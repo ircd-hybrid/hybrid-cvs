@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.380 2003/10/11 12:29:27 bill Exp $
+ *  $Id: s_serv.c,v 7.381 2003/10/11 20:47:25 bill Exp $
  */
 
 #include "stdinc.h"
@@ -1184,9 +1184,9 @@ server_estab(struct Client *client_p)
          match(my_name_for_link(conf), client_p->name))
       continue;
 
-    if (IsCapable(target_p, CAP_TS6))
-      sendto_one(target_p, ":%s SID %s 2 :%s%s",
-                 me.id, client_p->name,
+    if (IsCapable(target_p, CAP_TS6) && HasID(client_p))
+      sendto_one(target_p, ":%s SID %s 2 %s :%s%s",
+                 me.id, client_p->name, client_p->id,
                  IsHidden(client_p) ? "(H) " : "",
                  client_p->info);
     else

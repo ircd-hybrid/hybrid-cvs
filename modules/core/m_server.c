@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.117 2003/10/07 22:37:17 bill Exp $
+ *  $Id: m_server.c,v 1.118 2003/10/11 20:47:24 bill Exp $
  */
 
 #include "stdinc.h"
@@ -77,7 +77,7 @@ _moddeinit(void)
   mod_del_cmd(&sid_msgtab);
 }
 
-const char *_version = "$Revision: 1.117 $";
+const char *_version = "$Revision: 1.118 $";
 #endif
 
 
@@ -497,7 +497,7 @@ ms_server(struct Client *client_p, struct Client *source_p,
       continue;
 
     sendto_one(bclient_p, ":%s SERVER %s %d :%s%s",
-               parv[0], target_p->name, hop + 1,
+               ID_or_name(source_p, bclient_p), target_p->name, hop + 1,
                IsHidden(target_p) ? "(H) " : "",
                target_p->info);
   }
