@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.177 2001/05/29 22:50:19 leeh Exp $
+ *   $Id: s_serv.c,v 7.178 2001/05/30 10:12:54 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -1498,7 +1498,6 @@ burst_all(struct Client *client_p)
   struct Channel*   chptr;
   struct Channel*   vchan; 
   dlink_node *ptr;
-  time_t StartBurst=CurrentTime;
 
   /* serial counter borrowed from send.c */
   current_serial++;
