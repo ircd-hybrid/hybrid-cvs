@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_map.c,v 1.13 2003/04/16 19:56:32 michael Exp $
+ *  $Id: m_map.c,v 1.14 2003/04/16 20:16:06 michael Exp $
  */
 
 #include "stdinc.h"
@@ -54,7 +54,7 @@ void _moddeinit(void)
   mod_del_cmd(&map_msgtab);
 }
 
-const char *_version = "$Revision: 1.13 $";
+const char *_version = "$Revision: 1.14 $";
 #endif
 
 static char buf[BUFSIZE];
@@ -94,7 +94,7 @@ static void mo_map(struct Client *client_p, struct Client *source_p,
 static void dump_map(struct Client *client_p,struct Client *root_p, char *pbuf)
 {
   int cnt = 0, i = 0, len;
-  int users = 0;
+  int users;
   dlink_node *ptr;
   struct Client *server_p;
 
@@ -113,7 +113,7 @@ static void dump_map(struct Client *client_p,struct Client *root_p, char *pbuf)
   }
 	
   /* FIXME: add serv->usercnt */
-  users += dlink_list_length(&root_p->serv->users);
+  users = dlink_list_length(&root_p->serv->users);
         
   snprintf(buf + USER_COL, BUFSIZE - USER_COL,
            " | Users: %5d (%4.1f%%)", users,
