@@ -1,3 +1,17 @@
+db          2002/09/04 21:30:10 EDT	(20020905_1)
+
+  Modified files:
+    include              s_stats.h 
+    src                  s_stats.c 
+  Log:
+  - removed another never used statistic. It wasn't used in hybrid-6 either <g>
+  
+  Revision  Changes    Path
+  7.9       +0 -1      ircd-hybrid-7/include/s_stats.h
+  7.22      +2 -2      ircd-hybrid-7/src/s_stats.c
+
+
+
 db          2002/09/04 21:10:27 EDT	(20020905_0)
 
   Modified files:
@@ -31764,4 +31778,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4016 2002/09/05 01:10:30 db Exp $
+$Id: ChangeLog,v 7.4017 2002/09/05 01:30:12 db Exp $
