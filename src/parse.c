@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.72 2001/01/01 16:15:15 toot Exp $
+ *   $Id: parse.c,v 7.73 2001/01/01 22:57:57 toot Exp $
  */
 #include "parse.h"
 #include "client.h"
@@ -739,9 +739,8 @@ int m_unregistered(struct Client* cptr, struct Client* sptr, int parc, char* par
 
 int m_registered(struct Client* cptr, struct Client* sptr, int parc, char* parv[])
 {
-  /*  return send_error_to_client(sptr, ERR_ALREADYREGISTRED); */
-  sendto_one(cptr, ":%s NOTICE %s :Already registered",
-	     me.name,cptr->name);
+  sendto_one(cptr, form_str(ERR_ALREADYREGISTRED),   
+             me.name, parv[0]); 
   return 0;
 }
 
