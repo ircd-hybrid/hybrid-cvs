@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.373 2003/05/08 09:39:25 michael Exp $
+ *  $Id: s_conf.c,v 7.374 2003/05/08 21:36:16 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -433,7 +433,7 @@ check_client(struct Client *client_p, struct Client *source_p, char *username)
 	  source_p->localClient->listener->name,
 	  source_p->localClient->listener->port);
       exit_client(client_p, source_p, &me,
-		  "You are not authorised to use this server");
+		  "You are not authorized to use this server");
       break;
     }
  
