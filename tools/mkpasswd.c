@@ -6,7 +6,7 @@
 ** Modernization, getopt, etc for the Hybrid IRCD team
 ** by W. Campbell
 **
-** $Id: mkpasswd.c,v 7.7 2001/10/19 15:51:17 wcampbel Exp $
+** $Id: mkpasswd.c,v 7.8 2001/10/31 00:51:12 ejb Exp $
 */
 #include <stdio.h>
 #include <string.h>
@@ -29,6 +29,19 @@ char *make_md5_salt_para(char *);
 void usage();
 static char saltChars[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789./";
 
+#ifdef VMS
+static char *
+mygetpass(prompt)
+        char *prompt;
+{
+        static char line[100];
+
+        printf("warning: input will be echoed to screen.\n");
+        printf("%s", prompt);
+        fgets(line, sizeof(line), stdin);
+        return line;
+}
+#endif
 int main(int argc, char *argv[])
 {
   char *plaintext = NULL;
@@ -108,7 +121,11 @@ int main(int argc, char *argv[])
   }
   else
   {
+#ifndef VMS
     plaintext = getpass("plaintext: ");
+#else
+    plaintext = mygetpass("plaintext: ");
+#endif
   }
 
   printf("%s\n", crypt(plaintext, salt));
