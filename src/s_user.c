@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.199 2002/06/11 21:37:08 leeh Exp $
+ *  $Id: s_user.c,v 7.200 2002/06/12 00:53:36 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -338,8 +338,6 @@ int register_local_user(struct Client *client_p, struct Client *source_p,
 
   if (!IsGotId(source_p))
     {
-      char *p;
-      int i = 0;
 
       if (IsNeedIdentd(aconf))
 	{
@@ -351,19 +349,17 @@ int register_local_user(struct Client *client_p, struct Client *source_p,
 	  return(CLIENT_EXITED);
 	}
 
-      p = username;
       
       if(!IsNoTilde(aconf))
-        source_p->username[i++] = '~';
-
-      while(*p && i < USERLEN)
       {
-        if(*p != '[')
-          source_p->username[i++] = *p;
-	p++;
+        source_p->username[0] = '~';
+        source_p->username[1] = '\0';
       }
+      else 
+        source_p->username[0] = '\0';
+      
+      strlcat(source_p->username, username, USERLEN);
 
-      source_p->username[i] = '\0';
     }
 
   /* password check */
