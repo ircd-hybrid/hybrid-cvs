@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.64 2000/12/12 04:29:06 db Exp $
+ *   $Id: s_serv.c,v 7.65 2000/12/12 05:45:18 db Exp $
  */
 #include "tools.h"
 #include "s_serv.h"
@@ -524,7 +524,9 @@ void sendnick_TS(struct Client *cptr, struct Client *acptr)
           ubuf[1] = '\0';
         }
 
-      sendto_one(cptr, "NICK %s %d %lu %s %s %s %s :%s", acptr->name, 
+      sendto_one(cptr, ":%s NICK %s %d %lu %s %s %s %s :%s",
+		 me.name,
+		 acptr->name, 
                  acptr->hopcount + 1, acptr->tsinfo, ubuf,
                  acptr->username, acptr->host,
                  acptr->user->server, acptr->info);
