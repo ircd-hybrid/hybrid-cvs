@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.192 2002/05/20 17:11:22 androsyn Exp $
+ *  $Id: send.c,v 7.193 2002/05/20 17:28:41 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -699,7 +699,7 @@ sendto_remove_channels_local(struct Client *user, const char *pattern, ...)
 
   ++current_serial;
 
-  if (user->user != NULL)
+  if (user->user != NULL && user->user->channel.head != NULL)
   {
     for (ptr = user->user->channel.head; ptr && user->user->channel.head != NULL; ptr = ptr_next)
     {
@@ -904,6 +904,8 @@ sendto_list_local(dlink_list *list, buf_head_t *linebuf_ptr)
   dlink_node *ptr;
   dlink_node *ptr_next;
   struct Client *target_p;
+  if(list->head == NULL)
+     return;
   
   for (ptr = list->head; ptr && list->head != NULL; ptr = ptr_next)
   {
