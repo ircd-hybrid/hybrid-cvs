@@ -1,3 +1,15 @@
+androsyn    2002/07/11 05:23:21 EDT	(20020711_2)
+
+  Modified files:
+    include              rsa.h 
+  Log:
+  Add a newline to the end of rsa.h
+  
+  Revision  Changes    Path
+  7.11      +2 -1      ircd-hybrid-7/include/rsa.h
+
+
+
 androsyn    2002/07/11 05:17:20 EDT	(20020711_1)
 
   Modified files:
@@ -29449,4 +29461,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3853 2002/07/11 09:17:27 androsyn Exp $
+$Id: ChangeLog,v 7.3854 2002/07/11 09:23:28 androsyn Exp $
