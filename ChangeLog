@@ -1,3 +1,16 @@
+androsyn    2002/05/25 05:00:16 EDT	(20020525_12)
+
+  Modified files:
+    src                  ircd_signal.c s_bsd_sigio.c 
+  Log:
+  Minor cleanups to RT Sigio
+  
+  Revision  Changes    Path
+  7.11      +0 -5      ircd-hybrid-7/src/ircd_signal.c
+  7.22      +5 -16     ircd-hybrid-7/src/s_bsd_sigio.c
+
+
+
 androsyn    2002/05/25 02:52:50 EDT	(20020525_11)
 
   Modified files:
@@ -27253,4 +27266,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3694 2002/05/25 06:52:57 androsyn Exp $
+$Id: ChangeLog,v 7.3695 2002/05/25 09:00:23 androsyn Exp $
