@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.393 2003/05/19 16:19:16 db Exp $
+ *  $Id: s_conf.c,v 7.394 2003/05/19 19:10:53 stu Exp $
  */
 
 #include "stdinc.h"
@@ -745,7 +745,7 @@ hash_ip(struct irc_ssaddr *addr)
  * used in the hash.
  */
 void
-count_ip_hash(int *number_ips_stored,u_long *mem_ips_stored)
+count_ip_hash(int *number_ips_stored,unsigned long *mem_ips_stored)
 {
   struct ip_entry *ptr;
   int i;

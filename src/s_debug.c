@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_debug.c,v 7.82 2003/05/18 23:29:27 michael Exp $
+ *  $Id: s_debug.c,v 7.83 2003/05/19 19:10:54 stu Exp $
  */
 
 #include "stdinc.h"
@@ -158,37 +158,37 @@ count_memory(struct Client *source_p)
   int number_ips_stored;        /* number of ip addresses hashed */
   int number_servers_cached;    /* number of servers cached by scache */
 
-  u_long channel_memory = 0;
-  u_long channel_ban_memory = 0;
-  u_long channel_except_memory = 0;
-  u_long channel_invex_memory = 0;
+  unsigned long channel_memory = 0;
+  unsigned long channel_ban_memory = 0;
+  unsigned long channel_except_memory = 0;
+  unsigned long channel_invex_memory = 0;
 
-  u_long away_memory = 0;       /* memory used by aways */
-  u_long wwm = 0;               /* whowas array memory used */
-  u_long conf_memory = 0;       /* memory used by conf lines */
-  u_long mem_servers_cached;    /* memory used by scache */
-  u_long mem_ips_stored;        /* memory used by ip address hash */
+  unsigned long away_memory = 0;       /* memory used by aways */
+  unsigned long wwm = 0;               /* whowas array memory used */
+  unsigned long conf_memory = 0;       /* memory used by conf lines */
+  unsigned long mem_servers_cached;    /* memory used by scache */
+  unsigned long mem_ips_stored;        /* memory used by ip address hash */
 
-  u_long client_hash_table_size = 0;
-  u_long channel_hash_table_size = 0;
-  u_long resv_hash_table_size = 0;
-  u_long id_hash_table_size = 0;
-  u_long total_channel_memory = 0;
-  u_long totww = 0;
+  unsigned long client_hash_table_size = 0;
+  unsigned long channel_hash_table_size = 0;
+  unsigned long resv_hash_table_size = 0;
+  unsigned long id_hash_table_size = 0;
+  unsigned long total_channel_memory = 0;
+  unsigned long totww = 0;
 
   int local_client_count = 0;
-  u_long local_client_memory_used = 0;
+  unsigned long local_client_memory_used = 0;
 
   int remote_client_count = 0;
-  u_long remote_client_memory_used = 0;
+  unsigned long remote_client_memory_used = 0;
 
   int    user_count = 0;
-  u_long user_memory_used = 0;
+  unsigned long user_memory_used = 0;
 
   int    links_count = 0;
-  u_long links_memory_used = 0;
+  unsigned long links_memory_used = 0;
 
-  u_long total_memory = 0;
+  unsigned long total_memory = 0;
 
   count_whowas_memory(&wwu, &wwm);
 

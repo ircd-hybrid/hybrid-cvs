@@ -1,7 +1,7 @@
 /*
  * include/res.h (C)opyright 1992 Darren Reed.
  *
- * $Id: irc_reslib.h,v 7.7 2003/05/14 03:50:16 db Exp $
+ * $Id: irc_reslib.h,v 7.8 2003/05/19 19:10:51 stu Exp $
  */
 #ifndef INCLUDED_ircdreslib_h
 #define INCLUDED_ircdreslib_h
@@ -10,7 +10,7 @@
  * Inline versions of get/put short/long.  Pointer is advanced.
  */
 #define IRC_NS_GET16(s, cp) { \
-	register u_char *t_cp = (u_char *)(cp); \
+	register unsigned char *t_cp = (unsigned char *)(cp); \
 	(s) = ((u_int16_t)t_cp[0] << 8) \
 	    | ((u_int16_t)t_cp[1]) \
 	    ; \
@@ -18,7 +18,7 @@
 }
 
 #define IRC_NS_GET32(l, cp) { \
-	register u_char *t_cp = (u_char *)(cp); \
+	register unsigned char *t_cp = (unsigned char *)(cp); \
 	(l) = ((u_int32_t)t_cp[0] << 24) \
 	    | ((u_int32_t)t_cp[1] << 16) \
 	    | ((u_int32_t)t_cp[2] << 8) \
@@ -29,7 +29,7 @@
 
 #define IRC_NS_PUT16(s, cp) { \
 	register u_int16_t t_s = (u_int16_t)(s); \
-	register u_char *t_cp = (u_char *)(cp); \
+	register unsigned char *t_cp = (unsigned char *)(cp); \
 	*t_cp++ = t_s >> 8; \
 	*t_cp   = t_s; \
 	(cp) += NS_INT16SZ; \
@@ -37,7 +37,7 @@
 
 #define IRC_NS_PUT32(l, cp) { \
 	register u_int32_t t_l = (u_int32_t)(l); \
-	register u_char *t_cp = (u_char *)(cp); \
+	register unsigned char *t_cp = (unsigned char *)(cp); \
 	*t_cp++ = t_l >> 24; \
 	*t_cp++ = t_l >> 16; \
 	*t_cp++ = t_l >> 8; \
@@ -46,21 +46,21 @@
 }
 
 int irc_res_init(void);
-int irc_dn_expand(const u_char *msg, const u_char *eom, const u_char *src, char *dst, int dstsiz);
-int irc_ns_name_uncompress(const u_char *msg, const u_char *eom, const u_char *src, char *dst, size_t dstsiz);
-int irc_ns_name_unpack(const u_char *msg, const u_char *eom, const u_char *src, u_char *dst, size_t dstsiz);
-int irc_ns_name_ntop(const u_char *src, char *dst, size_t dstsiz);
-int irc_dn_comp(const char *src, u_char *dst, int dstsiz, u_char **dnptrs, u_char **lastdnptr);
-int irc_dn_skipname(const u_char *ptr, const u_char *eom);
-int irc_ns_name_skip(const u_char **ptrptr, const u_char *eom);
-u_int irc_ns_get16(const u_char *src);
-u_long irc_ns_get32(const u_char *src);
-void irc_ns_put16(u_int src, u_char *dst);
-void irc_ns_put32(u_long src, u_char *dst);
-int irc_ns_name_pton(const char *src, u_char *dst, size_t dstsiz);
-int irc_ns_name_pack(const u_char *src, u_char *dst, int dstsiz, const u_char **dnptrs, const u_char **lastdnptr);
-int irc_res_mkquery(const char *dname, int class, int type, u_char *buf, int buflen);
+int irc_dn_expand(const unsigned char *msg, const unsigned char *eom, const unsigned char *src, char *dst, int dstsiz);
+int irc_ns_name_uncompress(const unsigned char *msg, const unsigned char *eom, const unsigned char *src, char *dst, size_t dstsiz);
+int irc_ns_name_unpack(const unsigned char *msg, const unsigned char *eom, const unsigned char *src, unsigned char *dst, size_t dstsiz);
+int irc_ns_name_ntop(const unsigned char *src, char *dst, size_t dstsiz);
+int irc_dn_comp(const char *src, unsigned char *dst, int dstsiz, unsigned char **dnptrs, unsigned char **lastdnptr);
+int irc_dn_skipname(const unsigned char *ptr, const unsigned char *eom);
+int irc_ns_name_skip(const unsigned char **ptrptr, const unsigned char *eom);
+unsigned int irc_ns_get16(const unsigned char *src);
+unsigned long irc_ns_get32(const unsigned char *src);
+void irc_ns_put16(unsigned int src, unsigned char *dst);
+void irc_ns_put32(unsigned long src, unsigned char *dst);
+int irc_ns_name_pton(const char *src, unsigned char *dst, size_t dstsiz);
+int irc_ns_name_pack(const unsigned char *src, unsigned char *dst, int dstsiz, const unsigned char **dnptrs, const unsigned char **lastdnptr);
+int irc_res_mkquery(const char *dname, int class, int type, unsigned char *buf, int buflen);
 
 #endif /* INCLUDED_res_h */
 
-/* $Id: irc_reslib.h,v 7.7 2003/05/14 03:50:16 db Exp $ */
+/* $Id: irc_reslib.h,v 7.8 2003/05/19 19:10:51 stu Exp $ */

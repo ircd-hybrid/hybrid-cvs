@@ -92,7 +92,7 @@
 #define DNS_LABELTYPE_BITSTRING		0x41
 #define MAXLINE 128
 
-/* $Id: irc_reslib.c,v 7.11 2003/05/14 03:51:09 db Exp $ */
+/* $Id: irc_reslib.c,v 7.12 2003/05/19 19:10:53 stu Exp $ */
 
 static FBFILE *file;
 
@@ -129,10 +129,10 @@ static int labellen(const unsigned char *lp);
 static int special(int ch);
 static int printable(int ch);
 static int irc_decode_bitstring(const char **cpp, char *dn, const char *eom);
-static int irc_ns_name_compress(const char *src, u_char *dst, size_t dstsiz,
-    const u_char **dnptrs, const u_char **lastdnptr);
-static int irc_dn_find(const u_char *, const u_char *, const u_char * const *,
-    const u_char * const *);
+static int irc_ns_name_compress(const char *src, unsigned char *dst, size_t dstsiz,
+    const unsigned char **dnptrs, const unsigned char **lastdnptr);
+static int irc_dn_find(const unsigned char *, const unsigned char *, const unsigned char * const *,
+    const unsigned char * const *);
 static int irc_encode_bitsring(const char **, const char *, char **, char **, 
     const char *);
 static int mklower(int ch);
@@ -251,7 +251,7 @@ add_nameserver(char *arg)
  * Return size of compressed name or -1 if there was an error.
  */
 int
-irc_dn_expand(const u_char *msg, const u_char *eom, const u_char *src,
+irc_dn_expand(const unsigned char *msg, const unsigned char *eom, const unsigned char *src,
 	  char *dst, int dstsiz)
 {
 	int n = irc_ns_name_uncompress(msg, eom, src, dst, (size_t)dstsiz);
@@ -270,10 +270,10 @@ irc_dn_expand(const u_char *msg, const u_char *eom, const u_char *src,
  *	Root domain returns as "." not "".
  */
 int
-irc_ns_name_uncompress(const u_char *msg, const u_char *eom, const u_char *src,
+irc_ns_name_uncompress(const unsigned char *msg, const unsigned char *eom, const unsigned char *src,
 		   char *dst, size_t dstsiz)
 {
-	u_char tmp[NS_MAXCDNAME];
+	unsigned char tmp[NS_MAXCDNAME];
 	int n;
 	
 	if ((n = irc_ns_name_unpack(msg, eom, src, tmp, sizeof tmp)) == -1)
@@ -289,11 +289,11 @@ irc_ns_name_uncompress(const u_char *msg, const u_char *eom, const u_char *src,
  *	-1 if it fails, or consumed octets if it succeeds.
  */
 int
-irc_ns_name_unpack(const u_char *msg, const u_char *eom, const u_char *src,
-	       u_char *dst, size_t dstsiz)
+irc_ns_name_unpack(const unsigned char *msg, const unsigned char *eom, const unsigned char *src,
+	       unsigned char *dst, size_t dstsiz)
 {
-	const u_char *srcp, *dstlim;
-	u_char *dstp;
+	const unsigned char *srcp, *dstlim;
+	unsigned char *dstp;
 	int n, len, checked, l;
 
 	len = -1;
@@ -371,12 +371,12 @@ irc_ns_name_unpack(const u_char *msg, const u_char *eom, const u_char *src,
  *	All other domains are returned in non absolute form
  */
 int
-irc_ns_name_ntop(const u_char *src, char *dst, size_t dstsiz)
+irc_ns_name_ntop(const unsigned char *src, char *dst, size_t dstsiz)
 {
-	const u_char *cp;
+	const unsigned char *cp;
 	char *dn, *eom;
-	u_char c;
-	u_int n;
+	unsigned char c;
+	unsigned int n;
 	int l;
 
 	cp = src;
@@ -468,20 +468,20 @@ irc_ns_name_ntop(const u_char *src, char *dst, size_t dstsiz)
  * 'length' is the size of the array pointed to by 'comp_dn'.
  */
 int
-irc_dn_comp(const char *src, u_char *dst, int dstsiz,
-	u_char **dnptrs, u_char **lastdnptr)
+irc_dn_comp(const char *src, unsigned char *dst, int dstsiz,
+	unsigned char **dnptrs, unsigned char **lastdnptr)
 {
 	return (irc_ns_name_compress(src, dst, (size_t)dstsiz,
-				 (const u_char **)dnptrs,
-				 (const u_char **)lastdnptr));
+				 (const unsigned char **)dnptrs,
+				 (const unsigned char **)lastdnptr));
 }
 
 /*
  * Skip over a compressed domain name. Return the size or -1.
  */
 int
-irc_dn_skipname(const u_char *ptr, const u_char *eom) {
-	const u_char *saveptr = ptr;
+irc_dn_skipname(const unsigned char *ptr, const unsigned char *eom) {
+	const unsigned char *saveptr = ptr;
 
 	if (irc_ns_name_skip(&ptr, eom) == -1)
 		return (-1);
@@ -495,10 +495,10 @@ irc_dn_skipname(const u_char *ptr, const u_char *eom) {
  *	0 on success, -1 (with errno set) on failure.
  */
 int
-irc_ns_name_skip(const u_char **ptrptr, const u_char *eom)
+irc_ns_name_skip(const unsigned char **ptrptr, const unsigned char *eom)
 {
-	const u_char *cp;
-	u_int n;
+	const unsigned char *cp;
+	unsigned int n;
 	int l;
 
 	cp = *ptrptr;
@@ -532,29 +532,29 @@ irc_ns_name_skip(const u_char **ptrptr, const u_char *eom)
 	return (0);
 }
 
-u_int
-irc_ns_get16(const u_char *src) {
-	u_int dst;
+unsigned int
+irc_ns_get16(const unsigned char *src) {
+	unsigned int dst;
 
 	IRC_NS_GET16(dst, src);
 	return (dst);
 }
 
 u_long
-irc_ns_get32(const u_char *src) {
-	u_long dst;
+irc_ns_get32(const unsigned char *src) {
+	unsigned long dst;
 
 	IRC_NS_GET32(dst, src);
 	return (dst);
 }
 
 void
-irc_ns_put16(u_int src, u_char *dst) {
+irc_ns_put16(unsigned int src, unsigned char *dst) {
 	IRC_NS_PUT16(src, dst);
 }
 
 void
-irc_ns_put32(u_long src, u_char *dst) {
+irc_ns_put32(unsigned long src, unsigned char *dst) {
 	IRC_NS_PUT32(src, dst);
 }
 
@@ -591,7 +591,7 @@ static int
 labellen(const unsigned char *lp)
 {                               
         int bitlen;
-        u_char l = *lp;
+        unsigned char l = *lp;
                         
         if ((l & NS_CMPRSFLGS) == NS_CMPRSFLGS) {
                 /* should be avoided by the caller */
@@ -666,9 +666,9 @@ irc_decode_bitstring(const char **cpp, char *dn, const char *eom)
  */
 
 int
-irc_ns_name_pton(const char *src, u_char *dst, size_t dstsiz)
+irc_ns_name_pton(const char *src, unsigned char *dst, size_t dstsiz)
 {
-  u_char *label, *bp, *eom;
+  unsigned char *label, *bp, *eom;
   int c, n, escaped, e = 0;
   char *cp;
 
@@ -765,7 +765,7 @@ irc_ns_name_pton(const char *src, u_char *dst, size_t dstsiz)
       errno = EMSGSIZE;
       return (-1);
     }
-    *bp++ = (u_char)c;
+    *bp++ = (unsigned char)c;
   }
   c = (bp - label - 1);
   if ((c & NS_CMPRSFLGS) != 0) {    /* Label too big. */
@@ -810,12 +810,12 @@ irc_ns_name_pton(const char *src, u_char *dst, size_t dstsiz)
  *  list.
  */
 int
-irc_ns_name_pack(const u_char *src, u_char *dst, int dstsiz,
-       const u_char **dnptrs, const u_char **lastdnptr)
+irc_ns_name_pack(const unsigned char *src, unsigned char *dst, int dstsiz,
+       const unsigned char **dnptrs, const unsigned char **lastdnptr)
 {
-  u_char *dstp;
-  const u_char **cpp, **lpp, *eob, *msg;
-  const u_char *srcp;
+  unsigned char *dstp;
+  const unsigned char **cpp, **lpp, *eob, *msg;
+  const unsigned char *srcp;
   int n, l, first = 1;
 
   srcp = src;
@@ -859,8 +859,8 @@ irc_ns_name_pack(const u_char *src, u_char *dst, int dstsiz,
     /* Look to see if we can use pointers. */
     n = *srcp;
     if (n != 0 && msg != NULL) {
-      l = irc_dn_find(srcp, msg, (const u_char * const *)dnptrs,
-            (const u_char * const *)lpp);
+      l = irc_dn_find(srcp, msg, (const unsigned char * const *)dnptrs,
+            (const unsigned char * const *)lpp);
       if (l >= 0) {
         if (dstp + 1 >= eob) {
           goto cleanup;
@@ -903,10 +903,10 @@ cleanup:
                               
 
 static int
-irc_ns_name_compress(const char *src, u_char *dst, size_t dstsiz,
-                 const u_char **dnptrs, const u_char **lastdnptr)
+irc_ns_name_compress(const char *src, unsigned char *dst, size_t dstsiz,
+                 const unsigned char **dnptrs, const unsigned char **lastdnptr)
 {
-        u_char tmp[NS_MAXCDNAME];
+        unsigned char tmp[NS_MAXCDNAME];
 
         if (irc_ns_name_pton(src, tmp, sizeof tmp) == -1)
                 return (-1);
@@ -1028,13 +1028,13 @@ irc_encode_bitsring(const char **bp, const char *end, char **labelp,
  *  not the pointer to the start of the message.
  */
 static int
-irc_dn_find(const u_char *domain, const u_char *msg,
-  const u_char * const *dnptrs,
-  const u_char * const *lastdnptr)
+irc_dn_find(const unsigned char *domain, const unsigned char *msg,
+  const unsigned char * const *dnptrs,
+  const unsigned char * const *lastdnptr)
 {
-  const u_char *dn, *cp, *sp;
-  const u_char * const *cpp;
-  u_int n;
+  const unsigned char *dn, *cp, *sp;
+  const unsigned char * const *cpp;
+  unsigned int n;
 
   for (cpp = dnptrs; cpp < lastdnptr; cpp++) {
     sp = *cpp;
@@ -1108,13 +1108,13 @@ int
 irc_res_mkquery(
 	     const char *dname,		/* domain name */
 	     int class, int type,	/* class and type of query */
-	     u_char *buf,		/* buffer to put query */
+	     unsigned char *buf,		/* buffer to put query */
 	     int buflen)		/* size of buffer */
 {
 	HEADER *hp;
-	u_char *cp;
+	unsigned char *cp;
 	int n;
-	u_char *dnptrs[20], **dpp, **lastdnptr;
+	unsigned char *dnptrs[20], **dpp, **lastdnptr;
 
 	/*
 	 * Initialize header fields.

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.94 2003/05/13 18:19:34 db Exp $
+ *  $Id: channel_mode.c,v 7.95 2003/05/19 19:10:53 stu Exp $
  */
 
 #include "stdinc.h"
@@ -579,9 +579,9 @@ pretty_mask(char *mask)
 static char *
 fix_key(char *arg)
 {
-  u_char *s, *t, c;
+  unsigned char *s, *t, c;
 
-  for (s = t = (u_char *) arg; (c = *s); s++)
+  for (s = t = (unsigned char *) arg; (c = *s); s++)
   {
     c &= 0x7f;
     if (c != ':' && c > ' ' && c != ',')
@@ -603,9 +603,9 @@ fix_key(char *arg)
 static char *
 fix_key_old(char *arg)
 {
-  u_char *s, *t, c;
+  unsigned char *s, *t, c;
 
-  for (s = t = (u_char *) arg; (c = *s); s++)
+  for (s = t = (unsigned char *) arg; (c = *s); s++)
   {
     c &= 0x7f;
     if ((c != 0x0a) && (c != ':') && (c != 0x0d) && (c != ','))

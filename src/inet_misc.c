@@ -1,5 +1,5 @@
 /* inet_misc.c - inet_pton and inet_ntop for those who don't have it.
- * $Id: inet_misc.c,v 7.2 2003/05/17 17:18:01 joshk Exp $
+ * $Id: inet_misc.c,v 7.3 2003/05/19 19:10:53 stu Exp $
  *
  * Copyright (c) 1983, 1990, 1993
  *		The Regents of the University of California.  All rights reserved.
@@ -57,11 +57,11 @@ int
 inet_aton(const char *cp, struct in_addr * addr)
 {
 	unsigned int val;
-	int			base,
-				n;
-	char		c;
-	u_int		parts[4];
-	u_int	   *pp = parts;
+	int			 base,
+				 n;
+	char		 c;
+	unsigned int parts[4];
+	unsigned int *pp = parts;
 
 	for (;;)
 	{

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: scache.c,v 7.18 2003/03/29 00:23:42 michael Exp $
+ *  $Id: scache.c,v 7.19 2003/05/19 19:10:54 stu Exp $
  */
 
 #include "stdinc.h"
@@ -109,7 +109,7 @@ const char* find_or_add(const char* name)
  * output	- NONE
  * side effects	-
  */
-void count_scache(int *number_servers_cached,u_long *mem_servers_cached)
+void count_scache(int *number_servers_cached,unsigned long *mem_servers_cached)
 {
   struct scache_entry *scache_ptr;
   int i;

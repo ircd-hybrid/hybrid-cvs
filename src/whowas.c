@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: whowas.c,v 7.22 2003/04/16 09:01:52 michael Exp $
+ *  $Id: whowas.c,v 7.23 2003/05/19 19:10:54 stu Exp $
  */
 
 #include "stdinc.h"
@@ -143,12 +143,12 @@ get_history(char *nick, time_t timelimit)
 }
 
 void
-count_whowas_memory(int *wwu, u_long *wwum)
+count_whowas_memory(int *wwu, unsigned long *wwum)
 {
   struct Whowas *tmp;
   int i;
   int u = 0;
-  u_long um = 0;
+  unsigned long um = 0;
 
   /* count the number of used whowas structs in 'u'   */
   /* count up the memory used of whowas structs in um */

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: irc_string.c,v 7.61 2003/05/13 02:32:19 joshk Exp $
+ *  $Id: irc_string.c,v 7.62 2003/05/19 19:10:53 stu Exp $
  */
 
 #include "stdinc.h"
@@ -283,7 +283,7 @@ static const char *inet_ntop6(const unsigned char *src, char *dst, unsigned int 
  *	`dst' (as a const)
  * notes:
  *	(1) uses no statics
- *	(2) takes a u_char* not an in_addr as input
+ *	(2) takes a unsigned char* not an in_addr as input
  * author:
  *	Paul Vixie, 1996.
  */
@@ -315,7 +315,7 @@ inet_ntop6(const unsigned char *src, char *dst, unsigned int size)
 	 */
 	char tmp[sizeof "ffff:ffff:ffff:ffff:ffff:ffff:255.255.255.255"], *tp;
 	struct { int base, len; } best, cur;
-	u_int words[IN6ADDRSZ / INT16SZ];
+	unsigned int words[IN6ADDRSZ / INT16SZ];
 	int i;
 
 	/*
@@ -448,10 +448,10 @@ inetntop(int af, const void *src, char *dst, unsigned int size)
  *	Paul Vixie, 1996.
  */
 static int
-inet_pton4(const char *src, u_char *dst)
+inet_pton4(const char *src, unsigned char *dst)
 {
 	int saw_digit, octets, ch;
-	u_char tmp[INADDRSZ], *tp;
+	unsigned char tmp[INADDRSZ], *tp;
 
 	saw_digit = 0;
 	octets = 0;
@@ -459,7 +459,7 @@ inet_pton4(const char *src, u_char *dst)
 	while ((ch = *src++) != '\0') {
 
 		if (ch >= '0' && ch <= '9') {
-			u_int new = *tp * 10 + (ch - '0');
+			unsigned int new = *tp * 10 + (ch - '0');
 
 			if (new > 255)
 				return (0);
@@ -498,13 +498,13 @@ inet_pton4(const char *src, u_char *dst)
  */
 #ifdef IPV6
 static int
-inet_pton6(const char *src, u_char *dst)
+inet_pton6(const char *src, unsigned char *dst)
 {
 	static const char xdigits[] = "0123456789abcdef";
-	u_char tmp[IN6ADDRSZ], *tp, *endp, *colonp;
+	unsigned char tmp[IN6ADDRSZ], *tp, *endp, *colonp;
 	const char *curtok;
 	int ch, saw_xdigit;
-	u_int val;
+	unsigned int val;
 
 	tp = memset(tmp, '\0', IN6ADDRSZ);
 	endp = tp + IN6ADDRSZ;
@@ -540,8 +540,8 @@ inet_pton6(const char *src, u_char *dst)
 			}
 			if (tp + INT16SZ > endp)
 				return (0);
-			*tp++ = (u_char) (val >> 8) & 0xff;
-			*tp++ = (u_char) val & 0xff;
+			*tp++ = (unsigned char) (val >> 8) & 0xff;
+			*tp++ = (unsigned char) val & 0xff;
 			saw_xdigit = 0;
 			val = 0;
 			continue;
@@ -560,8 +560,8 @@ inet_pton6(const char *src, u_char *dst)
 	if (saw_xdigit) {
 		if (tp + INT16SZ > endp)
 			return (0);
-		*tp++ = (u_char) (val >> 8) & 0xff;
-		*tp++ = (u_char) val & 0xff;
+		*tp++ = (unsigned char) (val >> 8) & 0xff;
+		*tp++ = (unsigned char) val & 0xff;
 	}
 	if (colonp != NULL) {
 		/*

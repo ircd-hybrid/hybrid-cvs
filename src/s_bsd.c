@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.199 2003/05/18 23:29:27 michael Exp $
+ *  $Id: s_bsd.c,v 7.200 2003/05/19 19:10:53 stu Exp $
  */
 
 #include "stdinc.h"
@@ -576,7 +576,7 @@ comm_checktimeouts(void *notused)
 }
 
 /*
- * void comm_connect_tcp(int fd, const char *host, u_short port,
+ * void comm_connect_tcp(int fd, const char *host, unsigned short port,
  *                       struct sockaddr *clocal, int socklen,
  *                       CNCB *callback, void *data, int aftype, int timeout)
  * Input: An fd to connect with, a host and port to connect to,
@@ -589,7 +589,7 @@ comm_checktimeouts(void *notused)
  *               may be called now, or it may be called later.
  */
 void
-comm_connect_tcp(int fd, const char *host, u_short port,
+comm_connect_tcp(int fd, const char *host, unsigned short port,
                  struct sockaddr *clocal, int socklen, CNCB *callback,
                  void *data, int aftype, int timeout)
 {

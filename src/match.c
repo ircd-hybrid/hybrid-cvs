@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: match.c,v 7.25 2003/05/11 22:27:44 joshk Exp $
+ * $Id: match.c,v 7.26 2003/05/19 19:10:53 stu Exp $
  *
  */
 #include "stdinc.h"
@@ -208,14 +208,14 @@ int match_esc(const char *mask, const char *name)
 }
 
 static inline int 
-comp_with_mask(void *addr, void *dest, u_int mask)
+comp_with_mask(void *addr, void *dest, unsigned int mask)
 {
   if (memcmp(addr, dest, mask / 8) == 0) 
   {
     int n = mask / 8;
     int m = ((-1) << (8 - (mask % 8)));
     if (mask % 8 == 0 || 
-       (((u_char *) addr)[n] & m) == (((u_char *) dest)[n] & m))  
+       (((unsigned char *) addr)[n] & m) == (((unsigned char *) dest)[n] & m))  
       return (1);
   }
   return (0);

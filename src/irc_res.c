@@ -7,7 +7,7 @@
  * The authors takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: irc_res.c,v 7.18 2003/05/19 00:41:12 michael Exp $
+ * $Id: irc_res.c,v 7.19 2003/05/19 19:10:53 stu Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -528,22 +528,22 @@ do_query_number(const struct DNSQuery *query, const struct irc_ssaddr *addr,
 
     (void)sprintf(ipbuf, "%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x."
                   "%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.ip6.%s.",
-                  (u_int)(cp[15]&0xf), (u_int)(cp[15]>>4),
-                  (u_int)(cp[14]&0xf), (u_int)(cp[14]>>4),
-                  (u_int)(cp[13]&0xf), (u_int)(cp[13]>>4),
-                  (u_int)(cp[12]&0xf), (u_int)(cp[12]>>4),
-                  (u_int)(cp[11]&0xf), (u_int)(cp[11]>>4),
-                  (u_int)(cp[10]&0xf), (u_int)(cp[10]>>4),
-                  (u_int)(cp[9]&0xf), (u_int)(cp[9]>>4),
-                  (u_int)(cp[8]&0xf), (u_int)(cp[8]>>4),
-                  (u_int)(cp[7]&0xf), (u_int)(cp[7]>>4),
-                  (u_int)(cp[6]&0xf), (u_int)(cp[6]>>4),
-                  (u_int)(cp[5]&0xf), (u_int)(cp[5]>>4),
-                  (u_int)(cp[4]&0xf), (u_int)(cp[4]>>4),
-                  (u_int)(cp[3]&0xf), (u_int)(cp[3]>>4),
-                  (u_int)(cp[2]&0xf), (u_int)(cp[2]>>4),
-                  (u_int)(cp[1]&0xf), (u_int)(cp[1]>>4),
-                  (u_int)(cp[0]&0xf), (u_int)(cp[0]>>4), intarpa);
+                  (unsigned int)(cp[15]&0xf), (unsigned int)(cp[15]>>4),
+                  (unsigned int)(cp[14]&0xf), (unsigned int)(cp[14]>>4),
+                  (unsigned int)(cp[13]&0xf), (unsigned int)(cp[13]>>4),
+                  (unsigned int)(cp[12]&0xf), (unsigned int)(cp[12]>>4),
+                  (unsigned int)(cp[11]&0xf), (unsigned int)(cp[11]>>4),
+                  (unsigned int)(cp[10]&0xf), (unsigned int)(cp[10]>>4),
+                  (unsigned int)(cp[9]&0xf), (unsigned int)(cp[9]>>4),
+                  (unsigned int)(cp[8]&0xf), (unsigned int)(cp[8]>>4),
+                  (unsigned int)(cp[7]&0xf), (unsigned int)(cp[7]>>4),
+                  (unsigned int)(cp[6]&0xf), (unsigned int)(cp[6]>>4),
+                  (unsigned int)(cp[5]&0xf), (unsigned int)(cp[5]>>4),
+                  (unsigned int)(cp[4]&0xf), (unsigned int)(cp[4]>>4),
+                  (unsigned int)(cp[3]&0xf), (unsigned int)(cp[3]>>4),
+                  (unsigned int)(cp[2]&0xf), (unsigned int)(cp[2]>>4),
+                  (unsigned int)(cp[1]&0xf), (unsigned int)(cp[1]>>4),
+                  (unsigned int)(cp[0]&0xf), (unsigned int)(cp[0]>>4), intarpa);
   }
 #endif
   if (request == NULL)

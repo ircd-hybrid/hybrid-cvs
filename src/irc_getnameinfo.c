@@ -47,7 +47,7 @@
 #include "irc_string.h"
 
 
-/*  $Id: irc_getnameinfo.c,v 7.8 2003/05/11 22:27:44 joshk Exp $ */
+/*  $Id: irc_getnameinfo.c,v 7.9 2003/05/19 19:10:53 stu Exp $ */
 
 static const struct afd {
   int a_af;
@@ -66,9 +66,9 @@ static const struct afd {
 
 struct sockinet
 {
-  u_char si_len;
-  u_char si_family;
-  u_short si_port;
+  unsigned char si_len;
+  unsigned char si_family;
+  unsigned short si_port;
 };
 
 #ifdef IPV6
@@ -82,7 +82,7 @@ irc_getnameinfo(const struct sockaddr *sa, socklen_t salen, char *host,
 {
   const struct afd *afd;
   struct servent *sp;
-  u_short port;
+  unsigned short port;
   int family, i;
   const char *addr;
   u_int32_t v4a;
