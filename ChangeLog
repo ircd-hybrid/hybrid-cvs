@@ -1,3 +1,18 @@
+bill        2002/09/19 00:22:57 EDT	(20020919_1)
+
+  Modified files:
+    modules              m_unkline.c 
+    modules/core         m_message.c 
+  Log:
+  - another speed enhancement noted by lee
+  - change ungline notice to be consistent with undline and unkline
+  
+  Revision  Changes    Path
+  1.101     +15 -5     ircd-hybrid-7/modules/core/m_message.c
+  1.48      +3 -3      ircd-hybrid-7/modules/m_unkline.c
+
+
+
 bill        2002/09/18 23:12:02 EDT	(20020919_0)
 
   Modified files:
@@ -32075,4 +32090,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4037 2002/09/19 03:12:04 bill Exp $
+$Id: ChangeLog,v 7.4038 2002/09/19 04:23:00 bill Exp $
