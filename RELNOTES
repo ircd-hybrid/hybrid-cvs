@@ -1,4 +1,5 @@
 -- ircd-hybrid-7rc6 RELNOTES
+o) fixed a nasty ban overflow which causes desyncs
 o) allow '_' in hostnames
 o) fixed linebuf leak
 o) allow op/ban "cookies" (for now at least) i.e. mode * +o-b nick cookie
@@ -123,4 +124,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.47 2002/12/18 17:03:45 bill Exp $
+$Id: RELNOTES,v 1.48 2002/12/19 03:51:33 db Exp $
