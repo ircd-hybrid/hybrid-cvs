@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: list.c,v 7.52 2003/04/05 01:08:29 michael Exp $
+ *  $Id: list.c,v 7.53 2003/04/13 10:36:50 stu Exp $
  */
 
 #include "stdinc.h"
@@ -42,6 +42,7 @@
 
 /* XXX assummed 32 bit ints */
 int links_count=0;
+int slinks_count=0;
 int user_count=0;
 
 /*
@@ -206,6 +207,49 @@ free_dlink_node(dlink_node *ptr)
   assert(links_count >= 0);
 }
 
+/*
+ * init_slink_nodes
+ *
+ */
+static BlockHeap *snode_heap;
+void init_slink_nodes(void)
+{
+  snode_heap = BlockHeapCreate(sizeof(slink_node), SNODE_HEAP_SIZE);
+}
+
+/*
+ * make_slink_node
+ *
+ * inputs   - NONE
+ * output   - pointer to new slink_node
+ * side effects - NONE
+ */
+slink_node*
+make_slink_node(void)
+{
+  slink_node *lp;
+
+  lp = (slink_node *)BlockHeapAlloc(snode_heap);
+  ++slinks_count;
+
+  lp->next = NULL;
+  return lp;
+}
+
+/*
+ * free_slink_node
+ *
+ * inputs   - pointer to slink_node
+ * output   - NONE
+ * side effects - free given slink_node
+ */
+void
+free_slink_node(slink_node *ptr)
+{
+  BlockHeapFree(snode_heap, ptr);
+  --slinks_count;
+  assert(slinks_count >= 0);
+}
 
 /*
  * count_user_memory

@@ -19,12 +19,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- * $Id: stdinc.h,v 1.2 2003/03/25 01:17:49 db Exp $
+ * $Id: stdinc.h,v 1.3 2003/04/13 10:36:48 stu Exp $
  *
  */
  
-     
+#ifndef IN_AUTOCONF     
 #include "config.h" /* Gotta pull in the autoconf stuff */
+#endif
 
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>

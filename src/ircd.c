@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.263 2003/04/09 11:19:37 stu Exp $
+ *  $Id: ircd.c,v 7.264 2003/04/13 10:36:50 stu Exp $
  */
 
 #include "stdinc.h"
@@ -613,6 +613,7 @@ int main(int argc, char *argv[])
 
   initBlockHeap();
   init_dlink_nodes();
+  init_slink_nodes();
   initialize_message_files();
   linebuf_init();       /* set up some linebuf stuff to control paging */
   init_hash();

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: config.h,v 7.144 2003/03/29 17:26:40 michael Exp $
+ *  $Id: config.h,v 7.145 2003/04/13 10:36:48 stu Exp $
  */
 
 #ifndef INCLUDED_config_h
@@ -331,6 +331,7 @@
 #define LINEBUF_HEAP_SIZE	1024
 #define	USER_HEAP_SIZE		1024
 #define	DNODE_HEAP_SIZE		2048
+#define SNODE_HEAP_SIZE     2048
 #define TOPIC_HEAP_SIZE		1024
 #else  /* Small Net */
 #define CHANNEL_HEAP_SIZE	256
@@ -340,6 +341,7 @@
 #define LINEBUF_HEAP_SIZE	128
 #define	USER_HEAP_SIZE		128
 #define	DNODE_HEAP_SIZE		256
+#define SNODE_HEAP_SIZE     256
 #define TOPIC_HEAP_SIZE		256
 #endif
 

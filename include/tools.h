@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: tools.h,v 1.21 2003/04/08 09:39:13 adx Exp $
+ *  $Id: tools.h,v 1.22 2003/04/13 10:36:48 stu Exp $
  */
 
 #ifndef __TOOLS_H__
@@ -28,10 +28,12 @@
 #include "stdinc.h"
 
 /*
- * double-linked-list stuff
+ * double-linked-list and single-linked-list stuff
  */
 typedef struct _dlink_node dlink_node;
 typedef struct _dlink_list dlink_list;
+typedef struct _slink_node slink_node;
+typedef struct _slink_list slink_list;
 
 struct _dlink_node {
     void *data;
@@ -43,6 +45,16 @@ struct _dlink_node {
 struct _dlink_list {
     dlink_node *head;
     dlink_node *tail;
+    unsigned long length;
+};
+
+struct _slink_node {
+    void *data;
+    slink_node *next;
+};
+
+struct _slink_list {
+    slink_node *head;
     unsigned long length;
 };
 
@@ -73,6 +85,10 @@ void mem_frob(void *data, int len);
 #define mem_frob(x, y) 
 #endif
 
+void slink_add(void *data, slink_node *node, slink_list *list);
+void slink_delete(slink_node *node, slink_list *list);
+slink_node *slink_find(slink_list *list, void *data);
+
 /* These macros are basically swiped from the linux kernel
  * they are simple yet effective
  */
@@ -93,10 +109,13 @@ void mem_frob(void *data, int len);
 #define DLINK_FOREACH_SAFE(pos, n, head) for (pos = (head), n = pos ? pos->next : NULL; pos != NULL; pos = n, n = pos ? pos->next : NULL)
 	        
 #define DLINK_FOREACH_PREV(pos, head) for (pos = (head); pos != NULL; pos = pos->prev)
-              		                  	
+              		       
+#define SLINK_FOREACH(pos, head) for (pos = (head); pos != NULL; pos = pos->next)
+#define SLINK_FOREACH_SAFE(pos, n, head) for (pos = (head); n = pos ? pos->next : NULL; pos != NULL; pos = n, n = pos ? pos->next : NULL)
 
 /* Returns the list length */
 #define dlink_list_length(list) (list)->length
+#define slink_list_length(list) (list)->length
 
 /*
  * The functions below are included for the sake of inlining
@@ -247,6 +266,67 @@ dlinkFindDelete(dlink_list *list, void *data)
   if (m)
     dlinkDelete(m, list);
   return(m);
+}
+
+extern inline void
+slink_add(void *data, slink_node *node, slink_list *list)
+{
+    assert(list != NULL && node != NULL);
+
+    if(list->head == NULL)
+    {
+        list->head = node;
+        node->next = NULL;
+    }
+    else
+    {
+        node->next = list->head->next;
+        list->head = node;
+    }
+
+    node->data = data;
+    list->length++;
+}
+
+extern inline void
+slink_delete(slink_node *node, slink_list *list)
+{
+    slink_node *ptr;
+
+    assert(node != NULL && list != NULL);
+
+    if(list->head == NULL)
+        return;
+
+    if(list->head->next == NULL)
+        list->head = NULL;
+    else
+    {
+        SLINK_FOREACH(ptr, list->head)
+        {
+            if(ptr->next == node)
+            {
+                ptr->next = node->next;
+                break;
+            }
+        }
+    }
+    list->length--;
+}
+
+extern inline slink_node*
+slink_find(slink_list *list, void *data)
+{
+    slink_node *ptr;
+
+    assert(list != NULL && data != NULL);
+
+    SLINK_FOREACH(ptr, list->head)
+    {
+        if(ptr->data == data)
+            return ptr;
+    }
+    return NULL;
 }
 #endif /* __GNUC__ */
 

@@ -6668,7 +6668,8 @@ _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
-#include "include/stdinc.h"
+#define IN_AUTOCONF
+                    #include "include/stdinc.h"
 int
 main ()
 {
