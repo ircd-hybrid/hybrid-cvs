@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.106 2000/12/04 19:52:08 db Exp $
+ * $Id: channel.c,v 7.107 2000/12/04 20:36:42 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -1097,6 +1097,9 @@ void set_channel_mode(struct Client *cptr,
 	    }
           else if (c == 'v')
 	    {
+	      /* ignore attempts to voice/devoice if they are opped */
+	      if(is_any_op(chptr,who))
+		break;
 	      the_mode = MODE_VOICE;
 	      to_list = &chptr->voiced;
 	    }
@@ -2378,6 +2381,7 @@ void channel_member_names( struct Client *sptr,
   char buf[BUFSIZE];
   char *show_ops_flag;
   char *show_voiced_flag;
+  char *show_halfops_flag;
   int reply_to_send = NO;
 
   /* Find users on same channel (defined by chptr) */
@@ -2393,11 +2397,13 @@ void channel_member_names( struct Client *sptr,
   if(GlobalSetOptions.hide_chanops && !is_any_op(chptr,sptr))
     {
       show_ops_flag = "";
+      show_halfops_flag = "";
       show_voiced_flag = "";
     }
   else
     {
       show_ops_flag = "@";
+      show_halfops_flag = "%";
       show_voiced_flag = "+";
     }
 
@@ -2410,7 +2416,7 @@ void channel_member_names( struct Client *sptr,
 		      buf, mlen, &cur_len, &reply_to_send);
 
   channel_member_list(sptr,
-		      &chptr->halfops, chptr, name_of_channel, "%",
+		      &chptr->halfops, chptr,name_of_channel,show_halfops_flag,
 		      buf, mlen, &cur_len, &reply_to_send);
 
   channel_member_list(sptr, &chptr->peons, chptr, name_of_channel, "",
