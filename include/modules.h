@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.h,v 7.49 2003/07/07 16:56:41 joshk Exp $
+ *  $Id: modules.h,v 7.50 2003/07/08 21:06:36 joshk Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -97,6 +97,7 @@ extern struct Message drop_msgtab;
 extern struct Message eob_msgtab;
 extern struct Message error_msgtab;
 extern struct Message gline_msgtab;
+extern struct Message ungline_msgtab;
 extern struct Message info_msgtab;
 extern struct Message invite_msgtab;
 extern struct Message ison_msgtab;
@@ -104,7 +105,9 @@ extern struct Message join_msgtab;
 extern struct Message kick_msgtab;
 extern struct Message kill_msgtab;
 extern struct Message kline_msgtab;
+extern struct Message unkline_msgtab;
 extern struct Message dline_msgtab;
+extern struct Message undline_msgtab;
 extern struct Message knock_msgtab;
 extern struct Message knockll_msgtab;
 extern struct Message links_msgtab;
@@ -141,7 +144,6 @@ extern struct Message testline_msgtab;
 extern struct Message time_msgtab;
 extern struct Message topic_msgtab;
 extern struct Message trace_msgtab;
-extern struct Message msgtabs[];
 extern struct Message unresv_msgtab;
 extern struct Message unxline_msgtab;
 extern struct Message user_msgtab;

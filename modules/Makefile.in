@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/modules
 #
-# $Id: Makefile.in,v 1.93 2003/07/08 04:01:48 db Exp $
+# $Id: Makefile.in,v 1.94 2003/07/08 21:06:40 joshk Exp $
 #
 CC		= @CC@
 AR		= @AR@
@@ -189,5 +189,4 @@ clean:
 distclean: clean
 	${RM} -f Makefile .depend
 
-.PHONY: clean distclean
-
+.PHONY: clean distclean install install_hpux_shared hpux_shared install_shared_modules shared_modules install_libmodules.a install-mkdirs build

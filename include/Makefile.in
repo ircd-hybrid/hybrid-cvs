@@ -1,14 +1,11 @@
-# $Id: Makefile.in,v 1.10 2003/06/18 00:02:06 joshk Exp $
+# $Id: Makefile.in,v 1.11 2003/07/08 21:06:36 joshk Exp $
 # makefile for include/
 
-INSTALL=	@INSTALL@
-INSTALL_DATA=	@INSTALL_DATA@
-RM=		@RM@
+INSTALL		= @INSTALL@
+INSTALL_DATA	= @INSTALL_DATA@
+RM		= @RM@
 
-prefix=		@prefix@
-exec_prefix=	@exec_prefix@
-bindir=		@bindir@
-sysconfdir=	@sysconfdir@
+prefix		= @prefix@
 
 all:
 
@@ -22,3 +19,5 @@ install:
 
 distclean:
 	${RM} -f Makefile
+
+.PHONY: install distclean

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.19 2003/06/16 20:57:50 joshk Exp $
+# $Id: Makefile.in,v 1.20 2003/07/08 21:06:38 joshk Exp $
 #
 RM            = @RM@
 MV            = @MV@
@@ -38,3 +38,4 @@ install:
 distclean:
 	${RM} -f Makefile
 
+.PHONY: install distclean

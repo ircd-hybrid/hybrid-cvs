@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 7.44 2003/06/26 01:25:27 joshk Exp $
+# $Id: Makefile.in,v 7.45 2003/07/08 21:06:45 joshk Exp $
 
 CC		= @CC@
 INSTALL		= @INSTALL@
@@ -61,3 +61,4 @@ install: build
 	cd $(bindir) && $(LN) -s viconf vimotd; \
 	$(LN) -s viconf viklines
 
+.PHONY: install distclean clean build

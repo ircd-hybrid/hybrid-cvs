@@ -16,7 +16,7 @@
 #*   along with this program; if not, write to the Free Software
 #*   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #*
-#*   $Id: Makefile.in,v 7.61 2003/06/17 20:09:58 joshk Exp $
+#*   $Id: Makefile.in,v 7.62 2003/07/08 21:06:30 joshk Exp $
 #*/
 
 RM          = @RM@
@@ -83,7 +83,7 @@ install: all
 	done
 
 include/setup.h:
-	sh configure
+	@sh configure
 
 # A la Linux kernel config :)
 dep: depend

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.139 2003/07/02 17:32:26 michael Exp $
+ *  $Id: modules.c,v 7.140 2003/07/08 21:06:43 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -625,6 +625,7 @@ load_all_modules(int warn)
   mod_add_cmd(&eob_msgtab);
   mod_add_cmd(&gline_msgtab);
   add_capability("GLN", CAP_GLN, 1);
+  mod_add_cmd(&ungline_msgtab);
   mod_add_cmd(&info_msgtab);
   mod_add_cmd(&invite_msgtab);
   mod_add_cmd(&ison_msgtab);
@@ -634,6 +635,8 @@ load_all_modules(int warn)
   mod_add_cmd(&kline_msgtab);
   add_capability("KLN", CAP_KLN, 1);
   mod_add_cmd(&dline_msgtab);
+  mod_add_cmd(&unkline_msgtab);
+  mod_add_cmd(&undline_msgtab);
   mod_add_cmd(&knock_msgtab);
   add_capability("KNOCK", CAP_KNOCK, 1);
   mod_add_cmd(&knockll_msgtab);
@@ -673,9 +676,6 @@ load_all_modules(int warn)
   mod_add_cmd(&time_msgtab);
   mod_add_cmd(&topic_msgtab);
   mod_add_cmd(&trace_msgtab);
-  mod_add_cmd(&msgtabs[0]);
-  mod_add_cmd(&msgtabs[1]);
-  mod_add_cmd(&msgtabs[2]);
   add_capability("UNKLN", CAP_UNKLN, 1);
   mod_add_cmd(&unresv_msgtab);
   mod_add_cmd(&unxline_msgtab);

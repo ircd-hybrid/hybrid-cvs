@@ -1,7 +1,7 @@
 #
 # Makefile.in for servlink/src
 #
-# $Id: Makefile.in,v 1.21 2003/05/28 03:33:47 joshk Exp $
+# $Id: Makefile.in,v 1.22 2003/07/08 21:06:42 joshk Exp $
 #
 
 CC              = @CC@
@@ -17,9 +17,8 @@ SED		= @SED@
 prefix          = @prefix@
 exec_prefix     = @exec_prefix@
 bindir          = @bindir@
-libexecdir      = @libexecdir@
-sysconfdir      = @sysconfdir@
-localstatedir   = @localstatedir@
+
+CLOBBER=@CLOBBER@
 
 SSL_LIBS	= @SSL_LIBS@
 SSL_INCLUDES	= @SSL_INCLUDES@
@@ -27,7 +26,7 @@ ZIP_LIB		= @ZLIB_LD@
 
 IRCDLIBS        = @LIBS@ $(SSL_LIBS) $(ZIP_LIB)
 
-INCLUDES        = -I../include -I. $(SSL_INCLUDES)
+INCLUDES        = -I../include $(SSL_INCLUDES)
 CPPFLAGS        = ${INCLUDES} @CPPFLAGS@
 
 PROGS		= servlink
@@ -36,7 +35,6 @@ SOURCES =     \
   servlink.c  \
   io.c        \
   control.c
-  
 
 OBJECTS = ${SOURCES:.c=.o}
 
@@ -50,7 +48,7 @@ servlink: ${OBJECTS}
 install: build
 	mkdir -p $(bindir)
 	@for i in $(PROGS); do \
-                if test -f $(bindir)/$$i; then \
+                if test -f $(bindir)/$$i -a -z "$(CLOBBER)"; then \
                         echo $(MV) $(bindir)/$$i $(bindir)/$$i.old; \
                         $(MV) $(bindir)/$$i $(bindir)/$$i.old; \
                 fi; \
@@ -74,4 +72,4 @@ clean:
 distclean: clean
 	${RM} -f Makefile .depend
 
-.PHONY: clean distclean
+.PHONY: clean distclean install build

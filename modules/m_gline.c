@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.120 2003/07/08 04:01:48 db Exp $
+ *  $Id: m_gline.c,v 1.121 2003/07/08 21:06:40 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -74,17 +74,24 @@ static int invalid_gline(struct Client *, const char *);
 		       
 static void ms_gline(struct Client *, struct Client *, int, char **);
 static void mo_gline(struct Client *, struct Client *, int, char **);
+static void mo_ungline(struct Client *, struct Client *, int, char **);
 
 struct Message gline_msgtab = {
   "GLINE", 0, 0, 3, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, ms_gline, mo_gline, m_ignore}
 };
 
+struct Message ungline_msgtab = {
+  "UNGLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
+  {m_unregistered, m_not_oper, m_error, mo_ungline, m_ignore}
+};
+		
 #ifndef STATIC_MODULES
 void
 _modinit(void)
 {
     mod_add_cmd(&gline_msgtab);
+    mod_add_cmd(&ungline_msgtab);
     add_capability("GLN", CAP_GLN, 1);
 }
 
@@ -92,10 +99,11 @@ void
 _moddeinit(void)
 {
   mod_del_cmd(&gline_msgtab);
+  mod_del_cmd(&ungline_msgtab);
   delete_capability("GLN");
 }
 
-const char *_version = "$Revision: 1.120 $";
+const char *_version = "$Revision: 1.121 $";
 #endif
 
 /* mo_gline()
@@ -587,3 +595,71 @@ check_majority_gline(struct Client *source_p, const char *oper_nick,
   return(GLINE_NOT_PLACED);
 }
 
+/*
+** m_ungline
+** added May 29th 2000 by Toby Verrall <toot@melnet.co.uk>
+** added to hybrid-7 7/11/2000 --is
+**
+**      parv[0] = sender nick
+**      parv[1] = gline to remove
+*/
+static void
+mo_ungline(struct Client *client_p, struct Client *source_p,
+           int parc, char *parv[])
+{
+  char star[] = "*";
+  char *user, *host;
+
+  if (!ConfigFileEntry.glines)
+  {
+    sendto_one(source_p, ":%s NOTICE %s :UNGLINE disabled",
+               me.name, source_p->name);
+    return;
+  }
+
+  if (!IsOperUnkline(source_p) || !IsOperGline(source_p))
+  {
+    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
+               me.name, source_p->name);
+    return;
+  }
+
+  if ((host = strchr(parv[1], '@')) || *parv[1] == '*')
+  {
+    /* Explicit user@host mask given */
+    if (host != NULL)   /* Found user@host */
+    {
+      user = parv[1];   /* here is user part */
+      *(host++) = '\0'; /* and now here is host */
+    }
+    else
+    {
+      user = star;      /* no @ found, assume its *@somehost */
+      host = parv[1];
+    }
+  }
+  else
+  {
+    sendto_one(source_p, ":%s NOTICE %s :Invalid parameters",
+               me.name, source_p->name);
+    return;
+  }
+
+  if (remove_gline_match(user, host))
+  {
+    sendto_one(source_p, ":%s NOTICE %s :G-Line for [%s@%s] is removed",
+               me.name, source_p->name, user, host);
+    sendto_realops_flags(UMODE_ALL, L_ALL,
+                         "%s has removed the G-Line for: [%s@%s]",
+                         get_oper_name(source_p), user, host);
+    ilog(L_NOTICE, "%s removed G-Line for [%s@%s]",
+         get_oper_name(source_p), user, host);
+    return;
+  }
+  else
+  {
+    sendto_one(source_p, ":%s NOTICE %s :No G-Line for %s@%s",
+               me.name, source_p->name, user, host);
+    return;
+  }
+}

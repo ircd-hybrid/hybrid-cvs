@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/contrib
 #
-# $Id: Makefile.in,v 1.55 2003/07/07 05:15:08 joshk Exp $
+# $Id: Makefile.in,v 1.56 2003/07/08 21:06:31 joshk Exp $
 #
 CC		= @CC@
 RM		= @RM@
@@ -9,18 +9,15 @@ SED		= @SED@
 SEDOBJ		= @SEDOBJ@
 STDOUT		= @STDOUT@
 MV		= @MV@
-LEX		= @LEX@
-LEXLIB		= @LEXLIB@
 CFLAGS		= @IRC_CFLAGS@
 LD		= @LD@
 LN		= @LN@
 PICFLAGS	= @PICFLAGS@
 MKDEP		= @MKDEP@
 INSTALL		= @INSTALL@
-INSTALL_PROGRAM	= @INSTALL_PROGRAM@
 INSTALL_DATA	= @INSTALL_DATA@
 
-prefix=		@prefix@
+prefix		= @prefix@
 
 AUTOMODULEDIR	= ${prefix}/modules
 
@@ -32,13 +29,13 @@ IRCDLIBS	= @LIBS@ $(SSL_LIBS)
 INCLUDES	= -I../include $(SSL_INCLUDES)
 CPPFLAGS	= ${INCLUDES} @CPPFLAGS@
 
-uhelpdir=	${prefix}/help/users
-ohelpdir=	${prefix}/help/opers
+uhelpdir	= ${prefix}/help/users
+ohelpdir	= ${prefix}/help/opers
 
-SYMLINKS=	topic accept cjoin cmode admin names links away whowas \
-		version kick who invite quit join list nick oper part \
-		time credits motd userhost users whois ison lusers \
-		user help pass error challenge knock ping pong
+SYMLINKS	= topic accept cjoin cmode admin names links away whowas \
+		  version kick who invite quit join list nick oper part \
+		  time credits motd userhost users whois ison lusers \
+		  user help pass error challenge knock ping pong
 
 SRCS = \
   m_clearchan.c \
@@ -148,8 +145,6 @@ install_help:
 .so.sl:
 	${LD} -b $< -o $@
 	
-.PHONY: depend clean distclean
-
 .depend:
 	${MKDEP} ${CPPFLAGS} ${SRCS} ${STDOUT}
 	${SED} -e '${SEDOBJ}' < .depend > .depend.tmp
@@ -165,3 +160,4 @@ clean:
 distclean: clean
 	${RM} -f Makefile .depend
 
+.PHONY: depend clean distclean install_hpux_shared install_libmodules.a install_help shared_modules install hpux_shared build

@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.146 2003/07/05 06:21:02 db Exp $
+# $Id: Makefile.in,v 7.147 2003/07/08 21:06:43 joshk Exp $
 #
 @SET_MAKE@
 
@@ -22,7 +22,6 @@ YACC		= @YACC@
 prefix		= @prefix@
 exec_prefix	= @exec_prefix@
 bindir		= @bindir@
-libexecdir	= @libexecdir@
 sysconfdir	= @sysconfdir@
 localstatedir	= @localstatedir@
 
@@ -160,4 +159,4 @@ clean:
 distclean: clean
 	${RM} -f Makefile version.c.last .depend
 
-.PHONY: clean distclean
+.PHONY: clean distclean install install-mkdirs build

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.163 2003/07/08 04:01:48 db Exp $
+ *  $Id: m_kline.c,v 1.164 2003/07/08 21:06:40 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -55,7 +55,6 @@ static void mo_dline(struct Client *, struct Client *, int, char **);
 static void mo_unkline(struct Client *, struct Client *, int, char **);
 static void ms_unkline(struct Client *, struct Client *, int, char **);
 static void mo_undline(struct Client *, struct Client *, int, char **);
-static void mo_ungline(struct Client *, struct Client *, int, char **);
 
 #ifndef IPV6
 static char *make_cidr(char *dlhost, struct Client *);
@@ -64,28 +63,34 @@ static char *make_cidr(char *dlhost, struct Client *);
 static int remove_tkline_match(const char *, const char *);
 static int remove_tdline_match(const char *);
 
-struct Message msgtabs[] = {
-  {"KLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
-   {m_unregistered, m_not_oper, ms_kline, mo_kline, m_ignore}},
-  {"DLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
-   {m_unregistered, m_not_oper, m_error, mo_dline, m_ignore}},
-  {"UNKLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
-   {m_unregistered, m_not_oper, ms_unkline, mo_unkline, m_ignore}},
-  {"UNDLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
-   {m_unregistered, m_not_oper, m_error, mo_undline, m_ignore}}, 
-  {"UNGLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
-   {m_unregistered, m_not_oper, m_error, mo_ungline, m_ignore}}
+struct Message kline_msgtab = {
+  "KLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
+   {m_unregistered, m_not_oper, ms_kline, mo_kline, m_ignore}
+};
+
+struct Message dline_msgtab = {
+  "DLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
+   {m_unregistered, m_not_oper, m_error, mo_dline, m_ignore}
+};
+
+struct Message unkline_msgtab = {
+  "UNKLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
+   {m_unregistered, m_not_oper, ms_unkline, mo_unkline, m_ignore}
+};
+
+struct Message undline_msgtab = {
+  "UNDLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
+   {m_unregistered, m_not_oper, m_error, mo_undline, m_ignore}
 };
 
 #ifndef STATIC_MODULES
 void
 _modinit(void)
 {
-  mod_add_cmd(&msgtabs[0]);
-  mod_add_cmd(&msgtabs[1]);
-  mod_add_cmd(&msgtabs[2]);
-  mod_add_cmd(&msgtabs[3]);
-  mod_add_cmd(&msgtabs[4]);
+  mod_add_cmd(&kline_msgtab);
+  mod_add_cmd(&unkline_msgtab);
+  mod_add_cmd(&dline_msgtab);
+  mod_add_cmd(&undline_msgtab);
   add_capability("KLN", CAP_KLN, 1);
   add_capability("UNKLN", CAP_UNKLN, 1);
 }
@@ -93,16 +98,15 @@ _modinit(void)
 void
 _moddeinit(void)
 {
-  mod_del_cmd(&msgtabs[0]);
-  mod_del_cmd(&msgtabs[1]);
-  mod_del_cmd(&msgtabs[2]);
-  mod_del_cmd(&msgtabs[3]);
-  mod_del_cmd(&msgtabs[4]);
+  mod_del_cmd(&kline_msgtab);
+  mod_del_cmd(&unkline_msgtab);
+  mod_del_cmd(&dline_msgtab);
+  mod_del_cmd(&undline_msgtab);
   delete_capability("UNKLN");
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.163 $";
+const char *_version = "$Revision: 1.164 $";
 #endif
 
 /* Local function prototypes */
@@ -1382,73 +1386,4 @@ mo_undline(struct Client *client_p, struct Client *source_p,
   else
     sendto_one(source_p, ":%s NOTICE %s :No D-Line for [%s] found",
                me.name, source_p->name, cidr);
-}
-
-/*
-** m_ungline
-** added May 29th 2000 by Toby Verrall <toot@melnet.co.uk>
-** added to hybrid-7 7/11/2000 --is
-**
-**      parv[0] = sender nick
-**      parv[1] = gline to remove
-*/
-static void
-mo_ungline(struct Client *client_p, struct Client *source_p,
-           int parc, char *parv[])
-{
-  char star[] = "*";
-  char *user, *host;
-
-  if (!ConfigFileEntry.glines)
-  {
-    sendto_one(source_p, ":%s NOTICE %s :UNGLINE disabled",
-               me.name, source_p->name);
-    return;
-  }
-
-  if (!IsOperUnkline(source_p) || !IsOperGline(source_p))
-  {
-    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
-               me.name, source_p->name);
-    return;
-  }
-
-  if ((host = strchr(parv[1], '@')) || *parv[1] == '*')
-  {
-    /* Explicit user@host mask given */
-    if (host != NULL)   /* Found user@host */
-    {
-      user = parv[1];   /* here is user part */
-      *(host++) = '\0'; /* and now here is host */
-    }
-    else
-    {
-      user = star;      /* no @ found, assume its *@somehost */
-      host = parv[1];
-    }
-  }
-  else
-  {
-    sendto_one(source_p, ":%s NOTICE %s :Invalid parameters",
-               me.name, source_p->name);
-    return;
-  }
-
-  if (remove_gline_match(user, host))
-  {
-    sendto_one(source_p, ":%s NOTICE %s :G-Line for [%s@%s] is removed",
-               me.name, source_p->name, user, host);
-    sendto_realops_flags(UMODE_ALL, L_ALL,
-                         "%s has removed the G-Line for: [%s@%s]",
-                         get_oper_name(source_p), user, host);
-    ilog(L_NOTICE, "%s removed G-Line for [%s@%s]",
-         get_oper_name(source_p), user, host);
-    return;
-  }
-  else
-  {
-    sendto_one(source_p, ":%s NOTICE %s :No G-Line for %s@%s",
-               me.name, source_p->name, user, host);
-    return;
-  }
 }
