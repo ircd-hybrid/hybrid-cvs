@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.285 2003/05/11 22:27:44 joshk Exp $
+ *  $Id: ircd_parser.y,v 1.286 2003/05/12 04:09:55 michael Exp $
  */
 
 %{
@@ -274,7 +274,6 @@ init_parser_confs(void)
 %token  TRUE_NO_OPER_FLOOD
 %token  UNKLINE
 %token  USER
-%token	USE_ANONOPS
 %token  USE_EGD
 %token  USE_EXCEPT
 %token  USE_HALFOPS
@@ -2658,7 +2657,7 @@ general_dot_in_ip6_addr: DOT_IN_IP6_ADDR '=' TYES ';'
 /***************************************************************************
  *  section channel
  ***************************************************************************/
-channel_entry:      CHANNEL
+channel_entry: CHANNEL
   '{' channel_items '}' ';';
 
 channel_items:      channel_items channel_item | channel_item;
@@ -2666,7 +2665,6 @@ channel_item:       channel_use_except |
                     channel_use_halfops |
                     channel_use_invex |
                     channel_use_knock |
-		    channel_use_anonops |
                     channel_max_bans |
                     channel_knock_delay |
 		    channel_knock_delay_channel |
@@ -2676,8 +2674,7 @@ channel_item:       channel_use_except |
 		    channel_default_split_server_count |
 		    channel_no_create_on_split | 
 		    channel_no_join_on_split |
-		    channel_oper_pass_resv |
-                    error;
+		    channel_oper_pass_resv | error;
 
 channel_use_except: USE_EXCEPT '=' TYES ';'
 {
@@ -2718,36 +2715,6 @@ channel_use_halfops: USE_HALFOPS '=' TYES ';'
     }
     else
       ConfigChannel.use_halfops = 0;
-  }
-};
-
-channel_use_anonops: USE_ANONOPS '=' TYES ';'
-{
-#ifdef ANONOPS
-  if (ypass == 2)
-  {
-    if (ConfigChannel.use_anonops == 0)
-    {
-      ilog(L_ERROR, "Ignoring config file entry 'use_anonops = yes' "
-           "-- can only be changed on boot");
-      break;
-    }
-    else
-      ConfigChannel.use_anonops = 1;
-  }
-#endif
-} | USE_ANONOPS '=' TNO ';'
-{
-  if (ypass == 2)
-  {
-    if (ConfigChannel.use_anonops == 1)
-    {
-      ilog(L_ERROR, "Ignoring config file entry 'use_anonops = no' "
-           "-- can only be changed on boot");
-      break;
-    }
-    else
-      ConfigChannel.use_anonops = 0;
   }
 };
 
@@ -2854,8 +2821,7 @@ serverhide_entry: SERVERHIDE
   '{' serverhide_items '}' ';';
 
 serverhide_items:   serverhide_items serverhide_item | serverhide_item;
-serverhide_item:    serverhide_flatten_links |
-		    serverhide_hide_servers |
+serverhide_item:    serverhide_flatten_links | serverhide_hide_servers |
 		    serverhide_disable_remote_commands |
 		    serverhide_links_delay |
 		    serverhide_disable_hidden |

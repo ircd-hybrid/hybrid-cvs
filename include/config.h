@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: config.h,v 7.150 2003/05/11 22:04:44 michael Exp $
+ *  $Id: config.h,v 7.151 2003/05/12 04:09:48 michael Exp $
  */
 
 #ifndef INCLUDED_config_h
@@ -56,7 +56,7 @@
  * systems may require kernel patches, configuration tweaks, or ulimit
  * adjustments in order to exceed certain limits (e.g. 1024, 4096 fds).
  */
-#define HARD_FDLIMIT_    MAX_CLIENTS + 60 + 20
+#define HARD_FDLIMIT_ MAX_CLIENTS + 60 + 20
 
 /* XXX - MAX_BUFFER is mostly ignored. */
 /*
@@ -69,7 +69,7 @@
  * so MAX_CLIENTS + MAX_BUFFER + 10 must not exceed HARD_FDLIMIT.
  * NOTE: MAX_CLIENTS is set with configure now
  */
-#define MAX_BUFFER      60
+#define MAX_BUFFER 60
 
 #ifdef VMS
 /* *PATH - directory locations and filenames for VMS.
@@ -92,9 +92,9 @@
 #define ETCPATH         "IRCD$CONFDIR:"
 #define LOGPATH         "IRCD$LOGDIR:"
 
-#undef  MODPATH
-#undef  AUTOMODPATH
-#undef  MSGPATH
+#undef MODPATH
+#undef AUTOMODPATH
+#undef MSGPATH
 
 #define SPATH   BINPATH "IRCD.EXE"              /* server executable */
 #define SLPATH  BINPATH "SERVLINK.EXE"          /* servlink executable */
@@ -162,7 +162,7 @@
  *
  * This should be enabled network wide, or not at all.
  */
-#undef  IGNORE_BOGUS_TS
+#undef IGNORE_BOGUS_TS
 
 /* HIDE_SERVERS_IPS
  *
@@ -175,7 +175,7 @@
  * We recommend you leave this undefined, and just take care with who you
  * give admin=yes; to.
  */
-#undef  HIDE_SERVERS_IPS
+#undef HIDE_SERVERS_IPS
 
 /* HIDE_SPOOF_IPS
  *
@@ -206,18 +206,18 @@
  * this option is used unless you tell the system administrator beforehand
  * and obtain their permission to send messages to the system log files.
  */
-#undef  USE_SYSLOG
+#undef USE_SYSLOG
 
-#ifdef  USE_SYSLOG
+#ifdef USE_SYSLOG
 /* SYSLOG_KILL SYSLOG_SQUIT SYSLOG_CONNECT SYSLOG_USERS SYSLOG_OPER
  * If you use syslog above, you may want to turn some (none) of the
  * spurious log messages for KILL,SQUIT,etc off.
  */
-#undef  SYSLOG_KILL     /* log all operator kills to syslog */
-#undef  SYSLOG_SQUIT    /* log all remote squits for all servers to syslog */
-#undef  SYSLOG_CONNECT  /* log remote connect messages for other all servs */
-#undef  SYSLOG_USERS    /* send userlog stuff to syslog */
-#undef  SYSLOG_OPER     /* log all users who successfully become an Op */
+#undef SYSLOG_KILL     /* log all operator kills to syslog */
+#undef SYSLOG_SQUIT    /* log all remote squits for all servers to syslog */
+#undef SYSLOG_CONNECT  /* log remote connect messages for other all servs */
+#undef SYSLOG_USERS    /* send userlog stuff to syslog */
+#undef SYSLOG_OPER     /* log all users who successfully become an Op */
 
 /* LOG_FACILITY - facility to use for syslog()
  * Define the facility you want to use for syslog().  Ask your
@@ -285,13 +285,11 @@
  * If you have enabled efnet specific code these will be disabled automatically
  * else they are here for anyone else.
  */
-#define ANONOPS
 #define HALFOPS
 /* END OF CONFIGURABLE OPTIONS */
 
 /* disable them for efnet */
 #ifdef EFNET
-#undef ANONOPS
 #undef HALFOPS
 #ifndef HIDE_SERVERS_IPS
 #define HIDE_SERVERS_IPS

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.c,v 1.68 2003/05/09 21:38:18 bill Exp $
+ *  $Id: m_info.c,v 1.69 2003/05/12 04:09:50 michael Exp $
  */
 
 #include "stdinc.h"
@@ -69,7 +69,7 @@ _moddeinit(void)
   hook_del_event("doing_info");
   mod_del_cmd(&info_msgtab);
 }
-const char *_version = "$Revision: 1.68 $";
+const char *_version = "$Revision: 1.69 $";
 #endif
 
 /*
@@ -402,12 +402,6 @@ static struct InfoStruct info_table[] =
     OUTPUT_BOOLEAN_YN,
     &ConfigChannel.quiet_on_ban,
     "Banned users may not send text to a channel"
-  },
-  {
-    "use_anonops",
-    OUTPUT_BOOLEAN_YN,
-    &ConfigChannel.use_anonops,
-    "Enable chanmode +a (anonymous ops)",
   },
   {
     "use_except",

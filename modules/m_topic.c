@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_topic.c,v 1.57 2003/05/09 21:38:18 bill Exp $
+ *  $Id: m_topic.c,v 1.58 2003/05/12 04:09:50 michael Exp $
  */
 
 #include "stdinc.h"
@@ -40,8 +40,8 @@
 #include "modules.h"
 #include "packet.h"
 
-static void m_topic(struct Client*, struct Client*, int, char**);
-static void ms_topic(struct Client*, struct Client*, int, char**);
+static void m_topic(struct Client *, struct Client *, int, char **);
+static void ms_topic(struct Client *, struct Client *, int, char **);
 
 struct Message topic_msgtab = {
   "TOPIC", 0, 0, 2, 0, MFLG_SLOW, 0,
@@ -61,38 +61,37 @@ _moddeinit(void)
   mod_del_cmd(&topic_msgtab);
 }
 
-const char *_version = "$Revision: 1.57 $";
+const char *_version = "$Revision: 1.58 $";
 #endif
-/*
- * m_topic
- *      parv[0] = sender prefix
- *      parv[1] = channel name
- *	parv[2] = new topic, if setting topic
+
+/* m_topic()
+ *  parv[0] = sender prefix
+ *  parv[1] = channel name
+ *  parv[2] = new topic, if setting topic
  */
 static void
 m_topic(struct Client *client_p, struct Client *source_p,
-	int parc, char *parv[])
+        int parc, char *parv[])
 {
   struct Channel *chptr = NULL;
-  char  *p = NULL;
+  char *p;
 
-  if ((p = strchr(parv[1],',')))
+  if ((p = strchr(parv[1],',')) != NULL)
     *p = '\0';
+
   if (parv[1][0] == '\0')
   {
     sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-               me.name, parv[0], "TOPIC");
+               me.name, source_p->name, "TOPIC");
     return;
   }
 
   if (MyClient(source_p) && !IsFloodDone(source_p))
     flood_endgrace(source_p);
 
-  if (parv[1] != NULL && IsChannelName(parv[1]))
-    {
-      chptr = hash_find_channel(parv[1]);
-
-      if (chptr == NULL)
+  if (IsChannelName(parv[1]))
+  {
+      if ((chptr = hash_find_channel(parv[1])) == NULL)
       {
         /* if chptr isn't found locally, it =could= exist
          * on the uplink. so forward reqeuest
@@ -107,7 +106,7 @@ m_topic(struct Client *client_p, struct Client *source_p,
         else
         {
           sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
-                     me.name, parv[0], parv[1]);
+                     me.name, source_p->name, parv[1]);
           return;
         }
       }
@@ -117,7 +116,7 @@ m_topic(struct Client *client_p, struct Client *source_p,
 	{
 	  if (!IsMember(source_p, chptr))
 	    {
-	      sendto_one(source_p, form_str(ERR_NOTONCHANNEL), me.name, parv[0],
+	      sendto_one(source_p, form_str(ERR_NOTONCHANNEL), me.name, source_p->name,
 			 parv[1]);
 	      return;
 	    }
@@ -133,78 +132,51 @@ m_topic(struct Client *client_p, struct Client *source_p,
                             ":%s TOPIC %s :%s",
                             parv[0], chptr->chname,
                             chptr->topic == NULL ? "" : chptr->topic);
-	      if (chptr->mode.mode & MODE_HIDEOPS)
-		{
-		  sendto_channel_local(ONLY_CHANOPS_HALFOPS,
-				       chptr, ":%s!%s@%s TOPIC %s :%s",
-				       source_p->name,
-				       source_p->username,
-				       source_p->host,
-				       chptr->chname,
-				       chptr->topic == NULL ? "" : chptr->topic);
-
-		  sendto_channel_local(NON_CHANOPS,
-				       chptr, ":%s TOPIC %s :%s",
-				       me.name,
-				       chptr->chname,
-				       chptr->topic == NULL ? "" : chptr->topic);
-		}
-	      else
-		{
-		  sendto_channel_local(ALL_MEMBERS,
+	  sendto_channel_local(ALL_MEMBERS,
 				       chptr, ":%s!%s@%s TOPIC %s :%s",
 				       source_p->name,
 				       source_p->username,
 				       source_p->host,
 				       chptr->chname, chptr->topic == NULL ? "" : chptr->topic);
-		}
 	    }
 	  else
             sendto_one(source_p, form_str(ERR_CHANOPRIVSNEEDED),
-                       me.name, parv[0], parv[1]);
+                       me.name, source_p->name, parv[1]);
 	}
       else  /* only asking  for topic  */
 	{
 	  if (!IsMember(source_p, chptr) && SecretChannel(chptr))
 	    {
-	      sendto_one(source_p, form_str(ERR_NOTONCHANNEL), me.name, parv[0],
+	      sendto_one(source_p, form_str(ERR_NOTONCHANNEL), me.name, source_p->name,
 			 parv[1]);
 	      return;
 	    }
           if (chptr->topic == NULL)
 	    sendto_one(source_p, form_str(RPL_NOTOPIC),
-		       me.name, parv[0], parv[1]);
+		       me.name, source_p->name, parv[1]);
           else
 	    {
               sendto_one(source_p, form_str(RPL_TOPIC),
-                         me.name, parv[0],
+                         me.name, source_p->name,
                          chptr->chname, chptr->topic);
 
-                if (!(chptr->mode.mode & MODE_HIDEOPS) ||
-                    is_any_op(chptr,source_p))
-                {
-                  sendto_one(source_p, form_str(RPL_TOPICWHOTIME),
-                             me.name, parv[0], chptr->chname,
-                             chptr->topic_info,
-                             chptr->topic_time);
-                }
 	        /* client on LL needing the topic - if we have serverhide, say
 	         * its the actual LL server that set the topic, not us the
 	         * uplink -- fl_
 	         */
-	        else if (ConfigServerHide.hide_servers && !MyClient(source_p)
+	        if (ConfigServerHide.hide_servers && !MyClient(source_p)
 	                 && IsCapable(client_p, CAP_LL) && ServerInfo.hub)
   	        {
 	          sendto_one(source_p, form_str(RPL_TOPICWHOTIME),
-	  	             me.name, parv[0], chptr->chname,
+	  	             me.name, source_p->name, chptr->chname,
 	  		     client_p->name, chptr->topic_time);
                 }
   	        /* just normal topic hiding.. */
 	        else
 	 	{
                   sendto_one(source_p, form_str(RPL_TOPICWHOTIME),
-                             me.name, parv[0], chptr->chname,
-                             me.name,
+                             me.name, source_p->name, chptr->chname,
+                             chptr->topic_info,
                              chptr->topic_time);
                 }
             }
@@ -213,7 +185,7 @@ m_topic(struct Client *client_p, struct Client *source_p,
   else
     {
       sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
-                 me.name, parv[0], parv[1]);
+                 me.name, source_p->name, parv[1]);
     }
 }
 

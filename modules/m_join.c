@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_join.c,v 1.101 2003/05/10 04:05:03 michael Exp $
+ *  $Id: m_join.c,v 1.102 2003/05/12 04:09:50 michael Exp $
  */
 
 #include "stdinc.h"
@@ -64,7 +64,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&join_msgtab);
 }
-const char *_version = "$Revision: 1.101 $";
+const char *_version = "$Revision: 1.102 $";
 
 #endif
 static void do_join_0(struct Client *client_p, struct Client *source_p);
@@ -312,19 +312,12 @@ m_join(struct Client *client_p, struct Client *source_p,
 	  sendto_one(source_p, form_str(RPL_TOPIC), me.name,
 		     parv[0], chptr->chname, chptr->topic);
 
-          if (!(chptr->mode.mode & MODE_HIDEOPS) ||
-              (flags & CHFL_CHANOP) || (flags & CHFL_HALFOP))
-            {
               sendto_one(source_p, form_str(RPL_TOPICWHOTIME),
                          me.name, parv[0], chptr->chname,
                          chptr->topic_info, chptr->topic_time);
-            }
-          else /* Hide from nonops */
-            {
                sendto_one(source_p, form_str(RPL_TOPICWHOTIME),
                          me.name, parv[0], chptr->chname,
                          me.name, chptr->topic_time);
-            }
 	}
 
       channel_member_names(source_p, chptr, chptr->chname, 1);

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.22 2003/05/01 13:58:09 michael Exp $
+ *   $Id: m_operspy.c,v 1.23 2003/05/12 04:09:44 michael Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -125,7 +125,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.22 $";
+const char *_version = "$Revision: 1.23 $";
 #endif
 
 /*
@@ -486,8 +486,8 @@ static void do_who(struct Client *source_p,
                    char *chname,
                    char *op_flags)
 {
-  char  status[5];
-  char  *our_chname = chname;
+  char status[5];
+  char *our_chname = chname;
 
   if (chname == NULL && target_p->user->channel.head != NULL)
     our_chname = ((struct Channel *)target_p->user->channel.head->data)->chname;
@@ -496,25 +496,11 @@ static void do_who(struct Client *source_p,
              target_p->user->away ? 'G' : 'H',
              IsOper(target_p) ? "*" : "", op_flags );
 
-#ifdef ANONOPS
-  if(ConfigServerHide.hide_servers)
-    {
-      sendto_one(source_p, form_str(RPL_WHOREPLY), me.name, source_p->name,
-                 (our_chname) ? (our_chname) : "*",
-                 target_p->username,
-                 target_p->host, IsOper(source_p) ? target_p->user->server : "*",
-                 target_p->name,
-                 status, 0, target_p->info);
-    }
-  else
-#endif
-    {
-      sendto_one(source_p, form_str(RPL_WHOREPLY), me.name, source_p->name,
+  sendto_one(source_p, form_str(RPL_WHOREPLY), me.name, source_p->name,
                  (our_chname) ? (our_chname) : "*",
                  target_p->username,
                  target_p->host,  target_p->user->server, target_p->name,
                  status, target_p->hopcount, target_p->info);
-    }
 }
 
 static void
@@ -659,9 +645,7 @@ do_who_list(struct Client *source_p, struct Channel *chptr,
             char *halfop_flag, char *voiced_flag,
             char *chname)
 {
-#ifndef ANONOPS
   dlink_node *ptr;
-#endif
   struct Client *target_p;
   int done=0;
   int i=0;
@@ -704,31 +688,6 @@ do_who_list(struct Client *source_p, struct Channel *chptr,
   who_list[i].voiced = 0;
   who_list[i++].flag = halfop_flag;
 #endif
-
-#ifdef ANONOPS
-  while(done != NUMLISTS)
-  {
-    done = 0;
-
-    for(i = 0; i < NUMLISTS; i++)
-    {
-      if(who_list[i].ptr != NULL)
-      {
-        target_p = who_list[i].ptr->data;
-
-        if(who_list[i].voiced)
-          do_who(source_p, target_p, chname, voiced_flag);
-        else
-          do_who(source_p, target_p, chname, who_list[i].flag);
-        who_list[i].ptr = who_list[i].ptr->next;
-      }
-      else
-        done++;
-    }
-  }
-
-#else /* ANONOPS */
-
     for(i = 0; i < NUMLISTS; i++)
     {
       DLINK_FOREACH(ptr, who_list[i].ptr)
@@ -737,7 +696,5 @@ do_who_list(struct Client *source_p, struct Channel *chptr,
         do_who(source_p, target_p, chname, who_list[i].flag);
       }
     }
-
-#endif /* ANONOPS */
 }
 #endif /* OPERSPY_WHO */

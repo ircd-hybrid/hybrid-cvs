@@ -1,4 +1,4 @@
-irc.corefailure.com hybrid-7beta5 oiwszcerkfydnxbaugl biklmnopstveIha bkloveIh
+irc.corefailure.com hybrid-7beta5 oiwszcerkfydnxbaugl biklmnopstveIh bkloveIh
 
 User Modes:
 
@@ -25,7 +25,6 @@ User Modes:
 
 Channel Modes:
 
-+a - hideops    - Anonymous ops, chanops are hidden
 +b - ban        - Channel ban on nick!user@host
 +e - exempt     - Exemption from bans
 +h - halfop     - Half op (%), can kick non ops, not full ops
@@ -53,4 +52,4 @@ Currently these are bkloveIh.
 Note that most of the channel modes can be disabled in the conf file for
 networks that do not wish to support them.
 
-# $Id: modes.txt,v 7.10 2003/05/09 21:38:09 bill Exp $
+# $Id: modes.txt,v 7.11 2003/05/12 04:09:46 michael Exp $

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.149 2003/05/09 21:38:21 bill Exp $
+ *  $Id: m_sjoin.c,v 1.150 2003/05/12 04:09:52 michael Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.149 $";
+const char *_version = "$Revision: 1.150 $";
 #endif
 /*
  * ms_sjoin
@@ -151,9 +151,11 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   mode.limit = 0;
   mode.key[0] = '\0';;
   s = parv[3];
+
   while (*s)
-    switch(*(s++))
-      {
+  {
+    switch (*(s++))
+    {
       case 'i':
         mode.mode |= MODE_INVITEONLY;
         break;
@@ -172,12 +174,6 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
       case 't':
         mode.mode |= MODE_TOPICLIMIT;
         break;
-#ifdef ANONOPS
-      case 'a':
-	if(ConfigChannel.use_anonops)
-          mode.mode |= MODE_HIDEOPS;
-        break;
-#endif
       case 'k':
         strlcpy(mode.key, parv[4 + args], KEYLEN);
         args++;
@@ -190,17 +186,16 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
         if (parc < 5+args)
           return;
         break;
-      }
+    }
+  }
 
   *parabuf = '\0';
 
   if ((chptr = get_or_create_channel(source_p, parv[2], &isnew)) == NULL)
     return; /* channel name too long? */
 
-  oldts = chptr->channelts;
-
-  doesop = (parv[4+args][0] == '@' || parv[4+args][1] == '@');
-
+  oldts   = chptr->channelts;
+  doesop  = (parv[4+args][0] == '@' || parv[4+args][1] == '@');
   oldmode = &chptr->mode;
 
 #ifdef IGNORE_BOGUS_TS
@@ -267,22 +262,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
       strcpy(mode.key, oldmode->key);
   }
 
-#ifdef ANONOPS
-  if (mode.mode & MODE_HIDEOPS)
-    hide_or_not = ONLY_CHANOPS_HALFOPS;
-  else
-#endif
-    hide_or_not = ALL_MEMBERS;
-
-#ifdef ANONOPS
-  if ((MODE_HIDEOPS & mode.mode) && !(MODE_HIDEOPS & oldmode->mode))
-    sync_channel_oplists(chptr, MODE_DEL);
-
-  /* Don't reveal the ops, only to remove them all */
-  if (keep_our_modes)
-    if (!(MODE_HIDEOPS & mode.mode) && (MODE_HIDEOPS & oldmode->mode))
-      sync_channel_oplists(chptr, MODE_ADD);
-#endif
+  hide_or_not = ALL_MEMBERS;
 
   set_final_mode(&mode,oldmode);
   chptr->mode = mode;
@@ -607,31 +587,28 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   }
 }
 
-/*
- * set_final_mode
+/* set_final_mode()
  *
  * inputs	- pointer to mode to setup
  *		- pointer to old mode
  * output	- NONE
  * side effects	- 
  */
-
-struct mode_letter {
+struct mode_letter
+{
   int mode;
   char letter;
 };
 
-struct mode_letter flags[] = {
+struct mode_letter flags[] =
+{
   { MODE_NOPRIVMSGS, 'n' },
   { MODE_TOPICLIMIT, 't' },
   { MODE_SECRET,     's' },
   { MODE_MODERATED,  'm' },
   { MODE_INVITEONLY, 'i' },
   { MODE_PRIVATE,    'p' },
-#ifdef ANONOPS
-  { MODE_HIDEOPS,    'a' },
-#endif
-  { 0, 0 }
+  { 0, '\0' }
 };
 
 static void
@@ -714,8 +691,7 @@ set_final_mode(struct Mode *mode,struct Mode *oldmode)
   *mbuf = '\0';
 }
 
-/*
- * remove_our_modes
+/* remove_our_modes()
  *
  * inputs	- hide from ops or not int flag
  *		- pointer to channel to remove modes from
@@ -754,8 +730,7 @@ remove_our_modes(int hide_or_not,
 #endif
 }
 
-/*
- * remove_a_mode
+/* remove_a_mode()
  *
  * inputs	-
  * output	- NONE
@@ -788,8 +763,7 @@ void remove_a_mode(int hide_or_not,
   DLINK_FOREACH(ptr, list->head)
   {
     target_p = ptr->data;
-    if(target_p == NULL)	/* XXX is this necessary? */
-      continue;
+
     lpara[count++] = target_p->name;
 
     *mbuf++ = flag;

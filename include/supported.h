@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: supported.h,v 1.26 2003/05/09 21:38:13 bill Exp $
+ *  $Id: supported.h,v 1.27 2003/05/12 04:09:48 michael Exp $
  */
 
 #ifndef INCLUDED_supported_h
@@ -53,11 +53,11 @@
         ConfigChannel.max_bans, \
         ConfigFileEntry.max_targets,NICKLEN-1,TOPICLEN,TOPICLEN
 
-#define FEATURES2 "CHANTYPES=%s" \
-                  " PREFIX=%s" \
-		  " CHANMODES=%s%s%s%s" \
-		  " NETWORK=%s" \
-		  " CASEMAPPING=%s" \
+#define FEATURES2 "CHANTYPES=%s"      \
+                  " PREFIX=%s"        \
+		  " CHANMODES=%s%s%s" \
+		  " NETWORK=%s"       \
+		  " CASEMAPPING=%s"   \
 		  " CALLERID%s"
 
 #define FEATURES2VALUES ConfigServerHide.disable_local_channels ? "#" : "#&", \
@@ -65,7 +65,6 @@
                         ConfigChannel.use_except ? "e" : "", \
                         ConfigChannel.use_invex ? "I" : "", \
                         "b,k,l,imnpst", \
-                        ConfigChannel.use_anonops ? "a" : "", \
                         ServerInfo.network_name, CASEMAP, \
 			(uplink && IsCapable(uplink, CAP_LL)) ? "" : " SAFELIST"
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_who.c,v 1.72 2003/05/09 21:38:18 bill Exp $
+ *  $Id: m_who.c,v 1.73 2003/05/12 04:09:50 michael Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -60,7 +60,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&who_msgtab);
 }
-const char *_version = "$Revision: 1.72 $";
+const char *_version = "$Revision: 1.73 $";
 #endif
 static void do_who_on_channel(struct Client *source_p, struct Channel *chptr,
                               char *real_name, int member);
@@ -406,9 +406,7 @@ do_who_list(struct Client *source_p, struct Channel *chptr,
 	    char *halfop_flag, char *voiced_flag,
 	    char *chname, int member)
 {
-#ifndef ANONOPS
   dlink_node *ptr;
-#endif
   struct Client *target_p;
   int done=0;
   int i=0;
@@ -452,39 +450,6 @@ do_who_list(struct Client *source_p, struct Channel *chptr,
   who_list[i++].flag = halfop_flag;
 #endif
 
-#ifdef ANONOPS
-  while(done != NUMLISTS)
-  {
-    done = 0;
-
-    for(i = 0; i < NUMLISTS; i++)
-    {
-      if(who_list[i].ptr != NULL)
-      {
-	target_p = who_list[i].ptr->data;
-
-	if(who_list[i].voiced)
-	{
-	  if(target_p == source_p && is_voiced(chptr, source_p) && 
-	     chptr->mode.mode & MODE_HIDEOPS)
-	    do_who(source_p, target_p, chname, "+");
-	  else
-	    do_who(source_p, target_p, chname, voiced_flag);
-	}
-	else
-	{
-	  if(member || !IsInvisible(target_p))
-	    do_who(source_p, target_p, chname, who_list[i].flag);
-	}
-	who_list[i].ptr = who_list[i].ptr->next;
-      }
-      else
-	done++;
-    }
-  }
-
-#else /* ANONOPS */
-
     for(i = 0; i < NUMLISTS; i++)
     {
       DLINK_FOREACH(ptr, who_list[i].ptr)
@@ -495,12 +460,9 @@ do_who_list(struct Client *source_p, struct Channel *chptr,
 	  do_who(source_p, target_p, chname, who_list[i].flag);
       }
     }
-
-#endif /* ANONOPS */
 }
 
-/*
- * do_who
+/* do_who()
  *
  * inputs	- pointer to client requesting who
  *		- pointer to client to do who on
@@ -509,17 +471,16 @@ do_who_list(struct Client *source_p, struct Channel *chptr,
  * output	- NONE
  * side effects - do a who on given person
  */
-
 static void
 do_who(struct Client *source_p, struct Client *target_p,
-                   char *chname, char *op_flags)
+       char *chname, char *op_flags)
 {
-  char  status[5];
+  char status[5];
 
   ircsprintf(status,"%c%s%s", target_p->user->away ? 'G' : 'H',
 	     IsOper(target_p) ? "*" : "", op_flags );
 
-  if(ConfigServerHide.hide_servers)
+  if (ConfigServerHide.hide_servers)
   {
     sendto_one(source_p, form_str(RPL_WHOREPLY), me.name, source_p->name,
 	       (chname) ? (chname) : "*",
@@ -539,7 +500,7 @@ do_who(struct Client *source_p, struct Client *target_p,
 }
 
 /*
-** ms_who
+** ms_who()
 **      parv[0] = sender prefix
 **      parv[1] = nickname mask list
 **      parv[2] = additional selection flag, only 'o' for now.
@@ -553,11 +514,11 @@ ms_who(struct Client *client_p, struct Client *source_p,
    * other wise, ignore it.
    */
 
-  if( ServerInfo.hub )
+  if (ServerInfo.hub)
   {
-    if(!IsCapable(client_p->from,CAP_LL))
+    if (!IsCapable(client_p->from, CAP_LL))
       return;
   }
 
-  m_who(client_p,source_p,parc,parv);
+  m_who(client_p, source_p, parc, parv);
 }

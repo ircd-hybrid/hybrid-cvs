@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.21 2003/05/11 21:23:13 metalrock Exp $
+ *  $Id: m_whois.c,v 1.22 2003/05/12 04:09:44 michael Exp $
  */
 
 #include "stdinc.h"
@@ -193,7 +193,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-const char *_version = "$Revision: 1.21 $";
+const char *_version = "$Revision: 1.22 $";
 #endif
 
 /* m_whois
@@ -267,6 +267,7 @@ mo_whois(struct Client *client_p, struct Client *source_p,
 }
 
 
+/* XXX - should be a void function -Michael */
 /* do_whois()
  *
  * inputs	- pointer to 
@@ -368,8 +369,8 @@ do_whois(struct Client *client_p, struct Client *source_p,
 static int 
 global_whois(struct Client *source_p, char *nick, int wilds, int glob)
 {
-  struct Client *target_p = NULL;
-  int found = NO;
+  struct Client *target_p;
+  int found = 0;
   dlink_node *gcptr;
 
   DLINK_FOREACH(gcptr, global_client_list.head)
@@ -403,8 +404,7 @@ global_whois(struct Client *source_p, char *nick, int wilds, int glob)
   return(found);
 }
 
-/*
- * single_whois()
+/* single_whois()
  *
  * Inputs	- source_p client to report to
  *		- target_p client to report on
@@ -437,11 +437,11 @@ single_whois(struct Client *source_p,struct Client *target_p,
     sendto_one(source_p, form_str(RPL_WHOISSERVER),
 	       me.name, source_p->name, name, "<Unknown>",
 	      "*Not On This Net*");
-    return (NO);
+    return(0);
   }
 
-  invis = IsInvisible(target_p);
-  member = (target_p->user->channel.head) ? 1 : 0;
+  invis      = IsInvisible(target_p);
+  member     = (target_p->user->channel.head) ? 1 : 0;
   showperson = (wilds && !invis && !member) || !wilds;
 
   DLINK_FOREACH(ptr, target_p->user->channel.head)
@@ -464,7 +464,7 @@ single_whois(struct Client *source_p,struct Client *target_p,
 
   if(showperson)
     whois_person(source_p,target_p,glob);
-  return (YES);
+  return(1);
 }
 
 /* whois_person()
@@ -517,10 +517,8 @@ whois_person(struct Client *source_p,struct Client *target_p, int glob)
         cur_len = mlen;
         t = buf + mlen;
       }
-      if (chptr->mode.mode & MODE_HIDEOPS && !is_any_op(chptr,source_p))
-        ircsprintf(t,"%s ",chname);
-      else
-        ircsprintf(t,"%s%s ", channel_chanop_or_voice(chptr,target_p), chname);
+
+      ircsprintf(t,"%s%s ", channel_chanop_or_voice(chptr,target_p), chname);
 
       tlen = strlen(t);
       t += tlen;
@@ -574,8 +572,6 @@ whois_person(struct Client *source_p,struct Client *target_p, int glob)
    */
   if(MyClient(source_p)) 
     hook_call_event("doing_whois", &hd);
-  
-  return;
 }
 
 /* ms_whois()

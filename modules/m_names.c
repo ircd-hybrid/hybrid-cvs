@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_names.c,v 1.49 2003/05/09 21:38:18 bill Exp $
+ *  $Id: m_names.c,v 1.50 2003/05/12 04:09:50 michael Exp $
  */
 
 #include "stdinc.h"
@@ -66,7 +66,7 @@ _moddeinit(void)
   mod_del_cmd(&names_msgtab);
 }
 
-const char *_version = "$Revision: 1.49 $";
+const char *_version = "$Revision: 1.50 $";
 #endif
 
 /************************************************************************
@@ -78,17 +78,16 @@ const char *_version = "$Revision: 1.49 $";
 **      parv[0] = sender prefix
 **      parv[1] = channel
 */
-static void m_names(struct Client *client_p,
-                    struct Client *source_p,
-                    int parc,
-                    char *parv[])
+static void
+m_names(struct Client *client_p, struct Client *source_p,
+        int parc, char *parv[])
 { 
   struct Channel *ch2ptr = NULL;
   char *s;
   char *para = parc > 1 ? parv[1] : NULL;
 
   if (!EmptyString(para))
-    {
+  {
       while (*para == ',')
         para++;
       if ((s = strchr(para, ',')) != NULL)
@@ -118,43 +117,38 @@ static void m_names(struct Client *client_p,
     }
 }
 
-/*
- * names_all_visible_channels
+/* names_all_visible_channels()
  *
  * inputs       - pointer to client struct requesting names
  * output       - none
  * side effects - lists all visible channels whee!
  */
-
 static void
 names_all_visible_channels(struct Client *source_p)
 {
   dlink_node *gptr;
   struct Channel *chptr;
-  char *chname=NULL;
+  char *chname;
 
   /* 
    * First, do all visible channels (public and the one user self is)
    */
-
   DLINK_FOREACH(gptr, global_channel_list.head)
-    {
-      chptr = gptr->data;
-      chname = chptr->chname;
+  {
+    chptr = gptr->data;
+    chname = chptr->chname;
 
-      /* Find users on same channel (defined by chptr) */
-      channel_member_names(source_p, chptr, chname, 0);
-    }
+    /* Find users on same channel (defined by chptr) */
+    channel_member_names(source_p, chptr, chname, 0);
+  }
 }
 
-/*
- * names_non_public_non_secret
+/* names_non_public_non_secret()
  *
  * inputs       - pointer to client struct requesting names
  * output       - none
  * side effects - lists all non public non secret channels
  */
-
 static void
 names_non_public_non_secret(struct Client *source_p)
 {
@@ -214,9 +208,6 @@ names_non_public_non_secret(struct Client *source_p)
           t = buf + mlen;
         }
 
-      if (IsHideOps(ch3ptr))
-        ircsprintf(t," %s ", c2ptr->name);
-      else
         ircsprintf(t,"%s%s ", channel_chanop_or_voice(ch3ptr, c2ptr),
                    c2ptr->name);
 
@@ -233,20 +224,19 @@ names_non_public_non_secret(struct Client *source_p)
 
 static void
 ms_names(struct Client *client_p, struct Client *source_p,
-	 int parc, char *parv[])
+         int parc, char *parv[])
 { 
   /* If its running as a hub, and linked with lazy links
    * then allow leaf to use normal client m_names()
    * other wise, ignore it.
    */
+  if (ServerInfo.hub)
+  {
+    if (!IsCapable(client_p->from, CAP_LL))
+      return;
+  }
 
-  if(ServerInfo.hub)
-    {
-      if(!IsCapable(client_p->from,CAP_LL))
-        return;
-    }
-
-  if(IsClient(source_p))
-    m_names(client_p,source_p,parc,parv);
+  if (IsClient(source_p))
+    m_names(client_p, source_p, parc, parv);
 }
 

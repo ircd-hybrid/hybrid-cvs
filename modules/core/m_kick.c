@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kick.c,v 1.56 2003/05/09 21:38:21 bill Exp $
+ *  $Id: m_kick.c,v 1.57 2003/05/12 04:09:52 michael Exp $
  */
 
 #include "stdinc.h"
@@ -39,13 +39,14 @@
 #include "packet.h"
 
 
-static void m_kick(struct Client*, struct Client*, int, char**);
-static void ms_kick(struct Client*, struct Client*, int, char**);
+static void m_kick(struct Client *, struct Client *, int, char **);
+static void ms_kick(struct Client *, struct Client *, int, char **);
 
 struct Message kick_msgtab = {
   "KICK", 0, 0, 3, 0, MFLG_SLOW, 0,
   {m_unregistered, m_kick, ms_kick, m_kick, m_ignore}
 };
+
 #ifndef STATIC_MODULES
 void
 _modinit(void)
@@ -59,26 +60,26 @@ _moddeinit(void)
   mod_del_cmd(&kick_msgtab);
 }
 
-const char *_version = "$Revision: 1.56 $";
+const char *_version = "$Revision: 1.57 $";
 #endif
 
 /* m_kick()
-*      parv[0] = sender prefix
-*      parv[1] = channel
-*      parv[2] = client to kick
-*      parv[3] = kick comment
-*/
+ *  parv[0] = sender prefix
+ *  parv[1] = channel
+ *  parv[2] = client to kick
+ *  parv[3] = kick comment
+ */
 static void 
 m_kick(struct Client *client_p, struct Client *source_p,
        int parc, char *parv[])
 {
   struct Client *who;
   struct Channel *chptr;
-  int   chasing = 0;
-  char  *comment;
-  char  *name;
-  char  *p = NULL;
-  char  *user;
+  int chasing = 0;
+  char *comment;
+  char *name;
+  char *p = NULL;
+  char *user;
 
   if (*parv[2] == '\0')
   {
@@ -87,7 +88,7 @@ m_kick(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if(MyClient(source_p) && !IsFloodDone(source_p))
+  if (MyClient(source_p) && !IsFloodDone(source_p))
     flood_endgrace(source_p);
 
   comment = (EmptyString(parv[3])) ? parv[2] : parv[3];
@@ -102,18 +103,17 @@ m_kick(struct Client *client_p, struct Client *source_p,
   if (!*name)
     return;
 
-  chptr = hash_find_channel(name);
-  if (!chptr)
+  if ((chptr = hash_find_channel(name)) == NULL)
   {
     sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
                me.name, source_p->name, name);
     return;
   }
 
-  if (!IsServer(source_p) && !is_any_op(chptr, source_p) ) 
+  if (!IsServer(source_p) && !is_any_op(chptr, source_p)) 
   {
     /* was a user, not a server, and user isn't seen as a chanop here */
-    if(MyConnect(source_p))
+    if (MyConnect(source_p))
     {
       /* user on _my_ server, with no chanops.. so go away */
       sendto_one(source_p, form_str(ERR_CHANOPRIVSNEEDED),
@@ -121,7 +121,7 @@ m_kick(struct Client *client_p, struct Client *source_p,
       return;
     }
 
-    if(chptr->channelts == 0)
+    if (chptr->channelts == 0)
     {
       /* If its a TS 0 channel, do it the old way */         
       sendto_one(source_p, form_str(ERR_CHANOPRIVSNEEDED),
@@ -152,19 +152,25 @@ m_kick(struct Client *client_p, struct Client *source_p,
   }
 
   user = parv[2];
+
   while (*user == ',')
     user++;
-  if((p = strchr(user,',')) != NULL)
+
+  if ((p = strchr(user,',')) != NULL)
     *p = '\0';
+
   if (!*user)
     return;
 
-  if (!(who = find_chasing(source_p, user, &chasing)))
+  if ((who = find_chasing(source_p, user, &chasing)) == NULL)
     return;
 
   if (IsMember(who, chptr))
   {
     /* half ops cannot kick other halfops on private channels */
+
+
+/*** ***/
 #ifdef HALFOPS
     if (is_half_op(chptr,source_p))
     {
@@ -177,6 +183,10 @@ m_kick(struct Client *client_p, struct Client *source_p,
       }
     }
 #endif
+
+/*** ***/
+
+
    /* jdc
     * - In the case of a server kicking a user (i.e. CLEARCHAN),
     *   the kick should show up as coming from the server which did
@@ -189,29 +199,10 @@ m_kick(struct Client *client_p, struct Client *source_p,
       sendto_channel_local(ALL_MEMBERS, chptr, ":%s KICK %s %s :%s",
         source_p->name, name, who->name, comment);
     }
-#ifdef ANONOPS
-    else if(chptr->mode.mode & MODE_HIDEOPS)
-    {
-      /* jdc -- Non-chanops get kicked from me.name, not
-       *        who->name (themselves).
-       */
-      sendto_channel_local(NON_CHANOPS, chptr,
-			   ":%s KICK %s %s :%s",
-			   me.name, name, who->name, comment);
-
-      sendto_channel_local(ONLY_CHANOPS_HALFOPS, chptr,
-			   ":%s!%s@%s KICK %s %s :%s",
-			   source_p->name, source_p->username,
-			   source_p->host, name, who->name, comment);
-    }
-    else
-#endif
-    {
       sendto_channel_local(ALL_MEMBERS, chptr,
 			   ":%s!%s@%s KICK %s %s :%s",
 			   source_p->name, source_p->username,
 			   source_p->host, name, who->name, comment);
-    }
     sendto_server(client_p, NULL, chptr, NOCAPS, NOCAPS, NOFLAGS,
                   ":%s KICK %s %s :%s", parv[0], chptr->chname,
                   who->name, comment);
@@ -224,7 +215,7 @@ m_kick(struct Client *client_p, struct Client *source_p,
 
 static void
 ms_kick(struct Client *client_p, struct Client *source_p,
-	int parc, char *parv[])
+        int parc, char *parv[])
 {
   if (*parv[2] == '\0')
   {
@@ -232,5 +223,6 @@ ms_kick(struct Client *client_p, struct Client *source_p,
                me.name, source_p->name, "KICK");
     return;
   }
+
   m_kick(client_p, source_p, parc, parv);
 }

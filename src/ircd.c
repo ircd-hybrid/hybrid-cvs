@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.275 2003/05/11 22:27:44 joshk Exp $
+ *  $Id: ircd.c,v 7.276 2003/05/12 04:09:54 michael Exp $
  */
 
 #include "stdinc.h"
@@ -395,7 +395,7 @@ initialize_message_files(void)
   read_message_file(&ConfigFileEntry.linksfile);
 }
 
-/* initialize_server_capabs
+/* initialize_server_capabs()
  *
  * inputs       - none
  * output       - none
@@ -406,9 +406,8 @@ initialize_server_capabs(void)
   /* If halfops support is disabled, remove the capab from the list. */
   if (ConfigChannel.use_halfops == 0)
     default_server_capabs &= ~CAP_HOPS;
-  if (ConfigChannel.use_anonops == 0)
-    default_server_capabs &= ~CAP_AOPS;
 
+  /* XXX -Michael */
   default_server_capabs &= ~CAP_ZIP;
 }
 

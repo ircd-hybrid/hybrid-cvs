@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.h,v 7.14 2003/02/23 04:16:03 db Exp $
+ *  $Id: channel_mode.h,v 7.15 2003/05/12 04:09:48 michael Exp $
  */
 
 
@@ -48,10 +48,6 @@
 
 extern void    set_channel_mode(struct Client *, struct Client *, 
                                 struct Channel *, int, char **, char *);
-
-#ifdef ANONOPS
-extern void sync_channel_oplists(struct Channel *, int);
-#endif
 
 extern void set_channel_mode_flags( char flags_ptr[4][2],
 				    struct Channel *chptr,
@@ -99,7 +95,6 @@ extern void unset_chcap_usage_counts(struct Client *serv_p);
 #define MODE_BAN        0x0400
 #define MODE_EXCEPTION  0x0800
 #define MODE_INVEX	0x2000
-#define MODE_HIDEOPS    0x4000
 
 /*
  * mode flags which take another parameter (With PARAmeterS)
@@ -119,19 +114,16 @@ extern void unset_chcap_usage_counts(struct Client *serv_p);
 			        (MODE_PRIVATE|MODE_INVITEONLY))==\
 		                (MODE_PRIVATE|MODE_INVITEONLY))
 
-#define IsHideOps(x)            ((x) && ((x)->mode.mode & MODE_HIDEOPS))
 #define IsInviteOnly(x)         ((x) && ((x)->mode.mode & MODE_INVITEONLY))
 #define IsModerated(x)          ((x) && ((x)->mode.mode & MODE_MODERATED))
 #define IsNoPrivMsgs(x)         ((x) && ((x)->mode.mode & MODE_NOPRIVMSGS))
 #define IsTopicLimited(x)       ((x) && ((x)->mode.mode & MODE_TOPICLIMIT))
 
-#define SetHideOps(x)           ((x)->mode.mode |= MODE_HIDEOPS)
 #define SetInviteOnly(x)        ((x)->mode.mode |= MODE_INVITEONLY)
 #define SetModerated(x)         ((x)->mode.mode |= MODE_MODERATED)
 #define SetNoPrivMsgs(x)        ((x)->mode.mode |= MODE_NOPRIVMSGS)
 #define SetTopicLimited(x)      ((x)->mode.mode |= MODE_TOPICLIMIT)
 
-#define ClearHideOps(x)         ((x)->mode.mode &= ~MODE_HIDEOPS)
 #define ClearInviteOnly(x)      ((x)->mode.mode &= ~MODE_INVITEONLY)
 #define ClearModerated(x)       ((x)->mode.mode &= ~MODE_MODERATED)
 #define ClearNoPrivMsgs(x)      ((x)->mode.mode &= ~MODE_NOPRIVMSGS)
@@ -169,5 +161,4 @@ struct ChCapCombo
 #define CHACCESS_HALFOP 2
 #define CHACCESS_VOICED 1
 #define CHACCESS_PEON   0
-
 #endif  /* INCLUDED_channel_mode_h */

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.381 2003/05/11 22:04:51 michael Exp $
+ *  $Id: s_conf.c,v 7.382 2003/05/12 04:09:55 michael Exp $
  */
 
 #include "stdinc.h"
@@ -578,7 +578,7 @@ attach_iline(struct Client *client_p, struct ConfItem *aconf)
 
 /* init_ip_hash_table()
  *
- * input                - NONE
+ * inputs               - NONE
  * output               - NONE
  * side effects         - allocate memory for ip_entry(s)
  *			- clear the ip hash table
@@ -1471,17 +1471,13 @@ validate_conf(void)
     ConfigChannel.use_halfops = 0;
 #endif
 
-  /* hasnt been set, disable it by default */
-  if (ConfigChannel.use_anonops == -1)
-    ConfigChannel.use_anonops = 0;
-
   GlobalSetOptions.idletime = (ConfigFileEntry.idletime * 60);
 }
 
 /* conf_add_conf()
  *
  * Inputs	- ConfItem
- * Output	- none
+ * Output	- NONE
  * Side effects	- add given conf to link list
  */
 void
@@ -1914,7 +1910,6 @@ read_conf_files(int cold)
     ConfigItemList.length = 0;
     /* set to 'undefined' */
     ConfigChannel.use_halfops = -1;
-    ConfigChannel.use_anonops = -1;
   }
   else
   {
