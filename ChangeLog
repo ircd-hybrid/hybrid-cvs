@@ -1,3 +1,9 @@
+*** 20001208_17 by db
+- m_who is less broken for single nick who, but it looks broken to me
+  still... checked on efnet, it looks broken.
+
+
+
 *** 20001208_16 by db
 - added m_eob to modules, this means changes to handlers.h, msg.h, Makefile.in
 - also had to modify s_serv.c to send EOB message
@@ -1999,7 +2005,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.754 2000/12/09 03:12:47 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.755 2000/12/09 03:51:28 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
