@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.82 2000/12/19 04:39:33 db Exp $
+ *   $Id: s_serv.c,v 7.83 2000/12/19 09:46:46 db Exp $
  */
 #include "tools.h"
 #include "s_serv.h"
@@ -573,7 +573,7 @@ void client_burst_if_needed(struct Client *cptr, struct Client *acptr)
   if((acptr->lazyLinkClientExists & cptr->localClient->serverMask) == 0)
     {
       sendnick_TS( cptr, acptr );
-      acptr->lazyLinkClientExists |= cptr->localClient->serverMask;
+      add_lazylinkclient(cptr,acptr);
     }
 }
 
@@ -1149,9 +1149,14 @@ add_lazylinkclient(struct Client *cptr, struct Client *sptr)
 
   sptr->lazyLinkClientExists |= cptr->localClient->serverMask;
 
+  /* Now that I think about it, there is absolutely no need
+   * to keep track of these -db
+   */
+#if 0
   m = make_dlink_node();
 
   dlinkAdd(sptr, m, &lazylink_nicks);
+#endif
 }
 
 /*
@@ -1206,6 +1211,7 @@ remove_lazylink_flags(unsigned long mask)
 	}
     }
 
+#if 0
   for (ptr = lazylink_nicks.head; ptr; ptr = next_ptr)
     {
       next_ptr = ptr->next;
@@ -1219,6 +1225,7 @@ remove_lazylink_flags(unsigned long mask)
 	  free_dlink_node(ptr);
 	}
     }
+#endif
 }
 
 /*
@@ -1264,9 +1271,11 @@ void burst_ll_members(struct Client *cptr, dlink_list *list)
       acptr = ptr->data;
       if ((acptr->lazyLinkClientExists & cptr->localClient->serverMask) == 0)
         {
-          add_lazylinkclient(cptr,acptr);
           if (acptr->from != cptr)
-          sendnick_TS(cptr, acptr);
+	    {
+	      add_lazylinkclient(cptr,acptr);
+	      sendnick_TS(cptr, acptr);
+	    }
         }
     }
 }
