@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.31 2000/11/11 14:52:51 ejb Exp $
+ * $Id: client.h,v 7.32 2000/11/13 16:34:30 db Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -465,9 +465,9 @@ struct Client
 #define IsRejectHeld(x)         ((x)->flags & FLAGS_REJECT_HOLD)
 #define SetRejectHold(x)        ((x)->flags |= FLAGS_REJECT_HOLD)
 
-#define SetIpHash               ((x)->flags |= FLAGS_IPHASH)
-#define ClearIpHash             ((x)->flags &= ~FLAGS_IPHASH)
-#define IsIpHash                ((x)->flags & FLAGS_IPHASH)
+#define SetIpHash(x)            ((x)->flags |= FLAGS_IPHASH)
+#define ClearIpHash(x)          ((x)->flags &= ~FLAGS_IPHASH)
+#define IsIpHash(x)             ((x)->flags & FLAGS_IPHASH)
 
 #define SetNeedId(x)            ((x)->flags |= FLAGS_NEEDID)
 #define IsNeedId(x)             (((x)->flags & FLAGS_NEEDID) != 0)
