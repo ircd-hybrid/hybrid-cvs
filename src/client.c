@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.417 2003/10/13 00:59:19 bill Exp $
+ *  $Id: client.c,v 7.418 2003/10/21 01:39:50 bill Exp $
  */
 
 #include "stdinc.h"
@@ -1149,7 +1149,7 @@ exit_aborted_clients(void)
   struct Client *target_p;
   const char *notice;
 
-  for (ptr = abort_list.head; ptr != NULL; ptr = eac_next)
+  DLINK_FOREACH_SAFE(ptr, eac_next, abort_list.head)
   {
     target_p = ptr->data;
     eac_next = ptr->next;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.174 2003/10/07 22:37:12 bill Exp $
+ *  $Id: m_kline.c,v 1.175 2003/10/21 01:39:48 bill Exp $
  */
 
 #include "stdinc.h"
@@ -106,7 +106,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.174 $";
+const char *_version = "$Revision: 1.175 $";
 #endif
 
 #define TK_SECONDS 0
@@ -1291,7 +1291,7 @@ remove_tkline_match(const char *host, const char *user)
   int nm_t, cnm_t, bits, cbits;
   nm_t = parse_netmask(host, &addr, &bits);
 
-  for (tk_n=temporary_klines.head; tk_n; tk_n=tk_n->next)
+  DLINK_FOREACH(tk_n, temporary_klines.head)
   {
     tk_c = (struct AccessItem*)tk_n->data;
     cnm_t = parse_netmask(tk_c->host, &caddr, &cbits);
@@ -1328,7 +1328,7 @@ remove_tdline_match(const char *cidr)
   int nm_t, cnm_t, bits, cbits;
   nm_t = parse_netmask(cidr, &addr, &bits);
 
-  for (td_node = temporary_dlines.head; td_node; td_node = td_node->next)
+  DLINK_FOREACH(td_node, temporary_dlines.head)
   {
     td_conf = (struct AccessItem *)td_node->data;
     cnm_t   = parse_netmask(td_conf->host, &caddr, &cbits);
