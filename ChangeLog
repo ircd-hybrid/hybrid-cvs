@@ -1,3 +1,20 @@
+db          2002/10/11 15:57:50 EDT	(20021011_0)
+
+  Modified files:
+    contrib              m_force.c 
+    src                  channel.c ircd.c s_auth.c 
+  Log:
+  - fixed bogus expiry code
+  - fixed typo in s_auth.c
+  
+  Revision  Changes    Path
+  1.16      +4 -4      ircd-hybrid-7/contrib/m_force.c
+  7.335     +46 -111   ircd-hybrid-7/src/channel.c
+  7.241     +0 -2      ircd-hybrid-7/src/ircd.c
+  7.101     +3 -2      ircd-hybrid-7/src/s_auth.c
+
+
+
 bill        2002/10/10 18:17:22 EDT	(20021010_3)
 
   Modified files:
@@ -32370,4 +32387,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4056 2002/10/10 22:17:25 bill Exp $
+$Id: ChangeLog,v 7.4057 2002/10/11 19:57:53 db Exp $
