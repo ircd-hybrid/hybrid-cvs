@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: convertconf.c,v 1.7 2000/01/12 01:31:11 db Exp $
+ * $Id: convertconf.c,v 1.8 2000/01/12 02:34:32 db Exp $
  */
 
 #include <stdio.h>
@@ -863,16 +863,16 @@ static char* ClientFlags(FILE *out, char* spoof, char *tmp)
 	  fprintf(out,"\t\tnomatch_ip;\n");	  
           break;
         case '^':        /* is exempt from k/g lines */
-	  fprintf(out,"\t\tkline_exempt;\n");	  
+	  fprintf(out,"\t\tkline_exempt=yes;\n");	  
           break;
         case '&':        /* can run a bot */
-	  fprintf(out,"\t\tbot;\n");	  
+	  fprintf(out,"\t\tallow_bots=yes;\n");	  
           break;
         case '>':        /* can exceed max connects */
-	  fprintf(out,"\t\texceed_limit;\n");	  
+	  fprintf(out,"\t\texceed_limit=yes;\n");	  
           break;
         case '<':        /* can idle */
-	  fprintf(out,"\t\tcan_idle;\n");	  
+	  fprintf(out,"\t\tcan_idle=yes;\n");	  
           break;
         default:
           return tmp;
