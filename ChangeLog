@@ -1,3 +1,16 @@
+jmallett    2002/03/01 03:52:38 EST	(20020301_3)
+
+  Modified files:
+    .                    README.PLATFORMS 
+  Log:
+  Add notation for broken platforms, and mark GCC/SPARC ones as broken,
+  until I see otherwise.
+  
+  Revision  Changes    Path
+  7.10      +8 -5      ircd-hybrid-7/README.PLATFORMS
+
+
+
 jmallett    2002/03/01 03:40:04 EST	(20020301_2)
 
   Modified files:
@@ -23613,4 +23626,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3474 2002/03/01 08:40:10 jmallett Exp $
+$Id: ChangeLog,v 7.3475 2002/03/01 08:52:45 jmallett Exp $
