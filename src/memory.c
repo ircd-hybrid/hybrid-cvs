@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: memory.c,v 7.20 2001/06/05 01:45:34 ejb Exp $
+ * $Id: memory.c,v 7.21 2001/06/26 20:45:32 androsyn blalloc.c $
  */
 #include <stdlib.h>
 #include <string.h>
@@ -171,11 +171,9 @@ log_memory(void)
 void*
 _MyMalloc(size_t size)
 {
-  void* ret = malloc(size);
+  void *ret = calloc(1, size);
   if (ret == NULL)
     outofmemory();
-  else
-    memset(ret, 0, size);
   return ret;
 }
 
