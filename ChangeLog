@@ -1,3 +1,20 @@
+bill        2002/10/23 23:35:59 EDT	(20021024_1)
+
+  Modified files:
+    contrib              m_operspy.c 
+    include              msg.h 
+    src                  parse.c 
+  Log:
+  - added MFLG_HIDDEN, to hide commands from stats m
+  - updated m_operspy.c to use MFLG_HIDDEN
+  
+  Revision  Changes    Path
+  1.7       +2 -2      ircd-hybrid-7/contrib/m_operspy.c
+  7.42      +2 -0      ircd-hybrid-7/include/msg.h
+  7.140     +6 -5      ircd-hybrid-7/src/parse.c
+
+
+
 bill        2002/10/23 21:16:38 EDT	(20021024_0)
 
   Modified files:
@@ -32626,4 +32643,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4074 2002/10/24 01:16:40 bill Exp $
+$Id: ChangeLog,v 7.4075 2002/10/24 03:36:01 bill Exp $
