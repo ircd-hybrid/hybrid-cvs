@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.282 2003/02/18 22:26:39 db Exp $
+ *  $Id: s_serv.c,v 7.283 2003/02/19 10:36:47 a1kmm Exp $
  */
 
 #include "stdinc.h"
@@ -526,15 +526,13 @@ void
 try_connections(void *unused)
 {
   dlink_node	     *ptr;
-  dlink_node	     *con_ptr;
   struct ConfItem*   aconf;
-  struct Client*     client_p;
-  int                connecting = FALSE;
-  int                confrq;
-  time_t             next = 0;
   struct Class*      cltmp;
-  struct ConfItem*   con_conf = NULL;
-  int                con_class = 0;
+  int                confrq;
+
+  /* TODO: change this to set active flag to 0 when added to event! --Habeeb */
+  if(GlobalSetOptions.autoconn==0)
+    return;
 
   Debug((DEBUG_NOTICE,"Connection check at: %s", myctime(CurrentTime)));
 
@@ -547,6 +545,7 @@ try_connections(void *unused)
       if (!(aconf->status & CONF_SERVER) || aconf->port <= 0 ||
           !(IsConfAllowAutoConn(aconf)))
         continue;
+
       cltmp = ClassPtr(aconf);
       /*
        * Skip this entry if the use of it is still on hold until
@@ -556,11 +555,7 @@ try_connections(void *unused)
        * a bit fuzzy... -- msa >;) ]
        */
       if (aconf->hold > CurrentTime)
-        {
-          if (next > aconf->hold || next == 0)
-            next = aconf->hold;
-          continue;
-        }
+        continue;
 
       if ((confrq = get_con_freq(cltmp)) < MIN_CONN_FREQ )
         confrq = MIN_CONN_FREQ;
@@ -570,55 +565,34 @@ try_connections(void *unused)
        * Found a CONNECT config with port specified, scan clients
        * and see if this server is already connected?
        */
-      client_p = find_server(aconf->name);
+      if (find_server(aconf->name) != NULL)
+        continue;
       
-      if (!client_p && (Links(cltmp) < MaxLinks(cltmp)) &&
-          (!connecting || (ClassType(cltmp) > con_class)))
-        {
-          con_class = ClassType(cltmp);
-          con_conf = aconf;
-          /* We connect only one at time... */
-          connecting = TRUE;
-        }
-      if ((next > aconf->hold) || (next == 0))
-        next = aconf->hold;
-    }
-
-
-      /* TODO: change this to set active flag to 0 when added to event! --Habeeb */
-    if(GlobalSetOptions.autoconn==0)
-      return;
-     
-    if (con_ptr == NULL)
-      return;
-
-    if (connecting)
-    {
-      if (con_ptr->next != NULL)  /* if not already last */
+      if (Links(cltmp) < MaxLinks(cltmp))
       {
-	dlinkDelete(con_ptr, &ConfigItemList);
-	dlinkAddTail(con_conf, con_ptr, &ConfigItemList);
+        /* Go to the end of the list, if not already last */
+        if (ptr->next != NULL)
+        {
+          dlinkDelete(ptr, &ConfigItemList);
+          dlinkAddTail(aconf, ptr, &ConfigItemList);
+        }
+        /*
+         * We used to only print this if serv_connect() actually
+         * suceeded, but since comm_tcp_connect() can call the callback
+         * immediately if there is an error, we were getting error messages
+         * in the wrong order. SO, we just print out the activated line,
+         * and let serv_connect() / serv_connect_callback() print an
+         * error afterwards if it fails.
+         *   -- adrian
+         */
+        sendto_realops_flags(UMODE_ALL, L_ALL,
+                             "Connection to %s[%s] activated.",
+                             aconf->name, aconf->host);
+        serv_connect(aconf, 0);
+        /* We connect only one at time... */
+        return;
       }
     }
-
-    if (IsConfAllowAutoConn(con_conf))
-    {
-      /*
-       * We used to only print this if serv_connect() actually
-       * suceeded, but since comm_tcp_connect() can call the callback
-       * immediately if there is an error, we were getting error messages
-       * in the wrong order. SO, we just print out the activated line,
-       * and let serv_connect() / serv_connect_callback() print an
-       * error afterwards if it fails.
-       *   -- adrian
-       */
-       sendto_realops_flags(UMODE_ALL, L_ALL,
-    		"Connection to %s[%s] activated.",
-	      	con_conf->name, con_conf->host);
-      serv_connect(con_conf, 0);
-    }
-
-  Debug((DEBUG_NOTICE,"Next connection check : %s", myctime(next)));
 }
 
 int
