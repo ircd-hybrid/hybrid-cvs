@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.45 2000/12/24 00:04:47 ejb Exp $
+ * $Id: ircd_lexer.l,v 1.46 2000/12/24 01:36:55 ejb Exp $
  */
 
 %option case-insensitive
@@ -192,6 +192,7 @@ stats_p_notice	        { return STATS_P_NOTICE; }
 glines                  { return GLINES; }
 modules                 { return MODULES; }
 module                  { return MODULE; }
+path                    { return PATH; }
 
 oper_only_umodes        { return OPER_ONLY_UMODES; }
 bots                    { return T_BOTS; }

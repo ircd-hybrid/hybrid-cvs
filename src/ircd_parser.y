@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.67 2000/12/24 00:04:47 ejb Exp $
+ * $Id: ircd_parser.y,v 1.68 2000/12/24 01:36:55 ejb Exp $
  */
 
 %{
@@ -198,6 +198,7 @@ int   class_redirport_var;
 %token  T_CALLERID
 %token  T_WALLOP
 %token  OPER_ONLY_UMODES
+%token  PATH
 
 %%
 conf:   
@@ -233,12 +234,18 @@ modules_entry:          MODULES
 modules_items:   modules_items modules_item |
                     modules_item
 
-modules_item:    modules_module
+modules_item:    modules_module | modules_path
 
 modules_module:  MODULE '=' QSTRING ';'
 {
   load_one_module (yylval.string);
 };
+
+modules_path: PATH '=' QSTRING ';'
+{
+	mod_add_path(yylval.string);
+};
+
 
 /***************************************************************************
  *  section serverinfo

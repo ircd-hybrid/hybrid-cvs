@@ -16,11 +16,13 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.h,v 7.5 2000/12/21 13:39:28 db Exp $
+ * $Id: modules.h,v 7.6 2000/12/24 01:36:54 ejb Exp $
  */
 
 #ifndef INCLUDED_modules_h
 #define INCLUDED_modules_h
+
+#include <sys/param.h>
 
 #include "ircd_handler.h"
 #include "msg.h"
@@ -31,6 +33,16 @@ struct module {
   char *version;
   void *address;
 };
+
+struct module_path
+{
+	struct module_path *next;
+	struct module_pathx *prev;
+	char path[MAXPATHLEN];
+};
+
+/* add a path */
+void mod_add_path(char *path);
 
 /* load a module */
 extern void load_module(char *path);
