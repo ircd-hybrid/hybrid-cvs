@@ -34,7 +34,7 @@
  *                mode * -p etc. if flag was clear
  *
  *
- * $Id: channel.c,v 7.8 1999/08/20 05:21:51 tomh Exp $
+ * $Id: channel.c,v 7.9 1999/09/06 23:11:55 db Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -1394,6 +1394,17 @@ void set_channel_mode(struct Client *cptr,
                                  chptr->mode.key);
             }
 #endif
+          if (whatt == MODE_DEL)
+            {
+              if( (arg[0] == '*') && (arg[1] == '\0'))
+                arg = chptr->mode.key;
+              else
+                {
+                  if(strcmp(arg,chptr->mode.key))
+                    break;
+		}
+	    }
+
           *mbufw++ = plus;
           *mbufw++ = 'k';
           strcpy(pbufw, arg);
