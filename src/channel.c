@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.342 2002/10/29 19:38:21 bill Exp $
+ *  $Id: channel.c,v 7.343 2002/11/26 20:34:57 db Exp $
  */
 
 #include "stdinc.h"
@@ -700,10 +700,13 @@ channel_member_names(struct Client *source_p,
     members_ptr[1] = NULL;
 #endif
     members_ptr[2] = chptr->voiced.head;
-    members_ptr[3] = chptr->peons.head;
 #ifdef REQUIRE_OANDV
-    members_ptr[4] = chptr->chanops_voiced.head;
+    members_ptr[3] = chptr->chanops_voiced.head;
+    members_ptr[4] = chptr->peons.head;
+#else
+    members_ptr[3] = chptr->peons.head;
 #endif
+
     is_member = IsMember(source_p, chptr);
 
     /* Note: This code will show one chanop followed by one voiced followed
