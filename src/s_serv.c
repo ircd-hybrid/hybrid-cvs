@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.339 2003/05/31 07:01:47 lusky Exp $
+ *  $Id: s_serv.c,v 7.340 2003/05/31 18:52:55 adx Exp $
  */
 
 #include "stdinc.h"
@@ -70,8 +70,14 @@ int MaxClientCount     = 1;
 struct Client *uplink  = NULL;
 
 static void start_io(struct Client *server);
+#if 0
 static void burst_members(struct Client *client_p, dlink_list *list);
 static void burst_ll_members(struct Client *client_p, dlink_list *list);
+#endif
+
+static void burst_members(struct Client *client_p, struct Channel *chptr);
+static void burst_ll_members(struct Client *client_p, struct Channel *chptr);
+
 static void add_lazylinkchannel(struct Client *client_p, struct Channel *chptr);
 
 
@@ -1563,12 +1569,8 @@ burst_all(struct Client *client_p)
 
     if (chptr->users != 0)
     {
-      burst_members(client_p, &chptr->chanops);
-#ifdef REQUIRE_OANDV
-      burst_members(client_p, &chptr->chanops_voiced);
-#endif
-      burst_members(client_p, &chptr->voiced);
-      burst_members(client_p, &chptr->peons);
+      burst_members(client_p, chptr);
+
       send_channel_modes(client_p, chptr);
       hinfo.chptr  = chptr;
       hinfo.client = client_p;
@@ -1632,12 +1634,8 @@ cjoin_all(struct Client *client_p)
 void
 burst_channel(struct Client *client_p, struct Channel *chptr)
 {
-  burst_ll_members(client_p, &chptr->chanops);
-#ifdef REQUIRE_OANDV
-  burst_ll_members(client_p, &chptr->chanops_voiced);
-#endif
-  burst_ll_members(client_p, &chptr->voiced);
-  burst_ll_members(client_p, &chptr->peons);
+  burst_ll_members(client_p, chptr);
+
   send_channel_modes(client_p, chptr);
   add_lazylinkchannel(client_p,chptr);
 
@@ -1752,6 +1750,7 @@ remove_lazylink_flags(unsigned long mask)
  * output	- NONE
  * side effects	-
  */
+#if 0
 static void
 burst_members(struct Client *client_p, dlink_list *list)
 {
@@ -1771,6 +1770,29 @@ burst_members(struct Client *client_p, dlink_list *list)
     }
   }
 }
+#endif
+
+static void
+burst_members(struct Client *client_p, struct Channel *chptr)
+{
+  struct Client *target_p;
+  struct Membership *ms;
+  dlink_node *ptr;
+
+  DLINK_FOREACH(ptr, chptr->members.head)
+  {
+    ms       = ptr->data;
+    target_p = ms->client_p;
+
+    if (target_p->serial != current_serial)
+    {
+      target_p->serial = current_serial;
+
+      if (target_p->from != client_p)
+        sendnick_TS(client_p, target_p);
+    }
+  }
+}
 
 /* burst_ll_members()
  *
@@ -1779,6 +1801,7 @@ burst_members(struct Client *client_p, dlink_list *list)
  * output	- NONE
  * side effects	- This version also has to check the bitmap for lazylink
  */
+#if 0
 static void
 burst_ll_members(struct Client *client_p, dlink_list *list)
 {
@@ -1799,6 +1822,31 @@ burst_ll_members(struct Client *client_p, dlink_list *list)
     }
   }
 }
+#endif
+
+static void
+burst_ll_members(struct Client *client_p, struct Channel *chptr)
+{
+  struct Client *target_p;
+  struct Membership *ms;
+  dlink_node *ptr;
+
+  DLINK_FOREACH(ptr, chptr->members.head)
+  {
+    ms       = ptr->data;
+    target_p = ms->client_p;
+
+    if ((target_p->lazyLinkClientExists & client_p->localClient->serverMask) == 0)
+    {
+      if (target_p->from != client_p)
+      {
+        add_lazylinkclient(client_p,target_p);
+        sendnick_TS(client_p, target_p);
+      }
+    }
+  }
+}
+
 
 /* set_autoconn()
  *

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_mode.c,v 1.60 2003/05/24 00:08:23 michael Exp $
+ *  $Id: m_mode.c,v 1.61 2003/05/31 18:52:53 adx Exp $
  */
 
 #include "stdinc.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
   mod_del_cmd(&mode_msgtab);
 }
 
-const char *_version = "$Revision: 1.60 $";
+const char *_version = "$Revision: 1.61 $";
 #endif
 
 /*
@@ -76,7 +76,6 @@ m_mode(struct Client *client_p, struct Client *source_p,
   struct Channel *chptr = NULL;
   static char modebuf[MODEBUFLEN];
   static char parabuf[MODEBUFLEN];
-  dlink_node *ptr;
 
   if (parv[1][0] == '\0')
   {
@@ -144,7 +143,7 @@ m_mode(struct Client *client_p, struct Client *source_p,
                me.name, parv[0], parv[1], chptr->channelts);
   }
   /* bounce all modes from people we deop on sjoin */
-  else if ((ptr = find_user_link(&chptr->deopped, source_p)) == NULL)
+  else if (!is_deopped(chptr, source_p))
   {
     /* Finish the flood grace period... */
     if (MyClient(source_p) && !IsFloodDone(source_p))

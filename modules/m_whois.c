@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.102 2003/05/28 16:46:10 db Exp $
+ *  $Id: m_whois.c,v 1.103 2003/05/31 18:52:50 adx Exp $
  */
 
 #include "stdinc.h"
@@ -72,7 +72,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-const char *_version = "$Revision: 1.102 $";
+const char *_version = "$Revision: 1.103 $";
 #endif
 
 /*
@@ -296,6 +296,7 @@ single_whois(struct Client *source_p, struct Client *target_p,
 {
   dlink_node *ptr;
   struct Channel *chptr;
+  struct Membership *ms;
   const char *name;
   int invis;
   int member;
@@ -309,12 +310,13 @@ single_whois(struct Client *source_p, struct Client *target_p,
     name = target_p->name;
 
   invis      = IsInvisible(target_p);
-  member     = (target_p->user->channel.head) ? 1 : 0;
+  member     = (target_p->user->channel.head != NULL) ? 1 : 0;
   showperson = (wilds && !invis && !member) || !wilds;
 
   DLINK_FOREACH(ptr, target_p->user->channel.head)
   {
-    chptr = ptr->data;
+    ms = ptr->data;
+    chptr = ms->chptr;
     member = IsMember(source_p, chptr);
 
     if (invis && !member)
@@ -325,10 +327,10 @@ single_whois(struct Client *source_p, struct Client *target_p,
       break;
     }
     if (!invis && HiddenChannel(chptr) && !SecretChannel(chptr))
-      {
-	showperson = 1;
-	break;
-      }
+    {
+      showperson = 1;
+      break;
+    }
   }
 
   if (showperson)
@@ -350,6 +352,7 @@ whois_person(struct Client *source_p,struct Client *target_p, int glob)
   dlink_node *lp;
   struct Client *server_p;
   struct Channel *chptr;
+  struct Membership *ms;
   int cur_len = 0;
   int mlen;
   char *t;
@@ -373,7 +376,8 @@ whois_person(struct Client *source_p,struct Client *target_p, int glob)
 
   DLINK_FOREACH(lp, target_p->user->channel.head)
   {
-    chptr  = lp->data;
+    ms    = lp->data;
+    chptr = ms->chptr;
 
     if (ShowChannel(source_p, chptr))
     {
@@ -383,7 +387,7 @@ whois_person(struct Client *source_p,struct Client *target_p, int glob)
 	cur_len = mlen;
 	t = buf + mlen;
       }
-
+                             /* XXX -eeeek */
       ircsprintf(t, "%s%s ", channel_chanop_or_voice(chptr, target_p), chptr->chname);
 
       tlen = strlen(t);

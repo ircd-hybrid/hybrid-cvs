@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_names.c,v 1.52 2003/05/24 08:02:56 michael Exp $
+ *  $Id: m_names.c,v 1.53 2003/05/31 18:52:50 adx Exp $
  */
 
 #include "stdinc.h"
@@ -67,7 +67,7 @@ _moddeinit(void)
   mod_del_cmd(&names_msgtab);
 }
 
-const char *_version = "$Revision: 1.52 $";
+const char *_version = "$Revision: 1.53 $";
 #endif
 
 /************************************************************************
@@ -185,7 +185,7 @@ names_non_public_non_secret(struct Client *source_p)
      */
     DLINK_FOREACH(lp, c2ptr->user->channel.head)
     {
-      ch3ptr = lp->data;
+      ch3ptr = ((struct Membership *) lp->data)->chptr;
 
       if ((!PubChannel(ch3ptr) || IsMember(source_p, ch3ptr)) ||
           (SecretChannel(ch3ptr)))

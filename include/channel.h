@@ -19,16 +19,14 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.139 2003/05/24 08:02:52 michael Exp $
+ *  $Id: channel.h,v 7.140 2003/05/31 18:52:48 adx Exp $
  */
 
 #ifndef INCLUDED_channel_h
 #define INCLUDED_channel_h
 #include "config.h"           /* config settings */
 #include "ircd_defs.h"        /* buffer sizes */
-
-/* Efnet wanted this... */
-#define REQUIRE_OANDV
+#include "tools.h"
 
 struct Client;
 
@@ -56,25 +54,12 @@ struct Channel
   unsigned long   lazyLinkChannelExists;
   time_t          last_knock;           /* don't allow knock to flood */
 
-  dlink_list      chanops;		/* lists of chanops etc. */
-#ifdef REQUIRE_OANDV
-  dlink_list	  chanops_voiced;	/* UGH I'm sorry */
-#endif
-  dlink_list      voiced;
-  dlink_list      peons;                /* non ops, just members */
-  dlink_list	  deopped;              /* users deopped on sjoin */
+  dlink_list      members;
 
-  dlink_list      locchanops;           /* local versions of the above */
-#ifdef REQUIRE_OANDV
-  dlink_list	  locchanops_voiced;	/* UGH I'm sorry */
-#endif
-  dlink_list      locvoiced;
-  dlink_list      locpeons;             /* ... */
-  
-  dlink_list invites;
-  dlink_list banlist;
-  dlink_list exceptlist;
-  dlink_list invexlist;
+  dlink_list      invites;
+  dlink_list      banlist;
+  dlink_list      exceptlist;
+  dlink_list      invexlist;
 
   time_t          first_received_message_time; /* channel flood control */
   int             received_number_of_privmsgs;
@@ -89,25 +74,28 @@ extern dlink_list global_channel_list;
 extern void init_channels(void);
 extern int can_send (struct Channel *chptr, struct Client *who);
 extern int is_banned (struct Channel *chptr, struct Client *who);
-extern int can_join(struct Client *source_p, struct Channel *chptr, const char *key);
+extern int can_join(struct Client *source_p, struct Channel *chptr,
+                    const char *key);
 extern int is_chan_op(struct Channel *chptr,struct Client *who);
 extern int is_voiced(struct Channel *chptr,struct Client *who);
+extern int is_deopped(struct Channel *chptr,struct Client *who);
 
-#define find_user_link(list,who) who!=NULL?dlinkFind(list,who):NULL
-
-extern void add_user_to_channel(struct Channel *chptr, struct Client *who, int flags);
+extern void add_user_to_channel(struct Channel *chptr, struct Client *who,
+                                unsigned short flags);
 extern int remove_user_from_channel(struct Channel *chptr, struct Client *who);
 
 extern int check_channel_name(const char *name);
-extern void channel_member_names(struct Client *source_p, struct Channel *chptr, int show_eon);
+extern void channel_member_names(struct Client *source_p, struct Channel *chptr,
+                                 int show_eon);
 extern const char *channel_chanop_or_voice(struct Channel *, struct Client *);
 extern void add_invite(struct Channel *chptr, struct Client *who);
 extern void del_invite(struct Channel *chptr, struct Client *who);
 extern void send_channel_modes (struct Client *, struct Channel *);
-extern void channel_modes(struct Channel *chptr, struct Client *who, char *, char *);
+extern void channel_modes(struct Channel *, struct Client *, char *, char *);
 
 extern void check_spambot_warning(struct Client *source_p, const char *name);
 extern void check_splitmode(void *);
+extern void free_channel_list(dlink_list *);
 
 /*
 ** Channel Related macros follow
@@ -117,7 +105,7 @@ extern void check_splitmode(void *);
 #define ShowChannel(v,c)        (PubChannel(c) || IsMember((v),(c)))
 
 #define IsMember(who, chan) ((who && who->user && \
-                dlinkFind(&who->user->channel, chan)) ? 1 : 0)
+                 find_channel_link(who, chan)) ? 1 : 0)
 
 #define IsChannelName(name) ((name) && (*(name) == '#' || *(name) == '&'))
 
@@ -129,14 +117,22 @@ struct Ban          /* also used for exceptions -orabidoo */
   time_t when;
 };
 
-/* Number of chanops, peon, voiced sublists */
-#ifdef REQUIRE_OANDV
-#define NUMLISTS 4
-#else
-#define NUMLISTS 3
-#endif
+struct Membership
+{
+  dlink_node channode;
+  dlink_node usernode;
+  struct Channel *chptr;
+  struct Client *client_p;
+  unsigned short flags;
+};
 
-extern void set_channel_topic(struct Channel *chptr, const char *topic, const char *topic_info, time_t topicts); 
+extern struct Membership *find_user_link(struct Channel *chptr,
+                                         struct Client *client_p);
+extern struct Membership *find_channel_link(struct Client *client_p,
+                                            struct Channel *chptr);
+
+extern void set_channel_topic(struct Channel *chptr, const char *topic,
+                              const char *topic_info, time_t topicts); 
 extern void free_topic(struct Channel *);
 extern int allocate_topic(struct Channel *);
 #endif  /* INCLUDED_channel_h */

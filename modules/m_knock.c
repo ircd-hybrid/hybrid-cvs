@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_knock.c,v 1.60 2003/05/29 00:59:02 db Exp $
+ *  $Id: m_knock.c,v 1.61 2003/05/31 18:52:50 adx Exp $
  */
 
 #include "stdinc.h"
@@ -83,7 +83,7 @@ _moddeinit(void)
   delete_capability("KNOCK");
 }
 
-const char *_version = "$Revision: 1.60 $";
+const char *_version = "$Revision: 1.61 $";
 #endif
 
 /* m_knock
@@ -337,7 +337,7 @@ send_knock(struct Client *client_p, struct Client *source_p,
   if (source_p->user != NULL)
     {
       if (ConfigChannel.use_knock)
-        sendto_channel_local(ONLY_CHANOPS,
+        sendto_channel_local(CHFL_CHANOP,
   			     chptr, form_str(RPL_KNOCK),
 			     me.name, name, name,
 			     source_p->name, source_p->username,

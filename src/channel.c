@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.379 2003/05/29 00:59:05 db Exp $
+ *  $Id: channel.c,v 7.380 2003/05/31 18:52:55 adx Exp $
  */
 
 #include "stdinc.h"
@@ -51,11 +51,10 @@ dlink_list lazylink_channels = { NULL, NULL, 0 };
 BlockHeap *channel_heap;
 BlockHeap *ban_heap;
 BlockHeap *topic_heap;
+BlockHeap *member_heap;
 
-static void free_channel_list(dlink_list *list);
 static int sub1_from_channel(struct Channel *);
 static void destroy_channel(struct Channel *);
-static void delete_members(struct Channel *chptr, dlink_list *list);
 static void send_mode_list(struct Client *client_p, const char *chname,
                            dlink_list *top, char flag, int clear);
 static int check_banned(struct Channel *chptr, const char *s, const char *s2);
@@ -83,6 +82,7 @@ init_channels(void)
   channel_heap = BlockHeapCreate(sizeof(struct Channel), CHANNEL_HEAP_SIZE);
   ban_heap = BlockHeapCreate(sizeof(struct Ban), BAN_HEAP_SIZE);
   topic_heap = BlockHeapCreate(TOPICLEN+1 + USERHOST_REPLYLEN, TOPIC_HEAP_SIZE);
+  member_heap = BlockHeapCreate(sizeof(struct Membership), CHANNEL_HEAP_SIZE /* XXX */ );
 }
 
 /* add_user_to_channel()
@@ -95,54 +95,23 @@ init_channels(void)
  *                channels member chain.
  */
 void
-add_user_to_channel(struct Channel *chptr, struct Client *who, int flags)
+add_user_to_channel(struct Channel *chptr, struct Client *who,
+                    unsigned short flags)
 {
-  if (who->user != NULL)
-  {
-    switch (flags)
-    {
-      default:
-      case MODE_PEON:
-        dlinkAdd(who, make_dlink_node(), &chptr->peons);
-        if (MyClient(who))
-          dlinkAdd(who, make_dlink_node(), &chptr->locpeons);
-        break;
+  struct Membership *ms;
 
-      case MODE_CHANOP:
-        dlinkAdd(who, make_dlink_node(), &chptr->chanops);
-        if (MyClient(who))
-          dlinkAdd(who, make_dlink_node(), &chptr->locchanops);
-        break;
+  assert(who->user != NULL);
 
-      case MODE_VOICE:
-        dlinkAdd(who, make_dlink_node(), &chptr->voiced);
-        if (MyClient(who))
-          dlinkAdd(who, make_dlink_node(), &chptr->locvoiced);
-        break;
+  ms = (struct Membership *)BlockHeapAlloc(member_heap);
+  ms->client_p = who;
+  ms->chptr    = chptr;
+  ms->flags    = flags;
 
-#ifdef REQUIRE_OANDV
-      case MODE_CHANOP|MODE_VOICE:
-        dlinkAdd(who, make_dlink_node(), &chptr->chanops_voiced);
-	if (MyClient(who))
-	  dlinkAdd(who, make_dlink_node(), &chptr->locchanops_voiced);
-        break;
-#else
-      case MODE_CHANOP|MODE_VOICE:
-	dlinkAdd(who, make_dlink_node(), &chptr->chanops);
-	if (MyClient(who))
-	  dlinkAdd(who, make_dlink_node(), &chptr->locchanops);
-	break;
-#endif
-    }
+  chptr->users++;
+  who->user->joined++;
 
-    if (flags & MODE_DEOPPED)
-      dlinkAdd(who, make_dlink_node(), &chptr->deopped);
-
-    chptr->users++;
-
-    dlinkAdd(chptr, make_dlink_node(), &who->user->channel);
-    who->user->joined++;
-  }
+  dlinkAdd(ms, &ms->channode, &chptr->members);
+  dlinkAdd(ms, &ms->usernode, &who->user->channel);
 }
 
 /* remove_user_from_channel()
@@ -157,63 +126,39 @@ int
 remove_user_from_channel(struct Channel *chptr, struct Client *who)
 {
   dlink_node *ptr;
-  dlink_node *next_ptr;
+  struct Membership *ms;
 
-  if ((ptr = find_user_link(&chptr->peons, who)))
-    dlinkDelete(ptr, &chptr->peons);
-  else if ((ptr = find_user_link(&chptr->chanops, who)))
-    dlinkDelete(ptr, &chptr->chanops);
-#ifdef REQUIRE_OANDV
-  else if ((ptr = find_user_link(&chptr->chanops_voiced, who)))
-    dlinkDelete(ptr, &chptr->chanops_voiced);
-#endif
-  else if ((ptr = find_user_link(&chptr->voiced, who)))
-    dlinkDelete(ptr, &chptr->voiced);
-  else {
-    assert(0 == 1); /* This ain't supposed to happen */
+  assert(chptr != NULL);
+  assert(who->user != NULL);
+
+  /* XXX -could be optimized */
+
+  DLINK_FOREACH(ptr, chptr->members.head)
+  {
+    ms = ptr->data;
+
+    assert(ms != NULL);
+
+    if (ms->client_p == who)
+      dlinkDelete(&ms->channode, &chptr->members);
   }
 
-  free_dlink_node(ptr);
-
-  if((ptr = find_user_link(&chptr->deopped, who)))
+  DLINK_FOREACH(ptr, who->user->channel.head)
   {
-    dlinkDelete(ptr, &chptr->deopped);
-    free_dlink_node(ptr);
-  }
+    ms = ptr->data;
 
-  if (MyClient(who))
-  {
-    if ((ptr = find_user_link(&chptr->locpeons, who)))
-      dlinkDelete(ptr, &chptr->locpeons);
-    else if ((ptr = find_user_link(&chptr->locchanops, who)))
-      dlinkDelete(ptr, &chptr->locchanops);
-    else if ((ptr = find_user_link(&chptr->locvoiced, who)))
-      dlinkDelete(ptr, &chptr->locvoiced);
-#ifdef REQUIRE_OANDV
-    else if ((ptr = find_user_link(&chptr->locchanops_voiced, who)))
-      dlinkDelete(ptr, &chptr->locchanops_voiced);
-#endif
-    else
-      assert(1 == 0);
+    assert(ms != NULL);
 
-    free_dlink_node(ptr);
-  }
-
-  if (who->user != NULL)
-  {
-    DLINK_FOREACH_SAFE(ptr, next_ptr, who->user->channel.head)
+    if (ms->chptr == chptr)
     {
-      if (ptr->data == chptr)
-      {
-	dlinkDelete(ptr, &who->user->channel);
-	free_dlink_node(ptr);
-	who->user->joined--;
-	break;
-      }
+      dlinkDelete(&ms->usernode, &who->user->channel);
+      BlockHeapFree(member_heap, ms);
+      who->user->joined--;
+      break;
     }
   }
 
-  return(sub1_from_channel(chptr));
+  return (sub1_from_channel(chptr));
 }
 
 /* send_members()
@@ -223,47 +168,49 @@ remove_user_from_channel(struct Channel *chptr, struct Client *who)
  * side effects -
  */
 static void
-send_members(struct Client *client_p, char *lmodebuf, char *lparabuf,
-             struct Channel *chptr, dlink_list * list, char *op_flag)
+send_members(struct Client *client_p, struct Channel *chptr, char *lmodebuf,
+             char *lparabuf)
 {
+  struct Membership *ms;
   dlink_node *ptr;
-  dlink_node *next_ptr;
-  int tlen;                     /* length of t (temp pointer) */
-  int mlen;                     /* minimum length */
-  int cur_len = 0;              /* current length */
-  struct Client *target_p;
-  int data_to_send = 0;
-  char *t;                      /* temp char pointer */
+  int tlen;              /* length of text to append */
+  char *t, *start;       /* temp char pointer */
 
-  cur_len = mlen = ircsprintf(buf, ":%s SJOIN %lu %s %s %s:", me.name,
-                   (unsigned long)chptr->channelts,
-                   chptr->chname, lmodebuf, lparabuf);
+  start = t = buf + ircsprintf(buf, ":%s SJOIN %lu %s %s %s:", me.name,
+                               (unsigned long) chptr->channelts,
+                               chptr->chname, lmodebuf, lparabuf);
 
-  t = buf + mlen;
-
-  DLINK_FOREACH_SAFE(ptr, next_ptr, list->head)
+  DLINK_FOREACH(ptr, chptr->members.head)
   {
-    target_p = ptr->data;
-    ircsprintf(t, "%s%s ", op_flag, target_p->name);
+    ms = ptr->data;
 
-    tlen = strlen(t);
-    cur_len += tlen;
-    t += tlen;
-    data_to_send = 1;
+    tlen = strlen(ms->client_p->name) + 1;  /* nick + space */
+    if (ms->flags & CHFL_CHANOP)
+      tlen++;
+    if (ms->flags & CHFL_VOICE)
+      tlen++;
 
-    if (cur_len > (BUFSIZE - 80))
+    if (t + tlen - buf > IRCD_BUFSIZE)
     {
-      data_to_send = 0;
+      *(t - 1) = '\0';  /* kill the space and terminate the string */
       sendto_one(client_p, "%s", buf);
-      cur_len = mlen;
-      t = buf + mlen;
+      t = start;
     }
+
+    if (ms->flags & CHFL_CHANOP)
+      *t++ = '@';
+    if (ms->flags & CHFL_VOICE)
+      *t++ = '+';
+    strcpy(t, ms->client_p->name);
+    t += strlen(t);
+    *t++ = ' ';
   }
 
-  if (data_to_send)
-  {
-    sendto_one(client_p, "%s", buf);
-  }
+  /* should always be non-NULL unless we have a kind of persistent channels */
+  if (chptr->members.head != NULL)
+    t--;  /* take the space out */
+  *t = '\0';
+  sendto_one(client_p, "%s", buf);
 }
 
 /* send_channel_modes()
@@ -281,20 +228,11 @@ send_channel_modes(struct Client *client_p, struct Channel *chptr)
 
   *modebuf = *parabuf = '\0';
   channel_modes(chptr, client_p, modebuf, parabuf);
-
-  send_members(client_p, modebuf, parabuf, chptr, &chptr->chanops, "@");
-
-#ifdef REQUIRE_OANDV
-  send_members(client_p, modebuf, parabuf, chptr, &chptr->chanops_voiced, "@+");
-#endif
-  send_members(client_p, modebuf, parabuf, chptr, &chptr->voiced, "+");
-  send_members(client_p, modebuf, parabuf, chptr, &chptr->peons, "");
+  send_members(client_p, chptr, modebuf, parabuf);
 
   send_mode_list(client_p, chptr->chname, &chptr->banlist, 'b', 0);
-
   if (IsCapable(client_p, CAP_EX))
     send_mode_list(client_p, chptr->chname, &chptr->exceptlist, 'e', 0);
-
   if (IsCapable(client_p, CAP_IE))
     send_mode_list(client_p, chptr->chname, &chptr->invexlist, 'I', 0);
 }
@@ -419,7 +357,7 @@ sub1_from_channel(struct Channel *chptr)
  * output       - NONE
  * side effects -
  */
-static void
+void
 free_channel_list(dlink_list *list)
 {
   dlink_node *ptr;
@@ -448,29 +386,6 @@ destroy_channel(struct Channel *chptr)
 {
   dlink_node *ptr;
   dlink_node *m;
-
-  /* Walk through all the dlink's pointing to members of this channel,
-   * then walk through each client found from each dlink, removing
-   * any reference it has to this channel.
-   * Finally, free now unused dlink's
-   *
-   * For LazyLinks, note that the channel need not be empty, it only
-   * has to be empty of local users.
-   */
-
-  delete_members(chptr, &chptr->chanops);
-#ifdef REQUIRE_OANDV
-  delete_members(chptr, &chptr->chanops_voiced);
-#endif
-  delete_members(chptr, &chptr->voiced);
-  delete_members(chptr, &chptr->peons);
-
-  delete_members(chptr, &chptr->locchanops);
-#ifdef REQUIRE_OANDV
-  delete_members(chptr, &chptr->locchanops_voiced);
-#endif
-  delete_members(chptr, &chptr->locvoiced);
-  delete_members(chptr, &chptr->locpeons);
 
   while ((ptr = chptr->invites.head))
     del_invite(chptr, ptr->data);
@@ -504,46 +419,6 @@ destroy_channel(struct Channel *chptr)
   BlockHeapFree(channel_heap, chptr);
 }
 
-/* delete_members()
- *
- * inputs       - pointer to list (on channel)
- * output       - NONE
- * side effects - delete members of this list
- */
-static void
-delete_members(struct Channel *chptr, dlink_list *list)
-{
-  dlink_node *ptr;
-  dlink_node *next_ptr;
-  dlink_node *ptr_ch;
-  dlink_node *next_ptr_ch;
-  struct Client *who;
-
-  DLINK_FOREACH_SAFE(ptr, next_ptr, list->head)
-  {
-    who = ptr->data;
-
-    if (who->user != NULL)
-    {
-      /* remove reference to chptr from who */
-      DLINK_FOREACH_SAFE(ptr_ch, next_ptr_ch, who->user->channel.head)
-      {
-	if (ptr_ch->data == chptr)
-	{
-	  dlinkDelete(ptr_ch, &who->user->channel);
-	  free_dlink_node(ptr_ch);
-	  who->user->joined--;
-	  break;
-	}
-      }
-    }
-
-    /* remove reference to who from chptr */
-    dlinkDelete(ptr, list);
-    free_dlink_node(ptr);
-  }
-}
-
 /* channel_member_names()
  *
  * inputs       - pointer to client struct requesting names
@@ -559,66 +434,50 @@ channel_member_names(struct Client *source_p, struct Channel *chptr,
                      int show_eon)
 {
   struct Client *target_p;
-  dlink_node *ptr_list[NUMLISTS];
+  struct Membership *ms;
   dlink_node *ptr;
-  char ptr_flags[NUMLISTS][2];
   char lbuf[BUFSIZE];
-  char *t;
-  int mlen;
+  char *t, *start;
   int tlen;
-  int cur_len;
-  int reply_to_send = NO;
   int is_member;
-  int i;
 
   if (ShowChannel(source_p, chptr))
   {
-    ptr_list[0] = chptr->chanops.head;
-    ptr_list[1] = chptr->voiced.head;
-    ptr_list[2] = chptr->peons.head;
-#ifdef REQUIRE_OANDV
-    ptr_list[3] = chptr->chanops_voiced.head;
-#endif
-
-    set_channel_mode_flags(ptr_flags, chptr, source_p);
     is_member = IsMember(source_p, chptr);
-    ircsprintf(lbuf, form_str(RPL_NAMREPLY),
-               me.name, source_p->name,
-               channel_pub_or_secret(chptr));
+    t = lbuf + ircsprintf(lbuf, form_str(RPL_NAMREPLY),
+                          me.name, source_p->name,
+                          channel_pub_or_secret(chptr));
+    t += ircsprintf(t, " %s :", chptr->chname);
+    start = t;
+    tlen = 0;
 
-    mlen = strlen(lbuf);
-    ircsprintf(lbuf + mlen, " %s :", chptr->chname);
-    cur_len = mlen = strlen(lbuf);
-    t = lbuf + cur_len;
-
-    for (i = 0; i < NUMLISTS; i++)
+    DLINK_FOREACH(ptr, chptr->members.head)
     {
-      for (ptr = ptr_list[i]; ptr; ptr = ptr->next)
+      ms       = ptr->data;
+      target_p = ms->client_p;
+
+      if (IsInvisible(target_p) && !is_member)
+        continue;
+
+      tlen = strlen(target_p->name) + 1;  /* nick + space */
+      if (ms->flags & (CHFL_CHANOP | CHFL_VOICE))
+        tlen++;
+      if (t + tlen - lbuf > IRCD_BUFSIZE)
       {
-        target_p = ptr->data;
-
-        if (IsInvisible(target_p) && !is_member)
-          continue;
-
-        reply_to_send = YES;
-
-        ircsprintf(t, "%s%s ", ptr_flags[i], target_p->name);
-
-        tlen = strlen(t);
-        cur_len += tlen;
-        t += tlen;
-
-        if ((cur_len + NICKLEN) > (BUFSIZE - 3))
-        {
-          sendto_one(source_p, "%s", lbuf);
-  	  reply_to_send = NO;
-	  cur_len = mlen;
-	  t = lbuf + mlen;
-        }
+        *(t - 1) = '\0';
+	sendto_one(source_p, "%s", lbuf);
+	t = start;
       }
+
+      if (ms->flags & CHFL_CHANOP)
+        *t++ = '@';
+      else if (ms->flags & CHFL_VOICE)
+        *t++ = '+';
+      strcpy(t, target_p->name);
+      t += strlen(t);
     }
 
-    if (reply_to_send)
+    if (tlen != 0)
       sendto_one(source_p, "%s", lbuf);
   }
 
@@ -718,14 +577,10 @@ del_invite(struct Channel *chptr, struct Client *who)
 const char *
 channel_chanop_or_voice(struct Channel *chptr, struct Client *target_p)
 {
-  if (find_user_link(&chptr->chanops, target_p))
+  if (is_chan_op(chptr, target_p))
     return("@");
-  else if (find_user_link(&chptr->voiced, target_p))
+  else if (is_voiced(chptr, target_p))
     return("+");
-#ifdef REQUIRE_OANDV
-  else if (find_user_link(&chptr->chanops_voiced, target_p))
-    return("@+");
-#endif
   return("");
 }
 
@@ -876,16 +731,10 @@ can_join(struct Client *source_p, struct Channel *chptr, const char *key)
 int
 is_chan_op(struct Channel *chptr, struct Client *who)
 {
-  if (chptr != NULL)
-  {
-    if (find_user_link(&chptr->chanops, who) != NULL)
-      return(1);
-#ifdef REQUIRE_OANDV
-    if (find_user_link(&chptr->chanops_voiced, who) != NULL)
-      return(1);
-#endif
-  }
+  struct Membership *ms;
 
+  if ((ms = find_channel_link(who, chptr)) != NULL)
+    return(ms->flags & CHFL_CHANOP);
   return(0);
 }
 
@@ -899,17 +748,52 @@ is_chan_op(struct Channel *chptr, struct Client *who)
 int
 is_voiced(struct Channel *chptr, struct Client *who)
 {
-  if (chptr != NULL)
-  {
-    if (find_user_link(&chptr->voiced, who) != NULL)
-      return(1);
-#ifdef REQUIRE_OANDV
-    if (find_user_link(&chptr->chanops_voiced, who) != NULL)
-      return(1);
-#endif
-  }
+  struct Membership *ms;
 
+  if ((ms = find_channel_link(who, chptr)) != NULL)
+    return(ms->flags & CHFL_VOICE);
   return(0);
+}
+
+/* is_voiced()
+ *
+ * inputs       - pointer to channel to check voice on
+ *              - pointer to client struct being checked
+ * output       - yes if voiced no if not
+ * side effects -
+ */
+int
+is_deopped(struct Channel *chptr, struct Client *who)
+{
+  struct Membership *ms;
+
+  if ((ms = find_channel_link(who, chptr)) != NULL)
+    return(ms->flags & CHFL_DEOPPED);
+  return(0);
+}
+
+struct Membership *
+find_user_link(struct Channel *chptr, struct Client *client_p)
+{
+  dlink_node *ptr;
+
+  DLINK_FOREACH(ptr, chptr->members.head)
+    if (((struct Membership *) ptr->data)->client_p == client_p)
+      return((struct Membership *) ptr->data);
+
+  return(NULL);
+}
+
+struct Membership *
+find_channel_link(struct Client *client_p, struct Channel *chptr)
+{
+  dlink_node *ptr;
+
+  DLINK_FOREACH(ptr, client_p->user->channel.head)
+    if (((struct Membership *) ptr->data)->chptr == chptr)
+      return((struct Membership *) ptr->data);
+
+  return(NULL);
 }
 
 /* can_send()

@@ -15,12 +15,13 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_opme.c,v 1.39 2003/05/28 21:11:50 bill Exp $
+ *   $Id: m_opme.c,v 1.40 2003/05/31 18:52:46 adx Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
 #include "handlers.h"
 #include "channel.h"
+#include "channel_mode.h"
 #include "client.h"
 #include "ircd.h"
 #include "numeric.h"
@@ -55,19 +56,18 @@ _moddeinit(void)
   mod_del_cmd(&opme_msgtab);
 }
 
-const char *_version = "$Revision: 1.39 $";
+const char *_version = "$Revision: 1.40 $";
 
 static int
 chan_is_opless(struct Channel *chptr)
 {
-#ifdef REQUIRE_OANDV
-  if (chptr->chanops.head != NULL || chptr->chanops_voiced.head != NULL)
-#else
-  if (chptr->chanops.head != NULL)
-#endif
-    return(0);
-  else
-    return(1);
+  dlink_node *ptr;
+
+  DLINK_FOREACH(ptr, chptr->members.head)
+    if (((struct Membership *)ptr->data)->flags & CHFL_CHANOP)
+      return(0);
+
+  return(1);
 }
 
 /*
@@ -80,8 +80,6 @@ mo_opme(struct Client *client_p, struct Client *source_p,
         int parc, char *parv[])
 {
   struct Channel *chptr;
-  dlink_node *ptr;
-  dlink_node *locptr;
 
   /* admins only */
   if (!IsAdmin(source_p))
@@ -100,6 +98,13 @@ mo_opme(struct Client *client_p, struct Client *source_p,
     return;
   }
 
+  if (!IsMember(source_p, chptr))
+  {
+    sendto_one(source_p, form_str(ERR_NOTONCHANNEL),
+               me.name, source_p->name, parv[1]);
+    return;
+  }
+
   if (!chan_is_opless(chptr))
   {
     sendto_one(source_p, ":%s NOTICE %s :%s Channel is not opless",
@@ -107,37 +112,7 @@ mo_opme(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if ((ptr = find_user_link(&chptr->peons, source_p)))
-	  dlinkDelete(ptr, &chptr->peons);
-  else if ((ptr = find_user_link(&chptr->voiced, source_p)))
-	  dlinkDelete(ptr, &chptr->voiced);
-  else if ((ptr = find_user_link(&chptr->chanops, source_p)))
-	  dlinkDelete(ptr, &chptr->chanops);
-#ifdef REQUIRE_OANDV
-  else if((ptr = find_user_link(&chptr->chanops_voiced, source_p)))
-    dlinkDelete(ptr, &chptr->chanops_voiced);
-#endif
-  else
-    {
-       /* Theyre not even on the channel, bail. */
-       return;      
-    }
-
-  if ((locptr = find_user_link(&chptr->locpeons, source_p)))
-    dlinkDelete(locptr, &chptr->locpeons);
-  else if ((locptr = find_user_link(&chptr->locvoiced, source_p)))
-    dlinkDelete(locptr, &chptr->locvoiced);
-  else if ((locptr = find_user_link(&chptr->locchanops, source_p)))
-    dlinkDelete(locptr, &chptr->locchanops);
-#ifdef REQUIRE_OANDV
-  else if ((locptr = find_user_link(&chptr->locchanops_voiced, source_p)))
-    dlinkDelete(locptr, &chptr->locchanops_voiced);
-#endif
-  else
-    return;
-
-  dlinkAdd(source_p, ptr, &chptr->chanops);
-  dlinkAdd(source_p, locptr, &chptr->locchanops);
+  change_channel_membership(chptr, source_p, 1, CHFL_CHANOP);
 
   if (parv[1][0] == '&')
   {

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.120 2003/05/25 04:37:57 db Exp $
+ *  $Id: m_message.c,v 1.121 2003/05/31 18:52:52 adx Exp $
  */
 
 #include "stdinc.h"
@@ -119,7 +119,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.120 $";
+const char *_version = "$Revision: 1.121 $";
 #endif
 
 /*
@@ -499,12 +499,12 @@ msg_channel_flags(int p_or_n, const char *command, struct Client *client_p,
 
   if (flags & MODE_VOICE)
   {
-    type = ONLY_CHANOPS_VOICED;
+    type = CHFL_VOICE|CHFL_CHANOP;
     c = '+';
   }
   else
   {
-    type = ONLY_CHANOPS;
+    type = CHFL_CHANOP;
     c = '@';
   }
 

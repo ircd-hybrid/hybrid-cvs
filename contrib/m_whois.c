@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.25 2003/05/22 17:08:59 michael Exp $
+ *  $Id: m_whois.c,v 1.26 2003/05/31 18:52:46 adx Exp $
  */
 
 #include "stdinc.h"
@@ -194,7 +194,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-const char *_version = "$Revision: 1.25 $";
+const char *_version = "$Revision: 1.26 $";
 #endif
 
 /* m_whois
@@ -407,7 +407,7 @@ global_whois(struct Client *source_p, char *nick, int wilds, int glob)
  * 		  writing results to source_p
  */
 static int 
-single_whois(struct Client *source_p,struct Client *target_p,
+single_whois(struct Client *source_p, struct Client *target_p,
              int wilds, int glob)
 {
   dlink_node *ptr;
@@ -425,12 +425,12 @@ single_whois(struct Client *source_p,struct Client *target_p,
     name = target_p->name;
 
   invis      = IsInvisible(target_p);
-  member     = (target_p->user->channel.head) ? 1 : 0;
+  member     = (target_p->user->channel.head != NULL) ? 1 : 0;
   showperson = (wilds && !invis && !member) || !wilds;
 
   DLINK_FOREACH(ptr, target_p->user->channel.head)
   {
-    chptr = ptr->data;
+    chptr = ((struct Membership *) ptr->data)->chptr;
     member = IsMember(source_p, chptr);
     if (invis && !member)
       continue;
@@ -487,7 +487,7 @@ whois_person(struct Client *source_p,struct Client *target_p, int glob)
 
   DLINK_FOREACH(lp, target_p->user->channel.head)
   {
-    chptr  = lp->data;
+    chptr = ((struct Membership *) lp->data)->chptr;
 
     if (ShowChannel(source_p, chptr))
     {

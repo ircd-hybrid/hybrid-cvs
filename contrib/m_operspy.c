@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.28 2003/05/24 08:02:48 michael Exp $
+ *   $Id: m_operspy.c,v 1.29 2003/05/31 18:52:46 adx Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -81,28 +81,13 @@ static void mo_operspy(struct Client *client_p, struct Client *source_p,
 
 /* extensions for OPERSPY WHO */
 #ifdef OPERSPY_WHO
-static void do_who(struct Client *source_p,
-                   struct Client *target_p,
-                   char *chname,
-                   char *op_flags);
-
-static void do_who_list(struct Client *source_p, struct Channel *chptr,
-                        dlink_list *peons_list, dlink_list *chanops_list,
-#ifdef REQUIRE_OANDV
-                        dlink_list *chanops_voiced_list,
-#endif
-                        dlink_list *voiced_list,
-                        char *chanop_flag,
-                        char *halfop_flag,
-                        char *voiced_flag,
-                        char *chname);
-
+static void do_who(struct Client *source_p, struct Client *target_p,
+                   char *chname, char *op_flags);
 
 static void who_global(struct Client *source_p, char *mask, int server_oper);
 
-static void do_who_on_channel(struct Client *source_p,
-                              struct Channel *chptr, char *real_name,
-                              int server_oper);
+static void do_who_on_channel(struct Client *source_p, struct Channel *chptr,
+                              char *chname);
 
 #endif
 
@@ -123,7 +108,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.28 $";
+const char *_version = "$Revision: 1.29 $";
 #endif
 
 /*
@@ -135,10 +120,11 @@ static void
 m_operspy(struct Client *client_p, struct Client *source_p,
 	  int parc, char *parv[])
 {
-  char *operspy = (parc > 1) ? parv[1]-1 : NULL;
+  char *operspy = (parc > 1) ? parv[1] - 1 : NULL;
 
   if (operspy != NULL)
-    while (*operspy != 'o' && *operspy != 'O') --operspy;
+    while (*operspy != 'o' && *operspy != 'O')
+      --operspy;
   else
     operspy = "OPERSPY";
 
@@ -160,7 +146,7 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
   dlink_node *ptr;
 
 #ifdef OPERSPY_LIST
-  struct Channel	*chptr_list = NULL;
+  struct Channel *chptr_list = NULL;
 #endif
 
 #ifdef OPERSPY_MODE
@@ -183,7 +169,6 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
 
 #ifdef OPERSPY_WHO
   char			*mask = parc > 2 ? parv[2] : NULL;
-  char			flags[NUMLISTS][2];
   int			server_oper = parc > 3 ? (*parv[3] == 'o') : 0;
   struct Channel	*chptr_who = NULL;
   struct Client		*target_p_who = NULL;
@@ -354,7 +339,7 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
     if (IsChannelName(mask))
     {
       if ((chptr_who = hash_find_channel(mask)) != NULL)
-        do_who_on_channel(client_p, chptr_who, chptr_who->chname, server_oper);
+        do_who_on_channel(client_p, chptr_who, chptr_who->chname);
 
       sendto_one(client_p, form_str(RPL_ENDOFWHO), me.name, parv[0], mask);
       return;
@@ -365,22 +350,22 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
     if (((target_p_who = find_client(mask)) != NULL) && 
         IsPerson(target_p_who))
     {
-      char *chname = NULL;
-      chptr_who = NULL;
-
       if (target_p_who->user->channel.head != NULL)
       {
-        chptr_who = target_p_who->user->channel.head->data;
-        chname = chptr_who->chname;
-      }
+        struct Channel *chptr_who = ((struct Membership *)
+          target_p_who->user->channel.head->data)->chptr;
 
-      if (chptr_who != NULL)
-      {
-        set_channel_mode_flags(flags, chptr_who, client_p);
-        do_who(client_p, target_p_who, chname, flags[0]);
+        if (is_chan_op(chptr_who, target_p))
+	  do_who(client_p, target_p_who, chptr_who->chname, "@");
+	else if (is_voiced(chptr_who, target_p))
+	  do_who(client_p, target_p_who, chptr_who->chname, "+");
+	else
+	  do_who(client_p, target_p_who, chptr_who->chname, "");
       }
       else
+      {
         do_who(client_p, target_p_who, NULL, "");
+      }
 
       sendto_one(client_p, form_str(RPL_ENDOFWHO), me.name, parv[0], mask);
       return;
@@ -395,7 +380,6 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
 
     /* nothing else? end of /who. */
     sendto_one(client_p, form_str(RPL_ENDOFWHO), me.name, parv[0], mask);
-
     return;
   }
 #endif
@@ -431,7 +415,7 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
 
     DLINK_FOREACH(lp, target_p->user->channel.head)
     {
-      chptr_whois = lp->data;
+      chptr_whois = ((struct Membership *) lp->data)->chptr;
 
       if ((cur_len + strlen(chptr_whois->chname) + 2) > (BUFSIZE - 4))
       {
@@ -476,101 +460,35 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
 
 /* extensions for OPERSPY WHO */
 #ifdef OPERSPY_WHO
-static void do_who(struct Client *source_p,
-                   struct Client *target_p,
-                   char *chname,
-                   char *op_flags)
+static void
+do_who(struct Client *source_p, struct Client *target_p,
+       char *chname, char *op_flags)
 {
   char status[5];
-  char *our_chname = chname;
 
-  if (chname == NULL && target_p->user->channel.head != NULL)
-    our_chname = ((struct Channel *)target_p->user->channel.head->data)->chname;
-
-  ircsprintf(status,"%c%s%s",
-             target_p->user->away ? 'G' : 'H',
-             IsOper(target_p) ? "*" : "", op_flags );
-
+  ircsprintf(status,"%c%s%s", target_p->user->away ? 'G' : 'H',
+             IsOper(target_p) ? "*" : "", op_flags);
   sendto_one(source_p, form_str(RPL_WHOREPLY), me.name, source_p->name,
-                 (our_chname) ? (our_chname) : "*",
-                 target_p->username,
-                 target_p->host,  target_p->user->server->name, target_p->name,
-                 status, target_p->hopcount, target_p->info);
+             (chname) ? (chname) : "*",
+             target_p->username,
+             target_p->host,  target_p->user->server->name, target_p->name,
+             status, target_p->hopcount, target_p->info);
 }
 
 static void
-who_common_channel(struct Client *source_p,dlink_list chain,
-                   char *mask,int server_oper, int *maxmatches)
+who_global(struct Client *source_p, char *mask, int server_oper)
 {
-  dlink_node *clp;
   struct Client *target_p;
-
-  DLINK_FOREACH(clp, chain.head)
-  {
-    target_p = clp->data;
-
-    if (IsMarked(target_p))
-      continue;
-
-    if (server_oper && !IsOper(target_p))
-      continue;
-
-    SetMark(target_p);
-
-    if ((mask == NULL) ||
-        match(mask, target_p->name) ||
-        match(mask, target_p->username) ||
-        match(mask, target_p->host) ||
-        match(mask, target_p->user->server->name) ||
-        (MyClient(target_p) && match(mask, target_p->localClient->sockhost)) ||
-        match(mask, target_p->info))
-    {
-       
-      do_who(source_p, target_p, NULL, "");
-
-      if (*maxmatches > 0)
-      {
-        --(*maxmatches);
-        if(*maxmatches == 0)
-          return;
-      }
-    }
-  }
-}
-
-static void
-who_global(struct Client *source_p,char *mask, int server_oper)
-{
-  struct Channel *chptr=NULL;
-  struct Client *target_p;
-  dlink_node  *lp;
-  int   maxmatches = 500;
+  dlink_node *lp;
+  int maxmatches = 500;
                         
-  /* first, list all matching INvisible clients on common channels */
-  DLINK_FOREACH(lp, source_p->user->channel.head)
-  {
-     chptr = lp->data;
-     who_common_channel(source_p,chptr->chanops,mask,server_oper,&maxmatches);
-#ifdef REQUIRE_OANDV
-     who_common_channel(source_p,chptr->chanops_voiced,mask,server_oper,&maxmatches);
-#endif
-     who_common_channel(source_p,chptr->voiced,mask,server_oper,&maxmatches);
-     who_common_channel(source_p,chptr->peons,mask,server_oper,&maxmatches);
-  }
-
-  /* second, list all matching visible clients */
+  /* list all matching visible clients */
   DLINK_FOREACH(lp, global_client_list.head)
   {
     target_p = lp->data;
 
     if (!IsPerson(target_p))
       continue;
-
-    if (IsMarked(target_p))
-    {
-      ClearMark(target_p);
-      continue;
-    }
 
     if (server_oper && !IsOper(target_p))
       continue;
@@ -581,96 +499,39 @@ who_global(struct Client *source_p,char *mask, int server_oper)
         match(mask, target_p->info) ||
         (MyClient(target_p) && match(mask, target_p->localClient->sockhost)))
     {
-       
       do_who(source_p, target_p, NULL, "");
       if (maxmatches > 0)
       {
         --maxmatches;
-        if( maxmatches == 0 )
+        if (maxmatches == 0)
           return;
       }
-
     }
-
   }
 }
 
 static void
 do_who_on_channel(struct Client *source_p, struct Channel *chptr,
-		  char *chname, int server_oper)
-{
-  char flags[NUMLISTS][2];
-
-  /* jdc -- Check is_any_op() for +o > +h > +v priorities */
-  set_channel_mode_flags( flags, chptr, source_p );
-
-  do_who_list(source_p, chptr, &chptr->peons, &chptr->chanops,
-#ifdef REQUIRE_OANDV
-              &chptr->chanops_voiced,
-#endif
-              &chptr->voiced, flags[0], flags[1], flags[2], chname);
-
-}
-
-struct who_member
-{
-  dlink_node *ptr;
-  char *flag;
-  int voiced;
-};
- 
-struct who_member who_list[NUMLISTS];
-
-static void
-do_who_list(struct Client *source_p, struct Channel *chptr,
-            dlink_list *peons_list, dlink_list *chanops_list,
-#ifdef REQUIRE_OANDV
-            dlink_list *chanops_voiced_list,
-#endif
-            dlink_list *voiced_list, char *chanop_flag,
-            char *halfop_flag, char *voiced_flag,
-            char *chname)
+		  char *chname)
 {
   dlink_node *ptr;
   struct Client *target_p;
-  int i=0;
+  struct Membership *ms;
+  char status[3];
+  char *p = status;
 
-  if(peons_list != NULL)
-    who_list[i].ptr = peons_list->head;
-  else
-    who_list[i].ptr = NULL;
-  who_list[i].voiced = 0;
-  who_list[i++].flag = "";
+  DLINK_FOREACH(ptr, chptr->members.head)
+  {
+    ms = ptr->data;
+    target_p = ms->client_p;
 
-  if(voiced_list != NULL)
-    who_list[i].ptr = voiced_list->head;
-  else
-    who_list[i].ptr = NULL;
-  who_list[i].voiced = 1;
-  who_list[i++].flag = voiced_flag;
+    if (ms->flags & CHFL_CHANOP)
+      *p++ = '@';
+    else if (ms->flags & CHFL_VOICE)
+      *p++ = '+';
+    *p = '\0';
 
-  if(chanops_list != NULL)
-    who_list[i].ptr = chanops_list->head;
-  else
-    who_list[i].ptr = NULL;
-  who_list[i].voiced = 0;
-  who_list[i++].flag = chanop_flag;
-
-#ifdef REQUIRE_OANDV
-  if(chanops_voiced_list != NULL)
-    who_list[i].ptr = chanops_voiced_list->head;
-  else
-    who_list[i].ptr = NULL;
-  who_list[i].voiced = 0;
-  who_list[i++].flag = chanop_flag;
-#endif
-    for(i = 0; i < NUMLISTS; i++)
-    {
-      DLINK_FOREACH(ptr, who_list[i].ptr)
-      {
-        target_p = ptr->data;
-        do_who(source_p, target_p, chname, who_list[i].flag);
-      }
-    }
+    do_who(source_p, target_p, chname, status);
+  }
 }
 #endif /* OPERSPY_WHO */

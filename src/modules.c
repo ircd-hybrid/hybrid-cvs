@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.124 2003/05/31 09:34:13 metalrock Exp $
+ *  $Id: modules.c,v 7.125 2003/05/31 18:52:55 adx Exp $
  */
 
 #include "stdinc.h"
@@ -56,6 +56,7 @@ struct module **modlist = NULL;
 static const char *core_module_table[] =
 {
   "m_die.s",
+  "m_join.s",
   "m_kick.s",
   "m_kill.s",
   "m_message.s",

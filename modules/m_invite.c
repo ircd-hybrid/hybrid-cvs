@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_invite.c,v 1.56 2003/05/12 08:09:28 michael Exp $
+ *  $Id: m_invite.c,v 1.57 2003/05/31 18:52:50 adx Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&invite_msgtab);
 }
 
-const char *_version = "$Revision: 1.56 $";
+const char *_version = "$Revision: 1.57 $";
 #endif
 
 /*
@@ -210,7 +210,7 @@ m_invite(struct Client *client_p,
                   me.name, source_p->name, target_p->name, chptr->chname);
 
     /* XXX This possibly should be a numeric -db */
-    sendto_channel_local(ONLY_CHANOPS, chptr,
+    sendto_channel_local(CHFL_CHANOP, chptr,
                          ":%s NOTICE %s :%s is inviting %s to %s.",
 			 me.name, chptr->chname, source_p->name,
 			 target_p->name, chptr->chname);
@@ -335,7 +335,7 @@ ms_invite(struct Client *client_p,
 		    target_p->name, chptr->chname);
 
       /* XXX This possibly should be a numeric -db */
-      sendto_channel_local(ONLY_CHANOPS, chptr,
+      sendto_channel_local(CHFL_CHANOP, chptr,
 			   ":%s NOTICE %s :%s is inviting %s to %s.",
 			   me.name, chptr->chname, source_client_p->name,
 			   target_p->name, chptr->chname);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.263 2003/05/27 20:48:43 db Exp $
+ *  $Id: send.c,v 7.264 2003/05/31 18:52:55 adx Exp $
  */
 
 #include "stdinc.h"
@@ -52,20 +52,6 @@ static void send_message_remote(struct Client *, struct Client *, char *, int);
 
 /* global for now *sigh* */
 unsigned long current_serial = 0L;
-
-static void
-sendto_list_local(struct Client *one, dlink_list *list,
-		  char *buf, int len);
-
-static void
-sendto_list_remote(struct Client *one,
-		   struct Client *from, dlink_list *list, int caps,
-                   int nocaps, char *buf, int len);
-
-static void
-sendto_list_anywhere(struct Client *one, struct Client *from, dlink_list *list,
-                     char *local_buf, int local_len, char *remote_buf,
-                     int remote_len, char *uid_buf, int uid_len);
 
 /* send_format()
  *
@@ -503,6 +489,10 @@ sendto_channel_butone(struct Client *one, struct Client *from,
   char remote_buf[IRCD_BUFSIZE];
   char uid_buf[IRCD_BUFSIZE];
   int local_len, remote_len, uid_len;
+  dlink_node *ptr;
+  dlink_node *ptr_next;
+  struct Client *target_p;
+  struct Membership *ms;
 
   if (IsServer(from))
     local_len = ircsprintf(local_buf, ":%s %s %s ",
@@ -527,46 +517,12 @@ sendto_channel_butone(struct Client *one, struct Client *from,
 
   ++current_serial;
 
-  sendto_list_anywhere(one, from, &chptr->chanops, local_buf, local_len,
-                       remote_buf, remote_len, uid_buf, uid_len);
-
-#ifdef REQUIRE_OANDV
-  sendto_list_anywhere(one, from, &chptr->chanops_voiced, local_buf, local_len,
-                       remote_buf, remote_len, uid_buf, uid_len);
-#endif
-
-  sendto_list_anywhere(one, from, &chptr->voiced, local_buf, local_len,
-                       remote_buf, remote_len, uid_buf, uid_len);
-
-  sendto_list_anywhere(one, from, &chptr->peons, local_buf, local_len,
-                       remote_buf, remote_len, uid_buf, uid_len);
-}
-
-/* sendto_list_anywhere()
- *
- * inputs	- pointer to client NOT to send back towards
- *		- pointer to client from where message is coming from
- *		- pointer to channel list to send
- *		- pointer to sendbuf to use for local clients
- *		- length of local_buf
- *		- pointer to sendbuf to use for remote clients
- *		- length of remote_buf
- *              - pointer to sendbuf to use for remote clients
- *                on servers with UID support
- *              - length of uid_buf
- */
-static void
-sendto_list_anywhere(struct Client *one, struct Client *from, dlink_list *list,
-                     char *local_buf, int local_len, char *remote_buf,
-                     int remote_len, char *uid_buf, int uid_len)
-{
-  dlink_node *ptr;
-  dlink_node *ptr_next;
-  struct Client *target_p;
-
-  DLINK_FOREACH_SAFE(ptr, ptr_next, list->head)
+  DLINK_FOREACH_SAFE(ptr, ptr_next, chptr->members.head)
   {
-    target_p = ptr->data;
+    ms = ptr->data;
+    target_p = ms->client_p;
+    assert(target_p != NULL);
+
     if (IsDefunct(target_p) || target_p->from == one)
       continue;
 
@@ -580,8 +536,7 @@ sendto_list_anywhere(struct Client *one, struct Client *from, dlink_list *list,
     }
     else
     {
-      /*
-       * Now check whether a message has been sent to this
+      /* Now check whether a message has been sent to this
        * remote link already
        */
       if (target_p->from->serial != current_serial)
@@ -709,8 +664,11 @@ sendto_common_channels_local(struct Client *user, int touser,
                              const char *pattern, ...)
 {
   va_list args;
-  dlink_node *ptr;
+  dlink_node *uptr;
+  dlink_node *cptr;
   struct Channel *chptr;
+  struct Membership *ms;
+  struct Client *target_p;
   char buffer[IRCD_BUFSIZE];
   int len;
 
@@ -720,27 +678,34 @@ sendto_common_channels_local(struct Client *user, int touser,
 
   ++current_serial;
 
-  DLINK_FOREACH(ptr, user->user->channel.head)
+  DLINK_FOREACH(cptr, user->user->channel.head)
   {
-    chptr = ptr->data;
+    chptr = ((struct Membership *) cptr->data)->chptr;
+    assert(chptr != NULL);
 
-    sendto_list_local(user, &chptr->locchanops, buffer, len);
-#ifdef REQUIRE_OANDV
-    sendto_list_local(user, &chptr->locchanops_voiced, buffer, len);
-#endif
-    sendto_list_local(user, &chptr->locvoiced, buffer, len);
-    sendto_list_local(user, &chptr->locpeons, buffer, len);
+    DLINK_FOREACH(uptr, chptr->members.head)
+    {
+      ms = uptr->data;
+      target_p = ms->client_p;
+      assert(target_p != NULL);
+
+      if (target_p == user || !MyConnect(target_p) || IsDefunct(target_p) ||
+          target_p->serial == current_serial)
+        continue;
+
+      target_p->serial = current_serial;
+      send_message(target_p, buffer, len);
+    }
   }
 
   if (touser && MyConnect(user) && !IsDead(user) &&
-      (user->serial != current_serial))
+      user->serial != current_serial)
     send_message(user, buffer, len);
 }
 
 /* sendto_channel_local()
  *
- * inputs	- int type, i.e. ALL_MEMBERS, NON_CHANOPS,
- *                ONLY_CHANOPS_VOICED, ONLY_CHANOPS
+ * inputs	- member status mask, e.g. CHFL_CHANOP | CHFL_VOICE
  *              - pointer to channel to send to
  *              - var args pattern
  * output	- NONE
@@ -753,6 +718,9 @@ sendto_channel_local(int type, struct Channel *chptr, const char *pattern, ...)
   va_list args;
   char buffer[IRCD_BUFSIZE];
   int len;
+  dlink_node *ptr;
+  struct Membership *ms;
+  struct Client *target_p;
 
   va_start(args, pattern);
   len = send_format(buffer, IRCD_BUFSIZE, pattern, args);
@@ -761,31 +729,28 @@ sendto_channel_local(int type, struct Channel *chptr, const char *pattern, ...)
   /* Serial number checking isn't strictly necessary, but won't hurt */
   ++current_serial;
 
-  switch(type)
+  DLINK_FOREACH(ptr, chptr->members.head)
   {
-    case NON_CHANOPS:
-      sendto_list_local(NULL, &chptr->locvoiced, buffer, len);
-      sendto_list_local(NULL, &chptr->locpeons, buffer, len);
-      break;
+    ms = ptr->data;
+    target_p = ms->client_p;
 
-    default:
-    case ALL_MEMBERS:
-      sendto_list_local(NULL, &chptr->locpeons, buffer, len);
-    case ONLY_CHANOPS_VOICED:
-      sendto_list_local(NULL, &chptr->locvoiced, buffer, len);
-    case ONLY_CHANOPS:
-      sendto_list_local(NULL, &chptr->locchanops, buffer, len);
-#ifdef REQUIRE_OANDV
-      sendto_list_local(NULL, &chptr->locchanops_voiced, buffer, len);
-#endif
+    if (type != 0 && (ms->flags & type) == 0)
+      continue;
+
+    if (!MyConnect(target_p) || IsDefunct(target_p) ||
+        target_p->serial == current_serial)
+      continue;
+
+    target_p->serial = current_serial;
+
+    send_message(target_p, buffer, len);
   }
 }
 
 /* sendto_channel_local_butone()
  *
  * inputs       - pointer to client to NOT send message to
- *              - int type, i.e. ALL_MEMBERS, NON_CHANOPS,
- *                ONLY_CHANOPS_VOICED, ONLY_CHANOPS
+ *              - member status mask, e.g. CHFL_CHANOP | CHFL_VOICE
  *              - pointer to channel to send to
  *              - var args pattern
  * output       - NONE
@@ -799,6 +764,9 @@ sendto_channel_local_butone(struct Client *one, int type,
   va_list args;
   char buffer[IRCD_BUFSIZE];
   int len;
+  struct Client *target_p;
+  struct Membership *ms;
+  dlink_node *ptr;
 
   va_start(args, pattern); 
   len = send_format(buffer, IRCD_BUFSIZE, pattern, args);
@@ -807,32 +775,30 @@ sendto_channel_local_butone(struct Client *one, int type,
   /* Serial number checking isn't strictly necessary, but won't hurt */
   ++current_serial;
 
-  switch(type)
-  {
-    case NON_CHANOPS:
-      sendto_list_local(one, &chptr->locvoiced, buffer, len);
-      sendto_list_local(one, &chptr->locpeons, buffer, len);
-      break;
-                     
-    default:
-    case ALL_MEMBERS:
-      sendto_list_local(one, &chptr->locpeons, buffer, len);
-    case ONLY_CHANOPS_VOICED:
-      sendto_list_local(one, &chptr->locvoiced, buffer, len);
-    case ONLY_CHANOPS:
-      sendto_list_local(one, &chptr->locchanops, buffer, len);
-#ifdef REQUIRE_OANDV
-      sendto_list_local(one, &chptr->locchanops_voiced, buffer, len);
-#endif
+  DLINK_FOREACH(ptr, chptr->members.head)       
+  {   
+    ms = ptr->data;
+    target_p = ms->client_p;
+
+    if (type != 0 && (ms->flags & type) == 0)
+      continue;
+
+    if (target_p == one || !MyConnect(target_p) || IsDefunct(target_p) ||
+        target_p->serial == current_serial)
+      continue;
+
+    target_p->serial = current_serial;
+
+    send_message(target_p, buffer, len);
   }
 }
+
 
 /* sendto_channel_remote()
  *
  * inputs	- Client not to send towards
  *		- Client from whom message is from
- *		- int type, i.e. NON_CHANOPS, ALL_MEMBERS,
- *                ONLY_CHANOPS_VOICED, ONLY_CHANOPS
+ *		- member status mask, e.g. CHFL_CHANOP | CHFL_VOICE
  *              - pointer to channel to send to
  *              - var args pattern
  * output	- NONE
@@ -846,6 +812,10 @@ sendto_channel_remote(struct Client *one, struct Client *from, int type, int cap
   va_list args;
   char buffer[IRCD_BUFSIZE];
   int len;
+  dlink_node *ptr;
+  struct Client *target_p;
+  struct Membership *ms;
+
 
   va_start(args, pattern);
   len = send_format(buffer, IRCD_BUFSIZE, pattern, args);
@@ -854,87 +824,14 @@ sendto_channel_remote(struct Client *one, struct Client *from, int type, int cap
   /* Serial number checking isn't strictly necessary, but won't hurt */
   ++current_serial;
 
-  switch(type)
+  DLINK_FOREACH(ptr, chptr->members.head)
   {
-    case NON_CHANOPS:
-      sendto_list_remote(one, from, &chptr->voiced, caps, nocaps, buffer, len);
-      sendto_list_remote(one, from, &chptr->peons, caps, nocaps, buffer, len);
-      break;
+    ms = ptr->data;
+    target_p = ms->client_p;
 
-    /* Fall through to accumulate lists... */
-    default:
-    case ALL_MEMBERS:
-      sendto_list_remote(one, from, &chptr->peons, caps, nocaps, buffer, len);
-    case ONLY_CHANOPS_VOICED:
-      sendto_list_remote(one, from, &chptr->voiced, caps, nocaps, buffer, len);
-    case ONLY_CHANOPS:
-      sendto_list_remote(one, from, &chptr->chanops, caps, nocaps, buffer, len);
-#ifdef REQUIRE_OANDV
-      sendto_list_remote(one, from, &chptr->chanops_voiced, caps, nocaps,
-                         buffer, len);
-#endif
-  }
-}
-
-/* sendto_list_local()
- *
- * inputs       - pointer to client not to send to
- *              - pointer to all members of this list
- *              - buffer to send
- *              - length of buffer
- * output       - NONE
- * side effects - all members who are locally on this server on given list
- *                are sent given message, except one. Right now, its always
- *                a channel list but there is no reason we could not use
- *                another dlink list to send a message to a group of people.
- */
-static void 
-sendto_list_local(struct Client *one, dlink_list *list, char *buffer, int len)
-{
-  dlink_node *ptr;
-  struct Client *target_p;
-
-  DLINK_FOREACH(ptr, list->head)       
-  {   
-    if ((target_p = ptr->data) == NULL)
-      continue;
-    if (target_p == one || !MyConnect(target_p) || IsDefunct(target_p) ||
-        target_p->serial == current_serial)
+    if (type != 0 && (ms->flags & type) == 0)
       continue;
 
-    target_p->serial = current_serial;
-
-    send_message(target_p, buffer, len);
-  }
-}
-
-/*
- * sendto_list_remote(struct Client *one,
- *		      struct Client *from, dlink_list *list, int caps,
- *                    int nocaps, char *buffer, int len)
- *
- * Input: one  => Client not to send towards
- *	  from => The client who sent this to us.
- *        list => The list of clients to check.
- *        caps => The capabilities servers we send this to must have.
- *      nocaps => The capabilities servers we send this to must lack.
- *      buffer => The buffer to send.
- *         len => The length of the buffer.
- * Output: None.
- * Side-effects: Sends a buffer to all the servers of all the users on
- *               the list.
- */
-static void
-sendto_list_remote(struct Client *one, struct Client *from, dlink_list *list,
-                   int caps, int nocaps, char *buffer, int len)
-{
-  dlink_node *ptr;
-  struct Client *target_p;
-
-  DLINK_FOREACH(ptr, list->head)
-  {
-    if ((target_p = ptr->data) == NULL)
-      continue;
     if (MyConnect(target_p))
       continue;
     target_p = target_p->from;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.376 2003/05/26 05:43:20 db Exp $
+ *  $Id: client.c,v 7.377 2003/05/31 18:52:55 adx Exp $
  */
 
 #include "stdinc.h"
@@ -872,7 +872,7 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
                                  source_p->name, source_p->username,
                                  source_p->host, comment);
     DLINK_FOREACH_SAFE(lp, next_lp, source_p->user->channel.head)
-      remove_user_from_channel(lp->data, source_p);
+      remove_user_from_channel(((struct Membership *)lp->data)->chptr, source_p);
 
     /* Should not be in any channels now */
     assert(source_p->user->channel.head == NULL);
