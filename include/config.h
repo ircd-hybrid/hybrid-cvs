@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.92 2001/02/18 05:44:46 wcampbel Exp $
+ * $Id: config.h,v 7.93 2001/02/20 13:13:17 wcampbel Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -134,7 +134,8 @@
  * OPER_UMODES - set these to be the initial umodes when OPER'ing
  * These can be over-ridden in the ircd.conf file.
  */
-#define OPER_UMODES   (FLAGS_OPER|FLAGS_WALLOP|FLAGS_SERVNOTICE|FLAGS_OPERWALL|FLAGS_LOCOPS)
+#define OPER_UMODES   (FLAGS_OPER|FLAGS_WALLOP|FLAGS_SERVNOTICE|\
+                       FLAGS_OPERWALL|FLAGS_LOCOPS)
 
 /* MAXIMUM LINKS - max links for class 0 if no Y: line configured
  *
