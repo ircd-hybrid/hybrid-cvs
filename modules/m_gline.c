@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_gline.c,v 1.63 2001/09/23 02:26:02 a1kmm Exp $
+ *  $Id: m_gline.c,v 1.64 2001/10/06 18:32:14 leeh Exp $
  */
 
 #include <assert.h>
@@ -841,7 +841,7 @@ majority_gline(struct Client *source_p,
               DupString(gline_pending_ptr->reason2, reason);
               gline_pending_ptr->oper_server2 = find_or_add(oper_server);
               gline_pending_ptr->last_gline_time = CurrentTime;
-              gline_pending_ptr->time_request1 = CurrentTime;
+              gline_pending_ptr->time_request2 = CurrentTime;
               return NO;
             }
         }
