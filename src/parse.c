@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.40 2000/12/13 05:37:41 db Exp $
+ *   $Id: parse.c,v 7.41 2000/12/13 06:09:38 db Exp $
  */
 #include "parse.h"
 #include "client.h"
@@ -591,7 +591,7 @@ static void clear_msg_tree()
       mtree->pointers[c] = NULL;
     }
 
-  memset(msg_tree_root,0,sizeof(struct Message Tree));
+  memset(msg_tree_root,0,sizeof(struct MessageTree));
   return; 
 }
 
