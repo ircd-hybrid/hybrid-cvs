@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.12 1999/09/09 13:38:29 wnder Exp $
+ *  $Id: s_user.c,v 7.13 1999/09/10 18:06:37 wnder Exp $
  */
 #include "s_user.h"
 #include "channel.h"
@@ -716,7 +716,7 @@ static int register_user(struct Client *cptr, struct Client *sptr,
             }
         }
 
-     #endif /* USE_IAUTH */
+     #endif /* !USE_IAUTH */
 
 
       sendto_realops_flags(FLAGS_CCONN,
@@ -1323,11 +1323,8 @@ int do_user(char* nick, struct Client* cptr, struct Client* sptr,
      * Now that we have both the NICK and USER, send the
      * client to the iauth module for verification
      */
-    #if 0
-    begin_authorization();
-    #endif
+    BeginAuthorization(sptr);
  	#else
-
     return register_user(cptr, sptr, sptr->name, username);
   #endif
   }
