@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_oper.c,v 1.40 2001/12/14 14:31:29 leeh Exp $
+ *   $Id: m_oper.c,v 1.41 2001/12/21 04:11:08 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -250,6 +250,9 @@ static int match_oper_password(char *password,
   */
 
   /* passwd may be NULL pointer. Head it off at the pass... */
+  if (aconf->passwd == NULL)
+    return NO;
+
   if (password && *aconf->passwd)
     encr = crypt(password, aconf->passwd);
   else
@@ -258,7 +261,7 @@ static int match_oper_password(char *password,
   encr = password;
 #endif  /* CRYPT_OPER_PASSWORD */
 
-  if( strcmp(encr, aconf->passwd) == 0 )
+  if (strcmp(encr, aconf->passwd) == 0)
     return YES;
   else
     return NO;
