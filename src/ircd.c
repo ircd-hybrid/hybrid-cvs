@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.202 2001/12/11 04:09:55 androsyn Exp $
+ * $Id: ircd.c,v 7.203 2001/12/12 18:23:47 db Exp $
  */
 
 #include <sys/types.h>
@@ -464,7 +464,7 @@ static void write_pidfile(const char *filename)
 static void check_pidfile(const char *filename)
 {
   FBFILE* fb;
-  char buff[20];
+  char buff[32];
   pid_t pidfromfile;
 
   /* Don't do logging here, since we don't have log() initialised */
