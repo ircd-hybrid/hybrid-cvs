@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.302 2002/04/03 04:02:31 androsyn Exp $
+ *  $Id: channel.c,v 7.303 2002/04/04 19:29:44 db Exp $
  */
 
 #include "tools.h"
@@ -451,7 +451,7 @@ sub1_from_channel(struct Channel *chptr, int perm)
                                  * It should never happen but...
                                  */
     /* persistent channel */
-    if (perm == 0 || (chptr->channelts + ConfigChannel.persist_time) > CurrentTime)
+    if (perm == 0 || (chptr->channelts + ConfigChannel.persist_time) < CurrentTime)
       destroy_channel(chptr);
   }
 }
@@ -539,7 +539,7 @@ cleanup_channels(void *unused)
     {
       if(chptr->users == 0)
       {
-        if((chptr->channelts + ConfigChannel.persist_time) > CurrentTime)
+        if((chptr->channelts + ConfigChannel.persist_time) < CurrentTime)
 	{
 	  if(uplink && IsCapable(uplink, CAP_LL))
 	    sendto_one(uplink, ":%s DROP %s", me.name, chptr->chname);
