@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.82 2003/10/14 12:09:34 adx Exp $
+ *  $Id: hash.c,v 7.83 2003/10/24 11:38:44 michael Exp $
  */
 
 #include "stdinc.h"
@@ -809,6 +809,7 @@ add_user_host(char *user, const char *host, int global)
   }
 
   nameh = BlockHeapAlloc(namehost_heap);
+  memset(nameh, 0, sizeof(struct NameHost));
   strlcpy(nameh->name, user, sizeof(nameh->name));
 
   if (global)

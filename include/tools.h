@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: tools.h,v 1.25 2003/05/22 17:09:01 michael Exp $
+ *  $Id: tools.h,v 1.26 2003/10/24 11:38:43 michael Exp $
  */
 
 #ifndef __TOOLS_H__
@@ -125,6 +125,7 @@ extern inline void
 dlinkAdd(void *data, dlink_node * m, dlink_list * list)
 {
  m->data = data;
+ m->prev = NULL;
  m->next = list->head;
  /* Assumption: If list->tail != NULL, list->head != NULL */
  if (list->head != NULL)
