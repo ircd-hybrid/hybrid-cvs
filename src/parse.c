@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.147 2003/02/17 16:09:37 db Exp $
+ *  $Id: parse.c,v 7.148 2003/04/02 05:10:55 michael Exp $
  */
 
 #include "stdinc.h"
@@ -55,8 +55,8 @@ static  void    remove_unknown (struct Client *, char *, char *);
 static  void    do_numeric (char [], struct Client *,
                             struct Client *, int, char **);
 
-static  int    handle_command(struct Message *, struct Client *,
-			      struct Client *, int, char **);
+static  void    handle_command (struct Message *, struct Client *,
+				struct Client *, int, char **);
 
 static int hash(char *p);
 static struct Message *hash_parse(char *);
@@ -291,34 +291,9 @@ parse(struct Client *client_p, char *pbuffer, char *bufend)
     i = string_to_array(s, para);
 
   if (mptr == (struct Message *)NULL)
-    {
-      do_numeric(numeric, client_p, from, i, para);
-      return;
-    }
-
-  if (handle_command(mptr, client_p, from, i, para) < -1) 
-    {
-      char *p;
-      for (p = pbuffer; p <= end; p +=8)
-	{
-	  /* HACK HACK */
-	  /* Its expected this nasty code can be removed
-	   * or rewritten later if still needed.
-	   */
-	  if ((unsigned long)(p+8) > (unsigned long) end)
-	    {
-	       for(;p <= end; p++)
-		 {
-		    ilog(L_CRIT, "%02x |%c", p[0], p[0]);
-		 }
-	    }
-	  else
-            ilog(L_CRIT,
-	       "%02x %02x %02x %02x %02x %02x %02x %02x |%c%c%c%c%c%c%c%c",
-	       p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7],
-	       p[0], p[1], p[2], p[3], p[4], p[5], p[6], p[7]);
-	}
-    }
+    do_numeric(numeric, client_p, from, i, para);
+  else
+    handle_command(mptr, client_p, from, i, para);
 
 #ifdef INTENSIVE_DEBUG
   do_channel_integrity_check();
@@ -336,7 +311,7 @@ parse(struct Client *client_p, char *pbuffer, char *bufend)
  * output	- -1 if error from server
  * side effects	-
  */
-static int
+static void
 handle_command(struct Message *mptr, struct Client *client_p,
                struct Client *from, int i, char *hpara[MAXPARA])
 {
@@ -359,7 +334,7 @@ handle_command(struct Message *mptr, struct Client *client_p,
       if((IsHandshake(client_p) || IsConnecting(client_p)
           || IsServer(client_p))
 	 && !(mptr->flags & MFLG_UNREG))
-	return(1);
+	return;
     }
 
   handler = mptr->handlers[client_p->handler];
@@ -371,27 +346,23 @@ handle_command(struct Message *mptr, struct Client *client_p,
 	{
 	  sendto_one(client_p, form_str(ERR_NEEDMOREPARAMS),
 		     me.name, BadPtr(hpara[0]) ? "*" : hpara[0], mptr->cmd);
-	  if (MyClient(client_p))
-	    return(1);
-	  else
-	    return(-1);
 	}
-
-      sendto_realops_flags(UMODE_ALL, L_ALL, 
+      else
+	{
+	  sendto_realops_flags(UMODE_ALL, L_ALL, 
 			   "Dropping server %s due to (invalid) command '%s'"
-			   "with only %d arguments (expecting %d).",
-			   client_p->name, mptr->cmd, i, mptr->parameters);
-      ilog(L_CRIT, "Insufficient parameters (%d) for command '%s' from %s.",
-           i, mptr->cmd, client_p->name);
+			       "with only %d arguments (expecting %d).",
+			       client_p->name, mptr->cmd, i, mptr->parameters);
+	  ilog(L_CRIT,
+	       "Insufficient parameters (%d) for command '%s' from %s.",
+	       i, mptr->cmd, client_p->name);
       
-      exit_client(client_p, client_p, client_p,
-		  "Not enough arguments to server command.");
-
-      return(-1);
+	  exit_client(client_p, client_p, client_p,
+		      "Not enough arguments to server command.");
+	}
     }
-
-  (*handler)(client_p, from, i, hpara);
-  return(1);
+  else
+    (*handler)(client_p, from, i, hpara);
 }
 
 
@@ -405,7 +376,7 @@ handle_command(struct Message *mptr, struct Client *client_p,
  *
  */
 void
-clear_hash_parse()
+clear_hash_parse(void)
 {
   memset(msg_hash_table,0,sizeof(msg_hash_table));
 }
