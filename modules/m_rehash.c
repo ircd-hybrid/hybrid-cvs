@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_rehash.c,v 1.41 2002/10/12 01:32:59 db Exp $
+ *  $Id: m_rehash.c,v 1.42 2002/10/17 02:28:51 bill Exp $
  */
 
 #include "stdinc.h"
@@ -60,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&rehash_msgtab);
 }
 
-const char *_version = "$Revision: 1.41 $";
+const char *_version = "$Revision: 1.42 $";
 #endif
 /*
  * mo_rehash - REHASH message handler
@@ -112,7 +112,7 @@ static void mo_rehash(struct Client *client_p, struct Client *source_p,
         }
       else
         {
-          sendto_one(source_p,":%s NOTICE %s :rehash one of :CHANNELS DNS MOTD OMOTD" ,me.name,source_p->name);
+          sendto_one(source_p, ":%s NOTICE %s :rehash one of :DNS MOTD OMOTD", me.name, source_p->name);
           return;
         }
     }
