@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_mode.c,v 1.61 2003/05/31 18:52:53 adx Exp $
+ *  $Id: m_mode.c,v 1.62 2003/06/01 02:37:37 db Exp $
  */
 
 #include "stdinc.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
   mod_del_cmd(&mode_msgtab);
 }
 
-const char *_version = "$Revision: 1.61 $";
+const char *_version = "$Revision: 1.62 $";
 #endif
 
 /*
@@ -142,7 +142,17 @@ m_mode(struct Client *client_p, struct Client *source_p,
     sendto_one(source_p, form_str(RPL_CREATIONTIME),
                me.name, parv[0], parv[1], chptr->channelts);
   }
-  /* bounce all modes from people we deop on sjoin */
+  /* bounce all modes from people we deop on sjoin
+   * servers have always gotten away with murder,
+   * including telnet servers *g* - Dianora
+   *
+   * XXX Is it worth the bother to make an ms_mode() ? - Dianora
+   */
+  else if (IsServer(source_p))
+  {
+    set_channel_mode(client_p, source_p, chptr, parc - 2, parv + 2,
+                     chptr->chname);
+  }
   else if (!is_deopped(chptr, source_p))
   {
     /* Finish the flood grace period... */
