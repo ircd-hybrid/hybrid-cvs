@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.188 2001/10/11 17:18:30 jdc Exp $
+ * $Id: ircd.c,v 7.189 2001/10/17 02:40:30 db Exp $
  */
 
 #include <sys/types.h>
@@ -355,6 +355,7 @@ io_loop(void)
 static void initialize_global_set_options(void)
 {
   memset( &GlobalSetOptions, 0, sizeof(GlobalSetOptions));
+  memset( &ConfigFileEntry, 0, sizeof(ConfigFileEntry));
 
   GlobalSetOptions.maxclients = MAX_CLIENTS;
   GlobalSetOptions.autoconn = 1;
@@ -366,6 +367,8 @@ static void initialize_global_set_options(void)
     GlobalSetOptions.floodcount = ConfigFileEntry.default_floodcount;
   else
     GlobalSetOptions.floodcount = 10;
+
+  memset( &ConfigChannel, 0, sizeof(ConfigChannel));
 
  /* End of global set options */
 
