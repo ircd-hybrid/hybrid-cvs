@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.22 2000/01/01 06:35:16 db Exp $
+ *  $Id: s_conf.c,v 7.23 2000/01/01 06:45:49 db Exp $
  */
 #include "s_conf.h"
 #include "channel.h"
@@ -3875,11 +3875,11 @@ static void conf_add_q_line(struct ConfItem *aconf)
 	   */
 	  strcpy(chptr->chname, aconf->name);
 	  chptr->mode.mode = MODE_JUPED;
-	  if (channel)
-	    channel->prevch = chptr;
+	  if (GlobalChannelList)
+	    GlobalChannelList->prevch = chptr;
 	  chptr->prevch = NULL;
-	  chptr->nextch = channel;
-	  channel = chptr;
+	  chptr->nextch = GlobalChannelList;
+	  GlobalChannelList = chptr;
 	  /* JIC */
 	  chptr->channelts = CurrentTime;
 	  (void)add_to_channel_hash_table(aconf->name, chptr);
