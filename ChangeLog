@@ -1,3 +1,16 @@
+androsyn    2002/05/07 22:54:04 EDT	(20020508_0)
+
+  Modified files:
+    src                  getopt.c ircd.c 
+  Log:
+  Remove some remains of DEBUGMODE
+  
+  Revision  Changes    Path
+  7.13      +0 -19     ircd-hybrid-7/src/getopt.c
+  7.230     +0 -4      ircd-hybrid-7/src/ircd.c
+
+
+
 leeh        2002/05/07 08:50:48 EDT	(20020507_1)
 
   Modified files:
@@ -26082,4 +26095,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3630 2002/05/07 12:50:55 leeh Exp $
+$Id: ChangeLog,v 7.3631 2002/05/08 02:54:10 androsyn Exp $
