@@ -4,7 +4,7 @@
  * Owner:  Wohali (Joan Touzet)
  *
  *
- * $Id: blalloc.c,v 7.7 2000/11/29 23:35:35 db Exp $
+ * $Id: blalloc.c,v 7.8 2000/11/30 08:54:41 db Exp $
  */
 #include <stdio.h>
 #include <unistd.h>
@@ -50,7 +50,6 @@ static int newblock(BlockHeap *bh)
    b->freeElems = bh->elemsPerBlock;
    b->next = bh->base;
    b->allocMap = (unsigned long *) MyMalloc (sizeof(unsigned long) * (bh->numlongs +1));
-   memset((void *)b->allocMap, 0, (bh->numlongs + 1 ) * sizeof(unsigned long));
 
    if (b->allocMap == NULL)
      {

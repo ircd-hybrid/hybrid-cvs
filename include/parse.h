@@ -20,7 +20,7 @@
  * "parse.h". - Headers file.
  *
  *
- * $Id: parse.h,v 7.7 2000/11/27 23:38:42 db Exp $
+ * $Id: parse.h,v 7.8 2000/11/30 08:54:37 db Exp $
  *
  */
 #ifndef INCLUDED_parse_h_h
@@ -28,6 +28,15 @@
 
 struct Message;
 struct Client;
+
+struct MessageTree
+{
+  char*               final;
+  struct Message*     msg;
+  struct MessageTree* pointers[26];
+}; 
+
+typedef struct MessageTree MESSAGE_TREE;
 
 extern  int     parse (struct Client *, char *, char *);
 extern  void    init_tree_parse (struct Message *);

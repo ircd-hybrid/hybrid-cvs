@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: msg.h,v 7.27 2000/11/29 07:57:52 db Exp $
+ * $Id: msg.h,v 7.28 2000/11/30 08:54:37 db Exp $
  */
 #ifndef INCLUDED_msg_h
 #define INCLUDED_msg_h
@@ -57,14 +57,6 @@ struct  Message
   MessageHandler handlers[LAST_HANDLER_TYPE];
 };
 
-struct MessageTree
-{
-  char*               final;
-  struct Message*     msg;
-  struct MessageTree* pointers[26];
-}; 
-
-typedef struct MessageTree MESSAGE_TREE;
 
 #ifdef DBOP
 #define MSG_DBOP     "DBOP"
