@@ -1,3 +1,17 @@
+db          2002/11/19 19:18:32 EST	(20021120_0)
+
+  Modified files:
+    src                  channel_mode.c 
+  Log:
+  - fixes buffer overflow with +a -a channel mode
+  
+  found and patch submitted by Jack L. xxjack12xx@doramail.com
+  
+  Revision  Changes    Path
+  7.65      +3 -0      ircd-hybrid-7/src/channel_mode.c
+
+
+
 db          2002/11/18 14:54:59 EST	(20021118_0)
 
   Modified files:
@@ -33193,4 +33207,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4111 2002/11/18 19:55:02 db Exp $
+$Id: ChangeLog,v 7.4112 2002/11/20 00:18:34 db Exp $
