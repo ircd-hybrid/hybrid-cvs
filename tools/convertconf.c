@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: convertconf.c,v 1.11 2000/01/12 03:39:17 db Exp $
+ * $Id: convertconf.c,v 1.12 2000/01/12 03:56:37 db Exp $
  */
 
 #include <stdio.h>
@@ -417,7 +417,7 @@ static void oldParseOneLine(FILE *out,char* line)
       if(host_field)
 	fprintf(out,"\t\tname=\"%s@%s\";\n", user_field,host_field);
       if(passwd_field)
-	fprintf(out,"\t\treason=\"%s\"\n", passwd_field);
+	fprintf(out,"\t\treason=\"%s\";\n", passwd_field);
       fprintf(out,"\t}\n\n");
       break;
 
