@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.54 2000/12/31 23:56:46 toot Exp $
+ * $Id: channel.h,v 7.55 2001/01/03 00:35:33 db Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -234,7 +234,7 @@ typedef struct Ban      /* also used for exceptions -orabidoo */
   time_t when;
 } aBan;
 
-#define CLEANUP_CHANNELS_TIME (15*60)
+#define CLEANUP_CHANNELS_TIME (30*60)
 #define MAX_VCHAN_TIME (60*60)
 
 #endif  /* INCLUDED_channel_h */
