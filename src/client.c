@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.263 2002/05/19 03:42:23 androsyn Exp $
+ *  $Id: client.c,v 7.264 2002/05/20 00:22:43 androsyn Exp $
  */
 
 #include "tools.h"
@@ -1209,8 +1209,12 @@ void dead_link(struct Client *client_p)
 {
   dlink_node *m;
   const char *notice;
+  if(IsClosing(client_p))
+    return;
+
   linebuf_donebuf(&client_p->localClient->buf_recvq);
   linebuf_donebuf(&client_p->localClient->buf_sendq);
+  
   if(client_p->flags & FLAGS_SENDQEX)
     notice = "Max SendQ exceeded";
   else
