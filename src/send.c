@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.187 2002/05/12 12:15:20 leeh Exp $
+ *  $Id: send.c,v 7.188 2002/05/17 18:09:16 db Exp $
  */
 
 #include <sys/types.h>
@@ -719,6 +719,7 @@ sendto_common_channels_local(struct Client *user, const char *pattern, ...)
 {
   va_list args;
   dlink_node *ptr;
+  dlink_node *ptr_next;
   struct Channel *chptr;
   buf_head_t linebuf;
 
@@ -729,10 +730,11 @@ sendto_common_channels_local(struct Client *user, const char *pattern, ...)
 
   ++current_serial;
 
-  if (user->user)
+  if (user->user != NULL)
   {
-    for (ptr = user->user->channel.head; ptr; ptr = ptr->next)
+    for (ptr = user->user->channel.head; ptr; ptr = ptr_next)
     {
+      ptr_next = ptr->next;
       chptr = ptr->data;
 
       sendto_list_local(&chptr->locchanops, &linebuf);
@@ -878,10 +880,12 @@ static void
 sendto_list_local(dlink_list *list, buf_head_t *linebuf_ptr)
 {
   dlink_node *ptr;
+  dlink_node *ptr_next;
   struct Client *target_p;
 
-  for (ptr = list->head; ptr; ptr = ptr->next)
+  for (ptr = list->head; ptr; ptr = ptr_next)
   {
+    ptr_next = ptr->next;
     if ((target_p = ptr->data) == NULL)
       continue;
 
