@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.307 2002/06/20 18:00:40 leeh Exp $
+ *  $Id: s_conf.c,v 7.308 2002/06/26 03:05:45 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -1307,6 +1307,7 @@ int rehash(int sig)
 
   flush_deleted_I_P();
   check_klines();
+  reopen_log(logFileName);
   return 0;
 }
 

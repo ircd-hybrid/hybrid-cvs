@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_signal.c,v 7.11 2002/05/25 09:00:14 androsyn Exp $
+ * $Id: ircd_signal.c,v 7.12 2002/06/26 03:05:45 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -31,7 +31,8 @@
  * dummy_handler - don't know if this is really needed but if alarm is still
  * being used we probably will
  */ 
-static void dummy_handler(int sig)
+static void 
+dummy_handler(int sig)
 {
   /* Empty */
 }
@@ -39,7 +40,8 @@ static void dummy_handler(int sig)
 /*
  * sigterm_handler - exit the server
  */
-static void sigterm_handler(int sig)  
+static void 
+sigterm_handler(int sig)  
 {
   /* XXX we had a flush_connections() here - we should close all the
    * connections and flush data. read server_reboot() for my explanation.
@@ -52,7 +54,8 @@ static void sigterm_handler(int sig)
 /* 
  * sighup_handler - reread the server configuration
  */
-static void sighup_handler(int sig)
+static void 
+sighup_handler(int sig)
 {
   dorehash = 1;
 }
@@ -60,7 +63,8 @@ static void sighup_handler(int sig)
 /*
  * sigint_handler - restart the server
  */
-static void sigint_handler(int sig)
+static void 
+sigint_handler(int sig)
 {
   static int restarting = 0;
 
@@ -83,7 +87,8 @@ static void sigint_handler(int sig)
 /*
  * setup_signals - initialize signal handlers for server
  */
-void setup_signals()
+void 
+setup_signals()
 {
   struct sigaction act;
 

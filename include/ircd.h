@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.h,v 7.50 2002/05/24 23:34:07 androsyn Exp $
+ *  $Id: ircd.h,v 7.51 2002/06/26 03:05:42 androsyn Exp $
  */
 
 #ifndef INCLUDED_ircd_h
@@ -77,6 +77,7 @@ extern char*          platform;
 extern char*          infotext[];
 extern char*          serno;
 extern char*          ircd_version;
+extern const char*    logFileName;
 extern const char     serveropts[];
 extern int            cold_start;
 extern int            dorehash;

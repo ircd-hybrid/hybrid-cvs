@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.236 2002/06/04 05:30:16 androsyn Exp $
+ *  $Id: ircd.c,v 7.237 2002/06/26 03:05:45 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -109,7 +109,7 @@ dlink_list lazylink_channels;   /* known about lazylink channels on HUB */
 int callbacks_called;          /* A measure of server load... */
 
 static unsigned long       initialVMTop = 0;   /* top of virtual memory at init */
-static const char * logFileName = LPATH;
+const char * logFileName = LPATH;
 static const char * pidFileName = PPATH;
 
 char**  myargv;
