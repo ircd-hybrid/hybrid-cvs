@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_clearchan.c,v 1.13 2001/03/28 08:23:26 fl_ Exp $
+ *   $Id: m_clearchan.c,v 1.14 2001/04/28 15:43:18 fl_ Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -198,9 +198,9 @@ void kick_list(struct Client *client_p, struct Client *source_p, struct Channel 
       who = m->data;
       sendto_channel_local(ALL_MEMBERS, chptr,
 			   ":%s KICK %s %s :CLEARCHAN",
-			   me.name, chname, who->name);
+			   source_p->name, chname, who->name);
       sendto_channel_remote(chptr, &me,
-			    ":%s KICK %s %s :CLEARCHAN", me.name, chname, who->name);
+			    ":%s KICK %s %s :CLEARCHAN", source_p->name, chname, who->name);
       remove_user_from_channel(chptr, who);
     }
 
