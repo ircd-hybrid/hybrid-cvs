@@ -1,3 +1,15 @@
+db          2003/01/28 00:28:47 EST	(20030128_0)
+
+  Modified files:
+    src                  send.c 
+  Log:
+  - don't send to a dead client.
+  
+  Revision  Changes    Path
+  7.214     +7 -1      ircd-hybrid-7/src/send.c
+
+
+
 lusky       2003/01/27 16:01:06 EST	(20030127_1)
 
   Modified files:
@@ -34511,4 +34523,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4201 2003/01/27 21:01:09 lusky Exp $
+$Id: ChangeLog,v 7.4202 2003/01/28 05:28:50 db Exp $
