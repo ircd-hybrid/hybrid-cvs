@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: memory.c,v 7.35 2002/05/24 23:34:48 androsyn Exp $
+ *  $Id: memory.c,v 7.36 2002/06/15 07:24:48 androsyn Exp $
  */
 
 
@@ -179,7 +179,7 @@ void *_MyMalloc(size_t size)
  */
 void *_MyRealloc(void *x, size_t y)
 {
-    char *ret = realloc(x, y);
+    void *ret = realloc(x, y);
 
     if (!ret)
 	outofmemory();
