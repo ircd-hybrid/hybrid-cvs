@@ -19,7 +19,7 @@
  *
  *
  *
- * $Id: rsa.c,v 7.16 2001/06/25 16:28:59 jdc Exp $
+ * $Id: rsa.c,v 7.17 2001/06/25 16:55:34 jdc Exp $
  */
 
 #include <assert.h>
@@ -106,7 +106,6 @@ int verify_private_key(void)
    *         For some reason the system thinks PEM_read_bio_RSAPrivateKey
    *         is returning an int, not a RSA *.
    */
-  RSA_free(key);
   key = (RSA *) PEM_read_bio_RSAPrivateKey(file, NULL, 0, NULL);
 
   if (key == NULL)
