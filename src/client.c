@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.249 2002/04/15 01:14:41 leeh Exp $
+ *  $Id: client.c,v 7.250 2002/04/15 16:31:39 leeh Exp $
  */
 
 #include "tools.h"
@@ -1019,12 +1019,12 @@ static void exit_one_client(struct Client *client_p,
       */
       if (source_p->localClient)
       {
-	if(source_p->localClient->ctrlfd > -1))
+	if(source_p->localClient->ctrlfd > -1)
 	{
           fd_close(source_p->localClient->ctrlfd);
 	  source_p->localClient->ctrlfd = -1;
 
-#ifdef HAVE_SOCKETPAIR
+#ifndef HAVE_SOCKETPAIR
           fd_close(source_p->localClient->ctrlfd_r);
 	  fd_close(source_p->localClient->fd_r);
 	  
