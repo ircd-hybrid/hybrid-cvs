@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: list.c,v 7.65 2003/08/21 21:12:56 michael Exp $
+ *  $Id: list.c,v 7.66 2005/02/15 13:43:55 michael Exp $
  */
 
 #include "stdinc.h"
@@ -84,6 +84,8 @@ make_dlink_node(void)
 
   lp->next = NULL;
   lp->prev = NULL;
+  lp->data = NULL;
+
   return(lp);
 }
 
