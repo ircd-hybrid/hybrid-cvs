@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 7.39 2003/05/17 17:18:03 joshk Exp $
+# $Id: Makefile.in,v 7.40 2003/05/19 21:32:36 joshk Exp $
 
 CC		= @CC@
 INSTALL		= @INSTALL@
@@ -33,7 +33,7 @@ build: all
 encspeed: ../include/setup.h encspeed.c
 	$(CC) $(CFLAGS) $(INCLUDES) $(LDFLAGS) -o encspeed encspeed.c $(SSL_LIBS)
 
-mkpasswd: ../include/setup.h encspeed.c
+mkpasswd: ../include/setup.h mkpasswd.c
 	$(CC) $(CFLAGS) $(INCLUDES) $(LDFLAGS) -o mkpasswd mkpasswd.c $(CRYPT_LIB)
 
 # Default rule for everything
