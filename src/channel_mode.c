@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.47 2002/07/28 21:37:20 leeh Exp $
+ *  $Id: channel_mode.c,v 7.48 2002/07/28 23:43:07 leeh Exp $
  */
 
 #include "stdinc.h"
@@ -1245,12 +1245,8 @@ chm_op(struct Client *client_p, struct Client *source_p,
 
   opnick = parv[(*parn)++];
 
-  if ((targ_p = find_client(opnick)) == NULL)
+  if ((targ_p = find_chasing(source_p, opnick, NULL)) == NULL)
   {
-    if (!(*errors & SM_ERR_NOTONCHANNEL))
-      sendto_one(source_p, form_str(ERR_NOSUCHNICK), me.name,
-                 source_p->name, opnick);
-    *errors |= SM_ERR_NOTONCHANNEL;
     return;
   }
 
@@ -1455,12 +1451,8 @@ chm_halfop(struct Client *client_p, struct Client *source_p,
 
   opnick = parv[(*parn)++];
 
-  if ((targ_p = find_client(opnick)) == NULL)
+  if ((targ_p = find_chasing(source_p, opnick, NULL)) == NULL)
   {
-    if (!(*errors & SM_ERR_NOTONCHANNEL))
-      sendto_one(source_p, form_str(ERR_NOSUCHNICK), me.name,
-                 source_p->name, opnick);
-    *errors |= SM_ERR_NOTONCHANNEL;
     return;
   }
 
@@ -1606,12 +1598,8 @@ chm_voice(struct Client *client_p, struct Client *source_p,
 
   opnick = parv[(*parn)++];
 
-  if ((targ_p = find_client(opnick)) == NULL)
+  if ((targ_p = find_chasing(source_p, opnick, NULL)) == NULL)
   {
-    if (!(*errors & SM_ERR_NOTONCHANNEL))
-      sendto_one(source_p, form_str(ERR_NOSUCHNICK), me.name,
-                 source_p->name, opnick);
-    *errors |= SM_ERR_NOTONCHANNEL;
     return;
   }
 

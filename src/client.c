@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.290 2002/07/13 00:48:22 androsyn Exp $
+ *  $Id: client.c,v 7.291 2002/07/28 23:43:07 leeh Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -780,7 +780,7 @@ find_chasing(struct Client *source_p, char *user, int *chasing)
     {
       sendto_one(source_p, form_str(ERR_NOSUCHNICK),
                  me.name, source_p->name, user);
-      return ((struct Client *)NULL);
+      return (NULL);
     }
   if (chasing)
     *chasing = 1;
