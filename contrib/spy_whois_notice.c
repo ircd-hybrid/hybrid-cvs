@@ -19,9 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: spy_whois_notice.c,v 1.12 2003/05/28 16:46:09 db Exp $
+ *  $Id: spy_whois_notice.c,v 1.13 2003/05/31 23:42:11 metalrock Exp $
  */
 #include "stdinc.h"
+#include "tools.h"
 #include "modules.h"
 #include "hook.h"
 #include "client.h"
@@ -43,7 +44,7 @@ _moddeinit(void)
   hook_del_hook("doing_whois", (hookfn *)show_notice);
 }
 
-const char *_version = "$Revision: 1.12 $";
+const char *_version = "$Revision: 1.13 $";
 
 /* show_notice
  *

@@ -19,9 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: spy_trace_notice.c,v 1.9 2003/05/22 04:47:01 metalrock Exp $
+ *  $Id: spy_trace_notice.c,v 1.10 2003/05/31 23:42:11 metalrock Exp $
  */
 #include "stdinc.h"
+#include "tools.h"
 #include "modules.h"
 #include "hook.h"
 #include "client.h"
@@ -45,7 +46,7 @@ _moddeinit(void)
   hook_del_hook("doing_ltrace", (hookfn *)show_ltrace);
 }
 
-const char *_version = "$Revision: 1.9 $";
+const char *_version = "$Revision: 1.10 $";
 
 int show_trace(struct hook_spy_data *data)
 {

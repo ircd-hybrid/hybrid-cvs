@@ -19,9 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: spy_info_notice.c,v 1.8 2003/05/20 06:51:42 michael Exp $
+ *  $Id: spy_info_notice.c,v 1.9 2003/05/31 23:42:11 metalrock Exp $
  */
 #include "stdinc.h"
+#include "tools.h"
 #include "modules.h"
 #include "hook.h"
 #include "client.h"
@@ -42,7 +43,7 @@ _moddeinit(void)
   hook_del_hook("doing_info", (hookfn *)show_info);
 }
 
-const char *_version = "$Revision: 1.8 $";
+const char *_version = "$Revision: 1.9 $";
 
 int show_info(struct hook_spy_data *data)
 {
@@ -50,6 +51,5 @@ int show_info(struct hook_spy_data *data)
                          "info requested by %s (%s@%s) [%s]",
                          data->source_p->name, data->source_p->username,
                          data->source_p->host, data->source_p->user->server->name);
-
   return 0;
 }

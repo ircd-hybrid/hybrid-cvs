@@ -19,9 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: spy_admin_notice.c,v 1.8 2003/05/20 06:51:42 michael Exp $
+ *  $Id: spy_admin_notice.c,v 1.9 2003/05/31 23:42:11 metalrock Exp $
  */
 #include "stdinc.h"
+#include "tools.h"
 #include "modules.h"
 #include "hook.h"
 #include "client.h"
@@ -42,7 +43,7 @@ _moddeinit(void)
   hook_del_hook("doing_admin", (hookfn *)show_admin);
 }
 
-const char *_version = "$Revision: 1.8 $";
+const char *_version = "$Revision: 1.9 $";
 
 int show_admin(struct hook_spy_data *data)
 {
