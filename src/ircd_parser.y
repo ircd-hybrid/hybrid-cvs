@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.199 2001/08/03 13:10:30 leeh Exp $
+ * $Id: ircd_parser.y,v 1.200 2001/08/04 15:35:51 leeh Exp $
  */
 
 %{
@@ -192,6 +192,7 @@ int   class_redirport_var;
 %token  PACE_WAIT
 %token  PASSWORD
 %token  PATH
+%token  PERSIST_TIME
 %token  PING_TIME
 %token  PORT
 %token  QSTRING
@@ -2476,6 +2477,7 @@ channel_item:       channel_use_invex |
                     channel_knock_delay |
                     channel_max_chans_per_user |
                     channel_quiet_on_ban |
+		    channel_persist_time |
                     error
 
 channel_use_invex:   USE_INVEX '=' TYES ';'
@@ -2552,3 +2554,9 @@ channel_maxbans: MAXBANS '=' expr ';'
    {
       ConfigChannel.maxbans = $3;
    } ;
+
+channel_persist_time: PERSIST_TIME '=' timespec ';'
+  {
+    ConfigChannel.persist_time = $3;
+  } ;
+

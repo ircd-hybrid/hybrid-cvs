@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.149 2001/07/20 03:51:05 wcampbel Exp $
+ * $Id: s_conf.h,v 7.150 2001/08/04 15:35:50 leeh Exp $
  */
 
 #include "setup.h"
@@ -251,6 +251,7 @@ struct config_channel_entry
   int           maxbans;
   int           max_chans_per_user;
   int           quiet_on_ban;
+  int		persist_time;
 };
 
 struct server_info

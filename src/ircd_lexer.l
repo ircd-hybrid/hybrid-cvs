@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.115 2001/07/25 00:50:57 leeh Exp $
+ * $Id: ircd_lexer.l,v 1.116 2001/08/04 15:35:51 leeh Exp $
  */
 
 %option case-insensitive
@@ -190,6 +190,7 @@ oper_log        { return OPER_LOG; }
 operator	{ return OPERATOR; }
 passwd		{ return PASSWORD; }
 password	{ return PASSWORD; }
+persist_time    { return PERSIST_TIME; }
 ping_time	{ return PING_TIME; }
 port		{ return PORT; }
 quiet_on_ban    { return QUIET_ON_BAN; }
