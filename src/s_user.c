@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.127 2001/01/25 06:26:11 db Exp $
+ *  $Id: s_user.c,v 7.128 2001/01/25 17:32:55 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -689,7 +689,7 @@ static int valid_hostname(const char* hostname)
       if (!IsHostChar(*p))
         return NO;
 
-      if ('.' == *p)
+      if ('.' == *p || ':' == *p)
         ++dots;
       else
         ++chars;

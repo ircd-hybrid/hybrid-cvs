@@ -22,7 +22,7 @@
  * Cleanup of collapse and match
  * Moved static calls variable to match
  * Added asserts for null pointers
- * $Id: match.c,v 7.11 2001/01/11 05:32:00 a1kmm Exp $
+ * $Id: match.c,v 7.12 2001/01/25 17:32:54 androsyn Exp $
  *
  */
 #include "irc_string.h"
@@ -429,7 +429,7 @@ const unsigned int CharAttrs[] = {
 /* 7 */      PRINT_C|DIGIT_C|NICK_C|CHAN_C|NONEOS_C|USER_C|HOST_C,
 /* 8 */      PRINT_C|DIGIT_C|NICK_C|CHAN_C|NONEOS_C|USER_C|HOST_C,
 /* 9 */      PRINT_C|DIGIT_C|NICK_C|CHAN_C|NONEOS_C|USER_C|HOST_C,
-/* : */      PRINT_C|CHAN_C|NONEOS_C,
+/* : */      PRINT_C|CHAN_C|NONEOS_C|HOST_C,
 /* ; */      PRINT_C|CHAN_C|NONEOS_C,
 /* < */      PRINT_C|CHAN_C|NONEOS_C,
 /* = */      PRINT_C|CHAN_C|NONEOS_C,
