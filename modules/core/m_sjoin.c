@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.166 2003/09/18 22:51:52 bill Exp $
+ *  $Id: m_sjoin.c,v 1.167 2003/09/19 23:20:51 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.166 $";
+const char *_version = "$Revision: 1.167 $";
 #endif
 
 /* ms_sjoin()
@@ -368,7 +368,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
 
     /* copy the nick to the two buffers */
     nhops += ircsprintf(nhops, "%s ", s);
-    assert((nhops-sjbuf_nhops) < sizeof(sjbuf_nhops));
+    assert((unsigned int)(nhops - sjbuf_nhops) < sizeof(sjbuf_nhops));
 
     if (!keep_new_modes)
     {
