@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_connect.c,v 1.50 2003/07/05 06:20:57 db Exp $
+ *  $Id: m_connect.c,v 1.51 2004/05/24 21:57:44 bill Exp $
  */
 
 #include "stdinc.h"
@@ -60,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&connect_msgtab);
 }
 
-const char *_version = "$Revision: 1.50 $";
+const char *_version = "$Revision: 1.51 $";
 #endif
 
 /*
@@ -327,10 +327,10 @@ ms_connect(struct Client *client_p, struct Client *source_p,
    * Notify all operators about remote connect requests
    */
   sendto_wallops_flags(UMODE_WALLOP, &me, "Remote CONNECT %s %d from %s",
-                       parv[1], port, get_client_name(source_p, MASK_IP));
+                       parv[1], port, source_p->name);
   sendto_server(NULL, NULL, NULL, NOCAPS, NOCAPS, NOFLAGS,
                 ":%s WALLOPS :Remote CONNECT %s %d from %s",
-                me.name, parv[1], port, get_client_name(source_p, MASK_IP));
+                me.name, parv[1], port, source_p->name);
 
   ilog(L_TRACE, "CONNECT From %s : %s %d", 
        source_p->name, parv[1], port);

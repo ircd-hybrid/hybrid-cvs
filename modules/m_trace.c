@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_trace.c,v 1.75 2004/03/16 01:49:28 bill Exp $
+ *  $Id: m_trace.c,v 1.76 2004/05/24 21:57:44 bill Exp $
  */
 
 #include "stdinc.h"
@@ -94,7 +94,7 @@ _moddeinit(void)
   mod_del_cmd(&trace_msgtab6);
 #endif
 }
-const char *_version = "$Revision: 1.75 $";
+const char *_version = "$Revision: 1.76 $";
 #endif
 
 static int report_this_status(struct Client *source_p, struct Client *target_p,
@@ -234,9 +234,6 @@ do_actual_trace(int ttype, const char *tname, struct Client *client_p,
 
   trace_spy(source_p);
 
-  wilds = !parv[1] || strchr(tname, '*') || strchr(tname, '?');
-  dow = wilds || doall;
-
   if (!MyConnect(source_p) && IsCapable(source_p->from, CAP_TS6) && HasID(source_p))
   {
     from = me.id;
@@ -255,6 +252,9 @@ do_actual_trace(int ttype, const char *tname, struct Client *client_p,
     doall = TRUE;
     tname = me.name;
   }
+
+  wilds = !parv[1] || strchr(tname, '*') || strchr(tname, '?');
+  dow = wilds || doall;
 
   set_time();
   if (!IsOper(source_p) || !dow) /* non-oper traces must be full nicks */
