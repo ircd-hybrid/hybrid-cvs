@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: numeric.c,v 7.3 2000/11/29 23:35:39 db Exp $
+ *   $Id: numeric.c,v 7.4 2000/11/30 22:48:06 davidt Exp $
  */
 #include "numeric.h"
 #include "irc_string.h"
@@ -44,7 +44,7 @@ const char* form_str(int numeric)
   assert(numeric < ERR_LAST_ERR_MSG);
   assert(0 != replies[numeric]);
   
-  return replies[numeric];
+  return (const char *) getmsg( replies[numeric] );
 }
 
 

@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.80 2000/11/30 16:01:54 db Exp $
+ *  $Id: s_conf.c,v 7.81 2000/11/30 22:48:06 davidt Exp $
  */
 #include "s_conf.h"
 #include "s_stats.h"
@@ -1832,6 +1832,7 @@ void conf_add_conf(struct ConfItem *aconf)
 	 aconf->user ? aconf->user : "<NULL>",
 	 aconf->port,
 	 aconf->c_class ? ConfClassType(aconf): 0 ));
+
   aconf->next = ConfigItemList;
    ConfigItemList = aconf;
 }

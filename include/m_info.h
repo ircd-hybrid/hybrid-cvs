@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.h,v 7.14 2000/11/28 23:30:22 db Exp $
+ * $Id: m_info.h,v 7.15 2000/11/30 22:48:00 davidt Exp $
  */
 #ifndef INCLUDED_m_info_h
 #define INCLUDED_m_info_h
@@ -97,12 +97,6 @@ Info MyInformation[] = {
 #else
   { "CRYPT_LINK_PASSWORD", "OFF", 0, "Encrypt Server Passwords" },
 #endif /* CRYPT_LINK_PASSWORD */
-
-#ifdef CUSTOM_ERR
-  { "CUSTOM_ERR", "ON", 0, "Customized error messages" },
-#else
-  { "CUSTOM_ERR", "OFF", 0, "Customized error messages" },
-#endif /* CUSTOM_ERR */
 
 #ifdef DEBUGMODE
   { "DEBUGMODE", "ON", 0, "Debugging Mode" },

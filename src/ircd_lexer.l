@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.23 2000/11/30 09:53:47 db Exp $
+ * $Id: ircd_lexer.l,v 1.24 2000/11/30 22:48:05 davidt Exp $
  */
 
 %{
@@ -120,6 +120,7 @@ log_level	{ return LOG_LEVEL; }
 logging         { return LOGGING; }
 logpath         { return LOGPATH; }
 max_number	{ return MAX_NUMBER; }
+message_locale	{ return MESSAGE_LOCALE; }
 name		{ return NAME; }
 nick_changes	{ return NICK_CHANGES; }
 no		{ return TNO; }
