@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_wallops.c,v 1.29 2002/05/24 23:34:23 androsyn Exp $
+ *  $Id: m_wallops.c,v 1.30 2003/01/09 06:20:07 db Exp $
  */
 
 #include "stdinc.h"
@@ -34,7 +34,6 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
-#include "client.h"
 
 static void ms_wallops(struct Client*, struct Client*, int, char**);
 static void mo_wallops(struct Client*, struct Client*, int, char**);
@@ -57,7 +56,7 @@ _moddeinit(void)
   mod_del_cmd(&wallops_msgtab);
 }
  
-const char *_version = "$Revision: 1.29 $";
+const char *_version = "$Revision: 1.30 $";
 #endif
 /*
  * mo_wallops (write to *all* opers currently online)
