@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.267 2001/08/17 03:10:20 androsyn Exp $
+ * $Id: channel.c,v 7.268 2001/08/17 06:39:37 androsyn Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -110,13 +110,13 @@ static BlockHeap *channel_heap;
 static void channelheap_garbage_collect(void *unused)
 {
 	BlockHeapGarbageCollect(channel_heap);
-	eventAdd("channelheap_garbage_collect", channelheap_garbage_collect, NULL, 45, 0);
+	eventAddIsh("channelheap_garbage_collect", channelheap_garbage_collect, NULL, 45, 0);
 	
 }
 void init_channels(void)
 {
 	channel_heap = BlockHeapCreate(sizeof(struct Channel), 2048);
-	eventAdd("channelheap_garbage_collect", channelheap_garbage_collect, NULL, 45, 0);
+	eventAddIsh("channelheap_garbage_collect", channelheap_garbage_collect, NULL, 45, 0);
 }
 
 /*

@@ -6,7 +6,7 @@
  * The idea here is that we should really be maintaining pre-munged
  * buffer "lines" which we can later refcount to save needless copies.
  *
- * $Id: linebuf.c,v 7.49 2001/08/17 05:21:26 androsyn Exp $
+ * $Id: linebuf.c,v 7.50 2001/08/17 06:39:37 androsyn Exp $
  */
 
 #include <errno.h>
@@ -51,7 +51,7 @@ static int bufline_count = 0;
 static void linebuf_garbage_collect(void *unused)
 {
   BlockHeapGarbageCollect(linebuf_heap);
-  eventAdd("linebuf_garbage_collect", linebuf_garbage_collect, NULL, 30, 0);
+  eventAddIsh("linebuf_garbage_collect", linebuf_garbage_collect, NULL, 30, 0);
 }
       
 
@@ -59,7 +59,7 @@ void
 linebuf_init(void)
 {
   linebuf_heap  = BlockHeapCreate(sizeof(buf_line_t), 2048);
-  eventAdd("linebuf_garbage_collect", linebuf_garbage_collect, NULL, 30, 0);
+  eventAddIsh("linebuf_garbage_collect", linebuf_garbage_collect, NULL, 30, 0);
 }
 
 inline buf_line_t *
