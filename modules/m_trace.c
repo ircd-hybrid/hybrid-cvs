@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_trace.c,v 1.20 2001/03/07 06:05:45 toot Exp $
+ *   $Id: m_trace.c,v 1.21 2001/03/07 06:21:24 toot Exp $
  */
 #include "handlers.h"
 #include "class.h"
@@ -209,10 +209,6 @@ static void mo_trace(struct Client *client_p, struct Client *source_p,
     {
       target_p = ptr->data;
 
-      if (IsInvisible(target_p) && dow &&
-          !(MyConnect(source_p) && IsOper(source_p)) &&
-          !IsOper(target_p) && (target_p != source_p))
-        continue;
       if (!doall && wilds && !match(tname, target_p->name))
         continue;
       if (!dow && irccmp(tname, target_p->name))
@@ -228,10 +224,6 @@ static void mo_trace(struct Client *client_p, struct Client *source_p,
     {
       target_p = ptr->data;
 
-      if (IsInvisible(target_p) && dow &&
-          !(MyConnect(source_p) && IsOper(source_p)) &&
-          !IsOper(target_p) && (target_p != source_p))
-        continue;
       if (!doall && wilds && !match(tname, target_p->name))
         continue;
       if (!dow && irccmp(tname, target_p->name))
