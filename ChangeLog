@@ -1,3 +1,16 @@
+db          2003/01/16 18:13:40 EST	(20030116_5)
+
+  Modified files:
+    src                  client.c 
+  Log:
+  - another bug fix from Michael missing return(0); instead of return;
+    in exit_client()
+  
+  Revision  Changes    Path
+  7.313     +1 -1      ircd-hybrid-7/src/client.c
+
+
+
 db          2003/01/16 18:10:57 EST	(20030116_4)
 
   Modified files:
@@ -34005,4 +34018,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4166 2003/01/16 23:11:00 db Exp $
+$Id: ChangeLog,v 7.4167 2003/01/16 23:13:43 db Exp $
