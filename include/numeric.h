@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: numeric.h,v 7.17 2001/07/02 02:52:35 db Exp $
+ * $Id: numeric.h,v 7.18 2001/08/13 21:44:05 leeh Exp $
  */
 #ifndef INCLUDED_numeric_h
 #define INCLUDED_numeric_h
@@ -210,6 +210,9 @@ extern const char* form_str(int);
 #define RPL_VCHANLIST        277
 #define RPL_VCHANHELP        278
 
+#define RPL_ACCEPTLIST	     281
+#define RPL_ENDOFACCEPT      282
+
 /* numeric_replies */
 
 #define RPL_NONE             300
@@ -329,6 +332,10 @@ extern const char* form_str(int);
 #define ERR_USERSDISABLED    446
 
 #define ERR_NOTREGISTERED    451
+
+#define ERR_ACCEPTFULL       456
+#define ERR_ACCEPTEXIST      457
+#define ERR_ACCEPTNOT        458
 
 #define ERR_NEEDMOREPARAMS   461
 #define ERR_ALREADYREGISTRED 462
