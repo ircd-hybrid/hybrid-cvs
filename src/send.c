@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.277 2003/11/01 23:24:33 metalrock Exp $
+ *  $Id: send.c,v 7.278 2003/11/10 03:45:43 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -127,7 +127,7 @@ send_message(struct Client *to, char *buf, int len)
       sendto_realops_flags(UMODE_ALL, L_ALL,
                            "Max SendQ limit exceeded for %s: %lu > %lu",
                            get_client_name(to, HIDE_IP),
-                           dbuf_length(&to->localClient->buf_sendq) + len,
+                           (unsigned long)(dbuf_length(&to->localClient->buf_sendq) + len),
                            get_sendq(to));
     if (IsClient(to))
       SetSendQExceeded(to);
