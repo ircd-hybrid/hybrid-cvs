@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.137 2000/12/23 05:05:54 toot Exp $
+ * $Id: channel.c,v 7.138 2000/12/23 18:07:01 toot Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -2248,6 +2248,8 @@ struct Channel* get_channel(struct Client *cptr, char *chname, int flag)
 */
 static  void    sub1_from_channel(struct Channel *chptr)
 {
+  struct Client *lastuser;
+
   if (--chptr->users <= 0)
     {
       chptr->users = 0; /* if chptr->users < 0, make sure it sticks at 0
@@ -2261,6 +2263,21 @@ static  void    sub1_from_channel(struct Channel *chptr)
        */
       if((chptr->channelts + (30*60)) > CurrentTime)
         destroy_channel(chptr);
+    }
+
+  /* last user in the channel.. set a vchan_id incase we need it */
+  if (chptr->users <= 1)
+    {
+      if (chptr->chanops.head)
+        lastuser = chptr->chanops.head->data;
+      else if (chptr->halfops.head)
+        lastuser = chptr->halfops.head->data;
+      else if (chptr->voiced.head)
+        lastuser = chptr->voiced.head->data;
+      else if (chptr->peons.head)
+        lastuser = chptr->peons.head->data;
+
+      ircsprintf(chptr->vchan_id, "!%s", lastuser->name);
     }
 }
 
