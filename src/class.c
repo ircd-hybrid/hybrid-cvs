@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: class.c,v 7.51 2003/05/25 01:05:24 michael Exp $
+ *  $Id: class.c,v 7.52 2003/05/28 21:02:43 db Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ make_class(void)
 void
 free_class(struct Class *aclass)
 {
-  MyFree(aclass->className);
+  MyFree(aclass->class_name);
   MyFree((char *)aclass);
 }
 
@@ -116,10 +116,10 @@ get_client_class(struct Client *target_p)
     {
       aconf = ptr->data;
 
-      if (aconf->className == NULL)
+      if (aconf->class_name == NULL)
         retc = "default";
       else
-        retc= aconf->className;
+        retc= aconf->class_name;
     }
   }
 
@@ -298,7 +298,6 @@ init_class(void)
 
   aclass = make_class();
 
-  ClassType(aclass) = 0;
   DupString(ClassName(aclass), "default");
   ConFreq(aclass)  = DEFAULT_CONNECTFREQUENCY;
   PingFreq(aclass) = DEFAULT_PINGFREQUENCY;
@@ -341,9 +340,8 @@ long
 get_sendq(struct Client *client_p)
 {
   int sendq = DEFAULT_SENDQ;
-  int retc  = BAD_CLIENT_CLASS;
   dlink_node *ptr;
-  struct Class *cl;
+  struct Class *aclass;
   struct ConfItem *aconf;
 
   if (client_p && !IsMe(client_p) && (client_p->localClient->confs.head))
@@ -355,13 +353,12 @@ get_sendq(struct Client *client_p)
       if (aconf == NULL)
         continue;
 
-      if ((cl = ClassPtr(aconf)) == NULL)
+      if ((aclass = ClassPtr(aconf)) == NULL)
         continue;
 
-      if (ClassType(cl) > retc)
-        sendq = MaxSendq(cl);
+      sendq = MaxSendq(aclass);
+      return(sendq);
     }
   }
-
-  return(sendq);
+  return(BAD_CLIENT_CLASS);
 }

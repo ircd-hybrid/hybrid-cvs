@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.229 2003/05/28 16:37:56 db Exp $
+ *  $Id: s_conf.h,v 7.230 2003/05/28 21:02:41 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -70,7 +70,7 @@ struct ConfItem
   int              port;
   char *           fakename;   /* Mask name */
   time_t           hold;     /* Hold action until this time (calendar time) */
-  char *           className;   /* Name of class */
+  char *           class_name;  /* Name of class */
   struct Class *   c_class;     /* Class of connection */
   struct DNSQuery* dns_query;
   int              aftype;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: class.h,v 7.16 2003/05/25 01:05:20 michael Exp $
+ *  $Id: class.h,v 7.17 2003/05/28 21:02:41 db Exp $
  */
 
 #ifndef INCLUDED_class_h
@@ -32,31 +32,31 @@ struct Client;
 struct Class
 {
   dlink_node class_node;
-  char *className;
-  int type;
-  int conFreq;
-  int pingFreq;
-  int maxLinks;
-  long maxSendq;
+  char *class_name;
+  int con_freq;
+  int ping_freq;
+  int max_total;
+  int max_local;
+  int max_global;
+  int max_ident;
+  long max_sendq;
   int links;
 };
 
-#define ClassName(x)	((x)->className)
-#define ClassType(x)    ((x)->type)
-#define ConFreq(x)      ((x)->conFreq)
-#define PingFreq(x)     ((x)->pingFreq)
-#define MaxLinks(x)     ((x)->maxLinks)
-#define MaxSendq(x)     ((x)->maxSendq)
+#define ClassName(x)	((x)->class_name)
+#define ConFreq(x)      ((x)->con_freq)
+#define PingFreq(x)     ((x)->ping_freq)
+#define MaxLinks(x)     ((x)->max_total)
+#define MaxSendq(x)     ((x)->max_sendq)
 #define Links(x)        ((x)->links)
 
 #define ClassPtr(x)      ((x)->c_class)
 #define ConfLinks(x)     (ClassPtr(x)->links)
-#define ConfMaxLinks(x)  (ClassPtr(x)->maxLinks)
+#define ConfMaxLinks(x)  (ClassPtr(x)->max_total)
 #define ConfClassName(x) (ClassPtr(x)->class_name)
-#define ConfClassType(x) (ClassPtr(x)->type)
-#define ConfConFreq(x)   (ClassPtr(x)->conFreq)
-#define ConfPingFreq(x)  (ClassPtr(x)->pingFreq)
-#define ConfSendq(x)     (ClassPtr(x)->maxSendq)
+#define ConfConFreq(x)   (ClassPtr(x)->con_freq)
+#define ConfPingFreq(x)  (ClassPtr(x)->ping_freq)
+#define ConfSendq(x)     (ClassPtr(x)->max_sendq)
 
 extern dlink_list ClassList;  /* GLOBAL - class list */
 

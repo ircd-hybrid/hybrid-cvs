@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.296 2003/05/28 16:37:59 db Exp $
+ *  $Id: ircd_parser.y,v 1.297 2003/05/28 21:02:43 db Exp $
  */
 
 %{
@@ -776,8 +776,8 @@ oper_entry: OPERATOR
     {
       yy_tmp = ptr->data;
 
-      if (yy_aconf->className != NULL)
-        DupString(yy_tmp->className, yy_aconf->className);
+      if (yy_aconf->class_name != NULL)
+        DupString(yy_tmp->class_name, yy_aconf->class_name);
       if (yy_aconf->name != NULL)
         DupString(yy_tmp->name, yy_aconf->name);
       if (yy_aconf->passwd != NULL)
@@ -930,8 +930,8 @@ oper_class: CLASS '=' QSTRING ';'
 {
   if (ypass == 2)
   {
-    MyFree(yy_aconf->className);
-    DupString(yy_aconf->className, yylval.string);
+    MyFree(yy_aconf->class_name);
+    DupString(yy_aconf->class_name, yylval.string);
   }
 };
 
@@ -1193,8 +1193,8 @@ auth_entry: IRCD_AUTH
         DupString(yy_tmp->passwd, yy_aconf->passwd);
       if (yy_aconf->name != NULL)
         DupString(yy_tmp->name, yy_aconf->name);
-      if (yy_aconf->className != NULL)
-        DupString(yy_tmp->className, yy_aconf->className);
+      if (yy_aconf->class_name != NULL)
+        DupString(yy_tmp->class_name, yy_aconf->class_name);
 
       yy_tmp->flags = yy_aconf->flags;
       yy_tmp->port  = yy_aconf->port;
@@ -1388,8 +1388,8 @@ auth_class: CLASS '=' QSTRING ';'
 {
   if (ypass == 2)
   {
-    MyFree(yy_aconf->className);
-    DupString(yy_aconf->className, yylval.string);
+    MyFree(yy_aconf->class_name);
+    DupString(yy_aconf->class_name, yylval.string);
   }
 };
 
@@ -1940,8 +1940,8 @@ connect_class: CLASS '=' QSTRING ';'
 {
   if (ypass == 2)
   {
-    MyFree(yy_aconf->className);
-    DupString(yy_aconf->className, yylval.string);
+    MyFree(yy_aconf->class_name);
+    DupString(yy_aconf->class_name, yylval.string);
   }
 };
 
