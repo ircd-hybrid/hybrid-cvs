@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.24 2000/12/09 23:24:31 db Exp $
+ *   $Id: m_sjoin.c,v 1.25 2000/12/10 01:32:12 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -353,7 +353,7 @@ int     ms_sjoin(struct Client *cptr,
 	      add_vchan_to_client_cache(acptr,top_chptr, chptr);
 	      sendto_channel_local(ALL_MEMBERS,chptr, ":%s!%s@%s JOIN :%s",
 				   acptr->name,
-				   acptr->user,
+				   acptr->username,
 				   acptr->host,
 				   top_chptr->chname);
 	    }
@@ -361,7 +361,7 @@ int     ms_sjoin(struct Client *cptr,
 	    {
 	      sendto_channel_local(ALL_MEMBERS,chptr, ":%s!%s@%s JOIN :%s",
 				   acptr->name,
-				   acptr->user,
+				   acptr->username,
 				   acptr->host,
 				   parv[2]);
 	    }

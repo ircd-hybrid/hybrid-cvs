@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.118 2000/12/09 23:24:32 db Exp $
+ * $Id: channel.c,v 7.119 2000/12/10 01:32:14 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -1240,7 +1240,7 @@ void set_channel_mode(struct Client *cptr,
 				       chptr,
 				       ":%s!%s@%s MODE %s -k %s", 
 				       sptr->name,
-				       sptr->user,
+				       sptr->username,
 				       sptr->host,
 				       real_name,
 				       chptr->mode.key);
@@ -1251,7 +1251,7 @@ void set_channel_mode(struct Client *cptr,
 				       chptr,
 				       ":%s!%s@%s MODE %s -k %s", 
 				       sptr->name,
-				       sptr->user,
+				       sptr->username,
 				       sptr->host,
 				       real_name,
 				       chptr->mode.key);
@@ -1975,7 +1975,7 @@ void set_channel_mode(struct Client *cptr,
 			     chptr,
 			     ":%s!%s@%s MODE %s %s %s", 
 			     sptr->name,
-			     sptr->user,
+			     sptr->username,
 			     sptr->host,
 			     real_name,
 			     modebuf, parabuf);
@@ -1999,7 +1999,7 @@ void set_channel_mode(struct Client *cptr,
 			     chptr,
 			     ":%s!%s@%s MODE %s %s %s", 
 			     sptr->name,
-			     sptr->user,
+			     sptr->username,
 			     sptr->host,
 			     real_name,
 			     modebuf_ex, parabuf_ex);
@@ -2022,7 +2022,7 @@ void set_channel_mode(struct Client *cptr,
 			     chptr,
 			     ":%s!%s@%s MODE %s %s %s",
 			     sptr->name,
-			     sptr->user,
+			     sptr->username,
 			     sptr->host,
 			     real_name,
 			     modebuf_de, parabuf_de);
@@ -2045,7 +2045,7 @@ void set_channel_mode(struct Client *cptr,
 			     chptr,
 			     ":%s!%s@%s MODE %s %s %s",
 			     sptr->name,
-			     sptr->user,
+			     sptr->username,
 			     sptr->host,
 			     real_name,
 			     modebuf_invex, parabuf_invex);

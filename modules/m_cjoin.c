@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_cjoin.c,v 1.14 2000/12/09 23:24:30 db Exp $
+ *   $Id: m_cjoin.c,v 1.15 2000/12/10 01:32:11 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -219,7 +219,7 @@ int     m_cjoin(struct Client *cptr,
 		       vchan_chptr,
 		       ":%s!%s@%s JOIN :%s",
 		       sptr->name,
-		       sptr->user,
+		       sptr->username,
 		       sptr->host,
 		       chptr->chname);
 

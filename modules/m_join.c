@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 1.21 2000/12/09 23:24:30 db Exp $
+ *   $Id: m_join.c,v 1.22 2000/12/10 01:32:11 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -317,9 +317,9 @@ int     m_join(struct Client *cptr,
       /*
       ** notify all other users on the new channel
       */
-      sendto_channel_local(ALL_MEMBERS,chptr, ":%s!%s@%s JOIN :%s",
+      sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s JOIN :%s",
 			   sptr->name,
-			   sptr->user,
+			   sptr->username,
 			   sptr->host,
 			   name);
       
@@ -472,7 +472,7 @@ void do_join_0(struct Client *cptr, struct Client *sptr)
       chptr = lp->data;
       sendto_channel_local(ALL_MEMBERS,chptr, ":%s!%s@%s PART %s",
 			   sptr->name,
-			   sptr->user,
+			   sptr->username,
 			   sptr->host,
 			   chptr->chname);
       remove_user_from_channel(chptr, sptr);

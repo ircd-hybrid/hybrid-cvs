@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_part.c,v 1.14 2000/12/09 19:32:39 db Exp $
+ *   $Id: m_part.c,v 1.15 2000/12/10 01:32:12 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -179,7 +179,7 @@ static void part_one_client(struct Client *cptr,
 	  sendto_channel_local(ALL_MEMBERS,
 			       chptr, ":%s!%s@%s PART %s",
 			       sptr->name,
-			       sptr->user,
+			       sptr->username,
 			       sptr->host,
 			       name);
 	  remove_user_from_channel(chptr, sptr);
@@ -201,7 +201,7 @@ static void part_one_client(struct Client *cptr,
 	  sendto_channel_local(ALL_MEMBERS,
 			       vchan, ":%s!%s@%s PART %s",
 			       sptr->name,
-			       sptr->user,
+			       sptr->username,
 			       sptr->host,
 			       name);
 	  remove_user_from_channel(vchan, sptr);
@@ -224,7 +224,7 @@ static void part_one_client(struct Client *cptr,
       sendto_channel_local(ALL_MEMBERS,
 			   chptr, ":%s!%s@%s PART %s",
 			   sptr->name,
-			   sptr->user,
+			   sptr->username,
 			   sptr->host,
 			   name);
       remove_user_from_channel(chptr, sptr);

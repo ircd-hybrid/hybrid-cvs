@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_lljoin.c,v 1.10 2000/12/09 23:24:30 db Exp $
+ * $Id: m_lljoin.c,v 1.11 2000/12/10 01:32:12 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -147,7 +147,7 @@ int     ms_lljoin(struct Client *cptr,
           sendto_channel_local(ALL_MEMBERS, chptr,
 			       ":%s!%s@%s JOIN :%s",
 			       acptr->name,
-			       acptr->user,
+			       acptr->username,
 			       acptr->host,
 			       name);
       

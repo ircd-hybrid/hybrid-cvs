@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_topic.c,v 1.12 2000/12/09 19:32:39 db Exp $
+ *   $Id: m_topic.c,v 1.13 2000/12/10 01:32:13 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -141,7 +141,7 @@ int     m_topic(struct Client *cptr,
 		  sendto_channel_local(ONLY_CHANOPS,
 				       chptr, ":%s!%s@%s TOPIC %s :%s",
 				       sptr->name,
-				       sptr->user,
+				       sptr->username,
 				       sptr->host,
 				       name,
 				       chptr->topic);
@@ -152,7 +152,7 @@ int     m_topic(struct Client *cptr,
 		  sendto_channel_local(ALL_MEMBERS,
 				       chptr, ":%s!%s@%s TOPIC %s :%s",
 				       sptr->name,
-				       sptr->user,
+				       sptr->username,
 				       sptr->host,
 				       name, chptr->topic);
 		}
