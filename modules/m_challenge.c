@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_challenge.c,v 1.38 2002/10/28 01:08:40 gregp Exp $
+ *  $Id: m_challenge.c,v 1.39 2002/11/02 17:09:47 wiz Exp $
  */
 
 #include "stdinc.h"
@@ -55,7 +55,7 @@ _moddeinit(void)
   return;
 }
 
-const char *_version = "$Revision: 1.38 $";
+const char *_version = "$Revision: 1.39 $";
 #endif
 #else
 
@@ -80,7 +80,7 @@ _moddeinit(void)
   mod_del_cmd(&challenge_msgtab);
 }
 
-const char *_version = "$Revision: 1.38 $";
+const char *_version = "$Revision: 1.39 $";
 #endif
 /*
  * m_challenge - generate RSA challenge for wouldbe oper
@@ -170,8 +170,8 @@ static void m_challenge( struct Client *client_p, struct Client *source_p,
     /* they suck, do we tell the world? */
     if (ConfigFileEntry.failed_oper_notice)
     {
-      sendto_realops_flags(FLAGS_ALL, L_ALL, "Failed CHALLENGE attempt - host"
-             " mismatch by %s (%s@%s)",
+      sendto_realops_flags(FLAGS_ALL, L_ALL, "Failed CHALLENGE attempt by "
+             "%s (%s@%s)",
              source_p->name, source_p->username, source_p->host);
     }
     log_failed_oper(source_p, parv[1]);
