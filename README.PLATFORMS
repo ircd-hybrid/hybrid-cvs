@@ -1,14 +1,14 @@
 IRCD-Hybrid Platforms Information
 
-Sometimes problems and inconsistencies in the Hybrid code may only occur 
-on a specific platform (architecture and/or operating system and/or 
-compiler).  In these cases you may want to directly contact a person whO 
-is interested in maintaining Hybrid on that platform.  Below is a list of 
-people who have jumped up and taken responsibility for Hybrid, including 
+Sometimes problems and inconsistencies in the Hybrid code may only occur
+on a specific platform (architecture and/or operating system and/or
+compiler).  In these cases you may want to directly contact a person who
+is interested in maintaining Hybrid on that platform.  Below is a list of
+people who have jumped up and taken responsibility for Hybrid, including
 making sure it compiles, runs, and doesn't crash.
 
-Platforms marked with a '*' are known to be broken.  In general, README.FIRST
-will include specific notes on broken platforms.
+Platforms marked with a '*' are known to be broken.  In general,
+README.FIRST will include specific notes on broken platforms.
 
 ARCHITECTURE COMPILER         SYSTEM	    MAINTAINER
 ============ ================ ============= ===================================
@@ -30,4 +30,4 @@ Alpha        DEC C V6.0       OpenVMS 7.2   Edward Brocklesby
 PA-RISC 2.0  cc		      HP-UX B.11    Yusuf Iskenderoglu 
 						<uhc0@stud.uni-karlsruhe.de>
 
-$Id: README.PLATFORMS,v 7.16 2003/05/11 02:44:32 jmallett Exp $
+$Id: README.PLATFORMS,v 7.17 2003/05/11 02:55:26 jmallett Exp $
