@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.243 2001/06/16 08:12:28 a1kmm Exp $
+ *  $Id: s_conf.c,v 7.244 2001/06/16 21:57:29 db Exp $
  */
 
 #include <sys/types.h>
@@ -1019,7 +1019,7 @@ int attach_cn_lines(struct Client *client_p, const char* name, const char* host)
        continue;
      if (ptr->status != CONF_SERVER)
        continue;
-     if (irccmp(name, ptr->name)/* || irccmp(host, ptr->host)*/)
+     if ((match(name, ptr->name) == 0) || (irccmp(host, ptr->host) != 0))
        continue;
      attach_conf(client_p, ptr);
      return -1;
