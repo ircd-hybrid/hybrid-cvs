@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_squit.c,v 1.51 2003/03/31 17:55:44 michael Exp $
+ *  $Id: m_squit.c,v 1.52 2003/03/31 18:17:39 michael Exp $
  */
 
 #include "stdinc.h"
@@ -59,7 +59,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&squit_msgtab);
 }
-const char *_version = "$Revision: 1.51 $";
+const char *_version = "$Revision: 1.52 $";
 #endif
 
 /* mo_squit - SQUIT message handler
@@ -150,8 +150,6 @@ ms_squit(struct Client *client_p, struct Client *source_p,
   char *comment;
   const char *server;
 
-  if (strlen(comment) > (size_t)TOPICLEN)
-    comment[TOPICLEN] = '\0';
 #if 0
   /* XXX - How can this happen? -Michael */
   if (parc < 2 || EmptyString(parv[1]))
