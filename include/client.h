@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.46 2000/12/05 04:00:46 db Exp $
+ * $Id: client.h,v 7.47 2000/12/05 05:45:35 db Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -252,7 +252,8 @@ struct LocalUser
   int sent_parsed;      /* how many messages we've parsed in this second */
 
   /* caller ID allow list */
-  dlink_list	allow_list;
+  dlink_list	allow_list;	/* clients I'll allow to talk to me */
+  dlink_list	on_allow_list;	/* clients that have =me= on their allow list*/
 };
 
 /*
@@ -538,7 +539,12 @@ extern struct Client* next_client(struct Client* next, const char* name);
 extern struct Client* next_client_double(struct Client* next, 
                                          const char* name);
 
+#define MAX_ALLOW 20
+
 extern int accept_message(struct Client *source, struct Client *target);
+extern int add_to_accept(struct Client *source, struct Client *target);
+extern int del_from_accept(struct Client *source, struct Client *target);
+extern int del_all_accepts(struct Client *dying);
 
 #endif /* INCLUDED_client_h */
 
