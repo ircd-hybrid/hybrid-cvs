@@ -13,6 +13,10 @@ If you don't read this first, we won't help you.
   * will be installed with your ircd!					  *
   *************************************************************************
 
+  ALSO, IF YOU ARE UPGRADING YOUR CURRENT SOURCE TREE, AND YOU TRY TO BUILD
+  IN IT WITHOUT PERFORMING AT LEAST 'make clean', THINGS _WILL_ BREAK.  IT IS
+  RECOMMENDED THAT YOU RUN 'make distclean' AND THEN RERUN './configure'!
+
 ******************************* REQUIREMENTS **********************************
 
 Necessary Requirements:
@@ -114,4 +118,4 @@ Feature Specific Requirements:
 - Other files recommended for reading: BUGS, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: README.FIRST,v 7.28 2002/02/12 13:48:05 jmallett Exp $
+$Id: README.FIRST,v 7.29 2002/02/13 18:39:14 jmallett Exp $
