@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.25 2003/05/13 05:10:41 metalrock Exp $
+ *   $Id: m_operspy.c,v 1.26 2003/05/17 06:14:23 bill Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -123,7 +123,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.25 $";
+const char *_version = "$Revision: 1.26 $";
 #endif
 
 /*
@@ -156,7 +156,7 @@ static
 void mo_operspy(struct Client *client_p, struct Client *source_p,
 		int parc, char *parv[])
 {
-  char *operspy = (parc > 1) ? parv[1]-1 : NULL;
+  char *operspy = parv[0];
   dlink_node *ptr;
 
 #ifdef OPERSPY_LIST
@@ -200,11 +200,6 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
   int			cur_len = 0;
   int			reply_to_send = NO;
 #endif
-
-  if (operspy != NULL)
-    while (*operspy != 'o' && *operspy != 'O') --operspy;
-  else
-    operspy = "OPERSPY";
 
   if (parc != 3)
   {
