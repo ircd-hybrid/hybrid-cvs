@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.257 2002/05/16 10:18:07 androsyn Exp $
+ *  $Id: client.c,v 7.258 2002/05/17 16:08:09 androsyn Exp $
  */
 
 #include "tools.h"
@@ -202,9 +202,6 @@ void _free_client(struct Client* client_p)
 
       if (client_p->localClient->fd >= 0)
 	fd_close(client_p->localClient->fd);
-#ifndef NDEBUG
-      mem_frob(client_p->localClient, sizeof(struct LocalUser));
-#endif
 
       BlockHeapFree(lclient_heap, client_p->localClient);
       --local_client_count;
@@ -215,9 +212,6 @@ void _free_client(struct Client* client_p)
       --remote_client_count;
     }
 
-#ifndef NDEBUG
-  mem_frob(client_p, sizeof(struct Client));
-#endif
   BlockHeapFree(client_heap, client_p);
 }
 
