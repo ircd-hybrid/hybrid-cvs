@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.255 2002/05/13 04:21:17 androsyn Exp $
+ *  $Id: client.c,v 7.256 2002/05/16 06:17:41 androsyn Exp $
  */
 
 #include "tools.h"
@@ -1286,7 +1286,7 @@ int exit_client(
       SetClosing(source_p);
       
       /* Attempt to flush any queued data */
-      if (source_p->localClient->fd > -1)
+      if (source_p->localClient->fd > -1 || IsDead(source_p))
         send_queued_write(source_p->localClient->fd, source_p);
       if (source_p->flags & FLAGS_IPHASH)
         remove_one_ip(&source_p->localClient->ip);
