@@ -1,3 +1,8 @@
+*** 20001209_17 by db
+- oops, the missing .depend files
+
+
+
 *** 20001209_16 by db
 - rewrote sendto_realops in doing so I decided to combine sendto_realops_flags
   and sendto_realops()... I could have macro'ed sendto_realops() to
@@ -2126,7 +2131,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.771 2000/12/10 03:52:12 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.772 2000/12/10 03:54:27 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
