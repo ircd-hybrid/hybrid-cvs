@@ -18,7 +18,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: packet.c,v 7.44 2001/04/24 04:59:35 androsyn Exp $
+ *   $Id: packet.c,v 7.45 2001/04/24 05:10:25 androsyn Exp $
  */ 
 
 #include <stdio.h>
@@ -187,10 +187,11 @@ read_packet(int fd, void *data)
   if(IsDead(client_p))return;
 
   if (length <= 0) {
-    if(errno == EAGAIN)
+    if(errno == EAGAIN) {
       comm_setselect(client_p->fd, FDLIST_IDLECLIENT, COMM_SELECT_READ,
       		read_packet, client_p, 0);
-      	
+      return;
+    }  	
     error_exit_client(client_p, length);
     return;
   }
