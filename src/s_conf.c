@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.299 2002/04/25 17:53:22 leeh Exp $
+ *  $Id: s_conf.c,v 7.300 2002/04/28 08:14:26 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -152,7 +152,7 @@ conf_dns_callback(void* vptr, adns_answer *reply)
 {
   struct ConfItem *aconf = (struct ConfItem *) vptr;
 
-  if (reply->status == adns_s_ok)
+  if (reply && reply->status == adns_s_ok)
   {
 #ifdef IPV6
     copy_s_addr(IN_ADDR(aconf->ipnum),
