@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.202 2001/03/28 05:50:16 db Exp $
+ *  $Id: s_conf.c,v 7.203 2001/04/03 05:55:24 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -152,6 +152,7 @@ static void conf_dns_callback(void* vptr, adns_answer *reply)
   } 
 
   MyFree(aconf->dns_query);
+  aconf->dns_query = NULL;
 }
 
 /*
