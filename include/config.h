@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: config.h,v 7.134 2002/06/11 01:02:24 androsyn Exp $
+ *  $Id: config.h,v 7.135 2002/06/15 23:07:51 leeh Exp $
  */
 
 #ifndef INCLUDED_config_h
@@ -285,11 +285,16 @@
 #define ANONOPS
 #define HALFOPS
 
+/* END OF CONFIGURABLE OPTIONS */
+
 /* disable them for efnet */
 #ifdef EFNET
 #undef VCHANS
 #undef ANONOPS
 #undef HALFOPS
+#ifndef HIDE_SERVERS_IPS
+#define HIDE_SERVERS_IPS
+#endif
 #endif
 
 /* 
