@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.76 2001/01/05 23:13:35 ejb Exp $
+ *   $Id: parse.c,v 7.77 2001/01/05 23:18:14 ejb Exp $
  */
 #include "parse.h"
 #include "client.h"
@@ -334,7 +334,7 @@ handle_command(struct Message *mptr, struct Client *cptr, struct Client *from, i
   /* check right amount of params is passed... --is */
   if (i < mptr->parameters)
     {
-		sendto_realops_flags(FLAGS_ALL, "Not enough parameters for command %s from servers %s! (%d < %d)", mptr->cmd, i, mptr->parameters);
+		sendto_realops_flags(FLAGS_ALL, "Not enough parameters for command %s from servers %s! (%d < %d)", mptr->cmd, cptr->name, i, mptr->parameters);
 		sendto_one(cptr, form_str(ERR_NEEDMOREPARAMS),
 				   me.name, BadPtr(hpara[0]) ? "*" : hpara[0],
 				   mptr->cmd);
