@@ -16,7 +16,7 @@
 #*   along with this program; if not, write to the Free Software
 #*   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #*
-#*   $Id: Makefile.in,v 7.47 2003/05/08 20:20:20 joshk Exp $
+#*   $Id: Makefile.in,v 7.48 2003/05/09 05:58:27 joshk Exp $
 #*/
 
 RM=@RM@
@@ -93,3 +93,11 @@ install: all
 		find @bindir@ -name '*.old' | xargs ${RM} -f;\
 	fi
 
+rsa_respond:
+	@cd tools;\
+	echo "Creating rsa_respond.tar.gz";\
+	tar cf ../rsa_respond.tar	rsa_respond/README \
+					rsa_respond/respond.c \
+					rsa_respond/Makefile; \
+	cd ..;\
+	gzip rsa_respond.tar
