@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_squit.c,v 1.35 2001/06/05 16:11:27 leeh Exp $
+ *   $Id: m_squit.c,v 1.36 2001/06/21 18:38:45 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -138,7 +138,7 @@ static void ms_squit(struct Client *client_p, struct Client *source_p,
 	  sendto_wallops_flags(FLAGS_WALLOP, &me,
 				 "Remote SQUIT %s from %s (%s)",
 				 found_squit->server_name,
-				 get_client_name(source_p, HIDE_IP), comment);
+				 source_p->name, comment);
 
           sendto_server(NULL, NULL, NULL, NOCAPS, NOCAPS, NOFLAGS,
                         ":%s WALLOPS :Remote SQUIT %s from %s (%s)",
