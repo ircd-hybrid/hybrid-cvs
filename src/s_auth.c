@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.95.2.2 2002/05/26 10:55:57 androsyn Exp $
+ *  $Id: s_auth.c,v 7.95.2.3 2002/05/26 21:19:07 androsyn Exp $
  */
 
 /*
@@ -482,7 +482,7 @@ timeout_auth_queries_event(void *notused)
  * problems arise. -avalon
  */
 static
-void auth_connect_callback(int fd, int error, void *data)
+void auth_connect_callback(IO *io, int error, void *data)
 {
   struct AuthRequest *auth = data;
   struct sockaddr_in us;
@@ -531,7 +531,7 @@ void auth_connect_callback(int fd, int error, void *data)
 #define AUTH_BUFSIZ 128
 
 static void
-read_auth_reply(int fd, void *data)
+read_auth_reply(IO *io, void *data)
 {
   struct AuthRequest *auth = data;
   char* s=(char *)NULL;
@@ -540,13 +540,10 @@ read_auth_reply(int fd, void *data)
   int   count;
   char  buf[AUTH_BUFSIZ + 1]; /* buffer to read auth reply into */
 
-  len = recv(auth->fd, buf, AUTH_BUFSIZ, 0);
-#ifdef __MINGW32__
-  errno = WSAGetLastError();
-#endif
+  len = IO_read(auth->io, buf, AUTH_BUFSIZ, 0);
   if (len < 0 && ignoreErrno(errno))
   {
-    comm_setselect(fd, FDLIST_IDLECLIENT, COMM_SELECT_READ,
+    comm_setselect(io, FDLIST_IDLECLIENT, COMM_SELECT_READ,
                    read_auth_reply, auth, 0);
     return;
   }
@@ -574,8 +571,8 @@ read_auth_reply(int fd, void *data)
 	}
     }
 
-  fd_close(auth->fd);
-  auth->fd = -1;
+  IO_close(auth->io);
+  auth->io = NULL;
   ClearAuth(auth);
   
   if (s == NULL)

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fdlist.h,v 7.25.2.2 2002/05/26 20:13:13 androsyn Exp $
+ *  $Id: fdlist.h,v 7.25.2.3 2002/05/26 21:19:04 androsyn Exp $
  */
 
 #ifndef INCLUDED_fdlist_h
@@ -78,9 +78,8 @@ typedef enum iotype_t {
 typedef struct _fde fde_t;
 
 /* Callback for completed IO events */
-typedef void PF(int, void *);
+typedef void PF(IO *, void *);
 
-typedef void IO(int fd, void *data, size_t count);
 /* Callback for completed connections */
 /* int fd, int status, void * */
 typedef void CNCB(int, int, void *);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.c,v 7.67.2.2 2002/05/26 18:54:12 androsyn Exp $
+ *  $Id: listener.c,v 7.67.2.3 2002/05/26 21:19:07 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -416,7 +416,7 @@ accept_connection(int pfd, void *data)
 			       get_listener_name(listener));
 	  last_oper_notice = CurrentTime;
 	}
-      fd_send(fd, "ERROR :All connections in use\r\n", 32, 0);
+      IO_write(fd, "ERROR :All connections in use\r\n", 32, 0);
       fd_close(fd);
       /* Re-register a new IO request for the next accept .. */
       comm_setselect(listener->fd, FDLIST_SERVICE, COMM_SELECT_READ,

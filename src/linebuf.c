@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: linebuf.c,v 7.81.2.1 2002/05/26 07:03:52 androsyn Exp $
+ *  $Id: linebuf.c,v 7.81.2.2 2002/05/26 21:19:06 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -607,7 +607,7 @@ linebuf_putmsg(buf_head_t *bufhead, const char *format, va_list va_args,
  *        we have a CRLF.
  */
 int
-linebuf_flush(int fd, buf_head_t *bufhead)
+linebuf_flush(IO *io, buf_head_t *bufhead)
 {
   buf_line_t *bufline;
   int retval;
@@ -637,14 +637,11 @@ linebuf_flush(int fd, buf_head_t *bufhead)
     }
 
   /* Now, try writing data */
-  retval = send(fd, bufline->buf + bufhead->writeofs, bufline->len
-		 - bufhead->writeofs, 0);
+  retval = IO_write(io, bufline->buf + bufhead->writeofs, bufline->len
+		 - bufhead->writeofs);
   /* Deal with return code */
   if (retval < 0)
   {
-#ifdef __MINGW32__
-    errno = WSAGetLastError(); 
-#endif  
     return retval;
   }
   if (retval == 0)

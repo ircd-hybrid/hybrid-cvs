@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_select.c,v 7.26.2.1 2002/05/26 07:03:54 androsyn Exp $
+ *  $Id: s_bsd_select.c,v 7.26.2.2 2002/05/26 21:19:07 androsyn Exp $
  */
 
 #include "config.h"
@@ -122,26 +122,25 @@ void init_netio(void)
  * and deregister interest in a pending IO state for a given FD.
  */
 void
-comm_setselect(int fd, fdlist_t list, unsigned int type, PF * handler,
+comm_setselect(IO *io, fdlist_t list, unsigned int type, PF * handler,
     void *client_data, time_t timeout)
 {  
-    fde_t *F = &fd_table[fd];
-    assert(fd >= 0);
+    fde_t *F;  
+    assert(io != NULL);
+    assert(io->iotype == IO_FD);
+    
+    F = io->ioh->F;
     assert(F->flags.open);
-
-#ifdef NOTYET
-    debug(5, 5) ("commSetSelect: FD %d type %d, %s\n", fd, type, handler ? "SET"
- : "CLEAR");
-#endif
+    
     if (type & COMM_SELECT_READ) {
         F->read_handler = handler;
         F->read_data = client_data;
-        select_update_selectfds(fd, COMM_SELECT_READ, handler);
+        select_update_selectfds(io, COMM_SELECT_READ, handler);
     }
     if (type & COMM_SELECT_WRITE) {
         F->write_handler = handler;
         F->write_data = client_data;
-        select_update_selectfds(fd, COMM_SELECT_WRITE, handler);
+        select_update_selectfds(io, COMM_SELECT_WRITE, handler);
     }
     if (timeout)
         F->timeout = CurrentTime + (timeout / 1000);
@@ -165,6 +164,7 @@ comm_select(unsigned long delay)
     int num;
     int fd;
     PF *hdl;
+    IO *io;
     fde_t *F;
     struct timeval to;
     fd_set except_set;
@@ -176,7 +176,7 @@ comm_select(unsigned long delay)
     for (;;) {
         to.tv_sec = 0;
         to.tv_usec = delay * 1000;
-        num = select(highest_fd + 1, &tmpreadfds, &tmpwritefds, &except_set, &to);
+        num = IO_select(highest_fd + 1, &tmpreadfds, &tmpwritefds, &except_set, &to);
         if (num >= 0)
             break;
         if (ignoreErrno(errno))
@@ -193,28 +193,26 @@ comm_select(unsigned long delay)
         return 0;
 
     /* XXX we *could* optimise by falling out after doing num fds ... */
-    for (fd = 0; fd < highest_fd + 1; fd++) {
-        F = &fd_table[fd];
+    for (fd = 0; fd < highest_fd + 1; fd++) 
+    {
+        io = FD_to_IO(fd);
+        F = io->ioh->F;
 
-        if (FD_ISSET(fd, &tmpreadfds)) {
+        if (FD_ISSET(fd, &tmpreadfds)) 
+        {
             hdl = F->read_handler;
             F->read_handler = NULL;
             select_update_selectfds(fd, COMM_SELECT_READ, NULL);
-            if (!hdl) {
-                /* XXX Eek! This is another bad place! */
-            } else {
-                hdl(fd, F->read_data);
-            }
+            if(hdl != NULL)
+               hdl(fd, F->read_data);
         }
-        if (FD_ISSET(fd, &tmpwritefds)) {
+        if (FD_ISSET(fd, &tmpwritefds)) 
+        {
             hdl = F->write_handler;
             F->write_handler = NULL;
             select_update_selectfds(fd, COMM_SELECT_WRITE, NULL);
-            if (!hdl) {
-                /* XXX Eek! This is another bad place! */
-            } else {
+            if (hdl != NULL) 
                 hdl(fd, F->write_data);
-            }
         }
     }
     return 0;

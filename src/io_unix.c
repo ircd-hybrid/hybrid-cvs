@@ -19,18 +19,36 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- * $Id: io_unix.c,v 1.1.2.3 2002/05/26 20:13:16 androsyn Exp $
+ * $Id: io_unix.c,v 1.1.2.4 2002/05/26 21:19:06 androsyn Exp $
  *
  */
 
 
+
+
+
+static IO **fdtable;
+static unsigned long fdtable_size;
+
+static void create_fdtable(int maxfd)
+{
+	fdtable = MyMalloc(sizeof(IO *)*maxfd);
+	fdtable_size = maxfd;
+}
+
+static void realloc_fdtable(int maxfd)
+{
+	fdtable = MyRealloc(fdtable, sizeof(IO *)*maxfd);
+	fdtable_size = maxfd;
+}
+
 void initIO(void)
 {
-	 io_blockheap = BlockHeapCreate(sizeof(IO), 256);
-	 fde_blockheap = BlockHeapCreate(sizeof(fde), 256);
-	
+	io_blockheap = BlockHeapCreate(sizeof(IO), 256);
+	fde_blockheap = BlockHeapCreate(sizeof(fde), 256);
 
 }
+
 
 static int IO_nonblocking(IO *io)
 {
@@ -54,34 +72,39 @@ static int IO_nonblocking(IO *io)
 
 }
 
-/*
- * int IO_getfd(IO *io)
- *
- * Input: The IO handle we want to get an FD from
- * Ouput: The file descriptor or -1 if the handle isn't associated with an FD
- */
-
-int IO_getfd(IO *io)
+IO *FD_to_IO(int fd)
 {
-	if(io->iotype == IO_FD)
-	{
-		
-		return(io->ioh->fde);
-	}
-	return -1;
+	return(fdtable[fd]);		
+}
+
+int IO_select(int n, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout)
+{ 
+	return(select(n, readfds, writefds, expectfds, timeout));
 }
 
 
-IO *IO_accept(IO *io, struct sockaddr, int len)
+IO *IO_accept(IO *io, struct sockaddr *sock, int len)
 {
-	if(io->iotype == IO_FD)
-	{
-		fde_t *F = io->ioh->F;
-		accept
-		
-	}
+ 	if(io->iotype == IO_FD)
+ 	{
+ 	 	int fd;
+ 	 	IO *newio;
+ 	 	fd = accept(io->ioh->F->read_fd, sock, &len);
+ 	 	if(fd < 0)
+	 	 	return NULL;
+ 		newio = IO_newfd(fd, FD_SOCKET);
+		if(IO_nonblocking(io) == -1)
+		{
+			ilog(L_CRIT, "IO_socket: Couldn't set FD %d non blocking: %s", fd, strerror(errno));
+			IO_close(io);
+			return NULL; 
+		}
+		return(newio):
+ 	}
+	errno = EINVAL;
+	return NULL;   
+}	
 
-}
 /*
  * IO *IO_newfd(int fd, int fdtype)
  *
@@ -98,6 +121,13 @@ IO *IO_newfd(int fd_read, int fd_write, int fdtype)
 	io->ioh->F->fd_read = fd_read;
 	io->ioh->F->fd_write = fd_write;
 	io->ioh->F->type = fdtype;
+	if(fd_read == fd_write)
+	{
+		fdtable[fd_read] = io;
+	} else {
+		fdtable[fd_read] = io;
+		fdtable[fd_write] = io;
+	}
 	return(io);
 }
 
@@ -218,8 +248,12 @@ void IO_close(IO *io, void *data, size_t len)
 			{
 				close(io->ioh->F->fd_read);
 				close(io->ioh->F->fd_write);
-			} else
+				fdtable[io->ioh->F->fd_read] = NULL;
+				fdtable[io->ioh->F->fd_write] = NULL;
+			} else {
 				close(io->ioh->F->fd_read);
+				fdtable[io->ioh->F->fd_read] = NULL;
+			}
 			BlockHeapFree(fde_heap, F);
 		}
 	}

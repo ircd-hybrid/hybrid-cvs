@@ -19,21 +19,34 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- * $Id: io_win32.c,v 1.1.2.2 2002/05/26 18:54:12 androsyn Exp $
+ * $Id: io_win32.c,v 1.1.2.3 2002/05/26 21:19:06 androsyn Exp $
  *
  */
+
+
+static IO **fdtable;
+static unsigned long fdtable_size;
+
+static void create_fdtable(int maxfd)
+{
+ 	fdtable = MyMalloc(sizeof(IO *)*maxfd);
+ 	fdtable_size = maxfd;
+}
+ 
+static void realloc_fdtable(int maxfd)
+{
+ 	fdtable = MyRealloc(fdtable, sizeof(IO *)*maxfd);
+ 	fdtable_size = maxfd;
+}
+
 
 
 void initIO(void)
 {
 	 io_blockheap = BlockHeapCreate(sizeof(IO), 256);
 	 fde_blockheap = BlockHeapCreate(sizeof(fde), 256);
-	
-
 }
 
-/* This assumes that the IO handle is an FD!!! */ 
-#define IO_getfd(x) x->ioh->F->fd
 
 
 static int IO_nonblocking(IO *io)
@@ -53,7 +66,14 @@ static int IO_nonblocking(IO *io)
 
 }
 
-
+int IO_select(int n, fd_set *readfds, fd_set *writefds, fd_set *exceptfds, struct timeval *timeout)
+{
+	int ret;
+	ret = select(n, readfds, writefds, expectfds, timeout);
+	if(ret < 0)
+		errno = WSAGetLastError();
+	return(ret);
+}
 
 IO *IO_accept(IO *io, struct sockaddr *sock, int len)
 {
@@ -61,13 +81,13 @@ IO *IO_accept(IO *io, struct sockaddr *sock, int len)
 	{
 		int fd;
 		IO *newio;
-		fd = accept(IO_getfd(io), sock, &len);	
+		fd = accept(io->ioh->F->read_fd, sock, &len);	
 		if(fd < 0)
 		{
 			errno = WSAGetLastError();
 			return NULL;
 		}
-		newio = IO_newfd(fd, FD_SOCKET);
+		newio = IO_newfd(fd, fd, FD_SOCKET);
 		if(IO_nonblocking(io) == -1)
 		{
 			ilog(L_CRIT, "IO_socket: Couldn't set FD %d non blocking: %s", fd, strerror(errno));
@@ -81,22 +101,29 @@ IO *IO_accept(IO *io, struct sockaddr *sock, int len)
 	
 }
 
-IO *IO_newfd(int fd, int fdtype)
+IO *IO_newfd(int read_fd, int write_fd, int fdtype)
 {
 	io = BlockHeapAlloc(io_blockheap);
 	memset(io, 0, sizeof(IO));
 	io->iotype = IO_FD;
 	io->ioh->fde = BlockHeapAlloc(fde_blockheap);
 	memset(io->ioh->fde, 0, sizeof(fde));
-	io->ioh->fde->fd = fd;
+	io->ioh->fde->fd_read = fd_read;
+	io->ioh->fde->fd_write = fd_write;
 	io->ioh->fde->type = fdtype;
+	if(fd_read == fd_write)
+ 	{
+		fdtable[fd_read] = io;
+	} else {
+		fdtable[fd_read] = io;
+		fdtable[fd_write] = io;
+	}
 	return(io);
 }
 
 IO *IO_open(const char *file, int flags, ...)
 {
 	int fd, mode;
-	
 	va_list ap;
 	va_start(ap, flags);
 	mode = va_arg(ap, int);
@@ -105,7 +132,7 @@ IO *IO_open(const char *file, int flags, ...)
 	{
 		return NULL;
 	}
-	return(IO_newfd(FD, FD_FILE));
+	return(IO_newfd(fd, fd, FD_FILE));
 }
 
 IO *IO_socket(int family, int sock_type, int proto, const char *note)
@@ -118,7 +145,7 @@ IO *IO_socket(int family, int sock_type, int proto, const char *note)
 		errno = WSAGetLastError();
 		return NULL;
 	}
-	io = IO_newfd(fd, FD_SOCKET);
+	io = IO_newfd(fd, fd, FD_SOCKET);
 	if(IO_nonblocking(io) == -1)
 	{
 		ilog(L_CRIT, "IO_socket: Couldn't set FD %d non blocking: %s", fd, strerror(errno));
@@ -140,13 +167,13 @@ int IO_write(IO *io, void *data, size_t len)
 				case FD_SOCKET:
 				{
 					int ret;
-					ret = send(F->fd, data, len, 0);
+					ret = send(F->fd_write, data, len, 0);
 					errno = WSAGetLastError();
 					return(ret);
 				}
 				case FD_FILE:
 				{
-					return(write(F->fd, data, len));
+					return(write(F->fd_write, data, len));
 				}
 			}
 		}
@@ -167,13 +194,13 @@ int IO_read(IO *io, void *data, size_t len)
 				case FD_SOCKET:
 				{
 					int ret;
-					ret = recv(F->fd, data, len, 0);
+					ret = recv(F->fd_read, data, len, 0);
 					errno = WSAGetLastError();
 					return(ret);
 				}
 				case FD_FILE:
 				{
-					return(read(F->fd, data, len));
+					return(read(F->fd_read, data, len));
 				}
 			}
 		}
