@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_clearchan.c,v 1.11 2001/03/08 01:55:13 jdc Exp $
+ *   $Id: m_clearchan.c,v 1.12 2001/03/09 14:36:03 fl_ Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -64,7 +64,7 @@ static char    *mbuf;
 
 struct Message clearchan_msgtab = {
   MSG_CLEARCHAN, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, mo_clearchan, mo_clearchan}
+  {m_unregistered, m_not_oper, m_ignore, mo_clearchan}
 };
 
 void
