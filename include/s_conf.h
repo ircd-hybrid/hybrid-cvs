@@ -21,9 +21,12 @@
  */
 
 /*
- * $Id: s_conf.h,v 7.6 2000/01/14 01:16:47 db Exp $
+ * $Id: s_conf.h,v 7.7 2000/01/15 22:46:22 db Exp $
  *
  * $Log: s_conf.h,v $
+ * Revision 7.7  2000/01/15 22:46:22  db
+ * - more cleanups to parse code
+ *
  * Revision 7.6  2000/01/14 01:16:47  db
  * - externalized the old parser, unfortunately, this means a lot
  *   more of the s_conf interface is visible ;-(, can do better in the future...
@@ -463,7 +466,8 @@ extern void conf_add_x_line(struct ConfItem *);
 extern void conf_add_u_line(struct ConfItem *);
 extern void conf_add_q_line(struct ConfItem *);
 extern void conf_add_fields(struct ConfItem*, char*, char *, char*, char *);
-extern struct ConfItem* oldParseOneLine(char* ,struct ConfItem*,int*,int*);
+extern void conf_add_conf(struct ConfItem *);
+extern void oldParseOneLine(char* ,struct ConfItem*,int*,int*);
 
 #endif /* INCLUDED_s_conf_h */
 
