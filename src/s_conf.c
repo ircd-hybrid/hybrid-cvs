@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.186 2001/02/13 08:08:27 db Exp $
+ *  $Id: s_conf.c,v 7.187 2001/02/14 04:54:16 a1kmm Exp $
  */
 
 #include <sys/types.h>
@@ -2259,8 +2259,7 @@ static void clear_out_old_conf(void)
       MaxLinks(cltmp) = -1;
 
     clear_conf();
-    
-    zap_Dlines();
+    clear_Dline_table();
     clear_special_conf(&x_conf);
     clear_special_conf(&u_conf);
     clear_special_conf(&q_conf);

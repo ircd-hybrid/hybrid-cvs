@@ -1,7 +1,7 @@
 /*
  * Yanked out of Net::Patricia by Aaron Sethman <androsyn@ratbox.org>
  *
- * $Id: patricia.c,v 7.5 2001/02/11 02:52:08 a1kmm Exp $
+ * $Id: patricia.c,v 7.6 2001/02/14 04:54:16 a1kmm Exp $
  * Dave Plonka <plonka@doit.wisc.edu>
  *
  * This product includes software developed by the University of Michigan,
@@ -288,7 +288,7 @@ void Clear_Patricia(patricia_tree_t * patricia, void_fn_t func)
 void Destroy_Patricia(patricia_tree_t * patricia, void_fn_t func)
 {
 	Clear_Patricia(patricia, func);
-	MyFree(patricia);
+	/* MyFree(patricia); */
 	num_active_patricia--;
 }
 
