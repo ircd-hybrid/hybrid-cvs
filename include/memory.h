@@ -1,4 +1,4 @@
-/* $Id: memory.h,v 7.18 2001/06/26 20:08:01 androsyn Exp $ */
+/* $Id: memory.h,v 7.19 2001/08/13 04:48:39 androsyn Exp $ */
 
 #ifndef _I_MEMORY_H
 #define _I_MEMORY_H
@@ -46,6 +46,7 @@ extern inline void _DupString(char **x, const char *y);
 #define MyFree(x) _MyFree(x)
 #define DupString(x,y) _DupString(&x, y)
 #endif /* !MEMDEBUG */
+
 
 
 
