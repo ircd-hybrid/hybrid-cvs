@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/contrib
 #
-# $Id: Makefile.in,v 1.25 2001/10/04 21:26:42 androsyn Exp $
+# $Id: Makefile.in,v 1.26 2001/10/11 20:15:08 wcampbel Exp $
 #
 CC		= @CC@
 RM		= @RM@
@@ -27,12 +27,9 @@ INCLUDES	= -I../include $(SSL_INCLUDES)
 CPPFLAGS	= ${INCLUDES} @CPPFLAGS@
 
 SRCS =                          \
-  m_clearchan.c			\
-  m_jupe.c			\
-  m_nickinfo.c                  \
-  m_opme.c                      \
   m_map.c			\
   m_mkpasswd.c                  \
+  m_flags.c                     \
   spy_admin_notice.c		\
   spy_info_notice.c		\
   spy_links_notice.c		\
