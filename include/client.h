@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.85 2001/01/22 19:43:14 db Exp $
+ * $Id: client.h,v 7.86 2001/01/23 00:42:33 ejb Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -224,12 +224,13 @@ struct LocalUser
   int               priority;
   struct Listener*  listener;   /* listener accepted from */
   dlink_list        confs;      /* Configuration record associated */
+
 #ifdef IPV6
-  struct in6_addr    ip6;       /* Client's IP*/
+  struct sockaddr_in6   ip;
 #else
-  struct in_addr	ip;	/* non-ipv6 version */
+  struct sockaddr_in	ip;
 #endif
-  unsigned short    port;       /* and the remote port# too :-) */
+//  unsigned short    port;       /* and the remote port# too :-) */
   struct DNSReply*  dns_reply;  /* result returned from resolver query */
   unsigned long     serverMask; /* Only used for Lazy Links */
   time_t            last_nick_change;

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.123 2001/01/20 06:28:21 db Exp $
+ *  $Id: s_user.c,v 7.124 2001/01/23 00:42:49 ejb Exp $
  */
 
 #include <sys/types.h>
@@ -1021,11 +1021,7 @@ int user_mode(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 		    reattach to "old" iline
 		    - einride
 		  */
-#ifdef IPV6
-		  remove_one_ip(sptr->localClient->ip6);
-#else
-		  remove_one_ip(sptr->localClient->ip.s_addr);
-#endif
+		  remove_one_ip((struct sockaddr *)&sptr->localClient->ip);
 		  check_client(sptr->servptr, sptr, sptr->username);
                 }
             }

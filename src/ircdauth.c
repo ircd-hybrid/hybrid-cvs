@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: ircdauth.c,v 7.34 2001/01/20 06:28:20 db Exp $
+ *   $Id: ircdauth.c,v 7.35 2001/01/23 00:42:46 ejb Exp $
  */
 
 #include <stdio.h>
@@ -53,6 +53,7 @@
 #include "send.h"
 #include "memory.h"
 #include "s_serv.h"
+#include "config.h"
 
 static PF CompleteIAuthConnection;
 static PF ParseIAuth;

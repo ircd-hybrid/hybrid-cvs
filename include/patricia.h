@@ -1,5 +1,5 @@
 /*
- * $Id: patricia.h,v 7.2 2001/01/19 00:30:33 db Exp $
+ * $Id: patricia.h,v 7.3 2001/01/23 00:42:35 ejb Exp $
  * Dave Plonka <plonka@doit.wisc.edu>
  *
  * This product includes software developed by the University of Michigan,
@@ -30,6 +30,7 @@
 #include "s_conf.h"
 #include "send.h"
 #include "memory.h"
+#include "config.h"
 
 
 
@@ -58,7 +59,7 @@ typedef struct _prefix_t {
     int ref_count;		/* reference count */
     union {
 		struct in_addr sin;
-#ifdef HAVE_IPV6
+#ifdef IPV6
 		struct in6_addr sin6;
 #endif /* IPV6 */
     } add;
@@ -81,6 +82,7 @@ typedef struct _patricia_tree_t {
 } patricia_tree_t;
 
 
+patricia_node_t *match_ip(patricia_tree_t *tree, struct sockaddr *ip);
 patricia_node_t *match_string(patricia_tree_t *tree, const char *string);
 patricia_node_t *match_exact_string(patricia_tree_t *tree, const char *string);
 patricia_node_t *patricia_search_exact (patricia_tree_t *patricia, prefix_t *prefix);

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: irc_string.h,v 7.13 2001/01/18 17:32:14 ejb Exp $
+ *   $Id: irc_string.h,v 7.14 2001/01/23 00:42:34 ejb Exp $
  */
 #ifndef INCLUDED_irc_string_h
 #define INCLUDED_irc_string_h
@@ -27,7 +27,7 @@
 #ifndef INCLUDED_ircd_defs_h
 #include "ircd_defs.h"        /* buffer sizes */
 #endif
-
+#include <sys/socket.h>
 #include <netinet/in.h>
 
 /*
@@ -72,6 +72,15 @@ int ircsnprintf(char*, int, const char*);
  * inetntoa - optimized inet_ntoa
  */
 const char* inetntoa(const char* in_addr);
+
+/* 
+ * inetntop() 
+ * inetpton()
+ * portable interfaces for inet_ntop() and inet_pton()
+ */
+const char *inetntop(int af, const void *src, char *dst, unsigned int size);
+int inetpton(int af, const char *src, void *dst);
+                                
 /*
  * strncpy_irc - optimized strncpy
  */

@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.113 2001/01/21 19:21:36 db Exp $
+ * $Id: ircd_parser.y,v 1.114 2001/01/23 00:42:45 ejb Exp $
  */
 
 %{
@@ -27,6 +27,8 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include <string.h>
+
+#include "config.h"
 #include "ircd.h"
 #include "tools.h"
 #include "s_conf.h"
@@ -310,7 +312,10 @@ serverinfo_network_desc: NETWORK_DESC '=' QSTRING ';'
 
 serverinfo_vhost:       VHOST '=' IP_TYPE ';'
   {
-    ServerInfo.ip = yylval.ip_entry.ip;
+#ifndef IPV6
+/* XXX: Broken for IPv6 */
+    ServerInfo.ip.s_addr = yylval.ip_entry.ip;
+#endif
   };
 
 serverinfo_max_clients: T_MAX_CLIENTS '=' NUMBER ';'

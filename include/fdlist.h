@@ -1,7 +1,7 @@
 /*
  * fdlist.h
  *
- * $Id: fdlist.h,v 7.12 2000/12/01 15:01:45 adrian Exp $
+ * $Id: fdlist.h,v 7.13 2001/01/23 00:42:34 ejb Exp $
  */
 #ifndef INCLUDED_fdlist_h
 #define INCLUDED_fdlist_h
@@ -14,6 +14,8 @@
 #include <sys/socket.h>		/* Socket structs */
 #include <netinet/in.h>
 #endif
+
+#include "config.h"
 
 #define FD_DESC_SZ 32
 
@@ -104,9 +106,13 @@ struct _fde {
     } flags;
     struct {
         /* We don't need the host here ? */
+#ifdef IPV6
+	struct sockaddr_in6 S;
+	struct sockaddr_in6 hostaddr;
+#else
         struct sockaddr_in S;		/* What we're bound to */
-        struct in_addr hostaddr;	/* Where we are connecting to */
-        u_short port;
+	struct sockaddr_in hostaddr;
+#endif
         CNCB *callback;
         void *data;
         /* We'd also add the retry count here when we get to that -- adrian */

@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: ircd_defs.h,v 7.12 2001/01/18 09:07:28 ejb Exp $
+ * $Id: ircd_defs.h,v 7.13 2001/01/23 00:42:34 ejb Exp $
  *
  * ircd_defs.h - Global size definitions for record entries used
  * througout ircd. Please think 3 times before adding anything to this
@@ -93,5 +93,10 @@ extern int         BH_CurrentLine;
 #define free_dlink_node(x) _free_dlink_node((x))
 #endif
 
+#ifdef IPV6
+#define INADDR_IRC in6_addr *
+#else
+#define INADDR_IRC in_addr *
+#endif
 
 #endif /* INCLUDED_ircd_defs_h */
