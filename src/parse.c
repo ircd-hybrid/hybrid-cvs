@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.174 2003/06/06 04:31:50 michael Exp $
+ *  $Id: parse.c,v 7.175 2003/06/07 03:06:48 db Exp $
  */
 
 #include "stdinc.h"
@@ -58,6 +58,21 @@
  *   -> [MessageTree *] -> [MessageTree *] -> 'e' and matches
  *
  *				 'i' -> [MessageTree *] -> 'e' and matches
+ *
+ * BUGS (Limitations!)
+ * 
+ * I designed this trie to parse ircd commands. Hence it currently
+ * casefolds. This is trivial to fix by increasing MAXPTRLEN.
+ * This trie also "folds" '{' etc. down. This means, the input to this
+ * trie must be alpha tokens only. This again, is a limitation that
+ * can be overcome by increasing MAXPTRLEN to include upper/lower case
+ * at the expense of more memory. At the extreme end, you could make
+ * MAXPTRLEN 128.
+ *
+ * This is also not a patricia trie. On short ircd tokens, this is
+ * not likely going to matter. 
+ *
+ * Diane Bruce (Dianora), June 6 2003
  */
 
 #define MAXPTRLEN	32
