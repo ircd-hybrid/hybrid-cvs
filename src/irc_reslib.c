@@ -92,9 +92,7 @@
 #define DNS_LABELTYPE_BITSTRING 0x41
 #define MAXLINE 128
 
-/* $Id: irc_reslib.c,v 7.18 2003/06/05 15:47:44 adx Exp $ */
-
-static FBFILE *file;
+/* $Id: irc_reslib.c,v 7.19 2003/06/06 04:31:50 michael Exp $ */
 
 struct irc_ssaddr irc_nsaddr_list[IRCD_MAXNS];
 int irc_nscount = 0;
@@ -130,9 +128,9 @@ static int irc_decode_bitstring(const char **cpp, char *dn, const char *eom);
 static int irc_ns_name_compress(const char *src, unsigned char *dst, size_t dstsiz,
     const unsigned char **dnptrs, const unsigned char **lastdnptr);
 static int irc_dn_find(const unsigned char *, const unsigned char *, const unsigned char * const *,
-    const unsigned char * const *);
+                       const unsigned char * const *);
 static int irc_encode_bitsring(const char **, const char *, unsigned char **, unsigned char **, 
-    const char *);
+                               const char *);
 static int mklower(int ch);
   
 int
@@ -155,13 +153,13 @@ parse_resvconf(void)
   char *opt;
   char *arg;
   char input[MAXLINE];
+  FBFILE *file;
 
   /* XXX "/etc/resolv.conf" should be from a define in setup.h perhaps
    * for cygwin support etc. this hardcodes it to unix for now -db
    */
-
   if ((file = fbopen("/etc/resolv.conf", "r")) == NULL)
-    return (-1);
+    return(-1);
 
   while (fbgets(input, MAXLINE, file) != NULL)
   {
@@ -203,16 +201,15 @@ parse_resvconf(void)
       add_nameserver(arg);
   }
 
-  (void)fbclose(file);
-
+  fbclose(file);
   return(0);
 }
 
 /* add_nameserver()
  *
- * input  - either an IPV4 address in dotted quad
- *      or an IPV6 address in : format
- * output - NONE
+ * input        - either an IPV4 address in dotted quad
+ *                or an IPV6 address in : format
+ * output       - NONE
  * side effects - entry in irc_nsaddr_list is filled in as needed
  */
 static void
@@ -1115,6 +1112,7 @@ mklower(int ch)
 {
   if (ch >= 0x41 && ch <= 0x5A)
     return(ch + 0x20);
+
   return(ch);
 }
 

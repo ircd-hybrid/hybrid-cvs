@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.303 2003/06/04 06:25:54 michael Exp $
+ *  $Id: ircd_parser.y,v 1.304 2003/06/06 04:31:50 michael Exp $
  */
 
 %{
@@ -60,13 +60,12 @@ static struct ConfItem *yy_aconf = NULL;
 static struct cluster *cptr = NULL;
 static struct Class *yy_class = NULL;
 
-static dlink_list aconf_list = {NULL, NULL, 0};
-static dlink_list hub_confs_list = {NULL, NULL, 0};
-static dlink_list leaf_confs_list = {NULL, NULL, 0};
+static dlink_list aconf_list      = { NULL, NULL, 0 };
+static dlink_list hub_confs_list  = { NULL, NULL, 0 };
+static dlink_list leaf_confs_list = { NULL, NULL, 0 };
 
 static char *resv_reason;
 static char *listener_address;
-extern int ypass;
 
 static void
 init_parser_confs(void)

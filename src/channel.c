@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.389 2003/06/04 00:49:24 joshk Exp $
+ *  $Id: channel.c,v 7.390 2003/06/06 04:31:49 michael Exp $
  */
 
 #include "stdinc.h"
@@ -110,8 +110,10 @@ add_user_to_channel(struct Channel *chptr, struct Client *who,
   who->user->joined++;
 
   dlinkAdd(ms, &ms->channode, &chptr->members);
+
   if (MyConnect(who))
     dlinkAdd(ms, &ms->locchannode, &chptr->locmembers);
+
   dlinkAdd(ms, &ms->usernode, &who->user->channel);
 }
 
@@ -135,18 +137,22 @@ remove_user_from_channel(struct Channel *chptr, struct Client *who)
   assert(ms != NULL);
 
   dlinkDelete(&ms->channode, &chptr->members);
+
   if (MyConnect(who))
     dlinkDelete(&ms->locchannode, &chptr->locmembers);
+
   dlinkDelete(&ms->usernode, &who->user->channel);
 
-  BlockHeapFree(member_heap, (void*)ms);
+  BlockHeapFree(member_heap, ms);
   who->user->joined--;
+
   if (--chptr->users == 0)
   {
     destroy_channel(chptr);
-    return 1;
+    return(1);
   }
-  return 0;
+
+  return(0);
 }
 
 /* send_members()
@@ -156,8 +162,8 @@ remove_user_from_channel(struct Channel *chptr, struct Client *who)
  * side effects -
  */
 static void
-send_members(struct Client *client_p, struct Channel *chptr, char *lmodebuf,
-             char *lparabuf)
+send_members(struct Client *client_p, struct Channel *chptr,
+             char *lmodebuf, char *lparabuf)
 {
   struct Membership *ms;
   dlink_node *ptr;
@@ -344,10 +350,11 @@ free_channel_list(dlink_list *list)
 static void
 destroy_channel(struct Channel *chptr)
 {
-  dlink_node *ptr;
   dlink_node *m;
+  dlink_node *ptr;
+  dlink_node *ptr_next;
 
-  while ((ptr = chptr->invites.head))
+  DLINK_FOREACH_SAFE(ptr, ptr_next, chptr->invites.head)
     del_invite(chptr, ptr->data);
 
   /* free all bans/exceptions/denies */
@@ -357,6 +364,7 @@ destroy_channel(struct Channel *chptr)
 
   /* Free the topic */
   free_topic(chptr);
+
   /* This should be redundant at this point but JIC */
   chptr->banlist.head = chptr->exceptlist.head = chptr->invexlist.head = NULL;
   chptr->banlist.tail = chptr->exceptlist.tail = chptr->invexlist.tail = NULL;
@@ -541,7 +549,7 @@ get_member_status(struct Membership *ms, int combine)
   char *p;
 
   if (ms == NULL)
-    return "";
+    return("");
 
   p = buffer;
   if (ms->flags & CHFL_CHANOP)
@@ -554,7 +562,7 @@ get_member_status(struct Membership *ms, int combine)
     *p++ = '+';
   *p = '\0';
 
-  return (const char *)buffer;
+  return(buffer);
 }
 
 /* is_banned()
@@ -629,7 +637,7 @@ check_banned(struct Channel *chptr, const char *s, const char *s2)
           match(actualExcept->banstr, s2) ||
           match_cidr(actualExcept->banstr, s2))
       {
-        return CHFL_EXCEPTION;
+        return(CHFL_EXCEPTION);
       }
     }
   }
@@ -751,8 +759,8 @@ find_channel_link(struct Client *client_p, struct Channel *chptr)
   dlink_node *ptr;
 
   DLINK_FOREACH(ptr, client_p->user->channel.head)
-    if (((struct Membership *) ptr->data)->chptr == chptr)
-      return((struct Membership *) ptr->data);
+    if (((struct Membership *)ptr->data)->chptr == chptr)
+      return((struct Membership *)ptr->data);
 
   return(NULL);
 }
@@ -903,15 +911,16 @@ check_splitmode(void *unused)
  * output       - Success or failure
  * side effects - Allocates a new topic
  */
-int
+static void
 allocate_topic(struct Channel *chptr)
 {
   void *ptr;
 
   if (chptr == NULL)
-    return(FALSE);
+    return;
 
   ptr = BlockHeapAlloc(topic_heap);  
+
   /* Basically we allocate one large block for the topic and
    * the topic info.  We then split it up into two and shove it
    * in the chptr 
@@ -920,7 +929,6 @@ allocate_topic(struct Channel *chptr)
   chptr->topic_info  = (char *)ptr + TOPICLEN+1;
   *chptr->topic      = '\0';
   *chptr->topic_info = '\0';
-  return(TRUE);
 }
 
 void

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.380 2003/06/03 14:10:06 michael Exp $
+ *  $Id: client.c,v 7.381 2003/06/06 04:31:50 michael Exp $
  */
 
 #include "stdinc.h"
@@ -711,8 +711,8 @@ get_client_name(struct Client *client, int showip)
 
   assert(client != NULL);
 
-  if (0 == irccmp(client->name, client->host))
-    return client->name;
+  if (irccmp(client->name, client->host) == 0)
+    return(client->name);
 
 #ifdef HIDE_SERVERS_IPS
   if (IsServer(client) || IsConnecting(client) || IsHandshake(client))

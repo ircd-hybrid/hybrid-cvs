@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.145 2003/06/04 00:49:18 joshk Exp $
+ *  $Id: channel.h,v 7.146 2003/06/06 04:31:46 michael Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -46,25 +46,24 @@ struct Channel
 
   struct Channel *hnextch;
 
-  struct Mode     mode;
-  char            *topic;
-  char            *topic_info;
-  time_t          topic_time;
-  int             users;      /* user count */
-  unsigned long   lazyLinkChannelExists;
-  time_t          last_knock;           /* don't allow knock to flood */
+  struct Mode mode;
+  char *topic;
+  char *topic_info;
+  time_t topic_time;
+  int users; /* user count */
+  unsigned long lazyLinkChannelExists;
+  time_t last_knock; /* don't allow knock to flood */
 
-  dlink_list      members;
-  dlink_list      locmembers;  /* local members are here too */
+  dlink_list members;
+  dlink_list locmembers;  /* local members are here too */
+  dlink_list invites;
+  dlink_list banlist;
+  dlink_list exceptlist;
+  dlink_list invexlist;
 
-  dlink_list      invites;
-  dlink_list      banlist;
-  dlink_list      exceptlist;
-  dlink_list      invexlist;
-
-  time_t          first_received_message_time; /* channel flood control */
-  int             received_number_of_privmsgs;
-  int             flood_noticed;
+  time_t first_received_message_time; /* channel flood control */
+  int received_number_of_privmsgs;
+  int flood_noticed;
 
   time_t channelts;
   char chname[CHANNELLEN + 1];
@@ -72,9 +71,9 @@ struct Channel
 
 struct Membership
 {
-  dlink_node channode;      /* link to chptr->members */
-  dlink_node locchannode;   /* link to chptr->locmembers */
-  dlink_node usernode;      /* link to source_p->user->channel */
+  dlink_node channode;    /* link to chptr->members          */
+  dlink_node locchannode; /* link to chptr->locmembers       */
+  dlink_node usernode;    /* link to source_p->user->channel */
   struct Channel *chptr;
   struct Client *client_p;
   unsigned int flags;
@@ -130,9 +129,7 @@ struct Ban          /* also used for exceptions -orabidoo */
 
 extern struct Membership *find_channel_link(struct Client *client_p,
                                             struct Channel *chptr);
-
 extern void set_channel_topic(struct Channel *chptr, const char *topic,
                               const char *topic_info, time_t topicts); 
 extern void free_topic(struct Channel *);
-extern int allocate_topic(struct Channel *);
 #endif  /* INCLUDED_channel_h */

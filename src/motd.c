@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: motd.c,v 7.32 2003/05/18 23:29:27 michael Exp $
+ *  $Id: motd.c,v 7.33 2003/06/06 04:31:50 michael Exp $
  */
 
 #include "stdinc.h"
@@ -76,11 +76,13 @@ send_message_file(struct Client *source_p, MessageFile *motdToPrint)
       
       if (motdToPrint->contentsOfFile == NULL)
       {
-        sendto_one(source_p, form_str(ERR_NOMOTD), me.name, nick);
+        sendto_one(source_p, form_str(ERR_NOMOTD),
+                   me.name, nick);
         return(0);
       }
 
-      sendto_one(source_p, form_str(RPL_MOTDSTART), me.name, nick, me.name);
+      sendto_one(source_p, form_str(RPL_MOTDSTART),
+                 me.name, nick, me.name);
 
       for (linePointer = motdToPrint->contentsOfFile; linePointer;
            linePointer = linePointer->next)

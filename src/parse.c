@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.173 2003/06/05 15:02:46 adx Exp $
+ *  $Id: parse.c,v 7.174 2003/06/06 04:31:50 michael Exp $
  */
 
 #include "stdinc.h"
@@ -95,11 +95,10 @@ static char buffer[1024];
 
 static int cancel_clients(struct Client *, struct Client *, char *);
 static void remove_unknown(struct Client *, char *, char *);
-static void do_numeric(char [], struct Client *, struct Client *, int, char **);
+static void do_numeric(char[], struct Client *, struct Client *, int, char **);
 static void handle_command(struct Message *, struct Client *, struct Client *, unsigned int, char **);
 static struct Message *find_command(const char *);
-static void recurse_report_messages(struct Client *source_p,
-				    struct MessageTree *mtree);
+static void recurse_report_messages(struct Client *source_p, struct MessageTree *mtree);
 static void add_msg_element(struct MessageTree *mtree_p, struct Message *msg_p, const char *cmd);
 static void del_msg_element(struct MessageTree *mtree_p, const char *cmd);
 
@@ -418,14 +417,14 @@ add_msg_element(struct MessageTree *mtree_p, struct Message *msg_p, const char *
   if ((ntree_p = mtree_p->pointers[*cmd & (MAXPTRLEN-1)]) != NULL)
   {
     mtree_p->links++;
-    add_msg_element(ntree_p, msg_p, ++cmd);
+    add_msg_element(ntree_p, msg_p, cmd+1);
   }
   else
   {
     ntree_p = (struct MessageTree *)MyMalloc(sizeof(struct MessageTree));
     mtree_p->pointers[*cmd & (MAXPTRLEN-1)] = ntree_p;
     mtree_p->links++;
-    add_msg_element(ntree_p, msg_p, ++cmd);
+    add_msg_element(ntree_p, msg_p, cmd+1);
   }
 }
 
@@ -448,6 +447,7 @@ del_msg_element(struct MessageTree *mtree_p, const char *cmd)
   {
     del_msg_element(ntree_p, cmd+1);
     ntree_p->links--;
+
     if (ntree_p != &msg_tree) /* this would be bad if it happened */
     {
       if (ntree_p->links == 0)
@@ -470,9 +470,8 @@ static struct Message *
 msg_tree_parse(const char *cmd, struct MessageTree *root)
 {
   struct MessageTree *mtree;
-  for (mtree = root->pointers[(*cmd++) & (MAXPTRLEN-1)];
-           mtree != NULL;
-               mtree = mtree->pointers[(*cmd++) & (MAXPTRLEN-1)])
+  for (mtree = root->pointers[(*cmd++) & (MAXPTRLEN-1)]; mtree != NULL;
+       mtree = mtree->pointers[(*cmd++) & (MAXPTRLEN-1)])
   {
     if ((mtree->msg != NULL) && (*cmd == '\0'))
       return(mtree->msg);

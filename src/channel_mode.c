@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.107 2003/06/04 06:25:54 michael Exp $
+ *  $Id: channel_mode.c,v 7.108 2003/06/06 04:31:50 michael Exp $
  */
 
 #include "stdinc.h"
@@ -142,14 +142,12 @@ check_string(char *s)
   if (EmptyString(s))
     return(star);
 
-  else {
-    for (; *s; ++s)
+  for (; *s; ++s)
+  {
+    if (IsSpace(*s))
     {
-      if (IsSpace(*s))
-      {
-        *s = '\0';
-        break;
-      }
+      *s = '\0';
+      break;
     }
   }
 
@@ -482,12 +480,13 @@ fix_key(char *arg)
 {
   unsigned char *s, *t, c;
 
-  for (s = t = (unsigned char *) arg; (c = *s); s++)
+  for (s = t = (unsigned char *)arg; (c = *s); s++)
   {
     c &= 0x7f;
     if (c != ':' && c > ' ' && c != ',')
       *t++ = c;
   }
+
   *t = '\0';
   return(arg);
 }
@@ -506,12 +505,13 @@ fix_key_old(char *arg)
 {
   unsigned char *s, *t, c;
 
-  for (s = t = (unsigned char *) arg; (c = *s); s++)
+  for (s = t = (unsigned char *)arg; (c = *s); s++)
   {
     c &= 0x7f;
     if ((c != 0x0a) && (c != ':') && (c != 0x0d) && (c != ','))
       *t++ = c;
   }
+
   *t = '\0';
   return(arg);
 }
@@ -520,14 +520,14 @@ fix_key_old(char *arg)
  * once per call  -orabidoo
  */
 
-#define SM_ERR_NOTS             0x00000001      /* No TS on channel */
-#define SM_ERR_NOOPS            0x00000002      /* No chan ops */
-#define SM_ERR_UNKNOWN          0x00000004
-#define SM_ERR_RPL_B            0x00000008
-#define SM_ERR_RPL_E            0x00000010
-#define SM_ERR_NOTONCHANNEL     0x00000020      /* Not on channel */
-#define SM_ERR_RESTRICTED       0x00000040      /* Restricted chanop */
-#define SM_ERR_RPL_I            0x00000080
+#define SM_ERR_NOTS         0x00000001 /* No TS on channel  */
+#define SM_ERR_NOOPS        0x00000002 /* No chan ops       */
+#define SM_ERR_UNKNOWN      0x00000004
+#define SM_ERR_RPL_B        0x00000008
+#define SM_ERR_RPL_E        0x00000010
+#define SM_ERR_NOTONCHANNEL 0x00000020 /* Not on channel    */
+#define SM_ERR_RESTRICTED   0x00000040 /* Restricted chanop */
+#define SM_ERR_RPL_I        0x00000080
 
 /* Now lets do some stuff to keep track of what combinations of
  * servers exist...

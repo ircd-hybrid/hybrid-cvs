@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.112 2003/06/03 16:57:46 joshk Exp $
+ *  $Id: packet.c,v 7.113 2003/06/06 04:31:50 michael Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -289,16 +289,12 @@ read_ctrl_packet(int fd, void *data)
 #ifndef NDEBUG
   struct hook_io_data hdata;
 #endif
- 
- 
   assert(lserver != NULL);
     
   reply = &lserver->slinkrpl;
 
-  if(IsDefunct(server))
-  {
+  if (IsDefunct(server))
     return;
-  }
 
   if (!reply->command)
   {
@@ -318,7 +314,7 @@ read_ctrl_packet(int fd, void *data)
     reply->command = tmp[0];
   }
 
-  for(replydef = slinkrpltab; replydef->handler; replydef++)
+  for (replydef = slinkrpltab; replydef->handler; replydef++)
   {
     if (replydef->replyid == (unsigned int)reply->command)
       break;
@@ -399,7 +395,7 @@ nodata:
   comm_setselect(fd, FDLIST_SERVER, COMM_SELECT_READ,
                  read_ctrl_packet, server, 0);
 }
-  
+
 /*
  * read_packet - Read a 'packet' of data from a connection and process it.
  */
@@ -414,7 +410,7 @@ read_packet(int fd, void *data)
 #endif
   if (IsDefunct(client_p))
     return;
-  
+
   fd_r = client_p->localClient->fd;
 
 #ifndef HAVE_SOCKETPAIR
@@ -434,12 +430,13 @@ read_packet(int fd, void *data)
 
   if (length <= 0)
   {
-    if((length == -1) && ignoreErrno(errno))
+    if ((length == -1) && ignoreErrno(errno))
     {
       comm_setselect(fd_r, FDLIST_IDLECLIENT, COMM_SELECT_READ,
-      		read_packet, client_p, 0);
+                     read_packet, client_p, 0);
       return;
     }  	
+
     dead_link_on_read(client_p, length);
     return;
   }

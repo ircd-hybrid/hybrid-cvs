@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_die.c,v 1.30 2003/05/28 21:11:55 bill Exp $
+ *  $Id: m_die.c,v 1.31 2003/06/06 04:31:48 michael Exp $
  */
 
 #include "stdinc.h"
@@ -58,7 +58,7 @@ _moddeinit(void)
   mod_del_cmd(&die_msgtab);
 }
 
-const char *_version = "$Revision: 1.30 $";
+const char *_version = "$Revision: 1.31 $";
 #endif
 
 /*
@@ -110,14 +110,10 @@ mo_die(struct Client *client_p, struct Client *source_p,
                me.name, get_client_name(source_p, HIDE_IP));
   }
 
-  /*
-   * XXX we called flush_connections() here. Read server_reboot()
-   * for an explanation as to what we should do.
-   *     -- adrian
-   */
   ilog(L_NOTICE, "Server terminated by %s", get_oper_name(source_p));
-  /* 
-   * this is a normal exit, tell the os it's ok 
+  send_queued_all();
+
+  /* this is a normal exit, tell the os it's ok 
    */
   unlink(pidFileName);
   exit(0);
