@@ -1,5 +1,5 @@
 /*
- * $Id: adns.c,v 7.26 2001/10/04 14:22:22 androsyn Exp $
+ * $Id: adns.c,v 7.27 2001/10/04 14:25:38 androsyn Exp $
  * adns.c  functions to enter libadns 
  *
  * Written by Aaron Sethman <androsyn@ratbox.org>
@@ -208,7 +208,7 @@ void adns_getaddr(struct irc_inaddr *addr, int aftype,
                   struct DNSQuery *req)
 {
  struct irc_sockaddr ipn;
- assert(dns_state->nserver > 0);
+ assert(dns_state->nservers > 0);
 #ifdef IPV6
  if (aftype == AF_INET6)
   {
