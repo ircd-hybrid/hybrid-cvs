@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.130 2003/05/18 23:29:24 michael Exp $
+ *  $Id: m_kline.c,v 1.131 2003/05/20 06:51:47 michael Exp $
  */
 
 #include "stdinc.h"
@@ -76,7 +76,7 @@ _moddeinit(void)
   mod_del_cmd(&kline_msgtab);
   mod_del_cmd(&dline_msgtab);
 }
-const char *_version = "$Revision: 1.130 $";
+const char *_version = "$Revision: 1.131 $";
 #endif
 
 /* Local function prototypes */
@@ -289,7 +289,7 @@ ms_kline(struct Client *client_p, struct Client *source_p,
     {
       sendto_realops_flags(UMODE_ALL, L_ALL,
              "*** %s!%s@%s on %s is requesting an Invalid K-Line for [%s@%s] [%s]",
-             source_p->name, source_p->username, source_p->host, source_p->user->server,
+             source_p->name, source_p->username, source_p->host, source_p->user->server->name,
              kuser, khost, kreason);
       return;
     }
@@ -298,7 +298,7 @@ ms_kline(struct Client *client_p, struct Client *source_p,
     {
        sendto_realops_flags(UMODE_ALL, L_ALL, 
              "*** %s!%s@%s on %s is requesting a K-Line without %d wildcard chars for [%s@%s] [%s]",
-             source_p->name, source_p->username, source_p->host, source_p->user->server,
+             source_p->name, source_p->username, source_p->host, source_p->user->server->name,
              ConfigFileEntry.min_nonwildcard, kuser, khost, kreason);
        return;
      }
@@ -312,7 +312,7 @@ ms_kline(struct Client *client_p, struct Client *source_p,
   cur_time = CurrentTime;
   current_date = smalldate(cur_time);
 
-  if (find_u_conf(source_p->user->server,
+  if (find_u_conf(source_p->user->server->name,
 		  source_p->username, source_p->host))
     {
       /* We check if the kline already exists after we've announced its 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_debug.c,v 7.83 2003/05/19 19:10:54 stu Exp $
+ *  $Id: s_debug.c,v 7.84 2003/05/20 06:51:52 michael Exp $
  */
 
 #include "stdinc.h"
@@ -39,7 +39,6 @@
 #include "resv.h"
 #include "s_conf.h"
 #include "s_log.h"
-#include "scache.h"
 #include "send.h"
 #include "whowas.h"
 #include "memory.h"
@@ -156,7 +155,6 @@ count_memory(struct Client *source_p)
   int user_channels = 0;        /* users in channels */
   int aways_counted = 0;   
   int number_ips_stored;        /* number of ip addresses hashed */
-  int number_servers_cached;    /* number of servers cached by scache */
 
   unsigned long channel_memory = 0;
   unsigned long channel_ban_memory = 0;
@@ -166,7 +164,6 @@ count_memory(struct Client *source_p)
   unsigned long away_memory = 0;       /* memory used by aways */
   unsigned long wwm = 0;               /* whowas array memory used */
   unsigned long conf_memory = 0;       /* memory used by conf lines */
-  unsigned long mem_servers_cached;    /* memory used by scache */
   unsigned long mem_ips_stored;        /* memory used by ip address hash */
 
   unsigned long client_hash_table_size = 0;
@@ -360,13 +357,6 @@ count_memory(struct Client *source_p)
              CH_MAX, channel_hash_table_size , R_MAX,
              resv_hash_table_size, U_MAX, id_hash_table_size);
 
-  count_scache(&number_servers_cached,&mem_servers_cached);
-
-  sendto_one(source_p, ":%s %d %s z :scache %u(%d)",
-             me.name, RPL_STATSDEBUG, source_p->name,
-             number_servers_cached,
-             (int)mem_servers_cached);
-
   count_ip_hash(&number_ips_stored,&mem_ips_stored);
   sendto_one(source_p, ":%s %d %s z :iphash %u(%d)",
              me.name, RPL_STATSDEBUG, source_p->name,
@@ -378,7 +368,6 @@ count_memory(struct Client *source_p)
   total_memory += channel_hash_table_size;
   total_memory += resv_hash_table_size;
   total_memory += id_hash_table_size;
-  total_memory += mem_servers_cached;
 
   sendto_one(source_p, ":%s %d %s z :Total: whowas %d channel %d conf %d",
              me.name, RPL_STATSDEBUG, source_p->name, (int)totww,

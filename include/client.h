@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.188 2003/05/18 23:29:22 michael Exp $
+ *  $Id: client.h,v 7.189 2003/05/20 06:51:45 michael Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -69,7 +69,7 @@ struct User
   time_t         last;
   int            refcnt;        /* Number of times this block is referenced */
   int            joined;        /* number of channels joined */
-  const char*    server;        /* pointer to scached server name */
+  struct Client *server;        /* pointer to server */
   char*          response;  /* expected response from client */
   char*          auth_oper; /* Operator to become if they supply the response.*/
 	/* client ID, unique ID per client */
@@ -83,7 +83,7 @@ struct User
 struct Server
 {
   struct User *user;      /* who activated this connection     */
-  const char *up;         /* Pointer to scache name            */
+  char up[HOSTLEN + 1];   /* name of uplink                    */
   char by[NICKLEN];
   struct ConfItem *sconf; /* connect{} pointer for this server */
   dlink_list servers;     /* Servers on this server            */

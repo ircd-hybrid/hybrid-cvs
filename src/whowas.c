@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: whowas.c,v 7.23 2003/05/19 19:10:54 stu Exp $
+ *  $Id: whowas.c,v 7.24 2003/05/20 06:51:52 michael Exp $
  */
 
 #include "stdinc.h"
@@ -63,11 +63,11 @@ hash_whowas_name(const char *name)
 }
 
 void
-add_history(struct Client* client_p, int online)
+add_history(struct Client *client_p, int online)
 {
   struct Whowas *who = &WHOWAS[whowas_next];
 
-  assert(NULL != client_p);
+  assert(client_p != NULL);
 
   if (client_p == NULL)
     return;
@@ -90,7 +90,7 @@ add_history(struct Client* client_p, int online)
   strcpy(who->hostname, client_p->host);
   strcpy(who->realname, client_p->info);
 
-  who->servername = client_p->user->server;
+  strlcpy(who->servername, client_p->user->server->name, sizeof(who->servername));
 
   if (online)
   {
@@ -163,15 +163,14 @@ count_whowas_memory(int *wwu, unsigned long *wwum)
 
   *wwu = u;
   *wwum = um;
-  return;
 }
 
 void
-initwhowas(void)
+init_whowas(void)
 {
   int i;
 
-  for (i=0;i<NICKNAMEHISTORYLENGTH;i++)
+  for (i = 0; i < NICKNAMEHISTORYLENGTH; i++)
   {
     memset((void *)&WHOWAS[i], 0, sizeof(struct Whowas));
     WHOWAS[i].hashv = -1;

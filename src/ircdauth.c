@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircdauth.c,v 7.57 2003/05/11 22:27:44 joshk Exp $
+ *  $Id: ircdauth.c,v 7.58 2003/05/20 06:51:52 michael Exp $
  */
 
 #include "stdinc.h"
@@ -598,18 +598,18 @@ GreetUser(struct Client *client)
 
   SetClient(client);
 
-  client->servptr = find_server(client->user->server);
+  client->servptr = find_server(client->user->server->name);
   if (!client->servptr)
     {
       sendto_realops_flags(UMODE_ALL, L_ALL,"Ghost killed: %s on invalid server %s",
 			   client->name,
-			   client->user->server);
+			   client->user->server->name);
 
       sendto_one(client, ":%s KILL %s: %s (Ghosted, %s doesn't exist)",
 		 me.name,
 		 client->name,
 		 me.name,
-		 client->user->server);
+		 client->user->server->name);
 
       SetKilled(client);
 
@@ -705,7 +705,7 @@ GreetUser(struct Client *client)
 		     ubuf,
 		     client->username,
 		     client->host,
-		     client->user->server,
+		     client->user->server->name,
 		     client->info);
 #endif
 
@@ -717,7 +717,7 @@ GreetUser(struct Client *client)
 		(unsigned long) client->tsinfo,
 		ubuf,
 		client->username, client->host,
-		client->user->server, client->info);
+		client->user->server->name, client->info);
   }
   else
   {
@@ -729,7 +729,7 @@ GreetUser(struct Client *client)
                   (unsigned long) client->tsinfo,
                   ubuf,
                   client->username, client->host,
-                  client->user->server, client->info);
+                  client->user->server->name, client->info);
   }
   if (ubuf[1])
   {

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.104 2003/05/11 16:05:52 michael Exp $
+ *  $Id: m_server.c,v 1.105 2003/05/20 06:51:50 michael Exp $
  */
 
 #include "stdinc.h"
@@ -37,7 +37,6 @@
 #include "s_log.h"       /* log level defines */
 #include "s_serv.h"      /* server_estab, check_server, my_name_for_link */
 #include "s_stats.h"     /* ServerStats */
-#include "scache.h"      /* find_or_add */
 #include "send.h"        /* sendto_one */
 #include "motd.h"
 #include "msg.h"
@@ -70,7 +69,7 @@ _moddeinit(void)
   mod_del_cmd(&server_msgtab);
 }
 
-const char *_version = "$Revision: 1.104 $";
+const char *_version = "$Revision: 1.105 $";
 #endif
 
 
@@ -455,7 +454,7 @@ ms_server(struct Client *client_p, struct Client *source_p,
 
   set_server_gecos(target_p, info);
 
-  target_p->serv->up = find_or_add(parv[0]);
+  strlcpy(target_p->serv->up, source_p->name, sizeof(target_p->serv->up));
   target_p->servptr  = source_p;
 
   SetServer(target_p);

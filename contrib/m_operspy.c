@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.26 2003/05/17 06:14:23 bill Exp $
+ *   $Id: m_operspy.c,v 1.27 2003/05/20 06:51:42 michael Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -123,7 +123,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.26 $";
+const char *_version = "$Revision: 1.27 $";
 #endif
 
 /*
@@ -410,13 +410,15 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
       return;
     }
 
-    if ((target_p = (struct Client *)find_client(parv[2])) == NULL || !IsClient(target_p))
+    if ((target_p = find_client(parv[2])) == NULL || !IsClient(target_p))
     {
       sendto_one(client_p, form_str(ERR_NOSUCHNICK), me.name, parv[0], parv[2]);
       return;
     }
 
-    a2client_p = (struct Client *)find_server(target_p->user->server);
+    assert(target_p->user != NULL);
+
+    a2client_p = target_p->user->server;
 
     sendto_one(client_p, form_str(RPL_WHOISUSER), me.name,
                client_p->name, target_p->name, target_p->username,
@@ -431,6 +433,7 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
     DLINK_FOREACH(lp, target_p->user->channel.head)
     {
       chptr_whois = lp->data;
+
       if ((cur_len + strlen(chptr_whois->chname) + 2) > (BUFSIZE - 4))
       {
         sendto_one(client_p, "%s", buf);
@@ -452,8 +455,8 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
       sendto_one(client_p, "%s", buf);
 
     sendto_one(client_p, form_str(RPL_WHOISSERVER), me.name,
-               client_p->name, target_p->name, target_p->user->server,
-               a2client_p ? a2client_p->info : "*Not On This Net*");
+               client_p->name, target_p->name, a2client_p->name,
+               a2client_p->info);
 
     if (IsOper(target_p))
       sendto_one(client_p, form_str(RPL_WHOISOPERATOR), me.name,
@@ -492,7 +495,7 @@ static void do_who(struct Client *source_p,
   sendto_one(source_p, form_str(RPL_WHOREPLY), me.name, source_p->name,
                  (our_chname) ? (our_chname) : "*",
                  target_p->username,
-                 target_p->host,  target_p->user->server, target_p->name,
+                 target_p->host,  target_p->user->server->name, target_p->name,
                  status, target_p->hopcount, target_p->info);
 }
 
@@ -519,7 +522,7 @@ who_common_channel(struct Client *source_p,dlink_list chain,
         match(mask, target_p->name) ||
         match(mask, target_p->username) ||
         match(mask, target_p->host) ||
-        match(mask, target_p->user->server) ||
+        match(mask, target_p->user->server->name) ||
         (MyClient(target_p) && match(mask, target_p->localClient->sockhost)) ||
         match(mask, target_p->info))
     {
@@ -575,7 +578,7 @@ who_global(struct Client *source_p,char *mask, int server_oper)
 
     if (!mask ||
         match(mask, target_p->name) || match(mask, target_p->username) ||
-        match(mask, target_p->host) || match(mask, target_p->user->server) ||
+        match(mask, target_p->host) || match(mask, target_p->user->server->name) ||
         match(mask, target_p->info) ||
         (MyClient(target_p) && match(mask, target_p->localClient->sockhost)))
     {

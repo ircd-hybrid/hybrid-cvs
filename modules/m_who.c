@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_who.c,v 1.76 2003/05/13 18:21:06 db Exp $
+ *  $Id: m_who.c,v 1.77 2003/05/20 06:51:47 michael Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&who_msgtab);
 }
-const char *_version = "$Revision: 1.76 $";
+const char *_version = "$Revision: 1.77 $";
 #endif
 static void do_who_on_channel(struct Client *source_p, struct Channel *chptr,
                               char *real_name, int member);
@@ -257,7 +257,7 @@ who_common_channel(struct Client *source_p,dlink_list chain,
     if ((mask == NULL) ||
 	match(mask, target_p->name) || match(mask, target_p->username) ||
 	match(mask, target_p->host) || 
-	(match(mask, target_p->user->server) && 
+	(match(mask, target_p->user->server->name) && 
 	 (IsOper(source_p) || !ConfigServerHide.hide_servers)) ||
 	match(mask, target_p->info))
     {
@@ -325,7 +325,7 @@ who_global(struct Client *source_p,char *mask, int server_oper)
 
     if (!mask ||
         match(mask, target_p->name) || match(mask, target_p->username) ||
-	match(mask, target_p->host) || match(mask, target_p->user->server) ||
+	match(mask, target_p->host) || match(mask, target_p->user->server->name) ||
 	match(mask, target_p->info))
     {
 		
@@ -460,7 +460,7 @@ do_who(struct Client *source_p, struct Client *target_p,
     sendto_one(source_p, form_str(RPL_WHOREPLY), me.name, source_p->name,
 	       (chname) ? (chname) : "*",
 	       target_p->username,
-	       target_p->host, IsOper(source_p) ? target_p->user->server : "*",
+	       target_p->host, IsOper(source_p) ? target_p->user->server->name : "*",
 	       target_p->name,
 	       status, 0, target_p->info);
   }
@@ -469,7 +469,7 @@ do_who(struct Client *source_p, struct Client *target_p,
     sendto_one(source_p, form_str(RPL_WHOREPLY), me.name, source_p->name,
 	       (chname) ? (chname) : "*",
 	       target_p->username,
-	       target_p->host,  target_p->user->server, target_p->name,
+	       target_p->host,  target_p->user->server->name, target_p->name,
 	       status, target_p->hopcount, target_p->info);
   }
 }

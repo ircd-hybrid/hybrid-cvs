@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nick.c,v 1.114 2003/04/18 02:13:50 db Exp $
+ *  $Id: m_nick.c,v 1.115 2003/05/20 06:51:49 michael Exp $
  */
 
 #include "stdinc.h"
@@ -96,7 +96,7 @@ _moddeinit(void)
   mod_del_cmd(&client_msgtab);
 }
 
-const char *_version = "$Revision: 1.114 $";
+const char *_version = "$Revision: 1.115 $";
 #endif
 
 /*
@@ -356,7 +356,7 @@ ms_nick(struct Client *client_p, struct Client *source_p,
   strlcpy(nick, parv[1], sizeof(nick));
 
   if(check_clean_nick(client_p, source_p, nick, parv[1],
-                      (parc == 9 ? parv[7] : source_p->user->server)))
+                      (parc == 9 ? parv[7] : source_p->user->server->name)))
     return;
 
   if (parc == 9)

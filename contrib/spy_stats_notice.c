@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: spy_stats_notice.c,v 1.13 2003/02/17 16:09:24 db Exp $
+ *  $Id: spy_stats_notice.c,v 1.14 2003/05/20 06:51:42 michael Exp $
  */
 #include "stdinc.h"
 #include "modules.h"
@@ -43,7 +43,7 @@ _moddeinit(void)
 	hook_del_hook("doing_stats", (hookfn *)show_stats);
 }
 
-const char *_version = "$Revision: 1.13 $";
+const char *_version = "$Revision: 1.14 $";
 
 /* show a stats request */
 int
@@ -58,7 +58,7 @@ show_stats(struct hook_stats_data *data)
 			     data->source_p->name,
 			     data->source_p->username,
 			     data->source_p->host,
-			     data->source_p->user->server,
+			     data->source_p->user->server->name,
 			     data->name);
       else
 	sendto_realops_flags(UMODE_SPY, L_ALL,
@@ -67,14 +67,14 @@ show_stats(struct hook_stats_data *data)
 			     data->source_p->name,
 			     data->source_p->username,
 			     data->source_p->host,
-			     data->source_p->user->server);
+			     data->source_p->user->server->name);
     }
   else
     {
       sendto_realops_flags(UMODE_SPY, L_ALL,
                            "STATS %c requested by %s (%s@%s) [%s]",
 			   data->statchar, data->source_p->name, data->source_p->username,
-			   data->source_p->host, data->source_p->user->server);
+			   data->source_p->host, data->source_p->user->server->name);
     }
 
   return 0;

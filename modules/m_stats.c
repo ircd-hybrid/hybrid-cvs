@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.124 2003/05/13 01:53:34 db Exp $
+ *  $Id: m_stats.c,v 1.125 2003/05/20 06:51:47 michael Exp $
  */
 
 #include "stdinc.h"
@@ -36,7 +36,6 @@
 #include "msg.h"         /* Message */
 #include "hostmask.h"  /* report_mtrie_conf_links */
 #include "numeric.h"     /* ERR_xxx */
-#include "scache.h"      /* list_scache */
 #include "send.h"        /* sendto_one */
 #include "fdlist.h"      /* PF and friends */
 #include "s_bsd.h"       /* highest_fd */
@@ -80,7 +79,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.124 $";
+const char *_version = "$Revision: 1.125 $";
 #endif
 
 const char *Lformat = ":%s %d %s %s %u %u %u %u %u :%u %u %s";

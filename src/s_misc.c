@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_misc.c,v 7.32 2003/05/18 23:29:27 michael Exp $
+ *  $Id: s_misc.c,v 7.33 2003/05/20 06:51:52 michael Exp $
  */
 
 #include "stdinc.h"
@@ -52,7 +52,8 @@ static const char *weekdays[] =
   "Thursday", "Friday", "Saturday"
 };
 
-char *date(time_t lclock) 
+char *
+date(time_t lclock) 
 {
   static        char        buf[80], plus;
   struct        tm *lt, *gm;
@@ -77,20 +78,21 @@ char *date(time_t lclock)
   plus = (minswest > 0) ? '-' : '+';
   if (minswest < 0)
     minswest = -minswest;
-  
+
   ircsprintf(buf, "%s %s %d %d -- %02u:%02u:%02u %c%02u:%02u",
           weekdays[lt->tm_wday], months[lt->tm_mon],lt->tm_mday,
           lt->tm_year + 1900, lt->tm_hour, lt->tm_min, lt->tm_sec,
           plus, minswest/60, minswest%60);
 
-  return buf;
+  return(buf);
 }
 
-const char *smalldate(time_t lclock)
+const char *
+smalldate(time_t lclock)
 {
-  static  char    buf[MAX_DATE_STRING];
-  struct  tm *lt, *gm;
-  struct  tm      gmbuf;
+  static char buf[MAX_DATE_STRING];
+  struct tm *lt, *gm;
+  struct tm gmbuf;
 
   if (!lclock)
     lclock = CurrentTime;
@@ -102,24 +104,25 @@ const char *smalldate(time_t lclock)
   ircsprintf(buf, "%d/%d/%d %02d.%02d",
              lt->tm_year + 1900, lt->tm_mon + 1, lt->tm_mday,
              lt->tm_hour, lt->tm_min);
-  
-  return buf;
+
+  return(buf);
 }
 
-/*
- * small_file_date
+/* small_file_date()
  * Make a small YYYYMMDD formatted string suitable for a
  * dated file stamp. 
  */
-char* small_file_date(time_t lclock)
+char *
+small_file_date(time_t lclock)
 {
-  static  char    timebuffer[MAX_DATE_STRING];
+  static char timebuffer[MAX_DATE_STRING];
   struct tm *tmptr;
 
   if (!lclock)
     time(&lclock);
   tmptr = localtime(&lclock);
   strftime(timebuffer, MAX_DATE_STRING, "%Y%m%d", tmptr);
-  return timebuffer;
+
+  return(timebuffer);
 }
 

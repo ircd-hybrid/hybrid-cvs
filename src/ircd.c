@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.283 2003/05/19 02:09:30 metalrock Exp $
+ *  $Id: ircd.c,v 7.284 2003/05/20 06:51:52 michael Exp $
  */
 
 #include "stdinc.h"
@@ -60,7 +60,6 @@
 #include "s_misc.h"
 #include "s_serv.h"      /* try_connections */
 #include "s_stats.h"
-#include "scache.h"
 #include "send.h"
 #include "whowas.h"
 #include "modules.h"
@@ -610,7 +609,6 @@ main(int argc, char *argv[])
   dbuf_init();
   init_hash_tables();
   id_init();
-  clear_scache_hash_table(); /* server cache name table */
   init_ip_hash_table();      /* client host ip hash table */
   init_host_hash();          /* Host-hashtable. */
   clear_hash_parse();
@@ -618,7 +616,7 @@ main(int argc, char *argv[])
   initUser();
   init_channels();
   initclass();
-  initwhowas();
+  init_whowas();
   init_stats();
   init_hooks();
   load_all_modules(1);
@@ -676,7 +674,7 @@ main(int argc, char *argv[])
   SetMe(&me);
   make_server(&me);
 
-  me.serv->up = me.name;
+  strlcpy(me.serv->up, me.name, sizeof(me.serv->up));
   me.lasttime = me.since = me.firsttime = CurrentTime;
   add_to_client_hash_table(me.name, &me);
   

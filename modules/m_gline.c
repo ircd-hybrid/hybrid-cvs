@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.98 2003/05/13 02:32:13 joshk Exp $
+ *  $Id: m_gline.c,v 1.99 2003/05/20 06:51:47 michael Exp $
  */
 
 #include "stdinc.h"
@@ -39,7 +39,6 @@
 #include "s_bsd.h"
 #include "s_conf.h"
 #include "s_misc.h"
-#include "scache.h"
 #include "send.h"
 #include "msg.h"
 #include "fileio.h"
@@ -110,7 +109,7 @@ _moddeinit(void)
   mod_del_cmd(&gline_msgtab);
 }
 
-const char *_version = "$Revision: 1.98 $";
+const char *_version = "$Revision: 1.99 $";
 #endif
 /*
  * mo_gline()
@@ -239,12 +238,12 @@ mo_gline(struct Client *client_p, struct Client *source_p,
   sendto_server(NULL, NULL, NULL, CAP_UID, CAP_GLN, NOFLAGS,
 		":%s GLINE %s %s %s %s %s %s :%s",
 		me.name, ID(source_p), source_p->username,
-		source_p->host, source_p->user->server, user, host,
+		source_p->host, source_p->user->server->name, user, host,
 		reason);
   sendto_server(NULL, NULL, NULL, NOCAPS, CAP_GLN|CAP_UID, NOFLAGS,
 		":%s GLINE %s %s %s %s %s %s :%s",
 		me.name, source_p->name, source_p->username,
-		source_p->host, source_p->user->server, user, host,
+		source_p->host, source_p->user->server->name, user, host,
 		reason);
 }
 
@@ -284,7 +283,7 @@ ms_gline(struct Client *client_p, struct Client *source_p,
       oper_nick = parv[0];
       oper_user = source_p->username;
       oper_host = source_p->host;
-      oper_server = source_p->user->server;
+      oper_server = source_p->user->server->name;
       user = parv[1];
       host = parv[2];
       reason = parv[3];
@@ -673,7 +672,7 @@ add_new_majority_gline(const char* oper_nick, const char* oper_user,
   strlcpy(pending->oper_user1, oper_user, sizeof(pending->oper_user1));
   strlcpy(pending->oper_host1, oper_host, sizeof(pending->oper_host1));
 
-  pending->oper_server1 = find_or_add(oper_server);
+  strlcpy(pending->oper_server1, oper_server, sizeof(pending->oper_server1));
 
   strlcpy(pending->user, user, sizeof(pending->user));
   strlcpy(pending->host, host, sizeof(pending->host));
@@ -768,7 +767,7 @@ check_majority_gline(struct Client *source_p, const char *oper_nick,
 	strlcpy(gline_pending_ptr->oper_host2, oper_host,
 	        sizeof(gline_pending_ptr->oper_host2));
 	DupString(gline_pending_ptr->reason2, reason);
-	gline_pending_ptr->oper_server2 = find_or_add(oper_server);
+        strlcpy(gline_pending_ptr->oper_server2, oper_server, sizeof(gline_pending_ptr->oper_server2));
 	gline_pending_ptr->last_gline_time = CurrentTime;
 	gline_pending_ptr->time_request2 = CurrentTime;
 	return(GLINE_NOT_PLACED);

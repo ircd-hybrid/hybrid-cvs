@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.165 2003/05/20 04:25:20 michael Exp $
+ *  $Id: parse.c,v 7.166 2003/05/20 06:51:52 michael Exp $
  */
 
 #include "stdinc.h"
@@ -585,7 +585,7 @@ cancel_clients(struct Client *client_p, struct Client *source_p, char *cmd)
       sendto_realops_flags(UMODE_DEBUG, L_ALL,
                            "Would have dropped client %s (%s@%s) [%s from %s]",
                            client_p->name, client_p->username, client_p->host,
-                           client_p->user->server, client_p->from->name);
+                           client_p->user->server->name, client_p->from->name);
     return(-1);
 
     /* return exit_client(client_p, client_p, &me, "Fake Direction");*/

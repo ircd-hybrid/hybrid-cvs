@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.261 2003/05/20 04:25:20 michael Exp $
+ *  $Id: s_user.c,v 7.262 2003/05/20 06:51:52 michael Exp $
  */
 
 #include "stdinc.h"
@@ -47,7 +47,6 @@
 #include "s_log.h"
 #include "s_serv.h"
 #include "s_stats.h"
-#include "scache.h"
 #include "send.h"
 #include "supported.h"
 #include "whowas.h"
@@ -520,7 +519,7 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
   if (++Count.total > Count.max_tot)
     Count.max_tot = Count.total;
 
-  source_p->servptr = find_server(source_p->user->server);
+  source_p->servptr = find_server(source_p->user->server->name);
 
   /* Super GhostDetect:
    * If we can't find the server the user is supposed to be on,
@@ -529,7 +528,7 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
   if (source_p->servptr == NULL)
   {
     sendto_realops_flags(UMODE_ALL, L_ALL, "No server %s for user %s[%s@%s] from %s",
-                         source_p->user->server, source_p->name, source_p->username,
+                         source_p->user->server->name, source_p->name, source_p->username,
                          source_p->host, source_p->from->name);
     kill_client(client_p, source_p, "%s (Server doesn't exist)", me.name);
 
@@ -545,11 +544,11 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
     sendto_realops_flags(UMODE_DEBUG, L_ALL,
                          "Bad User [%s] :%s USER %s@%s %s, != %s[%s]",
                          client_p->name, nick, source_p->username,
-                         source_p->host, source_p->user->server,
+                         source_p->host, source_p->user->server->name,
                          target_p->name, target_p->from->name);
     kill_client(client_p, source_p,
                 "%s (NICK from wrong direction (%s != %s))",
-                me.name, source_p->user->server, target_p->from->name);
+                me.name, source_p->user->server->name, target_p->from->name);
     SetKilled(source_p);
     return(exit_client(source_p, source_p, &me, "USER server wrong direction"));
   }
@@ -605,14 +604,14 @@ introduce_client(struct Client *client_p, struct Client *source_p, char *nick)
     {
       sendto_one(uplink, "CLIENT %s %d %lu %s %s %s %s %s :%s",
                  nick, source_p->hopcount+1, (unsigned long)source_p->tsinfo,
-                 ubuf, source_p->username, source_p->host, source_p->user->server,
+                 ubuf, source_p->username, source_p->host, source_p->user->server->name,
                  source_p->user->id, source_p->info);
     }
     else
     {
       sendto_one(uplink, "NICK %s %d %lu %s %s %s %s :%s",
                  nick, source_p->hopcount+1, (unsigned long)source_p->tsinfo,
-                 ubuf, source_p->username, source_p->host, source_p->user->server,
+                 ubuf, source_p->username, source_p->host, source_p->user->server->name,
                  source_p->info);
     }
   }
@@ -628,12 +627,12 @@ introduce_client(struct Client *client_p, struct Client *source_p, char *nick)
       if (IsCapable(server, CAP_UID) && HasID(source_p))
         sendto_one(server, "CLIENT %s %d %lu %s %s %s %s %s :%s",
                    nick, source_p->hopcount+1, (unsigned long)source_p->tsinfo,
-                   ubuf, source_p->username, source_p->host, source_p->user->server,
+                   ubuf, source_p->username, source_p->host, source_p->user->server->name,
                    source_p->user->id, source_p->info);
       else
         sendto_one(server, "NICK %s %d %lu %s %s %s %s :%s",
                    nick, source_p->hopcount+1, (unsigned long)source_p->tsinfo,
-                   ubuf, source_p->username, source_p->host, source_p->user->server,
+                   ubuf, source_p->username, source_p->host, source_p->user->server->name,
                    source_p->info);
     }
   }
@@ -817,7 +816,7 @@ do_local_user(char *nick, struct Client *client_p, struct Client *source_p,
 
   /* don't take the clients word for it, ever
    */
-  user->server = me.name;
+  user->server = &me;
 
   strlcpy(source_p->info, realname, sizeof(source_p->info));
 
@@ -861,7 +860,7 @@ do_remote_user(struct Client *client_p, struct Client *source_p,
 
   /* coming from another server, take the servers word for it
    */
-  user->server = find_or_add(server);
+  user->server = find_server(server);
   strlcpy(source_p->host, host, sizeof(source_p->host)); 
   strlcpy(source_p->info, realname, sizeof(source_p->info));
 
@@ -1262,7 +1261,7 @@ check_X_line(struct Client *client_p, struct Client *source_p)
  *
  * inputs	- pointer to given client to oper
  *		- pointer to ConfItem to use
- * output	- none
+ * output	- NONE
  * side effects	-
  * Blindly opers up given source_p, using aconf info
  * all checks on passwords have already been done.
@@ -1287,7 +1286,7 @@ oper_up(struct Client *source_p, struct ConfItem *aconf)
   dlinkAdd(source_p, make_dlink_node(), &oper_list);
 
   if ((ptr = source_p->localClient->confs.head) != NULL)
-      operprivs = oper_privs_as_string(source_p, ((struct ConfItem *)ptr->data)->port);
+    operprivs = oper_privs_as_string(source_p, ((struct ConfItem *)ptr->data)->port);
   else
     operprivs = "";
 

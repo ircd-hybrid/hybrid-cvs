@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.326 2003/05/19 05:54:15 michael Exp $
+ *  $Id: s_serv.c,v 7.327 2003/05/20 06:51:52 michael Exp $
  */
 
 #include "stdinc.h"
@@ -52,7 +52,6 @@
 #include "s_log.h"
 #include "s_stats.h"
 #include "s_user.h"
-#include "scache.h"
 #include "send.h"
 #include "s_debug.h"
 #include "memory.h"
@@ -771,13 +770,13 @@ sendnick_TS(struct Client *client_p, struct Client *target_p)
 	       target_p->name, target_p->hopcount + 1,
 	       (unsigned long) target_p->tsinfo,
 	       ubuf, target_p->username, target_p->host,
-	       target_p->user->server, target_p->user->id, target_p->info);
+	       target_p->user->server->name, target_p->user->id, target_p->info);
   else
     sendto_one(client_p, "NICK %s %d %lu %s %s %s %s :%s",
 	       target_p->name, target_p->hopcount + 1,
 	       (unsigned long) target_p->tsinfo,
 	       ubuf, target_p->username, target_p->host,
-	       target_p->user->server, target_p->info);
+	       target_p->user->server->name, target_p->info);
 }
 
 /* client_burst_if_needed()
@@ -1025,10 +1024,8 @@ server_estab(struct Client *client_p)
 
   /* doesnt duplicate client_p->serv if allocated this struct already */
   make_server(client_p);
-  client_p->serv->up = me.name;
+  strlcpy(client_p->serv->up, me.name, sizeof(client_p->serv->up));
 
-  /* add it to scache */
-  find_or_add(client_p->name);
   /* fixing eob timings.. -gnp */
   client_p->firsttime = CurrentTime;
 
@@ -1940,7 +1937,8 @@ serv_connect(struct ConfItem *aconf, struct Client *by)
             free_user(client_p->serv->user, NULL);
         client_p->serv->user = NULL;
       }
-    client_p->serv->up = me.name;
+
+    strlcpy(client_p->serv->up, me.name, sizeof(client_p->serv->up));
     SetConnecting(client_p);
     dlinkAdd(client_p, &client_p->node, &global_client_list);
     /* from def_fam */

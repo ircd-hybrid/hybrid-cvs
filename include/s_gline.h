@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_gline.h,v 7.14 2003/05/08 03:42:51 michael Exp $
+ *  $Id: s_gline.h,v 7.15 2003/05/20 06:51:45 michael Exp $
  */
 
 #ifndef INCLUDED_s_gline_h
@@ -31,9 +31,9 @@
 struct Client;
 struct ConfItem;
 
+extern int remove_gline_match(const char *user, const char *host);
 extern struct ConfItem *find_gkill(struct Client *client, char *);
 extern struct ConfItem *find_is_glined(const char *host, const char *name);
-extern int remove_gline_match(const char *user, const char *host);
 extern void cleanup_glines(void *unused);
 
 struct gline_pending
@@ -41,30 +41,28 @@ struct gline_pending
   char oper_nick1[NICKLEN + 1];
   char oper_user1[USERLEN + 1];
   char oper_host1[HOSTLEN + 1];
-  const char* oper_server1;     /* point to scache */
+  char oper_server1[HOSTLEN + 1];
   char *reason1;
   time_t time_request1;
 
   char oper_nick2[NICKLEN + 1];
   char oper_user2[USERLEN + 1];
   char oper_host2[HOSTLEN + 1];
-  const char* oper_server2;     /* point to scache */
+  char oper_server2[HOSTLEN + 1];
   char *reason2;
   time_t time_request2;
-  
+
   time_t last_gline_time;       /* for expiring entry */
-  char user[USERLEN*2 + 2];
-  char host[HOSTLEN*2 + 2];
+  char user[USERLEN * 2 + 2];
+  char host[HOSTLEN * 2 + 2];
 };
 
 /* how long a pending G line can be around
  * 10 minutes should be plenty
  */
-
 #define GLINE_PENDING_EXPIRE 600
 #define CLEANUP_GLINES_TIME  300
 
 dlink_list pending_glines;
 extern dlink_list glines;
-
 #endif

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_jupe.c,v 1.52 2003/05/13 04:48:48 metalrock Exp $
+ *  $Id: m_jupe.c,v 1.53 2003/05/20 06:51:42 michael Exp $
  */
 
 #include "stdinc.h"
@@ -45,7 +45,6 @@
 #include "fdlist.h"
 #include "list.h"
 #include "s_conf.h"
-#include "scache.h"
 
 static void mo_jupe(struct Client *client_p, struct Client *source_p, int parc, char *parv[]);
 static int bogus_host(char *host);
@@ -68,7 +67,7 @@ _moddeinit(void)
   mod_del_cmd(&jupe_msgtab);
 }
 
-const char *_version = "$Revision: 1.52 $";
+const char *_version = "$Revision: 1.53 $";
 #endif
 
 /*
@@ -152,7 +151,7 @@ mo_jupe(struct Client *client_p, struct Client *source_p,
   ircsprintf(reason, "%s %s", "JUPED:", parv[2]);
   strlcpy(ajupe->info, reason, sizeof(ajupe->info));
 
-  ajupe->serv->up = me.name;
+  strlcpy(ajupe->serv->up, me.name, sizeof(ajupe->serv->up));
   ajupe->servptr  = &me;
   ajupe->hopcount = 1;
 

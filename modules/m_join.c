@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_join.c,v 1.104 2003/05/15 13:06:51 michael Exp $
+ *  $Id: m_join.c,v 1.105 2003/05/20 06:51:47 michael Exp $
  */
 
 #include "stdinc.h"
@@ -64,7 +64,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&join_msgtab);
 }
-const char *_version = "$Revision: 1.104 $";
+const char *_version = "$Revision: 1.105 $";
 
 #endif
 static void do_join_0(struct Client *client_p, struct Client *source_p);
@@ -367,7 +367,7 @@ ms_join(struct Client *client_p, struct Client *source_p,
       else
 	{
 	  ts_warn("User on %s remotely JOINing new channel with no TS", 
-		  source_p->user->server);
+		  source_p->user->server->name);
 	}
     }
 }

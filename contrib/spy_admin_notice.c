@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: spy_admin_notice.c,v 1.7 2003/02/17 16:09:24 db Exp $
+ *  $Id: spy_admin_notice.c,v 1.8 2003/05/20 06:51:42 michael Exp $
  */
 #include "stdinc.h"
 #include "modules.h"
@@ -42,14 +42,14 @@ _moddeinit(void)
   hook_del_hook("doing_admin", (hookfn *)show_admin);
 }
 
-const char *_version = "$Revision: 1.7 $";
+const char *_version = "$Revision: 1.8 $";
 
 int show_admin(struct hook_spy_data *data)
 {
   sendto_realops_flags(UMODE_SPY, L_ALL,
                          "admin requested by %s (%s@%s) [%s]",
                          data->source_p->name, data->source_p->username,
-                         data->source_p->host, data->source_p->user->server);
+                         data->source_p->host, data->source_p->user->server->name);
 
   return 0;
 }
