@@ -1,3 +1,15 @@
+leeh        2002/05/26 18:49:58 EDT	(20020526_10)
+
+  Modified files:
+    contrib              remote-unkline.diff 
+  Log:
+  - working remote unkline patch
+  
+  Revision  Changes    Path
+  1.2       +68 -89    ircd-hybrid-7/contrib/remote-unkline.diff
+
+
+
 androsyn    2002/05/26 17:19:10 EDT	(20020526_9)
 
   Modified files:        (Branch: WIN32_WIP)
@@ -27441,4 +27453,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3708 2002/05/26 21:19:16 androsyn Exp $
+$Id: ChangeLog,v 7.3709 2002/05/26 22:50:04 leeh Exp $
