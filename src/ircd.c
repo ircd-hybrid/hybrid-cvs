@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.149 2001/05/26 16:54:27 cosine Exp $
+ * $Id: ircd.c,v 7.150 2001/05/28 04:27:14 jdc Exp $
  */
 
 #include <sys/types.h>
@@ -38,6 +38,11 @@
 
 #include "setup.h"
 #include "config.h"
+
+#ifdef RLIMIT_FD_MAX
+#include <sys/time.h>
+#include <sys/resource.h>
+#endif
 
 #ifdef USE_GETTEXT
 #include <libintl.h>
@@ -87,19 +92,6 @@
  * Try and find the correct name to use with getrlimit() for setting the max.
  * number of files allowed to be open by this process.
  */
-#ifdef RLIMIT_FDMAX
-# define RLIMIT_FD_MAX   RLIMIT_FDMAX
-#else
-# ifdef RLIMIT_NOFILE
-#  define RLIMIT_FD_MAX RLIMIT_NOFILE
-# else
-#  ifdef RLIMIT_OPEN_MAX
-#   define RLIMIT_FD_MAX RLIMIT_OPEN_MAX
-#  else
-#   undef RLIMIT_FD_MAX
-#  endif
-# endif
-#endif
 
 /* /quote set variables */
 struct SetOptions GlobalSetOptions;
