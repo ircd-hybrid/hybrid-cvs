@@ -4,7 +4,7 @@
  * Owner:   Wohali (Joan Touzet)
  *
  *
- * $Id: blalloc.h,v 7.5 2001/01/11 19:42:47 a1kmm Exp $
+ * $Id: blalloc.h,v 7.6 2001/01/11 20:17:02 a1kmm Exp $
  */
 #ifndef INCLUDED_blalloc_h
 #define INCLUDED_blalloc_h
@@ -17,7 +17,7 @@
 #include <stddef.h>
 #define INCLUDED_stddef_h
 #endif
-
+#include "ircd_defs.h"
 
 
 /* 

@@ -4,7 +4,7 @@
  * Owner:  Wohali (Joan Touzet)
  *
  *
- * $Id: blalloc.c,v 7.16 2001/01/11 19:51:14 a1kmm Exp $
+ * $Id: blalloc.c,v 7.17 2001/01/11 20:17:08 a1kmm Exp $
  */
 #include <stdio.h>
 #include <unistd.h>
@@ -313,8 +313,9 @@ int _BlockHeapFree(BlockHeap *bh, void *ptr)
        return 1;
      }
 #ifdef MEMDEBUG
+   bh -= sizeof(MemoryEntry);
    {
-    MemoryEntry *mme = (MemoryEntry*)(((char*)bh)-sizeof(MemoryEntry));
+    MemoryEntry *mme = (MemoryEntry*)bh;
     if (mme->last)
       mme->last->next = mme->next;
     else
