@@ -1,6 +1,17 @@
+diff -ur nohalfops/contrib/m_clearchan.c halfops/contrib/m_clearchan.c
+--- nohalfops/contrib/m_clearchan.c	Sun Oct 12 20:51:17 2003
++++ halfops/contrib/m_clearchan.c	Sun Oct 12 20:57:26 2003
+@@ -197,6 +197,7 @@
+ remove_our_modes(struct Channel *chptr, struct Client *source_p)
+ {
+   remove_a_mode(chptr, CHFL_CHANOP, 'o');
++  remove_a_mode(chptr, CHFL_HALFOP, 'h');
+   remove_a_mode(chptr, CHFL_VOICE, 'v');
+ 
+   /* Clear all +beI modes */
 diff -ur nohalfops/contrib/m_ojoin.c halfops/contrib/m_ojoin.c
---- nohalfops/contrib/m_ojoin.c	Sat Oct 11 11:17:48 2003
-+++ halfops/contrib/m_ojoin.c	Sat Oct 11 11:17:54 2003
+--- nohalfops/contrib/m_ojoin.c	Sun Oct 12 20:51:17 2003
++++ halfops/contrib/m_ojoin.c	Sun Oct 12 20:51:26 2003
 @@ -103,6 +103,8 @@
                  modeletter = 'o'; name++; break;
        case '+': tmp_flags = CHFL_VOICE;
@@ -10,9 +21,20 @@ diff -ur nohalfops/contrib/m_ojoin.c halfops/contrib/m_ojoin.c
        case '#':
        case '&':
          tmp_flags = 0;
+diff -ur nohalfops/modules/core/m_join.c halfops/modules/core/m_join.c
+--- nohalfops/modules/core/m_join.c	Sun Oct 12 20:51:17 2003
++++ halfops/modules/core/m_join.c	Sun Oct 12 20:57:08 2003
+@@ -713,6 +713,7 @@
+ remove_our_modes(struct Channel *chptr, struct Client *source_p)
+ {
+   remove_a_mode(chptr, source_p, CHFL_CHANOP, 'o');
++  remove_a_mode(chptr, source_p, CHFL_HALFOP, 'h');
+   remove_a_mode(chptr, source_p, CHFL_VOICE, 'v');
+ }
+ 
 diff -ur nohalfops/modules/core/m_kick.c halfops/modules/core/m_kick.c
---- nohalfops/modules/core/m_kick.c	Sat Oct 11 11:17:48 2003
-+++ halfops/modules/core/m_kick.c	Sat Oct 11 11:17:54 2003
+--- nohalfops/modules/core/m_kick.c	Sun Oct 12 20:51:17 2003
++++ halfops/modules/core/m_kick.c	Sun Oct 12 20:51:26 2003
 @@ -135,7 +135,7 @@
          return;
        }
@@ -41,8 +63,8 @@ diff -ur nohalfops/modules/core/m_kick.c halfops/modules/core/m_kick.c
      * - In the case of a server kicking a user (i.e. CLEARCHAN),
      *   the kick should show up as coming from the server which did
 diff -ur nohalfops/modules/core/m_sjoin.c halfops/modules/core/m_sjoin.c
---- nohalfops/modules/core/m_sjoin.c	Sat Oct 11 11:17:48 2003
-+++ halfops/modules/core/m_sjoin.c	Sat Oct 11 11:18:15 2003
+--- nohalfops/modules/core/m_sjoin.c	Sun Oct 12 20:51:17 2003
++++ halfops/modules/core/m_sjoin.c	Sun Oct 12 20:53:14 2003
 @@ -318,7 +318,7 @@
      fl = 0;
      num_prefix = 0;
@@ -68,8 +90,20 @@ diff -ur nohalfops/modules/core/m_sjoin.c halfops/modules/core/m_sjoin.c
 +      }
      }
  
-     if (IsDigit(*s))
-@@ -370,7 +380,7 @@
+     target_p = find_person(s);
+@@ -354,6 +364,11 @@
+         *nick_ptr++ = '@';
+         *uid_ptr++  = '@';
+       }
++      if (fl & CHFL_HALFOP)
++      {
++        *nick_ptr++ = '%';
++        *uid_ptr++  = '%';
++      }
+       if (fl & CHFL_VOICE)
+       {
+         *nick_ptr++ = '+';
+@@ -367,7 +382,7 @@
  
      if (!keep_new_modes)
      {
@@ -78,7 +112,7 @@ diff -ur nohalfops/modules/core/m_sjoin.c halfops/modules/core/m_sjoin.c
          fl = CHFL_DEOPPED;
        else
          fl = 0;
-@@ -453,6 +463,24 @@
+@@ -450,6 +465,24 @@
          pargs = 0;
        }
      }
@@ -103,7 +137,7 @@ diff -ur nohalfops/modules/core/m_sjoin.c halfops/modules/core/m_sjoin.c
  
  nextnick:
      /* p points to the next nick */
-@@ -641,6 +669,7 @@
+@@ -638,6 +671,7 @@
  remove_our_modes(struct Channel *chptr, struct Client *source_p)
  {
    remove_a_mode(chptr, source_p, CHFL_CHANOP, 'o');
@@ -112,8 +146,8 @@ diff -ur nohalfops/modules/core/m_sjoin.c halfops/modules/core/m_sjoin.c
  }
  
 diff -ur nohalfops/src/channel_mode.c halfops/src/channel_mode.c
---- nohalfops/src/channel_mode.c	Sat Oct 11 11:17:48 2003
-+++ halfops/src/channel_mode.c	Sat Oct 11 11:17:54 2003
+--- nohalfops/src/channel_mode.c	Sun Oct 12 20:51:17 2003
++++ halfops/src/channel_mode.c	Sun Oct 12 20:51:26 2003
 @@ -72,6 +72,10 @@
  static void chm_op(struct Client *, struct Client *, struct Channel *, int,
                     int *, char **, int *, int, int, char, void *,
