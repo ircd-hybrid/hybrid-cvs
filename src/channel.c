@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.139 2000/12/24 00:28:26 madmax Exp $
+ * $Id: channel.c,v 7.140 2000/12/24 00:37:27 ejb Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -821,11 +821,11 @@ void send_channel_modes(struct Client *cptr, struct Channel *chptr)
   channel_modes(chptr, cptr, modebuf, parabuf);
 
   send_members(cptr,modebuf,parabuf,chptr,&chptr->chanops,"@");
-#if 0
-  send_members(cptr,modebuf,parabuf,chptr,&chptr->halfops,"%");
-#endif
+  if (IsCapable(cptr, CAP_HOPS))
+	  send_members(cptr,modebuf,parabuf,chptr,&chptr->halfops,"%");
+  else
   /* Ok, halfops can still generate a kick, they'll just looked unopped */
-  send_members(cptr,modebuf,parabuf,chptr,&chptr->halfops,"");
+	  send_members(cptr,modebuf,parabuf,chptr,&chptr->halfops,"@");
   send_members(cptr,modebuf,parabuf,chptr,&chptr->voiced,"+");
   send_members(cptr,modebuf,parabuf,chptr,&chptr->peons,"");
 
@@ -1056,6 +1056,9 @@ void set_channel_mode(struct Client *cptr,
   char  modebuf_invex[MODEBUFLEN];
   char  parabuf_invex[MODEBUFLEN];
 
+  char modebuf_hops[MODEBUFLEN];
+  char parabuf_hops[MODEBUFLEN];
+  
   char  *mbufw = modebuf, *mbuf2w = modebuf2;
   char  *pbufw = parabuf, *pbuf2w = parabuf2;
 
@@ -1067,6 +1070,9 @@ void set_channel_mode(struct Client *cptr,
 
   char  *mbufw_invex = modebuf_invex;
   char  *pbufw_invex = parabuf_invex;
+
+  char *mbufw_hops = modebuf_hops;
+  char *pbufw_hops = parabuf_hops;
 
   int   ischop;
   int   isok;
@@ -1228,14 +1234,26 @@ void set_channel_mode(struct Client *cptr,
           if (len + tmp + 2 >= MODEBUFLEN)
             break;
 
-          *mbufw++ = plus;
-          *mbufw++ = c;
-          strcpy(pbufw, who->name);
-          pbufw += strlen(pbufw);
-          *pbufw++ = ' ';
-          len += tmp + 1;
-          opcnt++;
+		  if (c == 'h')
+		  {
+			  *mbufw_hops++ = plus;
+			  *mbufw_hops++ = c;
+			  strcpy(pbufw_hops, who->name);
+			  pbufw_hops += strlen(pbufw_hops);
+			  *pbufw_hops++ = ' ';
+		  }
+		  else 
+		  {
+			  *mbufw++ = plus;
+			  *mbufw++ = c;
+			  strcpy(pbufw, who->name);
+			  pbufw += strlen(pbufw);
+			  *pbufw++ = ' ';
+		  }
 
+		  len += tmp + 1;
+		  opcnt++;
+		  
 	  /* ignore attempts to "demote" a full op to halfop */
 	  if((to_list == &chptr->halfops) && is_chan_op(chptr,who))
 	    break;
