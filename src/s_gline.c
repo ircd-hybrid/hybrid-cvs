@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_gline.c,v 1.33 2003/05/20 06:51:52 michael Exp $
+ *  $Id: s_gline.c,v 1.34 2003/05/24 09:25:44 michael Exp $
  */
 
 #include "stdinc.h"
@@ -30,7 +30,6 @@
 #include "common.h"
 #include "irc_string.h"
 #include "ircd.h"
-#include "m_kline.h"
 #include "hostmask.h"
 #include "numeric.h"
 #include "fdlist.h"
@@ -61,7 +60,7 @@ static void expire_pending_glines(void);
  * side effects - NONE
  */
 struct ConfItem *
-find_gkill(struct Client *client_p, char *username)
+find_gkill(struct Client *client_p, const char *username)
 {
   assert(client_p != NULL);
 
@@ -69,6 +68,8 @@ find_gkill(struct Client *client_p, char *username)
     return(NULL);
   return((IsExemptKline(client_p)) ? NULL : find_is_glined(client_p->host, username));
 }
+
+/* XXX need CIDR support */
 
 /* find_is_glined()
  *
@@ -188,15 +189,13 @@ expire_pending_glines(void)
   {
     glp_ptr = ptr->data;
 
-    if(((glp_ptr->last_gline_time + GLINE_PENDING_EXPIRE) <= CurrentTime)
-       || find_is_glined(glp_ptr->host, glp_ptr->user))
-      
+    if (((glp_ptr->last_gline_time + GLINE_PENDING_EXPIRE) <= CurrentTime) ||
+        find_is_glined(glp_ptr->host, glp_ptr->user))
     {
+      dlinkDelete(&glp_ptr->node, &pending_glines);
       MyFree(glp_ptr->reason1);
       MyFree(glp_ptr->reason2);
       MyFree(glp_ptr);
-      dlinkDelete(ptr, &pending_glines);
-      free_dlink_node(ptr);
     }
   }
 }

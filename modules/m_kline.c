@@ -19,12 +19,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.132 2003/05/24 00:35:10 db Exp $
+ *  $Id: m_kline.c,v 1.133 2003/05/24 09:25:42 michael Exp $
  */
 
 #include "stdinc.h"
 #include "tools.h"
-#include "m_kline.h"
 #include "channel.h"
 #include "class.h"
 #include "client.h"
@@ -46,8 +45,6 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
-
-extern int rehashed_klines;
 
 static void mo_kline(struct Client *, struct Client *, int, char **);
 static void ms_kline(struct Client *, struct Client *, int, char **);
@@ -78,7 +75,8 @@ _moddeinit(void)
   mod_del_cmd(&kline_msgtab);
   mod_del_cmd(&dline_msgtab);
 }
-const char *_version = "$Revision: 1.132 $";
+
+const char *_version = "$Revision: 1.133 $";
 #endif
 
 /* Local function prototypes */
@@ -102,9 +100,6 @@ static void apply_tkline(struct Client *source_p, struct ConfItem *aconf,
 char buffer[IRCD_BUFSIZE];
 char user[USERLEN+2];
 char host[HOSTLEN+2];
-
-#define MAX_EXT_REASON 100
-
 
 /*
  * mo_kline
@@ -336,8 +331,7 @@ ms_kline(struct Client *client_p, struct Client *source_p,
       }
 } /* ms_kline() */
 
-/*
- * apply_kline
+/* apply_kline()
  *
  * inputs	-
  * output	- NONE
@@ -354,8 +348,7 @@ apply_kline(struct Client *source_p, struct ConfItem *aconf,
   rehashed_klines = 1;
 }
 
-/*
- * apply_tkline
+/* apply_tkline()
  *
  * inputs	-
  * output	- NONE
