@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.68 2001/05/13 18:09:53 db Exp $
+ * $Id: channel.h,v 7.69 2001/05/14 10:08:54 toot Exp $
  */
 
 #include <sys/types.h>        /* time_t */
@@ -123,10 +123,8 @@ extern struct  Channel* get_channel(struct Client *,char*,int );
 
 extern void    channel_member_names( struct Client *source_p,
 				     struct Channel *chptr,
-				     char *name_of_channel);
-extern void    list_one_channel_member_names( struct Client *source_p,
-					      struct Channel *chptr,
-					      char *name_of_channel);
+				     char *name_of_channel,
+                                     int show_eon);
 extern char    *channel_pub_or_secret(struct Channel *chptr);
 extern char    *channel_chanop_or_voice(struct Channel *, struct Client *);
 

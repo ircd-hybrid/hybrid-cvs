@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_clearchan.c,v 1.15 2001/05/12 11:07:39 toot Exp $
+ *   $Id: m_clearchan.c,v 1.16 2001/05/14 10:08:47 toot Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -212,7 +212,7 @@ void kick_list(struct Client *client_p, struct Client *source_p, struct Channel 
 	     source_p->host,
 	     chname);
 
-  channel_member_names(source_p, chptr, chname);
+  channel_member_names(source_p, chptr, chname, 1);
 
 }
 

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_lljoin.c,v 1.38 2001/04/04 15:22:29 androsyn Exp $
+ * $Id: m_lljoin.c,v 1.39 2001/05/14 10:08:56 toot Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -291,5 +291,5 @@ static void ms_lljoin(struct Client *client_p,
                me.name, chptr->chname);
   }
 
-  (void)channel_member_names(target_p, chptr, chname);
+  channel_member_names(target_p, chptr, chname, 1);
 }

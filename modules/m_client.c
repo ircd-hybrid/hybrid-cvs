@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_client.c,v 1.21 2001/04/04 15:22:23 androsyn Exp $
+ *   $Id: m_client.c,v 1.22 2001/05/14 10:08:55 toot Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -551,7 +551,7 @@ m_client(struct Client *client_p, struct Client *source_p,
     root_chptr = chptr->root_chptr ? chptr->root_chptr : chptr;
     sendto_one(target_p, ":%s!%s@%s JOIN %s", target_p->name,
                target_p->username, target_p->host, root_chptr->chname);
-    channel_member_names(target_p, chptr, root_chptr->chname);               
+    channel_member_names(target_p, chptr, root_chptr->chname, 1);
    }
 }
 #endif

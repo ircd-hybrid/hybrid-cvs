@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 1.58 2001/05/13 18:10:00 db Exp $
+ *   $Id: m_join.c,v 1.59 2001/05/14 10:08:56 toot Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -372,8 +372,8 @@ static void m_join(struct Client *client_p,
             }
 	}
 
-      (void)list_one_channel_member_names(source_p, chptr, root_chptr->chname);
-      
+      channel_member_names(source_p, chptr, root_chptr->chname, 1);
+
       if(successful_join_count)
 	source_p->localClient->last_join_time = CurrentTime;
     }

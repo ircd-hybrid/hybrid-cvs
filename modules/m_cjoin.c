@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_cjoin.c,v 1.30 2001/05/12 10:27:38 kreator Exp $
+ *   $Id: m_cjoin.c,v 1.31 2001/05/14 10:08:55 toot Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -200,5 +200,5 @@ static void m_cjoin(struct Client *client_p,
 			vchan_chptr->chname);
 
   del_invite(vchan_chptr, source_p);
-  (void)channel_member_names(source_p, vchan_chptr, root_vchan->chname);
+  channel_member_names(source_p, vchan_chptr, root_vchan->chname, 1);
 }
