@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.363 2003/10/04 19:31:19 metalrock Exp $
+ *  $Id: ircd_parser.y,v 1.364 2004/03/03 11:31:16 metalrock Exp $
  */
 
 %{
@@ -431,7 +431,7 @@ modules_module: MODULE '=' QSTRING ';'
     /* I suppose we should just ignore it if it is already loaded(since
      * otherwise we would flood the opers on rehash) -A1kmm.
      */
-    if (findmodule_byname(m_bn) == -1)
+    if (findmodule_byname(m_bn) == NULL)
       /* XXX - should we unload this module on /rehash, if it isn't listed? */
       load_one_module(yylval.string, 0);
   }
