@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.189 2001/06/26 09:00:22 jdc Exp $
+ * $Id: ircd_parser.y,v 1.190 2001/06/29 07:25:44 a1kmm Exp $
  */
 
 %{
@@ -605,7 +605,10 @@ serverinfo_hub:         HUB '=' TYES ';'
         uplink->name);
     }
     else
+    {
       ServerInfo.hub = 1;
+      uplink = NULL;
+    }
   }
                         |
                         HUB '=' TNO ';'
