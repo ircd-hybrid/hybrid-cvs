@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.166 2001/12/07 10:59:31 leeh Exp $
+ * $Id: s_conf.h,v 7.167 2001/12/13 10:29:23 leeh Exp $
  */
 
 #include "setup.h"
@@ -244,18 +244,22 @@ struct config_file_entry
 
 struct config_channel_entry
 {
-  int           use_except;
-  int           use_halfops;
-  int           use_invex;
-  int           use_knock;
-  int           use_vchans;
-  int           knock_delay;
-  int		knock_delay_channel;
-  int           vchans_oper_only;
-  int           maxbans;
-  int           max_chans_per_user;
-  int           quiet_on_ban;
-  int		persist_time;
+  int   use_except;
+  int   use_halfops;
+  int   use_invex;
+  int   use_knock;
+  int   use_vchans;
+  int   knock_delay;
+  int	knock_delay_channel;
+  int   vchans_oper_only;
+  int   maxbans;
+  int   max_chans_per_user;
+  int   quiet_on_ban;
+  int	persist_time;
+  int   split_server_count;
+  int   split_user_count;
+  int   no_create_on_split;
+  int   no_join_on_split;
 };
 
 struct config_server_hide
