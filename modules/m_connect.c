@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_connect.c,v 1.37 2002/05/24 23:34:19 androsyn Exp $
+ *  $Id: m_connect.c,v 1.38 2002/09/19 16:14:33 bill Exp $
  */
 
 #include "stdinc.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
   mod_del_cmd(&connect_msgtab);
 }
 
-const char *_version = "$Revision: 1.37 $";
+const char *_version = "$Revision: 1.38 $";
 #endif
 /*
  * mo_connect - CONNECT command handler
@@ -160,10 +160,12 @@ static void mo_connect(struct Client* client_p, struct Client* source_p,
    */
   if (serv_connect(aconf, source_p))
     {
+#ifndef HIDE_SERVER_IPS
       if (IsOperAdmin(source_p))
 	sendto_one(source_p, ":%s NOTICE %s :*** Connecting to %s[%s].%d",
 		   me.name, parv[0], aconf->host, aconf->name, aconf->port);
       else
+#endif
 	sendto_one(source_p, ":%s NOTICE %s :*** Connecting to %s.%d",
 		   me.name, parv[0], aconf->name, aconf->port);
 
