@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_map.c,v 1.6 2001/10/03 04:17:13 wcampbel Exp $
+ *   $Id: m_map.c,v 1.7 2001/11/27 00:49:57 davidt Exp $
  */
 
 #include <assert.h>
@@ -42,7 +42,7 @@ static void mo_map(struct Client *client_p, struct Client *source_p,
 static void dump_map(struct Client *client_p,struct Client *root, char *pbuf);
 
 struct Message map_msgtab = {
-  "MAP", 0, 0, 0, MFLG_SLOW, 0,
+  "MAP", 0, 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_map, m_ignore, mo_map}
 };
 

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_flags.c,v 1.2 2001/10/23 03:09:00 db Exp $
+ *   $Id: m_flags.c,v 1.3 2001/11/27 00:49:57 davidt Exp $
  */
 
 /* List of ircd includes from ../include/ */
@@ -51,7 +51,7 @@ static char *set_flags_to_string(struct Client *client_p);
 static char *unset_flags_to_string(struct Client *client_p);
 
 struct Message test_msgtab = {
-  "FLAGS", 0, 0, 0, MFLG_SLOW, 0,
+  "FLAGS", 0, 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_flags, m_ignore, mo_flags}
 };
 
