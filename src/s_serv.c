@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.250 2002/03/10 00:03:11 androsyn Exp $
+ *  $Id: s_serv.c,v 7.251 2002/03/13 13:53:07 db Exp $
  */
 
 #include <sys/types.h>
@@ -658,6 +658,9 @@ int check_server(const char *name, struct Client* client_p, int cryptlink)
 
   if (!(client_p->localClient->passwd))
     return -2;
+
+  if(strlen(name) > HOSTLEN)
+    return -4;
 
   /* loop through looking for all possible connect items that might work */
   for (aconf = ConfigItemList; aconf; aconf = aconf->next)

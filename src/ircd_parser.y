@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.239 2002/03/01 20:22:58 androsyn Exp $
+ *  $Id: ircd_parser.y,v 1.240 2002/03/13 13:53:06 db Exp $
  */
 
 %{
@@ -489,7 +489,11 @@ serverinfo_name:        NAME '=' QSTRING ';'
   {
     /* this isn't rehashable */
     if(ServerInfo.name == NULL)
-      DupString(ServerInfo.name,yylval.string);
+    {
+      /* the ircd will exit() in main() if we dont set one */
+      if(strlen(yylval.string) <= HOSTLEN)
+        DupString(ServerInfo.name,yylval.string);
+    }
   };
 
 serverinfo_description: DESCRIPTION '=' QSTRING ';'
