@@ -6,7 +6,7 @@
  * The idea here is that we should really be maintaining pre-munged
  * buffer "lines" which we can later refcount to save needless copies.
  *
- * $Id: linebuf.c,v 7.8 2000/11/30 10:20:41 adrian Exp $
+ * $Id: linebuf.c,v 7.9 2000/12/05 17:41:26 db Exp $
  */
 
 #include <sys/errno.h>
@@ -232,7 +232,8 @@ linebuf_copy_line(buf_head_t *bufhead, buf_line_t *bufline,
         /*
          * phew! we can copy a byte. Do it, and update the counters.
          * this definitely blows our register sets on most sane archs,
-         * but hey, someone can recode this later on if the want to.
+         * but hey, someone can recode this later on if they want to.
+	 * (ppc has 32 gp registers! -db)
          */
         *bufch = *ch; 
         bufch++;
