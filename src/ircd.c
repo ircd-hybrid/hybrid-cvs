@@ -17,8 +17,9 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.2 1999/08/02 04:27:41 tomh Exp $
+ * $Id: ircd.c,v 7.3 1999/08/02 06:49:45 lusky Exp $
  */
+
 
 #include "ircd.h"
 #include "channel.h"
