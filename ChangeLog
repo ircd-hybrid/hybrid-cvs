@@ -1,3 +1,7 @@
+*** 20001116_6 by toot
+removed mo_knock, m_knock is fine for opers.
+
+
 *** 20001116_5 by toot
 use the topic setters nickname in the !list, if available
 
@@ -582,7 +586,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.555 2000/11/16 23:51:41 toot Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.556 2000/11/17 00:15:22 toot Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
