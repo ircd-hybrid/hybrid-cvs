@@ -25,7 +25,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: balloc.c,v 7.41 2003/01/17 13:00:52 db Exp $
+ *  $Id: balloc.c,v 7.42 2003/03/09 23:15:48 db Exp $
  */
 
 /* 
@@ -48,12 +48,6 @@
  * malloc() has it locked up in its heap.  With the mmap() method, we can munmap()
  * the block and return it back to the OS, thus causing our memory consumption to go
  * down after we no longer need it.
- * 
- * Of course it is up to the caller to make sure BlockHeapGarbageCollect() gets
- * called periodically to do this cleanup, otherwise you'll keep the memory in the
- * process.
- *
- *
  */
 
 #include "stdinc.h"
@@ -71,6 +65,7 @@
 #include "s_log.h"
 #include "client.h"
 #include "fdlist.h"
+#include "event.h"
 
 #ifdef HAVE_MMAP /* We've got mmap() that is good */
 #include <sys/mman.h>
@@ -82,9 +77,10 @@
 #endif
 #endif
 
-
+static BlockHeap *heap_list = NULL;
 
 static int newblock(BlockHeap * bh);
+static void heap_garbage_collection(void *arg);
 
 
 /*
@@ -94,7 +90,8 @@ static int newblock(BlockHeap * bh);
  * Output: None
  * Side Effects: Returns memory for the block back to the OS
  */
-static inline void free_block(void *ptr, size_t size)
+static inline void
+free_block(void *ptr, size_t size)
 {
   munmap(ptr, size);
 }
@@ -121,6 +118,7 @@ initBlockHeap(void)
   if (zero_fd < 0)
     outofmemory();
   fd_open(zero_fd, FD_FILE, "Anonymous mmap()");
+  eventAdd("heap_garbage_collection", &heap_garbage_collection, NULL, 119);
 }
 
 /*
@@ -154,6 +152,7 @@ get_block(size_t size)
 void
 initBlockHeap(void)
 {
+  eventAdd("heap_garbage_collection", &heap_garbage_collection, NULL, 119);
   return;
 }
 
@@ -221,12 +220,20 @@ free_block(void *ptr, size_t unused)
 void
 initBlockHeap()
 {
+  eventAdd("heap_garbage_collection", &heap_garbage_collection, NULL, 119);
   return;
-
 }
 #endif /* HAVE_MMAP */
 
 
+static void
+heap_garbage_collection(void *arg)
+{
+  BlockHeap *bh;
+
+  for (bh = heap_list; bh != NULL; bh = bh->next)
+    BlockHeapGarbageCollect(bh);
+}
 
 /* ************************************************************************ */
 /* FUNCTION DOCUMENTATION:                                                  */
@@ -346,6 +353,8 @@ BlockHeapCreate(size_t elemsize, int elemsperblock)
         outofmemory();          /* die.. out of memory */
       }
 
+    bh->next = heap_list;
+    heap_list = bh;
     return(bh);
 }
 
@@ -550,6 +559,15 @@ BlockHeapDestroy(BlockHeap * bh)
         if(walker != NULL)
           free(walker);
       }
+
+    if (heap_list == bh)
+      heap_list = bh->next;
+    else {
+      BlockHeap *prev;
+
+      for (prev = heap_list; prev->next != bh; prev = prev->next);
+      prev->next = bh->next;
+    }
 
     free(bh);
     return(0);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: balloc.h,v 1.12 2002/07/12 16:14:04 androsyn Exp $
+ *  $Id: balloc.h,v 1.13 2003/03/09 23:15:46 db Exp $
  */
 
 #ifndef INCLUDED_blalloc_h
@@ -67,6 +67,7 @@ struct BlockHeap {
    int     blocksAllocated;             /* Number of blocks allocated */
    int     freeElems;                   /* Number of free elements */
    Block*  base;                        /* Pointer to first block */
+   struct BlockHeap *next;              /* Pointer to next heap */
 };
 
 typedef struct BlockHeap BlockHeap;

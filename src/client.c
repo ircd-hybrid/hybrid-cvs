@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.336 2003/03/01 01:15:44 db Exp $
+ *  $Id: client.c,v 7.337 2003/03/09 23:15:48 db Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -80,20 +80,6 @@ dlink_list dead_list;
 dlink_list abort_list;
 
 /*
- * client_heap_gc
- *
- * inputs	- NONE
- * output	- NONE
- * side effect  - Does garbage collection of client heaps
- */
- 
-static void client_heap_gc(void *unused)
-{
-  BlockHeapGarbageCollect(client_heap);
-  BlockHeapGarbageCollect(lclient_heap);
-}
-
-/*
  * init_client
  *
  * inputs	- NONE
@@ -112,7 +98,6 @@ init_client(void)
   client_heap = BlockHeapCreate(sizeof(struct Client), CLIENT_HEAP_SIZE);
   lclient_heap = BlockHeapCreate(sizeof(struct LocalUser), LCLIENT_HEAP_SIZE);
   eventAddIsh("check_pings", check_pings, NULL, 30);
-  eventAddIsh("client_heap_gc", client_heap_gc, NULL, 30);
 }
 
 /*

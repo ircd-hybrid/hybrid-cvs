@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: linebuf.c,v 7.93 2002/10/09 15:08:32 db Exp $
+ *  $Id: linebuf.c,v 7.94 2003/03/09 23:15:49 db Exp $
  */
 
 #include "stdinc.h"
@@ -28,7 +28,6 @@
 #include "client.h"
 #include "linebuf.h"
 #include "memory.h"
-#include "event.h"
 #include "list.h"
 #include "balloc.h"
 #include "hook.h"
@@ -57,17 +56,10 @@ static int bufline_count = 0;
  * Initialise the linebuf mechanism
  */
 
-static void linebuf_garbage_collect(void *unused)
-{
-  BlockHeapGarbageCollect(linebuf_heap);
-}
-      
-
 void
 linebuf_init(void)
 {
   linebuf_heap  = BlockHeapCreate(sizeof(buf_line_t), LINEBUF_HEAP_SIZE);
-  eventAddIsh("linebuf_garbage_collect", linebuf_garbage_collect, NULL, 30);
 }
 
 static buf_line_t *

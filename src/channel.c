@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.358 2003/03/01 01:15:43 db Exp $
+ *  $Id: channel.c,v 7.359 2003/03/09 23:15:48 db Exp $
  */
 
 #include "stdinc.h"
@@ -71,23 +71,12 @@ static char modebuf[MODEBUFLEN], parabuf[MODEBUFLEN];
  *
  * Initializes the channel blockheap
  */
-static void
-channelheap_garbage_collect(void *unused)
-{
-  BlockHeapGarbageCollect(channel_heap);
-  BlockHeapGarbageCollect(ban_heap);
-  BlockHeapGarbageCollect(topic_heap);
-}
-
 void
 init_channels(void)
 {
   channel_heap = BlockHeapCreate(sizeof(struct Channel), CHANNEL_HEAP_SIZE);
   ban_heap = BlockHeapCreate(sizeof(struct Ban), BAN_HEAP_SIZE);
   topic_heap = BlockHeapCreate(TOPICLEN+1 + USERHOST_REPLYLEN, TOPIC_HEAP_SIZE);
-
-  eventAddIsh("channelheap_garbage_collect", channelheap_garbage_collect,
-              NULL, 45);
 }
 
 /*
