@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.c,v 7.53 2001/02/05 03:34:35 androsyn Exp $
+ *   $Id: s_auth.c,v 7.54 2001/02/07 06:16:25 androsyn Exp $
  *
  * Changes:
  *   July 6, 1999 - Rewrote most of the code here. When a client connects
@@ -215,7 +215,7 @@ static void auth_dns_callback(void* vptr, adns_answer* reply)
 	{
 		if(strlen(*reply->rrs.str) < HOSTLEN)
 		{
-			strncpy_irc(auth->client->host, *reply->rrs.str, HOSTLEN);
+			strcpy(auth->client->host, *reply->rrs.str);
 			sendheader(auth->client, REPORT_FIN_DNS);
 		} else {
 			strcpy(auth->client->host, auth->client->localClient->sockhost);
