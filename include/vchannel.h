@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: vchannel.h,v 7.18 2002/01/05 09:14:30 a1kmm Exp $
+ *  $Id: vchannel.h,v 7.19 2002/05/14 11:41:25 leeh Exp $
  */
 
 #ifndef INCLUDED_vchannel_h
@@ -40,6 +40,8 @@
 
 struct Client;
 struct Channel;
+
+#ifdef VCHANS
 
 extern void	add_vchan_to_client_cache(struct Client *source_p,
 					  struct Channel *base_chan,
@@ -94,5 +96,10 @@ extern struct Channel* cjoin_channel(struct Channel *root,
 #define RootChan(chan) \
   (((chan)->root_chptr == 0) ? (chan) : ((chan)->root_chptr))
 
+#else
+
+#define RootChan(chan) (chan)
+
+#endif /* VCHANS */
 #endif  /* INCLUDED_vchannel_h */
 

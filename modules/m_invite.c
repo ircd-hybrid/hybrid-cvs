@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_invite.c,v 1.43 2002/04/17 02:25:45 leeh Exp $
+ *  $Id: m_invite.c,v 1.44 2002/05/14 11:41:28 leeh Exp $
  */
 
 #include "tools.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
   mod_del_cmd(&invite_msgtab);
 }
 
-const char *_version = "$Revision: 1.43 $";
+const char *_version = "$Revision: 1.44 $";
 #endif
 
 /*
@@ -75,8 +75,11 @@ m_invite(struct Client *client_p,
          struct Client *source_p, int parc, char *parv[])
 {
   struct Client *target_p;
-  struct Channel *chptr, *vchan, *vchan2;
+  struct Channel *chptr, *vchan;
   int chop;                     /* Is channel op */
+#ifdef VCHANS
+  struct Channel *vchan2;
+#endif
 
   if (*parv[2] == '\0')
   {
@@ -136,10 +139,14 @@ m_invite(struct Client *client_p,
 
   /* By this point, chptr is non NULL */
 
+#ifdef VCHANS
   if (!(HasVchans(chptr) && (vchan = map_vchan(chptr, source_p))))
     vchan = chptr;
   if (IsVchan(chptr))
     chptr = chptr->root_chptr;
+#else
+  vchan = chptr;
+#endif
   
   if (MyClient(source_p) && !IsMember(source_p, vchan))
   {
@@ -148,6 +155,7 @@ m_invite(struct Client *client_p,
     return;
   }
 
+#ifdef VCHANS
   if ((vchan2 = map_vchan(chptr, target_p)))
   {
     if (MyClient(source_p) && ((vchan2->mode.mode & MODE_SECRET) == 0))
@@ -155,6 +163,7 @@ m_invite(struct Client *client_p,
                  parv[1], parv[2]);
     return;
   }
+#endif
 
   if (IsMember(target_p, vchan))
   {

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_part.c,v 1.54 2002/04/27 17:59:31 leeh Exp $
+ *  $Id: m_part.c,v 1.55 2002/05/14 11:41:33 leeh Exp $
  */
 
 #include "tools.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&part_msgtab);
 }
-const char *_version = "$Revision: 1.54 $";
+const char *_version = "$Revision: 1.55 $";
 #endif
 
 static void part_one_client(struct Client *client_p,
@@ -137,6 +137,7 @@ static void part_one_client(struct Client *client_p,
       return;
     }
 
+#ifdef VCHANS
   if (IsVchan(chptr) || HasVchans(chptr))
     {
       if(HasVchans(chptr))
@@ -152,6 +153,7 @@ static void part_one_client(struct Client *client_p,
         }
     }
   else
+#endif
     bchan = chptr; /* not a vchan */
 
   if (!chptr || !bchan || !IsMember(source_p, chptr))

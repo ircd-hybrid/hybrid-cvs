@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: vchannel.c,v 7.62 2002/05/12 14:50:50 leeh Exp $
+ *  $Id: vchannel.c,v 7.63 2002/05/14 11:41:38 leeh Exp $
  */
 
 #include "tools.h"
@@ -41,6 +41,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+#ifdef VCHANS
 static void vchan_show_ids(struct Client *source_p, struct Channel *chptr);
 
 /*
@@ -580,3 +581,5 @@ vchan_invites(struct Channel *chptr, struct Client *source_p)
 
   return NULL;
 }
+
+#endif

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_cjoin.c,v 1.49 2002/03/07 06:21:44 db Exp $
+ *  $Id: m_cjoin.c,v 1.50 2002/05/14 11:41:28 leeh Exp $
  */
 
 #include "tools.h"
@@ -44,6 +44,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifdef VCHANS
+
 static void m_cjoin(struct Client*, struct Client*, int, char**);
 
 struct Message cjoin_msgtab = {
@@ -64,7 +66,7 @@ _moddeinit(void)
   mod_del_cmd(&cjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.49 $";
+const char *_version = "$Revision: 1.50 $";
 #endif
 /*
 ** m_cjoin
@@ -211,3 +213,5 @@ static void m_cjoin(struct Client *client_p,
   del_invite(vchan_chptr, source_p);
   channel_member_names(source_p, vchan_chptr, root_vchan->chname, 1);
 }
+
+#endif /* VCHANS */

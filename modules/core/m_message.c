@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.90 2002/04/29 16:58:05 leeh Exp $
+ *  $Id: m_message.c,v 1.91 2002/05/14 11:41:33 leeh Exp $
  */
 
 #include "handlers.h"
@@ -122,7 +122,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.90 $";
+const char *_version = "$Revision: 1.91 $";
 #endif
 
 /*
@@ -448,12 +448,13 @@ msg_channel(int p_or_n, char *command,
 
   chname = RootChan(chptr)->chname;
 
+#ifdef VCHANS
   if (HasVchans(chptr))
     vchan = map_vchan(chptr, source_p);
-
+#endif
+  
   if (!vchan)
     vchan = chptr;
-
 
   if (MyClient(source_p))
   {
@@ -521,8 +522,10 @@ msg_channel_flags(int p_or_n, char *command, struct Client *client_p,
 
   chname = RootChan(chptr)->chname;
 
+#ifdef VCHANS
   if (HasVchans(chptr))
     vchan = map_vchan(chptr, source_p);
+#endif
 
   if (!vchan)
     vchan = chptr;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.111 2002/05/12 14:50:40 leeh Exp $
+ *  $Id: channel.h,v 7.112 2002/05/14 11:41:25 leeh Exp $
  */
 
 #include <sys/types.h>        /* time_t */
@@ -61,14 +61,18 @@ struct Channel
   char            topic[TOPICLEN + 1];
   char            topic_info[USERHOST_REPLYLEN];
   time_t          topic_time;
+#ifdef VCHANS
   char            vchan_id[NICKLEN*2];   /* use this for empty vchans */
+#endif
   int             users;      /* user count */
   int             locusers;   /* local user count */
   unsigned long   lazyLinkChannelExists;
   time_t          users_last;		/* when last user was in channel */
   time_t          last_knock;           /* don't allow knock to flood */
+#ifdef VCHANS
   struct Channel  *root_chptr;		/* pointer back to root if vchan */
   dlink_list	  vchan_list;	        /* vchan sublist */
+#endif
 
   dlink_list      chanops;		/* lists of chanops etc. */
 #ifdef REQUIRE_OANDV

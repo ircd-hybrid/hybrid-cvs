@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.248 2002/05/12 14:50:49 leeh Exp $
+ *  $Id: ircd_parser.y,v 1.249 2002/05/14 11:41:37 leeh Exp $
  */
 
 %{
@@ -2637,7 +2637,11 @@ channel_use_knock:   USE_KNOCK '=' TYES ';'
 
 
 channel_use_vchans: USE_VCHANS '=' TYES ';'
-  { ConfigChannel.use_vchans = 1; }
+  { 
+#ifdef VCHANS
+    ConfigChannel.use_vchans = 1;
+#endif
+  }
     |
     USE_VCHANS '=' TNO ';'
   { ConfigChannel.use_vchans = 0; };

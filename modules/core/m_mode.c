@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_mode.c,v 1.51 2002/04/27 17:59:31 leeh Exp $
+ *  $Id: m_mode.c,v 1.52 2002/05/14 11:41:33 leeh Exp $
  */
 
 #include "tools.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
 }
 
 
-const char *_version = "$Revision: 1.51 $";
+const char *_version = "$Revision: 1.52 $";
 #endif
 /*
  * m_mode - MODE command handler
@@ -73,12 +73,14 @@ static void m_mode(struct Client *client_p, struct Client *source_p,
               int parc, char *parv[])
 {
   struct Channel* chptr=NULL;
-  struct Channel* vchan;
   struct Channel* root;
   static char     modebuf[MODEBUFLEN];
   static char     parabuf[MODEBUFLEN];
   dlink_node	*ptr;
   int n = 2;
+#ifdef VCHANS
+  struct Channel* vchan;
+#endif
 
   /* Now, try to find the channel in question */
   if (!IsChanPrefix(parv[1][0]))
@@ -140,6 +142,7 @@ static void m_mode(struct Client *client_p, struct Client *source_p,
 
   root = chptr;
 
+#ifdef VCHANS
   if ((parc > 2) && parv[2][0] == '!')
     {
      struct Client *target_p;
@@ -181,6 +184,7 @@ static void m_mode(struct Client *client_p, struct Client *source_p,
            */
         }
     }
+#endif
 
   if (parc < n+1)
     {
