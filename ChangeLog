@@ -1,3 +1,17 @@
+lusky       2003/01/26 16:12:23 EST	(20030126_0)
+
+  Modified files:
+    contrib              m_whois.c 
+    modules              m_whois.c 
+  Log:
+  - whois idle display logic fix from lee
+  
+  Revision  Changes    Path
+  1.8       +6 -4      ircd-hybrid-7/contrib/m_whois.c
+  1.86      +10 -8     ircd-hybrid-7/modules/m_whois.c
+
+
+
 lusky       2003/01/25 18:43:22 EST	(20030125_5)
 
   Modified files:
@@ -34473,4 +34487,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4198 2003/01/25 23:43:24 lusky Exp $
+$Id: ChangeLog,v 7.4199 2003/01/26 21:12:26 lusky Exp $
