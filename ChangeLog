@@ -1,3 +1,15 @@
+androsyn    2002/03/09 16:59:37 EST	(20020309_4)
+
+  Modified files:
+    src                  send.c 
+  Log:
+  Remove debug.h from send.c
+  
+  Revision  Changes    Path
+  7.185     +0 -1      ircd-hybrid-7/src/send.c
+
+
+
 androsyn    2002/03/09 16:57:11 EST	(20020309_3)
 
   Modified files:
@@ -24029,4 +24041,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3492 2002/03/09 21:57:17 androsyn Exp $
+$Id: ChangeLog,v 7.3493 2002/03/09 21:59:43 androsyn Exp $
