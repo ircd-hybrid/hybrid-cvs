@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_knock.c,v 1.35 2001/11/29 01:03:53 db Exp $
+ *   $Id: m_knock.c,v 1.36 2001/11/29 05:53:47 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -264,7 +264,7 @@ static void send_knock(struct Client *client_p, struct Client *source_p,
 
   chptr->last_knock = CurrentTime;
 
-  sendto_one(source_p, ":%s NOTICE %s :*** Notice -- Your KNOCK has been delivered",
+  sendto_one(source_p, form_str(RPL_KNOCKDLVR),
              me.name, source_p->name);
 
   /* using &me and me.name won't deliver to clients not on this server
@@ -278,20 +278,19 @@ static void send_knock(struct Client *client_p, struct Client *source_p,
    * -Dianora
    */
 
-  /* bit of paranoid, be a shame if it cored for this -Dianora */
-  if(source_p->user)
+  if(source_p->user != NULL)
     {
       ircsprintf(message,"KNOCK: %s (%s [%s@%s] has asked for an invite)",
                  name, source_p->name, source_p->username, source_p->host);
 
       sendto_channel_local(ONLY_CHANOPS_HALFOPS,
-                          chptr,
-                          ":%s!%s@%s NOTICE %s :%s",
-                          source_p->name,
-                          source_p->username,
-                          source_p->host,
-                          name,
-                          message);
+			   chptr,
+			   form_str(RPL_KNOCK),
+			   me.name,
+			   name,
+			   source_p->name,
+			   source_p->username,
+			   source_p->host);
 
       /* XXX for future enhancement. 
        * negotiate a KNOCK CAPAB, send a KNOCK to remote servers
