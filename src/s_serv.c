@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.307 2003/04/20 16:45:49 adx Exp $
+ *  $Id: s_serv.c,v 7.308 2003/04/23 15:10:37 adx Exp $
  */
 
 #include "stdinc.h"
@@ -949,6 +949,7 @@ server_estab(struct Client *client_p)
                my_name_for_link(me.name, aconf), 
                ConfigServerHide.hidden ? "(H) " : "",
                (me.info[0]) ? (me.info) : "IRCers United");
+    send_queued_write(client_p);
     opt--;
     setsockopt(client_p->localClient->fd, IPPROTO_TCP, TCP_NODELAY,
                (char *)&opt, sizeof(opt));
