@@ -6778,7 +6778,6 @@ ac_cv_topiclen="120"
 if test "${with_nicklen+set}" = set; then
   withval="$with_nicklen"
 
-	echo $withval
   if test "$withval" = "no"; then
 	ac_cv_nicklen="9"
   else
@@ -6786,8 +6785,6 @@ if test "${with_nicklen+set}" = set; then
   fi
 
 fi;
-echo "$as_me:$LINENO: result: \"Setting NICKLEN to $ac_cv_nicklen\"" >&5
-echo "${ECHO_T}\"Setting NICKLEN to $ac_cv_nicklen\"" >&6
 cat >>confdefs.h <<_ACEOF
 #define NICKLEN (${ac_cv_nicklen}+1)
 _ACEOF
@@ -6805,8 +6802,6 @@ if test "${with_maxclients+set}" = set; then
   fi
 
 fi;
-echo "$as_me:$LINENO: result: \"Setting MAX_CLIENTS to $ac_cv_maxclients\"" >&5
-echo "${ECHO_T}\"Setting MAX_CLIENTS to $ac_cv_maxclients\"" >&6
 cat >>confdefs.h <<_ACEOF
 #define MAX_CLIENTS ${ac_cv_maxclients}
 _ACEOF
@@ -6824,8 +6819,6 @@ if test "${with_topiclen+set}" = set; then
   fi
 
 fi;
-echo "$as_me:$LINENO: result: \"Setting TOPICLEN to $ac_cv_topiclen\"" >&5
-echo "${ECHO_T}\"Setting TOPICLEN to $ac_cv_topiclen\"" >&6
 cat >>confdefs.h <<_ACEOF
 #define TOPICLEN ${ac_cv_topiclen}
 _ACEOF
@@ -9666,5 +9659,5 @@ if test "$ac_cv_efnet" = "yes"; then
         echo ""
 fi
 
-echo "$as_me:$LINENO: result: \"Server is configured with NICKLEN=$ac_cv_nicklen and MAX_CLIENTS=$ac_cv_maxclients\"" >&5
-echo "${ECHO_T}\"Server is configured with NICKLEN=$ac_cv_nicklen and MAX_CLIENTS=$ac_cv_maxclients\"" >&6
+echo "$as_me:$LINENO: result: Server is configured with NICKLEN=$ac_cv_nicklen TOPICLEN=$ac_cv_topiclen MAX_CLIENTS=$ac_cv_maxclients" >&5
+echo "${ECHO_T}Server is configured with NICKLEN=$ac_cv_nicklen TOPICLEN=$ac_cv_topiclen MAX_CLIENTS=$ac_cv_maxclients" >&6

@@ -16,11 +16,12 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: match.c,v 7.22 2003/04/09 11:19:37 stu Exp $
+ * $Id: match.c,v 7.23 2003/04/12 09:01:39 michael Exp $
  *
  */
 #include "stdinc.h"
 #include "irc_string.h"
+#include "irc_getaddrinfo.h"
 #include "config.h"     
 #include "client.h"
 #include "ircd.h"

@@ -55,13 +55,15 @@
 #include <errno.h>
 
 #include "setup.h"
+#include "irc_getnameinfo.h"
+#include "irc_string.h"
 
 #ifndef HAVE_SOCKLEN_T
 typedef int socklen_t;
 #endif
 
 
-/*  $Id: irc_getnameinfo.c,v 7.2 2003/04/12 07:00:06 michael Exp $ */
+/*  $Id: irc_getnameinfo.c,v 7.3 2003/04/12 09:01:39 michael Exp $ */
 
 static const struct afd {
   int a_af;
@@ -93,19 +95,17 @@ int
 irc_getnameinfo(const struct sockaddr *sa, socklen_t salen, char *host,
                 size_t hostlen, char *serv, size_t servlen, int flags)
 {
-	const struct afd *afd;
-	struct servent *sp;
-	struct hostent *hp;
-	u_short port;
-	int family, i;
-	const char *addr;
-	u_int32_t v4a;
-	int h_error;
-	char numserv[512];
-	char numaddr[512];
+  const struct afd *afd;
+  struct servent *sp;
+  u_short port;
+  int family, i;
+  const char *addr;
+  u_int32_t v4a;
+  char numserv[512];
+  char numaddr[512];
 
-	if (sa == NULL)
-		return EAI_FAIL;
+  if (sa == NULL)
+    return EAI_FAIL;
 
 /*	if (sa->sa_len != salen)
 		return EAI_FAIL;

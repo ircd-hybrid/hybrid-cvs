@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.186 2003/04/12 07:00:06 michael Exp $
+ *  $Id: s_bsd.c,v 7.187 2003/04/12 09:01:39 michael Exp $
  */
 
 #include "stdinc.h"
@@ -31,6 +31,8 @@
 #include "common.h"
 #include "event.h"
 #include "irc_string.h"
+#include "irc_getnameinfo.h"
+#include "irc_getaddrinfo.h"
 #include "ircdauth.h"
 #include "ircd.h"
 #include "linebuf.h"
@@ -78,24 +80,23 @@ close_all_connections(void)
 {
   int i;
   int fd;
-  int v6;
 
   for (i = 0; i < MAXCONNECTIONS; ++i)
-    {
-      if (fd_table[i].flags.open)
-        fd_close(i);
-      else
-        close(i);
-    }
+  {
+    if (fd_table[i].flags.open)
+      fd_close(i);
+    else
+      close(i);
+  }
 
   /* Make sure stdio descriptors (0-2) and profiler descriptor (3)
      always go somewhere harmless.  Use -foreground for profiling
      or executing from gdb */
   for (i = 0; i < LOWEST_SAFE_FD; i++)
-    {
-      if ((fd = open(PATH_DEVNULL, O_RDWR)) < 0)
-        exit(-1); /* we're hosed if we can't even open /dev/null */
-    }
+  {
+    if ((fd = open(PATH_DEVNULL, O_RDWR)) < 0)
+      exit(-1); /* we're hosed if we can't even open /dev/null */
+  }
 
   /* While we're here, let's check if the system can open AF_INET6 sockets */
   check_can_use_v6();

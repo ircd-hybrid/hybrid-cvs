@@ -50,6 +50,7 @@
 
 #include <stdarg.h>
 #include "setup.h"
+#include "irc_getaddrinfo.h"
 
 #define SUCCESS 0
 #define ANY 0
@@ -88,7 +89,7 @@
 #define EAI_MAX     14
 #define AI_MASK (AI_PASSIVE | AI_NUMERICHOST)
 
-/*  $Id: irc_getaddrinfo.c,v 7.1 2003/04/09 11:19:36 stu Exp $ */
+/*  $Id: irc_getaddrinfo.c,v 7.2 2003/04/12 09:01:39 michael Exp $ */
 
 static const char in_addrany[] = { 0, 0, 0, 0 };
 static const char in_loopback[] = { 127, 0, 0, 1 };
@@ -159,7 +160,7 @@ static struct addrinfo *get_ai(const struct addrinfo *,
 static int get_portmatch(const struct addrinfo *, const char *);
 static int get_port(struct addrinfo *, const char *, int);
 static const struct afd *find_afd(int);
-
+#if 0
 static char *ai_errlist[] = {
 	"Success",
 	"Address family for hostname not supported",	/* EAI_ADDRFAMILY */
@@ -177,7 +178,7 @@ static char *ai_errlist[] = {
 	"Resolved protocol is unknown",			/* EAI_PROTOCOL   */
 	"Unknown error", 				/* EAI_MAX        */
 };
-
+#endif
 /* XXX macros that make external reference is BAD. */
 
 #define GET_AI(ai, afd, addr) \
@@ -211,9 +212,9 @@ do { \
 #define MATCH(x, y, w) \
 	((x) == (y) || (/*CONSTCOND*/(w) && ((x) == ANY || (y) == ANY)))
 
+#if 0
 char *
-irc_gai_strerror(ecode)
-	int ecode;
+irc_gai_strerror(int ecode)
 {
 	if (ecode < 0 || ecode > EAI_MAX)
 		ecode = EAI_MAX;
@@ -221,8 +222,7 @@ irc_gai_strerror(ecode)
 }
 
 void
-irc_freeaddrinfo(ai)
-	struct addrinfo *ai;
+irc_freeaddrinfo(struct addrinfo *ai)
 {
 	struct addrinfo *next;
 
@@ -235,10 +235,10 @@ irc_freeaddrinfo(ai)
 		ai = next;
 	} while (ai);
 }
+#endif
 
 static int
-str_isnumber(p)
-	const char *p;
+str_isnumber(const char *p)
 {
 	char *ep;
 
@@ -254,33 +254,31 @@ str_isnumber(p)
 }
 
 int
-irc_getaddrinfo(hostname, servname, hints, res)
-	const char *hostname, *servname;
-	const struct addrinfo *hints;
-	struct addrinfo **res;
+irc_getaddrinfo(const char *hostname, const char *servname,
+                const struct addrinfo *hints, struct addrinfo **res)
 {
-	struct addrinfo sentinel;
-	struct addrinfo *cur;
-	int error = 0;
-	struct addrinfo ai;
-	struct addrinfo ai0;
-	struct addrinfo *pai;
-	const struct explore *ex;
+  struct addrinfo sentinel;
+  struct addrinfo *cur;
+  int error = 0;
+  struct addrinfo ai;
+  struct addrinfo ai0;
+  struct addrinfo *pai;
+  const struct explore *ex;
 
-	memset(&sentinel, 0, sizeof(sentinel));
-	cur = &sentinel;
-	pai = &ai;
-	pai->ai_flags = 0;
-	pai->ai_family = PF_UNSPEC;
-	pai->ai_socktype = ANY;
-	pai->ai_protocol = ANY;
-	pai->ai_addrlen = 0;
-	pai->ai_canonname = NULL;
-	pai->ai_addr = NULL;
-	pai->ai_next = NULL;
+  memset(&sentinel, 0, sizeof(sentinel));
+  cur = &sentinel;
+  pai = &ai;
+  pai->ai_flags = 0;
+  pai->ai_family = PF_UNSPEC;
+  pai->ai_socktype = ANY;
+  pai->ai_protocol = ANY;
+  pai->ai_addrlen = 0;
+  pai->ai_canonname = NULL;
+  pai->ai_addr = NULL;
+  pai->ai_next = NULL;
 
-	if (hostname == NULL && servname == NULL)
-		return EAI_NONAME;
+  if (hostname == NULL && servname == NULL)
+    return EAI_NONAME;
 	if (hints) {
 		/* error check for hints */
 		if (hints->ai_addrlen || hints->ai_canonname ||

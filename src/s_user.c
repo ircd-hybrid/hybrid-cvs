@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.236 2003/04/09 11:19:37 stu Exp $
+ *  $Id: s_user.c,v 7.237 2003/04/12 09:01:40 michael Exp $
  */
 
 #include "stdinc.h"
@@ -33,6 +33,7 @@
 #include "fdlist.h"
 #include "hash.h"
 #include "irc_string.h"
+#include "irc_getnameinfo.h"
 #include "ircd.h"
 #include "list.h"
 #include "listener.h"
