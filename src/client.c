@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.283 2002/06/27 00:01:28 androsyn Exp $
+ *  $Id: client.c,v 7.284 2002/06/27 02:14:38 androsyn Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -1145,7 +1145,7 @@ exit_remote_pending(void *unused)
   {
     rexit = ptr->data;
     next = ptr->next;
-    assert(ptr->data == NULL);
+    assert(ptr->data != NULL);
     if(ptr->data == NULL)
     {
        sendto_realops_flags(FLAGS_ALL, L_ALL,
