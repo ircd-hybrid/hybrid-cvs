@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.c,v 7.38 2002/02/24 20:32:23 lusky Exp $
+ *  $Id: s_log.c,v 7.39 2002/03/01 20:22:58 androsyn Exp $
  */
 
 #include "client.h"	/* Needed for struct Client */
@@ -164,7 +164,7 @@ void init_log(const char* filename)
   openlog("ircd", LOG_PID | LOG_NDELAY, LOG_FACILITY);
 #endif
 #ifndef SYSLOG_USERS
-  eventAdd("user_log_resync", user_log_resync, NULL, 60);
+  eventAddIsh("user_log_resync", user_log_resync, NULL, 60);
 #endif
 }
 

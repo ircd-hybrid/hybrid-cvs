@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.240 2002/02/28 15:54:00 androsyn Exp $
+ *  $Id: client.c,v 7.241 2002/03/01 20:22:57 androsyn Exp $
  */
 
 #include "tools.h"
@@ -104,9 +104,9 @@ void init_client(void)
    */
   client_heap = BlockHeapCreate(sizeof(struct Client), 1024);
   lclient_heap = BlockHeapCreate(sizeof(struct LocalUser), 512); 
-  eventAdd("check_pings", check_pings, NULL, 30);
-  eventAdd("free_exited_clients", &free_exited_clients, NULL, 4);
-  eventAdd("client_heap_gc", client_heap_gc, NULL, 30);
+  eventAddIsh("check_pings", check_pings, NULL, 30);
+  eventAddIsh("free_exited_clients", &free_exited_clients, NULL, 4);
+  eventAddIsh("client_heap_gc", client_heap_gc, NULL, 30);
 }
 
 /*

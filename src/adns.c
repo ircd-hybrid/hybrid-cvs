@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: adns.c,v 7.38 2002/02/08 04:55:54 lusky Exp $
+ *  $Id: adns.c,v 7.39 2002/03/01 20:22:57 androsyn Exp $
  */
 
 #include "fileio.h"
@@ -93,7 +93,7 @@ void init_resolver(void)
     exit(76);
   }
   
-  eventAdd("timeout_adns", timeout_adns, NULL, 2);
+  eventAddIsh("timeout_adns", timeout_adns, NULL, 2);
   dns_select();
 }
 

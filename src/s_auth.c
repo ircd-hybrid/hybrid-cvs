@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.88 2002/03/01 07:09:14 jmallett Exp $
+ *  $Id: s_auth.c,v 7.89 2002/03/01 20:22:58 androsyn Exp $
  */
 
 /*
@@ -120,7 +120,7 @@ init_auth(void)
 {
   memset(&auth_client_list, 0, sizeof(auth_client_list));
   memset(&auth_poll_list, 0, sizeof(auth_poll_list));
-  eventAdd("timeout_auth_queries_event", timeout_auth_queries_event, NULL, 1);
+  eventAddIsh("timeout_auth_queries_event", timeout_auth_queries_event, NULL, 1);
 }
 
 /*

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.238 2002/02/28 16:12:20 leeh Exp $
+ *  $Id: ircd_parser.y,v 1.239 2002/03/01 20:22:58 androsyn Exp $
  */
 
 %{
@@ -2715,7 +2715,7 @@ serverhide_links_delay: LINKS_DELAY '=' timespec ';'
   {
     if(($3 > 0) && ConfigServerHide.links_disabled == 1)
     {
-      eventAdd("write_links_file", write_links_file, NULL, $3);
+      eventAddIsh("write_links_file", write_links_file, NULL, $3);
       ConfigServerHide.links_disabled = 0;
     }
 	
