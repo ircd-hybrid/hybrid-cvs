@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.75 2003/07/25 23:16:10 michael Exp $
+ *  $Id: hash.c,v 7.76 2003/08/03 14:22:22 michael Exp $
  */
 
 #include "stdinc.h"
@@ -437,6 +437,7 @@ find_client(const char *name)
       struct Client *prev;
 
       while (prev = client_p, (client_p = client_p->hnext) != NULL)
+      {
         if (!irccmp(name, client_p->name))
         {
           prev->hnext = client_p->hnext;
@@ -444,6 +445,7 @@ find_client(const char *name)
           clientTable[hashv] = client_p;
           break;
         }
+      }
     }
   }
 
@@ -463,6 +465,7 @@ hash_find_id(const char *name)
       struct Client *prev;
 
       while (prev = client_p, (client_p = client_p->idhnext) != NULL)
+      {
         if (!irccmp(name, client_p->id))
         {
           prev->idhnext = client_p->idhnext;
@@ -470,6 +473,7 @@ hash_find_id(const char *name)
           idTable[hashv] = client_p;
           break;
         }
+      }
     }
   }
 
@@ -531,6 +535,7 @@ find_server(const char *name)
       struct Client *prev;
 
       while (prev = client_p, (client_p = client_p->hnext) != NULL)
+      {
         if ((IsServer(client_p) || IsMe(client_p)) &&
             !irccmp(name, client_p->name))
         {
@@ -539,6 +544,7 @@ find_server(const char *name)
           clientTable[hashv] = client_p;
           break;
         }
+      }
     }
   }
 
@@ -566,6 +572,7 @@ hash_find_channel(const char *name)
       struct Channel *prev;
 
       while (prev = chptr, (chptr = chptr->hnextch) != NULL)
+      {
         if (!irccmp(name, chptr->chname))
         {
           prev->hnextch = chptr->hnextch;
@@ -573,6 +580,7 @@ hash_find_channel(const char *name)
           channelTable[hashv] = chptr;
           break;
         }
+      }
     }
   }
 
@@ -600,6 +608,7 @@ hash_find_resv(const char *name)
       struct ResvChannel *prev;
 
       while (prev = chptr, (chptr = chptr->hnext) != NULL)
+      {
         if (!irccmp(name, chptr->name))
         {
           prev->hnext = chptr->hnext;
@@ -607,6 +616,7 @@ hash_find_resv(const char *name)
           resvchannelTable[hashv] = chptr;
           break;
         }
+      }
     }
   }
 
@@ -626,6 +636,7 @@ hash_find_userhost(const char *host)
       struct UserHost *prev;
 
       while (prev = userhost, (userhost = userhost->next) != NULL)
+      {
         if (!irccmp(host, userhost->host))
         {
           prev->next = userhost->next;
@@ -633,6 +644,7 @@ hash_find_userhost(const char *host)
           userhostTable[hashv] = userhost;
           break;
         }
+      }
     }
   }
 
@@ -884,7 +896,7 @@ struct Message hash_msgtab = {
  */
 void
 mo_hash(struct Client *client_p, struct Client *source_p,
-       int parc, char *parv[])
+        int parc, char *parv[])
 {
   int i;
   int max_chain = 0;
@@ -1152,6 +1164,7 @@ safe_list_channels(struct Client *source_p, struct ListTask *list_task,
           return; /* still more to do */
         }
       }
+
       for (chptr = channelTable[i]; chptr; chptr = chptr->hnextch)
         list_one_channel(source_p, chptr, list_task, remote_request);
     }

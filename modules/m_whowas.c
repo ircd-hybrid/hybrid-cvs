@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whowas.c,v 1.33 2003/05/11 16:05:50 michael Exp $
+ *  $Id: m_whowas.c,v 1.34 2003/08/03 14:22:20 michael Exp $
  */
 
 #include "stdinc.h"
@@ -48,7 +48,7 @@ static void whowas_do(struct Client *client_p, struct Client *source_p,
 
 struct Message whowas_msgtab = {
   "WHOWAS", 0, 0, 0, 0, MFLG_SLOW, 0L,
-  {m_unregistered, m_whowas, m_error, mo_whowas, m_ignore}
+  { m_unregistered, m_whowas, m_error, mo_whowas, m_ignore }
 };
 
 #ifndef STATIC_MODULES
@@ -63,7 +63,8 @@ _moddeinit(void)
 {
   mod_del_cmd(&whowas_msgtab);
 }
-const char *_version = "$Revision: 1.33 $";
+
+const char *_version = "$Revision: 1.34 $";
 #endif
 
 /*
@@ -116,7 +117,8 @@ whowas_do(struct Client *client_p, struct Client *source_p,
 {
   struct Whowas *temp;
   int cur = 0;
-  int max = -1, found = 0;
+  int max = -1;
+  int found = 0;
   char *p, *nick;
 
   if (parc > 2)
@@ -134,11 +136,10 @@ whowas_do(struct Client *client_p, struct Client *source_p,
     return;
 
   temp  = WHOWASHASH[hash_whowas_name(nick)];
-  found = 0;
 
   for (; temp; temp = temp->next)
   {
-    if (0 == irccmp(nick, temp->name))
+    if (irccmp(nick, temp->name) == 0)
     {
       sendto_one(source_p, form_str(RPL_WHOWASUSER),
                  me.name, source_p->name, temp->name,

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_admin.c,v 1.41 2003/06/21 20:09:21 metalrock Exp $
+ *  $Id: m_admin.c,v 1.42 2003/08/03 14:22:19 michael Exp $
  */
 
 #include "stdinc.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
   hook_del_event("doing_admin");
   mod_del_cmd(&admin_msgtab);
 }
-const char *_version = "$Revision: 1.41 $";
+const char *_version = "$Revision: 1.42 $";
 #endif
 
 /*
@@ -167,7 +167,8 @@ do_admin(struct Client *source_p)
  * output	- none
  * side effects - event doing_admin is called
  */
-static void admin_spy(struct Client *source_p)
+static void
+admin_spy(struct Client *source_p)
 {
   struct hook_spy_data data;
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: memory.h,v 7.39 2003/06/22 00:52:54 joshk Exp $
+ *  $Id: memory.h,v 7.40 2003/08/03 14:22:18 michael Exp $
  */
 
 #ifndef _I_MEMORY_H
@@ -50,33 +50,39 @@ extern void _DupString(char **x, const char *y);
  * so we don't declare the inlines unless GNUC
  */
 #ifdef __GNUC__
-extern inline void * MyMalloc(size_t size)
+extern inline void *
+MyMalloc(size_t size)
 {
   void *ret = calloc(1, size);
-  if(ret == NULL)
+
+  if (ret == NULL)
     outofmemory();
   return(ret);
 }
 
-extern inline void* MyRealloc(void* x, size_t y)
+extern inline void *
+MyRealloc(void *x, size_t y)
 {
   void *ret = realloc(x, y);
-  
-  if(ret == NULL)
+
+  if (ret == NULL)
     outofmemory();
   return(ret);    
 }
 
-extern inline void MyFree(void *x)
+extern inline void
+MyFree(void *x)
 {
-  if(x != NULL)
+  if (x != NULL)
     free(x);
 }
 
-extern inline void _DupString(char **x, const char *y)
+extern inline void
+_DupString(char **x, const char *y)
 {
   (*x) = malloc(strlen(y) + 1);
-  if(x == NULL)
+
+  if (x == NULL)
     outofmemory();
   strcpy((*x), y); 
 }

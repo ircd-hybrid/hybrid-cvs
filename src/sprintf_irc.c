@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: sprintf_irc.c,v 7.16 2003/04/06 04:18:57 db Exp $
+ *  $Id: sprintf_irc.c,v 7.17 2003/08/03 14:22:23 michael Exp $
  */
 
 #include "stdinc.h"
@@ -227,7 +227,8 @@ static const char atoi_tab[4000] = {
     '9','8','0',0, '9','8','1',0, '9','8','2',0, '9','8','3',0, '9','8','4',0,
     '9','8','5',0, '9','8','6',0, '9','8','7',0, '9','8','8',0, '9','8','9',0,
     '9','9','0',0, '9','9','1',0, '9','9','2',0, '9','9','3',0, '9','9','4',0,
-    '9','9','5',0, '9','9','6',0, '9','9','7',0, '9','9','8',0, '9','9','9',0 };
+    '9','9','5',0, '9','9','6',0, '9','9','7',0, '9','9','8',0, '9','9','9',0
+};
 
 static char scratch_buffer[32];
 
@@ -264,7 +265,6 @@ static char scratch_buffer[32];
 
 int
 vsprintf_irc(char *str, const char *format, va_list args)
-
 {
   char c;
   int bytes = 0;
@@ -452,7 +452,7 @@ vsprintf_irc(char *str, const char *format, va_list args)
 
   *str = '\0';
 
-  return (bytes);
+  return(bytes);
 } /* vsprintf_irc() */
 
 int
@@ -467,6 +467,6 @@ ircsprintf(char *str, const char *format, ...)
 
   va_end(args);
 
-  return (bytes);
+  return(bytes);
 } /* ircsprintf() */
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: memory.c,v 7.39 2003/04/16 10:38:19 michael Exp $
+ *  $Id: memory.c,v 7.40 2003/08/03 14:22:23 michael Exp $
  */
 
 
@@ -41,7 +41,8 @@
 /*
  * MyMalloc - allocate memory, call outofmemory on failure
  */
-void *MyMalloc(size_t size)
+void *
+MyMalloc(size_t size)
 {
   void *ret = calloc(1, size);
 
@@ -53,7 +54,8 @@ void *MyMalloc(size_t size)
 /*
  * MyRealloc - reallocate memory, call outofmemory on failure
  */
-void *MyRealloc(void *x, size_t y)
+void *
+MyRealloc(void *x, size_t y)
 {
   void *ret = realloc(x, y);
 
@@ -62,13 +64,15 @@ void *MyRealloc(void *x, size_t y)
   return(ret);
 }
 
-void MyFree(void *x)
+void
+MyFree(void *x)
 {
   if (x)
-    free((x));
+    free(x);
 }
 
-void _DupString(char **x, const char *y)
+void
+_DupString(char **x, const char *y)
 {
   (*x) = malloc(strlen(y) + 1);
   strcpy((*x), y);
@@ -78,9 +82,11 @@ void _DupString(char **x, const char *y)
  *
  * input        - NONE
  * output       - NONE
- * side effects - simply try to report there is a problem. Abort if it was called more than once
+ * side effects - simply try to report there is a problem.
+ *                Abort if it was called more than once
  */
-void outofmemory(void)
+void
+outofmemory(void)
 {
   static int was_here = 0;
 

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_clearchan.c,v 1.44 2003/06/29 22:46:11 michael Exp $
+ *   $Id: m_clearchan.c,v 1.45 2003/08/03 14:22:16 michael Exp $
  */
 
 #include "stdinc.h"
@@ -51,11 +51,10 @@ static void remove_a_mode(struct Channel *, int, char);
 
 struct Message clearchan_msgtab = {
   "CLEARCHAN", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, m_ignore, mo_clearchan, m_ignore}
+  { m_unregistered, m_not_oper, m_ignore, mo_clearchan, m_ignore }
 };
 
 #ifndef STATIC_MODULES
-
 void
 _modinit(void)
 {
@@ -68,8 +67,7 @@ _moddeinit(void)
   mod_del_cmd(&clearchan_msgtab);
 }
 
-const char *_version = "$Revision: 1.44 $";
-
+const char *_version = "$Revision: 1.45 $";
 #endif
 
 /*
@@ -127,10 +125,8 @@ mo_clearchan(struct Client *client_p, struct Client *source_p,
                 me.name, (unsigned long)(chptr->channelts - 1),
                 chptr->chname, source_p->name);
   sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s JOIN %s",
-                       source_p->name,
-                       source_p->username,
-                       source_p->host,
-                       chptr->chname);
+                       source_p->name, source_p->username,
+                       source_p->host, chptr->chname);
   sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s +o %s",
                        me.name, chptr->chname, source_p->name);
 
@@ -149,8 +145,9 @@ mo_clearchan(struct Client *client_p, struct Client *source_p,
   kick_list(client_p, source_p, chptr, chptr->chname);
 }
 
-static void kick_list(struct Client *client_p, struct Client *source_p,
-                      struct Channel *chptr, char *chname)
+static void
+kick_list(struct Client *client_p, struct Client *source_p,
+          struct Channel *chptr, char *chname)
 {
   dlink_node *m, *next_m;
   struct Membership *ms;
@@ -212,8 +209,8 @@ remove_our_modes(struct Channel *chptr, struct Client *source_p)
  * output	- NONE
  * side effects	- remove ONE mode from a channel
  */
-static
-void remove_a_mode(struct Channel *chptr, int mask, char flag)
+static void
+remove_a_mode(struct Channel *chptr, int mask, char flag)
 {
   dlink_node *ptr;
   struct Membership *ms;
@@ -241,10 +238,9 @@ void remove_a_mode(struct Channel *chptr, int mask, char flag)
     if (count >= 4)
     {
       *mbuf = '\0';
-      sendto_channel_local(ALL_MEMBERS, chptr,
-		           ":%s MODE %s %s %s %s %s %s",
-			   me.name, chptr->chname, lmodebuf,
-			   lpara[0], lpara[1], lpara[2], lpara[3]);
+      sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s %s %s %s %s %s",
+                           me.name, chptr->chname, lmodebuf, lpara[0],
+                           lpara[1], lpara[2], lpara[3]);
 
       mbuf = lmodebuf;
       *mbuf++ = '-';
@@ -255,10 +251,9 @@ void remove_a_mode(struct Channel *chptr, int mask, char flag)
 
   if (count != 0)
   {
-    *mbuf   = '\0';
-    sendto_channel_local(ALL_MEMBERS, chptr,
-			 ":%s MODE %s %s %s %s %s %s",
-			 me.name, chptr->chname, lmodebuf,
-			 lpara[0], lpara[1], lpara[2], lpara[3]);
+    *mbuf = '\0';
+    sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s %s %s %s %s %s",
+                         me.name, chptr->chname, lmodebuf, lpara[0],
+                         lpara[1], lpara[2], lpara[3]);
   }
 }

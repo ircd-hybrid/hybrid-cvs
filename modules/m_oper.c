@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_oper.c,v 1.74 2003/07/05 06:20:57 db Exp $
+ *  $Id: m_oper.c,v 1.75 2003/08/03 14:22:20 michael Exp $
  */
 
 #include "stdinc.h"
@@ -70,7 +70,7 @@ _moddeinit(void)
   mod_del_cmd(&oper_msgtab);
 }
 
-const char *_version = "$Revision: 1.74 $";
+const char *_version = "$Revision: 1.75 $";
 #endif
 
 /*
@@ -229,7 +229,8 @@ match_oper_password(const char *password, struct AccessItem *aconf)
  * side effects - notices all opers of the failed oper attempt if enabled
  */
 static void
-failed_oper_notice(struct Client *source_p, const char *name, const char *reason)
+failed_oper_notice(struct Client *source_p, const char *name,
+                   const char *reason)
 {
   if (ConfigFileEntry.failed_oper_notice)
     sendto_realops_flags(UMODE_ALL, L_ALL, "Failed OPER attempt as %s "

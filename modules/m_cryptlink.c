@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_cryptlink.c,v 1.56 2003/07/24 19:14:56 michael Exp $
+ *  $Id: m_cryptlink.c,v 1.57 2003/08/03 14:22:19 michael Exp $
  */
 
 /*
@@ -95,7 +95,7 @@ _moddeinit(void)
   mod_del_cmd(&cryptlink_msgtab);
 }
 
-const char *_version = "$Revision: 1.56 $";
+const char *_version = "$Revision: 1.57 $";
 #endif
 
 
@@ -115,9 +115,9 @@ const char *_version = "$Revision: 1.56 $";
  *                          parv[2] == cipher (eg. BF/168)
  *                          parv[3] == keyphrase
  */
-static void mr_cryptlink(struct Client *client_p,
-                         struct Client *source_p,
-                         int parc, char *parv[])
+static void
+mr_cryptlink(struct Client *client_p, struct Client *source_p,
+             int parc, char *parv[])
 {
   int i;
 
@@ -134,14 +134,13 @@ static void mr_cryptlink(struct Client *client_p,
   }
 }
 
-
 /*
  * cryptlink_auth - CRYPTLINK AUTH message handler
  *        parv[1] = secret key
  */
 static void
 cryptlink_auth(struct Client *client_p, struct Client *source_p,
-	       int parc, char *parv[])
+               int parc, char *parv[])
 {
   struct EncCapability *ecap;
   struct ConfItem *conf;
@@ -163,8 +162,8 @@ cryptlink_auth(struct Client *client_p, struct Client *source_p,
 
   for (ecap = CipherTable; ecap->name; ecap++)
   {
-    if ( (!irccmp(ecap->name, parv[2])) &&
-         (IsCapableEnc(client_p, ecap->cap)) )
+    if ((!irccmp(ecap->name, parv[2])) &&
+        (IsCapableEnc(client_p, ecap->cap)))
     {
       client_p->localClient->in_cipher = ecap;
       break;
@@ -192,11 +191,11 @@ cryptlink_auth(struct Client *client_p, struct Client *source_p,
   }
 
   key = MyMalloc(RSA_size(ServerInfo.rsa_private_key));
-  len = RSA_private_decrypt( enc_len, (unsigned char *)enc,(unsigned char *)key,
-                             ServerInfo.rsa_private_key,
-                             RSA_PKCS1_PADDING );
+  len = RSA_private_decrypt(enc_len, (unsigned char *)enc,(unsigned char *)key,
+                            ServerInfo.rsa_private_key,
+                            RSA_PKCS1_PADDING);
 
-  if ( len < client_p->localClient->in_cipher->keylen )
+  if (len < client_p->localClient->in_cipher->keylen)
   {
     report_crypto_errors();
     if (len < 0)
@@ -232,7 +231,7 @@ cryptlink_auth(struct Client *client_p, struct Client *source_p,
   {
     cryptlink_error(client_p, "AUTH",
                     "Lost C-line for server",
-                    "Lost C-line" );
+                    "Lost C-line");
     return;
   }
 
@@ -263,12 +262,13 @@ cryptlink_auth(struct Client *client_p, struct Client *source_p,
  *        parv[3] == keyphrase
  *        parv[4] == :server info (M-line)
  */
-static void cryptlink_serv(struct Client *client_p, struct Client *source_p,
-                           int parc, char *parv[])
+static void
+cryptlink_serv(struct Client *client_p, struct Client *source_p,
+               int parc, char *parv[])
 {
   char info[REALLEN + 1];
   char *name;
-  struct Client   *target_p;
+  struct Client *target_p;
   char *key = client_p->localClient->out_key;
   char *b64_key;
   struct ConfItem *conf;
@@ -355,7 +355,7 @@ static void cryptlink_serv(struct Client *client_p, struct Client *source_p,
 
   if (ServerInfo.hub && IsCapable(client_p, CAP_LL))
   {
-      if(IsCapable(client_p, CAP_HUB))
+      if (IsCapable(client_p, CAP_HUB))
       {
           ClearCap(client_p,CAP_LL);
           sendto_realops_flags(UMODE_ALL, L_ALL,
@@ -402,7 +402,7 @@ static void cryptlink_serv(struct Client *client_p, struct Client *source_p,
 
   p = info;
 
-  if(!strncmp(info, "(H)", 3))
+  if (!strncmp(info, "(H)", 3))
   {
     SetHidden(client_p);
 
@@ -467,8 +467,7 @@ static void cryptlink_serv(struct Client *client_p, struct Client *source_p,
   MyFree(b64_key);
 }
 
-/*
- * parse_cryptserv_args
+/* parse_cryptserv_args()
  *
  * inputs	- parv parameters
  *		- parc count
@@ -477,9 +476,9 @@ static void cryptlink_serv(struct Client *client_p, struct Client *source_p,
  * output	- NULL if invalid params, server name otherwise
  * side effects	- parv[2] is trimmed to HOSTLEN size if needed.
  */
-static char *parse_cryptserv_args(struct Client *client_p,
-                                  char *parv[], int parc, char *info,
-                                  char *key)
+static char *
+parse_cryptserv_args(struct Client *client_p, char *parv[],
+                     int parc, char *info, char *key)
 {
   char *name, *tmp, *out;
   int len;
@@ -505,16 +504,16 @@ static char *parse_cryptserv_args(struct Client *client_p,
       "verify_private_key() returned -1.  Check log for information.");
   }
 
-  if(ServerInfo.rsa_private_key == NULL)
+  if (ServerInfo.rsa_private_key == NULL)
   {
     cryptlink_error(client_p, "SERV", "No local private key found", NULL);
     return(NULL);
   }
-  out = MyMalloc(RSA_size(ServerInfo.rsa_private_key));
 
+  out = MyMalloc(RSA_size(ServerInfo.rsa_private_key));
   len = RSA_private_decrypt(decoded_len, tmp, out,
                             ServerInfo.rsa_private_key,
-                            RSA_PKCS1_PADDING );
+                            RSA_PKCS1_PADDING);
 
   MyFree(tmp);
 
@@ -539,9 +538,7 @@ static char *parse_cryptserv_args(struct Client *client_p,
   strlcpy(info, parv[4], REALLEN + 1);
 
   if (strlen(name) > HOSTLEN)
-  {
     name[HOSTLEN] = '\0';
-  }
 
   return(name);
 }

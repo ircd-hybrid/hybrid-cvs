@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.400 2003/07/25 23:49:20 michael Exp $
+ *  $Id: client.c,v 7.401 2003/08/03 14:22:22 michael Exp $
  */
 
 #include "stdinc.h"
@@ -257,11 +257,9 @@ check_pings_list(dlink_list *list)
 
     if (IsPerson(client_p))
     {
-      if(!IsExemptKline(client_p) &&
-	 GlobalSetOptions.idletime && 
-	 !IsOper(client_p) &&
-	 !IsIdlelined(client_p) && 
-	 ((CurrentTime - client_p->user->last) > GlobalSetOptions.idletime))
+      if (!IsExemptKline(client_p) && GlobalSetOptions.idletime && 
+          !IsOper(client_p) && !IsIdlelined(client_p) && 
+	  ((CurrentTime - client_p->user->last) > GlobalSetOptions.idletime))
 	{
 	  struct ConfItem *conf;
 	  struct AccessItem *aconf;
@@ -309,10 +307,9 @@ check_pings_list(dlink_list *list)
 	    ilog(L_NOTICE, "No response from %s, closing link",
 		 get_client_name(client_p, HIDE_IP));
 	  }
-	ircsprintf(scratch,
-			 "Ping timeout: %d seconds",
-			 (int)(CurrentTime - client_p->lasttime));
-	      
+	ircsprintf(scratch, "Ping timeout: %d seconds",
+                   (int)(CurrentTime - client_p->lasttime));
+
 	exit_client(client_p, client_p, &me, scratch);
 	continue;
       }
@@ -382,26 +379,26 @@ check_conf_klines(void)
      */
     if (IsDead(client_p))
       continue;
-	
+
     /* if there is a returned struct ConfItem then kill it */
     if ((aconf = find_dline_conf(&client_p->localClient->ip,
-				 client_p->localClient->aftype)) != NULL)
+                                  client_p->localClient->aftype)) != NULL)
     {
       if (aconf->status & CONF_EXEMPTDLINE)
 	continue;
-	    
-      sendto_realops_flags(UMODE_ALL, L_ALL,"DLINE active for %s",
-			   get_client_name(client_p, HIDE_IP));
-      
-      if (ConfigFileEntry.kline_with_connection_closed &&
-	  ConfigFileEntry.kline_with_reason)
-      {
-	reason = "Connection closed";
 
-	if (IsPerson(client_p))
-	  sendto_one(client_p, form_str(ERR_YOUREBANNEDCREEP),
-		     me.name, client_p->name,
-		     aconf->reason ? aconf->reason : "D-lined");
+      sendto_realops_flags(UMODE_ALL, L_ALL,"DLINE active for %s",
+                           get_client_name(client_p, HIDE_IP));
+
+      if (ConfigFileEntry.kline_with_connection_closed &&
+          ConfigFileEntry.kline_with_reason)
+      {
+        reason = "Connection closed";
+
+        if (IsPerson(client_p))
+          sendto_one(client_p, form_str(ERR_YOUREBANNEDCREEP),
+                     me.name, client_p->name,
+                     aconf->reason ? aconf->reason : "D-lined");
       }
       else
       {
@@ -412,7 +409,7 @@ check_conf_klines(void)
 	else
 	  reason = "D-lined";
 
-	if(IsPerson(client_p))
+	if (IsPerson(client_p))
 	  sendto_one(client_p, form_str(ERR_YOUREBANNEDCREEP),
 		     me.name, client_p->name, reason);
       }
@@ -433,8 +430,8 @@ check_conf_klines(void)
 			       get_client_name(client_p, HIDE_IP));
 	  continue;
 	}
-	
-	if (IsExemptGline(client_p))
+
+        if (IsExemptGline(client_p))
 	{
 	  sendto_realops_flags(UMODE_ALL, L_ALL,
 			"GLINE over-ruled for %s, client is gline_exempt",
@@ -446,7 +443,7 @@ check_conf_klines(void)
 			     get_client_name(client_p, HIDE_IP));
 			    
 	if (ConfigFileEntry.kline_with_connection_closed &&
-	   ConfigFileEntry.kline_with_reason)
+            ConfigFileEntry.kline_with_reason)
 	{
 	  reason = "Connection closed";
 
@@ -486,7 +483,7 @@ check_conf_klines(void)
 			     get_client_name(client_p, HIDE_IP));
 
 	if (ConfigFileEntry.kline_with_connection_closed &&
-	   ConfigFileEntry.kline_with_reason)
+            ConfigFileEntry.kline_with_reason)
 	{
 	  reason = "Connection closed";
 
@@ -506,7 +503,7 @@ check_conf_klines(void)
 	  sendto_one(client_p, form_str(ERR_YOUREBANNEDCREEP),
 		     me.name, client_p->name, reason);
 	}
-	      
+
 	exit_client(client_p, client_p, &me, reason);
 	continue; 
       }
@@ -519,7 +516,7 @@ check_conf_klines(void)
     client_p = ptr->data;
 
     if ((aconf = find_dline_conf(&client_p->localClient->ip,
-                                 client_p->localClient->aftype)))
+                                  client_p->localClient->aftype)))
     {
       if (aconf->status & CONF_EXEMPTDLINE)
         continue;
@@ -555,9 +552,8 @@ check_xlines(void)
       continue;
 	
     /* if there is a returned struct AccessItem then kill it */
-    if ((conf = find_matching_name_conf(
-					XLINE_TYPE, client_p->info,
-					NULL, NULL, 0)) != NULL)
+    if ((conf = find_matching_name_conf(XLINE_TYPE, client_p->info,
+                                        NULL, NULL, 0)) != NULL)
     {
       xconf = (struct MatchItem *)map_to_conf(conf);
 
@@ -583,7 +579,7 @@ check_xlines(void)
 	else
 	  reason = "X-lined";
 
-	if(IsPerson(client_p))
+	if (IsPerson(client_p))
 	  sendto_one(client_p, form_str(ERR_YOUREBANNEDCREEP),
 		     me.name, client_p->name, reason);
       }
@@ -1029,7 +1025,7 @@ remove_dependents(struct Client *client_p, struct Client *source_p,
     to = ptr->data;
 
     if (IsMe(to) || to == source_p->from || (to == client_p &&
-                                               IsCapable(to, CAP_QS)))
+                                             IsCapable(to, CAP_QS)))
       continue;
 
       /* MyConnect(source_p) is rotten at this point: if source_p
@@ -1235,7 +1231,7 @@ exit_client(
 
     if (IsIpHash(source_p))
       remove_one_ip(&source_p->localClient->ip);
-    
+
     if (source_p->localClient->dns_query != NULL)
     {
       delete_resolver_queries(source_p->localClient->dns_query->ptr);
@@ -1296,21 +1292,11 @@ exit_client(
     }
 
     if (IsPerson(source_p))
-    {
-      if (ConfigFileEntry.hide_spoof_ips)
-        sendto_realops_flags(UMODE_CCONN, L_ALL,
-                             "Client exiting: %s (%s@%s) [%s] [%s]",
-                             source_p->name, source_p->username, source_p->host,
-                             comment,
-                             IsIPSpoof(source_p) ? "255.255.255.255" :
-                             source_p->localClient->sockhost);
-      else
-        sendto_realops_flags(UMODE_CCONN, L_ALL,
-			     "Client exiting: %s (%s@%s) [%s] [%s]",
-                             source_p->name, source_p->username, source_p->host,
-                             comment,
-                             source_p->localClient->sockhost);
-    }
+      sendto_realops_flags(UMODE_CCONN, L_ALL, "Client exiting: %s (%s@%s) [%s] [%s]",
+                           source_p->name, source_p->username, source_p->host, comment,
+                           ConfigFileEntry.hide_spoof_ips && IsIPSpoof(source_p) ?
+                           "255.255.255.255" : source_p->localClient->sockhost);
+
     log_user_exit(source_p);
 
     if (!IsDead(source_p))

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_away.c,v 1.34 2003/05/25 04:37:55 db Exp $
+ *  $Id: m_away.c,v 1.35 2003/08/03 14:22:19 michael Exp $
  */
 
 #include "stdinc.h"
@@ -37,9 +37,9 @@
 #include "packet.h"
 
 
-static void m_away(struct Client*, struct Client*, int, char**);
-static void mo_away(struct Client*, struct Client*, int, char**);
-static void ms_away(struct Client*, struct Client*, int, char**);
+static void m_away(struct Client *, struct Client *, int, char **);
+static void mo_away(struct Client *, struct Client *, int, char **);
+static void ms_away(struct Client *, struct Client *, int, char **);
 
 struct Message away_msgtab = {
   "AWAY", 0, 0, 0, 0, MFLG_SLOW, 0,
@@ -58,7 +58,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&away_msgtab);
 }
-const char *_version = "$Revision: 1.34 $";
+const char *_version = "$Revision: 1.35 $";
 #endif
 
 /***********************************************************************
@@ -77,8 +77,9 @@ const char *_version = "$Revision: 1.34 $";
  *  parv[0] = sender prefix
  *  parv[1] = away message
  */
-static void m_away(struct Client *client_p, struct Client *source_p,
-                   int parc, char *parv[])
+static void
+m_away(struct Client *client_p, struct Client *source_p,
+       int parc, char *parv[])
 {
   char *cur_away_msg = source_p->user->away;
   char *new_away_msg;
@@ -139,8 +140,9 @@ static void m_away(struct Client *client_p, struct Client *source_p,
   sendto_one(source_p, form_str(RPL_NOWAWAY), me.name, parv[0]);
 }
 
-static void mo_away(struct Client *client_p, struct Client *source_p,
-                    int parc, char *parv[])
+static void
+mo_away(struct Client *client_p, struct Client *source_p,
+        int parc, char *parv[])
 {
   char *cur_away_msg = source_p->user->away;
   char *new_away_msg;
@@ -193,8 +195,9 @@ static void mo_away(struct Client *client_p, struct Client *source_p,
   sendto_one(source_p, form_str(RPL_NOWAWAY), me.name, parv[0]);
 }
 
-static void ms_away(struct Client *client_p, struct Client *source_p,
-                    int parc, char *parv[])
+static void
+ms_away(struct Client *client_p, struct Client *source_p,
+        int parc, char *parv[])
 {
   char *cur_away_msg;
   char *new_away_msg;

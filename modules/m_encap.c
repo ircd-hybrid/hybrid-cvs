@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_encap.c,v 1.7 2003/06/09 23:24:01 bill Exp $
+ *  $Id: m_encap.c,v 1.8 2003/08/03 14:22:19 michael Exp $
  */
 
 #include "stdinc.h"
@@ -55,18 +55,19 @@ _moddeinit(void)
   mod_del_cmd(&encap_msgtab);
   delete_capability("ENCAP");
 }
-const char *_version = "$Revision: 1.7 $";
+const char *_version = "$Revision: 1.8 $";
 #endif
 
 /*
  * ms_encap()
  *
  * inputs	- destination server, subcommand, parameters
- * outputs	- none
+ * output	- none
  * side effects	- propogates subcommand to locally connected servers
  */
 static void
-ms_encap(struct Client *client_p, struct Client *source_p, int parc, char *parv[])
+ms_encap(struct Client *client_p, struct Client *source_p,
+         int parc, char *parv[])
 {
   char buffer[BUFSIZE], *ptr = buffer;
   unsigned int cur_len = 0, len, i;

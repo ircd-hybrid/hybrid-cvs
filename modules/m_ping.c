@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ping.c,v 1.34 2003/06/21 20:09:21 metalrock Exp $
+ *  $Id: m_ping.c,v 1.35 2003/08/03 14:22:20 michael Exp $
  */
 
 #include "stdinc.h"
@@ -57,8 +57,9 @@ _moddeinit(void)
   mod_del_cmd(&ping_msgtab);
 }
 
-const char *_version = "$Revision: 1.34 $";
+const char *_version = "$Revision: 1.35 $";
 #endif
+
 /*
 ** m_ping
 **      parv[0] = sender prefix
@@ -120,17 +121,17 @@ m_ping(struct Client *client_p, struct Client *source_p,
                (destination) ? destination : me.name, origin);
 }
 
-static void ms_ping(struct Client *client_p,
-                   struct Client *source_p,
-                   int parc,
-                   char *parv[])
+static void
+ms_ping(struct Client *client_p, struct Client *source_p,
+        int parc, char *parv[])
 {
   struct Client *target_p;
-  char  *origin, *destination;
+  char *origin, *destination;
 
   if (parc < 2 || *parv[1] == '\0')
   {
-    sendto_one(source_p, form_str(ERR_NOORIGIN), me.name, parv[0]);
+    sendto_one(source_p, form_str(ERR_NOORIGIN),
+               me.name, parv[0]);
     return;
   }
 

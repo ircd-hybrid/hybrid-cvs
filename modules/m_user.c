@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_user.c,v 1.27 2003/04/18 02:13:43 db Exp $
+ *  $Id: m_user.c,v 1.28 2003/08/03 14:22:20 michael Exp $
  */
 
 #include "stdinc.h"
@@ -56,8 +56,9 @@ _moddeinit(void)
   mod_del_cmd(&user_msgtab);
 }
 
-const char *_version = "$Revision: 1.27 $";
+const char *_version = "$Revision: 1.28 $";
 #endif
+
 /*
 ** mr_user
 **      parv[0] = sender prefix
@@ -66,26 +67,25 @@ const char *_version = "$Revision: 1.27 $";
 **      parv[3] = server host name (used only from other servers)
 **      parv[4] = users real name info
 */
-static void mr_user(struct Client* client_p, struct Client* source_p,
-		   int parc, char *parv[])
+static void
+mr_user(struct Client *client_p, struct Client *source_p,
+        int parc, char *parv[])
 {
-  char* p;
- 
+  char *p;
+
   if ((p = strchr(parv[1],'@')) != NULL)
     *p = '\0'; 
 
   if (*parv[4] == '\0')
-    {
-      sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-                 me.name, EmptyString(parv[0]) ? "*" : parv[0], "USER");
-      return;
-    }
+  {
+    sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
+               me.name, EmptyString(parv[0]) ? "*" : parv[0], "USER");
+    return;
+  }
 
   do_local_user(parv[0], client_p, source_p,
-                parv[1],	/* username */
-                parv[2],	/* host */
-                parv[3],	/* server */
-                parv[4]	/* users real name */ );
+                parv[1], /* username */
+                parv[2], /* host     */
+                parv[3], /* server   */
+                parv[4]	 /* users real name */ );
 }
-
-

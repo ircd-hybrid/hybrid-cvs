@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_gline.c,v 1.40 2003/07/25 23:11:08 michael Exp $
+ *  $Id: s_gline.c,v 1.41 2003/08/03 14:22:23 michael Exp $
  */
 
 #include "stdinc.h"
@@ -115,13 +115,14 @@ remove_gline_match(const char *user, const char *host)
     conf = ptr->data;
     kill_ptr = (struct AccessItem *)map_to_conf(conf);
 
-    if (0 == irccmp(kill_ptr->host, host) &&
-        0 == irccmp(kill_ptr->user, user))
+    if (irccmp(kill_ptr->host, host) == 0 &&
+        irccmp(kill_ptr->user, user) == 0)
     {
       delete_conf_item(conf);
       return(1);
     }
   }
+
   return(0);
 }
 

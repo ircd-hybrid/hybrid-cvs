@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.299 2003/07/31 23:13:25 michael Exp $
+ *  $Id: s_user.c,v 7.300 2003/08/03 14:22:23 michael Exp $
  */
 
 #include "stdinc.h"
@@ -515,18 +515,12 @@ register_local_user(struct Client *client_p, struct Client *source_p,
                   source_p->localClient->ip.ss_len, ipaddr,
                   HOSTIPLEN, NULL, 0, NI_NUMERICHOST);
 
-  if (ConfigFileEntry.hide_spoof_ips)
-    sendto_realops_flags(UMODE_CCONN, L_ALL,
-                         "Client connecting: %s (%s@%s) [%s] {%s} [%s]",
-                         nick, source_p->username, source_p->host,
-                         IsIPSpoof(client_p) ? "255.255.255.255" : ipaddr,
-                         get_client_class(source_p), source_p->info);
-  else
-    sendto_realops_flags(UMODE_CCONN, L_ALL,
-                         "Client connecting: %s (%s@%s) [%s] {%s} [%s]",
-                         nick, source_p->username, source_p->host,
-                         ipaddr, get_client_class(source_p),
-			 source_p->info);
+  sendto_realops_flags(UMODE_CCONN, L_ALL,
+                       "Client connecting: %s (%s@%s) [%s] {%s} [%s]",
+                       nick, source_p->username, source_p->host,
+                       ConfigFileEntry.hide_spoof_ips && IsIPSpoof(source_p) ?
+                       "255.255.255.255" : ipaddr, get_client_class(source_p),
+                       source_p->info);
 
   /* If they have died in send_* don't do anything. */
   if (IsDead(source_p))
@@ -575,6 +569,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   user_welcome(source_p);
   add_user_host(source_p->username, source_p->host, 0);
   SetUserHost(source_p);
+
   return(introduce_client(client_p, source_p));
 }
 
@@ -651,6 +646,7 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
 
   add_user_host(source_p->username, source_p->host, 1);
   SetUserHost(source_p);
+
   return(introduce_client(client_p, source_p));
 }
 
@@ -835,8 +831,8 @@ valid_username(const char *username)
  * inputs       - pointer to source_p
  *              - pointer to aconf for this user
  * output       - NONE
- * side effects -
- * Report to user any special flags they are getting, and set them.
+ * side effects - Report to user any special flags
+ *                they are getting, and set them.
  */
 static void
 report_and_set_user_flags(struct Client *source_p, struct AccessItem *aconf)

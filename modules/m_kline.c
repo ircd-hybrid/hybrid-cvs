@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.165 2003/07/18 01:11:06 metalrock Exp $
+ *  $Id: m_kline.c,v 1.166 2003/08/03 14:22:19 michael Exp $
  */
 
 #include "stdinc.h"
@@ -106,7 +106,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.165 $";
+const char *_version = "$Revision: 1.166 $";
 #endif
 
 /* Local function prototypes */
@@ -1304,7 +1304,8 @@ remove_tkline_match(const char *host, const char *user)
  * Output: returns YES on success, NO if no tdline removed.
  * Side effects: Any matching tdlines are removed.
  */
-static int remove_tdline_match(const char *cidr)
+static int
+remove_tdline_match(const char *cidr)
 {
   struct AccessItem *td_conf;
   dlink_node *td_node;

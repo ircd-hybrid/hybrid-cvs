@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_version.c,v 1.47 2003/06/21 20:09:21 metalrock Exp $
+ *  $Id: m_version.c,v 1.48 2003/08/03 14:22:20 michael Exp $
  */
 
 #include "stdinc.h"
@@ -42,7 +42,7 @@ static void mo_version(struct Client *, struct Client *, int, char **);
 
 struct Message version_msgtab = {
   "VERSION", 0, 0, 0, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_version, ms_version, mo_version, m_ignore}
+  { m_unregistered, m_version, ms_version, mo_version, m_ignore }
 };
 
 #ifndef STATIC_MODULES
@@ -58,7 +58,7 @@ _moddeinit(void)
   mod_del_cmd(&version_msgtab);
 }
 
-const char *_version = "$Revision: 1.47 $";
+const char *_version = "$Revision: 1.48 $";
 #endif
 
 /*
@@ -90,9 +90,8 @@ m_version(struct Client *client_p, struct Client *source_p,
   }
 
   sendto_one(source_p, form_str(RPL_VERSION),
-             me.name, source_p->name, ircd_version,
-             serno, me.name,
-             confopts(source_p), serveropts);
+             me.name, source_p->name, ircd_version, serno,
+             me.name, confopts(source_p), serveropts);
   show_isupport(source_p);
 }
 
@@ -121,14 +120,15 @@ mo_version(struct Client *client_p, struct Client *source_p,
  *      parv[0] = sender prefix
  *      parv[1] = remote server
  */
-static void ms_version(struct Client* client_p, struct Client* source_p,
-                      int parc, char* parv[])
+static void
+ms_version(struct Client *client_p, struct Client *source_p,
+           int parc, char *parv[])
 {
   if (hunt_server(client_p, source_p, ":%s VERSION :%s", 
                   1, parc, parv) == HUNTED_ISME)
   {
-    sendto_one(source_p, form_str(RPL_VERSION), me.name,
-               parv[0], ircd_version, serno,
+    sendto_one(source_p, form_str(RPL_VERSION),
+               me.name, parv[0], ircd_version, serno,
                me.name, confopts(source_p), serveropts);
     show_isupport(source_p);
   }
