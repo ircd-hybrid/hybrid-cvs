@@ -2,7 +2,7 @@
  * encspeed.c - originally written by einride
  *            - modified for ircd-hybrid-7 by davidt
  *
- * $Id: encspeed.c,v 7.5 2002/07/12 03:30:07 joant Exp $
+ * $Id: encspeed.c,v 7.6 2003/02/07 07:17:02 a1kmm Exp $
  */
 
 #include "../include/setup.h"
@@ -57,7 +57,7 @@ static double stoptimer(void) {
 int main(int argc, char * argv[]) {
   int i, n, skipped = 0;
   int bs = BLOCKSIZE;
-  char *cipherstr = NULL;
+  const char *cipherstr = NULL;
   char key[MAXKEYSIZE];
   char iv[MAXKEYSIZE];
   char plaintext[BLOCKSIZE];
@@ -65,7 +65,7 @@ int main(int argc, char * argv[]) {
   double elapsed;
   
   EVP_CIPHER_CTX  ctx;
-  EVP_CIPHER   *cipher;
+  const EVP_CIPHER   *cipher;
   
   printf("Encryption speed test\n\n");
 
