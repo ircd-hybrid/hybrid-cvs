@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.199 2001/12/02 15:00:55 leeh Exp $
+ * $Id: ircd.c,v 7.200 2001/12/04 14:13:22 ejb Exp $
  */
 
 #include <sys/types.h>
@@ -418,6 +418,7 @@ static void initialize_server_capabs(void)
   {
     default_server_capabs &= ~CAP_HOPS;
   }
+  default_server_capabs &= ~CAP_ZIP;
 }
 
 
