@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.287 2002/06/29 04:34:50 db Exp $
+ *  $Id: client.c,v 7.288 2002/07/11 11:04:36 leeh Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -1167,7 +1167,7 @@ void dead_link(struct Client *client_p)
 		         "Closing link to %s: %s",
                          get_client_name(client_p, MASK_IP), notice);
   }
-  Debug((DEBUG_ERROR, notice, get_client_name(to, HIDE_IP)));
+  Debug((DEBUG_ERROR, "Closing link to %s: %s", get_client_name(to, HIDE_IP), notice));
   assert(dlinkFind(&abort_list, client_p) == NULL);
   m = make_dlink_node();
   dlinkAdd(client_p, m, &abort_list);
