@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_set.c,v 1.50 2003/05/01 23:28:38 michael Exp $
+ *  $Id: m_set.c,v 1.51 2003/05/02 09:43:26 adx Exp $
  */
 
 /* rewritten by jdc */
@@ -64,7 +64,7 @@ _moddeinit(void)
   mod_del_cmd(&set_msgtab);
 }
 
-const char *_version = "$Revision: 1.50 $";
+const char *_version = "$Revision: 1.51 $";
 #endif
 
 /* Structure used for the SET table itself */
@@ -78,7 +78,7 @@ struct SetStruct
    * eg:  1, 1 == char and int args */
 };
 
-static void quote_autoconn(struct Client *, char *, int);
+static void quote_autoconn(struct Client *, const char *, int);
 static void quote_autoconnall(struct Client *, int);
 static void quote_floodcount(struct Client *, int);
 static void quote_identtimeout(struct Client *, int);
