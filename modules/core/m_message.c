@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.52 2001/01/26 02:31:28 db Exp $
+ *   $Id: m_message.c,v 1.53 2001/01/27 21:35:44 fl_ Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -639,7 +639,7 @@ static void msg_client(int p_or_n, char *command,
   if(MyClient(sptr))
     {
       /* reset idle time for message only if its not to self */
-      if((sptr != acptr) && sptr->user)
+      if((p_or_n != NOTICE) && (sptr != acptr) && sptr->user)
 	sptr->user->last = CurrentTime;
     }
 
