@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.176 2001/01/05 02:19:36 davidt Exp $
+ * $Id: channel.c,v 7.177 2001/01/05 05:11:54 fl_ Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -1309,7 +1309,20 @@ void set_channel_mode(struct Client *cptr,
 
           if (isdeop && (c == 'o') && whatt == MODE_ADD)
             change_channel_membership(chptr,&chptr->peons, who);
-	  
+
+          /* Allow users to -h themselves */
+          if (whatt == MODE_DEL && target_was_hop && (c == 'h') &&
+            (who->name == sptr->name))
+              { 
+                change_channel_membership(chptr,&chptr->peons, who);
+                sendto_one(who, "%s!%s@%s MODE %s -h %s",
+                           who->name, who->username, who->host,
+                           chptr->chname, who->name);
+                sendto_channel_butone(who, cptr, chptr, "MODE %s -h %s",
+                                      chptr->chname, who->name);
+                break;
+              }
+
           if (!isok)
             {
               if (MyClient(sptr) && !errsent(SM_ERR_NOOPS, &errors_sent))
