@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-/* $Id: class.h,v 7.7 2000/12/04 19:07:09 db Exp $ */
+/* $Id: class.h,v 7.8 2000/12/21 20:05:37 db Exp $ */
 
 #ifndef INCLUDED_class_h
 #define INCLUDED_class_h
@@ -32,6 +32,8 @@ struct Class {
   int           pingFreq;
   int           maxLinks;
   long          maxSendq;
+  char*         servname;
+  int           servport;
   int           links;
 };
 

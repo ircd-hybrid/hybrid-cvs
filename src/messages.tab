@@ -18,7 +18,7 @@
  *
  *
  *
- *   $Id: messages.tab,v 7.26 2000/12/21 01:27:53 ejb Exp $
+ *   $Id: messages.tab,v 7.27 2000/12/21 20:05:44 db Exp $
  */
 
 static  char *  replies[] = {
@@ -32,7 +32,7 @@ static  char *  replies[] = {
 /* 007 */       (char *)NULL,
 /* 008 */       (char *)NULL,
 /* 009 */       (char *)NULL,
-/* 010 */       (char *)NULL,
+/* 010  RPL_REDIR, */ ":%s 010 %s %s %d :Please use this Server/Port instead",
 /* 011 */       (char *)NULL,
 /* 012 */       (char *)NULL,
 /* 013 */       (char *)NULL,

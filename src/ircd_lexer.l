@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.40 2000/12/21 13:39:42 db Exp $
+ * $Id: ircd_lexer.l,v 1.41 2000/12/21 20:05:43 db Exp $
  */
 
 %option case-insensitive
@@ -149,6 +149,8 @@ port		{ return PORT; }
 quarantine	{ return QUARANTINE; }
 reason		{ return REASON; }
 rehash		{ return REHASH; }
+redirserv       { return REDIRSERV; }
+redirport       { return REDIRPORT; }
 reject		{ return TREJECT; }
 remote		{ return REMOTE; }
 send_password	{ return SEND_PASSWORD; }
