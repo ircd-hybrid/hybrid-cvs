@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.41 2004/07/08 00:27:23 erik Exp $
+ *  $Id: m_xline.c,v 1.42 2004/10/31 21:29:04 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -82,7 +82,7 @@ _moddeinit(void)
   mod_del_cmd(&unxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.41 $";
+const char *_version = "$Revision: 1.42 $";
 #endif
 
 /* mo_xline()
@@ -362,7 +362,14 @@ valid_xline(struct Client *source_p, char *gecos, char *reason, int warn)
     return(0);
   }
 
-  if (strchr(reason, ':') != NULL)
+  if (strchr(gecos, '"'))
+  {
+    sendto_one(source_p, ":%s NOTICE %s :Invalid character '\"'",
+               me.name, source_p->name);
+    return(0);
+  }
+
+  if (strchr(reason, ':'))
   {
     if (warn)
       sendto_one(source_p, ":%s NOTICE %s :Invalid character ':' in comment",
