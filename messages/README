@@ -1,6 +1,7 @@
 Translated message files (user/admin submitted)
 
-There are user submitted message files for ircd-hybrid-7. Read the file
+There are user submitted message files for ircd-hybrid-7. Read the 
+example file in this directory (ircd-standard.example.lang) and the file
 doc/messages.txt to learn how to create, install, and possibly submit
 your own .lang files.
 
@@ -38,4 +39,4 @@ Contributions are welcome, at present time please send contributed translations
 to ircd-hybrid@the-project.org, hybrid@the-project.org, or directly to one
 of the people who work with the translations, currently wcampbel@botbay.net.
 
-# $Id: README,v 1.3 2003/05/17 20:26:49 joshk Exp $
+$Id: README,v 1.4 2003/05/19 04:08:36 joshk Exp $
