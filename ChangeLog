@@ -1,3 +1,12 @@
+*** 20001106_8 by adrian
+
+
+fd limit checking is done in comm_open() now, so remove a superflous check.
+This has the added advantage of killing an incorrect close() which should
+have been an fd_close(), but it doesn't matter much now ..
+
+
+
 *** 20001106_7 by db
 - reworked even more code
   I removed remote m_away entirely for now
@@ -78,7 +87,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.490 2000/11/06 15:40:51 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.491 2000/11/06 15:49:15 adrian Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
