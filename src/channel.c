@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.226 2001/06/01 00:56:01 davidt Exp $
+ * $Id: channel.c,v 7.227 2001/06/05 18:14:27 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -672,6 +672,8 @@ int can_join(struct Client *source_p, struct Channel *chptr, char *key)
          break;
       if (!lp)
         {
+	  if (!ConfigFileEntry.use_invex)
+	    return (ERR_INVITEONLYCHAN);
 	  for (ptr = chptr->invexlist.head; ptr; ptr = ptr->next)
 	    {
 	      invex = ptr->data;
