@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.268 2003/03/01 05:07:20 db Exp $
+ *  $Id: ircd_parser.y,v 1.269 2003/03/02 06:46:42 db Exp $
  */
 
 %{
@@ -2457,7 +2457,7 @@ general_message_locale: MESSAGE_LOCALE '=' QSTRING ';'
       if(strlen(yylval.string) > BUFSIZE-10)
 	yylval.string[BUFSIZE-9] = 0;
       ircsprintf(langenv, "LANGUAGE=%s", yylval.string);
-      putenv(langenv);
+      set_locale(langenv);
     }
   };
 

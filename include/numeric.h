@@ -19,13 +19,21 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: numeric.h,v 7.31 2002/11/27 15:46:24 db Exp $
+ *  $Id: numeric.h,v 7.32 2003/03/02 06:46:37 db Exp $
  */
 
 #ifndef INCLUDED_numeric_h
 #define INCLUDED_numeric_h
 
 #include "config.h"
+
+#define LOCALE_LENGTH 64  /* maximum length of locale name + 1 */
+
+struct NumericInfo {
+  char *name;        /* common name of the numeric */
+  char *standard;    /* standard numeric text */
+  char *translated;  /* translated numeric text */
+};
 
 /*
  * form_str - return a format string for a message number
@@ -165,6 +173,7 @@ extern const char* form_str(int);
 
 #define RPL_ACCEPTLIST	     281
 #define RPL_ENDOFACCEPT      282
+#define RPL_ISMESSAGING	     283
 
 /*	RPL_GLIST            280        Undernet extension */
 /*	RPL_ENDOFGLIST       281        Undernet extension */

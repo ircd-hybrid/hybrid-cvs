@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_select.c,v 7.27 2002/11/27 03:46:57 jmallett Exp $
+ *  $Id: s_bsd_select.c,v 7.28 2003/03/02 06:46:43 db Exp $
  */
 
 #include "config.h"
@@ -84,13 +84,15 @@ static void
 select_update_selectfds(int fd, short event, PF *handler)
 {  
     /* Update the read / write set */
-    if (event & COMM_SELECT_READ) {
+    if (event & COMM_SELECT_READ)
+    {
         if (handler)
             FD_SET(fd, &select_readfds);
         else
             FD_CLR(fd, &select_readfds);
     }
-    if (event & COMM_SELECT_WRITE) {
+    if (event & COMM_SELECT_WRITE)
+    {
         if (handler)
             FD_SET(fd, &select_writefds);
         else
@@ -109,10 +111,11 @@ select_update_selectfds(int fd, short event, PF *handler)
  * This is a needed exported function which will be called to initialise
  * the network loop code.
  */
-void init_netio(void)
+void
+init_netio(void)
 {
-    FD_ZERO(&select_readfds);
-    FD_ZERO(&select_writefds);
+  FD_ZERO(&select_readfds);
+  FD_ZERO(&select_writefds);
 }
 
 /*
@@ -133,12 +136,14 @@ comm_setselect(int fd, fdlist_t list, unsigned int type, PF * handler,
     debug(5, 5) ("commSetSelect: FD %d type %d, %s\n", fd, type, handler ? "SET"
  : "CLEAR");
 #endif
-    if (type & COMM_SELECT_READ) {
+    if (type & COMM_SELECT_READ)
+    {
         F->read_handler = handler;
         F->read_data = client_data;
         select_update_selectfds(fd, COMM_SELECT_READ, handler);
     }
-    if (type & COMM_SELECT_WRITE) {
+    if (type & COMM_SELECT_WRITE)
+    {
         F->write_handler = handler;
         F->write_data = client_data;
         select_update_selectfds(fd, COMM_SELECT_WRITE, handler);
@@ -172,7 +177,8 @@ comm_select(unsigned long delay)
     memcpy(&tmpreadfds, &select_readfds, sizeof(fd_set));
     memcpy(&tmpwritefds, &select_writefds, sizeof(fd_set));
 
-    for (;;) {
+    for (;;)
+    {
         to.tv_sec = 0;
         to.tv_usec = delay * 1000;
         num = select(highest_fd + 1, &tmpreadfds, &tmpwritefds, NULL, &to);
@@ -192,26 +198,35 @@ comm_select(unsigned long delay)
         return 0;
 
     /* XXX we *could* optimise by falling out after doing num fds ... */
-    for (fd = 0; fd < highest_fd + 1; fd++) {
+    for (fd = 0; fd < highest_fd + 1; fd++)
+    {
         F = &fd_table[fd];
 
-        if (FD_ISSET(fd, &tmpreadfds)) {
+        if (FD_ISSET(fd, &tmpreadfds))
+        {
             hdl = F->read_handler;
             F->read_handler = NULL;
             select_update_selectfds(fd, COMM_SELECT_READ, NULL);
-            if (!hdl) {
+            if (!hdl)
+            {
                 /* XXX Eek! This is another bad place! */
-            } else {
+            }
+            else
+            {
                 hdl(fd, F->read_data);
             }
         }
-        if (FD_ISSET(fd, &tmpwritefds)) {
+        if (FD_ISSET(fd, &tmpwritefds))
+        {
             hdl = F->write_handler;
             F->write_handler = NULL;
             select_update_selectfds(fd, COMM_SELECT_WRITE, NULL);
-            if (!hdl) {
+            if (!hdl)
+            {
                 /* XXX Eek! This is another bad place! */
-            } else {
+            }
+            else
+            {
                 hdl(fd, F->write_data);
             }
         }

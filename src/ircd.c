@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.255 2003/03/01 01:15:44 db Exp $
+ *  $Id: ircd.c,v 7.256 2003/03/02 06:46:42 db Exp $
  */
 
 #include "stdinc.h"
@@ -304,7 +304,6 @@ io_loop(void)
       if (delay <= CurrentTime)
 	eventRun();
   
-
       if (callbacks_called > 0)
 	empty_cycles = 0;
       else

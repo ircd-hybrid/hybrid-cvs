@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_set.c,v 1.46 2003/02/17 16:09:29 db Exp $
+ *  $Id: m_set.c,v 1.47 2003/03/02 06:46:39 db Exp $
  */
 
 /* rewritten by jdc */
@@ -64,7 +64,7 @@ _moddeinit(void)
   mod_del_cmd(&set_msgtab);
 }
 
-const char *_version = "$Revision: 1.46 $";
+const char *_version = "$Revision: 1.47 $";
 #endif
 /* Structure used for the SET table itself */
 struct SetStruct
@@ -325,27 +325,17 @@ static void quote_max( struct Client *source_p, int newval )
 /* SET MSGLOCALE */
 static void quote_msglocale( struct Client *source_p, char *locale )
 {
-#ifdef USE_GETTEXT
-  if(locale)
+  if(locale != NULL)
   {
-    char langenv[BUFSIZE];
-    ircsprintf(langenv,"LANGUAGE=%s",locale);
-    putenv(langenv);
-
+    set_locale(locale);
     sendto_one(source_p, ":%s NOTICE %s :Set MSGLOCALE to '%s'",
-	me.name, source_p->name,
-	getenv("LANGUAGE") ? getenv("LANGUAGE") : "<unset>");
+	       me.name, source_p->name, get_locale());
   }
   else
   {
     sendto_one(source_p, ":%s NOTICE %s :MSGLOCALE is currently '%s'",
-	me.name, source_p->name,
-	(getenv("LANGUAGE")) ? getenv("LANGUAGE") : "<unset>");
+	       me.name, source_p->name, get_locale());
   }
-#else
-  sendto_one(source_p, ":%s NOTICE %s :No gettext() support available.",
-	me.name, source_p->name);
-#endif
 }
 
 /* SET SPAMNUM */

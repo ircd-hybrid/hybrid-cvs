@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.110 2003/02/23 04:16:08 db Exp $
+ *  $Id: m_message.c,v 1.111 2003/03/02 06:46:41 db Exp $
  */
 
 #include "stdinc.h"
@@ -123,7 +123,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.110 $";
+const char *_version = "$Revision: 1.111 $";
 #endif
 
 /*
@@ -633,8 +633,7 @@ msg_client(int p_or_n, char *command,
                             "NOTICE %s :*** I've been informed you messaged me.",
                             source_p->name);
 
-          sendto_one(target_p,
-                     ":%s NOTICE %s :*** Client %s is messaging you and you are +g",
+          sendto_one(target_p, form_str(RPL_ISMESSAGING),
                      me.name, target_p->name,
                      get_client_name(source_p, HIDE_IP));
 
