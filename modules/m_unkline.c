@@ -21,7 +21,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: m_unkline.c,v 1.30 2001/04/19 02:53:23 a1kmm Exp $
+ *   $Id: m_unkline.c,v 1.31 2001/04/19 04:29:36 a1kmm Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -203,8 +203,9 @@ K:bar:No reason (1997/08/30 14.56):foo
    *p = '\0';
    p++;
    found_user = p;
-   if (irccmp(user,found_user) || type!=parse_netmask(found_host, &khostip,
-       &kbits) || bits != kbits || !(
+   if (irccmp(user,found_user) ||
+       (type != parse_netmask(found_host, &khostip, &kbits))
+       || ((type != HM_HOST) && bits != kbits) || !(
         (type==HM_HOST && !irccmp(host, found_host))
         || (type==HM_IPV4 && match_ipv4(&hostip, &khostip, bits))
 #ifdef IPV6
@@ -260,8 +261,9 @@ Then just ignore the line
    *p = '\0';
    found_host = p;
    found_host++;
-   if (irccmp(user,found_user) || type!=parse_netmask(found_host, &khostip,
-       &kbits) || bits != kbits || !(
+   if (irccmp(user,found_user) ||
+       type!=parse_netmask(found_host, &khostip, &kbits) ||
+       bits != kbits || !(
         (type==HM_HOST && !irccmp(host, found_host))
         || (type==HM_IPV4 && match_ipv4(&hostip, &khostip, bits))
 #ifdef IPV6
