@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.185 2003/10/12 00:48:12 bill Exp $
+ *  $Id: parse.c,v 7.186 2003/10/13 01:39:40 bill Exp $
  */
 
 #include "stdinc.h"
@@ -771,7 +771,7 @@ do_numeric(char numeric[], struct Client *client_p, struct Client *source_p,
     ircsprintf(t," :%s", parv[parc-1]);
   }
 
-  if ((target_p = find_client(parv[1])) != NULL)
+  if ((target_p = find_person(parv[1])) != NULL)
   {
     if (IsMe(target_p)) 
     {

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.170 2003/10/12 01:16:14 bill Exp $
+ *  $Id: m_sjoin.c,v 1.171 2003/10/13 01:39:38 bill Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.170 $";
+const char *_version = "$Revision: 1.171 $";
 #endif
 
 /* ms_sjoin()
@@ -332,10 +332,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
       }
     }
 
-    if (IsDigit(*s))
-      target_p = hash_find_id(s);
-    else
-      target_p = find_client(s);
+    target_p = find_person(s);
 
     /*
      * if the client doesnt exist, or if its fake direction/server, skip.
