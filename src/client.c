@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.68 2000/12/11 23:47:50 db Exp $
+ *  $Id: client.c,v 7.69 2000/12/12 03:18:11 db Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -236,12 +236,10 @@ void _free_client(struct Client* cptr)
  * check_pings - go through the local client list and check activity
  * kill off stuff that should die
  *
- * inputs       - current time
+ * inputs       - NOT USED (from event)
  * output       - next time_t when check_pings() should be called again
  * side effects - 
  *
- * Clients can be k-lined/d-lined/g-lined/r-lined and exit_client
- * called for each of these.
  *
  * A PING can be sent to clients as necessary.
  *
