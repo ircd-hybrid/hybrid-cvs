@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.172 2001/01/02 08:28:35 a1kmm Exp $
+ * $Id: channel.c,v 7.173 2001/01/02 19:03:38 davidt Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -2717,7 +2717,7 @@ static void clear_channel_list(int type, struct Channel *chptr,
 
       *mp++ = flag;
       *mp = '\0';
-      ircsprintf(pp,"%s ",banptr);
+      ircsprintf(pp,"%s ",banptr->banstr);
       pp += tlen;
       cur_len += tlen;
       count++;
