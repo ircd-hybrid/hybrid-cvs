@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_mode.c,v 1.45 2001/12/24 16:15:10 androsyn Exp $
+ *   $Id: m_mode.c,v 1.46 2002/01/01 18:50:30 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
 }
 
 
-char *_version = "$Revision: 1.45 $";
+char *_version = "$Revision: 1.46 $";
 #endif
 /*
  * m_mode - MODE command handler
@@ -80,7 +80,7 @@ static void m_mode(struct Client *client_p, struct Client *source_p,
   int n = 2;
   
   /* Now, try to find the channel in question */
-  if( !IsChanPrefix(parv[1][0]) )
+  if (!IsChanPrefix(parv[1][0]))
     {
       /* if here, it has to be a non-channel name */
       user_mode(client_p, source_p, parc, parv);
@@ -97,7 +97,7 @@ static void m_mode(struct Client *client_p, struct Client *source_p,
 	  
   chptr = hash_find_channel(parv[1]);
 
-  if(chptr == NULL)
+  if (chptr == NULL)
     {
       /* if chptr isn't found locally, it =could= exist
        * on the uplink. So ask.
@@ -110,7 +110,7 @@ static void m_mode(struct Client *client_p, struct Client *source_p,
       /* only send a mode upstream if a local client sent this request
        * -davidt
        */
-      if ( MyClient(source_p) && !ServerInfo.hub && uplink &&
+      if (MyClient(source_p) && !ServerInfo.hub && uplink &&
 	   IsCapable(uplink, CAP_LL))
 	{
 #if 0
@@ -149,7 +149,7 @@ static void m_mode(struct Client *client_p, struct Client *source_p,
                    parv[0], root->chname);
         return;
        }
-     if (!(chptr = map_vchan(root, target_p)))
+     if ((chptr = map_vchan(root, target_p)) == NULL)
        {
         sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL), me.name,
                    parv[0], root->chname);
@@ -182,7 +182,7 @@ static void m_mode(struct Client *client_p, struct Client *source_p,
         }
     }
 
-  if(parc < n+1)
+  if (parc < n+1)
     {
       channel_modes(chptr, source_p, modebuf, parabuf);
       sendto_one(source_p, form_str(RPL_CHANNELMODEIS),
