@@ -1,3 +1,21 @@
+db          2002/08/19 01:23:15 EDT	(20020819_0)
+
+  Modified files:
+    contrib              Makefile.in README 
+  Added files:
+    contrib              m_whois.c 
+  Log:
+  Added Gozems m_whois.c to contrib. It looks better than ours,
+  but we have to wait until more testing is done before making it
+  the official m_whois, so it will have to wait until 7.1
+  
+  Revision  Changes    Path
+  1.34      +1 -0      ircd-hybrid-7/contrib/Makefile.in
+  1.22      +4 -0      ircd-hybrid-7/contrib/README
+  1.1       +751 -0    ircd-hybrid-7/contrib/m_whois.c (new)
+
+
+
 a1kmm       2002/08/17 03:16:34 EDT	(20020817_1)
 
   Modified files:
@@ -31255,4 +31273,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3981 2002/08/17 07:16:37 a1kmm Exp $
+$Id: ChangeLog,v 7.3982 2002/08/19 05:23:17 db Exp $
