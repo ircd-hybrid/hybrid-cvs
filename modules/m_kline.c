@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.108 2002/08/07 16:53:00 bill Exp $
+ *  $Id: m_kline.c,v 1.109 2002/08/15 14:15:32 db Exp $
  */
 
 #include "stdinc.h"
@@ -75,7 +75,7 @@ _moddeinit(void)
   mod_del_cmd(&kline_msgtab);
   mod_del_cmd(&dline_msgtab);
 }
-const char *_version = "$Revision: 1.108 $";
+const char *_version = "$Revision: 1.109 $";
 #endif
 
 /* Local function prototypes */
@@ -469,11 +469,11 @@ cluster(char *hostname)
 
   if(strchr(hostname,'@'))      
     {
-      strlcpy(result, hostname, HOSTLEN);
+      strlcpy(result, hostname, HOSTLEN + 1);
       return(result);
     }
 
-  strlcpy(temphost, hostname, HOSTLEN);
+  strlcpy(temphost, hostname, HOSTLEN + 1);
 
   is_ip_number = YES;   /* assume its an IP# */
   ipp = temphost;
@@ -502,7 +502,7 @@ cluster(char *hostname)
       zap_point++;
       *zap_point++ = '*';               /* turn 111.222.333.444 into */
       *zap_point = '\0';                /*      111.222.333.*        */
-      strlcpy(result, temphost, HOSTLEN);
+      strlcpy(result, temphost, HOSTLEN + 1);
       return(result);
     }
   else
@@ -530,17 +530,17 @@ cluster(char *hostname)
               if(number_of_dots == 0)
                 {
                   result[0] = '*';
-                  strlcpy(result + 1, host_mask, HOSTLEN);
+                  strlcpy(result + 1, host_mask, HOSTLEN + 1);
                   return(result);
                 }
               host_mask--;
             }
           result[0] = '*';                      /* foo.com => *foo.com */
-          strlcpy(result + 1, temphost, HOSTLEN);
+          strlcpy(result + 1, temphost, HOSTLEN + 1);
         }
       else      /* no tld found oops. just return it as is */
         {
-          strlcpy(result, temphost, HOSTLEN);
+          strlcpy(result, temphost, HOSTLEN + 1);
           return(result);
         }
     }
@@ -584,7 +584,7 @@ mo_dline(struct Client *client_p, struct Client *source_p,
     }
 
   dlhost = parv[1];
-  strlcpy(cidr_form_host, dlhost, HOSTLEN);
+  strlcpy(cidr_form_host, dlhost, HOSTLEN + 1);
   cidr_form_host[HOSTLEN] = '\0';
 
   if ((t=parse_netmask(dlhost, NULL, &bits)) == HM_HOST)
@@ -774,11 +774,11 @@ find_user_host(struct Client *source_p,
         {
           *(hostp++) = '\0';                       /* short and squat */
 	  if (*user_host_or_nick)
-            strlcpy(luser,user_host_or_nick,USERLEN); /* here is my user */
+            strlcpy(luser,user_host_or_nick,USERLEN + 1); /* here is my user */
 	  else
 	    strcpy(luser,"*");
 	  if (*hostp)
-            strlcpy(lhost,hostp,HOSTLEN);             /* here is my host */
+            strlcpy(lhost, hostp, HOSTLEN + 1);    /* here is my host */
 	  else
 	    strcpy(lhost,"*");
         }
@@ -786,7 +786,7 @@ find_user_host(struct Client *source_p,
         {
           luser[0] = '*';             /* no @ found, assume its *@somehost */
           luser[1] = '\0';	  
-          strlcpy(lhost,user_host_or_nick,HOSTLEN);
+          strlcpy(lhost, user_host_or_nick, HOSTLEN + 1);
         }
 
       return 1;
@@ -822,11 +822,11 @@ find_user_host(struct Client *source_p,
        * if found in original user name (non-idented)
        */
 
-      strlcpy(luser, target_p->username, USERLEN);
+      strlcpy(luser, target_p->username, USERLEN + 1);
       if (*target_p->username == '~')
         luser[0] = '*';
 
-      strlcpy(lhost,cluster(target_p->host),HOSTLEN);
+      strlcpy(lhost,cluster(target_p->host), HOSTLEN + 1);
     }
 
   return 1;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.268 2002/08/15 07:32:13 db Exp $
+ *  $Id: s_serv.c,v 7.269 2002/08/15 14:15:37 db Exp $
  */
 
 #include "stdinc.h"
@@ -2032,8 +2032,8 @@ serv_connect(struct ConfItem *aconf, struct Client *by)
     client_p = make_client(NULL);
 
     /* Copy in the server, hostname, fd */
-    strlcpy(client_p->name, aconf->name, HOSTLEN);
-    strlcpy(client_p->host, aconf->host, HOSTLEN);
+    strlcpy(client_p->name, aconf->name, HOSTLEN + 1);
+    strlcpy(client_p->host, aconf->host, HOSTLEN + 1);
     inetntop(DEF_FAM, &IN_ADDR(aconf->ipnum), client_p->localClient->sockhost, HOSTIPLEN);
     client_p->localClient->fd = fd;
 

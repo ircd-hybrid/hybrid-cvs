@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.206 2002/08/09 15:56:35 bill Exp $
+ *  $Id: s_user.c,v 7.207 2002/08/15 14:15:37 db Exp $
  */
 
 #include "stdinc.h"
@@ -305,7 +305,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
            source_p->localClient->random_ping = (unsigned long)rand();
            sendto_one(source_p, "PING :%lu", (unsigned long)source_p->localClient->random_ping);
            source_p->flags |= FLAGS_PINGSENT;
-	   strlcpy(source_p->username, username, USERLEN);
+	   strlcpy(source_p->username, username, USERLEN + 1);
   	   return -1;
   	} 
   	if(!(source_p->flags2 & FLAGS2_PING_COOKIE))
@@ -512,7 +512,7 @@ int
 register_remote_user(struct Client *client_p, struct Client *source_p, 
 			 char *nick, char *username)
 {
-  struct User*     user = source_p->user;
+  struct User *user = source_p->user;
   struct Client *target_p;
   
   assert(NULL != source_p);
@@ -523,7 +523,7 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
 
   user->last = CurrentTime;
 
-  strlcpy(source_p->username, username, USERLEN);
+  strlcpy(source_p->username, username, USERLEN + 1);
 
   SetClient(source_p);
 
@@ -870,7 +870,7 @@ do_local_user(char* nick, struct Client* client_p, struct Client* source_p,
           /*
            * save the username in the client
            */
-          strlcpy(source_p->username, username, USERLEN);
+          strlcpy(source_p->username, username, USERLEN + 1);
         }
     }
   return 0;
@@ -904,10 +904,10 @@ do_remote_user(char* nick, struct Client* client_p, struct Client* source_p,
    * coming from another server, take the servers word for it
    */
   user->server = find_or_add(server);
-  strlcpy(source_p->host, host, HOSTLEN); 
+  strlcpy(source_p->host, host, HOSTLEN + 1); 
   strlcpy(source_p->info, realname, REALLEN);
-  if (id)
-	  strcpy(source_p->user->id, id);
+  if (id != NULL)
+    strcpy(source_p->user->id, id);
   
   return register_remote_user(client_p, source_p, source_p->name, username);
 }

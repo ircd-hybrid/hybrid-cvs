@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: scache.c,v 7.15 2002/05/24 23:34:52 androsyn Exp $
+ *  $Id: scache.c,v 7.16 2002/08/15 14:15:37 db Exp $
  */
 
 #include "stdinc.h"
@@ -96,7 +96,7 @@ const char* find_or_add(const char* name)
   ptr = (SCACHE*) MyMalloc(sizeof(SCACHE));
   assert(0 != ptr);
 
-  strlcpy(ptr->name, name, HOSTLEN);
+  strlcpy(ptr->name, name, HOSTLEN + 1);
 
   ptr->next = scache_hash[hash_index];
   scache_hash[hash_index] = ptr;

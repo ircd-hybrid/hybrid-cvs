@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.316 2002/08/08 15:43:27 bill Exp $
+ *  $Id: s_conf.c,v 7.317 2002/08/15 14:15:36 db Exp $
  */
 
 #include "stdinc.h"
@@ -526,7 +526,7 @@ verify_access(struct Client* client_p, const char* username)
   else
     {
       non_ident[0] = '~';
-      strlcpy(&non_ident[1],username, USERLEN);
+      strlcpy(&non_ident[1],username, USERLEN + 1);
       aconf = find_address_conf(client_p->host,non_ident,
 				&client_p->localClient->ip,
 				client_p->localClient->aftype);
@@ -577,7 +577,7 @@ verify_access(struct Client* client_p, const char* username)
 				       client_p->host, aconf->name);
 		}
 #endif
-	      strlcpy(client_p->host, aconf->name, HOSTLEN);
+	      strlcpy(client_p->host, aconf->name, HOSTLEN + 1);
 	      SetIPSpoof(client_p);
 	    }
 	  return(attach_iline(client_p, aconf));

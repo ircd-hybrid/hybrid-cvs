@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.294 2002/08/08 17:45:02 bill Exp $
+ *  $Id: client.c,v 7.295 2002/08/15 14:15:35 db Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -1128,10 +1128,10 @@ static void remove_dependents(struct Client* client_p,
        * comstud, since m_squit already does the notification.
        */
 
-      if ((aconf = to->serv->sconf))
-        strlcpy(myname, my_name_for_link(me.name, aconf), HOSTLEN);
+      if ((aconf = to->serv->sconf) != NULL)
+        strlcpy(myname, my_name_for_link(me.name, aconf), HOSTLEN + 1);
       else
-        strlcpy(myname, me.name, HOSTLEN);
+        strlcpy(myname, me.name, HOSTLEN + 1);
       recurse_send_quits(client_p, source_p, to, comment1, myname);
     }
 
