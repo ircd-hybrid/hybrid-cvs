@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.104 2000/12/04 16:08:25 db Exp $
+ * $Id: channel.c,v 7.105 2000/12/04 17:03:23 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -595,13 +595,17 @@ int is_half_op(struct Channel *chptr, struct Client *who )
 int can_send(struct Channel *chptr, struct Client *sptr)
 {
   if (chptr->mode.mode & MODE_MODERATED)
-    if(is_any_op(chptr,sptr))
-      return 1;
-
+    {
+      if(is_any_op(chptr,sptr))
+	return 1;
+      else
+	return 0;
+    }
+  
   if (chptr->mode.mode & MODE_NOPRIVMSGS && !IsMember(sptr,chptr))
-    return (MODE_NOPRIVMSGS);
+    return (0);
 
-  return 0;
+  return 1;
 }
 
 /*
