@@ -1,3 +1,15 @@
+db          2002/10/10 11:44:06 EDT	(20021010_0)
+
+  Modified files:
+    src                  s_user.c 
+  Log:
+  REALLEN + 1 as spotted by adx
+  
+  Revision  Changes    Path
+  7.209     +1 -1      ircd-hybrid-7/src/s_user.c
+
+
+
 androsyn    2002/10/09 12:59:50 EDT	(20021009_1)
 
   Modified files:
@@ -32306,4 +32318,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4052 2002/10/09 16:59:52 androsyn Exp $
+$Id: ChangeLog,v 7.4053 2002/10/10 15:44:08 db Exp $
