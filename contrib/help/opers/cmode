@@ -1,3 +1,4 @@
+# $Id: cmode,v 1.3 2004/03/10 08:19:23 metalrock Exp $
 MODE <channel> <+|-><modes> [parameters]
 
 =-=-=-=-=-=-=-=-=-=-=
@@ -24,16 +25,7 @@ NO PARAMETERS:
      +m     - 'Moderated'.  This will prevent any user who isn't opped,
               half-opped or voiced (+o/+h/+v) from talking in the channel.
 
-     +a     - 'Anonymous ops'.  This will stop people who join from
-              seeing who has ops.  Any modes set in the channel will
-              be shown as if a server set them.
-
-              When a user becomes opped or half-opped (+o/+h) they will
-              receive an op sync, where the server will op every user
-              that is opped.  They will then see modes normally, and
-              have the true list of who has ops/half-ops/voices
-
-     +i     - 'Invite only'.  This will stop anyone from joining your
+     +i     - 'Invite only'.  This will prevent anyone from joining your
               channel who hasn't received an /invite or whose host isn't in
               the +I list.
 
@@ -46,7 +38,7 @@ WITH PARAMETERS:
 
               PARAMS: /mode #channel +k key
 
-     +l     - 'Limit'. This will stop there being more than LIMIT people
+     +l     - 'Limit'. This will prevent more than LIMIT number of people
               in the channel at any time.
 
               PARAMS: /mode #channel +l limit
