@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.9 1999/09/03 02:17:16 wnder Exp $
+ * $Id: ircd.c,v 7.10 1999/09/09 13:38:28 wnder Exp $
  */
 #include "ircd.h"
 #include "channel.h"
@@ -808,6 +808,7 @@ int main(int argc, char *argv[])
     strncpy_irc(me.name, aconf->host, HOSTLEN);
   strncpy_irc(me.host, aconf->host, HOSTLEN);
 
+#ifdef USE_IAUTH
 	/* bingo - hardcoded for now - will be changed later */
 	strcpy(iAuth.hostname, "127.0.0.1");
 	iAuth.port = 4444;
@@ -819,6 +820,7 @@ int main(int argc, char *argv[])
 		fprintf(stderr, "Unable to connect to IAuth server\n");
 		exit (-1);
 	}
+#endif
 
   SetMe(&me);
   make_server(&me);

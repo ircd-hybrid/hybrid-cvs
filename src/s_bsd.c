@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.11 1999/09/08 19:23:38 wnder Exp $
+ *  $Id: s_bsd.c,v 7.12 1999/09/09 13:38:28 wnder Exp $
  */
 #include "s_bsd.h"
 #include "class.h"
@@ -725,6 +725,7 @@ void add_connection(struct Listener* listener, int fd)
 
   assert(0 != listener);
 
+#ifdef USE_IAUTH
   if (iAuth.socket == NOSOCK)
   {
     send(fd,
@@ -734,6 +735,7 @@ void add_connection(struct Listener* listener, int fd)
     close(fd);
     return;
   }
+#endif
 
   /* 
    * get the client socket name from the socket
@@ -961,8 +963,10 @@ int read_message(time_t delay, unsigned char mask)        /* mika */
       FD_ZERO(read_set);
       FD_ZERO(write_set);
 
+		#ifdef USE_IAUTH
       if (iAuth.socket != NOSOCK)
         FD_SET(iAuth.socket, read_set);
+    #endif
 
       for (auth = AuthPollList; auth; auth = auth->next) {
         assert(-1 < auth->fd);
@@ -1062,6 +1066,7 @@ int read_message(time_t delay, unsigned char mask)        /* mika */
       accept_connection(listener);
   }
 
+#ifdef USE_IAUTH
   /*
    * Check IAuth
    */
@@ -1077,6 +1082,7 @@ int read_message(time_t delay, unsigned char mask)        /* mika */
         iAuth.socket = NOSOCK;
       }
     }
+#endif
 
   for (i = 0; i <= highest_fd; i++) {
     if (!(GlobalFDList[i] & mask) || !(cptr = local[i]))
