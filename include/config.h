@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.30 2000/11/08 23:57:21 ejb Exp $
+ * $Id: config.h,v 7.31 2000/11/09 14:21:01 ejb Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -79,6 +79,7 @@
  *
  * DPATH = directory,
  * SPATH = server executable,
+ * MODPATH = directory of module to load automatically,
  * CPATH = conf file,
  * MPATH = MOTD
  * KPATH = kline conf file
@@ -99,6 +100,7 @@
 
 #define DPATH   "/usr/ejb/ircd/"
 #define SPATH   "/usr/ejb/ircd/ircd"
+#define MODPATH "/usr/ejb/ircd/modules/autoload/"
 #define CPATH   "ircd.conf"
 #define KPATH   "kline.conf"
 #define DLPATH  "kline.conf"

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: msg.h,v 7.23 2000/11/08 23:57:21 ejb Exp $
+ * $Id: msg.h,v 7.24 2000/11/09 14:21:02 ejb Exp $
  */
 #ifndef INCLUDED_msg_h
 #define INCLUDED_msg_h
@@ -135,6 +135,9 @@ typedef struct MessageTree MESSAGE_TREE;
 #define MSG_OPERWALL "OPERWALL" /* OPERWALL */
 #define MSG_UNDLINE  "UNDLINE"  /* UNDLINE */
 #define MSG_UNGLINE  "UNGLINE"  /* UNGLINE */
+#define MSG_LOCOPS   "LOCOPS"   /* LOCOPS */
+#define MSG_LTRACE   "LTRACE"   /* LTRACE */
+#define MSG_SVINFO   "SVINFO"   /* SVINFO */
 
 /*
  * Constants
@@ -150,6 +153,7 @@ typedef struct MessageTree MESSAGE_TREE;
 #define MSG_TESTLINE "TESTLINE"
 
 extern struct Message **msgtab;
+extern int num_msgs;
 
 #endif /* INCLUDED_msg_h */
 

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_gline.c,v 1.1 2000/11/08 23:57:26 ejb Exp $
+ *  $Id: m_gline.c,v 1.2 2000/11/09 14:21:07 ejb Exp $
  */
 #include "m_gline.h"
 #include "channel.h"
@@ -52,7 +52,7 @@
 extern ConfigFileEntryType ConfigFileEntry; /* defined in ircd.c */
 
 /* internal variables */
-static  struct ConfItem *glines = (struct ConfItem *)NULL;
+extern struct ConfItem *glines;
 static GLINE_PENDING *pending_glines;
 
 /* internal functions */

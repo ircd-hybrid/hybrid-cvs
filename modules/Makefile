@@ -2,7 +2,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile,v 1.2 2000/11/09 09:46:56 ejb Exp $
+# $Id: Makefile,v 1.3 2000/11/09 14:21:07 ejb Exp $
 #
 CC		= gcc
 RM		= /bin/rm
@@ -28,7 +28,6 @@ SRCS =                          \
   m_connect.c \
   m_die.c \
   m_drop.c \
-  m_error.c \
   m_gline.c \
   m_help.c \
   m_htm.c \
@@ -41,7 +40,6 @@ SRCS =                          \
   m_kline.c \
   m_knock.c \
   m_links.c \
-  m_list.c \
   m_lljoin.c \
   m_locops.c \
   m_ltrace.c \

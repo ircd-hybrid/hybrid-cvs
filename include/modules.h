@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.h,v 7.1 2000/11/08 23:57:21 ejb Exp $
+ * $Id: modules.h,v 7.2 2000/11/09 14:21:02 ejb Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -32,6 +32,9 @@ struct module {
 
 /* load a module */
 void load_module(char *path);
+
+/* load all modules */
+void load_all_module(void);
 
 /* add a command */
 void mod_add_cmd(char *cmd, struct Message *msg);

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_bsd.h,v 7.16 2000/11/08 09:34:15 adrian Exp $
+ *   $Id: s_bsd.h,v 7.17 2000/11/09 14:21:03 ejb Exp $
  *
  */
 #ifndef INCLUDED_s_bsd_h
@@ -25,6 +25,8 @@
 #include <sys/types.h>
 #define INCLUDED_sys_types_h
 #endif
+
+#include "fdlist.h"
 
 #define READBUF_SIZE    16384   /* used in s_bsd *AND* s_zip.c ! */
 

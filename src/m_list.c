@@ -3,7 +3,7 @@
  *   Copyright (C) 1990 Jarkko Oikarinen and
  *                      University of Oulu, Co Center
  *
- * $Id: m_list.c,v 7.13 2000/11/05 03:01:05 db Exp $ 
+ * $Id: m_list.c,v 7.14 2000/11/09 14:21:10 ejb Exp $ 
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -31,11 +31,25 @@
 #include "send.h"
 #include "vchannel.h"
 #include "list.h"
+#include "msg.h"
 
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>
 
+#if 0
+struct Message list_msgtab = {
+  MSG_LIST, 0, 0, MFLG_SLOW, 0,
+  {m_unregistered, m_list, m_ignore, m_list}
+};
+
+void
+_modinit(void)
+{
+  mod_add_cmd(MSG_LIST, &list_msgtab);
+}
+
+#endif
 /*
 ** m_list
 **      parv[0] = sender prefix

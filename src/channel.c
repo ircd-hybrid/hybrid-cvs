@@ -34,7 +34,7 @@
  *                mode * -p etc. if flag was clear
  *
  *
- * $Id: channel.c,v 7.66 2000/11/06 15:40:51 db Exp $
+ * $Id: channel.c,v 7.67 2000/11/09 14:21:09 ejb Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -2716,3 +2716,23 @@ static void destroy_channel(struct Channel *chptr)
   /* Wheee */
 }
 
+void del_invite(struct Channel *chptr, struct Client *who)
+{
+  struct SLink  **inv, *tmp;
+
+  for (inv = &(chptr->invites); (tmp = *inv); inv = &tmp->next)
+    if (tmp->value.cptr == who)
+      {
+        *inv = tmp->next;
+        free_link(tmp);
+        break;
+      }
+
+  for (inv = &(who->user->invited); (tmp = *inv); inv = &tmp->next)
+    if (tmp->value.chptr == chptr)
+      {
+        *inv = tmp->next;
+        free_link(tmp);
+        break;
+      }
+}
