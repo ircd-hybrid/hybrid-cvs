@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_away.c,v 1.14 2001/01/26 02:31:28 db Exp $
+ *   $Id: m_away.c,v 1.15 2001/01/28 23:17:01 jdc Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -54,7 +54,7 @@ _moddeinit(void)
   mod_del_cmd(&away_msgtab);
 }
 
-char *_version = "20001122";
+char *_version = "20010128";
 
 /***********************************************************************
  * m_away() - Added 14 Dec 1988 by jto. 
@@ -110,8 +110,9 @@ static int m_away(struct Client *cptr,
 
   /* Marking as away */
   
-  if (MyConnect(sptr) && ((CurrentTime-last_away) < 2 ||
-      (CurrentTime-sptr->user->last_away)<ConfigFileEntry.pace_wait))
+  if (MyConnect(sptr) && !IsOper(sptr) &&
+      ((CurrentTime-last_away) < 2 ||
+       (CurrentTime-sptr->user->last_away)<ConfigFileEntry.pace_wait))
     {
      sendto_one(sptr, form_str(RPL_LOAD2HI), me.name, parv[0]);
      return 0;
