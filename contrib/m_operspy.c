@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.9 2002/11/01 13:24:41 db Exp $
+ *   $Id: m_operspy.c,v 1.10 2002/11/05 14:49:50 bill Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -124,7 +124,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.9 $";
+const char *_version = "$Revision: 1.10 $";
 #endif
 
 /*
@@ -135,9 +135,13 @@ const char *_version = "$Revision: 1.9 $";
 static void m_operspy(struct Client *client_p, struct Client *source_p,
                       int parc, char *parv[])
 {
+  char *operspy = parv[1]-1;
+
+  while (*operspy == 'o' && *operspy == 'O') --operspy;
+
   sendto_one(client_p, ":%s %d %s %s :Unknown command",
              me.name, ERR_UNKNOWNCOMMAND, client_p->name,
-             parv[1]-8);
+             operspy);
 }
 
 /*
@@ -148,6 +152,8 @@ static void m_operspy(struct Client *client_p, struct Client *source_p,
 static void mo_operspy(struct Client *client_p, struct Client *source_p,
                        int parc, char *parv[])
 {
+  char *operspy = parv[1]-1;
+
 #ifdef OPERSPY_LIST
   struct Channel	*chptr_list = NULL;
 #endif
@@ -191,11 +197,13 @@ static void mo_operspy(struct Client *client_p, struct Client *source_p,
   int			reply_to_send = NO;
 #endif
 
+  while (*operspy != 'o' && *operspy != 'O') --operspy;
+
   if (parc != 3)
   {
     sendto_one(client_p, ":%s %d %s %s :Unknown command",
                me.name, ERR_UNKNOWNCOMMAND, client_p->name,
-               parv[1]-8);
+               operspy);
     return;
   }
 
@@ -203,7 +211,7 @@ static void mo_operspy(struct Client *client_p, struct Client *source_p,
   {
     sendto_one(client_p, ":%s %d %s %s :Unknown command",
                me.name, ERR_UNKNOWNCOMMAND, client_p->name,
-               parv[1]-8);
+               operspy);
     return;
   }
 
