@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.38 2004/03/23 18:58:34 metalrock Exp $
+ *  $Id: m_xline.c,v 1.39 2004/03/26 20:25:39 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -82,9 +82,8 @@ _moddeinit(void)
   mod_del_cmd(&unxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.38 $";
+const char *_version = "$Revision: 1.39 $";
 #endif
-
 
 /* mo_xline()
  *
@@ -102,8 +101,7 @@ mo_xline(struct Client *client_p, struct Client *source_p,
 {
   struct ConfItem *conf;
   struct MatchItem *match_item;
-  char *reason;
-  char *target_server=NULL;
+  char *reason, *target_server;
   const char *type;
   int type_i = 1;
   char def_reason[] = "No Reason";
@@ -115,51 +113,60 @@ mo_xline(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if (parc < 3)
+  /* XLINE <gecos> <type> ON <mask> :<reason>
+   * XLINE <gecos> ON <mask> :<reason>
+   */
+  if ((parc > 3) && (!irccmp(parv[2], "ON") || !irccmp(parv[3], "ON")))
   {
-    sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-               me.name, source_p->name, "XLINE");
-    return;
-  }
-
-  /* XLINE <gecos> <type> ON <server> :reason */
-  if (parc >= 5)
-  {
-    if (irccmp(parv[3], "ON") == 0)
+    if (parc < 5)
     {
-      type = parv[2];
-      target_server = parv[4];
-      if (parc > 5)
-        reason = parv[5];
-    }
-    else
-    {
-      /* perhaps we should show usage here?  also,
-       * this may be a bit nitpicky, but we are being
-       * painfully inconsistent by sending 'XLINE'
-       * rather than duplicating the case with which
-       * the command was issued.
-       */
-      sendto_one(source_p, form_str(ERR_NORECIPIENT),
+      sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
                  me.name, source_p->name, "XLINE");
       return;
     }
+    else if (!irccmp(parv[3], "ON"))
+    {
+      type = parv[2];
+      target_server = parv[4];
+      reason = parv[5];
+    }
+    else
+    {
+      type = "REJECT";
+      target_server = parv[3];
+      reason = parv[2];
+    }
   }
   /* XLINE <gecos> <type> :<reason> */
-  else if (parc == 4)
+  else if (parc >= 4)
   {
-    reason = parv[3];
     type = parv[2];
+    reason = parv[3];
   }
   /* XLINE <gecos> :<reason> */
   else if (parc == 3)
   {
-    reason = parv[2];
     type = "REJECT";
+    reason = parv[2];
   }
+  else
+    reason = def_reason;
 
   if (!valid_xline(source_p, parv[1], reason, 1))
     return;
+
+  if (irccmp(type, "WARN") == 0)
+    type_i = 0;
+  else if (irccmp(type, "REJECT") == 0)
+    type_i = 1;
+  else if (irccmp(type, "SILENT") == 0)
+    type_i = 2;
+  else
+  {
+    sendto_one(source_p, ":%s NOTICE %s :Invalid X-Line type",
+               me.name, source_p->name);
+    return;
+  }
 
   if (target_server != NULL)
   {
@@ -183,20 +190,8 @@ mo_xline(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if (irccmp(type,"WARN") == 0)
-    type_i = 0;
-  else if (irccmp(type,"REJECT") == 0)
-    type_i = 1;
-  else if (irccmp(type,"SILENT") == 0)
-    type_i = 2;
-  else
-    type_i = atoi(type);
-
-  if (EmptyString(reason))
-    reason = def_reason;
-
   write_xline(source_p, parv[1], reason, type_i);
-} /* mo_xline() */
+}
 
 /* ms_xline()
  *
@@ -210,11 +205,18 @@ ms_xline(struct Client *client_p, struct Client *source_p,
 {
   struct ConfItem *conf;
   struct MatchItem *match_item;
+  int type = atoi(parv[3]);
 
   if (parc != 5 || EmptyString(parv[4]))
     return;
 
+  if ((type < 0) || (type > 2))
+    return;
+
   if (!IsPerson(source_p))
+    return;
+
+  if (!valid_xline(source_p, parv[2], parv[4], 0))
     return;
 
   sendto_match_servs(source_p, parv[1], CAP_CLUSTER,
@@ -227,23 +229,17 @@ ms_xline(struct Client *client_p, struct Client *source_p,
   if (find_matching_name_conf(CLUSTER_TYPE, source_p->user->server->name,
                               NULL, NULL, CLUSTER_XLINE))
   {
-    if (!valid_xline(source_p, parv[2], parv[4], 0))
-      return;
-
     if ((find_matching_name_conf(XLINE_TYPE, parv[2],
 				NULL, NULL, 0)) != NULL)
       return;
 
-    write_xline(source_p, parv[2], parv[4], atoi(parv[3]));
+    write_xline(source_p, parv[2], parv[4], type);
   }
   else if (find_matching_name_conf(ULINE_TYPE,
 		       source_p->user->server->name,
                        source_p->username, source_p->host,
                        SHARED_XLINE))
   {
-    if (!valid_xline(source_p, parv[2], parv[4], 1))
-      return;
-
     if ((conf = find_matching_name_conf(XLINE_TYPE, parv[2],
 					NULL, NULL, 0)) != NULL)
     {
@@ -255,7 +251,7 @@ ms_xline(struct Client *client_p, struct Client *source_p,
       return;
     }
 
-    write_xline(source_p, parv[2], parv[4], atoi(parv[3]));
+    write_xline(source_p, parv[2], parv[4], type);
   }
 }
 
@@ -279,13 +275,6 @@ mo_unxline(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if (parc < 1)
-  {
-    sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-               me.name, source_p->name, "UNXLINE");
-    return;
-  }
-
   /* UNXLINE bill ON irc.server.com */
   if ((parc > 3) && (irccmp(parv[2], "ON") == 0))
   {
@@ -297,13 +286,11 @@ mo_unxline(struct Client *client_p, struct Client *source_p,
       return;
   }
   /* UNXLINE bill */
-  else if (parc >= 2)
-  {
-    if (dlink_list_length(&cluster_items))
-      cluster_unxline(source_p, parv[1]);
-    remove_xline(source_p, parv[1], 0);
-  }
-} /* mo_unxline() */
+  else if (dlink_list_length(&cluster_items))
+    cluster_unxline(source_p, parv[1]);
+
+  remove_xline(source_p, parv[1], 0);
+}
 
 /* ms_unxline()
  *
