@@ -1,3 +1,15 @@
+androsyn    2002/05/25 02:52:50 EDT	(20020525_11)
+
+  Modified files:
+    adns                 setup.c 
+  Log:
+  Make adns use the generic set non blocking routine
+  
+  Revision  Changes    Path
+  1.27      +2 -10     ircd-hybrid-7/adns/setup.c
+
+
+
 androsyn    2002/05/24 23:06:31 EDT	(20020525_10)
 
   Modified files:
@@ -27241,4 +27253,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3693 2002/05/25 03:06:37 androsyn Exp $
+$Id: ChangeLog,v 7.3694 2002/05/25 06:52:57 androsyn Exp $
