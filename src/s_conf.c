@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.369 2003/05/02 15:44:41 adx Exp $
+ *  $Id: s_conf.c,v 7.370 2003/05/03 08:33:55 adx Exp $
  */
 
 #include "stdinc.h"
@@ -604,11 +604,29 @@ static struct ip_entry *
 find_or_add_ip(struct irc_ssaddr *ip_in)
 {
   struct ip_entry *ptr, *newptr;
-  int hash_index=hash_ip(ip_in);
+  int hash_index = hash_ip(ip_in), res;
+  struct sockaddr_in *v4 = (struct sockaddr_in *) ip_in, *ptr_v4;
+#ifdef IPV6
+  struct sockaddr_in6 *v6 = (struct sockaddr_in6 *) ip_in, *ptr_v6;
+#endif
 
   for (ptr = ip_hash_table[hash_index]; ptr; ptr = ptr->next)
   {
-    if (memcmp(&ptr->ip, ip_in, sizeof(struct irc_ssaddr)) == 0)
+#ifdef IPV6
+    if (ptr->ip.ss.ss_family != ip_in->ss.ss_family)
+      continue;
+    if (ip_in->ss.ss_family == AF_INET6)
+    {
+      ptr_v6 = (struct sockaddr_in6 *) &ptr->ip;
+      res = memcmp(&v6->sin6_addr, &ptr_v6->sin6_addr, sizeof(struct in6_addr));
+    }
+    else
+#endif
+    {
+      ptr_v4 = (struct sockaddr_in *) &ptr->ip;
+      res = memcmp(&v4->sin_addr, &ptr_v4->sin_addr, sizeof(struct in_addr));
+    }
+    if (res == 0)
     {
       /* Found entry already in hash, return it. */
       return(ptr);
@@ -647,11 +665,29 @@ remove_one_ip(struct irc_ssaddr *ip_in)
 {
   struct ip_entry *ptr;
   struct ip_entry *last_ptr = NULL;
-  int hash_index = hash_ip(ip_in);
+  int hash_index = hash_ip(ip_in), res;
+  struct sockaddr_in *v4 = (struct sockaddr_in *) ip_in, *ptr_v4;
+#ifdef IPV6
+  struct sockaddr_in6 *v6 = (struct sockaddr_in6 *) ip_in, *ptr_v6;
+#endif
 
   for(ptr = ip_hash_table[hash_index]; ptr; ptr = ptr->next)
   {
-    if (memcmp(&ptr->ip, ip_in, sizeof(struct irc_ssaddr)))
+#ifdef IPV6
+    if (ptr->ip.ss.ss_family != ip_in->ss.ss_family)
+      continue;
+    if (ip_in->ss.ss_family == AF_INET6)
+    {
+      ptr_v6 = (struct sockaddr_in6 *) &ptr->ip;
+      res = memcmp(&v6->sin6_addr, &ptr_v6->sin6_addr, sizeof(struct in6_addr));
+    }
+    else
+#endif
+    {
+      ptr_v4 = (struct sockaddr_in *) &ptr->ip;
+      res = memcmp(&v4->sin_addr, &ptr_v4->sin_addr, sizeof(struct in_addr));
+    }
+    if (res)
       continue;
     if (ptr->count > 0)
       ptr->count--;
