@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.211 2001/09/23 02:26:03 a1kmm Exp $
+ *   $Id: s_serv.c,v 7.212 2001/09/25 10:35:01 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -509,14 +509,19 @@ int hunt_server(struct Client *client_p, struct Client *source_p, char *command,
     {
       if (IsMe(target_p) || MyClient(target_p))
         return HUNTED_ISME;
+	
       if (!match(target_p->name, parv[server]))
         parv[server] = target_p->name;
 
       /* Deal with lazylinks */
       client_burst_if_needed(target_p, source_p);
+      
       /* This is a little kludgy but should work... */
-      if (IsClient(source_p) && IsCapable(target_p, CAP_UID))
+      if (IsClient(source_p) &&
+         ((MyConnect(target_p) && IsCapable(target_p, CAP_UID)) ||
+	  (!MyConnect(target_p) && IsCapable(target_p->from, CAP_UID))))
         parv[0] = ID(source_p);
+	
       sendto_one(target_p, command, parv[0],
                  parv[1], parv[2], parv[3], parv[4],
                  parv[5], parv[6], parv[7], parv[8]);
