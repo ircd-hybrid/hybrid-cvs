@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.123 2001/05/01 18:58:35 db Exp $
+ *  $Id: s_bsd.c,v 7.124 2001/05/02 16:31:50 androsyn Exp $
  */
 #include "config.h"
 #include "fdlist.h"
@@ -596,6 +596,9 @@ comm_connect_tcp(int fd, const char *host, u_short port,
 {
  fd_table[fd].flags.called_connect = 1;
  assert(callback);
+#ifndef NDEBUG
+ memset(&fd_table[fd].connect, 0, sizeof(fd_table[fd].connect));
+#endif
  fd_table[fd].connect.callback = callback;
  fd_table[fd].connect.data = data;
 
@@ -738,7 +741,7 @@ static void
 comm_connect_tryconnect(int fd, void *notused)
 {
  int retval;
-  
+ assert(fd_table[fd].connect.callback); 
  /* Try the connect() */
  retval = connect(fd, (struct sockaddr *) &SOCKADDR(fd_table[fd].connect.hostaddr), sizeof(struct irc_sockaddr));
  /* Error? */
