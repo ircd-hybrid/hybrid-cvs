@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: config.h,v 7.139 2002/06/27 15:16:36 leeh Exp $
+ *  $Id: config.h,v 7.140 2002/07/10 00:05:51 leeh Exp $
  */
 
 #ifndef INCLUDED_config_h
@@ -189,6 +189,14 @@
  */
 #undef HIDE_SPOOF_IPS
 
+/* TS5_ONLY
+ *
+ * If this is defined only TS5 servers may link to the network.  See
+ * doc/ts5.txt for more information.  If your network has old servers
+ * (hyb5, hyb6.0, +CSr) or hybserv you should NOT define this.
+ */
+#undef TS5_ONLY
+
 /* USE_LOGFILE - log errors and such to LPATH
  * If you wish to have the server send 'vital' messages about server
  * to a logfile, define USE_LOGFILE.
@@ -304,6 +312,9 @@
 #endif
 #ifndef HIDE_SPOOF_IPS
 #define HIDE_SPOOF_IPS
+#endif
+#ifndef TS5_ONLY
+#define TS5_ONLY
 #endif
 #endif
 

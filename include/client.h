@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.150 2002/06/29 04:34:43 db Exp $
+ *  $Id: client.h,v 7.151 2002/07/10 00:05:51 leeh Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -370,7 +370,11 @@ struct LocalUser
  * ts stuff
  */
 #define TS_CURRENT      5       /* current TS protocol version */
+#ifdef TS5_ONLY
+#define TS_MIN          5
+#else
 #define TS_MIN          3       /* minimum supported TS protocol version */
+#endif
 #define TS_DOESTS       0x20000000
 #define DoesTS(x)       ((x)->tsinfo == TS_DOESTS)
 
