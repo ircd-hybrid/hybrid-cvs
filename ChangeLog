@@ -1,3 +1,15 @@
+db          2002/05/17 14:09:18 EDT	(20020517_2)
+
+  Modified files:
+    src                  send.c 
+  Log:
+  - Don't trust a pointer that can change underneath us
+  
+  Revision  Changes    Path
+  7.188     +7 -3      ircd-hybrid-7/src/send.c
+
+
+
 androsyn    2002/05/17 12:08:11 EDT	(20020517_1)
 
   Modified files:
@@ -26518,4 +26530,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3659 2002/05/17 16:08:17 androsyn Exp $
+$Id: ChangeLog,v 7.3660 2002/05/17 18:09:25 db Exp $
