@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.79 2002/05/20 16:41:12 androsyn Exp $
+ *  $Id: packet.c,v 7.80 2002/05/20 23:07:39 androsyn Exp $
  */
 
 #include <stdio.h>
@@ -413,7 +413,7 @@ read_packet(int fd, void *data)
 #endif
 
   
-  if (!IsDead(client_p) || !IsClosing(client_p))
+  if (!IsDead(client_p))
   {
     /* If we get here, we need to register for another COMM_SELECT_READ */
     if (PARSE_AS_SERVER(client_p)) {
@@ -424,6 +424,8 @@ read_packet(int fd, void *data)
         read_packet, client_p, 0);
     }
   }
+  /* This is about the only place useful to put it */
+  exit_aborted_clients();
 
 }
 
