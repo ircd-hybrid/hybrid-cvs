@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.60 2000/12/25 04:05:08 db Exp $
+ *   $Id: parse.c,v 7.61 2000/12/25 05:06:33 db Exp $
  */
 #include "parse.h"
 #include "client.h"
@@ -683,7 +683,8 @@ static int     do_numeric(
       if (IsMe(acptr)) 
         {
           sendto_realops_flags(FLAGS_ALL,
-			       "*** numeric to me? are you on drugs honey?");
+			       "*** %s numeric to me? are you on drugs honey?",
+			       numeric);
           return 0;
         }
       else if (acptr->from == cptr) 
