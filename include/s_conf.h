@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.124 2001/05/30 22:03:08 leeh Exp $
+ * $Id: s_conf.h,v 7.125 2001/05/31 16:30:35 davidt Exp $
  */
 
 #include "setup.h"
@@ -80,7 +80,7 @@ struct ConfItem
   int              dns_pending; /* 1 if dns query pending, 0 otherwise */
 #ifdef HAVE_LIBCRYPTO
   RSA*             rsa_public_key;
-  struct EncPreference *ciphertab; /* cipher_preference storage space */
+  struct EncPreference *cipher_preference;
 #endif
 };
 
@@ -233,6 +233,10 @@ typedef struct config_file_entry
   int           persist_expire;
   int           min_nonwildcard;
   int           default_floodcount;
+  int           client_flood;
+#ifdef HAVE_LIBCRYPTO
+  struct EncPreference *default_cipher_preference;
+#endif
 } ConfigFileEntryType;
 
 struct server_info

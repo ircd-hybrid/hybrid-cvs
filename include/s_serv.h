@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: s_serv.h,v 7.50 2001/05/29 21:11:12 davidt Exp $
+ * $Id: s_serv.h,v 7.51 2001/05/31 16:30:35 davidt Exp $
  *
  */
 #ifndef INCLUDED_serv_h
@@ -90,7 +90,6 @@ struct EncCapability
   unsigned int  cap;      /* mask value */
   int           keylen;   /* keylength (bytes) */
   int           cipherid; /* cipher id */
-  int           default_priority; /* 0=disabled, 1=highest, n=lowest */
 };
 
 struct EncPreference
@@ -121,6 +120,8 @@ struct EncPreference
 #define CAP_ENC_RC5_16_128      0x00000100
 
 #define CAP_ENC_ALL     0xFFFFFFFF                                              
+
+#define NUM_CAP_ENC     9
 
 /* Blowfish */                        
 #ifdef HAVE_EVP_BF_CFB
@@ -243,7 +244,7 @@ extern struct SlinkRplDef slinkrpltab[];
  */
 extern struct Capability captab[];
 #ifdef HAVE_LIBCRYPTO
-extern struct EncCapability enccaptab[];
+extern struct EncCapability enccaptab[NUM_CAP_ENC+1];
 #endif
 
 extern int MaxClientCount;     /* GLOBAL - highest number of clients */

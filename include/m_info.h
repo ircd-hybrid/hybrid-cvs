@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.h,v 7.33 2001/05/30 13:37:12 jdc Exp $
+ * $Id: m_info.h,v 7.34 2001/05/31 16:30:34 davidt Exp $
  */
 #ifndef INCLUDED_m_info_h
 #define INCLUDED_m_info_h
@@ -90,8 +90,7 @@ Info MyInformation[] = {
   { "HYBRID_SOMAXCONN", "", HYBRID_SOMAXCONN, "Maximum Queue Length of Pending Connections" },
 #endif /* SOMAXCONN */
 
-  { "INIT_MAXCLIENTS", "", INIT_MAXCLIENTS, "Maximum Clients" },
-  { "INITIAL_DBUFS", "", INITIAL_DBUFS, "Number of Dbufs to PreAllocate" },
+  { "MAX_CLIENTS", "", MAX_CLIENTS, "Default maximum Clients" },
 
   { "JOIN_LEAVE_COUNT_EXPIRE_TIME", "", JOIN_LEAVE_COUNT_EXPIRE_TIME, "Anti SpamBot Parameter" },
 
