@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: defaults.h,v 7.5 2002/04/23 14:26:24 leeh Exp $
+ *  $Id: defaults.h,v 7.6 2002/11/23 17:12:55 db Exp $
  */
 
 #ifndef INCLUDED_defaults_h
@@ -33,7 +33,7 @@
  * First, set other fd limits based on values from user
  */
 #ifndef HARD_FDLIMIT_
-error HARD_FDLIMIT_ undefined
+#error HARD_FDLIMIT_ undefined
 #endif
 
 #define HARD_FDLIMIT    (HARD_FDLIMIT_ - 10)
