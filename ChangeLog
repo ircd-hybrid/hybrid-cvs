@@ -1,3 +1,12 @@
+*** 20001206_3 by db
+- added mr_capab to handlers.h 
+- changed m_capab to use mr_capab, remember capabilities are sent
+  while client is still unregistered
+- fixed another parser bug pointed out by Walter Campbell
+- added sanity test to del_all_accepts
+
+
+
 *** 20001206_2 by db
 - reworked anti channel flooding to allow chanops/voice to flood
   their own channel with impunity. This will allow them to at least
@@ -1715,7 +1724,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.710 2000/12/06 17:01:16 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.711 2000/12/06 20:04:48 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
