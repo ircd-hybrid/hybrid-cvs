@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_help.c,v 1.36 2003/04/18 02:13:42 db Exp $
+ *  $Id: m_help.c,v 1.37 2003/05/03 13:38:58 adx Exp $
  */
 
 #include "stdinc.h"
@@ -67,7 +67,7 @@ _moddeinit(void)
   mod_del_cmd(&uhelp_msgtab);
 }
 
-const char *_version = "$Revision: 1.36 $";
+const char *_version = "$Revision: 1.37 $";
 #endif
 /*
  * m_help - HELP message handler
@@ -93,10 +93,7 @@ m_help(struct Client *client_p, struct Client *source_p,
       last_used = CurrentTime;
     }
 
-    if(parc > 1)
-      dohelp(source_p, UHPATH, parv[1], parv[0]);
-    else
-      dohelp(source_p, UHPATH, NULL, parv[0]);
+    dohelp(source_p, UHPATH, parv[1], parv[0]);
   }
   else
   {
@@ -112,10 +109,7 @@ static void
 mo_help(struct Client *client_p, struct Client *source_p,
                     int parc, char *parv[])
 {
-  if(parc > 1)
-    dohelp(source_p, HPATH, parv[1], parv[0]);
-  else
-    dohelp(source_p, HPATH, NULL, parv[0]);
+  dohelp(source_p, HPATH, parv[1], parv[0]);
 }
 
 /*
@@ -128,10 +122,7 @@ static void
 mo_uhelp(struct Client *client_p, struct Client *source_p,
             int parc, char *parv[])
 {
-  if(parc > 1)
-    dohelp(source_p, UHPATH, parv[1], parv[0]);
-  else
-    dohelp(source_p, UHPATH, NULL, parv[0]);
+  dohelp(source_p, UHPATH, parv[1], parv[0]);
 }
 
 static void
@@ -144,10 +135,13 @@ dohelp(struct Client *source_p, char *hpath,
 
   if (topic != NULL)
   {
-    /* convert to lower case */
-    for (i = 0; topic[i] != '\0'; i++)
+    if (*topic == '\0')
+      topic = "index";
+    else
     {
-      topic[i] = ToLower(topic[i]);
+      /* convert to lower case */
+      for (i = 0; topic[i] != '\0'; i++)
+        topic[i] = ToLower(topic[i]);
     }
   }
   else

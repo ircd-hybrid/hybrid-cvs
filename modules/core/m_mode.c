@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_mode.c,v 1.56 2003/04/18 02:13:50 db Exp $
+ *  $Id: m_mode.c,v 1.57 2003/05/03 13:39:00 adx Exp $
  */
 
 #include "stdinc.h"
@@ -42,7 +42,7 @@
 #include "modules.h"
 #include "packet.h"
 
-static void m_mode(struct Client*, struct Client*, int, char**);
+static void m_mode(struct Client *, struct Client *, int, char **);
 
 struct Message mode_msgtab = {
   "MODE", 0, 0, 2, 0, MFLG_SLOW, 0,
@@ -62,9 +62,9 @@ _moddeinit(void)
   mod_del_cmd(&mode_msgtab);
 }
 
-
-const char *_version = "$Revision: 1.56 $";
+const char *_version = "$Revision: 1.57 $";
 #endif
+
 /*
  * m_mode - MODE command handler
  * parv[0] - sender
@@ -78,11 +78,18 @@ m_mode(struct Client *client_p, struct Client *source_p,
   struct Channel* root;
   static char     modebuf[MODEBUFLEN];
   static char     parabuf[MODEBUFLEN];
-  dlink_node	*ptr;
+  dlink_node      *ptr;
   int n = 2;
 #ifdef VCHANS
   struct Channel* vchan;
 #endif
+
+  if (parv[1][0] == '\0')
+    {
+      sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
+                 me.name, parv[0], "MODE");
+      return;
+    }
 
   /* Now, try to find the channel in question */
   if (!IsChanPrefix(parv[1][0]))
@@ -126,7 +133,6 @@ m_mode(struct Client *client_p, struct Client *source_p,
 
 	  sendto_one(uplink, ":%s CBURST %s",
                      me.name, parv[1]);
-	  
 #endif
 	  sendto_one(uplink, ":%s MODE %s %s",
 		     source_p->name, parv[1], (parv[2] ? parv[2] : ""));
@@ -139,7 +145,7 @@ m_mode(struct Client *client_p, struct Client *source_p,
 	  return;
 	}
     }
-  
+
   /* Now known the channel exists */
 
   root = chptr;
@@ -148,11 +154,11 @@ m_mode(struct Client *client_p, struct Client *source_p,
   if ((parc > 2) && parv[2][0] == '!')
     {
      struct Client *target_p;
-     if (!(target_p = find_client(++parv[2])))
+     if ((target_p = find_client(++parv[2])) == NULL)
        {
-        sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL), me.name,
-                   parv[0], root->chname);
-        return;
+         sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL), me.name,
+                    parv[0], root->chname);
+         return;
        }
      if ((chptr = map_vchan(root, target_p)) == NULL)
        {
@@ -194,7 +200,7 @@ m_mode(struct Client *client_p, struct Client *source_p,
       sendto_one(source_p, form_str(RPL_CHANNELMODEIS),
 		 me.name, parv[0], parv[1],
 		 modebuf, parabuf);
-      
+
       /* Let opers see the "true" TS everyone else see's
        * the top root chan TS
        */
@@ -208,12 +214,12 @@ m_mode(struct Client *client_p, struct Client *source_p,
 		   parv[1], chptr->channelts);
     }
   /* bounce all modes from people we deop on sjoin */
-  else if((ptr = find_user_link(&chptr->deopped, source_p)) == NULL)
+  else if ((ptr = find_user_link(&chptr->deopped, source_p)) == NULL)
   {
     /* Finish the flood grace period... */
-    if(MyClient(source_p) && !IsFloodDone(source_p))
+    if (MyClient(source_p) && !IsFloodDone(source_p))
     {
-      if((parc == n) && (parv[n-1][0] == 'b') && (parv[n-1][1] == '\0'))
+      if ((parc == n) && (parv[n-1][0] == 'b') && (parv[n-1][1] == '\0'))
         ;
       else
         flood_endgrace(source_p);
@@ -223,7 +229,3 @@ m_mode(struct Client *client_p, struct Client *source_p,
                      root->chname);
   }
 }
-
-
-
-

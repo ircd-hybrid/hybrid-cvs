@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kill.c,v 1.71 2003/04/18 02:13:50 db Exp $
+ *  $Id: m_kill.c,v 1.72 2003/05/03 13:39:00 adx Exp $
  */
 
 #include "stdinc.h"
@@ -64,7 +64,7 @@ _moddeinit(void)
   mod_del_cmd(&kill_msgtab);
 }
 
-const char *_version = "$Revision: 1.71 $";
+const char *_version = "$Revision: 1.72 $";
 #endif
 /*
 ** mo_kill
@@ -84,15 +84,23 @@ mo_kill(struct Client *client_p, struct Client *source_p,
   user = parv[1];
   reason = parv[2]; /* Either defined or NULL (parc >= 2!!) */
 
+  if (*user == '\0')
+    {
+      sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
+                 me.name, parv[0], "KILL");
+      return;
+    }
+
   if (!IsOperK(source_p))
     {
-      sendto_one(source_p,":%s NOTICE %s :You need kline = yes;",me.name,parv[0]);
+      sendto_one(source_p, ":%s NOTICE %s :You need kline = yes;",
+                 me.name, parv[0]);
       return;
     }
 
   if (!EmptyString(reason))
     {
-      if(strlen(reason) > (size_t) KILLLEN)
+      if (strlen(reason) > (size_t) KILLLEN)
 	reason[KILLLEN] = '\0';
     }
   else
@@ -111,7 +119,7 @@ mo_kill(struct Client *client_p, struct Client *source_p,
                      me.name, parv[0], user);
           return;
         }
-      sendto_one(source_p,":%s NOTICE %s :KILL changed from %s to %s",
+      sendto_one(source_p, ":%s NOTICE %s :KILL changed from %s to %s",
                  me.name, parv[0], user, target_p->name);
     }
   if (IsServer(target_p) || IsMe(target_p))
@@ -128,7 +136,7 @@ mo_kill(struct Client *client_p, struct Client *source_p,
       return;
     }
 
-  if(MyConnect(target_p))
+  if (MyConnect(target_p))
     sendto_one(target_p, ":%s!%s@%s KILL %s :%s", 
 	       source_p->name, source_p->username, source_p->host,
 	       target_p->name, reason);
@@ -139,7 +147,7 @@ mo_kill(struct Client *client_p, struct Client *source_p,
 		       "Received KILL message for %s. From %s Path: %s (%s)", 
 		       target_p->name, parv[0], me.name, reason);
 
-  ilog(L_INFO,"KILL From %s For %s Path %s (%s)",
+  ilog(L_INFO, "KILL From %s For %s Path %s (%s)",
        parv[0], target_p->name, me.name, reason);
 
 
@@ -161,7 +169,7 @@ mo_kill(struct Client *client_p, struct Client *source_p,
     }
 
   ircsprintf(buf, "Killed (%s (%s))", source_p->name, reason);
-  
+
   exit_client(client_p, target_p, source_p, buf);
 }
 
@@ -192,7 +200,7 @@ ms_kill(struct Client *client_p, struct Client *source_p,
 
   user = parv[1];
 
-  if(EmptyString(parv[2]))
+  if (EmptyString(parv[2]))
   {
     reason = "<No reason given>";
 
@@ -202,8 +210,8 @@ ms_kill(struct Client *client_p, struct Client *source_p,
   else
   {
     reason = strchr(parv[2], ' ');
-      
-    if(reason)
+
+    if (reason != NULL)
     {
       *reason = '\0';
       reason++;
@@ -221,8 +229,8 @@ ms_kill(struct Client *client_p, struct Client *source_p,
        * not an uid, automatically rewrite the KILL for this new nickname.
        * --this keeps servers in synch when nick change and kill collide
        */
-      if( (*user == '.')  ||
-	  (!(target_p = get_history(user, (long)KILLCHASETIMELIMIT))))
+      if (*user == '.' ||
+	  (target_p = get_history(user, (long) KILLCHASETIMELIMIT)) == NULL)
         {
           sendto_one(source_p, form_str(ERR_NOSUCHNICK),
                      me.name, parv[0], user);
@@ -232,7 +240,7 @@ ms_kill(struct Client *client_p, struct Client *source_p,
                  me.name, parv[0], user, target_p->name);
       chasing = 1;
     }
-    
+
   if (IsServer(target_p) || IsMe(target_p))
     {
       sendto_one(source_p, form_str(ERR_CANTKILLSERVER),
@@ -240,12 +248,12 @@ ms_kill(struct Client *client_p, struct Client *source_p,
       return;
     }
 
-  if(MyConnect(target_p))
+  if (MyConnect(target_p))
   {
-    if(IsServer(source_p))
+    if (IsServer(source_p))
     {
       /* dont send clients kills from a hidden server */
-      if(ConfigServerHide.hide_servers && !IsOper(target_p))
+      if (ConfigServerHide.hide_servers && !IsOper(target_p))
         sendto_one(target_p, ":%s KILL %s :%s",
  		   me.name, target_p->name, reason);
       else
@@ -288,7 +296,7 @@ ms_kill(struct Client *client_p, struct Client *source_p,
     ircsprintf(buf, "Killed (%s %s)", me.name, reason);
   else
     ircsprintf(buf, "Killed (%s %s)", source_p->name, reason);
-    
+
   exit_client(client_p, target_p, source_p, buf);
 }
 
@@ -299,8 +307,8 @@ relay_kill(struct Client *one, struct Client *source_p,
   dlink_node *ptr;
   struct Client *client_p;
   int introduce_killed_client;
-  char* user; 
-  
+  char *user; 
+
   /* LazyLinks:
    * Check if each lazylink knows about target_p.
    *   If it does, send the kill, introducing source_p if required.
@@ -315,24 +323,24 @@ relay_kill(struct Client *one, struct Client *source_p,
    * -davidt
    */
 
-  if(IsServer(source_p))
+  if (IsServer(source_p))
     introduce_killed_client = 0;
   else
     introduce_killed_client = 1;
 
-  for( ptr = serv_list.head; ptr; ptr = ptr->next )
+  DLINK_FOREACH(ptr, serv_list.head)
   {
     client_p = (struct Client *) ptr->data;
     
-    if( !client_p || client_p == one )
+    if (client_p == NULL || client_p == one)
       continue;
 
-    if( !introduce_killed_client )
+    if (!introduce_killed_client)
     {
-      if( ServerInfo.hub && IsCapable(client_p, CAP_LL) )
+      if (ServerInfo.hub && IsCapable(client_p, CAP_LL))
       {
-        if(((client_p->localClient->serverMask &
-             target_p->lazyLinkClientExists) == 0))
+        if ((client_p->localClient->serverMask &
+             target_p->lazyLinkClientExists) == 0)
         {
           /* target isn't known to lazy leaf, skip it */
           continue;
@@ -341,7 +349,7 @@ relay_kill(struct Client *one, struct Client *source_p,
     }
     /* force introduction of killed client but check that
      * its not on the server we're bursting too.. */
-    else if(strcmp(target_p->user->server,client_p->name))
+    else if (strcmp(target_p->user->server, client_p->name))
       client_burst_if_needed(client_p, target_p);
 
     /* introduce source of kill */
@@ -353,7 +361,7 @@ relay_kill(struct Client *one, struct Client *source_p,
     else
       user = target_p->name;
 
-    if(MyClient(source_p))
+    if (MyClient(source_p))
       {
         sendto_one(client_p, ":%s KILL %s :%s!%s!%s!%s (%s)",
                    source_p->name, user,

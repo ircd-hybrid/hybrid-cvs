@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_topic.c,v 1.55 2003/04/18 02:13:43 db Exp $
+ *  $Id: m_topic.c,v 1.56 2003/05/03 13:38:58 adx Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&topic_msgtab);
 }
 
-const char *_version = "$Revision: 1.55 $";
+const char *_version = "$Revision: 1.56 $";
 #endif
 /*
  * m_topic
@@ -80,23 +80,29 @@ m_topic(struct Client *client_p, struct Client *source_p,
 #ifdef VCHANS
   struct Channel *vchan;
 #endif
-    
+
   if ((p = strchr(parv[1],',')))
     *p = '\0';
+  if (parv[1][0] == '\0')
+  {
+    sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
+               me.name, parv[0], "TOPIC");
+    return;
+  }
 
-  if(MyClient(source_p) && !IsFloodDone(source_p))
+  if (MyClient(source_p) && !IsFloodDone(source_p))
     flood_endgrace(source_p);
 
-  if (parv[1] && IsChannelName(parv[1]))
+  if (parv[1] != NULL && IsChannelName(parv[1]))
     {
       chptr = hash_find_channel(parv[1]);
 
-      if(chptr == NULL)
+      if (chptr == NULL)
       {
         /* if chptr isn't found locally, it =could= exist
          * on the uplink. so forward reqeuest
          */
-        if(!ServerInfo.hub && uplink && IsCapable(uplink, CAP_LL))
+        if (!ServerInfo.hub && uplink && IsCapable(uplink, CAP_LL))
         {
           sendto_one(uplink, ":%s TOPIC %s %s",
                      source_p->name, parv[1],
@@ -117,7 +123,7 @@ m_topic(struct Client *client_p, struct Client *source_p,
       if (HasVchans(chptr))
 	{
 	  vchan = map_vchan(chptr,source_p);
-	  if(vchan != NULL)
+	  if (vchan != NULL)
 	    chptr = vchan;
 	}
       else if (IsVchan(chptr))
@@ -145,7 +151,7 @@ m_topic(struct Client *client_p, struct Client *source_p,
                             ":%s TOPIC %s :%s",
                             parv[0], chptr->chname,
                             chptr->topic == NULL ? "" : chptr->topic);
-	      if(chptr->mode.mode & MODE_HIDEOPS)
+	      if (chptr->mode.mode & MODE_HIDEOPS)
 		{
 		  sendto_channel_local(ONLY_CHANOPS_HALFOPS,
 				       chptr, ":%s!%s@%s TOPIC %s :%s",
@@ -192,8 +198,8 @@ m_topic(struct Client *client_p, struct Client *source_p,
                          me.name, parv[0],
                          root_chan->chname, chptr->topic);
 
-                if(!(chptr->mode.mode & MODE_HIDEOPS) ||
-                  is_any_op(chptr,source_p))
+                if (!(chptr->mode.mode & MODE_HIDEOPS) ||
+                    is_any_op(chptr,source_p))
                 {
                   sendto_one(source_p, form_str(RPL_TOPICWHOTIME),
                              me.name, parv[0], root_chan->chname,
@@ -204,8 +210,8 @@ m_topic(struct Client *client_p, struct Client *source_p,
 	         * its the actual LL server that set the topic, not us the
 	         * uplink -- fl_
 	         */
-	        else if(ConfigServerHide.hide_servers && !MyClient(source_p)
-	                && IsCapable(client_p, CAP_LL) && ServerInfo.hub)
+	        else if (ConfigServerHide.hide_servers && !MyClient(source_p)
+	                 && IsCapable(client_p, CAP_LL) && ServerInfo.hub)
   	        {
 	          sendto_one(source_p, form_str(RPL_TOPICWHOTIME),
 	  	             me.name, parv[0], root_chan->chname,
@@ -244,21 +250,21 @@ ms_topic(struct Client *client_p, struct Client *source_p,
 	 int parc, char *parv[])
 {
   struct Channel *chptr = NULL;
-  
+
   if (!IsServer(source_p))
   {
     m_topic(client_p, source_p, parc, parv);
     return;
   }
 
-  if( parc < 5 )
+  if (parc < 5)
     return;
 
   if (parv[1] && IsChannelName(parv[1]))
     {
       if ((chptr = hash_find_channel(parv[1])) == NULL)
 	return;
-      
+
       set_channel_topic(chptr, parv[4], parv[2], atoi(parv[3]));
 
       if(ConfigServerHide.hide_servers)
