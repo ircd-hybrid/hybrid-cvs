@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.7 2003/05/24 05:48:49 joshk Exp $
+# $Id: Makefile.in,v 1.8 2003/06/01 16:23:29 adx Exp $
 
 INSTALL		= @INSTALL@
 INSTALL_DATA	= @INSTALL_DATA@
@@ -18,8 +18,9 @@ NOMVFILES	= ircd.motd
 all:
 
 install:
-	mkdir -p $(sysconfdir)
-	@for i in $(DISTFILES); do \
+	@if test $(sysconfdir) == `pwd`; then exit; fi; \
+	mkdir -p $(sysconfdir); \
+	for i in $(DISTFILES); do \
 		if test -f $(sysconfdir)/$$i -a -z "$(CLOBBER)"; then \
 			echo $(MV) $(sysconfdir)/$$i $(sysconfdir)/$$i.old; \
 			$(MV) $(sysconfdir)/$$i $(sysconfdir)/$$i.old; \
