@@ -1,3 +1,15 @@
+bill        2002/11/20 22:35:09 EST	(20021121_0)
+
+  Modified files:
+    modules              m_connect.c 
+  Log:
+  - fixed typo that caused leaking of hidden server IPs
+  
+  Revision  Changes    Path
+  1.39      +2 -2      ircd-hybrid-7/modules/m_connect.c
+
+
+
 bill        2002/11/20 13:00:05 EST	(20021120_2)
 
   Modified files:
@@ -33231,4 +33243,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4114 2002/11/20 18:00:07 bill Exp $
+$Id: ChangeLog,v 7.4115 2002/11/21 03:35:12 bill Exp $
