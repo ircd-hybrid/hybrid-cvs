@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_signal.c,v 7.12 2002/06/26 03:05:45 androsyn Exp $
+ * $Id: ircd_signal.c,v 7.13 2002/11/11 23:25:16 db Exp $
  */
 
 #include "stdinc.h"
@@ -58,6 +58,15 @@ static void
 sighup_handler(int sig)
 {
   dorehash = 1;
+}
+
+/*
+ * sigusr1_handler - reread the motd file
+ */
+static void
+sigusr1_handler(int sig)
+{
+  doremotd = 1;
 }
 
 /*
@@ -121,6 +130,10 @@ setup_signals()
   act.sa_handler = sigterm_handler;
   sigaddset(&act.sa_mask, SIGTERM);
   sigaction(SIGTERM, &act, 0);
+
+  act.sa_handler = sigusr1_handler;
+  sigaddset(&act.sa_mask, SIGUSR1);
+  sigaction(SIGUSR1, &act, 0);
 
 }
 

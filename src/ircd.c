@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.242 2002/10/28 21:09:24 bill Exp $
+ *  $Id: ircd.c,v 7.243 2002/11/11 23:25:16 db Exp $
  */
 
 #include "stdinc.h"
@@ -114,6 +114,7 @@ static const char * pidFileName = PPATH;
 
 char**  myargv;
 int     dorehash   = 0;
+int     doremotd   = 0;
 int     debuglevel = -1;        /* Server debug level */
 char*   debugmode  = "";        /*  -"-    -"-   -"-  */
 time_t  nextconnect = 1;        /* time for next try_connections call */
@@ -338,6 +339,13 @@ io_loop(void)
 	  rehash(1);
 	  dorehash = 0;
 	}
+      if (doremotd)
+        {
+          ReadMessageFile( &ConfigFileEntry.motd );
+          sendto_realops_flags(UMODE_ALL, L_ALL,
+                               "Got signal SIGUSR1, reloading ircd motd file");
+          doremotd = 0;
+        }
     }
 }
 

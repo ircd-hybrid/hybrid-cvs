@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.h,v 7.51 2002/06/26 03:05:42 androsyn Exp $
+ *  $Id: ircd.h,v 7.52 2002/11/11 23:25:15 db Exp $
  */
 
 #ifndef INCLUDED_ircd_h
@@ -81,6 +81,7 @@ extern const char*    logFileName;
 extern const char     serveropts[];
 extern int            cold_start;
 extern int            dorehash;
+extern int            doremotd;
 extern struct Client  me;
 extern struct Client* GlobalClientList;
 extern struct Client* local[];
