@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.260 2001/08/12 16:33:00 leeh blalloc.c $
+ *  $Id: s_conf.c,v 7.261 2001/08/22 21:44:37 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -1844,8 +1844,6 @@ char *oper_flags_as_string(int flags)
     *flags_ptr++ = 'u';
   if(flags & FLAGS_BOTS)
     *flags_ptr++ = 'b';
-  if(flags & FLAGS_DRONE)
-    *flags_ptr++ = 'e';
   if(flags & FLAGS_LOCOPS)
     *flags_ptr++ = 'l';
   if(flags & FLAGS_CALLERID)

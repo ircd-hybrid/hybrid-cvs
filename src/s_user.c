@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.161 2001/08/03 13:10:32 leeh blalloc.c $
+ *  $Id: s_user.c,v 7.162 2001/08/22 21:44:37 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -88,7 +88,6 @@ static struct flag_item user_modes[] =
   {FLAGS_BOTS,  'b'},
   {FLAGS_CCONN, 'c'},
   {FLAGS_DEBUG, 'd'},
-  {FLAGS_DRONE, 'e'},
   {FLAGS_FULL,  'f'},
   {FLAGS_CALLERID, 'g'},
   {FLAGS_INVISIBLE, 'i'},
@@ -147,7 +146,7 @@ int user_modes_from_c_to_bitmask[] =
   FLAGS_BOTS,   /* b */
   FLAGS_CCONN,  /* c */
   FLAGS_DEBUG,  /* d */
-  FLAGS_DRONE,  /* e */
+  0,            /* e */
   FLAGS_FULL,   /* f */
   FLAGS_CALLERID,  /* g */
   0,            /* h */
@@ -462,16 +461,10 @@ int register_local_user(struct Client *client_p, struct Client *source_p,
   inetntop(source_p->localClient->aftype, &IN_ADDR(source_p->localClient->ip), 
   				ipaddr, HOSTIPLEN);
   sendto_realops_flags(FLAGS_CCONN, L_ALL,
-		       "Client connecting: %s (%s@%s) [%s] {%s}",
+		       "Client connecting: %s (%s@%s) [%s] {%s} [%s]",
 		       nick, source_p->username, source_p->host,
 		       ipaddr,
-		       get_client_class(source_p));
-  
-  sendto_realops_flags(FLAGS_DRONE, L_ALL,
-		       "Cn: %s (%s@%s) [%s] [%s]",
-		       nick, source_p->username, source_p->host,
-		       ipaddr,
-		       source_p->info);
+		       get_client_class(source_p), source_p->info);
   
   if ((++Count.local) > Count.max_loc)
     {

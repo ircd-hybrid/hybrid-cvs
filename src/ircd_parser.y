@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.202 2001/08/12 16:33:00 leeh blalloc.c $
+ * $Id: ircd_parser.y,v 1.203 2001/08/22 21:44:37 leeh Exp $
  */
 
 %{
@@ -2348,11 +2348,7 @@ umode_oitem:     T_BOTS
               | T_LOCOPS
   {
     ConfigFileEntry.oper_umodes |= FLAGS_LOCOPS;
-  }
-              | T_DRONE
-  {
-    ConfigFileEntry.oper_umodes |= FLAGS_DRONE;
-  } ;
+  };
 
 general_oper_only_umodes: OPER_ONLY_UMODES 
   {
@@ -2426,11 +2422,7 @@ umode_item:	T_BOTS
               | T_LOCOPS
   {
     ConfigFileEntry.oper_only_umodes |= FLAGS_LOCOPS;
-  }
-              | T_DRONE
-  {
-    ConfigFileEntry.oper_only_umodes |= FLAGS_DRONE;
-  } ;
+  };
 
 general_min_nonwildcard:    MIN_NONWILDCARD '=' expr ';'
   {
