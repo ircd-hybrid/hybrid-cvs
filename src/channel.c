@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.96 2000/12/03 12:18:19 db Exp $
+ * $Id: channel.c,v 7.97 2000/12/03 23:11:43 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -2244,18 +2244,20 @@ static void destroy_channel(struct Channel *chptr)
 {
   struct Client *sptr;
   dlink_node *ptr;
+  struct Channel *root_chptr;
+  dlink_node *m;
 
   /* Don't ever delete the top of a chain of vchans! */
   if (IsVchanTop(chptr))
     return;
 
-  /* XXX This also be a dlink_dlist */
   if (IsVchan(chptr))
     {
+      root_chptr = chptr->root_chptr;
       /* remove from vchan double link list */
-      chptr->prev_vchan->next_vchan = chptr->next_vchan;
-      if (chptr->next_vchan)
-	chptr->next_vchan->prev_vchan = chptr->prev_vchan;
+      m = dlinkFind(&root_chptr->vchan_list,chptr);
+      dlinkDelete(m,&root_chptr->vchan_list);
+      free_dlink_node(m);
     }
 
   /* Walk through all the dlink's pointing to members of this channel,

@@ -4,7 +4,7 @@
  * Copyright (C) 1990 Jarkko Oikarinen and
  *                    University of Oulu, Co Center
  *
- * $Id: fileio.c,v 7.6 2000/11/08 19:55:31 adrian Exp $
+ * $Id: fileio.c,v 7.7 2000/12/03 23:11:45 db Exp $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -261,3 +261,28 @@ int fbstat(struct stat* sb, FBFILE* fb)
   return fstat(fb->fd, sb);
 }
 
+/*
+ * safe_write - write string to file, if an error occurs
+ * notify opers, return -1
+ *
+ * inputs       - client pointer
+ *              - filename to write to
+ *              - open FBFILE * to write on
+ *              - buffer to write
+ * output       - -1 if error on write, 0 if ok
+ * side effects - function tries to write buffer safely
+ *                i.e. checking for disk full errors etc.
+ */
+int safe_write(struct Client *sptr, const char *filename,
+	       FBFILE *out, char *buffer)
+{
+  assert(out != NULL);
+  assert(buffer != NULL);
+
+  if (fbputs(buffer, out) <= 0)
+    {
+      sendto_realops("*** Problem writing to %s",filename);
+      return -1;
+    }
+  return 0;
+}

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.57 2000/12/03 12:18:23 db Exp $
+ *   $Id: send.c,v 7.58 2000/12/03 23:11:46 db Exp $
  */
 #include "tools.h"
 #include "send.h"
@@ -1086,54 +1086,4 @@ ts_warn(const char *pattern, ...)
   va_end(args);
 } /* ts_warn() */
 
-
-
-extern struct ConfItem *u_conf;
-
-int
-sendto_slaves(struct Client *one, char *message, char *nick, int parc, char *parv[])
-
-{
-  struct Client *acptr;
-  struct ConfItem *aconf;
-  dlink_node *ptr;
-
-  for(ptr = serv_list.head; ptr; ptr = ptr->next)
-    {
-      acptr = ptr->data;
-
-      if (one == acptr)
-        continue;
-      
-      for (aconf = u_conf; aconf; aconf = aconf->next)
-        {
-          if (match(acptr->name,aconf->name))
-            { 
-              if(parc > 3)
-                sendto_one(acptr,":%s %s %s %s %s :%s",
-                           me.name,
-                           message,
-                           nick,
-                           parv[1],
-                           parv[2],
-                           parv[3]);
-              else if(parc > 2)
-                sendto_one(acptr,":%s %s %s %s :%s",
-                           me.name,
-                           message,
-                           nick,
-                           parv[1],
-                           parv[2]);
-              else if(parc > 1)
-                sendto_one(acptr,":%s %s %s :%s",
-                           me.name,
-                           message,
-                           nick,
-                           parv[1]);
-            } /* if (match(acptr->name,aconf->name)) */
-        } /* for (aconf = u_conf; aconf; aconf = aconf->next) */
-    } 
-
-  return 0;
-} /* sendto_slaves() */
 

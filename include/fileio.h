@@ -16,7 +16,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: fileio.h,v 7.3 2000/10/24 18:47:11 adrian Exp $
+ * $Id: fileio.h,v 7.4 2000/12/03 23:11:35 db Exp $
  */
 #ifndef INCLUDED_fileio_h
 #define INCLUDED_fileio_h
@@ -29,6 +29,10 @@
 #include <sys/stat.h>      /* struct stat */
 #define INCLUDED_sys_stat_h
 #endif
+
+
+/* XXX This shouldn't be here */
+struct Client;
 
 /*
  * FileBuf is a mirror of the ANSI FILE struct, but it works for any
@@ -78,5 +82,7 @@ extern int     fbstat(struct stat* sb, FBFILE* fb);
 /* file_open / file_close -- adrian */
 extern int     file_open(const char *filename, int mode, int fmode);
 extern void    file_close(int fd);
+
+extern int safe_write(struct Client *, const char *, FBFILE * ,char *);
 
 #endif /* INCLUDED_fileio_h */

@@ -18,7 +18,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: packet.c,v 7.17 2000/12/01 22:18:08 db Exp $
+ *   $Id: packet.c,v 7.18 2000/12/03 23:11:45 db Exp $
  */ 
 
 #include <stdio.h>
@@ -99,20 +99,6 @@ read_packet(int fd, void *data)
     error_exit_client(cptr, length);
     return;
   }
-
-#ifdef REJECT_HOLD
-  /*
-   * If client has been marked as rejected i.e. it is a client
-   * that is trying to connect again after a k-line,
-   * pretend to read it but don't actually.
-   * -Dianora
-   *
-   * FLAGS_REJECT_HOLD should NEVER be set for non local client
-   */
-  if (IsRejectHeld(cptr)) {
-    goto finish;
-  }
-#endif
 
   cptr->lasttime = CurrentTime;
   if (cptr->lasttime > cptr->since)

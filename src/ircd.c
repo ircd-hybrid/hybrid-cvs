@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.63 2000/12/03 12:18:21 db Exp $
+ * $Id: ircd.c,v 7.64 2000/12/03 23:11:45 db Exp $
  */
 #include "tools.h"
 #include "ircd.h"
@@ -111,11 +111,6 @@
 #   undef RLIMIT_FD_MAX
 #  endif
 # endif
-#endif
-
-
-#ifdef  REJECT_HOLD
-int reject_held_fds = 0;
 #endif
 
 /* LazyLinks code */
@@ -491,10 +486,6 @@ int main(int argc, char *argv[])
   Count.server = 1;     /* us */
 
   initialize_global_set_options();
-
-#ifdef REJECT_HOLD
-  reject_held_fds = 0;
-#endif
 
 /* this code by mika@cs.caltech.edu */
 /* 

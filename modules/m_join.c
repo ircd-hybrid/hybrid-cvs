@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 1.12 2000/12/03 12:18:17 db Exp $
+ *   $Id: m_join.c,v 1.13 2000/12/03 23:11:40 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -169,6 +169,8 @@ int     m_join(struct Client *cptr,
 		   * if there's only one vchan, and the root is empty
 		   * let them join that vchan
 		   */
+/* XXX FIXME */
+#if 0
 		  if( (!chptr->users) && (!chptr->next_vchan->next_vchan) )
 		    {
 		      root_chptr = chptr;
@@ -176,6 +178,7 @@ int     m_join(struct Client *cptr,
 		      joining_vchan = 1;
 		    }
 		  else
+#endif
 		    {
 		      /* voodoo to auto-join channel invited to */
 		      if ((vchan_chptr=vchan_invites(chptr, sptr)))

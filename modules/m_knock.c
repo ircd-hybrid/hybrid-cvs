@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_knock.c,v 1.7 2000/12/01 22:17:58 db Exp $
+ *   $Id: m_knock.c,v 1.8 2000/12/03 23:11:41 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -189,7 +189,7 @@ struct Channel *parse_knock_args(struct Client *cptr,
       else
         {
           /* No key specified */
- /* XXX */
+ /* XXX FIXME */
 #if 0
           if( (!chptr->members) && (!chptr->next_vchan->next_vchan) )
             {

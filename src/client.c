@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.50 2000/12/03 12:18:20 db Exp $
+ *  $Id: client.c,v 7.51 2000/12/03 23:11:44 db Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -321,23 +321,6 @@ check_pings(void *notused)
             }
         }
 
-#ifdef REJECT_HOLD
-      if (IsRejectHeld(cptr))
-        {
-          if( CurrentTime > (cptr->firsttime + REJECT_HOLD_TIME) )
-            {
-              if( reject_held_fds )
-                reject_held_fds--;
-
-              dying_clients[die_index].client = cptr;
-              dying_clients[die_index].fake_kill = 0;
-              dying_clients[die_index++].reason = "reject held client";
-              dying_clients[die_index].client = (struct Client *)NULL;
-              continue;         /* and go examine next fd/cptr */
-            }
-        }
-#endif
-
       if (!IsRegistered(cptr))
         ping = CONNECTTIMEOUT;
       else
@@ -631,23 +614,6 @@ void check_klines(void)
               continue;         /* and go examine next fd/cptr */
             }
         }
-
-#ifdef REJECT_HOLD
-      if (IsRejectHeld(cptr))
-        {
-          if( CurrentTime > (cptr->firsttime + REJECT_HOLD_TIME) )
-            {
-              if( reject_held_fds )
-                reject_held_fds--;
-
-              dying_clients[die_index].client = cptr;
-              dying_clients[die_index].fake_kill = 0;
-              dying_clients[die_index++].reason = "reject held client";
-              dying_clients[die_index].client = (struct Client *)NULL;
-              continue;         /* and go examine next fd/cptr */
-            }
-        }
-#endif
 
     }
 

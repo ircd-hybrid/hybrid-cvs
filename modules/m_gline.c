@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_gline.c,v 1.6 2000/12/01 22:17:56 db Exp $
+ *  $Id: m_gline.c,v 1.7 2000/12/03 23:11:40 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -42,6 +42,7 @@
 #include "scache.h"
 #include "send.h"
 #include "msg.h"
+#include "fileio.h"
 
 #include <assert.h>
 #include <string.h>
@@ -677,11 +678,12 @@ static void log_gline(struct Client *sptr,
   char         filenamebuf[PATH_MAX + 1];
   static  char timebuffer[MAX_DATE_STRING + 1];
   struct tm*   tmptr;
-  int          out;
+  FBFILE       *out;
 
   ircsprintf(filenamebuf, "%s.%s", 
                 ConfigFileEntry.glinefile, small_file_date((time_t) 0));
-  if ((out = file_open(filenamebuf, O_RDWR|O_APPEND|O_CREAT,0644))==-1)
+
+  if ((out = fbopen(filenamebuf, "a")) == NULL)
     {
       return;
     }
@@ -693,10 +695,12 @@ static void log_gline(struct Client *sptr,
                    user,host,timebuffer);
 
   /*
-   * NOTE: safe_write closes the file if an error occurs
    */
   if (safe_write(sptr, filenamebuf, out, buffer))
-    return;
+    {
+      fbclose(out);
+      return;
+    }
 
   ircsprintf(buffer, "#%s!%s@%s on %s [%s]\n",
                    gline_pending_ptr->oper_nick1,
@@ -707,7 +711,10 @@ static void log_gline(struct Client *sptr,
                    (gline_pending_ptr->reason1):"No reason");
 
   if (safe_write(sptr,filenamebuf,out,buffer))
-    return;
+    {
+      fbclose(out);
+      return;
+    }
 
   ircsprintf(buffer, "#%s!%s@%s on %s [%s]\n",
                    gline_pending_ptr->oper_nick2,
@@ -734,7 +741,7 @@ static void log_gline(struct Client *sptr,
   if (safe_write(sptr,filenamebuf,out,buffer))
     return;
 
-  file_close(out);
+  fbclose(out);
 }
 
 /*
