@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.71 2000/12/15 08:10:59 db Exp $
+ *   $Id: s_serv.c,v 7.72 2000/12/15 13:04:10 db Exp $
  */
 #include "tools.h"
 #include "s_serv.h"
@@ -492,17 +492,21 @@ void send_capabilities(struct Client* cptr, int can_send)
 {
   struct Capability* cap;
   char  msgbuf[BUFSIZE];
+  char  *t;
+  int   tl;
 
-  msgbuf[0] = '\0';
+  t = msgbuf;
 
   for (cap = captab; cap->name; ++cap)
     {
       if (cap->cap & can_send)
         {
-          strcat(msgbuf, cap->name);
-          strcat(msgbuf, " ");
+          tl = ircsprintf(t, "%s ", cap->name);
+	  t += tl;
         }
     }
+  t--;
+  *t = '\0';
   sendto_one(cptr, "CAPAB :%s", msgbuf);
 }
 
