@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.157 2003/01/20 12:44:00 db Exp $
+ *  $Id: client.h,v 7.158 2003/01/28 21:04:04 db Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -497,7 +497,8 @@ struct LocalUser
 #define SetCanFlood(x)		((x)->flags |= FLAGS_CANFLOOD)
 #define ClearCanFlood(x)	((x)->flags &= FLAGS_CANFLOOD)
 #define IsCanFlood(x)		((x)->flags & FLAGS_CANFLOOD)
-#define IsDefunct(x)            ((x)->flags & (FLAGS_DEADSOCKET|FLAGS_CLOSING))
+#define IsDefunct(x)            ((x)->flags & (FLAGS_DEADSOCKET|FLAGS_CLOSING|
+					       FLAGS_KILLED))
 
 /* oper flags */
 #define MyOper(x)               (MyConnect(x) && IsOper(x))
