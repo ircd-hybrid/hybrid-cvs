@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: msg.h,v 7.9 2000/01/06 04:34:51 db Exp $
+ * $Id: msg.h,v 7.10 2000/01/09 19:54:02 db Exp $
  */
 #ifndef INCLUDED_msg_h
 #define INCLUDED_msg_h
@@ -63,7 +63,7 @@ typedef struct MessageTree MESSAGE_TREE;
 #ifdef DBOP
 #define MSG_DBOP     "DBOP"
 #endif
-#define MSG_PRIVATE  "PRIVMSG"  /* PRIV */
+#define MSG_PRIVMSG  "PRIVMSG"  /* PRIV */
 
 #define MSG_CBURST   "CBURST"   /* LazyLink channel burst */
 #define MSG_DROP     "DROP"     /* LazyLink channel drop */
@@ -149,9 +149,9 @@ struct Message msgtab[] = {
 
   /*                                        |-- allow use even when unreg.
                                             v   yes/no                  */
-  { MSG_PRIVATE, m_private,  0, MAXPARA, 1, 0, 0, 0L },
+  { MSG_PRIVMSG, m_privmsg,  0, MAXPARA, 1, 0, 0, 0L },
 #else
-  { MSG_PRIVATE, m_private,  0, MAXPARA, 1, 0, 1, 0L },
+  { MSG_PRIVMSG, m_privmsg,  0, MAXPARA, 1, 0, 1, 0L },
 #endif
 
   /*                                           ^

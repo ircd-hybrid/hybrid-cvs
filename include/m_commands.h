@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_commands.h,v 7.6 2000/01/06 04:37:03 db Exp $
+ * $Id: m_commands.h,v 7.7 2000/01/09 19:54:02 db Exp $
  */
 #ifndef INCLUDED_m_commands_h
 #define INCLUDED_m_commands_h
@@ -38,7 +38,8 @@ extern int m_gline(struct Client *,struct Client *,int,char **);
 
 extern int m_locops(struct Client *,struct Client *,int,char **);
 
-extern int m_private(struct Client *,struct Client *,int,char **);
+extern int m_privmsg(struct Client *,struct Client *,int,char **);
+extern int m_notice(struct Client *,struct Client *,int,char **);
 extern int m_knock(struct Client *,struct Client *,int,char **);
 extern int m_topic(struct Client *,struct Client *,int,char **);
 extern int m_join(struct Client *,struct Client *,int,char **);
@@ -50,10 +51,8 @@ extern int m_wallops(struct Client *,struct Client *,int,char **);
 extern int m_kick(struct Client *,struct Client *,int,char **);
 extern int m_nick(struct Client *,struct Client *,int,char **);
 extern int m_error(struct Client *,struct Client *,int,char **);
-extern int m_notice(struct Client *,struct Client *,int,char **);
 extern int m_invite(struct Client *,struct Client *,int,char **);
 extern int m_quit(struct Client *,struct Client *,int,char **);
-
 extern int m_capab(struct Client *,struct Client *,int,char **);
 extern int m_info(struct Client *,struct Client *,int,char **);
 extern int m_kill(struct Client *,struct Client *,int,char **);
