@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.296 2002/02/04 05:17:28 androsyn Exp $
+ *  $Id: channel.c,v 7.297 2002/02/08 03:26:32 jmallett Exp $
  */
 
 #include "tools.h"
@@ -1145,6 +1145,8 @@ can_send(struct Channel *chptr, struct Client *source_p)
   if (is_any_op(chptr, source_p))
     return CAN_SEND_OPV;
   if (is_voiced(chptr, source_p))
+    return CAN_SEND_OPV;
+  if (IsServer(source_p))
     return CAN_SEND_OPV;
 
   if (chptr->mode.mode & MODE_MODERATED)
