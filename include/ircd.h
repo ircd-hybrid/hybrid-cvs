@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.h,v 7.67 2003/05/28 16:37:56 db Exp $
+ *  $Id: ircd.h,v 7.68 2003/06/03 16:41:51 joshk Exp $
  */
 
 #ifndef INCLUDED_ircd_h
@@ -28,6 +28,8 @@
 #include "config.h"
 #include "tools.h"
 #include "memory.h"
+
+extern char no_reason [], star [], nothing [];
 
 struct Client;
 struct dlink_list;

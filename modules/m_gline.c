@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.108 2003/05/30 04:59:38 db Exp $
+ *  $Id: m_gline.c,v 1.109 2003/06/03 16:41:48 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -97,7 +97,7 @@ _moddeinit(void)
   delete_capability("GLN");
 }
 
-const char *_version = "$Revision: 1.108 $";
+const char *_version = "$Revision: 1.109 $";
 #endif
 
 /* mo_gline()
@@ -149,16 +149,16 @@ mo_gline(struct Client *client_p, struct Client *source_p,
 
       /* gline for "@host", use *@host */
       if (*user == '\0')
-	user = "*";
+	user = star;
     }
     else
     {
-      user = "*";               /* no @ found, assume its *@somehost */
+      user = star;               /* no @ found, assume its *@somehost */
       host = parv[1];
     }
 	      
     if (*host == '\0')	/* duh. no host found, assume its '*' host */
-      host = "*";
+      host = star;
 
     strlcpy(tempuser, collapse(user), sizeof(tempuser));   /* allow for '*' */
     strlcpy(temphost, collapse(host), sizeof(temphost));

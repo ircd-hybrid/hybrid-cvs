@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.299 2003/06/01 23:46:55 joshk Exp $
+ *  $Id: ircd.c,v 7.300 2003/06/03 16:41:52 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -69,6 +69,9 @@
 #include "ircd_getopt.h"
 #include "balloc.h"
 
+char no_reason [] = "No Reason";
+char nothing [] = "";
+char star [] = "*";
 
 /* Try and find the correct name to use with getrlimit() for setting the max.
  * number of files allowed to be open by this process.
@@ -312,7 +315,8 @@ set_time(void)
 static void
 io_loop(void)
 {
-  unsigned long empty_cycles=0, st=0, delay;
+  unsigned long empty_cycles = 0, st = 0;
+  time_t delay;
 
   while (ServerRunning)
   {

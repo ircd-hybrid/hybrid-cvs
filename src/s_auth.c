@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.130 2003/05/26 18:35:18 joshk Exp $
+ *  $Id: s_auth.c,v 7.131 2003/06/03 16:41:52 joshk Exp $
  */
 
 /*
@@ -644,7 +644,7 @@ delete_identd_queries(struct Client *target_p)
 
       if (IsAuthPending(auth))
 	dlinkDelete(&auth->ident_node, &auth_doing_ident_list);
-#if xxx
+#ifdef XXX
       if (!IsDNSPending(auth))
 #endif
 	MyFree(auth);

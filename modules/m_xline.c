@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.16 2003/05/29 03:35:55 db Exp $
+ *  $Id: m_xline.c,v 1.17 2003/06/03 16:41:48 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -82,7 +82,7 @@ _moddeinit(void)
   mod_del_cmd(&xline_msgtab);
   mod_del_cmd(&unxline_msgtab);
 }
-const char *_version = "$Revision: 1.16 $";
+const char *_version = "$Revision: 1.17 $";
 #endif
 
 
@@ -199,7 +199,7 @@ mo_xline(struct Client *client_p, struct Client *source_p,
     cluster_xline(source_p, parv[1], type_i, reason);
 
   if (EmptyString(reason))
-    reason = "No Reason";
+    reason = no_reason;
 
   write_xline(source_p, parv[1], reason, type_i);
 } /* mo_xline() */

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.148 2003/05/31 21:43:29 db Exp $
+ *  $Id: m_kline.c,v 1.149 2003/06/03 16:41:48 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -81,7 +81,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.148 $";
+const char *_version = "$Revision: 1.149 $";
 #endif
 
 /* Local function prototypes */
@@ -120,7 +120,7 @@ static void
 mo_kline(struct Client *client_p, struct Client *source_p,
 	 int parc, char **parv)
 {
-  char *reason = "No Reason";
+  char *reason = no_reason;
   char *oper_reason;
   const char* current_date;
   const char* target_server=NULL;
@@ -676,10 +676,10 @@ mo_dline(struct Client *client_p, struct Client *source_p,
     if (*parv[0] != '\0')
       reason = *parv;
     else
-      reason = "No reason";
+      reason = no_reason;
   }
   else
-    reason = "No reason";
+    reason = no_reason;
 
 
   if (bits < 8)
@@ -705,7 +705,7 @@ mo_dline(struct Client *client_p, struct Client *source_p,
 
     if ((aconf = find_dline_conf(&daddr, t)) != NULL)
     {
-      creason = aconf->reason ? aconf->reason : "<No Reason>";
+      creason = aconf->reason ? aconf->reason : no_reason;
       if (IsConfExemptKline(aconf))
 	sendto_one(source_p,
 		   ":%s NOTICE %s :[%s] is (E)d-lined by [%s] - %s",
@@ -993,7 +993,7 @@ already_placed_kline(struct Client *source_p, const char *luser, const char *lho
 
     if ((aconf = find_conf_by_address(lhost, piphost, CONF_KILL, t, luser)))
     {
-      reason = aconf->reason ? aconf->reason : "<No Reason>";
+      reason = aconf->reason ? aconf->reason : no_reason;
 
       sendto_one(source_p,
                  ":%s NOTICE %s :[%s@%s] already K-Lined by [%s@%s] - %s",

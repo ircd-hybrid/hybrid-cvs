@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.155 2003/05/31 18:52:53 adx Exp $
+ *  $Id: m_sjoin.c,v 1.156 2003/06/03 16:41:54 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -42,7 +42,6 @@
 #include "s_serv.h"
 #include "s_conf.h"
 
-
 static void ms_sjoin(struct Client *, struct Client *, int, char **);
 
 struct Message sjoin_msgtab = {
@@ -63,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.155 $";
+const char *_version = "$Revision: 1.156 $";
 #endif
 
 /* ms_sjoin()
@@ -287,7 +286,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   }
 
   mbuf = modebuf;
-  para[0] = para[1] = para[2] = para[3] = "";
+  para[0] = para[1] = para[2] = para[3] = nothing;
   pargs = 0;
 
   *mbuf++ = '+';
@@ -426,7 +425,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
 			       modebuf, para[0], para[1], para[2], para[3]);
           mbuf = modebuf;
 	  *mbuf++ = '+';
-	  para[0] = para[1] = para[2] = para[3] = "";
+	  para[0] = para[1] = para[2] = para[3] = nothing;
 	  pargs = 0;
         }
         *mbuf++ = 'v';
@@ -450,7 +449,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
                            modebuf, para[0],para[1],para[2],para[3]);
       mbuf = modebuf;
       *mbuf++ = '+';
-      para[0] = para[1] = para[2] = para[3] = "";
+      para[0] = para[1] = para[2] = para[3] = nothing;
       pargs = 0;
     }
 
@@ -655,7 +654,7 @@ void remove_a_mode(struct Channel *chptr, struct Client *source_p,
   mbuf = lmodebuf;
   *mbuf++ = '-';
 
-  lpara[0] = lpara[1] = lpara[2] = lpara[3] = "";
+  lpara[0] = lpara[1] = lpara[2] = lpara[3] = nothing;
 
   DLINK_FOREACH(ptr, chptr->members.head)
   {
@@ -684,7 +683,7 @@ void remove_a_mode(struct Channel *chptr, struct Client *source_p,
       mbuf = lmodebuf;
       *mbuf++ = '-';
       count = 0;
-      lpara[0] = lpara[1] = lpara[2] = lpara[3] = "";
+      lpara[0] = lpara[1] = lpara[2] = lpara[3] = nothing;
     }
   }
 
