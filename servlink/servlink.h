@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: servlink.h,v 1.2 2001/05/23 20:59:14 davidt Exp $
+ *   $Id: servlink.h,v 1.3 2001/05/24 13:28:12 davidt Exp $
  */
 
 #define CONTROL_FD_R            0
@@ -32,6 +32,14 @@
 #define LOCAL_FD_W              LOCAL_FD_R
 #define REMOTE_FD_W             REMOTE_FD_R
 #define NUM_FDS                 3       /* nfds for select */
+#endif
+
+#define READLEN                  2048
+
+#ifdef HAVE_LIBZ
+#define BUFLEN                   READLEN * 8 /* allow for decompression */
+#else
+#define BUFLEN                   READLEN
 #endif
 
 extern struct slink_state       in_state;
@@ -73,6 +81,10 @@ struct slink_state
   unsigned int          crypt:1;
   unsigned int          zip:1;
   unsigned int          active:1;
+
+  unsigned char         buf[BUFLEN*2];
+  unsigned int          ofs;
+  unsigned int          len;
 
 #ifdef HAVE_LIBCRYPTO
   struct crypt_state    crypt_state;
