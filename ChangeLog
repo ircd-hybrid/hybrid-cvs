@@ -1,3 +1,9 @@
+*** 20001206_10 by db
+- redoing RPL_VCHANLIST so last %s is gone, since I'm building
+  up the channel sublist myself
+
+
+
 *** 20001206_9 by db
 - m_accept was using the wrong numeric for "no such nick"
 
@@ -1758,7 +1764,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.717 2000/12/07 00:23:16 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.718 2000/12/07 00:52:28 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
