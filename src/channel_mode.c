@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.53 2002/08/08 23:52:08 wcampbel Exp $
+ *  $Id: channel_mode.c,v 7.54 2002/08/08 23:58:17 wcampbel Exp $
  */
 
 #include "stdinc.h"
@@ -324,7 +324,7 @@ del_id(struct Channel *chptr, char *banid, int type)
       return 1;
     }
   }
-  return -1;
+  return 0;
 }
 
 /*
