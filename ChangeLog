@@ -1,3 +1,16 @@
+db          2003/01/15 23:08:02 EST	(20030116_1)
+
+  Modified files:
+    src                  ircd.c ircd_signal.c 
+  Log:
+  - zombies should be caught with a SIGCHLD handler.
+  
+  Revision  Changes    Path
+  7.246     +0 -15     ircd-hybrid-7/src/ircd.c
+  7.14      +17 -0     ircd-hybrid-7/src/ircd_signal.c
+
+
+
 db          2003/01/15 22:28:23 EST	(20030116_0)
 
   Modified files:
@@ -33944,4 +33957,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4162 2003/01/16 03:28:26 db Exp $
+$Id: ChangeLog,v 7.4163 2003/01/16 04:08:05 db Exp $
