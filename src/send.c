@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.255 2003/05/17 18:00:53 bill Exp $
+ *  $Id: send.c,v 7.256 2003/05/17 18:59:15 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -1043,7 +1043,7 @@ sendto_match_butone(struct Client *one, struct Client *from, char *mask,
 void
 sendto_match_servs(struct Client *source_p, const char *mask, int cap, const char *pattern, ...)
 {
-  va_list *args;
+  va_list args;
   struct Client *target_p;
   dlink_node *ptr;
   char buffer[BUFSIZE];

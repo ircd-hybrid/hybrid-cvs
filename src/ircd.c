@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.279 2003/05/14 22:29:42 db Exp $
+ *  $Id: ircd.c,v 7.280 2003/05/17 18:59:14 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -575,10 +575,6 @@ main(int argc, char *argv[])
     perror("chdir");
     exit(EXIT_FAILURE);
   }
-
-#ifdef __CYGWIN__
-  server_state.foreground = 1;
-#endif
 
   if (!server_state.foreground)
   {

@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.23 2003/05/17 17:17:49 joshk Exp $
+dnl $Id: configure.ac,v 7.24 2003/05/17 18:59:10 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -99,7 +99,6 @@ case `uname -s` in
 	CYGWIN*)
 		CYGWIN=yes
 		AC_DEFINE(CYGWIN, 1, [Cygwin requires a different set of headers to compile, so define to 1 if compiling on Cygwin.])
-		LIBS="$LIBS -lws2_32"
 		;;
 esac
 
@@ -258,7 +257,7 @@ AC_SUBST(CRYPT_LIB)
 
 dnl Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS([crypt.h inttypes.h sys/resource.h sys/param.h unistd.h errno.h string.h strings.h sys/syslog.h stdlib.h stddef.h getopt.h])
+AC_CHECK_HEADERS([crypt.h sys/resource.h sys/param.h errno.h sys/syslog.h stddef.h getopt.h])
 
 dnl See whether we can include both string.h and strings.h.
 AC_CACHE_CHECK([whether string.h and strings.h may both be included],

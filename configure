@@ -2274,7 +2274,6 @@ cat >>confdefs.h <<\_ACEOF
 #define CYGWIN 1
 _ACEOF
 
-		LIBS="$LIBS -lws2_32"
 		;;
 esac
 
@@ -4830,12 +4829,7 @@ done
 
 
 
-
-
-
-
-
-for ac_header in crypt.h inttypes.h sys/resource.h sys/param.h unistd.h errno.h string.h strings.h sys/syslog.h stdlib.h stddef.h getopt.h
+for ac_header in crypt.h sys/resource.h sys/param.h errno.h sys/syslog.h stddef.h getopt.h
 do
 as_ac_Header=`echo "ac_cv_header_$ac_header" | $as_tr_sh`
 if eval "test \"\${$as_ac_Header+set}\" = set"; then

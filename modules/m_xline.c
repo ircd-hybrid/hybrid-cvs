@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.6 2003/05/17 18:00:50 bill Exp $
+ *  $Id: m_xline.c,v 1.7 2003/05/17 18:59:13 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&xline_msgtab);
   mod_del_cmd(&unxline_msgtab);
 }
-const char *_version = "$Revision: 1.6 $";
+const char *_version = "$Revision: 1.7 $";
 #endif
 
 
@@ -223,8 +223,6 @@ static void
 ms_xline(struct Client *client_p, struct Client *source_p,
 	 int parc, char *parv[])
 {
-  struct ConfItem *aconf;
-
   if (parc != 5 || EmptyString(parv[4]))
     return;
 

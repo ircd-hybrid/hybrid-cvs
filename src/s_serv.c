@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.323 2003/05/17 18:00:52 bill Exp $
+ *  $Id: s_serv.c,v 7.324 2003/05/17 18:59:15 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -1299,12 +1299,9 @@ fork_server(struct Client *server)
   slink_fds[1][1][0] = fd_temp[0];
   slink_fds[1][0][1] = fd_temp[1];
 #endif
-#ifdef __CYGWIN__
-  if ((ret = vfork()) < 0)
-#else
-  if ((ret = fork()) < 0)
-#endif
+  if ((ret = fork()) < 0) {
     goto fork_error;
+  }
   else if (ret == 0)
   {
     /* set our fds as non blocking and close everything else */
