@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.20 2000/11/25 17:41:04 toot Exp $
+ * $Id: ircd_lexer.l,v 1.21 2000/11/26 03:35:41 db Exp $
  */
 
 %{
@@ -171,8 +171,6 @@ whois_notice            { return WHOIS_NOTICE; }
 whois_wait              { return WHOIS_WAIT; }
 pace_wait               { return PACE_WAIT; }
 knock_delay             { return KNOCK_DELAY; }
-wallops_wait            { return WALLOPS_WAIT; }
-pace_wallops            { return PACE_WALLOPS; }
 iauth_server            { return IAUTH_SERVER; }
 iauth_port		{ return IAUTH_PORT; }
 stats_p_notice	        { return STATS_P_NOTICE; }

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_connect.c,v 1.2 2000/11/23 23:17:10 db Exp $
+ *   $Id: m_connect.c,v 1.3 2000/11/26 03:35:39 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -143,16 +143,9 @@ int mo_connect(struct Client* cptr, struct Client* sptr, int parc, char* parv[])
   /*
    * Notify all operators about remote connect requests
    */
-  if (!IsAnyOper(cptr))
-    {
-      sendto_ops_butone(NULL, &me,
-                        ":%s WALLOPS :Remote CONNECT %s %s from %s",
-                        me.name, parv[1], parv[2] ? parv[2] : "",
-                        get_client_name(sptr, FALSE));
 
-      log(L_TRACE, "CONNECT From %s : %s %s", 
-          parv[0], parv[1], parv[2] ? parv[2] : "");
-    }
+  log(L_TRACE, "CONNECT From %s : %s %s", 
+      parv[0], parv[1], parv[2] ? parv[2] : "");
 
   aconf->port = port;
   /*
@@ -252,16 +245,21 @@ int ms_connect(struct Client* cptr, struct Client* sptr, int parc, char* parv[])
   /*
    * Notify all operators about remote connect requests
    */
-  if (!IsAnyOper(cptr))
-    {
-      sendto_ops_butone(NULL, &me,
-                        ":%s WALLOPS :Remote CONNECT %s %s from %s",
-                        me.name, parv[1], parv[2] ? parv[2] : "",
-                        get_client_name(sptr, FALSE));
+/* XXX vararg send_operwall */
+#if 0
+  send_operwall( &me, NULL,
+		 ":Remote CONNECT %s %s from %s",
+		 parv[1], parv[2] ? parv[2] : "",
+		 get_client_name(sptr, FALSE));
+#endif
+  sendto_serv_butone(cptr,
+		     ":%s WALLOPS :Remote CONNECT %s %s from %s",
+		     me.name, parv[1], parv[2] ? parv[2] : "",
+		     get_client_name(sptr, FALSE));
 
-      log(L_TRACE, "CONNECT From %s : %s %s", 
-          parv[0], parv[1], parv[2] ? parv[2] : "");
-    }
+
+  log(L_TRACE, "CONNECT From %s : %s %s", 
+      parv[0], parv[1], parv[2] ? parv[2] : "");
 
   aconf->port = port;
   /*

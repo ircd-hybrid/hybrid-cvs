@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operwall.c,v 1.2 2000/11/23 23:17:13 db Exp $
+ *   $Id: m_operwall.c,v 1.3 2000/11/26 03:35:40 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -55,16 +55,9 @@ int mo_operwall(struct Client *cptr, struct Client *sptr, int parc, char *parv[]
 {
   char *message = parc > 1 ? parv[1] : NULL;
 
-
   if (check_registered_user(sptr))
     return 0;
-  if (!IsAnyOper(sptr) || IsServer(sptr))
-    {
-      if (MyClient(sptr) && !IsServer(sptr))
-        sendto_one(sptr, form_str(ERR_NOPRIVILEGES),
-                   me.name, parv[0]);
-      return 0;
-    }
+
   if (EmptyString(message))
     {
       if (MyClient(sptr))
@@ -73,21 +66,7 @@ int mo_operwall(struct Client *cptr, struct Client *sptr, int parc, char *parv[]
       return 0;
     }
 
-#ifdef PACE_WALLOPS
-  if( MyClient(sptr) )
-    {
-          if( (LastUsedWallops + WALLOPS_WAIT) > CurrentTime ) 
-            {
-                sendto_one(sptr, ":%s NOTICE %s :Oh, one of those annoying opers who doesn't know how to use a channel",
-                     me.name,parv[0]);
-                return 0;
-            }
-          LastUsedWallops = CurrentTime;
-     }
-#endif
-
-  sendto_serv_butone(IsServer(cptr) ? cptr : NULL, ":%s OPERWALL :%s",
-                     parv[0], message);
+  sendto_serv_butone( NULL, ":%s OPERWALL :%s", parv[0], message);
   send_operwall(sptr, "OPERWALL", message);
   return 0;
 }
@@ -103,9 +82,9 @@ int ms_operwall(struct Client *cptr, struct Client *sptr, int parc, char *parv[]
 {
   char *message = parc > 1 ? parv[1] : NULL;
 
-
   if (check_registered_user(sptr))
     return 0;
+
   if (!IsAnyOper(sptr) || IsServer(sptr))
     {
       if (MyClient(sptr) && !IsServer(sptr))
@@ -113,6 +92,7 @@ int ms_operwall(struct Client *cptr, struct Client *sptr, int parc, char *parv[]
                    me.name, parv[0]);
       return 0;
     }
+
   if (EmptyString(message))
     {
       if (MyClient(sptr))
@@ -120,19 +100,6 @@ int ms_operwall(struct Client *cptr, struct Client *sptr, int parc, char *parv[]
                    me.name, parv[0], "OPERWALL");
       return 0;
     }
-
-#ifdef PACE_WALLOPS
-  if( MyClient(sptr) )
-    {
-          if( (LastUsedWallops + WALLOPS_WAIT) > CurrentTime ) 
-            {
-                sendto_one(sptr, ":%s NOTICE %s :Oh, one of those annoying opers who doesn't know how to use a channel",
-                     me.name,parv[0]);
-                return 0;
-            }
-          LastUsedWallops = CurrentTime;
-     }
-#endif
 
   sendto_serv_butone(IsServer(cptr) ? cptr : NULL, ":%s OPERWALL :%s",
                      parv[0], message);

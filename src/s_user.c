@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.39 2000/11/26 00:42:13 db Exp $
+ *  $Id: s_user.c,v 7.40 2000/11/26 03:35:42 db Exp $
  */
 #include "s_user.h"
 #include "channel.h"
@@ -1181,6 +1181,8 @@ int user_mode(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
       return 0;
     }
 
+/* XXX */
+#if 0
   if (IsServer(sptr) || sptr != acptr || acptr->from != sptr->from)
     {
       if (IsServer(cptr))
@@ -1193,6 +1195,7 @@ int user_mode(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
                    me.name, parv[0]);
       return 0;
     }
+#endif
  
   if (parc < 3)
     {
