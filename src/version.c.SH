@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# $Id: version.c.SH,v 7.10 2000/10/22 23:09:07 toot Exp $ 
+# $Id: version.c.SH,v 7.11 2000/10/23 12:07:08 adrian Exp $ 
 
 spitshell=cat
 package=IRC
@@ -71,6 +71,7 @@ char *infotext[] =
   "",
   "The core Hybrid Team as of this major release:",
   "",
+  "adrian              Adrian Chadd        adrian@creative.net.au",
   "cosine              Patrick Alken       wnder@uwns.underworld.net",
   "Dianora             Diane Bruce         db@db.net",
   "is-                 Edward Brocklesby   ejb@leguin.org.uk",
