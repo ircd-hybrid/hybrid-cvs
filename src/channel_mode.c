@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.123 2003/07/08 00:33:28 michael Exp $
+ *  $Id: channel_mode.c,v 7.124 2003/07/08 14:44:15 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1565,11 +1565,11 @@ get_channel_access(struct Client *source_p, struct Membership *member)
   if (!MyClient(source_p))
     return(CHACCESS_CHANOP);
 
-  /* just to be sure.. */
-  assert(source_p == member->client_p);
-
   if (member == NULL)
     return(CHACCESS_NOTONCHAN);
+
+  /* just to be sure.. */
+  assert(source_p == member->client_p);
 
   if (has_member_flags(member, CHFL_CHANOP))
     return(CHACCESS_CHANOP);
