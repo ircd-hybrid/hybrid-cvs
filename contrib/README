@@ -1,4 +1,4 @@
-$Id: README,v 1.21 2002/07/08 12:23:33 leeh Exp $
+$Id: README,v 1.22 2002/08/19 05:23:14 db Exp $
 
 This directory contains modules and patches that have been contributed
 by other people, or aren't suitable for including into the 
@@ -45,6 +45,10 @@ m_opme.c       - OPME - Allows an admin to op themselves in an opless channel
 m_tburst.c     - TBURST - module that will make servers send channel topics
                           to each other after a netsplit/restart.
 
+m_whois.c      - WHOIS - is a modified form of the standard
+		  	  whois provided. It adds the real IP
+			  to a remote whois if applicable. 
+			  	  
 example_module.c - An example module to be used for creating your own.
                    Syntax: TEST
 
