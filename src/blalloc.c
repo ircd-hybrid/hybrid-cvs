@@ -4,7 +4,7 @@
  * Owner:  Wohali (Joan Touzet)
  *
  *
- * $Id: blalloc.c,v 7.2 1999/09/10 03:53:25 tomh Exp $
+ * $Id: blalloc.c,v 7.3 1999/09/10 04:55:35 tomh Exp $
  */
 #include "blalloc.h"
 #include "ircd_defs.h"      /* DEBUG_BLOCK_ALLOCATOR */
@@ -187,7 +187,7 @@ void *BlockHeapAlloc (BlockHeap *bh)
            mask = 1; ctr = 0; unit = 0;
            while (unit < bh->numlongs)
              {
-               if ((mask == 1) && (walker->allocMap[unit] == ~0))
+               if ((mask == 1) && (walker->allocMap[unit] == (unsigned) ~0))
                  {
                    /* Entire subunit is used, skip to next one. */
                    unit++; 
