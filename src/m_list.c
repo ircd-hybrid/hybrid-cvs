@@ -3,7 +3,7 @@
  *   Copyright (C) 1990 Jarkko Oikarinen and
  *                      University of Oulu, Co Center
  *
- * $Id: m_list.c,v 7.12 2000/11/02 15:10:02 toot Exp $ 
+ * $Id: m_list.c,v 7.13 2000/11/05 03:01:05 db Exp $ 
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -57,7 +57,7 @@ int     m_list(struct Client *cptr,
   /* If its a LazyLinks connection, allow a list on its behalf */
   if( ConfigFileEntry.hub )
     {
-      if(!IsCapable(sptr->from,CAP_LL) && !MyConnect(sptr))
+      if(!IsCapable(cptr->from,CAP_LL) && !MyConnect(sptr))
 	return 0;
     }
   else
