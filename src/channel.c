@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.81 2000/11/30 07:38:57 db Exp $
+ * $Id: channel.c,v 7.82 2000/11/30 08:56:14 db Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -2152,7 +2152,6 @@ struct Channel* get_channel(struct Client *cptr, char *chname, int flag)
   if (flag == CREATE)
     {
       chptr = (struct Channel*) MyMalloc(sizeof(struct Channel) + len + 1);
-      memset(chptr, 0, sizeof(struct Channel));
       /*
        * NOTE: strcpy ok here, we have allocated strlen + 1
        */
