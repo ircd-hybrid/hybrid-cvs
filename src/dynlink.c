@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- * $Id: dynlink.c,v 7.13 2003/07/07 16:56:43 joshk Exp $
+ * $Id: dynlink.c,v 7.14 2003/08/22 07:51:58 michael Exp $
  *
  */
 #include "stdinc.h"
@@ -187,7 +187,8 @@ void *dlsym(void *myModule, char *mySymbolName)
  * output	- 0 if successful, -1 if error
  * side effects	- module is unloaded
  */
-int unload_one_module(char *name, int warn)
+int
+unload_one_module(char *name, int warn)
 {
   int modindex;
 
@@ -264,7 +265,7 @@ load_a_module(char *path, int warn, int core)
 #endif
     sendto_realops_flags(UMODE_ALL, L_ALL, "Error loading module %s: %s",
                          mod_basename, err);
-    ilog (L_WARN, "Error loading module %s: %s", mod_basename, err);
+    ilog(L_WARN, "Error loading module %s: %s", mod_basename, err);
     
     return(-1);
   }
@@ -274,7 +275,7 @@ load_a_module(char *path, int warn, int core)
   {
     if (shl_findsym(&tmpptr, "__modinit", TYPE_UNDEFINED, (void *)&initfunc) == -1)
     {
-      ilog (L_WARN, "Module %s has no _modinit() function", mod_basename);
+      ilog(L_WARN, "Module %s has no _modinit() function", mod_basename);
       sendto_realops_flags(UMODE_ALL, L_ALL, "Module %s has no _modinit() function",
                            mod_basename);
       shl_unload(tmpptr);
@@ -286,7 +287,7 @@ load_a_module(char *path, int warn, int core)
   {
     if (shl_findsym(&tmpptr, "__moddeinit", TYPE_UNDEFINED, (void *)&mod_deinit) == -1)
     {
-      ilog (L_WARN, "Module %s has no _moddeinit() function", mod_basename);
+      ilog(L_WARN, "Module %s has no _moddeinit() function", mod_basename);
       sendto_realops_flags(UMODE_ALL, L_ALL, "Module %s has no _moddeinit() function",
                            mod_basename);
       /* this is a soft error.  we're allowed not to have one, i guess.
@@ -311,8 +312,8 @@ load_a_module(char *path, int warn, int core)
   {
     sendto_realops_flags(UMODE_ALL, L_ALL, "Module %s has no _modinit() function",
                          mod_basename);
-    ilog (L_WARN, "Module %s has no _modinit() function", mod_basename);
-    (void)dlclose (tmpptr);
+    ilog(L_WARN, "Module %s has no _modinit() function", mod_basename);
+    (void)dlclose(tmpptr);
     return(-1);
   }
 
@@ -352,8 +353,8 @@ load_a_module(char *path, int warn, int core)
     sendto_realops_flags(UMODE_ALL, L_ALL,
                          "Module %s [version: %s] loaded at 0x%lx",
                          mod_basename, ver, (unsigned long)tmpptr);
-    ilog(L_WARN, "Module %s [version: %s] loaded at 0x%x",
-         mod_basename, ver, tmpptr);
+    ilog(L_WARN, "Module %s [version: %s] loaded at 0x%lx",
+         mod_basename, ver, (unsigned long)tmpptr);
   }
 
   return(0);

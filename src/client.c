@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.407 2003/08/21 21:16:55 michael Exp $
+ *  $Id: client.c,v 7.408 2003/08/22 07:51:58 michael Exp $
  */
 
 #include "stdinc.h"
@@ -333,11 +333,10 @@ static void
 check_unknowns_list(void)
 {
   dlink_node *ptr, *next_ptr;
-  struct Client *client_p;
 
   DLINK_FOREACH_SAFE(ptr, next_ptr, unknown_list.head)
   {
-    client_p = ptr->data;
+    struct Client *client_p = ptr->data;
 
     /* Check UNKNOWN connections - if they have been in this state
      * for > 30s, close them.
@@ -1345,7 +1344,7 @@ exit_client(
                            source_p->localClient->sendK,
                            source_p->localClient->receiveK);
       ilog(L_NOTICE, "%s was connected for %d seconds.  %d/%d sendK/recvK.",
-           source_p->name, CurrentTime - source_p->firsttime, 
+           source_p->name, (int)(CurrentTime - source_p->firsttime), 
            source_p->localClient->sendK, source_p->localClient->receiveK);
     }
   }

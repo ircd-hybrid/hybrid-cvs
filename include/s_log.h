@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.h,v 7.16 2003/06/22 00:52:54 joshk Exp $
+ *  $Id: s_log.h,v 7.17 2003/08/22 07:51:57 michael Exp $
  */
 
 #ifndef INCLUDED_s_log_h
@@ -27,13 +27,13 @@
 
 struct Client;
 
-#define L_CRIT    0
-#define L_ERROR   1
-#define L_WARN    2
-#define L_NOTICE  3
-#define L_TRACE   4
-#define L_INFO    5
-#define L_DEBUG   6
+#define L_CRIT   0
+#define L_ERROR  1
+#define L_WARN   2
+#define L_NOTICE 3
+#define L_TRACE  4
+#define L_INFO   5
+#define L_DEBUG  6
 
 extern int use_logging;
 
@@ -41,15 +41,18 @@ extern char foperlog[MAXPATHLEN+1];
 extern char fuserlog[MAXPATHLEN+1];
 extern char ffailed_operlog[MAXPATHLEN+1];
 
-extern void init_log(const char* filename);
-extern void reopen_log(const char* filename);
-extern void set_log_level(int level);
-extern int  get_log_level(void);
-extern void ilog(int priority, const char *fmt, ...);
-extern const char *get_log_level_as_string(int level);
+extern void init_log(const char *);
+extern void reopen_log(const char *);
+extern void set_log_level(int);
+extern int get_log_level(void);
+#ifdef __GNUC__
+extern void ilog(int, const char *, ...) __attribute__((format(printf, 2, 3)));
+#else
+extern void ilog(int, const char *, ...);
+#endif
+extern const char *get_log_level_as_string(int);
 
 extern void log_user_exit(struct Client *);
-extern void log_oper(struct Client *, const char *name);
-extern void log_failed_oper(struct Client *, const char *name);
-
+extern void log_oper(struct Client *, const char *);
+extern void log_failed_oper(struct Client *, const char *);
 #endif /* INCLUDED_s_log_h */
