@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.74 2003/06/28 18:01:51 joshk Exp $
+dnl $Id: configure.ac,v 7.75 2003/06/29 00:54:23 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -8,7 +8,7 @@ dnl said functions need to be just about as complex as they already are.
 AC_PREREQ(2.57)
 
 dnl Sneaky way to get an Id tag into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.74 2003/06/28 18:01:51 joshk Exp $])
+AC_COPYRIGHT([$Id: configure.ac,v 7.75 2003/06/29 00:54:23 joshk Exp $])
 
 AC_INIT([ircd-hybrid],[7-CURRENT])
 
@@ -91,7 +91,7 @@ case `uname -s` in
 	dnl only do this if we haven't already detected the newer one
 	dnl and we're not already using gcc
 	
-		if test "$HPUX" != yes -a "$CC" != gcc; then
+		if test "$HPUX" != yes -a "$ac_cv_c_compiler_gnu" = no; then
         	        AC_MSG_RESULT(assuming old HPUX with its own cc)  
 			IRC_CFLAGS="$IRC_CFLAGS +e"
 			HPUX=yes
