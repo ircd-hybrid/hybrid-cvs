@@ -1,3 +1,17 @@
+jmallett    2002/02/04 10:17:28 EST	(20020204_7)
+
+  Modified files:
+    autoconf             configure.in 
+  Log:
+  Add rtsigio to the list of things we can't find if we can't find any
+  selection paradigm. However I am not sure if we should automagically try
+  this as it is marked experimental... ?
+  
+  Revision  Changes    Path
+  7.116     +1 -1      ircd-hybrid-7/autoconf/configure.in
+
+
+
 androsyn    2002/02/04 07:51:37 EST	(20020204_6)
 
   Modified files:
@@ -22049,4 +22063,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3372 2002/02/04 12:51:43 androsyn Exp $
+$Id: ChangeLog,v 7.3373 2002/02/04 15:17:34 jmallett Exp $
