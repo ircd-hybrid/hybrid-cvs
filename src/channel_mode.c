@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.93 2003/05/13 02:32:18 joshk Exp $
+ *  $Id: channel_mode.c,v 7.94 2003/05/13 18:19:34 db Exp $
  */
 
 #include "stdinc.h"
@@ -1860,18 +1860,17 @@ set_channel_mode_flags(char flags_ptr[NUMLISTS][2], struct Channel *chptr,
                        struct Client *source_p)
 {
     flags_ptr[0][0] = '@';
-    flags_ptr[1][0] = '\0';
-    flags_ptr[2][0] = '+';
-    flags_ptr[3][0] = '\0';
+    flags_ptr[1][0] = '+';
+    flags_ptr[2][0] = '\0';
 #ifdef REQUIRE_OANDV
-    flags_ptr[4][0] = '@';
+    flags_ptr[3][0] = '@';
 #endif
 
     flags_ptr[0][1] = '\0';
     flags_ptr[1][1] = '\0';
     flags_ptr[2][1] = '\0';
 #ifdef REQUIRE_OANDV
-    flags_ptr[4][1] = '\0';
+    flags_ptr[3][1] = '\0';
 #endif
 }
 
