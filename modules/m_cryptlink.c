@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_cryptlink.c,v 1.47 2003/05/23 02:45:30 joshk Exp $
+ *  $Id: m_cryptlink.c,v 1.48 2003/05/25 07:11:46 metalrock Exp $
  */
 
 /*
@@ -48,7 +48,6 @@
 #include "common.h"      /* TRUE bleah */
 #include "event.h"
 #include "hash.h"        /* add_to_client_hash_table */
-#include "md5.h"
 #include "list.h"        /* make_server */
 #include "s_conf.h"      /* struct ConfItem */
 #include "s_log.h"       /* log level defines */
@@ -62,7 +61,7 @@
 void _modinit(void) {}
 void _moddeinit(void) {}
 
-const char *_version = "$Revision: 1.47 $";
+const char *_version = "$Revision: 1.48 $";
 #endif
 #else
 
@@ -108,7 +107,7 @@ _moddeinit(void)
   mod_del_cmd(&cryptlink_msgtab);
 }
 
-const char *_version = "$Revision: 1.47 $";
+const char *_version = "$Revision: 1.48 $";
 #endif
 
 
