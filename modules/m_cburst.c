@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_cburst.c,v 1.24 2001/01/02 05:17:07 db Exp $
+ * $Id: m_cburst.c,v 1.25 2001/01/02 05:30:22 davidt Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -105,14 +105,21 @@ int     ms_cburst(struct Client *cptr,
 #endif
 
   if( (chptr = hash_find_channel(name, NullChn)) == NULL)
+  {
+    if((!nick) || (nick && *nick!='!'))
     {
-      
       chptr = get_channel(sptr, name, CREATE);
-      chptr->channelts = (time_t)(-1); /* ! highest possible TS so its always
-					* over-ruled
-					*/
+      chptr->channelts = (time_t)(-1); /* ! highest possible TS so its always-                                          * over-ruled
+                                        */
       chptr->users_last = CurrentTime;
     }
+    else if(nick && *nick=='!')
+    {
+      sendto_one(sptr, form_str(ERR_NOSUCHCHANNEL),
+                 me.name, nick+1, name);
+      return 0;
+    }
+  }
 
   if(IsCapable(cptr,CAP_LL))
     {

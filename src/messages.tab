@@ -18,7 +18,7 @@
  *
  *
  *
- *   $Id: messages.tab,v 7.34 2000/12/29 23:23:20 wcampbel Exp $
+ *   $Id: messages.tab,v 7.35 2001/01/02 05:30:27 davidt Exp $
  */
 
 static  char *  replies[] = {
@@ -465,7 +465,7 @@ static  char *  replies[] = {
 /* 434 */       (char *)NULL,
 /* 435 */       (char *)NULL,
 /* 436 ERR_NICKCOLLISION, */    ":%s 436 %s %s :Nickname collision KILL",
-/* 437 ERR_NOTAVAILABLE, */     ":%s 437 %s %s :Nick/channel is temporarily unavailable",
+/* 437 ERR_ERR_UNAVAILRESOURCE, */ ":%s 437 %s %s :Nick/channel is temporarily unavailable",
 /* 438 */       (char *)NULL,
 /* 439 */       (char *)NULL,
 /* 440 */       (char *)NULL,
