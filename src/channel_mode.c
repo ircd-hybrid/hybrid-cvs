@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.26 2002/04/12 21:44:44 db Exp $
+ *  $Id: channel_mode.c,v 7.27 2002/04/13 08:36:56 db Exp $
  */
 
 #include "tools.h"
@@ -2799,8 +2799,14 @@ sync_oplists(struct Channel *chptr, struct Client *target_p,
              int dir, const char *name)
 {
   send_oplist(name, target_p, &chptr->chanops, "o", dir);
+#ifdef REQUIRE_OANDV
+  send_oplist(name, target_p, &chptr->chanops_voiced, "o", dir);
+#endif
   send_oplist(name, target_p, &chptr->halfops, "h", dir);
   send_oplist(name, target_p, &chptr->voiced, "v", dir);
+#ifdef REQUIRE_OANDV
+  send_oplist(name, target_p, &chptr->chanops_voiced, "v", dir);
+#endif
 }
 
 static void
