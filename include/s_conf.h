@@ -21,9 +21,14 @@
  */
 
 /*
- * $Id: s_conf.h,v 7.42 2000/12/18 05:42:49 bill Exp $
+ * $Id: s_conf.h,v 7.43 2000/12/19 17:46:01 ejb Exp $
  *
  * $Log: s_conf.h,v $
+ * Revision 7.43  2000/12/19 17:46:01  ejb
+ * - added client_exit:
+ *    *** Signoff: foo (Client Exit: foo)
+ * - removed ms_quit.
+ *
  * Revision 7.42  2000/12/18 05:42:49  bill
  *
  * - changed all file_open() and file_close() calls to fbopen() and fbclose()
@@ -613,6 +618,7 @@ typedef struct
   int         idletime;
   int	      hide_server;
   int	      hide_chanops;
+	int         client_exit;
 } ConfigFileEntryType;
 
 /* bleh. have to become global. */

@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.54 2000/12/19 04:21:21 ejb Exp $
+ * $Id: ircd_parser.y,v 1.55 2000/12/19 17:46:07 ejb Exp $
  */
 
 %{
@@ -175,6 +175,7 @@ int   class_sendq_var;
 %token  MODULES
 %token  HIDECHANOPS
 %token  HIDESERVER
+%token  CLIENT_EXIT
 
 %%
 conf:   
@@ -1204,7 +1205,7 @@ general_item:       general_failed_oper_notice | general_show_failed_oper_id |
                     general_glines | general_topic_uh | general_gline_time |
 		    general_idletime |
 		    general_hide_server | general_hide_chanops |
-                    general_message_locale
+                    general_message_locale | general_client_exit
 
 
 general_failed_oper_notice:   FAILED_OPER_NOTICE '=' TYES ';'
@@ -1266,6 +1267,16 @@ general_kline_with_reason: KLINE_WITH_REASON '=' TYES ';'
   {
     ConfigFileEntry.kline_with_reason = 0;
   } ;
+
+general_client_exit: CLIENT_EXIT '=' TYES ';'
+{
+	ConfigFileEntry.client_exit = 1;
+}
+| CLIENT_EXIT '-' TNO ';'
+{
+	ConfigFileEntry.client_exit = 0;
+	
+};
 
 general_kline_with_connection_closed: KLINE_WITH_CONNECTION_CLOSED '=' TYES ';'
   {
