@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.55 2003/06/15 19:00:38 joshk Exp $
+dnl $Id: configure.ac,v 7.56 2003/06/16 20:57:48 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -26,10 +26,10 @@ CFLAGS="$OLD_CFLAGS"
 dnl Check for various compilers. -jmallett
 dnl But if $CC turns out to be gcc, sure as hell it's, well, gcc. -joshk
 
-if test "$CC" != gcc; then
+if test "$ac_cv_c_compiler_gnu" != yes; then
 
 SGS=no
-AC_MSG_CHECKING(if we are using TenDRA or MIPSpro)
+AC_MSG_CHECKING($CC -version for TenDRA or MIPSpro)
 case `$CC -version 2>&1` in
 *TenDRA*)
 	AC_MSG_RESULT([yes, TenDRA])
@@ -50,7 +50,7 @@ case `$CC -version 2>&1` in
 ;;
 esac
 
-AC_MSG_CHECKING([$CC -V for Sun Workshop, Forte or Tru64 cc])
+AC_MSG_CHECKING([$CC -V for Sun Workshop, Forte, HPUX or Tru64 cc])
 case `$CC -V 2>&1` in
 *Sun*WorkShop* | *Forte*Developer*)
 	AC_MSG_RESULT(Sun Workshop/Forte)
@@ -63,6 +63,11 @@ case `$CC -V 2>&1` in
 	CPPFLAGS="-I/usr/local/include"
 	Tru=yes
 ;;
+*HP*ANSI*)
+	AC_MSG_RESULT(HPUX cc)
+	HPUX=yes
+	IRC_CFLAGS="+e"
+;;
 *)
 	AC_MSG_RESULT(no)
 ;;
@@ -70,16 +75,40 @@ esac
 
 fi
 
-AC_MSG_CHECKING(if we are using Apple GCC)
-if expr "`$CC -v 2>&1 | tail -1`" : Apple >/dev/null; then
-	AppleGCC=yes
-else
-	AppleGCC=no
-fi
+AC_MSG_CHECKING(uname -s for old HP-UX or Cygwin)
 
-AC_MSG_RESULT($AppleGCC)
+case `uname -s` in
+        HP-UX*)
+	dnl only do this if we haven't already detected the newer one
+	dnl and we're not already using gcc
+	
+		if test "$HPUX" != yes -a "$CC" != gcc; then
+        	        AC_MSG_RESULT(assuming old HPUX with its own cc)  
+			IRC_CFLAGS="$IRC_CFLAGS +e"
+			HPUX=yes
+		else
+			AC_MSG_RESULT(already using newer HPUX)
+		fi
+	;;
+	CYGWIN*)
+		CYGWIN=yes
+	;;
+	*)
+		AC_MSG_RESULT(no)
+	;;
+esac
 
-if test "$GCC" = yes; then
+if test "$ac_cv_c_compiler_gnu" = yes; then
+	AC_MSG_CHECKING(if $CC is Apple GCC)
+	
+	if expr "`$CC -v 2>&1 | tail -1`" : Apple >/dev/null; then
+		AppleGCC=yes
+	else
+		AppleGCC=no
+	fi
+
+	AC_MSG_RESULT($AppleGCC)
+
 	IRC_CFLAGS="$IRC_CFLAGS -O2 -Wall"
 fi
 
@@ -93,27 +122,12 @@ if test "$ac_cv_prog_cc_g" = yes; then
 fi
 
 dnl SVR4 SGS based on what we know about the compiler -jmallett
-AC_MSG_CHECKING(if your compiler supports the SVR4 Software Generation System interfaces)
+AC_MSG_CHECKING(if $CC supports the SVR4 SGS interfaces)
 if test "$SGS" = "yes"; then
 	AC_MSG_RESULT(yes)
 else
 	AC_MSG_RESULT(no)
 fi
-
-dnl cc on HPUX 11.00 does not produce any output on cc -V
-dnl Therefore I will use the following hack to discover HPUX 
-dnl -TimeMr14C
-
-case `uname -s` in
-        HP-UX*)
-                AC_MSG_RESULT(HP-UX found - Assuming HPUX C compiler cc)  
-		IRC_CFLAGS="$IRC_CFLAGS +e"
-		HPUX=yes
-		;;
-	CYGWIN*)
-		CYGWIN=yes
-		;;
-esac
 
 dnl We prefer BSD mkdep
 AC_PATH_PROG(MKDEP, mkdep)
@@ -916,8 +930,17 @@ else
 	dnl Additionally, HPUX does not like -export-dynamic, it likes -E instead.
 	dnl -TimeMr14C
 	if test "$HPUX" = "yes" -a "$CC" != gcc; then
-		AC_MSG_RESULT(HP-UX cc: +z -r -q -n +ESfic)
-		PICFLAGS="+z -r -q -n +ESfic -c"
+		AC_MSG_RESULT(HP-UX cc: +z -r -q -n)
+		PICFLAGS="+z -r -q -n -c"
+		AC_MSG_CHECKING(if +ESfic is required on this platform)
+		
+		if expr "`$CC +ESfic 2>&1`" : ".*neither supported.*" >/dev/null; then 
+			AC_MSG_RESULT(no)
+		else
+			AC_MSG_RESULT(yes)
+			PICFLAGS="$PICFLAGS +ESfic"
+		fi
+
 		SEDOBJ="s/\.o/.sl/g"
 		MOD_TARGET="hpux_shared"
 		LDFLAGS="${LDFLAGS} -Wl,-E"
