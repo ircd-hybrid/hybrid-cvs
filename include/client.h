@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.174 2003/04/05 01:08:23 michael Exp $
+ *  $Id: client.h,v 7.175 2003/04/05 08:45:11 adx Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -565,23 +565,23 @@ struct LocalUser
 
 /* operflags macros */
 #define ClearOperFlags(x)	((x)->localClient->operflags = 0)
-#define IsOperGlobalKill(x)     ((x)->localClient->operflags & OPER_FLAG_GLOBAL_KILL)
+#define IsOperGlobalKill(x)     (MyConnect(x) ? (x)->localClient->operflags & OPER_FLAG_GLOBAL_KILL : 0)
 #define SetOperGlobalKill(x)    ((x)->localClient->operflags |= OPER_FLAG_GLOBAL_KILL)
-#define IsOperRemote(x)         ((x)->localClient->operflags & OPER_FLAG_REMOTE)
+#define IsOperRemote(x)         (MyConnect(x) ? (x)->localClient->operflags & OPER_FLAG_REMOTE : 0)
 #define SetOperRemote(x)        ((x)->localClient->operflags |= OPER_FLAG_REMOTE)
-#define IsOperUnkline(x)        ((x)->localClient->operflags & OPER_FLAG_UNKLINE)
+#define IsOperUnkline(x)        (MyConnect(x) ? (x)->localClient->operflags & OPER_FLAG_UNKLINE : 0)
 #define SetOperUnkline(x)       ((x)->localClient->operflags |= OPER_FLAG_UNKLINE)
-#define IsOperGline(x)          ((x)->localClient->operflags & OPER_FLAG_GLINE)
+#define IsOperGline(x)          (MyConnect(x) ? (x)->localClient->operflags & OPER_FLAG_GLINE : 0)
 #define SetOperGline(x)         ((x)->localClient->operflags |= OPER_FLAG_GLINE)
-#define IsOperN(x)              ((x)->localClient->operflags & OPER_FLAG_N)
+#define IsOperN(x)              (MyConnect(x) ? (x)->localClient->operflags & OPER_FLAG_N : 0)
 #define SetOperN(x)             ((x)->localClient->operflags |= OPER_FLAG_N)
-#define IsOperK(x)              ((x)->localClient->operflags & OPER_FLAG_K)
+#define IsOperK(x)              (MyConnect(x) ? (x)->localClient->operflags & OPER_FLAG_K : 0)
 #define SetOperK(x)             ((x)->localClient->operflags |= OPER_FLAG_K)
-#define IsOperDie(x)            ((x)->localClient->operflags & OPER_FLAG_DIE)
+#define IsOperDie(x)            (MyConnect(x) ? (x)->localClient->operflags & OPER_FLAG_DIE : 0)
 #define SetOperDie(x)           ((x)->localClient->operflags |= OPER_FLAG_DIE)
-#define IsOperRehash(x)         ((x)->localClient->operflags & OPER_FLAG_REHASH)
+#define IsOperRehash(x)         (MyConnect(x) ? (x)->localClient->operflags & OPER_FLAG_REHASH : 0)
 #define SetOperRehash(x)        ((x)->localClient->operflags |= OPER_FLAG_REHASH)
-#define IsOperAdmin(x)          ((x)->localClient->operflags & OPER_FLAG_ADMIN)
+#define IsOperAdmin(x)          (MyConnect(x) ? (x)->localClient->operflags & OPER_FLAG_ADMIN : 0)
 #define SetOperAdmin(x)         ((x)->localClient->operflags |= OPER_FLAG_ADMIN)
 
 
