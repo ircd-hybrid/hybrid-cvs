@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.180 2004/03/02 17:03:02 db Exp $
+ *  $Id: m_sjoin.c,v 1.181 2004/04/05 23:27:05 ievil Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.180 $";
+const char *_version = "$Revision: 1.181 $";
 #endif
 
 static char modebuf[MODEBUFLEN];
@@ -702,7 +702,7 @@ void remove_a_mode(struct Channel *chptr, struct Client *source_p,
   dlink_node *ptr;
   struct Membership *ms;
   char lmodebuf[MODEBUFLEN];
-  char *lpara[4];
+  char *lpara[MAXMODEPARAMS];
   int count = 0;
   int lcount;
 
