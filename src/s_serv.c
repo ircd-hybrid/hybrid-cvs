@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.310 2003/04/23 17:40:09 adx Exp $
+ *  $Id: s_serv.c,v 7.311 2003/04/30 04:55:14 michael Exp $
  */
 
 #include "stdinc.h"
@@ -59,7 +59,6 @@
 #include "channel.h" /* chcap_usage_counts stuff...*/
 #include "hook.h"
 
-extern char *crypt();
 
 #define MIN_CONN_FREQ 300
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- * $Id: stdinc.h,v 1.3 2003/04/13 10:36:48 stu Exp $
+ * $Id: stdinc.h,v 1.4 2003/04/30 04:55:11 michael Exp $
  *
  */
  
@@ -43,11 +43,13 @@
 # endif 
 #endif  
 
-
 #ifdef HAVE_STDDEF_H
 #include <stddef.h>
 #endif
 
+#ifdef HAVE_CRYPT_H
+#include <crypt.h>
+#endif
 
 #include <stdio.h>
 #include <assert.h>
