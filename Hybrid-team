@@ -1,4 +1,4 @@
-$Id: Hybrid-team,v 7.52 2002/07/14 01:30:27 androsyn Exp $
+$Id: Hybrid-team,v 7.53 2002/10/29 22:53:09 wiz Exp $
 
 The hybrid team is a group of ircd coders who were frustrated
 with the instability and all-out "dirtiness" of the EFnet ircd's
@@ -28,6 +28,7 @@ jmallett, Juli Mallett <jmallett@FreeBSD.org>
 k9, Jeremy Chadwick <yoshi@parodius.com>
 Rodder, Jon Lusky <lusky@blown.net>
 toot, Toby Verrall <to7@antipope.fsnet.co.uk>
+wiz, Jason Dambrosio <jason@wiz.cx>
 Wohali, Joan Touzet <joant@ieee.org>
 xyst, Greg Prosser <gnp@arrogant.org>
  
