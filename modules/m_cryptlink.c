@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_cryptlink.c,v 1.54 2003/07/06 23:38:46 db Exp $
+ *  $Id: m_cryptlink.c,v 1.55 2003/07/24 19:07:10 michael Exp $
  */
 
 /*
@@ -95,7 +95,7 @@ _moddeinit(void)
   mod_del_cmd(&cryptlink_msgtab);
 }
 
-const char *_version = "$Revision: 1.54 $";
+const char *_version = "$Revision: 1.55 $";
 #endif
 
 
@@ -132,7 +132,6 @@ static void mr_cryptlink(struct Client *client_p,
       cryptlink_cmd_table[i].handler(client_p, source_p, parc, parv);
     }
   }
-  return;
 }
 
 
@@ -553,27 +552,20 @@ static char *parse_cryptserv_args(struct Client *client_p,
  * output	- 1 if a bogus hostname input, 0 if its valid
  * side effects	- none
  */
-static int bogus_host(char *host)
+static int
+bogus_host(char *host)
 {
-  int bogus_server = 0;
-  int dots = 0;
+  unsigned int dots = 0;
   char *s;
 
-  for (s = host; *s; s++ )
+  for (s = host; *s; s++)
   {
     if (!IsServChar(*s))
-    {
-      bogus_server = 1;
-      break;
-    }
+      return(1);
+
     if ('.' == *s)
-    {
       ++dots;
-    }
   }
-  if (!dots || bogus_server || strlen(host) > HOSTLEN)
-    return(1);
 
-  return(0);
+  return(!dots || strlen(host) > HOSTLEN)
 }
-
