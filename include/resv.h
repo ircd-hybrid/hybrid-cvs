@@ -1,6 +1,6 @@
 /*
  *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
- *  restart.h: A header for the restart functions.
+ *  resv.h: A header for the RESV functions.
  *
  *  Copyright (C) 2002 by the past and present ircd coders, and others.
  *
@@ -19,14 +19,14 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: resv.h,v 1.8 2003/03/01 01:15:37 db Exp $
+ *  $Id: resv.h,v 1.9 2003/04/30 07:20:54 michael Exp $
  */
 
 #ifndef INCLUDED_resv_h
 #define INCLUDED_resv_h
 
 /* allows resv *nicknick* etc */
-#define RESVNICKLEN NICKLEN*2
+#define RESVNICKLEN (NICKLEN * 2)
 
 struct ResvChannel
 {
@@ -69,7 +69,4 @@ extern struct ResvNick *return_nick_resv(char *);
 
 extern int clean_resv_nick(char *);
 
-#endif  /* INCLUDED_hash_h */
-
-
-
+#endif  /* INCLUDED_resv_h */

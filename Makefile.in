@@ -16,29 +16,14 @@
 #*   along with this program; if not, write to the Free Software
 #*   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #*
-#*   $Id: Makefile.in,v 7.41 2003/03/25 14:38:21 db Exp $
+#*   $Id: Makefile.in,v 7.42 2003/04/30 07:20:52 michael Exp $
 #*/
 
 RM=@RM@
 
-# Default CFLAGS
-# CFLAGS = -g -O2 -DNDEBUG
-CFLAGS		= @CFLAGS@
-# Developers CFLAGS
-#CFLAGS= -g -O2 -Wunused -Wall -ggdb -pedantic -Wshadow -Wmissing-declarations
-
 # Default make flags - you may want to uncomment this on a multicpu machine
 #MFLAGS = -j 4
-
-#
-# For developers
-#CFLAGS= -g -O2 -Wall
-
-# You may need to define the FD_SETSIZE in order to overrule
-# the system one.
-#CFLAGS= -DNDEBUG -g -O2 -D"FD_SETSIZE=1024"
-SHELL=/bin/sh
-SUBDIRS=modules adns src tools doc include servlink help
+SUBDIRS = modules adns src tools doc include servlink help
 
 CLEANDIRS = ${SUBDIRS} contrib iauth
 # XXX removed `iauth' from the build since it doesn't compile currently

@@ -1,6 +1,6 @@
 /*
  *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
- *  hook.h: A header for the dynamic buffers functions.
+ *  dbuf.h: A header for the dynamic buffers functions.
  *
  *  Copyright (C) 2002 by the past and present ircd coders, and others.
  *
@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: dbuf.h,v 7.9 2003/04/19 21:33:48 adx Exp $
+ *  $Id: dbuf.h,v 7.10 2003/04/30 07:20:54 michael Exp $
  */
 
 #ifndef __DBUF_H_INCLUDED

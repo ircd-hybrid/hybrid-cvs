@@ -1,6 +1,6 @@
 /*
  *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
- *  fileio.h: A header for some built in command handlers.
+ *  handlers.h: A header for some built in command handlers.
  *
  *  Copyright (C) 2002 by the past and present ircd coders, and others.
  *
@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: handlers.h,v 7.39 2003/04/13 05:55:19 michael Exp $
+ *  $Id: handlers.h,v 7.40 2003/04/30 07:20:54 michael Exp $
  */
 
 #ifndef INCLUDED_handlers_h

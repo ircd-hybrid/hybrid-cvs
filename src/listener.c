@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.c,v 7.80 2003/04/22 13:52:54 stu Exp $
+ *  $Id: listener.c,v 7.81 2003/04/30 07:20:56 michael Exp $
  */
 
 #include "stdinc.h"
@@ -44,9 +44,6 @@
 #include <openssl/bio.h>
 #endif
 
-#ifndef INADDR_NONE
-#define INADDR_NONE ((unsigned int)0xffffffff)
-#endif
 
 static PF accept_connection;
 
@@ -98,17 +95,17 @@ get_listener_name(const struct Listener* listener)
   return(buf);
 }
 
-/*
- * show_ports - send port listing to a client
+/* show_ports()
+ *
  * inputs       - pointer to client to show ports to
  * output       - none
- * side effects - show ports
+ * side effects - send port listing to a client
  */
 void 
-show_ports(struct Client* source_p)
+show_ports(struct Client *source_p)
 {
   dlink_node *ptr;
-  struct Listener* listener;
+  struct Listener *listener;
 
   DLINK_FOREACH(ptr, ListenerPollList.head)
   {
@@ -136,7 +133,7 @@ show_ports(struct Client* source_p)
 #endif
 
 static int 
-inetport(struct Listener* listener)
+inetport(struct Listener *listener)
 {
   struct irc_ssaddr  lsin;
   int                fd;

@@ -1,6 +1,6 @@
 /*
  *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
- *  s_conf.h: A header for the debug functions.
+ *  s_debug.h: A header for the debug functions.
  *
  *  Copyright (C) 2002 by the past and present ircd coders, and others.
  *
@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_debug.h,v 7.4 2002/05/24 23:34:08 androsyn Exp $
+ *  $Id: s_debug.h,v 7.5 2003/04/30 07:20:54 michael Exp $
  */
 
 #ifndef INCLUDED_s_debug_h
@@ -43,10 +43,8 @@ struct Client;
 #define DEBUG_LIST  10  /* debug list use */
 
 
-extern void send_usage(struct Client*);
-extern void count_memory (struct Client *);
-
+extern void send_usage(struct Client *);
+extern void count_memory(struct Client *);
 extern void debug(int, char *, ...);
-
 #endif /* INCLUDED_s_debug_h */
 
