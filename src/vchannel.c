@@ -19,7 +19,7 @@
  *
  *
  *
- * $Id: vchannel.c,v 7.11 2000/10/16 22:54:10 toot Exp $
+ * $Id: vchannel.c,v 7.12 2000/10/22 23:59:31 db Exp $
  */
 #include "vchannel.h"
 #include "channel.h"
@@ -186,6 +186,24 @@ struct Channel* find_vchan(struct Channel *chptr, char *key)
   if( (acptr = hash_find_client(key,(struct Client *)NULL)) )
     if( (chtmp = map_vchan(chptr, acptr)) )
       return chtmp;
+
+  return NullChn;
+}
+
+/* return the first found invite matching a subchannel of chptr
+ * or NULL if no invites are found */
+
+struct Channel* vchan_invites(struct Channel *chptr, struct Client *sptr)
+{
+  struct SLink *lp;
+  struct Channel *cp;
+
+  /* loop is nested this way to prevent preferencing channels higher
+     in the vchan list */
+  for (lp = sptr->user->invited; lp; lp = lp->next)
+    for (cp = chptr; cp; cp = cp->next_vchan)
+      if (lp->value.chptr == cp)
+        return cp;
 
   return NullChn;
 }

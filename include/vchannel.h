@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: vchannel.h,v 7.7 2000/10/16 22:54:06 toot Exp $
+ * $Id: vchannel.h,v 7.8 2000/10/22 23:59:27 db Exp $
  */
 
 #ifndef INCLUDED_vchannel_h
@@ -59,6 +59,10 @@ extern struct Channel* find_vchan(struct Channel *, char *);
 
 /* See if this client is on a sub chan already */
 extern int on_sub_vchan(struct Channel *chptr, struct Client *sptr);
+
+/* Check for an invite to any of the vchans */
+extern struct Channel* vchan_invites(struct Channel *chptr,
+                                     struct Client *sptr);
 
 /* Valid to verify a channel is a subchan */
 #define IsVchan(chan)	(chan->prev_vchan)

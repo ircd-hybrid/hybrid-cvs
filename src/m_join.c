@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 7.27 2000/10/22 17:20:35 db Exp $
+ *   $Id: m_join.c,v 7.28 2000/10/22 23:59:30 db Exp $
  */
 
 #include "handlers.h"
@@ -311,6 +311,14 @@ int     m_join(struct Client *cptr,
                      continue;
                    if (key && key[0] == '!')
                      {
+                       /* user joined with key "!".  force listing.
+                          (this prevents join-invited-chan voodoo) */
+                       if (!key[1])
+                         {
+                           show_vchans(cptr, sptr, chptr);
+                           return 0;
+                         }
+
                        /* found a matching vchan? let them join it */
                        if ((vchan_chptr = find_vchan(chptr, key)))
                          {
@@ -336,11 +344,21 @@ int     m_join(struct Client *cptr,
                            chptr = chptr->next_vchan;
                            joining_vchan = 1;
                          }
-                       /* otherwise, they get a list of inhabited channels */
                        else
                         {
-                          show_vchans(cptr, sptr, chptr);
-                          return 0;
+                          /* voodoo to auto-join channel invited to */
+                          if ((vchan_chptr=vchan_invites(chptr, sptr)))
+                            {
+                              root_chptr = chptr;
+                              chptr = vchan_chptr;
+                              joining_vchan = 1;
+                            }
+                          /* otherwise, they get a list of channels */
+                          else
+                            {
+                              show_vchans(cptr, sptr, chptr);
+                              return 0;
+                            }
                         }
                      }
                  }
