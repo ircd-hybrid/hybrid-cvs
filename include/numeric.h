@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: numeric.h,v 7.11 2000/12/15 00:12:04 toot Exp $
+ * $Id: numeric.h,v 7.12 2000/12/19 18:04:16 ejb Exp $
  */
 #ifndef INCLUDED_numeric_h
 #define INCLUDED_numeric_h
@@ -167,8 +167,8 @@ extern const char* form_str(int);
  * -Dianora
  */
 #define RPL_STATSPLINE       220
-
 #define RPL_UMODEIS          221
+#define RPL_MODLIST          222
 
 #define RPL_STATSFLINE       224
 #define RPL_STATSDLINE       225
