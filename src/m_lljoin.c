@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_lljoin.c,v 7.3 2000/01/06 02:10:36 db Exp $
+ * $Id: m_lljoin.c,v 7.4 2000/01/06 03:19:37 db Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -34,7 +34,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-#ifndef HUB
 /* Only leaves need lljoin */
 /*
 ** m_lljoin
@@ -167,4 +166,3 @@ int     m_lljoin(struct Client *cptr,
     }
   return 0;
 }
-#endif

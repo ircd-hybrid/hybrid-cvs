@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kline.c,v 7.7 1999/12/30 20:35:51 db Exp $
+ *   $Id: m_kline.c,v 7.8 2000/01/06 03:19:36 db Exp $
  */
 #include "m_kline.h"
 #include "channel.h"
@@ -414,10 +414,8 @@ m_kline(struct Client *cptr,
           sendto_realops("received kline from %s", sptr->name);
         }
 
-#ifdef HUB
-      sendto_slaves(sptr,"KLINE",slave_oper,parc,parv);
-#endif
-
+      if(ConfigFileEntry.hub)
+        sendto_slaves(sptr,"KLINE",slave_oper,parc,parv);
     }
   else
 #endif

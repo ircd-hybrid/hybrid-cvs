@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_cburst.c,v 7.2 2000/01/06 02:14:41 db Exp $
+ * $Id: m_cburst.c,v 7.3 2000/01/06 03:19:36 db Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -36,7 +36,6 @@
 #include <stdlib.h>
 
 
-#ifdef HUB
 /*
 ** m_cburst
 **      parv[0] = sender prefix
@@ -171,4 +170,3 @@ int     m_cburst(struct Client *cptr,
                   me.name, name, nick);
   return 0;
 }
-#endif

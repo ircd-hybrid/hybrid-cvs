@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.8 2000/01/04 15:56:09 db Exp $
+ * $Id: config.h,v 7.9 2000/01/06 03:19:31 db Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -349,14 +349,6 @@
  *
  */
 #define MAXIMUM_LINKS 1
-
-/* HUB - enable server-server routing
- * If your server is running as a a HUB Server then define this.
- * A HUB Server has many servers connect to it at the same as opposed
- * to a leaf which just has 1 server (typically the uplink). Define this
- * correctly for performance reasons.
- */
-#undef  HUB
 
 /* CMDLINE_CONFIG - allow conf-file to be specified on command line
  * NOTE: defining CMDLINE_CONFIG and installing ircd SUID or SGID is a MAJOR

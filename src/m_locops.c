@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_locops.c,v 7.3 1999/12/30 20:35:52 db Exp $
+ *   $Id: m_locops.c,v 7.4 2000/01/06 03:19:37 db Exp $
  */
 #include "m_commands.h"
 #include "client.h"
@@ -134,9 +134,9 @@ int m_locops(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
             }
           else
             return 0;
-#ifdef HUB
-          sendto_slaves(sptr,"LOCOPS",slave_oper,parc,parv);
-#endif
+
+          if(ConfigFileEntry.hub)
+            sendto_slaves(sptr,"LOCOPS",slave_oper,parc,parv);
           return 0;
         }
     }

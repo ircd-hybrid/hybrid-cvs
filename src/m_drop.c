@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_drop.c,v 7.3 2000/01/06 02:14:41 db Exp $
+ * $Id: m_drop.c,v 7.4 2000/01/06 03:19:36 db Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -35,7 +35,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-#ifdef HUB
 /* Only HUB's need drop */
 
 /*
@@ -75,4 +74,3 @@ int     m_drop(struct Client *cptr,
     chptr->lazyLinkChannelExists &= ~cptr->serverMask;
   return 0;
 }
-#endif

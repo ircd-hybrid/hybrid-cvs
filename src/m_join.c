@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 7.9 2000/01/04 19:17:30 db Exp $
+ *   $Id: m_join.c,v 7.10 2000/01/06 03:19:36 db Exp $
  */
 
 #include "m_commands.h"
@@ -34,6 +34,7 @@
 #include "numeric.h"
 #include "send.h"
 #include "s_serv.h"
+#include "s_conf.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -289,17 +290,18 @@ int     m_join(struct Client *cptr,
            else
              {
                flags = CHFL_CHANOP;
-#ifndef HUB
-               /* LazyLinks */
-               if( (*name != '&') && serv_cptr_list
-                     && IsCapable( serv_cptr_list, CAP_LL) )
+               if(!ConfigFileEntry.hub)
                  {
-                   sendto_one(serv_cptr_list,":%s CBURST %s %s %s",
-                     me.name,name,sptr->name, key ? key: "" );
-                   /* And wait for LLJOIN */
-                   return 0;
+                   /* LazyLinks */
+                   if( (*name != '&') && serv_cptr_list
+                       && IsCapable( serv_cptr_list, CAP_LL) )
+                     {
+                       sendto_one(serv_cptr_list,":%s CBURST %s %s %s",
+                         me.name,name,sptr->name, key ? key: "" );
+                       /* And wait for LLJOIN */
+                       return 0;
+                     }
                  }
-#endif
              }
 
            /* if its not a local channel, or isn't an oper

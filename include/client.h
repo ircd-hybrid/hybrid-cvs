@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.12 2000/01/04 15:56:09 db Exp $
+ * $Id: client.h,v 7.13 2000/01/06 03:19:31 db Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -236,9 +236,7 @@ struct Client
   struct in_addr    ip;         /* keep real ip# too */
   unsigned short    port;       /* and the remote port# too :-) */
   struct DNSReply*  dns_reply;  /* result returned from resolver query */
-#ifdef HUB
   unsigned long     serverMask; /* Only used for Lazy Links */
-#endif
 #ifdef ANTI_NICK_FLOOD
   time_t            last_nick_change;
   int               number_of_nick_changes;

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.17 2000/01/03 16:16:58 db Exp $
+ * $Id: ircd.c,v 7.18 2000/01/06 03:19:35 db Exp $
  */
 #include "ircd.h"
 #include "channel.h"
@@ -110,10 +110,8 @@
 int reject_held_fds = 0;
 #endif
 
-#ifndef HUB
 /* LazyLinks code */
 time_t lastCleanup;
-#endif
 
 #ifdef NEED_SPLITCODE
 extern time_t server_split_time;
@@ -383,13 +381,14 @@ static time_t io_loop(time_t delay)
       restart("Clock Failure");
     }
 
-#ifndef HUB
-  if(CurrentTime - lastCleanup >= CLEANUP_CHANNELS_TIME)
+  if(!ConfigFileEntry.hub)
     {
-      lastCleanup = CurrentTime;
-      cleanup_channels();
+      if(CurrentTime - lastCleanup >= CLEANUP_CHANNELS_TIME)
+        {
+          lastCleanup = CurrentTime;
+          cleanup_channels();
+        }
     }
-#endif
 
   /*
    * This chunk of code determines whether or not
@@ -622,13 +621,13 @@ static void initialize_global_set_options(void)
 
 static void initialize_message_files(void)
   {
-  InitMessageFile( HELP_MOTD, HPATH, &ConfigFileEntry.helpfile );
-  InitMessageFile( USER_MOTD, MPATH, &ConfigFileEntry.motd );
-  InitMessageFile( OPER_MOTD, OPATH, &ConfigFileEntry.opermotd );
+    InitMessageFile( HELP_MOTD, HPATH, &ConfigFileEntry.helpfile );
+    InitMessageFile( USER_MOTD, MPATH, &ConfigFileEntry.motd );
+    InitMessageFile( OPER_MOTD, OPATH, &ConfigFileEntry.opermotd );
 
-  ReadMessageFile( &ConfigFileEntry.helpfile );
-  ReadMessageFile( &ConfigFileEntry.motd );
-  ReadMessageFile( &ConfigFileEntry.opermotd );
+    ReadMessageFile( &ConfigFileEntry.helpfile );
+    ReadMessageFile( &ConfigFileEntry.motd );
+    ReadMessageFile( &ConfigFileEntry.opermotd );
   }
 
 /*
@@ -835,9 +834,8 @@ int main(int argc, char *argv[])
   init_stats();
   init_tree_parse(msgtab);      /* tree parse code (orabidoo) */
 
-#ifdef HUB
-  initServerMask();
-#endif
+  if(ConfigFileEntry.hub)
+    initServerMask();
 
   fdlist_init();
   init_netio();
