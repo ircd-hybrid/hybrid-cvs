@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.63 2000/12/11 22:07:34 db Exp $
+ *  $Id: s_user.c,v 7.64 2000/12/11 23:20:27 db Exp $
  */
 #include "tools.h"
 #include "s_user.h"
@@ -303,7 +303,6 @@ int register_user(struct Client *cptr, struct Client *sptr,
 
   user->last = CurrentTime;
   parv[0] = sptr->name;
-  parv[1] = parv[2] = NULL;
 
   /* pointed out by Mortiis, never be too careful */
   if(strlen(username) > USERLEN)

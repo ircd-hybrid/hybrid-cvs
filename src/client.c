@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.66 2000/12/11 22:07:32 db Exp $
+ *  $Id: client.c,v 7.67 2000/12/11 23:20:26 db Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -639,7 +639,8 @@ static void exit_marked_for_death_clients(dlink_list *list)
           if(cptr->flags2 & FLAGS2_ALREADY_EXITED)
             {
               sendto_realops_flags(FLAGS_ALL,
-				   "Client already exited %X",cptr);
+				   "Client already exited %X [%s]",
+				   cptr,cptr->name);
             }
           else
             (void)exit_client(cptr, cptr, &me, dying_ptr->reason);
@@ -1108,12 +1109,14 @@ const char* get_client_host(struct Client* client)
 ** Exit one client, local or remote. Assuming all dependents have
 ** been already removed, and socket closed for local client.
 */
-static void exit_one_client(struct Client *cptr, struct Client *sptr, struct Client *from,
+static void exit_one_client(struct Client *cptr, struct 
+			    Client *sptr, struct Client *from,
                             const char* comment)
 {
   struct Client* acptr;
   dlink_node *lp;
   dlink_node *next_lp;
+  dlink_node *m;
 
   if (IsServer(sptr))
     {
@@ -1379,8 +1382,18 @@ const char* comment         /* Reason for the exit */
 #ifdef IPV6
         remove_one_ip(sptr->localClient->ip6.s6_addr);
 #else
-        remove_one_ip(sptr->localClient->ip.s_addr);
+      remove_one_ip(sptr->localClient->ip.s_addr);
 #endif
+      if (IsUnknown(sptr))
+	{
+	  m = dlinkFind(&unknown_list,sptr);
+	  if( m != NULL )
+	    {
+	      dlinkDelete(m, &unknown_list);
+	      free_dlink_node(m);
+	    }
+	}
+
       if (IsAnyOper(sptr))
         {
 	  m = dlinkFind(&oper_list,sptr);
