@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 7.12 2000/12/25 18:33:01 ejb Exp $
+# $Id: Makefile.in,v 7.13 2000/12/29 16:33:32 davidt Exp $
 
 CC		= @CC@
 INSTALL		= @INSTALL@
@@ -9,7 +9,7 @@ RM		= @RM@
 LEX		= @LEX@
 LEXLIB		= @LEXLIB@
 CFLAGS		= @CFLAGS@ -DIRCD_PREFIX=\"@prefix@\"
-LDFLAGS   	= -Wl,-export-dynamic
+LDFLAGS   	= -Wl,-export-dynamic @LDFLAGS_EXTRA@
 MKDEP		= ${CC} -MM
 MV		= @MV@
 RM		= @RM@
