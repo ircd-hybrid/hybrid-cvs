@@ -1,3 +1,13 @@
+*** 20001204_5 by db
+- redid clear_channel_list code to handle possible buffer overflows
+  limiting to 3 mode changes isn't sufficient *sigh*
+  I think I got this right, unable to test without another server to link to
+  and I'm too tired. ;)
+  N.B. this code is very similar to send_mode_list... perhaps can
+  combine the two functions. ...
+
+
+
 *** 20001204_4 by db
 - fixed vchan support, added new back pointer to channel struct
   only set non NULL on sub vchans. This makes it easy ...
@@ -1490,7 +1500,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.685 2000/12/04 08:17:31 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.686 2000/12/04 08:30:58 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
