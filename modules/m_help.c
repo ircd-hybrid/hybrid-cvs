@@ -2,9 +2,9 @@
  * modules/m_help.c
  * Copyright (C) 2001 Hybrid Development Team
  *
- *   $Id: m_help.c,v 1.26 2001/12/24 16:15:08 androsyn Exp $
+ *   $Id: m_help.c,v 1.27 2001/12/28 16:41:48 davidt Exp $
  */
- 
+
 #include "handlers.h"
 #include "client.h"
 #include "ircd.h"
@@ -34,42 +34,42 @@ struct Message uhelp_msgtab = {
 };
 #ifndef STATIC_MODULES
 
-void
+  void
 _modinit(void)
 {
   mod_add_cmd(&help_msgtab);
   mod_add_cmd(&uhelp_msgtab);
 }
 
-void
+  void
 _moddeinit(void)
 {
   mod_del_cmd(&help_msgtab);
   mod_del_cmd(&uhelp_msgtab);
 }
 
-char *_version = "$Revision: 1.26 $";
+char *_version = "$Revision: 1.27 $";
 #endif
 /*
  * m_help - HELP message handler
  *      parv[0] = sender prefix
  */
 static void m_help(struct Client *client_p, struct Client *source_p,
-                  int parc, char *parv[])
+                   int parc, char *parv[])
 {
   static time_t last_used = 0;
 
   /* HELP is always local */
   if ((last_used + ConfigFileEntry.pace_wait) > CurrentTime)
-    {
-      /* safe enough to give this on a local connect only */
-      sendto_one(source_p,form_str(RPL_LOAD2HI),me.name,parv[0]);
-      return;
-    }
+  {
+    /* safe enough to give this on a local connect only */
+    sendto_one(source_p,form_str(RPL_LOAD2HI),me.name,parv[0]);
+    return;
+  }
   else
-    {
-      last_used = CurrentTime;
-    }
+  {
+    last_used = CurrentTime;
+  }
 
   if(parc > 1)
     dohelp(source_p, UHPATH, parv[1], parv[0]);
@@ -82,7 +82,7 @@ static void m_help(struct Client *client_p, struct Client *source_p,
  *      parv[0] = sender prefix
  */
 static void mo_help(struct Client *client_p, struct Client *source_p,
-                   int parc, char *parv[])
+                    int parc, char *parv[])
 {
   if(parc > 1)
     dohelp(source_p, HPATH, parv[1], parv[0]);
@@ -97,76 +97,81 @@ static void mo_help(struct Client *client_p, struct Client *source_p,
  */
 
 static void mo_uhelp(struct Client *client_p, struct Client *source_p,
-                   int parc, char *parv[])
+                     int parc, char *parv[])
 {
   if(parc > 1)
     dohelp(source_p, UHPATH, parv[1], parv[0]);
   else
-    dohelp(source_p, UHPATH, "", parv[0]);
+    dohelp(source_p, UHPATH, "index", parv[0]);
 }
 
-static void dohelp(source_p, hpath, topic, nick)
-	 struct Client *source_p;
-	 char *hpath, *topic, *nick;
+static void dohelp(struct Client *source_p, char *hpath,
+                   char *topic, char *nick)
 {
   char path[MAXPATHLEN + 1];
   struct stat sb;
+  int i;
+
+  /* convert to lower case */
+  for (i = 0; topic[i] != '\0'; i++)
+  {
+    topic[i] = ToLower(topic[i]);
+  }
 
   if (strchr(topic, '/'))
-	{
-	  sendto_one(source_p, form_str(ERR_HELPNOTFOUND), me.name, nick, topic);
-	  return;
-	}
+  {
+    sendto_one(source_p, form_str(ERR_HELPNOTFOUND), me.name, nick, topic);
+    return;
+  }
 
   if (strlen(hpath) + strlen(topic) + 1 > MAXPATHLEN)
-	{
-	  sendto_one(source_p, form_str(ERR_HELPNOTFOUND), me.name, nick, topic);
-	  return;
-	}
+  {
+    sendto_one(source_p, form_str(ERR_HELPNOTFOUND), me.name, nick, topic);
+    return;
+  }
 
   sprintf(path, "%s/%s", hpath, topic);
 
   if (stat(path, &sb) < 0)
-	{
-	  sendto_one(source_p, form_str(ERR_HELPNOTFOUND), me.name, nick, topic);
-	  return;
-	}
+  {
+    sendto_one(source_p, form_str(ERR_HELPNOTFOUND), me.name, nick, topic);
+    return;
+  }
 
   if (!S_ISREG(sb.st_mode))
-	{
-	  sendto_one(source_p, form_str(ERR_HELPNOTFOUND), me.name, nick, topic);
-	  return;
-	}
-    
+  {
+    sendto_one(source_p, form_str(ERR_HELPNOTFOUND), me.name, nick, topic);
+    return;
+  }
+
   sendhelpfile(source_p, path, topic, nick);
   return;
 }
 
-static void sendhelpfile(source_p, path, topic, nick)
-	 struct Client *source_p;
-	 char *path, *topic, *nick;
+static void sendhelpfile(struct Client *source_p, char *path,
+                         char *topic, char *nick)
 {
   FILE *file;
   char line[HELPLEN];
 
   if ((file = fopen(path, "r")) == NULL)
-	{
-	  sendto_one(source_p, form_str(ERR_HELPNOTFOUND), me.name, nick, topic);
-	  return;
-	}
+  {
+    sendto_one(source_p, form_str(ERR_HELPNOTFOUND), me.name, nick, topic);
+    return;
+  }
 
   if (fgets(line, sizeof(line), file) == NULL)
-	{
-	  sendto_one(source_p, form_str(ERR_HELPNOTFOUND), me.name, nick, topic);
-	  return;
-	}
+  {
+    sendto_one(source_p, form_str(ERR_HELPNOTFOUND), me.name, nick, topic);
+    return;
+  }
 
   sendto_one(source_p, form_str(RPL_HELPSTART), me.name, nick, topic, line);
 
   while (fgets(line, sizeof(line), file))
-	{
-	  sendto_one(source_p, form_str(RPL_HELPTXT), me.name, nick, topic, line);
-	}
+  {
+    sendto_one(source_p, form_str(RPL_HELPTXT), me.name, nick, topic, line);
+  }
 
   sendto_one(source_p, form_str(RPL_ENDOFHELP), me.name, nick, topic);
   return;
