@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.313 2003/06/14 03:39:25 db Exp $
+ *  $Id: ircd_parser.y,v 1.314 2003/06/14 17:31:18 adx Exp $
  */
 
 %{
@@ -723,7 +723,7 @@ logging_items:          logging_items logging_item |
 
 logging_item:           logging_path | logging_oper_log |
                         logging_gline_log | logging_log_level |
-			error;
+			logging_use_logging | error;
 
 logging_path:           T_LOGPATH '=' QSTRING ';' 
                         {
@@ -765,6 +765,16 @@ logging_log_level: LOG_LEVEL '=' T_L_CRIT ';'
 {
   if (ypass == 2)
     set_log_level(L_DEBUG);
+};
+
+logging_use_logging: USE_LOGGING '=' TYES ';'
+{
+  if (ypass == 2)
+    use_logging = YES;
+} | USE_LOGGING '=' TNO ';'
+{
+  if (ypass == 2)
+    use_logging = NO;
 };
 
 /***************************************************************************
@@ -2237,7 +2247,6 @@ general_item:       general_ignore_bogus_ts | general_failed_oper_notice |
                     general_idletime |
                     general_maximum_links |
                     general_message_locale | general_client_exit |
-		    general_use_logging |
                     general_fname_userlog | general_fname_operlog |
                     general_fname_foperlog | general_oper_only_umodes |
                     general_max_targets |
@@ -2490,16 +2499,6 @@ general_iauth_port: IAUTH_PORT '=' NUMBER ';'
   if (ypass == 2)
     iAuth.port = $3;
 #endif
-};
-
-general_use_logging: USE_LOGGING '=' TYES ';'
-{
-  if (ypass == 2)
-    ConfigFileEntry.use_logging = 1;
-} | USE_LOGGING '=' TNO ';'
-{
-  if (ypass == 2)
-    ConfigFileEntry.use_logging = 0;
 };
 
 general_fname_userlog: FNAME_USERLOG '=' QSTRING ';'

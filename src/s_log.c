@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.c,v 7.53 2003/06/12 00:38:33 metalrock Exp $
+ *  $Id: s_log.c,v 7.54 2003/06/14 17:31:18 adx Exp $
  */
 
 #include "stdinc.h"
@@ -28,6 +28,7 @@
 #include <syslog.h>
 #endif
 #include "client.h"	/* Needed for struct Client */
+#include "common.h"
 #include "s_log.h"
 #include "fileio.h"
 #include "irc_string.h"
@@ -43,6 +44,7 @@
 
 static FBFILE *logFile;
 static int logLevel = INIT_LOG_LEVEL;
+int use_logging = YES;
 
 
 #ifndef SYSLOG_USERS
@@ -162,7 +164,7 @@ ilog(int priority, const char *fmt, ...)
   if (priority <= L_DEBUG)
     syslog(sysLogLevel[priority], "%s", buf);
 #endif
-  if (ConfigFileEntry.use_logging)
+  if (use_logging)
     write_log(buf);
 
 #ifdef __vms

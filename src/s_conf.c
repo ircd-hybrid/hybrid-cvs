@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.428 2003/06/14 03:39:25 db Exp $
+ *  $Id: s_conf.c,v 7.429 2003/06/14 17:31:18 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1470,7 +1470,7 @@ rehash(int sig)
   flush_deleted_I_P();
   check_klines();
 
-  if (ConfigFileEntry.use_logging)
+  if (use_logging)
     reopen_log(logFileName);
 
   return(0);
@@ -1517,6 +1517,7 @@ set_default_conf(void)
   AdminInfo.description = NULL;
 
   set_log_level(L_NOTICE);
+  use_logging = YES;
   
   ConfigFileEntry.ignore_bogus_ts = NO;
   ConfigFileEntry.failed_oper_notice = YES;
@@ -1542,7 +1543,6 @@ set_default_conf(void)
   ConfigFileEntry.short_motd = NO;
   ConfigFileEntry.no_oper_flood = NO;
   ConfigFileEntry.true_no_oper_flood = NO;
-  ConfigFileEntry.use_logging = YES;
   ConfigFileEntry.fname_userlog[0] = '\0';
   ConfigFileEntry.fname_foperlog[0] = '\0';
   ConfigFileEntry.fname_operlog[0] = '\0';

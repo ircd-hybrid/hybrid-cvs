@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.h,v 7.13 2003/05/28 01:41:22 joshk Exp $
+ *  $Id: s_log.h,v 7.14 2003/06/14 17:31:14 adx Exp $
  */
 
 #ifndef INCLUDED_s_log_h
@@ -34,6 +34,8 @@ struct Client;
 #define L_TRACE   4
 #define L_INFO    5
 #define L_DEBUG   6
+
+extern int use_logging;
 
 extern void init_log(const char* filename);
 extern void reopen_log(const char* filename);
