@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.93 2001/01/01 20:49:40 db Exp $
+ * $Id: ircd.c,v 7.94 2001/01/04 03:00:58 davidt Exp $
  */
 #include "tools.h"
 #include "ircd.h"
@@ -138,6 +138,7 @@ dlink_list unknown_list;        /* unknown clients ON this server only */
 dlink_list lclient_list;        /* local clients only ON this server */
 dlink_list serv_list;           /* local servers know to this server ONLY */
 dlink_list oper_list;           /* our opers, duplicated in lclient_list */
+dlink_list dead_list;           /* clients that have exited, to be freed */
 
 dlink_list lazylink_channels;   /* known about lazylink channels on HUB */
 dlink_list lazylink_nicks;	/* known about lazylink nicks on HUB */
@@ -346,6 +347,11 @@ static time_t io_loop(time_t delay)
 
   /* Do IO events */
   comm_select(delay);
+
+  /*
+   * Free up dead clients
+   */
+  free_exited_clients();
 
   /*
    * Check to see whether we have to rehash the configuration ..

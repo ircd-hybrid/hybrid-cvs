@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.73 2001/01/01 22:57:57 toot Exp $
+ *   $Id: parse.c,v 7.74 2001/01/04 03:00:58 davidt Exp $
  */
 #include "parse.h"
 #include "client.h"
@@ -293,12 +293,18 @@ int parse(struct Client *cptr, char *pbuffer, char *bufend)
   i = 1;
   
   if (s)
-	  string_to_array(s, mpara, paramcount, end, &i, para);
+    string_to_array(s, mpara, paramcount, end, &i, para);
    
   if (mptr == (struct Message *)NULL)
-	  return do_numeric(numeric, cptr, from, i, para);
+    return do_numeric(numeric, cptr, from, i, para);
   else
-	  return handle_command(mptr, cptr, from, i, para);
+  {
+    handle_command(mptr, cptr, from, i, para);
+    if (cptr->fd < 0)
+      return(CLIENT_EXITED);
+    else
+      return 0;
+  }
 }
 
 static int
