@@ -1,3 +1,27 @@
+a1kmm       2001/12/18 03:42:19 EST	(20011218_1)
+
+  Modified files:
+    src                  s_auth.c s_bsd.c 
+  Log:
+  - Made s_auth reschedule if no data is read on the first pass. This is
+    needed for sigio to work properly as we need to try reading at once to
+    tell the kernel to send the signal next time. Note that if any auth
+    data is received, it still must all be received in the same packet. This
+    should be a non-risky commit.
+  - Changed an assert() to an if () return; This was needed because with SIGIO
+    a call to comm_setselect from a handler that was not called by comm_setselect
+    can result in a call to the handler, which caused re-entrancy problems with
+    the assert. As the assert() should never happen, this should not affect the
+    rest of the ircd. Additionally, it is a better action in the case it does
+    happen if NDEBUG is defined, as that would otherwise result in the ircd
+    coring(probably).
+  
+  Revision  Changes    Path
+  7.78      +8 -1      ircd-hybrid-7/src/s_auth.c
+  7.153     +4 -2      ircd-hybrid-7/src/s_bsd.c
+
+
+
 a1kmm       2001/12/18 02:20:09 EST	(20011218_0)
 
   Modified files:
@@ -988,7 +1012,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3209 2001/12/18 07:20:15 a1kmm Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3210 2001/12/18 08:42:24 a1kmm Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -19342,4 +19366,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3209 2001/12/18 07:20:15 a1kmm Exp $
+$Id: ChangeLog,v 7.3210 2001/12/18 08:42:24 a1kmm Exp $
