@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.312 2002/05/14 11:41:37 leeh Exp $
+ *  $Id: channel.c,v 7.313 2002/05/16 05:53:12 androsyn Exp $
  */
 
 #include "tools.h"
@@ -207,8 +207,10 @@ remove_user_from_channel(struct Channel *chptr, struct Client *who)
   else if ((ptr = find_user_link(&chptr->halfops, who)))
     dlinkDelete(ptr, &chptr->halfops);
 #endif
-  else
-    return;                     /* oops */
+  else {
+    assert(0 == 1); /* This ain't supposed to happen */
+  }
+#endif
 
   free_dlink_node(ptr);
 
@@ -235,7 +237,7 @@ remove_user_from_channel(struct Channel *chptr, struct Client *who)
       dlinkDelete(ptr, &chptr->locchanops_voiced);
 #endif
     else
-      return;                   /* XXX */
+      assert(1 == 0);
 
     free_dlink_node(ptr);
   }
@@ -475,6 +477,7 @@ sub1_from_channel(struct Channel *chptr)
 {
   if (--chptr->users <= 0)
   {
+    assert(chptr->users >= 0);
     chptr->users = 0;           /* if chptr->users < 0, make sure it sticks at 0
                                  * It should never happen but...
                                  */
