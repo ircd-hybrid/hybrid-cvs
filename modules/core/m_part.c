@@ -19,13 +19,14 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_part.c,v 1.71 2003/05/25 04:37:57 db Exp $
+ *  $Id: m_part.c,v 1.72 2003/06/07 12:00:54 michael Exp $
  */
 
 #include "stdinc.h"
 #include "tools.h"
 #include "handlers.h"
 #include "channel.h"
+#include "channel_mode.h"
 #include "client.h"
 #include "common.h"  
 #include "hash.h"
@@ -60,7 +61,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&part_msgtab);
 }
-const char *_version = "$Revision: 1.71 $";
+const char *_version = "$Revision: 1.72 $";
 #endif
 
 static void part_one_client(struct Client *client_p,
@@ -141,7 +142,7 @@ part_one_client(struct Client *client_p, struct Client *source_p,
    *  only allow /part reasons in -m chans
    */
   if (reason[0] &&
-      (is_chan_op(chptr, source_p) || !MyConnect(source_p) ||
+      (has_member_flags(chptr, source_p, CHFL_CHANOP) || !MyConnect(source_p) ||
        ((can_send(chptr, source_p) > 0 && 
          (source_p->firsttime + ConfigFileEntry.anti_spam_exit_message_time)
          < CurrentTime))))

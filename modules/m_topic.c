@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_topic.c,v 1.60 2003/05/13 02:32:13 joshk Exp $
+ *  $Id: m_topic.c,v 1.61 2003/06/07 12:00:52 michael Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&topic_msgtab);
 }
 
-const char *_version = "$Revision: 1.60 $";
+const char *_version = "$Revision: 1.61 $";
 #endif
 
 /* m_topic()
@@ -122,7 +122,7 @@ m_topic(struct Client *client_p, struct Client *source_p,
 	      return;
 	    }
 	  if ((chptr->mode.mode & MODE_TOPICLIMIT) == 0 ||
-	      is_chan_op(chptr,source_p))
+	      has_member_flags(chptr, source_p, CHFL_CHANOP))
 	    {
 	      char topic_info[USERHOST_REPLYLEN]; 
               ircsprintf(topic_info, "%s!%s@%s",

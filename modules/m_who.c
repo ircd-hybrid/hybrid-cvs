@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_who.c,v 1.84 2003/06/07 09:56:48 michael Exp $
+ *  $Id: m_who.c,v 1.85 2003/06/07 12:00:52 michael Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&who_msgtab);
 }
 
-const char *_version = "$Revision: 1.84 $";
+const char *_version = "$Revision: 1.85 $";
 #endif
 
 static void who_global(struct Client *source_p, char *mask, int server_oper);
@@ -175,9 +175,9 @@ m_who(struct Client *client_p, struct Client *source_p,
       /* XXX globalize this inside m_who.c ? */
       /* jdc -- Check is_any_op() for +o > +h > +v priorities */
 
-      if (is_chan_op(chptr,target_p))
+      if (has_member_flags(chptr, target_p, CHFL_CHANOP))
         do_who(source_p, target_p, chptr->chname, "@");
-      else if (is_voiced(chptr,target_p))
+      else if (has_member_flags(chptr, target_p, CHFL_VOICE))
         do_who(source_p, target_p, chptr->chname, "+");
       else
         do_who(source_p, target_p, chptr->chname, "");

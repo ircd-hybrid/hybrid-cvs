@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kick.c,v 1.59 2003/06/01 11:28:23 michael Exp $
+ *  $Id: m_kick.c,v 1.60 2003/06/07 12:00:54 michael Exp $
  */
 
 #include "stdinc.h"
@@ -60,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&kick_msgtab);
 }
 
-const char *_version = "$Revision: 1.59 $";
+const char *_version = "$Revision: 1.60 $";
 #endif
 
 /* m_kick()
@@ -110,7 +110,7 @@ m_kick(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if (!IsServer(source_p) && !is_chan_op(chptr, source_p)) 
+  if (!IsServer(source_p) && !has_member_flags(chptr, source_p, CHFL_CHANOP)) 
   {
     /* was a user, not a server, and user isn't seen as a chanop here */
     if (MyConnect(source_p))

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.122 2003/06/07 09:56:50 michael Exp $
+ *  $Id: m_message.c,v 1.123 2003/06/07 12:00:54 michael Exp $
  */
 
 #include "stdinc.h"
@@ -119,7 +119,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.122 $";
+const char *_version = "$Revision: 1.123 $";
 #endif
 
 /*
@@ -360,10 +360,10 @@ build_target_list(int p_or_n, const char *command, struct Client *client_p,
 
       if ((chptr = hash_find_channel(nick)) != NULL)
 	{
-	  if(!is_chan_op(chptr, source_p) && !is_voiced(chptr, source_p))
+	  if(!has_member_flags(chptr, source_p, CHFL_CHANOP|CHFL_VOICE))
 	    {
-	      sendto_one(source_p, form_str(ERR_CHANOPRIVSNEEDED), me.name,
-			 source_p->name, with_prefix);
+	      sendto_one(source_p, form_str(ERR_CHANOPRIVSNEEDED),
+                         me.name, source_p->name, with_prefix);
 	      return(-1);
 	    }
 
@@ -373,7 +373,7 @@ build_target_list(int p_or_n, const char *command, struct Client *client_p,
 		{
 		  sendto_one(source_p, form_str(ERR_TOOMANYTARGETS),
 			     me.name, source_p->name, nick);
-		  return (1);
+		  return(1);
 		}
 	      targets[ntargets].ptr = (void *)chptr;
 	      targets[ntargets].type = ENTITY_CHANOPS_ON_CHANNEL;

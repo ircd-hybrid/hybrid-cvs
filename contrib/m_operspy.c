@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.34 2003/06/07 09:56:44 michael Exp $
+ *   $Id: m_operspy.c,v 1.35 2003/06/07 12:00:49 michael Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -112,7 +112,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.34 $";
+const char *_version = "$Revision: 1.35 $";
 #endif
 
 #ifdef LOG_OPERSPY
@@ -378,9 +378,9 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
         chptr_who =
           ((struct Membership *)target_p_who->user->channel.head->data)->chptr;
 
-        if (is_chan_op(chptr_who, target_p))
+        if (has_member_flags(chptr_who, target_p, CHFL_CHANOP))
 	  do_who(client_p, target_p_who, chptr_who->chname, "@");
-	else if (is_voiced(chptr_who, target_p))
+	else if (has_member_flags(chptr_who, target_p, CHFL_VOICE))
 	  do_who(client_p, target_p_who, chptr_who->chname, "+");
 	else
 	  do_who(client_p, target_p_who, chptr_who->chname, "");

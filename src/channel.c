@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.390 2003/06/06 04:31:49 michael Exp $
+ *  $Id: channel.c,v 7.391 2003/06/07 12:00:56 michael Exp $
  */
 
 #include "stdinc.h"
@@ -702,56 +702,18 @@ can_join(struct Client *source_p, struct Channel *chptr, const char *key)
   return(0);
 }
 
-/* is_chan_op()
- *
- * inputs       - pointer to channel to check chanop on
- *              - pointer to client struct being checked
- * output       - yes if chanop no if not
- * side effects -
- */
 int
-is_chan_op(struct Channel *chptr, struct Client *who)
+has_member_flags(struct Channel *chptr, struct Client *who, unsigned int flags)
 {
   struct Membership *ms;
 
   if ((ms = find_channel_link(who, chptr)) != NULL)
-    return(ms->flags & CHFL_CHANOP);
+    if (ms->flags & flags)
+      return(1);
+
   return(0);
 }
 
-/* is_voiced()
- *
- * inputs       - pointer to channel to check voice on
- *              - pointer to client struct being checked
- * output       - yes if voiced no if not
- * side effects -
- */
-int
-is_voiced(struct Channel *chptr, struct Client *who)
-{
-  struct Membership *ms;
-
-  if ((ms = find_channel_link(who, chptr)) != NULL)
-    return(ms->flags & CHFL_VOICE);
-  return(0);
-}
-
-/* is_deopped()
- *
- * inputs       - pointer to channel to is deopped on
- *              - pointer to client struct being checked
- * output       - yes if deopped no if not
- * side effects -
- */
-int
-is_deopped(struct Channel *chptr, struct Client *who)
-{
-  struct Membership *ms;
-
-  if ((ms = find_channel_link(who, chptr)) != NULL)
-    return(ms->flags & CHFL_DEOPPED);
-  return(0);
-}
 
 struct Membership *
 find_channel_link(struct Client *client_p, struct Channel *chptr)

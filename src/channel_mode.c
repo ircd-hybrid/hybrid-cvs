@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.109 2003/06/07 09:56:52 michael Exp $
+ *  $Id: channel_mode.c,v 7.110 2003/06/07 12:00:56 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1057,9 +1057,9 @@ chm_op(struct Client *client_p, struct Client *source_p,
     return;
 
   /* no redundant mode changes */
-  if (dir == MODE_ADD &&  is_chan_op(chptr, targ_p))
+  if (dir == MODE_ADD &&  has_member_flags(chptr, targ_p, CHFL_CHANOP))
     return;
-  if (dir == MODE_DEL && !is_chan_op(chptr, targ_p))
+  if (dir == MODE_DEL && !has_member_flags(chptr, targ_p, CHFL_CHANOP))
     return;
 
   if (dir == MODE_ADD)
@@ -1152,9 +1152,9 @@ chm_voice(struct Client *client_p, struct Client *source_p,
     return;
 
   /* no redundant mode changes */
-  if (dir == MODE_ADD &&  is_voiced(chptr, targ_p))
+  if (dir == MODE_ADD &&  has_member_flags(chptr, targ_p, CHFL_VOICE))
     return;
-  if (dir == MODE_DEL && !is_voiced(chptr, targ_p))
+  if (dir == MODE_DEL && !has_member_flags(chptr, targ_p, CHFL_VOICE))
     return;
 
   if (dir == MODE_ADD)
@@ -1427,7 +1427,7 @@ get_channel_access(struct Client *source_p, struct Channel *chptr)
   if (!MyClient(source_p))
     return(CHACCESS_CHANOP);
 
-  if (is_chan_op(chptr, source_p))
+  if (has_member_flags(chptr, source_p, CHFL_CHANOP))
     return(CHACCESS_CHANOP);
 
   return(0);
