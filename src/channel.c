@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.300 2002/03/01 20:22:57 androsyn Exp $
+ *  $Id: channel.c,v 7.301 2002/03/04 21:29:57 leeh Exp $
  */
 
 #include "tools.h"
@@ -134,6 +134,14 @@ add_user_to_channel(struct Channel *chptr, struct Client *who, int flags)
         if (MyClient(who))
           dlinkAdd(who, lptr, &chptr->locvoiced);
         break;
+
+#ifdef REQUIRE_OANDV
+      case MODE_CHANOP|MODE_VOICE:
+        dlinkAdd(who, ptr, &chptr->chanops_voiced);
+	if (MyClient(who))
+	  dlinkAdd(who, lptr, &chptr->locchanops_voiced);
+        break;
+#endif
     }
 
     chptr->users++;
