@@ -1,3 +1,15 @@
+androsyn    2002/07/12 20:48:24 EDT	(20020713_0)
+
+  Modified files:
+    src                  client.c 
+  Log:
+  Make dead_link exit message consistant
+  
+  Revision  Changes    Path
+  7.290     +9 -4      ircd-hybrid-7/src/client.c
+
+
+
 androsyn    2002/07/12 15:42:29 EDT	(20020712_12)
 
   Modified files:
@@ -29731,4 +29743,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3871 2002/07/12 19:42:36 androsyn Exp $
+$Id: ChangeLog,v 7.3872 2002/07/13 00:48:31 androsyn Exp $
