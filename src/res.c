@@ -4,7 +4,7 @@
  * shape or form. The author takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: res.c,v 7.8 1999/09/11 04:01:43 tomh Exp $
+ * $Id: res.c,v 7.9 1999/12/18 03:35:58 db Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -1072,7 +1072,7 @@ void get_res(void)
        * got a name and address response, client resolved
        */
       cp = make_cache(request);
-      (*request->query.callback)(request->query.vptr, &cp->reply);
+      (*request->query.callback)(request->query.vptr, cp ? &cp->reply : 0 );
       rem_request(request);
     }
   }
