@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.142 2003/07/07 21:18:54 michael Exp $
+ *  $Id: m_stats.c,v 1.143 2003/07/16 00:35:07 michael Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.142 $";
+const char *_version = "$Revision: 1.143 $";
 #endif
 
 const char *Lformat = ":%s %d %s %s %u %u %u %u %u :%u %u %s";
@@ -679,7 +679,7 @@ stats_operedup(struct Client *source_p)
   struct AccessItem *aconf;
   dlink_node *oper_ptr;
   dlink_node *ptr;
-  int j = 0;
+  unsigned int j = 0;
 
   DLINK_FOREACH(oper_ptr, oper_list.head)
   {
@@ -690,7 +690,7 @@ stats_operedup(struct Client *source_p)
     if (MyClient(source_p) && IsOper(source_p))
     {
       ptr   = target_p->localClient->confs.head;
-      aconf = ptr->data;
+      aconf = map_to_conf(ptr->data);
 
       sendto_one(source_p, ":%s %d %s p :[%c][%s] %s (%s@%s) Idle: %d",
                  me.name, RPL_STATSDEBUG, source_p->name,
@@ -711,8 +711,8 @@ stats_operedup(struct Client *source_p)
     }
   }
 
-  sendto_one(source_p, ":%s %d %s p :%d OPER(s)", me.name, RPL_STATSDEBUG,
-             source_p->name, j);
+  sendto_one(source_p, ":%s %d %s p :%d OPER(s)",
+             me.name, RPL_STATSDEBUG, source_p->name, j);
   stats_p_spy(source_p);
 }
 
