@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.88 2002/01/12 18:38:43 jmallett Exp $
+ *  $Id: modules.c,v 7.89 2002/02/04 21:07:53 ejb Exp $
  */
 
 #include "config.h"
@@ -32,6 +32,10 @@
 #include <string.h>
 #include <errno.h>
 #include <dirent.h>
+
+#ifdef VMS
+# define _XOPEN_SOURCE
+#endif
 
 #include <limits.h>
 #include <unistd.h>

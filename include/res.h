@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: res.h,v 7.18 2002/01/05 09:14:29 a1kmm Exp $
+ *  $Id: res.h,v 7.19 2002/02/04 21:07:46 ejb Exp $
  */
 
 #ifndef _RES_H_INCLUDED
@@ -29,7 +29,11 @@
 #include "ircd_defs.h"
 /* I hate this *blah* db */
 #include "fileio.h"
-#include "../adns/adns.h"
+#ifdef VMS
+# include "adns.h"
+#else
+# include "../adns/adns.h"
+#endif
 
 #define DNS_BLOCK_SIZE 64
 
