@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.251 2003/02/16 00:22:23 db Exp $
+ *  $Id: ircd.c,v 7.252 2003/02/16 21:22:25 lusky Exp $
  */
 
 #include "stdinc.h"
@@ -616,6 +616,11 @@ int main(int argc, char *argv[])
   setup_signals();
   /* We need this to initialise the fd array before anything else */
   fdlist_init();
+  if (!server_state.foreground)
+  {
+    close_all_connections(); /* this needs to be before init_netio()! */
+  }
+  init_log(logFileName);
   init_netio();         /* This needs to be setup early ! -- adrian */
   /* Check if there is pidfile and daemon already running */
   check_pidfile(pidFileName);
@@ -623,11 +628,6 @@ int main(int argc, char *argv[])
   eventInit();
   init_sys();
 
-  if (!server_state.foreground)
-  {
-    close_all_connections();
-  }
-  init_log(logFileName);
   initBlockHeap();
   init_dlink_nodes();
   initialize_message_files();
