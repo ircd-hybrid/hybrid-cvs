@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: list.c,v 7.58 2003/06/03 14:10:06 michael Exp $
+ *  $Id: list.c,v 7.59 2003/06/16 04:01:29 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -39,11 +39,9 @@
 #include "memory.h"
 #include "balloc.h"
 
-
-/* XXX assummed 32 bit ints */
-int links_count  = 0;
-int slinks_count = 0;
-int user_count   = 0;
+int32_t links_count  = 0;
+int32_t slinks_count = 0;
+int32_t user_count   = 0;
 
 /* initUser()
  *
