@@ -1,3 +1,19 @@
+leeh        2001/12/15 17:20:09 EST	(20011215_11)
+
+  Modified files:
+    modules              .depend 
+    src                  .depend client.c 
+  Log:
+  - you cant compile an id string, commented it out in .depend
+  - check for splitmode everytime a client/server leaves (ugh)
+  
+  Revision  Changes    Path
+  1.2       +1 -1      ircd-hybrid-7/modules/.depend
+  7.2       +1 -1      ircd-hybrid-7/src/.depend
+  7.212     +4 -0      ircd-hybrid-7/src/client.c
+
+
+
 leeh        2001/12/15 15:35:23 EST	(20011215_10)
 
   Modified files:
@@ -639,7 +655,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3183 2001/12/15 20:35:28 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3184 2001/12/15 22:20:14 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -18993,4 +19009,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3183 2001/12/15 20:35:28 leeh Exp $
+$Id: ChangeLog,v 7.3184 2001/12/15 22:20:14 leeh Exp $
