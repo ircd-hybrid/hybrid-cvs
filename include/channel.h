@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.77 2001/06/26 19:48:42 leeh Exp $
+ * $Id: channel.h,v 7.78 2001/06/27 08:20:02 a1kmm Exp $
  */
 
 #include <sys/types.h>        /* time_t */
@@ -278,7 +278,7 @@ struct ChModeChange
 struct ChResyncOp
 {
  struct Client *client_p;
- int dir, sync;
+ int dir, sync, send;
  char c;
 };
 
