@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.65 2001/01/05 07:47:18 a1kmm Exp $
+ * $Id: s_conf.h,v 7.66 2001/01/05 08:21:52 db Exp $
  */
 
 #include <sys/param.h>
@@ -77,12 +77,6 @@ struct ConfItem
   struct Class*    c_class;     /* Class of connection */
   int              dns_pending; /* 1 if dns query pending, 0 otherwise */
 };
-
-typedef struct QlineItem {
-  char      *name;
-  struct    ConfItem *confList;
-  struct    QlineItem *next;
-}aQlineItem;
 
 #define CONF_ILLEGAL            0x80000000
 #define CONF_MATCH              0x40000000
