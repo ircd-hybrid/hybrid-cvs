@@ -17,7 +17,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- *  $Id: respond.c,v 1.8 2002/12/29 21:42:07 gregp Exp $
+ *  $Id: respond.c,v 1.9 2003/01/25 22:42:20 lusky Exp $
  */
 #include <stdio.h>
 #include <openssl/err.h>
@@ -48,6 +48,11 @@ static int pass_cb(char *buf, int size, int rwflag, void *u)
 	}
 
 	tmp = getpass("Enter passphrase for challenge: ");
+	if (!tmp)
+        {
+		puts("Couldn't read passphrase from stdin!");
+		exit(-1);
+	}
         len = strlen(tmp);
         if (len <= 0) 
 		return 0;
