@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.253 2001/07/18 14:36:57 androsyn Exp $
+ * $Id: channel.c,v 7.254 2001/07/22 14:03:30 leeh Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -1518,7 +1518,7 @@ chm_except(struct Client *client_p, struct Client *source_p,
     mode_changes_plus[mode_count_plus].letter = c;
     mode_changes_plus[mode_count_plus].caps = 0;
     mode_changes_plus[mode_count_plus].nocaps = 0;
-    mode_changes_plus[mode_count_plus].mems = ALL_MEMBERS;
+    mode_changes_plus[mode_count_plus].mems = ONLY_CHANOPS_HALFOPS;
     mode_changes_plus[mode_count_plus++].arg = mask;
   }
   else if (dir > 0 && del_id(chptr, mask, CHFL_EXCEPTION) == 0)
@@ -1534,7 +1534,7 @@ chm_except(struct Client *client_p, struct Client *source_p,
     mode_changes_minus[mode_count_minus].letter = c;
     mode_changes_minus[mode_count_minus].caps = 0;
     mode_changes_minus[mode_count_minus].nocaps = 0;
-    mode_changes_minus[mode_count_minus].mems = ALL_MEMBERS;
+    mode_changes_minus[mode_count_minus].mems = ONLY_CHANOPS_HALFOPS;
     mode_changes_minus[mode_count_minus++].arg = mask;
   }
 }
@@ -1595,7 +1595,7 @@ chm_invex(struct Client *client_p, struct Client *source_p,
     mode_changes_plus[mode_count_plus].letter = c;
     mode_changes_plus[mode_count_plus].caps = 0;
     mode_changes_plus[mode_count_plus].nocaps = 0;
-    mode_changes_plus[mode_count_plus].mems = ALL_MEMBERS;
+    mode_changes_plus[mode_count_plus].mems = ONLY_CHANOPS_HALFOPS;
     mode_changes_plus[mode_count_plus++].arg = mask;
   }
   else if (dir > 0 && del_id(chptr, mask, CHFL_INVEX) == 0)
@@ -1612,7 +1612,7 @@ chm_invex(struct Client *client_p, struct Client *source_p,
     mode_changes_minus[mode_count_minus].letter = c;
     mode_changes_minus[mode_count_minus].caps = 0;
     mode_changes_minus[mode_count_minus].nocaps = 0;
-    mode_changes_minus[mode_count_minus].mems = ALL_MEMBERS;
+    mode_changes_minus[mode_count_minus].mems = ONLY_CHANOPS_HALFOPS;
     mode_changes_minus[mode_count_minus++].arg = mask;
   }
 }
