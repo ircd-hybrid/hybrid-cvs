@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.72 2002/01/05 09:14:46 a1kmm Exp $
+ *  $Id: m_gline.c,v 1.73 2002/01/06 06:26:28 a1kmm Exp $
  */
 
 #include <assert.h>
@@ -122,7 +122,7 @@ _moddeinit(void)
   mod_del_cmd(&gline_msgtab);
 }
 
-char *_version = "$Revision: 1.72 $";
+char *_version = "$Revision: 1.73 $";
 #endif
 /*
  * mo_gline()
@@ -576,7 +576,7 @@ log_gline_request(
       return;
     }
 
-  tmptr = localtime(&CurrentTime);
+  tmptr = localtime((const time_t*)&CurrentTime);
   strftime(timebuffer, MAX_DATE_STRING, "%Y/%m/%d %H:%M:%S", tmptr);
 
   ircsprintf(buffer,
@@ -629,7 +629,7 @@ log_gline(struct Client *source_p,
       return;
     }
 
-  tmptr = localtime(&CurrentTime);
+  tmptr = localtime((const time_t*)&CurrentTime);
   strftime(timebuffer, MAX_DATE_STRING, "%Y/%m/%d %H:%M:%S", tmptr);
 
   ircsprintf(buffer,"#Gline for %s@%s %s added by the following\n",
