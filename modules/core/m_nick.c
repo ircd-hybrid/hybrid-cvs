@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_nick.c,v 1.36 2000/12/31 16:10:21 toot Exp $
+ *   $Id: m_nick.c,v 1.37 2001/01/02 02:07:44 a1kmm Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -340,7 +340,20 @@ int ms_nick(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
         }
       return 0;
     }
-
+  /* Okay, we should be safe to cut off the username... -A1kmm */
+  if (parc > 8 && strlen(parv[5]) > USERLEN)
+    {
+     sendto_realops_flags(FLAGS_ALL, "Long username from server %s for %s",
+                parv[0], parv[1]);
+     parv[5][USERLEN] = 0;
+    }
+  /* Okay, we should be safe to cut off the hostname... -A1kmm */
+  if (parc > 8 && strlen(parv[8]) > HOSTLEN)
+    {
+     sendto_realops_flags(FLAGS_ALL, "Long hostname from server %s for %s",
+                parv[0], parv[1]);
+     parv[8][HOSTLEN] = 0;
+    }
   if (!IsServer(sptr) && parc > 2)
     newts = atol(parv[2]);
   else if (IsServer(sptr) && parc > 3)
