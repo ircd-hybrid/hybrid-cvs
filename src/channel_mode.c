@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.52 2002/08/01 13:22:15 leeh Exp $
+ *  $Id: channel_mode.c,v 7.53 2002/08/08 23:52:08 wcampbel Exp $
  */
 
 #include "stdinc.h"
@@ -208,7 +208,7 @@ add_id(struct Client *client_p, struct Channel *chptr, char *banid, int type)
     {
       sendto_one(client_p, form_str(ERR_BANLISTFULL),
                  me.name, client_p->name, chptr->chname, banid);
-      return -1;
+      return 0;
     }
   }
 
@@ -229,14 +229,14 @@ add_id(struct Client *client_p, struct Channel *chptr, char *banid, int type)
     default:
       sendto_realops_flags(FLAGS_ALL, L_ALL,
                            "add_id() called with unknown ban type %d!", type);
-      return -1;
+      return 0;
   }
 
   for (ban = list->head; ban; ban = ban->next)
   {
     actualBan = ban->data;
     if (match(actualBan->banstr, banid))
-      return -1;
+      return 0;
   }
 
   ban = make_dlink_node();
@@ -263,7 +263,7 @@ add_id(struct Client *client_p, struct Channel *chptr, char *banid, int type)
   dlinkAdd(actualBan, ban, list);
 
   chptr->num_mask++;
-  return 0;
+  return 1;
 }
 
 /*
@@ -283,7 +283,7 @@ del_id(struct Channel *chptr, char *banid, int type)
   struct Ban *banptr;
 
   if (!banid)
-    return -1;
+    return 0;
 
   switch (type)
   {
@@ -299,7 +299,7 @@ del_id(struct Channel *chptr, char *banid, int type)
     default:
       sendto_realops_flags(FLAGS_ALL, L_ALL,
                            "del_id() called with unknown ban type %d!", type);
-      return -1;
+      return 0;
   }
 
   for (ban = list->head; ban; ban = ban->next)
@@ -321,7 +321,7 @@ del_id(struct Channel *chptr, char *banid, int type)
       dlinkDelete(ban, list);
       free_dlink_node(ban);
 
-      return 0;
+      return 1;
     }
   }
   return -1;
