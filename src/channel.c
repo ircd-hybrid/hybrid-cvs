@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.133 2000/12/21 01:27:52 ejb Exp $
+ * $Id: channel.c,v 7.134 2000/12/21 03:46:27 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -1887,48 +1887,47 @@ void set_channel_mode(struct Client *cptr,
             }
           break;
 
-			case 'z':
-				if (!isok_c)
-				{
-					if (MyClient(sptr) && !errsent(SM_ERR_NOOPS, &errors_sent))
-						sendto_one(sptr, form_str(ERR_CHANOPRIVSNEEDED), me.name,
-								   sptr->name, chname);
-					break;
-					
-				}
+	case 'z':
+	  if (!isok_c)
+	    {
+	      if (MyClient(sptr) && !errsent(SM_ERR_NOOPS, &errors_sent))
+		sendto_one(sptr, form_str(ERR_CHANOPRIVSNEEDED), me.name,
+			   sptr->name, chname);
+	      break;
+	      
+	    }
 
-				if(MyClient(sptr))
-				{
-					if(done_z)
-						break;
-					else
-						done_z = YES;
-					
-					/*              if ( opcnt >= MAXMODEPARAMS)
-									break; */
-				}
-				
-				if(whatt == MODE_ADD)
-				{
+	  if(MyClient(sptr))
+	    {
+	      if(done_z)
+		break;
+	      else
+		done_z = YES;
+	      
+	      /*              if ( opcnt >= MAXMODEPARAMS)
+			      break; */
+	    }
+	  
+	  if(whatt == MODE_ADD)
+	    {
               if (len + 2 >= MODEBUFLEN)
-				  break;
+		break;
               chptr->mode.mode |= MODE_HIDEOPS;
               *mbufw++ = '+';
               *mbufw++ = 'z';
               len += 2;
-				}
-				else
-				{
-					if (len + 2 >= MODEBUFLEN)
-						break;
-					
-					chptr->mode.mode &= ~MODE_HIDEOPS;
-					*mbufw++ = '-';
-					*mbufw++ = 'z';
-					len += 2;
-				}
-				break;
-				
+	    }
+	  else
+	    {
+	      if (len + 2 >= MODEBUFLEN)
+		break;
+	      
+	      chptr->mode.mode &= ~MODE_HIDEOPS;
+	      *mbufw++ = '-';
+	      *mbufw++ = 'z';
+	      len += 2;
+	    }
+	  break;
 				
         case 'p' :
           if (!isok_c)

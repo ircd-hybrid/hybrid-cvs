@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_set.c,v 1.18 2000/12/21 02:26:50 ejb Exp $ */
+ *   $Id: m_set.c,v 1.19 2000/12/21 03:46:23 db Exp $ */
 
 /* rewritten by jdc */
 
@@ -81,7 +81,6 @@ int quote_max(struct Client *, int);
 int quote_spamnum(struct Client *, int);
 int quote_spamtime(struct Client *, int);
 int quote_shide(struct Client *, int);
-int quote_chide(struct Client *, int);
 int list_quote_commands(struct Client *);
 
 

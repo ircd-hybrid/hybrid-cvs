@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.82 2000/12/21 02:31:52 db Exp $
+ *  $Id: client.c,v 7.83 2000/12/21 03:46:28 db Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -1071,10 +1071,6 @@ static void exit_one_client(struct Client *cptr, struct
 	    {
 	      next_lp = lp->next;
 	      remove_user_from_channel(lp->data,sptr);
-
-	      /* this dlink_node (lp) is freed
-	       * in remove_user_from_channel already.
-	       */
 	    }
           
           /* Clean up invitefield */
