@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.8 2000/01/24 02:47:31 db Exp $
+ * $Id: ircd_lexer.l,v 1.9 2000/01/25 04:02:04 db Exp $
  */
 
 %{
@@ -123,6 +123,18 @@ have_ident	{ return HAVE_IDENT; }
 reason		{ return REASON; }
 spoof		{ return SPOOF; }
 vhost		{ return VHOST; }
+logging         { return LOGGING; }
+logpath         { return LOGPATH; }
+oper_log        { return OPER_LOG; }
+gline_log       { return GLINE_LOG; }
+log_level	{ return LOG_LEVEL; }
+l_crit		{ return T_L_CRIT; }
+l_error		{ return T_L_ERROR; }
+l_warn		{ return T_L_WARN; }
+l_notice 	{ return T_L_NOTICE; }
+l_trace		{ return T_L_TRACE; }
+l_info		{ return T_L_INFO; }
+l_debug		{ return T_L_DEBUG; }
 .		{ return yytext[0]; }
 
 %%
