@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.41 2000/12/31 23:06:35 davidt Exp $
+ *   $Id: m_message.c,v 1.42 2001/01/02 17:07:22 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -586,7 +586,7 @@ void msg_client(int p_or_n, char *command,
 
   if(MyClient(acptr))
     {
-      if(IsSetCallerId(acptr))
+      if(!IsServer(sptr) && IsSetCallerId(acptr))
 	{
 	  /* Here is the anti-flood bot/spambot code -db */
 	  if(accept_message(sptr,acptr))
