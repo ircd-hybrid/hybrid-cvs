@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.53 2000/12/04 05:50:14 db Exp $
+ *  $Id: s_user.c,v 7.54 2000/12/04 08:41:31 db Exp $
  */
 #include "tools.h"
 #include "s_user.h"
@@ -664,9 +664,7 @@ int do_user(char* nick, struct Client* cptr, struct Client* sptr,
           sendto_one(sptr, form_str(ERR_ALREADYREGISTRED), me.name, nick);
           return 0;
         }
-#ifndef NO_DEFAULT_INVISIBLE
       sptr->flags |= FLAGS_INVISIBLE;
-#endif
 
       if (!(oflags & FLAGS_INVISIBLE) && IsInvisible(sptr))
         Count.invisi++;

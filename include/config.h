@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.45 2000/12/03 23:11:34 db Exp $
+ * $Id: config.h,v 7.46 2000/12/04 08:41:25 db Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -162,12 +162,6 @@
  */
 #undef  NO_DEFAULT_INVISIBLE
 
-/* NO_WHOIS_WILDCARDS - disable the use of wildcards in WHOIS.
- * this will probably be permanently enabled in the next release.
- * (should this be removed now? -is)
- */
-#define NO_WHOIS_WILDCARDS
-
 /*
  * OPER_UMODES LOCOP_UMODES - set these to be the initial umodes when OPER'ing
  * These can be over-ridden in ircd.conf file, with flags in last O field
@@ -298,17 +292,6 @@
  * flooding it.  Values greater than 8000 make no difference to the server.
  */
 #define CLIENT_FLOOD    2560
-
-/* LIMIT_UH
- * If this is defined, Y line limit is made against the actual
- * username not the ip. i.e. if you limit the connect frequency line
- * to 1, that allows only 1 username to connect instead of 1 client per ip
- * i.e. you can have 10 clients all with different usernames, but each user
- * can only connect once. Each non-idented client counts as the same user
- * i.e. ~a and ~b result in a count of two.
- *
- */
-#undef LIMIT_UH
 
 /*
  * Define this to enable IPv6 support.  IPv6 is currently still being

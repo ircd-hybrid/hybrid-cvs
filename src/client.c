@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.51 2000/12/03 23:11:44 db Exp $
+ *  $Id: client.c,v 7.52 2000/12/04 08:41:29 db Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -1384,16 +1384,11 @@ const char* comment         /* Reason for the exit */
 
   if (MyConnect(sptr))
     {
-#ifdef LIMIT_UH
-      if(sptr->flags & FLAGS_IPHASH)
-        remove_one_ip(sptr);
-#else
       if(sptr->flags & FLAGS_IPHASH)
 #ifdef IPV6
         remove_one_ip(sptr->localClient->ip6.s6_addr);
 #else
         remove_one_ip(sptr->localClient->ip.s_addr);
-#endif
 #endif
       if (IsAnyOper(sptr))
         {
