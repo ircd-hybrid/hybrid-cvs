@@ -1,3 +1,9 @@
+*** 20001207_3 by db
+- added example of new style conf file (finally)
+- renamed old ircd.conf example as ircd_old.conf
+
+
+
 *** 20001207_2 by db
 - fixed m_sjoin.c for vchans finally. They work just fine now.
 
@@ -1793,7 +1799,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.723 2000/12/07 06:02:30 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.724 2000/12/07 06:23:15 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
