@@ -1,7 +1,7 @@
 #
 # Makefile.in for servlink/src
 #
-# $Id: Makefile.in,v 1.7 2001/06/06 21:48:37 jdc Exp $
+# $Id: Makefile.in,v 1.8 2001/07/04 20:42:45 wcampbel Exp $
 #
 
 CC              = @CC@
@@ -74,6 +74,9 @@ depend:
 
 clean:
 	${RM} -f *.o *~ *.core core servlink
+
+lint:
+	lint -aacgprxhH $(CPPFLAGS) $(SOURCES) >>../lint.out
 
 distclean: clean
 	${RM} -f Makefile setup.h

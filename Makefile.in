@@ -16,7 +16,7 @@
 #*   along with this program; if not, write to the Free Software
 #*   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #*
-#*   $Id: Makefile.in,v 7.32 2001/05/22 19:11:23 davidt Exp $
+#*   $Id: Makefile.in,v 7.33 2001/07/04 20:42:32 wcampbel Exp $
 #*/
 
 RM=@RM@
@@ -93,6 +93,13 @@ depend:
 		echo "depend ==> $$i";\
 		cd $$i;\
 		${MAKE} depend; cd ..;\
+	done
+
+lint:
+	@for i in $(SUBDIRS); do \
+		echo "lint ==> $$i";\
+		cd $$i;\
+		${MAKE} lint; cd ..;\
 	done
 
 install: all

@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.93 2001/06/28 22:57:07 leeh Exp $
+# $Id: Makefile.in,v 7.94 2001/07/04 20:42:46 wcampbel Exp $
 #
 CC		= @CC@
 INSTALL		= @INSTALL@
@@ -169,6 +169,9 @@ depend:
 
 clean:
 	${RM} -f *.o *.exe *~ y.tab.* lex.yy.c ircd.core core ircd 
+
+lint:
+	lint -aacgprxhH $(CPPFLAGS) $(SRCS) >>../lint.out
 
 distclean: clean
 	${RM} -f Makefile version.c.last

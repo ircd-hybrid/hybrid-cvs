@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/modules
 #
-# $Id: Makefile.in,v 1.45 2001/06/28 22:57:06 leeh Exp $
+# $Id: Makefile.in,v 1.46 2001/07/04 20:42:44 wcampbel Exp $
 #
 CC		= @CC@
 AR		= @AR@
@@ -163,6 +163,9 @@ depend:
 
 clean:
 	${RM} -f *.so *~ *.o *.a
+
+lint:
+	lint -aacgprxhH $(CFLAGS) $(SRCS) >../lint.out
 
 distclean: clean
 	${RM} -f Makefile
