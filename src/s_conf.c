@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.35 2000/01/10 23:20:32 db Exp $
+ *  $Id: s_conf.c,v 7.36 2000/01/13 03:02:14 db Exp $
  */
 #include "s_conf.h"
 #include "channel.h"
@@ -2858,6 +2858,8 @@ int        is_address(char *host,
       host++;
     }
 
+  if(octet > 255)
+    return( 0 );
   current_ip <<= 8;
   current_ip += octet;
 
