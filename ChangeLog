@@ -1,3 +1,16 @@
+leeh        2002/02/02 10:25:46 EST	(20020202_0)
+
+  Modified files:
+    src                  parse.c 
+  Log:
+  - if we were exceeding the param count, we werent stripping off the : (like
+    we do if we dont exceed it), so we were ending up with :::: across servers
+  
+  Revision  Changes    Path
+  7.120     +4 -1      ircd-hybrid-7/src/parse.c
+
+
+
 wcampbel    2002/02/01 11:48:48 EST	(20020201_1)
 
   Modified files:
@@ -21879,4 +21892,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3360 2002/02/01 16:48:53 wcampbel Exp $
+$Id: ChangeLog,v 7.3361 2002/02/02 15:25:51 leeh Exp $
