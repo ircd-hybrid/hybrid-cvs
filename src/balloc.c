@@ -25,7 +25,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: balloc.c,v 7.34 2002/05/31 00:29:46 androsyn Exp $
+ *  $Id: balloc.c,v 7.35 2002/06/10 23:56:46 androsyn Exp $
  */
 
 /* 
@@ -260,7 +260,6 @@ static int newblock(BlockHeap * bh)
         newblk->block = b;
         data = (void *)((size_t)offset + sizeof(MemBlock));
         newblk->block = b;
-        newblk->data = data;
         dlinkAdd(data, &newblk->self, &b->free_list);
         offset = (unsigned char *)((unsigned char *)offset + bh->elemSize + sizeof(MemBlock));
       }
@@ -433,9 +432,9 @@ int _BlockHeapFree(BlockHeap * bh, void *ptr)
     block = memblock->block;
     bh->freeElems++;
     block->freeElems++;
-    mem_frob(memblock->data, bh->elemSize);
+    mem_frob(ptr, bh->elemSize);
     dlinkDelete(&memblock->self, &block->used_list);
-    dlinkAdd(memblock->data, &memblock->self, &block->free_list);
+    dlinkAdd(ptr, &memblock->self, &block->free_list);
     return 0;
 }
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: balloc.h,v 1.9 2002/05/24 23:34:06 androsyn Exp $
+ *  $Id: balloc.h,v 1.10 2002/06/10 23:56:44 androsyn Exp $
  */
 
 #ifndef INCLUDED_blalloc_h
@@ -54,7 +54,6 @@ typedef struct Block Block;
 struct MemBlock {
 	dlink_node self;		
 	Block *block;				/* Which block we belong to */
-	void *data;				/* Maybe pointless? :P */
 };
 typedef struct MemBlock MemBlock;
 
