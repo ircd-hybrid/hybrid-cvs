@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.99 2000/12/16 17:46:47 db Exp $
+ *  $Id: s_conf.c,v 7.100 2000/12/16 17:58:07 db Exp $
  */
 #include "tools.h"
 #include "s_conf.h"
@@ -3191,8 +3191,12 @@ void conf_add_fields(struct ConfItem *aconf,
 
 void yyerror(char *msg)
 {
-  sendto_realops_flags(FLAGS_ALL,"%d: %s in this line %s",
-		       lineno, msg, linebuf);
+  char newlinebuf[BUFSIZE];
+
+  strip_tabs(newlinebuf, linebuf, strlen(linebuf));
+
+  sendto_realops_flags(FLAGS_ALL, "%d: %s on line: %s",
+		       lineno, msg, newlinebuf);
 }
 
 int conf_fbgets(char *buf,int max_size, FBFILE *fb)

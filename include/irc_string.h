@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: irc_string.h,v 7.7 2000/10/06 04:26:58 lusky Exp $
+ *   $Id: irc_string.h,v 7.8 2000/12/16 17:58:03 db Exp $
  */
 #ifndef INCLUDED_irc_string_h
 #define INCLUDED_irc_string_h
@@ -73,6 +73,11 @@ extern char* strncpy_irc(char* s1, const char* s2, size_t n);
  * -Dianora
  */
 extern char* clean_string(char* dest, const unsigned char* src, size_t len);
+/*
+ * strip_tabs - convert tabs to spaces
+ * - jdc
+ */
+extern char *strip_tabs(char *dest, const unsigned char *src, size_t len);
 
 extern const char* myctime(time_t);
 extern char*       strtoken(char** save, char* str, char* fs);

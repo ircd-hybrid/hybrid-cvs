@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: irc_string.c,v 7.10 2000/12/12 17:25:33 db Exp $
+ *  $Id: irc_string.c,v 7.11 2000/12/16 17:58:06 db Exp $
  */
 #include "tools.h"
 #include "irc_string.h"
@@ -126,6 +126,37 @@ clean_string(char* dest, const unsigned char* src, size_t len)
       --len;
     }
   *d = '\0';
+  return dest;
+}
+
+/*
+ * strip_tabs(dst, src, length)
+ *
+ *   Copies src to dst, while converting all \t (tabs) into spaces.
+ *
+ * NOTE: jdc: I have a gut feeling there's a faster way to do this.
+ */
+char *strip_tabs(char *dest, const unsigned char *src, size_t len)
+{
+  char *d = dest;
+  /* Sanity check; we don't want anything nasty... */
+  assert(0 != dest);
+  assert(0 != src);
+
+  while (*src && (len > 0))
+  {
+    if (*src == '\t')
+    {
+      *d++ = ' ';   /* Translate the tab into a space */
+    }
+    else
+    {
+      *d++ = *src;  /* Copy src to dst */
+    }
+    ++src;
+    --len;
+  }
+  *d = '\0';   /* Null terminate, kthxbye */
   return dest;
 }
 
