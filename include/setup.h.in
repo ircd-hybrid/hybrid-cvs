@@ -57,9 +57,6 @@
 /* Define to 1 if you have the `EVP_rc5_32_12_16_cfb' function. */
 #undef HAVE_EVP_RC5_32_12_16_CFB
 
-/* Define to 1 if you have the <getopt.h> header file. */
-#undef HAVE_GETOPT_H
-
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 

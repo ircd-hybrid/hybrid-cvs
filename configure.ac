@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.66 2003/06/21 05:30:18 joshk Exp $
+dnl $Id: configure.ac,v 7.67 2003/06/21 20:38:22 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -8,7 +8,7 @@ dnl said functions need to be just about as complex as they already are.
 AC_PREREQ(2.57)
 
 dnl Sneaky way to get an Id tag into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.66 2003/06/21 05:30:18 joshk Exp $])
+AC_COPYRIGHT([$Id: configure.ac,v 7.67 2003/06/21 20:38:22 joshk Exp $])
 
 AC_INIT([ircd-hybrid],[7-CURRENT])
 
@@ -217,7 +217,7 @@ fi
 dnl Checks for header files.
 AC_HEADER_STDC
 
-AC_CHECK_HEADERS([crypt.h sys/resource.h sys/param.h errno.h sys/syslog.h stddef.h getopt.h libgen.h sys/wait.h wait.h])
+AC_CHECK_HEADERS([crypt.h sys/resource.h sys/param.h errno.h sys/syslog.h stddef.h libgen.h sys/wait.h wait.h])
 
 dnl Networking Functions
 dnl ====================
@@ -355,7 +355,7 @@ AC_MSG_CHECKING(for strlcpy)
 save_CFLAGS=$CFLAGS
 CFLAGS="$CFLAGS -Wimplicit -Werror"
 
-AC_COMPILE_IFELSE(
+AC_LINK_IFELSE(
 	[AC_LANG_PROGRAM(
 		[[#include <string.h>
 		#include <stdlib.h>]],
@@ -368,7 +368,7 @@ AC_COMPILE_IFELSE(
 )
 
 AC_MSG_CHECKING(for strlcat)
-AC_COMPILE_IFELSE(
+AC_LINK_IFELSE(
 	[AC_LANG_PROGRAM(
 		[[#include <string.h>
 		#include <stdlib.h>]],
@@ -660,11 +660,19 @@ dnl =====================
 
 AC_ARG_ENABLE(clobber,
 AC_HELP_STRING([--enable-clobber], [Don't preserve old binaries on make install]),
-[AC_SUBST(CLOBBER, yes)])
+[clobber=$enableval], [clobber=no])
+
+if test "$clobber" = yes; then
+	AC_SUBST(CLOBBER, yes)
+fi
 
 AC_ARG_ENABLE(assert,
 AC_HELP_STRING([--enable-assert],[Enable assert().]),
-[], [AC_DEFINE(NDEBUG, 1, [Define this to disable debugging support.])])
+[assert=$enableval], [assert=no])
+
+if test "$assert" = no; then
+	AC_DEFINE(NDEBUG, 1, [Define this to disable debugging support.])
+fi
 
 AC_MSG_CHECKING(if you want to do a profile build)
 AC_ARG_ENABLE(profile,
@@ -722,17 +730,22 @@ AC_ARG_ENABLE(warnings,
 AC_HELP_STRING([--enable-warnings],[Enable all sorts of warnings for debugging.]),
 [IRC_CFLAGS="$IRC_CFLAGS -Wcast-qual -Wmissing-declarations -Wmissing-prototypes -Wnested-externs -Wredundant-decls -Wshadow -Wwrite-strings -W -Wno-unused"],[])
 
-
 dnl Server Tweaks
 dnl =============
 
 AC_ARG_ENABLE(halfops,
 AC_HELP_STRING([--enable-halfops],[Enable the use of halfops (user mode %)]),
-[AC_DEFINE(USE_HALFOPS, 1, [Define to 1 if you want to be able to use halfops on your ircd.])],)
+[halfops=$enableval],[halfops=no])
+
+if test "$halfops" = yes; then
+	AC_DEFINE(USE_HALFOPS, 1, [Define to 1 if you want to be able to use halfops on your ircd.])
+fi
 
 AC_ARG_ENABLE(small-net,
 AC_HELP_STRING([--enable-small-net],[Enable small network support.]),
-[small_net="yes"
+[small_net=$enableval], [small_net=no])
+
+if test "$small_net" = yes; then
 	AC_DEFINE([NICKNAMEHISTORYLENGTH], 1500, [Size of the WHOWAS array.])
 	AC_DEFINE([CHANNEL_HEAP_SIZE], 256, [Size of the channel heap.])
 	AC_DEFINE([BAN_HEAP_SIZE], 128, [Size of the ban heap.])
@@ -743,8 +756,7 @@ AC_HELP_STRING([--enable-small-net],[Enable small network support.]),
 	AC_DEFINE([SNODE_HEAP_SIZE], 256, [Size of the slink_node heap.])
 	AC_DEFINE([TOPIC_HEAP_SIZE], 256, [Size of the topic heap.])
 	AC_DEFINE([DBUF_HEAP_SIZE], 64, [Size of the dbuf heap.])
-],
-[small_net="no"
+else	
 	AC_DEFINE([NICKNAMEHISTORYLENGTH], 15000, [Size of the WHOWAS array.])
 	AC_DEFINE([CHANNEL_HEAP_SIZE], 1024, [Size of the channel heap.])
 	AC_DEFINE([BAN_HEAP_SIZE], 1024, [Size of the ban heap.])
@@ -755,7 +767,7 @@ AC_HELP_STRING([--enable-small-net],[Enable small network support.]),
 	AC_DEFINE([SNODE_HEAP_SIZE], 2048, [Size of the slink_node heap.])
 	AC_DEFINE([TOPIC_HEAP_SIZE], 1024, [Size of the topic heap.])
 	AC_DEFINE([DBUF_HEAP_SIZE], 512, [Size of the dbuf heap.])
-])
+fi
 
 AC_ARG_ENABLE(efnet,
 AC_HELP_STRING([--enable-efnet],[For IRCDs running on EFnet.]),
@@ -848,14 +860,13 @@ AC_HELP_STRING([--with-nicklen=LENGTH],[Set the nick length to LENGTH (default 9
 AC_ARG_WITH(topiclen,           
 AC_HELP_STRING([--with-topiclen=NUMBER],[Set the max topic length to NUMBER (default 120, max 390)]),
 [
-	if test $withval -ge 390; then
-		TOPICLEN="390"
-		AC_MSG_WARN([TOPICLEN has a hard limit of 390. Setting TOPICLEN=390])
-	else
-		TOPICLEN="$withval"
-	fi
-],
-TOPICLEN="120")
+ if test $withval -ge 390; then
+	TOPICLEN=390
+	AC_MSG_WARN([TOPICLEN has a hard limit of 390. Setting TOPICLEN=390])
+ else
+ 	TOPICLEN=$withval
+ fi
+], [TOPICLEN=120])
 
 AC_ARG_WITH(maxconn,
 AC_HELP_STRING([--with-maxconn=NUMBER],[Maximum number of connections the ircd can handle]),
