@@ -1,3 +1,8 @@
+*** 20001111_5 by db
+- more clean ups on m_kline.c, I'll make this sane yet!
+
+
+
 *** 20001111_4 by ejb
 - fix up Makefiles a bit so they actually work
 - finally remove src/m_*.c
@@ -434,7 +439,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.532 2000/11/11 14:52:50 ejb Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.533 2000/11/11 15:55:06 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
