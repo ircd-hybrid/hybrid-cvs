@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_userhost.c,v 7.3 1999/12/30 20:36:02 db Exp $
+ *   $Id: m_userhost.c,v 7.4 2000/01/02 14:32:59 db Exp $
  */
 
 #include "m_commands.h"
@@ -146,7 +146,7 @@ int     m_userhost(struct Client *cptr,
       cn = p;
     }
 
-  ircsprintf(buf, "%s %s %s %s %s %s",
+  ircsprintf(buf, "%s%s %s %s %s %s",
     form_str(RPL_USERHOST),
     response[0], response[1], response[2], response[3], response[4] );
   sendto_one(sptr, buf, me.name, parv[0]);
