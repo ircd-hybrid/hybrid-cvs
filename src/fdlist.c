@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fdlist.c,v 7.29 2002/05/24 23:34:46 androsyn Exp $
+ *  $Id: fdlist.c,v 7.29.2.1 2002/05/26 07:03:51 androsyn Exp $
  */
 #include "stdinc.h"
 #include "config.h"  /* option settings */
@@ -99,6 +99,7 @@ fd_open(int fd, unsigned int type, const char *desc)
 #ifdef NOTYET
   debug(51, 3) ("fd_open FD %d %s\n", fd, desc);
 #endif
+  fprintf(stderr, "fd_open FD %d %s\n", fd, desc);
   F->fd = fd;
   F->type = type;
   F->flags.open = 1;
@@ -122,9 +123,10 @@ fd_close(int fd)
 {
   fde_t *F = &fd_table[fd];
   assert(F->flags.open);
+  fprintf(stderr, "fd_close FD %d %s\n", fd, F->desc);
 
   /* All disk fd's MUST go through file_close() ! */
-  assert(F->type != FD_FILE);
+//  assert(F->type != FD_FILE);
   if (F->type == FD_FILE)
     {
       assert(F->read_handler == NULL);
@@ -142,7 +144,12 @@ fd_close(int fd)
   memset(F, '\0', sizeof(fde_t));
   F->timeout = 0;
   /* Unlike squid, we're actually closing the FD here! -- adrian */
+#ifdef __MINGW32__
+  closesocket(fd);
+#else
   close(fd);
+#endif
+
 }
 
 

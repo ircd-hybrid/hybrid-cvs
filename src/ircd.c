@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.235 2002/05/25 01:22:43 androsyn Exp $
+ *  $Id: ircd.c,v 7.235.2.1 2002/05/26 07:03:51 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -158,7 +158,7 @@ static unsigned long get_vm_top(void)
    * offset from 0 (NULL), so the result of sbrk is cast to a size_t and 
    * returned. We really shouldn't be using it here but...
    */
-#ifndef VMS
+#if !defined(VMS) && !defined(__MINGW32__)
   void* vptr = sbrk(0);
   return (unsigned long) vptr;
 #else
@@ -225,7 +225,7 @@ init_sys(void)
 static int
 make_daemon(void)
 {
-#ifndef VMS
+#if !defined(VMS) && !defined(__MINGW32__)
   int pid;
   
   if((pid = fork()) < 0)
@@ -244,11 +244,15 @@ make_daemon(void)
   fclose(stdout);
   fclose(stderr); */
 #else
+#ifdef VMS
   /* if we get here, assume we've been detached.
      better set a process name. */
   $DESCRIPTOR(myname, "IRCD-HYBRID-7");
   SYS$SETPRN(&myname);
-#endif
+#endif /* VMS */
+  /* Teach win32 about forking or something */
+  
+#endif /* !VMS && !MINGW32 */
   return 0;
 }
 
@@ -523,16 +527,23 @@ static void setup_corefile(void)
  * side effects - Reaps zombies periodically
  * -AndroSyn
  */
+#ifndef __MINGW32__
 static void cleanup_zombies(void *unused)
 {
   int status;
   waitpid(-1, &status, WNOHANG);
 }
+#endif
 
 int main(int argc, char *argv[])
 {
+#ifdef __MINGW32__
+        WORD wVersionRequested = MAKEWORD(1, 1);
+        WSADATA wsaData;
+        WSAStartup(wVersionRequested, &wsaData);                
+#endif
+
   /* Check to see if the user is running us as root, which is a nono */
-  
   if(geteuid() == 0)
   {
     fprintf(stderr, "Don't run ircd as root!!!\n");
@@ -745,9 +756,10 @@ int main(int argc, char *argv[])
 
   /* Setup the timeout check. I'll shift it later :)  -- adrian */
   eventAddIsh("comm_checktimeouts", comm_checktimeouts, NULL, 1);
-
+#ifndef __MINGW32__
   eventAddIsh("cleanup_zombies", cleanup_zombies, NULL, 30); 
-  
+#endif
+
 #ifdef PACE_CONNECT
  if (ConfigFileEntry.throttle_time > 0)
    eventAddIsh("flush_expired_ips", flush_expired_ips, NULL, ConfigFileEntry.throttle_time);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- * $Id: stdinc.h,v 1.1 2002/05/24 23:39:13 androsyn Exp $
+ * $Id: stdinc.h,v 1.1.2.1 2002/05/26 07:03:47 androsyn Exp $
  *
  */
  
@@ -54,7 +54,9 @@
 #include <stdio.h>
 #include <time.h>
 #include <fcntl.h>
+#ifdef HAVE_NETDB_H
 #include <netdb.h>
+#endif
 #include <stdarg.h>
 #include <signal.h>
 #ifdef USE_GETTEXT
@@ -80,15 +82,23 @@
 #endif
 
 
+#ifdef HAVE_SYS_SOCKET_H
 #include <sys/socket.h>
-#include <sys/stat.h>
-#include <sys/wait.h>
+#endif
 
+#include <sys/stat.h>
+#ifdef HAVE_SYS_WAIT_H
+#include <sys/wait.h>
+#endif 
 #ifdef HAVE_SYS_PARAM_H
 #include <sys/param.h>
 #endif
+#ifdef HAVE_NETINET_IN_H
 #include <netinet/in.h>
+#endif
+#ifdef HAVE_ARPA_INET_H
 #include <arpa/inet.h>
+#endif
 
 #ifdef HAVE_ERRNO_H
 #include <errno.h>
@@ -99,3 +109,8 @@ extern int errno;
 #ifdef VMS
 #include <sys/ioctl.h>
 #endif
+
+#if defined(_WIN32) && !defined(__CYGWIN__) 
+#include "win32_defs.h"
+#endif
+

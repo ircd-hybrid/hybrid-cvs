@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_debug.c,v 7.67 2002/05/24 23:34:51 androsyn Exp $
+ *  $Id: s_debug.c,v 7.67.2.1 2002/05/26 07:03:55 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -88,6 +88,11 @@ void debug(int level, char *format, ...)
  */
 void send_usage(struct Client *source_p)
 {
+
+#if defined(VMS) || defined(__MINGW32__)
+  sendto_one(source_p, ":%s NOTICE %s :getrusage not supported on this system", me.name, source_p->name);
+  return;
+#else
   struct rusage  rus;
   time_t         secs;
   time_t         rup;
@@ -101,10 +106,6 @@ void send_usage(struct Client *source_p)
 # endif
 #endif
 
-#ifdef VMS
-  sendto_one(source_p, ":%s NOTICE %s :getrusage not supported on this system");
-  return;
-#else
   if (getrusage(RUSAGE_SELF, &rus) == -1)
     {
       sendto_one(source_p,":%s NOTICE %s :Getruseage error: %s.",

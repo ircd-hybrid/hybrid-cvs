@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.180 2002/05/24 23:34:08 androsyn Exp $
+ *  $Id: s_conf.h,v 7.180.2.1 2002/05/26 07:03:47 androsyn Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -410,7 +410,7 @@ extern int yylex(void);
 extern unsigned long cidr_to_bitmask[];
 
 #define NOT_AUTHORIZED  (-1)
-#define SOCKET_ERROR    (-2)
+#define H_SOCKET_ERROR    (-2)
 #define I_LINE_FULL     (-3)
 #define TOO_MANY        (-4)
 #define BANNED_CLIENT   (-5)

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.169 2002/05/24 23:34:50 androsyn Exp $
+ *  $Id: s_bsd.c,v 7.169.2.1 2002/05/26 07:03:53 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -205,7 +205,7 @@ int disable_sock_options(int fd)
  */
 int set_non_blocking(int fd)
 {
-#ifndef VMS
+#if !defined(VMS) && !defined(__MINGW32__)
   int nonb = 0;
   int res;
 
@@ -221,7 +221,11 @@ int set_non_blocking(int fd)
   fd_table[fd].flags.nonblocking = 1;
   return 1;
 #else
+#ifdef __MINGW32__
+  u_long val = 1;
+#else
   int val = 1;
+#endif
   int res;
 
   res = ioctl(fd, FIONBIO, &val);
@@ -766,6 +770,9 @@ comm_connect_tryconnect(int fd, void *notused)
    * which is a good thing.
    *   -- adrian
    */
+#ifdef __MINGW32__
+  errno = WSAGetLastError();
+#endif
   if (errno == EISCONN)
    comm_connect_callback(fd, COMM_OK);
   else if (ignoreErrno(errno))
@@ -817,16 +824,19 @@ comm_open(int family, int sock_type, int proto, const char *note)
    * XXX !!! -- adrian
    */
   fd = socket(family, sock_type, proto);
-  if (fd < 0)
+  if (fd < 0) {
+   #ifdef __MINGW32__
+   errno = WSAGetLastError();
+   #endif
     return -1; /* errno will be passed through, yay.. */
-
+  }
   /* Set the socket non-blocking, and other wonderful bits */
   if (!set_non_blocking(fd))
     {
       ilog(L_CRIT, "comm_open: Couldn't set FD %d non blocking: %s", fd, strerror(errno));
     /* if VMS, we might be opening a file (ircd.conf, resolv.conf).
        VMS doesn't let us set non-blocking on a file, so it might fail. */
-#ifndef VMS
+#if !defined(VMS) 
       close(fd);
       return -1;
 #endif
@@ -868,7 +878,11 @@ comm_accept(int fd, struct irc_sockaddr *pn)
   if (!set_non_blocking(newfd))
     {
       ilog(L_CRIT, "comm_accept: Couldn't set FD %d non blocking!", newfd);
+#ifdef __MINGW32__
       close(newfd);
+#else
+      closesocket(newfd);
+#endif
       return -1;
     }
 

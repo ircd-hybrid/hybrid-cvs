@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.82 2002/05/25 03:06:29 androsyn Exp $
+ *  $Id: packet.c,v 7.82.2.1 2002/05/26 07:03:52 androsyn Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -238,6 +238,9 @@ read_ctrl_packet(int fd, void *data)
     length = recv(fd, len, (2 - reply->gotdatalen), 0);
     if (length <= 0)
     {
+#ifdef __MINGW32__
+      errno = WSAGetLastError();
+#endif
       if((length == -1) && ignoreErrno(errno))
         goto nodata;
       error_exit_client(server, length);
@@ -342,6 +345,9 @@ read_packet(int fd, void *data)
 
   if (length <= 0)
   {
+#ifdef __MINGW32__
+      errno = WSAGetLastError();
+#endif
     if((length == -1) && ignoreErrno(errno))
     {
       comm_setselect(fd_r, FDLIST_IDLECLIENT, COMM_SELECT_READ,

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.303 2002/05/24 23:34:50 androsyn Exp $
+ *  $Id: s_conf.c,v 7.303.2.1 2002/05/26 07:03:54 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -408,7 +408,7 @@ report_specials(struct Client* source_p, int flags, int numeric)
  * inputs	- pointer to client
  * output	- 0 = Success
  * 		  NOT_AUTHORIZED (-1) = Access denied (no I line match)
- * 		  SOCKET_ERROR   (-2) = Bad socket.
+ * 		  H_SOCKET_ERROR   (-2) = Bad socket.
  * 		  I_LINE_FULL    (-3) = I-line is full
  *		  TOO_MANY       (-4) = Too many connections from hostname
  * 		  BANNED_CLIENT  (-5) = K-lined
@@ -431,7 +431,7 @@ check_client(struct Client *client_p, struct Client *source_p, char *username)
 
   switch( i )
     {
-    case SOCKET_ERROR:
+    case H_SOCKET_ERROR:
       (void)exit_client(client_p, source_p, &me, "Socket Error");
       break;
 

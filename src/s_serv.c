@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.255 2002/05/24 23:34:51 androsyn Exp $
+ *  $Id: s_serv.c,v 7.255.2.1 2002/05/26 07:03:55 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -1010,7 +1010,7 @@ int server_estab(struct Client *client_p)
 
   /* Hand the server off to servlink now */
 
-#ifndef VMS
+#if !defined(VMS) && !defined(__MINGW32__) 
   if (IsCapable(client_p, CAP_ENC) || IsCapable(client_p, CAP_ZIP))
     {
       if (fork_server(client_p) < 0 )
@@ -1290,7 +1290,7 @@ static void start_io(struct Client *server)
   send_queued_slink_write(server->localClient->ctrlfd, server);
 }
 
-#ifndef VMS
+#if !defined(VMS) && !defined(__MINGW32__)
 /*
  * fork_server
  *

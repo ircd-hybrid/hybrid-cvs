@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_signal.c,v 7.11 2002/05/25 09:00:14 androsyn Exp $
+ * $Id: ircd_signal.c,v 7.11.2.1 2002/05/26 07:03:52 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -85,6 +85,7 @@ static void sigint_handler(int sig)
  */
 void setup_signals()
 {
+#ifndef __MINGW32__
   struct sigaction act;
 
   act.sa_flags = 0;
@@ -116,7 +117,10 @@ void setup_signals()
   act.sa_handler = sigterm_handler;
   sigaddset(&act.sa_mask, SIGTERM);
   sigaction(SIGTERM, &act, 0);
-
+#else
+  signal(SIGINT, sigint_handler);
+  signal(SIGTERM, sigterm_handler);;
+#endif
 }
 
 

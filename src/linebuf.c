@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: linebuf.c,v 7.81 2002/05/25 03:06:28 androsyn Exp $
+ *  $Id: linebuf.c,v 7.81.2.1 2002/05/26 07:03:52 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -639,10 +639,14 @@ linebuf_flush(int fd, buf_head_t *bufhead)
   /* Now, try writing data */
   retval = send(fd, bufline->buf + bufhead->writeofs, bufline->len
 		 - bufhead->writeofs, 0);
-   
   /* Deal with return code */
   if (retval < 0)
+  {
+#ifdef __MINGW32__
+    errno = WSAGetLastError(); 
+#endif  
     return retval;
+  }
   if (retval == 0)
     return 0;
 

@@ -2120,7 +2120,7 @@ EOF
 
 fi
 
-for ac_hdr in inttypes.h sys/resource.h sys/param.h unistd.h errno.h string.h strings.h sys/syslog.h stdlib.h stddef.h getopt.h
+for ac_hdr in inttypes.h sys/resource.h sys/param.h unistd.h errno.h string.h strings.h sys/syslog.h stdlib.h stddef.h getopt.h sys/socket.h sys/wait.h netinet/in.h arpa/inet.h netdb.h winsock2.h
 do
 ac_safe=`echo "$ac_hdr" | sed 'y%./+-%__p_%'`
 echo $ac_n "checking for $ac_hdr""... $ac_c" 1>&6

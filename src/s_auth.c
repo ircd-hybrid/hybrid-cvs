@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.95 2002/05/24 23:34:49 androsyn Exp $
+ *  $Id: s_auth.c,v 7.95.2.1 2002/05/26 07:03:53 androsyn Exp $
  */
 
 /*
@@ -416,7 +416,6 @@ void start_auth(struct Client* client)
   client->localClient->dns_query->callback = auth_dns_callback;
 
   sendheader(client, REPORT_DO_DNS);
-
   /* No DNS cache now, remember? -- adrian */
   adns_getaddr(&client->localClient->ip, client->localClient->aftype, client->localClient->dns_query);
   SetDNSPending(auth);
@@ -542,7 +541,9 @@ read_auth_reply(int fd, void *data)
   char  buf[AUTH_BUFSIZ + 1]; /* buffer to read auth reply into */
 
   len = recv(auth->fd, buf, AUTH_BUFSIZ, 0);
-  
+#ifdef __MINGW32__
+  errno = WSAGetLastError();
+#endif
   if (len < 0 && ignoreErrno(errno))
   {
     comm_setselect(fd, FDLIST_IDLECLIENT, COMM_SELECT_READ,

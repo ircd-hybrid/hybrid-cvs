@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.270 2002/05/24 23:34:45 androsyn Exp $
+ *  $Id: client.c,v 7.270.2.1 2002/05/26 07:03:51 androsyn Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -1288,6 +1288,7 @@ int exit_client(
 {
   char comment1[HOSTLEN + HOSTLEN + 2];
   dlink_node *m;
+  fprintf(stderr, "Exiting client: %s\n", comment);
   if (MyConnect(source_p))
     {
       /* DO NOT REMOVE. exit_client can be called twice after a failed

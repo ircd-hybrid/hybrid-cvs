@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: md5.c,v 1.14 2002/05/25 01:35:09 androsyn Exp $
+ *  $Id: md5.c,v 1.14.2.1 2002/05/26 07:03:52 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -162,7 +162,7 @@ void	save_random()
     {
       write(fd, seed_char, 16);
 /* by default on VMS, files can only be read by their owner */
-#ifndef VMS
+#if !defined(VMS) && !defined(__MINGW32__)
       fchmod(fd, 0600);
 #endif
       close(fd);
