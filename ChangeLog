@@ -1,3 +1,15 @@
+davidt      2001/12/29 13:40:08 EST	(20011229_3)
+
+  Modified files:
+    modules              m_help.c 
+  Log:
+  - Avoid trying to lowercase a string constant.
+  
+  Revision  Changes    Path
+  1.28      +12 -7     ircd-hybrid-7/modules/m_help.c
+
+
+
 davidt      2001/12/29 12:24:46 EST	(20011229_2)
 
   Modified files:
@@ -1647,7 +1659,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3249 2001/12/29 17:24:52 davidt Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3250 2001/12/29 18:40:14 davidt Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -20001,4 +20013,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3249 2001/12/29 17:24:52 davidt Exp $
+$Id: ChangeLog,v 7.3250 2001/12/29 18:40:14 davidt Exp $
