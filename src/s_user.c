@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.185 2002/02/02 15:34:59 leeh Exp $
+ *  $Id: s_user.c,v 7.186 2002/02/17 09:07:32 a1kmm Exp $
  */
 
 #include <sys/types.h>
@@ -328,7 +328,6 @@ int register_local_user(struct Client *client_p, struct Client *source_p,
     {
       sendto_one(source_p,":%s NOTICE %s :*** Notice -- You have an illegal character in your hostname", 
 		 me.name, source_p->name );
-
       strncpy(source_p->host,source_p->localClient->sockhost,HOSTIPLEN+1);
     }
 
@@ -442,11 +441,15 @@ int register_local_user(struct Client *client_p, struct Client *source_p,
 		       nick, source_p->username, source_p->host,
 		       ipaddr,
 		       get_client_class(source_p), source_p->info);
+
+  /* If they have died in send_* don't do anything. */
+  if (IsDead(source_p))
+    return CLIENT_EXITED;
   
   source_p->umodes |= FLAGS_INVISIBLE;
 
   Count.invisi++;
-    
+
   if ((++Count.local) > Count.max_loc)
     {
       Count.max_loc = Count.local;

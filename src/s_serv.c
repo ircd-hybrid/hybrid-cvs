@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.243 2002/02/17 05:39:28 androsyn Exp $
+ *  $Id: s_serv.c,v 7.244 2002/02/17 09:07:32 a1kmm Exp $
  */
 
 #include <sys/types.h>
@@ -1054,6 +1054,9 @@ int server_estab(struct Client *client_p)
   */
   SetServer(client_p);
   client_p->servptr = &me;
+
+  if (IsDead(client_p))
+    return CLIENT_EXITED;
 
  /* Update the capability combination usage counts. -A1kmm */
   set_chcap_usage_counts(client_p);
