@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.50 2002/07/29 01:08:15 androsyn Exp $
+ *  $Id: channel_mode.c,v 7.51 2002/07/30 00:47:28 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -2013,9 +2013,7 @@ send_mode_changes(struct Client *client_p, struct Client *source_p,
 {
   int pbl, mbl, nc, mc;
   int i, st;
-#ifdef HALFOPS
   int dir = MODE_QUERY;
-#endif
 
   /* bail out if we have nothing to do... */
   if (!(mode_count
