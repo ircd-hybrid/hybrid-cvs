@@ -18,7 +18,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: packet.c,v 7.22 2000/12/08 04:25:47 adrian Exp $
+ *   $Id: packet.c,v 7.23 2000/12/08 06:34:45 db Exp $
  */ 
 
 #include <stdio.h>
@@ -215,8 +215,12 @@ read_packet(int fd, void *data)
   if (IsPerson(cptr) &&
      (linebuf_alloclen(&cptr->localClient->buf_recvq) > CLIENT_FLOOD)) {
       if (!(ConfigFileEntry.no_oper_flood && IsAnyOper(cptr))) {
+
+#if 0
         exit_client(cptr, cptr, cptr, "Excess Flood");
         return;
+#endif
+
       }
     }
 
