@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_names.c,v 1.51 2003/05/13 02:32:13 joshk Exp $
+ *  $Id: m_names.c,v 1.52 2003/05/24 08:02:56 michael Exp $
  */
 
 #include "stdinc.h"
@@ -46,8 +46,8 @@
 static void names_all_visible_channels(struct Client *source_p);
 static void names_non_public_non_secret(struct Client *source_p);
 
-static void m_names(struct Client*, struct Client*, int, char**);
-static void ms_names(struct Client*, struct Client*, int, char**);
+static void m_names(struct Client *, struct Client *, int, char **);
+static void ms_names(struct Client *, struct Client *, int, char **);
 
 struct Message names_msgtab = {
   "NAMES", 0, 0, 0, 0, MFLG_SLOW, 0,
@@ -67,7 +67,7 @@ _moddeinit(void)
   mod_del_cmd(&names_msgtab);
 }
 
-const char *_version = "$Revision: 1.51 $";
+const char *_version = "$Revision: 1.52 $";
 #endif
 
 /************************************************************************
@@ -83,39 +83,40 @@ static void
 m_names(struct Client *client_p, struct Client *source_p,
         int parc, char *parv[])
 { 
-  struct Channel *ch2ptr = NULL;
+  struct Channel *chptr = NULL;
   char *s;
   char *para = parc > 1 ? parv[1] : NULL;
 
   if (!EmptyString(para))
   {
-      while (*para == ',')
-        para++;
-      if ((s = strchr(para, ',')) != NULL)
-        *s = '\0';
-      if (!*para)
-        return;
+    while (*para == ',')
+      para++;
 
-      if (!check_channel_name(para))
-        { 
-          sendto_one(source_p, form_str(ERR_BADCHANNAME),
-                     me.name, parv[0], (unsigned char *)para);
-          return;
-        }
+    if ((s = strchr(para, ',')) != NULL)
+      *s = '\0';
+    if (!*para)
+      return;
 
-      if ((ch2ptr = hash_find_channel(para)) != NULL)
-        channel_member_names(source_p, ch2ptr, ch2ptr->chname, 1);
-      else
-        sendto_one(source_p, form_str(RPL_ENDOFNAMES), me.name,
-                   parv[0], para);
+    if (!check_channel_name(para))
+    { 
+      sendto_one(source_p, form_str(ERR_BADCHANNAME),
+                 me.name, source_p->name, para);
+      return;
     }
+
+    if ((chptr = hash_find_channel(para)) != NULL)
+      channel_member_names(source_p, chptr, 1);
+    else
+      sendto_one(source_p, form_str(RPL_ENDOFNAMES),
+                 me.name, source_p->name, para);
+  }
   else
-    {
-      names_all_visible_channels(source_p);
-      names_non_public_non_secret(source_p);
-      sendto_one(source_p, form_str(RPL_ENDOFNAMES), me.name, parv[0],
-                 "*");
-    }
+  {
+    names_all_visible_channels(source_p);
+    names_non_public_non_secret(source_p);
+    sendto_one(source_p, form_str(RPL_ENDOFNAMES),
+               me.name, source_p->name, "*");
+  }
 }
 
 /* names_all_visible_channels()
@@ -127,20 +128,18 @@ m_names(struct Client *client_p, struct Client *source_p,
 static void
 names_all_visible_channels(struct Client *source_p)
 {
-  dlink_node *gptr;
+  dlink_node *ptr;
   struct Channel *chptr;
-  char *chname;
 
   /* 
    * First, do all visible channels (public and the one user self is)
    */
-  DLINK_FOREACH(gptr, global_channel_list.head)
+  DLINK_FOREACH(ptr, global_channel_list.head)
   {
-    chptr = gptr->data;
-    chname = chptr->chname;
+    chptr = ptr->data;
 
     /* Find users on same channel (defined by chptr) */
-    channel_member_names(source_p, chptr, chname, 0);
+    channel_member_names(source_p, chptr, 0);
   }
 }
 
@@ -166,58 +165,58 @@ names_non_public_non_secret(struct Client *source_p)
   char *t;
 
   ircsprintf(buf,form_str(RPL_NAMREPLY),
-             me.name,source_p->name," * * :");
+             me.name, source_p->name," * * :");
 
   mlen = strlen(buf);
   cur_len = mlen;
   t = buf + mlen;
 
   /* Second, do all non-public, non-secret channels in one big sweep */
-
   DLINK_FOREACH(gc2ptr, global_client_list.head)
+  {
+    c2ptr = gc2ptr->data;
+
+    if (!IsPerson(c2ptr) || IsInvisible(c2ptr))
+      continue;
+
+    /* dont show a client if they are on a secret channel or
+     * they are on a channel source_p is on since they have already
+     * been shown earlier. -avalon
+     */
+    DLINK_FOREACH(lp, c2ptr->user->channel.head)
     {
-      c2ptr = gc2ptr->data;
+      ch3ptr = lp->data;
 
-      if (!IsPerson(c2ptr) || IsInvisible(c2ptr))
-        continue;
-      /*
-       * dont show a client if they are on a secret channel or
-       * they are on a channel source_p is on since they have already
-       * been shown earlier. -avalon
-       */
-      DLINK_FOREACH(lp, c2ptr->user->channel.head)
-        {
-          ch3ptr = lp->data;
-
-          if ( (!PubChannel(ch3ptr) || IsMember(source_p, ch3ptr)) ||
-               (SecretChannel(ch3ptr)))
-          {
-            dont_show = YES;
-            break;
-          }
-        }
-      if (dont_show) /* on any secret channels or shown already? */
-        continue;
-
-      if(lp == NULL)    /* Nothing to do. yay */
-        continue;
-
-      if ((cur_len + NICKLEN + 2) > (BUFSIZE - 3))
-        {
-          sendto_one(source_p, "%s", buf);
-          cur_len = mlen;
-          t = buf + mlen;
-        }
-
-        ircsprintf(t,"%s%s ", channel_chanop_or_voice(ch3ptr, c2ptr),
-                   c2ptr->name);
-
-      tlen = strlen(t);
-      cur_len += tlen;
-      t += tlen;
-
-      reply_to_send = YES;
+      if ((!PubChannel(ch3ptr) || IsMember(source_p, ch3ptr)) ||
+          (SecretChannel(ch3ptr)))
+      {
+        dont_show = YES;
+        break;
+      }
     }
+
+    if (dont_show)  /* on any secret channels or shown already? */
+      continue;
+
+    if (lp == NULL) /* Nothing to do. yay */
+      continue;
+
+    if ((cur_len + NICKLEN + 2) > (BUFSIZE - 3))
+    {
+      sendto_one(source_p, "%s", buf);
+      cur_len = mlen;
+      t = buf + mlen;
+    }
+
+    ircsprintf(t, "%s%s ", channel_chanop_or_voice(ch3ptr, c2ptr),
+               c2ptr->name);
+
+    tlen = strlen(t);
+    cur_len += tlen;
+    t += tlen;
+
+    reply_to_send = YES;
+  }
 
   if (reply_to_send)
     sendto_one(source_p, "%s", buf );
@@ -240,4 +239,3 @@ ms_names(struct Client *client_p, struct Client *source_p,
   if (IsClient(source_p))
     m_names(client_p, source_p, parc, parv);
 }
-

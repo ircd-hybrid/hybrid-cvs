@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: m_force.c,v 1.22 2003/05/12 08:09:20 michael Exp $
+ * $Id: m_force.c,v 1.23 2003/05/24 08:02:48 michael Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&forcepart_msgtab);
 }
 
-const char *_version = "$Revision: 1.22 $";
+const char *_version = "$Revision: 1.23 $";
 #endif
 
 /* m_forcejoin()
@@ -155,7 +155,7 @@ mo_forcejoin(struct Client *client_p, struct Client *source_p,
 
       add_user_to_channel(chptr, target_p, type);
 
-      if (chptr->chname[0] != '&')
+      if (chptr->chname[0] == '#')
         sendto_server(target_p, target_p, chptr, NOCAPS, NOCAPS, LL_ICLIENT,
 	              ":%s SJOIN %lu %s + :%c%s",
 	              me.name, (unsigned long) chptr->channelts,
@@ -178,7 +178,7 @@ mo_forcejoin(struct Client *client_p, struct Client *source_p,
 	           chptr->topic_info, chptr->topic_time);
       }
 
-      channel_member_names(target_p, chptr, chptr->chname, 1);
+      channel_member_names(target_p, chptr, 1);
     }
   else
     {
@@ -241,7 +241,7 @@ mo_forcejoin(struct Client *client_p, struct Client *source_p,
                            chptr->chname);
 
       target_p->localClient->last_join_time = CurrentTime;
-      channel_member_names(target_p, chptr, chptr->chname, 1);
+      channel_member_names(target_p, chptr, 1);
 
       /* we do this to let the oper know that a channel was created, this will be
        * seen from the server handling the command instead of the server that

@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_ojoin.c,v 1.17 2003/05/12 08:09:20 michael Exp $
+ *   $Id: m_ojoin.c,v 1.18 2003/05/24 08:02:48 michael Exp $
  */
 
 #include "stdinc.h"
@@ -57,7 +57,7 @@ _moddeinit(void)
   mod_del_cmd(&ojoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.17 $";
+const char *_version = "$Revision: 1.18 $";
 
 /*
 ** mo_ojoin
@@ -87,9 +87,7 @@ mo_ojoin(struct Client *client_p, struct Client *source_p,
     move_me = 1;
   }
 
-  chptr= hash_find_channel(parv[1]);
-
-  if (chptr == NULL)
+  if ((chptr = hash_find_channel(parv[1])) == NULL)
   {
     sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
                me.name, source_p->name, parv[1]);
@@ -106,13 +104,14 @@ mo_ojoin(struct Client *client_p, struct Client *source_p,
   if (move_me == 1)
     parv[1]--;
 
-  if (*parv[1] == '@') 
-    {
-       add_user_to_channel(chptr, source_p, CHFL_CHANOP);
-       if (chptr->chname[0] == '#')
-         sendto_server(client_p, source_p, chptr, NOCAPS, NOCAPS, LL_ICLIENT, 
-                 ":%s SJOIN %lu %s + :@%s", me.name, (unsigned long)chptr->channelts,
-                 chptr->chname, source_p->name);
+  if (*parv[1] == '@')
+  {
+     add_user_to_channel(chptr, source_p, CHFL_CHANOP);
+
+     if (chptr->chname[0] == '#')
+       sendto_server(client_p, source_p, chptr, NOCAPS, NOCAPS, LL_ICLIENT, 
+                     ":%s SJOIN %lu %s + :@%s", me.name, (unsigned long)chptr->channelts,
+                     chptr->chname, source_p->name);
        sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s JOIN %s",
                        source_p->name,
                        source_p->username,
@@ -153,13 +152,14 @@ mo_ojoin(struct Client *client_p, struct Client *source_p,
   /* send the topic... */
   if (chptr->topic != NULL)
   {
-    sendto_one(source_p, form_str(RPL_TOPIC), me.name,
-	       source_p->name, chptr->chname, chptr->topic);
-    sendto_one(source_p, form_str(RPL_TOPICWHOTIME), me.name,
-	       source_p->name, chptr->chname, chptr->topic_info,
-	       chptr->topic_time);
+    sendto_one(source_p, form_str(RPL_TOPIC),
+               me.name, source_p->name, chptr->chname,
+               chptr->topic);
+    sendto_one(source_p, form_str(RPL_TOPICWHOTIME),
+               me.name, source_p->name, chptr->chname,
+               chptr->topic_info, chptr->topic_time);
   }
 
   source_p->localClient->last_join_time = CurrentTime;
-  channel_member_names(source_p, chptr, chptr->chname, 1);
+  channel_member_names(source_p, chptr, 1);
 }

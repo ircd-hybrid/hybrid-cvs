@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_lljoin.c,v 1.62 2003/05/12 08:09:28 michael Exp $
+ *  $Id: m_lljoin.c,v 1.63 2003/05/24 08:02:56 michael Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&lljoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.62 $";
+const char *_version = "$Revision: 1.63 $";
 #endif
 /*
  * m_lljoin
@@ -89,7 +89,6 @@ ms_lljoin(struct Client *client_p, struct Client *source_p,
   char *chname = NULL;
   char *nick = NULL;
   char *key = NULL;
-  char *vkey = NULL;
   int  flags;
   int  i;
   struct Client *target_p;
@@ -113,7 +112,7 @@ ms_lljoin(struct Client *client_p, struct Client *source_p,
 
   if(parc >3)
   {
-    key = vkey = parv[3];
+    key = parv[3];
   }
 
   flags = 0;
@@ -153,10 +152,10 @@ ms_lljoin(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if( (i = can_join(target_p, chptr, key)) )
+  if ((i = can_join(target_p, chptr, key)))
   {
-    sendto_one(target_p,
-               form_str(i), me.name, nick, chptr->chname);
+    sendto_one(target_p, form_str(i),
+               me.name, nick, chptr->chname);
     return;
   }
 
@@ -210,5 +209,5 @@ ms_lljoin(struct Client *client_p, struct Client *source_p,
                me.name, chptr->chname);
   }
 
-  channel_member_names(target_p, chptr, chname, 1);
+  channel_member_names(target_p, chptr, 1);
 }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.375 2003/05/24 05:01:36 db Exp $
+ *  $Id: channel.c,v 7.376 2003/05/24 08:03:00 michael Exp $
  */
 
 #include "stdinc.h"
@@ -89,7 +89,7 @@ init_channels(void)
 void
 add_user_to_channel(struct Channel *chptr, struct Client *who, int flags)
 {
-  if (who->user)
+  if (who->user != NULL)
   {
     switch (flags)
     {
@@ -421,6 +421,7 @@ free_channel_list(dlink_list *list)
   DLINK_FOREACH_SAFE(ptr, next_ptr, list->head)
   {
     actualBan = ptr->data;
+
     MyFree(actualBan->banstr);
     MyFree(actualBan->who);
     dlinkDelete(&actualBan->node, list);
@@ -437,7 +438,6 @@ free_channel_list(dlink_list *list)
 static void
 destroy_channel(struct Channel *chptr)
 {
-  dlink_node *gptr;
   dlink_node *ptr;
   dlink_node *m;
 
@@ -478,9 +478,7 @@ destroy_channel(struct Channel *chptr)
   chptr->banlist.head = chptr->exceptlist.head = chptr->invexlist.head = NULL;
   chptr->banlist.tail = chptr->exceptlist.tail = chptr->invexlist.tail = NULL;
 
-  gptr = &chptr->node;
-  dlinkDelete(gptr, &global_channel_list);
-
+  dlinkDelete(&chptr->node, &global_channel_list);
   del_from_channel_hash_table(chptr->chname, chptr);
 
   if (ServerInfo.hub == 1)
@@ -550,7 +548,7 @@ delete_members(struct Channel *chptr, dlink_list *list)
  */
 void
 channel_member_names(struct Client *source_p, struct Channel *chptr,
-                     char *name_of_channel, int show_eon)
+                     int show_eon)
 {
   struct Client *target_p;
   dlink_node *ptr_list[NUMLISTS];
@@ -580,17 +578,17 @@ channel_member_names(struct Client *source_p, struct Channel *chptr,
 	       me.name, source_p->name, channel_pub_or_secret(chptr));
 
     mlen = strlen(lbuf);
-    ircsprintf(lbuf + mlen, " %s :", name_of_channel);
+    ircsprintf(lbuf + mlen, " %s :", chptr->chname);
     cur_len = mlen = strlen(lbuf);
     t = lbuf + cur_len;
 
-    for(i = 0; i < NUMLISTS; i++)
+    for (i = 0; i < NUMLISTS; i++)
     {
-      for(ptr = ptr_list[i]; ptr; ptr = ptr->next)
+      for (ptr = ptr_list[i]; ptr; ptr = ptr->next)
       {
         target_p = ptr->data;
 
-        if(IsInvisible(target_p) && !is_member)
+        if (IsInvisible(target_p) && !is_member)
           continue;
 
         reply_to_send = YES;
@@ -616,8 +614,8 @@ channel_member_names(struct Client *source_p, struct Channel *chptr,
   }
 
   if(show_eon)
-    sendto_one(source_p, form_str(RPL_ENDOFNAMES), me.name,
-	       source_p->name, name_of_channel);
+    sendto_one(source_p, form_str(RPL_ENDOFNAMES),
+               me.name, source_p->name, chptr->chname);
 }
 
 /* channel_pub_or_secret()
@@ -657,14 +655,11 @@ add_invite(struct Channel *chptr, struct Client *who)
   {
     del_invite(chptr, who);
   }
-  /*
-   * add client to channel invite list
-   */
+
+  /* add client to channel invite list */
   dlinkAdd(who, make_dlink_node(), &chptr->invites);
 
-  /*
-   * add channel to the end of the client invite list
-   */
+  /* add channel to the end of the client invite list */
   dlinkAdd(chptr, make_dlink_node(), &who->user->invited);
 }
 
@@ -812,7 +807,7 @@ check_banned(struct Channel *chptr, char *s, char *s2)
  * side effects - NONE
  */
 int
-can_join(struct Client *source_p, struct Channel *chptr, char *key)
+can_join(struct Client *source_p, struct Channel *chptr, const char *key)
 {
   dlink_node *lp;
   dlink_node *ptr;
@@ -832,7 +827,7 @@ can_join(struct Client *source_p, struct Channel *chptr, char *key)
 
   if (chptr->mode.mode & MODE_INVITEONLY)
   {
-    for (lp = source_p->user->invited.head; lp; lp = lp->next)
+    DLINK_FOREACH(lp, source_p->user->invited.head)
       if (lp->data == chptr)
         break;
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_trace.c,v 1.61 2003/05/15 15:48:54 joshk Exp $
+ *  $Id: m_trace.c,v 1.62 2003/05/24 08:02:56 michael Exp $
  */
 
 #include "stdinc.h"
@@ -66,7 +66,7 @@ _moddeinit(void)
   hook_del_event("doing_trace");
   mod_del_cmd(&trace_msgtab);
 }
-const char *_version = "$Revision: 1.61 $";
+const char *_version = "$Revision: 1.62 $";
 #endif
 static int report_this_status(struct Client *source_p, struct Client *target_p,int dow,
                               int link_u_p, int link_u_s);
@@ -80,15 +80,17 @@ static int report_this_status(struct Client *source_p, struct Client *target_p,i
  */
 static void
 m_trace(struct Client *client_p, struct Client *source_p,
-	int parc, char *parv[])
+        int parc, char *parv[])
 {
-  char *tname;
+  const char *tname;
 
   if (parc > 1)
     tname = parv[1];
   else
     tname = me.name;
-  sendto_one(source_p, form_str(RPL_ENDOFTRACE), me.name, parv[0], tname);
+
+  sendto_one(source_p, form_str(RPL_ENDOFTRACE),
+             me.name, source_p->name, tname);
 }
 
 
@@ -99,18 +101,17 @@ m_trace(struct Client *client_p, struct Client *source_p,
 */
 static void
 mo_trace(struct Client *client_p, struct Client *source_p,
-	 int parc, char *parv[])
+         int parc, char *parv[])
 {
-  struct Client       *target_p = NULL;
-  struct Class        *cltmp;
-  char  *tname;
-  int   doall, link_s[MAXCONNECTIONS], link_u[MAXCONNECTIONS];
-  int   cnt = 0, wilds, dow;
+  struct Client *target_p = NULL;
+  struct Class *cltmp;
+  const char *tname;
+  int doall, link_s[MAXCONNECTIONS], link_u[MAXCONNECTIONS];
+  int cnt = 0, wilds, dow;
   dlink_node *ptr;
   dlink_node *gcptr;	/* global_client_list ptr */
-  char *looking_for = parv[0];
 
-  if(!IsClient(source_p))
+  if (!IsClient(source_p))
     return;
     
   if (parc > 2)
@@ -142,10 +143,10 @@ mo_trace(struct Client *client_p, struct Client *source_p,
 	}
  
 	if (ac2ptr != NULL)
-          sendto_one(source_p, form_str(RPL_TRACELINK), me.name, looking_for,
+          sendto_one(source_p, form_str(RPL_TRACELINK), me.name, source_p->name,
                      ircd_version, tname, ac2ptr->from->name);
         else
-          sendto_one(source_p, form_str(RPL_TRACELINK), me.name, looking_for,
+          sendto_one(source_p, form_str(RPL_TRACELINK), me.name, source_p->name,
                      ircd_version, tname, "ac2ptr_is_NULL!!");
         return;
       }

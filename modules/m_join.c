@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_join.c,v 1.105 2003/05/20 06:51:47 michael Exp $
+ *  $Id: m_join.c,v 1.106 2003/05/24 08:02:56 michael Exp $
  */
 
 #include "stdinc.h"
@@ -64,7 +64,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&join_msgtab);
 }
-const char *_version = "$Revision: 1.105 $";
+const char *_version = "$Revision: 1.106 $";
 
 #endif
 static void do_join_0(struct Client *client_p, struct Client *source_p);
@@ -91,7 +91,7 @@ m_join(struct Client *client_p, struct Client *source_p,
   if (*parv[1] == '\0')
   {
     sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-               me.name, parv[0], "JOIN");
+               me.name, source_p->name, "JOIN");
     return;
   }
 
@@ -317,7 +317,7 @@ m_join(struct Client *client_p, struct Client *source_p,
                          chptr->topic_info, chptr->topic_time);
 	}
 
-      channel_member_names(source_p, chptr, chptr->chname, 1);
+      channel_member_names(source_p, chptr, 1);
 
       if(successful_join_count != 0)
 	source_p->localClient->last_join_time = CurrentTime;
@@ -335,21 +335,19 @@ m_join(struct Client *client_p, struct Client *source_p,
  *		  here, the initial code is in to take an extra parameter
  *		  and use it for the TimeStamp on a new channel.
  */
-
 static void 
 ms_join(struct Client *client_p, struct Client *source_p,
-	int parc, char *parv[])
+        int parc, char *parv[])
 {
-  char *name;
+  const char *name;
   int new_ts;
 
-  if ((source_p->user) == NULL)
+  if (source_p->user == NULL)
     return;
   
   name = parv[1];
 
-  /*
-   * stupid legacy here. If remote server joins someone to "0"
+  /* stupid legacy here. If remote server joins someone to "0"
    * thats a signal to remove this client from all channels.
    * note, the string "0" is simply '0' '\0' this following "if"
    * is faster then a strcmp.
@@ -382,7 +380,6 @@ ms_join(struct Client *client_p, struct Client *source_p,
  *		  There is a bunch of evilness necessary here due to
  * 		  anti spambot code.
  */
-
 static void
 do_join_0(struct Client *client_p, struct Client *source_p)
 {

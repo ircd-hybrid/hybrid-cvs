@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.27 2003/05/20 06:51:42 michael Exp $
+ *   $Id: m_operspy.c,v 1.28 2003/05/24 08:02:48 michael Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -123,7 +123,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.27 $";
+const char *_version = "$Revision: 1.28 $";
 #endif
 
 /*
@@ -291,8 +291,7 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
       return;
     }
 
-    /* 
-     * the way to go with this, rather than temporarily setting -sp,
+    /* the way to go with this, rather than temporarily setting -sp,
      * is to temporarily add our client to the member list.  then
      * we can also list +i users.  an unfortunate side-effect of this
      * is that your nickname shows up in the list.  for now, there is
@@ -300,7 +299,7 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
      */ 
 
     add_user_to_channel(chptr_names, client_p, MODE_CHANOP);
-    channel_member_names(client_p, chptr_names, parv[2], 1);
+    channel_member_names(client_p, chptr_names, 1);
     remove_user_from_channel(chptr_names, client_p);
     return;
   }
@@ -309,7 +308,7 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
 #ifdef OPERSPY_TOPIC
   if (irccmp(parv[1], "TOPIC") == 0)
   {
-    if ((chptr_topic = (struct Channel *)hash_find_channel(parv[2])) == NULL)
+    if ((chptr_topic = hash_find_channel(parv[2])) == NULL)
     {
       sendto_one(client_p, form_str(ERR_NOSUCHCHANNEL), me.name,
                  parv[0], parv[2]);
@@ -363,7 +362,7 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
 
     /* /who nick */
 
-    if (((target_p_who = (struct Client *)find_client(mask)) != NULL) && 
+    if (((target_p_who = find_client(mask)) != NULL) && 
         IsPerson(target_p_who))
     {
       char *chname = NULL;

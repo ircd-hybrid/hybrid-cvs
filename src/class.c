@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: class.c,v 7.49 2003/05/11 22:27:44 joshk Exp $
+ *  $Id: class.c,v 7.50 2003/05/24 08:03:01 michael Exp $
  */
 
 #include "stdinc.h"
@@ -288,21 +288,17 @@ check_class(void)
   }
 }
 
-/* initclass()
+/* init_class()
  *
  * inputs       - NONE
  * output       - NONE
  * side effects	- 
  */
 void
-initclass(void)
+init_class(void)
 {
   struct Class *aclass;
-#if 0
-  ClassList.head   = NULL;
-  ClassList.tail   = NULL;
-  ClassList.length = 0;
-#endif
+
   aclass = make_class();
 
   ClassType(aclass) = 0;

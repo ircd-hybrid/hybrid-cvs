@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.289 2003/05/24 03:25:32 db Exp $
+ *  $Id: ircd.c,v 7.290 2003/05/24 08:03:01 michael Exp $
  */
 
 #include "stdinc.h"
@@ -654,7 +654,7 @@ main(int argc, char *argv[])
   init_client();
   initUser();
   init_channels();
-  initclass();
+  init_class();
   init_whowas();
   init_stats();
   init_hooks();

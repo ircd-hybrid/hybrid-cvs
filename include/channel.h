@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.138 2003/05/24 05:01:38 db Exp $
+ *  $Id: channel.h,v 7.139 2003/05/24 08:02:52 michael Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -71,10 +71,10 @@ struct Channel
   dlink_list      locvoiced;
   dlink_list      locpeons;             /* ... */
   
-  dlink_list      invites;
-  dlink_list      banlist;
-  dlink_list      exceptlist;
-  dlink_list      invexlist;
+  dlink_list invites;
+  dlink_list banlist;
+  dlink_list exceptlist;
+  dlink_list invexlist;
 
   time_t          first_received_message_time; /* channel flood control */
   int             received_number_of_privmsgs;
@@ -89,7 +89,7 @@ extern dlink_list global_channel_list;
 extern void init_channels(void);
 extern int can_send (struct Channel *chptr, struct Client *who);
 extern int is_banned (struct Channel *chptr, struct Client *who);
-extern int can_join(struct Client *source_p, struct Channel *chptr, char *key);
+extern int can_join(struct Client *source_p, struct Channel *chptr, const char *key);
 extern int is_chan_op(struct Channel *chptr,struct Client *who);
 extern int is_voiced(struct Channel *chptr,struct Client *who);
 
@@ -99,10 +99,7 @@ extern void add_user_to_channel(struct Channel *chptr, struct Client *who, int f
 extern int remove_user_from_channel(struct Channel *chptr, struct Client *who);
 
 extern int check_channel_name(const char *name);
-extern void channel_member_names(struct Client *source_p,
-				     struct Channel *chptr,
-				     char *name_of_channel,
-                                     int show_eon);
+extern void channel_member_names(struct Client *source_p, struct Channel *chptr, int show_eon);
 extern const char *channel_chanop_or_voice(struct Channel *, struct Client *);
 extern void add_invite(struct Channel *chptr, struct Client *who);
 extern void del_invite(struct Channel *chptr, struct Client *who);
