@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.116 2002/06/11 01:39:36 androsyn Exp $
+ *  $Id: channel.h,v 7.117 2002/06/11 01:49:21 androsyn Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -181,4 +181,7 @@ void do_channel_integrity_check(void);
 #endif
 
 void set_channel_topic(struct Channel *chptr, const char *topic, const char *topic_info, time_t topicts); 
+void free_topic(struct Channel *);
+int allocate_topic(struct Channel *);
+
 #endif  /* INCLUDED_channel_h */

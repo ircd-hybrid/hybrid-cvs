@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_ojoin.c,v 1.10 2002/06/03 15:42:52 leeh Exp $
+ *   $Id: m_ojoin.c,v 1.11 2002/06/11 01:49:18 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -58,7 +58,7 @@ _moddeinit(void)
   mod_del_cmd(&ojoin_msgtab);
 }
 
-char *_version = "$Revision: 1.10 $";
+char *_version = "$Revision: 1.11 $";
 
 /*
 ** mo_ojoin
@@ -182,7 +182,7 @@ static void mo_ojoin(struct Client *client_p, struct Client *source_p,
     }
 
   /* send the topic... */
-  if (chptr->topic[0] != '\0')
+  if (chptr->topic != NULL)
   {
     sendto_one(source_p, form_str(RPL_TOPIC), me.name,
 	       source_p->name, chptr->chname, chptr->topic);

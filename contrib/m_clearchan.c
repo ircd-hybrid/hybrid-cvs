@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_clearchan.c,v 1.29 2002/05/24 23:48:33 androsyn Exp $
+ *   $Id: m_clearchan.c,v 1.30 2002/06/11 01:49:18 androsyn Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -77,7 +77,7 @@ _moddeinit(void)
   mod_del_cmd(&clearchan_msgtab);
 }
 
-char *_version = "$Revision: 1.29 $";
+char *_version = "$Revision: 1.30 $";
 
 /*
 ** mo_clearchan
@@ -182,8 +182,7 @@ static void mo_clearchan(struct Client *client_p, struct Client *source_p,
 
   chptr->mode.mode =
     MODE_SECRET | MODE_TOPICLIMIT | MODE_INVITEONLY | MODE_NOPRIVMSGS;
-  chptr->topic_info[0] = '\0';
-  chptr->topic[0] = '\0';
+  free_topic(chptr);
   chptr->mode.key[0] = 0;
 
   /* Kick the users out and join the oper */

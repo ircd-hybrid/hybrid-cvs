@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.321 2002/06/11 01:42:34 androsyn Exp $
+ *  $Id: channel.c,v 7.322 2002/06/11 01:49:23 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -1433,7 +1433,7 @@ void check_splitmode(void *unused)
  * side effects - Allocates a new topic
  */
 
-static int allocate_topic(struct Channel *chptr)
+int allocate_topic(struct Channel *chptr)
 {
   void *ptr;
   if(chptr == NULL)
@@ -1455,7 +1455,7 @@ static int allocate_topic(struct Channel *chptr)
   return FALSE;
 }
 
-static void free_topic(struct Channel *chptr)
+void free_topic(struct Channel *chptr)
 {
   void *ptr;
   
