@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: list.c,v 7.50 2003/03/01 01:15:44 db Exp $
+ *  $Id: list.c,v 7.51 2003/03/16 04:38:57 db Exp $
  */
 
 #include "stdinc.h"
@@ -58,8 +58,6 @@ void
 initUser(void)
 {
   user_heap = BlockHeapCreate(sizeof(struct User), USER_HEAP_SIZE);
-  if(!user_heap)
-     outofmemory();	
 }
 /*
  * make_user
@@ -171,8 +169,6 @@ static BlockHeap *dnode_heap;
 void init_dlink_nodes(void)
 {
   dnode_heap = BlockHeapCreate(sizeof(dlink_node), DNODE_HEAP_SIZE);
-  if(dnode_heap == NULL)
-     outofmemory();
 }
  
 /*
