@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: msg.h,v 7.38 2001/03/06 02:22:09 androsyn Exp $
+ * $Id: msg.h,v 7.39 2001/11/13 11:45:46 leeh Exp $
  */
 #ifndef INCLUDED_msg_h
 #define INCLUDED_msg_h
@@ -35,10 +35,11 @@ struct Client;
 /* 
  * Message table structure 
  */
-struct  Message
+struct Message
 {
   char  *cmd;
   unsigned int  count;      /* number of times command used */
+  unsigned int	rcount;     /* number of times command used by server */
   unsigned int  parameters; /* at least this many args must be passed
                              * or an error will be sent to the user 
                              * before the m_func is even called 

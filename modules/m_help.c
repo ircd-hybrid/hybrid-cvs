@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_help.c,v 1.20 2001/11/11 17:05:47 ejb Exp $
+ *   $Id: m_help.c,v 1.21 2001/11/13 11:45:47 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -46,7 +46,7 @@ struct Message help_msgtab = {
 };
 
 struct Message uhelp_msgtab = {
-  "UHELP", 0, 0, 0, MFLG_SLOW, 0,
+  "UHELP", 0, 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_help, m_ignore, mo_uhelp}
 };
 #ifndef STATIC_MODULES

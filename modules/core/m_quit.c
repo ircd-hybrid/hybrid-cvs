@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_quit.c,v 1.19 2001/05/24 04:22:06 ejb Exp $
+ *   $Id: m_quit.c,v 1.20 2001/11/13 11:45:48 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -37,7 +37,7 @@ static void m_quit(struct Client*, struct Client*, int, char**);
 static void ms_quit(struct Client*, struct Client*, int, char**);
 
 struct Message quit_msgtab = {
-  "QUIT", 0, 0, 0, MFLG_SLOW | MFLG_UNREG, 0,
+  "QUIT", 0, 0, 0, 0, MFLG_SLOW | MFLG_UNREG, 0,
   {m_quit, m_quit, ms_quit, m_quit}
 };
 

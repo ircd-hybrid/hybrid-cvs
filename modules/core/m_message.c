@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.74 2001/10/25 02:36:21 db Exp $
+ *   $Id: m_message.c,v 1.75 2001/11/13 11:45:48 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -102,12 +102,12 @@ static void handle_opers(int p_or_n, char *command,
 static void free_target_table(void);
 
 struct Message privmsg_msgtab = {
-  "PRIVMSG", 0, 1, 0, MFLG_SLOW | MFLG_UNREG, 0L,
+  "PRIVMSG", 0, 0, 1, 0, MFLG_SLOW | MFLG_UNREG, 0L,
   {m_unregistered, m_privmsg, m_privmsg, m_privmsg}
 };
 
 struct Message notice_msgtab = {
-  "NOTICE", 0, 1, 0, MFLG_SLOW, 0L,
+  "NOTICE", 0, 0, 1, 0, MFLG_SLOW, 0L,
   {m_unregistered, m_notice, m_notice, m_notice}
 };
 

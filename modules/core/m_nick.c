@@ -2,7 +2,7 @@
  * modules/m_nick.c
  * Copyright (C) 2001 Hybrid Development Team
  *
- * $Id: m_nick.c,v 1.79 2001/10/25 02:36:21 db Exp $
+ * $Id: m_nick.c,v 1.80 2001/11/13 11:45:48 leeh Exp $
  */
 
 #include "handlers.h"
@@ -58,12 +58,12 @@ static int perform_nick_collides(struct Client *, struct Client *,
                             
 
 struct Message nick_msgtab = {
-  "NICK", 0, 1, 0, MFLG_SLOW, 0,
+  "NICK", 0, 0, 1, 0, MFLG_SLOW, 0,
   {mr_nick, m_nick, ms_nick, m_nick}
 };
 
 struct Message client_msgtab = {
-  "CLIENT", 0, 10, 0, MFLG_SLOW, 0,
+  "CLIENT", 0, 0, 10, 0, MFLG_SLOW, 0,
   {m_ignore, m_ignore, ms_client, m_ignore}
 };
 

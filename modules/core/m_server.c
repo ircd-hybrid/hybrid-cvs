@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_server.c,v 1.70 2001/09/12 05:42:56 habeeb Exp $
+ *   $Id: m_server.c,v 1.71 2001/11/13 11:45:48 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"  /* m_server prototype */
@@ -52,7 +52,7 @@ static void ms_server(struct Client*, struct Client*, int, char **);
 static int set_server_gecos(struct Client *, char *);
 
 struct Message server_msgtab = {
-  "SERVER", 0, 3, 0, MFLG_SLOW | MFLG_UNREG, 0,
+  "SERVER", 0, 0, 3, 0, MFLG_SLOW | MFLG_UNREG, 0,
   {mr_server, m_registered, ms_server, m_registered}
 };
 

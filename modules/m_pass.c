@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_pass.c,v 1.17 2001/05/27 03:17:21 a1kmm Exp $
+ *  $Id: m_pass.c,v 1.18 2001/11/13 11:45:48 leeh Exp $
  */
 #include "handlers.h"  /* m_pass prototype */
 #include "client.h"      /* client struct */
@@ -35,7 +35,7 @@
 static void mr_pass(struct Client*, struct Client*, int, char**);
 
 struct Message pass_msgtab = {
-  "PASS", 0, 2, 0, MFLG_SLOW | MFLG_UNREG, 0,
+  "PASS", 0, 0, 2, 0, MFLG_SLOW | MFLG_UNREG, 0,
   {mr_pass, m_registered, m_ignore, m_registered}
 };
 

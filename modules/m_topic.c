@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_topic.c,v 1.39 2001/10/24 06:19:44 db Exp $
+ *   $Id: m_topic.c,v 1.40 2001/11/13 11:45:48 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -46,7 +46,7 @@ static void m_topic(struct Client*, struct Client*, int, char**);
 static void ms_topic(struct Client*, struct Client*, int, char**);
 
 struct Message topic_msgtab = {
-  "TOPIC", 0, 2, 0, MFLG_SLOW, 0,
+  "TOPIC", 0, 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_topic, ms_topic, m_topic}
 };
 

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_pong.c,v 1.19 2001/10/25 02:36:21 db Exp $
+ *   $Id: m_pong.c,v 1.20 2001/11/13 11:45:48 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -40,7 +40,7 @@ static void mr_pong(struct Client*, struct Client*, int, char**);
 static void ms_pong(struct Client*, struct Client*, int, char**);
 
 struct Message pong_msgtab = {
-  "PONG", 0, 1, 0, MFLG_SLOW | MFLG_UNREG, 0,
+  "PONG", 0, 0, 1, 0, MFLG_SLOW | MFLG_UNREG, 0,
   {mr_pong, m_ignore, ms_pong, m_ignore}
 };
 

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_dmem.c,v 1.10 2001/09/23 08:44:39 a1kmm Exp $
+ *   $Id: m_dmem.c,v 1.11 2001/11/13 11:45:47 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -42,7 +42,7 @@
 static void mo_dmem(struct Client*, struct Client*, int, char**);
 
 struct Message dmem_msgtab = {
-  "DMEM", 0, 0, 0, MFLG_SLOW, 0,
+  "DMEM", 0, 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, m_ignore, mo_dmem}
 };
 #ifndef STATIC_MODULES

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_version.c,v 1.31 2001/09/04 12:26:15 leeh Exp $
+ *   $Id: m_version.c,v 1.32 2001/11/13 11:45:49 leeh Exp $
  */
 #include <string.h>
 #include "handlers.h"
@@ -42,7 +42,7 @@ static void ms_version(struct Client*, struct Client*, int, char**);
 static void mo_version(struct Client*, struct Client*, int, char**);
 
 struct Message version_msgtab = {
-  "VERSION", 0, 0, 0, MFLG_SLOW, 0,
+  "VERSION", 0, 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_version, ms_version, mo_version}
 };
 

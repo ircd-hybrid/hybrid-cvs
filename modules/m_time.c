@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_time.c,v 1.20 2001/08/31 12:48:32 leeh Exp $
+ *   $Id: m_time.c,v 1.21 2001/11/13 11:45:48 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -38,7 +38,7 @@ static void m_time(struct Client*, struct Client*, int, char**);
 static void mo_time(struct Client*, struct Client*, int, char**);
 
 struct Message time_msgtab = {
-  "TIME", 0, 0, 0, MFLG_SLOW, 0,
+  "TIME", 0, 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_time, mo_time, mo_time}
 };
 

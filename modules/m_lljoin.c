@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_lljoin.c,v 1.50 2001/10/25 02:36:21 db Exp $
+ * $Id: m_lljoin.c,v 1.51 2001/11/13 11:45:48 leeh Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -46,7 +46,7 @@
 static void ms_lljoin(struct Client *,struct Client *,int,char **);
 
 struct Message lljoin_msgtab = {
-  "LLJOIN", 0, 3, 0, MFLG_SLOW | MFLG_UNREG, 0L,
+  "LLJOIN", 0, 0, 3, 0, MFLG_SLOW | MFLG_UNREG, 0L,
   {m_unregistered, m_ignore, ms_lljoin, m_ignore}
 };
 #ifndef STATIC_MODULES

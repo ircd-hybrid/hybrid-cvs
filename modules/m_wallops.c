@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_wallops.c,v 1.23 2001/06/01 00:56:00 davidt Exp $
+ *   $Id: m_wallops.c,v 1.24 2001/11/13 11:45:49 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -39,7 +39,7 @@ static void ms_wallops(struct Client*, struct Client*, int, char**);
 static void mo_wallops(struct Client*, struct Client*, int, char**);
 
 struct Message wallops_msgtab = {
-  "WALLOPS", 0, 2, 0, MFLG_SLOW, 0,
+  "WALLOPS", 0, 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, ms_wallops, mo_wallops}
 };
 

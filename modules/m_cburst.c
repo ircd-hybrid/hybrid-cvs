@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_cburst.c,v 1.35 2001/10/24 06:19:43 db Exp $
+ * $Id: m_cburst.c,v 1.36 2001/11/13 11:45:47 leeh Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -42,7 +42,7 @@
 static void ms_cburst(struct Client*, struct Client*, int, char**);
 
 struct Message cburst_msgtab = {
-  "CBURST", 0, 1, 0, MFLG_SLOW | MFLG_UNREG, 0L,
+  "CBURST", 0, 0, 1, 0, MFLG_SLOW | MFLG_UNREG, 0L,
   {m_unregistered, m_ignore, ms_cburst, m_ignore}
 };
 #ifndef STATIC_MODULES

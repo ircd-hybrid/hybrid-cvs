@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_list.c,v 1.36 2001/11/09 13:16:02 leeh Exp $
+ *  $Id: m_list.c,v 1.37 2001/11/13 11:45:48 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -48,7 +48,7 @@ static int list_all_channels(struct Client *);
 static void list_one_channel(struct Client *,struct Channel *);
 
 struct Message list_msgtab = {
-  "LIST", 0, 0, 0, MFLG_SLOW, 0,
+  "LIST", 0, 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_list, ms_list, mo_list}
 };
 #ifndef STATIC_MODULES

@@ -2,7 +2,7 @@
  * modules/m_resv.c
  * Copyright (C) 2001 Hybrid Development Team
  *
- * $Id: m_resv.c,v 1.10 2001/10/24 06:19:44 db Exp $
+ * $Id: m_resv.c,v 1.11 2001/11/13 11:45:48 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -22,12 +22,12 @@ static void mo_resv(struct Client *, struct Client *, int, char **);
 static void mo_unresv(struct Client *, struct Client *, int, char **);
 
 struct Message resv_msgtab = {
-  "RESV", 0, 3, 0, MFLG_SLOW | MFLG_UNREG, 0,
+  "RESV", 0, 0, 3, 0, MFLG_SLOW | MFLG_UNREG, 0,
   {m_ignore, m_not_oper, m_ignore, mo_resv}
 };
 
 struct Message unresv_msgtab = {
-  "UNRESV", 0, 2, 0, MFLG_SLOW | MFLG_UNREG, 0,
+  "UNRESV", 0, 0, 2, 0, MFLG_SLOW | MFLG_UNREG, 0,
   {m_ignore, m_not_oper, m_ignore, mo_unresv}
 };
 

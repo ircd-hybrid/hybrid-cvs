@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_eob.c,v 1.26 2001/08/03 13:10:27 leeh Exp $
+ *   $Id: m_eob.c,v 1.27 2001/11/13 11:45:47 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -37,7 +37,7 @@
 static void ms_eob(struct Client*, struct Client*, int, char**);
 
 struct Message eob_msgtab = {
-  "EOB", 0, 0, 0, MFLG_SLOW | MFLG_UNREG, 0, 
+  "EOB", 0, 0, 0, 0, MFLG_SLOW | MFLG_UNREG, 0, 
   {m_unregistered, m_ignore, ms_eob, m_ignore}
 };
 #ifndef STATIC_MODULES

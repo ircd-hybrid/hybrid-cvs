@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_ping.c,v 1.23 2001/10/25 12:44:09 db Exp $
+ *   $Id: m_ping.c,v 1.24 2001/11/13 11:45:48 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -38,7 +38,7 @@ static void m_ping(struct Client*, struct Client*, int, char**);
 static void ms_ping(struct Client*, struct Client*, int, char**);
 
 struct Message ping_msgtab = {
-  "PING", 0, 1, 0, MFLG_SLOW, 0,
+  "PING", 0, 0, 1, 0, MFLG_SLOW, 0,
   {m_unregistered, m_ping, ms_ping, m_ping}
 };
 

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_oper.c,v 1.37 2001/08/03 13:10:28 leeh Exp $
+ *   $Id: m_oper.c,v 1.38 2001/11/13 11:45:48 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -57,7 +57,7 @@ static void mo_oper(struct Client*, struct Client*, int, char**);
 
 
 struct Message oper_msgtab = {
-  "OPER", 0, 3, 0, MFLG_SLOW, 0,
+  "OPER", 0, 0, 3, 0, MFLG_SLOW, 0,
   {m_unregistered, m_oper, ms_oper, mo_oper} 
 };
 

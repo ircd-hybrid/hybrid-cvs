@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_rehash.c,v 1.32 2001/10/15 03:13:18 db Exp $
+ *   $Id: m_rehash.c,v 1.33 2001/11/13 11:45:48 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -42,7 +42,7 @@
 static void mo_rehash(struct Client*, struct Client*, int, char**);
 
 struct Message rehash_msgtab = {
-  "REHASH", 0, 0, 0, MFLG_SLOW, 0,
+  "REHASH", 0, 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, m_ignore, mo_rehash}
 };
 

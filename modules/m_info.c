@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.c,v 1.46 2001/10/17 16:07:25 leeh Exp $
+ * $Id: m_info.c,v 1.47 2001/11/13 11:45:47 leeh Exp $
  */
 
 #include <time.h>
@@ -55,7 +55,7 @@ static void ms_info(struct Client*, struct Client*, int, char**);
 static void mo_info(struct Client*, struct Client*, int, char**);
 
 struct Message info_msgtab = {
-  "INFO", 0, 0, 0, MFLG_SLOW, 0,
+  "INFO", 0, 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_info, ms_info, mo_info}
 };
 #ifndef STATIC_MODULES

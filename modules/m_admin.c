@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_admin.c,v 1.29 2001/09/05 12:14:45 leeh Exp $
+ *   $Id: m_admin.c,v 1.30 2001/11/13 11:45:47 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -42,7 +42,7 @@ static void do_admin( struct Client *source_p );
 static void admin_spy(struct Client *);
 
 struct Message admin_msgtab = {
-  "ADMIN", 0, 0, 0, MFLG_SLOW | MFLG_UNREG, 0, 
+  "ADMIN", 0, 0, 0, 0, MFLG_SLOW | MFLG_UNREG, 0, 
   {mr_admin, m_admin, ms_admin, ms_admin}
 };
 #ifndef STATIC_MODULES

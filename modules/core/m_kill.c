@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kill.c,v 1.55 2001/10/25 02:36:21 db Exp $
+ *   $Id: m_kill.c,v 1.56 2001/11/13 11:45:47 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -47,7 +47,7 @@ static void relay_kill(struct Client *, struct Client *, struct Client *,
                        const char *, const char *);
 
 struct Message kill_msgtab = {
-  "KILL", 0, 2, 0, MFLG_SLOW, 0,
+  "KILL", 0, 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, ms_kill, mo_kill}
 };
 #ifndef STATIC_MODULES

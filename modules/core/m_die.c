@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_die.c,v 1.18 2001/10/15 03:13:18 db Exp $
+ *   $Id: m_die.c,v 1.19 2001/11/13 11:45:47 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -39,7 +39,7 @@
 static void mo_die(struct Client*, struct Client*, int, char**);
 
 struct Message die_msgtab = {
-  "DIE", 0, 1, 0, MFLG_SLOW, 0,
+  "DIE", 0, 0, 1, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, m_ignore, mo_die}
 };
 #ifndef STATIC_MODULES

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kline.c,v 1.90 2001/10/17 16:07:25 leeh Exp $
+ *   $Id: m_kline.c,v 1.91 2001/11/13 11:45:47 leeh Exp $
  */
 #include "tools.h"
 #include "m_kline.h"
@@ -58,12 +58,12 @@ static void ms_kline(struct Client *,struct Client *,int,char **);
 static void mo_dline(struct Client *,struct Client *,int,char **);
 
 struct Message kline_msgtab = {
-  "KLINE", 0, 2, 0, MFLG_SLOW, 0,
+  "KLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, ms_kline, mo_kline}
 };
 
 struct Message dline_msgtab = {
-  "DLINE", 0, 2, 0, MFLG_SLOW, 0,
+  "DLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, m_error, mo_dline}
 };
 

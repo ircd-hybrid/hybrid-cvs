@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_connect.c,v 1.32 2001/10/25 02:36:20 db Exp $
+ *   $Id: m_connect.c,v 1.33 2001/11/13 11:45:47 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -45,7 +45,7 @@ static void mo_connect(struct Client*, struct Client*, int, char**);
 static void ms_connect(struct Client*, struct Client*, int, char**);
 
 struct Message connect_msgtab = {
-  "CONNECT", 0, 2, 0, MFLG_SLOW, 0,
+  "CONNECT", 0, 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, ms_connect, mo_connect}
 };
 

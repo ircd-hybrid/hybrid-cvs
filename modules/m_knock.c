@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_knock.c,v 1.32 2001/10/24 06:19:44 db Exp $
+ *   $Id: m_knock.c,v 1.33 2001/11/13 11:45:48 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -51,7 +51,7 @@ static void send_knock(struct Client *, struct Client *,
                        struct Channel *, char *);
 
 struct Message knock_msgtab = {
-  "KNOCK", 0, 2, 0, MFLG_SLOW, 0,
+  "KNOCK", 0, 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_knock, m_ignore, m_knock}
 };
 #ifndef STATIC_MODULES

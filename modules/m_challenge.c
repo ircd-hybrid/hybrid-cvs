@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_challenge.c,v 1.28 2001/10/24 14:41:41 androsyn Exp $
+ *   $Id: m_challenge.c,v 1.29 2001/11/13 11:45:47 leeh Exp $
  */
 #include <stdlib.h>
 #include <string.h>
@@ -63,7 +63,7 @@ void binary_to_hex( unsigned char * bin, char * hex, int length );
 
 /* We have openssl support, so include /CHALLENGE */
 struct Message challenge_msgtab = {
-  "CHALLENGE", 0, 2, 0, MFLG_SLOW, 0,
+  "CHALLENGE", 0, 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_challenge, m_ignore, m_challenge}
 };
 #ifndef STATIC_MODULES

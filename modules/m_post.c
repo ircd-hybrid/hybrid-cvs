@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_post.c,v 1.4 2001/08/03 13:10:28 leeh Exp $
+ *   $Id: m_post.c,v 1.5 2001/11/13 11:45:48 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -36,7 +36,7 @@
 static void mr_post(struct Client*, struct Client*, int, char**);
 
 struct Message post_msgtab = {
-  "POST", 0, 0, 0, MFLG_SLOW | MFLG_UNREG, 0,
+  "POST", 0, 0, 0, 0, MFLG_SLOW | MFLG_UNREG, 0,
   {mr_post, m_ignore, m_ignore, m_ignore}
 };
 

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_links.c,v 1.31 2001/08/31 12:48:32 leeh Exp $
+ *   $Id: m_links.c,v 1.32 2001/11/13 11:45:48 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -44,7 +44,7 @@ static void mo_links(struct Client*, struct Client*, int, char**);
 static void ms_links(struct Client*, struct Client*, int, char**);
 
 struct Message links_msgtab = {
-  "LINKS", 0, 0, 0, MFLG_SLOW, 0,
+  "LINKS", 0, 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_links, ms_links, mo_links}
 };
 #ifndef STATIC_MODULES

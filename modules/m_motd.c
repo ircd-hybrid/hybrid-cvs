@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_motd.c,v 1.23 2001/09/05 12:14:45 leeh Exp $
+ *   $Id: m_motd.c,v 1.24 2001/11/13 11:45:48 leeh Exp $
  */
 #include "client.h"
 #include "tools.h"
@@ -47,7 +47,7 @@ static void mo_motd(struct Client*, struct Client*, int, char**);
 static void motd_spy(struct Client *);
 
 struct Message motd_msgtab = {
-  "MOTD", 0, 0, 1, MFLG_SLOW, 0,
+  "MOTD", 0, 0, 0, 1, MFLG_SLOW, 0,
   {mr_motd, m_motd, mo_motd, mo_motd}
 };
 #ifndef STATIC_MODULES

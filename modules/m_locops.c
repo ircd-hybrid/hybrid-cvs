@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_locops.c,v 1.22 2001/04/04 15:22:29 androsyn Exp $
+ *   $Id: m_locops.c,v 1.23 2001/11/13 11:45:48 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -38,7 +38,7 @@
 static void m_locops(struct Client *,struct Client *,int,char **);
 
 struct Message locops_msgtab = {
-  "LOCOPS", 0, 2, 0, MFLG_SLOW, 0,
+  "LOCOPS", 0, 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, m_ignore, m_locops}
 };
 #ifndef STATIC_MODULES

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_userhost.c,v 1.32 2001/10/25 02:36:21 db Exp $
+ *   $Id: m_userhost.c,v 1.33 2001/11/13 11:45:49 leeh Exp $
  */
 
 #include "handlers.h"
@@ -41,7 +41,7 @@ static char buf[BUFSIZE];
 static void m_userhost(struct Client*, struct Client*, int, char**);
 
 struct Message userhost_msgtab = {
-  "USERHOST", 0, 1, 0, MFLG_SLOW, 0,
+  "USERHOST", 0, 0, 1, 0, MFLG_SLOW, 0,
   {m_unregistered, m_userhost, m_userhost, m_userhost}
 };
 

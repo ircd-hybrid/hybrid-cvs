@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operwall.c,v 1.23 2001/06/01 00:55:59 davidt Exp $
+ *   $Id: m_operwall.c,v 1.24 2001/11/13 11:45:48 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -37,7 +37,7 @@ static void mo_operwall(struct Client*, struct Client*, int, char**);
 static void ms_operwall(struct Client*, struct Client*, int, char**);
 
 struct Message operwall_msgtab = {
-  "OPERWALL", 0, 2, 0, MFLG_SLOW, 0,
+  "OPERWALL", 0, 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, ms_operwall, mo_operwall}
 };
 

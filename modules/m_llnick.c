@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_llnick.c,v 1.13 2001/10/25 02:36:21 db Exp $
+ * $Id: m_llnick.c,v 1.14 2001/11/13 11:45:48 leeh Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -42,7 +42,7 @@
 static void ms_llnick(struct Client*, struct Client*, int, char**);
 
 struct Message llnick_msgtab = {
-  "LLNICK", 0, 3, 0, MFLG_SLOW | MFLG_UNREG, 0L,
+  "LLNICK", 0, 0, 3, 0, MFLG_SLOW | MFLG_UNREG, 0L,
   {m_unregistered, m_ignore, ms_llnick, m_ignore}
 };
 #ifndef STATIC_MODULES

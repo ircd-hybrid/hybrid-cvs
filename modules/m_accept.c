@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_accept.c,v 1.26 2001/10/25 02:36:20 db Exp $
+ *   $Id: m_accept.c,v 1.27 2001/11/13 11:45:47 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -42,7 +42,7 @@ static void add_accept(struct Client *, struct Client *);
 static void list_accepts(struct Client *);
 
 struct Message accept_msgtab = {
-  "ACCEPT", 0, 2, 0, MFLG_SLOW | MFLG_UNREG, 0, 
+  "ACCEPT", 0, 0, 2, 0, MFLG_SLOW | MFLG_UNREG, 0, 
   {m_unregistered, m_accept, m_ignore, m_accept}
 };
 
