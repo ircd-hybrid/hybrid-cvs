@@ -1,6 +1,6 @@
                             Hybrid INSTALL Document
 
-   $Id: INSTALL,v 7.31 2002/09/19 16:14:30 bill Exp $
+   $Id: INSTALL,v 7.31.2.1 2004/06/19 14:30:34 lusky Exp $
 
    Copyright (c) 2001 by ircd-hybrid team
 
@@ -199,14 +199,13 @@
    Send Check or Money Order to... just kidding! You're on your own for
    support. Try asking other ircd-hybrid admins on EFnet if you can't fix it
    yourself. If you do fix anything, however, please send context or unified
-   diffs to ircd-hybrid@the-project.org so the fixes can be incorporated into
+   diffs to bugs@ircd-hybrid.org so the fixes can be incorporated into
    the next release of ircd-hybrid. If hybrid crashes on you, PLEASE contact
-   ircd-hybrid@the-project.org ASAP with a backtrace of the core. The Hybrid
+   bugs@ircd-hybrid.org ASAP with a backtrace of the core. The Hybrid
    team can't fix bugs if no one tells us about them!
 
    There is now a mailing list for general discussion of Hybrid. To subscribe,
-   send an emal to listmanager@the-project.org with a single line in the body
-   containing "subscribe hybrid". 
+   use this link: https://lists.ircd-hybrid.org/mailman/listinfo/hybrid
 
      ----------------------------------------------------------------------
 
@@ -234,7 +233,7 @@
    4. 
 
        Save the output of the backtrace command and send it to
-       ircd-hybrid@the-project.org.
+       bugs@ircd-hybrid.org.
 
    5. 
 

@@ -53,7 +53,7 @@ Feature Specific Requirements:
 
 *******************************************************************************
 
-- To report bugs in hybrid, send the bug report to ircd-hybrid@the-project.org
+- To report bugs in hybrid, send the bug report to bugs@ircd-hybrid.org
 
 - Known bugs are listed in the BUGS file
 
@@ -77,8 +77,8 @@ Feature Specific Requirements:
   to permission problems on these files.
 
 - There is now a mailing list for general discussion of Hybrid.  To subscribe
-  to the Hybrid List, send email to listmanager@the-project.org with
-  the subject "subscribe hybrid".
+  to the Hybrid List, use this line:
+  https://lists.ircd-hybrid.org/mailman/listinfo/hybrid
 
 - If you run in to a problem you think may be specific to your platform,
   check README.PLATFORMS for some hints.
@@ -112,4 +112,4 @@ Feature Specific Requirements:
 - Other files recommended for reading: BUGS, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: README.FIRST,v 7.33 2002/04/28 00:26:01 leeh Exp $
+$Id: README.FIRST,v 7.33.4.1 2004/06/19 14:30:34 lusky Exp $

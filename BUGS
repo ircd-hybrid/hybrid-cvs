@@ -54,10 +54,10 @@
     bothers you, fix it for us.
 
 BUG REPORTS: If you run this code and encounter problems, you must report
- the bug in by E-MAIL to ircd-hybrid@the-project.org.
+ the bug in by E-MAIL to bugs@ircd-hybrid.org.
 
  Please include a gdb backtrace and a copy of your config.h and ircd.conf
  with any report  (with passwords and other sensitive information masked).
 
 --------------------------------------------------------------------------------
-$Id: BUGS,v 7.52.2.1 2003/06/11 04:26:04 lusky Exp $
+$Id: BUGS,v 7.52.2.2 2004/06/19 14:30:34 lusky Exp $

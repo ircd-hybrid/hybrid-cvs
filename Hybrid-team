@@ -1,4 +1,4 @@
-$Id: Hybrid-team,v 7.59.2.4 2004/04/17 21:31:25 bill Exp $
+$Id: Hybrid-team,v 7.59.2.5 2004/06/19 14:30:34 lusky Exp $
 
 The hybrid team is a group of ircd coders who were frustrated
 with the instability and all-out "dirtiness" of the EFnet ircd's
@@ -7,28 +7,24 @@ of people, all of us.
  
 Anyone is welcome to contribute to this effort.  You are encouraged
 to participate in the Hybrid mailing list.  To subscribe to the
-Hybrid List, send email to listmanager@the-project.org with the
-subject "subscribe hybrid".
+Hybrid List, use this link:
+  https://lists.ircd-hybrid.org/mailman/listinfo/hybrid
  
 The core team as, of this major release:
  
-A1kmm, Andrew Miller <a1kmm@mware.virtualave.net>
 adrian, Adrian Chadd <adrian@creative.net.au>
+adx, Piotr Nizynski <adx@crashnet.pl>
 AndroSyn, Aaron Sethman <androsyn@ratbox.org>
 billy-jon, William Bierman III <bill@mu.org>
 cosine, Patrick Alken <wnder@uwns.underworld.net>
 David-T, David Taylor <davidt@yadt.co.uk>
 Dianora, Diane Bruce <db@db.net>
-einride, Erik S. Johansen, <einride@einride.org>
-fl, Lee Hardy <lee@leeh.co.uk>
-Hwy101, W. Campbell <wcampbel@botbay.net>
-larne, Edward Brocklesby <ejb@sdf.lonestar.org>
 ievil, Arnvid L. Karstad <ievil@isd.no>
-isomer, Perry Lorier <perry@coders.net>
 jmallett, Juli Mallett <jmallett@FreeBSD.org>
-k9, Jeremy Chadwick <yoshi@parodius.com>
-Rodder, Jon Lusky <lusky@blown.net>
-toot, Toby Verrall <to7@antipope.fsnet.co.uk>
+kire, Erik Small <smalle@hawaii.edu>
+metalrock, Jack Low <musirc@users.sourceforge.net>
+Rodder, Jon Lusky <luskyircd@blown.net>
+vulture, Sean Stanek <vulture@cs.iastate.edu>
 wiz, Jason Dambrosio <jason@wiz.cx>
 Wohali, Joan Touzet <joant@ieee.org>
 xyst, Greg Prosser <gnp@arrogant.org>
@@ -36,22 +32,27 @@ xyst, Greg Prosser <gnp@arrogant.org>
 The following people have contributed blood, sweat, and/or code to
 this release of hybrid, in nick alphabetical order:
  
-adx, Piotr Nizynski <adx@crashnet.pl>
+A1kmm, Andrew Miller <a1kmm@mware.virtualave.net>
 bysin, Ben Kittridge <bkittridge@cfl.rr.com>
 cryogen, Stuart Walsh <stu@ipng.org.uk>
 desrt, Ryan Lortie <desertangel@mindless.com>
+einride, Erik S. Johansen, <einride@einride.org>
+fl, Lee Hardy <lee@leeh.co.uk>
 Habeeb, David Supuran <habeeb@cfl.rr.com>
+Hwy101, W. Campbell <wcampbel@botbay.net>
+isomer, Perry Lorier <perry@coders.net>
 jv, Jakub Vlasek <jv@pilsedu.cz>
+k9, Jeremy Chadwick <yoshi@parodius.com>
 kre, Dinko Korunic <kreator@fly.srk.fer.hr>
+larne, Edward Brocklesby <ejb@sdf.lonestar.org>
 madmax, Paul Lomax <madmax@efnet.org>
-metalrock, Jack Low <musirc@users.sourceforge.net>
 Neph|l|m, Adel Mezibra <adel@cybercable.fr>
 Riedel, Dennis Vink, <riedel@chaotic.nl>
 Robert Alan Byer <byer@mail.ourservers.net>
 scuzzy, David Todd <scuzzy@aniverse.net>
 spookey, David Colburn <spookey@spookey.org>
 TimeMr14C, Yusuf Iskenderoglu <uhc0@stud.uni-karlsruhe.de>
-vulture, Sean Stanek <vulture@cs.iastate.edu>
+toot, Toby Verrall <to7@antipope.fsnet.co.uk>
 vx0, Mark Miller <mark@oc768.net>
 zb^3, Alfred Perlstein <alfred@freebsd.org>
  
@@ -60,5 +61,5 @@ be sure to let us know that too.  Many others have contributed to
 previous versions of this ircd and it's ancestors, too many to list
 here.
  
-Send bug fixes/complaints/rotten tomatoes to ircd-hybrid@the-project.org.
+Send bug fixes/complaints/rotten tomatoes to bugs@ircd-hybrid.org.
 
