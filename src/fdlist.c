@@ -3,7 +3,7 @@
  * fdlist.c   maintain lists of certain important fds 
  *
  *
- * $Id: fdlist.c,v 7.5 2000/10/31 13:21:55 adrian Exp $
+ * $Id: fdlist.c,v 7.6 2000/10/31 14:21:52 adrian Exp $
  */
 #include "fdlist.h"
 #include "client.h"  /* struct Client */
@@ -55,8 +55,6 @@ void fdlist_init(void)
     /* XXXX I HATE THIS CHECK. Can someone please fix? */
     if (!fd_table)
         exit(69);
-    /* Setup the timeout check. I'll shift it later :)  -- adrian */
-    eventAdd("comm_checktimeouts", comm_checktimeouts, NULL, 1, 0);
     initialized = 1;
   }
 }

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.39 2000/10/30 23:03:57 adrian Exp $
+ * $Id: ircd.c,v 7.40 2000/10/31 14:21:52 adrian Exp $
  */
 #include "ircd.h"
 #include "channel.h"
@@ -722,6 +722,10 @@ int main(int argc, char *argv[])
   if(!ConfigFileEntry.hub)
     eventAdd("cleanup_channels", cleanup_channels, NULL,
       CLEANUP_CHANNELS_TIME, 0 );
+
+  /* Setup the timeout check. I'll shift it later :)  -- adrian */
+  eventAdd("comm_checktimeouts", comm_checktimeouts, NULL, 1, 0);
+
 
   ServerRunning = 1;
   while (ServerRunning)
