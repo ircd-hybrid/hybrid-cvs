@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.154 2001/06/05 14:51:06 kreator Exp $
+ * $Id: ircd.c,v 7.155 2001/06/05 16:07:50 kreator Exp $
  */
 
 #include <sys/types.h>
@@ -465,9 +465,11 @@ static void setup_corefile(void)
   struct rlimit rlim; /* resource limits */
 
   /* Set corefilesize to maximum */
-  getrlimit(RLIMIT_CORE, &rlim);
-  rlim.rlim_cur = rlim.rlim_max;
-  setrlimit(RLIMIT_CORE, &rlim);
+  if (!getrlimit(RLIMIT_CORE, &rlim))
+  {
+    rlim.rlim_cur = rlim.rlim_max;
+    setrlimit(RLIMIT_CORE, &rlim);
+  }
 }
 
 int main(int argc, char *argv[])
