@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.131 2001/02/02 08:36:40 a1kmm Exp $
+ *  $Id: s_user.c,v 7.132 2001/02/05 06:12:34 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -328,6 +328,7 @@ int register_local_user(struct Client *cptr, struct Client *sptr,
   struct ConfItem*  aconf;
   struct User*     user = sptr->user;
   char        tmpstr2[IRCD_BUFSIZE];
+  char	      ipaddr[HOSTIPLEN];
   int  status;
   dlink_node *ptr;
   dlink_node *m;
@@ -453,16 +454,18 @@ int register_local_user(struct Client *cptr, struct Client *sptr,
       add_to_id_hash_table(sptr->user->id, sptr);
     }
 
+  inetntop(sptr->localClient->aftype, IN_ADDR(sptr->localClient->ip), 
+  				ipaddr, HOSTIPLEN);
   sendto_realops_flags(FLAGS_CCONN,
 		       "Client connecting: %s (%s@%s) [%s] {%s}",
 		       nick, sptr->username, sptr->host,
-		       inetntoa((char *)&sptr->localClient->ip),
+		       ipaddr,
 		       get_client_class(sptr));
   
   sendto_realops_flags(FLAGS_DRONE,
 		       "Cn: %s (%s@%s) [%s] [%s]",
 		       nick, sptr->username, sptr->host,
-		       inetntoa((char *)&sptr->localClient->ip),
+		       ipaddr,
 		       sptr->info);
   
   if ((++Count.local) > Count.max_loc)
