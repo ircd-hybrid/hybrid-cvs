@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_defs.h,v 7.28 2002/05/24 23:34:07 androsyn Exp $
+ *  $Id: ircd_defs.h,v 7.29 2002/07/10 07:06:23 androsyn Exp $
  */
 
 /*
@@ -45,7 +45,6 @@
 
 #define USERLEN         10
 #define REALLEN         50
-#define TOPICLEN        120     /* old value 90, truncated on other servers */
 #define KILLLEN         90      
 #define CHANNELLEN      200
 
