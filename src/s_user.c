@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.204 2002/08/08 15:43:27 bill Exp $
+ *  $Id: s_user.c,v 7.205 2002/08/08 17:45:03 bill Exp $
  */
 
 #include "stdinc.h"
@@ -445,7 +445,11 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   sendto_realops_flags(FLAGS_CCONN, L_ALL,
 		       "Client connecting: %s (%s@%s) [%s] {%s} [%s]",
 		       nick, source_p->username, source_p->host,
+#ifdef HIDE_SPOOF_IPS
+                       "255.255.255.255",
+#else
 		       ipaddr,
+#endif
 		       get_client_class(source_p), source_p->info);
 
   /* If they have died in send_* don't do anything. */

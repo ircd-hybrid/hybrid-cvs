@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.293 2002/08/03 22:33:32 androsyn Exp $
+ *  $Id: client.c,v 7.294 2002/08/08 17:45:02 bill Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -1324,7 +1324,12 @@ int exit_client(
         sendto_realops_flags(FLAGS_CCONN, L_ALL,
                              "Client exiting: %s (%s@%s) [%s] [%s]",
                              source_p->name, source_p->username, source_p->host,
-                             comment, source_p->localClient->sockhost);
+                             comment, 
+#ifdef HIDE_SPOOF_IPS
+                             "255.255.255.255");
+#else
+                             source_p->localClient->sockhost);
+#endif
 
       log_user_exit(source_p);
 
