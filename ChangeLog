@@ -1,3 +1,23 @@
+bill        2002/10/29 22:33:26 EST	(20021030_1)
+
+  Modified files:
+    contrib              m_operspy.c m_whois.c 
+    include              numeric.h 
+    modules              m_whois.c 
+    src                  messages.tab 
+  Log:
+  - removed RPL_WHOISADMIN, as it is un-needed, and wreaks of vanity.
+    stats p still distinguishes admins, but maybe it shouldn't .. ?
+  
+  Revision  Changes    Path
+  1.8       +1 -6      ircd-hybrid-7/contrib/m_operspy.c
+  1.5       +3 -9      ircd-hybrid-7/contrib/m_whois.c
+  7.30      +0 -2      ircd-hybrid-7/include/numeric.h
+  1.83      +1 -7      ircd-hybrid-7/modules/m_whois.c
+  7.72      +1 -1      ircd-hybrid-7/src/messages.tab
+
+
+
 androsyn    2002/10/29 21:56:20 EST	(20021030_0)
 
   Modified files:
@@ -32777,4 +32797,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4083 2002/10/30 02:56:22 androsyn Exp $
+$Id: ChangeLog,v 7.4084 2002/10/30 03:33:29 bill Exp $
