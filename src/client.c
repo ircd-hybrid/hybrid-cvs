@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.119 2001/01/16 09:00:58 db Exp $
+ *  $Id: client.c,v 7.120 2001/01/17 19:04:19 db Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -365,8 +365,8 @@ check_pings_list(dlink_list *list)
               cptr->flags2 |= FLAGS2_PING_TIMEOUT;
 
 	      (void)ircsprintf(scratch,
-			       "Ping timeout: %lu seconds",
-			       CurrentTime - cptr->lasttime);
+			       "Ping timeout: %d seconds",
+			       (int)(CurrentTime - cptr->lasttime));
 	      
 	      (void)exit_client(cptr, cptr, &me, scratch);
               continue;
