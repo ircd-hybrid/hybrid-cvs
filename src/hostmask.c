@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.c,v 7.92 2003/12/05 07:06:28 metalrock Exp $
+ *  $Id: hostmask.c,v 7.93 2003/12/05 22:35:21 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -851,7 +851,11 @@ report_Klines(struct Client *client_p, int tkline)
           continue;
 	conf = unmap_conf_item(aconf);
         get_printable_conf(conf, &host, &reason, &user, &port, &classname, &oreason);
-        sendto_one(client_p, form_str(RPL_STATSKLINE), me.name,
-                   client_p->name, c, host, user, reason, oreason);
+	if (IsOper(client_p))
+	  sendto_one(client_p, form_str(RPL_STATSKLINE), me.name,
+                     client_p->name, c, host, user, reason, oreason);
+	else
+          sendto_one(client_p, form_str(RPL_STATSKLINE), me.name,
+                     client_p->name, c, host, user, reason, "");
       }
 }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.154 2003/12/05 07:06:26 metalrock Exp $
+ *  $Id: m_stats.c,v 1.155 2003/12/05 22:35:19 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.154 $";
+const char *_version = "$Revision: 1.155 $";
 #endif
 
 static char *parse_stats_args(int, char **, int *, int *);
@@ -629,7 +629,7 @@ stats_tklines(struct Client *source_p)
     get_printable_conf(conf, &host, &pass, &user, &port, &classname, &oreason);
 
     sendto_one(source_p, form_str(RPL_STATSKLINE), from,
-               to, 'k', host, user, pass, oreason);
+               to, 'k', host, user, pass, "");
   }
   /* Theyre opered, or allowed to see all klines */
   else
