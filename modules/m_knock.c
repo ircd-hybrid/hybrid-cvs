@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_knock.c,v 1.29 2001/06/06 03:16:14 toot Exp $
+ *   $Id: m_knock.c,v 1.30 2001/10/02 16:36:14 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -160,11 +160,11 @@ static struct Channel *parse_knock_args(struct Client *client_p,
   if( (p = strchr(name,',')) )
     *p = '\0';
 
-  if (!IsChannelName(name) || !(chptr = hash_find_channel(name, NullChn)))
+  if (!IsChannelName(name) || !(chptr = hash_find_channel(name, NULL)))
     {
       sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL), me.name, parv[0],
                  name);
-      return NullChn;
+      return NULL;
     }
 
   if (IsVchanTop(chptr))
@@ -174,7 +174,7 @@ static struct Channel *parse_knock_args(struct Client *client_p,
         {
           sendto_one(source_p,":%s NOTICE %s :*** Notice -- You are on channel already!",
                      me.name, source_p->name);
-          return NullChn;
+          return NULL;
         }
       if (key && key[0] == '!')
         {
@@ -182,7 +182,7 @@ static struct Channel *parse_knock_args(struct Client *client_p,
           if (!key[1])
             {
               show_vchans(client_p, source_p, chptr, "knock");
-              return NullChn;
+              return NULL;
             }
 
           /* Find a matching vchan */
@@ -194,14 +194,14 @@ static struct Channel *parse_knock_args(struct Client *client_p,
             {
               sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
               me.name, parv[0], name);
-              return NullChn;
+              return NULL;
             }
         }
       else
         {
           /* No key specified */
           show_vchans(client_p, source_p, chptr, "knock");
-          return NullChn;
+          return NULL;
         }
     }
   else if (IsVchan(chptr))
@@ -209,7 +209,7 @@ static struct Channel *parse_knock_args(struct Client *client_p,
       /* Don't allow KNOCK'ing a vchans 'real' name */
       sendto_one(source_p, form_str(ERR_BADCHANNAME), me.name, parv[0],
                  name);
-      return NullChn;
+      return NULL;
     }
   else
     {
@@ -218,7 +218,7 @@ static struct Channel *parse_knock_args(struct Client *client_p,
         {
           sendto_one(source_p,":%s NOTICE %s :*** Notice -- You are on channel already!",
                      me.name, source_p->name);
-          return NullChn;
+          return NULL;
         }
     }
 
@@ -230,7 +230,7 @@ static struct Channel *parse_knock_args(struct Client *client_p,
       sendto_one(source_p,":%s NOTICE %s :*** Notice -- Channel is open!",
                  me.name,
                  source_p->name);
-      return NullChn;
+      return NULL;
     }
 
   /* don't allow a knock if the user is banned, or the channel is paranoid */
@@ -239,7 +239,7 @@ static struct Channel *parse_knock_args(struct Client *client_p,
     {
       sendto_one(source_p, form_str(ERR_CANNOTSENDTOCHAN), me.name, parv[0],
                  name);
-      return NullChn;
+      return NULL;
     }
 
   return chptr;

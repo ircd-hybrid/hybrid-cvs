@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.70 2001/08/03 13:10:28 leeh Exp $
+ *   $Id: m_message.c,v 1.71 2001/10/02 16:36:14 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -329,7 +329,7 @@ static int build_target_list(int p_or_n,
        
       if( IsChanPrefix(*nick) )
 	{
-	  if( (chptr = hash_find_channel(nick, NullChn)) )
+	  if( (chptr = hash_find_channel(nick, NULL)) )
 	    {
 	      if( !duplicate_ptr(chptr, *targets, i) ) 
 		{
@@ -396,7 +396,7 @@ static int build_target_list(int p_or_n,
 	   * if the channel is found, fine, if not report an error
 	   */
 	 
-	  if ( (chptr = hash_find_channel(nick, NullChn)) )
+	  if ( (chptr = hash_find_channel(nick, NULL)) )
 	    {
 		
 	      if((type & MODE_CHANOP) && !is_chan_op(chptr, source_p))

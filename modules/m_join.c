@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 1.72 2001/08/24 11:52:16 leeh Exp $
+ *   $Id: m_join.c,v 1.73 2001/10/02 16:36:14 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -169,7 +169,7 @@ static void m_join(struct Client *client_p,
 	}
 
       /* look for the channel */
-      if( (chptr = hash_find_channel(name, NullChn)) != NULL )
+      if( (chptr = hash_find_channel(name, NULL)) != NULL )
 	{
           /* Check if they want to join a subchan or something */
 	  vchan_chptr = select_vchan(chptr, client_p, source_p, vkey, name);

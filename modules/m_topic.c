@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_topic.c,v 1.36 2001/06/01 00:55:59 davidt Exp $
+ *   $Id: m_topic.c,v 1.37 2001/10/02 16:36:14 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -75,7 +75,7 @@ static void m_topic(struct Client *client_p,
                    int parc,
                    char *parv[])
 {
-  struct Channel *chptr = NullChn;
+  struct Channel *chptr = NULL;
   struct Channel *root_chan, *vchan;
   char  *p = NULL;
   
@@ -84,7 +84,7 @@ static void m_topic(struct Client *client_p,
 
   if (parv[1] && IsChannelName(parv[1]))
     {
-      chptr = hash_find_channel(parv[1], NullChn);
+      chptr = hash_find_channel(parv[1], NULL);
 
       if(chptr == NULL)
       {
@@ -266,7 +266,7 @@ static void ms_topic(struct Client *client_p,
 
   if (parv[1] && IsChannelName(parv[1]))
     {
-      if ( (chptr = hash_find_channel(parv[1], NullChn)) == NULL )
+      if ( (chptr = hash_find_channel(parv[1], NULL)) == NULL )
 	return;
 
       strncpy_irc(chptr->topic, parv[4], TOPICLEN);

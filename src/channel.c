@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.273 2001/10/02 16:13:24 db Exp $
+ * $Id: channel.c,v 7.274 2001/10/02 16:36:15 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -46,7 +46,7 @@
 
 struct config_channel_entry ConfigChannel;
 
-struct Channel *GlobalChannelList = NullChn;
+struct Channel *GlobalChannelList = NULL;
 
 static int add_id(struct Client *, struct Channel *, char *, int);
 static int del_id(struct Channel *, char *, int);

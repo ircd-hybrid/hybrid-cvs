@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_clearchan.c,v 1.20 2001/06/05 18:05:53 leeh Exp $
+ *   $Id: m_clearchan.c,v 1.21 2001/10/02 16:36:13 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -101,7 +101,7 @@ static void mo_clearchan(struct Client *client_p, struct Client *source_p,
 
   /* XXX - we might not have CBURSTed this channel if we are a lazylink
    * yet. */
-  chptr= hash_find_channel(parv[1], NullChn);
+  chptr= hash_find_channel(parv[1], NULL);
   root_chptr = chptr;
   if (chptr && parc > 2 && parv[2][0] == '!')
     {

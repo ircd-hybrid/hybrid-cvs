@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_mode.c,v 1.39 2001/05/25 14:45:25 davidt Exp $
+ *   $Id: m_mode.c,v 1.40 2001/10/02 16:36:14 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -94,7 +94,7 @@ static void m_mode(struct Client *client_p, struct Client *source_p,
       return;
     }
 	  
-  chptr = hash_find_channel(parv[1], NullChn);
+  chptr = hash_find_channel(parv[1], NULL);
 
   if(chptr == NULL)
     {

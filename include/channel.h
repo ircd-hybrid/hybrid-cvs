@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.89 2001/10/02 16:13:23 db Exp $
+ * $Id: channel.h,v 7.90 2001/10/02 16:36:14 db Exp $
  */
 
 #include <sys/types.h>        /* time_t */
@@ -102,8 +102,6 @@ void cleanup_channels(void *);
                            created or just tested for existence */
 
 #define MODEBUFLEN      200
-
-#define NullChn ((struct Channel *)0)
 
 
 /* Maximum mode changes allowed per client, per server is different */

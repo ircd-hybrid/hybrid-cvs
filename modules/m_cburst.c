@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_cburst.c,v 1.33 2001/08/03 13:10:27 leeh Exp $
+ * $Id: m_cburst.c,v 1.34 2001/10/02 16:36:14 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -105,7 +105,7 @@ static void ms_cburst(struct Client *client_p,
     key ? key : "" );
 #endif
 
-  if( (chptr = hash_find_channel(name, NullChn)) == NULL)
+  if( (chptr = hash_find_channel(name, NULL)) == NULL)
   {
     if((!nick) || (nick && *nick!='!'))
     {
