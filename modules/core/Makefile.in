@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/modules
 #
-# $Id: Makefile.in,v 1.40 2001/05/22 19:11:41 davidt Exp $
+# $Id: Makefile.in,v 1.41 2001/05/23 01:28:31 ejb Exp $
 #
 CC		= @CC@
 AR		= @AR@
@@ -131,13 +131,15 @@ install_shared_modules:
 .PHONY: depend clean distclean
 depend:
 	@${MKDEP} ${CPPFLAGS} ${SRCS} > .depend.tmp
-	@${SED} s/\\\.o/\\\.so/ < .depend.tmp > .depend
-	@${RM} -f .depend.tmp
+	@sed -e '/^# DO NOT DELETE THIS LINE/,$$d' <Makefile >Makefile.depend
+	@echo '# DO NOT DELETE THIS LINE!!!' >>Makefile.depend
+	@echo '# make depend needs it.' >>Makefile.depend
+	@cat .depend.tmp >>Makefile.depend
+	@mv Makefile.depend Makefile
+	@rm -f .depend.tmp
 
 clean:
 	${RM} -f *.so *~ *.o *.a
 
 distclean: clean
 	${RM} -f Makefile
-
-@INCDEP@
