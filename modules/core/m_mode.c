@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_mode.c,v 1.17 2000/12/23 01:42:14 db Exp $
+ *   $Id: m_mode.c,v 1.18 2000/12/24 18:43:23 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -109,7 +109,7 @@ int m_mode(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 		      me.name, parv[1]);
 	      
 	  sendto_one(uplink, ":%s MODE %s",
-		     me.name, parv[1]);
+		     sptr->name, parv[1]);
 	  return 0;
 	}
       else

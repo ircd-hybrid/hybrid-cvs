@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.71 2000/12/24 04:31:58 ejb Exp $
+ * $Id: ircd_parser.y,v 1.72 2000/12/24 18:43:25 db Exp $
  */
 
 %{
@@ -110,7 +110,7 @@ int   class_redirport_var;
 %token  LEAF_MASK
 %token  LISTEN
 %token  LOGGING
-%token  LOGPATH
+%token  T_LOGPATH
 %token  LOG_LEVEL
 %token  MAX_NUMBER
 %token  MAXIMUM_LINKS
@@ -373,7 +373,7 @@ logging_item:           logging_path | logging_oper_log |
                         logging_gline_log | logging_log_level |
 			error
 
-logging_path:           LOGPATH '=' QSTRING ';' 
+logging_path:           T_LOGPATH '=' QSTRING ';' 
                         {
                         };
 

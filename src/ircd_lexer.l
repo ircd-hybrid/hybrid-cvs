@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.47 2000/12/24 03:01:27 ejb Exp $
+ * $Id: ircd_lexer.l,v 1.48 2000/12/24 18:43:25 db Exp $
  */
 
 %option case-insensitive
@@ -130,7 +130,7 @@ leaf_mask	{ return LEAF_MASK; }
 listen		{ return LISTEN; }
 log_level	{ return LOG_LEVEL; }
 logging         { return LOGGING; }
-logpath         { return LOGPATH; }
+logpath         { return T_LOGPATH; }
 max_number	{ return MAX_NUMBER; }
 maximum_links   { return MAXIMUM_LINKS; }
 message_locale	{ return MESSAGE_LOCALE; }
