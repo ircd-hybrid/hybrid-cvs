@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.250 2002/05/24 23:34:47 androsyn Exp $
+ *  $Id: ircd_parser.y,v 1.251 2002/05/27 12:14:52 leeh Exp $
  */
 
 %{
@@ -1374,9 +1374,6 @@ connect_entry:  CONNECT
     yy_aconf->status = CONF_SERVER;
 
     /* defaults */
-#ifdef HAVE_LIBZ
-    yy_aconf->flags |= CONF_FLAGS_COMPRESSED;
-#endif
     yy_aconf->port = PORTNUM;
   }
   '{' connect_items '}' ';'
