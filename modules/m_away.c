@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_away.c,v 1.18 2001/03/06 02:22:19 androsyn Exp $
+ *   $Id: m_away.c,v 1.19 2001/03/19 17:12:15 toot Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -78,7 +78,6 @@ static void m_away(struct Client *client_p,
                   char *parv[])
 {
   char  *away, *awy2 = parv[1];
-  static time_t last_away;
 
   /* make sure the user exists */
   if (!(source_p->user))
@@ -111,14 +110,12 @@ static void m_away(struct Client *client_p,
   /* Marking as away */
   
   if (MyConnect(source_p) && !IsOper(source_p) &&
-      ((CurrentTime-last_away) < 2 ||
-       (CurrentTime-source_p->user->last_away)<ConfigFileEntry.pace_wait))
+     (CurrentTime-source_p->user->last_away)<ConfigFileEntry.pace_wait)
     {
      sendto_one(source_p, form_str(RPL_LOAD2HI), me.name, parv[0]);
      return;
     }
 
-  last_away = CurrentTime;
   source_p->user->last_away = CurrentTime;
 
   if (strlen(awy2) > (size_t) TOPICLEN)
