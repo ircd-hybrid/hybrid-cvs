@@ -1,3 +1,15 @@
+bill        2003/01/21 22:29:08 EST	(20030122_0)
+
+  Modified files:
+    modules              m_invite.c 
+  Log:
+  - invites from a local user to a local user were propogated, fixed.
+  
+  Revision  Changes    Path
+  1.52      +9 -22     ircd-hybrid-7/modules/m_invite.c
+
+
+
 lusky       2003/01/21 10:42:18 EST	(20030121_2)
 
   Modified files:
@@ -34330,4 +34342,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4189 2003/01/21 15:42:21 lusky Exp $
+$Id: ChangeLog,v 7.4190 2003/01/22 03:29:10 bill Exp $
