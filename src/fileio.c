@@ -4,7 +4,7 @@
  * Copyright (C) 1990 Jarkko Oikarinen and
  *                    University of Oulu, Co Center
  *
- * $Id: fileio.c,v 7.5 2000/10/24 18:47:16 adrian Exp $
+ * $Id: fileio.c,v 7.6 2000/11/08 19:55:31 adrian Exp $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,6 +31,7 @@
 #include <fcntl.h>  /* O_RDONLY, O_WRONLY, ... */
 #include <unistd.h> /* read, write, open, close */
 #include <assert.h> /* assert */
+#include <sys/errno.h>
 
 #define FB_EOF  0x01
 #define FB_FAIL 0x02
@@ -56,8 +57,13 @@ file_open(const char *filename, int mode, int fmode)
 {
     int fd;
     fd = open(filename, mode, fmode);
-    if (fd >= 0)
+    if (fd == MASTER_MAX) {
+        fd_close(fd); /* Too many FDs! */
+        errno = ENFILE;
+        fd = -1;
+    } else if (fd >= 0)
         fd_open(fd, FD_FILE, filename);
+    
     return fd;
 }
 
