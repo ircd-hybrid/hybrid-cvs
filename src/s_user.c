@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.184 2002/01/23 18:14:07 leeh Exp $
+ *  $Id: s_user.c,v 7.185 2002/02/02 15:34:59 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -249,9 +249,14 @@ void show_isupport(struct Client *source_p)
 {
   char isupportbuffer[512];
 
-  ircsprintf(isupportbuffer,FEATURES,FEATURESVALUES);
+  ircsprintf(isupportbuffer, FEATURES, FEATURESVALUES);
   sendto_one(source_p, form_str(RPL_ISUPPORT), me.name, source_p->name, 
   	     isupportbuffer);
+	     
+  ircsprintf(isupportbuffer, FEATURES2, FEATURES2VALUES);
+  sendto_one(source_p, form_str(RPL_ISUPPORT), me.name, source_p->name,
+             isupportbuffer);
+
   return;
 }
 
