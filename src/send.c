@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.247 2003/04/26 19:20:14 db Exp $
+ *  $Id: send.c,v 7.248 2003/04/26 21:35:23 db Exp $
  */
 
 #include "stdinc.h"
@@ -118,6 +118,9 @@ send_format(char *lsendbuf, int bufsize, const char *pattern, va_list args)
     lsendbuf[IRCD_BUFSIZE] = '\0';
     return(IRCD_BUFSIZE);
   }
+
+  lsendbuf[len++] = '\r';
+  lsendbuf[len++] = '\n';
 
   return (len);
 }
