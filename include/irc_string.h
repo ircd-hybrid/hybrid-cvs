@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: irc_string.h,v 7.15 2001/03/14 21:17:21 androsyn Exp $
+ *   $Id: irc_string.h,v 7.16 2001/03/14 21:50:04 androsyn Exp $
  */
 #ifndef INCLUDED_irc_string_h
 #define INCLUDED_irc_string_h
@@ -88,11 +88,11 @@ char* strncpy_irc(char* s1, const char* s2, size_t n);
 
 
 #ifndef HAVE_STRLCPY
-size_t strlcpy(char *dst, const char *src, size_t siz)
+size_t strlcpy(char *dst, const char *src, size_t siz);
 #endif
 
 #ifndef HAVE_STRLCAT
-size_t strlcat(char *dst, const char *src, size_t siz)
+size_t strlcat(char *dst, const char *src, size_t siz);
 #endif
 
 /*
