@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.18 2000/01/02 22:11:57 db Exp $
+ *  $Id: client.c,v 7.19 2000/01/04 00:37:13 db Exp $
  */
 #include "client.h"
 #include "class.h"
@@ -490,18 +490,6 @@ time_t check_pings(time_t currenttime)
         ping = CONNECTTIMEOUT;
       else
         ping = get_client_ping(cptr);
-
-      /*
-       * Ok, so goto's are ugly and can be avoided here but this code
-       * is already indented enough so I think its justified. -avalon
-       */
-       /*  if (!rflag &&
-               (ping >= currenttime - cptr->lasttime))
-              goto ping_timeout; */
-
-      /*
-       * *sigh* I think not -Dianora
-       */
 
       if (ping < (currenttime - cptr->lasttime))
         {
