@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_unkline.c,v 1.47 2002/06/26 23:38:57 leeh Exp $
+ *  $Id: m_unkline.c,v 1.48 2002/09/19 04:22:55 bill Exp $
  */
 
 #include "stdinc.h"
@@ -73,7 +73,7 @@ _moddeinit(void)
   mod_del_cmd(&msgtabs[1]);
   mod_del_cmd(&msgtabs[2]);
 }
-const char *_version = "$Revision: 1.47 $";
+const char *_version = "$Revision: 1.48 $";
 #endif
 
 static int flush_write(struct Client *, FBFILE* , char *, char *);
@@ -494,8 +494,8 @@ static void mo_ungline(struct Client *client_p, struct Client *source_p,
 
   if(remove_gline_match(user, host))
     {
-      sendto_one(source_p, ":%s NOTICE %s :Un-glined [%s@%s]",
-                 me.name, parv[0],user, host);
+      sendto_one(source_p, ":%s NOTICE %s :G-Line for [%s@%s] is removed",
+                 me.name, parv[0], user, host);
       sendto_realops_flags(FLAGS_ALL, L_ALL,
 			   "%s has removed the G-Line for: [%s@%s]",
 			   get_oper_name(source_p), user, host );
