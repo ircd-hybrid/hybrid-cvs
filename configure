@@ -4808,6 +4808,7 @@ _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
+#include <sys/types.h>
 #include <sys/socket.h>
 
 int
@@ -4845,16 +4846,11 @@ fi
 echo "$as_me:$LINENO: result: $ac_cv_type_socklen_t" >&5
 echo "${ECHO_T}$ac_cv_type_socklen_t" >&6
 if test $ac_cv_type_socklen_t = yes; then
-
-cat >>confdefs.h <<_ACEOF
-#define HAVE_SOCKLEN_T 1
-_ACEOF
-
-
+  :
 else
 
 cat >>confdefs.h <<\_ACEOF
-#define socklen_t int
+#define socklen_t unsigned int
 _ACEOF
 
 fi

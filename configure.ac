@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.50 2003/06/10 22:29:58 joshk Exp $
+dnl $Id: configure.ac,v 7.51 2003/06/11 04:06:54 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -224,9 +224,11 @@ fi
 
 AC_CHECK_TYPES([struct addrinfo], , , [[#include <netdb.h>]])
 
-AC_CHECK_TYPES(socklen_t, ,
-[AC_DEFINE([socklen_t], [int], [If we don't have a real socklen_t, int is good
-enough.])], [#include <sys/socket.h>])
+AC_CHECK_TYPE(socklen_t, ,
+[AC_DEFINE([socklen_t], [unsigned int],
+[If we don't have a real socklen_t, unsigned int is good enough.])],
+[#include <sys/types.h>
+#include <sys/socket.h>])
 
 dnl Tru64 accepts *both*
 if test -z "$Tru"; then
