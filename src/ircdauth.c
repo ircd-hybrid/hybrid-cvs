@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: ircdauth.c,v 7.1 1999/09/03 02:12:32 wnder Exp $
+ *   $Id: ircdauth.c,v 7.2 1999/09/03 03:10:54 wnder Exp $
  */
 
 #include <stdio.h>
@@ -44,7 +44,7 @@
 
 /*
  * This structure will contain the information for the IAuth
- * server
+ * server.
  */
 struct IrcdAuthentication iAuth;
 
