@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.12 2002/11/20 05:55:12 bill Exp $
+ *   $Id: m_operspy.c,v 1.13 2002/11/20 18:00:04 bill Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -124,7 +124,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.12 $";
+const char *_version = "$Revision: 1.13 $";
 #endif
 
 /*
@@ -135,9 +135,12 @@ const char *_version = "$Revision: 1.12 $";
 static void m_operspy(struct Client *client_p, struct Client *source_p,
                       int parc, char *parv[])
 {
-  char *operspy = parv[1]-1;
+  char *operspy = (parc > 1) ? parv[1]-1 : NULL;
 
-  while (*operspy == 'o' && *operspy == 'O') --operspy;
+  if (operspy != NULL)
+    while (*operspy != 'o' && *operspy != 'O') --operspy;
+  else
+    operspy = "OPERSPY";
 
   sendto_one(client_p, ":%s %d %s %s :Unknown command",
              me.name, ERR_UNKNOWNCOMMAND, client_p->name,
