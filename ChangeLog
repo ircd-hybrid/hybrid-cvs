@@ -1,3 +1,11 @@
+*** 20001106_15 by adrian
+
+
+We don't need to flush a socket buffer when we've already done it.
+REJECT_HOLD is fun code .. and yes, it was my screwup.
+
+
+
 *** 20001106_14 by adrian
 
 
@@ -140,7 +148,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.497 2000/11/06 22:15:17 adrian Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.498 2000/11/06 22:23:24 adrian Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
