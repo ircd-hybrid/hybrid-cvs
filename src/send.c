@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.97 2001/01/01 21:50:34 davidt Exp $
+ *   $Id: send.c,v 7.98 2001/01/02 18:08:13 davidt Exp $
  */
 #include "tools.h"
 #include "send.h"
@@ -612,6 +612,40 @@ sendto_cap_serv_butone(int cap, struct Client *one, const char *pattern, ...)
       
       if (IsCapable(cptr,cap))
 	send_message(cptr, (char *)sendbuf, len);
+    }
+} /* sendto_cap_serv_butone() */
+
+/*
+ * sendto_nocap_serv_butone
+ *
+ * inputs       - int capability mask NOT to send to.
+ *              - pointer to client NOT to send to or NULL
+ *              - var args pattern of message to send
+ * output       - NONE
+ * side effects - Send a message to all connected servers
+ *                except the client 'one'.
+ */
+void
+sendto_nocap_serv_butone(int cap, struct Client *one, const char *pattern, ...)
+{
+  int len;
+  va_list args;
+  struct Client *cptr;
+  dlink_node *ptr;
+
+  va_start(args, pattern);
+  len = send_format(sendbuf,pattern,args);
+  va_end(args);
+
+  for(ptr = serv_list.head; ptr; ptr = ptr->next)
+    {
+      cptr = ptr->data;
+
+      if (one && (cptr == one->from))
+        continue;
+
+      if (!IsCapable(cptr,cap))
+        send_message(cptr, (char *)sendbuf, len);
     }
 } /* sendto_cap_serv_butone() */
 
