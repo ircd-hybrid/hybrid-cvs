@@ -1,3 +1,23 @@
+leeh        2002/04/23 10:26:31 EDT	(20020423_2)
+
+  Modified files:
+    include              defaults.h ircd.h 
+    modules              m_set.c 
+    src                  ircd.c s_auth.c 
+  Log:
+  - commited my/joans ident stuff
+  
+  Approved by:    diane
+  
+  Revision  Changes    Path
+  7.5       +2 -0      ircd-hybrid-7/include/defaults.h
+  7.46      +1 -0      ircd-hybrid-7/include/ircd.h
+  1.44      +25 -1     ircd-hybrid-7/modules/m_set.c
+  7.228     +2 -0      ircd-hybrid-7/src/ircd.c
+  7.91      +3 -1      ircd-hybrid-7/src/s_auth.c
+
+
+
 leeh        2002/04/23 10:25:24 EDT	(20020423_1)
 
   Modified files:
@@ -25394,4 +25414,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3584 2002/04/23 14:25:30 leeh Exp $
+$Id: ChangeLog,v 7.3585 2002/04/23 14:26:37 leeh Exp $
