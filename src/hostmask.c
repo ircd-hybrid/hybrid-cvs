@@ -15,7 +15,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- * $Id: hostmask.c,v 7.1 2001/02/04 04:33:31 a1kmm Exp $ 
+ * $Id: hostmask.c,v 7.2 2001/02/04 04:55:17 a1kmm Exp $ 
  */
 #include <unistd.h>
 #include <string.h>
@@ -278,7 +278,7 @@ report_hostmask_conf_links(struct Client *sptr, int flags)
        if (mask->type != HOST_CONFITEM)
          continue;
        aconf = (struct ConfItem*)mask->data;
-       if (!(aconf->flags & CONF_CLIENT))
+       if (!(aconf->status & CONF_CLIENT))
          continue;
        if (!(MyConnect(sptr) && IsOper(sptr)) &&
            IsConfDoSpoofIp(aconf))
@@ -293,7 +293,7 @@ report_hostmask_conf_links(struct Client *sptr, int flags)
       }
     for (aconf = ip_i_lines; aconf; aconf = aconf->next)
       {
-       if (!(aconf->flags & CONF_CLIENT))
+       if (!(aconf->status & CONF_CLIENT))
          continue;
        if (!(MyConnect(sptr) && IsOper(sptr)) &&
            IsConfDoSpoofIp(aconf))
@@ -316,7 +316,7 @@ report_hostmask_conf_links(struct Client *sptr, int flags)
        if (mask->type != HOST_CONFITEM)
          continue;
        aconf = (struct ConfItem*)mask->data;
-       if (!(aconf->flags & CONF_KILL))
+       if (!(aconf->status & CONF_KILL))
          continue;
        get_printable_conf(aconf, &name, &host, &pass, &user, &port,
                           &classname);
@@ -326,12 +326,12 @@ report_hostmask_conf_links(struct Client *sptr, int flags)
       }
     for (aconf = ip_i_lines; aconf; aconf = aconf->next)
       {
-       if (!(aconf->flags & CONF_KILL))
+       if (!(aconf->status & CONF_KILL))
          continue;
        get_printable_conf(aconf, &name, &host, &pass, &user, &port,
                           &classname);
        sendto_one(sptr, form_str(RPL_STATSKLINE), me.name, sptr->name,
-                  'I', host, user, pass
+                  'K', host, user, pass
                  );
       }
    }
