@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.h,v 7.30 2002/05/24 23:34:07 androsyn Exp $
+ *  $Id: modules.h,v 7.31 2002/05/25 01:38:09 androsyn Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -152,7 +152,8 @@ extern struct Message wallops_msgtab;
 extern struct Message who_msgtab;
 extern struct Message whois_msgtab;
 extern struct Message whowas_msgtab;
-
+extern struct Message get_msgtab;
+extern struct Message put_msgtab;
 extern void load_all_modules(int check);
 
 #endif /* STATIC_MODULES */
