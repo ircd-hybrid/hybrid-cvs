@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.13 2000/04/03 03:33:29 db Exp $
+ * $Id: ircd_lexer.l,v 1.14 2000/04/04 14:05:57 db Exp $
  */
 
 %{
@@ -27,6 +27,7 @@
 #include <sys/types.h>
 #include <string.h>
 #include <ctype.h>
+#include "irc_string.h"
 #include "common.h"
 #include "s_conf.h"
 #include "y.tab.h"
@@ -62,7 +63,7 @@ qstring		\"[^\"\n]*[\"\n]
 	  return( IP_TYPE );
 	 }
 
-{qstring}	{ yylval.string = strdup(yytext+1);
+{qstring}	{ DupString(yylval.string,strdup(yytext+1));
 		  if(yylval.string[yyleng-2] != '"')
 		    fprintf(stderr,"Unterminated character string\n");
 		  else
