@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: messages.tab,v 7.77 2003/03/16 04:07:19 db Exp $
+ *   $Id: messages.tab,v 7.78 2003/04/13 13:02:10 adx Exp $
  */
 
 static struct NumericInfo replies[] = {
@@ -533,7 +533,7 @@ static struct NumericInfo replies[] = {
 /* 510 */  {NULL, NULL, NULL},
 /* 511 */  {NULL, NULL, NULL},
 /* 512 */  {NULL, NULL, NULL},
-/* 513 */  {"ERR_WRONGPONG", "%s 513 %s :To connect type /QUOTE PONG %lu", NULL},
+/* 513 */  {"ERR_WRONGPONG", ":%s 513 %s :To connect type /QUOTE PONG %lu", NULL},
 /* 514 */  {NULL, NULL, NULL},
 /* 515 */  {NULL, NULL, NULL},
 /* 516 */  {NULL, NULL, NULL},
@@ -541,7 +541,7 @@ static struct NumericInfo replies[] = {
 /* 518 */  {NULL, NULL, NULL},
 /* 519 */  {NULL, NULL, NULL},
 /* 520 */  {NULL, NULL, NULL},
-/* 521 */  {NULL, NULL, NULL},
+/* 521 */  {"ERR_LISTSYNTAX", ":%s 521 %s :Bad list syntax, type /QUOTE HELP LIST", NULL},
 /* 522 */  {NULL, NULL, NULL},
 /* 523 */  {NULL, NULL, NULL},
 /* 524 */  {"ERR_HELPNOTFOUND", ":%s 524 %s %s :Help not found", NULL},

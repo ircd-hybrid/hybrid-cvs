@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.177 2003/04/09 11:19:31 stu Exp $
+ *  $Id: client.h,v 7.178 2003/04/13 13:02:06 adx Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -194,6 +194,16 @@ struct Client
 
 };
 
+struct ListTask
+{
+  int           hash_index;     /* the bucket we are currently in */
+  dlink_list    show_mask;      /* show these channels.. */
+  dlink_list    hide_mask;      /* ..and hide these ones */
+  unsigned int  users_min, users_max;
+  unsigned int  created_min, created_max;
+  unsigned int  topicts_min, topicts_max;
+};
+
 struct LocalUser
 {
   /*
@@ -218,7 +228,7 @@ struct LocalUser
 
   unsigned int      operflags; /* oper priv flags */
 
-  int		    hash_index;
+  struct ListTask   *list_task;
   /* Send and receive linebuf queues .. */
   buf_head_t        buf_sendq;
   buf_head_t        buf_recvq;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: numeric.h,v 7.33 2003/03/02 22:33:56 db Exp $
+ *  $Id: numeric.h,v 7.34 2003/04/13 13:02:06 adx Exp $
  */
 
 #ifndef INCLUDED_numeric_h
@@ -449,7 +449,7 @@ extern const char *get_locale(void);
 /*	ERR_MASKTOOWIDE	     520	Undernet extension -Kev */
 /*	ERR_WHOTRUNC	     520	austnet */
 /*	ERR_LASTERROR        521	Undernet extension -Kev */
-/*	ERR_LISTSYNTAX       521	dalnet */
+#define	ERR_LISTSYNTAX       521
 /*	ERR_WHOSYNTAX	     522        dalnet */
 /*	ERR_WHOLIMEXCEED     523	dalnet */
 

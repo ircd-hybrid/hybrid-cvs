@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_list.c,v 1.52 2003/04/06 23:37:38 db Exp $
+ *  $Id: m_list.c,v 1.53 2003/04/13 13:02:08 adx Exp $
  */
 
 #include "stdinc.h"
@@ -65,9 +65,121 @@ _moddeinit(void)
 {
   mod_del_cmd(&list_msgtab);
 }
-const char *_version = "$Revision: 1.52 $";
+const char *_version = "$Revision: 1.53 $";
 #endif
 
+
+static void do_list(struct Client *source_p, int parc, char *parv[])
+{
+  struct ListTask *lt;
+  int no_masked_channels;
+
+  if (MyConnect(source_p))
+    if (source_p->localClient->list_task != NULL)
+    {
+      free_list_task(source_p->localClient->list_task, source_p);
+      sendto_one(source_p, form_str(RPL_LISTEND), me.name, source_p->name);
+      return;
+    }
+
+  lt = (struct ListTask *) MyMalloc(sizeof(struct ListTask));
+  memset((void *) lt, 0, sizeof(*lt));
+  lt->users_max = UINT_MAX;
+  lt->created_max = UINT_MAX;
+  lt->topicts_max = UINT_MAX;
+  if (MyConnect(source_p))
+    source_p->localClient->list_task = lt;
+  no_masked_channels = 1;
+
+  if (parc > 1)
+  {
+    char *opt, *save;
+    dlink_list *list;
+    int i, errors = 0;
+
+    for (opt = strtoken(&save, parv[1], ","); opt != NULL;
+         opt = strtoken(&save, NULL, ","))
+      switch (*opt)
+      {
+        case '<': if ((i = atoi(opt + 1)) > 0)
+		    lt->users_max = (unsigned int) i - 1;
+                  else
+		    errors = 1;
+		  break;
+        case '>': if ((i = atoi(opt + 1)) >= 0)
+		    lt->users_min = (unsigned int) i + 1;
+		  else
+		    errors = 1;
+		  break;
+        case '-': break;
+        case 'C':
+	case 'c': switch (*++opt)
+	          {
+		    case '<': if ((i = atoi(opt + 1)) >= 0)
+		                lt->created_max = (unsigned int) (CurrentTime
+				                  - 60 * i);
+			      else
+			        errors = 1;
+			      break;
+		    case '>': if ((i = atoi(opt + 1)) >= 0)
+		                lt->created_min = (unsigned int) (CurrentTime
+				                  - 60 * i);
+			      else
+			        errors = 1;
+			      break;
+		    default: errors = 1;
+		  }
+		  break;
+	case 'T':
+	case 't': switch (*++opt)
+	          {
+		    case '<': if ((i = atoi(opt + 1)) >= 0)
+		                lt->topicts_min = (unsigned int) (CurrentTime
+				                  - 60 * i);
+			      else
+			        errors = 1;
+			      break;
+		    case '>': if ((i = atoi(opt + 1)) >= 0)
+		                lt->topicts_max = (unsigned int) (CurrentTime
+				                  - 60 * i);
+			      else
+			        errors = 1;
+			      break;
+		    default: errors = 1;
+		  }
+		  break;
+        default: if (*opt == '!')
+	         {
+		   list = &lt->hide_mask;
+		   opt++;
+		 }
+		 else list = &lt->show_mask;
+		 if (strpbrk(opt, "?*") != NULL)
+		 {
+		   if (list == &lt->show_mask)
+		     no_masked_channels = 0;
+		 }
+		 else if (!IsChannelName(opt))
+		   errors = 1;
+		 if (!errors)
+		 {
+                   char *s;
+		   DupString(s, opt);
+		   dlinkAdd(s, make_dlink_node(), list);
+		 }
+      }
+    if (errors)
+    {
+      free_list_task(lt, source_p);
+      sendto_one(source_p, form_str(ERR_LISTSYNTAX), me.name, source_p->name);
+      return;
+    }
+  }
+
+  sendto_one(source_p, form_str(RPL_LISTSTART), me.name, source_p->name);
+  safe_list_channels(source_p, lt, no_masked_channels &&
+                     lt->show_mask.head != NULL, !MyConnect(source_p));
+}
 
 /*
 ** m_list
@@ -91,7 +203,6 @@ m_list(struct Client *client_p, struct Client *source_p,
   else
     last_used = CurrentTime;
 
-
   /* If its a LazyLinks connection, let uplink handle the list */
   if(uplink && IsCapable(uplink, CAP_LL))
     {
@@ -102,17 +213,7 @@ m_list(struct Client *client_p, struct Client *source_p,
       return;
     }
 
-  /* If no arg, do all channels *whee*, else just one channel */
-  if (parc < 2 || EmptyString(parv[1]))
-    {
-      sendto_one(source_p, form_str(RPL_LISTSTART),
-		 me.name, source_p->name);
-      safe_list_all_channels(source_p);
-    }
-  else
-    {
-      list_named_channel(source_p,parv[1]);
-    }
+  do_list(source_p, parc, parv);
 }
 
 
@@ -138,17 +239,7 @@ mo_list(struct Client *client_p, struct Client *source_p,
       return;
     }
 
-  /* If no arg, do all channels *whee*, else just one channel */
-  if (parc < 2 || EmptyString(parv[1]))
-    {
-      sendto_one(source_p, form_str(RPL_LISTSTART),
-		 me.name, source_p->name);
-      safe_list_all_channels(source_p);
-    }
-  else
-    {
-      list_named_channel(source_p,parv[1]);
-    }
+  do_list(source_p, parc, parv);
 }
 
 /*
@@ -167,154 +258,6 @@ ms_list(struct Client *client_p, struct Client *source_p,
       if(!IsCapable(client_p->from, CAP_LL) && !MyConnect(source_p))
 	return;
 
-      if (parc < 2 || EmptyString(parv[1]))
-	{
-	  list_all_channels(source_p);
-	}
-      else
-	{
-	  list_named_channel(source_p,parv[1]);
-	}
+      do_list(source_p, parc, parv);
     }
 }
-
-/*
- * list_all_channels
- * inputs	- pointer to client requesting list
- * output	- 0/1
- * side effects	- list all channels to source_p
- */
-static int
-list_all_channels(struct Client *source_p)
-{
-  dlink_node *gptr;
-  struct Channel *chptr;
-
-  sendto_one(source_p, form_str(RPL_LISTSTART), me.name, source_p->name);
-
-  DLINK_FOREACH(gptr, global_channel_list.head)
-    {
-      chptr = gptr->data;
-      if (!source_p->user ||
-	  (SecretChannel(chptr) && !IsMember(source_p, chptr)))
-	continue;
-      list_one_channel(source_p, chptr);
-    }
-
-  sendto_one(source_p, form_str(RPL_LISTEND), me.name, source_p->name);
-  return(0);
-}   
-
-/*
- * list_named_channel
- * inputs       - pointer to client requesting list
- * output       - 0/1
- * side effects	- list all channels to source_p
- */
-static int
-list_named_channel(struct Client *source_p,char *name)
-{
-  struct Channel *chptr;
-  char id_and_topic[TOPICLEN+NICKLEN+6]; /* <!!>, space and null */
-  char *p;
-#ifdef VCHANS
-  dlink_node *ptr;
-  struct Channel *root_chptr;
-  struct Channel *tmpchptr;
-#endif
-
-  sendto_one(source_p, form_str(RPL_LISTSTART), me.name, source_p->name);
-
-  while (*name == ',')
-    name++;
-  if ((p = strchr(name,',')) != NULL)
-    *p = '\0';
-  if (!*name)
-    return 0;
-
-  chptr = hash_find_channel(name);
-  if (chptr == NULL)
-    {
-      sendto_one(source_p, form_str(ERR_NOSUCHNICK),me.name,
-		 source_p->name, name);
-      sendto_one(source_p, form_str(RPL_LISTEND), me.name, source_p->name);
-      return 0;
-    }
-
-#ifdef VCHANS
-  if (HasVchans(chptr))
-    ircsprintf(id_and_topic, "<!%s> %s", pick_vchan_id(chptr),
-	       chptr->topic == NULL ? "" : chptr->topic );
-  else
-#endif
-    ircsprintf(id_and_topic, "%s", chptr->topic == NULL ? "" : chptr->topic);
-
-  if (ShowChannel(source_p, chptr))
-    sendto_one(source_p, form_str(RPL_LIST), me.name, source_p->name,
-               chptr->chname, chptr->users, id_and_topic);
-      
-  /* Deal with subvchans */
- 
-#ifdef VCHANS
-  DLINK_FOREACH(ptr, chptr->vchan_list.head)
-    {
-      tmpchptr = ptr->data;
-
-      if (ShowChannel(source_p, tmpchptr))
-	{
-          root_chptr = find_bchan(tmpchptr);
-          ircsprintf(id_and_topic, "<!%s> %s", pick_vchan_id(tmpchptr),
-		     tmpchptr->topic == NULL ? "" : chptr->topic);
-          sendto_one(source_p, form_str(RPL_LIST), me.name, source_p->name,
-                     root_chptr->chname, tmpchptr->users, id_and_topic);
-        }
-    }
-#endif
-  
-  sendto_one(source_p, form_str(RPL_LISTEND), me.name, source_p->name);
-  return 0;
-}
-
-/*
- * list_one_channel
- *
- * inputs       - client pointer to return result to
- *              - pointer to channel to list
- * ouput	- none
- * side effects -
- */
-static void
-list_one_channel(struct Client *source_p, struct Channel *chptr)
-{
-#ifdef VCHANS
-  struct Channel *root_chptr;
-  char  id_and_topic[TOPICLEN+NICKLEN+6]; /* <!!>, plus space and null */
-
-  if(IsVchan(chptr) || HasVchans(chptr))
-    {
-      root_chptr = find_bchan(chptr);
-      
-      if(root_chptr != NULL)
-        {
-          ircsprintf(id_and_topic, "<!%s> %s", pick_vchan_id(chptr), 
-		     chptr->topic == NULL ? "" : chptr->topic );
-          sendto_one(source_p, form_str(RPL_LIST), me.name, source_p->name,
-                     root_chptr->chname, chptr->users, id_and_topic);
-        }
-      else
-        {
-          ircsprintf(id_and_topic, "<!%s> %s", pick_vchan_id(chptr),
-		     chptr->topic == NULL ? "" : chptr->topic );
-          sendto_one(source_p, form_str(RPL_LIST), me.name, source_p->name,
-                     chptr->chname, chptr->users, id_and_topic);     
-        }
-    }
-  else
-#endif
-    {
-      sendto_one(source_p, form_str(RPL_LIST), me.name, source_p->name,
-                 chptr->chname, chptr->users,
-		 chptr->topic == NULL ? "" : chptr->topic );
-    }
-}
-

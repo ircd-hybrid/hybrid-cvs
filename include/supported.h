@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: supported.h,v 1.24 2003/04/07 14:12:27 adx Exp $
+ *  $Id: supported.h,v 1.25 2003/04/13 13:02:06 adx Exp $
  */
 
 #ifndef INCLUDED_supported_h
@@ -28,6 +28,7 @@
 #include "config.h"
 #include "channel.h"
 #include "ircd_defs.h"
+#include "s_serv.h"
 
 #ifndef USE_ASCII_CASEMAP
 #define CASEMAP "rfc1459"
@@ -58,7 +59,7 @@
 		  " CHANMODES=%s%s%s%s" \
 		  " NETWORK=%s" \
 		  " CASEMAPPING=%s" \
-		  " CALLERID SAFELIST"
+		  " CALLERID%s"
 
 #define FEATURES2VALUES ConfigServerHide.disable_local_channels ? "#" : "#&", \
                         ConfigChannel.use_halfops ? "(ohv)@%+" : "(ov)@+", \
@@ -66,7 +67,8 @@
                         ConfigChannel.use_invex ? "I" : "", \
                         "b,k,l,imnpst", \
                         ConfigChannel.use_anonops ? "a" : "", \
-                        ServerInfo.network_name, CASEMAP
+                        ServerInfo.network_name, CASEMAP, \
+			(uplink && IsCapable(uplink, CAP_LL)) ? "" : " SAFELIST"
 
 /*
  * - from mirc's versions.txt

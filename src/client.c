@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.345 2003/04/13 09:46:58 michael Exp $
+ *  $Id: client.c,v 7.346 2003/04/13 13:02:09 adx Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -91,10 +91,12 @@ init_client(void)
   /*
    * start off the check ping event ..  -- adrian
    * Every 30 seconds is plenty -- db
+   * check_pings has to deal with safe lists now,
+   * let's call it every 5 seconds -adx
    */
   client_heap = BlockHeapCreate(sizeof(struct Client), CLIENT_HEAP_SIZE);
   lclient_heap = BlockHeapCreate(sizeof(struct LocalUser), LCLIENT_HEAP_SIZE);
-  eventAddIsh("check_pings", check_pings, NULL, 30);
+  eventAdd("check_pings", check_pings, NULL, 5);
 }
 
 /*
@@ -344,8 +346,8 @@ check_pings_list(dlink_list *list)
     }
     /* ping_timeout: */
     /* Safe list */
-    if (client_p->localClient->hash_index != 0)
-      safe_list_all_channels(client_p);
+    if (client_p->localClient->list_task != NULL)
+      safe_list_channels(client_p, client_p->localClient->list_task, 0, 0);
   }
 }
 
@@ -1251,6 +1253,8 @@ exit_client(
       /* a little extra paranoia */
       if (IsPerson(source_p))
         dlinkDelete(&source_p->localClient->lclient_node, &local_client_list);
+      if (source_p->localClient->list_task != NULL)
+        free_list_task(source_p->localClient->list_task, source_p);
     }
 
     /* As soon as a client is known to be a server of some sort

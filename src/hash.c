@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.55 2003/04/07 12:20:48 adx Exp $
+ *  $Id: hash.c,v 7.56 2003/04/13 13:02:10 adx Exp $
  */
 
 #include "stdinc.h"
@@ -828,27 +828,83 @@ exceeding_sendq(struct Client *to)
     return(0);
 }
 
+void free_list_task(struct ListTask *lt, struct Client *source_p)
+{
+  dlink_node *dl, *dln;
+
+  DLINK_FOREACH_SAFE (dl, dln, lt->show_mask.head)
+  {
+    MyFree(dl->data);
+    free_dlink_node(dl);
+  }
+  DLINK_FOREACH_SAFE (dl, dln, lt->hide_mask.head)
+  {
+    MyFree(dl->data);
+    free_dlink_node(dl);
+  }
+  MyFree(lt);
+  if (MyConnect(source_p))
+    source_p->localClient->list_task = NULL;
+}
+
+/*
+ * list_allow_channel
+ *
+ * inputs       - channel name
+ *              - pointer to a list task
+ * output       - 1 if the channel is to be displayed
+ *                0 otherwise
+ * side effects -
+ */
+static int list_allow_channel(char *chname, struct ListTask *lt)
+{
+  dlink_node *dl;
+
+  DLINK_FOREACH (dl, lt->show_mask.head)
+    if (!match((char *) dl->data, chname))
+      return 0;
+  DLINK_FOREACH (dl, lt->hide_mask.head)
+    if (match((char *) dl->data, chname))
+      return 0;
+  return 1;
+}
+
 /*
  * list_one_channel
  *
  * inputs       - client pointer to return result to
  *              - pointer to channel to list
+ *              - pointer to ListTask structure
  * ouput	- none
  * side effects -
  */
 static void
-list_one_channel(struct Client *source_p, struct Channel *chptr)
+list_one_channel(struct Client *source_p, struct Channel *chptr,
+                 struct ListTask *list_task, int remote_request)
 {
-#ifdef VCHANS
-  struct Channel *root_chptr;
-  char  id_and_topic[TOPICLEN+NICKLEN+6]; /* <!!>, plus space and null */
+  if ((remote_request && chptr->chname[0] == '&') ||
+      (SecretChannel(chptr) && !IsMember(source_p, chptr)))
+    return;
+  if ((unsigned int) chptr->users < list_task->users_min ||
+      (unsigned int) chptr->users > list_task->users_max ||
+      (chptr->channelts != 0 &&
+       ((unsigned int) chptr->channelts < list_task->created_min ||
+        (unsigned int) chptr->channelts > list_task->created_max)) ||
+      (unsigned int) chptr->topic_time < list_task->topicts_min ||
+      (chptr->topic_time ? (unsigned int) chptr->topic_time : UINT_MAX) >
+      list_task->topicts_max)
+    return;
 
+#ifdef VCHANS
   if (IsVchan(chptr) || HasVchans(chptr))
     {
-      root_chptr = find_bchan(chptr);
-      
+      struct Channel *root_chptr = find_bchan(chptr);
+      char id_and_topic[TOPICLEN+NICKLEN+6]; /* <!!>, plus space and null */
+
       if (root_chptr != NULL)
         {
+	  if (!list_allow_channel(root_chptr->chname, list_task))
+	    return;
           ircsprintf(id_and_topic, "<!%s> %s", pick_vchan_id(chptr),
 		     chptr->topic == NULL ? "" : chptr->topic );
           sendto_one(source_p, form_str(RPL_LIST), me.name, source_p->name,
@@ -856,6 +912,8 @@ list_one_channel(struct Client *source_p, struct Channel *chptr)
         }
       else
         {
+          if (!list_allow_channel(chptr->chname, list_task))
+	    return;
           ircsprintf(id_and_topic, "<!%s> %s", pick_vchan_id(chptr),
 		     chptr->topic == NULL ? "" : chptr->topic );
           sendto_one(source_p, form_str(RPL_LIST), me.name, source_p->name,
@@ -865,15 +923,16 @@ list_one_channel(struct Client *source_p, struct Channel *chptr)
   else
 #endif
     {
+      if (!list_allow_channel(chptr->chname, list_task))
+        return;
       sendto_one(source_p, form_str(RPL_LIST), me.name, source_p->name,
                  chptr->chname, chptr->users,
 		 chptr->topic == NULL ? "" : chptr->topic );
     }
 }
 
-
 /*
- * safe_list_all_channels
+ * safe_list_channels
  * inputs	- pointer to client requesting list
  * output	- 0/1
  * side effects	- safely list all channels to source_p
@@ -887,36 +946,35 @@ list_one_channel(struct Client *source_p, struct Channel *chptr)
  * - Dianora
  */
 void
-safe_list_all_channels(struct Client *source_p)
+safe_list_channels(struct Client *source_p, struct ListTask *list_task,
+                   int only_unmasked_channels, int remote_request)
 {
   struct Channel *chptr;
-  int i;
-  int hash_index;
 
-  if (MyConnect(source_p))
-    hash_index = source_p->localClient->hash_index;
-  else
-    hash_index = 0;
-
-  for (i = hash_index; i < CH_MAX; i++)
+  if (!only_unmasked_channels)
   {
-    for (chptr = channelTable[i].list; chptr; chptr = chptr->hnextch)
+    int i;
+
+    for (i = list_task->hash_index; i < CH_MAX; i++)
     {
-      if (!source_p->user ||
-	  (SecretChannel(chptr) && !IsMember(source_p, chptr)))
-	continue;
-      list_one_channel(source_p, chptr);
-    }
-    if (MyConnect(source_p))
-    {  
-      source_p->localClient->hash_index = i;
-      if (exceeding_sendq(source_p))
-        return;		/* still more to do */
+      for (chptr = channelTable[i].list; chptr; chptr = chptr->hnextch)
+        list_one_channel(source_p, chptr, list_task, remote_request);
+      if (MyConnect(source_p))
+        if (exceeding_sendq(source_p))
+        {
+          list_task->hash_index = i;
+          return;		/* still more to do */
+        }
     }
   }
+  else {
+    dlink_node *dl;
 
+    DLINK_FOREACH (dl, list_task->show_mask.head)
+      if ((chptr = hash_find_channel((const char *) dl->data)) != NULL)
+        list_one_channel(source_p, chptr, list_task, remote_request);
+  }
+
+  free_list_task(list_task, source_p);
   sendto_one(source_p, form_str(RPL_LISTEND), me.name, source_p->name);
-  if (MyConnect(source_p))
-    source_p->localClient->hash_index = 0;
-  return;
 }   
