@@ -1,3 +1,8 @@
+*** 20001130_7 by db
+- no need to memset to zero in channel.c now either
+
+
+
 *** 20001130_6 by db
 - MessageTree stuff should be in parse.h not msg.h
 - Seeing as MyMalloc now zeros memory, no need to do it in blalloc
@@ -1112,7 +1117,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.631 2000/11/30 08:54:40 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.632 2000/11/30 08:56:17 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
