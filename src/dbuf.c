@@ -21,7 +21,7 @@
  * see the header file (dbuf.h).
  *
  *
- * $Id: dbuf.c,v 7.11 2000/01/04 04:44:35 db Exp $
+ * $Id: dbuf.c,v 7.12 2000/01/04 20:00:04 db Exp $
  */
 #include "dbuf.h"
 #include "common.h"
@@ -59,6 +59,9 @@ struct DBufBuffer {
 
 int DBufAllocCount = 0;
 int DBufUsedCount  = 0;
+
+/* For convenience, log the maximum number of malloc() dbuf */
+int DBufMaxAllocated = 0;
 
 static struct DBufBuffer* dbufFreeList = NULL;
 
@@ -148,6 +151,10 @@ static struct DBufBuffer* dbuf_malloc()
   assert(0 != db);
   ++DBufAllocCount;
   ++DBufUsedCount;
+
+  /* Count what the maximum number of malloc'ed dbuf's is */
+  if(DBufAllocCount > DBufMaxAllocated)
+    DBufMaxAllocated = DBufAllocCount;
 
   db->next  = 0;
   db->start = db->end = db->data;

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_debug.c,v 7.13 2000/01/04 15:56:14 db Exp $
+ *   $Id: s_debug.c,v 7.14 2000/01/04 20:00:05 db Exp $
  */
 #include "s_debug.h"
 #include "channel.h"
@@ -34,6 +34,7 @@
 #include "s_log.h"
 #include "scache.h"
 #include "send.h"
+#include "whowas.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -45,10 +46,7 @@
 #include <sys/param.h>
 #include <sys/resource.h>
 
-
-extern  void    count_whowas_memory(int *, u_long *);
 extern  void    count_ip_hash(int *,u_long *);    /* defined in s_conf.c */
-extern  int     maxdbufblocks;                    /* defined in dbuf.c */
 
 /*
  * Option string.  Must be before #ifdef DEBUGMODE.
@@ -390,9 +388,9 @@ void count_memory(struct Client *cptr,char *nick)
              U_MAX, client_hash_table_size,
              CH_MAX, channel_hash_table_size);
 
-  sendto_one(cptr, ":%s %d %s :Dbuf blocks allocated %d(%d), used %d(%d)",
+  sendto_one(cptr, ":%s %d %s :Dbuf blocks allocated %d(%d), used %d(%d) max allocated by malloc() %d",
              me.name, RPL_STATSDEBUG, nick, dbuf_alloc_count, dbuf_allocated,
-             dbuf_used_count, dbuf_used);
+             dbuf_used_count, dbuf_used, DBufMaxAllocated );
 
   rm = cres_mem(cptr);
 

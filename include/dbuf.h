@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-/* $Id: dbuf.h,v 7.5 2000/01/04 04:44:31 db Exp $ */
+/* $Id: dbuf.h,v 7.6 2000/01/04 20:00:02 db Exp $ */
 #ifndef INCLUDED_dbuf_h
 #define INCLUDED_dbuf_h
 #ifndef INCLUDED_config_h
@@ -51,6 +51,7 @@ struct DBuf {
 
 extern int DBufAllocCount;
 extern int DBufUsedCount;
+extern int DBufMaxAllocated;
 
 /*
 ** dbuf_put
