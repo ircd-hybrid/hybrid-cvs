@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.101 2003/04/18 02:13:50 db Exp $
+ *  $Id: m_server.c,v 1.102 2003/04/19 10:44:02 michael Exp $
  */
 
 #include "stdinc.h"
@@ -69,7 +69,8 @@ _moddeinit(void)
 {
   mod_del_cmd(&server_msgtab);
 }
-const char *_version = "$Revision: 1.101 $";
+
+const char *_version = "$Revision: 1.102 $";
 #endif
 
 
@@ -259,7 +260,7 @@ mr_server(struct Client *client_p, struct Client *source_p,
  */
 static void
 ms_server(struct Client *client_p, struct Client *source_p,
-	  int parc, char *parv[])
+          int parc, char *parv[])
 {
   char             info[REALLEN + 1];
                    /* same size as in s_misc.c */
@@ -277,13 +278,13 @@ ms_server(struct Client *client_p, struct Client *source_p,
    return;
 
   if (parc < 4)
-    {
-      sendto_one(client_p,"ERROR :No servername");
-      return;
-    }
+  {
+    sendto_one(client_p,"ERROR :No servername");
+    return;
+  }
 
   name = parv[1];
-  hop = atoi(parv[2]);
+  hop  = atoi(parv[2]);
   strlcpy(info, parv[3], sizeof(info));
 
   if ((target_p = server_exists(name)))
@@ -330,12 +331,11 @@ ms_server(struct Client *client_p, struct Client *source_p,
    * must always have '.' in them.
    */
   if (strchr(name,'.') == NULL)
-    {
-      /*
-       * Server trying to use the same name as a person. Would
-       * cause a fair bit of confusion. Enough to make it hellish
-       * for a while and servers to send stuff to the wrong place.
-       */
+  {
+    /* Server trying to use the same name as a person. Would
+     * cause a fair bit of confusion. Enough to make it hellish
+     * for a while and servers to send stuff to the wrong place.
+     */
       sendto_one(client_p,"ERROR :Nickname %s already exists!", name);
       sendto_realops_flags(UMODE_ALL, L_ADMIN,
 			   "Link %s cancelled: Server/nick collision on %s",
@@ -345,24 +345,21 @@ ms_server(struct Client *client_p, struct Client *source_p,
 	  get_client_name(client_p, MASK_IP), name);
       exit_client(client_p, client_p, client_p, "Nick as Server");
       return;
-    }
+  }
 
-  /*
-   * Server is informing about a new server behind
+  /* Server is informing about a new server behind
    * this link. Create REMOTE server structure,
    * add it to list and propagate word to my other
    * server links...
    */
   if (parc == 1 || info[0] == '\0')
-    {
-      sendto_one(client_p, "ERROR :No server info specified for %s", name);
-      return;
-    }
+  {
+    sendto_one(client_p, "ERROR :No server info specified for %s", name);
+    return;
+  }
 
-  /*
-   * See if the newly found server is behind a guaranteed
+  /* See if the newly found server is behind a guaranteed
    * leaf. If so, close the link.
-   *
    */
 
   DLINK_FOREACH(ptr, ConfigItemList.head)
@@ -488,10 +485,8 @@ ms_server(struct Client *client_p, struct Client *source_p,
   Count.server++;
 
   dlinkAdd(target_p, &target_p->node, &global_client_list);
-#if 0
   dlinkAdd(target_p, make_dlink_node(), &global_serv_list);
-#endif
-  add_server_to_list(target_p);
+
   add_to_client_hash_table(target_p->name, target_p);
   dlinkAdd(target_p, &target_p->lnode, &target_p->servptr->serv->servers);
 
@@ -540,7 +535,7 @@ static int
 set_server_gecos(struct Client *client_p, char *info)
 {
   /* check the info for [IP] */
-  if(info[0])
+  if (info[0])
   {
     char *p;
     char *s;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.266 2003/04/16 09:01:52 michael Exp $
+ *  $Id: ircd.c,v 7.267 2003/04/19 10:44:04 michael Exp $
  */
 
 #include "stdinc.h"
@@ -685,10 +685,9 @@ main(int argc, char *argv[])
   me.lasttime = me.since = me.firsttime = CurrentTime;
   add_to_client_hash_table(me.name, &me);
   
-  add_server_to_list(&me); /* add ourselves to global_serv_list */
-#if 0
+  /* add ourselves to global_serv_list */
   dlinkAdd(&me, make_dlink_node(), &global_serv_list);
-#endif
+
   check_class();
   write_pidfile(pidFileName);
   

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.304 2003/04/16 19:56:38 michael Exp $
+ *  $Id: s_serv.c,v 7.305 2003/04/19 10:44:04 michael Exp $
  */
 
 #include "stdinc.h"
@@ -292,18 +292,6 @@ my_name_for_link(const char *name, struct ConfItem *aconf)
     return(aconf->fakename);
   else
     return(name);
-}
-
-/* add_server_to_list()
- *
- * input	- pointer to client
- * output	- none
- * side effects - server is added to global_serv_list
- */
-void
-add_server_to_list(struct Client *client_p)
-{
-  dlinkAdd(client_p, make_dlink_node(), &global_serv_list);
 }
 
 /*
@@ -1037,10 +1025,8 @@ server_estab(struct Client *client_p)
 
   Count.server++;
   Count.myserver++;
-#if 0
+
   dlinkAdd(client_p, make_dlink_node(), &global_serv_list);
-#endif
-  add_server_to_list(client_p);
   add_to_client_hash_table(client_p->name, client_p);
 
   /* doesnt duplicate client_p->serv if allocated this struct already */
