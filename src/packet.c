@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.70 2002/02/17 05:39:27 androsyn Exp $
+ *  $Id: packet.c,v 7.71 2002/02/19 15:22:12 androsyn Exp $
  */
 
 #include <stdio.h>
@@ -289,14 +289,16 @@ read_packet(int fd, void *data)
   struct LocalUser *lclient_p = client_p->localClient;
   int length = 0;
   int lbuf_len;
-  int fd_r = client_p->localClient->fd;
+  int fd_r; 
   int binary = 0;
 #ifndef NDEBUG
   struct hook_io_data hdata;
 #endif
-  /* if the client is dead, kill it off now -davidt */
   if(IsDead(client_p))
     return;
+  
+  assert(lclient_p != NULL);
+  fd_r = client_p->localClient->fd;
 
 #ifndef HAVE_SOCKETPAIR
   if (HasServlink(client_p))
@@ -305,7 +307,6 @@ read_packet(int fd, void *data)
     fd_r = client_p->localClient->fd_r;
   }
 #endif
-  assert(lclient_p != NULL);
 
   /*
    * Read some data. We *used to* do anti-flood protection here, but
