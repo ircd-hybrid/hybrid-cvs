@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.68 2003/01/09 06:15:53 db Exp $
+ *  $Id: channel_mode.c,v 7.69 2003/01/11 03:52:29 db Exp $
  */
 
 #include "stdinc.h"
@@ -2797,7 +2797,7 @@ do_channel_integrity_check(void)
   struct Channel *ch;
   for (cl=GlobalClientList; cl; cl=cl->next)
   {
-    if (!IsRegisteredUser(cl) || IsDefunct(cl))
+    if (!IsRegisteredUser(cl) || IsDead(cl))
       continue;
     DLINK_FOREACH(ptr, cl->user->channel.head)
     {
