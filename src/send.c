@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.231 2003/04/02 11:19:46 michael Exp $
+ *  $Id: send.c,v 7.232 2003/04/06 00:37:02 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1372,9 +1372,8 @@ kill_client_ll_serv_butone(struct Client *one, struct Client *source_p,
 
   va_end(args);
 
-  for(ptr = serv_list.head; ptr; ptr = ptr_next)
+  DLINK_FOREACH_SAFE(ptr, ptr_next, serv_list.head)
   {
-    ptr_next = ptr->next;
     client_p = ptr->data;
 
     if (one && (client_p == one->from))

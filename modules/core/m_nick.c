@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nick.c,v 1.111 2003/04/06 00:07:15 michael Exp $
+ *  $Id: m_nick.c,v 1.112 2003/04/06 00:37:00 michael Exp $
  */
 
 #include "stdinc.h"
@@ -96,7 +96,7 @@ _moddeinit(void)
   mod_del_cmd(&client_msgtab);
 }
 
-const char *_version = "$Revision: 1.111 $";
+const char *_version = "$Revision: 1.112 $";
 #endif
 
 /*
@@ -150,7 +150,7 @@ mr_nick(struct Client *client_p, struct Client *source_p,
     if(!ServerInfo.hub && uplink && IsCapable(uplink, CAP_LL))
     {
       /* We don't know anyone called nick, but our hub might */
-      for(ptr = unknown_list.head; ptr; ptr = ptr->next)
+      DLINK_FOREACH(ptr, unknown_list.head)
       {
         uclient_p = ptr->data;
 
