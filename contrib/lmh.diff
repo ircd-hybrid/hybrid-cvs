@@ -413,9 +413,9 @@ diff -urN --exclude=CVS ircd-hybrid-7/include/supported.h ircd-hybrid-7+lmh/incl
  #include "ircd_defs.h"
  
 +#ifndef USE_ASCII_CASEMAP
-+#define CHARSET "rfc1459"
++#define CASEMAP "rfc1459"
 +#else
-+#define CHARSET "ascii"
++#define CASEMAP "ascii"
 +#endif
 +
  #define FEATURES "WALLCHOPS"\
@@ -434,7 +434,7 @@ diff -urN --exclude=CVS ircd-hybrid-7/include/supported.h ircd-hybrid-7+lmh/incl
                          "(ohv)@%+", "beI,k,l,imnpsta", \
 -			ServerInfo.network_name
 -                          
-+			ServerInfo.network_name, CHARSET
++			ServerInfo.network_name, CASEMAP
 +
  /*
   * - from mirc's versions.txt
@@ -673,7 +673,7 @@ diff -urN --exclude=CVS ircd-hybrid-7/modules/m_unkline.c ircd-hybrid-7+lmh/modu
     {m_unregistered, m_not_oper, m_error, mo_undline}}, 
    {"UNGLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
 @@ -76,8 +78,10 @@
- const char *_version = "$Revision: 1.5 $";
+ const char *_version = "$Revision: 1.6 $";
  #endif
  
 +static void remove_permkline_match(struct Client *, char *, char *);
@@ -972,7 +972,7 @@ diff -urN --exclude=CVS ircd-hybrid-7/modules/m_xline.c ircd-hybrid-7+lmh/module
 + * IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 + * POSSIBILITY OF SUCH DAMAGE.
 + *
-+ * $Id: lmh.diff,v 1.5 2002/07/02 10:22:25 leeh Exp $
++ * $Id: lmh.diff,v 1.6 2002/07/02 10:35:26 leeh Exp $
 + */
 +
 +#include "stdinc.h"
@@ -1017,7 +1017,7 @@ diff -urN --exclude=CVS ircd-hybrid-7/modules/m_xline.c ircd-hybrid-7+lmh/module
 +  mod_del_cmd(&xline_msgtab);
 +}
 +
-+char *_version = "$Revision: 1.5 $";
++char *_version = "$Revision: 1.6 $";
 +
 +/* m_xline()
 + *
