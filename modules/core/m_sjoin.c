@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.38 2000/12/22 16:12:44 db Exp $
+ *   $Id: m_sjoin.c,v 1.39 2000/12/23 05:05:53 toot Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -157,19 +157,20 @@ int     ms_sjoin(struct Client *cptr,
       case 't':
         mode.mode |= MODE_TOPICLIMIT;
         break;
-		  case 'z':
-			  mode.mode |= MODE_HIDEOPS;
-			  break;
-			  
-		  case 'k':
-         strncpy_irc(mode.key, parv[4 + args], KEYLEN);
+      case 'a':
+        mode.mode |= MODE_HIDEOPS;
+        break;
+      case 'k':
+        strncpy_irc(mode.key, parv[4 + args], KEYLEN);
         args++;
-        if (parc < 5+args) return 0;
+        if (parc < 5+args)
+          return 0;
         break;
       case 'l':
         mode.limit = atoi(parv[4+args]);
         args++;
-        if (parc < 5+args) return 0;
+        if (parc < 5+args)
+          return 0;
         break;
       }
 
@@ -503,12 +504,12 @@ void set_final_mode(struct Mode *mode,struct Mode *oldmode)
 
   if ((MODE_HIDEOPS & mode->mode) && !(MODE_HIDEOPS & oldmode->mode))
   {
-	  if (what != 1)
-	  {
-		  *mbuf++ = '+';
-		  what = 1;
-	  }
-	  *mbuf++ = 'z';
+    if (what != 1)
+      {
+        *mbuf++ = '+';
+        what = 1;
+      }
+    *mbuf++ = 'a';
   }
   
   if((MODE_PRIVATE    & mode->mode) && !(MODE_PRIVATE    & oldmode->mode))
@@ -586,12 +587,12 @@ void set_final_mode(struct Mode *mode,struct Mode *oldmode)
     }
   if ((MODE_HIDEOPS & oldmode->mode) && !(MODE_HIDEOPS & mode->mode))
   {
-	  if (what != -1)
-	  {
-		  *mbuf++ = '-';
-		  what = -1;
-	  }
-	  *mbuf++ = 'z';
+    if (what != -1)
+      {
+        *mbuf++ = '-';
+        what = -1;
+      }
+    *mbuf++ = 'a';
   }
   
   if((MODE_MODERATED  & oldmode->mode) && !(MODE_MODERATED  & mode->mode))

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_oper.c,v 1.19 2000/12/23 02:42:01 db Exp $
+ *   $Id: m_oper.c,v 1.20 2000/12/23 05:05:52 toot Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -310,25 +310,13 @@ int oper_up( struct Client *sptr, struct ConfItem *aconf )
     sptr->umodes |= FLAGS_ADMIN;
 
   sendto_realops_flags(FLAGS_ALL,
-		       "%s (%s@%s) is now operator (%c)", sptr->name,
-		       sptr->username, sptr->host,
-		       IsOper(sptr) ? 'O' : 'o');
-	
+		       "%s (%s@%s) is now an operator", sptr->name,
+		       sptr->username, sptr->host);
   send_umode_out(sptr, sptr, old);
-
   sendto_one(sptr, form_str(RPL_YOUREOPER), me.name, sptr->name);
-  sendto_one(sptr, ":%s NOTICE %s :*** Oper privs are %s",me.name,
-	     sptr->name,	
-	     operprivs);
+  sendto_one(sptr, ":%s NOTICE %s :*** Oper privs are %s", me.name,
+             sptr->name, operprivs);
   SendMessageFile(sptr, &ConfigFileEntry.opermotd);
   
   return 1;
 }
-
-
-
-
-
-
-
-

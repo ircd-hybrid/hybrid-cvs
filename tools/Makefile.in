@@ -1,5 +1,4 @@
-# $Id: Makefile.in,v 7.9 2000/12/22 21:04:20 wcampbel Exp $
-# $Id: Makefile.in,v 7.9 2000/12/22 21:04:20 wcampbel Exp $
+# $Id: Makefile.in,v 7.10 2000/12/23 05:05:56 toot Exp $
 
 CC		= @CC@
 INSTALL		= @INSTALL@
