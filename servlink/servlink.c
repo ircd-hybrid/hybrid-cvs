@@ -15,16 +15,15 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: servlink.c,v 1.22 2001/06/04 14:30:55 davidt Exp $
+ *   $Id: servlink.c,v 1.23 2001/06/05 22:06:40 toot Exp $
  */
 
 #include "setup.h"                                                   
 
 #include <sys/types.h>
 #include <sys/time.h>
-
 #include <sys/socket.h>
-
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>

@@ -2,7 +2,7 @@
  * encspeed.c - originally written by einride
  *            - modified for ircd-hybrid-7 by davidt
  *
- * $Id: encspeed.c,v 7.2 2001/05/29 16:20:14 jdc Exp $
+ * $Id: encspeed.c,v 7.3 2001/06/05 22:06:46 toot Exp $
  */
 
 #include "../include/setup.h"
@@ -13,6 +13,7 @@
 int main(int argc, char *argv[])
 {
   printf("No OpenSSL support.\n");
+  return 0;
 }
 
 #else
