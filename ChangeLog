@@ -1,3 +1,15 @@
+leeh        2002/04/25 04:54:50 EDT	(20020425_0)
+
+  Modified files:
+    src                  client.c 
+  Log:
+  - a1kmms fix for the core
+  
+  Revision  Changes    Path
+  7.251     +6 -0      ircd-hybrid-7/src/client.c
+
+
+
 leeh        2002/04/23 10:26:31 EDT	(20020423_2)
 
   Modified files:
@@ -25414,4 +25426,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3585 2002/04/23 14:26:37 leeh Exp $
+$Id: ChangeLog,v 7.3586 2002/04/25 08:54:56 leeh Exp $
