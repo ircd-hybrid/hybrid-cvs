@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.174 2001/08/03 13:10:30 leeh blalloc.c $
+ * $Id: ircd.c,v 7.175 2001/08/13 16:44:42 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -92,7 +92,7 @@
 #include "hook.h"
 #include "debug.h"
 #include "ircd_getopt.h"
-
+#include "balloc.h"
 /*
  * Try and find the correct name to use with getrlimit() for setting the max.
  * number of files allowed to be open by this process.
@@ -575,6 +575,7 @@ int main(int argc, char *argv[])
  if (!server_state.foreground)
    close_all_connections();
  init_log(logFileName);
+ initBlockHeap();
  init_netio();		/* This needs to be setup early ! -- adrian */
  init_resolver();	/* Needs to be setup before the io loop */
  initialize_message_files();

@@ -8,7 +8,7 @@
  * Owner:   Wohali (Joan Touzet)
  *
  *
- * $Id: balloc.h,v 1.1 2001/08/13 05:09:04 androsyn Exp $
+ * $Id: balloc.h,v 1.2 2001/08/13 16:44:42 androsyn Exp $
  */
 #ifndef INCLUDED_blalloc_h
 #define INCLUDED_blalloc_h
@@ -21,6 +21,7 @@
 #include <stddef.h>
 #define INCLUDED_stddef_h
 #endif
+#include <sys/mman.h>
 #include "tools.h"
 #include "memory.h"
 #include "ircd_defs.h"
@@ -73,6 +74,7 @@ extern int        BlockHeapGarbageCollect(BlockHeap *);
 
 extern void       BlockHeapCountMemory(BlockHeap *bh,int *, int *);
 extern void       BlockHeapDump(BlockHeap *bh,int fd);
+extern void	  initBlockHeap(void);
 
 
 #endif /* INCLUDED_blalloc_h */
