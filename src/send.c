@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.181 2002/02/27 17:51:46 enygma Exp $
+ *  $Id: send.c,v 7.182 2002/03/04 22:45:41 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -910,7 +910,8 @@ sendto_list_remote(struct Client *one,
     if (MyConnect(target_p))
       continue;
 
-    if (target_p == one) /* must skip the origin! */
+
+    if (target_p->from == one->from) /* must skip the origin! */
       continue;
 
     if (((target_p->from->localClient->caps & caps) != caps) ||
