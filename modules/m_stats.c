@@ -20,9 +20,10 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 1.15 2000/12/12 00:28:09 db Exp $
+ *  $Id: m_stats.c,v 1.16 2000/12/12 04:29:01 db Exp $
  */
-#include "handlers.h"  /* m_pass prototype */
+#include "tools.h"	 /* dlink_node/dlink_list */
+#include "handlers.h"    /* m_pass prototype */
 #include "class.h"       /* report_classes */
 #include "client.h"      /* Client */
 #include "common.h"      /* TRUE/FALSE */
@@ -97,6 +98,8 @@ const char* Lformat = ":%s %d %s %s %u %u %u %u %u :%u %u %s";
 char *parse_stats_args(int parc,char *parv[],int *doall,int *wilds);
 
 void stats_L(struct Client *sptr,char *name,int doall, int wilds);
+void stats_L_list(struct Client *sptr,char *name, int doall, int wilds,
+		  dlink_list *list);
 void stats_spy(struct Client *sptr,char stat);
 void stats_L_spy(struct Client *sptr, char stat, char *name);
 void stats_p_spy(struct Client *sptr);
@@ -516,7 +519,18 @@ void do_priv_stats(struct Client *sptr, char *name, char *target,
  */
 void stats_L(struct Client *sptr,char *name,int doall, int wilds)
 {
-  int i;
+  struct Client *acptr;
+
+  stats_L_list(sptr, name, doall, wilds, &unknown_list);
+  stats_L_list(sptr, name, doall, wilds, &lclient_list);
+  stats_L_list(sptr, name, doall, wilds, &oper_list);
+  stats_L_list(sptr, name, doall, wilds, &serv_list);
+}
+
+void stats_L_list(struct Client *sptr,char *name, int doall, int wilds,
+		  dlink_list *list)
+{
+  dlink_node *ptr;
   struct Client *acptr;
 
   /*
@@ -525,11 +539,8 @@ void stats_L(struct Client *sptr,char *name,int doall, int wilds)
    * are invisible not being visible to 'foreigners' who use
    * a wild card based search to list it.
    */
-  for (i = 0; i <= highest_fd; i++)
+  for(ptr = list->head;ptr;ptr = ptr->next)
     {
-      if (!(acptr = local[i]))
-	continue;
-
       if (IsPerson(acptr) &&
 	  !IsAnyOper(acptr) && !IsAnyOper(sptr) &&
 	  (acptr != sptr))

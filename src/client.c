@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.69 2000/12/12 03:18:11 db Exp $
+ *  $Id: client.c,v 7.70 2000/12/12 04:29:05 db Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -397,6 +397,14 @@ check_pings_list(dlink_list *list)
     }
 }
 
+/*
+ * check_unknowns_list
+ *
+ * inputs	- pointer to list of unknown clients
+ * output	- NONE
+ * side effects	- unknown clients get marked for termination after n seconds
+ */
+
 void check_unknowns_list(dlink_list *list)
 {
   dlink_node *ptr;
@@ -583,7 +591,9 @@ void check_klines(void)
   exit_marked_for_death_clients(&dying_list);
 }
 
-/* exit_marked_for_death_clients
+/*
+ * exit_marked_for_death_clients
+ *
  * inputs	- array of marked for death clients
  * output	- NONE
  * side effects	- Now exit clients marked for exit above.
