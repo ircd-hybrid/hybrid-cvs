@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.284 2001/12/10 03:55:29 jdc Exp $
+ * $Id: channel.c,v 7.285 2001/12/13 19:27:21 leeh Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -1202,3 +1202,12 @@ check_spambot_warning(struct Client *source_p, const char *name)
       source_p->localClient->last_leave_time = CurrentTime;
   }
 }
+
+/* check_splitmode()
+ *
+ * input	-
+ * output	-
+ * side effects - compares usercount and servercount against their split
+ *                values and adjusts splitmode accordingly
+ */
+

@@ -19,7 +19,7 @@
  *
  * "ircd.h". - Headers file.
  *
- * $Id: ircd.h,v 7.41 2001/11/21 14:51:01 androsyn Exp $
+ * $Id: ircd.h,v 7.42 2001/12/13 19:27:16 leeh Exp $
  *
  */
 #ifndef INCLUDED_ircd_h
@@ -93,6 +93,10 @@ extern struct timeval SystemTime;
 #define CurrentTime SystemTime.tv_sec
 extern time_t         nextconnect;
 extern int            default_server_capabs;
+
+extern int splitmode;
+extern int split_users;
+extern int split_servers;
 
 extern dlink_list unknown_list;
 extern dlink_list lclient_list;

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 1.78 2001/12/07 10:59:34 leeh Exp $
+ *   $Id: m_join.c,v 1.79 2001/12/13 19:27:18 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -181,6 +181,13 @@ m_join(struct Client *client_p,
       /* look for the channel */
       if((chptr = hash_find_channel(name)) != NULL)
 	{
+	  if(splitmode && (*name != '&') && ConfigChannel.no_join_on_split)
+	  {
+	    sendto_one(source_p, form_str(ERR_UNAVAILRESOURCE),
+                       me.name, source_p->name, name);
+	    continue;
+	  }
+
           /* Check if they want to join a subchan or something */
 	  vchan_chptr = select_vchan(chptr, source_p, vkey, name);
           
@@ -206,6 +213,14 @@ m_join(struct Client *client_p,
 	}
       else
 	{
+	  if(splitmode && (*name != '&') && 
+            (ConfigChannel.no_create_on_split || ConfigChannel.no_join_on_split))
+	  {
+	    sendto_one(source_p, form_str(ERR_UNAVAILRESOURCE),
+	               me.name, source_p->name, name);
+	    continue;
+	  }
+	  
 	  flags = CHFL_CHANOP;
 	  if(!ServerInfo.hub)
 	    {

@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.279 2001/12/12 04:58:34 db Exp $
+ *  $Id: s_conf.c,v 7.280 2001/12/13 19:27:22 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -1567,6 +1567,11 @@ set_default_conf(void)
 
   /* 60 * 30 = 1800 = 30 minutes */
   ConfigChannel.persist_time = 1800;
+
+  ConfigChannel.split_user_count = 0;
+  ConfigChannel.split_server_count = 0;
+  ConfigChannel.no_join_on_split = NO;
+  ConfigChannel.no_create_on_split = NO;
 
   ConfigServerHide.flatten_links = 0;
   ConfigServerHide.hide_servers = 0;
