@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.72 2000/12/20 02:39:23 db Exp $
+ *  $Id: s_user.c,v 7.73 2000/12/20 22:00:48 db Exp $
  */
 #include "tools.h"
 #include "s_user.h"
@@ -1068,7 +1068,7 @@ static int check_X_line(struct Client *cptr, struct Client *sptr)
   if(IsAnyOper(sptr))
     return 0;
 
-  if ((aconf = find_special_conf(sptr->info,CONF_XLINE)))
+  if ((aconf = find_x_conf(sptr->info)))
     {
       if(aconf->passwd)
 	reason = aconf->passwd;

@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.57 2000/12/20 18:29:31 db Exp $
+ * $Id: ircd_parser.y,v 1.58 2000/12/20 22:00:46 db Exp $
  */
 
 %{
@@ -786,10 +786,13 @@ shared_entry:		SHARED
     if(yy_aconf)
       {
         free_conf(yy_aconf);
-        yy_aconf = (struct ConfItem *)NULL;
+        yy_aconf = NULL;
       }
     yy_aconf=make_conf();
     yy_aconf->status = CONF_ULINE;
+    yy_aconf->name = NULL;
+    yy_aconf->user = NULL;
+    yy_aconf->host = NULL;
   };
   '{' shared_items '}' ';'
   {
@@ -800,12 +803,21 @@ shared_entry:		SHARED
 shared_items:		shared_items shared_item |
 			shared_item
 
-shared_item:		shared_name
+shared_item:		shared_name | shared_user | shared_host
 
 shared_name:		NAME '=' QSTRING ';'
   {
-    yy_aconf->host = yylval.string;
-    yylval.string = (char *)NULL;
+    DupString (yy_aconf->name, yylval.string);
+  };
+
+shared_user:		USER '=' QSTRING ';'
+  {
+    DupString (yy_aconf->user, yylval.string);
+  };
+
+shared_host:		HOST '=' QSTRING ';'
+  {
+    DupString (yy_aconf->host, yylval.string);
   };
 
 /***************************************************************************

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_nick.c,v 1.28 2000/12/20 05:59:44 db Exp $
+ *   $Id: m_nick.c,v 1.29 2000/12/20 22:00:45 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -119,7 +119,7 @@ int mr_nick(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
       return 0;
     }
 
-  if(find_q_line(nick, sptr->username, sptr->host)) 
+  if(find_q_conf(nick, sptr->username, sptr->host)) 
     {
       sendto_realops_flags(FLAGS_REJ,
 			   "Quarantined nick [%s] from user %s",
@@ -179,7 +179,7 @@ int m_nick(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
       return 0;
     }
 
-  if (!IsAnyOper(sptr) && find_q_line(nick, sptr->username, sptr->host))
+  if (!IsAnyOper(sptr) && find_q_conf(nick, sptr->username, sptr->host))
     {
       sendto_realops_flags(FLAGS_REJ,
 			   "Quarantined nick [%s] from user %s",
