@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.104 2001/08/22 13:48:35 leeh Exp $
+ *   $Id: m_sjoin.c,v 1.105 2001/08/22 13:59:55 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -544,22 +544,23 @@ nextnick:
        * need to exit.. this has the side effect of breaking double spaces
        * in an sjoin.. but that shouldnt happen anyway
        */
-      if(*s == '\0')
+      if(s && (*s == '\0'))
         s = p = NULL;
 	
       /* if p was NULL due to no spaces, s wont exist due to the above, so
        * we cant check it for spaces.. if there are no spaces, then when
        * we next get here, s will be NULL
        */
-      if (s && ((p = strchr(s, ' ')) != NULL))
-	{
-	  *p++ = '\0';
-	}
-	/* nah, the while will exit if theres nothing left.. and its
-	 * possible we still need to parse one final nick which doesnthave a
-	 * space at the end.. therefore p will become null.. so s will too
-	 * and the loop will exit
-	 */
+      if(s && ((p = strchr(s, ' ')) != NULL))
+      {
+        *p++ = '\0';
+      }
+	
+      /* nah, the while will exit if theres nothing left.. and its
+       * possible we still need to parse one final nick which doesnthave a
+       * space at the end.. therefore p will become null.. so s will too
+       * and the loop will exit
+       */
 #if 0	
       else
 	{
