@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kick.c,v 1.44 2002/05/24 23:34:38 androsyn Exp $
+ *  $Id: m_kick.c,v 1.45 2002/07/19 10:11:42 leeh Exp $
  */
 
 #include "stdinc.h"
@@ -59,7 +59,7 @@ _moddeinit(void)
   mod_del_cmd(&kick_msgtab);
 }
 
-const char *_version = "$Revision: 1.44 $";
+const char *_version = "$Revision: 1.45 $";
 #endif
 /*
 ** m_kick
@@ -177,14 +177,18 @@ static void m_kick(struct Client *client_p,
 
   if (IsMember(who, chptr))
     {
-      /* half ops cannot kick full chanops */
+      /* half ops cannot kick other halfops on private channels */
 #ifdef HALFOPS
-      if (is_half_op(chptr,source_p) && is_any_op(chptr,who))
+      if (is_half_op(chptr,source_p))
+      {
+	if (((chptr->mode.mode & MODE_PRIVATE) && is_any_op(chptr, who)) ||
+             is_chan_op(chptr, who))
 	{
           sendto_one(source_p, form_str(ERR_CHANOPRIVSNEEDED),
                      me.name, parv[0], name);
 	  return;
 	}
+      }
 #endif
       /* jdc
        * - In the case of a server kicking a user (i.e. CLEARCHAN),
