@@ -1,3 +1,15 @@
+leeh        2002/06/02 15:38:33 EDT	(20020602_1)
+
+  Added files:
+    doc/technical        ts5.txt 
+  Log:
+  - added ts5 doc, typed in a very very scary looking log prompt..
+  
+  Revision  Changes    Path
+  1.1       +151 -0    ircd-hybrid-7/doc/technical/ts5.txt (new)
+
+
+
 leeh        2002/06/02 10:08:10 EDT	(20020602_0)
 
   Modified files:
@@ -27805,4 +27817,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3735 2002/06/02 14:08:16 leeh Exp $
+$Id: ChangeLog,v 7.3736 2002/06/02 19:38:39 leeh Exp $
