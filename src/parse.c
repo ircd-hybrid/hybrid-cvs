@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.170 2003/06/03 03:24:20 michael Exp $
+ *  $Id: parse.c,v 7.171 2003/06/04 00:49:24 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -95,9 +95,12 @@ static char buffer[1024];
 static int cancel_clients(struct Client *, struct Client *, char *);
 static void remove_unknown(struct Client *, char *, char *);
 static void do_numeric(char [], struct Client *, struct Client *, int, char **);
-static void handle_command(struct Message *, struct Client *, struct Client *, int, char **);
+static void handle_command(struct Message *, struct Client *, struct Client *, unsigned int, char **);
 static struct Message *find_command(const char *);
-static void recurse_report_messages(struct Client *source_p, struct MessageTree *mtree);
+static void recurse_report_messages(struct Client *source_p,
+				    struct MessageTree *mtree);
+static void add_msg_element(struct MessageTree *mtree_p, struct Message *msg_p, const char *cmd);
+static void del_msg_element(struct MessageTree *mtree_p, const char *cmd);
 
 /* turn a string into a parc/parv pair */
 static inline int
@@ -165,7 +168,7 @@ parse(struct Client *client_p, char *pbuffer, char *bufend)
   char *ch;
   char *s;
   char *numeric = 0;
-  int i = 0;
+  unsigned int i = 0;
   int paramcount;
   int mpara = 0;
   struct Message *mptr;
@@ -332,7 +335,7 @@ parse(struct Client *client_p, char *pbuffer, char *bufend)
  */
 static void
 handle_command(struct Message *mptr, struct Client *client_p,
-               struct Client *from, int i, char *hpara[MAXPARA])
+               struct Client *from, unsigned int i, char *hpara[MAXPARA])
 {
   MessageHandler handler = 0;
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: class.c,v 7.56 2003/06/03 14:10:06 michael Exp $
+ *  $Id: class.c,v 7.57 2003/06/04 00:49:24 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -316,10 +316,10 @@ report_classes(struct Client *source_p)
  * output       - sendq for this client as found from its class
  * side effects	- NONE
  */
-long
+unsigned long
 get_sendq(struct Client *client_p)
 {
-  long sendq = DEFAULT_SENDQ;
+  unsigned long sendq = DEFAULT_SENDQ;
   dlink_node *ptr;
   struct Class *aclass;
   struct ConfItem *aconf;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: class.h,v 7.20 2003/06/01 18:45:29 db Exp $
+ *  $Id: class.h,v 7.21 2003/06/04 00:49:18 joshk Exp $
  */
 
 #ifndef INCLUDED_class_h
@@ -71,7 +71,7 @@ extern dlink_list ClassList;  /* GLOBAL - class list */
 
 extern struct Class *make_class(const char *name);
 extern void add_class(struct Class *aclass);
-extern long get_sendq(struct Client *);
+extern unsigned long get_sendq(struct Client *);
 extern int get_con_freq(struct Class* );
 extern struct Class *find_class(const char* );
 extern const char *get_client_class(struct Client *);

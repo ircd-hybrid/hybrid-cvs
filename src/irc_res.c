@@ -7,7 +7,7 @@
  * The authors takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: irc_res.c,v 7.26 2003/05/31 06:14:57 michael Exp $
+ * $Id: irc_res.c,v 7.27 2003/06/04 00:49:24 joshk Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -227,7 +227,7 @@ restart_resolver(void)
  * (as suggested by eps@TOASTER.SFSU.EDU)
  */
 void
-add_local_domain(char* hname, int size)
+add_local_domain(char* hname, size_t size)
 {
   /* try to fix up unqualified names 
    */
@@ -781,8 +781,8 @@ res_readreply(int fd, void *data)
    */
   comm_setselect(ResolverFileDescriptor, FDLIST_SERVICE, COMM_SELECT_READ,
                  res_readreply, NULL, 0);
-
-  if (rc <= sizeof(HEADER))
+  /* Better to cast the sizeof instead of rc */
+  if (rc <= (int)(sizeof(HEADER)))
     return;
 
   /*

@@ -12,7 +12,7 @@
 ** VMS support by Edward Brocklesby, crypt.c implementation
 ** phk@login.dknet.dk
 **
-** $Id: mkpasswd.c,v 7.16 2003/05/25 04:07:21 joshk Exp $
+** $Id: mkpasswd.c,v 7.17 2003/06/04 00:49:26 joshk Exp $
 */
 #include <stdio.h>
 #include <string.h>
@@ -45,8 +45,6 @@
 
 #ifdef __vms
 static char *getpass();
-#else
-extern char *getpass();
 #endif
 
 extern char *crypt();
@@ -71,7 +69,6 @@ static char saltChars[] =
 int main(int argc, char *argv[])
 {
   char *plaintext = NULL;
-  extern char *optarg;
   int c;
   char *saltpara = NULL;
   char *salt;

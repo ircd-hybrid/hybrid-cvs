@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.388 2003/06/01 15:05:54 adx Exp $
+ *  $Id: channel.c,v 7.389 2003/06/04 00:49:24 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -139,7 +139,7 @@ remove_user_from_channel(struct Channel *chptr, struct Client *who)
     dlinkDelete(&ms->locchannode, &chptr->locmembers);
   dlinkDelete(&ms->usernode, &who->user->channel);
 
-  BlockHeapFree(member_heap, ms);
+  BlockHeapFree(member_heap, (void*)ms);
   who->user->joined--;
   if (--chptr->users == 0)
   {
@@ -476,7 +476,7 @@ add_invite(struct Channel *chptr, struct Client *who)
    * delete last link in chain if the list is max length
    */
   if (dlink_list_length(&who->user->invited) >=
-      ConfigChannel.max_chans_per_user)
+      (unsigned int)ConfigChannel.max_chans_per_user)
   {
     del_invite(chptr, who);
   }
@@ -534,7 +534,7 @@ del_invite(struct Channel *chptr, struct Client *who)
  * NOTE: Returned string is usually a static buffer
  * (like in get_client_name)
  */
-char *
+const char *
 get_member_status(struct Membership *ms, int combine)
 {
   static char buffer[3];
@@ -554,7 +554,7 @@ get_member_status(struct Membership *ms, int combine)
     *p++ = '+';
   *p = '\0';
 
-  return buffer;
+  return (const char *)buffer;
 }
 
 /* is_banned()

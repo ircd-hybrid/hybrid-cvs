@@ -1,7 +1,7 @@
 /*
  * include/irc_res.h for referencing functions in src/irc_res.c
  *
- * $Id: irc_res.h,v 7.6 2003/05/18 23:29:22 michael Exp $
+ * $Id: irc_res.h,v 7.7 2003/06/04 00:49:18 joshk Exp $
  */
 
 #ifndef INCLUDED_irc_res_h
@@ -84,7 +84,7 @@ typedef struct
 
 extern int init_resolver(void);
 extern void restart_resolver(void);
-extern void add_local_domain(char *hname, int size);
+extern void add_local_domain(char *hname, size_t size);
 extern void timeout_resolver(void *notused);
 extern void delete_resolver_queries(const void *vptr);
 extern void report_dns_servers(struct Client *source_p);

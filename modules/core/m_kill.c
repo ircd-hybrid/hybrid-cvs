@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kill.c,v 1.77 2003/05/28 21:11:55 bill Exp $
+ *  $Id: m_kill.c,v 1.78 2003/06/04 00:49:22 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&kill_msgtab);
 }
 
-const char *_version = "$Revision: 1.77 $";
+const char *_version = "$Revision: 1.78 $";
 #endif
 
 /* mo_kill()
@@ -105,7 +105,7 @@ mo_kill(struct Client *client_p, struct Client *source_p,
       reason[KILLLEN] = '\0';
   }
   else
-    reason = "<No reason given>";
+    reason = no_reason;
 
   if ((target_p = find_client(user)) == NULL)
   {
@@ -200,7 +200,7 @@ ms_kill(struct Client *client_p, struct Client *source_p,
 
   if (EmptyString(parv[2]))
   {
-    reason = "<No reason given>";
+    reason = no_reason;
 
     /* hyb6 takes the nick of the killer from the path *sigh* --fl_ */
     path = source_p->name;
@@ -215,7 +215,7 @@ ms_kill(struct Client *client_p, struct Client *source_p,
       reason++;
     }
     else
-      reason = "<No reason given>";
+      reason = no_reason;
 
     path = parv[2];
   }
