@@ -1,3 +1,17 @@
+gregp       2002/12/29 16:42:08 EST	(20021229_0)
+
+  Modified files:
+    tools/rsa_respond    respond.c 
+  Log:
+  - added challenge.irc to contrib/, compliments of BlackJac@EFNet
+    script for EPIC (and apparently BitchX too) to support opering via /challenge
+  - cosmetic change in respond.c, don't append a \n to stuff we puts()
+  
+  Revision  Changes    Path
+  1.8       +1 -1      ircd-hybrid-7/tools/rsa_respond/respond.c
+
+
+
 bill        2002/12/28 02:02:39 EST	(20021228_0)
 
   Modified files:
@@ -33730,4 +33744,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4149 2002/12/28 07:02:42 bill Exp $
+$Id: ChangeLog,v 7.4150 2002/12/29 21:42:10 gregp Exp $
