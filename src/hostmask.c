@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- * $Id: hostmask.c,v 7.47 2001/08/20 23:30:51 db Exp $ 
+ * $Id: hostmask.c,v 7.48 2001/08/20 23:32:50 db Exp $ 
  */
  
 #include <stdlib.h>
@@ -802,7 +802,7 @@ report_Klines(struct Client *client_p, int k_or_K, int mask)
       if (arec->type == CONF_KILL)
 	{
 	  if ((k_or_K && !((aconf=arec->aconf)->flags & CONF_FLAGS_TEMPORARY))
-	      || (!temp && ((aconf=arec->aconf)->flags & CONF_FLAGS_TEMPORARY)))
+	      || (!k_or_K && ((aconf=arec->aconf)->flags & CONF_FLAGS_TEMPORARY)))
 	    continue;
 	  get_printable_conf(aconf, &name, &host, &pass, &user, &port,
 			     &classname);
