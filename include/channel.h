@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.95 2001/12/13 20:09:56 leeh Exp $
+ * $Id: channel.h,v 7.96 2001/12/16 22:25:00 db Exp $
  */
 
 #include <sys/types.h>        /* time_t */
@@ -160,12 +160,12 @@ extern void check_splitmode();
 
 #define IsChannelName(name) ((name) && (*(name) == '#' || *(name) == '&'))
 
-typedef struct Ban      /* also used for exceptions -orabidoo */
+struct Ban          /* also used for exceptions -orabidoo */
 {
   char *banstr;
   char *who;
   time_t when;
-} aBan;
+};
 
 #define CLEANUP_CHANNELS_TIME (30*60)
 #define MAX_VCHAN_TIME (60*60)
