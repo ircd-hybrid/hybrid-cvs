@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.403 2003/08/05 16:23:14 michael Exp $
+ *  $Id: client.c,v 7.404 2003/08/11 12:32:18 stu Exp $
  */
 
 #include "stdinc.h"
@@ -1230,7 +1230,7 @@ exit_client(
 
     if (source_p->localClient->dns_query != NULL)
     {
-      delete_resolver_queries(source_p->localClient->dns_query->ptr);
+      delete_resolver_queries(source_p->localClient->dns_query);
       source_p->localClient->dns_query = NULL;
     }
 
