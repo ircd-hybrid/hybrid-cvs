@@ -2,7 +2,7 @@
 #
 # Makefile.in for ircd/modules
 #
-# $Id: Makefile,v 1.6 2000/11/11 14:52:53 ejb Exp $
+# $Id: Makefile,v 1.7 2000/11/14 06:32:30 db Exp $
 #
 CC		= gcc
 RM		= /bin/rm
@@ -46,16 +46,15 @@ SRCS =                          \
   m_ltrace.c \
   m_lusers.c \
   m_mode.c \
+  m_message.c \
   m_names.c \
   m_nick.c \
-  m_notice.c \
   m_oper.c \
   m_operwall.c \
   m_part.c \
   m_pass.c \
   m_ping.c \
   m_pong.c \
-  m_privmsg.c \
   m_quit.c \
   m_rehash.c \
   m_restart.c \
