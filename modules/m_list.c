@@ -3,7 +3,7 @@
  *   Copyright (C) 1990 Jarkko Oikarinen and
  *                      University of Oulu, Co Center
  *
- * $Id: m_list.c,v 1.2 2000/11/11 13:05:21 db Exp $ 
+ * $Id: m_list.c,v 1.3 2000/11/11 14:37:34 db Exp $ 
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -109,6 +109,20 @@ int     mo_list(struct Client *cptr,
                char *parv[])
 {
   /* Opers don't get paced */
+
+  /* If its a LazyLinks connection, let uplink handle the list
+   * even for opers!
+   */
+
+  if( serv_cptr_list && IsCapable( serv_cptr_list, CAP_LL) )
+    {
+      if(parc < 2)
+	sendto_one( serv_cptr_list, ":%s LIST", sptr->name );
+      else
+	sendto_one( serv_cptr_list, ":%s LIST %s", sptr->name, parv[1] );
+      return 0;
+    }
+
   /* If no arg, do all channels *whee*, else just one channel */
   if (parc < 2 || BadPtr(parv[1]))
     {
