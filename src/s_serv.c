@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.101 2001/01/02 00:32:19 davidt Exp $
+ *   $Id: s_serv.c,v 7.102 2001/01/02 03:09:43 davidt Exp $
  */
 #include "tools.h"
 #include "s_serv.h"
@@ -1318,7 +1318,6 @@ void show_servers(struct Client *cptr)
 {
   struct Client *cptr2;
   int j=0;                /* used to count servers */
-  dlink_node *ptr;
 
   for(ptr = serv_list.head; ptr; ptr = ptr->next)
     {
@@ -1542,7 +1541,6 @@ serv_connect_callback(int fd, int status, void *data)
     struct Client *cptr = data;
     struct ConfItem *c_conf;
     struct ConfItem *n_conf;
-    dlink_node *m;
 
     /* First, make sure its a real client! */
     assert(cptr != NULL);
