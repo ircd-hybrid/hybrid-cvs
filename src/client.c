@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.79 2000/12/18 22:55:42 db Exp $
+ *  $Id: client.c,v 7.80 2000/12/20 02:39:21 db Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -1082,7 +1082,9 @@ static void exit_one_client(struct Client *cptr, struct
 	    {
 	      next_lp = lp->next;
 	      del_invite(lp->data, sptr);
+#if 0
 	      free_dlink_node(lp);
+#endif
 	    }
 
 	  /* Clean up allow lists */

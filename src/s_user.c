@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.71 2000/12/19 19:47:31 db Exp $
+ *  $Id: s_user.c,v 7.72 2000/12/20 02:39:23 db Exp $
  */
 #include "tools.h"
 #include "s_user.h"
@@ -512,13 +512,14 @@ int register_user(struct Client *cptr, struct Client *sptr,
    * Its not going to cost much more bandwidth to simply let new
    * nicks just ride on through.
    */
-  sendto_ll_serv_butone(cptr, sptr,
-			":%s NICK %s %d %lu %s %s %s %s :%s",
-			me.name,
-			nick, sptr->hopcount+1, sptr->tsinfo, ubuf,
-			sptr->username, sptr->host, user->server,
-			sptr->info);
+  sendto_ll_serv_butone(cptr,sptr, 1,
+		     ":%s NICK %s %d %lu %s %s %s %s :%s",
+		     me.name,
+		     nick, sptr->hopcount+1, sptr->tsinfo, ubuf,
+		     sptr->username, sptr->host, user->server,
+		     sptr->info);
 
+  
   if (ubuf[1])
     send_umode_out(cptr, sptr, 0);
   return 0;

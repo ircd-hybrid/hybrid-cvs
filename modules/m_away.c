@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_away.c,v 1.8 2000/12/19 19:47:24 db Exp $
+ *   $Id: m_away.c,v 1.9 2000/12/20 02:39:20 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -94,7 +94,7 @@ int     m_away(struct Client *cptr,
       if (away)
         {
 	  /* we now send this only if they were away before --is */
-	  sendto_serv_butone(cptr, ":%s AWAY", parv[0]);
+	  sendto_ll_serv_butone(cptr, sptr, 0, ":%s AWAY", parv[0]);
 	  
           MyFree(away);
           sptr->user->away = NULL;
@@ -112,7 +112,7 @@ int     m_away(struct Client *cptr,
 
   /* we now send this only if they weren't away already --is */
   if (!away)
-    sendto_serv_butone(cptr, ":%s AWAY :%s", parv[0], awy2); 
+    sendto_ll_serv_butone(cptr, sptr, 0, ":%s AWAY :%s", parv[0], awy2); 
 
   if (away)
     MyFree(away);

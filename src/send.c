@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.83 2000/12/19 19:47:31 db Exp $
+ *   $Id: send.c,v 7.84 2000/12/20 02:39:24 db Exp $
  */
 #include "tools.h"
 #include "send.h"
@@ -541,7 +541,7 @@ sendto_serv_butone(struct Client *one, const char *pattern, ...)
  *		  client being unknown to leaf, as in lazylink...
  */
 void
-sendto_ll_serv_butone(struct Client *one, struct Client *sptr,
+sendto_ll_serv_butone(struct Client *one, struct Client *sptr, int add,
 		      const char *pattern, ...)
 {
   int len;
@@ -564,9 +564,15 @@ sendto_ll_serv_butone(struct Client *one, struct Client *sptr,
 	{
 	  if( ( sptr->lazyLinkClientExists &
 		cptr->localClient->serverMask) == 0)
-	    sptr->lazyLinkClientExists |= cptr->localClient->serverMask;
-
-	  send_message(cptr, (char *)sendbuf, len);
+	    {
+	      if(add)
+		{
+		  add_lazylinkclient(cptr,sptr);
+		  send_message(cptr, (char *)sendbuf, len);
+		}
+	    }
+	  else
+	    send_message(cptr, (char *)sendbuf, len);
 	}
       else
 	send_message(cptr, (char *)sendbuf, len);
@@ -839,7 +845,7 @@ sendto_ll_channel_remote(struct Channel *chptr,
 		  == 0)
 		{
 		  sendnick_TS(cptr,sptr);
-		  sptr->lazyLinkClientExists |= cptr->localClient->serverMask;
+		  add_lazylinkclient(cptr,sptr);
 		}
 	    }
 	}

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 1.29 2000/12/19 19:47:24 db Exp $
+ *   $Id: m_join.c,v 1.30 2000/12/20 02:39:20 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -461,7 +461,7 @@ void do_join_0(struct Client *cptr, struct Client *sptr)
   struct Channel *chptr=NULL;
   dlink_node   *lp;
 
-  sendto_ll_serv_butone(cptr, sptr, ":%s JOIN 0", sptr->name);
+  sendto_ll_serv_butone(cptr, sptr, 0, ":%s JOIN 0", sptr->name);
 
   while ((lp = sptr->user->channel.head))
     {

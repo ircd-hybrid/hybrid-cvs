@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: ircdauth.c,v 7.22 2000/12/19 21:11:09 cosine Exp $
+ *   $Id: ircdauth.c,v 7.23 2000/12/20 02:39:22 db Exp $
  */
 
 #include <stdio.h>
@@ -199,7 +199,10 @@ CompleteIAuthConnection(int fd, void *notused)
     return;
 	}
 
+	/* XXX THIS IS A STATIC */
+#if 0
   comm_connect_callback(fd, COMM_OK);
+#endif
 
   comm_setselect(fd, FDLIST_SERVER, COMM_SELECT_READ,
                  ParseIAuth, NULL, 0);
