@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_llnick.c,v 1.4 2001/01/04 22:35:10 davidt Exp $
+ * $Id: m_llnick.c,v 1.5 2001/01/05 23:53:33 davidt Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -101,13 +101,14 @@ static int  ms_llnick(struct Client *cptr,
 
   if (new)
   {
+    nick_old++; /* skip '!' */
     /* New user -- find them */
     for( ptr = unknown_list.head; ptr; ptr = ptr->next )
     {
-      if( !strcmp(nick_old, ((struct Client *)ptr->data)->name) )
+      if( !strcmp(nick_old, ((struct Client *)ptr->data)->llname) )
       {
         acptr = ptr->data;
-        *acptr->name = '\0'; /* unset their peudo-nick */
+        *acptr->llname = '\0'; /* unset their temp-nick */
         break;
       }
     }

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.102 2001/01/05 15:27:18 toot Exp $
+ *  $Id: client.c,v 7.103 2001/01/05 23:53:34 davidt Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -1749,6 +1749,9 @@ set_initial_nick(struct Client *cptr, struct Client *sptr,
   /* nick better be the right length! -- adrian */
   strncat(nickbuf, nick, NICKLEN);
   fd_note(cptr->fd, nickbuf);
+
+  /* They have the nick they want now.. */
+  *cptr->llname = '\0';
 
   return 0;
 }

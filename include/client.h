@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.75 2001/01/05 23:45:54 ejb Exp $
+ * $Id: client.h,v 7.76 2001/01/05 23:53:28 davidt Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -144,6 +144,11 @@ struct Client
    * client->name is the unique name for a client nick or host
    */
   char              name[HOSTLEN + 1]; 
+  /*
+   * client->llname is used to store the clients requested nick
+   * temporarily for new connections.
+   */
+  char              llname[NICKLEN + 1];
   /* 
    * client->username is the username from ident or the USER message, 
    * If the client is idented the USER message is ignored, otherwise 

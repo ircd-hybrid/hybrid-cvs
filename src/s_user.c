@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.111 2001/01/05 23:46:01 ejb Exp $
+ *  $Id: s_user.c,v 7.112 2001/01/05 23:53:34 davidt Exp $
  */
 #include "tools.h"
 #include "s_user.h"
@@ -809,7 +809,8 @@ int do_local_user(char* nick, struct Client* cptr, struct Client* sptr,
 
   strncpy_irc(sptr->info, realname, REALLEN);
   
-  if (sptr->name[0]) /* NICK already received, now I have USER... */
+  if (sptr->name[0])
+    /* NICK already received, now I have USER... */
     return register_local_user(cptr, sptr, sptr->name, username);
   else
     {
