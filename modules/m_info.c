@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.c,v 1.48 2001/12/16 11:04:00 leeh Exp $
+ * $Id: m_info.c,v 1.49 2001/12/20 18:22:43 leeh Exp $
  */
 
 #include <time.h>
@@ -409,7 +409,7 @@ static void m_info(struct Client *client_p, struct Client *source_p,
     last_used = CurrentTime;
   }
 
-  if (!ConfigServerHide.disable_remote || IsOper(source_p))
+  if (!ConfigServerHide.disable_remote)
   {
     if (hunt_server(client_p,source_p,
         ":%s INFO :%s", 1, parc, parv) != HUNTED_ISME)
