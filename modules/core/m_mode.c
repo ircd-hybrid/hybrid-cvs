@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_mode.c,v 1.54 2002/07/20 15:51:50 leeh Exp $
+ *  $Id: m_mode.c,v 1.55 2002/07/21 16:17:45 leeh Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
 }
 
 
-const char *_version = "$Revision: 1.54 $";
+const char *_version = "$Revision: 1.55 $";
 #endif
 /*
  * m_mode - MODE command handler
@@ -212,7 +212,7 @@ static void m_mode(struct Client *client_p, struct Client *source_p,
     /* Finish the flood grace period... */
     if(MyClient(source_p) && !IsFloodDone(source_p))
     {
-      if((parc == n) && (parv[n-1][0] == 'b') && (parv[n-1][0] == '\0'))
+      if((parc == n) && (parv[n-1][0] == 'b') && (parv[n-1][1] == '\0'))
         ;
       else
         flood_endgrace(source_p);
