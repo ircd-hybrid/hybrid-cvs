@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: listener.c,v 7.10 2000/11/03 22:17:41 adrian Exp $
+ *  $Id: listener.c,v 7.11 2000/11/04 12:17:51 adrian Exp $
  */
 #include "listener.h"
 #include "client.h"
@@ -354,7 +354,8 @@ static void accept_connection(int pfd, void *data)
    * be accepted until some old is closed first.
    */
   do {
-    if (-1 == (fd = accept(listener->fd, (struct sockaddr*) &addr, &addrlen))) {
+    fd = comm_accept(listener->fd, (struct sockaddr*) &addr, &addrlen);
+    if (fd < 0) {
       if (EAGAIN == errno)
          break;
       /*
@@ -367,7 +368,6 @@ static void accept_connection(int pfd, void *data)
       }
       break;
     }
-    fd_open(fd, FD_SOCKET, "New incoming connection");
     /*
      * check for connection limit
      */
