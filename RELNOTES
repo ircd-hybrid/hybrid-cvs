@@ -3,7 +3,7 @@ o) rationalised the exit_client() code, thus fixing several cores/hangs
 o) fixed anonop handling
 o) fixed throttling code
 o) squit uplink in non HUB server cases 
-o) fixed m_invite code to send invite in +p mode
+o) fixed m_invite code invite and compatibility mode in +p
 o) fixed ip limit code (related to throttling)
 o) allow non opers to privmsg username@server. "opers" is reserved.
 o) fakename in aconf could leak memory fixed.
@@ -139,4 +139,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.60 2003/01/17 04:19:27 db Exp $
+$Id: RELNOTES,v 1.61 2003/01/17 13:06:19 db Exp $
