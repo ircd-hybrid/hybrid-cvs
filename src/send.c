@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.48 2000/11/26 19:34:36 adrian Exp $
+ *   $Id: send.c,v 7.49 2000/11/28 06:15:16 db Exp $
  */
 #include "send.h"
 #include "channel.h"
@@ -438,41 +438,6 @@ sendto_channel_type(struct Client *one, struct Client *from, struct Channel *chp
       } /* for (lp = chptr->members; lp; lp = lp->next) */
 
 } /* sendto_channel_type() */
-
-
-/* 
-** sendto_channel_type_notice()  - sends a message to all users on a channel who meet the
-** type criteria (chanop/voice/whatever).
-** message is also sent back to the sender if they have those privs.
-** used in knock/invite/privmsg@+/notice@+
-** -good
-*/
-void
-sendto_channel_type_notice(struct Client *from, struct Channel *chptr,
-			   int type, char *message)
-
-{
-        register struct SLink *lp;
-        register struct Client *acptr;
-        register int i;
-
-        for (lp = chptr->members; lp; lp = lp->next)
-        {
-                if (!(lp->flags & type))
-                        continue;
-
-                acptr = lp->value.cptr;
-
-                i = acptr->from->fd;
-                if (IsRegisteredUser(acptr))
-                {
-                        sendto_prefix_one(acptr, from, ":%s NOTICE %s :%s",
-                                from->name, 
-                                acptr->name, message);
-                }
-        }
-} /* sendto_channel_type_notice() */
-
 
 /*
  * sendto_serv_butone

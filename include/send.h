@@ -2,7 +2,7 @@
  * send.h
  * Copyright (C) 1999 Patrick Alken
  *
- * $Id: send.h,v 7.9 2000/11/26 18:37:05 bill Exp $
+ * $Id: send.h,v 7.10 2000/11/28 06:15:11 db Exp $
  */
 
 #ifndef INCLUDED_send_h
@@ -23,8 +23,6 @@ struct DBuf;
 extern void send_queued_write(int fd, void *data);
 
 extern  void send_operwall(struct Client *,char *,...);
-extern  void sendto_channel_type_notice(struct Client *, 
-                                        struct Channel *, int, char *);
 extern  int sendto_slaves(struct Client *, char *, char *, int, char **);
 
 extern  void sendto_one(struct Client *, const char *, ...);
