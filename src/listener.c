@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: listener.c,v 7.40 2001/02/26 05:59:57 androsyn Exp $
+ *  $Id: listener.c,v 7.41 2001/02/26 06:53:54 androsyn Exp $
  */
 #include "config.h"
 #include "listener.h"
@@ -150,6 +150,8 @@ static void listener_dns_callback(void *ptr, adns_answer *reply)
   	 	listener->name = listener->vhost;
         }	                                 
   }
+  BlockHeapFree(dns_blk, listener->dns_query);
+  listener->dns_query = NULL;
 }  
 
 static int inetport(struct Listener* listener)
@@ -228,10 +230,10 @@ static int inetport(struct Listener* listener)
 #else
   if (INADDR_ANY != listener->addr.sins.sin.s_addr) {
 #endif
-    struct DNSQuery *query = MyMalloc(sizeof(struct DNSQuery));	
-    query->callback = listener_dns_callback;
-    query->ptr = listener;
-    adns_getaddr(&listener->addr, DEF_FAM, query);
+    listener->dns_query = BlockHeapAlloc(dns_blk);	
+    listener->dns_query->callback = listener_dns_callback;
+    listener->dns_query->ptr = listener;
+    adns_getaddr(&listener->addr, DEF_FAM, listener->dns_query);
   }
   return 1;
 }

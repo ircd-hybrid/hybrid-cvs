@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.c,v 7.58 2001/02/26 05:59:58 androsyn Exp $
+ *   $Id: s_auth.c,v 7.59 2001/02/26 06:53:54 androsyn Exp $
  *
  * Changes:
  *   July 6, 1999 - Rewrote most of the code here. When a client connects
@@ -232,8 +232,8 @@ static void auth_dns_callback(void* vptr, adns_answer* reply)
     }
 
   MyFree(reply);
-  MyFree(auth->query);
-  auth->query = NULL;
+  BlockHeapFree(dns_blk, auth->client->localClient->dns_query);
+  auth->client->localClient->dns_query = NULL;
   if (!IsDoingAuth(auth))
     {
       release_auth_client(auth->client);
@@ -425,7 +425,7 @@ void start_auth(struct Client* client)
 	/* IAuthQuery(client); */
 #endif /* 0 */
 
-  client->localClient->dns_query = MyMalloc(sizeof(struct DNSQuery));
+  client->localClient->dns_query = BlockHeapAlloc(dns_blk);
   client->localClient->dns_query->ptr = auth;
   client->localClient->dns_query->callback = auth_dns_callback;
   sendheader(client, REPORT_DO_DNS);

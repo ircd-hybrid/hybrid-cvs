@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.140 2001/02/23 23:36:09 a1kmm Exp $
+ *  $Id: client.c,v 7.141 2001/02/26 06:53:53 androsyn Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -1006,7 +1006,7 @@ const char* get_client_host(struct Client* client)
 
   if (!MyConnect(client))
     return client->name;
-  if (client->localClient->dns_query.answer.status != adns_s_ok)
+  if (client->localClient->dns_query->answer.status != adns_s_ok)
     return get_client_name(client, HIDE_IP);
   else
     {
@@ -1323,7 +1323,7 @@ const char* comment         /* Reason for the exit */
       if (sptr->flags & FLAGS_IPHASH)
         remove_one_ip(&sptr->localClient->ip);
       
-      delete_adns_queries(&sptr->localClient->dns_query);
+      delete_adns_queries(sptr->localClient->dns_query);
       delete_identd_queries(sptr);
 
       client_flush_input(sptr);

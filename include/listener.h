@@ -16,7 +16,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: listener.h,v 7.6 2001/02/25 19:31:08 jdc Exp $
+ * $Id: listener.h,v 7.7 2001/02/26 06:53:46 androsyn Exp $
  */
 #ifndef INCLUDED_listener_h
 #define INCLUDED_listener_h
@@ -48,6 +48,7 @@ struct Listener {
   struct in_addr    addr;
 */
   struct irc_inaddr addr;              /* virtual address or INADDR_ANY */
+  struct DNSQuery   *dns_query;
   char             vhost[HOSTLEN + 1]; /* virtual name of listener */
 };
 
