@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.27 2000/09/29 17:16:58 ejb Exp $
+ *  $Id: client.c,v 7.28 2000/10/24 18:47:14 adrian Exp $
  */
 #include "client.h"
 #include "class.h"
@@ -193,7 +193,7 @@ void _free_client(struct Client* cptr)
 
   if (cptr->local_flag) {
     if (-1 < cptr->fd)
-      close(cptr->fd);
+      fd_close(cptr->fd);
 
     if (cptr->dns_reply)
       --cptr->dns_reply->ref_count;
@@ -1516,7 +1516,7 @@ const char* comment         /* Reason for the exit */
               {
                 if (logfile == -1)
                   {
-                    logfile = open(FNAME_USERLOG, O_WRONLY|O_APPEND);
+                    logfile = file_open(FNAME_USERLOG, O_WRONLY|O_APPEND, 0644);
                   }
                 ircsprintf(linebuf,
                            "%s (%3d:%02d:%02d): %s!%s@%s %d/%d\n",
@@ -1533,9 +1533,11 @@ const char* comment         /* Reason for the exit */
                  */
                 if (CurrentTime - lasttime > 10)
                   {
-                    close(logfile);
-                    logfile = -1;
-                    lasttime = CurrentTime;
+                    if (logfile != -1) {
+                        file_close(logfile);
+                        logfile = -1;
+                        lasttime = CurrentTime;
+                    }
                   }
               }
           }

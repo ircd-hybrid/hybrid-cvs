@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 7.8 2000/10/21 07:15:25 lusky Exp $
+ *  $Id: m_stats.c,v 7.9 2000/10/24 18:47:19 adrian Exp $
  */
 #include "handlers.h"  /* m_pass prototype */
 #include "class.h"       /* report_classes */
@@ -37,6 +37,7 @@
 #include "numeric.h"     /* ERR_xxx */
 #include "scache.h"      /* list_scache */
 #include "send.h"        /* sendto_one */
+#include "fdlist.h"      /* PF and friends */
 #include "s_bsd.h"       /* highest_fd */
 #include "s_conf.h"      /* ConfItem, report_configured_links */
 #include "s_debug.h"     /* send_usage */

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_gline.c,v 7.7 2000/09/29 17:16:59 ejb Exp $
+ *  $Id: m_gline.c,v 7.8 2000/10/24 18:47:18 adrian Exp $
  */
 #include "m_gline.h"
 #include "channel.h"
@@ -33,6 +33,8 @@
 #include "m_kline.h"
 #include "mtrie_conf.h"
 #include "numeric.h"
+#include "fdlist.h"
+#include "s_bsd.h"
 #include "s_conf.h"
 #include "s_misc.h"
 #include "scache.h"
@@ -618,7 +620,7 @@ static void log_gline_request(
 
   ircsprintf(filenamebuf, "%s.%s", 
              ConfigFileEntry.glinefile, small_file_date((time_t)0));
-  if ((out = open(filenamebuf, O_RDWR|O_APPEND|O_CREAT,0644))==-1)
+  if ((out = file_open(filenamebuf, O_RDWR|O_APPEND|O_CREAT,0644))==-1)
     {
       sendto_realops("*** Problem opening %s",filenamebuf);
       return;
@@ -637,7 +639,7 @@ static void log_gline_request(
     {
       sendto_realops("*** Problem writing to %s",filenamebuf);
     }
-  close(out);
+  file_close(out);
 }
 
 /*
@@ -663,7 +665,7 @@ static void log_gline(struct Client *sptr,
 
   ircsprintf(filenamebuf, "%s.%s", 
                 ConfigFileEntry.glinefile, small_file_date((time_t) 0));
-  if ((out = open(filenamebuf, O_RDWR|O_APPEND|O_CREAT,0644))==-1)
+  if ((out = file_open(filenamebuf, O_RDWR|O_APPEND|O_CREAT,0644))==-1)
     {
       return;
     }
@@ -716,7 +718,7 @@ static void log_gline(struct Client *sptr,
   if (safe_write(sptr,filenamebuf,out,buffer))
     return;
 
-  close(out);
+  file_close(out);
 }
 
 /*

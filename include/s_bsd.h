@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_bsd.h,v 7.5 2000/10/23 12:38:00 adrian Exp $
+ *   $Id: s_bsd.h,v 7.6 2000/10/24 18:47:11 adrian Exp $
  *
  */
 #ifndef INCLUDED_s_bsd_h
@@ -27,6 +27,10 @@
 #endif
 
 #define READBUF_SIZE    16384   /* used in s_bsd *AND* s_zip.c ! */
+
+/* Type of IO */
+#define	COMM_SELECT_READ		1
+#define	COMM_SELECT_WRITE		2
 
 struct Client;
 struct ConfItem;
@@ -46,8 +50,6 @@ extern void  close_all_connections(void);
 extern int   connect_server(struct ConfItem*, struct Client*, 
                             struct DNSReply*);
 extern void  get_my_name(struct Client *, char *, int);
-extern void  init_netio(void);
-extern int   read_message (time_t, unsigned char);
 extern void  report_error(const char*, const char*, int);
 extern int   set_non_blocking(int);
 extern int   set_sock_buffers(int, int);
@@ -59,6 +61,14 @@ extern int   read_packet(struct Client*);
 extern void  error_exit_client(struct Client*, int);
 extern int   get_sockerr(int);
 extern int   parse_client_queued(struct Client*);
+extern int   ignoreErrno(int ierrno);
+
+/* These must be defined in the network IO loop code of your choice */
+extern void  comm_setselect(int fd, unsigned int type, PF *handler, 
+                 void *client_data, time_t timeout);
+extern void  init_netio(void);
+extern int   read_message (time_t, unsigned char);
+extern int   comm_select(time_t);
 
 #endif /* INCLUDED_s_bsd_h */
 

@@ -16,7 +16,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: fileio.h,v 7.2 2000/01/24 02:47:28 db Exp $
+ * $Id: fileio.h,v 7.3 2000/10/24 18:47:11 adrian Exp $
  */
 #ifndef INCLUDED_fileio_h
 #define INCLUDED_fileio_h
@@ -73,5 +73,10 @@ extern int     fbputs(const char* str, FBFILE* fb);
  * return the status of the file associated with fb, see fstat(3)
  */
 extern int     fbstat(struct stat* sb, FBFILE* fb);
+
+
+/* file_open / file_close -- adrian */
+extern int     file_open(const char *filename, int mode, int fmode);
+extern void    file_close(int fd);
 
 #endif /* INCLUDED_fileio_h */

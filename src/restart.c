@@ -1,10 +1,11 @@
 /*
  * restart.c
  *
- * $Id: restart.c,v 7.2 1999/12/30 20:36:07 db Exp $
+ * $Id: restart.c,v 7.3 2000/10/24 18:47:21 adrian Exp $
  */
 #include "restart.h"
 #include "common.h"
+#include "fdlist.h"
 #include "ircd.h"
 #include "send.h"
 #include "s_debug.h"
@@ -39,7 +40,7 @@ void server_reboot(void)
   flush_connections(0);
 
   for (i = 0; i < MAXCONNECTIONS; ++i)
-    close(i);
+    fd_close(i);
   execv(SPATH, myargv);
 
   exit(-1);

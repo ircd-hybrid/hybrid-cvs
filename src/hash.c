@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: hash.c,v 7.5 2000/01/01 14:34:01 db Exp $
+ *  $Id: hash.c,v 7.6 2000/10/24 18:47:16 adrian Exp $
  */
 #include "s_conf.h"
 #include "channel.h"
@@ -28,6 +28,7 @@
 #include "numeric.h"
 #include "send.h"
 #include "s_debug.h"
+#include "fdlist.h"
 
 #include <assert.h>
 #include <fcntl.h>     /* O_RDWR ... */
@@ -478,7 +479,7 @@ int m_hash(struct Client *cptr, struct Client *sptr,int parc,char *parv[])
           (void)sprintf(hash_log_file,"%s/hash/iphash.%s",
                         DPATH,timebuffer);
 
-          if ((out = open(hash_log_file, O_RDWR | O_APPEND | O_CREAT,0664))==-1)
+          if ((out = file_open(hash_log_file, O_RDWR | O_APPEND | O_CREAT,0664))==-1)
               sendto_one(sptr, ":%s NOTICE %s :Problem opening %s ",
                          me.name, parv[0], hash_log_file);
           else
@@ -507,7 +508,7 @@ int m_hash(struct Client *cptr, struct Client *sptr,int parc,char *parv[])
           sprintf(hash_log_file,"%s/hash/%cdump.%s",
                         DPATH,ch,timebuffer);
           showlist = 1;
-          if ((out = open(hash_log_file, O_RDWR|O_APPEND|O_CREAT,0664))==-1)
+          if ((out = file_open(hash_log_file, O_RDWR|O_APPEND|O_CREAT,0664))==-1)
               sendto_one(sptr, ":%s NOTICE %s :Problem opening %s ",
                          me.name, parv[0], hash_log_file);
           else
@@ -571,7 +572,7 @@ int m_hash(struct Client *cptr, struct Client *sptr,int parc,char *parv[])
         }
     }
   if(showlist && (out >= 0))
-     (void)close(out);
+     file_close(out);
 
   switch((int)ch)
     {

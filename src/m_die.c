@@ -20,13 +20,14 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_die.c,v 7.3 2000/09/29 17:16:59 ejb Exp $
+ *   $Id: m_die.c,v 7.4 2000/10/24 18:47:17 adrian Exp $
  */
 #include "handlers.h"
 #include "client.h"
 #include "ircd.h"
 #include "irc_string.h"
 #include "numeric.h"
+#include "fdlist.h"
 #include "s_bsd.h"
 #include "s_log.h"
 #include "send.h"

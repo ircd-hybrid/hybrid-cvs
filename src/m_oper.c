@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_oper.c,v 7.12 2000/09/29 17:17:02 ejb Exp $
+ *   $Id: m_oper.c,v 7.13 2000/10/24 18:47:18 adrian Exp $
  */
 
 #include "handlers.h"
@@ -29,6 +29,8 @@
 #include "irc_string.h"
 #include "ircd.h"
 #include "numeric.h"
+#include "fdlist.h"
+#include "s_bsd.h"
 #include "s_conf.h"
 #include "s_log.h"
 #include "s_user.h"
@@ -263,7 +265,7 @@ int m_oper(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
            */
 
           if (IsPerson(sptr) &&
-              (logfile = open(FNAME_OPERLOG, O_WRONLY|O_APPEND)) != -1)
+              (logfile = file_open(FNAME_OPERLOG, O_WRONLY|O_APPEND, 0644)) != -1)
             {
               /* (void)alarm(0); */
               ircsprintf(buf, "%s OPER (%s) by (%s!%s@%s)\n",
@@ -271,7 +273,7 @@ int m_oper(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
                                parv[0], sptr->username,
                                sptr->host);
               write(logfile, buf, strlen(buf));
-              close(logfile);
+              file_close(logfile);
             }
         }
 #endif
@@ -460,7 +462,7 @@ int mo_oper(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
            */
 
           if (IsPerson(sptr) &&
-              (logfile = open(FNAME_OPERLOG, O_WRONLY|O_APPEND)) != -1)
+              (logfile = file_open(FNAME_OPERLOG, O_WRONLY|O_APPEND, 0644)) != -1)
             {
               /* (void)alarm(0); */
               ircsprintf(buf, "%s OPER (%s) by (%s!%s@%s)\n",
@@ -468,7 +470,7 @@ int mo_oper(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
                                parv[0], sptr->username,
                                sptr->host);
               write(logfile, buf, strlen(buf));
-              close(logfile);
+              file_close(logfile);
             }
         }
 #endif
@@ -657,7 +659,7 @@ int ms_oper(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
            */
 
           if (IsPerson(sptr) &&
-              (logfile = open(FNAME_OPERLOG, O_WRONLY|O_APPEND)) != -1)
+              (logfile = file_open(FNAME_OPERLOG, O_WRONLY|O_APPEND, 0644)) != -1)
             {
               /* (void)alarm(0); */
               ircsprintf(buf, "%s OPER (%s) by (%s!%s@%s)\n",
@@ -665,7 +667,7 @@ int ms_oper(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
                                parv[0], sptr->username,
                                sptr->host);
               write(logfile, buf, strlen(buf));
-              close(logfile);
+              file_close(logfile);
             }
         }
 #endif

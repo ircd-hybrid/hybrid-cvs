@@ -20,9 +20,10 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_log.c,v 7.6 2000/09/29 17:17:07 ejb Exp $
+ *   $Id: s_log.c,v 7.7 2000/10/24 18:47:23 adrian Exp $
  */
 #include "s_log.h"
+#include "fileio.h"
 #include "irc_string.h"
 #include "ircd.h"
 #include "s_misc.h"
@@ -73,7 +74,7 @@ static const char *logLevelToString[] =
 #if defined(USE_LOGFILE) 
 static int open_log(const char* filename)
 {
-  logFile = open(filename, 
+  logFile = file_open(filename, 
                  O_WRONLY | O_APPEND | O_CREAT | O_NONBLOCK, 0644);
   if (-1 == logFile) {
     syslog(LOG_ERR, "Unable to open log file: %s: %s",
@@ -88,7 +89,7 @@ void close_log(void)
 {
 #if defined(USE_LOGFILE) 
   if (-1 < logFile) {
-    close(logFile);
+    file_close(logFile);
     logFile = -1;
   }
 #endif

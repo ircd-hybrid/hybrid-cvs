@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_select.c,v 7.2 2000/10/23 18:44:59 db Exp $
+ *  $Id: s_bsd_select.c,v 7.3 2000/10/24 18:47:22 adrian Exp $
  */
 #include "s_bsd.h"
 #include "class.h"
@@ -105,6 +105,10 @@ void init_netio(void)
     }
   printf("Value of FD_SETSIZE is %d\n", FD_SETSIZE);
 
+  printf("AIEE! This code needs to be converted to use the new-style net " \
+         "IO. Go grab adrian.\n");
+  exit(59);
+
   read_set  = &readSet;
   write_set = &writeSet;
   init_resolver();
@@ -165,7 +169,7 @@ int read_message(time_t delay, unsigned char mask)        /* mika */
       }
       for (i = 0; i <= highest_fd; i++)
         {
-          if (!(GlobalFDList[i] & mask) || !(cptr = local[i]))
+          if (!(fd_table[i].mask & mask) || !(cptr = local[i]))
             continue;
 
           /*
@@ -282,7 +286,7 @@ int read_message(time_t delay, unsigned char mask)        /* mika */
 #endif
 
   for (i = 0; i <= highest_fd; i++) {
-    if (!(GlobalFDList[i] & mask) || !(cptr = local[i]))
+    if (!(fd_table[i].mask & mask) || !(cptr = local[i]))
       continue;
 
     /*

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: ircdauth.c,v 7.7 2000/03/31 02:38:29 db Exp $
+ *   $Id: ircdauth.c,v 7.8 2000/10/24 18:47:16 adrian Exp $
  */
 
 #include <stdio.h>
@@ -37,6 +37,7 @@
 #include "class.h"
 #include "client.h"
 #include "common.h"
+#include "fdlist.h"
 #include "irc_string.h"
 #include "ircd_defs.h"
 #include "ircd.h"
@@ -104,13 +105,14 @@ ConnectToIAuth()
 		iAuth.socket = NOSOCK;
 		return(NOSOCK);
 	}
+        fd_open(iAuth.socket, FD_SOCKET, "iAuth socket");
 
 	if ((hostptr = gethostbyname(iAuth.hostname)) == NULL)
 	{
 		log(L_ERROR,
 			"Unable to connect to IAuth server: Unknown host");
 
-		close(iAuth.socket);
+		fd_close(iAuth.socket);
 		iAuth.socket = NOSOCK;
 		return(NOSOCK);
 	}
@@ -127,7 +129,7 @@ ConnectToIAuth()
 	{
 		log(L_ERROR,
 			"ConnectToIAuth(): set_non_blocking() failed");
-		close(iAuth.socket);
+		fd_close(iAuth.socket);
 		iAuth.socket = NOSOCK;
 		return (NOSOCK);
 	}
@@ -139,7 +141,7 @@ ConnectToIAuth()
 			log(L_ERROR,
 				"Unable to connect to IAuth server: %s",
 				strerror(errno));
-			close(iAuth.socket);
+			fd_close(iAuth.socket);
 			iAuth.socket = NOSOCK;
 			return(NOSOCK);
 		}

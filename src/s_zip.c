@@ -16,12 +16,13 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_zip.c,v 7.6 2000/10/06 04:27:04 lusky Exp $
+ *   $Id: s_zip.c,v 7.7 2000/10/24 18:47:25 adrian Exp $
  */
 #include "s_zip.h"
 #include "client.h"
 #include "irc_string.h"
 #include "packet.h"
+#include "fdlist.h"
 #include "s_bsd.h"
 #include "s_serv.h"
 #include "s_log.h"
