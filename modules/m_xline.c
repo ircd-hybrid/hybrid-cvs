@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.1 2003/05/14 22:29:40 db Exp $
+ *  $Id: m_xline.c,v 1.2 2003/05/15 02:54:14 db Exp $
  */
 
 #include "stdinc.h"
@@ -48,7 +48,6 @@
 
 static void mo_xline(struct Client *,struct Client *,int,char **);
 static void ms_xline(struct Client *,struct Client *,int,char **);
-static void mo_xline(struct Client *,struct Client *,int,char **);
 
 struct Message xline_msgtab = {
   "XLINE", 0, 0, 0, 0, MFLG_SLOW, 0,
@@ -69,15 +68,8 @@ _moddeinit(void)
 {
   mod_del_cmd(&xline_msgtab);
 }
-const char *_version = "$Revision: 1.1 $";
+const char *_version = "$Revision: 1.2 $";
 #endif
-
-/* Local function prototypes */
-
-char buffer[IRCD_BUFSIZE];
-char user[USERLEN+2];
-
-#define MAX_EXT_REASON 100
 
 
 /*
@@ -93,10 +85,10 @@ char user[USERLEN+2];
  */
 static void
 mo_xline(struct Client *client_p, struct Client *source_p,
-	 int parc, char **parv)
+	 int parc, char *parv[])
 {
   struct ConfItem *aconf;
-  char *x_type, *x_pattern, *x_reason;
+  const char *x_type, *x_pattern, *x_reason;
   const char* current_date;
   time_t cur_time;
 
@@ -125,13 +117,15 @@ mo_xline(struct Client *client_p, struct Client *source_p,
     aconf->port = 1;
   else if (irccmp(x_type,"SILENT") == 0)
     aconf->port = 2;
+  else
+    aconf->port = 0; /* default = WARN(0) */
 
   if (EmptyString(x_reason))
     x_reason = "No Reason";
 
   collapse(x_pattern);
   DupString(aconf->name, x_pattern);
-  DupString(aconf->passwd, x_reason);
+  DupString(aconf->reason, x_reason);
   set_time();
   cur_time = CurrentTime;
   current_date = smalldate(cur_time);

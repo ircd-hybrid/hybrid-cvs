@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.126 2003/05/14 22:29:40 db Exp $
+ *  $Id: m_kline.c,v 1.127 2003/05/15 02:54:14 db Exp $
  */
 
 #include "stdinc.h"
@@ -76,7 +76,7 @@ _moddeinit(void)
   mod_del_cmd(&kline_msgtab);
   mod_del_cmd(&dline_msgtab);
 }
-const char *_version = "$Revision: 1.126 $";
+const char *_version = "$Revision: 1.127 $";
 #endif
 
 /* Local function prototypes */
@@ -369,13 +369,13 @@ apply_tkline(struct Client *source_p, struct ConfItem *aconf,
 		       "%s added temporary %d min. K-Line for [%s@%s] [%s]",
 		       get_oper_name(source_p), tkline_time/60,
 		       aconf->user, aconf->host,
-		       aconf->passwd);
+		       aconf->reason);
   sendto_one(source_p, ":%s NOTICE %s :Added temporary %d min. K-Line [%s@%s]",
 	     me.name, source_p->name, tkline_time/60,
 	     aconf->user, aconf->host);
   ilog(L_TRACE, "%s added temporary %d min. K-Line for [%s@%s] [%s]",
        source_p->name, tkline_time/60,
-       aconf->user, aconf->host, aconf->passwd);
+       aconf->user, aconf->host, aconf->reason);
   check_klines();
 }
 
@@ -693,7 +693,7 @@ mo_dline(struct Client *client_p, struct Client *source_p,
 
       if((aconf = find_dline_conf(&daddr, t)) != NULL)
 	{
-	  creason = aconf->passwd ? aconf->passwd : "<No Reason>";
+	  creason = aconf->reason ? aconf->reason : "<No Reason>";
 	  if (IsConfExemptKline(aconf))
 	    sendto_one(source_p,
 		       ":%s NOTICE %s :[%s] is (E)d-lined by [%s] - %s",
@@ -721,7 +721,7 @@ mo_dline(struct Client *client_p, struct Client *source_p,
 
   ircsprintf(dlbuffer, "%s (%s)",reason, current_date);
   DupString(aconf->host, dlhost);
-  DupString(aconf->passwd, dlbuffer);
+  DupString(aconf->reason, dlbuffer);
 
   add_conf_by_address(aconf->host, CONF_DLINE, NULL, aconf);
   /*
@@ -964,7 +964,7 @@ already_placed_kline(struct Client *source_p, const char *luser, const char *lho
   }
   if ((aconf = find_conf_by_address(lhost, piphost, CONF_KILL, t, luser)))
   {
-   reason = aconf->passwd ? aconf->passwd : "<No Reason>";
+   reason = aconf->reason ? aconf->reason : "<No Reason>";
 
    /* Remote servers can set klines, so if its a dupe we warn all 
     * local opers and leave it at that

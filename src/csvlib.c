@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.6 2003/05/14 22:38:03 db Exp $
+ *  $Id: csvlib.c,v 7.7 2003/05/15 02:54:16 db Exp $
  */
 
 #include "stdinc.h"
@@ -92,7 +92,7 @@ parse_csv_file(FBFILE *file, int conf_type)
 	DupString(aconf->user, user_field);
       if (port != NULL)
 	aconf->port = atoi(port);
-      conf_add_d_conf(aconf);
+      conf_add_conf(aconf);
       break;
     }
   }
@@ -271,9 +271,8 @@ write_csv_line(FBFILE *out, const char *format, ...)
         }
 	*str++ = '\"';
 	*str++ = ',';
-	*str = '\0';
 	  
-	bytes += 3;
+	bytes += 2;
 	continue;
       }
       if (c == 'c')
@@ -284,9 +283,8 @@ write_csv_line(FBFILE *out, const char *format, ...)
 	++bytes;
 	*str++ = '\"';
 	*str++ = ',';
-	*str++ = '\0';
 
-	bytes += 3;
+	bytes += 2;
 	continue;
       }
       if (c != '%')
@@ -298,15 +296,15 @@ write_csv_line(FBFILE *out, const char *format, ...)
 	str += ret;
 	bytes += ret;
 	*str++ = ',';
-	*str++ = '\0';
 
-	bytes += 2;
+	++bytes;
 	break;
       }
     }
     *str++ = c;
     ++bytes;
   }
+
   if(*(str-1) == ',')
   {
     *(str-1) = '\n';
