@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.198 2001/08/17 03:10:20 androsyn Exp $
+ *  $Id: client.c,v 7.199 2001/08/25 09:15:17 a1kmm Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -1333,15 +1333,15 @@ const char* comment         /* Reason for the exit */
 	    {
 	      dlinkDelete(m,&serv_list);
 	      free_dlink_node(m);
+#ifdef USE_TABLE_MODE
+          unset_chcap_usage_counts(source_p);
+#endif
 	    }
 	}
 
       if (IsServer(source_p))
         {
           Count.myserver--;
-#ifdef USE_TABLE_MODE	  
-          unset_chcap_usage_counts(source_p);
-#endif	  
 	  if(ServerInfo.hub)
 	    remove_lazylink_flags(source_p->localClient->serverMask);
 	  else
