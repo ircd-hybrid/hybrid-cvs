@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.251 2002/05/27 12:14:52 leeh Exp $
+ *  $Id: ircd_parser.y,v 1.252 2002/06/12 19:29:36 db Exp $
  */
 
 %{
@@ -58,9 +58,7 @@ extern char *ip_string;
 int yyparse();
 
 static struct ConfItem *yy_achead = NULL;
-#if 0
 static struct ConfItem *yy_aconf = NULL;
-#endif
 static struct ConfItem *yy_aprev = NULL;
 static int              yy_acount = 0;
 static struct ConfItem *yy_hconf;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.304 2002/05/31 02:21:05 androsyn Exp $
+ *  $Id: s_conf.c,v 7.305 2002/06/12 19:29:36 db Exp $
  */
 
 #include "stdinc.h"
@@ -77,7 +77,6 @@ static void     expire_tklines(dlink_list *);
 static int 	is_attached(struct Client *client_p, struct ConfItem *aconf);
 
 FBFILE* conf_fbfile_in;
-struct ConfItem* yy_aconf;
 extern char yytext[];
 
 /* address of class 0 conf */
