@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kill.c,v 1.12 2000/12/23 01:42:12 db Exp $
+ *   $Id: m_kill.c,v 1.13 2000/12/23 23:45:36 toot Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -242,7 +242,7 @@ int mo_kill(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
         }
       else
         killer = path;
-      ircsprintf(buf2, "Killed (%s)", killer);
+      ircsprintf(buf2, "Killed by %s", killer);
     }
   return exit_client(cptr, acptr, sptr, buf2);
 }
@@ -336,9 +336,8 @@ int ms_kill(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
       inpath = cptr->host;
       if (!BadPtr(path))
         {
-          ircsprintf(buf, "%s!%s%s (%s)",
-                     cptr->username, cptr->name,
-                     IsGlobalOper(sptr) ? "" : "(L)", path);
+          ircsprintf(buf, "%s!%s (%s)",
+                     cptr->username, cptr->name, path);
           path = buf;
           reason = path;
         }
@@ -387,7 +386,7 @@ int ms_kill(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 			 acptr->name, parv[0]);
 
 #if defined(USE_SYSLOG) && defined(SYSLOG_KILL)
-  if (IsGlobalOper(sptr))
+  if (IsOperGlobalKill(sptr))
     log(L_INFO,"KILL From %s For %s Path %s!%s",
                         parv[0], acptr->name, inpath, path);
 #endif
@@ -440,7 +439,7 @@ int ms_kill(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
         }
       else
         killer = path;
-      ircsprintf(buf2, "Killed (%s)", killer);
+      ircsprintf(buf2, "Killed by %s", killer);
     }
   return exit_client(cptr, acptr, sptr, buf2);
 }
