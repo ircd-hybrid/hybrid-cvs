@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.83 2001/04/08 18:03:49 fl_ Exp $
+ *   $Id: m_sjoin.c,v 1.84 2001/05/04 22:24:00 fl_ Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -274,20 +274,10 @@ static void ms_sjoin(struct Client *client_p,
        keep_our_modes = NO;
        chptr->channelts = tstosend = newts;
     }
-  /* Theyre not sending users, normal rules of timestamp apply */
+  /* Theyre not sending users, lets just ignore it and carry on */
   else if (chptr->users == 0 && !parv[4+args][0])
-    {
-       if(newts < oldts)
-         {
-           keep_our_modes = NO;
-           chptr->channelts = tstosend = newts;
-         }
-       else
-         {
-           mode = *oldmode;
-           return;
-         }
-    }
+    return;
+
   /* It isnt a perm channel, do normal timestamp rules */
   else if (newts == 0 || oldts == 0)
     chptr->channelts = tstosend = 0;
@@ -572,9 +562,9 @@ static void ms_sjoin(struct Client *client_p,
           continue;
       }
 
-      /* Its a blank sjoin, only forward to those with CAP_VCHAN */
-      if (!parv[4+args][0] && !IsCapable(target_p, CAP_VCHAN))
-          continue;
+      /* Its a blank sjoin, ugh */
+      if (!parv[4+args][0])
+          return;
 
       /* XXX - ids ? */
       if (IsCapable(target_p,CAP_HOPS))

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kick.c,v 1.30 2001/04/28 15:56:50 fl_ Exp $
+ *   $Id: m_kick.c,v 1.31 2001/05/04 22:24:00 fl_ Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -222,7 +222,7 @@ static void m_kick(struct Client *client_p,
 			    ":%s KICK %s %s :%s",
 			    parv[0], chptr->chname,
 			    who->name, comment);
-      remove_user_from_channel(chptr, who);
+      remove_user_from_channel(chptr, who, 0);
     }
   else
     sendto_one(source_p, form_str(ERR_USERNOTINCHANNEL),

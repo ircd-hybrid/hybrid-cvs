@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 1.56 2001/04/19 05:42:09 a1kmm Exp $
+ *   $Id: m_join.c,v 1.57 2001/05/04 22:23:59 fl_ Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -494,6 +494,6 @@ static void do_join_0(struct Client *client_p, struct Client *source_p)
 			   source_p->username,
 			   source_p->host,
 			   RootChan(chptr)->chname);
-      remove_user_from_channel(chptr, source_p);
+      remove_user_from_channel(chptr, source_p, 0);
     }
 }

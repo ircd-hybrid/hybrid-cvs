@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.66 2001/04/20 04:59:20 db Exp $
+ * $Id: channel.h,v 7.67 2001/05/04 22:23:52 fl_ Exp $
  */
 
 #include <sys/types.h>        /* time_t */
@@ -102,7 +102,7 @@ extern dlink_node *find_user_link (dlink_list *, struct Client *);
 extern void    add_user_to_channel(struct Channel *chptr,
 				   struct Client *who, int flags);
 extern void    remove_user_from_channel(struct Channel *chptr,
-					struct Client *who);
+					struct Client *who, int perm);
 
 extern int     can_send (struct Channel *chptr, struct Client *who);
 extern int     is_banned (struct Channel *chptr, struct Client *who);
@@ -114,7 +114,6 @@ extern int     is_half_op (struct Channel *chptr,struct Client *who);
 extern int     is_voiced (struct Channel *chptr,struct Client *who);
 
 extern void    send_channel_modes (struct Client *, struct Channel *);
-extern void    send_perm_channel (struct Client *, struct Channel *);
 extern int     check_channel_name(const char* name);
 extern void    channel_modes(struct Channel *chptr, struct Client *who,
 			     char *, char *);

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.153 2001/04/13 22:39:53 davidt Exp $
+ *   $Id: s_serv.c,v 7.154 2001/05/04 22:24:04 fl_ Exp $
  */
 
 #include <sys/types.h>
@@ -1041,9 +1041,6 @@ burst_all(struct Client *client_p)
           burst_members(client_p,&chptr->peons);
           send_channel_modes(client_p, chptr);
         }
-      /* Send blank channels if they support them, if the channels blank, we dont need to burst users */
-      else if ((*chptr->chname == '#') && IsCapable(client_p, CAP_VCHAN))
-        send_perm_channel(client_p, chptr);
 
       if(IsVchanTop(chptr))
 	{
@@ -1059,8 +1056,6 @@ burst_all(struct Client *client_p)
                   burst_members(client_p,&vchan->peons);
                   send_channel_modes(client_p, vchan);
                 }
-              else if ((*vchan->chname == '#') && IsCapable(client_p, CAP_VCHAN))
-                send_perm_channel(client_p, chptr);
 	    }
 	}
     }

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_part.c,v 1.43 2001/05/02 07:17:04 a1kmm Exp $
+ *   $Id: m_part.c,v 1.44 2001/05/04 22:24:00 fl_ Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -195,5 +195,5 @@ static void part_one_client(struct Client *client_p,
                            source_p->host,
                            bchan->chname);
     }
-  remove_user_from_channel(chptr, source_p);
+  remove_user_from_channel(chptr, source_p, 0);
 }

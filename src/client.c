@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.164 2001/04/26 11:34:31 toot Exp $
+ *  $Id: client.c,v 7.165 2001/05/04 22:24:03 fl_ Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -1042,7 +1042,7 @@ static void exit_one_client(struct Client *client_p, struct
           for (lp = source_p->user->channel.head; lp; lp = next_lp)
 	    {
 	      next_lp = lp->next;
-	      remove_user_from_channel(lp->data,source_p);
+	      remove_user_from_channel(lp->data,source_p, 1);
 	    }
           
           /* Clean up invitefield */
