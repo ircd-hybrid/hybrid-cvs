@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_motd.c,v 1.9 2000/12/25 07:03:55 db Exp $
+ *   $Id: m_motd.c,v 1.10 2000/12/25 16:09:11 db Exp $
  */
 #include "tools.h"
 #include "motd.h"
@@ -66,6 +66,13 @@ char *_version = "20001122";
 int m_motd(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 {
   static time_t last_used = 0;
+
+  /* This is safe enough to use during non hidden server mode */
+  if(!GlobalSetOptions.hide_server)
+    {
+      if (hunt_server(cptr, sptr, ":%s MOTD :%s", 1,parc,parv)!=HUNTED_ISME)
+	return 0;
+    }
 
   if((last_used + ConfigFileEntry.pace_wait) > CurrentTime)
     {
