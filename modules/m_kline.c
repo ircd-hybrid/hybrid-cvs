@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kline.c,v 1.83 2001/06/08 07:41:11 db Exp $
+ *   $Id: m_kline.c,v 1.84 2001/06/08 09:59:36 leeh Exp $
  */
 #include "tools.h"
 #include "m_kline.h"
@@ -204,6 +204,9 @@ static void mo_kline(struct Client *client_p,
        return;
     }
 
+  if(!valid_comment(source_p, reason))
+    return;
+    
   cur_time = time(NULL);
   current_date = smalldate(cur_time);
   aconf = make_conf();
@@ -310,6 +313,9 @@ static void ms_kline(struct Client *client_p,
              ConfigFileEntry.min_nonwildcard, kuser, khost, kreason);
        return;
      }
+
+  if(!valid_comment(source_p, kreason))
+    return;
 
   tkline_time = atoi(parv[2]);
 
