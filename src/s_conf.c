@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.222 2001/06/01 00:56:03 davidt Exp $
+ *  $Id: s_conf.c,v 7.223 2001/06/01 11:05:48 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -1434,9 +1434,9 @@ static void set_default_conf(void)
   ConfigFileEntry.kline_with_connection_closed = NO;
   ConfigFileEntry.warn_no_nline = YES;
   ConfigFileEntry.non_redundant_klines = YES;
-  ConfigFileEntry.o_lines_oper_only = NO;
-  ConfigFileEntry.k_lines_oper_only = 1; /* masked */
-  ConfigFileEntry.i_lines_oper_only = 1; /* masked */
+  ConfigFileEntry.stats_o_oper_only = NO;
+  ConfigFileEntry.stats_k_oper_only = 1; /* masked */
+  ConfigFileEntry.stats_i_oper_only = 1; /* masked */
   ConfigFileEntry.pace_wait = 10;
   ConfigFileEntry.caller_id_wait = 60;
   ConfigFileEntry.whois_wait = 0;

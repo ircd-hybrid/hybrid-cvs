@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.c,v 1.35 2001/05/30 13:30:42 jdc Exp $
+ * $Id: m_info.c,v 1.36 2001/06/01 11:05:45 leeh Exp $
  */
 #include "tools.h"
 #include "m_info.h"
@@ -262,9 +262,9 @@ static struct InfoStruct info_table[] =
     "Check for and disallow redundant K-lines"
   },
   {
-    "o_lines_oper_only",
+    "stats_o_oper_only",
     OUTPUT_BOOLEAN_YN,
-    &ConfigFileEntry.o_lines_oper_only,
+    &ConfigFileEntry.stats_o_oper_only,
     "STATS o output is only shown to operators"
   },
   {

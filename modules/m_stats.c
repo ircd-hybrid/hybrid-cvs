@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 1.76 2001/05/31 06:24:05 db Exp $
+ *  $Id: m_stats.c,v 1.77 2001/06/01 11:05:46 leeh Exp $
  */
 #include "tools.h"	 /* dlink_node/dlink_list */
 #include "handlers.h"    /* m_pass prototype */
@@ -342,11 +342,11 @@ static void stats_hubleaf(struct Client *client_p)
 static void stats_auth(struct Client *client_p)
 {
   /* Oper only, if unopered, return ERR_NOPRIVS */
-  if((ConfigFileEntry.i_lines_oper_only == 2) && !IsOper(client_p))
+  if((ConfigFileEntry.stats_i_oper_only == 2) && !IsOper(client_p))
     sendto_one(client_p, form_str(ERR_NOPRIVILEGES),me.name,client_p->name);
 
   /* If unopered, Only return matching auth blocks */
-  else if((ConfigFileEntry.i_lines_oper_only == 1) && !IsOper(client_p))
+  else if((ConfigFileEntry.stats_i_oper_only == 1) && !IsOper(client_p))
     report_Ilines(client_p, 1);
 
   /* Theyre opered, or allowed to see all auth blocks */
@@ -357,11 +357,11 @@ static void stats_auth(struct Client *client_p)
 static void stats_tklines(struct Client *client_p)
 {
   /* Oper only, if unopered, return ERR_NOPRIVS */
-  if((ConfigFileEntry.k_lines_oper_only == 2) && !IsOper(client_p))
+  if((ConfigFileEntry.stats_k_oper_only == 2) && !IsOper(client_p))
     sendto_one(client_p, form_str(ERR_NOPRIVILEGES),me.name,client_p->name);
 
   /* If unopered, Only return matching klines */
-  else if((ConfigFileEntry.k_lines_oper_only == 1) && !IsOper(client_p))
+  else if((ConfigFileEntry.stats_k_oper_only == 1) && !IsOper(client_p))
     report_Klines(client_p, 1, 1);
 
   /* Theyre opered, or allowed to see all klines */
@@ -372,11 +372,11 @@ static void stats_tklines(struct Client *client_p)
 static void stats_klines(struct Client *client_p)
 {
   /* Oper only, if unopered, return ERR_NOPRIVS */
-  if((ConfigFileEntry.k_lines_oper_only == 2) && !IsOper(client_p))
+  if((ConfigFileEntry.stats_k_oper_only == 2) && !IsOper(client_p))
     sendto_one(client_p, form_str(ERR_NOPRIVILEGES),me.name,client_p->name);
 
   /* If unopered, Only return matching klines */
-  else if((ConfigFileEntry.k_lines_oper_only == 1) && !IsOper(client_p))
+  else if((ConfigFileEntry.stats_k_oper_only == 1) && !IsOper(client_p))
     report_Klines(client_p, 0, 1);
 
   /* Theyre opered, or allowed to see all klines */
@@ -391,7 +391,7 @@ static void stats_messages(struct Client *client_p)
 
 static void stats_oper(struct Client *client_p)
 {
-  if (!IsOper(client_p) && ConfigFileEntry.o_lines_oper_only)
+  if (!IsOper(client_p) && ConfigFileEntry.stats_o_oper_only)
     sendto_one(client_p, form_str(ERR_NOPRIVILEGES),me.name,client_p->name);
   else
     report_configured_links(client_p, CONF_OPERATOR);
