@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.378 2003/06/01 18:45:31 db Exp $
+ *  $Id: client.c,v 7.379 2003/06/02 04:38:35 db Exp $
  */
 
 #include "stdinc.h"
@@ -405,8 +405,6 @@ check_klines(void)
 	  sendto_one(client_p, form_str(ERR_YOUREBANNEDCREEP),
 		     me.name, client_p->name,
 		     aconf->reason ? aconf->reason : "D-lined");
-	else
-	  sendto_one(client_p, "NOTICE DLINE :*** You have been D-lined");
       }
       else
       {
@@ -420,8 +418,6 @@ check_klines(void)
 	if(IsPerson(client_p))
 	  sendto_one(client_p, form_str(ERR_YOUREBANNEDCREEP),
 		     me.name, client_p->name, reason);
-	else
-	  sendto_one(client_p, "NOTICE DLINE :*** You have been D-lined");
       }
 
       exit_client(client_p, client_p, &me, reason);
@@ -531,7 +527,6 @@ check_klines(void)
       if (aconf->status & CONF_EXEMPTDLINE)
         continue;
 
-      sendto_one(client_p, "NOTICE DLINE :*** You have been D-lined");
       exit_client(client_p, client_p, &me, "D-lined");
     }
   }
@@ -576,8 +571,6 @@ check_xlines(void)
 	  sendto_one(client_p, form_str(ERR_YOUREBANNEDCREEP),
 		     me.name, client_p->name,
 		     aconf->reason ? aconf->reason : "X-lined");
-	else
-	  sendto_one(client_p, "NOTICE XLINE :*** You have been X-lined");
       }
       else
       {
@@ -591,8 +584,6 @@ check_xlines(void)
 	if(IsPerson(client_p))
 	  sendto_one(client_p, form_str(ERR_YOUREBANNEDCREEP),
 		     me.name, client_p->name, reason);
-	else
-	  sendto_one(client_p, "NOTICE DLINE :*** You have been X-lined");
       }
 
       exit_client(client_p, client_p, &me, reason);
