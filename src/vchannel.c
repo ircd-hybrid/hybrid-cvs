@@ -19,7 +19,7 @@
  *
  *
  *
- * $Id: vchannel.c,v 7.8 2000/10/16 16:10:13 toot Exp $
+ * $Id: vchannel.c,v 7.9 2000/10/16 16:24:00 db Exp $
  */
 #include "vchannel.h"
 #include "channel.h"
@@ -111,6 +111,22 @@ struct Channel* map_vchan(struct Channel *chptr, struct Client *sptr)
     {
       if( sptr->vchan_map[i].base_chan == chptr )
 	return (sptr->vchan_map[i].vchan);
+    }
+
+  return NullChn;
+}
+
+/* return matching bchan given vchan and sptr */
+struct Channel* map_bchan(struct Channel *chptr, struct Client *sptr)
+{
+  int i;
+
+  assert(sptr != NULL);
+
+  for(i=0;sptr->vchan_map[i].base_chan;i++)
+    {
+      if( sptr->vchan_map[i].vchan == chptr )
+	return (sptr->vchan_map[i].base_chan);
     }
 
   return NullChn;

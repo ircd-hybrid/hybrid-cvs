@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: vchannel.h,v 7.5 2000/10/16 16:10:08 toot Exp $
+ * $Id: vchannel.h,v 7.6 2000/10/16 16:23:57 db Exp $
  */
 
 #ifndef INCLUDED_vchannel_h
@@ -47,6 +47,7 @@ extern void	del_vchan_from_client_cache(struct Client *sptr,
 					    struct Channel *vchan);
 
 extern struct Channel* map_vchan(struct Channel *chptr, struct Client *sptr);
+extern struct Channel* map_bchan(struct Channel *chptr, struct Client *sptr);
 
 extern void	show_vchans(struct Client *cptr,
 			    struct Client *sptr,
