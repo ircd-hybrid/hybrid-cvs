@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.91 2001/02/10 23:33:32 fl_ Exp $
+ *   $Id: parse.c,v 7.92 2001/02/23 05:45:54 db Exp $
  */
 
 #include <assert.h>
@@ -301,6 +301,12 @@ void parse(struct Client *cptr, char *pbuffer, char *bufend)
   }
 
   handle_command(mptr, cptr, from, i, para);
+
+  if(IsDead(from))
+    exit_client(from, from, &me,
+		(from->flags & FLAGS_SENDQEX) ?
+		"SendQ exceeded" : "Dead socket");
+
 }
 
 static void 
