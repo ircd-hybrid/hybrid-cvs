@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.c,v 7.17 2000/11/01 18:53:14 adrian Exp $
+ *   $Id: s_auth.c,v 7.18 2000/11/03 18:54:12 adrian Exp $
  *
  * Changes:
  *   July 6, 1999 - Rewrote most of the code here. When a client connects
@@ -176,7 +176,6 @@ static void release_auth_client(struct Client* client)
     highest_fd = client->fd;
   local[client->fd] = client;
 
-  fdlist_add(client->fd, FDL_DEFAULT);
   /*
    * When a client has auth'ed, we want to start reading what it sends
    * us. This is what read_packet() does.

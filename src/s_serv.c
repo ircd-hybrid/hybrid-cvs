@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.36 2000/11/03 08:26:04 adrian Exp $
+ *   $Id: s_serv.c,v 7.37 2000/11/03 18:54:12 adrian Exp $
  */
 #include "s_serv.h"
 #include "channel.h"
@@ -717,8 +717,6 @@ int server_estab(struct Client *cptr)
   cptr->next_server_client = serv_cptr_list;
   serv_cptr_list = cptr;
   
-  fdlist_add(cptr->fd, FDL_SERVER | FDL_BUSY);
-
   /* ircd-hybrid-6 can do TS links, and  zipped links*/
   sendto_ops("Link with %s established: (%s) link",
              inpath,show_capabilities(cptr));
@@ -1199,7 +1197,6 @@ serv_connect(struct ConfItem *aconf, struct Client *by)
     local[cptr->fd] = cptr;
     SetConnecting(cptr);
     add_client_to_list(cptr);
-    fdlist_add(cptr->fd, FDL_DEFAULT);
 
     /* Now, initiate the connection */
     comm_connect_tcp(cptr->fd, aconf->host, aconf->port, NULL, 0, 

@@ -1,9 +1,9 @@
 /* 
  *
- * fdlist.c   maintain lists of certain important fds 
+ * fdlist.c   maintain lists of file descriptors
  *
  *
- * $Id: fdlist.c,v 7.9 2000/11/02 19:18:51 adrian Exp $
+ * $Id: fdlist.c,v 7.10 2000/11/03 18:54:11 adrian Exp $
  */
 #include "fdlist.h"
 #include "client.h"  /* struct Client */
@@ -59,19 +59,6 @@ void fdlist_init(void)
     initialized = 1;
   }
 }
-
-void fdlist_add(int fd, unsigned char mask)
-{
-  assert(fd < MAXCONNECTIONS + 1);
-  fd_table[fd].mask |= mask;
-}
- 
-void fdlist_delete(int fd, unsigned char mask)
-{
-  assert(fd < MAXCONNECTIONS + 1);
-  fd_table[fd].mask &= ~mask;
-}
-
 
 /* Called to open a given filedescriptor */
 void

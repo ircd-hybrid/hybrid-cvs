@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_oper.c,v 7.14 2000/10/31 22:59:49 db Exp $
+ *   $Id: m_oper.c,v 7.15 2000/11/03 18:54:11 adrian Exp $
  */
 
 #include "handlers.h"
@@ -233,7 +233,6 @@ int m_oper(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
       else
         operprivs = "";
 
-      fdlist_add(sptr->fd, FDL_OPER | FDL_BUSY);
 #ifdef CUSTOM_ERR
       sendto_ops("%s (%s@%s) has just acquired the personality of a petty megalomaniacal tyrant [IRC(%c)p]", parv[0],
 #else
@@ -430,7 +429,6 @@ int mo_oper(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
       else
         operprivs = "";
 
-      fdlist_add(sptr->fd, FDL_OPER | FDL_BUSY);
 #ifdef CUSTOM_ERR
       sendto_ops("%s (%s@%s) has just acquired the personality of a petty megalomaniacal tyrant [IRC(%c)p]", parv[0],
 #else
@@ -627,7 +625,6 @@ int ms_oper(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
       else
         operprivs = "";
 
-      fdlist_add(sptr->fd, FDL_OPER | FDL_BUSY);
 #ifdef CUSTOM_ERR
       sendto_ops("%s (%s@%s) has just acquired the personality of a petty megalomaniacal tyrant [IRC(%c)p]", parv[0],
 #else
