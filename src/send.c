@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.174 2002/02/17 03:11:27 androsyn Exp $
+ *  $Id: send.c,v 7.175 2002/02/17 04:52:23 a1kmm Exp $
  */
 
 #include <sys/types.h>
@@ -128,6 +128,10 @@ dead_link(struct Client *to, char *notice)
                          notice, get_client_name(to, MASK_IP));
   }
   Debug((DEBUG_ERROR, notice, get_client_name(to, HIDE_IP)));
+  /* Must do this know, can't try and send in exit_client... */
+  fd_close(to->fd);
+  to->fd = -1;
+  /* fd is closed, this is now safe... */
   exit_client(to, to, &me, notice);
   return (-1);
 } /* dead_link() */
