@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_server.c,v 1.41 2001/01/06 18:13:37 db Exp $
+ *   $Id: m_server.c,v 1.42 2001/01/06 18:25:15 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"  /* m_server prototype */
@@ -326,8 +326,8 @@ int ms_server(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
    * .edu's
    */
 
-  /* Ok, check for this server allowed to HUB */
-  if (!hlined)
+  /* Ok, check cptr can hub the new server, and make sure it's not a LL */
+  if (!hlined || (IsCapable(cptr, CAP_LL) && !IsCapable(cptr, CAP_HUB)))
     {
       /* OOOPs nope can't HUB */
       sendto_realops_flags(FLAGS_ALL,"Non-Hub link %s introduced %s.",
