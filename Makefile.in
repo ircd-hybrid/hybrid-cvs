@@ -16,7 +16,7 @@
 #*   along with this program; if not, write to the Free Software
 #*   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #*
-#*   $Id: Makefile.in,v 7.24 2000/12/30 02:07:38 lusky Exp $
+#*   $Id: Makefile.in,v 7.25 2001/01/10 02:37:17 wcampbel Exp $
 #*/
 
 RM=@RM@
@@ -39,6 +39,7 @@ CFLAGS		= @CFLAGS@
 #CFLAGS= -DNDEBUG -g -O2 -D"FD_SETSIZE=1024"
 SHELL=/bin/sh
 SUBDIRS=src tools modules doc gnats @SUBDIR_MESSAGES@ include
+CLEANDIRS = ${SUBDIRS} contrib iauth
 # XXX removed `iauth' from the build since it doesn't compile currently
 # SUBDIRS=src tools iauth
 
@@ -66,7 +67,7 @@ build:
 
 clean:
 	${RM} -f *~ core
-	@for i in $(SUBDIRS); do \
+	@for i in $(CLEANDIRS); do \
 		echo "clean ==> $$i";\
 		cd $$i;\
 		${MAKE} clean; cd ..;\
@@ -79,7 +80,7 @@ distclean:
 	${RM} -f Makefile *~ *.rej *.orig core ircd.core
 	${RM} -f config.status config.cache config.log
 	cd include; ${RM} -f setup.h *~ *.rej *.orig ; cd ..
-	@for i in $(SUBDIRS); do \
+	@for i in $(CLEANDIRS); do \
 		echo "distclean ==> $$i";\
 		cd $$i;\
 		${MAKE} distclean; cd ..;\
