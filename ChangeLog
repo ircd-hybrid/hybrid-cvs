@@ -1,3 +1,16 @@
+jmallett    2002/01/20 01:26:45 EST	(20020120_0)
+
+  Modified files:
+    include              memory.h 
+  Log:
+  Add support for pulling in inttypes on VMS for uintptr_t.
+  Obtained partially from:        ejb
+  
+  Revision  Changes    Path
+  7.29      +5 -1      ircd-hybrid-7/include/memory.h
+
+
+
 leeh        2002/01/16 17:21:20 EST	(20020116_2)
 
   Modified files:
@@ -21701,4 +21714,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3347 2002/01/16 22:21:26 leeh Exp $
+$Id: ChangeLog,v 7.3348 2002/01/20 06:26:50 jmallett Exp $
