@@ -1,3 +1,16 @@
+androsyn    2002/09/07 02:34:15 EDT	(20020907_1)
+
+  Modified files:
+    src                  channel.c 
+  Log:
+  This needs to be TOPICLEN+1, otherwise we'll chop the last byte off.  We
+  already allocate TOPICLEN+1 so..
+  
+  Revision  Changes    Path
+  7.329     +1 -1      ircd-hybrid-7/src/channel.c
+
+
+
 db          2002/09/06 22:18:58 EDT	(20020907_0)
 
   Modified files:
@@ -31877,4 +31890,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4023 2002/09/07 02:19:00 db Exp $
+$Id: ChangeLog,v 7.4024 2002/09/07 06:34:17 androsyn Exp $
