@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.170 2001/12/29 08:07:19 androsyn Exp $
+ * $Id: s_conf.h,v 7.171 2001/12/30 05:55:10 db Exp $
  */
 
 #include "setup.h"
@@ -65,8 +65,6 @@ struct ConfItem
   unsigned int     flags;
   int              clients;  /* Number of *LOCAL* clients using this */
   struct irc_inaddr ipnum;
-  unsigned int     ip;       /* only used for I D lines etc. */
-  unsigned int     ip_mask;
   char *           name;     /* IRC name, nick, server name, or original u@h */
   char *           host;     /* host part of user@host */
   char *           passwd;   /* doubles as kline reason *ugh* */
