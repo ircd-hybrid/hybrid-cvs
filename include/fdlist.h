@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fdlist.h,v 7.25.2.1 2002/05/26 10:55:54 androsyn Exp $
+ *  $Id: fdlist.h,v 7.25.2.2 2002/05/26 20:13:13 androsyn Exp $
  */
 
 #ifndef INCLUDED_fdlist_h
@@ -106,7 +106,8 @@ struct _fde {
      * Yes, this gives us only one pending read and one pending write per
      * filedescriptor. Think though: when do you think we'll need more?
      */
-    int fd;		/* So we can use the fde_t as a callback ptr */
+    int fd_write;	/* We need two fds in the case of PIPES */
+    int fd_read;
     int type;
     fdlist_t list;	/* Which list this FD should sit on */
     int comm_index;	/* where in the poll list we live */
@@ -120,8 +121,7 @@ struct _fde {
     time_t timeout;
     PF *flush_handler;
     void *flush_data;
-    IO *read;
-    IO *write;
+
     time_t flush_timeout;
     struct DNSQuery *dns_query;
     struct {

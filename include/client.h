@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.147 2002/05/24 23:34:06 androsyn Exp $
+ *  $Id: client.h,v 7.147.2.1 2002/05/26 20:13:13 androsyn Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -279,7 +279,9 @@ struct LocalUser
   char              in_key[CIPHERKEYLEN];
   char              out_key[CIPHERKEYLEN];
 #endif
-
+  
+  IO		    *io;
+  
   int               fd;         /* >= 0, for local clients */
 #ifndef HAVE_SOCKETPAIR
   int               fd_r;       /* fd for reading */
