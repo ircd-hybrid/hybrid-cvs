@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.215 2003/08/21 21:31:21 michael Exp $
+ *  $Id: client.h,v 7.216 2003/09/15 22:34:07 db Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -544,6 +544,7 @@ extern void check_xlines(void);
 extern const char *get_client_name(struct Client *client, int show_ip);
 extern void init_client(void);
 extern struct Client *make_client(struct Client *from);
+extern void free_client(struct Client *client_p);
 extern int exit_client(struct Client *, struct Client *, struct Client *, const char *);
 extern struct Client *find_chasing(struct Client *, const char *, int *);
 extern struct Client *find_person(const char *);

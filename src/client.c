@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.409 2003/09/11 03:41:47 metalrock Exp $
+ *  $Id: client.c,v 7.410 2003/09/15 22:34:08 db Exp $
  */
 
 #include "stdinc.h"
@@ -150,7 +150,17 @@ make_client(struct Client *from)
   return(client_p);
 }
 
-static void
+/*
+ * free_client
+ *
+ * inputs	- pointer to client
+ * output	- NONE
+ * side effects	- client pointed to has its memory freed
+ *
+ * Note, this is now global to be consistent with the API for make_client
+ */
+
+void
 free_client(struct Client *client_p)
 {
   assert(client_p != NULL);
