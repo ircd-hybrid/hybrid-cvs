@@ -1,3 +1,17 @@
+wcampbel    2002/02/04 23:04:53 EST	(20020205_2)
+
+  Modified files:
+    .                    INSTALL README.FIRST 
+  Log:
+  Update to INSTALL, reference convertklines
+  Cygwin IS currently supported, in a limited way.
+  
+  Revision  Changes    Path
+  7.22      +17 -1     ircd-hybrid-7/INSTALL
+  7.25      +1 -2      ircd-hybrid-7/README.FIRST
+
+
+
 jmallett    2002/02/04 21:40:24 EST	(20020205_1)
 
   Modified files:
@@ -22162,4 +22176,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3380 2002/02/05 02:40:29 jmallett Exp $
+$Id: ChangeLog,v 7.3381 2002/02/05 04:04:59 wcampbel Exp $
