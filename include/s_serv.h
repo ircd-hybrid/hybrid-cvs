@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: s_serv.h,v 7.54 2001/08/24 15:31:15 leeh Exp $
+ * $Id: s_serv.h,v 7.55 2001/08/26 18:09:15 davidt Exp $
  *
  */
 #ifndef INCLUDED_serv_h
@@ -36,8 +36,8 @@
  */
 #define TRY_CONNECTIONS_TIME	60
 
-/* collect ziplinks compression ratios/etc every 5 minutes */
-#define ZIPSTATS_TIME           300
+/* collect ziplinks compression ratios/etc every minute */
+#define ZIPSTATS_TIME           60
 
 /*
  * number of seconds to wait after server starts up, before

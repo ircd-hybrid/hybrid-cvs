@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.179 2001/08/17 03:10:20 androsyn Exp $
+ * $Id: ircd.c,v 7.180 2001/08/26 18:09:16 davidt Exp $
  */
 
 #include <sys/types.h>
@@ -677,7 +677,7 @@ int main(int argc, char *argv[])
  eventAdd("try_connections", try_connections, NULL,
           STARTUP_CONNECTIONS_TIME, 0);
 
- eventAdd("collect_zipstats", collect_zipstats, NULL,
+ eventAddIsh("collect_zipstats", collect_zipstats, NULL,
           ZIPSTATS_TIME, 0);
 
  /* Setup the timeout check. I'll shift it later :)  -- adrian */

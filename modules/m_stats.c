@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 1.84 2001/08/24 15:31:16 leeh Exp $
+ *  $Id: m_stats.c,v 1.85 2001/08/26 18:09:16 davidt Exp $
  */
 #include "tools.h"	 /* dlink_node/dlink_list */
 #include "handlers.h"    /* m_pass prototype */
@@ -669,15 +669,14 @@ static void stats_ziplinks(struct Client *client_p)
     target_p = ptr->data;
     if (IsCapable(target_p, CAP_ZIP))
     {
-      sendto_one(client_p, ":%s %d %s :ZipLinks stats for %s for the past %d minutes send[%lu bytes data/%lu bytes wire/%.2f%% ratio] recv[%lu bytes data/%lu bytes wire/%.2f%% ratio]",
+      sendto_one(client_p, ":%s %d %s :ZipLinks stats for %s send[%.2f%% compression (%lu bytes data/%lu bytes wire)] recv[%.2f%% compression (%lu bytes data/%lu bytes wire)]",
                  me.name, RPL_STATSDEBUG, client_p->name, target_p->name,
-                 (ZIPSTATS_TIME / 60),
+                 target_p->localClient->zipstats.out_ratio,
                  target_p->localClient->zipstats.out,
                  target_p->localClient->zipstats.out_wire,
-                 target_p->localClient->zipstats.out_ratio,
+                 target_p->localClient->zipstats.in_ratio,
                  target_p->localClient->zipstats.in,
-                 target_p->localClient->zipstats.in_wire,
-                 target_p->localClient->zipstats.in_ratio);
+                 target_p->localClient->zipstats.in_wire);
       sent_data++;
     }
   }
