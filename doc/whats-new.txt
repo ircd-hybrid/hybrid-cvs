@@ -78,7 +78,7 @@ more information.
 
 STATS e now shows events.
 
-STATS f now shows file descripters.
+STATS f now shows active file descriptors.
 
 List of CAPAB's:
 TS    - Support the TS protocol
@@ -160,4 +160,4 @@ PREFIX=%s      - The allowed PRIVMSG/NOTICE channel prefixes (server based
 
 # complete me
 
-# $Id: whats-new.txt,v 7.9 2000/12/25 17:27:10 wcampbel Exp $
+# $Id: whats-new.txt,v 7.10 2000/12/28 21:35:05 adrian Exp $
