@@ -1,3 +1,9 @@
+*** 20001202_9 by db
+- made list_length a generic function moved into tools.c
+  renamed as dlink_list_length()
+
+
+
 *** 20001202_8 by db
 - add code to move a list from one to the other, this makes
   de-opping an entire channel a simple job of moving lists over from
@@ -1329,7 +1335,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.663 2000/12/02 16:36:05 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.664 2000/12/02 16:42:10 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
