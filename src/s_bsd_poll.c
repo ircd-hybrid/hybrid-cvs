@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_poll.c,v 7.7 2000/10/28 02:29:10 toot Exp $
+ *  $Id: s_bsd_poll.c,v 7.8 2000/10/30 08:44:13 adrian Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -281,9 +281,7 @@ int read_message(time_t delay, unsigned char mask)
       if (DBufLength(&cptr->recvQ) < 4088)
         PFD_SETR(i);
       
-      if (DBufLength(&cptr->sendQ) || IsConnecting(cptr)
-          || ((cptr->flags2 & FLAGS2_ZIP) && (cptr->zip->outcount > 0))
-          )
+      if (IsConnecting(cptr))
         PFD_SETW(i);
     }
 
@@ -363,22 +361,13 @@ int read_message(time_t delay, unsigned char mask)
               exit_client(cptr, cptr, &me, "Lost C/N Line");
               continue;
             }
-            send_queued(cptr);
-            if (!IsDead(cptr))
-              continue;
           }
           else {
             /*
              * ...room for writing, empty some queue then...
              */
-            send_queued(cptr);
-            if (!IsDead(cptr))
-              continue;
+            exit(111); /* XXX we shouldn't get here now! -- adrian */
           }
-          exit_client(cptr, cptr, &me, 
-                     (cptr->flags & FLAGS_SENDQEX) ? 
-                     "SendQ Exceeded" : strerror(get_sockerr(cptr->fd)));
-          continue;
         }
       length = 1;     /* for fall through case */
       if (rr)

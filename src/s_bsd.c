@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.39 2000/10/30 04:56:31 db Exp $
+ *  $Id: s_bsd.c,v 7.40 2000/10/30 08:44:13 adrian Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -631,7 +631,11 @@ void close_connection(struct Client *cptr)
     cptr->dns_reply = 0;
   }
   if (-1 < cptr->fd) {
-    send_queued(cptr);
+    /*
+     * XXX send_queued() was called here. We should flush any dbufs
+     * attached to a FD in the close handlers, when they arrive.
+     *     -- adrian
+     */
     local[cptr->fd] = NULL;
     fdlist_delete(cptr->fd, FDL_ALL);
     fd_close(cptr->fd);

@@ -2,7 +2,7 @@
  * send.h
  * Copyright (C) 1999 Patrick Alken
  *
- * $Id: send.h,v 7.5 2000/10/29 21:01:20 adrian Exp $
+ * $Id: send.h,v 7.6 2000/10/30 08:44:10 adrian Exp $
  */
 
 #ifndef INCLUDED_send_h
@@ -60,8 +60,6 @@ extern  void ts_warn(const char *, ...);
 
 extern  void sendto_prefix_one(struct Client *, struct Client *, 
                                const char *, ...);
-
-extern void flush_sendq_except(struct DBuf*);
 
 /* used when sending to #mask or $mask */
 
