@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.164 2000/12/31 22:39:26 db Exp $
+ * $Id: channel.c,v 7.165 2000/12/31 22:54:01 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -2521,7 +2521,7 @@ void set_channel_mode(struct Client *cptr,
                                modebuf_aops);
       }
 
-      sendto_match_cap_servs(chptr, cptr, CAP_ANONOPS,
+      sendto_match_cap_servs(chptr, cptr, CAP_AOPS,
                              ":%s MODE %s %s",
                              sptr->name, chptr->chname,
                              modebuf_aops);
