@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_version.c,v 1.10 2000/12/24 05:05:28 isomer Exp $
+ *   $Id: m_version.c,v 1.11 2000/12/24 05:20:33 isomer Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -74,9 +74,11 @@ int m_version(struct Client* cptr, struct Client* sptr, int parc, char* parv[])
 int mo_version(struct Client* cptr, struct Client* sptr, int parc, char* parv[])
 {
   if (hunt_server(cptr, sptr, ":%s VERSION :%s", 
-		  1, parc, parv) == HUNTED_ISME)
-    sendto_one(sptr, form_str(RPL_VERSION), me.name,
-	       parv[0], version, serno, debugmode, me.name, serveropts);
+		  1, parc, parv) != HUNTED_ISME)
+    return 0;
+    
+  sendto_one(sptr, form_str(RPL_VERSION), me.name, parv[0], version, 
+  	     serno, debugmode, me.name, serveropts);
 	       
   show_isupport(sptr);
   
