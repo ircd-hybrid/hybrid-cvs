@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.218 2003/10/12 23:08:59 bill Exp $
+ *  $Id: client.h,v 7.219 2003/10/16 23:13:46 stu Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -255,7 +255,7 @@ struct LocalUser
 #endif
 
   struct SlinkRpl  slinkrpl;    /* slink reply being parsed */
-  unsigned char    *slinkq;     /* sendq for control data */
+  char    *slinkq;              /* sendq for control data */
   int              slinkq_ofs;  /* ofset into slinkq */
   int              slinkq_len;  /* length remaining after slinkq_ofs */
 

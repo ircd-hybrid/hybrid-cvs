@@ -92,7 +92,7 @@
 #define DNS_LABELTYPE_BITSTRING 0x41
 #define MAXLINE 128
 
-/* $Id: irc_reslib.c,v 7.22 2003/06/25 09:22:56 michael Exp $ */
+/* $Id: irc_reslib.c,v 7.23 2003/10/16 23:13:50 stu Exp $ */
 
 struct irc_ssaddr irc_nsaddr_list[IRCD_MAXNS];
 int irc_nscount = 0;
@@ -279,7 +279,7 @@ irc_ns_name_uncompress(const unsigned char *msg, const unsigned char *eom,
 
   if ((n = irc_ns_name_unpack(msg, eom, src, tmp, sizeof tmp)) == -1)
     return(-1);
-  if (irc_ns_name_ntop(tmp, dst, dstsiz) == -1)
+  if (irc_ns_name_ntop((char*)tmp, dst, dstsiz) == -1)
     return(-1);
   return(n);
 }
@@ -399,7 +399,7 @@ irc_ns_name_ntop(const char *src, char *dst, size_t dstsiz)
 			}
 			*dn++ = '.';
 		}
-		if ((l = labellen(cp - 1)) < 0) {
+		if ((l = labellen((unsigned char*)(cp - 1))) < 0) {
 			errno = EMSGSIZE; /* XXX */
 			return(-1);
 		}
@@ -959,7 +959,7 @@ irc_encode_bitsring(const char **bp, const char *end, unsigned char **labelp,
   if (!isxdigit((*cp) & 0xff)) /* reject '\[x/BLEN]' */
     return(EINVAL);
 
-  for (tp = *dst + 1; cp < end && tp < eom; cp++) {
+  for (tp = (char*)(dst + 1); cp < end && tp < eom; cp++) {
     switch((c = *cp)) {
     case ']': /* end of the bitstring */
       if (afterslash) {
@@ -1036,7 +1036,7 @@ irc_encode_bitsring(const char **bp, const char *end, unsigned char **labelp,
   **dst = blen;
 
   *bp = cp;
-  *dst = tp;
+  *dst = (unsigned char*)tp;
 
   return(0);
 }

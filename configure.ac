@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.84 2003/09/28 02:15:58 metalrock Exp $
+dnl $Id: configure.ac,v 7.85 2003/10/16 23:13:44 stu Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -8,7 +8,7 @@ dnl said functions need to be just about as complex as they already are.
 AC_PREREQ(2.57)
 
 dnl Sneaky way to get an Id tag into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.84 2003/09/28 02:15:58 metalrock Exp $])
+AC_COPYRIGHT([$Id: configure.ac,v 7.85 2003/10/16 23:13:44 stu Exp $])
 
 AC_INIT([ircd-hybrid],[7-CURRENT])
 
@@ -37,7 +37,7 @@ case `$CC -version 2>&1` in
 *TenDRA*)
 	AC_MSG_RESULT([yes, TenDRA])
 	IRC_CFLAGS=""
-	CPPFLAGS="$CPPFLAGS -Ylonglong -Yansi -I/usr/include"
+	CPPFLAGS="$CPPFLAGS -Ylonglong -Yansi -Ysystem"
 	SGS=yes
 	TenDRA=yes
 ;;

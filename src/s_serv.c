@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.389 2003/10/16 22:23:17 bill Exp $
+ *  $Id: s_serv.c,v 7.390 2003/10/16 23:13:50 stu Exp $
  */
 
 #include "stdinc.h"
@@ -2234,7 +2234,7 @@ cryptlink_init(struct Client *client_p, struct ConfItem *conf, int fd)
 {
   struct AccessItem *aconf;
   char *encrypted;
-  char *key_to_send;
+  unsigned char *key_to_send;
   char randkey[CIPHERKEYLEN];
   int enc_len;
 
@@ -2365,7 +2365,7 @@ static char base64_values[] =
  * using MyMalloc().  It should be freed after use.
  */
 int
-base64_block(char **output, char *data, int len)
+base64_block(unsigned char **output, char *data, int len)
 {
   unsigned char *out;
   unsigned char *in = (unsigned char*)data;
@@ -2410,7 +2410,7 @@ base64_block(char **output, char *data, int len)
   }
 
   out[count] = '\0';
-  *output = (char *)out;
+  *output = out;
   return (count);
 }
 
@@ -2419,7 +2419,7 @@ base64_block(char **output, char *data, int len)
  * using MyMalloc().  It should be freed after use.
  */
 int
-unbase64_block(char **output, char *data, int len)
+unbase64_block(unsigned char **output, char *data, int len)
 {
   unsigned char *out;
   unsigned char *in = (unsigned char*)data;
@@ -2462,7 +2462,7 @@ unbase64_block(char **output, char *data, int len)
   if (in[i-2] == '=') count--;
 
   out[count] = '\0';
-  *output = (char *)out;
+  *output = out;
   return (count);
 }
 

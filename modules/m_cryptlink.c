@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_cryptlink.c,v 1.57 2003/08/03 14:22:19 michael Exp $
+ *  $Id: m_cryptlink.c,v 1.58 2003/10/16 23:13:48 stu Exp $
  */
 
 /*
@@ -95,7 +95,7 @@ _moddeinit(void)
   mod_del_cmd(&cryptlink_msgtab);
 }
 
-const char *_version = "$Revision: 1.57 $";
+const char *_version = "$Revision: 1.58 $";
 #endif
 
 
@@ -147,8 +147,8 @@ cryptlink_auth(struct Client *client_p, struct Client *source_p,
   struct AccessItem *aconf;
   int   enc_len;
   int   len;
-  char *enc;
-  char *key;
+  unsigned char *enc;
+  unsigned char *key;
 
   if (parc < 4)
   {
@@ -270,7 +270,7 @@ cryptlink_serv(struct Client *client_p, struct Client *source_p,
   char *name;
   struct Client *target_p;
   char *key = client_p->localClient->out_key;
-  char *b64_key;
+  unsigned char *b64_key;
   struct ConfItem *conf;
   struct AccessItem *aconf;
   char *encrypted;
@@ -480,7 +480,8 @@ static char *
 parse_cryptserv_args(struct Client *client_p, char *parv[],
                      int parc, char *info, char *key)
 {
-  char *name, *tmp, *out;
+  char *name;
+  unsigned char *tmp, *out;
   int len;
   int decoded_len;
 
