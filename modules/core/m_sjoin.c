@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.45 2000/12/28 02:15:49 davidt Exp $
+ *   $Id: m_sjoin.c,v 1.46 2000/12/28 17:47:30 bill Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -37,6 +37,7 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
+#include "s_serv.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -353,9 +354,14 @@ int     ms_sjoin(struct Client *cptr,
 	  s++;
 	}
       
-      if (*s == '%')
+      if ((*s == '%') && IsCapable(sptr, CAP_HOPS))
 	{
 	  fl |= MODE_HALFOP;
+	  s++;
+	}
+      else if (*s == '%')
+	{
+	  fl |= MODE_CHANOP;
 	  s++;
 	}
 

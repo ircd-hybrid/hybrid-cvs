@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 1.32 2000/12/23 01:42:12 db Exp $
+ *   $Id: m_join.c,v 1.33 2000/12/28 17:47:29 bill Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -300,7 +300,17 @@ int     m_join(struct Client *cptr,
 				   chptr->chname,
 				   parv[0]);
 	}
-      else 
+      else if ((flags & CHFL_HALFOP) && (IsCapable(sptr,CAP_HOPS)))
+	{
+	  chptr->channelts = CurrentTime;
+	  sendto_ll_channel_remote(chptr, cptr, sptr,
+				   ":%s SJOIN %lu %s + :\%%s",
+				   me.name,
+				   chptr->channelts,
+				   chptr->chname,
+				   parv[0]);
+	}
+      else
 	{
 	  sendto_ll_channel_remote(chptr, cptr, sptr,
 				   ":%s SJOIN %lu %s + :%s",
