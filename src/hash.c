@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: hash.c,v 7.19 2001/01/05 18:30:15 cosine Exp $
+ *  $Id: hash.c,v 7.20 2001/01/05 18:31:37 cosine Exp $
  */
 #include "tools.h"
 #include "s_conf.h"
@@ -800,7 +800,7 @@ int mo_hash(struct Client *cptr, struct Client *sptr,int parc,char *parv[])
                  parv[0], totlink, used_now, size);
       if (!used_now)
         used_now = 1;
-      sendto_one(sptr,"NOTICE %s :Hash Ratio (av. depth): %f %Full: %f",
+      sendto_one(sptr,"NOTICE %s :Hash Ratio (av. depth): %f Full: %f",
                  parv[0], (float)((1.0 * totlink) / (1.0 * used_now)),
                  (float)((1.0 * used_now) / (1.0 * size)));
       sendto_one(sptr,"NOTICE %s :Deepest Link: %d Links: %d",
