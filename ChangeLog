@@ -1,3 +1,15 @@
+db          2003/02/10 19:15:04 EST	(20030211_0)
+
+  Modified files:
+    contrib              m_whois.c 
+  Log:
+  - Missing not found numeric fixed
+  
+  Revision  Changes    Path
+  1.9       +2 -3      ircd-hybrid-7/contrib/m_whois.c
+
+
+
 bill        2003/02/08 19:02:29 EST	(20030209_0)
 
   Modified files:
@@ -34969,4 +34981,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4228 2003/02/09 00:02:32 bill Exp $
+$Id: ChangeLog,v 7.4229 2003/02/11 00:15:07 db Exp $
