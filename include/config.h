@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.64 2000/12/23 23:55:31 toot Exp $
+ * $Id: config.h,v 7.65 2000/12/24 00:04:45 ejb Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -256,12 +256,6 @@
 /*   STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP  */
 
 /* You shouldn't change anything below this line, unless absolutely needed. */
-
-/* OPER_ONLY_UMODES - umodes that only opers can set */
-#define OPER_ONLY_UMODES (FLAGS_ADMIN|FLAGS_BOTS|FLAGS_CCONN|FLAGS_DEBUG| \
-						  FLAGS_FULL|FLAGS_SKILL|FLAGS_NCHANGE|FLAGS_OPER| \
-						  FLAGS_REJ|FLAGS_UNAUTH|FLAGS_SPY|FLAGS_EXTERNAL| \
-						  FLAGS_OPERWALL)
 
 /* INITIAL_DBUFS - how many dbufs to preallocate
  */

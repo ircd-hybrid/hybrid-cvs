@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.78 2000/12/23 17:50:31 ejb Exp $
+ *  $Id: s_user.c,v 7.79 2000/12/24 00:04:48 ejb Exp $
  */
 #include "tools.h"
 #include "s_user.h"
@@ -818,7 +818,7 @@ int user_mode(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
                 break;
 
               sptr->umodes &= ~(FLAGS_OPER|FLAGS_ADMIN);
-			  sptr->umodes &= ~OPER_ONLY_UMODES;
+			  sptr->umodes &= ~ConfigFileEntry.oper_only_umodes;
 			  
               Count.oper--;
 
@@ -876,7 +876,7 @@ int user_mode(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
         default :
           if( (flag = user_modes_from_c_to_bitmask[(unsigned char)*m]))
             {
-				if (MyConnect(sptr) && !IsOper(sptr) && (OPER_ONLY_UMODES & flag)) {
+				if (MyConnect(sptr) && !IsOper(sptr) && (ConfigFileEntry.oper_only_umodes & flag)) {
 					badflag = YES;
 				} else {
 					if (what == MODE_ADD)

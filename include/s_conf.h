@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.52 2000/12/23 22:12:24 toot Exp $
+ * $Id: s_conf.h,v 7.53 2000/12/24 00:04:46 ejb Exp $
  */
 
 #ifndef INCLUDED_config_h
@@ -214,6 +214,8 @@ typedef struct
   int	      hide_server;
   int         client_exit;
   int         maximum_links;
+	int       oper_only_umodes;
+	
 } ConfigFileEntryType;
 
 /* bleh. have to become global. */
