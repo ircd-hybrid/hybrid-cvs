@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.167 2001/01/01 13:59:36 toot Exp $
+ * $Id: channel.c,v 7.168 2001/01/01 21:01:38 fl_ Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -1399,17 +1399,9 @@ void set_channel_mode(struct Client *cptr,
             if ((!target_was_op) && (whatt == MODE_ADD) &&
                 ((to_list == &chptr->chanops) ||
                  (to_list == &chptr->halfops)))
-            {
-              send_mode_list(who, chptr->chname, &chptr->exceptlist, 'e', 0);
-              send_mode_list(who, chptr->chname, &chptr->invexlist, 'I', 0);
-            }
             else if (target_was_op && (whatt == MODE_DEL) &&
                      ((to_list != &chptr->chanops) &&
                       (to_list != &chptr->halfops)))
-            {
-              send_mode_list(who, chptr->chname, &chptr->exceptlist, 'e', 1);
-              send_mode_list(who, chptr->chname, &chptr->invexlist, 'I', 1);
-            }
           }
           
           break;
