@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kill.c,v 1.22 2001/01/19 07:20:28 ejb Exp $
+ *   $Id: m_kill.c,v 1.23 2001/01/19 17:36:34 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -97,7 +97,7 @@ int mo_kill(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   if (!(acptr = find_client(user, NULL)))
     {
       /*
-      ** If the user has recently changed nick, we automaticly
+      ** If the user has recently changed nick, automatically
       ** rewrite the KILL for this new nickname--this keeps
       ** servers in synch when nick change and kill collide
       */
@@ -187,7 +187,7 @@ int ms_kill(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   if (!(acptr = find_client(user, NULL)))
     {
       /*
-      ** If the user has recently changed nick, we automaticly
+      ** If the user has recently changed nick, automatically
       ** rewrite the KILL for this new nickname--this keeps
       ** servers in synch when nick change and kill collide
       */
