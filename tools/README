@@ -1,3 +1,5 @@
+$Id: README,v 7.2 2000/10/06 04:27:07 lusky Exp $
+
 A directory of support programs for ircd.
 
 mkpasswd - makes password for O lines
@@ -12,4 +14,4 @@ viconf - edit your conf file without having to chdir su etc. etc.
 
 
 --
-$Id: README,v 7.1 1999/08/26 03:36:31 lusky Exp $
+$Id: README,v 7.2 2000/10/06 04:27:07 lusky Exp $

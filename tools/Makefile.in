@@ -1,4 +1,6 @@
-# $Id: Makefile.in,v 7.4 2000/09/29 17:17:09 ejb Exp $
+# $Id: Makefile.in,v 7.5 2000/10/06 04:27:07 lusky Exp $
+# $Id: Makefile.in,v 7.5 2000/10/06 04:27:07 lusky Exp $
+
 CC=@CC@
 RM=@RM@
 IRCDLIBS=@LIBS@
@@ -48,5 +50,5 @@ install: build
 
 mkpasswd.o: ../include/setup.h ../zlib/zlib.h
 mkpasswd.o: ../zlib/zconf.h
-viconf.o: ../include/config.h ../include/setup.h ../include/defs.h
+viconf.o: ../include/config.h ../include/setup.h
 viconf.o: ../zlib/zlib.h ../zlib/zconf.h

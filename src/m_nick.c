@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_nick.c,v 7.9 2000/09/29 17:17:01 ejb Exp $
+ *   $Id: m_nick.c,v 7.10 2000/10/06 04:27:02 lusky Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -197,7 +197,7 @@ int m_nick(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
       (IsServer(cptr) && strcmp(nick, parv[1])))
     {
       sendto_one(sptr, form_str(ERR_ERRONEUSNICKNAME),
-                 me.name, parv[0], parv[1]);
+                 me.name, BadPtr(parv[0]) ? "*" : parv[0], parv[1]);
       
       if (IsServer(cptr))
         {

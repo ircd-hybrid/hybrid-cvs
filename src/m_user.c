@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_user.c,v 7.4 2000/07/20 02:42:53 db Exp $
+ *   $Id: m_user.c,v 7.5 2000/10/06 04:27:03 lusky Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -116,7 +116,7 @@ int m_user(struct Client* cptr, struct Client* sptr, int parc, char *parv[])
       *parv[3] == '\0' || *parv[4] == '\0')
     {
       sendto_one(sptr, form_str(ERR_NEEDMOREPARAMS),
-                 me.name, parv[0], "USER");
+                 me.name, BadPtr(parv[0]) ? "*" : parv[0], "USER");
       if (IsServer(cptr))
         sendto_realops("bad USER param count for %s from %s",
                        parv[0], get_client_name(cptr, HIDE_IP));

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.20 2000/09/29 17:16:53 ejb Exp $
+ * $Id: config.h,v 7.21 2000/10/06 04:26:56 lusky Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -162,12 +162,11 @@
  */
 #define RFC1035_ANAL
 
-/* MAX_MULTI_MESSAGES
- * Maximum number of recipients to a PRIVMSG.  Any more than MAX_MULTI_MESSAGES
- * will not be sent.  If MAX_MULTI_MESSAGES is 1, then any PRIVMSG with a ',' in
- * the target will be rejected.
+/* ALLOW_DOT_IN_IDENT
+ * Defining this will allow periods in ident replies.  Use of this is
+ * strongly discouraged on public networks
  */
-#define MAX_MULTI_MESSAGES 2
+#undef ALLOW_DOT_IN_IDENT
 
 /* CUSTOM_ERR - colorful notice/error/messages
  * Defining this will use custom notice/error/messages from src/messages_cust.tab

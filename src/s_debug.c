@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_debug.c,v 7.18 2000/08/13 22:35:10 ejb Exp $
+ *   $Id: s_debug.c,v 7.19 2000/10/06 04:27:03 lusky Exp $
  */
 #include "s_debug.h"
 #include "channel.h"
@@ -365,7 +365,7 @@ void count_memory(struct Client *cptr,char *nick)
 
   totch = chm + chbm + chu*sizeof(struct SLink) + chi*sizeof(struct SLink);
 
-  sendto_one(cptr, ":%s %d %s :Whowas users %d(%d))",
+  sendto_one(cptr, ":%s %d %s :Whowas users %d(%d)",
              me.name, RPL_STATSDEBUG, nick, wwu, wwu*sizeof(struct User));
 
   sendto_one(cptr, ":%s %d %s :Whowas array %d(%d)",

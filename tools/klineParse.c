@@ -1,10 +1,11 @@
-/* $Id: klineParse.c,v 7.1 1999/08/26 03:36:32 lusky Exp $
+/* $Id: klineParse.c,v 7.2 2000/10/06 04:27:08 lusky Exp $
  * 1.0  17Dec98 Darkshde -- Initial bug ridden release
  * 2.0  07Jan99 Darkshde -- added redundant kline checking
  * 2.1  11Jan99 Darkshde -- added -f made verbose display optional with -v
  *
  * This program will take a kline.conf and remove duplicate and redundant 
  * entries from it, creating a kline.conf.parsed file
+ * $Id: klineParse.c,v 7.2 2000/10/06 04:27:08 lusky Exp $
  */
 
 #define kParseVer "2.12"

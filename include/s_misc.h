@@ -1,3 +1,7 @@
+/*
+ * $Id: s_misc.h,v 7.3 2000/10/06 04:26:58 lusky Exp $ 
+ */
+
 #ifndef INCLUDED_s_misc_h
 #define INCLUDED_s_misc_h
 #ifndef INCLUDED_sys_types_h

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_cjoin.c,v 7.1 2000/10/03 18:14:51 db Exp $
+ *   $Id: m_cjoin.c,v 7.2 2000/10/06 04:27:02 lusky Exp $
  */
 
 #include "handlers.h"
@@ -114,7 +114,7 @@ int     m_cjoin(struct Client *cptr,
   struct Channel *chptr = NULL;
   struct Channel *vchan_chptr = NULL;
   char  *name;
-  char  *name;
+  char  *vchan_name;
   char  *p = NULL;
   
   if (!(sptr->user))
