@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.232 2002/02/19 18:28:17 androsyn Exp $
+ *  $Id: client.c,v 7.233 2002/02/23 05:29:14 a1kmm Exp $
  */
 
 #include "tools.h"
@@ -181,7 +181,24 @@ void _free_client(struct Client* client_p)
   assert(&me != client_p);
   assert(NULL == client_p->prev);
   assert(NULL == client_p->next);
+  assert(IsClosing(client_p) && IsDead(client_p));
+  assert(dlinkFind(&unknown_list, client_p) == NULL);
   assert(dlinkFind(&lclient_list, client_p) == NULL);
+  assert(dlinkFind(&serv_list, client_p) == NULL);
+  assert(dlinkFind(&global_serv_list, client_p) == NULL);
+  assert(dlinkFind(&oper_list, client_p) == NULL);
+
+  /*
+   * clean up extra sockets from P-lines which have been discarded.
+   */
+  if (client_p->localClient->listener)
+  {
+    assert(0 < client_p->localClient->listener->ref_count);
+    if (0 == --client_p->localClient->listener->ref_count &&
+        !client_p->localClient->listener->active) 
+      free_listener(client_p->localClient->listener);
+    client_p->localClient->listener = 0;
+  }
 
   if (MyConnect(client_p))
     {

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.186 2002/02/17 09:07:32 a1kmm Exp $
+ *  $Id: s_user.c,v 7.187 2002/02/23 05:29:15 a1kmm Exp $
  */
 
 #include <sys/types.h>
@@ -424,6 +424,9 @@ int register_local_user(struct Client *client_p, struct Client *source_p,
   if ((status = check_X_line(client_p,source_p)) < 0)
     return status;
 
+  if (IsDead(client_p))
+    return CLIENT_EXITED;
+
   if (source_p->user->id[0] == '\0') 
     {
       for (id = id_get(); find_id(id); id = id_get())
@@ -471,13 +474,14 @@ int register_local_user(struct Client *client_p, struct Client *source_p,
   source_p->localClient->allow_read = MAX_FLOOD_PER_SEC_I;
 
   Count.totalrestartcount++;
-  user_welcome(source_p);
 
   m = dlinkFind(&unknown_list, source_p);
 
   assert(m != NULL);
   dlinkDelete(m, &unknown_list);
   dlinkAdd(source_p, m, &lclient_list);
+
+  user_welcome(source_p);
 
   return (introduce_client(client_p, source_p, user, nick));
 }
