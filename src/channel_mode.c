@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.73 2003/02/23 04:16:10 db Exp $
+ *  $Id: channel_mode.c,v 7.74 2003/02/26 22:58:47 bill Exp $
  */
 
 #include "stdinc.h"
@@ -1292,7 +1292,7 @@ chm_op(struct Client *client_p, struct Client *source_p,
   {
     if (!(*errors & SM_ERR_NOTONCHANNEL))
       sendto_one(source_p, form_str(ERR_USERNOTINCHANNEL), me.name,
-                 source_p->name, chname, opnick);
+                 source_p->name, opnick, chname);
     *errors |= SM_ERR_NOTONCHANNEL;
     return;
   }
@@ -1493,7 +1493,7 @@ chm_halfop(struct Client *client_p, struct Client *source_p,
   {
     if (!(*errors & SM_ERR_NOTONCHANNEL))
       sendto_one(source_p, form_str(ERR_USERNOTINCHANNEL), me.name,
-                 source_p->name, chname, opnick);
+                 source_p->name, opnick, chname);
     *errors |= SM_ERR_NOTONCHANNEL;
     return;
   }
@@ -1630,7 +1630,7 @@ chm_voice(struct Client *client_p, struct Client *source_p,
   {
     if (!(*errors & SM_ERR_NOTONCHANNEL))
       sendto_one(source_p, form_str(ERR_USERNOTINCHANNEL), me.name,
-                 source_p->name, chname, opnick);
+                 source_p->name, opnick, chname);
     *errors |= SM_ERR_NOTONCHANNEL;
     return;
   }
