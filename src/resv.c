@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: resv.c,v 7.11 2002/01/05 09:15:15 a1kmm Exp $
+ *  $Id: resv.c,v 7.12 2002/02/25 19:09:39 androsyn Exp $
  */
 
 #include "tools.h"
@@ -93,10 +93,10 @@ create_nick_resv(char *name, char *reason, int conf)
 
   len = strlen(name);
 
-  if(len > NICKLEN)
+  if(len > NICKLEN - 1)
   {
-    len = NICKLEN;
-    name[NICKLEN] = '\0';
+    len = NICKLEN - 1;
+    name[NICKLEN - 1] = '\0';
   }
 
   if(strlen(reason) > TOPICLEN)
