@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.289 2002/01/03 23:46:15 leeh Exp $
+ * $Id: channel.c,v 7.290 2002/01/05 02:15:41 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -1230,7 +1230,7 @@ check_spambot_warning(struct Client *source_p, const char *name)
  * side effects - compares usercount and servercount against their split
  *                values and adjusts splitmode accordingly
  */
-void check_splitmode()
+void check_splitmode(void *unused)
 {
   if(splitmode)
   {

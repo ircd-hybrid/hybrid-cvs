@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: servlink.h,v 1.19 2001/06/04 14:30:56 davidt Exp $
+ *   $Id: servlink.h,v 1.20 2002/01/05 02:15:38 db Exp $
  */
 
 #ifndef INCLUDED_servlink_servlink_h
@@ -48,9 +48,6 @@
 #define BUFLEN                   READLEN
 #endif
 
-extern struct slink_state       in_state;
-extern struct slink_state       out_state;
-extern struct fd_table          fds[5];
 
 #ifdef HAVE_LIBCRYPTO
 #define CIPHER_BF       1
@@ -109,4 +106,9 @@ struct fd_table
   io_callback   *read_cb;
   io_callback   *write_cb;
 };
+
+extern struct slink_state       in_state;
+extern struct slink_state       out_state;
+extern struct fd_table          fds[5];
+
 #endif /* INCLUDED_servlink_servlink_h */
