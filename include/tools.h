@@ -19,12 +19,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: tools.h,v 1.22 2003/04/13 10:36:48 stu Exp $
+ *  $Id: tools.h,v 1.23 2003/04/16 09:46:58 michael Exp $
  */
 
 #ifndef __TOOLS_H__
 #define __TOOLS_H__
-
 #include "stdinc.h"
 
 /*
@@ -35,49 +34,39 @@ typedef struct _dlink_list dlink_list;
 typedef struct _slink_node slink_node;
 typedef struct _slink_list slink_list;
 
-struct _dlink_node {
-    void *data;
-    dlink_node *prev;
-    dlink_node *next;
-
+struct _dlink_node
+{
+  void *data;
+  dlink_node *prev;
+  dlink_node *next;
 };
   
-struct _dlink_list {
-    dlink_node *head;
-    dlink_node *tail;
-    unsigned long length;
+struct _dlink_list
+{
+  dlink_node *head;
+  dlink_node *tail;
+  unsigned long length;
 };
 
-struct _slink_node {
-    void *data;
-    slink_node *next;
+struct _slink_node
+{
+  void *data;
+  slink_node *next;
 };
 
-struct _slink_list {
-    slink_node *head;
-    unsigned long length;
+struct _slink_list
+{
+  slink_node *head;
+  unsigned long length;
 };
 
-void
-dlinkAdd(void *data, dlink_node * m, dlink_list * list);
-
-void
-dlinkAddBefore(dlink_node *b, void *data, dlink_node *m, dlink_list *list);
-
-void
-dlinkAddTail(void *data, dlink_node *m, dlink_list *list);
-
-void
-dlinkDelete(dlink_node *m, dlink_list *list);
-
-void
-dlinkMoveList(dlink_list *from, dlink_list *to);
-
-dlink_node *
-dlinkFind(dlink_list *m, void *data);
-
-dlink_node *
-dlinkFindDelete(dlink_list *m, void *data);
+extern void dlinkAdd(void *data, dlink_node * m, dlink_list * list);
+extern void dlinkAddBefore(dlink_node *b, void *data, dlink_node *m, dlink_list *list);
+extern void dlinkAddTail(void *data, dlink_node *m, dlink_list *list);
+extern void dlinkDelete(dlink_node *m, dlink_list *list);
+extern void dlinkMoveList(dlink_list *from, dlink_list *to);
+extern dlink_node *dlinkFind(dlink_list *m, void *data);
+extern dlink_node *dlinkFindDelete(dlink_list *m, void *data);
 
 #ifndef NDEBUG
 void mem_frob(void *data, int len);
@@ -85,9 +74,9 @@ void mem_frob(void *data, int len);
 #define mem_frob(x, y) 
 #endif
 
-void slink_add(void *data, slink_node *node, slink_list *list);
-void slink_delete(slink_node *node, slink_list *list);
-slink_node *slink_find(slink_list *list, void *data);
+extern void slink_add(void *data, slink_node *node, slink_list *list);
+extern void slink_delete(slink_node *node, slink_list *list);
+extern slink_node *slink_find(slink_list *list, void *data);
 
 /* These macros are basically swiped from the linux kernel
  * they are simple yet effective

@@ -19,16 +19,16 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.56 2003/04/13 13:02:10 adx Exp $
+ *  $Id: hash.c,v 7.57 2003/04/16 09:46:59 michael Exp $
  */
 
 #include "stdinc.h"
-
 #include "tools.h"
 #include "s_conf.h"
 #include "channel.h"
 #include "client.h"
 #include "common.h"
+#include "list.h"
 #include "hash.h"
 #include "resv.h"
 #include "irc_string.h"
@@ -53,10 +53,10 @@
 static unsigned int hash_channel_name(const char* name);
 
 #ifdef DEBUGMODE
-static struct HashEntry* clientTable = NULL;
-static struct HashEntry* channelTable = NULL;
-static struct HashEntry* idTable = NULL;
-static struct HashEntry* resvTable = NULL;
+static struct HashEntry *clientTable  = NULL;
+static struct HashEntry *channelTable = NULL;
+static struct HashEntry *idTable      = NULL;
+static struct HashEntry *resvTable    = NULL;
 static int clhits;
 static int clmiss;
 static int chhits;
@@ -64,13 +64,11 @@ static int chmiss;
 static int rhits;
 static int rmiss;
 #else
-
 static struct HashEntry clientTable[U_MAX];
 static int exceeding_sendq(struct Client *);
 static struct HashEntry channelTable[CH_MAX];
 static struct HashEntry idTable[U_MAX];
 static struct HashEntry resvTable[R_MAX];
-
 #endif
 
 /* XXX move channel hash into channel.c or hash channel stuff in channel.c
@@ -80,22 +78,22 @@ extern BlockHeap *channel_heap;
 
 struct HashEntry hash_get_channel_block(int i)
 {
-  return channelTable[i];
+  return(channelTable[i]);
 }
 
 size_t hash_get_channel_table_size(void)
 {
-  return sizeof(struct HashEntry) * CH_MAX;
+  return(sizeof(struct HashEntry) * CH_MAX);
 }
 
 size_t hash_get_client_table_size(void)
 {
-  return sizeof(struct HashEntry) * U_MAX;
+  return(sizeof(struct HashEntry) * U_MAX);
 }
 
 size_t hash_get_resv_table_size(void)
 {
-  return sizeof(struct HashEntry) * R_MAX;
+  return(sizeof(struct HashEntry) * R_MAX);
 }
 
 /*
@@ -135,32 +133,32 @@ int hash_nick_name(const char* name)
   unsigned int h = 0;
 
   while (*name)
-    {
-      h = (h << 4) - (h + (unsigned char)ToLower(*name++));
-    }
+  {
+    h = (h << 4) - (h + (unsigned char)ToLower(*name++));
+  }
 
   return(h & (U_MAX - 1));
 }
 
-/*
- * hash_id
+/* hash_id()
  *
  * IDs are a easy to hash -- they're already evenly distributed,
  * and they are always case sensitive.   -orabidoo
  */
-static  unsigned int 
+static unsigned int 
 hash_id(const char *nname)
 {
-	unsigned int h = 0;
-	
-	while (*nname) {
-		h = (h << 4) - (h + (unsigned char)*nname++);
-	}
+  unsigned int h = 0;
 
-	return (h & (U_MAX - 1));
+  while (*nname)
+  {
+    h = (h << 4) - (h + (unsigned char)*nname++);
+  }
+
+  return(h & (U_MAX - 1));
 }
-/*
- * hash_channel_name
+
+/* hash_channel_name()
  *
  * calculate a hash value on at most the first 30 characters of the channel
  * name. Most names are short than this or dissimilar in this range. There
@@ -174,16 +172,13 @@ int hash_channel_name(const char* name)
   unsigned int h = 0;
 
   while (*name && --i)
-    {
-      h = (h << 4) - (h + (unsigned char)ToLower(*name++));
-    }
-
-  return (h & (CH_MAX - 1));
+  {
+    h = (h << 4) - (h + (unsigned char)ToLower(*name++));
+  }
+  return(h & (CH_MAX - 1));
 }
 
-
-/*
- * hash_resv_channel()
+/* hash_resv_channel()
  *
  * calculate a hash value on at most the first 30 characters and add
  * it to the resv hash
@@ -199,11 +194,10 @@ int hash_resv_channel(const char *name)
     h = (h << 4) - (h + (unsigned char)ToLower(*name++));
   }
 
-  return (h & (R_MAX -1));
+  return(h & (R_MAX -1));
 }
 
-/*
- * clear_client_hash_table
+/* clear_client_hash_table()
  *
  * Nullify the hashtable and its contents so it is completely empty.
  */
@@ -213,14 +207,13 @@ clear_client_hash_table(void)
 #ifdef DEBUGMODE
   clhits = 0;
   clmiss = 0;
-  if(!clientTable)
+  if (!clientTable)
     clientTable = (struct HashEntry*) MyMalloc(U_MAX * sizeof(struct HashEntry));
 #endif
   memset(clientTable, 0, sizeof(struct HashEntry) * U_MAX);
 }
 
-/*
- * clear_id_hash_table
+/* clear_id_hash_table()
  *
  * Nullify the hashtable and its contents so it is completely empty.
  */
@@ -233,7 +226,7 @@ clear_id_hash_table(void)
    * idmiss = 0;
    * -cosine
    */
-  if(!idTable)
+  if (!idTable)
     idTable = (struct HashEntry*) MyMalloc(U_MAX * sizeof(struct HashEntry));
 #endif
   memset(idTable, 0, sizeof(struct HashEntry) * U_MAX);
