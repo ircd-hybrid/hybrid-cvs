@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_invite.c,v 1.8 2000/12/13 16:09:03 db Exp $
+ *   $Id: m_invite.c,v 1.9 2000/12/13 19:58:13 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -200,7 +200,6 @@ int     ms_invite(struct Client *cptr,
                  int parc,
                  char *parv[])
 {
-  /* XXX Consider just mapping this to m_invite in parse.c -db */
   return (m_invite(cptr,sptr,parc,parv));
   /* NOT REACHED */
   return 0;
