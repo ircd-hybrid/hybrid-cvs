@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.213 2002/10/30 21:44:53 androsyn Exp $
+ *  $Id: s_user.c,v 7.214 2002/10/30 21:53:30 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -864,21 +864,20 @@ do_local_user(char* nick, struct Client* client_p, struct Client* source_p,
 
   strlcpy(source_p->info, realname, sizeof(source_p->info));
  
+  if (!IsGotId(source_p)) 
+  {
+     /*
+      * save the username in the client
+      * If you move this you'll break ping cookies..you've been warned 
+      */
+      strlcpy(source_p->username, username, sizeof(source_p->username));
+  }
+
   if (source_p->name[0])
   { 
     /* NICK already received, now I have USER... */
     	return register_local_user(client_p, source_p, source_p->name, username);
   }
-  else
-    {
-      if (!IsGotId(source_p)) 
-        {
-          /*
-           * save the username in the client
-           */
-          strlcpy(source_p->username, username, sizeof(source_p->username));
-        }
-    }
   return 0;
 }
 
