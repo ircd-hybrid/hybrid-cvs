@@ -3,7 +3,7 @@
  *
  * This code was borrowed from the squid web cache by Adrian Chadd.
  *
- * $Id: event.c,v 7.10 2001/01/04 20:36:51 a1kmm Exp $
+ * $Id: event.c,v 7.11 2001/01/05 15:27:19 toot Exp $
  *
  * Original header follows:
  *
@@ -259,9 +259,9 @@ show_events(struct Client *sptr)
   while (e != NULL)
     {
       sendto_one(sptr,
-                 ":%s NOTICE %s :*** %-20s %lu seconds     %d",
+                 ":%s NOTICE %s :*** %-20s %-3d seconds     %d",
                  me.name,sptr->name,
-                 e->name, e->when - CurrentTime, e->weight);
+                 e->name, (int)(e->when - CurrentTime), e->weight);
       e = e->next;
     }
   sendto_one(sptr,":%s NOTICE %s :*** Finished",me.name,sptr->name);

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_knock.c,v 1.19 2001/01/05 00:14:29 davidt Exp $
+ *   $Id: m_knock.c,v 1.20 2001/01/05 15:27:13 toot Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -109,12 +109,11 @@ static int m_knock(struct Client *cptr,
    * -davidt
    */
 
-  if((chptr->last_knock + 30) > CurrentTime)
+  if((chptr->last_knock + ConfigFileEntry.knock_delay) > CurrentTime)
     {
-      sendto_one(sptr, ":%s NOTICE %s :*** Notice -- Wait %lu seconds before another knock to %s",
+      sendto_one(sptr, ":%s NOTICE %s :*** Notice -- Wait %d seconds before another knock to %s",
                  me.name, sptr->name,
-                 30 - (CurrentTime -
-                       chptr->last_knock),
+                 (int)(ConfigFileEntry.knock_delay - CurrentTime - chptr->last_knock),
                  parv[1]);
       return 0;
     }

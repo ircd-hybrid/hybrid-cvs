@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.106 2001/01/05 14:52:44 toot Exp $
+ *  $Id: s_user.c,v 7.107 2001/01/05 15:27:19 toot Exp $
  */
 #include "tools.h"
 #include "s_user.h"
@@ -197,22 +197,22 @@ void show_opers(struct Client *cptr)
 	  ptr = cptr2->localClient->confs.head;
 	  aconf = ptr->data;
 
-          sendto_one(cptr, ":%s %d %s :[%c][%s] %s (%s@%s) Idle: %lu",
+          sendto_one(cptr, ":%s %d %s :[%c][%s] %s (%s@%s) Idle: %d",
                      me.name, RPL_STATSDEBUG, cptr->name,
                      IsOper(cptr2) ? 'O' : 'o',
 		     oper_privs_as_string(cptr2, aconf->port),
                      cptr2->name,
                      cptr2->username, cptr2->host,
-                     CurrentTime - cptr2->user->last);
+                     (int)(CurrentTime - cptr2->user->last));
         }
       else
         {
-          sendto_one(cptr, ":%s %d %s :[%c] %s (%s@%s) Idle: %lu",
+          sendto_one(cptr, ":%s %d %s :[%c] %s (%s@%s) Idle: %d",
                      me.name, RPL_STATSDEBUG, cptr->name,
                      IsOper(cptr2) ? 'O' : 'o',
                      cptr2->name,
                      cptr2->username, cptr2->host,
-                     CurrentTime - cptr2->user->last);
+                     (int)(CurrentTime - cptr2->user->last));
         }
     }
 
