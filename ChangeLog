@@ -1,3 +1,9 @@
+*** 20001126_3 by bill
+
+va'ified send_operwall
+added zlib/ and iauth/ to SUBDIRS in Makefile
+
+
 *** 20001126_2 by db
 - fixed m_kline.c
 
@@ -760,7 +766,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.585 2000/11/26 18:33:08 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.586 2000/11/26 18:37:05 bill Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
