@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.63 2001/01/05 00:14:35 davidt Exp $
+ *   $Id: m_sjoin.c,v 1.64 2001/01/05 02:03:21 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -294,6 +294,14 @@ static int ms_sjoin(struct Client *cptr,
     hide_or_not = ONLY_CHANOPS;
   else
     hide_or_not = ALL_MEMBERS;
+
+  if ((MODE_HIDEOPS & mode.mode) && !(MODE_HIDEOPS & oldmode->mode))
+    sync_channel_oplists(chptr, 1);
+
+  /* Don't reveal the ops, only to remove them all */
+  if (keep_our_modes)
+    if (!(MODE_HIDEOPS & mode.mode) && (MODE_HIDEOPS & oldmode->mode))
+      sync_channel_oplists(chptr, 0);
 
   set_final_mode(&mode,oldmode);
   chptr->mode = mode;
