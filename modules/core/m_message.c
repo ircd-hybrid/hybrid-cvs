@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.18 2000/12/06 02:20:27 db Exp $
+ *   $Id: m_message.c,v 1.19 2000/12/06 02:31:13 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -265,8 +265,7 @@ int build_target_list(int p_or_n,
 	{
 	  if( (chptr = hash_find_channel(nick, NullChn)) )
 	    {
-	      if( !duplicate_ptr(chptr, target_table, i) &&
-		  !flood_attack_channel(sptr, chptr) )
+	      if( !duplicate_ptr(chptr, target_table, i) ) 
 		{
 		  target_table[i].ptr = (void *)chptr;
 		  target_table[i++].type = ENTITY_CHANNEL;
@@ -318,8 +317,7 @@ int build_target_list(int p_or_n,
 
 	  if ( (chptr = hash_find_channel(nick+1, NullChn)) )
 	    {
-	      if( !duplicate_ptr(chptr, target_table,i) &&
-		  !flood_attack_channel(sptr, chptr) )
+	      if( !duplicate_ptr(chptr, target_table,i) )
 		{
 		  target_table[i].ptr = (void *)chptr;
 		  target_table[i].type = ENTITY_CHANOPS_ON_CHANNEL;
@@ -434,9 +432,10 @@ void msg_channel( int p_or_n, char *command,
 
   if(can_send(chptr,sptr))
     {
-      sendto_channel_butone(cptr, sptr, chptr,
-			    ":%s %s %s :%s",
-			    sptr->name, command, channel_name, text);
+      if(!flood_attack_channel(sptr, chptr))
+	sendto_channel_butone(cptr, sptr, chptr,
+			      ":%s %s %s :%s",
+			      sptr->name, command, channel_name, text);
     }
   else
     {
