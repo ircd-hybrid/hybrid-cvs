@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: dbuf.h,v 7.12 2003/05/04 16:26:05 adx Exp $
+ *  $Id: dbuf.h,v 7.13 2003/05/27 17:45:51 joshk Exp $
  */
 
 #ifndef __DBUF_H_INCLUDED
@@ -41,7 +41,7 @@ struct dbuf_queue
 };
 
 extern void dbuf_init(void);
-extern void dbuf_put(struct dbuf_queue *, void *, size_t);
+extern void dbuf_put(struct dbuf_queue *, char *, size_t);
 extern void dbuf_delete(struct dbuf_queue *, size_t);
 
 #define dbuf_length(x) ((x)->total_size)

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.110 2003/05/19 15:14:18 adx Exp $
+ *  $Id: packet.c,v 7.111 2003/05/27 17:45:53 joshk Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -455,7 +455,7 @@ read_packet(int fd, void *data)
     client_p->since = CurrentTime;
   ClearPingSent(client_p);
 
-  dbuf_put(&client_p->localClient->buf_recvq, (void *)readBuf, length);
+  dbuf_put(&client_p->localClient->buf_recvq, readBuf, length);
   
   /* Attempt to parse what we have */
   parse_client_queued(client_p);

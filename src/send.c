@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.261 2003/05/25 04:38:00 db Exp $
+ *  $Id: send.c,v 7.262 2003/05/27 17:45:53 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -151,7 +151,7 @@ send_message(struct Client *to, char *buf, int len)
     return;
   }
 
-  dbuf_put(&to->localClient->buf_sendq, (void *) buf, len);
+  dbuf_put(&to->localClient->buf_sendq, buf, len);
 
   /*
    ** Update statistics. The following is slightly incorrect
