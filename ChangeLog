@@ -1,3 +1,9 @@
+*** 20001126_8 by db
+- .depend included references to in6.h which ltnx didn't have oops.
+- committed bysin's whois fix
+
+
+
 *** 20001126_7 by db
 - Seeing as there is next to nothing left of irc2.8 I'm removing
   it from the patchlevel.
@@ -832,7 +838,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.590 2000/11/26 22:26:25 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.591 2000/11/26 23:00:45 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
