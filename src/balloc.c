@@ -8,7 +8,7 @@
  * Owner:  Wohali (Joan Touzet)
  *
  *
- * $Id: balloc.c,v 7.12 2001/09/28 16:40:25 davidt Exp $
+ * $Id: balloc.c,v 7.13 2001/10/01 20:27:13 androsyn Exp $
  */
 
 #define WE_ARE_MEMORY_C
@@ -79,6 +79,10 @@ static inline void free_block(void *ptr, size_t unused)
 	free(ptr);
 }
 
+void initBlockHeap()
+{
+	return;
+}
 #endif /* HAVE_MMAP */
 
 
