@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_cjoin.c,v 7.15 2000/11/06 06:56:49 db Exp $
+ *   $Id: m_cjoin.c,v 7.16 2000/11/06 22:24:15 db Exp $
  */
 
 #include "handlers.h"
@@ -145,9 +145,7 @@ int     m_cjoin(struct Client *cptr,
 
   name = parv[1];
   if ( (p = strchr(name,',')) )
-    {
-      *p = '\0';
-    }
+    *p = '\0';
 
   if (!check_channel_name(name))
     {
