@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_connect.c,v 1.6 2000/12/09 05:59:43 db Exp $
+ *   $Id: m_connect.c,v 1.7 2000/12/11 02:50:47 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -251,10 +251,10 @@ int ms_connect(struct Client* cptr, struct Client* sptr, int parc, char* parv[])
   /*
    * Notify all operators about remote connect requests
    */
-  send_operwall( &me, NULL,
-		 ":Remote CONNECT %s %s from %s",
-		 parv[1], parv[2] ? parv[2] : "",
-		 get_client_name(sptr, FALSE));
+  sendto_all_local_opers( &me, NULL,
+			  "Remote CONNECT %s %s from %s",
+			  parv[1], parv[2] ? parv[2] : "",
+			  get_client_name(sptr, FALSE));
   sendto_serv_butone(cptr,
 		     ":%s WALLOPS :Remote CONNECT %s %s from %s",
 		     me.name, parv[1], parv[2] ? parv[2] : "",

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.122 2000/12/10 23:59:01 db Exp $
+ * $Id: channel.c,v 7.123 2000/12/11 02:50:49 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -82,17 +82,21 @@ static  char    modebuf[MODEBUFLEN], modebuf2[MODEBUFLEN];
 static  char    parabuf[MODEBUFLEN], parabuf2[MODEBUFLEN];
 
 /*
- *  Fixes a string so that the first white space found becomes an end of
- * string marker (`\0`).  returns the 'fixed' string or "*" if the string
- * was NULL length or a NULL pointer.
+ * check_string
+ *
+ * inputs	- string to check
+ * output	- pointer to modified string
+ * side effects - Fixes a string so that the first white space found
+ *                becomes an end of string marker (`\0`).
+ *                returns the 'fixed' string or "*" if the string
+ *                was NULL length or a NULL pointer.
  */
 static char* check_string(char* s)
 {
-  static char star[2] = "*";
   char* str = s;
 
-  if (BadPtr(s))
-    return star;
+  if (s == NULL)
+    return "*";
 
   for ( ; *s; ++s)
     {
@@ -1963,6 +1967,7 @@ void set_channel_mode(struct Client *cptr,
   else
     type = ALL_MEMBERS;
 
+  /* User generated prefixes */
   if(*modebuf)
     {
       if(IsServer(sptr))
@@ -1986,7 +1991,6 @@ void set_channel_mode(struct Client *cptr,
                          sptr->name, chptr->chname,
                          modebuf, parabuf);
     }
-
   if(*modebuf_ex)
     {
       if(IsServer(sptr))

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_locops.c,v 1.8 2000/12/09 06:10:17 db Exp $
+ *   $Id: m_locops.c,v 1.9 2000/12/11 02:50:47 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -73,7 +73,7 @@ int m_locops(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 
   if(MyConnect(sptr) && IsAnyOper(sptr))
     {
-      send_operwall(sptr, "LOCOPS", "%s", message);
+      sendto_all_local_opers(sptr, NULL, "LOCOPS", "%s", message);
     }
   else
     {
