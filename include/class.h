@@ -19,11 +19,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: class.h,v 7.11 2003/02/18 22:26:33 db Exp $
+ *  $Id: class.h,v 7.12 2003/02/19 09:51:10 a1kmm Exp $
  */
 
 #ifndef INCLUDED_class_h
 #define INCLUDED_class_h
+#include "tools.h"
 
 struct ConfItem;
 struct Client;

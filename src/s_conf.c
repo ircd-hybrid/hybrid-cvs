@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.343 2003/02/18 22:26:39 db Exp $
+ *  $Id: s_conf.c,v 7.344 2003/02/19 09:51:08 a1kmm Exp $
  */
 
 #include "stdinc.h"
@@ -185,6 +185,7 @@ make_conf(int status)
   struct ConfItem* aconf;
 
   aconf = (struct ConfItem*) MyMalloc(sizeof(struct ConfItem));
+  memset(aconf, 0, sizeof(*aconf));
   aconf->status       = status;
   aconf->aftype       = AF_INET;
   return(aconf);
@@ -1201,6 +1202,7 @@ find_x_conf(char *to_find)
 
   DLINK_FOREACH(ptr, ConfigItemList.head)
   {
+    aconf = ptr->data;
     if (EmptyString(aconf->name))
       continue;
 
