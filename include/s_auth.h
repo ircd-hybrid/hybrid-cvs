@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.h,v 7.9 2001/01/08 02:55:00 db Exp $
+ *   $Id: s_auth.h,v 7.10 2001/01/08 15:36:56 db Exp $
  */
 #ifndef INCLUDED_s_auth_h
 #define INCLUDED_s_auth_h
@@ -38,8 +38,6 @@
 struct Client;
 
 struct AuthRequest {
-  struct AuthRequest* next;      /* linked list node ptr */
-  struct AuthRequest* prev;      /* linked list node ptr */
   struct Client*      client;    /* pointer to client struct for request */
   unsigned int        flags;     /* current state of request */
   int                 fd;        /* file descriptor for auth queries */

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: ircdauth.c,v 7.30 2001/01/08 02:55:06 db Exp $
+ *   $Id: ircdauth.c,v 7.31 2001/01/08 15:37:01 db Exp $
  */
 
 #include <stdio.h>
@@ -749,13 +749,12 @@ static void
 BadAuth(int parc, char **parv)
 
 {
-	struct AuthRequest *auth;
-	long id;
+  struct AuthRequest *auth;
+  long id;
 
-	id = strtol(parv[1], 0, 0);
-	if ((auth = FindAuthClient(id)))
-	{
-		exit_client(auth->client, auth->client, &me,
-			parv[2] + 1);
-	}
+  id = strtol(parv[1], 0, 0);
+  if ((auth = FindAuthClient(id)))
+    {
+      exit_client(auth->client, auth->client, &me, parv[2] + 1);
+    }
 } /* BadAuth() */
