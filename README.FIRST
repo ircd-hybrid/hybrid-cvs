@@ -11,6 +11,8 @@ ircd-hybrid.
 Reading INSTALL is now a must, as the old DPATH is now specified when
 configure is run.
 
+Please read doc/index.txt to get an overview of the current documentation.
+
 *** IMPORTANT ***
 Old Hybrid 5/6 configuration files are no longer supported.  All conf
 files will have to be converted to the Hybrid 7 format.  A convertconf
@@ -40,4 +42,4 @@ CYGWIN USERS: Unfortunately, cygwin support has been removed,
 because there is no way to support dynamic modules under cygwin.
 
 --
-$Id: README.FIRST,v 7.4 2000/12/23 17:20:48 wcampbel Exp $
+$Id: README.FIRST,v 7.5 2000/12/28 21:43:54 adrian Exp $
