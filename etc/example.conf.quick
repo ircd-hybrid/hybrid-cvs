@@ -3,7 +3,7 @@
  *
  * Written by ejb, wcampbel, db, leeh and others
  *
- * $Id: example.conf.quick,v 1.2 2003/05/15 10:14:03 metalrock Exp $
+ * $Id: example.conf.quick,v 1.3 2003/05/19 15:06:39 joshk Exp $
  */
 
 /* IMPORTANT NOTES:
@@ -319,7 +319,7 @@ general {
 
 	max_targets = 4;
 	client_flood = 2560;
-	message_locale = "custom";
+	message_locale = "standard";
 	oper_only_umodes = bots, cconn, debug, full, skill, nchange, 
                      rej, spy, external, operwall, locops, unauth;
 
