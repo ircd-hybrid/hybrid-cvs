@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 1.31 2000/12/25 17:59:25 toot Exp $
+ *   $Id: m_whois.c,v 1.32 2000/12/25 19:02:49 ejb Exp $
  */
 #include "tools.h"
 #include "common.h"   /* bleah */
@@ -424,7 +424,7 @@ int     ms_whois(struct Client *cptr,
    * then allow leaf to use normal client m_whois()
    * other wise, ignore it.
    */
-  if(ConfigFileEntry.hub)
+  if(!IsOper(sptr) && ConfigFileEntry.hide_server)
     {
       if(!IsCapable(cptr->from,CAP_LL))
 	return 0;
