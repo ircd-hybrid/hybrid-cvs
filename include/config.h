@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.69 2000/12/28 20:26:37 toot Exp $
+ * $Id: config.h,v 7.70 2000/12/29 05:46:04 db Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -103,6 +103,7 @@
 #define PPATH   ETCPATH "/ircd.pid"
 #define HPATH   ETCPATH "/opers.txt"
 #define OPATH   ETCPATH "/opers.motd"
+#define LIPATH   ETCPATH "/links.txt"
 
 /* TS_MAX_DELTA_DEFAULT and TS_WARN_DELTA_DEFAULT -
  * allowed delta for TS when another server connects.

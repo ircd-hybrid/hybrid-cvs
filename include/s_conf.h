@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.59 2000/12/29 00:50:29 wcampbel Exp $
+ * $Id: s_conf.h,v 7.60 2000/12/29 05:46:05 db Exp $
  */
 
 #include <sys/param.h>
@@ -178,13 +178,14 @@ typedef struct
   char* network_name;
   char* network_desc;
 
-	char fname_operlog[MAXPATHLEN];
-	char fname_userlog[MAXPATHLEN];
-	char fname_foperlog[MAXPATHLEN];
+  char fname_operlog[MAXPATHLEN];
+  char fname_userlog[MAXPATHLEN];
+  char fname_foperlog[MAXPATHLEN];
 	
   MessageFile helpfile;
   MessageFile motd;
   MessageFile opermotd;
+  MessageFile linksfile;
 
   int         hub;
   int         dots_in_ident;
@@ -217,9 +218,9 @@ typedef struct
   int	      hide_server;
   int         client_exit;
   int         maximum_links;
-	int       oper_only_umodes;
-	int       max_targets;
-	int       links_notice;
+  int         oper_only_umodes;
+  int         max_targets;
+  int         links_notice;
 } ConfigFileEntryType;
 
 /* bleh. have to become global. */

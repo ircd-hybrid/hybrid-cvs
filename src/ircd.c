@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.89 2000/12/24 22:45:49 db Exp $
+ * $Id: ircd.c,v 7.90 2000/12/29 05:46:11 db Exp $
  */
 #include "tools.h"
 #include "ircd.h"
@@ -389,10 +389,12 @@ static void initialize_message_files(void)
     InitMessageFile( HELP_MOTD, HPATH, &ConfigFileEntry.helpfile );
     InitMessageFile( USER_MOTD, MPATH, &ConfigFileEntry.motd );
     InitMessageFile( OPER_MOTD, OPATH, &ConfigFileEntry.opermotd );
+    InitMessageFile( USER_LINKS, LIPATH, &ConfigFileEntry.linksfile );
 
     ReadMessageFile( &ConfigFileEntry.helpfile );
     ReadMessageFile( &ConfigFileEntry.motd );
     ReadMessageFile( &ConfigFileEntry.opermotd );
+    ReadMessageFile( &ConfigFileEntry.linksfile );
   }
 
 /*

@@ -1,7 +1,7 @@
 /*
  * motd.h
  *
- * $Id: motd.h,v 7.1 1999/12/30 20:35:32 db Exp $
+ * $Id: motd.h,v 7.2 2000/12/29 05:46:05 db Exp $
  */
 #ifndef INCLUDED_motd_h
 #define INCLUDED_motd_h
@@ -17,6 +17,7 @@
 
 typedef enum {
   USER_MOTD,
+  USER_LINKS,
   OPER_MOTD,
   HELP_MOTD
 } MotdType;
