@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.c,v 7.80 2003/04/23 19:07:49 bill Exp $
+ *  $Id: hostmask.c,v 7.81 2003/05/02 19:56:12 bill Exp $
  */
 
 #include "stdinc.h"
@@ -660,43 +660,51 @@ delete_one_address_conf(const char *address, struct ConfItem *aconf)
  * Output: None
  * Side effects: Clears out all address records in the hash table,
  *               frees them, and frees the ConfItems if nothing references
- *               them, otherwise sets them as illegal.
+ *               them, otherwise sets them as illegal.   
  */
 void
 clear_out_address_conf(void)
 {
   int i;
-  struct AddressRec **store_next;
-  struct AddressRec *arec, *arec_next;
-
+  struct AddressRec *arec;
+  struct AddressRec *last_arec;
+  struct AddressRec *next_arec;
+ 
   for (i = 0; i < ATABLE_SIZE; i++)
   {
-    store_next = &atable[i];
-    for (arec = atable[i]; arec; arec = arec_next)
+    last_arec = NULL;
+    for (arec = atable[i]; arec; arec = next_arec)
     {
-      /*
-       * We keep only the temporary klines, because the
-       * permanent ones will be re-read. -bill
-       */
-      arec_next = arec->next;
+      /* We keep the temporary K-lines and destroy the
+       * permanent ones, just to be confusing :) -A1kmm
+       */  
+      next_arec = arec->next;
 
       if (arec->aconf->flags & CONF_FLAGS_TEMPORARY)
       {
-        *store_next = arec;
-        store_next = &arec->next;
+        last_arec = arec;
       }
-      else
+      else   
       {
+        /* unlink it from link list - Dianora */
+  
+        if (last_arec == NULL)
+        {
+          atable[i] = next_arec;
+        }
+        else
+        {
+          last_arec->next = next_arec;
+        }
+
         arec->aconf->status |= CONF_ILLEGAL;
         if (arec->aconf->clients == 0)
           free_conf(arec->aconf);
         MyFree(arec);
       }
     }
-    *store_next = NULL;
   }
 }
-
 
 /*
  * show_iline_prefix()
