@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_misc.c,v 7.5 2000/10/31 22:59:55 db Exp $
+ *  $Id: s_misc.c,v 7.6 2000/11/26 19:34:35 adrian Exp $
  */
 #include "s_misc.h"
 #include "client.h"
@@ -159,7 +159,7 @@ void serv_info(struct Client *cptr,char *name)
       if(IsAnyOper(cptr))
         sendto_one(cptr, Lformat, me.name, RPL_STATSLINKINFO,
                    name, get_client_name(acptr, TRUE),
-                   (int)DBufLength(&acptr->sendQ),
+                   (int)linebuf_len(&acptr->buf_sendq),
                    (int)acptr->sendM, (int)acptr->sendK,
                    (int)acptr->receiveM, (int)acptr->receiveK,
                    CurrentTime - acptr->firsttime,
@@ -169,7 +169,7 @@ void serv_info(struct Client *cptr,char *name)
         {
           sendto_one(cptr, Lformat, me.name, RPL_STATSLINKINFO,
                      name, get_client_name(acptr, HIDEME),
-                     (int)DBufLength(&acptr->sendQ),
+                     (int)linebuf_len(&acptr->buf_sendq),
                      (int)acptr->sendM, (int)acptr->sendK,
                      (int)acptr->receiveM, (int)acptr->receiveK,
                      CurrentTime - acptr->firsttime,

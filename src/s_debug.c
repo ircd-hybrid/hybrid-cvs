@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_debug.c,v 7.23 2000/11/06 08:40:49 db Exp $
+ *   $Id: s_debug.c,v 7.24 2000/11/26 19:34:35 adrian Exp $
  */
 #include "s_debug.h"
 #include "channel.h"
@@ -25,7 +25,6 @@
 #include "class.h"
 #include "client.h"
 #include "common.h"
-#include "dbuf.h"
 #include "fdlist.h"
 #include "fileio.h"
 #include "hash.h"
@@ -333,6 +332,7 @@ void count_memory(struct Client *cptr,char *nick)
    * the results. since sending the results results in a dbuf being used,
    * the count would be wrong if we just used the globals
    */
+#if 0
   count_dbuf_memory(&dbuf_allocated, &dbuf_used);
   dbuf_alloc_count = INITIAL_DBUFS + DBufAllocCount;
   dbuf_used_count  = DBufUsedCount;
@@ -455,6 +455,7 @@ void count_memory(struct Client *cptr,char *nick)
              ":%s %d %s :TOTAL: %d Available:  Current max RSS: %u",
              me.name, RPL_STATSDEBUG, nick, tot, get_maxrss());
 
+#endif
 }
 
 /*

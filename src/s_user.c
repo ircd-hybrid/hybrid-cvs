@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.40 2000/11/26 03:35:42 db Exp $
+ *  $Id: s_user.c,v 7.41 2000/11/26 19:34:35 adrian Exp $
  */
 #include "s_user.h"
 #include "channel.h"
@@ -47,7 +47,6 @@
 #include "send.h"
 #include "whowas.h"
 #include "flud.h"
-#include "dbuf.h"
 
 #include <string.h>
 #include <stdlib.h>

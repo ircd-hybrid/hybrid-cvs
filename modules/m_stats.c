@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 1.5 2000/11/24 00:17:25 db Exp $
+ *  $Id: m_stats.c,v 1.6 2000/11/26 19:34:31 adrian Exp $
  */
 #include "handlers.h"  /* m_pass prototype */
 #include "class.h"       /* report_classes */
@@ -47,6 +47,7 @@
 #include "s_user.h"      /* show_opers */
 #include "event.h"	 /* events */
 #include "msg.h"
+#include "linebuf.h"
 
 #include <string.h>
 
@@ -526,7 +527,7 @@ void stats_L(struct Client *sptr,char *name,int doall, int wilds)
                      (IsUpper(stat)) ?
                      get_client_name(acptr, TRUE) :
                      get_client_name(acptr, FALSE),
-                     (int)DBufLength(&acptr->sendQ),
+                     (int)linebuf_len(&acptr->buf_sendq),
                      (int)acptr->sendM, (int)acptr->sendK,
                      (int)acptr->receiveM, (int)acptr->receiveK,
                      CurrentTime - acptr->firsttime,
@@ -539,7 +540,7 @@ void stats_L(struct Client *sptr,char *name,int doall, int wilds)
 	    sendto_one(sptr, Lformat, me.name,
 		       RPL_STATSLINKINFO, sptr->name,
 		       get_client_name(acptr, HIDEME),
-		       (int)DBufLength(&acptr->sendQ),
+		       (int)linebuf_len(&acptr->buf_sendq),
 		       (int)acptr->sendM, (int)acptr->sendK,
 		       (int)acptr->receiveM, (int)acptr->receiveK,
 		       CurrentTime - acptr->firsttime,
@@ -551,7 +552,7 @@ void stats_L(struct Client *sptr,char *name,int doall, int wilds)
 		       (IsUpper(stat)) ?
 		       get_client_name(acptr, TRUE) :
 		       get_client_name(acptr, FALSE),
-		       (int)DBufLength(&acptr->sendQ),
+		       (int)linebuf_len(&acptr->buf_sendq),
 		       (int)acptr->sendM, (int)acptr->sendK,
 		       (int)acptr->receiveM, (int)acptr->receiveK,
 		       CurrentTime - acptr->firsttime,

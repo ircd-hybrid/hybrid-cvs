@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.38 2000/11/21 21:31:04 adrian Exp $
+# $Id: Makefile.in,v 7.39 2000/11/26 19:34:32 adrian Exp $
 #
 CC		= @CC@
 RM		= @RM@
@@ -36,7 +36,6 @@ SRCS =                          \
   vchannel.c                    \
   class.c                       \
   client.c                      \
-  dbuf.c                        \
   dline_conf.c                  \
   event.c                       \
   fdlist.c                      \

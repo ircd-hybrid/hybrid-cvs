@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.6 2000/11/26 00:42:05 db Exp $
+ *   $Id: m_message.c,v 1.7 2000/11/26 19:34:30 adrian Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -554,7 +554,7 @@ int drone_attack(struct Client *sptr,struct Client *acptr)
 	       * DoS the client.
 	       * -Dianora
 	       */
-	      if(DBufLength(&acptr->sendQ) > (get_sendq(acptr)/2L))
+	      if(linebuf_len(&acptr->buf_sendq) > (get_sendq(acptr)/2L))
 		{
 		  if(acptr->drone_noticed == 1) /* tiny FSM */
 		    {
@@ -569,7 +569,7 @@ int drone_attack(struct Client *sptr,struct Client *acptr)
 		    }
 		}
 
-	      if(DBufLength(&acptr->sendQ) <= (get_sendq(acptr)/4L))
+	      if(linebuf_len(&acptr->buf_sendq) <= (get_sendq(acptr)/4L))
 		{
 		  if(acptr->drone_noticed == 2)
 		    {
