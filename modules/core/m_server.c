@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_server.c,v 1.33 2001/01/05 08:11:46 db Exp $
+ *   $Id: m_server.c,v 1.34 2001/01/05 10:32:05 a1kmm Exp $
  */
 #include "tools.h"
 #include "handlers.h"  /* m_server prototype */
@@ -221,6 +221,7 @@ int ms_server(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   struct Client*   bcptr;
   struct ConfItem* aconf;
   int              hop;
+  int              hlined = 0, llined = 0;
   dlink_node	   *ptr;
 
   if ( (host = parse_server_args(parv, parc, info, &hop)) == NULL )
@@ -317,25 +318,36 @@ int ms_server(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
    * See if the newly found server is behind a guaranteed
    * leaf (L-line). If so, close the link.
    */
-  if ((aconf = find_conf_host(&cptr->localClient->confs, host, CONF_LEAF)) &&
-      (!aconf->port || (hop > aconf->port)))
+  for (aconf = ConfigItemList; aconf; aconf=aconf->next)
     {
-      sendto_realops_flags(FLAGS_ALL,"Leaf-only link %s->%s - Closing",
-			   get_client_name(cptr,  TRUE),
-			   aconf->host ? aconf->host : "*");
-      sendto_one(cptr, "ERROR :Leaf-only link, sorry.");
-      return exit_client(cptr, cptr, cptr, "Leaf Only");
+     if (!(aconf->status == CONF_LEAF || aconf->status == CONF_HUB))
+       continue;
+     if (irccmp(aconf->host,
+          (aconf->status == CONF_LEAF) ? parv[0] : cptr->name))
+       continue;
+     if (match(aconf->name, host))
+       {
+        if (aconf->status == CONF_HUB)
+          hlined++;
+       }
+     else
+       {
+        if (acptr->status == CONF_LEAF)
+          llined++;
+       }
     }
-
-  if (!(aconf = find_conf_host(&cptr->localClient->confs, host, CONF_HUB)) ||
-      (aconf->port && (hop > aconf->port)) )
+  if (llined)
     {
-      sendto_realops_flags(FLAGS_ALL,"Non-Hub link %s introduced %s(%s).",
-			   get_client_name(cptr,  TRUE), host,
-			   aconf ? (aconf->host ? aconf->host : "*") : "!");
-      sendto_one(cptr, "ERROR :%s has no H: line for %s.",
-		 get_client_name(cptr,  TRUE), host);
-      return exit_client(cptr, cptr, cptr, "Too many servers");
+     sendto_realops_flags(FLAGS_ALL,"Leaf-only link %s introduced %s "
+                          "- Closing",
+			  get_client_name(cptr,  TRUE), sptr->name);
+     return exit_client(NULL, sptr, &me, "Leaf Only");
+    }
+  if (!hlined)
+    {
+      sendto_realops_flags(FLAGS_ALL,"Non-Hub link %s introduced %s.",
+			   get_client_name(cptr,  TRUE), host);
+      return exit_client(NULL, sptr, &me, "No H-line");
     }
 
   acptr = make_client(cptr);

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.113 2001/01/05 07:47:29 a1kmm Exp $
+ *   $Id: s_serv.c,v 7.114 2001/01/05 10:32:11 a1kmm Exp $
  */
 #include "tools.h"
 #include "s_serv.h"
@@ -359,7 +359,9 @@ int check_server(const char *name, struct Client* cptr)
            aconf->status & CONF_LEAF)
         )
        continue;
-     if (!match(name, aconf->name))
+     if ((aconf->status == CONF_SERVER) && !match(name, aconf->name))
+       continue;
+     if (aconf->status != CONF_SERVER && !match(name, aconf->user))
        continue;
      if (aconf->status & CONF_HUB || aconf->status & CONF_LEAF)
        {
