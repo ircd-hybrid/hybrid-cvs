@@ -1,3 +1,16 @@
+androsyn    2002/06/26 10:20:19 EDT	(20020626_4)
+
+  Modified files:
+    src                  client.c 
+  Log:
+  Add some assert()'s to exit_client() and changed the error message for
+  abort_list clients from "Dead link" to "Write error: connection closed"
+  
+  Revision  Changes    Path
+  7.279     +8 -1      ircd-hybrid-7/src/client.c
+
+
+
 leeh        2002/06/26 08:16:22 EDT	(20020626_3)
 
   Modified files:
@@ -28755,4 +28768,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3809 2002/06/26 12:16:29 leeh Exp $
+$Id: ChangeLog,v 7.3810 2002/06/26 14:20:26 androsyn Exp $
