@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.230 2001/12/30 09:11:28 a1kmm Exp $
+ *   $Id: s_serv.c,v 7.231 2001/12/31 12:54:36 db Exp $
  */
 
 #include <sys/types.h>
@@ -863,7 +863,7 @@ void client_burst_if_needed(struct Client *client_p, struct Client *target_p)
  
   if((target_p->lazyLinkClientExists & client_p->localClient->serverMask) == 0)
     {
-      sendnick_TS( client_p, target_p );
+      sendnick_TS(client_p, target_p);
       add_lazylinkclient(client_p,target_p);
     }
 }
