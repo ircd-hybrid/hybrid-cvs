@@ -1,3 +1,15 @@
+db          2003/02/01 14:13:08 EST	(20030201_1)
+
+  Modified files:
+    src                  send.c 
+  Log:
+  - don't send to defunct clients in a list
+  
+  Revision  Changes    Path
+  7.217     +1 -1      ircd-hybrid-7/src/send.c
+
+
+
 db          2003/01/31 22:55:22 EST	(20030201_0)
 
   Modified files:
@@ -34674,4 +34686,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4210 2003/02/01 03:55:25 db Exp $
+$Id: ChangeLog,v 7.4211 2003/02/01 19:13:11 db Exp $
