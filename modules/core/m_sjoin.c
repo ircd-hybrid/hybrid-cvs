@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.75 2001/03/02 17:16:14 fl_ Exp $
+ *   $Id: m_sjoin.c,v 1.76 2001/03/02 19:35:14 fl_ Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -266,6 +266,28 @@ static void ms_sjoin(struct Client *cptr,
    */
   if (isnew)
     chptr->channelts = tstosend = newts;
+  /* Remote is sending users to a permanent channel.. we need to drop our version
+   * and use theirs, to keep compatibility -- fl */
+  else if (chptr->users == 0 && parv[4+args][0])
+    {
+       keep_our_modes = NO;
+       chptr->channelts = tstosend = newts;
+    }
+  /* Theyre not sending users, normal rules of timestamp apply */
+  else if (chptr->users == 0 && !parv[4+args][0])
+    {
+       if(newts < oldts)
+         {
+           keep_our_modes = NO;
+           chptr->channelts = tstosend = newts;
+         }
+       else
+         {
+           mode = *oldmode;
+           return;
+         }
+    }
+  /* It isnt a perm channel, do normal timestamp rules */
   else if (newts == 0 || oldts == 0)
     chptr->channelts = tstosend = 0;
   else if (!newts)
