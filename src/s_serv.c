@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.100 2000/12/31 22:54:02 db Exp $
+ *   $Id: s_serv.c,v 7.101 2001/01/02 00:32:19 davidt Exp $
  */
 #include "tools.h"
 #include "s_serv.h"
@@ -1624,12 +1624,7 @@ serv_connect_callback(int fd, int status, void *data)
         return;
     }
 
-    m = dlinkFind(&unknown_list, cptr);
-    if(m != NULL)
-      {
-	dlinkDelete(m, &unknown_list);
-	dlinkAdd(cptr, m, &serv_list);
-      }
+    /* don't move to serv_list yet -- we haven't sent a burst! */
 
     /* If we get here, we're ok, so lets start reading some data */
     comm_setselect(fd, FDLIST_SERVER, COMM_SELECT_READ, read_packet, cptr, 0);
