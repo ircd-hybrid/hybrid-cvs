@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_invite.c,v 1.30 2001/10/26 21:04:56 db Exp $
+ *   $Id: m_invite.c,v 1.31 2001/11/04 00:50:01 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -128,7 +128,7 @@ static void m_invite(struct Client *client_p,
       return;
     }
 	  
-  if ((chptr = hash_find_channel(parv[2])) != NULL)
+  if ((chptr = hash_find_channel(parv[2])) == NULL)
     {
       if (MyClient(source_p))
         sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
