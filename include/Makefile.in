@@ -1,9 +1,8 @@
-# $Id: Makefile.in,v 1.7 2003/05/11 22:27:37 joshk Exp $
+# $Id: Makefile.in,v 1.8 2003/05/14 18:38:23 joshk Exp $
 # makefile for include/
 
 INSTALL=	@INSTALL@
 INSTALL_DATA=	@INSTALL_DATA@
-INSTALL_BIN=	@INSTALL_PROGRAM@
 RM=		@RM@
 
 prefix=		@prefix@

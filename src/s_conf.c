@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.387 2003/05/14 18:15:20 db Exp $
+ *  $Id: s_conf.c,v 7.388 2003/05/14 18:38:27 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -2098,6 +2098,9 @@ get_conf_name(int type)
     return(ConfigFileEntry.dlinefile);
     break;
   default:
+    return NULL; /* This should NEVER HAPPEN since we call this function
+		    only with the above values, this will cause us to core
+		    at some point if this happens so we know where it was */
     break;
   }
 }

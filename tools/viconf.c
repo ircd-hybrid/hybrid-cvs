@@ -1,18 +1,10 @@
 /*
  * viconf.c
  *
- * $Id: viconf.c,v 7.4 2002/02/05 02:40:22 jmallett Exp $
+ * $Id: viconf.c,v 7.5 2003/05/14 18:38:29 joshk Exp $
  */
-#include <stdio.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <stdlib.h>
-#include <errno.h>
-#include <string.h>
-#include <limits.h>
-#include <signal.h>
-#include "config.h"
 
+#include "stdinc.h"
 
 /* wait.h is in /include on solaris, likely on other SYSV machines as well
  * but wait.h is normally in /include/sys on BSD boxen,

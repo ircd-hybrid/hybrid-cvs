@@ -3,10 +3,10 @@
  *  csvlib.c - set of functions to deal with csv type of conf files
  *
  *  Copyright (C) 2003 by Diane Bruce, Stuart Walsh
- *  If you use it anywhere you like, if you like it buy us a beer.
- *  If its broken, don't bother us with the lawyers.
+ *  Use it anywhere you like, if you like it buy us a beer.
+ *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.2 2003/05/14 18:26:54 db Exp $
+ *  $Id: csvlib.c,v 7.3 2003/05/14 18:38:27 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -16,6 +16,7 @@
 #include "hostmask.h"
 #include "client.h"
 #include "irc_string.h"
+#include "sprintf_irc.h"
 #include "memory.h"
 #include "send.h"
 

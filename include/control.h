@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: control.h,v 1.4 2001/05/26 23:56:46 davidt Exp $
+ *   $Id: control.h,v 1.1 2003/05/14 18:38:23 joshk Exp $
  */
 
 #ifndef INCLUDED_servlink_control_h

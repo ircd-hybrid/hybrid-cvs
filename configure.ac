@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.19 2003/05/13 17:46:33 joshk Exp $
+dnl $Id: configure.ac,v 7.20 2003/05/14 18:38:20 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -9,7 +9,7 @@ AC_PREREQ(2.57)
 
 AC_INIT([ircd-hybrid],[7-CURRENT])
 
-AC_CONFIG_HEADER(include/setup.h servlink/setup.h)
+AC_CONFIG_HEADER(include/setup.h)
 
 AC_PREFIX_DEFAULT(/usr/local/ircd)
 

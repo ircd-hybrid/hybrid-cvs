@@ -15,21 +15,10 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: io.c,v 1.29 2003/05/01 15:53:37 michael Exp $
+ *   $Id: io.c,v 1.30 2003/05/14 18:38:24 joshk Exp $
  */
 
-#include "setup.h"
-
-#include <sys/types.h>
-#include <sys/socket.h>
-
-#include <assert.h>
-#include <errno.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdarg.h>
-#include <stdio.h>
-#include <unistd.h>
+#include "stdinc.h"
 
 #ifdef HAVE_LIBCRYPTO
 #include <openssl/evp.h>
