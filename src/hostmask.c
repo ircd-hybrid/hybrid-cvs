@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- * $Id: hostmask.c,v 7.53 2001/10/13 04:41:04 db Exp $ 
+ * $Id: hostmask.c,v 7.54 2001/10/13 06:40:39 a1kmm Exp $ 
  */
 
 #include <stdlib.h>
@@ -354,11 +354,11 @@ get_mask_hash(const char *text)
 {
   const char *hp = "", *p;
 
-  for (p = text + strlen(text) + 1; p > text; p--)
-    if (*(p - 1) == '*' || *(p - 1) == '?')
+  for (p = text + strlen(text) - 1; p > text; p--)
+    if (*p == '*' || *p == '?')
       return hash_text(hp);
-    else if (*(p - 1) == '.')
-      hp = p; /* + 1; */
+    else if (*p == '.')
+      hp = p + 1;
   return hash_text(text);
 }
 
