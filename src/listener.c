@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: listener.c,v 7.13 2000/11/29 23:35:38 db Exp $
+ *  $Id: listener.c,v 7.14 2000/11/30 08:59:30 db Exp $
  */
 #include "listener.h"
 #include "client.h"
@@ -53,8 +53,6 @@ struct Listener* make_listener(int port, struct in_addr addr)
   struct Listener* listener = 
     (struct Listener*) MyMalloc(sizeof(struct Listener));
   assert(0 != listener);
-
-  memset(listener, 0, sizeof(struct Listener));
 
   listener->name        = me.name;
   listener->fd          = -1;

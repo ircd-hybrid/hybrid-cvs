@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: class.c,v 7.10 2000/01/23 04:53:39 db Exp $
+ *   $Id: class.c,v 7.11 2000/11/30 08:59:29 db Exp $
  */
 #include "class.h"
 #include "client.h"
@@ -43,7 +43,6 @@ struct Class *make_class()
   struct Class        *tmp;
 
   tmp = (struct Class *)MyMalloc(sizeof(struct Class));
-  memset((void*)tmp, 0, sizeof(struct Class));
   return tmp;
 }
 

@@ -4,7 +4,7 @@
  * shape or form. The author takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: res.c,v 7.26 2000/11/29 23:35:40 db Exp $
+ * $Id: res.c,v 7.27 2000/11/30 08:59:30 db Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -1197,7 +1197,6 @@ static struct cache* make_cache(ResRQ* request)
   /*
    */ 
   cp = (struct cache*) MyMalloc(sizeof(struct cache));
-  memset(cp, 0, sizeof(struct cache));
   dup_hostent(&cp->he, hp);
   cp->reply.hp = &cp->he.h;
 

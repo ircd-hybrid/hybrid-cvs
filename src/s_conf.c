@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.78 2000/11/30 00:04:57 db Exp $
+ *  $Id: s_conf.c,v 7.79 2000/11/30 08:59:30 db Exp $
  */
 #include "s_conf.h"
 #include "s_stats.h"
@@ -183,7 +183,6 @@ struct ConfItem* make_conf()
   struct ConfItem* aconf;
 
   aconf = (struct ConfItem*) MyMalloc(sizeof(struct ConfItem));
-  memset(aconf, 0, sizeof(struct ConfItem));
   aconf->status       = CONF_ILLEGAL;
   aconf->ipnum.s_addr = INADDR_NONE;
   return (aconf);
