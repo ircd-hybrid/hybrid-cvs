@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.486 2003/12/05 07:06:29 metalrock Exp $
+ *  $Id: s_conf.c,v 7.487 2004/01/26 03:35:20 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -3137,7 +3137,7 @@ yyerror(const char *msg)
 }
 
 int
-conf_fbgets(char *lbuf, int max_size, FBFILE *fb)
+conf_fbgets(char *lbuf, unsigned int max_size, FBFILE *fb)
 {
   char *buff;
 

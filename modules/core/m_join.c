@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_join.c,v 1.19 2004/01/26 01:57:43 metalrock Exp $
+ *  $Id: m_join.c,v 1.20 2004/01/26 03:35:18 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -88,7 +88,7 @@ _moddeinit(void)
   mod_del_cmd(&join_msgtab);
 }
 
-const char *_version = "$Revision: 1.19 $";
+const char *_version = "$Revision: 1.20 $";
 #endif
 
 /* m_join()
@@ -102,7 +102,8 @@ m_join(struct Client *client_p, struct Client *source_p,
 {
   struct Channel *chptr = NULL;
   char *key = NULL;
-  int i, a, flags = 0;
+  int i, a;
+  unsigned int flags = 0;
   int successful_join_count = 0; /* Number of channels successfully joined */
 
   if (*parv[1] == '\0')

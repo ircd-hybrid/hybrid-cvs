@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.138 2003/08/19 18:13:56 stu Exp $
+ *  $Id: s_auth.c,v 7.139 2004/01/26 03:35:20 metalrock Exp $
  */
 
 /*
@@ -268,7 +268,7 @@ start_auth_query(struct AuthRequest* auth)
   {
     report_error(L_ALL, "creating auth stream socket %s:%s", 
         get_client_name(auth->client, SHOW_IP), errno);
-    ilog(L_ERROR, "Unable to create auth socket for %s:%m",
+    ilog(L_ERROR, "Unable to create auth socket for %s",
         get_client_name(auth->client, SHOW_IP));
     ++ServerStats->is_abad;
     return 0;
@@ -505,7 +505,7 @@ auth_connect_callback(int fd, int error, void *data)
   if (getsockname(auth->client->localClient->fd, (struct sockaddr *)&us,   (socklen_t*)&ulen) ||
       getpeername(auth->client->localClient->fd, (struct sockaddr *)&them, (socklen_t*)&tlen))
   {
-    ilog(L_INFO, "auth get{sock,peer}name error for %s:%m",
+    ilog(L_INFO, "auth get{sock,peer}name error for %s",
         get_client_name(auth->client, SHOW_IP));
     auth_error(auth);
     return;
