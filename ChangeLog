@@ -1,3 +1,16 @@
+a1kmm       2003/02/06 04:57:07 EST	(20030206_1)
+
+  Modified files:
+    src                  client.c 
+  Log:
+  <TimeMr14C> Andrew: in the new exit_client close_connection is called twice.
+  Fixed.
+  
+  Revision  Changes    Path
+  7.326     +0 -6      ircd-hybrid-7/src/client.c
+
+
+
 a1kmm       2003/02/06 03:46:12 EST	(20030206_0)
 
   Modified files:
@@ -34873,4 +34886,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4221 2003/02/06 08:46:15 a1kmm Exp $
+$Id: ChangeLog,v 7.4222 2003/02/06 09:57:10 a1kmm Exp $
