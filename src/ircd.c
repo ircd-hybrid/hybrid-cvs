@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.13 1999/12/31 04:12:52 wnder Exp $
+ * $Id: ircd.c,v 7.14 1999/12/31 04:47:31 wnder Exp $
  */
 #include "ircd.h"
 #include "channel.h"
@@ -28,6 +28,7 @@
 #include "fdlist.h"
 #include "hash.h"
 #include "irc_string.h"
+#include "ircdauth.h"
 #include "ircd_signal.h"
 #include "list.h"
 #include "m_gline.h"

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.22 1999/12/31 04:12:51 wnder Exp $
+ *  $Id: s_bsd.c,v 7.23 1999/12/31 04:47:31 wnder Exp $
  */
 #include "s_bsd.h"
 #include "class.h"
@@ -26,6 +26,7 @@
 #include "config.h"
 #include "fdlist.h"
 #include "irc_string.h"
+#include "ircdauth.h"
 #include "ircd.h"
 #include "list.h"
 #include "listener.h"
