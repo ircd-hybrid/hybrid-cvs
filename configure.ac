@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.27 2003/05/18 19:26:23 joshk Exp $
+dnl $Id: configure.ac,v 7.28 2003/05/22 19:10:32 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -915,6 +915,8 @@ dnl	iauth/source/Makefile	\
 )
 
 AC_OUTPUT
+
+rm -f src/.depend modules/.depend servlink/.depend contrib/.depend
 
 dnl Make it look sexay!
 

@@ -10366,6 +10366,8 @@ if test "$no_create" != yes; then
 fi
 
 
+rm -f src/.depend modules/.depend servlink/.depend contrib/.depend
+
 
 echo
 echo "Compiling $PACKAGE_NAME $PACKAGE_VERSION"
