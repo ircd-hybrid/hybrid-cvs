@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_gline.c,v 1.25 2003/04/02 02:12:08 michael Exp $
+ *  $Id: s_gline.c,v 1.26 2003/04/05 01:08:30 michael Exp $
  */
 
 #include "stdinc.h"
@@ -108,7 +108,7 @@ find_is_glined(const char* host, const char* name)
     }
   }
 
-  return((struct ConfItem *)NULL);
+  return(NULL);
 }
 
 /*

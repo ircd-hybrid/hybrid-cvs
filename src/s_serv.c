@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.292 2003/04/02 11:44:58 michael Exp $
+ *  $Id: s_serv.c,v 7.293 2003/04/05 01:08:30 michael Exp $
  */
 
 #include "stdinc.h"
@@ -377,7 +377,7 @@ write_links_file(void* notused)
 
     ircsprintf(newMessageLine->line,"%s %s :1 %s",
                target_p->name, me.name, p);
-    newMessageLine->next = (MessageFileLine *)NULL;
+    newMessageLine->next = NULL;
 
     if (MessageFileptr->contentsOfFile)
     {

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: list.c,v 7.51 2003/03/16 04:38:57 db Exp $
+ *  $Id: list.c,v 7.52 2003/04/05 01:08:29 michael Exp $
  */
 
 #include "stdinc.h"
@@ -112,7 +112,7 @@ make_server(struct Client *client_p)
       serv->users = NULL;
       serv->servers = NULL;
       *serv->by = '\0'; 
-      serv->up = (char *)NULL;
+      serv->up = NULL;
 #endif
       client_p->serv = serv;
     }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.c,v 7.73 2003/03/12 04:46:40 db Exp $
+ *  $Id: listener.c,v 7.74 2003/04/05 01:08:30 michael Exp $
  */
 
 #include "stdinc.h"
@@ -50,7 +50,7 @@
 
 static PF accept_connection;
 
-static dlink_list ListenerPollList;
+static dlink_list ListenerPollList = { NULL, NULL, 0 };
 
 static struct Listener* 
 make_listener(int port, struct irc_inaddr *addr)

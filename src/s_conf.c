@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.353 2003/03/31 16:38:28 adx Exp $
+ *  $Id: s_conf.c,v 7.354 2003/04/05 01:08:30 michael Exp $
  */
 
 #include "stdinc.h"
@@ -116,13 +116,13 @@ static void garbage_collect_ip_entries(void);
 static struct ip_entry *find_or_add_ip(struct irc_inaddr*);
 
 /* general conf items link list root, other than k lines etc. */
-dlink_list ConfigItemList;
+dlink_list ConfigItemList = { NULL, NULL, 0 };
 
 /* conf xline link list root */
-struct ConfItem        *x_conf = ((struct ConfItem *)NULL);
+struct ConfItem *x_conf = NULL;
 
 /* conf uline link list root */
-struct ConfItem        *u_conf = ((struct ConfItem *)NULL);
+struct ConfItem *u_conf = NULL;
 
 /*
  * conf_dns_callback
@@ -180,7 +180,7 @@ conf_dns_lookup(struct ConfItem* aconf)
  * side effects	- none
  */
 struct ConfItem* 
-make_conf(int status)
+make_conf(unsigned int status)
 {
   struct ConfItem* aconf;
 

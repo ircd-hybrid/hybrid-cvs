@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.173 2003/04/02 11:19:39 michael Exp $
+ *  $Id: client.h,v 7.174 2003/04/05 01:08:23 michael Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -141,8 +141,7 @@ struct Client
   unsigned int      umodes;     /* opers, normal users subset */
   unsigned int      flags;      /* client flags */
 
-  int               slink_pid;  /* pid of servlink process if any */
-  int               hopcount;   /* number of servers to this 0 = local */
+  unsigned short    hopcount;   /* number of servers to this 0 = local */
   unsigned short    status;     /* Client type */
   unsigned char     handler;    /* Handler index */
   unsigned long     serial;	/* used to enforce 1 send per nick */
@@ -243,7 +242,6 @@ struct LocalUser
   unsigned short    sendB;      /* counters to count upto 1-k lots of bytes */
   unsigned short    receiveB;   /* sent and received. */
   unsigned int      lastrecvM;  /* to check for activity --Mika */
-  int               priority;
   struct Listener*  listener;   /* listener accepted from */
   dlink_list        confs;      /* Configuration record associated */
 

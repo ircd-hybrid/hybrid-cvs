@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_unkline.c,v 1.53 2003/03/31 15:49:22 adx Exp $
+ *  $Id: m_unkline.c,v 1.54 2003/04/05 01:08:25 michael Exp $
  */
 
 #include "stdinc.h"
@@ -73,7 +73,7 @@ _moddeinit(void)
   mod_del_cmd(&msgtabs[1]);
   mod_del_cmd(&msgtabs[2]);
 }
-const char *_version = "$Revision: 1.53 $";
+const char *_version = "$Revision: 1.54 $";
 #endif
 
 static int flush_write(struct Client *, FBFILE *in, FBFILE *out,
@@ -270,7 +270,7 @@ flush_write(struct Client *source_p, FBFILE *in, FBFILE* out,
         me.name, source_p->name, temppath );
       fbclose(in);
       fbclose(out);
-      if(temppath != (char *)NULL)
+      if(temppath != NULL)
         (void)unlink(temppath);
     }
   return(error_on_write);

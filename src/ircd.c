@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.261 2003/04/02 14:29:23 adx Exp $
+ *  $Id: ircd.c,v 7.262 2003/04/05 01:08:29 michael Exp $
  */
 
 #include "stdinc.h"
@@ -123,7 +123,7 @@ static int irc_sleep(unsigned long useconds)
 	struct timespec t;
 	t.tv_sec = useconds / (unsigned long)  1000000;
 	t.tv_nsec = (useconds % (unsigned long) 1000000) * 1000 ;
-	return nanosleep(&t, (struct timespec *) NULL);
+	return nanosleep(&t, NULL);
 #else
 	struct timeval t;
 	t.tv_sec = 0;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fileio.c,v 7.27 2003/03/01 06:25:40 db Exp $
+ *  $Id: fileio.c,v 7.28 2003/04/05 01:08:29 michael Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -130,7 +130,7 @@ FBFILE* fdbopen(int fd, const char* mode)
     fb->ptr = fb->endp = fb->buf;
     fb->fd = fd;
     fb->flags = 0;
-    fb->pbptr = (char *)NULL;
+    fb->pbptr = NULL;
   }
   return fb;
 }

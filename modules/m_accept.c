@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_accept.c,v 1.33 2002/09/05 06:05:40 db Exp $
+ *  $Id: m_accept.c,v 1.34 2003/04/05 01:08:25 michael Exp $
  */
 
 #include "stdinc.h"
@@ -60,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&accept_msgtab);
 }
 
-const char *_version = "$Revision: 1.33 $";
+const char *_version = "$Revision: 1.34 $";
 #endif
 /*
  * m_accept - ACCEPT command handler
@@ -171,7 +171,7 @@ static void build_nicklist(struct Client *source_p, char *addbuf,
 
   /* build list of clients to add into addbuf, clients to remove in delbuf */
   for(name = strtoken(&p, nicks, ","); name; 
-      name = strtoken(&p, (char *)NULL, ","), del = 0)
+      name = strtoken(&p, NULL, ","), del = 0)
   {
     if(*name == '-')
     {

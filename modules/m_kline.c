@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.116 2003/03/31 15:49:22 adx Exp $
+ *  $Id: m_kline.c,v 1.117 2003/04/05 01:08:25 michael Exp $
  */
 
 #include "stdinc.h"
@@ -75,7 +75,7 @@ _moddeinit(void)
   mod_del_cmd(&kline_msgtab);
   mod_del_cmd(&dline_msgtab);
 }
-const char *_version = "$Revision: 1.116 $";
+const char *_version = "$Revision: 1.117 $";
 #endif
 
 /* Local function prototypes */
@@ -447,8 +447,8 @@ cluster(char *hostname)
   int         is_ip_number;     /* flag if its an ip # */             
   int         number_of_dots;   /* count number of dots for both ip# and
                                    domain klines */
-  if (!hostname)
-    return (char *) NULL;       /* EEK! */
+  if (hostname == NULL)
+    return(NULL);       /* EEK! */
 
   /* If a '@' is found in the hostname, this is bogus
    * and must have been introduced by server that doesn't

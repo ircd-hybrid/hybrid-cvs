@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_pong.c,v 1.31 2003/03/31 15:49:22 adx Exp $
+ *  $Id: m_pong.c,v 1.32 2003/04/05 01:08:25 michael Exp $
  */
 
 #include "stdinc.h"
@@ -60,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&pong_msgtab);
 }
 
-const char *_version = "$Revision: 1.31 $";
+const char *_version = "$Revision: 1.32 $";
 #endif
 static void ms_pong(struct Client *client_p,
                    struct Client *source_p,
@@ -116,7 +116,7 @@ mr_pong(struct Client *client_p, struct Client *source_p,
     {
       if(ConfigFileEntry.ping_cookie && source_p->user && source_p->name[0])
       {
-	unsigned long incoming_ping = strtoul(parv[1], (char **)NULL, 10);
+	unsigned long incoming_ping = strtoul(parv[1], NULL, 10);
 	if(incoming_ping)
 	{
 	  if(source_p->localClient->random_ping == incoming_ping)

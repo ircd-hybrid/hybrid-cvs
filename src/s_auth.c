@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.110 2003/04/04 23:22:27 stu Exp $
+ *  $Id: s_auth.c,v 7.111 2003/04/05 01:08:30 michael Exp $
  */
 
 /*
@@ -532,8 +532,8 @@ static void
 read_auth_reply(int fd, void *data)
 {
   struct AuthRequest *auth = data;
-  char* s=(char *)NULL;
-  char* t=(char *)NULL;
+  char* s= NULL;
+  char* t= NULL;
   int   len;
   int   count;
   char  buf[AUTH_BUFSIZ + 1]; /* buffer to read auth reply into */

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fdlist.h,v 7.25 2002/05/24 23:34:07 androsyn Exp $
+ *  $Id: fdlist.h,v 7.26 2003/04/05 01:08:23 michael Exp $
  */
 
 #ifndef INCLUDED_fdlist_h
@@ -29,15 +29,6 @@
 #include "ircd_defs.h"
 #include "res.h"
 #define FD_DESC_SZ 128  /* hostlen + comment */
-
-/*
- * priority values used in fdlist code
- */
-#define FDL_SERVER   0x01
-#define FDL_BUSY     0x02
-#define FDL_OPER     0x04
-#define FDL_DEFAULT  0x08 
-#define FDL_ALL      0xFF
 
 /* FD type values */
 enum {

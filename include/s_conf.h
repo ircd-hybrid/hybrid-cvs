@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.199 2003/04/02 02:12:06 michael Exp $
+ *  $Id: s_conf.h,v 7.200 2003/04/05 01:08:23 michael Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -335,7 +335,7 @@ extern void count_ip_hash(int *, u_long *);
 
 extern void remove_one_ip(struct irc_inaddr *ip);
 
-extern struct ConfItem* make_conf(int status);
+extern struct ConfItem* make_conf(unsigned int status);
 extern void             free_conf(struct ConfItem*);
 
 extern void             read_conf_files(int cold);

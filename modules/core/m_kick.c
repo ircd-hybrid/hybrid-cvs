@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kick.c,v 1.51 2003/03/31 04:30:18 michael Exp $
+ *  $Id: m_kick.c,v 1.52 2003/04/05 01:08:27 michael Exp $
  */
 
 #include "stdinc.h"
@@ -60,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&kick_msgtab);
 }
 
-const char *_version = "$Revision: 1.51 $";
+const char *_version = "$Revision: 1.52 $";
 #endif
 /*
 ** m_kick
@@ -81,7 +81,7 @@ m_kick(struct Client *client_p, struct Client *source_p,
   int   chasing = 0;
   char  *comment;
   char  *name;
-  char  *p = (char *)NULL;
+  char  *p = NULL;
   char  *user;
 
   if (*parv[2] == '\0')
@@ -243,8 +243,7 @@ m_kick(struct Client *client_p, struct Client *source_p,
                     ":%s KICK %s %s :%s",
                     parv[0], chptr->chname,
                     who->name, comment);
-      if (!IsDefunct(who))
-	remove_user_from_channel(chptr, who);
+      remove_user_from_channel(chptr, who);
     }
   else
     sendto_one(source_p, form_str(ERR_USERNOTINCHANNEL),

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.112 2003/04/02 11:19:43 michael Exp $
+ *  $Id: m_message.c,v 1.113 2003/04/05 01:08:27 michael Exp $
  */
 
 #include "stdinc.h"
@@ -123,7 +123,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.112 $";
+const char *_version = "$Revision: 1.113 $";
 #endif
 
 /*
@@ -279,7 +279,7 @@ build_target_list(int p_or_n, char *command, struct Client *client_p,
   ntargets = 0;
 
   for (nick = strtoken(&p, target_list, ","); nick;
-       nick = strtoken(&p, (char *)NULL, ","))
+       nick = strtoken(&p, NULL, ","))
   {
     char *with_prefix;
     /*
