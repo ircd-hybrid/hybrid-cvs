@@ -123,7 +123,7 @@ a1kmm       2001/12/10 22:42:48 EST	(20011211_5)
     modules              .depend Makefile.in 
     src                  .depend Makefile.in 
   Log:
-  - Fixed $Id: ChangeLog,v 7.3151 2001/12/12 18:23:54 db Exp $ tags echoed from Makefile.in into .depend
+  - Fixed #Id# tags echoed from Makefile.in into .depend
   
   Revision  Changes    Path
   1.39      +0 -0      ircd-hybrid-7/modules/.depend
@@ -171,7 +171,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3151 2001/12/12 18:23:54 db Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3152 2001/12/12 23:22:45 davidt Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -18525,4 +18525,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3151 2001/12/12 18:23:54 db Exp $
+$Id: ChangeLog,v 7.3152 2001/12/12 23:22:45 davidt Exp $
