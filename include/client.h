@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.21 2000/09/29 17:16:53 ejb Exp $
+ * $Id: client.h,v 7.22 2000/10/14 14:20:01 db Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -105,6 +105,15 @@ struct Server
   struct ConfItem* nline;       /* N-line pointer for this server */
   struct Client*   servers;     /* Servers on this server */
   struct Client*   users;       /* Users on this server */
+};
+
+/* entry for base_chan pointer and the corresponding vchan
+ * client is actually on
+ */
+struct Vchan_map
+{
+  struct Channel *base_chan;
+  struct Channel *vchan;
 };
 
 struct Client
@@ -257,6 +266,12 @@ struct Client
    */
   char              passwd[PASSWDLEN + 1];
   int               caps;       /* capabilities bit-field */
+
+/* cache table of mappings between top level chan and sub vchan client
+ * is on. client cannot have any more than MAXCHANNELSPERUSER vchans
+ */
+
+  struct	    Vchan_map vchan_map[MAXCHANNELSPERUSER];
 };
 
 /*

@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.21 2000/10/06 05:01:42 lusky Exp $
+# $Id: Makefile.in,v 7.22 2000/10/14 14:20:04 db Exp $
 #
 CC = @CC@
 RM = @RM@
@@ -30,6 +30,7 @@ lex.yy.c:	ircd_lexer.l
 SRCS =                          \
   blalloc.c                     \
   channel.c                     \
+  vchannel.c                    \
   class.c                       \
   client.c                      \
   dbuf.c                        \
