@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.40 2003/06/10 22:30:00 joshk Exp $
+ *   $Id: m_operspy.c,v 1.41 2003/06/13 00:35:49 db Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -117,7 +117,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.40 $";
+const char *_version = "$Revision: 1.41 $";
 #endif
 
 #ifdef OPERSPY_LOG
@@ -621,8 +621,8 @@ operspy_log(struct Client *source_p, const char *command, const char *target)
   {
     DLINK_FOREACH(cnode, source_p->localClient->confs.head)
     {
-      if (IsConfOperator((struct ConfItem *)cnode->data))
-        opername = ((struct ConfItem *)cnode->data)->name;
+      if (IsConfOperator((struct AccessItem *)cnode->data))
+        opername = ((struct AccessItem *)cnode->data)->name;
     }
   }
   else if (!MyClient(source_p))
