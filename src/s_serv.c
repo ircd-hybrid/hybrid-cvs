@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.385 2003/10/11 22:51:40 bill Exp $
+ *  $Id: s_serv.c,v 7.386 2003/10/13 01:10:15 bill Exp $
  */
 
 #include "stdinc.h"
@@ -865,7 +865,7 @@ sendnick_TS(struct Client *client_p, struct Client *target_p)
 	       target_p->name, target_p->hopcount + 1,
 	       (unsigned long) target_p->tsinfo,
 	       ubuf, target_p->username, target_p->host,
-	       (MyClient(target_p)?target_p->localClient->sockhost:""),
+	       (MyClient(target_p)?target_p->localClient->sockhost:"0"),
 	       target_p->id, target_p->info);
   else
     sendto_one(client_p, "NICK %s %d %lu %s %s %s %s :%s",
