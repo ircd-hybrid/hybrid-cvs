@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.15 1999/09/11 04:39:01 tomh Exp $
+ *  $Id: s_bsd.c,v 7.16 1999/09/12 14:59:15 wnder Exp $
  */
 #include "s_bsd.h"
 #include "class.h"
@@ -1084,7 +1084,11 @@ int read_message(time_t delay, unsigned char mask)        /* mika */
   		/*
   		 * Complete the connection to the IAuth server
   		 */
-  		CompleteIAuthConnection();
+  		if (!CompleteIAuthConnection())
+  		{
+  			close(iAuth.socket);
+  			iAuth.socket = NOSOCK;
+  		}
   	}
   	else if (FD_ISSET(iAuth.socket, read_set))
     {
