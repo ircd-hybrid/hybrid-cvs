@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_invite.c,v 1.16 2000/12/31 16:10:19 toot Exp $
+ *   $Id: m_invite.c,v 1.17 2001/01/04 16:10:17 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -39,6 +39,9 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
+
+static int m_invite(struct Client*, struct Client*, int, char**);
+static int ms_invite(struct Client*, struct Client*, int, char**);
 
 struct Message invite_msgtab = {
   MSG_INVITE, 0, 3, 0, MFLG_SLOW, 0,
@@ -65,10 +68,10 @@ char *_version = "20001122";
 **      parv[1] - user to invite
 **      parv[2] - channel number
 */
-int     m_invite(struct Client *cptr,
-                 struct Client *sptr,
-                 int parc,
-                 char *parv[])
+static int m_invite(struct Client *cptr,
+                    struct Client *sptr,
+                    int parc,
+                    char *parv[])
 {
   struct Client *acptr;
   struct Channel *chptr;
@@ -215,10 +218,10 @@ int     m_invite(struct Client *cptr,
 **      parv[1] - user to invite
 **      parv[2] - channel number
 */
-int     ms_invite(struct Client *cptr,
-                 struct Client *sptr,
-                 int parc,
-                 char *parv[])
+static int ms_invite(struct Client *cptr,
+                     struct Client *sptr,
+                     int parc,
+                     char *parv[])
 {
   return (m_invite(cptr,sptr,parc,parv));
   /* NOT REACHED */

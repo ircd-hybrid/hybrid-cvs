@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_cjoin.c,v 1.22 2001/01/01 23:27:28 davidt Exp $
+ *   $Id: m_cjoin.c,v 1.23 2001/01/04 16:10:13 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -42,7 +42,8 @@
 
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>
+
+static int m_cjoin(struct Client*, struct Client*, int, char**);
 
 struct Message cjoin_msgtab = {
   MSG_CJOIN, 0, 2, 0, MFLG_SLOW, 0,
@@ -70,10 +71,10 @@ char *_version = "20001122";
 **      parv[1] = channel
 **      parv[2] = channel password (key)
 */
-int     m_cjoin(struct Client *cptr,
-                struct Client *sptr,
-                int parc,
-                char *parv[])
+static int m_cjoin(struct Client *cptr,
+                   struct Client *sptr,
+                   int parc,
+                   char *parv[])
 {
   static char   jbuf[BUFSIZE];
   struct Channel *chptr = NULL;

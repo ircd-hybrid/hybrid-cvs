@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_challenge.c,v 1.12 2001/01/02 04:06:39 davidt Exp $
+ *   $Id: m_challenge.c,v 1.13 2001/01/04 16:10:13 davidt Exp $
  */
 #include <stdlib.h>
 #include "handlers.h"
@@ -35,8 +35,7 @@
 #include "parse.h"
 
 #ifndef OPENSSL
-
-/* Maybe this should be an error or something? -davidt */
+/* Maybe this should be an error or something?-davidt */
 
 void
 _modinit(void)
@@ -44,9 +43,17 @@ _modinit(void)
   return;
 }
 
+void
+_moddeinit(void)
+{
+  return;
+}
+
 char *_version = "20001122";
 
 #else
+
+static int m_challenge(struct Client*, struct Client*, int, char**);
 
 /* We have openssl support, so include /CHALLENGE */
 struct Message challenge_msgtab = {
@@ -76,7 +83,8 @@ char *_version = "20001122";
  * parv[0] = sender prefix
  *
  */
-int m_challenge( struct Client *cptr, struct Client *sptr, int parc, char *parv[] )
+static int m_challenge( struct Client *cptr, struct Client *sptr,
+                        int parc, char *parv[] )
 {
   char * challenge;
 

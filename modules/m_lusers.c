@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_lusers.c,v 1.8 2000/12/23 01:42:13 db Exp $
+ *   $Id: m_lusers.c,v 1.9 2001/01/04 16:10:19 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -33,6 +33,11 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
+
+/* XXX LazyLinks ? */
+
+static int m_lusers(struct Client*, struct Client*, int, char**);
+static int ms_lusers(struct Client*, struct Client*, int, char**);
 
 struct Message lusers_msgtab = {
   MSG_LUSERS, 0, 0, 0, MFLG_SLOW, 0,
@@ -62,7 +67,8 @@ char *_version = "20001122";
  * 199970918 JRL hacked to ignore parv[1] completely and require parc > 3
  * to cause a force
  */
-int m_lusers(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
+static int m_lusers(struct Client *cptr, struct Client *sptr,
+                    int parc, char *parv[])
 {
   static time_t last_used = 0;
 
@@ -101,7 +107,8 @@ int m_lusers(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
  * 199970918 JRL hacked to ignore parv[1] completely and require parc > 3
  * to cause a force
  */
-int ms_lusers(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
+static int ms_lusers(struct Client *cptr, struct Client *sptr,
+                     int parc, char *parv[])
 {
   static time_t last_used = 0;
 

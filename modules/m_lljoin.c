@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_lljoin.c,v 1.29 2001/01/02 04:29:11 davidt Exp $
+ * $Id: m_lljoin.c,v 1.30 2001/01/04 16:10:19 davidt Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -40,9 +40,11 @@
 #include <string.h>
 #include <stdlib.h>
 
+static int ms_lljoin(struct Client *,struct Client *,int,char **);
+
 struct Message lljoin_msgtab = {
   MSG_LLJOIN, 0, 3, 0, MFLG_SLOW | MFLG_UNREG, 0L,
-  {m_unregistered, m_error, ms_lljoin, m_error}
+  {m_unregistered, m_ignore, ms_lljoin, m_ignore}
 };
 
 void
@@ -78,10 +80,10 @@ char *_version = "20001122";
  * this is now..
  *
  */
-int     ms_lljoin(struct Client *cptr,
-               struct Client *sptr,
-               int parc,
-               char *parv[])
+static int ms_lljoin(struct Client *cptr,
+                     struct Client *sptr,
+                     int parc,
+                     char *parv[])
 {
   char *chname = NULL;
   char *nick = NULL;

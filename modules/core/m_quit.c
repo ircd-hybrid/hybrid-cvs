@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_quit.c,v 1.9 2000/12/22 16:12:43 db Exp $
+ *   $Id: m_quit.c,v 1.10 2001/01/04 16:10:23 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -32,6 +32,10 @@
 #include "parse.h"
 #include "modules.h"
 #include "s_conf.h"
+
+static int m_quit(struct Client*, struct Client*, int, char**);
+static int ms_quit(struct Client*, struct Client*, int, char**);
+static int mo_quit(struct Client*, struct Client*, int, char**);
 
 struct Message quit_msgtab = {
   MSG_QUIT, 0, 0, 0, MFLG_SLOW | MFLG_UNREG, 0,
@@ -57,10 +61,10 @@ char *_version = "20001122";
 **      parv[0] = sender prefix
 **      parv[1] = comment
 */
-int     m_quit(struct Client *cptr,
-               struct Client *sptr,
-               int parc,
-               char *parv[])
+static int m_quit(struct Client *cptr,
+                  struct Client *sptr,
+                  int parc,
+                  char *parv[])
 {
   char *comment = (parc > 1 && parv[1]) ? parv[1] : cptr->name;
   char reason [TOPICLEN + 1];
@@ -87,10 +91,10 @@ int     m_quit(struct Client *cptr,
 **      parv[0] = sender prefix
 **      parv[1] = comment
 */
-int     ms_quit(struct Client *cptr,
-               struct Client *sptr,
-               int parc,
-               char *parv[])
+static int ms_quit(struct Client *cptr,
+                   struct Client *sptr,
+                   int parc,
+                   char *parv[])
 {
   char *comment = (parc > 1 && parv[1]) ? parv[1] : cptr->name;
 
@@ -101,10 +105,10 @@ int     ms_quit(struct Client *cptr,
   return exit_client(cptr, sptr, sptr, comment);
 }
 
-int     mo_quit(struct Client *cptr,
-               struct Client *sptr,
-               int parc,
-               char *parv[])
+static int mo_quit(struct Client *cptr,
+                   struct Client *sptr,
+                   int parc,
+                   char *parv[])
 {
   char *comment = (parc > 1 && parv[1]) ? parv[1] : cptr->name;
   char reason [TOPICLEN + 1];

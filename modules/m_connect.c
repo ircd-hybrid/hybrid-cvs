@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_connect.c,v 1.13 2000/12/31 16:10:19 toot Exp $
+ *   $Id: m_connect.c,v 1.14 2001/01/04 16:10:14 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -40,6 +40,9 @@
 
 #include <assert.h>
 #include <stdlib.h>     /* atoi */
+
+static int mo_connect(struct Client*, struct Client*, int, char**);
+static int ms_connect(struct Client*, struct Client*, int, char**);
 
 struct Message connect_msgtab = {
   MSG_CONNECT, 0, 2, 0, MFLG_SLOW, 0,
@@ -71,7 +74,8 @@ char *_version = "20001122";
  *      parv[2] = port number
  *      parv[3] = remote server
  */
-int mo_connect(struct Client* cptr, struct Client* sptr, int parc, char* parv[])
+static int mo_connect(struct Client* cptr, struct Client* sptr,
+                      int parc, char* parv[])
 {
   int              port;
   int              tmpport;
@@ -189,7 +193,8 @@ int mo_connect(struct Client* cptr, struct Client* sptr, int parc, char* parv[])
  *      parv[2] = port number
  *      parv[3] = remote server
  */
-int ms_connect(struct Client* cptr, struct Client* sptr, int parc, char* parv[])
+static int ms_connect(struct Client* cptr, struct Client* sptr,
+                      int parc, char* parv[])
 {
   int              port;
   int              tmpport;

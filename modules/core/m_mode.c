@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_mode.c,v 1.23 2001/01/01 17:23:21 davidt Exp $
+ *   $Id: m_mode.c,v 1.24 2001/01/04 16:10:20 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -38,6 +38,8 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
+
+static int m_mode(struct Client*, struct Client*, int, char**);
 
 struct Message mode_msgtab = {
   MSG_MODE, 0, 2, 0, MFLG_SLOW, 0,
@@ -64,7 +66,8 @@ char *_version = "20001122";
  * parv[0] - sender
  * parv[1] - channel
  */
-int m_mode(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
+static int m_mode(struct Client *cptr, struct Client *sptr,
+              int parc, char *parv[])
 {
   struct Channel* chptr=NULL;
   struct Channel* vchan;

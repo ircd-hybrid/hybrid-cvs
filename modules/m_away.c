@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_away.c,v 1.11 2001/01/01 21:12:09 a1kmm Exp $
+ *   $Id: m_away.c,v 1.12 2001/01/04 16:10:12 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -34,6 +34,8 @@
 #include "s_conf.h"
 
 #include <stdlib.h>
+
+static int m_away(struct Client*, struct Client*, int, char**);
 
 struct Message away_msgtab = {
   MSG_AWAY, 0, 0, 0, MFLG_SLOW, 0,
@@ -70,10 +72,10 @@ char *_version = "20001122";
 **      parv[0] = sender prefix
 **      parv[1] = away message
 */
-int     m_away(struct Client *cptr,
-               struct Client *sptr,
-               int parc,
-               char *parv[])
+static int m_away(struct Client *cptr,
+                  struct Client *sptr,
+                  int parc,
+                  char *parv[])
 {
   char  *away, *awy2 = parv[1];
   static time_t last_away;

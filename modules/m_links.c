@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_links.c,v 1.18 2001/01/02 04:38:28 a1kmm Exp $
+ *   $Id: m_links.c,v 1.19 2001/01/04 16:10:19 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -37,6 +37,10 @@
 
 #include <assert.h>
 #include <string.h>
+
+static int m_links(struct Client*, struct Client*, int, char**);
+static int mo_links(struct Client*, struct Client*, int, char**);
+static int ms_links(struct Client*, struct Client*, int, char**);
 
 struct Message links_msgtab = {
   MSG_LINKS, 0, 0, 0, MFLG_SLOW, 0,
@@ -67,7 +71,8 @@ char *_version = "20001122";
  *      parv[2] = servername mask
  */
 
-int m_links(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
+static int m_links(struct Client *cptr, struct Client *sptr,
+                   int parc, char *parv[])
 {
 
   if (!GlobalSetOptions.hide_server)
@@ -91,7 +96,8 @@ int m_links(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   return 0;
 }
 
-int mo_links(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
+static int mo_links(struct Client *cptr, struct Client *sptr,
+                    int parc, char *parv[])
 {
   const char*    mask = "";
   struct Client* acptr;
@@ -177,7 +183,8 @@ int mo_links(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
  *      parv[1] = server to query 
  *      parv[2] = servername mask
  */
-int ms_links(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
+static int ms_links(struct Client *cptr, struct Client *sptr,
+                    int parc, char *parv[])
 {
   if (hunt_server(cptr, sptr, ":%s LINKS %s :%s", 1, parc, parv)
       != HUNTED_ISME)

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_ison.c,v 1.12 2000/12/23 23:12:58 ejb Exp $
+ *   $Id: m_ison.c,v 1.13 2001/01/04 16:10:17 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -33,6 +33,9 @@
 #include "modules.h"
 
 #include <string.h>
+
+/* XXX lazylinks */
+static int m_ison(struct Client*, struct Client*, int, char**);
 
 struct Message ison_msgtab = {
   MSG_ISON, 0, 1, 1, MFLG_SLOW, 0,
@@ -64,7 +67,8 @@ char *_version = "20001122";
  * format:
  * ISON :nicklist
  */
-int m_ison(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
+static int m_ison(struct Client *cptr, struct Client *sptr,
+                  int parc, char *parv[])
 {
   struct Client *acptr;
   char *nick;
@@ -107,7 +111,10 @@ int m_ison(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 	break;
     }
 
-/*  current_insert_point--; Do NOT take out the trailing space, it breaks ircII --Rodder */
+/*  current_insert_point--;
+ *  Do NOT take out the trailing space, it breaks ircII
+ *  --Rodder */
+
   *current_insert_point = '\0';
   sendto_one(sptr, "%s", buf);
   return 0;

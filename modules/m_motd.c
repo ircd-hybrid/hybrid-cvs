@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_motd.c,v 1.10 2000/12/25 16:09:11 db Exp $
+ *   $Id: m_motd.c,v 1.11 2001/01/04 16:10:20 davidt Exp $
  */
 #include "tools.h"
 #include "motd.h"
@@ -38,6 +38,9 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
+
+static int m_motd(struct Client*, struct Client*, int, char**);
+static int mo_motd(struct Client*, struct Client*, int, char**);
 
 struct Message motd_msgtab = {
   MSG_MOTD, 0, 0, 1, MFLG_SLOW, 0,
@@ -63,7 +66,8 @@ char *_version = "20001122";
 **      parv[0] = sender prefix
 **      parv[1] = servername
 */
-int m_motd(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
+static int m_motd(struct Client *cptr, struct Client *sptr,
+                  int parc, char *parv[])
 {
   static time_t last_used = 0;
 
@@ -96,7 +100,8 @@ int m_motd(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 **      parv[0] = sender prefix
 **      parv[1] = servername
 */
-int mo_motd(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
+static int mo_motd(struct Client *cptr, struct Client *sptr,
+                   int parc, char *parv[])
 {
   if (hunt_server(cptr, sptr, ":%s MOTD :%s", 1,parc,parv)!=HUNTED_ISME)
     return 0;

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_userhost.c,v 1.20 2001/01/02 05:35:12 db Exp $
+ *   $Id: m_userhost.c,v 1.21 2001/01/04 16:10:27 davidt Exp $
  */
 
 #include "handlers.h"
@@ -36,6 +36,9 @@
 #include <string.h>
 
 static char buf[BUFSIZE];
+
+/* XXX LazyLinks ? */
+static int m_userhost(struct Client*, struct Client*, int, char**);
 
 struct Message userhost_msgtab = {
   MSG_USERHOST, 0, 1, 0, MFLG_SLOW, 0,
@@ -61,10 +64,10 @@ char *_version = "20001122";
  * the need for complicated requests like WHOIS. It returns user/host
  * information only (no spurious AWAY labels or channels).
  */
-int     m_userhost(struct Client *cptr,
-                   struct Client *sptr,
-                   int parc,
-                   char *parv[])
+static int m_userhost(struct Client *cptr,
+                      struct Client *sptr,
+                      int parc,
+                      char *parv[])
 {
   struct Client *acptr;
   char response[NICKLEN*2+USERLEN+HOSTLEN+30];

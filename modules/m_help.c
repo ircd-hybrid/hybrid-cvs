@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_help.c,v 1.11 2000/12/30 07:30:26 lusky Exp $
+ *   $Id: m_help.c,v 1.12 2001/01/04 16:10:16 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -33,6 +33,9 @@
 #include "s_conf.h"
 #include "parse.h"
 #include "modules.h"
+
+static int m_help(struct Client*, struct Client*, int, char**);
+static int mo_help(struct Client*, struct Client*, int, char**);
 
 struct Message help_msgtab = {
   MSG_HELP, 0, 0, 0, MFLG_SLOW, 0,
@@ -57,7 +60,8 @@ char *_version = "20001122";
  * m_help - HELP message handler
  *      parv[0] = sender prefix
  */
-int m_help(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
+static int m_help(struct Client *cptr, struct Client *sptr,
+                  int parc, char *parv[])
 {
   static time_t last_used = 0;
 
@@ -82,10 +86,10 @@ int m_help(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
  * mo_help - HELP message handler
  *      parv[0] = sender prefix
  */
-int mo_help(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
+static int mo_help(struct Client *cptr, struct Client *sptr,
+                   int parc, char *parv[])
 {
   SendMessageFile(sptr, &ConfigFileEntry.helpfile);
   return 0;
 }
-
 

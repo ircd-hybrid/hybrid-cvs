@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_time.c,v 1.11 2000/12/25 18:52:03 toot Exp $
+ *   $Id: m_time.c,v 1.12 2001/01/04 16:10:25 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -33,6 +33,10 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
+
+static int m_time(struct Client*, struct Client*, int, char**);
+static int ms_time(struct Client*, struct Client*, int, char**);
+static int mo_time(struct Client*, struct Client*, int, char**);
 
 struct Message time_msgtab = {
   MSG_TIME, 0, 0, 0, MFLG_SLOW, 0,
@@ -58,7 +62,8 @@ char *_version = "20001202";
  *      parv[0] = sender prefix
  *      parv[1] = servername
  */
-int m_time(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
+static int m_time(struct Client *cptr, struct Client *sptr,
+                  int parc, char *parv[])
 {
   sendto_one(sptr, form_str(RPL_TIME), me.name,
              parv[0], me.name, date(0));
@@ -70,7 +75,8 @@ int m_time(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
  *      parv[0] = sender prefix
  *      parv[1] = servername
  */
-int mo_time(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
+static int mo_time(struct Client *cptr, struct Client *sptr,
+                   int parc, char *parv[])
 {
   if (hunt_server(cptr,sptr,":%s TIME :%s",1,parc,parv) == HUNTED_ISME)
     sendto_one(sptr, form_str(RPL_TIME), me.name,
@@ -83,7 +89,8 @@ int mo_time(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
  *      parv[0] = sender prefix
  *      parv[1] = servername
  */
-int ms_time(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
+static int ms_time(struct Client *cptr, struct Client *sptr,
+                   int parc, char *parv[])
 {
   if (hunt_server(cptr,sptr,":%s TIME :%s",1,parc,parv) == HUNTED_ISME)
     {

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_topic.c,v 1.25 2001/01/03 14:35:51 davidt Exp $
+ *   $Id: m_topic.c,v 1.26 2001/01/04 16:10:26 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -40,6 +40,9 @@
 
 #include <string.h>
 #include <stdlib.h>
+
+static int m_topic(struct Client*, struct Client*, int, char**);
+static int ms_topic(struct Client*, struct Client*, int, char**);
 
 struct Message topic_msgtab = {
   MSG_TOPIC, 0, 2, 0, MFLG_SLOW, 0,
@@ -66,10 +69,10 @@ char *_version = "20001122";
  *      parv[1] = channel name
  *	parv[2] = new topic, if setting topic
  */
-int     m_topic(struct Client *cptr,
-                struct Client *sptr,
-                int parc,
-                char *parv[])
+static int m_topic(struct Client *cptr,
+                   struct Client *sptr,
+                   int parc,
+                   char *parv[])
 {
   struct Channel *chptr = NullChn;
   struct Channel *vchan;
@@ -237,10 +240,10 @@ int     m_topic(struct Client *cptr,
  *
  * Let servers always set a topic
  */
-int     ms_topic(struct Client *cptr,
-                struct Client *sptr,
-                int parc,
-                char *parv[])
+static int ms_topic(struct Client *cptr,
+                    struct Client *sptr,
+                    int parc,
+                    char *parv[])
 {
   struct Channel *chptr = NULL;
   

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operwall.c,v 1.13 2001/01/03 22:21:13 davidt Exp $
+ *   $Id: m_operwall.c,v 1.14 2001/01/04 16:10:21 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -32,6 +32,9 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
+
+static int mo_operwall(struct Client*, struct Client*, int, char**);
+static int ms_operwall(struct Client*, struct Client*, int, char**);
 
 struct Message operwall_msgtab = {
   MSG_OPERWALL, 0, 2, 0, MFLG_SLOW, 0,
@@ -59,7 +62,8 @@ char *_version = "20001122";
  *      parv[1] = message text
  */
 
-int mo_operwall(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
+static int mo_operwall(struct Client *cptr, struct Client *sptr,
+                       int parc, char *parv[])
 {
   char *message = parv[1];
 
@@ -83,7 +87,8 @@ int mo_operwall(struct Client *cptr, struct Client *sptr, int parc, char *parv[]
  *      parv[1] = message text
  */
 
-int ms_operwall(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
+static int ms_operwall(struct Client *cptr, struct Client *sptr,
+                       int parc, char *parv[])
 {
   char *message = parv[1];
 

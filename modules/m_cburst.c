@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_cburst.c,v 1.25 2001/01/02 05:30:22 davidt Exp $
+ * $Id: m_cburst.c,v 1.26 2001/01/04 16:10:13 davidt Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -36,9 +36,10 @@
 #include "parse.h"
 #include "modules.h"
 
-#include <assert.h>
 #include <string.h>
 #include <stdlib.h>
+
+static int ms_cburst(struct Client*, struct Client*, int, char**);
 
 struct Message cburst_msgtab = {
   MSG_CBURST, 0, 1, 0, MFLG_SLOW | MFLG_UNREG, 0L,
@@ -71,10 +72,10 @@ char *_version = "20001122";
  * the given LL capable server.
  */
 
-int     ms_cburst(struct Client *cptr,
-                 struct Client *sptr,
-                 int parc,
-                 char *parv[])
+static int ms_cburst(struct Client *cptr,
+                     struct Client *sptr,
+                     int parc,
+                     char *parv[])
 {
   char *name;
   char *nick;

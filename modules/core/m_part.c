@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_part.c,v 1.24 2001/01/01 16:49:37 davidt Exp $
+ *   $Id: m_part.c,v 1.25 2001/01/04 16:10:22 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -42,6 +42,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+
+static int m_part(struct Client*, struct Client*, int, char**);
+static int ms_part(struct Client*, struct Client*, int, char**);
+static int mo_part(struct Client *, struct Client *, int, char **);
 
 struct Message part_msgtab = {
   MSG_PART, 1, 2, 0, MFLG_SLOW, 0,
@@ -71,10 +75,10 @@ char *_version = "20001122";
 **      parv[0] = sender prefix
 **      parv[1] = channel
 */
-int     m_part(struct Client *cptr,
-               struct Client *sptr,
-               int parc,
-               char *parv[])
+static int m_part(struct Client *cptr,
+                  struct Client *sptr,
+                  int parc,
+                  char *parv[])
 {
   int t_delta;
   int decrement_count;
@@ -224,10 +228,10 @@ static void part_one_client(struct Client *cptr,
  * but no spam checks
  */
 
-int     ms_part(struct Client *cptr,
-               struct Client *sptr,
-               int parc,
-               char *parv[])
+static int ms_part(struct Client *cptr,
+                   struct Client *sptr,
+                   int parc,
+                   char *parv[])
 {
   char  *p, *name;
 
@@ -254,10 +258,10 @@ int     ms_part(struct Client *cptr,
  * but no spam checks
  */
 
-int     mo_part(struct Client *cptr,
-               struct Client *sptr,
-               int parc,
-               char *parv[])
+static int mo_part(struct Client *cptr,
+                   struct Client *sptr,
+                   int parc,
+                   char *parv[])
 {
   char  *p, *name;
 

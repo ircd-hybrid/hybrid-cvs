@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_user.c,v 1.11 2001/01/04 11:32:01 ejb Exp $
+ *   $Id: m_user.c,v 1.12 2001/01/04 16:10:27 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -37,6 +37,8 @@
 #include <string.h>
 
 #define UFLAGS  (FLAGS_INVISIBLE|FLAGS_WALLOP|FLAGS_SERVNOTICE)
+
+static int m_user(struct Client*, struct Client*, int, char**);
 
 struct Message user_msgtab = {
   MSG_USER, 0, 5, 0, MFLG_SLOW, 0L,
@@ -65,7 +67,8 @@ char *_version = "20001122";
 **      parv[3] = server host name (used only from other servers)
 **      parv[4] = users real name info
 */
-int m_user(struct Client* cptr, struct Client* sptr, int parc, char *parv[])
+static int m_user(struct Client* cptr, struct Client* sptr,
+                  int parc, char *parv[])
 {
   char* username;
   char* host;

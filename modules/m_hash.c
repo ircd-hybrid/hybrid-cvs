@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_hash.c,v 1.7 2000/12/22 16:12:34 db Exp $
+ *   $Id: m_hash.c,v 1.8 2001/01/04 16:10:16 davidt Exp $
  */
 #include "handlers.h"
 #include "channel.h"
@@ -32,6 +32,11 @@
 #include "s_conf.h"     /* iphash_stats */
 #include "send.h"
 #include "msg.h"
+
+static void report_hash_stats(struct Client *, const char *,
+                              const struct HashStats *);
+
+static int mo_hash(struct Client *, struct Client *, int, char **);
 
 struct Message hash_msgtab = {
   MSG_HASH, 0, 2, 0, MFLG_SLOW, 0,
@@ -70,7 +75,7 @@ static void report_hash_stats(struct Client* client, const char* name,
 }
 
 /*
- * m_hash - report hash table statistics
+ * mo_hash - report hash table statistics
  *
  * NOTE: this command is not supposed to be an offical part of the ircd
  *       protocol.  It is simply here to help debug and to monitor the
@@ -79,7 +84,8 @@ static void report_hash_stats(struct Client* client, const char* name,
  *       -avalon
  *
  */
-int mo_hash(struct Client* cptr, struct Client* sptr, int parc, char* parv[])
+static int mo_hash(struct Client* cptr, struct Client* sptr,
+                   int parc, char* parv[])
 {
   struct HashStats stats;
 

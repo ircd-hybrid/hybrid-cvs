@@ -4,7 +4,7 @@
  * shape or form. The author takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: res.c,v 7.33 2000/12/31 05:23:24 db Exp $
+ * $Id: res.c,v 7.34 2001/01/04 16:10:30 davidt Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -1178,19 +1178,6 @@ static void dup_hostent(aHostent* new_hp, struct hostent* hp)
       p += (strlen(p) + 1);
     }
   *ap = 0;
-}
-
-/*
- * m_dns - dns status query
- */
-int m_dns(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
-{
-  if (parv[1] && *parv[1] == 'd')
-    {
-      sendto_one(sptr, "NOTICE %s :ResolverFileDescriptor = %d", parv[0], ResolverFileDescriptor);
-      return 0;
-    }
-  return 0;
 }
 
 static struct cache* make_cache(ResRQ* request)

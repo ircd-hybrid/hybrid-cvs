@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_locops.c,v 1.14 2000/12/31 16:10:21 toot Exp $
+ *   $Id: m_locops.c,v 1.15 2001/01/04 16:10:19 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -34,6 +34,8 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
+
+static int m_locops(struct Client *,struct Client *,int,char **);
 
 struct Message locops_msgtab = {
   MSG_LOCOPS, 0, 2, 0, MFLG_SLOW, 0,
@@ -60,7 +62,8 @@ char *_version = "20001122";
  *      parv[0] = sender prefix
  *      parv[1] = message text
  */
-int m_locops(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
+static int m_locops(struct Client *cptr, struct Client *sptr,
+                    int parc, char *parv[])
 {
   char *message = NULL;
 

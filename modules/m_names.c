@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_names.c,v 1.20 2001/01/03 02:44:58 davidt Exp $
+ *   $Id: m_names.c,v 1.21 2001/01/04 16:10:21 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -44,8 +44,11 @@
 #include <string.h>
 #include <assert.h>
 
-void names_all_visible_channels(struct Client *sptr);
-void names_non_public_non_secret(struct Client *sptr);
+static void names_all_visible_channels(struct Client *sptr);
+static void names_non_public_non_secret(struct Client *sptr);
+
+static int m_names(struct Client*, struct Client*, int, char**);
+static int ms_names(struct Client*, struct Client*, int, char**);
 
 struct Message names_msgtab = {
   MSG_NAMES, 0, 0, 0, MFLG_SLOW, 0,
@@ -77,10 +80,10 @@ char *_version = "20001122";
 **      parv[1] = channel
 **      parv[2] = root name
 */
-int     m_names( struct Client *cptr,
-                 struct Client *sptr,
-                 int parc,
-                 char *parv[])
+static int m_names( struct Client *cptr,
+                    struct Client *sptr,
+                    int parc,
+                    char *parv[])
 { 
   struct Channel *vchan;
   struct Channel *ch2ptr = NULL;
@@ -134,7 +137,7 @@ int     m_names( struct Client *cptr,
  * side effects	- lists all visible channels whee!
  */
 
-void names_all_visible_channels(struct Client *sptr)
+static void names_all_visible_channels(struct Client *sptr)
 {
   int mlen;
   int cur_len;
@@ -221,7 +224,7 @@ void names_all_visible_channels(struct Client *sptr)
  * side effects	- lists all non public non secret channels
  */
 
-void names_non_public_non_secret(struct Client *sptr)
+static void names_non_public_non_secret(struct Client *sptr)
 {
   int mlen;
   int tlen;
@@ -295,10 +298,10 @@ void names_non_public_non_secret(struct Client *sptr)
     sendto_one(sptr, "%s", buf );
 }
 
-int ms_names( struct Client *cptr,
-	      struct Client *sptr,
-	      int parc,
-	      char *parv[])
+static int ms_names( struct Client *cptr,
+                     struct Client *sptr,
+                     int parc,
+                     char *parv[])
 { 
   /* If its running as a hub, and linked with lazy links
    * then allow leaf to use normal client m_names()

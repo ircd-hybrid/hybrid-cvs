@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_wallops.c,v 1.14 2001/01/03 22:21:14 davidt Exp $
+ *   $Id: m_wallops.c,v 1.15 2001/01/04 16:10:28 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -33,6 +33,9 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
+
+static int ms_wallops(struct Client*, struct Client*, int, char**);
+static int mo_wallops(struct Client*, struct Client*, int, char**);
 
 struct Message wallops_msgtab = {
   MSG_WALLOPS, 0, 2, 0, MFLG_SLOW, 0,
@@ -58,7 +61,8 @@ char *_version = "20001122";
  *      parv[0] = sender prefix
  *      parv[1] = message text
  */
-int mo_wallops(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
+static int mo_wallops(struct Client *cptr, struct Client *sptr,
+                      int parc, char *parv[])
 { 
   char* message;
 
@@ -83,7 +87,8 @@ int mo_wallops(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
  *      parv[0] = sender prefix
  *      parv[1] = message text
  */
-int ms_wallops(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
+static int ms_wallops(struct Client *cptr, struct Client *sptr,
+                      int parc, char *parv[])
 { 
   char* message;
 

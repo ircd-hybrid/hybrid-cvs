@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_ping.c,v 1.8 2000/12/28 00:40:48 davidt Exp $
+ *   $Id: m_ping.c,v 1.9 2001/01/04 16:10:22 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -31,6 +31,9 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
+
+static int m_ping(struct Client*, struct Client*, int, char**);
+static int ms_ping(struct Client*, struct Client*, int, char**);
 
 struct Message ping_msgtab = {
   MSG_PING, 0, 1, 0, MFLG_SLOW, 0,
@@ -57,10 +60,10 @@ char *_version = "20001122";
 **      parv[1] = origin
 **      parv[2] = destination
 */
-int     m_ping(struct Client *cptr,
-               struct Client *sptr,
-               int parc,
-               char *parv[])
+static int m_ping(struct Client *cptr,
+                  struct Client *sptr,
+                  int parc,
+                  char *parv[])
 {
   struct Client *acptr;
   char  *origin, *destination;
@@ -96,10 +99,10 @@ int     m_ping(struct Client *cptr,
   return 0;
 }
 
-int     ms_ping(struct Client *cptr,
-               struct Client *sptr,
-               int parc,
-               char *parv[])
+static int ms_ping(struct Client *cptr,
+                   struct Client *sptr,
+                   int parc,
+                   char *parv[])
 {
   struct Client *acptr;
   char  *origin, *destination;

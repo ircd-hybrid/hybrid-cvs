@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_accept.c,v 1.11 2000/12/26 22:18:38 db Exp $
+ *   $Id: m_accept.c,v 1.12 2001/01/04 16:10:11 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -32,6 +32,8 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
+
+static int m_accept(struct Client*, struct Client*, int, char**);
 
 struct Message accept_msgtab = {
   MSG_ACCEPT, 0, 2, 0, MFLG_SLOW | MFLG_UNREG, 0, 
@@ -57,7 +59,8 @@ char *_version = "20001122";
  *      parv[0] = sender prefix
  *      parv[1] = servername
  */
-int m_accept(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
+static int m_accept(struct Client *cptr, struct Client *sptr,
+                    int parc, char *parv[])
 {
   char *nick;
   int  add=1;

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_testline.c,v 1.7 2000/12/30 08:17:49 lusky Exp $
+ *   $Id: m_testline.c,v 1.8 2001/01/04 16:10:25 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -38,6 +38,8 @@
 #include "modules.h"
 
 #include <string.h>
+
+static int mo_testline(struct Client*, struct Client*, int, char**);
 
 struct Message testline_msgtab = {
   MSG_TESTLINE, 0, 0, 0, MFLG_SLOW, 0,
@@ -73,7 +75,8 @@ char *_version = "20001124";
  *
  */  
   
-int mo_testline(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
+static int mo_testline(struct Client *cptr, struct Client *sptr,
+                       int parc, char *parv[])
 {
   struct ConfItem *aconf;
   unsigned long ip;

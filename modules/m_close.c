@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_close.c,v 1.8 2000/12/22 16:12:32 db Exp $
+ *   $Id: m_close.c,v 1.9 2001/01/04 16:10:14 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -33,6 +33,8 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
+
+static int mo_close(struct Client*, struct Client*, int, char**);
 
 struct Message close_msgtab = {
   MSG_CLOSE, 0, 1, 0, MFLG_SLOW, 0,
@@ -57,7 +59,8 @@ char *_version = "20001122";
  * mo_close - CLOSE message handler
  *  - added by Darren Reed Jul 13 1992.
  */
-int mo_close(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
+static int mo_close(struct Client *cptr, struct Client *sptr,
+                    int parc, char *parv[])
 {
   struct Client  *acptr;
   dlink_node     *ptr;

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kick.c,v 1.18 2000/12/31 16:10:20 toot Exp $
+ *   $Id: m_kick.c,v 1.19 2001/01/04 16:10:17 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -36,6 +36,9 @@
 #include "parse.h"
 
 #include <string.h>
+
+static int m_kick(struct Client*, struct Client*, int, char**);
+static int ms_kick(struct Client*, struct Client*, int, char**);
 
 struct Message kick_msgtab = {
   MSG_KICK, 0, 3, 0, MFLG_SLOW, 0,
@@ -63,10 +66,10 @@ char *_version = "20001122";
 **      parv[2] = client to kick
 **      parv[3] = kick comment
 */
-int     m_kick(struct Client *cptr,
-               struct Client *sptr,
-               int parc,
-               char *parv[])
+static int m_kick(struct Client *cptr,
+                  struct Client *sptr,
+                  int parc,
+                  char *parv[])
 {
   struct Client *who;
   struct Channel *chptr;
@@ -217,10 +220,10 @@ int     m_kick(struct Client *cptr,
   return (0);
 }
 
-int     ms_kick(struct Client *cptr,
-               struct Client *sptr,
-               int parc,
-               char *parv[])
+static int ms_kick(struct Client *cptr,
+                   struct Client *sptr,
+                   int parc,
+                   char *parv[])
 {
   if (*parv[2] == '\0')
     {

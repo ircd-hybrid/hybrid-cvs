@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_dmem.c,v 1.2 2000/12/22 16:12:33 db Exp $
+ *   $Id: m_dmem.c,v 1.3 2001/01/04 16:10:15 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -37,6 +37,8 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
+
+static int mo_dmem(struct Client*, struct Client*, int, char**);
 
 struct Message dmem_msgtab = {
   MSG_DMEM, 0, 0, 0, MFLG_SLOW, 0,
@@ -61,7 +63,8 @@ char *_version = "20001221";
  * mo_dmem - DMEM message handler
  *
  */
-int mo_dmem(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
+static int mo_dmem(struct Client *cptr, struct Client *sptr,
+                   int parc, char *parv[])
 {
 #ifdef DEBUGMEM
   sendto_realops_flags(FLAGS_ALL, "%s is forcing a memory report", parv[0]);
