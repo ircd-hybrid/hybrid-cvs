@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.212 2002/10/30 21:23:51 androsyn Exp $
+ *  $Id: s_user.c,v 7.213 2002/10/30 21:44:53 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -305,7 +305,6 @@ register_local_user(struct Client *client_p, struct Client *source_p,
            source_p->localClient->random_ping = (unsigned long)rand();
            sendto_one(source_p, "PING :%lu", (unsigned long)source_p->localClient->random_ping);
            source_p->flags |= FLAGS_PINGSENT;
-	   strlcpy(source_p->username, username, sizeof(source_p->username));
   	   return -1;
   	} 
   	if(!(source_p->flags2 & FLAGS2_PING_COOKIE))
@@ -864,13 +863,22 @@ do_local_user(char* nick, struct Client* client_p, struct Client* source_p,
   user->server = me.name;
 
   strlcpy(source_p->info, realname, sizeof(source_p->info));
-  if (!IsGotId(source_p)) 
-          strlcpy(source_p->username, username, sizeof(source_p->username));
  
   if (source_p->name[0])
   { 
-    	return register_local_user(client_p, source_p, source_p->name, source_p->username);
+    /* NICK already received, now I have USER... */
+    	return register_local_user(client_p, source_p, source_p->name, username);
   }
+  else
+    {
+      if (!IsGotId(source_p)) 
+        {
+          /*
+           * save the username in the client
+           */
+          strlcpy(source_p->username, username, sizeof(source_p->username));
+        }
+    }
   return 0;
 }
 
