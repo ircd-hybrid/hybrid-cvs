@@ -1,7 +1,7 @@
 /*
  * fdlist.h
  *
- * $Id: fdlist.h,v 7.22 2001/12/10 06:57:43 androsyn Exp $
+ * $Id: fdlist.h,v 7.23 2001/12/10 07:15:14 androsyn Exp $
  */
 #ifndef INCLUDED_fdlist_h
 #define INCLUDED_fdlist_h
@@ -114,7 +114,6 @@ struct _fde {
         void *data;
         /* We'd also add the retry count here when we get to that -- adrian */
     } connect;
-    int tried_write_io;
 };
 
 

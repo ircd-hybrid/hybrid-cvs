@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.164 2001/12/07 22:53:55 db Exp $
+ *   $Id: send.c,v 7.165 2001/12/10 07:15:11 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -190,23 +190,7 @@ _send_linebuf(struct Client *to, buf_head_t *linebuf)
   to->localClient->sendM += 1;
   me.localClient->sendM += 1;
 
-  /*
-   * Now we register a write callback. We *could* try to write some
-   * data to the FD, it'd be an optimisation, and we can deal with it
-   * later.
-   *     -- adrian
-   * So I took adrian's comments to heart..whether it works or not remains
-   * to been seen...This seems to be a bad idea as other connections die
-   * of starvation..
-   * -- Aaron
-   */
-#if 0
   send_queued_write(to->fd, to);	
-#endif
-#if 1
-  comm_setselect(to->fd, FDLIST_IDLECLIENT, COMM_SELECT_WRITE,
-                 send_queued_write, to, 0);
-#endif
   return 0;
 } /* send_linebuf() */
 
