@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.304 2003/08/13 20:35:45 metalrock Exp $
+ *  $Id: s_user.c,v 7.305 2003/08/20 00:02:47 michael Exp $
  */
 
 #include "stdinc.h"
@@ -56,14 +56,13 @@ int MaxClientCount     = 1;
 int MaxConnectionCount = 1;
 
 static BlockHeap *user_heap;
-static int32_t user_count = 0;
 
-static int valid_hostname(const char *hostname);
-static int valid_username(const char *username);
-static void user_welcome(struct Client *source_p);
+static int valid_hostname(const char *);
+static int valid_username(const char *);
+static void user_welcome(struct Client *);
 static void report_and_set_user_flags(struct Client *, struct AccessItem *);
-static int check_x_line(struct Client *client_p, struct Client *source_p);
-static int introduce_client(struct Client *client_p, struct Client *source_p);
+static int check_x_line(struct Client *, struct Client *);
+static int introduce_client(struct Client *, struct Client *);
 
 /* table of ascii char letters
  * to corresponding bitmask
@@ -182,7 +181,7 @@ init_user(void)
 
 /* make_user()
  *
- * inputs       - pointer to client struct
+ * inputs       - pointer to Client struct
  * output       - pointer to struct User
  * side effects - add's an User information block to a client
  *                if it was not previously allocated.
@@ -194,8 +193,6 @@ make_user(struct Client *client_p)
   {
     client_p->user = BlockHeapAlloc(user_heap);
     memset(client_p->user, 0, sizeof(struct User));
-
-    ++user_count;
   }
 
   return(client_p->user);
@@ -203,8 +200,8 @@ make_user(struct Client *client_p)
 
 /* free_user()
  *
- * inputs       - pointer to user struct
- *              - pointer to client struct
+ * inputs       - pointer to User struct
+ *              - pointer to Client struct
  * output       - NONE
  * side effects - free an User block
  */
@@ -232,22 +229,6 @@ free_user(struct User *user, struct Client *client_p)
   }
 
   BlockHeapFree(user_heap, user);
-  --user_count;
-  assert(user_count >= 0);
-}
-
-/* count_user_memory()
- *
- * inputs       - pointer to user memory actually used
- *              - pointer to user memory allocated total in block allocator
- * output       - NONE
- * side effects - NONE
- */
-void
-count_user_memory(int *count, unsigned long *user_memory_used)
-{
-  *count = user_count;
-  *user_memory_used = user_count * sizeof(struct User);
 }
 
 /* show_lusers()

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.h,v 7.73 2003/07/21 01:58:21 michael Exp $
+ *  $Id: ircd.h,v 7.74 2003/08/20 00:02:43 michael Exp $
  */
 
 #ifndef INCLUDED_ircd_h
@@ -43,7 +43,7 @@ struct SetOptions
   int spam_time;
 };
 
-struct Counter 
+struct Counter
 {
   int myserver; /* my servers          */
   int oper;     /* Opers               */
@@ -73,7 +73,6 @@ extern const char *serno;
 extern const char *ircd_version;
 extern const char *logFileName;
 extern const char *pidFileName;
-extern const char serveropts[];
 extern int dorehash;
 extern int doremotd;
 extern struct Counter Count;
@@ -92,12 +91,12 @@ extern int split_servers;
 
 extern dlink_list dead_list;
 extern dlink_list abort_list;
-extern dlink_list unknown_list;       /* unknown clients ON this server only */
-extern dlink_list local_client_list;  /* local clients only ON this server */
-extern dlink_list serv_list;          /* local servers to this server ONLY */
-extern dlink_list global_serv_list;   /* global servers on the network */
+extern dlink_list unknown_list;       /* unknown clients ON this server only        */
+extern dlink_list local_client_list;  /* local clients only ON this server          */
+extern dlink_list serv_list;          /* local servers to this server ONLY          */
+extern dlink_list global_serv_list;   /* global servers on the network              */
 extern dlink_list oper_list;          /* our opers, duplicated in local_client_list */
-extern dlink_list lazylink_channels;  /* known about lazylink channels on HUB */
+extern dlink_list lazylink_channels;  /* known about lazylink channels on HUB       */
 extern int rehashed_klines;
 extern int rehashed_xlines;
 extern unsigned long get_maxrss(void);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.404 2003/08/11 12:32:18 stu Exp $
+ *  $Id: client.c,v 7.405 2003/08/20 00:02:47 michael Exp $
  */
 
 #include "stdinc.h"
@@ -65,13 +65,10 @@ dlink_list serv_list = {NULL, NULL, 0};
 dlink_list global_serv_list = {NULL, NULL, 0};
 dlink_list oper_list = {NULL, NULL, 0};
 
-static void check_pings_list(dlink_list *list);
+static void check_pings_list(dlink_list *);
 static void check_unknowns_list(void);
 
 static EVH check_pings;
-
-static int remote_client_count = 0;
-static int local_client_count  = 0;
 
 static BlockHeap *client_heap  = NULL;
 static BlockHeap *lclient_heap = NULL;
@@ -138,12 +135,10 @@ make_client(struct Client *from)
 #endif      
     /* as good a place as any... */
     dlinkAdd(client_p, make_dlink_node(), &unknown_list);
-    ++local_client_count;
   }
   else
   { /* from is not NULL */
     client_p->from = from; /* 'from' of local client is self! */
-    ++remote_client_count;
   }
 
   client_p->hnext  = client_p;
@@ -182,12 +177,6 @@ free_client(struct Client *client_p)
     dbuf_clear(&client_p->localClient->buf_sendq);
 
     BlockHeapFree(lclient_heap, client_p->localClient);
-    --local_client_count;
-    assert(local_client_count >= 0);
-  }
-  else
-  {
-    --remote_client_count;
   }
 
   BlockHeapFree(client_heap, client_p);
@@ -1366,29 +1355,6 @@ exit_client(
 
   exit_one_client(client_p, source_p, from, comment);
   return(client_p == source_p ? CLIENT_EXITED : 0);
-}
-
-/*
- * Count up local client memory
- */
-
-/* XXX one common Client list now */
-void
-count_local_client_memory(int *count, unsigned long *local_client_memory_used)
-{
-  *count = local_client_count;
-  *local_client_memory_used = local_client_count *
-    (sizeof(struct Client) + sizeof(struct LocalUser));
-}
-
-/*
- * Count up remote client memory
- */
-void
-count_remote_client_memory(int *count, unsigned long *remote_client_memory_used)
-{
-  *count = remote_client_count;
-  *remote_client_memory_used = remote_client_count * sizeof(struct Client);
 }
 
 /*

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_version.c,v 1.48 2003/08/03 14:22:20 michael Exp $
+ *  $Id: m_version.c,v 1.49 2003/08/20 00:02:45 michael Exp $
  */
 
 #include "stdinc.h"
@@ -35,10 +35,25 @@
 #include "parse.h"
 #include "modules.h"
 
-static char *confopts(struct Client *source_p);
+static char *confopts(struct Client *);
 static void m_version(struct Client *, struct Client *, int, char **);
 static void ms_version(struct Client *, struct Client *, int, char **);
 static void mo_version(struct Client *, struct Client *, int, char **);
+
+/* Option string. */
+static const char serveropts[] = {
+  ' ',
+  'T',
+  'S',
+#ifdef TS_CURRENT
+  '0' + TS_CURRENT,
+#endif
+/* ONLY do TS */
+/* ALWAYS do TS_WARNINGS */
+  'o',
+  'w',
+  '\0'
+};
 
 struct Message version_msgtab = {
   "VERSION", 0, 0, 0, 0, MFLG_SLOW, 0,
@@ -58,7 +73,7 @@ _moddeinit(void)
   mod_del_cmd(&version_msgtab);
 }
 
-const char *_version = "$Revision: 1.48 $";
+const char *_version = "$Revision: 1.49 $";
 #endif
 
 /*
