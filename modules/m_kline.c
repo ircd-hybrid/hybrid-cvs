@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.143 2003/05/29 03:35:55 db Exp $
+ *  $Id: m_kline.c,v 1.144 2003/05/29 23:29:04 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -81,7 +81,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.143 $";
+const char *_version = "$Revision: 1.144 $";
 #endif
 
 /* Local function prototypes */
@@ -286,7 +286,7 @@ ms_kline(struct Client *client_p, struct Client *source_p,
   if (find_cluster(source_p->user->server->name, CLUSTER_KLINE))
   {
     if (!valid_user_host(source_p, kuser, khost) || !valid_wild_card(kuser, khost) ||
-        !valid_comment(source_p, kreason))
+        !valid_comment(source_p, kreason) || already_placed_kline(source_p, kuser, khost))
       return;
 
     tkline_time = atoi(parv[2]);

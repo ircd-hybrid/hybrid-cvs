@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_unkline.c,v 1.68 2003/05/29 03:35:55 db Exp $
+ *  $Id: m_unkline.c,v 1.69 2003/05/29 23:29:04 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&msgtabs[2]);
   delete_capability("UNKLN");
 }
-const char *_version = "$Revision: 1.68 $";
+const char *_version = "$Revision: 1.69 $";
 #endif
 
 static int remove_tkline_match(const char *, const char *);
@@ -136,7 +136,7 @@ mo_unkline(struct Client *client_p,struct Client *source_p,
     }
 
   /* UNKLINE bill@mu.org ON irc.mu.org */
-  if ((parc == 4) && (irccmp(parv[2], "ON") == 0))
+  if ((parc > 3) && (irccmp(parv[2], "ON") == 0))
   {
     sendto_match_servs(source_p, parv[3], CAP_UNKLN,
                        "UNKLINE %s %s %s", parv[3], user, host);
