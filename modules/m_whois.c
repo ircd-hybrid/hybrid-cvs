@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 1.46 2001/01/05 14:52:42 toot Exp $
+ *   $Id: m_whois.c,v 1.47 2001/01/06 01:41:33 toot Exp $
  */
 #include "tools.h"
 #include "common.h"   /* bleah */
@@ -459,16 +459,6 @@ static int ms_whois(struct Client *cptr,
       sendto_one(sptr, form_str(ERR_NONICKNAMEGIVEN),
                  me.name, parv[0]);
       return 0;
-    }
-
-  /* If its running as a hub, and linked with lazy links
-   * then allow leaf to use normal client m_whois()
-   * other wise, ignore it.
-   */
-  if( !IsOper(sptr) && GlobalSetOptions.hide_server
-      && !IsCapable(cptr->from,CAP_LL) )
-    {
- 	return 0;
     }
  
   return( m_whois(cptr,sptr,parc,parv) );
