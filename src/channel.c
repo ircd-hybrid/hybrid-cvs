@@ -34,7 +34,7 @@
  *                mode * -p etc. if flag was clear
  *
  *
- * $Id: channel.c,v 7.30 2000/01/04 15:56:13 db Exp $
+ * $Id: channel.c,v 7.31 2000/01/04 17:52:52 db Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -2338,13 +2338,7 @@ void    add_invite(struct Client *cptr,struct Channel *chptr)
    */
   if (list_length(cptr->user->invited) >= MAXCHANNELSPERUSER)
     {
-      /*                This forgets the channel side of invitation     -Vesa
-                        inv = cptr->user->invited;
-                        cptr->user->invited = inv->next;
-                        free_link(inv);
-*/
       del_invite(cptr, cptr->user->invited->value.chptr);
- 
     }
   /*
    * add client to channel invite list
