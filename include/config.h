@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.94 2001/02/24 05:32:24 a1kmm Exp $
+ * $Id: config.h,v 7.95 2001/02/24 08:06:22 a1kmm Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
