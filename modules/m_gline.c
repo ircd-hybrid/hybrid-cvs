@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_gline.c,v 1.68 2001/11/13 11:45:47 leeh Exp $
+ *  $Id: m_gline.c,v 1.69 2001/12/14 15:26:32 leeh Exp $
  */
 
 #include <assert.h>
@@ -825,8 +825,6 @@ majority_gline(struct Client *source_p,
 
               if(find_is_glined(host, user))
                 return NO;
-              if (find_conf_by_address(host, NULL, CONF_KILL, 0, user))
-               return NO;
 
               log_gline(source_p,gline_pending_ptr,
                         oper_nick,oper_user,oper_host,oper_server,
