@@ -1,3 +1,16 @@
+androsyn    2002/02/19 13:28:19 EST	(20020219_1)
+
+  Modified files:
+    src                  client.c 
+  Log:
+  Add an assert() that should catch if a client is on the lclient list when we
+  try to free it...
+  
+  Revision  Changes    Path
+  7.232     +1 -0      ircd-hybrid-7/src/client.c
+
+
+
 androsyn    2002/02/19 10:22:13 EST	(20020219_0)
 
   Modified files:
@@ -22921,4 +22934,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3432 2002/02/19 15:22:20 androsyn Exp $
+$Id: ChangeLog,v 7.3433 2002/02/19 18:28:25 androsyn Exp $
