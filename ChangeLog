@@ -1,3 +1,11 @@
+*** 20001203_8 by adrian
+
+
+* ziplinks is gone for the time being
+* david-t tidied up calling fd_note() in the right places
+
+
+
 *** 20001203_7 by adrian
 
 
@@ -1415,7 +1423,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.675 2000/12/03 09:13:44 adrian Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.676 2000/12/03 09:16:40 adrian Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
