@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.156 2003/01/19 13:19:50 db Exp $
+ *  $Id: client.h,v 7.157 2003/01/20 12:44:00 db Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -618,7 +618,7 @@ extern int set_initial_nick(struct Client *client_p, struct Client *source_p,
                             char *nick);
 extern int change_local_nick(struct Client *client_p, struct Client *source_p,
                              char *nick);
-extern void dead_link_on_write(struct Client *client_p, int errno);
-extern void dead_link_on_read(struct Client *client_p, int errno);
+extern void dead_link_on_write(struct Client *client_p, int ierrno);
+extern void dead_link_on_read(struct Client *client_p, int error);
 #endif /* INCLUDED_client_h */
 
