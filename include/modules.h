@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.h,v 7.20 2001/05/31 19:42:59 davidt Exp $
+ * $Id: modules.h,v 7.21 2001/07/02 19:03:15 jdc Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -73,8 +73,7 @@ extern struct Message capab_msgtab;
 extern struct Message cburst_msgtab;
 #ifdef HAVE_LIBCRYPTO
 extern struct Message challenge_msgtab;
-extern struct Message cryptserv_msgtab;
-extern struct Message cryptauth_msgtab;
+extern struct Message cryptlink_msgtab;
 #endif
 extern struct Message cjoin_msgtab;
 extern struct Message client_msgtab;

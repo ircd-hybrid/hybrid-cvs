@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.142 2001/06/26 09:00:20 jdc Exp $
+ * $Id: s_conf.h,v 7.143 2001/07/02 19:03:16 jdc Exp $
  */
 
 #include "setup.h"
@@ -83,7 +83,7 @@ struct ConfItem
 #ifdef HAVE_LIBCRYPTO
   char *           rsa_public_key_file;
   RSA *            rsa_public_key;
-  struct EncPreference *cipher_preference;
+  struct EncCapability *cipher_preference;
 #endif
 };
 
@@ -235,7 +235,7 @@ struct config_file_entry
   int           client_flood;
   int           use_egd;
 #ifdef HAVE_LIBCRYPTO
-  struct EncPreference *default_cipher_preference;
+  struct EncCapability *default_cipher_preference;
 #endif
 };
 

@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.116 2001/06/11 19:56:45 leeh Exp $
+ * $Id: client.h,v 7.117 2001/07/02 19:03:13 jdc Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -389,7 +389,7 @@ struct LocalUser
 #define FLAGS_IPHASH       0x1000 /* iphashed this client */
 #define FLAGS_CRYPTIN      0x2000 /* incoming data must be decrypted */
 #define FLAGS_CRYPTOUT     0x4000 /* outgoing data must be encrypted */
-#define FLAGS_WAITAUTH     0x8000 /* waiting for CRYPTAUTH command */
+#define FLAGS_WAITAUTH     0x8000 /* waiting for CRYPTLINK AUTH command */
 #define FLAGS_SERVLINK     0x10000 /* servlink has servlink process */
 
 /* umodes, settable flags */
