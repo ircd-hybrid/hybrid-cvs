@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.c,v 7.41 2001/01/04 20:36:52 a1kmm Exp $
+ * $Id: modules.c,v 7.42 2001/01/04 21:11:58 davidt Exp $
  */
 
 #include <dlfcn.h>
@@ -369,6 +369,8 @@ mo_modload (struct Client *cptr, struct Client *sptr, int parc, char **parv)
   }
 
   (void)load_one_module (parv[1]);
+
+  MyFree(m_bn);
   return 0;
 }
 
