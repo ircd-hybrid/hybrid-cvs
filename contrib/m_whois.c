@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.12 2003/03/21 17:52:18 db Exp $
+ *  $Id: m_whois.c,v 1.13 2003/03/30 05:30:14 michael Exp $
  */
 
 #include "stdinc.h"
@@ -58,6 +58,7 @@ static int single_whois(struct Client *source_p, struct Client *target_p,
                         int wilds, int glob);
 static void whois_person(struct Client *source_p,struct Client *target_p,int glob);
 static int global_whois(struct Client *source_p, char *nick, int wilds, int glob);
+static int show_ip(struct Client* source_p, struct Client* target_p);
 
 static void m_whois(struct Client*, struct Client*, int, char**);
 static void ms_whois(struct Client*, struct Client*, int, char**);
@@ -109,7 +110,7 @@ static char show_ip_remote[7][7] =
   /*Else*/       {'-','-','-','-','-','-','-'}
 };
 
-int
+static int
 show_ip(struct Client* source_p, struct Client* target_p)
 {
   int s, t, res;
@@ -194,7 +195,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-const char *_version = "$Revision: 1.12 $";
+const char *_version = "$Revision: 1.13 $";
 #endif
 /*
 ** m_whois
@@ -488,7 +489,7 @@ whois_person(struct Client *source_p,struct Client *target_p, int glob)
 {
   char buf[BUFSIZE];
   char *chname;
-  char *server_name;
+  const char *server_name;
   dlink_node  *lp;
   struct Client *a2client_p;
   struct Channel *chptr;
@@ -507,7 +508,7 @@ whois_person(struct Client *source_p,struct Client *target_p, int glob)
   sendto_one(source_p, form_str(RPL_WHOISUSER), me.name,
 	 source_p->name, target_p->name,
 	 target_p->username, target_p->host, target_p->info);
-  server_name = (char *)target_p->user->server;
+  server_name = target_p->user->server;
 
   ircsprintf(buf, form_str(RPL_WHOISCHANNELS),
 	       me.name, source_p->name, target_p->name, "");
