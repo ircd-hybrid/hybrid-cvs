@@ -3,7 +3,7 @@
  *   Copyright (C) 1990 Jarkko Oikarinen and
  *                      University of Oulu, Co Center
  *
- * $Id: m_list.c,v 1.18 2000/12/22 16:12:38 db Exp $ 
+ * $Id: m_list.c,v 1.19 2000/12/26 15:07:43 db Exp $ 
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -220,6 +220,13 @@ int list_named_channel(struct Client *sptr,char *name)
     return 0;
 
   chptr = hash_find_channel(name, NullChn);
+
+  if (chptr == NULL)
+    {
+      sendto_one(sptr,form_str(ERR_NOSUCHNICK),me.name, sptr->name, name);
+      sendto_one(sptr, form_str(RPL_LISTEND), me.name, sptr->name);
+      return 0;
+    }
 
   for (ptr = chptr->vchan_list.head; ptr; ptr = ptr->next)
     {
