@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.220 2002/01/09 17:38:33 jmallett Exp $
+ *  $Id: client.c,v 7.221 2002/01/22 03:02:28 androsyn Exp $
  */
 
 #include "tools.h"
@@ -1080,8 +1080,10 @@ static void exit_one_client(struct Client *client_p, struct
 
   /* remove from global client list */
   remove_client_from_list(source_p);
-
   SetDead(source_p);
+
+  /* Check to see if the client isn't already on the dead list */
+  assert(dlinkFind(&dead_list, source_p) == NULL);
   /* add to dead client dlist */
   lp = make_dlink_node();
   dlinkAdd(source_p, lp, &dead_list);
