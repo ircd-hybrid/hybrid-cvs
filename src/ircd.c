@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.180 2001/08/26 18:09:16 davidt Exp $
+ * $Id: ircd.c,v 7.181 2001/09/06 11:34:39 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -297,7 +297,7 @@ set_time(void)
 		(unsigned long) newtime,
 		(unsigned long) CurrentTime);
 
-  report_error(to_send, me.name, 0);
+  report_error(L_ALL, to_send, me.name, 0);
   set_back_events(CurrentTime - newtime);
  }
  CurrentTime = newtime;

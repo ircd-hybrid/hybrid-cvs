@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.c,v 7.71 2001/08/03 13:10:31 leeh blalloc.c $
+ *   $Id: s_auth.c,v 7.72 2001/09/06 11:34:39 leeh Exp $
  *
  * Changes:
  *   July 6, 1999 - Rewrote most of the code here. When a client connects
@@ -287,7 +287,7 @@ static int start_auth_query(struct AuthRequest* auth)
 
   if ((fd = comm_open(DEF_FAM, SOCK_STREAM, 0, "ident")) == -1)
     {
-      report_error("creating auth stream socket %s:%s", 
+      report_error(L_ALL, "creating auth stream socket %s:%s", 
 		   get_client_name(auth->client, SHOW_IP), errno);
       ilog(L_ERROR, "Unable to create auth socket for %s:%m",
 	  get_client_name(auth->client, SHOW_IP));
@@ -305,7 +305,7 @@ static int start_auth_query(struct AuthRequest* auth)
   sendheader(auth->client, REPORT_DO_ID);
   if (!set_non_blocking(fd))
     {
-      report_error(NONB_ERROR_MSG, get_client_name(auth->client, SHOW_IP), errno);
+      report_error(L_ALL, NONB_ERROR_MSG, get_client_name(auth->client, SHOW_IP), errno);
       fd_close(fd);
       return 0;
     }

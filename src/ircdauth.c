@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: ircdauth.c,v 7.41 2001/08/03 13:10:30 leeh blalloc.c $
+ *   $Id: ircdauth.c,v 7.42 2001/09/06 11:34:39 leeh Exp $
  */
 
 #include <stdio.h>
@@ -108,7 +108,7 @@ ConnectToIAuth()
 	iAuth.socket = comm_open(AF_INET, SOCK_STREAM, 0, "iAuth socket");
 	if (iAuth.socket < 0)
 	{
-    report_error("ConnectToIAuth(): Unable to open stream socket to %s: %s",
+    report_error(L_ALL, "ConnectToIAuth(): Unable to open stream socket to %s: %s",
       iAuth.hostname,
       errno);
 		iAuth.socket = NOSOCK;

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_bsd.h,v 7.29 2001/06/12 21:20:32 androsyn Exp $
+ *   $Id: s_bsd.h,v 7.30 2001/09/06 11:34:38 leeh Exp $
  *
  */
 #ifndef INCLUDED_s_bsd_h
@@ -57,7 +57,7 @@ extern void  close_all_connections(void);
 extern int   connect_server(struct ConfItem*, struct Client*, 
                             struct DNSReply*);
 extern void  get_my_name(struct Client *, char *, int);
-extern void  report_error(const char*, const char*, int);
+extern void  report_error(int, const char*, const char*, int);
 extern int   set_non_blocking(int);
 extern int   set_sock_buffers(int, int);
 
