@@ -1,3 +1,15 @@
+db          2002/02/10 18:47:07 EST	(20020210_4)
+
+  Modified files:
+    modules              m_who.c 
+  Log:
+  - cleaner patch for 'who 0'
+  
+  Revision  Changes    Path
+  1.51      +6 -9      ircd-hybrid-7/modules/m_who.c
+
+
+
 db          2002/02/10 16:24:35 EST	(20020210_3)
 
   Modified files:
@@ -22426,4 +22438,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3397 2002/02/10 21:24:41 db Exp $
+$Id: ChangeLog,v 7.3398 2002/02/10 23:47:13 db Exp $
