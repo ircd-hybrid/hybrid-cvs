@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: msg.h,v 7.33 2000/12/22 16:12:25 db Exp $
+ * $Id: msg.h,v 7.34 2001/01/04 11:31:55 ejb Exp $
  */
 #ifndef INCLUDED_msg_h
 #define INCLUDED_msg_h
@@ -66,6 +66,7 @@ struct  Message
 #define MSG_DBOP     "DBOP"
 #endif
 
+#define MSG_CLIENT   "CLIENT"   /* CLIENT */
 #define MSG_ACCEPT   "ACCEPT"   /* ACCEPT */
 #define MSG_PRIVMSG  "PRIVMSG"  /* PRIV */
 #define MSG_CBURST   "CBURST"   /* LazyLink channel burst */

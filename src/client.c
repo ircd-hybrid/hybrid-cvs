@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.94 2001/01/04 03:00:57 davidt Exp $
+ *  $Id: client.c,v 7.95 2001/01/04 11:32:02 ejb Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -1127,7 +1127,9 @@ static void exit_one_client(struct Client *cptr, struct
    * Remove sptr from the client lists
    */
   del_from_client_hash_table(sptr->name, sptr);
-
+  if (HasID(sptr))
+	  del_from_id_hash_table(sptr->user->id, sptr);
+  
   /* remove from global client list */
   remove_client_from_list(sptr);
 

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_user.c,v 1.10 2000/12/31 16:10:23 toot Exp $
+ *   $Id: m_user.c,v 1.11 2001/01/04 11:32:01 ejb Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -88,5 +88,5 @@ int m_user(struct Client* cptr, struct Client* sptr, int parc, char *parv[])
   server = parv[3];
   realname = parv[4];
 
-  return do_user(parv[0], cptr, sptr, username, host, server, realname);
+  return do_user(parv[0], cptr, sptr, username, host, server, realname, NULL);
 }

@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.52 2001/01/01 05:09:41 wcampbel Exp $
+# $Id: Makefile.in,v 7.53 2001/01/04 11:32:02 ejb Exp $
 #
 CC		= @CC@
 INSTALL		= @INSTALL@
@@ -73,6 +73,7 @@ SRCS =                          \
   listener.c                    \
   m_error.c                     \
   match.c                       \
+  md5.c                         \
   memdebug.c                    \
   modules.c                     \
   motd.c                        \

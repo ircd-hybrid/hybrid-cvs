@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_nick.c,v 1.40 2001/01/03 22:21:11 davidt Exp $
+ *   $Id: m_nick.c,v 1.41 2001/01/04 11:32:01 ejb Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -717,7 +717,7 @@ nick_from_server(struct Client *cptr, struct Client *sptr, int parc,
             }
           
           return do_user(nick, cptr, sptr, parv[5], parv[6],
-                         parv[7], parv[8]);
+                         parv[7], parv[8], NULL);
         }
     }
   else if (sptr->name[0])

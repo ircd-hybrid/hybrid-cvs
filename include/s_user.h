@@ -19,7 +19,7 @@
  *
  * "s_user.h". - Headers file.
  *
- * $Id: s_user.h,v 7.8 2000/12/30 06:03:35 lusky Exp $
+ * $Id: s_user.h,v 7.9 2001/01/04 11:31:55 ejb Exp $
  *
  */
 #ifndef INCLUDED_s_user_h
@@ -44,7 +44,7 @@ extern int   show_lusers(struct Client* sptr);
 extern void  show_opers(struct Client* client);
 extern int   register_user(struct Client* ,struct Client* ,char* ,char* );
 extern int   do_user(char* ,struct Client* ,struct Client*,
-                   char* ,char *,char *,char *);
+                   char* ,char *,char *,char *, char *);
 
 extern int   user_modes_from_c_to_bitmask[];
 extern int   show_isupport(struct Client *);

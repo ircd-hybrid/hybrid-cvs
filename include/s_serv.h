@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: s_serv.h,v 7.31 2001/01/04 08:51:25 a1kmm Exp $
+ * $Id: s_serv.h,v 7.32 2001/01/04 11:31:55 ejb Exp $
  *
  */
 #ifndef INCLUDED_serv_h
@@ -66,10 +66,11 @@ struct Capability
 #define CAP_HOPS        0x00001000      /* can do half ops (+h) */
 #define CAP_HUB         0x00002000      /* This server is a HUB */
 #define CAP_AOPS        0x00004000      /* Can do anon ops (+a) */
+#define CAP_UID         0x00008000      /* Can do UIDs */
 
 #define CAP_MASK        CAP_QS|CAP_EX|CAP_CHW|\
                         CAP_DE|CAP_IE|CAP_VCHAN|CAP_EOB|CAP_KLN|CAP_GLN|\
-                        CAP_HOPS|CAP_AOPS
+                        CAP_HOPS|CAP_AOPS|CAP_UID
 
 #define DoesCAP(x)      ((x)->caps)
 
