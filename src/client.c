@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.320 2003/02/01 03:55:20 db Exp $
+ *  $Id: client.c,v 7.321 2003/02/02 20:47:24 db Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -1307,21 +1307,13 @@ exit_client(
        */
       if (!IsRegistered(source_p))
 	{
-	  m = dlinkFind(&unknown_list,source_p);
-	  if(m != NULL)
-	    {
-	      dlinkDelete(m, &unknown_list);
-	      free_dlink_node(m);
-	    }
+	  if ((m = dlinkFindDelete(&unknown_list, source_p)) != NULL)
+	    free_dlink_node(m);
 	}
       if (IsOper(source_p))
         {
-	  m = dlinkFind(&oper_list,source_p);
-	  if(m != NULL)
-	    {
-	      dlinkDelete(m, &oper_list);
-	      free_dlink_node(m);
-	    }
+	  if ((m = dlinkFindDelete(&oper_list, source_p)) != NULL)
+	    free_dlink_node(m);
         }
       if (IsClient(source_p))
         {
@@ -1329,12 +1321,8 @@ exit_client(
 
           if(IsPerson(source_p))        /* a little extra paranoia */
             {
-	      m = dlinkFind(&lclient_list,source_p);
-	      if(m != NULL)
-		{
-		  dlinkDelete(m,&lclient_list);
-		  free_dlink_node(m);
-		}
+	      if((m = dlinkFindDelete(&lclient_list, source_p)) != NULL)
+		free_dlink_node(m);
             }
         }
 
@@ -1345,10 +1333,8 @@ exit_client(
       if (IsServer(source_p) || IsConnecting(source_p) ||
           IsHandshake(source_p))
 	{
-	  m = dlinkFind(&serv_list,source_p);
-	  if(m != NULL)
+	  if((m = dlinkFindDelete(&serv_list, source_p)) != NULL)
 	    {
-	      dlinkDelete(m,&serv_list);
 	      free_dlink_node(m);
               unset_chcap_usage_counts(source_p);
 	    }

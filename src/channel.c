@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.353 2003/01/31 23:00:31 db Exp $
+ *  $Id: channel.c,v 7.354 2003/02/02 20:47:23 db Exp $
  */
 
 #include "stdinc.h"
@@ -571,9 +571,8 @@ destroy_channel(struct Channel *chptr)
   {
     root_chptr = chptr->root_chptr;
     /* remove from vchan double link list */
-    m = dlinkFind(&root_chptr->vchan_list, chptr);
-    dlinkDelete(m, &root_chptr->vchan_list);
-    free_dlink_node(m);
+    if ((m = dlinkFindDelete(&root_chptr->vchan_list, chptr)) != NULL)
+      free_dlink_node(m);
   }
 #endif
 
