@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.150 2001/03/23 07:30:58 ejb Exp $
+ * $Id: ircd_parser.y,v 1.151 2001/03/23 07:33:15 ejb Exp $
  */
 
 %{
@@ -313,7 +313,7 @@ sizespec:	NUMBER
 		= {
 			$$ = $1;
 		}
-		NUMBER BYTES
+		| NUMBER BYTES
 		= { 
 			$$ = $1;
 		}
