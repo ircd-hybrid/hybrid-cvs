@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_part.c,v 1.21 2001/01/01 02:08:12 davidt Exp $
+ *   $Id: m_part.c,v 1.22 2001/01/01 04:47:14 wcampbel Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -176,7 +176,7 @@ static void part_one_client(struct Client *cptr,
 	  */
 	  
 	  sendto_channel_remote(chptr, cptr, ":%s PART %s", sptr->name,
-                                chname);
+                                name);
 	  
 	  sendto_channel_local(ALL_MEMBERS,
 			       chptr, ":%s!%s@%s PART %s",
