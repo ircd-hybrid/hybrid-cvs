@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.280 2004/02/24 03:36:20 michael Exp $
+ *  $Id: send.c,v 7.281 2005/01/01 16:14:51 michael Exp $
  */
 
 #include "stdinc.h"
@@ -142,8 +142,8 @@ send_message(struct Client *to, char *buf, int len)
    ** because it counts messages even if queued, but bytes
    ** only really sent. Queued bytes get updated in SendQueued.
    */
-  to->localClient->sendM += 1;
-  me.localClient->sendM += 1;
+  ++to->localClient->sendM;
+  ++me.localClient->sendM;
 
   if (dbuf_length(&to->localClient->buf_sendq) >
       (IsServer(to) ? (unsigned int) 1024 : (unsigned int) 4096))
@@ -296,7 +296,7 @@ send_queued_write(struct Client *to)
         to->localClient->sendK += (to->localClient->sendB >> 10);
         to->localClient->sendB &= 0x03ff;        /* 2^10 = 1024, 3ff = 1023 */
       }
-      else if (me.localClient->sendB > 1023)
+      if (me.localClient->sendB > 1023)
       { 
         me.localClient->sendK += (me.localClient->sendB >> 10);
         me.localClient->sendB &= 0x03ff;

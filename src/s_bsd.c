@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.212 2003/09/19 22:13:13 bill Exp $
+ *  $Id: s_bsd.c,v 7.213 2005/01/01 16:14:51 michael Exp $
  */
 
 #include "stdinc.h"
@@ -269,12 +269,12 @@ close_connection(struct Client *client_p)
     ServerStats->is_sks += client_p->localClient->sendK;
     ServerStats->is_skr += client_p->localClient->receiveK;
     ServerStats->is_sti += CurrentTime - client_p->firsttime;
-    if (ServerStats->is_sbs > 2047)
+    if (ServerStats->is_sbs > 1023)
     {
       ServerStats->is_sks += (ServerStats->is_sbs >> 10);
       ServerStats->is_sbs &= 0x3ff;
     }
-    if (ServerStats->is_sbr > 2047)
+    if (ServerStats->is_sbr > 1023)
     {
       ServerStats->is_skr += (ServerStats->is_sbr >> 10);
       ServerStats->is_sbr &= 0x3ff;
@@ -314,12 +314,12 @@ close_connection(struct Client *client_p)
     ServerStats->is_cks += client_p->localClient->sendK;
     ServerStats->is_ckr += client_p->localClient->receiveK;
     ServerStats->is_cti += CurrentTime - client_p->firsttime;
-    if (ServerStats->is_cbs > 2047)
+    if (ServerStats->is_cbs > 1023)
     {
       ServerStats->is_cks += (ServerStats->is_cbs >> 10);
       ServerStats->is_cbs &= 0x3ff;
     }
-    if (ServerStats->is_cbr > 2047)
+    if (ServerStats->is_cbr > 1023)
     {
       ServerStats->is_ckr += (ServerStats->is_cbr >> 10);
       ServerStats->is_cbr &= 0x3ff;
