@@ -19,7 +19,7 @@
  *
  * "ircd.h". - Headers file.
  *
- * $Id: ircd.h,v 7.17 2000/12/09 05:20:42 db Exp $
+ * $Id: ircd.h,v 7.18 2000/12/11 22:07:27 db Exp $
  *
  */
 #ifndef INCLUDED_ircd_h
@@ -95,10 +95,10 @@ extern time_t         CurrentTime;
 extern time_t         LCF;
 extern time_t         nextconnect;
 
-
+extern dlink_list unknown_list;
 extern dlink_list lclient_list;
-extern dlink_list oper_list;
 extern dlink_list serv_list;
+extern dlink_list oper_list;
 
 #ifdef REJECT_HOLD
 extern int reject_held_fds;

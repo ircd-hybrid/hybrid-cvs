@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.70 2000/12/10 03:52:25 db Exp $
+ *  $Id: s_bsd.c,v 7.71 2000/12/11 22:07:33 db Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -96,7 +96,6 @@ void close_all_connections(void)
         fd_close(i);
     else
         close(i);
-    local[i] = 0;
   }
 }
 
@@ -298,7 +297,6 @@ void close_connection(struct Client *cptr)
       /* attempt to flush any pending dbufs. Evil, but .. -- adrian */
       if (!IsDead(cptr))
         send_queued_write(cptr->fd, cptr);
-      local[cptr->fd] = NULL;
       fd_close(cptr->fd);
       cptr->fd = -1;
     }

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_nick.c,v 1.22 2000/12/11 04:06:02 db Exp $
+ *   $Id: m_nick.c,v 1.23 2000/12/11 22:07:31 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -878,3 +878,7 @@ int clean_nick_name(char* nick)
 
   return (ch - nick);
 }
+
+
+
+

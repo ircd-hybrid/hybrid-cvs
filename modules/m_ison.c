@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_ison.c,v 1.5 2000/12/09 05:59:46 db Exp $
+ *   $Id: m_ison.c,v 1.6 2000/12/11 22:07:31 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -81,8 +81,8 @@ int m_ison(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   len = strlen(buf);
   current_insert_point = buf + len;
 
-  for (nick = strtoken(&p, parv[1], ","); nick;
-       nick = strtoken(&p, NULL, ","))
+  for (nick = strtoken(&p, parv[1], " "); nick;
+       nick = strtoken(&p, NULL, " "))
     {
       if ((acptr = find_person(nick, NULL)))
 	{

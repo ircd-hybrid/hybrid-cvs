@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.c,v 7.28 2000/12/10 03:52:25 db Exp $
+ *   $Id: s_auth.c,v 7.29 2000/12/11 22:07:33 db Exp $
  *
  * Changes:
  *   July 6, 1999 - Rewrote most of the code here. When a client connects
@@ -174,7 +174,6 @@ static void release_auth_client(struct Client* client)
 {
   if (client->fd > highest_fd)
     highest_fd = client->fd;
-  local[client->fd] = client;
 
   /*
    * When a client has auth'ed, we want to start reading what it sends
