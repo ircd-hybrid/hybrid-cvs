@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: listener.c,v 7.31 2001/02/12 05:13:18 androsyn Exp $
+ *  $Id: listener.c,v 7.32 2001/02/21 06:59:31 androsyn Exp $
  */
 #include "listener.h"
 #include "client.h"
@@ -164,8 +164,7 @@ static int inetport(struct Listener* listener)
   else if ((HARD_FDLIMIT - 10) < fd) {
     report_error("no more connections left for listener %s:%s", 
                  get_listener_name(listener), errno);
-    /* This is ok because we haven't fd_open()ed it yet -- adrian */
-    close(fd);
+    fd_close(fd);
     return 0;
   }
   /* 
