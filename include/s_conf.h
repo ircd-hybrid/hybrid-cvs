@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.69 2001/01/05 15:42:08 db Exp $
+ * $Id: s_conf.h,v 7.70 2001/01/05 16:16:51 db Exp $
  */
 
 #include <sys/param.h>
@@ -116,8 +116,6 @@ struct ConfItem
 #define IsIllegal(x)    ((x)->status & CONF_ILLEGAL)
 
 /* aConfItem->flags */
-/* We can recycle flags as long as the same flag is not used twice for
- * the same type of config entry. */
 
 /* Generic flags... */
 /* access flags... */
@@ -132,9 +130,9 @@ struct ConfItem
 #define CONF_FLAGS_IDLE_LINED           0x0100
 #define CONF_FLAGS_SPOOF_IP             0x0200
 /* server flags */
-#define CONF_FLAGS_ALLOW_AUTO_CONN      0x0001
-#define CONF_FLAGS_LAZY_LINK            0x0002
-#define CONF_FLAGS_REDIR                0x0004
+#define CONF_FLAGS_ALLOW_AUTO_CONN      0x0400
+#define CONF_FLAGS_LAZY_LINK            0x0800
+#define CONF_FLAGS_REDIR                0x1000
 
 /* Macros for aConfItem */
 
