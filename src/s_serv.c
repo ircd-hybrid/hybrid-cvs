@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.14 2000/01/03 00:33:42 db Exp $
+ *   $Id: s_serv.c,v 7.15 2000/01/03 00:44:39 db Exp $
  */
 #include "s_serv.h"
 #include "channel.h"
@@ -441,6 +441,16 @@ int check_server(struct Client* cptr)
        else
          {
            cptr->serverMask = nextFreeMask();
+           /* its full folks, 32 leaves? wow. I never thought I'd
+            * see the day. Now this will have to be recoded! -Dianora
+            */
+           if(!cptr->serverMask)
+             {
+               sendto_realops("serverMask is full!");
+
+               /* try and negotiate a non LL connect */
+               ClearCap(cptr,CAP_LL);
+             }
 #ifdef DEBUGLL
            sendto_realops("s_serv.c: Adding serverMask %X", cptr->serverMask );
 #endif
