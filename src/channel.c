@@ -34,7 +34,7 @@
  *                mode * -p etc. if flag was clear
  *
  *
- * $Id: channel.c,v 7.46 2000/10/12 18:41:52 db Exp $
+ * $Id: channel.c,v 7.47 2000/10/13 18:50:39 db Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -2460,21 +2460,23 @@ static  void    sub1_from_channel(struct Channel *chptr)
 	   * If so, don't remove if it has sub vchans
 	   * top level chan always has prev_chan == NULL
 	   */
-          if ( (chptr->prev_vchan == NULL) && (chptr->next_vchan == NULL) )
+          if (chptr->prev_vchan == NULL)
             {
-	      if (chptr->prevch)
-		chptr->prevch->nextch = chptr->nextch;
-	      else
-		GlobalChannelList = chptr->nextch;
-	      if (chptr->nextch)
-		chptr->nextch->prevch = chptr->prevch;
-              del_from_channel_hash_table(chptr->chname, chptr);
-              MyFree((char*) chptr);
-              Count.chan--;
+	      if(chptr->next_vchan == NULL)
+		{
+		  if (chptr->prevch)
+		    chptr->prevch->nextch = chptr->nextch;
+		  else
+		    GlobalChannelList = chptr->nextch;
+		  if (chptr->nextch)
+		    chptr->nextch->prevch = chptr->prevch;
+		  del_from_channel_hash_table(chptr->chname, chptr);
+		  MyFree((char*) chptr);
+		  Count.chan--;
+		}
 	    }
-
           /* if this is a subchan take it out the linked list */
-          else if (chptr->prev_vchan)
+          else
             {
 	      /* remove from vchan double link list */
               chptr->prev_vchan->next_vchan = chptr->next_vchan;
