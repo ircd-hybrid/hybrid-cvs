@@ -1,3 +1,15 @@
+leeh        2002/06/15 19:07:53 EDT	(20020616_0)
+
+  Modified files:
+    include              config.h 
+  Log:
+  - define HIDE_SERVERS_IPS by default for efnut.
+  
+  Revision  Changes    Path
+  7.135     +5 -0      ircd-hybrid-7/include/config.h
+
+
+
 leeh        2002/06/15 09:09:48 EDT	(20020615_6)
 
   Modified files:
@@ -28386,4 +28398,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3777 2002/06/15 13:09:55 leeh Exp $
+$Id: ChangeLog,v 7.3778 2002/06/15 23:07:59 leeh Exp $
