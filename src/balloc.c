@@ -3,6 +3,12 @@
  *  balloc.c: A block allocator.
  *
  *  Copyright (C) 2002 by the past and present ircd coders, and others.
+ *  Original credit lines follow:
+ *
+ *  File:   blalloc.c
+ *  Owner:  Wohali (Joan Touzet)
+ *  
+ *  Modified 2001/11/29 for mmap() support by Aaron Sethman <androsyn@ratbox.org>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,7 +25,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: balloc.c,v 7.26 2002/03/18 20:06:55 androsyn Exp $
+ *  $Id: balloc.c,v 7.27 2002/04/14 22:13:48 androsyn Exp $
  */
 
 /* 
