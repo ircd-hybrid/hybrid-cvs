@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.103.2.1 2003/04/05 01:20:03 lusky Exp $
+ *  $Id: s_auth.c,v 7.103.2.2 2003/04/05 18:51:45 lusky Exp $
  */
 
 /*
@@ -208,9 +208,15 @@ auth_dns_callback(void* vptr, adns_answer* reply)
         struct Client *client = auth->client;
         auth->ip6_int = 1;
 	MyFree(reply);
-	SetDNSPending(auth);
-        adns_getaddr(&client->localClient->ip, client->localClient->aftype, client->localClient->dns_query, 1);
-        return;
+	reply = NULL;
+	/* Only set DNS pending if no error! -- Dianora */
+        if (adns_getaddr(&client->localClient->ip,
+			 client->localClient->aftype,
+			 client->localClient->dns_query, 1) == 0)
+	{
+	  SetDNSPending(auth);
+	  return;
+	}
       }
 #endif
       sendheader(auth->client, REPORT_FAIL_DNS);
