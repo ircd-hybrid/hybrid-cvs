@@ -1,3 +1,9 @@
+*** 20001117_1 by toot
+. made a separate ircd.conf setting to block nickchanges when banned,
+  and block them in +m chans too, unless opped
+. fixed a typo i made in can_send() :P
+
+
 *** 20001116_7 by toot
 (quiet_on_ban stuff)
   +o/+v should be able to speak even if banned
@@ -595,7 +601,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.557 2000/11/17 01:03:40 toot Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.558 2000/11/17 18:02:59 toot Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
