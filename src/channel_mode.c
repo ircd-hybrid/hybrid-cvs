@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.98 2003/05/26 05:43:19 db Exp $
+ *  $Id: channel_mode.c,v 7.99 2003/05/28 16:56:26 db Exp $
  */
 
 #include "stdinc.h"
@@ -759,7 +759,14 @@ chm_simple(struct Client *client_p, struct Client *source_p,
   simple_modes_mask |= mode_type;
 
   /* setting + */
-  if ((dir == MODE_ADD) && !(chptr->mode.mode & mode_type))
+  /* Apparently, (though no one has ever told the hybrid group directly)
+   * admins don't like redundant mode checking. ok. It would have been nice
+   * if you had have told us directly. I've left the original code snippets
+   * in place.
+   *
+   * -Dianora
+   */
+  if ((dir == MODE_ADD)) /* && !(chptr->mode.mode & mode_type)) */
   {
     chptr->mode.mode |= mode_type;
 
@@ -771,7 +778,7 @@ chm_simple(struct Client *client_p, struct Client *source_p,
     mode_changes[mode_count].mems = ALL_MEMBERS;
     mode_changes[mode_count++].arg = NULL;
   }
-  else if ((dir == MODE_DEL) && (chptr->mode.mode & mode_type))
+  else if ((dir == MODE_DEL)) /* && (chptr->mode.mode & mode_type)) */
   {
     /* setting - */
 
