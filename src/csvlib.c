@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.33 2004/01/26 03:35:20 metalrock Exp $
+ *  $Id: csvlib.c,v 7.34 2004/02/10 05:33:25 db Exp $
  */
 
 #include "stdinc.h"
@@ -445,7 +445,7 @@ getfield(char *newline)
   for (;;)
   {
     /* At end of string, mark it as end and return */
-    if (*end == '\0')
+    if ((*end == '\0') || (*end == '\n'))
     {
       line = NULL;
       return(NULL);
@@ -526,9 +526,6 @@ remove_conf_line(ConfType type, struct Client *source_p, const char *pat1, const
 
   while (fbgets(buf, sizeof(buf), in) != NULL) 
   {
-    if ((p = strchr(buf,'\n')) != NULL)
-      *p = '\0';
-
     if ((*buf == '\0') || (*buf == '#'))
     {
       if(flush_write(source_p, in, out, buf, temppath) < 0)
@@ -537,7 +534,7 @@ remove_conf_line(ConfType type, struct Client *source_p, const char *pat1, const
     
     /* Keep copy of original line, getfield trashes line as it goes */
     strlcpy(buff, buf, sizeof(buff));
-    
+
     if ((found1 = getfield(buff)) == NULL)
     {
       if(flush_write(source_p, in, out, buf, temppath) < 0)
