@@ -1,4 +1,4 @@
-$Id: Hybrid-team,v 7.47 2002/04/06 14:54:41 db Exp $
+$Id: Hybrid-team,v 7.48 2002/04/06 15:37:40 db Exp $
 
 The hybrid team is a group of ircd coders who were frustrated
 with the instability and all-out "dirtiness" of the EFnet ircd's
@@ -37,6 +37,7 @@ this release of hybrid, in nick alphabetical order:
 bysin, Ben Kittridge <bkittridge@cfl.rr.com>
 desrt, Ryan Lortie <desertangel@mindless.com>
 Habeeb, David Supuran <habeeb@cfl.rr.com>
+jv, Jakub Vlasek <jv@pilsedu.cz>
 kre, Dinko Korunic <kreator@fly.srk.fer.hr>
 madmax, Paul Lomax <madmax@efnet.org>
 Neph|l|m, Adel Mezibra <adel@cybercable.fr>
