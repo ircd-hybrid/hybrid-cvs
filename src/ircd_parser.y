@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.253 2002/07/11 23:40:22 leeh Exp $
+ *  $Id: ircd_parser.y,v 1.254 2002/08/15 13:32:43 db Exp $
  */
 
 %{
@@ -283,8 +283,8 @@ int   class_redirport_var;
 
 %type   <string>   QSTRING
 %type   <number>   NUMBER
-%type   <number>   timespec
-%type   <number>   sizespec
+%type   <number>   timespec, timespec_
+%type   <number>   sizespec, sizespec_
 
 %%
 conf:   
@@ -314,53 +314,38 @@ conf_item:        admin_entry
         ;
 
 
-timespec:	NUMBER 
-		= {
-			$$ = $1;
-		}
-		| NUMBER SECONDS
-		= {
-			$$ = $1;
-		}
-		| NUMBER MINUTES
-		= {
-			$$ = $1 * 60;
-		}
-		| NUMBER HOURS
-		= {
-			$$ = $1 * 60 * 60;
-		}
-		| NUMBER DAYS
-		= {
-			$$ = $1 * 60 * 60 * 24;
-		}
-		| NUMBER WEEKS
-		= {
-			$$ = $1 * 60 * 60 * 24 * 7;
-		}
-		| timespec timespec
-		= {
-			/* 2 years 3 days */
+timespec_: { $$ = 0; } | timespec;
+timespec:	NUMBER timespec_
+		{
 			$$ = $1 + $2;
+		}
+		| NUMBER SECONDS timespec_
+		{
+			$$ = $1 + $3;
+		}
+		| NUMBER MINUTES timespec_
+		{
+			$$ = $1 * 60 + $3;
+		}
+		| NUMBER HOURS timespec_
+		{
+			$$ = $1 * 60 * 60 + $3;
+		}
+		| NUMBER DAYS timespec_
+		{
+			$$ = $1 * 60 * 60 * 24 + $3;
+		}
+		| NUMBER WEEKS timespec_
+		{
+			$$ = $1 * 60 * 60 * 24 * 7 + $3;
 		}
 		;
 
-sizespec:	NUMBER	
-		= {
-			$$ = $1;
-		}
-		| NUMBER BYTES
-		= { 
-			$$ = $1;
-		}
-		| NUMBER KBYTES
-		= {
-			$$ = $1 * 1024;
-		}
-		| NUMBER MBYTES
-		= {
-			$$ = $1 * 1024 * 1024;
-		}
+sizespec_:	{ $$ = 0; } | sizespec;
+sizespec:	NUMBER sizespec_ { $$ = $1 + $2; }
+		| NUMBER BYTES sizespec_ { $$ = $1 + $3; }
+		| NUMBER KBYTES sizespec_ { $$ = $1 * 1024 + $3; }
+		| NUMBER MBYTES sizespec_ { $$ = $1 * 1024 * 1024 + $3; }
 		;
 
 
