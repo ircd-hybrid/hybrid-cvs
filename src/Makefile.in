@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.102 2001/12/11 03:22:42 a1kmm Exp $
+# $Id: Makefile.in,v 7.103 2001/12/11 03:42:47 a1kmm Exp $
 #
 CC		= @CC@
 INSTALL		= @INSTALL@
@@ -23,6 +23,8 @@ bindir		= @bindir@
 libexecdir	= @libexecdir@
 sysconfdir	= @sysconfdir@
 localstatedir	= @localstatedir@
+
+DOLLAR = $$
 
 IRCD_EXE	= ircd
 
@@ -162,8 +164,8 @@ version.c: version.c.SH
 
 .PHONY: depend clean distclean
 depend:
-	echo "# $Id: Makefile.in,v 7.102 2001/12/11 03:22:42 a1kmm Exp $" > .depend
-	@${MKDEP} ${CPPFLAGS} ${BASE_SRCS} ${EXTRA_SRCS} >> .depend
+	echo "# \${DOLLAR}Id: ${DOLLAR}" > .depend
+	${MKDEP} ${CPPFLAGS} ${BASE_SRCS} ${EXTRA_SRCS} >> .depend
 
 clean:
 	${RM} -f *.o *.exe *~ y.tab.* lex.yy.c ircd.core core ircd 
