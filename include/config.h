@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.27 2000/10/26 14:40:25 db Exp $
+ * $Id: config.h,v 7.28 2000/11/06 08:40:46 db Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -712,10 +712,8 @@ error CLIENT_FLOOD undefined.
 void    free_fluders();
 void    free_fludees();
 
-#ifdef ANTI_SPAMBOT
 #define MIN_SPAM_NUM 5
 #define MIN_SPAM_TIME 60
-#endif
 
 #define MIN_IDLETIME 1800
 

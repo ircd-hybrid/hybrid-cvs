@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_debug.c,v 7.22 2000/11/03 05:04:34 db Exp $
+ *   $Id: s_debug.c,v 7.23 2000/11/06 08:40:49 db Exp $
  */
 #include "s_debug.h"
 #include "channel.h"
@@ -300,7 +300,7 @@ void count_memory(struct Client *cptr,char *nick)
   for (chptr = GlobalChannelList; chptr; chptr = chptr->nextch)
     {
       ch++;
-      chm += (strlen(chptr->chname) + sizeof(aChannel));
+      chm += (strlen(chptr->chname) + sizeof(struct Channel));
       for (link = chptr->members; link; link = link->next)
         chu++;
       for (link = chptr->invites; link; link = link->next)

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.28 2000/11/06 08:13:30 db Exp $
+ * $Id: channel.h,v 7.29 2000/11/06 08:40:46 db Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -77,18 +77,10 @@ struct Channel
   time_t          channelts;
   char            locally_created;  /* used to flag a locally created channel*/
   char            keep_their_modes; /* used only on mode after sjoin */
-#ifdef FLUD
   time_t          fludblock;
   struct fludbot* fluders;
-#endif
-#if defined(PRESERVE_CHANNEL_ON_SPLIT) || defined(NO_JOIN_ON_SPLIT)
-  struct Channel* last_empty_channel;
-  struct Channel* next_empty_channel;
-#endif
   char            chname[1];
 };
-
-typedef struct  Channel aChannel;
 
 extern  struct  Channel *GlobalChannelList;
 
@@ -99,7 +91,7 @@ void cleanup_channels(void *);
 
 #define MODEBUFLEN      200
 
-#define NullChn ((aChannel *)0)
+#define NullChn ((struct Channel *)0)
 
 #define ChannelExists(n)        (hash_find_channel(n, NullChn) != NullChn)
 
@@ -225,16 +217,6 @@ typedef struct Ban      /* also used for exceptions -orabidoo */
   char *who;
   time_t when;
 } aBan;
-
-
-#ifdef NEED_SPLITCODE
-
-extern int server_was_split;
-#if defined(SPLIT_PONG)
-extern int got_server_pong;
-#endif
-
-#endif  /* NEED_SPLITCODE */
 
 #endif  /* INCLUDED_channel_h */
 

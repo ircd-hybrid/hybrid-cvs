@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: ircd_defs.h,v 7.4 2000/04/02 15:46:36 db Exp $
+ * $Id: ircd_defs.h,v 7.5 2000/11/06 08:40:46 db Exp $
  *
  * ircd_defs.h - Global size definitions for record entries used
  * througout ircd. Please think 3 times before adding anything to this
@@ -84,11 +84,9 @@ extern int         BH_CurrentLine;
                           BH_CurrentLine = __LINE__;\
                           _free_user((x), (y)); }
 
-#ifdef FLUD
 #define free_fludbot(x) { BH_CurrentFile = __FILE__;\
                           BH_CurrentLine = __LINE__;\
                           BlockHeapFree(free_fludbots, (x)); }
-#endif
 
 #else
 #define free_client(x) _free_client((x))

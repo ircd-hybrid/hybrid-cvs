@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_stats.c,v 7.3 2000/10/24 18:47:24 adrian Exp $
+ *  $Id: s_stats.c,v 7.4 2000/11/06 08:40:50 db Exp $
  */
 #include "s_stats.h"
 #include "client.h"
@@ -127,10 +127,8 @@ void tstats(struct Client *cptr, const char *name)
              sp->is_ckr, sp->is_cbr, sp->is_skr, sp->is_sbr);
   sendto_one(cptr, ":%s %d %s :time connected %u %u",
              me.name, RPL_STATSDEBUG, name, sp->is_cti, sp->is_sti);
-#ifdef FLUD
   sendto_one(cptr, ":%s %d %s :CTCP Floods Blocked %u",
              me.name, RPL_STATSDEBUG, name, sp->is_flud);
-#endif /* FLUD */
 }
 
 
