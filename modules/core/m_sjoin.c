@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.103 2001/08/22 13:41:44 leeh Exp $
+ *   $Id: m_sjoin.c,v 1.104 2001/08/22 13:48:35 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -539,7 +539,14 @@ static void ms_sjoin(struct Client *client_p,
 nextnick:
       /* p points to the next nick */
       s = p;
-      
+     
+      /* if there was a trailing space and p was pointing to it, then we
+       * need to exit.. this has the side effect of breaking double spaces
+       * in an sjoin.. but that shouldnt happen anyway
+       */
+      if(*s == '\0')
+        s = p = NULL;
+	
       /* if p was NULL due to no spaces, s wont exist due to the above, so
        * we cant check it for spaces.. if there are no spaces, then when
        * we next get here, s will be NULL
