@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_invite.c,v 1.48 2002/12/15 23:50:15 db Exp $
+ *  $Id: m_invite.c,v 1.49 2003/01/10 05:11:22 db Exp $
  */
 
 #include "stdinc.h"
@@ -64,7 +64,7 @@ _moddeinit(void)
   mod_del_cmd(&invite_msgtab);
 }
 
-const char *_version = "$Revision: 1.48 $";
+const char *_version = "$Revision: 1.49 $";
 #endif
 
 /*
@@ -223,41 +223,35 @@ m_invite(struct Client *client_p,
 	       source_p->username, source_p->host, target_p->name,
 	       chptr->chname);
   }
-
-  /* if the channel is +pi, broadcast everywhere thats CAP_PARA, send to
-   * target if target isnt CAP_PARA capable, else just send to target
-   */
-  if(ParanoidChannel(vchan))
+  else
   {
     /* XXX Send to servers blindly for now. finesse this later
      * Old code only sent the invite to servers that happened to
      * have chanops on channel for invitee being invited to.
      * This obviously was a tad wrong. -db
      */
-    sendto_server(source_p->from, source_p, NULL, CAP_PARA, NOCAPS, NOFLAGS,
+    sendto_server(source_p->from, source_p, NULL, NOCAPS, NOCAPS, NOFLAGS,
 		  ":%s INVITE %s :%s",
 		  source_p->name, target_p->name, vchan->chname);
+  }
 
-    if(!MyConnect(target_p) && (target_p->from != client_p) &&
-       !IsCapable(target_p->from, CAP_PARA))
-    {
-      sendto_one(target_p->from, ":%s INVITE %s :%s", parv[0],
-		 target_p->name, vchan->chname);
-    }
-
+  /* if the channel is +pi, broadcast everywhere thats CAP_PARA, send to
+   * target if target isnt CAP_PARA capable, else just send to target
+   */
+  if(ParanoidChannel(vchan))
+  {
     /* XXX This possibly should be a numeric -db */
     sendto_channel_local(ONLY_CHANOPS_HALFOPS, vchan,
                          ":%s NOTICE %s :%s is inviting %s to %s.",
 			 me.name, chptr->chname, source_p->name,
 			 target_p->name, chptr->chname);
-  }
-  else
-  {
-    if(!MyConnect(target_p) && (target_p->from != client_p))
-    {
-      sendto_one(target_p->from, ":%s INVITE %s :%s", parv[0],
-		 target_p->name, vchan->chname);
-    }
+
+    /* Send a notice to servers that don't support CAP_PARA */
+    sendto_channel_remote(source_p, client_p, ONLY_CHANOPS_HALFOPS_VOICED,
+			  NOCAPS, CAP_PARA, chptr,
+			  ":%s NOTICE %s :%s is inviting %s to %s.",
+			  source_p->name, chptr->chname, source_p->name,
+			  target_p->name, chptr->chname);
   }
 }
 
@@ -355,8 +349,16 @@ ms_invite(struct Client *client_p,
 			 ":%s NOTICE %s :%s is inviting %s to %s.",
 			 me.name, chptr->chname, source_p->name,
 			 target_p->name, chptr->chname);
-    sendto_server(source_p, NULL, NULL, CAP_PARA, NOCAPS, NOFLAGS,
-		  ":%s INVITE %s :%s",
-		  source_p->name, target_p->name, vchan->chname);
+
+    /* Send a notice to servers that don't support CAP_PARA */
+    sendto_channel_remote(source_p, client_p, ONLY_CHANOPS_HALFOPS_VOICED,
+			  NOCAPS, CAP_PARA, chptr,
+			  ":%s NOTICE %s :%s is inviting %s to %s.",
+			  source_p->name, chptr->chname, source_p->name,
+			  target_p->name, chptr->chname);
   }
+
+  sendto_server(source_p, NULL, NULL, NOCAPS, NOCAPS, NOFLAGS,
+		":%s INVITE %s :%s",
+		source_p->name, target_p->name, vchan->chname);
 }

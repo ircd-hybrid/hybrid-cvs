@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.210 2003/01/09 06:15:54 db Exp $
+ *  $Id: send.c,v 7.211 2003/01/10 05:11:24 db Exp $
  */
 
 #include "stdinc.h"
@@ -866,8 +866,8 @@ sendto_channel_local_butone(struct Client *one, int type,
  *
  * inputs	- Client not to send towards
  *		- Client from whom message is from
- *		- int type, i.e. ALL_MEMBERS, NON_CHANOPS,
- *                ONLY_CHANOPS_VOICED, ONLY_CHANOPS
+ *		- int type, i.e. NON_CHANOPS, ALL_MEMBERS,
+ *                ONLY_CHANOPS_HALFOPS_VOICED, ONLY_CHANOPS
  *              - pointer to channel to send to
  *              - var args pattern
  * output	- NONE
