@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.256 2003/05/16 13:29:28 michael Exp $
+ *  $Id: s_user.c,v 7.257 2003/05/16 23:36:51 michael Exp $
  */
 
 #include "stdinc.h"
@@ -60,8 +60,7 @@ static int valid_username(const char *username);
 static void user_welcome(struct Client *source_p);
 static void report_and_set_user_flags(struct Client *, struct ConfItem *);
 static int check_X_line(struct Client *client_p, struct Client *source_p);
-static int introduce_client(struct Client *client_p, struct Client *source_p,
-                            struct User *user, char *nick);
+static int introduce_client(struct Client *client_p, struct Client *source_p, char *nick);
 
 /* table of ascii char letters
  * to corresponding bitmask
@@ -69,10 +68,10 @@ static int introduce_client(struct Client *client_p, struct Client *source_p,
 struct flag_item
 {
   unsigned int mode;
-  char letter;
+  unsigned char letter;
 };
 
-static struct flag_item user_modes[] =
+static const struct flag_item user_modes[] =
 {
   {UMODE_ADMIN,      'a'},
   {UMODE_BOTS,       'b'},
@@ -277,7 +276,6 @@ register_local_user(struct Client *client_p, struct Client *source_p,
                     char *nick, char *username)
 {
   struct ConfItem *aconf;
-  struct User *user;
   char tmpstr2[IRCD_BUFSIZE];
   char ipaddr[HOSTIPLEN];
   int status;
@@ -313,8 +311,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
     }
   }
 
-  user       = source_p->user;
-  user->last = CurrentTime;
+  source_p->user->last = CurrentTime;
   /* Straight up the maximum rate of flooding... */
   source_p->localClient->allow_read = MAX_FLOOD_BURST;
 
@@ -424,7 +421,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
     for (id = id_get(); find_id(id); id = id_get())
       ;
 
-    strcpy(source_p->user->id, id);
+    strlcpy(source_p->user->id, id, sizeof(source_p->user->id));
     add_to_id_hash_table(id, source_p);
 #if 0
     /* unused */
@@ -491,7 +488,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   }
 
   user_welcome(source_p);
-  return(introduce_client(client_p, source_p, user, nick));
+  return(introduce_client(client_p, source_p, nick));
 }
 
 /* register_remote_user()
@@ -505,7 +502,6 @@ int
 register_remote_user(struct Client *client_p, struct Client *source_p, 
                      char *nick, char *username)
 {
-  struct User *user;
   struct Client *target_p;
 
   assert(source_p != NULL);
@@ -514,8 +510,7 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
   if (source_p == NULL)
     return(-1);
 
-  user = source_p->user;
-  user->last = CurrentTime;
+  source_p->user->last = CurrentTime;
 
   strlcpy(source_p->username, username, sizeof(source_p->username));
 
@@ -525,7 +520,7 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
   if (++Count.total > Count.max_tot)
     Count.max_tot = Count.total;
 
-  source_p->servptr = find_server(user->server);
+  source_p->servptr = find_server(source_p->user->server);
 
   /* Super GhostDetect:
    * If we can't find the server the user is supposed to be on,
@@ -550,16 +545,16 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
     sendto_realops_flags(UMODE_DEBUG, L_ALL,
                          "Bad User [%s] :%s USER %s@%s %s, != %s[%s]",
                          client_p->name, nick, source_p->username,
-                         source_p->host, user->server,
+                         source_p->host, source_p->user->server,
                          target_p->name, target_p->from->name);
     kill_client(client_p, source_p,
                 "%s (NICK from wrong direction (%s != %s))",
-                me.name, user->server, target_p->from->name);
+                me.name, source_p->user->server, target_p->from->name);
     SetKilled(source_p);
     return(exit_client(source_p, source_p, &me, "USER server wrong direction"));
   }
 
-  return(introduce_client(client_p, source_p, user, nick));
+  return(introduce_client(client_p, source_p, nick));
 }
 
 /* introduce_clients()
@@ -571,8 +566,7 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
  *		  from a remote connect.
  */
 static int
-introduce_client(struct Client *client_p, struct Client *source_p,
-                 struct User *user, char *nick)
+introduce_client(struct Client *client_p, struct Client *source_p, char *nick)
 {
   dlink_node *server_node;
   struct Client *server;
@@ -611,14 +605,14 @@ introduce_client(struct Client *client_p, struct Client *source_p,
     {
       sendto_one(uplink, "CLIENT %s %d %lu %s %s %s %s %s :%s",
                  nick, source_p->hopcount+1, (unsigned long)source_p->tsinfo,
-                 ubuf, source_p->username, source_p->host, user->server,
-                 user->id, source_p->info);
+                 ubuf, source_p->username, source_p->host, source_p->user->server,
+                 source_p->user->id, source_p->info);
     }
     else
     {
       sendto_one(uplink, "NICK %s %d %lu %s %s %s %s :%s",
                  nick, source_p->hopcount+1, (unsigned long)source_p->tsinfo,
-                 ubuf, source_p->username, source_p->host, user->server,
+                 ubuf, source_p->username, source_p->host, source_p->user->server,
                  source_p->info);
     }
   }
@@ -634,12 +628,12 @@ introduce_client(struct Client *client_p, struct Client *source_p,
       if (IsCapable(server, CAP_UID) && HasID(source_p))
         sendto_one(server, "CLIENT %s %d %lu %s %s %s %s %s :%s",
                    nick, source_p->hopcount+1, (unsigned long)source_p->tsinfo,
-                   ubuf, source_p->username, source_p->host, user->server,
-                   user->id, source_p->info);
+                   ubuf, source_p->username, source_p->host, source_p->user->server,
+                   source_p->user->id, source_p->info);
       else
         sendto_one(server, "NICK %s %d %lu %s %s %s %s :%s",
                    nick, source_p->hopcount+1, (unsigned long)source_p->tsinfo,
-                   ubuf, source_p->username, source_p->host, user->server,
+                   ubuf, source_p->username, source_p->host, source_p->user->server,
                    source_p->info);
     }
   }
@@ -650,7 +644,7 @@ introduce_client(struct Client *client_p, struct Client *source_p,
 /* valid_hostname()
  *
  * Inputs       - pointer to user
- * Output       - YES if valid, NO if not
+ * Output       - 1 if valid, 0 if not
  * Side effects - check hostname for validity
  *
  * NOTE: this doesn't allow a hostname to begin with a dot and
@@ -664,19 +658,19 @@ valid_hostname(const char *hostname)
   assert(p != NULL);
 
   if (hostname == NULL)
-    return(NO);
+    return(0);
 
   if ('.' == *p)
-    return(NO);
+    return(0);
 
   while (*p)
   {
     if (!IsHostChar(*p))
-      return(NO);
+      return(0);
     p++;
   }
 
-  return(YES);
+  return(1);
 }
 
 /* valid_username()
@@ -699,7 +693,7 @@ valid_username(const char *username)
   assert(p != NULL);
 
   if (username == NULL)
-    return(NO);
+    return(0);
 
   if ('~' == *p)
     ++p;
@@ -709,7 +703,7 @@ valid_username(const char *username)
    * or "-hi-@somehost", "h-----@somehost" would still be accepted.
    */
   if (!IsAlNum(*p))
-    return(NO);
+    return(0);
 
   while (*++p)
   {
@@ -718,15 +712,15 @@ valid_username(const char *username)
       dots++;
 
       if (dots > ConfigFileEntry.dots_in_ident)
-        return(NO);
+        return(0);
       if (!IsUserChar(p[1]))
-        return(NO);
+        return(0);
     }
     else if (!IsUserChar(*p))
-      return(NO);
+      return(0);
   }
 
-  return(YES);
+  return(1);
 }
 
 /* report_and_set_user_flags()
@@ -737,7 +731,7 @@ valid_username(const char *username)
  * Side effects -
  * Report to user any special flags they are getting, and set them.
  */
-static void 
+static void
 report_and_set_user_flags(struct Client *source_p, struct ConfItem *aconf)
 {
   /* If this user is being spoofed, tell them so */
@@ -872,7 +866,7 @@ do_remote_user(struct Client *client_p, struct Client *source_p,
   strlcpy(source_p->info, realname, sizeof(source_p->info));
 
   if (id != NULL)
-    strcpy(source_p->user->id, id);
+    strlcpy(source_p->user->id, id, sizeof(source_p->user->id));
 
   return(register_remote_user(client_p, source_p, source_p->name, username));
 }
@@ -895,7 +889,7 @@ user_mode(struct Client *client_p, struct Client *source_p, int parc, char *parv
   char *m;
   struct Client *target_p;
   int what = MODE_ADD;
-  int badflag = NO; /* Only send one bad flag notice */
+  int badflag = 0; /* Only send one bad flag notice */
   char buf[BUFSIZE];
 #if 0
   /* already covered by m_mode */
@@ -1011,7 +1005,7 @@ user_mode(struct Client *client_p, struct Client *source_p, int parc, char *parv
             if (MyConnect(source_p) && !IsOper(source_p) &&
                 (ConfigFileEntry.oper_only_umodes & flag))
             {
-              badflag = YES;
+              badflag = 1;
             }
             else
             {
@@ -1024,7 +1018,7 @@ user_mode(struct Client *client_p, struct Client *source_p, int parc, char *parv
           else
           {
             if (MyConnect(source_p))
-              badflag = YES;
+              badflag = 1;
           }
 
           break;
@@ -1060,7 +1054,7 @@ user_mode(struct Client *client_p, struct Client *source_p, int parc, char *parv
    */
   send_umode_out(client_p, source_p, setflags);
 }
-        
+
 /* send_umode()
  * send the MODE string for user (user) to connection client_p
  * -avalon

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.321 2003/05/13 02:32:19 joshk Exp $
+ *  $Id: s_serv.c,v 7.322 2003/05/16 23:36:51 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1248,6 +1248,7 @@ fork_server(struct Client *server)
                         */
   char fd_str[5][6];   /* store 5x '6' '5' '5' '3' '5' '\0' */
   char *kid_argv[7];
+  char slink_str[] = "-slink";
 #ifdef HAVE_SOCKETPAIR
   /* ctrl */
   if (socketpair(AF_UNIX, SOCK_STREAM, 0, fd_temp) < 0)
@@ -1332,8 +1333,8 @@ fork_server(struct Client *server)
     sprintf(fd_str[2], "%d", slink_fds[1][0][0]); /* data read */
     sprintf(fd_str[3], "%d", slink_fds[1][0][1]); /* data write */
     sprintf(fd_str[4], "%d", server->localClient->fd);         /* network read/write */
-    
-    kid_argv[0] = "-slink";
+
+    kid_argv[0] = slink_str;
     kid_argv[1] = fd_str[0];
     kid_argv[2] = fd_str[1];
     kid_argv[3] = fd_str[2];
@@ -1342,7 +1343,7 @@ fork_server(struct Client *server)
     kid_argv[6] = NULL;
 
     /* exec servlink program */
-    execv( ConfigFileEntry.servlink_path, kid_argv );
+    execv(ConfigFileEntry.servlink_path, kid_argv);
 
     /* We're still here, abort. */
     _exit(1);
@@ -1359,11 +1360,11 @@ fork_server(struct Client *server)
 
     assert(server->localClient);
     server->localClient->ctrlfd = slink_fds[0][1][1];
-    server->localClient->fd = slink_fds[1][1][1];
+    server->localClient->fd     = slink_fds[1][1][1];
 
 #ifndef HAVE_SOCKETPAIR
     server->localClient->ctrlfd_r = slink_fds[0][1][0];
-    server->localClient->fd_r = slink_fds[1][1][0];
+    server->localClient->fd_r     = slink_fds[1][1][0];
 #endif
 
     if (!set_non_blocking(server->localClient->fd))
