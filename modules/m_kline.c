@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.114 2003/03/02 09:00:41 bill Exp $
+ *  $Id: m_kline.c,v 1.115 2003/03/29 14:25:11 michael Exp $
  */
 
 #include "stdinc.h"
@@ -75,12 +75,12 @@ _moddeinit(void)
   mod_del_cmd(&kline_msgtab);
   mod_del_cmd(&dline_msgtab);
 }
-const char *_version = "$Revision: 1.114 $";
+const char *_version = "$Revision: 1.115 $";
 #endif
 
 /* Local function prototypes */
 
-static time_t  valid_tkline(struct Client *source_p, char *string);
+static time_t valid_tkline(char *string);
 static char *cluster(char *);
 static int find_user_host(struct Client *source_p,
                           char *user_host_or_nick, char *user, char *host);
@@ -95,7 +95,7 @@ static void apply_kline(struct Client *source_p, struct ConfItem *aconf,
 			const char *current_date, time_t cur_time);
 
 static void apply_tkline(struct Client *source_p, struct ConfItem *aconf,
-                         const char *current_date, int temporary_kline_time);
+                         int temporary_kline_time);
 
 
 char buffer[IRCD_BUFSIZE];
@@ -138,7 +138,7 @@ mo_kline(struct Client *client_p, struct Client *source_p,
   parv++;
   parc--;
 
-  tkline_time = valid_tkline(source_p,*parv);
+  tkline_time = valid_tkline(*parv);
 
   if (tkline_time > 0)
     {
@@ -238,7 +238,7 @@ mo_kline(struct Client *client_p, struct Client *source_p,
 		 reason,
 		 current_date);
       DupString(aconf->passwd, buffer);
-      apply_tkline(source_p, aconf, current_date, tkline_time);
+      apply_tkline(source_p, aconf, tkline_time);
     }
   else
     {
@@ -312,7 +312,7 @@ ms_kline(struct Client *client_p, struct Client *source_p,
 
   tkline_time = atoi(parv[2]);
 
-  if (find_u_conf((char *)source_p->user->server,
+  if (find_u_conf(source_p->user->server,
 		  source_p->username, source_p->host))
     {
       /* We check if the kline already exists after we've announced its 
@@ -329,7 +329,7 @@ ms_kline(struct Client *client_p, struct Client *source_p,
       cur_time = CurrentTime;
 
       if (tkline_time)
-	apply_tkline(source_p, aconf, current_date, tkline_time);
+	apply_tkline(source_p, aconf, tkline_time);
       else
 	apply_kline(source_p, aconf, aconf->passwd, NULL,
 		    current_date, cur_time);
@@ -366,7 +366,7 @@ apply_kline(struct Client *source_p, struct ConfItem *aconf,
  */
 static void
 apply_tkline(struct Client *source_p, struct ConfItem *aconf,
-                         const char *current_date, int tkline_time)
+             int tkline_time)
 {
   aconf->hold = CurrentTime + tkline_time;
   add_temp_kline(aconf);
@@ -395,7 +395,7 @@ apply_tkline(struct Client *source_p, struct ConfItem *aconf,
  * side effects - none
  */
 static time_t
-valid_tkline(struct Client *source_p, char *p)
+valid_tkline(char *p)
 {
   time_t result = 0;
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.359 2003/03/09 23:15:48 db Exp $
+ *  $Id: channel.c,v 7.360 2003/03/29 14:25:15 michael Exp $
  */
 
 #include "stdinc.h"
@@ -60,8 +60,7 @@ static void delete_members(struct Channel *chptr, dlink_list * list);
 
 static void send_mode_list(struct Client *client_p, char *chname,
                            dlink_list *top, char flag, int clear);
-static int check_banned(struct Channel *chptr, struct Client *who,
-                                                char *s, char *s2);
+static int check_banned(struct Channel *chptr, char *s, char *s2);
 
 static char buf[BUFSIZE];
 static char modebuf[MODEBUFLEN], parabuf[MODEBUFLEN];
@@ -1004,7 +1003,7 @@ is_banned(struct Channel *chptr, struct Client *who)
   ircsprintf(src_iphost,"%s!%s@%s", who->name, who->username,
 	     who->localClient->sockhost);
 
-  return (check_banned(chptr, who, src_host, src_iphost));
+  return (check_banned(chptr, src_host, src_iphost));
 }
 
 /*
@@ -1023,7 +1022,7 @@ is_banned(struct Channel *chptr, struct Client *who)
  * +e code from orabidoo
  */
 static int
-check_banned(struct Channel *chptr, struct Client *who, char *s, char *s2)
+check_banned(struct Channel *chptr, char *s, char *s2)
 {
   dlink_node *ban;
   dlink_node *except;
@@ -1084,7 +1083,7 @@ can_join(struct Client *source_p, struct Channel *chptr, char *key)
   ircsprintf(src_iphost,"%s!%s@%s", source_p->name, source_p->username,
 	     source_p->localClient->sockhost);
 
-  if ((check_banned(chptr, source_p, src_host, src_iphost)) == CHFL_BAN)
+  if ((check_banned(chptr, src_host, src_iphost)) == CHFL_BAN)
     return (ERR_BANNEDFROMCHAN);
 
   if (chptr->mode.mode & MODE_INVITEONLY)

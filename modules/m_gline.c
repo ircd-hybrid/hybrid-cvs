@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.92 2003/03/21 18:54:02 db Exp $
+ *  $Id: m_gline.c,v 1.93 2003/03/29 14:25:11 michael Exp $
  */
 
 #include "stdinc.h"
@@ -109,7 +109,7 @@ _moddeinit(void)
   mod_del_cmd(&gline_msgtab);
 }
 
-const char *_version = "$Revision: 1.92 $";
+const char *_version = "$Revision: 1.93 $";
 #endif
 /*
  * mo_gline()
@@ -468,8 +468,8 @@ set_local_gline(const char *oper_nick,
   ircsprintf(buffer, "%s (%s)",reason,current_date);
       
   DupString(aconf->passwd, buffer);
-  DupString(aconf->name, (char *)user);
-  DupString(aconf->host, (char *)host);
+  DupString(aconf->name, (const char *)user);
+  DupString(aconf->host, (const char *)host);
   aconf->hold = CurrentTime + ConfigFileEntry.gline_time;
   add_gline(aconf);
       

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.196 2003/03/01 05:07:19 db Exp $
+ *  $Id: s_conf.h,v 7.197 2003/03/29 14:25:09 michael Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -362,8 +362,8 @@ extern int conf_connect_allowed(struct irc_inaddr *addr, int aftype);
 extern char *oper_privs_as_string(struct Client *, int);
 extern void split_user_host(struct ConfItem *aconf);
 
-extern int find_u_conf(char*, char*, char *);
-extern struct ConfItem *find_x_conf(char*);
+extern int find_u_conf(const char *, const char *, const char *);
+extern struct ConfItem *find_x_conf(const char *);
 
 extern struct ConfItem* find_tkline(const char*, const char*, struct irc_inaddr *);
 extern char* show_iline_prefix(struct Client *,struct ConfItem *,char *);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.348 2003/03/01 05:07:20 db Exp $
+ *  $Id: s_conf.c,v 7.349 2003/03/29 14:25:15 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1194,7 +1194,7 @@ find_conf_by_host(const char* host, int status)
  * side effects - looks for a match on name field
  */
 struct ConfItem *
-find_x_conf(char *to_find)
+find_x_conf(const char *to_find)
 {
   dlink_node *ptr;
   struct ConfItem *aconf;
@@ -1224,7 +1224,7 @@ find_x_conf(char *to_find)
  * side effects - looks for a matches on all fields
  */
 int 
-find_u_conf(char *server,char *user,char *host)
+find_u_conf(const char *server, const char *user, const char *host)
 {
   dlink_node *ptr;
   struct ConfItem *aconf;

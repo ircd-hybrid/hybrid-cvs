@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.231 2003/03/29 00:23:42 michael Exp $
+ *  $Id: s_user.c,v 7.232 2003/03/29 14:25:15 michael Exp $
  */
 
 #include "stdinc.h"
@@ -839,7 +839,7 @@ report_and_set_user_flags(struct Client *source_p,struct ConfItem *aconf)
  */
 int
 do_local_user(char* nick, struct Client* client_p, struct Client* source_p,
-		  char* username, char *host, char *server, char *realname)
+              char* username, char* host, char* server, char* realname)
 {
   struct User* user;
 
@@ -890,9 +890,9 @@ do_local_user(char* nick, struct Client* client_p, struct Client* source_p,
  * side effects -
  */
 int
-do_remote_user(char* nick, struct Client* client_p, struct Client* source_p,
-		   char* username, char *host, char *server, char *realname,
-		   char *id)
+do_remote_user(struct Client* client_p, struct Client* source_p,
+               char* username, char *host, char *server,
+               char *realname, char *id)
 {
   struct User* user;
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.287 2003/03/29 00:23:41 michael Exp $
+ *  $Id: s_serv.c,v 7.288 2003/03/29 14:25:15 michael Exp $
  */
 
 #include "stdinc.h"
@@ -144,7 +144,6 @@ struct SlinkRplDef slinkrpltab[] = {
   { 0,                 0,              0 },
 };
 
-unsigned long nextFreeMask();
 static unsigned long freeMask;
 static void server_burst(struct Client *client_p);
 #ifndef VMS

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.h,v 7.16 2002/05/24 23:34:08 androsyn Exp $
+ *  $Id: s_user.h,v 7.17 2003/03/29 14:25:09 michael Exp $
  */
 
 #ifndef INCLUDED_s_user_h
@@ -43,7 +43,7 @@ extern int   register_remote_user(struct Client* ,struct Client* ,
 extern int   do_local_user(char* ,struct Client* ,struct Client*,
 			   char* ,char *,char *,char *);
 
-extern int   do_remote_user(char* ,struct Client* ,struct Client*,
+extern int   do_remote_user(struct Client* ,struct Client*,
 			    char* ,char *,char *,char *,char *);
 
 extern int   user_modes_from_c_to_bitmask[];

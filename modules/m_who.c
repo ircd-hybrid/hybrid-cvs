@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_who.c,v 1.68 2003/02/23 04:16:05 db Exp $
+ *  $Id: m_who.c,v 1.69 2003/03/29 14:25:11 michael Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -61,11 +61,10 @@ _moddeinit(void)
 {
   mod_del_cmd(&who_msgtab);
 }
-const char *_version = "$Revision: 1.68 $";
+const char *_version = "$Revision: 1.69 $";
 #endif
-static void do_who_on_channel(struct Client *source_p,
-			      struct Channel *chptr, char *real_name,
-			      int server_oper, int member);
+static void do_who_on_channel(struct Client *source_p, struct Channel *chptr,
+                              char *real_name, int member);
 
 static void do_who_list(struct Client *source_p, struct Channel *chptr,
                         dlink_list *peons_list, dlink_list *chanops_list,
@@ -152,13 +151,13 @@ static void m_who(struct Client *client_p,
 	{
 	  vchan = map_vchan(mychannel,source_p);
 	  if(vchan != 0) 
-	    do_who_on_channel(source_p,vchan,"*",NO,YES);
+	    do_who_on_channel(source_p,vchan,"*",YES);
 	  else
-	    do_who_on_channel(source_p,mychannel,"*",NO,YES);
+	    do_who_on_channel(source_p,mychannel,"*",YES);
 	}
       else
 #endif
-	do_who_on_channel(source_p, mychannel, "*", NO, YES);
+	do_who_on_channel(source_p, mychannel, "*", YES);
 
       sendto_one(source_p, form_str(RPL_ENDOFWHO), me.name, parv[0], "*");
       return;
@@ -181,22 +180,22 @@ static void m_who(struct Client *client_p,
 
 	      /* If vchan not 0, that makes them a member automatically */
 	      if ( vchan != 0 )
-		do_who_on_channel(source_p, vchan, chptr->chname, NO, YES);
+		do_who_on_channel(source_p, vchan, chptr->chname, YES);
 	      else
 		{
 		  if ( IsMember(source_p, chptr) )
-		    do_who_on_channel(source_p, chptr, chptr->chname, NO, YES);
+		    do_who_on_channel(source_p, chptr, chptr->chname, YES);
 		  else if(!SecretChannel(chptr))
-		    do_who_on_channel(source_p, chptr, chptr->chname, NO, NO);
+		    do_who_on_channel(source_p, chptr, chptr->chname, NO);
 		}
 	    }
 	  else
 #endif
 	    {
 	      if ( IsMember(source_p, chptr) )
-		do_who_on_channel(source_p, chptr, chptr->chname, NO, YES);
+		do_who_on_channel(source_p, chptr, chptr->chname, YES);
 	      else if(!SecretChannel(chptr))
-		do_who_on_channel(source_p, chptr, chptr->chname, NO, NO);
+		do_who_on_channel(source_p, chptr, chptr->chname, NO);
 	    }
 	}
       sendto_one(source_p, form_str(RPL_ENDOFWHO), me.name, parv[0], mask);
@@ -417,7 +416,7 @@ who_global(struct Client *source_p,char *mask, int server_oper)
 
 static void
 do_who_on_channel(struct Client *source_p, struct Channel *chptr,
-			      char *chname, int server_oper, int member)
+                  char *chname, int member)
 {
   char flags[NUMLISTS][2];
 
