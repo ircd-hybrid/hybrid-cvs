@@ -20,13 +20,12 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.36 2000/11/06 16:12:02 adrian Exp $
+ *  $Id: client.c,v 7.37 2000/11/11 14:52:56 ejb Exp $
  */
 #include "client.h"
 #include "class.h"
 #include "blalloc.h"
 #include "channel.h"
-#include "m_invite.h"
 #include "common.h"
 #include "dline_conf.h"
 #include "fdlist.h"

@@ -2,7 +2,7 @@
 #
 # Makefile.in for ircd/modules
 #
-# $Id: Makefile,v 1.5 2000/11/11 13:05:21 db Exp $
+# $Id: Makefile,v 1.6 2000/11/11 14:52:53 ejb Exp $
 #
 CC		= gcc
 RM		= /bin/rm
@@ -75,17 +75,18 @@ SRCS =                          \
   m_version.c \
   m_wallops.c \
   m_who.c \
-  m_whois.c
+  m_whois.c \
 
 OBJS = ${SRCS:.c=.so}
 
-default:	all
+default:	build
+build: all
 all: $(OBJS)
 
 install: all
 	@echo "Please do a make install from the top level directory"
 
-.SUFFIXES: .c .so
+.SUFFIXES: .so
 
 .c.so:
 	${CC} -DPIC -fPIC -shared ${CFLAGS} $(CPPFLAGS) -c ${.IMPSRC} -o ${.TARGET}

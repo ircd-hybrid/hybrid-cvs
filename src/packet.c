@@ -18,7 +18,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: packet.c,v 7.11 2000/11/06 16:12:04 adrian Exp $
+ *   $Id: packet.c,v 7.12 2000/11/11 14:53:25 ejb Exp $
  */ 
 #include "packet.h"
 #include "client.h"
@@ -112,9 +112,7 @@ int dopacket(struct Client *cptr, char *buffer, size_t length)
               */
               if (cptr->flags & FLAGS_DEADSOCKET)
                 return exit_client(cptr, cptr, &me, (cptr->flags & FLAGS_SENDQEX) ?
-                                   ((IsDoingList(cptr)) ?
-                                    "Local kill by /list (so many channels!)" :
-                                   "SendQ exceeded") : "Dead socket");
+                                   "SendQ exceeded" : "Dead socket");
 
               ch1 = cptrbuf;
             }

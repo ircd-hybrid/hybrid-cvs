@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.28 2000/11/10 08:14:29 db Exp $
+ *   $Id: parse.c,v 7.29 2000/11/11 14:53:26 ejb Exp $
  */
 #include "parse.h"
 #include "client.h"
@@ -342,13 +342,6 @@ int parse(struct Client *cptr, char *buffer, char *bufend)
 #endif
 #endif
   
-  /* don't allow other commands while a list is blocked. since we treat
-     them specially with respect to sendq. */
-#if 0
-  if ((IsDoingList(cptr)) && (*mptr->func != m_list))
-      return -1;
-#endif
-
   /* Determine the class of this connection and assign it one of four handler types to
       fit in with the handler table - Pie-Man 07/24/2000 */
   switch (cptr->status)
