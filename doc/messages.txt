@@ -1,6 +1,6 @@
                          Message Customization Overview
 
-   $Id: messages.txt,v 1.4 2003/05/15 07:01:42 joshk Exp $
+   $Id: messages.txt,v 1.5 2003/05/19 15:05:36 joshk Exp $
 
    Copyright (c) 2001, 2003 by ircd-hybrid team
 
@@ -48,3 +48,10 @@
    free as you can make it since it is subject to public consumption. Providing
    a translation will be a way that nearly anyone who knows multiple languages
    to contribute to ircd, and get their name in the translation credits.
+
+   When making such a translation, you should base it off
+   ircd-standard.example.lang, which is a conversion of our base (English)
+   messages.tab into the .lang format. You should edit it from there into your
+   own language, and of course give credit to yourself and whoever else you
+   may have done the translation with. Then, send it off to us, and we'll see
+   what we can do.

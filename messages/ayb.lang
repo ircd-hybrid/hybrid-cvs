@@ -1,7 +1,7 @@
 ; ircd-hybrid-7 custom message file
 ; Copyright (C) 2000
 ; David Taylor <davidt@yadt.co.uk>, 2000.
-; $Id: ayb.lang,v 1.3 2003/05/11 09:25:06 adx Exp $
+; $Id: ayb.lang,v 1.4 2003/05/19 15:05:39 joshk Exp $
 
 RPL_WELCOME:             :%s 001 %s :ALL YOUR BASE ARE BELONG TO %s, %s!!!
 RPL_CREATED:             :%s 003 %s :Someone set up us the server %s
@@ -11,14 +11,13 @@ RPL_STATSUPTIME:         :%s 242 %s :Someone set up us the bomb %d days, %d:%02d
 RPL_LUSERCLIENT:         :%s 251 %s :There are %d minor Zigs and %d invisible on %d servers
 RPL_LUSEROP:             :%s 252 %s %d :Zigs online
 RPL_LUSERME:             :%s 255 %s :%d clients and %d servers are belong to me
-RPL_LOAD2HI:             :%s 263 %s :Hold your horses... the server load is temporarily too heavy. Try again later, ok?
+RPL_LOAD2HI:             :%s 263 %s :What you say!?? The server is moving too many zigs..
 RPL_LOCALUSERS:          :%s 265 %s :%d users (max %d) are belong to me
 RPL_GLOBALUSERS:         :%s 266 %s :%d users (max %d) are belong to the network
 RPL_UNAWAY:              :%s 305 %s :OK, you're not /away anymore. Did you move Zig for great justice?
 RPL_NOWAWAY:             :%s 306 %s :OK, you're /away now. Hurry back!
 RPL_WHOISOPERATOR:       :%s 313 %s %s :is a Zig for Great Justice
 RPL_YOUREOPER:           :%s 381 %s :SOMEONE SET YOU UP THE /KILL FOR GREAT JUSTICE!
-RPL_REHASHING:           :%s 382 %s %s :it slices, dices, and even reloads config files! Rehashing config file, mang.
 ERR_NOSUCHNICK:          :%s 401 %s %s :No such Zig
 ERR_TOOMANYCHANNELS:     :%s 405 %s %s :Too many channels are belong to you
 ERR_WASNOSUCHNICK:       :%s 406 %s %s :There was no such Zig
@@ -27,8 +26,5 @@ ERR_NORECIPIENT:         :%s 411 %s :No Zigs Moved (%s)
 ERR_UNKNOWNCOMMAND:      :%s 421 %s %s :THAT COMMAND IS NOT BELONG TO ME!!!
 ERR_NOMOTD:              :%s 422 %s :MOTD file is not belong to me
 ERR_NICKNAMEINUSE:       :%s 433 %s %s :Zig is belong to someone else.
-ERR_PASSWDMISMATCH:      :%s 464 %s :BZZT!! Wrong password, homez. Are you sure you know what you're doing??
-ERR_NOPRIVILEGES:        :%s 481 %s :I don't THINK so, homez... you ain't got what it takes. (IRC operator)
-ERR_CHANOPRIVSNEEDED:    :%s 482 %s %s :You can't do that thing, when you don't have that swing (You're not channel operator)
-ERR_CANTKILLSERVER:      :%s 483 %s :Don't be an idiot - you can't kill a SERVER, fool.
-ERR_NOOPERHOST:          :%s 491 %s :Sorry, you just don't have what it takes to be an IRC Operator here.
+ERR_CHANOPRIVSNEEDED:    :%s 482 %s %s :You know what you doing, you need +o
+ERR_CANTKILLSERVER:      :%s 483 %s :You have no chance to kill a SERVER make your time.
