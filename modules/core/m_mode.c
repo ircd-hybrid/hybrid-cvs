@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_mode.c,v 1.36 2001/04/19 07:38:13 a1kmm Exp $
+ *   $Id: m_mode.c,v 1.37 2001/05/02 06:27:05 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -120,13 +120,17 @@ static void m_mode(struct Client *client_p, struct Client *source_p,
       if ( MyClient(source_p) && !ServerInfo.hub && uplink &&
 	   IsCapable(uplink, CAP_LL))
 	{
+#if 0
 	  /* cache the channel if it exists on uplink
 	   * If the channel as seen by the uplink, has vchans,
 	   * the uplink will have to SJOIN all of those.
 	   */
+	  /* Lets not for now -db */
+
 	  sendto_one(uplink, ":%s CBURST %s",
                      me.name, parv[1]);
 	  
+#endif
 	  sendto_one(uplink, ":%s MODE %s %s",
 		     source_p->name, parv[1], (parv[2] ? parv[2] : ""));
 	  return;
