@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nick.c,v 1.124 2003/07/25 23:16:08 michael Exp $
+ *  $Id: m_nick.c,v 1.125 2003/09/04 03:51:05 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -98,7 +98,7 @@ _moddeinit(void)
   mod_del_cmd(&uid_msgtab);
 }
 
-const char *_version = "$Revision: 1.124 $";
+const char *_version = "$Revision: 1.125 $";
 #endif
 
 /*
@@ -334,12 +334,8 @@ ms_nick(struct Client *client_p, struct Client *source_p,
 #define NICK_SERVER	parv[7]
 #define NICK_GECOS	parv[8]
 
-  if (parc < 2 || EmptyString(NICK_NICK))
-  {
-    sendto_one(source_p, form_str(ERR_NONICKNAMEGIVEN),
-               me.name, parv[0]);
+  if (parc != 9 || EmptyString(NICK_NICK))
     return;
-  }
 
   /* fix the length of the nick */
   strlcpy(nick, NICK_NICK, sizeof(nick));
