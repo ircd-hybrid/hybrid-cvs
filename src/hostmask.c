@@ -15,7 +15,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- * $Id: hostmask.c,v 7.18 2001/02/17 00:37:37 a1kmm Exp $ 
+ * $Id: hostmask.c,v 7.19 2001/02/23 21:21:26 a1kmm Exp $ 
  */
 #include <unistd.h>
 #include <string.h>
@@ -257,7 +257,6 @@ void clear_conf(void)
    {
     hmen = hme->next;
     conf = ((struct ConfItem*)hme->data);
-    assert(conf->clients > 0);
     if (conf->clients == 0)
       {
        hmel ? hmel->next : deferred_masks = hmen->next;
