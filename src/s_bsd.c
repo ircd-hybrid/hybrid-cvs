@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.60 2000/11/06 13:48:19 adrian Exp $
+ *  $Id: s_bsd.c,v 7.61 2000/11/06 16:12:04 adrian Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -40,7 +40,6 @@
 #include "s_log.h"
 #include "s_serv.h"
 #include "s_stats.h"
-#include "s_zip.h"
 #include "send.h"
 #include "s_debug.h"
 
@@ -362,13 +361,6 @@ void close_connection(struct Client *cptr)
     fd_close(cptr->fd);
     cptr->fd = -1;
   }
-
-    /*
-     * the connection might have zip data (even if
-     * FLAGS2_ZIP is not set)
-     */
-  if (IsServer(cptr))
-    zip_free(cptr);
 
   DBufClear(&cptr->sendQ);
   DBufClear(&cptr->recvQ);

@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.29 2000/11/06 14:58:02 adrian Exp $
+# $Id: Makefile.in,v 7.30 2000/11/06 16:12:02 adrian Exp $
 #
 CC = @CC@
 RM = @RM@
@@ -10,9 +10,9 @@ LEXLIB = @LEXLIB@
 
 MKDEP = ${CC} -MM
 
-IRCDLIBS = @LIBS@ @SSL_LIBS@ ../zlib/libz.a
+IRCDLIBS = @LIBS@ @SSL_LIBS@
 
-INCLUDES = -I../include -I../zlib
+INCLUDES = -I../include
 CPPFLAGS = ${INCLUDES} @SSL_DEFINE@ @CPPFLAGS@
  
 default:	all
@@ -127,7 +127,6 @@ SRCS =                          \
   s_serv.c                      \
   s_stats.c                     \
   s_user.c                      \
-  s_zip.c                       \
   scache.c                      \
   send.c                        \
   sprintf_irc.c                 \

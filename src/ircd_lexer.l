@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.16 2000/11/05 07:51:54 db Exp $
+ * $Id: ircd_lexer.l,v 1.17 2000/11/06 16:12:03 adrian Exp $
  */
 
 %{
@@ -80,7 +80,6 @@ allow_bots	{ return ALLOW_BOTS; }
 auth		{ return AUTH; }
 autoconn	{ return AUTOCONN; }
 class		{ return CLASS; }
-compressed	{ return COMPRESSED; }
 connect		{ return CONNECT; }
 deny		{ return DENY; }
 description	{ return DESCRIPTION; }

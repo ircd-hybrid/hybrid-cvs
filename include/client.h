@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.28 2000/11/05 21:23:35 toot Exp $
+ * $Id: client.h,v 7.29 2000/11/06 16:11:59 adrian Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -211,7 +211,6 @@ struct Client
   int               received_number_of_privmsgs;
   int               drone_noticed;
   char  buffer[CLIENT_BUFSIZE]; /* Incoming message buffer */
-  struct Zdata*     zip;        /* zip data */
   short             lastsq;     /* # of 2k blocks when sendqueued called last*/
   struct DBuf       sendQ;      /* Outgoing message queue--if socket full */
   struct DBuf       recvQ;      /* Hold for data incoming yet to be parsed */
@@ -387,8 +386,6 @@ struct Client
                                  FLAGS2_OPER_REHASH| \
                                  FLAGS2_OPER_ADMIN)
 
-#define FLAGS2_ZIP           0x4000  /* (server) zipped link */
-#define FLAGS2_ZIPFIRST      0x8000  /* start of zip (ignore any CR/LF) */
 #define FLAGS2_CBURST       0x10000  /* connection burst being sent */
 
 #define FLAGS2_DOINGLIST    0x20000  /* client is doing a list */

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.h,v 7.11 2000/11/06 08:40:46 db Exp $
+ * $Id: m_info.h,v 7.12 2000/11/06 16:12:00 adrian Exp $
  */
 #ifndef INCLUDED_m_info_h
 #define INCLUDED_m_info_h
@@ -361,9 +361,6 @@ Info MyInformation[] = {
 #else
   { "WINTRHAWK", "OFF", 0, "Enable Wintrhawk Styling" },
 #endif /* WINTRHAWK */
-
-  { "ZIP_LEVEL", "", ZIP_LEVEL, "Compression Value for Zipped Links" },
-  { "ZIP_LINKS", "ON", 0, "Compress Server to Server Links" },
 
   /*
    * since we don't want to include the world here, NULL probably

@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_select.c,v 7.3 2000/10/24 18:47:22 adrian Exp $
+ *  $Id: s_bsd_select.c,v 7.4 2000/11/06 16:12:05 adrian Exp $
  */
 #include "s_bsd.h"
 #include "class.h"
@@ -45,7 +45,6 @@
 #include "s_log.h"
 #include "s_serv.h"
 #include "s_stats.h"
-#include "s_zip.h"
 #include "send.h"
 #include "s_debug.h"
 #include "s_bsd.h"
@@ -184,9 +183,7 @@ int read_message(time_t delay, unsigned char mask)        /* mika */
                FD_SET(i, read_set);
             }
 
-          if (DBufLength(&cptr->sendQ) || IsConnecting(cptr)
-              || ((cptr->flags2 & FLAGS2_ZIP) && (cptr->zip->outcount > 0))
-              )
+          if (DBufLength(&cptr->sendQ) || IsConnecting(cptr))
             {
                FD_SET(i, write_set);
             }

@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_kqueue.c,v 1.2 2000/11/03 18:20:04 adrian Exp $
+ *  $Id: s_bsd_kqueue.c,v 1.3 2000/11/06 16:12:05 adrian Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -45,7 +45,6 @@
 #include "s_log.h"
 #include "s_serv.h"
 #include "s_stats.h"
-#include "s_zip.h"
 #include "send.h"
 #include "s_debug.h"
 #include "s_bsd.h"

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h.dist,v 7.15 2000/10/26 14:40:26 db Exp $
+ * $Id: config.h.dist,v 7.16 2000/11/06 16:11:59 adrian Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -224,13 +224,6 @@
  * (should this be removed now? -is)
  */
 #define NO_WHOIS_WILDCARDS
-
-/*
- * The compression level used for zipped links. (Suggested values: 1 to 5)
- * Above 4 will only give a rather marginal increase in compression for a
- * large increase in CPU usage.
- */
-#define ZIP_LEVEL       2
 
 /*
  * OPER_UMODES LOCOP_UMODES - set these to be the initial umodes when OPER'ing

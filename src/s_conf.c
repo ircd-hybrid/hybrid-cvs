@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.67 2000/11/06 13:48:19 adrian Exp $
+ *  $Id: s_conf.c,v 7.68 2000/11/06 16:12:06 adrian Exp $
  */
 #include "s_conf.h"
 #include "channel.h"
@@ -290,8 +290,6 @@ void report_configured_links(struct Client* sptr, int mask)
             char c;
 
             c = p->conf_char;
-            if(tmp->flags & CONF_FLAGS_ZIP_LINK)
-              c = 'c';
             if(tmp->flags & CONF_FLAGS_LAZY_LINK)
               c = 'n';
 
