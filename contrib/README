@@ -1,4 +1,4 @@
-$Id: README,v 1.30 2003/05/30 03:17:32 joshk Exp $
+$Id: README,v 1.31 2003/06/18 17:33:39 joshk Exp $
 
 This directory contains modules and patches that have been contributed
 by other people, or aren't suitable for including into the 
@@ -9,7 +9,7 @@ There is also a lone ircII script (challenge.irc) that works alongwith
 rsa_respond so you can authenticate within your client.
 
 Once again. WITH feeling. Not all of these modules have been thoroughly
-tested! Thats why some of them are in contrib not in the main tree yet!
+tested! That's why some of them are in contrib not in the main tree yet.
 At least one module in contrib has been known to core servers when used.
 You have been warned. 
 
