@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.38 2000/10/29 21:01:25 adrian Exp $
+ *  $Id: s_bsd.c,v 7.39 2000/10/30 04:56:31 db Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -290,36 +290,6 @@ int deliver_it(struct Client* cptr, const char* str, int len)
         }
     }
   return(retval);
-}
-
-/*
- * Ordinary client access check. Look for conf lines which have the same
- * status as the flags passed.
- *
- * outputs
- *  0 = Success
- * -1 = Access denied (no I line match)
- * -2 = Bad socket.
- * -3 = I-line is full
- * -4 = Too many connections from hostname
- * -5 = K-lined
- * also updates reason if a K-line
- *
- */
-int check_client(struct Client *cptr,char *username,char **reason)
-{
-  static char     sockname[HOSTLEN + 1];
-  int             i;
- 
-  ClearAccess(cptr);
-
-  if ((i = attach_Iline(cptr, username, reason)))
-    {
-      log(L_INFO, "Access denied: %s[%s]", cptr->name, sockname);
-      return i;
-    }
-
-  return 0;
 }
 
 /*
