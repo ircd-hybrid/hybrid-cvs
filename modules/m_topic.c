@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_topic.c,v 1.14 2000/12/18 03:59:56 db Exp $
+ *   $Id: m_topic.c,v 1.15 2000/12/20 18:29:26 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -117,21 +117,12 @@ int     m_topic(struct Client *cptr,
 	      
               MyFree(chptr->topic_info);
 	      
-	      if (ConfigFileEntry.topic_uh)
-		{
-		  chptr->topic_info = 
-		    (char *)MyMalloc(strlen(sptr->name)+
-				     strlen(sptr->username)+
-				     strlen(sptr->host)+3);
-		  ircsprintf(chptr->topic_info, "%s!%s@%s",
-			     sptr->name, sptr->username, sptr->host);
-		}
-	      else
-		{
-		  chptr->topic_info =
-		    (char *)MyMalloc(strlen(sptr->name) + 1);
-		  strncpy_irc(chptr->topic_info, sptr->name, NICKLEN);
-		}
+	      chptr->topic_info = 
+		(char *)MyMalloc(strlen(sptr->name)+
+				 strlen(sptr->username)+
+				 strlen(sptr->host)+3);
+	      ircsprintf(chptr->topic_info, "%s!%s@%s",
+			 sptr->name, sptr->username, sptr->host);
 
 	      chptr->topic_time = CurrentTime;
 	      
@@ -179,10 +170,14 @@ int     m_topic(struct Client *cptr,
               sendto_one(sptr, form_str(RPL_TOPIC),
                          me.name, parv[0],
                          name, chptr->topic);
-              sendto_one(sptr, form_str(RPL_TOPICWHOTIME),
-                         me.name, parv[0], name,
-                         chptr->topic_info,
-                         chptr->topic_time);
+	      if ((!GlobalSetOptions.hide_chanops) ||
+		  (GlobalSetOptions.hide_chanops && is_any_op(chptr,sptr)))
+		{
+		  sendto_one(sptr, form_str(RPL_TOPICWHOTIME),
+			     me.name, parv[0], name,
+			     chptr->topic_info,
+			     chptr->topic_time);
+		}
 	    }
 	}
     }
