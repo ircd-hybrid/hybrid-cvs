@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.116 2003/04/18 21:48:38 adx Exp $
+ *  $Id: s_auth.c,v 7.117 2003/04/19 10:21:47 michael Exp $
  */
 
 /*
@@ -59,8 +59,8 @@
  * this replaces the original sendheader macros
  */
 static struct {
-  const char* message;
-  size_t      length;
+  const char *message;
+  size_t length;
 } HeaderMessages [] = {
   /* 123456789012345678901234567890123456789012345678901234567890 */
   { "NOTICE AUTH :*** Looking up your hostname...\r\n",    46 },
@@ -91,15 +91,14 @@ typedef enum {
 /*
  */
 dlink_list auth_client_list = {NULL, NULL, 0};
-dlink_list auth_poll_list = {NULL, NULL, 0};
+dlink_list auth_poll_list   = {NULL, NULL, 0};
 
 static EVH timeout_auth_queries_event;
 
 static PF read_auth_reply;
 static CNCB auth_connect_callback;
 
-/*
- * init_auth()
+/* init_auth()
  *
  * Initialise the auth code
  */
@@ -115,7 +114,7 @@ init_auth(void)
 static struct AuthRequest*
 make_auth_request(struct Client* client)
 {
-  struct AuthRequest* request = 
+  struct AuthRequest *request = 
     (struct AuthRequest *)MyMalloc(sizeof(struct AuthRequest));
   request->fd      = -1;
   request->client  = client;
@@ -127,7 +126,7 @@ make_auth_request(struct Client* client)
  * free_auth_request - cleanup auth request allocations
  */
 static void
-free_auth_request(struct AuthRequest* request)
+free_auth_request(struct AuthRequest *request)
 {
   MyFree(request);
 }
@@ -136,21 +135,19 @@ free_auth_request(struct AuthRequest* request)
  * unlink_auth_request - remove auth request from a list
  */
 static void
-unlink_auth_request(struct AuthRequest* request, dlink_list *list)
+unlink_auth_request(struct AuthRequest *request, dlink_list *list)
 {
   dlink_node *ptr;
-  if((ptr = dlinkFind(list, request)) != NULL)
-  {
-    dlinkDelete(ptr, list);
+
+  if ((ptr = dlinkFindDelete(list, request)) != NULL)
     free_dlink_node(ptr);
-  }
 }
 
 /*
  * link_auth_request - add auth request to a list
  */
 static void
-link_auth_request(struct AuthRequest* request, dlink_list *list)
+link_auth_request(struct AuthRequest *request, dlink_list *list)
 {
   dlinkAdd(request, make_dlink_node(), list);
 }
@@ -161,7 +158,7 @@ link_auth_request(struct AuthRequest* request, dlink_list *list)
  * the main io processing loop
  */
 static void
-release_auth_client(struct Client* client)
+release_auth_client(struct Client *client)
 {
   if (client->localClient->fd > highest_fd)
     highest_fd = client->localClient->fd;
@@ -237,7 +234,6 @@ auth_dns_callback(void* vptr, adns_answer* reply)
 #endif
       release_auth_client(client_p);
     }
-
 }
 
 /*
@@ -407,10 +403,13 @@ GetValidIdent(char *buf)
 void
 start_auth(struct Client* client)
 {
-  struct AuthRequest* auth = 0;
-  assert(0 != client);
+  struct AuthRequest *auth = 0;
+
+  assert(client != 0);
+
   if(client == NULL)
     return;
+
   auth = make_auth_request(client);
 
   client->localClient->dns_query = MyMalloc(sizeof(struct DNSQuery));
@@ -525,7 +524,6 @@ auth_connect_callback(int fd, int error, void *data)
   read_auth_reply(auth->fd, auth);
 }
 
-
 /*
  * read_auth_reply - read the reply (if any) from the ident server 
  * we connected to.
@@ -609,16 +607,14 @@ read_auth_reply(int fd, void *data)
     }
 }
 
-/*
- * remove_auth_request()
+/* remove_auth_request()
+ *
  * Remove request 'auth' from AuthClientList, and free it.
  * There is no need to release auth->client since it has
  * already been done
  */
-
 void
 remove_auth_request(struct AuthRequest *auth)
-
 {
   unlink_auth_request(auth, &auth_client_list);
   free_auth_request(auth);
@@ -638,12 +634,14 @@ FindAuthClient(long id)
   struct AuthRequest *auth;
 
   DLINK_FOREACH(ptr, auth_client_list.head)
-    {
-      auth = ptr->data;
-      if( auth->client == (struct Client *)id)
-	return auth;
-    }
-  return (NULL);
+  {
+    auth = ptr->data;
+
+    if (auth->client == (struct Client *)id)
+      return auth;
+  }
+
+  return(NULL);
 } /* FindAuthClient() */
 
 /*
@@ -655,33 +653,35 @@ delete_identd_queries(struct Client *target_p)
 {
   dlink_node *ptr;
   dlink_node *next_ptr;
-  struct AuthRequest* auth;
+  struct AuthRequest *auth;
 
   DLINK_FOREACH_SAFE(ptr, next_ptr, auth_poll_list.head)
   {
-      auth = ptr->data;
+    auth = ptr->data;
 
-      if(auth->client == target_p)
-	{
-	  if (auth->fd >= 0)
-	    fd_close(auth->fd);
-	  dlinkDelete(ptr, &auth_poll_list);
-	  free_auth_request(auth);
-	  free_dlink_node(ptr);
-	}
+    if (auth->client == target_p)
+    {
+      if (auth->fd >= 0)
+        fd_close(auth->fd);
+
+      dlinkDelete(ptr, &auth_poll_list);
+      free_auth_request(auth);
+      free_dlink_node(ptr);
+    }
   }
 
   DLINK_FOREACH_SAFE(ptr, next_ptr, auth_client_list.head)
   {
-      auth = ptr->data;
+    auth = ptr->data;
 
-      if(auth->client == target_p)
-	{
-	  if (auth->fd >= 0)
-	    fd_close(auth->fd);
-	  dlinkDelete(ptr, &auth_client_list);
-	  free_auth_request(auth);
-	  free_dlink_node(ptr);
-	}
+    if (auth->client == target_p)
+    {
+      if (auth->fd >= 0)
+        fd_close(auth->fd);
+
+      dlinkDelete(ptr, &auth_client_list);
+      free_auth_request(auth);
+      free_dlink_node(ptr);
+    }
   }
 }

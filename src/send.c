@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.234 2003/04/18 00:01:47 michael Exp $
+ *  $Id: send.c,v 7.235 2003/04/19 10:21:48 michael Exp $
  */
 
 #include "stdinc.h"
@@ -52,7 +52,7 @@ static void _send_linebuf(struct Client *, buf_head_t *);
 static void send_linebuf_remote(struct Client *, struct Client *, buf_head_t *);
 
 /* send the message to the link the target is attached to */
-#define send_linebuf(a,b) _send_linebuf((a->from?a->from:a),b)
+#define send_linebuf(a, b) _send_linebuf((a->from?a->from:a),b)
 
 /* global for now *sigh* */
 unsigned long current_serial=0L;
@@ -79,7 +79,7 @@ sendto_list_anywhere(struct Client *one, struct Client *from,
  * side effects	- input buffer is trimmed if needed
  */
 static inline int
-send_trim(char *lsendbuf,int len)
+send_trim(char *lsendbuf, int len)
 {
   /*
    * from rfc1459
@@ -109,18 +109,18 @@ send_trim(char *lsendbuf,int len)
    * -wnder
    */
 
-  if(len > 510)
+  if (len > 510)
   {
     lsendbuf[IRCD_BUFSIZE-2] = '\r';
     lsendbuf[IRCD_BUFSIZE-1] = '\n';
-    lsendbuf[IRCD_BUFSIZE] = '\0';
+    lsendbuf[IRCD_BUFSIZE]   = '\0';
     return(IRCD_BUFSIZE);
   }
-  return len;
+
+  return(len);
 }
 
-/*
- * send_format
+/* send_format()
  *
  * inputs	- buffer to format into
  *		- format pattern to use
@@ -135,7 +135,7 @@ send_format(char *lsendbuf, const char *pattern, va_list args)
 
   len = vsprintf_irc(lsendbuf, pattern, args);
 
-  return (send_trim(lsendbuf,len));
+  return(send_trim(lsendbuf, len));
 }
 
 
@@ -243,7 +243,7 @@ send_linebuf_remote(struct Client *to, struct Client *from,
   } 
 
   _send_linebuf(to, linebuf);
-} /* send_linebuf_remote() */
+}
 
 /*
  ** send_queued_write
@@ -325,7 +325,7 @@ send_queued_write(int fd, struct Client *to)
   if (linebuf_len(&to->localClient->buf_sendq))
     comm_setselect(fd, FDLIST_IDLECLIENT, COMM_SELECT_WRITE,
                    (PF *)send_queued_write, (void *)to, 0);
-} /* send_queued_write() */
+}
 
 /*
  ** send_queued_slink_write
@@ -395,7 +395,7 @@ send_queued_slink_write(int fd, struct Client *to)
     comm_setselect(to->localClient->ctrlfd, FDLIST_IDLECLIENT,
                    COMM_SELECT_WRITE, (PF *)send_queued_slink_write,
                    (void *)to, 0);
-} /* send_queued_slink_write() */
+}
 
 /* sendto_one()
  *
@@ -427,7 +427,7 @@ sendto_one(struct Client *to, const char *pattern, ...)
 
   linebuf_donebuf(&linebuf);
 
-} /* sendto_one() */
+}
 
 /* sendto_one_prefix()
  *
@@ -474,7 +474,7 @@ sendto_one_prefix(struct Client *to, struct Client *prefix,
   va_end(args);
   send_linebuf(to_sendto, &linebuf);
   linebuf_donebuf(&linebuf);
-} /* sendto_one() */
+}
 
 /* sendto_channel_butone()
  *
@@ -490,7 +490,7 @@ sendto_channel_butone(struct Client *one, struct Client *from,
                       struct Channel *chptr, const char *command,
                       const char *pattern, ...)
 {
-  va_list    args;
+  va_list args;
   buf_head_t local_linebuf;
   buf_head_t remote_linebuf;
   buf_head_t uid_linebuf;
@@ -540,7 +540,7 @@ sendto_channel_butone(struct Client *one, struct Client *from,
   linebuf_donebuf(&local_linebuf);
   linebuf_donebuf(&remote_linebuf);
   linebuf_donebuf(&uid_linebuf);
-} /* sendto_channel_butone() */
+}
 
 /* sendto_list_anywhere()
  *
@@ -553,9 +553,9 @@ sendto_channel_butone(struct Client *one, struct Client *from,
  *		- length of remote_sendbuf
  */
 static void
-sendto_list_anywhere(struct Client *one, struct Client *from,
-                     dlink_list *list, buf_head_t *local_linebuf,
-                     buf_head_t *remote_linebuf, buf_head_t *uid_linebuf)
+sendto_list_anywhere(struct Client *one, struct Client *from, dlink_list *list,
+                     buf_head_t *local_linebuf, buf_head_t *remote_linebuf,
+                     buf_head_t *uid_linebuf)
 {
   dlink_node *ptr;
   dlink_node *ptr_next;
@@ -626,9 +626,9 @@ sendto_list_anywhere(struct Client *one, struct Client *from,
  */
 void 
 sendto_server(struct Client *one, struct Client *source_p,
-                   struct Channel *chptr, unsigned long caps,
-                   unsigned long nocaps, unsigned long llflags,
-                   const char *format, ...)
+              struct Channel *chptr, unsigned long caps,
+              unsigned long nocaps, unsigned long llflags,
+              const char *format, ...)
 {
   va_list args;
   struct Client *client_p;
@@ -744,7 +744,7 @@ sendto_common_channels_local(struct Client *user, int touser,
     send_linebuf(user, &linebuf);
 
   linebuf_donebuf(&linebuf);
-} /* sendto_common_channels() */
+}
 
 /* sendto_channel_local()
  *
@@ -793,7 +793,7 @@ sendto_channel_local(int type, struct Channel *chptr, const char *pattern, ...)
 #endif
   }
   linebuf_donebuf(&linebuf);
-} /* sendto_channel_local() */
+}
 
 /* sendto_channel_local_butone()
  *
@@ -844,7 +844,7 @@ sendto_channel_local_butone(struct Client *one, int type,
 #endif
   }
   linebuf_donebuf(&linebuf);
-} /* sendto_channel_local_butone() */
+}
 
 /* sendto_channel_remote()
  *
@@ -898,10 +898,9 @@ sendto_channel_remote(struct Client *one, struct Client *from, int type, int cap
 #endif
   }
   linebuf_donebuf(&linebuf);
-} /* sendto_channel_remote() */
+}
 
-/*
- * sendto_list_local
+/* sendto_list_local()
  *
  * inputs       - pointer to client not to send to
  *              - pointer to all members of this list
@@ -915,7 +914,7 @@ sendto_channel_remote(struct Client *one, struct Client *from, int type, int cap
  */
 static void 
 sendto_list_local(struct Client *one, dlink_list *list,
-		  buf_head_t *linebuf_ptr)
+                  buf_head_t *linebuf_ptr)
 {
   dlink_node *ptr;
   dlink_node *ptr_next;
@@ -939,7 +938,7 @@ sendto_list_local(struct Client *one, dlink_list *list,
 
     send_linebuf(target_p, linebuf_ptr);
   }
-} /* sendto_list_local() */
+}
 
 /*
  * sendto_list_remote(struct Client *one,
@@ -957,9 +956,8 @@ sendto_list_local(struct Client *one, dlink_list *list,
  *               the list.
  */
 static void
-sendto_list_remote(struct Client *one,
-		   struct Client *from, dlink_list *list, int caps,
-                   int nocaps, buf_head_t *linebuf)
+sendto_list_remote(struct Client *one, struct Client *from, dlink_list *list,
+                   int caps, int nocaps, buf_head_t *linebuf)
 {
   dlink_node *ptr;
   dlink_node *ptr_next;
@@ -985,7 +983,7 @@ sendto_list_remote(struct Client *one,
     target_p->from->serial = current_serial;
     send_linebuf(target_p, linebuf);
   } 
-} /* sendto_list_remote() */
+}
 
 /*
  ** match_it() and sendto_match_butone() ARE only used
@@ -996,8 +994,7 @@ sendto_list_remote(struct Client *one,
  **
  */
 
-/*
- * match_it
+/* match_it()
  *
  * inputs	- client pointer to match on
  *		- actual mask to match
@@ -1007,16 +1004,14 @@ sendto_list_remote(struct Client *one,
  */
 static int
 match_it(const struct Client *one, const char *mask, int what)
-
 {
-  if(what == MATCH_HOST)
-    return match(mask, one->host);
+  if (what == MATCH_HOST)
+    return(match(mask, one->host));
 
-  return match(mask, one->user->server);
-} /* match_it() */
+  return(match(mask, one->user->server));
+}
 
-/*
- * sendto_match_butone
+/* sendto_match_butone()
  *
  * Send to all clients which match the mask in a way defined on 'what';
  * either by user hostname or user servername.
@@ -1024,9 +1019,8 @@ match_it(const struct Client *one, const char *mask, int what)
  * ugh. ONLY used by m_message.c to send an "oper magic" message. ugh.
  */
 void
-sendto_match_butone(struct Client *one, struct Client *from,
-                    char *mask, int what,
-                    const char *pattern, ...)
+sendto_match_butone(struct Client *one, struct Client *from, char *mask,
+                    int what, const char *pattern, ...)
 {
   va_list args;
   struct Client *client_p;
@@ -1095,14 +1089,12 @@ sendto_match_butone(struct Client *one, struct Client *from,
 
     send_linebuf_remote(client_p, from, &remote_linebuf);
   }
+
   linebuf_donebuf(&local_linebuf);
   linebuf_donebuf(&remote_linebuf);
+}
 
-} /* sendto_match_butone() */
-
-
-/*
- * sendto_anywhere
+/* sendto_anywhere()
  *
  * inputs	- pointer to dest client
  * 		- pointer to from client
@@ -1149,8 +1141,7 @@ sendto_anywhere(struct Client *to, struct Client *from,
   linebuf_donebuf(&linebuf);
 }
 
-/*
- * sendto_realops_flags
+/* sendto_realops_flags()
  *
  * inputs	- flag types of messages to show to real opers
  *		- flag indicating opers/admins
@@ -1158,7 +1149,6 @@ sendto_anywhere(struct Client *to, struct Client *from,
  * output	- NONE
  * side effects	- Send to *local* ops only but NOT +s nonopers.
  */
-
 void
 sendto_realops_flags(unsigned int flags, int level, const char *pattern, ...)
 {
@@ -1180,11 +1170,11 @@ sendto_realops_flags(unsigned int flags, int level, const char *pattern, ...)
     /* If we're sending it to opers and theyre an admin, skip.
      * If we're sending it to admins, and theyre not, skip.
      */
-    if(((level == L_ADMIN) && !IsAdmin(client_p)) ||
+    if (((level == L_ADMIN) && !IsAdmin(client_p)) ||
        ((level == L_OPER) && IsAdmin(client_p)))
       continue;
 
-    if(client_p->umodes & flags)
+    if (client_p->umodes & flags)
     {
       linebuf_newbuf(&linebuf);
       linebuf_putmsg(&linebuf, NULL, NULL,
@@ -1195,10 +1185,9 @@ sendto_realops_flags(unsigned int flags, int level, const char *pattern, ...)
       linebuf_donebuf(&linebuf);
     }
   }
-} /* sendto_realops_flags() */
+}
 
-/*
- * sendto_wallops_flags
+/* sendto_wallops_flags()
  *
  * inputs       - flag types of messages to show to real opers
  *              - client sending request
@@ -1206,7 +1195,6 @@ sendto_realops_flags(unsigned int flags, int level, const char *pattern, ...)
  * output       - NONE
  * side effects - Send a wallops to local opers
  */
-
 void
 sendto_wallops_flags(unsigned int flags, struct Client *source_p,
                      const char *pattern, ...)
@@ -1233,20 +1221,20 @@ sendto_wallops_flags(unsigned int flags, struct Client *source_p,
   {
     client_p = ptr->data;
 
-    if(client_p->umodes & flags)
+    if (client_p->umodes & flags)
       send_linebuf(client_p, &linebuf);
   }
+
   linebuf_donebuf(&linebuf);
 }
 
-/*
- * ts_warn
+/* ts_warn()
+ *
  * inputs	- var args message
  * output	- NONE
  * side effects	- Call sendto_realops_flags, with some flood checking
  *		  (at most 5 warnings every 5 seconds)
  */
-
 void
 ts_warn(const char *pattern, ...)
 {
@@ -1279,10 +1267,9 @@ ts_warn(const char *pattern, ...)
 
   sendto_realops_flags(UMODE_ALL, L_ALL,"%s",lbuf);
   ilog(L_CRIT, "%s", lbuf);
-} /* ts_warn() */
+}
 
-/*
- * kill_client
+/* kill_client()
  *
  * inputs	- client to send kill towards
  * 		- pointer to client to kill
@@ -1290,10 +1277,9 @@ ts_warn(const char *pattern, ...)
  * output	- NONE
  * side effects	- NONE
  */
-
 void
-kill_client(struct Client *client_p,
-            struct Client *diedie, const char *pattern, ...)
+kill_client(struct Client *client_p, struct Client *diedie,
+            const char *pattern, ...)
 {
   va_list args;
   buf_head_t linebuf;
@@ -1303,7 +1289,7 @@ kill_client(struct Client *client_p,
   va_start(args, pattern);
 
   /* XXX perhaps IsCapable should test for localClient itself ? -db */
-  if(HasID(diedie) && client_p->localClient && IsCapable(client_p, CAP_UID))
+  if (HasID(diedie) && client_p->localClient && IsCapable(client_p, CAP_UID))
     linebuf_putmsg(&linebuf, pattern, &args, ":%s KILL %s :",
                    me.name, ID(diedie));
   else
@@ -1316,9 +1302,7 @@ kill_client(struct Client *client_p,
   linebuf_donebuf(&linebuf);
 }
 
-
-/*
- * kill_client_ll_serv_butone
+/* kill_client_ll_serv_butone()
  *
  * inputs	- pointer to client to not send to
  *		- pointer to client to kill
@@ -1342,7 +1326,7 @@ kill_client_ll_serv_butone(struct Client *one, struct Client *source_p,
 
   va_start(args, pattern);
 
-  if(HasID(source_p))
+  if (HasID(source_p))
   {
     have_uid = 1;
     linebuf_newbuf(&linebuf_uid);

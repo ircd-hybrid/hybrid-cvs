@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.246 2003/04/18 19:28:14 michael Exp $
+ *  $Id: s_user.c,v 7.247 2003/04/19 10:21:48 michael Exp $
  */
 
 #include "stdinc.h"
@@ -56,9 +56,9 @@
 
 static int valid_hostname(const char *hostname);
 static int valid_username(const char *username);
+static void user_welcome(struct Client *source_p);
 static void report_and_set_user_flags(struct Client *, struct ConfItem *);
 static int check_X_line(struct Client *client_p, struct Client *source_p);
-static void user_welcome(struct Client *source_p);
 static int introduce_client(struct Client *client_p, struct Client *source_p,
                             struct User *user, char *nick);
 
@@ -283,13 +283,13 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   dlink_node *m;
   char *id;
 
-  assert(NULL != source_p);
+  assert(source_p != NULL);
   assert(MyConnect(source_p));
   assert(source_p->username != username);
-  
+
   if (source_p == NULL)
     return(-1);
-  
+
   if (!MyConnect(source_p))
     return(-1);
 
@@ -351,7 +351,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
     }
 
     p = username;
-      
+
     if (!IsNoTilde(aconf))
       source_p->username[i++] = '~';
 
@@ -366,8 +366,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   }
 
   /* password check */
-  if (!EmptyString(aconf->passwd) &&
-      strcmp(source_p->localClient->passwd, aconf->passwd))
+  if (!EmptyString(aconf->passwd) && strcmp(source_p->localClient->passwd, aconf->passwd))
   {
     ServerStats->is_ref++;
     sendto_one(source_p, form_str(ERR_PASSWDMISMATCH),
@@ -380,7 +379,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
 
   /* report if user has &^>= etc. and set flags as needed in source_p */
   report_and_set_user_flags(source_p, aconf);
-  
+
   /* Limit clients -
    * We want to be able to have servers and F-line clients
    * connect, so save room for "buffer" connections.
@@ -432,7 +431,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
 #endif
   }
 
-  irc_getnameinfo((struct sockaddr*)&source_p->localClient->ip, 
+  irc_getnameinfo((struct sockaddr *)&source_p->localClient->ip,
         source_p->localClient->ip.ss_len, ipaddr, HOSTIPLEN, NULL, 0,
         NI_NUMERICHOST);
   sendto_realops_flags(UMODE_CCONN, L_ALL,
@@ -706,7 +705,7 @@ valid_username(const char *username)
   const char *p = username;
 
   assert(p != NULL);
-  
+
   if (username == NULL)
     return(NO);
 
@@ -964,13 +963,13 @@ user_mode(struct Client *client_p, struct Client *source_p, int parc, char *parv
     {
       switch (*m)
       {
-        case '+' :
+        case '+':
           what = MODE_ADD;
           break;
-        case '-' :
+        case '-':
           what = MODE_DEL;
           break;
-        case 'o' :
+        case 'o':
           if (what == MODE_ADD)
           {
             if (IsServer(client_p) && !IsOper(source_p))
@@ -996,13 +995,9 @@ user_mode(struct Client *client_p, struct Client *source_p, int parc, char *parv
               dlink_node *dm;
 
               ClearOperFlags(source_p);
-              dm = dlinkFind(&oper_list,source_p);
 
-              if (dm != NULL)
-              {
-                dlinkDelete(dm,&oper_list);
+              if ((dm = dlinkFindDelete(&oper_list, source_p)) != NULL)
                 free_dlink_node(dm);
-              }
             }
           }
 
@@ -1012,12 +1007,12 @@ user_mode(struct Client *client_p, struct Client *source_p, int parc, char *parv
          * but they shouldnt be in default
          */
         case ' ' :
-        case '\n' :
-        case '\r' :
-        case '\t' :
+        case '\n':
+        case '\r':
+        case '\t':
           break;
 
-        default :
+        default:
           if ((flag = user_modes_from_c_to_bitmask[(unsigned char)*m]))
           {
             if (MyConnect(source_p) && !IsOper(source_p) &&
@@ -1230,9 +1225,9 @@ user_welcome(struct Client *source_p)
 
 /* check_X_line()
  *
- * inputs	- pointer to client to test
- * outupt	- -1 if exiting 0 if ok
- * side effects	-
+ * inputs       - pointer to client to test
+ * outupt       - -1 if exiting 0 if ok
+ * side effects -
  */
 static int
 check_X_line(struct Client *client_p, struct Client *source_p)

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_jupe.c,v 1.48 2003/04/18 02:13:37 db Exp $
+ *  $Id: m_jupe.c,v 1.49 2003/04/19 10:21:46 michael Exp $
  */
 
 #include "stdinc.h"
@@ -67,7 +67,7 @@ _moddeinit(void)
   mod_del_cmd(&jupe_msgtab);
 }
 
-const char *_version = "$Revision: 1.48 $";
+const char *_version = "$Revision: 1.49 $";
 #endif
 
 /*
@@ -142,17 +142,12 @@ mo_jupe(struct Client *client_p, struct Client *source_p,
   ajupe = make_client(NULL);
 
   /* make_client() adds client to unknown_list */
-  m = dlinkFind(&unknown_list, ajupe);
+  if ((m = dlinkFindDelete(&unknown_list, ajupe)) != NULL)
+    free_dlink_node(m);
 
-  assert(NULL != m);
-
-  if (m != NULL)
-    dlinkDelete(m, &unknown_list);
-
-  free_dlink_node(m);
   make_server(ajupe);
 
-  strlcpy(ajupe->name,parv[1], sizeof(ajupe->name));
+  strlcpy(ajupe->name, parv[1], sizeof(ajupe->name));
   ircsprintf(reason, "%s %s", "JUPED:", parv[2]);
   strlcpy(ajupe->info, reason, sizeof(ajupe->info));
 
