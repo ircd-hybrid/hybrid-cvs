@@ -1,3 +1,15 @@
+androsyn    2002/05/30 21:29:04 EDT	(20020531_8)
+
+  Modified files:
+    src                  fdlist.c 
+  Log:
+  Remove a pointless assert()
+  
+  Revision  Changes    Path
+  7.30      +1 -2      ircd-hybrid-7/src/fdlist.c
+
+
+
 androsyn    2002/05/30 20:36:38 EDT	(20020531_7)
 
   Modified files:
@@ -27610,4 +27622,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3721 2002/05/31 00:36:45 androsyn Exp $
+$Id: ChangeLog,v 7.3722 2002/05/31 01:29:11 androsyn Exp $
