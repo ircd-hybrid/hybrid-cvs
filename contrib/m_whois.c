@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.27 2003/06/01 14:38:45 adx Exp $
+ *  $Id: m_whois.c,v 1.28 2003/06/01 15:05:49 adx Exp $
  */
 
 #include "stdinc.h"
@@ -194,7 +194,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-const char *_version = "$Revision: 1.27 $";
+const char *_version = "$Revision: 1.28 $";
 #endif
 
 /* m_whois
@@ -465,6 +465,7 @@ whois_person(struct Client *source_p,struct Client *target_p, int glob)
   dlink_node *lp;
   struct Client *server_p;
   struct Channel *chptr;
+  struct Membership *ms;
   int cur_len = 0;
   int mlen;
   char *t;
@@ -487,7 +488,8 @@ whois_person(struct Client *source_p,struct Client *target_p, int glob)
 
   DLINK_FOREACH(lp, target_p->user->channel.head)
   {
-    chptr = ((struct Membership *) lp->data)->chptr;
+    ms = (struct Membership *) lp->data;
+    chptr = ms->chptr;
 
     if (ShowChannel(source_p, chptr))
     {
@@ -498,8 +500,7 @@ whois_person(struct Client *source_p,struct Client *target_p, int glob)
         t = buf + mlen;
       }
 
-      ircsprintf(t, "%s%s ", get_member_status(chptr, target_p, YES),
-                 chptr->chname);
+      ircsprintf(t, "%s%s ", get_member_status(ms, YES), chptr->chname);
 
       tlen = strlen(t);
       t += tlen;

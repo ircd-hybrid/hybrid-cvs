@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.30 2003/06/01 14:38:45 adx Exp $
+ *   $Id: m_operspy.c,v 1.31 2003/06/01 15:05:49 adx Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -108,7 +108,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.30 $";
+const char *_version = "$Revision: 1.31 $";
 #endif
 
 /*
@@ -426,7 +426,7 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
 
       ircsprintf(t, "%s%s%s ",
                  ShowChannel(client_p, chptr_whois) ? "" : "%",
-                 get_member_status(chptr_whois, target_p, YES),
+                 get_member_status((struct Membership *) lp->data, YES),
                  chptr_whois->chname);
       tlen = strlen(t);
       t += tlen;
@@ -515,23 +515,12 @@ do_who_on_channel(struct Client *source_p, struct Channel *chptr,
 		  char *chname)
 {
   dlink_node *ptr;
-  struct Client *target_p;
   struct Membership *ms;
-  char status[3];
-  char *p = status;
 
   DLINK_FOREACH(ptr, chptr->members.head)
   {
     ms = ptr->data;
-    target_p = ms->client_p;
-
-    if (ms->flags & CHFL_CHANOP)
-      *p++ = '@';
-    else if (ms->flags & CHFL_VOICE)
-      *p++ = '+';
-    *p = '\0';
-
-    do_who(source_p, target_p, chname, status);
+    do_who(source_p, ms->client_p, chname, get_member_status(ms, NO));
   }
 }
 #endif /* OPERSPY_WHO */

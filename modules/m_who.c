@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_who.c,v 1.79 2003/05/31 18:52:50 adx Exp $
+ *  $Id: m_who.c,v 1.80 2003/06/01 15:05:52 adx Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&who_msgtab);
 }
-const char *_version = "$Revision: 1.79 $";
+const char *_version = "$Revision: 1.80 $";
 #endif
 
 static void who_global(struct Client *source_p, char *mask, int server_oper);
@@ -333,22 +333,14 @@ do_who_on_channel(struct Client *source_p, struct Channel *chptr,
   dlink_node *ptr;
   struct Client *target_p;
   struct Membership *ms;
-  char status[3];
-  char *p = status;
 
   DLINK_FOREACH(ptr, chptr->members.head)
   {
     ms = ptr->data;
     target_p = ms->client_p;
 
-    if (ms->flags & CHFL_CHANOP)
-      *p++ = '@';
-    else if (ms->flags & CHFL_VOICE)
-      *p++ = '+';
-    *p = '\0';
-
     if (member || !IsInvisible(target_p))
-      do_who(source_p, target_p, chname, status);
+      do_who(source_p, target_p, chname, get_member_status(ms, NO));
   }
 }
 

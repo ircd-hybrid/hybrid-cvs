@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.143 2003/06/01 14:38:46 adx Exp $
+ *  $Id: channel.h,v 7.144 2003/06/01 15:05:50 adx Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -70,6 +70,16 @@ struct Channel
   char chname[CHANNELLEN + 1];
 };
 
+struct Membership
+{
+  dlink_node channode;      /* link to chptr->members */
+  dlink_node locchannode;   /* link to chptr->locmembers */
+  dlink_node usernode;      /* link to source_p->user->channel */
+  struct Channel *chptr;
+  struct Client *client_p;
+  unsigned int flags;
+};
+
 extern dlink_list global_channel_list;
 
 extern void init_channels(void);
@@ -88,7 +98,7 @@ extern int remove_user_from_channel(struct Channel *chptr, struct Client *who);
 extern int check_channel_name(const char *name);
 extern void channel_member_names(struct Client *source_p, struct Channel *chptr,
                                  int show_eon);
-extern char *get_member_status(struct Channel *, struct Client *, int);
+extern char *get_member_status(struct Membership *, int);
 extern void add_invite(struct Channel *chptr, struct Client *who);
 extern void del_invite(struct Channel *chptr, struct Client *who);
 extern void send_channel_modes (struct Client *, struct Channel *);
@@ -116,16 +126,6 @@ struct Ban          /* also used for exceptions -orabidoo */
   char *banstr;
   char *who;
   time_t when;
-};
-
-struct Membership
-{
-  dlink_node channode;      /* link to chptr->members */
-  dlink_node locchannode;   /* link to chptr->locmembers */
-  dlink_node usernode;      /* link to source_p->user->channel */
-  struct Channel *chptr;
-  struct Client *client_p;
-  unsigned int flags;
 };
 
 extern struct Membership *find_channel_link(struct Client *client_p,

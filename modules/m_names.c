@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_names.c,v 1.54 2003/06/01 14:38:48 adx Exp $
+ *  $Id: m_names.c,v 1.55 2003/06/01 15:05:52 adx Exp $
  */
 
 #include "stdinc.h"
@@ -67,7 +67,7 @@ _moddeinit(void)
   mod_del_cmd(&names_msgtab);
 }
 
-const char *_version = "$Revision: 1.54 $";
+const char *_version = "$Revision: 1.55 $";
 #endif
 
 /************************************************************************
@@ -208,8 +208,8 @@ names_non_public_non_secret(struct Client *source_p)
       t = buf + mlen;
     }
 
-    ircsprintf(t, "%s%s ", get_member_status(ch3ptr, c2ptr, NO),
-               c2ptr->name);
+    ircsprintf(t, "%s%s ", get_member_status(find_channel_link(c2ptr, ch3ptr),
+                                             NO), c2ptr->name);
 
     tlen = strlen(t);
     cur_len += tlen;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.387 2003/06/01 14:38:50 adx Exp $
+ *  $Id: channel.c,v 7.388 2003/06/01 15:05:54 adx Exp $
  */
 
 #include "stdinc.h"
@@ -185,10 +185,8 @@ send_members(struct Client *client_p, struct Channel *chptr, char *lmodebuf,
       t = start;
     }
 
-    if (ms->flags & CHFL_CHANOP)
-      *t++ = '@';
-    if (ms->flags & CHFL_VOICE)
-      *t++ = '+';
+    strcpy(t, get_member_status(ms, YES));
+    t += strlen(t);
     strcpy(t, ms->client_p->name);
     t += strlen(t);
     *t++ = ' ';
@@ -431,10 +429,8 @@ channel_member_names(struct Client *source_p, struct Channel *chptr,
 	t = start;
       }
 
-      if (ms->flags & CHFL_CHANOP)
-        *t++ = '@';
-      else if (ms->flags & CHFL_VOICE)
-        *t++ = '+';
+      strcpy(t, get_member_status(ms, NO));
+      t += strlen(t);
       t += ircsprintf(t, "%s ", target_p->name); /* XXX */
     }
 
@@ -529,21 +525,20 @@ del_invite(struct Channel *chptr, struct Client *who)
 
 /* get_member_status()
  *
- * inputs       - pointer to channel
- *              - pointer to client
+ * inputs       - pointer to struct Membership
  *              - YES if we can combine different flags
  * output       - string either @, +, % or "" depending on whether
  *                chanop, voiced or user
  * side effects -
  *
- * NOTE: Returned pointer can be static (like in get_client_name)
+ * NOTE: Returned string is usually a static buffer
+ * (like in get_client_name)
  */
 char *
-get_member_status(struct Channel *chptr, struct Client *target_p, int combine)
+get_member_status(struct Membership *ms, int combine)
 {
   static char buffer[3];
   char *p;
-  struct Membership *ms = find_channel_link(target_p, chptr);
 
   if (ms == NULL)
     return "";

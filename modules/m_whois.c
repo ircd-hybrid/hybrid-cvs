@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.104 2003/06/01 14:38:48 adx Exp $
+ *  $Id: m_whois.c,v 1.105 2003/06/01 15:05:52 adx Exp $
  */
 
 #include "stdinc.h"
@@ -72,7 +72,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-const char *_version = "$Revision: 1.104 $";
+const char *_version = "$Revision: 1.105 $";
 #endif
 
 /*
@@ -388,8 +388,8 @@ whois_person(struct Client *source_p,struct Client *target_p, int glob)
 	t = buf + mlen;
       }
                              /* XXX -eeeek */
-      ircsprintf(t, "%s%s ", get_member_status(chptr, target_p, YES),
-                 chptr->chname);
+      ircsprintf(t, "%s%s ",
+                 get_member_status(ms, YES), chptr->chname);
 
       tlen = strlen(t);
       t += tlen;
