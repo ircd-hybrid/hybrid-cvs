@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.77 2000/12/17 21:18:16 db Exp $
+ *  $Id: client.c,v 7.78 2000/12/18 01:44:04 db Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -1322,6 +1322,8 @@ const char* comment         /* Reason for the exit */
 
 	  if(ConfigFileEntry.hub)
 	    restoreUnusedServerMask(sptr->localClient->serverMask);
+	  else
+	    uplink = NULL;
         }
       sptr->flags |= FLAGS_CLOSING;
       if (IsPerson(sptr))

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 1.19 2000/12/10 20:04:05 db Exp $
+ *   $Id: m_whois.c,v 1.20 2000/12/18 01:44:02 db Exp $
  */
 #include "tools.h"
 #include "common.h"   /* bleah */
@@ -385,7 +385,7 @@ int     ms_whois(struct Client *cptr,
                 char *parv[])
 {
   /* If its running as a hub, and linked with lazy links
-   * then allow leaf to use normal client m_names()
+   * then allow leaf to use normal client m_whois()
    * other wise, ignore it.
    */
 

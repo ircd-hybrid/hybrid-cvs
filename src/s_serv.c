@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.78 2000/12/17 22:45:47 db Exp $
+ *   $Id: s_serv.c,v 7.79 2000/12/18 01:44:04 db Exp $
  */
 #include "tools.h"
 #include "s_serv.h"
@@ -65,6 +65,8 @@ extern struct sockaddr_in vserv;               /* defined in s_conf.c */
 
 int MaxConnectionCount = 1;
 int MaxClientCount     = 1;
+
+struct Client *uplink=NULL;
 
 /*
  * list of recognized server capabilities.  "TS" is not on the list
@@ -855,6 +857,11 @@ int server_estab(struct Client *cptr)
         }
     }
   
+  if(!ConfigFileEntry.hub)
+    {
+      uplink = cptr;
+    }
+
   server_burst(cptr);
 
   return 0;

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_lljoin.c,v 1.15 2000/12/17 02:56:52 db Exp $
+ * $Id: m_lljoin.c,v 1.16 2000/12/18 01:44:01 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -85,12 +85,6 @@ int     ms_lljoin(struct Client *cptr,
   int  i;
   struct Client *acptr;
   struct Channel *chptr;
-
-  /* XXX global uplink */
-  dlink_node *ptr;
-  struct Client *uplink=NULL;
-  if( ptr = serv_list.head )
-    uplink = ptr->data;
 
   if(uplink && !IsCapable(uplink,CAP_LL))
     {

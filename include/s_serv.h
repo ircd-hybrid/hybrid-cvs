@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: s_serv.h,v 7.17 2000/12/16 17:46:42 db Exp $
+ * $Id: s_serv.h,v 7.18 2000/12/18 01:43:56 db Exp $
  *
  */
 #ifndef INCLUDED_serv_h
@@ -116,6 +116,7 @@ extern void        sjoin_channel(struct Client *cptr, struct Channel *chptr);
 extern void	   sendnick_TS(struct Client*, struct Client* );
 extern int         serv_connect(struct ConfItem *, struct Client *);
 
+extern struct Client *uplink; /* NON NULL if leaf and is this servers uplink */
 #endif /* INCLUDED_s_serv_h */
 
 

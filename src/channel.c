@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.127 2000/12/17 21:18:15 db Exp $
+ * $Id: channel.c,v 7.128 2000/12/18 01:44:03 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -2372,16 +2372,6 @@ void cleanup_channels(void *unused)
    struct Channel *chptr;
    struct Channel *next_chptr;
    dlink_node *ptr;
-   struct Client *uplink;
-
-   /* XXX errg for leafs, really need a global uplink struct */
-   if(!ConfigFileEntry.hub && serv_list.head)
-     {
-       ptr = serv_list.head;
-       uplink = ptr->data;
-     }
-   else
-     uplink = NULL;
 
    eventAdd("cleanup_channels", cleanup_channels, NULL,
 	    CLEANUP_CHANNELS_TIME, 0 );

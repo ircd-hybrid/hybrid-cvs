@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_mode.c,v 1.13 2000/12/16 05:58:50 db Exp $
+ *   $Id: m_mode.c,v 1.14 2000/12/18 01:44:01 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -91,10 +91,6 @@ int m_mode(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
       /* if chptr isn't found locally, it =could= exist
        * on the uplink. So ask.
        */
-      dlink_node *ptr;
-      struct Client *uplink=NULL;
-      if( ptr = serv_list.head )
-	uplink = ptr->data;
       
       /* LazyLinks */
       /* this was segfaulting if we had no servers linked.

@@ -3,7 +3,7 @@
  *   Copyright (C) 1990 Jarkko Oikarinen and
  *                      University of Oulu, Co Center
  *
- * $Id: m_list.c,v 1.15 2000/12/16 18:19:23 db Exp $ 
+ * $Id: m_list.c,v 1.16 2000/12/18 01:44:01 db Exp $ 
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -71,11 +71,6 @@ int     m_list(struct Client *cptr,
                char *parv[])
 {
   static time_t last_used=0L;
-  /* XXX global uplink */
-  dlink_node *ptr;
-  struct Client *uplink=NULL;
-  if( ptr = serv_list.head )
-    uplink = ptr->data;
 
   /* If its a LazyLinks connection, let uplink handle the list */
 
@@ -122,12 +117,6 @@ int     mo_list(struct Client *cptr,
                int parc,
                char *parv[])
 {
-  /* XXX global uplink */
-  dlink_node *ptr;
-  struct Client *uplink=NULL;
-  if( ptr = serv_list.head )
-    uplink = ptr->data;
-  
 /* Opers don't get paced */
 
   /* If its a LazyLinks connection, let uplink handle the list
