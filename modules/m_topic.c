@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_topic.c,v 1.4 2000/11/28 03:54:13 bill Exp $
+ *   $Id: m_topic.c,v 1.5 2000/11/30 07:38:55 db Exp $
  */
 #include "handlers.h"
 #include "channel.h"
@@ -140,9 +140,20 @@ int     m_topic(struct Client *cptr,
 	      sendto_match_servs(chptr, cptr,":%s TOPIC %s :%s",
 				 parv[0], chptr->chname,
 				 chptr->topic);
-	      sendto_channel_butserv(chptr, sptr, ":%s TOPIC %s :%s",
-				     parv[0],
-				     chname, chptr->topic);
+	      if(GlobalSetOptions.hide_chanops)
+		{
+		  sendto_channel_butserv(ONLY_CHANOPS,
+					 chptr, sptr, ":%s TOPIC %s :%s",
+					 parv[0],
+					 chname, chptr->topic);
+		}
+	      else
+		{
+		  sendto_channel_butserv(ALL_MEMBERS,
+					 chptr, sptr, ":%s TOPIC %s :%s",
+					 parv[0],
+					 chname, chptr->topic);
+		}
 	    }
 	  else
             sendto_one(sptr, form_str(ERR_CHANOPRIVSNEEDED),
@@ -259,9 +270,21 @@ int     ms_topic(struct Client *cptr,
 	      sendto_match_servs(chptr, cptr,":%s TOPIC %s :%s",
 				 parv[0], chptr->chname,
 				 chptr->topic);
-	      sendto_channel_butserv(chptr, sptr, ":%s TOPIC %s :%s",
-				     parv[0],
-				     chptr->chname, chptr->topic);
+	      if(GlobalSetOptions.hide_chanops)
+		{
+		  sendto_channel_butserv(ONLY_CHANOPS,
+					 chptr, sptr, ":%s TOPIC %s :%s",
+					 parv[0],
+					 chptr->chname, chptr->topic);
+		}
+	      else
+		{
+		  sendto_channel_butserv(ALL_MEMBERS,
+					 chptr, sptr, ":%s TOPIC %s :%s",
+					 parv[0],
+					 chptr->chname, chptr->topic);
+		}
+
 	    }
 	  else
             sendto_one(sptr, form_str(ERR_CHANOPRIVSNEEDED),

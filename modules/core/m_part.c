@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_part.c,v 1.7 2000/11/28 03:54:06 bill Exp $
+ *   $Id: m_part.c,v 1.8 2000/11/30 07:38:54 db Exp $
  */
 #include "handlers.h"
 #include "channel.h"
@@ -175,7 +175,8 @@ static void part_one_client(struct Client *cptr,
 	  
 	  sendto_match_servs(chptr, cptr, ":%s PART %s", sptr->name, name);
 	  
-	  sendto_channel_butserv(chptr, sptr, ":%s PART %s", sptr->name, name);
+	  sendto_channel_butserv(ALL_MEMBERS,
+				 chptr, sptr, ":%s PART %s", sptr->name, name);
 	  remove_user_from_channel(chptr, sptr, 0);
 	}
       else
@@ -192,7 +193,8 @@ static void part_one_client(struct Client *cptr,
             
 	  sendto_match_servs(chptr, cptr, ":%s PART %s", sptr->name, name);
             
-	  sendto_channel_butserv(vchan, sptr, ":%s PART %s", sptr->name, name);
+	  sendto_channel_butserv(ALL_MEMBERS,
+				 vchan, sptr, ":%s PART %s", sptr->name, name);
 	  remove_user_from_channel(vchan, sptr, 0);
 	}
     }
@@ -210,7 +212,8 @@ static void part_one_client(struct Client *cptr,
 
       sendto_match_servs(chptr, cptr, ":%s PART %s", sptr->name, name);
             
-      sendto_channel_butserv(chptr, sptr, ":%s PART %s", sptr->name, name);
+      sendto_channel_butserv(ALL_MEMBERS,
+			     chptr, sptr, ":%s PART %s", sptr->name, name);
       remove_user_from_channel(chptr, sptr, 0);
     }
 }

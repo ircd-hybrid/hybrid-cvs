@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_cjoin.c,v 1.4 2000/11/28 03:53:51 bill Exp $
+ *   $Id: m_cjoin.c,v 1.5 2000/11/30 07:38:53 db Exp $
  */
 
 #include "handlers.h"
@@ -212,14 +212,14 @@ int     m_cjoin(struct Client *cptr,
   /*
   ** notify all other users on the new channel
   */
-  sendto_channel_butserv(vchan_chptr, sptr, ":%s JOIN :%s",
+  sendto_channel_butserv(ALL_MEMBERS, vchan_chptr, sptr, ":%s JOIN :%s",
 			 parv[0], chptr->chname);
 
 
   vchan_chptr->mode.mode |= MODE_TOPICLIMIT;
   vchan_chptr->mode.mode |= MODE_NOPRIVMSGS;
 
-  sendto_channel_butserv(vchan_chptr, sptr,
+  sendto_channel_butserv(ONLY_CHANOPS,vchan_chptr, sptr,
 			 ":%s MODE %s +nt",
 			 me.name, chptr->chname);
 

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.53 2000/11/29 23:35:42 db Exp $
+ *   $Id: send.c,v 7.54 2000/11/30 07:38:58 db Exp $
  */
 #include "send.h"
 #include "channel.h"
@@ -513,12 +513,15 @@ sendto_common_channels(struct Client *user, const char *pattern, ...)
 /*
  * sendto_channel_butserv
  *
- * Send a message to all members of a channel that are connected to this
- * server.
+ * inputs	-
+ * output	- NONE
+ * side effects - Send a message to all members of a channel that are
+ *		  connected to this server.
  */
 
 void
-sendto_channel_butserv(struct Channel *chptr, struct Client *from, 
+sendto_channel_butserv(int type,
+		       struct Channel *chptr, struct Client *from, 
                        const char *pattern, ...)
 
 {
@@ -530,7 +533,14 @@ sendto_channel_butserv(struct Channel *chptr, struct Client *from,
 
   for (lp = chptr->members; lp; lp = lp->next)
     if (MyConnect(acptr = lp->value.cptr))
-      vsendto_prefix_one(acptr, from, pattern, args);
+      {
+	if(type == ALL_MEMBERS)
+	  vsendto_prefix_one(acptr, from, pattern, args);
+	else if( (type == ONLY_CHANOPS) && is_chan_op(chptr,acptr))
+	  vsendto_prefix_one(acptr, from, pattern, args);
+	else if( (type == NON_CHANOPS) && !is_chan_op(chptr,acptr))
+	  vsendto_prefix_one(acptr, from, pattern, args);
+      }
   
   va_end(args);
 } /* sendto_channel_butserv() */

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kick.c,v 1.4 2000/11/28 03:53:56 bill Exp $
+ *   $Id: m_kick.c,v 1.5 2000/11/30 07:38:54 db Exp $
  */
 #include "handlers.h"
 #include "channel.h"
@@ -165,9 +165,19 @@ int     m_kick(struct Client *cptr,
 
   if (IsMember(who, chptr))
     {
-      sendto_channel_butserv(chptr, sptr,
-                             ":%s KICK %s %s :%s", parv[0],
-                             name, who->name, comment);
+      if(GlobalSetOptions.hide_chanops)
+	{
+	  sendto_channel_butserv(ALL_MEMBERS, chptr, sptr,
+				 ":%s KICK %s %s :%s", parv[0],
+				 who->name, who->name, comment);
+	}
+      else
+	{
+	  sendto_channel_butserv(ONLY_CHANOPS, chptr, sptr,
+				 ":%s KICK %s %s :%s", parv[0],
+				 name, who->name, comment);
+	}
+
       sendto_match_servs(chptr, cptr,
                          ":%s KICK %s %s :%s",
                          parv[0], chptr->chname,
