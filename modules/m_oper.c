@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_oper.c,v 1.38 2001/11/13 11:45:48 leeh Exp $
+ *   $Id: m_oper.c,v 1.39 2001/12/14 08:49:20 a1kmm Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -121,9 +121,12 @@ static void m_oper(struct Client *client_p, struct Client *source_p,
         -einride
       */
       ptr = source_p->localClient->confs.head;
-      oconf = ptr->data;
-      detach_conf(source_p,oconf);
-      
+      if (ptr)
+      {
+        oconf = ptr->data;
+        detach_conf(source_p,oconf);
+      }
+
       if( attach_conf(source_p, aconf) != 0 )
         {
           sendto_one(source_p,":%s NOTICE %s :Can't attach conf!",
