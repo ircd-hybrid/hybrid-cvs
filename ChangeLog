@@ -1,3 +1,15 @@
+bill        2002/10/16 22:28:52 EDT	(20021017_0)
+
+  Modified files:
+    modules              m_rehash.c 
+  Log:
+  - updated rehash usage notice
+  
+  Revision  Changes    Path
+  1.42      +2 -2      ircd-hybrid-7/modules/m_rehash.c
+
+
+
 bill        2002/10/16 16:52:39 EDT	(20021016_2)
 
   Modified files:
@@ -32505,4 +32517,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4065 2002/10/16 20:52:41 bill Exp $
+$Id: ChangeLog,v 7.4066 2002/10/17 02:28:54 bill Exp $
