@@ -6,7 +6,7 @@
  * The idea here is that we should really be maintaining pre-munged
  * buffer "lines" which we can later refcount to save needless copies.
  *
- * $Id: linebuf.c,v 7.9 2000/12/05 17:41:26 db Exp $
+ * $Id: linebuf.c,v 7.10 2000/12/05 20:43:23 db Exp $
  */
 
 #include <sys/errno.h>
@@ -102,6 +102,7 @@ linebuf_skip_crlf(char *ch, int len)
      /* First, skip until the first non-CRLF */
      while (len && (*ch != '\n') && (*ch != '\r')) {
          ch++;
+	 assert(len > 0);
          len--;
          cpylen++;
      }
@@ -109,6 +110,7 @@ linebuf_skip_crlf(char *ch, int len)
      /* Then, skip until the last CRLF */
      while (len && ((*ch == '\n') || (*ch == '\r'))) {
          ch++;
+	 assert(len > 0);
          len--;
          cpylen++;
      }
@@ -239,6 +241,7 @@ linebuf_copy_line(buf_head_t *bufhead, buf_line_t *bufline,
         bufch++;
         ch++;
         cpylen++;
+	assert(len > 0);
         len--;
         bufline->len++;
         bufhead->len++;
@@ -289,6 +292,7 @@ linebuf_parse(buf_head_t *bufhead, char *data, int len)
 
         /* Skip the data and update len .. */
         len -= cpylen;
+	assert(len >= 0);
         data += cpylen;
     }
     /* Next, the loop */
@@ -299,6 +303,7 @@ linebuf_parse(buf_head_t *bufhead, char *data, int len)
         /* And parse */
         cpylen = linebuf_copy_line(bufhead, bufline, data, len);
         len -= cpylen;
+	assert(len >= 0);
         data += cpylen;
         linecnt++;
     }
@@ -455,6 +460,7 @@ linebuf_flush(int fd, buf_head_t *bufhead)
     if (bufhead->writeofs == bufline->len) {
        bufhead->writeofs = 0;
        bufhead->len -= bufline->len;
+       assert(bufhead->len >=0);
        linebuf_done_line(bufhead, bufline);
     }
 

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_admin.c,v 1.8 2000/12/02 14:41:37 toot Exp $
+ *   $Id: m_admin.c,v 1.9 2000/12/05 20:43:20 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -32,7 +32,7 @@
 
 #include "msg.h"
 
-static void do_admin( struct Client *sptr );
+void do_admin( struct Client *sptr );
 
 struct Message admin_msgtab = {
   MSG_ADMIN, 0, 0, MFLG_SLOW | MFLG_UNREG, 0, 
