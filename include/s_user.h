@@ -19,7 +19,7 @@
  *
  * "s_user.h". - Headers file.
  *
- * $Id: s_user.h,v 7.9 2001/01/04 11:31:55 ejb Exp $
+ * $Id: s_user.h,v 7.10 2001/01/04 19:47:10 db Exp $
  *
  */
 #ifndef INCLUDED_s_user_h
@@ -42,9 +42,15 @@ extern void  send_umode (struct Client* , struct Client* ,
 extern void  send_umode_out(struct Client* , struct Client* , int);
 extern int   show_lusers(struct Client* sptr);
 extern void  show_opers(struct Client* client);
-extern int   register_user(struct Client* ,struct Client* ,char* ,char* );
-extern int   do_user(char* ,struct Client* ,struct Client*,
-                   char* ,char *,char *,char *, char *);
+extern int   register_local_user(struct Client* ,struct Client* ,
+				 char* ,char* );
+extern int   register_remote_user(struct Client* ,struct Client* ,
+				  char* ,char* );
+extern int   do_local_user(char* ,struct Client* ,struct Client*,
+			   char* ,char *,char *,char *);
+
+extern int   do_remote_user(char* ,struct Client* ,struct Client*,
+			    char* ,char *,char *,char *,char *);
 
 extern int   user_modes_from_c_to_bitmask[];
 extern int   show_isupport(struct Client *);

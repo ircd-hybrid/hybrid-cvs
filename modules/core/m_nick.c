@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_nick.c,v 1.42 2001/01/04 16:10:21 davidt Exp $
+ *   $Id: m_nick.c,v 1.43 2001/01/04 19:47:15 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -736,8 +736,8 @@ nick_from_server(struct Client *cptr, struct Client *sptr, int parc,
               m++;
             }
           
-          return do_user(nick, cptr, sptr, parv[5], parv[6],
-                         parv[7], parv[8], NULL);
+          return do_remote_user(nick, cptr, sptr, parv[5], parv[6],
+				parv[7], parv[8], NULL);
         }
     }
   else if (sptr->name[0])
@@ -774,7 +774,9 @@ nick_from_server(struct Client *cptr, struct Client *sptr, int parc,
 
 /*
  * set_initial_nick
- * inputs
+ * inputs	- pointer to client
+ *		- pointer to client
+ *		- new nick
  * output
  * side effects	-
  *
@@ -810,7 +812,7 @@ set_initial_nick(struct Client *cptr, struct Client *sptr,
        */
       BeginAuthorization(sptr);
 #else
-      if (register_user(cptr, sptr, nick, buf) == CLIENT_EXITED)
+      if (register_local_user(cptr, sptr, nick, buf) == CLIENT_EXITED)
 	return CLIENT_EXITED;
 #endif
     }
