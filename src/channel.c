@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.152 2000/12/29 10:34:51 toot Exp $
+ * $Id: channel.c,v 7.153 2000/12/29 16:43:20 fl_ Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -2239,14 +2239,14 @@ void set_channel_mode(struct Client *cptr,
   if(*modebuf_ex)
     {
       if(IsServer(sptr))
-	sendto_channel_local(type,
+	sendto_channel_local(ONLY_CHANOPS,
 			     chptr,
 			     ":%s MODE %s %s %s", 
 			     me.name,
 			     chname,
 			     modebuf_ex, parabuf_ex);
       else
-	sendto_channel_local(type,
+	sendto_channel_local(ONLY_CHANOPS,
 			     chptr,
 			     ":%s!%s@%s MODE %s %s %s", 
 			     sptr->name,
@@ -2285,14 +2285,14 @@ void set_channel_mode(struct Client *cptr,
   if(*modebuf_invex)
     {
       if(IsServer(sptr))
-	sendto_channel_local(type,
+	sendto_channel_local(ONLY_CHANOPS,
 			     chptr,
 			     ":%s MODE %s %s %s",
 			     me.name,
 			     chname,
 			     modebuf_invex, parabuf_invex);
       else
-	sendto_channel_local(type,
+	sendto_channel_local(ONLY_CHANOPS,
 			     chptr,
 			     ":%s!%s@%s MODE %s %s %s",
 			     sptr->name,
