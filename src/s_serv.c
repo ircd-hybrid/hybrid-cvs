@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.89 2000/12/23 13:29:48 toot Exp $
+ *   $Id: s_serv.c,v 7.90 2000/12/24 00:10:59 ejb Exp $
  */
 #include "tools.h"
 #include "s_serv.h"
@@ -89,6 +89,7 @@ struct Capability captab[] = {
   { "EOB",      CAP_EOB },
   { "KLN",      CAP_KLN },
   { "GLN",      CAP_GLN },
+  { "HOPS",     CAP_HOPS },
   { 0,   0 }
 };
 
