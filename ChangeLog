@@ -1,3 +1,15 @@
+androsyn    2002/10/30 16:44:54 EST	(20021030_7)
+
+  Modified files:
+    src                  s_user.c 
+  Log:
+  Fix the USER/PING cookie bug properly..
+  
+  Revision  Changes    Path
+  7.213     +12 -4     ircd-hybrid-7/src/s_user.c
+
+
+
 db          2002/10/30 16:31:22 EST	(20021030_6)
 
   Modified files:
@@ -32881,4 +32893,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4089 2002/10/30 21:31:24 db Exp $
+$Id: ChangeLog,v 7.4090 2002/10/30 21:44:57 androsyn Exp $
