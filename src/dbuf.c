@@ -21,7 +21,7 @@
  * see the header file (dbuf.h).
  *
  *
- * $Id: dbuf.c,v 7.5 1999/09/04 01:16:41 tomh Exp $
+ * $Id: dbuf.c,v 7.6 1999/09/04 22:55:37 tomh Exp $
  */
 #include "dbuf.h"
 #include "common.h"
@@ -338,7 +338,7 @@ int dbuf_getmsg(struct DBuf* dyn, char* buf, size_t length)
       *buf++ = *start++;
 
     count = start - db->start;
-    if (start < end && IsEol(*start)) {
+    if (start < end) {
       *buf = '\0';
       copied += count;
       dbuf_delete(dyn, copied);
