@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.84 2003/05/01 12:21:45 michael Exp $
+ *  $Id: channel_mode.c,v 7.85 2003/05/08 01:17:54 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -2084,7 +2084,8 @@ send_mode_changes(struct Client *client_p, struct Client *source_p,
 #endif
 
   if (IsServer(source_p))
-    mbl = ircsprintf(modebuf, ":%s MODE %s ", me.name, chname);
+    mbl = ircsprintf(modebuf, ":%s MODE %s ", IsHidden(source_p) ?
+		     me.name : source_p->name, chname);
   else
     mbl = ircsprintf(modebuf, ":%s!%s@%s MODE %s ", source_p->name,
                      source_p->username, source_p->host, chname);

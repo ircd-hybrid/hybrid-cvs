@@ -1,6 +1,6 @@
                              Server Hide Reference
 
-   $Id: serverhide.txt,v 7.4 2002/04/15 14:16:59 db Exp $
+   $Id: serverhide.txt,v 7.5 2003/05/08 01:17:51 metalrock Exp $
 
    Copyright (c) 2001 by ircd-hybrid team
 
@@ -135,7 +135,7 @@ Using Non-QS Compliant Hubs
    The flattened LINKS option will, as a side effect, display all user QUIT's
    due to network splits in the following format:
 
-   :user QUIT :your.server.name *.split
+   :user QUIT :*.net *.split
 
    This works extremely well as long as all servers on your network are
    compliant with the QS capability, which sends a single SQUIT to the

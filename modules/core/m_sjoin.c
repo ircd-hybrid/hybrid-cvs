@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.146 2003/04/18 02:13:50 db Exp $
+ *  $Id: m_sjoin.c,v 1.147 2003/05/08 01:17:52 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.146 $";
+const char *_version = "$Revision: 1.147 $";
 #endif
 /*
  * ms_sjoin
@@ -266,16 +266,15 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
 
 #ifdef IGNORE_BOGUS_TS
   if (newts < 800000000)
-    {
-      sendto_realops_flags(UMODE_DEBUG, L_ALL,
-			"*** Bogus TS %lu on %s ignored from %s",
-			(unsigned long)newts, chptr->chname,
-			client_p->name);
+  {
+    sendto_realops_flags(UMODE_DEBUG, L_ALL,
+			 "*** Bogus TS %lu on %s ignored from %s",
+			 (unsigned long)newts, chptr->chname,
+			 client_p->name);
 
-      newts = (oldts==0) ? oldts : 800000000;
-    }
+    newts = (oldts==0) ? oldts : 800000000;
+  }
 #else
-
   if(!isnew && !newts && oldts)
   {
     sendto_channel_local(ALL_MEMBERS, chptr,
@@ -295,10 +294,10 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   /* Remote is sending users to a permanent channel.. we need to drop our
    * version and use theirs, to keep compatibility -- fl */
   else if (chptr->users == 0 && parv[4+args][0])
-    {
-       keep_our_modes = NO;
-       chptr->channelts = tstosend = newts;
-    }
+  {
+     keep_our_modes = NO;
+     chptr->channelts = tstosend = newts;
+  }
   /* They're not sending users, lets just ignore it and carry on */
   else if (chptr->users == 0 && !parv[4+args][0])
     return;
@@ -311,26 +310,26 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   else if (newts == oldts)
     tstosend = oldts;
   else if (newts < oldts)
-    {
-      keep_our_modes = NO;
-      chptr->channelts = tstosend = newts;
-    }
+  {
+    keep_our_modes = NO;
+    chptr->channelts = tstosend = newts;
+  }
   else
-    {
-      keep_new_modes = NO;
-      tstosend = oldts;
-    }
+  {
+    keep_new_modes = NO;
+    tstosend = oldts;
+  }
 
   if (!keep_new_modes)
     mode = *oldmode;
   else if (keep_our_modes)
-    {
-      mode.mode |= oldmode->mode;
-      if (oldmode->limit > mode.limit)
-        mode.limit = oldmode->limit;
-      if (strcmp(mode.key, oldmode->key) < 0)
-        strcpy(mode.key, oldmode->key);
-    }
+  {
+    mode.mode |= oldmode->mode;
+    if (oldmode->limit > mode.limit)
+      mode.limit = oldmode->limit;
+    if (strcmp(mode.key, oldmode->key) < 0)
+      strcpy(mode.key, oldmode->key);
+  }
 
 #ifdef ANONOPS
   if (mode.mode & MODE_HIDEOPS)
@@ -354,35 +353,38 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
 
   /* Lost the TS, other side wins, so remove modes on this side */
   if (!keep_our_modes)
-    {
-      remove_our_modes(hide_or_not, chptr, top_chptr, source_p);
-      sendto_channel_local(ALL_MEMBERS, chptr,
-	    ":%s NOTICE %s :*** Notice -- TS for %s changed from %lu to %lu",
-	    me.name, chptr->chname, chptr->chname, (unsigned long)oldts, (unsigned long)newts);
-    }
-     
+  {
+    remove_our_modes(hide_or_not, chptr, top_chptr, source_p);
+    sendto_channel_local(ALL_MEMBERS, chptr,
+   		         ":%s NOTICE %s :*** Notice -- TS for %s changed from %lu to %lu",
+	 		 me.name, chptr->chname, chptr->chname,
+			 (unsigned long)oldts, (unsigned long)newts);
+  }
+   
   if (*modebuf != '\0')
-    {
-      /* This _SHOULD_ be to ALL_MEMBERS
-       * It contains only +aimnstlki, etc */
-      if (top_chptr != NULL)
-	sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s %s %s",
-			     me.name, top_chptr->chname, modebuf, parabuf);
-      else
-	sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s %s %s",
-			     me.name, chptr->chname, modebuf, parabuf);
-    }
+  {
+    /* This _SHOULD_ be to ALL_MEMBERS
+     * It contains only +aimnstlki, etc */
+    if (top_chptr != NULL)
+      sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s %s %s",
+	                   IsHidden(source_p) ? me.name : source_p->name,
+			   top_chptr->chname, modebuf, parabuf);
+    else
+      sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s %s %s",
+			   IsHidden(source_p) ? me.name : source_p->name,
+			   chptr->chname, modebuf, parabuf);
+  }
 
   *modebuf = *parabuf = '\0';
   if (parv[3][0] != '0' && keep_new_modes)
-    {
-      channel_modes(chptr, source_p, modebuf, parabuf);
-    }
+  {
+    channel_modes(chptr, source_p, modebuf, parabuf);
+  }
   else
-    {
+  {
       modebuf[0] = '0';
       modebuf[1] = '\0';
-    }
+  }
 
   buflen = ircsprintf(buf, ":%s SJOIN %lu %s %s %s:",
 		      parv[0], (unsigned long)tstosend,
@@ -392,12 +394,12 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
    * @+".
    */
   if (buflen >= (BUFSIZE - 6 - NICKLEN))
-    {
-      sendto_realops_flags(UMODE_ALL, L_ALL,
-			   "Long SJOIN from server: %s(via %s) (ignored)",
-			   source_p->name, client_p->name);
-      return;
-    }
+  {
+    sendto_realops_flags(UMODE_ALL, L_ALL,
+			 "Long SJOIN from server: %s(via %s) (ignored)",
+			 source_p->name, client_p->name);
+    return;
+  }
 
   mbuf = modebuf;
   para[0] = para[1] = para[2] = para[3] = "";
@@ -414,293 +416,273 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
 
   /* remove any leading spaces */
   while(*s == ' ')
-  {
     s++;
-  }
    
   /* if theres a space, theres going to be more than one nick, change the
    * first space to \0, so s is just the first nick, and point p to the
    * second nick
    */
   if ((p = strchr(s, ' ')) != NULL)
-  {
     *p++ = '\0';
-  }
 
   while (s)
+  {
+    fl = 0;
+    num_prefix = 0;
+
+    for (i = 0; i < 2; i++)
     {
-      fl = 0;
-      num_prefix = 0;
-
-      for (i = 0; i < 2; i++)
-	{
-	  if (*s == '@')
-	    {
-	      fl |= MODE_CHANOP;
-	      if (keep_new_modes)
-	      {
-#ifdef HALFOPS
-	        *hops++ = *s;
-#endif
-		*nhops++ = *s;
-		num_prefix++;
-              }
-	      
-	      s++;
-	    }
-	  else if (*s == '+')
-	    {
-	      fl |= MODE_VOICE;
-	      if (keep_new_modes)
-	      {
-#ifdef HALFOPS
-	        *hops++ = *s;
-#endif
-		*nhops++ = *s;
-		num_prefix++;
-	      }
-	      
-	      s++;
-	    }
-	  else if (*s == '%')
-	    {
-#ifdef HALFOPS
-	      fl |= MODE_HALFOP;
-#else
-	      fl |= MODE_CHANOP;
-#endif
-	      if (keep_new_modes)
-	      {
-#ifdef HALFOPS
-	        *hops++ = *s;
-#endif
-		*nhops++ = '@';
-		num_prefix++;
-	      }
-	      
-	      s++;
-	    }
-	}
-
-      /* if the client doesnt exist, backtrack over the prefix (@%+) that we
-       * just added and skip to the next nick
-       */
-      /* also do this if its fake direction or a server */
-      if (!(target_p = find_client(s)) ||
-         (target_p->from != client_p) || !IsPerson(target_p))
+      if (*s == '@')
       {
-        sendto_one(source_p, form_str(ERR_NOSUCHNICK), me.name,
-	           source_p->name, s);
-
-#ifdef HALFOPS
-        hops -= num_prefix;
-	*hops = '\0';
-#endif
-
-	nhops -= num_prefix;
-	*nhops = '\0';
-
-        goto nextnick;
-      }
-
-      /* copy the nick to the two buffers */
-#ifdef HALFOPS
-      hops += ircsprintf(hops, "%s ", s);
-      assert((hops - sjbuf_hops) < sizeof(sjbuf_hops));
-#endif
-
-      nhops += ircsprintf(nhops, "%s ", s);
-      assert((nhops-sjbuf_nhops) < sizeof(sjbuf_nhops));
-
-      if (!keep_new_modes)
-	{
-	  if ((fl & MODE_CHANOP) || (fl & MODE_HALFOP))
-	    {
-	      fl = MODE_DEOPPED;
-	    }
-	  else
-	    {
-	      fl = 0;
-	    }
-	}
-
-      people++;
-
-      /* LazyLinks - Introduce unknown clients before sending the sjoin */
-      if (ServerInfo.hub)
-	{
-	  DLINK_FOREACH(m, serv_list.head)
-	    {
-	      lclient_p = m->data;
-	      
-	      /* Hopefully, the server knows about it's own clients. */
-	      if (client_p == lclient_p)
-		continue;
-
-	      /* Ignore non lazylinks */
-	      if (!IsCapable(lclient_p,CAP_LL))
-		continue;
-
-	      /* Ignore servers we won't tell anyway */
-	      if (!(RootChan(chptr)->lazyLinkChannelExists &
-		    lclient_p->localClient->serverMask) )
-		continue;
-
-	      /* Ignore servers that already know target_p */
-	      if (!(target_p->lazyLinkClientExists &
-		    lclient_p->localClient->serverMask) )
-		{
-		  /* Tell LazyLink Leaf about client_p,
-		   * as the leaf is about to get a SJOIN */
-		  sendnick_TS( lclient_p, target_p );
-		  add_lazylinkclient(lclient_p,target_p);
-		}
-	    }
-	}
-      
-      if (!IsMember(target_p, chptr))
+        fl |= MODE_CHANOP;
+        if (keep_new_modes)
         {
-          add_user_to_channel(chptr, target_p, fl);
-	  /* XXX vchan stuff */
+#ifdef HALFOPS
+          *hops++ = *s;
+#endif
+	  *nhops++ = *s;
+	  num_prefix++;
+        }
+	s++;
+      }
+      else if (*s == '+')
+      {
+        fl |= MODE_VOICE;
+        if (keep_new_modes)
+        {
+#ifdef HALFOPS
+          *hops++ = *s;
+#endif
+	  *nhops++ = *s;
+	  num_prefix++;
+	}
+        s++;
+      }
+      else if (*s == '%')
+      {
+#ifdef HALFOPS
+        fl |= MODE_HALFOP;
+#else
+        fl |= MODE_CHANOP;
+#endif
+        if (keep_new_modes)
+        {
+#ifdef HALFOPS
+          *hops++ = *s;
+#endif
+	  *nhops++ = '@';
+	  num_prefix++;
+	}
+        s++;
+      }
+    }
+    /* if the client doesnt exist, backtrack over the prefix (@%+) that we
+     * just added and skip to the next nick
+     *
+     * also do this if its fake direction or a server
+     */
+    if (!(target_p = find_client(s)) ||
+      (target_p->from != client_p) || !IsPerson(target_p))
+    {
+      sendto_one(source_p, form_str(ERR_NOSUCHNICK), me.name,
+                 source_p->name, s);
+
+#ifdef HALFOPS
+      hops -= num_prefix;
+      *hops = '\0';
+#endif
+      nhops -= num_prefix;
+      *nhops = '\0';
+      goto nextnick;
+    }
+
+    /* copy the nick to the two buffers */
+#ifdef HALFOPS
+    hops += ircsprintf(hops, "%s ", s);
+    assert((hops - sjbuf_hops) < sizeof(sjbuf_hops));
+#endif
+    nhops += ircsprintf(nhops, "%s ", s);
+    assert((nhops-sjbuf_nhops) < sizeof(sjbuf_nhops));
+
+    if (!keep_new_modes)
+    {
+      if ((fl & MODE_CHANOP) || (fl & MODE_HALFOP))
+        fl = MODE_DEOPPED;
+      else
+        fl = 0;
+    }
+    people++;
+
+    /* LazyLinks - Introduce unknown clients before sending the sjoin */
+    if (ServerInfo.hub)
+    {
+      DLINK_FOREACH(m, serv_list.head)
+      {
+        lclient_p = m->data;
+	      
+        /* Hopefully, the server knows about it's own clients. */
+        if (client_p == lclient_p)
+	  continue;
+
+        /* Ignore non lazylinks */
+        if (!IsCapable(lclient_p,CAP_LL))
+	  continue;
+
+        /* Ignore servers we won't tell anyway */
+        if (!(RootChan(chptr)->lazyLinkChannelExists &
+	    lclient_p->localClient->serverMask) )
+	  continue;
+
+	/* Ignore servers that already know target_p */
+	if (!(target_p->lazyLinkClientExists &
+	    lclient_p->localClient->serverMask) )
+	{
+	  /* Tell LazyLink Leaf about client_p,
+	   * as the leaf is about to get a SJOIN */
+	  sendnick_TS( lclient_p, target_p );
+	  add_lazylinkclient(lclient_p,target_p);
+	}
+      }
+   }
+      
+   if (!IsMember(target_p, chptr))
+   {
+     add_user_to_channel(chptr, target_p, fl);
+     /* XXX vchan stuff */
 
 #ifdef VCHANS
-	  if (top_chptr)
-	    {
-	      add_vchan_to_client_cache(target_p,top_chptr, chptr);
-	      sendto_channel_local(ALL_MEMBERS,chptr, ":%s!%s@%s JOIN :%s",
-				   target_p->name,
-				   target_p->username,
-				   target_p->host,
-				   top_chptr->chname);
-	    }
-	  else
+     if (top_chptr)
+     {
+       add_vchan_to_client_cache(target_p,top_chptr, chptr);
+       sendto_channel_local(ALL_MEMBERS,chptr, ":%s!%s@%s JOIN :%s",
+			    target_p->name,
+			    target_p->username,
+			    target_p->host,
+			    top_chptr->chname);
+     }
+     else
 #endif
-	    {
-	      sendto_channel_local(ALL_MEMBERS,chptr, ":%s!%s@%s JOIN :%s",
-				   target_p->name,
-				   target_p->username,
-				   target_p->host,
-				   parv[2]);
-	    }
-	}
-
-      if (fl & MODE_CHANOP)
-        {
-          *mbuf++ = 'o';
-	  para[pargs++] = s;
-
+     {
+       sendto_channel_local(ALL_MEMBERS,chptr, ":%s!%s@%s JOIN :%s",
+			    target_p->name,
+			    target_p->username,
+			    target_p->host,
+			    parv[2]);
+     }
+  }
+  if (fl & MODE_CHANOP)
+  {
+    *mbuf++ = 'o';
+    para[pargs++] = s;
 #ifdef REQUIRE_OANDV
-          /* a +ov user.. bleh */
-	  if(fl & MODE_VOICE)
-	  {
-	    /* its possible the +o has filled up MAXMODEPARAMS, if so, start
-	     * a new buffer
-	     */
-	    if(pargs >= MAXMODEPARAMS)
-	      {
-	        *mbuf = '\0';
-		sendto_channel_local(hide_or_not, chptr,
-		                     ":%s MODE %s %s %s %s %s %s",
-				     me.name, RootChan(chptr)->chname,
-				     modebuf,
-				     para[0], para[1], para[2], para[3]);
-                mbuf = modebuf;
-		*mbuf++ = '+';
-		para[0] = para[1] = para[2] = para[3] = "";
-		pargs = 0;
-	      }
-
-	    *mbuf++ = 'v';
-	    para[pargs++] = s;
-	  }
-#endif
-        }
-      else if(fl & MODE_VOICE)
-        {
-          *mbuf++ = 'v';
-	  para[pargs++] = s;
-        }
-#ifdef HALFOPS
-      else if(fl & MODE_HALFOP)
-        {
-          *mbuf++ = 'h';
-          para[pargs++] = s;
-        }
-#endif
-
+    /* a +ov user.. bleh */
+    if(fl & MODE_VOICE)
+    {
+      /* its possible the +o has filled up MAXMODEPARAMS, if so, start
+       * a new buffer
+       */
       if(pargs >= MAXMODEPARAMS)
-        {
-          *mbuf = '\0';
-          sendto_channel_local(hide_or_not, chptr,
-                               ":%s MODE %s %s %s %s %s %s",
-                               me.name, RootChan(chptr)->chname,
-                               modebuf, para[0],para[1],para[2],para[3]);
-          mbuf = modebuf;
-          *mbuf++ = '+';
-          para[0] = para[1] = para[2] = para[3] = "";
-          pargs = 0;
-        }
-
-nextnick:
-      /* p points to the next nick */
-      s = p;
-     
-      /* if there was a trailing space and p was pointing to it, then we
-       * need to exit.. this has the side effect of breaking double spaces
-       * in an sjoin.. but that shouldnt happen anyway
-       */
-      if(s && (*s == '\0'))
-        s = p = NULL;
-	
-      /* if p was NULL due to no spaces, s wont exist due to the above, so
-       * we cant check it for spaces.. if there are no spaces, then when
-       * we next get here, s will be NULL
-       */
-      if(s && ((p = strchr(s, ' ')) != NULL))
       {
-        *p++ = '\0';
+        *mbuf = '\0';
+        sendto_channel_local(hide_or_not, chptr,
+	                     ":%s MODE %s %s %s %s %s %s",
+			     IsHidden(source_p) ? me.name : source_p->name, 
+			     RootChan(chptr)->chname,
+			     modebuf, para[0], para[1], para[2], para[3]);
+        mbuf = modebuf;
+	*mbuf++ = '+';
+	para[0] = para[1] = para[2] = para[3] = "";
+	pargs = 0;
       }
+      *mbuf++ = 'v';
+      para[pargs++] = s;
     }
-  
+#endif
+  }
+  else if(fl & MODE_VOICE)
+  {
+    *mbuf++ = 'v';
+    para[pargs++] = s;
+  }
+#ifdef HALFOPS
+  else if(fl & MODE_HALFOP)
+  {
+    *mbuf++ = 'h';
+    para[pargs++] = s;
+  }
+#endif
+  if(pargs >= MAXMODEPARAMS)
+  {
+    *mbuf = '\0';
+     sendto_channel_local(hide_or_not, chptr,
+                          ":%s MODE %s %s %s %s %s %s",
+                          IsHidden(source_p) ? me.name : source_p->name,
+			  RootChan(chptr)->chname,
+                          modebuf, para[0],para[1],para[2],para[3]);
+     mbuf = modebuf;
+     *mbuf++ = '+';
+     para[0] = para[1] = para[2] = para[3] = "";
+     pargs = 0;
+  }
+  nextnick:
+    /* p points to the next nick */
+    s = p;
+
+    /* if there was a trailing space and p was pointing to it, then we
+    * need to exit.. this has the side effect of breaking double spaces
+    * in an sjoin.. but that shouldnt happen anyway
+    */
+    if(s && (*s == '\0'))
+      s = p = NULL;
+
+    /* if p was NULL due to no spaces, s wont exist due to the above, so
+     * we cant check it for spaces.. if there are no spaces, then when
+     * we next get here, s will be NULL
+     */
+    if(s && ((p = strchr(s, ' ')) != NULL))
+    {
+      *p++ = '\0';
+    }
+  }
   *mbuf = '\0';
   if(pargs)
-    {
-      sendto_channel_local(hide_or_not, chptr,
-                           ":%s MODE %s %s %s %s %s %s",
-                           me.name, RootChan(chptr)->chname,
-                           modebuf, para[0], para[1], para[2], para[3]);
-    }
-
+  {
+    sendto_channel_local(hide_or_not, chptr,
+   	                          ":%s MODE %s %s %s %s %s %s",
+  				  IsHidden(source_p) ? me.name : source_p->name,
+                                  RootChan(chptr)->chname, modebuf,
+				  para[0],para[1], para[2], para[3]);
+  }
   if(!people)
     return;
 
   /* relay the SJOIN to other servers */
   DLINK_FOREACH(m, serv_list.head)
+  {
+    target_p = m->data;
+
+    if(target_p == client_p->from)
+      continue;
+
+    /* skip lazylinks that don't know about this server */
+    if(ServerInfo.hub && IsCapable(target_p,CAP_LL))
     {
-      target_p = m->data;
+      if (!(RootChan(chptr)->lazyLinkChannelExists &
+          target_p->localClient->serverMask) )
+      continue;
+    }
 
-      if(target_p == client_p->from)
-        continue;
-
-      /* skip lazylinks that don't know about this server */
-      if(ServerInfo.hub && IsCapable(target_p,CAP_LL))
-      {
-        if (!(RootChan(chptr)->lazyLinkChannelExists &
-              target_p->localClient->serverMask) )
-          continue;
-      }
-
-      /* Its a blank sjoin, ugh */
-      if(!parv[4+args][0])
-          return;
+    /* Its a blank sjoin, ugh */
+    if(!parv[4+args][0])
+      return;
 
 #ifdef HALFOPS
-      if(IsCapable(target_p, CAP_HOPS))
-        sendto_one(target_p, "%s%s", buf, sjbuf_hops);
-      else
+    if(IsCapable(target_p, CAP_HOPS))
+      sendto_one(target_p, "%s%s", buf, sjbuf_hops);
+    else
 #endif
-        sendto_one(target_p, "%s%s", buf, sjbuf_nhops);
-   }
+      sendto_one(target_p, "%s%s", buf, sjbuf_nhops);
+  }
 }
 
 /*
@@ -884,38 +866,42 @@ void remove_a_mode(int hide_or_not,
     chname = top_chptr->chname;
 #endif
 
-  ircsprintf(buf,":%s MODE %s ", me.name, chname);
+  ircsprintf(buf,":%s MODE %s ",
+	     IsHidden(source_p) ? me.name : source_p->name,
+             chname);
 
   DLINK_FOREACH(ptr, list->head)
-    {
-      target_p = ptr->data;
-      if(target_p == NULL)	/* XXX is this necessary? */
-	continue;
-      lpara[count++] = target_p->name;
+  {
+    target_p = ptr->data;
+    if(target_p == NULL)	/* XXX is this necessary? */
+      continue;
+    lpara[count++] = target_p->name;
 
-      *mbuf++ = flag;
+    *mbuf++ = flag;
 
-      if(count >= MAXMODEPARAMS)
-	{
-	  *mbuf   = '\0';
-	  sendto_channel_local(hide_or_not, chptr,
-			       ":%s MODE %s %s %s %s %s %s",
-			       me.name, chname, lmodebuf,
-			       lpara[0], lpara[1], lpara[2], lpara[3] );
-
-	  mbuf = lmodebuf;
-	  *mbuf++ = '-';
-	  count = 0;
-	  lpara[0] = lpara[1] = lpara[2] = lpara[3] = "";
-	}
-    }
-
-  if(count != 0)
+    if(count >= MAXMODEPARAMS)
     {
       *mbuf   = '\0';
       sendto_channel_local(hide_or_not, chptr,
-			   ":%s MODE %s %s %s %s %s %s",
-			   me.name, chname, lmodebuf,
+		           ":%s MODE %s %s %s %s %s %s",
+			   IsHidden(source_p) ? me.name : source_p->name,
+			   chname, lmodebuf,
 			   lpara[0], lpara[1], lpara[2], lpara[3] );
+
+      mbuf = lmodebuf;
+      *mbuf++ = '-';
+      count = 0;
+      lpara[0] = lpara[1] = lpara[2] = lpara[3] = "";
     }
+  }
+
+  if(count != 0)
+  {
+    *mbuf   = '\0';
+    sendto_channel_local(hide_or_not, chptr,
+			 ":%s MODE %s %s %s %s %s %s",
+			 IsHidden(source_p) ? me.name : source_p->name,
+			 chname, lmodebuf,
+			 lpara[0], lpara[1], lpara[2], lpara[3] );
+  }
 }

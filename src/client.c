@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.357 2003/05/04 16:26:07 adx Exp $
+ *  $Id: client.c,v 7.358 2003/05/08 01:17:54 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -1292,10 +1292,10 @@ exit_client(
   {
     if(ConfigServerHide.hide_servers)
     {
-      /* set netsplit message to "me.name *.split" to still show 
+      /* set netsplit message to "*.net *.split" to still show 
        * that its a split, but hide the servers splitting
        */
-      ircsprintf(comment1,"%s *.split", me.name);
+      ircsprintf(comment1, "*.net *.split");
     }
     else
     {
