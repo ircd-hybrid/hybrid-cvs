@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_gline.c,v 1.1 2000/12/13 19:58:14 db Exp $
+ *  $Id: s_gline.c,v 1.2 2000/12/14 23:06:44 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -225,9 +225,6 @@ void report_glines(struct Client *sptr)
       sendto_one(sptr,form_str(RPL_STATSKLINE), me.name,
 		 sptr->name, 'G' , host, name, reason);
     }
-
-  sendto_one(sptr,form_str(RPL_ENDOFSTATS),
-	     me.name, sptr->name, 'G');
 }
 
 /*
