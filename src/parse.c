@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.103 2001/08/03 13:10:31 leeh Exp $
+ *   $Id: parse.c,v 7.104 2001/08/06 07:36:17 db Exp $
  */
 
 #include <assert.h>
@@ -445,6 +445,7 @@ void mod_del_cmd(struct Message *msg)
 	  MyFree(ptr);
 	  return;
 	}
+      last_ptr = ptr;
     }
 }
 
