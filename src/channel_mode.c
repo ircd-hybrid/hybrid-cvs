@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.55 2002/08/12 16:09:42 androsyn Exp $
+ *  $Id: channel_mode.c,v 7.56 2002/08/20 01:02:29 db Exp $
  */
 
 #include "stdinc.h"
@@ -951,12 +951,9 @@ chm_ban(struct Client *client_p, struct Client *source_p,
   else
     mask = pretty_mask(raw_mask);
     
-  /* Cant do this - older servers dont.. it WILL cause a desync, but should
-   * be limited by our input buffer anyway --fl_
-   * 
-   * if (strlen(mask) > HOSTLEN+NICKLEN+USERLEN)
-   *   return;
-   */
+  /* We'd have problems parsing this, hyb6 does it too */
+    if (strlen(mask) > (MODEBUFLEN - 2))
+      return;
 
   /* if we're adding a NEW id */
   if (dir == MODE_ADD) 
@@ -1054,6 +1051,10 @@ chm_except(struct Client *client_p, struct Client *source_p,
     mask = raw_mask;
   else
     mask = pretty_mask(raw_mask);
+
+  /* We'd have problems parsing this, hyb6 does it too */
+    if (strlen(mask) > (MODEBUFLEN - 2)) 
+      return; 
 
   /* If we're adding a NEW id */
   if (dir == MODE_ADD)
@@ -1156,6 +1157,10 @@ chm_invex(struct Client *client_p, struct Client *source_p,
     mask = raw_mask;
   else
     mask = pretty_mask(raw_mask);
+
+  /* We'd have problems parsing this, hyb6 does it too */
+    if (strlen(mask) > (MODEBUFLEN - 2)) 
+      return; 
 
   if(dir == MODE_ADD)
   {
