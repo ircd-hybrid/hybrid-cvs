@@ -19,10 +19,11 @@
  *
  *
  *
- * $Id: rsa.h,v 7.2 2001/04/13 22:39:43 davidt Exp $
+ * $Id: rsa.h,v 7.3 2001/06/08 22:31:36 kreator Exp $
  */
 
 int generate_challenge( char ** r_challenge, char ** r_response, char * key );
 int crypt_data(char **out, char *in, int len, char *key);
 int decrypt_data(char **out, char *in, int len, char *key);
+int get_randomness( unsigned char * buf, int length );
   

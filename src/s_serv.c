@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.186 2001/06/05 16:41:46 leeh Exp $
+ *   $Id: s_serv.c,v 7.187 2001/06/08 22:31:40 kreator Exp $
  */
 
 #include <sys/types.h>
@@ -33,6 +33,7 @@
 #include <time.h>
 #include <netdb.h>
 
+#include "rsa.h"
 #include "config.h"
 
 #ifdef HAVE_LIBCRYPTO
@@ -2252,7 +2253,7 @@ void cryptlink_init(struct Client *client_p,
       return;
     }
 
-  if (RAND_bytes(randkey, CIPHERKEYLEN) != 1)
+  if (get_randomness(randkey, CIPHERKEYLEN) != 1)
     {
       cryptlink_error(client_p,
                       "%s[%s]: CRYPTLINK failed - couldn't generate secret");

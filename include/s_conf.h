@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.137 2001/06/08 10:24:46 a1kmm Exp $
+ * $Id: s_conf.h,v 7.138 2001/06/08 22:31:36 kreator Exp $
  */
 
 #include "setup.h"
@@ -179,6 +179,7 @@ struct config_file_entry
   char *glinelog;
 
   char *servlink_path;
+  char *egdpool_path;
 
   char* network_name;
   char* network_desc;
@@ -229,6 +230,7 @@ struct config_file_entry
   int           min_nonwildcard;
   int           default_floodcount;
   int           client_flood;
+  int           use_egd;
 #ifdef HAVE_LIBCRYPTO
   struct EncPreference *default_cipher_preference;
 #endif
