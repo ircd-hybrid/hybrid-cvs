@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.18 1999/12/30 20:36:10 db Exp $
+ *  $Id: s_user.c,v 7.19 1999/12/30 22:32:26 db Exp $
  */
 #include "s_user.h"
 #include "channel.h"
@@ -555,6 +555,7 @@ static int register_user(struct Client *cptr, struct Client *sptr,
 
   if (MyConnect(sptr))
     {
+#ifndef USE_IAUTH
       switch( check_client(sptr,username,&reason))
         {
         case SOCKET_ERROR:
@@ -773,7 +774,7 @@ static int register_user(struct Client *cptr, struct Client *sptr,
               return exit_client(cptr, sptr, &me, "quarantined nick");
             }
         }
-
+#endif /* USE_IAUTH */
 
       sendto_realops_flags(FLAGS_CCONN,
                          "Client connecting: %s (%s@%s) [%s] {%d}",
@@ -1272,8 +1273,15 @@ static int nickkilldone(struct Client *cptr, struct Client *sptr, int parc,
           ** may reject the client and call exit_client for it
           ** --must test this and exit m_nick too!!!
           */
+#ifdef USE_IAUTH
+          /*
+           * Send the client to the iauth module for verification
+           */
+            BeginAuthorization(sptr);
+#else
             if (register_user(cptr, sptr, nick, buf) == CLIENT_EXITED)
               return CLIENT_EXITED;
+#endif
         }
     }
 

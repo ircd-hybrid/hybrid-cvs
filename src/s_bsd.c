@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.19 1999/12/30 20:36:08 db Exp $
+ *  $Id: s_bsd.c,v 7.20 1999/12/30 22:32:26 db Exp $
  */
 #include "s_bsd.h"
 #include "class.h"
@@ -733,6 +733,17 @@ void add_connection(struct Listener* listener, int fd)
 
   assert(0 != listener);
 
+#ifdef USE_IAUTH
+  if (iAuth.socket == NOSOCK)
+    {
+      send(fd,
+        "NOTICE AUTH :*** Ircd AUthentication Server is temporarily down, please connect later\r\n",
+        87,
+        0);
+      close(fd);
+      return;
+    }
+
   /* 
    * get the client socket name from the socket
    * the client has already been checked out in accept_connection
@@ -963,6 +974,11 @@ int read_message(time_t delay, unsigned char mask)        /* mika */
     {
       FD_ZERO(read_set);
       FD_ZERO(write_set);
+
+#ifdef USE_IAUTH
+  if (iAuth.socket != NOSOCK)
+    FD_SET(iAuth.socket, read_set);
+#endif
 
       for (auth = AuthPollList; auth; auth = auth->next) {
         assert(-1 < auth->fd);
