@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_zip.c,v 7.4 2000/01/24 22:22:31 db Exp $
+ *   $Id: s_zip.c,v 7.5 2000/07/31 13:22:41 db Exp $
  */
 #include "s_zip.h"
 #include "client.h"
@@ -24,6 +24,7 @@
 #include "packet.h"
 #include "s_bsd.h"
 #include "s_serv.h"
+#include "s_log.h"
 #include "send.h"
 
 #include <string.h>

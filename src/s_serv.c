@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.23 2000/04/02 13:02:34 db Exp $
+ *   $Id: s_serv.c,v 7.24 2000/07/31 13:22:41 db Exp $
  */
 #include "s_serv.h"
 #include "channel.h"
@@ -67,7 +67,7 @@ int MaxClientCount     = 1;
  */
 struct Capability captab[] = {
 /*  name        cap     */ 
-  { "ZIP",      CAP_ZIP },
+  { "ZIP",      CAP_ZIP }, 
   { "QS",       CAP_QS },
   { "EX",       CAP_EX },
   { "CHW",      CAP_CHW },
@@ -652,6 +652,7 @@ int server_estab(struct Client *cptr)
                       get_client_name(cptr, TRUE));
           return exit_client(cptr, cptr, &me, "zip_init() failed");
         }
+
       cptr->flags2 |= (FLAGS2_ZIP|FLAGS2_ZIPFIRST);
     }
   else

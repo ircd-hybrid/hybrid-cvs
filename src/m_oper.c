@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_oper.c,v 7.10 2000/07/20 02:42:51 db Exp $
+ *   $Id: m_oper.c,v 7.11 2000/07/31 13:22:41 db Exp $
  */
 
 #include "handlers.h"
@@ -126,6 +126,9 @@ int m_oper(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   
   if ((IsServer(cptr) || IsMe(cptr)) && !IsOper(sptr))
     {
+      if (sptr->status == STAT_CLIENT)
+	sptr->handler = OPER_HANDLER;
+
       sptr->flags |= FLAGS_OPER;
       Count.oper++;
       sendto_serv_butone(cptr, ":%s MODE %s :+o", parv[0], parv[0]);
@@ -320,6 +323,9 @@ int mo_oper(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   
   if ((IsServer(cptr) || IsMe(cptr)) && !IsOper(sptr))
     {
+      if (sptr->status == STAT_CLIENT)
+	sptr->handler = OPER_HANDLER;
+
       sptr->flags |= FLAGS_OPER;
       Count.oper++;
       sendto_serv_butone(cptr, ":%s MODE %s :+o", parv[0], parv[0]);
@@ -514,6 +520,9 @@ int ms_oper(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   
   if ((IsServer(cptr) || IsMe(cptr)) && !IsOper(sptr))
     {
+      if (sptr->status == STAT_CLIENT)
+	sptr->handler = OPER_HANDLER;
+
       sptr->flags |= FLAGS_OPER;
       Count.oper++;
       sendto_serv_butone(cptr, ":%s MODE %s :+o", parv[0], parv[0]);

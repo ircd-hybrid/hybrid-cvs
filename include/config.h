@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.16 2000/07/25 00:04:55 db Exp $
+ * $Id: config.h,v 7.17 2000/07/31 13:22:39 db Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -318,7 +318,7 @@
  * need not be the same for both, as long as hte opposite end has the
  * right password in the opposite line.
  */
-#undef  CRYPT_LINK_PASSWORD
+#define  CRYPT_LINK_PASSWORD
 
 /* IDLE_FROM_MSG - Idle-time reset only from privmsg
  * Idle-time reset only from privmsg, if undefined idle-time
