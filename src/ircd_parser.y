@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.278 2003/04/18 21:03:38 michael Exp $
+ *  $Id: ircd_parser.y,v 1.279 2003/04/18 21:26:39 michael Exp $
  */
 
 %{
@@ -532,23 +532,20 @@ serverinfo_vhost: VHOST '=' QSTRING ';'
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags    = AI_PASSIVE | AI_NUMERICHOST;
 
-    if (ypass == 2)
+    if (irc_getaddrinfo(yylval.string, NULL, &hints, &res))
+      ilog(L_ERROR, "Invalid netmask for server vhost(%s)", yylval.string);
+    else
     {
-      if (irc_getaddrinfo(yylval.string, NULL, &hints, &res))
-        ilog(L_ERROR, "Invalid netmask for server vhost(%s)", yylval.string);
-      else
-      {
-        ServerInfo.specific_ipv4_vhost = 1;
+      ServerInfo.specific_ipv4_vhost = 1;
 
-        assert(res != NULL);
+      assert(res != NULL);
 
-        memcpy(&ServerInfo.ip, res->ai_addr, res->ai_addrlen);
-        ServerInfo.ip.ss.ss_family = res->ai_family;
-        ServerInfo.ip.ss_len = res->ai_addrlen;
-        irc_freeaddrinfo(res);
+      memcpy(&ServerInfo.ip, res->ai_addr, res->ai_addrlen);
+      ServerInfo.ip.ss.ss_family = res->ai_family;
+      ServerInfo.ip.ss_len = res->ai_addrlen;
+      irc_freeaddrinfo(res);
 
-        ServerInfo.specific_ipv4_vhost = 1;
-      }
+      ServerInfo.specific_ipv4_vhost = 1;
     }
   }
 };
