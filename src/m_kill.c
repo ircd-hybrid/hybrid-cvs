@@ -20,12 +20,13 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kill.c,v 7.0 1999/08/01 21:19:47 lusky Exp $
+ *   $Id: m_kill.c,v 7.1 1999/08/03 06:18:25 tomh Exp $
  */
 #include "m_commands.h"
 #include "client.h"
 #include "ircd.h"
 #include "numeric.h"
+#include "s_log.h"
 #include "s_serv.h"
 #include "send.h"
 #include "whowas.h"
@@ -215,10 +216,10 @@ int m_kill(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
                      "Received KILL message for %s. From %s Path: %s!%s",
                      acptr->name, parv[0], inpath, path);
 
-#if defined(USE_SYSLOG) && defined(SYSLOG_KILL)
+#if defined(SYSLOG_KILL)
   if (IsOper(sptr))
-    syslog(LOG_INFO,"KILL From %s For %s Path %s!%s",
-                        parv[0], acptr->name, inpath, path);
+    log(L_INFO,"KILL From %s For %s Path %s!%s",
+        parv[0], acptr->name, inpath, path);
 #endif
   /*
   ** And pass on the message to other servers. Note, that if KILL
