@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.273 2001/10/17 15:25:24 jdc Exp $
+ *  $Id: s_conf.c,v 7.274 2001/10/17 16:07:25 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -351,7 +351,7 @@ report_configured_links(struct Client* source_p, int mask)
 	      
 	    *s++ = 0;
             /* Allow admins to see actual ips */
-            if(IsSetOperAdmin(source_p))
+            if(IsOperAdmin(source_p))
               sendto_one(source_p, form_str(p->rpl_stats), me.name,
                          source_p->name, c,
                          host,

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.c,v 1.45 2001/10/11 23:21:18 davidt Exp $
+ * $Id: m_info.c,v 1.46 2001/10/17 16:07:25 leeh Exp $
  */
 
 #include <time.h>
@@ -673,7 +673,7 @@ static void send_conf_options(struct Client *source_p)
   */
 
   /* jdc -- Only send compile information to admins. */
-  if (IsSetOperAdmin(source_p))
+  if (IsOperAdmin(source_p))
   {
     sendto_one(source_p,
 	":%s %d %s :Compiled on [%s]",

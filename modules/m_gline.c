@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_gline.c,v 1.65 2001/10/15 03:13:18 db Exp $
+ *  $Id: m_gline.c,v 1.66 2001/10/17 16:07:25 leeh Exp $
  */
 
 #include <assert.h>
@@ -153,7 +153,7 @@ static void mo_gline(struct Client *client_p,
 
   if (ConfigFileEntry.glines)
     {
-      if (!IsSetOperGline(source_p))
+      if (!IsOperGline(source_p))
 	{
 	  sendto_one(source_p,":%s NOTICE %s :You need gline = yes;",me.name,parv[0]);
 	  return;

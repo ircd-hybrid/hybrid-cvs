@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_connect.c,v 1.30 2001/10/15 03:13:18 db Exp $
+ *   $Id: m_connect.c,v 1.31 2001/10/17 16:07:25 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -161,7 +161,7 @@ static void mo_connect(struct Client* client_p, struct Client* source_p,
    */
   if (serv_connect(aconf, source_p))
     {
-      if (IsSetOperAdmin(source_p))
+      if (IsOperAdmin(source_p))
 	sendto_one(source_p, ":%s NOTICE %s :*** Connecting to %s[%s].%d",
 		   me.name, parv[0], aconf->host, aconf->name, aconf->port);
       else

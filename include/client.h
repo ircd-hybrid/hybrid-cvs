@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.129 2001/09/12 17:00:26 leeh Exp $
+ * $Id: client.h,v 7.130 2001/10/17 16:07:24 leeh Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -546,26 +546,28 @@ struct LocalUser
 
 #define IsRestricted(x)         ((x)->flags2 &  FLAGS2_RESTRICTED)
 #define SetRestricted(x)        ((x)->flags2 |= FLAGS2_RESTRICTED)
-#define SetOperGlobalKill(x)    ((x)->flags2 |= FLAGS2_OPER_GLOBAL_KILL)
+
 #define IsOperGlobalKill(x)     ((x)->flags2 & FLAGS2_OPER_GLOBAL_KILL)
-#define SetOperRemote(x)        ((x)->flags2 |= FLAGS2_OPER_REMOTE)
+#define SetOperGlobalKill(x)    ((x)->flags2 |= FLAGS2_OPER_GLOBAL_KILL)
 #define IsOperRemote(x)         ((x)->flags2 & FLAGS2_OPER_REMOTE)
+#define SetOperRemote(x)        ((x)->flags2 |= FLAGS2_OPER_REMOTE)
+#define IsOperUnkline(x)        ((x)->flags2 & FLAGS2_OPER_UNKLINE)
 #define SetOperUnkline(x)       ((x)->flags2 |= FLAGS2_OPER_UNKLINE)
-#define IsSetOperUnkline(x)     ((x)->flags2 & FLAGS2_OPER_UNKLINE)
+#define IsOperGline(x)          ((x)->flags2 & FLAGS2_OPER_GLINE)
 #define SetOperGline(x)         ((x)->flags2 |= FLAGS2_OPER_GLINE)
-#define IsSetOperGline(x)       ((x)->flags2 & FLAGS2_OPER_GLINE)
+#define IsOperN(x)              ((x)->flags2 & FLAGS2_OPER_N)
 #define SetOperN(x)             ((x)->flags2 |= FLAGS2_OPER_N)
-#define IsSetOperN(x)           ((x)->flags2 & FLAGS2_OPER_N)
+#define IsOperK(x)              ((x)->flags2 & FLAGS2_OPER_K)
 #define SetOperK(x)             ((x)->flags2 |= FLAGS2_OPER_K)
-#define IsSetOperK(x)           ((x)->flags2 & FLAGS2_OPER_K)
-#define SetOperDie(x)           ((x)->flags2 |= FLAGS2_OPER_DIE)
 #define IsOperDie(x)            ((x)->flags2 & FLAGS2_OPER_DIE)
-#define SetOperRehash(x)        ((x)->flags2 |= FLAGS2_OPER_REHASH)
+#define SetOperDie(x)           ((x)->flags2 |= FLAGS2_OPER_DIE)
 #define IsOperRehash(x)         ((x)->flags2 & FLAGS2_OPER_REHASH)
+#define SetOperRehash(x)        ((x)->flags2 |= FLAGS2_OPER_REHASH)
+#define IsOperAdmin(x)          ((x)->flags2 & FLAGS2_OPER_ADMIN)
 #define SetOperAdmin(x)         ((x)->flags2 |= FLAGS2_OPER_ADMIN)
-#define IsSetOperAdmin(x)       ((x)->flags2 & FLAGS2_OPER_ADMIN)
-#define SetFloodDone(x)         ((x)->flags2 |= FLAGS2_FLOODDONE)
+
 #define IsFloodDone(x)          ((x)->flags2 & FLAGS2_FLOODDONE)
+#define SetFloodDone(x)         ((x)->flags2 |= FLAGS2_FLOODDONE)
 #define CBurst(x)               ((x)->flags2 & FLAGS2_CBURST)
 
 /*

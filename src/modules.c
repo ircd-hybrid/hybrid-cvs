@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.c,v 7.73 2001/10/10 18:50:27 davidt Exp $
+ * $Id: modules.c,v 7.74 2001/10/17 16:07:25 leeh Exp $
  */
 #include "config.h"
 
@@ -408,7 +408,7 @@ mo_modload (struct Client *client_p, struct Client *source_p, int parc, char **p
 {
   char *m_bn;
 
-  if (!IsSetOperAdmin(source_p))
+  if (!IsOperAdmin(source_p))
   {
     sendto_one(source_p, ":%s NOTICE %s :You have no A flag", me.name, parv[0]);
     return;
@@ -435,7 +435,7 @@ mo_modunload (struct Client *client_p, struct Client *source_p, int parc, char *
 {
   char *m_bn;
 
-  if (!IsSetOperAdmin (source_p))
+  if (!IsOperAdmin (source_p))
   {
     sendto_one (source_p, ":%s NOTICE %s :You have no A flag",
                 me.name, parv[0]);
@@ -466,7 +466,7 @@ mo_modreload (struct Client *client_p, struct Client *source_p, int parc, char *
 {
   char *m_bn;
 
-  if (!IsSetOperAdmin (source_p))
+  if (!IsOperAdmin (source_p))
     {
       sendto_one (source_p, ":%s NOTICE %s :You have no A flag",
                   me.name, parv[0]);
@@ -502,7 +502,7 @@ mo_modlist (struct Client *client_p, struct Client *source_p, int parc, char **p
 {
   int i;
 
-  if (!IsSetOperAdmin (source_p))
+  if (!IsOperAdmin (source_p))
   {
     sendto_one (source_p, ":%s NOTICE %s :You have no A flag",
                 me.name, parv[0]);
@@ -547,7 +547,7 @@ mo_modrestart (struct Client *client_p, struct Client *source_p, int parc, char 
 {
   int modnum;
 
-  if (!IsSetOperAdmin (source_p))
+  if (!IsOperAdmin (source_p))
   {
     sendto_one (source_p, ":%s NOTICE %s :You have no A flag",
                 me.name, parv[0]);
