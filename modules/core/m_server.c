@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.88 2002/10/09 15:08:30 db Exp $
+ *  $Id: m_server.c,v 1.89 2002/10/09 16:59:49 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -67,7 +67,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&server_msgtab);
 }
-const char *_version = "$Revision: 1.88 $";
+const char *_version = "$Revision: 1.89 $";
 #endif
 
 int bogus_host(char *host);
@@ -458,14 +458,9 @@ static void ms_server(struct Client *client_p, struct Client *source_p,
     }
   
 
-  target_p = make_client(client_p);
-  make_server(target_p);
-  target_p->hopcount = hop;
 
   if(strlen(name) > HOSTLEN)
   {
-    MyFree(target_p->serv);
-    free_client(target_p);
     sendto_realops_flags(FLAGS_ALL, L_ADMIN,
  		         "Link %s introduced server with invalid servername %s",
 		         get_client_name(client_p, HIDE_IP), name);
@@ -476,6 +471,10 @@ static void ms_server(struct Client *client_p, struct Client *source_p,
     exit_client(NULL, client_p, &me, "Invalid servername introduced.");
     return;
   }
+
+  target_p = make_client(client_p);
+  make_server(target_p);
+  target_p->hopcount = hop;
 
   strlcpy(target_p->name, name, HOSTLEN+1);
   
