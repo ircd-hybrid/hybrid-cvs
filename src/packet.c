@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.94 2002/12/16 20:53:00 db Exp $
+ *  $Id: packet.c,v 7.95 2002/12/16 22:43:29 db Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -448,10 +448,13 @@ read_packet(int fd, void *data)
   lclient_p->actually_read += lbuf_len;
   
   /* Attempt to parse what we have */
-  parse_client_queued(client_p);
 
   if (!IsDead(client_p))
   {
+    parse_client_queued(client_p);
+    if (IsDead(client_p))
+      return;
+
     /* Check to make sure we're not flooding */
     if (IsPerson(client_p) &&
 	(linebuf_alloclen(&client_p->localClient->buf_recvq) >
