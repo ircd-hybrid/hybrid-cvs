@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.30 2003/06/21 20:09:14 metalrock Exp $
+ *  $Id: m_whois.c,v 1.31 2003/07/17 06:25:20 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -82,7 +82,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-const char *_version = "$Revision: 1.30 $";
+const char *_version = "$Revision: 1.31 $";
 #endif
 
 /* m_whois
@@ -428,15 +428,17 @@ whois_person(struct Client *source_p,struct Client *target_p, int glob)
     if ((glob) || (MyClient(source_p) && (IsOper(source_p) ||
         !ConfigServerHide.hide_servers)) || (source_p == target_p))
     {
-      sendto_one(source_p, form_str(RPL_WHOISACTUALLY), 
-		 me.name, source_p->name, target_p->name,
-#ifdef HIDE_SPOOF_IPS
-                 !IsIPSpoof(target_p) ?
-		 target_p->localClient->sockhost : "255.255.255.255");
-#else
-		 IsIPSpoof(target_p) && IsOper(target_p) ?
-                 "255.255.255.255" : target_p->localClient->sockhost);
-#endif
+      if (ConfigFileEntry.hide_spoof_ips)
+        sendto_one(source_p, form_str(RPL_WHOISACTUALLY), 
+		   me.name, source_p->name, target_p->name,
+                   !IsIPSpoof(target_p) ?
+		   target_p->localClient->sockhost : "255.255.255.255");
+      else
+        sendto_one(source_p, form_str(RPL_WHOISACTUALLY),
+                   me.name, source_p->name, target_p->name,
+                   IsIPSpoof(target_p) && IsOper(target_p) ?
+                   "255.255.255.255" : target_p->localClient->sockhost);
+
       sendto_one(source_p, form_str(RPL_WHOISIDLE),
                  me.name, source_p->name, target_p->name,
                  CurrentTime - target_p->user->last,

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.257 2003/07/07 21:18:52 michael Exp $
+ *  $Id: s_conf.h,v 7.258 2003/07/17 06:25:24 metalrock Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -308,6 +308,7 @@ struct config_file_entry
   int oper_pass_resv;
   int glines;
   int gline_time;
+  int hide_spoof_ips;
   int idletime;
   int ignore_bogus_ts;
   int maximum_links;

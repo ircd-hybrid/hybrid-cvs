@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.c,v 7.86 2003/07/05 06:21:02 db Exp $
+ *  $Id: hostmask.c,v 7.87 2003/07/17 06:25:28 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -779,7 +779,9 @@ report_auth(struct Client *client_p)
   int i, port;
 
   for (i = 0; i < ATABLE_SIZE; i++)
+  {
     for (arec = atable[i]; arec; arec = arec->next)
+    {
       if (arec->type == CONF_CLIENT)
       {
         aconf = arec->aconf;
@@ -794,14 +796,21 @@ report_auth(struct Client *client_p)
          * sender, so prepare the strings for comparing --fl_
 	 */
 
-        sendto_one(client_p, form_str(RPL_STATSILINE), me.name,
-                   client_p->name, (IsConfRestricted(aconf)) ? 'i' : 'I', "*",
-                   show_iline_prefix(client_p, aconf, user),
-#ifdef HIDE_SPOOF_IPS
-                   IsConfDoSpoofIp(aconf) ? "255.255.255.255" :
-#endif
-                   host, port, classname);
+        if (ConfigFileEntry.hide_spoof_ips)
+          sendto_one(client_p, form_str(RPL_STATSILINE), me.name,
+                     client_p->name, (IsConfRestricted(aconf)) ? 'i' : 'I', "*",
+                     show_iline_prefix(client_p, aconf, user),
+                     IsConfDoSpoofIp(aconf) ? "255.255.255.255" :
+                     host, port, classname);
+        else
+          sendto_one(client_p, form_str(RPL_STATSILINE), me.name,
+                     client_p->name, (IsConfRestricted(aconf)) ? 'i' : 'I', "*",
+                     show_iline_prefix(client_p, aconf, user),
+                     host, port, classname);
+
       }
+    }
+  }
 }
 
 /* report_Klines()

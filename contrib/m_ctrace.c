@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ctrace.c,v 1.4 2003/07/07 04:59:22 joshk Exp $
+ *  $Id: m_ctrace.c,v 1.5 2003/07/17 06:25:20 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
   hook_del_event("doing_ctrace");
   mod_del_cmd(&ctrace_msgtab);
 }
-const char *_version = "$Revision: 1.4 $";
+const char *_version = "$Revision: 1.5 $";
 #endif
 static int report_this_status(struct Client *source_p, struct Client *target_p);
 
@@ -148,39 +148,42 @@ report_this_status(struct Client *source_p, struct Client *target_p)
 	   (MyClient(source_p) || !IsInvisible(target_p)))
 	  || IsOper(target_p))
 	{
-#ifndef HIDE_SPOOF_IPS
-          if (IsAdmin(target_p))
+          if (IsAdmin(target_p) && !ConfigFileEntry.hide_spoof_ips)
 	    sendto_one(source_p, form_str(RPL_TRACEOPERATOR),
                        me.name, source_p->name, class_name, name,
                        IsAdmin(source_p) ? ip : "255.255.255.255",
                        CurrentTime - target_p->lasttime,
-                       (target_p->user) ? (CurrentTime - target_p->user->last) : 0);
-		       
-	  else 
-#endif
-          if (IsOper(target_p))
-	    sendto_one(source_p, form_str(RPL_TRACEOPERATOR),
-		       me.name, source_p->name, class_name, name, 
-#ifdef HIDE_SPOOF_IPS
-		       IsIPSpoof(target_p) ? "255.255.255.255" : ip,
-#else
-                       MyOper(source_p) ? ip :
-		       (IsIPSpoof(target_p) ? "255.255.255.255" : ip),
-#endif
-		       CurrentTime - target_p->lasttime,
-		       (target_p->user)?(CurrentTime - target_p->user->last):0);
-		       
+                       (target_p->user) ? (CurrentTime - target_p->user->last) : 0);	       
+	  else if (IsOper(target_p))
+          {
+            if (ConfigFileEntry.hide_spoof_ips)
+	      sendto_one(source_p, form_str(RPL_TRACEOPERATOR),
+		         me.name, source_p->name, class_name, name, 
+		         IsIPSpoof(target_p) ? "255.255.255.255" : ip,
+		         CurrentTime - target_p->lasttime,
+		         (target_p->user)?(CurrentTime - target_p->user->last):0);
+	    else   
+              sendto_one(source_p, form_str(RPL_TRACEOPERATOR),
+                         me.name, source_p->name, class_name, name,
+                         (IsIPSpoof(target_p) ? "255.255.255.255" : ip),
+                         CurrentTime - target_p->lasttime,
+                         (target_p->user)?(CurrentTime - target_p->user->last):0);
+          }
 	  else
-	    sendto_one(source_p, form_str(RPL_TRACEUSER),
-		       me.name, source_p->name, class_name, name,
-#ifdef HIDE_SPOOF_IPS
-                       IsIPSpoof(target_p) ? "255.255.255.255" : ip,
-#else
-		       MyOper(source_p) ? ip : 
-		       (IsIPSpoof(target_p) ? "255.255.255.255" : ip),
-#endif
-		       CurrentTime - target_p->lasttime,
-		       (target_p->user)?(CurrentTime - target_p->user->last):0);
+          {
+            if (ConfigFileEntry.hide_spoof_ips)
+	      sendto_one(source_p, form_str(RPL_TRACEUSER),
+		         me.name, source_p->name, class_name, name,
+                         IsIPSpoof(target_p) ? "255.255.255.255" : ip,
+		         CurrentTime - target_p->lasttime,
+		         (target_p->user)?(CurrentTime - target_p->user->last):0);
+            else
+              sendto_one(source_p, form_str(RPL_TRACEUSER),
+                         me.name, source_p->name, class_name, name,
+                         (IsIPSpoof(target_p) ? "255.255.255.255" : ip),
+                         CurrentTime - target_p->lasttime,
+                         (target_p->user)?(CurrentTime - target_p->user->last):0);
+          }
 	  cnt++;
 	}
       break;

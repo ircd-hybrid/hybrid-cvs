@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ltrace.c,v 1.14 2003/07/05 19:08:20 joshk Exp $
+ *  $Id: m_ltrace.c,v 1.15 2003/07/17 06:25:20 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -66,7 +66,7 @@ _moddeinit(void)
   mod_del_cmd(&ltrace_msgtab);
 }
 
-const char *_version = "$Revision: 1.14 $";
+const char *_version = "$Revision: 1.15 $";
 #endif
 
 static int report_this_status(struct Client *source_p, struct Client *target_p,int dow,
@@ -183,18 +183,24 @@ mo_ltrace(struct Client *client_p, struct Client *source_p,
         class_name = get_client_class(target_p);
 
         if (IsOper(target_p))
-          sendto_one(source_p, form_str(RPL_TRACEOPERATOR),
-                     me.name, parv[0], class_name, name, 
-#ifndef HIDE_SPOOF_IPS
-                     MyOper(source_p) ? ipaddr :
-#endif
-		     (IsIPSpoof(target_p) ? "255.255.255.255" : ipaddr),
-                     CurrentTime - target_p->lasttime,
-                     (target_p->user) ? (CurrentTime - target_p->user->last) : 0);
+	{
+	  if (ConfigFileEntry.hide_spoof_ips)
+            sendto_one(source_p, form_str(RPL_TRACEOPERATOR),
+                       me.name, source_p->name, class_name, name, 
+		       (IsIPSpoof(target_p) ? "255.255.255.255" : ipaddr),
+                       CurrentTime - target_p->lasttime,
+                       (target_p->user) ? (CurrentTime - target_p->user->last) : 0);
+	  else
+            sendto_one(source_p, form_str(RPL_TRACEOPERATOR),
+                       me.name, source_p->name, class_name, name,
+                       (IsIPSpoof(target_p) ? "255.255.255.255" : ipaddr),
+                       CurrentTime - target_p->lasttime,
+                       (target_p->user) ? (CurrentTime - target_p->user->last) : 0);
+        }
       }
       
-      sendto_one(source_p, form_str(RPL_ENDOFTRACE),me.name,
-                 parv[0], tname);
+      sendto_one(source_p, form_str(RPL_ENDOFTRACE),
+                 me.name, source_p->name, tname);
       return;
     }
 
@@ -303,25 +309,36 @@ report_this_status(struct Client *source_p, struct Client *target_p,
 
     case STAT_CLIENT:
       if (IsAdmin(target_p))
-	sendto_one(source_p, form_str(RPL_TRACEOPERATOR),
-                   me.name, source_p->name, class_name, name,
-#ifndef HIDE_SPOOF_IPS
-                   IsAdmin(source_p) ? ip : 
-#endif
-                   (IsIPSpoof(target_p) ? "255.255.255.255" : ip),
-                   CurrentTime - target_p->lasttime,
-                   (target_p->user) ? (CurrentTime - target_p->user->last) : 0);
-
+      {
+	if (ConfigFileEntry.hide_spoof_ips)
+	  sendto_one(source_p, form_str(RPL_TRACEOPERATOR),
+                     me.name, source_p->name, class_name, name,
+                     (IsIPSpoof(target_p) ? "255.255.255.255" : ip),
+                     CurrentTime - target_p->lasttime,
+                     (target_p->user) ? (CurrentTime - target_p->user->last) : 0);
+	else
+          sendto_one(source_p, form_str(RPL_TRACEOPERATOR),
+                     me.name, source_p->name, class_name, name,
+                     IsAdmin(source_p) ? ip :
+                     (IsIPSpoof(target_p) ? "255.255.255.255" : ip),
+                     CurrentTime - target_p->lasttime,
+                     (target_p->user) ? (CurrentTime - target_p->user->last) : 0);
+      }
       else if (IsOper(target_p))
-	sendto_one(source_p, form_str(RPL_TRACEOPERATOR),
-		   me.name, source_p->name, class_name, name, 
-#ifndef HIDE_SPOOF_IPS
-		   MyOper(source_p) ? ip : 
-#endif
-		   (IsIPSpoof(target_p) ? "255.255.255.255" : ip),
-		   CurrentTime - target_p->lasttime,
-		   (target_p->user)?(CurrentTime - target_p->user->last):0);
-
+      {
+        if (ConfigFileEntry.hide_spoof_ips)
+          sendto_one(source_p, form_str(RPL_TRACEOPERATOR),
+                     me.name, source_p->name, class_name, name,
+                     (IsIPSpoof(target_p) ? "255.255.255.255" : ip),
+                     CurrentTime - target_p->lasttime,
+                     (target_p->user)?(CurrentTime - target_p->user->last):0);
+	else
+	  sendto_one(source_p, form_str(RPL_TRACEOPERATOR),
+		     me.name, source_p->name, class_name, name, 
+		     (IsIPSpoof(target_p) ? "255.255.255.255" : ip),
+		     CurrentTime - target_p->lasttime,
+		     (target_p->user)?(CurrentTime - target_p->user->last):0);
+      }
       break;
     case STAT_SERVER:
       if(!IsAdmin(source_p))

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.337 2003/07/11 17:55:12 db Exp $
+ *  $Id: ircd_parser.y,v 1.338 2003/07/17 06:25:28 metalrock Exp $
  */
 
 %{
@@ -186,6 +186,7 @@ unhook_hub_leaf_confs(void)
 %token  HIDDEN_ADMIN
 %token  HIDE_SERVER_IPS
 %token  HIDE_SERVERS
+%token	HIDE_SPOOF_IPS
 %token  HOST
 %token  HUB
 %token  HUB_MASK
@@ -2371,10 +2372,10 @@ general_entry: GENERAL
   '{' general_items '}' ';';
 
 general_items:      general_items general_item | general_item;
-general_item:       general_ignore_bogus_ts | general_failed_oper_notice |
-                    general_anti_nick_flood | general_max_nick_time |
-                    general_max_nick_changes | general_max_accept |
-                    general_anti_spam_exit_message_time |
+general_item:       general_hide_spoof_ips | general_ignore_bogus_ts |
+		    general_failed_oper_notice | general_anti_nick_flood |
+		    general_max_nick_time | general_max_nick_changes |
+		    general_max_accept | general_anti_spam_exit_message_time |
                     general_ts_warn_delta | general_ts_max_delta |
                     general_kline_with_reason |
                     general_kline_with_connection_closed |
@@ -2400,6 +2401,12 @@ general_item:       general_ignore_bogus_ts | general_failed_oper_notice |
                     general_dot_in_ip6_addr | general_ping_cookie |
                     general_disable_auth | general_fallback_to_ip6_int |
                     error;
+
+general_hide_spoof_ips: HIDE_SPOOF_IPS '=' TBOOL ';'
+{
+  if (ypass == 2)
+    ConfigFileEntry.hide_spoof_ips = yylval.number;
+}
 
 general_ignore_bogus_ts: IGNORE_BOGUS_TS '=' TBOOL ';'
 {

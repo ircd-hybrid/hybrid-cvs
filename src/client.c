@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.395 2003/07/08 04:01:50 db Exp $
+ *  $Id: client.c,v 7.396 2003/07/17 06:25:27 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -720,10 +720,8 @@ get_client_name(struct Client *client, int showip)
       IsConnecting(client) || IsHandshake(client))
     showip = MASK_IP;
 
-#ifdef HIDE_SPOOF_IPS
-  if (showip == SHOW_IP && IsIPSpoof(client))
+  if (ConfigFileEntry.hide_spoof_ips && (showip == SHOW_IP && IsIPSpoof(client)))
     showip = MASK_IP;
-#endif
 
   /* And finally, let's get the host information, ip or name */
   switch (showip)
@@ -1307,15 +1305,21 @@ exit_client(
     }
 
     if (IsPerson(source_p))
-      sendto_realops_flags(UMODE_CCONN, L_ALL,
-			   "Client exiting: %s (%s@%s) [%s] [%s]",
-                           source_p->name, source_p->username, source_p->host,
-                           comment,
-#ifdef HIDE_SPOOF_IPS
-                           IsIPSpoof(source_p) ? "255.255.255.255" :
-#endif
-                           source_p->localClient->sockhost);
-
+    {
+      if (ConfigFileEntry.hide_spoof_ips)
+        sendto_realops_flags(UMODE_CCONN, L_ALL,
+                             "Client exiting: %s (%s@%s) [%s] [%s]",
+                             source_p->name, source_p->username, source_p->host,
+                             comment,
+                             IsIPSpoof(source_p) ? "255.255.255.255" :
+                             source_p->localClient->sockhost);
+      else
+        sendto_realops_flags(UMODE_CCONN, L_ALL,
+			     "Client exiting: %s (%s@%s) [%s] [%s]",
+                             source_p->name, source_p->username, source_p->host,
+                             comment,
+                             source_p->localClient->sockhost);
+    }
     log_user_exit(source_p);
 
     if (!IsDead(source_p))

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.458 2003/07/09 03:15:26 db Exp $
+ *  $Id: s_conf.c,v 7.459 2003/07/17 06:25:28 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -814,11 +814,9 @@ verify_access(struct Client* client_p, const char *username)
       {
 	conf = unmap_conf_item(aconf);
 
-#ifndef HIDE_SPOOF_IPS
-        if (IsConfSpoofNotice(aconf))
+        if (ConfigFileEntry.hide_spoof_ips && IsConfSpoofNotice(aconf))
           sendto_realops_flags(UMODE_ALL, L_ADMIN, "%s spoofing: %s as %s",
                                client_p->name, client_p->host, conf->name);
-#endif
         strlcpy(client_p->host, conf->name, sizeof(client_p->host));
         SetIPSpoof(client_p);
       }
@@ -1835,6 +1833,7 @@ set_default_conf(void)
   ffailed_operlog[0] = '\0';
   foperlog[0] = '\0';
   
+  ConfigFileEntry.hide_spoof_ips = YES;
   ConfigFileEntry.ignore_bogus_ts = NO;
   ConfigFileEntry.disable_remote = 0;
   ConfigFileEntry.failed_oper_notice = YES;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.293 2003/07/06 19:10:21 michael Exp $
+ *  $Id: s_user.c,v 7.294 2003/07/17 06:25:28 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -424,15 +424,19 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   irc_getnameinfo((struct sockaddr *)&source_p->localClient->ip,
                   source_p->localClient->ip.ss_len, ipaddr,
                   HOSTIPLEN, NULL, 0, NI_NUMERICHOST);
-  sendto_realops_flags(UMODE_CCONN, L_ALL,
-                       "Client connecting: %s (%s@%s) [%s] {%s} [%s]",
-                       nick, source_p->username, source_p->host,
-#ifdef HIDE_SPOOF_IPS
-                       IsIPSpoof(client_p) ? "255.255.255.255" : ipaddr,
-#else
-		       ipaddr,
-#endif
-		       get_client_class(source_p), source_p->info);
+
+  if (ConfigFileEntry.hide_spoof_ips)
+    sendto_realops_flags(UMODE_CCONN, L_ALL,
+                         "Client connecting: %s (%s@%s) [%s] {%s} [%s]",
+                         nick, source_p->username, source_p->host,
+                         IsIPSpoof(client_p) ? "255.255.255.255" : ipaddr,
+                         get_client_class(source_p), source_p->info);
+  else
+    sendto_realops_flags(UMODE_CCONN, L_ALL,
+                         "Client connecting: %s (%s@%s) [%s] {%s} [%s]",
+                         nick, source_p->username, source_p->host,
+                         ipaddr, get_client_class(source_p),
+			 source_p->info);
 
   /* If they have died in send_* don't do anything. */
   if (IsDead(source_p))

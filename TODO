@@ -1,4 +1,4 @@
-$Id: TODO,v 7.93 2003/07/07 12:43:53 michael Exp $
+$Id: TODO,v 7.94 2003/07/17 06:25:19 metalrock Exp $
 
 - add more stderr debugging (ircd -s)... one for every place we syslog()
 - ircd -s doesn't work through a restart
@@ -117,9 +117,8 @@ it's a leaf.
 
 -- metalrock's list
 
-* Rewrite the horrendous trace modules.
-* Write hide_spoof_ips for ircd.conf.
 * Don't show local channels in a remote whois.
+* Write documentation for example.conf changes.
 
 -- adx's list
 
