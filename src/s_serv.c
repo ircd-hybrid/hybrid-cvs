@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.222 2001/11/29 20:24:06 leeh Exp $
+ *   $Id: s_serv.c,v 7.223 2001/12/02 15:15:09 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -1048,9 +1048,8 @@ const char* show_capabilities(struct Client* target_p)
       target_p->localClient->in_cipher &&
       target_p->localClient->out_cipher)
   {
-    tl = ircsprintf(t, "ENC:%s,%s ",
-                    target_p->localClient->in_cipher->name,
-                    target_p->localClient->out_cipher->name);
+    tl = ircsprintf(t, "ENC:%s ",
+                    target_p->localClient->in_cipher->name);
     t += tl;
   }
 #endif
