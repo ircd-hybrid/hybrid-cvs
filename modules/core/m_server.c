@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.125 2004/11/03 07:23:48 db Exp $
+ *  $Id: m_server.c,v 1.126 2004/12/31 04:37:37 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -77,7 +77,7 @@ _moddeinit(void)
   mod_del_cmd(&sid_msgtab);
 }
 
-const char *_version = "$Revision: 1.125 $";
+const char *_version = "$Revision: 1.126 $";
 #endif
 
 
@@ -360,6 +360,18 @@ ms_server(struct Client *client_p, struct Client *source_p,
     return;
   }
 
+  if (strlen(name) > HOSTLEN)
+  {
+    sendto_realops_flags(UMODE_ALL, L_ADMIN,
+                         "Link %s introduced server with invalid servername %s",
+                         get_client_name(client_p, HIDE_IP), name);
+    sendto_realops_flags(UMODE_ALL, L_OPER,
+                         "Link %s introduced server with invalid servername %s",
+                         client_p->name, name);
+    exit_client(NULL, client_p, &me, "Invalid servername introduced.");
+    return;
+  }
+
   /* Server is informing about a new server behind
    * this link. Create REMOTE server structure,
    * add it to list and propagate word to my other
@@ -453,18 +465,6 @@ ms_server(struct Client *client_p, struct Client *source_p,
        */
       exit_client(NULL, client_p, &me, "Leafed Server.");
       return;
-  }
-
-  if (strlen(name) > HOSTLEN)
-  {
-    sendto_realops_flags(UMODE_ALL, L_ADMIN,
-                         "Link %s introduced server with invalid servername %s",
-                         get_client_name(client_p, HIDE_IP), name);
-    sendto_realops_flags(UMODE_ALL, L_OPER,
-                         "Link %s introduced server with invalid servername %s",
-                         client_p->name, name);
-    exit_client(NULL, client_p, &me, "Invalid servername introduced.");
-    return;
   }
 
   target_p = make_client(client_p);
@@ -609,7 +609,7 @@ ms_sid(struct Client *client_p, struct Client *source_p,
 			 "Link %s cancelled: servername name %s invalid",
 		         get_client_name(client_p, SHOW_IP), SID_NAME);
     sendto_realops_flags(UMODE_ALL, L_OPER,
-                         "Link %s cancelled: Server/nick collision on %s",
+                         "Link %s cancelled: servername name %s invalid",
 	                 get_client_name(client_p, MASK_IP), SID_NAME);
     exit_client(client_p, client_p, client_p, "Nick as Server");
     return;
