@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.77 2003/09/18 22:51:55 bill Exp $
+ *  $Id: hash.c,v 7.78 2003/10/03 18:28:52 garion Exp $
  */
 
 #include "stdinc.h"
@@ -585,6 +585,27 @@ hash_find_channel(const char *name)
   }
 
   return(chptr);
+}
+
+/* hash_get_chptr(unsigned int hashv)
+ *
+ * inputs       - hash value (should be between 0 and HASHSIZE - 1)
+ * output       - NONE
+ * returns      - pointer to first channel in channelTable[hashv]
+ *                if that exists;
+ *                NULL if there is no channel in that place;
+ *                NULL if hashv is an invalid number.
+ * side effects - NONE
+ */
+struct Channel *
+hash_get_chptr(unsigned int hashv)
+{
+  struct Channel *chptr;
+
+  if (hashv > HASHSIZE)
+      return NULL;
+
+  return channelTable[hashv];
 }
 
 /* hash_find_resv()
