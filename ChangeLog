@@ -1,3 +1,19 @@
+*** 20001106_9 by adrian
+
+
+I hate doing it, but here it is. One blind commit to rip out ziplinks
+from hybrid-7, as they will be re-implemented later on as an external
+process rather than be in the code.
+
+the actual zip files haven't been removed, since I'm probably going to
+reuse them very soon now.
+
+This hasn't been tested. It compiles. I will do more testing this evening,
+and probably do some much needed tidyups to the client/server send and
+receive code.
+
+
+
 *** 20001106_8 by adrian
 
 
@@ -87,7 +103,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.491 2000/11/06 15:49:15 adrian Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.492 2000/11/06 16:11:58 adrian Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
