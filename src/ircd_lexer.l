@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.49 2000/12/28 20:56:13 ejb Exp $
+ * $Id: ircd_lexer.l,v 1.50 2000/12/29 00:50:31 wcampbel Exp $
  */
 
 %option case-insensitive
@@ -183,6 +183,7 @@ non_redundant_klines    { return NON_REDUNDANT_KLINES; }
 
 e_lines_oper_only       { return E_LINES_OPER_ONLY; }
 f_lines_oper_only       { return F_LINES_OPER_ONLY; }
+o_lines_oper_only       { return O_LINES_OPER_ONLY; }
 stats_notice            { return STATS_NOTICE; }
 whois_wait              { return WHOIS_WAIT; }
 pace_wait               { return PACE_WAIT; }

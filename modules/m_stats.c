@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 1.35 2000/12/28 00:18:25 db Exp $
+ *  $Id: m_stats.c,v 1.36 2000/12/29 00:50:30 wcampbel Exp $
  */
 #include "tools.h"	 /* dlink_node/dlink_list */
 #include "handlers.h"    /* m_pass prototype */
@@ -69,7 +69,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-char *_version = "20001122";
+char *_version = "20001228";
 
 /*
  * m_stats - STATS message handler
@@ -294,8 +294,16 @@ void do_non_priv_stats(struct Client *sptr, char *name, char *target,
       break;
 
     case 'o' : case 'O' :
-      report_configured_links(sptr, CONF_OPS);
-      stats_spy(sptr,stat);
+      if (ConfigFileEntry.o_lines_oper_only && IsOper(sptr))
+        {
+          report_configured_links(sptr, CONF_OPS);
+          stats_spy(sptr,stat);
+        }
+      else
+        {
+          sendto_one(sptr, form_str(ERR_NOPRIVILEGES), me.name, sptr->name);
+          stats_spy(sptr,stat);
+        }
       break;
 
     case 'p' :

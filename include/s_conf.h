@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.58 2000/12/28 20:56:07 ejb Exp $
+ * $Id: s_conf.h,v 7.59 2000/12/29 00:50:29 wcampbel Exp $
  */
 
 #include <sys/param.h>
@@ -201,6 +201,7 @@ typedef struct
   int         non_redundant_klines;
   int         e_lines_oper_only;
   int         f_lines_oper_only;
+  int         o_lines_oper_only;
   int         stats_notice;
   int         whois_notice;
   int         pace_wait;
