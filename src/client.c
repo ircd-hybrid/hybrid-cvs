@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.426 2004/10/03 06:28:08 metalrock Exp $
+ *  $Id: client.c,v 7.427 2004/10/31 20:27:25 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1536,8 +1536,6 @@ change_local_nick(struct Client *client_p, struct Client *source_p, const char *
   ** on a channel, send note of change to all clients
   ** on that channel. Propagate notice to other servers.
   */
-  source_p->tsinfo = CurrentTime;
-
   if ((source_p->localClient->last_nick_change +
        ConfigFileEntry.max_nick_time) < CurrentTime)
     source_p->localClient->number_of_nick_changes = 0;
@@ -1550,6 +1548,9 @@ change_local_nick(struct Client *client_p, struct Client *source_p, const char *
      !ConfigFileEntry.anti_nick_flood || 
      (IsOper(source_p) && ConfigFileEntry.no_oper_flood))
   {
+    if (irccmp(source_p->name, nick))
+      source_p->tsinfo = CurrentTime;
+
     /* XXX - the format of this notice should eventually be changed
      * to either %s[%s@%s], or even better would be get_client_name() -bill
      */
