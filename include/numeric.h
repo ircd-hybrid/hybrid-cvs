@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: numeric.h,v 7.6 2000/08/13 22:34:59 ejb Exp $
+ * $Id: numeric.h,v 7.7 2000/09/26 14:09:07 ejb Exp $
  */
 #ifndef INCLUDED_numeric_h
 #define INCLUDED_numeric_h
@@ -241,6 +241,8 @@ extern const char* form_str(int);
 #define RPL_INVITING         341
 #define RPL_SUMMONING        342
 
+#define RPL_INVITELIST       346
+#define RPL_ENDOFINVITELIST  347
 #define RPL_EXCEPTLIST       348
 #define RPL_ENDOFEXCEPTLIST  349
 

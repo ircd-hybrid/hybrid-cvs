@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.24 2000/07/31 13:22:41 db Exp $
+ *   $Id: s_serv.c,v 7.25 2000/09/26 14:09:12 ejb Exp $
  */
 #include "s_serv.h"
 #include "channel.h"
@@ -73,6 +73,7 @@ struct Capability captab[] = {
   { "CHW",      CAP_CHW },
   { "DE",       CAP_DE },
   { "LL",       CAP_LL },
+  { "IE",       CAP_IE },
   { 0,   0 }
 };
 
