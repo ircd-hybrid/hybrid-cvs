@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_classlist.c,v 1.1.2.3 2003/05/22 03:26:44 db Exp $
+ *  $Id: m_omotd.c,v 1.1.2.1 2003/05/22 03:26:44 db Exp $
  */
 
 #include "stdinc.h"
@@ -43,61 +43,41 @@
 #include "modules.h"
 
 
-static void mo_classlist(struct Client*, struct Client*, int, char**);
+static void mo_omotd(struct Client*, struct Client*, int, char**);
 
-struct Message classlist_msgtab = {
-  "CLASSLIST", 0, 0, 0, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, m_ignore, mo_classlist}
+struct Message omotd_msgtab = {
+  "OMOTD", 0, 0, 0, 0, MFLG_SLOW, 0,
+  {m_unregistered, m_not_oper, m_ignore, mo_omotd}
 };
 #ifndef STATIC_MODULES
 
 void
 _modinit(void)
 {
-  mod_add_cmd(&classlist_msgtab);
+  mod_add_cmd(&omotd_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  mod_del_cmd(&classlist_msgtab);
+  mod_del_cmd(&omotd_msgtab);
 }
 
-const char *_version = "$Revision: 1.1.2.3 $";
+const char *_version = "$Revision: 1.1.2.1 $";
 #endif
 
 /*
- * mo_classlist
+ * mo_omotd
  */
 
 /*
-** mo_classlist
+** mo_omotd
 **      parv[0] = sender prefix
 */
 static void
-mo_classlist(struct Client *client_p, struct Client *source_p,
-	     int parc, char *parv[])
+mo_omotd(struct Client *client_p, struct Client *source_p,
+	 int parc, char *parv[])
 { 
-  struct Class *cltmp;
-  char *classname;
-
-  if ((parc < 1) || (*parv[1] == '\0'))
-  {
-    sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-               me.name, parv[0], "CLASSLIST");
-    return;
-  }
-
-  classname = parv[1];
-
-  for (cltmp = ClassList; cltmp; cltmp = cltmp->next)
-    if (match(classname, ClassName(cltmp)))
-    {
-      sendto_one(source_p, ":%s NOTICE %s %s %d",
-		 me.name, source_p->name, ClassName(cltmp), Links(cltmp));
-      return;
-    }
-
-  sendto_one(source_p, ":%s NOTICE %s Not found",
-		 me.name, source_p->name);
+  SendMessageFile(source_p, &ConfigFileEntry.opermotd);
 }
+
