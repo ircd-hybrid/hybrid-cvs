@@ -1,6 +1,6 @@
                          Message Customization Overview
 
-   $Id: messages.txt,v 1.5 2003/05/19 15:05:36 joshk Exp $
+   $Id: messages.txt,v 1.6 2003/05/25 04:07:19 joshk Exp $
 
    Copyright (c) 2001, 2003 by ircd-hybrid team
 
@@ -37,7 +37,7 @@
                            Creating Your Own Messages
 
    This process is a little more complicated. The easiest way to start
-   editing messages is to take a file such as custom.lang, make a copy,
+   editing messages is to take ircd-standard.example.lang, make a copy,
    and change whichever status lines you wish.
 
    Once you have your customized message file ready, just copy it into the

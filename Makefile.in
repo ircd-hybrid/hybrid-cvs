@@ -16,19 +16,19 @@
 #*   along with this program; if not, write to the Free Software
 #*   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #*
-#*   $Id: Makefile.in,v 7.55 2003/05/22 02:34:21 joshk Exp $
+#*   $Id: Makefile.in,v 7.56 2003/05/25 04:07:18 joshk Exp $
 #*/
 
-RM=@RM@
-prefix=@prefix@
-exec_prefix=@exec_prefix@
+RM          = @RM@
+prefix      = @prefix@
+exec_prefix = @exec_prefix@
 
 # Default make flags - you may want to uncomment this on a multicpu machine
 #MFLAGS   = -j 4
-BUILD_DIRS = modules src tools servlink
-INSTALL_DIRS   = ${BUILD_DIRS} etc doc include
-DEPEND_DIRS = modules src servlink contrib
-CLEAN_DIRS = ${BUILD_DIRS} contrib
+BUILD_DIRS   = modules src tools servlink
+INSTALL_DIRS = ${BUILD_DIRS} etc doc include
+DEPEND_DIRS  = modules src servlink contrib
+CLEAN_DIRS   = ${BUILD_DIRS} contrib
 # Anywhere that we can make install, we obviously can rm -f Makefile
 DISTCLEAN_DIRS = ${INSTALL_DIRS} contrib messages
 

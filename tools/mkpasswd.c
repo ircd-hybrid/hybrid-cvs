@@ -12,7 +12,7 @@
 ** VMS support by Edward Brocklesby, crypt.c implementation
 ** phk@login.dknet.dk
 **
-** $Id: mkpasswd.c,v 7.15 2003/05/23 17:53:15 joshk Exp $
+** $Id: mkpasswd.c,v 7.16 2003/05/25 04:07:21 joshk Exp $
 */
 #include <stdio.h>
 #include <string.h>
@@ -419,12 +419,12 @@ static void full_usage(void)
   printf("         [-R rawsalt]\n");
   printf("-m Generate an MD5 password\n");
   printf("-d Generate a DES password\n");
-#ifndef VMS
+#ifndef __vms
   printf("-b Generate a BlowFish password\n");
   printf("-e Generate an Extended DES password\n");
 #endif
   printf("-l Specify a length for a random MD5 or BlowFish salt\n");
-#ifndef VMS
+#ifndef __vms
   printf("-r Specify a number of rounds for a BlowFish or Extended DES password\n");
   printf("   BlowFish:  default 4, no more than 6 recommended\n");
   printf("   Extended DES:  default 25\n");
@@ -445,11 +445,11 @@ static void brief_usage(void)
 {
   printf("mkpasswd - password hash generator\n");
   printf("Standard DES:  mkpasswd [-d] [-s salt] [-p plaintext]\n");
-#ifndef VMS
+#ifndef __vms
   printf("Extended DES:  mkpasswd -e [-r rounds] [-s salt] [-p plaintext]\n");
 #endif
   printf("         MD5:  mkpasswd -m [-l saltlength] [-s salt] [-p plaintext]\n");
-#ifndef VMS
+#ifndef __vms
   printf("    BlowFish:  mkpasswd -b [-r rounds] [-l saltlength] [-s salt]\n");
 #endif
   printf("                           [-p plaintext]\n");

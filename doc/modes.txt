@@ -1,4 +1,14 @@
+                        User and Channel Modes Guide
+			----------------------------
+
+In /VERSION one might see something like this:
+
 irc.corefailure.com hybrid-7beta5 oiwszcerkfydnxbaugl biklmnopstveIh bkloveIh
+
+These describe the user modes, channel modes, and channel modes that require
+arguments that are available to the user. It is hardcoded into src/messages.tab.
+
+Here is a guide to the preceding modes:
 
 User Modes:
 
@@ -50,4 +60,4 @@ Currently these are bkloveIh.
 Note that most of the channel modes can be disabled in the conf file for
 networks that do not wish to support them.
 
-# $Id: modes.txt,v 7.13 2003/05/15 07:01:42 joshk Exp $
+# $Id: modes.txt,v 7.14 2003/05/25 04:07:19 joshk Exp $
