@@ -1,7 +1,7 @@
 /*
  * fdlist.h
  *
- * $Id: fdlist.h,v 7.20 2001/05/23 20:59:07 davidt Exp $
+ * $Id: fdlist.h,v 7.21 2001/05/25 14:45:19 davidt Exp $
  */
 #ifndef INCLUDED_fdlist_h
 #define INCLUDED_fdlist_h
@@ -123,8 +123,11 @@ void fdlist_init(void);
 extern void  fd_open(int, unsigned int, const char *);
 extern void  fd_close(int);
 extern void  fd_dump(struct Client *source_p);
-extern void  fd_note(int fd, const char *desc);
-
-
+#ifndef __GNUC__
+extern void  fd_note(int fd, const char *format, ...);
+#else
+extern void  fd_note(int fd, const char *format, ...)
+  __attribute__((format (printf, 2, 3)));
+#endif
 #endif /* INCLUDED_fdlist_h */
 

@@ -19,7 +19,7 @@
  *
  * "packet.h". - Headers file.
  *
- * $Id: packet.h,v 7.10 2001/04/19 07:38:07 a1kmm Exp $
+ * $Id: packet.h,v 7.11 2001/05/25 14:45:19 davidt Exp $
  *
  */
 #ifndef INCLUDED_packet_h
@@ -43,6 +43,7 @@
 /* And the initial rate of flooding after registration... -A1kmm. */
 #define MAX_FLOOD_PER_SEC_I            24
 
+extern PF  read_ctrl_packet;
 extern PF  read_packet;
 extern PF  flood_recalc;
 

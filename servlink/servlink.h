@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: servlink.h,v 1.10 2001/05/24 23:09:32 davidt Exp $
+ *   $Id: servlink.h,v 1.11 2001/05/25 14:45:28 davidt Exp $
  */
 
 #include <stdio.h>
@@ -37,8 +37,16 @@
 #define NUM_FDS                 3       /* nfds for select */
 #endif
 
+#define IO_READ                 0
+#define IO_WRITE                1
+#define IO_SELECT               2
 
-//#define SERVLINK_DEBUG
+#define IO_TYPE(io)     (((io==2)?"select":((io==1)?"write":"read")))
+
+#define FD_NAME(fd)     (fd_name[fd])
+extern char *fd_name[NUM_FDS];
+
+/* #define SERVLINK_DEBUG */
 
 #define READLEN                  2048
 
@@ -101,7 +109,7 @@ struct slink_state
 };
 
 
-extern int checkError(int);
+extern int checkError(int, int, int);
 
 typedef void (io_callback)(void);
 

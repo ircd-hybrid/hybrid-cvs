@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.147 2001/05/25 01:02:53 ejb Exp $
+ * $Id: ircd.c,v 7.148 2001/05/25 14:45:30 davidt Exp $
  */
 
 #include <sys/types.h>
@@ -617,6 +617,9 @@ int main(int argc, char *argv[])
  /* No, 'cause after a restart it would cause all sorts of nick collides */
  eventAdd("try_connections", try_connections, NULL,
           STARTUP_CONNECTIONS_TIME, 0);
+
+ eventAdd("collect_zipstats", collect_zipstats, NULL,
+          ZIPSTATS_TIME, 0);
 
  /* Setup the timeout check. I'll shift it later :)  -- adrian */
  eventAdd("comm_checktimeouts", comm_checktimeouts, NULL, 1, 0);

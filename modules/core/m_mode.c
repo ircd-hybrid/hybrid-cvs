@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_mode.c,v 1.38 2001/05/02 07:17:04 a1kmm Exp $
+ *   $Id: m_mode.c,v 1.39 2001/05/25 14:45:25 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -77,7 +77,7 @@ static void m_mode(struct Client *client_p, struct Client *source_p,
   static char     modebuf[MODEBUFLEN];
   static char     parabuf[MODEBUFLEN];
   int n = 2;
-
+  
   /* Now, try to find the channel in question */
   if( !IsChanPrefix(parv[1][0]) )
     {

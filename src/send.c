@@ -17,11 +17,12 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.143 2001/05/22 19:11:55 davidt Exp $
+ *   $Id: send.c,v 7.144 2001/05/25 14:45:32 davidt Exp $
  */
 
 #include <sys/types.h>
 
+#include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>

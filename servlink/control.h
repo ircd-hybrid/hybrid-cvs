@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: control.h,v 1.2 2001/05/24 19:38:37 davidt Exp $
+ *   $Id: control.h,v 1.3 2001/05/25 14:45:27 davidt Exp $
  */
 
 #define CMD_SET_ZIP_OUT_LEVEL           1       /* data */
@@ -34,6 +34,10 @@
 #define CMD_INJECT_RECVQ                14      /* data */
 #define CMD_INJECT_SENDQ                15      /* data */
 #define CMD_INIT                        16
+#define CMD_ZIPSTATS                    17      /* data */
+
+#define RPL_ERROR                       1       /* data */
+#define RPL_ZIPSTATS                    2       /* data */
 
 struct ctrl_command
 {
