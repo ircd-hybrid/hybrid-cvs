@@ -1,10 +1,13 @@
 /*
- * src/res.c (C)opyright 1992 Darren Reed. All rights reserved.
- * This file may not be distributed without the author's permission in any
- * shape or form. The author takes no responsibility for any damage or loss
+ * A rewrite of Darren Reeds original res.c As there is nothing
+ * left of Darrens original code, this is now licensed by the hybrid group.
+ * (Well, some of the function names are the same, and bits of the structs..)
+ * You can use it where it is useful, free even. Buy us a beer and stuff.
+ *
+ * The authors takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: irc_res.c,v 7.2 2003/05/12 23:01:57 stu Exp $
+ * $Id: irc_res.c,v 7.3 2003/05/12 23:12:04 db Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -13,7 +16,7 @@
  * This was all needlessly complicated for irc. Simplified. No more hostent
  * All we really care about is the IP -> hostname mappings. Thats all. 
  *
- * Apr 28, 2003 --Dianora
+ * Apr 28, 2003 --cryogen and Dianora
  */
 
 #include "tools.h"
@@ -53,7 +56,7 @@
 #error this code needs to be able to address individual octets 
 #endif
 
-/* $Id: irc_res.c,v 7.2 2003/05/12 23:01:57 stu Exp $ */
+/* $Id: irc_res.c,v 7.3 2003/05/12 23:12:04 db Exp $ */
 
 static PF res_readreply;
 
