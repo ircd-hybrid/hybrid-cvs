@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.241 2002/02/17 03:11:27 androsyn Exp $
+ *  $Id: s_serv.c,v 7.242 2002/02/17 04:38:35 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -1381,7 +1381,7 @@ int fork_server(struct Client *server)
       }
       else
       {
-#ifdef VMS || __CYGWIN__
+#if defined(VMS) || defined(__CYGWIN__)
         if (i > 2) /* don't close std* */
 #endif
           close(i);
