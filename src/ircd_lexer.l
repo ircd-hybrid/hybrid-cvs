@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.5 2000/01/22 04:53:06 db Exp $
+ * $Id: ircd_lexer.l,v 1.6 2000/01/23 04:53:39 db Exp $
  */
 
 %{
@@ -29,8 +29,6 @@
 #include <ctype.h>
 #include "s_conf.h"
 #include "y.tab.h"
-
-/* int yylineno=1; */
 
 #undef YY_INPUT
 #define YY_FATAL_ERROR(msg) conf_yy_fatal_error( msg )
@@ -74,7 +72,7 @@ description	{ return DESCRIPTION; }
 administrator	{ return ADMIN; }
 admin		{ return ADMIN; }
 class		{ return CLASS; }
-client		{ return CLIENT; }
+auth		{ return AUTH; }
 operator	{ return OPERATOR; }
 global		{ return GLOBAL; }
 oper		{ return OPERATOR; }
@@ -115,7 +113,6 @@ password	{ return PASSWORD; }
 passwd		{ return PASSWORD; }
 kline_exempt	{ return KLINE_EXEMPT; }
 allow_bots	{ return ALLOW_BOTS; }
-allow		{ return ALLOW; }
 no_tilde	{ return NO_TILDE; }
 have_ident	{ return HAVE_IDENT; }
 reason		{ return REASON; }

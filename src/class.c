@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: class.c,v 7.9 2000/01/17 22:35:10 db Exp $
+ *   $Id: class.c,v 7.10 2000/01/23 04:53:39 db Exp $
  */
 #include "class.h"
 #include "client.h"
@@ -208,7 +208,7 @@ void    initclass()
   ClassList = (struct Class *)make_class();
 
   ClassType(ClassList) = 0;
-  DupString(ClassName(ClassList),"0");
+  DupString(ClassName(ClassList),"default");
   ConFreq(ClassList) = CONNECTFREQUENCY;
   PingFreq(ClassList) = PINGFREQUENCY;
   MaxLinks(ClassList) = MAXIMUM_LINKS;

@@ -43,7 +43,7 @@
  *
  * Diane Bruce -db (db@db.net)
  *
- * $Id: mtrie_conf.c,v 7.6 2000/01/17 03:21:31 db Exp $
+ * $Id: mtrie_conf.c,v 7.7 2000/01/23 04:53:40 db Exp $
  */
 #include "mtrie_conf.h"
 #include "class.h"
@@ -1350,7 +1350,8 @@ void report_mtrie_conf_links(struct Client *sptr, int flags)
              IsConfDoSpoofIp(found_conf))
             continue;
 
-          get_printable_conf(found_conf, &name, &host, &pass, &user, &port, &classname );
+          get_printable_conf(found_conf, &name, &host, &pass, &user, &port,
+			     &classname );
 
           c = 'I';
 #ifdef LITTLE_I_LINES
