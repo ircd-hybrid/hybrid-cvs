@@ -1,3 +1,16 @@
+bill        2002/09/08 17:09:37 EDT	(20020908_0)
+
+  Modified files:
+    contrib              m_operspy.c 
+  Log:
+  - fixed non-oper-issued to properly respond with Unknown command
+    side note: there should be a way for a msgtab-triggered function to access the command that triggered it
+  
+  Revision  Changes    Path
+  1.4       +14 -7     ircd-hybrid-7/contrib/m_operspy.c
+
+
+
 androsyn    2002/09/07 02:34:15 EDT	(20020907_1)
 
   Modified files:
@@ -31890,4 +31903,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4024 2002/09/07 06:34:17 androsyn Exp $
+$Id: ChangeLog,v 7.4025 2002/09/08 21:09:40 bill Exp $
