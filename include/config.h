@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: config.h,v 7.136 2002/06/19 20:17:44 leeh Exp $
+ *  $Id: config.h,v 7.137 2002/06/20 18:00:38 leeh Exp $
  */
 
 #ifndef INCLUDED_config_h
@@ -184,8 +184,8 @@
 
 /* HIDE_SPOOF_IPS
  *
- * If this is undefined, admins will be allowed to see a spoofed users IP
- * in /trace etc.  If this is defined, they will be shown a masked IP.
+ * If this is undefined, opers will be allowed to see the real IP of spoofed
+ * users in /trace etc.  If this is defined they will be shown a masked IP.
  */
 #undef HIDE_SPOOF_IPS
 

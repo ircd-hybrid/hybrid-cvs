@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.306 2002/06/15 07:19:57 androsyn Exp $
+ *  $Id: s_conf.c,v 7.307 2002/06/20 18:00:40 leeh Exp $
  */
 
 #include "stdinc.h"
@@ -566,12 +566,14 @@ verify_access(struct Client* client_p, const char* username)
 	  /* Thanks for spoof idea amm */
 	  if (IsConfDoSpoofIp(aconf))
 	    {
+#ifndef HIDE_SPOOF_IPS
 	      if (IsConfSpoofNotice(aconf))
 		{
 		  sendto_realops_flags(FLAGS_ALL, L_ADMIN,
 				       "%s spoofing: %s as %s", client_p->name,
 				       client_p->host, aconf->name);
 		}
+#endif
 	      strlcpy(client_p->host, aconf->name, HOSTLEN);
 	      SetIPSpoof(client_p);
 	    }
