@@ -1,5 +1,5 @@
 /************************************************************************
- *   IRC - Internet Relay Chat, src/vchannel.c
+ *   IRC - Internet Relay Chat, src/rsa.c
  *   Copyright (C) 1990 Jarkko Oikarinen and
  *                      University of Oulu, Co Center
  *
@@ -19,7 +19,7 @@
  *
  *
  *
- * $Id: rsa.c,v 7.7 2001/02/02 08:36:40 a1kmm Exp $
+ * $Id: rsa.c,v 7.8 2001/03/16 16:29:20 androsyn Exp $
  */
 
 #include <string.h>
