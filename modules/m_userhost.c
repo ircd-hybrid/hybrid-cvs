@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_userhost.c,v 1.9 2000/11/30 16:01:49 db Exp $
+ *   $Id: m_userhost.c,v 1.10 2000/12/07 04:37:11 db Exp $
  */
 
 #include "handlers.h"
@@ -76,13 +76,6 @@ int     m_userhost(struct Client *cptr,
                  me.name, parv[0], "USERHOST");
       return 0;
     }
-
-  /* The idea is to build up the response string out of pieces
-   * none of this strlen() nonsense.
-   * 5 * (NICKLEN*2+USERLEN+HOSTLEN+30) is still << sizeof(buf)
-   * and our ircsprintf() truncates it to fit anyway. There is
-   * no danger of an overflow here. -Dianora
-   */
 
   response[0][0] = response[1][0] = response[2][0] = 
     response[3][0] = response[4][0] = '\0';

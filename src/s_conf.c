@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.92 2000/12/06 23:34:58 db Exp $
+ *  $Id: s_conf.c,v 7.93 2000/12/07 04:37:15 db Exp $
  */
 #include "tools.h"
 #include "s_conf.h"
@@ -2584,9 +2584,21 @@ void WriteKlineOrDline( KlineType type,
     }
 
   if(type==KLINE_TYPE)
-    ircsprintf(buffer, "#%s!%s@%s K'd: %s@%s:%s\n",
-	       sptr->name, sptr->username, sptr->host,
-	       user, host, reason);
+    {
+      if (MyClient(sptr))
+	{
+	  ircsprintf(buffer, "#%s!%s@%s K'd: %s@%s:%s\n",
+		     sptr->name, sptr->username, sptr->host,
+		     user, host, reason);
+	}
+      else
+	{
+	  ircsprintf(buffer, "#%s!%s@%s on %s K'd: %s@%s:%s\n",
+		     sptr->name, sptr->username, sptr->host,
+		     sptr->servptr?sptr->servptr->name:"<Unknown>",
+		     user, host, reason);
+	}
+    }
   else
     ircsprintf(buffer, "#%s!%s@%s D'd: %s:%s\n",
 	       sptr->name, sptr->username, sptr->host,
