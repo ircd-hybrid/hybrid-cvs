@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.239 2002/02/25 17:39:14 androsyn Exp $
+ *  $Id: client.c,v 7.240 2002/02/28 15:54:00 androsyn Exp $
  */
 
 #include "tools.h"
@@ -137,8 +137,10 @@ struct Client* make_client(struct Client* from)
 
       client_p->localClient = localClient;
        
+      client_p->localClient->fd = -1;
       client_p->localClient->ctrlfd = -1;
 #ifndef HAVE_SOCKETPAIR
+      client_p->localClient->fd_r = -1;
       client_p->localClient->ctrlfd_r = -1;
 #endif      
       /* as good a place as any... */
