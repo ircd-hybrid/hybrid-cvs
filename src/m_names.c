@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_names.c,v 7.12 2000/11/03 05:04:33 db Exp $
+ *   $Id: m_names.c,v 7.13 2000/11/04 05:39:24 db Exp $
  */
 
 #include "handlers.h"
@@ -34,6 +34,8 @@
 #include "list.h"
 #include "numeric.h"
 #include "send.h"
+#include "s_serv.h"
+#include "s_conf.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -405,6 +407,12 @@ int ms_names( struct Client *cptr,
 	      int parc,
 	      char *parv[])
 { 
+  if( ConfigFileEntry.hub )
+    {
+      if(!IsCapable(cptr->from,CAP_LL))
+	return 0;
+    }
   return(1);
 }
+
 
