@@ -13,6 +13,12 @@ o) LIST extensions borrowed from undernet (SAFELIST, channel filtering -
 o) A native i18n support is provided instead of the former gettext,
    which is no longer needed. Old message files have been updated
    according to the new format, plus some new translations are available.
+o) removed virtual channels
+o) the user-channel membership handling has been entirely rewritten to
+   be more CPU friendly
+o) fixed a possible /CHALLENGE memory leak
+o) removed OpenVMS support
+o) CRYP_OPER_PASSWORD is now runtime configurable via ircd.conf
 
 --------------------------------------------------------------------------------
 
@@ -28,8 +34,9 @@ BUGS: Major bugs in this release are listed in BUGS
 BUG REPORTS: If you run this code and encounter problems, you must report
  the bug in one of the following ways:
   a) By EMAIL to bugs@ircd-hybrid.org.  
- Please include a gdb backtrace and a copy of your config.h and ircd.conf 
- with any report  (with passwords and other sensitive information masked).
+ Please include a gdb backtrace and a copy of your setup.h, defaults.h, and
+ ircd.conf with any report  (with passwords and other sensitive
+ information masked).
 
 DISCUSSION: There is a mailing list for discussion of hybrid issues,
  including betas.  To subscribe, use this link:
@@ -60,4 +67,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.76 2004/07/17 03:03:36 adx Exp $
+$Id: RELNOTES,v 1.77 2004/07/19 00:32:48 michael Exp $
