@@ -1,4 +1,4 @@
-$Id: Hybrid-team,v 7.59.2.2 2003/12/30 20:53:29 ievil Exp $
+$Id: Hybrid-team,v 7.59.2.3 2004/04/12 07:56:10 metalrock Exp $
 
 The hybrid team is a group of ircd coders who were frustrated
 with the instability and all-out "dirtiness" of the EFnet ircd's
@@ -44,7 +44,7 @@ Habeeb, David Supuran <habeeb@cfl.rr.com>
 jv, Jakub Vlasek <jv@pilsedu.cz>
 kre, Dinko Korunic <kreator@fly.srk.fer.hr>
 madmax, Paul Lomax <madmax@efnet.org>
-MetalRock, Jack Low <xxjack12xx@doramail.com>
+metalrock, Jack Low <musirc@users.sourceforge.net>
 Neph|l|m, Adel Mezibra <adel@cybercable.fr>
 Riedel, Dennis Vink, <vink@vuurwerk.nl>
 Robert Alan Byer <byer@mail.ourservers.net>
