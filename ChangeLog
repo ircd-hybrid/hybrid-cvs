@@ -1,3 +1,15 @@
+leeh        2002/04/30 07:35:02 EDT	(20020430_3)
+
+  Modified files:
+    src                  ircd_parser.y 
+  Log:
+  - missing "r"
+  
+  Revision  Changes    Path
+  1.245     +1 -1      ircd-hybrid-7/src/ircd_parser.y
+
+
+
 leeh        2002/04/30 06:46:53 EDT	(20020430_2)
 
   Modified files:
@@ -25902,4 +25914,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3618 2002/04/30 10:47:00 leeh Exp $
+$Id: ChangeLog,v 7.3619 2002/04/30 11:35:09 leeh Exp $
