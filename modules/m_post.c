@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_post.c,v 1.11 2002/05/24 23:34:22 androsyn Exp $
+ *  $Id: m_post.c,v 1.12 2003/01/21 06:13:36 db Exp $
  */
 
 #include "stdinc.h"
@@ -57,15 +57,18 @@ void
 _modinit(void)
 {
   mod_add_cmd(&post_msgtab);
-}
+  mod_add_cmd(&get_msgtab);
+  mod_add_cmd(&put_msgtab);}
 
 void
 _moddeinit(void)
 {
   mod_del_cmd(&post_msgtab);
+  mod_del_cmd(&get_msgtab);
+  mod_del_cmd(&put_msgtab);
 }
 
-const char *_version = "$Revision: 1.11 $";
+const char *_version = "$Revision: 1.12 $";
 #endif
 /*
 ** mr_dumb_proxy
