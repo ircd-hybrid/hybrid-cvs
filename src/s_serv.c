@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.20 2000/01/08 03:17:09 db Exp $
+ *   $Id: s_serv.c,v 7.21 2000/01/09 04:52:46 db Exp $
  */
 #include "s_serv.h"
 #include "channel.h"
@@ -824,7 +824,7 @@ int server_estab(struct Client *cptr)
   if (ConfigFileEntry.hub && IsCapable(cptr, CAP_LL))
     {
      /* LazyLinks version 2, don't send nicks! */
-#if LLVER1
+#ifdef LLVER1
       for (acptr = &me; acptr; acptr = acptr->prev)
         if (acptr->from != cptr)
           sendnick_TS(cptr, acptr);

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.9 2000/01/06 03:19:31 db Exp $
+ * $Id: config.h,v 7.10 2000/01/09 04:52:43 db Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -945,6 +945,12 @@ void    free_fludees();
 #ifdef IDLE_CHECK
 #define MIN_IDLETIME 1800
 #endif
+
+/* tuck this here for now, it will go away eventually...
+ * but meanwhile, at least it will compile a server that works -db
+ */
+
+#define LLVER1
 
 #define CONFIG_H_LEVEL_6
 

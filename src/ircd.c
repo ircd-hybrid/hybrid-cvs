@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.19 2000/01/06 04:32:10 db Exp $
+ * $Id: ircd.c,v 7.20 2000/01/09 04:52:46 db Exp $
  */
 #include "ircd.h"
 #include "channel.h"
@@ -381,6 +381,7 @@ static time_t io_loop(time_t delay)
       restart("Clock Failure");
     }
 
+  /* LazyLinks */
   if(!ConfigFileEntry.hub)
     {
       if(CurrentTime - lastCleanup >= CLEANUP_CHANNELS_TIME)
