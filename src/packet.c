@@ -18,7 +18,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: packet.c,v 7.46 2001/05/02 07:17:06 a1kmm Exp $
+ *   $Id: packet.c,v 7.47 2001/05/02 08:09:06 a1kmm Exp $
  */ 
 
 #include <stdio.h>
@@ -217,7 +217,7 @@ read_packet(int fd, void *data)
     return;
   }
 
-  lclient_p->actually_read++;
+  lclient_p->actually_read += lbuf_len;
   
   /* Check to make sure we're not flooding */
   if (IsPerson(client_p) &&
