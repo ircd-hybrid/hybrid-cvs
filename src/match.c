@@ -22,7 +22,7 @@
  * Cleanup of collapse and match
  * Moved static calls variable to match
  * Added asserts for null pointers
- * $Id: match.c,v 7.12 2001/01/25 17:32:54 androsyn Exp $
+ * $Id: match.c,v 7.13 2001/06/14 20:48:10 androsyn blalloc.c $
  *
  */
 #include "irc_string.h"
@@ -271,7 +271,7 @@ int ircncmp(const char* s1, const char *s2, int n)
   }
   return (res);
 }
-
+#ifdef DEAD_CODE
 unsigned long textip_to_ul(const char *ip)
 {
   unsigned long ipr=0;
@@ -293,7 +293,7 @@ unsigned long textip_to_ul(const char *ip)
   ipr += octet;
   return ipr;
 }
-
+#endif 
 const unsigned char ToLowerTab[] = { 
   0, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0xa,
   0xb, 0xc, 0xd, 0xe, 0xf, 0x10, 0x11, 0x12, 0x13, 0x14,
