@@ -1,6 +1,6 @@
                             Hybrid INSTALL Document
 
-   $Id: INSTALL,v 7.24 2002/03/07 13:44:29 db Exp $
+   $Id: INSTALL,v 7.25 2002/03/07 14:04:34 db Exp $
 
    Copyright (c) 2001 by ircd-hybrid team
 
@@ -201,7 +201,7 @@
    4. 
 
        Save the output of the backtrace command and send it to
-       listmanager@the-project.org.
+       ircd-hybrid@the-project.org.
 
    5. 
 
