@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.235 2001/06/08 22:31:38 kreator Exp $
+ *  $Id: s_conf.c,v 7.236 2001/06/09 18:37:11 toot Exp $
  */
 
 #include <sys/types.h>
@@ -1914,13 +1914,14 @@ char *oper_flags_as_string(int flags)
 /* const char* get_oper_name(struct Client *client_p)
  * Input: A client to find the active oper{} name for.
  * Output: The nick!user@host{oper} of the oper.
+ *         "oper" is server name for remote opers
  * Side effects: None.
  */
 char*
 get_oper_name(struct Client *client_p)
 {
  dlink_node *cnode;
- static char buffer[NICKLEN+USERLEN+HOSTLEN+OPERNICKLEN+1];
+ static char buffer[NICKLEN+USERLEN+HOSTLEN+HOSTLEN+5]; /* +5 for !,@,{,} and null */
  if (MyConnect(client_p))
  {
   for (cnode=client_p->localClient->confs.head; cnode; cnode=cnode->next)
@@ -1928,13 +1929,14 @@ get_oper_name(struct Client *client_p)
    {
     ircsprintf(buffer, "%s!%s@%s{%s}", client_p->name,
                client_p->username, client_p->host,
-               ((struct ConfItem*)cnode->data)->name
-              );
+               ((struct ConfItem*)cnode->data)->name);
     return buffer;
    }
   /* Probably should assert here for now. If there is an oper out there 
    * with no oper{} block, it would be good for us to know... */
-  assert(0); /* Oper without oper conf! */
+  /* or not - the ircd.conf might have just been altererd, removing
+     the block. */
+  /*  assert(0); /* Oper without oper conf! */
  }
  ircsprintf(buffer, "%s!%s@%s{%s}", client_p->name,
             client_p->username, client_p->host, client_p->servptr->name);
