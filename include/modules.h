@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.h,v 7.28 2002/02/27 17:51:36 enygma Exp $
+ *  $Id: modules.h,v 7.29 2002/03/30 17:04:26 db Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -34,7 +34,7 @@
 #if defined(HAVE_SHL_LOAD)
 #include <dl.h>
 #endif
-#if !defined(STATIC_MODULES) && (defined(HAVE_DLOPEN) || defined(HAVE_LIBDL))
+#if !defined(STATIC_MODULES) && defined(HAVE_DLFCN_H)
 #include <dlfcn.h>
 #endif
 
