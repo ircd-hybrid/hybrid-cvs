@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 1.78 2001/07/03 11:46:18 leeh Exp $
+ *  $Id: m_stats.c,v 1.79 2001/07/04 13:28:13 leeh Exp $
  */
 #include "tools.h"	 /* dlink_node/dlink_list */
 #include "handlers.h"    /* m_pass prototype */
@@ -154,8 +154,8 @@ static struct StatsStruct stats_cmd_table[] =
   { 'K',	stats_klines,		0,	0,	},
   { 'l',	stats_ltrace,		1,	0,	},
   { 'L',	stats_ltrace,		1,	0,	},
-  { 'm',	stats_messages,		1,	0,	},
-  { 'M',	stats_messages,		1,	0,	},
+  { 'm',	stats_messages,		0,	0,	},
+  { 'M',	stats_messages,		0,	0,	},
   { 'o',	stats_oper,		0,	0,	},
   { 'O',	stats_oper,		0,	0,	},
   { 'p',	stats_operedup,		0,	0,	},
