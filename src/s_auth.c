@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.87 2002/02/28 14:03:49 androsyn Exp $
+ *  $Id: s_auth.c,v 7.88 2002/03/01 07:09:14 jmallett Exp $
  */
 
 /*
@@ -348,7 +348,7 @@ static int start_auth_query(struct AuthRequest* auth)
    * and machines with multiple IP addresses are common now
    */
   memset(&localaddr, 0, locallen);
-  getsockname(auth->client->localClient->fd, (struct sockaddr*)&SOCKADDR(localaddr), (size_t*)&locallen);
+  getsockname(auth->client->localClient->fd, (struct sockaddr*)&SOCKADDR(localaddr), &locallen);
   S_PORT(localaddr) = htons(0);
 
   auth->fd = fd;
