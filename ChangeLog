@@ -1,3 +1,26 @@
+db          2003/01/10 22:52:32 EST	(20030111_0)
+
+  Modified files:
+    include              client.h 
+    src                  channel_mode.c client.c packet.c parse.c 
+                         s_bsd.c s_serv.c s_user.c send.c 
+  Log:
+  - Even more cleanups of the exit code, but this gets rid of the
+    abort_list.
+  
+  Revision  Changes    Path
+  7.155     +0 -1      ircd-hybrid-7/include/client.h
+  7.69      +1 -1      ircd-hybrid-7/src/channel_mode.c
+  7.311     +11 -77    ircd-hybrid-7/src/client.c
+  7.97      +11 -19    ircd-hybrid-7/src/packet.c
+  7.143     +2 -2      ircd-hybrid-7/src/parse.c
+  7.175     +1 -1      ircd-hybrid-7/src/s_bsd.c
+  7.272     +22 -20    ircd-hybrid-7/src/s_serv.c
+  7.218     +2 -2      ircd-hybrid-7/src/s_user.c
+  7.212     +11 -11    ircd-hybrid-7/src/send.c
+
+
+
 db          2003/01/10 15:22:48 EST	(20030110_3)
 
   Modified files:
@@ -33891,4 +33914,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4159 2003/01/10 20:22:51 db Exp $
+$Id: ChangeLog,v 7.4160 2003/01/11 03:52:35 db Exp $
