@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.262 2001/07/28 10:47:22 a1kmm Exp $
+ * $Id: channel.c,v 7.263 2001/07/29 20:06:05 leeh Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -3110,11 +3110,12 @@ set_channel_mode(struct Client *client_p,
 
         /* ignore server-generated MODE +-ovh */
         /* naw, allow it but still flag it */
-        if (IsServer(source_p))
+	/* ignore +ovh and flag it, allow -ovh */
+        if (IsServer(source_p) && (whatt == MODE_ADD))
         {
-          ts_warn("MODE %c%c on %s for %s from server %s",
-                  (whatt == MODE_ADD ? '+' : '-'), c, chname,
-                  who->name, source_p->name);
+          ts_warn("MODE +%c on %s for %s from server %s",
+                  c, chname, who->name, source_p->name);
+          break;
         }
 
         target_was_chop = is_chan_op(chptr, who);
