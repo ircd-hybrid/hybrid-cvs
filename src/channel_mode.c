@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.101 2003/05/31 18:52:55 adx Exp $
+ *  $Id: channel_mode.c,v 7.102 2003/06/01 04:00:06 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -302,7 +302,11 @@ change_channel_membership(struct Channel *chptr, struct Client *client_p,
   if ((ms = find_user_link(chptr, client_p)) != NULL)
   {
     if (add_flag)
+    {
       ms->flags |=  flags;
+      if (flags & CHFL_CHANOP)
+        ms->flags &= ~ CHFL_DEOPPED;
+    }
     else
       ms->flags &= ~flags;
   }
