@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_part.c,v 7.2 1999/12/30 20:35:54 db Exp $
+ *   $Id: m_part.c,v 7.3 2000/01/02 22:11:58 db Exp $
  */
 #include "m_commands.h"
 #include "channel.h"
@@ -32,6 +32,7 @@
 #include "list.h"
 #include "numeric.h"
 #include "send.h"
+#include "s_serv.h"
 
 #include <stdlib.h>
 #include <string.h>

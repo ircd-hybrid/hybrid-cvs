@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 7.6 2000/01/02 05:34:59 db Exp $
+ *   $Id: m_join.c,v 7.7 2000/01/02 22:11:57 db Exp $
  */
 
 #include "m_commands.h"
@@ -292,11 +292,26 @@ int     m_join(struct Client *cptr,
              {
                flags = CHFL_CHANOP;
 #ifndef HUB
-               if( serv_cptr_list && IsCapable( serv_cptr_list, CAP_LL) )
+               if( (*name != '&') && serv_cptr_list
+                     && IsCapable( serv_cptr_list, CAP_LL) )
                  {
-                   sendto_realops("This is where we ask for %s", name );
-                   sendto_one(serv_cptr_list,":%s CBURST %s :%s",
-                     me.name,name,sptr->name);
+#ifdef DEBUGLL
+                   sendto_realops("This is where we ask for %s %s %s",
+                                   name,
+                                   sptr->name,
+                                   key ? key : "" );
+#endif
+                   if(key)
+                     sendto_one(serv_cptr_list,":%s CBURST %s :%s %s",
+                       me.name,name,sptr->name,key);
+                   else
+                     sendto_one(serv_cptr_list,":%s CBURST %s :%s",
+                       me.name,name,sptr->name);
+#ifdef DEBUGLL
+                   sendto_realops("Waiting for LLJOIN");
+#endif
+                   /* And wait for LLJOIN */
+                   return 0;
                  }
 #endif
              }

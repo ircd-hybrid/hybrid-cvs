@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.11 2000/01/02 07:42:49 db Exp $
+ *   $Id: s_serv.c,v 7.12 2000/01/02 22:11:59 db Exp $
  */
 #include "s_serv.h"
 #include "channel.h"
@@ -41,6 +41,7 @@
 #include "s_zip.h"
 #include "scache.h"
 #include "send.h"
+#include "client.h"
 #include "s_debug.h"
 
 #include <assert.h>
@@ -677,7 +678,12 @@ int server_estab(struct Client *cptr)
   if (!set_sock_buffers(cptr->fd, READBUF_SIZE))
     report_error(SETBUF_ERROR_MSG, get_client_name(cptr, TRUE), errno);
 
+#ifdef HUB
   cptr->serverMask = nextFreeMask();
+#ifdef DEBUGLL
+  sendto_realops("Adding serverMask %X", cptr->serverMask );
+#endif
+#endif
 
   /* LINKLIST */
   /* add to server link list -Dianora */

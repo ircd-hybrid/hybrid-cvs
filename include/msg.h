@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: msg.h,v 7.7 2000/01/02 06:47:30 db Exp $
+ * $Id: msg.h,v 7.8 2000/01/02 22:11:54 db Exp $
  */
 #ifndef INCLUDED_msg_h
 #define INCLUDED_msg_h
@@ -68,6 +68,8 @@ typedef struct MessageTree MESSAGE_TREE;
 #ifdef HUB
 #define MSG_CBURST   "CBURST"   /* channel burst */
 #define MSG_DROP     "DROP"     /* channel burst */
+#else
+#define MSG_LLJOIN   "LLJOIN"   /* Lazy Link join */
 #endif
 
 #define MSG_WHO      "WHO"      /* WHO  -> WHOC */
@@ -177,6 +179,9 @@ struct Message msgtab[] = {
 #ifdef HUB
   { MSG_CBURST,  m_cburst,   0, MAXPARA, 1, 0, 0, 0L },
   { MSG_DROP,    m_drop,     0, MAXPARA, 1, 0, 0, 0L },
+#endif
+#ifndef HUB
+ { MSG_LLJOIN,   m_lljoin,   0, MAXPARA, 1, 0, 0, 0L },
 #endif
   { MSG_MODE,    m_mode,     0, MAXPARA, 1, 0, 0, 0L },
   { MSG_QUIT,    m_quit,     0, MAXPARA, 1, 1, 0, 0L },

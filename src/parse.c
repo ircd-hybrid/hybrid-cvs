@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.7 2000/01/01 14:34:01 db Exp $
+ *   $Id: parse.c,v 7.8 2000/01/02 22:11:58 db Exp $
  */
 #include "parse.h"
 #include "channel.h"
@@ -246,12 +246,6 @@ int parse(struct Client *cptr, char *buffer, char *bufend)
   */
 
   /* Note initially true: s==NULL || *(s-1) == '\0' !! */
-
-  /* ZZZ hmmmmmmmm whats this then? */
-#if 0
-  if (me.user)
-    para[0] = sender;
-#endif
 
   i = 1;
 
