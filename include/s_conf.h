@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.136 2001/06/08 07:37:23 db Exp $
+ * $Id: s_conf.h,v 7.137 2001/06/08 10:24:46 a1kmm Exp $
  */
 
 #include "setup.h"
@@ -386,6 +386,8 @@ extern void conf_add_conf(struct ConfItem *);
 extern void parse_k_file(FBFILE *fb);
 extern void parse_d_file(FBFILE *fb);
 extern char *getfield(char *newline);
+
+extern char *get_oper_name(struct Client *client_p);
 
 extern int yylex(void);
 

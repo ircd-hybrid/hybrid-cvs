@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kline.c,v 1.84 2001/06/08 09:59:36 leeh Exp $
+ *   $Id: m_kline.c,v 1.85 2001/06/08 10:24:53 a1kmm Exp $
  */
 #include "tools.h"
 #include "m_kline.h"
@@ -360,7 +360,7 @@ static void ms_kline(struct Client *client_p,
  *
  * inputs	-
  * output	- NONE
- * side effects	- kline as given, is added to apropriate tree
+ * side effects	- kline as given, is added to the hashtable
  *		  and conf file
  */
 static void apply_kline(struct Client *source_p, struct ConfItem *aconf,
