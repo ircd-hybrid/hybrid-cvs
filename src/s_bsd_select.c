@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_select.c,v 7.1 2000/10/23 12:38:03 adrian Exp $
+ *  $Id: s_bsd_select.c,v 7.2 2000/10/23 18:44:59 db Exp $
  */
 #include "s_bsd.h"
 #include "class.h"
@@ -142,7 +142,7 @@ int read_message(time_t delay, unsigned char mask)        /* mika */
       FD_ZERO(read_set);
       FD_ZERO(write_set);
 
-		#ifdef USE_IAUTH
+#ifdef USE_IAUTH
       if (iAuth.socket != NOSOCK)
       {
       	if (IsIAuthConnect(iAuth))
@@ -150,7 +150,7 @@ int read_message(time_t delay, unsigned char mask)        /* mika */
       	else
         	FD_SET(iAuth.socket, read_set);
       }
-    #endif
+#endif
 
       for (auth = AuthPollList; auth; auth = auth->next) {
         assert(-1 < auth->fd);

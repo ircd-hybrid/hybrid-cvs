@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_cjoin.c,v 7.13 2000/10/22 17:20:35 db Exp $
+ *   $Id: m_cjoin.c,v 7.14 2000/10/23 18:44:58 db Exp $
  */
 
 #include "handlers.h"
@@ -214,7 +214,7 @@ int     m_cjoin(struct Client *cptr,
       return 0;
     }
 
-  ircsprintf( vchan_name, "#%s_%lu", name+1, CurrentTime );
+  ircsprintf( vchan_name, "##%s_%lu", name+1, CurrentTime );
   vchan_chptr = get_channel(sptr, vchan_name, CREATE);
 
   if( vchan_chptr == NULL )
