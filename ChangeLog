@@ -1,3 +1,19 @@
+jmallett    2002/11/12 23:33:02 EST	(20021113_1)
+
+  Modified files:
+    .                    README.PLATFORMS 
+  Log:
+  Well, I can't look after some platforms I used to be able to since I moved
+  to Kansas, but I can look after OpenBSD/macppc now!  Hopefully more to come,
+  but not just yet :/
+  
+  (I'm back!)
+  
+  Revision  Changes    Path
+  7.15      +1 -7      ircd-hybrid-7/README.PLATFORMS
+
+
+
 wiz         2002/11/12 20:59:00 EST	(20021113_0)
 
   Modified files:
@@ -33126,4 +33142,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4106 2002/11/13 01:59:02 wiz Exp $
+$Id: ChangeLog,v 7.4107 2002/11/13 04:33:04 jmallett Exp $
