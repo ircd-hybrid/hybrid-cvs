@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.4 2003/05/21 11:08:26 metalrock Exp $
+# $Id: Makefile.in,v 1.5 2003/05/23 01:04:57 joshk Exp $
 
 INSTALL		= @INSTALL@
 INSTALL_DATA	= @INSTALL_DATA@
@@ -45,6 +45,3 @@ install:
 
 distclean:
 	${RM} -f Makefile
-
-# XXX what the heck is this for? it's truly an example of examples
-#$(CP) convertconf-example.conf $(sysconfdir)/.convertconf-example.conf
