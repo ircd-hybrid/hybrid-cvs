@@ -25,7 +25,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: balloc.c,v 7.43 2003/05/11 22:27:44 joshk Exp $
+ *  $Id: balloc.c,v 7.44 2003/05/22 20:19:37 jmallett Exp $
  */
 
 /* 
@@ -278,7 +278,6 @@ newblock(BlockHeap * bh)
         newblk = (void *)offset;
         newblk->block = b;
         data = (void *)((size_t)offset + sizeof(MemBlock));
-        newblk->block = b;
         dlinkAdd(data, &newblk->self, &b->free_list);
         offset = (unsigned char *)((unsigned char *)offset + bh->elemSize + sizeof(MemBlock));
       }
