@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 1.62 2001/04/10 05:21:45 a1kmm Exp $
+ *  $Id: m_stats.c,v 1.63 2001/04/18 10:57:41 fl_ Exp $
  */
 #include "tools.h"	 /* dlink_node/dlink_list */
 #include "handlers.h"    /* m_pass prototype */
@@ -363,8 +363,13 @@ static void do_priv_stats(struct Client *source_p, char *name, char *target,
       stats_spy(source_p,statchar);
       break;
 
-    case 'E' : case 'e' :
+    case 'E' :
       show_events(source_p);
+      stats_spy(source_p,statchar);
+      break;
+
+    case 'e' :
+      report_exemptlines(source_p);
       stats_spy(source_p,statchar);
       break;
 

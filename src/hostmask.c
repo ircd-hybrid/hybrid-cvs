@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- * $Id: hostmask.c,v 7.34 2001/04/17 22:36:05 fl_ Exp $ 
+ * $Id: hostmask.c,v 7.35 2001/04/18 10:57:42 fl_ Exp $ 
  */
  
 #include <stdlib.h>
@@ -468,7 +468,7 @@ find_address_conf(const char *host, const char *user,
 
 /* struct ConfItem* find_dline(struct irc_inaddr*, int)
  * Input: An address, an address family.
- * Output: The best matching D-line or E-lining I-line.
+ * Output: The best matching D-line or exempt line.
  * Side effects: None.
  */
 struct ConfItem*
@@ -632,6 +632,26 @@ report_dlines(struct Client *client_p)
    }
 }
 
+void
+report_exemptlines(struct Client *client_p)
+{
+  char *name, *host, *pass, *user, *classname;
+  struct AddressRec *arec;
+  struct ConfItem *aconf;
+  int i, port;
+  
+  for (i=0; i<ATABLE_SIZE; i++)
+    for (arec=atable[i]; arec; arec=arec->next)
+      if (arec->type == CONF_EXEMPTDLINE)
+        {
+           aconf = arec->aconf;
+           get_printable_conf(aconf, &name, &host, &pass,
+                              &user, &port, &classname);
+           sendto_one(client_p, form_str(RPL_STATSDLINE), me.name,
+                      client_p->name, 'e', host, pass);
+        }
+}
+ 
 /*
  * show_iline_prefix()
  *
