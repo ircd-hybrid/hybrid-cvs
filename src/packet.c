@@ -18,7 +18,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: packet.c,v 7.52 2001/05/25 14:45:31 davidt Exp $
+ *   $Id: packet.c,v 7.53 2001/05/26 12:39:35 davidt Exp $
  */ 
 
 #include <stdio.h>
@@ -177,7 +177,7 @@ read_ctrl_packet(int fd, void *data)
     reply->readdata = 0;
     reply->data = NULL;
 
-    length = read(fd, &reply->command, 1);
+    length = read(fd, tmp, 1);
 
     if (length <= 0)
     {
@@ -186,6 +186,8 @@ read_ctrl_packet(int fd, void *data)
       error_exit_client(server, length);
       return;
     }
+
+    reply->command = tmp[0];
   }
 
   for (replydef = slinkrpltab; replydef->handler; replydef++)

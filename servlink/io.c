@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: io.c,v 1.18 2001/05/25 16:50:36 davidt Exp $
+ *   $Id: io.c,v 1.19 2001/05/26 12:39:30 davidt Exp $
  */
 
 #include "../include/setup.h"
@@ -280,9 +280,11 @@ void read_ctrl(void)
     cmd.data = NULL;
 
     /* read the command */
-    if (!(ret = checkError(read(CONTROL_FD_R, &cmd.command, 1),
+    if (!(ret = checkError(read(CONTROL_FD_R, tmp, 1),
                            IO_READ, CONTROL_FD_R)))
       return;
+
+    cmd.command = tmp[0];
   }
 
   /* read datalen for commands including data */
@@ -309,14 +311,14 @@ void read_ctrl(void)
 
         if (cmd.gotdatalen == 0)
         {
-          cmd.datalen = *len << 8;
+          cmd.datalen = len[0] << 8;
           cmd.gotdatalen++;
           ret--;
           len++;
         }
         if (ret && (cmd.gotdatalen == 1))
         {
-          cmd.datalen |= *len;
+          cmd.datalen |= len[0];
           cmd.gotdatalen++;
           if (cmd.datalen > 0)
             cmd.data = calloc(cmd.datalen, 1);
