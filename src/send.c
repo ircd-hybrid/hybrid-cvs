@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.45 2000/11/26 03:35:42 db Exp $
+ *   $Id: send.c,v 7.46 2000/11/26 17:46:45 db Exp $
  */
 #include "send.h"
 #include "channel.h"
@@ -313,14 +313,17 @@ vsendto_one(struct Client *to, const char *pattern, va_list args)
 } /* vsendto_one() */
 
 void
-sendto_channel_butone(struct Client *one, struct Client *from, struct Channel *chptr, 
+sendto_channel_butone(struct Client *one, struct Client *from,
+		      struct Channel *chptr, 
                       const char *pattern, ...)
 
 {
   va_list       args;
   register struct SLink *lp;
   register struct Client *acptr;
-  register int index; /* index of sentalong[] to flag client as having received message */
+  register int index; /* index of sentalong[] to flag client
+		       * as having received message
+		       */
 
   va_start(args, pattern);
 
@@ -450,7 +453,8 @@ sendto_channel_type(struct Client *one, struct Client *from, struct Channel *chp
 ** -good
 */
 void
-sendto_channel_type_notice(struct Client *from, struct Channel *chptr, int type, char *message)
+sendto_channel_type_notice(struct Client *from, struct Channel *chptr,
+			   int type, char *message)
 
 {
         register struct SLink *lp;
