@@ -1,3 +1,8 @@
+*** 20001128_4 by db
+- oopsies in modules.c should be max_mods not num_mods
+
+
+
 *** 20001128_3 by db
 - removed more bloat bloat bloat
 
@@ -931,7 +936,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.607 2000/11/28 06:15:14 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.608 2000/11/28 06:21:14 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
