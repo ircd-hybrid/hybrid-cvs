@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.325 2003/02/06 08:46:00 a1kmm Exp $
+ *  $Id: client.c,v 7.326 2003/02/06 09:57:06 a1kmm Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -1561,12 +1561,6 @@ exit_client(
            source_p->name, CurrentTime - source_p->firsttime, 
            source_p->localClient->sendK, source_p->localClient->receiveK);
     }
-  }
-  
-  if (MyConnect(source_p))
-  {
-    close_connection(source_p);
-    SetDead(source_p); /* You are dead my friend */
   }
   
   /* The client *better* be off all of the lists */
