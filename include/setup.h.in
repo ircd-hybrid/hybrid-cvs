@@ -1,8 +1,5 @@
 /* include/setup.h.in.  Generated from configure.ac by autoheader.  */
 
-/* Max number of buckets in hash tables. */
-#undef HASHSIZE
-
 /* Size of the ban heap. */
 #undef BAN_HEAP_SIZE
 
@@ -20,6 +17,9 @@
 
 /* Define if this ircd will be an EFnet server. */
 #undef EFNET
+
+/* Max number of buckets in hash tables. */
+#undef HASHSIZE
 
 /* Define to 1 if you have the `basename' function. */
 #undef HAVE_BASENAME

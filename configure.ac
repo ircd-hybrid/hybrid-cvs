@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.82 2003/07/18 00:41:40 joshk Exp $
+dnl $Id: configure.ac,v 7.83 2003/09/18 14:06:54 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -8,7 +8,7 @@ dnl said functions need to be just about as complex as they already are.
 AC_PREREQ(2.57)
 
 dnl Sneaky way to get an Id tag into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.82 2003/07/18 00:41:40 joshk Exp $])
+AC_COPYRIGHT([$Id: configure.ac,v 7.83 2003/09/18 14:06:54 joshk Exp $])
 
 AC_INIT([ircd-hybrid],[7-CURRENT])
 
@@ -607,7 +607,10 @@ AC_HELP_STRING([--enable-kqueue],[Force kqueue() usage.]),
 
 AC_ARG_ENABLE(devpoll,
 AC_HELP_STRING([--enable-devpoll],[Force usage of /dev/poll.]),
-[SELECT_TYPE_EXPLICIT="devpoll"; echo "Forcing /dev/poll to be enabled"],)
+[SELECT_TYPE_EXPLICIT="devpoll"
+echo "Forcing /dev/poll to be enabled"
+dnl These need to be defined or not defined
+AC_CHECK_HEADERS([sys/devpoll.h devpoll.h])],)
 
 AC_ARG_ENABLE(rtsigio,
 AC_HELP_STRING([--enable-rtsigio],[Enable SIGIO with RT Signals (Linux only)]),
