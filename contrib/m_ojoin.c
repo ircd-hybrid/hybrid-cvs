@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_ojoin.c,v 1.8 2002/05/31 04:16:20 androsyn Exp $
+ *   $Id: m_ojoin.c,v 1.9 2002/06/01 18:47:26 db Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -59,7 +59,7 @@ _moddeinit(void)
   mod_del_cmd(&ojoin_msgtab);
 }
 
-char *_version = "$Revision: 1.8 $";
+char *_version = "$Revision: 1.9 $";
 
 /*
 ** mo_ojoin
@@ -102,6 +102,9 @@ static void mo_ojoin(struct Client *client_p, struct Client *source_p,
     }
 #endif
 
+  if (move_me == 1)
+    parv[1]--;
+
   if( chptr == NULL )
     {
       sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
@@ -115,9 +118,6 @@ static void mo_ojoin(struct Client *client_p, struct Client *source_p,
                  me.name, source_p->name, parv[1]);
       return;
     }
-
-  if (move_me == 1)
-    parv[1]--;
 
   if (*parv[1] == '@') 
     {
