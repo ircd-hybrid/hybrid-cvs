@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.80 2002/08/23 03:30:30 db Exp $
+ *  $Id: m_whois.c,v 1.81 2002/09/05 06:05:40 db Exp $
  */
 
 #include "stdinc.h"
@@ -76,7 +76,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-const char *_version = "$Revision: 1.80 $";
+const char *_version = "$Revision: 1.81 $";
 #endif
 /*
 ** m_whois
@@ -215,7 +215,7 @@ do_whois(struct Client *client_p, struct Client *source_p,
 	{
 	  if (!ServerInfo.hub && uplink && IsCapable(uplink,CAP_LL))
 	    {
-	      if(glob == 1)
+	      if(glob)
    	        sendto_one(uplink,":%s WHOIS %s :%s",
 		  	   source_p->name, nick, nick);
 	      else
@@ -256,8 +256,7 @@ do_whois(struct Client *client_p, struct Client *source_p,
  * 		  writing results to source_p
  */
 static int
-global_whois(struct Client *source_p, char *nick,
-	     int wilds, int glob)
+global_whois(struct Client *source_p, char *nick, int wilds, int glob)
 {
   struct Client *target_p;
   int found = NO;
@@ -399,7 +398,7 @@ static void whois_person(struct Client *source_p,struct Client *target_p, int gl
   cur_len = mlen;
   t = buf + mlen;
 
-  for (lp = target_p->user->channel.head; lp; lp = lp->next)
+  DLINK_FOREACH(lp, target_p->user->channel.head)
     {
       chptr = lp->data;
       chname = chptr->chname;
@@ -468,8 +467,8 @@ static void whois_person(struct Client *source_p,struct Client *target_p, int gl
 		   me.name, source_p->name, target_p->name);
     }
 
-  if ( (glob == 1) || (MyConnect(target_p) && (IsOper(source_p) ||
-       !ConfigServerHide.hide_servers)) || (target_p == source_p) )
+  if (glob || (MyConnect(target_p) && (IsOper(source_p) ||
+      !ConfigServerHide.hide_servers)) || (target_p == source_p) )
     {
       sendto_one(source_p, form_str(RPL_WHOISIDLE),
                  me.name, source_p->name, target_p->name,
@@ -554,14 +553,12 @@ ms_whois(struct Client *client_p, struct Client *source_p,
        * if the target isnt on that server.. answer it for them, as the
        * LL might not know that the target exists..
        */
-      if(MyConnect(target_p) && ServerInfo.hub && 
-         IsCapable(target_p, CAP_LL))
+      if(MyConnect(target_p) && ServerInfo.hub && IsCapable(target_p, CAP_LL))
       {
         struct Client *whois_p;
 
         /* try to find the client */
-	whois_p = find_client(parv[2]);
-	if (whois_p)
+	if ((whois_p = find_client(parv[2])) != NULL)
 	{
 	  /* check the server being asked to perform the whois, is that
 	   * clients uplink */

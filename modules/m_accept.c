@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_accept.c,v 1.32 2002/07/11 23:42:00 androsyn Exp $
+ *  $Id: m_accept.c,v 1.33 2002/09/05 06:05:40 db Exp $
  */
 
 #include "stdinc.h"
@@ -60,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&accept_msgtab);
 }
 
-const char *_version = "$Revision: 1.32 $";
+const char *_version = "$Revision: 1.33 $";
 #endif
 /*
  * m_accept - ACCEPT command handler
@@ -247,7 +247,7 @@ static void list_accepts(struct Client *source_p)
   *nicks = '\0';
   len2= strlen(source_p->name) + 10;
 
-  for(ptr = source_p->allow_list.head; ptr; ptr = ptr->next)
+  DLINK_FOREACH(ptr, source_p->allow_list.head)
   {
     target_p = ptr->data;
 

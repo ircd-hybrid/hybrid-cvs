@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_close.c,v 1.23 2002/05/24 23:34:19 androsyn Exp $
+ *  $Id: m_close.c,v 1.24 2002/09/05 06:05:40 db Exp $
  */
 
 #include "stdinc.h"
@@ -54,14 +54,15 @@ _moddeinit(void)
   mod_del_cmd(&close_msgtab);
 }
 
-const char *_version = "$Revision: 1.23 $";
+const char *_version = "$Revision: 1.24 $";
 #endif
 /*
  * mo_close - CLOSE message handler
  *  - added by Darren Reed Jul 13 1992.
  */
-static void mo_close(struct Client *client_p, struct Client *source_p,
-                    int parc, char *parv[])
+static void
+mo_close(struct Client *client_p, struct Client *source_p,
+	 int parc, char *parv[])
 {
   struct Client  *target_p;
   dlink_node     *ptr;
@@ -70,10 +71,9 @@ static void mo_close(struct Client *client_p, struct Client *source_p,
 
 
 
-  for (ptr = unknown_list.head; ptr; ptr = ptr_next)
+  DLINK_FOREACH_SAFE(ptr, ptr_next, unknown_list.head)
     {
       target_p = ptr->data;
-      ptr_next = ptr->next;
 
   /* Which list would connecting servers be found in? serv_list ? */
 #if 0
