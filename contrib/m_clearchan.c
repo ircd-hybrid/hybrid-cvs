@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_clearchan.c,v 1.10 2001/03/07 19:30:13 fl_ Exp $
+ *   $Id: m_clearchan.c,v 1.11 2001/03/08 01:55:13 jdc Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -38,6 +38,7 @@
 #include "parse.h"
 #include "modules.h"
 #include "vchannel.h"
+#include "list.h"
 
 #include <string.h>
 
