@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_poll.c,v 7.12 2000/11/01 15:53:15 adrian Exp $
+ *  $Id: s_bsd_poll.c,v 7.13 2000/11/01 18:53:14 adrian Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -234,8 +234,6 @@ int read_message(time_t delay, unsigned char mask)
   int                  res = 0;
   int                  length;
   int                  fd;
-  struct AuthRequest*  auth;
-  struct AuthRequest*  auth_next;
   int                  rr;
   int                  rw;
   int                  i;
@@ -245,18 +243,7 @@ int read_message(time_t delay, unsigned char mask)
     pfd      = poll_fdarray;
     pfd->fd  = -1;
     res_pfd  = NULL;
-    auth = 0;
 
-    /*
-     * set auth descriptors
-     */
-    for (auth = AuthPollList; auth; auth = auth->next) {
-      assert(-1 < auth->fd);
-      auth->index = nbr_pfds;
-      if (IsAuthConnect(auth))
-        PFD_SETW(auth->fd);
-        /* Reading is done through comm_setselect now! -- adrian */
-    }
     /*
      * set client descriptors
      */
@@ -295,23 +282,6 @@ int read_message(time_t delay, unsigned char mask)
     sleep(10);
   }
 
-  /*
-   * check auth descriptors
-   */
-  for (auth = AuthPollList; auth; auth = auth_next) {
-    auth_next = auth->next;
-    i = auth->index;
-    /*
-     * check for any event, we only ask for one at a time
-     */
-    if (poll_fdarray[i].revents) { 
-      if (IsAuthConnect(auth))
-        send_auth_query(auth);
-      poll_fdarray[i].fd = -1;
-      if (0 == --nfds)
-        break;
-    }
-  }
   /*
    * Since we're going to rip this code out anyway, the current "hack"
    * will suffice to keep things going. The only two things this loop
