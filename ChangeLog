@@ -1,3 +1,15 @@
+db          2002/07/18 03:12:53 EDT	(20020718_2)
+
+  Modified files:
+    src                  messages.tab 
+  Log:
+  - This adds (core) to any module listed that is a core module
+  
+  Revision  Changes    Path
+  7.69      +1 -1      ircd-hybrid-7/src/messages.tab
+
+
+
 leeh        2002/07/17 19:31:13 EDT	(20020718_1)
 
   Modified files:
@@ -30055,4 +30067,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3896 2002/07/17 23:31:20 leeh Exp $
+$Id: ChangeLog,v 7.3897 2002/07/18 07:13:00 db Exp $
