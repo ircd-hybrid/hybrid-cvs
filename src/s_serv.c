@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.336 2003/05/26 05:43:20 db Exp $
+ *  $Id: s_serv.c,v 7.337 2003/05/27 20:20:05 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -371,6 +371,7 @@ hunt_server(struct Client *client_p, struct Client *source_p, const char *comman
             int server, int parc, char *parv[])
 {
   struct Client *target_p = NULL;
+  struct Client *target_tmp = NULL;
   dlink_node *ptr;
   int wilds;
 
@@ -413,12 +414,16 @@ hunt_server(struct Client *client_p, struct Client *source_p, const char *comman
     {
       DLINK_FOREACH(ptr, global_client_list.head)
       {
-	target_p = NULL;
+        target_tmp = ptr->data;
 
-	if (match(parv[server], ((struct Client *)(ptr->data))->name))
+        if (match(parv[server], target_tmp->name))
         {
-	  target_p = ptr->data;
-	  break;
+          if (target_tmp->from == source_p->from && !MyConnect(target_tmp))
+            continue;
+          target_p = ptr->data;
+
+          if (IsRegistered(target_p) && (target_p != client_p))
+            break;
         }
       }
     }
