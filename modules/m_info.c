@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.c,v 1.44 2001/09/05 12:14:45 leeh Exp $
+ * $Id: m_info.c,v 1.45 2001/10/11 23:21:18 davidt Exp $
  */
 
 #include <time.h>
@@ -326,6 +326,30 @@ static struct InfoStruct info_table[] =
     OUTPUT_DECIMAL,
     &ConfigFileEntry.ts_max_delta,
     "Maximum permitted TS delta from another server"
+  },
+  {
+    "use_except",
+    OUTPUT_BOOLEAN_YN,
+    &ConfigChannel.use_except,
+    "Enable chanmode +e (ban exceptions)",
+  },
+  {
+    "use_halfops",
+    OUTPUT_BOOLEAN_YN,
+    &ConfigChannel.use_halfops,
+    "Enable chanmode +h (halfops)",
+  },
+  {
+    "use_invex",
+    OUTPUT_BOOLEAN_YN,
+    &ConfigChannel.use_invex,
+    "Enable chanmode +I (invite exceptions)",
+  },
+  {
+    "use_knock",
+    OUTPUT_BOOLEAN_YN,
+    &ConfigChannel.use_knock,
+    "Enable /KNOCK",
   },
   {
     "ts_warn_delta",

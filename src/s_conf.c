@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.271 2001/10/11 15:41:02 jdc Exp $
+ *  $Id: s_conf.c,v 7.272 2001/10/11 23:21:19 davidt Exp $
  */
 
 #include <sys/types.h>
@@ -1461,6 +1461,7 @@ rehash (struct Client *client_p,struct Client *source_p, int sig)
 
 #define YES     1
 #define NO      0
+#define UNSET  -1
 
 static void 
 set_default_conf(void)
@@ -1554,7 +1555,8 @@ set_default_conf(void)
   ConfigChannel.disable_vchans = NO;
 
   ConfigChannel.use_except  = YES;
-  ConfigChannel.use_halfops = YES;
+  /* ConfigChannel.use_halfops = YES; */ /* Don't set, as this can't
+                                            be changed at runtime */
   ConfigChannel.use_invex   = NO;
   ConfigChannel.use_knock   = YES;
   ConfigChannel.knock_delay = 300;
@@ -1620,6 +1622,10 @@ validate_conf(void)
       (ConfigFileEntry.client_flood > CLIENT_FLOOD_MAX))
      ConfigFileEntry.client_flood = CLIENT_FLOOD_MAX;
 
+  /* Hasn't been set yet, so set it now */
+  if(ConfigChannel.use_halfops == -1)
+    ConfigChannel.use_halfops = 1;
+  
   GlobalSetOptions.idletime = (ConfigFileEntry.idletime * 60);
 }
 
@@ -2078,7 +2084,12 @@ read_conf_files(int cold)
         }
     }
 
-  if (!cold)
+  if (cold)
+  {
+    /* set to 'undefined' */
+    ConfigChannel.use_halfops = -1;
+  }
+  else
   {
     clear_out_old_conf();
   }
