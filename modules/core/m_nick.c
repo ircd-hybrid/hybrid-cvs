@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_nick.c,v 1.43 2001/01/04 19:47:15 db Exp $
+ *   $Id: m_nick.c,v 1.44 2001/01/04 20:02:57 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -145,7 +145,7 @@ static int mr_nick(struct Client *cptr, struct Client *sptr, int parc,
        * involve killing someone, instead of just sending a
        * NICKNAMEINUSE error
        */
-      sendto_one(sptr, ":%s NBURST %s %s", me.name, nick);
+      sendto_one(sptr, ":%s NBURST %s", me.name, nick);
     }
     else
       return(set_initial_nick(cptr, sptr, nick));
