@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.406 2003/08/21 21:12:56 michael Exp $
+ *  $Id: client.c,v 7.407 2003/08/21 21:16:55 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1324,7 +1324,7 @@ exit_client(
     }
     else
     {
-      if ((source_p->serv) && (source_p->serv->up))
+      if ((source_p->serv) && (source_p->serv->up[0] != '\0'))
         strcpy(comment1, source_p->serv->up);
       else
         strcpy(comment1, "<Unknown>");
