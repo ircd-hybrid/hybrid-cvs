@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.23 2003/06/16 03:07:50 db Exp $
+ *  $Id: m_xline.c,v 1.24 2003/06/16 07:37:03 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -83,7 +83,7 @@ _moddeinit(void)
   mod_del_cmd(&unxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.23 $";
+const char *_version = "$Revision: 1.24 $";
 #endif
 
 
@@ -247,7 +247,8 @@ ms_xline(struct Client *client_p, struct Client *source_p,
 
     write_xline(source_p, parv[2], parv[4], atoi(parv[3]));
   }
-  else if (find_u_conf(source_p->user->server->name,
+  else if (find_matching_name_conf(ULINE_TYPE,
+		       source_p->user->server->name,
                        source_p->username, source_p->host,
                        SHARED_XLINE))
   {
@@ -347,7 +348,8 @@ ms_unxline(struct Client *client_p, struct Client *source_p,
 
   if (find_cluster(source_p->user->server->name, CLUSTER_UNXLINE))
     remove_xline(source_p, parv[2], 1);
-  else if (find_u_conf(source_p->user->server->name,
+    else if (find_matching_name_conf(ULINE_TYPE,
+		       source_p->user->server->name,
                        source_p->username, source_p->host,
                        SHARED_UNXLINE))
   {
