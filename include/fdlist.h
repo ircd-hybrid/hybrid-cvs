@@ -1,7 +1,7 @@
 /*
  * fdlist.h
  *
- * $Id: fdlist.h,v 7.11 2000/11/19 14:45:10 davidt Exp $
+ * $Id: fdlist.h,v 7.12 2000/12/01 15:01:45 adrian Exp $
  */
 #ifndef INCLUDED_fdlist_h
 #define INCLUDED_fdlist_h
@@ -88,6 +88,9 @@ struct _fde {
     PF *timeout_handler;
     void *timeout_data;
     time_t timeout;
+    PF *flush_handler;
+    void *flush_data;
+    time_t flush_timeout;
     struct {
         unsigned int open:1;
         unsigned int close_request:1;
