@@ -1,5 +1,5 @@
 /************************************************************************
- *   IRC - Internet Relay Chat, include/config.h
+ *   IRC - Internet Relay Chat, src/modules.c
  *   Copyright (C) 1990 Jarkko Oikarinen
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.c,v 7.31 2000/12/30 06:03:42 lusky Exp $
+ * $Id: modules.c,v 7.32 2001/01/01 23:27:30 davidt Exp $
  */
 
 #include <dlfcn.h>
@@ -159,22 +159,22 @@ int unload_one_module (char *name)
 
 struct Message modload_msgtab = {
   MSG_MODLOAD, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_ignore, m_ignore, mo_modload}
+  {m_unregistered, m_not_oper, m_ignore, mo_modload}
 };
 
 struct Message modunload_msgtab = {
   MSG_MODUNLOAD, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_ignore, m_ignore, mo_modunload}
+  {m_unregistered, m_not_oper, m_ignore, mo_modunload}
 };
 
 struct Message modlist_msgtab = {
   MSG_MODLIST, 0, 1, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_ignore, m_ignore, mo_modlist}
+  {m_unregistered, m_not_oper, m_ignore, mo_modlist}
 };
 
 struct Message hash_msgtab = {
   MSG_HASH, 0, 1, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_ignore, m_ignore, mo_hash}
+  {m_unregistered, m_not_oper, m_ignore, mo_hash}
 };
 
 /* load all modules from MPATH */

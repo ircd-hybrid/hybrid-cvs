@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.63 2000/12/31 07:44:18 db Exp $
+ * $Id: s_conf.h,v 7.64 2001/01/01 23:27:27 davidt Exp $
  */
 
 #include <sys/param.h>
@@ -222,6 +222,7 @@ typedef struct
   int         max_targets;
   int         links_notice;
   int         links_delay;
+  int         vchans_oper_only;
 } ConfigFileEntryType;
 
 /* bleh. have to become global. */

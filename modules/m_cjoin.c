@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_cjoin.c,v 1.21 2001/01/01 22:28:58 davidt Exp $
+ *   $Id: m_cjoin.c,v 1.22 2001/01/01 23:27:28 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -48,6 +48,7 @@ struct Message cjoin_msgtab = {
   MSG_CJOIN, 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_cjoin, m_error, m_cjoin}
 };
+
 
 void
 _modinit(void)
@@ -84,6 +85,13 @@ int     m_cjoin(struct Client *cptr,
   if (!(sptr->user))
     {
       /* something is *fucked* - bail */
+      return 0;
+    }
+
+  if (ConfigFileEntry.vchans_oper_only && !IsOper(sptr))
+    {
+      sendto_one(sptr, form_str(ERR_NOPRIVILEGES),
+                 me.name, parv[0]);
       return 0;
     }
 
