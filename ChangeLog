@@ -1,3 +1,26 @@
+a1kmm       2003/01/31 07:53:10 EST	(20030131_1)
+
+  Modified files:
+    src                  channel.c 
+    modules/core         m_part.c 
+    include              channel.h 
+  Log:
+  - Kludge around the fact that a channel can be destroyed after
+    remove_user_from_channel is called, by incrementing users
+    artificially, and calling sub1_from_channel manually later.
+    - This would be less of a kludge if we rename users to
+      refcount or something(TODO).
+  - In order not to break vchans, I had to set the vchan ID when the users count
+    is 2 or less, instead of the normal 1. This is an awful kludge, and we need
+    a better way to do it.
+  
+  Revision  Changes    Path
+  7.122     +2 -0      ircd-hybrid-7/include/channel.h
+  1.59      +4 -2      ircd-hybrid-7/modules/core/m_part.c
+  7.351     +2 -3      ircd-hybrid-7/src/channel.c
+
+
+
 a1kmm       2003/01/31 07:15:21 EST	(20030131_0)
 
   Modified files:
@@ -34591,4 +34614,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4206 2003/01/31 12:15:23 a1kmm Exp $
+$Id: ChangeLog,v 7.4207 2003/01/31 12:53:13 a1kmm Exp $
