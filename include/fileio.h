@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fileio.h,v 7.8 2002/01/05 09:14:28 a1kmm Exp $
+ *  $Id: fileio.h,v 7.9 2002/03/09 17:03:37 androsyn Exp $
  */
 
 #ifndef INCLUDED_fileio_h
@@ -99,9 +99,5 @@ extern int     fbstat(struct stat* sb, FBFILE* fb);
  * popen a file.
  */
 extern FBFILE *fbpopen(const char *, const char *);
-
-/* file_open / file_close -- adrian */
-extern int     file_open(const char *filename, int mode, int fmode);
-extern void    file_close(int fd);
 
 #endif /* INCLUDED_fileio_h */

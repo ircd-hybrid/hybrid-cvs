@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fileio.c,v 7.19 2002/02/25 17:39:14 androsyn Exp $
+ *  $Id: fileio.c,v 7.20 2002/03/09 17:03:40 androsyn Exp $
  */
 
 #include "fileio.h"
@@ -45,7 +45,7 @@
  * Grr. -- adrian
  */
 
-int
+static int
 file_open(const char *filename, int mode, int fmode)
 {
     int fd;
@@ -60,7 +60,7 @@ file_open(const char *filename, int mode, int fmode)
     return fd;
 }
 
-void
+static void
 file_close(int fd)
 {
     /*
