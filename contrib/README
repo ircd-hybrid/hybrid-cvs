@@ -1,4 +1,4 @@
-$Id: README,v 1.13 2001/12/27 11:38:18 leeh Exp $
+$Id: README,v 1.14 2002/01/13 18:54:41 wcampbel Exp $
 
 This directory contains modules that have been contributed
 by other people, or aren't suitable for including into the 
@@ -6,6 +6,9 @@ hybrid tree.
 
 m_flags.c      - FLAGS - csircd like support of changing usermodes
                  Syntax:  FLAGS :+OWALLOPS -SWALLOPS
+
+m_jupe.c       - JUPE - Server juping command
+                 Syntax:  JUPE juped.server.name :Reason
 		 
 m_map.c        - MAP - Display the server routing graph in a visually pleasing
                        format

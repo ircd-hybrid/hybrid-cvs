@@ -1,4 +1,4 @@
-$Id: TODO,v 7.59 2001/12/06 22:52:58 davidt Exp $
+$Id: TODO,v 7.60 2002/01/13 18:54:38 wcampbel Exp $
 
 - add more stderr debugging (ircd -s)... one for every place we syslog()
 - ircd -s doesn't work through a restart
@@ -91,8 +91,6 @@ Little things to be done given enough time and initiative -Hwy
    user="wcampbel@144.26.0.0/16"; # Does not work
 .  The 3 logging path settings are NOOP in the conf (logpath, oper_log, 
    gline_log)
-.  Fix tools/fixklines.c and tools/klineParse.c for the new kline.conf
-   format.
 .  Fix convertconf more
 .  2 pass conf parser (grab classes before anything that uses them)
 .  Re-add the ability to set usermodes from the conf (oldconf field after the
