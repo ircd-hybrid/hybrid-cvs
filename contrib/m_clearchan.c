@@ -1,5 +1,5 @@
 /************************************************************************
- *   IRC - Internet Relay Chat, modules/m_clearchan.c
+ *   IRC - Internet Relay Chat, contrib/m_clearchan.c
  *   Copyright (C) 1990 Jarkko Oikarinen and
  *                      University of Oulu, Computing Center
  *
@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_clearchan.c,v 1.1 2001/01/04 21:41:52 toot Exp $
+ *   $Id: m_clearchan.c,v 1.2 2001/01/04 21:52:03 toot Exp $
  */
 #include "tools.h"
 #include "handlers.h"
