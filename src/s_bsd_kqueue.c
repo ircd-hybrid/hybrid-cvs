@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_kqueue.c,v 1.14 2001/05/09 08:08:27 a1kmm Exp $
+ *  $Id: s_bsd_kqueue.c,v 1.15 2001/06/05 01:45:38 ejb Exp $
  */
 #include "config.h"
 #ifdef USE_KQUEUE
@@ -162,7 +162,7 @@ void init_netio(void)
 {
     kq = kqueue();
     if (kq < 0) {
-        log(L_CRIT, "init_netio: Couldn't open kqueue fd!\n");
+        ilog(L_CRIT, "init_netio: Couldn't open kqueue fd!\n");
         exit(115); /* Whee! */
     }
     kqmax = getdtablesize();

@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: oldparse.c,v 1.25 2001/04/17 22:36:07 fl_ Exp $
+ *  $Id: oldparse.c,v 1.26 2001/06/05 01:45:36 ejb Exp $
  */
 
 #include <sys/types.h>
@@ -125,7 +125,7 @@ void oldParseOneLine(char* line)
       
     default:
       free_conf(aconf);
-      log(L_ERROR, "Error in config file: %s", line);
+      ilog(L_ERROR, "Error in config file: %s", line);
       break;
     }
 }

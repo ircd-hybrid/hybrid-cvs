@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_signal.c,v 7.6 2001/05/25 01:02:54 ejb Exp $
+ * $Id: ircd_signal.c,v 7.7 2001/06/05 01:45:33 ejb blalloc.c $
  */
 
 #include <signal.h>
@@ -47,7 +47,7 @@ static void sigterm_handler(int sig)
    * connections and flush data. read server_reboot() for my explanation.
    *     -- adrian
    */
-  log(L_CRIT, "Server killed By SIGTERM");
+  ilog(L_CRIT, "Server killed By SIGTERM");
   exit(-1);
 }
   
@@ -68,12 +68,12 @@ static void sigint_handler(int sig)
 
   if (server_state.foreground) 
     {
-      log(L_WARN, "Server exiting on SIGINT");
+      ilog(L_WARN, "Server exiting on SIGINT");
       exit(0);
     }
   else
     {
-      log(L_WARN, "Server Restarting on SIGINT");
+      ilog(L_WARN, "Server Restarting on SIGINT");
       if (restarting == 0) 
         {
           restarting = 1;

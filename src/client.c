@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.177 2001/06/03 13:55:34 db Exp $
+ *  $Id: client.c,v 7.178 2001/06/05 01:45:31 ejb Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -316,7 +316,7 @@ check_pings_list(dlink_list *list)
                   sendto_realops_flags(FLAGS_NOTADMIN,
                                        "No response from %s, closing link",
                                        get_client_name(client_p, MASK_IP));
-                  log(L_NOTICE, "No response from %s, closing link",
+                  ilog(L_NOTICE, "No response from %s, closing link",
                       get_client_name(client_p, HIDE_IP));
                 }
 	      (void)ircsprintf(scratch,
@@ -1427,7 +1427,7 @@ const char* comment         /* Reason for the exit */
 			       source_p->name, (int)(CurrentTime - source_p->firsttime),
 			       source_p->localClient->sendK,
 			       source_p->localClient->receiveK);
-          log(L_NOTICE, "%s was connected for %d seconds.  %d/%d sendK/recvK.",
+          ilog(L_NOTICE, "%s was connected for %d seconds.  %d/%d sendK/recvK.",
               source_p->name, CurrentTime - source_p->firsttime, 
               source_p->localClient->sendK, source_p->localClient->receiveK);
 

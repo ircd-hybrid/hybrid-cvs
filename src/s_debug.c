@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_debug.c,v 7.55 2001/06/02 05:46:07 ejb Exp $
+ *   $Id: s_debug.c,v 7.56 2001/06/05 01:45:41 ejb Exp $
  */
 
 #include <sys/types.h> 
@@ -97,7 +97,7 @@ void debug(int level, char *format, ...)
     vsprintf(debugbuf, format, args);
     va_end(args);
 
-    log(L_DEBUG, "%s", debugbuf);
+    ilog(L_DEBUG, "%s", debugbuf);
   }
   errno = err;
 } /* debug() */

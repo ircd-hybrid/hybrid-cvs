@@ -24,12 +24,11 @@ Known problems on VMS:
   - If IRCD.EXE exits immediately after startup, make sure that [.ETC]IRCD.PID
     doesn't exist.
 
-It should work fine when started with RUN/DETACH, but doesn't yet
-set a process name for itself, so it'll appear empty in show sys.
+It should work fine when started with RUN/DETACH.
 
 So far, IRCD is known to work on OpenVMS 7.2/Alpha systems.
 
 If anyone gets ircd working on VMS (or has problems with it), please mail me
 (ejb@leguin.org.uk) with any comments you have.
 
-$Id: README.VMS,v 1.8 2001/06/02 05:46:00 ejb Exp $
+$Id: README.VMS,v 1.9 2001/06/05 01:45:21 ejb Exp $

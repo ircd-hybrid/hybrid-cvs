@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.152 2001/05/30 02:59:18 ejb Exp $
+ * $Id: ircd.c,v 7.153 2001/06/05 01:45:33 ejb Exp $
  */
 
 #include <sys/types.h>
@@ -284,7 +284,7 @@ set_time(void)
  
  if (newtime == -1)
  {
-  log(L_ERROR, "Clock Failure (%d)", errno);
+  ilog(L_ERROR, "Clock Failure (%d)", errno);
   sendto_realops_flags(FLAGS_ALL,
                        "Clock Failure (%d), TS can be corrupted", errno);
   restart("Clock Failure");
@@ -400,13 +400,13 @@ static void write_pidfile(const char *filename)
     {
       ircsprintf(buff,"%d\n", (int)getpid());
       if ((fbputs(buff, fd) == -1))
-        log(L_ERROR,"Error writing to pid file %s (%s)", filename,
+        ilog(L_ERROR,"Error writing to pid file %s (%s)", filename,
 		    strerror(errno));
       fbclose(fd);
       return;
     }
   else
-    log(L_ERROR, "Error opening pid file %s", filename);
+    ilog(L_ERROR, "Error opening pid file %s", filename);
 }
 
 /*
@@ -552,7 +552,7 @@ int main(int argc, char *argv[])
  if (ServerInfo.name == NULL)
  {
   fprintf(stderr, "Error: No server name specified\n");
-  log(L_CRIT,"You need a server name to run.");
+  ilog(L_CRIT,"You need a server name to run.");
   exit(EXIT_FAILURE);
  }
 
@@ -602,7 +602,7 @@ int main(int argc, char *argv[])
  check_class();
  write_pidfile(pidFileName);
   
- log(L_NOTICE, "Server Ready");
+ ilog(L_NOTICE, "Server Ready");
   
  eventAdd("cleanup_channels", cleanup_channels, NULL,
           CLEANUP_CHANNELS_TIME, 0);

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: memory.c,v 7.19 2001/05/29 01:19:35 a1kmm Exp $
+ * $Id: memory.c,v 7.20 2001/06/05 01:45:34 ejb Exp $
  */
 #include <stdlib.h>
 #include <string.h>
@@ -224,7 +224,7 @@ void outofmemory()
 
   was_here = 1;
 
-  log(L_CRIT, "Out of memory: restarting server...");
+  ilog(L_CRIT, "Out of memory: restarting server...");
 #ifdef MEMDEBUG
   log_memory();
 #endif

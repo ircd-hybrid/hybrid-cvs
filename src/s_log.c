@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_log.c,v 7.31 2001/05/28 13:45:46 jdc Exp $
+ *   $Id: s_log.c,v 7.32 2001/06/05 01:45:42 ejb Exp $
  */
 #include "client.h"	/* Needed for struct Client */
 #include "s_log.h"
@@ -125,7 +125,7 @@ static void write_log(const char* message)
 }
 #endif
    
-void log(int priority, const char* fmt, ...)
+void ilog(int priority, const char* fmt, ...)
 {
   char    buf[LOG_BUFSIZE];
   va_list args;

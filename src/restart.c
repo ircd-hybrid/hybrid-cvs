@@ -1,7 +1,7 @@
 /*
  * restart.c
  *
- * $Id: restart.c,v 7.12 2001/01/18 17:32:23 ejb Exp $
+ * $Id: restart.c,v 7.13 2001/06/05 01:45:36 ejb Exp $
  */
 #include "tools.h"
 #include "restart.h"
@@ -29,7 +29,7 @@ void restart(char *mesg)
     abort();
   was_here = YES;
 
-  log(L_NOTICE, "Restarting Server because: %s, memory data limit: %ld",
+  ilog(L_NOTICE, "Restarting Server because: %s, memory data limit: %ld",
          mesg, get_maxrss());
 
   server_reboot();
@@ -43,7 +43,7 @@ void server_reboot(void)
 		       "Aieeeee!!!  Restarting server... memory: %d",
 		       get_maxrss());
 
-  log(L_NOTICE, "Restarting server...");
+  ilog(L_NOTICE, "Restarting server...");
   /*
    * XXX we used to call flush_connections() here. But since this routine
    * doesn't exist anymore, we won't be flushing. This is ok, since 

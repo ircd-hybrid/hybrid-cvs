@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.148 2001/06/01 00:56:03 davidt Exp $
+ *   $Id: send.c,v 7.149 2001/06/05 01:45:45 ejb Exp $
  */
 
 #include <sys/types.h>
@@ -1184,7 +1184,7 @@ ts_warn(const char *pattern, ...)
   va_end(args);
 
   sendto_realops_flags(FLAGS_ALL,"%s",lbuf);
-  log(L_CRIT, "%s", lbuf);
+  ilog(L_CRIT, "%s", lbuf);
 } /* ts_warn() */
 
 
