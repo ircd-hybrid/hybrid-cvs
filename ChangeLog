@@ -1,3 +1,11 @@
+*** 20001209_3 by db
+- removed obsolete #ifdef's in m_info.h
+- removed obsolete comments in m_unkline.c
+- removed SLAVE_SERVER junk fro m_locops.c
+- removed obsolete #ifdef junk in s_debug.c
+
+
+
 *** 20001209_2 by db
 - renamed confusing sendto_channel_butserv to sendto_channel_local
   it reflects better what the stupid function does
@@ -2020,7 +2028,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.757 2000/12/09 05:59:41 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.758 2000/12/09 06:10:16 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
