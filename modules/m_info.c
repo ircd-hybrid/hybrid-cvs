@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.c,v 1.67 2003/05/06 23:02:30 michael Exp $
+ *  $Id: m_info.c,v 1.68 2003/05/09 21:38:18 bill Exp $
  */
 
 #include "stdinc.h"
@@ -69,7 +69,7 @@ _moddeinit(void)
   hook_del_event("doing_info");
   mod_del_cmd(&info_msgtab);
 }
-const char *_version = "$Revision: 1.67 $";
+const char *_version = "$Revision: 1.68 $";
 #endif
 
 /*
@@ -432,18 +432,6 @@ static struct InfoStruct info_table[] =
     OUTPUT_BOOLEAN_YN,
     &ConfigChannel.use_knock,
     "Enable /KNOCK",
-  },
-  {
-    "use_vchans",
-    OUTPUT_BOOLEAN_YN,
-    &ConfigChannel.use_vchans,
-    "Enabled vchans",
-  },
-  {
-    "vchans_oper_only",
-    OUTPUT_BOOLEAN_YN,
-    &ConfigChannel.vchans_oper_only,
-    "Restrict use of /CJOIN to opers"
   },
   {
     "disable_hidden",

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.252 2003/04/27 12:55:25 adx Exp $
+ *  $Id: send.c,v 7.253 2003/05/09 21:38:25 bill Exp $
  */
 
 #include "stdinc.h"
@@ -42,7 +42,6 @@
 #include "list.h"
 #include "s_debug.h"
 #include "s_log.h"
-#include "vchannel.h"
 #include "memory.h"
 #include "hook.h"
 
@@ -491,11 +490,11 @@ sendto_channel_butone(struct Client *one, struct Client *from,
 
   if (IsServer(from))
     local_len = ircsprintf(local_buf, ":%s %s %s ",
-                           from->name, command, RootChan(chptr)->chname);
+                           from->name, command, chptr->chname);
   else
     local_len = ircsprintf(local_buf, ":%s!%s@%s %s %s ",
                            from->name, from->username, from->host,
-                           command, RootChan(chptr)->chname);
+                           command, chptr->chname);
   remote_len = ircsprintf(remote_buf, ":%s %s %s ",
                           from->name, command, chptr->chname);
   uid_len = ircsprintf(uid_buf, ":%s %s %s ",

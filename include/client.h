@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.184 2003/05/04 16:26:05 adx Exp $
+ *  $Id: client.h,v 7.185 2003/05/09 21:38:13 bill Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -106,15 +106,6 @@ struct ZipStats
   double out_ratio;
 };
 
-/* entry for base_chan pointer and the corresponding vchan
- * client is actually on
- */
-struct Vchan_map
-{
-  struct Channel *base_chan;
-  struct Channel *vchan;
-};
-
 struct Client
 {
   dlink_node node;
@@ -173,13 +164,6 @@ struct Client
    * gcos field in /etc/passwd but anything can go here.
    */
   char              info[REALLEN + 1]; /* Free form additional client info */
-
-/* cache table of mappings between top level chan and sub vchan client
- * is on.
- */
-
-  dlink_list      vchan_map;
-
 
   /* caller ID allow list */
   /* This has to be here, since a client on an on_allow_list could

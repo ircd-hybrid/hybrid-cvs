@@ -1,4 +1,4 @@
-$Id: README,v 1.27 2003/05/08 01:36:42 joshk Exp $
+$Id: README,v 1.28 2003/05/09 21:38:07 bill Exp $
 
 This directory contains modules and patches that have been contributed
 by other people, or aren't suitable for including into the 
@@ -19,7 +19,7 @@ Modules
 
 m_clearchan.c  - CLEARCHAN - clears all users out of a channel and joins person
                              issuing command
-                 Syntax: CLEARCHAN <channel> [vchanid]
+                 Syntax: CLEARCHAN <channel>
 
 m_flags.c      - FLAGS - csircd like support of changing usermodes
                  Syntax:  FLAGS :+OWALLOPS -SWALLOPS

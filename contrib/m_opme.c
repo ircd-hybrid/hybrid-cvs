@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_opme.c,v 1.33 2003/05/03 11:10:00 michael Exp $
+ *   $Id: m_opme.c,v 1.34 2003/05/09 21:38:07 bill Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -33,7 +33,6 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
-#include "vchannel.h"
 
 
 static void mo_opme(struct Client *client_p, struct Client *source_p, int parc, char *parv[]);
@@ -56,7 +55,7 @@ _moddeinit(void)
   mod_del_cmd(&opme_msgtab);
 }
 
-const char *_version = "$Revision: 1.33 $";
+const char *_version = "$Revision: 1.34 $";
 
 static int
 chan_is_opless(struct Channel *chptr)
@@ -80,8 +79,7 @@ static void
 mo_opme(struct Client *client_p, struct Client *source_p,
         int parc, char *parv[])
 {
-  struct Channel *chptr, *root_chptr;
-  int on_vchan = 0;
+  struct Channel *chptr;
   dlink_node *ptr;
   dlink_node *locptr;
 
@@ -95,19 +93,7 @@ mo_opme(struct Client *client_p, struct Client *source_p,
 
   /* XXX - we might not have CBURSTed this channel if we are a lazylink
    * yet. */
-  chptr      = hash_find_channel(parv[1]);
-  root_chptr = chptr;
-
-#ifdef VCHANS
-  if (chptr && parc > 2 && parv[2][0] == '!')
-  {
-    chptr = find_vchan(chptr, parv[2]);
-
-    if (root_chptr != chptr)
-      on_vchan++;
-  }
-#endif
-  if (chptr == NULL)
+  if ((chptr = hash_find_channel(parv[1])) == NULL)
   {
     sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
                me.name, source_p->name, parv[1]);
@@ -161,54 +147,27 @@ mo_opme(struct Client *client_p, struct Client *source_p,
   dlinkAdd(source_p, ptr, &chptr->chanops);
   dlinkAdd(source_p, locptr, &chptr->locchanops);
 
-  if (!on_vchan)
-    {
-     if (parv[1][0] == '&')
-     {
-       sendto_wallops_flags(UMODE_LOCOPS, &me,
-                            "OPME called for [%s] by %s!%s@%s",
-                            parv[1], source_p->name, source_p->username,
-                            source_p->host);
-     }
-     else
-     {
-       sendto_wallops_flags(UMODE_WALLOP, &me,
-                            "OPME called for [%s] by %s!%s@%s",
-                            parv[1], source_p->name, source_p->username,
-                            source_p->host);
-       sendto_server(NULL, source_p, NULL, NOCAPS, NOCAPS, LL_ICLIENT,
-                     ":%s WALLOPS :OPME called for [%s] by %s!%s@%s",
-                     me.name, parv[1], source_p->name, source_p->username,
-                     source_p->host);
-     }
-     ilog(L_NOTICE, "OPME called for [%s] by %s!%s@%s",
-                   parv[1], source_p->name, source_p->username,
-                   source_p->host);
-    }
+  if (parv[1][0] == '&')
+  {
+    sendto_wallops_flags(UMODE_LOCOPS, &me,
+                         "OPME called for [%s] by %s!%s@%s",
+                         parv[1], source_p->name, source_p->username,
+                         source_p->host);
+  }
   else
-    {
-     if (parv[1][0] == '&')
-     {
-       sendto_wallops_flags(UMODE_LOCOPS, &me,
-                            "OPME called for [%s %s] by %s!%s@%s",
-                            parv[1], parv[2], source_p->name,
-                            source_p->username, source_p->host);
-     }
-     else
-     {
-       sendto_wallops_flags(UMODE_WALLOP, &me,
-                            "OPME called for [%s %s] by %s!%s@%s",
-                            parv[1], parv[2], source_p->name,
-                            source_p->username, source_p->host);
-       sendto_server(NULL, source_p, NULL, NOCAPS, NOCAPS, LL_ICLIENT,
-                     ":%s WALLOPS :OPME called for [%s %s] by %s!%s@%s",
-                     me.name, parv[1], parv[2], source_p->name,
-                     source_p->username, source_p->host);
-     }
-     ilog(L_NOTICE, "OPME called for [%s %s] by %s!%s@%s",
-                   parv[1], parv[2], source_p->name, source_p->username,
-                   source_p->host);
-    }
+  {
+    sendto_wallops_flags(UMODE_WALLOP, &me,
+                         "OPME called for [%s] by %s!%s@%s",
+                         parv[1], source_p->name, source_p->username,
+                         source_p->host);
+    sendto_server(NULL, source_p, NULL, NOCAPS, NOCAPS, LL_ICLIENT,
+                  ":%s WALLOPS :OPME called for [%s] by %s!%s@%s",
+                  me.name, parv[1], source_p->name, source_p->username,
+                  source_p->host);
+  }
+  ilog(L_NOTICE, "OPME called for [%s] by %s!%s@%s",
+       parv[1], source_p->name, source_p->username,
+       source_p->host);
 
   sendto_server(NULL, source_p, chptr, CAP_UID, NOCAPS, NOFLAGS,
                  ":%s PART %s", ID(source_p), parv[1]);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.377 2003/05/09 21:06:35 metalrock Exp $
+ *  $Id: s_conf.c,v 7.378 2003/05/09 21:38:24 bill Exp $
  */
 
 #include "stdinc.h"
@@ -1388,12 +1388,9 @@ set_default_conf(void)
   ConfigFileEntry.crypt_oper_password = YES;
   ConfigFileEntry.throttle_time = 10;
 
-  ConfigChannel.vchans_oper_only = NO;
-
   ConfigChannel.use_except  = YES;
   ConfigChannel.use_invex   = YES;
   ConfigChannel.use_knock   = YES;
-  ConfigChannel.use_vchans = NO;
   ConfigChannel.knock_delay = 300;
   ConfigChannel.knock_delay_channel = 60;
   ConfigChannel.max_chans_per_user = 15;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_topic.c,v 1.56 2003/05/03 13:38:58 adx Exp $
+ *  $Id: m_topic.c,v 1.57 2003/05/09 21:38:18 bill Exp $
  */
 
 #include "stdinc.h"
@@ -27,7 +27,6 @@
 #include "handlers.h"
 #include "channel.h"
 #include "channel_mode.h"
-#include "vchannel.h"
 #include "client.h"
 #include "hash.h"
 #include "irc_string.h"
@@ -62,7 +61,7 @@ _moddeinit(void)
   mod_del_cmd(&topic_msgtab);
 }
 
-const char *_version = "$Revision: 1.56 $";
+const char *_version = "$Revision: 1.57 $";
 #endif
 /*
  * m_topic
@@ -75,11 +74,7 @@ m_topic(struct Client *client_p, struct Client *source_p,
 	int parc, char *parv[])
 {
   struct Channel *chptr = NULL;
-  struct Channel *root_chan;
   char  *p = NULL;
-#ifdef VCHANS
-  struct Channel *vchan;
-#endif
 
   if ((p = strchr(parv[1],',')))
     *p = '\0';
@@ -117,19 +112,6 @@ m_topic(struct Client *client_p, struct Client *source_p,
         }
       }
 
-      root_chan = chptr;
-
-#ifdef VCHANS
-      if (HasVchans(chptr))
-	{
-	  vchan = map_vchan(chptr,source_p);
-	  if (vchan != NULL)
-	    chptr = vchan;
-	}
-      else if (IsVchan(chptr))
-        root_chan = RootChan(chptr);
-#endif
-          
       /* setting topic */
       if (parc > 2)
 	{
@@ -158,13 +140,13 @@ m_topic(struct Client *client_p, struct Client *source_p,
 				       source_p->name,
 				       source_p->username,
 				       source_p->host,
-				       root_chan->chname,
+				       chptr->chname,
 				       chptr->topic == NULL ? "" : chptr->topic);
 
 		  sendto_channel_local(NON_CHANOPS,
 				       chptr, ":%s TOPIC %s :%s",
 				       me.name,
-				       root_chan->chname,
+				       chptr->chname,
 				       chptr->topic == NULL ? "" : chptr->topic);
 		}
 	      else
@@ -174,7 +156,7 @@ m_topic(struct Client *client_p, struct Client *source_p,
 				       source_p->name,
 				       source_p->username,
 				       source_p->host,
-				       root_chan->chname, chptr->topic == NULL ? "" : chptr->topic);
+				       chptr->chname, chptr->topic == NULL ? "" : chptr->topic);
 		}
 	    }
 	  else
@@ -196,13 +178,13 @@ m_topic(struct Client *client_p, struct Client *source_p,
 	    {
               sendto_one(source_p, form_str(RPL_TOPIC),
                          me.name, parv[0],
-                         root_chan->chname, chptr->topic);
+                         chptr->chname, chptr->topic);
 
                 if (!(chptr->mode.mode & MODE_HIDEOPS) ||
                     is_any_op(chptr,source_p))
                 {
                   sendto_one(source_p, form_str(RPL_TOPICWHOTIME),
-                             me.name, parv[0], root_chan->chname,
+                             me.name, parv[0], chptr->chname,
                              chptr->topic_info,
                              chptr->topic_time);
                 }
@@ -214,14 +196,14 @@ m_topic(struct Client *client_p, struct Client *source_p,
 	                 && IsCapable(client_p, CAP_LL) && ServerInfo.hub)
   	        {
 	          sendto_one(source_p, form_str(RPL_TOPICWHOTIME),
-	  	             me.name, parv[0], root_chan->chname,
+	  	             me.name, parv[0], chptr->chname,
 	  		     client_p->name, chptr->topic_time);
                 }
   	        /* just normal topic hiding.. */
 	        else
 	 	{
                   sendto_one(source_p, form_str(RPL_TOPICWHOTIME),
-                             me.name, parv[0], root_chan->chname,
+                             me.name, parv[0], chptr->chname,
                              me.name,
                              chptr->topic_time);
                 }

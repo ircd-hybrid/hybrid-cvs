@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.283 2003/05/07 02:46:49 michael Exp $
+ *  $Id: ircd_parser.y,v 1.284 2003/05/09 21:38:24 bill Exp $
  */
 
 %{
@@ -281,8 +281,6 @@ init_parser_confs(void)
 %token  USE_HALFOPS
 %token  USE_INVEX
 %token  USE_KNOCK
-%token  USE_VCHANS
-%token  VCHANS_OPER_ONLY
 %token  VHOST
 %token  VHOST6
 %token  WARN
@@ -2669,9 +2667,7 @@ channel_item:       channel_use_except |
                     channel_use_halfops |
                     channel_use_invex |
                     channel_use_knock |
-                    channel_use_vchans |
 		    channel_use_anonops |
-		    channel_vchans_oper_only |
                     channel_max_bans |
                     channel_knock_delay |
 		    channel_knock_delay_channel |
@@ -2774,28 +2770,6 @@ channel_use_knock: USE_KNOCK '=' TYES ';'
 {
   if (ypass == 2)
     ConfigChannel.use_knock = 0;
-};
-
-channel_use_vchans: USE_VCHANS '=' TYES ';'
-{
-#ifdef VCHANS
-  if (ypass == 2)
-    ConfigChannel.use_vchans = 1;
-#endif
-} | USE_VCHANS '=' TNO ';'
-{
-  if (ypass == 2)
-    ConfigChannel.use_vchans = 0;
-};
-
-channel_vchans_oper_only: VCHANS_OPER_ONLY '=' TYES ';'
-{ 
-  if (ypass == 2)
-    ConfigChannel.vchans_oper_only = 1;
-} | VCHANS_OPER_ONLY '=' TNO ';'
-{
-  if (ypass == 2)
-    ConfigChannel.vchans_oper_only = 0;
 };
 
 channel_knock_delay: KNOCK_DELAY '=' timespec ';'

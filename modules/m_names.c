@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_names.c,v 1.48 2003/04/06 00:07:13 michael Exp $
+ *  $Id: m_names.c,v 1.49 2003/05/09 21:38:18 bill Exp $
  */
 
 #include "stdinc.h"
@@ -27,7 +27,6 @@
 #include "handlers.h"
 #include "channel.h"
 #include "channel_mode.h"
-#include "vchannel.h"
 #include "client.h"
 #include "common.h"   /* bleah */
 #include "hash.h"
@@ -67,7 +66,7 @@ _moddeinit(void)
   mod_del_cmd(&names_msgtab);
 }
 
-const char *_version = "$Revision: 1.48 $";
+const char *_version = "$Revision: 1.49 $";
 #endif
 
 /************************************************************************
@@ -78,7 +77,6 @@ const char *_version = "$Revision: 1.48 $";
 ** m_names
 **      parv[0] = sender prefix
 **      parv[1] = channel
-**      parv[2] = vkey
 */
 static void m_names(struct Client *client_p,
                     struct Client *source_p,
@@ -88,10 +86,6 @@ static void m_names(struct Client *client_p,
   struct Channel *ch2ptr = NULL;
   char *s;
   char *para = parc > 1 ? parv[1] : NULL;
-#ifdef VCHANS
-  struct Channel *vchan = NULL;
-  char *vkey = NULL;
-#endif
 
   if (!EmptyString(para))
     {
@@ -102,11 +96,6 @@ static void m_names(struct Client *client_p,
       if (!*para)
         return;
 
-#ifdef VCHANS
-      if (parc > 2)
-        vkey = parv[2];
-#endif
-
       if (!check_channel_name(para))
         { 
           sendto_one(source_p, form_str(ERR_BADCHANNAME),
@@ -115,31 +104,7 @@ static void m_names(struct Client *client_p,
         }
 
       if ((ch2ptr = hash_find_channel(para)) != NULL)
-        {
-#ifdef VCHANS
-          if (HasVchans(ch2ptr))
-            {
-              vchan = map_vchan(ch2ptr, source_p);
-
-              if ((vkey && !vkey[1]) || (!vchan && !vkey))
-                {
-                  show_vchans(source_p, ch2ptr, "names");
-                  return;
-                }
-              else if (vkey && vkey[1])
-                {
-                  vchan = find_vchan(ch2ptr, vkey);
-                  if(!vchan)
-                    return;
-                }
-              channel_member_names(source_p, vchan, ch2ptr->chname, 1);
-            }
-          else
-#endif
-            {
-              channel_member_names(source_p, ch2ptr, ch2ptr->chname, 1);
-            }
-        }
+        channel_member_names(source_p, ch2ptr, ch2ptr->chname, 1);
       else
         sendto_one(source_p, form_str(RPL_ENDOFNAMES), me.name,
                    parv[0], para);
@@ -167,9 +132,6 @@ names_all_visible_channels(struct Client *source_p)
   dlink_node *gptr;
   struct Channel *chptr;
   char *chname=NULL;
-#ifdef VCHANS
-  struct Channel *bchan;
-#endif
 
   /* 
    * First, do all visible channels (public and the one user self is)
@@ -178,20 +140,10 @@ names_all_visible_channels(struct Client *source_p)
   DLINK_FOREACH(gptr, global_channel_list.head)
     {
       chptr = gptr->data;
-#ifdef VCHANS
-      if (IsVchan(chptr))
-        {
-          bchan = find_bchan (chptr);
-          if (bchan != NULL)
-            chname = bchan->chname;
-        }
-      else
-#endif
-        chname = chptr->chname;
+      chname = chptr->chname;
 
       /* Find users on same channel (defined by chptr) */
-
-      channel_member_names( source_p, chptr, chname, 0);
+      channel_member_names(source_p, chptr, chname, 0);
     }
 }
 

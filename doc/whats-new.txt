@@ -39,23 +39,6 @@ options that were in config.h, to be changed with a /rehash.
 
   NOTE: Anonymous ops are optional and disabled by default.
   
-- The infamous VChans are included.  This allows multiple channels with the
-  same name.  When joining a channel with vchans, a simple JOIN #channel
-  will show a message saying which channels are available.  The user will
-  then have to JOIN #channel !key with one of the provided keys.  Creating
-  a new vchan is easy as well.  Part the channel and do /quote CJOIN #channel.
-  A new view of the channel is created.   A legitimate op can just CJOIN a
-  new vchan and get all of the old users over to the new vchan.  The takeover
-  people will then be sitting opped by themselves in a vchan while the
-  original users are back the way they were before in another vchan.
-
-  The command CJOIN and vchans are configurable in the config file:
-       vchans_oper_only=yes; will make CJOIN oper only
-       use_vchans=no;        will stop vchans from being recognised on
-                             this server
-
-  See doc/vchans.txt for more information.
-
 --------------
  User Changes: 
 --------------
@@ -215,7 +198,6 @@ options that were in config.h, to be changed with a /rehash.
   server will support, and what commands:
 
     KNOCK          - Support KNOCK
-    VCHANS         - Support Virtual Channels
     EXCEPTS        - Support ban exceptions (+e)
     INVEX          - Support invite exceptions (+I)
     WALLCHOPS      - /notice @#channel will notice only ops
@@ -266,5 +248,5 @@ options that were in config.h, to be changed with a /rehash.
     PARA    - Controls propogation of INVITE notices for +p (paranoid) channels
     ENC:a   - Encrypted link, where 'a' is the cipher being used
 
-# $Id: whats-new.txt,v 7.38 2003/04/08 09:30:49 adx Exp $
+# $Id: whats-new.txt,v 7.39 2003/05/09 21:38:09 bill Exp $
 

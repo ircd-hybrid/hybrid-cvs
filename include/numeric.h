@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: numeric.h,v 7.34 2003/04/13 13:02:06 adx Exp $
+ *  $Id: numeric.h,v 7.35 2003/05/09 21:38:13 bill Exp $
  */
 
 #ifndef INCLUDED_numeric_h
@@ -168,10 +168,6 @@ extern const char *get_locale(void);
 
 #define RPL_LOCALUSERS       265
 #define RPL_GLOBALUSERS      266
-
-#define RPL_VCHANEXIST       276
-#define RPL_VCHANLIST        277
-#define RPL_VCHANHELP        278
 
 #define RPL_ACCEPTLIST	     281
 #define RPL_ENDOFACCEPT      282
@@ -431,9 +427,6 @@ extern const char *get_locale(void);
 /* #define ERR_LAST_ERR_MSG 505 
  * moved to 999
  */
-
-#define ERR_VCHANDISABLED    506
-#define ERR_ALREADYONVCHAN   507
 
 /*      ERR_NOTIFYFULL       512           aircd */
 /*	ERR_TOOMANYWATCH     512           Numeric List: Dalnet */

@@ -33,8 +33,7 @@ Channel Modes:
                   explicitly INVITE'd into the channel before being able
                   JOIN
 +i - invite     - Invite only
-+k - key        - Key/password for the channel.  VChans with a key can be
-                  JOIN'ed with JOIN #vchanned-channel !vkey password
++k - key        - Key/password for the channel
 +l - limit      - Limit the number of users in a channel
 +m - moderated  - Users without +v/h/o cannot send text to the channel
 +n - noexternal - Users must be in the channel to send text to it
@@ -54,4 +53,4 @@ Currently these are bkloveIh.
 Note that most of the channel modes can be disabled in the conf file for
 networks that do not wish to support them.
 
-# $Id: modes.txt,v 7.9 2003/04/05 03:32:23 michael Exp $
+# $Id: modes.txt,v 7.10 2003/05/09 21:38:09 bill Exp $

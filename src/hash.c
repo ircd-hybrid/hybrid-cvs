@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.61 2003/05/03 12:14:03 michael Exp $
+ *  $Id: hash.c,v 7.62 2003/05/09 21:38:24 bill Exp $
  */
 
 #include "stdinc.h"
@@ -42,7 +42,6 @@
 /* XXX ZZZ for "safe_list" *ugh* */
 #include "channel.h"
 #include "channel_mode.h"
-#include "vchannel.h"
 
 /* New hash code */
 /*
@@ -616,40 +615,11 @@ list_one_channel(struct Client *source_p, struct Channel *chptr,
       list_task->topicts_max)
     return;
 
-#ifdef VCHANS
-  if (IsVchan(chptr) || HasVchans(chptr))
-    {
-      struct Channel *root_chptr = find_bchan(chptr);
-      char id_and_topic[TOPICLEN+NICKLEN+6]; /* <!!>, plus space and null */
-
-      if (root_chptr != NULL)
-        {
-	  if (!list_allow_channel(root_chptr->chname, list_task))
-	    return;
-          ircsprintf(id_and_topic, "<!%s> %s", pick_vchan_id(chptr),
-		     chptr->topic == NULL ? "" : chptr->topic );
-          sendto_one(source_p, form_str(RPL_LIST), me.name, source_p->name,
-                     root_chptr->chname, chptr->users, id_and_topic);
-        }
-      else
-        {
-          if (!list_allow_channel(chptr->chname, list_task))
-	    return;
-          ircsprintf(id_and_topic, "<!%s> %s", pick_vchan_id(chptr),
-		     chptr->topic == NULL ? "" : chptr->topic );
-          sendto_one(source_p, form_str(RPL_LIST), me.name, source_p->name,
-                     chptr->chname, chptr->users, id_and_topic);     
-        }
-    }
-  else
-#endif
-    {
-      if (!list_allow_channel(chptr->chname, list_task))
-        return;
-      sendto_one(source_p, form_str(RPL_LIST), me.name, source_p->name,
-                 chptr->chname, chptr->users,
-		 chptr->topic == NULL ? "" : chptr->topic );
-    }
+  if (!list_allow_channel(chptr->chname, list_task))
+    return;
+  sendto_one(source_p, form_str(RPL_LIST), me.name, source_p->name,
+             chptr->chname, chptr->users,
+             chptr->topic == NULL ? "" : chptr->topic );
 }
 
 /* safe_list_channels()
@@ -706,4 +676,4 @@ safe_list_channels(struct Client *source_p, struct ListTask *list_task,
 
   free_list_task(list_task, source_p);
   sendto_one(source_p, form_str(RPL_LISTEND), me.name, source_p->name);
-}   
+}

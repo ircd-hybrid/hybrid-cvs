@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: messages.tab,v 7.82 2003/05/09 19:39:51 metalrock Exp $
+ *   $Id: messages.tab,v 7.83 2003/05/09 21:38:24 bill Exp $
  */
 
 static struct NumericInfo replies[] = {
@@ -296,9 +296,9 @@ static struct NumericInfo replies[] = {
 /* 273 */  {NULL, NULL, NULL},
 /* 274 */  {NULL, NULL, NULL},
 /* 275 */  {NULL, NULL, NULL},
-/* 276 */  {"RPL_VCHANEXIST", ":%s 276 %s %s :has %d possible virtual channels available", NULL},
-/* 277 */  {"RPL_VCHANLIST", ":%s 277 %s %s ", NULL},
-/* 278 */  {"RPL_VCHANHELP", ":%s 278 %s :Type /%s %s <key> to specify the channel you want", NULL},
+/* 276 */  {NULL, NULL, NULL},
+/* 277 */  {NULL, NULL, NULL},
+/* 278 */  {NULL, NULL, NULL},
 /* 279 */  {NULL, NULL, NULL},
 /* 280 */  {NULL, NULL, NULL},
 /* 281 */  {"RPL_ACCEPTLIST", ":%s 281 %s %s :", NULL},
@@ -485,7 +485,7 @@ static struct NumericInfo replies[] = {
 /* 462 */  {"ERR_ALREADYREGISTRED", ":%s 462 %s :You may not reregister", NULL},
 /* 463 */  {"ERR_NOPERMFORHOST", ":%s 463 %s :Your host isn't among the privileged", NULL},
 /* 464 */  {"ERR_PASSWDMISMATCH", ":%s 464 %s :Password Incorrect", NULL},
-/* 465 */  {"ERR_YOUREBANNEDCREEP", ":%s 465 %s :You are banned from this server - %s", NULL},
+/* 465 */  {"ERR_YOUREBANNEDCREEP", ":%s 465 %s :You are banned from this server- %s", NULL},
 /* 466 */  {"ERR_YOUWILLBEBANNED", NULL, NULL},
 /* 467 */  {"ERR_KEYSET", ":%s 467 %s %s :Channel key already set", NULL},
 /* 468 */  {NULL, NULL, NULL},
@@ -526,8 +526,8 @@ static struct NumericInfo replies[] = {
 /* 503 */  {"ERR_GHOSTEDCLIENT", ":%s 503 %s :Message could not be delivered to %s", NULL},
 /* 504 */  {"ERR_USERNOTONSERV", ":%s 504 %s %s :User is not on this server", NULL},
 /* 505 */  {NULL, NULL, NULL},
-/* 506 */  {"ERR_VCHANDISABLED", ":%s 506 %s :Virtual Channels are disabled", NULL},
-/* 507 */  {"ERR_ALREADYONVCHAN", ":%s 507 %s %s :You are already on a subchan", NULL},
+/* 506 */  {NULL, NULL, NULL},
+/* 507 */  {NULL, NULL, NULL},
 /* 508 */  {NULL, NULL, NULL},
 /* 509 */  {NULL, NULL, NULL},
 /* 510 */  {NULL, NULL, NULL},

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.95 2003/04/18 02:13:43 db Exp $
+ *  $Id: m_whois.c,v 1.96 2003/05/09 21:38:18 bill Exp $
  */
 
 #include "stdinc.h"
@@ -30,7 +30,6 @@
 #include "hash.h"
 #include "channel.h"
 #include "channel_mode.h"
-#include "vchannel.h"
 #include "ircd.h"
 #include "numeric.h"
 #include "s_conf.h"
@@ -74,7 +73,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-const char *_version = "$Revision: 1.95 $";
+const char *_version = "$Revision: 1.96 $";
 #endif
 /*
 ** m_whois
@@ -378,9 +377,6 @@ whois_person(struct Client *source_p,struct Client *target_p, int glob)
   int tlen;
   int reply_to_send = NO;
   struct hook_mfunc_data hd;
-#ifdef VCHANS
-  struct Channel *bchan;
-#endif
   
   a2client_p = find_server(target_p->user->server);
           
@@ -400,15 +396,6 @@ whois_person(struct Client *source_p,struct Client *target_p, int glob)
   {
     chptr = lp->data;
     chname = chptr->chname;
-
-#ifdef VCHANS
-    if (IsVchan(chptr))
-    {
-      bchan = find_bchan (chptr);
-      if (bchan != NULL)
-	chname = bchan->chname;
-    }
-#endif
 
     if (ShowChannel(source_p, chptr))
     {

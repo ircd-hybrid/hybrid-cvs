@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.316 2003/05/08 23:05:53 metalrock Exp $
+ *  $Id: s_serv.c,v 7.317 2003/05/09 21:38:25 bill Exp $
  */
 
 #include "stdinc.h"
@@ -30,7 +30,6 @@
 #include "tools.h"
 #include "s_serv.h"
 #include "channel_mode.h"
-#include "vchannel.h"
 #include "class.h"
 #include "client.h"
 #include "common.h"
@@ -1490,9 +1489,6 @@ burst_all(struct Client *client_p)
   struct hook_burst_channel hinfo; 
   dlink_node *gptr;
   dlink_node *ptr;
-#ifdef VCHANS
-  struct Channel *vchan;
-#endif
 
   /* serial counter borrowed from send.c */
   current_serial++;
@@ -1501,13 +1497,6 @@ burst_all(struct Client *client_p)
   {
     chptr = gptr->data;
 
-    /* Don't send vchannels twice; vchannels will be
-     * sent along as subchannels of the top channel
-     */
-#ifdef VCHANS
-    if (IsVchan(chptr))
-      continue;
-#endif
     if (chptr->users != 0)
     {
       burst_members(client_p, &chptr->chanops);
@@ -1524,33 +1513,6 @@ burst_all(struct Client *client_p)
       hinfo.client = client_p;
       hook_call_event("burst_channel", &hinfo);
     }
-#ifdef VCHANS
-    if (IsVchanTop(chptr))
-    {
-      DLINK_FOREACH(ptr, chptr->vchan_list.head)
-      {
-        vchan = ptr->data;
-
-        if (vchan->users != 0)
-        {
-          burst_members(client_p, &vchan->chanops);
-#ifdef REQUIRE_OANDV
-          burst_members(client_p, &vchan->chanops_voiced);
-#endif
-          burst_members(client_p, &vchan->voiced);
-#ifdef HALFOPS
-          burst_members(client_p, &vchan->halfops);
-#endif
-          burst_members(client_p, &vchan->peons);
-          send_channel_modes(client_p, vchan);
-
-          hinfo.chptr  = chptr;
-          hinfo.client = client_p;
-       	  hook_call_event("burst_channel", &hinfo);
-        }
-      }
-    }
-#endif
   }
 
   /* also send out those that are not on any channel
@@ -1602,17 +1564,13 @@ cjoin_all(struct Client *client_p)
  *              - channel pointer
  * output	- none
  * side effects	- All sjoins for channel(s) given by chptr are sent
- *                for all channel members. If channel has vchans, send
- *                them on. ONLY called by hub on behalf of a lazylink
- *		  so client_p is always guaranteed to be a LL leaf.
+ *                for all channel members. ONLY called by hub on
+ *                behalf of a lazylink so client_p is always guarunteed
+ *		  to be a LL leaf.
  */
 void
 burst_channel(struct Client *client_p, struct Channel *chptr)
 {
-#ifdef VCHANS
-  dlink_node *ptr;
-  struct Channel *vchan;
-#endif
   burst_ll_members(client_p, &chptr->chanops);
 #ifdef REQUIRE_OANDV
   burst_ll_members(client_p, &chptr->chanops_voiced);
@@ -1631,34 +1589,6 @@ burst_channel(struct Client *client_p, struct Channel *chptr)
                me.name, chptr->chname, chptr->topic_info,
                (unsigned long)chptr->topic_time, chptr->topic);
   }
-#ifdef VCHANS
-  if (IsVchanTop(chptr))
-  {
-    DLINK_FOREACH(ptr, chptr->vchan_list.head)
-    {
-      vchan = ptr->data;
-
-      burst_ll_members(client_p,&vchan->chanops);
-#ifdef REQUIRE_OANDV
-      burst_ll_members(client_p,&vchan->chanops_voiced);
-#endif
-      burst_ll_members(client_p,&vchan->voiced);
-#ifdef HALFOPS
-      burst_ll_members(client_p,&vchan->halfops);
-#endif
-      burst_ll_members(client_p,&vchan->peons);
-      send_channel_modes(client_p, vchan);
-      add_lazylinkchannel(client_p,vchan);
-
-      if (vchan->topic != NULL && vchan->topic_info != NULL)
-      {
-        sendto_one(client_p, ":%s TOPIC %s %s %lu :%s",
-                   me.name, vchan->chname, vchan->topic_info,
-                   (unsigned long)vchan->topic_time, vchan->topic);
-      }
-    }
-  }
-#endif
 }
 
 /* add_lazlinkchannel()
@@ -1677,6 +1607,7 @@ static void
 add_lazylinkchannel(struct Client *local_server_p, struct Channel *chptr)
 {
   assert(MyConnect(local_server_p));
+
   chptr->lazyLinkChannelExists |= local_server_p->localClient->serverMask;
   dlinkAdd(chptr, make_dlink_node(), &lazylink_channels);
 }

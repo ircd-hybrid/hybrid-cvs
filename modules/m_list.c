@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_list.c,v 1.56 2003/05/01 15:53:35 michael Exp $
+ *  $Id: m_list.c,v 1.57 2003/05/09 21:38:18 bill Exp $
  */
 
 #include "stdinc.h"
@@ -35,7 +35,6 @@
 #include "s_conf.h"
 #include "s_serv.h"
 #include "send.h"
-#include "vchannel.h"
 #include "list.h"
 #include "msg.h"
 #include "parse.h"
@@ -62,7 +61,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&list_msgtab);
 }
-const char *_version = "$Revision: 1.56 $";
+const char *_version = "$Revision: 1.57 $";
 #endif
 
 

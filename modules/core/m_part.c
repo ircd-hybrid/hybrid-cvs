@@ -19,14 +19,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_part.c,v 1.67 2003/04/18 02:13:50 db Exp $
+ *  $Id: m_part.c,v 1.68 2003/05/09 21:38:21 bill Exp $
  */
 
 #include "stdinc.h"
 #include "tools.h"
 #include "handlers.h"
 #include "channel.h"
-#include "vchannel.h"
 #include "client.h"
 #include "common.h"  
 #include "hash.h"
@@ -61,7 +60,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&part_msgtab);
 }
-const char *_version = "$Revision: 1.67 $";
+const char *_version = "$Revision: 1.68 $";
 #endif
 
 static void part_one_client(struct Client *client_p,
@@ -121,7 +120,6 @@ part_one_client(struct Client *client_p, struct Client *source_p,
                 char *name, char *reason)
 {
   struct Channel *chptr;
-  struct Channel *bchan;
 
   if ((chptr = hash_find_channel(name)) == NULL)
     {
@@ -130,26 +128,7 @@ part_one_client(struct Client *client_p, struct Client *source_p,
       return;
     }
 
-#ifdef VCHANS
-  if (IsVchan(chptr) || HasVchans(chptr))
-    {
-      if(HasVchans(chptr))
-        {
-          /* Set chptr to actual channel, bchan to the base channel */
-          bchan = chptr;
-          chptr = map_vchan(bchan,source_p);
-        }
-      else
-        {
-          /* chptr = chptr; */
-          bchan = find_bchan(chptr);
-        }
-    }
-  else
-#endif
-    bchan = chptr; /* not a vchan */
-
-  if (!chptr || !bchan || !IsMember(source_p, chptr))
+  if (!chptr || !IsMember(source_p, chptr))
     {
       sendto_one(source_p, form_str(ERR_NOTONCHANNEL),
                  me.name, source_p->name, name);
@@ -179,7 +158,7 @@ part_one_client(struct Client *client_p, struct Client *source_p,
                          source_p->name,
                          source_p->username,
                          source_p->host,
-                         bchan->chname,
+                         chptr->chname,
                          reason);
   }
   else
@@ -193,7 +172,7 @@ part_one_client(struct Client *client_p, struct Client *source_p,
                          source_p->name,
                          source_p->username,
                          source_p->host,
-                         bchan->chname);
+                         chptr->chname);
   }
   remove_user_from_channel(chptr, source_p);
 }

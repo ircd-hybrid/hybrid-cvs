@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.156 2003/05/07 08:55:43 adx Exp $
+ *  $Id: parse.c,v 7.157 2003/05/09 21:38:24 bill Exp $
  */
 
 #include "stdinc.h"
@@ -39,7 +39,6 @@
 #include "ircd_handler.h"
 #include "msg.h"
 #include "s_conf.h"
-#include "vchannel.h"
 #include "memory.h"
 #include "s_serv.h"
 
@@ -784,7 +783,7 @@ do_numeric(char numeric[], struct Client *client_p, struct Client *source_p,
     sendto_channel_local(ALL_MEMBERS, chptr,
 			 ":%s %s %s %s",
 			 source_p->name,
-			 numeric, RootChan(chptr)->chname, buffer);
+			 numeric, chptr->chname, buffer);
 }
 
 /* m_not_oper()

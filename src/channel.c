@@ -19,14 +19,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.366 2003/05/01 15:53:38 michael Exp $
+ *  $Id: channel.c,v 7.367 2003/05/09 21:38:24 bill Exp $
  */
 
 #include "stdinc.h"
 #include "tools.h"
 #include "channel.h"
 #include "channel_mode.h"
-#include "vchannel.h"
 #include "client.h"
 #include "common.h"
 #include "hash.h"
@@ -155,19 +154,12 @@ add_user_to_channel(struct Channel *chptr, struct Client *who, int flags)
  * output       - did the channel get destroyed
  * side effects - deletes an user from a channel by removing a link in the
  *                channels member chain.
- *                sets a vchan_id if the last user is just leaving
  */
 int
 remove_user_from_channel(struct Channel *chptr, struct Client *who)
 {
   dlink_node *ptr;
   dlink_node *next_ptr;
-
-  /* last user in the channel.. set a vchan_id incase we need it */
-#ifdef VCHANS
-  if (chptr->users <= 1)
-    ircsprintf(chptr->vchan_id, "!%s", who->name);
-#endif
 
   if ((ptr = find_user_link(&chptr->peons, who)))
     dlinkDelete(ptr, &chptr->peons);
@@ -230,11 +222,6 @@ remove_user_from_channel(struct Channel *chptr, struct Client *who)
       }
     }
   }
-
-#ifdef VCHANS
-  if (IsVchan(chptr))
-    del_vchan_from_client_cache(who, chptr);
-#endif
 
   if (MyClient(who))
   {
@@ -427,42 +414,6 @@ check_channel_name(const char *name)
   return 1;
 }
 
-#ifdef VCHANS
-/* clear_channels()
- *  inputs       -
- *  output       -
- *  side effects - destroying empty channels
- */
-void
-clear_channels(void *unused)
-{
-  struct Channel *chptr;
-  dlink_node *ptr;
-  dlink_node *next_ptr;
-
-  DLINK_FOREACH_SAFE(ptr, next_ptr, global_channel_list.head)
-  {
-    chptr = ptr->data;
-
-    if (!HasVchans(chptr))
-    {
-      if (!IsVchanTop(chptr))
-      {
-	if (chptr->users == 0)
-	{
-	  if ((uplink) && IsCapable(uplink, CAP_LL))
-	  {
-	    sendto_one(uplink, ":%s DROP %s", me.name, chptr->chname);
-	  }
-
-	  destroy_channel(chptr);
-	}
-      }
-    }
-  }
-}
-#endif
-
 /*
  * sub1_from_channel
  *
@@ -527,23 +478,6 @@ destroy_channel(struct Channel *chptr)
   dlink_node *gptr;
   dlink_node *ptr;
   dlink_node *m;
-#ifdef VCHANS
-  struct Channel *root_chptr;
-#endif
-
-  /* Don't ever delete the top of a chain of vchans! */
-#ifdef VCHANS
-  if (IsVchanTop(chptr))
-    return;
-
-  if (IsVchan(chptr))
-  {
-    root_chptr = chptr->root_chptr;
-    /* remove from vchan double link list */
-    if ((m = dlinkFindDelete(&root_chptr->vchan_list, chptr)) != NULL)
-      free_dlink_node(m);
-  }
-#endif
 
   /* Walk through all the dlink's pointing to members of this channel,
    * then walk through each client found from each dlink, removing
@@ -644,11 +578,6 @@ delete_members(struct Channel *chptr, dlink_list * list)
       }
     }
 
-
-#ifdef VCHANS
-    if (IsVchan(chptr))
-      del_vchan_from_client_cache(who, chptr);
-#endif
 
     /* remove reference to who from chptr */
     dlinkDelete(ptr, list);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.212 2003/05/09 21:06:37 metalrock Exp $
+ *  $Id: s_conf.h,v 7.213 2003/05/09 21:38:13 bill Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -256,10 +256,8 @@ struct config_channel_entry
   int use_halfops;
   int use_invex;
   int use_knock;
-  int use_vchans;
   int knock_delay;
   int knock_delay_channel;
-  int vchans_oper_only;
   unsigned int max_bans;
   int max_chans_per_user;
   int no_create_on_split;

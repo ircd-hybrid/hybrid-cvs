@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_knock.c,v 1.54 2003/05/03 13:38:58 adx Exp $
+ *  $Id: m_knock.c,v 1.55 2003/05/09 21:38:18 bill Exp $
  */
 
 #include "stdinc.h"
@@ -34,7 +34,6 @@
 #include "numeric.h"
 #include "send.h"
 #include "s_conf.h"
-#include "vchannel.h"
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
@@ -81,16 +80,15 @@ _moddeinit(void)
   mod_del_cmd(&knockll_msgtab);
 }
 
-const char *_version = "$Revision: 1.54 $";
+const char *_version = "$Revision: 1.55 $";
 #endif
 
 /* m_knock
  *    parv[0] = sender prefix
  *    parv[1] = channel
- *    parv[2] = 'key' (for vchan)
  *
  *  The KNOCK command has the following syntax:
- *   :<sender> KNOCK <channel> <vchan id>
+ *   :<sender> KNOCK <channel>
  *
  *  If a user is not banned from the channel they can use the KNOCK
  *  command to have the server NOTICE the channel operators notifying
@@ -123,9 +121,7 @@ m_knock(struct Client *client_p, struct Client *source_p, int parc,
       return;
     else
     {
-      /* set sockhost to parv[2], then shift the vchan id down if it
-       * exists.. done here to save messing in parse_knock_local()
-       */
+      /* set sockhost to parv[2] here to save messing in parse_knock_local() */
       sockhost = parv[2];
 
       if(parc > 3)
@@ -148,7 +144,6 @@ m_knock(struct Client *client_p, struct Client *source_p, int parc,
  * ms_knock()
  *	parv[0] = sender prefix
  *	parv[1] = channel
- *	parv[2] = vchan id
  */
  
 static void
@@ -182,9 +177,6 @@ parse_knock_local(struct Client *client_p, struct Client *source_p,
 
   struct Channel *chptr;
   char *p, *name, *key;
-#ifdef VCHANS
-  struct Channel *vchan_chptr;
-#endif
 
   name = parv[1];
   key = (parc > 2) ? parv[2] : NULL;
@@ -225,61 +217,12 @@ parse_knock_local(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-#ifdef VCHANS
-  if (IsVchanTop(chptr))
+  /* Normal channel, just be sure they aren't on it */
+  if (IsMember(source_p, chptr))
   {
-    /* They specified a vchan basename */
-    if (on_sub_vchan(chptr,source_p))
-    {
-      sendto_one(source_p, form_str(ERR_KNOCKONCHAN),
-		 me.name, source_p->name, name);
-      return;
-    }
-    if (key != NULL && key[0] == '!')
-    {
-      /* Make "KNOCK #channel !" work like JOIN */
-      if (!key[1])
-      {
-	show_vchans(source_p, chptr, "knock");
-	return;
-      }
-
-      /* Find a matching vchan */
-      if ((vchan_chptr = find_vchan(chptr, key)))
-      {
-	chptr = vchan_chptr;
-      }
-      else
-      {
-	sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
-		   me.name, parv[0], name);
-	return;
-      }
-    }
-    else
-    {
-      /* No key specified */
-      show_vchans(source_p, chptr, "knock");
-      return;
-    }
-  }
-  else if (IsVchan(chptr))
-  {
-    /* Don't allow KNOCK'ing a vchans 'real' name */
-    sendto_one(source_p, form_str(ERR_BADCHANNAME), me.name, parv[0],
-	       name);
+    sendto_one(source_p, form_str(ERR_KNOCKONCHAN),
+    me.name, source_p->name, name);
     return;
-  }
-  else
-#endif
-  {
-    /* Normal channel, just be sure they aren't on it */
-    if (IsMember(source_p, chptr))
-    {
-      sendto_one(source_p, form_str(ERR_KNOCKONCHAN),
-		 me.name, source_p->name, name);
-      return;
-    }
   }
 
   if (!((chptr->mode.mode & MODE_INVITEONLY) ||
@@ -345,9 +288,6 @@ parse_knock_remote(struct Client *client_p, struct Client *source_p,
 {
   struct Channel *chptr;
   char *p, *name, *key;
-#ifdef VCHANS
-  struct Channel *vchan_chptr;
-#endif
 
   name = parv[1];
   key = parv[2];
@@ -357,22 +297,6 @@ parse_knock_remote(struct Client *client_p, struct Client *source_p,
 
   if (!IsChannelName(name) || (chptr = hash_find_channel(name)) == NULL)
     return;
-
-#ifdef VCHANS
-  if (IsVchanTop(chptr))
-  {
-    if (on_sub_vchan(chptr, source_p))
-      return;
-
-    if (key != NULL && (key[0] == '!') &&
-        (vchan_chptr = find_vchan(chptr, key)) != NULL)
-      chptr = vchan_chptr;
-    else
-      return;
-  }
-  else if (IsVchan(chptr))
-    return;
-#endif
 
   if (IsMember(source_p, chptr))
     return;

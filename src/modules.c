@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.113 2003/05/08 03:42:54 michael Exp $
+ *  $Id: modules.c,v 7.114 2003/05/09 21:38:24 bill Exp $
  */
 
 #include "stdinc.h"
@@ -548,9 +548,6 @@ load_all_modules(int warn)
   mod_add_cmd(&away_msgtab);
   mod_add_cmd(&capab_msgtab);
   mod_add_cmd(&cburst_msgtab);
-#ifdef VCHANS
-  mod_add_cmd(&cjoin_msgtab);
-#endif
   mod_add_cmd(&client_msgtab);
   mod_add_cmd(&close_msgtab);
   mod_add_cmd(&connect_msgtab);

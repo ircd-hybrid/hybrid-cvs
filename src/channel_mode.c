@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.86 2003/05/08 01:49:35 metalrock Exp $
+ *  $Id: channel_mode.c,v 7.87 2003/05/09 21:38:24 bill Exp $
  */
 
 #include "stdinc.h"
@@ -27,7 +27,6 @@
 #include "tools.h"
 #include "channel.h"
 #include "channel_mode.h"
-#include "vchannel.h"
 #include "client.h"
 #include "common.h"
 #include "hash.h"
@@ -2522,9 +2521,9 @@ sync_channel_oplists(struct Channel *chptr, int dir)
   dlink_node *ptr;
 
   for (ptr=chptr->locpeons.head; ptr!=NULL && ptr->data!=NULL; ptr=ptr->next)
-    sync_oplists(chptr, ptr->data, MODE_ADD, RootChan(chptr)->chname);
+    sync_oplists(chptr, ptr->data, MODE_ADD, chptr->chname);
   for (ptr=chptr->locvoiced.head; ptr!=NULL && ptr->data!=NULL; ptr = ptr->next)
-    sync_oplists(chptr, ptr->data, MODE_ADD, RootChan(chptr)->chname);
+    sync_oplists(chptr, ptr->data, MODE_ADD, chptr->chname);
 }
 
 #endif
@@ -2592,14 +2591,14 @@ update_channel_info(struct Channel *chptr)
       {
         mode_get_status(chptr, ptr->data, &t_op, &t_hop, &t_voice, 0);
         if (!t_hop && !t_op)
-          sync_oplists(chptr, ptr->data, MODE_DEL, RootChan(chptr)->chname);
+          sync_oplists(chptr, ptr->data, MODE_DEL, chptr->chname);
       }
 
       DLINK_FOREACH(ptr, chptr->locvoiced.head)
       {
         mode_get_status(chptr, ptr->data, &t_op, &t_hop, &t_voice, 0);
         if (!t_hop && !t_op)
-          sync_oplists(chptr, ptr->data, MODE_DEL, RootChan(chptr)->chname);
+          sync_oplists(chptr, ptr->data, MODE_DEL, chptr->chname);
       }
 
 #ifdef HALFOPS
@@ -2607,7 +2606,7 @@ update_channel_info(struct Channel *chptr)
       {
         mode_get_status(chptr, ptr->data, &t_op, &t_hop, &t_voice, 1);
         if(!t_hop && !t_op)
-          sync_oplists(chptr, ptr->data, MODE_DEL, RootChan(chptr)->chname);
+          sync_oplists(chptr, ptr->data, MODE_DEL, chptr->chname);
       }
 #endif
 
@@ -2616,7 +2615,7 @@ update_channel_info(struct Channel *chptr)
       {
         mode_get_status(chptr, ptr->data, &t_op, &t_hop, &t_voice, 1);
         if(!t_hop && !t_op)
-          sync_oplists(chptr, ptr->data, MODE_DEL, RootChan(chptr)->chname);
+          sync_oplists(chptr, ptr->data, MODE_DEL, chptr->chname);
       }
 #endif
 
@@ -2624,7 +2623,7 @@ update_channel_info(struct Channel *chptr)
       {
         mode_get_status(chptr, ptr->data, &t_op, &t_hop, &t_voice, 1);
         if(!t_hop && !t_op)
-          sync_oplists(chptr, ptr->data, MODE_DEL, RootChan(chptr)->chname);
+          sync_oplists(chptr, ptr->data, MODE_DEL, chptr->chname);
       }
     }
     else
@@ -2681,13 +2680,13 @@ update_channel_info(struct Channel *chptr)
     /* ..and send a resync to them */
     DLINK_FOREACH_SAFE(ptr, ptr_next, deopped.head)
     {
-      sync_oplists(chptr, ptr->data, MODE_DEL, RootChan(chptr)->chname);
+      sync_oplists(chptr, ptr->data, MODE_DEL, chptr->chname);
       free_dlink_node(ptr);
     }
 
     DLINK_FOREACH_SAFE(ptr, ptr_next, opped.head)
     {
-      sync_oplists(chptr, ptr->data, MODE_ADD, RootChan(chptr)->chname);
+      sync_oplists(chptr, ptr->data, MODE_ADD, chptr->chname);
       free_dlink_node(ptr);
     }
   }

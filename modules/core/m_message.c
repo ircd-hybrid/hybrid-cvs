@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.116 2003/04/18 02:13:50 db Exp $
+ *  $Id: m_message.c,v 1.117 2003/05/09 21:38:21 bill Exp $
  */
 
 #include "stdinc.h"
@@ -36,7 +36,6 @@
 #include "modules.h"
 #include "channel.h"
 #include "channel_mode.h"
-#include "vchannel.h"
 #include "irc_string.h"
 #include "hash.h"
 #include "class.h"
@@ -120,7 +119,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.116 $";
+const char *_version = "$Revision: 1.117 $";
 #endif
 
 /*
@@ -448,19 +447,10 @@ static void
 msg_channel(int p_or_n, const char *command, struct Client *client_p,
             struct Client *source_p, struct Channel *chptr, char *text)
 {
-  struct Channel *vchan = NULL;
   char *chname = NULL;
   int result;
 
-  chname = RootChan(chptr)->chname;
-
-#ifdef VCHANS
-  if (HasVchans(chptr))
-    vchan = map_vchan(chptr, source_p);
-#endif
-  
-  if (!vchan)
-    vchan = chptr;
+  chname = chptr->chname;
 
   if (MyClient(source_p))
   {
@@ -470,12 +460,12 @@ msg_channel(int p_or_n, const char *command, struct Client *client_p,
   }
 
   /* chanops and voiced can flood their own channel with impunity */
-  if ((result = can_send(vchan, source_p)))
+  if ((result = can_send(chptr, source_p)))
   {
     if (result == CAN_SEND_OPV ||
-        !flood_attack_channel(p_or_n, source_p, vchan, chname))
+        !flood_attack_channel(p_or_n, source_p, chptr, chname))
     {
-      sendto_channel_butone(client_p, source_p, vchan, command, ":%s", text);
+      sendto_channel_butone(client_p, source_p, chptr, command, ":%s", text);
     }
   }
   else
@@ -505,8 +495,7 @@ msg_channel_flags(int p_or_n, const char *command, struct Client *client_p,
                   struct Client *source_p, struct Channel *chptr,
                   int flags, char *text)
 {
-  struct Channel *vchan = NULL;
-  char *chname          = NULL;
+  char *chname = NULL;
   int type;
   char c;
 
@@ -526,15 +515,7 @@ msg_channel_flags(int p_or_n, const char *command, struct Client *client_p,
     c = '@';
   }
 
-  chname = RootChan(chptr)->chname;
-
-#ifdef VCHANS
-  if (HasVchans(chptr))
-    vchan = map_vchan(chptr, source_p);
-#endif
-
-  if (!vchan)
-    vchan = chptr;
+  chname = chptr->chname;
 
   if (MyClient(source_p))
   {
@@ -542,7 +523,7 @@ msg_channel_flags(int p_or_n, const char *command, struct Client *client_p,
     if ((p_or_n != NOTICE) && source_p->user)
       source_p->user->last = CurrentTime;
 
-    sendto_channel_local_butone(source_p, type, vchan, ":%s!%s@%s %s %c%s :%s",
+    sendto_channel_local_butone(source_p, type, chptr, ":%s!%s@%s %s %c%s :%s",
                                 source_p->name, source_p->username,
                                 source_p->host, command, c, chname, text);
   }
@@ -552,7 +533,7 @@ msg_channel_flags(int p_or_n, const char *command, struct Client *client_p,
      * another good catch, lee.  we never would echo to remote clients anyway,
      * so use slightly less intensive sendto_channel_local()
      */
-    sendto_channel_local(type, vchan, ":%s!%s@%s %s %c%s :%s",
+    sendto_channel_local(type, chptr, ":%s!%s@%s %s %c%s :%s",
                          source_p->name, source_p->username,
                          source_p->host, command, c, chname, text);
   }
@@ -560,10 +541,10 @@ msg_channel_flags(int p_or_n, const char *command, struct Client *client_p,
   if (chptr->chname[0] != '#')
     return;
 
-  sendto_channel_remote(source_p, client_p, type, CAP_CHW, CAP_UID, vchan,
-                ":%s %s %c%s :%s", source_p->name, command, c, vchan->chname, text);
-  sendto_channel_remote(source_p, client_p, type, CAP_CHW|CAP_UID, NOCAPS, vchan,
-                ":%s %s %c%s :%s", ID(source_p), command, c, vchan->chname, text);
+  sendto_channel_remote(source_p, client_p, type, CAP_CHW, CAP_UID, chptr,
+                ":%s %s %c%s :%s", source_p->name, command, c, chptr->chname, text);
+  sendto_channel_remote(source_p, client_p, type, CAP_CHW|CAP_UID, NOCAPS, chptr,
+                ":%s %s %c%s :%s", ID(source_p), command, c, chptr->chname, text);
   /* non CAP_CHW servers? */
 }
 

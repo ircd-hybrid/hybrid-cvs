@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_clearchan.c,v 1.35 2003/05/02 09:27:40 michael Exp $
+ *   $Id: m_clearchan.c,v 1.36 2003/05/09 21:38:07 bill Exp $
  */
 
 #include "stdinc.h"
@@ -36,7 +36,6 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
-#include "vchannel.h"
 #include "list.h"
 
 
@@ -48,11 +47,11 @@ static void kick_list(struct Client *client_p, struct Client *source_p, struct C
                       dlink_list *list,char *chname);
 
 static void remove_our_modes(int type,
-                      struct Channel *chptr, struct Channel *top_chptr,
+                      struct Channel *chptr,
                       struct Client *source_p);
 static void remove_a_mode(int hide_or_not,
-                          struct Channel *chptr, struct Channel *top_chptr,
-                          struct Client *source_p, dlink_list *list, char flag);
+                          struct Channel *chptr, struct Client *source_p,
+                          dlink_list *list, char flag);
 static void free_channel_list(dlink_list *list);
 
 static char *mbuf;
@@ -75,7 +74,7 @@ _moddeinit(void)
   mod_del_cmd(&clearchan_msgtab);
 }
 
-const char *_version = "$Revision: 1.35 $";
+const char *_version = "$Revision: 1.36 $";
 
 /*
 ** mo_clearchan
@@ -86,8 +85,7 @@ static void
 mo_clearchan(struct Client *client_p, struct Client *source_p,
              int parc, char *parv[])
 {
-  struct Channel *chptr, *root_chptr;
-  int on_vchan = 0;
+  struct Channel *chptr;
 
   /* admins only */
   if (!IsOperAdmin(source_p))
@@ -99,19 +97,7 @@ mo_clearchan(struct Client *client_p, struct Client *source_p,
 
   /* XXX - we might not have CBURSTed this channel if we are a lazylink
    * yet. */
-  chptr      = hash_find_channel(parv[1]);
-  root_chptr = chptr;
-
-#ifdef VCHANS
-  if (chptr && parc > 2 && parv[2][0] == '!')
-  {
-    chptr = find_vchan(chptr, parv[2]);
-
-    if (root_chptr != chptr)
-      on_vchan++;
-  }
-#endif
-  if (chptr == NULL)
+  if ((chptr = hash_find_channel(parv[1])) == NULL)
   {
     sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
                me.name, parv[0], parv[1]);
@@ -125,33 +111,19 @@ mo_clearchan(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if (!on_vchan)
-  {
-    sendto_wallops_flags(UMODE_WALLOP, &me, "CLEARCHAN called for [%s] by %s!%s@%s",
-                         parv[1], source_p->name, source_p->username, source_p->host);
-    sendto_server(NULL, source_p, NULL, NOCAPS, NOCAPS, LL_ICLIENT,
-                  ":%s WALLOPS :CLEARCHAN called for [%s] by %s!%s@%s",
-                  me.name, parv[1], source_p->name, source_p->username,
-                  source_p->host);
-    ilog(L_NOTICE, "CLEARCHAN called for [%s] by %s!%s@%s",
-         parv[1], source_p->name, source_p->username, source_p->host);
-  }
-  else
-  {
-    sendto_wallops_flags(UMODE_WALLOP, &me, "CLEARCHAN called for [%s %s] by %s!%s@%s",
-                         parv[1], parv[2], source_p->name, source_p->username, source_p->host);
-    sendto_server(NULL, source_p, NULL, NOCAPS, NOCAPS, LL_ICLIENT,
-                  ":%s WALLOPS :CLEARCHAN called for [%s %s] by %s!%s@%s",
-                  me.name, parv[1], parv[2], source_p->name,
-                  source_p->username, source_p->host);
-    ilog(L_NOTICE, "CLEARCHAN called for [%s %s] by %s!%s@%s",
-         parv[1], parv[2], source_p->name, source_p->username, source_p->host);
-  }
+  sendto_wallops_flags(UMODE_WALLOP, &me, "CLEARCHAN called for [%s] by %s!%s@%s",
+                       parv[1], source_p->name, source_p->username, source_p->host);
+  sendto_server(NULL, source_p, NULL, NOCAPS, NOCAPS, LL_ICLIENT,
+                ":%s WALLOPS :CLEARCHAN called for [%s] by %s!%s@%s",
+                me.name, parv[1], source_p->name, source_p->username,
+                source_p->host);
+  ilog(L_NOTICE, "CLEARCHAN called for [%s] by %s!%s@%s",
+       parv[1], source_p->name, source_p->username, source_p->host);
 
   /* Kill all the modes we have about the channel..
    * making everyone a peon
    */  
-  remove_our_modes(0, chptr, root_chptr, source_p);
+  remove_our_modes(0, chptr, source_p);
 
   /* SJOIN the user to give them ops, and lock the channel */
   sendto_server(client_p, source_p, chptr, NOCAPS, NOCAPS,
@@ -162,7 +134,7 @@ mo_clearchan(struct Client *client_p, struct Client *source_p,
                        source_p->name,
                        source_p->username,
                        source_p->host,
-                       root_chptr->chname);
+                       chptr->chname);
   sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s +o %s",
                        me.name, chptr->chname, source_p->name);
 
@@ -172,11 +144,6 @@ mo_clearchan(struct Client *client_p, struct Client *source_p,
    * again. */
   if (chptr->channelts)
     chptr->channelts--;
-
-#ifdef VCHANS
-  if (on_vchan)
-    add_vchan_to_client_cache(source_p,root_chptr,chptr);
-#endif
 
   chptr->mode.mode =
     MODE_SECRET | MODE_TOPICLIMIT | MODE_INVITEONLY | MODE_NOPRIVMSGS;
@@ -218,26 +185,24 @@ void kick_list(struct Client *client_p, struct Client *source_p, struct Channel 
  *
  * inputs       - hide from ops or not int flag
  *              - pointer to channel to remove modes from
- *              - if vchan basechannel pointer
  *              - client pointer
  * output       - NONE
  * side effects - Go through the local members, remove all their
  *                chanop modes etc., this side lost the TS.
  */
 static void
-remove_our_modes(int hide_or_not, struct Channel *chptr, struct Channel *top_chptr,
-                 struct Client *source_p)
+remove_our_modes(int hide_or_not, struct Channel *chptr, struct Client *source_p)
 {
-  remove_a_mode(hide_or_not, chptr, top_chptr, source_p, &chptr->chanops, 'o');
+  remove_a_mode(hide_or_not, chptr, source_p, &chptr->chanops, 'o');
 #ifdef REQUIRE_OANDV
-  remove_a_mode(hide_or_not, chptr, top_chptr, source_p, &chptr->chanops_voiced, 'o');
+  remove_a_mode(hide_or_not, chptr, source_p, &chptr->chanops_voiced, 'o');
 #endif
 #ifdef HALFOPS
-  remove_a_mode(hide_or_not, chptr, top_chptr, source_p, &chptr->halfops, 'h');
+  remove_a_mode(hide_or_not, chptr, source_p, &chptr->halfops, 'h');
 #endif
-  remove_a_mode(hide_or_not, chptr, top_chptr, source_p, &chptr->voiced, 'v');
+  remove_a_mode(hide_or_not, chptr, source_p, &chptr->voiced, 'v');
 #ifdef REQUIRE_OANDV
-  remove_a_mode(hide_or_not, chptr, top_chptr, source_p, &chptr->chanops_voiced, 'v');
+  remove_a_mode(hide_or_not, chptr, source_p, &chptr->chanops_voiced, 'v');
 #endif
 
   /* Move all voice/ops etc. to non opped list */
@@ -273,8 +238,8 @@ remove_our_modes(int hide_or_not, struct Channel *chptr, struct Channel *top_chp
  * side effects - remove ONE mode from a channel
  */
 static void
-remove_a_mode(int hide_or_not, struct Channel *chptr, struct Channel *top_chptr,
-              struct Client *source_p, dlink_list *list, char flag)
+remove_a_mode(int hide_or_not, struct Channel *chptr, struct Client *source_p,
+              dlink_list *list, char flag)
 {
   dlink_node *ptr;
   struct Client *target_p;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.131 2003/05/03 13:57:18 michael Exp $
+ *  $Id: channel.h,v 7.132 2003/05/09 21:38:13 bill Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -54,17 +54,10 @@ struct Channel
   char            *topic;
   char            *topic_info;
   time_t          topic_time;
-#ifdef VCHANS
-  char            vchan_id[NICKLEN*2];   /* use this for empty vchans */
-#endif
   int             users;      /* user count */
   int             locusers;   /* local user count */
   unsigned long   lazyLinkChannelExists;
   time_t          last_knock;           /* don't allow knock to flood */
-#ifdef VCHANS
-  struct Channel  *root_chptr;		/* pointer back to root if vchan */
-  dlink_list	  vchan_list;	        /* vchan sublist */
-#endif
 
   dlink_list      chanops;		/* lists of chanops etc. */
 #ifdef REQUIRE_OANDV
@@ -103,9 +96,6 @@ struct Channel
 extern dlink_list global_channel_list;
 
 extern void init_channels(void);
-#ifdef VCHANS
-extern void clear_channels(void *unused);
-#endif
 extern int     can_send (struct Channel *chptr, struct Client *who);
 extern int     is_banned (struct Channel *chptr, struct Client *who);
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kick.c,v 1.55 2003/05/08 23:32:50 metalrock Exp $
+ *  $Id: m_kick.c,v 1.56 2003/05/09 21:38:21 bill Exp $
  */
 
 #include "stdinc.h"
@@ -27,7 +27,6 @@
 #include "handlers.h"
 #include "channel.h"
 #include "channel_mode.h"
-#include "vchannel.h"
 #include "client.h"
 #include "irc_string.h"
 #include "ircd.h"
@@ -60,7 +59,7 @@ _moddeinit(void)
   mod_del_cmd(&kick_msgtab);
 }
 
-const char *_version = "$Revision: 1.55 $";
+const char *_version = "$Revision: 1.56 $";
 #endif
 
 /* m_kick()
@@ -75,14 +74,11 @@ m_kick(struct Client *client_p, struct Client *source_p,
 {
   struct Client *who;
   struct Channel *chptr;
-#ifdef VCHANS
-  struct Channel *vchan;
-#endif
-  int chasing = 0;
-  char *comment;
-  char *name;
-  char *p = NULL;
-  char *user;
+  int   chasing = 0;
+  char  *comment;
+  char  *name;
+  char  *p = NULL;
+  char  *user;
 
   if (*parv[2] == '\0')
   {
@@ -113,15 +109,6 @@ m_kick(struct Client *client_p, struct Client *source_p,
                me.name, source_p->name, name);
     return;
   }
-
-#ifdef VCHANS
-  if (HasVchans(chptr))
-  {
-    vchan = map_vchan(chptr, source_p);
-    if(vchan != 0)
-      chptr = vchan;
-  }
-#endif
 
   if (!IsServer(source_p) && !is_any_op(chptr, source_p) ) 
   {

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_join.c,v 1.99 2003/04/18 02:13:42 db Exp $
+ *  $Id: m_join.c,v 1.100 2003/05/09 21:38:18 bill Exp $
  */
 
 #include "stdinc.h"
@@ -27,7 +27,6 @@
 #include "handlers.h"
 #include "channel.h"
 #include "channel_mode.h"
-#include "vchannel.h"
 #include "client.h"
 #include "common.h"   /* bleah */
 #include "resv.h"
@@ -65,7 +64,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&join_msgtab);
 }
-const char *_version = "$Revision: 1.99 $";
+const char *_version = "$Revision: 1.100 $";
 
 #endif
 static void do_join_0(struct Client *client_p, struct Client *source_p);
@@ -75,8 +74,7 @@ static void do_join_0(struct Client *client_p, struct Client *source_p);
  * m_join
  *      parv[0] = sender prefix
  *      parv[1] = channel
- *      parv[2] = channel password (key) (or vkey for vchans)
- *      parv[3] = vkey
+ *      parv[2] = channel password (key)
  */
 static void
 m_join(struct Client *client_p,
@@ -84,18 +82,10 @@ m_join(struct Client *client_p,
        int parc, char *parv[])
 {
   struct Channel *chptr = NULL;
-  struct Channel *root_chptr = NULL;
-  int joining_vchan = 0;
   char  *name, *key = NULL;
-  char *vkey = NULL; /* !key for vchans */
   int   i, flags = 0, error_reported = 0;
   char  *p = NULL, *p2 = NULL, *p3 = NULL;
   int   successful_join_count = 0; /* Number of channels successfully joined */
-#ifdef VCHANS
-  struct Channel *vchan_chptr = NULL;
-  char *pvc = NULL;
-  int   vc_ts;
-#endif
   char modebuf[MODEBUFLEN];
   char parabuf[MODEBUFLEN];
 
@@ -106,24 +96,12 @@ m_join(struct Client *client_p,
       return;
     }
 
-#ifdef VCHANS
-  if (parc > 3)
-    {
-      key = strtoken(&p2, parv[3], ",");
-      vkey = strtoken(&p3, parv[2], ",");
-    }
-  else 
-#endif
   if (parc > 2)
-    {
-      key = strtoken(&p2, parv[2], ",");
-      vkey = key;
-    }
+    key = strtoken(&p2, parv[2], ",");
 
 
   for (name = strtoken(&p, parv[1], ","); name;
          key = (key) ? strtoken(&p2, NULL, ",") : NULL,
-         vkey = (parc>3) ? ((vkey) ? strtoken(&p3, NULL, ",") : NULL) : key,
          name = strtoken(&p, NULL, ","))
     {
       modebuf[0] = '+';
@@ -218,24 +196,6 @@ m_join(struct Client *client_p,
 	    continue;
 	  }
 
-#ifdef VCHANS
-          /* Check if they want to join a subchan or something */
-	  if((vchan_chptr = select_vchan(chptr, source_p, vkey, name)) == NULL)
-            continue;
-
-          if(vchan_chptr != chptr)
-          {
-            joining_vchan = 1;
-            root_chptr = chptr;
-            chptr = vchan_chptr;
-          }
-          else
-#endif
-          {
-            joining_vchan = 0;
-            root_chptr = chptr;
-          }
-          
 	  /* save the expense of calling channel_modes()
 	   * if zero users on channel, then I have to call channel_modes().
 	   * (N.B. if channel_modes() was rewritten to be sane and fast
@@ -279,8 +239,6 @@ m_join(struct Client *client_p,
 		       me.name, parv[0], name);
 	    continue;
 	  }
-	  else
-	    root_chptr = chptr;
 	}
 
     if (!IsOper(source_p))
@@ -301,11 +259,6 @@ m_join(struct Client *client_p,
       
       add_user_to_channel(chptr, source_p, flags);
 
-#ifdef VCHANS
-      if (joining_vchan)
-	add_vchan_to_client_cache(source_p,root_chptr,chptr);
-#endif
-
       /*
       **  Set timestamp if appropriate, and propagate
       */
@@ -320,36 +273,6 @@ m_join(struct Client *client_p,
 	  modebuf[2] = 't';
 	  modebuf[3] = '\0';
 
-          /*
-           * XXX - this is a rather ugly hack.
-           *
-           * Unfortunately, there's no way to pass
-           * the fact that it is a vchan through SJOIN...
-           */
-#ifdef VCHANS
-          /* Prevent users creating a fake vchan */
-          if (name[0] == '#' && name[1] == '#')
-            {
-              if ((pvc = strrchr(name+3, '_'))) 
-                {
-                  /*
-                   * OK, name matches possible vchan:
-                   * ##channel_blah
-                   */
-                  pvc++; /*  point pvc after last _ */
-                  vc_ts = atol(pvc);
-                  
-                  /*
-                   * if blah is the same as the TS, up the TS
-                   * by one, to prevent this channel being
-                   * seen as a vchan
-                   */
-                  if (vc_ts == CurrentTime)
-                    chptr->channelts++;
-                }
-            }
-#endif
-
 	  sendto_server(client_p, source_p, chptr, NOCAPS, NOCAPS,
                         LL_ICLIENT,
                         ":%s SJOIN %lu %s %s %s:@%s",
@@ -363,11 +286,11 @@ m_join(struct Client *client_p,
 	   */
 	  sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s JOIN :%s",
 			       source_p->name, source_p->username,
-			       source_p->host, root_chptr->chname);
+			       source_p->host, chptr->chname);
       
 	  sendto_channel_local(ONLY_CHANOPS_HALFOPS,chptr,
 			       ":%s MODE %s %s %s",
-			       me.name, root_chptr->chname,
+			       me.name, chptr->chname,
 			       modebuf, parabuf);
 	}
       else
@@ -380,7 +303,7 @@ m_join(struct Client *client_p,
 
 	  sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s JOIN :%s",
 			       source_p->name, source_p->username,
-			       source_p->host, root_chptr->chname);
+			       source_p->host, chptr->chname);
         }
 
 
@@ -389,24 +312,24 @@ m_join(struct Client *client_p,
       if (chptr->topic != NULL)
 	{
 	  sendto_one(source_p, form_str(RPL_TOPIC), me.name,
-		     parv[0], root_chptr->chname, chptr->topic);
+		     parv[0], chptr->chname, chptr->topic);
 
           if (!(chptr->mode.mode & MODE_HIDEOPS) ||
               (flags & CHFL_CHANOP) || (flags & CHFL_HALFOP))
             {
               sendto_one(source_p, form_str(RPL_TOPICWHOTIME),
-                         me.name, parv[0], root_chptr->chname,
+                         me.name, parv[0], chptr->chname,
                          chptr->topic_info, chptr->topic_time);
             }
           else /* Hide from nonops */
             {
                sendto_one(source_p, form_str(RPL_TOPICWHOTIME),
-                         me.name, parv[0], root_chptr->chname,
+                         me.name, parv[0], chptr->chname,
                          me.name, chptr->topic_time);
             }
 	}
 
-      channel_member_names(source_p, chptr, root_chptr->chname, 1);
+      channel_member_names(source_p, chptr, chptr->chname, 1);
 
       if(successful_join_count != 0)
 	source_p->localClient->last_join_time = CurrentTime;
@@ -491,7 +414,7 @@ do_join_0(struct Client *client_p, struct Client *source_p)
 
       sendto_channel_local(ALL_MEMBERS,chptr, ":%s!%s@%s PART %s",
 			   source_p->name, source_p->username,
-			   source_p->host, RootChan(chptr)->chname);
+			   source_p->host, chptr->chname);
       remove_user_from_channel(chptr, source_p);
     }
 }
