@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_gline.c,v 1.39 2003/07/05 06:21:03 db Exp $
+ *  $Id: s_gline.c,v 1.40 2003/07/25 23:11:08 michael Exp $
  */
 
 #include "stdinc.h"
@@ -81,13 +81,11 @@ struct AccessItem *
 find_is_glined(const char *host, const char *user)
 {
   dlink_node *ptr;
-  struct ConfItem *conf;
   struct AccessItem *kill_ptr; 
 
   DLINK_FOREACH(ptr, gline_items.head)
   {
-    conf = ptr->data;
-    kill_ptr = (struct AccessItem *)conf;
+    kill_ptr = map_to_conf(ptr->data);
 
     if ((kill_ptr->user && (!user || match(kill_ptr->user, user))) &&
         (kill_ptr->host && (!host || match(kill_ptr->host, host))))
@@ -95,6 +93,7 @@ find_is_glined(const char *host, const char *user)
       return(kill_ptr);
     }
   }
+
   return(NULL);
 }
 
