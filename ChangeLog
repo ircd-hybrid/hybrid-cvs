@@ -1,3 +1,8 @@
+*** 20010126_17 by db
+- updated TODO list
+
+
+
 *** 20010126_16 by db
 - changed code to send UID's for KILL's when possible.
 - changed direct reference to id to ID macro in send.c
@@ -6,7 +11,7 @@
 
 *** 20010126_15 by db
 - corrected formatting
-- added CVS $Id: ChangeLog,v 7.1675 2001/01/27 03:53:24 db Exp $ string in comments
+- added CVS $Id: ChangeLog,v 7.1676 2001/01/27 04:05:35 db Exp $ string in comments
 
 
 
