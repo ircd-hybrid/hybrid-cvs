@@ -305,5 +305,5 @@
 /* If system does not define u_int16_t, define a usable substitute. */
 #undef u_int16_t
 
-/* If system does not define u_int32_t, define to unsigned int here. */
+/* If system does not define u_int32_t, define to unsigned long int here. */
 #undef u_int32_t

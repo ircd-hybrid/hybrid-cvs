@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.53 2003/06/13 07:40:27 joshk Exp $
+dnl $Id: configure.ac,v 7.54 2003/06/14 03:54:01 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -326,7 +326,7 @@ AC_CHECK_TYPE([u_int32_t], [],
 	],
 	[
 		AC_MSG_WARN([system has no u_int32_t or uint32_t, default to unsigned int])
-		AC_DEFINE(u_int32_t, [unsigned int], [If system does not define u_int32_t, define to unsigned int here.])
+		AC_DEFINE(u_int32_t, [unsigned long int], [If system does not define u_int32_t, define to unsigned long int here.])
 	])
 ])
 
@@ -352,7 +352,6 @@ AC_CHECK_TYPE([sa_family_t], [],
 [[#include <sys/types.h>
 #include <sys/socket.h>]])
 
-AC_CHECK_TYPE([unsigned int], [], [AC_MSG_ERROR([unsigned int is not defined; aborting])])
 AC_CHECK_TYPES([uintptr_t])
 
 dnl check for snprintf
