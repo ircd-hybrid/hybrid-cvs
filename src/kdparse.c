@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: kdparse.c,v 7.7 2002/05/24 23:34:48 androsyn Exp $
+ *  $Id: kdparse.c,v 7.8 2002/07/06 16:58:57 db Exp $
  */
 
 #include "stdinc.h"
@@ -38,7 +38,8 @@
  * Side Effects - Parse one new style K line
  */
 
-void parse_k_file(FBFILE *file)
+void
+parse_k_file(FBFILE *file)
 {
   struct ConfItem *aconf;
   char* user_field=(char *)NULL;
@@ -49,7 +50,7 @@ void parse_k_file(FBFILE *file)
 
   while (fbgets(line, sizeof(line), file))
     {
-      if ((p = strchr(line, '\n')))
+      if ((p = strchr(line, '\n')) != NULL)
         *p = '\0';
 
       if ((*line == '\0') || (*line == '#'))
