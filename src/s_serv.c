@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.365 2003/07/07 06:53:08 joshk Exp $
+ *  $Id: s_serv.c,v 7.366 2003/07/18 22:19:50 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -530,8 +530,13 @@ try_connections(void *unused)
        * error afterwards if it fails.
        *   -- adrian
        */
-      sendto_realops_flags(UMODE_ALL, L_ALL, "Connection to %s[%s] activated.",
-                           conf->name, aconf->host);
+      if (ConfigServerHide.hide_server_ips)
+        sendto_realops_flags(UMODE_ALL, L_ALL, "Connection to %s activated.",
+                             conf->name);
+      else
+        sendto_realops_flags(UMODE_ALL, L_ALL, "Connection to %s[%s] activated.",
+                             conf->name, aconf->host);
+
       serv_connect(aconf, 0);
       /* We connect only one at time... */
       return;
