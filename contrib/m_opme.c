@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_opme.c,v 1.5 2001/01/07 01:01:05 fl_ Exp $
+ *   $Id: m_opme.c,v 1.6 2001/01/09 02:18:00 wcampbel Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -110,7 +110,7 @@ int mo_opme(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 
   if (!chan_is_opless(chptr))
   {
-	  sendto_one(sptr, ":%s NOTICE %s %s :Channel is not opless",
+	  sendto_one(sptr, ":%s NOTICE %s :%s Channel is not opless",
 				 me.name, parv[0], parv[1]);
 	  return 0;
   }
