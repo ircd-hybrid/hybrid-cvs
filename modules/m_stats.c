@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.155 2003/12/05 22:35:19 metalrock Exp $
+ *  $Id: m_stats.c,v 1.156 2003/12/06 23:01:16 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.155 $";
+const char *_version = "$Revision: 1.156 $";
 #endif
 
 static char *parse_stats_args(int, char **, int *, int *);
@@ -519,7 +519,7 @@ stats_glines(struct Client *source_p)
                from, to, 'G',
                kill_ptr->host ? kill_ptr->host : "*",
                kill_ptr->user ? kill_ptr->user : "*",
-               kill_ptr->reason ? kill_ptr->reason : "No reason specified");
+               kill_ptr->reason ? kill_ptr->reason : "No reason specified", "" );
   }
 }
 
