@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.232 2002/01/05 09:15:18 a1kmm Exp $
+ *  $Id: s_serv.c,v 7.233 2002/01/09 17:16:54 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -388,7 +388,7 @@ void write_links_file(void* notused)
       continue;
 
     /* skip hidden servers */
-    if(target_p->hidden_server && ConfigServerHide.allow_hidden)
+    if(target_p->hidden_server && !ConfigServerHide.disable_hidden)
       continue;
 
     if(target_p->info[0])

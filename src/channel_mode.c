@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.18 2002/01/05 09:15:11 a1kmm Exp $
+ *  $Id: channel_mode.c,v 7.19 2002/01/09 17:16:53 leeh Exp $
  */
 
 #include "tools.h"
@@ -184,7 +184,7 @@ add_id(struct Client *client_p, struct Channel *chptr, char *banid, int type)
   struct Ban *actualBan;
 
   /* dont let local clients overflow the banlist */
-  if ((!IsServer(client_p)) && (chptr->num_mask >= ConfigChannel.maxbans))
+  if ((!IsServer(client_p)) && (chptr->num_mask >= ConfigChannel.max_bans))
   {
     if (MyClient(client_p))
     {

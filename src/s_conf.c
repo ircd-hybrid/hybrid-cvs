@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.290 2002/01/05 09:15:16 a1kmm Exp $
+ *  $Id: s_conf.c,v 7.291 2002/01/09 17:16:54 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -1566,13 +1566,13 @@ set_default_conf(void)
   ConfigChannel.knock_delay = 300;
   ConfigChannel.knock_delay_channel = 60;
   ConfigChannel.max_chans_per_user = 15;
-  ConfigChannel.maxbans = 25;
+  ConfigChannel.max_bans = 25;
 
   /* 60 * 30 = 1800 = 30 minutes */
   ConfigChannel.persist_time = 1800;
 
-  ConfigChannel.split_user_count = 0;
-  ConfigChannel.split_server_count = 0;
+  ConfigChannel.default_split_user_count = 0;
+  ConfigChannel.default_split_server_count = 0;
   ConfigChannel.no_join_on_split = NO;
   ConfigChannel.no_create_on_split = NO;
 
@@ -1581,7 +1581,7 @@ set_default_conf(void)
   ConfigServerHide.disable_remote = 0;
   ConfigServerHide.links_delay = 300;
   ConfigServerHide.hidden = 0;
-  ConfigServerHide.allow_hidden = 1;
+  ConfigServerHide.disable_hidden = 0;
 
   ConfigFileEntry.min_nonwildcard = 4;
   ConfigFileEntry.default_floodcount = 8;

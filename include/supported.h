@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: supported.h,v 1.16 2002/01/05 09:14:30 a1kmm Exp $
+ *  $Id: supported.h,v 1.17 2002/01/09 17:16:48 leeh Exp $
  */
 
 #ifndef INCLUDED_supported_h
@@ -47,7 +47,7 @@
         ConfigChannel.use_except ? " EXCEPTS" : "", \
         ConfigChannel.use_invex ? " INVEX" : "", \
         MAXMODEPARAMS,ConfigChannel.max_chans_per_user, \
-        ConfigChannel.maxbans, \
+        ConfigChannel.max_bans, \
         ConfigFileEntry.max_targets,NICKLEN,TOPICLEN,TOPICLEN, \
 	ConfigServerHide.disable_local_channels ? "#" : "#&","(ohv)@%+", \
         "beI,k,l,imnpsta"
