@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_trace.c,v 1.47 2002/06/19 20:39:03 leeh Exp $
+ *  $Id: m_trace.c,v 1.48 2002/06/19 20:49:54 leeh Exp $
  */
 
 #include "stdinc.h"
@@ -67,7 +67,7 @@ _moddeinit(void)
   hook_del_event("doing_trace");
   mod_del_cmd(&trace_msgtab);
 }
-const char *_version = "$Revision: 1.47 $";
+const char *_version = "$Revision: 1.48 $";
 #endif
 static int report_this_status(struct Client *source_p, struct Client *target_p,int dow,
                               int link_u_p, int link_u_s);
@@ -370,16 +370,24 @@ static int report_this_status(struct Client *source_p, struct Client *target_p,
           if (IsOper(target_p))
 	    sendto_one(source_p, form_str(RPL_TRACEOPERATOR),
 		       me.name, source_p->name, class_name, name, 
-		       MyOper(source_p) ? ip : 
+#ifdef HIDE_SPOOF_IPS
+		       IsIPSpoof(target_p) ? "255.255.255.255" : ip,
+#else
+                       MyOper(source_p) ? ip :
 		       (IsIPSpoof(target_p) ? "255.255.255.255" : ip),
+#endif
 		       CurrentTime - target_p->lasttime,
 		       (target_p->user)?(CurrentTime - target_p->user->last):0);
 		       
 	  else
 	    sendto_one(source_p, form_str(RPL_TRACEUSER),
 		       me.name, source_p->name, class_name, name,
+#ifdef HIDE_SPOOF_IPS
+                       IsIPSpoof(target_p) ? "255.255.255.255" : ip,
+#else
 		       MyOper(source_p) ? ip : 
 		       (IsIPSpoof(target_p) ? "255.255.255.255" : ip),
+#endif
 		       CurrentTime - target_p->lasttime,
 		       (target_p->user)?(CurrentTime - target_p->user->last):0);
 	  cnt++;
