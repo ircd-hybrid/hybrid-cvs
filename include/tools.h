@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: tools.h,v 1.10 2002/06/01 21:49:44 androsyn Exp $
+ *  $Id: tools.h,v 1.11 2002/06/17 02:54:49 db Exp $
  */
 
 #ifndef __TOOLS_H__
@@ -87,7 +87,6 @@ extern inline void
 dlinkAdd(void *data, dlink_node * m, dlink_list * list)
 {
  m->data = data;
- m->next = NULL;
  m->next = list->head;
  /* Assumption: If list->tail != NULL, list->head != NULL */
  if (list->head != NULL)
