@@ -1,3 +1,16 @@
+db          2002/02/16 19:54:10 EST	(20020217_1)
+
+  Modified files:
+    src                  client.c 
+  Log:
+  - We have a macro that does what the old code did, so lets use it.
+  - cosmetic change only
+  
+  Revision  Changes    Path
+  7.226     +2 -3      ircd-hybrid-7/src/client.c
+
+
+
 androsyn    2002/02/16 19:46:02 EST	(20020217_0)
 
   Modified files:
@@ -22614,4 +22627,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3410 2002/02/17 00:46:07 androsyn Exp $
+$Id: ChangeLog,v 7.3411 2002/02/17 00:54:16 db Exp $
