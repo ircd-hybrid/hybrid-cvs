@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_rehash.c,v 1.29 2001/09/12 05:42:56 habeeb Exp $
+ *   $Id: m_rehash.c,v 1.30 2001/09/12 06:24:49 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -38,7 +38,6 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
-#include "event.h"
 
 static void mo_rehash(struct Client*, struct Client*, int, char**);
 

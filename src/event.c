@@ -3,7 +3,7 @@
  *
  * This code was borrowed from the squid web cache by Adrian Chadd.
  *
- * $Id: event.c,v 7.20 2001/09/12 05:39:21 habeeb Exp $
+ * $Id: event.c,v 7.21 2001/09/12 06:24:50 db Exp $
  *
  * Original header follows:
  *
@@ -70,6 +70,7 @@ eventAdd(const char *name, EVH *func, void *arg, time_t when)
   event_table[event_max].arg = arg;
   event_table[event_max].when = CurrentTime + when;
   event_table[event_max].frequency = when; 
+  event_table[event_max].active = 1;
   ++event_max;
 }
 
