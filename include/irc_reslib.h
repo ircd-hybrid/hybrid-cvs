@@ -1,7 +1,7 @@
 /*
- * include/res.h (C)opyright 1992 Darren Reed.
+ * include/irc_reslib.h (C)opyright 1992 Darren Reed.
  *
- * $Id: irc_reslib.h,v 7.9 2003/05/20 04:25:19 michael Exp $
+ * $Id: irc_reslib.h,v 7.10 2003/05/20 04:45:32 metalrock Exp $
  */
 #ifndef INCLUDED_ircdreslib_h
 #define INCLUDED_ircdreslib_h
