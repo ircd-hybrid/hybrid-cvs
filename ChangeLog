@@ -1,3 +1,11 @@
+*** 20001108_3 by adrian
+
+
+Updates on the network code documentation. Add documentation for the FD lists
+and FD management code.
+
+
+
 *** 20001108_2 by adrian
 
 
@@ -259,7 +267,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.512 2000/11/08 09:34:18 adrian Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.513 2000/11/08 19:54:10 adrian Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
