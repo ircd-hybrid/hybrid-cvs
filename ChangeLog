@@ -1,3 +1,18 @@
+leeh        2002/01/03 07:11:33 EST	(20020103_0)
+
+  Modified files:
+    modules              Makefile.in 
+    src                  modules-dld.c modules.c 
+  Log:
+  - made quit a core module
+  
+  Revision  Changes    Path
+  1.63      +1 -1      ircd-hybrid-7/modules/Makefile.in
+  1.15      +1 -0      ircd-hybrid-7/src/modules-dld.c
+  7.83      +1 -0      ircd-hybrid-7/src/modules.c
+
+
+
 leeh        2002/01/02 17:19:33 EST	(20020102_7)
 
   Modified files:
@@ -2120,7 +2135,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3281 2002/01/02 22:19:38 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3282 2002/01/03 12:11:38 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -20474,4 +20489,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3281 2002/01/02 22:19:38 leeh Exp $
+$Id: ChangeLog,v 7.3282 2002/01/03 12:11:38 leeh Exp $
