@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.71 2000/12/10 21:36:09 db Exp $
+ *   $Id: send.c,v 7.72 2000/12/10 21:49:20 db Exp $
  */
 #include "tools.h"
 #include "send.h"
@@ -955,14 +955,7 @@ sendto_anywhere(struct Client *to, struct Client *from,
     }
 
   len = ircsprintf(sendbuf,"%s%s", prefix,buf);
-
-  if(len > 510)
-    {
-      sendbuf[IRCD_BUFSIZE-2] = '\r';
-      sendbuf[IRCD_BUFSIZE-1] = '\n';
-      sendbuf[IRCD_BUFSIZE] = '\0';
-      len = IRCD_BUFSIZE;
-    }
+  len = send_trim(sendbuf, len);
       
   if(MyClient(to))
     send_message(to, (char *)sendbuf, len);
