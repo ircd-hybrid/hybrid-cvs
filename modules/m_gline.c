@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.80 2002/07/31 17:35:31 leeh Exp $
+ *  $Id: m_gline.c,v 1.81 2002/07/31 18:17:42 leeh Exp $
  */
 
 #include "stdinc.h"
@@ -114,7 +114,7 @@ _moddeinit(void)
   mod_del_cmd(&gline_msgtab);
 }
 
-const char *_version = "$Revision: 1.80 $";
+const char *_version = "$Revision: 1.81 $";
 #endif
 /*
  * mo_gline()
@@ -489,11 +489,12 @@ check_majority_gline(struct Client *source_p,
 		     const char *host,
 		     const char *reason)
 {
+  /* set the actual gline in majority_gline() so we can pull the
+   * initial reason and use that as the trigger reason. --fl
+   */
   if(majority_gline(source_p,oper_nick,oper_user, oper_host,
 		    oper_server, user, host, reason))
   {
-    set_local_gline(oper_nick,oper_user,oper_host,oper_server,
-		    user,host,reason);
     cleanup_glines();
   }
 }
@@ -838,6 +839,10 @@ majority_gline(struct Client *source_p,
               log_gline(source_p,gline_pending_ptr,
                         oper_nick,oper_user,oper_host,oper_server,
                         user,host,reason);
+
+              /* trigger the gline using the original reason --fl */
+              set_local_gline(oper_nick, oper_user, oper_host, oper_server,
+		              user, host, gline_pending_ptr->reason1);
               return YES;
             }
           else
