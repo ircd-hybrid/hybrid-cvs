@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.112 2001/10/06 04:24:32 db Exp $
+ *   $Id: m_sjoin.c,v 1.113 2001/10/06 14:26:14 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -364,7 +364,10 @@ static void ms_sjoin(struct Client *client_p,
 		      (unsigned long) tstosend,
 		      parv[2], modebuf, parabuf);
 
-  if (buflen >= (BUFSIZE - 5 - NICKLEN))
+  /* check we can fit a nick on the end, as well as \r\n\0 and a prefix "
+   * @+".
+   */
+  if (buflen >= (BUFSIZE - 6 - NICKLEN))
     {
       sendto_realops_flags(FLAGS_ALL, L_ALL,
 			   "Long SJOIN from server: %s(via %s) (ignored)",
