@@ -1,5 +1,5 @@
 /*
- * $Id: adns.c,v 7.17 2001/03/28 05:50:13 db Exp $
+ * $Id: adns.c,v 7.18 2001/04/05 23:18:43 androsyn Exp $
  * adns.c  functions to enter libadns 
  *
  * Written by Aaron Sethman <androsyn@ratbox.org>
@@ -83,6 +83,7 @@ void dns_do_callbacks(void)
 		{
 			case 0:
 				/* Looks like we got a winner */			
+				assert(query->callback != NULL);
 				query->query = NULL;
 				query->callback(query->ptr, answer);
 				break;
@@ -90,6 +91,7 @@ void dns_do_callbacks(void)
 				/* Go into the queue again */
 				break;;
 			default:
+				assert(query->callback != NULL);
 				/* Awww we failed, what a shame */
 				query->query = NULL;
 				query->callback(query->ptr, NULL);		
