@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_misc.c,v 7.15 2001/01/11 23:26:25 a1kmm Exp $
+ *  $Id: s_misc.c,v 7.16 2001/01/17 06:02:00 toot Exp $
  */
 #include "s_misc.h"
 #include "client.h"
@@ -103,7 +103,7 @@ const char* smalldate(time_t lclock)
   gm = &gmbuf; 
   lt = localtime(&lclock);
   
-  ircsprintf(buf, "%d/%d/%d %d.%d",
+  ircsprintf(buf, "%d/%d/%d %02d.%02d",
              lt->tm_year + 1900, lt->tm_mon + 1, lt->tm_mday,
              lt->tm_hour, lt->tm_min);
   
