@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_stats.c,v 7.23 2003/01/17 13:00:53 db Exp $
+ *  $Id: s_stats.c,v 7.24 2003/02/26 22:40:58 bill Exp $
  */
 
 #include "stdinc.h"
@@ -110,32 +110,32 @@ tstats(struct Client *source_p)
 
   sp->is_ni = dlink_list_length(&unknown_list);
 
-  sendto_one(source_p, ":%s %d %s :accepts %u refused %u",
+  sendto_one(source_p, ":%s %d %s T :accepts %u refused %u",
              me.name, RPL_STATSDEBUG, source_p->name, sp->is_ac, sp->is_ref);
-  sendto_one(source_p, ":%s %d %s :unknown commands %u prefixes %u",
+  sendto_one(source_p, ":%s %d %s T :unknown commands %u prefixes %u",
              me.name, RPL_STATSDEBUG, source_p->name, sp->is_unco, sp->is_unpf);
-  sendto_one(source_p, ":%s %d %s :nick collisions %u unknown closes %u",
+  sendto_one(source_p, ":%s %d %s T :nick collisions %u unknown closes %u",
              me.name, RPL_STATSDEBUG, source_p->name, sp->is_kill, sp->is_ni);
-  sendto_one(source_p, ":%s %d %s :wrong direction %u empty %u",
+  sendto_one(source_p, ":%s %d %s T :wrong direction %u empty %u",
              me.name, RPL_STATSDEBUG, source_p->name, sp->is_wrdi, sp->is_empt);
-  sendto_one(source_p, ":%s %d %s :numerics seen %u",
+  sendto_one(source_p, ":%s %d %s T :numerics seen %u",
              me.name, RPL_STATSDEBUG, source_p->name, sp->is_num);
-  sendto_one(source_p, ":%s %d %s :auth successes %u fails %u",
+  sendto_one(source_p, ":%s %d %s T :auth successes %u fails %u",
              me.name, RPL_STATSDEBUG, source_p->name, sp->is_asuc, sp->is_abad);
-  sendto_one(source_p, ":%s %d %s :Client Server",
+  sendto_one(source_p, ":%s %d %s T :Client Server",
              me.name, RPL_STATSDEBUG, source_p->name);
 
-  sendto_one(source_p, ":%s %d %s :connected %u %u",
+  sendto_one(source_p, ":%s %d %s T :connected %u %u",
              me.name, RPL_STATSDEBUG, source_p->name, 
 	     (unsigned int)dlink_list_length(&lclient_list), 
 	     (unsigned int)dlink_list_length(&serv_list));
-  sendto_one(source_p, ":%s %d %s :bytes sent %d.%uK %d.%uK",
+  sendto_one(source_p, ":%s %d %s T :bytes sent %d.%uK %d.%uK",
              me.name, RPL_STATSDEBUG, source_p->name,
              (int)sp->is_cks, sp->is_cbs, (int)sp->is_sks, sp->is_sbs);
-  sendto_one(source_p, ":%s %d %s :bytes recv %d.%uK %d.%uK",
+  sendto_one(source_p, ":%s %d %s T :bytes recv %d.%uK %d.%uK",
              me.name, RPL_STATSDEBUG, source_p->name,
              (int)sp->is_ckr, sp->is_cbr, (int)sp->is_skr, sp->is_sbr);
-  sendto_one(source_p, ":%s %d %s :time connected %d %d",
+  sendto_one(source_p, ":%s %d %s T :time connected %d %d",
              me.name, RPL_STATSDEBUG, source_p->name, (int)sp->is_cti,
 	     (int)sp->is_sti);
 }
