@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_killhost.c,v 1.4 2003/05/13 05:10:41 metalrock Exp $
+ *  $Id: m_killhost.c,v 1.5 2003/05/23 15:38:41 joshk Exp $
  *
  */
 
@@ -64,7 +64,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&killhost_msgtab);
 }
-const char *_version = "$Revision: 1.4 $";
+const char *_version = "$Revision: 1.5 $";
 #endif
 
 /*
@@ -189,7 +189,7 @@ static void kh_relay_kill(struct Client *one, struct Client *source_p,
     }
     /* force introduction of killed client but check that
      * its not on the server we're bursting too.. */
-    else if(strcmp(target_p->user->server,client_p->name))
+    else if(strcmp(target_p->user->server->name,client_p->name))
       client_burst_if_needed(client_p, target_p);
 
     /* introduce source of kill */
