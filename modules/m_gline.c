@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_gline.c,v 1.45 2001/04/09 08:29:47 a1kmm Exp $
+ *  $Id: m_gline.c,v 1.46 2001/05/16 16:59:08 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -319,12 +319,13 @@ static void ms_gline(struct Client *client_p,
   else
     return;
 
-  sendto_serv_butone(source_p, ":%s GLINE %s %s %s :%s",
-		     source_p->name,
-		     oper_nick,
-		     user,
-		     host,
-		     reason);
+  sendto_cap_serv_butone(CAP_GLN,
+                         source_p, ":%s GLINE %s %s %s :%s",
+		         source_p->name,
+		         oper_nick,
+		         user,
+		         host,
+		         reason);
 
   if (ConfigFileEntry.glines)
     {
