@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_drop.c,v 1.2 2000/11/09 09:46:57 ejb Exp $
+ * $Id: m_drop.c,v 1.3 2000/11/23 22:39:40 db Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -68,10 +68,6 @@ int     ms_drop(struct Client *cptr,
   struct Channel *chptr;
 
   if(parc < 2 || *parv[1] == '\0')
-    return 0;
-
-  /* If not a server just ignore it */
-  if ( !IsServer(cptr) )
     return 0;
 
   name = parv[1];
