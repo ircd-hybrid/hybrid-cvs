@@ -6,7 +6,7 @@
  * The idea here is that we should really be maintaining pre-munged
  * buffer "lines" which we can later refcount to save needless copies.
  *
- * $Id: linebuf.c,v 7.41 2001/08/13 20:56:51 androsyn Exp $
+ * $Id: linebuf.c,v 7.42 2001/08/14 17:44:44 db Exp $
  */
 
 #include <errno.h>
@@ -46,7 +46,6 @@ static int bufline_count = 0;
  *
  * Initialise the linebuf mechanism
  */
-buf_line_t *linebuf_freelist;
 
 static void linebuf_garbage_collect(void *unused)
 {
