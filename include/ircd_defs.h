@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: ircd_defs.h,v 7.9 2000/12/21 14:16:06 adrian Exp $
+ * $Id: ircd_defs.h,v 7.10 2000/12/30 23:10:11 db Exp $
  *
  * ircd_defs.h - Global size definitions for record entries used
  * througout ircd. Please think 3 times before adding anything to this
@@ -60,6 +60,7 @@
  * message return values 
  */
 #define CLIENT_EXITED    -2
+#define CLIENT_PARSE_ERROR -1
 #define CLIENT_OK	1
 
 /* 
