@@ -25,7 +25,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: balloc.c,v 7.27 2002/04/14 22:13:48 androsyn Exp $
+ *  $Id: balloc.c,v 7.28 2002/05/16 13:57:26 androsyn Exp $
  */
 
 /* 
@@ -353,23 +353,21 @@ void *_BlockHeapAlloc(BlockHeap * bh)
         return ((void *) NULL);
 
     if (bh->freeElems == 0)
-      {   /* Allocate new block and assign */
+      {   
+        /* Allocate new block and assign */
         /* newblock returns 1 if unsuccessful, 0 if not */
 
         if (newblock(bh))
 	  {
-            return ((void *) NULL);
+            /* That didn't work..try to garbage collect */
+            BlockHeapGarbageCollect(bh);  
+            if(bh->freeElems == 0)
+              {
+                 outofmemory(); /* Well that didn't work either...bail */
+              }
 	  }
-        walker = bh->base;
-        walker->freeElems--;
-        bh->freeElems--;
-        new_node = walker->free_list.head;
-        dlinkDelete(new_node, &walker->free_list);
-        dlinkAdd(new_node->data, new_node, &walker->used_list);
-        assert(new_node->data != NULL);
-        return (new_node->data);
-      }
-
+       }
+      
     for (walker = bh->base; walker != NULL; walker = walker->next)
       {
         if (walker->freeElems > 0)
