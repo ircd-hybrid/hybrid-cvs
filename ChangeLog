@@ -1,3 +1,21 @@
+db          2002/11/12 08:12:42 EST	(20021112_1)
+
+  Modified files:
+    modules/core         m_part.c 
+  Log:
+  Just a small bug I came across by chance, if you haven't got it
+  already :-)
+  
+  In modules/core/m_part.c (line 178) there is an extra space in the
+  format string "%s PART %s  :%s".  This was using hybrid 7-rc4.
+  
+  submitted by tfarrell@frogbert.queens.unimelb.edu.au
+  
+  Revision  Changes    Path
+  1.57      +2 -2      ircd-hybrid-7/modules/core/m_part.c
+
+
+
 db          2002/11/12 08:09:51 EST	(20021112_0)
 
   Modified files:
@@ -33072,4 +33090,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4103 2002/11/12 13:09:53 db Exp $
+$Id: ChangeLog,v 7.4104 2002/11/12 13:12:45 db Exp $
