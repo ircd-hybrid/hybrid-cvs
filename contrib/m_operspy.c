@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.18 2003/04/02 11:44:52 michael Exp $
+ *   $Id: m_operspy.c,v 1.19 2003/04/03 15:14:49 adx Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -48,6 +48,7 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
+#include "hash.h"
 
 /* enable OPERSPY version of LIST */
 #define OPERSPY_LIST
@@ -124,7 +125,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.18 $";
+const char *_version = "$Revision: 1.19 $";
 #endif
 
 /*
