@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.260 2001/07/27 16:45:25 leeh Exp $
+ * $Id: channel.c,v 7.261 2001/07/27 19:34:52 androsyn Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -2437,7 +2437,7 @@ send_cap_mode_changes(struct Client *client_p, struct Client *source_p,
       modebuf[mbl] = 0;
 
       if (mode_changes_minus[i].arg != NULL)
-        pbl = strlen(strcat(parabuf, mode_changes_minus[i].arg));
+        pbl = strlcat(parabuf, mode_changes_minus[i].arg, MODEBUFLEN);
 
       parabuf[pbl++] = ' ';
       parabuf[pbl] = 0;
@@ -2483,7 +2483,7 @@ send_cap_mode_changes(struct Client *client_p, struct Client *source_p,
       modebuf[mbl] = 0;
 
       if (mode_changes_plus[i].arg != NULL)
-        pbl = strlen(strcat(parabuf, mode_changes_plus[i].arg));
+        pbl = strlcat(parabuf, mode_changes_plus[i].arg, MODEBUFLEN);
 
       parabuf[pbl++] = ' ';
       parabuf[pbl] = 0;
