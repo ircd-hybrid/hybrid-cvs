@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_part.c,v 1.23 2001/01/01 16:48:28 davidt Exp $
+ *   $Id: m_part.c,v 1.24 2001/01/01 16:49:37 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -181,7 +181,7 @@ static void part_one_client(struct Client *cptr,
        **  Remove user from the old channel (if any)
        */
 
-      sendto_channel_remote(chptr, cptr, ":%s PART %s", sptr->name,
+      sendto_channel_remote(vchan, cptr, ":%s PART %s", sptr->name,
                             vchan->chname);
 
       sendto_channel_local(ALL_MEMBERS,
