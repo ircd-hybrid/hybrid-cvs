@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: listener.c,v 7.55 2001/09/06 11:34:39 leeh Exp $
+ *  $Id: listener.c,v 7.56 2001/09/17 03:18:20 jdc Exp $
  */
 #include "config.h"
 #include "listener.h"
@@ -369,10 +369,21 @@ static void accept_connection(int pfd, void *data)
   if((IN6_IS_ADDR_V4MAPPED(&IN_ADDR2(addr))) ||
   	(IN6_IS_ADDR_V4COMPAT(&IN_ADDR2(addr))))
   {
+   /* jdc -- 09/15/2001 --
+    *   This breaks 4.4BSD.  You Linux IPv6 people are naughty.  :-)
+    *   We have no "in6_u" nor "u6_addr8".  Please examine src/s_bsd.c
+    *   for proper IPv6 structure information/examples.
+    */
+   /*
    memmove(&addr.sins.sin.s_addr,
            addr.sins.sin6.in6_u.u6_addr8+12,
            sizeof(struct in_addr));
-   sai.sins.sin.sin_family = AF_INET;  	
+   */
+   memmove(&addr.sins.sin.s_addr,
+           addr.sins.sin6.s6_addr+12,
+           sizeof(struct in_addr));
+
+   sai.sins.sin.sin_family = AF_INET;
   }
 #endif
 
