@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h.dist,v 7.50 2001/06/08 03:49:43 db Exp $
+ * $Id: config.h.dist,v 7.51 2001/07/02 02:54:59 db Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -245,12 +245,6 @@
  * You usually shouldn't need this. -Dianora
 */
 #undef DEBUGMODE               /* define DEBUGMODE to enable debugging mode.*/
-
-/*
- * viconf option, if USE_RCS is defined, viconf will use rcs "ci"
- * to keep the conf file  under RCS control.
- */
-#define USE_RCS
 
 /*
  * this checks for various things that should never happen, but
