@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_debug.c,v 7.59 2001/08/03 13:10:32 leeh Exp $
+ *   $Id: s_debug.c,v 7.60 2001/08/04 13:13:24 leeh blalloc.c $
  */
 
 #include <sys/types.h> 
@@ -63,15 +63,6 @@
  * Option string.  Must be before #ifdef DEBUGMODE.
  */
 const char serveropts[] = {
-#ifdef  DEBUGMODE
-  'D',
-#endif
-#ifdef  CRYPT_OPER_PASSWORD
-  'p',
-#endif
-#ifdef  USE_SYSLOG
-  'Y',
-#endif
   ' ',
   'T',
   'S',
