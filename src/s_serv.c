@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.237 2002/02/04 06:07:57 androsyn Exp $
+ *  $Id: s_serv.c,v 7.238 2002/02/06 15:02:32 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -113,6 +113,7 @@ struct Capability captab[] = {
   { "UID",   CAP_UID },
   { "ZIP",   CAP_ZIP },
   { "TBURST", CAP_TBURST },
+  { "PARA",  CAP_PARA },
   { 0,           0 }
 };
 
