@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.197 2001/08/16 20:19:21 leeh Exp $
+ *  $Id: client.c,v 7.198 2001/08/17 03:10:20 androsyn Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -102,7 +102,7 @@ void init_client(void)
   * start off the check ping event ..  -- adrian
   * Every 30 seconds is plenty -- db
   */
- client_heap = BlockHeapCreate(sizeof(struct Client), 1024);
+ client_heap = BlockHeapCreate(sizeof(struct Client), 10000);
  lclient_heap = BlockHeapCreate(sizeof(struct LocalUser), 512); 
  eventAdd("check_pings", check_pings, NULL, 30, 0);
  eventAdd("free_exited_clients()", &free_exited_clients, NULL, 4, 0);

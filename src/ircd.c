@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.178 2001/08/16 20:19:21 leeh Exp $
+ * $Id: ircd.c,v 7.179 2001/08/17 03:10:20 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -591,6 +591,7 @@ int main(int argc, char *argv[])
  clear_hash_parse();
  init_client();
  initUser();
+ init_channels();
  initclass();
  initwhowas();
  init_stats();

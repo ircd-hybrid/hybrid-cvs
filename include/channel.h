@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.84 2001/08/05 18:01:15 leeh Exp $
+ * $Id: channel.h,v 7.85 2001/08/17 03:10:19 androsyn Exp $
  */
 
 #include <sys/types.h>        /* time_t */
@@ -88,11 +88,12 @@ struct Channel
 
   int             num_mask;              /* number of bans+exceptions+invite exceptions */
   time_t          channelts;
-  char            chname[1];
+  char            chname[CHANNELLEN+1];
 };
 
 extern  struct  Channel *GlobalChannelList;
 
+void init_channels(void);
 void cleanup_channels(void *);
 
 #define CREATE 1        /* whether a channel should be
