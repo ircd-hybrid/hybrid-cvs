@@ -1,3 +1,16 @@
+leeh        2002/02/25 14:56:04 EST	(20020225_4)
+
+  Modified files:
+    tools                convertklines.c 
+  Log:
+  - made convertklines use the new conf format
+  - cleanups, added support for oper reasons
+  
+  Revision  Changes    Path
+  7.5       +78 -54    ircd-hybrid-7/tools/convertklines.c
+
+
+
 androsyn    2002/02/25 14:12:07 EST	(20020225_3)
 
   Modified files:
@@ -23235,4 +23248,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3452 2002/02/25 19:12:13 androsyn Exp $
+$Id: ChangeLog,v 7.3453 2002/02/25 19:56:10 leeh Exp $
