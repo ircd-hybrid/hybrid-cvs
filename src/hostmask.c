@@ -15,7 +15,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- * $Id: hostmask.c,v 7.16 2001/02/16 17:22:07 db Exp $ 
+ * $Id: hostmask.c,v 7.17 2001/02/16 17:37:14 db Exp $ 
  */
 #include <unistd.h>
 #include <string.h>
@@ -446,8 +446,7 @@ void report_hostmask_conf_links(struct Client *sptr, int flags)
 	get_printable_conf(aconf, &name, &host, &pass, &user, &port,
 			   &classname);
 	sendto_one(sptr, form_str(RPL_STATSKLINE), me.name, sptr->name,
-		   'K', host, user, pass
-		   );
+		   'K', host, user, pass );
       }
 
 
@@ -468,10 +467,7 @@ void report_hostmask_conf_links(struct Client *sptr, int flags)
 	     get_printable_conf(aconf, &name, &host, &pass, &user, &port,
 				&classname);
 	     sendto_one(sptr, form_str(RPL_STATSKLINE), me.name, sptr->name,
-			'K', name,
-			show_iline_prefix(sptr,aconf,user),
-			host, port, classname
-			);
+			'K', host, user, pass );
 	   }
        }
    }
