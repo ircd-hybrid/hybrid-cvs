@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircdauth.c,v 7.60 2003/07/07 04:59:23 joshk Exp $
+ *  $Id: ircdauth.c,v 7.61 2003/10/11 02:15:10 bill Exp $
  */
 
 #include "stdinc.h"
@@ -722,8 +722,16 @@ GreetUser(struct Client *client)
   else
   {
     /* send to all servers, except LL servers */
-    sendto_server(NULL, NULL, NULL, NOCAPS, CAP_LL,
-                  NOFLAGS, "NICK %s %d %lu %s %s %s %s :%s",
+    sendto_server(NULL, NULL, NULL, CAP_TS6, CAP_LL, NOFLAGS,
+                  ":%s UID %s %d %lu %s %s %s %s %s :%s",
+                  ID(client),
+                  client->hopcount+1,
+                  (unsigned long) client->tsinfo,
+                  ubuf,
+                  client->username, client->host,
+                  client->user->server->name, client->info);
+    sendto_server(NULL, NULL, NULL, NOCAPS, CAP_TS6|CAP_LL, NOFLAGS,
+                  "NICK %s %d %lu %s %s %s %s :%s",
                   client->name,
                   client->hopcount+1,
                   (unsigned long) client->tsinfo,

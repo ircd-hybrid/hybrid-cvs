@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nick.c,v 1.132 2003/10/07 22:37:17 bill Exp $
+ *  $Id: m_nick.c,v 1.133 2003/10/11 02:15:08 bill Exp $
  */
 
 #include "stdinc.h"
@@ -97,7 +97,7 @@ _moddeinit(void)
   mod_del_cmd(&uid_msgtab);
 }
 
-const char *_version = "$Revision: 1.132 $";
+const char *_version = "$Revision: 1.133 $";
 #endif
 
 /*
@@ -286,7 +286,8 @@ m_nick(struct Client *client_p, struct Client *source_p,
     if (!ServerInfo.hub && uplink && IsCapable(uplink, CAP_LL))
     {
       /* The uplink might know someone by this name already. */
-      sendto_one(uplink, ":%s NBURST %s %s %s", me.name, nick,
+      sendto_one(uplink, ":%s NBURST %s %s %s",
+                 ID_or_name(&me, uplink), nick,
                  nick, source_p->name);
       return;
     }
@@ -757,7 +758,10 @@ nick_from_server(struct Client *client_p, struct Client *source_p, int parc,
     if (source_p->user != NULL)
     {
       add_history(source_p,1);
-      sendto_server(client_p, source_p, NULL, NOCAPS, NOCAPS, NOFLAGS,
+      sendto_server(client_p, source_p, NULL, CAP_TS6, NOCAPS, NOFLAGS,
+                    ":%s NICK %s :%lu",
+                    ID(source_p), nick, (unsigned long)source_p->tsinfo);
+      sendto_server(client_p, source_p, NULL, NOCAPS, CAP_TS6, NOFLAGS,
                     ":%s NICK %s :%lu",
 		      parv[0], nick, (unsigned long)source_p->tsinfo);
     }

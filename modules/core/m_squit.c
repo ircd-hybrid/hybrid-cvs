@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_squit.c,v 1.56 2003/06/04 06:25:52 michael Exp $
+ *  $Id: m_squit.c,v 1.57 2003/10/11 02:15:08 bill Exp $
  */
 
 #include "stdinc.h"
@@ -60,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&squit_msgtab);
 }
 
-const char *_version = "$Revision: 1.56 $";
+const char *_version = "$Revision: 1.57 $";
 #endif
 
 /* mo_squit - SQUIT message handler
@@ -181,7 +181,10 @@ ms_squit(struct Client *client_p, struct Client *source_p,
   {
     sendto_wallops_flags(UMODE_WALLOP, &me, "Remote SQUIT %s from %s (%s)",
                          target_p->name, source_p->name, comment);
-    sendto_server(NULL, NULL, NULL, NOCAPS, NOCAPS, NOFLAGS,
+    sendto_server(NULL, NULL, NULL, CAP_TS6, NOCAPS, NOFLAGS,
+                  ":%s WALLOPS :Remote SQUIT %s from %s (%s)",
+                  me.id, target_p->name, source_p->name, comment);
+    sendto_server(NULL, NULL, NULL, NOCAPS, CAP_TS6, NOFLAGS,
                   ":%s WALLOPS :Remote SQUIT %s from %s (%s)",
                   me.name, target_p->name, source_p->name, comment);
     ilog(L_TRACE, "SQUIT From %s : %s (%s)", parv[0],

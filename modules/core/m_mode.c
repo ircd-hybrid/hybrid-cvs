@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_mode.c,v 1.68 2003/10/08 02:59:50 metalrock Exp $
+ *  $Id: m_mode.c,v 1.69 2003/10/11 02:15:08 bill Exp $
  */
 
 #include "stdinc.h"
@@ -72,7 +72,7 @@ _moddeinit(void)
   mod_del_cmd(&mode_msgtab);
 }
 
-const char *_version = "$Revision: 1.68 $";
+const char *_version = "$Revision: 1.69 $";
 #endif
 
 /*
@@ -134,7 +134,8 @@ m_mode(struct Client *client_p, struct Client *source_p,
                      me.name, parv[1]);
 #endif
 	  sendto_one(uplink, ":%s MODE %s %s",
-		     source_p->name, parv[1], (parv[2] ? parv[2] : ""));
+                     ID_or_name(source_p, uplink),
+		     parv[1], (parv[2] ? parv[2] : ""));
 	  return;
 	}
       else
@@ -201,14 +202,14 @@ ms_tmode(struct Client *client_p, struct Client *source_p, int parc, char *parv[
   if (!IsChanPrefix(parv[2][0]) || !check_channel_name(parv[2]))
   {
     sendto_one(source_p, form_str(ERR_BADCHANNAME),
-               me.name, source_p->name, parv[2]);
+               ID_or_name(&me, client_p), ID_or_name(source_p, client_p), parv[2]);
     return;
   }
 
   if ((chptr = hash_find_channel(parv[2])) == NULL)
   {
     sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
-               me.name, source_p->name, parv[2]);
+               ID_or_name(&me, client_p), ID_or_name(source_p, client_p), parv[2]);
     return;
   }
 
@@ -290,8 +291,9 @@ ms_bmask(struct Client *client_p, struct Client *source_p, int parc, char *parv[
   parabuf[0] = '\0';
   s = MyMalloc(BUFSIZE);
 
+  /* only need to construct one buffer, for non-ts6 servers */
   mlen = ircsprintf(modebuf, ":%s MODE %s +",
-        source_p->name, chptr->chname);
+                    source_p->name, chptr->chname);
   mbuf = modebuf + mlen;
   pbuf = parabuf;
 
@@ -314,9 +316,11 @@ ms_bmask(struct Client *client_p, struct Client *source_p, int parc, char *parv[
       {
         *mbuf = '\0';
         *(pbuf - 1) = '\0';
-        sendto_channel_local(ALL_MEMBERS, chptr, "%s %s", modebuf, parabuf);
+        sendto_channel_local(ALL_MEMBERS, chptr, "%s %s",
+                             modebuf, parabuf);
         sendto_server(client_p, NULL, chptr, needcap, CAP_TS6, NOFLAGS,
-                      "%s %s", modebuf, parabuf);
+                      "%s %s",
+                      modebuf, parabuf);
 
         mbuf = modebuf + mlen;
         pbuf = parabuf;
@@ -350,6 +354,7 @@ ms_bmask(struct Client *client_p, struct Client *source_p, int parc, char *parv[
                   "%s %s", modebuf, parabuf);
   }
 
+  /* assumption here is that since the server sent BMASK, they are TS6, so they have an ID */
   sendto_server(client_p, NULL, chptr, CAP_TS6|needcap, NOCAPS, NOFLAGS,
                 ":%s BMASK %lu %s %s :%s",
                  source_p->id, (unsigned long)chptr->channelts, chptr->chname,

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.412 2003/10/07 22:37:20 bill Exp $
+ *  $Id: client.c,v 7.413 2003/10/11 02:15:10 bill Exp $
  */
 
 #include "stdinc.h"
@@ -853,7 +853,9 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
      */
     if (!IsKilled(source_p))
     {
-      sendto_server(client_p, source_p, NULL, NOCAPS, NOCAPS, NOFLAGS,
+      sendto_server(client_p, source_p, NULL, CAP_TS6, NOCAPS, NOFLAGS,
+                    ":%s QUIT :%s", ID(source_p), comment);
+      sendto_server(client_p, source_p, NULL, NOCAPS, CAP_TS6, NOFLAGS,
                     ":%s QUIT :%s", source_p->name, comment);
     }
 
@@ -1572,9 +1574,12 @@ change_local_nick(struct Client *client_p, struct Client *source_p, const char *
 	   * hubs might not propogate a nick change, if the leaf
 	   * does not know about that client yet.
 	   */
-      sendto_server(client_p, source_p, NULL, NOCAPS, NOCAPS,
-                    NOFLAGS, ":%s NICK %s :%lu", source_p->name,
-                    nick, (unsigned long)source_p->tsinfo);
+      sendto_server(client_p, source_p, NULL, CAP_TS6, NOCAPS, NOFLAGS,
+                    ":%s NICK %s :%lu",
+                    ID(source_p), nick, (unsigned long)source_p->tsinfo);
+      sendto_server(client_p, source_p, NULL, NOCAPS, NOCAPS, NOFLAGS,
+                    ":%s NICK %s :%lu",
+                    source_p->name, nick, (unsigned long)source_p->tsinfo);
     }
   }
   else

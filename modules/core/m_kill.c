@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kill.c,v 1.82 2003/10/07 22:37:17 bill Exp $
+ *  $Id: m_kill.c,v 1.83 2003/10/11 02:15:08 bill Exp $
  */
 
 #include "stdinc.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&kill_msgtab);
 }
 
-const char *_version = "$Revision: 1.82 $";
+const char *_version = "$Revision: 1.83 $";
 #endif
 
 /* mo_kill()
@@ -309,7 +309,7 @@ relay_kill(struct Client *one, struct Client *source_p,
   dlink_node *ptr;
   struct Client *client_p;
   int introduce_killed_client;
-  char *user; 
+  const char *from, *to;
 
   /* LazyLinks:
    * Check if each lazylink knows about target_p.
@@ -358,19 +358,20 @@ relay_kill(struct Client *one, struct Client *source_p,
     client_burst_if_needed(client_p, source_p);
 
     /* use UID if possible */
-    user = ID_or_name(source_p, client_p);
+    from = ID_or_name(source_p, client_p);
+    to = ID_or_name(target_p, client_p);
 
     if (MyClient(source_p))
     {
         sendto_one(client_p, ":%s KILL %s :%s!%s!%s!%s (%s)",
-                   source_p->name, user,
+                   from, to,
                    me.name, source_p->host, source_p->username,
                    source_p->name, reason);
     }
     else
     {
         sendto_one(client_p, ":%s KILL %s :%s %s",
-                   source_p->name, user,
+                   from, to,
                    inpath, reason);
     }
   }
