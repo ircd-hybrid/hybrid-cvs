@@ -1,5 +1,5 @@
 /* Hybrid 7 Example configuration file
- * $Id: example.conf.efnet,v 7.9 2002/04/29 23:57:24 leeh Exp $
+ * $Id: example.conf.efnet,v 7.10 2002/04/30 17:21:20 leeh Exp $
  * December 2000 - ejb, wcampbel, db and others
  */
 
@@ -887,7 +887,9 @@ general {
 	 */
 	ping_cookie = no;
 
-	/* Set to "yes" to disable flood control for opers. */
+	/* Set to yes to increase the flood limits for opers.
+	 * This will not disable flood control, just raise it.
+	 */
 	no_oper_flood = yes;
 
 	/* Enable G-lines */

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.75 2002/04/27 20:36:20 db Exp $
+ *  $Id: packet.c,v 7.76 2002/04/30 17:21:23 leeh Exp $
  */
 
 #include <stdio.h>
@@ -51,7 +51,8 @@ static void client_dopacket(struct Client *client_p, char *buffer, size_t length
 static void
 parse_client_queued(struct Client *client_p)
 { 
-  int dolen = 0, checkflood = 1;
+  int dolen = 0;
+  int checkflood = 1;
   struct LocalUser *lclient_p = client_p->localClient;
 
   if (IsServer(client_p) || !IsRegistered(client_p))
@@ -99,7 +100,16 @@ parse_client_queued(struct Client *client_p)
        * as sent_parsed will always hover around the allow_read limit
        * and no 'bursts' will be permitted.
        */
-      if (checkflood && (lclient_p->sent_parsed > lclient_p->allow_read))
+      if(checkflood)
+      {
+        if(lclient_p->sent_parsed >= lclient_p->allow_read)
+          break;
+      }
+      
+      /* allow opers 4 times the amount of messages as users. why 4?
+       * why not. :) --fl_
+       */
+      else if(lclient_p->sent_parsed >= (4 * lclient_p->allow_read))
         break;
        
       dolen = linebuf_get(&client_p->localClient->buf_recvq, readBuf,
@@ -147,8 +157,15 @@ flood_recalc(int fd, void *data)
   if (!lclient_p)
     return;
 
-  /* Reset the sent-per-second count */
-  if(--lclient_p->sent_parsed < 0)
+  /* Reset the sent-per-second count, decrease opers quicker
+   * than normal users
+   */
+  if(ConfigFileEntry.no_oper_flood && IsOper(client_p))
+    lclient_p->sent_parsed -= 2;
+  else
+    lclient_p->sent_parsed--;
+  
+  if(lclient_p->sent_parsed < 0)
     lclient_p->sent_parsed = 0;
   
   if(--lclient_p->actually_read < 0)
