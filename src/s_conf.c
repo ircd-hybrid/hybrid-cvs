@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.3 1999/08/02 16:38:31 db Exp $
+ *  $Id: s_conf.c,v 7.4 1999/08/03 01:14:51 tomh Exp $
  */
 #include "s_conf.h"
 #include "channel.h"
@@ -2451,8 +2451,8 @@ static void initconf(FBFILE* file, int use_include)
 
       if (!dontadd)
         {
-          (void)collapse(aconf->host);
-          (void)collapse(aconf->user);
+          collapse(aconf->host);
+          collapse(aconf->user);
           Debug((DEBUG_NOTICE,
                  "Read Init: (%d) (%s) (%s) (%s) (%d) (%d)",
                  aconf->status, aconf->host, aconf->passwd,
