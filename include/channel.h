@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.134 2003/05/11 22:27:37 joshk Exp $
+ *  $Id: channel.h,v 7.135 2003/05/12 08:09:26 michael Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -61,9 +61,6 @@ struct Channel
 #ifdef REQUIRE_OANDV
   dlink_list	  chanops_voiced;	/* UGH I'm sorry */
 #endif
-#ifdef HALFOPS
-  dlink_list      halfops;
-#endif
   dlink_list      voiced;
   dlink_list      peons;                /* non ops, just members */
   dlink_list	  deopped;              /* users deopped on sjoin */
@@ -71,9 +68,6 @@ struct Channel
   dlink_list      locchanops;           /* local versions of the above */
 #ifdef REQUIRE_OANDV
   dlink_list	  locchanops_voiced;	/* UGH I'm sorry */
-#endif
-#ifdef HALFOPS
-  dlink_list      lochalfops;
 #endif
   dlink_list      locvoiced;
   dlink_list      locpeons;             /* ... */
@@ -99,12 +93,8 @@ extern int     is_banned (struct Channel *chptr, struct Client *who);
 
 extern int     can_join(struct Client *source_p, struct Channel *chptr,
                         char *key);
-extern int     is_chan_op (struct Channel *chptr,struct Client *who);
-extern int     is_any_op (struct Channel *chptr,struct Client *who);
-#ifdef HALFOPS
-extern int     is_half_op (struct Channel *chptr,struct Client *who);
-#endif
-extern int     is_voiced (struct Channel *chptr,struct Client *who);
+extern int is_chan_op(struct Channel *chptr,struct Client *who);
+extern int is_voiced(struct Channel *chptr,struct Client *who);
 
 #define find_user_link(list,who) who!=NULL?dlinkFind(list,who):NULL
 #define FIND_AND_DELETE(list,who) who!=NULL?dlinkFindDelete(list,who)
@@ -153,11 +143,11 @@ struct Ban          /* also used for exceptions -orabidoo */
   time_t when;
 };
 
-/* Number of chanops, peon, voiced, halfops sublists */
+/* Number of chanops, peon, voiced sublists */
 #ifdef REQUIRE_OANDV
-#define NUMLISTS 5
-#else
 #define NUMLISTS 4
+#else
+#define NUMLISTS 3
 #endif
 
 extern void set_channel_topic(struct Channel *chptr, const char *topic, const char *topic_info, time_t topicts); 

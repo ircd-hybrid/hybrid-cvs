@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.h,v 7.15 2003/05/12 04:09:48 michael Exp $
+ *  $Id: channel_mode.h,v 7.16 2003/05/12 08:09:26 michael Exp $
  */
 
 
@@ -28,23 +28,10 @@
 #include "config.h"           /* config settings */
 #include "ircd_defs.h"        /* buffer sizes */
 
-/* If the below define is enabled, we will bounce halfops as follows:
- * If we receive a halfop for a user, we will check their ->from supports
- * CAP_HOPS, if not, we will bounce the mode back as a -h (which will
- * be translated to -o for any back down the line not supporting CAP_HOPS).
- * If it does, we'll send it as +h to that server, and any others supporting
- * CAP_HOPS.  All other servers will see a +o.
- *
- * The first server to find (user_being_halfoped)->from is not capable
- * of CAP_HOPS will also send a notice to the user performing the mode
- * (if it is indeed a user) informing them why.
- */
-#undef BOUNCE_BAD_HOPS
-
-#define MODEBUFLEN      200
+#define MODEBUFLEN    200
 
 /* Maximum mode changes allowed per client, per server is different */
-#define MAXMODEPARAMS   4
+#define MAXMODEPARAMS 4
 
 extern void    set_channel_mode(struct Client *, struct Client *, 
                                 struct Channel *, int, char **, char *);
@@ -72,7 +59,6 @@ extern void unset_chcap_usage_counts(struct Client *serv_p);
 #define CHFL_CHANOP     0x0001 /* Channel operator */
 #define CHFL_VOICE      0x0002 /* the power to speak */
 #define CHFL_DEOPPED    0x0004 /* deopped by us, modes need to be bounced */
-#define CHFL_HALFOP     0x0008 /* Channel half op */
 #define CHFL_BAN        0x0010 /* ban channel flag */
 #define CHFL_EXCEPTION  0x0020 /* exception to ban channel flag */
 #define CHFL_INVEX      0x0080
@@ -82,7 +68,6 @@ extern void unset_chcap_usage_counts(struct Client *serv_p);
 #define MODE_PEON	CHFL_PEON
 #define MODE_CHANOP     CHFL_CHANOP
 #define MODE_VOICE      CHFL_VOICE
-#define MODE_HALFOP	CHFL_HALFOP
 #define MODE_DEOPPED	CHFL_DEOPPED
 
 /* channel modes ONLY */
@@ -100,8 +85,8 @@ extern void unset_chcap_usage_counts(struct Client *serv_p);
  * mode flags which take another parameter (With PARAmeterS)
  */
 
-#define MODE_QUERY     0
-#define MODE_ADD       1
+#define MODE_QUERY      0
+#define MODE_ADD        1
 #define MODE_DEL       -1
 
 /* name invisible */
@@ -141,15 +126,6 @@ struct ChModeChange
   struct Client *client;
 };
 
-#ifdef HALFOPS
-struct ChModeBounce
-{
-  char letter;
-  char *arg, *id;
-  int dir;
-};
-#endif
-
 struct ChCapCombo
 {
   int count;
@@ -157,8 +133,7 @@ struct ChCapCombo
   int cap_no;
 };
 
-#define CHACCESS_CHANOP 3
-#define CHACCESS_HALFOP 2
+#define CHACCESS_CHANOP 2
 #define CHACCESS_VOICED 1
 #define CHACCESS_PEON   0
 #endif  /* INCLUDED_channel_mode_h */

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.h,v 7.67 2003/04/23 15:04:40 adx Exp $
+ *  $Id: send.h,v 7.68 2003/05/12 08:09:26 michael Exp $
  */
 
 #ifndef INCLUDED_send_h
@@ -107,10 +107,9 @@ kill_client_ll_serv_butone(struct Client *one, struct Client *source_p,
 
 #define ALL_MEMBERS  0
 #define NON_CHANOPS  1
-#define ONLY_CHANOPS_HALFOPS_VOICED 2
-#define ONLY_CHANOPS_HALFOPS 3
-#define ONLY_CHANOPS 4
-#define ONLY_SERVERS 5 /* for channel_mode.c */
+#define ONLY_CHANOPS_VOICED  2
+#define ONLY_CHANOPS 3
+#define ONLY_SERVERS 4 /* for channel_mode.c */
 
 #define L_ALL 	0
 #define L_OPER 	1

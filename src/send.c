@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.253 2003/05/09 21:38:25 bill Exp $
+ *  $Id: send.c,v 7.254 2003/05/12 08:09:34 michael Exp $
  */
 
 #include "stdinc.h"
@@ -522,11 +522,6 @@ sendto_channel_butone(struct Client *one, struct Client *from,
   sendto_list_anywhere(one, from, &chptr->voiced, local_buf, local_len,
                        remote_buf, remote_len, uid_buf, uid_len);
 
-#ifdef HALFOPS
-  sendto_list_anywhere(one, from, &chptr->halfops, local_buf, local_len,
-                       remote_buf, remote_len, uid_buf, uid_len);
-#endif
-
   sendto_list_anywhere(one, from, &chptr->peons, local_buf, local_len,
                        remote_buf, remote_len, uid_buf, uid_len);
 }
@@ -717,9 +712,6 @@ sendto_common_channels_local(struct Client *user, int touser,
 #ifdef REQUIRE_OANDV
     sendto_list_local(user, &chptr->locchanops_voiced, buffer, len);
 #endif
-#ifdef HALFOPS
-    sendto_list_local(user, &chptr->lochalfops, buffer, len);
-#endif
     sendto_list_local(user, &chptr->locvoiced, buffer, len);
     sendto_list_local(user, &chptr->locpeons, buffer, len);
   }
@@ -763,12 +755,8 @@ sendto_channel_local(int type, struct Channel *chptr, const char *pattern, ...)
     default:
     case ALL_MEMBERS:
       sendto_list_local(NULL, &chptr->locpeons, buffer, len);
-    case ONLY_CHANOPS_HALFOPS_VOICED:
+    case ONLY_CHANOPS_VOICED:
       sendto_list_local(NULL, &chptr->locvoiced, buffer, len);
-#ifdef HALFOPS
-    case ONLY_CHANOPS_HALFOPS:
-      sendto_list_local(NULL, &chptr->lochalfops, buffer, len);
-#endif
     case ONLY_CHANOPS:
       sendto_list_local(NULL, &chptr->locchanops, buffer, len);
 #ifdef REQUIRE_OANDV
@@ -813,12 +801,8 @@ sendto_channel_local_butone(struct Client *one, int type,
     default:
     case ALL_MEMBERS:
       sendto_list_local(one, &chptr->locpeons, buffer, len);
-    case ONLY_CHANOPS_HALFOPS_VOICED:
+    case ONLY_CHANOPS_VOICED:
       sendto_list_local(one, &chptr->locvoiced, buffer, len);
-#ifdef HALFOPS
-    case ONLY_CHANOPS_HALFOPS:
-      sendto_list_local(one, &chptr->lochalfops, buffer, len);
-#endif
     case ONLY_CHANOPS:
       sendto_list_local(one, &chptr->locchanops, buffer, len);
 #ifdef REQUIRE_OANDV
@@ -832,7 +816,7 @@ sendto_channel_local_butone(struct Client *one, int type,
  * inputs	- Client not to send towards
  *		- Client from whom message is from
  *		- int type, i.e. NON_CHANOPS, ALL_MEMBERS,
- *                ONLY_CHANOPS_HALFOPS_VOICED, ONLY_CHANOPS
+ *                ONLY_CHANOPS_VOICED, ONLY_CHANOPS
  *              - pointer to channel to send to
  *              - var args pattern
  * output	- NONE
@@ -865,12 +849,8 @@ sendto_channel_remote(struct Client *one, struct Client *from, int type, int cap
     default:
     case ALL_MEMBERS:
       sendto_list_remote(one, from, &chptr->peons, caps, nocaps, buffer, len);
-    case ONLY_CHANOPS_HALFOPS_VOICED:
+    case ONLY_CHANOPS_VOICED:
       sendto_list_remote(one, from, &chptr->voiced, caps, nocaps, buffer, len);
-#ifdef HALFOPS
-    case ONLY_CHANOPS_HALFOPS:
-      sendto_list_remote(one, from, &chptr->halfops, caps, nocaps, buffer, len);
-#endif
     case ONLY_CHANOPS:
       sendto_list_remote(one, from, &chptr->chanops, caps, nocaps, buffer, len);
 #ifdef REQUIRE_OANDV

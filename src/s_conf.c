@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.382 2003/05/12 04:09:55 michael Exp $
+ *  $Id: s_conf.c,v 7.383 2003/05/12 08:09:33 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1463,14 +1463,6 @@ validate_conf(void)
       (ConfigFileEntry.client_flood > CLIENT_FLOOD_MAX))
      ConfigFileEntry.client_flood = CLIENT_FLOOD_MAX;
 
-  /* Hasn't been set yet, so set it now */
-  if (ConfigChannel.use_halfops == -1)
-#ifdef HALFOPS
-    ConfigChannel.use_halfops = 1;
-#else
-    ConfigChannel.use_halfops = 0;
-#endif
-
   GlobalSetOptions.idletime = (ConfigFileEntry.idletime * 60);
 }
 
@@ -1908,8 +1900,6 @@ read_conf_files(int cold)
     ConfigItemList.head = NULL;
     ConfigItemList.tail = NULL;
     ConfigItemList.length = 0;
-    /* set to 'undefined' */
-    ConfigChannel.use_halfops = -1;
   }
   else
   {

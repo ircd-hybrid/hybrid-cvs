@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.150 2003/05/12 04:09:52 michael Exp $
+ *  $Id: m_sjoin.c,v 1.151 2003/05/12 08:09:31 michael Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.150 $";
+const char *_version = "$Revision: 1.151 $";
 #endif
 /*
  * ms_sjoin
@@ -119,15 +119,8 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   int hide_or_not;
   int i;
   dlink_node *m;
-#ifdef HALFOPS
-  static         char sjbuf_hops[BUFSIZE]; /* buffer with halfops as % */
-  register char  *hops;
-#endif
 
   *buf = '\0';
-#ifdef HALFOPS
-  *sjbuf_hops = '\0';
-#endif
   *sjbuf_nhops = '\0';
 
   if (IsClient(source_p) || parc < 5)
@@ -270,7 +263,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   /* Lost the TS, other side wins, so remove modes on this side */
   if (!keep_our_modes)
   {
-    remove_our_modes(hide_or_not, chptr, source_p);
+    remove_our_modes(ALL_MEMBERS, chptr, source_p);
     sendto_channel_local(ALL_MEMBERS, chptr,
    		         ":%s NOTICE %s :*** Notice -- TS for %s changed from %lu to %lu",
 	 		 me.name, chptr->chname, chptr->chname,
@@ -319,9 +312,6 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
 
   *mbuf++ = '+';
 
-#ifdef HALFOPS
-  hops = sjbuf_hops;
-#endif
   nhops = sjbuf_nhops;
 
   s = parv[args+4];
@@ -349,9 +339,6 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
         fl |= MODE_CHANOP;
         if (keep_new_modes)
         {
-#ifdef HALFOPS
-          *hops++ = *s;
-#endif
 	  *nhops++ = *s;
 	  num_prefix++;
         }
@@ -362,27 +349,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
         fl |= MODE_VOICE;
         if (keep_new_modes)
         {
-#ifdef HALFOPS
-          *hops++ = *s;
-#endif
 	  *nhops++ = *s;
-          num_prefix++;
-        }
-        s++;
-      }
-      else if (*s == '%')
-      {
-#ifdef HALFOPS
-        fl |= MODE_HALFOP;
-#else
-        fl |= MODE_CHANOP;
-#endif
-        if (keep_new_modes)
-        {
-#ifdef HALFOPS
-          *hops++ = *s;
-#endif
-	  *nhops++ = '@';
           num_prefix++;
         }
         s++;
@@ -399,26 +366,18 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
       sendto_one(source_p, form_str(ERR_NOSUCHNICK), me.name,
                  source_p->name, s);
 
-#ifdef HALFOPS
-      hops -= num_prefix;
-      *hops = '\0';
-#endif
       nhops -= num_prefix;
       *nhops = '\0';
       goto nextnick;
     }
 
     /* copy the nick to the two buffers */
-#ifdef HALFOPS
-    hops += ircsprintf(hops, "%s ", s);
-    assert((hops - sjbuf_hops) < sizeof(sjbuf_hops));
-#endif
     nhops += ircsprintf(nhops, "%s ", s);
     assert((nhops-sjbuf_nhops) < sizeof(sjbuf_nhops));
 
     if (!keep_new_modes)
     {
-      if ((fl & MODE_CHANOP) || (fl & MODE_HALFOP))
+      if (fl & MODE_CHANOP)
         fl = MODE_DEOPPED;
       else
         fl = 0;
@@ -480,7 +439,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
         if(pargs >= MAXMODEPARAMS)
         {
           *mbuf = '\0';
-          sendto_channel_local(hide_or_not, chptr,
+          sendto_channel_local(ALL_MEMBERS, chptr,
 	                       ":%s MODE %s %s %s %s %s %s",
 		  	       (IsHidden(source_p) || ConfigServerHide.hide_servers) ?
 			       me.name : source_p->name, 
@@ -501,17 +460,11 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
       *mbuf++ = 'v';
       para[pargs++] = s;
     }
-#ifdef HALFOPS
-    else if(fl & MODE_HALFOP)
-    {
-      *mbuf++ = 'h';
-      para[pargs++] = s;
-    }
-#endif
+
     if(pargs >= MAXMODEPARAMS)
     {
       *mbuf = '\0';
-      sendto_channel_local(hide_or_not, chptr,
+      sendto_channel_local(ALL_MEMBERS, chptr,
                            ":%s MODE %s %s %s %s %s %s",
                            (IsHidden(source_p) || ConfigServerHide.hide_servers) ?
                            me.name : source_p->name,
@@ -547,7 +500,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   *mbuf = '\0';
   if(pargs)
   {
-    sendto_channel_local(hide_or_not, chptr,
+    sendto_channel_local(ALL_MEMBERS, chptr,
                          ":%s MODE %s %s %s %s %s %s",
                          (IsHidden(source_p) || ConfigServerHide.hide_servers) ?
                          me.name : source_p->name,
@@ -578,12 +531,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
     if(!parv[4+args][0])
       return;
 
-#ifdef HALFOPS
-    if(IsCapable(target_p, CAP_HOPS))
-      sendto_one(target_p, "%s%s", buf, sjbuf_hops);
-    else
-#endif
-      sendto_one(target_p, "%s%s", buf, sjbuf_nhops);
+    sendto_one(target_p, "%s%s", buf, sjbuf_nhops);
   }
 }
 
@@ -722,12 +670,6 @@ remove_our_modes(int hide_or_not,
   dlinkMoveList(&chptr->chanops_voiced, &chptr->peons);
   dlinkMoveList(&chptr->locchanops_voiced, &chptr->locpeons);
 #endif
-
-#ifdef HALFOPS
-  remove_a_mode(hide_or_not, chptr, source_p, &chptr->halfops, 'h');
-  dlinkMoveList(&chptr->halfops, &chptr->peons);
-  dlinkMoveList(&chptr->lochalfops, &chptr->locpeons);
-#endif
 }
 
 /* remove_a_mode()
@@ -771,7 +713,7 @@ void remove_a_mode(int hide_or_not,
     if(count >= MAXMODEPARAMS)
     {
       *mbuf   = '\0';
-      sendto_channel_local(hide_or_not, chptr,
+      sendto_channel_local(ALL_MEMBERS, chptr,
 		           ":%s MODE %s %s %s %s %s %s",
 			   (IsHidden(source_p) ||
 			   ConfigServerHide.hide_servers) ?
@@ -789,7 +731,7 @@ void remove_a_mode(int hide_or_not,
   if(count != 0)
   {
     *mbuf   = '\0';
-    sendto_channel_local(hide_or_not, chptr,
+    sendto_channel_local(ALL_MEMBERS, chptr,
 			 ":%s MODE %s %s %s %s %s %s",
 			 (IsHidden(source_p) || ConfigServerHide.hide_servers) ?
 			 me.name : source_p->name,

@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: m_force.c,v 1.21 2003/05/04 13:44:33 michael Exp $
+ * $Id: m_force.c,v 1.22 2003/05/12 08:09:20 michael Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&forcepart_msgtab);
 }
 
-const char *_version = "$Revision: 1.21 $";
+const char *_version = "$Revision: 1.22 $";
 #endif
 
 /* m_forcejoin()
@@ -128,14 +128,6 @@ mo_forcejoin(struct Client *client_p, struct Client *source_p,
     mode = 'o';
     sjmode = '@';
   }
-#ifdef HALFOPS
-  else if (*parv[2] == '%')
-  {
-    type = CHFL_HALFOP;
-    mode = 'h';
-    sjmode = '%';
-  }
-#endif
   else if (*parv[2] == '+')
   {
     type = CHFL_VOICE;

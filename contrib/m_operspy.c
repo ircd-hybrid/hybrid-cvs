@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.23 2003/05/12 04:09:44 michael Exp $
+ *   $Id: m_operspy.c,v 1.24 2003/05/12 08:09:20 michael Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -90,9 +90,6 @@ static void do_who_list(struct Client *source_p, struct Channel *chptr,
 #ifdef REQUIRE_OANDV
                         dlink_list *chanops_voiced_list,
 #endif
-#ifdef HALFOPS
-                        dlink_list *halfops_list,
-#endif
                         dlink_list *voiced_list,
                         char *chanop_flag,
                         char *halfop_flag,
@@ -125,7 +122,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.23 $";
+const char *_version = "$Revision: 1.24 $";
 #endif
 
 /*
@@ -559,9 +556,6 @@ who_global(struct Client *source_p,char *mask, int server_oper)
 #ifdef REQUIRE_OANDV
      who_common_channel(source_p,chptr->chanops_voiced,mask,server_oper,&maxmatches);
 #endif
-#ifdef HALFOPS
-     who_common_channel(source_p,chptr->halfops,mask,server_oper,&maxmatches);
-#endif
      who_common_channel(source_p,chptr->voiced,mask,server_oper,&maxmatches);
      who_common_channel(source_p,chptr->peons,mask,server_oper,&maxmatches);
   }
@@ -616,9 +610,6 @@ do_who_on_channel(struct Client *source_p, struct Channel *chptr,
 #ifdef REQUIRE_OANDV
               &chptr->chanops_voiced,
 #endif
-#ifdef HALFOPS
-              &chptr->halfops,
-#endif
               &chptr->voiced, flags[0], flags[1], flags[2], chname);
 
 }
@@ -637,9 +628,6 @@ do_who_list(struct Client *source_p, struct Channel *chptr,
             dlink_list *peons_list, dlink_list *chanops_list,
 #ifdef REQUIRE_OANDV
             dlink_list *chanops_voiced_list,
-#endif
-#ifdef HALFOPS
-            dlink_list *halfops_list,
 #endif
             dlink_list *voiced_list, char *chanop_flag,
             char *halfop_flag, char *voiced_flag,
@@ -678,15 +666,6 @@ do_who_list(struct Client *source_p, struct Channel *chptr,
     who_list[i].ptr = NULL;
   who_list[i].voiced = 0;
   who_list[i++].flag = chanop_flag;
-#endif
-
-#ifdef HALFOPS
-  if(halfops_list != NULL)
-    who_list[i].ptr = halfops_list->head;
-  else
-    who_list[i].ptr = NULL;
-  who_list[i].voiced = 0;
-  who_list[i++].flag = halfop_flag;
 #endif
     for(i = 0; i < NUMLISTS; i++)
     {

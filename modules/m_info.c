@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.c,v 1.69 2003/05/12 04:09:50 michael Exp $
+ *  $Id: m_info.c,v 1.70 2003/05/12 08:09:28 michael Exp $
  */
 
 #include "stdinc.h"
@@ -69,7 +69,7 @@ _moddeinit(void)
   hook_del_event("doing_info");
   mod_del_cmd(&info_msgtab);
 }
-const char *_version = "$Revision: 1.69 $";
+const char *_version = "$Revision: 1.70 $";
 #endif
 
 /*
@@ -408,12 +408,6 @@ static struct InfoStruct info_table[] =
     OUTPUT_BOOLEAN_YN,
     &ConfigChannel.use_except,
     "Enable chanmode +e (ban exceptions)",
-  },
-  {
-    "use_halfops",
-    OUTPUT_BOOLEAN_YN,
-    &ConfigChannel.use_halfops,
-    "Enable chanmode +h (halfops)",
   },
   {
     "use_invex",

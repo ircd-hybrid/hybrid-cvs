@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.286 2003/05/12 04:09:55 michael Exp $
+ *  $Id: ircd_parser.y,v 1.287 2003/05/12 08:09:33 michael Exp $
  */
 
 %{
@@ -276,7 +276,6 @@ init_parser_confs(void)
 %token  USER
 %token  USE_EGD
 %token  USE_EXCEPT
-%token  USE_HALFOPS
 %token  USE_INVEX
 %token  USE_KNOCK
 %token  VHOST
@@ -2662,7 +2661,6 @@ channel_entry: CHANNEL
 
 channel_items:      channel_items channel_item | channel_item;
 channel_item:       channel_use_except |
-                    channel_use_halfops |
                     channel_use_invex |
                     channel_use_knock |
                     channel_max_bans |
@@ -2684,38 +2682,6 @@ channel_use_except: USE_EXCEPT '=' TYES ';'
 {
   if (ypass == 2)
     ConfigChannel.use_except = 0;
-};
-
-channel_use_halfops: USE_HALFOPS '=' TYES ';'
-{
-#ifdef HALFOPS
-  if (ypass == 2)
-  {
-    /* Set to -1 on boot */
-    if (ConfigChannel.use_halfops == 0)
-    {
-      ilog(L_ERROR, "Ignoring config file entry 'use_halfops = yes' "
-           "-- can only be changed on boot");
-      break;
-    }
-    else
-      ConfigChannel.use_halfops = 1;
-  }
-#endif
-} | USE_HALFOPS '=' TNO ';'
-{
-  if (ypass == 2)
-  {
-    /* Set to -1 on boot */
-    if (ConfigChannel.use_halfops == 1)
-    {
-      ilog(L_ERROR, "Ignoring config file entry 'use_halfops = no' "
-           "-- can only be changed on boot");
-      break;
-    }
-    else
-      ConfigChannel.use_halfops = 0;
-  }
 };
 
 channel_use_invex: USE_INVEX '=' TYES ';'

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.319 2003/05/11 22:04:51 michael Exp $
+ *  $Id: s_serv.c,v 7.320 2003/05/12 08:09:34 michael Exp $
  */
 
 #include "stdinc.h"
@@ -93,9 +93,7 @@ struct Capability captab[] = {
   { "KLN",       CAP_KLN },
   { "GLN",       CAP_GLN },
   { "KNOCK",   CAP_KNOCK },
-  { "HOPS",     CAP_HOPS },
   { "HUB",       CAP_HUB },
-  { "AOPS",     CAP_AOPS },
   { "UID",       CAP_UID },
   { "ZIP",       CAP_ZIP },
   { "TBURST", CAP_TBURST },
@@ -1501,9 +1499,6 @@ burst_all(struct Client *client_p)
       burst_members(client_p, &chptr->chanops_voiced);
 #endif
       burst_members(client_p, &chptr->voiced);
-#ifdef HALFOPS
-      burst_members(client_p, &chptr->halfops);
-#endif
       burst_members(client_p, &chptr->peons);
       send_channel_modes(client_p, chptr);
       hinfo.chptr  = chptr;
@@ -1573,9 +1568,6 @@ burst_channel(struct Client *client_p, struct Channel *chptr)
   burst_ll_members(client_p, &chptr->chanops_voiced);
 #endif
   burst_ll_members(client_p, &chptr->voiced);
-#ifdef HALFOPS
-  burst_ll_members(client_p, &chptr->halfops);
-#endif
   burst_ll_members(client_p, &chptr->peons);
   send_channel_modes(client_p, chptr);
   add_lazylinkchannel(client_p,chptr);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.276 2003/05/12 04:09:54 michael Exp $
+ *  $Id: ircd.c,v 7.277 2003/05/12 08:09:33 michael Exp $
  */
 
 #include "stdinc.h"
@@ -403,10 +403,6 @@ initialize_message_files(void)
 static void
 initialize_server_capabs(void)
 {
-  /* If halfops support is disabled, remove the capab from the list. */
-  if (ConfigChannel.use_halfops == 0)
-    default_server_capabs &= ~CAP_HOPS;
-
   /* XXX -Michael */
   default_server_capabs &= ~CAP_ZIP;
 }
@@ -414,7 +410,7 @@ initialize_server_capabs(void)
 /* write_pidfile
  *
  * inputs       - filename+path of pid file
- * output       - none
+ * output       - NONE
  * side effects - write the pid of the ircd to filename
  */
 static void

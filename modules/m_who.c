@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_who.c,v 1.73 2003/05/12 04:09:50 michael Exp $
+ *  $Id: m_who.c,v 1.74 2003/05/12 08:09:28 michael Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -60,7 +60,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&who_msgtab);
 }
-const char *_version = "$Revision: 1.73 $";
+const char *_version = "$Revision: 1.74 $";
 #endif
 static void do_who_on_channel(struct Client *source_p, struct Channel *chptr,
                               char *real_name, int member);
@@ -69,9 +69,6 @@ static void do_who_list(struct Client *source_p, struct Channel *chptr,
                         dlink_list *peons_list, dlink_list *chanops_list,
 #ifdef REQUIRE_OANDV
                         dlink_list *chanops_voiced_list,
-#endif
-#ifdef HALFOPS
-                        dlink_list *halfops_list, 
 #endif
 			dlink_list *voiced_list,
                         char *chanop_flag,
@@ -202,10 +199,6 @@ m_who(struct Client *client_p, struct Client *source_p,
 
 	  if (is_chan_op(chptr,target_p))
 	    do_who(source_p, target_p, chname, flags[0]);
-#ifdef HALFOPS
-	  else if(is_half_op(chptr,target_p))
-	    do_who(source_p, target_p, chname, flags[1]);
-#endif
 	  else if(is_voiced(chptr,target_p))
 	    do_who(source_p, target_p, chname, flags[2]);
 	  else
@@ -308,9 +301,6 @@ who_global(struct Client *source_p,char *mask, int server_oper)
 #ifdef REQUIRE_OANDV
      who_common_channel(source_p,chptr->chanops_voiced,mask,server_oper,&maxmatches);
 #endif
-#ifdef HALFOPS
-     who_common_channel(source_p,chptr->halfops,mask,server_oper,&maxmatches);
-#endif
      who_common_channel(source_p,chptr->voiced,mask,server_oper,&maxmatches);
      who_common_channel(source_p,chptr->peons,mask,server_oper,&maxmatches);
   }
@@ -377,9 +367,6 @@ do_who_on_channel(struct Client *source_p, struct Channel *chptr,
 #ifdef REQUIRE_OANDV
               &chptr->chanops_voiced,
 #endif
-#ifdef HALFOPS
-              &chptr->halfops,
-#endif
               &chptr->voiced, flags[0], flags[1], flags[2], chname, member);
 
 }
@@ -398,9 +385,6 @@ do_who_list(struct Client *source_p, struct Channel *chptr,
 	    dlink_list *peons_list, dlink_list *chanops_list,
 #ifdef REQUIRE_OANDV
 	    dlink_list *chanops_voiced_list,
-#endif
-#ifdef HALFOPS
-	    dlink_list *halfops_list,
 #endif
 	    dlink_list *voiced_list, char *chanop_flag,
 	    char *halfop_flag, char *voiced_flag,
@@ -439,15 +423,6 @@ do_who_list(struct Client *source_p, struct Channel *chptr,
     who_list[i].ptr = NULL;
   who_list[i].voiced = 0;
   who_list[i++].flag = chanop_flag;
-#endif
-
-#ifdef HALFOPS
-  if(halfops_list != NULL)
-    who_list[i].ptr = halfops_list->head;
-  else
-    who_list[i].ptr = NULL;
-  who_list[i].voiced = 0;
-  who_list[i++].flag = halfop_flag;
 #endif
 
     for(i = 0; i < NUMLISTS; i++)

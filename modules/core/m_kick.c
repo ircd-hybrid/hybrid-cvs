@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kick.c,v 1.57 2003/05/12 04:09:52 michael Exp $
+ *  $Id: m_kick.c,v 1.58 2003/05/12 08:09:31 michael Exp $
  */
 
 #include "stdinc.h"
@@ -60,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&kick_msgtab);
 }
 
-const char *_version = "$Revision: 1.57 $";
+const char *_version = "$Revision: 1.58 $";
 #endif
 
 /* m_kick()
@@ -110,7 +110,7 @@ m_kick(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if (!IsServer(source_p) && !is_any_op(chptr, source_p)) 
+  if (!IsServer(source_p) && !is_chan_op(chptr, source_p)) 
   {
     /* was a user, not a server, and user isn't seen as a chanop here */
     if (MyConnect(source_p))
@@ -167,26 +167,6 @@ m_kick(struct Client *client_p, struct Client *source_p,
 
   if (IsMember(who, chptr))
   {
-    /* half ops cannot kick other halfops on private channels */
-
-
-/*** ***/
-#ifdef HALFOPS
-    if (is_half_op(chptr,source_p))
-    {
-      if (((chptr->mode.mode & MODE_PRIVATE) && is_any_op(chptr, who)) ||
-          is_chan_op(chptr, who))
-      {
-        sendto_one(source_p, form_str(ERR_CHANOPRIVSNEEDED),
-                   me.name, source_p->name, name);
-        return;
-      }
-    }
-#endif
-
-/*** ***/
-
-
    /* jdc
     * - In the case of a server kicking a user (i.e. CLEARCHAN),
     *   the kick should show up as coming from the server which did

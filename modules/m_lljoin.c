@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_lljoin.c,v 1.61 2003/05/09 21:38:18 bill Exp $
+ *  $Id: m_lljoin.c,v 1.62 2003/05/12 08:09:28 michael Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&lljoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.61 $";
+const char *_version = "$Revision: 1.62 $";
 #endif
 /*
  * m_lljoin
@@ -181,7 +181,6 @@ ms_lljoin(struct Client *client_p, struct Client *source_p,
 		 nick);
     }
 
-  /* a user can create a channel with halfops..? */
   sendto_one(uplink,
              ":%s SJOIN %lu %s + :%s",
 	     me.name,

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_topic.c,v 1.58 2003/05/12 04:09:50 michael Exp $
+ *  $Id: m_topic.c,v 1.59 2003/05/12 08:09:28 michael Exp $
  */
 
 #include "stdinc.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
   mod_del_cmd(&topic_msgtab);
 }
 
-const char *_version = "$Revision: 1.58 $";
+const char *_version = "$Revision: 1.59 $";
 #endif
 
 /* m_topic()
@@ -121,7 +121,7 @@ m_topic(struct Client *client_p, struct Client *source_p,
 	      return;
 	    }
 	  if ((chptr->mode.mode & MODE_TOPICLIMIT) == 0 ||
-	      is_any_op(chptr,source_p))
+	      is_chan_op(chptr,source_p))
 	    {
 	      char topic_info[USERHOST_REPLYLEN]; 
               ircsprintf(topic_info, "%s!%s@%s",
@@ -171,7 +171,6 @@ m_topic(struct Client *client_p, struct Client *source_p,
 	  	             me.name, source_p->name, chptr->chname,
 	  		     client_p->name, chptr->topic_time);
                 }
-  	        /* just normal topic hiding.. */
 	        else
 	 	{
                   sendto_one(source_p, form_str(RPL_TOPICWHOTIME),

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.h,v 7.73 2003/05/12 05:33:12 joshk Exp $
+ *  $Id: s_serv.h,v 7.74 2003/05/12 08:09:26 michael Exp $
  */
 
 #ifndef INCLUDED_serv_h
@@ -57,9 +57,7 @@ struct Capability
 #define CAP_EOB	   0x00000040 /* Can do EOB message                  */
 #define CAP_KLN	   0x00000080 /* Can do KLINE message                */
 #define CAP_GLN	   0x00000100 /* Can do GLINE message                */
-#define CAP_HOPS   0x00000200 /* can do half ops (+h)                */
 #define CAP_HUB    0x00000400 /* This server is a HUB                */
-#define CAP_AOPS   0x00000800 /* Can do anon ops (+a)                */
 #define CAP_UID    0x00001000 /* Can do UIDs                         */
 #define CAP_ZIP    0x00002000 /* Can do ZIPlinks                     */
 #define CAP_ENC    0x00004000 /* Can do ENCrypted links              */
@@ -68,7 +66,7 @@ struct Capability
 #define CAP_PARA   0x00020000 /* supports invite broadcasting for +p */
 
 #define CAP_MASK   (CAP_QS | CAP_EX | CAP_CHW | CAP_IE | CAP_EOB |\
-                    CAP_KLN | CAP_GLN | CAP_HOPS | CAP_AOPS |\
+                    CAP_KLN | CAP_GLN |\
                     CAP_UID | CAP_ZIP | CAP_ENC | CAP_KNOCK | CAP_PARA)
 
 #ifdef HAVE_LIBZ

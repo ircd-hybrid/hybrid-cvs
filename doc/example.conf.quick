@@ -3,7 +3,7 @@
  *
  * Written by ejb, wcampbel, db, leeh and others
  *
- * $Id: example.conf.quick,v 1.6 2003/05/12 04:09:46 michael Exp $
+ * $Id: example.conf.quick,v 1.7 2003/05/12 08:09:22 michael Exp $
  */
 
 /* IMPORTANT NOTES:
@@ -250,7 +250,6 @@ gecos {
 channel {
 	use_invex = yes;
 	use_except = yes;
-    use_halfops = yes;
 	use_knock = yes;
 	knock_delay = 5 minutes;
 	knock_delay_channel = 1 minute;

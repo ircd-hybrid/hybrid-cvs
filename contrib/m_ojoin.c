@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_ojoin.c,v 1.16 2003/05/09 21:38:07 bill Exp $
+ *   $Id: m_ojoin.c,v 1.17 2003/05/12 08:09:20 michael Exp $
  */
 
 #include "stdinc.h"
@@ -57,7 +57,7 @@ _moddeinit(void)
   mod_del_cmd(&ojoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.16 $";
+const char *_version = "$Revision: 1.17 $";
 
 /*
 ** mo_ojoin
@@ -122,23 +122,6 @@ mo_ojoin(struct Client *client_p, struct Client *source_p,
                        me.name, chptr->chname, source_p->name);
 
     }
-#ifdef HALFOPS
-  else if (*parv[1] == '%')
-    {
-       add_user_to_channel(chptr, source_p, CHFL_HALFOP);
-       if (chptr->chname[0] == '#')
-         sendto_server(client_p, source_p, chptr, NOCAPS, NOCAPS, LL_ICLIENT, 
-                 ":%s SJOIN %lu %s + :%%%s", me.name, (unsigned long)chptr->channelts,
-                 chptr->chname, source_p->name);
-       sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s JOIN %s",
-                       source_p->name,
-                       source_p->username,
-                       source_p->host,
-                       chptr->chname);
-       sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s +h %s",
-                       me.name, chptr->chname, source_p->name);
-    }
-#endif
   else if (*parv[1] == '+')
     {
        add_user_to_channel(chptr, source_p, CHFL_VOICE);

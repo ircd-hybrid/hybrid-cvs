@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: supported.h,v 1.27 2003/05/12 04:09:48 michael Exp $
+ *  $Id: supported.h,v 1.28 2003/05/12 08:09:26 michael Exp $
  */
 
 #ifndef INCLUDED_supported_h
@@ -36,15 +36,15 @@
 #define CASEMAP "ascii"
 #endif
 
-#define FEATURES "WALLCHOPS"\
-                "%s%s%s" \
-                " MODES=%i" \
-                " MAXCHANNELS=%i" \
-                " MAXBANS=%i" \
-                " MAXTARGETS=%i" \
-                " NICKLEN=%i" \
-                " TOPICLEN=%i" \
-                " KICKLEN=%i"
+#define FEATURES "WALLCHOPS"       \
+                 "%s%s%s"          \
+                 " MODES=%i"       \
+                 " MAXCHANNELS=%i" \
+                 " MAXBANS=%i"     \
+                 " MAXTARGETS=%i"  \
+                 " NICKLEN=%i"     \
+                 " TOPICLEN=%i"    \
+                 " KICKLEN=%i"
 
 #define FEATURESVALUES ConfigChannel.use_knock ? " KNOCK" : "", \
         ConfigChannel.use_except ? " EXCEPTS" : "", \
@@ -61,7 +61,7 @@
 		  " CALLERID%s"
 
 #define FEATURES2VALUES ConfigServerHide.disable_local_channels ? "#" : "#&", \
-                        ConfigChannel.use_halfops ? "(ohv)@%+" : "(ov)@+", \
+                        "(ov)@+", \
                         ConfigChannel.use_except ? "e" : "", \
                         ConfigChannel.use_invex ? "I" : "", \
                         "b,k,l,imnpst", \

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_invite.c,v 1.55 2003/05/09 21:38:18 bill Exp $
+ *  $Id: m_invite.c,v 1.56 2003/05/12 08:09:28 michael Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&invite_msgtab);
 }
 
-const char *_version = "$Revision: 1.55 $";
+const char *_version = "$Revision: 1.56 $";
 #endif
 
 /*
@@ -210,13 +210,13 @@ m_invite(struct Client *client_p,
                   me.name, source_p->name, target_p->name, chptr->chname);
 
     /* XXX This possibly should be a numeric -db */
-    sendto_channel_local(ONLY_CHANOPS_HALFOPS, chptr,
+    sendto_channel_local(ONLY_CHANOPS, chptr,
                          ":%s NOTICE %s :%s is inviting %s to %s.",
 			 me.name, chptr->chname, source_p->name,
 			 target_p->name, chptr->chname);
 
     /* Send a notice to servers that don't support CAP_PARA */
-    sendto_channel_remote(source_p, client_p, ONLY_CHANOPS_HALFOPS,
+    sendto_channel_remote(source_p, client_p, ONLY_CHANOPS,
 			  NOCAPS, CAP_PARA, chptr,
 			  ":%s NOTICE %s :%s is inviting %s to %s.",
 			  source_p->name, chptr->chname, source_p->name,
@@ -335,13 +335,13 @@ ms_invite(struct Client *client_p,
 		    target_p->name, chptr->chname);
 
       /* XXX This possibly should be a numeric -db */
-      sendto_channel_local(ONLY_CHANOPS_HALFOPS, chptr,
+      sendto_channel_local(ONLY_CHANOPS, chptr,
 			   ":%s NOTICE %s :%s is inviting %s to %s.",
 			   me.name, chptr->chname, source_client_p->name,
 			   target_p->name, chptr->chname);
 
       /* Send a notice to servers that don't support CAP_PARA */
-      sendto_channel_remote(source_p, client_p, ONLY_CHANOPS_HALFOPS,
+      sendto_channel_remote(source_p, client_p, ONLY_CHANOPS,
 			    NOCAPS, CAP_PARA, chptr,
 			    ":%s NOTICE %s :%s is inviting %s to %s.",
 			    source_client_p->name, chptr->chname,

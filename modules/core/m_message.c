@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.117 2003/05/09 21:38:21 bill Exp $
+ *  $Id: m_message.c,v 1.118 2003/05/12 08:09:31 michael Exp $
  */
 
 #include "stdinc.h"
@@ -119,7 +119,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.117 $";
+const char *_version = "$Revision: 1.118 $";
 #endif
 
 /*
@@ -333,14 +333,12 @@ build_target_list(int p_or_n, const char *command, struct Client *client_p,
     type = 0;
     with_prefix = nick;
     /*  allow %+@ if someone wants to do that */
-    for (;;)
+    for (; ;)
     {
       if (*nick == '@')
         type |= MODE_CHANOP;
-      else if (*nick == '%')
-        type |= MODE_CHANOP | MODE_HALFOP;
       else if (*nick == '+')
-        type |= MODE_CHANOP | MODE_HALFOP | MODE_VOICE;
+        type |= MODE_CHANOP | MODE_VOICE;
       else
         break;
       nick++;
@@ -362,7 +360,7 @@ build_target_list(int p_or_n, const char *command, struct Client *client_p,
 
       if ((chptr = hash_find_channel(nick)) != NULL)
 	{
-	  if(!is_any_op(chptr, source_p) && !is_voiced(chptr, source_p))
+	  if(!is_chan_op(chptr, source_p) && !is_voiced(chptr, source_p))
 	    {
 	      sendto_one(source_p, form_str(ERR_CHANOPRIVSNEEDED), me.name,
 			 source_p->name, with_prefix);
@@ -501,13 +499,8 @@ msg_channel_flags(int p_or_n, const char *command, struct Client *client_p,
 
   if (flags & MODE_VOICE)
   {
-    type = ONLY_CHANOPS_HALFOPS_VOICED;
+    type = ONLY_CHANOPS_VOICED;
     c = '+';
-  }
-  else if (flags & MODE_HALFOP)
-  {
-    type = ONLY_CHANOPS_HALFOPS;
-    c = '%';
   }
   else
   {

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.369 2003/05/12 04:09:54 michael Exp $
+ *  $Id: channel.c,v 7.370 2003/05/12 08:09:33 michael Exp $
  */
 
 #include "stdinc.h"
@@ -45,23 +45,24 @@
 
 
 struct config_channel_entry ConfigChannel;
-dlink_list global_channel_list = {NULL, NULL, 0};
-dlink_list lazylink_channels = {NULL, NULL, 0};
+dlink_list global_channel_list = { NULL, NULL, 0 };
+dlink_list lazylink_channels = { NULL, NULL, 0 };
 BlockHeap *channel_heap;
 BlockHeap *ban_heap;
 BlockHeap *topic_heap;
 
-static void free_channel_list(dlink_list * list);
+static void free_channel_list(dlink_list *list);
 static int sub1_from_channel(struct Channel *);
 static void destroy_channel(struct Channel *);
-static void delete_members(struct Channel *chptr, dlink_list * list);
+static void delete_members(struct Channel *chptr, dlink_list *list);
 static void send_mode_list(struct Client *client_p, char *chname,
                            dlink_list *top, char flag, int clear);
 static int check_banned(struct Channel *chptr, char *s, char *s2);
 static const char *channel_pub_or_secret(struct Channel *chptr);
 
 static char buf[BUFSIZE];
-static char modebuf[MODEBUFLEN], parabuf[MODEBUFLEN];
+static char modebuf[MODEBUFLEN];
+static char parabuf[MODEBUFLEN];
 
 /* init_channels()
  *
@@ -80,7 +81,7 @@ init_channels(void)
  * inputs       - pointer to channel to add client to
  *              - pointer to client (who) to add
  *              - flags for chanops etc
- * output       - none
+ * output       - NONE
  * side effects - adds a user to a channel by adding another link to the
  *                channels member chain.
  */
@@ -103,14 +104,6 @@ add_user_to_channel(struct Channel *chptr, struct Client *who, int flags)
         if (MyClient(who))
           dlinkAdd(who, make_dlink_node(), &chptr->locchanops);
         break;
-
-#ifdef HALFOPS
-      case MODE_HALFOP:
-        dlinkAdd(who, make_dlink_node(), &chptr->halfops);
-        if (MyClient(who))
-          dlinkAdd(who, make_dlink_node(), &chptr->lochalfops);
-        break;
-#endif
 
       case MODE_VOICE:
         dlinkAdd(who, make_dlink_node(), &chptr->voiced);
@@ -146,8 +139,7 @@ add_user_to_channel(struct Channel *chptr, struct Client *who, int flags)
   }
 }
 
-/*
- * remove_user_from_channel
+/* remove_user_from_channel()
  * 
  * inputs       - pointer to channel to remove client from
  *              - pointer to client (who) to remove
@@ -171,10 +163,6 @@ remove_user_from_channel(struct Channel *chptr, struct Client *who)
 #endif
   else if ((ptr = find_user_link(&chptr->voiced, who)))
     dlinkDelete(ptr, &chptr->voiced);
-#ifdef HALFOPS
-  else if ((ptr = find_user_link(&chptr->halfops, who)))
-    dlinkDelete(ptr, &chptr->halfops);
-#endif
   else {
     assert(0 == 1); /* This ain't supposed to happen */
   }
@@ -195,10 +183,6 @@ remove_user_from_channel(struct Channel *chptr, struct Client *who)
       dlinkDelete(ptr, &chptr->locchanops);
     else if ((ptr = find_user_link(&chptr->locvoiced, who)))
       dlinkDelete(ptr, &chptr->locvoiced);
-#ifdef HALFOPS
-    else if ((ptr = find_user_link(&chptr->lochalfops, who)))
-      dlinkDelete(ptr, &chptr->lochalfops);
-#endif
 #ifdef REQUIRE_OANDV
     else if ((ptr = find_user_link(&chptr->locchanops_voiced, who)))
       dlinkDelete(ptr, &chptr->locchanops_voiced);
@@ -303,19 +287,6 @@ send_channel_modes(struct Client *client_p, struct Channel *chptr)
 #ifdef REQUIRE_OANDV
   send_members(client_p, modebuf, parabuf, chptr, &chptr->chanops_voiced, "@+");
 #endif
-
-#ifdef HALFOPS
-  if (IsCapable(client_p, CAP_HOPS))
-  {
-    send_members(client_p, modebuf, parabuf, chptr, &chptr->halfops, "%");
-  }
-  else
-  {
-    /* Ok, halfops can still generate a kick, they'll just looked opped */
-    send_members(client_p, modebuf, parabuf, chptr, &chptr->halfops, "@");
-  }
-#endif
-
   send_members(client_p, modebuf, parabuf, chptr, &chptr->voiced, "+");
   send_members(client_p, modebuf, parabuf, chptr, &chptr->peons, "");
 
@@ -394,8 +365,9 @@ send_mode_list(struct Client *client_p,
 /* check_channel_name()
  *
  * inputs       - channel name
- * output       - true (1) if name ok, false (0) otherwise
- * side effects - check_channel_name - check channel name for
+ * output       - true  (1) if name ok,
+ *              - false (0) otherwise
+ * side effects - check channel name for
  *                invalid characters
  */
 int
@@ -448,7 +420,7 @@ sub1_from_channel(struct Channel *chptr)
  * side effects -
  */
 static void
-free_channel_list(dlink_list * list)
+free_channel_list(dlink_list *list)
 {
   dlink_node *ptr;
   dlink_node *next_ptr;
@@ -493,9 +465,6 @@ destroy_channel(struct Channel *chptr)
 #endif
   delete_members(chptr, &chptr->voiced);
   delete_members(chptr, &chptr->peons);
-#ifdef HALFOPS
-  delete_members(chptr, &chptr->halfops);
-#endif
 
   delete_members(chptr, &chptr->locchanops);
 #ifdef REQUIRE_OANDV
@@ -503,9 +472,6 @@ destroy_channel(struct Channel *chptr)
 #endif
   delete_members(chptr, &chptr->locvoiced);
   delete_members(chptr, &chptr->locpeons);
-#ifdef HALFOPS
-  delete_members(chptr, &chptr->lochalfops);
-#endif
 
   while ((ptr = chptr->invites.head))
     del_invite(chptr, ptr->data);
@@ -544,23 +510,21 @@ destroy_channel(struct Channel *chptr)
 /* delete_members()
  *
  * inputs       - pointer to list (on channel)
- * output       - none
+ * output       - NONE
  * side effects - delete members of this list
  */
 static void
-delete_members(struct Channel *chptr, dlink_list * list)
+delete_members(struct Channel *chptr, dlink_list *list)
 {
   dlink_node *ptr;
   dlink_node *next_ptr;
   dlink_node *ptr_ch;
   dlink_node *next_ptr_ch;
-
   struct Client *who;
 
   DLINK_FOREACH_SAFE(ptr, next_ptr, list->head)
   {
-    next_ptr = ptr->next;
-    who = (struct Client *)ptr->data;
+    who = ptr->data;
 
     if (who->user != NULL)
     {
@@ -576,7 +540,6 @@ delete_members(struct Channel *chptr, dlink_list * list)
 	}
       }
     }
-
 
     /* remove reference to who from chptr */
     dlinkDelete(ptr, list);
@@ -611,14 +574,10 @@ channel_member_names(struct Client *source_p, struct Channel *chptr,
   int is_member;
   int i;
 
-  if(ShowChannel(source_p, chptr))
+  if (ShowChannel(source_p, chptr))
   {
     ptr_list[0] = chptr->chanops.head;
-#ifdef HALFOPS
-    ptr_list[1] = chptr->halfops.head;
-#else
     ptr_list[1] = NULL;
-#endif
     ptr_list[2] = chptr->voiced.head;
     ptr_list[3] = chptr->peons.head;
 #ifdef REQUIRE_OANDV
@@ -759,7 +718,7 @@ del_invite(struct Channel *chptr, struct Client *who)
  * inputs       - pointer to channel
  *              - pointer to client
  * output       - string either @,+% or"" depending on whether
- *                chanop, voiced, halfop or user
+ *                chanop, voiced or user
  * side effects -
  */
 const char *
@@ -767,10 +726,6 @@ channel_chanop_or_voice(struct Channel *chptr, struct Client *target_p)
 {
   if (find_user_link(&chptr->chanops, target_p))
     return("@");
-#ifdef HALFOPS
-  else if (find_user_link(&chptr->halfops, target_p))
-    return("%");
-#endif
   else if (find_user_link(&chptr->voiced, target_p))
     return("+");
 #ifdef REQUIRE_OANDV
@@ -934,62 +889,9 @@ is_chan_op(struct Channel *chptr, struct Client *who)
       return(1);
 #endif
   }
+
   return(0);
 }
-
-
-/*********** **************/
-/*
- * is_any_op
- *
- * inputs       - pointer to channel to check for chanop or halfops on
- *              - pointer to client struct being checked
- * output       - yes if anyop no if not
- * side effects -
- */
-int
-is_any_op(struct Channel *chptr, struct Client *who)
-{
-  if (chptr != NULL)
-  {
-    if (find_user_link(&chptr->chanops, who) != NULL)
-      return (1);
-#ifdef HALFOPS
-    if (find_user_link(&chptr->halfops, who) != NULL)
-      return (1);
-#endif
-#ifdef REQUIRE_OANDV
-    if (find_user_link(&chptr->chanops_voiced, who) != NULL)
-      return (1);
-#endif
-  }
-  return (0);
-}
-
-/*
- * is_half_op
- *
- * inputs       - pointer to channel to check for chanop or halfops on
- *              - pointer to client struct being checked
- * output       - yes if anyop no if not
- * side effects -
- */
-#ifdef HALFOPS
-int
-is_half_op(struct Channel *chptr, struct Client *who)
-{
-  if (chptr != NULL)
-  {
-    if ((find_user_link(&chptr->halfops, who)))
-      return (1);
-  }
-
-  return (0);
-}
-#endif
-/****************** ****/
-
-
 
 /* is_voiced()
  *
@@ -1010,6 +912,7 @@ is_voiced(struct Channel *chptr, struct Client *who)
       return(1);
 #endif
   }
+
   return(0);
 }
 
@@ -1031,7 +934,7 @@ can_send(struct Channel *chptr, struct Client *source_p)
       !(IsOper(source_p)) && ConfigChannel.oper_pass_resv))
     return(CAN_SEND_NO);
     
-  if (is_any_op(chptr, source_p))
+  if (is_chan_op(chptr, source_p))
     return(CAN_SEND_OPV);
   if (is_voiced(chptr, source_p))
     return(CAN_SEND_OPV);

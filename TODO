@@ -1,4 +1,4 @@
-$Id: TODO,v 7.80 2003/05/11 23:47:29 joshk Exp $
+$Id: TODO,v 7.81 2003/05/12 08:09:18 michael Exp $
 
 - add more stderr debugging (ircd -s)... one for every place we syslog()
 - ircd -s doesn't work through a restart
@@ -144,8 +144,7 @@ But at least SysV make seems to work, kind of. :)
 
 -- MeTaLRoCk's list
 
-* Fixed the darned halfops so the channel doesn't get desynched when
-people start setting a combination of op, voice, halfop modes.
+* <empty>
 
 -- adx's list
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: config.h,v 7.151 2003/05/12 04:09:48 michael Exp $
+ *  $Id: config.h,v 7.152 2003/05/12 08:09:26 michael Exp $
  */
 
 #ifndef INCLUDED_config_h
@@ -285,12 +285,10 @@
  * If you have enabled efnet specific code these will be disabled automatically
  * else they are here for anyone else.
  */
-#define HALFOPS
 /* END OF CONFIGURABLE OPTIONS */
 
 /* disable them for efnet */
 #ifdef EFNET
-#undef HALFOPS
 #ifndef HIDE_SERVERS_IPS
 #define HIDE_SERVERS_IPS
 #endif

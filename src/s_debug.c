@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_debug.c,v 7.80 2003/05/11 22:04:51 michael Exp $
+ *  $Id: s_debug.c,v 7.81 2003/05/12 08:09:34 michael Exp $
  */
 
 #include "stdinc.h"
@@ -230,9 +230,6 @@ count_memory(struct Client *source_p)
     channel_users += dlink_list_length(&chptr->chanops_voiced);
 #endif
     channel_users += dlink_list_length(&chptr->voiced);
-#ifdef HALFOPS
-    channel_users += dlink_list_length(&chptr->halfops);
-#endif
     channel_invites += dlink_list_length(&chptr->invites);
 
     DLINK_FOREACH(dlink, chptr->banlist.head)

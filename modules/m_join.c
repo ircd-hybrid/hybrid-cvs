@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_join.c,v 1.102 2003/05/12 04:09:50 michael Exp $
+ *  $Id: m_join.c,v 1.103 2003/05/12 08:09:28 michael Exp $
  */
 
 #include "stdinc.h"
@@ -64,7 +64,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&join_msgtab);
 }
-const char *_version = "$Revision: 1.102 $";
+const char *_version = "$Revision: 1.103 $";
 
 #endif
 static void do_join_0(struct Client *client_p, struct Client *source_p);
@@ -286,7 +286,7 @@ m_join(struct Client *client_p, struct Client *source_p,
 			       source_p->name, source_p->username,
 			       source_p->host, chptr->chname);
       
-	  sendto_channel_local(ONLY_CHANOPS_HALFOPS,chptr,
+	  sendto_channel_local(ONLY_CHANOPS, chptr,
 			       ":%s MODE %s %s %s",
 			       me.name, chptr->chname,
 			       modebuf, parabuf);
