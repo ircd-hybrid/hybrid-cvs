@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.h,v 7.62 2002/02/06 15:02:28 leeh Exp $
+ *  $Id: s_serv.h,v 7.63 2002/03/09 23:01:24 androsyn Exp $
  */
 
 #ifndef INCLUDED_serv_h
@@ -301,8 +301,6 @@ extern void cryptlink_error(struct Client *client_p, char *type,
 
 extern struct Client *uplink; /* NON NULL if leaf and is this servers uplink */
 
-void add_lazylinkchannel(struct Client *client_p, struct Channel *chptr);
-void add_lazylinkclient(struct Client *client_p, struct Client *source_p);
 void remove_lazylink_flags(unsigned long mask);
 void client_burst_if_needed(struct Client *client_p, struct Client *target_p);
 struct EncCapability *check_cipher(struct Client *client_p,
