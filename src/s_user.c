@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.166 2001/10/17 16:07:25 leeh Exp $
+ *  $Id: s_user.c,v 7.167 2001/10/21 15:40:49 davidt Exp $
  */
 
 #include <sys/types.h>
@@ -38,6 +38,7 @@
 #include "tools.h"
 #include "s_user.h"
 #include "channel.h"
+#include "channel_mode.h"
 #include "class.h"
 #include "client.h"
 #include "common.h"
@@ -1080,7 +1081,7 @@ void send_umode(struct Client *client_p, struct Client *source_p, int old,
   int   i;
   int flag;
   char  *m;
-  int   what = MODE_NULL;
+  int   what = 0;
 
   /*
    * build a string in umode_buf to represent the change in the user's

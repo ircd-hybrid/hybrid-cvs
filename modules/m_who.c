@@ -20,13 +20,14 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_who.c,v 1.41 2001/08/31 12:48:32 leeh Exp $
+ *   $Id: m_who.c,v 1.42 2001/10/21 15:40:50 davidt Exp $
  */
 #include "tools.h"
 #include "common.h"   /* bleah */
 #include "handlers.h"
 #include "client.h"
 #include "channel.h"
+#include "channel_mode.h"
 #include "vchannel.h"
 #include "hash.h"
 #include "ircd.h"

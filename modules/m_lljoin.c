@@ -17,10 +17,11 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_lljoin.c,v 1.47 2001/10/02 16:36:14 db Exp $
+ * $Id: m_lljoin.c,v 1.48 2001/10/21 15:40:50 davidt Exp $
  */
 #include "tools.h"
 #include "channel.h"
+#include "channel_mode.h"
 #include "vchannel.h"
 #include "client.h"
 #include "hash.h"       /* for find_client() */

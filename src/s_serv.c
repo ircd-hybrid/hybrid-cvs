@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.215 2001/10/15 22:42:53 davidt Exp $
+ *   $Id: s_serv.c,v 7.216 2001/10/21 15:40:49 davidt Exp $
  */
 
 #include <sys/types.h>
@@ -45,7 +45,7 @@
 
 #include "tools.h"
 #include "s_serv.h"
-#include "channel.h"
+#include "channel_mode.h"
 #include "vchannel.h"
 #include "class.h"
 #include "client.h"
@@ -1221,9 +1221,7 @@ int server_estab(struct Client *client_p)
   client_p->servptr = &me;
 
  /* Update the capability combination usage counts. -A1kmm */
-#ifdef USE_TABLE_MODE 
   set_chcap_usage_counts(client_p);
-#endif  
 
   /* Some day, all these lists will be consolidated *sigh* */
   add_client_to_llist(&(me.serv->servers), client_p);

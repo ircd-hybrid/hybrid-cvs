@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.71 2001/10/02 16:36:14 db Exp $
+ *   $Id: m_message.c,v 1.72 2001/10/21 15:40:50 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -35,6 +35,7 @@
 #include "modules.h"
 
 #include "channel.h"
+#include "channel_mode.h"
 #include "vchannel.h"
 #include "irc_string.h"
 #include "hash.h"

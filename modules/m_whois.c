@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 1.68 2001/08/31 12:48:32 leeh Exp $
+ *   $Id: m_whois.c,v 1.69 2001/10/21 15:40:50 davidt Exp $
  */
 
 #include <string.h>
@@ -33,6 +33,7 @@
 #include "hash.h"       /* for find_client() */
 #include "common.h"   /* bleah */
 #include "channel.h"
+#include "channel_mode.h"
 #include "vchannel.h"
 #include "hash.h"
 #include "ircd.h"

@@ -17,12 +17,13 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: vchannel.c,v 7.54 2001/10/02 16:36:15 db Exp $
+ * $Id: vchannel.c,v 7.55 2001/10/21 15:40:49 davidt Exp $
  */
 
 #include "tools.h"
 #include "vchannel.h"
 #include "channel.h"
+#include "channel_mode.h"
 #include "client.h"
 #include "common.h"
 #include "hash.h"

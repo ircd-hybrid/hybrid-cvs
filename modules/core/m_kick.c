@@ -20,11 +20,12 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kick.c,v 1.32 2001/06/01 00:55:56 davidt Exp $
+ *   $Id: m_kick.c,v 1.33 2001/10/21 15:40:50 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
 #include "channel.h"
+#include "channel_mode.h"
 #include "vchannel.h"
 #include "client.h"
 #include "irc_string.h"

@@ -20,12 +20,12 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.206 2001/09/25 08:11:03 a1kmm Exp $
+ *  $Id: client.c,v 7.207 2001/10/21 15:40:49 davidt Exp $
  */
 #include "tools.h"
 #include "client.h"
 #include "class.h"
-#include "channel.h"
+#include "channel_mode.h"
 #include "common.h"
 #include "event.h"
 #include "fdlist.h"
@@ -1316,9 +1316,7 @@ const char* comment         /* Reason for the exit */
 	    {
 	      dlinkDelete(m,&serv_list);
 	      free_dlink_node(m);
-#ifdef USE_TABLE_MODE
-          unset_chcap_usage_counts(source_p);
-#endif
+              unset_chcap_usage_counts(source_p);
 	    }
 	}
 

@@ -20,11 +20,12 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.116 2001/10/17 15:25:24 jdc Exp $
+ *   $Id: m_sjoin.c,v 1.117 2001/10/21 15:40:50 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
 #include "channel.h"
+#include "channel_mode.h"
 #include "vchannel.h"
 #include "client.h"
 #include "hash.h"
@@ -318,12 +319,12 @@ static void ms_sjoin(struct Client *client_p,
     hide_or_not = ALL_MEMBERS;
 
   if ((MODE_HIDEOPS & mode.mode) && !(MODE_HIDEOPS & oldmode->mode))
-    sync_channel_oplists(chptr, 1);
+    sync_channel_oplists(chptr, MODE_DEL);
 
   /* Don't reveal the ops, only to remove them all */
   if (keep_our_modes)
     if (!(MODE_HIDEOPS & mode.mode) && (MODE_HIDEOPS & oldmode->mode))
-      sync_channel_oplists(chptr, 0);
+      sync_channel_oplists(chptr, MODE_ADD);
 
   set_final_mode(&mode,oldmode);
   chptr->mode = mode;
