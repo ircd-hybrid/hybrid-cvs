@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_cryptlink.c,v 1.32 2002/05/24 23:34:19 androsyn Exp $
+ *  $Id: m_cryptlink.c,v 1.33 2002/07/15 07:26:09 androsyn Exp $
  */
 
 /*
@@ -68,7 +68,7 @@
 void _modinit(void) {}
 void _moddeinit(void) {}
 
-const char *_version = "$Revision: 1.32 $";
+const char *_version = "$Revision: 1.33 $";
 #endif
 #else
 
@@ -114,7 +114,7 @@ _moddeinit(void)
   mod_del_cmd(&cryptlink_msgtab);
 }
 
-const char *_version = "$Revision: 1.32 $";
+const char *_version = "$Revision: 1.33 $";
 #endif
 
 
@@ -518,6 +518,11 @@ static char *parse_cryptserv_args(struct Client *client_p,
       "verify_private_key() returned -1.  Check log for information.");
   }
 
+  if(ServerInfo.rsa_private_key == NULL)
+  {
+    cryptlink_error(client_p, "SERV", "No local private key found", NULL);
+    return(NULL);
+  }
   out = MyMalloc(RSA_size(ServerInfo.rsa_private_key));
 
   len = RSA_private_decrypt(decoded_len, tmp, out,
