@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.10 2002/11/05 14:49:50 bill Exp $
+ *   $Id: m_operspy.c,v 1.11 2002/11/10 19:53:06 bill Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -124,7 +124,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.10 $";
+const char *_version = "$Revision: 1.11 $";
 #endif
 
 /*
@@ -408,7 +408,7 @@ static void mo_operspy(struct Client *client_p, struct Client *source_p,
       return;
     }
 
-    if ((target_p = (struct Client *)find_client(parv[2])) == NULL)
+    if ((target_p = (struct Client *)find_client(parv[2])) == NULL || !IsClient(target_p))
     {
       sendto_one(client_p, form_str(ERR_NOSUCHNICK), me.name, parv[0], parv[2]);
       return;
