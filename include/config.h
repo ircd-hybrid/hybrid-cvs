@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.66 2000/12/24 03:06:59 ejb Exp $
+ * $Id: config.h,v 7.67 2000/12/24 14:49:24 adrian Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -93,13 +93,14 @@
 #define SPATH   IRCD_PREFIX "/bin/ircd"
 /* i really don't like the below, but I'll figure the rest out! -- adrian */
 #define ETCPATH	IRCD_PREFIX "/etc"
+#define LOGPATH IRCD_PREFIX "/logs"
 #define CPATH   ETCPATH "/ircd.conf"
 #define KPATH   ETCPATH "/kline.conf"
 #define DLPATH  ETCPATH "/kline.conf"
 #define GPATH   ETCPATH "/gline.log"
 #define RPATH   ETCPATH "/ircd.rsa"
 #define MPATH   ETCPATH "/ircd.motd"
-#define LPATH   ETCPATH "/ircd.log"
+#define LPATH   LOGPATH "/ircd.log"
 #define PPATH   ETCPATH "/ircd.pid"
 #define HPATH   ETCPATH "/opers.txt"
 #define OPATH   ETCPATH "/opers.motd"
