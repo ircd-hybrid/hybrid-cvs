@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.243 2003/06/16 07:37:02 metalrock Exp $
+ *  $Id: s_conf.h,v 7.244 2003/06/18 00:15:08 metalrock Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -326,6 +326,7 @@ struct config_server_hide
   int links_disabled;
   int hidden;
   int disable_hidden;
+  int hide_server_ips;
 };
 
 struct server_info

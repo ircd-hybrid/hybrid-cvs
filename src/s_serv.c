@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.350 2003/06/16 15:16:05 michael Exp $
+ *  $Id: s_serv.c,v 7.351 2003/06/18 00:15:12 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -2092,19 +2092,19 @@ serv_connect_callback(int fd, int status, void *data)
         sizeof(struct irc_ssaddr));
     /* Check the status */
     if (status != COMM_OK)
-      {
-        /* We have an error, so report it and quit */
-	/* Admins get to see any IP, mere opers don't *sigh*
-	 */
-#ifdef HIDE_SERVERS_IPS
-        sendto_realops_flags(UMODE_ALL, L_ADMIN,
-                             "Error connecting to %s: %s",
-                             client_p->name, comm_errstr(status));
-#else
-        sendto_realops_flags(UMODE_ALL, L_ADMIN,
-			     "Error connecting to %s[%s]: %s", client_p->name,
-			     client_p->host, comm_errstr(status));
-#endif
+    {
+      /* We have an error, so report it and quit
+       * Admins get to see any IP, mere opers don't *sigh*
+       */
+       if (ConfigServerHide.hide_server_ips)
+         sendto_realops_flags(UMODE_ALL, L_ADMIN,
+                              "Error connecting to %s: %s",
+                              client_p->name, comm_errstr(status));
+       else
+         sendto_realops_flags(UMODE_ALL, L_ADMIN,
+			      "Error connecting to %s[%s]: %s", client_p->name,
+			      client_p->host, comm_errstr(status));
+
 	sendto_realops_flags(UMODE_ALL, L_OPER,
 			     "Error connecting to %s: %s",
 			     client_p->name, comm_errstr(status));

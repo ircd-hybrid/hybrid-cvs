@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.386 2003/06/16 03:07:53 db Exp $
+ *  $Id: client.c,v 7.387 2003/06/18 00:15:12 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -720,10 +720,10 @@ get_client_name(struct Client *client, int showip)
   if (irccmp(client->name, client->host) == 0)
     return(client->name);
 
-#ifdef HIDE_SERVERS_IPS
-  if (IsServer(client) || IsConnecting(client) || IsHandshake(client))
+  if (ConfigServerHide.hide_server_ips || IsServer(client) ||
+      IsConnecting(client) || IsHandshake(client))
     showip = MASK_IP;
-#endif
+
 #ifdef HIDE_SPOOF_IPS
   if (showip == SHOW_IP && IsIPSpoof(client))
     showip = MASK_IP;

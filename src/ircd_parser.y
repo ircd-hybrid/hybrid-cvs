@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.316 2003/06/18 00:02:08 joshk Exp $
+ *  $Id: ircd_parser.y,v 1.317 2003/06/18 00:15:12 metalrock Exp $
  */
 
 %{
@@ -150,6 +150,7 @@ init_parser_confs(void)
 %token	HAVENT_READ_CONF
 %token  HIDDEN
 %token  HIDDEN_ADMIN
+%token	HIDE_SERVER_IPS
 %token  HIDE_SERVERS
 %token  HOST
 %token  HUB
@@ -2924,7 +2925,8 @@ serverhide_item:    serverhide_flatten_links | serverhide_hide_servers |
 		    serverhide_links_delay |
 		    serverhide_disable_hidden |
 		    serverhide_hidden |
-		    serverhide_disable_local_channels |
+		    serverhide_disable_local_channels | 
+		    serverhide_hide_server_ips |
                     error;
 
 serverhide_flatten_links: FLATTEN_LINKS '=' TBOOL ';'
@@ -2976,3 +2978,10 @@ serverhide_disable_hidden: DISABLE_HIDDEN '=' TBOOL ';'
   if (ypass == 2)
     ConfigServerHide.disable_hidden = yylval.number;
 };
+
+serverhide_hide_server_ips: HIDE_SERVER_IPS '=' TBOOL ';'
+{
+  if (ypass == 2)
+    ConfigServerHide.hide_server_ips = yylval.number;
+};
+

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.435 2003/06/18 00:02:08 joshk Exp $
+ *  $Id: s_conf.c,v 7.436 2003/06/18 00:15:12 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -620,15 +620,14 @@ report_configured_links(struct Client *source_p, unsigned int mask)
 
         *s++ = '\0';
 
-	/* Allow admins to see actual ips */
-	/* except if HIDE_SERVERS_IPS is defined */
-#ifndef HIDE_SERVERS_IPS
-        if (IsAdmin(source_p))
+	/* Allow admins to see actual ips
+	 * unless hide_server_ips is enabled
+         */
+        if (!ConfigServerHide.hide_server_ips && IsAdmin(source_p))
           sendto_one(source_p, form_str(p->rpl_stats),
                      me.name, source_p->name, c, host,
                      buf, name, port, classname);
         else
-#endif
           sendto_one(source_p, form_str(p->rpl_stats),
                      me.name, source_p->name, c,
 		     "*@127.0.0.1", buf, name, port, classname);
@@ -1751,6 +1750,7 @@ set_default_conf(void)
   ConfigChannel.oper_pass_resv = YES;
 
   ConfigServerHide.flatten_links = 0;
+  ConfigServerHide.hide_server_ips = 0;
   ConfigServerHide.hide_servers = 0;
   ConfigServerHide.disable_remote = 0;
   ConfigServerHide.links_delay = 300;

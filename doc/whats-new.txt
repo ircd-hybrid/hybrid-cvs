@@ -105,8 +105,8 @@ networking support
      (indicated by umode +a and admin=yes; in oper block)
 
   It also limits certain stats commands to admin only.  IPs can still be
-  fully removed from all admins and opers by defining HIDE_SERVERS_IPS in
-  config.h.
+  fully removed from all admins and opers by enabling hide_server_ips in
+  ircd.conf.
 
 - The /notice $irc.server command has been renamed to /notice $$irc.server
 
@@ -278,5 +278,5 @@ networking support
     PARA    - Controls propogation of INVITE notices for +p (paranoid) channels
     ENC:a   - Encrypted link, where 'a' is the cipher being used
 
-# $Id: whats-new.txt,v 7.43 2003/05/31 05:54:20 joshk Exp $
+# $Id: whats-new.txt,v 7.44 2003/06/18 00:15:05 metalrock Exp $
 

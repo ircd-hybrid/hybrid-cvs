@@ -3,7 +3,7 @@
  *
  * Written by ejb, wcampbel, db, leeh and others
  *
- * $Id: example.conf.quick,v 1.12 2003/06/14 22:00:40 michael Exp $
+ * $Id: example.conf.quick,v 1.13 2003/06/18 00:15:06 metalrock Exp $
  */
 
 /* IMPORTANT NOTES:
@@ -299,6 +299,7 @@ serverhide {
 	hide_servers = no;
 	disable_remote_commands = no;
 	disable_local_channels = no;
+	hide_server_ips = no;
 };
 
 general {

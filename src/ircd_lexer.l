@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_lexer.l,v 1.168 2003/06/15 09:27:43 michael Exp $
+ *  $Id: ircd_lexer.l,v 1.169 2003/06/18 00:15:12 metalrock Exp $
  */
 
 %option case-insensitive
@@ -186,6 +186,7 @@ have_ident	{ return HAVE_IDENT; }
 havent_read_conf { return HAVENT_READ_CONF; }
 hidden		{ return HIDDEN; }
 hidden_admin	{ return HIDDEN_ADMIN; }
+hide_server_ips	{ return HIDE_SERVER_IPS; }
 hide_servers	{ return HIDE_SERVERS; }
 host		{ return HOST; }
 hub		{ return HUB; }

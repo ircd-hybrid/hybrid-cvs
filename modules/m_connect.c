@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_connect.c,v 1.45 2003/06/12 22:05:54 db Exp $
+ *  $Id: m_connect.c,v 1.46 2003/06/18 00:15:10 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
   mod_del_cmd(&connect_msgtab);
 }
 
-const char *_version = "$Revision: 1.45 $";
+const char *_version = "$Revision: 1.46 $";
 #endif
 
 /*
@@ -181,15 +181,13 @@ mo_connect(struct Client* client_p, struct Client* source_p,
    */
   if (serv_connect(aconf, source_p))
   {
-#ifndef HIDE_SERVERS_IPS
-    if (IsAdmin(source_p))
+    if (!ConfigServerHide.hide_server_ips && IsAdmin(source_p))
       sendto_one(source_p, ":%s NOTICE %s :*** Connecting to %s[%s].%d",
                  me.name, source_p->name, aconf->host,
                  aconf->name, aconf->port);
     else
-#endif
-    sendto_one(source_p, ":%s NOTICE %s :*** Connecting to %s.%d",
-               me.name, source_p->name, aconf->name, aconf->port);
+      sendto_one(source_p, ":%s NOTICE %s :*** Connecting to %s.%d",
+                 me.name, source_p->name, aconf->name, aconf->port);
   }
   else
   {
