@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.57 2002/08/20 16:42:00 db Exp $
+ *  $Id: channel_mode.c,v 7.58 2002/08/20 19:25:30 db Exp $
  */
 
 #include "stdinc.h"
@@ -2516,16 +2516,14 @@ update_channel_info(struct Channel *chptr)
   {
     if(chptr->mode.mode & MODE_HIDEOPS)
     {
-      for (ptr = chptr->locpeons.head; ptr != NULL && ptr->data != NULL;
-           ptr = ptr->next)
+      DLINK_FOREACH(ptr, chptr->locpeons.head)
       {
         mode_get_status(chptr, ptr->data, &t_op, &t_hop, &t_voice, 0);
         if (!t_hop && !t_op)
           sync_oplists(chptr, ptr->data, MODE_DEL, RootChan(chptr)->chname);
       }
 
-      for (ptr = chptr->locvoiced.head; ptr != NULL && ptr->data != NULL;
-           ptr = ptr->next)
+      DLINK_FOREACH(ptr, chptr->locvoiced.head)
       {
         mode_get_status(chptr, ptr->data, &t_op, &t_hop, &t_voice, 0);
         if (!t_hop && !t_op)
@@ -2611,9 +2609,8 @@ update_channel_info(struct Channel *chptr)
     }
 
     /* ..and send a resync to them */
-    for (ptr=deopped.head; ptr != NULL && ptr->data != NULL; ptr=ptr_next)
+    DLINK_FOREACH_SAFE(ptr, ptr_next, deopped.head)
     {
-      ptr_next = ptr->next;
       sync_oplists(chptr, ptr->data, MODE_DEL, RootChan(chptr)->chname);
       free_dlink_node(ptr);
     }
@@ -2729,7 +2726,7 @@ do_channel_integrity_check(void)
   {
     if (!IsRegisteredUser(cl) || IsDead(cl))
       continue;
-    for (ptr=cl->user->channel.head; ptr; ptr=ptr->next)
+    DLINK_FOREACH(ptr, cl->user->channel.head)
     {
       dlink_node *ptr2;
       int matched = 0, matched_local;
@@ -2740,7 +2737,7 @@ do_channel_integrity_check(void)
         matched_local = 0;
       /* Make sure that they match once, and only once... */
 #define SEARCH_LIST(listname) \
-      for (ptr2=ch->listname.head; ptr2; ptr2=ptr2->next) \
+      DLINK_FOREACH(ptr2, ch->listname.head) \
         if (ptr2->data == cl) \
         { \
           assert(matched == 0); \
