@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.216 2001/05/16 18:47:29 leeh Exp $
+ * $Id: channel.c,v 7.217 2001/05/19 04:45:17 a1kmm Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -2250,11 +2250,11 @@ void set_channel_mode(struct Client *client_p,
                                modebuf, parabuf);
       }
 
-      sendto_match_nocap_servs(chptr, client_p, CAP_UID, ":%s MODE %s %s %s",
+      sendto_match_nocap_servs(chptr, source_p, CAP_UID, ":%s MODE %s %s %s",
 			       source_p->name, chptr->chname,
 			       modebuf, parabuf);
 	  
-      sendto_match_cap_servs(chptr, client_p, CAP_UID, ":%s MODE %s %s %s",
+      sendto_match_cap_servs(chptr, source_p, CAP_UID, ":%s MODE %s %s %s",
 			     HasID(source_p) ? source_p->user->id : source_p->name,
 			     chptr->chname,
 			     modebuf, parabuf);

@@ -15,7 +15,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- * $Id: hostmask.h,v 1.12 2001/05/07 21:27:11 fl_ Exp $ 
+ * $Id: hostmask.h,v 1.13 2001/05/19 04:45:09 a1kmm Exp $ 
  */
 
 enum
@@ -84,3 +84,4 @@ struct AddressRec
  /* The next record in this hash bucket. */
  struct AddressRec *next;
 };
+

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kline.c,v 1.74 2001/05/18 02:11:24 db Exp $
+ *   $Id: m_kline.c,v 1.75 2001/05/19 04:45:15 a1kmm Exp $
  */
 #include "tools.h"
 #include "m_kline.h"
@@ -554,8 +554,10 @@ static void mo_dline(struct Client *client_p, struct Client *source_p,
                     int parc, char *parv[])
 {
   char *dlhost, *reason;
+#ifndef IPV6
   char *p;
   struct Client *target_p;
+#endif
   struct irc_inaddr daddr;
   char cidr_form_host[HOSTLEN + 1];
   struct ConfItem *aconf;
@@ -577,7 +579,7 @@ static void mo_dline(struct Client *client_p, struct Client *source_p,
   {
 #ifdef IPV6
    sendto_one(source_p, ":%s NOTICE %s :Sorry, please supply an address.",
-              &me.name, parv[0]);
+              me.name, parv[0]);
    return;
 #else
       if (!(target_p = find_chasing(source_p, parv[1], NULL)))
