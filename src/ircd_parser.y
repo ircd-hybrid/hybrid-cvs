@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.210 2001/09/12 01:01:52 db Exp $
+ * $Id: ircd_parser.y,v 1.211 2001/09/12 05:09:30 db Exp $
  */
 
 %{
@@ -2552,7 +2552,7 @@ serverhide_links_delay: LINKS_DELAY '=' timespec ';'
 serverhide_hidden: HIDDEN '=' TYES ';'
   {
     ConfigServerHide.hidden = 1;
-  };
+  }
     |
     HIDDEN '=' TNO ';'
   {
