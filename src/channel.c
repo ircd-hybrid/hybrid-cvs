@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.328 2002/09/05 14:06:15 db Exp $
+ *  $Id: channel.c,v 7.329 2002/09/07 06:34:13 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -1467,7 +1467,7 @@ set_channel_topic(struct Channel *chptr, const char *topic,
   {
     if(chptr->topic == NULL)
       allocate_topic(chptr);
-    strlcpy(chptr->topic, topic, TOPICLEN);
+    strlcpy(chptr->topic, topic, TOPICLEN+1);
     strlcpy(chptr->topic_info, topic_info,  USERHOST_REPLYLEN);
     chptr->topic_time = topicts; 
   }
