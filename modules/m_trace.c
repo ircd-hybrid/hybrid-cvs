@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_trace.c,v 1.74 2004/03/12 22:15:29 db Exp $
+ *  $Id: m_trace.c,v 1.75 2004/03/16 01:49:28 bill Exp $
  */
 
 #include "stdinc.h"
@@ -94,7 +94,7 @@ _moddeinit(void)
   mod_del_cmd(&trace_msgtab6);
 #endif
 }
-const char *_version = "$Revision: 1.74 $";
+const char *_version = "$Revision: 1.75 $";
 #endif
 
 static int report_this_status(struct Client *source_p, struct Client *target_p,
@@ -226,7 +226,7 @@ do_actual_trace(int ttype, const char *tname, struct Client *client_p,
   struct Client *target_p = NULL;
   struct ConfItem *conf;
   struct ClassItem *cltmp;
-  int doall, link_s[HARD_FDLIMIT], link_u[HARD_FDLIMIT];
+  int doall = 0, link_s[HARD_FDLIMIT], link_u[HARD_FDLIMIT];
   int cnt = 0, wilds, dow;
   dlink_node *gcptr;	/* global_client_list ptr */
   dlink_node *ptr;
@@ -234,7 +234,6 @@ do_actual_trace(int ttype, const char *tname, struct Client *client_p,
 
   trace_spy(source_p);
 
-  doall = (parv[1] && (parc > 1)) ? match(tname, me.name): TRUE;
   wilds = !parv[1] || strchr(tname, '*') || strchr(tname, '?');
   dow = wilds || doall;
 
@@ -247,6 +246,14 @@ do_actual_trace(int ttype, const char *tname, struct Client *client_p,
   {
     from = me.name;
     to = source_p->name;
+  }
+
+  if (match(tname, me.name))
+    doall = TRUE;
+  else if (!MyClient(source_p) && !strcmp(tname, me.id))
+  {
+    doall = TRUE;
+    tname = me.name;
   }
 
   set_time();

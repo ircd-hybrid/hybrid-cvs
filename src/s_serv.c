@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.399 2004/03/15 21:04:57 db Exp $
+ *  $Id: s_serv.c,v 7.400 2004/03/16 01:49:29 bill Exp $
  */
 
 #include "stdinc.h"
@@ -380,17 +380,24 @@ hunt_server(struct Client *client_p, struct Client *source_p, const char *comman
    */
   if (parc <= server || EmptyString(parv[server]) ||
       match(me.name, parv[server]) ||
-      match(parv[server], me.name))
+      match(parv[server], me.name) ||
+      !strcmp(parv[server], me.id))
     return(HUNTED_ISME);
 
   /* These are to pickup matches that would cause the following
    * message to go in the wrong direction while doing quick fast
    * non-matching lookups.
    */
-  if ((target_p = find_client(parv[server])))
+  if (MyClient(source_p))
+    target_p = find_client(parv[server]);
+  else
+    target_p = find_person(parv[server]);
+
+  if (target_p)
     if (target_p->from == source_p->from && !MyConnect(target_p))
       target_p = NULL;
-  if (!target_p && (target_p = find_server(parv[server])))
+
+  if (target_p == NULL && (target_p = find_server(parv[server])))
     if (target_p->from == source_p->from && !MyConnect(target_p))
       target_p = NULL;
 
