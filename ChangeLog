@@ -1,3 +1,15 @@
+bill        2002/10/01 22:13:06 EDT	(20021002_0)
+
+  Modified files:
+    contrib              m_jupe.c 
+  Log:
+  - WALLOPS warning broadcast to remove servers used oper as source, changed to server
+  
+  Revision  Changes    Path
+  1.35      +2 -2      ircd-hybrid-7/contrib/m_jupe.c
+
+
+
 bill        2002/09/24 12:33:06 EDT	(20020924_0)
 
   Modified files:
@@ -32135,4 +32147,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4041 2002/09/24 16:33:09 bill Exp $
+$Id: ChangeLog,v 7.4042 2002/10/02 02:13:08 bill Exp $
