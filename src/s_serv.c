@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.31 2000/10/28 20:21:27 db Exp $
+ *   $Id: s_serv.c,v 7.32 2000/10/28 21:31:30 db Exp $
  */
 #include "s_serv.h"
 #include "channel.h"
@@ -895,7 +895,7 @@ static void server_burst(struct Client *cptr)
 	      send_channel_modes(cptr, chptr);
 
 	      for ( vchan = chptr->next_vchan; vchan;
-		    vchan = chptr->next_vchan)
+		    vchan = vchan->next_vchan)
 		{
 		  for (l = vchan->members; l; l = l->next)
 		    {
