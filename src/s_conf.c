@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.456 2003/07/08 04:01:51 db Exp $
+ *  $Id: s_conf.c,v 7.457 2003/07/08 17:06:42 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -160,8 +160,7 @@ conf_dns_lookup(struct AccessItem *aconf)
   }
 }
 
-/* This should be inlined, its going to be used a lot */
-void *
+inline void *
 map_to_conf(struct ConfItem *aconf)
 {
   void *conf;
@@ -170,8 +169,7 @@ map_to_conf(struct ConfItem *aconf)
   return(conf);
 }
 
-/* This should be inlined, its going to be used a lot */
-struct ConfItem *
+inline struct ConfItem *
 unmap_conf_item(void *aconf)
 {
   struct ConfItem *conf;
