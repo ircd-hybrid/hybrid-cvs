@@ -8,10 +8,11 @@
  * Owner:  Wohali (Joan Touzet)
  *
  *
- * $Id: balloc.c,v 7.13 2001/10/01 20:27:13 androsyn Exp $
+ * $Id: balloc.c,v 7.14 2001/10/03 19:16:16 androsyn Exp $
  */
 
 #define WE_ARE_MEMORY_C
+#include "setup.h"
 
 #ifndef NOBALLOC
 #include <stdio.h>
