@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_cjoin.c,v 1.40 2001/10/02 16:36:14 db Exp $
+ *   $Id: m_cjoin.c,v 1.41 2001/10/17 15:25:24 jdc Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -89,14 +89,14 @@ static void m_cjoin(struct Client *client_p,
       return;
     }
 
-  if ((ConfigChannel.vchans_oper_only && !IsOper(source_p)) || 
-       ConfigChannel.disable_vchans)
+  if ( (ConfigChannel.vchans_oper_only && !IsOper(source_p)) ||
+       (ConfigChannel.use_vchans == 0) )
     {
       sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
                  me.name, parv[0]);
       return;
     }
-      
+
   if (*parv[1] == '\0')
     {
       sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),

@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.272 2001/10/11 23:21:19 davidt Exp $
+ *  $Id: s_conf.c,v 7.273 2001/10/17 15:25:24 jdc Exp $
  */
 
 #include <sys/types.h>
@@ -1552,13 +1552,13 @@ set_default_conf(void)
   ConfigFileEntry.throttle_time = 10;
 
   ConfigChannel.vchans_oper_only = NO;
-  ConfigChannel.disable_vchans = NO;
 
   ConfigChannel.use_except  = YES;
   /* ConfigChannel.use_halfops = YES; */ /* Don't set, as this can't
                                             be changed at runtime */
   ConfigChannel.use_invex   = NO;
   ConfigChannel.use_knock   = YES;
+  ConfigChannel.use_vchans = NO;
   ConfigChannel.knock_delay = 300;
   ConfigChannel.max_chans_per_user = 15;
   ConfigChannel.maxbans = 25;

@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.159 2001/10/11 15:41:02 jdc Exp $
+ * $Id: s_conf.h,v 7.160 2001/10/17 15:25:23 jdc Exp $
  */
 
 #include "setup.h"
@@ -247,9 +247,9 @@ struct config_channel_entry
   int           use_halfops;
   int           use_invex;
   int           use_knock;
+  int           use_vchans;
   int           knock_delay;
   int           vchans_oper_only;
-  int           disable_vchans;
   int           maxbans;
   int           max_chans_per_user;
   int           quiet_on_ban;

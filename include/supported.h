@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: supported.h,v 1.13 2001/06/06 03:16:12 toot Exp $
+ * $Id: supported.h,v 1.14 2001/10/17 15:25:23 jdc Exp $
  * 
  */
 #ifndef INCLUDED_supported_h
@@ -37,9 +37,9 @@
                 " CHANTYPES=%s" \
                 " PREFIX=%s" \
                 " CHANMODES=%s"
-                 
+
 #define FEATURESVALUES ConfigChannel.use_knock ? " KNOCK" : "", \
-        ConfigChannel.disable_vchans ? "" : " VCHANS", \
+        ConfigChannel.use_vchans ? " VCHANS" : "", \
         ConfigChannel.use_except ? " EXCEPTS" : "", \
         ConfigChannel.use_invex ? " INVEX" : "", \
         MAXMODEPARAMS,ConfigChannel.max_chans_per_user, \
