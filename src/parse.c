@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.86 2001/01/20 16:00:46 davidt Exp $
+ *   $Id: parse.c,v 7.87 2001/01/21 12:26:40 davidt Exp $
  */
 
 #include <assert.h>
@@ -623,7 +623,11 @@ static  void    remove_unknown(struct Client *cptr,
    * user on the other server which needs to be removed. -avalon
    * Tell opers about this. -Taner
    */
-  if (!strchr(lsender, '.'))
+  /* '.something'      is an ID      (KILL)
+   * 'nodots'          is a nickname (KILL)
+   * 'no.dot.at.start' is a server   (SQUIT)
+   */
+  if ((lsender[0] == '.') || !strchr(lsender, '.'))
     sendto_one(cptr, ":%s KILL %s :%s (%s(?) <- %s)",
                me.name, lsender, me.name, lsender,
                get_client_name(cptr, FALSE));
