@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.22 2002/02/25 17:39:14 androsyn Exp $
+ *  $Id: channel_mode.c,v 7.23 2002/02/25 19:12:05 androsyn Exp $
  */
 
 #include "tools.h"
@@ -538,10 +538,10 @@ pretty_mask(char *mask)
     nick = mask;
 
   /* truncate values to max lengths */
-  if (strlen(nick) > NICKLEN)
+  if (strlen(nick) > NICKLEN - 1)
   {
-    ne = nick[NICKLEN];
-    nick[NICKLEN] = '\0';
+    ne = nick[NICKLEN - 1];
+    nick[NICKLEN - 1] = '\0';
   }
   if (strlen(user) > USERLEN)
   {
@@ -563,7 +563,7 @@ pretty_mask(char *mask)
   if (ex)
     *ex = '!';
   if (ne)
-    nick[NICKLEN] = ne;
+    nick[NICKLEN - 1] = ne;
   if (ue)
     user[USERLEN] = ue;
   if (he)
