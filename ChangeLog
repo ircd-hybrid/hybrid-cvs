@@ -1,3 +1,15 @@
+lusky       2002/08/21 22:01:39 EDT	(20020822_0)
+
+  Modified files:
+    src                  parse.c 
+  Log:
+  - check for null arg after :
+  
+  Revision  Changes    Path
+  7.138     +2 -0      ircd-hybrid-7/src/parse.c
+
+
+
 lusky       2002/08/21 01:58:04 EDT	(20020821_1)
 
   Modified files:
@@ -31427,4 +31439,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3993 2002/08/21 05:58:07 lusky Exp $
+$Id: ChangeLog,v 7.3994 2002/08/22 02:01:42 lusky Exp $
