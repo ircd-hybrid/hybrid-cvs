@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_knock.c,v 1.50 2002/05/24 23:34:21 androsyn Exp $
+ *  $Id: m_knock.c,v 1.51 2002/08/02 21:58:59 leeh Exp $
  */
 
 #include "stdinc.h"
@@ -81,7 +81,7 @@ _moddeinit(void)
   mod_del_cmd(&knockll_msgtab);
 }
 
-const char *_version = "$Revision: 1.50 $";
+const char *_version = "$Revision: 1.51 $";
 #endif
 
 /* m_knock
@@ -287,7 +287,7 @@ static void parse_knock_local(struct Client *client_p,
     }
 
   /* don't allow a knock if the user is banned, or the channel is secret */
-  if ((chptr->mode.mode & MODE_SECRET) ||
+  if ((chptr->mode.mode & MODE_PRIVATE) ||
       (sockhost && is_banned_knock(chptr, source_p, sockhost)) ||
       (!sockhost && is_banned(chptr, source_p)))
     {
