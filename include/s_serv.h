@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: s_serv.h,v 7.6 2000/09/26 14:09:07 ejb Exp $
+ * $Id: s_serv.h,v 7.7 2000/09/30 15:41:25 db Exp $
  *
  */
 #ifndef INCLUDED_serv_h
@@ -47,7 +47,8 @@ struct Capability
 #define CAP_DE          0x00000020      /* Can do channel +d (regex deny) */
 #define CAP_LL          0x00000040      /* Can do lazy links */
 #define CAP_IE          0x00000080      /* Can do invite exceptions */
-#define CAP_MASK        CAP_QS|CAP_EX|CAP_CHW|CAP_DE|CAP_IE
+#define CAP_VCHAN       0x00000100      /* Can do vchans */
+#define CAP_MASK        CAP_QS|CAP_EX|CAP_CHW|CAP_DE|CAP_IE|CAP_VCHAN
 
 #define DoesCAP(x)      ((x)->caps)
 
