@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.234 2002/02/23 11:23:13 leeh Exp $
+ *  $Id: client.c,v 7.235 2002/02/23 12:58:30 leeh Exp $
  */
 
 #include "tools.h"
@@ -181,11 +181,6 @@ void _free_client(struct Client* client_p)
   assert(&me != client_p);
   assert(NULL == client_p->prev);
   assert(NULL == client_p->next);
-#if 0
-  assert(IsClosing(client_p) && IsDead(client_p));
-#else
-  assert(IsClosing(client_p));
-#endif
   assert(dlinkFind(&unknown_list, client_p) == NULL);
   assert(dlinkFind(&lclient_list, client_p) == NULL);
   assert(dlinkFind(&serv_list, client_p) == NULL);
@@ -208,6 +203,8 @@ void _free_client(struct Client* client_p)
 
   if (MyConnect(client_p))
     {
+      assert(IsClosing(client_p) && IsDead(client_p));
+      
     /*
      * clean up extra sockets from P-lines which have been discarded.
      */
@@ -1321,9 +1318,10 @@ int exit_client(
 {
   char comment1[HOSTLEN + HOSTLEN + 2];
   dlink_node *m;
-  SetClosing(source_p);
   if (MyConnect(source_p))
     {
+      SetClosing(source_p);
+      
       /* Attempt to flush any queued data */
       if (source_p->localClient->fd > -1)
         send_queued_write(source_p->localClient->fd, source_p);
