@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: oldparse.c,v 1.12 2000/12/06 03:28:09 db Exp $
+ *  $Id: oldparse.c,v 1.13 2000/12/14 19:59:18 db Exp $
  */
 #include "tools.h"
 #include "s_log.h"
@@ -441,8 +441,7 @@ static char *set_conf_flags(struct ConfItem *aconf,char *tmp)
         case '^':        /* is exempt from k/g lines */
           aconf->flags |= CONF_FLAGS_E_LINED;
           break;
-        case '&':        /* can run a bot */
-          aconf->flags |= CONF_FLAGS_B_LINED;
+        case '&':        /* ignore obsolete flag */
           break;
         case '>':        /* can exceed max connects */
           aconf->flags |= CONF_FLAGS_F_LINED;
