@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.h,v 7.23 2001/12/06 20:46:36 leeh Exp $
+ * $Id: modules.h,v 7.24 2002/01/02 17:45:35 leeh Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -53,6 +53,9 @@ extern void load_module(char *path);
 
 /* load all modules */
 extern void load_all_modules(int check);
+
+/* load core modules */
+extern void load_core_modules(int check);
 
 extern void _modinit(void);
 extern void _moddeinit(void);

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.209 2001/12/30 04:19:44 db Exp $
+ * $Id: ircd.c,v 7.210 2002/01/02 17:45:39 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -655,6 +655,7 @@ int main(int argc, char *argv[])
   init_stats();
   init_hooks();
   load_all_modules(1);
+  load_core_modules(1);
   initServerMask();
   init_auth();                  /* Initialise the auth code */
   init_resolver();      /* Needs to be setup before the io loop */
