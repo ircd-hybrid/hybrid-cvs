@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.471 2003/09/10 11:29:27 michael Exp $
+ *  $Id: s_conf.c,v 7.472 2003/09/10 11:31:53 michael Exp $
  */
 
 #include "stdinc.h"
@@ -831,7 +831,7 @@ verify_access(struct Client *client_p, const char *username)
       {
 	conf = unmap_conf_item(aconf);
 
-        if (ConfigFileEntry.hide_spoof_ips && IsConfSpoofNotice(aconf))
+        if (!ConfigFileEntry.hide_spoof_ips && IsConfSpoofNotice(aconf))
           sendto_realops_flags(UMODE_ALL, L_ADMIN, "%s spoofing: %s as %s",
                                client_p->name, client_p->host, conf->name);
         strlcpy(client_p->host, conf->name, sizeof(client_p->host));

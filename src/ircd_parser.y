@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.347 2003/08/06 04:58:27 michael Exp $
+ *  $Id: ircd_parser.y,v 1.348 2003/09/10 11:31:53 michael Exp $
  */
 
 %{
@@ -1329,7 +1329,8 @@ auth_entry: IRCD_AUTH
   if (ypass == 2)
   {
     yy_conf = make_conf_item(CLIENT_TYPE);
-    yy_aconf = (struct AccessItem *)map_to_conf(yy_conf);
+    yy_aconf = map_to_conf(yy_conf);
+    yy_aconf->flags |= CONF_FLAGS_SPOOF_NOTICE; /* default to spoof_notice=yes: */
   }
   else
   {
@@ -1448,15 +1449,14 @@ auth_passwd: PASSWORD '=' QSTRING ';'
   }
 };
 
-/* the logic here is flipped to change the default value to YES */
 auth_spoof_notice: SPOOF_NOTICE '=' TBOOL ';'
 {
   if (ypass == 2)
   {
     if (yylval.number)
-      yy_aconf->flags &= ~CONF_FLAGS_SPOOF_NOTICE;
-    else
       yy_aconf->flags |= CONF_FLAGS_SPOOF_NOTICE;
+    else
+      yy_aconf->flags &= ~CONF_FLAGS_SPOOF_NOTICE;
   }
 };
 
@@ -1472,7 +1472,8 @@ auth_spoof: SPOOF '=' QSTRING ';'
       DupString(yy_conf->name, yylval.string);
       yy_aconf->flags |= CONF_FLAGS_SPOOF_IP;
     }
-    else {
+    else
+    {
       ilog(L_ERROR, "Spoofs must be less than %d..ignoring it", HOSTLEN);
       yy_conf->name = NULL;
     }

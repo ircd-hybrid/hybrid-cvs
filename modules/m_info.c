@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.c,v 1.77 2003/06/21 20:09:21 metalrock Exp $
+ *  $Id: m_info.c,v 1.78 2003/09/10 11:31:51 michael Exp $
  */
 
 #include "stdinc.h"
@@ -42,21 +42,21 @@
 #include "parse.h"
 #include "modules.h"
 
-static void send_conf_options(struct Client *source_p);
-static void send_birthdate_online_time(struct Client *source_p);
-static void send_info_text(struct Client *source_p);
+static void send_conf_options(struct Client *);
+static void send_birthdate_online_time(struct Client *);
+static void send_info_text(struct Client *);
 static void info_spy(struct Client *);
 
-static void m_info(struct Client*, struct Client*, int, char**);
-static void ms_info(struct Client*, struct Client*, int, char**);
-static void mo_info(struct Client*, struct Client*, int, char**);
+static void m_info(struct Client *, struct Client *, int, char **);
+static void ms_info(struct Client *, struct Client *, int, char **);
+static void mo_info(struct Client *, struct Client *, int, char **);
 
 struct Message info_msgtab = {
   "INFO", 0, 0, 0, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_info, ms_info, mo_info, m_ignore}
+  { m_unregistered, m_info, ms_info, mo_info, m_ignore }
 };
-#ifndef STATIC_MODULES
 
+#ifndef STATIC_MODULES
 void
 _modinit(void)
 {
@@ -70,7 +70,8 @@ _moddeinit(void)
   hook_del_event("doing_info");
   mod_del_cmd(&info_msgtab);
 }
-const char *_version = "$Revision: 1.77 $";
+
+const char *_version = "$Revision: 1.78 $";
 #endif
 
 /*
@@ -154,6 +155,12 @@ static struct InfoStruct info_table[] =
     OUTPUT_DECIMAL,
     &ConfigFileEntry.gline_time,
     "Expiry time for G-lines"
+  },
+  {
+    "hide_spoof_ips",
+    OUTPUT_BOOLEAN_YN,
+    &ConfigFileEntry.hide_spoof_ips,
+    "Hide spoofed IP's"
   },
   {
     "hub",
@@ -510,7 +517,6 @@ m_info(struct Client *client_p, struct Client *source_p,
   send_birthdate_online_time(source_p);
 
   sendto_one(source_p, form_str(RPL_ENDOFINFO), me.name, parv[0]);
-
 } /* m_info() */
 
 /*
@@ -520,7 +526,7 @@ m_info(struct Client *client_p, struct Client *source_p,
 */
 static void
 mo_info(struct Client *client_p, struct Client *source_p,
-	int parc, char *parv[])
+        int parc, char *parv[])
 {
   if (hunt_server(client_p,source_p,":%s INFO :%s",1,parc,parv) == HUNTED_ISME)
   {
@@ -541,7 +547,7 @@ mo_info(struct Client *client_p, struct Client *source_p,
 */
 static void
 ms_info(struct Client *client_p, struct Client *source_p,
-	int parc, char *parv[])
+        int parc, char *parv[])
 {
   if (!IsClient(source_p))
       return;
@@ -551,7 +557,7 @@ ms_info(struct Client *client_p, struct Client *source_p,
     info_spy(source_p);
     send_info_text(source_p); 
 
-    if(IsOper(source_p))
+    if (IsOper(source_p))
       send_conf_options(source_p);
       
     send_birthdate_online_time(source_p);
@@ -577,7 +583,8 @@ send_info_text(struct Client *source_p)
                me.name, source_p->name, *text++);
   }
 
-  sendto_one(source_p, form_str(RPL_INFO), me.name, source_p->name, "");
+  sendto_one(source_p, form_str(RPL_INFO),
+             me.name, source_p->name, "");
 }
 
 /* send_birthdate_online_time()
