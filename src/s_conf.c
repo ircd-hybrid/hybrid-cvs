@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.424 2003/06/12 22:06:00 db Exp $
+ *  $Id: s_conf.c,v 7.425 2003/06/12 23:13:13 db Exp $
  */
 
 #include "stdinc.h"
@@ -59,10 +59,12 @@
 struct config_server_hide ConfigServerHide;
 
 /* general conf items link list root, other than k lines etc. */
+dlink_list all_conf_items = { NULL, NULL, 0 };
 dlink_list ConfigItemList = { NULL, NULL, 0 };
 dlink_list temporary_klines = { NULL, NULL, 0 };
 dlink_list temporary_dlines = { NULL, NULL, 0 };
 dlink_list temporary_ip_klines = { NULL, NULL, 0 };
+
 
 extern int yyparse(); /* defined in y.tab.c */
 extern int lineno;
@@ -72,6 +74,7 @@ int scount = 0; /* used by yyparse(), etc */
 int ypass  = 1; /* used by yyparse()      */
 
 /* internally defined functions */
+static ConfType status_to_type(int status); /* XXX temp hack */
 static void lookup_confhost(struct AccessItem *aconf);
 static void set_default_conf(void);
 static void validate_conf(void);
@@ -151,33 +154,67 @@ conf_dns_lookup(struct AccessItem *aconf)
   }
 }
 
-/* make_conf()
+/* XXX temporary hack */
+static ConfType
+status_to_type(int status)
+{
+  switch(status)
+    {
+    case CONF_KLINE:
+      return KLINE_TYPE;
+      break;
+    case CONF_DLINE:
+      return DLINE_TYPE;
+      break;
+    default:
+      return CONF_CLIENT;
+      break;
+    }
+}
+
+/* make_access_item()
  *
- * inputs	- type of conf to make
+ * inputs	- type of AccessItem to make
  * output	- pointer to new conf entry
  * side effects	- none
  */
 struct AccessItem *
-make_conf(unsigned int status)
+make_access_item(unsigned int status)
 {
   struct AccessItem *aconf;
+  struct ConfItem *confitem;
 
-  aconf = (struct AccessItem *)MyMalloc(sizeof(struct AccessItem));
+  confitem = (struct ConfItem *)MyMalloc(sizeof(struct ConfItem) +
+					 sizeof(struct AccessItem));
+
+
+  /* XXX possible cleanup...
+   * remove KLINE_TYPE, DLINE_TYPE, XLINE_TYPE, GLINE_TYPE
+   * replace with ACCESS_TYPE
+   * for now...
+   */
+  confitem->type = status_to_type(status);
+
+  dlinkAdd(confitem, &confitem->node, &all_conf_items);
+  
+  aconf = (struct AccessItem *)&confitem->conf;
 
   aconf->status = status;
   aconf->aftype = AF_INET;
   return(aconf);
 }
 
-/* free_conf()
+/* free_access_item()
  *
  * inputs	- pointer to conf to free
  * output	- none
  * side effects	- crucial password fields are zeroed, conf is freed
  */
 void
-free_conf(struct AccessItem *aconf)
+free_access_item(struct AccessItem *aconf)
 {
+  struct ConfItem *confitem;
+
   if (aconf == NULL)
     return;
 
@@ -202,7 +239,14 @@ free_conf(struct AccessItem *aconf)
     RSA_free(aconf->rsa_public_key);
   MyFree(aconf->rsa_public_key_file);
 #endif
-  MyFree(aconf);
+
+  /* XXX Isn't this just horrible? 
+   * Lets use address arithemetic !
+   */
+  confitem = (struct ConfItem *)((unsigned long)aconf -
+				(unsigned long)sizeof(struct ConfItem));
+  dlinkDelete(&confitem->node, &all_conf_items);
+  MyFree(confitem);
 }
 
 /* det_confs_butmask()
@@ -928,7 +972,7 @@ detach_conf(struct Client *client_p, struct AccessItem *aconf)
       if (aconf->clients > 0)
 	--aconf->clients;
       if (aconf->clients == 0 && IsConfIllegal(aconf))
-	free_conf(aconf);
+	free_access_item(aconf);
 
       dlinkDelete(ptr, &client_p->localClient->confs);
       free_dlink_node(ptr);
@@ -1978,7 +2022,7 @@ clear_out_old_conf(void)
       if ((aconf->status & (CONF_CLIENT_MASK|CONF_HUB|CONF_LEAF)) == 0)
       {
         dlinkDelete(&aconf->node, &ConfigItemList);
-        free_conf(aconf);
+        free_access_item(aconf);
       }
       else
         SetConfIllegal(aconf);
@@ -1986,7 +2030,7 @@ clear_out_old_conf(void)
     else
     {
       dlinkDelete(&aconf->node, &ConfigItemList);
-      free_conf(aconf);
+      free_access_item(aconf);
     }
   }
 
@@ -2079,7 +2123,7 @@ flush_deleted_I_P(void)
       dlinkDelete(ptr, &ConfigItemList);
 
       if (aconf->clients == 0)
-	free_conf(aconf);
+	free_access_item(aconf);
     }
   }
 }
@@ -2219,7 +2263,7 @@ conf_add_d_conf(struct AccessItem *aconf)
   if (parse_netmask(aconf->host, NULL, NULL) == HM_HOST)
   {
     ilog(L_WARN, "Invalid Dline %s ignored", aconf->host);
-    free_conf(aconf);
+    free_access_item(aconf);
   }
   else
   {

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.c,v 7.83 2003/06/12 22:05:59 db Exp $
+ *  $Id: hostmask.c,v 7.84 2003/06/12 23:13:13 db Exp $
  */
 
 #include "stdinc.h"
@@ -647,7 +647,7 @@ delete_one_address_conf(const char *address, struct AccessItem *aconf)
         atable[hv] = arec->next;
       aconf->status |= CONF_ILLEGAL;
       if (aconf->clients == 0)
-        free_conf(aconf);
+        free_access_item(aconf);
       MyFree(arec);
       return;
     }
@@ -699,7 +699,7 @@ clear_out_address_conf(void)
 
         arec->aconf->status |= CONF_ILLEGAL;
         if (arec->aconf->clients == 0)
-          free_conf(arec->aconf);
+          free_access_item(arec->aconf);
         MyFree(arec);
       }
     }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.152 2003/06/12 22:05:54 db Exp $
+ *  $Id: m_kline.c,v 1.153 2003/06/12 23:13:11 db Exp $
  */
 
 #include "stdinc.h"
@@ -81,7 +81,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.152 $";
+const char *_version = "$Revision: 1.153 $";
 #endif
 
 /* Local function prototypes */
@@ -225,7 +225,7 @@ mo_kline(struct Client *client_p, struct Client *source_p,
   set_time();
   cur_time = CurrentTime;
   current_date = smalldate(cur_time);
-  aconf = make_conf(CONF_KILL);
+  aconf = make_access_item(CONF_KILL);
   DupString(aconf->host, host);
   DupString(aconf->user, user);
   aconf->port = 0;
@@ -299,7 +299,7 @@ ms_kline(struct Client *client_p, struct Client *source_p,
     cur_time = CurrentTime;
     current_date = smalldate(cur_time);
 
-    aconf = make_conf(CONF_KILL);
+    aconf = make_access_item(CONF_KILL);
     DupString(aconf->user, kuser);
     DupString(aconf->host, khost);
     DupString(aconf->reason, kreason);
@@ -338,7 +338,7 @@ ms_kline(struct Client *client_p, struct Client *source_p,
     cur_time = CurrentTime;
     current_date = smalldate(cur_time);
 
-    aconf = make_conf(CONF_KILL);
+    aconf = make_access_item(CONF_KILL);
     DupString(aconf->host, khost);
     DupString(aconf->reason, kreason);
     DupString(aconf->user, kuser);
@@ -738,7 +738,7 @@ mo_dline(struct Client *client_p, struct Client *source_p,
     return;
 
   ircsprintf(dlbuffer, "%s (%s)",reason, current_date);
-  aconf = make_conf(CONF_DLINE);
+  aconf = make_access_item(CONF_DLINE);
   DupString(aconf->host, dlhost);
   DupString(aconf->reason, dlbuffer);
 

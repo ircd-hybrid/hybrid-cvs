@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.18 2003/06/12 22:05:59 db Exp $
+ *  $Id: csvlib.c,v 7.19 2003/06/12 23:13:13 db Exp $
  */
 
 #include "stdinc.h"
@@ -58,7 +58,7 @@ parse_csv_file(FBFILE *file, ConfType conf_type)
     {
     case KLINE_TYPE:
       parse_csv_line(line, &user_field, &host_field, &reason_field, NULL);
-      aconf = make_conf(conf_type);
+      aconf = make_access_item(conf_type);
       if (host_field != NULL)
 	DupString(aconf->host, host_field);
       if (reason_field != NULL)
@@ -71,7 +71,7 @@ parse_csv_file(FBFILE *file, ConfType conf_type)
 
     case DLINE_TYPE:
       parse_csv_line(line, &host_field, &reason_field, NULL);
-      aconf = make_conf(CONF_DLINE);
+      aconf = make_access_item(CONF_DLINE);
       if (host_field != NULL)
 	DupString(aconf->host, host_field);
       if (reason_field != NULL)
@@ -82,7 +82,7 @@ parse_csv_file(FBFILE *file, ConfType conf_type)
     case XLINE_TYPE:
       parse_csv_line(line, &name_field, &reason_field, &oper_reason, &port,
 		     NULL);
-      aconf = make_conf(CONF_XLINE);
+      aconf = make_access_item(CONF_XLINE);
       if (name_field != NULL)
 	DupString(aconf->name, name_field);
       if (reason_field != NULL)

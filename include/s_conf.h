@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.236 2003/06/12 22:05:52 db Exp $
+ *  $Id: s_conf.h,v 7.237 2003/06/12 23:13:09 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -357,9 +357,8 @@ extern struct admin_info AdminInfo;        /* defined in ircd.c */
 extern void init_ip_hash_table(void);
 extern void count_ip_hash(int *, unsigned long *);
 extern void remove_one_ip(struct irc_ssaddr *ip);
-
-extern struct AccessItem *make_conf(unsigned int status);
-extern void free_conf(struct AccessItem *);
+extern struct AccessItem *make_access_item(unsigned int status);
+extern void free_access_item(struct AccessItem *);
 extern void read_conf_files(int cold);
 extern int attach_conf(struct Client *, struct AccessItem *);
 extern int attach_confs(struct Client *client, const char *name, unsigned int statmask);

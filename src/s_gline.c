@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_gline.c,v 1.37 2003/06/12 22:06:00 db Exp $
+ *  $Id: s_gline.c,v 1.38 2003/06/12 23:13:13 db Exp $
  */
 
 #include "stdinc.h"
@@ -118,7 +118,7 @@ remove_gline_match(const char *user, const char *host)
     if (0 == irccmp(kill_ptr->host, host) &&
         0 == irccmp(kill_ptr->name, user))
     {
-      free_conf(kill_ptr);
+      free_access_item(kill_ptr);
       dlinkDelete(ptr, &glines);
       free_dlink_node(ptr);
       return(1);
@@ -163,7 +163,7 @@ expire_glines(void)
 
     if (kill_ptr->hold <= CurrentTime)
     {
-      free_conf(kill_ptr);
+      free_access_item(kill_ptr);
       dlinkDelete(ptr, &glines);
       free_dlink_node(ptr);
     }

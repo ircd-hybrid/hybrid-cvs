@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.383 2003/06/12 22:05:59 db Exp $
+ *  $Id: client.c,v 7.384 2003/06/12 23:13:13 db Exp $
  */
 
 #include "stdinc.h"
@@ -264,7 +264,7 @@ check_pings_list(dlink_list *list)
 	{
 	  struct AccessItem *aconf;
 
-	  aconf = make_conf(CONF_KILL);
+	  aconf = make_access_item(CONF_KILL);
 
 	  DupString(aconf->host, client_p->host);
 	  DupString(aconf->passwd, "idle exceeder");
