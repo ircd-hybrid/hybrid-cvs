@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.176 2002/02/10 03:35:03 wcampbel Exp $
+ *  $Id: s_conf.h,v 7.177 2002/02/28 11:46:37 leeh Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -215,7 +215,7 @@ struct config_file_entry
   int		stats_i_oper_only;
   int		stats_P_oper_only;
   int           pace_wait;
-  int           whois_wait;
+  int           pace_wait_simple;
   int           short_motd;
   int           no_oper_flood;
   int           glines;

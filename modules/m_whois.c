@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.73 2002/01/05 09:14:49 a1kmm Exp $
+ *  $Id: m_whois.c,v 1.74 2002/02/28 11:46:39 leeh Exp $
  */
 
 #include <string.h>
@@ -79,7 +79,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-char *_version = "$Revision: 1.73 $";
+char *_version = "$Revision: 1.74 $";
 #endif
 /*
 ** m_whois
@@ -103,7 +103,7 @@ static void m_whois(struct Client *client_p,
   if(parc > 2)
     {
       /* seeing as this is going across servers, we should limit it */
-      if((last_used + ConfigFileEntry.whois_wait) > CurrentTime)
+      if((last_used + ConfigFileEntry.pace_wait_simple) > CurrentTime)
         {             
           if(MyClient(source_p))
             sendto_one(source_p,form_str(RPL_LOAD2HI),me.name,source_p->name);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_help.c,v 1.29 2002/01/05 09:14:46 a1kmm Exp $
+ *  $Id: m_help.c,v 1.30 2002/02/28 11:46:39 leeh Exp $
  */
 
 #include "handlers.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&uhelp_msgtab);
 }
 
-char *_version = "$Revision: 1.29 $";
+char *_version = "$Revision: 1.30 $";
 #endif
 /*
  * m_help - HELP message handler
@@ -77,7 +77,7 @@ static void m_help(struct Client *client_p, struct Client *source_p,
   static time_t last_used = 0;
 
   /* HELP is always local */
-  if ((last_used + ConfigFileEntry.pace_wait) > CurrentTime)
+  if ((last_used + ConfigFileEntry.pace_wait_simple) > CurrentTime)
   {
     /* safe enough to give this on a local connect only */
     sendto_one(source_p,form_str(RPL_LOAD2HI),me.name,parv[0]);

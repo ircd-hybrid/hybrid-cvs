@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.293 2002/02/25 17:39:15 androsyn Exp $
+ *  $Id: s_conf.c,v 7.294 2002/02/28 11:46:43 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -1517,7 +1517,7 @@ set_default_conf(void)
   ConfigFileEntry.stats_P_oper_only = NO;
   ConfigFileEntry.pace_wait = 10;
   ConfigFileEntry.caller_id_wait = 60;
-  ConfigFileEntry.whois_wait = 0;
+  ConfigFileEntry.pace_wait_simple = 1;
   ConfigFileEntry.short_motd = NO;
   ConfigFileEntry.no_oper_flood = NO;
   ConfigFileEntry.fname_userlog[0] = '\0';

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_lexer.l,v 1.135 2002/01/09 17:16:53 leeh Exp $
+ *  $Id: ircd_lexer.l,v 1.136 2002/02/28 11:46:42 leeh Exp $
  */
 
 %option case-insensitive
@@ -262,8 +262,8 @@ stats_o_oper_only       { return STATS_O_OPER_ONLY; }
 stats_k_oper_only	{ return STATS_K_OPER_ONLY; }
 stats_i_oper_only	{ return STATS_I_OPER_ONLY; }
 stats_P_oper_only	{ return STATS_P_OPER_ONLY; }
-whois_wait              { return WHOIS_WAIT; }
 pace_wait               { return PACE_WAIT; }
+pace_wait_simple	{ return PACE_WAIT_SIMPLE; }
 knock_delay             { return KNOCK_DELAY; }
 knock_delay_channel	{ return KNOCK_DELAY_CHANNEL; }
 iauth_server            { return IAUTH_SERVER; }
