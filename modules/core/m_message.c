@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.92 2002/05/24 23:34:38 androsyn Exp $
+ *  $Id: m_message.c,v 1.93 2002/06/28 18:18:46 db Exp $
  */
 
 #include "stdinc.h"
@@ -122,7 +122,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.92 $";
+const char *_version = "$Revision: 1.93 $";
 #endif
 
 /*
@@ -831,9 +831,9 @@ handle_opers(int p_or_n,
   }
 
   /*
-     ** user[%host]@server addressed?
+   * user[%host]@server addressed?
    */
-  if ((server = (char *)strchr(nick, '@')) &&
+  if ((server = strchr(nick, '@')) &&
       (target_p = find_server(server + 1)))
   {
     count = 0;
@@ -850,11 +850,11 @@ handle_opers(int p_or_n,
 
     *server = '\0';
 
-    if ((host = (char *)strchr(nick, '%')))
+    if ((host = strchr(nick, '%')))
       *host++ = '\0';
 
     /* Check if someones msg'ing opers@our.server */
-    if (!strcmp(nick, "opers"))
+    if (strcmp(nick, "opers") == 0)
     {
       sendto_realops_flags(FLAGS_ALL, L_ALL, "To opers: From: %s: %s",
                            source_p->name, text);
@@ -862,17 +862,17 @@ handle_opers(int p_or_n,
     }
 
     /*
-       ** Look for users which match the destination host
-       ** (no host == wildcard) and if one and one only is
-       ** found connected to me, deliver message!
+     * Look for users which match the destination host
+     * (no host == wildcard) and if one and one only is
+     * found connected to me, deliver message!
      */
     target_p = find_userhost(nick, host, NULL, &count);
 
-    if (server)
+    if (server != NULL)
       *server = '@';
-    if (host)
+    if (host != NULL)
       *--host = '%';
-    if (target_p)
+    if (target_p != NULL)
     {
       if (count == 1)
         sendto_anywhere(target_p, source_p,

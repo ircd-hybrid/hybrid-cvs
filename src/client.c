@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.285 2002/06/27 15:16:38 leeh Exp $
+ *  $Id: client.c,v 7.286 2002/06/28 18:18:49 db Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -718,11 +718,11 @@ del_client_from_llist(struct Client **bucket, struct Client *client)
  *      the old. 'name' is now assumed to be a null terminated
  *      string and the search is the for server and user.
  */
-struct Client *find_userhost(char *user, char *host,
-			     struct Client *client_p, int *count)
+struct Client *
+find_userhost(char *user, char *host, struct Client *client_p, int *count)
 {
-  struct Client       *c2ptr;
-  struct Client       *res = client_p;
+  struct Client *c2ptr;
+  struct Client *res = client_p;
 
   *count = 0;
   if (collapse(user))
