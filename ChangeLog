@@ -1,3 +1,15 @@
+leeh        2001/12/11 09:44:53 EST	(20011211_8)
+
+  Modified files:
+    include              supported.h 
+  Log:
+  - if &channels are disabled, dont send it in 005
+  
+  Revision  Changes    Path
+  1.15      +3 -2      ircd-hybrid-7/include/supported.h
+
+
+
 androsyn    2001/12/10 23:33:11 EST	(20011211_7)
 
   Modified files:
@@ -46,7 +58,7 @@ a1kmm       2001/12/10 22:42:48 EST	(20011211_5)
     modules              .depend Makefile.in 
     src                  .depend Makefile.in 
   Log:
-  - Fixed $Id: ChangeLog,v 7.3145 2001/12/11 04:33:17 androsyn Exp $ tags echoed from Makefile.in into .depend
+  - Fixed $Id: ChangeLog,v 7.3146 2001/12/11 14:44:58 leeh Exp $ tags echoed from Makefile.in into .depend
   
   Revision  Changes    Path
   1.39      +0 -0      ircd-hybrid-7/modules/.depend
@@ -94,7 +106,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3145 2001/12/11 04:33:17 androsyn Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3146 2001/12/11 14:44:58 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -18448,4 +18460,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3145 2001/12/11 04:33:17 androsyn Exp $
+$Id: ChangeLog,v 7.3146 2001/12/11 14:44:58 leeh Exp $
