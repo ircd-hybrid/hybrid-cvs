@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nick.c,v 1.90 2002/05/24 23:34:38 androsyn Exp $
+ *  $Id: m_nick.c,v 1.91 2002/05/31 02:59:24 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -97,7 +97,7 @@ _moddeinit(void)
   mod_del_cmd(&client_msgtab);
 }
 
-const char *_version = "$Revision: 1.90 $";
+const char *_version = "$Revision: 1.91 $";
 #endif
 
 /*
@@ -583,6 +583,8 @@ static int check_clean_host(struct Client *client_p, char *nick,
 static int clean_nick_name(char *nick)
 {
   assert(nick);
+  if(nick == NULL)
+    return 0;
 
   /* nicks cant start with a digit or - */
   if (*nick == '-' || IsDigit(*nick))
@@ -606,11 +608,14 @@ static int clean_nick_name(char *nick)
 static int clean_user_name(char *user)
 {
   assert(user);
-
+  if(user == NULL)
+    return 0;
+    
   for(; *user; user++)
   {
     if(!IsUserChar(*user))
       return 0;
+    
   }
 
   return 1;
@@ -624,7 +629,8 @@ static int clean_user_name(char *user)
 static int clean_host_name(char *host)
 {
   assert(host);
-
+  if(host == NULL)
+    return 0;
   for(; *host; host++)
   {
     if(!IsHostChar(*host))
