@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_away.c,v 1.9 2000/12/20 02:39:20 db Exp $
+ *   $Id: m_away.c,v 1.10 2000/12/22 16:12:31 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -35,7 +35,7 @@
 #include <stdlib.h>
 
 struct Message away_msgtab = {
-  MSG_AWAY, 0, 0, MFLG_SLOW, 0,
+  MSG_AWAY, 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_away, m_away, m_away}
 };
 

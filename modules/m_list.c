@@ -3,7 +3,7 @@
  *   Copyright (C) 1990 Jarkko Oikarinen and
  *                      University of Oulu, Co Center
  *
- * $Id: m_list.c,v 1.17 2000/12/18 03:59:49 db Exp $ 
+ * $Id: m_list.c,v 1.18 2000/12/22 16:12:38 db Exp $ 
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@
 #include <stdlib.h>
 
 struct Message list_msgtab = {
-  MSG_LIST, 0, 0, MFLG_SLOW, 0,
+  MSG_LIST, 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_list, ms_list, m_list}
 };
 

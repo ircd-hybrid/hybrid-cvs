@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_eob.c,v 1.9 2000/12/18 03:59:45 db Exp $
+ *   $Id: m_eob.c,v 1.10 2000/12/22 16:12:33 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -36,7 +36,7 @@
 void do_eob( struct Client *sptr );
 
 struct Message eob_msgtab = {
-  MSG_EOB, 0, 0, MFLG_SLOW | MFLG_UNREG, 0, 
+  MSG_EOB, 0, 0, 0, MFLG_SLOW | MFLG_UNREG, 0, 
   {m_unregistered, m_error, ms_eob, m_error}
 };
 

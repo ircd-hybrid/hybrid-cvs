@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kline.c,v 1.33 2000/12/22 15:51:28 db Exp $
+ *   $Id: m_kline.c,v 1.34 2000/12/22 16:12:37 db Exp $
  */
 #include "tools.h"
 #include "m_kline.h"
@@ -54,12 +54,12 @@
 #include <errno.h>
 
 struct Message kline_msgtab = {
-  MSG_KLINE, 0, 2, MFLG_SLOW, 0,
+  MSG_KLINE, 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, ms_kline, mo_kline}
 };
 
 struct Message dline_msgtab = {
-  MSG_DLINE, 0, 2, MFLG_SLOW, 0,
+  MSG_DLINE, 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, m_error, mo_dline}
 };
 

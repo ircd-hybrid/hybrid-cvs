@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_challenge.c,v 1.9 2000/12/21 13:39:35 db Exp $
+ *   $Id: m_challenge.c,v 1.10 2000/12/22 16:12:32 db Exp $
  */
 #include <stdlib.h>
 #include "handlers.h"
@@ -49,7 +49,7 @@ char *_version = "20001122";
 
 /* We have openssl support, so include /CHALLENGE */
 struct Message challenge_msgtab = {
-  MSG_CHALLENGE, 0, 0, MFLG_SLOW, 0,
+  MSG_CHALLENGE, 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_challenge, m_ignore, m_challenge}
 };
 

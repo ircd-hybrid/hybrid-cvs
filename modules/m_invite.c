@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_invite.c,v 1.12 2000/12/20 03:43:17 db Exp $
+ *   $Id: m_invite.c,v 1.13 2000/12/22 16:12:35 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -40,7 +40,7 @@
 #include "modules.h"
 
 struct Message invite_msgtab = {
-  MSG_INVITE, 0, 2, MFLG_SLOW, 0,
+  MSG_INVITE, 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_invite, ms_invite, m_invite}
 };
 

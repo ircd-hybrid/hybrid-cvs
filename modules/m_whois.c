@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 1.26 2000/12/21 13:39:35 db Exp $
+ *   $Id: m_whois.c,v 1.27 2000/12/22 16:12:49 db Exp $
  */
 #include "tools.h"
 #include "common.h"   /* bleah */
@@ -50,7 +50,7 @@ void whois_person(struct Client *sptr,struct Client *acptr);
 int global_whois(struct Client *sptr, char *nick, int wilds);
 
 struct Message whois_msgtab = {
-  MSG_WHOIS, 0, 1, MFLG_SLOW, 0L, {m_unregistered, m_whois, ms_whois, mo_whois}
+  MSG_WHOIS, 0, 1, 0, MFLG_SLOW, 0L, {m_unregistered, m_whois, ms_whois, mo_whois}
 };
 
 void

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_trace.c,v 1.9 2000/12/18 03:59:56 db Exp $
+ *   $Id: m_trace.c,v 1.10 2000/12/22 16:12:46 db Exp $
  */
 #include "handlers.h"
 #include "class.h"
@@ -42,7 +42,7 @@
 #include <time.h>
 
 struct Message trace_msgtab = {
-  MSG_TRACE, 0, 0, MFLG_SLOW, 0,
+  MSG_TRACE, 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_ignore, ms_trace, mo_trace}
 };
 

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_capab.c,v 1.9 2000/12/18 03:59:42 db Exp $
+ *   $Id: m_capab.c,v 1.10 2000/12/22 16:12:31 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -34,7 +34,7 @@
 #include <assert.h>
 
 struct Message capab_msgtab = {
-  MSG_CAPAB, 0, 0, MFLG_SLOW | MFLG_UNREG, 0,
+  MSG_CAPAB, 0, 0, 0, MFLG_SLOW | MFLG_UNREG, 0,
   {mr_capab, m_error, mr_capab, m_error}
 };
 

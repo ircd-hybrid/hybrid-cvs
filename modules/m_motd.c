@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_motd.c,v 1.6 2000/12/18 03:59:50 db Exp $
+ *   $Id: m_motd.c,v 1.7 2000/12/22 16:12:40 db Exp $
  */
 #include "tools.h"
 #include "motd.h"
@@ -40,7 +40,7 @@
 #include <time.h>
 
 struct Message motd_msgtab = {
-  MSG_MOTD, 1, 1, MFLG_SLOW, 0,
+  MSG_MOTD, 1, 1, 0, MFLG_SLOW, 0,
   {m_unregistered, m_motd, m_motd, m_motd}
 };
 

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_quit.c,v 1.8 2000/12/19 18:04:20 ejb Exp $
+ *   $Id: m_quit.c,v 1.9 2000/12/22 16:12:43 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -34,7 +34,7 @@
 #include "s_conf.h"
 
 struct Message quit_msgtab = {
-  MSG_QUIT, 0, 0, MFLG_SLOW | MFLG_UNREG, 0,
+  MSG_QUIT, 0, 0, 0, MFLG_SLOW | MFLG_UNREG, 0,
   {m_quit, m_quit, ms_quit, mo_quit}
 };
 

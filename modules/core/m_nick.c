@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_nick.c,v 1.29 2000/12/20 22:00:45 db Exp $
+ *   $Id: m_nick.c,v 1.30 2000/12/22 16:12:41 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -55,7 +55,7 @@ int clean_nick_name(char* nick);
 
 
 struct Message nick_msgtab = {
-  MSG_NICK, 0, 1, MFLG_SLOW, 0,
+  MSG_NICK, 0, 1, 0, MFLG_SLOW, 0,
   {mr_nick, m_nick, ms_nick, m_nick}
 };
 

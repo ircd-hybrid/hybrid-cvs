@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_oper.c,v 1.14 2000/12/19 04:21:19 ejb Exp $
+ *   $Id: m_oper.c,v 1.15 2000/12/22 16:12:41 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -52,7 +52,7 @@ extern        char *crypt();
 #endif /* CRYPT_OPER_PASSWORD */
 
 struct Message oper_msgtab = {
-	MSG_OPER, 0, 2, MFLG_SLOW, 0,
+	MSG_OPER, 0, 2, 0, MFLG_SLOW, 0,
 	{m_unregistered, m_oper, ms_oper, mo_oper} 
 };
 

@@ -16,7 +16,7 @@
 *   along with this program; if not, write to the Free Software
 *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 *
-*   $Id: m_whowas.c,v 1.8 2000/12/21 13:39:36 db Exp $
+*   $Id: m_whowas.c,v 1.9 2000/12/22 16:12:49 db Exp $
 */
 #include "whowas.h"
 #include "handlers.h"
@@ -41,7 +41,7 @@
 #include "memdebug.h"
 
 struct Message whowas_msgtab = {
-  MSG_WHOWAS, 0, 1, MFLG_SLOW, 0L,
+  MSG_WHOWAS, 0, 1, 0, MFLG_SLOW, 0L,
   {m_unregistered, m_whowas, mo_whowas, m_whowas}
 };
 

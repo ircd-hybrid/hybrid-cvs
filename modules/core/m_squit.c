@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_squit.c,v 1.14 2000/12/18 03:59:55 db Exp $
+ *   $Id: m_squit.c,v 1.15 2000/12/22 16:12:44 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -40,7 +40,7 @@
 #include <assert.h>
 
 struct Message squit_msgtab = {
-  MSG_SQUIT, 0, 1, MFLG_SLOW, 0,
+  MSG_SQUIT, 0, 1, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, ms_squit, mo_squit}
 };
 

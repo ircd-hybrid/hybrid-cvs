@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_hash.c,v 1.6 2000/12/16 05:23:09 toot Exp $
+ *   $Id: m_hash.c,v 1.7 2000/12/22 16:12:34 db Exp $
  */
 #include "handlers.h"
 #include "channel.h"
@@ -34,7 +34,7 @@
 #include "msg.h"
 
 struct Message hash_msgtab = {
-  MSG_HASH, 0, 2, MFLG_SLOW, 0,
+  MSG_HASH, 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, mo_hash, mo_hash}
 };
 

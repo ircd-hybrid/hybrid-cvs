@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: msg.h,v 7.32 2000/12/21 13:39:29 db Exp $
+ * $Id: msg.h,v 7.33 2000/12/22 16:12:25 db Exp $
  */
 #ifndef INCLUDED_msg_h
 #define INCLUDED_msg_h
@@ -38,12 +38,16 @@ struct Client;
 struct  Message
 {
   char  *cmd;
-  unsigned int  count;                  /* number of times command used */
-  unsigned int  parameters; /* at least this many args must be passed or an error
-			       will be sent to the user before the m_func is even called */
-  unsigned int  flags;  /* bit 0 set means that this command is allowed
-			   to be used only on the average of once per 2
-			   seconds -SRB */
+  unsigned int  count;      /* number of times command used */
+  unsigned int  parameters; /* at least this many args must be passed
+                             * or an error will be sent to the user 
+                             * before the m_func is even called 
+                             */
+  unsigned int  maxpara;    /* maximum permitted parameters */
+  unsigned int  flags;      /* bit 0 set means that this command is allowed
+			     * to be used only on the average of once per 2
+			     * seconds -SRB
+			     */
   unsigned long bytes;  /* bytes received for this message */
   /*
    * cptr = Connected client ptr

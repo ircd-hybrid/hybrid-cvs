@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_server.c,v 1.14 2000/12/18 03:59:54 db Exp $
+ *   $Id: m_server.c,v 1.15 2000/12/22 16:12:44 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"  /* m_server prototype */
@@ -44,7 +44,7 @@
 #include <stdlib.h>
 
 struct Message server_msgtab = {
-  MSG_SERVER, 0, 3, MFLG_SLOW | MFLG_UNREG, 0,
+  MSG_SERVER, 0, 3, 0, MFLG_SLOW | MFLG_UNREG, 0,
   {mr_server, m_registered, ms_server, m_registered}
 };
 

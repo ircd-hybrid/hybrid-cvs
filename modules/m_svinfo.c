@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_svinfo.c,v 1.8 2000/12/18 03:59:55 db Exp $
+ *   $Id: m_svinfo.c,v 1.9 2000/12/22 16:12:45 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -39,7 +39,7 @@
 #include <stdlib.h>
 
 struct Message svinfo_msgtab = {
-  MSG_SVINFO, 0, 4, MFLG_SLOW, 0,
+  MSG_SVINFO, 0, 4, 0, MFLG_SLOW, 0,
   {m_unregistered, m_ignore, m_svinfo, m_ignore}
 };
 

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_connect.c,v 1.9 2000/12/18 03:59:44 db Exp $
+ *   $Id: m_connect.c,v 1.10 2000/12/22 16:12:32 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -42,7 +42,7 @@
 #include <stdlib.h>     /* atoi */
 
 struct Message connect_msgtab = {
-  MSG_CONNECT, 0, 1, MFLG_SLOW, 0,
+  MSG_CONNECT, 0, 1, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, ms_connect, mo_connect}
 };
 

@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_set.c,v 1.20 2000/12/22 15:51:29 db Exp $ */
+ *   $Id: m_set.c,v 1.21 2000/12/22 16:12:44 db Exp $ */
 
 /* rewritten by jdc */
 
@@ -42,7 +42,7 @@
 #include <stdlib.h>  /* atoi */
 
 struct Message set_msgtab = {
-  MSG_SET, 0, 0, MFLG_SLOW, 0,
+  MSG_SET, 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, m_error, mo_set}
 };
 

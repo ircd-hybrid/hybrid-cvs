@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.31 2000/12/18 03:59:50 db Exp $
+ *   $Id: m_message.c,v 1.32 2000/12/22 16:12:40 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -93,12 +93,12 @@ void handle_opers(int p_or_n, char *command,
 		  char *text);
 
 struct Message privmsg_msgtab = {
-  MSG_PRIVMSG, 0, 1, MFLG_SLOW | MFLG_UNREG, 0L,
+  MSG_PRIVMSG, 0, 1, 0, MFLG_SLOW | MFLG_UNREG, 0L,
   {m_unregistered, m_privmsg, m_privmsg, m_privmsg}
 };
 
 struct Message notice_msgtab = {
-  MSG_NOTICE, 0, 1, MFLG_SLOW | MFLG_UNREG, 0L,
+  MSG_NOTICE, 0, 1, 0, MFLG_SLOW | MFLG_UNREG, 0L,
   {m_unregistered, m_notice, m_notice, m_notice}
 };
 

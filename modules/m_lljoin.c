@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_lljoin.c,v 1.19 2000/12/21 03:21:35 ryan Exp $
+ * $Id: m_lljoin.c,v 1.20 2000/12/22 16:12:39 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -41,7 +41,7 @@
 #include <stdlib.h>
 
 struct Message lljoin_msgtab = {
-  MSG_LLJOIN, 0, 3, MFLG_SLOW | MFLG_UNREG, 0L,
+  MSG_LLJOIN, 0, 3, 0, MFLG_SLOW | MFLG_UNREG, 0L,
   {m_unregistered, m_error, ms_lljoin, m_error}
 };
 

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_user.c,v 1.8 2000/12/18 03:59:57 db Exp $
+ *   $Id: m_user.c,v 1.9 2000/12/22 16:12:47 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -39,7 +39,7 @@
 #define UFLAGS  (FLAGS_INVISIBLE|FLAGS_WALLOP|FLAGS_SERVNOTICE)
 
 struct Message user_msgtab = {
-  MSG_USER, 0, 1, MFLG_SLOW, 0L, {m_user, m_registered, m_ignore, m_registered}
+  MSG_USER, 0, 1, 0, MFLG_SLOW, 0L, {m_user, m_registered, m_ignore, m_registered}
 };
 
 void

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_lusers.c,v 1.6 2000/12/18 03:59:50 db Exp $
+ *   $Id: m_lusers.c,v 1.7 2000/12/22 16:12:39 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -35,7 +35,7 @@
 #include "modules.h"
 
 struct Message lusers_msgtab = {
-  MSG_LUSERS, 0, 0, MFLG_SLOW, 0,
+  MSG_LUSERS, 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_lusers, ms_lusers, m_lusers}
 };
 

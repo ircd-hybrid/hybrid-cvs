@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_names.c,v 1.16 2000/12/21 02:26:49 ejb Exp $
+ *   $Id: m_names.c,v 1.17 2000/12/22 16:12:40 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -48,7 +48,7 @@ void names_all_visible_channels(struct Client *sptr);
 void names_non_public_non_secret(struct Client *sptr);
 
 struct Message names_msgtab = {
-  MSG_NAMES, 0, 0, MFLG_SLOW, 0,
+  MSG_NAMES, 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_names, ms_names, m_names}
 };
 

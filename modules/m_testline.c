@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_testline.c,v 1.5 2000/12/18 03:59:56 db Exp $
+ *   $Id: m_testline.c,v 1.6 2000/12/22 16:12:45 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -38,7 +38,7 @@
 #include "modules.h"
 
 struct Message testline_msgtab = {
-  MSG_TESTLINE, 0, 0, MFLG_SLOW, 0,
+  MSG_TESTLINE, 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, m_ignore, mo_testline}
 };
  

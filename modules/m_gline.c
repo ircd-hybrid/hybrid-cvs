@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_gline.c,v 1.26 2000/12/21 02:31:48 db Exp $
+ *  $Id: m_gline.c,v 1.27 2000/12/22 16:12:34 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -98,7 +98,7 @@ int majority_gline(struct Client *sptr,
 
 
 struct Message gline_msgtab = {
-    MSG_GLINE, 0, 3, MFLG_SLOW, 0,
+    MSG_GLINE, 0, 3, 0, MFLG_SLOW, 0,
       {m_unregistered, m_not_oper, ms_gline, mo_gline}
 };
 

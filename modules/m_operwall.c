@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operwall.c,v 1.8 2000/12/18 03:59:52 db Exp $
+ *   $Id: m_operwall.c,v 1.9 2000/12/22 16:12:41 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -34,7 +34,7 @@
 #include "modules.h"
 
 struct Message operwall_msgtab = {
-  MSG_OPERWALL, 0, 1, MFLG_SLOW, 0,
+  MSG_OPERWALL, 0, 1, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, ms_operwall, mo_operwall}
 };
 

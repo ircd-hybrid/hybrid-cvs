@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kick.c,v 1.15 2000/12/21 02:26:49 ejb Exp $
+ *   $Id: m_kick.c,v 1.16 2000/12/22 16:12:36 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -38,7 +38,7 @@
 #include <string.h>
 
 struct Message kick_msgtab = {
-  MSG_KICK, 0, 2, MFLG_SLOW, 0,
+  MSG_KICK, 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_kick, ms_kick, m_kick}
 };
 
