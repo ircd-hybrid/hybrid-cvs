@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_invite.c,v 1.39 2002/01/16 22:21:19 leeh Exp $
+ *  $Id: m_invite.c,v 1.40 2002/02/05 20:16:58 leeh Exp $
  */
 
 #include "tools.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
   mod_del_cmd(&invite_msgtab);
 }
 
-char *_version = "$Revision: 1.39 $";
+char *_version = "$Revision: 1.40 $";
 #endif
 
 /*
@@ -209,6 +209,16 @@ m_invite(struct Client *client_p,
                source_p->username, source_p->host, target_p->name,
                chptr->chname);
   }
+#if 1
+  else
+  {
+    if(target_p->from != client_p)
+      sendto_one(target_p->from, ":%s INVITE %s :%s", parv[0],
+                 target_p->name, vchan->chname);
+  }
+
+  /* breaks hyb6, need a proper solution */
+#else
   sendto_channel_remote(source_p, client_p,
 			ONLY_CHANOPS_HALFOPS, NOCAPS, NOCAPS,
                         chptr, ":%s INVITE %s :%s", parv[0], 
@@ -218,6 +228,8 @@ m_invite(struct Client *client_p,
       target_p->from != client_p)
     sendto_one(target_p->from, ":%s INVITE %s :%s", parv[0],
                target_p->name, vchan->chname);
+#endif
+
   if (vchan->mode.mode & MODE_PRIVATE)
     sendto_channel_local(ONLY_CHANOPS_HALFOPS, vchan,
         ":%s NOTICE %s :%s is inviting %s to %s.", me.name, chptr->chname,
