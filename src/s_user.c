@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.86 2000/12/28 18:00:42 davidt Exp $
+ *  $Id: s_user.c,v 7.87 2000/12/30 06:03:46 lusky Exp $
  */
 #include "tools.h"
 #include "s_user.h"
@@ -844,7 +844,7 @@ int user_mode(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 
               if (MyConnect(sptr))
                 {
-                  dlink_node *m;
+                  dlink_node *dm;
 
 		  ptr = sptr->localClient->confs.head;
 		  aconf = ptr->data;
@@ -858,11 +858,11 @@ int user_mode(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
                                     FLAGS2_OPER_K|
                                     FLAGS2_OPER_ADMIN);
 
-		  m = dlinkFind(&oper_list,sptr);
-		  if(m != NULL)
+		  dm = dlinkFind(&oper_list,sptr);
+		  if(dm != NULL)
 		    {
-		      dlinkDelete(m,&oper_list);
-		      free_dlink_node(m);
+		      dlinkDelete(dm,&oper_list);
+		      free_dlink_node(dm);
 		    }
 
 		  /*

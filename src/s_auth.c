@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.c,v 7.31 2000/12/21 16:00:01 db Exp $
+ *   $Id: s_auth.c,v 7.32 2000/12/30 06:03:44 lusky Exp $
  *
  * Changes:
  *   July 6, 1999 - Rewrote most of the code here. When a client connects
@@ -312,7 +312,7 @@ static int start_auth_query(struct AuthRequest* auth)
    * and machines with multiple IP addresses are common now
    */
   memset(&localaddr, 0, locallen);
-  getsockname(auth->client->fd, (struct sockaddr*) &localaddr, &locallen);
+  getsockname(auth->client->fd, (struct sockaddr*) &localaddr, (int *)&locallen);
   localaddr.sin_port = htons(0);
 
   memcpy(&sock.sin_addr, &auth->client->localClient->ip,
@@ -512,8 +512,8 @@ void auth_connect_callback(int fd, int error, void *data)
     return;
   }
 
-  if (getsockname(auth->client->fd, (struct sockaddr *)&us,   &ulen) ||
-      getpeername(auth->client->fd, (struct sockaddr *)&them, &tlen)) {
+  if (getsockname(auth->client->fd, (struct sockaddr *)&us,   (int *) &ulen) ||
+      getpeername(auth->client->fd, (struct sockaddr *)&them, (int *) &tlen)) {
 
     log(L_INFO, "auth get{sock,peer}name error for %s:%m",
         get_client_name(auth->client, SHOW_IP));

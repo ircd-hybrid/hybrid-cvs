@@ -19,8 +19,11 @@
  *
  *
  *
- * $Id: rsa.c,v 7.2 2000/12/21 13:39:49 db Exp $
+ * $Id: rsa.c,v 7.3 2000/12/30 06:03:44 lusky Exp $
  */
+
+#include <string.h>
+#include "memdebug.h"
 
 #ifdef OPENSSL
 
@@ -28,8 +31,6 @@
 #include <openssl/rsa.h>
 #include <openssl/md5.h>
 #include <openssl/bn.h>
-#include <string.h>
-#include "memdebug.h"
 
 void binary_to_hex( unsigned char * bin, char * hex, int length )
 {

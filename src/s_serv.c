@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.97 2000/12/28 17:28:55 davidt Exp $
+ *   $Id: s_serv.c,v 7.98 2000/12/30 06:03:46 lusky Exp $
  */
 #include "tools.h"
 #include "s_serv.h"
@@ -512,7 +512,7 @@ int check_server(struct Client* cptr)
  * side effects	- send the CAPAB line to a server  -orabidoo
  *
  */
-void send_capabilities(struct Client* cptr, int can_send)
+void send_capabilities(struct Client* cptr, int lcan_send)
 {
   struct Capability* cap;
   char  msgbuf[BUFSIZE];
@@ -523,7 +523,7 @@ void send_capabilities(struct Client* cptr, int can_send)
 
   for (cap = captab; cap->name; ++cap)
     {
-      if (cap->cap & can_send)
+      if (cap->cap & lcan_send)
         {
           tl = ircsprintf(t, "%s ", cap->name);
 	  t += tl;
@@ -1054,7 +1054,6 @@ burst_channel(struct Client *cptr, struct Channel *chptr)
 {
   dlink_node        *ptr;
   struct Channel*   vchan;
-  struct Client*    acptr;
 
   burst_ll_members(cptr,&chptr->chanops);
   burst_ll_members(cptr,&chptr->voiced);

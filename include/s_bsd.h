@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_bsd.h,v 7.21 2000/12/28 05:18:35 lusky Exp $
+ *   $Id: s_bsd.h,v 7.22 2000/12/30 06:03:34 lusky Exp $
  *
  */
 #ifndef INCLUDED_s_bsd_h
@@ -32,7 +32,7 @@
 #include "fdlist.h"
 
 #ifndef HAVE_SOCKLEN_T
-typedef unsigned int socklen_t;
+typedef int socklen_t;
 #endif
 
 #define READBUF_SIZE    16384   /* used in s_bsd *AND* s_zip.c ! */
@@ -82,6 +82,9 @@ extern void  comm_setselect(int fd, fdlist_t list, unsigned int type,
 extern void  init_netio(void);
 extern int   read_message (time_t, unsigned char);
 extern int   comm_select(time_t);
+extern int   comm_select_fdlist(fdlist_t, time_t);
+extern int   disable_sock_options(int);
+
 
 #endif /* INCLUDED_s_bsd_h */
 

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.h,v 7.7 2000/12/30 04:36:54 lusky Exp $
+ * $Id: modules.h,v 7.8 2000/12/30 06:03:34 lusky Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -52,5 +52,8 @@ extern void load_all_modules(void);
 
 extern void _modinit(void);
 extern void _moddeinit(void);
+
+extern int unload_one_module (char *);
+extern int load_one_module (char *);
 
 #endif

@@ -18,7 +18,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: packet.c,v 7.27 2000/12/23 01:42:20 db Exp $
+ *   $Id: packet.c,v 7.28 2000/12/30 06:03:43 lusky Exp $
  */ 
 
 #include <stdio.h>
@@ -48,8 +48,10 @@ static
 int parse_client_queued(struct Client *cptr)
 { 
     int dolen  = 0;
+#if 0
     struct LocalUser *lcptr = cptr->localClient;
     int checkflood = 1; /* Whether we're checking or not */
+#endif
 
 #if 0
     if (IsServer(cptr))
