@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.172 2001/02/05 01:05:40 androsyn Exp $
+ *  $Id: s_conf.c,v 7.173 2001/02/05 01:19:59 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -176,6 +176,7 @@ struct ConfItem* make_conf()
 
   aconf = (struct ConfItem*) MyMalloc(sizeof(struct ConfItem));
   aconf->status       = CONF_ILLEGAL;
+  aconf->aftype	      = AF_INET;
 /*  aconf->ipnum.s_addr = INADDR_NONE; */
   return (aconf);
 }
