@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_classlist.c,v 1.2 2003/05/22 04:10:10 db Exp $
+ *  $Id: m_classlist.c,v 1.3 2003/05/23 04:10:56 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -62,19 +62,15 @@ _moddeinit(void)
   mod_del_cmd(&classlist_msgtab);
 }
 
-const char *_version = "$Revision: 1.2 $";
+const char *_version = "$Revision: 1.3 $";
 #endif
 
-/*
- * mo_classlist
+/* mo_classlist()
+ *
+ *      parv[0] = sender prefix
+ *      parv[1] = channel
+ *      parv[2] = vkey
  */
-
-/*
-** mo_classlist
-**      parv[0] = sender prefix
-**      parv[1] = channel
-**      parv[2] = vkey
-*/
 static void
 mo_classlist(struct Client *client_p, struct Client *source_p,
 	     int parc, char *parv[])
@@ -86,7 +82,7 @@ mo_classlist(struct Client *client_p, struct Client *source_p,
   if ((parc < 1) || (*parv[1] == '\0'))
   {
     sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-               me.name, parv[0], "CLASSLIST");
+               me.name, source_p->name, "CLASSLIST");
     return;
   }
 
@@ -98,12 +94,12 @@ mo_classlist(struct Client *client_p, struct Client *source_p,
 
     if (match(classname, ClassName(aclass)))
     {
-      sendto_one(source_p, ":%s NOTICE %s %s %d",
+      sendto_one(source_p, ":%s NOTICE %s :%s %d",
 		 me.name, source_p->name, ClassName(aclass), Links(aclass));
       return;
     }
   }
 
-  sendto_one(source_p, ":%s NOTICE %s Not found",
+  sendto_one(source_p, ":%s NOTICE %s :Not found",
 		 me.name, source_p->name);
 }
