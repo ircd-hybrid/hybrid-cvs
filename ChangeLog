@@ -1,3 +1,11 @@
+*** 20001127_1 by db
+- fixed modules code to use version string as well
+- fixed parse to use prefix tree code
+- modload modunload hooks in place, need admin flags 
+- fixed m_help to use original msgtab 
+
+
+
 *** 20001126_10 by db
 - got tired of a compile warning
 
@@ -848,7 +856,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.593 2000/11/27 01:01:27 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.594 2000/11/27 08:47:12 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
