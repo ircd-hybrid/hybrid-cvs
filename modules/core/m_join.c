@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_join.c,v 1.5 2003/06/29 22:46:15 michael Exp $
+ *  $Id: m_join.c,v 1.6 2003/09/16 04:37:01 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -66,11 +66,10 @@ _moddeinit(void)
   mod_del_cmd(&join_msgtab);
 }
 
-const char *_version = "$Revision: 1.5 $";
+const char *_version = "$Revision: 1.6 $";
 #endif
 
-/*
- * m_join
+/* m_join()
  *      parv[0] = sender prefix
  *      parv[1] = channel
  *      parv[2] = channel password (key)
@@ -80,10 +79,10 @@ m_join(struct Client *client_p, struct Client *source_p,
        int parc, char *parv[])
 {
   struct Channel *chptr = NULL;
-  char  *name, *key = NULL;
-  int   i, flags = 0, error_reported = 0;
-  char  *p = NULL, *p2 = NULL;
-  int   successful_join_count = 0; /* Number of channels successfully joined */
+  char *name, *key = NULL;
+  int i, flags = 0, error_reported = 0;
+  char *p = NULL, *p2 = NULL;
+  int successful_join_count = 0; /* Number of channels successfully joined */
 
   if (*parv[1] == '\0')
   {
@@ -106,20 +105,19 @@ m_join(struct Client *client_p, struct Client *source_p,
       continue;
     }
 
-    /*
-    ** JOIN 0 sends out a part for all channels a user
-    ** has joined.
-    **
-    ** this should be either disabled or selectable in
-    ** config file .. it's abused a lot more than it's
-    ** used these days :/ --is
-    */
+    /* JOIN 0 sends out a part for all channels a user
+     * has joined.
+     *
+     * this should be either disabled or selectable in
+     * config file .. it's abused a lot more than it's
+     * used these days :/ --is
+     */
     if (*name == '0' && !atoi(name))
     {
       if (source_p->user->channel.head == NULL)
         continue;
 
-      do_join_0(&me,source_p);
+      do_join_0(&me, source_p);
       error_reported = 0;
       continue;
     }
@@ -309,8 +307,7 @@ m_join(struct Client *client_p, struct Client *source_p,
   }
 }
 
-/*
- * ms_join
+/* ms_join()
  *
  * inputs	-
  * output	- none
@@ -344,14 +341,10 @@ ms_join(struct Client *client_p, struct Client *source_p,
   else
   {
     if (parc > 2)
-    {
       new_ts = atoi(parv[2]);
-    }
     else
-    {
       ts_warn("User on %s remotely JOINing new channel with no TS", 
               source_p->user->server->name);
-    }
   }
 }
 
