@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: irc_string.h,v 7.30 2001/10/08 14:13:02 androsyn Exp $
+ *   $Id: irc_string.h,v 7.31 2001/10/11 02:39:24 androsyn Exp $
  */
 #ifndef INCLUDED_irc_string_h
 #define INCLUDED_irc_string_h
@@ -30,7 +30,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <string.h>
-
+#include <stdarg.h>
 /*
  * match - compare name with mask, mask may contain * and ? as wildcards
  * match - returns 1 on successful match, 0 otherwise
@@ -94,6 +94,14 @@ size_t strlcpy(char *dst, const char *src, size_t siz);
 
 #ifndef HAVE_STRLCAT
 size_t strlcat(char *dst, const char *src, size_t siz);
+#endif
+
+#ifndef HAVE_SNPRINTF
+int snprintf (char *str,size_t count,const char *fmt,...);
+#endif
+
+#ifndef HAVE_VSNPRINTF
+int vsnprintf (char *str, size_t count, const char *fmt, va_list args);
 #endif
 
 /*
