@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.149 2003/09/26 10:49:16 bill Exp $
+ *  $Id: m_stats.c,v 1.150 2003/09/27 23:19:40 bill Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.149 $";
+const char *_version = "$Revision: 1.150 $";
 #endif
 
 static char *parse_stats_args(int, char **, int *, int *);
@@ -101,7 +101,6 @@ static void stats_hubleaf(struct Client *);
 static void stats_auth(struct Client *);
 static void stats_tklines(struct Client *);
 static void stats_klines(struct Client *);
-static void stats_cluster(struct Client *);
 static void stats_messages(struct Client *);
 static void stats_oper(struct Client *);
 static void stats_operedup(struct Client *);
@@ -160,8 +159,6 @@ static const struct StatsStruct
   { 'Q',	stats_resv,		1,	0,	},
   { 'r',	stats_usage,		1,	0,	},
   { 'R',	stats_usage,		1,	0,	},
-  { 's',        stats_cluster,          1,      0,      },
-  { 'S',        stats_cluster,          1,      0,      },
   { 't',	stats_tstats,		1,	0,	},
   { 'T',	stats_tstats,		1,	0,	},
   { 'u',	stats_uptime,		0,	0,	},
@@ -305,12 +302,6 @@ stats_connect(struct Client *source_p)
   report_confitem_types(source_p, SERVER_TYPE);
 }
 
-static void
-stats_cluster(struct Client *source_p)
-{
-  report_confitem_types(source_p, CLUSTER_TYPE);
-}
-
 /* stats_deny()
  *
  * input	- client to report to
@@ -350,8 +341,8 @@ stats_deny(struct Client *source_p)
 
 /* stats_tdeny()
  *
- * input	- client to report to
- * output	- none
+ * input        - client to report to
+ * output       - none
  * side effects - client is given dline list.
  */
 static void
@@ -371,13 +362,13 @@ stats_tdeny(struct Client *source_p)
       {
         aconf = arec->aconf;
 
-	/* dont report a permanent dline as a tdline */
-	if ((aconf->flags & CONF_FLAGS_TEMPORARY) == 0)
-	  continue;
+        /* dont report a permanent dline as a tdline */
+        if ((aconf->flags & CONF_FLAGS_TEMPORARY) == 0)
+          continue;
 
-	conf = unmap_conf_item(aconf);
-	get_printable_conf(conf, &host, &pass, &user, &port, &classname);
-	sendto_one(source_p, form_str(RPL_STATSDLINE),
+        conf = unmap_conf_item(aconf);
+        get_printable_conf(conf, &host, &pass, &user, &port, &classname);
+        sendto_one(source_p, form_str(RPL_STATSDLINE),
                    me.name, source_p->name, 'd', host, pass);
       }
     }
@@ -386,8 +377,8 @@ stats_tdeny(struct Client *source_p)
 
 /* stats_exempt()
  *
- * input	- client to report to
- * output	- none
+ * input        - client to report to
+ * output       - none
  * side effects - client is given list of exempt blocks
  */
 static void
@@ -407,8 +398,8 @@ stats_exempt(struct Client *source_p)
       {
         aconf = arec->aconf;
 
-	conf = unmap_conf_item(aconf);
-	get_printable_conf(conf, &host, &pass, &user, &port, &classname);
+        conf = unmap_conf_item(aconf);
+        get_printable_conf(conf, &host, &pass, &user, &port, &classname);
         sendto_one(source_p, form_str(RPL_STATSDLINE),
                    me.name, source_p->name, 'e', host, pass);
       }
@@ -424,8 +415,8 @@ stats_events(struct Client *source_p)
 
 /* stats_pending_glines()
  *
- * input	- client pointer
- * output	- none
+ * input        - client pointer
+ * output       - none
  * side effects - client is shown list of pending glines
  */
 static void
@@ -454,11 +445,11 @@ stats_pending_glines(struct Client *source_p)
     strftime(timebuffer, MAX_DATE_STRING, "%Y/%m/%d %H:%M:%S", tmptr);
 
     sendto_one(source_p,
-	       ":%s NOTICE %s :1) %s!%s@%s on %s requested gline at %s for %s@%s [%s]",
-	       me.name, source_p->name, glp_ptr->oper_nick1,
-	       glp_ptr->oper_user1, glp_ptr->oper_host1,
-	       glp_ptr->oper_server1, timebuffer,
-	       glp_ptr->user, glp_ptr->host, glp_ptr->reason1);
+               ":%s NOTICE %s :1) %s!%s@%s on %s requested gline at %s for %s@%s [%s]",
+               me.name, source_p->name, glp_ptr->oper_nick1,
+               glp_ptr->oper_user1, glp_ptr->oper_host1,
+               glp_ptr->oper_server1, timebuffer,
+               glp_ptr->user, glp_ptr->host, glp_ptr->reason1);
 
     if (glp_ptr->oper_nick2[0] != '\0')
     {
@@ -466,10 +457,10 @@ stats_pending_glines(struct Client *source_p)
       strftime(timebuffer, MAX_DATE_STRING, "%Y/%m/%d %H:%M:%S", tmptr);
       sendto_one(source_p,
       ":%s NOTICE %s :2) %s!%s@%s on %s requested gline at %s for %s@%s [%s]",
-		 me.name, source_p->name, glp_ptr->oper_nick2,
-		 glp_ptr->oper_user2, glp_ptr->oper_host2,
-		 glp_ptr->oper_server2, timebuffer,
-		 glp_ptr->user, glp_ptr->host, glp_ptr->reason2);
+                 me.name, source_p->name, glp_ptr->oper_nick2,
+                 glp_ptr->oper_user2, glp_ptr->oper_host2,
+                 glp_ptr->oper_server2, timebuffer,
+                 glp_ptr->user, glp_ptr->host, glp_ptr->reason2);
     }
   }
 
@@ -479,8 +470,8 @@ stats_pending_glines(struct Client *source_p)
 
 /* stats_glines()
  *
- * input	- client pointer
- * output	- none
+ * input        - client pointer
+ * output       - none
  * side effects - client is shown list of glines
  */
 static void
@@ -510,9 +501,9 @@ stats_glines(struct Client *source_p)
 
 /* stats_gdeny()
  *
- * input	- client pointer
- * outputs	- none
- * side effects	- client is shown gline ACL
+ * input        - client pointer
+ * outputs      - none
+ * side effects - client is shown gline ACL
  */
 static void
 stats_gdeny(struct Client *source_p)

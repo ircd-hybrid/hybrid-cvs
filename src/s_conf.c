@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.482 2003/09/26 14:34:15 michael Exp $
+ *  $Id: s_conf.c,v 7.483 2003/09/27 23:19:42 bill Exp $
  */
 
 #include "stdinc.h"
@@ -530,7 +530,7 @@ report_confitem_types(struct Client *source_p, ConfType type)
   struct MatchItem *matchitem;
   struct ClassItem *classitem;
   char *host, *reason, *user, *classname;
-  char buf[5], *p = buf;
+  char buf[10], *p = buf;
   int port;
 
   switch (type)
@@ -556,7 +556,7 @@ report_confitem_types(struct Client *source_p, ConfType type)
 
      *p++ = '\0';
 
-      sendto_one(source_p, ":%s %d %s %s@%s %s %s",
+      sendto_one(source_p, ":%s %d %s V %s@%s %s %s",
                  me.name, RPL_STATSDEBUG, source_p->name, 
                  aconf->user, aconf->host, conf->name, buf);
     }
@@ -582,10 +582,26 @@ report_confitem_types(struct Client *source_p, ConfType type)
       buf[0] = '\0';
       p = buf;
 
+      /* some of these are redundant for the sake of consistency with clster{} flags */
+      *p++ = 'c';
+
       if (matchitem->action & SHARED_KLINE)
         *p++ = 'K';
       else
         *p++ = 'k';
+
+      *p++ = 'l';
+
+      if (matchitem->action & SHARED_RESV)
+      { 
+        *p++ = 'Q';
+        *p++ = 'R';
+      }
+      else
+      {
+        *p++ = 'q';
+        *p++ = 'r';
+      }
 
       if (matchitem->action & SHARED_UNKLINE)
         *p++ = 'U';
@@ -593,14 +609,15 @@ report_confitem_types(struct Client *source_p, ConfType type)
         *p++ = 'u';
 
       if (matchitem->action & SHARED_XLINE)
+      {
         *p++ = 'X';
+        *p++ = 'Y';
+      }
       else
+      {
         *p++ = 'x';
-
-      if (matchitem->action & SHARED_RESV)
-        *p++ = 'Q';
-      else
-        *p++ = 'q';
+        *p++ = 'y';
+      }
 
       *p++ = '\0';
 
@@ -608,17 +625,59 @@ report_confitem_types(struct Client *source_p, ConfType type)
 		 me.name, source_p->name, conf->name,
                  matchitem->user, matchitem->host, buf);
     }
-    break;
 
-  case CLUSTER_TYPE:
     DLINK_FOREACH(ptr, cluster_items.head)
     {
       conf = ptr->data;
       matchitem = (struct MatchItem *)map_to_conf(conf);
+
+      buf[0] = '\0';
+      p = buf;
+
+      *p++ = 'C';
+
+      if (matchitem->action & CLUSTER_KLINE)
+        *p++ = 'K';
+      else
+        *p++ = 'k';
+
+      if (matchitem->action & CLUSTER_LOCOPS)
+        *p++ = 'L';
+      else
+        *p++ = 'l';
+
+      if (matchitem->action & CLUSTER_RESV)
+        *p++ = 'Q';
+      else
+        *p++ = 'q';
+
+      if (matchitem->action & CLUSTER_UNRESV)
+        *p++ = 'R';
+      else
+        *p++ = 'r';
+
+      if (matchitem->action & CLUSTER_UNKLINE)
+        *p++ = 'U';
+      else
+        *p++ = 'u';
+
+      if (matchitem->action & CLUSTER_XLINE)
+        *p++ = 'X';
+      else
+        *p++ = 'x';
+
+      if (matchitem->action & CLUSTER_UNXLINE)
+        *p++ = 'Y';
+      else
+        *p++ = 'y';
+
+      *p++ = '\0';
+
       sendto_one(source_p, form_str(RPL_STATSULINE),
-                 me.name, source_p->name,
-                 conf->name, "*", "*", "*");
+                 me.name, source_p->name, conf->name,
+                 matchitem->user, matchitem->host, buf);
     }
+
     break;
 
   case OPER_TYPE:
@@ -724,6 +783,7 @@ report_confitem_types(struct Client *source_p, ConfType type)
   case GLINE_TYPE:
   case CRESV_TYPE:
   case NRESV_TYPE:
+  case CLUSTER_TYPE:
     break;
   }
 }

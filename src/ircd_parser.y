@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.358 2003/09/26 10:35:51 bill Exp $
+ *  $Id: ircd_parser.y,v 1.359 2003/09/27 23:19:42 bill Exp $
  */
 
 %{
@@ -1778,6 +1778,12 @@ cluster_entry: T_CLUSTER
 {
   if (ypass == 2)
   {
+    if (yy_conf->name == NULL)
+      yy_conf->name = "*";
+    if (yy_match_item->user == NULL)
+      yy_match_item->user = "*";
+    if (yy_match_item->host == NULL)
+      yy_match_item->host = "*";
     yy_conf = NULL;
   }
 };
@@ -2958,7 +2964,6 @@ gline_entry: GLINES
     {
       dlinkDelete(gdeny_items.tail, &gdeny_items);
       MyFree(yy_conf);
-      MyFree(yy_aconf);
       yy_conf = NULL;
       yy_aconf = NULL;
     }
