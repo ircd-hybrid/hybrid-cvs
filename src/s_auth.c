@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.c,v 7.2 1999/08/15 18:38:37 tomh Exp $
+ *   $Id: s_auth.c,v 7.3 1999/09/03 02:17:17 wnder Exp $
  *
  * Changes:
  *   July 6, 1999 - Rewrote most of the code here. When a client connects
@@ -33,6 +33,7 @@
 #include "fdlist.h"              /* fdlist_add */
 #include "irc_string.h"
 #include "ircd.h"
+#include "ircdauth.h"
 #include "numeric.h"
 #include "res.h"
 #include "s_bsd.h"
@@ -383,6 +384,15 @@ void start_auth(struct Client* client)
 
   auth = make_auth_request(client);
 
+  link_auth_request(auth, &AuthPollList);
+
+	/*
+	 * Now we send the client's information to the IAuth
+	 * server.
+	 */
+	IAuthQuery(client);
+
+#if 0 /* bingo */
   query.vptr     = auth;
   query.callback = auth_dns_callback;
 
@@ -405,6 +415,7 @@ void start_auth(struct Client* client)
     free_auth_request(auth);
     release_auth_client(client);
   }
+#endif /* 0 */
 }
 
 /*
@@ -546,3 +557,16 @@ void read_auth_reply(struct AuthRequest* auth)
   }
 }
 
+/*
+remove_auth_request()
+ Remove request 'auth' from AuthPollList and free it
+*/
+
+void
+remove_auth_request(struct AuthRequest *auth)
+
+{
+	unlink_auth_request(auth, &AuthPollList);
+	release_auth_client(auth->client);
+	free_auth_request(auth);
+} /* remove_auth_request() */
