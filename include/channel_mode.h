@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel_mode.h,v 7.3 2001/12/16 22:22:44 leeh Exp $
+ * $Id: channel_mode.h,v 7.4 2001/12/16 23:04:13 db Exp $
  */
 
 #include <sys/types.h>        /* time_t */
@@ -107,8 +107,6 @@ extern void unset_chcap_usage_counts(struct Client *serv_p);
 /*
  * mode flags which take another parameter (With PARAmeterS)
  */
-#define MODE_WPARAS (MODE_CHANOP|MODE_VOICE|MODE_BAN|\
-                     MODE_EXCEPTION|MODE_INVEX)
 
 #define MODE_QUERY     0
 #define MODE_ADD       1
