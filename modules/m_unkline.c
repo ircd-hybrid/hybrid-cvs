@@ -21,7 +21,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: m_unkline.c,v 1.9 2000/12/09 06:10:17 db Exp $
+ *   $Id: m_unkline.c,v 1.10 2000/12/09 18:36:13 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -456,6 +456,13 @@ int mo_undline (struct Client *cptr, struct Client *sptr,int parc,char *parv[])
     {
       sendto_one(sptr,":%s NOTICE %s :You have no U flag",me.name,
                  parv[0]);
+      return 0;
+    }
+
+  if ( parc < 2 )
+    {
+      sendto_one(sptr, form_str(ERR_NEEDMOREPARAMS),
+                 me.name, parv[0], "UNDLINE");
       return 0;
     }
 
