@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.283 2001/12/15 02:07:34 db Exp $
+ *  $Id: s_conf.c,v 7.284 2001/12/15 02:24:49 db Exp $
  */
 
 #include <sys/types.h>
@@ -253,7 +253,6 @@ free_conf(struct ConfItem* aconf)
   if (aconf->passwd)
     memset(aconf->passwd, 0, strlen(aconf->passwd));
   MyFree(aconf->passwd);
-  MyFree(aconf->oper_reason);
   if (aconf->spasswd)
     memset(aconf->spasswd, 0, strlen(aconf->spasswd));
   MyFree(aconf->spasswd);

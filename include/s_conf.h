@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.168 2001/12/15 02:07:29 db Exp $
+ * $Id: s_conf.h,v 7.169 2001/12/15 02:24:44 db Exp $
  */
 
 #include "setup.h"
@@ -71,7 +71,6 @@ struct ConfItem
   char *           host;     /* host part of user@host */
   char *           passwd;   /* doubles as kline reason *ugh* */
   char *           spasswd;  /* Password to send. */
-  char *	   oper_reason; /* | portion of kline reason */
   char *           user;     /* user part of user@host */
   int              port;
   char *           fakename;   /* Mask name */
