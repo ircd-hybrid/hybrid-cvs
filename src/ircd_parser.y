@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.142 2001/03/12 06:36:59 a1kmm Exp $
+ * $Id: ircd_parser.y,v 1.143 2001/03/12 20:14:52 androsyn Exp $
  */
 
 %{
@@ -902,10 +902,10 @@ auth_class:   CLASS '=' QSTRING ';'
 
 auth_persistant: PERSISTANT '=' TYES ';'
   {
-   yy_aconf->flags |= CONF_FLAGS_PERSISTANT
+   yy_aconf->flags |= CONF_FLAGS_PERSISTANT;
   } |            PERSISTANT '=' TNO ';'
   {
-   yy_aconf->flags &= CONF_FLAGS_PERSISTANT
+   yy_aconf->flags &= CONF_FLAGS_PERSISTANT;
   };
 
 /***************************************************************************
