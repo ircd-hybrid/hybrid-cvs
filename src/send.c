@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.135 2001/04/13 22:39:53 davidt Exp $
+ *   $Id: send.c,v 7.136 2001/04/14 15:34:06 davidt Exp $
  */
 
 #include <sys/types.h>
@@ -176,12 +176,13 @@ _send_message(struct Client *to, char *msg, int len)
     }
   else
     {
+#ifdef OPENSSL
       if (IsCryptOut(to))
       {
         linebuf_flags |= LINEBUF_CRYPT;
         linebuf_key = to->localClient->out_key;
       }
-      /* XXX - ziplinks */
+#endif
       if (len)
           linebuf_put(&to->localClient->buf_sendq, msg, len,
                       linebuf_flags, linebuf_key);

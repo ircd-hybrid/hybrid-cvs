@@ -18,7 +18,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: packet.c,v 7.41 2001/04/13 22:39:51 davidt Exp $
+ *   $Id: packet.c,v 7.42 2001/04/14 15:34:05 davidt Exp $
  */ 
 
 #include <stdio.h>
@@ -177,16 +177,17 @@ read_packet(int fd, void *data)
   int lbuf_len;
   int linebuf_flags = 0;
   char *linebuf_key = NULL;
-
+  
   assert(lclient_p != NULL);
   assert(lclient_p->allow_read <= MAX_FLOOD_PER_SEC);
 
+#ifdef OPENSSL
   if (IsCryptIn(client_p))
   {
     linebuf_flags |= LINEBUF_CRYPT;
     linebuf_key = lclient_p->in_key;
   }
-  /* XXX - ziplinks */
+#endif
 
   /*
    * Read some data. We *used to* do anti-flood protection here, but

@@ -6,7 +6,7 @@
  * The idea here is that we should really be maintaining pre-munged
  * buffer "lines" which we can later refcount to save needless copies.
  *
- * $Id: linebuf.c,v 7.29 2001/04/13 22:39:50 davidt Exp $
+ * $Id: linebuf.c,v 7.30 2001/04/14 15:34:05 davidt Exp $
  */
 
 #include <errno.h>
@@ -239,7 +239,9 @@ linebuf_copy_line(buf_head_t *bufhead, buf_line_t *bufline,
   char *bufch = &bufline->buf[bufline->len];
   char *data_to_read;
 /*  char *zip_buf; */
+#ifdef OPENSSL
   char *crypt_buf;
+#endif
   int   read_len;
   int   proclen = 0;
 
@@ -677,8 +679,10 @@ static int linebuf_write(int fd, buf_head_t *bufhead, buf_line_t *bufline)
   int   buffered = 1;
   int   retval = 0;
   int   try_write = 1;
+#ifdef OPENSSL
   char *crypt_buf;
-/*  char *zip_buf;*/
+#endif
+  /*  char *zip_buf;*/
 
   if (!((bufline->flags & LINEBUF_ZIP) ||
 #ifdef OPENSSL
