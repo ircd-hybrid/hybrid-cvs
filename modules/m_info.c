@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.c,v 1.23 2001/01/20 06:28:11 db Exp $
+ * $Id: m_info.c,v 1.24 2001/01/23 05:01:25 db Exp $
  */
 #include "tools.h"
 #include "m_info.h"
@@ -242,8 +242,8 @@ static void send_conf_options(struct Client *sptr)
               RPL_INFO,
               sptr->name,
               "network_name",
-              ConfigFileEntry.network_name ? 
-                ConfigFileEntry.network_name :
+              ServerInfo.network_name ? 
+                ServerInfo.network_name :
                 NETWORK_NAME_DEFAULT,
               "Name of the Network");
    sendto_one(sptr,
@@ -252,8 +252,8 @@ static void send_conf_options(struct Client *sptr)
               RPL_INFO,
               sptr->name,
               "network_desc",
-              ConfigFileEntry.network_desc ?
-                ConfigFileEntry.network_desc :
+              ServerInfo.network_desc ?
+                ServerInfo.network_desc :
                 NETWORK_DESC_DEFAULT,
               "Description of the network");
    sendto_one(sptr,

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 1.54 2001/01/20 06:28:17 db Exp $
+ *   $Id: m_whois.c,v 1.55 2001/01/23 05:01:26 db Exp $
  */
 
 #include <string.h>
@@ -429,8 +429,8 @@ static void whois_person(struct Client *sptr,struct Client *acptr, int glob)
   else
     sendto_one(sptr, form_str(RPL_WHOISSERVER),
 	       me.name, sptr->name, acptr->name,
-               ConfigFileEntry.network_name,
-	       ConfigFileEntry.network_desc);
+               ServerInfo.network_name,
+	       ServerInfo.network_desc);
 
   if (acptr->user->away)
     sendto_one(sptr, form_str(RPL_AWAY), me.name,
