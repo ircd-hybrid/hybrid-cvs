@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_gline.c,v 1.59 2001/06/19 16:07:47 leeh Exp $
+ *  $Id: m_gline.c,v 1.60 2001/06/22 07:03:57 jdc Exp $
  */
 
 #include <assert.h>
@@ -683,13 +683,13 @@ log_gline(struct Client *source_p,
       return;
     }
 
-  ircsprintf(buffer, "\"%s\",\"%s\",\"%s %s\",\"%s\",%ld\n",
+  ircsprintf(buffer, "\"%s\",\"%s\",\"%s %s\",\"%s\",%lu\n",
 	     user,
 	     host,
 	     reason,
 	     timebuffer,
 	     oper_nick,
-	     CurrentTime);
+	     (unsigned long) CurrentTime);
 
   if (fbputs(buffer,out) == -1)
     {
