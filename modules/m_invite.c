@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_invite.c,v 1.61 2003/06/12 15:17:20 michael Exp $
+ *  $Id: m_invite.c,v 1.62 2003/06/14 13:58:39 michael Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&invite_msgtab);
 }
 
-const char *_version = "$Revision: 1.61 $";
+const char *_version = "$Revision: 1.62 $";
 #endif
 
 /*
@@ -73,8 +73,8 @@ const char *_version = "$Revision: 1.61 $";
 **      parv[2] - channel number
 */
 static void
-m_invite(struct Client *client_p,
-         struct Client *source_p, int parc, char *parv[])
+m_invite(struct Client *client_p, struct Client *source_p,
+         int parc, char *parv[])
 {
   struct Client *target_p;
   struct Channel *chptr;
@@ -96,14 +96,15 @@ m_invite(struct Client *client_p,
 
   if ((target_p = find_person(parv[1])) == NULL)
   {
-    sendto_one(source_p, form_str(ERR_NOSUCHNICK), me.name, parv[0], parv[1]);
+    sendto_one(source_p, form_str(ERR_NOSUCHNICK),
+               me.name, parv[0], parv[1]);
     return;
   }
 
   if (check_channel_name(parv[2]) == 0)
   {
     sendto_one(source_p, form_str(ERR_BADCHANNAME),
-               me.name, parv[0], (unsigned char *)parv[2]);
+               me.name, parv[0], parv[2]);
     return;
   }
 
@@ -318,7 +319,6 @@ ms_invite(struct Client *client_p, struct Client *source_p,
   }
   else
   {
-
     /* There are two different kinds of behaviour that both make sense here.
      * 1) One approach is simply to chop at the first non CAP_PARA hub
      * 2) if there is a non CAP_PARA hub in between a cluster of CAP_PARA

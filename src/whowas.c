@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: whowas.c,v 7.26 2003/05/27 19:55:28 db Exp $
+ *  $Id: whowas.c,v 7.27 2003/06/14 13:58:42 michael Exp $
  */
 
 #include "stdinc.h"
@@ -177,7 +177,7 @@ init_whowas(void)
 
   for (i = 0; i < NICKNAMEHISTORYLENGTH; i++)
   {
-    memset((void *)&WHOWAS[i], 0, sizeof(struct Whowas));
+    memset(&WHOWAS[i], 0, sizeof(struct Whowas));
     WHOWAS[i].hashv = -1;
   }
 

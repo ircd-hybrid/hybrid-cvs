@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.115 2003/06/14 03:38:20 db Exp $
+ *  $Id: m_gline.c,v 1.116 2003/06/14 13:58:39 michael Exp $
  */
 
 #include "stdinc.h"
@@ -76,12 +76,11 @@ static void ms_gline(struct Client *, struct Client *, int, char **);
 static void mo_gline(struct Client *, struct Client *, int, char **);
 
 struct Message gline_msgtab = {
-    "GLINE", 0, 0, 3, 0, MFLG_SLOW, 0,
-      {m_unregistered, m_not_oper, ms_gline, mo_gline, m_ignore}
+  "GLINE", 0, 0, 3, 0, MFLG_SLOW, 0,
+  {m_unregistered, m_not_oper, ms_gline, mo_gline, m_ignore}
 };
 
 #ifndef STATIC_MODULES
-
 void
 _modinit(void)
 {
@@ -96,7 +95,7 @@ _moddeinit(void)
   delete_capability("GLN");
 }
 
-const char *_version = "$Revision: 1.115 $";
+const char *_version = "$Revision: 1.116 $";
 #endif
 
 /* mo_gline()
@@ -180,10 +179,9 @@ mo_gline(struct Client *client_p, struct Client *source_p,
 
   if (check_wild_gline(user, host))
   {
-    if (MyClient(source_p))
-      sendto_one(source_p,
-		 ":%s NOTICE %s :Please include at least %d non-wildcard characters with the user@host",
-		 me.name, parv[0], ConfigFileEntry.min_nonwildcard);
+    sendto_one(source_p,
+               ":%s NOTICE %s :Please include at least %d non-wildcard characters with the user@host",
+               me.name, parv[0], ConfigFileEntry.min_nonwildcard);
     return;
   }
 
@@ -208,7 +206,7 @@ mo_gline(struct Client *client_p, struct Client *source_p,
                        source_p->name, source_p->username, source_p->host,
                        me.name, user, host, reason);
   ilog(L_TRACE, "#gline for %s@%s [%s] requested by %s!%s@%s",
-       user, host, reason, source_p->name, (const char *)source_p->username,
+       user, host, reason, source_p->name, source_p->username,
        source_p->host);
 
   /* 4 param version for hyb-7 servers */
@@ -321,7 +319,6 @@ ms_gline(struct Client *client_p, struct Client *source_p,
       * gline.. it could lead to a desync... but we have to stop people
       * glining *@*..   -- fl
       */
-
      if (check_wild_gline(user, host))
      {
        sendto_realops_flags(UMODE_ALL, L_ALL, 
@@ -341,10 +338,9 @@ ms_gline(struct Client *client_p, struct Client *source_p,
      }
 
      ilog(L_TRACE, "#gline for %s@%s [%s] requested by %s!%s@%s on %s",
-	  user, host, reason, source_p->name, (const char *)source_p->username,
-	  source_p->host, oper_server);
+          user, host, reason, source_p->name, source_p->username,
+          source_p->host, oper_server);
 
-      
       sendto_realops_flags(UMODE_ALL, L_ALL,
 			   "%s!%s@%s on %s is requesting gline for [%s@%s] [%s]",
 			   oper_nick, oper_user, oper_host, oper_server,
@@ -458,7 +454,6 @@ set_local_gline(struct Client *source_p, const char *user,
   check_klines();
 }
 
-
 /* add_new_majority_gline()
  * 
  * inputs       - name of operator requesting gline
@@ -520,9 +515,9 @@ add_new_majority_gline(const char *oper_nick, const char *oper_user,
  */
 static int
 check_majority_gline(struct Client *source_p, const char *oper_nick,
-		     const char *oper_user, const char *oper_host,
-		     const char* oper_server, const char *user,
-		     const char *host, const char *reason)
+                     const char *oper_user, const char *oper_host,
+                     const char* oper_server, const char *user,
+                     const char *host, const char *reason)
 {
   dlink_node *pending_node;
   struct gline_pending *gline_pending_ptr;
@@ -530,9 +525,8 @@ check_majority_gline(struct Client *source_p, const char *oper_nick,
   /* if its already glined, why bother? :) -- fl_ */
   if(find_is_glined(host, user))
     return(GLINE_NOT_PLACED);
-    
-  /* special case condition where there are no pending glines */
 
+  /* special case condition where there are no pending glines */
   if (dlink_list_length(&pending_glines) == 0) /* first gline request placed */
   {
     add_new_majority_gline(oper_nick, oper_user, oper_host, oper_server,
@@ -548,8 +542,8 @@ check_majority_gline(struct Client *source_p, const char *oper_nick,
 	(irccmp(gline_pending_ptr->host,host) == 0))
     {
       if (((irccmp(gline_pending_ptr->oper_user1,oper_user) == 0) ||
-	   (irccmp(gline_pending_ptr->oper_host1,oper_host) == 0)) ||
-	  (irccmp(gline_pending_ptr->oper_server1,oper_server) == 0))
+          (irccmp(gline_pending_ptr->oper_host1,oper_host) == 0)) ||
+          (irccmp(gline_pending_ptr->oper_server1,oper_server) == 0))
       {
 	return(GLINE_ALREADY_VOTED);
       }
@@ -562,13 +556,13 @@ check_majority_gline(struct Client *source_p, const char *oper_nick,
 	    (irccmp(gline_pending_ptr->oper_host2,oper_host)==0)) ||
 	   (irccmp(gline_pending_ptr->oper_server2,oper_server)==0))
 	{
-	  return (GLINE_ALREADY_VOTED);
+	  return(GLINE_ALREADY_VOTED);
 	}
 
 	/* trigger the gline using the original reason --fl */
 	set_local_gline(source_p, user, host, gline_pending_ptr->reason1);
 	cleanup_glines(NULL);
-	return (GLINE_PLACED);
+	return(GLINE_PLACED);
       }
       else
       {
@@ -588,6 +582,7 @@ check_majority_gline(struct Client *source_p, const char *oper_nick,
       }
     }
   }
+
   /* Didn't find this user@host gline in pending gline list
    * so add it.
    */

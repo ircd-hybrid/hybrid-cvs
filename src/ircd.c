@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.304 2003/06/14 01:23:19 joshk Exp $
+ *  $Id: ircd.c,v 7.305 2003/06/14 13:58:41 michael Exp $
  */
 
 #include "stdinc.h"
@@ -83,8 +83,8 @@ struct server_info ServerInfo;
 /* admin info set from ircd.conf */
 struct admin_info AdminInfo;
 
-struct Counter Count;
-struct ServerState_t server_state;
+struct Counter Count = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+struct ServerState_t server_state = { 0 };
 
 struct timeval SystemTime;
 int ServerRunning;            /* GLOBAL - server execution state */
@@ -584,12 +584,9 @@ main(int argc, char *argv[])
   dlinkAdd(&me, &me.node, &global_client_list);	/* Pointer to beginning
 						   of Client list */
 
-  memset((void *)&Count, 0, sizeof(Count));
-  memset((void *)&server_state, 0, sizeof(server_state));
-
   Count.server = 1;     /* us */
-  memset((void *)&ServerInfo, 0, sizeof(ServerInfo));
-  memset((void *)&AdminInfo, 0, sizeof(AdminInfo));
+  memset(&ServerInfo, 0, sizeof(ServerInfo));
+  memset(&AdminInfo, 0, sizeof(AdminInfo));
 
   /* Initialise the channel capability usage counts... */
   init_chcap_usage_counts();

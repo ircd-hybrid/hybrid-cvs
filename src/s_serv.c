@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.348 2003/06/12 22:06:00 db Exp $
+ *  $Id: s_serv.c,v 7.349 2003/06/14 13:58:41 michael Exp $
  */
 
 #include "stdinc.h"
@@ -963,7 +963,7 @@ server_estab(struct Client *client_p)
   /* We shouldn't have to check this, it should already done before
    * server_estab is called. -A1kmm
    */
-  memset((void *)client_p->localClient->passwd, 0,sizeof(client_p->localClient->passwd));
+  memset(client_p->localClient->passwd, 0, sizeof(client_p->localClient->passwd));
 
   /* Its got identd , since its a server */
   SetGotId(client_p);
