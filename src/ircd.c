@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.232 2002/05/18 20:53:52 androsyn Exp $
+ *  $Id: ircd.c,v 7.233 2002/05/19 03:42:23 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -131,7 +131,6 @@ dlink_list lclient_list;        /* local clients only ON this server */
 dlink_list serv_list;           /* local servers to this server ONLY */
 dlink_list global_serv_list;    /* global servers on the network */
 dlink_list oper_list;           /* our opers, duplicated in lclient_list */
-dlink_list abort_list;		/* clients who aren't quite dead yet */
 dlink_list lazylink_channels;   /* known about lazylink channels on HUB */
 
 int callbacks_called;          /* A measure of server load... */
