@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.166 2001/01/25 21:27:24 db Exp $
+ *  $Id: s_conf.c,v 7.167 2001/01/26 17:47:39 jdc Exp $
  */
 
 #include <sys/types.h>
@@ -540,9 +540,12 @@ int attach_Iline(struct Client* cptr, const char* username)
 	  /* Thanks for spoof idea amm */
 	  if(IsConfDoSpoofIp(aconf))
 	    {
-	      sendto_realops_flags(FLAGS_ADMIN,
+	      if(IsConfSpoofNotice(aconf))
+	      {
+	        sendto_realops_flags(FLAGS_ADMIN,
 				   "%s spoofing: %s as %s", cptr->name,
 				   cptr->host, aconf->name);
+	      }
 	      strncpy_irc(cptr->host, aconf->name, HOSTLEN);
 	      SetIPSpoof(cptr);
 	      SetIPHidden(cptr);
