@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.309 2003/01/09 06:15:53 db Exp $
+ *  $Id: client.c,v 7.310 2003/01/09 08:04:55 db Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -902,7 +902,7 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
   dlink_node *next_lp;
 
   if (IsDead(source_p))
-    return 0;
+    return;
 
   if (IsServer(source_p))
     {
