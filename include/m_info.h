@@ -19,12 +19,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.h,v 7.45 2003/05/11 22:04:44 michael Exp $
+ *  $Id: m_info.h,v 7.46 2003/05/17 00:52:50 michael Exp $
  */
 
 #ifndef INCLUDED_m_info_h
 #define INCLUDED_m_info_h
-
 #include "config.h"
 
 typedef struct Information
@@ -68,18 +67,6 @@ Info MyInformation[] = {
 #endif /* DLPATH */
 
   { "HARD_FDLIMIT_", "", HARD_FDLIMIT_, "Maximum Number of File Descriptors Available" },
-
-#ifdef HPATH
-  { "HPATH", HPATH, 0, "Path to Operator Help Files" },
-#else
-  { "HPATH", "NONE", 0, "Path to Operator Help Files" },
-#endif /* HPATH */
-
-#ifdef UHPATH
-  { "UHPATH", UHPATH, 0, "Path to User Help Files" },
-#else
-  { "UHPATH", "NONE", 0, "Path to User Help Files" },
-#endif /* UH PATH */
 
 #ifdef SOMAXCONN
   { "HYBRID_SOMAXCONN", "", SOMAXCONN, "Maximum Queue Length of Pending Connections" },
@@ -176,4 +163,3 @@ Info MyInformation[] = {
 };
 
 #endif /* INCLUDED_m_info_h */
-

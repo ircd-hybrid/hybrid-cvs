@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: config.h,v 7.153 2003/05/14 22:29:38 db Exp $
+ *  $Id: config.h,v 7.154 2003/05/17 00:52:50 michael Exp $
  */
 
 #ifndef INCLUDED_config_h
@@ -107,8 +107,6 @@
 #define MPATH   ETCPATH "IRCD.MOTD"             /* MOTD filename */
 #define LPATH   LOGPATH "IRCD.LOG"              /* logfile */
 #define PPATH   ETCPATH "IRCD.PID"              /* pid file */
-#define HPATH   ETCPATH "OPERS.TXT"             /* oper help file */
-#define UHPATH  ETCPATH "USERS.TXT"             /* user help file */
 #define OPATH   ETCPATH "OPERS.MOTD"            /* oper MOTD file */
 #define LIPATH  ETCPATH "LINKS.TXT"             /* cached LINKS file */
 #else /* VMS */
@@ -139,8 +137,6 @@
 #define MSGPATH IRCD_PREFIX "/messages/"
 #define ETCPATH IRCD_PREFIX "/etc"
 #define LOGPATH IRCD_PREFIX "/logs"
-#define UHPATH   IRCD_PREFIX "/help/users"
-#define HPATH  IRCD_PREFIX "/help/opers"
 
 /* files */
 #define SPATH   BINPATH "/ircd"                 /* ircd executable */
