@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/modules
 #
-# $Id: Makefile.in,v 1.29 2001/02/28 04:51:52 ejb Exp $
+# $Id: Makefile.in,v 1.30 2001/03/09 16:02:34 fl_ Exp $
 #
 CC		= @CC@
 RM		= @RM@
@@ -67,6 +67,7 @@ SRCS =                          \
   m_pass.c \
   m_ping.c \
   m_pong.c \
+  m_post.c \
   m_quit.c \
   m_rehash.c \
   m_restart.c \
