@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.85 2002/07/12 03:29:58 joant Exp $
+ *  $Id: m_server.c,v 1.86 2002/07/13 11:42:02 leeh Exp $
  */
 
 #include "stdinc.h"
@@ -67,7 +67,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&server_msgtab);
 }
-const char *_version = "$Revision: 1.85 $";
+const char *_version = "$Revision: 1.86 $";
 #endif
 
 int bogus_host(char *host);
@@ -417,20 +417,9 @@ static void ms_server(struct Client *client_p, struct Client *source_p,
       sendto_realops_flags(FLAGS_ALL, L_OPER,
           "Non-Hub link %s introduced %s.",
 	  get_client_name(client_p, MASK_IP), name);
-      /* If it is new, we are probably misconfigured, so split the
-       * non-hub server introducing this. Otherwise, split the new
-       * server. -A1kmm. */
-      if ((CurrentTime - source_p->firsttime) < 20)
-        {
-          exit_client(NULL, source_p, &me, "No matching hub_mask.");
-          return;
-        }
-      else
-        {
-          sendto_one(source_p, ":%s SQUIT %s :Sorry, no matching hub_mask.",
-                     me.name, name);
-          return;
-        }
+
+      exit_client(NULL, source_p, &me, "No matching hub_mask.");
+      return;
     }
 
   /* Check for the new server being leafed behind this HUB */
