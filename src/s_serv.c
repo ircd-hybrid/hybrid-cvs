@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.150 2001/03/07 20:07:43 androsyn Exp $
+ *   $Id: s_serv.c,v 7.151 2001/03/08 15:58:38 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -811,9 +811,6 @@ int server_estab(struct Client *client_p)
   sendto_one(client_p,"SVINFO %d %d 0 :%lu", TS_CURRENT, TS_MIN, CurrentTime);
   
   det_confs_butmask(client_p, CONF_LEAF|CONF_HUB|CONF_SERVER);
-#if 0
-  release_client_dns_reply(client_p);
-#endif
   /*
   ** *WARNING*
   **    In the following code in place of plain server's
