@@ -130,12 +130,7 @@ o) fixes to stop annoying yacc complain about conflicts during compile
 
 --------------------------------------------------------------------------------
 
-This is the current release candidate version of ircd-hybrid-7.
-
-NOTE: This is still BETA code.  Run it at your own risk.  By running this
- code you assume FULL responsibility for any problems it may cause.  We do
- NOT recommend that you run BETA code on production IRC networks such
- as EFnet.
+This is the current release version of ircd-hybrid-7.
 
 BUGS: Major bugs in this release are listed in BUGS
 
@@ -174,4 +169,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.65.2.3 2003/05/31 07:30:18 lusky Exp $
+$Id: RELNOTES,v 1.65.2.4 2003/06/12 13:04:18 lusky Exp $
