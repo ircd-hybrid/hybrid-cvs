@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.368 2003/05/01 19:42:25 michael Exp $
+ *  $Id: s_conf.c,v 7.369 2003/05/02 15:44:41 adx Exp $
  */
 
 #include "stdinc.h"
@@ -567,9 +567,8 @@ attach_iline(struct Client *client_p, struct ConfItem *aconf)
       return(TOO_MANY); /* Already at maximum allowed ip#'s */
     else
     {
-      sendto_one(client_p, ":%s NOTICE %s :*** :I: line is full, "
-                 "but you have an >I: line!",
-                 me.name, client_p->name);
+      sendto_one(client_p, ":%s NOTICE %s :*** Your connection class is full, "
+                 "but you have exceed_limit=yes;", me.name, client_p->name);
     }
   }
 
@@ -922,8 +921,8 @@ attach_conf(struct Client *client_p, struct ConfItem *aconf)
         return(I_LINE_FULL); 
       else
       {
-        send(client_p->localClient->fd, "NOTICE FLINE :I: line is full, "
-             "but you have an >I: line!\n", 56, 0);
+        sendto_one(client_p, ":%s NOTICE %s :*** Your connection class is "
+              "full, but you have exceed_limit=yes;", me.name, client_p->name);
         SetExemptLimits(client_p);
       }
     }
