@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.255 2003/07/05 06:20:55 db Exp $
+ *  $Id: s_conf.h,v 7.256 2003/07/07 16:56:41 joshk Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -438,8 +438,6 @@ extern struct ConfItem *find_matching_name_conf(ConfType type, const char *,
 extern struct ConfItem *find_exact_name_conf(ConfType type, const char *,
 					     const char *, const char *);
 extern void delete_conf_item(struct ConfItem *);
-extern struct ConfItem *find_tkline(const char *, const char *,
-				    struct irc_ssaddr *);
 extern void get_printable_conf(struct ConfItem *, char **, char **,
 			       char **, int *,char **);
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- * $Id: dynlink.c,v 7.12 2003/06/17 03:58:29 joshk Exp $
+ * $Id: dynlink.c,v 7.13 2003/07/07 16:56:43 joshk Exp $
  *
  */
 #include "stdinc.h"
@@ -190,20 +190,17 @@ void *dlsym(void *myModule, char *mySymbolName)
 int unload_one_module(char *name, int warn)
 {
   int modindex;
-  void (*deinitfunc)(void) = NULL;
 
   if ((modindex = findmodule_byname(name)) == -1) 
     return(-1);
+
+  if (modlist[modindex]->modremove) (*(modlist[modindex]->modremove))();
 
 #ifdef HAVE_SHL_LOAD
     /* shl_* and friends have a slightly different format than dl*. But it does not
      * require creation of a totally new modules.c, instead proper usage of
      * defines solve this case. -TimeMr14C
      */
-  if (shl_findsym(modlist[modindex]->address, "_moddeinit", TYPE_UNDEFINED, &deinitfunc) == 0)
-      deinitfunc();
-  else if (shl_findsym(modlist[modindex]->address, "__moddeinit", TYPE_UNDEFINED, &deinitfunc) == 0)
-    deinitfunc();
   shl_unload((shl_t) & (modlist[modindex]->address));
 #else
   /* We use FreeBSD's dlfunc(3) interface, or fake it as we
@@ -212,10 +209,6 @@ int unload_one_module(char *name, int warn)
    * providing something guaranteed to do the right thing here.
    *          -jmallett
    */
-  if ((deinitfunc = (void(*)(void))dlfunc(modlist[modindex]->address, "_moddeinit")) ||
-      (deinitfunc = (void(*)(void))dlfunc(modlist[modindex]->address, "__moddeinit")))
-    deinitfunc();
-
   dlclose(modlist[modindex]->address);
 #endif
   MyFree(modlist[modindex]->name);
@@ -250,6 +243,7 @@ load_a_module(char *path, int warn, int core)
 #endif
   char *mod_basename;
   void (*initfunc)(void) = NULL;
+  void (*mod_deinit)(void) = NULL;
   char **verp;
   char *ver;
 
@@ -288,6 +282,19 @@ load_a_module(char *path, int warn, int core)
     }
   }
 
+  if (shl_findsym(&tmpptr, "_moddeinit", TYPE_UNDEFINED, (void *)&mod_deinit) == -1)
+  {
+    if (shl_findsym(&tmpptr, "__moddeinit", TYPE_UNDEFINED, (void *)&mod_deinit) == -1)
+    {
+      ilog (L_WARN, "Module %s has no _moddeinit() function", mod_basename);
+      sendto_realops_flags(UMODE_ALL, L_ALL, "Module %s has no _moddeinit() function",
+                           mod_basename);
+      /* this is a soft error.  we're allowed not to have one, i guess.
+       * (judging by the code in unload_one_module() */
+      mod_deinit = NULL;
+    }
+  }
+
   if (shl_findsym(&tmpptr, "_version", TYPE_UNDEFINED, &verp) == -1)
   {
     if (shl_findsym(&tmpptr, "__version", TYPE_UNDEFINED, &verp) == -1)
@@ -309,6 +316,17 @@ load_a_module(char *path, int warn, int core)
     return(-1);
   }
 
+  mod_deinit = (void(*)(void))dlfunc(tmpptr, "_moddeinit");
+
+  if (mod_deinit == NULL && (mod_deinit = (void(*)(void))dlfunc(tmpptr, "__moddeinit")) == NULL)
+  {
+    sendto_realops_flags(UMODE_ALL, L_ALL, "Module %s has no _moddeinit() function",
+                         mod_basename);
+    ilog (L_WARN, "Module %s has no _moddeinit() function", mod_basename);
+    /* blah blah soft error, see above. */
+    mod_deinit = NULL;
+  }
+
   verp = (char **)dlsym(tmpptr, "_version");
 
   if (verp == NULL && (verp = (char **)dlsym(tmpptr, "__version")) == NULL)
@@ -323,6 +341,7 @@ load_a_module(char *path, int warn, int core)
   modlist[num_mods]->address = tmpptr;
   modlist[num_mods]->version = ver;
   modlist[num_mods]->core    = core;
+  modlist[num_mods]->modremove = mod_deinit;
   DupString(modlist[num_mods]->name, mod_basename);
   num_mods++;
 
