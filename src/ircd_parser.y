@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.129 2001/02/13 05:22:47 androsyn Exp $
+ * $Id: ircd_parser.y,v 1.130 2001/02/13 08:34:39 db Exp $
  */
 
 %{
@@ -1002,10 +1002,10 @@ connect_entry:  CONNECT
     if(yy_aconf->host && yy_aconf->passwd
        && yy_aconf->spasswd)
       {
-        ++scount;
         if( conf_add_server(yy_aconf, scount) >= 0 )
 	  {
 	    conf_add_conf(yy_aconf);
+	    ++scount;
 	  }
 	else
 	  {
