@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.282 2003/05/19 00:41:13 michael Exp $
+ *  $Id: ircd.c,v 7.283 2003/05/19 02:09:30 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -244,13 +244,13 @@ static int printVersion = 0;
 
 struct lgetopt myopts[] = {
   {"dlinefile",  &ConfigFileEntry.dlinefile, 
-   STRING, "File to use for dlines.conf"},
+   STRING, "File to use for dline.conf"},
   {"configfile", &ConfigFileEntry.configfile, 
    STRING, "File to use for ircd.conf"},
   {"klinefile",  &ConfigFileEntry.klinefile, 
-   STRING, "File to use for klines.conf"},
+   STRING, "File to use for kline.conf"},
   {"xlinefile",  &ConfigFileEntry.xlinefile, 
-   STRING, "File to use for xlines.conf"},
+   STRING, "File to use for xline.conf"},
   {"logfile",    &logFileName, 
    STRING, "File to use for ircd.log"},
   {"pidfile",    &pidFileName,
