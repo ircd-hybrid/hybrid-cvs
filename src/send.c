@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.213 2003/01/19 13:19:52 db Exp $
+ *  $Id: send.c,v 7.214 2003/01/28 05:28:46 db Exp $
  */
 
 #include "stdinc.h"
@@ -580,10 +580,13 @@ sendto_list_anywhere(struct Client *one, struct Client *from,
   {
     target_p = ptr->data;
 
+    if (IsDead(target_p))
+      continue;
+
     if (target_p->from == one)
       continue;
 
-    if (MyConnect(target_p) && IsRegisteredUser(target_p) && !IsDead(target_p))
+    if (MyConnect(target_p) && IsRegisteredUser(target_p))
     {
       if(target_p->serial != current_serial)
       {
@@ -662,6 +665,9 @@ sendto_server(struct Client *one, struct Client *source_p,
   {
     client_p = ptr->data;
 
+    /* If dead already skip */
+    if (IsDead(client_p))
+      continue;
     /* check against 'one' */
     if (one && (client_p == one->from))
       continue;
