@@ -1,7 +1,7 @@
 /*
  * include/irc_res.h for referencing functions in src/irc_res.c
  *
- * $Id: irc_res.h,v 7.7 2003/06/04 00:49:18 joshk Exp $
+ * $Id: irc_res.h,v 7.8 2003/11/25 05:08:03 db Exp $
  */
 
 #ifndef INCLUDED_irc_res_h
@@ -86,7 +86,7 @@ extern int init_resolver(void);
 extern void restart_resolver(void);
 extern void add_local_domain(char *hname, size_t size);
 extern void timeout_resolver(void *notused);
-extern void delete_resolver_queries(const void *vptr);
+extern void delete_resolver_queries(const struct DNSQuery *query);
 extern void report_dns_servers(struct Client *source_p);
 extern void gethost_byname_type(const char *name, const struct DNSQuery *query, int type);
 extern void gethost_byname(const char *name, const struct DNSQuery *query);

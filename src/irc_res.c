@@ -7,7 +7,7 @@
  * The authors takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: irc_res.c,v 7.35 2003/08/19 17:52:08 adx Exp $
+ * $Id: irc_res.c,v 7.36 2003/11/25 05:08:04 db Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -88,7 +88,7 @@ struct reslist
   time_t timeout;
   struct irc_ssaddr addr;
   char *name;
-  struct DNSQuery query;   /* query callback for this request */
+  const struct DNSQuery *query;  /* query callback for this request */
 };
 
 static int ResolverFileDescriptor = -1;
@@ -272,9 +272,8 @@ make_request(const struct DNSQuery* query)
   request->resend  = 1;
   request->timeout = 4;    /* start at 4 and exponential inc. */
   memset(&request->addr, 0, sizeof(request->addr));
-  request->query.ptr      = query->ptr;
-  request->query.callback = query->callback;
-  request->state          = REQ_IDLE;
+  request->query   = query;
+  request->state   = REQ_IDLE;
 
   dlinkAdd(request, &request->node, &request_list);
   return(request);
@@ -302,7 +301,7 @@ timeout_query_list(time_t now)
     {
       if (--request->retries <= 0)
       {
-        (*request->query.callback)(request->query.ptr, NULL);
+        (*request->query->callback)(request->query->ptr, NULL);
         rem_request(request);
         continue;
       }
@@ -337,7 +336,7 @@ timeout_resolver(void *notused)
  * for which there no longer exist clients or conf lines.
  */
 void
-delete_resolver_queries(const void *vptr)
+delete_resolver_queries(const struct DNSQuery *query)
 {
   dlink_node *ptr;
   dlink_node *next_ptr;
@@ -347,7 +346,7 @@ delete_resolver_queries(const void *vptr)
   {
     if ((request = ptr->data) != NULL)
     {
-      if (vptr == &request->query)
+      if (query == request->query)
         rem_request(request);
     }
   }
@@ -839,7 +838,7 @@ res_readreply(int fd, void *data)
          * If a bad error was returned, we stop here and dont send
          * send any more (no retries granted).
          */
-        (*request->query.callback)(request->query.ptr, NULL);
+        (*request->query->callback)(request->query->ptr, NULL);
 	rem_request(request);
       } 
     }
@@ -862,7 +861,7 @@ res_readreply(int fd, void *data)
          * got a PTR response with no name, something bogus is happening
          * don't bother trying again, the client address doesn't resolve
          */
-        (*request->query.callback)(request->query.ptr, reply);
+        (*request->query->callback)(request->query->ptr, reply);
         rem_request(request);
         return;
       }
@@ -874,10 +873,10 @@ res_readreply(int fd, void *data)
        */
 #ifdef IPV6
       if (request->addr.ss.ss_family == AF_INET6)
-        gethost_byname_type(request->name, &request->query, T_AAAA);
+        gethost_byname_type(request->name, request->query, T_AAAA);
       else
 #endif
-      gethost_byname_type(request->name, &request->query, T_A);
+      gethost_byname_type(request->name, request->query, T_A);
       rem_request(request);
     }
     else
@@ -886,7 +885,7 @@ res_readreply(int fd, void *data)
        * got a name and address response, client resolved
        */
       reply = make_dnsreply(request);
-      (*request->query.callback)(request->query.ptr, reply);
+      (*request->query->callback)(request->query->ptr, reply);
       MyFree(reply);
       rem_request(request);
     }
