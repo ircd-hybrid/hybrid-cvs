@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.h,v 7.21 2003/04/13 13:02:06 adx Exp $
+ *  $Id: hash.h,v 7.22 2003/04/18 19:28:12 michael Exp $
  */
 
 #ifndef INCLUDED_hash_h
@@ -57,7 +57,7 @@ struct HashEntry {
 };
 
 struct Client *find_id(const char *name);
-extern int add_to_id_hash_table(char *, struct Client *);
+extern void add_to_id_hash_table(char *, struct Client *);
 extern struct HashEntry hash_get_channel_block(int i);
 
 extern struct Channel

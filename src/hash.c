@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.57 2003/04/16 09:46:59 michael Exp $
+ *  $Id: hash.c,v 7.58 2003/04/18 19:28:14 michael Exp $
  */
 
 #include "stdinc.h"
@@ -127,8 +127,8 @@ size_t hash_get_resv_table_size(void)
  * The order shown above is just one instant of the server. 
  */
 
-static unsigned
-int hash_nick_name(const char* name)
+static unsigned int
+hash_nick_name(const char *name)
 {
   unsigned int h = 0;
 
@@ -165,8 +165,8 @@ hash_id(const char *nname)
  * is little or no point hashing on a full channel name which maybe 255 chars
  * long.
  */
-static unsigned
-int hash_channel_name(const char* name)
+static unsigned int
+hash_channel_name(const char *name)
 {
   int i = 30;
   unsigned int h = 0;
@@ -175,6 +175,7 @@ int hash_channel_name(const char* name)
   {
     h = (h << 4) - (h + (unsigned char)ToLower(*name++));
   }
+
   return(h & (CH_MAX - 1));
 }
 
@@ -183,8 +184,8 @@ int hash_channel_name(const char* name)
  * calculate a hash value on at most the first 30 characters and add
  * it to the resv hash
  */
-static unsigned
-int hash_resv_channel(const char *name)
+static unsigned int
+hash_resv_channel(const char *name)
 {
   int i = 30;
   unsigned int h = 0;
@@ -270,17 +271,16 @@ init_hash(void)
 /*
  * add_to_id_hash_table
  */
-int
+void
 add_to_id_hash_table(char *name, struct Client *client_p)
 {
-  unsigned int     hashv;
+  unsigned int hashv;
 
   hashv = hash_id(name);
   client_p->idhnext = (struct Client *)idTable[hashv].list;
   idTable[hashv].list = (void *)client_p;
   idTable[hashv].links++;
   idTable[hashv].hits++;
-  return 0;
 }
 
 /*
@@ -292,12 +292,13 @@ add_to_client_hash_table(const char* name, struct Client* client_p)
   unsigned int hashv;
   assert(name != NULL);
   assert(client_p != NULL);
-  if(name == NULL || client_p == NULL)
+
+  if (name == NULL || client_p == NULL)
     return;
-  
+
   hashv = hash_nick_name(name);
-  client_p->hnext = (struct Client*) clientTable[hashv].list;
-  clientTable[hashv].list = (void*) client_p;
+  client_p->hnext = (struct Client *)clientTable[hashv].list;
+  clientTable[hashv].list = (void *)client_p;
   ++clientTable[hashv].links;
   ++clientTable[hashv].hits;
 }
@@ -311,18 +312,17 @@ add_to_resv_hash_table(const char *name, struct ResvChannel *resv_p)
   unsigned int hashv;
   assert(name != NULL);
   assert(resv_p != NULL);
-  
-  if(name == NULL || resv_p == NULL)
+
+  if (name == NULL || resv_p == NULL)
     return;
 
   hashv = hash_resv_channel(name);
 
-  resv_p->hnext = (struct ResvChannel *) resvTable[hashv].list;
-  resvTable[hashv].list = (void*)resv_p;
+  resv_p->hnext = (struct ResvChannel *)resvTable[hashv].list;
+  resvTable[hashv].list = (void *)resv_p;
   ++resvTable[hashv].links;
   ++resvTable[hashv].hits;
 }
-
 
 /*
  * del_from_id_hash_table - remove a client/server from the id
@@ -500,9 +500,9 @@ find_id(const char *name)
   unsigned int hashv;
 
   assert(NULL != name);
-	
+
   if (name == NULL)
-    return NULL;
+    return(NULL);
 
   hashv = hash_id(name);
   found_client = (struct Client *)idTable[hashv].list;
@@ -518,22 +518,20 @@ find_id(const char *name)
     }
   }
 	
-  return (NULL);
+  return(NULL);
 }
 
-
-/*
- * find_client
+/* find_client()
  *
  * inputs	- name of either server or client
  * output	- pointer to client pointer
  * side effects	- none
  */
-struct Client* 
-find_client(const char* name)
+struct Client *
+find_client(const char *name)
 {
-  struct Client* found_client;
-  unsigned int   hashv;
+  struct Client *found_client;
+  unsigned int hashv;
 
   assert(name != NULL);
 
@@ -558,9 +556,8 @@ find_client(const char* name)
   ++clmiss;
 #endif
   
-  return (NULL);
+  return(NULL);
 }
-
 
 /*
  * Whats happening in this next loop ? Well, it takes a name like
@@ -572,8 +569,8 @@ find_client(const char* name)
  * also made const correct
  * --Bleep
  */
-static struct Client* 
-hash_find_masked_server(const char* name)
+static struct Client *
+hash_find_masked_server(const char *name)
 {
   char           buf[HOSTLEN + 1];
   char*          p = buf;
@@ -602,21 +599,20 @@ hash_find_masked_server(const char* name)
   return 0;
 }
 
-/*
- * find_server
+/* find_server()
  *
  * inputs	- pointer to server name
  * output	- NULL if given name is NULL or
  *		  given server not found
  * side effects	-
  */
-struct Client* 
-find_server(const char* name)
+struct Client *
+find_server(const char *name)
 {
-  struct Client* found_server;
-  unsigned int   hashv;
+  struct Client *found_server;
+  unsigned int hashv;
 
-  assert(NULL != name);
+  assert(name != NULL);
 
   if (name == NULL)
     return(NULL);
@@ -647,24 +643,25 @@ find_server(const char* name)
 #endif
 }
 
-/*
- * hash_find_channel
+/* hash_find_channel()
+ *
  * inputs	- pointer to name
  * output	- 
  * side effects	-
  */
-struct Channel* 
-hash_find_channel(const char* name)
+struct Channel *
+hash_find_channel(const char *name)
 {
-  struct Channel* found_chptr;
+  struct Channel *found_chptr;
   unsigned int hashv;
-  
-  assert(name != NULL);
-  if(name == NULL)
-    return NULL;
-  hashv = hash_channel_name(name);
 
-  found_chptr = (struct Channel*) channelTable[hashv].list;
+  assert(name != NULL);
+
+  if (name == NULL)
+    return(NULL);
+
+  hashv       = hash_channel_name(name);
+  found_chptr = (struct Channel *)channelTable[hashv].list;
 
   for ( ; found_chptr; found_chptr = found_chptr->hnextch)
   

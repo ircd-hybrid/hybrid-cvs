@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.c,v 7.78 2003/04/13 22:29:23 db Exp $
+ *  $Id: listener.c,v 7.79 2003/04/18 19:28:14 michael Exp $
  */
 
 #include "stdinc.h"
@@ -40,44 +40,42 @@
 #include "memory.h"
 #include "setup.h"
 #include "tools.h"
-
 #ifdef HAVE_LIBCRYPTO
 #include <openssl/bio.h>
 #endif
 
-
 #ifndef INADDR_NONE
-#define INADDR_NONE ((unsigned int) 0xffffffff)
+#define INADDR_NONE ((unsigned int)0xffffffff)
 #endif
 
 static PF accept_connection;
 
 static dlink_list ListenerPollList = { NULL, NULL, 0 };
 
-static struct Listener* 
+static struct Listener *
 make_listener(int port, struct irc_ssaddr *addr)
 {
-  struct Listener* listener =
-    (struct Listener*) MyMalloc(sizeof(struct Listener));
-  assert(0 != listener);
-  
+  struct Listener *listener =
+    (struct Listener *)MyMalloc(sizeof(struct Listener));
+  assert(listener != 0);
+
   listener->name        = me.name;
   listener->fd          = -1;
   memcpy(&listener->addr, addr, sizeof(struct irc_ssaddr));
   listener->port        = port;
 
-  return listener;
+  return(listener);
 }
 
 void
-free_listener(struct Listener* listener)
+free_listener(struct Listener *listener)
 {
-  assert(NULL != listener);
-  if(listener == NULL)
+  assert(listener != NULL);
+
+  if (listener == NULL)
     return;
 
-dlinkDelete(&listener->listener_node, &ListenerPollList);
-  /* free */
+  dlinkDelete(&listener->listener_node, &ListenerPollList);
   MyFree(listener);
 }
 
@@ -85,16 +83,19 @@ dlinkDelete(&listener->listener_node, &ListenerPollList);
  * get_listener_name - return displayable listener name and port
  * returns "host.foo.org:6667" for a given listener
  */
-const char* 
+const char *
 get_listener_name(const struct Listener* listener)
 {
   static char buf[HOSTLEN + HOSTLEN + PORTNAMELEN + 4];
-  assert(NULL != listener);
-  if(listener == NULL)
-    return NULL;
+
+  assert(listener != NULL);
+
+  if (listener == NULL)
+    return(NULL);
+
   ircsprintf(buf, "%s[%s/%u]",
              me.name, listener->name, listener->port);
-  return buf;
+  return(buf);
 }
 
 /*
@@ -215,27 +216,29 @@ inetport(struct Listener* listener)
   return 1;
 }
 
-static struct Listener* 
+static struct Listener *
 find_listener(int port, struct irc_ssaddr *addr)
 {
   dlink_node *ptr;
-  struct Listener* listener = NULL;
-  struct Listener* last_closed = NULL;
+  struct Listener *listener    = NULL;
+  struct Listener *last_closed = NULL;
 
   DLINK_FOREACH(ptr, ListenerPollList.head)
   {
     listener = ptr->data;
-    if ( (port == listener->port) &&
-         (!memcmp(addr, &listener->addr, sizeof(struct irc_ssaddr))))
+
+    if ((port == listener->port) &&
+        (!memcmp(addr, &listener->addr, sizeof(struct irc_ssaddr))))
     {
       /* Try to return an open listener, otherwise reuse a closed one */
       if (listener->fd == -1)
         last_closed = listener;
       else
-        return listener;
+        return(listener);
     }
   }
-  return last_closed;
+
+  return(last_closed);
 }
 
 
@@ -323,11 +326,14 @@ add_listener(int port, const char* vhost_ip)
 /*
  * close_listener - close a single listener
  */
-void close_listener(struct Listener* listener)
+void
+close_listener(struct Listener *listener)
 {
   assert(listener != NULL);
-  if(listener == NULL)
+
+  if (listener == NULL)
     return;
+
   if (listener->fd >= 0)
   {
     fd_close(listener->fd);
@@ -350,9 +356,9 @@ close_listeners(void)
 {
   dlink_node *ptr;
   dlink_node *next_ptr;
-  struct Listener* listener;
-  /*
-   * close all 'extra' listening ports we have
+  struct Listener *listener;
+
+  /* close all 'extra' listening ports we have
    */
   DLINK_FOREACH_SAFE(ptr, next_ptr, ListenerPollList.head)
   {
@@ -368,7 +374,6 @@ static void
 accept_connection(int pfd, void *data)
 {
   static time_t      last_oper_notice = 0;
-
   struct irc_ssaddr sai;
   struct irc_ssaddr addr;
   int                fd;
@@ -376,7 +381,7 @@ accept_connection(int pfd, void *data)
   struct Listener *  listener = data;
 
   assert(listener != NULL);
-  if(listener == NULL)
+  if (listener == NULL)
     return;
   listener->last_accept = CurrentTime;
   /*

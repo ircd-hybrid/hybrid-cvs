@@ -19,34 +19,26 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.h,v 7.20 2003/04/02 02:36:48 michael Exp $
+ *  $Id: s_user.h,v 7.21 2003/04/18 19:28:12 michael Exp $
  */
 
 #ifndef INCLUDED_s_user_h
 #define INCLUDED_s_user_h
-
 #include "config.h"
 
 struct Client;
 struct ConfItem;
 
-extern int   user_mode(struct Client* , struct Client* , int, char** );
-extern void  send_umode(struct Client* , struct Client* ,
-                        unsigned int, unsigned int, char* );
-extern void  send_umode_out(struct Client* , struct Client* , unsigned int);
-extern int   show_lusers(struct Client* source_p);
-extern int   register_local_user(struct Client* ,struct Client* ,
-				 char* ,char* );
-extern int   register_remote_user(struct Client* ,struct Client* ,
-				  char* ,char* );
-extern int   do_local_user(char* ,struct Client* ,struct Client*,
-			   char* ,char *,char *,char *);
-
-extern int   do_remote_user(struct Client* ,struct Client*,
-			    char* ,char *,char *,char *,char *);
-
+extern int user_mode(struct Client *, struct Client *, int, char **);
+extern void send_umode(struct Client *, struct Client *,
+                       unsigned int, unsigned int, char *);
+extern void send_umode_out(struct Client* , struct Client* , unsigned int);
+extern void show_lusers(struct Client *source_p);
+extern int register_local_user(struct Client *, struct Client *, char *, char *);
+extern int register_remote_user(struct Client *, struct Client *, char *, char *);
+extern int do_local_user(char *, struct Client *, struct Client *, char *, char *, char *, char *);
+extern int do_remote_user(struct Client *, struct Client *, char *, char *, char *, char *, char *);
 extern unsigned int user_modes_from_c_to_bitmask[];
-extern void  show_isupport(struct Client *);
-extern int oper_up(struct Client *source_p, struct ConfItem *aconf);
-
+extern void show_isupport(struct Client *);
+extern void oper_up(struct Client *source_p, struct ConfItem *aconf);
 #endif

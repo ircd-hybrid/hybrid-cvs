@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.245 2003/04/17 01:08:07 db Exp $
+ *  $Id: s_user.c,v 7.246 2003/04/18 19:28:14 michael Exp $
  */
 
 #include "stdinc.h"
@@ -170,11 +170,11 @@ unsigned int user_modes_from_c_to_bitmask[] =
 
 /* show_lusers()
  *
- * inputs	- pointer to client
- * output	-
- * side effects	- display to client user counts etc.
+ * inputs       - pointer to client
+ * output       -
+ * side effects - display to client user counts etc.
  */
-int
+void
 show_lusers(struct Client *source_p) 
 {
   if (!ConfigServerHide.hide_servers || IsOper(source_p))
@@ -225,14 +225,12 @@ show_lusers(struct Client *source_p)
 
   if ((Count.local + Count.myserver) > MaxConnectionCount)
     MaxConnectionCount = Count.local + Count.myserver; 
-
-  return(0);
 }
 
 /* show_isupport()
  *
- * inputs	- pointer to client
- * output	- 
+ * inputs       - pointer to client
+ * output       - 
  * side effects	- display to client what we support (for them)
  */
 void
@@ -392,7 +390,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
    */
   /* Except "F:" clients */
   if ((((Count.local + 1) >= (GlobalSetOptions.maxclients + MAX_BUFFER))) ||
-     ((Count.local >= ServerInfo.max_clients) && !IsExemptLimits(source_p)))
+      ((Count.local >= ServerInfo.max_clients) && !IsExemptLimits(source_p)))
   {
     sendto_realops_flags(UMODE_FULL, L_ALL, "Too many clients, rejecting %s[%s].",
                          nick, source_p->host);
@@ -508,7 +506,7 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
   struct User *user;
   struct Client *target_p;
 
-  assert(NULL != source_p);
+  assert(source_p != NULL);
   assert(source_p->username != username);
 
   if (source_p == NULL)
@@ -671,7 +669,7 @@ valid_hostname(const char *hostname)
 {
   const char *p = hostname;
 
-  assert(NULL != p);
+  assert(p != NULL);
 
   if (hostname == NULL)
     return(NO);
@@ -707,7 +705,7 @@ valid_username(const char *username)
   int dots      = 0;
   const char *p = username;
 
-  assert(NULL != p);
+  assert(p != NULL);
   
   if (username == NULL)
     return(NO);
@@ -817,9 +815,9 @@ do_local_user(char *nick, struct Client *client_p, struct Client *source_p,
 {
   struct User *user;
 
-  assert(NULL != source_p);
+  assert(source_p != NULL);
   assert(source_p->username != username);
-  
+
   if (source_p == NULL)
     return(0);
 
@@ -868,7 +866,7 @@ do_remote_user(struct Client *client_p, struct Client *source_p,
 {
   struct User *user;
 
-  assert(NULL != source_p);
+  assert(source_p != NULL);
   assert(source_p->username != username);
 
   if (source_p == NULL)
@@ -1042,7 +1040,7 @@ user_mode(struct Client *client_p, struct Client *source_p, int parc, char *parv
           }
 
           break;
-        }
+      }
     }
   }
 
@@ -1140,8 +1138,8 @@ send_umode(struct Client *client_p, struct Client *source_p,
  * side effects - Only send ubuf out to servers that know about this client
  */
 void
-send_umode_out(struct Client *client_p,
-               struct Client *source_p, unsigned int old)
+send_umode_out(struct Client *client_p, struct Client *source_p,
+               unsigned int old)
 {
   struct Client *target_p;
   char buf[BUFSIZE];
@@ -1285,7 +1283,7 @@ check_X_line(struct Client *client_p, struct Client *source_p)
  * all checks on passwords have already been done.
  * This could also be used by rsa oper routines. 
  */
-int
+void
 oper_up(struct Client *source_p, struct ConfItem *aconf)
 {
   unsigned int old = (source_p->umodes & ALL_UMODES);
@@ -1347,6 +1345,5 @@ oper_up(struct Client *source_p, struct ConfItem *aconf)
   sendto_one(source_p, ":%s NOTICE %s :*** Oper privs are %s",
              me.name, source_p->name, operprivs);
   SendMessageFile(source_p, &ConfigFileEntry.opermotd);
-
-  return(1);
 }
+
