@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_challenge.c,v 1.23 2001/06/05 01:46:48 db Exp $
+ *   $Id: m_challenge.c,v 1.24 2001/07/02 19:09:18 jdc Exp $
  */
 #include <stdlib.h>
 #include <string.h>
@@ -101,7 +101,7 @@ static void m_challenge( struct Client *client_p, struct Client *source_p,
      if (!source_p->user->response)
        return;
      
-     if (strcasecmp(source_p->user->response, ++parv[1]))
+     if (irccmp(source_p->user->response, ++parv[1]))
        {
          sendto_one(source_p, form_str(ERR_PASSWDMISMATCH), me.name,
                     source_p->name);

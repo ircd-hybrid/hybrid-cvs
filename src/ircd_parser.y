@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.191 2001/07/02 19:03:25 jdc Exp $
+ * $Id: ircd_parser.y,v 1.192 2001/07/02 19:09:25 jdc Exp $
  */
 
 %{
@@ -1649,7 +1649,7 @@ connect_cipher_preference: CIPHER_PREFERENCE '=' QSTRING ';'
 
     for (ecap = CipherTable; ecap->name; ecap++)
     {
-      if ( (!strcasecmp(ecap->name, cipher_name)) &&
+      if ( (!irccmp(ecap->name, cipher_name)) &&
            (ecap->cap & CAP_ENC_MASK))
       {
         yy_aconf->cipher_preference = ecap;
@@ -2209,7 +2209,7 @@ general_default_cipher_preference: DEFAULT_CIPHER_PREFERENCE '=' QSTRING ';'
 
     for (ecap = CipherTable; ecap->name; ecap++)
     {
-      if ( (!strcasecmp(ecap->name, cipher_name)) &&
+      if ( (!irccmp(ecap->name, cipher_name)) &&
            (ecap->cap & CAP_ENC_MASK))
       {
         ConfigFileEntry.default_cipher_preference = ecap;

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_capab.c,v 1.19 2001/07/02 19:03:20 jdc Exp $
+ *   $Id: m_capab.c,v 1.20 2001/07/02 19:09:18 jdc Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -95,7 +95,7 @@ static void mr_capab(struct Client *client_p, struct Client *source_p,
        */
       for (ecap = CipherTable; ecap->name; ecap++)
       {
-        if ( (!strcasecmp(ecap->name, s)) && (ecap->cap & CAP_ENC_MASK))
+        if ( (!irccmp(ecap->name, s)) && (ecap->cap & CAP_ENC_MASK))
         {
           cipher = ecap->cap;
           break;

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_cryptlink.c,v 1.17 2001/07/02 19:03:22 jdc Exp $
+ *   $Id: m_cryptlink.c,v 1.18 2001/07/02 19:09:19 jdc Exp $
  */
 
 /*
@@ -186,7 +186,7 @@ static void cryptlink_auth(struct Client *client_p, struct Client *source_p,
 
   for (ecap = CipherTable; ecap->name; ecap++)
   {
-    if ( (!strcasecmp(ecap->name, parv[2])) &&
+    if ( (!irccmp(ecap->name, parv[2])) &&
          (IsCapableEnc(client_p, ecap->cap)) )
     {
       client_p->localClient->in_cipher = ecap;
