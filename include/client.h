@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.128 2001/09/04 16:53:49 leeh Exp $
+ * $Id: client.h,v 7.129 2001/09/12 17:00:26 leeh Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -612,7 +612,6 @@ extern int set_initial_nick(struct Client *client_p, struct Client *source_p,
                             char *nick);
 extern int change_local_nick(struct Client *client_p, struct Client *source_p,
                              char *nick);
-extern int clean_nick_name(char* nick);
 
 #endif /* INCLUDED_client_h */
 

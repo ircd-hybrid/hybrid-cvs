@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.204 2001/09/12 05:39:21 habeeb Exp $
+ *  $Id: client.c,v 7.205 2001/09/12 17:00:27 leeh Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -1711,39 +1711,4 @@ int change_local_nick(struct Client *client_p, struct Client *source_p,
   return 1;
 }
 
-/*
- * clean_nick_name - ensures that the given parameter (nick) is
- * really a proper string for a nickname (note, the 'nick'
- * may be modified in the process...)
- *
- *      RETURNS the length of the final NICKNAME (0, if
- *      nickname is illegal)
- *
- *  Nickname characters are in range
- *      'A'..'}', '_', '-', '0'..'9'
- *  anything outside the above set will terminate nickname.
- *  In addition, the first character cannot be '-'
- *  or a Digit.
- *
- *  Note:
- *      '~'-character should be NOT be allowed.
- */
-int clean_nick_name(char* nick)
-{
-  char* ch   = nick;
-  char* endp = ch + NICKLEN;
-  assert(0 != nick);
-
-  if (*nick == '-' || IsDigit(*nick)) /* first character in [0..9-] */
-    return 0;
-  
-  for ( ; ch < endp && *ch; ++ch)
-    {
-      if (!IsNickChar(*ch))
-	break;
-    }
-  *ch = '\0';
-
-  return (ch - nick);
-}
 
