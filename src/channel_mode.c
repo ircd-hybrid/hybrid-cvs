@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.115 2003/06/14 14:11:46 adx Exp $
+ *  $Id: channel_mode.c,v 7.116 2003/06/19 14:27:21 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1603,15 +1603,13 @@ static struct ChannelMode ModeTable[255] =
  * Side-effects: None.
  */
 static int
-get_channel_access(struct Client *source_p, struct Channel *chptr)
+get_channel_access(struct Client *source_p, struct Channel *chptr, struct Membership *member)
 {
-  struct Membership *member;
-
   /* Let hacked servers in for now... */
   if (!MyClient(source_p))
     return(CHACCESS_CHANOP);
 
-  if ((member = find_channel_link(source_p, chptr)) == NULL)
+  if (member == NULL)
     return(CHACCESS_NOTONCHAN);
 
   if (has_member_flags(member, CHFL_CHANOP))
@@ -1878,8 +1876,8 @@ send_mode_changes(struct Client *client_p, struct Client *source_p,
  *               clients.
  */
 void
-set_channel_mode(struct Client *client_p, struct Client *source_p,
-                 struct Channel *chptr, int parc, char *parv[], char *chname)
+set_channel_mode(struct Client *client_p, struct Client *source_p, struct Channel *chptr,
+                 struct Membership *member, int parc, char *parv[], char *chname)
 {
   int dir = MODE_ADD;
   int parn = 1;
@@ -1892,7 +1890,7 @@ set_channel_mode(struct Client *client_p, struct Client *source_p,
   mode_limit = 0;
   simple_modes_mask = 0;
 
-  alevel = get_channel_access(source_p, chptr);
+  alevel = get_channel_access(source_p, chptr, member);
 
   for (; (c = *ml) != '\0'; ml++) 
   {

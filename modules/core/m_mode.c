@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_mode.c,v 1.64 2003/06/07 15:20:29 adx Exp $
+ *  $Id: m_mode.c,v 1.65 2003/06/19 14:27:20 michael Exp $
  */
 
 #include "stdinc.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
   mod_del_cmd(&mode_msgtab);
 }
 
-const char *_version = "$Revision: 1.64 $";
+const char *_version = "$Revision: 1.65 $";
 #endif
 
 /*
@@ -74,6 +74,7 @@ m_mode(struct Client *client_p, struct Client *source_p,
        int parc, char *parv[])
 {
   struct Channel *chptr = NULL;
+  struct Membership *member;
   static char modebuf[MODEBUFLEN];
   static char parabuf[MODEBUFLEN];
 
@@ -150,21 +151,26 @@ m_mode(struct Client *client_p, struct Client *source_p,
    */
   else if (IsServer(source_p))
   {
-    set_channel_mode(client_p, source_p, chptr, parc - 2, parv + 2,
+    set_channel_mode(client_p, source_p, chptr, NULL, parc - 2, parv + 2,
                      chptr->chname);
   }
-  else if (!has_member_flags(find_channel_link(source_p, chptr), CHFL_DEOPPED))
+  else
   {
-    /* Finish the flood grace period... */
-    if (MyClient(source_p) && !IsFloodDone(source_p))
-    {
-      if ((parc == 3) && (parv[2][0] == 'b') && (parv[2][1] == '\0'))
-        ;
-      else
-        flood_endgrace(source_p);
-    }
+    member = find_channel_link(source_p, chptr);
 
-    set_channel_mode(client_p, source_p, chptr, parc - 2, parv + 2,
-                     chptr->chname);
+    if (!has_member_flags(member, CHFL_DEOPPED))
+    {
+      /* Finish the flood grace period... */
+      if (MyClient(source_p) && !IsFloodDone(source_p))
+      {
+        if ((parc == 3) && (parv[2][0] == 'b') && (parv[2][1] == '\0'))
+          ;
+        else
+          flood_endgrace(source_p);
+      }
+
+      set_channel_mode(client_p, source_p, chptr, member, parc - 2, parv + 2,
+                       chptr->chname);
+    }
   }
 }

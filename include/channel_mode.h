@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.h,v 7.24 2003/06/12 15:17:19 michael Exp $
+ *  $Id: channel_mode.h,v 7.25 2003/06/19 14:27:18 michael Exp $
  */
 
 
@@ -34,8 +34,8 @@
 #define MAXMODEPARAMS 4
 
 extern void change_channel_membership(struct Membership *, unsigned int, unsigned int);
-extern void set_channel_mode(struct Client *, struct Client *,
-                             struct Channel *, int, char **, char *);
+extern void set_channel_mode(struct Client *, struct Client *, struct Channel *,
+                             struct Membership *, int, char **, char *);
 
 extern void init_chcap_usage_counts(void);
 extern void set_chcap_usage_counts(struct Client *serv_p);
