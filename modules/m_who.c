@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_who.c,v 1.22 2000/12/26 22:18:39 db Exp $
+ *   $Id: m_who.c,v 1.23 2000/12/30 08:17:50 lusky Exp $
  */
 #include "tools.h"
 #include "common.h"   /* bleah */
@@ -280,7 +280,7 @@ void who_global(struct Client *sptr,char *mask, int oper)
   struct Channel *bchan;
   struct Client *acptr;
   dlink_node  *lp;
-  char  *chname;
+  char  *chname=NULL;
   int   showperson;
   int   member;
   int   isinvis;

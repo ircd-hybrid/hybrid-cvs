@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_server.c,v 1.22 2000/12/30 07:30:28 lusky Exp $
+ *   $Id: m_server.c,v 1.23 2000/12/30 08:17:48 lusky Exp $
  */
 #include "tools.h"
 #include "handlers.h"  /* m_server prototype */
@@ -65,7 +65,7 @@ _moddeinit(void)
 
 char *parse_server_args(char *parv[], int parc, char *info, int *hop);
 int bogus_host(char *host);
-int write_links_file(void*);
+void write_links_file(void*);
 
 char *_version = "20001122";
 
@@ -397,7 +397,7 @@ int ms_server(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
  *
  * 
  */
-int write_links_file(void* notused)
+void write_links_file(void* notused)
 {
   MessageFileLine *next_mptr = 0;
   MessageFileLine *mptr = 0;
@@ -414,7 +414,7 @@ int write_links_file(void* notused)
   MessageFileptr = &ConfigFileEntry.linksfile;
 
   if ((file = fbopen(MessageFileptr->fileName, "w")) == 0)
-    return(-1);
+    return;
 
   for( mptr = MessageFileptr->contentsOfFile; mptr; mptr = next_mptr)
     {
@@ -466,7 +466,6 @@ int write_links_file(void* notused)
 	}
     }
   fbclose(file);
-  return 0;
 }
 
 /*

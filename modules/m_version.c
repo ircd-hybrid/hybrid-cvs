@@ -20,14 +20,16 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_version.c,v 1.16 2000/12/29 09:54:55 toot Exp $
+ *   $Id: m_version.c,v 1.17 2000/12/30 08:17:50 lusky Exp $
  */
+#include <string.h>
 #include "handlers.h"
 #include "client.h"
 #include "ircd.h"
 #include "numeric.h"
 #include "s_conf.h"
 #include "s_serv.h"
+#include "s_user.h"
 #include "send.h"
 #include "msg.h"
 #include "parse.h"
