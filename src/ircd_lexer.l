@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.70 2001/02/05 02:59:02 db Exp $
+ * $Id: ircd_lexer.l,v 1.71 2001/02/11 02:52:07 a1kmm Exp $
  */
 
 %option case-insensitive
@@ -74,7 +74,8 @@ qstring		\"[^\"\n]*[\"\n]
 
 ([0-9][a-f]{0,4}\:){1,7}[0-9][1-f]{0,4}(\/[0-9]+)?  {
 
-	if(is_ipv6_address(yytext,&yylval.ip_entry.ip,&yylval.ip_entry.ip_mask))
+	if(is_ipv6_address(yytext,(unsigned char*)&yylval.ip_entry.ip,
+	   (unsigned char*)&yylval.ip_entry.ip_mask))
           {
             ip_string = yytext;
 	    return( IPV6_TYPE );

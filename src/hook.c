@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: hook.c,v 7.5 2001/01/18 09:07:37 ejb Exp $
+ * $Id: hook.c,v 7.6 2001/02/11 02:52:07 a1kmm Exp $
  */
 
 /* hooks are used by modules to hook into events called by other parts of
@@ -30,6 +30,7 @@
 #include "tools.h"
 #include "list.h"
 #include "hook.h"
+#include "memory.h"
 
 dlink_list hooks;
 
@@ -44,11 +45,8 @@ new_hook(char *name)
 {
 	hook *h;
 	
-	h = malloc(sizeof(hook));
-	memset(h, 0, sizeof(hook));
-
-	h->name = malloc(strlen(name) + 1);
-	strcpy(h->name, name);
+	h = MyMalloc(sizeof(hook));
+    DupString(h->name, name);
 	return h;
 }
 
@@ -77,7 +75,7 @@ hook_del_event(char *name)
 		
 		if (!strcmp(h->name, name)) {
 			dlinkDelete(node, &hooks);
-			free(h);
+			MyFree(h);
 			return 0;
 		}
 	}

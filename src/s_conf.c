@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.180 2001/02/10 22:01:54 db Exp $
+ *  $Id: s_conf.c,v 7.181 2001/02/11 02:52:08 a1kmm Exp $
  */
 
 #include <sys/types.h>
@@ -2170,7 +2170,7 @@ void read_conf_files(int cold)
         }
     }
 
-  if(!cold)
+  if (!cold)
     clear_out_old_conf();
 
   read_conf(conf_fbfile_in);

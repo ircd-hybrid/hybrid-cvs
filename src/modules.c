@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.c,v 7.54 2001/02/05 20:12:53 davidt Exp $
+ * $Id: modules.c,v 7.55 2001/02/11 02:52:07 a1kmm Exp $
  */
 
 #include <dlfcn.h>
@@ -130,7 +130,7 @@ mod_add_path(char *path)
   if (mod_find_path(path))
     return;
 
-  pathst = malloc (sizeof (struct module_path));
+  pathst = MyMalloc (sizeof (struct module_path));
   node = make_dlink_node();
   
   strcpy(pathst->path, path);
