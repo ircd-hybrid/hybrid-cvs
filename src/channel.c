@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.329 2002/09/07 06:34:13 androsyn Exp $
+ *  $Id: channel.c,v 7.330 2002/09/11 02:24:51 db Exp $
  */
 
 #include "stdinc.h"
@@ -1150,7 +1150,7 @@ can_join(struct Client *source_p, struct Channel *chptr, char *key)
       if (lp->data == chptr)
         break;
 
-    if (lp != NULL)
+    if (lp == NULL)
     {
       if (!ConfigChannel.use_invex)
         return (ERR_INVITEONLYCHAN);
