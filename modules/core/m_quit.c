@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_quit.c,v 1.37 2003/06/21 04:08:51 michael Exp $
+ *  $Id: m_quit.c,v 1.38 2003/07/19 09:29:43 michael Exp $
  */
 
 #include "stdinc.h"
@@ -55,7 +55,7 @@ _moddeinit(void)
   mod_del_cmd(&quit_msgtab);
 }
 
-const char *_version = "$Revision: 1.37 $";
+const char *_version = "$Revision: 1.38 $";
 #endif
 
 /*
@@ -74,7 +74,7 @@ m_quit(struct Client *client_p, struct Client *source_p,
       (source_p->firsttime + ConfigFileEntry.anti_spam_exit_message_time)
       < CurrentTime))
   {
-    strlcat(reason, comment, sizeof(reason));
+    strlcpy(reason+6, comment, sizeof(reason)-6);
   }
 
   exit_client(client_p, source_p, source_p, reason);
@@ -96,4 +96,3 @@ ms_quit(struct Client *client_p, struct Client *source_p,
 
   exit_client(client_p, source_p, source_p, comment);
 }
-
