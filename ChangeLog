@@ -1,3 +1,16 @@
+db          2003/02/08 17:50:48 EST	(20030208_0)
+
+  Modified files:
+    src                  client.c 
+  Log:
+  - found by scuzzy and cryogen. A client already exiting shouldn't be
+    killed by kline.
+  
+  Revision  Changes    Path
+  7.328     +6 -0      ircd-hybrid-7/src/client.c
+
+
+
 a1kmm       2003/02/07 02:17:03 EST	(20030207_1)
 
   Modified files:
@@ -34943,4 +34956,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4226 2003/02/07 07:17:05 a1kmm Exp $
+$Id: ChangeLog,v 7.4227 2003/02/08 22:50:51 db Exp $
