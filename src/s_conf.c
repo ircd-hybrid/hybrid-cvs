@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.462 2003/07/22 12:23:11 adx Exp $
+ *  $Id: s_conf.c,v 7.463 2003/08/01 16:29:56 michael Exp $
  */
 
 #include "stdinc.h"
@@ -625,6 +625,7 @@ report_confitem_types(struct Client *source_p, ConfType type)
   case LEAF_TYPE:
     DLINK_FOREACH(ptr, leaf_items.head)
     {
+      conf = ptr->data;
       matchitem = (struct MatchItem *)map_to_conf(conf);
       sendto_one(source_p, form_str(RPL_STATSLLINE), me.name,
 		 source_p->name, 'L', matchitem->host, conf->name, 0, "*");
