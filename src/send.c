@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.173 2002/02/17 02:48:18 androsyn Exp $
+ *  $Id: send.c,v 7.174 2002/02/17 03:11:27 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -114,8 +114,6 @@ send_trim(char *lsendbuf, int len );
 static int
 dead_link(struct Client *to, char *notice)
 {
-  SetDead(to);
-
   /*
    * If because of buffer problem then clean linebuf's now so that
    * notices don't hurt operators below.

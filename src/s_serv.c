@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.240 2002/02/17 02:55:23 androsyn Exp $
+ *  $Id: s_serv.c,v 7.241 2002/02/17 03:11:27 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -2157,7 +2157,6 @@ serv_connect_callback(int fd, int status, void *data)
 	sendto_realops_flags(FLAGS_ALL, L_OPER,
 			     "Error connecting to %s: %s",
 			     client_p->name, comm_errstr(status));
-	SetDead(client_p);
         exit_client(client_p, client_p, &me, comm_errstr(status));
         return;
       }
