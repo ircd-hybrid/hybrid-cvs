@@ -1,3 +1,15 @@
+lusky       2002/08/17 01:04:08 EDT	(20020817_0)
+
+  Modified files:
+    .                    TODO 
+  Log:
+  Test commit, new repo should be working now.
+  
+  Revision  Changes    Path
+  7.73      +1 -0      ircd-hybrid-7/TODO
+
+
+
 db          2002/08/16 07:07:23 EDT	(20020816_1)
 
   Modified files:
@@ -31231,4 +31243,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3979 2002/08/16 11:07:30 db Exp $
+$Id: ChangeLog,v 7.3980 2002/08/17 05:04:11 lusky Exp $
