@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.218 2002/02/10 08:49:56 androsyn Exp $
+ *  $Id: ircd.c,v 7.219 2002/02/10 17:26:33 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -334,8 +334,6 @@ io_loop(void)
       if (delay <= CurrentTime)
 	eventRun();
   
-      /* Check on the last activity, sleep for up to 1/2s if we are idle... */
-      fprintf(stderr, "Empty cycles: %d callbacks_called: %d\n", empty_cycles, callbacks_called);
 
       if (callbacks_called > 0)
 	empty_cycles = 0;
