@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.h,v 7.25 2003/06/01 18:45:29 db Exp $
+ *  $Id: hash.h,v 7.26 2003/06/03 03:24:16 michael Exp $
  */
 
 #ifndef INCLUDED_hash_h
@@ -64,6 +64,7 @@ extern size_t hash_get_client_table_size(void);
 extern size_t hash_get_channel_table_size(void);
 extern size_t hash_get_resv_table_size(void);
 extern size_t hash_get_id_table_size(void);
+extern size_t hash_get_userhost_table_size(void);
 
 extern void init_hash_tables(void);
 extern void add_to_id_hash_table(const char *, struct Client *);
@@ -84,4 +85,3 @@ extern struct ResvChannel *hash_find_resv(const char *name);
 extern void free_list_task(struct ListTask *, struct Client *);
 extern void safe_list_channels(struct Client *source_p, struct ListTask *, int, int);
 #endif  /* INCLUDED_hash_h */
-

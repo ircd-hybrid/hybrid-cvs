@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.105 2003/06/01 15:05:52 adx Exp $
+ *  $Id: m_whois.c,v 1.106 2003/06/03 03:24:18 michael Exp $
  */
 
 #include "stdinc.h"
@@ -46,7 +46,7 @@
 static void do_whois(struct Client *client_p, struct Client *source_p, int parc, char *parv[]);
 static int single_whois(struct Client *source_p, struct Client *target_p, int wilds, int glob);
 static void whois_person(struct Client *source_p, struct Client *target_p, int glob);
-static int global_whois(struct Client *source_p, char *nick, int wilds, int glob);
+static int global_whois(struct Client *source_p, const char *nick, int wilds, int glob);
 
 static void m_whois(struct Client *, struct Client *, int, char **);
 static void ms_whois(struct Client *, struct Client *, int, char **);
@@ -72,7 +72,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-const char *_version = "$Revision: 1.105 $";
+const char *_version = "$Revision: 1.106 $";
 #endif
 
 /*
@@ -85,7 +85,7 @@ m_whois(struct Client *client_p, struct Client *source_p,
         int parc, char *parv[])
 {
   static time_t last_used = 0;
-  
+
   if (parc < 2 || EmptyString(parv[1]))
   {
     sendto_one(source_p, form_str(ERR_NONICKNAMEGIVEN),
@@ -159,17 +159,16 @@ do_whois(struct Client *client_p, struct Client *source_p,
          int parc, char *parv[])
 {
   struct Client *target_p;
-  char  *nick;
-  char  *p = NULL;
-  int   found=NO;
-  int   wilds;
-  int   glob=0;
+  char *nick;
+  char *p = NULL;
+  int found=NO;
+  int wilds;
+  int glob=0;
   
   /* This lets us make all "whois nick" queries look the same, and all
    * "whois nick nick" queries look the same.  We have to pass it all
    * the way down to whois_person() though -- fl */
-
-  if(parc > 2)
+  if (parc > 2)
     glob = 1;
 
   nick = parv[1];
@@ -184,30 +183,30 @@ do_whois(struct Client *client_p, struct Client *source_p,
   collapse(nick);
   wilds = (strchr(nick, '?') || strchr(nick, '*'));
 
-  if(!wilds)
+  if (!wilds)
   {
-    if((target_p = find_client(nick)) != NULL)
+    if ((target_p = find_client(nick)) != NULL)
     {
       /* im being asked to reply to a client that isnt mine..
        * I cant answer authoritively, so better make it non-detailed
        */
-      if(!MyClient(target_p))
-	glob=0;
+      if (!MyClient(target_p))
+	glob = 0;
 	    
       if (IsServer(client_p))
 	client_burst_if_needed(client_p,target_p);
 
-      if(IsPerson(target_p))
+      if (IsPerson(target_p))
       {
 	single_whois(source_p,target_p,wilds,glob);
-	found = YES;
+	found = 1;
       }
     }
     else
     {
       if (!ServerInfo.hub && uplink && IsCapable(uplink,CAP_LL))
       {
-	if(glob)
+	if  (glob)
 	  sendto_one(uplink,":%s WHOIS %s :%s",
 		     source_p->name, nick, nick);
 	else
@@ -231,9 +230,9 @@ do_whois(struct Client *client_p, struct Client *source_p,
 
   if (!found)
     sendto_one(source_p, form_str(ERR_NOSUCHNICK),
-               me.name, parv[0], nick);
+               me.name, source_p->name, nick);
   sendto_one(source_p, form_str(RPL_ENDOFWHOIS),
-             me.name, parv[0], parv[1]);
+             me.name, source_p->name, parv[1]);
 }
 
 /* global_whois()
@@ -246,11 +245,11 @@ do_whois(struct Client *client_p, struct Client *source_p,
  * 		  writing results to source_p
  */
 static int
-global_whois(struct Client *source_p, char *nick, int wilds, int glob)
+global_whois(struct Client *source_p, const char *nick, int wilds, int glob)
 {
-  struct Client *target_p = NULL;
-  int found = NO;
   dlink_node *ptr;
+  struct Client *target_p;
+  int found = 0;
 
   DLINK_FOREACH(ptr, global_client_list.head)
   {
@@ -261,8 +260,10 @@ global_whois(struct Client *source_p, char *nick, int wilds, int glob)
 
     if (!match(nick, target_p->name))
       continue;
-    /*
-     * 'Rules' established for sending a WHOIS reply:
+
+    assert(target_p->user->server != NULL);
+
+    /* 'Rules' established for sending a WHOIS reply:
      *
      *
      * - if wildcards are being used dont send a reply if
@@ -275,7 +276,7 @@ global_whois(struct Client *source_p, char *nick, int wilds, int glob)
      */
 
     if (single_whois(source_p, target_p, wilds, glob))
-      found = YES;
+      found = 1;
   }
 
   return(found);
@@ -296,7 +297,6 @@ single_whois(struct Client *source_p, struct Client *target_p,
 {
   dlink_node *ptr;
   struct Channel *chptr;
-  struct Membership *ms;
   const char *name;
   int invis;
   int member;
@@ -315,8 +315,7 @@ single_whois(struct Client *source_p, struct Client *target_p,
 
   DLINK_FOREACH(ptr, target_p->user->channel.head)
   {
-    ms = ptr->data;
-    chptr = ms->chptr;
+    chptr  = ((struct Membership *)ptr->data)->chptr;
     member = IsMember(source_p, chptr);
 
     if (invis && !member)
@@ -334,7 +333,7 @@ single_whois(struct Client *source_p, struct Client *target_p,
   }
 
   if (showperson)
-    whois_person(source_p,target_p,glob);
+    whois_person(source_p, target_p, glob);
   return(1);
 }
 
@@ -474,15 +473,15 @@ ms_whois(struct Client *client_p, struct Client *source_p,
    * parv[1] == server to reply to the request
    * parv[2] == the client we are whois'ing
    */
-  if(parc > 2)
+  if (parc > 2)
   {
     struct Client *target_p;
     
     /* check if parv[1] is a client.. (most common) */
-    if((target_p = find_client(parv[1])) == NULL)
+    if ((target_p = find_client(parv[1])) == NULL)
     {
       /* ok, parv[1] isnt a client, is it a server? */
-      if((target_p = find_server(parv[1])) == NULL)
+      if ((target_p = find_server(parv[1])) == NULL)
       {
         /* its not a server either.. theyve sent a bad whois */
         sendto_one(source_p, form_str(ERR_NOSUCHSERVER), me.name,
@@ -501,14 +500,14 @@ ms_whois(struct Client *client_p, struct Client *source_p,
     /* if parv[1] isnt my client, or me, someone else is supposed
      * to be handling the request.. so send it to them 
      */
-    if(!MyClient(target_p) && !IsMe(target_p))
+    if (!MyClient(target_p) && !IsMe(target_p))
     {
 
       /* we're being asked to forward a whois request to a LL to answer,
        * if the target isnt on that server.. answer it for them, as the
        * LL might not know that the target exists..
        */
-      if(MyConnect(target_p) && ServerInfo.hub && IsCapable(target_p, CAP_LL))
+      if (MyConnect(target_p) && ServerInfo.hub && IsCapable(target_p, CAP_LL))
       {
         struct Client *whois_p;
 
@@ -517,7 +516,7 @@ ms_whois(struct Client *client_p, struct Client *source_p,
 	{
 	  /* check the server being asked to perform the whois, is that
 	   * clients uplink */
-	  if(whois_p->servptr != target_p)
+	  if (whois_p->servptr != target_p)
 	  {
 	    /* they asked the LL for info on a client it didnt know about..
 	     * as we're answering for them, make sure its non-detailed

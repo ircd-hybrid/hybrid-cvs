@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_who.c,v 1.82 2003/06/02 06:11:49 db Exp $
+ *  $Id: m_who.c,v 1.83 2003/06/03 03:24:18 michael Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -62,14 +62,14 @@ _moddeinit(void)
   mod_del_cmd(&who_msgtab);
 }
 
-const char *_version = "$Revision: 1.82 $";
+const char *_version = "$Revision: 1.83 $";
 #endif
 
 static void who_global(struct Client *source_p, char *mask, int server_oper);
 static void do_who(struct Client *source_p, struct Client *target_p,
-                   char *chname, char *op_flags);
+                   const char *chname, const char *op_flags);
 static void do_who_on_channel(struct Client *source_p, struct Channel *chptr,
-                              char *chname, int member, int server_oper);
+                              const char *chname, int member, int server_oper);
 
 /*
 ** m_who
@@ -267,9 +267,9 @@ who_common_channel(struct Client *source_p, struct Channel *chptr,
 static void
 who_global(struct Client *source_p,char *mask, int server_oper)
 {
-  struct Channel *chptr=NULL;
+  struct Channel *chptr;
   struct Client *target_p;
-  dlink_node  *lp;
+  dlink_node *lp;
   dlink_node *gcptr;
   int maxmatches = 500;
 
@@ -328,7 +328,7 @@ who_global(struct Client *source_p,char *mask, int server_oper)
  */
 static void
 do_who_on_channel(struct Client *source_p, struct Channel *chptr,
-                  char *chname, int member, int server_oper)
+                  const char *chname, int member, int server_oper)
 {
   dlink_node *ptr;
   struct Client *target_p;
@@ -359,12 +359,12 @@ do_who_on_channel(struct Client *source_p, struct Channel *chptr,
  */
 static void
 do_who(struct Client *source_p, struct Client *target_p,
-       char *chname, char *op_flags)
+       const char *chname, const char *op_flags)
 {
   char status[5];
 
-  ircsprintf(status,"%c%s%s", target_p->user->away ? 'G' : 'H',
-	     IsOper(target_p) ? "*" : "", op_flags);
+  ircsprintf(status, "%c%s%s", target_p->user->away ? 'G' : 'H',
+             IsOper(target_p) ? "*" : "", op_flags);
 
   if (ConfigServerHide.hide_servers)
   {
@@ -399,7 +399,6 @@ ms_who(struct Client *client_p, struct Client *source_p,
    * then allow leaf to use normal client m_who()
    * other wise, ignore it.
    */
-
   if (ServerInfo.hub)
   {
     if (!IsCapable(client_p->from, CAP_LL))

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.265 2003/06/01 14:38:50 adx Exp $
+ *  $Id: send.c,v 7.266 2003/06/03 03:24:20 michael Exp $
  */
 
 #include "stdinc.h"
@@ -492,7 +492,6 @@ sendto_channel_butone(struct Client *one, struct Client *from,
   dlink_node *ptr;
   dlink_node *ptr_next;
   struct Client *target_p;
-  struct Membership *ms;
 
   if (IsServer(from))
     local_len = ircsprintf(local_buf, ":%s %s %s ",
@@ -519,8 +518,7 @@ sendto_channel_butone(struct Client *one, struct Client *from,
 
   DLINK_FOREACH_SAFE(ptr, ptr_next, chptr->members.head)
   {
-    ms = ptr->data;
-    target_p = ms->client_p;
+    target_p = ((struct Membership *)ptr->data)->client_p;
     assert(target_p != NULL);
 
     if (IsDefunct(target_p) || target_p->from == one)

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.169 2003/06/02 22:26:51 db Exp $
+ *  $Id: parse.c,v 7.170 2003/06/03 03:24:20 michael Exp $
  */
 
 #include "stdinc.h"
@@ -76,8 +76,9 @@
 				 * - Dianora
 				 */
 
-struct MessageTree {
-  int links;		/* Count of nodes =under= this node */
+struct MessageTree
+{
+  int links; /* Count of nodes =under= this node */
   struct Message *msg;
   struct MessageTree *pointers[MAXPTRLEN];
 };
@@ -95,9 +96,8 @@ static int cancel_clients(struct Client *, struct Client *, char *);
 static void remove_unknown(struct Client *, char *, char *);
 static void do_numeric(char [], struct Client *, struct Client *, int, char **);
 static void handle_command(struct Message *, struct Client *, struct Client *, int, char **);
-static struct Message *find_command(char *);
-static void recurse_report_messages(struct Client *source_p,
-				    struct MessageTree *mtree);
+static struct Message *find_command(const char *);
+static void recurse_report_messages(struct Client *source_p, struct MessageTree *mtree);
 
 /* turn a string into a parc/parv pair */
 static inline int
@@ -165,7 +165,7 @@ parse(struct Client *client_p, char *pbuffer, char *bufend)
   char *ch;
   char *s;
   char *numeric = 0;
-  int i;
+  int i = 0;
   int paramcount;
   int mpara = 0;
   struct Message *mptr;
@@ -196,8 +196,6 @@ parse(struct Client *client_p, char *pbuffer, char *bufend)
       s++;
       ch = s;
     }
-
-    i = 0;
 
     if (*sender && IsServer(client_p))
     {
@@ -394,8 +392,7 @@ clear_hash_parse(void)
   memset(&msg_tree, 0, sizeof(msg_tree));
 }
 
-/*
- * add_msg_element
+/* add_msg_element()
  *
  * inputs	- pointer to MessageTree
  *		- pointer to Message to add for given command
@@ -403,8 +400,8 @@ clear_hash_parse(void)
  * output	- NONE
  * side effects	- recursively build the Message Tree ;-)
  */
-void
-add_msg_element(struct MessageTree *mtree_p, struct Message *msg_p, char *cmd)
+static void
+add_msg_element(struct MessageTree *mtree_p, struct Message *msg_p, const char *cmd)
 {
   struct MessageTree *ntree_p;
 
@@ -428,16 +425,15 @@ add_msg_element(struct MessageTree *mtree_p, struct Message *msg_p, char *cmd)
   }
 }
 
-/*
- * del_msg_element
+/* del_msg_element()
  *
  * inputs	- Pointer to MessageTree to delete from
  *		- pointer to command name to delete
  * output	- NONE
  * side effects	- recursively deletes a token from the Message Tree ;-)
  */
-void
-del_msg_element(struct MessageTree *mtree_p, char *cmd)
+static void
+del_msg_element(struct MessageTree *mtree_p, const char *cmd)
 {
   struct MessageTree *ntree_p;
 
@@ -448,7 +444,7 @@ del_msg_element(struct MessageTree *mtree_p, char *cmd)
   {
     del_msg_element(ntree_p, cmd+1);
     ntree_p->links--;
-    if (ntree_p != &msg_tree)	/* this would be bad if it happened */
+    if (ntree_p != &msg_tree) /* this would be bad if it happened */
     {
       if (ntree_p->links == 0)
       {
@@ -459,8 +455,7 @@ del_msg_element(struct MessageTree *mtree_p, char *cmd)
   }
 }
 
-/*
- * msg_tree_parse
+/* msg_tree_parse()
  *
  * inputs	- Pointer to command to find
  *		- Pointer to MessageTree root
@@ -468,7 +463,7 @@ del_msg_element(struct MessageTree *mtree_p, char *cmd)
  * side effects	- none
  */
 static struct Message *
-msg_tree_parse(char *cmd, struct MessageTree *root)
+msg_tree_parse(const char *cmd, struct MessageTree *root)
 {
   struct MessageTree *mtree;
   for (mtree = root->pointers[(*cmd++) & (MAXPTRLEN-1)];
@@ -476,9 +471,10 @@ msg_tree_parse(char *cmd, struct MessageTree *root)
                mtree = mtree->pointers[(*cmd++) & (MAXPTRLEN-1)])
   {
     if ((mtree->msg != NULL) && (*cmd == '\0'))
-      return mtree->msg;
+      return(mtree->msg);
   }
-  return NULL;
+
+  return(NULL);
 }
 
 /* mod_add_cmd()
@@ -498,14 +494,13 @@ mod_add_cmd(struct Message *msg)
   if (msg == NULL)
     return;
 
-  if ((found_msg = msg_tree_parse((char *)msg->cmd, &msg_tree)) != NULL)
-    return;	/* Its already added */
+  if ((found_msg = msg_tree_parse(msg->cmd, &msg_tree)) != NULL)
+    return; /* Its already added */
 
-  add_msg_element(&msg_tree, msg, (char *)msg->cmd);
+  add_msg_element(&msg_tree, msg, msg->cmd);
   msg->count  = 0;
   msg->rcount = 0;
   msg->bytes  = 0;
-
 }
 
 /* mod_del_cmd()
@@ -517,12 +512,12 @@ mod_add_cmd(struct Message *msg)
 void
 mod_del_cmd(struct Message *msg)
 {
-  assert(NULL != msg);
+  assert(msg != NULL);
 
   if (msg == NULL)
     return;
 
-  del_msg_element(&msg_tree, (char *)msg->cmd);
+  del_msg_element(&msg_tree, msg->cmd);
 }
 
 /* find_command()
@@ -532,7 +527,7 @@ mod_del_cmd(struct Message *msg)
  * side effects - 
  */
 static struct Message *
-find_command(char *cmd)
+find_command(const char *cmd)
 {
   return(msg_tree_parse(cmd, &msg_tree));
 }
@@ -562,7 +557,7 @@ static void
 recurse_report_messages(struct Client *source_p, struct MessageTree *mtree)
 {
   int i;
-  
+
   if (mtree->msg != NULL)
   {
     if (!((mtree->msg->flags & MFLG_HIDDEN) && !IsAdmin(source_p)))
@@ -647,7 +642,7 @@ cancel_clients(struct Client *client_p, struct Client *source_p, char *cmd)
      *
      * all servers must be TS these days --is
      */
-    if (source_p->user)
+    if (source_p->user != NULL)
     {
       sendto_realops_flags(UMODE_DEBUG, L_ADMIN,
                            "Message for %s[%s@%s!%s] from %s (TS, ignored)",
