@@ -23,8 +23,12 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_select.c,v 7.6 2000/12/21 13:39:51 db Exp $
+ *  $Id: s_bsd_select.c,v 7.7 2000/12/24 22:58:48 adrian Exp $
  */
+
+#error "s_bsd_select.c hasn't been rewritten yet. use poll or contact \
+adrian chadd <adrian@creative.net.au>."
+
 #include "tools.h"
 #include "s_bsd.h"
 #include "class.h"
