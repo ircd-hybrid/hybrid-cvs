@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nburst.c,v 1.19 2003/04/18 02:13:43 db Exp $
+ *  $Id: m_nburst.c,v 1.20 2003/05/11 16:05:50 michael Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&nburst_msgtab);
 }
 
-const char *_version = "$Revision: 1.19 $";
+const char *_version = "$Revision: 1.20 $";
 #endif
 /*
 ** m_nburst
@@ -78,7 +78,7 @@ const char *_version = "$Revision: 1.19 $";
 
 static void
 ms_nburst(struct Client *client_p, struct Client *source_p,
-	  int parc, char *parv[])
+          int parc, char *parv[])
 {
   char *nick;
   char *nick_new = NULL;
@@ -86,20 +86,19 @@ ms_nburst(struct Client *client_p, struct Client *source_p,
   struct Client *target_p;
   char status;
 
-  if( parc < 2 || *parv[1] == '\0' )
+  if (parc < 2 || *parv[1] == '\0')
      return;
 
   nick = parv[1];
 
-  if( parc > 2 )
+  if (parc > 2)
     nick_new = parv[2];
 
-  if( parc > 3 )
+  if (parc > 3)
     nick_old = parv[3];
 
   if (!ServerInfo.hub && IsCapable(client_p, CAP_LL))
     return;
-
 #ifdef DEBUGLL
   sendto_realops_flags(UMODE_ALL, L_ALL, "NBURST called by %s for %s %s %s",
     client_p->name,
@@ -120,6 +119,4 @@ ms_nburst(struct Client *client_p, struct Client *source_p,
   if (parc > 2)
     sendto_one(client_p, ":%s LLNICK %c %s %s", me.name, status, nick_new,
                (nick_old ? nick_old : ""));
-
-  return;
 }

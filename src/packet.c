@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.108 2003/05/10 05:56:53 metalrock Exp $
+ *  $Id: packet.c,v 7.109 2003/05/11 16:05:54 michael Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -148,6 +148,7 @@ parse_client_queued(struct Client *client_p)
   }
 
   if (IsServer(client_p) || IsConnecting(client_p) || IsHandshake(client_p))
+  {
     while (1)
     {
       if (IsDefunct(client_p))
@@ -157,6 +158,7 @@ parse_client_queued(struct Client *client_p)
         break;
       client_dopacket(client_p, readBuf, dolen);
     }
+  }
   else if(IsClient(client_p))
   {
     if (ConfigFileEntry.no_oper_flood && (IsOper(client_p) || IsCanFlood(client_p)))

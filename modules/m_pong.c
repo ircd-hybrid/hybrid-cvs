@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_pong.c,v 1.36 2003/04/18 02:13:43 db Exp $
+ *  $Id: m_pong.c,v 1.37 2003/05/11 16:05:50 michael Exp $
  */
 
 #include "stdinc.h"
@@ -59,7 +59,7 @@ _moddeinit(void)
   mod_del_cmd(&pong_msgtab);
 }
 
-const char *_version = "$Revision: 1.36 $";
+const char *_version = "$Revision: 1.37 $";
 #endif
 static void
 ms_pong(struct Client *client_p, struct Client *source_p,
@@ -69,10 +69,11 @@ ms_pong(struct Client *client_p, struct Client *source_p,
   char  *origin, *destination;
 
   if (parc < 2 || *parv[1] == '\0')
-    {
-      sendto_one(source_p, form_str(ERR_NOORIGIN), me.name, parv[0]);
-      return;
-    }
+  {
+    sendto_one(source_p, form_str(ERR_NOORIGIN),
+               me.name, parv[0]);
+    return;
+  }
 
   origin = parv[1];
   destination = parv[2];
@@ -97,18 +98,16 @@ ms_pong(struct Client *client_p, struct Client *source_p,
           return;
         }
     }
-
-#ifdef  DEBUGMODE
+#ifdef DEBUGMODE
   else
     Debug((DEBUG_NOTICE, "PONG: %s %s", origin,
            destination ? destination : "*"));
 #endif
-  return;
 }
 
 static void
 mr_pong(struct Client *client_p, struct Client *source_p,
-	int parc, char *parv[])
+        int parc, char *parv[])
 {
   if (parc == 2 && *parv[1] != '\0')
     {

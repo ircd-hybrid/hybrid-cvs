@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.367 2003/05/09 21:38:24 bill Exp $
+ *  $Id: channel.c,v 7.368 2003/05/11 16:05:54 michael Exp $
  */
 
 #include "stdinc.h"
@@ -391,8 +391,8 @@ send_mode_list(struct Client *client_p,
 }
 
 
-/*
- * check_channel_name
+/* check_channel_name()
+ *
  * inputs       - channel name
  * output       - true (1) if name ok, false (0) otherwise
  * side effects - check_channel_name - check channel name for
@@ -402,20 +402,20 @@ int
 check_channel_name(const char *name)
 {
   assert(name != NULL);
-  if(name == NULL)
-    return 0;
-    
+
+  if (name == NULL)
+    return(0);
+
   for (; *name; ++name)
   {
     if (!IsChanChar(*name))
-      return 0;
+      return(0);
   }
 
-  return 1;
+  return(1);
 }
 
-/*
- * sub1_from_channel
+/* sub1_from_channel()
  *
  * inputs	- pointer to channel to remove client from
  * output	- did the channel get destroyed
@@ -437,7 +437,7 @@ sub1_from_channel(struct Channel *chptr)
 #endif
     destroy_channel(chptr);
   }
-  return (0);
+  return(0);
 }
 
 /*
@@ -471,7 +471,6 @@ free_channel_list(dlink_list * list)
  * output       - none
  * side effects - walk through this channel, and destroy it.
  */
-
 static void
 destroy_channel(struct Channel *chptr)
 {
@@ -904,13 +903,13 @@ is_banned(struct Channel *chptr, struct Client *who)
   char src_iphost[NICKLEN + USERLEN + HOSTLEN + 6];
 
   if (!IsPerson(who))
-    return (0);
+    return(0);
 
   ircsprintf(src_host,"%s!%s@%s", who->name, who->username, who->host);
   ircsprintf(src_iphost,"%s!%s@%s", who->name, who->username,
 	     who->localClient->sockhost);
 
-  return (check_banned(chptr, src_host, src_iphost));
+  return(check_banned(chptr, src_host, src_iphost));
 }
 
 /*
@@ -962,7 +961,7 @@ check_banned(struct Channel *chptr, char *s, char *s2)
     }
   }
 
-  return ((actualBan ? CHFL_BAN : 0));
+  return((actualBan ? CHFL_BAN : 0));
 }
 
 /* small series of "helper" functions */
@@ -991,7 +990,7 @@ can_join(struct Client *source_p, struct Channel *chptr, char *key)
 	     source_p->localClient->sockhost);
 
   if ((check_banned(chptr, src_host, src_iphost)) == CHFL_BAN)
-    return (ERR_BANNEDFROMCHAN);
+    return(ERR_BANNEDFROMCHAN);
 
   if (chptr->mode.mode & MODE_INVITEONLY)
   {
@@ -1002,7 +1001,7 @@ can_join(struct Client *source_p, struct Channel *chptr, char *key)
     if (lp == NULL)
     {
       if (!ConfigChannel.use_invex)
-        return (ERR_INVITEONLYCHAN);
+        return(ERR_INVITEONLYCHAN);
       DLINK_FOREACH(ptr, chptr->invexlist.head)
       {
         invex = ptr->data;
@@ -1011,17 +1010,17 @@ can_join(struct Client *source_p, struct Channel *chptr, char *key)
           break;
       }
       if (ptr == NULL)
-        return (ERR_INVITEONLYCHAN);
+        return(ERR_INVITEONLYCHAN);
     }
   }
 
   if (*chptr->mode.key && (EmptyString(key) || irccmp(chptr->mode.key, key)))
-    return (ERR_BADCHANNELKEY);
+    return(ERR_BADCHANNELKEY);
 
   if (chptr->mode.limit && chptr->users >= chptr->mode.limit)
-    return (ERR_CHANNELISFULL);
+    return(ERR_CHANNELISFULL);
 
-  return 0;
+  return(0);
 }
 
 /*
@@ -1118,7 +1117,6 @@ is_voiced(struct Channel *chptr, struct Client *who)
   }
   return (0);
 }
-
 
 /*
  * can_send

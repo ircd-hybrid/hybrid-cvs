@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ison.c,v 1.30 2003/04/18 02:13:42 db Exp $
+ *  $Id: m_ison.c,v 1.31 2003/05/11 16:05:50 michael Exp $
  */
 
 #include "stdinc.h"
@@ -35,9 +35,7 @@
 #include "s_conf.h" /* ConfigFileEntry */
 #include "s_serv.h" /* uplink/IsCapable */
 
-#include <string.h>
-
-static int do_ison(struct Client *up, struct Client *source_p,
+static void do_ison(struct Client *up, struct Client *source_p,
                    int parc, char *parv[]);
 
 static void m_ison(struct Client*, struct Client*, int, char**);
@@ -49,19 +47,18 @@ struct Message ison_msgtab = {
 };
 
 #ifndef STATIC_MODULES
-
-  void
+void
 _modinit(void)
 {
   mod_add_cmd(&ison_msgtab);
 }
 
-  void
+void
 _moddeinit(void)
 {
   mod_del_cmd(&ison_msgtab);
 }
-const char *_version = "$Revision: 1.30 $";
+const char *_version = "$Revision: 1.31 $";
 #endif
 
 static char buf[BUFSIZE];
@@ -99,15 +96,15 @@ m_ison(struct Client *client_p, struct Client *source_p,
  */
 static void
 ms_ison(struct Client *client_p, struct Client *source_p,
-	int parc, char *parv[])
+        int parc, char *parv[])
 {
   if (ServerInfo.hub && IsCapable(client_p, CAP_LL))
     do_ison(NULL, source_p, parc, parv);
 }
 
-static int
+static void
 do_ison(struct Client *up, struct Client *source_p,
-	int parc, char *parv[])
+        int parc, char *parv[])
 {
   struct Client *target_p;
   char *nick;
@@ -136,7 +133,7 @@ do_ison(struct Client *up, struct Client *source_p,
       if ((target_p = find_person(nick)))
       {
         len = strlen(target_p->name);
-        if( (current_insert_point + (len + 5)) < (buf + sizeof(buf)) )
+        if ((current_insert_point + (len + 5)) < (buf + sizeof(buf)))
         {
           memcpy((void *)current_insert_point,
                  (void *)target_p->name, len);
@@ -160,7 +157,7 @@ do_ison(struct Client *up, struct Client *source_p,
           current_insert_point2 += len;
           *current_insert_point2++ = ' ';
         }
-        if (!target_p)
+        if (target_p == NULL)
         {
           /*
            * XXX Ick. we need to ask our hub if nick is online.
@@ -183,13 +180,11 @@ do_ison(struct Client *up, struct Client *source_p,
    *  Do NOT take out the trailing space, it breaks ircII
    *  --Rodder */
 
-  *current_insert_point = '\0';
+  *current_insert_point  = '\0';
   *current_insert_point2 = '\0'; 
   
   if (relay_to_hub)
     sendto_one(up, ":%s ISON :%s", source_p->name, buf2);
   else
     sendto_one(source_p, "%s", buf);
-
-  return 0;
 }

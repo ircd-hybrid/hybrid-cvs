@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_debug.h,v 7.5 2003/04/30 07:20:54 michael Exp $
+ *  $Id: s_debug.h,v 7.6 2003/05/11 16:05:48 michael Exp $
  */
 
 #ifndef INCLUDED_s_debug_h
@@ -45,6 +45,6 @@ struct Client;
 
 extern void send_usage(struct Client *);
 extern void count_memory(struct Client *);
-extern void debug(int, char *, ...);
+extern void debug(int, const char *, ...);
 #endif /* INCLUDED_s_debug_h */
 

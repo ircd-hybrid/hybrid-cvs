@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_list.c,v 1.57 2003/05/09 21:38:18 bill Exp $
+ *  $Id: m_list.c,v 1.58 2003/05/11 16:05:50 michael Exp $
  */
 
 #include "stdinc.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&list_msgtab);
 }
-const char *_version = "$Revision: 1.57 $";
+const char *_version = "$Revision: 1.58 $";
 #endif
 
 
@@ -72,12 +72,14 @@ do_list(struct Client *source_p, int parc, char *parv[])
   int no_masked_channels;
 
   if (MyConnect(source_p))
+  {
     if (source_p->localClient->list_task != NULL)
     {
       free_list_task(source_p->localClient->list_task, source_p);
       sendto_one(source_p, form_str(RPL_LISTEND), me.name, source_p->name);
       return;
     }
+  }
 
   lt = (struct ListTask *) MyMalloc(sizeof(struct ListTask));
   lt->users_max = UINT_MAX;

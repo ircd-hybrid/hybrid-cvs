@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_knock.c,v 1.55 2003/05/09 21:38:18 bill Exp $
+ *  $Id: m_knock.c,v 1.56 2003/05/11 16:05:50 michael Exp $
  */
 
 #include "stdinc.h"
@@ -80,7 +80,7 @@ _moddeinit(void)
   mod_del_cmd(&knockll_msgtab);
 }
 
-const char *_version = "$Revision: 1.55 $";
+const char *_version = "$Revision: 1.56 $";
 #endif
 
 /* m_knock
@@ -100,19 +100,18 @@ const char *_version = "$Revision: 1.55 $";
  *  This function is also used for LL servers forwarding knock requests they
  *  dont know about, for us to answer.
  */
-
 static void
-m_knock(struct Client *client_p, struct Client *source_p, int parc,
-	char *parv[])
+m_knock(struct Client *client_p, struct Client *source_p,
+        int parc, char *parv[])
 {
   char *sockhost = NULL;
 
   if ((ConfigChannel.use_knock == 0) && MyClient(source_p))
-    {
-      sendto_one(source_p, form_str(ERR_KNOCKDISABLED),
-		 me.name, source_p->name);
-      return;
-    }
+  {
+    sendto_one(source_p, form_str(ERR_KNOCKDISABLED),
+               me.name, source_p->name);
+    return;
+  }
 
   /* a remote KNOCKLL request, check we're capable of handling it.. */
   if (!MyConnect(source_p))
@@ -154,9 +153,7 @@ ms_knock(struct Client *client_p, struct Client *source_p,
     parse_knock_remote(client_p, source_p, parc, parv);
 }
 
-
-/*
- * parse_knock_local()
+/* parse_knock_local()
  *
  * input        - pointer to physical struct client_p
  *              - pointer to source struct source_p
@@ -167,7 +164,6 @@ ms_knock(struct Client *client_p, struct Client *source_p,
  * side effects - sets name to name of base channel
  *                or sends failure message to source_p
  */
-
 static void
 parse_knock_local(struct Client *client_p, struct Client *source_p,
                               int parc, char *parv[], char *sockhost)
@@ -187,18 +183,18 @@ parse_knock_local(struct Client *client_p, struct Client *source_p,
   if (*name == '\0')
   {
     sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-               me.name, parv[0], "KNOCK");
+               me.name, source_p->name, "KNOCK");
     return;
   }
 
   if (!IsChannelName(name))
   {
     sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
-               me.name, parv[0], name);
+               me.name, source_p->name, name);
     return;
   }
 
-  if (!(chptr = hash_find_channel(name)))
+  if ((chptr = hash_find_channel(name)) == NULL)
   {
     if (!ServerInfo.hub && uplink && IsCapable(uplink, CAP_LL))
     {
@@ -210,8 +206,8 @@ parse_knock_local(struct Client *client_p, struct Client *source_p,
     }
     else
     {
-      sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL), me.name, parv[0],
-                 name);
+      sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
+                 me.name, source_p->name, name);
     }
 
     return;
@@ -239,8 +235,8 @@ parse_knock_local(struct Client *client_p, struct Client *source_p,
       (sockhost && is_banned_knock(chptr, source_p, sockhost)) ||
       (!sockhost && is_banned(chptr, source_p)))
   {
-    sendto_one(source_p, form_str(ERR_CANNOTSENDTOCHAN), me.name, parv[0],
-	       name);
+    sendto_one(source_p, form_str(ERR_CANNOTSENDTOCHAN),
+               me.name, source_p->name, name);
     return;
   }
 
@@ -271,8 +267,7 @@ parse_knock_local(struct Client *client_p, struct Client *source_p,
              MyClient(source_p) ? 0 : 1);
 }
 
-/*
- * parse_knock_remote
+/* parse_knock_remote()
  *
  * input	- pointer to client
  *		- pointer to source
@@ -308,12 +303,9 @@ parse_knock_remote(struct Client *client_p, struct Client *source_p,
 
   if (chptr)
     send_knock(client_p, source_p, chptr, name, key, 0);
-
-  return;
 }
 
-/*
- * send_knock
+/* send_knock()
  *
  * input        - pointer to physical struct client_p
  *              - pointer to source struct source_p
@@ -322,7 +314,6 @@ parse_knock_remote(struct Client *client_p, struct Client *source_p,
  * output       -
  * side effects - knock is sent locally (if enabled) and propagated
  */
-
 static void
 send_knock(struct Client *client_p, struct Client *source_p,
 	   struct Channel *chptr, char *name, char *key, int llclient)
@@ -353,8 +344,6 @@ send_knock(struct Client *client_p, struct Client *source_p,
                     ":%s KNOCK %s %s",
 		    source_p->name, name, key != NULL ? key : "");
     }
-
-  return;
 }
 
 /* is_banned_knock()
@@ -372,13 +361,15 @@ is_banned_knock(struct Channel *chptr, struct Client *who, char *sockhost)
   char src_iphost[NICKLEN + USERLEN + HOSTLEN + 6];
 
   if (!IsPerson(who))
-    return 0;
+    return(0);
 
   ircsprintf(src_host, "%s!%s@%s", who->name, who->username, who->host);
   ircsprintf(src_iphost, "%s!%s@%s", who->name, who->username, sockhost);
 
-  return (check_banned_knock(chptr, who, src_host, src_iphost));
+  return(check_banned_knock(chptr, who, src_host, src_iphost));
 }
+
+/** XXX - need CIDR support **/
 
 /* check_banned_knock()
  *
@@ -391,7 +382,7 @@ is_banned_knock(struct Channel *chptr, struct Client *who, char *sockhost)
  */
 static int
 check_banned_knock(struct Channel *chptr, struct Client *who,
-		   char *s, char *s2)
+                   char *s, char *s2)
 {
   dlink_node *ban;
   dlink_node *except;
@@ -419,5 +410,5 @@ check_banned_knock(struct Channel *chptr, struct Client *who,
     }
   }
 
-  return ((actualBan ? CHFL_BAN : 0));
+  return((actualBan ? CHFL_BAN : 0));
 }

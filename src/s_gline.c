@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_gline.c,v 1.28 2003/05/08 03:42:54 michael Exp $
+ *  $Id: s_gline.c,v 1.29 2003/05/11 16:05:54 michael Exp $
  */
 
 #include "stdinc.h"
@@ -56,9 +56,9 @@ static void expire_glines(void);
 static void expire_pending_glines(void);
 
 
-/* find_gkill
+/* find_gkill()
  *
- * inputs       - struct Client pointer to a Client struct
+ * inputs       - pointer to a Client struct
  * output       - struct ConfItem pointer if a gline was found for this client
  * side effects - none
  */

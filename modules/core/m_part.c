@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_part.c,v 1.68 2003/05/09 21:38:21 bill Exp $
+ *  $Id: m_part.c,v 1.69 2003/05/11 16:05:52 michael Exp $
  */
 
 #include "stdinc.h"
@@ -60,7 +60,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&part_msgtab);
 }
-const char *_version = "$Revision: 1.68 $";
+const char *_version = "$Revision: 1.69 $";
 #endif
 
 static void part_one_client(struct Client *client_p,
@@ -81,21 +81,21 @@ m_part(struct Client *client_p, struct Client *source_p,
   char reason[TOPICLEN+1];
 
   if (*parv[1] == '\0')
-    {
-      sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-                 me.name, parv[0], "PART");
-      return;
-    }
+  {
+    sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
+               me.name, source_p->name, "PART");
+    return;
+  }
 
   reason[0] = '\0';
 
   if (parc > 2)
     strlcpy(reason, parv[2], sizeof(reason));
 
-  name = strtoken( &p, parv[1], ",");
+  name = strtoken(&p, parv[1], ",");
 
   /* Finish the flood grace period... */
-  if(MyClient(source_p) && !IsFloodDone(source_p))
+  if (MyClient(source_p) && !IsFloodDone(source_p))
     flood_endgrace(source_p);
 
   while(name)
@@ -103,11 +103,9 @@ m_part(struct Client *client_p, struct Client *source_p,
     part_one_client(client_p, source_p, name, reason);
     name = strtoken(&p, NULL, ",");
   }
-  return;
 }
 
-/*
- * part_one_client
+/* part_one_client()
  *
  * inputs	- pointer to server
  * 		- pointer to source client to remove
@@ -122,18 +120,19 @@ part_one_client(struct Client *client_p, struct Client *source_p,
   struct Channel *chptr;
 
   if ((chptr = hash_find_channel(name)) == NULL)
-    {
-      sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
-		 me.name, source_p->name, name);
-      return;
-    }
+  {
+    sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
+               me.name, source_p->name, name);
+    return;
+  }
 
-  if (!chptr || !IsMember(source_p, chptr))
-    {
-      sendto_one(source_p, form_str(ERR_NOTONCHANNEL),
-                 me.name, source_p->name, name);
-      return;
-    }
+  if (!IsMember(source_p, chptr))
+  {
+    sendto_one(source_p, form_str(ERR_NOTONCHANNEL),
+               me.name, source_p->name, name);
+    return;
+  }
+
   if (MyConnect(source_p) && !IsOper(source_p))
     check_spambot_warning(source_p, NULL);
   

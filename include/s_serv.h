@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.h,v 7.71 2003/05/01 23:28:37 michael Exp $
+ *  $Id: s_serv.h,v 7.72 2003/05/11 16:05:48 michael Exp $
  */
 
 #ifndef INCLUDED_serv_h
@@ -245,13 +245,12 @@ extern int MaxConnectionCount; /* GLOBAL - highest number of connections */
 #define HUNTED_PASS     1       /* if message passed onwards successfully */
 
 
-extern int         check_server(const char* name, struct Client* server,
-                                int cryptlink);
-extern int         hunt_server(struct Client *client_pt,
-                               struct Client *source_pt,
+extern int check_server(const char *name, struct Client *server, int cryptlink);
+extern int hunt_server(struct Client *client_p,
+                               struct Client *source_p,
                                const char *command, int server, 
                                int parc, char **parv);
-extern const char* my_name_for_link(const char* name, struct ConfItem* conf);
+extern const char *my_name_for_link(struct ConfItem* conf);
 extern void        send_capabilities(struct Client*, struct ConfItem* conf,
                                      int, int);
 extern void	   write_links_file(void *);				     
@@ -263,7 +262,7 @@ extern void        start_collect_zipstats(void);
 extern void        collect_zipstats(void *unused);
 extern void        initServerMask(void);
 extern void        burst_channel(struct Client *client_p, struct Channel *chptr);
-extern void	   sendnick_TS(struct Client*, struct Client* );
+extern void	   sendnick_TS(struct Client *, struct Client *);
 extern int         serv_connect(struct ConfItem *, struct Client *);
 extern unsigned long nextFreeMask(void);
 extern void        cryptlink_init(struct Client *client_p,

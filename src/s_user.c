@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.253 2003/05/10 04:05:06 michael Exp $
+ *  $Id: s_user.c,v 7.254 2003/05/11 16:05:55 michael Exp $
  */
 
 #include "stdinc.h"
@@ -893,7 +893,7 @@ do_remote_user(struct Client *client_p, struct Client *source_p,
  * parv[1] - username to change mode for
  * parv[2] - modes to change
  */
-int
+void
 user_mode(struct Client *client_p, struct Client *source_p, int parc, char *parv[])
 {
   unsigned int i;
@@ -905,20 +905,21 @@ user_mode(struct Client *client_p, struct Client *source_p, int parc, char *parv
   int what = MODE_ADD;
   int badflag = NO; /* Only send one bad flag notice */
   char buf[BUFSIZE];
-
+#if 0
+  /* already covered by m_mode */
   if (parc < 2)
   {
     sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
                me.name, source_p->name, "MODE");
-    return(0);
+    return;
   }
-
+#endif
   if ((target_p = find_person(parv[1])) == NULL)
   {
     if (MyConnect(source_p))
       sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
                  me.name, source_p->name, parv[1]);
-    return(0);
+    return;
   }
 
   /* Dont know why these were commented out..
@@ -928,14 +929,14 @@ user_mode(struct Client *client_p, struct Client *source_p, int parc, char *parv
   {
      sendto_realops_flags(UMODE_ALL, L_ADMIN, "*** Mode for User %s from %s",
                           parv[1], source_p->name);
-     return(0);
+     return;
   }
 
   if (source_p != target_p || target_p->from != source_p->from)
   {
      sendto_one(source_p, form_str(ERR_USERSDONTMATCH),
                 me.name, source_p->name);
-     return(0);
+     return;
   }
 
   if (parc < 3)
@@ -950,7 +951,7 @@ user_mode(struct Client *client_p, struct Client *source_p, int parc, char *parv
 
     sendto_one(source_p, form_str(RPL_UMODEIS),
                me.name, source_p->name, buf);
-    return(0);
+    return;
   }
 
   /* find flags already set for user */
@@ -1066,7 +1067,6 @@ user_mode(struct Client *client_p, struct Client *source_p, int parc, char *parv
    * will cause servers to update correctly.
    */
   send_umode_out(client_p, source_p, setflags);
-  return(0);
 }
         
 /* send_umode()

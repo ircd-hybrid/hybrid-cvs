@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.361 2003/05/08 10:54:14 michael Exp $
+ *  $Id: client.c,v 7.362 2003/05/11 16:05:54 michael Exp $
  */
 
 #include "stdinc.h"
@@ -632,16 +632,17 @@ find_chasing(struct Client *source_p, char *user, int *chasing)
   if (chasing)
     *chasing = 0;
   if (who)
-    return who;
+    return(who);
   if ((who = get_history(user, (long)KILLCHASETIMELIMIT)) == NULL)
-    {
-      sendto_one(source_p, form_str(ERR_NOSUCHNICK),
-                 me.name, source_p->name, user);
-      return (NULL);
-    }
+  {
+    sendto_one(source_p, form_str(ERR_NOSUCHNICK),
+               me.name, source_p->name, user);
+    return(NULL);
+  }
+
   if (chasing)
     *chasing = 1;
-  return who;
+  return(who);
 }
 
 /*
@@ -669,15 +670,15 @@ get_client_name(struct Client *client, int showip)
 
   assert(client != NULL);
 
-  if (!irccmp(client->name, client->host))
+  if (0 == irccmp(client->name, client->host))
     return client->name;
 
 #ifdef HIDE_SERVERS_IPS
-  if(IsServer(client) || IsConnecting(client) || IsHandshake(client))
+  if (IsServer(client) || IsConnecting(client) || IsHandshake(client))
     showip = MASK_IP;
 #endif
 #ifdef HIDE_SPOOF_IPS
-  if(showip == SHOW_IP && IsIPSpoof(client))
+  if (showip == SHOW_IP && IsIPSpoof(client))
     showip = MASK_IP;
 #endif
 
@@ -997,7 +998,7 @@ remove_dependents(struct Client *client_p, struct Client *source_p,
        */
 
       if ((aconf = to->serv->sconf) != NULL)
-        strlcpy(myname, my_name_for_link(me.name, aconf), sizeof(myname));
+        strlcpy(myname, my_name_for_link(aconf), sizeof(myname));
       else
         strlcpy(myname, me.name, sizeof(myname));
       recurse_send_quits(client_p, source_p, to, comment1, myname);
@@ -1456,25 +1457,20 @@ del_all_accepts(struct Client *client_p)
 {
   dlink_node *ptr;
   dlink_node *next_ptr;
-  struct Client *target_p;
 
   DLINK_FOREACH_SAFE(ptr, next_ptr, client_p->allow_list.head)
   {
-    target_p = ptr->data;
-
-    del_from_accept(target_p, client_p);
+    del_from_accept((struct Client *)ptr->data, client_p);
   }
 
   DLINK_FOREACH_SAFE(ptr, next_ptr, client_p->on_allow_list.head)
   {
-    target_p = ptr->data;
-
-    del_from_accept(client_p, target_p);
+    del_from_accept(client_p, (struct Client *)ptr->data);
   }
 }
 
-/*
- * set_initial_nick
+/* set_initial_nick()
+ *
  * inputs
  * output
  * side effects	-

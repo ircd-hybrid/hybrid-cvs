@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_debug.c,v 7.78 2003/05/04 16:26:08 adx Exp $
+ *  $Id: s_debug.c,v 7.79 2003/05/11 16:05:54 michael Exp $
  */
 
 #include "stdinc.h"
@@ -63,13 +63,14 @@ const char serveropts[] = {
 };
 
 void
-debug(int level, char *format, ...)
+debug(int level, const char *format, ...)
 {
   static char debugbuf[1024];
   va_list args;
   int err = errno;
 
-  if ((debuglevel >= 0) && (level <= debuglevel)) {
+  if ((debuglevel >= 0) && (level <= debuglevel))
+  {
     va_start(args, format);
 
     vsprintf(debugbuf, format, args);

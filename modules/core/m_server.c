@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.103 2003/05/03 15:41:18 michael Exp $
+ *  $Id: m_server.c,v 1.104 2003/05/11 16:05:52 michael Exp $
  */
 
 #include "stdinc.h"
@@ -70,7 +70,7 @@ _moddeinit(void)
   mod_del_cmd(&server_msgtab);
 }
 
-const char *_version = "$Revision: 1.103 $";
+const char *_version = "$Revision: 1.104 $";
 #endif
 
 
@@ -480,15 +480,15 @@ ms_server(struct Client *client_p, struct Client *source_p,
 
     if (!(aconf = bclient_p->serv->sconf))
     {
-      sendto_realops_flags(UMODE_ALL, L_ADMIN, "Lost N-line for %s on %s. Closing",
+      sendto_realops_flags(UMODE_ALL, L_ADMIN, "Lost connect{} block for %s on %s. Closing",
                            get_client_name(client_p, HIDE_IP), name);
-      sendto_realops_flags(UMODE_ALL, L_OPER,  "Lost N-line for %s on %s. Closing",
+      sendto_realops_flags(UMODE_ALL, L_OPER,  "Lost connect{} block for %s on %s. Closing",
                            get_client_name(client_p, MASK_IP), name);
       exit_client(client_p, client_p, client_p, "Lost connect{} block");
       return;
     }
 
-    if (match(my_name_for_link(me.name, aconf), target_p->name))
+    if (match(my_name_for_link(aconf), target_p->name))
       continue;
 
     sendto_one(bclient_p, ":%s SERVER %s %d :%s%s",

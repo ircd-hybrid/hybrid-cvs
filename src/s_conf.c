@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.379 2003/05/10 02:20:23 joshk Exp $
+ *  $Id: s_conf.c,v 7.380 2003/05/11 16:05:54 michael Exp $
  */
 
 #include "stdinc.h"
@@ -241,9 +241,9 @@ det_confs_butmask(struct Client *client_p, unsigned int mask)
 }
 
 static struct LinkReport {
-  int conf_type;
-  int rpl_stats;
-  int conf_char;
+  unsigned int conf_type;
+  unsigned int rpl_stats;
+  unsigned int conf_char;
 } report_array[] = {
   { CONF_SERVER,   RPL_STATSCLINE, 'C'},
   { CONF_LEAF,     RPL_STATSLLINE, 'L'},
@@ -948,7 +948,7 @@ attach_conf(struct Client *client_p, struct ConfItem *aconf)
   if (IsConfIllegal(aconf))
     return(NOT_AUTHORIZED);
 
-  if ((aconf->status & CONF_OPERATOR) == 0)
+  if (!IsConfOperator(aconf))
   {
     if (IsConfClient(aconf) && ConfLinks(aconf) >= ConfMaxLinks(aconf) &&
         ConfMaxLinks(aconf) > 0)
@@ -1046,7 +1046,8 @@ attach_connect_block(struct Client *client_p, const char *name,
       continue;
     if (!IsConfServer(aconf))
       continue;
-    if ((match(name, aconf->name) == 0) || (match(aconf->host, host) == 0))
+    if ((match(aconf->name, name) == 0) ||
+        (match(aconf->host, host) == 0))
       continue;
 
     attach_conf(client_p, aconf);
@@ -1175,7 +1176,7 @@ struct ConfItem *
 find_conf_by_host(const char *host, unsigned int status)
 {
   dlink_node *ptr;
-  struct ConfItem* conf;
+  struct ConfItem *conf;
 
   assert(host != NULL);
 
@@ -1249,9 +1250,11 @@ find_u_conf(const char *server, const char *user, const char *host)
 
     if (match(aconf->name,server))
     {
-      if (EmptyString(aconf->user) || EmptyString(aconf->host))
+      if (EmptyString(aconf->user) ||
+          EmptyString(aconf->host))
         return(YES);
-      if (match(aconf->user, user) && match(aconf->host, host))
+      if (match(aconf->user, user) &&
+          match(aconf->host, host))
         return(YES);
     }
   }
@@ -1493,7 +1496,7 @@ conf_add_conf(struct ConfItem *aconf)
 	 aconf->passwd ? aconf->passwd : "<NULL>",
 	 aconf->user ? aconf->user : "<NULL>",
 	 aconf->port,
-	 aconf->c_class ? ConfClassType(aconf): 0 ));
+	 aconf->c_class ? ConfClassType(aconf): 0));
 
   dlinkAdd(aconf, &aconf->node, &ConfigItemList);
 }
@@ -1821,11 +1824,11 @@ get_oper_name(struct Client *client_p)
   {
     DLINK_FOREACH(cnode, client_p->localClient->confs.head)
     {
-      if (((struct ConfItem*)cnode->data)->status & CONF_OPERATOR)
+      if (IsConfOperator((struct ConfItem *)cnode->data))
       {
 	ircsprintf(buffer, "%s!%s@%s{%s}", client_p->name,
 		   client_p->username, client_p->host,
-		   ((struct ConfItem*)cnode->data)->name);
+		   ((struct ConfItem *)cnode->data)->name);
 	return(buffer);
       }
     }
@@ -2263,7 +2266,7 @@ conf_add_server(struct ConfItem *aconf, int lcount)
     return(-1);
   }
 
-  if (EmptyString(aconf->passwd) && !(aconf->flags & CONF_FLAGS_CRYPTLINK))
+  if (EmptyString(aconf->passwd) && !IsConfCryptLink(aconf))
   {
     sendto_realops_flags(UMODE_ALL, L_ALL, "Bad connect block, name %s",
                          aconf->name);

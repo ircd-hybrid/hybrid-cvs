@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_trace.c,v 1.57 2003/04/18 02:13:43 db Exp $
+ *  $Id: m_trace.c,v 1.58 2003/05/11 16:05:50 michael Exp $
  */
 
 #include "stdinc.h"
@@ -66,7 +66,7 @@ _moddeinit(void)
   hook_del_event("doing_trace");
   mod_del_cmd(&trace_msgtab);
 }
-const char *_version = "$Revision: 1.57 $";
+const char *_version = "$Revision: 1.58 $";
 #endif
 static int report_this_status(struct Client *source_p, struct Client *target_p,int dow,
                               int link_u_p, int link_u_s);
@@ -313,19 +313,16 @@ mo_trace(struct Client *client_p, struct Client *source_p,
 */
 static void
 ms_trace(struct Client *client_p, struct Client *source_p,
-	 int parc, char *parv[])
+         int parc, char *parv[])
 {
   if (hunt_server(client_p, source_p, ":%s TRACE %s :%s", 2, parc, parv))
     return;
 
-  if( IsOper(source_p) )
-    mo_trace(client_p,source_p,parc,parv);
-  return;
+  if (IsOper(source_p))
+    mo_trace(client_p, source_p, parc, parv);
 }
 
-
-/*
- * report_this_status
+/* report_this_status()
  *
  * inputs	- pointer to client to report to
  * 		- pointer to client to report about
@@ -334,7 +331,7 @@ ms_trace(struct Client *client_p, struct Client *source_p,
  */
 static int
 report_this_status(struct Client *source_p, struct Client *target_p,
-		   int dow, int link_u_p, int link_s_p)
+                   int dow, int link_u_p, int link_s_p)
 {
   const char* name;
   const char* class_name;
@@ -456,4 +453,3 @@ trace_spy(struct Client *source_p)
 
   hook_call_event("doing_trace", &data);
 }
-

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.317 2003/05/09 21:38:25 bill Exp $
+ *  $Id: s_serv.c,v 7.318 2003/05/11 16:05:55 michael Exp $
  */
 
 #include "stdinc.h"
@@ -183,7 +183,7 @@ slink_zipstats(unsigned int rpl, unsigned int len, unsigned char *data,
    * regression for most of our installed SPARC base.
    * -jmallett, 04/27/2002
    */
-  memcpy(&zipstats, &server_p->localClient->zipstats, sizeof (struct ZipStats));
+  memcpy(&zipstats, &server_p->localClient->zipstats, sizeof(struct ZipStats));
 
   in |= (data[i++] << 24);
   in |= (data[i++] << 16);
@@ -209,7 +209,7 @@ slink_zipstats(unsigned int rpl, unsigned int len, unsigned char *data,
    * value of a to b if it is.
    * Add and Set if No Overflow.
    */
-#define	ASNO(a, b) a = (a + b >= a? a + b: b)
+#define	ASNO(a, b) a = (a + b >= a ? a + b : b)
 
   ASNO(zipstats.in, in);
   ASNO(zipstats.out, out);
@@ -281,15 +281,14 @@ struct EncCapability *check_cipher(struct Client *client_p,
 /* my_name_for_link()
  * return wildcard name of my server name 
  * according to given config entry --Jto
- * XXX - this is only called with me.name as name
  */
 const char *
-my_name_for_link(const char *name, struct ConfItem *aconf)
+my_name_for_link(struct ConfItem *aconf)
 {
   if (aconf->fakename)
     return(aconf->fakename);
   else
-    return(name);
+    return(me.name);
 }
 
 /*
@@ -569,7 +568,7 @@ check_server(const char *name, struct Client *client_p, int cryptlink)
   struct ConfItem *server_aconf = NULL;
   int error = -1;
 
-  assert(NULL != client_p);
+  assert(client_p != NULL);
 
   if (client_p == NULL)
     return(error);
@@ -942,7 +941,7 @@ server_estab(struct Client *client_p)
      * Nagle is already disabled at this point --adx
      */
     sendto_one(client_p, "SERVER %s 1 :%s%s",
-               my_name_for_link(me.name, aconf), 
+               my_name_for_link(aconf), 
                ConfigServerHide.hidden ? "(H) " : "",
                (me.info[0]) ? (me.info) : "IRCers United");
     send_queued_write(client_p);
@@ -1080,7 +1079,7 @@ server_estab(struct Client *client_p)
       continue;
 
     if ((aconf = target_p->serv->sconf) &&
-         match(my_name_for_link(me.name, aconf), client_p->name))
+         match(my_name_for_link(aconf), client_p->name))
       continue;
 
     sendto_one(target_p,":%s SERVER %s 2 :%s%s", 
@@ -1119,7 +1118,7 @@ server_estab(struct Client *client_p)
 
     if (IsServer(target_p))
     {
-      if (match(my_name_for_link(me.name, aconf), target_p->name))
+      if (match(my_name_for_link(aconf), target_p->name))
         continue;
 
       sendto_one(client_p, ":%s SERVER %s %d :%s%s", 
@@ -2024,16 +2023,16 @@ serv_connect(struct ConfItem *aconf, struct Client *by)
 static void
 serv_connect_callback(int fd, int status, void *data)
 {
-    struct Client *client_p = data;
-    struct ConfItem *aconf;
+  struct Client *client_p = data;
+  struct ConfItem *aconf;
 
-    /* First, make sure its a real client! */
-    assert(client_p != NULL);
-    assert(client_p->localClient->fd == fd);
-    
-    if(client_p == NULL)
-      return;
-      
+  /* First, make sure its a real client! */
+  assert(client_p != NULL);
+  assert(client_p->localClient->fd == fd);
+
+  if (client_p == NULL)
+    return;
+
     /* Next, for backward purposes, record the ip of the server */
     memcpy(&client_p->localClient->ip, &fd_table[fd].connect.hostaddr,
         sizeof(struct irc_ssaddr));
@@ -2111,7 +2110,7 @@ serv_connect_callback(int fd, int status, void *data)
              0);
 
     sendto_one(client_p, "SERVER %s 1 :%s%s",
-               my_name_for_link(me.name, aconf), 
+               my_name_for_link(aconf), 
 	       ConfigServerHide.hidden ? "(H) " : "", 
 	       me.info);
 
@@ -2206,7 +2205,7 @@ cryptlink_init(struct Client *client_p, struct ConfItem *aconf, int fd)
          CAP_ENC_MASK);
 
   sendto_one(client_p, "CRYPTLINK SERV %s %s :%s%s",
-             my_name_for_link(me.name, aconf), key_to_send,
+             my_name_for_link(aconf), key_to_send,
              ConfigServerHide.hidden ? "(H) " : "", me.info);
 
   SetHandshake(client_p);
@@ -2246,7 +2245,5 @@ cryptlink_error(struct Client *client_p, const char *type,
    */
   if ((client_reason != NULL) && (!IsDead(client_p)))
     exit_client(client_p, client_p, &me, client_reason);
-
-  return;
 }
 #endif /* HAVE_LIBCRYPTO */

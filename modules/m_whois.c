@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.96 2003/05/09 21:38:18 bill Exp $
+ *  $Id: m_whois.c,v 1.97 2003/05/11 16:05:50 michael Exp $
  */
 
 #include "stdinc.h"
@@ -73,7 +73,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-const char *_version = "$Revision: 1.96 $";
+const char *_version = "$Revision: 1.97 $";
 #endif
 /*
 ** m_whois
@@ -465,8 +465,6 @@ whois_person(struct Client *source_p,struct Client *target_p, int glob)
  */
   if(MyClient(source_p)) 
     hook_call_event("doing_whois", &hd);
-  
-  return;
 }
 
 /*
@@ -480,9 +478,9 @@ whois_person(struct Client *source_p,struct Client *target_p, int glob)
  * know what it does.. --fl_ */
 static void
 ms_whois(struct Client *client_p, struct Client *source_p,
-                    int parc, char *parv[])
+         int parc, char *parv[])
 {
-  if(!IsClient(source_p))
+  if (!IsClient(source_p))
     return;
 
   /* its a misconfigured server */
@@ -597,5 +595,4 @@ ms_whois(struct Client *client_p, struct Client *source_p,
 
   /* parc == 2, so its a lazylink client asking us about a nick, so do it */
   do_whois(client_p, source_p, parc, parv);
-  return;
 }

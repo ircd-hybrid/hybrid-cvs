@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.185 2003/05/09 21:38:13 bill Exp $
+ *  $Id: client.h,v 7.186 2003/05/11 16:05:48 michael Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -74,7 +74,10 @@ struct User
   char*          auth_oper; /* Operator to become if they supply the response.*/
 	/* client ID, unique ID per client */
   char id[IDLEN + 1];
+#if 0
+  /* unused */
   char id_key[IDLEN + 1];
+#endif
 };
 
 struct Server
