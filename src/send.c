@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.73 2000/12/11 02:50:50 db Exp $
+ *   $Id: send.c,v 7.74 2000/12/11 03:18:42 db Exp $
  */
 #include "tools.h"
 #include "send.h"
@@ -1009,11 +1009,11 @@ sendto_realops_flags(int flags, const char *pattern, ...)
   len = send_format(nbuf, pattern, args);
   va_end(args);
 
-  if(len > (512-60))
+  if(len > 400)
     {
-      nbuf[512-60] = '\r';
-      nbuf[512-59] = '\n';
-      nbuf[512-58] = '\0';
+      nbuf[400] = '\r';
+      nbuf[401] = '\n';
+      nbuf[402] = '\0';
     }
 
   if (flags == FLAGS_ALL)
@@ -1024,12 +1024,12 @@ sendto_realops_flags(int flags, const char *pattern, ...)
 
 	  if (SendServNotice(cptr))
 	    {
-	      (void)ircsprintf(sendbuf, ":%s NOTICE %s :*** Notice -- %s",
+	      len = ircsprintf(sendbuf, ":%s NOTICE %s :*** Notice -- %s",
 			       me.name,
 			       cptr->name,
 			       nbuf);
 
-	      len = strlen(sendbuf);	/* XXX *sigh* */
+	      len = send_trim(sendbuf,len);
 	      send_message(cptr, (char *)sendbuf, len);
 	    }
 	}
@@ -1042,11 +1042,12 @@ sendto_realops_flags(int flags, const char *pattern, ...)
 
 	  if(cptr->umodes & flags)
 	    {
-	      (void)ircsprintf(sendbuf, ":%s NOTICE %s :*** Notice -- %s",
-			       me.name,
-			       cptr->name,
-			       nbuf);
+	      len =ircsprintf(sendbuf, ":%s NOTICE %s :*** Notice -- %s",
+			      me.name,
+			      cptr->name,
+			      nbuf);
 
+	      len = send_trim(sendbuf,len);
 	      send_message(cptr, (char *)sendbuf, len);
 	    }
 	}
