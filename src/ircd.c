@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.73 2000/12/14 17:38:44 toot Exp $
+ * $Id: ircd.c,v 7.74 2000/12/14 18:11:36 db Exp $
  */
 #include "tools.h"
 #include "ircd.h"
@@ -508,7 +508,6 @@ int main(int argc, char *argv[])
   ConfigFileEntry.klinefile = KPATH;    /* Server kline file */
   ConfigFileEntry.dlinefile = DLPATH;   /* dline file */
 
-#endif /* DLPATH */
 
 #ifdef  CHROOTDIR
   if (chdir(DPATH))
