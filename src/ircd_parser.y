@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.11 2000/01/23 21:02:38 db Exp $
+ * $Id: ircd_parser.y,v 1.12 2000/01/24 02:47:31 db Exp $
  */
 
 %{
@@ -93,10 +93,8 @@ int   class_sendq_var;
 %token  EMAIL
 %token  HUB
 %token  HUB_MASK
-%token  HUB_MASKS
 %token  LEAF
 %token  LEAF_MASK
-%token  LEAF_MASKS
 %token  PING_TIME
 %token  NUMBER_PER_IP
 %token  MAX_NUMBER

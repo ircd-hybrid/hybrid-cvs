@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.7 2000/01/23 21:02:37 db Exp $
+ * $Id: ircd_lexer.l,v 1.8 2000/01/24 02:47:31 db Exp $
  */
 
 %{
@@ -113,9 +113,7 @@ accept_password { return ACCEPT_PASSWORD; }
 compressed	{ return COMPRESSED; }
 lazylink	{ return LAZYLINK; }
 hub_mask	{ return HUB_MASK; }
-hub_masks	{ return HUB_MASKS; }
 leaf_mask	{ return LEAF_MASK; }
-leaf_masks	{ return LEAF_MASKS; }
 password	{ return PASSWORD; }
 passwd		{ return PASSWORD; }
 kline_exempt	{ return KLINE_EXEMPT; }

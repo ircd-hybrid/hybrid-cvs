@@ -16,7 +16,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: fileio.h,v 7.1 1999/12/30 20:35:28 db Exp $
+ * $Id: fileio.h,v 7.2 2000/01/24 02:47:28 db Exp $
  */
 #ifndef INCLUDED_fileio_h
 #define INCLUDED_fileio_h
@@ -61,6 +61,10 @@ extern int     fbgetc(FBFILE* fb);
  * see fgets(3)
  */
 extern char*   fbgets(char* buf, size_t len, FBFILE* fb);
+/*
+ * ungets c to fb see ungetc(3)
+ */
+extern void    fbungetc(char c, FBFILE* fb);
 /*
  * write a null terminated string to a file, see fputs(3)
  */
