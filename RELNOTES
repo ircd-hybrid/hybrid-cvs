@@ -11,7 +11,7 @@ o) the use_anonops/halfops/invex/except options will actually disable users
 o) a core with clearchan was fixed
 o) more double free fixes
 o) a flaw in serverhide relating to /who was fixed
-
+o) protection against users flooding has been re-enabled.
 
 --------------------------------------------------------------------------------
 
@@ -59,4 +59,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.23 2002/04/26 00:47:35 leeh Exp $
+$Id: RELNOTES,v 1.24 2002/04/27 23:55:48 leeh Exp $
