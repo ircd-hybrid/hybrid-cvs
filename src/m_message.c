@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 7.3 1999/12/30 20:35:53 db Exp $
+ *   $Id: m_message.c,v 7.4 2000/01/08 01:59:22 db Exp $
  */
 #include "m_commands.h"
 #include "client.h"
@@ -269,6 +269,13 @@ static  int     m_message(struct Client *cptr,
   /*
   ** nickname addressed?
   */
+
+  if(!ConfigFileEntry.hub && serv_cptr_list &&
+     IsCapable(serv_cptr_list,CAP_LL))
+    {
+
+    }
+
   if ((acptr = find_person(nick, NULL)))
     {
 #ifdef  IDLE_CHECK
