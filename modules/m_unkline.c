@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_unkline.c,v 1.61 2003/05/24 16:15:13 bill Exp $
+ *  $Id: m_unkline.c,v 1.62 2003/05/24 18:42:41 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -76,7 +76,7 @@ _moddeinit(void)
   mod_del_cmd(&msgtabs[1]);
   mod_del_cmd(&msgtabs[2]);
 }
-const char *_version = "$Revision: 1.61 $";
+const char *_version = "$Revision: 1.62 $";
 #endif
 
 static int remove_tkline_match(char *,char *);
@@ -225,7 +225,7 @@ ms_unkline(struct Client *client_p, struct Client *source_p, int parc, char *par
            source_p->name, kuser, khost);
     }
   }
-  else if (find_u_conf(source_p->user->server,
+  else if (find_u_conf(source_p->user->server->name,
                        source_p->username, source_p->host,
                        SHARED_UNKLINE))
   {

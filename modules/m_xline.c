@@ -19,12 +19,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.11 2003/05/24 18:37:11 db Exp $
+ *  $Id: m_xline.c,v 1.12 2003/05/24 18:42:41 joshk Exp $
  */
 
 #include "stdinc.h"
 #include "tools.h"
-#include "m_kline.h"
 #include "channel.h"
 #include "class.h"
 #include "client.h"
@@ -83,7 +82,7 @@ _moddeinit(void)
   mod_del_cmd(&xline_msgtab);
   mod_del_cmd(&unxline_msgtab);
 }
-const char *_version = "$Revision: 1.11 $";
+const char *_version = "$Revision: 1.12 $";
 #endif
 
 
@@ -241,7 +240,7 @@ ms_xline(struct Client *client_p, struct Client *source_p,
 
     write_xline(source_p, parv[2], parv[4], atoi(parv[3]));
   }
-  else if (find_u_conf(source_p->user->server,
+  else if (find_u_conf(source_p->user->server->name,
                        source_p->username, source_p->host,
                        SHARED_XLINE))
   {
@@ -342,7 +341,7 @@ ms_unxline(struct Client *client_p, struct Client *source_p,
 
   if (find_cluster((char *)source_p->user->server, CLUSTER_UNXLINE))
     remove_xline(source_p, parv[2], 1);
-  else if (find_u_conf(source_p->user->server,
+  else if (find_u_conf(source_p->user->server->name,
                        source_p->username, source_p->host,
                        SHARED_UNXLINE))
   {
