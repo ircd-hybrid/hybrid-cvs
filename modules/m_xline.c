@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.34 2004/02/28 06:12:25 metalrock Exp $
+ *  $Id: m_xline.c,v 1.35 2004/03/16 09:11:24 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -82,7 +82,7 @@ _moddeinit(void)
   mod_del_cmd(&unxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.34 $";
+const char *_version = "$Revision: 1.35 $";
 #endif
 
 
@@ -122,17 +122,6 @@ mo_xline(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if ((conf = find_matching_name_conf(XLINE_TYPE, parv[1],
-				      NULL, NULL, 0)) != NULL)
-  {
-    match_item = (struct MatchItem *)map_to_conf(conf);
-
-    sendto_one(source_p, ":%s NOTICE %s :[%s] already X-Lined by [%s] - %s",
-               me.name, source_p->name, parv[1],
-	       conf->name, match_item->reason);
-    return;
-  }
-
   /* XLINE <gecos> <type> ON <server> :reason */
   if (parc >= 5)
   {
@@ -141,7 +130,7 @@ mo_xline(struct Client *client_p, struct Client *source_p,
       type = parv[2];
       target_server = parv[4];
       if (parc > 5)
-	reason = parv[5];
+        reason = parv[5];
     }
     else
     {
@@ -169,6 +158,28 @@ mo_xline(struct Client *client_p, struct Client *source_p,
     type = "REJECT";
   }
 
+  if (target_server != NULL)
+  {
+    sendto_match_servs(source_p, target_server, CAP_CLUSTER,
+                       "XLINE %s %s %d :%s",
+                       target_server, parv[1], type_i, reason);
+    if (!match(target_server, me.name))
+      return;
+  }
+  else if (dlink_list_length(&cluster_items) != 0)
+    cluster_xline(source_p, parv[1], type_i, reason);
+
+  if ((conf = find_matching_name_conf(XLINE_TYPE, parv[1],
+                                      NULL, NULL, 0)) != NULL)
+  {
+    match_item = (struct MatchItem *)map_to_conf(conf);
+
+    sendto_one(source_p, ":%s NOTICE %s :[%s] already X-Lined by [%s] - %s",
+               me.name, source_p->name, parv[1],
+               conf->name, match_item->reason);
+    return;
+  }
+
   if (irccmp(type,"WARN") == 0)
     type_i = 0;
   else if (irccmp(type,"REJECT") == 0)
@@ -180,17 +191,6 @@ mo_xline(struct Client *client_p, struct Client *source_p,
 
   if (EmptyString(reason))
     reason = def_reason;
-
-  if (target_server != NULL)
-  {
-    sendto_match_servs(source_p, target_server, CAP_CLUSTER,
-                       "XLINE %s %s %d :%s",
-                       target_server, parv[1], type_i, reason);
-    if (!match(target_server, me.name))
-      return;
-  }
-  else if (dlink_list_length(&cluster_items) != 0)
-    cluster_xline(source_p, parv[1], type_i, reason);
 
   write_xline(source_p, parv[1], reason, type_i);
 } /* mo_xline() */
