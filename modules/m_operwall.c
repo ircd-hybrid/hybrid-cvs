@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_operwall.c,v 1.29 2002/05/24 23:34:21 androsyn Exp $
+ *  $Id: m_operwall.c,v 1.30 2003/02/17 16:09:29 db Exp $
  */
 
 #include "stdinc.h"
@@ -55,7 +55,7 @@ _moddeinit(void)
   mod_del_cmd(&operwall_msgtab);
 }
 
-const char *_version = "$Revision: 1.29 $";
+const char *_version = "$Revision: 1.30 $";
 #endif
 /*
  * mo_operwall - OPERWALL message handler
@@ -78,7 +78,7 @@ static void mo_operwall(struct Client *client_p, struct Client *source_p,
 
   sendto_server(NULL, source_p, NULL, NOCAPS, NOCAPS, LL_ICLIENT,
                 ":%s OPERWALL :%s", parv[0], message);
-  sendto_wallops_flags(FLAGS_OPERWALL, source_p, "OPERWALL - %s", message);
+  sendto_wallops_flags(UMODE_OPERWALL, source_p, "OPERWALL - %s", message);
 }
 
 /*
@@ -103,7 +103,7 @@ static void ms_operwall(struct Client *client_p, struct Client *source_p,
 
   sendto_server(client_p, source_p, NULL, NOCAPS, NOCAPS, LL_ICLIENT,
                 ":%s OPERWALL :%s", parv[0], message);
-  sendto_wallops_flags(FLAGS_OPERWALL, source_p, "OPERWALL - %s", message);
+  sendto_wallops_flags(UMODE_OPERWALL, source_p, "OPERWALL - %s", message);
 }
 
 

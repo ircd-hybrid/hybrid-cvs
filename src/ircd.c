@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.252 2003/02/16 21:22:25 lusky Exp $
+ *  $Id: ircd.c,v 7.253 2003/02/17 16:09:36 db Exp $
  */
 
 #include "stdinc.h"
@@ -284,7 +284,7 @@ set_time(void)
   if(gettimeofday(&newtime, NULL) == -1)
     {
       ilog(L_ERROR, "Clock Failure (%d)", errno);
-      sendto_realops_flags(FLAGS_ALL, L_ALL,
+      sendto_realops_flags(UMODE_ALL, L_ALL,
 			   "Clock Failure (%d), TS can be corrupted", errno);
    
       restart("Clock Failure");
@@ -344,7 +344,7 @@ io_loop(void)
       if (doremotd)
         {
           ReadMessageFile( &ConfigFileEntry.motd );
-          sendto_realops_flags(FLAGS_ALL, L_ALL,
+          sendto_realops_flags(UMODE_ALL, L_ALL,
                                "Got signal SIGUSR1, reloading ircd motd file");
           doremotd = 0;
         }

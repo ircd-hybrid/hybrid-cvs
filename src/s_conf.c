@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.341 2003/02/16 22:06:46 bill Exp $
+ *  $Id: s_conf.c,v 7.342 2003/02/17 16:09:37 db Exp $
  */
 
 #include "stdinc.h"
@@ -76,6 +76,7 @@ static void     clear_out_old_conf(void);
 static void     flush_deleted_I_P(void);
 static void     expire_tklines(dlink_list *);
 static int 	is_attached(struct Client *client_p, struct ConfItem *aconf);
+static char 	*umode_as_string(int umode);
 
 FBFILE* conf_fbfile_in;
 extern char yytext[];
@@ -326,7 +327,7 @@ report_configured_links(struct Client* source_p, int mask)
                          name,
                          port,
                          classname,
-                         oper_flags_as_string((int)tmp->hold));
+                         umode_as_string((int)tmp->hold));
             else
 #endif
               sendto_one(source_p, form_str(p->rpl_stats), me.name,
@@ -348,7 +349,7 @@ report_configured_links(struct Client* source_p, int mask)
                          user, host, name,
                          oper_privs_as_string((struct Client *)NULL,port),
                          classname,
-                         oper_flags_as_string((int)tmp->hold));
+                         umode_as_string((int)tmp->hold));
             else
               sendto_one(source_p, form_str(p->rpl_stats), me.name,
                          source_p->name, p->conf_char,
@@ -442,7 +443,7 @@ check_client(struct Client *client_p, struct Client *source_p, char *username)
       break;
 
     case TOO_MANY:
-      sendto_realops_flags(FLAGS_FULL, L_ALL, 
+      sendto_realops_flags(UMODE_FULL, L_ALL, 
                            "Too many on IP for %s (%s).",
 			   get_client_name(source_p, SHOW_IP),
 			   source_p->localClient->sockhost);
@@ -456,7 +457,7 @@ check_client(struct Client *client_p, struct Client *source_p, char *username)
       break;
 
     case I_LINE_FULL:
-      sendto_realops_flags(FLAGS_FULL, L_ALL,
+      sendto_realops_flags(UMODE_FULL, L_ALL,
                            "I-line is full for %s (%s).",
 			   get_client_name(source_p, SHOW_IP),
 			   source_p->localClient->sockhost);
@@ -476,7 +477,7 @@ check_client(struct Client *client_p, struct Client *source_p, char *username)
       /* jdc - lists server name & port connections are on */
       /*       a purely cosmetical change */
       inetntop(source_p->localClient->aftype, &IN_ADDR(source_p->localClient->ip), ipaddr, HOSTIPLEN);
-      sendto_realops_flags(FLAGS_UNAUTH, L_ALL,
+      sendto_realops_flags(UMODE_UNAUTH, L_ALL,
 			   "Unauthorized client connection from %s [%s] on [%s/%u].",
 			   get_client_name(source_p, SHOW_IP),
 			   ipaddr,
@@ -536,66 +537,66 @@ verify_access(struct Client* client_p, const char* username)
     }
 
   if (aconf != NULL)
+  {
+    if (aconf->status & CONF_CLIENT)
     {
-      if (aconf->status & CONF_CLIENT)
+      if (aconf->flags & CONF_FLAGS_REDIR)
+      {
+	sendto_one(client_p, form_str(RPL_REDIR), me.name, client_p->name,
+		   aconf->name ? aconf->name : "", aconf->port);
+	return(NOT_AUTHORIZED);
+      }
+      if (ConfigFileEntry.glines)
+      {
+	if (!IsConfExemptKline(aconf) && !IsConfExemptGline(aconf))
 	{
-	  if (aconf->flags & CONF_FLAGS_REDIR)
-	    {
-	      sendto_one(client_p, form_str(RPL_REDIR), me.name, client_p->name,
-			 aconf->name ? aconf->name : "", aconf->port);
-	      return(NOT_AUTHORIZED);
-	    }
-	  if (ConfigFileEntry.glines)
-	    {
-	      if (!IsConfExemptKline(aconf) && !IsConfExemptGline(aconf))
-		{
-		  if (IsGotId(client_p))
-		    gkill_conf = find_gkill(client_p, client_p->username);
-		  else
-		    gkill_conf = find_gkill(client_p, non_ident);
-
-		  if (gkill_conf)
-		    {
-		      sendto_one(client_p, ":%s NOTICE %s :*** G-lined", me.name,
-				 client_p->name);
-		      sendto_one(client_p, ":%s NOTICE %s :*** Banned %s",
-				 me.name, client_p->name, 
-				 gkill_conf->passwd);
-		      return(BANNED_CLIENT);
-		    }
-		}
-	    }
-	  if (IsConfDoIdentd(aconf))
-	    SetNeedId(client_p);
-	  if (IsConfRestricted(aconf))
-	    SetRestricted(client_p);
-	  /* Thanks for spoof idea amm */
-	  if (IsConfDoSpoofIp(aconf))
-	    {
+	  if (IsGotId(client_p))
+	    gkill_conf = find_gkill(client_p, client_p->username);
+	  else
+	    gkill_conf = find_gkill(client_p, non_ident);
+	  
+	  if (gkill_conf != NULL)
+	  {
+	    sendto_one(client_p, ":%s NOTICE %s :*** G-lined", me.name,
+		       client_p->name);
+	    sendto_one(client_p, ":%s NOTICE %s :*** Banned %s",
+		       me.name, client_p->name, 
+		       gkill_conf->passwd);
+	    return(BANNED_CLIENT);
+	  }
+	}
+      }
+      if (IsConfDoIdentd(aconf))
+	SetNeedId(client_p);
+      if (IsConfRestricted(aconf))
+	SetRestricted(client_p);
+      /* Thanks for spoof idea amm */
+      if (IsConfDoSpoofIp(aconf))
+      {
 #ifndef HIDE_SPOOF_IPS
-	      if (IsConfSpoofNotice(aconf))
-		{
-		  sendto_realops_flags(FLAGS_ALL, L_ADMIN,
-				       "%s spoofing: %s as %s", client_p->name,
-				       client_p->host, aconf->name);
-		}
-#endif
-	      strlcpy(client_p->host, aconf->name, sizeof(client_p->host));
-	      SetIPSpoof(client_p);
-	    }
-	  return(attach_iline(client_p, aconf));
-	}
-      else if (aconf->status & CONF_KILL)
+	if (IsConfSpoofNotice(aconf))
 	{
-	  if (ConfigFileEntry.kline_with_reason)
-	    {
-	      sendto_one(client_p, ":%s NOTICE %s :*** Banned %s",
-			 me.name,client_p->name,aconf->passwd);
-	    }
-	  return(BANNED_CLIENT);
+	  sendto_realops_flags(UMODE_ALL, L_ADMIN,
+			       "%s spoofing: %s as %s", client_p->name,
+			       client_p->host, aconf->name);
 	}
+#endif
+	strlcpy(client_p->host, aconf->name, sizeof(client_p->host));
+	SetIPSpoof(client_p);
+      }
+      return(attach_iline(client_p, aconf));
     }
- return(NOT_AUTHORIZED);
+    else if (aconf->status & CONF_KILL)
+    {
+      if (ConfigFileEntry.kline_with_reason)
+      {
+	sendto_one(client_p, ":%s NOTICE %s :*** Banned %s",
+		   me.name,client_p->name,aconf->passwd);
+      }
+      return(BANNED_CLIENT);
+    }
+  }
+  return(NOT_AUTHORIZED);
 }
 
 /*
@@ -1299,10 +1300,8 @@ int
 rehash(int sig)
 {
   if (sig != 0)
-    {
-      sendto_realops_flags(FLAGS_ALL, L_ALL,
-			   "Got signal SIGHUP, reloading ircd conf. file");
-    }
+    sendto_realops_flags(UMODE_ALL, L_ALL,
+			 "Got signal SIGHUP, reloading ircd conf. file");
 
   restart_resolver();
   /* don't close listeners until we know we can go ahead with the rehash */
@@ -1418,9 +1417,9 @@ set_default_conf(void)
   ConfigFileEntry.compression_level = 0;
 #endif
 
-  ConfigFileEntry.oper_umodes = FLAGS_LOCOPS | FLAGS_SERVNOTICE |
-    FLAGS_OPERWALL | FLAGS_WALLOP;
-  ConfigFileEntry.oper_only_umodes = FLAGS_DEBUG;
+  ConfigFileEntry.oper_umodes = UMODE_LOCOPS | UMODE_SERVNOTICE |
+    UMODE_OPERWALL | UMODE_WALLOP;
+  ConfigFileEntry.oper_only_umodes = UMODE_DEBUG;
   ConfigFileEntry.throttle_time = 10;
 
   ConfigChannel.vchans_oper_only = NO;
@@ -1708,22 +1707,22 @@ expire_tklines(dlink_list *tklist)
   dlink_node *next_node;
   struct ConfItem *kill_ptr;
   DLINK_FOREACH_SAFE(kill_node, next_node, tklist->head)
+  {
+    kill_ptr = kill_node->data;
+
+    if (kill_ptr->hold <= CurrentTime)
     {
-      kill_ptr = kill_node->data;
+      /* Alert opers that a TKline expired - Hwy */
+      sendto_realops_flags(UMODE_ALL, L_ALL,
+			   "Temporary K-line for [%s@%s] expired",
+			   (kill_ptr->user) ? kill_ptr->user : "*",
+			   (kill_ptr->host) ? kill_ptr->host : "*");
 
-      if (kill_ptr->hold <= CurrentTime)
-	{
-          /* Alert opers that a TKline expired - Hwy */
-          sendto_realops_flags(FLAGS_ALL, L_ALL,
-			       "Temporary K-line for [%s@%s] expired",
-			       (kill_ptr->user) ? kill_ptr->user : "*",
-			       (kill_ptr->host) ? kill_ptr->host : "*");
-
-	  delete_one_address_conf(kill_ptr->host, kill_ptr);
-	  dlinkDelete(kill_node, tklist);
-	  free_dlink_node(kill_node);
-	}
+      delete_one_address_conf(kill_ptr->host, kill_ptr);
+      dlinkDelete(kill_node, tklist);
+      free_dlink_node(kill_node);
     }
+  }
 }
 
 /*
@@ -1832,58 +1831,58 @@ oper_privs_as_string(struct Client *client_p,int port)
 }
 
 
-/* oper_flags_as_string
+/* umode_as_string
  *
- * inputs        - oper flags as bit mask
- * output        - oper flags as as string
+ * inputs        - umode as bit mask
+ * output        - umode as as string
  * side effects -
  *
  */
-char *
-oper_flags_as_string(int flags)
+static char *
+umode_as_string(int umode)
 {
   /* This MUST be extended if we add any more modes... -Hwy */
-  static char flags_out[18];
-  char *flags_ptr;
+  static char umode_out[18];
+  char *umode_ptr;
 
-  flags_ptr = flags_out;
-  *flags_ptr = '\0';
+  umode_ptr = umode_out;
+  *umode_ptr = '\0';
 
-  if(flags & FLAGS_INVISIBLE)
-    *flags_ptr++ = 'i';
-  if(flags & FLAGS_WALLOP)
-    *flags_ptr++ = 'w';
-  if(flags & FLAGS_SERVNOTICE)
-    *flags_ptr++ = 's';
-  if(flags & FLAGS_CCONN)
-    *flags_ptr++ = 'c';
-  if(flags & FLAGS_REJ)
-    *flags_ptr++ = 'r';
-  if(flags & FLAGS_SKILL)
-    *flags_ptr++ = 'k';
-  if(flags & FLAGS_FULL)
-    *flags_ptr++ = 'f';
-  if(flags & FLAGS_SPY)
-    *flags_ptr++ = 'y';
-  if(flags & FLAGS_DEBUG)
-    *flags_ptr++ = 'd';
-  if(flags & FLAGS_NCHANGE)
-    *flags_ptr++ = 'n';
-  if(flags & FLAGS_ADMIN)
-    *flags_ptr++ = 'a';
-  if(flags & FLAGS_EXTERNAL)
-    *flags_ptr++ = 'x';
-  if(flags & FLAGS_UNAUTH)
-    *flags_ptr++ = 'u';
-  if(flags & FLAGS_BOTS)
-    *flags_ptr++ = 'b';
-  if(flags & FLAGS_LOCOPS)
-    *flags_ptr++ = 'l';
-  if(flags & FLAGS_CALLERID)
-    *flags_ptr++ = 'g';
-  *flags_ptr = '\0';
+  if(umode & UMODE_INVISIBLE)
+    *umode_ptr++ = 'i';
+  if(umode & UMODE_WALLOP)
+    *umode_ptr++ = 'w';
+  if(umode & UMODE_SERVNOTICE)
+    *umode_ptr++ = 's';
+  if(umode & UMODE_CCONN)
+    *umode_ptr++ = 'c';
+  if(umode & UMODE_REJ)
+    *umode_ptr++ = 'r';
+  if(umode & UMODE_SKILL)
+    *umode_ptr++ = 'k';
+  if(umode & UMODE_FULL)
+    *umode_ptr++ = 'f';
+  if(umode & UMODE_SPY)
+    *umode_ptr++ = 'y';
+  if(umode & UMODE_DEBUG)
+    *umode_ptr++ = 'd';
+  if(umode & UMODE_NCHANGE)
+    *umode_ptr++ = 'n';
+  if(umode & UMODE_ADMIN)
+    *umode_ptr++ = 'a';
+  if(umode & UMODE_EXTERNAL)
+    *umode_ptr++ = 'x';
+  if(umode & UMODE_UNAUTH)
+    *umode_ptr++ = 'u';
+  if(umode & UMODE_BOTS)
+    *umode_ptr++ = 'b';
+  if(umode & UMODE_LOCOPS)
+    *umode_ptr++ = 'l';
+  if(umode & UMODE_CALLERID)
+    *umode_ptr++ = 'g';
+  *umode_ptr = '\0';
 
-  return(flags_out);
+  return(umode_out);
 }
 
 
@@ -1981,20 +1980,20 @@ read_conf_files(int cold)
   strlcpy(conffilebuf, filename, sizeof(conffilebuf));
 
   if ((conf_fbfile_in = fbopen(filename,"r")) == NULL)
+  {
+    if(cold)
     {
-      if(cold)
-        {
-          ilog(L_CRIT, "Failed in reading configuration file %s", filename);
-          exit(-1);
-        }
-      else
-        {
-          sendto_realops_flags(FLAGS_ALL, L_ALL,
-			       "Can't open file '%s' - aborting rehash!",
-			       filename );
-          return;
-        }
+      ilog(L_CRIT, "Failed in reading configuration file %s", filename);
+      exit(-1);
     }
+    else
+    {
+      sendto_realops_flags(UMODE_ALL, L_ALL,
+			   "Can't open file '%s' - aborting rehash!",
+			   filename );
+      return;
+    }
+  }
 
   if (cold)
   {
@@ -2012,41 +2011,41 @@ read_conf_files(int cold)
 
   kfilename = get_conf_name(KLINE_TYPE);
   if (irccmp(filename, kfilename))
+  {
+    if((file = fbopen(kfilename,"r")) == NULL)
     {
-      if((file = fbopen(kfilename,"r")) == NULL)
-        {
-	  if (cold)
-	    ilog(L_ERROR, "Failed reading kline file %s", filename);
-	  else
-	    sendto_realops_flags(FLAGS_ALL, L_ALL,
-				 "Can't open %s file klines could be missing!",
-				 kfilename);
-	}
+      if (cold)
+	ilog(L_ERROR, "Failed reading kline file %s", filename);
       else
-	{
-	  parse_k_file(file);
-	  fbclose(file);
-	}
+	sendto_realops_flags(UMODE_ALL, L_ALL,
+			     "Can't open %s file klines could be missing!",
+			     kfilename);
     }
+    else
+    {
+      parse_k_file(file);
+      fbclose(file);
+    }
+  }
 
   dfilename = get_conf_name(DLINE_TYPE);
   if (irccmp(filename, dfilename) && irccmp(kfilename, dfilename))
+  {
+    if ((file = fbopen(dfilename,"r")) == NULL)
     {
-      if ((file = fbopen(dfilename,"r")) == NULL)
-	{
-	  if(cold)
-	    ilog(L_ERROR, "Failed reading dline file %s", dfilename);
-	  else
-	    sendto_realops_flags(FLAGS_ALL, L_ALL,
-				 "Can't open %s file dlines could be missing!",
-				 dfilename);
-	}
+      if(cold)
+	ilog(L_ERROR, "Failed reading dline file %s", dfilename);
       else
-	{
-	  parse_d_file(file);
-	  fbclose(file);
-	}
+	sendto_realops_flags(UMODE_ALL, L_ALL,
+			     "Can't open %s file dlines could be missing!",
+			     dfilename);
     }
+    else
+    {
+      parse_d_file(file);
+      fbclose(file);
+    }
+  }
 }
 
 /*
@@ -2227,7 +2226,7 @@ WriteKlineOrDline( KlineType type,
 
   if (type == DLINE_TYPE)
     {
-      sendto_realops_flags(FLAGS_ALL, L_ALL,
+      sendto_realops_flags(UMODE_ALL, L_ALL,
 			   "%s added D-Line for [%s] [%s]",
 			   get_oper_name(source_p), host, reason);
       sendto_one(source_p, ":%s NOTICE %s :Added D-Line [%s] to %s",
@@ -2236,7 +2235,7 @@ WriteKlineOrDline( KlineType type,
     }
   else
     {
-      sendto_realops_flags(FLAGS_ALL, L_ALL,
+      sendto_realops_flags(UMODE_ALL, L_ALL,
 			   "%s added K-Line for [%s@%s] [%s]",
 			   get_oper_name(source_p), user, host, reason);
       sendto_one(source_p, ":%s NOTICE %s :Added K-Line [%s@%s]",
@@ -2245,7 +2244,7 @@ WriteKlineOrDline( KlineType type,
 
   if ((out = fbopen(filename, "a")) == NULL)
     {
-      sendto_realops_flags(FLAGS_ALL, L_ALL,
+      sendto_realops_flags(UMODE_ALL, L_ALL,
 			   "*** Problem opening %s ", filename);
       return;
     }
@@ -2274,7 +2273,7 @@ WriteKlineOrDline( KlineType type,
 
   if (fbputs(buffer,out) == -1)
     {
-      sendto_realops_flags(FLAGS_ALL, L_ALL,
+      sendto_realops_flags(UMODE_ALL, L_ALL,
 			   "*** Problem writing to %s",filename);
       fbclose(out);
       return;
@@ -2332,7 +2331,7 @@ conf_add_class_to_conf(struct ConfItem *aconf)
 
   if(ClassPtr(aconf) == class0)
     {
-      sendto_realops_flags(FLAGS_ALL, L_ALL,
+      sendto_realops_flags(UMODE_ALL, L_ALL,
 	   "Warning *** Defaulting to default class for missing class \"%s\"",
 			   aconf->className);
       MyFree(aconf->className);
@@ -2366,14 +2365,14 @@ conf_add_server(struct ConfItem *aconf, int lcount)
 
   if (lcount > MAXCONFLINKS || !aconf->host || !aconf->name)
     {
-      sendto_realops_flags(FLAGS_ALL, L_ALL,"Bad connect block");
+      sendto_realops_flags(UMODE_ALL, L_ALL,"Bad connect block");
       ilog(L_WARN, "Bad connect block");
       return(-1);
     }
 
   if (BadPtr(aconf->passwd) && !(aconf->flags & CONF_FLAGS_CRYPTLINK))
     {
-      sendto_realops_flags(FLAGS_ALL, L_ALL,"Bad connect block, name %s",
+      sendto_realops_flags(UMODE_ALL, L_ALL,"Bad connect block, name %s",
 			   aconf->name);
       ilog(L_WARN, "Bad connect block, host %s",aconf->name);
       return(-1);
@@ -2381,7 +2380,7 @@ conf_add_server(struct ConfItem *aconf, int lcount)
           
   if (SplitUserHost(aconf) < 0)
     {
-      sendto_realops_flags(FLAGS_ALL, L_ALL,"Bad connect block, name %s",
+      sendto_realops_flags(UMODE_ALL, L_ALL,"Bad connect block, name %s",
 			   aconf->name);
       ilog(L_WARN, "Bad connect block, name %s",aconf->name);
       return(-1);
@@ -2494,7 +2493,7 @@ yyerror(char *msg)
 
   strip_tabs(newlinebuf, (const unsigned char *)linebuf, strlen(linebuf));
 
-  sendto_realops_flags(FLAGS_ALL, L_ALL,"\"%s\", line %d: %s: %s",
+  sendto_realops_flags(UMODE_ALL, L_ALL,"\"%s\", line %d: %s: %s",
 		       conffilebuf, lineno + 1, msg, newlinebuf);
 
   ilog(L_WARN, "\"%s\", line %d: %s: %s",

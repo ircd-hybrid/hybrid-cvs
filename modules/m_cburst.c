@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_cburst.c,v 1.41 2002/05/24 23:34:19 androsyn Exp $
+ *  $Id: m_cburst.c,v 1.42 2003/02/17 16:09:28 db Exp $
  */
 
 #include "stdinc.h"
@@ -60,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&cburst_msgtab);
 }
 
-const char *_version = "$Revision: 1.41 $";
+const char *_version = "$Revision: 1.42 $";
 #endif
 /*
 ** m_cburst
@@ -101,7 +101,7 @@ ms_cburst(struct Client *client_p,
     key = "";
 
 #ifdef DEBUGLL
-  sendto_realops_flags(FLAGS_ALL, L_ALL, "CBURST called by %s for %s %s %s",
+  sendto_realops_flags(UMODE_ALL, L_ALL, "CBURST called by %s for %s %s %s",
     client_p->name,
     name,
     nick ? nick : "",
@@ -135,7 +135,7 @@ ms_cburst(struct Client *client_p,
     }
   else
     {
-      sendto_realops_flags(FLAGS_ALL, L_ALL,
+      sendto_realops_flags(UMODE_ALL, L_ALL,
 		   "*** CBURST request received from non LL capable server! [%s]",
 			   client_p->name);
     }

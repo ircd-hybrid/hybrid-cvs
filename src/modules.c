@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.106 2003/01/21 14:26:51 db Exp $
+ *  $Id: modules.c,v 7.107 2003/02/17 16:09:37 db Exp $
  */
 
 #include "stdinc.h"
@@ -350,7 +350,7 @@ load_one_module (char *path, int coremodule)
 	 }
     }
    
-  sendto_realops_flags(FLAGS_ALL, L_ALL,
+  sendto_realops_flags(UMODE_ALL, L_ALL,
                        "Cannot locate module %s", path);
   ilog(L_WARN, "Cannot locate module %s", path);
   return -1;
@@ -463,7 +463,7 @@ mo_modreload (struct Client *client_p, struct Client *source_p, int parc, char *
 
   if((load_one_module(parv[1], check_core) == -1) && check_core)
   {
-    sendto_realops_flags(FLAGS_ALL, L_ALL,
+    sendto_realops_flags(UMODE_ALL, L_ALL,
                          "Error reloading core module: %s: terminating ircd",
 			 parv[1]);
     ilog(L_CRIT, "Error loading core module %s: terminating ircd", parv[1]);
@@ -533,7 +533,7 @@ mo_modrestart (struct Client *client_p, struct Client *source_p, int parc, char 
   load_core_modules(0);
   rehash(0);
   
-  sendto_realops_flags(FLAGS_ALL, L_ALL,
+  sendto_realops_flags(UMODE_ALL, L_ALL,
               "Module Restart: %d modules unloaded, %d modules loaded",
 			modnum, num_mods);
   ilog(L_WARN, "Module Restart: %d modules unloaded, %d modules loaded",

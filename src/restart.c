@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: restart.c,v 7.23 2003/01/25 05:00:33 lusky Exp $
+ *  $Id: restart.c,v 7.24 2003/02/17 16:09:37 db Exp $
  */
 
 #include "stdinc.h"
@@ -31,7 +31,7 @@
 #include "send.h"
 #include "s_debug.h"
 #include "s_log.h"
-#include "client.h"     /* for FLAGS_ALL */
+#include "client.h"     /* for UMODE_ALL */
 #include "memory.h"
 
 
@@ -57,7 +57,7 @@ void server_reboot(void)
 {
   int i;
 
-  sendto_realops_flags(FLAGS_ALL, L_ALL,
+  sendto_realops_flags(UMODE_ALL, L_ALL,
                        "Restarting server...");
 
   ilog(L_NOTICE, "Restarting server... (%s)",SPATH);

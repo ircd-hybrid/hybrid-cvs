@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.85 2002/12/28 07:02:38 bill Exp $
+ *  $Id: m_gline.c,v 1.86 2003/02/17 16:09:29 db Exp $
  */
 
 #include "stdinc.h"
@@ -109,7 +109,7 @@ _moddeinit(void)
   mod_del_cmd(&gline_msgtab);
 }
 
-const char *_version = "$Revision: 1.85 $";
+const char *_version = "$Revision: 1.86 $";
 #endif
 /*
  * mo_gline()
@@ -214,7 +214,7 @@ mo_gline(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  sendto_realops_flags(FLAGS_ALL, L_ALL,
+  sendto_realops_flags(UMODE_ALL, L_ALL,
 		       "%s!%s@%s on %s is requesting gline for [%s@%s] [%s]",
 		       source_p->name, source_p->username, source_p->host,
 		       me.name, user, host, reason);
@@ -334,7 +334,7 @@ ms_gline(struct Client *client_p, struct Client *source_p,
 
      if (check_wild_gline(user, host))
         {
-          sendto_realops_flags(FLAGS_ALL, L_ALL, 
+          sendto_realops_flags(UMODE_ALL, L_ALL, 
                        "%s!%s@%s on %s is requesting a gline without %d non-wildcard characters for [%s@%s] [%s]",
                        oper_nick, oper_user, oper_host, oper_server, ConfigFileEntry.min_nonwildcard,
                        user, host, reason);
@@ -344,7 +344,7 @@ ms_gline(struct Client *client_p, struct Client *source_p,
       log_gline_request(oper_nick,oper_user,oper_host,oper_server,
 			user,host,reason);
       
-      sendto_realops_flags(FLAGS_ALL, L_ALL,
+      sendto_realops_flags(UMODE_ALL, L_ALL,
 			   "%s!%s@%s on %s is requesting gline for [%s@%s] [%s]",
 			   oper_nick, oper_user, oper_host, oper_server,
 			   user, host, reason);
@@ -354,7 +354,7 @@ ms_gline(struct Client *client_p, struct Client *source_p,
 			       oper_server, user, host, reason) ==
 	  GLINE_ALREADY_VOTED)
       {
-	sendto_realops_flags(FLAGS_ALL, L_ALL,
+	sendto_realops_flags(UMODE_ALL, L_ALL,
 			     "oper or server has already voted");
       }
     }
@@ -473,7 +473,7 @@ set_local_gline(const char *oper_nick,
   aconf->hold = CurrentTime + ConfigFileEntry.gline_time;
   add_gline(aconf);
       
-  sendto_realops_flags(FLAGS_ALL, L_ALL,
+  sendto_realops_flags(UMODE_ALL, L_ALL,
 		       "%s!%s@%s on %s has triggered gline for [%s@%s] [%s]",
 		       oper_nick, oper_user, oper_host, oper_server,
 		       user, host, reason);
@@ -499,7 +499,7 @@ log_gline_request(
 
   if(ConfigFileEntry.glinefile == NULL)
     {
-      sendto_realops_flags(FLAGS_ALL, L_ALL,"*** Problem opening glinefile");
+      sendto_realops_flags(UMODE_ALL, L_ALL,"*** Problem opening glinefile");
       return;
     }
 
@@ -507,7 +507,7 @@ log_gline_request(
              ConfigFileEntry.glinefile, small_file_date((time_t)0));
   if ( (out = fbopen(filenamebuf, "+a")) == NULL )
     {
-      sendto_realops_flags(FLAGS_ALL, L_ALL,"*** Problem opening %s: %s",
+      sendto_realops_flags(UMODE_ALL, L_ALL,"*** Problem opening %s: %s",
                      filenamebuf, strerror(errno));
       return;
     }
@@ -523,7 +523,7 @@ log_gline_request(
 
   if (fbputs(buffer, out) == -1)
     {
-      sendto_realops_flags(FLAGS_ALL, L_ALL,"*** Problem writing to %s (%s)",
+      sendto_realops_flags(UMODE_ALL, L_ALL,"*** Problem writing to %s (%s)",
 				     filenamebuf, strerror(errno));
     }
   fbclose(out);
@@ -548,7 +548,7 @@ log_gline(struct Client *source_p,
 
   if(ConfigFileEntry.glinefile == NULL)
     {
-      sendto_realops_flags(FLAGS_ALL, L_ALL,"*** Problem opening glinefile.");
+      sendto_realops_flags(UMODE_ALL, L_ALL,"*** Problem opening glinefile.");
       return;
     }
 
@@ -557,7 +557,7 @@ log_gline(struct Client *source_p,
 
   if ((out = fbopen(filenamebuf, "a")) == NULL)
     {
-      sendto_realops_flags(FLAGS_ALL, L_ALL,
+      sendto_realops_flags(UMODE_ALL, L_ALL,
 			   "*** Problem opening %s",filenamebuf);
       return;
     }
@@ -570,7 +570,7 @@ log_gline(struct Client *source_p,
 
   if (fbputs(buffer,out) == -1)
     {
-      sendto_realops_flags(FLAGS_ALL, L_ALL,
+      sendto_realops_flags(UMODE_ALL, L_ALL,
 			   "*** Problem writing to %s",filenamebuf);
       fbclose(out);
       return;
@@ -586,7 +586,7 @@ log_gline(struct Client *source_p,
 
   if (fbputs(buffer,out) == -1)
     {
-      sendto_realops_flags(FLAGS_ALL, L_ALL,"*** Problem writing to %s",filenamebuf);
+      sendto_realops_flags(UMODE_ALL, L_ALL,"*** Problem writing to %s",filenamebuf);
       return;
     }
 
@@ -600,7 +600,7 @@ log_gline(struct Client *source_p,
 
   if (fbputs(buffer,out) == -1)
     {
-      sendto_realops_flags(FLAGS_ALL, L_ALL,"*** Problem writing to %s",filenamebuf);
+      sendto_realops_flags(UMODE_ALL, L_ALL,"*** Problem writing to %s",filenamebuf);
       fbclose(out);
       return;
     }
@@ -614,7 +614,7 @@ log_gline(struct Client *source_p,
 
   if (fbputs(buffer,out) == -1)
     {
-      sendto_realops_flags(FLAGS_ALL, L_ALL,"*** Problem writing to %s",filenamebuf);
+      sendto_realops_flags(UMODE_ALL, L_ALL,"*** Problem writing to %s",filenamebuf);
       fbclose(out);
       return;
     }
@@ -629,7 +629,7 @@ log_gline(struct Client *source_p,
 
   if (fbputs(buffer,out) == -1)
     {
-      sendto_realops_flags(FLAGS_ALL, L_ALL,"*** Problem writing to %s",filenamebuf);
+      sendto_realops_flags(UMODE_ALL, L_ALL,"*** Problem writing to %s",filenamebuf);
       fbclose(out);
       return;
     }

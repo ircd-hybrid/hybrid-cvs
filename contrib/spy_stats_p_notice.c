@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: spy_stats_p_notice.c,v 1.4 2002/05/24 23:48:34 androsyn Exp $
+ *  $Id: spy_stats_p_notice.c,v 1.5 2003/02/17 16:09:24 db Exp $
  */
 #include "stdinc.h"
 #include "modules.h"
@@ -43,11 +43,11 @@ _moddeinit(void)
   hook_del_hook("doing_stats_p", (hookfn *)show_stats_p);
 }
 
-const char *_version = "$Revision: 1.4 $";
+const char *_version = "$Revision: 1.5 $";
 
 int show_stats_p(struct hook_stats_data *data)
 {
-  sendto_realops_flags(FLAGS_SPY, L_ALL,
+  sendto_realops_flags(UMODE_SPY, L_ALL,
                        "STATS p requested by %s (%s@%s) [%s]",
   	               data->source_p->name, data->source_p->username,
 		       data->source_p->host, data->source_p->user->server);

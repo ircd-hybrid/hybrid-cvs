@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.262 2002/11/12 13:45:42 db Exp $
+ *  $Id: ircd_parser.y,v 1.263 2003/02/17 16:09:36 db Exp $
  */
 
 %{
@@ -36,7 +36,7 @@
 #include "s_conf.h"
 #include "event.h"
 #include "s_log.h"
-#include "client.h"	/* for FLAGS_ALL only */
+#include "client.h"	/* for UMODE_ALL only */
 #include "irc_string.h"
 #include "ircdauth.h"
 #include "memory.h"
@@ -435,7 +435,7 @@ serverinfo_rsa_private_key_file: RSA_PRIVATE_KEY_FILE '=' QSTRING ';'
 
   if (file == NULL)
   {
-    sendto_realops_flags(FLAGS_ALL, L_ALL,
+    sendto_realops_flags(UMODE_ALL, L_ALL,
       "Ignoring config file entry rsa_private_key -- file open failed"
       " (%s)", yylval.string);
     break;
@@ -445,14 +445,14 @@ serverinfo_rsa_private_key_file: RSA_PRIVATE_KEY_FILE '=' QSTRING ';'
                                                             NULL, 0, NULL);
   if (ServerInfo.rsa_private_key == NULL)
   {
-    sendto_realops_flags(FLAGS_ALL, L_ALL,
+    sendto_realops_flags(UMODE_ALL, L_ALL,
       "Ignoring config file entry rsa_private_key -- couldn't extract key");
     break;
   }
 
   if (!RSA_check_key( ServerInfo.rsa_private_key ))
   {
-    sendto_realops_flags(FLAGS_ALL, L_ALL,
+    sendto_realops_flags(UMODE_ALL, L_ALL,
       "Ignoring config file entry rsa_private_key -- invalid key");
     break;
   }
@@ -460,7 +460,7 @@ serverinfo_rsa_private_key_file: RSA_PRIVATE_KEY_FILE '=' QSTRING ';'
   /* require 2048 bit (256 byte) key */
   if ( RSA_size(ServerInfo.rsa_private_key) != 256 )
   {
-    sendto_realops_flags(FLAGS_ALL, L_ALL,
+    sendto_realops_flags(UMODE_ALL, L_ALL,
       "Ignoring config file entry rsa_private_key -- not 2048 bit");
     break;
   }
@@ -547,7 +547,7 @@ serverinfo_hub:         HUB '=' TYES ';'
     /* Don't become a hub if we have a lazylink active. */
     if (!ServerInfo.hub && uplink && IsCapable(uplink, CAP_LL))
     {
-      sendto_realops_flags(FLAGS_ALL, L_ALL,
+      sendto_realops_flags(UMODE_ALL, L_ALL,
         "Ignoring config file line hub = yes; due to active LazyLink (%s)",
         uplink->name);
     }
@@ -569,7 +569,7 @@ serverinfo_hub:         HUB '=' TYES ';'
         if(MyConnect((struct Client *)node->data) &&
            IsCapable((struct Client *)node->data,CAP_LL))
         {
-          sendto_realops_flags(FLAGS_ALL, L_ALL,
+          sendto_realops_flags(UMODE_ALL, L_ALL,
             "Ignoring config file line hub = no; due to active LazyLink (%s)",
             ((struct Client *)node->data)->name);
           ServerInfo.hub = 1;
@@ -816,7 +816,7 @@ oper_rsa_public_key_file: RSA_PUBLIC_KEY_FILE '=' QSTRING ';'
 
     if (file == NULL)
     {
-      sendto_realops_flags(FLAGS_ALL, L_ALL,
+      sendto_realops_flags(UMODE_ALL, L_ALL,
         "Ignoring rsa_public_key_file -- does %s exist?", yylval.string);
       break;
     }
@@ -826,7 +826,7 @@ oper_rsa_public_key_file: RSA_PUBLIC_KEY_FILE '=' QSTRING ';'
 
     if (yy_achead->rsa_public_key == NULL)
     {
-      sendto_realops_flags(FLAGS_ALL, L_ALL,
+      sendto_realops_flags(UMODE_ALL, L_ALL,
         "Ignoring rsa_public_key_file -- Key invalid; check key syntax.");
       break;
     }
@@ -1403,22 +1403,22 @@ connect_entry:  CONNECT
 	{
 #ifndef HAVE_LIBCRYPTO
           if (IsConfCryptLink(yy_aconf))
-            sendto_realops_flags(FLAGS_ALL, L_ALL,
+            sendto_realops_flags(UMODE_ALL, L_ALL,
                        "Ignoring connect block for %s -- no OpenSSL support",
                        yy_aconf->name);
 #else
           if(IsConfCryptLink(yy_aconf) && !yy_aconf->rsa_public_key)
-	    sendto_realops_flags(FLAGS_ALL, L_ALL,
+	    sendto_realops_flags(UMODE_ALL, L_ALL,
 	                     "Ignoring connect block for %s -- missing key",
 			     yy_aconf->name);
 #endif
           if(!yy_aconf->host)
-	    sendto_realops_flags(FLAGS_ALL, L_ALL,
+	    sendto_realops_flags(UMODE_ALL, L_ALL,
 	                     "Ignoring connect block for %s -- missing host",
 	                     yy_aconf->name);
           else if(!IsConfCryptLink(yy_aconf) && 
 	         (!yy_aconf->passwd || !yy_aconf->spasswd))
-            sendto_realops_flags(FLAGS_ALL, L_ALL,
+            sendto_realops_flags(UMODE_ALL, L_ALL,
 	                   "Ignoring connect block for %s -- missing password",
 			   yy_aconf->name);
         }
@@ -1488,7 +1488,7 @@ connect_name:   NAME '=' QSTRING ';'
   {
     if(yy_aconf->name != NULL)
       {
-	sendto_realops_flags(FLAGS_ALL, L_ALL,"*** Multiple connect name entry");
+	sendto_realops_flags(UMODE_ALL, L_ALL,"*** Multiple connect name entry");
 	ilog(L_WARN, "Multiple connect name entry %s", yy_aconf->name);
       }
 
@@ -1582,7 +1582,7 @@ connect_rsa_public_key_file: RSA_PUBLIC_KEY_FILE '=' QSTRING ';'
 
     if (file == NULL)
     {
-      sendto_realops_flags(FLAGS_ALL, L_ALL,
+      sendto_realops_flags(UMODE_ALL, L_ALL,
         "Ignoring rsa_public_key_file -- does %s exist?", yylval.string);
       break;
     }
@@ -1592,7 +1592,7 @@ connect_rsa_public_key_file: RSA_PUBLIC_KEY_FILE '=' QSTRING ';'
 
     if (yy_aconf->rsa_public_key == NULL)
     {
-      sendto_realops_flags(FLAGS_ALL, L_ALL,
+      sendto_realops_flags(UMODE_ALL, L_ALL,
         "Ignoring rsa_public_key_file -- Key invalid; check key syntax.");
       break;
     }
@@ -1615,7 +1615,7 @@ connect_cryptlink:	CRYPTLINK '=' TYES ';'
 connect_compressed:       COMPRESSED '=' TYES ';'
   {
 #ifndef HAVE_LIBZ
-    sendto_realops_flags(FLAGS_ALL, L_ALL,
+    sendto_realops_flags(UMODE_ALL, L_ALL,
       "Ignoring compressed = yes; -- no zlib support");
 #else
     yy_aconf->flags |= CONF_FLAGS_COMPRESSED;
@@ -1706,13 +1706,13 @@ connect_cipher_preference: CIPHER_PREFERENCE '=' QSTRING ';'
 
     if (!found)
     {
-      sendto_realops_flags(FLAGS_ALL, L_ALL, "Invalid cipher '%s' for %s",
+      sendto_realops_flags(UMODE_ALL, L_ALL, "Invalid cipher '%s' for %s",
                            cipher_name, yy_aconf->name);
       ilog(L_ERROR, "Invalid cipher '%s' for %s",
                     cipher_name, yy_aconf->name);
     }
 #else
-      sendto_realops_flags(FLAGS_ALL, L_ALL,
+      sendto_realops_flags(UMODE_ALL, L_ALL,
         "Ignoring 'cipher_preference' line for %s -- no OpenSSL support",
          yy_aconf->name);
       ilog(L_ERROR, "Ignoring 'cipher_preference' line for %s -- "
@@ -2289,11 +2289,11 @@ general_default_cipher_preference: DEFAULT_CIPHER_PREFERENCE '=' QSTRING ';'
 
     if (!found)
     {
-      sendto_realops_flags(FLAGS_ALL, L_ALL, "Invalid cipher '%s'", cipher_name);
+      sendto_realops_flags(UMODE_ALL, L_ALL, "Invalid cipher '%s'", cipher_name);
       ilog(L_ERROR, "Invalid cipher '%s'", cipher_name);
     }
 #else
-    sendto_realops_flags(FLAGS_ALL, L_ALL, "Ignoring 'default_cipher_preference' "
+    sendto_realops_flags(UMODE_ALL, L_ALL, "Ignoring 'default_cipher_preference' "
                                     "-- no OpenSSL support");
     ilog(L_ERROR, "Ignoring 'default_cipher_preference' "
                   "-- no OpenSSL support");
@@ -2304,14 +2304,14 @@ general_compression_level: COMPRESSION_LEVEL '=' NUMBER ';'
   {
     ConfigFileEntry.compression_level = $3;
 #ifndef HAVE_LIBZ
-    sendto_realops_flags(FLAGS_ALL, L_ALL,
+    sendto_realops_flags(UMODE_ALL, L_ALL,
       "Ignoring compression_level = %d; -- no zlib support",
        ConfigFileEntry.compression_level);
 #else
     if ((ConfigFileEntry.compression_level < 1) ||
         (ConfigFileEntry.compression_level > 9))
     {
-      sendto_realops_flags(FLAGS_ALL, L_ALL,
+      sendto_realops_flags(UMODE_ALL, L_ALL,
         "Ignoring invalid compression level '%d', using default",
         ConfigFileEntry.compression_level);
       ConfigFileEntry.compression_level = 0;
@@ -2383,67 +2383,67 @@ umode_oitems:    umode_oitems ',' umode_oitem |
 
 umode_oitem:     T_BOTS
   {
-    ConfigFileEntry.oper_umodes |= FLAGS_BOTS;
+    ConfigFileEntry.oper_umodes |= UMODE_BOTS;
   }
               | T_CCONN
   {
-    ConfigFileEntry.oper_umodes |= FLAGS_CCONN;
+    ConfigFileEntry.oper_umodes |= UMODE_CCONN;
   }
               | T_DEBUG
   {
-    ConfigFileEntry.oper_umodes |= FLAGS_DEBUG;
+    ConfigFileEntry.oper_umodes |= UMODE_DEBUG;
   }
               | T_FULL
   {
-    ConfigFileEntry.oper_umodes |= FLAGS_FULL;
+    ConfigFileEntry.oper_umodes |= UMODE_FULL;
   }
               | T_SKILL
   {
-    ConfigFileEntry.oper_umodes |= FLAGS_SKILL;
+    ConfigFileEntry.oper_umodes |= UMODE_SKILL;
   }
               | T_NCHANGE
   {
-    ConfigFileEntry.oper_umodes |= FLAGS_NCHANGE;
+    ConfigFileEntry.oper_umodes |= UMODE_NCHANGE;
   }
               | T_REJ
   {
-    ConfigFileEntry.oper_umodes |= FLAGS_REJ;
+    ConfigFileEntry.oper_umodes |= UMODE_REJ;
   }
               | T_UNAUTH
   {
-    ConfigFileEntry.oper_umodes |= FLAGS_UNAUTH;
+    ConfigFileEntry.oper_umodes |= UMODE_UNAUTH;
   }
               | T_SPY
   {
-    ConfigFileEntry.oper_umodes |= FLAGS_SPY;
+    ConfigFileEntry.oper_umodes |= UMODE_SPY;
   }
               | T_EXTERNAL
   {
-    ConfigFileEntry.oper_umodes |= FLAGS_EXTERNAL;
+    ConfigFileEntry.oper_umodes |= UMODE_EXTERNAL;
   }
               | T_OPERWALL
   {
-    ConfigFileEntry.oper_umodes |= FLAGS_OPERWALL;
+    ConfigFileEntry.oper_umodes |= UMODE_OPERWALL;
   }
               | T_SERVNOTICE
   {
-    ConfigFileEntry.oper_umodes |= FLAGS_SERVNOTICE;
+    ConfigFileEntry.oper_umodes |= UMODE_SERVNOTICE;
   }
               | T_INVISIBLE
   {
-    ConfigFileEntry.oper_umodes |= FLAGS_INVISIBLE;
+    ConfigFileEntry.oper_umodes |= UMODE_INVISIBLE;
   }
               | T_WALLOP
   {
-    ConfigFileEntry.oper_umodes |= FLAGS_WALLOP;
+    ConfigFileEntry.oper_umodes |= UMODE_WALLOP;
   }
               | T_CALLERID
   {
-    ConfigFileEntry.oper_umodes |= FLAGS_CALLERID;
+    ConfigFileEntry.oper_umodes |= UMODE_CALLERID;
   }
               | T_LOCOPS
   {
-    ConfigFileEntry.oper_umodes |= FLAGS_LOCOPS;
+    ConfigFileEntry.oper_umodes |= UMODE_LOCOPS;
   };
 
 general_oper_only_umodes: OPER_ONLY_UMODES 
@@ -2457,67 +2457,67 @@ umode_items:	umode_items ',' umode_item |
 
 umode_item:	T_BOTS 
   {
-    ConfigFileEntry.oper_only_umodes |= FLAGS_BOTS;
+    ConfigFileEntry.oper_only_umodes |= UMODE_BOTS;
   } 
               | T_CCONN
   {
-    ConfigFileEntry.oper_only_umodes |= FLAGS_CCONN;
+    ConfigFileEntry.oper_only_umodes |= UMODE_CCONN;
   }
               | T_DEBUG
   {
-    ConfigFileEntry.oper_only_umodes |= FLAGS_DEBUG;
+    ConfigFileEntry.oper_only_umodes |= UMODE_DEBUG;
   }
               | T_FULL
   { 
-    ConfigFileEntry.oper_only_umodes |= FLAGS_FULL;
+    ConfigFileEntry.oper_only_umodes |= UMODE_FULL;
   }
               | T_SKILL
   {
-    ConfigFileEntry.oper_only_umodes |= FLAGS_SKILL;
+    ConfigFileEntry.oper_only_umodes |= UMODE_SKILL;
   }
               | T_NCHANGE
   {
-    ConfigFileEntry.oper_only_umodes |= FLAGS_NCHANGE;
+    ConfigFileEntry.oper_only_umodes |= UMODE_NCHANGE;
   }
               | T_REJ
   {
-    ConfigFileEntry.oper_only_umodes |= FLAGS_REJ;
+    ConfigFileEntry.oper_only_umodes |= UMODE_REJ;
   }
               | T_UNAUTH
   {
-    ConfigFileEntry.oper_only_umodes |= FLAGS_UNAUTH;
+    ConfigFileEntry.oper_only_umodes |= UMODE_UNAUTH;
   }
               | T_SPY
   {
-    ConfigFileEntry.oper_only_umodes |= FLAGS_SPY;
+    ConfigFileEntry.oper_only_umodes |= UMODE_SPY;
   }
               | T_EXTERNAL
   {
-    ConfigFileEntry.oper_only_umodes |= FLAGS_EXTERNAL;
+    ConfigFileEntry.oper_only_umodes |= UMODE_EXTERNAL;
   }
               | T_OPERWALL
   {
-    ConfigFileEntry.oper_only_umodes |= FLAGS_OPERWALL;
+    ConfigFileEntry.oper_only_umodes |= UMODE_OPERWALL;
   } 
               | T_SERVNOTICE
   {
-    ConfigFileEntry.oper_only_umodes |= FLAGS_SERVNOTICE;
+    ConfigFileEntry.oper_only_umodes |= UMODE_SERVNOTICE;
   }
               | T_INVISIBLE
   {
-    ConfigFileEntry.oper_only_umodes |= FLAGS_INVISIBLE;
+    ConfigFileEntry.oper_only_umodes |= UMODE_INVISIBLE;
   }
               | T_WALLOP
   {
-    ConfigFileEntry.oper_only_umodes |= FLAGS_WALLOP;
+    ConfigFileEntry.oper_only_umodes |= UMODE_WALLOP;
   }
               | T_CALLERID
   {
-    ConfigFileEntry.oper_only_umodes |= FLAGS_CALLERID;
+    ConfigFileEntry.oper_only_umodes |= UMODE_CALLERID;
   }
               | T_LOCOPS
   {
-    ConfigFileEntry.oper_only_umodes |= FLAGS_LOCOPS;
+    ConfigFileEntry.oper_only_umodes |= UMODE_LOCOPS;
   };
 
 general_min_nonwildcard:    MIN_NONWILDCARD '=' NUMBER ';'

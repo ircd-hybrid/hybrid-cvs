@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_squit.c,v 1.47 2003/02/14 23:01:53 db Exp $
+ *  $Id: m_squit.c,v 1.48 2003/02/17 16:09:33 db Exp $
  */
 
 #include "stdinc.h"
@@ -58,7 +58,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&squit_msgtab);
 }
-const char *_version = "$Revision: 1.47 $";
+const char *_version = "$Revision: 1.48 $";
 #endif
 struct squit_parms 
 {
@@ -100,7 +100,7 @@ static void mo_squit(struct Client *client_p, struct Client *source_p,
     {
       if(MyConnect(found_squit->target_p))
 	{
-	  sendto_realops_flags(FLAGS_ALL, L_ALL,
+	  sendto_realops_flags(UMODE_ALL, L_ALL,
 			       "Received SQUIT %s from %s (%s)",
 			       found_squit->target_p->name,
 			       get_client_name(source_p, HIDE_IP), comment);
@@ -143,7 +143,7 @@ static void ms_squit(struct Client *client_p, struct Client *source_p,
     */
     if (MyConnect(found_squit->target_p))
     {
-      sendto_wallops_flags(FLAGS_WALLOP, &me,
+      sendto_wallops_flags(UMODE_WALLOP, &me,
 			   "Remote SQUIT %s from %s (%s)",
 			   found_squit->server_name,
 			   source_p->name, comment);

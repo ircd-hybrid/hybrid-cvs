@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.140 2002/07/04 16:07:23 androsyn Exp $
+ *  $Id: m_sjoin.c,v 1.141 2003/02/17 16:09:33 db Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.140 $";
+const char *_version = "$Revision: 1.141 $";
 #endif
 /*
  * ms_sjoin
@@ -270,7 +270,7 @@ static void ms_sjoin(struct Client *client_p,
 #ifdef IGNORE_BOGUS_TS
   if (newts < 800000000)
     {
-      sendto_realops_flags(FLAGS_DEBUG, L_ALL,
+      sendto_realops_flags(UMODE_DEBUG, L_ALL,
 			"*** Bogus TS %lu on %s ignored from %s",
 			(unsigned long) newts,
 			chptr->chname,
@@ -285,7 +285,7 @@ static void ms_sjoin(struct Client *client_p,
     sendto_channel_local(ALL_MEMBERS, chptr,
  		":%s NOTICE %s :*** Notice -- TS for %s changed from %lu to 0",
 		me.name, chptr->chname, chptr->chname, oldts);
-    sendto_realops_flags(FLAGS_ALL, L_ALL,
+    sendto_realops_flags(UMODE_ALL, L_ALL,
 		         "Server %s changing TS on %s from %lu to 0",
 			 source_p->name, chptr->chname, oldts);
   }
@@ -402,7 +402,7 @@ static void ms_sjoin(struct Client *client_p,
    */
   if (buflen >= (BUFSIZE - 6 - NICKLEN))
     {
-      sendto_realops_flags(FLAGS_ALL, L_ALL,
+      sendto_realops_flags(UMODE_ALL, L_ALL,
 			   "Long SJOIN from server: %s(via %s) (ignored)",
 			   source_p->name, client_p->name);
       return;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: spy_stats_notice.c,v 1.12 2002/05/24 23:48:34 androsyn Exp $
+ *  $Id: spy_stats_notice.c,v 1.13 2003/02/17 16:09:24 db Exp $
  */
 #include "stdinc.h"
 #include "modules.h"
@@ -43,7 +43,7 @@ _moddeinit(void)
 	hook_del_hook("doing_stats", (hookfn *)show_stats);
 }
 
-const char *_version = "$Revision: 1.12 $";
+const char *_version = "$Revision: 1.13 $";
 
 /* show a stats request */
 int
@@ -52,7 +52,7 @@ show_stats(struct hook_stats_data *data)
   if((data->statchar == 'L') || (data->statchar == 'l'))
     {
       if(data->name != NULL)
-	sendto_realops_flags(FLAGS_SPY, L_ALL,
+	sendto_realops_flags(UMODE_SPY, L_ALL,
 			     "STATS %c requested by %s (%s@%s) [%s] on %s",
 			     data->statchar,
 			     data->source_p->name,
@@ -61,7 +61,7 @@ show_stats(struct hook_stats_data *data)
 			     data->source_p->user->server,
 			     data->name);
       else
-	sendto_realops_flags(FLAGS_SPY, L_ALL,
+	sendto_realops_flags(UMODE_SPY, L_ALL,
 			     "STATS %c requested by %s (%s@%s) [%s]",
 			     data->statchar,
 			     data->source_p->name,
@@ -71,7 +71,7 @@ show_stats(struct hook_stats_data *data)
     }
   else
     {
-      sendto_realops_flags(FLAGS_SPY, L_ALL,
+      sendto_realops_flags(UMODE_SPY, L_ALL,
                            "STATS %c requested by %s (%s@%s) [%s]",
 			   data->statchar, data->source_p->name, data->source_p->username,
 			   data->source_p->host, data->source_p->user->server);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_drop.c,v 1.24 2002/05/24 23:34:19 androsyn Exp $
+ *  $Id: m_drop.c,v 1.25 2003/02/17 16:09:28 db Exp $
  */
 
 #include "stdinc.h"
@@ -60,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&drop_msgtab);
 }
 
-const char *_version = "$Revision: 1.24 $";
+const char *_version = "$Revision: 1.25 $";
 #endif
 /*
 ** ms_drop
@@ -84,7 +84,7 @@ static void ms_drop(struct Client *client_p,
   name = parv[1];
 
 #ifdef DEBUGLL
-  sendto_realops(FLAGS_ALL, "DROP called by %s for %s", client_p->name, name );
+  sendto_realops(UMODE_ALL, "DROP called by %s for %s", client_p->name, name );
 #endif
 
   if((chptr=hash_find_channel(name)) == NULL)

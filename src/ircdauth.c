@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircdauth.c,v 7.51 2003/02/04 05:30:50 db Exp $
+ *  $Id: ircdauth.c,v 7.52 2003/02/17 16:09:36 db Exp $
  */
 
 #include "stdinc.h"
@@ -576,7 +576,7 @@ GreetUser(struct Client *client)
 
   client->user->last = CurrentTime;
 
-  sendto_realops_flags(FLAGS_CCONN,
+  sendto_realops_flags(UMODE_CCONN,
 		       "Client connecting: %s (%s@%s) [%s] {%s}",
 		       client->name,
 		       client->username,
@@ -594,7 +594,7 @@ GreetUser(struct Client *client)
     {
       Count.max_loc = Count.local;
       if (!(Count.max_loc % 10))
-        sendto_realops_flags(FLAGS_ALL, L_ALL,"New Max Local Clients: %d",
+        sendto_realops_flags(UMODE_ALL, L_ALL,"New Max Local Clients: %d",
                              Count.max_loc);
     }
 
@@ -603,7 +603,7 @@ GreetUser(struct Client *client)
   client->servptr = find_server(client->user->server);
   if (!client->servptr)
     {
-      sendto_realops_flags(FLAGS_ALL, L_ALL,"Ghost killed: %s on invalid server %s",
+      sendto_realops_flags(UMODE_ALL, L_ALL,"Ghost killed: %s on invalid server %s",
 			   client->name,
 			   client->user->server);
 

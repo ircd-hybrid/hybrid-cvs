@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.107 2003/02/03 05:25:47 bill Exp $
+ *  $Id: m_message.c,v 1.108 2003/02/17 16:09:33 db Exp $
  */
 
 #include "stdinc.h"
@@ -123,7 +123,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.107 $";
+const char *_version = "$Revision: 1.108 $";
 #endif
 
 /*
@@ -703,7 +703,7 @@ flood_attack_client(int p_or_n, struct Client *source_p,
     {
       if (target_p->localClient->flood_noticed == 0)
       {
-        sendto_realops_flags(FLAGS_BOTS, L_ALL,
+        sendto_realops_flags(UMODE_BOTS, L_ALL,
                              "Possible Flooder %s on %s target: %s",
                              get_client_name(source_p, HIDE_IP),
                              source_p->user->server, target_p->name);
@@ -758,7 +758,7 @@ flood_attack_channel(int p_or_n, struct Client *source_p,
     {
       if (chptr->flood_noticed == 0)
       {
-        sendto_realops_flags(FLAGS_BOTS, L_ALL,
+        sendto_realops_flags(UMODE_BOTS, L_ALL,
                              "Possible Flooder %s on %s target: %s",
                              get_client_name(source_p, HIDE_IP),
                              source_p->user->server, chptr->chname);
@@ -853,7 +853,7 @@ handle_special(int p_or_n, char *command, struct Client *client_p,
 	  sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
 		     me.name, source_p->name);
 	else
-	  sendto_realops_flags(FLAGS_ALL, L_ALL, "To opers: From: %s: %s",
+	  sendto_realops_flags(UMODE_ALL, L_ALL, "To opers: From: %s: %s",
 			       source_p->name, text);
 	return;
       }

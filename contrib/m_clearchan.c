@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_clearchan.c,v 1.30 2002/06/11 01:49:18 androsyn Exp $
+ *   $Id: m_clearchan.c,v 1.31 2003/02/17 16:09:24 db Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -77,7 +77,7 @@ _moddeinit(void)
   mod_del_cmd(&clearchan_msgtab);
 }
 
-char *_version = "$Revision: 1.30 $";
+char *_version = "$Revision: 1.31 $";
 
 /*
 ** mo_clearchan
@@ -127,7 +127,7 @@ static void mo_clearchan(struct Client *client_p, struct Client *source_p,
 
   if (!on_vchan)
     {
-     sendto_wallops_flags(FLAGS_WALLOP, &me, 
+     sendto_wallops_flags(UMODE_WALLOP, &me, 
               "CLEARCHAN called for [%s] by %s!%s@%s",
               parv[1], source_p->name, source_p->username, source_p->host);
      sendto_server(NULL, source_p, NULL, NOCAPS, NOCAPS, LL_ICLIENT,
@@ -139,7 +139,7 @@ static void mo_clearchan(struct Client *client_p, struct Client *source_p,
     }
   else
     {
-     sendto_wallops_flags(FLAGS_WALLOP, &me,
+     sendto_wallops_flags(UMODE_WALLOP, &me,
               "CLEARCHAN called for [%s %s] by %s!%s@%s",
               parv[1], parv[2], source_p->name, source_p->username,
               source_p->host);

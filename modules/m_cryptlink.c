@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_cryptlink.c,v 1.37 2003/02/14 23:01:51 db Exp $
+ *  $Id: m_cryptlink.c,v 1.38 2003/02/17 16:09:28 db Exp $
  */
 
 /*
@@ -68,7 +68,7 @@
 void _modinit(void) {}
 void _moddeinit(void) {}
 
-const char *_version = "$Revision: 1.37 $";
+const char *_version = "$Revision: 1.38 $";
 #endif
 #else
 
@@ -114,7 +114,7 @@ _moddeinit(void)
   mod_del_cmd(&cryptlink_msgtab);
 }
 
-const char *_version = "$Revision: 1.37 $";
+const char *_version = "$Revision: 1.38 $";
 #endif
 
 
@@ -205,7 +205,7 @@ static void cryptlink_auth(struct Client *client_p, struct Client *source_p,
 
   if ( verify_private_key() == -1 )
   {
-    sendto_realops_flags(FLAGS_ALL, L_ADMIN,
+    sendto_realops_flags(UMODE_ALL, L_ADMIN,
       "verify_private_key() returned -1.  Check log for information.");
   }
 
@@ -374,7 +374,7 @@ static void cryptlink_serv(struct Client *client_p, struct Client *source_p,
       if(IsCapable(client_p, CAP_HUB))
       {
           ClearCap(client_p,CAP_LL);
-          sendto_realops_flags(FLAGS_ALL, L_ALL,
+          sendto_realops_flags(UMODE_ALL, L_ALL,
                "*** LazyLinks to a hub from a hub, thats a no-no.");
       }
       else
@@ -383,7 +383,7 @@ static void cryptlink_serv(struct Client *client_p, struct Client *source_p,
 
           if(!client_p->localClient->serverMask)
           {
-              sendto_realops_flags(FLAGS_ALL, L_ALL,
+              sendto_realops_flags(UMODE_ALL, L_ALL,
                                    "serverMask is full!");
               /* try and negotiate a non LL connect */
               ClearCap(client_p,CAP_LL);
@@ -395,7 +395,7 @@ static void cryptlink_serv(struct Client *client_p, struct Client *source_p,
       if (!IsCapable(client_p, CAP_HUB))
       {
         ClearCap(client_p,CAP_LL);
-        sendto_realops_flags(FLAGS_ALL, L_ALL,
+        sendto_realops_flags(UMODE_ALL, L_ALL,
           "*** LazyLinks to a leaf from a leaf, thats a no-no.");
       }
   }
@@ -514,7 +514,7 @@ static char *parse_cryptserv_args(struct Client *client_p,
 
   if (verify_private_key() == -1)
   {
-    sendto_realops_flags(FLAGS_ALL, L_ADMIN,
+    sendto_realops_flags(UMODE_ALL, L_ADMIN,
       "verify_private_key() returned -1.  Check log for information.");
   }
 

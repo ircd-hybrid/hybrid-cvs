@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_resv.c,v 1.16 2002/05/24 23:34:22 androsyn Exp $
+ *  $Id: m_resv.c,v 1.17 2003/02/17 16:09:29 db Exp $
  */
 
 #include "stdinc.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&unresv_msgtab);
 }
 
-const char *_version = "$Revision: 1.16 $";
+const char *_version = "$Revision: 1.17 $";
 #endif
 
 /*
@@ -98,7 +98,7 @@ static void mo_resv(struct Client *client_p, struct Client *source_p,
                ":%s NOTICE %s :A local RESV has been placed on channel: %s [%s]",
                me.name, source_p->name, resv_p->name, resv_p->reason);
 	       
-    sendto_realops_flags(FLAGS_ALL, L_ALL,
+    sendto_realops_flags(UMODE_ALL, L_ALL,
                          "%s has placed a local RESV on channel: %s [%s]",
              	         get_oper_name(source_p),
 		         resv_p->name, resv_p->reason);
@@ -130,7 +130,7 @@ static void mo_resv(struct Client *client_p, struct Client *source_p,
 	       me.name, source_p->name,
 	       resv_p->name, resv_p->reason);
 
-    sendto_realops_flags(FLAGS_ALL, L_ALL,
+    sendto_realops_flags(UMODE_ALL, L_ALL,
                          "%s has placed a local RESV on nick: %s [%s]",
 			 get_oper_name(source_p),
 			 resv_p->name, resv_p->reason);
@@ -179,7 +179,7 @@ static void mo_unresv(struct Client *client_p, struct Client *source_p,
                  ":%s NOTICE %s :The local RESV has been removed on channel: %s",
   	         me.name, source_p->name, parv[1]);
 		 
-      sendto_realops_flags(FLAGS_ALL, L_ALL,
+      sendto_realops_flags(UMODE_ALL, L_ALL,
                            "%s has removed the local RESV for channel: %s",
 	  		   get_oper_name(source_p), parv[1]);
 	      
@@ -213,7 +213,7 @@ static void mo_unresv(struct Client *client_p, struct Client *source_p,
                  ":%s NOTICE %s :The local RESV has been removed on nick: %s",
 		 me.name, source_p->name, parv[1]);
 
-      sendto_realops_flags(FLAGS_ALL, L_ALL,
+      sendto_realops_flags(UMODE_ALL, L_ALL,
                            "%s has removed the local RESV for nick: %s",
 			   get_oper_name(source_p), parv[1]);
     }

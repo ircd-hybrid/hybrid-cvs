@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kill.c,v 1.68 2003/02/14 23:01:53 db Exp $
+ *  $Id: m_kill.c,v 1.69 2003/02/17 16:09:33 db Exp $
  */
 
 #include "stdinc.h"
@@ -64,7 +64,7 @@ _moddeinit(void)
   mod_del_cmd(&kill_msgtab);
 }
 
-const char *_version = "$Revision: 1.68 $";
+const char *_version = "$Revision: 1.69 $";
 #endif
 /*
 ** mo_kill
@@ -135,7 +135,7 @@ mo_kill(struct Client *client_p, struct Client *source_p,
 
   /* Do not change the format of this message.  There's no point in changing messages
    * that have been around for ever, for no reason.. */
-  sendto_realops_flags(FLAGS_ALL, L_ALL,
+  sendto_realops_flags(UMODE_ALL, L_ALL,
 		       "Received KILL message for %s. From %s Path: %s (%s)", 
 		       target_p->name, parv[0], me.name, reason);
 
@@ -157,7 +157,7 @@ mo_kill(struct Client *client_p, struct Client *source_p,
       ** the unnecessary QUIT for this. (This flag should never be
       ** set in any other place)
       */
-      target_p->flags |= FLAGS_KILLED;
+      SetKilled(target_p);
     }
 
   ircsprintf(buf, "Killed (%s (%s))", source_p->name, reason);
@@ -265,14 +265,14 @@ ms_kill(struct Client *client_p, struct Client *source_p,
    */
   if (IsOper(source_p)) /* send it normally */
     {
-      sendto_realops_flags(FLAGS_ALL, L_ALL,
+      sendto_realops_flags(UMODE_ALL, L_ALL,
 		"Received KILL message for %s. From %s Path: %s!%s!%s!%s %s",
 		target_p->name, parv[0], source_p->user->server, 
                 source_p->host, source_p->username, source_p->name, reason);
     }
   else
     {
-      sendto_realops_flags(FLAGS_SKILL, L_ALL,
+      sendto_realops_flags(UMODE_SKILL, L_ALL,
 			   "Received KILL message for %s. From %s %s",
 			   target_p->name, parv[0], reason);
     }
@@ -281,8 +281,6 @@ ms_kill(struct Client *client_p, struct Client *source_p,
        parv[0], target_p->name, parv[0], reason);
 
   relay_kill(client_p, source_p, target_p, path, reason);
-
-  /* FLAGS_KILLED prevents a quit being sent out */ 
   SetKilled(target_p);
 
   /* reason comes supplied with its own ()'s */

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.180 2003/02/15 16:32:46 lusky Exp $
+ *  $Id: s_bsd.c,v 7.181 2003/02/17 16:09:37 db Exp $
  */
 
 #include "stdinc.h"
@@ -146,7 +146,7 @@ report_error(int level, const char* text, const char* who, int error)
 {
   who = (who) ? who : "";
 
-  sendto_realops_flags(FLAGS_DEBUG, level, text, who, strerror(error));
+  sendto_realops_flags(UMODE_DEBUG, level, text, who, strerror(error));
 
   ilog(L_ERROR, text, who, strerror(error));
 }

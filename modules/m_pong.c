@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_pong.c,v 1.28 2002/08/15 14:15:32 db Exp $
+ *  $Id: m_pong.c,v 1.29 2003/02/17 16:09:29 db Exp $
  */
 
 #include "stdinc.h"
@@ -60,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&pong_msgtab);
 }
 
-const char *_version = "$Revision: 1.28 $";
+const char *_version = "$Revision: 1.29 $";
 #endif
 static void ms_pong(struct Client *client_p,
                    struct Client *source_p,
@@ -78,7 +78,7 @@ static void ms_pong(struct Client *client_p,
 
   origin = parv[1];
   destination = parv[2];
-  source_p->flags &= ~FLAGS_PINGSENT;
+  ClearPingSent(source_p);
 
   /* Now attempt to route the PONG, comstud pointed out routable PING
    * is used for SPING.  routable PING should also probably be left in
@@ -139,6 +139,6 @@ mr_pong(struct Client *client_p, struct Client *source_p,
   else
     sendto_one(source_p, form_str(ERR_NOORIGIN), me.name, parv[0]);
   
-  source_p->flags &= ~FLAGS_PINGSENT;
+  ClearPingSent(source_p);
 }
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.280 2003/02/15 16:32:46 lusky Exp $
+ *  $Id: s_serv.c,v 7.281 2003/02/17 16:09:37 db Exp $
  */
 
 #include "stdinc.h"
@@ -165,7 +165,7 @@ slink_error(unsigned int rpl, unsigned int len, unsigned char *data,
   assert(len < 256);
   data[len-1] = '\0';
 
-  sendto_realops_flags(FLAGS_ALL, L_ALL, "SlinkError for %s: %s",
+  sendto_realops_flags(UMODE_ALL, L_ALL, "SlinkError for %s: %s",
                        server_p->name, data);
   /* XXX should this be exit_client? */
   exit_client(server_p, server_p, &me, "servlink error -- terminating link");
@@ -613,7 +613,7 @@ try_connections(void *unused)
        * error afterwards if it fails.
        *   -- adrian
        */
-       sendto_realops_flags(FLAGS_ALL, L_ALL,
+       sendto_realops_flags(UMODE_ALL, L_ALL,
     		"Connection to %s[%s] activated.",
 	      	con_conf->name, con_conf->host);
       serv_connect(con_conf, 0);
@@ -942,7 +942,7 @@ server_estab(struct Client *client_p)
                                CONF_SERVER)))
     {
      /* This shouldn't happen, better tell the ops... -A1kmm */
-     sendto_realops_flags(FLAGS_ALL, L_ALL, "Warning: Lost connect{} block "
+     sendto_realops_flags(UMODE_ALL, L_ALL, "Warning: Lost connect{} block "
        "for server %s(this shouldn't happen)!", host);
      return exit_client(client_p, client_p, client_p, "Lost connect{} block!");
     }
@@ -1022,11 +1022,11 @@ server_estab(struct Client *client_p)
     {
       if (fork_server(client_p) < 0 )
       {
-        sendto_realops_flags(FLAGS_ALL, L_ADMIN,
+        sendto_realops_flags(UMODE_ALL, L_ADMIN,
 	      "Warning: fork failed for server %s -- check servlink_path (%s)",
 	      get_client_name(client_p, HIDE_IP),
 	      ConfigFileEntry.servlink_path);
-        sendto_realops_flags(FLAGS_ALL, L_OPER, "Warning: fork failed for server "
+        sendto_realops_flags(UMODE_ALL, L_OPER, "Warning: fork failed for server "
           "%s -- check servlink_path (%s)",
            get_client_name(client_p, MASK_IP),
            ConfigFileEntry.servlink_path);
@@ -1076,7 +1076,7 @@ server_estab(struct Client *client_p)
     }
   else
   {
-    sendto_realops_flags(FLAGS_ALL, L_ADMIN,
+    sendto_realops_flags(UMODE_ALL, L_ADMIN,
 	 "Tried to register (%s) server but it was already registered!?!",
 			 host);
       exit_client(client_p, client_p, client_p,
@@ -1097,12 +1097,12 @@ server_estab(struct Client *client_p)
   /* fixing eob timings.. -gnp */
 
   /* Show the real host/IP to admins */
-  sendto_realops_flags(FLAGS_ALL, L_ADMIN,
+  sendto_realops_flags(UMODE_ALL, L_ADMIN,
 			"Link with %s established: (%s) link",
 			inpath_ip,show_capabilities(client_p));
 
   /* Now show the masked hostname/IP to opers */
-  sendto_realops_flags(FLAGS_ALL, L_OPER,
+  sendto_realops_flags(UMODE_ALL, L_OPER,
 			"Link with %s established: (%s) link",
 			inpath,show_capabilities(client_p));
 
@@ -1916,7 +1916,7 @@ set_autoconn(struct Client *source_p,char *parv0,char *name,int newval)
       else
         aconf->flags &= ~CONF_FLAGS_ALLOW_AUTO_CONN;
 
-      sendto_realops_flags(FLAGS_ALL, L_ALL,
+      sendto_realops_flags(UMODE_ALL, L_ALL,
 			   "%s has changed AUTOCONN for %s to %i",
 			   parv0, name, newval);
       sendto_one(source_p,
@@ -2016,10 +2016,10 @@ serv_connect(struct ConfItem *aconf, struct Client *by)
      */
     if ((client_p = find_server(aconf->name)))
       { 
-        sendto_realops_flags(FLAGS_ALL, L_ADMIN,
+        sendto_realops_flags(UMODE_ALL, L_ADMIN,
 	      "Server %s already present from %s",
 	      aconf->name, get_client_name(client_p, SHOW_IP));
-        sendto_realops_flags(FLAGS_ALL, L_OPER,
+        sendto_realops_flags(UMODE_ALL, L_OPER,
 			     "Server %s already present from %s",
 			     aconf->name, get_client_name(client_p, MASK_IP));
         if (by && IsPerson(by) && !MyClient(by))
@@ -2073,7 +2073,7 @@ serv_connect(struct ConfItem *aconf, struct Client *by)
      */
     if (!attach_connect_block(client_p, aconf->name, aconf->host))
       {
-        sendto_realops_flags(FLAGS_ALL, L_ALL,
+        sendto_realops_flags(UMODE_ALL, L_ALL,
 			   "Host %s is not enabled for connecting:no C/N-line",
 			     aconf->name);
         if (by && IsPerson(by) && !MyClient(by))  
@@ -2196,10 +2196,10 @@ serv_connect_callback(int fd, int status, void *data)
         /* We have an error, so report it and quit */
 	/* Admins get to see any IP, mere opers don't *sigh*
 	 */
-        sendto_realops_flags(FLAGS_ALL, L_ADMIN,
+        sendto_realops_flags(UMODE_ALL, L_ADMIN,
 			     "Error connecting to %s[%s]: %s", client_p->name,
 			     client_p->host, comm_errstr(status));
-	sendto_realops_flags(FLAGS_ALL, L_OPER,
+	sendto_realops_flags(UMODE_ALL, L_OPER,
 			     "Error connecting to %s: %s",
 			     client_p->name, comm_errstr(status));
 
@@ -2216,9 +2216,9 @@ serv_connect_callback(int fd, int status, void *data)
 			    client_p->name, CONF_SERVER); 
     if (aconf == NULL)
       {
-        sendto_realops_flags(FLAGS_ALL, L_ADMIN,
+        sendto_realops_flags(UMODE_ALL, L_ADMIN,
 	             "Lost connect{} block for %s", get_client_name(client_p, HIDE_IP));
-        sendto_realops_flags(FLAGS_ALL, L_OPER,
+        sendto_realops_flags(UMODE_ALL, L_OPER,
 		     "Lost connect{} block for %s", get_client_name(client_p, MASK_IP));
 
         exit_client(client_p, client_p, &me, "Lost connect{} block");
@@ -2268,11 +2268,11 @@ serv_connect_callback(int fd, int status, void *data)
      */
     if (IsDead(client_p)) 
     {
-        sendto_realops_flags(FLAGS_ALL, L_ADMIN,
+        sendto_realops_flags(UMODE_ALL, L_ADMIN,
 			     "%s[%s] went dead during handshake",
                              client_p->name,
 			     client_p->host);
-        sendto_realops_flags(FLAGS_ALL, L_OPER,
+        sendto_realops_flags(UMODE_ALL, L_OPER,
 			     "%s went dead during handshake", client_p->name);
 
         return;
@@ -2383,9 +2383,9 @@ void
 cryptlink_error(struct Client *client_p, char *type,
 		char *reason, char *client_reason)
 {
-  sendto_realops_flags(FLAGS_ALL, L_ADMIN, "%s: CRYPTLINK %s error - %s",
+  sendto_realops_flags(UMODE_ALL, L_ADMIN, "%s: CRYPTLINK %s error - %s",
                        get_client_name(client_p, SHOW_IP), type, reason);
-  sendto_realops_flags(FLAGS_ALL, L_OPER, "%s: CRYPTLINK %s error - %s",
+  sendto_realops_flags(UMODE_ALL, L_OPER, "%s: CRYPTLINK %s error - %s",
                        get_client_name(client_p, MASK_IP), type, reason);
   ilog(L_ERROR, "%s: CRYPTLINK %s error - %s",
                 get_client_name(client_p, SHOW_IP), type, reason);

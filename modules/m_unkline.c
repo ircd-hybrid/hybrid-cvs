@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_unkline.c,v 1.51 2002/11/18 19:54:58 db Exp $
+ *  $Id: m_unkline.c,v 1.52 2003/02/17 16:09:29 db Exp $
  */
 
 #include "stdinc.h"
@@ -73,7 +73,7 @@ _moddeinit(void)
   mod_del_cmd(&msgtabs[1]);
   mod_del_cmd(&msgtabs[2]);
 }
-const char *_version = "$Revision: 1.51 $";
+const char *_version = "$Revision: 1.52 $";
 #endif
 
 static int flush_write(struct Client *, FBFILE *in, FBFILE *out,
@@ -142,7 +142,7 @@ mo_unkline (struct Client *client_p,struct Client *source_p,
       sendto_one(source_p,
 		 ":%s NOTICE %s :Un-klined [%s@%s] from temporary k-lines",
 		 me.name, parv[0],user, host);
-      sendto_realops_flags(FLAGS_ALL, L_ALL,
+      sendto_realops_flags(UMODE_ALL, L_ALL,
 			   "%s has removed the temporary K-Line for: [%s@%s]",
 			   get_oper_name(source_p), user, host);
       ilog(L_NOTICE, "%s removed temporary K-Line for [%s@%s]", parv[0], user,
@@ -228,7 +228,7 @@ mo_unkline (struct Client *client_p,struct Client *source_p,
 
   sendto_one(source_p, ":%s NOTICE %s :K-Line for [%s@%s] is removed", 
              me.name, source_p->name, user,host);
-  sendto_realops_flags(FLAGS_ALL, L_ALL,
+  sendto_realops_flags(UMODE_ALL, L_ALL,
 		       "%s has removed the K-Line for: [%s@%s]",
 		       get_oper_name(source_p), user, host);
 
@@ -419,7 +419,7 @@ mo_undline (struct Client *client_p, struct Client *source_p,
 
   sendto_one(source_p, ":%s NOTICE %s :D-Line for [%s] is removed",
 	     me.name, parv[0], cidr);
-  sendto_realops_flags(FLAGS_ALL, L_ALL, "%s has removed the D-Line for: [%s]",
+  sendto_realops_flags(UMODE_ALL, L_ALL, "%s has removed the D-Line for: [%s]",
 		       get_oper_name(source_p), cidr);
   ilog(L_NOTICE, "%s removed D-Line for [%s]", get_oper_name(source_p),
        cidr);
@@ -479,7 +479,7 @@ mo_ungline(struct Client *client_p, struct Client *source_p,
     {
       sendto_one(source_p, ":%s NOTICE %s :G-Line for [%s@%s] is removed",
                  me.name, parv[0], user, host);
-      sendto_realops_flags(FLAGS_ALL, L_ALL,
+      sendto_realops_flags(UMODE_ALL, L_ALL,
 			   "%s has removed the G-Line for: [%s@%s]",
 			   get_oper_name(source_p), user, host );
       ilog(L_NOTICE, "%s removed G-Line for [%s@%s]",

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_user.c,v 1.23 2002/05/24 23:34:23 androsyn Exp $
+ *  $Id: m_user.c,v 1.24 2003/02/17 16:09:29 db Exp $
  */
 
 #include "stdinc.h"
@@ -36,7 +36,7 @@
 #include "modules.h"
 
 
-#define UFLAGS  (FLAGS_INVISIBLE|FLAGS_WALLOP|FLAGS_SERVNOTICE)
+#define UMODES  (UMODE_INVISIBLE|UMODE_WALLOP|UMODE_SERVNOTICE)
 
 static void mr_user(struct Client*, struct Client*, int, char**);
 
@@ -58,7 +58,7 @@ _moddeinit(void)
   mod_del_cmd(&user_msgtab);
 }
 
-const char *_version = "$Revision: 1.23 $";
+const char *_version = "$Revision: 1.24 $";
 #endif
 /*
 ** mr_user
@@ -73,7 +73,7 @@ static void mr_user(struct Client* client_p, struct Client* source_p,
 {
   char* p;
  
-  if ((p = strchr(parv[1],'@')))
+  if ((p = strchr(parv[1],'@')) != NULL)
     *p = '\0'; 
 
   if (*parv[4] == '\0')

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.111 2002/11/13 13:12:02 db Exp $
+ *  $Id: m_kline.c,v 1.112 2003/02/17 16:09:29 db Exp $
  */
 
 #include "stdinc.h"
@@ -75,7 +75,7 @@ _moddeinit(void)
   mod_del_cmd(&kline_msgtab);
   mod_del_cmd(&dline_msgtab);
 }
-const char *_version = "$Revision: 1.111 $";
+const char *_version = "$Revision: 1.112 $";
 #endif
 
 /* Local function prototypes */
@@ -293,7 +293,7 @@ ms_kline(struct Client *client_p, struct Client *source_p,
 
   if (valid_user_host(source_p, kuser, khost))
     {
-      sendto_realops_flags(FLAGS_ALL, L_ALL,
+      sendto_realops_flags(UMODE_ALL, L_ALL,
              "*** %s!%s@%s on %s is requesting an Invalid K-Line for [%s@%s] [%s]",
              source_p->name, source_p->username, source_p->host, source_p->user->server,
              kuser, khost, kreason);
@@ -302,7 +302,7 @@ ms_kline(struct Client *client_p, struct Client *source_p,
 
   if (valid_wild_card(kuser, khost))
     {
-       sendto_realops_flags(FLAGS_ALL, L_ALL, 
+       sendto_realops_flags(UMODE_ALL, L_ALL, 
              "*** %s!%s@%s on %s is requesting a K-Line without %d wildcard chars for [%s@%s] [%s]",
              source_p->name, source_p->username, source_p->host, source_p->user->server,
              ConfigFileEntry.min_nonwildcard, kuser, khost, kreason);
@@ -317,7 +317,7 @@ ms_kline(struct Client *client_p, struct Client *source_p,
   if (find_u_conf((char *)source_p->user->server,
 		  source_p->username, source_p->host))
     {
-      sendto_realops_flags(FLAGS_ALL, L_ALL,
+      sendto_realops_flags(UMODE_ALL, L_ALL,
 			   "*** Received K-Line for [%s@%s] [%s], from %s!%s@%s on %s",
 			   kuser, khost, kreason,
 			   source_p->name, source_p->username,
@@ -381,7 +381,7 @@ apply_tkline(struct Client *source_p, struct ConfItem *aconf,
 {
   aconf->hold = CurrentTime + tkline_time;
   add_temp_kline(aconf);
-  sendto_realops_flags(FLAGS_ALL, L_ALL,
+  sendto_realops_flags(UMODE_ALL, L_ALL,
 		       "%s added temporary %d min. K-Line for [%s@%s] [%s]",
 		       get_oper_name(source_p), tkline_time/60,
 		       aconf->user, aconf->host,
@@ -990,7 +990,7 @@ already_placed_kline(struct Client *source_p, char *luser, char *lhost)
     */
    /* they can?  here was me thinking it was only remote clients :P */
    if(!MyClient(source_p))
-    sendto_realops_flags(FLAGS_ALL, L_ALL, 
+    sendto_realops_flags(UMODE_ALL, L_ALL, 
              "*** Remote K-Line [%s@%s] already K-Lined by [%s@%s] - %s",
              luser, lhost, aconf->user, aconf->host, reason);
    else

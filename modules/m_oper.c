@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_oper.c,v 1.58 2002/11/06 21:17:59 wiz Exp $
+ *  $Id: m_oper.c,v 1.59 2003/02/17 16:09:29 db Exp $
  */
 
 #include "stdinc.h"
@@ -75,7 +75,7 @@ _moddeinit(void)
   mod_del_cmd(&oper_msgtab);
 }
 
-const char *_version = "$Revision: 1.58 $";
+const char *_version = "$Revision: 1.59 $";
 #endif
 
 /*
@@ -276,7 +276,7 @@ static void
 failed_oper_notice(struct Client *source_p, char *name, char *reason)
 {
     if (ConfigFileEntry.failed_oper_notice)
-      sendto_realops_flags(FLAGS_ALL, L_ALL, "Failed OPER attempt as %s "
+      sendto_realops_flags(UMODE_ALL, L_ALL, "Failed OPER attempt as %s "
                            "by %s (%s@%s) - %s", name, source_p->name,
                            source_p->username, source_p->host, reason);
 }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_error.c,v 7.28 2003/02/14 23:01:55 db Exp $
+ *  $Id: m_error.c,v 7.29 2003/02/17 16:09:37 db Exp $
  */
 
 #include "stdinc.h"
@@ -61,19 +61,19 @@ m_error(struct Client *client_p, struct Client *source_p,
 
   if (client_p == source_p)
     {
-      sendto_realops_flags(FLAGS_ALL, L_ADMIN,
+      sendto_realops_flags(UMODE_ALL, L_ADMIN,
             "ERROR :from %s -- %s",
 	    get_client_name(client_p, HIDE_IP), para);
-      sendto_realops_flags(FLAGS_ALL, L_OPER,
+      sendto_realops_flags(UMODE_ALL, L_OPER,
             "ERROR :from %s -- %s",
 	    get_client_name(client_p, MASK_IP), para);
     }
   else
     {
-      sendto_realops_flags(FLAGS_ALL, L_OPER,
+      sendto_realops_flags(UMODE_ALL, L_OPER,
             "ERROR :from %s via %s -- %s",
 	    source_p->name, get_client_name(client_p, MASK_IP), para);
-      sendto_realops_flags(FLAGS_ALL, L_ADMIN,"ERROR :from %s via %s -- %s",
+      sendto_realops_flags(UMODE_ALL, L_ADMIN,"ERROR :from %s via %s -- %s",
 			   source_p->name,
 			   get_client_name(client_p, HIDE_IP), para);
     }
@@ -94,9 +94,9 @@ ms_error(struct Client *client_p, struct Client *source_p,
 	   source_p->name, para);
 
   if (client_p == source_p)
-    sendto_realops_flags(FLAGS_ALL, L_ALL,"ERROR :from %s -- %s",
+    sendto_realops_flags(UMODE_ALL, L_ALL,"ERROR :from %s -- %s",
 			 get_client_name(client_p, MASK_IP), para);
   else
-    sendto_realops_flags(FLAGS_ALL, L_ALL,"ERROR :from %s via %s -- %s", source_p->name,
+    sendto_realops_flags(UMODE_ALL, L_ALL,"ERROR :from %s via %s -- %s", source_p->name,
 			 get_client_name(client_p, MASK_IP), para);
 }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_jupe.c,v 1.36 2002/10/17 17:06:32 bill Exp $
+ *  $Id: m_jupe.c,v 1.37 2003/02/17 16:09:24 db Exp $
  */
 
 #include "stdinc.h"
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&jupe_msgtab);
 }
 
-const char *_version = "$Revision: 1.36 $";
+const char *_version = "$Revision: 1.37 $";
 #endif
 
 /*
@@ -116,7 +116,7 @@ static void mo_jupe(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  sendto_wallops_flags(FLAGS_WALLOP, &me,
+  sendto_wallops_flags(UMODE_WALLOP, &me,
                        "JUPE for %s requested by %s: %s",
 			 parv[1], get_oper_name(source_p), parv[2]);
 
@@ -136,7 +136,7 @@ static void mo_jupe(struct Client *client_p, struct Client *source_p,
                 ":%s SERVER %s 1 :JUPED: %s",
                 me.name, parv[1], parv[2]);
 
-  sendto_realops_flags(FLAGS_ALL, L_ALL,
+  sendto_realops_flags(UMODE_ALL, L_ALL,
                        "Link with %s established: (JUPED) link",
 		       parv[1]);
 

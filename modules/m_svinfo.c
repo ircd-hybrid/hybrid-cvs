@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_svinfo.c,v 1.36 2003/02/14 23:01:51 db Exp $
+ *  $Id: m_svinfo.c,v 1.37 2003/02/17 16:09:29 db Exp $
  */
 #include "stdinc.h"
 #include "handlers.h"
@@ -56,7 +56,7 @@ _moddeinit(void)
   mod_del_cmd(&svinfo_msgtab);
 }
 
-const char *_version = "$Revision: 1.36 $";
+const char *_version = "$Revision: 1.37 $";
 #endif
 /*
  * ms_svinfo - SVINFO message handler
@@ -89,10 +89,10 @@ ms_svinfo(struct Client *client_p, struct Client *source_p,
        * TS_ONLY we can't fall back to the non-TS protocol so
        * we drop the link  -orabidoo
        */
-      sendto_realops_flags(FLAGS_ALL, L_ADMIN,
+      sendto_realops_flags(UMODE_ALL, L_ADMIN,
             "Link %s dropped, wrong TS protocol version (%s,%s)",
             get_client_name(source_p, SHOW_IP), parv[1], parv[2]);
-      sendto_realops_flags(FLAGS_ALL, L_OPER,
+      sendto_realops_flags(UMODE_ALL, L_OPER,
                  "Link %s dropped, wrong TS protocol version (%s,%s)",
                  get_client_name(source_p, MASK_IP), parv[1], parv[2]);
       exit_client(source_p, source_p, source_p, "Incompatible TS version");
@@ -108,13 +108,13 @@ ms_svinfo(struct Client *client_p, struct Client *source_p,
 
   if (deltat > ConfigFileEntry.ts_max_delta)
     {
-      sendto_realops_flags(FLAGS_ALL, L_ADMIN,
+      sendto_realops_flags(UMODE_ALL, L_ADMIN,
           "Link %s dropped, excessive TS delta (my TS=%lu, their TS=%lu, delta=%d)",
           get_client_name(source_p, SHOW_IP),
           (unsigned long) CurrentTime,
           (unsigned long) theirtime,
           (int) deltat);
-      sendto_realops_flags(FLAGS_ALL, L_OPER,
+      sendto_realops_flags(UMODE_ALL, L_OPER,
           "Link %s dropped, excessive TS delta (my TS=%lu, their TS=%lu, delta=%d)",
            get_client_name(source_p, MASK_IP),
            (unsigned long) CurrentTime,
@@ -132,7 +132,7 @@ ms_svinfo(struct Client *client_p, struct Client *source_p,
 
   if (deltat > ConfigFileEntry.ts_warn_delta)
     { 
-      sendto_realops_flags(FLAGS_ALL, L_ALL,
+      sendto_realops_flags(UMODE_ALL, L_ALL,
                 "Link %s notable TS delta (my TS=%lu, their TS=%lu, delta=%d)",
                 source_p->name,
                 (unsigned long) CurrentTime,
