@@ -1,3 +1,15 @@
+bill        2002/10/16 23:20:34 EDT	(20021017_1)
+
+  Modified files:
+    contrib              m_operspy.c 
+  Log:
+  - kludged small bug that allowed detection of m_operspy.c module
+  
+  Revision  Changes    Path
+  1.6       +10 -7     ircd-hybrid-7/contrib/m_operspy.c
+
+
+
 bill        2002/10/16 22:28:52 EDT	(20021017_0)
 
   Modified files:
@@ -32517,4 +32529,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4066 2002/10/17 02:28:54 bill Exp $
+$Id: ChangeLog,v 7.4067 2002/10/17 03:20:36 bill Exp $
