@@ -7,7 +7,7 @@
  * The authors takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: irc_res.c,v 7.36 2003/11/25 05:08:04 db Exp $
+ * $Id: irc_res.c,v 7.37 2004/10/29 14:24:25 adx Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -829,6 +829,7 @@ res_readreply(int fd, void *data)
       {
         request->state = REQ_INT;
         request->timeout += 4;
+	request->retries--;
         resend_query(request);
       }
       else
