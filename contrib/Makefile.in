@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/contrib
 #
-# $Id: Makefile.in,v 1.35.2.3 2003/05/22 03:26:44 db Exp $
+# $Id: Makefile.in,v 1.35.2.4 2003/05/30 04:14:50 lusky Exp $
 #
 CC		= @CC@
 RM		= @RM@
@@ -37,7 +37,7 @@ SRCS =                          \
   m_map.c			\
   m_mkpasswd.c                  \
   m_ojoin.c			\
-  m_omotod.c			\
+  m_omotd.c			\
   m_operspy.c			\
   m_opme.c			\
   m_tburst.c			\
