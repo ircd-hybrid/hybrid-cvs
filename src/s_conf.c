@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.391 2003/05/18 23:29:27 michael Exp $
+ *  $Id: s_conf.c,v 7.392 2003/05/19 00:41:13 michael Exp $
  */
 
 #include "stdinc.h"
@@ -78,10 +78,12 @@ static void read_conf(FBFILE *);
 static void clear_out_old_conf(void);
 static void flush_deleted_I_P(void);
 static void expire_tklines(dlink_list *);
+static void garbage_collect_ip_entries(void);
+static int hash_ip(struct irc_ssaddr *);
 static int is_attached(struct Client *client_p, struct ConfItem *aconf);
 static int verify_access(struct Client *client_p, const char *username);
 static int attach_iline(struct Client *, struct ConfItem *);
-
+static struct ip_entry *find_or_add_ip(struct irc_ssaddr *);
 
 FBFILE *conf_fbfile_in;
 extern char yytext[];
@@ -106,9 +108,6 @@ struct ip_entry
 static struct ip_entry *ip_hash_table[IP_HASH_SIZE];
 static BlockHeap *ip_entry_heap = NULL;
 static int ip_entries_count = 0;
-static int hash_ip(struct irc_ssaddr *);
-static void garbage_collect_ip_entries(void);
-static struct ip_entry *find_or_add_ip(struct irc_ssaddr*);
 
 /* conf xline link list root */
 struct ConfItem *x_conf = NULL;
@@ -127,7 +126,7 @@ struct ConfItem *u_conf = NULL;
  * if successful save hp in the conf item it was called with
  */
 static void
-conf_dns_callback(void* vptr, struct DNSReply *reply)
+conf_dns_callback(void *vptr, struct DNSReply *reply)
 {
   struct ConfItem *aconf = (struct ConfItem *)vptr;
 
@@ -188,21 +187,19 @@ free_conf(struct ConfItem *aconf)
 
   if (aconf->dns_query != NULL)
     delete_resolver_queries(aconf);
-
-  MyFree(aconf->host);
-
-  if (aconf->passwd)
+  if (aconf->passwd != NULL)
     memset(aconf->passwd, 0, strlen(aconf->passwd));
-  MyFree(aconf->passwd);
-
-  if (aconf->spasswd)
+  if (aconf->spasswd != NULL)
     memset(aconf->spasswd, 0, strlen(aconf->spasswd));
+
+  MyFree(aconf->passwd);
   MyFree(aconf->spasswd);
   MyFree(aconf->reason);
   MyFree(aconf->oper_reason);
   MyFree(aconf->name);
-  MyFree(aconf->className);
   MyFree(aconf->user);
+  MyFree(aconf->host);
+  MyFree(aconf->className);
   MyFree(aconf->fakename);
 #ifdef HAVE_LIBCRYPTO
   if (aconf->rsa_public_key)
@@ -1212,7 +1209,7 @@ find_x_conf(const char *to_find)
     if (EmptyString(aconf->name))
       continue;
 
-    if (match_esc(aconf->name,to_find))
+    if (match_esc(aconf->name, to_find))
       return(aconf);
   }
 
@@ -1247,14 +1244,14 @@ find_u_conf(const char *server, const char *user, const char *host)
     {
       if (EmptyString(aconf->user) ||
           EmptyString(aconf->host))
-        return(YES);
+        return(1);
       if (match(aconf->user, user) &&
           match(aconf->host, host))
-        return(YES);
+        return(1);
     }
   }
 
-  return(NO);
+  return(0);
 }
 
 /* rehash()
@@ -1841,9 +1838,9 @@ get_oper_name(struct Client *client_p)
  * of name, host, pass, user to values either
  * in aconf, or "<NULL>" port is set to aconf->port in all cases.
  */
-void 
-get_printable_conf(struct ConfItem *aconf, char **name, char **host,
-                   char **reason, char **user,int *port,char **classname)
+void
+get_printable_conf(struct ConfItem *aconf, char **name, char **host, char **reason,
+                   char **user, int *port, char **classname)
 {
   static char null[] = "<NULL>";
   static char zero[] = "default";
@@ -2176,7 +2173,7 @@ conf_add_class_to_conf(struct ConfItem *aconf)
  * side effects - Add a connect block
  */
 int
-conf_add_server(struct ConfItem *aconf, int lcount)
+conf_add_server(struct ConfItem *aconf, unsigned int lcount)
 {
   conf_add_class_to_conf(aconf);
 
@@ -2232,7 +2229,7 @@ conf_add_d_conf(struct ConfItem *aconf)
 /* yyerror()
  *
  * inputs	- message from parser
- * output	- none
+ * output	- NONE
  * side effects	- message to opers and log file entry is made
  */
 void

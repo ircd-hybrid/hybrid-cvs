@@ -7,7 +7,7 @@
  * The authors takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: irc_res.c,v 7.17 2003/05/18 23:29:26 michael Exp $
+ * $Id: irc_res.c,v 7.18 2003/05/19 00:41:12 michael Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -96,25 +96,22 @@ struct reslist
   struct DNSQuery   query;             /* query callback for this request */
 };
 
-static int    ResolverFileDescriptor = -1;
+static int ResolverFileDescriptor = -1;
+static dlink_list request_list    = { NULL, NULL, 0 };
 
-static dlink_list request_list;
-
-static void     rem_request(struct reslist *request);
-static struct   reslist *make_request(const struct DNSQuery* query);
-static void     do_query_name(const struct DNSQuery* query, 
-    const char* name, struct reslist *request, int);
-static void     do_query_number(const struct DNSQuery* query, 
-    const struct irc_ssaddr*, 
-    struct reslist *request);
-static void     query_name(const char* name, int query_class, int query_type, 
-    struct reslist *request);
-static int      send_res_msg(const char* buf, int len, int count);
-static void     resend_query(struct reslist *request);
-static int      proc_answer(struct reslist *request, HEADER* header, 
-    char *, char *);
+static void rem_request(struct reslist *request);
+static struct reslist *make_request(const struct DNSQuery *query);
+static void do_query_name(const struct DNSQuery *query,
+                          const char* name, struct reslist *request, int);
+static void do_query_number(const struct DNSQuery *query,
+                            const struct irc_ssaddr *,
+                            struct reslist *request);
+static void query_name(const char *name, int query_class, int query_type, 
+                       struct reslist *request);
+static int send_res_msg(const char *buf, int len, int count);
+static void resend_query(struct reslist *request);
+static int proc_answer(struct reslist *request, HEADER *header, char *, char *);
 static struct reslist *find_id(int id);
-
 static struct DNSReply *make_dnsreply(struct reslist *request);
 
 extern struct irc_ssaddr irc_nsaddr_list[IRCD_MAXNS];
@@ -210,16 +207,14 @@ start_resolver(void)
 /*
  * init_resolver - initialize resolver and resolver library
  */
-  int
+int
 init_resolver(void)
 {
 #ifdef  LRAND48
   srand48(CurrentTime);
 #endif
-
-  memset(&request_list, 0, sizeof(request_list));
   start_resolver();
-  return (ResolverFileDescriptor);
+  return(ResolverFileDescriptor);
 }
 
 /*
@@ -238,14 +233,14 @@ restart_resolver(void)
 void
 add_local_domain(char* hname, int size)
 {
-  /* 
-   * try to fix up unqualified names 
+  /* try to fix up unqualified names 
    */
-  if (!strchr(hname, '.'))
+  if (strchr(hname, '.') == NULL)
   {
     if (irc_domain[0])
     {
       size_t len = strlen(hname);
+
       if ((strlen(irc_domain) + len + 2) < size)
       {
         hname[len++] = '.';
@@ -288,7 +283,7 @@ make_request(const struct DNSQuery* query)
 {
   struct reslist *request;
 
-  request = (struct reslist *) MyMalloc(sizeof(struct reslist));
+  request = (struct reslist *)MyMalloc(sizeof(struct reslist));
   memset(request, 0, sizeof(struct reslist));
 
   request->sentat  = CurrentTime;
@@ -296,13 +291,12 @@ make_request(const struct DNSQuery* query)
   request->resend  = 1;
   request->timeout = 4;    /* start at 4 and exponential inc. */
   memset(&request->addr, 0, sizeof(request->addr));
-  request->query.ptr        = query->ptr;
-  request->query.callback   = query->callback;
-  request->state = REQ_IDLE;
+  request->query.ptr      = query->ptr;
+  request->query.callback = query->callback;
+  request->state          = REQ_IDLE;
 
   dlinkAdd(request, make_dlink_node(), &request_list);
-
-  return (request);
+  return(request);
 }
 
 /*
@@ -315,14 +309,14 @@ timeout_query_list(time_t now)
   dlink_node *ptr;
   dlink_node *next_ptr;
   struct reslist *request;
-  time_t   next_time    = 0;
-  time_t   timeout      = 0;
+  time_t next_time = 0;
+  time_t timeout   = 0;
 
   DLINK_FOREACH_SAFE(ptr, next_ptr, request_list.head)
   {
     request = ptr->data;
-
     timeout = request->sentat + request->timeout;
+
     if (now >= timeout)
     {
       if (--request->retries <= 0)
@@ -343,7 +337,8 @@ timeout_query_list(time_t now)
       next_time = timeout;
     }
   }
-  return ((next_time > now) ? next_time : (now + AR_TTL));
+
+  return((next_time > now) ? next_time : (now + AR_TTL));
 }
 
 /*
@@ -394,7 +389,7 @@ delete_resolver_queries(const void *vptr)
  * nameservers or -1 if no successful sends.
  */
 static int
-send_res_msg(const char* msg, int len, int rcount)
+send_res_msg(const char *msg, int len, int rcount)
 {
   int i;
   int sent = 0;
@@ -410,11 +405,12 @@ send_res_msg(const char* msg, int len, int rcount)
   for (i = 0; i < max_queries; i++)
   {
     if (sendto(ResolverFileDescriptor, msg, len, 0, 
-          (struct sockaddr*) &(irc_nsaddr_list[i]), 
-          irc_nsaddr_list[i].ss_len) == len) 
+        (struct sockaddr*) &(irc_nsaddr_list[i]), 
+        irc_nsaddr_list[i].ss_len) == len) 
       ++sent;
   }
-  return (sent);
+
+  return(sent);
 }
 
 /*
@@ -431,9 +427,10 @@ find_id(int id)
     request = ptr->data;
 
     if (request->id == id)
-      return (request);
+      return(request);
   }
-  return (NULL);
+
+  return(NULL);
 }
 
 /* 
@@ -451,7 +448,7 @@ gethost_byname_type(const char *name, const struct DNSQuery *query, int type)
  * gethost_byname - wrapper for _type - send T_AAAA first
  */
 void
-gethost_byname(const char* name, const struct DNSQuery* query)
+gethost_byname(const char *name, const struct DNSQuery *query)
 {
   gethost_byname_type(name, query, T_AAAA);
 }
@@ -460,7 +457,7 @@ gethost_byname(const char* name, const struct DNSQuery* query)
  * gethost_byaddr - get host name from address
  */
 void
-gethost_byaddr(const struct irc_ssaddr* addr, const struct DNSQuery* query)
+gethost_byaddr(const struct irc_ssaddr *addr, const struct DNSQuery *query)
 {
   do_query_number(query, addr, NULL);
 }
@@ -469,10 +466,10 @@ gethost_byaddr(const struct irc_ssaddr* addr, const struct DNSQuery* query)
  * do_query_name - nameserver lookup name
  */
 static void
-do_query_name(const struct DNSQuery* query, const char* name,
+do_query_name(const struct DNSQuery *query, const char *name,
 	      struct reslist *request, int type)
 {
-  char  host_name[HOSTLEN + 1];
+  char host_name[HOSTLEN + 1];
 
   strlcpy(host_name, name, HOSTLEN);
   add_local_domain(host_name, HOSTLEN);
@@ -480,7 +477,7 @@ do_query_name(const struct DNSQuery* query, const char* name,
   if (request == NULL)
   {
     request       = make_request(query);
-    request->name = (char *) MyMalloc(strlen(host_name) + 1);
+    request->name = (char *)MyMalloc(strlen(host_name) + 1);
     request->type = type;
     strcpy(request->name, host_name);
 #ifdef IPV6
@@ -512,7 +509,7 @@ do_query_number(const struct DNSQuery *query, const struct irc_ssaddr *addr,
   if (addr->ss.ss_family == AF_INET)
   {
     struct sockaddr_in *v4 = (struct sockaddr_in *)addr;
-    cp = (const unsigned char*) &v4->sin_addr.s_addr;
+    cp = (const unsigned char*)&v4->sin_addr.s_addr;
 
     ircsprintf(ipbuf, "%u.%u.%u.%u.in-addr.arpa.",
         (unsigned int)(cp[3]), (unsigned int)(cp[2]),
@@ -523,10 +520,12 @@ do_query_number(const struct DNSQuery *query, const struct irc_ssaddr *addr,
   {
     struct sockaddr_in6 *v6 = (struct sockaddr_in6 *)addr;
     cp = (const unsigned char *)&v6->sin6_addr.s6_addr;
+
     if (request != NULL && request->state == REQ_INT)
       intarpa = "int";
     else
       intarpa = "arpa";
+
     (void)sprintf(ipbuf, "%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x."
                   "%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.%x.ip6.%s.",
                   (u_int)(cp[15]&0xf), (u_int)(cp[15]>>4),
@@ -547,14 +546,14 @@ do_query_number(const struct DNSQuery *query, const struct irc_ssaddr *addr,
                   (u_int)(cp[0]&0xf), (u_int)(cp[0]>>4), intarpa);
   }
 #endif
-    
   if (request == NULL)
   {
     request              = make_request(query);
     request->type        = T_PTR;
     memcpy(&request->addr, addr, sizeof(struct irc_ssaddr));
-    request->name = (char *)MyMalloc(HOSTLEN+1);
+    request->name = (char *)MyMalloc(HOSTLEN + 1);
   }
+
   query_name(ipbuf, C_IN, T_PTR, request);
 }
 
@@ -562,20 +561,20 @@ do_query_number(const struct DNSQuery *query, const struct irc_ssaddr *addr,
  * query_name - generate a query based on class, type and name.
  */
 static void
-query_name(const char* name, int query_class, int type,
-	   struct reslist *request)
+query_name(const char *name, int query_class, int type,
+           struct reslist *request)
 {
   char buf[MAXPACKET];
-  int  request_len = 0;
+  int request_len = 0;
 
   memset(buf, 0, sizeof(buf));
 
   if ((request_len = irc_res_mkquery(name, query_class, type, 
-          (unsigned char *)buf, sizeof(buf))) > 0)
+      (unsigned char *)buf, sizeof(buf))) > 0)
   {
-    HEADER* header = (HEADER*) buf;
+    HEADER *header = (HEADER *)buf;
 #ifndef LRAND48
-    int            k = 0;
+    int k = 0;
     struct timeval tv;
 #endif
     /*
@@ -759,7 +758,7 @@ proc_answer(struct reslist *request, HEADER* header, char* buf, char* eob)
 
           if (n < 0)
             return (0);
-          return (1);
+          return(1);
         }
 
         request->state = REQ_CNAME;
@@ -784,31 +783,33 @@ proc_answer(struct reslist *request, HEADER* header, char* buf, char* eob)
 static void
 res_readreply(int fd, void *data)
 {
-  char               buf[sizeof(HEADER) + MAXPACKET];
-  HEADER*            header;
-  struct reslist     *request = NULL;
-  struct DNSReply    *reply = NULL;
-  int                rc;
-  int                answer_count;
-  socklen_t          len = sizeof(struct irc_ssaddr);
+  char buf[sizeof(HEADER) + MAXPACKET];
+  HEADER *header;
+  struct reslist *request = NULL;
+  struct DNSReply *reply = NULL;
+  int rc;
+  int answer_count;
+  socklen_t len = sizeof(struct irc_ssaddr);
   struct irc_ssaddr lsin;
 
   assert(fd == ResolverFileDescriptor);
+
   rc = recvfrom(ResolverFileDescriptor, buf, sizeof(buf), 0, 
-      (struct sockaddr*) &lsin, &len);
-  /*
-   * Re-schedule a read *after* recvfrom, or we'll be registering
+                (struct sockaddr *)&lsin, &len);
+
+  /* Re-schedule a read *after* recvfrom, or we'll be registering
    * interest where it'll instantly be ready for read :-) -- adrian
    */
   comm_setselect(ResolverFileDescriptor, FDLIST_SERVICE, COMM_SELECT_READ,
-      res_readreply, NULL, 0);
+                 res_readreply, NULL, 0);
 
   if (rc <= sizeof(HEADER))
     return;
+
   /*
    * convert DNS reply reader from Network byte order to CPU byte order.
    */
-  header = (HEADER*) buf;
+  header = (HEADER *)buf;
   header->ancount = ntohs(header->ancount);
   header->qdcount = ntohs(header->qdcount);
   header->nscount = ntohs(header->nscount);
@@ -923,20 +924,18 @@ res_readreply(int fd, void *data)
   }
 }
 
-
-static struct DNSReply*
+static struct DNSReply *
 make_dnsreply(struct reslist *request)
 {
   struct DNSReply* cp;
-  assert(0 != request);
+  assert(request != 0);
 
-  cp = (struct DNSReply*) MyMalloc(sizeof(struct DNSReply));
+  cp = (struct DNSReply *)MyMalloc(sizeof(struct DNSReply));
 
   DupString(cp->h_name, request->name);
   memcpy(&cp->addr, &request->addr, sizeof(cp->addr));
   return(cp);
 }
-
 
 void
 report_dns_servers(struct Client *source_p)
@@ -947,9 +946,9 @@ report_dns_servers(struct Client *source_p)
   for (i = 0; i < irc_nscount; i++)
   {
     irc_getnameinfo((struct sockaddr*) &(irc_nsaddr_list[i]), 
-		    irc_nsaddr_list[i].ss_len, ipaddr, HOSTIPLEN, NULL, 0,
-		    NI_NUMERICHOST);
+                    irc_nsaddr_list[i].ss_len, ipaddr, HOSTIPLEN, NULL, 0,
+                    NI_NUMERICHOST);
     sendto_one(source_p, form_str(RPL_STATSALINE),
-	       me.name, source_p->name, ipaddr); 
+               me.name, source_p->name, ipaddr); 
   }
 }

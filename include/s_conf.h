@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.218 2003/05/14 22:29:38 db Exp $
+ *  $Id: s_conf.h,v 7.219 2003/05/19 00:41:11 michael Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -367,7 +367,7 @@ extern int conf_fbgets(char *, int, FBFILE *);
 
 extern void write_conf_line(struct Client *, struct ConfItem *,
 			    const char *, time_t);
-extern int  remove_conf_line(int, struct Client *, char *, char *);
+extern int remove_conf_line(int, struct Client *, char *, char *);
 extern void add_temp_kline(struct ConfItem *);
 extern void report_temp_klines(struct Client *);
 extern void show_temp_klines(struct Client *, dlink_list *);
@@ -376,10 +376,9 @@ extern void cleanup_tklines(void *notused);
 extern const char *get_conf_name(int);
 extern int rehash(int);
 
-extern int conf_add_server(struct ConfItem *, int);
+extern int conf_add_server(struct ConfItem *, unsigned int);
 extern void conf_add_class_to_conf(struct ConfItem *);
 extern void conf_add_me(struct ConfItem *);
-extern void conf_add_class(struct ConfItem *, int);
 extern void conf_add_d_conf(struct ConfItem *);
 extern void conf_add_x_conf(struct ConfItem *);
 extern void conf_add_u_conf(struct ConfItem *);

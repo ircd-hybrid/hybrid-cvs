@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.281 2003/05/18 23:29:26 michael Exp $
+ *  $Id: ircd.c,v 7.282 2003/05/19 00:41:13 michael Exp $
  */
 
 #include "stdinc.h"
@@ -83,24 +83,24 @@ struct server_info ServerInfo;
 /* admin info set from ircd.conf */
 struct admin_info AdminInfo;
 
-struct  Counter Count;
-struct  ServerState_t server_state;
+struct Counter Count;
+struct ServerState_t server_state;
 
 struct timeval SystemTime;
-int    ServerRunning;           /* GLOBAL - server execution state */
+int ServerRunning;           /* GLOBAL - server execution state */
 struct Client me;               /* That's me */
 struct LocalUser meLocalUser;	/* That's also part of me */
 
 int callbacks_called;          /* A measure of server load... */
 
-static unsigned long       initialVMTop = 0;   /* top of virtual memory at init */
-const char * logFileName = LPATH;
-const char * pidFileName = PPATH;
+static unsigned long initialVMTop = 0;   /* top of virtual memory at init */
+const char *logFileName = LPATH;
+const char *pidFileName = PPATH;
 
-char**  myargv;
-int     dorehash   = 0;
-int     doremotd   = 0;
-time_t  nextconnect = 1;        /* time for next try_connections call */
+char **myargv;
+int dorehash = 0;
+int doremotd = 0;
+time_t nextconnect = 1;        /* time for next try_connections call */
 
 /* Set to zero because it should be initialized later using
  * initialize_server_capabs
@@ -210,7 +210,7 @@ init_sys(void)
 #endif
 }
 
-static int
+static void
 make_daemon(void)
 {
 #ifndef VMS
@@ -238,7 +238,6 @@ make_daemon(void)
   $DESCRIPTOR(myname, "IRCD-HYBRID-7");
   SYS$SETPRN(&myname);
 #endif
-  return(0);
 }
 
 static int printVersion = 0;

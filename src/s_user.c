@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.257 2003/05/16 23:36:51 michael Exp $
+ *  $Id: s_user.c,v 7.258 2003/05/19 00:41:13 michael Exp $
  */
 
 #include "stdinc.h"
@@ -91,7 +91,7 @@ static const struct flag_item user_modes[] =
   {UMODE_EXTERNAL,   'x'},
   {UMODE_SPY,        'y'},
   {UMODE_OPERWALL,   'z'},
-  {0, 0}
+  {0, '\0'}
 };
 
 /* memory is cheap. map 0-255 to equivalent mode */
@@ -171,7 +171,7 @@ unsigned int user_modes_from_c_to_bitmask[] =
 /* show_lusers()
  *
  * inputs       - pointer to client
- * output       -
+ * output       - NONE
  * side effects - display to client user counts etc.
  */
 void
@@ -231,7 +231,7 @@ show_lusers(struct Client *source_p)
 /* show_isupport()
  *
  * inputs       - pointer to client
- * output       - 
+ * output       - NONE
  * side effects	- display to client what we support (for them)
  */
 void
@@ -557,7 +557,7 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
   return(introduce_client(client_p, source_p, nick));
 }
 
-/* introduce_clients()
+/* introduce_client()
  *
  * inputs	-
  * output	-
@@ -676,7 +676,7 @@ valid_hostname(const char *hostname)
 /* valid_username()
  *
  * Inputs       - pointer to user
- * Output       - YES if valid, NO if not
+ * Output       - 1 if valid, 0 if not
  * Side effects - check username for validity
  *
  * Absolutely always reject any '*' '!' '?' '@' in an user name
@@ -930,7 +930,7 @@ user_mode(struct Client *client_p, struct Client *source_p, int parc, char *parv
     m = buf;
     *m++ = '+';
 
-    for (i = 0; user_modes[i].letter && (m - buf < BUFSIZE - 4);i++)
+    for (i = 0; user_modes[i].letter && (m - buf < BUFSIZE - 4); i++)
       if (source_p->umodes & user_modes[i].mode)
         *m++ = user_modes[i].letter;
     *m = '\0';
@@ -1225,9 +1225,9 @@ check_X_line(struct Client *client_p, struct Client *source_p)
   struct ConfItem *aconf;
   const char *reason;
 
-  if ((aconf = find_x_conf(source_p->info)))
+  if ((aconf = find_x_conf(source_p->info)) != NULL)
   {
-    if (aconf->passwd)
+    if (aconf->passwd != NULL)
       reason = aconf->passwd;
     else
       reason = "NONE";
@@ -1274,7 +1274,6 @@ oper_up(struct Client *source_p, struct ConfItem *aconf)
   unsigned int old = (source_p->umodes & ALL_UMODES);
   const char *operprivs = "";
   dlink_node *ptr;
-  struct ConfItem *found_aconf;
 
   SetOper(source_p);
 
@@ -1304,18 +1303,8 @@ oper_up(struct Client *source_p, struct ConfItem *aconf)
 
   dlinkAdd(source_p, make_dlink_node(), &oper_list);
 
-  if (source_p->localClient->confs.head)
-  {
-    ptr = source_p->localClient->confs.head;
-
-    if (ptr)
-    {
-      found_aconf = ptr->data;
-
-      if (found_aconf)
-        operprivs = oper_privs_as_string(source_p, found_aconf->port);
-    }
-  }
+  if ((ptr = source_p->localClient->confs.head) != NULL)
+      operprivs = oper_privs_as_string(source_p, ((struct ConfItem *)ptr->data)->port);
   else
     operprivs = "";
 
