@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_poll.c,v 7.62 2003/06/30 17:49:39 adx Exp $
+ *  $Id: s_bsd_poll.c,v 7.63 2003/07/01 16:45:55 adx Exp $
  */
 
 #include "stdinc.h"
@@ -58,11 +58,8 @@
 struct _pollfd_list {
     struct pollfd pollfds[HARD_FDLIMIT];
     int maxindex; /* highest FD number */
-};
+} pollfd_list;
 
-typedef struct _pollfd_list pollfd_list_t;
-
-pollfd_list_t pollfd_list;
 static void poll_update_pollfds(int, short, PF *);
 
 /* XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX */
@@ -75,70 +72,63 @@ static void poll_update_pollfds(int, short, PF *);
 static inline int
 poll_findslot(void)
 {
-    int i;
-    for (i = 0; i < HARD_FDLIMIT; i++)
+  int i;
+
+  for (i = 0; i < HARD_FDLIMIT; i++)
+    if (pollfd_list.pollfds[i].fd == -1)
     {
-        if (pollfd_list.pollfds[i].fd == -1)
-        {
-            /* MATCH!!#$*&$ */
-            return i;
-        }
+      /* MATCH!!#$*&$ */
+      return i;
     }
-    assert(1 == 0);
-    /* NOTREACHED */
-    return -1;
+
+  assert(1 == 0);
+  /* NOTREACHED */
+  return -1;
 }
+
 /*
  * set and clear entries in the pollfds[] array.
  */ 
 static void
 poll_update_pollfds(int fd, short event, PF * handler)
 {  
-    fde_t *F = &fd_table[fd];
-    int comm_index;
+  fde_t *F = &fd_table[fd];
+  int comm_index;
 
-    if(F->comm_index < 0)
-    {    
-    	F->comm_index = poll_findslot();
+  if (F->comm_index < 0)
+    F->comm_index = poll_findslot();
+  comm_index = F->comm_index;
+
+  /* Update the events */
+  if (handler != NULL)
+  {
+    F->list = FDLIST_IDLECLIENT;
+    pollfd_list.pollfds[comm_index].events |= event;
+    pollfd_list.pollfds[comm_index].fd = fd;
+    /* update maxindex here */
+    if (comm_index > pollfd_list.maxindex)
+      pollfd_list.maxindex = comm_index;
+  }
+  else {
+    pollfd_list.pollfds[comm_index].events &= ~event;
+    if (pollfd_list.pollfds[comm_index].events == 0)
+    {
+      pollfd_list.pollfds[comm_index].fd = -1;
+      pollfd_list.pollfds[comm_index].revents = 0;
+      F->comm_index = -1;
+      F->list = FDLIST_NONE;
+
+      /* update pollfd_list.maxindex here */
+      if (comm_index == pollfd_list.maxindex)
+        while (pollfd_list.maxindex >= 0 &&
+               pollfd_list.pollfds[pollfd_list.maxindex].fd == -1)
+          pollfd_list.maxindex--;
     }
-    comm_index = F->comm_index;
-
-    /* Update the events */
-    if (handler)
-      {
-        F->list = FDLIST_IDLECLIENT;
-        pollfd_list.pollfds[comm_index].events |= event;
-        pollfd_list.pollfds[comm_index].fd = fd;
-        /* update maxindex here */
-        if (comm_index > pollfd_list.maxindex)
-            pollfd_list.maxindex = comm_index;
-      }
-    else
-      {
-	if (comm_index >= 0)
-	  {
-	    pollfd_list.pollfds[comm_index].events &= ~event;
-	    if (pollfd_list.pollfds[comm_index].events == 0)
-	      {
-		pollfd_list.pollfds[comm_index].fd = -1;
-		pollfd_list.pollfds[comm_index].revents = 0;
-		F->comm_index = -1;
-		F->list = FDLIST_NONE;
-
-		/* update pollfd_list.maxindex here */
-		if (comm_index == pollfd_list.maxindex)
-		  while (pollfd_list.maxindex >= 0 &&
-		  	pollfd_list.pollfds[pollfd_list.maxindex].fd == -1)
-                    pollfd_list.maxindex--;
-	      }
-	  }
-      }
+  }
 }
-
 
 /* XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX */
 /* Public functions */
-
 
 /*
  * init_netio
@@ -146,14 +136,13 @@ poll_update_pollfds(int fd, short event, PF * handler)
  * This is a needed exported function which will be called to initialise
  * the network loop code.
  */
-void init_netio(void)
+void
+init_netio(void)
 {
     int fd;
 
     for (fd = 0; fd < HARD_FDLIMIT; fd++)
-    {
        pollfd_list.pollfds[fd].fd = -1;
-    }
     pollfd_list.maxindex = 0;
 }
 
@@ -164,32 +153,33 @@ void init_netio(void)
  * and deregister interest in a pending IO state for a given FD.
  */
 void
-comm_setselect(int fd, fdlist_t list, unsigned int type, PF * handler,
-    void *client_data, time_t timeout)
+comm_setselect(int fd, fdlist_t list, unsigned int type, PF *handler,
+               void *client_data, time_t timeout)
 {  
-    fde_t *F = &fd_table[fd];
-    assert(fd >= 0);
-    assert(F->flags.open);
+  fde_t *F = &fd_table[fd];
 
-    if (type & COMM_SELECT_READ)
-    {
-        F->read_handler = handler;
-        F->read_data = client_data;
-        poll_update_pollfds(fd, POLLRDNORM, handler);
-    }
-    if (type & COMM_SELECT_WRITE)
-    {
-        F->write_handler = handler;
-        F->write_data = client_data;
-        poll_update_pollfds(fd, POLLWRNORM, handler);
-    }
-    if (timeout)
-        F->timeout = CurrentTime + (timeout / 1000);
+  assert(fd >= 0);
+  assert(F->flags.open);
+
+  if (type & COMM_SELECT_READ)
+  {
+    F->read_handler = handler;
+    F->read_data = client_data;
+    poll_update_pollfds(fd, POLLRDNORM, handler);
+  }
+  if (type & COMM_SELECT_WRITE)
+  {
+    F->write_handler = handler;
+    F->write_data = client_data;
+    poll_update_pollfds(fd, POLLWRNORM, handler);
+  }
+  if (timeout)
+    F->timeout = CurrentTime + (timeout / 1000);
 }
  
-/* int comm_select_fdlist(unsigned long delay)
+/* void comm_select_fdlist(unsigned long delay)
  * Input: The maximum time to delay.
- * Output: Returns -1 on error, 0 on success.
+ * Output: None
  * Side-effects: Deregisters future interest in IO and calls the handlers
  *               if an event occurs for an FD.
  * Comments: Check all connections for new connections and input data
@@ -200,43 +190,36 @@ comm_setselect(int fd, fdlist_t list, unsigned int type, PF * handler,
  * comm_setselect and fd_table[] and calls callbacks for IO ready
  * events.
  */
-int
+void
 comm_select(unsigned long delay)
 {
-  int num;
-  int fd;
-  int ci;
+  int num, fd, ci, revents;
   PF *hdl;
+  fde_t *F;
   
-  for (;;)
-  {
-    /* XXX kill that +1 later ! -- adrian */
-    num = poll(pollfd_list.pollfds, pollfd_list.maxindex + 1, delay);
-    if (num >= 0)
-      break;
-    if (ignoreErrno(errno))
-      continue;
-    /* error! */
-    set_time();
-    return -1;
-    /* NOTREACHED */
-  }
-  
-  /* update current time again, eww.. */
+  /* XXX kill that +1 later ! -- adrian */
+  while ((num = poll(pollfd_list.pollfds, pollfd_list.maxindex + 1, delay)) < 0
+         && ignoreErrno(errno))
+    ;
+
   set_time();
  
   if (num == 0)
-    return 0;
-  /* XXX we *could* optimise by falling out after doing num fds ... */
+    return;
+
+  /* XXX we *could* optimise by falling out after doing num fds ...
+   * Currently it'd be hard to do, because pollfd_list can be changed
+   * within this loop (by I/O handlers) --adx
+   */
   for (ci = 0; ci < pollfd_list.maxindex + 1; ci++)
   {
-    fde_t *F;
-    int revents;
     if (((revents = pollfd_list.pollfds[ci].revents) == 0) ||
-      (pollfd_list.pollfds[ci].fd) == -1)
+        (pollfd_list.pollfds[ci].fd) == -1)
       continue;
+
     fd = pollfd_list.pollfds[ci].fd;
     F = &fd_table[fd];
+
     if (revents & (POLLRDNORM | POLLIN | POLLHUP | POLLERR))
     {
       hdl = F->read_handler;
@@ -254,5 +237,4 @@ comm_select(unsigned long delay)
         hdl(fd, F->write_data);
     }
   }
-  return 0;
 }

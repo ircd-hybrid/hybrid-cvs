@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.308 2003/06/30 17:49:38 adx Exp $
+ *  $Id: ircd.c,v 7.309 2003/07/01 16:45:55 adx Exp $
  */
 
 #include "stdinc.h"
@@ -276,8 +276,6 @@ set_time(void)
 static void
 io_loop(void)
 {
-  time_t delay;
-
   while (ServerRunning)
   {
     /*
@@ -302,15 +300,10 @@ io_loop(void)
     /* Run pending events, then get the number of seconds to the next
      * event
      */
-    delay = eventNextTime();
-
-    while (delay <= CurrentTime)
-    {
+    while (eventNextTime() <= CurrentTime)
       eventRun();
-      delay = eventNextTime();
-    }
 
-    comm_select(delay * 1000);
+    comm_select(500);
     exit_aborted_clients();
     free_exited_clients();
     send_queued_all();

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.h,v 7.44 2003/06/12 22:05:52 db Exp $
+ *  $Id: s_bsd.h,v 7.45 2003/07/01 16:45:53 adx Exp $
  */
 
 #ifndef INCLUDED_s_bsd_h
@@ -74,7 +74,7 @@ extern void  comm_setselect(int fd, fdlist_t list, unsigned int type,
                  PF *handler, void *client_data, time_t timeout);
 extern void  init_netio(void);
 extern int   read_message (time_t, unsigned char);
-extern int   comm_select(unsigned long);
+extern void  comm_select(unsigned long);
 extern int   disable_sock_options(int);
 extern void  check_can_use_v6(void);
 #ifdef IPV6
