@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu, Computing Center and Jarkko Oikarinen
  *
- * $Id: list.c,v 7.5 1999/12/30 20:35:46 db Exp $
+ * $Id: list.c,v 7.6 1999/12/30 20:50:39 db Exp $
  */
 #include "blalloc.h"
 #include "channel.h"
@@ -250,15 +250,15 @@ void _free_link(struct SLink *lp)
     }
 }
 
-aClass *make_class()
+struct Class *make_class()
 {
-  aClass        *tmp;
+  struct Class        *tmp;
 
-  tmp = (aClass *)MyMalloc(sizeof(aClass));
+  tmp = (struct Class *)MyMalloc(sizeof(struct Class));
   return tmp;
 }
 
-void free_class(aClass *tmp)
+void free_class(struct Class *tmp)
 {
   MyFree((char *)tmp);
 }
