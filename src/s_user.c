@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.208 2002/08/22 16:08:21 db Exp $
+ *  $Id: s_user.c,v 7.209 2002/10/10 15:44:05 db Exp $
  */
 
 #include "stdinc.h"
@@ -856,7 +856,7 @@ do_local_user(char* nick, struct Client* client_p, struct Client* source_p,
    */
   user->server = me.name;
 
-  strlcpy(source_p->info, realname, REALLEN);
+  strlcpy(source_p->info, realname, REALLEN + 1);
  
   if (source_p->name[0])
   { 
