@@ -20,12 +20,13 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_who.c,v 7.11 2000/11/05 04:07:15 db Exp $
+ *   $Id: m_who.c,v 7.12 2000/11/05 06:23:54 db Exp $
  */
 
 #include "common.h"   /* bleah */
 #include "handlers.h"
 #include "client.h"
+#include "common.h"   /* bleah */
 #include "channel.h"
 #include "vchannel.h"
 #include "hash.h"
@@ -35,6 +36,7 @@
 #include "send.h"
 #include "list.h"
 #include "irc_string.h"
+#include "s_conf.h"
 
 /*
  * m_functions execute protocol messages on this server:
@@ -414,4 +416,30 @@ static  void    do_who(struct Client *sptr,
              repname, acptr->username,
              acptr->host, acptr->user->server, acptr->name,
              status, acptr->hopcount, acptr->info);
+}
+
+/*
+** ms_who
+**      parv[0] = sender prefix
+**      parv[1] = nickname mask list
+**      parv[2] = additional selection flag, only 'o' for now.
+*/
+int     ms_who(struct Client *cptr,
+              struct Client *sptr,
+              int parc,
+              char *parv[])
+{
+  /* If its running as a hub, and linked with lazy links
+   * then allow leaf to use normal client m_who()
+   * other wise, ignore it.
+   */
+
+  if( ConfigFileEntry.hub )
+    {
+      if(!IsCapable(cptr->from,CAP_LL))
+	return 0;
+    }
+
+  return( m_who(cptr,sptr,parc,parv) );
+
 }

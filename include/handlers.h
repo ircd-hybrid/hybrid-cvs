@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: handlers.h,v 7.7 2000/11/05 03:37:47 ryan Exp $
+ * $Id: handlers.h,v 7.8 2000/11/05 06:23:49 db Exp $
  */
 #ifndef INCLUDED_handlers_h
 #define INCLUDED_handlers_h
@@ -205,6 +205,8 @@ extern int ms_topic(struct Client*, struct Client*, int, char**);
 extern int ms_trace(struct Client*, struct Client*, int, char**);
 extern int ms_version(struct Client*, struct Client*, int, char**);
 extern int ms_wallops(struct Client*, struct Client*, int, char**);
+extern int ms_who(struct Client*, struct Client*, int, char**);
+extern int ms_whois(struct Client*, struct Client*, int, char**);
 
 #endif /* INCLUDED_handlers_h */
 

@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.26 2000/11/05 03:37:47 ryan Exp $
+ * $Id: client.h,v 7.27 2000/11/05 06:23:49 db Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -187,9 +187,7 @@ struct Client
    * gcos field in /etc/passwd but anything can go here.
    */
   char              info[REALLEN + 1]; /* Free form additional client info */
-#ifdef FLUD
   struct SLink*     fludees;
-#endif
   /*
    * The following fields are allocated only for local clients
    * (directly connected to *this* server with a socket.
@@ -199,11 +197,8 @@ struct Client
    */
   int               count;       /* Amount of data in buffer */
   unsigned char     isbot;      /* non 0 if its a type of bot */
-#ifdef FLUD
   time_t            fludblock;
   struct fludbot*   fluders;
-#endif
-#ifdef ANTI_SPAMBOT
   time_t            last_join_time;   /* when this client last 
                                          joined a channel */
   time_t            last_leave_time;  /* when this client last 
@@ -212,12 +207,9 @@ struct Client
                                          MIN_JOIN_LEAVE_TIME seconds */
   int               oper_warn_count_down; /* warn opers of this possible 
                                           spambot every time this gets to 0 */
-#endif
-#ifdef ANTI_DRONE_FLOOD
   time_t            first_received_message_time;
   int               received_number_of_privmsgs;
   int               drone_noticed;
-#endif
   char  buffer[CLIENT_BUFSIZE]; /* Incoming message buffer */
   struct Zdata*     zip;        /* zip data */
   short             lastsq;     /* # of 2k blocks when sendqueued called last*/
@@ -477,10 +469,8 @@ struct Client
 #define SetWallops(x)           ((x)->umodes |= FLAGS_WALLOP)
 
 
-#ifdef REJECT_HOLD
 #define IsRejectHeld(x)         ((x)->flags & FLAGS_REJECT_HOLD)
 #define SetRejectHold(x)        ((x)->flags |= FLAGS_REJECT_HOLD)
-#endif
 
 #define SetIpHash               ((x)->flags |= FLAGS_IPHASH)
 #define ClearIpHash             ((x)->flags &= ~FLAGS_IPHASH)
