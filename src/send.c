@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.184 2002/03/09 21:57:08 androsyn Exp $
+ *  $Id: send.c,v 7.185 2002/03/09 21:59:36 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -54,7 +54,6 @@
 #include "s_log.h"
 #include "vchannel.h"
 #include "memory.h"
-#include "debug.h"
 #include "hook.h"
 
 #define LOG_BUFSIZE 2048
