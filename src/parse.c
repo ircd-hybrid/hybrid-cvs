@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.190 2003/11/01 06:15:44 db Exp $
+ *  $Id: parse.c,v 7.191 2004/01/17 16:16:06 db Exp $
  */
 
 #include "stdinc.h"
@@ -426,7 +426,7 @@ add_msg_element(struct MessageTree *mtree_p,
 {
   struct MessageTree *ntree_p;
 
-  if (*(cmd+1) == '\0')
+  if (*cmd == '\0')
   {
     mtree_p->msg = msg_p;
     mtree_p->links++;		/* Have msg pointer, so up ref count */
@@ -483,7 +483,7 @@ del_msg_element(struct MessageTree *mtree_p, const char *cmd)
    * -db
    */
 
-  if ((*(cmd+1) == '\0') && (mtree_p->msg != NULL))
+  if ((*cmd == '\0') && (mtree_p->msg != NULL))
   {
     mtree_p->msg = NULL;
     mtree_p->links--;
@@ -514,11 +514,12 @@ static struct Message *
 msg_tree_parse(const char *cmd, struct MessageTree *root)
 {
   struct MessageTree *mtree;
-  for (mtree = root->pointers[(*cmd++) & (MAXPTRLEN-1)]; mtree != NULL;
-       mtree = mtree->pointers[(*cmd++) & (MAXPTRLEN-1)])
+  for (mtree = root->pointers[(*cmd) & (MAXPTRLEN-1)]; mtree != NULL;
+       mtree = mtree->pointers[(*++cmd) & (MAXPTRLEN-1)])
   {
-    if ((mtree->msg != NULL) && (*(cmd+1) == '\0'))
+    if ((*(cmd+1) == '\0') && (mtree->msg != NULL))
       return(mtree->msg);
+
   }
 
   return(NULL);
