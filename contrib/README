@@ -1,4 +1,4 @@
-$Id: README,v 1.29 2003/05/26 18:51:18 joshk Exp $
+$Id: README,v 1.30 2003/05/30 03:17:32 joshk Exp $
 
 This directory contains modules and patches that have been contributed
 by other people, or aren't suitable for including into the 
@@ -31,6 +31,9 @@ m_force.c      - FORCE - forces a user to either part or join a channel with
                          an optional status (@%+)
                  Syntax: FORCEJOIN <nick> [status]<channel>
                          FORCEPART <nick> <channel>
+
+m_help.c       - HELP - provide help for IRC commands. See bottom of document.
+                 Syntax: HELP :command
 
 m_jupe.c       - JUPE - Server juping command
                  Syntax:  JUPE juped.server.name :Reason
