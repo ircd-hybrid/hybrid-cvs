@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.220 2001/11/27 18:30:40 davidt Exp $
+ *   $Id: s_serv.c,v 7.221 2001/11/29 01:28:04 jdc Exp $
  */
 
 #include <sys/types.h>
@@ -36,11 +36,8 @@
 #include "config.h"
 
 #ifdef HAVE_LIBCRYPTO
-#include "rsa.h"
 #include <openssl/rsa.h>
-#include <openssl/bio.h>
-#include <openssl/evp.h>
-#include <openssl/rand.h>
+#include "rsa.h"
 #endif
 
 #include "tools.h"

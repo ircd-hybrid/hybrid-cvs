@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.197 2001/11/26 20:25:34 a1kmm Exp $
+ * $Id: ircd.c,v 7.198 2001/11/29 01:28:04 jdc Exp $
  */
 
 #include <sys/types.h>
@@ -431,18 +431,24 @@ static void initialize_server_capabs(void)
 static void write_pidfile(const char *filename)
 {
   FBFILE* fd;
-  char buff[20];
+  char buff[sizeof(unsigned int)+1];
   if ((fd = fbopen(filename, "w")))
-    {
-      ircsprintf(buff,"%d\n", (int)getpid());
+  {
+      unsigned int pid = (unsigned int) getpid();
+
+      ircsprintf(buff,"%u\n", pid);
       if ((fbputs(buff, fd) == -1))
-        ilog(L_ERROR,"Error writing to pid file %s (%s)", filename,
-		    strerror(errno));
+      {
+        ilog(L_ERROR,"Error writing %u to pid file %s (%s)",
+             pid, filename, strerror(errno));
+      }
       fbclose(fd);
       return;
-    }
+  }
   else
+  {
     ilog(L_ERROR, "Error opening pid file %s", filename);
+  }
 }
 
 /*
