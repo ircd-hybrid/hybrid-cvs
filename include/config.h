@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.50 2000/12/12 23:07:07 adrian Exp $
+ * $Id: config.h,v 7.51 2000/12/14 17:04:37 db Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -529,13 +529,6 @@ error CLIENT_FLOOD undefined.
 #undef USE_GETTEXT
 #define _(a)       (a)
 #endif
-
-
-/* tuck this here for now, it will go away eventually...
- * but meanwhile, at least it will compile a server that works -db
- */
-
-#define LLVER1
 
 #define CONFIG_H_LEVEL_7
 

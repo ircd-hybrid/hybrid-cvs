@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_cburst.c,v 1.10 2000/12/13 16:09:01 db Exp $
+ * $Id: m_cburst.c,v 1.11 2000/12/14 17:04:39 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -28,7 +28,7 @@
 #include "ircd.h"
 #include "list.h"
 #include "numeric.h"
-#include "s_serv.h"       /* captab */
+#include "s_serv.h"       /* captab, send_channel_burst */
 #include "s_user.h"
 #include "send.h"
 #include "msg.h"
@@ -117,22 +117,19 @@ int     ms_cburst(struct Client *cptr,
 
   if(IsCapable(cptr,CAP_LL))
     {
-      /* for version 2 of LazyLinks, also have to send nicks on channel */
-#ifndef LLVER1
-      dlink_node *l;
+      /* serial counter borrowed from send.c */
+      current_serial++;
 
-      for (l = chptr->members->next; l; l = l->next)
-	{
-	  acptr = l->data;
-	  if (acptr->from != cptr)
-	    sendnick_TS(cptr, acptr);
-	}
-#endif
-      chptr->lazyLinkChannelExists |= cptr->localClient->serverMask;
+      burst_members(cptr,&chptr->chanops);
+      burst_members(cptr,&chptr->voiced);
+      burst_members(cptr,&chptr->halfops);
+      burst_members(cptr,&chptr->peons);
+
       send_channel_modes(cptr, chptr);
+      chptr->lazyLinkChannelExists |= cptr->localClient->serverMask;
        /* Send the topic */
       sendto_one(cptr, ":%s TOPIC %s :%s",
-         chptr->topic_info, chptr->chname, chptr->topic);
+         me.name, chptr->chname, chptr->topic);
     }
   else
     {

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: class.c,v 7.16 2000/12/10 20:04:07 db Exp $
+ *   $Id: class.c,v 7.17 2000/12/14 17:04:40 db Exp $
  */
 #include "tools.h"
 #include "class.h"
@@ -216,8 +216,10 @@ struct Class  *find_class(char* classname)
 {
   struct Class *cltmp;
 
-  if(!classname)
-    return NULL;
+  if(classname == NULL)
+    {
+      return(ClassList);	/* return class 0 */
+    }
 
   for (cltmp = ClassList; cltmp; cltmp = cltmp->next)
     if (!strcmp(ClassName(cltmp),classname))

@@ -18,8 +18,10 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.28 2000/12/13 16:09:07 db Exp $
+ * $Id: ircd_lexer.l,v 1.29 2000/12/14 17:04:40 db Exp $
  */
+
+%option case-insensitive
 
 %{
 #include <stdio.h>
