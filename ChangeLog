@@ -1,3 +1,16 @@
+androsyn    2002/06/08 20:22:30 EDT	(20020609_0)
+
+  Modified files:
+    src                  client.c 
+  Log:
+  We shouldn't call  remove_dependents if source_p->serv == NULL, why
+  source_p->serv == NULL i'm not sure
+  
+  Revision  Changes    Path
+  7.276     +2 -1      ircd-hybrid-7/src/client.c
+
+
+
 leeh        2002/06/07 19:38:36 EDT	(20020608_2)
 
   Modified files:
@@ -28013,4 +28026,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3751 2002/06/07 23:38:42 leeh Exp $
+$Id: ChangeLog,v 7.3752 2002/06/09 00:22:36 androsyn Exp $
