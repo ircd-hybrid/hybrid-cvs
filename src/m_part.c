@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_part.c,v 7.7 2000/10/16 03:05:41 db Exp $
+ *   $Id: m_part.c,v 7.8 2000/10/31 22:12:52 db Exp $
  */
 #include "handlers.h"
 #include "channel.h"
@@ -242,55 +242,10 @@ int     ms_part(struct Client *cptr,
 
   if (parc < 2 || parv[1][0] == '\0')
     {
-      sendto_one(sptr, form_str(ERR_NEEDMOREPARAMS),
-                 me.name, parv[0], "PART");
       return 0;
     }
 
   name = strtoken( &p, parv[1], ",");
-
-#ifdef ANTI_SPAMBOT     /* Dianora */
-      /* if its my client, and isn't an oper */
-
-      if (name && MyConnect(sptr) && !IsAnOper(sptr))
-        {
-          if(GlobalSetOptions.spam_num &&
-	     (sptr->join_leave_count >= GlobalSetOptions.spam_num))
-            {
-              sendto_ops_flags(FLAGS_BOTS,
-                               "User %s (%s@%s) is a possible spambot",
-                               sptr->name,
-                               sptr->username, sptr->host);
-              sptr->oper_warn_count_down = OPER_SPAM_COUNTDOWN;
-            }
-          else
-            {
-              int t_delta;
-
-              if( (t_delta = (CurrentTime - sptr->last_leave_time)) >
-                  JOIN_LEAVE_COUNT_EXPIRE_TIME)
-                {
-                  int decrement_count;
-                  decrement_count = (t_delta/JOIN_LEAVE_COUNT_EXPIRE_TIME);
-
-                  if(decrement_count > sptr->join_leave_count)
-                    sptr->join_leave_count = 0;
-                  else
-                    sptr->join_leave_count -= decrement_count;
-                }
-              else
-                {
-                  if( (CurrentTime - (sptr->last_join_time)) < 
-		      GlobalSetOptions.spam_time)
-                    {
-                      /* oh, its a possible spambot */
-                      sptr->join_leave_count++;
-                    }
-                }
-              sptr->last_leave_time = CurrentTime;
-            }
-        }
-#endif
 
   while ( name )
     {
@@ -331,6 +286,13 @@ int     mo_part(struct Client *cptr,
   struct Channel *chptr;
   char  *p, *name;
 
+  if (parc < 2 || parv[1][0] == '\0')
+    {
+      sendto_one(sptr, form_str(ERR_NEEDMOREPARAMS),
+                 me.name, parv[0], "PART");
+      return 0;
+    }
+
   name = strtoken( &p, parv[1], ",");
 
   while ( name )
@@ -363,3 +325,4 @@ int     mo_part(struct Client *cptr,
     }
   return 0;
 }
+
