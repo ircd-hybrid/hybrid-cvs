@@ -1,3 +1,17 @@
+androsyn    2002/06/03 15:24:16 EDT	(20020603_5)
+
+  Modified files:
+    adns                 event.c 
+    src                  adns.c 
+  Log:
+  Minor adns fixes.
+  
+  Revision  Changes    Path
+  1.17      +1 -2      ircd-hybrid-7/adns/event.c
+  7.45      +3 -2      ircd-hybrid-7/src/adns.c
+
+
+
 androsyn    2002/06/03 14:54:23 EDT	(20020603_4)
 
   Modified files:
@@ -27885,4 +27899,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3741 2002/06/03 18:54:29 androsyn Exp $
+$Id: ChangeLog,v 7.3742 2002/06/03 19:24:23 androsyn Exp $
