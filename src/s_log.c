@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_log.c,v 7.15 2000/12/22 15:51:35 db Exp $
+ *   $Id: s_log.c,v 7.16 2000/12/22 16:32:41 db Exp $
  */
 #include "client.h"	/* Needed for struct Client */
 #include "s_log.h"
@@ -29,6 +29,7 @@
 #include "ircd.h"
 #include "s_misc.h"
 #include "event.h"	/* Needed for EVH etc. */
+#include "config.h"     /* Needed for FNAME_USERLOG, INIT_LOG_LEVEL */
 
 #include <assert.h>
 #include <errno.h>
