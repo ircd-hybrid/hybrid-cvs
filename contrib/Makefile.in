@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/contrib
 #
-# $Id: Makefile.in,v 1.45 2003/05/22 04:10:10 db Exp $
+# $Id: Makefile.in,v 1.46 2003/05/22 04:28:42 metalrock Exp $
 #
 CC		= @CC@
 RM		= @RM@
@@ -40,7 +40,7 @@ SYMLINKS=	topic accept cjoin cmode admin names links away whowas \
 SRCS = \
   m_clearchan.c \
   m_classlist.c \
-  m_ctrace.c    
+  m_ctrace.c    \
   m_flags.c     \
   m_force.c	\
   m_help.c      \
