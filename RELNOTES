@@ -1,4 +1,5 @@
 -- ircd-hybrid-7rc8 RELNOTES
+o) fixed ziplinks hang/error on initial connection
 o) fixed contrib/m_whois core and bogus idle for non-local in modules/m_whois
 o) fixed ziplinks dropping with NULL character error
 o) fixed restart not working if the new process starts too quickly
@@ -145,4 +146,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.62 2003/01/25 03:59:58 lusky Exp $
+$Id: RELNOTES,v 1.63 2003/01/25 23:43:18 lusky Exp $

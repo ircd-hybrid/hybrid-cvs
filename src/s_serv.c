@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.274 2003/01/19 13:25:21 db Exp $
+ *  $Id: s_serv.c,v 7.275 2003/01/25 23:43:20 lusky Exp $
  */
 
 #include "stdinc.h"
@@ -28,6 +28,8 @@
 #include <openssl/rsa.h>
 #include "rsa.h"
 #endif
+
+#include <netinet/tcp.h>
 
 #include "tools.h"
 #include "s_serv.h"
@@ -938,6 +940,7 @@ int server_estab(struct Client *client_p)
   char*             host;
   dlink_node        *m;
   dlink_node        *ptr;
+  int               opt;
 
   assert(NULL != client_p);
   if(client_p == NULL)
@@ -1000,11 +1003,23 @@ int server_estab(struct Client *client_p)
              | (ServerInfo.hub ? CAP_HUB : 0)
              | ((aconf->flags & CONF_FLAGS_COMPRESSED) ? CAP_ZIP_SUPPORTED : 0),
              0);
-
+      /* SERVER is the last command sent before switching to ziplinks.
+       * We set TCPNODELAY on the socket to make sure it gets sent out
+       * on the wire immediately.  Otherwise, it could be sitting in
+       * a kernel buffer when we start sending zipped data, and the
+       * parser on the receiving side can't hand both unzipped and zipped
+       * data in one packet. --Rodder
+       */
+      opt = 1;
+      setsockopt(client_p->localClient->fd, IPPROTO_TCP, TCP_NODELAY,
+                 (char *)&opt, sizeof(opt));
       sendto_one(client_p, "SERVER %s 1 :%s%s",
                  my_name_for_link(me.name, aconf), 
 		 ConfigServerHide.hidden ? "(H) " : "",
                  (me.info[0]) ? (me.info) : "IRCers United");
+      opt--;
+      setsockopt(client_p->localClient->fd, IPPROTO_TCP, TCP_NODELAY,
+                 (char *)&opt, sizeof(opt));
     }
 
   /*
