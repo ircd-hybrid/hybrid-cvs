@@ -1,3 +1,8 @@
+*** 20001207_8 by db
+- fixed m_stats.c so /stats E,F as non oper gives No permission error
+
+
+
 *** 20001207_7 by db
 - m_message.c would core if the channel was +m and you tried to
   message it. duh
@@ -1824,7 +1829,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.728 2000/12/07 08:19:03 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.729 2000/12/07 08:40:27 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
