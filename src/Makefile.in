@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.24 2000/10/23 15:10:29 adrian Exp $
+# $Id: Makefile.in,v 7.25 2000/11/04 22:58:19 ryan Exp $
 #
 CC = @CC@
 RM = @RM@
@@ -10,10 +10,10 @@ LEXLIB = @LEXLIB@
 
 MKDEP = ${CC} -MM
 
-IRCDLIBS = @LIBS@ ../zlib/libz.a
+IRCDLIBS = @LIBS@ @SSL_LIBS@ ../zlib/libz.a
 
 INCLUDES = -I../include -I../zlib
-CPPFLAGS = ${INCLUDES} @CPPFLAGS@
+CPPFLAGS = ${INCLUDES} @SSL_DEFINE@ @CPPFLAGS@
  
 y.tab.o:	y.tab.c ircd_parser.y
 	gcc -g -I ../include -I. -c y.tab.c
