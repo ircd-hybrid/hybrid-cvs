@@ -5,7 +5,7 @@
  *
  * adrian chadd <adrian@creative.net.au>
  *
- * $Id: tools.c,v 7.4 2000/12/02 06:54:36 db Exp $
+ * $Id: tools.c,v 7.5 2000/12/02 15:19:36 db Exp $
  */
 
 #include <assert.h>
@@ -49,7 +49,7 @@ dlinkAddBefore(dlink_node *b, void *data, dlink_node *m, dlink_list *list)
 }
 
 void
-dlinkAddTail(void *data, dlink_node * m, dlink_list * list)
+dlinkAddTail(void *data, dlink_node *m, dlink_list *list)
 {
     m->data = data;
     m->next = NULL;
@@ -62,7 +62,7 @@ dlinkAddTail(void *data, dlink_node * m, dlink_list * list)
 }
 
 void
-dlinkDelete(dlink_node * m, dlink_list * list)
+dlinkDelete(dlink_node *m, dlink_list *list)
 {
     if (m->next)
         m->next->prev = m->prev;

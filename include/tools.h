@@ -5,7 +5,7 @@
  *
  * Adrian Chadd <adrian@creative.net.au>
  *
- * $Id: tools.h,v 1.1 2000/11/21 18:42:20 adrian Exp $
+ * $Id: tools.h,v 1.2 2000/12/02 15:19:30 db Exp $
  */
 #ifndef __TOOLS_H__
 #define __TOOLS_H__
@@ -26,5 +26,20 @@ struct _dlink_list {
     dlink_node *head;
     dlink_node *tail;
 };
+
+void
+dlinkAdd(void *data, dlink_node * m, dlink_list * list);
+
+void
+dlinkAddBefore(dlink_node *b, void *data, dlink_node *m, dlink_list *list);
+
+void
+dlinkAddTail(void *data, dlink_node *m, dlink_list *list);
+
+void
+dlinkDelete(dlink_node *m, dlink_list *list);
+
+void
+dlinkMoveList(dlink_list *from, dlink_list *to);
 
 #endif

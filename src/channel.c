@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.91 2000/12/02 07:41:43 db Exp $
+ * $Id: channel.c,v 7.92 2000/12/02 15:19:35 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -526,9 +526,7 @@ static int change_channel_membership(struct Channel *chptr,
     {
       if (to_list != &chptr->peons)
 	{
-	  dlinkDelete(who, ptr, &chptr->peons);
-	  if( ptr == chptr->peons.head )
-	    chptr->peons.head = chptr->peons.tail = NULL;
+	  dlinkDelete( ptr, &chptr->peons);
 	  dlinkAdd(who, ptr, to_list);
 	  return(1);
 	}
@@ -538,9 +536,7 @@ static int change_channel_membership(struct Channel *chptr,
     {
       if (to_list != &chptr->voiced)
 	{
-	  dlinkDelete(who, ptr, &chptr->voiced);
-	  if( ptr == chptr->voiced.head )
-	    chptr->voiced.head = chptr->voiced.tail = NULL;
+	  dlinkDelete( ptr, &chptr->voiced);
 	  dlinkAdd(who, ptr, to_list);
 	  return(1);
 	}
@@ -550,9 +546,7 @@ static int change_channel_membership(struct Channel *chptr,
     {
       if (to_list != &chptr->halfops)
 	{
-	  dlinkDelete(who, ptr, &chptr->halfops);
-	  if( ptr == chptr->halfops.head )
-	    chptr->halfops.head = chptr->halfops.tail = NULL;
+	  dlinkDelete( ptr, &chptr->halfops);
 	  dlinkAdd(who, ptr, to_list);
 	  return(1);
 	}
@@ -562,9 +556,7 @@ static int change_channel_membership(struct Channel *chptr,
     {
       if (to_list != &chptr->chanops)
 	{
-	  dlinkDelete(who, ptr, &chptr->chanops);
-	  if( ptr == chptr->chanops.head )
-	    chptr->chanops.head = chptr->chanops.tail = NULL;
+	  dlinkDelete( ptr, &chptr->chanops);
 	  dlinkAdd(who, ptr, to_list);
 	  return(1);
 	}
