@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.h,v 7.8 2001/01/08 01:34:43 db Exp $
+ *   $Id: s_auth.h,v 7.9 2001/01/08 02:55:00 db Exp $
  */
 #ifndef INCLUDED_s_auth_h
 #define INCLUDED_s_auth_h
@@ -43,7 +43,6 @@ struct AuthRequest {
   struct Client*      client;    /* pointer to client struct for request */
   unsigned int        flags;     /* current state of request */
   int                 fd;        /* file descriptor for auth queries */
-  int                 index;     /* select / poll index */
   time_t              timeout;   /* time when query expires */
 };
 
@@ -72,9 +71,6 @@ struct AuthRequest {
 /* #define SetGotId(x)       ((x)->flags |= FLAGS_GOTID) */
 
 
-extern struct AuthRequest* AuthPollList;  /* GLOBAL - auth queries pending io */
-
-extern struct AuthRequest* AuthClientList;
 
 extern void start_auth(struct Client *);
 extern void send_auth_query(struct AuthRequest* req);
@@ -85,4 +81,13 @@ extern void init_auth(void);
 extern void delete_identd_queries(struct Client *);
 
 #endif /* INCLUDED_s_auth_h */
+
+
+
+
+
+
+
+
+
 
