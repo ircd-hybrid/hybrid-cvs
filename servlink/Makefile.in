@@ -1,7 +1,7 @@
 #
 # Makefile.in for servlink/src
 #
-# $Id: Makefile.in,v 1.9 2001/07/18 03:05:58 androsyn Exp $
+# $Id: Makefile.in,v 1.10 2001/09/20 00:21:20 lusky Exp $
 #
 
 CC              = @CC@
@@ -47,7 +47,7 @@ all: servlink
 build: all
 
 servlink: ${OBJECTS}
-	${CC} ${LDFLAGS} -o $@ ${OBJECTS} ${IRCDLIBS}
+	${CC} ${CFLAGS} ${LDFLAGS} -o $@ ${OBJECTS} ${IRCDLIBS}
 
 install: build
 	@for i in $(PROGS); do \
