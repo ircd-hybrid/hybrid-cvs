@@ -12,7 +12,7 @@
 ** VMS support by Edward Brocklesby, crypt.c implementation
 ** phk@login.dknet.dk
 **
-** $Id: mkpasswd.c,v 7.13 2003/05/16 01:17:39 joshk Exp $
+** $Id: mkpasswd.c,v 7.14 2003/05/18 01:08:00 michael Exp $
 */
 #include <stdio.h>
 #include <string.h>
@@ -51,19 +51,18 @@ extern char *getpass();
 
 extern char *crypt();
 
-char *make_des_salt();
-char *make_ext_salt(int);
-char *make_ext_salt_para(int, char *);
-char *make_md5_salt(int);
-char *make_md5_salt_para(char *);
-char *make_bf_salt(int, int);
-char *make_bf_salt_para(int, char *);
-char *int_to_base64(int);
-char *generate_random_salt(char *, int);
-char *generate_poor_salt(char *, int);
-
-void full_usage();
-void brief_usage();
+static char *make_des_salt(void);
+static char *make_ext_salt(int);
+static char *make_ext_salt_para(int, char *);
+static char *make_md5_salt(int);
+static char *make_md5_salt_para(char *);
+static char *make_bf_salt(int, int);
+static char *make_bf_salt_para(int, char *);
+static char *int_to_base64(int);
+static char *generate_random_salt(char *, int);
+static char *generate_poor_salt(char *, int);
+static void full_usage(void);
+static void brief_usage(void);
 
 static char saltChars[] =
        "./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -265,7 +264,7 @@ int main(int argc, char *argv[])
   return 0;
 }
 
-char *make_des_salt()
+static char *make_des_salt(void)
 {
   static char salt[3];
   generate_random_salt(salt, 2);
@@ -273,7 +272,7 @@ char *make_des_salt()
   return salt;
 }
 
-char *int_to_base64(int value)
+static char *int_to_base64(int value)
 {
   static char buf[5];
   int i;
@@ -290,7 +289,7 @@ char *int_to_base64(int value)
   return buf;
 }
 
-char *make_ext_salt(int rounds)
+static char *make_ext_salt(int rounds)
 {
   static char salt[10];
 
@@ -300,7 +299,7 @@ char *make_ext_salt(int rounds)
   return salt;
 }
 
-char *make_ext_salt_para(int rounds, char *saltpara)
+static char *make_ext_salt_para(int rounds, char *saltpara)
 {
   static char salt[10];
 
@@ -308,7 +307,7 @@ char *make_ext_salt_para(int rounds, char *saltpara)
   return salt;
 }
 
-char *make_md5_salt_para(char *saltpara)
+static char *make_md5_salt_para(char *saltpara)
 {
   static char salt[21];
   if (saltpara && (strlen(saltpara) <= 16))
@@ -325,8 +324,8 @@ char *make_md5_salt_para(char *saltpara)
   /* NOT REACHED */
   return NULL;
 }
-  
-char *make_md5_salt(int length)
+
+static char *make_md5_salt(int length)
 {
   static char salt[21];
   if (length > 16)
@@ -343,7 +342,7 @@ char *make_md5_salt(int length)
   return salt;
 }
 
-char *make_bf_salt_para(int rounds, char *saltpara)
+static char *make_bf_salt_para(int rounds, char *saltpara)
 {
   static char salt[31];
   char tbuf[3];
@@ -363,7 +362,7 @@ char *make_bf_salt_para(int rounds, char *saltpara)
   return NULL;
 }
 
-char *make_bf_salt(int rounds, int length)
+static char *make_bf_salt(int rounds, int length)
 {
   static char salt[31];
   char tbuf[3];
@@ -380,7 +379,7 @@ char *make_bf_salt(int rounds, int length)
   return salt;
 }
 
-char *generate_poor_salt(char *salt, int length)
+static char *generate_poor_salt(char *salt, int length)
 {
   int i;
   srandom(time(NULL));
@@ -391,7 +390,7 @@ char *generate_poor_salt(char *salt, int length)
   return(salt);
 }
 
-char *generate_random_salt(char *salt, int length)
+static char *generate_random_salt(char *salt, int length)
 {
   char *buf;
   int fd, i;
@@ -414,7 +413,7 @@ char *generate_random_salt(char *salt, int length)
   return(salt);
 }
 
-void full_usage()
+static void full_usage(void)
 {
   printf("mkpasswd [-m|-d|-b|-e] [-l saltlength] [-r rounds] [-s salt] [-p plaintext]\n");
   printf("         [-R rawsalt]\n");
@@ -438,7 +437,7 @@ void full_usage()
   exit(0);
 }
 
-void brief_usage()
+static void brief_usage(void)
 {
   printf("mkpasswd - password hash generator\n");
   printf("Standard DES:  mkpasswd [-d] [-s salt] [-p plaintext]\n");
@@ -458,8 +457,7 @@ void brief_usage()
 #ifdef VMS
 
 static char *
-getpass (prompt)
-        char *prompt;
+getpass(char *prompt)
 {
   static char password[2][64];
   static int i = 0;
@@ -499,4 +497,3 @@ getpass (prompt)
   return password[i++];
 }
 #endif
-

@@ -1,7 +1,7 @@
 /*
  * viconf.c
  *
- * $Id: viconf.c,v 7.5 2003/05/14 18:38:29 joshk Exp $
+ * $Id: viconf.c,v 7.6 2003/05/18 01:08:00 michael Exp $
  */
 
 #include "stdinc.h"
@@ -18,37 +18,37 @@
 #include <sys/wait.h>
 #endif
 
-static int LockedFile(char *filename);
+static int LockedFile(const char *filename);
 static char lockpath[PATH_MAX + 1];
-
 
 int main(int argc, char *argv[])
 {
-  char *ed, *p, *filename = CPATH;
+  char *ed, *p;
+  const char *filename = CPATH;
 
-  if( chdir(DPATH) < 0 )
-    {
-      fprintf(stderr,"Cannot chdir to %s\n", DPATH);
-      exit(errno);
-    }
+  if (chdir(DPATH) < 0)
+  {
+    fprintf(stderr, "Cannot chdir to %s\n", DPATH);
+    exit(errno);
+  }
 
-  if((p = strrchr(argv[0], '/')) == NULL)
+  if ((p = strrchr(argv[0], '/')) == NULL)
     p = argv[0];
   else
     p++;
 #ifdef KPATH
-  if(strcmp(p, "viklines") == 0)
+  if (strcmp(p, "viklines") == 0)
     filename = KPATH;
 #endif /* KPATH */
 
-  if(strcmp(p, "vimotd") == 0)
+  if (strcmp(p, "vimotd") == 0)
     filename = MPATH;
 
-  if(LockedFile(filename))
-    {
-      fprintf(stderr,"Can't lock %s\n", filename);
-      exit(errno);
-    }
+  if (LockedFile(filename))
+  {
+    fprintf(stderr, "Can't lock %s\n", filename);
+    exit(errno);
+  }
 
   /* ed config file */
   switch(fork())
@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
       fprintf(stderr, "error forking, %d\n", errno);
       exit(errno);
     case 0:		/* Child */
-      if((ed = getenv("EDITOR")) == NULL)
+      if ((ed = getenv("EDITOR")) == NULL)
 	ed = "vi";
       execlp(ed, ed, filename, NULL);
       fprintf(stderr, "error running editor, %d\n", errno);
@@ -67,7 +67,7 @@ int main(int argc, char *argv[])
     }
 
   unlink(lockpath);
-  return 0;
+  return(0);
 }
 
 /*
@@ -81,26 +81,21 @@ int main(int argc, char *argv[])
  *         -1 if couldn't unlock
  *         0 if was able to lock
  */
-
-
-
 static int
-LockedFile(char *filename)
-
+LockedFile(const char *filename)
 {
-
   char buffer[1024];
   FILE *fileptr;
   int killret;
   int fd;
 
-  if (!filename)
-    return (0);
-  
+  if (filename == NULL)
+    return(0);
+
   sprintf(lockpath, "%s.lock", filename);
-  
-  if ((fileptr = fopen(lockpath, "r")) != (FILE *) NULL)
-    {
+
+  if ((fileptr = fopen(lockpath, "r")) != NULL)
+  {
       if (fgets(buffer, sizeof(buffer) - 1, fileptr))
 	{
 	  /*
@@ -115,7 +110,7 @@ LockedFile(char *filename)
 	  if (killret == 0)
 	    {
 	      fclose(fileptr);
-	      return (1);
+	      return(1);
 	    }
 
 	  /*
@@ -133,14 +128,14 @@ LockedFile(char *filename)
   unlink(lockpath);
 
   /* create exclusive lock */
-  if((fd = open(lockpath, O_WRONLY|O_CREAT|O_EXCL, 0666)) < 0)
-    {
-      fprintf(stderr, "ircd config file locked\n");
-      return (-1);
-    }
+  if ((fd = open(lockpath, O_WRONLY|O_CREAT|O_EXCL, 0666)) < 0)
+  {
+    fprintf(stderr, "ircd config file locked\n");
+    return(-1);
+  }
 
   fileptr = fdopen(fd,"w");
   fprintf(fileptr,"%d\n",(int)getpid());
   fclose(fileptr);
-  return (0);
-} /* LockedFile() */
+  return(0);
+}

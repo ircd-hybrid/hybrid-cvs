@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: convertconf.c,v 1.37 2003/05/11 22:27:49 joshk Exp $
+ * $Id: convertconf.c,v 1.38 2003/05/18 01:08:00 michael Exp $
  */
 
 #include <stdio.h>
@@ -54,8 +54,8 @@ static void ReplaceQuotes(char *out, char *in);
 static void oldParseOneLine(FILE *out, char *in);
 static void PrintOutServers(FILE *out);
 static void PairUpServers(struct ConnectPair* );
-static void AddHubOrLeaf(int type,char* name,char* host);
-static void OperPrivsFromString(FILE* , char* );
+static void AddHubOrLeaf(int type, const char *name, const char *host);
+static void OperPrivsFromString(FILE *, const char *);
 static int basic = 0;
 
 int main(int argc,char *argv[])
@@ -268,32 +268,29 @@ static void ReplaceQuotes(char* quotedLine,char *inputLine)
   *out = '\0';
 }
 
-/*
- * oldParseOneLine
+/* oldParseOneLine()
+ *
  * Inputs       - pointer to line to parse
  *		- pointer to output to write
  * Output       - 
  * Side Effects - Parse one old style conf line.
  */
-
-static void oldParseOneLine(FILE *out,char* line)
+static void
+oldParseOneLine(FILE *out, char *line)
 {
   char conf_letter;
-  char* tmp;
-  char* user_field=(char *)NULL;
-  char* passwd_field=(char *)NULL;
-  char* host_field=(char *)NULL;
-  char* port_field=(char *)NULL;
-  char* class_field=(char *)NULL;
-  struct ConnectPair* pair;
+  char *tmp;
+  const char *user_field   = NULL;
+  const char *passwd_field = NULL;
+  const char *host_field   = NULL;
+  const char *port_field   = NULL;
+  const char *class_field  = NULL;
+  struct ConnectPair *pair;
   int sendq = 0;
-  int restricted;
 
   tmp = getfield(line);
-
   conf_letter = *tmp;
 
-  restricted = 0;
   for (;;) /* Fake loop, that I can use break here --msa */
     {
       /* host field */
@@ -576,16 +573,15 @@ static void oldParseOneLine(FILE *out,char* line)
     }
 }
 
-/*
- * PrintOutServers
+/* PrintOutServers()
  *
  * In		- FILE pointer
  * Out		- NONE
  * Side Effects	- Print out connect configurations
  */
-static void PrintOutServers(FILE* out)
+static void PrintOutServers(FILE *out)
 {
-  struct ConnectPair* p;
+  struct ConnectPair *p;
 
   for(p = base_ptr; p; p = p->next)
     {
@@ -668,8 +664,7 @@ static void PairUpServers(struct ConnectPair* pair)
     base_ptr = pair;
 }
 
-/*
- * AddHubOrLeaf
+/* AddHubOrLeaf()
  *
  * In		- type either IS_HUB or IS_LEAF
  *		- name of leaf or hub
@@ -677,13 +672,13 @@ static void PairUpServers(struct ConnectPair* pair)
  * Out		- none
  * Side Effects	- Pair up hub or leaf with connect configuration
  */
-static void AddHubOrLeaf(int type,char* name,char* host)
+static void AddHubOrLeaf(int type, const char *name, const char *host)
 {
-  struct ConnectPair* p;
-  struct ConnectPair* pair;
+  struct ConnectPair *p;
+  struct ConnectPair *pair;
 
-  for(p = base_ptr; p; p = p->next )
-    {
+  for (p = base_ptr; p; p = p->next)
+  {
       if(p->name && name )
 	{
 	  if( !strcasecmp(p->name,name) )
@@ -748,14 +743,13 @@ static char *getfield(char *newline)
   return(field);
 }
 
-/* OperPrivsFromString
+/* OperPrivsFromString()
  *
  * inputs        - privs as string
  * output        - none
  * side effects -
  */
-
-static void OperPrivsFromString(FILE* out, char *privs)
+static void OperPrivsFromString(FILE* out, const char *privs)
 {
   while(*privs)
     {

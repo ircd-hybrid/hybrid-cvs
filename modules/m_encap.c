@@ -19,17 +19,18 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_encap.c,v 1.1 2003/05/17 18:00:50 bill Exp $
+ *  $Id: m_encap.c,v 1.2 2003/05/18 01:07:58 michael Exp $
  */
 
-#include "setup.h"
+#include "stdinc.h"
+#include "handlers.h"
 #include "client.h"
 #include "msg.h"
-#include "handlers.h"
 #include "parse.h"
 #include "sprintf_irc.h"
 #include "s_serv.h"
 #include "send.h"
+#include "modules.h"
 
 static void ms_encap(struct Client *client_p, struct Client *source_p,
                      int parc, char *parv[]);
@@ -51,7 +52,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&encap_msgtab);
 }
-const char *_version = "$Revision: 1.1 $";
+const char *_version = "$Revision: 1.2 $";
 #endif
 
 /*
@@ -61,7 +62,7 @@ const char *_version = "$Revision: 1.1 $";
  * outputs	- none
  * side effects	- propogates subcommand to locally connected servers
  */
-void
+static void
 ms_encap(struct Client *client_p, struct Client *source_p, int parc, char *parv[])
 {
   char buffer[BUFSIZE], *ptr = buffer;

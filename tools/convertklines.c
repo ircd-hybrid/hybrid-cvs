@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: convertklines.c,v 7.5 2002/02/25 19:56:03 leeh Exp $
+ * $Id: convertklines.c,v 7.6 2003/05/18 01:08:00 michael Exp $
  */
 
 #include <stdio.h>
@@ -66,7 +66,7 @@ int main(int argc,char *argv[])
   return 0;
 }
 
-static void usage()
+static void usage(void)
 {
   fprintf(stderr, "klines and dlines now go in separate files:\n");
   fprintf(stderr,"convertklines kline.conf.old kline.conf.new dline.conf.new\n");
@@ -182,25 +182,24 @@ static void ReplaceQuotes(char* quotedLine,char *inputLine)
   *out = '\0';
 }
 
-/*
- * parse()
+/* parse()
+ *
  * Inputs       - pointer to line to parse
  *		- pointer to output to write
  * Output       - 
  * Side Effects - Parse one old style conf line.
  */
-
-static void parse(FILE *outkline, FILE *outdline, char* line)
+static void
+parse(FILE *outkline, FILE *outdline, char *line)
 {
   char conf_letter;
   char *tmp;
-  char *user_field = NULL;
-  char *passwd_field = NULL;
-  char *host_field = NULL;
-  char *operpasswd_field = NULL;
+  const char *user_field       = NULL;
+  const char *passwd_field     = NULL;
+  const char *host_field       = NULL;
+  const char *operpasswd_field = NULL;
 
   tmp = getfield(line);
-
   conf_letter = *tmp;
 
   for (;;) /* Fake loop, that I can use break here --msa */

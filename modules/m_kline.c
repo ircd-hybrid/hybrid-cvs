@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.128 2003/05/17 18:00:50 bill Exp $
+ *  $Id: m_kline.c,v 1.129 2003/05/18 01:07:58 michael Exp $
  */
 
 #include "stdinc.h"
@@ -76,7 +76,7 @@ _moddeinit(void)
   mod_del_cmd(&kline_msgtab);
   mod_del_cmd(&dline_msgtab);
 }
-const char *_version = "$Revision: 1.128 $";
+const char *_version = "$Revision: 1.129 $";
 #endif
 
 /* Local function prototypes */
@@ -547,7 +547,8 @@ static void
 mo_dline(struct Client *client_p, struct Client *source_p,
 	 int parc, char *parv[])
 {
-  char *dlhost, *reason, *oper_reason;
+  char *dlhost, *oper_reason;
+  const char *reason;
 #ifndef IPV6
   char *p;
   struct Client *target_p;
@@ -578,10 +579,10 @@ mo_dline(struct Client *client_p, struct Client *source_p,
               me.name, parv[0]);
    return;
 #else
-      if (!(target_p = find_chasing(source_p, parv[1], NULL)))
+      if ((target_p = find_chasing(source_p, parv[1], NULL)) == NULL)
         return;
 
-      if(!target_p->user)
+      if(target_p->user == NULL)
         return;
       t = HM_IPV4;
       if (IsServer(target_p))
