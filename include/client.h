@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.107 2001/04/17 22:35:56 fl_ Exp $
+ * $Id: client.h,v 7.108 2001/04/26 11:34:29 toot Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -573,8 +573,6 @@ extern struct Client* find_userhost (char *, char *, struct Client *, int *);
 extern struct Client* next_client(struct Client* next, const char* name);
 extern struct Client* next_client_double(struct Client* next, 
                                          const char* name);
-
-#define MAX_ALLOW 20
 
 extern int accept_message(struct Client *source, struct Client *target);
 extern void add_to_accept(struct Client *source, struct Client *target);

@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.92 2001/04/18 10:15:39 fl_ Exp $
+ * $Id: ircd_lexer.l,v 1.93 2001/04/26 11:34:31 toot Exp $
  */
 
 %option case-insensitive
@@ -210,6 +210,7 @@ yes		{ return TYES; }
 
 failed_oper_notice      { return FAILED_OPER_NOTICE; }
 show_failed_oper_id     { return SHOW_FAILED_OPER_ID; }
+max_accept              { return MAX_ACCEPT; }
 max_nick_changes        { return MAX_NICK_CHANGES; }
 max_nick_time           { return MAX_NICK_TIME; }
 anti_nick_flood         { return ANTI_NICK_FLOOD; }

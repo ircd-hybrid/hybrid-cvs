@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.162 2001/04/18 11:37:24 a1kmm Exp $
+ * $Id: ircd_parser.y,v 1.163 2001/04/26 11:34:32 toot Exp $
  */
 
 %{
@@ -196,6 +196,7 @@ int   class_redirport_var;
 %token  SHOW_FAILED_OPER_ID
 %token  ANTI_NICK_FLOOD
 %token  ANTI_SPAM_EXIT_MESSAGE_TIME
+%token  MAX_ACCEPT
 %token  MAX_NICK_TIME
 %token  MAX_NICK_CHANGES
 %token  TS_MAX_DELTA
@@ -1789,7 +1790,7 @@ general_items:      general_items general_item |
 
 general_item:       general_failed_oper_notice | general_show_failed_oper_id |
                     general_anti_nick_flood | general_max_nick_time |
-                    general_max_nick_changes |
+                    general_max_nick_changes | general_max_accept |
                     general_anti_spam_exit_message_time |
                     general_ts_warn_delta | general_ts_max_delta |
                     general_kline_with_reason |
@@ -1854,6 +1855,11 @@ general_max_nick_time:    MAX_NICK_TIME '=' timespec ';'
 general_max_nick_changes:  MAX_NICK_CHANGES '=' expr ';'
   {
     ConfigFileEntry.max_nick_changes = $3;
+  } ;
+
+general_max_slow:  MAX_ACCEPT '=' expr ';'
+  {
+    ConfigFileEntry.max_accept = $3;
   } ;
 
 general_anti_spam_exit_message_time:  ANTI_SPAM_EXIT_MESSAGE_TIME '=' timespec ';'
