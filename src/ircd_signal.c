@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_signal.c,v 7.5 2001/01/18 09:07:39 ejb Exp $
+ * $Id: ircd_signal.c,v 7.6 2001/05/25 01:02:54 ejb Exp $
  */
 
 #include <signal.h>
@@ -66,11 +66,20 @@ static void sigint_handler(int sig)
 {
   static int restarting = 0;
 
-  log(L_WARN, "Server Restarting on SIGINT");
-  if (restarting == 0) {
-    restarting = 1;
-    server_reboot();
-  }
+  if (server_state.foreground) 
+    {
+      log(L_WARN, "Server exiting on SIGINT");
+      exit(0);
+    }
+  else
+    {
+      log(L_WARN, "Server Restarting on SIGINT");
+      if (restarting == 0) 
+        {
+          restarting = 1;
+          server_reboot();
+        }
+    }
 }
 
 /*

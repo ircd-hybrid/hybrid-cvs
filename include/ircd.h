@@ -19,7 +19,7 @@
  *
  * "ircd.h". - Headers file.
  *
- * $Id: ircd.h,v 7.31 2001/05/10 06:30:39 a1kmm Exp $
+ * $Id: ircd.h,v 7.32 2001/05/25 01:02:46 ejb Exp $
  *
  */
 #ifndef INCLUDED_ircd_h
@@ -65,6 +65,12 @@ struct Counter {
 };
 
 extern struct SetOptions GlobalSetOptions;  /* defined in ircd.c */
+
+struct ServerState_t {
+  int     foreground;
+};
+
+extern struct ServerState_t server_state;
 
 extern char*          debugmode;
 extern int            debuglevel;

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.127 2001/05/24 15:54:21 ejb Exp $
+ *  $Id: s_bsd.c,v 7.128 2001/05/25 01:02:54 ejb Exp $
  */
 #include "config.h"
 #include "fdlist.h"
@@ -225,14 +225,11 @@ int set_non_blocking(int fd)
   int val = 1;
   int res;
 
-  log(L_CRIT, "Using ioctl to set FD %d non-blocking", fd);
-  printf("Using ioctl to set FD %d non-blocking\n", fd);
   res = ioctl(fd, FIONBIO, &val);
   if (res == -1)
     return 0;
 
   fd_table[fd].flags.nonblocking = 1;
-  log(L_CRIT, "Succeeded.");
   return 1;
 #endif
 }
