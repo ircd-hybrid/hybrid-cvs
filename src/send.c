@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.49 2000/11/28 06:15:16 db Exp $
+ *   $Id: send.c,v 7.50 2000/11/28 07:33:43 db Exp $
  */
 #include "send.h"
 #include "channel.h"
@@ -990,9 +990,6 @@ ts_warn(const char *pattern, ...)
   ** more than 5 every 5 seconds.  -orabidoo
   */
 
-  /*
-   * hybrid servers always do TS_WARNINGS -Dianora
-   */
   now = time(NULL);
   if (now - last < 5)
     {
@@ -1012,7 +1009,6 @@ ts_warn(const char *pattern, ...)
 } /* ts_warn() */
 
 
-#ifdef SLAVE_SERVERS
 
 extern aConfItem *u_conf;
 
@@ -1060,4 +1056,3 @@ sendto_slaves(struct Client *one, char *message, char *nick, int parc, char *par
   return 0;
 } /* sendto_slaves() */
 
-#endif /* SLAVE_SERVERS */
