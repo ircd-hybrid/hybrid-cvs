@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.250 2002/04/15 16:31:39 leeh Exp $
+ *  $Id: client.c,v 7.251 2002/04/25 08:54:48 leeh Exp $
  */
 
 #include "tools.h"
@@ -1301,6 +1301,12 @@ int exit_client(
   dlink_node *m;
   if (MyConnect(source_p))
     {
+      /* DO NOT REMOVE. exit_client can be called twice after a failed
+       * read/write.
+       */
+      if(IsClosing(source_p))
+        return;
+
       SetClosing(source_p);
       
       /* Attempt to flush any queued data */
