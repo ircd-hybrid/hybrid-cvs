@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.c,v 1.32 2001/05/07 15:50:30 toot Exp $
+ * $Id: m_info.c,v 1.33 2001/05/29 16:15:05 jdc Exp $
  */
 #include "tools.h"
 #include "m_info.h"
@@ -335,6 +335,14 @@ static void send_conf_options(struct Client *source_p)
               "max_nick_changes",
               ConfigFileEntry.max_nick_changes,
               "How many nick changes to allow");
+   sendto_one(source_p,
+              ":%s %d %s :%-30s %-5d [%-30s]",
+              me.name,
+              RPL_INFO,
+              source_p->name,
+              "max_chans_per_user",
+              ConfigFileEntry.max_chans_per_user,
+              "Maximum number of channels a client can join");
     sendto_one(source_p,
               ":%s %d %s :%-30s %-5d [%-30s]",
               me.name, 
