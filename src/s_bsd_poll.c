@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_poll.c,v 7.44 2001/06/12 21:23:19 androsyn blalloc.c $
+ *  $Id: s_bsd_poll.c,v 7.45 2001/08/17 22:03:24 davidt Exp $
  */
 #include "config.h"
 #ifdef USE_POLL
@@ -335,10 +335,10 @@ comm_select_fdlist(fdlist_t fdlist, unsigned long delay)
 int
 comm_select(unsigned long delay)
 {
-    comm_select_fdlist(FDLIST_SERVICE, 0);
-    comm_select_fdlist(FDLIST_SERVER, 0);
-    /* comm_select_fdlist(FDLIST_BUSYCLIENT, 0); */
-    comm_select_fdlist(FDLIST_IDLECLIENT, delay);
-    return 0;
+  comm_select_fdlist(FDLIST_IDLECLIENT, 0);
+  /* comm_select_fdlist(BUSYCLIENT, 0); */
+  comm_select_fdlist(FDLIST_SERVICE, 0);
+  comm_select_fdlist(FDLIST_SERVER, delay);
+  return 0;
 }
 #endif
