@@ -1,3 +1,24 @@
+leeh        2002/01/02 12:45:42 EST	(20020102_4)
+
+  Modified files:
+    include              modules.h 
+    modules              Makefile.in 
+    src                  ircd.c modules-dld.c modules.c 
+  Log:
+  - install core modules into ircd/modules
+  - on startup walk a table of core modules, loading each as we go
+    if any fail, exit(0);
+  - no protection from modunload as of yet..
+  
+  Revision  Changes    Path
+  7.24      +4 -1      ircd-hybrid-7/include/modules.h
+  1.62      +15 -4     ircd-hybrid-7/modules/Makefile.in
+  7.210     +1 -0      ircd-hybrid-7/src/ircd.c
+  1.13      +35 -0     ircd-hybrid-7/src/modules-dld.c
+  7.80      +35 -0     ircd-hybrid-7/src/modules.c
+
+
+
 leeh        2002/01/02 11:44:02 EST	(20020102_3)
 
   Modified files:
@@ -2059,7 +2080,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3277 2002/01/02 16:44:07 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3278 2002/01/02 17:45:47 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -20413,4 +20434,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3277 2002/01/02 16:44:07 leeh Exp $
+$Id: ChangeLog,v 7.3278 2002/01/02 17:45:47 leeh Exp $
