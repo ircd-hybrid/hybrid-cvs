@@ -16,7 +16,7 @@
 #*   along with this program; if not, write to the Free Software
 #*   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #*
-#*   $Id: Makefile.in,v 7.49 2003/05/09 21:38:05 bill Exp $
+#*   $Id: Makefile.in,v 7.50 2003/05/11 01:10:05 joshk Exp $
 #*/
 
 RM=@RM@
@@ -40,12 +40,7 @@ MAKE := $(MAKE) ${MFLAGS}
 
 all:	build
 
-build:
-	-@if [ ! -f include/setup.h ] ; then \
-		echo "Hmm...doesn't look like you've run configure..."; \
-		echo "Doing so now."; \
-		sh configure; \
-	fi
+build: include/setup.h
 	@for i in $(SUBDIRS); do \
 		echo "build ==> $$i";\
 		cd $$i;\
@@ -93,3 +88,5 @@ install: all
 		find @bindir@ -name '*.old' | xargs ${RM} -f;\
 	fi
 
+include/setup.h:
+	sh configure

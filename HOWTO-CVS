@@ -1,6 +1,6 @@
 -*- How to use ircd-hybrid's CVS system.
 -*- By Juli Mallett <jmallett@FreeBSD.org>.
--*- $Id: HOWTO-CVS,v 1.4 2003/02/19 06:14:37 lusky Exp $
+-*- $Id: HOWTO-CVS,v 1.5 2003/05/11 01:10:05 joshk Exp $
 
 --- Open branches:
 --- HEAD version: 7.1 (CURRENT)
@@ -11,7 +11,7 @@
 I'll be your CVS maven, of sorts.  Here's what you need to know to use things
 efficiently.  First off, some ground rules:
 
-	1) Don't comit to a release branch without explicit approval (and
+	1) Don't commit to a release branch without explicit approval (and
 	   NEED) unless it has been to the HEAD branch first.
 	2) Don't break the HEAD branch just because you can.  You should do
 	   your best to keep it working and in top shape, but new features

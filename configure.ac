@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.11 2003/05/10 19:57:20 joshk Exp $
+dnl $Id: configure.ac,v 7.12 2003/05/11 01:10:05 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -166,9 +166,10 @@ fi
 dnl Checks for libraries.
 AC_CHECK_LIB(socket, socket)
 
-dnl Solaris libraries. We don't want a AC_DEFINE though. Too much clutter
-AC_CHECK_LIB(resolv, inet_aton, [LIBS="$LIBS -lresolv"])
-AC_CHECK_LIB(nsl, inet_pton, [LIBS="$LIBS -lnsl"])
+dnl Solaris libraries. We don't want a AC_DEFINE though. Too much clutter.
+dnl But don't use them if they're available natively.
+AC_SEARCH_LIBS(inet_aton, resolv)
+AC_SEARCH_LIBS(inet_pton, nsl)
 
 AC_SEARCH_LIBS(crypt, [descrypt crypt],,
 [AC_MSG_ERROR([No crypt implementation found on your system!])])

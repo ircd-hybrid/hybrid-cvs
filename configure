@@ -3637,13 +3637,13 @@ _ACEOF
 fi
 
 
-echo "$as_me:$LINENO: checking for inet_aton in -lresolv" >&5
-echo $ECHO_N "checking for inet_aton in -lresolv... $ECHO_C" >&6
-if test "${ac_cv_lib_resolv_inet_aton+set}" = set; then
+echo "$as_me:$LINENO: checking for library containing inet_aton" >&5
+echo $ECHO_N "checking for library containing inet_aton... $ECHO_C" >&6
+if test "${ac_cv_search_inet_aton+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lresolv  $LIBS"
+  ac_func_search_save_LIBS=$LIBS
+ac_cv_search_inet_aton=no
 cat >conftest.$ac_ext <<_ACEOF
 #line $LINENO "configure"
 /* confdefs.h.  */
@@ -3679,29 +3679,77 @@ if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  ac_cv_lib_resolv_inet_aton=yes
+  ac_cv_search_inet_aton="none required"
 else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-ac_cv_lib_resolv_inet_aton=no
 fi
 rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
+if test "$ac_cv_search_inet_aton" = no; then
+  for ac_lib in resolv; do
+    LIBS="-l$ac_lib  $ac_func_search_save_LIBS"
+    cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+/* Override any gcc2 internal prototype to avoid an error.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+/* We use char because int might match the return type of a gcc2
+   builtin and then its argument prototype would still apply.  */
+char inet_aton ();
+int
+main ()
+{
+inet_aton ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_search_inet_aton="-l$ac_lib"
+break
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
 fi
-echo "$as_me:$LINENO: result: $ac_cv_lib_resolv_inet_aton" >&5
-echo "${ECHO_T}$ac_cv_lib_resolv_inet_aton" >&6
-if test $ac_cv_lib_resolv_inet_aton = yes; then
-  LIBS="$LIBS -lresolv"
+rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+  done
+fi
+LIBS=$ac_func_search_save_LIBS
+fi
+echo "$as_me:$LINENO: result: $ac_cv_search_inet_aton" >&5
+echo "${ECHO_T}$ac_cv_search_inet_aton" >&6
+if test "$ac_cv_search_inet_aton" != no; then
+  test "$ac_cv_search_inet_aton" = "none required" || LIBS="$ac_cv_search_inet_aton $LIBS"
+
 fi
 
-echo "$as_me:$LINENO: checking for inet_pton in -lnsl" >&5
-echo $ECHO_N "checking for inet_pton in -lnsl... $ECHO_C" >&6
-if test "${ac_cv_lib_nsl_inet_pton+set}" = set; then
+echo "$as_me:$LINENO: checking for library containing inet_pton" >&5
+echo $ECHO_N "checking for library containing inet_pton... $ECHO_C" >&6
+if test "${ac_cv_search_inet_pton+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
-  ac_check_lib_save_LIBS=$LIBS
-LIBS="-lnsl  $LIBS"
+  ac_func_search_save_LIBS=$LIBS
+ac_cv_search_inet_pton=no
 cat >conftest.$ac_ext <<_ACEOF
 #line $LINENO "configure"
 /* confdefs.h.  */
@@ -3737,20 +3785,68 @@ if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  ac_cv_lib_nsl_inet_pton=yes
+  ac_cv_search_inet_pton="none required"
 else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-ac_cv_lib_nsl_inet_pton=no
 fi
 rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
-LIBS=$ac_check_lib_save_LIBS
+if test "$ac_cv_search_inet_pton" = no; then
+  for ac_lib in nsl; do
+    LIBS="-l$ac_lib  $ac_func_search_save_LIBS"
+    cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+/* Override any gcc2 internal prototype to avoid an error.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+/* We use char because int might match the return type of a gcc2
+   builtin and then its argument prototype would still apply.  */
+char inet_pton ();
+int
+main ()
+{
+inet_pton ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_search_inet_pton="-l$ac_lib"
+break
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
 fi
-echo "$as_me:$LINENO: result: $ac_cv_lib_nsl_inet_pton" >&5
-echo "${ECHO_T}$ac_cv_lib_nsl_inet_pton" >&6
-if test $ac_cv_lib_nsl_inet_pton = yes; then
-  LIBS="$LIBS -lnsl"
+rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+  done
+fi
+LIBS=$ac_func_search_save_LIBS
+fi
+echo "$as_me:$LINENO: result: $ac_cv_search_inet_pton" >&5
+echo "${ECHO_T}$ac_cv_search_inet_pton" >&6
+if test "$ac_cv_search_inet_pton" != no; then
+  test "$ac_cv_search_inet_pton" = "none required" || LIBS="$ac_cv_search_inet_pton $LIBS"
+
 fi
 
 
