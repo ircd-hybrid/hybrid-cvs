@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.310 2003/09/30 03:25:40 db Exp $
+ *  $Id: s_user.c,v 7.311 2003/10/04 19:31:19 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -862,7 +862,7 @@ report_and_set_user_flags(struct Client *source_p, struct AccessItem *aconf)
   {
     SetCanFlood(source_p);
     sendto_one(source_p, ":%s NOTICE %s :*** You are exempt from flood "
-               "protection, aren't you feersome.",
+               "protection, aren't you fearsome.",
                me.name, source_p->name);
   }
 }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: defaults.h,v 7.16 2003/09/11 03:41:42 metalrock Exp $
+ *  $Id: defaults.h,v 7.17 2003/10/04 19:31:17 metalrock Exp $
  */
 
 #ifndef INCLUDED_defaults_h
@@ -51,6 +51,7 @@
 #define MSGPATH IRCD_PREFIX "/messages/"
 #define ETCPATH IRCD_PREFIX "/etc"
 #define LOGPATH IRCD_PREFIX "/logs"
+#define MODPATH IRCD_PREFIX "/modules/"
 
 /* files */
 #define SPATH   BINPATH "/ircd"                 /* ircd executable */

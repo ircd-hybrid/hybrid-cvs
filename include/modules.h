@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.h,v 7.50 2003/07/08 21:06:36 joshk Exp $
+ *  $Id: modules.h,v 7.51 2003/10/04 19:31:17 metalrock Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -56,7 +56,7 @@ struct module_path
 };
 
 /* set base path */
-extern void mod_set_base (char *path);
+extern void mod_set_base(void);
 
 /* add a path */
 extern void mod_add_path(const char *path);

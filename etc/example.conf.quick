@@ -3,7 +3,7 @@
  *
  * Written by ejb, wcampbel, db, leeh and others
  *
- * $Id: example.conf.quick,v 1.23 2003/09/26 10:35:47 bill Exp $
+ * $Id: example.conf.quick,v 1.24 2003/10/04 19:31:15 metalrock Exp $
  */
 
 /* IMPORTANT NOTES:
@@ -378,7 +378,6 @@ glines {
 };
 
 modules {
-	base_path = "/usr/local/ircd/modules";
 	path = "/usr/local/ircd/modules";
 	path = "/usr/local/ircd/modules/autoload";
 	#module = "some_module.so";

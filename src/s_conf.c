@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.483 2003/09/27 23:19:42 bill Exp $
+ *  $Id: s_conf.c,v 7.484 2003/10/04 19:31:19 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -1050,7 +1050,7 @@ attach_iline(struct Client *client_p, struct ConfItem *conf)
       {
 	sendto_one(client_p,
 		   ":%s NOTICE %s :*** Your connection class is full, "
-		   "but you have exceed_limit=yes;", me.name, client_p->name);
+		   "but you have exceed_limit = yes;", me.name, client_p->name);
       }
     }
   }
@@ -1514,7 +1514,7 @@ attach_conf(struct Client *client_p, struct ConfItem *conf)
 	  else
 	  {
 	    sendto_one(client_p, ":%s NOTICE %s :*** Your connection class is "
-		       "full, but you have exceed_limit=yes;",
+		       "full, but you have exceed_limit = yes;",
 		       me.name, client_p->name);
 	    SetExemptLimits(client_p);
 	  }

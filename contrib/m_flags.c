@@ -27,7 +27,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: m_flags.c,v 1.14 2003/05/13 04:48:48 metalrock Exp $
+ *  $Id: m_flags.c,v 1.15 2003/10/04 19:31:13 metalrock Exp $
  */
 
 /* List of ircd includes from ../include/ */
@@ -77,7 +77,7 @@ _moddeinit(void)
   mod_del_cmd(&test_msgtab);
 }
 
-const char *_version = "$Revision: 1.14 $";
+const char *_version = "$Revision: 1.15 $";
 #endif
 
 /* FLAGS requires it's own mini parser, since the last parameter in it can
@@ -316,7 +316,7 @@ mo_flags(struct Client *client_p, struct Client *source_p,
         if (!IsOperN(source_p))
         {
           sendto_one(source_p,
-                     ":%s NOTICE %s :*** You need oper and N flag for +n",
+                     ":%s NOTICE %s :*** You need nick_changes = yes;",
                      me.name,parv[0]);
           continue;
         }

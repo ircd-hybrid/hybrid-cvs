@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.318 2003/09/21 09:59:04 michael Exp $
+ *  $Id: ircd.c,v 7.319 2003/10/04 19:31:18 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -216,9 +216,6 @@ make_daemon(void)
   }
 
   setsid();
-/*fclose(stdin);
-  fclose(stdout);
-  fclose(stderr); */
 }
 
 static int printVersion = 0;
@@ -307,8 +304,7 @@ io_loop(void)
     free_exited_clients();
     send_queued_all();
 
-    /* Check to see whether we have to rehash the configuration ..
-     */
+    /* Check to see whether we have to rehash the configuration .. */
     if (dorehash)
     {
       rehash(1);
@@ -389,7 +385,6 @@ initialize_server_capabs(void)
   add_capability("QS", CAP_QS, 1);
   add_capability("LL", CAP_LL, 1);
   add_capability("EOB", CAP_EOB, 1);
-
 #if 0
   add_capability("SID", CAP_SID, 0);
 #endif
@@ -507,21 +502,17 @@ main(int argc, char *argv[])
     return(-1);
   }
 
-  /*
-   * save server boot time right away, so getrusage works correctly
-   */
+  /* save server boot time right away, so getrusage works correctly */
   set_time();
-  /*
-   * Setup corefile size immediately after boot -kre
-   */
+
+  /* Setup corefile size immediately after boot -kre */
   setup_corefile();
 
-  /*
-   * set initialVMTop before we allocate any memory
-   */
+  /* set initialVMTop before we allocate any memory */
   initialVMTop = get_vm_top();
 
   ServerRunning = 0;
+
   /* It ain't random, but it ought to be a little harder to guess */
   srand(SystemTime.tv_sec ^ (SystemTime.tv_usec | (getpid() << 20)));
   memset(&me, 0, sizeof(me));
@@ -543,7 +534,6 @@ main(int argc, char *argv[])
   ConfigFileEntry.glinefile  = GPATH;  /* gline log file            */
   ConfigFileEntry.cresvfile  = CRESVPATH; /* channel resv file      */
   ConfigFileEntry.nresvfile  = NRESVPATH; /* nick resv file         */
-
   myargv = argv;
   umask(077);                /* better safe than sorry --SRB */
 
@@ -562,26 +552,18 @@ main(int argc, char *argv[])
   }
 
   if (!server_state.foreground)
-  {
     make_daemon();
-  }
   else
-  {
     print_startup(getpid());
-  }
 
   setup_signals();
   /* We need this to initialise the fd array before anything else */
   fdlist_init();
 
   if (!server_state.foreground)
-  {
     close_all_connections(); /* this needs to be before init_netio()! */
-  }
   else
-  {
     check_can_use_v6(); /* Done in close_all_connections normally */
-  }
 
   init_log(logFileName);
   init_netio();         /* This needs to be setup early ! -- adrian */
@@ -667,6 +649,18 @@ main(int argc, char *argv[])
   dlinkAdd(&me, make_dlink_node(), &global_serv_list);
 
   check_class();
+
+#ifndef STATIC_MODULES
+  if (chdir(MODPATH))
+  {
+    ilog (L_CRIT, "Could not load core modules. Terminating!");
+    exit(EXIT_FAILURE);
+  }
+  mod_set_base();
+  load_all_modules(1);
+  load_core_modules(1);
+#endif
+
   write_pidfile(pidFileName);
 
   ilog(L_NOTICE, "Server Ready");

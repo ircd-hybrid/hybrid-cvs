@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.362 2003/09/29 03:16:21 bill Exp $
+ *  $Id: ircd_parser.y,v 1.363 2003/10/04 19:31:19 metalrock Exp $
  */
 
 %{
@@ -70,10 +70,6 @@ extern dlink_list gdeny_items;
 
 static char *resv_reason;
 static char *listener_address;
-
-#ifndef STATIC_MODULES
-extern int ServerRunning;
-#endif
 
 struct CollectItem {
   dlink_node node;
@@ -142,7 +138,6 @@ unhook_hub_leaf_confs(void)
 %token  ANTI_SPAM_EXIT_MESSAGE_TIME
 %token  IRCD_AUTH
 %token  AUTOCONN
-%token  BASE_PATH
 %token	T_BLOCK
 %token  BYTES KBYTES MBYTES GBYTES TBYTES
 %token  CALLER_ID_WAIT
@@ -422,7 +417,7 @@ modules_entry: MODULES
   '{' modules_items '}' ';';
 
 modules_items:  modules_items modules_item | modules_item;
-modules_item:   modules_module | modules_base_path | modules_path | error;
+modules_item:   modules_module | modules_path | error;
 
 modules_module: MODULE '=' QSTRING ';'
 {
@@ -448,27 +443,6 @@ modules_path: PATH '=' QSTRING ';'
 #ifndef STATIC_MODULES
   if (ypass == 2)
     mod_add_path(yylval.string);
-#endif
-};
-
-modules_base_path: BASE_PATH '=' QSTRING ';'
-{
-#ifndef STATIC_MODULES
-  if (ypass == 2)
-  {
-     mod_set_base(yylval.string);
-     /*
-      * a slight hack here, if we are loading the conf during
-      * the startup of the ircd, we should load the standard
-      * modules first, before the ones specified by module="";
-      * so lets load them right away.
-      */
-     if (ServerRunning != 1)
-     {
-       load_all_modules(1);
-       load_core_modules(1);
-     }
-  }
 #endif
 };
 

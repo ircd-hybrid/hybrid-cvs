@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.141 2003/07/25 23:16:10 michael Exp $
+ *  $Id: modules.c,v 7.142 2003/10/04 19:31:19 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -52,12 +52,8 @@
 #ifndef STATIC_MODULES
 
 struct module **modlist = NULL;
-
-static char base_valid = 0;
 static char modlist_valid = 0;
-
-static char* base_path = NULL;
-static char* base_autoload = NULL;
+static char *base_autoload = NULL;
 
 static const char *core_module_table[] =
 {
@@ -159,7 +155,6 @@ mod_find_path(const char *path)
  * output - nothing
  * side effect - modlist may have been malloc'd and modlist_valid set to 1.
  */
-
 static void
 init_modlist (void)
 {
@@ -179,23 +174,16 @@ init_modlist (void)
  * output - none
  * side effects - sets the base path to path
  */
-
 void
-mod_set_base (char* path)
+mod_set_base(void)
 {
   unsigned int len;
-  base_valid = 1;
 
-  MyFree (base_path);
-  MyFree (base_autoload);
-
-  DupString (base_path, path);
+  len = strlen(MODPATH) + 9;
+  /* whatever MODPATH + "autoload/" */
   
-  len = strlen(path) + 10;
-  /* whatever path + "/autoload/" */
-  
-  base_autoload = MyMalloc (len + 1);
-  snprintf (base_autoload, len, "%s/autoload/", base_path);
+  base_autoload = MyMalloc(len + 1);
+  snprintf(base_autoload, len, "%sautoload/", MODPATH);
 }
 
 /* mod_add_path()
@@ -278,15 +266,7 @@ load_all_modules(int warn)
   int len;
   unsigned int mq_len;
   
-  /* At this point, base_path MUST be specified */
-  if (base_valid == 0)
-  {
-    ilog (L_CRIT, "You must specify a base_path in ircd.conf. See the examples. Terminating!");
-    exit (EXIT_FAILURE);
-  }
-
   modules_init();
-
   init_modlist();
   
   max_mods = MODS_INCREMENT;
@@ -338,21 +318,21 @@ load_all_modules(int warn)
 void
 load_core_modules(int warn)
 {
-  char* module_name;
+  char *module_name;
   int i;
   unsigned int m_len;
 
   for (i = 0; core_module_table[i]; i++)
   {
-    if ((m_len = (strlen(base_path) + strlen(core_module_table[i]) + strlen(SHARED_SUFFIX) + 2)) > PATH_MAX)
+    if ((m_len = (strlen(MODPATH) + strlen(core_module_table[i]) + strlen(SHARED_SUFFIX) + 2)) > PATH_MAX)
     {
        ilog (L_ERROR, "Path for %s%s was truncated, the module was not loaded.",
                core_module_table[i], SHARED_SUFFIX);
     }
     else
     {
-      module_name = MyMalloc (m_len + 1);
-      snprintf (module_name, m_len + 1, "%s/%s%s", base_path, core_module_table[i], SHARED_SUFFIX);
+      module_name = MyMalloc(m_len + 1);
+      snprintf(module_name, m_len + 1, "%s%s%s", MODPATH, core_module_table[i], SHARED_SUFFIX);
       if (load_a_module(module_name, warn, 1) == -1)
       {
         ilog(L_CRIT, "Error loading core module %s%s: terminating ircd",
@@ -581,7 +561,7 @@ mo_modrestart(struct Client *client_p, struct Client *source_p, int parc, char *
   modnum = num_mods;
 
   while (num_mods)
-     unload_one_module(modlist[0]->name, 0);
+    unload_one_module(modlist[0]->name, 0);
 
   load_all_modules(0);
   load_core_modules(0);
