@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.87 2001/05/16 16:59:09 leeh Exp $
+ *   $Id: m_sjoin.c,v 1.88 2001/05/16 23:32:06 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -136,10 +136,7 @@ static void ms_sjoin(struct Client *client_p,
   if (!check_channel_name(parv[2]))
     return;
 
-  /* comstud server did this, SJOIN's for
-   * local channels can't happen.
-   */
-
+  /* SJOIN's for local channels can't happen. */
   if(*parv[2] == '&')
     return;
 
