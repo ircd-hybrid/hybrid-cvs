@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: s_serv.h,v 7.24 2000/12/24 00:10:55 ejb Exp $
+ * $Id: s_serv.h,v 7.25 2000/12/24 22:39:28 adrian Exp $
  *
  */
 #ifndef INCLUDED_serv_h
@@ -29,6 +29,12 @@
 #include <sys/types.h>
 #define INCLUDED_sys_types_h
 #endif
+
+/*
+ * The number of seconds between calls to try_connections(). Fiddle with
+ * this ONLY if you KNOW what you're doing!
+ */
+#define TRY_CONNECTIONS_TIME	60
 
 struct Client;
 struct ConfItem;
@@ -109,7 +115,7 @@ extern int         server_estab(struct Client* cptr);
 extern void        set_autoconn(struct Client *,char *,char *,int);
 extern const char* show_capabilities(struct Client* client);
 extern void        show_servers(struct Client *);
-extern time_t      try_connections(time_t currenttime);
+extern void        try_connections(void *unused);
 
 extern void        initServerMask(void);
 extern void        burst_channel(struct Client *cptr, struct Channel *chptr);
