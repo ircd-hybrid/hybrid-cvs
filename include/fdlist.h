@@ -1,7 +1,7 @@
 /*
  * fdlist.h
  *
- * $Id: fdlist.h,v 7.19 2001/03/06 02:22:08 androsyn Exp $
+ * $Id: fdlist.h,v 7.20 2001/05/23 20:59:07 davidt Exp $
  */
 #ifndef INCLUDED_fdlist_h
 #define INCLUDED_fdlist_h
@@ -18,7 +18,7 @@
 #include "config.h"
 #include "ircd_defs.h"
 #include "res.h"
-#define FD_DESC_SZ 32
+#define FD_DESC_SZ 128  /* hostlen + comment */
 
 /*
  * priority values used in fdlist code

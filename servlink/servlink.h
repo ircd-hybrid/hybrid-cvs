@@ -15,16 +15,28 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: servlink.h,v 1.1 2001/05/22 19:11:46 davidt Exp $
+ *   $Id: servlink.h,v 1.2 2001/05/23 20:59:14 davidt Exp $
  */
 
-#define CONTROL_FD              0
-#define LOCAL_FD                1
-#define REMOTE_FD               2
+#define CONTROL_FD_R            0
+#define LOCAL_FD_R              1
+#define REMOTE_FD_R             2
+
+#ifdef MISSING_SOCKPAIR
+#define CONTROL_FD_W            3
+#define LOCAL_FD_W              4
+#define REMOTE_FD_W             REMOTE_FD_R 
+#define NUM_FDS                 5       /* nfds for select */
+#else
+#define CONTROL_FD_W            CONTROL_FD_R
+#define LOCAL_FD_W              LOCAL_FD_R
+#define REMOTE_FD_W             REMOTE_FD_R
+#define NUM_FDS                 3       /* nfds for select */
+#endif
 
 extern struct slink_state       in_state;
 extern struct slink_state       out_state;
-extern struct fd_table          fds[3];
+extern struct fd_table          fds[NUM_FDS];
 
 #ifdef HAVE_LIBCRYPTO
 #define CIPHER_BF       1
