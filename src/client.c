@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.236 2002/02/23 15:30:53 leeh Exp $
+ *  $Id: client.c,v 7.237 2002/02/24 04:44:49 a1kmm Exp $
  */
 
 #include "tools.h"
@@ -181,11 +181,13 @@ void _free_client(struct Client* client_p)
   assert(&me != client_p);
   assert(NULL == client_p->prev);
   assert(NULL == client_p->next);
+#if 0
   assert(dlinkFind(&unknown_list, client_p) == NULL);
   assert(dlinkFind(&lclient_list, client_p) == NULL);
   assert(dlinkFind(&serv_list, client_p) == NULL);
   assert(dlinkFind(&global_serv_list, client_p) == NULL);
   assert(dlinkFind(&oper_list, client_p) == NULL);
+#endif
 
   /*
    * clean up extra sockets from P-lines which have been discarded.
