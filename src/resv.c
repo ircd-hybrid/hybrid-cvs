@@ -19,38 +19,36 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: resv.c,v 7.17 2002/10/10 18:49:30 androsyn Exp $
+ *  $Id: resv.c,v 7.18 2003/05/02 17:20:33 michael Exp $
  */
 
 #include "stdinc.h"
 #include "tools.h"
-#include "restart.h"
 #include "common.h"
 #include "fdlist.h"
 #include "ircd.h"
 #include "send.h"
 #include "s_debug.h"
-#include "numeric.h"
-#include "s_log.h"
 #include "client.h"   
 #include "memory.h"
+#include "numeric.h"
 #include "resv.h"
 #include "hash.h"
 #include "ircd_defs.h"
 
-struct ResvChannel *ResvChannelList;
-struct ResvNick *ResvNickList;
+dlink_list resv_channel_list = { NULL, NULL, 0 };
+dlink_list resv_nick_list    = { NULL, NULL, 0 };
 
 struct ResvChannel *
-create_channel_resv(char *name, char *reason, int conf)
+create_channel_resv(char *name, char *reason, unsigned char conf)
 {
   struct ResvChannel *resv_p = NULL;
   int len;
 
-  if(find_channel_resv(name))
-    return NULL;
+  if (find_channel_resv(name))
+    return(NULL);
 
-  if((len = strlen(reason)) > TOPICLEN)
+  if ((len = strlen(reason)) > TOPICLEN)
   {
     reason[TOPICLEN] = '\0';
     len = TOPICLEN;
@@ -62,29 +60,22 @@ create_channel_resv(char *name, char *reason, int conf)
   DupString(resv_p->reason, reason);
   resv_p->conf = conf;
 
-  if(ResvChannelList != NULL)
-    ResvChannelList->prev = resv_p;
-
-  resv_p->next = ResvChannelList;
-  resv_p->prev = NULL;
-
-  ResvChannelList = resv_p;
-
+  dlinkAdd(resv_p, &resv_p->node, &resv_channel_list);
   add_to_resv_hash_table(resv_p->name, resv_p);
 
-  return resv_p;
+  return(resv_p);
 }
 
 struct ResvNick *
-create_nick_resv(char *name, char *reason, int conf)
+create_nick_resv(char *name, char *reason, unsigned char conf)
 {
-  struct ResvNick *resv_p = NULL;
+  struct ResvNick *resv_p;
   int len;
 
-  if(find_nick_resv(name))
-    return NULL;
+  if (find_nick_resv(name))
+    return(NULL);
 
-  if((len = strlen(reason)) > TOPICLEN)
+  if ((len = strlen(reason)) > TOPICLEN)
   {
     reason[TOPICLEN] = '\0';
     len = TOPICLEN;
@@ -96,170 +87,164 @@ create_nick_resv(char *name, char *reason, int conf)
   DupString(resv_p->reason, reason);
   resv_p->conf = conf;
 
-  if(ResvNickList)
-    ResvNickList->prev = resv_p;
+  dlinkAdd(resv_p, &resv_p->node, &resv_nick_list);
 
-  resv_p->next = ResvNickList;
-  resv_p->prev = NULL;
-
-  ResvNickList = resv_p;
-
-  return resv_p;
+  return(resv_p);
 }
 
-int 
-clear_conf_resv()
+void
+clear_conf_resv(void)
 {
+  dlink_node *ptr;
+  dlink_node *next_ptr;
   struct ResvChannel *resv_cp;
-  struct ResvChannel *next_cp;
   struct ResvNick *resv_np;
-  struct ResvNick *next_np;
 
-  for(resv_cp = ResvChannelList; resv_cp; resv_cp = next_cp)
+  DLINK_FOREACH_SAFE(ptr, next_ptr, resv_channel_list.head)
   {
-    next_cp = resv_cp->next;
+    resv_cp = ptr->data;
 
-    if(resv_cp->conf)
+    if (resv_cp->conf)
       delete_channel_resv(resv_cp);
   }
 
-  for(resv_np = ResvNickList; resv_np; resv_np = next_np)
+  DLINK_FOREACH_SAFE(ptr, next_ptr, resv_nick_list.head)
   {
-    next_np = resv_np->next;
+    resv_np = ptr->data;
 
-    if(resv_np->conf)
+    if (resv_np->conf)
       delete_nick_resv(resv_np);
   }
-  
-  return 0;
-}
-
-int 
-delete_channel_resv(struct ResvChannel *resv_p)
-{
-  if(!(resv_p))
-    return 0;
-
-  del_from_resv_hash_table(resv_p->name, resv_p);
-
-  if(resv_p->prev)
-    resv_p->prev->next = resv_p->next;
-  else
-    ResvChannelList = resv_p->next;
-
-  if(resv_p->next)
-    resv_p->next->prev = resv_p->prev;
-
-  MyFree((char *)resv_p);
-
-  return 1;
-}
-
-int 
-delete_nick_resv(struct ResvNick *resv_p)
-{
-  if(!(resv_p))
-    return 0;
-
-  if(resv_p->prev)
-    resv_p->prev->next = resv_p->next;
-  else
-    ResvNickList = resv_p->next;
-
-  if(resv_p->next)
-    resv_p->next->prev = resv_p->prev;
-
-  MyFree((char *)resv_p);
-
-  return 1;
 }
 
 int
-find_channel_resv(char *name)
+delete_channel_resv(struct ResvChannel *resv_p)
+{
+  assert(resv_p != NULL);
+
+  if (resv_p == NULL)
+    return(0);
+
+  del_from_resv_hash_table(resv_p->name, resv_p);
+  dlinkDelete(&resv_p->node, &resv_channel_list);
+  MyFree((char *)resv_p);
+
+  return(1);
+}
+
+int
+delete_nick_resv(struct ResvNick *resv_p)
+{
+  assert(resv_p != NULL);
+
+  if (resv_p == NULL)
+    return(0);
+
+  dlinkDelete(&resv_p->node, &resv_nick_list);
+  MyFree((char *)resv_p);
+
+  return(1);
+}
+
+int
+find_channel_resv(const char *name)
 {
   struct ResvChannel *resv_p;
 
-  resv_p = (struct ResvChannel *)hash_find_resv(name);
+  if ((resv_p = hash_find_resv(name)) != NULL)
+    return(1);
 
-  if (resv_p == NULL)
-    return 0;
-
-  return 1;
+  return(0);
 }
 
-int 
-find_nick_resv(char *name)
+int
+find_nick_resv(const char *name)
 {
+  dlink_node *ptr;
   struct ResvNick *resv_p;
 
-  for(resv_p = ResvNickList; resv_p; resv_p = resv_p->next)
+  DLINK_FOREACH(ptr, resv_nick_list.head)
   {
-    if(match(resv_p->name, name))
-      return 1;
+    resv_p = ptr->data;
+
+    if (match(resv_p->name, name))
+      return(1);
   }
-  
-  return 0;
+
+  return(0);
 }
 
 struct ResvNick *
-return_nick_resv(char *name)
+return_nick_resv(const char *name)
 {
+  dlink_node *ptr;
   struct ResvNick *resv_p;
 
-  for(resv_p = ResvNickList; resv_p; resv_p = resv_p->next)
+  DLINK_FOREACH(ptr, resv_nick_list.head)
   {
-    if(!(irccmp(resv_p->name, name)))
-      return resv_p;
+    resv_p = ptr->data;
+
+    if (0 == irccmp(resv_p->name, name))
+      return(resv_p);
   }
 
-  return NULL;
+  return(NULL);
 }
 
-void 
+void
 report_resv(struct Client *source_p)
 {
+  dlink_node *ptr;
   struct ResvChannel *resv_cp;
   struct ResvNick *resv_np;
 
-  for(resv_cp = ResvChannelList; resv_cp; resv_cp = resv_cp->next)
+  DLINK_FOREACH(ptr, resv_channel_list.head)
+  {
+    resv_cp = ptr->data;
+
     sendto_one(source_p, form_str(RPL_STATSQLINE),
                me.name, source_p->name,
 	       resv_cp->conf ? 'Q' : 'q',
 	       resv_cp->name, resv_cp->reason);
+  }
 
-  for(resv_np = ResvNickList; resv_np; resv_np = resv_np->next)
+  DLINK_FOREACH(ptr, resv_nick_list.head)
+  {
+    resv_np = ptr->data;
+
     sendto_one(source_p, form_str(RPL_STATSQLINE),
                me.name, source_p->name,
 	       resv_np->conf ? 'Q' : 'q',
 	       resv_np->name, resv_np->reason);
-}	       
+  }
+}
 
 int
 clean_resv_nick(char *nick)
 {
   char tmpch;
-  int as=0;
-  int q=0;
-  int ch=0;
+  int as = 0;
+  int q  = 0;
+  int ch = 0;
 
-  if(*nick == '-' || IsDigit(*nick))
-    return 0;
-    
+  if (*nick == '-' || IsDigit(*nick))
+    return(0);
+
   while((tmpch = *nick++))
   {
-    if(tmpch == '?')
+    if (tmpch == '?')
       q++;
-    else if(tmpch == '*')
+    else if (tmpch == '*')
       as++;
-    else if(IsNickChar(tmpch))
+    else if (IsNickChar(tmpch))
       ch++;
     else
-      return 0;
+      return(0);
   }
 
-  if(!ch && as)
-    return 0;
+  if (!ch && as)
+    return(0);
 
-  return 1;
+  return(1);
 }
-    
+

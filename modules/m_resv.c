@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_resv.c,v 1.18 2003/04/06 00:07:13 michael Exp $
+ *  $Id: m_resv.c,v 1.19 2003/05/02 17:20:32 michael Exp $
  */
 
 #include "stdinc.h"
@@ -65,108 +65,90 @@ _moddeinit(void)
   mod_del_cmd(&unresv_msgtab);
 }
 
-const char *_version = "$Revision: 1.18 $";
+const char *_version = "$Revision: 1.19 $";
 #endif
 
-/*
- * mo_resv()
- *      parv[0] = sender prefix
- *      parv[1] = channel/nick to forbid
+/* mo_resv()
+ *   parv[0] = sender prefix
+ *   parv[1] = channel/nick to forbid
  */
-
 static void mo_resv(struct Client *client_p, struct Client *source_p,
                     int parc, char *parv[])
 {
-  if(EmptyString(parv[1]))
+  if (EmptyString(parv[1]))
     return;
 
-  if(IsChannelName(parv[1]))
+  if (IsChannelName(parv[1]))
   {
     struct ResvChannel *resv_p;
-    
-    resv_p = create_channel_resv(parv[1], parv[2], 0);
-  
-    if(!(resv_p))
+
+    if ((resv_p = create_channel_resv(parv[1], parv[2], 0)) == NULL)
     {
-      sendto_one(source_p,
-                 ":%s NOTICE %s :A RESV has already been placed on channel: %s",
-                 me.name, source_p->name, parv[1]);
+      sendto_one(source_p, ":%s NOTICE %s :A RESV has already been placed "
+                 "on channel: %s", me.name, source_p->name, parv[1]);
       return;
     }
-    
-    sendto_one(source_p,
-               ":%s NOTICE %s :A local RESV has been placed on channel: %s [%s]",
-               me.name, source_p->name, resv_p->name, resv_p->reason);
-	       
-    sendto_realops_flags(UMODE_ALL, L_ALL,
-                         "%s has placed a local RESV on channel: %s [%s]",
-             	         get_oper_name(source_p),
-		         resv_p->name, resv_p->reason);
+
+    sendto_one(source_p, ":%s NOTICE %s :A local RESV has been placed on "
+               "channel: %s [%s]", me.name, source_p->name, resv_p->name,
+               resv_p->reason);
+
+    sendto_realops_flags(UMODE_ALL, L_ALL, "%s has placed a local RESV on "
+                         "channel: %s [%s]", get_oper_name(source_p),
+                         resv_p->name, resv_p->reason);
   }
-  else if(clean_resv_nick(parv[1]))
+  else if (clean_resv_nick(parv[1]))
   {
     struct ResvNick *resv_p;
 
-    if((strchr(parv[1], '*') || strchr(parv[1], '?')) && !IsAdmin(source_p))
+    if ((strchr(parv[1], '*') || strchr(parv[1], '?')) && !IsAdmin(source_p))
     {
-      sendto_one(source_p,
-                 ":%s NOTICE %s :You must be an admin to perform a wildcard RESV",
-		 me.name, source_p->name);
+      sendto_one(source_p, ":%s NOTICE %s :You must be an admin to perform "
+                 "a wildcard RESV", me.name, source_p->name);
       return;
     }
 
-    resv_p = create_nick_resv(parv[1], parv[2], 0);
-
-    if(!(resv_p))
+    if ((resv_p = create_nick_resv(parv[1], parv[2], 0)) == NULL)
     {
-      sendto_one(source_p,
-                 ":%s NOTICE %s :A RESV has already been placed on nick: %s",
-		 me.name, source_p->name, parv[1]);
+      sendto_one(source_p, ":%s NOTICE %s :A RESV has already been placed "
+                 "on nick: %s", me.name, source_p->name, parv[1]);
       return;
     }
 
-    sendto_one(source_p,
-               ":%s NOTICE %s :A local RESV has been placed on nick: %s [%s]",
-	       me.name, source_p->name,
-	       resv_p->name, resv_p->reason);
-
-    sendto_realops_flags(UMODE_ALL, L_ALL,
-                         "%s has placed a local RESV on nick: %s [%s]",
-			 get_oper_name(source_p),
-			 resv_p->name, resv_p->reason);
-  }			 
+    sendto_one(source_p, ":%s NOTICE %s :A local RESV has been placed on "
+               "nick: %s [%s]", me.name, source_p->name,
+               resv_p->name, resv_p->reason);
+    sendto_realops_flags(UMODE_ALL, L_ALL, "%s has placed a local RESV on "
+                         "nick: %s [%s]", get_oper_name(source_p),
+                         resv_p->name, resv_p->reason);
+  }
   else
-    sendto_one(source_p, 
-              ":%s NOTICE %s :You have specified an invalid resv: [%s]",
-	      me.name, source_p->name, parv[1]);
+    sendto_one(source_p, ":%s NOTICE %s :You have specified an invalid "
+               "resv: [%s]", me.name, source_p->name, parv[1]);
 }
 
-/*
- * mo_unresv()
- *     parv[0] = sender prefix
- *     parv[1] = channel/nick to unforbid
+/* mo_unresv()
+ *   parv[0] = sender prefix
+ *   parv[1] = channel/nick to unforbid
  */
-
 static void mo_unresv(struct Client *client_p, struct Client *source_p,
                       int parc, char *parv[])
 {
-  if(IsChannelName(parv[1]))
+  if (IsChannelName(parv[1]))
   {
     struct ResvChannel *resv_p;
-    
-    if(!ResvChannelList || 
-       !(resv_p = (struct ResvChannel *)hash_find_resv(parv[1])))
+
+    if (resv_channel_list.head == NULL ||
+       !(resv_p = hash_find_resv(parv[1])))
     {
-      sendto_one(source_p, 
-                 ":%s NOTICE %s :A RESV does not exist for channel: %s",
-	         me.name, source_p->name, parv[1]);
+      sendto_one(source_p, ":%s NOTICE %s :A RESV does not exist for "
+                 "channel: %s", me.name, source_p->name, parv[1]);
       return;
     }
-  
-    else if(resv_p->conf)
+    else if (resv_p->conf)
     {
-      sendto_one(source_p,
-         ":%s NOTICE %s :The RESV for channel: %s is in the config file and must be removed by hand.",
+      sendto_one(source_p, ":%s NOTICE %s :The RESV for channel: %s is "
+                 "in the config file and must be removed by hand.",
                  me.name, source_p->name, parv[1]);
       return;	       
     }
@@ -175,47 +157,39 @@ static void mo_unresv(struct Client *client_p, struct Client *source_p,
     {
       delete_channel_resv(resv_p);
 
-      sendto_one(source_p,
-                 ":%s NOTICE %s :The local RESV has been removed on channel: %s",
-  	         me.name, source_p->name, parv[1]);
-		 
-      sendto_realops_flags(UMODE_ALL, L_ALL,
-                           "%s has removed the local RESV for channel: %s",
-	  		   get_oper_name(source_p), parv[1]);
-	      
+      sendto_one(source_p, ":%s NOTICE %s :The local RESV has been removed "
+                 "on channel: %s", me.name, source_p->name, parv[1]);
+      sendto_realops_flags(UMODE_ALL, L_ALL, "%s has removed the local RESV "
+                           "for channel: %s", get_oper_name(source_p), parv[1]);
     }
   }
-  else if(clean_resv_nick(parv[1]))
+  else if (clean_resv_nick(parv[1]))
   {
     struct ResvNick *resv_p;
 
-    if(!ResvNickList || !(resv_p = return_nick_resv(parv[1])))
+    if (resv_nick_list.head == NULL ||
+        !(resv_p = return_nick_resv(parv[1])))
     {
-      sendto_one(source_p,
-                 ":%s NOTICE %s :A RESV does not exist for nick: %s",
-		 me.name, source_p->name, parv[1]);
+      sendto_one(source_p, ":%s NOTICE %s :A RESV does not exist for nick: %s",
+                 me.name, source_p->name, parv[1]);
       return;
     }
-
-    else if(resv_p->conf)
+    else if (resv_p->conf)
     {
-      sendto_one(source_p,
-         ":%s NOTICE %s :The RESV for nick: %s is in the config file and must be removed by hand.",
-	         me.name, source_p->name, parv[1]);
+      sendto_one(source_p, ":%s NOTICE %s :The RESV for nick: %s is in the "
+                 "config file and must be removed by hand.",
+                 me.name, source_p->name, parv[1]);
       return;
     }
-
     else
     {
       delete_nick_resv(resv_p);
 
-      sendto_one(source_p,
-                 ":%s NOTICE %s :The local RESV has been removed on nick: %s",
-		 me.name, source_p->name, parv[1]);
-
-      sendto_realops_flags(UMODE_ALL, L_ALL,
-                           "%s has removed the local RESV for nick: %s",
-			   get_oper_name(source_p), parv[1]);
+      sendto_one(source_p, ":%s NOTICE %s :The local RESV has been removed "
+                 "on nick: %s", me.name, source_p->name, parv[1]);
+      sendto_realops_flags(UMODE_ALL, L_ALL, "%s has removed the local RESV "
+                           "for nick: %s", get_oper_name(source_p), parv[1]);
     }
   }
 }
+
