@@ -1,3 +1,15 @@
+db          2002/10/29 15:14:37 EST	(20021029_1)
+
+  Modified files:
+    doc                  challenge.txt 
+  Log:
+  - updated challenge.txt, this never got updated properly
+  
+  Revision  Changes    Path
+  1.10      +333 -333  ircd-hybrid-7/doc/challenge.txt
+
+
+
 bill        2002/10/29 14:38:22 EST	(20021029_0)
 
   Modified files:
@@ -32734,4 +32746,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4080 2002/10/29 19:38:25 bill Exp $
+$Id: ChangeLog,v 7.4081 2002/10/29 20:14:39 db Exp $
