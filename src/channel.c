@@ -34,7 +34,7 @@
  *                mode * -p etc. if flag was clear
  *
  *
- * $Id: channel.c,v 7.72 2000/11/17 01:03:36 toot Exp $
+ * $Id: channel.c,v 7.73 2000/11/17 18:03:01 toot Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -617,7 +617,7 @@ int can_send(struct Channel *chptr, struct Client *who)
   if( lp = find_user_link(chptr->members, who) )
     {
       /* +o/+v can always talk */
-      if (lp->flags & CHFL_CHANOP|CHFL_VOICE)
+      if (lp->flags & (CHFL_CHANOP|CHFL_VOICE))
         return 0;
 
       if (chptr->mode.mode & MODE_MODERATED)

@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.28 2000/11/08 23:57:40 ejb Exp $
+ * $Id: ircd_parser.y,v 1.29 2000/11/17 18:03:02 toot Exp $
  */
 
 %{
@@ -137,6 +137,7 @@ int   class_sendq_var;
 %token  WARN
 %token  GENERAL
 %token  QUIET_ON_BAN
+%token  MODERATE_NICKCHANGE
 %token  FAILED_OPER_NOTICE
 %token  SHOW_FAILED_OPER_ID
 %token  ANTI_NICK_FLOOD
@@ -1160,8 +1161,8 @@ general_entry:      GENERAL
 general_items:      general_items general_item |
                     general_item
 
-general_item:       general_quiet_on_ban | general_failed_oper_notice |
-                    general_show_failed_oper_id |
+general_item:       general_quiet_on_ban | general_moderate_nickchange |
+                    general_failed_oper_notice | general_show_failed_oper_id |
                     general_anti_nick_flood | general_max_nick_time | general_max_nick_changes |
                     general_ts_warn_delta | general_ts_max_delta | general_kline_with_reason |
                     general_kline_with_connection_closed | general_warn_no_nline |
@@ -1181,6 +1182,16 @@ general_quiet_on_ban:   QUIET_ON_BAN '=' TYES ';'
                         QUIET_ON_BAN '=' TNO ';'
   {
     ConfigFileEntry.quiet_on_ban = 0;
+  } ;
+
+general_moderate_nickchange:   MODERATE_NICKCHANGE '=' TYES ';'
+  {
+    ConfigFileEntry.moderate_nickchange = 1;
+  }
+                        |
+                        MODERATE_NICKCHANGE '=' TNO ';'
+  {
+    ConfigFileEntry.moderate_nickchange = 0;
   } ;
 
 general_failed_oper_notice:   FAILED_OPER_NOTICE '=' TYES ';'
