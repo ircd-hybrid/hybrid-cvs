@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_debug.c,v 7.76 2003/05/01 19:42:26 michael Exp $
+ *  $Id: s_debug.c,v 7.77 2003/05/03 12:14:03 michael Exp $
  */
 
 #include "stdinc.h"
@@ -36,6 +36,7 @@
 #include "list.h"
 #include "numeric.h"
 #include "res.h"
+#include "resv.h"
 #include "s_conf.h"
 #include "s_log.h"
 #include "scache.h"
@@ -193,6 +194,8 @@ count_memory(struct Client *source_p)
 
   u_long client_hash_table_size = 0;
   u_long channel_hash_table_size = 0;
+  u_long resv_hash_table_size = 0;
+  u_long id_hash_table_size = 0;
   u_long total_channel_memory = 0;
   u_long totww = 0;
 
@@ -328,6 +331,13 @@ count_memory(struct Client *source_p)
              me.name, RPL_STATSDEBUG, source_p->name,
 	     dlink_list_length(&ConfigItemList), (int)conf_memory);
 
+  sendto_one(source_p, ":%s %d %s z :Resv channels %lu(%lu) nicks %lu(%lu)",
+             me.name, RPL_STATSDEBUG, source_p->name,
+             dlink_list_length(&resv_channel_list),
+             dlink_list_length(&resv_channel_list)*sizeof(struct ResvChannel),
+             dlink_list_length(&resv_nick_list),
+             dlink_list_length(&resv_nick_list)*sizeof(struct ResvNick));
+
   sendto_one(source_p, ":%s %d %s z :Classes %u(%lu)",
              me.name, RPL_STATSDEBUG, source_p->name,
 	     class_count, (unsigned long)class_count*sizeof(struct Class));
@@ -369,11 +379,14 @@ count_memory(struct Client *source_p)
 
   client_hash_table_size  = hash_get_client_table_size();
   channel_hash_table_size = hash_get_channel_table_size();
+  resv_hash_table_size    = hash_get_resv_table_size();
+  id_hash_table_size      = hash_get_id_table_size();
 
-  sendto_one(source_p, ":%s %d %s z :Hash: client %u(%lu) chan %u(%lu)",
+  sendto_one(source_p, ":%s %d %s z :Hash: client %u(%lu) chan %u(%lu) resv %u(%lu) id %u(%lu)",
              me.name, RPL_STATSDEBUG, source_p->name,
              U_MAX, client_hash_table_size,
-             CH_MAX, channel_hash_table_size);
+             CH_MAX, channel_hash_table_size , R_MAX,
+             resv_hash_table_size, U_MAX, id_hash_table_size);
 
   sendto_one(source_p, ":%s %d %s z :linebuf %d(%d)",
              me.name, RPL_STATSDEBUG, source_p->name,
@@ -392,19 +405,18 @@ count_memory(struct Client *source_p)
              number_ips_stored,
              (int)mem_ips_stored);
 
-  total_memory = totww + total_channel_memory + conf_memory +
-    class_count * sizeof(struct Class);
+  total_memory = totww + total_channel_memory + conf_memory + class_count * sizeof(struct Class);
   total_memory += client_hash_table_size;
   total_memory += channel_hash_table_size;
-
+  total_memory += resv_hash_table_size;
+  total_memory += id_hash_table_size;
   total_memory += mem_servers_cached;
-  sendto_one(source_p, ":%s %d %s z :Total: whowas %d channel %d conf %d",
-             me.name, RPL_STATSDEBUG, source_p->name,
-	     (int)totww,
-	     (int)total_channel_memory,
-             (int)conf_memory);
 
-  count_local_client_memory( &local_client_count,
+  sendto_one(source_p, ":%s %d %s z :Total: whowas %d channel %d conf %d",
+             me.name, RPL_STATSDEBUG, source_p->name, (int)totww,
+	     (int)total_channel_memory, (int)conf_memory);
+
+  count_local_client_memory(&local_client_count,
 			     (int *)&local_client_memory_used );
   total_memory += local_client_memory_used;
   sendto_one(source_p, ":%s %d %s z :Local client Memory in use: %d(%d)",

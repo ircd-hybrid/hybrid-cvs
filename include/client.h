@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.182 2003/05/02 09:27:42 michael Exp $
+ *  $Id: client.h,v 7.183 2003/05/03 12:14:01 michael Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -121,8 +121,8 @@ struct Client
   dlink_node node;
   dlink_node lnode;      /* Used for Server->servers/users */
 
-  struct Client*    hnext;
-  struct Client*    idhnext;
+  slink_node snode;
+  slink_node idsnode;
 
   struct User*      user;       /* ...defined, if this is a User */
   struct Server*    serv;       /* ...defined, if this is a server */

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.269 2003/04/23 15:04:41 adx Exp $
+ *  $Id: ircd.c,v 7.270 2003/05/03 12:14:03 michael Exp $
  */
 
 #include "stdinc.h"
@@ -615,11 +615,11 @@ main(int argc, char *argv[])
   initialize_message_files();
   linebuf_init();       /* set up some linebuf stuff to control paging */
   dbuf_init();
-  init_hash();
+  init_hash_tables();
   id_init();
-  clear_scache_hash_table();    /* server cache name table */
-  init_ip_hash_table();        /* client host ip hash table */
-  init_host_hash();             /* Host-hashtable. */
+  clear_scache_hash_table(); /* server cache name table */
+  init_ip_hash_table();      /* client host ip hash table */
+  init_host_hash();          /* Host-hashtable. */
   clear_hash_parse();
   init_client();
   initUser();

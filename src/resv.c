@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: resv.c,v 7.19 2003/05/03 11:10:05 michael Exp $
+ *  $Id: resv.c,v 7.20 2003/05/03 12:14:03 michael Exp $
  */
 
 #include "stdinc.h"
@@ -69,7 +69,6 @@ struct ResvNick *
 create_nick_resv(char *name, char *reason, unsigned char conf)
 {
   struct ResvNick *resv_p;
-  int len;
 
   if (name == NULL || reason == NULL)
     return(NULL);

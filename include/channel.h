@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.129 2003/05/01 15:53:32 michael Exp $
+ *  $Id: channel.h,v 7.130 2003/05/03 12:14:01 michael Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -38,16 +38,17 @@ struct Client;
 
 struct Mode
 {
-  unsigned int  mode;
-  int   limit;
-  char  key[KEYLEN];
+  unsigned int mode;
+  int limit;
+  char key[KEYLEN];
 };
 
 /* channel structure */
 
 struct Channel
 {
-  dlink_node	  node;
+  dlink_node node;
+  slink_node snode;
   struct Channel* hnextch;
   struct Mode     mode;
   char            *topic;
