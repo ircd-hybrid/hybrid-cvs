@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.270 2002/05/24 23:34:45 androsyn Exp $
+ *  $Id: client.c,v 7.271 2002/05/30 20:13:59 leeh Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -291,7 +291,7 @@ check_pings_list(dlink_list *list)
 
               DupString(aconf->host, client_p->host);
               DupString(aconf->passwd, "idle exceeder");
-              DupString(aconf->name, client_p->username);
+              DupString(aconf->user, client_p->username);
               aconf->port = 0;
               aconf->hold = CurrentTime + 60;
               add_temp_kline(aconf);
