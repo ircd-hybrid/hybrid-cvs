@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_bsd.h,v 7.13 2000/11/03 20:35:41 adrian Exp $
+ *   $Id: s_bsd.h,v 7.14 2000/11/03 22:17:37 adrian Exp $
  *
  */
 #ifndef INCLUDED_s_bsd_h
@@ -65,6 +65,8 @@ extern void  comm_checktimeouts(void *);
 extern void  comm_connect_tcp(int, const char *, u_short,
                  struct sockaddr *, int, CNCB *, void *);
 extern const char * comm_errstr(int status);
+extern int   comm_open(int family, int sock_type, int proto,
+                 const char *note);
 
 /* These must be defined in the network IO loop code of your choice */
 extern void  comm_setselect(int fd, unsigned int type, PF *handler, 

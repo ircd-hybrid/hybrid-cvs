@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: ircdauth.c,v 7.9 2000/10/26 07:57:49 db Exp $
+ *   $Id: ircdauth.c,v 7.10 2000/11/03 22:17:41 adrian Exp $
  */
 
 #include <stdio.h>
@@ -97,7 +97,8 @@ ConnectToIAuth()
 	register struct hostent *hostptr;
 	struct in_addr *ptr;
 
-	if ((iAuth.socket = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+	iAuth.socket = comm_open(AF_INET, SOCK_STREAM, 0, "iAuth socket");
+	if (iAuth.socket < 0)
 	{
 		log(L_ERROR,
 			"ConnectToIAuth(): Unable to open stream socket: %s",
@@ -105,7 +106,6 @@ ConnectToIAuth()
 		iAuth.socket = NOSOCK;
 		return(NOSOCK);
 	}
-        fd_open(iAuth.socket, FD_SOCKET, "iAuth socket");
 
 	if ((hostptr = gethostbyname(iAuth.hostname)) == NULL)
 	{

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.56 2000/11/03 20:35:45 adrian Exp $
+ *  $Id: s_bsd.c,v 7.57 2000/11/03 22:17:42 adrian Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -892,4 +892,40 @@ comm_errstr(int error)
     if (error < 0 || error >= COMM_ERR_MAX)
         return "Invalid error number!";
     return comm_err_str[error];
+}
+
+
+/*
+ * comm_open() - open a socket
+ *
+ * This is a highly highly cut down version of squid's comm_open() which
+ * for the most part emulates socket(), *EXCEPT* it fails if we're about
+ * to run out of file descriptors.
+ */
+int
+comm_open(int family, int sock_type, int proto, const char *note)
+{
+    int fd;
+    /* First, make sure we aren't going to run out of file descriptors */
+    if (number_fd >= MASTER_MAX)
+        return ENFILE;
+
+    /*
+     * Next, we try to open the socket. We *should* drop the reserved FD
+     * limit if/when we get an error, but we can deal with that later.
+     * XXX !!! -- adrian
+     */
+    fd = socket(family, sock_type, proto);
+    if (fd < -1)
+        return -1; /* errno will be passed through, yay.. */
+
+    /* Next, update things in our fd tracking */
+    fd_open(fd, FD_SOCKET, note);
+
+    /*
+     * Here we can do stuff like set non-block, no-delay, tweak the
+     * recvbuf, etc, but there's no point right now.
+     *   -- adrian
+     */
+    return fd;
 }

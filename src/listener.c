@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: listener.c,v 7.9 2000/10/26 15:04:29 db Exp $
+ *  $Id: listener.c,v 7.10 2000/11/03 22:17:41 adrian Exp $
  */
 #include "listener.h"
 #include "client.h"
@@ -139,9 +139,9 @@ static int inetport(struct Listener* listener)
    * At first, open a new socket
    */
 #ifdef IPV6
-  fd = socket(AF_INET6, SOCK_STREAM, 0);
+  fd = comm_open(AF_INET6, SOCK_STREAM, 0, "IPv6 Listener socket");
 #else
-  fd = socket(AF_INET, SOCK_STREAM, 0);
+  fd = comm_open(AF_INET, SOCK_STREAM, 0, "Listener socket");
 #endif
 
   if (-1 == fd) {
@@ -156,7 +156,6 @@ static int inetport(struct Listener* listener)
     close(fd);
     return 0;
   }
-  fd_open(fd, FD_SOCKET, "Listener socket");
   /* 
    * XXX - we don't want to do all this crap for a listener
    * set_sock_opts(listener);

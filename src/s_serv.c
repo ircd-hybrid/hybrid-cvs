@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.37 2000/11/03 18:54:12 adrian Exp $
+ *   $Id: s_serv.c,v 7.38 2000/11/03 22:17:42 adrian Exp $
  */
 #include "s_serv.h"
 #include "channel.h"
@@ -1119,7 +1119,7 @@ serv_connect(struct ConfItem *aconf, struct Client *by)
     /* XXX we should make sure we're not already connected! */
 
     /* create a socket for the server connection */ 
-    if ((fd = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+    if ((fd = comm_open(AF_INET, SOCK_STREAM, 0, aconf->name)) < 0) {
         /* Eek, failure to create the socket */
         report_error("opening stream socket to %s: %s", aconf->name, errno);
         return 0;
@@ -1129,9 +1129,6 @@ serv_connect(struct ConfItem *aconf, struct Client *by)
         close(fd); /* Haven't fd_open()ed yet */
         return 0;
     }
-
-    /* Tag it in the FD tracking code */
-    fd_open(fd, FD_SOCKET, aconf->name);
 
     /* Create a client */
     cptr = make_client(NULL);
