@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.133 2002/04/25 19:37:46 leeh Exp $
+ *  $Id: m_sjoin.c,v 1.134 2002/04/26 10:52:10 leeh Exp $
  */
 
 #include "tools.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.133 $";
+const char *_version = "$Revision: 1.134 $";
 #endif
 /*
  * ms_sjoin
@@ -269,6 +269,17 @@ static void ms_sjoin(struct Client *client_p,
 
       newts = (oldts==0) ? oldts : 800000000;
     }
+#else
+
+  if(!isnew && !newts && oldts)
+  {
+    sendto_channel_local(ALL_MEMBERS, chptr,
+ 		":%s NOTICE %s :*** Notice -- TS for %s changed from %lu to 0",
+		me.name, chptr->chname, chptr->chname, oldts);
+    sendto_realops_flags(FLAGS_ALL, L_ALL,
+		         "Server %s changing TS on %s from %lu to 0",
+			 source_p->name, chptr->chname, oldts);
+  }
 #endif
 
   /*
@@ -336,6 +347,9 @@ static void ms_sjoin(struct Client *client_p,
   if (!keep_our_modes)
     {
       remove_our_modes(hide_or_not, chptr, top_chptr, source_p);
+      sendto_channel_local(ALL_MEMBERS, chptr,
+	    ":%s NOTICE %s :*** Notice -- TS for %s changed from %lu to %lu",
+	    me.name, chptr->chname, chptr->chname, oldts, newts);
     }
      
   if (*modebuf != '\0')
