@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_away.c,v 1.28 2002/03/07 06:21:44 db Exp $
+ *  $Id: m_away.c,v 1.29 2002/04/27 17:59:28 leeh Exp $
  */
 
 #include "handlers.h"
@@ -33,6 +33,7 @@
 #include "modules.h"
 #include "s_conf.h"
 #include "s_serv.h"
+#include "packet.h"
 
 #include <stdlib.h>
 
@@ -54,7 +55,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&away_msgtab);
 }
-const char *_version = "$Revision: 1.28 $";
+const char *_version = "$Revision: 1.29 $";
 #endif
 /***********************************************************************
  * m_away() - Added 14 Dec 1988 by jto. 
@@ -78,6 +79,9 @@ static void m_away(struct Client *client_p,
                   char *parv[])
 {
   char  *away, *awy2 = parv[1];
+
+  if(MyClient(source_p) && !IsFloodDone(source_p))
+    flood_endgrace(source_p);
 
   /* make sure the user exists */
   if (!(source_p->user))

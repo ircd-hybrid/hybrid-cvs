@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_mode.c,v 1.50 2002/04/18 13:15:52 leeh Exp $
+ *  $Id: m_mode.c,v 1.51 2002/04/27 17:59:31 leeh Exp $
  */
 
 #include "tools.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
 }
 
 
-const char *_version = "$Revision: 1.50 $";
+const char *_version = "$Revision: 1.51 $";
 #endif
 /*
  * m_mode - MODE command handler
@@ -205,7 +205,8 @@ static void m_mode(struct Client *client_p, struct Client *source_p,
   else if((ptr = find_user_link(&chptr->deopped, source_p)) == NULL)
   {
     /* Finish the flood grace period... */
-    SetFloodDone(source_p);
+    if(MyClient(source_p) && !IsFloodDone(source_p))
+      flood_endgrace(source_p);
 
     set_channel_mode(client_p, source_p, chptr, parc - n, parv + n, 
                      root->chname);

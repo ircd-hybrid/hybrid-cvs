@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_topic.c,v 1.49 2002/04/13 11:46:06 leeh Exp $
+ *  $Id: m_topic.c,v 1.50 2002/04/27 17:59:28 leeh Exp $
  */
 
 #include "tools.h"
@@ -38,6 +38,7 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
+#include "packet.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -63,7 +64,7 @@ _moddeinit(void)
   mod_del_cmd(&topic_msgtab);
 }
 
-const char *_version = "$Revision: 1.49 $";
+const char *_version = "$Revision: 1.50 $";
 #endif
 /*
  * m_topic
@@ -81,6 +82,9 @@ static void m_topic(struct Client *client_p,
   
   if ((p = strchr(parv[1],',')))
     *p = '\0';
+
+  if(MyClient(source_p) && !IsFloodDone(source_p))
+    flood_endgrace(source_p);
 
   if (parv[1] && IsChannelName(parv[1]))
     {

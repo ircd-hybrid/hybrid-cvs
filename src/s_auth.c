@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.91 2002/04/23 14:26:29 leeh Exp $
+ *  $Id: s_auth.c,v 7.92 2002/04/27 17:59:34 leeh Exp $
  */
 
 /*
@@ -193,7 +193,7 @@ static void release_auth_client(struct Client* client)
    * us. This is what read_packet() does.
    *     -- adrian
    */
-  client->localClient->allow_read = MAX_FLOOD_PER_SEC;
+  client->localClient->allow_read = MAX_FLOOD;
   comm_setflush(client->localClient->fd, 1000, flood_recalc, client);
   add_client_to_list(client);
   read_packet(client->localClient->fd, client);

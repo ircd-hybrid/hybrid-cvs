@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_part.c,v 1.53 2002/04/09 00:04:26 db Exp $
+ *  $Id: m_part.c,v 1.54 2002/04/27 17:59:31 leeh Exp $
  */
 
 #include "tools.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&part_msgtab);
 }
-const char *_version = "$Revision: 1.53 $";
+const char *_version = "$Revision: 1.54 $";
 #endif
 
 static void part_one_client(struct Client *client_p,
@@ -102,8 +102,8 @@ static void m_part(struct Client *client_p,
   name = strtoken( &p, parv[1], ",");
 
   /* Finish the flood grace period... */
-  SetFloodDone(source_p);
-  /* if its my client, and isn't an oper */
+  if(MyClient(source_p) && !IsFloodDone(source_p))
+    flood_endgrace(source_p);
 
   while(name)
   {

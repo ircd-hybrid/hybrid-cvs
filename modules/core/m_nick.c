@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nick.c,v 1.88 2002/04/26 15:27:30 leeh Exp $
+ *  $Id: m_nick.c,v 1.89 2002/04/27 17:59:31 leeh Exp $
  */
 
 #include "handlers.h"
@@ -44,6 +44,7 @@
 #include "parse.h"
 #include "modules.h"
 #include "common.h"
+#include "packet.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -98,7 +99,7 @@ _moddeinit(void)
   mod_del_cmd(&client_msgtab);
 }
 
-const char *_version = "$Revision: 1.88 $";
+const char *_version = "$Revision: 1.89 $";
 #endif
 
 /*
@@ -207,7 +208,8 @@ static void mr_nick(struct Client *client_p, struct Client *source_p,
   }
 
   /* mark end of grace period, to prevent nickflooding */
-  SetFloodDone(source_p);
+  if(!IsFloodDone(source_p))
+    flood_endgrace(source_p);
 
   /* terminate nick to NICKLEN */
   strlcpy(nick, parv[1], NICKLEN);

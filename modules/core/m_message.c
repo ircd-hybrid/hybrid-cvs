@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.88 2002/03/07 06:22:03 db Exp $
+ *  $Id: m_message.c,v 1.89 2002/04/27 17:59:30 leeh Exp $
  */
 
 #include "handlers.h"
@@ -122,7 +122,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.88 $";
+const char *_version = "$Revision: 1.89 $";
 #endif
 
 /*
@@ -199,7 +199,8 @@ m_message(int p_or_n,
   }
 
   /* Finish the flood grace period... */
-  SetFloodDone(source_p);
+  if(MyClient(source_p) && !IsFloodDone(source_p))
+    flood_endgrace(source_p);
 
   if (build_target_list(p_or_n, command, client_p, source_p, parv[1],
                         parv[2]) < 0)
