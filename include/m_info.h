@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.h,v 7.15 2000/11/30 22:48:00 davidt Exp $
+ * $Id: m_info.h,v 7.16 2000/12/05 02:24:19 db Exp $
  */
 #ifndef INCLUDED_m_info_h
 #define INCLUDED_m_info_h
@@ -247,18 +247,6 @@ Info MyInformation[] = {
 #else
   { "PPATH", "NONE", 0, "Path to Pid File" },
 #endif /* PPATH */
-
-#ifdef REJECT_HOLD
-  { "REJECT_HOLD", "ON", 0, "Do not Dump a K-lined Client immediately" },
-#else
-  { "REJECT_HOLD", "OFF", 0, "Do not Dump a K-lined Client immediately" },
-#endif /* REJECT_HOLE */
-
-#ifdef REJECT_HOLD_TIME
-  { "REJECT_HOLD_TIME", "", REJECT_HOLD_TIME, "Amount of Time to Hold a K-lined Client" },
-#else
-  { "REJECT_HOLD_TIME", "OFF", 0, "Amount of Time to Hold a K-lined Client" },
-#endif /* REJECT_HOLD_TIME */
 
 #ifdef REPORT_DLINE_TO_USER
   { "REPORT_DLINE_TO_USER", "ON", 0, "Inform Clients They are D-lined" },
