@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.68 2001/06/01 00:55:57 davidt Exp $
+ *   $Id: m_message.c,v 1.69 2001/06/10 00:03:17 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -669,10 +669,11 @@ static void msg_client(int p_or_n, char *command,
 
   if(MyClient(target_p))
     {
+      /* XXX Controversial? allow opers always to send through a +g */
       if(!IsServer(source_p) && IsSetCallerId(target_p))
 	{
 	  /* Here is the anti-flood bot/spambot code -db */
-	  if(accept_message(source_p,target_p))
+	  if(accept_message(source_p,target_p) || IsOper(source_p))
 	    {
 	      sendto_one(target_p, ":%s!%s@%s %s %s :%s",
 			 source_p->name,
