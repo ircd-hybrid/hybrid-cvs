@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.277 2003/05/28 21:11:57 bill Exp $
+ *  $Id: s_user.c,v 7.278 2003/05/29 07:42:05 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -1322,7 +1322,7 @@ oper_up(struct Client *source_p, struct ConfItem *aconf)
  */
 
 static char new_uid[TOTALSIDUID+1];     /* allow for \0 */
-static void add_one_to_uid(int index);
+static void add_one_to_uid(int i);
   
 /*
  * uid_init()
