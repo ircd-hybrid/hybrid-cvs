@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.37 2003/06/09 20:48:25 bill Exp $
+ *   $Id: m_operspy.c,v 1.38 2003/06/09 23:23:58 bill Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -53,7 +53,10 @@
 #include "hash.h"
 
 /* enable per-oper logging of OPERSPY functions */
-#define LOG_OPERSPY
+#define OPERSPY_LOG
+
+/* enable this to send incoming operspy usage to connected +y (UMODE_SPY) opers */
+#define OPERSPY_NOTICE
 
 /* enable OPERSPY version of LIST */
 #define OPERSPY_LIST
@@ -78,10 +81,9 @@
 /*
  * The commands we will add
  */
-static void m_operspy(struct Client *client_p, struct Client *source_p,
-                       int parc, char *parv[]);
-static void mo_operspy(struct Client *client_p, struct Client *source_p,
-                       int parc, char *parv[]);
+static void m_operspy(struct Client *, struct Client *, int, char **);
+static void ms_operspy(struct Client *, struct Client *, int, char **);
+static void mo_operspy(struct Client *, struct Client *, int, char **);
 
 /* extensions for OPERSPY WHO */
 #ifdef OPERSPY_WHO
@@ -96,8 +98,8 @@ static void do_who_on_channel(struct Client *source_p, struct Channel *chptr,
 #endif
 
 struct Message operspy_msgtab = {
-  "OPERSPY", 0, 0, 0, 0, MFLG_SLOW|MFLG_HIDDEN, 0,
-  {m_ignore, m_operspy, m_operspy, mo_operspy, m_ignore}
+  "OPERSPY", 0, 0, 0, 0, MFLG_HIDDEN, 0,
+  {m_ignore, m_operspy, ms_operspy, mo_operspy, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -112,11 +114,11 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.37 $";
+const char *_version = "$Revision: 1.38 $";
 #endif
 
-#ifdef LOG_OPERSPY
-static void log_operspy(struct Client *, const char *, const char *);
+#ifdef OPERSPY_LOG
+static void operspy_log(struct Client *, const char *, const char *);
 #endif
 
 /*
@@ -139,6 +141,37 @@ m_operspy(struct Client *client_p, struct Client *source_p,
   sendto_one(client_p, ":%s %d %s %s :Unknown command",
              me.name, ERR_UNKNOWNCOMMAND, client_p->name,
              operspy);
+}
+
+static void
+ms_operspy(struct Client *client_p, struct Client *source_p,
+           int parc, char *parv[])
+{   
+#ifdef OPERSPY_LOGFILE
+  FBFILE *log_fb;
+  char logfile[BUFSIZE], linebuf[BUFSIZE];
+ 
+  ircsprintf(logfile, "%s/operspy.remote.log", LOGPATH);
+  if ((log_fb = fbopen(logfile, "a")) == NULL)
+  {
+#ifdef OPERSPY_NOTICE
+    sendto_realops_flags(UMODE_ADMIN, L_ALL, "Failed to open remote operspy logfile");
+#endif
+    return;
+  }   
+
+  ircsprintf(linebuf, "[%s] %s -- OPERSPY %s :%s\n",
+             smalldate(CurrentTime),
+             get_oper_name(source_p),
+             parv[1], parv[2]);
+  fbputs(linebuf, log_fb);
+  fbclose(log_fb);
+#endif
+
+#ifdef OPERSPY_NOTICE
+  sendto_realops_flags(UMODE_SPY, L_ALL, "Received OPERSPY message from %s -- %s :%s",
+                       get_oper_name(source_p), parv[1], parv[2]);
+#endif
 }
 
 /*
@@ -230,8 +263,8 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
     sendto_one(client_p, form_str(RPL_LISTEND),
                me.name, client_p->name);
 
-#ifdef LOG_OPERSPY
-    log_operspy(client_p, "LIST", parv[2]);
+#ifdef OPERSPY_LOG
+    operspy_log(client_p, "LIST", parv[2]);
 #endif
     return;
   }
@@ -271,8 +304,8 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
     sendto_one(client_p, form_str(RPL_CREATIONTIME),
                me.name, parv[0], parv[2], chptr_mode->channelts);
 
-#ifdef LOG_OPERSPY
-    log_operspy(client_p, "MODE", parv[2]);
+#ifdef OPERSPY_LOG
+    operspy_log(client_p, "MODE", parv[2]);
 #endif
     return;
   }
@@ -305,8 +338,8 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
     channel_member_names(client_p, chptr_names, 1);
     remove_user_from_channel(chptr_names, client_p);
 
-#ifdef LOG_OPERSPY
-    log_operspy(client_p, "NAMES", parv[2]);
+#ifdef OPERSPY_LOG
+    operspy_log(client_p, "NAMES", parv[2]);
 #endif
     return;
   }
@@ -334,8 +367,8 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
                  chptr_topic->topic_time);
     }
 
-#ifdef LOG_OPERSPY
-    log_operspy(client_p, "TOPIC", parv[2]);
+#ifdef OPERSPY_LOG
+    operspy_log(client_p, "TOPIC", parv[2]);
 #endif
     return;
   }
@@ -406,8 +439,8 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
     sendto_one(client_p, form_str(RPL_ENDOFWHO),
                me.name, parv[0], mask);
 
-#ifdef LOG_OPERSPY
-    log_operspy(client_p, "WHO", parv[2]);
+#ifdef OPERSPY_LOG
+    operspy_log(client_p, "WHO", parv[2]);
 #endif
     return;
   }
@@ -482,8 +515,8 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
                  target_p->firsttime);
     sendto_one(client_p, form_str(RPL_ENDOFWHOIS),
                me.name, parv[0], parv[2]);
-#ifdef LOG_OPERSPY
-    log_operspy(client_p, "WHOIS", parv[2]);
+#ifdef OPERSPY_LOG
+    operspy_log(client_p, "WHOIS", parv[2]);
 #endif
     return;
   }
@@ -559,9 +592,9 @@ do_who_on_channel(struct Client *source_p, struct Channel *chptr,
 }
 #endif /* OPERSPY_WHO */
 
-#ifdef LOG_OPERSPY
+#ifdef OPERSPY_LOG
 static void
-log_operspy(struct Client *source_p, const char *command, const char *target)
+operspy_log(struct Client *source_p, const char *command, const char *target)
 {
   FBFILE *operspy_fb;
   dlink_node *cnode;
@@ -593,4 +626,4 @@ log_operspy(struct Client *source_p, const char *command, const char *target)
   sendto_match_servs(source_p, "*", CAP_ENCAP, "ENCAP * OPERSPY %s :%s",
                      command, target);
 }
-#endif /* LOG_OPERSPY */
+#endif /* OPERSPY_LOG */

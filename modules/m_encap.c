@@ -1,6 +1,6 @@
 /*
  *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
- *  m_encap.c: subcommand propogation
+ *  m_encap.c: encapsulated command propogation and parsing
  *
  *  Copyright (C) 2003 by the past and present ircd coders, and others.
  *
@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_encap.c,v 1.6 2003/06/09 20:48:30 bill Exp $
+ *  $Id: m_encap.c,v 1.7 2003/06/09 23:24:01 bill Exp $
  */
 
 #include "stdinc.h"
@@ -55,7 +55,7 @@ _moddeinit(void)
   mod_del_cmd(&encap_msgtab);
   delete_capability("ENCAP");
 }
-const char *_version = "$Revision: 1.6 $";
+const char *_version = "$Revision: 1.7 $";
 #endif
 
 /*
@@ -70,6 +70,7 @@ ms_encap(struct Client *client_p, struct Client *source_p, int parc, char *parv[
 {
   char buffer[BUFSIZE], *ptr = buffer;
   unsigned int cur_len = 0, len, i;
+  int paramcount, mpara = 0;
   struct Message *mptr = NULL;
   MessageHandler handler = 0;
 
@@ -107,12 +108,24 @@ ms_encap(struct Client *client_p, struct Client *source_p, int parc, char *parv[
   if (!match(parv[1], me.name))
     return;
 
-  mptr = find_encap(parv[2]);
+  mptr = find_command(parv[2]);
   if ((mptr == NULL) || (mptr->cmd == NULL))
     return;
 
+  paramcount = mptr->parameters;
+  mpara      = mptr->maxpara;
+
+  mptr->bytes += strlen(buffer);
+
+  /*
+   * yes this is an ugly hack, but it is quicker than copying the entire array again
+   * note: this hack wouldnt be needed if parv[0] were set to the command name, rather
+   * than being derived from the prefix, as it should have been from the beginning.
+   */
+  ptr = parv[0];
   parv+=2;
   parc-=2;
+  parv[0] = ptr;
 
   if ((handler = mptr->handlers[2]) == NULL)
     return;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: msg.h,v 7.46 2003/06/09 20:48:29 bill Exp $
+ *  $Id: msg.h,v 7.47 2003/06/09 23:24:00 bill Exp $
  */
 
 #ifndef INCLUDED_msg_h
@@ -75,7 +75,6 @@ struct Message
 #define   MFLG_HIDDEN		0x008   /* Command is hidden from everyone
 					 * but opers			      
 					 */
-#define   MFLG_ENCAP		0x010	/* Command is a subcommand of encap */
  
 #define MAXPARA    15 
 

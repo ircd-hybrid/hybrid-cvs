@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/contrib
 #
-# $Id: Makefile.in,v 1.49 2003/06/09 20:48:25 bill Exp $
+# $Id: Makefile.in,v 1.50 2003/06/09 23:23:58 bill Exp $
 #
 CC		= @CC@
 RM		= @RM@
@@ -55,7 +55,6 @@ SRCS = \
   m_opme.c      \
   m_tburst.c    \
   m_whois.c     \
-  operspy_log.c	\
   spy_admin_notice.c    \
   spy_info_notice.c     \
   spy_links_notice.c    \

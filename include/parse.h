@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.h,v 7.18 2003/06/09 20:48:29 bill Exp $
+ *  $Id: parse.h,v 7.19 2003/06/09 23:24:00 bill Exp $
  */
 
 #ifndef INCLUDED_parse_h
@@ -32,7 +32,7 @@ extern void parse(struct Client *, char *, char *);
 extern void clear_hash_parse(void);
 extern void mod_add_cmd(struct Message *);
 extern void mod_del_cmd(struct Message *);
-extern struct Message *find_encap(const char *);
+extern struct Message *find_command(const char *);
 extern void report_messages(struct Client *);
 
 #endif /* INCLUDED_parse_h */

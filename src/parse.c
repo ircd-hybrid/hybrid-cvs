@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.177 2003/06/09 20:48:32 bill Exp $
+ *  $Id: parse.c,v 7.178 2003/06/09 23:24:03 bill Exp $
  */
 
 #include "stdinc.h"
@@ -99,7 +99,6 @@ struct MessageTree
 };
 
 static struct MessageTree msg_tree;
-static struct MessageTree encap_tree;
 
 /*
  * NOTE: parse() should not be called recursively by other functions!
@@ -112,7 +111,7 @@ static int cancel_clients(struct Client *, struct Client *, char *);
 static void remove_unknown(struct Client *, char *, char *);
 static void do_numeric(char[], struct Client *, struct Client *, int, char **);
 static void handle_command(struct Message *, struct Client *, struct Client *, unsigned int, char **);
-static struct Message *find_command(const char *);
+struct Message *find_command(const char *);
 static void recurse_report_messages(struct Client *source_p, struct MessageTree *mtree);
 static void add_msg_element(struct MessageTree *mtree_p, struct Message *msg_p, const char *cmd);
 static void del_msg_element(struct MessageTree *mtree_p, const char *cmd);
@@ -408,7 +407,6 @@ void
 clear_hash_parse(void)
 {
   memset(&msg_tree, 0, sizeof(msg_tree));
-  memset(&encap_tree, 0, sizeof(encap_tree));
 }
 
 /* add_msg_element()
@@ -465,7 +463,7 @@ del_msg_element(struct MessageTree *mtree_p, const char *cmd)
     ntree_p->links--;
 
     /* this would be bad if it happened */
-    if (ntree_p != &msg_tree && ntree_p != &encap_tree)
+    if (ntree_p != &msg_tree)
     {
       if (ntree_p->links == 0)
       {
@@ -514,23 +512,11 @@ mod_add_cmd(struct Message *msg)
   if (msg == NULL)
     return;
 
-  if (msg->flags & MFLG_ENCAP)
-  {
-    /* ENCAP already added? */
-    if ((found_msg = msg_tree_parse(msg->cmd, &encap_tree)) != NULL)
-      return;
+  /* command already added? */
+  if ((found_msg = msg_tree_parse(msg->cmd, &msg_tree)) != NULL)
+    return;
 
-    add_msg_element(&encap_tree, msg, msg->cmd);
-  }
-  else
-  {
-    /* regular command, already added? */
-    if ((found_msg = msg_tree_parse(msg->cmd, &msg_tree)) != NULL)
-      return;
-
-    add_msg_element(&msg_tree, msg, msg->cmd);
-  }
-
+  add_msg_element(&msg_tree, msg, msg->cmd);
   msg->count = msg->rcount = msg->bytes = 0;
 }
 
@@ -548,10 +534,7 @@ mod_del_cmd(struct Message *msg)
   if (msg == NULL)
     return;
 
-  if (msg->flags & MFLG_ENCAP)
-    del_msg_element(&encap_tree, msg->cmd);
-  else
-    del_msg_element(&msg_tree, msg->cmd);
+  del_msg_element(&msg_tree, msg->cmd);
 }
 
 /* find_command()
@@ -560,22 +543,10 @@ mod_del_cmd(struct Message *msg)
  * output	- pointer to struct Message
  * side effects - none
  */
-static struct Message *
+struct Message *
 find_command(const char *cmd)
 {
   return(msg_tree_parse(cmd, &msg_tree));
-}
-
-/* find_encap()
- *
- * inputs	- command name
- * outputs	- pointer to struct Message
- * side effects	- none
- */
-struct Message *
-find_encap(const char *cmd)
-{
-  return(msg_tree_parse(cmd, &encap_tree));
 }
 
 /* report_messages()
