@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.76 2000/12/16 22:48:35 db Exp $
+ *   $Id: s_serv.c,v 7.77 2000/12/17 20:36:56 db Exp $
  */
 #include "tools.h"
 #include "s_serv.h"
@@ -1256,6 +1256,11 @@ static unsigned long nextFreeMask()
 
 /*
  * serv_connect() - initiate a server connection
+ *
+ * inputs	- pointer to conf 
+ *		- pointer to client doing the connet
+ * output	-
+ * side effects	-
  *
  * This code initiates a connection to a server. It first checks to make
  * sure the given server exists. If this is the case, it creates a socket,
