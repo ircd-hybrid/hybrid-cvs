@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.202 2001/03/15 20:03:57 db Exp $
+ * $Id: channel.c,v 7.203 2001/03/22 05:51:27 ejb Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -2351,7 +2351,7 @@ void set_channel_mode(struct Client *client_p,
 				   source_p->name, chptr->chname,
 				   modebuf_ex, parabuf_ex);
 
-      sendto_match_cap_servs(chptr, client_p, CAP_EX | CAP_UID,
+      sendto_match_vacap_servs(chptr, client_p, CAP_EX, CAP_UID, 0,
 			     ":%s MODE %s %s %s",
 			     HasID(source_p) ? source_p->user->id : source_p->name,
 			     chptr->chname,
@@ -2385,7 +2385,7 @@ void set_channel_mode(struct Client *client_p,
 				   ":%s MODE %s %s %s",
 				   source_p->name, chptr->chname,
 				   modebuf_invex, parabuf_invex);
-      sendto_match_cap_servs(chptr, client_p, CAP_IE | CAP_UID,
+      sendto_match_vacap_servs(chptr, client_p, CAP_IE, CAP_UID, 0,
 			     ":%s MODE %s %s %s",
 			     HasID(source_p) ? source_p->user->id : source_p->name,
 			     chptr->chname,
@@ -2420,7 +2420,7 @@ void set_channel_mode(struct Client *client_p,
 				   source_p->name, chptr->chname,
 				   modebuf_hops, parabuf_hops);
 	  
-      sendto_match_cap_servs(chptr, client_p, CAP_HOPS | CAP_UID,
+      sendto_match_vacap_servs(chptr, client_p, CAP_HOPS, CAP_UID, 0,
 			     ":%s MODE %s %s %s",
 			     HasID(source_p) ? source_p->user->id : source_p->name,
 			     chptr->chname,
@@ -2465,7 +2465,7 @@ void set_channel_mode(struct Client *client_p,
 				   source_p->name, chptr->chname,
 				   modebuf_aops);
 
-      sendto_match_cap_servs(chptr, client_p, CAP_AOPS | CAP_UID,
+      sendto_match_vacap_servs(chptr, client_p, CAP_AOPS, CAP_UID, 0,
                              ":%s MODE %s %s",
                              HasID(source_p) ? source_p->user->id : source_p->name,
 			     chptr->chname,
