@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_mode.c,v 1.58 2003/05/09 21:38:21 bill Exp $
+ *  $Id: m_mode.c,v 1.59 2003/05/09 22:19:21 michael Exp $
  */
 
 #include "stdinc.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
   mod_del_cmd(&mode_msgtab);
 }
 
-const char *_version = "$Revision: 1.58 $";
+const char *_version = "$Revision: 1.59 $";
 #endif
 
 /*
@@ -73,18 +73,17 @@ static void
 m_mode(struct Client *client_p, struct Client *source_p,
        int parc, char *parv[])
 {
-  struct Channel* chptr=NULL;
-  static char     modebuf[MODEBUFLEN];
-  static char     parabuf[MODEBUFLEN];
-  dlink_node      *ptr;
-  int n = 2;
+  struct Channel *chptr = NULL;
+  static char modebuf[MODEBUFLEN];
+  static char parabuf[MODEBUFLEN];
+  dlink_node *ptr;
 
   if (parv[1][0] == '\0')
-    {
-      sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-                 me.name, parv[0], "MODE");
-      return;
-    }
+  {
+    sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
+               me.name, parv[0], "MODE");
+    return;
+  }
 
   /* Now, try to find the channel in question */
   if (!IsChanPrefix(parv[1][0]))
@@ -136,16 +135,15 @@ m_mode(struct Client *client_p, struct Client *source_p,
     }
 
   /* Now known the channel exists */
-
-  if (parc < n+1)
+  if (parc < 3)
   {
     channel_modes(chptr, source_p, modebuf, parabuf);
     sendto_one(source_p, form_str(RPL_CHANNELMODEIS),
                me.name, parv[0], parv[1],
 	       modebuf, parabuf);
     sendto_one(source_p, form_str(RPL_CREATIONTIME),
-               me.name, parv[0],
-               parv[1], chptr->channelts);
+               me.name, parv[0], parv[1],
+               chptr->channelts);
   }
   /* bounce all modes from people we deop on sjoin */
   else if ((ptr = find_user_link(&chptr->deopped, source_p)) == NULL)
@@ -153,13 +151,13 @@ m_mode(struct Client *client_p, struct Client *source_p,
     /* Finish the flood grace period... */
     if (MyClient(source_p) && !IsFloodDone(source_p))
     {
-      if ((parc == n) && (parv[n-1][0] == 'b') && (parv[n-1][1] == '\0'))
+      if ((parc == 3) && (parv[2][0] == 'b') && (parv[2][1] == '\0'))
         ;
       else
         flood_endgrace(source_p);
     }
 
-    set_channel_mode(client_p, source_p, chptr, parc - n, parv + n, 
+    set_channel_mode(client_p, source_p, chptr, parc - 2, parv + 2,
                      chptr->chname);
   }
 }
