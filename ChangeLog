@@ -1,3 +1,15 @@
+db          2003/01/17 08:06:20 EST	(20030117_11)
+
+  Modified files:
+    .                    RELNOTES 
+  Log:
+  - RELNOTES comment about +pi channels was slightly wrong
+  
+  Revision  Changes    Path
+  1.61      +1 -1      ircd-hybrid-7/RELNOTES
+
+
+
 db          2003/01/17 08:00:55 EST	(20030117_10)
 
   Modified files:
@@ -34190,4 +34202,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4179 2003/01/17 13:00:57 db Exp $
+$Id: ChangeLog,v 7.4180 2003/01/17 13:06:22 db Exp $
