@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: s_serv.h,v 7.11 2000/11/29 23:35:30 db Exp $
+ * $Id: s_serv.h,v 7.12 2000/11/30 16:01:41 db Exp $
  *
  */
 #ifndef INCLUDED_serv_h
@@ -55,9 +55,9 @@ struct Capability
 /*
  * Capability macros.
  */
-#define IsCapable(x, cap)       ((x)->caps & (cap))
-#define SetCapable(x, cap)      ((x)->caps |= (cap))
-#define ClearCap(x, cap)        ((x)->caps &= ~(cap))
+#define IsCapable(x, cap)       ((x)->localClient->caps & (cap))
+#define SetCapable(x, cap)      ((x)->localClient->caps |= (cap))
+#define ClearCap(x, cap)        ((x)->localClient->caps &= ~(cap))
 
 /*
  * Globals

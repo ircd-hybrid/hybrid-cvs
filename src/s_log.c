@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_log.c,v 7.10 2000/11/30 04:11:34 db Exp $
+ *   $Id: s_log.c,v 7.11 2000/11/30 16:01:55 db Exp $
  */
 #include "client.h"	/* Needed for struct Client */
 #include "s_log.h"
@@ -228,8 +228,8 @@ void log_user_exit(struct Client *sptr)
 		       sptr->name,
 		       sptr->username,
 		       sptr->host,
-		       sptr->sendK,
-		       sptr->receiveK);
+		       sptr->localClient->sendK,
+		       sptr->localClient->receiveK);
 
 	    fbputs(linebuf, user_log_fb);
 

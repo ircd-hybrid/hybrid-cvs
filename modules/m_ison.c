@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_ison.c,v 1.3 2000/11/28 03:53:55 bill Exp $
+ *   $Id: m_ison.c,v 1.4 2000/11/30 16:01:46 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -80,9 +80,6 @@ int m_ison(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   ircsprintf(buf, form_str(RPL_ISON), me.name, parv[0]);
   len = strlen(buf);
   current_insert_point = buf + len;
-
-  if (!IsGlobalOper(cptr))
-    cptr->priority +=20; /* this keeps it from moving to 'busy' list */
 
   for (nick = strtoken(&p, parv[1], ","); nick;
        nick = strtoken(&p, NULL, ","))

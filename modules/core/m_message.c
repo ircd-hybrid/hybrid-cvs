@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.12 2000/11/29 07:57:56 db Exp $
+ *   $Id: m_message.c,v 1.13 2000/11/30 16:01:47 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -546,7 +546,7 @@ void msg_client(int n_or_p, char *command,
 	  else
 	    {
 	      /* XXX hard coded 60 ick fix -db */
-	      if( (acptr->last_caller_id_time + 60) < CurrentTime )
+	      if( (acptr->localClient->last_caller_id_time + 60) < CurrentTime )
 		{
 		  sendto_prefix_one(sptr, acptr,
 		    ":%s NOTICE %s :*** I've been informed you messaged me.",
@@ -558,7 +558,7 @@ void msg_client(int n_or_p, char *command,
 				    sptr->name, sptr->username,
 				    sptr->host );
 
-		  acptr->last_caller_id_time = CurrentTime;
+		  acptr->localClient->last_caller_id_time = CurrentTime;
 		}
 	    }
 	}
@@ -585,30 +585,31 @@ int drone_attack(struct Client *sptr,struct Client *acptr)
   if(GlobalSetOptions.dronetime &&
      MyConnect(acptr) && IsClient(sptr) )
     {
-      if((acptr->first_received_message_time+GlobalSetOptions.dronetime)
+      if((acptr->localClient->first_received_message_time+GlobalSetOptions.dronetime)
 	 < CurrentTime)
 	{
-	  acptr->received_number_of_privmsgs=1;
-	  acptr->first_received_message_time = CurrentTime;
-	  acptr->drone_noticed = 0;
+	  acptr->localClient->received_number_of_privmsgs=1;
+	  acptr->localClient->first_received_message_time = CurrentTime;
+	  acptr->localClient->drone_noticed = 0;
 	}
       else
 	{
-	  if(acptr->received_number_of_privmsgs > GlobalSetOptions.dronecount)
+	  if(acptr->localClient->received_number_of_privmsgs > 
+	     GlobalSetOptions.dronecount)
 	    {
-	      if(acptr->drone_noticed == 0) /* tiny FSM */
+	      if(acptr->localClient->drone_noticed == 0)
 		{
 		  sendto_realops_flags(FLAGS_BOTS,
 		       "Possible Drone Flooder %s [%s@%s] on %s target: %s",
 				       sptr->name, sptr->username,
 				       sptr->host,
 				       sptr->user->server, acptr->name);
-		  acptr->drone_noticed = 1;
+		  acptr->localClient->drone_noticed = 1;
 		  return 1;
 		}
 	    }
 	  else
-	    acptr->received_number_of_privmsgs++;
+	    acptr->localClient->received_number_of_privmsgs++;
 	}
     }
 

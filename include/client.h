@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.38 2000/11/30 10:28:49 adrian Exp $
+ * $Id: client.h,v 7.39 2000/11/30 16:01:40 db Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -185,19 +185,20 @@ struct Client
   char              info[REALLEN + 1]; /* Free form additional client info */
 
 /* cache table of mappings between top level chan and sub vchan client
- * is on. client cannot have any more than MAXCHANNELSPERUSER vchans
+ * is on.
  */
 
   struct	    Vchan_map vchan_map[MAXCHANNELSPERUSER];
+  struct LocalUser *localClient;
+};
 
+struct LocalUser
+{
   /*
    * The following fields are allocated only for local clients
    * (directly connected to *this* server with a socket.
-   * The first of them *MUST* be the "count"--it is the field
-   * to which the allocation is tied to! *Never* refer to
-   * these fields, if (from != self).
    */
-  int               count;       /* Amount of data in buffer, not used! */
+  /* Anti flooding part, all because of lamers... */
   time_t            last_join_time;   /* when this client last 
                                          joined a channel */
   time_t            last_leave_time;  /* when this client last 
@@ -210,7 +211,7 @@ struct Client
   time_t            first_received_message_time;
   int               received_number_of_privmsgs;
   int               drone_noticed;
-  short             lastsq;     /* # of 2k blocks when sendqueued called last*/
+
 
   /* Send and recieve linebuf queues .. */
   buf_head_t        buf_sendq;

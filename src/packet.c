@@ -18,7 +18,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: packet.c,v 7.14 2000/11/30 10:28:53 adrian Exp $
+ *   $Id: packet.c,v 7.15 2000/11/30 16:01:53 db Exp $
  */ 
 #include "packet.h"
 #include "client.h"
@@ -51,25 +51,26 @@ int client_dopacket(struct Client *cptr, char *buffer, size_t length)
   /* 
    * Update messages received
    */
-  ++me.receiveM;
-  ++cptr->receiveM;
+  ++me.localClient->receiveM;
+  ++cptr->localClient->receiveM;
 
   /* 
    * Update bytes received
    */
-  cptr->receiveB += length;
+  cptr->localClient->receiveB += length;
 
-  if (cptr->receiveB > 1023) {
-    cptr->receiveK += (cptr->receiveB >> 10);
-    cptr->receiveB &= 0x03ff; /* 2^10 = 1024, 3ff = 1023 */
+  if (cptr->localClient->receiveB > 1023) {
+    cptr->localClient->receiveK += (cptr->localClient->receiveB >> 10);
+    cptr->localClient->receiveB &= 0x03ff; /* 2^10 = 1024, 3ff = 1023 */
   }
 
-  me.receiveB += length;
+  me.localClient->receiveB += length;
 
-  if (me.receiveB > 1023) {
-    me.receiveK += (me.receiveB >> 10);
-    me.receiveB &= 0x03ff;
-  }
+  if (me.localClient->receiveB > 1023)
+    {
+      me.localClient->receiveK += (me.localClient->receiveB >> 10);
+      me.localClient->receiveB &= 0x03ff;
+    }
 
   if (CLIENT_EXITED == parse(cptr, buffer, buffer + length)) {
     /*

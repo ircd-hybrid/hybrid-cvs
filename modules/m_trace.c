@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_trace.c,v 1.5 2000/11/28 03:54:13 bill Exp $
+ *   $Id: m_trace.c,v 1.6 2000/11/30 16:01:49 db Exp $
  */
 #include "handlers.h"
 #include "class.h"
@@ -135,7 +135,7 @@ int mo_trace(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
           return 0;
         }
       name = get_client_name(acptr, FALSE);
-      ip = inetntoa((char*) &acptr->ip);
+      ip = inetntoa((char*) &acptr->localClient->ip);
 
       class_name = get_client_class(acptr);
 
@@ -264,7 +264,7 @@ int report_this_status(struct Client *sptr, struct Client *acptr,
   int cnt;
   static time_t now;
 
-  ip = inetntoa((const char*) &acptr->ip);
+  ip = inetntoa((const char*) &acptr->localClient->ip);
   name = get_client_name(acptr, FALSE);
   class_name = get_client_class(acptr);
 

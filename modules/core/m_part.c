@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_part.c,v 1.8 2000/11/30 07:38:54 db Exp $
+ *   $Id: m_part.c,v 1.9 2000/11/30 16:01:48 db Exp $
  */
 #include "handlers.h"
 #include "channel.h"
@@ -91,36 +91,36 @@ int     m_part(struct Client *cptr,
   if (name)
     {
       if(GlobalSetOptions.spam_num &&
-	 (sptr->join_leave_count >= GlobalSetOptions.spam_num))
+	 (sptr->localClient->join_leave_count >= GlobalSetOptions.spam_num))
 	{
 	  sendto_realops_flags(FLAGS_BOTS,
 			       "User %s (%s@%s) is a possible spambot",
 			       sptr->name,
 			       sptr->username, sptr->host);
-	  sptr->oper_warn_count_down = OPER_SPAM_COUNTDOWN;
+	  sptr->localClient->oper_warn_count_down = OPER_SPAM_COUNTDOWN;
 	}
       else
 	{
-	  if( (t_delta = (CurrentTime - sptr->last_leave_time)) >
+	  if( (t_delta = (CurrentTime - sptr->localClient->last_leave_time)) >
 	      JOIN_LEAVE_COUNT_EXPIRE_TIME)
 	    {
 	      decrement_count = (t_delta/JOIN_LEAVE_COUNT_EXPIRE_TIME);
 	      
-	      if(decrement_count > sptr->join_leave_count)
-		sptr->join_leave_count = 0;
+	      if(decrement_count > sptr->localClient->join_leave_count)
+		sptr->localClient->join_leave_count = 0;
 	      else
-		sptr->join_leave_count -= decrement_count;
+		sptr->localClient->join_leave_count -= decrement_count;
 	    }
 	  else
 	    {
-	      if( (CurrentTime - (sptr->last_join_time)) < 
+	      if( (CurrentTime - (sptr->localClient->last_join_time)) < 
 		  GlobalSetOptions.spam_time)
 		{
 		  /* oh, its a possible spambot */
-		  sptr->join_leave_count++;
+		  sptr->localClient->join_leave_count++;
 		}
 	    }
-	  sptr->last_leave_time = CurrentTime;
+	  sptr->localClient->last_leave_time = CurrentTime;
 	}
      
       while(name)

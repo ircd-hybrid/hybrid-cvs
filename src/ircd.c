@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.59 2000/11/30 09:53:46 db Exp $
+ * $Id: ircd.c,v 7.60 2000/11/30 16:01:52 db Exp $
  */
 #include "ircd.h"
 #include "channel.h"
@@ -130,7 +130,8 @@ struct  Counter Count;
 
 time_t  CurrentTime;            /* GLOBAL - current system timestamp */
 int     ServerRunning;          /* GLOBAL - server execution state */
-struct Client me;                     /* That's me */
+struct Client me;               /* That's me */
+struct LocalUser meLocalUser;	/* That's also part of me */
 
 struct Client* GlobalClientList = 0; /* Pointer to beginning of Client list */
 /* client pointer lists */ 
@@ -473,7 +474,11 @@ int main(int argc, char *argv[])
   initialVMTop = get_vm_top();
 
   ServerRunning = 0;
+
   memset(&me, 0, sizeof(me));
+  memset(&meLocalUser, 0, sizeof(meLocalUser));
+  me.localClient = &meLocalUser;
+
   GlobalClientList = &me;       /* Pointer to beginning of Client list */
 
   memset(&Count, 0, sizeof(Count));

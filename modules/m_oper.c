@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_oper.c,v 1.6 2000/11/29 18:16:29 db Exp $
+ *   $Id: m_oper.c,v 1.7 2000/11/30 16:01:48 db Exp $
  */
 
 #include "handlers.h"
@@ -181,7 +181,8 @@ struct ConfItem *find_password_aconf(char *name, struct Client *sptr)
   if (!(aconf = find_conf_exact(name, sptr->username, sptr->host,
                                 CONF_OPS)) &&
       !(aconf = find_conf_exact(name, sptr->username,
-                                inetntoa((char *)&sptr->ip), CONF_OPS)))
+                                inetntoa((char *)&sptr->localClient->ip),
+				CONF_OPS)))
     {
       return 0;
     }
@@ -280,10 +281,10 @@ int oper_up( struct Client *sptr, struct ConfItem *aconf )
   sptr->next_oper_client = oper_cptr_list;
   oper_cptr_list = sptr;
 
-  if(sptr->confs)
+  if(sptr->localClient->confs)
     {
       struct ConfItem *aconf;
-      aconf = sptr->confs->value.aconf;
+      aconf = sptr->localClient->confs->value.aconf;
       operprivs = oper_privs_as_string(sptr,aconf->port);
     }
   else

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_drop.c,v 1.5 2000/11/28 03:53:52 bill Exp $
+ * $Id: m_drop.c,v 1.6 2000/11/30 16:01:46 db Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -84,7 +84,7 @@ int     ms_drop(struct Client *cptr,
   if(!(chptr=hash_find_channel(name, NullChn)))
     return -1;
 
-  if(cptr->serverMask) /* JIC */
-    chptr->lazyLinkChannelExists &= ~cptr->serverMask;
+  if(cptr->localClient->serverMask) /* JIC */
+    chptr->lazyLinkChannelExists &= ~cptr->localClient->serverMask;
   return 0;
 }

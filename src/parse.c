@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.36 2000/11/30 09:53:48 db Exp $
+ *   $Id: parse.c,v 7.37 2000/11/30 16:01:53 db Exp $
  */
 #include "parse.h"
 #include "client.h"
@@ -246,7 +246,7 @@ int parse(struct Client *cptr, char *buffer, char *bufend)
 	  if (ConfigFileEntry.no_oper_flood) {
             if (IsAnyOper(cptr))
               /* "randomly" (weighted) increase the since */
-              cptr->since += (cptr->receiveM % 5) ? 1 : 0;
+              cptr->since += (cptr->localClient->receiveM % 5) ? 1 : 0;
             else
             cptr->since += (2 + i / 120);
 	  }
@@ -875,11 +875,11 @@ int m_unregistered(struct Client* cptr, struct Client* sptr, int parc, char* par
    * is fully registered..
    */
 
-  if( cptr->number_of_nick_changes == 0 )
+  if( cptr->localClient->number_of_nick_changes == 0 )
     {
       sendto_one(cptr, ":%s %d * %s :Register first.",
 		 me.name, ERR_NOTREGISTERED, parv[0]);
-      cptr->number_of_nick_changes++;
+      cptr->localClient->number_of_nick_changes++;
     }
   return 0;
 }

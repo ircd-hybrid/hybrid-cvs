@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_nick.c,v 1.8 2000/11/28 03:54:04 bill Exp $
+ *   $Id: m_nick.c,v 1.9 2000/11/30 16:01:47 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -915,13 +915,15 @@ int change_nick( struct Client *cptr, struct Client *sptr,
   ** on that channel. Propagate notice to other servers.
   */
 
-  if( (sptr->last_nick_change + ConfigFileEntry.max_nick_time) < CurrentTime)
-    sptr->number_of_nick_changes = 0;
-  sptr->last_nick_change = CurrentTime;
-  sptr->number_of_nick_changes++;
+  if( (sptr->localClient->last_nick_change +
+       ConfigFileEntry.max_nick_time) < CurrentTime)
+    sptr->localClient->number_of_nick_changes = 0;
+  sptr->localClient->last_nick_change = CurrentTime;
+  sptr->localClient->number_of_nick_changes++;
 
   if((ConfigFileEntry.anti_nick_flood && 
-      (sptr->number_of_nick_changes <= ConfigFileEntry.max_nick_changes)) ||
+      (sptr->localClient->number_of_nick_changes
+       <= ConfigFileEntry.max_nick_changes)) ||
      !ConfigFileEntry.anti_nick_flood)
     {
       sendto_realops_flags(FLAGS_NCHANGE,

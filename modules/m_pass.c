@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_pass.c,v 1.4 2000/11/28 03:54:07 bill Exp $
+ *  $Id: m_pass.c,v 1.5 2000/11/30 16:01:48 db Exp $
  */
 #include "handlers.h"  /* m_pass prototype */
 #include "client.h"      /* client struct */
@@ -74,7 +74,7 @@ int m_pass(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
                  me.name, parv[0]);
       return 0;
     }
-  strncpy_irc(cptr->passwd, password, PASSWDLEN);
+  strncpy_irc(cptr->localClient->passwd, password, PASSWDLEN);
   if (parc > 2)
     {
       /* 
