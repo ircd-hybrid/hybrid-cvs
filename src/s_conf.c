@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.227 2001/06/05 20:18:27 db Exp $
+ *  $Id: s_conf.c,v 7.228 2001/06/05 21:33:35 db Exp $
  */
 
 #include <sys/types.h>
@@ -65,7 +65,6 @@
 #include "memory.h"
 
 extern int yyparse(); /* defined in y.tab.c */
-extern ConfigFileEntryType ConfigFileEntry; /* defined in ircd.c */
 extern int lineno;
 extern char linebuf[];
 int scount = 0;       /* used by yyparse(), etc */
@@ -1471,13 +1470,12 @@ static void set_default_conf(void)
     FLAGS_REJ | FLAGS_SPY | FLAGS_EXTERNAL | FLAGS_OPERWALL |
     FLAGS_DRONE | FLAGS_LOCOPS | FLAGS_UNAUTH;
 
-  /* XXX These should be in a ConfigChannel struct */
-  ConfigFileEntry.vchans_oper_only = NO;
-  ConfigFileEntry.disable_vchans = NO;
-  ConfigFileEntry.use_invex = NO;
-  ConfigFileEntry.use_except= YES;
-  ConfigFileEntry.use_knock= YES;
-  /* XXX Down to here should be in a ConfigChannel struct */
+  ConfigChannel.vchans_oper_only = NO;
+  ConfigChannel.disable_vchans = NO;
+
+  ConfigChannel.use_invex = NO;
+  ConfigChannel.use_except= YES;
+  ConfigChannel.use_knock= YES;
 
   ConfigFileEntry.persist_expire = 30 * 60;
   ConfigFileEntry.min_nonwildcard = 4;

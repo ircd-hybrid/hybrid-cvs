@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: motd.c,v 7.15 2001/03/06 02:23:02 androsyn Exp $
+ *   $Id: motd.c,v 7.16 2001/06/05 21:33:35 db Exp $
  */
 
 #include <sys/types.h>
@@ -42,8 +42,6 @@
 #include "client.h"
 #include "irc_string.h"
 #include "memory.h"
-
-extern ConfigFileEntryType ConfigFileEntry; /* defined in ircd.c */
 
 /*
 ** InitMessageFile

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.157 2001/06/05 19:24:56 toot Exp $
+ * $Id: ircd.c,v 7.158 2001/06/05 21:33:34 db Exp $
  */
 
 #include <sys/types.h>
@@ -101,11 +101,11 @@
 /* /quote set variables */
 struct SetOptions GlobalSetOptions;
 
-/* config.h config file paths etc */
-ConfigFileEntryType ConfigFileEntry; 
-/* server info */
+/* configuration set from ircd.conf */
+struct config_file_entry ConfigFileEntry; 
+/* server info set from ircd.conf */
 struct server_info ServerInfo;
-/* admin info */
+/* admin info set from ircd.conf */
 struct admin_info AdminInfo;
 
 struct  Counter Count;

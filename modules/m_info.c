@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.c,v 1.37 2001/06/02 05:47:35 ejb Exp $
+ * $Id: m_info.c,v 1.38 2001/06/05 21:33:30 db Exp $
  */
 
 #include <time.h>
@@ -302,7 +302,7 @@ static struct InfoStruct info_table[] =
   {
     "vchans_oper_only",
     OUTPUT_BOOLEAN_YN,
-    &ConfigFileEntry.vchans_oper_only,
+    &ConfigChannel.vchans_oper_only,
     "Restrict use of /CJOIN to opers"
   },
   {

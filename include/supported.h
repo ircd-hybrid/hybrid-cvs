@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: supported.h,v 1.11 2001/05/29 16:10:25 jdc Exp $
+ * $Id: supported.h,v 1.12 2001/06/05 21:33:29 db Exp $
  * 
  */
 #ifndef INCLUDED_supported_h
@@ -39,7 +39,7 @@
                 " PREFIX=%s" \
                 " CHANMODES=%s"
                  
-#define FEATURESVALUES ConfigFileEntry.disable_vchans ? "" : " VCHANS", \
+#define FEATURESVALUES ConfigChannel.disable_vchans ? "" : " VCHANS", \
         MAXMODEPARAMS,ConfigFileEntry.max_chans_per_user,MAXBANS, \
         ConfigFileEntry.max_targets,NICKLEN,TOPICLEN,TOPICLEN,"#&","(ohv)@%+", \
         "beI,k,l,imnpsta"

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_knock.c,v 1.27 2001/04/04 15:22:28 androsyn Exp $
+ *   $Id: m_knock.c,v 1.28 2001/06/05 21:33:31 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -92,6 +92,14 @@ static void m_knock(struct Client *client_p,
                    char *parv[])
 {
   struct Channel      *chptr;
+
+  if (ConfigChannel.use_knock == 0)
+    {
+      sendto_one(source_p, ":%s NOTICE %s :*** KNOCK disabled",
+		 me.name, source_p->name);
+      return;
+    }
+	
 
   chptr = parse_knock_args(client_p, source_p, parc, parv);
   
