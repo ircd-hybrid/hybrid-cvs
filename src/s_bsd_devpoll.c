@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_devpoll.c,v 7.15 2002/06/17 02:57:01 db Exp $
+ *  $Id: s_bsd_devpoll.c,v 7.16 2002/11/27 03:46:57 jmallett Exp $
  */
 
 #include "config.h"
@@ -296,5 +296,9 @@ comm_select(unsigned long delay)
     /* XXX Get here, we broke! */
     return 0;
 }
-
+#else
+/**
+ * Don't let an empty compilation unit slip through.
+ */
+static int dummy;
 #endif /* USE_DEVPOLL */

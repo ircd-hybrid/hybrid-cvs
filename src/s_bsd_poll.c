@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_poll.c,v 7.54 2002/05/24 23:34:50 androsyn Exp $
+ *  $Id: s_bsd_poll.c,v 7.55 2002/11/27 03:46:57 jmallett Exp $
  */
 
 #include "config.h"
@@ -257,5 +257,9 @@ comm_select(unsigned long delay)
  }
  return 0;
 }
-
+#else
+/**
+ * Don't let an empty compilation unit slip through.
+ */
+static int dummy;
 #endif

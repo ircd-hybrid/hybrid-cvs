@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_select.c,v 7.26 2002/05/25 01:42:54 androsyn Exp $
+ *  $Id: s_bsd_select.c,v 7.27 2002/11/27 03:46:57 jmallett Exp $
  */
 
 #include "config.h"
@@ -219,4 +219,9 @@ comm_select(unsigned long delay)
     return 0;
 }
 
+#else /* USE_SELECT */
+/**
+ * Don't let an empty compilation unit slip through.
+ */
+static int dummy;
 #endif /* USE_SELECT */

@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_kqueue.c,v 1.27 2002/06/15 07:19:57 androsyn Exp $
+ *  $Id: s_bsd_kqueue.c,v 1.28 2002/11/27 03:46:57 jmallett Exp $
  */
 
 #include "config.h"
@@ -286,4 +286,9 @@ comm_select(unsigned long delay)
   return 0;
 }
 
+#else /* USE_KQUEUE */
+/**
+ * Don't let an empty compilation unit slip through.
+ */
+static int dummy;
 #endif /* USE_KQUEUE */
