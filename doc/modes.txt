@@ -13,6 +13,7 @@ User Modes:
 +i - invisible  - Not shown in NAMES or WHO unless you share a
                   a channel
 +k - skill      - See server generated KILL messages
++l - locops     - See LOCOPS messages
 +n - nchange    - See client nick changes
 +o - oper       - Operator status
 +r - rej        - See rejected client notices
@@ -51,4 +52,4 @@ Channel Modes:
 The third part of the 004 numeric lists channel modes that require arguments.
 Currently these are bklovedIh.
 
-# $Id: modes.txt,v 7.3 2001/01/05 14:51:04 wcampbel Exp $
+# $Id: modes.txt,v 7.4 2001/01/18 00:00:29 wcampbel Exp $

@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.145 2001/01/17 19:35:47 davidt Exp $
+ *  $Id: s_conf.c,v 7.146 2001/01/18 00:00:34 wcampbel Exp $
  */
 #include "tools.h"
 #include "s_conf.h"
@@ -1892,7 +1892,8 @@ char *oper_privs_as_string(struct Client *cptr,int port)
 
 char *oper_flags_as_string(int flags)
 {
-  static char flags_out[16];
+  /* This MUST be extended if we add any more modes... -Hwy */
+  static char flags_out[18];
   char *flags_ptr;
 
   flags_ptr = flags_out;
@@ -1920,6 +1921,18 @@ char *oper_flags_as_string(int flags)
     *flags_ptr++ = 'n';
   if(flags & FLAGS_ADMIN)
     *flags_ptr++ = 'a';
+  if(flags & FLAGS_EXTERNAL)
+    *flags_ptr++ = 'x';
+  if(flags & FLAGS_UNAUTH)
+    *flags_ptr++ = 'u';
+  if(flags & FLAGS_BOTS)
+    *flags_ptr++ = 'b';
+  if(flags & FLAGS_DRONE)
+    *flags_ptr++ = 'e';
+  if(flags & FLAGS_LOCOPS)
+    *flags_ptr++ = 'l';
+  if(flags & FLAGS_CALLERID)
+    *flags_ptr++ = 'g';
   *flags_ptr = '\0';
 
   return(flags_out);

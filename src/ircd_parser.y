@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.105 2001/01/11 09:30:26 a1kmm Exp $
+ * $Id: ircd_parser.y,v 1.106 2001/01/18 00:00:34 wcampbel Exp $
  */
 
 %{
@@ -190,6 +190,7 @@ int   class_redirport_var;
 %token  T_DRONE
 %token  T_FULL
 %token  T_SKILL
+%token  T_LOCOPS
 %token  T_NCHANGE
 %token  T_REJ
 %token  T_UNAUTH
@@ -1816,6 +1817,10 @@ umode_item:	T_BOTS
               | T_CALLERID
   {
     ConfigFileEntry.oper_only_umodes |= FLAGS_CALLERID;
+  }
+              | T_LOCOPS
+  {
+    ConfigFileEntry.oper_only_umodes |= FLAGS_LOCOPS;
   }
               | T_DRONE
   {
