@@ -1,7 +1,7 @@
 /*
  * include/res.h (C)opyright 1992 Darren Reed.
  *
- * $Id: irc_reslib.h,v 7.6 2003/05/13 15:03:52 joshk Exp $
+ * $Id: irc_reslib.h,v 7.7 2003/05/14 03:50:16 db Exp $
  */
 #ifndef INCLUDED_ircdreslib_h
 #define INCLUDED_ircdreslib_h
@@ -59,8 +59,8 @@ void irc_ns_put16(u_int src, u_char *dst);
 void irc_ns_put32(u_long src, u_char *dst);
 int irc_ns_name_pton(const char *src, u_char *dst, size_t dstsiz);
 int irc_ns_name_pack(const u_char *src, u_char *dst, int dstsiz, const u_char **dnptrs, const u_char **lastdnptr);
-int irc_res_mkquery(int op, const char *dname, int class, int type, const u_char *data, int datalen, u_char *buf, int buflen);
+int irc_res_mkquery(const char *dname, int class, int type, u_char *buf, int buflen);
 
 #endif /* INCLUDED_res_h */
 
-/* $Id: irc_reslib.h,v 7.6 2003/05/13 15:03:52 joshk Exp $ */
+/* $Id: irc_reslib.h,v 7.7 2003/05/14 03:50:16 db Exp $ */
