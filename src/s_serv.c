@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.13 2000/01/02 22:35:57 db Exp $
+ *   $Id: s_serv.c,v 7.14 2000/01/03 00:33:42 db Exp $
  */
 #include "s_serv.h"
 #include "channel.h"
@@ -427,13 +427,27 @@ int check_server(struct Client* cptr)
   if( !(c_conf->flags & CONF_FLAGS_ZIP_LINK) )
     ClearCap(cptr,CAP_ZIP);
 
-#ifdef HUB
   /* n line with an H line, must be a typo */
-
-  if( ( n_conf->flags & CONF_FLAGS_LAZY_LINK ) &&
-      (find_conf_by_name(n_conf->name, CONF_HUB ) ) )
-    ClearCap(cptr,CAP_LL);
+  if( n_conf->flags & CONF_FLAGS_LAZY_LINK )
+    {
+      if(find_conf_by_name(n_conf->name, CONF_HUB ))
+        {
+          ClearCap(cptr,CAP_LL);
+#ifdef DEBUGLL
+          sendto_realops("s_serv.c: Clearing CAP_LL" );
 #endif
+         }
+#ifdef HUB
+       else
+         {
+           cptr->serverMask = nextFreeMask();
+#ifdef DEBUGLL
+           sendto_realops("s_serv.c: Adding serverMask %X", cptr->serverMask );
+#endif
+         }
+#endif
+    }
+
 
   /*
    * if the C:line doesn't have an IP address assigned put the one from
@@ -677,13 +691,6 @@ int server_estab(struct Client *cptr)
    */
   if (!set_sock_buffers(cptr->fd, READBUF_SIZE))
     report_error(SETBUF_ERROR_MSG, get_client_name(cptr, TRUE), errno);
-
-#ifdef HUB
-  cptr->serverMask = nextFreeMask();
-#ifdef DEBUGLL
-  sendto_realops("Adding serverMask %X", cptr->serverMask );
-#endif
-#endif
 
   /* LINKLIST */
   /* add to server link list -Dianora */
