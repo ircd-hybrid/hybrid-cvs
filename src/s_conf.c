@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.407 2003/05/26 04:55:54 metalrock Exp $
+ *  $Id: s_conf.c,v 7.408 2003/05/26 18:11:53 db Exp $
  */
 
 #include "stdinc.h"
@@ -187,7 +187,7 @@ free_conf(struct ConfItem *aconf)
     return;
 
   if (aconf->dns_query != NULL)
-    delete_resolver_queries(aconf);
+    delete_resolver_queries(aconf->dns_query);
   if (aconf->passwd != NULL)
     memset(aconf->passwd, 0, strlen(aconf->passwd));
   if (aconf->spasswd != NULL)
