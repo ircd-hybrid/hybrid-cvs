@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.164 2003/07/08 21:06:40 joshk Exp $
+ *  $Id: m_kline.c,v 1.165 2003/07/18 01:11:06 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -106,7 +106,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.164 $";
+const char *_version = "$Revision: 1.165 $";
 #endif
 
 /* Local function prototypes */
@@ -127,8 +127,6 @@ static void apply_tkline(struct Client *source_p, struct ConfItem *conf,
 
 
 char buffer[IRCD_BUFSIZE];
-char user[USERLEN+2];
-char host[HOSTLEN+2];
 
 /*
  * mo_kline
@@ -148,6 +146,8 @@ mo_kline(struct Client *client_p, struct Client *source_p,
   char def_reason[] = "No Reason";
   char *reason = def_reason;
   char *oper_reason;
+  char user[USERLEN+2];
+  char host[HOSTLEN+2];
   const char *current_date;
   const char *target_server=NULL;
   struct ConfItem *conf;
