@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.302 2003/08/05 16:23:15 michael Exp $
+ *  $Id: s_user.c,v 7.303 2003/08/13 06:03:43 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -361,8 +361,10 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   struct AccessItem *aconf;
   char ipaddr[HOSTIPLEN];
   int status;
+  int i = 0;
   dlink_node *ptr;
   dlink_node *m;
+  const char *p;
 
   assert(source_p != NULL);
   assert(MyConnect(source_p));
@@ -408,11 +410,21 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   ptr   = source_p->localClient->confs.head;
   aconf = map_to_conf((struct ConfItem *) ptr->data);
 
-  if (!IsGotId(source_p))
+  if (ConfigFileEntry.disable_auth)
   {
-    int i = 0;
-    const char *p;
+    p = username;
 
+    while (*p && i < USERLEN)
+    {
+      if (*p != '[')
+        source_p->username[i++] = *p;
+      p++;
+    }
+
+    source_p->username[i] = '\0';
+  }
+  else if (!IsGotId(source_p))
+  {
     if (IsNeedIdentd(aconf))
     {
       ServerStats->is_ref++;
