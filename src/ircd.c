@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.110 2001/01/20 10:57:39 toot Exp $
+ * $Id: ircd.c,v 7.111 2001/01/21 23:55:17 db Exp $
  */
 
 #include <sys/types.h>
@@ -121,9 +121,6 @@
 # endif
 #endif
 
-/* LazyLinks code */
-time_t lastCleanup;
-
 /* /quote set variables */
 struct SetOptions GlobalSetOptions;
 
@@ -142,6 +139,10 @@ struct Client me;               /* That's me */
 struct LocalUser meLocalUser;	/* That's also part of me */
 
 struct Client* GlobalClientList = 0; /* Pointer to beginning of Client list */
+
+/* Virtual host */
+struct sockaddr_in vserv;
+int                specific_virtual_host = 0;
 
 /* unknown/client pointer lists */ 
 dlink_list unknown_list;        /* unknown clients ON this server only */
@@ -563,6 +564,17 @@ int main(int argc, char *argv[])
   if(ServerInfo.description != NULL)
     {
       strncpy_irc(me.info, ServerInfo.description, REALLEN);
+    }
+
+  /* Do virtual host setup here */
+  /* XXX Not yet IPV6 */
+
+  if(ServerInfo.ip != 0)
+    {
+      memset(&vserv,0, sizeof(vserv));
+      vserv.sin_family = AF_INET;
+      vserv.sin_addr.s_addr = htonl(ServerInfo.ip);
+      specific_virtual_host = 1;
     }
 
 #ifdef USE_GETTEXT
