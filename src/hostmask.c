@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.c,v 7.71 2002/08/20 18:03:32 androsyn Exp $
+ *  $Id: hostmask.c,v 7.72 2002/09/10 02:25:51 db Exp $
  */
 
 #include "stdinc.h"
@@ -604,8 +604,8 @@ delete_one_address_conf(const char *address, struct ConfItem *aconf)
         arecl->next = arec->next;
       else
         atable[hv] = arec->next;
-      aconf->flags |= CONF_ILLEGAL;
-      if (!aconf->clients)
+      aconf->status |= CONF_ILLEGAL;
+      if (aconf->clients == 0)
         free_conf(aconf);
       MyFree(arec);
       return;
@@ -643,8 +643,8 @@ clear_out_address_conf(void)
       }
       else
       {
-        arec->aconf->flags |= CONF_ILLEGAL;
-        if (!arec->aconf->clients)
+        arec->aconf->status |= CONF_ILLEGAL;
+        if (arec->aconf->clients == 0)
           free_conf(arec->aconf);
         MyFree(arec);
       }
