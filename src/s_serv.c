@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.234 2002/01/09 17:38:34 jmallett Exp $
+ *  $Id: s_serv.c,v 7.235 2002/01/23 17:59:25 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -511,6 +511,13 @@ int hunt_server(struct Client *client_p, struct Client *source_p, char *command,
 
   if (target_p)
     {
+      if(!IsRegistered(target_p))
+      {
+        sendto_one(source_p, form_str(ERR_NOSUCHSERVER), me.name,
+	           parv[0], parv[server]);
+        return HUNTED_NOSUCH;
+      }
+	
       if (IsMe(target_p) || MyClient(target_p))
         return HUNTED_ISME;
 	
@@ -531,6 +538,7 @@ int hunt_server(struct Client *client_p, struct Client *source_p, char *command,
                  parv[5], parv[6], parv[7], parv[8]);
       return(HUNTED_PASS);
     } 
+    
   sendto_one(source_p, form_str(ERR_NOSUCHSERVER), me.name,
              parv[0], parv[server]);
   return(HUNTED_NOSUCH);
