@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.160 2000/12/30 23:07:50 davidt Exp $
+ * $Id: channel.c,v 7.161 2000/12/31 01:27:58 fl_ Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -2234,9 +2234,9 @@ void set_channel_mode(struct Client *cptr,
     }
 
   /*
-   * Hidden modes (currently +o, [also +h see modebuf_hops])
-   * Seen by everyone on -a channels
-   * Seen only by chanops/halfops on +a channels
+   * Hidden modes (currently +o and +b, [also +h see modebuf_hops])
+   * +o seen only by chanops/halfops on +a channels
+   * +b should be seen by everyone, but ops only on +a channel
    */
   if(*modebuf2)
     {
@@ -2278,7 +2278,7 @@ void set_channel_mode(struct Client *cptr,
 			     modebuf_ex, parabuf_ex);
       else
       {
-        sendto_channel_local(type,
+        sendto_channel_local(ONLY_CHANOPS,
                              chptr,
                              ":%s!%s@%s MODE %s %s %s",
                              sptr->name,
@@ -2286,13 +2286,6 @@ void set_channel_mode(struct Client *cptr,
                              sptr->host,
                              chname,
                              modebuf_ex, parabuf_ex);
-        if(chptr->mode.mode & MODE_HIDEOPS)
-          sendto_channel_local(NON_CHANOPS,
-                               chptr,
-                               ":%s MODE %s %s %s",
-                               me.name,
-                               chname,
-                               modebuf_ex, parabuf_ex);
       }
 
       sendto_match_cap_servs(chptr, cptr, CAP_EX, ":%s MODE %s %s %s",
@@ -2339,9 +2332,8 @@ void set_channel_mode(struct Client *cptr,
     }
 
   /*
-   * mode +I, seen by everyone.
+   * mode +I, seen by ops only.
    * Only send remotely to servers with IE
-   * On +a channels pretend to nonops that it's a server mode.
    */
   if(*modebuf_invex)
     {
@@ -2353,8 +2345,7 @@ void set_channel_mode(struct Client *cptr,
 			     chname,
 			     modebuf_invex, parabuf_invex);
       else
-      {
-        sendto_channel_local(type,
+        sendto_channel_local(ONLY_CHANOPS,
                              chptr,
                              ":%s!%s@%s MODE %s %s %s",
                              sptr->name,
@@ -2362,14 +2353,6 @@ void set_channel_mode(struct Client *cptr,
                              sptr->host,
                              chname,
                              modebuf_invex, parabuf_invex);
-        if(chptr->mode.mode & MODE_HIDEOPS)
-          sendto_channel_local(NON_CHANOPS,
-                               chptr,
-                               ":%s MODE %s %s %s",
-                               me.name,
-                               chname,
-                               modebuf_invex, parabuf_invex);
-      }
 
       sendto_match_cap_servs(chptr, cptr, CAP_IE, ":%s MODE %s %s %s",
 			     sptr->name, chptr->chname,
