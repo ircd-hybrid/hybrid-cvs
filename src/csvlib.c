@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.34 2004/02/10 05:33:25 db Exp $
+ *  $Id: csvlib.c,v 7.35 2004/02/10 22:17:48 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -497,7 +497,7 @@ remove_conf_line(ConfType type, struct Client *source_p, const char *pat1, const
   const char *filename;
   FBFILE *in, *out;
   int pairme=0;
-  char buf[BUFSIZE], buff[BUFSIZE], temppath[BUFSIZE], *p;
+  char buf[BUFSIZE], buff[BUFSIZE], temppath[BUFSIZE];
   char *found1;
   char *found2;
   mode_t oldumask;
