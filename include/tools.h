@@ -5,7 +5,7 @@
  *
  * Adrian Chadd <adrian@creative.net.au>
  *
- * $Id: tools.h,v 1.2 2000/12/02 15:19:30 db Exp $
+ * $Id: tools.h,v 1.3 2000/12/02 16:42:06 db Exp $
  */
 #ifndef __TOOLS_H__
 #define __TOOLS_H__
@@ -42,4 +42,6 @@ dlinkDelete(dlink_node *m, dlink_list *list);
 void
 dlinkMoveList(dlink_list *from, dlink_list *to);
 
+int
+dlink_list_length(dlink_list *m);
 #endif

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.93 2000/12/02 16:36:01 db Exp $
+ * $Id: channel.c,v 7.94 2000/12/02 16:42:11 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -2473,7 +2473,7 @@ void add_invite(struct Channel *chptr, struct Client *who)
   /*
    * delete last link in chain if the list is max length
    */
-  if (list_length(&who->user->invited) >= MAXCHANNELSPERUSER)
+  if (dlink_list_length(&who->user->invited) >= MAXCHANNELSPERUSER)
     {
       del_invite(chptr,who);
     }
@@ -2523,22 +2523,6 @@ void del_invite(struct Channel *chptr, struct Client *who)
 	  break;
 	}
     }
-}
-
-/* 
- * list_length
- * inputs	- pointer to a dlink_list
- * output	- return the length (>=0) of a chain of links.
- * side effects	-
- */
-extern int list_length(dlink_list *list)
-{
-  dlink_node *ptr;
-  int   count = 0;
-
-  for (ptr = list->head; ptr; ptr = ptr->next)
-    count++;
-  return count;
 }
 
 /*

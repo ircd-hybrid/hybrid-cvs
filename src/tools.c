@@ -5,7 +5,7 @@
  *
  * adrian chadd <adrian@creative.net.au>
  *
- * $Id: tools.c,v 7.6 2000/12/02 16:36:02 db Exp $
+ * $Id: tools.c,v 7.7 2000/12/02 16:42:12 db Exp $
  */
 
 #include <assert.h>
@@ -78,6 +78,22 @@ dlinkDelete(dlink_node *m, dlink_list *list)
 }
 
 
+/* 
+ * dlink_list_length
+ * inputs	- pointer to a dlink_list
+ * output	- return the length (>=0) of a chain of links.
+ * side effects	-
+ */
+extern int dlink_list_length(dlink_list *list)
+{
+  dlink_node *ptr;
+  int   count = 0;
+
+  for (ptr = list->head; ptr; ptr = ptr->next)
+    count++;
+  return count;
+}
+
 void
 dlinkMoveList(dlink_list *from, dlink_list *to)
 {
@@ -90,3 +106,5 @@ dlinkMoveList(dlink_list *from, dlink_list *to)
     to->head = from->head;
     from->head = from->tail = NULL;
 }
+
+
