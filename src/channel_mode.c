@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.65 2002/11/20 00:18:31 db Exp $
+ *  $Id: channel_mode.c,v 7.66 2002/12/14 04:08:38 db Exp $
  */
 
 #include "stdinc.h"
@@ -986,6 +986,9 @@ chm_ban(struct Client *client_p, struct Client *source_p,
   }
   else if (dir == MODE_DEL)
   {
+/* XXX grrrrrrr */
+#ifdef NO_BAN_COOKIE
+
     if (del_id(chptr, mask, CHFL_BAN) == 0)
     {
       /* mask isn't a valid ban, check raw_mask */
@@ -996,6 +999,14 @@ chm_ban(struct Client *client_p, struct Client *source_p,
       }
       mask = raw_mask;
     }
+
+#else
+/* XXX this hack allows /mode * +o-b nick ban.cookie
+ * I'd like to see this hack go away in the future.
+ */
+      if(del_id(chptr, raw_mask, CHFL_BAN))
+       mask = raw_mask;
+#endif
 
     mode_changes[mode_count].letter = c;
     mode_changes[mode_count].dir = MODE_DEL;
@@ -2302,7 +2313,12 @@ set_channel_mode(struct Client *client_p, struct Client *source_p,
 
   alevel = get_channel_access(source_p, chptr);
 
-  for (; (c = *ml) != 0; ml++)
+  for (; (c = *ml) != '\0'; ml++) 
+  {
+#ifdef notyet
+    if(mode_count > 20)
+      break;
+#endif
     switch (c)
     {
       case '+':
@@ -2326,9 +2342,10 @@ set_channel_mode(struct Client *client_p, struct Client *source_p,
                                        chname);
         break;
     }
+  }
 
   update_channel_info(chptr);
-
+  
   send_mode_changes(client_p, source_p, chptr, chname);
 }
 
