@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.72 2003/07/05 01:27:10 db Exp $
+ *  $Id: hash.c,v 7.73 2003/07/19 22:56:47 michael Exp $
  */
 
 #include "stdinc.h"
@@ -268,21 +268,25 @@ hash_del_id(struct Client *client_p)
   unsigned int hashv = strhash(client_p->id);
   struct Client *tmp = idTable[hashv];
 
-  /* id was not found in the hash */
-  if (tmp == NULL)
-    return;
-
-  if (tmp == client_p)
+  if (tmp != NULL)
   {
-    idTable[hashv] = client_p->idhnext;
-    client_p->idhnext = client_p;
-    return;
-  }
+    if (tmp == client_p)
+    {
+      idTable[hashv] = client_p->idhnext;
+      client_p->idhnext = client_p;
+    }
+    else
+    {
+      while (tmp->idhnext != client_p)
+      {
+        if ((tmp = tmp->idhnext) == NULL)
+          return;
+      }
 
-  while (tmp->idhnext != client_p)
-    tmp = tmp->idhnext;
-  tmp->idhnext = tmp->idhnext->idhnext;
-  client_p->idhnext = client_p;
+      tmp->idhnext = tmp->idhnext->idhnext;
+      client_p->idhnext = client_p;
+    }
+  }
 }
 
 /* hash_del_client()
@@ -297,21 +301,25 @@ hash_del_client(struct Client *client_p)
   unsigned int hashv = strhash(client_p->name);
   struct Client *tmp = clientTable[hashv];
 
-  /* client was not found in the hash */
-  if (tmp == NULL)
-    return;
-
-  if (tmp == client_p)
+  if (tmp != NULL)
   {
-    clientTable[hashv] = client_p->hnext;
-    client_p->hnext = client_p;
-    return;
-  }
+    if (tmp == client_p)
+    {
+      clientTable[hashv] = client_p->hnext;
+      client_p->hnext = client_p;
+    }
+    else
+    {
+      while (tmp->hnext != client_p)
+      {
+        if ((tmp = tmp->hnext) == NULL)
+          return;
+      }
 
-  while (tmp->hnext != client_p)
-    tmp = tmp->hnext;
-  tmp->hnext = tmp->hnext->hnext;
-  client_p->hnext = client_p;
+      tmp->hnext = tmp->hnext->hnext;
+      client_p->hnext = client_p;
+    }
+  }
 }
 
 /* hash_del_userhost()
@@ -326,21 +334,25 @@ hash_del_userhost(struct UserHost *userhost)
   unsigned int hashv = strhash(userhost->host);
   struct UserHost *tmp = userhostTable[hashv];
 
-  /* userhost was not found in the hash */
-  if (tmp == NULL)
-    return;
-
-  if (tmp == userhost)
+  if (tmp != NULL)
   {
-    userhostTable[hashv] = userhost->next;
-    userhost->next = userhost;
-    return;
-  }
+    if (tmp == userhost)
+    {
+      userhostTable[hashv] = userhost->next;
+      userhost->next = userhost;
+    }
+    else
+    {
+      while (tmp->next != userhost)
+      {
+        if ((tmp = tmp->next) == NULL)
+          return;
+      }
 
-  while (tmp->next != userhost)
-    tmp = tmp->next;
-  tmp->next = tmp->next->next;
-  userhost->next = userhost;
+      tmp->next = tmp->next->next;
+      userhost->next = userhost;
+    }
+  }
 }
 
 /* hash_del_channel()
@@ -356,21 +368,25 @@ hash_del_channel(struct Channel *chptr)
   unsigned int hashv = strhash(chptr->chname);
   struct Channel *tmp = channelTable[hashv];
 
-  /* channel was not found in the hash */
-  if (tmp == NULL)
-    return;
-
-  if (tmp == chptr)
+  if (tmp !== NULL)
   {
-    channelTable[hashv] = chptr->hnextch;
-    chptr->hnextch = chptr;
-    return;
-  }
+    if (tmp == chptr)
+    {
+      channelTable[hashv] = chptr->hnextch;
+      chptr->hnextch = chptr;
+    }
+    else
+    {
+      while (tmp->hnextch != chptr)
+      {
+        if ((tmp = tmp->hnextch) == NULL)
+          return;
+      }
 
-  while (tmp->hnextch != chptr)
-    tmp = tmp->hnextch;
-  tmp->hnextch = tmp->hnextch->hnextch;
-  chptr->hnextch = chptr;
+      tmp->hnextch = tmp->hnextch->hnextch;
+      chptr->hnextch = chptr;
+    }
+  }
 }
 
 void
@@ -379,21 +395,25 @@ hash_del_resv(struct ResvChannel *chptr)
   unsigned int hashv = strhash(chptr->name);
   struct ResvChannel *tmp = resvchannelTable[hashv];
 
-  /* resv was not found in the hash */
-  if (tmp == NULL)
-    return;
-
-  if (tmp == chptr)
+  if (tmp != NULL)
   {
-    resvchannelTable[hashv] = chptr->hnext;
-    chptr->hnext = chptr;
-    return;
-  }
+    if (tmp == chptr)
+    {
+      resvchannelTable[hashv] = chptr->hnext;
+      chptr->hnext = chptr;
+    }
+    else
+    {
+      while (tmp->hnext != chptr)
+      {
+        if ((tmp = tmp->hnext) == NULL)
+          return;
+      }
 
-  while (tmp->hnext != chptr)
-    tmp = tmp->hnext;
-  tmp->hnext = tmp->hnext->hnext;
-  chptr->hnext = chptr;
+      tmp->hnext = tmp->hnext->hnext;
+      chptr->hnext = chptr;
+    }
+  }
 }
 
 /* find_client()
