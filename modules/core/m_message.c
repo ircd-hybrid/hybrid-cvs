@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.105 2003/01/16 18:56:30 db Exp $
+ *  $Id: m_message.c,v 1.106 2003/01/17 02:58:25 db Exp $
  */
 
 #include "stdinc.h"
@@ -93,14 +93,9 @@ static void msg_client(int p_or_n, char *command,
                        struct Client *source_p, struct Client *target_p,
                        char *text);
 
-static void handle_opers(int p_or_n, char *command,
-                         struct Client *client_p,
-                         struct Client *source_p, char *nick, char *text);
-
-
-static int handle_nick_server(int p_or_n, char *command,
-			      struct Client *client_p,
-			      struct Client *source_p, char *nick, char *text);
+static void handle_special(int p_or_n, char *command,
+			   struct Client *client_p,
+			   struct Client *source_p, char *nick, char *text);
 
 struct Message privmsg_msgtab = {
   "PRIVMSG", 0, 0, 1, 0, MFLG_SLOW | MFLG_UNREG, 0L,
@@ -128,7 +123,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.105 $";
+const char *_version = "$Revision: 1.106 $";
 #endif
 
 /*
@@ -403,15 +398,9 @@ build_target_list(int p_or_n, char *command, struct Client *client_p,
       continue;
     }
 
-    if (strchr(nick, '@') != NULL)
+    if(((*nick == '$') || strchr(nick, '@')))
     {
-      if(handle_nick_server(p_or_n, command, client_p, source_p, nick, text))
-	continue;
-    }
-
-    if(IsOper(source_p) && ((*nick == '$') || strchr(nick, '@')))
-    {
-      handle_opers(p_or_n, command, client_p, source_p, nick, text);
+      handle_special(p_or_n, command, client_p, source_p, nick, text);
     }
     else
     {
@@ -795,24 +784,30 @@ flood_attack_channel(int p_or_n, struct Client *source_p,
 
 
 /*
- * handle_opers
+ * handle_special
  *
  * inputs	- server pointer
  *		- client pointer
  *		- nick stuff to grok for opers
  *		- text to send if grok
  * output	- none
- * side effects	- all the traditional oper type messages are parsed here.
+ * side effects	- old style username@server is handled here for non opers
+ *		  opers are allowed username%hostname@server
+ *		  all the traditional oper type messages are also parsed here.
  *		  i.e. "/msg #some.host."
  *		  However, syntax has been changed.
  *		  previous syntax "/msg #some.host.mask"
  *		  now becomes     "/msg $#some.host.mask"
  *		  previous syntax of: "/msg $some.server.mask" remains
  *		  This disambiguates the syntax.
+ *
+ * XXX		  N.B. dalnet changed it to nick@server as have other servers.
+ *		  we will stick with tradition for now.
+ *		- Dianora
  */
 static void
-handle_opers(int p_or_n, char *command, struct Client *client_p,
-             struct Client *source_p, char *nick, char *text)
+handle_special(int p_or_n, char *command, struct Client *client_p,
+	       struct Client *source_p, char *nick, char *text)
 {
   struct Client *target_p;
   char *host;
@@ -820,6 +815,92 @@ handle_opers(int p_or_n, char *command, struct Client *client_p,
   char *s;
   int count;
 
+  /*
+   * user[%host]@server addressed?
+   */
+  if ((server = strchr(nick, '@')) != NULL)
+  {
+    count = 0;
+
+    if ((host = strchr(nick, '%')) && !IsOper(source_p))
+    {
+      sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
+		 me.name, source_p->name);
+      return;
+    }
+    if ((target_p = find_server(server + 1)) != NULL)
+    {
+      if (!IsMe(target_p))
+      {
+	/*
+	 * Not destined for a user on me :-(
+	 */
+
+	sendto_one(target_p, ":%s %s %s :%s", source_p->name,
+		   command, nick, text);
+	if ((p_or_n != NOTICE) && source_p->user)
+	  source_p->user->last = CurrentTime;
+	return;
+      }
+
+      *server = '\0';
+
+      if (host != NULL)
+	*host++ = '\0';
+
+      /* Check if someones msg'ing opers@our.server */
+      if (strcmp(nick, "opers") == 0)
+      {
+	if (!IsOper(source_p))
+	  sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
+		     me.name, source_p->name);
+	else
+	  sendto_realops_flags(FLAGS_ALL, L_ALL, "To opers: From: %s: %s",
+			       source_p->name, text);
+	return;
+      }
+
+      /*
+       * Look for users which match the destination host
+       * (no host == wildcard) and if one and one only is
+       * found connected to me, deliver message!
+       */
+      target_p = find_userhost(nick, host, &count);
+
+      if (target_p != NULL)
+      {
+	if (server != NULL)
+	  *server = '@';
+	if (host != NULL)
+	  *--host = '%';
+
+	if (count == 1)
+	{
+	  sendto_one(target_p, ":%s %s %s :%s",
+		     source_p->name, command, nick, text);
+	  if ((p_or_n != NOTICE) && source_p->user)
+	    source_p->user->last = CurrentTime;
+	}
+	else
+	  sendto_one(source_p, form_str(ERR_TOOMANYTARGETS),
+		     me.name, source_p->name, nick);
+      }
+    }
+    else if (server && *(server+1) && (target_p == NULL))
+	sendto_one(source_p, form_str(ERR_NOSUCHSERVER), me.name,
+		   source_p->name, server+1);
+    else if (server && (target_p == NULL))
+	sendto_one(source_p, form_str(ERR_NOSUCHNICK), me.name,
+		   source_p->name, nick);
+    return;
+  }
+
+  if (!IsOper(source_p))
+  {
+    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
+	       me.name, source_p->name);
+    return;
+  }
   /*
    * the following two cases allow masks in NOTICEs
    * (for OPERs only)
@@ -865,127 +946,6 @@ handle_opers(int p_or_n, char *command, struct Client *client_p,
     return;
   }
 
-  /*
-   * user[%host]@server addressed?
-   */
-  if ((server = strchr(nick, '@')) && (target_p = find_server(server + 1)))
-  {
-    count = 0;
-
-    /*
-     * Not destined for a user on me :-(
-     */
-
-    if (!IsMe(target_p))
-    {
-      sendto_one(target_p, ":%s %s %s :%s", source_p->name,
-                 command, nick, text);
-      if ((p_or_n != NOTICE) && source_p->user)
-        source_p->user->last = CurrentTime;
-      return;
-    }
-
-    *server = '\0';
-
-    if ((host = strchr(nick, '%')) != NULL)
-      *host++ = '\0';
-
-    /* Check if someones msg'ing opers@our.server */
-    if (strcmp(nick, "opers") == 0)
-    {
-      sendto_realops_flags(FLAGS_ALL, L_ALL, "To opers: From: %s: %s",
-                           source_p->name, text);
-      return;
-    }
-
-    /*
-     * Look for users which match the destination host
-     * (no host == wildcard) and if one and one only is
-     * found connected to me, deliver message!
-     */
-    target_p = find_userhost(nick, host, &count);
-
-    if (target_p != NULL)
-    {
-      if (server != NULL)
-	*server = '@';
-      if (host != NULL)
-	*--host = '%';
-
-      if (count == 1)
-      {
-        sendto_anywhere(target_p, source_p, "%s %s :%s", command,
-			nick, text);
-        if ((p_or_n != NOTICE) && source_p->user)
-          source_p->user->last = CurrentTime;
-      }
-      else
-        sendto_one(source_p, form_str(ERR_TOOMANYTARGETS),
-                   me.name, source_p->name, nick);
-    }
-  }
-  else if (server && *(server+1) && (target_p == NULL))
-    sendto_one(source_p, form_str(ERR_NOSUCHSERVER), me.name,
-               source_p->name, server+1);
-  else if (server && (target_p == NULL))
-    sendto_one(source_p, form_str(ERR_NOSUCHNICK), me.name,
-               source_p->name, nick);
-}
-
-/*
- * handle_nick_server
- *
- * inputs	- server pointer
- *		- client pointer
- *		- nick stuff to grok
- *		- text to send if grok
- * output	- 1 if handled here, 0 if not
- * side effects	- nick@server is handled here
- */
-static int
-handle_nick_server(int p_or_n, char *command, struct Client *client_p,
-		   struct Client *source_p, char *nick, char *text)
-{
-  struct Client *target_p;
-  struct Client *server_p;
-  char *server;
-  int result;
-
-  result = 0;
-
-  if ((server = strchr(nick, '@')) && (server_p = find_server(server + 1)))
-  {
-    if (strchr(nick, '%') != NULL)
-      return(0);
-
-    if (strncasecmp(nick, "opers", 5) == 0)
-      return(0);
-
-    *server = '\0';
-
-    if ((target_p = find_person(nick)) != NULL)
-    {
-      *server = '@';
-
-      if (server_p == &me)
-      {
-        sendto_one(target_p, ":%s %s %s :%s",
-		   source_p->name, command, nick, text);
-      }
-      else
-      {
-        sendto_anywhere(target_p, source_p, "%s %s :%s", command,
-                        nick, text);
-      }
-      if ((p_or_n != NOTICE) && source_p->user)
-	source_p->user->last = CurrentTime;
-      result = 1;
-    }
-    else
-      sendto_one(source_p, form_str(ERR_NOSUCHNICK),
-		 me.name, source_p->name, nick);
-  }
-  return(result);
 }
 
 /*
