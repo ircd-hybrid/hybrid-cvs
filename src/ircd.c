@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.92 2000/12/30 18:19:10 lusky Exp $
+ * $Id: ircd.c,v 7.93 2001/01/01 20:49:40 db Exp $
  */
 #include "tools.h"
 #include "ircd.h"
@@ -586,7 +586,9 @@ int main(int argc, char *argv[])
            CLEANUP_TKLINES_TIME, 0);
 
   /* We want try_connections to be called as soon as possible now! -- adrian */
-  eventAdd("try_connections", try_connections, NULL, 0, 0);
+  /* No, 'cause after a restart it would cause all sorts of nick collides */
+  eventAdd("try_connections", try_connections, NULL, 
+	   STARTUP_CONNECTIONS_TIME, 0);
 
   /* Setup the timeout check. I'll shift it later :)  -- adrian */
   eventAdd("comm_checktimeouts", comm_checktimeouts, NULL, 1, 0);

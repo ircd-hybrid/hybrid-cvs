@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: s_serv.h,v 7.29 2000/12/31 22:53:56 db Exp $
+ * $Id: s_serv.h,v 7.30 2001/01/01 20:49:34 db Exp $
  *
  */
 #ifndef INCLUDED_serv_h
@@ -35,6 +35,12 @@
  * this ONLY if you KNOW what you're doing!
  */
 #define TRY_CONNECTIONS_TIME	60
+/*
+ * number of seconds to wait after server starts up, before
+ * starting try_connections()
+ * TOO SOON and you can nick collide like crazy. 
+ */
+#define STARTUP_CONNECTIONS_TIME 300
 
 struct Client;
 struct ConfItem;
