@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: memory.h,v 7.36 2002/07/13 22:54:47 androsyn Exp $
+ *  $Id: memory.h,v 7.37 2003/05/25 01:44:15 joshk Exp $
  */
 
 #ifndef _I_MEMORY_H
@@ -30,7 +30,7 @@
 #include "balloc.h"
 
 /* Needed to use uintptr_t for some pointer manipulation. */
-#ifdef __VMS
+#ifdef __vms
 #include inttypes
 #else /* Not VMS */
 #ifdef HAVE_INTTYPES_H
