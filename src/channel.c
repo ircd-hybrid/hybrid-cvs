@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.382 2003/06/01 03:08:19 michael Exp $
+ *  $Id: channel.c,v 7.383 2003/06/01 08:48:37 michael Exp $
  */
 
 #include "stdinc.h"
@@ -96,7 +96,7 @@ init_channels(void)
  */
 void
 add_user_to_channel(struct Channel *chptr, struct Client *who,
-                    unsigned short flags)
+                    unsigned int flags)
 {
   struct Membership *ms;
 

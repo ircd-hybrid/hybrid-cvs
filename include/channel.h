@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.140 2003/05/31 18:52:48 adx Exp $
+ *  $Id: channel.h,v 7.141 2003/06/01 08:48:35 michael Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -81,7 +81,7 @@ extern int is_voiced(struct Channel *chptr,struct Client *who);
 extern int is_deopped(struct Channel *chptr,struct Client *who);
 
 extern void add_user_to_channel(struct Channel *chptr, struct Client *who,
-                                unsigned short flags);
+                                unsigned int flags);
 extern int remove_user_from_channel(struct Channel *chptr, struct Client *who);
 
 extern int check_channel_name(const char *name);
@@ -123,7 +123,7 @@ struct Membership
   dlink_node usernode;
   struct Channel *chptr;
   struct Client *client_p;
-  unsigned short flags;
+  unsigned int flags;
 };
 
 extern struct Membership *find_user_link(struct Channel *chptr,

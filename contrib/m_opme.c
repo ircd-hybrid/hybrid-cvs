@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_opme.c,v 1.40 2003/05/31 18:52:46 adx Exp $
+ *   $Id: m_opme.c,v 1.41 2003/06/01 08:48:33 michael Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -56,7 +56,7 @@ _moddeinit(void)
   mod_del_cmd(&opme_msgtab);
 }
 
-const char *_version = "$Revision: 1.40 $";
+const char *_version = "$Revision: 1.41 $";
 
 static int
 chan_is_opless(struct Channel *chptr)
@@ -112,7 +112,7 @@ mo_opme(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  change_channel_membership(chptr, source_p, 1, CHFL_CHANOP);
+  change_channel_membership(chptr, source_p, CHFL_CHANOP, CHFL_DEOPPED);
 
   if (parv[1][0] == '&')
   {

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.102 2003/06/01 04:00:06 metalrock Exp $
+ *  $Id: channel_mode.c,v 7.103 2003/06/01 08:48:37 michael Exp $
  */
 
 #include "stdinc.h"
@@ -295,20 +295,16 @@ del_id(struct Channel *chptr, const char *banid, int type)
 
 void
 change_channel_membership(struct Channel *chptr, struct Client *client_p,
-                          int add_flag, unsigned short flags)
+                          unsigned int add_flag, unsigned int del_flag)
 {
   struct Membership *ms;
 
   if ((ms = find_user_link(chptr, client_p)) != NULL)
   {
     if (add_flag)
-    {
-      ms->flags |=  flags;
-      if (flags & CHFL_CHANOP)
-        ms->flags &= ~ CHFL_DEOPPED;
-    }
-    else
-      ms->flags &= ~flags;
+      ms->flags |=  add_flag;
+    if (del_flag)
+      ms->flags &= ~del_flag;
   }
 }
 
@@ -1084,7 +1080,7 @@ chm_op(struct Client *client_p, struct Client *source_p,
     mode_changes[mode_count].arg = targ_p->name;
     mode_changes[mode_count++].client = targ_p;
 
-    change_channel_membership(chptr, targ_p, 1, CHFL_CHANOP);
+    change_channel_membership(chptr, targ_p, CHFL_CHANOP, CHFL_DEOPPED);
   }
   else
   {
@@ -1179,7 +1175,7 @@ chm_voice(struct Client *client_p, struct Client *source_p,
     mode_changes[mode_count].arg = targ_p->name;
     mode_changes[mode_count++].client = targ_p;
 
-    change_channel_membership(chptr, targ_p, 1, CHFL_VOICE);
+    change_channel_membership(chptr, targ_p, CHFL_VOICE, 0);
 
   }
   else
