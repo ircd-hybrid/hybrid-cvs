@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_nick.c,v 1.53 2001/01/27 06:38:12 lusky Exp $
+ *   $Id: m_nick.c,v 1.54 2001/01/27 07:05:58 lusky Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -133,6 +133,7 @@ static int mr_nick(struct Client *cptr, struct Client *sptr, int parc,
     }
 
   if ( (acptr = find_client(nick, NULL)) == NULL )
+   {
     if (!ServerInfo.hub && uplink && IsCapable(uplink, CAP_LL))
     {
       /* We don't know anyone called nick, but our hub might */
@@ -161,6 +162,7 @@ static int mr_nick(struct Client *cptr, struct Client *sptr, int parc,
       {
         return(set_initial_nick(cptr, sptr, nick));
       }
+   }
   else
    {
      sendto_one(sptr, form_str(ERR_NICKNAMEINUSE), me.name, "*", nick);
