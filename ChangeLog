@@ -1,3 +1,22 @@
+a1kmm       2003/02/07 02:09:30 EST	(20030207_0)
+
+  Modified files:
+    src                  send.c client.c 
+    modules/core         m_nick.c 
+    include              send.h 
+  Log:
+  - Don't send QUIT back to a user on exit.
+  - Changed a IsClosing to IsDead so users so ERROR :Closing Link: when they are
+    exited.
+  
+  Revision  Changes    Path
+  7.60      +4 -2      ircd-hybrid-7/include/send.h
+  1.99      +3 -2      ircd-hybrid-7/modules/core/m_nick.c
+  7.327     +5 -3      ircd-hybrid-7/src/client.c
+  7.222     +4 -2      ircd-hybrid-7/src/send.c
+
+
+
 a1kmm       2003/02/06 05:53:28 EST	(20030206_3)
 
   Modified files:
@@ -34912,4 +34931,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4224 2003/02/06 10:53:31 a1kmm Exp $
+$Id: ChangeLog,v 7.4225 2003/02/07 07:09:33 a1kmm Exp $
