@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.215 2002/01/12 18:38:42 jmallett Exp $
+ *  $Id: ircd.c,v 7.216 2002/01/30 06:48:15 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -548,6 +548,13 @@ static void cleanup_zombies(void *unused)
 
 int main(int argc, char *argv[])
 {
+  /* Check to see if the user is running us as root, which is a nono */
+  
+  if(geteuid() == 0)
+  {
+    fprintf(stderr, "Don't run ircd as root!!!\n");
+    return -1;
+  }
 
   /*
    * save server boot time right away, so getrusage works correctly
