@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.119 2000/12/23 01:11:51 db Exp $
+ *  $Id: s_conf.c,v 7.120 2000/12/23 01:42:20 db Exp $
  */
 #include "tools.h"
 #include "s_conf.h"
@@ -302,7 +302,7 @@ void report_configured_links(struct Client* sptr, int mask)
         else if(mask & (CONF_OPERATOR))
           {
             /* Don't allow non opers to see oper privs */
-            if(IsAnyOper(sptr))
+            if(IsOper(sptr))
               sendto_one(sptr, form_str(p->rpl_stats), me.name,
                          sptr->name,
                          p->conf_char,

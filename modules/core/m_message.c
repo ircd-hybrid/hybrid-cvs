@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.32 2000/12/22 16:12:40 db Exp $
+ *   $Id: m_message.c,v 1.33 2000/12/23 01:42:13 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -339,7 +339,7 @@ int build_target_list(int p_or_n,
 	    }
 	}
 
-      if (IsGlobalOper(sptr) && (*nick == '$'))
+      if (IsOper(sptr) && (*nick == '$'))
 	{
 	  handle_opers(p_or_n, command, cptr,sptr,nick+1,text);
 	  continue;

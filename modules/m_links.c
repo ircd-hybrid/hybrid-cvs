@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_links.c,v 1.10 2000/12/22 16:12:38 db Exp $
+ *   $Id: m_links.c,v 1.11 2000/12/23 01:42:12 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -99,7 +99,7 @@ int m_links(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
         continue;
       if (*mask && !match(mask, acptr->name))
         continue;
-      if(IsAnyOper(sptr))
+      if(IsOper(sptr))
          sendto_one(sptr, form_str(RPL_LINKS),
                     me.name, parv[0], acptr->name, acptr->serv->up,
                     acptr->hopcount, (acptr->info[0] ? acptr->info :
@@ -157,7 +157,7 @@ int ms_links(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
       != HUNTED_ISME)
     return 0;
 
-  if(IsAnyOper(sptr))
+  if(IsOper(sptr))
     return(m_links(cptr,sptr,parc,parv));
   return 0;
 }

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.c,v 1.9 2000/12/22 16:12:35 db Exp $
+ * $Id: m_info.c,v 1.10 2000/12/23 01:42:11 db Exp $
  */
 #include "tools.h"
 #include "m_info.h"
@@ -133,7 +133,7 @@ int ms_info(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 {
   if (hunt_server(cptr,sptr,":%s INFO :%s",1,parc,parv) == HUNTED_ISME)
     {
-      if(IsAnyOper(sptr))
+      if(IsOper(sptr))
 	mo_info(cptr,sptr,parc,parv);
       else
 	m_info(cptr,sptr,parc,parv);

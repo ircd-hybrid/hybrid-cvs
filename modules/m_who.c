@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_who.c,v 1.18 2000/12/22 16:12:48 db Exp $
+ *   $Id: m_who.c,v 1.19 2000/12/23 01:42:17 db Exp $
  */
 #include "tools.h"
 #include "common.h"   /* bleah */
@@ -196,7 +196,7 @@ int     m_who(struct Client *cptr,
   /* '/who nick' */
 
   if (((acptr = find_client(mask, NULL)) != NULL) &&
-      IsPerson(acptr) && (!oper || IsAnyOper(acptr)))
+      IsPerson(acptr) && (!oper || IsOper(acptr)))
     {
       struct Channel *bchan;
       char *chname=NULL;
@@ -290,7 +290,7 @@ void who_global(struct Client *sptr,char *mask, int oper)
     {
       if (!IsPerson(acptr))
         continue;
-      if (oper && !IsAnyOper(acptr))
+      if (oper && !IsOper(acptr))
         continue;
       
       showperson = NO;
@@ -413,20 +413,20 @@ void    do_who(struct Client *sptr,
     {
       ircsprintf(status,"%c%s", 
 		 acptr->user->away ? 'G' : 'H',
-		 IsAnyOper(acptr) ? "*" : "");
+		 IsOper(acptr) ? "*" : "");
     }
   else
     {
       ircsprintf(status,"%c%s%s", 
 		 acptr->user->away ? 'G' : 'H',
-		 IsAnyOper(acptr) ? "*" : "", op_flags );
+		 IsOper(acptr) ? "*" : "", op_flags );
     }
 
   if(ConfigFileEntry.hide_server)
     {
       sendto_one(sptr, form_str(RPL_WHOREPLY), me.name, sptr->name,
 		 chname, acptr->username,
-		 acptr->host, IsAnyOper(sptr) ? acptr->user->server : "*",
+		 acptr->host, IsOper(sptr) ? acptr->user->server : "*",
 		 acptr->name,
 		 status, acptr->hopcount, acptr->info);
     }

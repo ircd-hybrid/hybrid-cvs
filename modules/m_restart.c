@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_restart.c,v 1.7 2000/12/22 16:12:43 db Exp $
+ *   $Id: m_restart.c,v 1.8 2000/12/23 01:42:15 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -64,7 +64,7 @@ int     mo_restart(struct Client *cptr,
                   char *parv[])
 {
   char buf[BUFSIZE]; 
-  if (!MyClient(sptr) || !IsAnyOper(sptr))
+  if (!MyClient(sptr) || !IsOper(sptr))
     {
       sendto_one(sptr, form_str(ERR_NOPRIVILEGES), me.name, parv[0]);
       return 0;

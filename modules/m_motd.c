@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_motd.c,v 1.7 2000/12/22 16:12:40 db Exp $
+ *   $Id: m_motd.c,v 1.8 2000/12/23 01:42:14 db Exp $
  */
 #include "tools.h"
 #include "motd.h"
@@ -67,7 +67,7 @@ int m_motd(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 {
   static time_t last_used = 0;
 
-  if(!IsAnyOper(sptr))
+  if(!IsOper(sptr))
     {
       if((last_used + ConfigFileEntry.pace_wait) > CurrentTime)
         {

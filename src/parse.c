@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.47 2000/12/21 13:39:48 db Exp $
+ *   $Id: parse.c,v 7.48 2000/12/23 01:42:20 db Exp $
  */
 #include "parse.h"
 #include "client.h"
@@ -312,7 +312,7 @@ int parse(struct Client *cptr, char *buffer, char *bufend)
        handle_idx = SERVER_HANDLER;
        break;
      case STAT_CLIENT:
-       handle_idx = IsAnyOper(cptr) ? OPER_HANDLER : CLIENT_HANDLER;
+       handle_idx = IsOper(cptr) ? OPER_HANDLER : CLIENT_HANDLER;
        break;
      default:
   /* Todo: An error should be logged here, unable to determine the class of connection.

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 1.27 2000/12/22 16:12:49 db Exp $
+ *   $Id: m_whois.c,v 1.28 2000/12/23 01:42:17 db Exp $
  */
 #include "tools.h"
 #include "common.h"   /* bleah */
@@ -368,7 +368,7 @@ void whois_person(struct Client *sptr,struct Client *acptr)
     sendto_one(sptr, form_str(RPL_AWAY), me.name,
 	       sptr->name, acptr->name, acptr->user->away);
 
-  if (IsAnyOper(acptr))
+  if (IsOper(acptr))
     {
       sendto_one(sptr, form_str(RPL_WHOISOPERATOR),
 		 me.name, sptr->name, acptr->name);

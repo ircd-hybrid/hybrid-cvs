@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.84 2000/12/21 13:39:40 db Exp $
+ *  $Id: client.c,v 7.85 2000/12/23 01:42:18 db Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -297,7 +297,7 @@ check_pings_list(dlink_list *list)
         {
           if( !IsElined(cptr) &&
               GlobalSetOptions.idletime && 
-              !IsAnyOper(cptr) &&
+              !IsOper(cptr) &&
               !IsIdlelined(cptr) && 
               ((CurrentTime - cptr->user->last) > GlobalSetOptions.idletime))
             {
@@ -548,7 +548,7 @@ static void update_client_exit_stats(struct Client* cptr)
   else if (IsClient(cptr))
     {
       --Count.total;
-      if (IsAnyOper(cptr))
+      if (IsOper(cptr))
 	--Count.oper;
       if (IsInvisible(cptr)) 
 	--Count.invisi;
@@ -1274,7 +1274,7 @@ const char* comment         /* Reason for the exit */
 	      free_dlink_node(m);
 	    }
 	}
-      if (IsAnyOper(sptr))
+      if (IsOper(sptr))
         {
 	  m = dlinkFind(&oper_list,sptr);
 	  if( m != NULL )

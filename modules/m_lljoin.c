@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_lljoin.c,v 1.20 2000/12/22 16:12:39 db Exp $
+ * $Id: m_lljoin.c,v 1.21 2000/12/23 01:42:12 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -149,7 +149,7 @@ int     ms_lljoin(struct Client *cptr,
     }
 
   if ((acptr->user->joined >= MAXCHANNELSPERUSER) &&
-      (!IsAnyOper(acptr) || (acptr->user->joined >= MAXCHANNELSPERUSER*3)))
+      (!IsOper(acptr) || (acptr->user->joined >= MAXCHANNELSPERUSER*3)))
     {
       sendto_one(acptr, form_str(ERR_TOOMANYCHANNELS),
 		 me.name, parv[0], chname );

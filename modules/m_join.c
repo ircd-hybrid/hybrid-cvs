@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 1.31 2000/12/22 16:12:36 db Exp $
+ *   $Id: m_join.c,v 1.32 2000/12/23 01:42:12 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -232,7 +232,7 @@ int     m_join(struct Client *cptr,
 	}
 
       if ((sptr->user->joined >= MAXCHANNELSPERUSER) &&
-         (!IsAnyOper(sptr) || (sptr->user->joined >= MAXCHANNELSPERUSER*3)))
+         (!IsOper(sptr) || (sptr->user->joined >= MAXCHANNELSPERUSER*3)))
 	{
 	  sendto_one(sptr, form_str(ERR_TOOMANYCHANNELS),
 		     me.name, parv[0], name);

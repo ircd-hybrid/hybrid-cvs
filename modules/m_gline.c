@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_gline.c,v 1.27 2000/12/22 16:12:34 db Exp $
+ *  $Id: m_gline.c,v 1.28 2000/12/23 01:42:11 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -147,13 +147,6 @@ int mo_gline(struct Client *cptr,
 
   if (ConfigFileEntry.glines)
     {
-      /* Only globals can apply Glines */
-      if (!IsGlobalOper(sptr))
-	{
-	  sendto_one(sptr, form_str(ERR_NOPRIVILEGES), me.name, parv[0]);
-	  return 0;
-	}
-
       if (!IsSetOperGline(sptr))
 	{
 	  sendto_one(sptr,":%s NOTICE %s :You have no G flag",me.name,parv[0]);

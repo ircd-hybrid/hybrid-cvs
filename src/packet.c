@@ -18,7 +18,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: packet.c,v 7.26 2000/12/21 14:16:10 adrian Exp $
+ *   $Id: packet.c,v 7.27 2000/12/23 01:42:20 db Exp $
  */ 
 
 #include <stdio.h>
@@ -65,7 +65,7 @@ int parse_client_queued(struct Client *cptr)
     else
       {
 	checkflood = 0;
-	if (ConfigFileEntry.no_oper_flood && IsAnyOper(cptr))
+	if (ConfigFileEntry.no_oper_flood && IsOper(cptr))
 	  checkflood = 0;
 
 	/*
@@ -213,7 +213,7 @@ read_packet(int fd, void *data)
   /* Check to make sure we're not flooding */
   if (IsPerson(cptr) &&
      (linebuf_alloclen(&cptr->localClient->buf_recvq) > CLIENT_FLOOD)) {
-      if (!(ConfigFileEntry.no_oper_flood && IsAnyOper(cptr))) {
+      if (!(ConfigFileEntry.no_oper_flood && IsOper(cptr))) {
 
 #if 0
         exit_client(cptr, cptr, cptr, "Excess Flood");

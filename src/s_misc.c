@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_misc.c,v 7.10 2000/12/21 13:39:53 db Exp $
+ *  $Id: s_misc.c,v 7.11 2000/12/23 01:42:21 db Exp $
  */
 #include "s_misc.h"
 #include "client.h"
@@ -160,7 +160,7 @@ void serv_info(struct Client *cptr)
        * been removed. Also, do not allow non opers to see the IP's of servers
        * on stats ?
        */
-      if(IsAnyOper(cptr))
+      if(IsOper(cptr))
         sendto_one(cptr, Lformat, me.name, RPL_STATSLINKINFO,
                    cptr->name, get_client_name(acptr, TRUE),
                    (int)linebuf_len(&acptr->localClient->buf_sendq),

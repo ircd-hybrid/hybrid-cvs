@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_oper.c,v 1.17 2000/12/23 01:11:50 db Exp $
+ *   $Id: m_oper.c,v 1.18 2000/12/23 01:42:14 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -176,7 +176,7 @@ int ms_oper(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 {
   /* if message arrived from server, trust it, and set to oper */
   
-  if (!IsGlobalOper(sptr))
+  if (!IsOper(sptr))
     {
       if (sptr->status == STAT_CLIENT)
 	sptr->handler = OPER_HANDLER;
