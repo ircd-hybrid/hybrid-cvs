@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_mode.c,v 1.12 2000/12/16 04:42:40 db Exp $
+ *   $Id: m_mode.c,v 1.13 2000/12/16 05:58:50 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -110,7 +110,8 @@ int m_mode(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 	  sendto_one(uplink, ":%s CBURST %s",
 		      me.name, parv[1]);
 	      
-	  /* a "callback" is triggered by an LLJOIN from uplink */
+	  sendto_one(uplink, ":%s MODE %s",
+		     me.name, parv[1]);
 	  return 0;
 	}
       else
