@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: irc_string.c,v 7.35 2001/07/20 03:46:20 wcampbel Exp $
+ *  $Id: irc_string.c,v 7.36 2001/07/20 15:22:31 androsyn Exp $
  */
 #include "config.h"
 #include "tools.h"
@@ -75,22 +75,6 @@ const char* myctime(time_t value)
   if ((p = strchr(buf, '\n')) != NULL)
     *p = '\0';
   return buf;
-}
-
-/*
- * strncpy_irc - optimized strncpy
- * This may not look like it would be the fastest possible way to do it,
- * but it generally outperforms everything else on many platforms, 
- * including asm library versions and memcpy, if compiled with the 
- * optimizer on. (-O2 for gcc) --Bleep
- */
-char* strncpy_irc(char* s1, const char* s2, size_t n)
-{
-  register char* endp = s1 + n;
-  register char* s = s1;
-  while (s < endp && (*s++ = *s2++))
-    ;
-  return s1;
 }
 
 
@@ -734,3 +718,24 @@ size_t strlcpy(char *dst, const char *src, size_t siz)
  	return(s - src - 1);	/* count does not include NUL */
 }
 #endif
+
+
+/*
+ * strncpy_irc - optimized strncpy
+ * This may not look like it would be the fastest possible way to do it,
+ * but it generally outperforms everything else on many platforms, 
+ * including asm library versions and memcpy, if compiled with the 
+ * optimizer on. (-O2 for gcc) --Bleep
+ */
+#ifdef strncpy_irc
+#undef strncpy_irc
+#endif
+
+char* strncpy_irc(char* s1, const char* s2, size_t n)
+{
+  register char* endp = s1 + n;
+  register char* s = s1;
+  while (s < endp && (*s++ = *s2++))
+    ;
+  return s1;
+}
