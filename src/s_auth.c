@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.86 2002/02/28 03:02:16 jmallett Exp $
+ *  $Id: s_auth.c,v 7.87 2002/02/28 14:03:49 androsyn Exp $
  */
 
 /*
@@ -595,7 +595,7 @@ read_auth_reply(int fd, void *data)
   auth->fd = -1;
   ClearAuth(auth);
   
-  if (s == NULL && auth->client->username[0] != '\0')
+  if (s == NULL)
     {
       ++ServerStats->is_abad;
       strcpy(auth->client->username, "unknown");

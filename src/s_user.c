@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.190 2002/02/25 17:39:16 androsyn Exp $
+ *  $Id: s_user.c,v 7.191 2002/02/28 14:03:49 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -307,6 +307,7 @@ int register_local_user(struct Client *client_p, struct Client *source_p,
            source_p->random_ping = (unsigned long)random();
            sendto_one(source_p, "PING :%lu", (unsigned long)source_p->random_ping);
            source_p->flags |= FLAGS_PINGSENT;
+	   strlcpy(source_p->username, username, USERLEN);
   	   return -1;
   	} 
   	if(!(source_p->flags2 & FLAGS2_PING_COOKIE))
@@ -320,9 +321,6 @@ int register_local_user(struct Client *client_p, struct Client *source_p,
   /* Straight up the maximum rate of flooding... */
   source_p->localClient->allow_read = MAX_FLOOD_PER_SEC_I;
 
-  /* pointed out by Mortiis, never be too careful */
-  if(strlen(username) > USERLEN)
-    username[USERLEN] = '\0';
 
   if( ( status = check_client(client_p, source_p, username )) < 0 )
     return(CLIENT_EXITED);
@@ -364,7 +362,7 @@ int register_local_user(struct Client *client_p, struct Client *source_p,
       else
 	{
 	  *source_p->username = '~';
-	  strlcpy(&source_p->username[1], username, USERLEN);
+	  strlcpy(&source_p->username[1], username, USERLEN-1);
 	}
     }
 
@@ -506,10 +504,6 @@ int register_remote_user(struct Client *client_p, struct Client *source_p,
   assert(source_p->username != username);
 
   user->last = CurrentTime;
-
-  /* pointed out by Mortiis, never be too careful */
-  if(strlen(username) > USERLEN)
-    username[USERLEN] = '\0';
 
   strlcpy(source_p->username, username, USERLEN);
 
