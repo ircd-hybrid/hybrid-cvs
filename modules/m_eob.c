@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_eob.c,v 1.19 2001/03/06 02:05:11 androsyn Exp $
+ *   $Id: m_eob.c,v 1.20 2001/03/06 02:22:22 androsyn Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -60,7 +60,7 @@ char *_version = "20001202";
  *      parv[0] = sender prefix   
  *      parv[1] = servername   
  */
-static void ms_eob(struct Client *client_p, struct Client *server_p,
+static void ms_eob(struct Client *client_p, struct Client *source_p,
                   int parc, char *parv[])
 {
   unsigned long TheirTime;
@@ -77,11 +77,11 @@ static void ms_eob(struct Client *client_p, struct Client *server_p,
 
       sendto_realops_flags(
        FLAGS_ALL,"*** End of burst from %s (%lu seconds)",
-       server_p->name, DeltaTime );
+       source_p->name, DeltaTime );
     }
   else
     sendto_realops_flags(FLAGS_ALL,"*** End of burst from %s",
-			 server_p->name);
+			 source_p->name);
 
   SetEob(client_p);
 }

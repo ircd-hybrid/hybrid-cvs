@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_drop.c,v 1.15 2001/03/06 02:05:11 androsyn Exp $
+ * $Id: m_drop.c,v 1.16 2001/03/06 02:22:22 androsyn Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -69,7 +69,7 @@ char *_version = "20001122";
 **      "drop" a channel from consideration on a lazy link
 */
 static void ms_drop(struct Client *client_p,
-                   struct Client *server_p,
+                   struct Client *source_p,
                   int parc,
                   char *parv[])
 {

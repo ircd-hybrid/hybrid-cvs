@@ -19,7 +19,7 @@
  *
  * "s_user.h". - Headers file.
  *
- * $Id: s_user.h,v 7.11 2001/03/06 02:04:59 androsyn Exp $
+ * $Id: s_user.h,v 7.12 2001/03/06 02:22:11 androsyn Exp $
  *
  */
 #ifndef INCLUDED_s_user_h
@@ -40,7 +40,7 @@ extern int   user_mode(struct Client* , struct Client* , int, char** );
 extern void  send_umode (struct Client* , struct Client* ,
                          int, int, char* );
 extern void  send_umode_out(struct Client* , struct Client* , int);
-extern int   show_lusers(struct Client* server_p);
+extern int   show_lusers(struct Client* source_p);
 extern void  show_opers(struct Client* client);
 extern int   register_local_user(struct Client* ,struct Client* ,
 				 char* ,char* );

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_nburst.c,v 1.7 2001/03/06 02:05:19 androsyn Exp $
+ * $Id: m_nburst.c,v 1.8 2001/03/06 02:22:29 androsyn Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -75,7 +75,7 @@ char *_version = "20010104";
  */
 
 static void ms_nburst(struct Client *client_p,
-                     struct Client *server_p,
+                     struct Client *source_p,
                      int parc,
                      char *parv[])
 {

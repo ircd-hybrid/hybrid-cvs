@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_capab.c,v 1.15 2001/03/06 02:05:08 androsyn Exp $
+ *   $Id: m_capab.c,v 1.16 2001/03/06 02:22:19 androsyn Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -58,7 +58,7 @@ char *_version = "20001122";
  *      parv[1] = space-separated list of capabilities
  *
  */
-static void mr_capab(struct Client *client_p, struct Client *server_p,
+static void mr_capab(struct Client *client_p, struct Client *source_p,
                     int parc, char *parv[])
 {
   struct Capability *cap;

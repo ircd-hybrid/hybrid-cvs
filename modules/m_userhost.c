@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_userhost.c,v 1.28 2001/03/06 02:05:26 androsyn Exp $
+ *   $Id: m_userhost.c,v 1.29 2001/03/06 02:22:41 androsyn Exp $
  */
 
 #include "handlers.h"
@@ -65,7 +65,7 @@ char *_version = "20001122";
  * information only (no spurious AWAY labels or channels).
  */
 static void m_userhost(struct Client *client_p,
-                      struct Client *server_p,
+                      struct Client *source_p,
                       int parc,
                       char *parv[])
 {
@@ -99,7 +99,7 @@ static void m_userhost(struct Client *client_p,
            * including your nick and the nick of someone not known to
            * the leaf, you'll get your spoofed IP.  tough.
            */
-	  if (MyClient(aclient_p) && (aclient_p == server_p))
+	  if (MyClient(aclient_p) && (aclient_p == source_p))
 	  {
             rl = ircsprintf(response, "%s%s=%c%s@%s ",
 			    aclient_p->name,
@@ -146,5 +146,5 @@ static void m_userhost(struct Client *client_p,
         }
     }
 
-  sendto_one(server_p, "%s", buf);
+  sendto_one(source_p, "%s", buf);
 }

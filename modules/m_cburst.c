@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_cburst.c,v 1.29 2001/03/06 02:05:09 androsyn Exp $
+ * $Id: m_cburst.c,v 1.30 2001/03/06 02:22:19 androsyn Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -73,7 +73,7 @@ char *_version = "20001122";
  */
 
 static void ms_cburst(struct Client *client_p,
-                     struct Client *server_p,
+                     struct Client *source_p,
                      int parc,
                      char *parv[])
 {
@@ -109,14 +109,14 @@ static void ms_cburst(struct Client *client_p,
   {
     if((!nick) || (nick && *nick!='!'))
     {
-      chptr = get_channel(server_p, name, CREATE);
+      chptr = get_channel(source_p, name, CREATE);
       chptr->channelts = (time_t)(-1); /* ! highest possible TS so its always-                                          * over-ruled
                                         */
       chptr->users_last = CurrentTime;
     }
     else if(nick && *nick=='!')
     {
-      sendto_one(server_p, form_str(ERR_NOSUCHCHANNEL),
+      sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
                  me.name, nick+1, name);
       return;
     }

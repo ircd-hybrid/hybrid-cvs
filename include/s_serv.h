@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: s_serv.h,v 7.36 2001/03/06 02:04:59 androsyn Exp $
+ * $Id: s_serv.h,v 7.37 2001/03/06 02:22:10 androsyn Exp $
  *
  */
 #ifndef INCLUDED_serv_h
@@ -103,7 +103,7 @@ extern int MaxConnectionCount; /* GLOBAL - highest number of connections */
 
 
 extern int         check_server(const char* name, struct Client* server);
-extern int         hunt_server(struct Client* client_pt, struct Client* server_pt,
+extern int         hunt_server(struct Client* client_pt, struct Client* source_pt,
                                char* command, int server, 
                                int parc, char** parv);
 extern const char* my_name_for_link(const char* name, struct ConfItem* conf);
@@ -123,7 +123,7 @@ extern unsigned long nextFreeMask(void);
 extern struct Client *uplink; /* NON NULL if leaf and is this servers uplink */
 
 void add_lazylinkchannel(struct Client *client_p, struct Channel *chptr);
-void add_lazylinkclient(struct Client *client_p, struct Client *server_p);
+void add_lazylinkclient(struct Client *client_p, struct Client *source_p);
 void remove_lazylink_flags(unsigned long mask);
 void client_burst_if_needed(struct Client *client_p, struct Client *aclient_p);
 

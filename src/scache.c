@@ -1,7 +1,7 @@
 /*
  * scache.c
  *
- * $Id: scache.c,v 7.9 2001/03/06 02:05:43 androsyn Exp $
+ * $Id: scache.c,v 7.10 2001/03/06 02:23:10 androsyn blalloc.c $
  */
 
 #include "client.h"
@@ -119,7 +119,7 @@ void count_scache(int *number_servers_cached,u_long *mem_servers_cached)
 
 /* list all server names in scache very verbose */
    
-void list_scache(struct Client *server_p)
+void list_scache(struct Client *source_p)
 {
   int hash_index;
   SCACHE *ptr;
@@ -130,8 +130,8 @@ void list_scache(struct Client *server_p)
       while(ptr)
         {
           if(ptr->name)
-            sendto_one(server_p,":%s NOTICE %s :%s",
-                       me.name, server_p->name, ptr->name);
+            sendto_one(source_p,":%s NOTICE %s :%s",
+                       me.name, source_p->name, ptr->name);
           ptr = ptr->next;
         }
     }

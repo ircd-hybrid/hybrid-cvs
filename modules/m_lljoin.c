@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_lljoin.c,v 1.35 2001/03/06 02:05:16 androsyn Exp $
+ * $Id: m_lljoin.c,v 1.36 2001/03/06 02:22:26 androsyn Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -81,7 +81,7 @@ char *_version = "20001122";
  *
  */
 static void ms_lljoin(struct Client *client_p,
-                     struct Client *server_p,
+                     struct Client *source_p,
                      int parc,
                      char *parv[])
 {

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_dmem.c,v 1.7 2001/03/06 02:05:11 androsyn Exp $
+ *   $Id: m_dmem.c,v 1.8 2001/03/06 02:22:21 androsyn Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -69,12 +69,12 @@ void ReportAllocated(struct Client*);
  *
  */
 static void
-mo_dmem(struct Client *client_p, struct Client *server_p, int parc, char *parv[])
+mo_dmem(struct Client *client_p, struct Client *source_p, int parc, char *parv[])
 {
 #ifdef MEMDEBUG
-  ReportAllocated(server_p);
+  ReportAllocated(source_p);
 #else
-  sendto_one(server_p, ":%s NOTICE %s :Compiled without memory debugging",
-    me.name, server_p->name);
+  sendto_one(source_p, ":%s NOTICE %s :Compiled without memory debugging",
+    me.name, source_p->name);
 #endif
 }

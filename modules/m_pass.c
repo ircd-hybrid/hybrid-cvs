@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_pass.c,v 1.14 2001/03/06 02:05:20 androsyn Exp $
+ *  $Id: m_pass.c,v 1.15 2001/03/06 02:22:31 androsyn Exp $
  */
 #include "handlers.h"  /* m_pass prototype */
 #include "client.h"      /* client struct */
@@ -62,7 +62,7 @@ char *_version = "20001122";
  *      parv[1] = password
  *      parv[2] = optional extra version information
  */
-static void mr_pass(struct Client *client_p, struct Client *server_p,
+static void mr_pass(struct Client *client_p, struct Client *source_p,
                    int parc, char *parv[])
 {
   const char *password = parv[1];

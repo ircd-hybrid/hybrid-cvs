@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.100 2001/03/06 02:04:58 androsyn Exp $
+ * $Id: s_conf.h,v 7.101 2001/03/06 02:22:10 androsyn Exp $
  */
 
 #include "setup.h"
@@ -267,7 +267,7 @@ extern int              attach_confs(struct Client* client,
                                      const char* name, int statmask);
 extern int              attach_cn_lines(struct Client* client, 
                                         const char* name, const char* host);
-extern int              check_client(struct Client* client_p, struct Client *server_p,
+extern int              check_client(struct Client* client_p, struct Client *source_p,
 				     char *);
 extern int              attach_Iline(struct Client* client,
 				     const char* username);
@@ -303,7 +303,7 @@ extern void get_printable_conf(struct ConfItem *,
                                     char **, char **, char **,
                                     char **, int *,char **);
 extern void report_configured_links(struct Client* client_p, int mask);
-extern void report_specials(struct Client* server_p, int flags, int numeric);
+extern void report_specials(struct Client* source_p, int flags, int numeric);
 extern void report_qlines(struct Client* client_p);
 
 extern void yyerror(char *);

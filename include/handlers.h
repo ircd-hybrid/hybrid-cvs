@@ -17,14 +17,14 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: handlers.h,v 7.35 2001/03/06 02:04:57 androsyn Exp $
+ * $Id: handlers.h,v 7.36 2001/03/06 02:22:08 androsyn Exp $
  */
 #ifndef INCLUDED_handlers_h
 #define INCLUDED_handlers_h
 
 /*
  * m_functions execute protocol messages on this server:
- * int m_func(struct Client* client_p, struct Client* server_p, int parc, char* parv[]);
+ * int m_func(struct Client* client_p, struct Client* source_p, int parc, char* parv[]);
  *
  *    client_p    is always NON-NULL, pointing to a *LOCAL* client
  *            structure (with an open socket connected!). This
@@ -32,36 +32,36 @@
  *            originated (or which caused the m_function to be
  *            executed--some m_functions may call others...).
  *
- *    server_p    is the source of the message, defined by the
+ *    source_p    is the source of the message, defined by the
  *            prefix part of the message if present. If not
- *            or prefix not found, then server_p==client_p.
+ *            or prefix not found, then source_p==client_p.
  *
- *            (!IsServer(client_p)) => (client_p == server_p), because
+ *            (!IsServer(client_p)) => (client_p == source_p), because
  *            prefixes are taken *only* from servers...
  *
  *            (IsServer(client_p))
- *                    (server_p == client_p) => the message didn't
+ *                    (source_p == client_p) => the message didn't
  *                    have the prefix.
  *
- *                    (server_p != client_p && IsServer(server_p) means
+ *                    (source_p != client_p && IsServer(source_p) means
  *                    the prefix specified servername. (?)
  *
- *                    (server_p != client_p && !IsServer(server_p) means
+ *                    (source_p != client_p && !IsServer(source_p) means
  *                    that message originated from a remote
  *                    user (not local).
  *
  *
  *            combining
  *
- *            (!IsServer(server_p)) means that, server_p can safely
+ *            (!IsServer(source_p)) means that, source_p can safely
  *            taken as defining the target structure of the
  *            message in this server.
  *
  *    *Always* true (if 'parse' and others are working correct):
  *
- *    1)      server_p->from == client_p  (note: client_p->from == client_p)
+ *    1)      source_p->from == client_p  (note: client_p->from == client_p)
  *
- *    2)      MyConnect(server_p) <=> server_p == client_p (e.g. server_p
+ *    2)      MyConnect(source_p) <=> source_p == client_p (e.g. source_p
  *            *cannot* be a local connection, unless it's
  *            actually client_p!). [MyConnect(x) should probably
  *            be defined as (x == x->from) --msa ]

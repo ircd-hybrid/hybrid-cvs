@@ -3,7 +3,7 @@
  * fdlist.c   maintain lists of file descriptors
  *
  *
- * $Id: fdlist.c,v 7.22 2001/03/06 02:05:33 androsyn Exp $
+ * $Id: fdlist.c,v 7.23 2001/03/06 02:22:57 androsyn Exp $
  */
 #include "fdlist.h"
 #include "client.h"  /* struct Client */
@@ -130,7 +130,7 @@ fd_close(int fd)
  * fd_dump() - dump the list of active filedescriptors
  */
 void
-fd_dump(struct Client *server_p)
+fd_dump(struct Client *source_p)
 {
     int i;
 
@@ -138,10 +138,10 @@ fd_dump(struct Client *server_p)
         if (!fd_table[i].flags.open)
             continue;
 
-        sendto_one(server_p, ":%s NOTICE %s :*** fd %d, desc '%s'", me.name,
-          server_p->name, i, fd_table[i].desc);
+        sendto_one(source_p, ":%s NOTICE %s :*** fd %d, desc '%s'", me.name,
+          source_p->name, i, fd_table[i].desc);
     }
-    sendto_one(server_p, ":%s NOTICE %s :*** Finished", me.name, server_p->name);
+    sendto_one(source_p, ":%s NOTICE %s :*** Finished", me.name, source_p->name);
 }
 
 

@@ -1,5 +1,5 @@
 /*
- * $Id: adns.c,v 7.14 2001/03/06 02:05:29 androsyn Exp $
+ * $Id: adns.c,v 7.15 2001/03/06 02:22:49 androsyn Exp $
  * adns.c  functions to enter libadns 
  *
  * Written by Aaron Sethman <androsyn@ratbox.org>
@@ -21,14 +21,14 @@
 adns_state dns_state;
 BlockHeap *dns_blk;
 
-void report_adns_servers(struct Client *server_p)
+void report_adns_servers(struct Client *source_p)
 {
 	int x;
 	char buf[16]; /* XXX: adns only deals with ipv4 dns servers so this is okay */
 	for(x = 0; x < dns_state->nservers; x++)	
 	{
 		inetntop(AF_INET, &dns_state->servers[x].addr.s_addr, buf, 16);
- 		sendto_one(server_p, form_str(RPL_STATSALINE), me.name, server_p->name, buf); 
+ 		sendto_one(source_p, form_str(RPL_STATSALINE), me.name, source_p->name, buf); 
 	}
 }
 

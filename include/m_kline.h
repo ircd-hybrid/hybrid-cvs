@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_kline.h,v 7.3 2001/03/06 02:04:58 androsyn Exp $
+ * $Id: m_kline.h,v 7.4 2001/03/06 02:22:09 androsyn Exp $
  */
 #ifndef INCLUDED_m_kline_h
 #define INCLUDED_m_kline_h
@@ -26,7 +26,7 @@ struct Client;
 struct PKDlines
 {
   struct PKDlines* next;
-  struct Client*   server_p;
+  struct Client*   source_p;
   struct Client*   rclient_p;
   char*            user; /* username of K/D lined user */
   char*            host; /* hostname of K/D lined user */
