@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.410 2003/10/15 02:25:07 bill Exp $
+ *  $Id: channel.c,v 7.411 2004/03/02 17:02:59 db Exp $
  */
 
 #include "stdinc.h"
@@ -54,10 +54,6 @@ static char buf[BUFSIZE];
 static char modebuf[MODEBUFLEN];
 static char parabuf[MODEBUFLEN];
 
-static BlockHeap *topic_heap;
-static BlockHeap *member_heap;
-
-static void destroy_channel(struct Channel *);
 static void send_mode_list(struct Client *, struct Channel *, dlink_list *, char);
 static int check_banned(struct Channel *, const char *, const char *);
 static const char *channel_pub_or_secret(struct Channel *);
@@ -357,7 +353,7 @@ free_channel_list(dlink_list *list)
  * output       - NONE
  * side effects - walk through this channel, and destroy it.
  */
-static void
+void
 destroy_channel(struct Channel *chptr)
 {
   dlink_node *ptr, *ptr_next;
