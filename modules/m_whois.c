@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 1.37 2001/01/01 01:48:02 toot Exp $
+ *   $Id: m_whois.c,v 1.38 2001/01/01 21:43:23 a1kmm Exp $
  */
 #include "tools.h"
 #include "common.h"   /* bleah */
@@ -79,13 +79,23 @@ int     m_whois(struct Client *cptr,
                 int parc,
                 char *parv[])
 {
+  struct Client *acptr;
   if (parc < 2)
     {
       sendto_one(sptr, form_str(ERR_NONICKNAMEGIVEN),
                  me.name, parv[0]);
       return 0;
     }
-
+  /* Don't break old clients... -A1kmm. */
+  /* Okay, after discussion with other coders we have to always route,
+   * and always show idle times... -A1kmm */
+  if ((acptr = hash_find_client(parv[1], (struct Client*)NULL)) &&
+      !MyConnect(acptr) && IsClient(acptr))
+    {
+     sendto_one(acptr->from, ":%s WHOIS %s %s", parv[0], parv[1],
+                parv[1]);
+     return 0;
+    }
   return(do_whois(cptr,sptr,parc,parv));
 }
 
@@ -396,8 +406,8 @@ void whois_person(struct Client *sptr,struct Client *acptr)
 	sendto_one(sptr, form_str(RPL_WHOISADMIN),
 		   me.name, sptr->name, acptr->name);
     }
-
-  if ((IsOper(sptr) || !GlobalSetOptions.hide_server) && MyConnect(acptr))
+  /* Always route, always show idle time - A1kmm. */
+  if (MyConnect(acptr))
     sendto_one(sptr, form_str(RPL_WHOISIDLE),
 	       me.name, sptr->name, acptr->name,
 	       CurrentTime - acptr->user->last,
