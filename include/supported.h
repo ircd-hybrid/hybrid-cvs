@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: supported.h,v 1.14 2001/10/17 15:25:23 jdc Exp $
+ * $Id: supported.h,v 1.15 2001/12/11 14:44:52 leeh Exp $
  * 
  */
 #ifndef INCLUDED_supported_h
@@ -44,7 +44,8 @@
         ConfigChannel.use_invex ? " INVEX" : "", \
         MAXMODEPARAMS,ConfigChannel.max_chans_per_user, \
         ConfigChannel.maxbans, \
-        ConfigFileEntry.max_targets,NICKLEN,TOPICLEN,TOPICLEN,"#&","(ohv)@%+", \
+        ConfigFileEntry.max_targets,NICKLEN,TOPICLEN,TOPICLEN, \
+	ConfigServerHide.disable_local_channels ? "#" : "#&","(ohv)@%+", \
         "beI,k,l,imnpsta"
 
 /*
