@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.167 2003/06/02 08:03:44 db Exp $
+ *  $Id: parse.c,v 7.168 2003/06/02 18:18:59 db Exp $
  */
 
 #include "stdinc.h"
@@ -44,18 +44,39 @@
 #include "s_serv.h"
 
 /*
- * for the trie parser
- * 
- * - Dianora
+ * (based on orabidoo's parser code)
+ *
+ * This has always just been a trie. Look at volume III of Knuth ACP
+ *
+ *
+ * ok, you start out with an array of pointers, each one corresponds
+ * to a letter at the current position in the command being examined.
+ *
+ * so roughly you have this for matching 'trie' or 'tie'
+ *
+ * 't' points -> [MessageTree *] 'r' -> [MessageTree *] -> 'i'
+ *   -> [MessageTree *] -> [MessageTree *] -> 'e' and matches
+ *
+ *				 'i' -> [MessageTree *] -> 'e' and matches
  */
+
 #define MAXPTRLEN	32	/* Must be a power of 2, and
 				 * larger than 26 [a-z]|[A-Z]
+				 * its used to allocate the set
+				 * of pointers at each node of the tree
+				 * There are MAXPTRLEN pointers at each node.
+				 * Obviously, there have to be more pointers
+				 * Than ASCII letters. 32 is a nice number
+				 * since there is then no need to shift
+				 * 'A'/'a' to base 0 index, at the expense
+				 * of a few never used pointers. For a small
+				 * parser like this, this is a good compromise
+				 * and does make it somewhat faster.
+				 *
+				 * - Dianora
 				 */
-#define MAXPREFIXLEN	64	/* Must be longer than every command name */
-#define UPPERCASE_MASK	0xdf	/* mask to turn ASCII into wine er upper case*/
 
 struct MessageTree {
-  int final;
   struct Message *msg;
   struct MessageTree *pointers[MAXPTRLEN];
 };
@@ -288,7 +309,8 @@ parse(struct Client *client_p, char *pbuffer, char *bufend)
 
   if (s != NULL)
     i = string_to_array(s, para);
-  else {
+  else
+  {
     i = 0;
     para[1] = NULL;
   }
@@ -363,8 +385,7 @@ handle_command(struct Message *mptr, struct Client *client_p,
  * inputs       -
  * output       - NONE
  * side effects - MUST MUST be called at startup ONCE before
- *                any other keyword hash routine is used.
- *
+ *                any other keyword routine is used.
  */
 void
 clear_hash_parse(void)
@@ -375,9 +396,9 @@ clear_hash_parse(void)
 /*
  * add_msg_element
  *
- * inputs	- 
- *		-
- *		-
+ * inputs	- pointer to MessageTree
+ *		- pointer to Message to add for given command
+ *		- pointer to current portion of command being added
  * output	- NONE
  * side effects	- recursively build the Message Tree ;-)
  */
@@ -388,7 +409,6 @@ add_msg_element(struct MessageTree *mtree_p, struct Message *msg_p, char *cmd)
 
   if (*cmd == '\0')
   {
-    mtree_p->final = 1;
     mtree_p->msg = msg_p;
     return;
   }
@@ -408,9 +428,8 @@ add_msg_element(struct MessageTree *mtree_p, struct Message *msg_p, char *cmd)
 /*
  * del_msg_element
  *
- * inputs	- 
- *		-
- *		-
+ * inputs	- Pointer to MessageTree to delete from
+ *		- pointer to command name to delete
  * output	- NONE
  * side effects	- recursively deletes a token from the Message Tree ;-)
  */
@@ -431,6 +450,14 @@ del_msg_element(struct MessageTree *mtree_p, char *cmd)
   }
 }
 
+/*
+ * msg_tree_parse
+ *
+ * inputs	- Pointer to command to find
+ *		- Pointer to MessageTree root
+ * output	- Find given command returning Message * if found NULL if not
+ * side effects	- none
+ */
 static struct Message *
 msg_tree_parse(char *cmd, struct MessageTree *root)
 {
@@ -439,7 +466,7 @@ msg_tree_parse(char *cmd, struct MessageTree *root)
            mtree != NULL;
                mtree = mtree->pointers[(*cmd++) & (MAXPTRLEN-1)])
   {
-    if (mtree->final && (*cmd == '\0'))
+    if ((mtree->msg != NULL) && (*cmd == '\0'))
       return mtree->msg;
   }
   return NULL;
@@ -527,7 +554,7 @@ recurse_report_messages(struct Client *source_p, struct MessageTree *mtree)
 {
   int i;
   
-  if (mtree->final)
+  if (mtree->msg != NULL)
   {
     if (!((mtree->msg->flags & MFLG_HIDDEN) && !IsAdmin(source_p)))
       sendto_one(source_p, form_str(RPL_STATSCOMMANDS),
