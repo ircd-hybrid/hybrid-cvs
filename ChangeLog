@@ -1,3 +1,15 @@
+androsyn    2002/06/12 14:57:53 EDT	(20020612_2)
+
+  Modified files:
+    src                  sprintf_irc.c 
+  Log:
+  Make %lu spit out a 0 for 0 instead of 000000000
+  
+  Revision  Changes    Path
+  7.15      +6 -0      ircd-hybrid-7/src/sprintf_irc.c
+
+
+
 androsyn    2002/06/11 21:40:23 EDT	(20020612_1)
 
   Modified files:
@@ -28215,4 +28227,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3765 2002/06/12 01:40:29 androsyn Exp $
+$Id: ChangeLog,v 7.3766 2002/06/12 18:58:00 androsyn Exp $
