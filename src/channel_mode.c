@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.70 2003/02/06 08:46:01 a1kmm Exp $
+ *  $Id: channel_mode.c,v 7.71 2003/02/06 10:12:39 a1kmm Exp $
  */
 
 #include "stdinc.h"
@@ -1801,6 +1801,9 @@ chm_key(struct Client *client_p, struct Client *source_p,
   {
     if (!(*chptr->mode.key))
       return;
+
+    if (parc > *parn)
+      (*parn)++;
 
     *chptr->mode.key = 0;
 
