@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_connect.c,v 1.46 2003/06/18 00:15:10 metalrock Exp $
+ *  $Id: m_connect.c,v 1.47 2003/06/24 10:37:51 michael Exp $
  */
 
 #include "stdinc.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
   mod_del_cmd(&connect_msgtab);
 }
 
-const char *_version = "$Revision: 1.46 $";
+const char *_version = "$Revision: 1.47 $";
 #endif
 
 /*
@@ -157,7 +157,7 @@ mo_connect(struct Client* client_p, struct Client* source_p,
   {
     pending_connection = ptr->data;
 
-    if (pending_connection->name != NULL && aconf->name != NULL)
+    if (pending_connection->name[0] && aconf->name != NULL)
     {
       if (0 == irccmp(aconf->name, pending_connection->name))
       {
@@ -292,7 +292,7 @@ ms_connect(struct Client *client_p, struct Client *source_p,
   {
     pending_connection = ptr->data;
 
-    if (pending_connection->name != NULL && aconf->name != NULL)
+    if (pending_connection->name[0] && aconf->name != NULL)
     {
       if (0 == irccmp(aconf->name, pending_connection->name))
       {
