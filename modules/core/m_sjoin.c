@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.136 2002/05/12 14:50:45 leeh Exp $
+ *  $Id: m_sjoin.c,v 1.137 2002/05/12 21:37:08 leeh Exp $
  */
 
 #include "tools.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.136 $";
+const char *_version = "$Revision: 1.137 $";
 #endif
 /*
  * ms_sjoin
@@ -122,7 +122,7 @@ static void ms_sjoin(struct Client *client_p,
   static         char buf[2*BUFSIZE]; /* buffer for modes and prefix */
 #ifdef HALFOPS
   static         char sjbuf_hops[BUFSIZE]; /* buffer with halfops as % */
-  register       *hops;
+  register char  *hops;
 #endif
   static         char sjbuf_nhops[BUFSIZE]; /* buffer with halfops as @ */
   char           *p; /* pointer used making sjbuf */
