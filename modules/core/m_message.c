@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.86 2002/01/13 14:58:26 jmallett Exp $
+ *  $Id: m_message.c,v 1.87 2002/01/13 15:02:20 jmallett Exp $
  */
 
 #include "handlers.h"
@@ -122,7 +122,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-char *_version = "$Revision: 1.86 $";
+char *_version = "$Revision: 1.87 $";
 #endif
 
 /*
@@ -151,6 +151,12 @@ static void
 m_privmsg(struct Client *client_p,
           struct Client *source_p, int parc, char *parv[])
 {
+  /* servers have no reason to send privmsgs, yet sometimes there is cause
+   * for a notice.. (for example remote kline replies) --fl_
+   */
+  if (!IsPerson(source_p))
+    return;
+
   m_message(PRIVMSG, "PRIVMSG", client_p, source_p, parc, parv);
 }
 
@@ -175,12 +181,6 @@ m_message(int p_or_n,
           struct Client *source_p, int parc, char *parv[])
 {
   int i;
-
-  /* servers have no reason to send privmsgs, yet sometimes there is cause
-   * for a notice.. (for example remote kline replies) --fl_
-   */
-  if (!IsPerson(source_p) && p_or_n != NOTICE)
-    return;
 
   if (parc < 2 || *parv[1] == '\0')
   {
