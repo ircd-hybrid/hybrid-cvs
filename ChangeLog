@@ -1,3 +1,24 @@
+db          2002/09/06 15:37:15 EDT	(20020906_0)
+
+  Modified files:
+    include              s_log.h 
+    modules              m_challenge.c m_oper.c 
+    src                  s_log.c send.c 
+  Log:
+  - fixed bug with operlog and foperlog handling. The ConfigFile entries were being
+    treated as char filename pointers, instead of strings.
+    There was missing log_failed_oper() code.
+    log_oper() code was not being called when it should have been.
+  
+  Revision  Changes    Path
+  7.11      +1 -0      ircd-hybrid-7/include/s_log.h
+  1.37      +52 -49    ircd-hybrid-7/modules/m_challenge.c
+  1.53      +4 -2      ircd-hybrid-7/modules/m_oper.c
+  7.44      +83 -49    ircd-hybrid-7/src/s_log.c
+  7.206     +0 -1      ircd-hybrid-7/src/send.c
+
+
+
 db          2002/09/05 11:07:14 EDT	(20020905_5)
 
   Modified files:
@@ -31844,4 +31865,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4021 2002/09/05 15:07:17 db Exp $
+$Id: ChangeLog,v 7.4022 2002/09/06 19:37:17 db Exp $
