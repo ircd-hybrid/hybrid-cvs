@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.217 2001/10/25 02:36:21 db Exp $
+ *   $Id: s_serv.c,v 7.218 2001/10/30 23:39:15 bill Exp $
  */
 
 #include <sys/types.h>
@@ -33,10 +33,10 @@
 #include <time.h>
 #include <netdb.h>
 
-#include "rsa.h"
 #include "config.h"
 
 #ifdef HAVE_LIBCRYPTO
+#include "rsa.h"
 #include <openssl/rsa.h>
 #include <openssl/bio.h>
 #include <openssl/evp.h>

@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.124 2001/10/17 15:25:24 jdc Exp $
+ * $Id: ircd_lexer.l,v 1.125 2001/10/30 23:39:15 bill Exp $
  */
 
 %option case-insensitive
@@ -33,7 +33,11 @@
 #include "irc_string.h"
 #include "common.h"
 #include "s_conf.h"
-#include "y.tab.h"
+#ifdef VMS
+# include "ircd_parser_tab.h"
+#else
+# include "y.tab.h"
+#endif
 #include "memory.h"
 #include "hostmask.h"
 #include "setup.h"

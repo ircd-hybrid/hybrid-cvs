@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.191 2001/10/21 15:40:49 davidt Exp $
+ * $Id: ircd.c,v 7.192 2001/10/30 23:39:15 bill Exp $
  */
 
 #include <sys/types.h>
@@ -203,7 +203,7 @@ print_startup(int pid)
 static void 
 init_sys(void)
 {
-#ifdef RLIMIT_FD_MAX
+#if defined(RLIMIT_FD_MAX) && !defined(VMS)
   struct rlimit limit;
 
   if (!getrlimit(RLIMIT_FD_MAX, &limit))
@@ -493,6 +493,7 @@ static void check_pidfile(const char *filename)
  */
 static void setup_corefile(void)
 {
+#ifndef VMS
   struct rlimit rlim; /* resource limits */
 
   /* Set corefilesize to maximum */
@@ -501,6 +502,7 @@ static void setup_corefile(void)
       rlim.rlim_cur = rlim.rlim_max;
       setrlimit(RLIMIT_CORE, &rlim);
     }
+#endif
 }
 
 /*
