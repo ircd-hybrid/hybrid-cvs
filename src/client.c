@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.425 2004/04/01 02:53:24 bill Exp $
+ *  $Id: client.c,v 7.426 2004/10/03 06:28:08 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -269,7 +269,7 @@ check_pings_list(dlink_list *list)
 	  aconf = (struct AccessItem *)map_to_conf(conf);
 
 	  DupString(aconf->host, client_p->host);
-	  DupString(aconf->passwd, "idle exceeder");
+	  DupString(aconf->reason, "idle exceeder");
 	  DupString(aconf->user, client_p->username);
 	  aconf->hold = CurrentTime + 60;
 	  add_temp_kline(aconf);
@@ -277,7 +277,7 @@ check_pings_list(dlink_list *list)
 		       "Idle time limit exceeded for %s - temp k-lining",
 			       get_client_name(client_p, HIDE_IP));
 
-	  exit_client(client_p, client_p, &me, aconf->passwd);
+	  exit_client(client_p, client_p, &me, aconf->reason);
 	  continue;
 	}
     }
