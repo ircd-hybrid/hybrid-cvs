@@ -1,3 +1,10 @@
+*** 20001117_2 by davidt
+- added missing _modinit function to m_gline.c
+- removed #ifdef LTRACE from m_ltrace.c 
+- fixed m_challenge.c to make a non-broken module if we aren't using
+  OPENSSL
+
+
 *** 20001117_1 by toot
 . made a separate ircd.conf setting to block nickchanges when banned,
   and block them in +m chans too, unless opped
@@ -601,7 +608,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.558 2000/11/17 18:02:59 toot Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.559 2000/11/18 01:02:59 davidt Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
