@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nick.c,v 1.91 2002/05/31 02:59:24 androsyn Exp $
+ *  $Id: m_nick.c,v 1.92 2002/07/11 15:27:03 leeh Exp $
  */
 
 #include "stdinc.h"
@@ -97,7 +97,7 @@ _moddeinit(void)
   mod_del_cmd(&client_msgtab);
 }
 
-const char *_version = "$Revision: 1.91 $";
+const char *_version = "$Revision: 1.92 $";
 #endif
 
 /*
@@ -144,7 +144,7 @@ static void mr_nick(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if (!(target_p = find_client(nick)))
+  if ((target_p = find_client(nick)) == NULL)
   {
     if(!ServerInfo.hub && uplink && IsCapable(uplink, CAP_LL))
     {
@@ -180,7 +180,12 @@ static void mr_nick(struct Client *client_p, struct Client *source_p,
       return;
     }
   }
-  else /* nickname is in use */
+  else if(source_p == target_p)
+  {
+    strcpy(source_p->name, nick);
+    return;
+  }
+  else
   {
     sendto_one(source_p, form_str(ERR_NICKNAMEINUSE), me.name, "*", nick);
   }
