@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.339 2003/07/17 07:00:12 joshk Exp $
+ *  $Id: ircd_parser.y,v 1.340 2003/07/21 17:18:18 adx Exp $
  */
 
 %{
@@ -1444,8 +1444,10 @@ auth_spoof: SPOOF '=' QSTRING ';'
       DupString(yy_conf->name, yylval.string);
       yy_aconf->flags |= CONF_FLAGS_SPOOF_IP;
     }
-    else
+    else {
       ilog(L_ERROR, "Spoofs must be less than %d..ignoring it", HOSTLEN);
+      yy_conf->name = NULL;
+    }
   }
 };
 

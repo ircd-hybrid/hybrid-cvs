@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.295 2003/07/21 01:58:24 michael Exp $
+ *  $Id: s_user.c,v 7.296 2003/07/21 17:18:18 adx Exp $
  */
 
 #include "stdinc.h"
@@ -782,7 +782,7 @@ report_and_set_user_flags(struct Client *source_p, struct AccessItem *aconf)
                me.name, source_p->name);
   }
 
-  /* If this user is exempt from user limits set it F lined" */
+  /* If this user is exempt from user limits set it "F lined" */
   if (IsConfExemptLimits(aconf))
   {
     SetExemptLimits(source_p);
