@@ -1,3 +1,9 @@
+*** 20001119_2 by davidt
+modularised m_motd, so /MOTD works once again.
+motd.c still contains various file reading/sending commands, which are
+used elsewhere, although motd.c probably isn't the best name any more.
+
+
 *** 20001119_1 by davidt
 fixes for poll.  It seems to work, although there's probably a bug lurking
 in there somewhere...
@@ -626,7 +632,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.563 2000/11/19 14:45:14 davidt Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.564 2000/11/19 15:43:50 davidt Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
