@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.81 2001/01/20 07:43:53 db Exp $
+ * $Id: s_conf.h,v 7.82 2001/01/20 14:33:34 db Exp $
  */
 
 #include "setup.h"
@@ -206,6 +206,7 @@ struct server_info
   int         hub;
   /* XXX a no no in the IPV6 world */
   unsigned long ip;
+  int         max_clients;
 };
 
 struct admin_info
