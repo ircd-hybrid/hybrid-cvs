@@ -16,7 +16,7 @@
 #*   along with this program; if not, write to the Free Software
 #*   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #*
-#*   $Id: Makefile.in,v 7.13 2000/12/01 00:59:55 db Exp $
+#*   $Id: Makefile.in,v 7.14 2000/12/12 21:46:51 adrian Exp $
 #*/
 
 RM=@RM@
@@ -81,7 +81,7 @@ CFLAGS		= @CFLAGS@
 
 SHELL=/bin/sh
 #SUBDIRS=src tools modules messages
-SUBDIRS=src tools modules
+SUBDIRS=src tools modules doc
 # XXX removed `iauth' from the build since it doesn't compile currently
 # SUBDIRS=src tools iauth
 # XXX removed 'messages' from the build until thats fixed
@@ -131,5 +131,10 @@ depend:
 	done
 
 install: all
-	@./tools/install_ircd
+	@for i in $(SUBDIRS); do \
+		echo "install ==> $$i";\
+		cd $$i;\
+		${MAKE} install; \
+		cd ..; \
+	done
 

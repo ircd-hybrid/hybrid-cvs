@@ -1,5 +1,5 @@
 This file outlines the features that ircd-hybrid has for IRC Operators.
-$Id: opers.txt,v 7.6 2000/12/10 23:58:55 db Exp $
+$Id: opers.txt,v 7.1 2000/12/12 21:46:59 adrian Exp $
 
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
