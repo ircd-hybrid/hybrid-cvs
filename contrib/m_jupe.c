@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_jupe.c,v 1.31 2002/07/04 13:32:56 androsyn Exp $
+ *  $Id: m_jupe.c,v 1.32 2002/07/04 16:07:30 db Exp $
  */
 
 #include "stdinc.h"
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&jupe_msgtab);
 }
 
-const char *_version = "$Revision: 1.31 $";
+const char *_version = "$Revision: 1.32 $";
 #endif
 
 /*
@@ -137,16 +137,7 @@ static void mo_jupe(struct Client *client_p, struct Client *source_p,
 		       parv[1]);
 
   ajupe = make_client(NULL);
-
-  m = dlinkFind(&unknown_list, ajupe);
-  if(m != NULL)
-    {
-      dlinkDelete(m, &unknown_list);
-    }
-  free_dlink_node(m);
-
   make_server(ajupe);
-
   ajupe->hopcount = 1;
   strlcpy(ajupe->name,parv[1],HOSTLEN);
 
