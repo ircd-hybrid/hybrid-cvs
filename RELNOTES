@@ -2,6 +2,7 @@
 o) rationalised the exit_client() code, thus fixing several cores/hangs
 o) fixed anonop handling
 o) fixed throttling code
+o) squit uplink in non HUB server cases 
 
 -- ircd-hybrid-7rc6 RELNOTES
 o) fixed a nasty ban overflow which causes desyncs
@@ -129,4 +130,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.50 2003/01/09 07:48:41 db Exp $
+$Id: RELNOTES,v 1.51 2003/01/10 03:47:34 db Exp $
