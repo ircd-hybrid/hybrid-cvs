@@ -1,3 +1,21 @@
+gregp       2002/10/27 20:08:41 EST	(20021028_0)
+
+  Modified files:
+    modules              m_challenge.c 
+  Log:
+  - fixing m_challenge.so braindeath, reported by wiz
+    - we were trying to log source_p->challenge stuffs directly after we'd
+      freed it a few lines above (oops)
+    - prehaps we should announce it to locops sometimes too!
+  
+  Reveiwed by:     my pet donkey, wiz
+  Submitted by:    wiz, various bovines
+  
+  Revision  Changes    Path
+  1.38      +11 -4     ircd-hybrid-7/modules/m_challenge.c
+
+
+
 bill        2002/10/24 16:54:53 EDT	(20021024_3)
 
   Modified files:
@@ -32673,4 +32691,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4077 2002/10/24 20:54:55 bill Exp $
+$Id: ChangeLog,v 7.4078 2002/10/28 01:08:43 gregp Exp $
