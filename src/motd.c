@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: motd.c,v 7.17 2001/07/20 11:28:53 leeh blalloc.c $
+ *   $Id: motd.c,v 7.18 2001/08/24 16:27:13 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -114,7 +114,8 @@ int SendMessageFile(struct Client *source_p, MessageFile *motdToPrint)
     case OPER_MOTD:
       if (motdToPrint->contentsOfFile == (MessageFileLine *)NULL)
         {
-          sendto_one(source_p, ":%s NOTICE %s :No OPER MOTD", me.name, source_p->name);
+/*          sendto_one(source_p, ":%s NOTICE %s :No OPER MOTD", me.name,
+ *          source_p->name); */
           return -1;
         }
       sendto_one(source_p,":%s NOTICE %s :Start of OPER MOTD",me.name,source_p->name);
