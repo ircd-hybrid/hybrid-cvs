@@ -1,3 +1,15 @@
+leeh        2001/12/14 10:16:25 EST	(20011214_5)
+
+  Modified files:
+    src                  client.c 
+  Log:
+  - fixed the kline_with_connection_closed/kline_with_reason stuff
+  
+  Revision  Changes    Path
+  7.211     +72 -39    ircd-hybrid-7/src/client.c
+
+
+
 leeh        2001/12/14 09:31:31 EST	(20011214_4)
 
   Modified files:
@@ -370,7 +382,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3166 2001/12/14 14:31:36 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3167 2001/12/14 15:16:30 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -18724,4 +18736,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3166 2001/12/14 14:31:36 leeh Exp $
+$Id: ChangeLog,v 7.3167 2001/12/14 15:16:30 leeh Exp $
