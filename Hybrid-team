@@ -1,4 +1,4 @@
-$Id: Hybrid-team,v 7.82 2004/07/23 20:55:59 metalrock Exp $
+$Id: Hybrid-team,v 7.83 2004/09/25 14:34:17 adx Exp $
 
 The hybrid team is a group of ircd coders who were frustrated
 with the instability and all-out "dirtiness" of the EFnet ircd's
@@ -12,7 +12,7 @@ Hybrid List, use this link:
 
 The core team as, of this major release:
 
-adx, Piotr Nizynski <adx@crashnet.pl>
+adx, Piotr Nizynski <adx@irc7.pl>
 billy-jon, William Bierman III <bill@mu.org>
 cryogen, Stuart Walsh <stu@ipng.org.uk>
 Dianora, Diane Bruce <db@db.net>
