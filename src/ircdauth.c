@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: ircdauth.c,v 7.26 2000/12/30 09:28:35 lusky Exp $
+ *   $Id: ircdauth.c,v 7.27 2000/12/30 23:26:03 lusky Exp $
  */
 
 #include <stdio.h>
@@ -180,7 +180,7 @@ CompleteIAuthConnection(int fd, void *notused)
 
 	errval = 0;
 	errlen = sizeof(errval);
-	if (getsockopt(fd, SOL_SOCKET, SO_ERROR, &errval, &errlen) < 0)
+	if (getsockopt(fd, SOL_SOCKET, SO_ERROR, (void *)&errval, &errlen) < 0)
 	{
 		log(L_ERROR,
 			"CompleteIAuthConnection(): getsockopt(SO_ERROR) failed: %s",

@@ -22,7 +22,7 @@
  * Cleanup of collapse and match
  * Moved static calls variable to match
  * Added asserts for null pointers
- * $Id: match.c,v 7.7 2000/12/22 03:47:15 ejb Exp $
+ * $Id: match.c,v 7.8 2000/12/30 23:26:03 lusky Exp $
  *
  */
 #include "irc_string.h"
@@ -215,7 +215,7 @@ unsigned long textip_to_ul(const char *ip)
 
   char c;
   while((c=*ip)) {
-    if(isdigit(c)) {
+    if(isdigit((int)c)) {
       octet *= 10;
       octet += (*ip & 0xF);
     } else if(c == '.') {
