@@ -1,3 +1,19 @@
+db          2001/12/14 21:24:51 EST	(20011215_1)
+
+  Modified files:
+    include              s_conf.h 
+    modules              m_kline.c 
+    src                  s_conf.c 
+  Log:
+  - No reason at all to waste space in the ConfItem
+  
+  Revision  Changes    Path
+  7.169     +0 -1      ircd-hybrid-7/include/s_conf.h
+  1.93      +16 -21    ircd-hybrid-7/modules/m_kline.c
+  7.284     +0 -1      ircd-hybrid-7/src/s_conf.c
+
+
+
 db          2001/12/14 21:07:36 EST	(20011215_0)
 
   Modified files:
@@ -475,7 +491,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3173 2001/12/15 02:07:41 db Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3174 2001/12/15 02:24:56 db Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -18829,4 +18845,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3173 2001/12/15 02:07:41 db Exp $
+$Id: ChangeLog,v 7.3174 2001/12/15 02:24:56 db Exp $
