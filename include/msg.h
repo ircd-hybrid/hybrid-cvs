@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: msg.h,v 7.48 2003/06/12 03:40:29 joshk Exp $
+ *  $Id: msg.h,v 7.49 2003/06/15 18:47:20 michael Exp $
  */
 
 #ifndef INCLUDED_msg_h
@@ -68,13 +68,10 @@ struct Message
 #define   MFLG_UNREG            0x002   /* Command available to unregistered
                                          * clients.                          
 					 */
-#define   MFLG_IGNORE           0x004   /* silently ignore command from
-                                         * unregistered clients 
-					 */
-#define   MFLG_HIDDEN		0x008   /* Command is hidden from everyone
+#define   MFLG_HIDDEN		0x004   /* Command is hidden from everyone
 					 * but opers			      
 					 */
  
-#define MAXPARA    15 
+#define MAXPARA    15
 
 #endif /* INCLUDED_msg_h */

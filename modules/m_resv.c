@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_resv.c,v 1.27 2003/06/14 18:12:00 db Exp $
+ *  $Id: m_resv.c,v 1.28 2003/06/15 18:47:21 michael Exp $
  */
 
 #include "stdinc.h"
@@ -48,12 +48,12 @@ static void parse_resv(struct Client *, char *, char *, int);
 static void remove_resv(struct Client *, char *, int);
 
 struct Message resv_msgtab = {
-  "RESV", 0, 0, 3, 0, MFLG_SLOW | MFLG_UNREG, 0,
+  "RESV", 0, 0, 3, 0, MFLG_SLOW, 0,
   {m_ignore, m_not_oper, ms_resv, mo_resv, m_ignore}
 };
 
 struct Message unresv_msgtab = {
-  "UNRESV", 0, 0, 2, 0, MFLG_SLOW | MFLG_UNREG, 0,
+  "UNRESV", 0, 0, 2, 0, MFLG_SLOW, 0,
   {m_ignore, m_not_oper, ms_unresv, mo_unresv, m_ignore}
 };
 
@@ -72,15 +72,16 @@ _moddeinit(void)
   mod_del_cmd(&unresv_msgtab);
 }
 
-const char *_version = "$Revision: 1.27 $";
+const char *_version = "$Revision: 1.28 $";
 #endif
 
 /* mo_resv()
  *   parv[0] = sender prefix
  *   parv[1] = channel/nick to forbid
  */
-static void mo_resv(struct Client *client_p, struct Client *source_p,
-                    int parc, char *parv[])
+static void
+mo_resv(struct Client *client_p, struct Client *source_p,
+        int parc, char *parv[])
 {
   char *reason;
 
