@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_lljoin.c,v 1.28 2001/01/02 04:22:38 davidt Exp $
+ * $Id: m_lljoin.c,v 1.29 2001/01/02 04:29:11 davidt Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -158,8 +158,7 @@ int     ms_lljoin(struct Client *cptr,
   {
     if (chptr)
     {
-      if ( (vchan_chptr = select_vchan(chptr, cptr, acptr, vkey, chname)) )
-        return 0;
+      vchan_chptr = select_vchan(chptr, cptr, acptr, vkey, chname);
     }
     else
     {
@@ -167,9 +166,6 @@ int     ms_lljoin(struct Client *cptr,
       flags = CHFL_CHANOP;
     }
     
-    if (!chptr)
-      return 0;
-      
     if (vchan_chptr != chptr)
     {
       root_vchan = chptr;
@@ -177,6 +173,9 @@ int     ms_lljoin(struct Client *cptr,
     }
     else
       root_vchan = chptr;
+
+    if(!chptr || !root_vchan)
+      return 0;
 
     if (chptr->users == 0)
       flags = CHFL_CHANOP;
