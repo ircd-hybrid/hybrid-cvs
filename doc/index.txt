@@ -1,5 +1,5 @@
 
-# $Id: index.txt,v 1.7 2001/02/18 05:44:44 wcampbel Exp $
+# $Id: index.txt,v 1.8 2001/02/23 20:49:28 wcampbel Exp $
 Here is the overview of the documents in the doc/ directory.
 
 CIDR.txt		- Description of CIDR in IPv4
@@ -12,6 +12,7 @@ Tao-of-IRC.940110
 blalloc.txt		- Outline of the block memory allocator
 challenge.txt           - Overview of the challenge/response system for
                           obtaining operator status
+cookies.txt             - ircd Cookie proposal
 event.txt		- Outline of the event system
 example.conf            - An example ircd.conf file describing most of the
                           user settable options
