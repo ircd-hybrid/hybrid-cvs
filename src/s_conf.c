@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.450 2003/06/30 04:38:05 joshk Exp $
+ *  $Id: s_conf.c,v 7.451 2003/06/30 07:10:44 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -426,23 +426,21 @@ delete_conf_item(struct ConfItem *conf)
 static void
 clear_conf_items(void)
 {
-  dlink_node *ptr;
-  dlink_node *next_ptr;
+  dlink_node *ptr, *next_ptr;
   struct ConfItem *conf;
 
-  DLINK_FOREACH_SAFE(ptr, next_ptr, uconf_items.head)
-  {
-    delete_conf_item((conf = ptr->data));
-  }
+  dlink_list * free_items [] = {
+    &uconf_items, &xconf_items, &server_items, &nresv_items, NULL
+  };
 
-  DLINK_FOREACH_SAFE(ptr, next_ptr, xconf_items.head)
+  dlink_list ** iterator = free_items; /* C is dumb */
+  
+  for (; *iterator != NULL; iterator++)
   {
-    delete_conf_item((conf = ptr->data));
-  }
-
-  DLINK_FOREACH_SAFE(ptr, next_ptr, nresv_items.head)
-  {
-    delete_conf_item((conf = ptr->data));
+    DLINK_FOREACH_SAFE(ptr, next_ptr, (*iterator)->head)
+    {
+      delete_conf_item((conf = ptr->data));
+    }
   }
 }
 
