@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.322 2003/02/03 05:08:38 db Exp $
+ *  $Id: client.c,v 7.323 2003/02/03 05:25:48 bill Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -844,15 +844,15 @@ get_client_name(struct Client* client, int showip)
       switch (showip)
         {
           case SHOW_IP:
-            ircsprintf(nbuf, "%s [%s@%s]", client->name, client->username,
+            ircsprintf(nbuf, "%s[%s@%s]", client->name, client->username,
               client->localClient->sockhost);
             break;
           case MASK_IP:
-            ircsprintf(nbuf, "%s [%s@255.255.255.255]", client->name,
+            ircsprintf(nbuf, "%s[%s@255.255.255.255]", client->name,
               client->username);
             break;
           default:
-            ircsprintf(nbuf, "%s [%s@%s]", client->name, client->username,
+            ircsprintf(nbuf, "%s[%s@%s]", client->name, client->username,
               client->host);
         }
       return nbuf;
@@ -1645,6 +1645,9 @@ change_local_nick(struct Client *client_p, struct Client *source_p, char *nick)
      !ConfigFileEntry.anti_nick_flood || 
      (IsOper(source_p) && ConfigFileEntry.no_oper_flood))
     {
+      /* XXX - the format of this notice should eventually be changed
+       * to either %s[%s@%s], or even better would be get_client_name() -bill
+       */
       sendto_realops_flags(FLAGS_NCHANGE, L_ALL,
 			   "Nick change: From %s to %s [%s@%s]",
 			   source_p->name, nick, source_p->username,

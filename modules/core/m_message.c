@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.106 2003/01/17 02:58:25 db Exp $
+ *  $Id: m_message.c,v 1.107 2003/02/03 05:25:47 bill Exp $
  */
 
 #include "stdinc.h"
@@ -123,7 +123,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.106 $";
+const char *_version = "$Revision: 1.107 $";
 #endif
 
 /*
@@ -631,9 +631,9 @@ msg_client(int p_or_n, char *command,
                             source_p->name);
 
           sendto_one(target_p,
-                     ":%s NOTICE %s :*** Client %s [%s@%s] is messaging you and you are +g",
+                     ":%s NOTICE %s :*** Client %s is messaging you and you are +g",
                      me.name, target_p->name,
-                     source_p->name, source_p->username, source_p->host);
+                     get_client_name(source_p, HIDE_IP));
 
           target_p->localClient->last_caller_id_time = CurrentTime;
 
@@ -704,9 +704,8 @@ flood_attack_client(int p_or_n, struct Client *source_p,
       if (target_p->localClient->flood_noticed == 0)
       {
         sendto_realops_flags(FLAGS_BOTS, L_ALL,
-                             "Possible Flooder %s [%s@%s] on %s target: %s",
-                             source_p->name, source_p->username,
-                             source_p->host,
+                             "Possible Flooder %s on %s target: %s",
+                             get_client_name(source_p, HIDE_IP),
                              source_p->user->server, target_p->name);
         target_p->localClient->flood_noticed = 1;
         /* add a bit of penalty */
@@ -760,9 +759,8 @@ flood_attack_channel(int p_or_n, struct Client *source_p,
       if (chptr->flood_noticed == 0)
       {
         sendto_realops_flags(FLAGS_BOTS, L_ALL,
-                             "Possible Flooder %s [%s@%s] on %s target: %s",
-                             source_p->name, source_p->username,
-                             source_p->host,
+                             "Possible Flooder %s on %s target: %s",
+                             get_client_name(source_p, HIDE_IP),
                              source_p->user->server, chptr->chname);
         chptr->flood_noticed = 1;
 

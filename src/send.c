@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.219 2003/02/03 05:08:38 db Exp $
+ *  $Id: send.c,v 7.220 2003/02/03 05:25:49 bill Exp $
  */
 
 #include "stdinc.h"
@@ -226,13 +226,13 @@ send_linebuf_remote(struct Client *to, struct Client *from,
     }
 
     sendto_realops_flags(FLAGS_ALL, L_ALL,
-                         "Ghosted: %s [%s@%s] from %s [%s@%s] (%s)",
+                         "Ghosted: %s[%s@%s] from %s[%s@%s] (%s)",
                          to->name, to->username, to->host,
                          from->name, from->username, from->host,
                          to->from->name);
 
     sendto_server(NULL, to, NULL, NOCAPS, NOCAPS, NOFLAGS,
-                  ":%s KILL %s :%s (%s [%s@%s] Ghosted %s)",
+                  ":%s KILL %s :%s (%s[%s@%s] Ghosted %s)",
                   me.name, to->name, me.name, to->name,
                   to->username, to->host, to->from->name);
 
