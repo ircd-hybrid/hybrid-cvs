@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.439 2003/06/21 03:55:16 michael Exp $
+ *  $Id: s_conf.c,v 7.440 2003/06/21 17:13:23 db Exp $
  */
 
 #include "stdinc.h"
@@ -502,7 +502,10 @@ report_confitem_types(struct Client *source_p, ConfType type)
 {
   dlink_node *ptr;
   struct ConfItem *conf;
+  struct AccessItem *aconf;
   struct MatchItem *matchitem;
+  char *name, *host, *reason, *user, *classname;
+  int port;
 
   switch (type)
   {
@@ -528,8 +531,26 @@ report_confitem_types(struct Client *source_p, ConfType type)
 		 matchitem->name, matchitem->reason);
     }
     break;
-  case CONF_TYPE:
   case OPER_TYPE:
+    DLINK_FOREACH(ptr, oconf_items.head)
+    {
+      conf = ptr->data;
+      aconf = (struct AccessItem *)map_to_conf(conf);
+      get_printable_conf(aconf, &name, &host, &reason, &user, &port,
+			 &classname);
+      /* Don't allow non opers to see oper privs */
+      if (IsOper(source_p))
+	sendto_one(source_p, form_str(RPL_STATSOLINE),
+		   me.name, source_p->name, 'O', user, host,
+		   name, oper_privs_as_string(NULL, port), classname);
+      else
+	sendto_one(source_p, form_str(RPL_STATSOLINE),
+		   me.name, source_p->name, 'O', user, host,
+		   name, "0", classname);
+    }
+    break;
+
+  case CONF_TYPE:
   case CLIENT_TYPE:
   case SERVER_TYPE:
   case HUB_TYPE:
@@ -551,7 +572,6 @@ static struct LinkReport {
 } report_array[] = {
   { CONF_SERVER,   RPL_STATSCLINE, 'C'},
   { CONF_LEAF,     RPL_STATSLLINE, 'L'},
-  { CONF_OPERATOR, RPL_STATSOLINE, 'O'},
   { CONF_HUB,      RPL_STATSHLINE, 'H'},
   { 0, 0, '\0' }
 };
@@ -626,18 +646,6 @@ report_configured_links(struct Client *source_p, unsigned int mask)
           sendto_one(source_p, form_str(p->rpl_stats),
                      me.name, source_p->name, c,
 		     "*@127.0.0.1", buf, name, port, classname);
-      }
-      else if (mask & CONF_OPERATOR)
-      {
-        /* Don't allow non opers to see oper privs */
-        if (IsOper(source_p))
-          sendto_one(source_p, form_str(p->rpl_stats),
-                     me.name, source_p->name, p->conf_char, user, host,
-                     name, oper_privs_as_string(NULL, port), classname);
-        else
-          sendto_one(source_p, form_str(p->rpl_stats),
-                     me.name, source_p->name, p->conf_char, user, host,
-                     name, "0", classname);
       }
       else
         sendto_one(source_p, form_str(p->rpl_stats),

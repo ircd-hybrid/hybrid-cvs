@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.134 2003/06/12 22:05:55 db Exp $
+ *  $Id: m_stats.c,v 1.135 2003/06/21 17:13:21 db Exp $
  */
 
 #include "stdinc.h"
@@ -79,7 +79,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.134 $";
+const char *_version = "$Revision: 1.135 $";
 #endif
 
 const char *Lformat = ":%s %d %s %s %u %u %u %u %u :%u %u %s";
@@ -646,7 +646,7 @@ stats_oper(struct Client *source_p)
     sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
                me.name, source_p->name);
   else
-    report_configured_links(source_p, CONF_OPERATOR);
+    report_confitem_types(source_p, OPER_TYPE);
 }
 
 /* stats_operedup()
