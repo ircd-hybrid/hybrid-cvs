@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.45 2003/07/18 18:10:07 bill Exp $
+ *   $Id: m_operspy.c,v 1.46 2003/08/02 11:23:31 adx Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -117,7 +117,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.45 $";
+const char *_version = "$Revision: 1.46 $";
 #endif
 
 #ifdef OPERSPY_LOG
@@ -133,17 +133,9 @@ static void
 m_operspy(struct Client *client_p, struct Client *source_p,
           int parc, char *parv[])
 {
-  char *operspy = (parc > 1) ? parv[1] - 1 : NULL;
-
-  if (operspy != NULL)
-    while (*operspy != 'o' && *operspy != 'O')
-      --operspy;
-  else
-    operspy = "OPERSPY";
-
   sendto_one(client_p, ":%s %d %s %s :Unknown command",
              me.name, ERR_UNKNOWNCOMMAND, client_p->name,
-             operspy);
+             parv[0]);
 }
 
 static void
@@ -263,7 +255,7 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
     if (!IsChanPrefix(parv[2][0]) || !check_channel_name(parv[2]))
     {
       sendto_one(client_p, form_str(ERR_BADCHANNAME),
-                 me.name, parv[0], parv[2]);
+                 me.name, client_p->name, parv[2]);
       return;
     }
 
@@ -275,7 +267,7 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
        * info.
        */ 
       sendto_one(client_p, form_str(ERR_NOSUCHCHANNEL),
-                 me.name, parv[0], parv[2]);
+                 me.name, client_p->name, parv[2]);
       return;
     }
 
@@ -291,9 +283,9 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
     client_p->status = c_status;
 
     sendto_one(client_p, form_str(RPL_CHANNELMODEIS),
-               me.name, parv[0], parv[2], modebuf, parabuf);
+               me.name, client_p->name, parv[2], modebuf, parabuf);
     sendto_one(client_p, form_str(RPL_CREATIONTIME),
-               me.name, parv[0], parv[2], chptr_mode->channelts);
+               me.name, client_p->name, parv[2], chptr_mode->channelts);
 
     return;
   }
@@ -305,14 +297,14 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
     if (!IsChanPrefix(parv[2][0]) || !check_channel_name(parv[2]))
     {
       sendto_one(client_p, form_str(ERR_BADCHANNAME),
-                 me.name, parv[0], parv[2]);
+                 me.name, client_p->name, parv[2]);
       return;
     }
 
     if ((chptr_names = hash_find_channel(parv[2])) == NULL)
     {
       sendto_one(client_p, form_str(ERR_NOSUCHCHANNEL),
-                 me.name, parv[0], parv[2]);
+                 me.name, client_p->name, parv[2]);
       return;
     }
 
@@ -340,7 +332,7 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
     if ((chptr_topic = hash_find_channel(parv[2])) == NULL)
     {
       sendto_one(client_p, form_str(ERR_NOSUCHCHANNEL),
-                 me.name, parv[0], parv[2]);
+                 me.name, client_p->name, parv[2]);
       return;
     }
 
@@ -350,13 +342,13 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
 
     if (chptr_topic->topic == NULL)
       sendto_one(client_p, form_str(RPL_NOTOPIC),
-                 me.name, parv[0], parv[2]);
+                 me.name, client_p->name, parv[2]);
     else
     {
-      sendto_one(client_p, form_str(RPL_TOPIC), me.name, parv[0],
+      sendto_one(client_p, form_str(RPL_TOPIC), me.name, client_p->name,
                  chptr_topic->chname, chptr_topic->topic);
       sendto_one(client_p, form_str(RPL_TOPICWHOTIME), me.name,
-                 parv[0], chptr_topic->chname, chptr_topic->topic_info,
+                 client_p->name, chptr_topic->chname, chptr_topic->topic_info,
                  chptr_topic->topic_time);
     }
 
@@ -374,7 +366,7 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
       if (*mask == '\0')
       {
         sendto_one(client_p, form_str(RPL_ENDOFWHO),
-                   me.name, parv[0], "*");
+                   me.name, client_p->name, "*");
         return;
       }
     }
@@ -385,7 +377,7 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
 #endif
       who_global(client_p, NULL, server_oper);
       sendto_one(client_p, form_str(RPL_ENDOFWHO),
-                 me.name, parv[0], "*");
+                 me.name, client_p->name, "*");
       return;
     }
 
@@ -401,7 +393,7 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
       }
 
       sendto_one(client_p, form_str(RPL_ENDOFWHO),
-                 me.name, parv[0], mask);
+                 me.name, client_p->name, mask);
       return;
     }
 
@@ -430,7 +422,7 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
       }
 
       sendto_one(client_p, form_str(RPL_ENDOFWHO),
-                 me.name, parv[0], mask);
+                 me.name, client_p->name, mask);
       return;
     }
 
@@ -446,7 +438,7 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
 
     /* nothing else? end of /who. */
     sendto_one(client_p, form_str(RPL_ENDOFWHO),
-               me.name, parv[0], mask);
+               me.name, client_p->name, mask);
 
     return;
   }
@@ -458,14 +450,14 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
     if (strchr(parv[2], '?') || strchr(parv[2], '*'))
     {
       sendto_one(client_p, ":%s NOTICE %s :Do not use wildcards with this.",
-                 me.name, parv[0]);
+                 me.name, client_p->name);
       return;
     }
 
     if ((target_p = find_client(parv[2])) == NULL || !IsClient(target_p))
     {
       sendto_one(client_p, form_str(ERR_NOSUCHNICK),
-                 me.name, parv[0], parv[2]);
+                 me.name, client_p->name, parv[2]);
       return;
     }
 
@@ -527,13 +519,13 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
                  client_p->name, target_p->name, CurrentTime - target_p->user->last,
                  target_p->firsttime);
     sendto_one(client_p, form_str(RPL_ENDOFWHOIS),
-               me.name, parv[0], parv[2]);
+               me.name, client_p->name, parv[2]);
 
     return;
   }
 #endif
   sendto_one(client_p, ":%s NOTICE %s :%s is not a valid option.  Choose from LIST, MODE, NAMES, WHO, WHOIS",
-             me.name, parv[0], parv[1]);
+             me.name, client_p->name, parv[1]);
 }
 
 /* extensions for OPERSPY WHO */
