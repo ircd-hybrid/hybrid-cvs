@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_challenge.c,v 1.26 2001/10/23 02:33:26 androsyn Exp $
+ *   $Id: m_challenge.c,v 1.27 2001/10/24 05:26:06 androsyn Exp $
  */
 #include <stdlib.h>
 #include <string.h>
@@ -156,8 +156,7 @@ static void m_challenge( struct Client *client_p, struct Client *source_p,
      sendto_one (source_p, form_str(ERR_NOOPERHOST), me.name, parv[0]);
      return;
     }
-  /* XXX this should be a config flag.. */
-  if (!strchr(aconf->passwd, ' '))
+  if (!aconf->rsa_public_key)
     {
      sendto_one (source_p, ":%s NOTICE %s :I'm sorry, PK authentication "
                  "is not enabled for your oper{} block.", me.name,
@@ -165,7 +164,7 @@ static void m_challenge( struct Client *client_p, struct Client *source_p,
      return;
     }
   if (
-   !generate_challenge (&challenge, &(source_p->user->response), aconf->passwd)
+   !generate_challenge (&challenge, &(source_p->user->response), aconf->rsa_public_key)
      )
     {
      sendto_one (source_p, form_str(RPL_RSACHALLENGE), me.name, parv[0],
