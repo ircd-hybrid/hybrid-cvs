@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- * $Id: hostmask.c,v 7.42 2001/06/11 19:20:06 androsyn Exp $ 
+ * $Id: hostmask.c,v 7.43 2001/06/15 10:26:22 a1kmm Exp $ 
  */
  
 #include <stdlib.h>
@@ -77,7 +77,7 @@ try_parse_v6_netmask(const char *text, struct irc_inaddr *addr, int *b)
    {
     if (finsert>=0)
      return HM_HOST;
-    finsert = dp;
+    finsert = --dp;
    }
    else
    {
@@ -99,6 +99,7 @@ try_parse_v6_netmask(const char *text, struct irc_inaddr *addr, int *b)
   else if (c == '/')
   {
    char *after;
+   d[dp] = d[dp] >> 4*nyble;   
    dp++;
    if (p > text && *(p-1)==':')
     return HM_HOST;
@@ -111,13 +112,14 @@ try_parse_v6_netmask(const char *text, struct irc_inaddr *addr, int *b)
   }
   else
    return HM_HOST;
+ d[dp] = d[dp] >> 4*nyble;
  if (c == 0)
   dp++;
  if (finsert < 0 && bits == 0)
   bits = dp*16;
  else if (bits == 0)
   bits = 128;
- /* How many bytes are missing? -A1kmm */
+ /* How many words are missing? -A1kmm */
  deficit = bits/16+((bits%16)?1:0)-dp;
  /* Now fill in the gaps(from ::) in the copied table... -A1kmm */
  for (dp=0,nyble=0; dp<8; dp++)
@@ -137,8 +139,8 @@ try_parse_v6_netmask(const char *text, struct irc_inaddr *addr, int *b)
   dc[dp] = 0;
  /* And assign... -A1kmm */
  if (addr)
-  for (dp=0; dp<16; dp++)
-   addr->sins.sin6.s6_addr[dp] = htonl(dc[dp]);
+  for (dp=0; dp<8; dp++)
+   addr->sins.sin6.s6_addr16[dp] = htons(dc[dp]);
  if (b)
   *b = bits;
  return HM_IPV6;
