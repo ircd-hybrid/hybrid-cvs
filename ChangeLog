@@ -1,3 +1,16 @@
+db          2002/03/14 12:44:15 EST	(20020314_1)
+
+  Modified files:
+    src                  parse.c 
+  Log:
+  To Lee. Write on the blackboard 100 times please "A string is not
+  an integer." Thank you.
+  
+  Revision  Changes    Path
+  7.124     +1 -1      ircd-hybrid-7/src/parse.c
+
+
+
 db          2002/03/14 09:23:19 EST	(20020314_0)
 
   Modified files:
@@ -24247,4 +24260,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3508 2002/03/14 14:23:25 db Exp $
+$Id: ChangeLog,v 7.3509 2002/03/14 17:44:21 db Exp $
