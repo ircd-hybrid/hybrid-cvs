@@ -53,6 +53,9 @@
 6.  IAuthd is broken beyond belief.  It does not work at this time.  If this
     bothers you, fix it for us.
 
+7.  Solaris stock 32bit stdio is limited to 256 fds. This breaks when using
+    cryptlinks.
+
 BUG REPORTS: If you run this code and encounter problems, you must report
  the bug in by E-MAIL to ircd-hybrid@the-project.org.
 
@@ -60,4 +63,4 @@ BUG REPORTS: If you run this code and encounter problems, you must report
  with any report  (with passwords and other sensitive information masked).
 
 --------------------------------------------------------------------------------
-$Id: BUGS,v 7.50 2002/07/06 20:14:28 leeh Exp $
+$Id: BUGS,v 7.51 2003/01/19 23:38:52 db Exp $
