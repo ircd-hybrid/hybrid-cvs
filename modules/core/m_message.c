@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.107.2.2 2004/06/16 04:56:02 erik Exp $
+ *  $Id: m_message.c,v 1.107.2.3 2004/07/15 05:05:33 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -123,7 +123,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.107.2.2 $";
+const char *_version = "$Revision: 1.107.2.3 $";
 #endif
 
 /*
@@ -346,8 +346,10 @@ build_target_list(int p_or_n, char *command, struct Client *client_p,
     {
       if (*nick == '@')
         type |= MODE_CHANOP;
+#ifdef HALFOPS
       else if (*nick == '%')
         type |= MODE_CHANOP | MODE_HALFOP;
+#endif
       else if (*nick == '+')
         type |= MODE_CHANOP | MODE_HALFOP | MODE_VOICE;
       else
@@ -522,11 +524,13 @@ msg_channel_flags(int p_or_n, char *command, struct Client *client_p,
     type = ONLY_CHANOPS_HALFOPS_VOICED;
     c = '+';
   }
+#ifdef HALFOPS
   else if (flags & MODE_HALFOP)
   {
     type = ONLY_CHANOPS_HALFOPS;
     c = '%';
   }
+#endif
   else
   {
     type = ONLY_CHANOPS;
