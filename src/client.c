@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.99 2001/01/04 23:51:23 toot Exp $
+ *  $Id: client.c,v 7.100 2001/01/05 07:47:26 a1kmm Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -1249,7 +1249,7 @@ static void remove_dependents(struct Client* cptr,
        * comstud, since m_squit already does the notification.
        */
 
-      if ((aconf = to->serv->nline))
+      if ((aconf = to->serv->sconf))
         strncpy_irc(myname, my_name_for_link(me.name, aconf), HOSTLEN);
       else
         strncpy_irc(myname, me.name, HOSTLEN);

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_connect.c,v 1.16 2001/01/05 05:46:07 fl_ Exp $
+ *   $Id: m_connect.c,v 1.17 2001/01/05 07:47:24 a1kmm Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -114,9 +114,9 @@ static int mo_connect(struct Client* cptr, struct Client* sptr,
   /*
    * try to find the name, then host, if both fail notify ops and bail
    */
-  if (!(aconf = find_conf_by_name(parv[1], CONF_CONNECT_SERVER)))
+  if (!(aconf = find_conf_by_name(parv[1], CONF_SERVER)))
     {
-      if (!(aconf = find_conf_by_host(parv[1], CONF_CONNECT_SERVER)))
+      if (!(aconf = find_conf_by_host(parv[1], CONF_SERVER)))
 	{
 	  sendto_one(sptr,
 		     "NOTICE %s :Connect: Host %s not listed in ircd.conf",
@@ -225,8 +225,8 @@ static int ms_connect(struct Client* cptr, struct Client* sptr,
   /*
    * try to find the name, then host, if both fail notify ops and bail
    */
-  if (!(aconf = find_conf_by_name(parv[1], CONF_CONNECT_SERVER))) {
-    if (!(aconf = find_conf_by_host(parv[1], CONF_CONNECT_SERVER))) {
+  if (!(aconf = find_conf_by_name(parv[1], CONF_SERVER))) {
+    if (!(aconf = find_conf_by_host(parv[1], CONF_SERVER))) {
       sendto_one(sptr,
                  ":%s NOTICE %s :Connect: Host %s not listed in ircd.conf",
                  me.name, parv[0], parv[1]);

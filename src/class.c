@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: class.c,v 7.20 2000/12/22 15:51:33 db Exp $
+ *   $Id: class.c,v 7.21 2001/01/05 07:47:25 a1kmm Exp $
  */
 #include "tools.h"
 #include "class.h"
@@ -120,8 +120,7 @@ int     get_client_ping(struct Client *acptr)
       for(link = acptr->localClient->confs.head; link; link = link->next)
 	{
 	  aconf = link->data;
-	  if (aconf->status & (CONF_CLIENT|CONF_CONNECT_SERVER|
-			       CONF_NOCONNECT_SERVER))
+	  if (aconf->status & (CONF_CLIENT|CONF_SERVER))
 	    {
 	      ping2 = get_conf_ping(aconf);
 	      if ((ping2 != BAD_PING) && ((ping > ping2) || !ping))

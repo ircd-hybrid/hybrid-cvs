@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.81 2001/01/03 22:51:48 adrian Exp $
+ *  $Id: s_bsd.c,v 7.82 2001/01/05 07:47:27 a1kmm Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -236,7 +236,7 @@ void close_connection(struct Client *cptr)
        * a 'quick' reconnect, else reset the next-connect cycle.
        */
       if ((aconf = find_conf_exact(cptr->name, cptr->username,
-                                   cptr->host, CONF_CONNECT_SERVER)))
+                                   cptr->host, CONF_SERVER)))
         {
           /*
            * Reschedule a faster reconnect, if this was a automatically

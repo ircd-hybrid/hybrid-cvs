@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: oldparse.c,v 1.19 2000/12/31 07:44:24 db Exp $
+ *  $Id: oldparse.c,v 1.20 2001/01/05 07:47:27 a1kmm Exp $
  */
 #include "tools.h"
 #include "s_log.h"
@@ -52,8 +52,7 @@ static char *getfield(char *newline);
  *
  */
 
-void oldParseOneLine(char* line,struct ConfItem* aconf,
-                            int* pccount,int* pncount)
+void oldParseOneLine(char* line,struct ConfItem* aconf)
 {
   char conf_letter;
   char* tmp;

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_squit.c,v 1.23 2001/01/05 05:46:08 fl_ Exp $
+ *   $Id: m_squit.c,v 1.24 2001/01/05 07:47:24 a1kmm Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -181,7 +181,7 @@ static struct squit_parms *find_squit(struct Client *cptr,
   */
   while ((*server == '*') && IsServer(cptr))
     {
-      aconf = cptr->serv->nline;
+      aconf = cptr->serv->sconf;
       if (!aconf)
 	break;
 

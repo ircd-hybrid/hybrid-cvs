@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_server.c,v 1.31 2001/01/05 00:14:34 davidt Exp $
+ *   $Id: m_server.c,v 1.32 2001/01/05 07:47:24 a1kmm Exp $
  */
 #include "tools.h"
 #include "handlers.h"  /* m_server prototype */
@@ -365,7 +365,7 @@ int ms_server(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 
       if (bcptr == cptr)
 	continue;
-      if (!(aconf = bcptr->serv->nline))
+      if (!(aconf = bcptr->serv->sconf))
 	{
 	  sendto_realops_flags(FLAGS_ALL,"Lost N-line for %s on %s. Closing",
 			       get_client_name(cptr, TRUE), host);
