@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.396 2004/03/02 07:54:29 bill Exp $
+ *  $Id: s_serv.c,v 7.397 2004/03/11 16:23:44 db Exp $
  */
 
 #include "stdinc.h"
@@ -607,7 +607,11 @@ check_server(const char *name, struct Client *client_p, int cryptlink)
         /* A NULL password is as good as a bad one */
         if (EmptyString(client_p->localClient->passwd))
           return(-2);
-		
+
+	/* code in s_conf.c should not have allowed this to be NULL */
+	if (aconf->passwd == NULL)
+	  return(-2);
+
         if (IsConfEncrypted(aconf))
         {
           if (strcmp(aconf->passwd,
