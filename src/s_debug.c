@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_debug.c,v 7.92 2003/06/24 00:29:51 michael Exp $
+ *  $Id: s_debug.c,v 7.93 2003/06/26 04:35:08 db Exp $
  */
 
 #include "stdinc.h"
@@ -263,7 +263,7 @@ count_memory(struct Client *source_p)
   }
 
   /* count up all classes */
-  class_count = dlink_list_length(&ClassList);
+  class_count = dlink_list_length(&class_items);
 
   sendto_one(source_p, ":%s %d %s z :Users %u(%lu) Invites %u(%lu)",
              me.name, RPL_STATSDEBUG, source_p->name,
@@ -292,7 +292,7 @@ count_memory(struct Client *source_p)
 
   sendto_one(source_p, ":%s %d %s z :Classes %u(%lu)",
              me.name, RPL_STATSDEBUG, source_p->name,
-	     class_count, (unsigned long) class_count * sizeof(struct Class));
+	     class_count, (unsigned long) class_count * sizeof(struct ClassItem));
 
   sendto_one(source_p, ":%s %d %s z :Channels %lu(%d)",
              me.name, RPL_STATSDEBUG, source_p->name,
@@ -350,7 +350,7 @@ count_memory(struct Client *source_p)
              (int) mem_ips_stored);
 
   total_memory = totww + total_channel_memory + conf_memory + class_count *
-    sizeof(struct Class);
+    sizeof(struct ClassItem);
   total_memory += client_hash_table_size;
   total_memory += channel_hash_table_size;
   total_memory += resv_hash_table_size;

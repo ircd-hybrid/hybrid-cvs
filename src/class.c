@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: class.c,v 7.60 2003/06/17 20:05:12 joshk Exp $
+ *  $Id: class.c,v 7.61 2003/06/26 04:35:07 db Exp $
  */
 
 #include "stdinc.h"
@@ -36,54 +36,6 @@
 #include "memory.h"
 
 #define BAD_PING (-1)
-
-dlink_list ClassList = { NULL, NULL, 0 };
-
-/* find_class_ptr()
- *
- * inputs	- string name of class
- * output	- corresponding class pointer
- * side effects	- NONE
- */
-static dlink_node *
-find_class_ptr(const char *classname)
-{
-  dlink_node *ptr;
-  struct Class *aclass;
-
-  DLINK_FOREACH(ptr, ClassList.head)
-  {
-    aclass = ptr->data;
-
-    if (!strcmp(ClassName(aclass), classname))
-      return(ptr);
-  }
-
-  return(NULL);
-}
-
-struct Class *
-make_class(const char *name)
-{
-  struct Class *aclass;
-
-  aclass = (struct Class *)MyMalloc(sizeof(struct Class));
-  if (name != NULL)
-    DupString(ClassName(aclass), name);
-  ConFreq(aclass)  = DEFAULT_CONNECTFREQUENCY;
-  PingFreq(aclass) = DEFAULT_PINGFREQUENCY;
-  MaxTotal(aclass) = ConfigFileEntry.maximum_links;
-  MaxSendq(aclass) = DEFAULT_SENDQ;
-  CurrUserCount(aclass) = 0;
-  return(aclass);
-}
-
-void
-free_class(struct Class *aclass)
-{
-  MyFree(aclass->class_name);
-  MyFree(aclass);
-}
 
 /* get_conf_ping()
  *
@@ -176,41 +128,12 @@ get_client_ping(struct Client *target_p)
  * side effects - NONE
  */
 int
-get_con_freq(struct Class *clptr)
+get_con_freq(struct ClassItem *clptr)
 {
   if (clptr != NULL)
     return(ConFreq(clptr));
 
   return(DEFAULT_CONNECTFREQUENCY);
-}
-
-/* add_class()
- *
- * inputs	- pointer to class to add
- * output	- NONE
- * side effects - When adding a class, check to see if it is
- *		  already present first.
- */
-void
-add_class(struct Class *aclass)
-{
-  dlink_node *ptr;
-
-  if (aclass == NULL)
-    return;
-
-  if ((ptr = find_class_ptr(aclass->class_name)) == NULL)
-  {
-    dlinkAdd(aclass, &aclass->class_node, &ClassList);
-    CurrUserCount(aclass) = 0;
-
-    if (MaxSendq(aclass) == 0)
-      MaxSendq(aclass) = DEFAULT_SENDQ;
-  }
-  else
-  {
-    free_class(aclass);
-  }
 }
 
 /* find_class()
@@ -219,26 +142,30 @@ add_class(struct Class *aclass)
  * output	- corresponding Class pointer
  * side effects	- NONE
  */
-struct Class *
+struct ClassItem *
 find_class(const char *classname)
 {
-  dlink_node *ptr;
-  struct Class *aclass;
+  struct ConfItem *conf;
+  struct ClassItem *aclass;
 
-  if ((ptr = find_class_ptr(classname)) != NULL)
+  if ((conf = find_exact_name_conf(CLASS_TYPE, classname, NULL, NULL)) != NULL)
   {
-    return(ptr->data);
+    aclass = (struct ClassItem *)map_to_conf(conf);
+    return(aclass);
   }
   else
   {
-    if ((ptr = find_class_ptr("default")) != NULL)
+    if ((conf = find_exact_name_conf(CLASS_TYPE, "default",
+				     NULL, NULL)) != NULL)
     {
-      return(ptr->data);
+      aclass = (struct ClassItem *)map_to_conf(conf);
+      return(aclass);
     }
     else
     {
-      aclass = make_class("default");
-      dlinkAdd(aclass, &aclass->class_node, &ClassList);
+      conf = make_conf_item(CLASS_TYPE);
+      aclass = (struct ClassItem *)map_to_conf(conf);
+      DupString(aclass->class_name, "default");
       return(aclass);
     }
   }
@@ -255,18 +182,20 @@ check_class(void)
 {
   dlink_node *ptr;
   dlink_node *next_ptr;
-  struct Class *aclass;
+  struct ConfItem *conf;
+  struct ClassItem *aclass;
 
-  DLINK_FOREACH_SAFE(ptr, next_ptr, ClassList.head)
+  DLINK_FOREACH_SAFE(ptr, next_ptr, class_items.head)
   {
-    aclass = ptr->data;
+    conf = ptr->data;
+    aclass = (struct ClassItem *)map_to_conf(conf);
 
     if (MaxTotal(aclass) < 0)
     {
-      dlinkDelete(&aclass->class_node, &ClassList);
+      dlinkDelete(&conf->node, &class_items);
 
       if (CurrUserCount(aclass) <= 0)
-        free_class(aclass);
+        delete_conf_item(conf);
     }
   }
 }
@@ -280,33 +209,17 @@ check_class(void)
 void
 init_class(void)
 {
-  struct Class *aclass;
+  struct ConfItem *conf;
+  struct ClassItem *aclass;
 
-  aclass = make_class("default");
-  dlinkAdd(aclass, &aclass->class_node, &ClassList);
-}
-
-/* report_classes()
- *
- * inputs       - pointer to client to report to
- * output       - NONE
- * side effects	- class report is done to this client
- */
-void
-report_classes(struct Client *source_p)
-{
-  dlink_node *ptr;
-  struct Class *aclass;
-
-  DLINK_FOREACH(ptr, ClassList.head)
-  {
-    aclass = ptr->data;
-    sendto_one(source_p, form_str(RPL_STATSYLINE),
-               me.name, source_p->name, 'Y',
-               ClassName(aclass), PingFreq(aclass),
-               ConFreq(aclass),
-               MaxTotal(aclass), MaxSendq(aclass));
-  }
+  conf = make_conf_item(CLASS_TYPE);
+  aclass = (struct ClassItem *)map_to_conf(conf);
+  DupString(aclass->class_name, "default");
+  ConFreq(aclass)  = DEFAULT_CONNECTFREQUENCY;
+  PingFreq(aclass) = DEFAULT_PINGFREQUENCY;
+  MaxTotal(aclass) = ConfigFileEntry.maximum_links;
+  MaxSendq(aclass) = DEFAULT_SENDQ;
+  CurrUserCount(aclass) = 0;
 }
 
 /* get_sendq()
@@ -320,7 +233,7 @@ get_sendq(struct Client *client_p)
 {
   unsigned long sendq = DEFAULT_SENDQ;
   dlink_node *ptr;
-  struct Class *aclass;
+  struct ClassItem *aclass;
   struct AccessItem *aconf;
 
   if (client_p && !IsMe(client_p) && (client_p->localClient->confs.head))

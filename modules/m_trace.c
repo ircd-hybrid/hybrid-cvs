@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_trace.c,v 1.66 2003/06/18 06:26:31 metalrock Exp $
+ *  $Id: m_trace.c,v 1.67 2003/06/26 04:35:05 db Exp $
  */
 
 #include "stdinc.h"
@@ -40,6 +40,7 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
+#include "s_conf.h"
 #include "irc_getnameinfo.h"
 
 static void m_trace(struct Client *, struct Client *, int, char **);
@@ -94,7 +95,7 @@ _moddeinit(void)
   mod_del_cmd(&trace_msgtab6);
 #endif
 }
-const char *_version = "$Revision: 1.66 $";
+const char *_version = "$Revision: 1.67 $";
 #endif
 
 static int report_this_status(struct Client *source_p, struct Client *target_p,
@@ -224,7 +225,8 @@ do_actual_trace(int ttype, const char *tname,
 		int parc, char *parv[])
 {
   struct Client *target_p = NULL;
-  struct Class *cltmp;
+  struct ConfItem *conf;
+  struct ClassItem *cltmp;
   int doall, link_s[HARD_FDLIMIT], link_u[HARD_FDLIMIT];
   int cnt = 0, wilds, dow;
   dlink_node *gcptr;	/* global_client_list ptr */
@@ -390,9 +392,10 @@ do_actual_trace(int ttype, const char *tname,
     return;
   }
     
-  DLINK_FOREACH(ptr, ClassList.head)
+  DLINK_FOREACH(ptr, class_items.head)
   {
-    cltmp = ptr->data;
+    conf = ptr->data;
+    cltmp = (struct ClassItem *)map_to_conf(conf);
     if (CurrUserCount(cltmp) > 0)
       sendto_one(source_p, form_str(RPL_TRACECLASS), me.name,
 		 parv[0], ClassName(cltmp), CurrUserCount(cltmp));

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.250 2003/06/21 20:52:57 metalrock Exp $
+ *  $Id: s_conf.h,v 7.251 2003/06/26 04:35:04 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -53,6 +53,7 @@ extern struct AccessItem* yy_aconf;
 
 typedef enum {  
   CONF_TYPE, 
+  CLASS_TYPE,
   OPER_TYPE,
   CLIENT_TYPE,
   SERVER_TYPE,
@@ -67,13 +68,6 @@ typedef enum {
   CRESV_TYPE,     
   NRESV_TYPE
 } ConfType;
-
-/* 
- * defines for types of objects 
- */
-#define ACCESSTYPE 0
-#define MATCHTYPE  1
-  
 
 struct ConfItem
 {
@@ -113,7 +107,7 @@ struct AccessItem
   char *           fakename;   /* Mask name */
   time_t           hold;     /* Hold action until this time (calendar time) */
   char *           class_name;  /* Name of class */
-  struct Class *   c_class;     /* Class of connection */
+  struct ClassItem *c_class;    /* Class of connection */
   struct DNSQuery* dns_query;
   int              aftype;
 #ifdef HAVE_LIBCRYPTO

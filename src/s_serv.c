@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.353 2003/06/25 08:47:00 michael Exp $
+ *  $Id: s_serv.c,v 7.354 2003/06/26 04:35:08 db Exp $
  */
 
 #include "stdinc.h"
@@ -470,7 +470,7 @@ try_connections(void *unused)
 {
   dlink_node *ptr;
   struct AccessItem *aconf;
-  struct Class *cltmp;
+  struct ClassItem *cltmp;
   int confrq;
 
   /* TODO: change this to set active flag to 0 when added to event! --Habeeb */

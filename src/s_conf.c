@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.442 2003/06/24 09:39:32 michael Exp $
+ *  $Id: s_conf.c,v 7.443 2003/06/26 04:35:07 db Exp $
  */
 
 #include "stdinc.h"
@@ -63,6 +63,7 @@ dlink_list oconf_items = { NULL, NULL, 0 };
 dlink_list uconf_items = { NULL, NULL, 0 };
 dlink_list xconf_items = { NULL, NULL, 0 };
 dlink_list nresv_items = { NULL, NULL, 0 };
+dlink_list class_items = { NULL, NULL, 0 };
 
 dlink_list ConfigItemList = { NULL, NULL, 0 };
 dlink_list temporary_klines = { NULL, NULL, 0 };
@@ -92,13 +93,13 @@ static int attach_iline(struct Client *, struct AccessItem *);
 static struct ip_entry *find_or_add_ip(struct irc_ssaddr *);
 static void parse_conf_file(int type, int cold);
 static void clear_conf_items(void);
-static dlink_list *map_to_list(ConfType conf, int *conf_type);
+static dlink_list *map_to_list(ConfType conf);
 
 FBFILE *conf_fbfile_in;
 extern char yytext[];
 
 /* address of class 0 conf */
-static struct Class *class0;
+static struct ClassItem *class0;
 
 /* usually, with hash tables, you use a prime number...
  * but in this case I am dealing with ip addresses,
@@ -179,6 +180,7 @@ make_conf_item(ConfType type)
 {
   struct ConfItem *conf;
   struct AccessItem *aconf;
+  struct ClassItem *aclass;
   int status=0;
 
   switch(type)
@@ -263,7 +265,20 @@ make_conf_item(ConfType type)
     dlinkAdd(conf, &conf->node, &nresv_items);
     break;
 
+  case CLASS_TYPE:
+    conf = (struct ConfItem *)MyMalloc(sizeof(struct ConfItem) +
+					 sizeof(struct ClassItem));
+    dlinkAdd(conf, &conf->node, &class_items);
+    aclass = (struct ClassItem *)map_to_conf(conf);
+    ConFreq(aclass)  = DEFAULT_CONNECTFREQUENCY;
+    PingFreq(aclass) = DEFAULT_PINGFREQUENCY;
+    MaxTotal(aclass) = ConfigFileEntry.maximum_links;
+    MaxSendq(aclass) = DEFAULT_SENDQ;
+    CurrUserCount(aclass) = 0;
+    break;
+
   default:
+
     conf = NULL;
     break;
   }
@@ -279,6 +294,7 @@ delete_conf_item(struct ConfItem *conf)
 {
   struct MatchItem *match_item;
   struct AccessItem *aconf;
+  struct ClassItem *aclass;
   ConfType type = conf->type;
 
   switch(type)
@@ -383,6 +399,13 @@ delete_conf_item(struct ConfItem *conf)
     MyFree(match_item->reason);
     MyFree(match_item->oper_reason);
     dlinkDelete(&conf->node, &nresv_items);
+    MyFree(conf);
+    break;
+
+  case CLASS_TYPE:
+    aclass = (struct ClassItem *)map_to_conf(conf);
+    MyFree(aclass->class_name);
+    dlinkDelete(&conf->node, &class_items);
     MyFree(conf);
     break;
 
@@ -504,6 +527,7 @@ report_confitem_types(struct Client *source_p, ConfType type)
   struct ConfItem *conf;
   struct AccessItem *aconf;
   struct MatchItem *matchitem;
+  struct ClassItem *classitem;
   char *name, *host, *reason, *user, *classname;
   int port;
 
@@ -531,6 +555,7 @@ report_confitem_types(struct Client *source_p, ConfType type)
 		 matchitem->name, matchitem->reason);
     }
     break;
+
   case OPER_TYPE:
     DLINK_FOREACH(ptr, oconf_items.head)
     {
@@ -547,6 +572,19 @@ report_confitem_types(struct Client *source_p, ConfType type)
 	sendto_one(source_p, form_str(RPL_STATSOLINE),
 		   me.name, source_p->name, 'O', user, host,
 		   name, "0", classname);
+    }
+    break;
+
+  case CLASS_TYPE:
+    DLINK_FOREACH(ptr, class_items.head)
+    {
+      conf = ptr->data;
+      classitem = (struct ClassItem *)map_to_conf(conf);
+      sendto_one(source_p, form_str(RPL_STATSYLINE),
+		 me.name, source_p->name, 'Y',
+		 ClassName(classitem), PingFreq(classitem),
+		 ConFreq(classitem),
+		 MaxTotal(classitem), MaxSendq(classitem));
     }
     break;
 
@@ -1214,7 +1252,8 @@ int
 detach_conf(struct Client *client_p, struct AccessItem *aconf)
 {
   dlink_node *ptr;
-  struct Class *aclass;
+  struct ClassItem *aclass;
+  struct ConfItem *conf;
 
   if (aconf == NULL)
     return(-1);
@@ -1230,8 +1269,17 @@ detach_conf(struct Client *client_p, struct AccessItem *aconf)
 
 	if (MaxTotal(aclass) < 0 && CurrUserCount(aclass) <= 0)
 	{
-	  dlinkDelete(&aclass->class_node, &ClassList);
-	  free_class(ClassPtr(aconf));
+	  /* XXX 
+	   * I'm converting from ClassItem * to ConfItem * here,
+	   * then converting right back to get ClassItem * ...
+	   * This needs to be fixed, but not tonight...
+	   * XXX would it make more sense to keep ConfItem *
+	   * in the AccessItem * rather than the ClassItem ?
+	   * It means a double lookup to get sendq though...
+	   */
+	  conf = (struct ConfItem *)((unsigned long)aclass -
+				     (unsigned long)sizeof(struct ConfItem));
+	  delete_conf_item(conf);
 	  ClassPtr(aconf) = NULL;
 	}
       }
@@ -1543,34 +1591,28 @@ find_conf_by_host(const char *host, unsigned int status)
  * map_to_list
  *
  * inputs	- ConfType conf
- *		- pointer to where to stick type of object list is
  * output	- pointer to dlink_list to use
  * side effects	- none
  */
 static dlink_list *
-map_to_list(ConfType type, int *ct_p)
+map_to_list(ConfType type)
 {
   switch(type)
   {
   case XLINE_TYPE:
-    if (ct_p != NULL)
-      *ct_p = MATCHTYPE;
     return(&xconf_items);
     break;
   case ULINE_TYPE:
-    if (ct_p != NULL)
-      *ct_p = MATCHTYPE;
     return(&uconf_items);
     break;
   case NRESV_TYPE:
-    if (ct_p != NULL)
-      *ct_p = MATCHTYPE;
     return(&nresv_items);
     break;
   case OPER_TYPE:
-    if (ct_p != NULL)
-      *ct_p = ACCESSTYPE;
     return(&oconf_items);
+    break;
+  case CLASS_TYPE:
+    return(&class_items);
     break;
   case CONF_TYPE:
   case KLINE_TYPE:
@@ -1602,12 +1644,14 @@ find_matching_name_conf(ConfType type,
   struct AccessItem *aconf=NULL;
   struct MatchItem *match_item=NULL;
   dlink_list *list_p;
-  int conf_type;
 
-  list_p = map_to_list(type, &conf_type);
+  list_p = map_to_list(type);
 
-  if (conf_type == MATCHTYPE)
+  switch(type)
   {
+  case XLINE_TYPE:
+  case ULINE_TYPE:
+  case NRESV_TYPE:
     DLINK_FOREACH(ptr, (*list_p).head)
     {
       conf = ptr->data;
@@ -1628,9 +1672,9 @@ find_matching_name_conf(ConfType type,
 	  return (conf);
       }
     }
-  }
-  else if(conf_type == ACCESSTYPE)
-  {
+    break;
+
+  case OPER_TYPE:
     DLINK_FOREACH(ptr, (*list_p).head)
     {
       conf = ptr->data;
@@ -1647,8 +1691,10 @@ find_matching_name_conf(ConfType type,
 	  return (conf);
       }
     }
+    break;
+  default:
+    break;
   }
-
   return(NULL);
 }
 
@@ -1670,13 +1716,17 @@ find_exact_name_conf(ConfType type,
   struct ConfItem *conf;
   struct AccessItem *aconf;
   struct MatchItem *match_item;
+  struct ClassItem *aclass;
   dlink_list *list_p;
-  int conf_type;
 
-  list_p = map_to_list(type, &conf_type);
+  list_p = map_to_list(type);
 
-  if (conf_type == MATCHTYPE)
+  switch(type)
   {
+  case XLINE_TYPE:
+  case ULINE_TYPE:
+  case NRESV_TYPE:
+
     DLINK_FOREACH(ptr, (*list_p).head)
     {
       conf = ptr->data;
@@ -1694,9 +1744,9 @@ find_exact_name_conf(ConfType type,
 	  return (conf);
       }
     }
-  }
-  else if (conf_type == ACCESSTYPE)
-  {
+    break;
+
+  case OPER_TYPE:
     DLINK_FOREACH(ptr, (*list_p).head)
     {
       conf = ptr->data;
@@ -1714,6 +1764,23 @@ find_exact_name_conf(ConfType type,
 	  return (conf);
       }
     }
+    break;
+
+  case CLASS_TYPE:
+    DLINK_FOREACH(ptr, (*list_p).head)
+    {
+      conf = ptr->data;
+      aclass = (struct ClassItem *)map_to_conf(conf);
+      if (EmptyString(aclass->class_name))
+	continue;
+    
+      if (irccmp(aclass->class_name, name) == 0)
+	return (conf);
+    }
+    break;
+
+  default:
+    break;
   }
   return(NULL);
 }
@@ -2376,8 +2443,9 @@ clear_out_old_conf(void)
 {
   dlink_node *ptr;
   dlink_node *next_ptr;
+  struct ConfItem *conf;
   struct AccessItem *aconf;
-  struct Class *cltmp;
+  struct ClassItem *cltmp;
 
   /* We only need to free anything allocated by yyparse() here.
    * Resetting structs, etc, is taken care of by set_default_conf().
@@ -2411,9 +2479,10 @@ clear_out_old_conf(void)
   /* don't delete the class table, rather mark all entries
    * for deletion. The table is cleaned up by check_class. - avalon
    */
-  DLINK_FOREACH(ptr, ClassList.head)
+  DLINK_FOREACH(ptr, class_items.head)
   {
-    cltmp = ptr->data;
+    conf = ptr->data;
+    cltmp = (struct ClassItem *)map_to_conf(conf);
     CurrUserCount(cltmp) = -1;
   }
 

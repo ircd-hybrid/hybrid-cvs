@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: class.h,v 7.22 2003/06/12 22:05:52 db Exp $
+ *  $Id: class.h,v 7.23 2003/06/26 04:35:03 db Exp $
  */
 
 #ifndef INCLUDED_class_h
@@ -29,9 +29,8 @@
 struct AccessItem;
 struct Client;
 
-struct Class
+struct ClassItem
 {
-  dlink_node class_node;
   char *class_name;
   int con_freq;
   int ping_freq;
@@ -67,18 +66,15 @@ struct Class
 #define ConfPingFreq(x)  (ClassPtr(x)->ping_freq)
 #define ConfSendq(x)     (ClassPtr(x)->max_sendq)
 
-extern dlink_list ClassList;  /* GLOBAL - class list */
+extern dlink_list class_items;	/* XXX */
 
-extern struct Class *make_class(const char *name);
-extern void add_class(struct Class *aclass);
 extern unsigned long get_sendq(struct Client *);
-extern int get_con_freq(struct Class* );
-extern struct Class *find_class(const char* );
+extern int get_con_freq(struct ClassItem* );
 extern const char *get_client_class(struct Client *);
 extern int get_client_ping(struct Client *);
 extern void check_class(void);
 extern void init_class(void);
-extern void free_class(struct Class *);
+extern void free_class(struct ClassItem *);
 extern void fix_class(struct AccessItem *, struct AccessItem *);
-extern void report_classes(struct Client *);
+extern struct ClassItem *find_class(const char *);
 #endif /* INCLUDED_class_h */

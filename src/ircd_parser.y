@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.326 2003/06/23 02:39:33 db Exp $
+ *  $Id: ircd_parser.y,v 1.327 2003/06/26 04:35:07 db Exp $
  */
 
 %{
@@ -60,7 +60,7 @@ static struct ConfItem *yy_conf = NULL;
 static struct AccessItem *yy_aconf = NULL;
 static struct MatchItem *yy_match_item = NULL;
 static struct cluster *cptr = NULL;
-static struct Class *yy_class = NULL;
+static struct ClassItem *yy_class = NULL;
 
 static dlink_list col_conf_list    = { NULL, NULL, 0 };
 static dlink_list hub_aconfs_list  = { NULL, NULL, 0 };
@@ -1108,15 +1108,17 @@ class_entry: CLASS
 {
   if (ypass == 1)
   {
-    yy_class = make_class(NULL);
+    yy_conf = make_conf_item(CLASS_TYPE);
+    yy_class = (struct ClassItem *)map_to_conf(yy_conf);
   }
 } '{' class_items '}' ';'
 {
   if (ypass == 1)
   {
-    if ((yy_class != NULL) && (yy_class->class_name != NULL))
+    if ((yy_class != NULL) && (yy_class->class_name == NULL))
     {
-      add_class(yy_class);
+      delete_conf_item(yy_conf);
+      yy_conf = NULL;
       yy_class = NULL;
     }
   }
@@ -1291,7 +1293,7 @@ auth_entry: IRCD_AUTH
         DupString(new_aconf->class_name, yy_aconf->class_name);
 
       if (yy_aconf->passwd != NULL)
-	DupString(new_aconf->passwd, yy_tmp->passwd);
+	DupString(new_aconf->passwd, yy_aconf->passwd);
 
       conf_add_class_to_conf(new_aconf);
 

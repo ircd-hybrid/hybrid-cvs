@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.137 2003/06/24 09:39:30 michael Exp $
+ *  $Id: m_stats.c,v 1.138 2003/06/26 04:35:05 db Exp $
  */
 
 #include "stdinc.h"
@@ -79,7 +79,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.137 $";
+const char *_version = "$Revision: 1.138 $";
 #endif
 
 const char *Lformat = ":%s %d %s %s %u %u %u %u %u :%u %u %s";
@@ -739,7 +739,7 @@ stats_uptime(struct Client *source_p)
 static void
 stats_shared(struct Client *source_p)
 {
-  report_configured_links(source_p, CONF_ULINE);
+  report_confitem_types(source_p, ULINE_TYPE);
 }
 
 /* stats_servers()
@@ -775,13 +775,13 @@ stats_servers(struct Client *source_p)
 static void
 stats_gecos(struct Client *source_p)
 {
-  report_configured_links(source_p, CONF_XLINE);
+  report_confitem_types(source_p, XLINE_TYPE);
 }
 
 static void
 stats_class(struct Client *source_p)
 {
-  report_classes(source_p);
+  report_confitem_types(source_p, CLASS_TYPE);
 }
 
 static void
