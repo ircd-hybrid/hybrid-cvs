@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: numeric.h,v 7.32 2003/03/02 06:46:37 db Exp $
+ *  $Id: numeric.h,v 7.33 2003/03/02 22:33:56 db Exp $
  */
 
 #ifndef INCLUDED_numeric_h
@@ -40,6 +40,8 @@ struct NumericInfo {
  * messages are defined below
  */
 extern const char* form_str(int);
+extern void set_locale(const char *);
+extern const char *get_locale(void);
 
 /*
  * Reserve numerics 000-099 for server-client connections where the client
