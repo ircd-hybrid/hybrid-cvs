@@ -1,3 +1,16 @@
+db          2002/09/08 23:05:28 EDT	(20020909_0)
+
+  Modified files:
+    modules              m_oper.c 
+  Log:
+  - source_p->umode not source_p->flags, not that it seems to matter.
+    tbh, I don't think ms_oper() is ever ever called.
+  
+  Revision  Changes    Path
+  1.54      +2 -2      ircd-hybrid-7/modules/m_oper.c
+
+
+
 bill        2002/09/08 17:09:37 EDT	(20020908_0)
 
   Modified files:
@@ -31903,4 +31916,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4025 2002/09/08 21:09:40 bill Exp $
+$Id: ChangeLog,v 7.4026 2002/09/09 03:05:31 db Exp $
