@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_lljoin.c,v 1.57 2002/05/24 23:34:21 androsyn Exp $
+ *  $Id: m_lljoin.c,v 1.58 2003/01/17 01:09:59 db Exp $
  */
 
 #include "stdinc.h"
@@ -30,7 +30,6 @@
 #include "client.h"
 #include "hash.h"
 #include "common.h"
-#include "hash.h"
 #include "irc_string.h"
 #include "ircd.h"
 #include "list.h"
@@ -64,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&lljoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.57 $";
+const char *_version = "$Revision: 1.58 $";
 #endif
 /*
  * m_lljoin
