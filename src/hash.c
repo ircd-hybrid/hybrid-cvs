@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.73 2003/07/19 22:56:47 michael Exp $
+ *  $Id: hash.c,v 7.74 2003/07/20 03:34:50 db Exp $
  */
 
 #include "stdinc.h"
@@ -368,7 +368,7 @@ hash_del_channel(struct Channel *chptr)
   unsigned int hashv = strhash(chptr->chname);
   struct Channel *tmp = channelTable[hashv];
 
-  if (tmp !== NULL)
+  if (tmp != NULL)
   {
     if (tmp == chptr)
     {
