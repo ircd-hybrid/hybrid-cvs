@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.162 2001/01/25 06:26:10 db Exp $
+ *  $Id: s_conf.c,v 7.163 2001/01/25 07:23:04 db Exp $
  */
 
 #include <sys/types.h>
@@ -1483,29 +1483,23 @@ void conf_add_conf(struct ConfItem *aconf)
 static int SplitUserHost(struct ConfItem *aconf)
 {
   char *p;
+  char *new_user;
+  char *new_host;
 
   if ( (p = strchr(aconf->host, '@')) )
     {
       *p = '\0';
+      DupString(new_user, aconf->host);
+      MyFree(aconf->user);
+      aconf->user = new_user;
       p++;
-      if(aconf->user)
-        {
-          aconf->name = aconf->user;
-          DupString(aconf->user, aconf->host);
-          strcpy(aconf->host, p);
-        }
-      else
-        {
-          return(-1);
-        }
+      DupString(new_host,p);
+      MyFree(aconf->host);
+      aconf->host = new_host;
     }
   else
     {
-      if(aconf->user)
-        {
-          aconf->name = aconf->user;
-          DupString(aconf->user, "*");
-        }
+      DupString(aconf->user, "*");
     }
   return(1);
 }

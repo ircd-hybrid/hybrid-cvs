@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.189 2001/01/23 05:01:30 db Exp $
+ * $Id: channel.c,v 7.190 2001/01/25 07:23:03 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -1236,6 +1236,18 @@ void set_channel_mode(struct Client *cptr,
                   parv++;
                   break;
                 }
+	      else
+		{
+		  if(IsRestricted(sptr) && (whatt == MODE_ADD))
+		    {
+		      sendto_one(sptr,":%s NOTICE %s :*** NOTICE -- You are restricted and cannot chanop others",
+				 me.name,
+				 sptr->name);
+		      parc--;
+		      parv++;
+		      break;
+		    }
+		}
             }
           if (whatt == MODE_QUERY)
             break;
