@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.381 2003/10/11 20:47:25 bill Exp $
+ *  $Id: s_serv.c,v 7.382 2003/10/11 21:39:03 stu Exp $
  */
 
 #include "stdinc.h"
@@ -1239,7 +1239,7 @@ server_estab(struct Client *client_p)
                      target_p->hopcount+1, IsHidden(target_p) ? "(H) " : "",
                      target_p->info);
         else /* shouldn't happen */
-          ;
+          assert(0 == 1); /* Keep gcc happy */
       }
       else
         sendto_one(client_p, ":%s SERVER %s %d :%s%s", 
