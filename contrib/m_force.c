@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: m_force.c,v 1.16 2002/10/11 19:57:47 db Exp $
+ * $Id: m_force.c,v 1.17 2002/11/01 13:24:41 db Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&forcepart_msgtab);
 }
 
-char *_version = "$Revision: 1.16 $";
+char *_version = "$Revision: 1.17 $";
 #endif
 
 /*
@@ -288,7 +288,7 @@ static void mo_forcepart(struct Client *client_p, struct Client *source_p,
   if((chptr = hash_find_channel(parv[2])) == NULL)
   {
     sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
-               me.name, parv[0], parv[1]);
+               me.name, parv[0], parv[2]);
     return;
   }
 
