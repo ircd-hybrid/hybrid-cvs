@@ -1,3 +1,15 @@
+androsyn    2002/06/03 14:54:23 EDT	(20020603_4)
+
+  Modified files:
+    src                  adns.c 
+  Log:
+  Doh..left the TCP resolver turned on.
+  
+  Revision  Changes    Path
+  7.44      +2 -2      ircd-hybrid-7/src/adns.c
+
+
+
 leeh        2002/06/03 12:04:39 EDT	(20020603_3)
 
   Modified files:
@@ -27873,4 +27885,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3740 2002/06/03 16:04:45 leeh Exp $
+$Id: ChangeLog,v 7.3741 2002/06/03 18:54:29 androsyn Exp $
