@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.3 1999/08/02 11:47:06 db Exp $
+ *   $Id: s_serv.c,v 7.4 1999/08/13 03:55:49 tomh Exp $
  */
 #include "s_serv.h"
 #include "channel.h"
@@ -661,8 +661,8 @@ int server_estab(struct Client *cptr)
 
   nextping = CurrentTime;
   /* ircd-hybrid-6 can do TS links, and  zipped links*/
-  sendto_ops("Link with %s established: (%s) link",
-             inpath,show_capabilities(cptr));
+  sendto_ops("Link with %s established: (%s)", inpath, 
+             show_capabilities(cptr));
 
   add_to_client_hash_table(cptr->name, cptr);
   /* doesnt duplicate cptr->serv if allocated this struct already */

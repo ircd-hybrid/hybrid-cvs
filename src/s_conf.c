@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.6 1999/08/06 04:09:55 db Exp $
+ *  $Id: s_conf.c,v 7.7 1999/08/13 03:55:48 tomh Exp $
  */
 #include "s_conf.h"
 #include "channel.h"
@@ -817,7 +817,7 @@ static int hash_ip(unsigned long ip)
 {
   int hash;
   ip = ntohl(ip);
-  hash = ((ip >>= 12) + ip) & (IP_HASH_SIZE-1);
+  hash = ((ip >> 12) + ip) & (IP_HASH_SIZE-1);
   return(hash);
 }
 
