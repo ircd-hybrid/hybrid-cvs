@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_topic.c,v 1.20 2000/12/26 22:18:39 db Exp $
+ *   $Id: m_topic.c,v 1.21 2000/12/27 01:28:58 bill Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -163,7 +163,7 @@ int     m_topic(struct Client *cptr,
 	      sendto_one(sptr, form_str(ERR_NOTONCHANNEL), me.name, parv[0],
 			 parv[1]);
 	      return 0;
-p	    }
+	    }
           if (chptr->topic[0] == '\0')
 	    sendto_one(sptr, form_str(RPL_NOTOPIC),
 		       me.name, parv[0], parv[1]);
