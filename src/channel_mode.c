@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.135 2003/10/11 23:23:33 stu Exp $
+ *  $Id: channel_mode.c,v 7.136 2003/10/12 00:48:12 bill Exp $
  */
 
 #include "stdinc.h"
@@ -1659,7 +1659,7 @@ set_channel_mode(struct Client *client_p, struct Client *source_p, struct Channe
 
   for (; (c = *ml) != '\0'; ml++) 
   {
-#ifdef notyet
+#if 0
     if(mode_count > 20)
       break;
 #endif

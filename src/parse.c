@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.184 2003/10/11 12:29:27 bill Exp $
+ *  $Id: parse.c,v 7.185 2003/10/12 00:48:12 bill Exp $
  */
 
 #include "stdinc.h"
@@ -219,9 +219,7 @@ parse(struct Client *client_p, char *pbuffer, char *bufend)
        * XXX it could be useful to know which of these occurs most frequently.
        * the ID check should always come first, though, since it is so easy.
        */
-      if (IsDigit(*sender))
-        from = hash_find_id(sender);
-      else if ((from = find_client(sender)) == NULL)
+      if ((from = find_person(sender)) == NULL)
         from = find_server(sender);
 
       /* Hmm! If the client corresponding to the

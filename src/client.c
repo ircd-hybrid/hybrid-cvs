@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.414 2003/10/11 21:56:07 bill Exp $
+ *  $Id: client.c,v 7.415 2003/10/12 00:48:12 bill Exp $
  */
 
 #include "stdinc.h"
@@ -665,7 +665,7 @@ find_person(const char *name)
 struct Client *
 find_chasing(struct Client *source_p, const char *user, int *chasing)
 {
-  struct Client *who = find_client(user);
+  struct Client *who = find_person(user);
 
   if (chasing)
     *chasing = 0;
