@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.397 2003/05/23 02:32:21 db Exp $
+ *  $Id: s_conf.c,v 7.398 2003/05/23 02:45:31 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -1862,7 +1862,6 @@ get_printable_conf(struct ConfItem *aconf, char **name, char **host, char **reas
 void
 read_conf_files(int cold)
 {
-  FBFILE *file;
   const char *filename;
 
   conf_fbfile_in = NULL;
