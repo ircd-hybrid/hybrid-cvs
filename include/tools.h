@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: tools.h,v 1.8 2002/01/05 09:14:30 a1kmm Exp $
+ *  $Id: tools.h,v 1.9 2002/05/17 16:07:10 androsyn Exp $
  */
 
 #ifndef __TOOLS_H__
@@ -65,6 +65,10 @@ dlink_list_length(dlink_list *m);
 dlink_node *
 dlinkFind(dlink_list *m, void *data);
 
+#ifndef NDEBUG
 void mem_frob(void *data, int len);
+#else
+#define mem_frob(x, y) 
+#endif
 
 #endif
