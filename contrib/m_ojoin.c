@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_ojoin.c,v 1.22 2003/06/10 22:30:00 joshk Exp $
+ *   $Id: m_ojoin.c,v 1.23 2003/06/11 00:07:27 joshk Exp $
  */
 
 /* Remove this if you do not wish /OJOIN to support multiple channels
@@ -58,7 +58,7 @@ _moddeinit(void)
   mod_del_cmd(&ojoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.22 $";
+const char *_version = "$Revision: 1.23 $";
 
 /*
 ** mo_ojoin
@@ -74,7 +74,7 @@ mo_ojoin(struct Client *client_p, struct Client *source_p,
 #ifdef OJOIN_MULTIJOIN
   char *t;
 #endif
-  int move_me;
+  short move_me = 1;
   unsigned int tmp_flags;
 
   /* admins only */
@@ -90,8 +90,7 @@ mo_ojoin(struct Client *client_p, struct Client *source_p,
 	  name = strtoken (&t, NULL, ","))
   {
 #endif
-
-    /* Default - only #/& sets this to 0 */  
+    
     move_me = 1;
     
     switch (*name)
@@ -104,17 +103,18 @@ mo_ojoin(struct Client *client_p, struct Client *source_p,
       case '%': tmp_flags = CHFL_HALFOP;
                 modeletter = 'h'; name++; break;
 #endif
-      /* No special mode flags - Just add the user */
       case '#':
       case '&':
         tmp_flags = 0;
-	move_me = 0;
 	modeletter = '\0';
 	break;
 	
+       /* We're not joining a channel, or we don't know the mode,
+	* what ARE we joining? */
       default:
-        sendto_one (source_p, ":%s NOTICE %s :Invalid mode symbol \'%c\'",
-          me.name, source_p->name, *name);
+        sendto_one (source_p, form_str(ERR_NOSUCHCHANNEL),
+                 me.name, source_p->name, name);
+
 #ifdef OJOIN_MULTIJOIN
 	continue;
 #else
@@ -138,9 +138,9 @@ mo_ojoin(struct Client *client_p, struct Client *source_p,
   
     else
     {
-      if (move_me == 1) 
+      if (move_me == 1)
         name--;
-  
+
       add_user_to_channel(chptr, source_p, tmp_flags);
   
       if (chptr->chname[0] == '#')
