@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.59 2000/12/05 04:00:52 db Exp $
+ *   $Id: send.c,v 7.60 2000/12/08 03:39:03 db Exp $
  */
 #include "tools.h"
 #include "send.h"
@@ -667,8 +667,6 @@ sendto_match_servs(struct Channel *chptr, struct Client *from, const char *patte
       if (*chptr->chname == '&')
         return;
     }
-  else
-    return; /* an ooopsies */
 
   for(ptr = serv_list.head; ptr; ptr = ptr->next)
     {
@@ -677,7 +675,7 @@ sendto_match_servs(struct Channel *chptr, struct Client *from, const char *patte
       if (cptr == from)
         continue;
 
-      if(ConfigFileEntry.hub && IsCapable(cptr,CAP_LL))
+      if(chptr && ConfigFileEntry.hub && IsCapable(cptr,CAP_LL))
         {
           if( !(chptr->lazyLinkChannelExists & cptr->localClient->serverMask) )
              continue;
