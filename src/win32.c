@@ -4,11 +4,12 @@
  *
  *  Copyright 2002 Aaron Sethman <androsyn@ratbox.org>
  *
- *  $Id: win32.c,v 1.1.2.1 2002/05/26 05:37:30 androsyn Exp $
+ *  $Id: win32.c,v 1.1.2.2 2002/05/26 10:55:58 androsyn Exp $
  */
 
 #include "stdinc.h"
 #ifdef __MINGW32__
+
 
 /*
  * This is our gettimeofday() filler.  

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.95.2.1 2002/05/26 07:03:53 androsyn Exp $
+ *  $Id: s_auth.c,v 7.95.2.2 2002/05/26 10:55:57 androsyn Exp $
  */
 
 /*
@@ -88,7 +88,7 @@ typedef enum {
 } ReportType;
 
 #define sendheader(c, r) \
-   send((c)->localClient->fd, HeaderMessages[(r)].message, HeaderMessages[(r)].length, 0)
+   fd_send((c)->localClient->fd, HeaderMessages[(r)].message, HeaderMessages[(r)].length, 0)
 
 /*
  */
@@ -511,7 +511,7 @@ void auth_connect_callback(int fd, int error, void *data)
              (unsigned int) ntohs(them.sin_port),
              (unsigned int) ntohs(us.sin_port));
 
-  if (send(auth->fd, authbuf, strlen(authbuf), 0) == -1)
+  if (fd_send(auth->fd, authbuf, strlen(authbuf), 0) == -1)
     {
       auth_error(auth);
       return;

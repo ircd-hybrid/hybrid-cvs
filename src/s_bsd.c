@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.169.2.1 2002/05/26 07:03:53 androsyn Exp $
+ *  $Id: s_bsd.c,v 7.169.2.2 2002/05/26 10:55:58 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -841,9 +841,10 @@ comm_open(int family, int sock_type, int proto, const char *note)
       return -1;
 #endif
     }
-
-  /* Next, update things in our fd tracking */
-  fd_open(fd, FD_SOCKET, note);
+  if(sock_type == SOCK_DGRAM)
+    fd_open(fd, FD_DATAGRAM, note);
+  else
+    fd_open(fd, FD_SOCKET, note);
   return fd;
 }
 

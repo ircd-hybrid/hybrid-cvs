@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fdlist.c,v 7.29.2.1 2002/05/26 07:03:51 androsyn Exp $
+ *  $Id: fdlist.c,v 7.29.2.2 2002/05/26 10:55:57 androsyn Exp $
  */
 #include "stdinc.h"
 #include "config.h"  /* option settings */
@@ -38,6 +38,10 @@ static void fdlist_update_biggest(int fd, int opening);
 /* Highest FD and number of open FDs .. */
 int highest_fd = -1; /* Its -1 because we haven't started yet -- adrian */
 int number_fd = 0;
+
+
+
+
 
 static void
 fdlist_update_biggest(int fd, int opening)
@@ -99,7 +103,6 @@ fd_open(int fd, unsigned int type, const char *desc)
 #ifdef NOTYET
   debug(51, 3) ("fd_open FD %d %s\n", fd, desc);
 #endif
-  fprintf(stderr, "fd_open FD %d %s\n", fd, desc);
   F->fd = fd;
   F->type = type;
   F->flags.open = 1;
@@ -113,6 +116,15 @@ fd_open(int fd, unsigned int type, const char *desc)
   F->list = FDLIST_NONE;
   if (desc)
     strncpy(F->desc, desc, FD_DESC_SZ);
+  if(F->type == FD_SOCKET) 
+  {
+    F->read = fd_recv;
+    F->write = fd_send;
+  }
+  else {
+    F->read = read;
+    F->write = write;
+  }   
   number_fd++;
 }
 

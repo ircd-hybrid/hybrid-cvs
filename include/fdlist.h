@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fdlist.h,v 7.25 2002/05/24 23:34:07 androsyn Exp $
+ *  $Id: fdlist.h,v 7.25.2.1 2002/05/26 10:55:54 androsyn Exp $
  */
 
 #ifndef INCLUDED_fdlist_h
@@ -47,6 +47,7 @@ enum {
     FD_FILECLOSE,
     FD_SOCKET,
     FD_PIPE,
+    FD_DATAGRAM,
     FD_UNKNOWN
 };
 
@@ -69,19 +70,35 @@ typedef enum fdlist_t {
     FDLIST_MAX
 } fdlist_t;
 
+
+typedef enum iotype_t {
+    IO_FD,
+    IO_UNKNOWN
+} iotype_t;
 typedef struct _fde fde_t;
 
 /* Callback for completed IO events */
 typedef void PF(int, void *);
 
+typedef void IO(int fd, void *data, size_t count);
 /* Callback for completed connections */
 /* int fd, int status, void * */
 typedef void CNCB(int, int, void *);
+
 
 extern int highest_fd;
 extern int number_fd;
 
 struct Client;
+
+typedef struct _IO {
+	iotype_t iotype;
+	union {
+		fde_t *F;
+		/* Stick other IO specific goodies in here */
+	} ioh;
+} IO;
+
 
 struct _fde {
     /* New-school stuff, again pretty much ripped from squid */
@@ -103,6 +120,8 @@ struct _fde {
     time_t timeout;
     PF *flush_handler;
     void *flush_data;
+    IO *read;
+    IO *write;
     time_t flush_timeout;
     struct DNSQuery *dns_query;
     struct {

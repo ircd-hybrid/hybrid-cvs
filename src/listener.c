@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.c,v 7.67 2002/05/24 23:34:48 androsyn Exp $
+ *  $Id: listener.c,v 7.67.2.1 2002/05/26 10:55:57 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -416,7 +416,7 @@ accept_connection(int pfd, void *data)
 			       get_listener_name(listener));
 	  last_oper_notice = CurrentTime;
 	}
-      send(fd, "ERROR :All connections in use\r\n", 32, 0);
+      fd_send(fd, "ERROR :All connections in use\r\n", 32, 0);
       fd_close(fd);
       /* Re-register a new IO request for the next accept .. */
       comm_setselect(listener->fd, FDLIST_SERVICE, COMM_SELECT_READ,
@@ -432,11 +432,11 @@ accept_connection(int pfd, void *data)
    switch (pe)
    {
     case BANNED_CLIENT:
-     send(fd, DLINE_WARNING, sizeof(DLINE_WARNING)-1, 0);
+     fd_send(fd, DLINE_WARNING, sizeof(DLINE_WARNING)-1, 0);
      break;
 #ifdef PACE_CONNECT
     case TOO_FAST:
-     send(fd, TOOFAST_WARNING, sizeof(TOOFAST_WARNING)-1, 0);
+     fd_send(fd, TOOFAST_WARNING, sizeof(TOOFAST_WARNING)-1, 0);
      break;
 #endif
    }
