@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: m_tb.c,v 1.15 2003/05/03 11:10:00 michael Exp $
+ *  $Id: m_tb.c,v 1.16 2003/05/13 04:48:48 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ _moddeinit(void)
   unset_tburst_capab();
 }
 
-const char *_version = "$Revision: 1.15 $";
+const char *_version = "$Revision: 1.16 $";
 #endif
 
 /* ms_tburst()
@@ -131,8 +131,8 @@ set_topic(struct Client *source_p, struct Channel *chptr,
 #ifdef TBURST_PROPAGATE
   sendto_server(source_p, NULL, chptr, CAP_TBURST, NOCAPS, NOFLAGS,
 		":%s TBURST %ld %s %ld %s :%s",
-		me.name, chptr->channelts, chptr->chname,
-		chptr->topic_time, 
+		me.name, (unsigned long)chptr->channelts, chptr->chname,
+		(unsigned long)chptr->topic_time, 
                 chptr->topic_info == NULL ? "" : chptr->topic_info,
                 chptr->topic == NULL ? "" : chptr->topic);
 #endif
@@ -155,8 +155,8 @@ send_tburst(struct hook_burst_channel *data)
 {
   if (data->chptr->topic != NULL && IsCapable(data->client, CAP_TBURST))
     sendto_one(data->client, ":%s TBURST %ld %s %ld %s :%s",
-               me.name, data->chptr->channelts, data->chptr->chname,
-	       data->chptr->topic_time, data->chptr->topic_info, 
+               me.name, (unsigned long)data->chptr->channelts, data->chptr->chname,
+	       (unsigned long)data->chptr->topic_time, data->chptr->topic_info, 
 	       data->chptr->topic);
   return(0);
 }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_killhost.c,v 1.2 2003/05/12 00:40:32 michael Exp $
+ *  $Id: m_killhost.c,v 1.3 2003/05/13 04:48:48 metalrock Exp $
  *
  */
 
@@ -35,6 +35,7 @@
 #include "send.h"
 #include "whowas.h"
 #include "irc_string.h"
+#include "sprintf_irc.h"
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
@@ -63,7 +64,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&killhost_msgtab);
 }
-const char *_version = "$Revision: 1.2 $";
+const char *_version = "$Revision: 1.3 $";
 #endif
 
 /*

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_map.c,v 1.15 2003/04/18 02:13:37 db Exp $
+ *  $Id: m_map.c,v 1.16 2003/05/13 04:48:48 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -29,6 +29,7 @@
 #include "numeric.h"
 #include "send.h"
 #include "s_conf.h"
+#include "ircd.h"
 
 #define USER_COL       50 /* display | Users: %d at col 50 */
 
@@ -54,7 +55,7 @@ void _moddeinit(void)
   mod_del_cmd(&map_msgtab);
 }
 
-const char *_version = "$Revision: 1.15 $";
+const char *_version = "$Revision: 1.16 $";
 #endif
 
 static char buf[BUFSIZE];

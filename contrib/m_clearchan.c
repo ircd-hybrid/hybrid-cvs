@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_clearchan.c,v 1.37 2003/05/12 08:09:20 michael Exp $
+ *   $Id: m_clearchan.c,v 1.38 2003/05/13 04:48:48 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -32,6 +32,7 @@
 #include "send.h"
 #include "whowas.h"
 #include "irc_string.h"
+#include "sprintf_irc.h"
 #include "hash.h"
 #include "msg.h"
 #include "parse.h"
@@ -74,7 +75,7 @@ _moddeinit(void)
   mod_del_cmd(&clearchan_msgtab);
 }
 
-const char *_version = "$Revision: 1.37 $";
+const char *_version = "$Revision: 1.38 $";
 
 /*
 ** mo_clearchan

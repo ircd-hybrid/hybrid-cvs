@@ -27,7 +27,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: m_flags.c,v 1.13 2003/04/19 23:43:45 michael Exp $
+ *  $Id: m_flags.c,v 1.14 2003/05/13 04:48:48 metalrock Exp $
  */
 
 /* List of ircd includes from ../include/ */
@@ -37,6 +37,7 @@
 #include "common.h"     /* FALSE bleah */
 #include "ircd.h"
 #include "irc_string.h"
+#include "sprintf_irc.h"
 #include "numeric.h"
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -76,7 +77,7 @@ _moddeinit(void)
   mod_del_cmd(&test_msgtab);
 }
 
-const char *_version = "$Revision: 1.13 $";
+const char *_version = "$Revision: 1.14 $";
 #endif
 
 /* FLAGS requires it's own mini parser, since the last parameter in it can
