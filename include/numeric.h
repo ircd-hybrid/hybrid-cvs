@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: numeric.h,v 7.39 2003/06/12 03:40:29 joshk Exp $
+ *  $Id: numeric.h,v 7.40 2004/03/17 04:08:57 db Exp $
  */
 
 #ifndef INCLUDED_numeric_h
@@ -316,6 +316,7 @@ extern const char *get_locale(void);
 #define ERR_TOOMANYTARGETS   407
 #define ERR_NOORIGIN         409
 
+#define ERR_NOTARGET         410
 #define ERR_NORECIPIENT      411
 #define ERR_NOTEXTTOSEND     412
 #define ERR_NOTOPLEVEL       413

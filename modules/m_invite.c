@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_invite.c,v 1.66 2004/02/18 13:51:46 metalrock Exp $
+ *  $Id: m_invite.c,v 1.67 2004/03/17 04:08:58 db Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&invite_msgtab);
 }
 
-const char *_version = "$Revision: 1.66 $";
+const char *_version = "$Revision: 1.67 $";
 #endif
 
 /*
@@ -93,7 +93,11 @@ m_invite(struct Client *client_p, struct Client *source_p,
 
   if ((target_p = find_person(parv[1])) == NULL)
   {
-    sendto_one(source_p, form_str(ERR_NOSUCHNICK),
+    if (IsDigit(parv[1][0]))
+      sendto_one(source_p, form_str(ERR_NOTARGET),
+               me.name, parv[0]);
+    else
+      sendto_one(source_p, form_str(ERR_NOSUCHNICK),
                me.name, parv[0], parv[1]);
     return;
   }

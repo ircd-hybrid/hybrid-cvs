@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: messages.tab,v 7.91 2003/12/05 07:06:29 metalrock Exp $
+ *   $Id: messages.tab,v 7.92 2004/03/17 04:09:02 db Exp $
  */
 
 static struct NumericInfo replies[] = {
@@ -430,7 +430,7 @@ static struct NumericInfo replies[] = {
 /* 407 */  {"ERR_TOOMANYTARGETS", ":%s 407 %s %s :Too many recipients. Only %d processed", NULL},
 /* 408 */  {NULL, NULL, NULL},
 /* 409 */  {"ERR_NOORIGIN", ":%s 409 %s :No origin specified", NULL},
-/* 410 */  {NULL, NULL, NULL},
+/* 410 */  {"ERR_NOTARGET", ":%s 410 %s :Target has left irc", NULL},
 /* 411 */  {"ERR_NORECIPIENT", ":%s 411 %s :No recipient given (%s)", NULL},
 /* 412 */  {"ERR_NOTEXTTOSEND", ":%s 412 %s :No text to send", NULL},
 /* 413 */  {"ERR_NOTOPLEVEL", ":%s 413 %s %s :No toplevel domain specified", NULL},

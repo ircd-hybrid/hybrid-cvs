@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kill.c,v 1.86 2004/03/17 01:34:28 db Exp $
+ *  $Id: m_kill.c,v 1.87 2004/03/17 04:09:00 db Exp $
  */
 
 #include "stdinc.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&kill_msgtab);
 }
 
-const char *_version = "$Revision: 1.86 $";
+const char *_version = "$Revision: 1.87 $";
 #endif
 
 /* mo_kill()
@@ -118,6 +118,7 @@ mo_kill(struct Client *client_p, struct Client *source_p,
 				(time_t)ConfigFileEntry.kill_chase_time_limit))
 				== NULL)
     {
+      /* Don't need an ERR_NOTARGET here, since its a local oper -db */
       sendto_one(source_p, form_str(ERR_NOSUCHNICK),
                  me.name, source_p->name, user);
       return;
@@ -230,17 +231,23 @@ ms_kill(struct Client *client_p, struct Client *source_p,
        * not an uid, automatically rewrite the KILL for this new nickname.
        * --this keeps servers in synch when nick change and kill collide
        */
-      if (IsDigit(*user) ||
-	  (target_p = get_history(user,
-                                (time_t)ConfigFileEntry.kill_chase_time_limit))
-                                == NULL)
-      {
-        sendto_one(source_p, form_str(ERR_NOSUCHNICK),
-                   me.name, source_p->name, user);
-        return;
-      }
-      sendto_one(source_p,":%s NOTICE %s :KILL changed from %s to %s",
-                 me.name, source_p->name, user, target_p->name);
+    if (IsDigit(*user))
+    {
+      sendto_one(source_p, form_str(ERR_NOTARGET),
+		 me.name, source_p->name);
+      return;
+    }
+    else if((target_p =
+	     get_history(user,
+			 (time_t)ConfigFileEntry.kill_chase_time_limit))
+	    == NULL)
+    {
+      sendto_one(source_p, form_str(ERR_NOSUCHNICK),
+		 me.name, source_p->name, user);
+      return;
+    }
+    sendto_one(source_p,":%s NOTICE %s :KILL changed from %s to %s",
+	       me.name, source_p->name, user, target_p->name);
   }
 
   if (IsServer(target_p) || IsMe(target_p))

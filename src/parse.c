@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.194 2004/02/03 03:59:55 michael Exp $
+ *  $Id: parse.c,v 7.195 2004/03/17 04:09:02 db Exp $
  */
 
 #include "stdinc.h"
@@ -769,6 +769,8 @@ do_numeric(char numeric[], struct Client *client_p, struct Client *source_p,
   {
     if (IsMe(target_p)) 
     {
+      int num;
+
       /*
        * We shouldn't get numerics sent to us,
        * any numerics we do get indicate a bug somewhere..
@@ -787,7 +789,13 @@ do_numeric(char numeric[], struct Client *client_p, struct Client *source_p,
        * will do the "right thing" and kill a nick that is colliding.
        * unfortunately, it did not work. --Dianora
        */
-      if (atoi(numeric) != ERR_NOSUCHNICK)
+
+      /* Yes, a good compiler would have optimised this, but
+       * this is probably easier to read. -db
+       */
+      num = atoi(numeric);
+
+      if ((num != ERR_NOSUCHNICK) && (num != ERR_NOTARGET))
         sendto_realops_flags(UMODE_ALL, L_ADMIN,
 			     "*** %s(via %s) sent a %s numeric to me: %s",
 			     source_p->name, client_p->name, numeric, buffer);
