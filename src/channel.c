@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.171 2001/01/02 01:33:07 davidt Exp $
+ * $Id: channel.c,v 7.172 2001/01/02 08:28:35 a1kmm Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -1043,7 +1043,7 @@ static  char    *fix_key_old(char *arg)
   for (s = t = (u_char *)arg; (c = *s); s++)
     { 
       c &= 0x7f;
-      if ((c != 0x0a) && (c != ':'))
+      if ((c != 0x0a) && (c != ':') && (c != 0x0d))
         *t++ = c;
     }
   *t = '\0';
