@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_unkline.c,v 1.51.2.3 2004/03/18 03:57:24 bill Exp $
+ *  $Id: m_unkline.c,v 1.51.2.4 2004/06/16 04:55:54 erik Exp $
  */
 
 #include "stdinc.h"
@@ -52,11 +52,11 @@ static void mo_ungline(struct Client*, struct Client*, int, char**);
 
 struct Message msgtabs[] = {
   {"UNKLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
-   {m_unregistered, m_not_oper, ms_unkline, mo_unkline}},
+   {m_unregistered, m_not_oper, ms_unkline, ms_unkline, mo_unkline}},
   {"UNDLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
-   {m_unregistered, m_not_oper, m_error, mo_undline}}, 
+   {m_unregistered, m_not_oper, m_error, m_ignore, mo_undline}}, 
   {"UNGLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
-   {m_unregistered, m_not_oper, m_error, mo_ungline}}
+   {m_unregistered, m_not_oper, m_error, m_ignore, mo_ungline}}
 };
 
 #ifndef STATIC_MODULES
@@ -75,7 +75,7 @@ _moddeinit(void)
   mod_del_cmd(&msgtabs[1]);
   mod_del_cmd(&msgtabs[2]);
 }
-const char *_version = "$Revision: 1.51.2.3 $";
+const char *_version = "$Revision: 1.51.2.4 $";
 #endif
 
 static int remove_tkline_match(char *,char *);

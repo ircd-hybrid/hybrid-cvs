@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_away.c,v 1.31 2002/07/31 16:24:06 leeh Exp $
+ *  $Id: m_away.c,v 1.31.2.1 2004/06/16 04:55:51 erik Exp $
  */
 
 #include "stdinc.h"
@@ -41,7 +41,7 @@ static void m_away(struct Client*, struct Client*, int, char**);
 
 struct Message away_msgtab = {
   "AWAY", 0, 0, 0, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_away, m_away, m_away}
+  {m_unregistered, m_away, m_away, m_ignore, m_away}
 };
 #ifndef STATIC_MODULES
 void
@@ -55,7 +55,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&away_msgtab);
 }
-const char *_version = "$Revision: 1.31 $";
+const char *_version = "$Revision: 1.31.2.1 $";
 #endif
 /***********************************************************************
  * m_away() - Added 14 Dec 1988 by jto. 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_omotd.c,v 1.1.2.2 2003/05/22 04:13:55 db Exp $
+ *  $Id: m_omotd.c,v 1.1.2.3 2004/06/16 04:55:46 erik Exp $
  */
 
 #include "stdinc.h"
@@ -47,7 +47,7 @@ static void mo_omotd(struct Client*, struct Client*, int, char**);
 
 struct Message omotd_msgtab = {
   "OMOTD", 0, 0, 0, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, m_ignore, mo_omotd}
+  {m_unregistered, m_not_oper, m_ignore, m_ignore, mo_omotd}
 };
 #ifndef STATIC_MODULES
 
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&omotd_msgtab);
 }
 
-const char *_version = "$Revision: 1.1.2.2 $";
+const char *_version = "$Revision: 1.1.2.3 $";
 #endif
 
 /*

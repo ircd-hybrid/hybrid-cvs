@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_list.c,v 1.45.2.1 2003/10/26 02:08:15 db Exp $
+ *  $Id: m_list.c,v 1.45.2.2 2004/06/16 04:55:53 erik Exp $
  */
 
 #include "stdinc.h"
@@ -50,7 +50,7 @@ static void list_one_channel(struct Client *,struct Channel *);
 
 struct Message list_msgtab = {
   "LIST", 0, 0, 0, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_list, ms_list, mo_list}
+  {m_unregistered, m_list, ms_list, m_ignore, mo_list}
 };
 #ifndef STATIC_MODULES
 
@@ -65,7 +65,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&list_msgtab);
 }
-const char *_version = "$Revision: 1.45.2.1 $";
+const char *_version = "$Revision: 1.45.2.2 $";
 #endif
 static int list_all_channels(struct Client *source_p);
 static int list_named_channel(struct Client *source_p,char *name);

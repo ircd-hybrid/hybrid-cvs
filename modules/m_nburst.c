@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nburst.c,v 1.17 2002/05/24 23:34:21 androsyn Exp $
+ *  $Id: m_nburst.c,v 1.17.4.1 2004/06/16 04:55:53 erik Exp $
  */
 
 #include "stdinc.h"
@@ -46,7 +46,7 @@ static void ms_nburst(struct Client*, struct Client*, int, char**);
 
 struct Message nburst_msgtab = {
   "NBURST", 0, 0, 1, 0, MFLG_SLOW | MFLG_UNREG, 0L,
-  {m_unregistered, m_ignore, ms_nburst, m_ignore}
+  {m_unregistered, m_ignore, ms_nburst, ms_nburst, m_ignore}
 };
 #ifndef STATIC_MODULES
 
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&nburst_msgtab);
 }
 
-const char *_version = "$Revision: 1.17 $";
+const char *_version = "$Revision: 1.17.4.1 $";
 #endif
 /*
 ** m_nburst

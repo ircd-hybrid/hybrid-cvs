@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_lusers.c,v 1.23 2002/07/31 16:24:07 leeh Exp $
+ *  $Id: m_lusers.c,v 1.23.2.1 2004/06/16 04:55:53 erik Exp $
  */
 
 #include "stdinc.h"
@@ -42,7 +42,7 @@ static void ms_lusers(struct Client*, struct Client*, int, char**);
 
 struct Message lusers_msgtab = {
   "LUSERS", 0, 0, 0, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_lusers, ms_lusers, ms_lusers}
+  {m_unregistered, m_lusers, ms_lusers, m_ignore, ms_lusers}
 };
 #ifndef STATIC_MODULES
 
@@ -58,7 +58,7 @@ _moddeinit(void)
   mod_del_cmd(&lusers_msgtab);
 }
 
-const char *_version = "$Revision: 1.23 $";
+const char *_version = "$Revision: 1.23.2.1 $";
 #endif
 /*
  * m_lusers - LUSERS message handler

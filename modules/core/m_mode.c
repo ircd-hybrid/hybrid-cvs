@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_mode.c,v 1.55 2002/07/21 16:17:45 leeh Exp $
+ *  $Id: m_mode.c,v 1.55.2.1 2004/06/16 04:56:02 erik Exp $
  */
 
 #include "stdinc.h"
@@ -46,7 +46,7 @@ static void m_mode(struct Client*, struct Client*, int, char**);
 
 struct Message mode_msgtab = {
   "MODE", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_mode, m_mode, m_mode}
+  {m_unregistered, m_mode, m_mode, m_ignore, m_mode}
 };
 #ifndef STATIC_MODULES
 
@@ -63,7 +63,7 @@ _moddeinit(void)
 }
 
 
-const char *_version = "$Revision: 1.55 $";
+const char *_version = "$Revision: 1.55.2.1 $";
 #endif
 /*
  * m_mode - MODE command handler

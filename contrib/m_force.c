@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: m_force.c,v 1.17 2002/11/01 13:24:41 db Exp $
+ * $Id: m_force.c,v 1.17.2.1 2004/06/16 04:55:46 erik Exp $
  */
 
 #include "stdinc.h"
@@ -56,11 +56,11 @@ static void mo_forcepart(struct Client *client_p, struct Client *source_p,
 
 struct Message forcejoin_msgtab = {
   "FORCEJOIN", 0, 0, 3, 0, MFLG_SLOW, 0,
-  {m_ignore, m_not_oper, mo_forcejoin, mo_forcejoin}
+  {m_ignore, m_not_oper, mo_forcejoin, m_ignore, mo_forcejoin}
 };
 struct Message forcepart_msgtab = {
   "FORCEPART", 0, 0, 3, 0, MFLG_SLOW, 0,
-  {m_ignore, m_not_oper, mo_forcepart, mo_forcepart}
+  {m_ignore, m_not_oper, mo_forcepart, m_ignore, mo_forcepart}
 };
 
 #ifndef STATIC_MODULES
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&forcepart_msgtab);
 }
 
-char *_version = "$Revision: 1.17 $";
+char *_version = "$Revision: 1.17.2.1 $";
 #endif
 
 /*

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_invite.c,v 1.53 2003/01/23 04:24:06 db Exp $
+ *  $Id: m_invite.c,v 1.53.2.1 2004/06/16 04:55:52 erik Exp $
  */
 
 #include "stdinc.h"
@@ -48,7 +48,7 @@ static void ms_invite(struct Client *, struct Client *, int, char **);
 
 struct Message invite_msgtab = {
   "INVITE", 0, 0, 3, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_invite, ms_invite, m_invite}
+  {m_unregistered, m_invite, ms_invite, m_ignore, m_invite}
 };
 #ifndef STATIC_MODULES
 
@@ -64,7 +64,7 @@ _moddeinit(void)
   mod_del_cmd(&invite_msgtab);
 }
 
-const char *_version = "$Revision: 1.53 $";
+const char *_version = "$Revision: 1.53.2.1 $";
 #endif
 
 /*

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_lljoin.c,v 1.58 2003/01/17 01:09:59 db Exp $
+ *  $Id: m_lljoin.c,v 1.58.2.1 2004/06/16 04:55:53 erik Exp $
  */
 
 #include "stdinc.h"
@@ -47,7 +47,7 @@ static void ms_lljoin(struct Client *,struct Client *,int,char **);
 
 struct Message lljoin_msgtab = {
   "LLJOIN", 0, 0, 3, 0, MFLG_SLOW | MFLG_UNREG, 0L,
-  {m_unregistered, m_ignore, ms_lljoin, m_ignore}
+  {m_unregistered, m_ignore, ms_lljoin, m_ignore, m_ignore}
 };
 #ifndef STATIC_MODULES
 
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&lljoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.58 $";
+const char *_version = "$Revision: 1.58.2.1 $";
 #endif
 /*
  * m_lljoin

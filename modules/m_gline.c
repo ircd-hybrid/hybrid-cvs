@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.85.2.1 2003/04/11 03:41:40 lusky Exp $
+ *  $Id: m_gline.c,v 1.85.2.2 2004/06/16 04:55:52 erik Exp $
  */
 
 #include "stdinc.h"
@@ -89,10 +89,11 @@ static int invalid_gline(struct Client *, char *, char *, char *);
 		       
 static void ms_gline(struct Client*, struct Client*, int, char**);
 static void mo_gline(struct Client*, struct Client*, int, char**);
+static void me_gline(struct Client*, struct Client*, int, char**);
 
 struct Message gline_msgtab = {
     "GLINE", 0, 0, 3, 0, MFLG_SLOW, 0,
-      {m_unregistered, m_not_oper, ms_gline, mo_gline}
+      {m_unregistered, m_not_oper, ms_gline, me_gline, mo_gline}
 };
 
 #ifndef STATIC_MODULES
@@ -109,7 +110,7 @@ _moddeinit(void)
   mod_del_cmd(&gline_msgtab);
 }
 
-const char *_version = "$Revision: 1.85.2.1 $";
+const char *_version = "$Revision: 1.85.2.2 $";
 #endif
 /*
  * mo_gline()
@@ -361,6 +362,104 @@ ms_gline(struct Client *client_p, struct Client *source_p,
       }
     }
 }
+
+
+/*
+ * me_gline - ENCAP version of ms_gline above
+ *   lets m_encap handle propagation
+ */
+static void
+me_gline(struct Client *client_p, struct Client *source_p,
+	 int parc, char *parv[])
+{
+  /* These are needed for hyb6 compatibility.. if its ever removed we can
+   * just use source_p->username etc.. 
+   */
+  const char *oper_nick = NULL;        /* nick of oper requesting GLINE */
+  const char *oper_user = NULL;        /* username of oper requesting GLINE */
+  const char *oper_host = NULL;        /* hostname of oper requesting GLINE */
+  const char *oper_server = NULL;      /* server of oper requesting GLINE */
+  char *user = NULL;
+  char *host = NULL;             /* user and host of GLINE "victim" */
+  const char *reason = NULL;           /* reason for "victims" demise */
+  struct Client *acptr;
+
+  /* hyb-7 style gline (post beta3) */
+  if(parc == 4 && IsPerson(source_p))
+    {
+      oper_nick = parv[0];
+      oper_user = source_p->username;
+      oper_host = source_p->host;
+      oper_server = source_p->user->server;
+      user = parv[1];
+      host = parv[2];
+      reason = parv[3];
+    }
+  /* or it's a hyb-6 style */
+  else if(parc == 8 && IsServer(source_p))
+    {
+      oper_nick = parv[1];
+      oper_user = parv[2];
+      oper_host = parv[3];
+      oper_server = parv[4];
+      user = parv[5];
+      host = parv[6];
+      reason = parv[7];      
+    }
+  /* none of the above */
+  else
+    return;
+
+  /* Its plausible that the server and/or client dont actually exist,
+   * and its faked, as the oper isnt sending the gline..
+   * check they're real --fl_ */
+  /* we need acptr for LL introduction anyway -davidt */
+  if((acptr = find_server(oper_server)))
+  {
+    if((acptr = find_client(oper_nick)) == NULL)
+      return;
+  }
+  else
+    return;
+
+ if(invalid_gline(acptr, user, host, (char *)reason))
+    return;
+    
+  if (ConfigFileEntry.glines)
+    {
+     /* I dont like the idea of checking for x non-wildcard chars in a
+      * gline.. it could lead to a desync... but we have to stop people
+      * glining *@*..   -- fl
+      */
+
+     if (check_wild_gline(user, host))
+        {
+          sendto_realops_flags(FLAGS_ALL, L_ALL, 
+                       "%s!%s@%s on %s is requesting a gline without %d non-wildcard characters for [%s@%s] [%s]",
+                       oper_nick, oper_user, oper_host, oper_server, ConfigFileEntry.min_nonwildcard,
+                       user, host, reason);
+          return;
+        }
+
+      log_gline_request(oper_nick,oper_user,oper_host,oper_server,
+			user,host,reason);
+      
+      sendto_realops_flags(FLAGS_ALL, L_ALL,
+			   "%s!%s@%s on %s is requesting gline for [%s@%s] [%s]",
+			   oper_nick, oper_user, oper_host, oper_server,
+			   user, host, reason);
+
+      /* If at least 3 opers agree this user should be G lined then do it */
+      if (check_majority_gline(source_p, oper_nick, oper_user, oper_host,
+			       oper_server, user, host, reason) ==
+	  GLINE_ALREADY_VOTED)
+      {
+	sendto_realops_flags(FLAGS_ALL, L_ALL,
+			     "oper or server has already voted");
+      }
+    }
+}
+
 
 /*
  * check_wild_gline

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whowas.c,v 1.30 2003/01/17 13:00:51 db Exp $
+ *  $Id: m_whowas.c,v 1.30.2.1 2004/06/16 04:55:55 erik Exp $
  */
 
 #include "stdinc.h"
@@ -46,7 +46,7 @@ static void mo_whowas(struct Client*, struct Client*, int, char**);
 
 struct Message whowas_msgtab = {
   "WHOWAS", 0, 0, 0, 0, MFLG_SLOW, 0L,
-  {m_unregistered, m_whowas, m_error, mo_whowas}
+  {m_unregistered, m_whowas, m_error, m_ignore, mo_whowas}
 };
 
 #ifndef STATIC_MODULES
@@ -61,7 +61,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&whowas_msgtab);
 }
-const char *_version = "$Revision: 1.30 $";
+const char *_version = "$Revision: 1.30.2.1 $";
 #endif
 static int whowas_do(struct Client *client_p, struct Client *source_p,
                      int parc, char *parv[]);

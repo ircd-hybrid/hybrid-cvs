@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_oper.c,v 1.58 2002/11/06 21:17:59 wiz Exp $
+ *  $Id: m_oper.c,v 1.58.2.1 2004/06/16 04:55:53 erik Exp $
  */
 
 #include "stdinc.h"
@@ -59,7 +59,7 @@ static void mo_oper(struct Client*, struct Client*, int, char**);
 
 struct Message oper_msgtab = {
   "OPER", 0, 0, 3, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_oper, ms_oper, mo_oper} 
+  {m_unregistered, m_oper, ms_oper, m_ignore, mo_oper} 
 };
 
 #ifndef STATIC_MODULES
@@ -75,7 +75,7 @@ _moddeinit(void)
   mod_del_cmd(&oper_msgtab);
 }
 
-const char *_version = "$Revision: 1.58 $";
+const char *_version = "$Revision: 1.58.2.1 $";
 #endif
 
 /*

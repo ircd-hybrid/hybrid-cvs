@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.13.2.7 2004/04/17 21:31:27 bill Exp $
+ *   $Id: m_operspy.c,v 1.13.2.8 2004/06/16 04:55:46 erik Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -83,7 +83,7 @@
  */
 static void m_operspy(struct Client *client_p, struct Client *source_p,
                        int parc, char *parv[]);
-static void ms_operspy(struct Client *client_p, struct Client *source_p,
+static void me_operspy(struct Client *client_p, struct Client *source_p,
                        int parc, char *parv[]);
 static void mo_operspy(struct Client *client_p, struct Client *source_p,
                        int parc, char *parv[]);
@@ -120,7 +120,7 @@ static void do_who_on_channel(struct Client *source_p,
 
 struct Message operspy_msgtab = {
   "OPERSPY", 0, 0, 0, 0, MFLG_SLOW|MFLG_HIDDEN, 0,
-  {m_ignore, m_operspy, m_operspy, mo_operspy}
+  {m_ignore, m_operspy, m_ignore, me_operspy, mo_operspy}
 };
 
 #ifndef STATIC_MODULES
@@ -135,7 +135,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.13.2.7 $";
+const char *_version = "$Revision: 1.13.2.8 $";
 #endif
 
 #ifdef OPERSPY_LOG
@@ -163,7 +163,7 @@ static void m_operspy(struct Client *client_p, struct Client *source_p,
 }
 
 static void
-ms_operspy(struct Client *client_p, struct Client *source_p,
+me_operspy(struct Client *client_p, struct Client *source_p,
            int parc, char *parv[])
 {
   assert(parc > 2);
@@ -839,7 +839,7 @@ operspy_log(struct Client *source_p, const char *command, const char *target)
   if ((operspy_fb = fbopen(logfile, "a")) == NULL)
     return;
 
-  ircsprintf(linebuf, "[%s] %s!%s@%s -- OPERSPY %s %s\n",
+  ircsprintf(linebuf, "[%s] %s -- OPERSPY %s %s\n",
              smalldate(CurrentTime),
              get_oper_name(source_p),
              command, target);

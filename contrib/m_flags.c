@@ -27,7 +27,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: m_flags.c,v 1.9 2002/05/24 23:48:34 androsyn Exp $
+ *  $Id: m_flags.c,v 1.9.4.1 2004/06/16 04:55:46 erik Exp $
  */
 
 /* List of ircd includes from ../include/ */
@@ -61,7 +61,7 @@ static char *unset_flags_to_string(struct Client *client_p);
 
 struct Message test_msgtab = {
   "FLAGS", 0, 0, 0, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_flags, m_ignore, mo_flags}
+  {m_unregistered, m_flags, m_ignore, m_ignore, mo_flags}
 };
 
 #ifndef STATIC_MODULES
@@ -77,7 +77,7 @@ _moddeinit(void)
   mod_del_cmd(&test_msgtab);
 }
 
-const char *_version = "$Revision: 1.9 $";
+const char *_version = "$Revision: 1.9.4.1 $";
 #endif
 
 /* FLAGS requires it's own mini parser, since the last parameter in it can

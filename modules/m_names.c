@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_names.c,v 1.44 2002/08/15 15:00:59 adx Exp $
+ *  $Id: m_names.c,v 1.44.2.1 2004/06/16 04:55:53 erik Exp $
  */
 
 #include "stdinc.h"
@@ -51,7 +51,7 @@ static void ms_names(struct Client*, struct Client*, int, char**);
 
 struct Message names_msgtab = {
   "NAMES", 0, 0, 0, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_names, ms_names, m_names}
+  {m_unregistered, m_names, ms_names, m_ignore, m_names}
 };
 #ifndef STATIC_MODULES
 
@@ -67,7 +67,7 @@ _moddeinit(void)
   mod_del_cmd(&names_msgtab);
 }
 
-const char *_version = "$Revision: 1.44 $";
+const char *_version = "$Revision: 1.44.2.1 $";
 #endif
 
 /************************************************************************

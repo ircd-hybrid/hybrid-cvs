@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nick.c,v 1.100.2.2 2003/04/03 01:29:02 lusky Exp $
+ *  $Id: m_nick.c,v 1.100.2.3 2004/06/16 04:56:03 erik Exp $
  */
 
 #include "stdinc.h"
@@ -74,12 +74,12 @@ static int perform_nick_collides(struct Client *, struct Client *,
 
 struct Message nick_msgtab = {
   "NICK", 0, 0, 1, 0, MFLG_SLOW, 0,
-  {mr_nick, m_nick, ms_nick, m_nick}
+  {mr_nick, m_nick, ms_nick, m_ignore, m_nick}
 };
 
 struct Message client_msgtab = {
   "CLIENT", 0, 0, 10, 0, MFLG_SLOW, 0,
-  {m_ignore, m_ignore, ms_client, m_ignore}
+  {m_ignore, m_ignore, ms_client, m_ignore, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -97,7 +97,7 @@ _moddeinit(void)
   mod_del_cmd(&client_msgtab);
 }
 
-const char *_version = "$Revision: 1.100.2.2 $";
+const char *_version = "$Revision: 1.100.2.3 $";
 #endif
 
 /*

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_clearchan.c,v 1.30 2002/06/11 01:49:18 androsyn Exp $
+ *   $Id: m_clearchan.c,v 1.30.2.1 2004/06/16 04:55:46 erik Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -62,7 +62,7 @@ static char    *mbuf;
 
 struct Message clearchan_msgtab = {
   MSG_CLEARCHAN, 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, m_ignore, mo_clearchan}
+  {m_unregistered, m_not_oper, m_ignore, m_ignore, mo_clearchan}
 };
 
 void
@@ -77,7 +77,7 @@ _moddeinit(void)
   mod_del_cmd(&clearchan_msgtab);
 }
 
-char *_version = "$Revision: 1.30 $";
+char *_version = "$Revision: 1.30.2.1 $";
 
 /*
 ** mo_clearchan

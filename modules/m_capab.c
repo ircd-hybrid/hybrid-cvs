@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_capab.c,v 1.31 2003/02/14 23:01:51 db Exp $
+ *  $Id: m_capab.c,v 1.31.2.1 2004/06/16 04:55:51 erik Exp $
  */
 
 #include "stdinc.h"
@@ -36,7 +36,7 @@ static void mr_capab(struct Client*, struct Client*, int, char**);
 
 struct Message capab_msgtab = {
   "CAPAB", 0, 0, 0, 0, MFLG_SLOW | MFLG_UNREG, 0,
-  {mr_capab, m_ignore, m_ignore, m_ignore}
+  {mr_capab, m_ignore, m_ignore, m_ignore, m_ignore}
 };
 #ifndef STATIC_MODULES
 void
@@ -51,7 +51,7 @@ _moddeinit(void)
   mod_del_cmd(&capab_msgtab);
 }
 
-const char *_version = "$Revision: 1.31 $";
+const char *_version = "$Revision: 1.31.2.1 $";
 #endif
 
 /*

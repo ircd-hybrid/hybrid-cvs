@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_close.c,v 1.25 2003/02/06 08:46:08 a1kmm Exp $
+ *  $Id: m_close.c,v 1.25.2.1 2004/06/16 04:55:51 erik Exp $
  */
 
 #include "stdinc.h"
@@ -39,7 +39,7 @@ static void mo_close(struct Client*, struct Client*, int, char**);
 
 struct Message close_msgtab = {
   "CLOSE", 0, 0, 0, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, m_ignore, mo_close}
+  {m_unregistered, m_not_oper, m_ignore, m_ignore, mo_close}
 };
 #ifndef STATIC_MODULES
 void
@@ -54,7 +54,7 @@ _moddeinit(void)
   mod_del_cmd(&close_msgtab);
 }
 
-const char *_version = "$Revision: 1.25 $";
+const char *_version = "$Revision: 1.25.2.1 $";
 #endif
 /*
  * mo_close - CLOSE message handler

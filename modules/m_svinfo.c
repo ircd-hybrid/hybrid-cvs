@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_svinfo.c,v 1.36 2003/02/14 23:01:51 db Exp $
+ *  $Id: m_svinfo.c,v 1.36.2.1 2004/06/16 04:55:54 erik Exp $
  */
 #include "stdinc.h"
 #include "handlers.h"
@@ -40,7 +40,7 @@ static void ms_svinfo(struct Client*, struct Client*, int, char**);
 
 struct Message svinfo_msgtab = {
   "SVINFO", 0, 0, 4, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_ignore, ms_svinfo, m_ignore}
+  {m_unregistered, m_ignore, ms_svinfo, ms_svinfo, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -56,7 +56,7 @@ _moddeinit(void)
   mod_del_cmd(&svinfo_msgtab);
 }
 
-const char *_version = "$Revision: 1.36 $";
+const char *_version = "$Revision: 1.36.2.1 $";
 #endif
 /*
  * ms_svinfo - SVINFO message handler

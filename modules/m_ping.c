@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ping.c,v 1.32 2002/10/12 03:38:13 db Exp $
+ *  $Id: m_ping.c,v 1.32.2.1 2004/06/16 04:55:53 erik Exp $
  */
 
 #include "stdinc.h"
@@ -41,7 +41,7 @@ static void ms_ping(struct Client*, struct Client*, int, char**);
 
 struct Message ping_msgtab = {
   "PING", 0, 0, 1, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_ping, ms_ping, m_ping}
+  {m_unregistered, m_ping, ms_ping, m_ignore, m_ping}
 };
 
 #ifndef STATIC_MODULES
@@ -57,7 +57,7 @@ _moddeinit(void)
   mod_del_cmd(&ping_msgtab);
 }
 
-const char *_version = "$Revision: 1.32 $";
+const char *_version = "$Revision: 1.32.2.1 $";
 #endif
 /*
 ** m_ping

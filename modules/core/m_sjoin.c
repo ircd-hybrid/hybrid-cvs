@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.140.2.1 2003/10/26 02:08:18 db Exp $
+ *  $Id: m_sjoin.c,v 1.140.2.2 2004/06/16 04:56:03 erik Exp $
  */
 
 #include "stdinc.h"
@@ -47,7 +47,7 @@ static void ms_sjoin(struct Client*, struct Client*, int, char**);
 
 struct Message sjoin_msgtab = {
   "SJOIN", 0, 0, 0, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_ignore, ms_sjoin, m_ignore}
+  {m_unregistered, m_ignore, ms_sjoin, m_ignore, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.140.2.1 $";
+const char *_version = "$Revision: 1.140.2.2 $";
 #endif
 /*
  * ms_sjoin

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_restart.c,v 1.23 2002/05/24 23:34:22 androsyn Exp $
+ *  $Id: m_restart.c,v 1.23.4.1 2004/06/16 04:55:53 erik Exp $
  */
 
 #include "stdinc.h"
@@ -41,7 +41,7 @@ static void mo_restart(struct Client *, struct Client *, int, char **);
 
 struct Message restart_msgtab = {
   "RESTART", 0, 0, 0, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, m_ignore, mo_restart}
+  {m_unregistered, m_not_oper, m_ignore, m_ignore, mo_restart}
 };
 
 #ifndef STATIC_MODULES
@@ -57,7 +57,7 @@ _moddeinit(void)
   mod_del_cmd(&restart_msgtab);
 }
 
-const char *_version = "$Revision: 1.23 $";
+const char *_version = "$Revision: 1.23.4.1 $";
 #endif
 /*
  * mo_restart

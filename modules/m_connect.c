@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_connect.c,v 1.39 2002/11/21 03:35:08 bill Exp $
+ *  $Id: m_connect.c,v 1.39.2.1 2004/06/16 04:55:51 erik Exp $
  */
 
 #include "stdinc.h"
@@ -45,7 +45,7 @@ static void ms_connect(struct Client*, struct Client*, int, char**);
 
 struct Message connect_msgtab = {
   "CONNECT", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, ms_connect, mo_connect}
+  {m_unregistered, m_not_oper, ms_connect, m_ignore, mo_connect}
 };
 
 #ifndef STATIC_MODULES
@@ -61,7 +61,7 @@ _moddeinit(void)
   mod_del_cmd(&connect_msgtab);
 }
 
-const char *_version = "$Revision: 1.39 $";
+const char *_version = "$Revision: 1.39.2.1 $";
 #endif
 /*
  * mo_connect - CONNECT command handler

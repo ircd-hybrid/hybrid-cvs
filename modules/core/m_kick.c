@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kick.c,v 1.50 2003/02/01 20:12:24 db Exp $
+ *  $Id: m_kick.c,v 1.50.2.1 2004/06/16 04:56:02 erik Exp $
  */
 
 #include "stdinc.h"
@@ -45,7 +45,7 @@ static void ms_kick(struct Client*, struct Client*, int, char**);
 
 struct Message kick_msgtab = {
   "KICK", 0, 0, 3, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_kick, ms_kick, m_kick}
+  {m_unregistered, m_kick, ms_kick, m_ignore, m_kick}
 };
 #ifndef STATIC_MODULES
 void
@@ -60,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&kick_msgtab);
 }
 
-const char *_version = "$Revision: 1.50 $";
+const char *_version = "$Revision: 1.50.2.1 $";
 #endif
 /*
 ** m_kick

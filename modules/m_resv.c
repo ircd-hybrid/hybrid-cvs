@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_resv.c,v 1.16.4.1 2003/10/26 02:08:15 db Exp $
+ *  $Id: m_resv.c,v 1.16.4.2 2004/06/16 04:55:54 erik Exp $
  */
 
 #include "stdinc.h"
@@ -42,12 +42,12 @@ static void mo_unresv(struct Client *, struct Client *, int, char **);
 
 struct Message resv_msgtab = {
   "RESV", 0, 0, 3, 0, MFLG_SLOW | MFLG_UNREG, 0,
-  {m_ignore, m_not_oper, m_ignore, mo_resv}
+  {m_ignore, m_not_oper, m_ignore, m_ignore, mo_resv}
 };
 
 struct Message unresv_msgtab = {
   "UNRESV", 0, 0, 2, 0, MFLG_SLOW | MFLG_UNREG, 0,
-  {m_ignore, m_not_oper, m_ignore, mo_unresv}
+  {m_ignore, m_not_oper, m_ignore, m_ignore, mo_unresv}
 };
 
 #ifndef STATIC_MODULES
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&unresv_msgtab);
 }
 
-const char *_version = "$Revision: 1.16.4.1 $";
+const char *_version = "$Revision: 1.16.4.2 $";
 #endif
 
 /*

@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_opme.c,v 1.28 2002/09/19 16:14:32 bill Exp $
+ *   $Id: m_opme.c,v 1.28.2.1 2004/06/16 04:55:46 erik Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -42,7 +42,7 @@ static int chan_is_opless(struct Channel *chptr);
 
 struct Message opme_msgtab = {
   "OPME", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, m_ignore, mo_opme}
+  {m_unregistered, m_not_oper, m_ignore, m_ignore, mo_opme}
 };
 
 void
@@ -57,7 +57,7 @@ _moddeinit(void)
   mod_del_cmd(&opme_msgtab);
 }
 
-char *_version = "$Revision: 1.28 $";
+char *_version = "$Revision: 1.28.2.1 $";
 
 static int chan_is_opless(struct Channel *chptr)
 {

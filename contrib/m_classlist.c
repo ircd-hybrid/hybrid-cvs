@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_classlist.c,v 1.1.2.3 2003/05/22 03:26:44 db Exp $
+ *  $Id: m_classlist.c,v 1.1.2.4 2004/06/16 04:55:45 erik Exp $
  */
 
 #include "stdinc.h"
@@ -47,7 +47,7 @@ static void mo_classlist(struct Client*, struct Client*, int, char**);
 
 struct Message classlist_msgtab = {
   "CLASSLIST", 0, 0, 0, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, m_ignore, mo_classlist}
+  {m_unregistered, m_not_oper, m_ignore, m_ignore, mo_classlist}
 };
 #ifndef STATIC_MODULES
 
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&classlist_msgtab);
 }
 
-const char *_version = "$Revision: 1.1.2.3 $";
+const char *_version = "$Revision: 1.1.2.4 $";
 #endif
 
 /*

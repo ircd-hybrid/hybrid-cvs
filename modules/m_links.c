@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_links.c,v 1.37 2002/07/31 16:24:07 leeh Exp $
+ *  $Id: m_links.c,v 1.37.2.1 2004/06/16 04:55:53 erik Exp $
  */
 
 #include "stdinc.h"
@@ -44,7 +44,7 @@ static void ms_links(struct Client*, struct Client*, int, char**);
 
 struct Message links_msgtab = {
   "LINKS", 0, 0, 0, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_links, ms_links, mo_links}
+  {m_unregistered, m_links, ms_links, m_ignore, mo_links}
 };
 #ifndef STATIC_MODULES
 
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&links_msgtab);
 }
 
-const char *_version = "$Revision: 1.37 $";
+const char *_version = "$Revision: 1.37.2.1 $";
 #endif
 /*
  * m_links - LINKS message handler

@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_ojoin.c,v 1.11 2002/06/11 01:49:18 androsyn Exp $
+ *   $Id: m_ojoin.c,v 1.11.2.1 2004/06/16 04:55:46 erik Exp $
  */
 
 #include "stdinc.h"
@@ -43,7 +43,7 @@ static void mo_ojoin(struct Client *client_p, struct Client *source_p,
 
 struct Message ojoin_msgtab = {
   "OJOIN", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, m_ignore, mo_ojoin}
+  {m_unregistered, m_not_oper, m_ignore, m_ignore, mo_ojoin}
 };
 
 void
@@ -58,7 +58,7 @@ _moddeinit(void)
   mod_del_cmd(&ojoin_msgtab);
 }
 
-char *_version = "$Revision: 1.11 $";
+char *_version = "$Revision: 1.11.2.1 $";
 
 /*
 ** mo_ojoin

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.111.2.3 2004/03/18 03:57:24 bill Exp $
+ *  $Id: m_kline.c,v 1.111.2.4 2004/06/16 04:55:52 erik Exp $
  */
 
 #include "stdinc.h"
@@ -46,6 +46,8 @@
 #include "parse.h"
 #include "modules.h"
 
+
+static void me_kline(struct Client *,struct Client *,int,char **);
 static void mo_kline(struct Client *,struct Client *,int,char **);
 static void ms_kline(struct Client *,struct Client *,int,char **);
 static void mo_dline(struct Client *,struct Client *,int,char **);
@@ -55,12 +57,12 @@ static char *make_cidr(char *dlhost, struct Client *);
 
 struct Message kline_msgtab = {
   "KLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, ms_kline, mo_kline}
+  {m_unregistered, m_not_oper, ms_kline, me_kline, mo_kline}
 };
 
 struct Message dline_msgtab = {
   "DLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, m_error, mo_dline}
+  {m_unregistered, m_not_oper, m_error, m_ignore, mo_dline}
 };
 
 #ifndef STATIC_MODULES
@@ -78,7 +80,7 @@ _moddeinit(void)
   mod_del_cmd(&kline_msgtab);
   mod_del_cmd(&dline_msgtab);
 }
-const char *_version = "$Revision: 1.111.2.3 $";
+const char *_version = "$Revision: 1.111.2.4 $";
 #endif
 
 /* Local function prototypes */
@@ -255,6 +257,7 @@ mo_kline(struct Client *client_p, struct Client *source_p,
     }
 } /* mo_kline() */
 
+
 /*
  * ms_kline()
  *
@@ -369,6 +372,98 @@ apply_kline(struct Client *source_p, struct ConfItem *aconf,
   /* Now, activate kline against current online clients */
   rehashed_klines = 1;
 }
+
+
+/*
+ * me_kline()
+ *
+ * encap version of ms_kline above -- no propagation
+ */
+
+static void
+me_kline(struct Client *clinet_p, struct Client *source_p,
+	 int parc, char *parv[])
+{ 
+  const char *current_date;
+  struct ConfItem *aconf=NULL;
+  int    tkline_time;
+  time_t cur_time;
+
+  char *kuser;
+  char *khost;
+  char *kreason;
+
+  if (parc != 6)
+    return;
+
+  kuser = parv[3];
+  khost = parv[4];
+  kreason = parv[5];
+
+  if (!match(parv[1],me.name))
+    return;
+
+  if (!IsPerson(source_p))
+    return;
+
+  if (!find_u_conf((char *)source_p->user->server,
+		   source_p->username, source_p->host))
+    return;
+
+  if (valid_user_host(source_p, kuser, khost))
+    {
+      sendto_realops_flags(FLAGS_ALL, L_ALL,
+             "*** %s!%s@%s on %s is requesting an Invalid K-Line for [%s@%s] [%s]",
+             source_p->name, source_p->username, source_p->host, source_p->user->server,
+             kuser, khost, kreason);
+      return;
+    }
+
+  if (valid_wild_card(kuser, khost))
+    {
+       sendto_realops_flags(FLAGS_ALL, L_ALL, 
+             "*** %s!%s@%s on %s is requesting a K-Line without %d wildcard chars for [%s@%s] [%s]",
+             source_p->name, source_p->username, source_p->host, source_p->user->server,
+             ConfigFileEntry.min_nonwildcard, kuser, khost, kreason);
+       return;
+     }
+
+  if(!valid_comment(source_p, kreason))
+    return;
+
+  tkline_time = atoi(parv[2]);
+
+  set_time();
+  cur_time = CurrentTime;
+  current_date = smalldate(cur_time);
+
+  /* We check if the kline already exists after we've announced its 
+   * arrived, to avoid confusing opers - fl
+   * No, 'cause if there are remote klines, it has to be checked here -db
+   */
+
+  if (already_placed_kline(source_p, kuser, khost))
+    return;
+
+  sendto_realops_flags(FLAGS_ALL, L_ALL,
+		       "*** Received K-Line for [%s@%s] [%s], from %s!%s@%s on %s",
+		       kuser, khost, kreason,
+		       source_p->name, source_p->username,
+		       source_p->host, source_p->user->server);
+  
+  aconf = make_conf();
+  
+  aconf->status = CONF_KILL;
+  DupString(aconf->user, kuser);
+  DupString(aconf->host, khost);
+  DupString(aconf->passwd, kreason);
+
+  if (tkline_time != 0)
+    apply_tkline(source_p, aconf, current_date, tkline_time);
+  else
+    apply_kline(source_p, aconf, current_date, cur_time);
+}
+
 
 /*
  * apply_tkline

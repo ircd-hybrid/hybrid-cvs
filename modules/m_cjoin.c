@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_cjoin.c,v 1.55 2002/08/15 15:00:59 adx Exp $
+ *  $Id: m_cjoin.c,v 1.55.2.1 2004/06/16 04:55:51 erik Exp $
  */
 
 #include "stdinc.h"
@@ -48,7 +48,7 @@ static void m_cjoin(struct Client*, struct Client*, int, char**);
 
 struct Message cjoin_msgtab = {
   "CJOIN", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_cjoin, m_ignore, m_cjoin}
+  {m_unregistered, m_cjoin, m_ignore, m_ignore, m_cjoin}
 };
 #endif
 
@@ -69,7 +69,7 @@ _moddeinit(void)
 #endif
 }
 
-const char *_version = "$Revision: 1.55 $";
+const char *_version = "$Revision: 1.55.2.1 $";
 #endif /* STATIC_MODULES */
 
 #ifdef VCHANS

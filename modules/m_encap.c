@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_encap.c,v 1.8.2.1 2004/02/10 04:29:43 ievil Exp $
+ *  $Id: m_encap.c,v 1.8.2.2 2004/06/16 04:55:52 erik Exp $
  */
 
 #include "stdinc.h"
@@ -40,7 +40,7 @@ static void ms_encap(struct Client *client_p, struct Client *source_p,
 
 struct Message encap_msgtab = {
   "ENCAP", 0, 0, 3, 0, MFLG_SLOW, 0,
-  {m_ignore, m_ignore, ms_encap, m_ignore}
+  {m_ignore, m_ignore, ms_encap, m_ignore, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -57,7 +57,7 @@ _moddeinit(void)
   mod_del_cmd(&encap_msgtab);
 /*  delete_capability("ENCAP"); and this */
 }
-const char *_version = "$Revision: 1.8.2.1 $";
+const char *_version = "$Revision: 1.8.2.2 $";
 #endif
 
 /*
@@ -129,7 +129,7 @@ ms_encap(struct Client *client_p, struct Client *source_p, int parc, char *parv[
   parc-=2;
   parv[0] = ptr;
 
-  if ((handler = mptr->handlers[2]) == NULL)
+  if ((handler = mptr->handlers[ENCAP_HANDLER]) == NULL)
     return;
 
   (*handler)(client_p, source_p, parc, parv);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.29.2.3 2004/03/26 20:29:53 metalrock Exp $
+ *  $Id: m_xline.c,v 1.29.2.4 2004/06/16 04:55:55 erik Exp $
  */
 
 #include "stdinc.h"
@@ -60,12 +60,12 @@ static int valid_wild_card(char *gecos);
 
 struct Message xline_msgtab = {
   "XLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, ms_xline, mo_xline}
+  {m_unregistered, m_not_oper, ms_xline, ms_xline, mo_xline}
 };
 
 struct Message unxline_msgtab = {
   "UNXLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, ms_unxline, mo_unxline}
+  {m_unregistered, m_not_oper, ms_unxline, ms_unxline, mo_unxline}
 };
 
 
@@ -83,7 +83,7 @@ _moddeinit(void)
   mod_del_cmd(&xline_msgtab);
   mod_del_cmd(&unxline_msgtab);
 }
-const char *_version = "$Revision: 1.29.2.3 $";
+const char *_version = "$Revision: 1.29.2.4 $";
 #endif
 
 

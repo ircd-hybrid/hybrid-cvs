@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_pass.c,v 1.23 2002/05/24 23:34:21 androsyn Exp $
+ *  $Id: m_pass.c,v 1.23.4.1 2004/06/16 04:55:53 erik Exp $
  */
 
 #include "stdinc.h"
@@ -37,7 +37,7 @@ static void mr_pass(struct Client*, struct Client*, int, char**);
 
 struct Message pass_msgtab = {
   "PASS", 0, 0, 2, 0, MFLG_SLOW | MFLG_UNREG, 0,
-  {mr_pass, m_registered, m_ignore, m_registered}
+  {mr_pass, m_registered, m_ignore, m_ignore, m_registered}
 };
 
 #ifndef STATIC_MODULES
@@ -53,7 +53,7 @@ _moddeinit(void)
   mod_del_cmd(&pass_msgtab);
 }
 
-const char *_version = "$Revision: 1.23 $";
+const char *_version = "$Revision: 1.23.4.1 $";
 #endif
 /*
  * m_pass() - Added Sat, 4 March 1989

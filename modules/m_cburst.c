@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_cburst.c,v 1.41 2002/05/24 23:34:19 androsyn Exp $
+ *  $Id: m_cburst.c,v 1.41.4.1 2004/06/16 04:55:51 erik Exp $
  */
 
 #include "stdinc.h"
@@ -45,7 +45,7 @@ static void ms_cburst(struct Client*, struct Client*, int, char**);
 
 struct Message cburst_msgtab = {
   "CBURST", 0, 0, 1, 0, MFLG_SLOW | MFLG_UNREG, 0L,
-  {m_unregistered, m_ignore, ms_cburst, m_ignore}
+  {m_unregistered, m_ignore, ms_cburst, ms_cburst, m_ignore}
 };
 #ifndef STATIC_MODULES
 void
@@ -60,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&cburst_msgtab);
 }
 
-const char *_version = "$Revision: 1.41 $";
+const char *_version = "$Revision: 1.41.4.1 $";
 #endif
 /*
 ** m_cburst

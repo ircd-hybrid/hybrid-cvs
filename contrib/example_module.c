@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: example_module.c,v 1.6 2002/05/24 23:48:33 androsyn Exp $
+ *   $Id: example_module.c,v 1.6.4.1 2004/06/16 04:55:45 erik Exp $
  */
 
 /* List of ircd includes from ../include/ */
@@ -53,6 +53,8 @@ static void m_test(struct Client *client_p, struct Client *source_p,
                     int parc, char *parv[]);
 static void ms_test(struct Client *client_p, struct Client *source_p,
                     int parc, char *parv[]);
+static void me_test(struct Client *client_p, struct Client *source_p,
+                    int parc, char *parv[]);
 static void mo_test(struct Client *client_p, struct Client *source_p,
                     int parc, char *parv[]);
 
@@ -84,6 +86,7 @@ struct Message test_msgtab = {
   * unregged == function to call for unregistered clients
   * regged == function to call for normal users
   * remote == function to call for servers/remote users
+  * encap == function to call for an encap'd server/remote command
   * oper == function to call for operators
   *
   * There are also some pre-coded functions for use:
@@ -92,11 +95,12 @@ struct Message test_msgtab = {
   * m_ignore:       ignore the command when it comes from certain types
   * m_error:        give an error when the command comes from certain types
   */
-  {mr_test, m_test, ms_test, mo_test}
+  {mr_test, m_test, ms_test, me_test, mo_test}
 
  /* It is normal for unregistered functions to be prefixed with mr_
   *   "      "       normal users to be prefixed with m_
   *   "      "       remote clients to be prefixed with ms_
+  *   "      "       encap'd remote commands to be prefixed with me_
   *   "      "       operators to be prefixed with mo_
   */
 };
@@ -121,7 +125,7 @@ _moddeinit(void)
 
 /* When we last modified the file (shown in /modlist), this is usually:
  */
-const char *_version = "$Revision: 1.6 $";
+const char *_version = "$Revision: 1.6.4.1 $";
 #endif
 
 /*
@@ -188,6 +192,12 @@ static void ms_test(struct Client *client_p, struct Client *source_p,
   }
 }    
 	  
+static void me_test(struct Client *client_p, struct Client *source_p,
+                    int parc, char *parv[])
+{
+
+}
+
 /*
  * mo_test
  *      parv[0] = sender prefix
