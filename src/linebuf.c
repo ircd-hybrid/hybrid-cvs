@@ -6,7 +6,7 @@
  * The idea here is that we should really be maintaining pre-munged
  * buffer "lines" which we can later refcount to save needless copies.
  *
- * $Id: linebuf.c,v 7.51 2001/08/20 19:00:34 androsyn Exp $
+ * $Id: linebuf.c,v 7.52 2001/08/21 18:51:37 androsyn Exp $
  */
 
 #include <errno.h>
@@ -149,27 +149,25 @@ linebuf_done_line(buf_head_t *bufhead, buf_line_t *bufline,
 static inline int
 linebuf_skip_crlf(char *ch, int len)
 {
-  register int cpylen = 0;
+  register int orig_len = len;
   
   /* First, skip until the first non-CRLF */
-  while (len && (*ch != '\n') && (*ch != '\r'))
+  for(; len; len--, ch++)
     {
-      ch++;
-      assert(len > 0);
-      len--;
-      cpylen++;
+      if (*ch == '\r')
+	break;
+      else if(*ch == '\n')
+        break;
     }
 
   /* Then, skip until the last CRLF */
-  while (len && ((*ch == '\n') || (*ch == '\r')))
+  for(; len; len--, ch++)
     {
-      ch++;
-      assert(len > 0);
-      len--;
-      cpylen++;
+      if ((*ch != '\r') && (*ch != '\n'))
+        break;
     }
-     
-  return cpylen;
+  assert(orig_len > len);
+  return(orig_len - len);
 }
 
 
