@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_mode.c,v 1.28 2001/02/05 20:12:41 davidt Exp $
+ *   $Id: m_mode.c,v 1.29 2001/02/05 22:12:36 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -81,6 +81,7 @@ static void m_mode(struct Client *cptr, struct Client *sptr,
     {
       /* if here, it has to be a non-channel name */
       user_mode(cptr, sptr, parc, parv);
+      return;
     }
 
   if (!check_channel_name(parv[1]))
