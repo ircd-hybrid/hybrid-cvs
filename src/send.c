@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.62 2000/12/09 07:04:44 db Exp $
+ *   $Id: send.c,v 7.63 2000/12/09 08:01:48 db Exp $
  */
 #include "tools.h"
 #include "send.h"
@@ -325,7 +325,7 @@ sendto_channel_butone(struct Client *one, struct Client *from,
                       const char *pattern, ...)
 
 {
-  va_list       args;
+  va_list    args;
   dlink_node *lp;
   struct Client *acptr;
   int index; /* index of sentalong[] to flag client
@@ -677,17 +677,19 @@ match_it(const struct Client *one, const char *mask, int what)
 } /* match_it() */
 
 /*
- * sendto_match_servs
+ * sendto_channel_remote
  *
- * send to all servers the channel given
+ * send to all servers the channel given, except for "from"
  */
 
 void
-sendto_match_servs(struct Channel *chptr, struct Client *from, const char *pattern, ...)
+sendto_channel_remote(struct Channel *chptr,
+		      struct Client *from,
+		      const char *pattern, ...)
 
 {
   va_list args;
-  register struct Client *cptr;
+  struct Client *cptr;
   dlink_node *ptr;
 
   va_start(args, pattern);
@@ -715,7 +717,7 @@ sendto_match_servs(struct Channel *chptr, struct Client *from, const char *patte
     }
 
   va_end(args);
-} /* sendto_match_servs() */
+} /* sendto_channel_remote() */
 
 /*
  * sendto_match_cap_servs

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kick.c,v 1.10 2000/12/09 07:04:41 db Exp $
+ *   $Id: m_kick.c,v 1.11 2000/12/09 08:01:45 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -177,25 +177,25 @@ int     m_kick(struct Client *cptr,
       if(GlobalSetOptions.hide_chanops)
 	{
 	  sendto_channel_local(NON_CHANOPS, chptr,
-				 ":%s KICK %s %s :%s", 
-				 who->name,
-				 name, who->name, comment);
+			       ":%s KICK %s %s :%s", 
+			       who->name,
+			       name, who->name, comment);
 
 	  sendto_channel_local(ONLY_CHANOPS, chptr,
-				 ":%s KICK %s %s :%s", parv[0],
-				 name, who->name, comment);
+			       ":%s KICK %s %s :%s", parv[0],
+			       name, who->name, comment);
 	}
       else
 	{
 	  sendto_channel_local(ONLY_CHANOPS, chptr,
-				 ":%s KICK %s %s :%s", parv[0],
-				 name, who->name, comment);
+			       ":%s KICK %s %s :%s", parv[0],
+			       name, who->name, comment);
 	}
 
-      sendto_match_servs(chptr, cptr,
-                         ":%s KICK %s %s :%s",
-                         parv[0], chptr->chname,
-                         who->name, comment);
+      sendto_channel_remote(chptr, cptr,
+			    ":%s KICK %s %s :%s",
+			    parv[0], chptr->chname,
+			    who->name, comment);
       remove_user_from_channel(chptr, who);
     }
   else

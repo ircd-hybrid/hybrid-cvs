@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.115 2000/12/09 07:04:43 db Exp $
+ * $Id: channel.c,v 7.116 2000/12/09 08:01:47 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -1253,7 +1253,7 @@ void set_channel_mode(struct Client *cptr,
 				       chptr->mode.key);
 		}
 
-              sendto_match_servs(chptr, cptr, ":%s MODE %s -k %s",
+              sendto_channel_remote(chptr, cptr, ":%s MODE %s -k %s",
                                  sptr->name, real_name,
                                  chptr->mode.key);
             }
@@ -1965,7 +1965,7 @@ void set_channel_mode(struct Client *cptr,
 			   sptr->name,
 			   real_name,
 			   modebuf, parabuf);
-      sendto_match_servs(chptr, cptr, ":%s MODE %s %s %s",
+      sendto_channel_remote(chptr, cptr, ":%s MODE %s %s %s",
                          sptr->name, chptr->chname,
                          modebuf, parabuf);
     }
