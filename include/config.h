@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.85 2001/01/31 20:15:11 davidt Exp $
+ * $Id: config.h,v 7.86 2001/02/02 10:07:34 a1kmm Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -244,8 +244,8 @@
  * Define this to enable IPv6 support.  IPv6 is currently still being
  * developed, and is not guaranteed to work properly..
  */
-
-#define IPV6
+/* We probably don't want this on by default -A1kmm. */
+/* #define IPV6 */
 
 /*   STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP  */
 
