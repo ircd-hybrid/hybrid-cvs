@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.4 2000/01/16 22:24:06 db Exp $
+ * $Id: ircd_lexer.l,v 1.5 2000/01/22 04:53:06 db Exp $
  */
 
 %{
@@ -120,6 +120,7 @@ no_tilde	{ return NO_TILDE; }
 have_ident	{ return HAVE_IDENT; }
 reason		{ return REASON; }
 spoof		{ return SPOOF; }
+vhost		{ return VHOST; }
 .		{ return yytext[0]; }
 
 %%

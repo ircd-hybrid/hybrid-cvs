@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.45 2000/01/21 04:21:37 db Exp $
+ *  $Id: s_conf.c,v 7.46 2000/01/22 04:53:07 db Exp $
  */
 #include "s_conf.h"
 #include "channel.h"
@@ -3330,6 +3330,9 @@ void conf_add_me(struct ConfItem *aconf)
   ** if previously defined. Note, that "info"-field can be
   ** changed by "/rehash".
   ** Can't change vhost mode/address either 
+  **
+  ** host ip to connect is given either from IP field as filled in
+  ** or from passwd field as string...
   */
   /*  if (aconf->status == CONF_ME) */
 
@@ -3338,7 +3341,15 @@ void conf_add_me(struct ConfItem *aconf)
   if (me.name[0] == '\0' && aconf->host[0])
     {
       strncpy_irc(me.name, aconf->host, HOSTLEN);
-      if ((aconf->passwd[0] != '\0') && (aconf->passwd[0] != '*'))
+      if(aconf->ip)
+	{
+	  memset(&vserv,0, sizeof(vserv));
+	  vserv.sin_family = AF_INET;
+	  vserv.sin_addr.s_addr = aconf->ip;
+	  specific_virtual_host = 1;
+	}
+      else if (aconf->passwd && 
+	       (aconf->passwd[0] != '\0') && (aconf->passwd[0] != '*'))
 	{
 	  memset(&vserv,0, sizeof(vserv));
 	  vserv.sin_family = AF_INET;
