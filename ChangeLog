@@ -1,3 +1,21 @@
+db          2003/01/16 18:10:57 EST	(20030116_4)
+
+  Modified files:
+    .                    RELNOTES 
+    src                  messages.tab s_conf.c 
+  Log:
+  Two quick bug fixes passed on by michael <michael@phat-net.de>
+  
+  - fakename in aconf could leak, fixed.
+  - missing : in messages.tab numeric 513 ERR_WRONGPONG
+  
+  Revision  Changes    Path
+  1.55      +2 -0      ircd-hybrid-7/RELNOTES
+  7.73      +1 -1      ircd-hybrid-7/src/messages.tab
+  7.335     +2 -1      ircd-hybrid-7/src/s_conf.c
+
+
+
 db          2003/01/16 13:56:31 EST	(20030116_3)
 
   Modified files:
@@ -33987,4 +34005,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4165 2003/01/16 18:56:33 db Exp $
+$Id: ChangeLog,v 7.4166 2003/01/16 23:11:00 db Exp $
