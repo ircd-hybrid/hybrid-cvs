@@ -1,3 +1,15 @@
+a1kmm       2002/02/09 03:55:35 EST	(20020209_0)
+
+  Modified files:
+    src                  hook.c 
+  Log:
+  - Fixed a reference to memory shortly after it has been freed.
+  
+  Revision  Changes    Path
+  7.13      +1 -1      ircd-hybrid-7/src/hook.c
+
+
+
 jmallett    2002/02/08 01:04:27 EST	(20020208_2)
 
   Modified files:
@@ -22354,4 +22366,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3392 2002/02/08 06:04:33 jmallett Exp $
+$Id: ChangeLog,v 7.3393 2002/02/09 08:55:41 a1kmm Exp $
