@@ -1,3 +1,15 @@
+androsyn    2002/07/12 12:33:11 EDT	(20020712_11)
+
+  Modified files:
+    include              tools.h 
+  Log:
+  Forgot some more inlines
+  
+  Revision  Changes    Path
+  1.15      +3 -3      ircd-hybrid-7/include/tools.h
+
+
+
 androsyn    2002/07/12 12:14:05 EDT	(20020712_10)
 
   Modified files:
@@ -29707,4 +29719,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3869 2002/07/12 16:14:12 androsyn Exp $
+$Id: ChangeLog,v 7.3870 2002/07/12 16:33:18 androsyn Exp $
