@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.195 2002/05/31 02:21:06 androsyn Exp $
+ *  $Id: s_user.c,v 7.196 2002/05/31 04:44:54 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -286,13 +286,13 @@ int register_local_user(struct Client *client_p, struct Client *source_p,
   dlink_node *m;
   char *id;
   assert(NULL != source_p);
-  assert(MyClient(source_p));
+  assert(MyConnect(source_p));
   assert(source_p->username != username);
   
   if(source_p == NULL)
     return -1;
   
-  if(!MyClient(source_p))
+  if(!MyConnect(source_p))
     return -1;
 
   if(ConfigFileEntry.ping_cookie)
@@ -473,7 +473,7 @@ int register_local_user(struct Client *client_p, struct Client *source_p,
   m = dlinkFind(&unknown_list, source_p);
 
   assert(m != NULL);
-  if(m == NULL)
+  if(m != NULL)
   {
     dlinkDelete(m, &unknown_list);
     dlinkAdd(source_p, m, &lclient_list);
