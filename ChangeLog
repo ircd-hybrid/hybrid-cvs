@@ -1,3 +1,9 @@
+*** 20010126_18 by db
+- removed some wording which not everyone would find funny *sigh*
+  Hey, I found it funny but ... it really shouldn't be in the beta.
+
+
+
 *** 20010126_17 by db
 - updated TODO list
 
@@ -11,7 +17,7 @@
 
 *** 20010126_15 by db
 - corrected formatting
-- added CVS $Id: ChangeLog,v 7.1676 2001/01/27 04:05:35 db Exp $ string in comments
+- added CVS $Id: ChangeLog,v 7.1677 2001/01/27 04:26:50 db Exp $ string in comments
 
 
 
