@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: adns.c,v 7.41 2002/05/24 23:34:44 androsyn Exp $
+ *  $Id: adns.c,v 7.41.2.1 2002/07/08 18:44:50 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -121,6 +121,7 @@ void dns_writeable(int fd, void *ptr)
 {
   adns_processwriteable(dns_state, fd, &SystemTime); 
   dns_select();
+  dns_do_callbacks();
 }
 
 
@@ -145,8 +146,11 @@ void dns_do_callbacks(void)
       case 0:
         /* Looks like we got a winner */            
         assert(query->callback != NULL);
-        query->query = NULL;
-        query->callback(query->ptr, answer);
+        if(query->callback != NULL)
+        {
+          query->query = NULL;
+          query->callback(query->ptr, answer);
+        }
         break;
 	
       case EAGAIN:
@@ -155,9 +159,12 @@ void dns_do_callbacks(void)
 	
       default:
         assert(query->callback != NULL);
-        /* Awww we failed, what a shame */
-        query->query = NULL;
-        query->callback(query->ptr, NULL);      
+        if(query->callback != NULL)
+        {
+          /* Awww we failed, what a shame */
+          query->query = NULL;
+          query->callback(query->ptr, NULL);      
+        }
         break;
     } 
   }
@@ -172,8 +179,8 @@ void dns_do_callbacks(void)
 void dns_readable(int fd, void *ptr)
 {
   adns_processreadable(dns_state, fd, &SystemTime);  
-  dns_do_callbacks();
   dns_select();
+  dns_do_callbacks();
 }
 
 /* void dns_select(void)
@@ -192,7 +199,6 @@ void dns_select(void)
   for(i = 0; i < npollfds; i++)
   {
     fd = pollfds[i].fd;
-    
     if (pollfds[i].events & ADNS_POLLIN) 
       comm_setselect(fd, FDLIST_SERVER, COMM_SELECT_READ, dns_readable, NULL, 0);
     if (pollfds[i].events & ADNS_POLLOUT)
@@ -235,7 +241,7 @@ void adns_getaddr(struct irc_inaddr *addr, int aftype,
                   struct DNSQuery *req)
 {
   struct irc_sockaddr ipn;
-  
+  memset(&ipn, 0, sizeof(struct irc_sockaddr));
   assert(dns_state->nservers > 0);
   
 #ifdef IPV6

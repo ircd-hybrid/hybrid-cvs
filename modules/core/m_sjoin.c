@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.139 2002/05/24 23:34:39 androsyn Exp $
+ *  $Id: m_sjoin.c,v 1.139.2.1 2002/07/08 18:44:44 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.139 $";
+const char *_version = "$Revision: 1.139.2.1 $";
 #endif
 /*
  * ms_sjoin
@@ -392,7 +392,7 @@ static void ms_sjoin(struct Client *client_p,
       modebuf[1] = '\0';
     }
 
-  buflen = ircsprintf(buf, ":%s SJOIN %lu %s %s %s :",
+  buflen = ircsprintf(buf, ":%s SJOIN %lu %s %s %s:",
 		      parv[0],
 		      (unsigned long) tstosend,
 		      parv[2], modebuf, parabuf);
@@ -709,10 +709,10 @@ nextnick:
 
 #ifdef HALFOPS
       if (IsCapable(target_p, CAP_HOPS))
-        sendto_one(target_p, "%s %s", buf, sjbuf_hops);
+        sendto_one(target_p, "%s%s", buf, sjbuf_hops);
       else
 #endif
-        sendto_one(target_p, "%s %s", buf, sjbuf_nhops);
+        sendto_one(target_p, "%s%s", buf, sjbuf_nhops);
    }
 }
 

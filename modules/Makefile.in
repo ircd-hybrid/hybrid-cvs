@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/modules
 #
-# $Id: Makefile.in,v 1.67 2002/05/24 23:34:19 androsyn Exp $
+# $Id: Makefile.in,v 1.67.2.1 2002/07/08 18:44:35 androsyn Exp $
 #
 CC		= @CC@
 AR		= @AR@
@@ -197,16 +197,14 @@ install_hpux_shared: install-mkdirs
 
 .PHONY: depend clean distclean
 depend:
-	grep "Id:" .depend > .depend.out
-	${MV} .depend.out .depend
-	${MKDEP} ${INCLUDES} ${ALL_SRCS} >> .depend
+	${MKDEP} ${INCLUDES} ${ALL_SRCS} > .depend
 
 clean:
 	${RM} -f *.so *.sl *~ *.o *.a
 	${RM} -f core/*.so core/*.sl core/*~ core/*.o
 
 lint:
-	lint -aacgprxhH ${CFLAGS} $(ALL_SRCS) >../lint.out
+	lint -aacgprxhH ${CPPFLAGS} -DIRCD_PREFIX=\"@prefix@\" $(ALL_SRCS) >../lint.out
 
 distclean: clean
 	${RM} -f Makefile

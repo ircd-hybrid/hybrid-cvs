@@ -19,7 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: tools.c,v 7.20 2002/05/24 23:34:53 androsyn Exp $
+ *  $Id: tools.c,v 7.20.2.1 2002/07/08 18:44:58 androsyn Exp $
+ *
+ * When you update these functions make sure you update the ones in tools.h
+ * as well!!!
  */
 
 #include "stdinc.h"
@@ -54,7 +57,6 @@ void
 dlinkAdd(void *data, dlink_node * m, dlink_list * list)
 {
  m->data = data;
- m->next = NULL;
  m->next = list->head;
  /* Assumption: If list->tail != NULL, list->head != NULL */
  if (list->head != NULL)
@@ -179,5 +181,4 @@ dlinkMoveList(dlink_list *from, dlink_list *to)
 
   /* I think I got that right */
 }
-
 

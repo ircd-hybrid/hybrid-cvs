@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.c,v 7.64 2002/05/24 23:34:46 androsyn Exp $
+ *  $Id: hostmask.c,v 7.64.2.1 2002/07/08 18:44:53 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -145,7 +145,7 @@ try_parse_v6_netmask(const char *text, struct irc_inaddr *addr, int *b)
     for (dp = 0; dp < 8; dp++)
       /* The cast is a kludge to make netbsd work. */
       ((unsigned short *)&addr->sins.sin6)[dp] = htons(dc[dp]);
-  if (b)
+  if (b != NULL)
     *b = bits;
   return HM_IPV6;
 }
@@ -215,7 +215,7 @@ try_parse_v4_netmask(const char *text, struct irc_inaddr *addr, int *b)
   if (addr)
     addr->sins.sin.s_addr =
       htonl(addb[0] << 24 | addb[1] << 16 | addb[2] << 8 | addb[3]);
-  if (b)
+  if (b != NULL)
     *b = bits;
   return HM_IPV4;
 }
@@ -523,9 +523,10 @@ add_conf_by_address(const char *address, int type, const char *username,
   int masktype, bits;
   unsigned long hv;
   struct AddressRec *arec;
+
   if (address == NULL)
     address = "/NOMATCH!/";
-  arec = MyMalloc(sizeof(*arec));
+  arec = MyMalloc(sizeof(struct AddressRec));
   masktype = parse_netmask(address, &arec->Mask.ipa.addr, &bits);
   arec->Mask.ipa.bits = bits;
   arec->masktype = masktype;

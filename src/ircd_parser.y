@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.250 2002/05/24 23:34:47 androsyn Exp $
+ *  $Id: ircd_parser.y,v 1.250.2.1 2002/07/08 18:44:54 androsyn Exp $
  */
 
 %{
@@ -58,9 +58,7 @@ extern char *ip_string;
 int yyparse();
 
 static struct ConfItem *yy_achead = NULL;
-#if 0
 static struct ConfItem *yy_aconf = NULL;
-#endif
 static struct ConfItem *yy_aprev = NULL;
 static int              yy_acount = 0;
 static struct ConfItem *yy_hconf;
@@ -1374,9 +1372,6 @@ connect_entry:  CONNECT
     yy_aconf->status = CONF_SERVER;
 
     /* defaults */
-#ifdef HAVE_LIBZ
-    yy_aconf->flags |= CONF_FLAGS_COMPRESSED;
-#endif
     yy_aconf->port = PORTNUM;
   }
   '{' connect_items '}' ';'

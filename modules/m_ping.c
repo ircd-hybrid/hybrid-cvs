@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ping.c,v 1.28 2002/05/24 23:34:22 androsyn Exp $
+ *  $Id: m_ping.c,v 1.28.2.1 2002/07/08 18:44:36 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -34,6 +34,7 @@
 #include "modules.h"
 #include "hash.h"
 #include "s_conf.h"
+#include "s_serv.h"
 
 static void m_ping(struct Client*, struct Client*, int, char**);
 static void ms_ping(struct Client*, struct Client*, int, char**);
@@ -56,7 +57,7 @@ _moddeinit(void)
   mod_del_cmd(&ping_msgtab);
 }
 
-const char *_version = "$Revision: 1.28 $";
+const char *_version = "$Revision: 1.28.2.1 $";
 #endif
 /*
 ** m_ping
@@ -88,23 +89,26 @@ static void m_ping(struct Client *client_p,
    return;
   }
 
-/* Screw this, origin == clients nick if remote, what they sent if local --fl_  */
-#if 0
-  target_p = find_client(origin, NULL);
-  if (!target_p)
-    target_p = find_server(origin);
-
-  if (target_p && target_p != source_p)
-    origin = client_p->name;
-#endif
-
   if (!EmptyString(destination) && !match(destination, me.name))
   {
     /* We're sending it across servers.. origin == client_p->name --fl_ */
     origin = client_p->name;
+
+    /* XXX - sendto_server() ? --fl_ */
     if ((target_p = find_server(destination)))
+    {
+      /* use the direct link for LL checking */
+      target_p = target_p->from;
+
+      if(ServerInfo.hub && IsCapable(target_p, CAP_LL))
+      {
+        if((source_p->lazyLinkClientExists & target_p->localClient->serverMask) == 0)
+          client_burst_if_needed(target_p, source_p);
+      }
+
       sendto_one(target_p,":%s PING %s :%s", parv[0],
                  origin, destination);
+    }
     else
     {
       sendto_one(source_p, form_str(ERR_NOSUCHSERVER),

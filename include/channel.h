@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.114 2002/05/24 23:34:06 androsyn Exp $
+ *  $Id: channel.h,v 7.114.2.1 2002/07/08 18:44:29 androsyn Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -51,8 +51,8 @@ struct Channel
   struct Channel* prevch;
   struct Channel* hnextch;
   struct Mode     mode;
-  char            topic[TOPICLEN + 1];
-  char            topic_info[USERHOST_REPLYLEN];
+  char            *topic;
+  char            *topic_info;
   time_t          topic_time;
 #ifdef VCHANS
   char            vchan_id[NICKLEN*2];   /* use this for empty vchans */
@@ -179,5 +179,9 @@ struct Ban          /* also used for exceptions -orabidoo */
 #ifdef INTENSIVE_DEBUG
 void do_channel_integrity_check(void);
 #endif
+
+void set_channel_topic(struct Channel *chptr, const char *topic, const char *topic_info, time_t topicts); 
+void free_topic(struct Channel *);
+int allocate_topic(struct Channel *);
 
 #endif  /* INCLUDED_channel_h */

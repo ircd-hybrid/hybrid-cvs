@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.92 2002/05/24 23:34:38 androsyn Exp $
+ *  $Id: m_message.c,v 1.92.2.1 2002/07/08 18:44:43 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -61,6 +61,7 @@ static int flood_attack_client(int p_or_n, struct Client *source_p,
                                struct Client *target_p);
 static int flood_attack_channel(int p_or_n, struct Client *source_p,
                                 struct Channel *chptr, char *chname);
+static struct Client* find_userhost (char *, char *, int *);
 
 #define ENTITY_NONE    0
 #define ENTITY_CHANNEL 1
@@ -122,7 +123,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.92 $";
+const char *_version = "$Revision: 1.92.2.1 $";
 #endif
 
 /*
@@ -206,8 +207,9 @@ m_message(int p_or_n,
                         parv[2]) < 0)
   {
     /* Sigh.  We need to relay this command to the hub */
-    sendto_one(uplink, ":%s %s %s :%s",
-               source_p->name, command, parv[1], parv[2]);
+    if (!ServerInfo.hub && (uplink != NULL))
+      sendto_one(uplink, ":%s %s %s :%s",
+		 source_p->name, command, parv[1], parv[2]);
     return;
   }
 
@@ -259,11 +261,11 @@ build_target_list(int p_or_n, char *command, struct Client *client_p,
 {
   int type;
   char *p, *nick, *target_list, ncbuf[BUFSIZE];
-  struct Channel *chptr;
+  struct Channel *chptr=NULL;
   struct Client *target_p;
 
   /* Sigh, we can't mutilate parv[1] incase we need it to send to a hub */
-  if (!ServerInfo.hub && uplink && IsCapable(uplink, CAP_LL))
+  if (!ServerInfo.hub && (uplink != NULL) && IsCapable(uplink, CAP_LL))
   {
     strncpy(ncbuf, nicks_channels, BUFSIZE);
     target_list = ncbuf;
@@ -284,29 +286,33 @@ build_target_list(int p_or_n, char *command, struct Client *client_p,
 
     if (IsChanPrefix(*nick))
     {
+      /* ignore send of local channel to a server (should not happen) */
       if (IsServer(client_p) && *nick == '&')
         continue;
+
       if ((chptr = hash_find_channel(nick)) != NULL)
       {
         if (!duplicate_ptr(chptr))
         {
+          if (ntargets >= ConfigFileEntry.max_targets)
+	    {
+	      sendto_one(source_p, form_str(ERR_TOOMANYTARGETS),
+			 me.name, source_p->name, nick);
+	      return (1);
+	    }
           targets[ntargets].ptr = (void *)chptr;
           targets[ntargets++].type = ENTITY_CHANNEL;
-
-          if (ntargets >= ConfigFileEntry.max_targets)
-            return (ntargets);
-          continue;
         }
       }
       else
       {
-        if (!ServerInfo.hub && uplink && IsCapable(uplink, CAP_LL))
+        if (!ServerInfo.hub && (uplink != NULL) && IsCapable(uplink, CAP_LL))
           return -1;
         else if (p_or_n != NOTICE)
           sendto_one(source_p, form_str(ERR_NOSUCHNICK), me.name,
                      source_p->name, nick);
-        continue;
       }
+      continue;
     }
 
     /* look for a privmsg to another client */
@@ -314,14 +320,17 @@ build_target_list(int p_or_n, char *command, struct Client *client_p,
     {
       if (!duplicate_ptr(target_p))
       {
+        if (ntargets >= ConfigFileEntry.max_targets)
+	  {
+	    sendto_one(source_p, form_str(ERR_TOOMANYTARGETS),
+		       me.name, source_p->name, nick);
+	    return (1);
+	  }
         targets[ntargets].ptr = (void *)target_p;
         targets[ntargets].type = ENTITY_CLIENT;
         targets[ntargets++].flags = 0;
-
-        if (ntargets >= ConfigFileEntry.max_targets)
-          return (ntargets);
-        continue;
       }
+      continue;
     }
     
     /* @#channel or +#channel message ? */
@@ -342,68 +351,68 @@ build_target_list(int p_or_n, char *command, struct Client *client_p,
       nick++;
     }
 
-    if (type)
+    if (type != 0)
     {
       /* suggested by Mortiis */
-      if (!*nick)               /* if its a '\0' dump it, there is no recipient */
-      {
-        sendto_one(source_p, form_str(ERR_NORECIPIENT),
-                   me.name, source_p->name, command);
-        continue;
-      }
+      if (*nick == '\0')      /* if its a '\0' dump it, there is no recipient */
+	{
+	  sendto_one(source_p, form_str(ERR_NORECIPIENT),
+		     me.name, source_p->name, command);
+	  continue;
+	}
 
       /* At this point, nick+1 should be a channel name i.e. #foo or &foo
        * if the channel is found, fine, if not report an error
        */
 
       if ((chptr = hash_find_channel(nick)) != NULL)
-      {
+	{
+	  if(!is_any_op(chptr, source_p) && !is_voiced(chptr, source_p))
+	    {
+	      sendto_one(source_p, form_str(ERR_CHANOPRIVSNEEDED), me.name,
+			 source_p->name, with_prefix);
+	      return(-1);
+	    }
 
-        if(!is_any_op(chptr, source_p) && !is_voiced(chptr, source_p))
-        {
-          sendto_one(source_p, form_str(ERR_NOSUCHNICK),
-                     me.name, source_p->name, with_prefix);
-          continue;
-        }
-	
-        if (!duplicate_ptr(chptr))
-        {
-          targets[ntargets].ptr = (void *)chptr;
-          targets[ntargets].type = ENTITY_CHANOPS_ON_CHANNEL;
-          targets[ntargets++].flags = type;
-
-          if (ntargets >= ConfigFileEntry.max_targets)
-            return (ntargets);
-          continue;
-        }
-      }
+	  if (!duplicate_ptr(chptr))
+	    {
+	      if (ntargets >= ConfigFileEntry.max_targets)
+		{
+		  sendto_one(source_p, form_str(ERR_TOOMANYTARGETS),
+			     me.name, source_p->name, nick);
+		  return (1);
+		}
+	      targets[ntargets].ptr = (void *)chptr;
+	      targets[ntargets].type = ENTITY_CHANOPS_ON_CHANNEL;
+	      targets[ntargets++].flags = type;
+	    }
+	}
       else
-      {
-        if (!ServerInfo.hub && uplink && IsCapable(uplink, CAP_LL))
-          return -1;
-        else if (p_or_n != NOTICE)
-          sendto_one(source_p, form_str(ERR_NOSUCHNICK), me.name,
-                     source_p->name, nick);
-        continue;
-      }
+	{
+	  if (!ServerInfo.hub && (uplink != NULL) && IsCapable(uplink, CAP_LL))
+	    return -1;
+	  else if (p_or_n != NOTICE)
+	    sendto_one(source_p, form_str(ERR_NOSUCHNICK), me.name,
+		       source_p->name, nick);
+	}
+      continue;
     }
 
     if(IsOper(source_p) && ((*nick == '$') || strchr(nick, '@')))
     {
       handle_opers(p_or_n, command, client_p, source_p, nick, text);
-      continue;
     }
     else
     {
-      if (!ServerInfo.hub && uplink && IsCapable(uplink, CAP_LL))
+      if (!ServerInfo.hub && (uplink != NULL) && IsCapable(uplink, CAP_LL))
         return -1;
       else if(p_or_n != NOTICE)
         sendto_one(source_p, form_str(ERR_NOSUCHNICK),
 	           me.name, source_p->name, nick);
-      continue;
     }
+    /* continue; */
   }
-  return ntargets;
+  return (1);
 }
 
 /*
@@ -778,9 +787,7 @@ flood_attack_channel(int p_or_n, struct Client *source_p,
  *		  This disambiguates the syntax.
  */
 static void
-handle_opers(int p_or_n,
-             char *command,
-             struct Client *client_p,
+handle_opers(int p_or_n, char *command, struct Client *client_p,
              struct Client *source_p, char *nick, char *text)
 {
   struct Client *target_p;
@@ -790,10 +797,10 @@ handle_opers(int p_or_n,
   int count;
 
   /*
-     ** the following two cases allow masks in NOTICEs
-     ** (for OPERs only)
-     **
-     ** Armin, 8Jun90 (gruner@informatik.tu-muenchen.de)
+   * the following two cases allow masks in NOTICEs
+   * (for OPERs only)
+   *
+   * Armin, 8Jun90 (gruner@informatik.tu-muenchen.de)
    */
   if(*nick == '$')
   {
@@ -807,7 +814,7 @@ handle_opers(int p_or_n,
       return;
     }
       
-    if (!(s = (char *)strrchr(nick, '.')))
+    if ((s = strrchr(nick, '.')) == NULL)
     {
       sendto_one(source_p, form_str(ERR_NOTOPLEVEL),
                  me.name, source_p->name, nick);
@@ -831,16 +838,16 @@ handle_opers(int p_or_n,
   }
 
   /*
-     ** user[%host]@server addressed?
+   * user[%host]@server addressed?
    */
-  if ((server = (char *)strchr(nick, '@')) &&
-      (target_p = find_server(server + 1)))
+  if ((server = strchr(nick, '@')) && (target_p = find_server(server + 1)))
   {
     count = 0;
 
     /*
-       ** Not destined for a user on me :-(
+     * Not destined for a user on me :-(
      */
+
     if (!IsMe(target_p))
     {
       sendto_one(target_p, ":%s %s %s :%s", source_p->name,
@@ -850,11 +857,11 @@ handle_opers(int p_or_n,
 
     *server = '\0';
 
-    if ((host = (char *)strchr(nick, '%')))
+    if ((host = strchr(nick, '%')) != NULL)
       *host++ = '\0';
 
     /* Check if someones msg'ing opers@our.server */
-    if (!strcmp(nick, "opers"))
+    if (strcmp(nick, "opers") == 0)
     {
       sendto_realops_flags(FLAGS_ALL, L_ALL, "To opers: From: %s: %s",
                            source_p->name, text);
@@ -862,25 +869,59 @@ handle_opers(int p_or_n,
     }
 
     /*
-       ** Look for users which match the destination host
-       ** (no host == wildcard) and if one and one only is
-       ** found connected to me, deliver message!
+     * Look for users which match the destination host
+     * (no host == wildcard) and if one and one only is
+     * found connected to me, deliver message!
      */
-    target_p = find_userhost(nick, host, NULL, &count);
+    target_p = find_userhost(nick, host, &count);
 
-    if (server)
-      *server = '@';
-    if (host)
-      *--host = '%';
-    if (target_p)
+    if (target_p != NULL)
     {
+      if (server != NULL)
+	*server = '@';
+      if (host != NULL)
+	*--host = '%';
+
       if (count == 1)
-        sendto_anywhere(target_p, source_p,
-                        "%s %s :%s", "PRIVMSG", nick, text);
+        sendto_anywhere(target_p, source_p, "%s %s :%s", "PRIVMSG",
+			nick, text);
       else
-        sendto_one(source_p,
-                   form_str(ERR_TOOMANYTARGETS),
+        sendto_one(source_p, form_str(ERR_TOOMANYTARGETS),
                    me.name, source_p->name, nick);
     }
   }
+}
+
+/*
+ * find_userhost - find a user@host (server or user).
+ * inputs       - user name to look for
+ *              - host name to look for
+ *		- pointer to count of number of matches found
+ * outputs	- pointer to client if found
+ *		- count is updated
+ * side effects	- none
+ *
+ */
+static struct Client *
+find_userhost(char *user, char *host, int *count)
+{
+  struct Client *c2ptr;
+  struct Client *res = NULL;
+
+  *count = 0;
+  if (collapse(user) != NULL)
+    {
+      for (c2ptr = GlobalClientList; c2ptr; c2ptr = c2ptr->next) 
+	{
+	  if (!MyClient(c2ptr)) /* implies mine and an user */
+	    continue;
+	  if ((!host || match(host, c2ptr->host)) &&
+	      irccmp(user, c2ptr->username) == 0)
+	    {
+	      (*count)++;
+	      res = c2ptr;
+	    }
+	}
+    }
+  return (res);
 }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ltrace.c,v 1.2 2002/05/24 23:48:34 androsyn Exp $
+ *  $Id: m_ltrace.c,v 1.2.2.1 2002/07/08 18:44:25 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -44,6 +44,7 @@
 
 static void m_ltrace(struct Client *, struct Client *, int, char **);
 static void mo_ltrace(struct Client*, struct Client*, int, char**);
+static struct Client* next_client_double(struct Client *next, const char* ch);
 static void ltrace_spy(struct Client *);
 
 struct Message ltrace_msgtab = {
@@ -66,7 +67,7 @@ _moddeinit(void)
   mod_del_cmd(&ltrace_msgtab);
 }
 
-const char *_version = "$Revision: 1.2 $";
+const char *_version = "$Revision: 1.2.2.1 $";
 #endif
 
 static int report_this_status(struct Client *source_p, struct Client *target_p,int dow,
@@ -334,3 +335,36 @@ static void ltrace_spy(struct Client *source_p)
   hook_call_event("doing_ltrace", &data);
 }
 
+/* 
+ * this slow version needs to be used for hostmasks *sigh
+ *
+ * next_client_double - find the next matching client. 
+ * The search can be continued from the specified client entry. 
+ * Normal usage loop is:
+ *
+ *      for (x = client; x = next_client_double(x,mask); x = x->next)
+ *              HandleMatchingClient;
+ *            
+ */
+static struct Client* 
+next_client_double(struct Client *next, /* First client to check */
+                   const char* ch)      /* search string (may include wilds) */
+{
+  struct Client *tmp = next;
+
+  next = find_client(ch);
+
+  if (next == NULL)
+    next = tmp;
+
+  if (tmp && tmp->prev == next)
+    return NULL;
+  if (next != tmp)
+    return next;
+  for ( ; next; next = next->next)
+    {
+      if (match(ch,next->name) || match(next->name,ch))
+        break;
+    }
+  return next;
+}

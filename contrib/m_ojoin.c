@@ -15,8 +15,9 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_ojoin.c,v 1.7 2002/05/24 23:48:34 androsyn Exp $
+ *   $Id: m_ojoin.c,v 1.7.2.1 2002/07/08 18:44:25 androsyn Exp $
  */
+
 #include "stdinc.h"
 #include "tools.h"
 #include "handlers.h"
@@ -36,8 +37,6 @@
 #include "vchannel.h"
 #include "list.h"
 #include "channel_mode.h"
-
-#include <string.h>
 
 static void mo_ojoin(struct Client *client_p, struct Client *source_p,
                          int parc, char *parv[]);
@@ -59,7 +58,7 @@ _moddeinit(void)
   mod_del_cmd(&ojoin_msgtab);
 }
 
-char *_version = "$Revision: 1.7 $";
+char *_version = "$Revision: 1.7.2.1 $";
 
 /*
 ** mo_ojoin
@@ -84,7 +83,7 @@ static void mo_ojoin(struct Client *client_p, struct Client *source_p,
 
   /* XXX - we might not have CBURSTed this channel if we are a lazylink
    * yet. */
-  if (*parv[1] != '#')
+  if (*parv[1] == '@' || *parv[1] == '%' || *parv[1] == '+')
     {
       parv[1]++;
       move_me = 1;
@@ -122,9 +121,10 @@ static void mo_ojoin(struct Client *client_p, struct Client *source_p,
   if (*parv[1] == '@') 
     {
        add_user_to_channel(chptr, source_p, CHFL_CHANOP);
-       sendto_server(client_p, source_p, chptr, NOCAPS, NOCAPS, LL_ICLIENT, 
-               ":%s SJOIN %lu %s + :@%s", me.name, chptr->channelts,
-               chptr->chname, source_p->name);
+       if (chptr->chname[0] != '&')
+         sendto_server(client_p, source_p, chptr, NOCAPS, NOCAPS, LL_ICLIENT, 
+                 ":%s SJOIN %lu %s + :@%s", me.name, chptr->channelts,
+                 chptr->chname, source_p->name);
        sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s JOIN %s",
                        source_p->name,
                        source_p->username,
@@ -138,9 +138,10 @@ static void mo_ojoin(struct Client *client_p, struct Client *source_p,
   else if (*parv[1] == '%')
     {
        add_user_to_channel(chptr, source_p, CHFL_HALFOP);
-       sendto_server(client_p, source_p, chptr, NOCAPS, NOCAPS, LL_ICLIENT, 
-               ":%s SJOIN %lu %s + :%%%s", me.name, chptr->channelts,
-               chptr->chname, source_p->name);
+       if (chptr->chname[0] != '&')
+         sendto_server(client_p, source_p, chptr, NOCAPS, NOCAPS, LL_ICLIENT, 
+                 ":%s SJOIN %lu %s + :%%%s", me.name, chptr->channelts,
+                 chptr->chname, source_p->name);
        sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s JOIN %s",
                        source_p->name,
                        source_p->username,
@@ -153,9 +154,10 @@ static void mo_ojoin(struct Client *client_p, struct Client *source_p,
   else if (*parv[1] == '+')
     {
        add_user_to_channel(chptr, source_p, CHFL_VOICE);
-       sendto_server(client_p, source_p, chptr, NOCAPS, NOCAPS, LL_ICLIENT, 
-               ":%s SJOIN %lu %s + :+%s", me.name, chptr->channelts,
-               chptr->chname, source_p->name);
+       if (chptr->chname[0] != '&')
+         sendto_server(client_p, source_p, chptr, NOCAPS, NOCAPS, LL_ICLIENT, 
+                 ":%s SJOIN %lu %s + :+%s", me.name, chptr->channelts,
+                 chptr->chname, source_p->name);
        sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s JOIN %s",
                        source_p->name,
                        source_p->username,
@@ -167,10 +169,11 @@ static void mo_ojoin(struct Client *client_p, struct Client *source_p,
   else
     {
        add_user_to_channel(chptr, source_p, CHFL_PEON);
-       sendto_server(client_p, source_p, chptr, NOCAPS, NOCAPS, LL_ICLIENT, 
-                     ":%s SJOIN %lu %s + :%s",
-		     me.name, chptr->channelts,
-		     chptr->chname, source_p->name);
+       if (chptr->chname[0] != '&')
+         sendto_server(client_p, source_p, chptr, NOCAPS, NOCAPS, LL_ICLIENT, 
+                       ":%s SJOIN %lu %s + :%s",
+                       me.name, chptr->channelts,
+		       chptr->chname, source_p->name);
        sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s JOIN %s",
                        source_p->name,
                        source_p->username,
@@ -178,6 +181,15 @@ static void mo_ojoin(struct Client *client_p, struct Client *source_p,
                        root_chptr->chname);
     }
 
+  /* send the topic... */
+  if (chptr->topic != NULL)
+  {
+    sendto_one(source_p, form_str(RPL_TOPIC), me.name,
+	       source_p->name, chptr->chname, chptr->topic);
+    sendto_one(source_p, form_str(RPL_TOPICWHOTIME), me.name,
+	       source_p->name, chptr->chname, chptr->topic_info,
+	       chptr->topic_time);
+  }
 
   /* XXX - check this isn't too big above... */
 #ifdef VCHANS
@@ -185,6 +197,7 @@ static void mo_ojoin(struct Client *client_p, struct Client *source_p,
     add_vchan_to_client_cache(source_p,root_chptr,chptr);
 #endif
 
+  source_p->localClient->last_join_time = CurrentTime;
   channel_member_names(source_p, chptr, chptr->chname, 1);
 }
 

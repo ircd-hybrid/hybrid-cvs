@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.127 2002/05/24 23:34:49 androsyn Exp $
+ *  $Id: parse.c,v 7.127.2.1 2002/07/08 18:44:56 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -135,6 +135,8 @@ void parse(struct Client *client_p, char *pbuffer, char *bufend)
 
   assert(!IsDead(client_p));
   assert(client_p->localClient->fd >= 0);
+  if(IsDead(client_p) || client_p->localClient->fd < 0)
+    return;
 
   assert((bufend-pbuffer) < 512);
 
@@ -266,7 +268,7 @@ void parse(struct Client *client_p, char *pbuffer, char *bufend)
                            me.name, ERR_UNKNOWNCOMMAND,
                            from->name, ch);
               Debug((DEBUG_ERROR,"Unknown (%s) from %s",
-                     ch, get_client_name(client_p, SHOW_IP)));
+                     ch, get_client_name(client_p, HIDE_IP)));
             }
           ServerStats->is_unco++;
           return;
@@ -378,7 +380,9 @@ mod_add_cmd(struct Message *msg)
   int    msgindex;
 
   assert(msg != NULL);
-
+  if(msg == NULL)
+    return;
+    
   msgindex = hash(msg->cmd);
 
   for(ptr = msg_hash_table[msgindex]; ptr; ptr = ptr->next )
@@ -417,7 +421,9 @@ void mod_del_cmd(struct Message *msg)
   int    msgindex;
 
   assert(msg != NULL);
-
+  if(msg == NULL)
+    return;
+    
   msgindex = hash(msg->cmd);
 
   for(ptr = msg_hash_table[msgindex]; ptr; ptr = ptr->next )

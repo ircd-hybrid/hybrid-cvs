@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hook.c,v 7.15 2002/05/24 23:34:46 androsyn Exp $
+ *  $Id: hook.c,v 7.15.2.1 2002/07/08 18:44:53 androsyn Exp $
  */
 
 /* hooks are used by modules to hook into events called by other parts of
@@ -53,8 +53,7 @@ new_hook(char *name)
 	hook *h;
 	
 	h = MyMalloc(sizeof(hook));
-	memset(h, 0, sizeof(*h));
-    DupString(h->name, name);
+        DupString(h->name, name);
 	return h;
 }
 

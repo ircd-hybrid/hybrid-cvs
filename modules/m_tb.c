@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: m_tb.c,v 1.8 2002/05/24 23:48:34 androsyn Exp $
+ *  $Id: m_tb.c,v 1.8.2.1 2002/07/08 18:44:25 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -81,7 +81,7 @@ _moddeinit(void)
   unset_tburst_capab();
 }
 
-const char *_version = "$Revision: 1.8 $";
+const char *_version = "$Revision: 1.8.2.1 $";
 #endif
 
 /* ms_tburst()
@@ -110,7 +110,7 @@ static void ms_tburst(struct Client *client_p, struct Client *source_p,
 
     else if(chptr->channelts == newchannelts)
     {
-      if(!chptr->topic[0] || (chptr->topic_time > newtopicts))
+      if(chptr->topic == NULL || (chptr->topic_time > newtopicts))
 	set_topic(source_p, chptr, newtopicts, parv[4], parv[5]);
       else
 	return;
@@ -124,20 +124,19 @@ static void ms_tburst(struct Client *client_p, struct Client *source_p,
 static void set_topic(struct Client *source_p, struct Channel *chptr, 
 		      time_t newtopicts, char *topicwho, char *topic)
 {
-  strlcpy(chptr->topic, topic, TOPICLEN);
-  strlcpy(chptr->topic_info, topicwho, USERHOST_REPLYLEN);
-
-  chptr->topic_time = newtopicts;
+  set_channel_topic(chptr, topic, topicwho, newtopicts);
 
   sendto_channel_local(ALL_MEMBERS, chptr, ":%s TOPIC %s :%s",
 		       ConfigServerHide.hide_servers ? me.name : source_p->name,
-		       chptr->chname, chptr->topic);
+		       chptr->chname, chptr->topic == NULL ? "" : chptr->topic);
 
 #ifdef TBURST_PROPAGATE
   sendto_server(source_p, NULL, chptr, CAP_TBURST, NOCAPS, NOFLAGS,
 		":%s TBURST %ld %s %ld %s :%s",
 		source_p->name, chptr->channelts, chptr->chname,
-		chptr->topic_time, chptr->topic_info, chptr->topic);
+		chptr->topic_time, 
+                chptr->topic_info == NULL ? "" : chptr->topic_info,
+                chptr->topic == NULL ? "" : chptr->topic);
 #endif
 }
 
@@ -153,7 +152,7 @@ static void unset_tburst_capab()
 
 int send_tburst(struct hook_burst_channel *data)
 {
-  if(data->chptr->topic[0] && IsCapable(data->client, CAP_TBURST))
+  if(data->chptr->topic != NULL && IsCapable(data->client, CAP_TBURST))
     sendto_one(data->client, ":%s TBURST %ld %s %ld %s :%s",
                me.name, data->chptr->channelts, data->chptr->chname,
 	       data->chptr->topic_time, data->chptr->topic_info, 

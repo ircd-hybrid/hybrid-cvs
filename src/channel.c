@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.316 2002/05/24 23:34:44 androsyn Exp $
+ *  $Id: channel.c,v 7.316.2.1 2002/07/08 18:44:50 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -52,6 +52,7 @@ struct config_channel_entry ConfigChannel;
 struct Channel *GlobalChannelList = NULL;
 BlockHeap *channel_heap;
 BlockHeap *ban_heap;
+BlockHeap *topic_heap;
 
 static void free_channel_list(dlink_list * list);
 static int  sub1_from_channel(struct Channel *);
@@ -76,12 +77,14 @@ static void channelheap_garbage_collect(void *unused)
 {
   BlockHeapGarbageCollect(channel_heap);
   BlockHeapGarbageCollect(ban_heap);
+  BlockHeapGarbageCollect(topic_heap);
 }
 
 void init_channels(void)
 {
   channel_heap = BlockHeapCreate(sizeof(struct Channel), CHANNEL_HEAP_SIZE);
   ban_heap = BlockHeapCreate(sizeof(struct Ban), BAN_HEAP_SIZE);
+  topic_heap = BlockHeapCreate(TOPICLEN+1 + USERHOST_REPLYLEN, TOPIC_HEAP_SIZE);
   eventAddIsh("channelheap_garbage_collect", channelheap_garbage_collect,
               NULL, 45);
 }
@@ -303,7 +306,7 @@ send_members(struct Client *client_p,
   int data_to_send = 0;
   char *t;                      /* temp char pointer */
 
-  cur_len = mlen = ircsprintf(buf, ":%s SJOIN %lu %s %s %s :", me.name,
+  cur_len = mlen = ircsprintf(buf, ":%s SJOIN %lu %s %s %s:", me.name,
                    (unsigned long)chptr->channelts,
                    chptr->chname, lmodebuf, lparabuf);
 
@@ -456,7 +459,9 @@ int
 check_channel_name(const char *name)
 {
   assert(name != NULL);
-
+  if(name == NULL)
+    return 0;
+    
   for (; *name; ++name)
   {
     if (!IsChanChar(*name))
@@ -666,6 +671,8 @@ destroy_channel(struct Channel *chptr)
   free_channel_list(&chptr->exceptlist);
   free_channel_list(&chptr->invexlist);
 
+  /* Free the topic */
+  free_topic(chptr);
   /* This should be redundant at this point but JIC */
   chptr->banlist.head = chptr->exceptlist.head = chptr->invexlist.head = NULL;
 
@@ -1416,6 +1423,72 @@ void check_splitmode(void *unused)
                            "Network rejoined, deactivating splitmode");
       eventDelete(check_splitmode, NULL);
     }
+  }
+}
+
+
+/*
+ * input	- Channel to allocate a new topic for
+ * output	- Success or failure
+ * side effects - Allocates a new topic
+ */
+
+int allocate_topic(struct Channel *chptr)
+{
+  void *ptr;
+  if(chptr == NULL)
+    return FALSE;
+  
+  ptr = BlockHeapAlloc(topic_heap);  
+  if(ptr != NULL)
+  {
+    /* Basically we allocate one large block for the topic and
+     * the topic info.  We then split it up into two and shove it
+     * in the chptr 
+     */
+    chptr->topic = ptr;
+    chptr->topic_info = ptr + TOPICLEN+1;
+    *chptr->topic = '\0';
+    *chptr->topic_info = '\0';
+    return TRUE;
+  }
+  return FALSE;
+}
+
+void free_topic(struct Channel *chptr)
+{
+  void *ptr;
+  
+  if(chptr == NULL)
+    return;
+  if(chptr->topic == NULL)
+    return;
+  /* This is safe for now - If you change allocate_topic you
+   * MUST change this as well
+   */
+  ptr = chptr->topic; 
+  BlockHeapFree(topic_heap, ptr);    
+  chptr->topic = NULL;
+  chptr->topic_info = NULL;
+}
+
+/*
+ * set_channel_topic - Sets the channel topic
+ */
+void set_channel_topic(struct Channel *chptr, const char *topic, const char *topic_info, time_t topicts)
+{
+  if(strlen(topic) > 0)
+  {
+    if(chptr->topic == NULL)
+      allocate_topic(chptr);
+    strlcpy(chptr->topic, topic, TOPICLEN);
+    strlcpy(chptr->topic_info, topic_info,  USERHOST_REPLYLEN);
+    chptr->topic_time = topicts; 
+  } else
+  {
+    if(chptr->topic != NULL)
+      free_topic(chptr);
+    chptr->topic_time = 0;
   }
 }
 

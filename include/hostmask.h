@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.h,v 1.21 2002/05/24 23:34:07 androsyn Exp $
+ *  $Id: hostmask.h,v 1.21.2.1 2002/07/08 18:44:30 androsyn Exp $
  */
 
 #ifndef INCLUDE_hostmask_h
@@ -101,3 +101,4 @@ struct AddressRec
 
 
 #endif /* INCLUDE_hostmask_h */
+

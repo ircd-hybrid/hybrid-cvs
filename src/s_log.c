@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.c,v 7.41 2002/05/24 23:34:51 androsyn Exp $
+ *  $Id: s_log.c,v 7.41.2.1 2002/07/08 18:44:57 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -83,7 +83,8 @@ static const char *logLevelToString[] =
  */
 #if defined(USE_LOGFILE) 
 
-static int open_log(const char* filename)
+static int 
+open_log(const char* filename)
 {
   logFile = fbopen(filename, "a");
   if (logFile == NULL) {
@@ -99,27 +100,27 @@ static int open_log(const char* filename)
 
 
 #if defined(USE_LOGFILE) 
-static void write_log(const char* message)
+static void 
+write_log(const char* message)
 {
   char buf[LOG_BUFSIZE];
 
-  if( !logFile )
+  if(logFile == NULL)
     return;
 
-#ifdef HAVE_SNPRINTF
   snprintf(buf, LOG_BUFSIZE, "[%s] %s\n", smalldate(CurrentTime), message);
-#else
-  sprintf(buf, "[%s] %s\n", smalldate(CurrentTime), message);
-#endif
   fbputs(buf, logFile);
 }
 #endif
    
-void ilog(int priority, const char* fmt, ...)
+void 
+ilog(int priority, const char* fmt, ...)
 {
   char    buf[LOG_BUFSIZE];
   va_list args;
   assert(-1 < priority);
+  if(fmt == NULL)
+    return;
   assert(0 != fmt);
 
   if (priority > logLevel)
@@ -138,7 +139,8 @@ void ilog(int priority, const char* fmt, ...)
 #endif
 }
   
-void init_log(const char* filename)
+void 
+init_log(const char* filename)
 {
 #if defined(USE_LOGFILE) 
   open_log(filename);
@@ -151,18 +153,30 @@ void init_log(const char* filename)
 #endif
 }
 
-void set_log_level(int level)
+void
+reopen_log(const char* filename)
+{
+#if defined(USE_LOGFILE)
+  fbclose(logFile);
+  open_log(filename);
+#endif  
+  
+}
+void 
+set_log_level(int level)
 {
   if (L_ERROR < level && level <= L_DEBUG)
     logLevel = level;
 }
 
-int get_log_level(void)
+int 
+get_log_level(void)
 {
   return( logLevel );
 }
 
-const char *get_log_level_as_string(int level)
+const char *
+get_log_level_as_string(int level)
 {
   if(level > L_DEBUG)
     level = L_DEBUG;
@@ -181,7 +195,8 @@ const char *get_log_level_as_string(int level)
  * side effects - Current exiting client is logged to
  *		  either SYSLOG or to file.
  */
-void log_user_exit(struct Client *source_p)
+void 
+log_user_exit(struct Client *source_p)
 {
   time_t        on_for;
 
@@ -274,7 +289,8 @@ user_log_resync(void *notused)
  * side effects - FNAME_OPERLOG is written to, if its present
  */
 
-void log_oper( struct Client *source_p, char *name )
+void 
+log_oper( struct Client *source_p, char *name )
 {
   FBFILE *oper_fb;
   char linebuf[BUFSIZE];

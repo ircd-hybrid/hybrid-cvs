@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.194 2002/05/25 01:22:43 androsyn Exp $
+ *  $Id: s_user.c,v 7.194.2.1 2002/07/08 18:44:57 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -286,15 +286,21 @@ int register_local_user(struct Client *client_p, struct Client *source_p,
   dlink_node *m;
   char *id;
   assert(NULL != source_p);
-  assert(NULL != source_p->localClient);
+  assert(MyConnect(source_p));
   assert(source_p->username != username);
+  
+  if(source_p == NULL)
+    return -1;
+  
+  if(!MyConnect(source_p))
+    return -1;
 
   if(ConfigFileEntry.ping_cookie)
   {
-  	if(!(source_p->flags & FLAGS_PINGSENT) && source_p->random_ping == 0)
+  	if(!(source_p->flags & FLAGS_PINGSENT) && source_p->localClient->random_ping == 0)
   	{
-           source_p->random_ping = (unsigned long)rand();
-           sendto_one(source_p, "PING :%lu", (unsigned long)source_p->random_ping);
+           source_p->localClient->random_ping = (unsigned long)rand();
+           sendto_one(source_p, "PING :%lu", (unsigned long)source_p->localClient->random_ping);
            source_p->flags |= FLAGS_PINGSENT;
 	   strlcpy(source_p->username, username, USERLEN);
   	   return -1;
@@ -332,6 +338,9 @@ int register_local_user(struct Client *client_p, struct Client *source_p,
 
   if (!IsGotId(source_p))
     {
+      char *p;
+      int i = 0;
+
       if (IsNeedIdentd(aconf))
 	{
 	  ServerStats->is_ref++;
@@ -341,18 +350,20 @@ int register_local_user(struct Client *client_p, struct Client *source_p,
 	  (void)exit_client(client_p, source_p, &me, "Install identd");
 	  return(CLIENT_EXITED);
 	}
-      else
-	strlcpy(source_p->username, username, USERLEN);
 
-      if (IsNoTilde(aconf))
-	{
-	  strlcpy(source_p->username, username, USERLEN);
-	}
-      else
-	{
-	  *source_p->username = '~';
-	  strlcpy(&source_p->username[1], username, USERLEN-1);
-	}
+      p = username;
+      
+      if(!IsNoTilde(aconf))
+        source_p->username[i++] = '~';
+
+      while(*p && i < USERLEN)
+      {
+        if(*p != '[')
+          source_p->username[i++] = *p;
+	p++;
+      }
+
+      source_p->username[i] = '\0';
     }
 
   /* password check */
@@ -467,9 +478,16 @@ int register_local_user(struct Client *client_p, struct Client *source_p,
   m = dlinkFind(&unknown_list, source_p);
 
   assert(m != NULL);
-  dlinkDelete(m, &unknown_list);
-  dlinkAdd(source_p, m, &lclient_list);
-
+  if(m != NULL)
+  {
+    dlinkDelete(m, &unknown_list);
+    dlinkAdd(source_p, m, &lclient_list);
+  } else {
+     sendto_realops_flags(FLAGS_ALL, L_ADMIN, "Tried to register %s (%s@%s) but I couldn't find it?!?", 
+     			  nick, source_p->username, source_p->host);
+     exit_client(client_p, source_p, &me, "Client exited");
+     return CLIENT_EXITED;
+  }
   user_welcome(source_p);
 
   return (introduce_client(client_p, source_p, user, nick));
@@ -491,6 +509,9 @@ int register_remote_user(struct Client *client_p, struct Client *source_p,
   
   assert(NULL != source_p);
   assert(source_p->username != username);
+  
+  if(source_p == NULL)
+    return -1;
 
   user->last = CurrentTime;
 
@@ -670,6 +691,9 @@ static int valid_hostname(const char* hostname)
   const char* p     = hostname;
 
   assert(NULL != p);
+  
+  if(hostname == NULL)
+    return NO;
 
   if ('.' == *p)
     return NO;
@@ -701,6 +725,9 @@ static int valid_username(const char* username)
   const char *p = username;
 
   assert(NULL != p);
+  
+  if(username == NULL)
+    return NO;
 
   if ('~' == *p)
     ++p;
@@ -791,6 +818,9 @@ int do_local_user(char* nick, struct Client* client_p, struct Client* source_p,
 
   assert(NULL != source_p);
   assert(source_p->username != username);
+  
+  if(source_p == NULL)
+    return 0;
 
   user = make_user(source_p);
 
@@ -842,6 +872,8 @@ int do_remote_user(char* nick, struct Client* client_p, struct Client* source_p,
   assert(NULL != source_p);
   assert(source_p->username != username);
 
+  if(source_p == NULL)
+    return 0;
   user = make_user(source_p);
 
   oflags = source_p->flags;

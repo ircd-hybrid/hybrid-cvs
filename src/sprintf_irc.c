@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: sprintf_irc.c,v 7.14 2002/05/24 23:34:53 androsyn Exp $
+ *  $Id: sprintf_irc.c,v 7.14.2.1 2002/07/08 18:44:58 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -308,6 +308,12 @@ vsprintf_irc(char *str, const char *format, va_list args)
 
 	      ++format;
 	      v1 = va_arg(args, unsigned long);
+	      if (v1 == 0)
+	      {
+	        *str++ = '0';
+	        ++bytes;
+	        continue;
+	      }
 	      if (v1 > 999999999L)
 		{
 		  v2 = v1 / 1000000000;

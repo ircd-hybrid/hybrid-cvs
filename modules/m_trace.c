@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_trace.c,v 1.46 2002/05/24 23:34:23 androsyn Exp $
+ *  $Id: m_trace.c,v 1.46.2.1 2002/07/08 18:44:37 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -45,6 +45,7 @@
 static void m_trace(struct Client *, struct Client *, int, char **);
 static void ms_trace(struct Client*, struct Client*, int, char**);
 static void mo_trace(struct Client*, struct Client*, int, char**);
+static struct Client* next_client_double(struct Client *next, const char* ch);
 
 static void trace_spy(struct Client *);
 
@@ -67,7 +68,7 @@ _moddeinit(void)
   hook_del_event("doing_trace");
   mod_del_cmd(&trace_msgtab);
 }
-const char *_version = "$Revision: 1.46 $";
+const char *_version = "$Revision: 1.46.2.1 $";
 #endif
 static int report_this_status(struct Client *source_p, struct Client *target_p,int dow,
                               int link_u_p, int link_u_s);
@@ -357,6 +358,7 @@ static int report_this_status(struct Client *source_p, struct Client *target_p,
 	   (MyClient(source_p) || !(dow && IsInvisible(target_p))))
 	  || !dow || IsOper(target_p))
 	{
+#ifndef HIDE_SPOOF_IPS
           if (IsAdmin(target_p))
 	    sendto_one(source_p, form_str(RPL_TRACEOPERATOR),
                        me.name, source_p->name, class_name, name,
@@ -364,19 +366,29 @@ static int report_this_status(struct Client *source_p, struct Client *target_p,
                        CurrentTime - target_p->lasttime,
                        (target_p->user) ? (CurrentTime - target_p->user->last) : 0);
 		       
-	  else if (IsOper(target_p))
+	  else 
+#endif
+          if (IsOper(target_p))
 	    sendto_one(source_p, form_str(RPL_TRACEOPERATOR),
 		       me.name, source_p->name, class_name, name, 
-		       MyOper(source_p) ? ip : 
+#ifdef HIDE_SPOOF_IPS
+		       IsIPSpoof(target_p) ? "255.255.255.255" : ip,
+#else
+                       MyOper(source_p) ? ip :
 		       (IsIPSpoof(target_p) ? "255.255.255.255" : ip),
+#endif
 		       CurrentTime - target_p->lasttime,
 		       (target_p->user)?(CurrentTime - target_p->user->last):0);
 		       
 	  else
 	    sendto_one(source_p, form_str(RPL_TRACEUSER),
 		       me.name, source_p->name, class_name, name,
+#ifdef HIDE_SPOOF_IPS
+                       IsIPSpoof(target_p) ? "255.255.255.255" : ip,
+#else
 		       MyOper(source_p) ? ip : 
 		       (IsIPSpoof(target_p) ? "255.255.255.255" : ip),
+#endif
 		       CurrentTime - target_p->lasttime,
 		       (target_p->user)?(CurrentTime - target_p->user->last):0);
 	  cnt++;
@@ -418,4 +430,39 @@ static void trace_spy(struct Client *source_p)
 
   hook_call_event("doing_trace", &data);
 }
+
+/* 
+ * this slow version needs to be used for hostmasks *sigh
+ *
+ * next_client_double - find the next matching client. 
+ * The search can be continued from the specified client entry. 
+ * Normal usage loop is:
+ *
+ *      for (x = client; x = next_client_double(x,mask); x = x->next)
+ *              HandleMatchingClient;
+ *            
+ */
+static struct Client* 
+next_client_double(struct Client *next, /* First client to check */
+                   const char* ch)      /* search string (may include wilds) */
+{
+  struct Client *tmp = next;
+
+  next = find_client(ch);
+
+  if (next == NULL)
+    next = tmp;
+
+  if (tmp && tmp->prev == next)
+    return NULL;
+  if (next != tmp)
+    return next;
+  for ( ; next; next = next->next)
+    {
+      if (match(ch,next->name) || match(next->name,ch))
+        break;
+    }
+  return next;
+}
+
 

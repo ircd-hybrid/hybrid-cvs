@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: config.h,v 7.133 2002/05/12 12:15:16 leeh Exp $
+ *  $Id: config.h,v 7.133.2.1 2002/07/08 18:44:29 androsyn Exp $
  */
 
 #ifndef INCLUDED_config_h
@@ -182,6 +182,13 @@
  */
 #undef  HIDE_SERVERS_IPS
 
+/* HIDE_SPOOF_IPS
+ *
+ * If this is undefined, opers will be allowed to see the real IP of spoofed
+ * users in /trace etc.  If this is defined they will be shown a masked IP.
+ */
+#undef HIDE_SPOOF_IPS
+
 /* USE_LOGFILE - log errors and such to LPATH
  * If you wish to have the server send 'vital' messages about server
  * to a logfile, define USE_LOGFILE.
@@ -285,11 +292,19 @@
 #define ANONOPS
 #define HALFOPS
 
+/* END OF CONFIGURABLE OPTIONS */
+
 /* disable them for efnet */
 #ifdef EFNET
 #undef VCHANS
 #undef ANONOPS
 #undef HALFOPS
+#ifndef HIDE_SERVERS_IPS
+#define HIDE_SERVERS_IPS
+#endif
+#ifndef HIDE_SPOOF_IPS
+#define HIDE_SPOOF_IPS
+#endif
 #endif
 
 /* 
@@ -303,6 +318,7 @@
 #define LINEBUF_HEAP_SIZE	1024
 #define	USER_HEAP_SIZE		1024
 #define	DNODE_HEAP_SIZE		2048
+#define TOPIC_HEAP_SIZE		1024
 #else  /* Small Net */
 #define CHANNEL_HEAP_SIZE	256
 #define BAN_HEAP_SIZE		128
@@ -311,6 +327,7 @@
 #define LINEBUF_HEAP_SIZE	128
 #define	USER_HEAP_SIZE		128
 #define	DNODE_HEAP_SIZE		256
+#define TOPIC_HEAP_SIZE		256
 #endif
 
 /* DEBUGMODE is used mostly for internal development, it is likely

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: memory.h,v 7.30 2002/05/24 23:34:07 androsyn Exp $
+ *  $Id: memory.h,v 7.30.2.1 2002/07/08 18:44:30 androsyn Exp $
  */
 
 #ifndef _I_MEMORY_H
@@ -43,18 +43,6 @@ typedef unsigned long uintptr_t;
 #endif
 
 extern void outofmemory(void);
-#ifndef WE_ARE_MEMORY_C
-#undef strdup
-#undef malloc
-#undef realloc
-#undef calloc
-#undef free
-#define malloc do_not_call_old_memory_functions!call_My*functions
-#define calloc do_not_call_old_memory_functions!call_My*functions
-#define realloc do_not_call_old_memory_functions!call_My*functions
-#define strdup do_not_call_old_memory_functions!call_My*functions
-#define free do_not_call_old_memory_functions!call_My*functions
-#endif
 
 #ifdef MEMDEBUG
 void *memlog(void *m, int s, char *f, int l);
@@ -94,11 +82,43 @@ extern MemoryEntry *first_mem_entry;
 
 #else /* MEMDEBUG */
 
-
-extern void * _MyMalloc(size_t size);
-extern void* _MyRealloc(void* x, size_t y);
+extern void *_MyMalloc(size_t size);
+extern void *_MyRealloc(void *x, size_t y);
 extern void _MyFree(void *x);
 extern void _DupString(char **x, const char *y);
+
+
+extern inline void * _MyMalloc(size_t size)
+{
+  void *ret = calloc(1, size);
+  if(ret == NULL)
+    outofmemory();
+  return(ret);
+}
+
+extern inline void* _MyRealloc(void* x, size_t y)
+{
+  void *ret = realloc(x, y);
+  
+  if(ret == NULL)
+    outofmemory();
+  return(ret);    
+}
+
+extern inline void _MyFree(void *x)
+{
+  if(x != NULL)
+    free(x);
+}
+
+extern inline void _DupString(char **x, const char *y)
+{
+  (*x) = malloc(strlen(y) + 1);
+  if(x == NULL)
+    outofmemory();
+  strcpy((*x), y); 
+}
+
 extern int         _BlockHeapFree(BlockHeap *bh, void *ptr);
 extern void *	  _BlockHeapAlloc(BlockHeap *bh);
 
@@ -116,6 +136,20 @@ extern void *	  _BlockHeapAlloc(BlockHeap *bh);
 #define BlockHeapAlloc(x) MyMalloc((int)x)
 #define BlockHeapFree(x,y) MyFree(y)
 #endif
+
+#ifndef WE_ARE_MEMORY_C
+#undef strdup
+#undef malloc
+#undef realloc
+#undef calloc
+#undef free
+#define malloc do_not_call_old_memory_functions!call_My*functions
+#define calloc do_not_call_old_memory_functions!call_My*functions
+#define realloc do_not_call_old_memory_functions!call_My*functions
+#define strdup do_not_call_old_memory_functions!call_My*functions
+#define free do_not_call_old_memory_functions!call_My*functions
+#endif
+
 
 #endif /* _I_MEMORY_H */
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_pong.c,v 1.26 2002/05/24 23:34:22 androsyn Exp $
+ *  $Id: m_pong.c,v 1.26.2.1 2002/07/08 18:44:36 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -60,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&pong_msgtab);
 }
 
-const char *_version = "$Revision: 1.26 $";
+const char *_version = "$Revision: 1.26.2.1 $";
 #endif
 static void ms_pong(struct Client *client_p,
                    struct Client *source_p,
@@ -120,7 +120,7 @@ static void mr_pong(struct Client *client_p,
 	unsigned long incoming_ping = strtoul(parv[1], (char **)NULL, 10);
 	if(incoming_ping)
 	{
-	  if(source_p->random_ping == incoming_ping)
+	  if(source_p->localClient->random_ping == incoming_ping)
 	  {
 		char buf[USERLEN+1];
 		strlcpy(buf, source_p->username, USERLEN);
@@ -128,7 +128,7 @@ static void mr_pong(struct Client *client_p,
 		register_local_user(client_p, source_p, source_p->name, buf);
 	  } else
 	  {
-		sendto_one(source_p, form_str(ERR_WRONGPONG), me.name, source_p->name, source_p->random_ping);
+		sendto_one(source_p, form_str(ERR_WRONGPONG), me.name, source_p->name, source_p->localClient->random_ping);
 		return;
 	  }
 	}
