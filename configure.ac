@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.36 2003/05/27 17:11:13 joshk Exp $
+dnl $Id: configure.ac,v 7.37 2003/05/28 03:14:33 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -504,32 +504,22 @@ dnl Specialized functions and libraries
 dnl ===================================
 
 AC_ARG_WITH(zlib-path,
-AC_HELP_STRING([--with-zlib-path=DIR],[Path to libz.a for ziplinks support.]),
+AC_HELP_STRING([--with-zlib-path=DIR],[Path to libz.so for ziplinks support.]),
 [LIBS="$LIBS -L$withval"],)
 
 AC_ARG_ENABLE(zlib,
 AC_HELP_STRING([--disable-zlib],[Disable ziplinks support]),
 [zlib=no],
 [
-	AC_CHECK_LIB(z, deflate,
-		[AC_CHECK_LIB(z, zlibVersion,
-			[
-				ZLIB_LD="-lz"
-				AC_DEFINE(HAVE_LIBZ, 1, [Define to 1 if you have the `z' library (-lz).])
-			],
-			[
-				AC_MSG_RESULT([yes, but not using it - v1.0.2 is required])
-				ZLIB_LD=""
-				zlib=no
-			]
-		)],
-		[
-			AC_MSG_RESULT([yes, not using it; -lz unavailable])
-			zlib=no
-		])
+	AC_CHECK_HEADER(zlib.h,[
+	AC_CHECK_LIB(z, zlibVersion)
+	])
 ])
 
-AC_SUBST(ZLIB_LD)
+dnl Eliminate the need for a secondary variable
+if test "$ac_cv_lib_z_zlibVersion" = yes; then
+	AC_SUBST(ZLIB_LD, -lz)
+fi
 
 dnl IO Loop Selection
 dnl =================
@@ -757,6 +747,7 @@ if test "$shared_modules" = "no"; then
 	MODULES_LIBS="../modules/libmodules.a"
 	SEDOBJ=""
 	AC_DEFINE(STATIC_MODULES, 1, [Define to 1 if dynamic modules can't be used.])
+	
 else
 	echo "Checking for shared module support"
 	MODULES_DEFINE=""
@@ -830,7 +821,12 @@ else
 			fi
 		else
 			AC_MSG_RESULT(no)
-			AC_MSG_ERROR(could not find a way to produce position independent code. Try ./configure  --disable-shared-modules)
+			echo "no, using static modules"
+			MODULES_DEFINE=""
+			MOD_TARGET="libmodules.a"
+			MODULES_LIBS="../modules/libmodules.a"
+			SEDOBJ=""
+			AC_DEFINE(STATIC_MODULES, 1, [Define to 1 if dynamic modules can't be used.])
 		fi
 	fi
 	AC_SUBST(PICFLAGS)
