@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.c,v 7.48 2001/01/15 14:51:25 ejb Exp $
+ * $Id: modules.c,v 7.49 2001/01/17 23:27:17 fl_ Exp $
  */
 
 #include <dlfcn.h>
@@ -257,7 +257,7 @@ load_one_module (char *path)
 	struct stat statbuf;
 
 	if (strchr(path, '/')) /* absolute path, try it */
-		return load_a_module(modpath, 1);
+		return load_a_module(path, 1);
 
 	for (pathst = mod_paths.head; pathst; pathst = pathst->next)
 	{
@@ -293,7 +293,8 @@ load_a_module (char *path, int check)
   mod_basename = irc_basename(path);
 
   tmpptr = dlopen (path, RTLD_NOW);
-  
+
+sendto_realops_flags(FLAGS_ALL, "%s", path);  
   if (tmpptr == NULL)
   {
       const char *err = dlerror();
