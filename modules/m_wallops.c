@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_wallops.c,v 1.4 2000/11/26 03:35:40 db Exp $
+ *   $Id: m_wallops.c,v 1.5 2000/11/26 18:37:07 bill Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -63,7 +63,7 @@ int mo_wallops(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
       return 0;
     }
 
-  send_operwall(sptr, "WALLOPS", message);
+  send_operwall(sptr, "WALLOPS", "%s", message);
   sendto_serv_butone( NULL, ":%s WALLOPS :%s", parv[0], message);
 
   return 0;
@@ -89,12 +89,12 @@ int ms_wallops(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 
   if(IsServer(sptr))
     {
-      send_operwall(sptr, NULL, message);
+      send_operwall(sptr, NULL, "%s", message);
       sendto_serv_butone(cptr, ":%s WALLOPS :%s", parv[0], message);
     }
   else
     {
-      send_operwall(sptr, "WALLOPS", message);
+      send_operwall(sptr, "WALLOPS", "%s", message);
       sendto_serv_butone( cptr, ":%s WALLOPS :%s", parv[0], message);
     }
 

@@ -16,7 +16,7 @@
 #*   along with this program; if not, write to the Free Software
 #*   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #*
-#*   $Id: Makefile.in,v 7.9 2000/11/11 14:52:43 ejb Exp $
+#*   $Id: Makefile.in,v 7.10 2000/11/26 18:37:01 bill Exp $
 #*/
 
 RM=@RM@
@@ -80,7 +80,7 @@ CFLAGS		= @CFLAGS@
 
 
 SHELL=/bin/sh
-SUBDIRS=src tools modules
+SUBDIRS=src tools modules iauth
 # XXX removed `iauth' from the build since it doesn't compile currently
 # SUBDIRS=src tools iauth
 
