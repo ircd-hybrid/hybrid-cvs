@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.h,v 7.4 2000/10/25 23:18:07 adrian Exp $
+ *   $Id: s_auth.h,v 7.5 2000/11/01 15:28:53 adrian Exp $
  */
 #ifndef INCLUDED_s_auth_h
 #define INCLUDED_s_auth_h
@@ -26,6 +26,14 @@
 #ifndef INCLUDED_config_h
 #include "config.h"
 #endif
+
+/* 
+ * How many auth allocations to allocate in a block. I'm guessing that
+ * a good number here is 64, because these are temporary and don't live
+ * as long as clients do.
+ *     -- adrian
+ */
+#define	AUTH_BLOCK_SIZE		64
 
 struct Client;
 
