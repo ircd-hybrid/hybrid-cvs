@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.277 2002/06/19 20:17:47 leeh Exp $
+ *  $Id: client.c,v 7.278 2002/06/19 20:26:37 leeh Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -885,8 +885,7 @@ get_client_name(struct Client* client, int showip)
         return client->name;
 
 #ifdef HIDE_SERVERS_IPS
-      if(showip == SHOW_IP && (IsServer(client) || IsConnecting(client)
-			      || IsHandshake(client)))
+      if(IsServer(client) || IsConnecting(client) || IsHandshake(client))
         showip = MASK_IP;
 #endif
 #ifdef HIDE_SPOOF_IPS
