@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.76 2001/01/04 20:27:17 toot Exp $
+ * $Id: config.h,v 7.77 2001/01/07 04:28:05 ejb Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -400,6 +400,12 @@
  */
 #define USE_RCS
 
+/*
+ * this checks for various things that should never happen, but
+ * might do due to bugs.  ircd might be slightly more efficient with 
+ * these disabled, who knows. keep this enabled during development.
+ */
+#define INVARIANTS
 /* ----------------- archaic and/or broken section -------------------- */
 #undef DNS_DEBUG
 

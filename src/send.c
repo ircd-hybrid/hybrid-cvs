@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.105 2001/01/07 03:25:28 davidt Exp $
+ *   $Id: send.c,v 7.106 2001/01/07 04:28:10 ejb Exp $
  */
 #include "tools.h"
 #include "send.h"
@@ -145,12 +145,14 @@ send_message(struct Client *to, char *msg, int len)
   if (to->from)
     to = to->from; /* shouldn't be necessary */
 
+#ifdef INVARIANTS
   if (IsMe(to))
     {
       sendto_realops_flags(FLAGS_ALL,
 			   "Trying to send to myself! [%s]", msg);
       return 0;
     }
+#endif
 
   if (to->fd < 0)
     return 0; /* Thou shalt not write to closed descriptors */
@@ -312,6 +314,7 @@ send_queued_write(int fd, void *data)
   ** Once socket is marked dead, we cannot start writing to it,
   ** even if the error is removed...
   */
+#ifdef INVARIANTS
   if (IsDead(to)) {
     /*
      * Actually, we should *NEVER* get here--something is
@@ -320,6 +323,7 @@ send_queued_write(int fd, void *data)
      */
     return;
   } /* if (IsDead(to)) */
+#endif
 
   /* Next, lets try to write some data */
   if (linebuf_len(&to->localClient->buf_sendq)) {
@@ -373,6 +377,7 @@ sendto_one(struct Client *to, const char *pattern, ...)
   if (to->from)
     to = to->from;
   
+#ifdef INVARIANTS
   if (to->fd < 0)
     {
       Debug((DEBUG_ERROR,
@@ -385,6 +390,7 @@ sendto_one(struct Client *to, const char *pattern, ...)
 			   "Trying to send [%s] to myself!", sendbuf);
       return;
     }
+#endif
 
   va_start(args, pattern);
   len = send_format(sendbuf, pattern, args);
@@ -420,6 +426,7 @@ sendto_one_prefix(struct Client *to, struct Client *prefix,
   else
     sendto = to;
   
+#ifdef INVARIANTS
   if (to->fd < 0)
     {
       Debug((DEBUG_ERROR,
@@ -433,6 +440,7 @@ sendto_one_prefix(struct Client *to, struct Client *prefix,
 			   "Trying to send [%s] to myself!", sendbuf);
       return;
     }
+#endif
 
   va_start(args, pattern);
   send_format(sendbuf, pattern, args);
