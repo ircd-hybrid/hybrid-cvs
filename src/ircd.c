@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.214 2002/01/09 17:16:53 leeh Exp $
+ *  $Id: ircd.c,v 7.215 2002/01/12 18:38:42 jmallett Exp $
  */
 
 #include <sys/types.h>
@@ -43,6 +43,9 @@
 
 #ifdef RLIMIT_FD_MAX
 #include <sys/time.h>
+#endif
+
+#ifdef HAVE_SYS_RESOURCE_H
 #include <sys/resource.h>
 #endif
 
@@ -209,7 +212,7 @@ print_startup(int pid)
 static void 
 init_sys(void)
 {
-#if defined(RLIMIT_FD_MAX) && !defined(VMS)
+#if defined(RLIMIT_FD_MAX) && !defined(VMS) && defined(HAVE_SYS_RLIMIT_H)
   struct rlimit limit;
 
   if (!getrlimit(RLIMIT_FD_MAX, &limit))
@@ -518,7 +521,7 @@ static void check_pidfile(const char *filename)
  */
 static void setup_corefile(void)
 {
-#ifndef VMS
+#if !defined(VMS) && defined(HAVE_SYS_RESOURCE_H)
   struct rlimit rlim; /* resource limits */
 
   /* Set corefilesize to maximum */

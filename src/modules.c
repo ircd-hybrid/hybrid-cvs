@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.87 2002/01/05 09:15:14 a1kmm Exp $
+ *  $Id: modules.c,v 7.88 2002/01/12 18:38:43 jmallett Exp $
  */
 
 #include "config.h"
@@ -257,9 +257,9 @@ int unload_one_module (char *name, int warn)
   if ((modindex = findmodule_byname (name)) == -1) 
     return -1;
 
-  if( (deinitfunc = (void (*)(void))dlsym (modlist[modindex]->address, 
+  if( (deinitfunc = (void (*)(void))(uintptr_t)dlsym (modlist[modindex]->address, 
 				  "_moddeinit")) 
-		  || (deinitfunc = (void (*)(void))dlsym (modlist[modindex]->address, 
+		  || (deinitfunc = (void (*)(void))(uintptr_t)dlsym (modlist[modindex]->address, 
 				  "__moddeinit")))
   {
     deinitfunc ();
@@ -423,9 +423,9 @@ load_a_module (char *path, int warn, int core)
       return -1;
   }
 
-  initfunc = (void (*)(void))dlsym (tmpptr, "_modinit");
+  initfunc = (void (*)(void))(uintptr_t)dlsym (tmpptr, "_modinit");
   if (initfunc == NULL 
-		  && (initfunc = (void (*)(void))dlsym(tmpptr, "__modinit")) == NULL)
+		  && (initfunc = (void (*)(void))(uintptr_t)dlsym(tmpptr, "__modinit")) == NULL)
   {
     sendto_realops_flags(FLAGS_ALL, L_ALL,
                           "Module %s has no _modinit() function",
