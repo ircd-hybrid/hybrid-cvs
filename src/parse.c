@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.50 2000/12/23 21:47:28 ejb Exp $
+ *   $Id: parse.c,v 7.51 2000/12/23 21:55:17 ejb Exp $
  */
 #include "parse.h"
 #include "client.h"
@@ -243,15 +243,16 @@ int parse(struct Client *cptr, char *buffer, char *bufend)
 
   i = 1;
 
-  end = s;
-  while (*end++);
-  
   if (s)   /* redone by is, aug 2000 */
   {
       if (paramcount > MAXPARA)
 		  paramcount = MAXPARA;
-      
-      {
+
+	  end = s;
+	  while (*end++)
+		  ;
+  
+	  {
 		  char *longarg = NULL;
 		  char *ap;
 		  
