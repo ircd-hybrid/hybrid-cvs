@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_unkline.c,v 1.49 2002/11/13 05:30:41 db Exp $
+ *  $Id: m_unkline.c,v 1.50 2002/11/13 13:15:06 db Exp $
  */
 
 #include "stdinc.h"
@@ -73,7 +73,7 @@ _moddeinit(void)
   mod_del_cmd(&msgtabs[1]);
   mod_del_cmd(&msgtabs[2]);
 }
-const char *_version = "$Revision: 1.49 $";
+const char *_version = "$Revision: 1.50 $";
 #endif
 
 static int flush_write(struct Client *, FBFILE *in, FBFILE *out,
@@ -96,7 +96,7 @@ mo_unkline (struct Client *client_p,struct Client *source_p,
 	    int parc,char *parv[])
 {
   FBFILE *in, *out;
-  int pairme=0,error_on_write = NO;
+  int pairme=0;
   char buf[BUFSIZE], buff[BUFSIZE], temppath[BUFSIZE], *user, *host, *p;
   const char  *filename;                /* filename to use for unkline */
   mode_t oldumask;
@@ -327,7 +327,7 @@ mo_undline (struct Client *client_p, struct Client *source_p,
   FBFILE* out;
   char  buf[BUFSIZE], buff[BUFSIZE], temppath[BUFSIZE], *p;
   const char  *filename,*cidr, *found_cidr;
-  int pairme = NO, error_on_write = NO;
+  int pairme = NO;
   mode_t oldumask;
 
   ircsprintf(temppath, "%s.tmp", ConfigFileEntry.dlinefile);
