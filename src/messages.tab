@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: messages.tab,v 7.66 2002/04/28 16:47:53 leeh Exp $
+ *   $Id: messages.tab,v 7.67 2002/05/22 13:52:43 leeh Exp $
  */
 
 static  char *  replies[] = {
@@ -387,7 +387,7 @@ static  char *  replies[] = {
 /* 360 */       NULL,
 /* 361 RPL_KILLDONE, */ NULL,
 /* 362 RPL_CLOSING, */          ":%s 362 %s %s :Closed. Status = %d",
-/* 363 RPL_CLOSEEND, */         ":%s 363 %s %d: Connections Closed",
+/* 363 RPL_CLOSEEND, */         ":%s 363 %s %d :Connections Closed",
 /* 364 RPL_LINKS, */            ":%s 364 %s %s %s :%d %s",
 /* 365 RPL_ENDOFLINKS, */       ":%s 365 %s %s :End of /LINKS list.",
 /* 366 RPL_ENDOFNAMES, */       ":%s 366 %s %s :End of /NAMES list.",

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.267 2002/05/20 23:07:38 androsyn Exp $
+ *  $Id: client.c,v 7.268 2002/05/22 13:52:43 leeh Exp $
  */
 
 #include "tools.h"
@@ -73,8 +73,9 @@ static int local_client_count=0;
 static BlockHeap *client_heap = NULL;
 static BlockHeap *lclient_heap = NULL;
 
-static dlink_list dead_list;
-static dlink_list abort_list;
+dlink_list dead_list;
+dlink_list abort_list;
+
 /*
  * client_heap_gc
  *
