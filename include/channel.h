@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.120 2002/10/28 21:09:20 bill Exp $
+ *  $Id: channel.h,v 7.121 2003/01/17 04:18:16 db Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -103,10 +103,10 @@ struct Channel
 
 extern  struct  Channel *GlobalChannelList;
 
-void init_channels(void);
-void cleanup_channels(void *);
-
-
+extern void init_channels(void);
+#ifdef VCHANS
+extern void clear_channels(void *unused);
+#endif
 extern int     can_send (struct Channel *chptr, struct Client *who);
 extern int     is_banned (struct Channel *chptr, struct Client *who);
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.347 2003/01/09 06:15:52 db Exp $
+ *  $Id: channel.c,v 7.348 2003/01/17 04:18:19 db Exp $
  */
 
 #include "stdinc.h"
@@ -453,6 +453,41 @@ check_channel_name(const char *name)
 
   return 1;
 }
+
+#ifdef VCHANS
+/* clear_channels()
+ *  inputs       -
+ *  output       -
+ *  side effects - destroying empty channels
+ */
+void
+clear_channels(void *unused)
+{
+  struct Channel *chptr;
+  struct Channel *next_chptr;
+
+  for (chptr = GlobalChannelList; chptr; chptr = next_chptr)
+  {
+    next_chptr = chptr->nextch;
+
+    if (!HasVchans(chptr))
+    {
+      if (!IsVchanTop(chptr))
+      {
+	if (chptr->users == 0)
+	{
+	  if ((uplink) && IsCapable(uplink, CAP_LL))
+	  {
+	    sendto_one(uplink, ":%s DROP %s", me.name, chptr->chname);
+	  }
+
+	  destroy_channel(chptr);
+	}
+      }
+    }
+  }
+}
+#endif
 
 /*
  * sub1_from_channel

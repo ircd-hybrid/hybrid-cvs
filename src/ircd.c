@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.246 2003/01/16 04:08:01 db Exp $
+ *  $Id: ircd.c,v 7.247 2003/01/17 04:18:20 db Exp $
  */
 
 #include "stdinc.h"
@@ -731,6 +731,9 @@ int main(int argc, char *argv[])
   
   ilog(L_NOTICE, "Server Ready");
   
+#ifdef VCHANS
+  eventAddIsh("clear_channels", clear_channels, NULL, 1800);
+#endif
   eventAddIsh("cleanup_glines", cleanup_glines, NULL, CLEANUP_GLINES_TIME);
 
   eventAddIsh("cleanup_tklines", cleanup_tklines, NULL, CLEANUP_TKLINES_TIME);
