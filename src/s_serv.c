@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.140 2001/02/09 02:20:03 db Exp $
+ *   $Id: s_serv.c,v 7.141 2001/02/09 02:51:12 db Exp $
  */
 
 #include <sys/types.h>
@@ -1568,7 +1568,7 @@ serv_connect(struct ConfItem *aconf, struct Client *by)
 	copy_s_addr(S_ADDR(ipn), htonl(IN_ADDR(vserv)));
 #endif
 	comm_connect_tcp(cptr->fd, aconf->host, aconf->port,
-3			 (struct sockaddr *)&SOCKADDR(ipn), sizeof(struct irc_sockaddr), 
+			 (struct sockaddr *)&SOCKADDR(ipn), sizeof(struct irc_sockaddr), 
 			 serv_connect_callback, cptr, aconf->aftype);
       }
     else
