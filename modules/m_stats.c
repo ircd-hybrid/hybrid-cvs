@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 1.48 2001/01/19 04:06:33 db Exp $
+ *  $Id: m_stats.c,v 1.49 2001/01/20 06:48:18 db Exp $
  */
 #include "tools.h"	 /* dlink_node/dlink_list */
 #include "handlers.h"    /* m_pass prototype */
@@ -301,7 +301,7 @@ static void do_non_priv_stats(struct Client *sptr, char *name, char *target,
 	{
 	  if(IsOper(sptr))
 	    {
-	      report_configured_links(sptr, CONF_OPS);
+	      report_configured_links(sptr, CONF_OPERATOR);
 	    }
 	  else
 	    {
@@ -310,7 +310,7 @@ static void do_non_priv_stats(struct Client *sptr, char *name, char *target,
 	}
       else
 	{
-	  report_configured_links(sptr, CONF_OPS);
+	  report_configured_links(sptr, CONF_OPERATOR);
 	}
       stats_spy(sptr,statchar);
       break;
@@ -428,7 +428,7 @@ static void do_priv_stats(struct Client *sptr, char *name, char *target,
       break;
 
     case 'o' : case 'O' :
-      report_configured_links(sptr, CONF_OPS);
+      report_configured_links(sptr, CONF_OPERATOR);
       stats_spy(sptr,statchar);
       break;
 

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_oper.c,v 1.24 2001/01/05 00:14:32 davidt Exp $
+ *   $Id: m_oper.c,v 1.25 2001/01/20 06:48:18 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -210,10 +210,10 @@ struct ConfItem *find_password_aconf(char *name, struct Client *sptr)
   struct ConfItem *aconf;
 
   if (!(aconf = find_conf_exact(name, sptr->username, sptr->host,
-				CONF_OPS)) &&
+				CONF_OPERATOR)) &&
       !(aconf = find_conf_exact(name, sptr->username,
 				inetntoa((char *)&sptr->localClient->ip),
-				CONF_OPS)))
+				CONF_OPERATOR)))
     {
       return 0;
     }
@@ -234,7 +234,7 @@ static int match_oper_password(char *password,
 {
   char *encr;
 
-  if (!aconf->status & CONF_OPS)
+  if (!aconf->status & CONF_OPERATOR)
     return NO;
 
 #ifdef CRYPT_OPER_PASSWORD

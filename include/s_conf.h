@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.78 2001/01/20 06:28:04 db Exp $
+ * $Id: s_conf.h,v 7.79 2001/01/20 06:48:13 db Exp $
  */
 
 #include "setup.h"
@@ -78,7 +78,6 @@ struct ConfItem
 #define CONF_QUARANTINED_NICK   0x0001
 #define CONF_CLIENT             0x0002
 #define CONF_SERVER             0x0004
-#define CONF_LOCOP              0x0008
 #define CONF_OPERATOR           0x0010
 #define CONF_KILL               0x0040
 #define CONF_ADMIN              0x0080
@@ -95,9 +94,8 @@ struct ConfItem
 #define CONF_ULINE             0x80000
 
 
-#define CONF_OPS                (CONF_OPERATOR | CONF_LOCOP)
-#define CONF_SERVER_MASK        CONF_SERVER
-#define CONF_CLIENT_MASK        (CONF_CLIENT | CONF_OPS | CONF_SERVER_MASK)
+#define CONF_SERVER_MASK       CONF_SERVER
+#define CONF_CLIENT_MASK       (CONF_CLIENT | CONF_OPERATOR | CONF_SERVER_MASK)
 
 #define IsIllegal(x)    ((x)->status & CONF_ILLEGAL)
 
