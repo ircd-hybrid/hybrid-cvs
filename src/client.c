@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.137 2001/02/11 02:52:05 a1kmm Exp $
+ *  $Id: client.c,v 7.138 2001/02/21 13:55:32 androsyn Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -1323,8 +1323,7 @@ const char* comment         /* Reason for the exit */
       if (sptr->flags & FLAGS_IPHASH)
         remove_one_ip(&sptr->localClient->ip);
       
-      if(sptr->localClient->dns_query.query != NULL)
-	      adns_cancel(sptr->localClient->dns_query.query);
+      delete_adns_queries(sptr);
       delete_identd_queries(sptr);
 
       client_flush_input(sptr);

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.c,v 7.56 2001/02/14 05:53:20 toot Exp $
+ *   $Id: s_auth.c,v 7.57 2001/02/21 13:55:31 androsyn Exp $
  *
  * Changes:
  *   July 6, 1999 - Rewrote most of the code here. When a client connects
@@ -462,7 +462,7 @@ timeout_auth_queries_event(void *notused)
 	    sendheader(auth->client, REPORT_FAIL_ID);
 	  if (IsDNSPending(auth))
 	    {
-	      adns_cancel(auth->client->localClient->dns_query.query);	
+	      delete_adns_queries(&auth->client->localClient->dns_query);
 	      auth->client->localClient->dns_query.query = NULL;
 	      sendheader(auth->client, REPORT_FAIL_DNS);
 	    }

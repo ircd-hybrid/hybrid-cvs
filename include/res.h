@@ -1,5 +1,5 @@
 /*
- * $Id: res.h,v 7.13 2001/02/11 23:37:42 db Exp $ 
+ * $Id: res.h,v 7.14 2001/02/21 13:55:38 androsyn Exp $ 
  * New res.h
  * Aaron Sethman <androsyn@ratbox.org>
  */
@@ -30,5 +30,5 @@ void dns_do_callbacks(void);
 void dns_select (void);
 void adns_gethost (const char *name , int aftype , struct DNSQuery *req );
 void adns_getaddr (struct irc_inaddr *addr , int aftype , struct DNSQuery *req );
-
+void delete_adns_queries(struct DNSQuery *q);
 #endif
