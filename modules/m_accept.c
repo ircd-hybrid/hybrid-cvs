@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_accept.c,v 1.13 2001/01/05 00:14:22 davidt Exp $
+ *   $Id: m_accept.c,v 1.14 2001/01/15 14:32:15 ejb Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -89,6 +89,13 @@ static int m_accept(struct Client *cptr, struct Client *sptr,
 
   if (add == 1)
     {
+		if (accept_message(source, sptr)) {
+			/* already on list */
+			sendto_one(sptr, ":%s NOTICE %s :%s is already on your accept list",
+					   me.name, parv[0], source->name);
+			return 0;
+		}
+		
       del_from_accept(source,sptr);
       add_to_accept(source,sptr);
       sendto_one(sptr, ":%s NOTICE %s :Now allowing %s", 
