@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.398 2004/03/15 11:02:52 metalrock Exp $
+ *  $Id: s_serv.c,v 7.399 2004/03/15 21:04:57 db Exp $
  */
 
 #include "stdinc.h"
@@ -413,7 +413,7 @@ hunt_server(struct Client *client_p, struct Client *source_p, const char *comman
     }
     else
     {
-      DLINK_FOREACH(ptr, global_serv_list.head)
+      DLINK_FOREACH(ptr, global_client_list.head)
       {
         target_tmp = ptr->data;
 
