@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.205 2001/12/13 20:10:02 leeh Exp $
+ * $Id: ircd.c,v 7.206 2001/12/17 17:06:49 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -610,6 +610,10 @@ int main(int argc, char *argv[])
     perror("chdir");
     exit(EXIT_FAILURE);
   }
+
+#ifdef __CYGWIN__
+  server_state.foreground = 1;
+#endif
 
   if (!server_state.foreground)
   {
