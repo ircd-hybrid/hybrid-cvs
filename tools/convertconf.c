@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: convertconf.c,v 1.18 2000/04/03 03:33:30 db Exp $
+ * $Id: convertconf.c,v 1.19 2000/12/20 08:10:07 db Exp $
  */
 
 #include <stdio.h>
@@ -413,9 +413,9 @@ static void oldParseOneLine(FILE *out,char* line)
     case 'm':
       fprintf(out,"\tserverinfo {\n");
       if(host_field)
-	fprintf(out,"\t\tname=%s;\n", host_field);
+	fprintf(out,"\t\tname=\"%s\";\n", host_field);
       if(passwd_field)
-	fprintf(out,"\t\tvhost=\"%s\";\n", passwd_field);
+	fprintf(out,"\t\tvhost=%s;\n", passwd_field);
       if(user_field)
 	fprintf(out,"\t\tdescription=\"%s\";\n", user_field);
       if(port_field)
@@ -521,8 +521,10 @@ static void oldParseOneLine(FILE *out,char* line)
       fprintf(out,"\tshared {\n");
       if(host_field)
 	fprintf(out,"\t\tname=\"%s\";\n", host_field);
+#if 0
       if(passwd_field)
 	fprintf(out,"\t\treason=\"%s\";\n", passwd_field);
+#endif
       fprintf(out,"\t};\n\n");
       break;
 
@@ -785,7 +787,7 @@ static void OperPrivsFromString(FILE* out, char *privs)
 	}
       else if(*privs == 'K')                /* allow kill and kline privs */
 	{
-	  fprintf(out,"\t\tkline_kill=yes;\n");
+	  fprintf(out,"\t\tkline=yes;\n");
 	}
       else if(*privs == 'k')                /* disallow kill and kline privs */
 	{

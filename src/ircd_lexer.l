@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.36 2000/12/19 17:46:06 ejb Exp $
+ * $Id: ircd_lexer.l,v 1.37 2000/12/20 08:10:02 db Exp $
  */
 
 %option case-insensitive
@@ -154,6 +154,7 @@ remote		{ return REMOTE; }
 send_password	{ return SEND_PASSWORD; }
 sendq		{ return SENDQ; }
 serverinfo	{ return SERVERINFO; }
+shared          { return SHARED; }
 short_motd      { return SHORT_MOTD; }
 spoof		{ return SPOOF; }
 unkline		{ return UNKLINE; }

@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: oldparse.c,v 1.13 2000/12/14 19:59:18 db Exp $
+ *  $Id: oldparse.c,v 1.14 2000/12/20 08:10:03 db Exp $
  */
 #include "tools.h"
 #include "s_log.h"
@@ -255,8 +255,8 @@ void oldParseOneLine(char* line,struct ConfItem* aconf,
       conf_add_q_line(aconf);
       break;
 
-    case 'U': /* Uphost, ie. host where client reading */
-    case 'u': /* this should connect.                  */
+    case 'U': /* shared klines etc. */
+    case 'u': 
       aconf->status = CONF_ULINE;
       conf_add_fields(aconf,host_field,pass_field,user_field,
 		      port_field,class_field);
