@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_links.c,v 1.20 2001/01/05 00:14:30 davidt Exp $
+ *   $Id: m_links.c,v 1.21 2001/01/15 21:20:07 fl_ Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -131,41 +131,32 @@ static int mo_links(struct Client *cptr, struct Client *sptr,
         continue;
       if (*mask && !match(mask, acptr->name))
         continue;
-      if(IsOper(sptr))
-         sendto_one(sptr, form_str(RPL_LINKS),
-                    me.name, parv[0], acptr->name, acptr->serv->up,
-                    acptr->hopcount, (acptr->info[0] ? acptr->info :
-                                      "(Unknown Location)"));
+    
+      if(acptr->info[0])
+        {
+          if( (p = strchr(acptr->info,']')) )
+            p += 2; /* skip the nasty [IP] part */
+          else
+            p = acptr->info;
+        } 
+      else
+        p = "(Unknown Location)";
+
+
+      if(!GlobalSetOptions.hide_server || IsOper(sptr))
+	   sendto_one(sptr, form_str(RPL_LINKS),
+		      me.name, parv[0], acptr->name, acptr->serv->up,
+                      acptr->hopcount, p);
       else
         {
-          if(acptr->info[0])
-            {
-              if( (p = strchr(acptr->info,']')) )
-                p += 2; /* skip the nasty [IP] part */
-              else
-                p = acptr->info;
-            }
+          if(&me == acptr)
+            sendto_one(sptr, form_str(RPL_LINKS),
+                       me.name, parv[0], acptr->name, me.name, 0, p);
           else
-            p = "(Unknown Location)";
+            sendto_one(sptr, form_str(RPL_LINKS),
+                       me.name, parv[0], acptr->name, me.name, 1, p);
 
-	  if(GlobalSetOptions.hide_server)
-	    {
-	      if(&me == acptr)
-		sendto_one(sptr, form_str(RPL_LINKS),
-			   me.name, parv[0], acptr->name, me.name,
-			   0, p);
-	      else
-		sendto_one(sptr, form_str(RPL_LINKS),
-			   me.name, parv[0], acptr->name, me.name,
-			   1, p);
-	    }
-	  else
-	    {
-	      sendto_one(sptr, form_str(RPL_LINKS),
-			 me.name, parv[0], acptr->name, acptr->serv->up,
-			 acptr->hopcount, p);
-	    }
-        }
+	}
 
     }
   
