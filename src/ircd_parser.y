@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.131 2001/02/17 00:37:37 a1kmm Exp $
+ * $Id: ircd_parser.y,v 1.132 2001/02/19 01:54:31 wcampbel Exp $
  */
 
 %{
@@ -665,7 +665,7 @@ listen_entry:   LISTEN
 listen_items:   listen_items listen_item |
                 listen_item
 
-listen_item:    listen_port | listen_address | error
+listen_item:    listen_port | listen_address | listen_host | error
 
 listen_port:    PORT '=' NUMBER ';'
   {
@@ -673,6 +673,11 @@ listen_port:    PORT '=' NUMBER ';'
   };
 
 listen_address: IP '=' QSTRING ';'
+  {
+    DupString(listener_address, yylval.string);
+  };
+
+listen_host:	HOST '=' QSTRING ';'
   {
     DupString(listener_address, yylval.string);
   };
