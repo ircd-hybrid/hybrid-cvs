@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.112 2002/05/14 11:41:25 leeh Exp $
+ *  $Id: channel.h,v 7.113 2002/05/20 17:53:49 androsyn Exp $
  */
 
 #include <sys/types.h>        /* time_t */
@@ -130,7 +130,7 @@ extern int     is_voiced (struct Channel *chptr,struct Client *who);
 extern dlink_node *find_user_link (dlink_list *, struct Client *);
 extern void    add_user_to_channel(struct Channel *chptr,
 				   struct Client *who, int flags);
-extern void    remove_user_from_channel(struct Channel *chptr,
+extern int     remove_user_from_channel(struct Channel *chptr,
 					struct Client *who);
 
 extern int     check_channel_name(const char* name);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.193 2002/05/20 17:28:41 androsyn Exp $
+ *  $Id: send.c,v 7.194 2002/05/20 17:53:52 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -705,16 +705,18 @@ sendto_remove_channels_local(struct Client *user, const char *pattern, ...)
     {
       ptr_next = ptr->next;
       chptr = ptr->data;
-      remove_user_from_channel(chptr, user);
-      sendto_list_local(&chptr->locchanops, &linebuf);
+      if(remove_user_from_channel(chptr, user) == 0)
+      {
+        sendto_list_local(&chptr->locchanops, &linebuf);
 #ifdef REQUIRE_OANDV
-      sendto_list_local(&chptr->locchanops_voiced, &linebuf);
+        sendto_list_local(&chptr->locchanops_voiced, &linebuf);
 #endif
 #ifdef HALFOPS
-      sendto_list_local(&chptr->lochalfops, &linebuf);
+        sendto_list_local(&chptr->lochalfops, &linebuf);
 #endif
-      sendto_list_local(&chptr->locvoiced, &linebuf);
-      sendto_list_local(&chptr->locpeons, &linebuf);
+        sendto_list_local(&chptr->locvoiced, &linebuf);
+        sendto_list_local(&chptr->locpeons, &linebuf);
+      }
     }
 
     if (MyConnect(user) && (user->serial != current_serial))
