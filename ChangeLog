@@ -1,3 +1,15 @@
+leeh        2002/02/05 15:16:59 EST	(20020205_5)
+
+  Modified files:
+    modules              m_invite.c 
+  Log:
+  - disable invite propagation
+  
+  Revision  Changes    Path
+  1.40      +13 -1     ircd-hybrid-7/modules/m_invite.c
+
+
+
 jmallett    2002/02/05 09:37:55 EST	(20020205_4)
 
   Modified files:
@@ -22205,4 +22217,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3383 2002/02/05 14:38:01 jmallett Exp $
+$Id: ChangeLog,v 7.3384 2002/02/05 20:17:05 leeh Exp $
