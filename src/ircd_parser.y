@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.126 2001/02/05 01:05:37 androsyn Exp $
+ * $Id: ircd_parser.y,v 1.127 2001/02/05 02:59:02 db Exp $
  */
 
 %{
@@ -110,6 +110,7 @@ int   class_redirport_var;
 %token  INCLUDE
 %token  IP
 %token  IP_TYPE
+%token  IPV6_TYPE
 %token  KILL
 %token  KLINE
 %token  KLINE_EXEMPT
@@ -756,6 +757,19 @@ auth_user:   USER '=' QSTRING ';'
 
     yy_aconf->ip = yylval.ip_entry.ip;
     yy_aconf->ip_mask = yylval.ip_entry.ip_mask;
+    DupString(yy_aconf->host,ip_string);
+    if((p = strchr(yy_aconf->host, ';')))
+      *p = '\0';
+  }
+	     |
+        IP '=' IPV6_TYPE ';'
+  {
+    char *p;
+
+#if 0
+    yy_aconf->ip = yylval.ip_entry.ip;
+    yy_aconf->ip_mask = yylval.ip_entry.ip_mask;
+#endif
     DupString(yy_aconf->host,ip_string);
     if((p = strchr(yy_aconf->host, ';')))
       *p = '\0';

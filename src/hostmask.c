@@ -15,7 +15,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- * $Id: hostmask.c,v 7.4 2001/02/05 02:29:11 db Exp $ 
+ * $Id: hostmask.c,v 7.5 2001/02/05 02:59:01 db Exp $ 
  */
 #include <unistd.h>
 #include <string.h>
@@ -159,7 +159,10 @@ struct ConfItem *find_matching_conf(const char *host, const char *user,
 void add_conf(struct ConfItem *aconf)
 {
  char buffer[HOSTLEN+USERLEN+1];
- ircsprintf(buffer, "%s@%s", aconf->user, aconf->host);
+
+ ircsprintf(buffer, "%s@%s",
+	    aconf->user ? aconf->user : "",
+	    aconf->host ? aconf->host : "");
  add_hostmask(buffer, HOST_CONFITEM, aconf);
 }
 

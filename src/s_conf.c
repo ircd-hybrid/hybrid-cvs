@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.174 2001/02/05 02:29:11 db Exp $
+ *  $Id: s_conf.c,v 7.175 2001/02/05 02:59:02 db Exp $
  */
 
 #include <sys/types.h>
@@ -2073,6 +2073,25 @@ int        is_address(char *host,
     }
 
   return( 1 );
+}
+
+/*
+ * is_ipv6_address
+ *
+ * inputs        - hostname
+ *               - pointer to ip result
+ *               - pointer to ip_mask result
+ * output        - YES if hostname is ip# only NO if its not
+ * side effects  - NONE
+ * 
+ */
+
+int        is_ipv6_address(char *host,
+			   unsigned char *ip_ptr,
+			   unsigned char *ip_mask_ptr)
+{
+  /* lie */
+  return 1;
 }
 
 /*
