@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: balloc.c,v 7.23 2002/01/14 00:56:04 androsyn Exp $
+ *  $Id: balloc.c,v 7.24 2002/02/27 17:20:15 androsyn Exp $
  */
 
 /* 
@@ -74,6 +74,13 @@ static int newblock(BlockHeap * bh);
 
 #ifdef HAVE_MMAP /* We've got mmap() that is good */
 #include <sys/mman.h>
+
+/* HP-UX sucks */
+#ifdef MAP_ANONYMOUS
+#ifndef MAP_ANON
+#define MAP_ANONYMOUS MAP_ANON
+#endif
+#endif
 
 /*
  * static inline void free_block(void *ptr, size_t size)
