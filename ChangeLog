@@ -1,3 +1,18 @@
+wiz         2002/10/30 22:12:31 EST	(20021031_0)
+
+  Modified files:
+    include              hook.h 
+    src                  hook.c 
+  Log:
+  - Fixed compile time errors from missing ) and missing proto
+    in hook.c/hook.h (hi bill!)
+  
+  Revision  Changes    Path
+  1.15      +1 -0      ircd-hybrid-7/include/hook.h
+  7.19      +2 -2      ircd-hybrid-7/src/hook.c
+
+
+
 androsyn    2002/10/30 16:53:31 EST	(20021030_8)
 
   Modified files:
@@ -32905,4 +32920,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4091 2002/10/30 21:53:33 androsyn Exp $
+$Id: ChangeLog,v 7.4092 2002/10/31 03:12:34 wiz Exp $
