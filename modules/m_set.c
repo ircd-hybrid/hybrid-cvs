@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_set.c,v 1.24 2000/12/28 17:28:49 davidt Exp $ */
+ *   $Id: m_set.c,v 1.25 2000/12/30 18:28:53 lusky Exp $ */
 
 /* rewritten by jdc */
 
@@ -306,7 +306,9 @@ int quote_msglocale( struct Client *sptr, char *locale )
 #ifdef USE_GETTEXT
   if(locale)
   {
-    setenv("LANGUAGE", locale, 1);
+    char langenv[BUFSIZE];
+    ircsprintf("LANGUAGE=%s",locale);
+    putenv(langenv);
     { /* XXX ick, this is what gettext.info _recommends_ */
       extern int  _nl_msg_cat_cntr;
       ++_nl_msg_cat_cntr;
