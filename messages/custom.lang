@@ -1,13 +1,12 @@
 ; ircd-hybrid-7 custom message file
 ; Copyright (C) 2000
 ; David Taylor <davidt@yadt.co.uk>, 2000.
-; $Id: custom.lang,v 1.1 2003/03/25 01:17:51 db Exp $
+; $Id: custom.lang,v 1.2 2003/05/11 09:25:06 adx Exp $
 
 RPL_LUSEROP:             :%s 252 %s %d :Smurf Targets (IRC Operators) online
 RPL_LOAD2HI:             :%s 263 %s :Hold your horses... the server load is temporarily too heavy. Try again later, ok?
 RPL_UNAWAY:              :%s 305 %s :OK, you're not /away anymore. Did you have fun?
 RPL_NOWAWAY:             :%s 306 %s :OK, you're /away now. Hurry back!
-RPL_WHOISADMIN:          :%s 308 %s %s :is a Goon Gumpa (Server Admin)
 RPL_WHOISOPERATOR:       :%s 313 %s %s :is a Smurf Target (IRC Operator)
 RPL_YOUREOPER:           :%s 381 %s :You are now one bad motherfucker - Go /kill someone.
 RPL_REHASHING:           :%s 382 %s %s :it slices, dices, and even reloads config files! Rehashing config file, mang.

@@ -1,7 +1,7 @@
 ; ircd-hybrid-7 custom message file
 ; Copyright (C) 2000
 ; David Taylor <davidt@yadt.co.uk>, 2000.
-; $Id: ayb.lang,v 1.2 2003/05/09 21:38:15 bill Exp $
+; $Id: ayb.lang,v 1.3 2003/05/11 09:25:06 adx Exp $
 
 RPL_WELCOME:             :%s 001 %s :ALL YOUR BASE ARE BELONG TO %s, %s!!!
 RPL_CREATED:             :%s 003 %s :Someone set up us the server %s
@@ -16,7 +16,6 @@ RPL_LOCALUSERS:          :%s 265 %s :%d users (max %d) are belong to me
 RPL_GLOBALUSERS:         :%s 266 %s :%d users (max %d) are belong to the network
 RPL_UNAWAY:              :%s 305 %s :OK, you're not /away anymore. Did you move Zig for great justice?
 RPL_NOWAWAY:             :%s 306 %s :OK, you're /away now. Hurry back!
-RPL_WHOISADMIN:          :%s 308 %s %s :is a Master Zig (Server Admin)
 RPL_WHOISOPERATOR:       :%s 313 %s %s :is a Zig for Great Justice
 RPL_YOUREOPER:           :%s 381 %s :SOMEONE SET YOU UP THE /KILL FOR GREAT JUSTICE!
 RPL_REHASHING:           :%s 382 %s %s :it slices, dices, and even reloads config files! Rehashing config file, mang.
