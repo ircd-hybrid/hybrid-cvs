@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.46 2000/12/14 03:34:49 db Exp $
+ * $Id: ircd_parser.y,v 1.47 2000/12/14 04:19:38 db Exp $
  */
 
 %{
@@ -495,7 +495,7 @@ oper_rehash: REHASH '=' TYES ';' { yy_aconf->port |= CONF_OPER_REHASH;}
 
 oper_admin: ADMIN '=' TYES ';' { yy_aconf->port |= CONF_OPER_ADMIN;}
             |
-            ADMIN '=' TNO ';' { yy_aconf->port |= CONF_OPER_ADMIN;}
+            ADMIN '=' TNO ';' { yy_aconf->port &= ~CONF_OPER_ADMIN;}
 
 /***************************************************************************
  *  section class
