@@ -1,3 +1,17 @@
+leeh        2001/12/14 09:31:31 EST	(20011214_4)
+
+  Modified files:
+    modules              m_message.c m_oper.c 
+  Log:
+  - ban our opers doing $irc.server
+  - initialise oconf to NULL
+  
+  Revision  Changes    Path
+  1.81      +7 -0      ircd-hybrid-7/modules/m_message.c
+  1.40      +3 -1      ircd-hybrid-7/modules/m_oper.c
+
+
+
 a1kmm       2001/12/14 03:49:22 EST	(20011214_3)
 
   Modified files:
@@ -356,7 +370,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3165 2001/12/14 08:49:27 a1kmm Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3166 2001/12/14 14:31:36 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -18710,4 +18724,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3165 2001/12/14 08:49:27 a1kmm Exp $
+$Id: ChangeLog,v 7.3166 2001/12/14 14:31:36 leeh Exp $
