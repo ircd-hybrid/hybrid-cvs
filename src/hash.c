@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.81 2003/10/11 21:56:07 bill Exp $
+ *  $Id: hash.c,v 7.82 2003/10/14 12:09:34 adx Exp $
  */
 
 #include "stdinc.h"
@@ -137,7 +137,7 @@ init_hash(void)
   userhost_heap = BlockHeapCreate(sizeof(struct UserHost), CLIENT_HEAP_SIZE);
   namehost_heap = BlockHeapCreate(sizeof(struct NameHost), CLIENT_HEAP_SIZE);
 
-  weight_key = random() % 256;  /* better than nothing --adx */
+  weight_key = rand() % 256;  /* better than nothing --adx */
 
   /* Here is to what we "map" a char before working on it */
   for (i = CHAR_MIN; i <= CHAR_MAX; i++)
