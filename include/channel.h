@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.122 2003/01/31 12:53:09 a1kmm Exp $
+ *  $Id: channel.h,v 7.123 2003/01/31 13:17:57 a1kmm Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -149,6 +149,9 @@ extern void    check_spambot_warning(struct Client *source_p, const
 extern void check_splitmode(void *);
 extern int sub1_from_channel(struct Channel *chptr);
 
+extern void part_one_client(struct Client *client_p,
+			    struct Client *source_p,
+			    char *name, char *reason);
 
 /*
 ** Channel Related macros follow

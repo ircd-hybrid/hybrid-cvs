@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kick.c,v 1.47 2002/08/15 15:01:02 adx Exp $
+ *  $Id: m_kick.c,v 1.48 2003/01/31 13:17:55 a1kmm Exp $
  */
 
 #include "stdinc.h"
@@ -60,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&kick_msgtab);
 }
 
-const char *_version = "$Revision: 1.47 $";
+const char *_version = "$Revision: 1.48 $";
 #endif
 /*
 ** m_kick
@@ -184,6 +184,13 @@ static void m_kick(struct Client *client_p,
     {
       return;
     }
+
+  /* To save trouble later, convert kicking yourself into a part. */
+  if (who == source_p)
+  {
+    part_one_client(client_p, source_p, chptr->chname, comment);
+    return;
+  }
 
   if (IsMember(who, chptr))
     {
