@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.172 2002/09/11 15:27:08 db Exp $
+ *  $Id: s_bsd.c,v 7.173 2002/10/30 02:56:19 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -397,10 +397,21 @@ void add_connection(struct Listener* listener, int fd)
 #else
   new_client->localClient->aftype = AF_INET;
 #endif
+  *new_client->host = '\0';
+#ifdef IPV6
+  if(*new_client->localClient->sockhost == ':')
+    strlcat(new_client->host, "0",HOSTLEN+1);
 
-  strcpy(new_client->host, new_client->localClient->sockhost);
+  if(new_client->localClient->aftype == AF_INET6 && ConfigFileEntry.dot_in_ip6_addr == 1)
+  {
+    strlcat(new_client->host, new_client->localClient->sockhost,HOSTLEN+1);
+    strlcat(new_client->host, ".",HOSTLEN+1);
+  } else
+#endif
+    strlcat(new_client->host, new_client->localClient->sockhost,HOSTLEN+1);
+
   new_client->localClient->fd        = fd;
-
+  
   new_client->localClient->listener  = listener;
   ++listener->ref_count;
 

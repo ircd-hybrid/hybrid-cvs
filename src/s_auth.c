@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.102 2002/10/19 22:32:51 androsyn Exp $
+ *  $Id: s_auth.c,v 7.103 2002/10/30 02:56:18 androsyn Exp $
  */
 
 /*
@@ -190,41 +190,19 @@ static void
 auth_dns_callback(void* vptr, adns_answer* reply)
 {
   struct AuthRequest* auth = (struct AuthRequest*) vptr;
-  char *str = auth->client->host;
   ClearDNSPending(auth);
-  *auth->client->host = '\0';
   if(reply && (reply->status == adns_s_ok))
     {
       if(strlen(*reply->rrs.str) <= HOSTLEN)
         {
           strlcpy(auth->client->host, *reply->rrs.str, sizeof(auth->client->host));
           sendheader(auth->client, REPORT_FIN_DNS);
-        }
-      else
-        {
-#ifdef IPV6
-          if(*auth->client->localClient->sockhost == ':')
-          {
-            strlcat(auth->client->host, "0",sizeof(auth->client->host));
-	  }
-          if(auth->client->localClient->aftype == AF_INET6 && ConfigFileEntry.dot_in_ip6_addr == 1)
-	  {
-            strlcat(auth->client->host, auth->client->localClient->sockhost,sizeof(auth->client->host));
-            strlcat(auth->client->host, ".",sizeof(auth->client->host));
-          } else
-#endif
-            strlcat(auth->client->host, auth->client->localClient->sockhost,sizeof(auth->client->host));
+        } else
           sendheader(auth->client, REPORT_HOST_TOOLONG);
-        }
     }
   else
     {
 #ifdef IPV6
-	
-      if(*auth->client->localClient->sockhost == ':')
-      {
-	strlcat(str, "0",HOSTLEN);
-      }
       if(auth->client->localClient->aftype == AF_INET6 && ConfigFileEntry.fallback_to_ip6_int == 1 && auth->ip6_int == 0)
       {
         struct Client *client = auth->client;
@@ -234,18 +212,8 @@ auth_dns_callback(void* vptr, adns_answer* reply)
         adns_getaddr(&client->localClient->ip, client->localClient->aftype, client->localClient->dns_query, 1);
         return;
       }
-
-      if(auth->client->localClient->aftype == AF_INET6 && ConfigFileEntry.dot_in_ip6_addr == 1)
-      {
-        strlcat(str, auth->client->localClient->sockhost,HOSTLEN+1);
-        strlcat(str, ".",HOSTLEN+1);
-        sendheader(auth->client, REPORT_FAIL_DNS);
-      } else 
 #endif
-      {
-        strlcat(str, auth->client->localClient->sockhost,HOSTLEN+1); 
-        sendheader(auth->client, REPORT_FAIL_DNS);
-      }
+      sendheader(auth->client, REPORT_FAIL_DNS);
     }
 
   MyFree(reply);
