@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.116 2003/06/19 14:27:21 michael Exp $
+ *  $Id: channel_mode.c,v 7.117 2003/06/21 14:09:12 michael Exp $
  */
 
 #include "stdinc.h"
@@ -342,7 +342,7 @@ channel_modes(struct Channel *chptr, struct Client *client_p,
               char *mbuf, char *pbuf)
 {
   int i;
-  int len;
+  int len = 0;
 
   *mbuf++ = '+';
   *pbuf = '\0';
@@ -371,7 +371,7 @@ channel_modes(struct Channel *chptr, struct Client *client_p,
   {
     *mbuf++ = 'k';
 
-    if (IsMember(client_p, chptr) || IsServer(client_p))
+    if (len || IsMember(client_p, chptr) || IsServer(client_p))
       ircsprintf(pbuf, "%s ", chptr->mode.key);
   }
 
