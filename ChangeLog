@@ -1,3 +1,17 @@
+leeh        2002/03/01 19:14:28 EST	(20020302_0)
+
+  Modified files:
+    .                    TODO 
+    contrib              m_jupe.c 
+  Log:
+  - strncpy_irc -> strlcpy
+  
+  Revision  Changes    Path
+  7.61      +0 -23     ircd-hybrid-7/TODO
+  1.26      +3 -3      ircd-hybrid-7/contrib/m_jupe.c
+
+
+
 androsyn    2002/03/01 15:23:02 EST	(20020301_7)
 
   Modified files:
@@ -23705,4 +23719,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3479 2002/03/01 20:23:08 androsyn Exp $
+$Id: ChangeLog,v 7.3480 2002/03/02 00:14:34 leeh Exp $
