@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.249 2003/06/21 20:36:14 joshk Exp $
+ *  $Id: s_conf.h,v 7.250 2003/06/21 20:52:57 metalrock Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -247,60 +247,55 @@ struct config_file_entry
   char *servlink_path;
   char *egdpool_path;
 
-  char fname_operlog[MAXPATHLEN+1];
-  char fname_userlog[MAXPATHLEN+1];
-  char fname_foperlog[MAXPATHLEN+1];
-
   MessageFile motd;
   MessageFile opermotd;
   MessageFile linksfile;
 
   unsigned char compression_level;
-  int		disable_remote;
-  int		dot_in_ip6_addr;
-  int           dots_in_ident;
-  int           failed_oper_notice;
-  int           anti_nick_flood;
-  int           anti_spam_exit_message_time;
-  int           max_accept;
-  int           max_nick_time;
-  int           max_nick_changes;
-  int           ts_max_delta;
-  int           ts_warn_delta;
-  int           kline_with_reason;
-  int           kline_with_connection_closed;
-  int           warn_no_nline;
-  int           non_redundant_klines;
-  int           stats_o_oper_only;
-  int		stats_k_oper_only;
-  int		stats_i_oper_only;
-  int		stats_P_oper_only;
-  int           pace_wait;
-  int           pace_wait_simple;
-  int           short_motd;
-  int           no_oper_flood;
-  int           true_no_oper_flood;
-  int           glines;
-  int           gline_time;
-  int           idletime;
-  int		ignore_bogus_ts;
-  int           maximum_links;
-  int           oper_only_umodes;
-  int		oper_pass_resv;
-  int           oper_umodes;
-  int           crypt_oper_password;
-  int           max_targets;
-  int           caller_id_wait;
-  int           min_nonwildcard;
-  int		min_nonwildcard_simple;
-  int           default_floodcount;
-  int           client_flood;
+  int dot_in_ip6_addr;
+  int dots_in_ident;
+  int failed_oper_notice;
+  int anti_nick_flood;
+  int anti_spam_exit_message_time;
+  int max_accept;
+  int max_nick_time;
+  int max_nick_changes;
+  int ts_max_delta;
+  int ts_warn_delta;
+  int kline_with_reason;
+  int kline_with_connection_closed;
+  int warn_no_nline;
+  int stats_o_oper_only;
+  int stats_k_oper_only;
+  int stats_i_oper_only;
+  int stats_P_oper_only;
+  int pace_wait;
+  int pace_wait_simple;
+  int short_motd;
+  int no_oper_flood;
+  int true_no_oper_flood;
+  int oper_pass_resv;
+  int glines;
+  int gline_time;
+  int idletime;
+  int ignore_bogus_ts;
+  int maximum_links;
+  int oper_only_umodes;
+  int oper_umodes;
+  int crypt_oper_password;
+  int max_targets;
+  int caller_id_wait;
+  int min_nonwildcard;
+  int min_nonwildcard_simple;
+  int default_floodcount;
+  int client_flood;
   /* 0 == don't use throttle... */
-  int           throttle_time;
-  int           use_egd;
-  int		ping_cookie;
-  int		disable_auth;
-  int		fallback_to_ip6_int;
+  int throttle_time;
+  int use_egd;
+  int ping_cookie;
+  int disable_auth;
+  int disable_remote;
+  int fallback_to_ip6_int;
 #ifdef HAVE_LIBCRYPTO
   struct EncCapability *default_cipher_preference;
 #endif
