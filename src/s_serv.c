@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.110 2001/01/04 12:19:14 ejb Exp $
+ *   $Id: s_serv.c,v 7.111 2001/01/04 19:29:00 a1kmm Exp $
  */
 #include "tools.h"
 #include "s_serv.h"
@@ -372,9 +372,16 @@ int check_server(const char *name, struct Client* cptr)
      if (!(match(aconf->host, cptr->host) ||
          cptr->localClient->ip.s_addr == aconf->ipnum.s_addr))
        continue;
+#ifdef CRYPT_LINK_PASSWORD
+     if (aconf->status & CONF_NOCONNECT_SERVER &&
+         strcmp(aconf->passwd, crypt(cptr->localClient->passwd,
+                aconf->passwd)))
+       return -2;
+#else
      if (aconf->status & CONF_NOCONNECT_SERVER &&
          strcmp(aconf->passwd, cptr->localClient->passwd))
        return -2;
+#endif
      if (aconf->status & CONF_CONNECT_SERVER)
        cline = aconf;
      if (aconf->status & CONF_NOCONNECT_SERVER)
