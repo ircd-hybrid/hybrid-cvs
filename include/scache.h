@@ -19,7 +19,7 @@
  *
  * "scache.h". - Headers file.
  *
- * $Id: scache.h,v 7.2 1999/12/30 20:35:38 db Exp $
+ * $Id: scache.h,v 7.3 2000/10/30 08:22:23 db Exp $
  *
  */
 #ifndef INCLUDED_scache_h
@@ -28,6 +28,6 @@
 extern void        clear_scache_hash_table(void);
 extern const char* find_or_add(const char* name);
 extern void        count_scache(int *,unsigned long *);
-extern void        list_scache(struct Client *, struct Client *,int, char **);
+extern void        list_scache(struct Client *sptr);
 
 #endif
