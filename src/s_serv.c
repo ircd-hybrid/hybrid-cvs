@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.225 2001/12/03 16:23:41 androsyn Exp $
+ *   $Id: s_serv.c,v 7.226 2001/12/14 15:48:20 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -32,6 +32,7 @@
 #include <errno.h>
 #include <time.h>
 #include <netdb.h>
+#include <fcntl.h> 
 
 #include "config.h"
 
@@ -1453,9 +1454,12 @@ static void start_io(struct Client *server)
   server->localClient->slinkq_len = c;
  
   /* schedule a write */ 
+  send_queued_slink_write(server->localClient->ctrlfd, server);
+#if 0  
   comm_setselect(server->localClient->ctrlfd, FDLIST_IDLECLIENT,
                  COMM_SELECT_WRITE, send_queued_slink_write,
                  server, 0);
+#endif
 }
 
 #ifndef VMS
@@ -1524,7 +1528,7 @@ int fork_server(struct Client *server)
   slink_fds[1][0][1] = fd_temp[1];
 #endif
 
-  if ((ret = vfork()) < 0)
+  if ((ret = fork()) < 0)
     goto fork_error;
   else if (ret == 0)
   {
@@ -1533,8 +1537,17 @@ int fork_server(struct Client *server)
     {
       if ((i == slink_fds[0][0][0]) || (i == slink_fds[0][0][1]) ||
           (i == slink_fds[0][0][0]) || (i == slink_fds[1][0][1]) ||
-          (i == server->fd))
+          (i == server->fd)) {
         set_non_blocking(i);
+#ifdef USE_SIGIO /* the servlink process doesn't need O_ASYNC */
+	{
+		int flags = 0;
+		fcntl(i, F_GETFL, &flags);
+		flags |= ~O_ASYNC;
+		fcntl(i, F_SETFL, flags);
+	}
+#endif
+      }
       else
       {
 #ifdef VMS
