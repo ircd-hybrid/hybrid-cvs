@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.91 2002/12/12 06:33:00 db Exp $
+ *  $Id: packet.c,v 7.92 2002/12/13 03:21:13 db Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -58,27 +58,29 @@ parse_client_queued(struct Client *client_p)
 
     for(;;)
     {
+      if (IsDead(client_p))
+	return;
+
       /* rate unknown clients at MAX_FLOOD per loop */
       if(i >= MAX_FLOOD)
         break;
 
-      dolen = linebuf_get(&client_p->localClient->buf_recvq, readBuf,
-                          READBUF_SIZE, LINEBUF_COMPLETE, LINEBUF_PARSED);
+	dolen = linebuf_get(&client_p->localClient->buf_recvq, readBuf,
+			    READBUF_SIZE, LINEBUF_COMPLETE, LINEBUF_PARSED);
 
-      if(dolen <= 0)
-        break;
+	if(dolen <= 0)
+	  break;
                           
       if(!IsDead(client_p))
       {
         client_dopacket(client_p, readBuf, dolen);
         i++;
 
-        /* if theyve dropped out of the unknown state, break and move
+        /* if they've dropped out of the unknown state, break and move
          * to the parsing for their appropriate status.  --fl
          */
         if(!IsUnknown(client_p))
           break;
-
       }
       else if(MyConnect(client_p))
       {
@@ -91,6 +93,8 @@ parse_client_queued(struct Client *client_p)
 
   if (IsServer(client_p) || IsConnecting(client_p) || IsHandshake(client_p))
   {
+    if(IsDead(client_p))
+      return;
     while ((dolen = linebuf_get(&client_p->localClient->buf_recvq,
                               readBuf, READBUF_SIZE, LINEBUF_COMPLETE,
                               LINEBUF_PARSED)) > 0)
@@ -119,7 +123,7 @@ parse_client_queued(struct Client *client_p)
      * messages in this loop, we simply drop out of the loop prematurely.
      *   -- adrian
      */
-    for (;;)
+    for(;;)
     {
       if (IsDead(client_p))
 	break;
@@ -266,7 +270,7 @@ read_ctrl_packet(int fd, void *data)
     reply->command = tmp[0];
   }
 
-  for (replydef = slinkrpltab; replydef->handler; replydef++)
+  for(replydef = slinkrpltab; replydef->handler; replydef++)
   {
     if (replydef->replyid == reply->command)
       break;
