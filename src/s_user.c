@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.247 2003/04/19 10:21:48 michael Exp $
+ *  $Id: s_user.c,v 7.248 2003/04/19 15:34:28 michael Exp $
  */
 
 #include "stdinc.h"
@@ -188,9 +188,9 @@ show_lusers(struct Client *source_p)
     sendto_one(source_p, form_str(RPL_LUSEROP),
                me.name, source_p->name, Count.oper);
 
-  if (Count.unknown > 0)
+  if (dlink_list_length(&unknown_list) > 0)
     sendto_one(source_p, form_str(RPL_LUSERUNKNOWN),
-               me.name, source_p->name, Count.unknown);
+               me.name, source_p->name, dlink_list_length(&unknown_list));
 
   if (Count.chan > 0)
     sendto_one(source_p, form_str(RPL_LUSERCHANNELS),

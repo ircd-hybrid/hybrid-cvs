@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.h,v 7.59 2003/04/13 05:55:20 michael Exp $
+ *  $Id: ircd.h,v 7.60 2003/04/19 15:34:26 michael Exp $
  */
 
 #ifndef INCLUDED_ircd_h
@@ -43,7 +43,8 @@ struct SetOptions
   int spam_time;
 };
 
-struct Counter {
+struct Counter 
+{
   int server;   /* servers             */
   int myserver; /* my servers          */
   int oper;     /* Opers               */
@@ -51,7 +52,6 @@ struct Counter {
   int local;    /* Local Clients       */
   int total;    /* total clients       */
   int invisi;   /* invisible clients   */
-  int unknown;  /* unknown connections */
   int max_loc;  /* MAX local clients   */
   int max_tot;  /* MAX global clients  */
   unsigned long totalrestartcount; /* Total client count ever */
@@ -59,7 +59,8 @@ struct Counter {
 
 extern struct SetOptions GlobalSetOptions;  /* defined in ircd.c */
 
-struct ServerState_t {
+struct ServerState_t
+{
   int foreground;
 };
 
