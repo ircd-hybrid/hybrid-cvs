@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.c,v 7.16 2000/12/14 17:53:50 db Exp $
+ * $Id: modules.c,v 7.17 2000/12/15 02:28:36 db Exp $
  */
 
 #include <dlfcn.h>
@@ -119,6 +119,11 @@ struct Message modunload_msgtab = {
   {m_unregistered, m_ignore, m_ignore, mo_modunload}
 };
 
+struct Message modlist_msgtab = {
+  MSG_MODLIST, 0, 0, MFLG_SLOW, 0,
+  {m_unregistered, m_ignore, m_ignore, mo_modlist}
+};
+
 /* load all modules from MPATH */
 void
 load_all_modules (void)
@@ -135,6 +140,7 @@ load_all_modules (void)
 
   mod_add_cmd(MSG_MODLOAD,&modload_msgtab);
   mod_add_cmd(MSG_MODUNLOAD,&modunload_msgtab);
+  mod_add_cmd(MSG_MODLIST,&modlist_msgtab);
 
   if (chdir (system_module_dir_name) == -1)
     {
@@ -329,6 +335,29 @@ mo_modunload (struct Client *cptr, struct Client *sptr, int parc, char **parv)
 		  me.name, sptr->name, m_bn);
     }
   free (m_bn);
+}
+
+/* list modules .. */
+int
+mo_modlist (struct Client *cptr, struct Client *sptr, int parc, char **parv)
+{
+  int i;
+
+  if (!IsSetOperAdmin (sptr))
+    {
+      sendto_one (sptr, ":%s NOTICE %s :You have no A flag",
+		  me.name, parv[0]);
+      return 0;
+    }
+
+  for(i = 0; i < num_mods; i++ )
+    {
+      sendto_one(sptr, ":%s NOTICE %s :%s %X %s",
+		 me.name, sptr->name,
+		 modlist[i]->name,
+		 modlist[i]->address,
+		 modlist[i]->version);
+    }
 }
 
 
