@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_jupe.c,v 1.27 2002/03/07 06:21:36 db Exp $
+ *  $Id: m_jupe.c,v 1.28 2002/04/27 09:30:46 leeh Exp $
  */
 
 #include "tools.h"
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&jupe_msgtab);
 }
 
-const char *_version = "$Revision: 1.27 $";
+const char *_version = "$Revision: 1.28 $";
 #endif
 
 /*
@@ -104,7 +104,14 @@ static void mo_jupe(struct Client *client_p, struct Client *source_p,
                  me.name, parv[0], parv[1]);
       return;
     }
-    
+
+  if(match(parv[1], me.name))
+  {
+    sendto_one(source_p, ":%s NOTICE %s :I cant jupe myself!",
+	       me.name, source_p->name);
+    return;
+  }
+
   sendto_wallops_flags(FLAGS_WALLOP, &me,
                        "JUPE for %s requested by %s: %s",
 			 parv[1], get_oper_name(source_p), parv[2]);
