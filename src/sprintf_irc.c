@@ -1,6 +1,6 @@
 /*
  *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
- *  snprintf.c: Functions for printing to a string.
+ *  sprintf_irc.c: Functions for printing to a string.
  *
  *  Copyright (C) 2002 by the past and present ircd coders, and others.
  *
@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: sprintf_irc.c,v 7.15 2002/06/12 18:57:52 androsyn Exp $
+ *  $Id: sprintf_irc.c,v 7.15.2.1 2003/04/07 23:51:18 lusky Exp $
  */
 
 #include "stdinc.h"
