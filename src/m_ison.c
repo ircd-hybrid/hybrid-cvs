@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_ison.c,v 7.0 1999/08/01 21:19:47 lusky Exp $
+ *   $Id: m_ison.c,v 7.1 1999/10/14 06:18:39 lusky Exp $
  */
 #include "m_commands.h"
 #include "client.h"
@@ -158,7 +158,7 @@ int m_ison(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
       end_of_current_nick = strchr(current_nick,' ');
     }
 
-  current_insert_point--;
+/*  current_insert_point--; Do NOT take out the trailing space, it breaks ircII --Rodder */
   *current_insert_point = '\0';
   sendto_one(sptr, "%s", buf);
   return 0;
