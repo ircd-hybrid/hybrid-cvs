@@ -3,7 +3,7 @@
  *
  * Written by ejb, wcampbel, db, leeh and others
  *
- * $Id: example.conf.quick,v 1.15 2003/06/21 20:09:17 metalrock Exp $
+ * $Id: example.conf.quick,v 1.16 2003/06/22 22:35:15 metalrock Exp $
  */
 
 /* IMPORTANT NOTES:
@@ -61,9 +61,9 @@ admin {
 /* logging {}: contains information about logfiles. */
 logging {
         use_logging = yes;
-        userlog = "logs/userlog";
-        operlog = "logs/operlog";
-        failed_operlog = "logs/foperlog";
+        fuserlog = "logs/userlog";
+        foperlog = "logs/operlog";
+        ffailed_operlog = "logs/foperlog";
 	log_level = L_INFO;
 };
 
