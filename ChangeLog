@@ -1,3 +1,16 @@
+leeh        2002/04/30 11:18:01 EDT	(20020430_6)
+
+  Modified files:
+    modules/core         m_sjoin.c 
+  Log:
+  - removed the nick chase crap from sjoin
+  - better fake direction tracking
+  
+  Revision  Changes    Path
+  1.135     +4 -11     ircd-hybrid-7/modules/core/m_sjoin.c
+
+
+
 leeh        2002/04/30 10:29:17 EDT	(20020430_5)
 
   Modified files:
@@ -25940,4 +25953,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3621 2002/04/30 14:29:23 leeh Exp $
+$Id: ChangeLog,v 7.3622 2002/04/30 15:18:07 leeh Exp $
