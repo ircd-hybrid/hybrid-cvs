@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_names.c,v 1.4 2000/11/28 03:54:04 bill Exp $
+ *   $Id: m_names.c,v 1.5 2000/11/30 05:29:31 db Exp $
  */
 
 #include "handlers.h"
@@ -85,7 +85,8 @@ int     m_names( struct Client *cptr,
 { 
   struct Channel *vchan;
   struct Channel *ch2ptr = NULL;
-  char  *s, *para = parc > 1 ? parv[1] : NULL;
+  char  *s;
+  char *para = parc > 1 ? parv[1] : NULL;
   int comma_count=0;
   int char_count=0;
 
@@ -176,6 +177,7 @@ void names_all_visible_channels(struct Client *sptr)
   char buf2[2*NICKLEN];
   char *chname;
 
+  buf2[0] = '\0';
   mlen = strlen(me.name) + NICKLEN + 7;
   cur_len = mlen;
   
@@ -251,6 +253,7 @@ void names_non_public_non_secret(struct Client *sptr)
   char buf[BUFSIZE];
   char buf2[2*NICKLEN];
 
+  buf2[0] = '\0';
   mlen = strlen(me.name) + NICKLEN + 7;
 
   /* Second, do all non-public, non-secret channels in one big sweep */
@@ -280,6 +283,10 @@ void names_non_public_non_secret(struct Client *sptr)
         }
       if (dont_show) /* on any secret channels or shown already? */
         continue;
+
+      if(lp == NULL)	/* Nothing to do. yay */
+	continue;
+
       ircsprintf(buf2,"%s%s ", chanop_or_voice(lp), c2ptr->name);
       strcat(buf,buf2);
       cur_len += strlen(buf2);
