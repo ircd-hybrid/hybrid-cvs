@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.275 2003/05/26 05:43:20 db Exp $
+ *  $Id: s_user.c,v 7.276 2003/05/28 05:02:27 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -1319,11 +1319,8 @@ oper_up(struct Client *source_p, struct ConfItem *aconf)
  * Quick and dirty UID code for new proposed SID on EFnet
  *
  */
-#define MAXSID		3
-#define MAXUID		6
-#define TOTALSIDUID	(MAXSID+MAXUID)
 
-static char new_uid[TOTALSIDUID+1];	/* allow for \0 */
+static char new_uid[TOTALSIDUID+1];     /* allow for \0 */
 static void add_one_to_uid(int index);
   
 /*
@@ -1344,14 +1341,14 @@ uid_init(void)
   memset(new_uid, 0, sizeof(new_uid));
 
   if (ServerInfo.sid != NULL)
-    memcpy(new_uid, ServerInfo.sid, IRCD_MIN(strlen(ServerInfo.sid), MAXSID));
+    memcpy(new_uid, ServerInfo.sid, IRCD_MIN(strlen(ServerInfo.sid), IRC_MAXSID));
 
-  for (i = 0; i < MAXSID; i++)
+  for (i = 0; i < IRC_MAXSID; i++)
     if (new_uid[i] == '\0') 
       new_uid[i] = 'A';
 
-  /* XXX if MAXUID != 6, this will have to be rewritten */
-  memcpy(new_uid+MAXSID, "AAAAAA", MAXUID);
+  /* XXX if IRC_MAXUID != 6, this will have to be rewritten */
+  memcpy(new_uid+IRC_MAXSID, "AAAAAA", IRC_MAXUID);
 }
 
 /*
@@ -1381,7 +1378,7 @@ uid_get(void)
 static void
 add_one_to_uid(int i)
 {
-  if (i != MAXSID)		/* Not reached server SID portion yet? */
+  if (i != IRC_MAXSID)		/* Not reached server SID portion yet? */
   {
     if (new_uid[i] == 'Z')
       new_uid[i] = '0';
@@ -1394,9 +1391,9 @@ add_one_to_uid(int i)
   }
   else
   {
-    /* XXX if MAXUID != 6, this will have to be rewritten */
+    /* XXX if IRC_MAXUID != 6, this will have to be rewritten */
     if (new_uid[i] == 'Z')
-      memcpy(new_uid+MAXSID, "AAAAAA", MAXUID);
+      memcpy(new_uid+IRC_MAXSID, "AAAAAA", IRC_MAXUID);
     else new_uid[i] = new_uid[i] + 1;
   }
 }

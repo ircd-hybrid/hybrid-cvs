@@ -19,12 +19,16 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.h,v 7.28 2003/05/25 23:08:15 db Exp $
+ *  $Id: s_user.h,v 7.29 2003/05/28 05:02:24 joshk Exp $
  */
 
 #ifndef INCLUDED_s_user_h
 #define INCLUDED_s_user_h
 #include "config.h"
+
+#define IRC_MAXSID          3
+#define IRC_MAXUID          6
+#define TOTALSIDUID     (IRC_MAXSID+IRC_MAXUID)
 
 struct Client;
 struct ConfItem;
