@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: hook.c,v 7.1 2001/01/15 13:28:25 ejb Exp $
+ * $Id: hook.c,v 7.2 2001/01/17 04:01:48 ejb Exp $
  */
 
 /* hooks are used by modules to hook into events called by other parts of
@@ -31,6 +31,12 @@
 #include "hook.h"
 
 dlink_list hooks;
+
+void
+init_hooks(void)
+{
+	memset(&hooks, 0, sizeof(hooks));
+}
 
 static hook *
 new_hook(char *name)

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.102 2001/01/14 22:32:59 fl_ Exp $
+ * $Id: ircd.c,v 7.103 2001/01/17 04:01:48 ejb Exp $
  */
 #include "tools.h"
 #include "ircd.h"
@@ -57,6 +57,7 @@
 #include "whowas.h"
 #include "modules.h"
 #include "memory.h"
+#include "hook.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -528,6 +529,8 @@ int main(int argc, char *argv[])
   init_resolver();
 
   init_auth();			/* Initialise the auth code */
+
+  init_hooks();
 
   read_conf_files(YES);         /* cold start init conf files */
 
