@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_topic.c,v 1.63 2003/06/12 15:17:20 michael Exp $
+ *  $Id: m_topic.c,v 1.64 2003/06/22 17:47:39 michael Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&topic_msgtab);
 }
 
-const char *_version = "$Revision: 1.63 $";
+const char *_version = "$Revision: 1.64 $";
 #endif
 
 /* m_topic()
@@ -78,7 +78,7 @@ m_topic(struct Client *client_p, struct Client *source_p,
   char *p;
   struct Membership *ms;
 
-  if ((p = strchr(parv[1],',')) != NULL)
+  if ((p = strchr(parv[1], ',')) != NULL)
     *p = '\0';
 
   if (parv[1][0] == '\0')
@@ -146,41 +146,44 @@ m_topic(struct Client *client_p, struct Client *source_p,
         sendto_one(source_p, form_str(ERR_CHANOPRIVSNEEDED),
                    me.name, source_p->name, parv[1]);
     }
-    else  /* only asking  for topic  */
+    else /* only asking for topic */
     {
-      if (!IsMember(source_p, chptr) && SecretChannel(chptr))
+      if (!SecretChannel(chptr) || IsMember(source_p, chptr))
       {
-        sendto_one(source_p, form_str(ERR_NOTONCHANNEL), me.name, source_p->name,
-                   parv[1]);
-        return;
+        if (chptr->topic == NULL)
+          sendto_one(source_p, form_str(RPL_NOTOPIC),
+                     me.name, source_p->name, parv[1]);
+        else
+        {
+          sendto_one(source_p, form_str(RPL_TOPIC),
+                     me.name, source_p->name,
+                     chptr->chname, chptr->topic);
+
+          /* client on LL needing the topic - if we have serverhide, say
+           * its the actual LL server that set the topic, not us the
+           * uplink -- fl_
+           */
+          if (ConfigServerHide.hide_servers && !MyClient(source_p)
+              && IsCapable(client_p, CAP_LL) && ServerInfo.hub)
+          {
+            sendto_one(source_p, form_str(RPL_TOPICWHOTIME),
+  	               me.name, source_p->name, chptr->chname,
+                       client_p->name, chptr->topic_time);
+          }
+          else
+          {
+            sendto_one(source_p, form_str(RPL_TOPICWHOTIME),
+                       me.name, source_p->name, chptr->chname,
+                       chptr->topic_info,
+                       chptr->topic_time);
+          }
+        }
       }
-      if (chptr->topic == NULL)
-        sendto_one(source_p, form_str(RPL_NOTOPIC),
-                   me.name, source_p->name, parv[1]);
       else
       {
-        sendto_one(source_p, form_str(RPL_TOPIC),
-                   me.name, source_p->name,
-                   chptr->chname, chptr->topic);
-
-        /* client on LL needing the topic - if we have serverhide, say
-         * its the actual LL server that set the topic, not us the
-         * uplink -- fl_
-         */
-        if (ConfigServerHide.hide_servers && !MyClient(source_p)
-            && IsCapable(client_p, CAP_LL) && ServerInfo.hub)
-        {
-          sendto_one(source_p, form_str(RPL_TOPICWHOTIME),
-  	             me.name, source_p->name, chptr->chname,
-  		     client_p->name, chptr->topic_time);
-        }
-        else
- 	{
-          sendto_one(source_p, form_str(RPL_TOPICWHOTIME),
-                     me.name, source_p->name, chptr->chname,
-                     chptr->topic_info,
-                     chptr->topic_time);
-        }
+        sendto_one(source_p, form_str(ERR_NOTONCHANNEL),
+                   me.name, source_p->name, parv[1]);
+        return;
       }
     }
   }
@@ -203,7 +206,7 @@ m_topic(struct Client *client_p, struct Client *source_p,
  */
 static void
 ms_topic(struct Client *client_p, struct Client *source_p,
-	 int parc, char *parv[])
+         int parc, char *parv[])
 {
   struct Channel *chptr = NULL;
 
