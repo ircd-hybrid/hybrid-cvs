@@ -7,6 +7,7 @@ User Modes:
 +b - bots       - See bot and drone flooding notices
 +c - cconn      - Client connection/quit notices
 +d - debug      - See debugging notices
++e - drone      - See possible drones
 +f - full       - See I: line full notices
 +g - callerid   - Server Side Ignore
 +i - invisible  - Not shown in NAMES or WHO unless you share a
@@ -50,4 +51,4 @@ Channel Modes:
 The third part of the 004 numeric lists channel modes that require arguments.
 Currently these are bklovedIh.
 
-# $Id: modes.txt,v 7.2 2000/12/25 21:40:49 wcampbel Exp $
+# $Id: modes.txt,v 7.3 2001/01/05 14:51:04 wcampbel Exp $

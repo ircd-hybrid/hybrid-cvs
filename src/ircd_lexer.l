@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.52 2001/01/01 23:27:29 davidt Exp $
+ * $Id: ircd_lexer.l,v 1.53 2001/01/05 14:51:09 wcampbel Exp $
  */
 
 %option case-insensitive
@@ -215,6 +215,7 @@ servnotice              { return T_SERVNOTICE; }
 invisible               { return T_INVISIBLE; }
 wallop                  { return T_WALLOP; }
 callerid                { return T_CALLERID; }
+drone                   { return T_DRONE; }
 .		        { return yytext[0]; }
 
 %%
