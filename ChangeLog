@@ -1,3 +1,15 @@
+db          2002/12/16 01:44:46 EST	(20021216_2)
+
+  Modified files:
+    .                    RELNOTES 
+  Log:
+  - started updating RELNOTES in preparation for one more rc
+  
+  Revision  Changes    Path
+  1.45      +11 -0     ircd-hybrid-7/RELNOTES
+
+
+
 db          2002/12/16 01:30:51 EST	(20021216_1)
 
   Modified files:
@@ -33567,4 +33579,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4137 2002/12/16 06:30:54 db Exp $
+$Id: ChangeLog,v 7.4138 2002/12/16 06:44:49 db Exp $
