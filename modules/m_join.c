@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 1.11 2000/12/02 19:55:08 toot Exp $
+ *   $Id: m_join.c,v 1.12 2000/12/03 12:18:17 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -212,11 +212,17 @@ int     m_join(struct Client *cptr,
 	  flags = CHFL_CHANOP;
 	  if(!ConfigFileEntry.hub)
 	    {
+	      /* XXX global uplink */
+	      dlink_node *ptr;
+	      struct Client *uplink=NULL;
+	      if( ptr = serv_list.head )
+		uplink = ptr->data;
+
 	      /* LazyLinks */
-	      if( (*name != '&') && serv_cptr_list
-		  && IsCapable(serv_cptr_list, CAP_LL) )
+	      if( (*name != '&') && uplink
+		  && IsCapable(uplink, CAP_LL) )
 		{
-		  sendto_one(serv_cptr_list,":%s CBURST %s %s %s",
+		  sendto_one(uplink,":%s CBURST %s %s %s",
 			     me.name,name,sptr->name, key ? key: "" );
 		  /* And wait for LLJOIN */
 		  return 0;

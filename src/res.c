@@ -4,7 +4,7 @@
  * shape or form. The author takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: res.c,v 7.27 2000/11/30 08:59:30 db Exp $
+ * $Id: res.c,v 7.28 2000/12/03 12:18:21 db Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -1075,10 +1075,10 @@ res_readreply(int fd, void *data)
 	  /*
 	   * got a name and address response, client resolved
 	   *
-	   * XXX - Bug found here by Dianora -
-	   * make_cache() occasionally returns a NULL pointer when a
-	   * PTR returned a CNAME, cp was not checked before so the
-	   * callback was being called with a value of 0x2C != NULL
+           * XXX - Bug found here by Dianora -
+           * make_cache() occasionally returns a NULL pointer when a
+           * PTR returned a CNAME, cp was not checked before so the
+           * callback was being called with a value of 0x2C != NULL
 	   *
 	   */
 	  cp = make_cache(request);

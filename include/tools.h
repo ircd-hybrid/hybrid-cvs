@@ -5,12 +5,12 @@
  *
  * Adrian Chadd <adrian@creative.net.au>
  *
- * $Id: tools.h,v 1.4 2000/12/03 00:05:41 db Exp $
+ * $Id: tools.h,v 1.5 2000/12/03 12:18:13 db Exp $
  */
 #ifndef __TOOLS_H__
 #define __TOOLS_H__
 
-#define DEBUG_DLINK
+#undef DEBUG_DLINK
 
 /*
  * double-linked-list stuff
@@ -51,4 +51,7 @@ dlinkMoveList(dlink_list *from, dlink_list *to);
 
 int
 dlink_list_length(dlink_list *m);
+
+dlink_node *
+dlinkFind(dlink_list *m, void *data);
 #endif

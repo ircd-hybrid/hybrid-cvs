@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: ircdauth.c,v 7.16 2000/12/01 22:24:58 db Exp $
+ *   $Id: ircdauth.c,v 7.17 2000/12/03 12:18:21 db Exp $
  */
 
 #include <stdio.h>
@@ -533,6 +533,7 @@ GreetUser(struct Client *client)
   static char ubuf[12];
   struct ConfItem *found_aconf;
   dlink_node *ptr;
+  dlink_node *m;
 
   sendto_realops_flags(FLAGS_CCONN,
 		       "Client connecting: %s (%s@%s) [%s] {%d}",
@@ -659,12 +660,8 @@ GreetUser(struct Client *client)
       ubuf[1] = '\0';
     }
   
-  if (LocalClientList)
-    LocalClientList->previous_local_client = client;
-
-  client->previous_local_client = NULL;
-  client->next_local_client = LocalClientList;
-  LocalClientList = client;
+  m = make_dlink_node();
+  dlinkAdd(client, m, &lclient_list);
 
   sendto_serv_butone(client,
 		     "NICK %s %d %lu %s %s %s %s :%s",

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_mode.c,v 1.7 2000/12/01 22:17:59 db Exp $
+ *   $Id: m_mode.c,v 1.8 2000/12/03 12:18:18 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -86,24 +86,29 @@ int m_mode(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
       chptr = hash_find_channel(parv[1], NullChn);
       if(!chptr)
 	{
+	  /* XXX global uplink */
+	  dlink_node *ptr;
+	  struct Client *uplink=NULL;
+	  if( ptr = serv_list.head )
+	    uplink = ptr->data;
+
 	  /* LazyLinks */
-	  if (serv_cptr_list != NULL) {
-	    /* this was segfaulting if we had no servers linked.
-	     *  -pro
-	     */
-	    if ( !ConfigFileEntry.hub && IsCapable( serv_cptr_list, CAP_LL) )
-	      {
-		/* cache the channel if it exists on uplink */
-		
-		sendto_one( serv_cptr_list, ":%s CBURST %s",
-			    me.name, parv[1] );
-		
-		/* meanwhile, ask for channel mode */
-		sendto_one( serv_cptr_list, ":%s MODE %s",
-			    sptr->name, parv[1] );
-		return 0;
-	      }
-	  }
+	  /* this was segfaulting if we had no servers linked.
+	   *  -pro
+	   */
+	  if ( !ConfigFileEntry.hub && uplink &&
+	       IsCapable( uplink, CAP_LL) )
+	    {
+	      /* cache the channel if it exists on uplink */
+	      
+	      sendto_one( uplink, ":%s CBURST %s",
+			  me.name, parv[1] );
+	      
+	      /* meanwhile, ask for channel mode */
+	      sendto_one( uplink, ":%s MODE %s",
+			  sptr->name, parv[1] );
+	      return 0;
+	    }
 	}
     }
   else

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_misc.c,v 7.7 2000/11/30 16:01:55 db Exp $
+ *  $Id: s_misc.c,v 7.8 2000/12/03 12:18:22 db Exp $
  */
 #include "s_misc.h"
 #include "client.h"
@@ -144,12 +144,15 @@ void serv_info(struct Client *cptr,char *name)
   int        j;
   long        sendK, receiveK, uptime;
   struct Client        *acptr;
+  dlink_node *ptr;
 
   sendK = receiveK = 0;
   j = 1;
 
-  for(acptr = serv_cptr_list; acptr; acptr = acptr->next_server_client)
+  for(ptr = serv_list.head; ptr; ptr = ptr->next)
     {
+      acptr = ptr->data;
+
       sendK += acptr->localClient->sendK;
       receiveK += acptr->localClient->receiveK;
       /* There are no more non TS servers on this network, so that test has

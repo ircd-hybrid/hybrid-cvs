@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.62 2000/12/01 22:18:06 db Exp $
+ * $Id: ircd.c,v 7.63 2000/12/03 12:18:21 db Exp $
  */
 #include "tools.h"
 #include "ircd.h"
@@ -136,9 +136,10 @@ struct LocalUser meLocalUser;	/* That's also part of me */
 
 struct Client* GlobalClientList = 0; /* Pointer to beginning of Client list */
 /* client pointer lists */ 
-struct Client *LocalClientList = NULL;
-struct Client *oper_cptr_list  = NULL;
-struct Client *serv_cptr_list  = NULL;
+
+dlink_list oper_list;
+dlink_list serv_list;
+dlink_list lclient_list;
 
 static size_t      initialVMTop = 0;   /* top of virtual memory at init */
 static const char* logFileName = LPATH;
@@ -479,6 +480,10 @@ int main(int argc, char *argv[])
   memset(&me, 0, sizeof(me));
   memset(&meLocalUser, 0, sizeof(meLocalUser));
   me.localClient = &meLocalUser;
+
+  lclient_list.head = lclient_list.tail = NULL;
+  oper_list.head = oper_list.tail = NULL;
+  serv_list.head = serv_list.tail = NULL;
 
   GlobalClientList = &me;       /* Pointer to beginning of Client list */
 
