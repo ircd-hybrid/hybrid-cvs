@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 7.17 2000/11/06 06:56:53 db Exp $
+ *   $Id: m_whois.c,v 7.18 2000/11/06 18:11:52 db Exp $
  */
 
 #include "common.h"   /* bleah */
@@ -317,8 +317,7 @@ static int single_whois(struct Client *sptr,struct Client *acptr,int wilds)
   sendto_one(sptr, form_str(RPL_WHOISUSER), me.name,
 	     sptr->name, name,
 	     acptr->username, acptr->host, acptr->info);
-  mlen = strlen(me.name) + strlen(sptr->name) + 6 +
-    strlen(name);
+  mlen = strlen(me.name) + strlen(sptr->name) + 6 + strlen(name);
   for (len = 0, *buf = '\0', lp = user->channel; lp;
        lp = lp->next)
     {
