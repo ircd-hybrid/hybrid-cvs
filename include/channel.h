@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.149 2003/06/12 03:40:28 joshk Exp $
+ *  $Id: channel.h,v 7.150 2003/06/16 09:18:55 michael Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -63,7 +63,7 @@ struct Channel
 
   time_t first_received_message_time; /* channel flood control */
   int received_number_of_privmsgs;
-  int flood_noticed;
+  char flood_noticed;
 
   time_t channelts;
   char chname[CHANNELLEN + 1];
