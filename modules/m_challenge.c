@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_challenge.c,v 1.29 2001/11/13 11:45:47 leeh Exp $
+ *   $Id: m_challenge.c,v 1.30 2001/11/13 18:17:44 kreator Exp $
  */
 #include <stdlib.h>
 #include <string.h>
@@ -31,7 +31,9 @@
 #include "numeric.h"
 #include "send.h"
 #include "s_conf.h"
+#ifdef HAVE_LIBCRYPTO
 #include "rsa.h"
+#endif
 #include "msg.h"
 #include "parse.h"
 #include "irc_string.h"
