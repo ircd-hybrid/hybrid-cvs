@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.75 2001/03/31 22:23:41 ejb Exp $
+# $Id: Makefile.in,v 7.76 2001/04/01 18:30:34 ejb Exp $
 #
 CC		= @CC@
 INSTALL		= @INSTALL@
@@ -64,6 +64,7 @@ BASE_SRCS =                     \
   event.c                       \
   fdlist.c                      \
   fileio.c                      \
+  getopt.c                      \
   hash.c                        \
   hook.c                        \
   hostmask.c                    \
