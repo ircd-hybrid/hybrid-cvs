@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.238 2002/02/06 15:02:32 leeh Exp $
+ *  $Id: s_serv.c,v 7.239 2002/02/14 05:50:32 a1kmm Exp $
  */
 
 #include <sys/types.h>
@@ -2156,7 +2156,7 @@ serv_connect_callback(int fd, int status, void *data)
 	sendto_realops_flags(FLAGS_ALL, L_OPER,
 			     "Error connecting to %s: %s",
 			     client_p->name, comm_errstr(status));
-	client_p->flags |= FLAGS_DEADSOCKET;
+	SetDead(client_p);
         exit_client(client_p, client_p, &me, comm_errstr(status));
         return;
       }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.171 2002/01/05 09:15:19 a1kmm Exp $
+ *  $Id: send.c,v 7.172 2002/02/14 05:50:32 a1kmm Exp $
  */
 
 #include <sys/types.h>
@@ -91,19 +91,15 @@ static inline int
 send_trim(char *lsendbuf, int len );
 
 /*
- ** dead_link
- **      An error has been detected. The link *must* be closed,
- **      but *cannot* call ExitClient (m_bye) from here.
- **      Instead, mark it with FLAGS_DEADSOCKET. This should
- **      generate ExitClient from the main loop.
- **
- **      If 'notice' is not NULL, it is assumed to be a format
- **      for a message to local opers. I can contain only one
- **      '%s', which will be replaced by the sockhost field of
- **      the failing link.
- **
- **      Also, the notice is skipped for "uninteresting" cases,
- **      like Persons and yet unknown connections...
+ * dead_link
+ *
+ *      If 'notice' is not NULL, it is assumed to be a format
+ *      for a message to local opers. I can contain only one
+ *      '%s', which will be replaced by the sockhost field of
+ *      the failing link.
+ *
+ *      Also, the notice is skipped for "uninteresting" cases,
+ *      like Persons and yet unknown connections...
  */
 /*
  * Can't call exit_client right away. This client might be in the middle
@@ -134,6 +130,7 @@ dead_link(struct Client *to, char *notice)
                          notice, get_client_name(to, MASK_IP));
   }
   Debug((DEBUG_ERROR, notice, get_client_name(to, HIDE_IP)));
+  exit_client(to, to, &me, notice);
   return (-1);
 } /* dead_link() */
 
