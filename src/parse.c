@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.79 2001/01/06 15:33:17 fl_ Exp $
+ *   $Id: parse.c,v 7.80 2001/01/07 01:48:42 fl_ Exp $
  */
 #include "parse.h"
 #include "client.h"
@@ -691,9 +691,13 @@ static int     do_numeric(
     {
       if (IsMe(acptr)) 
         {
-          sendto_realops_flags(FLAGS_ALL,
-			       "*** %s(via %s) sent a %s numeric to me?!?",
-			       sptr->name, cptr->name, numeric);
+/*         We're gunna get these as a consequence of lazylinks.. might
+ *         as well just ignore them 
+ *
+ *         sendto_realops_flags(FLAGS_ALL,
+ *			       "*** %s(via %s) sent a %s numeric to me?!?",
+ *			       sptr->name, cptr->name, numeric);
+ */
           return 0;
         }
       else if (acptr->from == cptr) 
