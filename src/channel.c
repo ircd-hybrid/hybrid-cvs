@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.141 2000/12/24 03:37:43 ejb Exp $
+ * $Id: channel.c,v 7.142 2000/12/27 18:53:48 davidt Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -567,7 +567,7 @@ int can_join(struct Client *sptr, struct Channel *chptr, char *key)
     {
       for (lp = sptr->user->invited.head; lp; lp = lp->next)
         if (lp->data == chptr)
-          break;
+         break;
       if (!lp)
         {
 	  for (ptr = chptr->invexlist.head; ptr; ptr = ptr->next)

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_topic.c,v 1.22 2000/12/27 11:43:16 db Exp $
+ *   $Id: m_topic.c,v 1.23 2000/12/27 18:53:43 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -33,6 +33,7 @@
 #include "numeric.h"
 #include "send.h"
 #include "s_conf.h"
+#include "s_serv.h"
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
@@ -80,12 +81,38 @@ int     m_topic(struct Client *cptr,
   if (parv[1] && IsChannelName(parv[1]))
     {
       chptr = hash_find_channel(parv[1], NullChn);
-      if (!chptr)
+
+      if(chptr == NULL)
+      {
+        /* if chptr isn't found locally, it =could= exist
+         * on the uplink. So ask.
+         */
+
+        /* LazyLinks */
+        /* this was segfaulting if we had no servers linked.
+         *  -pro
+         */
+        if ( !ConfigFileEntry.hub && uplink &&
+           IsCapable(uplink, CAP_LL) )
         {
-          sendto_one(sptr, form_str(ERR_NOSUCHCHANNEL), me.name, parv[0],
-              parv[1]);
+          /* cache the channel if it exists on uplink
+           * If the channel as seen by the uplink, has vchans,
+           * the uplink will have to SJOIN all of those.
+           */
+          sendto_one(uplink, ":%s CBURST %s",
+                      me.name, parv[1]);
+
+          sendto_one(uplink, ":%s TOPIC %s",
+                     sptr->name, parv[1]);
           return 0;
         }
+        else
+        {
+          sendto_one(sptr, form_str(ERR_NOSUCHCHANNEL),
+                     me.name, parv[0], parv[1]);
+          return 0;
+        }
+      }
 
       if (HasVchans(chptr))
 	{

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_lljoin.c,v 1.23 2000/12/26 19:17:39 db Exp $
+ * $Id: m_lljoin.c,v 1.24 2000/12/27 18:53:42 davidt Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -137,9 +137,9 @@ int     ms_lljoin(struct Client *cptr,
 	  return 0;
 	}
 
-      if ( (i = can_join(sptr, chptr, key)) )
+      if ( (i = can_join(acptr, chptr, key)) )
 	{
-	  sendto_one(sptr,
+	  sendto_one(acptr,
 		     form_str(i), me.name, parv[0], chname);
 	  return 0;
 	}

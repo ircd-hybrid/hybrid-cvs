@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.84 2000/12/27 16:16:01 db Exp $
+ *  $Id: s_user.c,v 7.85 2000/12/27 18:53:49 davidt Exp $
  */
 #include "tools.h"
 #include "s_user.h"
@@ -1016,8 +1016,19 @@ void send_umode_out(struct Client *cptr,
 
       if((acptr != cptr) && (acptr != sptr) && (*buf))
         {
-	  sendto_one(acptr, ":%s MODE %s :%s",
-		     sptr->name, sptr->name, buf);
+          log(L_DEBUG, "About to send umode to %s\n", acptr->name);
+          log(L_DEBUG, "hub: %d, LL: %d, SM: %d, CEM: %d, MATCH: %d",
+              ConfigFileEntry.hub, IsCapable(acptr, CAP_LL),
+              acptr->localClient->serverMask,
+              sptr->lazyLinkClientExists,
+              (acptr->localClient->serverMask &
+               sptr->lazyLinkClientExists));
+            
+          if((!(ConfigFileEntry.hub && IsCapable(acptr, CAP_LL)))
+             || (acptr->localClient->serverMask &
+                 sptr->lazyLinkClientExists))
+            sendto_one(acptr, ":%s MODE %s :%s",
+                       sptr->name, sptr->name, buf);
         }
     }
 

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_invite.c,v 1.13 2000/12/22 16:12:35 db Exp $
+ *   $Id: m_invite.c,v 1.14 2000/12/27 18:53:42 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -35,6 +35,7 @@
 #include "numeric.h"
 #include "send.h"
 #include "s_conf.h"
+#include "s_serv.h"
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
@@ -182,6 +183,19 @@ int     m_invite(struct Client *cptr,
 
   if(MyConnect(acptr) && chop)
     add_invite(chptr, acptr);
+
+  
+  if(!MyConnect(acptr) && ConfigFileEntry.hub &&
+     IsCapable(acptr->from, CAP_LL))
+  {
+    /* acptr is connected to a LL leaf, connected to us */
+    if(IsPerson(sptr))
+      client_burst_if_needed(acptr->from, sptr);
+
+    if ( (chptr->lazyLinkChannelExists &
+          acptr->from->localClient->serverMask) == 0 )
+      burst_channel( acptr->from, chptr );
+  }
 
   sendto_anywhere(acptr, sptr, "INVITE %s :%s",
 		  acptr->name, parv[2]);

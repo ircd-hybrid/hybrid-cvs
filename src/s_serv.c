@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.94 2000/12/26 19:17:45 db Exp $
+ *   $Id: s_serv.c,v 7.95 2000/12/27 18:53:49 davidt Exp $
  */
 #include "tools.h"
 #include "s_serv.h"
@@ -459,6 +459,7 @@ int check_server(struct Client* cptr)
   attach_conf(cptr, c_conf);
   attach_confs(cptr, cptr->name, CONF_HUB | CONF_LEAF);
 
+  
   if( !(n_conf->flags & CONF_FLAGS_LAZY_LINK) )
     ClearCap(cptr,CAP_LL);
 

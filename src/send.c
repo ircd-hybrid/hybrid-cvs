@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.86 2000/12/22 08:11:26 db Exp $
+ *   $Id: send.c,v 7.87 2000/12/27 18:53:50 davidt Exp $
  */
 #include "tools.h"
 #include "send.h"
@@ -842,6 +842,18 @@ sendto_ll_channel_remote(struct Channel *chptr,
 	{
 	  if(ConfigFileEntry.hub)
 	    {
+              /* Only tell leafs that already know about the channel */
+              if ((chptr->lazyLinkChannelExists &
+                   cptr->localClient->serverMask) == 0)
+              {
+                continue;
+              }
+              /* Uhm.  We shouldn't get here.
+               * Since the server obviously knows about the channel,
+               * it really should know about all the nicks that exist
+               * on the channel...
+               */
+              assert( 0 ); /* XXX -dt */
 	      if ((sptr->lazyLinkClientExists & cptr->localClient->serverMask)
 		  == 0)
 		{
