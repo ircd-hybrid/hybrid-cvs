@@ -1,3 +1,10 @@
+*** 20001209_14 by db
+- I was using ->user instead of ->username in prefix. *DUH*
+- removed pretty much identical function in send.c (MORE BLOAT GONE!)
+  using another function to do the same job. (sendto_list())
+
+
+
 *** 20001209_13 by db
 - ok. in the new world order... prefixes are generated at the top level
   instead of being grunged out in send.c... This gets rid of incredible
@@ -2102,7 +2109,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.768 2000/12/09 23:24:29 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.769 2000/12/10 01:32:10 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
