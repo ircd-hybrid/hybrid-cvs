@@ -18,7 +18,7 @@
  */
 
 /*
- * $Id: whowas.h,v 7.2 2000/10/06 04:26:59 lusky Exp $
+ * $Id: whowas.h,v 7.3 2000/11/14 07:40:46 db Exp $
  */
 #ifndef INCLUDED_whowas_h
 #define INCLUDED_whowas_h
@@ -104,11 +104,14 @@ struct Client *get_history (char *, time_t);
                                         /* Nick name */
                                         /* Time limit in seconds */
 
-int     m_whowas (struct Client *, struct Client *, int, char *[]);
-
 /*
 ** for debugging...counts related structures stored in whowas array.
 */
 void    count_whowas_memory (int *, u_long *);
+
+/* XXX m_whowas.c in modules needs these */
+extern struct Whowas WHOWAS[];
+extern struct Whowas *WHOWASHASH[];
+extern unsigned int hash_whowas_name(const char* name);
 
 #endif /* INCLUDED_whowas_h */
