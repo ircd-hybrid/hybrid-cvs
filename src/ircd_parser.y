@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.280 2003/04/30 03:59:53 michael Exp $
+ *  $Id: ircd_parser.y,v 1.281 2003/05/04 12:14:57 michael Exp $
  */
 
 %{
@@ -289,12 +289,12 @@ init_parser_confs(void)
 %token  WARN
 %token  WARN_NO_NLINE
 
-%type   <string>   QSTRING
-%type   <number>   NUMBER
-%type   <number>   timespec
-%type   <number>   timespec_
-%type   <number>   sizespec
-%type   <number>   sizespec_
+%type <string> QSTRING
+%type <number> NUMBER
+%type <number> timespec
+%type <number> timespec_
+%type <number> sizespec
+%type <number> sizespec_
 
 %%
 conf:   
@@ -362,15 +362,13 @@ sizespec:	NUMBER sizespec_ { $$ = $1 + $2; }
 /***************************************************************************
  *  section modules
  ***************************************************************************/
-modules_entry:          MODULES
+modules_entry: MODULES
   '{' modules_items '}' ';';
 
-modules_items:   modules_items modules_item |
-                 modules_item;
-modules_item:    modules_module | modules_path |
-                 error;
+modules_items:  modules_items modules_item | modules_item;
+modules_item:   modules_module | modules_path | error;
 
-modules_module:  MODULE '=' QSTRING ';'
+modules_module: MODULE '=' QSTRING ';'
 {
 #ifndef STATIC_MODULES /* NOOP in the static case */
   if (ypass == 2)
@@ -384,7 +382,7 @@ modules_module:  MODULE '=' QSTRING ';'
      */
     if (findmodule_byname(m_bn) == -1)
       /* XXX - should we unload this module on /rehash, if it isn't listed? */
-      load_one_module (yylval.string, 0);
+      load_one_module(yylval.string, 0);
 
     MyFree(m_bn);
   }
@@ -407,7 +405,6 @@ serverinfo_entry: SERVERINFO
 
 serverinfo_items:       serverinfo_items serverinfo_item |
                         serverinfo_item ;
-
 serverinfo_item:        serverinfo_name | serverinfo_vhost |
                         serverinfo_hub | serverinfo_description |
                         serverinfo_network_name | serverinfo_network_desc |
@@ -437,7 +434,7 @@ serverinfo_rsa_private_key_file: RSA_PRIVATE_KEY_FILE '=' QSTRING ';'
 
     DupString(ServerInfo.rsa_private_key_file, yylval.string);
 
-    if ((file = BIO_new_file( yylval.string, "r" )) == NULL)
+    if ((file = BIO_new_file(yylval.string, "r")) == NULL)
     {
       sendto_realops_flags(UMODE_ALL, L_ALL,
                            "Ignoring config file entry rsa_private_key -- file open failed"
@@ -565,7 +562,7 @@ serverinfo_vhost6: VHOST6 '=' QSTRING ';'
     hints.ai_flags    = AI_PASSIVE | AI_NUMERICHOST;
 
     if (irc_getaddrinfo(yylval.string, NULL, &hints, &res))
-      ilog(L_ERROR, "Invalid netmask for server vhost(%s)", yylval.string);
+      ilog(L_ERROR, "Invalid netmask for server vhost6(%s)", yylval.string);
     else
     {
       assert(res != NULL);
@@ -653,8 +650,7 @@ serverinfo_hub: HUB '=' TYES ';'
  ***************************************************************************/
 admin_entry: ADMIN  '{' admin_items '}' ';' ;
 
-admin_items: admin_items admin_item |
-             admin_item;
+admin_items: admin_items admin_item | admin_item;
 admin_item:  admin_name | admin_description |
              admin_email | error;
 
@@ -709,26 +705,35 @@ logging_gline_log:	GLINE_LOG '=' QSTRING ';'
                         {
                         };
 
-logging_log_level:     LOG_LEVEL '=' T_L_CRIT ';'
-  { set_log_level(L_CRIT); }
-                       |
-                       LOG_LEVEL '=' T_L_ERROR ';'
-  { set_log_level(L_ERROR); }
-                       |
-                       LOG_LEVEL '=' T_L_WARN ';'
-  { set_log_level(L_WARN); }
-                       |
-                       LOG_LEVEL '=' T_L_NOTICE ';'
-  { set_log_level(L_NOTICE); }
-                       |
-                       LOG_LEVEL '=' T_L_TRACE ';'
-  { set_log_level(L_TRACE); }
-                       |
-                       LOG_LEVEL '=' T_L_INFO ';'
-  { set_log_level(L_INFO); }
-                       |
-                       LOG_LEVEL '=' T_L_DEBUG ';'
-  { set_log_level(L_DEBUG); };
+logging_log_level: LOG_LEVEL '=' T_L_CRIT ';'
+{ 
+  if (ypass == 2)
+    set_log_level(L_CRIT);
+} | LOG_LEVEL '=' T_L_ERROR ';'
+{
+  if (ypass == 2)
+    set_log_level(L_ERROR);
+} | LOG_LEVEL '=' T_L_WARN ';'
+{
+  if (ypass == 2)
+    set_log_level(L_WARN);
+} | LOG_LEVEL '=' T_L_NOTICE ';'
+{
+  if (ypass == 2)
+    set_log_level(L_NOTICE);
+} | LOG_LEVEL '=' T_L_TRACE ';'
+{
+  if (ypass == 2)
+    set_log_level(L_TRACE);
+} | LOG_LEVEL '=' T_L_INFO ';'
+{
+  if (ypass == 2)
+    set_log_level(L_INFO);
+} | LOG_LEVEL '=' T_L_DEBUG ';'
+{
+  if (ypass == 2)
+    set_log_level(L_DEBUG);
+};
 
 /***************************************************************************
  * oper section
@@ -802,9 +807,7 @@ oper_entry: OPERATOR
   }
 }; 
 
-oper_items:     oper_items oper_item |
-                oper_item;
-
+oper_items:     oper_items oper_item | oper_item;
 oper_item:      oper_name  | oper_user | oper_password |
                 oper_class | oper_global_kill | oper_remote |
                 oper_kline | oper_unkline | oper_gline | oper_nick_changes |
@@ -814,9 +817,7 @@ oper_name: NAME '=' QSTRING ';'
 {
   if (ypass == 2)
   {
-    int oname_len;
-
-    if ((oname_len = strlen(yylval.string)) > OPERNICKLEN)
+    if (strlen(yylval.string) > OPERNICKLEN)
       yylval.string[OPERNICKLEN] = '\0';
 
     MyFree(yy_aconf->name);
@@ -824,7 +825,7 @@ oper_name: NAME '=' QSTRING ';'
   }
 };
 
-oper_user: USER '='  QSTRING ';'
+oper_user: USER '=' QSTRING ';'
 {
   if (ypass == 2)
   {
@@ -875,8 +876,8 @@ oper_rsa_public_key_file: RSA_PUBLIC_KEY_FILE '=' QSTRING ';'
 
     if (file == NULL)
     {
-      sendto_realops_flags(UMODE_ALL, L_ALL,
-                           "Ignoring rsa_public_key_file -- does %s exist?", yylval.string);
+      sendto_realops_flags(UMODE_ALL, L_ALL, "Ignoring rsa_public_key_file -- "
+                           "does %s exist?", yylval.string);
       break;
     }
 
@@ -997,8 +998,7 @@ oper_admin: ADMIN '=' TYES ';'
 /***************************************************************************
  *  section class
  ***************************************************************************/
-
-class_entry:    CLASS 
+class_entry: CLASS
 {
   if (ypass == 1)
   {
@@ -1013,17 +1013,14 @@ class_entry:    CLASS
 {
   if (ypass == 1)
   {
-    add_class(class_name_var,class_ping_time_var,
-              class_number_per_ip_var, class_max_number_var,
-              class_sendq_var );
+    add_class(class_name_var, class_ping_time_var, class_number_per_ip_var,
+              class_max_number_var, class_sendq_var);
     MyFree(class_name_var);
     class_name_var = NULL;
   }
 };
 
-class_items:    class_items class_item |
-                class_item;
-
+class_items:    class_items class_item | class_item;
 class_item:     class_name |
                 class_ping_time |
                 class_number_per_ip |
@@ -1087,8 +1084,7 @@ listen_entry: LISTEN
   }
 };
 
-listen_items:   listen_items listen_item |
-                listen_item;
+listen_items:   listen_items listen_item | listen_item;
 listen_item:    listen_port | listen_address | listen_host | error;
 
 listen_port: PORT '=' port_items ';' ;
@@ -1143,57 +1139,59 @@ auth_entry: AUTH
 } '{' auth_items '}' ';' 
 {
   if (ypass == 2)
+  {
+    dlink_node *ptr;
+    dlink_node *next_ptr;
+    struct ConfItem *yy_tmp;
+
+    /* copy over settings from first struct */
+    DLINK_FOREACH(ptr, aconf_list.head)
     {
-      dlink_node *ptr;
-      dlink_node *next_ptr;
-      struct ConfItem *yy_tmp;
+      yy_tmp = ptr->data;
 
-      /* copy over settings from first struct */
-      DLINK_FOREACH(ptr, aconf_list.head)
-      {
-	yy_tmp = ptr->data;
-	if (yy_aconf->passwd != NULL)
-	  DupString(yy_tmp->passwd, yy_aconf->passwd);
-	if (yy_aconf->name != NULL)
-	  DupString(yy_tmp->name, yy_aconf->name);
-	if (yy_aconf->className != NULL)
-	  DupString(yy_tmp->className, yy_aconf->className);
-	yy_tmp->flags = yy_aconf->flags;
-	yy_tmp->port  = yy_aconf->port;
-      }
-      
-      DLINK_FOREACH_SAFE(ptr, next_ptr, aconf_list.head)
-      {
-	yy_tmp = ptr->data;
+      if (yy_aconf->passwd != NULL)
+        DupString(yy_tmp->passwd, yy_aconf->passwd);
+      if (yy_aconf->name != NULL)
+        DupString(yy_tmp->name, yy_aconf->name);
+      if (yy_aconf->className != NULL)
+        DupString(yy_tmp->className, yy_aconf->className);
 
-	if (yy_tmp->name == NULL)
-	  DupString(yy_tmp->name,"NOMATCH");
-	conf_add_class_to_conf(yy_tmp);
-
-	if (yy_tmp->user == NULL)
-	  DupString(yy_tmp->user,"*");
-	else
-	  (void)collapse(yy_tmp->user);
-
-	if (yy_tmp->host != NULL)
-	{
-	  (void)collapse(yy_tmp->host);
-	  add_conf_by_address(yy_tmp->host, CONF_CLIENT, yy_tmp->user, yy_tmp);
-	}
-	else
-	{
-	  free_conf(yy_tmp);
-	}
-	dlinkDelete(ptr, &aconf_list);
-      }
-      free_conf(yy_aconf);
-      yy_aconf = NULL;
+      yy_tmp->flags = yy_aconf->flags;
+      yy_tmp->port  = yy_aconf->port;
     }
-  }; 
 
-auth_items:     auth_items auth_item |
-                auth_item;
+    DLINK_FOREACH_SAFE(ptr, next_ptr, aconf_list.head)
+    {
+      yy_tmp = ptr->data;
 
+      if (yy_tmp->name == NULL)
+        DupString(yy_tmp->name, "NOMATCH");
+      conf_add_class_to_conf(yy_tmp);
+
+      if (yy_tmp->user == NULL)
+        DupString(yy_tmp->user, "*");
+      else
+        collapse(yy_tmp->user);
+
+      if (yy_tmp->host != NULL)
+      {
+        collapse(yy_tmp->host);
+        add_conf_by_address(yy_tmp->host, CONF_CLIENT, yy_tmp->user, yy_tmp);
+      }
+      else
+      {
+        free_conf(yy_tmp);
+      }
+
+      dlinkDelete(ptr, &aconf_list);
+    }
+
+    free_conf(yy_aconf);
+    yy_aconf = NULL;
+  }
+}; 
+
+auth_items:     auth_items auth_item | auth_item;
 auth_item:      auth_user | auth_passwd | auth_class |
                 auth_kline_exempt | auth_have_ident | auth_is_restricted |
                 auth_exceed_limit | auth_no_tilde | auth_gline_exempt |
@@ -1240,6 +1238,7 @@ auth_spoof_notice: SPOOF_NOTICE '=' TNO ';'
     yy_aconf->flags &= ~CONF_FLAGS_SPOOF_NOTICE;
 };
 
+/* XXX - need check for illegal hostnames here */
 auth_spoof: SPOOF '=' QSTRING ';' 
 {
   if (ypass == 2)
@@ -1370,8 +1369,7 @@ resv_entry: RESV
   }
 };
 
-resv_items:	resv_items resv_item |
-                resv_item;
+resv_items:	resv_items resv_item | resv_item;
 resv_item:	resv_creason | resv_channel | resv_nick | error;
 
 resv_creason: REASON '=' QSTRING ';'
@@ -1434,8 +1432,7 @@ shared_entry: T_SHARED
   }
 };
 
-shared_items: shared_items shared_item |
-              shared_item;
+shared_items: shared_items shared_item | shared_item;
 shared_item:  shared_name | shared_user | error;
 
 shared_name: NAME '=' QSTRING ';'
@@ -1573,8 +1570,7 @@ connect_entry: CONNECT
   }
 };
 
-connect_items:  connect_items connect_item |
-                connect_item;
+connect_items:  connect_items connect_item | connect_item;
 connect_item:   connect_name | connect_host | connect_send_password |
                 connect_accept_password | connect_port | connect_aftype | 
  		connect_fakename | connect_lazylink | connect_hub_mask | 
@@ -1613,9 +1609,7 @@ connect_send_password: SEND_PASSWORD '=' QSTRING ';'
   if (ypass == 2)
   {
     if (yy_aconf->spasswd != NULL)
-    {
       memset(yy_aconf->spasswd, 0, strlen(yy_aconf->spasswd));
-    }
 
     MyFree(yy_aconf->spasswd);
     DupString(yy_aconf->spasswd, yylval.string);
@@ -1627,16 +1621,14 @@ connect_accept_password: ACCEPT_PASSWORD '=' QSTRING ';'
   if (ypass == 2)
   {
     if (yy_aconf->passwd != NULL)
-    {
       memset(yy_aconf->passwd, 0, strlen(yy_aconf->passwd));
-    }
 
     MyFree(yy_aconf->passwd);
     DupString(yy_aconf->passwd, yylval.string);
   }
 };
 
-connect_port:   PORT '=' NUMBER ';'
+connect_port: PORT '=' NUMBER ';'
 {
   if (ypass == 2)
     yy_aconf->port = $3;
@@ -1712,7 +1704,7 @@ connect_rsa_public_key_file: RSA_PUBLIC_KEY_FILE '=' QSTRING ';'
       break;
     }
 
-    yy_aconf->rsa_public_key = (RSA *)PEM_read_bio_RSA_PUBKEY(file, NULL, 0, NULL );
+    yy_aconf->rsa_public_key = (RSA *)PEM_read_bio_RSA_PUBKEY(file, NULL, 0, NULL);
 
     if (yy_aconf->rsa_public_key == NULL)
     {
@@ -1812,30 +1804,29 @@ connect_cipher_preference: CIPHER_PREFERENCE '=' QSTRING ';'
 
     for (ecap = CipherTable; ecap->name; ecap++)
     {
-	if ((!irccmp(ecap->name, cipher_name)) &&
-	   (ecap->cap & CAP_ENC_MASK))
-	{
-	  yy_aconf->cipher_preference = ecap;
-	  found = 1;
-	}
+      if ((!irccmp(ecap->name, cipher_name)) &&
+          (ecap->cap & CAP_ENC_MASK))
+      {
+        yy_aconf->cipher_preference = ecap;
+        found = 1;
+      }
     }
 
     if (!found)
     {
-	sendto_realops_flags(UMODE_ALL, L_ALL, "Invalid cipher '%s' for %s",
-			     cipher_name, yy_aconf->name);
-	ilog(L_ERROR, "Invalid cipher '%s' for %s",
-	     cipher_name, yy_aconf->name);
+      sendto_realops_flags(UMODE_ALL, L_ALL, "Invalid cipher '%s' for %s",
+                           cipher_name, yy_aconf->name);
+      ilog(L_ERROR, "Invalid cipher '%s' for %s",
+           cipher_name, yy_aconf->name);
     }
   }
 #else
   if (ypass == 2)
   {
-      sendto_realops_flags(UMODE_ALL, L_ALL,
-        "Ignoring 'cipher_preference' line for %s -- no OpenSSL support",
-         yy_aconf->name);
-      ilog(L_ERROR, "Ignoring 'cipher_preference' line for %s -- "
-                    "no OpenSSL support", yy_aconf->name);
+    sendto_realops_flags(UMODE_ALL, L_ALL, "Ignoring 'cipher_preference' line "
+                         "for %s -- no OpenSSL support", yy_aconf->name);
+    ilog(L_ERROR, "Ignoring 'cipher_preference' line for %s -- "
+         "no OpenSSL support", yy_aconf->name);
   }
 #endif
 };
@@ -1865,10 +1856,8 @@ kill_entry: KILL
   }
 }; 
 
-kill_items:     kill_items kill_item |
-                kill_item;
+kill_items:     kill_items kill_item | kill_item;
 kill_item:      kill_user | kill_reason | error;
-
 
 kill_user: USER '=' QSTRING ';'
 {
@@ -1898,7 +1887,7 @@ deny_entry: DENY
     free_conf(yy_aconf);
     yy_aconf = make_conf(CONF_DLINE);
     /* default reason */
-    DupString(yy_aconf->passwd,"NO REASON");
+    DupString(yy_aconf->passwd, "NO REASON");
   }
 } '{' deny_items '}' ';'
 {
@@ -1912,9 +1901,7 @@ deny_entry: DENY
   }
 }; 
 
-deny_items:     deny_items deny_item |
-                deny_item;
-
+deny_items:     deny_items deny_item | deny_item;
 deny_item:      deny_ip | deny_reason | error;
 
 deny_ip: IP '=' QSTRING ';'
@@ -1958,8 +1945,7 @@ exempt_entry: EXEMPT
   }
 };
 
-exempt_items:     exempt_items exempt_item |
-                  exempt_item;
+exempt_items:     exempt_items exempt_item | exempt_item;
 exempt_item:      exempt_ip | error;
 
 exempt_ip: IP '=' QSTRING ';'
@@ -1995,9 +1981,8 @@ gecos_entry: GECOS
   }
 }; 
 
-gecos_items:     gecos_items gecos_item |
-                 gecos_item;
-gecos_item:      gecos_name | gecos_reason | gecos_action | error;
+gecos_items: gecos_items gecos_item | gecos_item;
+gecos_item:  gecos_name | gecos_reason | gecos_action | error;
 
 gecos_name: NAME '=' QSTRING ';' 
 {
@@ -2034,11 +2019,10 @@ gecos_action: ACTION '=' WARN ';'
 /***************************************************************************
  *  section general
  ***************************************************************************/
-general_entry:      GENERAL
+general_entry: GENERAL
   '{' general_items '}' ';';
 
-general_items:      general_items general_item |
-                    general_item;
+general_items:      general_items general_item | general_item;
 general_item:       general_failed_oper_notice |
                     general_anti_nick_flood | general_max_nick_time |
                     general_max_nick_changes | general_max_accept |
@@ -2132,8 +2116,7 @@ general_ts_max_delta: TS_MAX_DELTA '=' timespec ';'
 
 general_havent_read_conf: HAVENT_READ_CONF '=' NUMBER ';'
 {
-  /* XXX harmless to whine on both passes! */
-  if ($3 > 0)
+  if (($3 > 0) && ypass == 1)
   {
     ilog(L_CRIT, "You haven't read your config file properly.");
     ilog(L_CRIT, "There is a line in the example conf that will kill your server if not removed.");
@@ -2692,9 +2675,7 @@ general_dot_in_ip6_addr: DOT_IN_IP6_ADDR '=' TYES ';'
 channel_entry:      CHANNEL
   '{' channel_items '}' ';';
 
-channel_items:      channel_items channel_item |
-                    channel_item;
-
+channel_items:      channel_items channel_item | channel_item;
 channel_item:       channel_use_except |
                     channel_use_halfops |
                     channel_use_invex |
@@ -2907,12 +2888,10 @@ channel_oper_pass_resv: OPER_PASS_RESV '=' TYES ';'
 /***************************************************************************
  *  section serverhide
  ***************************************************************************/
-serverhide_entry:      SERVERHIDE
+serverhide_entry: SERVERHIDE
   '{' serverhide_items '}' ';';
 
-serverhide_items:   serverhide_items serverhide_item |
-                    serverhide_item;
-
+serverhide_items:   serverhide_items serverhide_item | serverhide_item;
 serverhide_item:    serverhide_flatten_links |
 		    serverhide_hide_servers |
 		    serverhide_disable_remote_commands |
