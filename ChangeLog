@@ -1,3 +1,17 @@
+bill        2002/10/23 18:12:17 EDT	(20021023_0)
+
+  Modified files:
+    src                  channel.c list.c 
+  Log:
+  - added additional sanity checking in expire_channels(), which fixes a core
+  - removed extra ; in make_dlink_node()
+  
+  Revision  Changes    Path
+  7.338     +27 -4     ircd-hybrid-7/src/channel.c
+  7.47      +1 -1      ircd-hybrid-7/src/list.c
+
+
+
 androsyn    2002/10/22 14:47:27 EDT	(20021022_0)
 
   Modified files:
@@ -32600,4 +32614,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4072 2002/10/22 18:47:30 androsyn Exp $
+$Id: ChangeLog,v 7.4073 2002/10/23 22:12:22 bill Exp $
