@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: class.c,v 7.54 2003/05/30 08:05:40 michael Exp $
+ *  $Id: class.c,v 7.55 2003/05/31 00:52:47 michael Exp $
  */
 
 #include "stdinc.h"
@@ -36,9 +36,7 @@
 #include "s_debug.h"
 #include "memory.h"
 
-#define BAD_CONF_CLASS   -1
-#define BAD_PING         -2
-#define BAD_CLIENT_CLASS -3
+#define BAD_PING -1
 
 dlink_list ClassList = { NULL, NULL, 0 };
 
@@ -125,7 +123,7 @@ get_client_class(struct Client *target_p)
       if (aconf->class_name == NULL)
         retc = "default";
       else
-        retc= aconf->class_name;
+        retc = aconf->class_name;
     }
   }
 
@@ -183,6 +181,7 @@ get_con_freq(struct Class *clptr)
 {
   if (clptr != NULL)
     return(ConFreq(clptr));
+
   return(DEFAULT_CONNECTFREQUENCY);
 }
 
@@ -205,6 +204,7 @@ add_class(struct Class *aclass)
   {
     dlinkAdd(aclass, &aclass->class_node, &ClassList);
     CurrUserCount(aclass) = 0;
+
     if (MaxSendq(aclass) == 0)
       MaxSendq(aclass) = DEFAULT_SENDQ;
   }
@@ -319,7 +319,7 @@ report_classes(struct Client *source_p)
 long
 get_sendq(struct Client *client_p)
 {
-  int sendq = DEFAULT_SENDQ;
+  long sendq = DEFAULT_SENDQ;
   dlink_node *ptr;
   struct Class *aclass;
   struct ConfItem *aconf;
@@ -337,9 +337,8 @@ get_sendq(struct Client *client_p)
         continue;
 
       sendq = MaxSendq(aclass);
-      return(sendq);
     }
   }
 
-  return(BAD_CLIENT_CLASS);
+  return(sendq);
 }
