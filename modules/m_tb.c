@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: m_tb.c,v 1.22 2003/11/01 06:18:40 joshk Exp $
+ *  $Id: m_tb.c,v 1.23 2004/05/08 05:15:14 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -77,7 +77,7 @@ _moddeinit(void)
   delete_capability("TBURST");
 }
 
-const char *_version = "$Revision: 1.22 $";
+const char *_version = "$Revision: 1.23 $";
 
 #endif /* !STATIC_MODULES */
 
@@ -95,27 +95,30 @@ ms_tburst(struct Client *client_p, struct Client *source_p,
           int parc, char *parv[])
 {
   struct Channel *chptr;
-  time_t newchannelts = atol(parv[1]);
-  time_t newtopicts = atol(parv[3]);
+  time_t oldchannelts = atol(parv[1]);
+  time_t oldtopicts = atol(parv[3]);
 
-  if((chptr = hash_find_channel(parv[2])))
-  {
-    /* Don't allow newly created channels to change the topic ever,
-     * only change the topic if we are on the old channel TS with
-     * a new topic_time. -metalrock
-     */
-    if (chptr->channelts > newchannelts)
-      return;
-    else if (chptr->topic == NULL || (chptr->topic_time > newtopicts))
-      set_topic(source_p, chptr, newtopicts, parv[4], parv[5]);
-  }
+  if ((chptr = hash_find_channel(parv[2])) == NULL)
+    return;
+
+  /* If the topics are the same (due to lag) ignore it */
+  if ((chptr->topic != NULL) && !strcmp(chptr->topic, parv[5]))
+    return;
+
+  /* Only allow topic change if we are the newer TS and server
+   * sending TBURST has older TS and topicTS on older TS is
+   * newer than current topicTS. -metalrock
+   */
+  if ((oldchannelts <= chptr->channelts) &&
+      ((chptr->topic == NULL) || (oldtopicts > chptr->topic_time)))
+    set_topic(source_p, chptr, oldtopicts, parv[4], parv[5]);
 }
 
 static void
 set_topic(struct Client *source_p, struct Channel *chptr, 
-          time_t newtopicts, char *topicwho, char *topic)
+          time_t oldtopicts, char *topicwho, char *topic)
 {
-  set_channel_topic(chptr, topic, topicwho, newtopicts);
+  set_channel_topic(chptr, topic, topicwho, oldtopicts);
 
   sendto_channel_local(ALL_MEMBERS, chptr, ":%s TOPIC %s :%s",
 		       ConfigServerHide.hide_servers ? me.name : source_p->name,
