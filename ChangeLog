@@ -1,3 +1,15 @@
+androsyn    2002/05/24 21:42:56 EDT	(20020525_8)
+
+  Modified files:
+    src                  s_bsd_select.c 
+  Log:
+  bcopy() people still use bcopy()?!?  Replaced those with memcpy()
+  
+  Revision  Changes    Path
+  7.26      +2 -2      ircd-hybrid-7/src/s_bsd_select.c
+
+
+
 androsyn    2002/05/24 21:38:11 EDT	(20020525_7)
 
   Modified files:
@@ -27203,4 +27215,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3690 2002/05/25 01:38:17 androsyn Exp $
+$Id: ChangeLog,v 7.3691 2002/05/25 01:43:02 androsyn Exp $
