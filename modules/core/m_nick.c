@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nick.c,v 1.138 2004/02/14 19:59:15 metalrock Exp $
+ *  $Id: m_nick.c,v 1.139 2004/02/23 07:23:25 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -93,7 +93,7 @@ _moddeinit(void)
   mod_del_cmd(&uid_msgtab);
 }
 
-const char *_version = "$Revision: 1.138 $";
+const char *_version = "$Revision: 1.139 $";
 #endif
 
 /* mr_nick()
@@ -330,11 +330,12 @@ ms_nick(struct Client *client_p, struct Client *source_p,
 
   /* fix the lengths */
   strlcpy(nick, nnick, sizeof(nick));
-  strlcpy(ngecos, parv[8], sizeof(ngecos));
 
   if (parc == 9)
   {
     struct Client *server_p = find_server(nserver);
+
+    strlcpy(ngecos, parv[8], sizeof(ngecos));
 
     if (server_p == NULL)
     {
