@@ -1,7 +1,7 @@
 
 Whats changed in the codebase
 
-# $Id: whats-new-code.txt,v 1.1 2000/12/28 21:57:43 adrian Exp $
+# $Id: whats-new-code.txt,v 1.2 2001/01/24 14:58:45 wcampbel Exp $
 
 First, please note one thing - a *LOT* has changed in hybrid-7.
 
@@ -20,7 +20,7 @@ First, please note one thing - a *LOT* has changed in hybrid-7.
   it is more efficient, but the split-list code in s_bsd_poll.c needs some
   further research.
 
-  Please read the documentation avaliable, which will go into more detail.
+  Please read the documentation available, which will go into more detail.
 
 * An event system has been added, again borrowed mainly from squid. This
   allows periodic events (channel cleanup, server connection retries, etc)

@@ -40,7 +40,7 @@
 4.  Problem with msgfmt command building custom msgs using gettext
     - Please ensure you are using GNU gettext version 0.10.35.
       Other versions are untested, and some are known to be
-      incompatable.
+      incompatible.
 
 5.  When linking servers, you may see warnings about servers being sent
     403 numerics.  This is caused by the NOTICE AUTH :*** ... messages,
@@ -65,4 +65,4 @@ BUG REPORTS: If you run this code and encounter problems, you must report
  with any report  (with passwords and other sensitive information masked).
 
 --------------------------------------------------------------------------------
-$Id: BUGS,v 7.9 2001/01/22 20:33:58 fl_ Exp $
+$Id: BUGS,v 7.10 2001/01/24 14:58:33 wcampbel Exp $

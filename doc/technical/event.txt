@@ -1,7 +1,7 @@
 Overview of the event subsystem
 Adrian Chadd <adrian@creative.net.au>
 
-$Id: event.txt,v 1.1 2000/11/08 08:53:11 adrian Exp $
+$Id: event.txt,v 1.2 2001/01/24 14:58:41 wcampbel Exp $
 
 
 One of the things that immediately struck me whilst first looking at the
@@ -30,7 +30,7 @@ An event is identified by its callback function and data pair.
 
 Events are run through eventRun(). This is designed to be called *BEFORE*
 your IO handlers, to let events scheduled immediately (ie a time of 0)
-to initate IO before the IO handlers are called.
+to initiate IO before the IO handlers are called.
 
 (Believe me, its useful.)
 
@@ -45,7 +45,7 @@ Say you have something which must be called every 15 seconds.
 static EVH foo_periodic_event;
 static int initialised = 0;
 
-* You would then add the event in your initialisation function:
+* You would then add the event in your initialization function:
 
 void foo_init(void)
 {

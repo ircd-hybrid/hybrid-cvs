@@ -1,14 +1,14 @@
 Overview of the network subsystem
 Adrian Chadd <adrian@creative.net.au>
 
-$Id: network.txt,v 1.5 2000/12/24 23:59:56 adrian Exp $
+$Id: network.txt,v 1.6 2001/01/24 14:58:43 wcampbel Exp $
 
 
 This document is an overview of the new and hopefully improved network
 subsystem.
 
 The code is based loosely upon the network core found in the Squid web cache
-server, with some optimisations for ircd-specific IO patterns.
+server, with some optimizations for ircd-specific IO patterns.
 
 
 
