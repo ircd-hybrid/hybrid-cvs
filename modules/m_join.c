@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 1.77 2001/11/13 12:55:47 leeh Exp $
+ *   $Id: m_join.c,v 1.78 2001/12/07 10:59:34 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -152,6 +152,14 @@ m_join(struct Client *client_p,
         sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
 	           me.name, source_p->name, name);
 	continue;
+      }
+
+      if(ConfigServerHide.disable_local_channels &&
+        (*name == '&'))
+      {
+        sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
+	           me.name, source_p->name, name);
+        continue;
       }
 
       /* check the length */

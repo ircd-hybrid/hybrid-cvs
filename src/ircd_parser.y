@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.223 2001/11/29 20:24:05 leeh Exp $
+ * $Id: ircd_parser.y,v 1.224 2001/12/07 10:59:36 leeh Exp $
  */
 
 %{
@@ -122,6 +122,7 @@ int   class_redirport_var;
 %token  DENY
 %token  DESCRIPTION
 %token  DIE
+%token  DISABLE_LOCAL_CHANNELS
 %token  DISABLE_REMOTE_COMMANDS
 %token  DOT_IN_IP6_ADDR
 %token  DOTS_IN_IDENT
@@ -2593,6 +2594,7 @@ serverhide_item:    serverhide_flatten_links |
 		    serverhide_links_delay |
 		    serverhide_allow_hidden |
 		    serverhide_hidden |
+		    serverhide_disable_local_channels |
                     error
 
 serverhide_flatten_links: FLATTEN_LINKS '=' TYES ';'
@@ -2624,7 +2626,17 @@ serverhide_disable_remote_commands: DISABLE_REMOTE_COMMANDS '=' TYES ';'
   {
     ConfigServerHide.disable_remote = 0;
   } ;
-  
+
+serverhide_disable_local_channels: DISABLE_LOCAL_CHANNELS '=' TYES ';'
+  {
+    ConfigServerHide.disable_local_channels = 1;
+  }
+    |
+    DISABLE_LOCAL_CHANNELS '=' TNO ';'
+  {
+    ConfigServerHide.disable_local_channels = 0;
+  } ;
+
 serverhide_links_delay: LINKS_DELAY '=' timespec ';'
   {
     if(($3 > 0) && ConfigServerHide.links_disabled == 1)

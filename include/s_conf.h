@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.165 2001/12/04 08:30:11 db Exp $
+ * $Id: s_conf.h,v 7.166 2001/12/07 10:59:31 leeh Exp $
  */
 
 #include "setup.h"
@@ -263,6 +263,7 @@ struct config_server_hide
   int	flatten_links;
   int	hide_servers;
   int	disable_remote;
+  int   disable_local_channels;
   int	links_delay;
   int   links_disabled;
   int	hidden;

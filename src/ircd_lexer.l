@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.128 2001/11/29 20:24:04 leeh Exp $
+ * $Id: ircd_lexer.l,v 1.129 2001/12/07 10:59:36 leeh Exp $
  */
 
 %option case-insensitive
@@ -129,6 +129,7 @@ default_floodcount  { return DEFAULT_FLOODCOUNT; }
 deny		{ return DENY; }
 description	{ return DESCRIPTION; }
 die		{ return DIE; }
+disable_local_channels { return DISABLE_LOCAL_CHANNELS; }
 disable_remote_commands	{ return DISABLE_REMOTE_COMMANDS; }
 dot_in_ip6_addr { return DOT_IN_IP6_ADDR; }
 dots_in_ident   { return DOTS_IN_IDENT; }
