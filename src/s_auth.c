@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.c,v 7.12 2000/10/25 23:18:11 adrian Exp $
+ *   $Id: s_auth.c,v 7.13 2000/10/30 22:32:31 adrian Exp $
  *
  * Changes:
  *   July 6, 1999 - Rewrote most of the code here. When a client connects
@@ -178,6 +178,12 @@ static void release_auth_client(struct Client* client)
   local[client->fd] = client;
 
   fdlist_add(client->fd, FDL_DEFAULT);
+  /*
+   * When a client has auth'ed, we want to start reading what it sends
+   * us. This is what read_packet() does.
+   *     -- adrian
+   */
+  comm_setselect(client->fd, COMM_SELECT_WRITE, read_packet, client, 0);
   add_client_to_list(client);
 }
  

@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_poll.c,v 7.8 2000/10/30 08:44:13 adrian Exp $
+ *  $Id: s_bsd_poll.c,v 7.9 2000/10/30 22:32:32 adrian Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -278,9 +278,6 @@ int read_message(time_t delay, unsigned char mask)
       if (DBufLength(&cptr->recvQ) && delay2 > 2)
         delay2 = 1;
 
-      if (DBufLength(&cptr->recvQ) < 4088)
-        PFD_SETR(i);
-      
       if (IsConnecting(cptr))
         PFD_SETW(i);
     }
@@ -370,20 +367,6 @@ int read_message(time_t delay, unsigned char mask)
           }
         }
       length = 1;     /* for fall through case */
-      if (rr)
-        length = read_packet(cptr);
-      else if (PARSE_AS_CLIENT(cptr) && !NoNewLine(cptr))
-        length = parse_client_queued(cptr);
-
-      if (length > 0 || length == CLIENT_EXITED)
-        continue;
-      if (IsDead(cptr)) {
-         exit_client(cptr, cptr, &me,
-                      strerror(get_sockerr(cptr->fd)));
-         continue;
-      }
-      error_exit_client(cptr, length);
-      errno = 0;
     }
   return 0;
 }
