@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.c,v 7.78 2003/04/13 17:47:12 db Exp $
+ *  $Id: hostmask.c,v 7.79 2003/04/23 00:22:24 bill Exp $
  */
 
 #include "stdinc.h"
@@ -567,8 +567,13 @@ add_conf_by_address(const char *address, int type, const char *username,
   unsigned long hv;
   struct AddressRec *arec;
 
-  if (address == NULL)
+  assert(!EmptyString(username));
+  assert(type != 0); 
+  assert(aconf != NULL);
+
+  if (EmptyString(address))
     address = "/NOMATCH!/";
+
   arec = MyMalloc(sizeof(struct AddressRec));
   masktype = parse_netmask(address, &arec->Mask.ipa.addr, &bits);
   arec->Mask.ipa.bits = bits;
@@ -662,43 +667,34 @@ void
 clear_out_address_conf(void)
 {
   int i;
-  struct AddressRec *arec;
-  struct AddressRec *last_arec;
-  struct AddressRec *next_arec;
+  struct AddressRec **store_next;
+  struct AddressRec *arec, *arec_next;
 
   for (i = 0; i < ATABLE_SIZE; i++)
   {
-    last_arec = NULL;
-    for (arec = atable[i]; arec; arec = next_arec)
+    store_next = &atable[i];
+    for (arec = atable[i]; arec; arec = arec_next)
     {
-      /* We keep the temporary K-lines and destroy the
-       * permanent ones, just to be confusing :) -A1kmm 
+      /*
+       * We keep only the temporary klines, because the
+       * permanent ones will be re-read. -bill
        */
-      next_arec = arec->next;
+      arec_next = arec->next;
 
       if (arec->aconf->flags & CONF_FLAGS_TEMPORARY)
       {
-	last_arec = arec;
+        *store_next = arec;
+        store_next = &arec->next;
       }
       else
       {
-	/* unlink it from link list - Dianora */
-
-	if (last_arec == NULL)
-	{
-	  atable[i] = NULL;
-	}
-	else
-	{
-	  last_arec->next = arec->next;
-	}
-
         arec->aconf->status |= CONF_ILLEGAL;
         if (arec->aconf->clients == 0)
           free_conf(arec->aconf);
         MyFree(arec);
       }
     }
+    *store_next = NULL;
   }
 }
 
