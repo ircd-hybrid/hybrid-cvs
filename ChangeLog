@@ -1,3 +1,8 @@
+*** 20001212_3 by db
+- oops. forgot to generate a prefix in sendnick_TS in s_serv.c
+
+
+
 *** 20001212_2 by db
 - don't core if a server is not found on the serv_list
 
@@ -2389,7 +2394,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.802 2000/12/12 05:11:34 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.803 2000/12/12 05:45:21 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
