@@ -6,33 +6,24 @@
  *
  *  You can use this code in any way as long as these names remain.
  *
- *  $Id: m_mkpasswd.c,v 1.12 2003/06/18 07:51:42 joshk Exp $
+ *  $Id: m_mkpasswd.c,v 1.13 2003/12/03 07:39:42 metalrock Exp $
  */
 
-/* List of ircd includes from ../include/ */
-#include "stdinc.h"
 #include "handlers.h"
-#include "client.h"
-#include "common.h"     /* FALSE bleah */
 #include "ircd.h"
 #include "irc_string.h"
 #include "numeric.h"
-#include "fdlist.h"
-#include "s_bsd.h"
 #include "s_conf.h"
-#include "s_log.h"
 #include "s_serv.h"
 #include "send.h"
-#include "msg.h"
-#include "parse.h"
 #include "modules.h"
 
 static void m_mkpasswd(struct Client *client_p, struct Client *source_p,
                        int parc, char *parv[]);
 static void mo_mkpasswd(struct Client *client_p, struct Client *source_p,
                         int parc, char *parv[]);
-static char *make_salt(void);
-static char *make_md5_salt(void);
+static char *des(void);
+static char *md5(void);
 
 static char saltChars[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789./";
 
@@ -52,7 +43,7 @@ void _moddeinit(void)
   mod_del_cmd(&mkpasswd_msgtab);
 }
 
-const char *_version = "$Revision: 1.12 $";
+const char *_version = "$Revision: 1.13 $";
 #endif
 
 static void
@@ -60,11 +51,16 @@ m_mkpasswd(struct Client *client_p, struct Client *source_p,
            int parc, char *parv[])
 {
   static time_t last_used = 0;
-  int is_md5 = 0;
+
+  if (parc < 1)
+  {
+    sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
+               me.name, source_p->name, "MKPASSWD");
+    return;
+  }
 
   if ((last_used + ConfigFileEntry.pace_wait) > CurrentTime)
   {
-    /* safe enough to give this on a local connect only */
     sendto_one(source_p, form_str(RPL_LOAD2HI),
                me.name, source_p->name);
     return;
@@ -72,33 +68,21 @@ m_mkpasswd(struct Client *client_p, struct Client *source_p,
   else
     last_used = CurrentTime;
 
-  if (parc == 3)
-  {
-    if (irccmp(parv[2], "MD5") == 0)
-    {
-      is_md5 = 1;
-    }
-    else if (irccmp(parv[2], "DES") == 0)
-    {
-      /* Not really needed, but we may want to have a default encryption
-       * setting somewhere down the road
-       */
-      is_md5 = 0;
-    }
-    else
-    {
-      sendto_one(source_p, ":%s NOTICE %s :MKPASSWD syntax error:  MKPASSWD pass [DES|MD5]", me.name, parv[0]);
-      return;
-    }
-  }
-
-  if (parc == 1)
-    sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-               me.name, parv[0], "MKPASSWD");
+  if (parv[2] == NULL)
+    sendto_one(source_p, ":%s NOTICE %s :DES Encryption for [%s]: %s",
+               me.name, source_p->name, parv[1], crypt(parv[1],
+               des()));
+  else if (irccmp(parv[2], "DES") == 0)
+    sendto_one(source_p, ":%s NOTICE %s :DES Encryption for [%s]: %s",
+               me.name, source_p->name, parv[1], crypt(parv[1],
+               des()));
+  else if (irccmp(parv[2], "MD5") == 0)
+    sendto_one(source_p, ":%s NOTICE %s :MD5 Encryption for [%s]: %s",
+               me.name, source_p->name, parv[1], crypt(parv[1],
+               md5()));
   else
-    sendto_one(source_p, ":%s NOTICE %s :Encryption for [%s]:  %s",
-               me.name, parv[0], parv[1], crypt(parv[1],
-               is_md5 ? make_md5_salt() : make_salt()));
+    sendto_one(source_p, ":%s NOTICE %s :Syntax: MKPASSWD pass [DES|MD5]",
+               me.name, source_p->name);
 }
 
 /*
@@ -110,39 +94,31 @@ static void
 mo_mkpasswd(struct Client *client_p, struct Client *source_p,
 	    int parc, char *parv[])
 {		 
-  int is_md5 = 0;
-
-  if (parc == 3)
+  if (parc < 1)
   {
-    if (irccmp(parv[2], "MD5") == 0)
-    {
-      is_md5 = 1;
-    }
-    else if (irccmp(parv[2], "DES") == 0)
-    {
-      /* Not really needed, but we may want to have a default encryption
-       * setting somewhere down the road
-       */
-      is_md5 = 0;
-    }
-    else
-    {
-      sendto_one(source_p, ":%s NOTICE %s :MKPASSWD syntax error:  MKPASSWD pass [DES|MD5]", me.name, parv[0]);
-      return;
-    }
-  }
-
-  if (parc == 1)
     sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-               me.name, parv[0], "MKPASSWD");
+               me.name, source_p->name, "MKPASSWD");
+    return;
+  }
+  if (parv[2] == NULL)
+    sendto_one(source_p, ":%s NOTICE %s :DES Encryption for [%s]: %s",
+               me.name, source_p->name, parv[1], crypt(parv[1],
+               des()));
+  else if (irccmp(parv[2], "DES") == 0)
+    sendto_one(source_p, ":%s NOTICE %s :DES Encryption for [%s]: %s",
+               me.name, source_p->name, parv[1], crypt(parv[1],
+               des()));
+  else if (irccmp(parv[2], "MD5") == 0)
+    sendto_one(source_p, ":%s NOTICE %s :MD5 Encryption for [%s]: %s",
+               me.name, source_p->name, parv[1], crypt(parv[1],
+               md5()));
   else
-    sendto_one(source_p, ":%s NOTICE %s :Encryption for [%s]:  %s",
-               me.name, parv[0], parv[1], crypt(parv[1],
-               is_md5 ? make_md5_salt() : make_salt()));
+    sendto_one(source_p, ":%s NOTICE %s :Syntax: MKPASSWD pass [DES|MD5]",
+               me.name, source_p->name);
 }
 
 static char *
-make_salt(void)
+des(void)
 {
   static char salt[3];
 
@@ -153,7 +129,7 @@ make_salt(void)
 }
 
 static char *
-make_md5_salt(void)
+md5(void)
 {
   static char salt[13];
   int i;
