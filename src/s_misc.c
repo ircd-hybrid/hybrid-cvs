@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_misc.c,v 7.2 1999/12/30 20:36:09 db Exp $
+ *  $Id: s_misc.c,v 7.3 2000/08/13 22:35:10 ejb Exp $
  */
 #include "s_misc.h"
 #include "client.h"
@@ -109,7 +109,6 @@ const char* smalldate(time_t clock)
 }
 
 
-#if defined(GLINES) || defined(SEPARATE_QUOTE_KLINES_BY_DATE)
 /*
  * small_file_date
  * Make a small YYYYMMDD formatted string suitable for a
@@ -126,7 +125,6 @@ char* small_file_date(time_t clock)
   strftime(timebuffer, MAX_DATE_STRING, "%Y%m%d", tmptr);
   return timebuffer;
 }
-#endif
 
 /*
  * Retarded - so sue me :-P

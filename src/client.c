@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.24 2000/04/05 22:12:35 db Exp $
+ *  $Id: client.c,v 7.25 2000/08/13 22:35:03 ejb Exp $
  */
 #include "client.h"
 #include "class.h"
@@ -355,8 +355,7 @@ time_t check_pings(time_t currenttime)
             {
               if(IsPerson(cptr))
                 {
-#ifdef GLINES
-                  if( (aconf = find_gkill(cptr)) )
+                  if( ConfigFileEntry.glines && (aconf = find_gkill(cptr)) )
                     {
                       if(IsElined(cptr))
                         {
@@ -392,7 +391,6 @@ time_t check_pings(time_t currenttime)
                       continue;         /* and go examine next fd/cptr */
                     }
                   else
-#endif
                   if((aconf = find_kill(cptr))) /* if there is a returned
                                                    struct ConfItem.. then kill it */
                     {

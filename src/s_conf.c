@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.57 2000/07/25 00:04:57 db Exp $
+ *  $Id: s_conf.c,v 7.58 2000/08/13 22:35:10 ejb Exp $
  */
 #include "s_conf.h"
 #include "channel.h"
@@ -422,7 +422,7 @@ int attach_Iline(struct Client* cptr, const char* username, char **preason)
     {
       if (aconf->status & CONF_CLIENT)
         {
-#ifdef GLINES
+	if (ConfigFileEntry.glines) {
           if ( !IsConfElined(aconf) && (gkill_conf = find_gkill(cptr)) )
             {
               *preason = gkill_conf->passwd;
@@ -430,8 +430,7 @@ int attach_Iline(struct Client* cptr, const char* username, char **preason)
                            me.name,cptr->name);
               return ( -5 );
             }
-#endif        /* GLINES */
-
+	}
           if(IsConfDoIdentd(aconf))
             SetNeedId(cptr);
 
@@ -2353,6 +2352,15 @@ char *oper_privs_as_string(struct Client *cptr,int port)
   else
     *privs_ptr++ = 'd';
 
+  if (port & CONF_OPER_ADMIN)
+  {
+	  if (cptr)
+		  SetOperAdmin(cptr);
+	  *privs_ptr++ = 'A';
+  }
+  else
+	  *privs_ptr++ = 'a';
+  
   *privs_ptr = '\0';
 
   return(privs_out);

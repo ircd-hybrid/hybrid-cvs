@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_quit.c,v 7.2 2000/07/20 02:42:52 db Exp $
+ *   $Id: m_quit.c,v 7.3 2000/08/13 22:35:07 ejb Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -121,10 +121,19 @@ int     ms_quit(struct Client *cptr,
   if (strlen(comment) > (size_t) TOPICLEN)
     comment[TOPICLEN] = '\0';
 
-#ifdef ANTI_SPAM_EXIT_MESSAGE
-  if( !IsServer(sptr) && MyConnect(sptr) &&
-     (sptr->firsttime + ANTI_SPAM_EXIT_MESSAGE_TIME) > CurrentTime)
-    comment = "Client Quit";
-#endif
+  return IsServer(sptr) ? 0 : exit_client(cptr, sptr, sptr, comment);
+}
+
+int     mo_quit(struct Client *cptr,
+               struct Client *sptr,
+               int parc,
+               char *parv[])
+{
+  char *comment = (parc > 1 && parv[1]) ? parv[1] : cptr->name;
+
+  sptr->flags |= FLAGS_NORMALEX;
+  if (strlen(comment) > (size_t) TOPICLEN)
+    comment[TOPICLEN] = '\0';
+
   return IsServer(sptr) ? 0 : exit_client(cptr, sptr, sptr, comment);
 }

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.25 2000/07/20 02:42:49 db Exp $
+ * $Id: ircd.c,v 7.26 2000/08/13 22:35:04 ejb Exp $
  */
 #include "ircd.h"
 #include "channel.h"
@@ -720,10 +720,6 @@ int main(int argc, char *argv[])
   ConfigFileEntry.dlinefile = CPATH;
 #endif /* DLPATH */
 
-#ifdef GLINES
-  ConfigFileEntry.glinefile = GLINEFILE;
-#endif
-
 #ifdef  CHROOTDIR
   if (chdir(DPATH))
     {
@@ -847,8 +843,9 @@ int main(int argc, char *argv[])
 
 #ifdef USE_IAUTH
 	/* bingo - hardcoded for now - will be changed later */
-	strcpy(iAuth.hostname, "127.0.0.1");
-	iAuth.port = 4444;
+  /* done - its in ircd.conf now --is */
+  /* strcpy(iAuth.hostname, "127.0.0.1"); 
+	 iAuth.port = 4444; */
 	iAuth.flags = 0;
 
 	ConnectToIAuth();

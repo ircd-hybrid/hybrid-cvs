@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.14 2000/04/04 14:05:57 db Exp $
+ * $Id: ircd_lexer.l,v 1.15 2000/08/13 22:35:04 ejb Exp $
  */
 
 %{
@@ -90,6 +90,8 @@ exceed_limit    { return EXCEED_LIMIT; }
 gecos		{ return GECOS; }
 general		{ return GENERAL; }
 gline		{ return GLINE; }
+gline_file      { return GLINE_FILE; }
+gline_time      { return GLINE_TIME; }
 gline_log       { return GLINE_LOG; }
 global		{ return GLOBAL; }
 global_kill	{ return GLOBAL_KILL; }
@@ -121,6 +123,7 @@ name		{ return NAME; }
 nick_changes	{ return NICK_CHANGES; }
 no		{ return TNO; }
 no_tilde	{ return NO_TILDE; }
+no_oper_flood   { return NO_OPER_FLOOD; }
 number_per_ip	{ return NUMBER_PER_IP; }
 oper		{ return OPERATOR; }
 oper_log        { return OPER_LOG; }
@@ -137,6 +140,7 @@ remote		{ return REMOTE; }
 send_password	{ return SEND_PASSWORD; }
 sendq		{ return SENDQ; }
 serverinfo	{ return SERVERINFO; }
+short_motd      { return SHORT_MOTD; }
 spoof		{ return SPOOF; }
 unkline		{ return UNKLINE; }
 user		{ return USER;} 
@@ -169,7 +173,12 @@ pace_wait               { return PACE_WAIT; }
 knock_delay             { return KNOCK_DELAY; }
 wallops_wait            { return WALLOPS_WAIT; }
 pace_wallops            { return PACE_WALLOPS; }
-short_motd              { return SHORT_MOTD; }
+iauth_server            { return IAUTH_SERVER; }
+iauth_port		{ return IAUTH_PORT; }
+stats_p_notice	        { return STATS_P_NOTICE; }
+invite_plus_i_only      { return INVITE_PLUS_I_ONLY; }
+glines                  { return GLINES; }
+topic_uh                { return TOPIC_UH; }
 .		        { return yytext[0]; }
 
 %%

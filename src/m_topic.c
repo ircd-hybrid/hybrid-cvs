@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_topic.c,v 7.5 2000/07/20 02:42:52 db Exp $
+ *   $Id: m_topic.c,v 7.6 2000/08/13 22:35:08 ejb Exp $
  */
 #include "handlers.h"
 #include "channel.h"
@@ -30,8 +30,11 @@
 #include "ircd.h"
 #include "numeric.h"
 #include "send.h"
+#include "s_conf.h"
 
 #include <string.h>
+#include <stdlib.h>
+
 /*
  * m_functions execute protocol messages on this server:
  *
@@ -102,13 +105,6 @@ int     m_topic(struct Client *cptr,
   struct Channel *chptr = NullChn;
   char  *topic = (char *)NULL, *name, *p = (char *)NULL;
   
-  if (parc < 2)
-    {
-      sendto_one(sptr, form_str(ERR_NEEDMOREPARAMS),
-                 me.name, parv[0], "TOPIC");
-      return 0;
-    }
-
   p = strchr(parv[1],',');
   if(p)
     *p = '\0';
@@ -128,68 +124,84 @@ int     m_topic(struct Client *cptr,
           return 0;
         }
 
-      if (!IsMember(sptr, chptr))
-        {
-          sendto_one(sptr, form_str(ERR_NOTONCHANNEL), me.name, parv[0],
-              name);
-          return 0;
-        }
-
-      if (parc > 2) /* setting topic */
+      if (parc > 2) { /* setting topic */
         topic = parv[2];
 
-      if(topic) /* a little extra paranoia never hurt */
-        {
-          if ((chptr->mode.mode & MODE_TOPICLIMIT) == 0 ||
-               is_chan_op(sptr, chptr))
-            {
-              /* setting a topic */
-              /*
-               * chptr zeroed
-               */
-              strncpy_irc(chptr->topic, topic, TOPICLEN);
+		if (!IsMember(sptr, chptr))
+		{
+			sendto_one(sptr, form_str(ERR_NOTONCHANNEL), me.name, parv[0],
+					   name);
+			return 0;
+		}
+		if ((chptr->mode.mode & MODE_TOPICLIMIT) == 0 ||
+			is_chan_op(sptr, chptr))
+		{
+			/* setting a topic */
+			/*
+			 * chptr zeroed
+			 */
+			strncpy_irc(chptr->topic, topic, TOPICLEN);
+			
+			if (chptr->topic_info)
+				free(chptr->topic_info);
+			
+			if (ConfigFileEntry.topic_uh) {
+				chptr->topic_info = 
+					(char *)MyMalloc(strlen(sptr->name)+
+									 strlen(sptr->username)+
+									 strlen(sptr->host)+3);
+				ircsprintf(chptr->topic_info, "%s!%s@%s",
+						   sptr->name, sptr->username, sptr->host);
+			}
+			else
+			{
+				chptr->topic_info =
+					(char *)MyMalloc(strlen(sptr->name) + 1);
+				strncpy_irc(chptr->topic_info, sptr->name, NICKLEN);
+			}
 
-              /*
-               * XXX - this truncates the topic_nick if
-               * strlen(sptr->name) > NICKLEN
-               */
-              strncpy_irc(chptr->topic_nick, sptr->name, NICKLEN);
-              chptr->topic_time = CurrentTime;
-
-              sendto_match_servs(chptr, cptr,":%s TOPIC %s :%s",
-                                 parv[0], chptr->chname,
-                                 chptr->topic);
-              sendto_channel_butserv(chptr, sptr, ":%s TOPIC %s :%s",
-                                     parv[0],
-                                     chptr->chname, chptr->topic);
-            }
-          else
+			chptr->topic_time = CurrentTime;
+			
+			sendto_match_servs(chptr, cptr,":%s TOPIC %s :%s",
+							   parv[0], chptr->chname,
+							   chptr->topic);
+			sendto_channel_butserv(chptr, sptr, ":%s TOPIC %s :%s",
+								   parv[0],
+								   chptr->chname, chptr->topic);
+		}
+		else
             sendto_one(sptr, form_str(ERR_CHANOPRIVSNEEDED),
                        me.name, parv[0], chptr->chname);
-        }
+	  }
       else  /* only asking  for topic  */
-        {
+	  {
+		  if (!IsMember(sptr, chptr) && SecretChannel(chptr))
+		  {
+			  sendto_one(sptr, form_str(ERR_NOTONCHANNEL), me.name, parv[0],
+						 name);
+			  return 0;
+		  }
           if (chptr->topic[0] == '\0')
-            sendto_one(sptr, form_str(RPL_NOTOPIC),
-                       me.name, parv[0], chptr->chname);
+			  sendto_one(sptr, form_str(RPL_NOTOPIC),
+						 me.name, parv[0], chptr->chname);
           else
-            {
+		  {
               sendto_one(sptr, form_str(RPL_TOPIC),
                          me.name, parv[0],
                          chptr->chname, chptr->topic);
               sendto_one(sptr, form_str(RPL_TOPICWHOTIME),
                          me.name, parv[0], chptr->chname,
-                         chptr->topic_nick,
+                         chptr->topic_info,
                          chptr->topic_time);
-            }
-        }
+		  }
+	  }
     }
   else
-    {
+  {
       sendto_one(sptr, form_str(ERR_NOSUCHCHANNEL),
                  me.name, parv[0], name);
-    }
-
+  }
+  
   return 0;
 }
 
@@ -201,13 +213,6 @@ int     ms_topic(struct Client *cptr,
   struct Channel *chptr = NullChn;
   char  *topic = (char *)NULL, *name, *p = (char *)NULL;
   
-  if (parc < 2)
-    {
-      sendto_one(sptr, form_str(ERR_NEEDMOREPARAMS),
-                 me.name, parv[0], "TOPIC");
-      return 0;
-    }
-
   p = strchr(parv[1],',');
   if(p)
     *p = '\0';
@@ -227,67 +232,84 @@ int     ms_topic(struct Client *cptr,
           return 0;
         }
 
-      if (!IsMember(sptr, chptr))
-        {
-          sendto_one(sptr, form_str(ERR_NOTONCHANNEL), me.name, parv[0],
-              name);
-          return 0;
-        }
-
-      if (parc > 2) /* setting topic */
+      if (parc > 2) { /* setting topic */
         topic = parv[2];
 
-      if(topic) /* a little extra paranoia never hurt */
-        {
-          if ((chptr->mode.mode & MODE_TOPICLIMIT) == 0 ||
-               is_chan_op(sptr, chptr))
-            {
-              /* setting a topic */
-              /*
-               * chptr zeroed
-               */
-              strncpy_irc(chptr->topic, topic, TOPICLEN);
+		if (!IsMember(sptr, chptr))
+		{
+			sendto_one(sptr, form_str(ERR_NOTONCHANNEL), me.name, parv[0],
+					   name);
+			return 0;
+		}
+		
+		if ((chptr->mode.mode & MODE_TOPICLIMIT) == 0 ||
+			is_chan_op(sptr, chptr))
+		{
+			/* setting a topic */
+			/*
+			 * chptr zeroed
+			 */
+			strncpy_irc(chptr->topic, topic, TOPICLEN);
+			
+			if (chptr->topic_info)
+				free(chptr->topic_info);
+			
+			if (ConfigFileEntry.topic_uh) {
+				chptr->topic_info = 
+					(char *)MyMalloc(strlen(sptr->name)+
+									 strlen(sptr->username)+
+									 strlen(sptr->host)+3);
+				ircsprintf(chptr->topic_info, "%s!%s@%s",
+						   sptr->name, sptr->username, sptr->host);
+			}
+			else
+			{
+				chptr->topic_info = MyMalloc(strlen(sptr->name) + 1);
+				strncpy_irc(chptr->topic_info, sptr->name, NICKLEN);
+			}
 
-              /*
-               * XXX - this truncates the topic_nick if
-               * strlen(sptr->name) > NICKLEN
-               */
-              strncpy_irc(chptr->topic_nick, sptr->name, NICKLEN);
-              chptr->topic_time = CurrentTime;
-
-              sendto_match_servs(chptr, cptr,":%s TOPIC %s :%s",
-                                 parv[0], chptr->chname,
-                                 chptr->topic);
-              sendto_channel_butserv(chptr, sptr, ":%s TOPIC %s :%s",
-                                     parv[0],
-                                     chptr->chname, chptr->topic);
-            }
-          else
+			chptr->topic_time = CurrentTime;
+			
+			sendto_match_servs(chptr, cptr,":%s TOPIC %s :%s",
+							   parv[0], chptr->chname,
+							   chptr->topic);
+			sendto_channel_butserv(chptr, sptr, ":%s TOPIC %s :%s",
+								   parv[0],
+								   chptr->chname, chptr->topic);
+		}
+		else
             sendto_one(sptr, form_str(ERR_CHANOPRIVSNEEDED),
                        me.name, parv[0], chptr->chname);
-        }
+	  }
       else  /* only asking  for topic  */
-        {
-          if (chptr->topic[0] == '\0')
-            sendto_one(sptr, form_str(RPL_NOTOPIC),
-                       me.name, parv[0], chptr->chname);
+	  {
+		  if (!IsMember(sptr, chptr) && SecretChannel(chptr))
+		  {
+			  sendto_one(sptr, form_str(ERR_NOTONCHANNEL), me.name, parv[0],
+						 name);
+			  return 0;
+		  }
+		  
+		  if (chptr->topic[0] == '\0')
+			  sendto_one(sptr, form_str(RPL_NOTOPIC),
+						 me.name, parv[0], chptr->chname);
           else
-            {
+		  {
               sendto_one(sptr, form_str(RPL_TOPIC),
                          me.name, parv[0],
                          chptr->chname, chptr->topic);
               sendto_one(sptr, form_str(RPL_TOPICWHOTIME),
                          me.name, parv[0], chptr->chname,
-                         chptr->topic_nick,
+                         chptr->topic_info,
                          chptr->topic_time);
-            }
-        }
+		  }
+	  }
     }
   else
-    {
+  {
       sendto_one(sptr, form_str(ERR_NOSUCHCHANNEL),
                  me.name, parv[0], name);
-    }
-
+  }
+  
   return 0;
 }

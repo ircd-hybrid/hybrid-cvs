@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.h,v 7.8 2000/04/02 17:42:00 db Exp $
+ * $Id: m_info.h,v 7.9 2000/08/13 22:34:59 ejb Exp $
  */
 #ifndef INCLUDED_m_info_h
 #define INCLUDED_m_info_h
@@ -184,12 +184,6 @@ Info MyInformation[] = {
 #else
   { "GLINEFILE", "NONE", 0, "Path to G-line File" },
 #endif /* GLINEFILE */
-
-#ifdef GLINES
-  { "GLINES", "ON", 0, "Network wide K-lines" },
-#else
-  { "GLINES", "OFF", 0, "Network wide K-lines" },
-#endif /* GLINES */
 
   { "HARD_FDLIMIT_", "", HARD_FDLIMIT_, "Maximum Number of File Descriptors Available" },
 

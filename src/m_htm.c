@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_htm.c,v 7.3 2000/07/20 02:42:49 db Exp $
+ *   $Id: m_htm.c,v 7.4 2000/08/13 22:35:05 ejb Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -91,14 +91,14 @@
 
 #define LOADCFREQ 5
 /*
- * m_htm - HTM command handler
+ * mo_htm - HTM command handler
  * high traffic mode info
  */
-int m_htm(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
+int mo_htm(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 {
   char *command;
 
-  if (!MyClient(sptr) || !IsOper(sptr))
+  if (!MyClient(sptr))
     {
       sendto_one(sptr, form_str(ERR_NOPRIVILEGES), me.name, parv[0]);
       return 0;

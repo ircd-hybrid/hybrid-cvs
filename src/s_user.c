@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.28 2000/07/20 02:42:54 db Exp $
+ *  $Id: s_user.c,v 7.29 2000/08/13 22:35:11 ejb Exp $
  */
 #include "s_user.h"
 #include "channel.h"
@@ -77,7 +77,8 @@ struct flag_item
 };
 
 static struct flag_item user_modes[] =
-{ 
+{
+  {FLAGS_ADMIN, 'a'},
   {FLAGS_BOTS,  'b'},
   {FLAGS_CCONN, 'c'},
   {FLAGS_DEBUG, 'd'},
@@ -133,7 +134,7 @@ int user_modes_from_c_to_bitmask[] =
   0,            /* Z 0x5A */
   0, 0, 0, 0, 0, /* 0x5F */ 
   /* 0x60 */       0,
-  0,            /* a */
+  FLAGS_ADMIN,  /* a */
   FLAGS_BOTS,   /* b */
   FLAGS_CCONN,  /* c */
   FLAGS_DEBUG,  /* d */
@@ -1273,7 +1274,8 @@ int user_mode(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
                                     FLAGS2_OPER_UNKLINE|
                                     FLAGS2_OPER_GLINE|
                                     FLAGS2_OPER_N|
-                                    FLAGS2_OPER_K);
+                                    FLAGS2_OPER_K|
+					                FLAGS2_OPER_ADMIN);
                   while(cur_cptr)
                     {
                       if(sptr == cur_cptr) 
@@ -1326,7 +1328,12 @@ int user_mode(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
                  me.name,parv[0]);
       sptr->umodes &= ~FLAGS_NCHANGE; /* only tcm's really need this */
     }
-
+  if ((sptr->umodes & FLAGS_ADMIN) && !IsSetOperAdmin(sptr)) {
+	  sendto_one(sptr, ":%s NOTICE %s :*** You need oper and A flag for +a",
+				 me.name, parv[0]);
+	  sptr->umodes &= ~FLAGS_ADMIN;  /* shouldn't let normal opers set this */
+  }
+  
   if (!(setflags & FLAGS_INVISIBLE) && IsInvisible(sptr))
     ++Count.invisi;
   if ((setflags & FLAGS_INVISIBLE) && !IsInvisible(sptr))

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: numeric.h,v 7.5 2000/03/31 02:38:27 db Exp $
+ * $Id: numeric.h,v 7.6 2000/08/13 22:34:59 ejb Exp $
  */
 #ifndef INCLUDED_numeric_h
 #define INCLUDED_numeric_h
@@ -225,6 +225,7 @@ extern const char* form_str(int);
 
 #define RPL_ENDOFWHOIS       318
 #define RPL_WHOISCHANNELS    319
+#define RPL_WHOISADMIN       320
 
 #define RPL_LISTSTART        321
 #define RPL_LIST             322
@@ -346,6 +347,8 @@ extern const char* form_str(int);
 #define ERR_USERSDONTMATCH   502
 
 #define ERR_GHOSTEDCLIENT    503
-#define ERR_LAST_ERR_MSG     504
+
+#define ERR_USERNOTONSERV    504
+#define ERR_LAST_ERR_MSG     505
 
 #endif /* INCLUDED_numeric_h */

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_debug.c,v 7.17 2000/04/05 22:12:35 db Exp $
+ *   $Id: s_debug.c,v 7.18 2000/08/13 22:35:10 ejb Exp $
  */
 #include "s_debug.h"
 #include "channel.h"
@@ -76,9 +76,6 @@ const char serveropts[] = {
 #endif
 #ifdef  SHOW_INVISIBLE_LUSERS
   'i',
-#endif
-#ifndef NO_DEFAULT_INVISIBLE
-  'I',
 #endif
 #ifdef  OPER_KILL
 # ifdef  LOCAL_KILL_ONLY

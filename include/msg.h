@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: msg.h,v 7.14 2000/07/31 13:22:39 db Exp $
+ * $Id: msg.h,v 7.15 2000/08/13 22:34:59 ejb Exp $
  */
 #ifndef INCLUDED_msg_h
 #define INCLUDED_msg_h
@@ -39,7 +39,8 @@ struct  Message
 {
   char  *cmd;
   unsigned int  count;                  /* number of times command used */
-  unsigned int  parameters;
+  unsigned int  parameters; /* at least this many args must be passed or an error
+			       will be sent to the user before the m_func is even called */
   unsigned int  flags;  /* bit 0 set means that this command is allowed
 			   to be used only on the average of once per 2
 			   seconds -SRB */

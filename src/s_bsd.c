@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.27 2000/02/02 02:57:17 tomh Exp $
+ *  $Id: s_bsd.c,v 7.28 2000/08/13 22:35:09 ejb Exp $
  */
 #include "s_bsd.h"
 #include "class.h"
@@ -895,9 +895,7 @@ static int read_packet(struct Client *cptr)
       return exit_client(cptr, cptr, cptr, "dbuf_put fail");
     
     if (IsPerson(cptr) &&
-#ifdef NO_OPER_FLOOD
-        !IsAnOper(cptr) &&
-#endif
+        (ConfigFileEntry.no_oper_flood && !IsAnOper(cptr)) &&
         DBufLength(&cptr->recvQ) > CLIENT_FLOOD) {
       return exit_client(cptr, cptr, cptr, "Excess Flood");
     }

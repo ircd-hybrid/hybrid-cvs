@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: oldparse.c,v 1.4 2000/01/18 02:12:24 db Exp $
+ *  $Id: oldparse.c,v 1.5 2000/08/13 22:35:09 ejb Exp $
  */
 #include "s_log.h"
 #include "s_conf.h"
@@ -360,12 +360,10 @@ static int oper_privs_from_string(int int_privs,char *privs)
         int_privs |= CONF_OPER_K;
       else if(*privs == 'k')                /* disallow kill and kline privs */
         int_privs &= ~CONF_OPER_K;
-#ifdef GLINES
-      else if(*privs == 'G')                /* allow gline */
+      else if(ConfigFileEntry.glines && *privs == 'G')                /* allow gline */
         int_privs |= CONF_OPER_GLINE;
-      else if(*privs == 'g')                /* disallow gline */
+      else if(ConfigFileEntry.glines && *privs == 'g')                /* disallow gline */
         int_privs &= ~CONF_OPER_GLINE;
-#endif
       else if(*privs == 'H')                /* allow rehash */
         int_privs |= CONF_OPER_REHASH;
       else if(*privs == 'h')                /* disallow rehash */

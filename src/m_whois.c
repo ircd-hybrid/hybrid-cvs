@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 7.7 2000/07/20 02:42:53 db Exp $
+ *   $Id: m_whois.c,v 7.8 2000/08/13 22:35:08 ejb Exp $
  */
 
 #include "handlers.h"
@@ -266,6 +266,9 @@ int     m_whois(struct Client *cptr,
           if (IsAnOper(acptr))
             sendto_one(sptr, form_str(RPL_WHOISOPERATOR),
                        me.name, parv[0], name);
+		  if (IsOper(acptr) && acptr->umodes & FLAGS_ADMIN )
+			  sendto_one(sptr, form_str(RPL_WHOISADMIN),
+						 me.name, parv[0], name);
           if (ConfigFileEntry.whois_notice && 
               (MyOper(acptr)) && ((acptr)->umodes & FLAGS_SPY) &&
               (MyConnect(sptr)) && (IsPerson(sptr)) && (acptr != sptr))
