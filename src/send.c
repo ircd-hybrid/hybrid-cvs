@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.153 2001/07/08 03:01:08 a1kmm Exp $
+ *   $Id: send.c,v 7.154 2001/07/08 03:12:31 a1kmm Exp $
  */
 
 #include <sys/types.h>
@@ -152,12 +152,6 @@ _send_linebuf(struct Client *to, buf_head_t *linebuf)
       return 0;
     }
 #endif
-  if (IsModuleOwned(to))
-  {
-   //module_read(to, );
-   return 0;
-  }
-
   if (to->fd < 0)
     return 0; /* Thou shalt not write to closed descriptors */
 
