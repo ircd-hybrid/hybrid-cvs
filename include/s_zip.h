@@ -19,13 +19,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_zip.h,v 7.5 2002/05/24 23:34:08 androsyn Exp $
+ *  $Id: s_zip.h,v 7.6 2003/06/12 03:40:29 joshk Exp $
  */
 
 #ifndef INCLUDED_s_zip_h
 #define INCLUDED_s_zip_h
-
-#include "config.h"       /* config settings */
 
 struct Client;
 

@@ -19,12 +19,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: numeric.h,v 7.38 2003/06/04 06:25:48 michael Exp $
+ *  $Id: numeric.h,v 7.39 2003/06/12 03:40:29 joshk Exp $
  */
 
 #ifndef INCLUDED_numeric_h
 #define INCLUDED_numeric_h
-#include "config.h"
 
 #define LOCALE_LENGTH 64  /* maximum length of locale name + 1 */
 

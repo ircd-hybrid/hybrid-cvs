@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.51 2003/06/11 04:06:54 joshk Exp $
+dnl $Id: configure.ac,v 7.52 2003/06/12 03:40:24 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -380,10 +380,10 @@ AC_HELP_STRING([--disable-openssl],[Disable OpenSSL support.])],
 [cf_enable_openssl=$enableval],
 [cf_enable_openssl="auto"])
 
-if test "X$cf_enable_openssl" != "Xno" ; then
+if test "$cf_enable_openssl" != "no" ; then
 	cf_openssl_basedir=""
-	if test "X$cf_enable_openssl" != "Xauto" &&
-	test "X$cf_enable_openssl" != "Xyes" ; then
+	if test "$cf_enable_openssl" != "auto" &&
+	test "$cf_enable_openssl" != "yes" ; then
 		dnl Support for --enable-openssl=/some/place
 		cf_openssl_basedir="`echo ${cf_enable_openssl} | sed 's/\/$//'`"
 	else
@@ -398,7 +398,7 @@ if test "X$cf_enable_openssl" != "Xno" ; then
 		unset dirs
 	fi
 	dnl Now check cf_openssl_found to see if we found anything.
-	if test "X$cf_openssl_basedir" != "X" ; then
+	if test ! -z "$cf_openssl_basedir"; then
 		if test -f "${cf_openssl_basedir}/include/openssl/opensslv.h" ; then
 			SSL_INCLUDES="-I${cf_openssl_basedir}/include"
 			SSL_LIBS="-L${cf_openssl_basedir}/lib"
@@ -421,7 +421,7 @@ if test "X$cf_enable_openssl" != "Xno" ; then
 
 	dnl If we have a basedir defined, then everything is okay.  Otherwise,
 	dnl we have a problem.
-	if test "X$cf_openssl_basedir" != "X" ; then
+	if test ! -z "$cf_openssl_basedir"; then
 		AC_MSG_RESULT($cf_openssl_basedir)
 		cf_enable_openssl="yes"
 	else
@@ -438,7 +438,7 @@ save_CPPFLAGS="$CPPFLAGS"
 CPPFLAGS="$CPPFLAGS $SSL_INCLUDES"
 save_LIBS="$LIBS"
 LIBS="$LIBS $SSL_LIBS"
-if test "X$cf_enable_openssl" != "Xno"; then
+if test "$cf_enable_openssl" != no; then
 	dnl Check OpenSSL version (must be 0.9.6 or above!)
 	AC_MSG_CHECKING(for OpenSSL 0.9.6 or above)
 	AC_RUN_IFELSE(
@@ -451,7 +451,7 @@ if test "X$cf_enable_openssl" != "Xno"; then
 	cf_openssl_version_ok=no,
 	cf_openssl_version_ok=no)
 
-	if test "X$cf_openssl_version_ok" = "Xyes"; then
+	if test "$cf_openssl_version_ok" = yes; then
 		AC_MSG_RESULT(found)
 
 		dnl Work around pmake/gmake conditional incompatibilities
@@ -460,7 +460,7 @@ if test "X$cf_enable_openssl" != "Xno"; then
 		dnl Do all the HAVE_LIBCRYPTO magic -- and check for ciphers
 		CPPFLAGS="$CPPFLAGS $SSL_LIBS"
 		AC_CHECK_LIB(crypto, RSA_free)
-		if test "X$ac_cv_lib_crypto_RSA_free" = "Xyes"; then
+		if test "$ac_cv_lib_crypto_RSA_free" = yes; then
 			LIBS="$LIBS -lcrypto"
 			cf_openssl_ciphers=''
 			AC_CHECK_FUNCS(EVP_bf_cfb,
@@ -491,25 +491,25 @@ dnl End OpenSSL detection
 dnl Specialized functions and libraries
 dnl ===================================
 
-zlib=yes
-
 AC_ARG_WITH(zlib-path,
 AC_HELP_STRING([--with-zlib-path=DIR],[Path to libz.so for ziplinks support.]),
 [LIBS="$LIBS -L$withval"],)
 
 AC_ARG_ENABLE(zlib,
 AC_HELP_STRING([--disable-zlib],[Disable ziplinks support]),
-[zlib=no],
-[
-	AC_CHECK_HEADER(zlib.h,[
+[zlib=$enableval],[zlib=yes])
+
+if test "$zlib" = yes; then
+
+AC_CHECK_HEADER(zlib.h, [
 	AC_CHECK_LIB(z, zlibVersion,
 	[
 		AC_SUBST(ZLIB_LD, -lz)
 		AC_DEFINE(HAVE_LIBZ, 1, [Define to 1 if zlib (-lz) is available.])
-	], zlib=no
-	)
 	], zlib=no)
-])
+], zlib=no)
+
+fi
 
 dnl IO Loop Selection
 dnl =================
@@ -623,7 +623,8 @@ AC_MSG_CHECKING(if you want ElectricFence)
 AC_ARG_ENABLE(efence,
 AC_HELP_STRING([--enable-efence],[Enable ElectricFence (memory debugger).]),
 [
-	if test ! -z "$enableval"; then
+if test "$enableval" != no; then
+	if test ! -z "$enableval" -a "$enableval" != yes; then
 		LIBS="$LIBS -L$enableval"
 	fi
 
@@ -633,18 +634,23 @@ AC_HELP_STRING([--enable-efence],[Enable ElectricFence (memory debugger).]),
 		AC_MSG_RESULT(yes)
 	],
 	[AC_MSG_RESULT(not found, disabling)])
+else
+	AC_MSG_RESULT(no)
+fi
 ],[AC_MSG_RESULT(no)])
 
 dnl Check if we want to enable the block allocator
 AC_MSG_CHECKING(if you want the block allocator)
 AC_ARG_ENABLE(block-alloc,
 AC_HELP_STRING([--disable-block-alloc],[Disable the block allocator (Only useful with ElectricFence)]),
-[
-	balloc="no"
+[balloc=$enableval], [balloc=yes])
+
+if test "$balloc" = no; then
 	AC_SUBST(BALLOC_C, [])
 	AC_DEFINE(NOBALLOC, 1, [Disable the block allocator.])
-],
-[balloc="yes"; AC_SUBST(BALLOC_C, balloc.c)])
+else
+	AC_SUBST(BALLOC_C, balloc.c)
+fi
 
 AC_MSG_RESULT($balloc)
 
@@ -662,33 +668,113 @@ AC_HELP_STRING([--enable-halfops],[Enable the use of halfops (user mode %)]),
 
 AC_ARG_ENABLE(small-net,
 AC_HELP_STRING([--enable-small-net],[Enable small network support.]),
-[
-	small_net="yes"
-	IRC_CFLAGS="$IRC_CFLAGS -DSMALL_NET"
+[small_net="yes"
+	AC_DEFINE([NICKNAMEHISTORYLENGTH], 1500, [Size of the WHOWAS array.])
+	AC_DEFINE([CHANNEL_HEAP_SIZE], 256, [Size of the channel heap.])
+	AC_DEFINE([BAN_HEAP_SIZE], 128, [Size of the ban heap.])
+	AC_DEFINE([CLIENT_HEAP_SIZE], 256, [Size of the client heap.])
+	AC_DEFINE([LCLIENT_HEAP_SIZE], 128, [Size of the local client heap.])
+	AC_DEFINE([USER_HEAP_SIZE], 128, [Size of the user heap.])
+	AC_DEFINE([DNODE_HEAP_SIZE], 256, [Size of the dlink_node heap.])
+	AC_DEFINE([SNODE_HEAP_SIZE], 256, [Size of the slink_node heap.])
+	AC_DEFINE([TOPIC_HEAP_SIZE], 256, [Size of the topic heap.])
+	AC_DEFINE([DBUF_HEAP_SIZE], 64, [Size of the dbuf heap.])
 ],
-[small_net="no"])
+[small_net="no"
+	AC_DEFINE([NICKNAMEHISTORYLENGTH], 15000, [Size of the WHOWAS array.])
+	AC_DEFINE([CHANNEL_HEAP_SIZE], 1024, [Size of the channel heap.])
+	AC_DEFINE([BAN_HEAP_SIZE], 1024, [Size of the ban heap.])
+	AC_DEFINE([CLIENT_HEAP_SIZE], 1024, [Size of the client heap.])
+	AC_DEFINE([LCLIENT_HEAP_SIZE], 512, [Size of the local client heap.])
+	AC_DEFINE([USER_HEAP_SIZE], 1024, [Size of the user heap.])
+	AC_DEFINE([DNODE_HEAP_SIZE], 2048, [Size of the dlink_node heap.])
+	AC_DEFINE([SNODE_HEAP_SIZE], 2048, [Size of the slink_node heap.])
+	AC_DEFINE([TOPIC_HEAP_SIZE], 1024, [Size of the topic heap.])
+	AC_DEFINE([DBUF_HEAP_SIZE], 512, [Size of the dbuf heap.])
+])
 
 AC_ARG_ENABLE(efnet,
 AC_HELP_STRING([--enable-efnet],[For IRCDs running on EFnet.]),
-[
+[efnet=$enableval], [efnet=no])
+
+if test "$efnet" = yes; then
 	AC_DEFINE(EFNET, 1, [Define if this ircd will be an EFnet server.])
+	AC_DEFINE(TS5_ONLY, 1, [If enabled, only TS5 enabled servers may link to your network.])
+	
 	echo "Building ircd for use with EFnet"
-	efnet=yes
 	EXAMPLE_CONF=example.efnet.conf
-], EXAMPLE_CONF=example.conf)
+else
+	AC_DEFINE(INVARIANTS, 1, [Miscellaneous sanity checks for the ircd. Makes it slightly slower])
+	EXAMPLE_CONF=example.conf
+fi
 
 AC_SUBST(EXAMPLE_CONF)
 
+AC_MSG_CHECKING(for syslog options)
+
+AC_ARG_ENABLE(syslog,
+AC_HELP_STRING([--enable-syslog="EVENTS"], [Enable syslog for events: kill, squit, connect, users, oper, space separated in quotes (default: disabled)]),
+[
+dnl Hopelessly swiped from the mozilla source (kind of)
+
+if test "$enableval" != no; then
+	syslogstuff=core
+fi
+
+for option in $enableval; do
+case "$option" in
+	kill)
+		syslogstuff="$syslogstuff kill"
+		AC_DEFINE(SYSLOG_KILL, 1, [Send oper kills to syslog])
+	;;
+	squit)
+		syslogstuff="$syslogstuff squit"
+		AC_DEFINE(SYSLOG_SQUIT, 1, [Send remote squits for all servers to syslog])
+	;;
+	connect)
+		syslogstuff="$syslogstuff connect"
+		AC_DEFINE(SYSLOG_CONNECT, 1, [Send connect notices for other servers to syslog])
+	;;
+	users)
+		syslogstuff="$syslogstuff users"
+		AC_DEFINE(SYSLOG_USERS, 1, [Send user log stuff to syslog])
+	;;
+	oper)
+		syslogstuff="$syslogstuff oper"
+		AC_DEFINE(SYSLOG_OPER, 1, [Send /OPER successes to syslog])
+	;;
+dnl yes is okay, shut up you
+	yes)
+	;;
+	*)
+		AC_MSG_WARN(unknown event $option)
+	;;
+	esac
+	done
+	
+	if test ! -z "$syslogstuff" -o "$enableval" = yes; then
+		AC_DEFINE(USE_SYSLOG, 1, [Send vital ircd messages to syslog])
+	fi
+],[syslogstuff=none])
+
+AC_MSG_RESULT($syslogstuff)
+
+AC_ARG_WITH(syslog-facility,
+AC_HELP_STRING([--with-syslog-facility=LOG], [Define the log facility to use with ircd's syslog output (default LOG_LOCAL4)]),
+[facility=$withval],[facility="LOG_LOCAL4"])
+
+AC_DEFINE_UNQUOTED(LOG_FACILITY, $facility, [Log facility to use for syslog()])
+
 AC_ARG_WITH(nicklen,
-AC_HELP_STRING([--with-nicklen=LENGTH],[Set the nick length to LENGTH.]),
+AC_HELP_STRING([--with-nicklen=LENGTH],[Set the nick length to LENGTH (default 9)]),
 	NICKLEN="$withval", NICKLEN="9")
 
 AC_ARG_WITH(maxclients,
-AC_HELP_STRING([--with-maxclients=NUMBER],[Set the maximum number of clients to NUMBER.]),
+AC_HELP_STRING([--with-maxclients=NUMBER],[Set the maximum number of clients to NUMBER (default 200)]),
 	MAXCLIENTS="$withval", MAXCLIENTS="200")
 
 AC_ARG_WITH(topiclen,           
-AC_HELP_STRING([--with-topiclen=NUMBER],[Set the max topic length to NUMBER.]),
+AC_HELP_STRING([--with-topiclen=NUMBER],[Set the max topic length to NUMBER (default 120, max 390)]),
 [
 	if test $withval -gt 390; then
 		TOPICLEN="390"
@@ -725,11 +811,12 @@ dnl And now the actual meat of the checking.
 
 AC_ARG_ENABLE(shared-modules,
 AC_HELP_STRING([--disable-shared-modules],[ Disable shared modules.]),
-[shared_modules="no"],
-[
-	dnl Some sanity checks.
-	
-  	if test "$profile" = "no"; then
+[shared_modules=$enableval], [shared_modules="yes"])
+
+dnl Some first-stage sanity checks.
+if test "$shared_modules" = yes; then
+  	
+	if test "$profile" = "no"; then
 		shared_modules="yes"
 	else
 		AC_MSG_WARN([disabling shared modules; cannot coexist with profile builds])
@@ -746,8 +833,9 @@ AC_HELP_STRING([--disable-shared-modules],[ Disable shared modules.]),
 		AC_MSG_WARN([disabling shared modules: Tiny C Compiler can't create PIC])
 		shared_modules="no"
 	fi
-])
+fi
 
+dnl Second stage support check.
 if test "$shared_modules" = "no"; then
 	echo "Not using shared modules.."
 	MODULES_DEFINE=""
@@ -812,14 +900,14 @@ else
 	dnl In the second stage, we link the modules via ld -b.
 	dnl Additionally, HPUX does not like -export-dynamic, it likes -E instead.
 	dnl -TimeMr14C
-	if test "$HPUX" = "yes"; then
-		AC_MSG_RESULT(HP-UX - Assuming HPUX C compiler cc: +z -r -q -n +ESfic)
+	if test "$HPUX" = "yes" -a "$CC" != gcc; then
+		AC_MSG_RESULT(HP-UX cc: +z -r -q -n +ESfic)
 		PICFLAGS="+z -r -q -n +ESfic -c"
 		SEDOBJ="s/\.o/.sl/g"
 		MOD_TARGET="hpux_shared"
 		LDFLAGS="${LDFLAGS} -Wl,-E"
 	fi
-	if test "$Tru" = yes; then
+	if test "$Tru" = yes -a "$CC" != gcc; then
 		AC_MSG_RESULT([Tru64: -shared -expect_unresolved '*'])
 		PICFLAGS="-shared -expect_unresolved '*' "
 		LDFLAGS="-call_shared"
@@ -845,8 +933,9 @@ else
 
 	AC_CHECK_FUNC(nlist,,
 		AC_CHECK_LIB(dl, nlist, nlist_lib="-ldl",
-			AC_CHECK_LIB(elf, nlist, nlist_lib="-lelf",
-			AC_MSG_WARN(** cannot locate nlist() **))
+			AC_CHECK_LIB(elf, nlist, nlist_lib="-lelf",)
+dnl I call this FUD
+dnl			AC_MSG_WARN(** cannot locate nlist() **)
 		)
 	)
 
@@ -857,7 +946,8 @@ else
 	AC_CHECK_HEADER(elf/nlist.h, [ nlist_h="elf/nlist.h" ], )
 	AC_CHECK_HEADER(nlist.h, [ nlist_h="nlist.h" ], )
 	if test x"$nlist_h" = "x"; then
-		AC_MSG_WARN([nlist.h unavailable: assuming no underscores prepend symbol names])
+dnl I call this FUD
+dnl		AC_MSG_WARN([nlist.h unavailable: assuming no underscores prepend symbol names])
 		AC_DEFINE_UNQUOTED(SYMBOL_PREFIX, "", [String containing extra underscores prepended to symbols loaded from modules.])
 	else
 		AC_MSG_CHECKING(for extra underscores prepended to symbol names)

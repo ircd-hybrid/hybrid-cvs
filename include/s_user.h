@@ -19,12 +19,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.h,v 7.29 2003/05/28 05:02:24 joshk Exp $
+ *  $Id: s_user.h,v 7.30 2003/06/12 03:40:29 joshk Exp $
  */
 
 #ifndef INCLUDED_s_user_h
 #define INCLUDED_s_user_h
-#include "config.h"
 
 #define IRC_MAXSID          3
 #define IRC_MAXUID          6

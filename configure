@@ -859,6 +859,10 @@ Optional Features:
   --enable-halfops        Enable the use of halfops (user mode %)
   --enable-small-net      Enable small network support.
   --enable-efnet          For IRCDs running on EFnet.
+  --enable-syslog="EVENTS"
+                          Enable syslog for events: kill, squit, connect,
+                          users, oper, space separated in quotes (default:
+                          disabled)
   --disable-shared-modules
                           Disable shared modules.
 
@@ -866,10 +870,15 @@ Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
   --with-zlib-path=DIR    Path to libz.so for ziplinks support.
-  --with-nicklen=LENGTH   Set the nick length to LENGTH.
+  --with-syslog-facility=LOG
+                          Define the log facility to use with ircd's syslog
+                          output (default LOG_LOCAL4)
+  --with-nicklen=LENGTH   Set the nick length to LENGTH (default 9)
   --with-maxclients=NUMBER
-                          Set the maximum number of clients to NUMBER.
-  --with-topiclen=NUMBER  Set the max topic length to NUMBER.
+                          Set the maximum number of clients to NUMBER (default
+                          200)
+  --with-topiclen=NUMBER  Set the max topic length to NUMBER (default 120, max
+                          390)
 
 Some influential environment variables:
   CC          C compiler command
@@ -6432,10 +6441,10 @@ else
   cf_enable_openssl="auto"
 fi;
 
-if test "X$cf_enable_openssl" != "Xno" ; then
+if test "$cf_enable_openssl" != "no" ; then
 	cf_openssl_basedir=""
-	if test "X$cf_enable_openssl" != "Xauto" &&
-	test "X$cf_enable_openssl" != "Xyes" ; then
+	if test "$cf_enable_openssl" != "auto" &&
+	test "$cf_enable_openssl" != "yes" ; then
 				cf_openssl_basedir="`echo ${cf_enable_openssl} | sed 's/\/$//'`"
 	else
 			for dirs in /usr/local/ssl /usr/pkg /usr/local \
@@ -6447,7 +6456,7 @@ if test "X$cf_enable_openssl" != "Xno" ; then
 		done
 		unset dirs
 	fi
-		if test "X$cf_openssl_basedir" != "X" ; then
+		if test ! -z "$cf_openssl_basedir"; then
 		if test -f "${cf_openssl_basedir}/include/openssl/opensslv.h" ; then
 			SSL_INCLUDES="-I${cf_openssl_basedir}/include"
 			SSL_LIBS="-L${cf_openssl_basedir}/lib"
@@ -6460,7 +6469,7 @@ if test "X$cf_enable_openssl" != "Xno" ; then
 		fi
 	fi
 
-			if test "X$cf_openssl_basedir" != "X" ; then
+			if test ! -z "$cf_openssl_basedir"; then
 		echo "$as_me:$LINENO: result: $cf_openssl_basedir" >&5
 echo "${ECHO_T}$cf_openssl_basedir" >&6
 		cf_enable_openssl="yes"
@@ -6479,7 +6488,7 @@ save_CPPFLAGS="$CPPFLAGS"
 CPPFLAGS="$CPPFLAGS $SSL_INCLUDES"
 save_LIBS="$LIBS"
 LIBS="$LIBS $SSL_LIBS"
-if test "X$cf_enable_openssl" != "Xno"; then
+if test "$cf_enable_openssl" != no; then
 		echo "$as_me:$LINENO: checking for OpenSSL 0.9.6 or above" >&5
 echo $ECHO_N "checking for OpenSSL 0.9.6 or above... $ECHO_C" >&6
 	if test "$cross_compiling" = yes; then
@@ -6526,7 +6535,7 @@ fi
 rm -f core core.* *.core gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
 fi
 
-	if test "X$cf_openssl_version_ok" = "Xyes"; then
+	if test "$cf_openssl_version_ok" = yes; then
 		echo "$as_me:$LINENO: result: found" >&5
 echo "${ECHO_T}found" >&6
 
@@ -6598,7 +6607,7 @@ _ACEOF
 
 fi
 
-		if test "X$ac_cv_lib_crypto_RSA_free" = "Xyes"; then
+		if test "$ac_cv_lib_crypto_RSA_free" = yes; then
 			LIBS="$LIBS -lcrypto"
 			cf_openssl_ciphers=''
 
@@ -7119,8 +7128,6 @@ LIBS="$save_LIBS"
 
 
 
-zlib=yes
-
 
 # Check whether --with-zlib-path or --without-zlib-path was given.
 if test "${with_zlib_path+set}" = set; then
@@ -7131,10 +7138,14 @@ fi;
 # Check whether --enable-zlib or --disable-zlib was given.
 if test "${enable_zlib+set}" = set; then
   enableval="$enable_zlib"
-  zlib=no
+  zlib=$enableval
 else
+  zlib=yes
+fi;
 
-	if test "${ac_cv_header_zlib_h+set}" = set; then
+if test "$zlib" = yes; then
+
+if test "${ac_cv_header_zlib_h+set}" = set; then
   echo "$as_me:$LINENO: checking for zlib.h" >&5
 echo $ECHO_N "checking for zlib.h... $ECHO_C" >&6
 if test "${ac_cv_header_zlib_h+set}" = set; then
@@ -7331,7 +7342,6 @@ _ACEOF
 
 else
   zlib=no
-
 fi
 
 
@@ -7341,7 +7351,7 @@ fi
 
 
 
-fi;
+fi
 
 
 # Check whether --enable-poll or --disable-poll was given.
@@ -7800,7 +7810,8 @@ echo $ECHO_N "checking if you want ElectricFence... $ECHO_C" >&6
 if test "${enable_efence+set}" = set; then
   enableval="$enable_efence"
 
-	if test ! -z "$enableval"; then
+if test "$enableval" != no; then
+	if test ! -z "$enableval" -a "$enableval" != yes; then
 		LIBS="$LIBS -L$enableval"
 	fi
 
@@ -7869,6 +7880,10 @@ else
 echo "${ECHO_T}not found" >&6
 fi
 
+else
+	echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+fi
 
 else
   echo "$as_me:$LINENO: result: no" >&5
@@ -7880,19 +7895,22 @@ echo $ECHO_N "checking if you want the block allocator... $ECHO_C" >&6
 # Check whether --enable-block-alloc or --disable-block-alloc was given.
 if test "${enable_block_alloc+set}" = set; then
   enableval="$enable_block_alloc"
+  balloc=$enableval
+else
+  balloc=yes
+fi;
 
-	balloc="no"
+if test "$balloc" = no; then
 
 
 cat >>confdefs.h <<\_ACEOF
 #define NOBALLOC 1
 _ACEOF
 
-
 else
-  balloc="yes"; BALLOC_C=balloc.c
+	BALLOC_C=balloc.c
 
-fi;
+fi
 
 echo "$as_me:$LINENO: result: $balloc" >&5
 echo "${ECHO_T}$balloc" >&6
@@ -7918,31 +7936,237 @@ fi;
 # Check whether --enable-small-net or --disable-small-net was given.
 if test "${enable_small_net+set}" = set; then
   enableval="$enable_small_net"
+  small_net="yes"
 
-	small_net="yes"
-	IRC_CFLAGS="$IRC_CFLAGS -DSMALL_NET"
+cat >>confdefs.h <<\_ACEOF
+#define NICKNAMEHISTORYLENGTH 1500
+_ACEOF
+
+
+cat >>confdefs.h <<\_ACEOF
+#define CHANNEL_HEAP_SIZE 256
+_ACEOF
+
+
+cat >>confdefs.h <<\_ACEOF
+#define BAN_HEAP_SIZE 128
+_ACEOF
+
+
+cat >>confdefs.h <<\_ACEOF
+#define CLIENT_HEAP_SIZE 256
+_ACEOF
+
+
+cat >>confdefs.h <<\_ACEOF
+#define LCLIENT_HEAP_SIZE 128
+_ACEOF
+
+
+cat >>confdefs.h <<\_ACEOF
+#define USER_HEAP_SIZE 128
+_ACEOF
+
+
+cat >>confdefs.h <<\_ACEOF
+#define DNODE_HEAP_SIZE 256
+_ACEOF
+
+
+cat >>confdefs.h <<\_ACEOF
+#define SNODE_HEAP_SIZE 256
+_ACEOF
+
+
+cat >>confdefs.h <<\_ACEOF
+#define TOPIC_HEAP_SIZE 256
+_ACEOF
+
+
+cat >>confdefs.h <<\_ACEOF
+#define DBUF_HEAP_SIZE 64
+_ACEOF
+
 
 else
   small_net="no"
+
+cat >>confdefs.h <<\_ACEOF
+#define NICKNAMEHISTORYLENGTH 15000
+_ACEOF
+
+
+cat >>confdefs.h <<\_ACEOF
+#define CHANNEL_HEAP_SIZE 1024
+_ACEOF
+
+
+cat >>confdefs.h <<\_ACEOF
+#define BAN_HEAP_SIZE 1024
+_ACEOF
+
+
+cat >>confdefs.h <<\_ACEOF
+#define CLIENT_HEAP_SIZE 1024
+_ACEOF
+
+
+cat >>confdefs.h <<\_ACEOF
+#define LCLIENT_HEAP_SIZE 512
+_ACEOF
+
+
+cat >>confdefs.h <<\_ACEOF
+#define USER_HEAP_SIZE 1024
+_ACEOF
+
+
+cat >>confdefs.h <<\_ACEOF
+#define DNODE_HEAP_SIZE 2048
+_ACEOF
+
+
+cat >>confdefs.h <<\_ACEOF
+#define SNODE_HEAP_SIZE 2048
+_ACEOF
+
+
+cat >>confdefs.h <<\_ACEOF
+#define TOPIC_HEAP_SIZE 1024
+_ACEOF
+
+
+cat >>confdefs.h <<\_ACEOF
+#define DBUF_HEAP_SIZE 512
+_ACEOF
+
+
 fi;
 
 # Check whether --enable-efnet or --disable-efnet was given.
 if test "${enable_efnet+set}" = set; then
   enableval="$enable_efnet"
+  efnet=$enableval
+else
+  efnet=no
+fi;
 
+if test "$efnet" = yes; then
 
 cat >>confdefs.h <<\_ACEOF
 #define EFNET 1
 _ACEOF
 
+
+cat >>confdefs.h <<\_ACEOF
+#define TS5_ONLY 1
+_ACEOF
+
+
 	echo "Building ircd for use with EFnet"
-	efnet=yes
 	EXAMPLE_CONF=example.efnet.conf
+else
+
+cat >>confdefs.h <<\_ACEOF
+#define INVARIANTS 1
+_ACEOF
+
+	EXAMPLE_CONF=example.conf
+fi
+
+
+
+echo "$as_me:$LINENO: checking for syslog options" >&5
+echo $ECHO_N "checking for syslog options... $ECHO_C" >&6
+
+# Check whether --enable-syslog or --disable-syslog was given.
+if test "${enable_syslog+set}" = set; then
+  enableval="$enable_syslog"
+
+
+if test "$enableval" != no; then
+	syslogstuff=core
+fi
+
+for option in $enableval; do
+case "$option" in
+	kill)
+		syslogstuff="$syslogstuff kill"
+
+cat >>confdefs.h <<\_ACEOF
+#define SYSLOG_KILL 1
+_ACEOF
+
+	;;
+	squit)
+		syslogstuff="$syslogstuff squit"
+
+cat >>confdefs.h <<\_ACEOF
+#define SYSLOG_SQUIT 1
+_ACEOF
+
+	;;
+	connect)
+		syslogstuff="$syslogstuff connect"
+
+cat >>confdefs.h <<\_ACEOF
+#define SYSLOG_CONNECT 1
+_ACEOF
+
+	;;
+	users)
+		syslogstuff="$syslogstuff users"
+
+cat >>confdefs.h <<\_ACEOF
+#define SYSLOG_USERS 1
+_ACEOF
+
+	;;
+	oper)
+		syslogstuff="$syslogstuff oper"
+
+cat >>confdefs.h <<\_ACEOF
+#define SYSLOG_OPER 1
+_ACEOF
+
+	;;
+	yes)
+	;;
+	*)
+		{ echo "$as_me:$LINENO: WARNING: unknown event $option" >&5
+echo "$as_me: WARNING: unknown event $option" >&2;}
+	;;
+	esac
+	done
+
+	if test ! -z "$syslogstuff" -o "$enableval" = yes; then
+
+cat >>confdefs.h <<\_ACEOF
+#define USE_SYSLOG 1
+_ACEOF
+
+	fi
 
 else
-  EXAMPLE_CONF=example.conf
+  syslogstuff=none
 fi;
 
+echo "$as_me:$LINENO: result: $syslogstuff" >&5
+echo "${ECHO_T}$syslogstuff" >&6
+
+
+# Check whether --with-syslog-facility or --without-syslog-facility was given.
+if test "${with_syslog_facility+set}" = set; then
+  withval="$with_syslog_facility"
+  facility=$withval
+else
+  facility="LOG_LOCAL4"
+fi;
+
+
+cat >>confdefs.h <<_ACEOF
+#define LOG_FACILITY $facility
+_ACEOF
 
 
 
@@ -8005,11 +8229,14 @@ _ACEOF
 # Check whether --enable-shared-modules or --disable-shared-modules was given.
 if test "${enable_shared_modules+set}" = set; then
   enableval="$enable_shared_modules"
-  shared_modules="no"
+  shared_modules=$enableval
 else
+  shared_modules="yes"
+fi;
 
+if test "$shared_modules" = yes; then
 
-  	if test "$profile" = "no"; then
+	if test "$profile" = "no"; then
 		shared_modules="yes"
 	else
 		{ echo "$as_me:$LINENO: WARNING: disabling shared modules; cannot coexist with profile builds" >&5
@@ -8028,8 +8255,7 @@ echo "$as_me: WARNING: disabling shared modules; Cygwin is at present unable to 
 echo "$as_me: WARNING: disabling shared modules: Tiny C Compiler can't create PIC" >&2;}
 		shared_modules="no"
 	fi
-
-fi;
+fi
 
 if test "$shared_modules" = "no"; then
 	echo "Not using shared modules.."
@@ -8817,15 +9043,15 @@ echo "${ECHO_T}SVR4 Software Generation System interfaces: -KPIC -DPIC -G" >&6
 echo "${ECHO_T}Darwin or Mac OS X - Assuming you want to make Mach-O bundles: -fno-common -bundle -flat_namespace -undefined suppress" >&6
 		PICFLAGS="-fno-common -bundle -flat_namespace -undefined suppress"
 	fi
-								if test "$HPUX" = "yes"; then
-		echo "$as_me:$LINENO: result: HP-UX - Assuming HPUX C compiler cc: +z -r -q -n +ESfic" >&5
-echo "${ECHO_T}HP-UX - Assuming HPUX C compiler cc: +z -r -q -n +ESfic" >&6
+								if test "$HPUX" = "yes" -a "$CC" != gcc; then
+		echo "$as_me:$LINENO: result: HP-UX cc: +z -r -q -n +ESfic" >&5
+echo "${ECHO_T}HP-UX cc: +z -r -q -n +ESfic" >&6
 		PICFLAGS="+z -r -q -n +ESfic -c"
 		SEDOBJ="s/\.o/.sl/g"
 		MOD_TARGET="hpux_shared"
 		LDFLAGS="${LDFLAGS} -Wl,-E"
 	fi
-	if test "$Tru" = yes; then
+	if test "$Tru" = yes -a "$CC" != gcc; then
 		echo "$as_me:$LINENO: result: Tru64: -shared -expect_unresolved '*'" >&5
 echo "${ECHO_T}Tru64: -shared -expect_unresolved '*'" >&6
 		PICFLAGS="-shared -expect_unresolved '*' "
@@ -9044,9 +9270,6 @@ echo "$as_me:$LINENO: result: $ac_cv_lib_elf_nlist" >&5
 echo "${ECHO_T}$ac_cv_lib_elf_nlist" >&6
 if test $ac_cv_lib_elf_nlist = yes; then
   nlist_lib="-lelf"
-else
-  { echo "$as_me:$LINENO: WARNING: ** cannot locate nlist() **" >&5
-echo "$as_me: WARNING: ** cannot locate nlist() **" >&2;}
 fi
 
 
@@ -9459,8 +9682,6 @@ fi
 
 
 	if test x"$nlist_h" = "x"; then
-		{ echo "$as_me:$LINENO: WARNING: nlist.h unavailable: assuming no underscores prepend symbol names" >&5
-echo "$as_me: WARNING: nlist.h unavailable: assuming no underscores prepend symbol names" >&2;}
 
 cat >>confdefs.h <<_ACEOF
 #define SYMBOL_PREFIX ""

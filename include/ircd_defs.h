@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_defs.h,v 7.36 2003/05/28 18:10:32 bill Exp $
+ *  $Id: ircd_defs.h,v 7.37 2003/06/12 03:40:29 joshk Exp $
  */
 
 /*
@@ -34,12 +34,7 @@
 #ifndef INCLUDED_ircd_defs_h
 #define INCLUDED_ircd_defs_h
 
-#include "config.h"
 #include "inet_misc.h"
-
-#if !defined(CONFIG_H_LEVEL_7)
-#  error Incorrect config.h for this revision of ircd.
-#endif
 
 #define HOSTLEN         63      /* Length of hostname.  Updated to         */
                                 /* comply with RFC1123                     */

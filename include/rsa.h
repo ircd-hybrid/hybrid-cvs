@@ -19,10 +19,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: rsa.h,v 7.11 2002/07/11 09:23:19 androsyn Exp $
+ *  $Id: rsa.h,v 7.12 2003/06/12 03:40:29 joshk Exp $
  */
 #ifndef INCLUDED_rsa_h
-#define INCLUDED_rsa_h 1
+#define INCLUDED_rsa_h
+
+#include "setup.h"
 
 #ifdef HAVE_LIBCRYPTO
 extern void report_crypto_errors(void);

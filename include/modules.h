@@ -19,12 +19,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.h,v 7.41 2003/06/01 18:47:01 joshk Exp $
+ *  $Id: modules.h,v 7.42 2003/06/12 03:40:29 joshk Exp $
  */
 
 #ifndef INCLUDED_modules_h
 #define INCLUDED_modules_h
-#include "config.h"
+
 #include "setup.h"
 #include "parse.h"
 

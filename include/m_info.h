@@ -19,12 +19,14 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.h,v 7.46 2003/05/17 00:52:50 michael Exp $
+ *  $Id: m_info.h,v 7.47 2003/06/12 03:40:29 joshk Exp $
  */
 
 #ifndef INCLUDED_m_info_h
 #define INCLUDED_m_info_h
-#include "config.h"
+
+#include "setup.h"
+#include "defaults.h"
 
 typedef struct Information
 {
@@ -41,12 +43,6 @@ Info MyInformation[] = {
 #else
   { "CLIENT_FLOOD", "OFF", 0, "Client Excess Flood Threshold" },
 #endif /* CLIENT_FLOOD */
-
-#ifdef CMDLINE_CONFIG
-  { "CMDLINE_CONFIG", "ON", 0, "Allow Command Line Specification of Config File" },
-#else
-  { "CMDLINE_CONFIG", "OFF", 0, "Allow Command Line Specification of Config File" },
-#endif /* CMDLINE_CONFIG */
 
 #ifdef CPATH
   { "CPATH", CPATH, 0, "Path to Main Configuration File" },

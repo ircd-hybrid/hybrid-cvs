@@ -19,12 +19,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.148 2003/06/07 15:20:25 adx Exp $
+ *  $Id: channel.h,v 7.149 2003/06/12 03:40:28 joshk Exp $
  */
 
 #ifndef INCLUDED_channel_h
 #define INCLUDED_channel_h
-#include "config.h"           /* config settings */
+
 #include "ircd_defs.h"        /* buffer sizes */
 #include "tools.h"
 

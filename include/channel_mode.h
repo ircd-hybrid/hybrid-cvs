@@ -19,13 +19,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.h,v 7.22 2003/06/08 14:38:58 michael Exp $
+ *  $Id: channel_mode.h,v 7.23 2003/06/12 03:40:28 joshk Exp $
  */
 
 
 #ifndef INCLUDED_channel_mode_h
 #define INCLUDED_channel_mode_h
-#include "config.h"           /* config settings */
+
 #include "ircd_defs.h"        /* buffer sizes */
 
 #define MODEBUFLEN    200

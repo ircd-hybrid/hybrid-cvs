@@ -19,13 +19,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.h,v 7.21 2003/05/24 07:01:00 db Exp $
+ *  $Id: s_auth.h,v 7.22 2003/06/12 03:40:29 joshk Exp $
  */
 
 #ifndef INCLUDED_s_auth_h
 #define INCLUDED_s_auth_h
 
-#include "config.h"
 #include "irc_res.h"
 
 /* How many auth allocations to allocate in a block. I'm guessing that

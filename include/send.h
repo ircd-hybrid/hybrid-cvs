@@ -19,13 +19,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.h,v 7.69 2003/05/17 18:00:46 bill Exp $
+ *  $Id: send.h,v 7.70 2003/06/12 03:40:29 joshk Exp $
  */
 
 #ifndef INCLUDED_send_h
 #define INCLUDED_send_h
 
-#include "config.h"       /* HAVE_STDARG_H */
+#include "setup.h"       /* HAVE_STDARG_H */
 
 /* For those unfamiliar with GNU format attributes, a is the 1 based
  * argument number of the format string, and b is the 1 based argument

@@ -19,16 +19,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.201 2003/06/07 09:56:46 michael Exp $
+ *  $Id: client.h,v 7.202 2003/06/12 03:40:28 joshk Exp $
  */
 
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
-#include "config.h"
-#if !defined(CONFIG_H_LEVEL_7)
-#error Incorrect config.h for this revision of ircd.
-#endif
 
+#include "setup.h"
 #include "ircd_defs.h"
 #include "ircd_handler.h"
 #include "dbuf.h"

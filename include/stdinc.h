@@ -19,16 +19,18 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- * $Id: stdinc.h,v 1.12 2003/05/28 01:41:22 joshk Exp $
+ * $Id: stdinc.h,v 1.13 2003/06/12 03:40:29 joshk Exp $
  *
  */
 
 #ifndef STDINC_H /* prevent multiple #includes */
 #define STDINC_H
  
-#ifndef IN_AUTOCONF     
-#include "config.h" /* Gotta pull in the autoconf stuff */
+#ifndef IN_AUTOCONF
+#include "setup.h"
 #endif
+
+#include "defaults.h"
 
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>

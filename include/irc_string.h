@@ -19,11 +19,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: irc_string.h,v 7.41 2003/05/24 16:15:11 bill Exp $
+ *  $Id: irc_string.h,v 7.42 2003/06/12 03:40:29 joshk Exp $
  */
 
 #ifndef INCLUDED_irc_string_h
 #define INCLUDED_irc_string_h
+
+#include "setup.h"
 
 /*
  * match - compare name with mask, mask may contain * and ? as wildcards

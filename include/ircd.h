@@ -19,13 +19,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.h,v 7.70 2003/06/06 04:31:46 michael Exp $
+ *  $Id: ircd.h,v 7.71 2003/06/12 03:40:29 joshk Exp $
  */
 
 #ifndef INCLUDED_ircd_h
 #define INCLUDED_ircd_h
 
-#include "config.h"
+#include "setup.h"
 #include "tools.h"
 #include "memory.h"
 

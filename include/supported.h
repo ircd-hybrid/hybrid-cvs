@@ -19,13 +19,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: supported.h,v 1.30 2003/05/18 20:20:20 michael Exp $
+ *  $Id: supported.h,v 1.31 2003/06/12 03:40:30 joshk Exp $
  */
 
 #ifndef INCLUDED_supported_h
 #define INCLUDED_supported_h
 
-#include "config.h"
 #include "channel.h"
 #include "ircd_defs.h"
 #include "s_serv.h"

@@ -1,6 +1,6 @@
                             Hybrid INSTALL Document
 
-   $Id: INSTALL,v 7.33 2003/05/17 17:17:48 joshk Exp $
+   $Id: INSTALL,v 7.34 2003/06/12 03:40:23 joshk Exp $
 
    Copyright (c) 2001 by ircd-hybrid team
 
@@ -12,11 +12,13 @@
    | Reading INSTALL is now a must, as the old DPATH is now specified when  |
    | configure is run.                                                      |
    |                                                                        |
-   | - You now need to ./configure --prefix="/path/to/install/it"           |
+   | - You now need to ./configure --prefix="/path/to/install/it" as a      |
+   |   minimum. Try ./configure --help or read this file for more info on   |
+   |   the possible options you can pass to configure.                      |
    |                                                                        |
-   |   Important: The old config format WILL NOT WORK. Please see point 6!  |
+   | - Important: The old config format WILL NOT WORK. Please see point 7!  |
    |                                                                        |
-   |   The old kline format WILL NOT WORK. Please see point 7!              |
+   | - The old kline format WILL NOT WORK. Please see point 8!              |
    +------------------------------------------------------------------------+
 
    ***** EFNET NOTE *****
@@ -68,6 +70,9 @@
             system. This is currently only available on 2.4 Linux kernel
             versions or later.
 
+	  With regards to the autodetection, if none of these are suitable
+	  poll() will be checked for, followed by select().
+
           * --enable-openssl - Enable the openssl dependent crypto functions.
             This will allow CHALLENGE to work and encrypted links. On systems
             where the configure script can automatically detect OpenSSL, this
@@ -75,24 +80,33 @@
             must specify a path with this option
             (--enable-openssl=/path/to/openssl)
 
-       These are optional and not enabled by default:
+       These are optional or have default values that may be overridden:
    
           * --disable-shared-modules - Disable module support. This option is
             more secure, but reduces a lot of the flexibility in Hybrid 7.
-            This may need to be used on some systems without a working dl
-            library.
+            This may need to be used on some systems without a working
+            dlopen/dlsym.
 
-          * --disable-assert - Disable some of the debugging code. This
-            should be used on all production servers for maximum speed and to
-            prevent cores from things that shouldn't normally happen.
+          * --enable-assert - Enable use of numerous debugging checks. This
+            should not be used on any production servers for maximum speed
+	    so as to prevent cores from things that shouldn't normally happen.
 
           * --enable-small-net - Tunes the server for smaller networks by
             reducing the startup memory footprint. This should really only be
             used for *small* networks, as this tends to be a performance hit
             on larger networks.
 
-          * --with-nicklen - Sets the maximum NICK length. Note that this
-            must be consistant across your entire network.
+	  * --enable-syslog=kill/squit/connect/users/oper, separated by
+	  spaces, in quotes - Enables syslog logging, with events you specify
+	  (none is okay too, and logs the most essential messages only.)
+
+	  * --enable-syslog-facility=FACILITY - Check with your sysadmin to see
+	  what this should be; by default it is LOG_LOCAL4.
+
+          * --with-nicklen,
+	    --with-topiclen - Respectively, sets the maximum NICK length and
+	    maximum TOPIC length. Note that this must be consistent across your
+	    entire network. Defaults are 9 and 120, respectively.
 
           * --with-maxclients - Sets the maximum number of clients support by
             the server. Note that this also twiddles the HARD_FDLIMIT_ define

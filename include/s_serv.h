@@ -19,12 +19,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.h,v 7.82 2003/06/06 07:17:43 michael Exp $
+ *  $Id: s_serv.h,v 7.83 2003/06/12 03:40:29 joshk Exp $
  */
 
 #ifndef INCLUDED_serv_h
 #define INCLUDED_serv_h
-#include "config.h"
+#include "setup.h"
 
 /* collect ziplinks compression ratios/etc every minute */
 #define ZIPSTATS_TIME           60

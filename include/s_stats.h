@@ -19,13 +19,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_stats.h,v 7.9 2002/09/05 01:30:07 db Exp $
+ *  $Id: s_stats.h,v 7.10 2003/06/12 03:40:29 joshk Exp $
  */
 
 #ifndef INCLUDED_s_stats_h
 #define INCLUDED_s_stats_h
-
-#include "config.h"
 
 struct Client;
 

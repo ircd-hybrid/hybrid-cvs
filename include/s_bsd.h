@@ -19,13 +19,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.h,v 7.42 2003/05/07 20:19:02 stu Exp $
+ *  $Id: s_bsd.h,v 7.43 2003/06/12 03:40:29 joshk Exp $
  */
 
 #ifndef INCLUDED_s_bsd_h
 #define INCLUDED_s_bsd_h
 
-#include "config.h"       
+#include "setup.h"       
 #include "fdlist.h"
 
 /* Size of a read buffer */

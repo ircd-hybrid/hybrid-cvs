@@ -1,5 +1,20 @@
 /* include/setup.h.in.  Generated from configure.ac by autoheader.  */
 
+/* Size of the ban heap. */
+#undef BAN_HEAP_SIZE
+
+/* Size of the channel heap. */
+#undef CHANNEL_HEAP_SIZE
+
+/* Size of the client heap. */
+#undef CLIENT_HEAP_SIZE
+
+/* Size of the dbuf heap. */
+#undef DBUF_HEAP_SIZE
+
+/* Size of the dlink_node heap. */
+#undef DNODE_HEAP_SIZE
+
 /* Define if this ircd will be an EFnet server. */
 #undef EFNET
 
@@ -132,11 +147,20 @@
 /* Define to 1 if you have the <wait.h> header file. */
 #undef HAVE_WAIT_H
 
+/* Miscellaneous sanity checks for the ircd. Makes it slightly slower */
+#undef INVARIANTS
+
 /* Define if IPv6 support is present and available. */
 #undef IPV6
 
 /* Prefix where the ircd is installed. */
 #undef IRCD_PREFIX
+
+/* Size of the local client heap. */
+#undef LCLIENT_HEAP_SIZE
+
+/* Log facility to use for syslog() */
+#undef LOG_FACILITY
 
 /* Maximum no. of clients that can connect to the ircd. */
 #undef MAX_CLIENTS
@@ -146,6 +170,9 @@
 
 /* Nickname length */
 #undef NICKLEN
+
+/* Size of the WHOWAS array. */
+#undef NICKNAMEHISTORYLENGTH
 
 /* Disable the block allocator. */
 #undef NOBALLOC
@@ -180,6 +207,9 @@
 /* This is the type of IO loop we are using */
 #undef SELECT_TYPE
 
+/* Size of the slink_node heap. */
+#undef SNODE_HEAP_SIZE
+
 /* Define to 1 if sockaddr_in has a 'sin_len' member. */
 #undef SOCKADDR_IN_HAS_LEN
 
@@ -196,8 +226,32 @@
    modules. */
 #undef SYMBOL_PREFIX
 
+/* Send connect notices for other servers to syslog */
+#undef SYSLOG_CONNECT
+
+/* Send oper kills to syslog */
+#undef SYSLOG_KILL
+
+/* Send /OPER successes to syslog */
+#undef SYSLOG_OPER
+
+/* Send remote squits for all servers to syslog */
+#undef SYSLOG_SQUIT
+
+/* Send user log stuff to syslog */
+#undef SYSLOG_USERS
+
 /* Maximum topic length (<=390) */
 #undef TOPICLEN
+
+/* Size of the topic heap. */
+#undef TOPIC_HEAP_SIZE
+
+/* If enabled, only TS5 enabled servers may link to your network. */
+#undef TS5_ONLY
+
+/* Size of the user heap. */
+#undef USER_HEAP_SIZE
 
 /* Define to 1 if you want to be able to use halfops on your ircd. */
 #undef USE_HALFOPS
@@ -208,6 +262,9 @@
 /* Using sigio futzes around with the ircd - if you want sigio to work, this
    has to be 1. */
 #undef USE_SIGIO
+
+/* Send vital ircd messages to syslog */
+#undef USE_SYSLOG
 
 /* Define to 1 if your processor stores words with the most significant byte
    first (like Motorola and SPARC, unlike Intel and VAX). */

@@ -19,13 +19,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_gline.h,v 7.18 2003/06/09 18:00:51 michael Exp $
+ *  $Id: s_gline.h,v 7.19 2003/06/12 03:40:29 joshk Exp $
  */
 
 #ifndef INCLUDED_s_gline_h
 #define INCLUDED_s_gline_h
 
-#include "config.h"
 #include "ircd_defs.h"
 
 struct Client;
@@ -67,4 +66,5 @@ struct gline_pending
 
 extern dlink_list pending_glines;
 extern dlink_list glines;
-#endif
+
+#endif /* INCLUDED_s_gline_h */

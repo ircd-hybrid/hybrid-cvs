@@ -19,13 +19,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: msg.h,v 7.47 2003/06/09 23:24:00 bill Exp $
+ *  $Id: msg.h,v 7.48 2003/06/12 03:40:29 joshk Exp $
  */
 
 #ifndef INCLUDED_msg_h
 #define INCLUDED_msg_h
 
-#include "config.h"
 #include "ircd_handler.h"
 
 struct Client;
