@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.39 2000/12/30 07:30:27 lusky Exp $
+ *   $Id: m_message.c,v 1.40 2000/12/31 21:53:41 spookey Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -656,7 +656,7 @@ int flood_attack_client(struct Client *sptr,struct Client *acptr)
 	    }
 	}
 
-      if((acptr->localClient->received_number_of_privmsgs > 
+      if((acptr->localClient->received_number_of_privmsgs >= 
 	  GlobalSetOptions.floodcount) || acptr->localClient->flood_noticed)
 	{
 	  if(acptr->localClient->flood_noticed == 0)
@@ -708,7 +708,7 @@ int flood_attack_channel(struct Client *sptr,struct Channel *chptr,
 	    }
 	}
 
-      if((chptr->received_number_of_privmsgs > GlobalSetOptions.floodcount)
+      if((chptr->received_number_of_privmsgs >= GlobalSetOptions.floodcount)
 	 || chptr->flood_noticed)
 	{
 	  if(chptr->flood_noticed == 0)
