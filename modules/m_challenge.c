@@ -20,12 +20,13 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_challenge.c,v 1.10 2000/12/22 16:12:32 db Exp $
+ *   $Id: m_challenge.c,v 1.11 2000/12/30 07:30:25 lusky Exp $
  */
 #include <stdlib.h>
 #include "handlers.h"
 #include "client.h"
 #include "ircd.h"
+#include "modules.h"
 #include "numeric.h"
 #include "send.h"
 #include "s_conf.h"

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_links.c,v 1.16 2000/12/30 07:11:30 db Exp $
+ *   $Id: m_links.c,v 1.17 2000/12/30 07:30:27 lusky Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -107,7 +107,7 @@ int mo_links(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   assert(0 != mask);
 
   if (*mask)       /* only necessary if there is a mask */
-    mask = collapse(clean_string(clean_mask, mask, 2 * HOSTLEN));
+    mask = collapse(clean_string(clean_mask, (const unsigned char*) mask, 2 * HOSTLEN));
 
   if (ConfigFileEntry.links_notice && MyConnect(sptr))
     sendto_realops_flags(FLAGS_SPY,

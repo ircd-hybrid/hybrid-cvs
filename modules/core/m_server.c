@@ -20,12 +20,13 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_server.c,v 1.21 2000/12/30 07:11:30 db Exp $
+ *   $Id: m_server.c,v 1.22 2000/12/30 07:30:28 lusky Exp $
  */
 #include "tools.h"
 #include "handlers.h"  /* m_server prototype */
 #include "client.h"      /* client struct */
 #include "common.h"      /* TRUE bleah */
+#include "event.h"
 #include "hash.h"        /* add_to_client_hash_table */
 #include "irc_string.h"  /* strncpy_irc */
 #include "ircd.h"        /* me */
@@ -465,6 +466,7 @@ int write_links_file(void* notused)
 	}
     }
   fbclose(file);
+  return 0;
 }
 
 /*

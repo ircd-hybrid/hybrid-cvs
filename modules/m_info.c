@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.c,v 1.12 2000/12/30 07:11:30 db Exp $
+ * $Id: m_info.c,v 1.13 2000/12/30 07:30:26 lusky Exp $
  */
 #include "tools.h"
 #include "m_info.h"
@@ -138,7 +138,7 @@ int ms_info(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
       else
 	m_info(cptr,sptr,parc,parv);
     }
-
+  return 0;
 } /* ms_info() */
 
 

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_names.c,v 1.17 2000/12/22 16:12:40 db Exp $
+ *   $Id: m_names.c,v 1.18 2000/12/30 07:30:28 lusky Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -142,7 +142,7 @@ void names_all_visible_channels(struct Client *sptr)
   struct Channel *chptr;
   struct Channel *bchan;
   char buf[BUFSIZE];
-  char *chname;
+  char *chname=NULL;
   char *show_ops_flag;
   char *show_voiced_flag;
   char *show_halfop_flag;
@@ -227,7 +227,7 @@ void names_non_public_non_secret(struct Client *sptr)
   int dont_show = NO;
   dlink_node    *lp;
   struct Client *c2ptr;
-  struct Channel *ch3ptr;
+  struct Channel *ch3ptr=NULL;
   char buf[BUFSIZE];
   char *t;
 

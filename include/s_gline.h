@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_gline.h,v 7.5 2000/12/25 17:59:19 toot Exp $
+ * $Id: s_gline.h,v 7.6 2000/12/30 07:30:24 lusky Exp $
  */
 
 #ifndef INCLUDED_s_gline_h
@@ -41,6 +41,10 @@ extern void   report_glines(struct Client *);
 extern int    remove_gline_match(const char *user, const char *host);
 extern void   cleanup_glines(void *notused);
 extern void   add_gline(struct ConfItem *);
+extern void   add_new_majority_gline(const char *, const char *, const char *,
+                                     const char *, const char *, const char *,
+                                     const char *);
+
 
 typedef struct gline_pending
 {

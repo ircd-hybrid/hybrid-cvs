@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_help.c,v 1.10 2000/12/22 16:12:34 db Exp $
+ *   $Id: m_help.c,v 1.11 2000/12/30 07:30:26 lusky Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -85,6 +85,7 @@ int m_help(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 int mo_help(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 {
   SendMessageFile(sptr, &ConfigFileEntry.helpfile);
+  return 0;
 }
 
 

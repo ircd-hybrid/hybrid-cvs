@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/modules
 #
-# $Id: Makefile.in,v 1.20 2000/12/21 13:39:35 db Exp $
+# $Id: Makefile.in,v 1.21 2000/12/30 07:30:25 lusky Exp $
 #
 CC		= @CC@
 RM		= @RM@
@@ -101,7 +101,7 @@ install: all
 .SUFFIXES: .so
 
 .c.so:
-	${CC} -DPIC -fPIC -shared ${CFLAGS} $(CPPFLAGS) $< -o $@
+	${CC} -DPIC -fPIC -shared ${CPPFLAGS} $(CFLAGS) $< -o $@
 
 .PHONY: depend clean distclean
 depend:
