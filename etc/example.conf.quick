@@ -3,7 +3,7 @@
  *
  * Written by ejb, wcampbel, db, leeh and others
  *
- * $Id: example.conf.quick,v 1.18 2003/07/17 06:25:22 metalrock Exp $
+ * $Id: example.conf.quick,v 1.19 2003/07/21 17:09:06 adx Exp $
  */
 
 /* IMPORTANT NOTES:
@@ -305,7 +305,7 @@ serverhide {
 };
 
 general {
-        hide_spoofs_ips = yes;
+        hide_spoof_ips = yes;
         ignore_bogus_ts = no;
 
 	disable_auth = no;
