@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.125 2003/05/20 06:51:47 michael Exp $
+ *  $Id: m_stats.c,v 1.126 2003/05/24 17:45:36 db Exp $
  */
 
 #include "stdinc.h"
@@ -79,7 +79,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.125 $";
+const char *_version = "$Revision: 1.126 $";
 #endif
 
 const char *Lformat = ":%s %d %s %s %u %u %u %u %u :%u %u %s";
@@ -104,6 +104,7 @@ struct StatsStruct
 static void stats_dns_servers(struct Client *);
 static void stats_connect(struct Client *);
 static void stats_deny(struct Client *);
+static void stats_tdeny(struct Client *);
 static void stats_exempt(struct Client *);
 static void stats_events(struct Client *);
 static void stats_pending_glines(struct Client *);
@@ -139,7 +140,7 @@ static struct StatsStruct stats_cmd_table[] =
   { 'A',	stats_dns_servers,	1,	1,	},
   { 'c',	stats_connect,		1,	0,	},
   { 'C',	stats_connect,		1,	0,	},
-  { 'd',	stats_deny,		1,	0,	},
+  { 'd',	stats_tdeny,		1,	0,	},
   { 'D',	stats_deny,		1,	0,	},
   { 'e', 	stats_exempt,		1,	0,	},
   { 'E',	stats_events,		1,	1,	},
@@ -333,10 +334,49 @@ stats_deny(struct Client *source_p)
       {
         aconf = arec->aconf;
 
+	/* dont report a tdline as a dline */
+	if(aconf->flags & CONF_FLAGS_TEMPORARY)
+	  continue;
+
 	get_printable_conf(aconf, &name, &host, &pass, &user, &port,
 	                  &classname);
 	sendto_one(source_p, form_str(RPL_STATSDLINE), me.name,
 	           source_p->name, 'D', host, pass);
+      }
+    }
+  }
+}
+
+/* stats_tdeny()
+ *
+ * input	- client to report to
+ * output	- none
+ * side effects - client is given dline list.
+ */
+static void
+stats_tdeny(struct Client *source_p)
+{
+  char *name, *host, *pass, *user, *classname;
+  struct AddressRec *arec;
+  struct ConfItem *aconf;
+  int i, port;
+
+  for (i = 0; i < ATABLE_SIZE; i++)
+  {
+    for (arec = atable[i]; arec; arec=arec->next)
+    {
+      if (arec->type == CONF_DLINE)
+      {
+        aconf = arec->aconf;
+
+	/* dont report a permanent dline as a tdline */
+	if((aconf->flags & CONF_FLAGS_TEMPORARY) == 0)
+	  continue;
+
+	get_printable_conf(aconf, &name, &host, &pass, &user, &port,
+	                  &classname);
+	sendto_one(source_p, form_str(RPL_STATSDLINE), me.name,
+	           source_p->name, 'd', host, pass);
       }
     }
   }

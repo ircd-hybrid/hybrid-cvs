@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.401 2003/05/24 16:15:16 bill Exp $
+ *  $Id: s_conf.c,v 7.402 2003/05/24 17:45:38 db Exp $
  */
 
 #include "stdinc.h"
@@ -1632,6 +1632,21 @@ add_temp_kline(struct ConfItem *aconf)
   add_conf_by_address(aconf->host, CONF_KILL, aconf->user, aconf);
 }
 
+/* add_temp_dline()
+ *
+ * inputs        - pointer to struct ConfItem
+ * output        - none
+ * Side effects  - links in given struct ConfItem into 
+ *                 temporary kline link list
+ */
+void
+add_temp_dline(struct ConfItem *aconf)
+{
+  dlinkAdd(aconf, make_dlink_node(), &temporary_dlines);
+  SetConfTemporary(aconf);
+  add_conf_by_address(aconf->host, CONF_DLINE, NULL, aconf);
+}
+
 /* cleanup_tklines()
  *
  * inputs       - NONE
@@ -1643,6 +1658,7 @@ void
 cleanup_tklines(void *notused)
 {
   expire_tklines(&temporary_klines);
+  expire_tklines(&temporary_dlines);
 }
 
 /* expire_tklines()
@@ -1665,10 +1681,19 @@ expire_tklines(dlink_list *tklist)
     if (kill_ptr->hold <= CurrentTime)
     {
       /* Alert opers that a TKline expired - Hwy */
-      sendto_realops_flags(UMODE_ALL, L_ALL,
-			   "Temporary K-line for [%s@%s] expired",
-			   (kill_ptr->user) ? kill_ptr->user : "*",
-			   (kill_ptr->host) ? kill_ptr->host : "*");
+      if (kill_ptr->status & CONF_KILL)
+      {
+	sendto_realops_flags(UMODE_ALL, L_ALL,
+			     "Temporary K-line for [%s@%s] expired",
+			     (kill_ptr->user) ? kill_ptr->user : "*",
+			     (kill_ptr->host) ? kill_ptr->host : "*");
+      }
+      else
+      {
+	sendto_realops_flags(UMODE_ALL, L_ALL,
+			     "Temporary D-line for [%s] expired",
+			     (kill_ptr->host) ? kill_ptr->host : "*");
+      }
 
       delete_one_address_conf(kill_ptr->host, kill_ptr);
       dlinkDelete(kill_node, tklist);

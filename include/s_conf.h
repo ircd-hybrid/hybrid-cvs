@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.222 2003/05/24 16:15:11 bill Exp $
+ *  $Id: s_conf.h,v 7.223 2003/05/24 17:45:35 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -390,8 +390,7 @@ extern void write_resv_line(struct Client *, int type, void *);
 
 extern int remove_conf_line(int, struct Client *, char *, char *);
 extern void add_temp_kline(struct ConfItem *);
-extern void report_temp_klines(struct Client *);
-extern void show_temp_klines(struct Client *, dlink_list *);
+extern void add_temp_dline(struct ConfItem *);
 extern void cleanup_tklines(void *notused);
 
 extern const char *get_conf_name(int);

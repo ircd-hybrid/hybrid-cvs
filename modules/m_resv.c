@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_resv.c,v 1.22 2003/05/24 16:15:13 bill Exp $
+ *  $Id: m_resv.c,v 1.23 2003/05/24 17:45:36 db Exp $
  */
 
 #include "stdinc.h"
@@ -72,7 +72,7 @@ _moddeinit(void)
   mod_del_cmd(&unresv_msgtab);
 }
 
-const char *_version = "$Revision: 1.22 $";
+const char *_version = "$Revision: 1.23 $";
 #endif
 
 /* mo_resv()
@@ -142,7 +142,7 @@ ms_resv(struct Client *client_p, struct Client *source_p,
 
   if (find_cluster((char *)source_p->user->server, CLUSTER_RESV))
     parse_resv(source_p, parv[2], parv[3], 1);
-  else if (find_u_conf(source_p->user->server,
+  else if (find_u_conf((char *)source_p->user->server,
                        source_p->username, source_p->host,
                        SHARED_RESV))
     parse_resv(source_p, parv[2], parv[3], 0);
@@ -202,7 +202,7 @@ ms_unresv(struct Client *client_p, struct Client *source_p, int parc, char *parv
 
   if (find_cluster((char *)source_p->user->server, CLUSTER_UNRESV))
     remove_resv(source_p, parv[2], 1);
-  else if (find_u_conf(source_p->user->server,
+  else if (find_u_conf((char *)source_p->user->server,
                        source_p->username, source_p->host,
                        SHARED_UNRESV))
     remove_resv(source_p, parv[2], 0);
