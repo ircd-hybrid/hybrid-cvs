@@ -18,7 +18,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: packet.c,v 7.66 2001/10/18 05:54:36 db Exp $
+ *   $Id: packet.c,v 7.67 2001/11/27 18:30:40 davidt Exp $
  */ 
 
 #include <stdio.h>
@@ -55,7 +55,8 @@ parse_client_queued(struct Client *client_p)
  if (IsServer(client_p))
  {
   while ((dolen = linebuf_get(&client_p->localClient->buf_recvq,
-                              readBuf, READBUF_SIZE, 0, 0)) > 0)
+                              readBuf, READBUF_SIZE, LINEBUF_COMPLETE,
+                              LINEBUF_PARSED)) > 0)
   {
    if (!IsDead(client_p))
     client_dopacket(client_p, readBuf, dolen);
@@ -83,7 +84,7 @@ parse_client_queued(struct Client *client_p)
    if (checkflood && (lclient_p->sent_parsed > lclient_p->allow_read))
     break;
    dolen = linebuf_get(&client_p->localClient->buf_recvq, readBuf,
-                       READBUF_SIZE, 0, 0);
+                       READBUF_SIZE, LINEBUF_COMPLETE, LINEBUF_PARSED);
    if (!dolen)
     break;
    client_dopacket(client_p, readBuf, dolen);
