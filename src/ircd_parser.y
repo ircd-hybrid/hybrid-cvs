@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.246 2002/04/30 14:29:15 leeh Exp $
+ *  $Id: ircd_parser.y,v 1.247 2002/05/12 12:15:19 leeh Exp $
  */
 
 %{
@@ -2560,6 +2560,7 @@ channel_use_except:   USE_EXCEPT '=' TYES ';'
 
 channel_use_halfops:   USE_HALFOPS '=' TYES ';'
   {
+#ifdef HALFOPS
     /* Set to -1 on boot */
     if (ConfigChannel.use_halfops == 0)
     {
@@ -2569,6 +2570,7 @@ channel_use_halfops:   USE_HALFOPS '=' TYES ';'
     }
     else
       ConfigChannel.use_halfops = 1;
+#endif
   }
   |
     USE_HALFOPS '=' TNO ';'
@@ -2587,6 +2589,7 @@ channel_use_halfops:   USE_HALFOPS '=' TYES ';'
 
 channel_use_anonops: USE_ANONOPS '=' TYES ';'
   {
+#ifdef ANONOPS
     if(ConfigChannel.use_anonops)
     {
       ilog(L_ERROR, "Ignoring config file entry 'use_anonops = yes' "
@@ -2595,6 +2598,7 @@ channel_use_anonops: USE_ANONOPS '=' TYES ';'
     }
     else
       ConfigChannel.use_anonops = 1;
+#endif
   }
     |
     USE_ANONOPS '=' TNO ';'

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.301 2002/05/01 17:24:03 leeh Exp $
+ *  $Id: s_conf.c,v 7.302 2002/05/12 12:15:19 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -1499,7 +1499,11 @@ validate_conf(void)
 
   /* Hasn't been set yet, so set it now */
   if(ConfigChannel.use_halfops == -1)
+#ifdef HALFOPS
     ConfigChannel.use_halfops = 1;
+#else
+    ConfigChannel.use_halfops = 0;
+#endif
 
   /* hasnt been set, disable it by default */
   if(ConfigChannel.use_anonops == -1)

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_debug.c,v 7.64 2002/01/05 09:15:17 a1kmm Exp $
+ *  $Id: s_debug.c,v 7.65 2002/05/12 12:15:20 leeh Exp $
  */
 
 #include <sys/types.h> 
@@ -266,8 +266,10 @@ void count_memory(struct Client *source_p)
 #endif
       for (dlink = chptr->voiced.head; dlink; dlink = dlink->next)
         channel_users++;
+#ifdef HALFOPS
       for (dlink = chptr->halfops.head; dlink; dlink = dlink->next)
         channel_users++;
+#endif
 
       for (dlink = chptr->invites.head; dlink; dlink = dlink->next)
         channel_invites++;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: config.h,v 7.132 2002/04/03 13:10:29 androsyn Exp $
+ *  $Id: config.h,v 7.133 2002/05/12 12:15:16 leeh Exp $
  */
 
 #ifndef INCLUDED_config_h
@@ -275,6 +275,22 @@
  * try 5 or 25. 5 for AIX and SUNOS, 25 should work better for other OS's
 */
 #define HYBRID_SOMAXCONN 25
+
+/* CODE DISABLE SECTION
+ *
+ * If you have enabled efnet specific code these will be disabled automatically
+ * else they are here for anyone else.
+ */
+#define VCHANS
+#define ANONOPS
+#define HALFOPS
+
+/* disable them for efnet */
+#ifdef EFNET
+#undef VCHANS
+#undef ANONOPS
+#undef HALFOPS
+#endif
 
 /* 
  * Default pre-allocations for various things...
