@@ -1,3 +1,8 @@
+*** 20001211_11 by db
+- how did THAT get back in. removed local[] again *sigh*
+
+
+
 *** 20001211_10 by db
 - simple re-work to m_ison.c, rfc1489 is ambigious about how this should
   be handled...
@@ -2345,7 +2350,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.795 2000/12/12 02:32:17 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.796 2000/12/12 02:40:41 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
