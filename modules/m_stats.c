@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.146 2003/08/13 09:57:11 michael Exp $
+ *  $Id: m_stats.c,v 1.147 2003/08/13 21:10:11 michael Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.146 $";
+const char *_version = "$Revision: 1.147 $";
 #endif
 
 static char *parse_stats_args(int, char **, int *, int *);
@@ -376,8 +376,8 @@ stats_tdeny(struct Client *source_p)
 
 	conf = unmap_conf_item(aconf);
 	get_printable_conf(conf, &host, &pass, &user, &port, &classname);
-	sendto_one(source_p, form_str(RPL_STATSDLINE), me.name,
-	           source_p->name, 'd', host, pass);
+	sendto_one(source_p, form_str(RPL_STATSDLINE),
+                   me.name, source_p->name, 'd', host, pass);
       }
     }
   }
@@ -408,8 +408,8 @@ stats_exempt(struct Client *source_p)
 
 	conf = unmap_conf_item(aconf);
 	get_printable_conf(conf, &host, &pass, &user, &port, &classname);
-        sendto_one(source_p, form_str(RPL_STATSDLINE), me.name,
-                   source_p->name, 'e', host, pass);
+        sendto_one(source_p, form_str(RPL_STATSDLINE),
+                   me.name, source_p->name, 'e', host, pass);
       }
     }
   }
@@ -485,7 +485,7 @@ stats_pending_glines(struct Client *source_p)
 static void
 stats_glines(struct Client *source_p)
 {
-  dlink_node *gline_node;
+  dlink_node *ptr;
   struct AccessItem *kill_ptr;
 
   if (!ConfigFileEntry.glines)
@@ -495,7 +495,7 @@ stats_glines(struct Client *source_p)
     return;
   }
 
-  DLINK_FOREACH(gline_node, gline_items.head)
+  DLINK_FOREACH(ptr, gline_items.head)
   {
     kill_ptr = map_to_conf(ptr->data);
 
@@ -748,7 +748,7 @@ stats_uptime(struct Client *source_p)
   now = CurrentTime - me.since;
   sendto_one(source_p, form_str(RPL_STATSUPTIME), me.name, source_p->name,
              now/86400, (now/3600)%24, (now/60)%60, now%60);
-  if(!ConfigFileEntry.disable_remote || IsOper(source_p))
+  if (!ConfigFileEntry.disable_remote || IsOper(source_p))
      sendto_one(source_p, form_str(RPL_STATSCONN), me.name, source_p->name,
                 MaxConnectionCount, MaxClientCount, Count.totalrestartcount);
 }
@@ -847,7 +847,8 @@ stats_servlinks(struct Client *source_p)
 
   if (ConfigServerHide.flatten_links && !IsOper(source_p))
   {
-    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),me.name, source_p->name);
+    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
+               me.name, source_p->name);
     return;
   }
 
@@ -870,14 +871,13 @@ stats_servlinks(struct Client *source_p)
                (int)target_p->localClient->sendK,
                (int)target_p->localClient->receiveM,
                (int)target_p->localClient->receiveK,
-               CurrentTime - target_p->firsttime,
-               (CurrentTime > target_p->since) ? (CurrentTime - target_p->since): 0,
+               (unsigned)(CurrentTime - target_p->firsttime),
+               (CurrentTime > target_p->since) ? (unsigned)(CurrentTime - target_p->since): 0,
                IsOper(source_p) ? show_capabilities(target_p) : "TS");
   }
 
   sendto_one(source_p, ":%s %d %s ? :%u total server(s)",
              me.name, RPL_STATSDEBUG, source_p->name, j);
-
   sendto_one(source_p, ":%s %d %s ? :Sent total : %7.2f %s",
              me.name, RPL_STATSDEBUG, source_p->name, 
 	     _GMKv(sendK), _GMKs(sendK));
@@ -996,8 +996,8 @@ stats_L_list(struct Client *source_p,char *name, int doall, int wilds,
 		     (int)target_p->localClient->sendK,
                      (int)target_p->localClient->receiveM,
 		     (int)target_p->localClient->receiveK,
-                     CurrentTime - target_p->firsttime,
-                     (CurrentTime > target_p->since) ? (CurrentTime - target_p->since):0,
+                     (unsigned)(CurrentTime - target_p->firsttime),
+                     (CurrentTime > target_p->since) ? (unsigned)(CurrentTime - target_p->since):0,
                      IsServer(target_p) ? show_capabilities(target_p) : "-");
 	}
       else
@@ -1013,8 +1013,8 @@ stats_L_list(struct Client *source_p,char *name, int doall, int wilds,
 		       (int)target_p->localClient->sendK,
 		       (int)target_p->localClient->receiveM,
 		       (int)target_p->localClient->receiveK,
-		       CurrentTime - target_p->firsttime,
-		       (CurrentTime > target_p->since) ? (CurrentTime - target_p->since):0,
+		       (unsigned)(CurrentTime - target_p->firsttime),
+		       (CurrentTime > target_p->since) ? (unsigned)(CurrentTime - target_p->since):0,
 		       IsServer(target_p) ? show_capabilities(target_p) : "-");
 	  else /* show the real IP */
 	    sendto_one(source_p, ":%s %d %s %s %u %u %u %u %u :%u %u %s", me.name,
@@ -1027,8 +1027,8 @@ stats_L_list(struct Client *source_p,char *name, int doall, int wilds,
 		       (int)target_p->localClient->sendK,
 		       (int)target_p->localClient->receiveM,
 		       (int)target_p->localClient->receiveK,
-		       CurrentTime - target_p->firsttime,
-		       (CurrentTime > target_p->since) ? (CurrentTime - target_p->since):0,
+		       (unsigned)(CurrentTime - target_p->firsttime),
+		       (CurrentTime > target_p->since) ? (unsigned)(CurrentTime - target_p->since):0,
 		       IsServer(target_p) ? show_capabilities(target_p) : "-");
 	}
     }
