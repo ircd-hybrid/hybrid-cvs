@@ -1,5 +1,5 @@
 
-# $Id: index.txt,v 1.16 2002/01/13 18:54:43 wcampbel Exp $
+# $Id: index.txt,v 1.17 2002/06/25 23:06:53 leeh Exp $
 Here is the overview of the documents in the doc/ directory.
 
 CIDR.txt		- Description of CIDR in IPv4
@@ -10,8 +10,6 @@ challenge.txt           - Overview of the challenge/response system for
 dline.conf              - A blank dline.conf file used by make install
 example.conf            - An example ircd.conf file describing most of the
                           user settable options
-example.conf.efnet      - An example ircd.conf file for use on EFnet, only
-                          features approved on EFnet will be enabled
 guidelines.txt		- Documentation guidelines
 index.txt		- This file
 ircd.8                  - The new revised manpage, read with the following
