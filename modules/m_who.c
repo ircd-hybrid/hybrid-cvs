@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_who.c,v 1.70 2003/04/02 11:19:41 michael Exp $
+ *  $Id: m_who.c,v 1.71 2003/04/18 02:13:43 db Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -46,7 +46,7 @@ static void ms_who(struct Client*, struct Client*, int, char**);
 
 struct Message who_msgtab = {
   "WHO", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_who, ms_who, m_who}
+  {m_unregistered, m_who, ms_who, m_who, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -61,7 +61,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&who_msgtab);
 }
-const char *_version = "$Revision: 1.70 $";
+const char *_version = "$Revision: 1.71 $";
 #endif
 static void do_who_on_channel(struct Client *source_p, struct Channel *chptr,
                               char *real_name, int member);
@@ -82,10 +82,8 @@ static void do_who_list(struct Client *source_p, struct Channel *chptr,
 
 static void who_global(struct Client *source_p, char *mask, int server_oper);
 
-static void do_who(struct Client *source_p,
-                   struct Client *target_p,
-                   char *chname,
-                   char *op_flags);
+static void do_who(struct Client *source_p, struct Client *target_p,
+                   char *chname, char *op_flags);
 
 
 /*
@@ -94,10 +92,9 @@ static void do_who(struct Client *source_p,
 **      parv[1] = nickname mask list
 **      parv[2] = additional selection flag, only 'o' for now.
 */
-static void m_who(struct Client *client_p,
-                 struct Client *source_p,
-                 int parc,
-                 char *parv[])
+static void
+m_who(struct Client *client_p, struct Client *source_p,
+      int parc, char *parv[])
 {
   struct Client *target_p;
   char  *mask = parc > 1 ? parv[1] : NULL;

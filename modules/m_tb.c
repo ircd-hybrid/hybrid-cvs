@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: m_tb.c,v 1.13 2003/04/03 23:48:56 michael Exp $
+ *  $Id: m_tb.c,v 1.14 2003/04/18 02:13:38 db Exp $
  */
 
 #include "stdinc.h"
@@ -61,7 +61,7 @@ int send_tburst(struct hook_burst_channel *);
 
 struct Message tburst_msgtab = {
   "TBURST", 0, 0, 6, 0, MFLG_SLOW, 0,
-  {m_ignore, m_ignore, ms_tburst, m_ignore}
+  {m_ignore, m_ignore, ms_tburst, m_ignore, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -81,7 +81,7 @@ _moddeinit(void)
   unset_tburst_capab();
 }
 
-const char *_version = "$Revision: 1.13 $";
+const char *_version = "$Revision: 1.14 $";
 #endif
 
 /* ms_tburst()
@@ -93,8 +93,9 @@ const char *_version = "$Revision: 1.13 $";
  *      parv[4] = topic setter
  *      parv[5] = topic
  */
-static void ms_tburst(struct Client *client_p, struct Client *source_p,
-                    int parc, char *parv[])
+static void
+ms_tburst(struct Client *client_p, struct Client *source_p,
+	  int parc, char *parv[])
 {
   struct Channel *chptr;
   time_t newchannelts;
@@ -121,8 +122,9 @@ static void ms_tburst(struct Client *client_p, struct Client *source_p,
   }
 }
 
-static void set_topic(struct Client *source_p, struct Channel *chptr, 
-		      time_t newtopicts, char *topicwho, char *topic)
+static void
+set_topic(struct Client *source_p, struct Channel *chptr, 
+	  time_t newtopicts, char *topicwho, char *topic)
 {
   set_channel_topic(chptr, topic, topicwho, newtopicts);
 
@@ -140,17 +142,20 @@ static void set_topic(struct Client *source_p, struct Channel *chptr,
 #endif
 }
 
-static void set_tburst_capab(void)
+static void
+set_tburst_capab(void)
 {
   default_server_capabs |= CAP_TBURST;
 }
 
-static void unset_tburst_capab(void)
+static void
+unset_tburst_capab(void)
 {
   default_server_capabs &= ~CAP_TBURST;
 }
 
-int send_tburst(struct hook_burst_channel *data)
+int
+send_tburst(struct hook_burst_channel *data)
 {
   if(data->chptr->topic != NULL && IsCapable(data->client, CAP_TBURST))
     sendto_one(data->client, ":%s TBURST %ld %s %ld %s :%s",

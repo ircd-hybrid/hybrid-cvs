@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.119 2003/04/10 14:23:52 stu Exp $
+ *  $Id: m_kline.c,v 1.120 2003/04/18 02:13:42 db Exp $
  */
 
 #include "stdinc.h"
@@ -52,12 +52,12 @@ static void mo_dline(struct Client *,struct Client *,int,char **);
 
 struct Message kline_msgtab = {
   "KLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, ms_kline, mo_kline}
+  {m_unregistered, m_not_oper, ms_kline, mo_kline, m_ignore}
 };
 
 struct Message dline_msgtab = {
   "DLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, m_error, mo_dline}
+  {m_unregistered, m_not_oper, m_error, mo_dline, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -75,7 +75,7 @@ _moddeinit(void)
   mod_del_cmd(&kline_msgtab);
   mod_del_cmd(&dline_msgtab);
 }
-const char *_version = "$Revision: 1.119 $";
+const char *_version = "$Revision: 1.120 $";
 #endif
 
 /* Local function prototypes */

@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: m_force.c,v 1.18 2003/04/03 23:48:55 michael Exp $
+ * $Id: m_force.c,v 1.19 2003/04/18 02:13:37 db Exp $
  */
 
 #include "stdinc.h"
@@ -56,11 +56,11 @@ static void mo_forcepart(struct Client *client_p, struct Client *source_p,
 
 struct Message forcejoin_msgtab = {
   "FORCEJOIN", 0, 0, 3, 0, MFLG_SLOW, 0,
-  {m_ignore, m_not_oper, mo_forcejoin, mo_forcejoin}
+  {m_ignore, m_not_oper, mo_forcejoin, mo_forcejoin, m_ignore}
 };
 struct Message forcepart_msgtab = {
   "FORCEPART", 0, 0, 3, 0, MFLG_SLOW, 0,
-  {m_ignore, m_not_oper, mo_forcepart, mo_forcepart}
+  {m_ignore, m_not_oper, mo_forcepart, mo_forcepart, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&forcepart_msgtab);
 }
 
-const char *_version = "$Revision: 1.18 $";
+const char *_version = "$Revision: 1.19 $";
 #endif
 
 /*
@@ -87,8 +87,9 @@ const char *_version = "$Revision: 1.18 $";
  *      parv[1] = user to force
  *      parv[2] = channel to force them into
  */
-static void mo_forcejoin(struct Client *client_p, struct Client *source_p,
-                         int parc, char *parv[])
+static void
+mo_forcejoin(struct Client *client_p, struct Client *source_p,
+	     int parc, char *parv[])
 {
   struct Client *target_p;
   struct Channel *chptr;
@@ -261,8 +262,9 @@ static void mo_forcejoin(struct Client *client_p, struct Client *source_p,
 }
 
 
-static void mo_forcepart(struct Client *client_p, struct Client *source_p,
-		         int parc, char *parv[])
+static void
+mo_forcepart(struct Client *client_p, struct Client *source_p,
+	     int parc, char *parv[])
 {
   struct Client *target_p;
   struct Channel *chptr;

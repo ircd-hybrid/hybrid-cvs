@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_cjoin.c,v 1.55 2002/08/15 15:00:59 adx Exp $
+ *  $Id: m_cjoin.c,v 1.56 2003/04/18 02:13:42 db Exp $
  */
 
 #include "stdinc.h"
@@ -48,7 +48,7 @@ static void m_cjoin(struct Client*, struct Client*, int, char**);
 
 struct Message cjoin_msgtab = {
   "CJOIN", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_cjoin, m_ignore, m_cjoin}
+  {m_unregistered, m_cjoin, m_ignore, m_cjoin, m_ignore}
 };
 #endif
 
@@ -69,7 +69,7 @@ _moddeinit(void)
 #endif
 }
 
-const char *_version = "$Revision: 1.55 $";
+const char *_version = "$Revision: 1.56 $";
 #endif /* STATIC_MODULES */
 
 #ifdef VCHANS
@@ -79,10 +79,9 @@ const char *_version = "$Revision: 1.55 $";
 **      parv[1] = channel
 **      parv[2] = channel password (key)
 */
-static void m_cjoin(struct Client *client_p,
-                   struct Client *source_p,
-                   int parc,
-                   char *parv[])
+static void
+m_cjoin(struct Client *client_p, struct Client *source_p,
+	int parc, char *parv[])
 {
   static char   jbuf[BUFSIZE];
   struct Channel *chptr = NULL;

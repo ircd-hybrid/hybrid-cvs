@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.145 2003/04/14 08:41:12 michael Exp $
+ *  $Id: m_sjoin.c,v 1.146 2003/04/18 02:13:50 db Exp $
  */
 
 #include "stdinc.h"
@@ -47,7 +47,7 @@ static void ms_sjoin(struct Client*, struct Client*, int, char**);
 
 struct Message sjoin_msgtab = {
   "SJOIN", 0, 0, 0, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_ignore, ms_sjoin, m_ignore}
+  {m_unregistered, m_ignore, ms_sjoin, m_ignore, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.145 $";
+const char *_version = "$Revision: 1.146 $";
 #endif
 /*
  * ms_sjoin
@@ -96,7 +96,7 @@ static void remove_a_mode(int hide_or_not,
 
 static void
 ms_sjoin(struct Client *client_p, struct Client *source_p,
-                    int parc, char *parv[])
+	 int parc, char *parv[])
 {
   struct Channel *chptr;
   struct Channel *top_chptr=NULL;	/* XXX vchans */

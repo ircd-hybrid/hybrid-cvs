@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_die.c,v 1.27 2003/04/02 11:19:43 michael Exp $
+ *  $Id: m_die.c,v 1.28 2003/04/18 02:13:50 db Exp $
  */
 
 #include "stdinc.h"
@@ -42,7 +42,7 @@ static void mo_die(struct Client*, struct Client*, int, char**);
 
 struct Message die_msgtab = {
   "DIE", 0, 0, 1, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, m_ignore, mo_die}
+  {m_unregistered, m_not_oper, m_ignore, mo_die, m_ignore}
 };
 #ifndef STATIC_MODULES
 void
@@ -57,13 +57,14 @@ _moddeinit(void)
   mod_del_cmd(&die_msgtab);
 }
 
-const char *_version = "$Revision: 1.27 $";
+const char *_version = "$Revision: 1.28 $";
 #endif
 /*
  * mo_die - DIE command handler
  */
-static void mo_die(struct Client *client_p, struct Client *source_p,
-                  int parc, char *parv[])
+static void
+mo_die(struct Client *client_p, struct Client *source_p,
+       int parc, char *parv[])
 {
   struct Client* target_p;
   dlink_node *ptr;

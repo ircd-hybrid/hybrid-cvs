@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_user.c,v 1.26 2003/04/15 13:25:23 adx Exp $
+ *  $Id: m_user.c,v 1.27 2003/04/18 02:13:43 db Exp $
  */
 
 #include "stdinc.h"
@@ -40,7 +40,7 @@ static void mr_user(struct Client*, struct Client*, int, char**);
 
 struct Message user_msgtab = {
   "USER", 0, 0, 5, 0, MFLG_SLOW, 0L,
-  {mr_user, m_registered, m_ignore, m_registered}
+  {mr_user, m_registered, m_ignore, m_registered, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -56,7 +56,7 @@ _moddeinit(void)
   mod_del_cmd(&user_msgtab);
 }
 
-const char *_version = "$Revision: 1.26 $";
+const char *_version = "$Revision: 1.27 $";
 #endif
 /*
 ** mr_user

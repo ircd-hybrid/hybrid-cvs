@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_squit.c,v 1.52 2003/03/31 18:17:39 michael Exp $
+ *  $Id: m_squit.c,v 1.53 2003/04/18 02:13:50 db Exp $
  */
 
 #include "stdinc.h"
@@ -44,7 +44,7 @@ static void mo_squit(struct Client *, struct Client *, int, char **);
 
 struct Message squit_msgtab = {
   "SQUIT", 0, 0, 1, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, ms_squit, mo_squit}
+  {m_unregistered, m_not_oper, ms_squit, mo_squit, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -59,7 +59,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&squit_msgtab);
 }
-const char *_version = "$Revision: 1.52 $";
+const char *_version = "$Revision: 1.53 $";
 #endif
 
 /* mo_squit - SQUIT message handler

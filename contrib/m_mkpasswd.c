@@ -6,7 +6,7 @@
  *
  *  You can use this code in any way as long as these names remain.
  *
- *  $Id: m_mkpasswd.c,v 1.9 2002/05/24 23:48:34 androsyn Exp $
+ *  $Id: m_mkpasswd.c,v 1.10 2003/04/18 02:13:37 db Exp $
  */
 
 /* List of ircd includes from ../include/ */
@@ -42,7 +42,7 @@ static char saltChars[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0
 
 struct Message test_msgtab = {
   "MKPASSWD", 0, 0, 1, 2, MFLG_SLOW, 0,
-  {m_unregistered, m_mkpasswd, m_ignore, mo_mkpasswd}
+  {m_unregistered, m_mkpasswd, m_ignore, mo_mkpasswd, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -56,11 +56,12 @@ void _moddeinit(void)
   mod_del_cmd(&test_msgtab);
 }
 
-const char *_version = "$Revision: 1.9 $";
+const char *_version = "$Revision: 1.10 $";
 #endif
 
-static void m_mkpasswd(struct Client *client_p, struct Client *source_p,
-                   int parc, char *parv[])
+static void
+m_mkpasswd(struct Client *client_p, struct Client *source_p,
+	   int parc, char *parv[])
 {
   static time_t last_used = 0;
   int is_md5 = 0;
@@ -106,12 +107,13 @@ static void m_mkpasswd(struct Client *client_p, struct Client *source_p,
 }
 
 /*
-** mo_test
+** mo_mkpasswd
 **      parv[0] = sender prefix
 **      parv[1] = parameter
 */
-static void mo_mkpasswd(struct Client *client_p, struct Client *source_p,
-                   int parc, char *parv[])
+static void
+mo_mkpasswd(struct Client *client_p, struct Client *source_p,
+	    int parc, char *parv[])
 {		 
   int is_md5 = 0;
 
@@ -144,7 +146,8 @@ static void mo_mkpasswd(struct Client *client_p, struct Client *source_p,
                is_md5 ? make_md5_salt() : make_salt()));
 }
 
-static char *make_salt(void)
+static char *
+make_salt(void)
 {
   static char salt[3];
   salt[0] = saltChars[random() % 64];
@@ -153,7 +156,8 @@ static char *make_salt(void)
   return salt;
 }
 
-static char *make_md5_salt(void)
+static char *
+make_md5_salt(void)
 {
   static char salt[13];
   int i;

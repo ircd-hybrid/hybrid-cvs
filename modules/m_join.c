@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_join.c,v 1.98 2003/03/28 19:18:27 db Exp $
+ *  $Id: m_join.c,v 1.99 2003/04/18 02:13:42 db Exp $
  */
 
 #include "stdinc.h"
@@ -49,7 +49,7 @@ static void ms_join(struct Client*, struct Client*, int, char**);
 
 struct Message join_msgtab = {
   "JOIN", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_join, ms_join, m_join}
+  {m_unregistered, m_join, ms_join, m_join, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -65,7 +65,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&join_msgtab);
 }
-const char *_version = "$Revision: 1.98 $";
+const char *_version = "$Revision: 1.99 $";
 
 #endif
 static void do_join_0(struct Client *client_p, struct Client *source_p);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_capab.c,v 1.31 2003/02/14 23:01:51 db Exp $
+ *  $Id: m_capab.c,v 1.32 2003/04/18 02:13:42 db Exp $
  */
 
 #include "stdinc.h"
@@ -36,7 +36,7 @@ static void mr_capab(struct Client*, struct Client*, int, char**);
 
 struct Message capab_msgtab = {
   "CAPAB", 0, 0, 0, 0, MFLG_SLOW | MFLG_UNREG, 0,
-  {mr_capab, m_ignore, m_ignore, m_ignore}
+  {mr_capab, m_ignore, m_ignore, m_ignore, m_ignore}
 };
 #ifndef STATIC_MODULES
 void
@@ -51,7 +51,7 @@ _moddeinit(void)
   mod_del_cmd(&capab_msgtab);
 }
 
-const char *_version = "$Revision: 1.31 $";
+const char *_version = "$Revision: 1.32 $";
 #endif
 
 /*
@@ -60,8 +60,9 @@ const char *_version = "$Revision: 1.31 $";
  *      parv[1] = space-separated list of capabilities
  *
  */
-static void mr_capab(struct Client *client_p, struct Client *source_p,
-                    int parc, char *parv[])
+static void
+mr_capab(struct Client *client_p, struct Client *source_p,
+	 int parc, char *parv[])
 {
   struct Capability *cap;
   int i;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_rehash.c,v 1.43 2003/02/17 16:09:29 db Exp $
+ *  $Id: m_rehash.c,v 1.44 2003/04/18 02:13:43 db Exp $
  */
 
 #include "stdinc.h"
@@ -44,7 +44,7 @@ static void mo_rehash(struct Client*, struct Client*, int, char**);
 
 struct Message rehash_msgtab = {
   "REHASH", 0, 0, 0, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, m_ignore, mo_rehash}
+  {m_unregistered, m_not_oper, m_ignore, mo_rehash, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -60,14 +60,15 @@ _moddeinit(void)
   mod_del_cmd(&rehash_msgtab);
 }
 
-const char *_version = "$Revision: 1.43 $";
+const char *_version = "$Revision: 1.44 $";
 #endif
 /*
  * mo_rehash - REHASH message handler
  *
  */
-static void mo_rehash(struct Client *client_p, struct Client *source_p,
-                     int parc, char *parv[])
+static void
+mo_rehash(struct Client *client_p, struct Client *source_p,
+	  int parc, char *parv[])
 {
   int found = NO;
 

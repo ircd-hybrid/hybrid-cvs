@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.20 2003/04/03 23:48:56 michael Exp $
+ *   $Id: m_operspy.c,v 1.21 2003/04/18 02:13:37 db Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -110,7 +110,7 @@ static void do_who_on_channel(struct Client *source_p,
 
 struct Message operspy_msgtab = {
   "OPERSPY", 0, 0, 0, 0, MFLG_SLOW|MFLG_HIDDEN, 0,
-  {m_ignore, m_operspy, m_operspy, mo_operspy}
+  {m_ignore, m_operspy, m_operspy, mo_operspy, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -125,7 +125,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.20 $";
+const char *_version = "$Revision: 1.21 $";
 #endif
 
 /*
@@ -133,8 +133,9 @@ const char *_version = "$Revision: 1.20 $";
  *      parv[1] = operspy command
  *      parv[2] = command parameter
  */
-static void m_operspy(struct Client *client_p, struct Client *source_p,
-                      int parc, char *parv[])
+static void
+m_operspy(struct Client *client_p, struct Client *source_p,
+	  int parc, char *parv[])
 {
   char *operspy = (parc > 1) ? parv[1]-1 : NULL;
 
@@ -618,7 +619,7 @@ who_global(struct Client *source_p,char *mask, int server_oper)
 
 static void
 do_who_on_channel(struct Client *source_p, struct Channel *chptr,
-                              char *chname, int server_oper)
+		  char *chname, int server_oper)
 {
   char flags[NUMLISTS][2];
 

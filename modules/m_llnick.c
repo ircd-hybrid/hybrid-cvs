@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_llnick.c,v 1.21 2003/02/17 16:09:29 db Exp $
+ *  $Id: m_llnick.c,v 1.22 2003/04/18 02:13:43 db Exp $
  */
 
 #include "stdinc.h"
@@ -44,7 +44,7 @@ static void ms_llnick(struct Client*, struct Client*, int, char**);
 
 struct Message llnick_msgtab = {
   "LLNICK", 0, 0, 3, 0, MFLG_SLOW | MFLG_UNREG, 0L,
-  {m_unregistered, m_ignore, ms_llnick, m_ignore}
+  {m_unregistered, m_ignore, ms_llnick, m_ignore, m_ignore}
 };
 #ifndef STATIC_MODULES
 
@@ -60,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&llnick_msgtab);
 }
 
-const char *_version = "$Revision: 1.21 $";
+const char *_version = "$Revision: 1.22 $";
 #endif
 /*
  * m_llnick
@@ -70,10 +70,9 @@ const char *_version = "$Revision: 1.21 $";
  *      parv[3] = old nick
  *
  */
-static void ms_llnick(struct Client *client_p,
-                      struct Client *source_p,
-                      int parc,
-                      char *parv[])
+static void
+ms_llnick(struct Client *client_p, struct Client *source_p,
+	  int parc, char *parv[])
 {
   char *nick;
   char *nick_old = NULL;

@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_ojoin.c,v 1.13 2003/04/12 06:59:58 michael Exp $
+ *   $Id: m_ojoin.c,v 1.14 2003/04/18 02:13:37 db Exp $
  */
 
 #include "stdinc.h"
@@ -43,7 +43,7 @@ static void mo_ojoin(struct Client *client_p, struct Client *source_p,
 
 struct Message ojoin_msgtab = {
   "OJOIN", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, m_ignore, mo_ojoin}
+  {m_unregistered, m_not_oper, m_ignore, mo_ojoin, m_ignore}
 };
 
 void
@@ -58,15 +58,16 @@ _moddeinit(void)
   mod_del_cmd(&ojoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.13 $";
+const char *_version = "$Revision: 1.14 $";
 
 /*
 ** mo_ojoin
 **      parv[0] = sender prefix
 **      parv[1] = channel
 */
-static void mo_ojoin(struct Client *client_p, struct Client *source_p,
-                     int parc, char *parv[])
+static void
+mo_ojoin(struct Client *client_p, struct Client *source_p,
+	 int parc, char *parv[])
 {
   struct Channel *chptr, *root_chptr;
   int move_me = 0;

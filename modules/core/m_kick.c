@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kick.c,v 1.53 2003/04/06 00:07:15 michael Exp $
+ *  $Id: m_kick.c,v 1.54 2003/04/18 02:13:50 db Exp $
  */
 
 #include "stdinc.h"
@@ -45,7 +45,7 @@ static void ms_kick(struct Client*, struct Client*, int, char**);
 
 struct Message kick_msgtab = {
   "KICK", 0, 0, 3, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_kick, ms_kick, m_kick}
+  {m_unregistered, m_kick, ms_kick, m_kick, m_ignore}
 };
 #ifndef STATIC_MODULES
 void
@@ -60,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&kick_msgtab);
 }
 
-const char *_version = "$Revision: 1.53 $";
+const char *_version = "$Revision: 1.54 $";
 #endif
 /*
 ** m_kick
@@ -71,7 +71,7 @@ const char *_version = "$Revision: 1.53 $";
 */
 static void 
 m_kick(struct Client *client_p, struct Client *source_p,
-                  int parc, char *parv[])
+       int parc, char *parv[])
 {
   struct Client *who;
   struct Channel *chptr;
@@ -252,7 +252,7 @@ m_kick(struct Client *client_p, struct Client *source_p,
 
 static void
 ms_kick(struct Client *client_p, struct Client *source_p,
-                   int parc, char *parv[])
+	int parc, char *parv[])
 {
   if (*parv[2] == '\0')
     {

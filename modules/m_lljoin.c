@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_lljoin.c,v 1.59 2003/02/17 16:09:29 db Exp $
+ *  $Id: m_lljoin.c,v 1.60 2003/04/18 02:13:43 db Exp $
  */
 
 #include "stdinc.h"
@@ -47,7 +47,7 @@ static void ms_lljoin(struct Client *,struct Client *,int,char **);
 
 struct Message lljoin_msgtab = {
   "LLJOIN", 0, 0, 3, 0, MFLG_SLOW | MFLG_UNREG, 0L,
-  {m_unregistered, m_ignore, ms_lljoin, m_ignore}
+  {m_unregistered, m_ignore, ms_lljoin, m_ignore, m_ignore}
 };
 #ifndef STATIC_MODULES
 
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&lljoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.59 $";
+const char *_version = "$Revision: 1.60 $";
 #endif
 /*
  * m_lljoin
@@ -84,10 +84,9 @@ const char *_version = "$Revision: 1.59 $";
  * this is now..
  *
  */
-static void ms_lljoin(struct Client *client_p,
-                     struct Client *source_p,
-                     int parc,
-                     char *parv[])
+static void
+ms_lljoin(struct Client *client_p, struct Client *source_p,
+	  int parc, char *parv[])
 {
   char *chname = NULL;
   char *nick = NULL;

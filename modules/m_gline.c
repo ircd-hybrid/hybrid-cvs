@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.95 2003/04/16 10:38:17 michael Exp $
+ *  $Id: m_gline.c,v 1.96 2003/04/18 02:13:42 db Exp $
  */
 
 #include "stdinc.h"
@@ -55,7 +55,7 @@
 /* internal functions */
 static void set_local_gline(
                             const char *oper_nick,
-                            const char *oper_user,
+			    const char *oper_user,
                             const char *oper_host,
                             const char *oper_server,
                             const char *user,
@@ -92,7 +92,7 @@ static void mo_gline(struct Client*, struct Client*, int, char**);
 
 struct Message gline_msgtab = {
     "GLINE", 0, 0, 3, 0, MFLG_SLOW, 0,
-      {m_unregistered, m_not_oper, ms_gline, mo_gline}
+      {m_unregistered, m_not_oper, ms_gline, mo_gline, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -109,7 +109,7 @@ _moddeinit(void)
   mod_del_cmd(&gline_msgtab);
 }
 
-const char *_version = "$Revision: 1.95 $";
+const char *_version = "$Revision: 1.96 $";
 #endif
 /*
  * mo_gline()

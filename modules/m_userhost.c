@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_userhost.c,v 1.37 2002/05/24 23:34:23 androsyn Exp $
+ *  $Id: m_userhost.c,v 1.38 2003/04/18 02:13:43 db Exp $
  */
 
 #include "stdinc.h"
@@ -41,7 +41,7 @@ static void m_userhost(struct Client*, struct Client*, int, char**);
 
 struct Message userhost_msgtab = {
   "USERHOST", 0, 0, 1, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_userhost, m_userhost, m_userhost}
+  {m_unregistered, m_userhost, m_userhost, m_userhost, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -57,17 +57,16 @@ _moddeinit(void)
   mod_del_cmd(&userhost_msgtab);
 }
 
-const char *_version = "$Revision: 1.37 $";
+const char *_version = "$Revision: 1.38 $";
 #endif
 /*
  * m_userhost added by Darren Reed 13/8/91 to aid clients and reduce
  * the need for complicated requests like WHOIS. It returns user/host
  * information only (no spurious AWAY labels or channels).
  */
-static void m_userhost(struct Client *client_p,
-                      struct Client *source_p,
-                      int parc,
-                      char *parv[])
+static void
+m_userhost(struct Client *client_p, struct Client *source_p,
+	   int parc, char *parv[])
 {
   struct Client *target_p;
   char response[NICKLEN*2+USERLEN+HOSTLEN+30];

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_time.c,v 1.26 2002/07/20 15:51:47 leeh Exp $
+ *  $Id: m_time.c,v 1.27 2003/04/18 02:13:43 db Exp $
  */
 
 #include "stdinc.h"
@@ -57,15 +57,16 @@ _moddeinit(void)
   mod_del_cmd(&time_msgtab);
 }
 
-const char *_version = "$Revision: 1.26 $";
+const char *_version = "$Revision: 1.27 $";
 #endif
 /*
  * m_time
  *      parv[0] = sender prefix
  *      parv[1] = servername
  */
-static void m_time(struct Client *client_p, struct Client *source_p,
-                  int parc, char *parv[])
+static void
+m_time(struct Client *client_p, struct Client *source_p,
+       int parc, char *parv[])
 {
   /* this is not rate limited, so end the grace period */
   if(MyClient(source_p) && !IsFloodDone(source_p))
@@ -87,8 +88,9 @@ static void m_time(struct Client *client_p, struct Client *source_p,
  *      parv[0] = sender prefix
  *      parv[1] = servername
  */
-static void mo_time(struct Client *client_p, struct Client *source_p,
-                   int parc, char *parv[])
+static void
+mo_time(struct Client *client_p, struct Client *source_p,
+	int parc, char *parv[])
 {
   if (hunt_server(client_p,source_p,":%s TIME :%s",1,parc,parv) == HUNTED_ISME)
     sendto_one(source_p, form_str(RPL_TIME), me.name,

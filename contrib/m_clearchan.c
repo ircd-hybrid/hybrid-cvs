@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_clearchan.c,v 1.33 2003/04/03 23:48:55 michael Exp $
+ *   $Id: m_clearchan.c,v 1.34 2003/04/18 02:13:37 db Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ static char    *mbuf;
 
 struct Message clearchan_msgtab = {
   MSG_CLEARCHAN, 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, m_ignore, mo_clearchan}
+  {m_unregistered, m_not_oper, m_ignore, mo_clearchan, m_ignore}
 };
 
 void
@@ -78,15 +78,16 @@ _moddeinit(void)
   mod_del_cmd(&clearchan_msgtab);
 }
 
-const char *_version = "$Revision: 1.33 $";
+const char *_version = "$Revision: 1.34 $";
 
 /*
 ** mo_clearchan
 **      parv[0] = sender prefix
 **      parv[1] = channel
 */
-static void mo_clearchan(struct Client *client_p, struct Client *source_p,
-                        int parc, char *parv[])
+static void
+mo_clearchan(struct Client *client_p, struct Client *source_p,
+	     int parc, char *parv[])
 {
   struct Channel *chptr, *root_chptr;
   int on_vchan = 0;
@@ -236,9 +237,10 @@ void kick_list(struct Client *client_p, struct Client *source_p, struct Channel 
  * side effects - Go through the local members, remove all their
  *                chanop modes etc., this side lost the TS.
  */
-static void remove_our_modes( int hide_or_not,
-                              struct Channel *chptr, struct Channel *top_chptr,
-                              struct Client *source_p)
+static void
+remove_our_modes( int hide_or_not,
+		  struct Channel *chptr, struct Channel *top_chptr,
+		  struct Client *source_p)
 {
   remove_a_mode(hide_or_not, chptr, top_chptr, source_p, &chptr->chanops, 'o');
 #ifdef REQUIRE_OANDV
@@ -286,9 +288,10 @@ static void remove_our_modes( int hide_or_not,
  * output       - NONE
  * side effects - remove ONE mode from a channel
  */
-static void remove_a_mode( int hide_or_not,
-                           struct Channel *chptr, struct Channel *top_chptr,
-                           struct Client *source_p, dlink_list *list, char flag)
+static void
+remove_a_mode( int hide_or_not,
+	       struct Channel *chptr, struct Channel *top_chptr,
+	       struct Client *source_p, dlink_list *list, char flag)
 {
   dlink_node *ptr;
   struct Client *target_p;
@@ -350,7 +353,8 @@ static void remove_a_mode( int hide_or_not,
  * output       - NONE
  * side effects -
  */
-static void free_channel_list(dlink_list *list)
+static void
+free_channel_list(dlink_list *list)
 {
   dlink_node *ptr;
   dlink_node *next_ptr;

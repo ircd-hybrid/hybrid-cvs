@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_lusers.c,v 1.23 2002/07/31 16:24:07 leeh Exp $
+ *  $Id: m_lusers.c,v 1.24 2003/04/18 02:13:43 db Exp $
  */
 
 #include "stdinc.h"
@@ -42,7 +42,7 @@ static void ms_lusers(struct Client*, struct Client*, int, char**);
 
 struct Message lusers_msgtab = {
   "LUSERS", 0, 0, 0, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_lusers, ms_lusers, ms_lusers}
+  {m_unregistered, m_lusers, ms_lusers, ms_lusers, m_ignore}
 };
 #ifndef STATIC_MODULES
 
@@ -58,7 +58,7 @@ _moddeinit(void)
   mod_del_cmd(&lusers_msgtab);
 }
 
-const char *_version = "$Revision: 1.23 $";
+const char *_version = "$Revision: 1.24 $";
 #endif
 /*
  * m_lusers - LUSERS message handler
@@ -69,8 +69,9 @@ const char *_version = "$Revision: 1.23 $";
  * 199970918 JRL hacked to ignore parv[1] completely and require parc > 3
  * to cause a force
  */
-static void m_lusers(struct Client *client_p, struct Client *source_p,
-                    int parc, char *parv[])
+static void
+m_lusers(struct Client *client_p, struct Client *source_p,
+	 int parc, char *parv[])
 {
   static time_t last_used = 0;
 
@@ -102,8 +103,9 @@ static void m_lusers(struct Client *client_p, struct Client *source_p,
  * 199970918 JRL hacked to ignore parv[1] completely and require parc > 3
  * to cause a force
  */
-static void ms_lusers(struct Client *client_p, struct Client *source_p,
-                     int parc, char *parv[])
+static void
+ms_lusers(struct Client *client_p, struct Client *source_p,
+	  int parc, char *parv[])
 {
   if (parc > 2)
     {

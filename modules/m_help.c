@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_help.c,v 1.35 2003/01/17 03:58:00 db Exp $
+ *  $Id: m_help.c,v 1.36 2003/04/18 02:13:42 db Exp $
  */
 
 #include "stdinc.h"
@@ -49,7 +49,7 @@ struct Message help_msgtab = {
 
 struct Message uhelp_msgtab = {
   "UHELP", 0, 0, 0, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_help, m_ignore, mo_uhelp}
+  {m_unregistered, m_help, m_ignore, mo_uhelp, m_ignore}
 };
 #ifndef STATIC_MODULES
 
@@ -67,7 +67,7 @@ _moddeinit(void)
   mod_del_cmd(&uhelp_msgtab);
 }
 
-const char *_version = "$Revision: 1.35 $";
+const char *_version = "$Revision: 1.36 $";
 #endif
 /*
  * m_help - HELP message handler
@@ -75,7 +75,7 @@ const char *_version = "$Revision: 1.35 $";
  */
 static void
 m_help(struct Client *client_p, struct Client *source_p,
-                   int parc, char *parv[])
+       int parc, char *parv[])
 {
   static time_t last_used = 0;
 

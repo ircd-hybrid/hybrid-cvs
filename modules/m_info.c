@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.c,v 1.63 2003/04/14 06:42:50 michael Exp $
+ *  $Id: m_info.c,v 1.64 2003/04/18 02:13:42 db Exp $
  */
 
 #include "stdinc.h"
@@ -52,7 +52,7 @@ static void mo_info(struct Client*, struct Client*, int, char**);
 
 struct Message info_msgtab = {
   "INFO", 0, 0, 0, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_info, ms_info, mo_info}
+  {m_unregistered, m_info, ms_info, mo_info, m_ignore}
 };
 #ifndef STATIC_MODULES
 
@@ -69,7 +69,7 @@ _moddeinit(void)
   hook_del_event("doing_info");
   mod_del_cmd(&info_msgtab);
 }
-const char *_version = "$Revision: 1.63 $";
+const char *_version = "$Revision: 1.64 $";
 #endif
 
 /*
@@ -495,8 +495,9 @@ static struct InfoStruct info_table[] =
 **  parv[0] = sender prefix
 **  parv[1] = servername
 */
-static void m_info(struct Client *client_p, struct Client *source_p,
-                  int parc, char *parv[])
+static void
+m_info(struct Client *client_p, struct Client *source_p,
+       int parc, char *parv[])
 {
   static time_t last_used=0L;
 
@@ -534,8 +535,9 @@ static void m_info(struct Client *client_p, struct Client *source_p,
 **  parv[0] = sender prefix
 **  parv[1] = servername
 */
-static void mo_info(struct Client *client_p, struct Client *source_p,
-                   int parc, char *parv[])
+static void
+mo_info(struct Client *client_p, struct Client *source_p,
+	int parc, char *parv[])
 {
   if (hunt_server(client_p,source_p,":%s INFO :%s",1,parc,parv) == HUNTED_ISME)
   {
@@ -554,8 +556,9 @@ static void mo_info(struct Client *client_p, struct Client *source_p,
 **  parv[0] = sender prefix
 **  parv[1] = servername
 */
-static void ms_info(struct Client *client_p, struct Client *source_p,
-                   int parc, char *parv[])
+static void
+ms_info(struct Client *client_p, struct Client *source_p,
+	int parc, char *parv[])
 {
   if (!IsClient(source_p))
       return;
@@ -580,7 +583,8 @@ static void ms_info(struct Client *client_p, struct Client *source_p,
  * output	- none
  * side effects	- info text is sent to client
  */
-static void send_info_text(struct Client *source_p)
+static void
+send_info_text(struct Client *source_p)
 {
   char **text = infotext;
 
@@ -599,7 +603,8 @@ static void send_info_text(struct Client *source_p)
  * output	- none
  * side effects	- birthdate and online time are sent
  */
-static void send_birthdate_online_time(struct Client *source_p)
+static void
+send_birthdate_online_time(struct Client *source_p)
 {
   sendto_one(source_p, ":%s %d %s :Birth Date: %s, compile # %s",
 	     me.name, RPL_INFO, source_p->name,
@@ -616,7 +621,8 @@ static void send_birthdate_online_time(struct Client *source_p)
  * output	- none
  * side effects	- send config options to client
  */
-static void send_conf_options(struct Client *source_p)
+static void
+send_conf_options(struct Client *source_p)
 {
   Info *infoptr;
   int i = 0;
@@ -779,7 +785,8 @@ static void send_conf_options(struct Client *source_p)
  * output       - none
  * side effects - hook doing_info is called
  */
-static void info_spy(struct Client *source_p)
+static void
+info_spy(struct Client *source_p)
 {
   struct hook_spy_data data;
 

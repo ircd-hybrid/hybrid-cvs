@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_set.c,v 1.48 2003/04/13 09:46:54 michael Exp $
+ *  $Id: m_set.c,v 1.49 2003/04/18 02:13:43 db Exp $
  */
 
 /* rewritten by jdc */
@@ -48,7 +48,7 @@ static void mo_set(struct Client*, struct Client*, int, char**);
 
 struct Message set_msgtab = {
   "SET", 0, 0, 0, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, m_error, mo_set}
+  {m_unregistered, m_not_oper, m_error, mo_set, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -64,7 +64,7 @@ _moddeinit(void)
   mod_del_cmd(&set_msgtab);
 }
 
-const char *_version = "$Revision: 1.48 $";
+const char *_version = "$Revision: 1.49 $";
 #endif
 
 /* Structure used for the SET table itself */
@@ -127,7 +127,8 @@ static struct SetStruct set_cmd_table[] =
  * list_quote_commands() sends the client all the available commands.
  * Four to a line for now.
  */
-static void list_quote_commands(struct Client *source_p)
+static void
+list_quote_commands(struct Client *source_p)
 {
   int i;
   int j = 0;
@@ -161,13 +162,15 @@ static void list_quote_commands(struct Client *source_p)
 }
 
 /* SET AUTOCONN */
-static void quote_autoconn( struct Client *source_p, char *arg, int newval)
+static void
+quote_autoconn( struct Client *source_p, char *arg, int newval)
 {
   set_autoconn(source_p, source_p->name, arg, newval);
 }
 
 /* SET AUTOCONNALL */
-static void quote_autoconnall( struct Client *source_p, int newval)
+static void
+quote_autoconnall( struct Client *source_p, int newval)
 {
   if(newval >= 0)
   {
@@ -185,7 +188,8 @@ static void quote_autoconnall( struct Client *source_p, int newval)
 
 
 /* SET FLOODCOUNT */
-static void quote_floodcount( struct Client *source_p, int newval)
+static void
+quote_floodcount( struct Client *source_p, int newval)
 {
   if(newval >= 0)
   {
@@ -202,7 +206,8 @@ static void quote_floodcount( struct Client *source_p, int newval)
 }
 
 /* SET IDENTTIMEOUT */
-static void quote_identtimeout(struct Client *source_p, int newval)
+static void
+quote_identtimeout(struct Client *source_p, int newval)
 {
   if(!IsOperAdmin(source_p))
   {
@@ -224,7 +229,8 @@ static void quote_identtimeout(struct Client *source_p, int newval)
 }
 
 /* SET IDLETIME */
-static void quote_idletime( struct Client *source_p, int newval )
+static void
+quote_idletime( struct Client *source_p, int newval )
 {
   if(newval >= 0)
   {
@@ -251,7 +257,8 @@ static void quote_idletime( struct Client *source_p, int newval )
 }
 
 /* SET LOG */
-static void quote_log( struct Client *source_p, int newval )
+static void
+quote_log( struct Client *source_p, int newval )
 {
   const char *log_level_as_string;
 
@@ -283,7 +290,8 @@ static void quote_log( struct Client *source_p, int newval )
 }
 
 /* SET MAX */
-static void quote_max( struct Client *source_p, int newval )
+static void
+quote_max( struct Client *source_p, int newval )
 {
   if (newval > 0)
   {
@@ -321,7 +329,8 @@ static void quote_max( struct Client *source_p, int newval )
 }
 
 /* SET MSGLOCALE */
-static void quote_msglocale( struct Client *source_p, char *locale )
+static void
+quote_msglocale( struct Client *source_p, char *locale )
 {
   if(locale != NULL)
   {
@@ -337,7 +346,8 @@ static void quote_msglocale( struct Client *source_p, char *locale )
 }
 
 /* SET SPAMNUM */
-static void quote_spamnum( struct Client *source_p, int newval )
+static void
+quote_spamnum( struct Client *source_p, int newval )
 {
   if (newval > 0)
   {
@@ -368,7 +378,8 @@ static void quote_spamnum( struct Client *source_p, int newval )
 }
 
 /* SET SPAMTIME */
-static void quote_spamtime( struct Client *source_p, int newval )
+static void
+quote_spamtime( struct Client *source_p, int newval )
 {
   if (newval > 0)
   {
@@ -411,7 +422,8 @@ static const char *splitmode_status[] =
 };
 
 /* SET SPLITMODE */
-static void quote_splitmode(struct Client *source_p, char *charval)
+static void
+quote_splitmode(struct Client *source_p, char *charval)
 {
   if(charval)
   {
@@ -470,7 +482,8 @@ static void quote_splitmode(struct Client *source_p, char *charval)
 }
 
 /* SET SPLITNUM */
-static void quote_splitnum(struct Client *source_p, int newval)
+static void
+quote_splitnum(struct Client *source_p, int newval)
 {
   if(newval >= 0)
   {
@@ -488,7 +501,8 @@ static void quote_splitnum(struct Client *source_p, int newval)
 }
 
 /* SET SPLITUSERS */
-static void quote_splitusers(struct Client *source_p, int newval)
+static void
+quote_splitusers(struct Client *source_p, int newval)
 {
   if(newval >= 0)
   {
@@ -509,8 +523,9 @@ static void quote_splitusers(struct Client *source_p, int newval)
  * mo_set - SET command handler
  * set options while running
  */
-static void mo_set(struct Client *client_p, struct Client *source_p,
-                   int parc, char *parv[])
+static void
+mo_set(struct Client *client_p, struct Client *source_p,
+       int parc, char *parv[])
 {
   int i;
   int n;

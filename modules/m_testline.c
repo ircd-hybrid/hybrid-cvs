@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_testline.c,v 1.27 2003/04/09 11:19:34 stu Exp $
+ *  $Id: m_testline.c,v 1.28 2003/04/18 02:13:43 db Exp $
  */
 
 #include "stdinc.h"
@@ -43,7 +43,7 @@ static void mo_testline(struct Client*, struct Client*, int, char**);
 
 struct Message testline_msgtab = {
   "TESTLINE", 0, 0, 0, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, m_ignore, mo_testline}
+  {m_unregistered, m_not_oper, m_ignore, mo_testline, m_ignore}
 };
  
 #ifndef STATIC_MODULES
@@ -59,7 +59,7 @@ _moddeinit(void)
   mod_del_cmd(&testline_msgtab);
 }
  
-const char *_version = "$Revision: 1.27 $";
+const char *_version = "$Revision: 1.28 $";
 #endif
 /*
  * mo_testline
@@ -76,8 +76,9 @@ const char *_version = "$Revision: 1.27 $";
  *
  */  
   
-static void mo_testline(struct Client *client_p, struct Client *source_p,
-                       int parc, char *parv[])
+static void
+mo_testline(struct Client *client_p, struct Client *source_p,
+	    int parc, char *parv[])
 {
   struct ConfItem *aconf;
   struct irc_ssaddr ip;

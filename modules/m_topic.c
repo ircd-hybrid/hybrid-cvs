@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_topic.c,v 1.54 2002/06/11 01:39:38 androsyn Exp $
+ *  $Id: m_topic.c,v 1.55 2003/04/18 02:13:43 db Exp $
  */
 
 #include "stdinc.h"
@@ -46,7 +46,7 @@ static void ms_topic(struct Client*, struct Client*, int, char**);
 
 struct Message topic_msgtab = {
   "TOPIC", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_topic, ms_topic, m_topic}
+  {m_unregistered, m_topic, ms_topic, m_topic, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&topic_msgtab);
 }
 
-const char *_version = "$Revision: 1.54 $";
+const char *_version = "$Revision: 1.55 $";
 #endif
 /*
  * m_topic
@@ -70,9 +70,9 @@ const char *_version = "$Revision: 1.54 $";
  *      parv[1] = channel name
  *	parv[2] = new topic, if setting topic
  */
-static void m_topic(struct Client *client_p,
-                   struct Client *source_p,
-                   int parc, char *parv[])
+static void
+m_topic(struct Client *client_p, struct Client *source_p,
+	int parc, char *parv[])
 {
   struct Channel *chptr = NULL;
   struct Channel *root_chan;
@@ -239,10 +239,9 @@ static void m_topic(struct Client *client_p,
  *
  * Let servers always set a topic
  */
-static void ms_topic(struct Client *client_p,
-                    struct Client *source_p,
-                    int parc,
-                    char *parv[])
+static void
+ms_topic(struct Client *client_p, struct Client *source_p,
+	 int parc, char *parv[])
 {
   struct Channel *chptr = NULL;
   

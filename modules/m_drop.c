@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_drop.c,v 1.25 2003/02/17 16:09:28 db Exp $
+ *  $Id: m_drop.c,v 1.26 2003/04/18 02:13:42 db Exp $
  */
 
 #include "stdinc.h"
@@ -45,7 +45,7 @@ static void ms_drop(struct Client *,struct Client *,int,char **);
 
 struct Message drop_msgtab = {
   "DROP", 0, 0, 2, 0, MFLG_SLOW | MFLG_UNREG, 0L,
-  {m_unregistered, m_ignore, ms_drop, m_ignore}
+  {m_unregistered, m_ignore, ms_drop, m_ignore, m_ignore}
 };
 #ifndef STATIC_MODULES
 void
@@ -60,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&drop_msgtab);
 }
 
-const char *_version = "$Revision: 1.25 $";
+const char *_version = "$Revision: 1.26 $";
 #endif
 /*
 ** ms_drop
@@ -70,10 +70,9 @@ const char *_version = "$Revision: 1.25 $";
 **
 **      "drop" a channel from consideration on a lazy link
 */
-static void ms_drop(struct Client *client_p,
-                   struct Client *source_p,
-                  int parc,
-                  char *parv[])
+static void
+ms_drop(struct Client *client_p, struct Client *source_p,
+	int parc, char *parv[])
 {
   char *name;
   struct Channel *chptr;

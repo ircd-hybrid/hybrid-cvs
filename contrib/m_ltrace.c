@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ltrace.c,v 1.8 2003/04/12 06:59:58 michael Exp $
+ *  $Id: m_ltrace.c,v 1.9 2003/04/18 02:13:37 db Exp $
  */
 
 #include "stdinc.h"
@@ -48,7 +48,7 @@ static void ltrace_spy(struct Client *);
 
 struct Message ltrace_msgtab = {
   "LTRACE", 0, 0, 0, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_ltrace, mo_ltrace, mo_ltrace}
+  {m_unregistered, m_ltrace, mo_ltrace, mo_ltrace, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -66,7 +66,7 @@ _moddeinit(void)
   mod_del_cmd(&ltrace_msgtab);
 }
 
-const char *_version = "$Revision: 1.8 $";
+const char *_version = "$Revision: 1.9 $";
 #endif
 
 static int report_this_status(struct Client *source_p, struct Client *target_p,int dow,

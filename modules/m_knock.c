@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_knock.c,v 1.52 2002/09/05 06:05:40 db Exp $
+ *  $Id: m_knock.c,v 1.53 2003/04/18 02:13:42 db Exp $
  */
 
 #include "stdinc.h"
@@ -58,11 +58,11 @@ static int check_banned_knock(struct Channel *, struct Client *,
 
 struct Message knock_msgtab = {
   "KNOCK", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_knock, ms_knock, m_knock}
+  {m_unregistered, m_knock, ms_knock, m_knock, m_ignore}
 };
 struct Message knockll_msgtab = {
   "KNOCKLL", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_ignore, m_knock, m_ignore}
+  {m_unregistered, m_ignore, m_knock, m_ignore, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -81,7 +81,7 @@ _moddeinit(void)
   mod_del_cmd(&knockll_msgtab);
 }
 
-const char *_version = "$Revision: 1.52 $";
+const char *_version = "$Revision: 1.53 $";
 #endif
 
 /* m_knock
@@ -153,7 +153,7 @@ m_knock(struct Client *client_p, struct Client *source_p, int parc,
  
 static void
 ms_knock(struct Client *client_p, struct Client *source_p,
-		     int parc, char *parv[])
+	 int parc, char *parv[])
 {
   if(IsClient(source_p))
     parse_knock_remote(client_p, source_p, parc, parv);

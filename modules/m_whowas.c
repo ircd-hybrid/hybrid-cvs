@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whowas.c,v 1.30 2003/01/17 13:00:51 db Exp $
+ *  $Id: m_whowas.c,v 1.31 2003/04/18 02:13:43 db Exp $
  */
 
 #include "stdinc.h"
@@ -46,7 +46,7 @@ static void mo_whowas(struct Client*, struct Client*, int, char**);
 
 struct Message whowas_msgtab = {
   "WHOWAS", 0, 0, 0, 0, MFLG_SLOW, 0L,
-  {m_unregistered, m_whowas, m_error, mo_whowas}
+  {m_unregistered, m_whowas, m_error, mo_whowas, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -61,7 +61,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&whowas_msgtab);
 }
-const char *_version = "$Revision: 1.30 $";
+const char *_version = "$Revision: 1.31 $";
 #endif
 static int whowas_do(struct Client *client_p, struct Client *source_p,
                      int parc, char *parv[]);
@@ -72,10 +72,9 @@ static int whowas_do(struct Client *client_p, struct Client *source_p,
 **      parv[0] = sender prefix
 **      parv[1] = nickname queried
 */
-static void m_whowas(struct Client *client_p,
-                    struct Client *source_p,
-                    int parc,
-                    char *parv[])
+static void
+m_whowas(struct Client *client_p, struct Client *source_p,
+	 int parc, char *parv[])
 {
   static time_t last_used=0L;
 
@@ -99,10 +98,9 @@ static void m_whowas(struct Client *client_p,
   whowas_do(client_p,source_p,parc,parv);
 }
 
-static void mo_whowas(struct Client *client_p,
-                     struct Client *source_p,
-                     int parc,
-                     char *parv[])
+static void
+mo_whowas(struct Client *client_p, struct Client *source_p,
+	  int parc, char *parv[])
 {
   if (parc < 2 || parv[1][0] == '\0')
     {
@@ -114,8 +112,9 @@ static void mo_whowas(struct Client *client_p,
   whowas_do(client_p,source_p,parc,parv);
 }
 
-static int whowas_do(struct Client *client_p, struct Client *source_p,
-                     int parc, char *parv[])
+static int
+whowas_do(struct Client *client_p, struct Client *source_p,
+	  int parc, char *parv[])
 {
   struct Whowas *temp;
   int cur = 0;

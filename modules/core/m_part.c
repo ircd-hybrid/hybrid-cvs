@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_part.c,v 1.66 2003/04/05 01:08:28 michael Exp $
+ *  $Id: m_part.c,v 1.67 2003/04/18 02:13:50 db Exp $
  */
 
 #include "stdinc.h"
@@ -46,7 +46,7 @@ static void m_part(struct Client*, struct Client*, int, char**);
 
 struct Message part_msgtab = {
   "PART", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_part, m_part, m_part}
+  {m_unregistered, m_part, m_part, m_part, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -61,7 +61,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&part_msgtab);
 }
-const char *_version = "$Revision: 1.66 $";
+const char *_version = "$Revision: 1.67 $";
 #endif
 
 static void part_one_client(struct Client *client_p,

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_trace.c,v 1.56 2003/04/09 11:19:34 stu Exp $
+ *  $Id: m_trace.c,v 1.57 2003/04/18 02:13:43 db Exp $
  */
 
 #include "stdinc.h"
@@ -49,7 +49,7 @@ static void trace_spy(struct Client *);
 
 struct Message trace_msgtab = {
   "TRACE", 0, 0, 0, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_trace, ms_trace, mo_trace}
+  {m_unregistered, m_trace, ms_trace, mo_trace, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -66,7 +66,7 @@ _moddeinit(void)
   hook_del_event("doing_trace");
   mod_del_cmd(&trace_msgtab);
 }
-const char *_version = "$Revision: 1.56 $";
+const char *_version = "$Revision: 1.57 $";
 #endif
 static int report_this_status(struct Client *source_p, struct Client *target_p,int dow,
                               int link_u_p, int link_u_s);
@@ -78,8 +78,9 @@ static int report_this_status(struct Client *source_p, struct Client *target_p,i
  *	parv[0] = sender prefix
  *	parv[1] = target client/server to trace
  */
-static void m_trace(struct Client *client_p, struct Client *source_p,
-                    int parc, char *parv[])
+static void
+m_trace(struct Client *client_p, struct Client *source_p,
+	int parc, char *parv[])
 {
   char *tname;
 
@@ -98,7 +99,7 @@ static void m_trace(struct Client *client_p, struct Client *source_p,
 */
 static void
 mo_trace(struct Client *client_p, struct Client *source_p,
-                    int parc, char *parv[])
+	 int parc, char *parv[])
 {
   struct Client       *target_p = NULL;
   struct Class        *cltmp;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_jupe.c,v 1.47 2003/04/16 19:56:32 michael Exp $
+ *  $Id: m_jupe.c,v 1.48 2003/04/18 02:13:37 db Exp $
  */
 
 #include "stdinc.h"
@@ -51,7 +51,7 @@ static int bogus_host(char *host);
 
 struct Message jupe_msgtab = {
   "JUPE", 0, 0, 3, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, mo_jupe, mo_jupe}
+  {m_unregistered, m_not_oper, mo_jupe, mo_jupe, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -67,7 +67,7 @@ _moddeinit(void)
   mod_del_cmd(&jupe_msgtab);
 }
 
-const char *_version = "$Revision: 1.47 $";
+const char *_version = "$Revision: 1.48 $";
 #endif
 
 /*

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_quit.c,v 1.29 2003/03/01 01:15:41 db Exp $
+ *  $Id: m_quit.c,v 1.30 2003/04/18 02:13:50 db Exp $
  */
 
 #include "stdinc.h"
@@ -39,7 +39,7 @@ static void ms_quit(struct Client*, struct Client*, int, char**);
 
 struct Message quit_msgtab = {
   "QUIT", 0, 0, 0, 0, MFLG_SLOW | MFLG_UNREG, 0,
-  {m_quit, m_quit, ms_quit, m_quit}
+  {m_quit, m_quit, ms_quit, m_quit, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -55,7 +55,7 @@ _moddeinit(void)
   mod_del_cmd(&quit_msgtab);
 }
 
-const char *_version = "$Revision: 1.29 $";
+const char *_version = "$Revision: 1.30 $";
 #endif
 /*
 ** m_quit

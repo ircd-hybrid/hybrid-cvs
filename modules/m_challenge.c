@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_challenge.c,v 1.43 2003/04/13 09:46:54 michael Exp $
+ *  $Id: m_challenge.c,v 1.44 2003/04/18 02:13:42 db Exp $
  */
 
 #include "stdinc.h"
@@ -54,7 +54,7 @@ _moddeinit(void)
   return;
 }
 
-const char *_version = "$Revision: 1.43 $";
+const char *_version = "$Revision: 1.44 $";
 #endif
 #else
 
@@ -65,7 +65,7 @@ void binary_to_hex(unsigned char * bin, char * hex, int length);
 /* We have openssl support, so include /CHALLENGE */
 struct Message challenge_msgtab = {
   "CHALLENGE", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_challenge, m_ignore, m_challenge}
+  {m_unregistered, m_challenge, m_ignore, m_challenge, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -81,7 +81,7 @@ _moddeinit(void)
   mod_del_cmd(&challenge_msgtab);
 }
 
-const char *_version = "$Revision: 1.43 $";
+const char *_version = "$Revision: 1.44 $";
 #endif
 /*
  * m_challenge - generate RSA challenge for wouldbe oper
@@ -89,8 +89,9 @@ const char *_version = "$Revision: 1.43 $";
  * parv[1] = operator to challenge for, or +response
  *
  */
-static void m_challenge(struct Client *client_p, struct Client *source_p,
-                        int parc, char *parv[])
+static void
+m_challenge(struct Client *client_p, struct Client *source_p,
+	    int parc, char *parv[])
 {
   char * challenge;
   dlink_node *ptr;

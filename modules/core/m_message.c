@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.115 2003/04/13 09:46:56 michael Exp $
+ *  $Id: m_message.c,v 1.116 2003/04/18 02:13:50 db Exp $
  */
 
 #include "stdinc.h"
@@ -102,7 +102,7 @@ struct Message privmsg_msgtab = {
 
 struct Message notice_msgtab = {
   "NOTICE", 0, 0, 1, 0, MFLG_SLOW, 0L,
-  {m_unregistered, m_notice, m_notice, m_notice}
+  {m_unregistered, m_notice, m_notice, m_notice, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -120,7 +120,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.115 $";
+const char *_version = "$Revision: 1.116 $";
 #endif
 
 /*

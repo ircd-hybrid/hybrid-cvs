@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_map.c,v 1.14 2003/04/16 20:16:06 michael Exp $
+ *  $Id: m_map.c,v 1.15 2003/04/18 02:13:37 db Exp $
  */
 
 #include "stdinc.h"
@@ -40,7 +40,7 @@ static void dump_map(struct Client *client_p,struct Client *root, char *pbuf);
 
 struct Message map_msgtab = {
   "MAP", 0, 0, 0, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_map, m_ignore, mo_map}
+  {m_unregistered, m_map, m_ignore, mo_map, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -54,7 +54,7 @@ void _moddeinit(void)
   mod_del_cmd(&map_msgtab);
 }
 
-const char *_version = "$Revision: 1.14 $";
+const char *_version = "$Revision: 1.15 $";
 #endif
 
 static char buf[BUFSIZE];
@@ -62,8 +62,9 @@ static char buf[BUFSIZE];
 /* m_map
 **	parv[0] = sender prefix
 */
-static void m_map(struct Client *client_p, struct Client *source_p,
-                    int parc, char *parv[])
+static void
+m_map(struct Client *client_p, struct Client *source_p,
+      int parc, char *parv[])
 {
   if (!ConfigServerHide.flatten_links)
   {
@@ -80,7 +81,8 @@ static void m_map(struct Client *client_p, struct Client *source_p,
 ** mo_map
 **      parv[0] = sender prefix
 */
-static void mo_map(struct Client *client_p, struct Client *source_p,
+static void
+mo_map(struct Client *client_p, struct Client *source_p,
                     int parc, char *parv[])
 {
   dump_map(client_p,&me,buf);
@@ -91,7 +93,8 @@ static void mo_map(struct Client *client_p, struct Client *source_p,
 ** dump_map
 **   dumps server map, called recursively.
 */
-static void dump_map(struct Client *client_p,struct Client *root_p, char *pbuf)
+static void
+dump_map(struct Client *client_p,struct Client *root_p, char *pbuf)
 {
   int cnt = 0, i = 0, len;
   int users;

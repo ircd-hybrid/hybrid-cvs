@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_version.c,v 1.40 2003/04/09 11:19:34 stu Exp $
+ *  $Id: m_version.c,v 1.41 2003/04/18 02:13:43 db Exp $
  */
 
 #include <stdinc.h>
@@ -43,7 +43,7 @@ static void mo_version(struct Client*, struct Client*, int, char**);
 
 struct Message version_msgtab = {
   "VERSION", 0, 0, 0, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_version, ms_version, mo_version}
+  {m_unregistered, m_version, ms_version, mo_version, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -59,7 +59,7 @@ _moddeinit(void)
   mod_del_cmd(&version_msgtab);
 }
 
-const char *_version = "$Revision: 1.40 $";
+const char *_version = "$Revision: 1.41 $";
 #endif
 /*
  * m_version - VERSION command handler

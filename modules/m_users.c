@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_users.c,v 1.25 2002/05/24 23:34:23 androsyn Exp $
+ *  $Id: m_users.c,v 1.26 2003/04/18 02:13:43 db Exp $
  */
 
 #include "stdinc.h"
@@ -39,7 +39,7 @@ static void mo_users(struct Client*, struct Client*, int, char**);
 
 struct Message users_msgtab = {
   "USERS", 0, 0, 0, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_users, mo_users, mo_users}
+  {m_unregistered, m_users, mo_users, mo_users, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -55,7 +55,7 @@ _moddeinit(void)
   mod_del_cmd(&users_msgtab);
 }
 
-const char *_version = "$Revision: 1.25 $";
+const char *_version = "$Revision: 1.26 $";
 #endif
 
 /*
@@ -63,8 +63,9 @@ const char *_version = "$Revision: 1.25 $";
  *      parv[0] = sender prefix
  *      parv[1] = servername
  */
-static void m_users(struct Client *client_p, struct Client *source_p,
-                   int parc, char *parv[])
+static void
+m_users(struct Client *client_p, struct Client *source_p,
+	int parc, char *parv[])
 {
   if(!ConfigServerHide.disable_remote)
   {
@@ -85,8 +86,9 @@ static void m_users(struct Client *client_p, struct Client *source_p,
  *      parv[0] = sender prefix
  *      parv[1] = servername
  */
-static void mo_users(struct Client *client_p, struct Client *source_p,
-                   int parc, char *parv[])
+static void
+mo_users(struct Client *client_p, struct Client *source_p,
+	 int parc, char *parv[])
 {
   if (hunt_server(client_p,source_p,":%s USERS :%s",1,parc,parv) == HUNTED_ISME)
     {

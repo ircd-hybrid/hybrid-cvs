@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_motd.c,v 1.35 2003/02/14 23:01:51 db Exp $
+ *  $Id: m_motd.c,v 1.36 2003/04/18 02:13:43 db Exp $
  */
 
 #include "stdinc.h"
@@ -53,7 +53,7 @@ static void motd_spy(struct Client *);
  */
 struct Message motd_msgtab = {
   "MOTD", 0, 0, 0, 1, MFLG_SLOW, 0,
-  {mr_motd, m_motd, mo_motd, mo_motd}
+  {mr_motd, m_motd, mo_motd, mo_motd, m_ignore}
 };
 #ifndef STATIC_MODULES
 void
@@ -70,7 +70,7 @@ _moddeinit(void)
   mod_del_cmd(&motd_msgtab);
 }
 
-const char *_version = "$Revision: 1.35 $";
+const char *_version = "$Revision: 1.36 $";
 #endif
 
 /* mr_motd()
@@ -79,7 +79,7 @@ const char *_version = "$Revision: 1.35 $";
  */
 static void
 mr_motd(struct Client *client_p, struct Client *source_p,
-                    int parc, char *parv[])
+	int parc, char *parv[])
 {
   /* allow unregistered clients to see the motd, but exit them */
   SendMessageFile(source_p,&ConfigFileEntry.motd);

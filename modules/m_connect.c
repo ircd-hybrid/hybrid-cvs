@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_connect.c,v 1.40 2003/02/17 16:09:28 db Exp $
+ *  $Id: m_connect.c,v 1.41 2003/04/18 02:13:42 db Exp $
  */
 
 #include "stdinc.h"
@@ -45,7 +45,7 @@ static void ms_connect(struct Client*, struct Client*, int, char**);
 
 struct Message connect_msgtab = {
   "CONNECT", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, ms_connect, mo_connect}
+  {m_unregistered, m_not_oper, ms_connect, mo_connect, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -61,7 +61,7 @@ _moddeinit(void)
   mod_del_cmd(&connect_msgtab);
 }
 
-const char *_version = "$Revision: 1.40 $";
+const char *_version = "$Revision: 1.41 $";
 #endif
 /*
  * mo_connect - CONNECT command handler
@@ -74,8 +74,9 @@ const char *_version = "$Revision: 1.40 $";
  *      parv[2] = port number
  *      parv[3] = remote server
  */
-static void mo_connect(struct Client* client_p, struct Client* source_p,
-                      int parc, char* parv[])
+static void
+mo_connect(struct Client* client_p, struct Client* source_p,
+	   int parc, char* parv[])
 {
   int              port;
   int              tmpport;
@@ -194,8 +195,9 @@ static void mo_connect(struct Client* client_p, struct Client* source_p,
  *      parv[2] = port number
  *      parv[3] = remote server
  */
-static void ms_connect(struct Client* client_p, struct Client* source_p,
-                      int parc, char* parv[])
+static void
+ms_connect(struct Client* client_p, struct Client* source_p,
+	   int parc, char* parv[])
 {
   int              port;
   int              tmpport;

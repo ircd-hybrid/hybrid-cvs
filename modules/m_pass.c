@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_pass.c,v 1.25 2003/04/06 00:07:13 michael Exp $
+ *  $Id: m_pass.c,v 1.26 2003/04/18 02:13:43 db Exp $
  */
 
 #include "stdinc.h"
@@ -37,7 +37,7 @@ static void mr_pass(struct Client*, struct Client*, int, char**);
 
 struct Message pass_msgtab = {
   "PASS", 0, 0, 2, 0, MFLG_SLOW | MFLG_UNREG, 0,
-  {mr_pass, m_registered, m_ignore, m_registered}
+  {mr_pass, m_registered, m_ignore, m_registered, mr_pass}
 };
 
 #ifndef STATIC_MODULES
@@ -53,7 +53,7 @@ _moddeinit(void)
   mod_del_cmd(&pass_msgtab);
 }
 
-const char *_version = "$Revision: 1.25 $";
+const char *_version = "$Revision: 1.26 $";
 #endif
 /*
  * m_pass() - Added Sat, 4 March 1989
@@ -64,8 +64,9 @@ const char *_version = "$Revision: 1.25 $";
  *      parv[1] = password
  *      parv[2] = optional extra version information
  */
-static void mr_pass(struct Client *client_p, struct Client *source_p,
-                   int parc, char *parv[])
+static void
+mr_pass(struct Client *client_p, struct Client *source_p,
+	int parc, char *parv[])
 {
   const char *password = parv[1];
 

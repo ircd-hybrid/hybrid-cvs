@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_eob.c,v 1.32 2003/02/17 16:09:29 db Exp $
+ *  $Id: m_eob.c,v 1.33 2003/04/18 02:13:42 db Exp $
  */
 
 #include "stdinc.h"
@@ -39,7 +39,7 @@ static void ms_eob(struct Client*, struct Client*, int, char**);
 
 struct Message eob_msgtab = {
   "EOB", 0, 0, 0, 0, MFLG_SLOW | MFLG_UNREG, 0, 
-  {m_unregistered, m_ignore, ms_eob, m_ignore}
+  {m_unregistered, m_ignore, ms_eob, m_ignore, m_ignore}
 };
 #ifndef STATIC_MODULES
 void
@@ -54,15 +54,16 @@ _moddeinit(void)
   mod_del_cmd(&eob_msgtab);
 }
 
-const char *_version = "$Revision: 1.32 $";
+const char *_version = "$Revision: 1.33 $";
 #endif
 /*
  * ms_eob - EOB command handler
  *      parv[0] = sender prefix   
  *      parv[1] = servername   
  */
-static void ms_eob(struct Client *client_p, struct Client *source_p,
-                  int parc, char *parv[])
+static void
+ms_eob(struct Client *client_p, struct Client *source_p,
+       int parc, char *parv[])
 {
    sendto_realops_flags(UMODE_ALL, L_ALL,
                         "End of burst from %s (%d seconds)",

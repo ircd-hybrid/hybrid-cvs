@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_post.c,v 1.15 2003/02/17 16:09:29 db Exp $
+ *  $Id: m_post.c,v 1.16 2003/04/18 02:13:43 db Exp $
  */
 
 #include "stdinc.h"
@@ -38,17 +38,17 @@ static void mr_dumb_proxy(struct Client*, struct Client*, int, char**);
 
 struct Message post_msgtab = {
   "POST", 0, 0, 0, 0, MFLG_SLOW | MFLG_UNREG, 0,
-  {mr_dumb_proxy, m_ignore, m_ignore, m_ignore}
+  {mr_dumb_proxy, m_ignore, m_ignore, m_ignore, m_ignore}
 };
 
 struct Message get_msgtab = {
   "GET", 0, 0, 0, 0, MFLG_SLOW | MFLG_UNREG, 0,
-  {mr_dumb_proxy, m_ignore, m_ignore, m_ignore}
+  {mr_dumb_proxy, m_ignore, m_ignore, m_ignore, m_ignore}
 };
 
 struct Message put_msgtab = {
   "PUT", 0, 0, 0, 0, MFLG_SLOW | MFLG_UNREG, 0,
-  {mr_dumb_proxy, m_ignore, m_ignore, m_ignore}
+  {mr_dumb_proxy, m_ignore, m_ignore, m_ignore, m_ignore}
 };
 
 
@@ -68,17 +68,16 @@ _moddeinit(void)
   mod_del_cmd(&put_msgtab);
 }
 
-const char *_version = "$Revision: 1.15 $";
+const char *_version = "$Revision: 1.16 $";
 #endif
 /*
 ** mr_dumb_proxy
 **      parv[0] = sender prefix
 **      parv[1] = comment
 */
-static void mr_dumb_proxy(struct Client *client_p,
-                  struct Client *source_p,
-                  int parc,
-                  char *parv[])
+static void
+mr_dumb_proxy(struct Client *client_p, struct Client *source_p,
+	      int parc, char *parv[])
 {
   sendto_realops_flags(UMODE_REJ, L_ALL,
                        "HTTP Proxy disconnected: [%s@%s]",

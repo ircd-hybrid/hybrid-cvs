@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_unkline.c,v 1.56 2003/04/10 14:23:52 stu Exp $
+ *  $Id: m_unkline.c,v 1.57 2003/04/18 02:13:43 db Exp $
  */
 
 #include "stdinc.h"
@@ -50,11 +50,11 @@ static void mo_ungline(struct Client*, struct Client*, int, char**);
 
 struct Message msgtabs[] = {
   {"UNKLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
-   {m_unregistered, m_not_oper, m_error, mo_unkline}},
+   {m_unregistered, m_not_oper, m_error, mo_unkline, m_ignore}},
   {"UNDLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
-   {m_unregistered, m_not_oper, m_error, mo_undline}}, 
+   {m_unregistered, m_not_oper, m_error, mo_undline, m_ignore}}, 
   {"UNGLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
-   {m_unregistered, m_not_oper, m_error, mo_ungline}}
+   {m_unregistered, m_not_oper, m_error, mo_ungline, m_ignore}}
 };
 
 #ifndef STATIC_MODULES
@@ -73,7 +73,7 @@ _moddeinit(void)
   mod_del_cmd(&msgtabs[1]);
   mod_del_cmd(&msgtabs[2]);
 }
-const char *_version = "$Revision: 1.56 $";
+const char *_version = "$Revision: 1.57 $";
 #endif
 
 static int flush_write(struct Client *, FBFILE *in, FBFILE *out,
