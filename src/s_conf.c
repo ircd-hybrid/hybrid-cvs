@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.318 2002/08/19 06:42:10 androsyn Exp $
+ *  $Id: s_conf.c,v 7.319 2002/08/20 05:49:54 db Exp $
  */
 
 #include "stdinc.h"
@@ -108,9 +108,9 @@ typedef struct ip_entry
 
 static IP_ENTRY *ip_hash_table[IP_HASH_SIZE];
 
-static int hash_ip(struct irc_inaddr *);
+static int hash_ip(struct irc_inaddr *, int aftype);
 
-static IP_ENTRY *find_or_add_ip(struct irc_inaddr*);
+static IP_ENTRY *find_or_add_ip(struct irc_inaddr*, int aftype);
 
 /* general conf items link list root */
 struct ConfItem* ConfigItemList = NULL;
@@ -607,7 +607,8 @@ static
 int attach_iline(struct Client *client_p, struct ConfItem *aconf)
 {
   IP_ENTRY *ip_found;
-  ip_found = find_or_add_ip(&client_p->localClient->ip);
+  ip_found = find_or_add_ip(&client_p->localClient->ip,
+				client_p->localClient->aftype);
 
   SetIpHash(client_p);
   ip_found->count++;
@@ -686,12 +687,12 @@ clear_ip_hash_table()
  */
 
 static IP_ENTRY *
-find_or_add_ip(struct irc_inaddr *ip_in)
+find_or_add_ip(struct irc_inaddr *ip_in, int aftype)
 {
   int hash_index;
   IP_ENTRY *ptr, *newptr;
 
-  for(ptr = ip_hash_table[hash_index = hash_ip(ip_in)]; ptr;
+  for(ptr = ip_hash_table[hash_index = hash_ip(ip_in,aftype)]; ptr;
       ptr = ptr->next)
   {
    if(!memcmp(&ptr->ip, ip_in, sizeof(struct irc_inaddr)))
@@ -738,10 +739,10 @@ find_or_add_ip(struct irc_inaddr *ip_in)
  */
 
 void 
-remove_one_ip(struct irc_inaddr *ip_in)
+remove_one_ip(struct irc_inaddr *ip_in, int aftype)
 {
   IP_ENTRY *ptr, **lptr;
-  int hash_index = hash_ip(ip_in);
+  int hash_index = hash_ip(ip_in, aftype);
   for (lptr = ip_hash_table+hash_index, ptr = *lptr;
        ptr;
        lptr=&ptr->next, ptr=*lptr)
@@ -776,7 +777,7 @@ remove_one_ip(struct irc_inaddr *ip_in)
 
 #ifndef IPV6
 static int  
-hash_ip(struct irc_inaddr *addr)
+hash_ip(struct irc_inaddr *addr, int aftype /* unused */)
 {
   int hash;
   u_int32_t ip;
@@ -787,12 +788,12 @@ hash_ip(struct irc_inaddr *addr)
 }
 #else /* IPV6 */
 static int
-hash_ip(struct irc_inaddr *addr)
+hash_ip(struct irc_inaddr *addr, int aftype)
 {
   int hash;
   unsigned long *ip = (unsigned long *)&PIN_ADDR(addr);
 
-  if(IN6_IS_ADDR_V4MAPPED(ip))
+  if(aftype == AF_INET)
   {
      hash = ((ip[3] >> 12) + ip[3]) & (IP_HASH_SIZE-1);
      return(hash);
@@ -1623,7 +1624,7 @@ conf_connect_allowed(struct irc_inaddr *addr, int aftype)
   if (aconf != NULL)
     return(BANNED_CLIENT);
 
-  ip_found = find_or_add_ip(addr);
+  ip_found = find_or_add_ip(addr, aftype);
   if ((CurrentTime - ip_found->last_attempt) <
       ConfigFileEntry.throttle_time)
     {

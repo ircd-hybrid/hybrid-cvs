@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.182 2002/07/12 00:51:05 androsyn Exp $
+ *  $Id: s_conf.h,v 7.183 2002/08/20 05:49:52 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -324,7 +324,7 @@ extern void clear_ip_hash_table(void);
 extern void iphash_stats(struct Client *,struct Client *,int,char **,FBFILE*);
 extern void count_ip_hash(int *, u_long *);
 
-void remove_one_ip(struct irc_inaddr *ip);
+void remove_one_ip(struct irc_inaddr *ip, int aftype);
 
 extern struct ConfItem* make_conf(void);
 extern void             free_conf(struct ConfItem*);
