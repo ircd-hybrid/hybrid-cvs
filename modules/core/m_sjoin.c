@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.28 2000/12/13 07:57:43 db Exp $
+ *   $Id: m_sjoin.c,v 1.29 2000/12/15 08:04:10 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -39,6 +39,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+
 
 struct Message sjoin_msgtab = {
   MSG_SJOIN, 0, 0, MFLG_SLOW, 0,
@@ -109,6 +110,18 @@ int     ms_sjoin(struct Client *cptr,
   char    *p;
   int hide_or_not;
   dlink_node *m;
+
+  if(HasSentEob(cptr))
+    {
+      sendto_realops_flags(FLAGS_ALL,
+			   "*** HACK %s doing SJOIN after EOB!",
+			   cptr->name);
+
+      sendto_serv_butone(NULL, ":%s WALLOPS :%s",
+			 me.name, "*** HACK %s doing SJOIN after EOB!",
+			 cptr->name);
+
+    }
 
   if(GlobalSetOptions.hide_chanops)
     hide_or_not = ONLY_CHANOPS;
@@ -750,12 +763,3 @@ void remove_a_mode( int hide_or_not,
 
     }
 }
-
-
-
-
-
-
-
-
-

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.69 2000/12/14 17:04:40 db Exp $
+ *   $Id: s_serv.c,v 7.70 2000/12/15 08:04:11 db Exp $
  */
 #include "tools.h"
 #include "s_serv.h"
@@ -553,19 +553,31 @@ const char* show_capabilities(struct Client* acptr)
 {
   static char        msgbuf[BUFSIZE];
   struct Capability* cap;
+  char *t;
+  int  tl;
 
-  strcpy(msgbuf,"TS ");
+  t = msgbuf;
+  tl = ircsprintf(msgbuf,"TS ");
+  t += tl;
+
   if (!acptr->localClient->caps)        /* short circuit if no caps */
-    return msgbuf;
+    {
+      msgbuf[2] = '\0';
+      return msgbuf;
+    }
 
   for (cap = captab; cap->cap; ++cap)
     {
       if(cap->cap & acptr->localClient->caps)
         {
-          strcat(msgbuf, cap->name);
-          strcat(msgbuf, " ");
+          tl = ircsprintf(t, "%s ", cap->name);
+	  t += tl;
         }
     }
+
+  t--;
+  *t = '\0';
+
   return msgbuf;
 }
 
