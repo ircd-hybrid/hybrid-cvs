@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_join.c,v 1.18 2003/11/04 22:30:01 bill Exp $
+ *  $Id: m_join.c,v 1.19 2004/01/26 01:57:43 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -66,6 +66,7 @@ static void remove_a_mode(struct Channel *, struct Client *, int, char);
 
 static char modebuf[MODEBUFLEN];
 static char parabuf[MODEBUFLEN];
+static char sendbuf[MODEBUFLEN];
 static char *mbuf;
 
 struct Message join_msgtab = {
@@ -87,7 +88,7 @@ _moddeinit(void)
   mod_del_cmd(&join_msgtab);
 }
 
-const char *_version = "$Revision: 1.18 $";
+const char *_version = "$Revision: 1.19 $";
 #endif
 
 /* m_join()
@@ -609,22 +610,22 @@ static const struct mode_letter
   unsigned char letter;
 } flags[] = {
   { MODE_NOPRIVMSGS, 'n' },
-  { MODE_TOPICLIMIT, 't' },  
+  { MODE_TOPICLIMIT, 't' },
   { MODE_SECRET,     's' },
   { MODE_MODERATED,  'm' },
   { MODE_INVITEONLY, 'i' },
   { MODE_PRIVATE,    'p' },
   { 0, '\0' }
-}; 
-  
+};
+
 static void
 set_final_mode(struct Mode *mode, struct Mode *oldmode)
-{  
+{
   char *pbuf = parabuf;
   int what   = 0;
   int len;
   int i;
-    
+
   for (i = 0; flags[i].letter; i++)
   {
     if ((flags[i].mode & mode->mode) &&
@@ -731,11 +732,14 @@ void remove_a_mode(struct Channel *chptr, struct Client *source_p,
   char lmodebuf[MODEBUFLEN];
   char *lpara[4];
   int count = 0;
+  int lcount;
 
   mbuf = lmodebuf;
   *mbuf++ = '-';
 
-  lpara[0] = lpara[1] = lpara[2] = lpara[3] = "";
+  for(lcount = 0; lcount < MAXMODEPARAMS; lcount++)
+    lpara[lcount] = "";
+  sendbuf[0] = '\0';
 
   DLINK_FOREACH(ptr, chptr->members.head)
   {
@@ -750,32 +754,48 @@ void remove_a_mode(struct Channel *chptr, struct Client *source_p,
 
     *mbuf++ = flag;
 
-    if (count >= 4)
+    if (count >= MAXMODEPARAMS)
     {
+      for(lcount = 0; lcount < MAXMODEPARAMS; lcount++)
+      {
+        if (*lpara[lcount] == '\0')
+          break;
+
+        strlcat(sendbuf, " ", sizeof(sendbuf));
+        strlcat(sendbuf, lpara[lcount], sizeof(sendbuf));
+        lpara[lcount] = "";
+      }
+
       *mbuf = '\0';
       sendto_channel_local(ALL_MEMBERS, chptr,
-                           ":%s MODE %s %s %s %s %s %s",
+                           ":%s MODE %s %s%s",
                            (IsHidden(source_p) ||
                            ConfigServerHide.hide_servers) ?
                            me.name : source_p->name,
-                           chptr->chname, lmodebuf,
-                           lpara[0], lpara[1], lpara[2], lpara[3]);
-
+                           chptr->chname, lmodebuf, sendbuf);
       mbuf = lmodebuf;
       *mbuf++ = '-';
       count = 0;
-      lpara[0] = lpara[1] = lpara[2] = lpara[3] = "";
+      sendbuf[0] = '\0';
     }
   }
 
   if (count != 0)
   {
     *mbuf = '\0';
+    for(lcount = 0; lcount < MAXMODEPARAMS; lcount++)
+    {
+      if (*lpara[lcount] == '\0')
+        break;
+
+      strlcat(sendbuf, " ", sizeof(sendbuf));
+      strlcat(sendbuf, lpara[lcount], sizeof(sendbuf));
+    }
     sendto_channel_local(ALL_MEMBERS, chptr,
-                         ":%s MODE %s %s %s %s %s %s",
+                         ":%s MODE %s %s%s",
                          (IsHidden(source_p) || ConfigServerHide.hide_servers) ?
                          me.name : source_p->name,
-                         chptr->chname, lmodebuf,
-                         lpara[0], lpara[1], lpara[2], lpara[3]);
+                         chptr->chname, lmodebuf, sendbuf);
   }
 }
+
