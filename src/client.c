@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.67 2000/12/11 23:20:26 db Exp $
+ *  $Id: client.c,v 7.68 2000/12/11 23:47:50 db Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -1116,7 +1116,6 @@ static void exit_one_client(struct Client *cptr, struct
   struct Client* acptr;
   dlink_node *lp;
   dlink_node *next_lp;
-  dlink_node *m;
 
   if (IsServer(sptr))
     {
@@ -1310,7 +1309,6 @@ static void remove_dependents(struct Client* cptr,
                                const char* comment1)
 {
   struct Client *to;
-  int i;
   struct ConfItem *aconf;
   static char myname[HOSTLEN+1];
   dlink_node *ptr;

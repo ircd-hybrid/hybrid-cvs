@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_stats.c,v 7.7 2000/12/11 22:07:34 db Exp $
+ *  $Id: s_stats.c,v 7.8 2000/12/11 23:47:50 db Exp $
  */
 #include "s_stats.h"
 #include "client.h"
@@ -47,7 +47,6 @@ void init_stats()
 void tstats(struct Client *cptr, const char *name)
 {
   struct Client*           acptr;
-  int                      i;
   struct ServerStatistics* sp;
   struct ServerStatistics  tmp;
   dlink_node *ptr;
