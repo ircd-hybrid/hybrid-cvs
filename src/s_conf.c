@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.168 2001/01/31 20:15:16 davidt Exp $
+ *  $Id: s_conf.c,v 7.169 2001/02/01 21:49:49 jdc Exp $
  */
 
 #include <sys/types.h>
@@ -781,7 +781,7 @@ static int hash_ip(struct irc_inaddr *addr)
   return(hash);
 #else
   unsigned int hash = 0;
-  char *ip = &PIN_ADDR(addr);
+  char *ip = (char *) &PIN_ADDR(addr);
 
   while (*ip)
     { 
