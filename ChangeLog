@@ -1,3 +1,15 @@
+leeh        2002/05/12 12:43:52 EDT	(20020512_3)
+
+  Modified files:
+    src                  channel.c 
+  Log:
+  - better channel_member_names for #undef ANONOPS
+  
+  Revision  Changes    Path
+  7.311     +81 -0     ircd-hybrid-7/src/channel.c
+
+
+
 leeh        2002/05/12 10:50:53 EDT	(20020512_2)
 
   Modified files:
@@ -26277,4 +26289,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3643 2002/05/12 14:50:59 leeh Exp $
+$Id: ChangeLog,v 7.3644 2002/05/12 16:43:59 leeh Exp $
