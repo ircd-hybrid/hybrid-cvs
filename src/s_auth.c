@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.c,v 7.63 2001/03/28 05:50:15 db Exp $
+ *   $Id: s_auth.c,v 7.64 2001/03/28 13:15:17 androsyn Exp $
  *
  * Changes:
  *   July 6, 1999 - Rewrote most of the code here. When a client connects
@@ -426,6 +426,7 @@ void start_auth(struct Client* client)
 
   client->localClient->dns_query = MyMalloc(sizeof(struct DNSQuery));
   client->localClient->dns_query->ptr = auth;
+  client->localClient->dns_query->callback = auth_dns_callback;
   /* No DNS cache now, remember? -- adrian */
   adns_getaddr(&client->localClient->ip, client->localClient->aftype, client->localClient->dns_query);
   SetDNSPending(auth);
