@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.c,v 7.25 2000/11/30 16:01:53 db Exp $
+ *   $Id: s_auth.c,v 7.26 2000/11/30 16:27:35 adrian Exp $
  *
  * Changes:
  *   July 6, 1999 - Rewrote most of the code here. When a client connects
@@ -37,6 +37,7 @@
 #include "ircd.h"
 #include "ircdauth.h"
 #include "numeric.h"
+#include "packet.h"
 #include "res.h"
 #include "s_bsd.h"
 #include "s_log.h"

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.46 2000/11/30 16:01:55 db Exp $
+ *   $Id: s_serv.c,v 7.47 2000/11/30 16:27:36 adrian Exp $
  */
 #include "s_serv.h"
 #include "channel.h"
@@ -34,6 +34,7 @@
 #include "ircd.h"
 #include "list.h"
 #include "numeric.h"
+#include "packet.h"
 #include "res.h"
 #include "s_bsd.h"
 #include "s_conf.h"

@@ -19,7 +19,7 @@
  *
  * "packet.h". - Headers file.
  *
- * $Id: packet.h,v 7.4 2000/11/26 19:34:29 adrian Exp $
+ * $Id: packet.h,v 7.5 2000/11/30 16:27:30 adrian Exp $
  *
  */
 #ifndef INCLUDED_packet_h
@@ -32,6 +32,8 @@
 struct Client;
 
 extern int client_dopacket(struct Client* client, char* buf, size_t len);
+extern PF  read_packet;
+extern int parse_client_queued(struct Client *);
 
 #endif /* INCLUDED_packet_h */
 
