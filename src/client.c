@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.168 2001/05/14 07:31:33 a1kmm Exp $
+ *  $Id: client.c,v 7.169 2001/05/22 19:11:48 davidt Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -113,6 +113,7 @@ struct Client* make_client(struct Client* from)
       localClient = (struct LocalUser *)MyMalloc(sizeof(struct LocalUser));
       client_p->localClient = localClient;
 
+      client_p->localClient->ctrlfd = -1;                                                        
       /* as good a place as any... */
       m = make_dlink_node();
       dlinkAdd(client_p, m, &unknown_list);
@@ -1003,6 +1004,9 @@ static void exit_one_client(struct Client *client_p, struct
       ** The bulk of this is done in remove_dependents now, all
       ** we have left to do is send the SQUIT upstream.  -orabidoo
       */
+      if (source_p->localClient && (source_p->localClient->ctrlfd > -1))
+        fd_close(source_p->localClient->ctrlfd);
+
       target_p = source_p->from;
       if (target_p && IsServer(target_p) && target_p != client_p && !IsMe(target_p) &&
           (source_p->flags & FLAGS_KILLED) == 0)

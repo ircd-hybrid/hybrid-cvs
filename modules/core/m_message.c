@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.66 2001/05/02 07:17:03 a1kmm Exp $
+ *   $Id: m_message.c,v 1.67 2001/05/22 19:11:43 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -106,7 +106,7 @@ struct Message privmsg_msgtab = {
 };
 
 struct Message notice_msgtab = {
-  "NOTICE", 0, 1, 0, MFLG_SLOW | MFLG_UNREG, 0L,
+  "NOTICE", 0, 1, 0, MFLG_SLOW, 0L,
   {m_unregistered, m_notice, m_notice, m_notice}
 };
 
@@ -126,7 +126,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-char *_version = "20001122";
+char *_version = "20010519";
 #endif
 /* 
  * free_target_table -

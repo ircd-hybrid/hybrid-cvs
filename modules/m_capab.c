@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_capab.c,v 1.17 2001/04/04 15:22:22 androsyn Exp $
+ *   $Id: m_capab.c,v 1.18 2001/05/22 19:11:42 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -65,6 +65,11 @@ static void mr_capab(struct Client *client_p, struct Client *source_p,
   struct Capability *cap;
   char* p;
   char* s;
+#ifdef HAVE_LIBCRYPTO
+  struct EncCapability *ecap;
+  char* enc_s;
+  char* enc_p;
+#endif
 
   /* ummm, this shouldn't happen. Could argue this should be logged etc. */
   if (client_p->localClient == NULL)
@@ -80,14 +85,37 @@ static void mr_capab(struct Client *client_p, struct Client *source_p,
 
   for (s = strtoken(&p, parv[1], " "); s; s = strtoken(&p, NULL, " "))
     {
-      for (cap = captab; cap->name; cap++)
+#ifdef HAVE_LIBCRYPTO
+      if (0 == strncmp(s, "ENC:", 4))
+      {
+        s += 4; /* skip ENC: */
+        SetCapable(client_p, CAP_ENC);
+        /* parse list of ciphers */
+        for (enc_s = strtoken(&enc_p, s, ","); enc_s;
+             enc_s = strtoken(&enc_p, NULL, ","))
         {
-          if (0 == strcmp(cap->name, s))
+          /* parse 'ENC:C1,C2,C3,C4' */
+          for (ecap = enccaptab; ecap->name; ecap++)
+          {
+            if ((0 == strcmp(ecap->name, enc_s)) &&
+                (ecap->cap & CAP_ENC_MASK))
             {
-              client_p->localClient->caps |= cap->cap;
+              client_p->localClient->enc_caps |= ecap->cap;
               break;
             }
-         }
+          }
+        }
+      }
+      else /* normal capab */
+#endif
+        for (cap = captab; cap->name; cap++)
+        {
+          if (0 == strcmp(cap->name, s))
+          {
+            client_p->localClient->caps |= cap->cap;
+            break;
+          }
+        }
     }
 }
 

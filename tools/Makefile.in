@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 7.16 2001/01/08 21:26:20 wcampbel Exp $
+# $Id: Makefile.in,v 7.17 2001/05/22 19:11:56 davidt Exp $
 
 CC		= @CC@
 INSTALL		= @INSTALL@
@@ -14,13 +14,12 @@ MKDEP		= ${CC} -MM
 MV		= @MV@
 RM		= @RM@
 
-IRCDLIBS	= @LIBS@ @SSL_LIBS@
+IRCDLIBS	= @LIBS@
 INCLUDES	= -I../include
-CPPFLAGS	= ${INCLUDES} @SSL_DEFINE@ @CPPFLAGS@
+CPPFLAGS	= ${INCLUDES} @CPPFLAGS@
 
 prefix		= @prefix@
 exec_prefix	= @exec_prefix@
-exec_suffix	= @exec_suffix@
 bindir		= @bindir@
 libexecdir	= @libexecdir@
 sysconfdir	= @sysconfdir@

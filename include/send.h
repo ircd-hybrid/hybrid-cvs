@@ -2,7 +2,7 @@
  * send.h
  * Copyright (C) 1999 Patrick Alken
  *
- * $Id: send.h,v 7.43 2001/03/22 05:51:49 ejb Exp $
+ * $Id: send.h,v 7.44 2001/05/22 19:11:39 davidt Exp $
  */
 
 #ifndef INCLUDED_send_h
@@ -24,7 +24,8 @@ unsigned long current_serial;
 /* send.c prototypes */
 
 extern void send_queued_write(int fd, void *data);
-
+extern void send_queued_slink_write(int fd, void *data);
+  
 #ifndef __GNUC__
 extern  void sendto_all_local_opers(struct Client *, char *message_type,
 				    const char *pattern,...);

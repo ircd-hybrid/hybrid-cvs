@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.h,v 7.29 2001/03/19 09:59:55 toot Exp $
+ * $Id: m_info.h,v 7.30 2001/05/22 19:11:37 davidt Exp $
  */
 #ifndef INCLUDED_m_info_h
 #define INCLUDED_m_info_h
@@ -140,11 +140,11 @@ Info MyInformation[] = {
 
   { "OPER_SPAM_COUNTDOWN", "", OPER_SPAM_COUNTDOWN, "Anti SpamBot Parameter" },
 
-#ifdef OPENSSL
-  { "OPENSSL", "ON", 0, "Enable OpenSSL CHALLENGE Support" },
+#ifdef HAVE_LIBCRYPTO
+  { "HAVE_LIBCRYPTO", "ON", 0, "Enable OpenSSL CHALLENGE Support" },
 #else
-  { "OPENSSL", "OFF", 0, "Enable OpenSSL CHALLENGE Support" },
-#endif /* OPENSSL */
+  { "HAVE_LIBCRYPTO", "OFF", 0, "Enable OpenSSL CHALLENGE Support" },
+#endif /* HAVE_LIBCRYPTO */
 
 #ifdef PPATH
   { "PPATH", PPATH, 0, "Path to Pid File" },

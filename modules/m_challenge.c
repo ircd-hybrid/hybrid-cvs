@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_challenge.c,v 1.21 2001/04/13 22:39:45 davidt Exp $
+ *   $Id: m_challenge.c,v 1.22 2001/05/22 19:11:42 davidt Exp $
  */
 #include <stdlib.h>
 #include <string.h>
@@ -39,7 +39,7 @@
 
 int oper_up( struct Client *source_p, struct ConfItem *aconf );
 
-#ifndef OPENSSL
+#ifndef HAVE_LIBCRYPTO
 /* Maybe this should be an error or something?-davidt */
 #ifndef STATIC_MODULES
 void
@@ -158,4 +158,4 @@ static void m_challenge( struct Client *client_p, struct Client *source_p,
   return;
 }
 
-#endif /* OPENSSL */
+#endif /* HAVE_LIBCRYPTO */

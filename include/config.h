@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.107 2001/05/05 13:37:32 fl_ Exp $
+ * $Id: config.h,v 7.108 2001/05/22 19:11:37 davidt Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -97,6 +97,8 @@
 #define MODPATH IRCD_PREFIX "/modules/autoload/"
 #define MSGPATH IRCD_PREFIX "/messages/"
 #define SPATH   IRCD_PREFIX "/bin/ircd"
+#define SLPATH  IRCD_PREFIX "/bin/servlink" /* see servlink_path=""; in
+                                               config */
 /* i really don't like the below, but I'll figure the rest out! -- adrian */
 #define ETCPATH	IRCD_PREFIX "/etc"
 #define LOGPATH IRCD_PREFIX "/logs"
@@ -110,7 +112,7 @@
 #define PPATH   ETCPATH "/ircd.pid"
 #define HPATH   ETCPATH "/opers.txt"
 #define OPATH   ETCPATH "/opers.motd"
-#define LIPATH   ETCPATH "/links.txt"
+#define LIPATH  ETCPATH "/links.txt"
 
 /* TS_MAX_DELTA_DEFAULT and TS_WARN_DELTA_DEFAULT -
  * allowed delta for TS when another server connects.

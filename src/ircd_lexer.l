@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.94 2001/05/07 15:50:32 toot Exp $
+ * $Id: ircd_lexer.l,v 1.95 2001/05/22 19:11:49 davidt Exp $
  */
 
 %option case-insensitive
@@ -107,9 +107,11 @@ aftype		{ return AFTYPE; }
 auth		{ return AUTH; }
 autoconn	{ return AUTOCONN; }
 caller_id_wait	{ return CALLER_ID_WAIT; }
+cipher_preference { return CIPHER_PREFERENCE; }
 class		{ return CLASS; }
 client_exit     { return CLIENT_EXIT; }
 compressed	{ return COMPRESSED; }
+compression_level { return COMPRESSION_LEVEL; }
 connect		{ return CONNECT; }
 connectfreq     { return CONNECTFREQ; }
 default_floodcount  { return DEFAULT_FLOODCOUNT; }
@@ -195,6 +197,7 @@ rsa_private_key { return RSA_PRIVATE_KEY; }
 send_password	{ return SEND_PASSWORD; }
 sendq		{ return SENDQ; }
 serverinfo	{ return SERVERINFO; }
+servlink_path   { return SERVLINK_PATH; }
 silent          { return SILENT; }
 shared          { return SHARED; }
 short_motd      { return SHORT_MOTD; }

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.c,v 7.59 2001/04/04 16:17:44 androsyn Exp $
+ * $Id: modules.c,v 7.60 2001/05/22 19:11:52 davidt Exp $
  */
 #include "config.h"
 
@@ -555,7 +555,7 @@ load_all_modules(int check)
 	mod_add_cmd(&away_msgtab);
 	mod_add_cmd(&capab_msgtab);
 	mod_add_cmd(&cburst_msgtab);
-#ifdef OPENSSL
+#ifdef HAVE_LIBCRYPTO
 	mod_add_cmd(&challenge_msgtab);
 #endif
 	mod_add_cmd(&cjoin_msgtab);

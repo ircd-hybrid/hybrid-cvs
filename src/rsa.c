@@ -19,7 +19,7 @@
  *
  *
  *
- * $Id: rsa.c,v 7.9 2001/04/13 22:39:52 davidt Exp $
+ * $Id: rsa.c,v 7.10 2001/05/22 19:11:52 davidt Exp $
  */
 
 #include <assert.h>
@@ -27,7 +27,7 @@
 #include "memory.h"
 #include "rsa.h"
 #include "client.h" /* CIPHERKEYLEN .. eww */
-#ifdef OPENSSL
+#ifdef HAVE_LIBCRYPTO
 
 #include <openssl/rand.h>
 #include <openssl/rsa.h>
@@ -213,4 +213,4 @@ fail:
   return -1;
 }
 
-#endif /* OPENSSL */
+#endif /* HAVE_LIBCRYPTO */
