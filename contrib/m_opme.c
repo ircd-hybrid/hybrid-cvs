@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_opme.c,v 1.3 2001/01/06 15:42:06 fl_ Exp $
+ *   $Id: m_opme.c,v 1.4 2001/01/07 00:09:06 fl_ Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -43,6 +43,7 @@
 
 int mo_opme(struct Client *cptr, struct Client *sptr,
 		 int parc, char *parv[]);
+int chan_is_opless(struct Channel *chptr);
 
 struct Message opme_msgtab = {
   "OPME", 0, 2, 0, MFLG_SLOW, 0,
