@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.488 2004/02/01 05:25:46 metalrock Exp $
+ *  $Id: s_conf.c,v 7.489 2004/02/01 05:34:45 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -76,7 +76,7 @@ dlink_list temporary_dlines = { NULL, NULL, 0 };
 extern int lineno;
 extern char linebuf[];
 extern char conffilebuf[IRCD_BUFSIZE];
-int yyparse();
+extern int yyparse(); /* defined in y.tab.c */
 unsigned int scount = 0; /* used by yyparse(), etc */
 int ypass  = 1; /* used by yyparse()      */
 
