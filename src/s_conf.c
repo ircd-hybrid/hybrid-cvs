@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.487 2004/01/26 03:35:20 metalrock Exp $
+ *  $Id: s_conf.c,v 7.488 2004/02/01 05:25:46 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -73,11 +73,11 @@ dlink_list gdeny_items	 = { NULL, NULL, 0 };
 dlink_list temporary_klines = { NULL, NULL, 0 };
 dlink_list temporary_dlines = { NULL, NULL, 0 };
 
-extern int yyparse(); /* defined in y.tab.c */
 extern int lineno;
 extern char linebuf[];
 extern char conffilebuf[IRCD_BUFSIZE];
-int scount = 0; /* used by yyparse(), etc */
+int yyparse();
+unsigned int scount = 0; /* used by yyparse(), etc */
 int ypass  = 1; /* used by yyparse()      */
 
 /* internally defined functions */

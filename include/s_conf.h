@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.272 2004/01/31 04:57:17 metalrock Exp $
+ *  $Id: s_conf.h,v 7.273 2004/02/01 05:25:44 metalrock Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -394,7 +394,7 @@ struct logging_entry
 };
 
 
-extern int scount;
+extern unsigned int scount;
 extern int ypass;
 extern int specific_ipv4_vhost; /* used in s_bsd.c */
 extern int specific_ipv6_vhost;
