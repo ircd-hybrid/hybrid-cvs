@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.297 2003/04/09 11:19:37 stu Exp $
+ *  $Id: s_serv.c,v 7.298 2003/04/12 07:00:06 michael Exp $
  */
 
 #include "stdinc.h"
@@ -394,7 +394,6 @@ write_links_file(void* notused)
   fbclose(file);
 }
 
-  
 /*
  * hunt_server - Do the basic thing in delivering the message (command)
  *      across the relays to the specific server (server) for
@@ -416,7 +415,7 @@ write_links_file(void* notused)
  */
 int
 hunt_server(struct Client *client_p, struct Client *source_p, char *command,
-	    int server, int parc, char *parv[])
+            int server, int parc, char *parv[])
 {
   struct Client *target_p = NULL;
   dlink_node *ptr;
@@ -467,7 +466,7 @@ hunt_server(struct Client *client_p, struct Client *source_p, char *command,
 
 	    if (match(parv[server], ((struct Client *)(ptr->data))->name))
             {
-              target_p = (struct Client *)ptr->data;
+              target_p = ptr->data;
 	      break;
             }
           }

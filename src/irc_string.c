@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: irc_string.c,v 7.57 2003/04/09 11:19:37 stu Exp $
+ *  $Id: irc_string.c,v 7.58 2003/04/12 07:00:06 michael Exp $
  */
 
 #include "stdinc.h"
@@ -65,7 +65,6 @@ const char* myctime(time_t value)
     *p = '\0';
   return buf;
 }
-
 
 /*
  * clean_string - clean up a string possibly containing garbage
@@ -218,7 +217,6 @@ static const char *IpQuadTab[] =
  *      argv 11/90).
  *  inet_ntoa --  its broken on some Ultrix/Dynix too. -avalon
  */
-
 const char* inetntoa(const char* in)
 {
   static char buf[16];
@@ -245,7 +243,6 @@ const char* inetntoa(const char* in)
   return buf;
 }
 
-
 /*
  * Copyright (c) 1996-1999 by Internet Software Consortium.
  *
@@ -270,8 +267,10 @@ const char* inetntoa(const char* in)
  * sizeof(int) < 4.  sizeof(int) > 4 is fine; all the world's not a VAX.
  */
 
-static const char *inet_ntop4 (const u_char *src, char *dst, unsigned int size);
-static const char *inet_ntop6 (const u_char *src, char *dst, unsigned int size);
+static const char *inet_ntop4(const unsigned char *src, char *dst, unsigned int size);
+#ifdef IPV6
+static const char *inet_ntop6(const unsigned char *src, char *dst, unsigned int size);
+#endif
 
 /* const char *
  * inet_ntop4(src, dst, size)
@@ -287,9 +286,10 @@ static const char *inet_ntop6 (const u_char *src, char *dst, unsigned int size);
 static const char *
 inet_ntop4(const unsigned char *src, char *dst, unsigned int size)
 {
-	if(size < 16)
-		return NULL;
-	return strcpy(dst, inetntoa((const char *)src));
+  if (size < 16)
+    return(NULL);
+
+  return(strcpy(dst, inetntoa((const char *)src)));
 }
 
 /* const char *
@@ -298,6 +298,7 @@ inet_ntop4(const unsigned char *src, char *dst, unsigned int size)
  * author:
  *	Paul Vixie, 1996.
  */
+#ifdef IPV6
 static const char *
 inet_ntop6(const unsigned char *src, char *dst, unsigned int size)
 {
@@ -384,6 +385,7 @@ inet_ntop6(const unsigned char *src, char *dst, unsigned int size)
 	}
 	return strcpy(dst, tmp);
 }
+#endif
 
 /* char *
  * inetntop(af, src, dst, size)
@@ -395,22 +397,21 @@ inet_ntop6(const unsigned char *src, char *dst, unsigned int size)
  */
 const char *inetntop(int af, const void *src, char *dst, unsigned int size)
 {
-	switch (af) {
-	case AF_INET:
-		return (inet_ntop4(src, dst, size));
+  switch (af) {
+    case AF_INET:
+      return(inet_ntop4(src, dst, size));
 #ifdef IPV6
-	case AF_INET6:
-		if(IN6_IS_ADDR_V4MAPPED((const struct in6_addr *)src) ||
-			IN6_IS_ADDR_V4COMPAT((const struct in6_addr *)src))
-			return(inet_ntop4((unsigned char *)&((struct in6_addr *)src)->s6_addr[12], dst, size));
-		else 
-			return (inet_ntop6(src, dst, size));
+    case AF_INET6:
+      if (IN6_IS_ADDR_V4MAPPED((const struct in6_addr *)src) ||
+          IN6_IS_ADDR_V4COMPAT((const struct in6_addr *)src))
+        return(inet_ntop4((unsigned char *)&((struct in6_addr *)src)->s6_addr[12], dst, size));
+      else 
+        return(inet_ntop6(src, dst, size));
 #endif
-
-	default:
-		return (NULL);
-	}
-	/* NOTREACHED */
+    default:
+      return(NULL);
+  }
+  /* NOTREACHED */
 }
 
 /*
@@ -489,7 +490,7 @@ inet_pton4(const char *src, u_char *dst)
  * author:
  *	Paul Vixie, 1996.
  */
-
+#ifdef IPV6
 static int
 inet_pton6(const char *src, u_char *dst)
 {
@@ -577,28 +578,30 @@ inet_pton6(const char *src, u_char *dst)
 	memcpy(dst, tmp, IN6ADDRSZ);
 	return (1);
 }
+#endif
+
 int
 inetpton(int af, const char *src, void *dst)
 {
-	switch (af) {
-	case AF_INET:
-		return (inet_pton4(src, dst));
+  switch (af) {
+    case AF_INET:
+      return(inet_pton4(src, dst));
 #ifdef IPV6
-	case AF_INET6:
-		/* Somebody might have passed as an IPv4 address this is sick but it works */
-		if(inet_pton4(src, dst))
-		{
-			char tmp[HOSTIPLEN];
-			ircsprintf(tmp, "::ffff:%s", src);
-			return (inet_pton6(tmp, dst));
-		}
-		else
-			return (inet_pton6(src, dst));
+    case AF_INET6:
+      /* Somebody might have passed as an IPv4 address this is sick but it works */
+      if (inet_pton4(src, dst))
+      {
+        char tmp[HOSTIPLEN];
+        ircsprintf(tmp, "::ffff:%s", src);
+        return(inet_pton6(tmp, dst));
+      }
+      else
+        return(inet_pton6(src, dst));
 #endif
-	default:
-		return (-1);
-	}
-	/* NOTREACHED */
+    default:
+      return(-1);
+  }
+  /* NOTREACHED */
 }
 
 /*

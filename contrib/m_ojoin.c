@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_ojoin.c,v 1.12 2003/04/03 23:48:56 michael Exp $
+ *   $Id: m_ojoin.c,v 1.13 2003/04/12 06:59:58 michael Exp $
  */
 
 #include "stdinc.h"
@@ -58,7 +58,7 @@ _moddeinit(void)
   mod_del_cmd(&ojoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.12 $";
+const char *_version = "$Revision: 1.13 $";
 
 /*
 ** mo_ojoin
@@ -85,21 +85,22 @@ static void mo_ojoin(struct Client *client_p, struct Client *source_p,
   /* XXX - we might not have CBURSTed this channel if we are a lazylink
    * yet. */
   if (*parv[1] == '@' || *parv[1] == '%' || *parv[1] == '+')
-    {
-      parv[1]++;
-      move_me = 1;
-    }
+  {
+    parv[1]++;
+    move_me = 1;
+  }
 
   chptr= hash_find_channel(parv[1]);
   root_chptr = chptr;
 
 #ifdef VCHANS
   if (chptr && parc > 2 && parv[2][0] == '!')
-    {
-      chptr = find_vchan(chptr, parv[2]);
-      if (root_chptr != chptr)
-        on_vchan++;
-    }
+  {
+    chptr = find_vchan(chptr, parv[2]);
+
+    if (root_chptr != chptr)
+      on_vchan++;
+  }
 #endif
 
   if (chptr == NULL)
@@ -109,12 +110,12 @@ static void mo_ojoin(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if(IsMember(source_p, chptr))
-    {
-      sendto_one(source_p, ":%s NOTICE %s :Please part %s before using OJOIN",
-                 me.name, source_p->name, parv[1]);
-      return;
-    }
+  if (IsMember(source_p, chptr))
+  {
+    sendto_one(source_p, ":%s NOTICE %s :Please part %s before using OJOIN",
+               me.name, source_p->name, parv[1]);
+    return;
+  }
 
   if (move_me == 1)
     parv[1]--;
@@ -124,7 +125,7 @@ static void mo_ojoin(struct Client *client_p, struct Client *source_p,
        add_user_to_channel(chptr, source_p, CHFL_CHANOP);
        if (chptr->chname[0] != '&')
          sendto_server(client_p, source_p, chptr, NOCAPS, NOCAPS, LL_ICLIENT, 
-                 ":%s SJOIN %lu %s + :@%s", me.name, chptr->channelts,
+                 ":%s SJOIN %lu %s + :@%s", me.name, (unsigned long)chptr->channelts,
                  chptr->chname, source_p->name);
        sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s JOIN %s",
                        source_p->name,
@@ -141,7 +142,7 @@ static void mo_ojoin(struct Client *client_p, struct Client *source_p,
        add_user_to_channel(chptr, source_p, CHFL_HALFOP);
        if (chptr->chname[0] != '&')
          sendto_server(client_p, source_p, chptr, NOCAPS, NOCAPS, LL_ICLIENT, 
-                 ":%s SJOIN %lu %s + :%%%s", me.name, chptr->channelts,
+                 ":%s SJOIN %lu %s + :%%%s", me.name, (unsigned long)chptr->channelts,
                  chptr->chname, source_p->name);
        sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s JOIN %s",
                        source_p->name,
@@ -157,7 +158,7 @@ static void mo_ojoin(struct Client *client_p, struct Client *source_p,
        add_user_to_channel(chptr, source_p, CHFL_VOICE);
        if (chptr->chname[0] != '&')
          sendto_server(client_p, source_p, chptr, NOCAPS, NOCAPS, LL_ICLIENT, 
-                 ":%s SJOIN %lu %s + :+%s", me.name, chptr->channelts,
+                 ":%s SJOIN %lu %s + :+%s", me.name, (unsigned long)chptr->channelts,
                  chptr->chname, source_p->name);
        sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s JOIN %s",
                        source_p->name,
@@ -173,13 +174,11 @@ static void mo_ojoin(struct Client *client_p, struct Client *source_p,
        if (chptr->chname[0] != '&')
          sendto_server(client_p, source_p, chptr, NOCAPS, NOCAPS, LL_ICLIENT, 
                        ":%s SJOIN %lu %s + :%s",
-                       me.name, chptr->channelts,
+                       me.name, (unsigned long)chptr->channelts,
 		       chptr->chname, source_p->name);
        sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s JOIN %s",
-                       source_p->name,
-                       source_p->username,
-                       source_p->host,
-                       root_chptr->chname);
+                       source_p->name, source_p->username,
+                       source_p->host, root_chptr->chname);
     }
 
   /* send the topic... */

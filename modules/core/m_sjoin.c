@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.143 2003/03/01 01:15:41 db Exp $
+ *  $Id: m_sjoin.c,v 1.144 2003/04/12 07:00:04 michael Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.143 $";
+const char *_version = "$Revision: 1.144 $";
 #endif
 /*
  * ms_sjoin
@@ -271,8 +271,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
     {
       sendto_realops_flags(UMODE_DEBUG, L_ALL,
 			"*** Bogus TS %lu on %s ignored from %s",
-			(unsigned long) newts,
-			chptr->chname,
+			(unsigned long)newts, chptr->chname,
 			client_p->name);
 
       newts = (oldts==0) ? oldts : 800000000;
@@ -283,10 +282,10 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   {
     sendto_channel_local(ALL_MEMBERS, chptr,
  		":%s NOTICE %s :*** Notice -- TS for %s changed from %lu to 0",
-		me.name, chptr->chname, chptr->chname, oldts);
+		me.name, chptr->chname, chptr->chname, (unsigned long)oldts);
     sendto_realops_flags(UMODE_ALL, L_ALL,
 		         "Server %s changing TS on %s from %lu to 0",
-			 source_p->name, chptr->chname, oldts);
+			 source_p->name, chptr->chname, (unsigned long)oldts);
   }
 #endif
 
@@ -361,7 +360,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
       remove_our_modes(hide_or_not, chptr, top_chptr, source_p);
       sendto_channel_local(ALL_MEMBERS, chptr,
 	    ":%s NOTICE %s :*** Notice -- TS for %s changed from %lu to %lu",
-	    me.name, chptr->chname, chptr->chname, oldts, newts);
+	    me.name, chptr->chname, chptr->chname, (unsigned long)oldts, (unsigned long)newts);
     }
      
   if (*modebuf != '\0')
@@ -369,15 +368,11 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
       /* This _SHOULD_ be to ALL_MEMBERS
        * It contains only +aimnstlki, etc */
       if (top_chptr != NULL)
-	sendto_channel_local(ALL_MEMBERS,
-			     chptr, ":%s MODE %s %s %s",
-			     me.name,
-			     top_chptr->chname, modebuf, parabuf);
+	sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s %s %s",
+			     me.name, top_chptr->chname, modebuf, parabuf);
       else
-	sendto_channel_local(ALL_MEMBERS,
-			     chptr, ":%s MODE %s %s %s",
-			     me.name,
-			     chptr->chname, modebuf, parabuf);
+	sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s %s %s",
+			     me.name, chptr->chname, modebuf, parabuf);
     }
 
   *modebuf = *parabuf = '\0';
@@ -392,7 +387,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
     }
 
   buflen = ircsprintf(buf, ":%s SJOIN %lu %s %s %s:",
-		      parv[0], (unsigned long) tstosend,
+		      parv[0], (unsigned long)tstosend,
 		      parv[2], modebuf, parabuf);
 
   /* check we can fit a nick on the end, as well as \r\n\0 and a prefix "
@@ -858,7 +853,6 @@ remove_our_modes(int hide_or_not,
   dlinkMoveList(&chptr->lochalfops, &chptr->locpeons);
 #endif
 }
-
 
 /*
  * remove_a_mode

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.185 2003/04/09 11:19:37 stu Exp $
+ *  $Id: s_bsd.c,v 7.186 2003/04/12 07:00:06 michael Exp $
  */
 
 #include "stdinc.h"
@@ -102,16 +102,16 @@ close_all_connections(void)
 }
 
 /*
- * check_can_use_v6 - Check if the system can open AF_INET6 sockets
+ * check_can_use_v6()
+ *  Check if the system can open AF_INET6 sockets
  */
-
 void
-check_can_use_v6()
+check_can_use_v6(void)
 {
 #ifdef IPV6
   int v6;
 
-  if((v6 = socket(AF_INET6, SOCK_STREAM, 0)) < 0)
+  if ((v6 = socket(AF_INET6, SOCK_STREAM, 0)) < 0)
     ServerInfo.can_use_v6 = 0;
   else
   {

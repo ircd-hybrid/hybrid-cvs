@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.272 2003/04/09 11:19:37 stu Exp $
+ *  $Id: ircd_parser.y,v 1.273 2003/04/12 07:00:06 michael Exp $
  */
 
 %{
@@ -54,8 +54,6 @@
 #include <openssl/bio.h>
 #include <openssl/pem.h>
 #endif
-
-
 
 int yyparse();
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.356 2003/04/09 11:19:37 stu Exp $
+ *  $Id: s_conf.c,v 7.357 2003/04/12 07:00:06 michael Exp $
  */
 
 #include "stdinc.h"
@@ -79,7 +79,6 @@ static void     clear_out_old_conf(void);
 static void     flush_deleted_I_P(void);
 static void     expire_tklines(dlink_list *);
 static int 	is_attached(struct Client *client_p, struct ConfItem *aconf);
-static char 	*umode_as_string(int umode);
 
 FBFILE* conf_fbfile_in;
 extern char yytext[];
@@ -696,7 +695,6 @@ remove_one_ip(struct irc_ssaddr *ip_in)
  * output       - integer value used as index into hash table
  * side effects - hopefully, none
  */
-
 static int  
 hash_ip(struct irc_ssaddr *addr)
 {
@@ -724,6 +722,7 @@ hash_ip(struct irc_ssaddr *addr)
     return(hash);
   }
 #endif
+  return(0);
 }
 
 /*
@@ -1250,10 +1249,9 @@ find_u_conf(const char *server, const char *user, const char *host)
 int
 rehash(int sig)
 {
-  int fd;
   if (sig != 0)
     sendto_realops_flags(UMODE_ALL, L_ALL,
-			 "Got signal SIGHUP, reloading ircd conf. file");
+                         "Got signal SIGHUP, reloading ircd conf. file");
 
   restart_resolver();
   /* don't close listeners until we know we can go ahead with the rehash */
@@ -1801,62 +1799,6 @@ oper_privs_as_string(struct Client *client_p,int port)
 
   return(privs_out);
 }
-
-
-/* umode_as_string
- *
- * inputs        - umode as bit mask
- * output        - umode as as string
- * side effects -
- *
- */
-static char *
-umode_as_string(int umode)
-{
-  /* This MUST be extended if we add any more modes... -Hwy */
-  static char umode_out[18];
-  char *umode_ptr;
-
-  umode_ptr = umode_out;
-  *umode_ptr = '\0';
-
-  if(umode & UMODE_INVISIBLE)
-    *umode_ptr++ = 'i';
-  if(umode & UMODE_WALLOP)
-    *umode_ptr++ = 'w';
-  if(umode & UMODE_SERVNOTICE)
-    *umode_ptr++ = 's';
-  if(umode & UMODE_CCONN)
-    *umode_ptr++ = 'c';
-  if(umode & UMODE_REJ)
-    *umode_ptr++ = 'r';
-  if(umode & UMODE_SKILL)
-    *umode_ptr++ = 'k';
-  if(umode & UMODE_FULL)
-    *umode_ptr++ = 'f';
-  if(umode & UMODE_SPY)
-    *umode_ptr++ = 'y';
-  if(umode & UMODE_DEBUG)
-    *umode_ptr++ = 'd';
-  if(umode & UMODE_NCHANGE)
-    *umode_ptr++ = 'n';
-  if(umode & UMODE_ADMIN)
-    *umode_ptr++ = 'a';
-  if(umode & UMODE_EXTERNAL)
-    *umode_ptr++ = 'x';
-  if(umode & UMODE_UNAUTH)
-    *umode_ptr++ = 'u';
-  if(umode & UMODE_BOTS)
-    *umode_ptr++ = 'b';
-  if(umode & UMODE_LOCOPS)
-    *umode_ptr++ = 'l';
-  if(umode & UMODE_CALLERID)
-    *umode_ptr++ = 'g';
-  *umode_ptr = '\0';
-
-  return(umode_out);
-}
-
 
 /* const char* get_oper_name(struct Client *client_p)
  * Input: A client to find the active oper{} name for.

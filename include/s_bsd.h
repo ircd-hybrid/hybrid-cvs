@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.h,v 7.38 2003/04/09 11:19:32 stu Exp $
+ *  $Id: s_bsd.h,v 7.39 2003/04/12 07:00:02 michael Exp $
  */
 
 #ifndef INCLUDED_s_bsd_h
@@ -79,7 +79,7 @@ extern void  init_netio(void);
 extern int   read_message (time_t, unsigned char);
 extern int   comm_select(unsigned long);
 extern int   disable_sock_options(int);
-extern void  check_can_use_v6();
+extern void  check_can_use_v6(void);
 
 #ifdef USE_SIGIO
 void do_sigio(int);

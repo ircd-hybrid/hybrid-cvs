@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ltrace.c,v 1.7 2003/04/02 11:19:37 michael Exp $
+ *  $Id: m_ltrace.c,v 1.8 2003/04/12 06:59:58 michael Exp $
  */
 
 #include "stdinc.h"
@@ -43,7 +43,7 @@
 
 
 static void m_ltrace(struct Client *, struct Client *, int, char **);
-static void mo_ltrace(struct Client*, struct Client*, int, char**);
+static void mo_ltrace(struct Client *, struct Client *, int, char **);
 static void ltrace_spy(struct Client *);
 
 struct Message ltrace_msgtab = {
@@ -66,7 +66,7 @@ _moddeinit(void)
   mod_del_cmd(&ltrace_msgtab);
 }
 
-const char *_version = "$Revision: 1.7 $";
+const char *_version = "$Revision: 1.8 $";
 #endif
 
 static int report_this_status(struct Client *source_p, struct Client *target_p,int dow,
@@ -80,7 +80,7 @@ static int report_this_status(struct Client *source_p, struct Client *target_p,i
  */
 static void
 m_ltrace(struct Client *client_p, struct Client *source_p,
-	 int parc, char *parv[])
+         int parc, char *parv[])
 {
   char *tname;
 
@@ -100,7 +100,7 @@ static void
 mo_ltrace(struct Client *client_p, struct Client *source_p,
 	  int parc, char *parv[])
 {
-  struct Client       *target_p = NULL;
+  struct Client *target_p = NULL;
   char  *tname;
   int   doall, link_s[MAXCONNECTIONS], link_u[MAXCONNECTIONS];
   int   wilds, dow;
@@ -176,8 +176,10 @@ mo_ltrace(struct Client *client_p, struct Client *source_p,
       if(target_p && IsPerson(target_p)) 
       {
         name = get_client_name(target_p, HIDE_IP);
-        inetntop(target_p->localClient->aftype, &IN_ADDR(target_p->localClient->ip), ipaddr, HOSTIPLEN);
-
+        /* Should this be sockhost? - stu */
+        getnameinfo((struct sockaddr*)&target_p->localClient->ip,
+                    target_p->localClient->ip.ss_len, ipaddr,
+                    HOSTIPLEN, NULL, 0, NI_NUMERICHOST);
         class_name = get_client_class(target_p);
 
         if (IsOper(target_p))
@@ -253,7 +255,6 @@ mo_ltrace(struct Client *client_p, struct Client *source_p,
   sendto_one(source_p, form_str(RPL_ENDOFTRACE),me.name, parv[0],tname);
 }
 
-
 /*
  * report_this_status
  *
@@ -264,13 +265,17 @@ mo_ltrace(struct Client *client_p, struct Client *source_p,
  */
 static int
 report_this_status(struct Client *source_p, struct Client *target_p,
-		   int dow, int link_u_p, int link_s_p)
+                   int dow, int link_u_p, int link_s_p)
 {
   const char* name;
   const char* class_name;
-  char  ip[HOSTIPLEN];
+  char ip[HOSTIPLEN];
 
-  inetntop(target_p->localClient->aftype, &IN_ADDR(target_p->localClient->ip), ip, HOSTIPLEN);
+  /* Should this be sockhost? - stu */
+  getnameinfo((struct sockaddr *)&target_p->localClient->ip,
+              target_p->localClient->ip.ss_len, ip,
+              HOSTIPLEN, NULL, 0, NI_NUMERICHOST);
+
   name = get_client_name(target_p, HIDE_IP);
   class_name = get_client_class(target_p);
 
@@ -306,7 +311,7 @@ report_this_status(struct Client *source_p, struct Client *target_p,
                    (IsIPSpoof(target_p) ? "255.255.255.255" : ip),
                    CurrentTime - target_p->lasttime,
                    (target_p->user) ? (CurrentTime - target_p->user->last) : 0);
-		       
+
       else if (IsOper(target_p))
 	sendto_one(source_p, form_str(RPL_TRACEOPERATOR),
 		   me.name, source_p->name, class_name, name, 
@@ -335,7 +340,7 @@ report_this_status(struct Client *source_p, struct Client *target_p,
       break;
     }
 
-  return 0;
+  return(0);
 }
 
 /* ltrace_spy()

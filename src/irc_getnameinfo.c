@@ -61,41 +61,37 @@ typedef int socklen_t;
 #endif
 
 
-/*  $Id: irc_getnameinfo.c,v 7.1 2003/04/09 11:19:37 stu Exp $ */
+/*  $Id: irc_getnameinfo.c,v 7.2 2003/04/12 07:00:06 michael Exp $ */
 
 static const struct afd {
-	int a_af;
-	int a_addrlen;
-	int a_socklen;
-	int a_off;
+  int a_af;
+  int a_addrlen;
+  int a_socklen;
+  int a_off;
 } afdl [] = {
 #ifdef IPV6
-	{PF_INET6, sizeof(struct in6_addr), sizeof(struct sockaddr_in6),
-		offsetof(struct sockaddr_in6, sin6_addr)},
+    {PF_INET6, sizeof(struct in6_addr), sizeof(struct sockaddr_in6),
+             offsetof(struct sockaddr_in6, sin6_addr)},
 #endif
-	{PF_INET, sizeof(struct in_addr), sizeof(struct sockaddr_in),
-		offsetof(struct sockaddr_in, sin_addr)},
-	{0, 0, 0},
+    {PF_INET, sizeof(struct in_addr), sizeof(struct sockaddr_in),
+            offsetof(struct sockaddr_in, sin_addr)},
+    {0, 0, 0},
 };
 
 struct sockinet {
-	u_char	si_len;
-	u_char	si_family;
-	u_short	si_port;
+  u_char si_len;
+  u_char si_family;
+  u_short si_port;
 };
 
+#ifdef IPV6
 static int ip6_parsenumeric(const struct sockaddr *, const char *, char *,
     size_t, int);
+#endif
 
 int
-irc_getnameinfo(sa, salen, host, hostlen, serv, servlen, flags)
-	const struct sockaddr *sa;
-	socklen_t salen;
-	char *host;
-	size_t hostlen;
-	char *serv;
-	size_t servlen;
-	int flags;
+irc_getnameinfo(const struct sockaddr *sa, socklen_t salen, char *host,
+                size_t hostlen, char *serv, size_t servlen, int flags)
 {
 	const struct afd *afd;
 	struct servent *sp;
@@ -234,24 +230,21 @@ irc_getnameinfo(sa, salen, host, hostlen, serv, servlen, flags)
 
 #ifdef IPV6
 static int
-ip6_parsenumeric(sa, addr, host, hostlen, flags)
-	const struct sockaddr *sa;
-	const char *addr;
-	char *host;
-	size_t hostlen;
-	int flags;
+ip6_parsenumeric(const struct sockaddr *sa, const char *addr,
+                 char *host, size_t hostlen, int flags)
 {
-	int numaddrlen;
-	char numaddr[512];
+  int numaddrlen;
+  char numaddr[512];
 
-	if (inet_ntop(AF_INET6, addr, numaddr, sizeof(numaddr)) == NULL)
-		return EAI_SYSTEM;
+  if (inet_ntop(AF_INET6, addr, numaddr, sizeof(numaddr)) == NULL)
+    return(EAI_SYSTEM);
 
-	numaddrlen = strlen(numaddr);
-	if (numaddrlen + 1 > hostlen) /* don't forget terminator */
-		return EAI_MEMORY;
-	strlcpy(host, numaddr, hostlen);
+  numaddrlen = strlen(numaddr);
 
-	return 0;
+  if (numaddrlen + 1 > hostlen) /* don't forget terminator */
+    return(EAI_MEMORY);
+
+  strlcpy(host, numaddr, hostlen);
+  return(0);
 }
 #endif

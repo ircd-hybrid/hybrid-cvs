@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nick.c,v 1.112 2003/04/06 00:37:00 michael Exp $
+ *  $Id: m_nick.c,v 1.113 2003/04/12 07:00:04 michael Exp $
  */
 
 #include "stdinc.h"
@@ -96,7 +96,7 @@ _moddeinit(void)
   mod_del_cmd(&client_msgtab);
 }
 
-const char *_version = "$Revision: 1.112 $";
+const char *_version = "$Revision: 1.113 $";
 #endif
 
 /*
@@ -109,12 +109,12 @@ static void
 mr_nick(struct Client *client_p, struct Client *source_p,
         int parc, char *parv[])
 {
-  struct   Client *target_p, *uclient_p;
+  struct Client *target_p, *uclient_p;
   char     nick[NICKLEN];
   char*    s;
   dlink_node *ptr;
    
-  if(parc < 2 || EmptyString(parv[1]))
+  if (parc < 2 || EmptyString(parv[1]))
   {
     sendto_one(source_p, form_str(ERR_NONICKNAMEGIVEN),
                me.name, EmptyString(parv[0]) ? "*" : parv[0]);
@@ -126,7 +126,7 @@ mr_nick(struct Client *client_p, struct Client *source_p,
     *s = '\0';
                                
   /* copy the nick and terminate it */
-  strlcpy(nick, parv[1], NICKLEN);
+  strlcpy(nick, parv[1], sizeof(nick));
 
   /* check the nickname is ok */
   if(!clean_nick_name(nick))
@@ -198,14 +198,14 @@ mr_nick(struct Client *client_p, struct Client *source_p,
  *     parv[0] = sender prefix
  *     parv[1] = nickname
  */
- static void
- m_nick(struct Client *client_p, struct Client *source_p,
-	int parc, char *parv[])
+static void
+m_nick(struct Client *client_p, struct Client *source_p,
+       int parc, char *parv[])
 {
-  char     nick[NICKLEN];
-  struct   Client *target_p;
+  char nick[NICKLEN];
+  struct Client *target_p;
 
-  if(parc < 2 || EmptyString(parv[1]))
+  if (parc < 2 || EmptyString(parv[1]))
   {
     sendto_one(source_p, form_str(ERR_NONICKNAMEGIVEN),
                me.name, parv[0]);
@@ -213,14 +213,14 @@ mr_nick(struct Client *client_p, struct Client *source_p,
   }
 
   /* mark end of grace period, to prevent nickflooding */
-  if(!IsFloodDone(source_p))
+  if (!IsFloodDone(source_p))
     flood_endgrace(source_p);
 
   /* terminate nick to NICKLEN */
-  strlcpy(nick, parv[1], NICKLEN);
+  strlcpy(nick, parv[1], sizeof(nick));
 
   /* check the nickname is ok */
-  if(!clean_nick_name(nick))
+  if (!clean_nick_name(nick))
   {
     sendto_one(source_p, form_str(ERR_ERRONEUSNICKNAME),
                me.name, parv[0], nick);
@@ -317,13 +317,13 @@ mr_nick(struct Client *client_p, struct Client *source_p,
  */
 static void
 ms_nick(struct Client *client_p, struct Client *source_p,
-	int parc, char *parv[])
+        int parc, char *parv[])
 {
   struct Client* target_p;
   char     nick[NICKLEN];
   time_t   newts = 0;
 
-  if(parc < 2 || EmptyString(parv[1]))
+  if (parc < 2 || EmptyString(parv[1]))
   {
     sendto_one(source_p, form_str(ERR_NONICKNAMEGIVEN),
                me.name, parv[0]);
@@ -353,10 +353,10 @@ ms_nick(struct Client *client_p, struct Client *source_p,
   }
 
   /* fix the length of the nick */
-  strlcpy(nick, parv[1], NICKLEN);
+  strlcpy(nick, parv[1], sizeof(nick));
 
   if(check_clean_nick(client_p, source_p, nick, parv[1],
-                      (parc == 9 ? parv[7] : (char *) source_p->user->server)))
+                      (parc == 9 ? parv[7] : source_p->user->server)))
     return;
 
   if (parc == 9)
@@ -412,8 +412,6 @@ ms_nick(struct Client *client_p, struct Client *source_p,
 
   perform_nick_collides(source_p, client_p, target_p,
                         parc, parv, newts, nick);
-			
-
 }
 
 /*
@@ -437,7 +435,7 @@ ms_client(struct Client *client_p, struct Client *source_p,
     return;
 
   /* parse the nickname */
-  strlcpy(nick, parv[1], NICKLEN);
+  strlcpy(nick, parv[1], sizeof(nick));
 
   /* check the nicknames, usernames and hostnames are ok */
   if(check_clean_nick(client_p, source_p, nick, parv[1], parv[7]) ||
@@ -497,7 +495,6 @@ ms_client(struct Client *client_p, struct Client *source_p,
                         parc, parv, newts, nick);
 }			  
 
-
 /* 
  * check_clean_nick()
  * 
@@ -511,7 +508,7 @@ ms_client(struct Client *client_p, struct Client *source_p,
  */
 static int
 check_clean_nick(struct Client *client_p, struct Client *source_p, 
-		 char *nick, char *newnick, const char *server)
+                 char *nick, char *newnick, const char *server)
 {
   /* the old code did some wacky stuff here, if the nick is invalid, kill it
    * and dont bother messing at all
@@ -554,7 +551,7 @@ check_clean_nick(struct Client *client_p, struct Client *source_p,
  */
 static int
 check_clean_user(struct Client *client_p, char *nick, 
-		 char *user, char *server)
+                 char *user, char *server)
 {
   if(strlen(user) > USERLEN)
   {
@@ -588,7 +585,7 @@ check_clean_user(struct Client *client_p, char *nick,
  */
 static int
 check_clean_host(struct Client *client_p, char *nick,
-		 char *host, char *server)
+                 char *host, char *server)
 {
   if(strlen(host) > HOSTLEN)
   {
@@ -682,7 +679,6 @@ clean_host_name(char *host)
   return 1;
 }
 
-
 /*
  * nick_from_server()
  */
@@ -767,9 +763,8 @@ nick_from_server(struct Client *client_p, struct Client *source_p, int parc,
   /* remove all accepts pointing to the client */
   del_all_accepts(source_p);
 
-  return 0;
+  return(0);
 }
-
 
 /*
  * client_from_server()
@@ -1009,6 +1004,4 @@ perform_nick_collides(struct Client *source_p, struct Client *client_p,
 
   return 0;
 }
-
-	    
 
