@@ -19,7 +19,7 @@
  *
  * "m_gline.h". - Headers file.
  *
- * $Id: m_gline.h,v 7.3 2000/09/29 17:16:54 ejb Exp $
+ * $Id: m_gline.h,v 7.4 2000/11/07 17:07:04 ejb Exp $
  *
  */
 
@@ -43,6 +43,7 @@ extern struct ConfItem* find_gkill(struct Client* client, char *);
 extern struct ConfItem* find_is_glined(const char* host, const char* name);
 extern void   flush_glines(void);             
 extern void   report_glines(struct Client *); 
+extern int    remove_gline_match(const char *user, const char *host);
 
 typedef struct gline_pending
 {

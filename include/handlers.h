@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: handlers.h,v 7.11 2000/11/07 03:51:07 db Exp $
+ * $Id: handlers.h,v 7.12 2000/11/07 17:07:04 ejb Exp $
  */
 #ifndef INCLUDED_handlers_h
 #define INCLUDED_handlers_h
@@ -163,6 +163,8 @@ extern int mo_stats(struct Client*, struct Client*, int, char**);
 extern int mo_testline(struct Client *,struct Client *,int,char **);
 extern int mo_trace(struct Client*, struct Client*, int, char**);
 extern int mo_unkline(struct Client *,struct Client *,int,char **);
+extern int mo_undline(struct Client *, struct Client *, int, char **);
+extern int mo_ungline(struct Client *, struct Client *, int, char **);
 extern int mo_wallops(struct Client*, struct Client*, int, char**);
 extern int mo_htm(struct Client *,struct Client *,int,char **);
 extern int mo_quit(struct Client*, struct Client*, int, char**);
