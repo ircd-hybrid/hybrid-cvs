@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_challenge.c,v 1.41 2003/02/17 16:09:28 db Exp $
+ *  $Id: m_challenge.c,v 1.42 2003/04/02 02:36:50 michael Exp $
  */
 
 #include "stdinc.h"
@@ -37,8 +37,7 @@
 #include "parse.h"
 #include "irc_string.h"
 #include "s_log.h"
-
-int oper_up( struct Client *source_p, struct ConfItem *aconf );
+#include "s_user.h"
 
 #ifndef HAVE_LIBCRYPTO
 /* Maybe this should be an error or something?-davidt */
@@ -55,7 +54,7 @@ _moddeinit(void)
   return;
 }
 
-const char *_version = "$Revision: 1.41 $";
+const char *_version = "$Revision: 1.42 $";
 #endif
 #else
 
@@ -81,7 +80,7 @@ _moddeinit(void)
   mod_del_cmd(&challenge_msgtab);
 }
 
-const char *_version = "$Revision: 1.41 $";
+const char *_version = "$Revision: 1.42 $";
 #endif
 /*
  * m_challenge - generate RSA challenge for wouldbe oper

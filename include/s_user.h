@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.h,v 7.19 2003/04/02 02:12:06 michael Exp $
+ *  $Id: s_user.h,v 7.20 2003/04/02 02:36:48 michael Exp $
  */
 
 #ifndef INCLUDED_s_user_h
@@ -28,6 +28,7 @@
 #include "config.h"
 
 struct Client;
+struct ConfItem;
 
 extern int   user_mode(struct Client* , struct Client* , int, char** );
 extern void  send_umode(struct Client* , struct Client* ,
