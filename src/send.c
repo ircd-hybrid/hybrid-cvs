@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.124 2001/02/05 20:12:54 davidt Exp $
+ *   $Id: send.c,v 7.125 2001/02/06 04:50:38 db Exp $
  */
 
 #include <sys/types.h>
@@ -105,6 +105,8 @@ send_trim(char *lsendbuf, int len );
 static int
 dead_link(struct Client *to, char *notice)
 {
+  /* XXX is this the =right= thing to do? or anyone have a better idea? */
+
   exit_client(to, to, &me,
               (to->flags & FLAGS_SENDQEX) ?
               "SendQ exceeded" : "Dead socket");
