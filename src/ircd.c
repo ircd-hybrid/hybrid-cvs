@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.50 2000/11/24 08:27:40 db Exp $
+ * $Id: ircd.c,v 7.51 2000/11/24 14:13:48 db Exp $
  */
 #include "ircd.h"
 #include "channel.h"
@@ -396,7 +396,6 @@ static void initialize_global_set_options(void)
   memset( &GlobalSetOptions, 0, sizeof(GlobalSetOptions));
 
   GlobalSetOptions.maxclients = MAX_CLIENTS;
-  GlobalSetOptions.noisy_htm = NOISY_HTM;
   GlobalSetOptions.autoconn = 1;
 
   GlobalSetOptions.fludnum = FLUD_NUM;

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.33 2000/11/21 05:03:05 db Exp $
+ * $Id: config.h,v 7.34 2000/11/24 14:13:43 db Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -327,11 +327,6 @@
  * flooding it.  Values greater than 8000 make no difference to the server.
  */
 #define CLIENT_FLOOD    2560
-
-/* NOISY_HTM - should HTM be noisy by default
- * should be YES or NO
- */
-#define NOISY_HTM YES
 
 /*
  * LITTLE_I_LINE support

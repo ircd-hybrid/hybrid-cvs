@@ -19,7 +19,7 @@
  *
  * "ircd.h". - Headers file.
  *
- * $Id: ircd.h,v 7.9 2000/11/21 05:03:06 db Exp $
+ * $Id: ircd.h,v 7.10 2000/11/24 14:13:44 db Exp $
  *
  */
 #ifndef INCLUDED_ircd_h
@@ -38,8 +38,6 @@ struct SetOptions
 {
   int maxclients;       /* max clients allowed */
   int autoconn;         /* autoconn enabled for all servers? */
-  int noisy_htm;        /* noisy htm or not ? */
-  int lifesux;
 
   int idletime;
 
