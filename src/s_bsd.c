@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.144 2001/08/05 20:42:06 db blalloc.c $
+ *  $Id: s_bsd.c,v 7.145 2001/08/21 20:54:24 davidt Exp $
  */
 #include "config.h"
 #include "fdlist.h"
@@ -90,7 +90,9 @@ static PF comm_connect_tryconnect;
 void close_all_connections(void)
 {
   int i;
+#ifndef NDEBUG
   int fd;
+#endif
 
 #ifndef VMS
   for (i = 0; i < MAXCONNECTIONS; ++i)

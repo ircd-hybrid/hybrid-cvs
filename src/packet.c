@@ -18,7 +18,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: packet.c,v 7.59 2001/08/16 13:53:34 androsyn Exp $
+ *   $Id: packet.c,v 7.60 2001/08/21 20:54:24 davidt Exp $
  */ 
 
 #include <stdio.h>
@@ -165,7 +165,7 @@ read_ctrl_packet(int fd, void *data)
   struct SlinkRplDef *replydef;
 
   assert(lserver != NULL);
-  reply = &server->localClient->slinkrpl;
+  reply = &lserver->slinkrpl;
 
   /* if the server died, kill it off now -davidt */
   if(IsDead(server))
