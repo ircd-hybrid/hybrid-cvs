@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_help.c,v 1.10 2003/08/17 04:34:38 joshk Exp $
+ *  $Id: m_help.c,v 1.11 2003/08/17 05:14:36 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&uhelp_msgtab);
 }
 
-const char *_version = "$Revision: 1.10 $";
+const char *_version = "$Revision: 1.11 $";
 #endif
 
 /*
@@ -182,6 +182,8 @@ sendhelpfile(struct Client *source_p, char *path, char *topic)
 {
   FBFILE *file;
   char line[HELPLEN];
+  char started = 0;
+  int type;
 
   if ((file = fbopen(path, "r")) == NULL)
   {
@@ -199,14 +201,29 @@ sendhelpfile(struct Client *source_p, char *path, char *topic)
 
   else if (line[0] != '#')
   {
+    line[strlen(line) - 1] = '\0';	  
     sendto_one(source_p, form_str(RPL_HELPSTART),
              me.name, source_p->name, topic, line);
+    started = 1;
   }
 
   while (fbgets(line, sizeof(line), file))
+  {
+    line[strlen(line) - 1] = '\0';
     if(line[0] != '#')
+    {
+      if (!started)
+      {
+        type = RPL_HELPSTART;
+	started = 1;
+      }
+      else
+        type = RPL_HELPTXT;
+      
       sendto_one(source_p, form_str(RPL_HELPTXT),
                  me.name, source_p->name, topic, line);
+    }
+  }
 
   fbclose(file);
   sendto_one(source_p, form_str(RPL_ENDOFHELP),
