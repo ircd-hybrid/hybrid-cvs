@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_who.c,v 1.49 2002/01/05 09:14:49 a1kmm Exp $
+ *  $Id: m_who.c,v 1.50 2002/02/10 21:24:34 db Exp $
  */
 
 #include "tools.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&who_msgtab);
 }
-char *_version = "$Revision: 1.49 $";
+char *_version = "$Revision: 1.50 $";
 #endif
 static void do_who_on_channel(struct Client *source_p,
 			      struct Channel *chptr, char *real_name,
@@ -113,7 +113,7 @@ static void m_who(struct Client *client_p,
 
       if (*mask == '\0')
 	{
-	  sendto_one(source_p, form_str(RPL_ENDOFWHO), me.name, parv[0], "*" );
+	  sendto_one(source_p, form_str(RPL_ENDOFWHO), me.name, parv[0], "*");
 	  return;
 	}
     }
@@ -187,7 +187,7 @@ static void m_who(struct Client *client_p,
 		do_who_on_channel(source_p, chptr, chptr->chname, NO, NO);
 	    }
 	}
-      sendto_one(source_p, form_str(RPL_ENDOFWHO), me.name, parv[0], mask );
+      sendto_one(source_p, form_str(RPL_ENDOFWHO), me.name, parv[0], mask);
       return;
     }
 
@@ -245,7 +245,7 @@ static void m_who(struct Client *client_p,
 	  do_who(source_p, target_p, NULL, "");
 	}
 
-      sendto_one(source_p, form_str(RPL_ENDOFWHO), me.name, parv[0], mask );
+      sendto_one(source_p, form_str(RPL_ENDOFWHO), me.name, parv[0], mask);
       return;
     }
   /* '/who 0' */
@@ -255,7 +255,9 @@ static void m_who(struct Client *client_p,
   }
   /* Wasn't a nick, wasn't a channel, wasn't a '*' so ... */
   who_global(source_p, mask, server_oper);
-  sendto_one(source_p, form_str(RPL_ENDOFWHO), me.name, parv[0], mask );
+  if(mask == NULL)
+    mask = "*";
+  sendto_one(source_p, form_str(RPL_ENDOFWHO), me.name, parv[0], mask);
 }
 
 /* who_common_channel
@@ -287,7 +289,7 @@ static void who_common_channel(struct Client *source_p,dlink_list chain,
 
      SetMark(target_p);
 
-     if (!mask ||
+     if ((mask == NULL) ||
           match(mask, target_p->name) || match(mask, target_p->username) ||
           match(mask, target_p->host) || match(mask, target_p->user->server) ||
 	  match(mask, target_p->info))
