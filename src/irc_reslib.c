@@ -68,8 +68,6 @@
  * SOFTWARE.
  */
 
-/* $Id: irc_reslib.c,v 7.20 2003/06/07 07:44:41 michael Exp $ */
-
 /* Original copyright ISC as above. 
  * Code modified specifically for ircd use from the following orginal files
  * in bind ...
@@ -92,21 +90,23 @@
 
 #define NS_TYPE_ELT             0x40 /* EDNS0 extended label type */
 #define DNS_LABELTYPE_BITSTRING 0x41
-#define MAXLINE                 128
+#define MAXLINE 128
+
+/* $Id: irc_reslib.c,v 7.21 2003/06/07 11:05:24 michael Exp $ */
 
 struct irc_ssaddr irc_nsaddr_list[IRCD_MAXNS];
 int irc_nscount = 0;
 char irc_domain[HOSTLEN + 1];
 
 static const char digitvalue[256] = {
-  -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, /* 16  */
-  -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, /* 32  */
-  -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, /* 48  */
-   0,  1,  2,  3,  4,  5,  6,  7,  8,  9, -1, -1, -1, -1, -1, -1, /* 64  */
-  -1, 10, 11, 12, 13, 14, 15, -1, -1, -1, -1, -1, -1, -1, -1, -1, /* 80  */
-  -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, /* 96  */
-  -1, 10, 11, 12, 13, 14, 15, -1, -1, -1, -1, -1, -1, -1, -1, -1, /* 112 */
-  -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, /* 128 */
+  -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, /*16*/
+  -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, /*32*/
+  -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, /*48*/
+   0,  1,  2,  3,  4,  5,  6,  7,  8,  9, -1, -1, -1, -1, -1, -1, /*64*/
+  -1, 10, 11, 12, 13, 14, 15, -1, -1, -1, -1, -1, -1, -1, -1, -1, /*80*/
+  -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, /*96*/
+  -1, 10, 11, 12, 13, 14, 15, -1, -1, -1, -1, -1, -1, -1, -1, -1, /*112*/
+  -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, /*128*/
   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
@@ -114,7 +114,7 @@ static const char digitvalue[256] = {
   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-  -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, /* 256 */
+  -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, /*256*/
 };
 
 static int parse_resvconf(void);
@@ -190,16 +190,14 @@ parse_resvconf(void)
     /* skip these spaces that are before the argument */
     while (IsSpace(*p))
       p++;
-
     /* Now arg should be right where p is pointing */
     arg = p;
-
     if ((p = strpbrk(arg, " \t")) != NULL)
       *p = '\0';  /* take the first word */
 
-    if (irccmp(opt, "domain") == 0)
-      strlcpy(irc_domain, arg, sizeof(irc_domain));
-    else if (irccmp(opt, "nameserver") == 0)
+    if (strcasecmp(opt, "domain") == 0)
+      strlcpy(irc_domain, arg, HOSTLEN);
+    else if (strcasecmp(opt, "nameserver") == 0)
       add_nameserver(arg);
   }
 
@@ -278,7 +276,6 @@ irc_ns_name_uncompress(const unsigned char *msg, const unsigned char *eom,
     return(-1);
   return(n);
 }
-
 /*
  * irc_ns_name_unpack(msg, eom, src, dst, dstsiz)
  *	Unpack a domain name from a message, source may be compressed.
@@ -290,91 +287,74 @@ irc_ns_name_unpack(const unsigned char *msg, const unsigned char *eom,
                    const unsigned char *src, unsigned char *dst,
                    size_t dstsiz)
 {
-  const unsigned char *srcp, *dstlim;
-  unsigned char *dstp;
-  int l;
-  int n;
-  int len = -1;
-  int checked = 0;
+	const unsigned char *srcp, *dstlim;
+	unsigned char *dstp;
+	int n, len, checked, l;
 
-  dstp   = dst;
-  srcp   = src;
-  dstlim = dst + dstsiz;
-
-  if (srcp < msg || srcp >= eom)
-  {
-    errno = EMSGSIZE;
-    return(-1);
-  }
-
-  /* Fetch next label in domain name. */
-  while ((n = *srcp++) != 0)
-  {
-    /* Check for indirection. */
-    switch (n & NS_CMPRSFLGS)
-    {
-      case 0:
-      case NS_TYPE_ELT:
-        /* Limit checks. */
-        if ((l = labellen(srcp - 1)) < 0)
-        {
-          errno = EMSGSIZE;
-          return(-1);
-        }
-        if (dstp + l + 1 >= dstlim || srcp + l >= eom)
-        {
-          errno = EMSGSIZE;
-          return (-1);
-        }
-
-        checked += l + 1;
-	*dstp++ = n;
-	memcpy(dstp, srcp, l);
-	dstp += l;
-	srcp += l;
-	break;
-
-      case NS_CMPRSFLGS:
-        if (srcp >= eom)
-        {
-          errno = EMSGSIZE;
-          return(-1);
-        }
-
-        if (len < 0)
-	  len = srcp - src + 1;
-	srcp = msg + (((n & 0x3f) << 8) | (*srcp & 0xff));
-
-	if (srcp < msg || srcp >= eom)
-        {  /* Out of range. */
-	  errno = EMSGSIZE;
-	  return (-1);
+	len = -1;
+	checked = 0;
+	dstp = dst;
+	srcp = src;
+	dstlim = dst + dstsiz;
+	if (srcp < msg || srcp >= eom) {
+		errno = EMSGSIZE;
+		return (-1);
 	}
+	/* Fetch next label in domain name. */
+	while ((n = *srcp++) != 0) {
+		/* Check for indirection. */
+		switch (n & NS_CMPRSFLGS) {
+		case 0:
+		case NS_TYPE_ELT:
+			/* Limit checks. */
+			if ((l = labellen(srcp - 1)) < 0) {
+				errno = EMSGSIZE;
+				return(-1);
+			}
+			if (dstp + l + 1 >= dstlim || srcp + l >= eom) {
+				errno = EMSGSIZE;
+				return (-1);
+			}
+			checked += l + 1;
+			*dstp++ = n;
+			memcpy(dstp, srcp, l);
+			dstp += l;
+			srcp += l;
+			break;
 
-	checked += 2;
+		case NS_CMPRSFLGS:
+			if (srcp >= eom) {
+				errno = EMSGSIZE;
+				return (-1);
+			}
+			if (len < 0)
+				len = srcp - src + 1;
+			srcp = msg + (((n & 0x3f) << 8) | (*srcp & 0xff));
+			if (srcp < msg || srcp >= eom) {  /* Out of range. */
+				errno = EMSGSIZE;
+				return (-1);
+			}
+			checked += 2;
+			/*
+			 * Check for loops in the compressed name;
+			 * if we've looked at the whole message,
+			 * there must be a loop.
+			 */
+			if (checked >= eom - msg) {
+				errno = EMSGSIZE;
+				return (-1);
+			}
+			break;
 
-	/* Check for loops in the compressed name;
-	 * if we've looked at the whole message,
-	 * there must be a loop.
-	 */
-	if (checked >= eom - msg)
-        {
-	  errno = EMSGSIZE;
-	  return (-1);
+		default:
+			errno = EMSGSIZE;
+			return (-1);			/* flag error */
+		}
 	}
-
-	break;
-
-      default:
-        errno = EMSGSIZE;
-	return(-1); /* flag error */
-    }
-  }
-
-  *dstp = '\0';
-  if (len < 0)
-    len = srcp - src;
-  return(len);
+	*dstp = '\0';
+	if (len < 0)
+		len = srcp - src;
+	return (len);
 }
 
 /*
@@ -389,32 +369,27 @@ irc_ns_name_unpack(const unsigned char *msg, const unsigned char *eom,
 int
 irc_ns_name_ntop(const char *src, char *dst, size_t dstsiz)
 {
-  const char *cp;
-  char *dn, *eom;
-  unsigned char c;
-  unsigned int n;
-  int l;
+	const char *cp;
+	char *dn, *eom;
+	unsigned char c;
+	unsigned int n;
+	int l;
 
-  cp = src;
-  dn = dst;
-  eom = dst + dstsiz;
+	cp = src;
+	dn = dst;
+	eom = dst + dstsiz;
 
-  while ((n = *cp++) != 0)
-  {
-    if ((n & NS_CMPRSFLGS) == NS_CMPRSFLGS)
-    {
-      /* Some kind of compression pointer. */
-      errno = EMSGSIZE;
-      return (-1);
-    }
-
-    if (dn != dst)
-    {
-      if (dn >= eom)
-      {
-        errno = EMSGSIZE;
-        return(-1);
-      }
+	while ((n = *cp++) != 0) {
+		if ((n & NS_CMPRSFLGS) == NS_CMPRSFLGS) {
+			/* Some kind of compression pointer. */
+			errno = EMSGSIZE;
+			return (-1);
+		}
+		if (dn != dst) {
+			if (dn >= eom) {
+				errno = EMSGSIZE;
+				return (-1);
+			}
 			*dn++ = '.';
 		}
 		if ((l = labellen(cp - 1)) < 0) {
@@ -665,41 +640,33 @@ printable(int ch)
 static int
 irc_decode_bitstring(const char **cpp, char *dn, const char *eom)
 {
-  const char *cp = *cpp;
-  char *beg = dn, tc;
-  int b, blen, plen;
+        const char *cp = *cpp;
+        char *beg = dn, tc;
+        int b, blen, plen;
 
-  if ((blen = (*cp & 0xff)) == 0)
-    blen = 256;
+        if ((blen = (*cp & 0xff)) == 0)
+                blen = 256;
+        plen = (blen + 3) / 4;
+        plen += sizeof("\\[x/]") + (blen > 99 ? 3 : (blen > 9) ? 2 : 1);
+        if (dn + plen >= eom)
+                return(-1);
 
-  plen = (blen + 3) / 4;
-  plen += sizeof("\\[x/]") + (blen > 99 ? 3 : (blen > 9) ? 2 : 1);
+        cp++;
+        dn += sprintf(dn, "\\[x");
+        for (b = blen; b > 7; b -= 8, cp++)
+                dn += sprintf(dn, "%02x", *cp & 0xff);
+        if (b > 4) {
+                tc = *cp++;
+                dn += sprintf(dn, "%02x", tc & (0xff << (8 - b)));
+        } else if (b > 0) {
+                tc = *cp++;
+               dn += sprintf(dn, "%1x",
+                               ((tc >> 4) & 0x0f) & (0x0f << (4 - b)));
+        }
+        dn += sprintf(dn, "/%d]", blen);
 
-  if (dn + plen >= eom)
-    return(-1);
-
-  cp++;
-  dn += sprintf(dn, "\\[x");
-
-  for (b = blen; b > 7; b -= 8, cp++)
-    dn += sprintf(dn, "%02x", *cp & 0xff);
-
-  if (b > 4)
-  {
-    tc = *cp++;
-    dn += sprintf(dn, "%02x", tc & (0xff << (8 - b)));
-  }
-  else if (b > 0)
-  {
-    tc = *cp++;
-    dn += sprintf(dn, "%1x",
-                  ((tc >> 4) & 0x0f) & (0x0f << (4 - b)));
-  }
-
-  dn += sprintf(dn, "/%d]", blen);
-  *cpp = cp;
-
-  return(dn - beg);
+        *cpp = cp;
+        return(dn - beg);
 }
 
 /*
@@ -723,6 +690,7 @@ irc_ns_name_pton(const char *src, unsigned char *dst, size_t dstsiz)
   bp = dst;
   eom = dst + dstsiz;
   label = bp++;
+
 
   while ((c = *src++) != 0) {
     if (escaped) {
@@ -968,9 +936,11 @@ irc_encode_bitsring(const char **bp, const char *end, unsigned char **labelp,
   int afterslash = 0;
   const char *cp = *bp;
   char *tp, c;
-  const char *beg_blen = NULL;
+  const char *beg_blen;
   char *end_blen = NULL;
   int value = 0, count = 0, tbcount = 0, blen = 0;
+
+  beg_blen = end_blen = NULL;
 
   /* a bitstring must contain at least 2 characters */
   if (end - cp < 2)
@@ -982,11 +952,9 @@ irc_encode_bitsring(const char **bp, const char *end, unsigned char **labelp,
   if (!isxdigit((*cp) & 0xff)) /* reject '\[x/BLEN]' */
     return(EINVAL);
 
-  for (tp = *dst + 1; cp < end && tp < eom; cp++)
-  {
-    switch((c = *cp))
-    {
-      case ']': /* end of the bitstring */
+  for (tp = *dst + 1; cp < end && tp < eom; cp++) {
+    switch((c = *cp)) {
+    case ']': /* end of the bitstring */
       if (afterslash) {
         if (beg_blen == NULL)
           return(EINVAL);
@@ -1131,7 +1099,6 @@ irc_dn_find(const unsigned char *domain, const unsigned char *msg,
       sp += *sp + 1;
     }
   }
-
   errno = ENOENT;
   return (-1);
 }
@@ -1162,39 +1129,40 @@ irc_res_mkquery(
 	     unsigned char *buf,		/* buffer to put query */
 	     int buflen)		/* size of buffer */
 {
-  HEADER *hp;
-  unsigned char *cp;
-  int n;
-  unsigned char *dnptrs[20], **dpp, **lastdnptr;
+	HEADER *hp;
+	unsigned char *cp;
+	int n;
+	unsigned char *dnptrs[20], **dpp, **lastdnptr;
 
-  /* Initialize header fields. */
-  if ((buf == NULL) || (buflen < HFIXEDSZ))
-    return(-1);
+	/*
+	 * Initialize header fields.
+	 */
+	if ((buf == NULL) || (buflen < HFIXEDSZ))
+		return (-1);
+	memset(buf, 0, HFIXEDSZ);
+	hp = (HEADER *) buf;
 
-  memset(buf, 0, HFIXEDSZ);
-  hp = (HEADER *)buf;
+	hp->id = 0;
+	hp->opcode = QUERY;
+	hp->rd = 1;		/* recurse */
+	hp->rcode = NO_ERRORS;
+	cp = buf + HFIXEDSZ;
+	buflen -= HFIXEDSZ;
+	dpp = dnptrs;
+	*dpp++ = buf;
+	*dpp++ = NULL;
+	lastdnptr = dnptrs + sizeof dnptrs / sizeof dnptrs[0];
 
-  hp->id = 0;
-  hp->opcode = QUERY;
-  hp->rd = 1;		/* recurse */
-  hp->rcode = NO_ERRORS;
-  cp = buf + HFIXEDSZ;
-  buflen -= HFIXEDSZ;
-  dpp = dnptrs;
-  *dpp++ = buf;
-  *dpp++ = NULL;
-  lastdnptr = dnptrs + sizeof dnptrs / sizeof dnptrs[0];
+	if ((buflen -= QFIXEDSZ) < 0)
+	  return (-1);
+	if ((n = irc_dn_comp(dname, cp, buflen, dnptrs, lastdnptr)) < 0)
+	  return (-1);
 
-  if ((buflen -= QFIXEDSZ) < 0)
-    return (-1);
-  if ((n = irc_dn_comp(dname, cp, buflen, dnptrs, lastdnptr)) < 0)
-    return (-1);
+	cp += n;
+	buflen -= n;
+	IRC_NS_PUT16(type, cp);
+	IRC_NS_PUT16(class, cp);
+	hp->qdcount = htons(1);
 
-  cp += n;
-  buflen -= n;
-  IRC_NS_PUT16(type, cp);
-  IRC_NS_PUT16(class, cp);
-  hp->qdcount = htons(1);
-
-  return(cp - buf);
+	return (cp - buf);
 }
