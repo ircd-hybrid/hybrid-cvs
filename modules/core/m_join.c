@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_join.c,v 1.20 2004/01/26 03:35:18 metalrock Exp $
+ *  $Id: m_join.c,v 1.21 2004/03/06 22:45:20 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -88,7 +88,7 @@ _moddeinit(void)
   mod_del_cmd(&join_msgtab);
 }
 
-const char *_version = "$Revision: 1.20 $";
+const char *_version = "$Revision: 1.21 $";
 #endif
 
 /* m_join()
@@ -528,9 +528,10 @@ build_target_list(struct Client *client_p, struct Client *source_p,
         continue;
       }
 
-      /* XXX - When does this happen? */
       if (dlink_list_length(&chptr->members) == 0)
         flags = CHFL_CHANOP;
+      else
+        flags = 0;
     }
     else
     {
