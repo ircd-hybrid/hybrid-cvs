@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_rehash.c,v 1.21 2001/03/30 17:46:38 androsyn Exp $
+ *   $Id: m_rehash.c,v 1.22 2001/03/30 20:13:55 ejb Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -92,12 +92,6 @@ static void mo_rehash(struct Client *client_p, struct Client *source_p,
           sendto_realops_flags(FLAGS_ALL,"%s is rehashing DNS", parv[0]);
           restart_resolver();   /* re-read /etc/resolv.conf AGAIN?
                                    and close/re-open res socket */
-          found = YES;
-        }
-      else if(irccmp(parv[1],"GC") == 0)
-        {
-          sendto_one(source_p, form_str(RPL_REHASHING), me.name, parv[0], "garbage collecting");
-          sendto_realops_flags(FLAGS_ALL,"%s is garbage collecting", parv[0]);
           found = YES;
         }
       else if(irccmp(parv[1],"MOTD") == 0)

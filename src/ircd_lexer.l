@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.85 2001/03/23 08:43:33 ejb Exp $
+ * $Id: ircd_lexer.l,v 1.86 2001/03/30 20:14:01 ejb Exp $
  */
 
 %option case-insensitive
@@ -49,6 +49,7 @@ char *ip_string;
 
 int  lineno;
 char linebuf[IRCD_BUFSIZE];
+void ccomment(void);
 %}
 
 ws		[ \t]*
@@ -56,6 +57,7 @@ comment		#.*
 qstring		\"[^\"\n]*[\"\n]
 
 %%
+"/*"		{ ccomment(); }
 \n.*		{ 
 		  strcpy(linebuf, yytext+1); 
 		  lineno++;
@@ -294,3 +296,23 @@ tb			{ return TBYTES; }
 
 %%
 
+/* -kre*/
+void ccomment(void)
+{
+  int c;
+
+  while (1)
+  {
+    while ((c=input())!='*' && c!=EOF);
+    if (c=='*')
+    {
+      while ((c=input())=='*');
+      if (c=='/') break;
+    }
+    if (c==EOF)
+    {
+      YY_FATAL_ERROR("EOF in comment");
+      break;
+    }
+  }
+}
