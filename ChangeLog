@@ -1,3 +1,15 @@
+androsyn    2002/05/18 17:50:58 EDT	(20020518_4)
+
+  Modified files:
+    src                  s_auth.c 
+  Log:
+  Make unlink_auth_request use dlinkFind()
+  
+  Revision  Changes    Path
+  7.93      +5 -15     ircd-hybrid-7/src/s_auth.c
+
+
+
 androsyn    2002/05/18 16:58:34 EDT	(20020518_3)
 
   Modified files:
@@ -26600,4 +26612,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3665 2002/05/18 20:58:40 androsyn Exp $
+$Id: ChangeLog,v 7.3666 2002/05/18 21:51:05 androsyn Exp $
