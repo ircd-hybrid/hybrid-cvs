@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 7.6 2000/01/02 07:42:49 db Exp $
+ *   $Id: m_sjoin.c,v 7.7 2000/01/02 07:44:03 db Exp $
  */
 #include "m_commands.h"
 #include "channel.h"
@@ -135,16 +135,6 @@ int     m_sjoin(struct Client *cptr,
 
   isnew = ChannelExists(parv[2]) ? 0 : 1;
   chptr = get_channel(sptr, parv[2], CREATE);
-
-#ifdef HUB
-  if(IsCapable(cptr,CAP_LL) &&
-     ! (chptr->lazyLinkChannelExists & cptr->serverMask) )
-    {
-#ifdef DEBUGLL
-      sendto_realops("m_sjoin: remote server doesn't know about us yet");
-#endif
-    }
-#endif
 
   /*
    * bogus ban removal code.
