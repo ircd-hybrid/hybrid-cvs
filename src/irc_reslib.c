@@ -102,7 +102,7 @@
 #define DNS_LABELTYPE_BITSTRING		0x41
 #define MAXLINE 128
 
-/* $Id: irc_reslib.c,v 7.2 2003/05/13 02:32:18 joshk Exp $ */
+/* $Id: irc_reslib.c,v 7.3 2003/05/13 02:36:23 db Exp $ */
 
 static FBFILE *file;
 
@@ -1106,3 +1106,113 @@ mklower(int ch)
   return (ch);
 }
 
+/* From resolv/mkquery.c */
+
+/*
+ * Form all types of queries.
+ * Returns the size of the result or -1.
+ */
+int
+irc_res_mkquery(
+	     int op,			/* opcode of query */
+	     const char *dname,		/* domain name */
+	     int class, int type,	/* class and type of query */
+	     const u_char *data,	/* resource record data */
+	     int datalen,		/* length of data */
+	     u_char *buf,		/* buffer to put query */
+	     int buflen)		/* size of buffer */
+{
+	register HEADER *hp;
+	register u_char *cp;
+	register int n;
+	u_char *dnptrs[20], **dpp, **lastdnptr;
+
+	/*
+	 * Initialize header fields.
+	 */
+	if ((buf == NULL) || (buflen < HFIXEDSZ))
+		return (-1);
+	memset(buf, 0, HFIXEDSZ);
+	hp = (HEADER *) buf;
+
+	/* XXX We randomise our own id in irc_res.c */
+#if notneeded
+	hp->id = htons(++statp->id);
+#endif
+	hp->opcode = op;
+#if notneeded	
+	hp->rd = (statp->options & RES_RECURSE) != 0;
+#endif
+	hp->rcode = NOERROR;
+	cp = buf + HFIXEDSZ;
+	buflen -= HFIXEDSZ;
+	dpp = dnptrs;
+	*dpp++ = buf;
+	*dpp++ = NULL;
+	lastdnptr = dnptrs + sizeof dnptrs / sizeof dnptrs[0];
+	/*
+	 * perform opcode specific processing
+	 */
+	switch (op) {
+	case QUERY:	/*FALLTHROUGH*/
+	case NS_NOTIFY_OP:
+		if ((buflen -= QFIXEDSZ) < 0)
+			return (-1);
+		if ((n = dn_comp(dname, cp, buflen, dnptrs, lastdnptr)) < 0)
+			return (-1);
+		cp += n;
+		buflen -= n;
+		__putshort(type, cp);
+		cp += INT16SZ;
+		__putshort(class, cp);
+		cp += INT16SZ;
+		hp->qdcount = htons(1);
+		if (op == QUERY || data == NULL)
+			break;
+		/*
+		 * Make an additional record for completion domain.
+		 */
+		buflen -= RRFIXEDSZ;
+		n = dn_comp((const char *)data, cp, buflen, dnptrs, lastdnptr);
+		if (n < 0)
+			return (-1);
+		cp += n;
+		buflen -= n;
+		__putshort(T_NULL, cp);
+		cp += INT16SZ;
+		__putshort(class, cp);
+		cp += INT16SZ;
+		__putlong(0, cp);
+		cp += INT32SZ;
+		__putshort(0, cp);
+		cp += INT16SZ;
+		hp->arcount = htons(1);
+		break;
+
+	case IQUERY:
+		/*
+		 * Initialize answer section
+		 */
+		if (buflen < 1 + RRFIXEDSZ + datalen)
+			return (-1);
+		*cp++ = '\0';	/* no domain name */
+		__putshort(type, cp);
+		cp += INT16SZ;
+		__putshort(class, cp);
+		cp += INT16SZ;
+		__putlong(0, cp);
+		cp += INT32SZ;
+		__putshort(datalen, cp);
+		cp += INT16SZ;
+		if (datalen) {
+			memcpy(cp, data, datalen);
+			cp += datalen;
+		}
+		hp->ancount = htons(1);
+		break;
+
+	default:
+		return (-1);
+	}
+	return (cp - buf);
+}

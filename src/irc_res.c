@@ -7,7 +7,7 @@
  * The authors takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: irc_res.c,v 7.6 2003/05/13 02:32:18 joshk Exp $
+ * $Id: irc_res.c,v 7.7 2003/05/13 02:36:23 db Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -49,7 +49,7 @@
 #error this code needs to be able to address individual octets 
 #endif
 
-/* $Id: irc_res.c,v 7.6 2003/05/13 02:32:18 joshk Exp $ */
+/* $Id: irc_res.c,v 7.7 2003/05/13 02:36:23 db Exp $ */
 
 static PF res_readreply;
 
@@ -570,8 +570,8 @@ query_name(const char* name, int query_class, int type,
   int  request_len = 0;
 
   memset(buf, 0, sizeof(buf));
-  if ((request_len = res_mkquery(QUERY, name, query_class, type, 
-          NULL, 0, NULL, (unsigned char *)buf,
+  if ((request_len = irc_res_mkquery(QUERY, name, query_class, type, 
+          NULL, 0, (unsigned char *)buf,
           sizeof(buf))) > 0)
   {
     HEADER* header = (HEADER*) buf;

@@ -1,7 +1,7 @@
 /*
  * include/res.h (C)opyright 1992 Darren Reed.
  *
- * $Id: irc_reslib.h,v 7.2 2003/05/13 02:32:11 joshk Exp $
+ * $Id: irc_reslib.h,v 7.3 2003/05/13 02:36:22 db Exp $
  */
 #ifndef INCLUDED_ircdreslib_h
 #define INCLUDED_ircdreslib_h
@@ -75,7 +75,10 @@ int irc_dn_skipname(const u_char *ptr, const u_char *eom);
 int ns_name_skip(const u_char **ptrptr, const u_char *eom);
 int irc_ns_name_pton(const char *src, u_char *dst, size_t dstsiz);
 int irc_ns_name_pack(const u_char *src, u_char *dst, int dstsiz, const u_char **dnptrs, const u_char **lastdnptr);
+irc_res_mkquery(int op, const char *dname, int class, int type,
+                const unsigned char *data,
+                int datalen, unsigned char *buf, int buflen);
 
 #endif /* INCLUDED_res_h */
 
-/* $Id: irc_reslib.h,v 7.2 2003/05/13 02:32:11 joshk Exp $ */
+/* $Id: irc_reslib.h,v 7.3 2003/05/13 02:36:22 db Exp $ */
