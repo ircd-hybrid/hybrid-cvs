@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.303 2002/11/30 13:39:50 androsyn Exp $
+ *  $Id: client.c,v 7.304 2002/12/10 03:10:56 androsyn Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -175,28 +175,21 @@ struct Client* make_client(struct Client* from)
   return client_p;
 }
 
-void free_client(struct Client* client_p)
+void free_local_client(struct Client *client_p)
 {
-  assert(NULL != client_p);
-  assert(&me != client_p);
-  assert(NULL == client_p->prev);
-  assert(NULL == client_p->next);
-
   if (MyConnect(client_p))
-    {
-      assert(IsClosing(client_p) && IsDead(client_p));
-      
+  {
     /*
      * clean up extra sockets from P-lines which have been discarded.
      */
-    if (client_p->localClient->listener)
-    {
-      assert(0 < client_p->localClient->listener->ref_count);
-      if (0 == --client_p->localClient->listener->ref_count &&
-          !client_p->localClient->listener->active) 
-        free_listener(client_p->localClient->listener);
-      client_p->localClient->listener = 0;
-    }
+      if (client_p->localClient->listener)
+      {
+        assert(0 < client_p->localClient->listener->ref_count);
+        if (0 == --client_p->localClient->listener->ref_count &&
+            !client_p->localClient->listener->active) 
+          free_listener(client_p->localClient->listener);
+        client_p->localClient->listener = 0;
+      }
 
       if (client_p->localClient->fd >= 0)
 	fd_close(client_p->localClient->fd);
@@ -204,11 +197,21 @@ void free_client(struct Client* client_p)
       BlockHeapFree(lclient_heap, client_p->localClient);
       --local_client_count;
       assert(local_client_count >= 0);
-    }
+      client_p->localClient = NULL;
+  }
+}
+
+void free_client(struct Client* client_p)
+{
+  assert(NULL != client_p);
+  assert(&me != client_p);
+  assert(NULL == client_p->prev);
+  assert(NULL == client_p->next);
+
+  if(MyConnect(client_p)
+     free_local_client(client_p);
   else
-    {
       --remote_client_count;
-    }
 
   BlockHeapFree(client_heap, client_p);
 }
@@ -1005,12 +1008,6 @@ static void exit_one_client(struct Client *client_p,
   /* remove from global client list */
   remove_client_from_list(source_p);
 
-  if(MyConnect(source_p))
-  {
-    linebuf_donebuf(&source_p->localClient->buf_recvq);
-    linebuf_donebuf(&source_p->localClient->buf_sendq);
-  }
-  
   /* Check to see if the client isn't already on the dead list */
   assert(dlinkFind(&dead_list, source_p) == NULL);
   /* add to dead client dlist */
@@ -1341,20 +1338,6 @@ exit_client(
 	    sendto_one(source_p, "ERROR :Closing Link: %s (%s)",
 		       source_p->host, comment);
 	}
-      /*
-      ** Currently only server connections can have
-      ** depending remote clients here, but it does no
-      ** harm to check for all local clients. In
-      ** future some other clients than servers might
-      ** have remotes too...
-      **
-      ** Close the Client connection first and mark it
-      ** so that no messages are attempted to send to it.
-      ** (The following *must* make MyConnect(source_p) == FALSE!).
-      ** It also makes source_p->from == NULL, thus it's unnecessary
-      ** to test whether "source_p != target_p" in the following loops.
-      */
-     close_connection(source_p);
     }
 
   if(IsServer(source_p))
@@ -1392,6 +1375,12 @@ exit_client(
               source_p->localClient->sendK, source_p->localClient->receiveK);
         }
     }
+
+  if(MyConnect(source_p))
+  {
+     close_connection(source_p);
+     free_local_client(source_p);
+  }
   /* The client *better* be off all of the lists */
   assert(dlinkFind(&unknown_list, source_p) == NULL);
   assert(dlinkFind(&lclient_list, source_p) == NULL);
