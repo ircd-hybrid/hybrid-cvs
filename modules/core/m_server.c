@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.124 2004/10/31 22:51:50 adx Exp $
+ *  $Id: m_server.c,v 1.125 2004/11/03 07:23:48 db Exp $
  */
 
 #include "stdinc.h"
@@ -77,7 +77,7 @@ _moddeinit(void)
   mod_del_cmd(&sid_msgtab);
 }
 
-const char *_version = "$Revision: 1.124 $";
+const char *_version = "$Revision: 1.125 $";
 #endif
 
 
@@ -213,8 +213,13 @@ mr_server(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  while ((target_p = find_servconn_in_progress(name)))
-    exit_client(target_p, target_p, &me, "Overridden");
+  /* XXX If somehow there is a connect in progress and
+   * a connect comes in with same name toss the pending one,
+   * but only if it's not the same client! - Dianora
+   */
+  if ((target_p = find_servconn_in_progress(name)))
+    if (target_p != client_p)
+      exit_client(target_p, target_p, &me, "Overridden");
 
   if (ServerInfo.hub && IsCapable(client_p, CAP_LL))
   {
@@ -327,8 +332,13 @@ ms_server(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  while ((target_p = find_servconn_in_progress(name)))
-    exit_client(target_p, target_p, &me, "Overridden");
+  /* XXX If somehow there is a connect in progress and
+   * a connect comes in with same name toss the pending one,
+   * but only if it's not the same client! - Dianora
+   */
+  if ((target_p = find_servconn_in_progress(name)))
+    if (target_p != client_p)
+      exit_client(target_p, target_p, &me, "Overridden");
 
   /* User nicks never have '.' in them and server names
    * must always have '.' in them.
@@ -576,8 +586,13 @@ ms_sid(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  while ((target_p = find_servconn_in_progress(name)))
-    exit_client(target_p, target_p, &me, "Overridden");
+  /* XXX If somehow there is a connect in progress and
+   * a connect comes in with same name toss the pending one,
+   * but only if it's not the same client! - Dianora
+   */
+  if ((target_p = find_servconn_in_progress(name)))
+    if (target_p != client_p)
+      exit_client(target_p, target_p, &me, "Overridden");
 
   /* User nicks never have '.' in them and server names
    * must always have '.' in them.
