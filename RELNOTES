@@ -1,3 +1,14 @@
+-- ircd-hybrid-7rc6 RELNOTES
+o) fixed linebuf leak
+o) allow op/ban "cookies" (for now at least)
+o) fixed bug in client exit
+o) fixed invite bug with +pi channels
+o) changed all instances of nick[user@host] to nick [user@host]
+o) fixed wrong numeric for KNOCKDISABLED
+o) fixed servlink bug "char" is not always signed
+o) fixed typo that caused leaking of hidden server IPs
+o) fixed potential core in unkline
+
 -- ircd-hybrid-7rc5 RELNOTES
 o) Fixed null hostname bug in ipv6 
 o) Fixed hook code so it won't re-hook
@@ -108,4 +119,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.44 2002/10/31 05:30:36 db Exp $
+$Id: RELNOTES,v 1.45 2002/12/16 06:44:45 db Exp $
