@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_opme.c,v 1.32 2003/04/18 02:13:37 db Exp $
+ *   $Id: m_opme.c,v 1.33 2003/05/03 11:10:00 michael Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -36,8 +36,7 @@
 #include "vchannel.h"
 
 
-static void mo_opme(struct Client *client_p, struct Client *source_p,
-                    int parc, char *parv[]);
+static void mo_opme(struct Client *client_p, struct Client *source_p, int parc, char *parv[]);
 static int chan_is_opless(struct Channel *chptr);
 
 struct Message opme_msgtab = {
@@ -57,7 +56,7 @@ _moddeinit(void)
   mod_del_cmd(&opme_msgtab);
 }
 
-const char *_version = "$Revision: 1.32 $";
+const char *_version = "$Revision: 1.33 $";
 
 static int
 chan_is_opless(struct Channel *chptr)
@@ -67,9 +66,9 @@ chan_is_opless(struct Channel *chptr)
 #else
   if (chptr->chanops.head != NULL)
 #endif
-	  return 0;
+    return(0);
   else
-	  return 1;
+    return(1);
 }
 
 /*
@@ -79,46 +78,46 @@ chan_is_opless(struct Channel *chptr)
 */
 static void
 mo_opme(struct Client *client_p, struct Client *source_p,
-	int parc, char *parv[])
+        int parc, char *parv[])
 {
   struct Channel *chptr, *root_chptr;
   int on_vchan = 0;
   dlink_node *ptr;
   dlink_node *locptr;
-  
+
   /* admins only */
   if (!IsAdmin(source_p))
   {
-    sendto_one(source_p, ":%s NOTICE %s :You need admin = yes;", me.name,
-               parv[0]);
+    sendto_one(source_p, ":%s NOTICE %s :You need admin = yes;",
+               me.name, source_p->name);
     return;
   }
 
   /* XXX - we might not have CBURSTed this channel if we are a lazylink
    * yet. */
-  chptr= hash_find_channel(parv[1]);
+  chptr      = hash_find_channel(parv[1]);
   root_chptr = chptr;
 
 #ifdef VCHANS
   if (chptr && parc > 2 && parv[2][0] == '!')
-    {
-      chptr = find_vchan(chptr, parv[2]);
-      if (root_chptr != chptr)
-		  on_vchan++;
-    }
+  {
+    chptr = find_vchan(chptr, parv[2]);
+
+    if (root_chptr != chptr)
+      on_vchan++;
+  }
 #endif
-  
   if (chptr == NULL)
   {
     sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
-               me.name, parv[0], parv[1]);
+               me.name, source_p->name, parv[1]);
     return;
   }
 
   if (!chan_is_opless(chptr))
   {
     sendto_one(source_p, ":%s NOTICE %s :%s Channel is not opless",
-               me.name, parv[0], parv[1]);
+               me.name, source_p->name, parv[1]);
     return;
   }
 
@@ -142,22 +141,20 @@ mo_opme(struct Client *client_p, struct Client *source_p,
        return;      
     }
 
-  if((locptr = find_user_link(&chptr->locpeons, source_p)))
+  if ((locptr = find_user_link(&chptr->locpeons, source_p)))
     dlinkDelete(locptr, &chptr->locpeons);
-  else if((locptr = find_user_link(&chptr->locvoiced, source_p)))
+  else if ((locptr = find_user_link(&chptr->locvoiced, source_p)))
     dlinkDelete(locptr, &chptr->locvoiced);
 #ifdef HALFOPS
-  else if((locptr = find_user_link(&chptr->lochalfops, source_p)))
+  else if ((locptr = find_user_link(&chptr->lochalfops, source_p)))
     dlinkDelete(locptr, &chptr->lochalfops);
 #endif
-  else if((locptr = find_user_link(&chptr->locchanops, source_p)))
+  else if ((locptr = find_user_link(&chptr->locchanops, source_p)))
     dlinkDelete(locptr, &chptr->locchanops);
-  
 #ifdef REQUIRE_OANDV
-  else if((locptr = find_user_link(&chptr->locchanops_voiced, source_p)))
+  else if ((locptr = find_user_link(&chptr->locchanops_voiced, source_p)))
     dlinkDelete(locptr, &chptr->locchanops_voiced);
 #endif
-
   else
     return;
 

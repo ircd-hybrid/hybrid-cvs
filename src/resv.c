@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: resv.c,v 7.18 2003/05/02 17:20:33 michael Exp $
+ *  $Id: resv.c,v 7.19 2003/05/03 11:10:05 michael Exp $
  */
 
 #include "stdinc.h"
@@ -42,17 +42,16 @@ dlink_list resv_nick_list    = { NULL, NULL, 0 };
 struct ResvChannel *
 create_channel_resv(char *name, char *reason, unsigned char conf)
 {
-  struct ResvChannel *resv_p = NULL;
-  int len;
+  struct ResvChannel *resv_p;
+
+  if (name == NULL || reason == NULL)
+    return(NULL);
 
   if (find_channel_resv(name))
     return(NULL);
 
-  if ((len = strlen(reason)) > TOPICLEN)
-  {
+  if (strlen(reason) > TOPICLEN)
     reason[TOPICLEN] = '\0';
-    len = TOPICLEN;
-  }
 
   resv_p = (struct ResvChannel *)MyMalloc(sizeof(struct ResvChannel));
 
@@ -72,14 +71,14 @@ create_nick_resv(char *name, char *reason, unsigned char conf)
   struct ResvNick *resv_p;
   int len;
 
+  if (name == NULL || reason == NULL)
+    return(NULL);
+
   if (find_nick_resv(name))
     return(NULL);
 
-  if ((len = strlen(reason)) > TOPICLEN)
-  {
+  if (strlen(reason) > TOPICLEN)
     reason[TOPICLEN] = '\0';
-    len = TOPICLEN;
-  }
 
   resv_p = (struct ResvNick *)MyMalloc(sizeof(struct ResvNick));
 
@@ -230,7 +229,7 @@ clean_resv_nick(char *nick)
   if (*nick == '-' || IsDigit(*nick))
     return(0);
 
-  while((tmpch = *nick++))
+  while ((tmpch = *nick++))
   {
     if (tmpch == '?')
       q++;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: class.c,v 7.45 2003/05/01 15:53:39 michael Exp $
+ *  $Id: class.c,v 7.46 2003/05/03 11:10:05 michael Exp $
  */
 
 #include "stdinc.h"
@@ -41,7 +41,7 @@
 #define BAD_PING         -2
 #define BAD_CLIENT_CLASS -3
 
-dlink_list ClassList;
+dlink_list ClassList = { NULL, NULL, 0 };
 
 /* find_class_ptr()
  *
@@ -317,11 +317,11 @@ void
 initclass(void)
 {
   struct Class *aclass;
-
+#if 0
   ClassList.head   = NULL;
   ClassList.tail   = NULL;
   ClassList.length = 0;
-
+#endif
   aclass = make_class();
 
   ClassType(aclass) = 0;

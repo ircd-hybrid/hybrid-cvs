@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.c,v 7.47 2003/04/13 09:46:58 michael Exp $
+ *  $Id: s_log.c,v 7.48 2003/05/03 11:10:05 michael Exp $
  */
 
 #include "stdinc.h"
@@ -27,7 +27,6 @@
 /* XXX #ifdef HAVE_SYSLOG_H */
 #include <syslog.h>
 #endif
-
 #include "client.h"	/* Needed for struct Client */
 #include "s_log.h"
 #include "fileio.h"
@@ -44,19 +43,20 @@
 #define LOG_BUFSIZE 2000
 
 #ifdef USE_LOGFILE
-static FBFILE* logFile;
+static FBFILE *logFile;
 #endif
 static int logLevel = INIT_LOG_LEVEL;
 
 
 #ifndef SYSLOG_USERS
 static EVH user_log_resync;
-static FBFILE *user_log_fb=NULL;
+static FBFILE *user_log_fb = NULL;
 #endif
 
 
 #ifdef USE_SYSLOG
-static int sysLogLevel[] = {
+static int sysLogLevel[] =
+{
   LOG_CRIT,
   LOG_ERR,
   LOG_WARNING,
@@ -88,45 +88,48 @@ static int
 open_log(const char* filename)
 {
   if (!server_state.foreground)
-  {
     close(2); /* let the logfile grab fd 2 to catch stderr */
-  }
+
   logFile = fbopen(filename, "a");
+
   if (logFile == NULL)
   {
 #ifdef USE_SYSLOG
     syslog(LOG_ERR, "Unable to open log file: %s: %s",
            filename, strerror(errno));
 #endif
-    return 0;
+    return(0);
   }
-  return 1;
+
+  return(1);
 }
 #endif
 
 
 #if defined(USE_LOGFILE) 
 static void 
-write_log(const char* message)
+write_log(const char *message)
 {
   char buf[LOG_BUFSIZE];
 
   if (logFile == NULL)
     return;
 
-  snprintf(buf, LOG_BUFSIZE, "[%s] %s\n",
+  snprintf(buf, sizeof(buf), "[%s] %s\n",
            smalldate(CurrentTime), message);
   fbputs(buf, logFile);
 }
 #endif
    
-void 
-ilog(int priority, const char* fmt, ...)
+void
+ilog(int priority, const char *fmt, ...)
 {
-  char    buf[LOG_BUFSIZE];
+  char buf[LOG_BUFSIZE];
   va_list args;
+
   assert(-1 < priority);
-  if(fmt == NULL)
+
+  if (fmt == NULL)
     return;
 
   if (priority > logLevel)
@@ -145,8 +148,8 @@ ilog(int priority, const char* fmt, ...)
 #endif
 }
   
-void 
-init_log(const char* filename)
+void
+init_log(const char *filename)
 {
 #if defined(USE_LOGFILE) 
   open_log(filename);
@@ -160,22 +163,22 @@ init_log(const char* filename)
 }
 
 void
-reopen_log(const char* filename)
+reopen_log(const char *filename)
 {
 #if defined(USE_LOGFILE)
   fbclose(logFile);
   open_log(filename);
-#endif  
-  
+#endif
 }
-void 
+
+void
 set_log_level(int level)
 {
   if (L_ERROR < level && level <= L_DEBUG)
     logLevel = level;
 }
 
-int 
+int
 get_log_level(void)
 {
   return(logLevel);
@@ -184,9 +187,9 @@ get_log_level(void)
 const char *
 get_log_level_as_string(int level)
 {
-  if(level > L_DEBUG)
+  if (level > L_DEBUG)
     level = L_DEBUG;
-  else if(level < L_ERROR)
+  else if (level < L_ERROR)
     level = L_ERROR;
 
   return(logLevelToString[level]);
@@ -199,7 +202,7 @@ get_log_level_as_string(int level)
  * side effects - Current exiting client is logged to
  *		  either SYSLOG or to file.
  */
-void 
+void
 log_user_exit(struct Client *source_p)
 {
   time_t on_for;
@@ -304,9 +307,8 @@ log_oper(struct Client *source_p, const char *name)
     if (oper_fb != NULL)
     {
       ircsprintf(linebuf, "%s OPER (%s) by (%s!%s@%s)\n",
-		 myctime(CurrentTime), name, 
-		 source_p->name, source_p->username,
-		 source_p->host);
+		 myctime(CurrentTime), name, source_p->name,
+                 source_p->username, source_p->host);
 
       fbputs(linebuf,oper_fb);
       fbclose(oper_fb);
@@ -331,18 +333,18 @@ log_failed_oper(struct Client *source_p, const char *name)
   
   if (IsPerson(source_p))
   {
-    if((oper_fb = fbopen(ConfigFileEntry.fname_foperlog, "r")) != NULL)
+    if ((oper_fb = fbopen(ConfigFileEntry.fname_foperlog, "r")) != NULL)
     {
       fbclose(oper_fb);
       oper_fb = fbopen(ConfigFileEntry.fname_foperlog, "a");
     }
 
-    if(oper_fb != NULL)
+    if (oper_fb != NULL)
     {
       ircsprintf(linebuf, "%s FAILED OPER (%s) by (%s!%s@%s)\n",
-		 myctime(CurrentTime), name, 
-		 source_p->name, source_p->username, source_p->host);
-      
+		 myctime(CurrentTime), name, source_p->name,
+                 source_p->username, source_p->host);
+
       fbputs(linebuf,oper_fb);
       fbclose(oper_fb);
     }

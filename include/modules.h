@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.h,v 7.34 2003/04/13 09:46:52 michael Exp $
+ *  $Id: modules.h,v 7.35 2003/05/03 11:10:04 michael Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -40,9 +40,10 @@
 #include "memory.h"
 
 #ifndef STATIC_MODULES
-struct module {
+struct module
+{
   char *name;
-  char *version;
+  const char *version;
   void *address;
   int core;
 };
@@ -55,9 +56,6 @@ struct module_path
 /* add a path */
 extern void mod_add_path(const char *path);
 extern void mod_clear_paths(void);
-
-/* load a module */
-extern void load_module(char *path);
 
 /* load all modules */
 extern void load_all_modules(int warn);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_jupe.c,v 1.49 2003/04/19 10:21:46 michael Exp $
+ *  $Id: m_jupe.c,v 1.50 2003/05/03 11:09:59 michael Exp $
  */
 
 #include "stdinc.h"
@@ -67,7 +67,7 @@ _moddeinit(void)
   mod_del_cmd(&jupe_msgtab);
 }
 
-const char *_version = "$Revision: 1.49 $";
+const char *_version = "$Revision: 1.50 $";
 #endif
 
 /*
@@ -175,7 +175,8 @@ mo_jupe(struct Client *client_p, struct Client *source_p,
 /* bogus_host()
  *
  * inputs       - hostname
- * output       - 1 if a bogus hostname input, 0 if its valid
+ * output       - 1 if a bogus hostname input,
+ *              - 0 if its valid
  * side effects - none
  */
 static int

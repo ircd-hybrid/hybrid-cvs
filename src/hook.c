@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hook.c,v 7.22 2003/04/18 21:48:38 adx Exp $
+ *  $Id: hook.c,v 7.23 2003/05/03 11:10:05 michael Exp $
  */
 
 /* hooks are used by modules to hook into events called by other parts of
@@ -33,7 +33,7 @@
 #include "hook.h"
 #include "memory.h"
 
-dlink_list hooks = {NULL, NULL, 0};
+static dlink_list hooks = { NULL, NULL, 0 };
 static hook *find_hook(const char *name);
 
 void
@@ -51,7 +51,7 @@ static hook *
 new_hook(const char *name)
 {
   hook *h;
-	
+
   h = MyMalloc(sizeof(hook));
   DupString(h->name, name);
   return(h);

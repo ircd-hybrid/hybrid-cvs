@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: m_tb.c,v 1.14 2003/04/18 02:13:38 db Exp $
+ *  $Id: m_tb.c,v 1.15 2003/05/03 11:10:00 michael Exp $
  */
 
 #include "stdinc.h"
@@ -50,11 +50,8 @@
  */
 #define TBURST_PROPAGATE
 
-
-
 static void ms_tburst(struct Client *, struct Client *, int, char **);
-static void set_topic(struct Client *, struct Channel *, 
-		      time_t, char *, char *);
+static void set_topic(struct Client *, struct Channel *, time_t, char *, char *);
 static void set_tburst_capab(void);
 static void unset_tburst_capab(void);
 int send_tburst(struct hook_burst_channel *);
@@ -81,7 +78,7 @@ _moddeinit(void)
   unset_tburst_capab();
 }
 
-const char *_version = "$Revision: 1.14 $";
+const char *_version = "$Revision: 1.15 $";
 #endif
 
 /* ms_tburst()
@@ -95,28 +92,27 @@ const char *_version = "$Revision: 1.14 $";
  */
 static void
 ms_tburst(struct Client *client_p, struct Client *source_p,
-	  int parc, char *parv[])
+          int parc, char *parv[])
 {
   struct Channel *chptr;
   time_t newchannelts;
   time_t newtopicts;
 
   newchannelts = atol(parv[1]);
-  newtopicts = atol(parv[3]);
+  newtopicts   = atol(parv[3]);
 
-  if((chptr = hash_find_channel(parv[2])))
+  if ((chptr = hash_find_channel(parv[2])))
   {
-    if(chptr->channelts < newchannelts)
+    if (chptr->channelts < newchannelts)
       return;
 
-    else if(chptr->channelts == newchannelts)
+    else if (chptr->channelts == newchannelts)
     {
-      if(chptr->topic == NULL || (chptr->topic_time > newtopicts))
+      if (chptr->topic == NULL || (chptr->topic_time > newtopicts))
 	set_topic(source_p, chptr, newtopicts, parv[4], parv[5]);
       else
 	return;
     }
-
     else
       set_topic(source_p, chptr, newtopicts, parv[4], parv[5]);
   }
@@ -124,7 +120,7 @@ ms_tburst(struct Client *client_p, struct Client *source_p,
 
 static void
 set_topic(struct Client *source_p, struct Channel *chptr, 
-	  time_t newtopicts, char *topicwho, char *topic)
+          time_t newtopicts, char *topicwho, char *topic)
 {
   set_channel_topic(chptr, topic, topicwho, newtopicts);
 
@@ -157,11 +153,10 @@ unset_tburst_capab(void)
 int
 send_tburst(struct hook_burst_channel *data)
 {
-  if(data->chptr->topic != NULL && IsCapable(data->client, CAP_TBURST))
+  if (data->chptr->topic != NULL && IsCapable(data->client, CAP_TBURST))
     sendto_one(data->client, ":%s TBURST %ld %s %ld %s :%s",
                me.name, data->chptr->channelts, data->chptr->chname,
 	       data->chptr->topic_time, data->chptr->topic_info, 
 	       data->chptr->topic);
-
-  return 0;
+  return(0);
 }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.250 2003/04/19 22:18:42 db Exp $
+ *  $Id: s_user.c,v 7.251 2003/05/03 11:10:05 michael Exp $
  */
 
 #include "stdinc.h"
@@ -155,7 +155,7 @@ unsigned int user_modes_from_c_to_bitmask[] =
   UMODE_WALLOP,     /* w */
   UMODE_EXTERNAL,   /* x */
   UMODE_SPY,        /* y */
-  UMODE_OPERWALL,   /* z 0x7A */
+  UMODE_OPERWALL,   /* z      0x7A */
   0,0,0,0,0,        /* 0x7B - 0x7F */
 
   /* 0x80 */ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, /* 0x9F */
@@ -322,19 +322,21 @@ register_local_user(struct Client *client_p, struct Client *source_p,
 
   if (!valid_hostname(source_p->host))
   {
-    sendto_one(source_p, ":%s NOTICE %s :*** Notice -- You have an illegal character in your hostname", 
-               me.name, source_p->name);
+    sendto_one(source_p, ":%s NOTICE %s :*** Notice -- You have an illegal character "
+               "in your hostname", me.name, source_p->name);
     strlcpy(source_p->host, source_p->localClient->sockhost, sizeof(source_p->host));
   }
 
   ptr   = source_p->localClient->confs.head;
   aconf = ptr->data;
-
+#if 0
+ /* verify_access() should take care of this */
   if (aconf == NULL)
   {
     exit_client(client_p, source_p, &me, "*** Not Authorized");
     return(CLIENT_EXITED);
   }
+#endif
 
   if (!IsGotId(source_p))
   {
@@ -344,9 +346,8 @@ register_local_user(struct Client *client_p, struct Client *source_p,
     if (IsNeedIdentd(aconf))
     {
       ServerStats->is_ref++;
-      sendto_one(source_p,
-                 ":%s NOTICE %s :*** Notice -- You need to install identd to use this server",
-                 me.name, client_p->name);
+      sendto_one(source_p, ":%s NOTICE %s :*** Notice -- You need to install identd "
+                 "to use this server", me.name, client_p->name);
       exit_client(client_p, source_p, &me, "Install identd");
       return(CLIENT_EXITED);
     }
@@ -402,8 +403,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   /* valid user name check */
   if (valid_username(source_p->username) == 0)
   {
-    sendto_realops_flags(UMODE_REJ, L_ALL,
-                         "Invalid username: %s (%s@%s)",
+    sendto_realops_flags(UMODE_REJ, L_ALL, "Invalid username: %s (%s@%s)",
                          nick, source_p->username, source_p->host);
     ServerStats->is_ref++;
     ircsprintf(tmpstr2, "Invalid username [%s]", source_p->username);
@@ -464,7 +464,8 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   SetClient(source_p);
 
   /* XXX source_p->servptr is &me, since local client */
-  source_p->servptr = find_server(user->server);
+  /* source_p->servptr = find_server(user->server);   */
+  source_p->servptr = &me;
   dlinkAdd(source_p, &source_p->lnode, &source_p->servptr->serv->users);
 
   /* Increment our total user count here */
@@ -654,12 +655,11 @@ introduce_client(struct Client *client_p, struct Client *source_p,
   return(0);
 }
 
-/* 
- * valid_hostname - check hostname for validity
+/* valid_hostname()
  *
  * Inputs       - pointer to user
  * Output       - YES if valid, NO if not
- * Side effects - NONE
+ * Side effects - check hostname for validity
  *
  * NOTE: this doesn't allow a hostname to begin with a dot and
  * will not allow more dots than chars.
@@ -687,13 +687,12 @@ valid_hostname(const char *hostname)
   return(YES);
 }
 
-/* 
- * valid_username - check username for validity
+/* valid_username()
  *
  * Inputs       - pointer to user
  * Output       - YES if valid, NO if not
- * Side effects - NONE
- * 
+ * Side effects - check username for validity
+ *
  * Absolutely always reject any '*' '!' '?' '@' in an user name
  * reject any odd control characters names.
  * Allow '.' in username to allow for "first.last"
@@ -910,7 +909,7 @@ user_mode(struct Client *client_p, struct Client *source_p, int parc, char *parv
   if (parc < 2)
   {
     sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-               me.name, parv[0], "MODE");
+               me.name, source_p->name, "MODE");
     return(0);
   }
 
@@ -918,7 +917,7 @@ user_mode(struct Client *client_p, struct Client *source_p, int parc, char *parv
   {
     if (MyConnect(source_p))
       sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
-                 me.name, parv[0], parv[1]);
+                 me.name, source_p->name, parv[1]);
     return(0);
   }
 
@@ -935,7 +934,7 @@ user_mode(struct Client *client_p, struct Client *source_p, int parc, char *parv
   if (source_p != target_p || target_p->from != source_p->from)
   {
      sendto_one(source_p, form_str(ERR_USERSDONTMATCH),
-                me.name, parv[0]);
+                me.name, source_p->name);
      return(0);
   }
 
@@ -950,7 +949,7 @@ user_mode(struct Client *client_p, struct Client *source_p, int parc, char *parv
     *m = '\0';
 
     sendto_one(source_p, form_str(RPL_UMODEIS),
-               me.name, parv[0], buf);
+               me.name, source_p->name, buf);
     return(0);
   }
 
@@ -1042,7 +1041,7 @@ user_mode(struct Client *client_p, struct Client *source_p, int parc, char *parv
 
   if (badflag)
     sendto_one(source_p, form_str(ERR_UMODEUNKNOWNFLAG),
-               me.name, parv[0]);
+               me.name, source_p->name);
 
   if ((source_p->umodes & UMODE_NCHANGE) && !IsOperN(source_p))
   {
@@ -1216,12 +1215,16 @@ user_welcome(struct Client *source_p)
   }
   else  
     SendMessageFile(source_p, &ConfigFileEntry.motd);
-
+#if 0
+  /* restrictions are broken since diane commented out some code.
+   * local restrictions are just pointless
+   */
   if (IsRestricted(source_p))
   {
     sendto_one(source_p,form_str(ERR_RESTRICTED),
                me.name, source_p->name);
   }
+#endif
 }
 
 /* check_X_line()
