@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_privmsg.c,v 7.10 2000/10/14 22:07:08 db Exp $
+ *   $Id: m_privmsg.c,v 7.11 2000/10/16 06:44:18 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -177,29 +177,28 @@ int     m_privmsg(struct Client *cptr,
 
       if (HasVchans(chptr))
 	{
-	  vchan = map_vchan(chptr,sptr);
-	  if(vchan == 0)
-	    return 0;
-	  if (can_send(sptr, vchan) == 0)
-	    sendto_channel_butone(cptr, sptr, vchan,
-				  ":%s %s %s :%s",
-				  parv[0], "PRIVMSG", nick,
-				  parv[2]);
-	  else
-	    sendto_one(sptr, form_str(ERR_CANNOTSENDTOCHAN),
-		       me.name, parv[0], nick);
+	  if( vchan = map_vchan(chptr,sptr) )
+	    {
+	      if (can_send(sptr, vchan) == 0)
+		sendto_channel_butone(cptr, sptr, vchan,
+				      ":%s %s %s :%s",
+				      parv[0], "PRIVMSG", nick,
+				      parv[2]);
+	      else
+		sendto_one(sptr, form_str(ERR_CANNOTSENDTOCHAN),
+			   me.name, parv[0], nick);
+	      return 0;
+	    }
 	}
+
+      if (can_send(sptr, chptr) == 0)
+	sendto_channel_butone(cptr, sptr, chptr,
+			      ":%s %s %s :%s",
+			      parv[0], "PRIVMSG", nick,
+			      parv[2]);
       else
-	{
-	  if (can_send(sptr, chptr) == 0)
-	    sendto_channel_butone(cptr, sptr, chptr,
-				  ":%s %s %s :%s",
-				  parv[0], "PRIVMSG", nick,
-				  parv[2]);
-	  else
-	    sendto_one(sptr, form_str(ERR_CANNOTSENDTOCHAN),
-		       me.name, parv[0], nick);
-	}
+	sendto_one(sptr, form_str(ERR_CANNOTSENDTOCHAN),
+		   me.name, parv[0], nick);
       return 0;
     }
       

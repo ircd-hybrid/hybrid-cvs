@@ -19,7 +19,7 @@
  *
  *
  *
- * $Id: vchannel.c,v 7.6 2000/10/15 13:42:39 toot Exp $
+ * $Id: vchannel.c,v 7.7 2000/10/16 06:44:18 db Exp $
  */
 #include "vchannel.h"
 #include "channel.h"
@@ -46,6 +46,10 @@ void    add_vchan_to_client_cache(struct Client *sptr,
   int i=0;
 
   assert(sptr != NULL);
+
+  /* oops its the top channel of the subchans */
+  if( base_chan == vchan )
+    return;
 
   while(sptr->vchan_map[i].base_chan != NULL)
     {
