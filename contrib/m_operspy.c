@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.48 2003/09/25 22:25:11 bill Exp $
+ *   $Id: m_operspy.c,v 1.49 2003/09/28 00:58:42 metalrock Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -81,9 +81,7 @@
 
 #define IsOperspy(x) (IsOper(x) && MyClient(x) && IsAdmin(x))
 
-/*
- * The commands we will add
- */
+/* The commands we will add */
 static void m_operspy(struct Client *, struct Client *, int, char **);
 static void ms_operspy(struct Client *, struct Client *, int, char **);
 static void mo_operspy(struct Client *, struct Client *, int, char **);
@@ -117,15 +115,14 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.48 $";
+const char *_version = "$Revision: 1.49 $";
 #endif
 
 #ifdef OPERSPY_LOG
 static void operspy_log(struct Client *, const char *, const char *);
 #endif
 
-/*
- * m_operspy
+/* m_operspy()
  *      parv[1] = operspy command
  *      parv[2] = command parameter
  */
@@ -133,9 +130,8 @@ static void
 m_operspy(struct Client *client_p, struct Client *source_p,
           int parc, char *parv[])
 {
-  sendto_one(client_p, ":%s %d %s %s :Unknown command",
-             me.name, ERR_UNKNOWNCOMMAND, client_p->name,
-             parv[0]);
+  sendto_one(client_p, form_str(ERR_UNKNOWNCOMMAND),
+	     me.name, client_p->name, parv[0]);
 }
 
 static void
@@ -149,8 +145,7 @@ ms_operspy(struct Client *client_p, struct Client *source_p,
 #endif
 }
 
-/*
- * mo_operspy
+/* mo_operspy()
  *	parv[1] = operspy command
  *	parv[2] = command parameter
  */
@@ -208,17 +203,15 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
 
   if (parc != 3)
   {
-    sendto_one(client_p, ":%s %d %s %s :Unknown command",
-               me.name, ERR_UNKNOWNCOMMAND, client_p->name,
-               operspy);
+    sendto_one(client_p, form_str(ERR_UNKNOWNCOMMAND),
+               me.name, client_p->name, operspy);
     return;
   }
 
   if (!IsOperspy(client_p))
   {
-    sendto_one(client_p, ":%s %d %s %s :Unknown command",
-               me.name, ERR_UNKNOWNCOMMAND, client_p->name,
-               operspy);
+    sendto_one(client_p, form_str(ERR_UNKNOWNCOMMAND),
+               me.name, client_p->name, operspy);
     return;
   }
 
