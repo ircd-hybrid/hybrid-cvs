@@ -1,6 +1,8 @@
 /*
  * A slightly nicer version of dline_conf.c
  * Written by Aaron Sethman <androsyn@ratbox.org>
+ *
+ * $Id: dline_conf.c,v 7.26 2001/02/14 05:53:19 toot Exp $
  */
 
 #include "config.h"

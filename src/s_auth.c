@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.c,v 7.55 2001/02/12 07:23:54 androsyn Exp $
+ *   $Id: s_auth.c,v 7.56 2001/02/14 05:53:20 toot Exp $
  *
  * Changes:
  *   July 6, 1999 - Rewrote most of the code here. When a client connects
@@ -208,34 +208,40 @@ static void release_auth_client(struct Client* client)
  */
 static void auth_dns_callback(void* vptr, adns_answer* reply)
 {
-	  
-	struct AuthRequest* auth = (struct AuthRequest*) vptr;
-	ClearDNSPending(auth);
-	if(reply && (reply->status == adns_s_ok))
-	{
-		if(strlen(*reply->rrs.str) < HOSTLEN)
-		{
-			strcpy(auth->client->host, *reply->rrs.str);
-			sendheader(auth->client, REPORT_FIN_DNS);
-		} else {
-			strcpy(auth->client->host, auth->client->localClient->sockhost);
-			sendheader(auth->client, REPORT_HOST_TOOLONG);
-		}
-	} else {
-		strcpy(auth->client->host, auth->client->localClient->sockhost);
-		sendheader(auth->client, REPORT_FAIL_DNS);
-	}
-	if(reply)
-		MyFree(reply);
-	if (!IsDoingAuth(auth))
-	{
-		release_auth_client(auth->client);
-		unlink_auth_request(auth, &auth_poll_list);
+  struct AuthRequest* auth = (struct AuthRequest*) vptr;
+
+  ClearDNSPending(auth);
+
+  if(reply && (reply->status == adns_s_ok))
+    {
+      if(strlen(*reply->rrs.str) < HOSTLEN)
+        {
+          strcpy(auth->client->host, *reply->rrs.str);
+          sendheader(auth->client, REPORT_FIN_DNS);
+        }
+      else
+        {
+          strcpy(auth->client->host, auth->client->localClient->sockhost);
+          sendheader(auth->client, REPORT_HOST_TOOLONG);
+        }
+    }
+  else
+    {
+      strcpy(auth->client->host, auth->client->localClient->sockhost);
+      sendheader(auth->client, REPORT_FAIL_DNS);
+    }
+
+  MyFree(reply);
+
+  if (!IsDoingAuth(auth))
+    {
+      release_auth_client(auth->client);
+      unlink_auth_request(auth, &auth_poll_list);
 #ifdef USE_IAUTH
-		link_auth_request(auth, &auth_client_list);
+      link_auth_request(auth, &auth_client_list);
 #endif
-		free_auth_request(auth);
-	}
+      free_auth_request(auth);
+    }
 }
 
 /*
