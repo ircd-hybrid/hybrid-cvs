@@ -1,3 +1,11 @@
+*** 20001107_7 by adrian
+
+
+A network code overview. Very brief (only comm_setselect() is covered
+right now), but I'll be adding to it real soon.
+
+
+
 *** 20001107_6 by ejb
 added support for /undline and /ungline (ported from toot's
 patch to -6)
@@ -216,7 +224,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.507 2000/11/07 17:07:07 ejb Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.508 2000/11/07 18:10:23 adrian Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
