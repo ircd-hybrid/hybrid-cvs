@@ -1,3 +1,16 @@
+db          2002/04/15 10:17:01 EDT	(20020415_4)
+
+  Modified files:
+    doc                  serverhide.txt 
+  Log:
+  - updated serverhide.txt as amended by Wendy
+  approved db
+  
+  Revision  Changes    Path
+  7.4       +1 -4      ircd-hybrid-7/doc/serverhide.txt
+
+
+
 db          2002/04/15 02:13:30 EDT	(20020415_3)
 
   Modified files:
@@ -25088,4 +25101,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3563 2002/04/15 06:13:36 db Exp $
+$Id: ChangeLog,v 7.3564 2002/04/15 14:17:07 db Exp $
