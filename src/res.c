@@ -4,7 +4,7 @@
  * shape or form. The author takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: res.c,v 7.21 2000/11/03 22:17:41 adrian Exp $
+ * $Id: res.c,v 7.22 2000/11/04 17:44:19 adrian Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -297,7 +297,8 @@ static void start_resolver(void)
 #endif
   if (ResolverFileDescriptor < 0)
     {
-      ResolverFileDescriptor = comm_open(AF_INET, SOCK_DGRAM, 0, "Resolver");
+      ResolverFileDescriptor = comm_open(AF_INET, SOCK_DGRAM, 0,
+        "Resolver socket");
       set_non_blocking(ResolverFileDescriptor);
       /* At the moment, the resolver FD data is global .. */
       comm_setselect(ResolverFileDescriptor, COMM_SELECT_READ, res_readreply,

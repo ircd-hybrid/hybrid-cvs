@@ -20,10 +20,11 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_nick.c,v 7.11 2000/10/31 22:59:48 db Exp $
+ *   $Id: m_nick.c,v 7.12 2000/11/04 17:44:18 adrian Exp $
  */
 #include "handlers.h"
 #include "client.h"
+#include "fdlist.h"
 #include "irc_string.h"
 #include "ircd.h"
 #include "numeric.h"
@@ -749,6 +750,18 @@ static int nickkilldone(struct Client *cptr, struct Client *sptr, int parc,
     del_from_client_hash_table(sptr->name, sptr);
   strcpy(sptr->name, nick);
   add_to_client_hash_table(nick, sptr);
+
+  /*
+   * .. and update the new nick in the fd note.
+   * XXX should use IsLocal() ! -- adrian
+   */
+  if (cptr->fd > -1) {
+    char nickbuf[NICKLEN + 10];
+    strcpy(nickbuf, "Nick: ");
+    /* XXX nick better be the right length! -- adrian */
+    strncat(nickbuf, nick, NICKLEN);
+    fd_note(cptr->fd, nickbuf);
+  }
 
   return 0;
 }
