@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.13 2003/05/24 19:25:29 michael Exp $
+ *  $Id: m_xline.c,v 1.14 2003/05/25 05:56:36 db Exp $
  */
 
 #include "stdinc.h"
@@ -82,7 +82,7 @@ _moddeinit(void)
   mod_del_cmd(&xline_msgtab);
   mod_del_cmd(&unxline_msgtab);
 }
-const char *_version = "$Revision: 1.13 $";
+const char *_version = "$Revision: 1.14 $";
 #endif
 
 
@@ -413,7 +413,7 @@ write_xline(struct Client *source_p, char *gecos, char *reason, int type)
 
   aconf = make_conf(CONF_XLINE);
   aconf->port = type;
-                         
+
   collapse(gecos);
   DupString(aconf->name, gecos);
   DupString(aconf->reason, reason);

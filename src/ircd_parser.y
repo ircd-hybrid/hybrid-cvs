@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.291 2003/05/25 04:25:36 michael Exp $
+ *  $Id: ircd_parser.y,v 1.292 2003/05/25 05:56:38 db Exp $
  */
 
 %{
@@ -227,6 +227,7 @@ init_parser_confs(void)
 %token  SERVERHIDE
 %token  SERVERINFO
 %token  SERVLINK_PATH
+%token  SID
 %token  T_SHARED
 %token	T_CLUSTER
 %token	TYPE
@@ -414,7 +415,7 @@ serverinfo_item:        serverinfo_name | serverinfo_vhost |
                         serverinfo_network_name | serverinfo_network_desc |
                         serverinfo_max_clients | 
                         serverinfo_rsa_private_key_file | serverinfo_vhost6 |
-                        serverinfo_max_buffer | 
+                        serverinfo_max_buffer | serverinfo_sid |
 			error;
 
 serverinfo_rsa_private_key_file: RSA_PRIVATE_KEY_FILE '=' QSTRING ';'
@@ -487,6 +488,16 @@ serverinfo_name: NAME '=' QSTRING ';'
       if (strlen(yylval.string) <= HOSTLEN)
         DupString(ServerInfo.name, yylval.string);
     }
+  }
+};
+
+serverinfo_sid: SID '=' QSTRING ';' 
+{
+  /* this isn't rehashable */
+  if (ypass == 2)
+  {
+    MyFree(ServerInfo.sid);
+    DupString(ServerInfo.sid, yylval.string);
   }
 };
 

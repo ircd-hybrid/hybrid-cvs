@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.270 2003/05/25 04:38:00 db Exp $
+ *  $Id: s_user.c,v 7.271 2003/05/25 05:56:38 db Exp $
  */
 
 #include "stdinc.h"
@@ -48,7 +48,6 @@
 #include "send.h"
 #include "supported.h"
 #include "whowas.h"
-#include "md5.h"
 #include "memory.h"
 #include "packet.h"
 
@@ -56,7 +55,7 @@ static int valid_hostname(const char *hostname);
 static int valid_username(const char *username);
 static void user_welcome(struct Client *source_p);
 static void report_and_set_user_flags(struct Client *, struct ConfItem *);
-static int check_X_line(struct Client *client_p, struct Client *source_p);
+static int check_x_line(struct Client *client_p, struct Client *source_p);
 static int introduce_client(struct Client *client_p, struct Client *source_p);
 
 /* table of ascii char letters
@@ -442,7 +441,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   }
 
   /* end of valid user name check */
-  if ((status = check_X_line(client_p, source_p)) < 0)
+  if ((status = check_x_line(client_p, source_p)) < 0)
     return(status);
 
   if (IsDead(client_p))
@@ -450,7 +449,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
 
   if (source_p->user->id[0] == '\0') 
   {
-    for (id = id_get(); find_id(id); id = id_get())
+    for (id = sid_get(); find_id(id); id = sid_get())
       ;
 
     strlcpy(source_p->user->id, id, sizeof(source_p->user->id));
@@ -525,8 +524,9 @@ register_local_user(struct Client *client_p, struct Client *source_p,
  *		  is introduced by a server.
  */
 int
-register_remote_user(struct Client *client_p, struct Client *source_p, const char *username,
-                     const char *host, const char *server, const char *id, const char *realname)
+register_remote_user(struct Client *client_p, struct Client *source_p,
+		     const char *username, const char *host, const char *server,
+		     const char *id, const char *realname)
 {
   struct Client *target_p;
 
@@ -631,7 +631,7 @@ introduce_client(struct Client *client_p, struct Client *source_p)
    * Only send to non CAP_LL servers, unless we're a lazylink leaf,
    * in that case just send it to the uplink.
    * -davidt
-   * rewritten to cope with UIDs .. eww eww eww --is
+   * rewritten to cope with SIDs .. eww eww eww --is
    */
   if (!ServerInfo.hub && uplink && IsCapable(uplink, CAP_LL) &&
       client_p != uplink)
@@ -1213,14 +1213,14 @@ user_welcome(struct Client *source_p)
 #endif
 }
 
-/* check_X_line()
+/* check_x_line()
  *
  * inputs       - pointer to client to test
  * outupt       - -1 if exiting 0 if ok
  * side effects -
  */
 static int
-check_X_line(struct Client *client_p, struct Client *source_p)
+check_x_line(struct Client *client_p, struct Client *source_p)
 {
   struct ConfItem *aconf;
   const char *reason;
@@ -1303,4 +1303,14 @@ oper_up(struct Client *source_p, struct ConfItem *aconf)
   sendto_one(source_p, ":%s NOTICE %s :*** Oper privs are %s",
              me.name, source_p->name, operprivs);
   send_message_file(source_p, &ConfigFileEntry.opermotd);
+}
+
+void
+sid_init(void)
+{
+}
+
+char *
+sid_get(void)
+{
 }

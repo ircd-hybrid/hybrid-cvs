@@ -19,10 +19,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.291 2003/05/25 04:24:59 db Exp $
+ *  $Id: ircd.c,v 7.292 2003/05/25 05:56:38 db Exp $
  */
 
 #include "stdinc.h"
+#include "s_user.h"
 #ifdef __vms
 # include descrip
 # include starlet
@@ -45,7 +46,6 @@
 #include "s_gline.h"
 #include "motd.h"
 #include "ircd_handler.h"
-#include "md5.h"
 #include "msg.h"         /* msgtab */
 #include "hostmask.h"
 #include "numeric.h"
@@ -657,7 +657,7 @@ main(int argc, char *argv[])
   initialize_message_files();
   dbuf_init();
   init_hash_tables();
-  id_init();
+  sid_init();
   init_ip_hash_table();      /* client host ip hash table */
   init_host_hash();          /* Host-hashtable. */
   clear_hash_parse();

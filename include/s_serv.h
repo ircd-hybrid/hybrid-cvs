@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.h,v 7.78 2003/05/25 04:37:54 db Exp $
+ *  $Id: s_serv.h,v 7.79 2003/05/25 05:56:34 db Exp $
  */
 
 #ifndef INCLUDED_serv_h
@@ -284,5 +284,8 @@ struct EncCapability *check_cipher(struct Client *client_p,
                                    struct ConfItem *aconf);
 void        add_lazylinkclient(struct Client *client_p, struct Client *source_p);
 
+/* XXX don't belong in the now gone md5, but do these belong in s_serv.c ? */
+extern int base64_block(char **output, char *data, int len);
+extern int unbase64_block(char **output, char *data, int len);
 #endif /* INCLUDED_s_serv_h */
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.226 2003/05/25 04:15:08 michael Exp $
+ *  $Id: s_conf.h,v 7.227 2003/05/25 05:56:34 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -300,6 +300,7 @@ struct server_info
   char *      rsa_private_key_file;
   RSA *       rsa_private_key;
 #endif
+  char	      *sid;
   int         hub;
   struct      irc_ssaddr ip;
   struct      irc_ssaddr ip6;

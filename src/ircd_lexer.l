@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_lexer.l,v 1.158 2003/05/24 16:15:15 bill Exp $
+ *  $Id: ircd_lexer.l,v 1.159 2003/05/25 05:56:38 db Exp $
  */
 
 %option case-insensitive
@@ -145,6 +145,7 @@ cipher_preference { return CIPHER_PREFERENCE; }
 class		{ return CLASS; }
 client_exit     { return CLIENT_EXIT; }
 client_flood	{ return T_CLIENT_FLOOD; }
+cluster		{ return T_CLUSTER; }
 compressed	{ return COMPRESSED; }
 compression_level { return COMPRESSION_LEVEL; }
 connect		{ return CONNECT; }
@@ -253,8 +254,8 @@ serverhide	{ return SERVERHIDE; }
 serverinfo	{ return SERVERINFO; }
 servlink_path   { return SERVLINK_PATH; }
 shared          { return T_SHARED; }
-cluster		{ return T_CLUSTER; }
 short_motd      { return SHORT_MOTD; }
+sid		{ return SID; }
 silent          { return SILENT; }
 spoof		{ return SPOOF; }
 spoof_notice	{ return SPOOF_NOTICE; }
