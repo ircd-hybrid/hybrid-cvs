@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_close.c,v 1.1 2000/11/08 23:57:25 ejb Exp $
+ *   $Id: m_close.c,v 1.2 2000/11/09 09:26:16 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -51,12 +51,6 @@ int mo_close(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   struct Client* acptr;
   int            i;
   int            closed = 0;
-
-  if (!MyOper(sptr))
-    {
-      sendto_one(sptr, form_str(ERR_NOPRIVILEGES), me.name, parv[0]);
-      return 0;
-    }
 
   for (i = highest_fd; i; i--)
     {
