@@ -19,13 +19,14 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_classlist.c,v 1.6 2003/05/29 00:58:58 db Exp $
+ *  $Id: m_classlist.c,v 1.7 2003/06/26 04:46:24 joshk Exp $
  */
 
 #include "stdinc.h"
 #include "tools.h"
 #include "handlers.h"
 #include "channel.h"
+#include "class.h"
 #include "channel_mode.h"
 #include "client.h"
 #include "common.h"   /* bleah */
@@ -62,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&classlist_msgtab);
 }
 
-const char *_version = "$Revision: 1.6 $";
+const char *_version = "$Revision: 1.7 $";
 #endif
 
 /* mo_classlist()
@@ -74,7 +75,8 @@ static void
 mo_classlist(struct Client *client_p, struct Client *source_p,
 	     int parc, char *parv[])
 { 
-  struct Class *aclass;
+  struct ClassItem *aclass;
+  struct ConfItem *conf;
   char *classname;
   dlink_node *ptr;
 
@@ -87,10 +89,11 @@ mo_classlist(struct Client *client_p, struct Client *source_p,
 
   classname = parv[1];
 
-  DLINK_FOREACH(ptr, ClassList.head)
+  DLINK_FOREACH(ptr, class_items.head)
   {
-    aclass = ptr->data;
-
+    conf = ptr->data;
+    aclass = (struct ClassItem *)map_to_conf(conf);
+    
     /* These two cases "shouldn't" happen. ;-) -Dianora */
     if (aclass == NULL)
       continue;

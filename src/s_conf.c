@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.443 2003/06/26 04:35:07 db Exp $
+ *  $Id: s_conf.c,v 7.444 2003/06/26 04:46:25 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -1120,8 +1120,9 @@ hash_ip(struct irc_ssaddr *addr)
     hash  = hash & (IP_HASH_SIZE - 1);
     return(hash);
   }
-#endif
+#else
   return(0);
+#endif
 }
 
 /* count_ip_hash()
