@@ -29,7 +29,7 @@ diff -ur ircd-hybrid/include/s_conf.h disabled/include/s_conf.h
    int           throttle_time;
    int           use_egd;
    int		ping_cookie;
-+  int		disable_auth
++  int		disable_auth;
    int           use_help;
  #ifdef IPV6  
    int		fallback_to_ip6_int;
