@@ -1,6 +1,6 @@
                             Hybrid INSTALL Document
 
-   $Id: INSTALL,v 7.35 2003/06/13 04:45:51 db Exp $
+   $Id: INSTALL,v 7.36 2003/06/13 05:33:53 metalrock Exp $
 
    Copyright (c) 2001 by ircd-hybrid team
 
@@ -18,7 +18,7 @@
    |                                                                        |
    | - Important: The old config format WILL NOT WORK. Please see point 6!  |
    |                                                                        |
-   | - The old kline format WILL NOT WORK. Please see point 8!              |
+   | - The old kline format WILL NOT WORK. Please see point 7!              |
    +------------------------------------------------------------------------+
 
    ***** EFNET NOTE *****
