@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.c,v 7.9 2000/11/28 00:08:31 db Exp $
+ * $Id: modules.c,v 7.10 2000/11/28 04:42:16 db Exp $
  */
 
 #include <dlfcn.h>
@@ -182,6 +182,7 @@ load_one_module (char *path)
   void *tmpptr;
   char *mod_basename, *s;
   void (*initfunc)(void) = NULL;
+  char **verp;
   char *ver;
 
   mod_basename = basename(path);
@@ -209,8 +210,10 @@ load_one_module (char *path)
       return -1;
     }
 
-  if (!(ver = (char *)dlsym (tmpptr, "_version")))
+  if (!(verp = (char **)dlsym (tmpptr, "_version")))
     ver = unknown_ver;
+  else
+    ver = *verp;
 
   increase_modlist();
 
