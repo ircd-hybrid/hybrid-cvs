@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: config.h,v 7.129 2002/02/23 15:30:50 leeh Exp $
+ *  $Id: config.h,v 7.130 2002/02/24 20:32:20 lusky Exp $
  */
 
 #ifndef INCLUDED_config_h
@@ -158,7 +158,7 @@
 /* WANT_GETTEXT - toggle gettext support.
  * NOTE: if configure doesn't detect gettext, this won't do anything.
  */
-#define WANT_GETTEXT    1
+#define WANT_GETTEXT
  
 /* Ignore bogus timestamps from other servers. Yes this will desync
  * the network, but it will allow chanops to resync with a valid non TS 0
@@ -178,7 +178,7 @@
  * We recommend you leave this undefined, and just take care with who you
  * give admin=yes; to.
  */
-#undef HIDE_SERVERS_IPS
+#undef  HIDE_SERVERS_IPS
 
 /* USE_LOGFILE - log errors and such to LPATH
  * If you wish to have the server send 'vital' messages about server
@@ -194,7 +194,7 @@
  * this option is used unless you tell the system administrator beforehand
  * and obtain their permission to send messages to the system log files.
  */
-#undef USE_SYSLOG
+#undef  USE_SYSLOG
 
 #ifdef  USE_SYSLOG
 /* SYSLOG_KILL SYSLOG_SQUIT SYSLOG_CONNECT SYSLOG_USERS SYSLOG_OPER
@@ -275,7 +275,7 @@
  * to make your client server very sluggish.
  * You usually shouldn't need this. -Dianora
 */
-#undef DEBUGMODE               /* define DEBUGMODE to enable debugging mode.*/
+#undef  DEBUGMODE               /* define DEBUGMODE to enable debugging mode.*/
 
 /*
  * this checks for various things that should never happen, but

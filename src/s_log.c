@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.c,v 7.37 2002/01/05 09:15:17 a1kmm Exp $
+ *  $Id: s_log.c,v 7.38 2002/02/24 20:32:23 lusky Exp $
  */
 
 #include "client.h"	/* Needed for struct Client */
@@ -53,10 +53,10 @@ static FBFILE* logFile;
 #endif
 static int logLevel = INIT_LOG_LEVEL;
 
-static FBFILE *user_log_fb=NULL;
 
 #ifndef SYSLOG_USERS
 static EVH user_log_resync;
+static FBFILE *user_log_fb=NULL;
 #endif
 
 
