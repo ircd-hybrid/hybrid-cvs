@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kill.c,v 1.3 2000/11/23 23:17:11 db Exp $
+ *   $Id: m_kill.c,v 1.4 2000/11/26 00:42:04 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -191,7 +191,7 @@ int mo_kill(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
        * contain real IP addresses.  But we do want opers to see them.
        * The choices are currently to do two sends, or just not show kills
        * to non opers.  I'm chosing the latter for now.  --Rodder
-         sendto_ops("Received KILL message for %s. From %s!%s@%s Path:supressed.!%s",
+         sendto_realops("Received KILL message for %s. From %s!%s@%s Path:supressed.!%s",
                     acptr->name, sptr->name, sptr->username, sptr->host,
                     reason);
        */
@@ -406,15 +406,16 @@ int ms_kill(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   if (IsAnyOper(sptr)) /* send it normally */
     {
       sendto_realops("Received KILL message for %s. From %s Path: %s!%s", 
-               acptr->name, parv[0], inpath, path);
+		     acptr->name, parv[0], inpath, path);
       /*
-       * dilema here: we don't want non opers to see pathes which
+       * XXX 
+       * dilemna here: we don't want non opers to see paths which
        * contain real IP addresses.  But we do want opers to see them.
        * The choices are currently to do two sends, or just not show kills
        * to non opers.  I'm chosing the latter for now.  --Rodder
-         sendto_ops("Received KILL message for %s. From %s!%s@%s Path:supressed.!%s",
-                    acptr->name, sptr->name, sptr->username, sptr->host,
-                    reason);
+         sendto_realops("Received KILL message for %s. From %s!%s@%s Path:supressed.!%s",
+	 acptr->name, sptr->name, sptr->username, sptr->host,
+	 reason);
        */
     }
   else

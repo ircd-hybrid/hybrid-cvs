@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_oper.c,v 1.3 2000/11/23 23:17:13 db Exp $
+ *   $Id: m_oper.c,v 1.4 2000/11/26 00:42:05 db Exp $
  */
 
 #include "handlers.h"
@@ -319,13 +319,13 @@ int oper_up( struct Client *sptr, struct ConfItem *aconf )
     operprivs = "";
 
 #ifdef CUSTOM_ERR
-  sendto_ops("%s (%s@%s) has just acquired the personality of a petty megalomaniacal tyrant [IRC(%c)p]", sptr->name,
-	     sptr->username, sptr->host,
-	     IsGlobalOper(sptr) ? 'O' : 'o');
+  sendto_realops("%s (%s@%s) has just acquired the personality of a petty megalomaniacal tyrant [IRC(%c)p]", sptr->name,
+		 sptr->username, sptr->host,
+		 IsGlobalOper(sptr) ? 'O' : 'o');
 #else
-  sendto_ops("%s (%s@%s) is now operator (%c)", sptr->name,
-	     sptr->username, sptr->host,
-	     IsGlobalOper(sptr) ? 'O' : 'o');
+  sendto_realops("%s (%s@%s) is now operator (%c)", sptr->name,
+		 sptr->username, sptr->host,
+		 IsGlobalOper(sptr) ? 'O' : 'o');
 #endif /* CUSTOM_ERR */
 
   send_umode_out(sptr, sptr, old);

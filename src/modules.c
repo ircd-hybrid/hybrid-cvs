@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.c,v 7.3 2000/11/16 17:28:16 davidt Exp $
+ * $Id: modules.c,v 7.4 2000/11/26 00:42:11 db Exp $
  */
 
 #include <dlfcn.h>
@@ -60,7 +60,10 @@ load_all_modules(void)
   if (chdir(system_module_dir_name) == -1) {
     log(L_WARN, "Could not load modules from %s: %s",
 	system_module_dir_name, strerror(errno));
-    exit(0);
+    /* DONT EXIT!!! admin/oper can still recover from this, just Log it.
+     * patch suggested by bysin
+     */
+    return;
   }
 
   system_module_dir = opendir(".");

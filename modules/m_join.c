@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 1.3 2000/11/24 00:17:22 db Exp $
+ *   $Id: m_join.c,v 1.4 2000/11/26 00:42:03 db Exp $
  */
 
 #include "handlers.h"
@@ -472,12 +472,12 @@ void check_spambot_warning( struct Client *sptr, char *name )
 	  else
 	    sptr->oper_warn_count_down = 0;
 
-	  sendto_ops_flags(FLAGS_BOTS,
-		   "User %s (%s@%s) trying to join %s is a possible spambot",
-			   sptr->name,
-			   sptr->username,
-			   sptr->host,
-			   name);     
+	  sendto_realops_flags(FLAGS_BOTS,
+	       "User %s (%s@%s) trying to join %s is a possible spambot",
+			       sptr->name,
+			       sptr->username,
+			       sptr->host,
+			       name);     
 	  sptr->oper_warn_count_down = OPER_SPAM_COUNTDOWN;
 	}
     }

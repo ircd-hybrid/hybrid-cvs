@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.38 2000/11/06 06:56:53 db Exp $
+ *  $Id: s_user.c,v 7.39 2000/11/26 00:42:13 db Exp $
  */
 #include "s_user.h"
 #include "channel.h"
@@ -737,8 +737,8 @@ int register_user(struct Client *cptr, struct Client *sptr,
         {
           Count.max_loc = Count.local;
           if (!(Count.max_loc % 10))
-            sendto_ops("New Max Local Clients: %d",
-                       Count.max_loc);
+            sendto_realops("New Max Local Clients: %d",
+			   Count.max_loc);
         }
     }
   else
@@ -749,8 +749,8 @@ int register_user(struct Client *cptr, struct Client *sptr,
   sptr->servptr = find_server(user->server);
   if (!sptr->servptr)
     {
-      sendto_ops("Ghost killed: %s on invalid server %s",
-                 sptr->name, sptr->user->server);
+      sendto_realops("Ghost killed: %s on invalid server %s",
+		     sptr->name, sptr->user->server);
       sendto_one(cptr,":%s KILL %s :%s (Ghosted, %s doesn't exist)",
                  me.name, sptr->name, me.name, user->server);
       sptr->flags |= FLAGS_KILLED;
@@ -1185,9 +1185,9 @@ int user_mode(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
     {
       if (IsServer(cptr))
         sendto_ops_butone(NULL, &me,
-                          ":%s WALLOPS :MODE for User %s From %s!%s",
-                          me.name, parv[1],
-                          get_client_name(cptr, FALSE), sptr->name);
+			      ":%s WALLOPS :MODE for User %s From %s!%s",
+			      me.name, parv[1],
+			      get_client_name(cptr, FALSE), sptr->name);
       else
         sendto_one(sptr, form_str(ERR_USERSDONTMATCH),
                    me.name, parv[0]);

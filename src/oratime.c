@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: oratime.c,v 7.1 1999/12/30 20:36:06 db Exp $
+ *   $Id: oratime.c,v 7.2 2000/11/26 00:42:11 db Exp $
  */
 #include "oratime.h"
 #ifdef ORATIMING
@@ -61,7 +61,7 @@ void orat_no(void)
 
 void orat_report(void)
 {
-  sendto_ops("Time spent: %ld ms", tsdms);
+  sendto_realops("Time spent: %ld ms", tsdms);
 }
 
 #endif /* ORATIMING */

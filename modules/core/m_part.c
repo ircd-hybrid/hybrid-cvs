@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_part.c,v 1.5 2000/11/23 23:17:13 db Exp $
+ *   $Id: m_part.c,v 1.6 2000/11/26 00:42:06 db Exp $
  */
 #include "handlers.h"
 #include "channel.h"
@@ -87,10 +87,10 @@ int     m_part(struct Client *cptr,
       if(GlobalSetOptions.spam_num &&
 	 (sptr->join_leave_count >= GlobalSetOptions.spam_num))
 	{
-	  sendto_ops_flags(FLAGS_BOTS,
-			   "User %s (%s@%s) is a possible spambot",
-			   sptr->name,
-			   sptr->username, sptr->host);
+	  sendto_realops_flags(FLAGS_BOTS,
+			       "User %s (%s@%s) is a possible spambot",
+			       sptr->name,
+			       sptr->username, sptr->host);
 	  sptr->oper_warn_count_down = OPER_SPAM_COUNTDOWN;
 	}
       else

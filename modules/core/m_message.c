@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.5 2000/11/24 00:17:22 db Exp $
+ *   $Id: m_message.c,v 1.6 2000/11/26 00:42:05 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -540,11 +540,11 @@ int drone_attack(struct Client *sptr,struct Client *acptr)
 	    {
 	      if(acptr->drone_noticed == 0) /* tiny FSM */
 		{
-		  sendto_ops_flags(FLAGS_BOTS,
-		   "Possible Drone Flooder %s [%s@%s] on %s target: %s",
-				   sptr->name, sptr->username,
-				   sptr->host,
-				   sptr->user->server, acptr->name);
+		  sendto_realops_flags(FLAGS_BOTS,
+		       "Possible Drone Flooder %s [%s@%s] on %s target: %s",
+				       sptr->name, sptr->username,
+				       sptr->host,
+				       sptr->user->server, acptr->name);
 		  acptr->drone_noticed = 1;
 		}
 	      /* heuristic here, if target has been getting a lot
@@ -558,9 +558,9 @@ int drone_attack(struct Client *sptr,struct Client *acptr)
 		{
 		  if(acptr->drone_noticed == 1) /* tiny FSM */
 		    {
-		      sendto_ops_flags(FLAGS_BOTS,
+		      sendto_realops_flags(FLAGS_BOTS,
 		       "anti_drone_flood SendQ protection activated for %s",
-				       acptr->name);
+					   acptr->name);
 
 		      sendto_one(acptr,     
  ":%s NOTICE %s :*** Notice -- Server drone flood protection activated for %s",

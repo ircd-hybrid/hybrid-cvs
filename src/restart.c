@@ -1,7 +1,7 @@
 /*
  * restart.c
  *
- * $Id: restart.c,v 7.4 2000/10/29 21:01:24 adrian Exp $
+ * $Id: restart.c,v 7.5 2000/11/26 00:42:11 db Exp $
  */
 #include "restart.h"
 #include "common.h"
@@ -34,7 +34,7 @@ void server_reboot(void)
 {
   int i;
   
-  sendto_ops("Aieeeee!!!  Restarting server... memory: %d", get_maxrss());
+  sendto_realops("Aieeeee!!!  Restarting server... memory: %d", get_maxrss());
 
   log(L_NOTICE, "Restarting server...");
   /*

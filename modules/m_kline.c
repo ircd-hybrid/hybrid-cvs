@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kline.c,v 1.8 2000/11/24 09:08:53 db Exp $
+ *   $Id: m_kline.c,v 1.9 2000/11/26 00:42:04 db Exp $
  */
 #include "m_kline.h"
 #include "channel.h"
@@ -93,6 +93,10 @@ void WriteDline(const char *, struct Client *,
 
 char *_version = "20001122";
 
+char buffer[IRCD_BUFSIZE];
+char user[USERLEN+2];
+char host[HOSTLEN+2];
+
 /*
  * mo_kline
  *
@@ -109,10 +113,7 @@ int mo_kline(struct Client *cptr,
                 int parc,
                 char *parv[])
 {
-  char buffer[IRCD_BUFSIZE];
   char *p;
-  char user[USERLEN+2];
-  char host[HOSTLEN+2];
   char *reason = NULL;
   const char* current_date;
   int  ip_kline = NO;
@@ -178,10 +179,18 @@ int mo_kline(struct Client *cptr,
 
   ip_kline = is_ip_kline(host,&ip,&ip_mask);
 
+/* ZZZ */
+sendto_realops("ip_kline %d host %s\n", ip_kline,host);
+
   if ( already_placed(sptr, user, host, ip) )
     return 0;
 
+/* ZZZ */
+sendto_realops("About to call smalldate\n");
+
   current_date = smalldate((time_t) 0);
+
+sendto_realops("current_date %s\n",current_date);
 
   aconf = make_conf();
   aconf->status = CONF_KILL;

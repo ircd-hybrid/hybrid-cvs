@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.76 2000/11/24 08:02:12 db Exp $
+ * $Id: channel.c,v 7.77 2000/11/26 00:42:08 db Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -2529,7 +2529,7 @@ void cleanup_channels(void *unused)
      eventAdd("cleanup_channels", cleanup_channels, NULL,
        CLEANUP_CHANNELS_TIME, 0 );
 
-   sendto_ops_flags(FLAGS_DEBUG, "*** Cleaning up local channels...");
+   sendto_realops_flags(FLAGS_DEBUG, "*** Cleaning up local channels...");
    
    next_chptr = NULL;
 

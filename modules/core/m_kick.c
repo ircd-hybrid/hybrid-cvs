@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kick.c,v 1.2 2000/11/23 23:04:14 db Exp $
+ *   $Id: m_kick.c,v 1.3 2000/11/26 00:42:04 db Exp $
  */
 #include "handlers.h"
 #include "channel.h"
@@ -186,13 +186,6 @@ int     ms_kick(struct Client *cptr,
                  me.name, parv[0], "KICK");
       return 0;
     }
-
-  /* local server is very unlikely to kick...
-   */
-
-  if (IsServer(sptr))
-    sendto_ops("KICK from %s for %s %s",
-               parv[0], parv[1], parv[2]);
 
   return (m_kick(cptr, sptr, parc, parv));
 

@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu, Computing Center and Jarkko Oikarinen
  *
- * $Id: list.c,v 7.10 2000/11/13 06:08:20 db Exp $
+ * $Id: list.c,v 7.11 2000/11/26 00:42:10 db Exp $
  */
 #include "blalloc.h"
 #include "channel.h"
@@ -181,7 +181,7 @@ void _free_user(struct User* user, struct Client* cptr)
        */
       if (user->joined || user->refcnt < 0 ||
           user->invited || user->channel)
-      sendto_ops("* %#x user (%s!%s@%s) %#x %#x %#x %d %d *",
+      sendto_realops("* %#x user (%s!%s@%s) %#x %#x %#x %d %d *",
                  cptr, cptr ? cptr->name : "<noname>",
                  cptr->username, cptr->host, user,
                  user->invited, user->channel, user->joined,
@@ -189,8 +189,8 @@ void _free_user(struct User* user, struct Client* cptr)
 
       if(BlockHeapFree(free_anUsers,user))
         {
-          sendto_ops("list.c couldn't BlockHeapFree(free_anUsers,user) user = %lX", user );
-          sendto_ops("Please report to the hybrid team! ircd-hybrid@the-project.org");
+          sendto_realops("list.c couldn't BlockHeapFree(free_anUsers,user) user = %lX", user );
+          sendto_realops("Please report to the hybrid team! ircd-hybrid@the-project.org");
 #ifdef SYSLOG_BLOCK_ALLOCATOR 
           log(L_DEBUG,"list.c couldn't BlockHeapFree(free_anUsers,user) user = %lX", (long unsigned int) user);
 #endif
@@ -218,8 +218,8 @@ void _free_link(struct SLink *lp)
 {
   if(BlockHeapFree(free_Links,lp))
     {
-      sendto_ops("list.c couldn't BlockHeapFree(free_Links,lp) lp = %lX", lp );
-      sendto_ops("Please report to the hybrid team!");
+      sendto_realops("list.c couldn't BlockHeapFree(free_Links,lp) lp = %lX", lp );
+      sendto_realops("Please report to the hybrid team!");
     }
 }
 

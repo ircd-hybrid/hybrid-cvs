@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_error.c,v 1.2 2000/11/24 00:17:21 db Exp $
+ *   $Id: m_error.c,v 1.3 2000/11/26 00:42:03 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -69,11 +69,11 @@ int m_error(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   if (IsPerson(cptr) || IsUnknown(cptr))
     return 0;
   if (cptr == sptr)
-    sendto_ops("ERROR :from %s -- %s",
-               get_client_name(cptr, FALSE), para);
+    sendto_realops("ERROR :from %s -- %s",
+		   get_client_name(cptr, FALSE), para);
   else
-    sendto_ops("ERROR :from %s via %s -- %s", sptr->name,
-               get_client_name(cptr,FALSE), para);
+    sendto_realops("ERROR :from %s via %s -- %s", sptr->name,
+		   get_client_name(cptr,FALSE), para);
   return 0;
 }
 
@@ -94,11 +94,11 @@ int mr_error(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   if (IsPerson(cptr) || IsUnknown(cptr))
     return 0;
   if (cptr == sptr)
-    sendto_ops("ERROR :from %s -- %s",
-               get_client_name(cptr, FALSE), para);
+    sendto_realops("ERROR :from %s -- %s",
+		   get_client_name(cptr, FALSE), para);
   else
-    sendto_ops("ERROR :from %s via %s -- %s", sptr->name,
-               get_client_name(cptr,FALSE), para);
+    sendto_realops("ERROR :from %s via %s -- %s", sptr->name,
+		   get_client_name(cptr,FALSE), para);
   return 0;
 }
 
@@ -119,11 +119,11 @@ int ms_error(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   if (IsPerson(cptr) || IsUnknown(cptr))
     return 0;
   if (cptr == sptr)
-    sendto_ops("ERROR :from %s -- %s",
-               get_client_name(cptr, FALSE), para);
+    sendto_realops("ERROR :from %s -- %s",
+		   get_client_name(cptr, FALSE), para);
   else
-    sendto_ops("ERROR :from %s via %s -- %s", sptr->name,
-               get_client_name(cptr,FALSE), para);
+    sendto_realops("ERROR :from %s via %s -- %s", sptr->name,
+		   get_client_name(cptr,FALSE), para);
   return 0;
 }
 

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.52 2000/11/25 17:41:03 toot Exp $
+ * $Id: ircd.c,v 7.53 2000/11/26 00:42:10 db Exp $
  */
 #include "ircd.h"
 #include "channel.h"
@@ -320,7 +320,7 @@ static time_t io_loop(time_t delay)
   if ((CurrentTime = time(NULL)) == -1)
     {
       log(L_ERROR, "Clock Failure (%d)", errno);
-      sendto_ops("Clock Failure (%d), TS can be corrupted", errno);
+      sendto_realops("Clock Failure (%d), TS can be corrupted", errno);
       restart("Clock Failure");
     }
 
@@ -333,7 +333,7 @@ static time_t io_loop(time_t delay)
   else if ((lasttimeofday + MAX_SETBACK_TIME) < CurrentTime)
     {
       log(L_ERROR, "Clock Failure (%d)", errno);
-      sendto_ops("Clock set back more than %d seconds, TS can be corrupted",
+      sendto_realops("Clock set back more than %d seconds, TS can be corrupted",
         ConfigFileEntry.ts_max_delta);
       restart("Clock Failure");
     }
