@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.89 2001/01/03 00:41:14 davidt Exp $
+ *  $Id: s_user.c,v 7.90 2001/01/03 20:43:43 db Exp $
  */
 #include "tools.h"
 #include "s_user.h"
@@ -537,8 +537,7 @@ int register_user(struct Client *cptr, struct Client *sptr,
    * nicks just ride on through.
    */
   sendto_ll_serv_butone(cptr,sptr, 1,
-		     ":%s NICK %s %d %lu %s %s %s %s :%s",
-		     me.name,
+		     "NICK %s %d %lu %s %s %s %s :%s",
 		     nick, sptr->hopcount+1, sptr->tsinfo, ubuf,
 		     sptr->username, sptr->host, user->server,
 		     sptr->info);
@@ -562,8 +561,8 @@ int register_user(struct Client *cptr, struct Client *sptr,
    */
 
   sendto_nocap_serv_butone(CAP_LL, cptr,
-                            ":%s NICK %s %d %lu %s %s %s %s :%s",
-                            me.name, nick, sptr->hopcount+1, sptr->tsinfo,
+                            "NICK %s %d %lu %s %s %s %s :%s",
+                            nick, sptr->hopcount+1, sptr->tsinfo,
                             ubuf, sptr->username, sptr->host, user->server,
                             sptr->info);
 #endif
