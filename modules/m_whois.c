@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.79 2002/08/15 15:00:59 adx Exp $
+ *  $Id: m_whois.c,v 1.80 2002/08/23 03:30:30 db Exp $
  */
 
 #include "stdinc.h"
@@ -76,21 +76,20 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-const char *_version = "$Revision: 1.79 $";
+const char *_version = "$Revision: 1.80 $";
 #endif
 /*
 ** m_whois
 **      parv[0] = sender prefix
 **      parv[1] = nickname masklist
 */
-static void m_whois(struct Client *client_p,
-                   struct Client *source_p,
-                   int parc,
-                   char *parv[])
+static void
+m_whois(struct Client *client_p, struct Client *source_p,
+	int parc, char *parv[])
 {
   static time_t last_used = 0;
   
-  if (parc < 2)
+  if (parc < 2 || BadPtr(parv[1]))
     {
       sendto_one(source_p, form_str(ERR_NONICKNAMEGIVEN),
                  me.name, parv[0]);
@@ -132,12 +131,12 @@ static void m_whois(struct Client *client_p,
 **      parv[0] = sender prefix
 **      parv[1] = nickname masklist
 */
-static void mo_whois(struct Client *client_p,
-                    struct Client *source_p,
-                    int parc,
-                    char *parv[])
+static void
+mo_whois(struct Client *client_p, struct Client *source_p,
+                    int parc, char *parv[])
 {
-  if(parc < 2)
+  /* XXX Need BadPtr */
+  if (parc < 2 || BadPtr(parv[1]))
     {
       sendto_one(source_p, form_str(ERR_NONICKNAMEGIVEN),
                  me.name, parv[0]);
@@ -164,8 +163,9 @@ static void mo_whois(struct Client *client_p,
  * output	- 
  * side effects -
  */
-static int do_whois(struct Client *client_p, struct Client *source_p,
-                    int parc, char *parv[])
+static int
+do_whois(struct Client *client_p, struct Client *source_p,
+	 int parc, char *parv[])
 {
   struct Client *target_p;
   char  *nick;
@@ -221,7 +221,7 @@ static int do_whois(struct Client *client_p, struct Client *source_p,
 	      else
 		sendto_one(uplink,":%s WHOIS %s",
 			   source_p->name, nick);
-	      return 0;
+	      return (0);
 	    }
 	}
     }
@@ -231,7 +231,7 @@ static int do_whois(struct Client *client_p, struct Client *source_p,
 
       if (!ServerInfo.hub && uplink && IsCapable(uplink,CAP_LL))
 	{
-	  return 0;
+	  return (0);
 	}
       /* Oh-oh wilds is true so have to do it the hard expensive way */
       found = global_whois(source_p,nick,wilds,glob);
@@ -242,7 +242,7 @@ static int do_whois(struct Client *client_p, struct Client *source_p,
   else
     sendto_one(source_p, form_str(ERR_NOSUCHNICK), me.name, parv[0], nick);
 
-  return 0;
+  return (0);
 }
 
 /*
@@ -255,8 +255,9 @@ static int do_whois(struct Client *client_p, struct Client *source_p,
  * Side Effects	- do a single whois on given client
  * 		  writing results to source_p
  */
-static int global_whois(struct Client *source_p, char *nick,
-                        int wilds, int glob)
+static int
+global_whois(struct Client *source_p, char *nick,
+	     int wilds, int glob)
 {
   struct Client *target_p;
   int found = NO;
@@ -304,8 +305,9 @@ static int global_whois(struct Client *source_p, char *nick,
  * Side Effects	- do a single whois on given client
  * 		  writing results to source_p
  */
-static int single_whois(struct Client *source_p,struct Client *target_p,
-                        int wilds, int glob)
+static int
+single_whois(struct Client *source_p,struct Client *target_p,
+	     int wilds, int glob)
 {
   dlink_node *ptr;
   struct Channel *chptr;
@@ -319,7 +321,7 @@ static int single_whois(struct Client *source_p,struct Client *target_p,
   else
     name = target_p->name;
 
-  if( target_p->user == NULL )
+  if(target_p->user == NULL)
     {
       sendto_one(source_p, form_str(RPL_WHOISUSER), me.name,
 		 source_p->name, name,
@@ -327,14 +329,14 @@ static int single_whois(struct Client *source_p,struct Client *target_p,
 	  sendto_one(source_p, form_str(RPL_WHOISSERVER),
 		 me.name, source_p->name, name, "<Unknown>",
 		 "*Not On This Net*");
-      return 0;
+      return (0);
     }
 
   invis = IsInvisible(target_p);
   member = (target_p->user->channel.head) ? 1 : 0;
   showperson = (wilds && !invis && !member) || !wilds;
 
-  for (ptr = target_p->user->channel.head; ptr; ptr = ptr->next)
+  DLINK_FOREACH(ptr, target_p->user->channel.head)
     {
       chptr = ptr->data;
       member = IsMember(source_p, chptr);
@@ -354,7 +356,7 @@ static int single_whois(struct Client *source_p,struct Client *target_p,
 
   if(showperson)
     whois_person(source_p,target_p,glob);
-  return 0;
+  return (0);
 }
 
 /*
@@ -495,13 +497,13 @@ static void whois_person(struct Client *source_p,struct Client *target_p, int gl
  * that can happen, and as people might not understand the code, I
  * stuck heavy comments in it.. it looks ugly.. but at least you
  * know what it does.. --fl_ */
-static void ms_whois(struct Client *client_p,
-                    struct Client *source_p,
-                    int parc,
-                    char *parv[])
+static void
+ms_whois(struct Client *client_p, struct Client *source_p,
+                    int parc, char *parv[])
 {
   /* its a misconfigured server */
-  if (parc < 2)
+  /* XXX Need BadPtr */
+  if (parc < 2 || BadPtr(parv[1]))
     {
       sendto_one(source_p, form_str(ERR_NONICKNAMEGIVEN),
                  me.name, parv[0]);
@@ -602,7 +604,7 @@ static void ms_whois(struct Client *client_p,
 	 * the target isnt a LL.. why would I need to burst? */
         sendto_one(target_p->from, ":%s WHOIS %s :%s", parv[0], parv[1],
                    parv[2]);
-        return;	       
+       return;	       
       }
     }
 
