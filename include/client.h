@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.204 2003/06/25 08:46:54 michael Exp $
+ *  $Id: client.h,v 7.205 2003/06/26 16:44:08 michael Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -218,7 +218,6 @@ struct LocalUser
   unsigned int      receiveK;   /* Statistics: total k-bytes received */
   unsigned short    sendB;      /* counters to count upto 1-k lots of bytes */
   unsigned short    receiveB;   /* sent and received. */
-  unsigned int      lastrecvM;  /* to check for activity --Mika */
   struct Listener*  listener;   /* listener accepted from */
   dlink_list        confs;      /* Configuration record associated */
 
@@ -235,7 +234,7 @@ struct LocalUser
    * has been made. (set in s_bsd.c only)
    */
   char              sockhost[HOSTIPLEN + 1]; /* This is the host name from the 
-                                              socket ip address as string */
+                                                socket ip address as string */
   /* XXX - there is no reason to save this, it should be checked when it's
    * received and not stored, this is not used after registration
    */
