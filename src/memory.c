@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: memory.c,v 7.7 2001/02/12 06:44:59 a1kmm Exp $
+ * $Id: memory.c,v 7.8 2001/03/01 06:02:27 db Exp $
  */
 #include <stdlib.h>
 #include <string.h>
@@ -86,7 +86,11 @@ _MyFree(void *what, char *file, int line)
    first_mem_entry = mme->next;
  if (mme->next)
    mme->next->last = mme->last;
+
+#ifndef NDEBUG
  mem_frob(mme, mme->size+sizeof(MemoryEntry));
+#endif
+
  free(mme);
 }
 
