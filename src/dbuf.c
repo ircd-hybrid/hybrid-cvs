@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: dbuf.c,v 7.17 2003/04/20 15:14:05 adx Exp $
+ *  $Id: dbuf.c,v 7.18 2003/04/23 17:40:09 adx Exp $
  */
 
 #include "stdinc.h"
@@ -73,6 +73,7 @@ dbuf_put(struct dbuf_queue *qptr, void *data, size_t count)
     count -= amount;
     last->size += amount;
     qptr->total_size += amount;
+    (char *) data += amount;
   } while (count > 0);
 }
 

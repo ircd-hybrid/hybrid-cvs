@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.h,v 7.39 2003/04/12 07:00:02 michael Exp $
+ *  $Id: s_bsd.h,v 7.40 2003/04/23 17:40:07 adx Exp $
  */
 
 #ifndef INCLUDED_s_bsd_h
@@ -58,6 +58,7 @@ extern void  get_my_name(struct Client *, char *, int);
 extern void  report_error(int, const char*, const char*, int);
 extern int   set_non_blocking(int);
 extern int   set_sock_buffers(int, int);
+extern void  set_no_delay(int);
 
 extern int   get_sockerr(int);
 extern int   ignoreErrno(int ierrno);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.309 2003/04/23 15:13:06 adx Exp $
+ *  $Id: s_serv.c,v 7.310 2003/04/23 17:40:09 adx Exp $
  */
 
 #include "stdinc.h"
@@ -27,7 +27,6 @@
 #include <openssl/rsa.h>
 #include "rsa.h"
 #endif
-#include <netinet/tcp.h>
 #include "tools.h"
 #include "s_serv.h"
 #include "channel_mode.h"
@@ -873,7 +872,6 @@ server_estab(struct Client *client_p)
   static char inpath_ip[HOSTLEN * 2 + USERLEN + 5];
   dlink_node *m;
   dlink_node *ptr;
-  int opt;
 
   assert(NULL != client_p);
 
@@ -941,18 +939,15 @@ server_estab(struct Client *client_p)
      * a kernel buffer when we start sending zipped data, and the
      * parser on the receiving side can't hand both unzipped and zipped
      * data in one packet. --Rodder
+     *
+     * currently we only need to call send_queued_write,
+     * Nagle is already disabled at this point --adx
      */
-    opt = 1;
-    setsockopt(client_p->localClient->fd, IPPROTO_TCP, TCP_NODELAY,
-               (char *)&opt, sizeof(opt));
     sendto_one(client_p, "SERVER %s 1 :%s%s",
                my_name_for_link(me.name, aconf), 
                ConfigServerHide.hidden ? "(H) " : "",
                (me.info[0]) ? (me.info) : "IRCers United");
     send_queued_write(client_p);
-    opt--;
-    setsockopt(client_p->localClient->fd, IPPROTO_TCP, TCP_NODELAY,
-               (char *)&opt, sizeof(opt));
   }
 
   /* XXX - this should be in s_bsd */

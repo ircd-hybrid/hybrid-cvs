@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.117 2003/04/19 10:21:47 michael Exp $
+ *  $Id: s_auth.c,v 7.118 2003/04/23 17:40:09 adx Exp $
  */
 
 /*
@@ -170,6 +170,7 @@ release_auth_client(struct Client *client)
    */
   client->localClient->allow_read = MAX_FLOOD;
   comm_setflush(client->localClient->fd, 1000, flood_recalc, client);
+  set_no_delay(client->localClient->fd);
   dlinkAdd(client, &client->node, &global_client_list);
   read_packet(client->localClient->fd, client);
 }
