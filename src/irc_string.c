@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: irc_string.c,v 7.54 2002/05/31 02:21:03 androsyn Exp $
+ *  $Id: irc_string.c,v 7.55 2003/03/29 02:45:41 michael Exp $
  */
 
 #include "stdinc.h"
@@ -653,7 +653,7 @@ size_t strlcat(char *dst, const char *src, size_t siz)
  	const char *s = src;
  	size_t n = siz, dlen;
 
-	while (*d != '\0' && n-- != 0)
+        while (n-- != 0 && *d != '\0')
 		d++;
 	dlen = d - dst;
 	n = siz - dlen;
