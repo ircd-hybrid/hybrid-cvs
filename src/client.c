@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.261 2002/05/18 20:58:32 androsyn Exp $
+ *  $Id: client.c,v 7.262 2002/05/18 23:12:23 androsyn Exp $
  */
 
 #include "tools.h"
@@ -1214,8 +1214,8 @@ void exit_aborted_clients(void)
           free_dlink_node(ptr);
           continue;
         }
-      exit_client(target_p, target_p, &me, "Dead link");  
       dlinkDelete(ptr, &abort_list);
+      exit_client(target_p, target_p, &me, "Dead link");  
       free_dlink_node(ptr);
     }
 }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.93 2002/05/18 21:50:57 androsyn Exp $
+ *  $Id: s_auth.c,v 7.94 2002/05/18 23:12:24 androsyn Exp $
  */
 
 /*
@@ -659,7 +659,6 @@ delete_identd_queries(struct Client *target_p)
   dlink_node *ptr;
   dlink_node *next_ptr;
   struct AuthRequest* auth;
-
   for (ptr = auth_poll_list.head; ptr; ptr = next_ptr)
     {
       auth = ptr->data;

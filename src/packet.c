@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.77 2002/05/18 07:12:07 androsyn Exp $
+ *  $Id: packet.c,v 7.78 2002/05/18 23:12:24 androsyn Exp $
  */
 
 #include <stdio.h>
@@ -401,8 +401,6 @@ read_packet(int fd, void *data)
 
   /* Attempt to parse what we have */
   parse_client_queued(client_p);
-  /* This is about the only place useful to put it */
-  exit_aborted_clients();
   
   /* server fd may have changed */
   fd_r = client_p->localClient->fd;
@@ -426,6 +424,9 @@ read_packet(int fd, void *data)
         read_packet, client_p, 0);
     }
   }
+  /* This is about the only place useful to put it */
+  exit_aborted_clients();
+
 }
 
 
