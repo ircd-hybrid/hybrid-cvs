@@ -1,3 +1,15 @@
+bill        2002/11/20 00:55:13 EST	(20021120_1)
+
+  Modified files:
+    contrib              m_operspy.c 
+  Log:
+  - fix a potential core. this does create a detection vulnerability, but being stable is more important
+  
+  Revision  Changes    Path
+  1.12      +6 -3      ircd-hybrid-7/contrib/m_operspy.c
+
+
+
 db          2002/11/19 19:18:32 EST	(20021120_0)
 
   Modified files:
@@ -33207,4 +33219,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4112 2002/11/20 00:18:34 db Exp $
+$Id: ChangeLog,v 7.4113 2002/11/20 05:55:16 bill Exp $
