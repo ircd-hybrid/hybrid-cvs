@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.297 2002/04/17 00:05:10 leeh Exp $
+ *  $Id: s_conf.c,v 7.298 2002/04/22 22:16:57 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -492,13 +492,13 @@ check_client(struct Client *client_p, struct Client *source_p, char *username)
 			   source_p->localClient->listener->port);
 			   
       ilog(L_INFO,
-	  "Unauthorized client connection from %s on [%s/%u].",
+	  "Unauthorised client connection from %s on [%s/%u].",
 	  get_client_name(source_p, SHOW_IP),
 	  source_p->localClient->listener->name,
 	  source_p->localClient->listener->port);
 	  
       (void)exit_client(client_p, source_p, &me,
-			"You are not authorized to use this server");
+			"You are not authorised to use this server");
       break;
     }
     case BANNED_CLIENT:
