@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.164 2001/12/02 15:00:54 leeh Exp $
+ * $Id: s_conf.h,v 7.165 2001/12/04 08:30:11 db Exp $
  */
 
 #include "setup.h"
@@ -69,8 +69,9 @@ struct ConfItem
   unsigned int     ip_mask;
   char *           name;     /* IRC name, nick, server name, or original u@h */
   char *           host;     /* host part of user@host */
-  char *           passwd;
+  char *           passwd;   /* doubles as kline reason *ugh* */
   char *           spasswd;  /* Password to send. */
+  char *	   oper_reason; /* | portion of kline reason */
   char *           user;     /* user part of user@host */
   int              port;
   char *           fakename;   /* Mask name */
