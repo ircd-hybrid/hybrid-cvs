@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.394 2003/06/12 15:17:24 michael Exp $
+ *  $Id: channel.c,v 7.395 2003/06/14 16:47:47 adx Exp $
  */
 
 #include "stdinc.h"
@@ -406,7 +406,7 @@ channel_member_names(struct Client *source_p, struct Channel *chptr,
   struct Client *target_p;
   struct Membership *ms;
   dlink_node *ptr;
-  char lbuf[BUFSIZE];
+  char lbuf[IRCD_BUFSIZE + 1];
   char *t, *start;
   int tlen;
   int is_member;
@@ -416,8 +416,8 @@ channel_member_names(struct Client *source_p, struct Channel *chptr,
     is_member = IsMember(source_p, chptr);
     t = lbuf + ircsprintf(lbuf, form_str(RPL_NAMREPLY),
                           me.name, source_p->name,
-                          channel_pub_or_secret(chptr));
-    t += ircsprintf(t, " %s :", chptr->chname);
+                          channel_pub_or_secret(chptr),
+                          chptr->chname);
     start = t;
     tlen = 0;
 
@@ -439,9 +439,8 @@ channel_member_names(struct Client *source_p, struct Channel *chptr,
 	t = start;
       }
 
-      strcpy(t, get_member_status(ms, NO));
-      t += strlen(t);
-      t += ircsprintf(t, "%s ", target_p->name); /* XXX */
+      t += ircsprintf(t, "%s%s ", get_member_status(ms, NO),
+                      target_p->name); /* XXX */
     }
 
     if (tlen != 0)

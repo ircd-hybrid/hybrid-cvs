@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_names.c,v 1.55 2003/06/01 15:05:52 adx Exp $
+ *  $Id: m_names.c,v 1.56 2003/06/14 16:47:45 adx Exp $
  */
 
 #include "stdinc.h"
@@ -67,7 +67,7 @@ _moddeinit(void)
   mod_del_cmd(&names_msgtab);
 }
 
-const char *_version = "$Revision: 1.55 $";
+const char *_version = "$Revision: 1.56 $";
 #endif
 
 /************************************************************************
@@ -165,7 +165,7 @@ names_non_public_non_secret(struct Client *source_p)
   char *t;
 
   ircsprintf(buf,form_str(RPL_NAMREPLY),
-             me.name, source_p->name," * * :");
+             me.name, source_p->name, "*", "*");
 
   mlen = strlen(buf);
   cur_len = mlen;
