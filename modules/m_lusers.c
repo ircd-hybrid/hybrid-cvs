@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_lusers.c,v 1.10 2001/01/05 00:14:30 davidt Exp $
+ *   $Id: m_lusers.c,v 1.11 2001/01/24 19:01:23 fl_ Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -110,23 +110,6 @@ static int m_lusers(struct Client *cptr, struct Client *sptr,
 static int ms_lusers(struct Client *cptr, struct Client *sptr,
                      int parc, char *parv[])
 {
-  static time_t last_used = 0;
-
-  if (!IsOper(sptr))
-    {
-      if ((last_used + ConfigFileEntry.pace_wait) > CurrentTime)
-        {
-          /* safe enough to give this on a local connect only */
-          if (MyClient(sptr))
-            sendto_one(sptr, form_str(RPL_LOAD2HI), me.name, parv[0]);
-          return 0;
-        }
-      else
-        {
-          last_used = CurrentTime;
-        }
-    }
-
   if (parc > 2)
     {
       if(hunt_server(cptr, sptr, ":%s LUSERS %s :%s", 2, parc, parv)
