@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_defs.h,v 7.38 2003/06/16 18:21:57 michael Exp $
+ *  $Id: ircd_defs.h,v 7.39 2004/10/07 18:28:30 adx Exp $
  */
 
 /*
@@ -68,7 +68,7 @@
 struct irc_ssaddr
 {
   struct sockaddr_storage ss;
-  unsigned char   ss_len;   
+  unsigned char   ss_len;
   in_port_t       ss_port;
 };
 #endif /* INCLUDED_ircd_defs_h */

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: match.c,v 7.36 2004/02/28 06:12:27 metalrock Exp $
+ * $Id: match.c,v 7.37 2004/10/07 18:28:32 adx Exp $
  *
  */
 #include "stdinc.h"
@@ -239,7 +239,7 @@ match_cidr(const char *s1, const char *s2)
   char address[NICKLEN + USERLEN + HOSTLEN + 6];
   char mask[NICKLEN + USERLEN + HOSTLEN + 6];
   char *ipmask, *ip, *len;
-  int cidrlen, aftype;
+  int cidrlen, offset;
   struct addrinfo hints, *res;
   
   /* Unlikely to ever overflow, but we may as well be consistant - stu */
@@ -267,39 +267,45 @@ match_cidr(const char *s1, const char *s2)
   if (cidrlen == 0) 
     return(0);
 
-#ifdef IPV6  
-  if (strchr(ip, ':') && strchr(ipmask, ':'))
-    aftype = AF_INET6;
-  else 
-#endif
-  if (!strchr(ip, ':') && !strchr(ipmask, ':'))
-    aftype = AF_INET;
-  else
-    return(0);
-  
   memset(&hints, 0, sizeof(hints));
   hints.ai_family = AF_UNSPEC;
   hints.ai_flags = AI_NUMERICHOST;
 
   irc_getaddrinfo(ip, NULL, &hints, &res);
-  if (res)
-  {
-    memcpy(&ipaddr, res->ai_addr, res->ai_addrlen);
-    ipaddr.ss_len = res->ai_addrlen;
-    ipaddr.ss.ss_family = res->ai_family;
-    irc_freeaddrinfo(res);
-  }
+  if (!res)
+    return 0;
+
+#ifdef INET6
+  if (res->ai_family == AF_INET)
+    offset = offsetof(struct sockaddr_in, sin_addr);
+  else if (res->ai_family == AF_INET6)
+    offset = offsetof(struct sockaddr_in6, sin6_addr);
+  else
+    return 0;
+#else
+  offset = offsetof(struct sockaddr_in, sin_addr);
+#endif
+
+  memcpy(&ipaddr, res->ai_addr, res->ai_addrlen);
+  ipaddr.ss_len = res->ai_addrlen;
+  irc_freeaddrinfo(res);
+
+  if (cidrlen > ipaddr.ss_len * 8)
+    return 0;
 
   irc_getaddrinfo(ipmask, NULL, &hints, &res);
-  if (res)
-  {
-    memcpy(&maskaddr, res->ai_addr, res->ai_addrlen);
-    maskaddr.ss_len = res->ai_addrlen;
-    maskaddr.ss.ss_family = res->ai_family;
-    irc_freeaddrinfo(res);
-  }
-  
-  if (comp_with_mask(&ipaddr, &maskaddr, cidrlen) && match(mask, address))
+  if (!res)
+    return 0;
+
+  memcpy(&maskaddr, res->ai_addr, res->ai_addrlen);
+  maskaddr.ss_len = res->ai_addrlen;
+  irc_freeaddrinfo(res);
+
+  if (maskaddr.ss_len != ipaddr.ss_len)
+    return 0;
+
+  if (comp_with_mask(((char *) &ipaddr) + offset, ((char *) &maskaddr) +
+    offset, cidrlen) && match(mask, address))
     return(1);
   else
     return(0);
