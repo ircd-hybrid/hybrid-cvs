@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.261 2001/08/22 21:44:37 leeh Exp $
+ *  $Id: s_conf.c,v 7.262 2001/08/29 15:14:06 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -1395,6 +1395,7 @@ static void set_default_conf(void)
   ConfigFileEntry.stats_o_oper_only = NO;
   ConfigFileEntry.stats_k_oper_only = 1; /* masked */
   ConfigFileEntry.stats_i_oper_only = 1; /* masked */
+  ConfigFileEntry.stats_P_oper_only = NO;
   ConfigFileEntry.pace_wait = 10;
   ConfigFileEntry.caller_id_wait = 60;
   ConfigFileEntry.whois_wait = 0;

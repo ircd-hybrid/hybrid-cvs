@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.150 2001/08/04 15:35:50 leeh Exp $
+ * $Id: s_conf.h,v 7.151 2001/08/29 15:14:06 leeh Exp $
  */
 
 #include "setup.h"
@@ -214,6 +214,7 @@ struct config_file_entry
   int           stats_o_oper_only;
   int		stats_k_oper_only;
   int		stats_i_oper_only;
+  int		stats_P_oper_only;
   int           pace_wait;
   int           whois_wait;
   int           short_motd;
