@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.80 2003/10/03 22:52:46 garion Exp $
+ *  $Id: hash.c,v 7.81 2003/10/11 21:56:07 bill Exp $
  */
 
 #include "stdinc.h"
@@ -525,9 +525,12 @@ struct Client *
 find_server(const char *name)
 {
   unsigned int hashv = strhash(name);
-  struct Client *client_p;
+  struct Client *client_p = NULL;
 
-  if ((client_p = clientTable[hashv]) != NULL)
+  if (IsDigit(*name) && strlen(name) == 3)
+    client_p = hash_find_id(name);
+
+  if ((client_p == NULL) && (client_p = clientTable[hashv]) != NULL)
   {
     if ((!IsServer(client_p) && !IsMe(client_p)) ||
         irccmp(name, client_p->name))

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.413 2003/10/11 02:15:10 bill Exp $
+ *  $Id: client.c,v 7.414 2003/10/11 21:56:07 bill Exp $
  */
 
 #include "stdinc.h"
@@ -841,7 +841,7 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
     if (target_p && IsServer(target_p) && target_p != client_p &&
         !IsMe(target_p) && !IsKilled(source_p))
       sendto_one(target_p, ":%s SQUIT %s :%s",
-                 from->name, source_p->name, comment);
+                 ID_or_name(from, target_p), ID_or_name(source_p, target_p), comment);
   }
   else if (IsPerson(source_p)) /* ...just clean all others with QUIT... */
   {
@@ -948,7 +948,7 @@ recurse_send_quits(struct Client *client_p, struct Client *source_p,
       }
     }
     else
-      sendto_one(to, "SQUIT %s :%s", source_p->name, me.name);
+      sendto_one(to, "SQUIT %s :%s", ID_or_name(source_p, to), me.name);
   }
   else
   {
@@ -965,7 +965,7 @@ recurse_send_quits(struct Client *client_p, struct Client *source_p,
     }
 
     if (!match(myname, source_p->name))
-      sendto_one(to, "SQUIT %s :%s", source_p->name, me.name);
+      sendto_one(to, "SQUIT %s :%s", ID_or_name(source_p, to), me.name);
   }
 }
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.312 2003/10/07 22:37:20 bill Exp $
+ *  $Id: s_user.c,v 7.313 2003/10/11 21:56:07 bill Exp $
  */
 
 #include "stdinc.h"
@@ -1201,7 +1201,7 @@ send_umode_out(struct Client *client_p, struct Client *source_p,
           (target_p->localClient->serverMask &
            source_p->lazyLinkClientExists))
         sendto_one(target_p, ":%s MODE %s :%s",
-                   source_p->name, source_p->name, buf);
+                   ID_or_name(source_p, target_p), ID_or_name(source_p, target_p), buf);
     }
   }
 
