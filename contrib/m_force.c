@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: m_force.c,v 1.20 2003/05/03 11:09:59 michael Exp $
+ * $Id: m_force.c,v 1.21 2003/05/04 13:44:33 michael Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&forcepart_msgtab);
 }
 
-const char *_version = "$Revision: 1.20 $";
+const char *_version = "$Revision: 1.21 $";
 #endif
 
 /* m_forcejoin()
@@ -302,8 +302,8 @@ mo_forcepart(struct Client *client_p, struct Client *source_p,
                me.name, source_p->name, parv[2], parv[1]);
     return;
   }
-  
-  if (chptr->chname[0] == ''')
+
+  if (chptr->chname[0] == '#')
     sendto_server(target_p, target_p, chptr, NOCAPS, NOCAPS, LL_ICLIENT,
                   ":%s PART %s :%s", target_p->name,
                   chptr->chname, target_p->name);
