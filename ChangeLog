@@ -1,3 +1,16 @@
+jmallett    2002/01/13 02:19:27 EST	(20020113_3)
+
+  Modified files:
+    src                  hostmask.c 
+  Log:
+  Fixing some comments, since they'll get fixed eventually anyway:
+  - "an possible" -> "a possible"
+  
+  Revision  Changes    Path
+  7.63      +2 -2      ircd-hybrid-7/src/hostmask.c
+
+
+
 jmallett    2002/01/13 02:11:13 EST	(20020113_2)
 
   Modified files:
@@ -3119,7 +3132,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3330 2002/01/13 07:11:19 jmallett Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3331 2002/01/13 07:19:33 jmallett Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -21473,4 +21486,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3330 2002/01/13 07:11:19 jmallett Exp $
+$Id: ChangeLog,v 7.3331 2002/01/13 07:19:33 jmallett Exp $
