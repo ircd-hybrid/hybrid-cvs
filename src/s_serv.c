@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.4 1999/08/13 03:55:49 tomh Exp $
+ *   $Id: s_serv.c,v 7.5 1999/08/15 18:38:38 tomh Exp $
  */
 #include "s_serv.h"
 #include "channel.h"
@@ -520,7 +520,6 @@ int server_estab(struct Client *cptr)
   int               split;
 
   assert(0 != cptr);
-  ClearAccess(cptr);
 
   inpath = get_client_name(cptr, TRUE); /* "refresh" inpath with host */
   split = irccmp(cptr->name, cptr->host);

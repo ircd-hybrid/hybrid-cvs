@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.c,v 7.1 1999/08/02 11:47:05 db Exp $
+ *   $Id: s_auth.c,v 7.2 1999/08/15 18:38:37 tomh Exp $
  *
  * Changes:
  *   July 6, 1999 - Rewrote most of the code here. When a client connects
@@ -158,8 +158,6 @@ static void release_auth_client(struct Client* client)
 
   fdlist_add(client->fd, FDL_DEFAULT);
   add_client_to_list(client);
-  
-  SetAccess(client);
 }
  
 /*

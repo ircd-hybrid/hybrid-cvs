@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_debug.c,v 7.4 1999/08/15 18:16:15 tomh Exp $
+ *   $Id: s_debug.c,v 7.5 1999/08/15 18:38:37 tomh Exp $
  */
 #include "s_debug.h"
 #include "channel.h"
@@ -401,7 +401,7 @@ void count_memory(struct Client* cptr, char* nick)
               conf_mem + class_count * sizeof(struct Class) + 
               dbuf_mem + resolver_mem + ip_hash_mem + scache_mem;
 
-  sendto_one(cptr, ":%s %d %s :Total: ch %d cl %d co %d db %d",
+  sendto_one(cptr, ":%s %d %s :Total: channel %d client %d conf %d dbuf %d",
              me.name, RPL_STATSDEBUG, nick, channel_mem_total, 
              client_mem_total, conf_mem, dbuf_mem);
 
