@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.343 2003/04/06 18:24:47 db Exp $
+ *  $Id: client.c,v 7.344 2003/04/06 23:27:57 db Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -239,8 +239,6 @@ check_pings(void *notused)
   check_pings_list(&serv_list);
   check_unknowns_list(&unknown_list);
 }
-
-extern int safe_list_all_channels(struct Client *source_p);
 
 /*
  * Check_pings_list()
