@@ -17,10 +17,12 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: s_log.h,v 7.4 2000/11/29 18:16:25 db Exp $
+ * $Id: s_log.h,v 7.5 2000/11/29 18:51:58 db Exp $
  */
 #ifndef INCLUDED_s_log_h
 #define INCLUDED_s_log_h
+
+struct Client;
 
 #define L_CRIT    0
 #define L_ERROR   1

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: ircdauth.c,v 7.11 2000/11/26 00:42:10 db Exp $
+ *   $Id: ircdauth.c,v 7.12 2000/11/29 18:52:02 db Exp $
  */
 
 #include <stdio.h>
@@ -609,7 +609,7 @@ GreetUser(struct Client *client)
 	parv[0] = client->name;
 	parv[1] = parv[2] = NULL;
 
-	show_lusers(client, client, 1, parv);
+	show_lusers(client);
 
   if(ConfigFileEntry.short_motd) {
   	sendto_one(client,"NOTICE %s :*** Notice -- motd was last changed at %s",

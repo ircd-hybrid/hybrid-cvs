@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_lusers.c,v 1.3 2000/11/28 03:54:01 bill Exp $
+ *   $Id: m_lusers.c,v 1.4 2000/11/29 18:52:01 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -87,7 +87,7 @@ int m_lusers(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
           return 0;
         }
     }
-  return show_lusers(cptr,sptr,parc,parv);
+  return show_lusers(sptr);
 }
 
 /*
@@ -126,6 +126,6 @@ int ms_lusers(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
           return 0;
         }
     }
-  return show_lusers(cptr,sptr,parc,parv);
+  return show_lusers(sptr);
 }
 
