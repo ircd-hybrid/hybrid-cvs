@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.166 2003/08/03 14:22:19 michael Exp $
+ *  $Id: m_kline.c,v 1.167 2003/08/11 18:43:28 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -106,11 +106,10 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.166 $";
+const char *_version = "$Revision: 1.167 $";
 #endif
 
 /* Local function prototypes */
-
 static time_t valid_tkline(char *string);
 static char *cluster(char *);
 static int find_user_host(struct Client *source_p,
@@ -125,11 +124,9 @@ static void apply_kline(struct Client *source_p, struct ConfItem *conf,
 static void apply_tkline(struct Client *source_p, struct ConfItem *conf,
                          int temporary_kline_time);
 
+static char buffer[IRCD_BUFSIZE];
 
-char buffer[IRCD_BUFSIZE];
-
-/*
- * mo_kline
+/* mo_kline()
  *
  * inputs	- pointer to server
  *		- pointer to client
@@ -137,7 +134,6 @@ char buffer[IRCD_BUFSIZE];
  *		- parameter list
  * output	-
  * side effects - k line is added
- *
  */
 static void
 mo_kline(struct Client *client_p, struct Client *source_p,
@@ -260,8 +256,8 @@ mo_kline(struct Client *client_p, struct Client *source_p,
   if (tkline_time != 0)
   {
     ircsprintf(buffer,
-	       "Temporary K-line %d min. - %s (%s)",
-	       (int)(tkline_time/60), reason, current_date);
+               "Temporary K-line %d min. - %s (%s)",
+               (int)(tkline_time/60), reason, current_date);
     DupString(aconf->reason, buffer);
     if (oper_reason != NULL)
       DupString(aconf->oper_reason, oper_reason);
@@ -275,13 +271,8 @@ mo_kline(struct Client *client_p, struct Client *source_p,
       DupString(aconf->oper_reason, oper_reason);
     apply_kline(source_p, conf, current_date, cur_time);
   }
-} /* mo_kline() */
+}
 
-/*
- * ms_kline()
- *
- *
- */
 static void
 ms_kline(struct Client *client_p, struct Client *source_p,
 	 int parc, char *parv[])
@@ -304,49 +295,53 @@ ms_kline(struct Client *client_p, struct Client *source_p,
                 ":%s KLINE %s %s %s %s :%s",
                 parv[0], parv[1], parv[2], parv[3], parv[4], parv[5]);
 
-
+  tkline_time = atoi(parv[2]);
   kuser   = parv[3];
   khost   = parv[4];
   kreason = parv[5];
 
-  if (!match(parv[1],me.name))
+  if (!valid_user_host(source_p, kuser, khost) || !valid_comment(source_p, kreason) ||
+      !match(parv[1], me.name) || !IsPerson(source_p) || 
+      already_placed_kline(source_p, kuser, khost))
     return;
 
-  if (!IsPerson(source_p))
-    return;
+  set_time();
+  cur_time = CurrentTime;
+  current_date = smalldate(cur_time);
+
+  conf = make_conf_item(KLINE_TYPE);
+  aconf = (struct AccessItem *)map_to_conf(conf);
+  DupString(aconf->host, khost);
+  DupString(aconf->user, kuser);
 
   if (find_matching_name_conf(CLUSTER_TYPE, source_p->user->server->name,
                               NULL, NULL, CLUSTER_KLINE))
   {
-    if (!valid_user_host(source_p, kuser, khost) || !valid_wild_card(kuser, khost) ||
-        !valid_comment(source_p, kreason) || already_placed_kline(source_p, kuser, khost))
+    if (!valid_wild_card(kuser, khost))
       return;
 
     tkline_time = atoi(parv[2]);
 
-    set_time();
-    cur_time = CurrentTime;
-    current_date = smalldate(cur_time);
-
-    conf = make_conf_item(KLINE_TYPE);
-    aconf = (struct AccessItem *)map_to_conf(conf);
-    DupString(aconf->user, kuser);
-    DupString(aconf->host, khost);
-    DupString(aconf->reason, kreason);
-
     if (tkline_time != 0)
+    {
+      ircsprintf(buffer,
+                 "Temporary K-line %d min. - %s (%s)",
+                 (int)(tkline_time/60), kreason, current_date);
+      DupString(aconf->reason, buffer);
       apply_tkline(source_p, conf, tkline_time);
+    }
     else
+    {
+      ircsprintf(buffer, "%s (%s)", kreason, current_date);
+      DupString(aconf->reason, buffer);
       apply_kline(source_p, conf, current_date, cur_time);
+    }
   }
   else if (find_matching_name_conf(ULINE_TYPE,
 				  source_p->user->server->name,
 				  source_p->username, source_p->host,
 				  SHARED_KLINE))
   {
-    if (!valid_user_host(source_p, kuser, khost))
-      return;
-
     if (!valid_wild_card(kuser, khost))
     {
       sendto_one(source_p, ":%s NOTICE %s :Please include at least %d non-wildcard characters with the user@host",
@@ -354,34 +349,22 @@ ms_kline(struct Client *client_p, struct Client *source_p,
       return;
     }
 
-    if (!valid_comment(source_p, kreason))
-      return;
-
-    /* We check if the kline already exists after we've announced its
-     * arrived, to avoid confusing opers - fl
-     */
-    if (already_placed_kline(source_p, kuser, khost))
-      return;
-
-    tkline_time = atoi(parv[2]);
-
-    set_time();
-    cur_time = CurrentTime;
-    current_date = smalldate(cur_time);
-
-    conf = make_conf_item(KLINE_TYPE);
-    aconf = (struct AccessItem *)map_to_conf(conf);
-    DupString(aconf->host, khost);
-    DupString(aconf->reason, kreason);
-    DupString(aconf->user, kuser);
-
     if (tkline_time != 0)
+    {
+      ircsprintf(buffer,
+                 "Temporary K-line %d min. - %s (%s)",
+                 (int)(tkline_time/60), kreason, current_date);
+      DupString(aconf->reason, buffer);
       apply_tkline(source_p, conf, tkline_time);
+    }
     else
+    {
+      ircsprintf(buffer, "%s (%s)", kreason, current_date);
+      DupString(aconf->reason, buffer);
       apply_kline(source_p, conf, current_date, cur_time);
+    }
   }
-
-} /* ms_kline() */
+}
 
 /* apply_kline()
  *
@@ -432,8 +415,7 @@ apply_tkline(struct Client *source_p, struct ConfItem *conf,
   rehashed_klines = 1;
 }
 
-/*
- * apply_tdline
+/* apply_tdline()
  *
  * inputs	-
  * output	- NONE
