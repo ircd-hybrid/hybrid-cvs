@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 7.32 2002/07/11 23:40:27 leeh Exp $
+# $Id: Makefile.in,v 7.33 2003/05/06 05:41:07 db Exp $
 
 CC		= @CC@
 INSTALL		= @INSTALL@
@@ -17,8 +17,8 @@ LN              = @LN@
 
 SSL_LIBS	= @SSL_LIBS@
 SSL_INCLUDES	= @SSL_INCLUDES@
+CRYPT_LIB	= @CRYPT_LIB@
 
-IRCDLIBS	= @LIBS@ $(SSL_LIBS)
 INCLUDES	= -I../include $(SSL_INCLUDES)
 CPPFLAGS	= ${INCLUDES} @CPPFLAGS@
 
@@ -32,7 +32,7 @@ localstatedir	= @localstatedir@
 moduledir	= @prefix@/modules
 automoduledir	= @prefix@/modules/autoload
 
-PROGS		= viconf mkpasswd convertconf convertilines convertklines encspeed
+PROGS		= viconf mkpasswd convertconf convertilines convertklines @ENCSPEED@
 
 mkpasswd_SOURCES = mkpasswd.c
 mkpasswd_OBJECTS = mkpasswd.o
@@ -55,21 +55,21 @@ all: $(PROGS)
 build: all
 
 encspeed: $(encspeed_OBJECTS)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o encspeed $(encspeed_OBJECTS) $(IRCDLIBS)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o encspeed $(encspeed_OBJECTS) $(SSL_LIBS)
 mkpasswd: $(mkpasswd_OBJECTS)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o mkpasswd $(mkpasswd_OBJECTS) $(IRCDLIBS)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o mkpasswd $(mkpasswd_OBJECTS) $(CRYPT_LIB)
 
 viconf: $(viconf_OBJECTS)
-	$(CC) $(CFLAGS) $(LDFLAGS) -o viconf $(viconf_OBJECTS) $(IRCDLIBS)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o viconf $(viconf_OBJECTS)
 
 convertilines: convertilines.o
-	$(CC) $(CFLAGS) $(LDFLAGS) -o convertilines $(convertilines_OBJECTS) $(IRCDLIBS)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o convertilines $(convertilines_OBJECTS)
 
 convertklines: convertklines.o
-	$(CC) $(CFLAGS) $(LDFLAGS) -o convertklines $(convertklines_OBJECTS) $(IRCDLIBS)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o convertklines $(convertklines_OBJECTS)
 
 convertconf: convertconf.o
-	$(CC) $(CFLAGS) $(LDFLAGS) -o convertconf $(convertconf_OBJECTS) $(IRCDLIBS)
+	$(CC) $(CFLAGS) $(LDFLAGS) -o convertconf $(convertconf_OBJECTS)
 
 clean:
 	$(RM) -f $(all_OBJECTS) convertconf encspeed viconf chkconf mkpasswd *~ core *.exe convertklines convertilines

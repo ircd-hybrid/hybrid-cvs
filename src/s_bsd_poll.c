@@ -20,11 +20,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_poll.c,v 7.56 2003/03/12 04:46:40 db Exp $
+ *  $Id: s_bsd_poll.c,v 7.57 2003/05/06 05:41:05 db Exp $
  */
 
 #include "config.h"
-#ifdef USE_POLL
 #include "stdinc.h"
 #include <sys/poll.h>
 
@@ -262,9 +261,3 @@ comm_select(unsigned long delay)
   }
   return 0;
 }
-#else
-/**
- * Don't let an empty compilation unit slip through.
- */
-static int dummy;
-#endif

@@ -21,7 +21,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_sigio.c,v 7.24 2002/11/27 03:46:58 jmallett Exp $
+ *  $Id: s_bsd_sigio.c,v 7.25 2003/05/06 05:41:05 db Exp $
  */
 
 #ifndef _GNU_SOURCE
@@ -29,7 +29,6 @@
 #endif
 
 #include "config.h"
-#ifdef USE_SIGIO
 #include "stdinc.h"
 #include <sys/poll.h>
 
@@ -353,9 +352,3 @@ int comm_select(unsigned long delay)
     mask_our_signal(sigio_signal);
     return 0;
 }
-#else
-/**
- * Don't let an empty compilation unit slip through.
- */
-static int dummy;
-#endif

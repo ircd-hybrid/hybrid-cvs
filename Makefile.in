@@ -16,7 +16,7 @@
 #*   along with this program; if not, write to the Free Software
 #*   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #*
-#*   $Id: Makefile.in,v 7.42 2003/04/30 07:20:52 michael Exp $
+#*   $Id: Makefile.in,v 7.43 2003/05/06 05:40:53 db Exp $
 #*/
 
 RM=@RM@
@@ -30,7 +30,14 @@ CLEANDIRS = ${SUBDIRS} contrib iauth
 # SUBDIRS=src tools iauth
 RSA_FILES=rsa_respond/README rsa_respond/respond.c rsa_respond/Makefile
 
-MAKE = make ${MFLAGS} 
+# The make used HAS to set $(MAKE). But then, if we don't do it this
+# way, people lose the option to use a 'make' called something other 
+# than `make.' If it doesn't set $(MAKE), fall back to the old behavior
+# by substing SET_MAKE.
+
+@SET_MAKE@
+
+MAKE += ${MFLAGS} 
 
 all:	build
 
@@ -60,7 +67,7 @@ clean:
 		${MAKE} clean; cd ..;\
 	done
 	-@if [ -f include/setup.h ] ; then \
-	echo "To really restart installation, make distclean" ; \
+	echo "To really restart installation, ${MAKE} distclean" ; \
 	fi
 
 distclean:

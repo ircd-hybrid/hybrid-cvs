@@ -1,202 +1,198 @@
-/* include/setup.h.in.  Generated automatically from autoconf/configure.in by autoheader 2.13.  */
+/* include/setup.h.in.  Generated from autoconf/configure.in by autoheader.  */
 
-/* Define as __inline if that's what the C compiler calls it.  */
-#undef inline
-
-/* Define if you need to in order for stat and other things to work.  */
-#undef _POSIX_SOURCE
-
-/* Define to the type of arg1 for select(). */
-#undef SELECT_TYPE_ARG1
-
-/* Define to the type of args 2, 3 and 4 for select(). */
-#undef SELECT_TYPE_ARG234
-
-/* Define to the type of arg5 for select(). */
-#undef SELECT_TYPE_ARG5
-
-/* Define if you have the ANSI C header files.  */
-#undef STDC_HEADERS
-
-/* Define if you have the poll() system call.  */
-#undef USE_POLL
-
-/* Define with our select type */
-#undef SELECT_TYPE
-
-/* Define if we are going to use /dev/poll for network IO */
-#undef HAVE_DEVPOLL
-
-#undef USE_DEVPOLL
-
-/* Using kqueue */
-#undef USE_KQUEUE
-
-/* Using poll */
-#undef USE_POLL
-
-/* Using select */
-#undef USE_SELECT
-
-/* Using devpoll */
-#undef USE_DEVPOLL
-
-/* Using sigio */
-#undef USE_SIGIO
-
-/* Define if we have socklen_t */
-#undef HAVE_SOCKLEN_T
-
-/* Define if we have uintptr_t */
-#undef HAVE_UINTPTR_T
-
-/* Define if we need HAVE_SHL_LOAD - HPUX */
-#undef HAVE_SHL_LOAD
-
-/* Define based upon RLIMIT value is found in sys/resource.h */
-/* By default, we assume nothing is found. */
-#undef RLIMIT_FD_MAX
-
-/* Define if we can include both string.h and strings.h */
-#undef STRING_WITH_STRINGS
-
-/* This is a string containing any extra underscores that must be prepended
- * to symbols loaded from modules.
- */
-#undef SYMBOL_PREFIX
-
-/* IPv6 support */
-#undef IPV6
-
-/* u_int32_t */
-#undef u_int32_t
-
-/* static modules */
-#undef STATIC_MODULES
-
-/* No block allocator */
-#undef NOBALLOC
-
-/* nanosleep */
-#undef HAVE_NANOSLEEP
-
-/* nicklen */
-#undef NICKLEN
-
-/* max_clients */
-#undef MAX_CLIENTS
-
-/* topiclen */
-#undef TOPICLEN
-
-/* EFNET */
+/* Define if this ircd will be an EFnet server. */
 #undef EFNET
 
-/* PATH_DEVNULL */
-#undef PATH_DEVNULL
-
-/* Define if you have the EVP_bf_cfb function.  */
-#undef HAVE_EVP_BF_CFB
-
-/* Define if you have the EVP_cast5_cfb function.  */
-#undef HAVE_EVP_CAST5_CFB
-
-/* Define if you have the EVP_des_cfb function.  */
-#undef HAVE_EVP_DES_CFB
-
-/* Define if you have the EVP_des_ede3_cfb function.  */
-#undef HAVE_EVP_DES_EDE3_CFB
-
-/* Define if you have the EVP_idea_cfb function.  */
-#undef HAVE_EVP_IDEA_CFB
-
-/* Define if you have the EVP_rc5_32_12_16_cfb function.  */
-#undef HAVE_EVP_RC5_32_12_16_CFB
-
-/* Define if you have the dlfunc function.  */
-#undef HAVE_DLFUNC
-
-/* Define if you have the dlopen function.  */
-#undef HAVE_DLOPEN
-
-/* Define if you have the kevent function.  */
-#undef HAVE_KEVENT
-
-/* Define if you have the mmap function.  */
-#undef HAVE_MMAP
-
-/* Define if you have the snprintf function.  */
-#undef HAVE_SNPRINTF
-
-/* Define if you have the socketpair function.  */
-#undef HAVE_SOCKETPAIR
-
-/* Define if you have the strlcat function.  */
-#undef HAVE_STRLCAT
-
-/* Define if you have the strlcpy function.  */
-#undef HAVE_STRLCPY
-
-/* Define if you have the vsnprintf function.  */
-#undef HAVE_VSNPRINTF
-
-/* Define if you have the <dlfcn.h> header file.  */
-#undef HAVE_DLFCN_H
-
-/* Define if you have the <errno.h> header file.  */
-#undef HAVE_ERRNO_H
-
-/* Define if you have the <getopt.h> header file.  */
-#undef HAVE_GETOPT_H
-
-/* Define if you have the <inttypes.h> header file.  */
-#undef HAVE_INTTYPES_H
-
-/* Define if you have the <mach-o/dyld.h> header file.  */
-#undef HAVE_MACH_O_DYLD_H
-
-/* Define if you have the <stddef.h> header file.  */
-#undef HAVE_STDDEF_H
-
-/* Define if you have the <stdlib.h> header file.  */
-#undef HAVE_STDLIB_H
-
-/* Define if you have the <string.h> header file.  */
-#undef HAVE_STRING_H
-
-/* Define if you have the <strings.h> header file.  */
-#undef HAVE_STRINGS_H
-
-/* Define if you have the <sys/param.h> header file.  */
-#undef HAVE_SYS_PARAM_H
-
-/* Define if you have the <sys/resource.h> header file.  */
-#undef HAVE_SYS_RESOURCE_H
-
-/* Define if you have the <sys/syslog.h> header file.  */
-#undef HAVE_SYS_SYSLOG_H
-
-/* Define if you have the <unistd.h> header file.  */
-#undef HAVE_UNISTD_H
-
-/* Define if you have the crypto library (-lcrypto).  */
-#undef HAVE_LIBCRYPTO
-
-/* Define if you have the descrypt library (-ldescrypt).  */
-#undef HAVE_LIBDESCRYPT
-
-/* Define if you have the dl library (-ldl).  */
-#undef HAVE_LIBDL
-
-/* Define if you have the efence library (-lefence).  */
-#undef HAVE_LIBEFENCE
-
-/* Define if you have the socket library (-lsocket).  */
-#undef HAVE_LIBSOCKET
-
-/* Define if you have the z library (-lz).  */
-#undef HAVE_LIBZ
-
-/* Define if you have the <crypt.h> header file.  */
+/* Define to 1 if you have the <crypt.h> header file. */
 #undef HAVE_CRYPT_H
 
+/* Define to 1 if you have the <dlfcn.h> header file. */
+#undef HAVE_DLFCN_H
+
+/* Define to 1 if you have the `dlfunc' function. */
+#undef HAVE_DLFUNC
+
+/* Define to 1 if you have the `dlopen' function. */
+#undef HAVE_DLOPEN
+
+/* Define to 1 if you have the <errno.h> header file. */
+#undef HAVE_ERRNO_H
+
+/* Define to 1 if you have the `EVP_bf_cfb' function. */
+#undef HAVE_EVP_BF_CFB
+
+/* Define to 1 if you have the `EVP_cast5_cfb' function. */
+#undef HAVE_EVP_CAST5_CFB
+
+/* Define to 1 if you have the `EVP_des_cfb' function. */
+#undef HAVE_EVP_DES_CFB
+
+/* Define to 1 if you have the `EVP_des_ede3_cfb' function. */
+#undef HAVE_EVP_DES_EDE3_CFB
+
+/* Define to 1 if you have the `EVP_idea_cfb' function. */
+#undef HAVE_EVP_IDEA_CFB
+
+/* Define to 1 if you have the `EVP_rc5_32_12_16_cfb' function. */
+#undef HAVE_EVP_RC5_32_12_16_CFB
+
+/* Define to 1 if you have the <getopt.h> header file. */
+#undef HAVE_GETOPT_H
+
+/* Define to 1 if you have the <inttypes.h> header file. */
+#undef HAVE_INTTYPES_H
+
+/* Define to 1 if you have the `crypto' library (-lcrypto). */
+#undef HAVE_LIBCRYPTO
+
+/* Define to 1 if you have the `dl' library (-ldl). */
+#undef HAVE_LIBDL
+
+/* Define to 1 if you have the `socket' library (-lsocket). */
+#undef HAVE_LIBSOCKET
+
+/* Define to 1 if you have the `z' library (-lz). */
+#undef HAVE_LIBZ
+
+/* Define to 1 if you have the <mach-o/dyld.h> header file. */
+#undef HAVE_MACH_O_DYLD_H
+
+/* Define to 1 if you have the <memory.h> header file. */
+#undef HAVE_MEMORY_H
+
+/* Define to 1 if you have the `mmap' function. */
+#undef HAVE_MMAP
+
+/* Define if the nanosleep function is available somewhere. */
+#undef HAVE_NANOSLEEP
+
+/* shl_load() is available */
+#undef HAVE_SHL_LOAD
+
+/* Define to 1 if you have the `snprintf' function. */
+#undef HAVE_SNPRINTF
+
+/* Define to 1 if you have the `socketpair' function. */
+#undef HAVE_SOCKETPAIR
+
+/* Define to 1 if you have the <stddef.h> header file. */
+#undef HAVE_STDDEF_H
+
+/* Define to 1 if you have the <stdint.h> header file. */
+#undef HAVE_STDINT_H
+
+/* Define to 1 if you have the <stdlib.h> header file. */
+#undef HAVE_STDLIB_H
+
+/* Define to 1 if you have the <strings.h> header file. */
+#undef HAVE_STRINGS_H
+
+/* Define to 1 if you have the <string.h> header file. */
+#undef HAVE_STRING_H
+
+/* Define to 1 if you have the `strlcat' function. */
+#undef HAVE_STRLCAT
+
+/* Define to 1 if you have the `strlcpy' function. */
+#undef HAVE_STRLCPY
+
+/* Define to 1 if you have the <sys/param.h> header file. */
+#undef HAVE_SYS_PARAM_H
+
+/* Define to 1 if you have the <sys/resource.h> header file. */
+#undef HAVE_SYS_RESOURCE_H
+
+/* Define to 1 if you have the <sys/stat.h> header file. */
+#undef HAVE_SYS_STAT_H
+
+/* Define to 1 if you have the <sys/syslog.h> header file. */
+#undef HAVE_SYS_SYSLOG_H
+
+/* Define to 1 if you have the <sys/types.h> header file. */
+#undef HAVE_SYS_TYPES_H
+
+/* Define if uintptr_t is available */
+#undef HAVE_UINTPTR_T
+
+/* Define to 1 if you have the <unistd.h> header file. */
+#undef HAVE_UNISTD_H
+
+/* Define to 1 if the system has the type `unsigned int'. */
+#undef HAVE_UNSIGNED_INT
+
+/* Define to 1 if the system has the type `u_int32_t'. */
+#undef HAVE_U_INT32_T
+
+/* Define to 1 if you have the `vsnprintf' function. */
+#undef HAVE_VSNPRINTF
+
+/* Define if IPv6 support is present and available. */
+#undef IPV6
+
+/* Maximum no. of clients that can connect to the ircd. */
+#undef MAX_CLIENTS
+
+/* Nickname length */
+#undef NICKLEN
+
+/* Disable the block allocator. */
+#undef NOBALLOC
+
+/* Define to the address where bug reports for this package should be sent. */
+#undef PACKAGE_BUGREPORT
+
+/* Define to the full name of this package. */
+#undef PACKAGE_NAME
+
+/* Define to the full name and version of this package. */
+#undef PACKAGE_STRING
+
+/* Define to the one symbol short name of this package. */
+#undef PACKAGE_TARNAME
+
+/* Define to the version of this package. */
+#undef PACKAGE_VERSION
+
+/* Path to /dev/null */
+#undef PATH_DEVNULL
+
+/* RLIMIT value found in sys/resource.h if found */
+#undef RLIMIT_FD_MAX
+
+/* This is the type of IO loop we are using */
+#undef SELECT_TYPE
+
+/* Define to 1 if dynamic modules can't be used. */
+#undef STATIC_MODULES
+
+/* Define to 1 if you have the ANSI C header files. */
+#undef STDC_HEADERS
+
+/* Define to 1 if string.h may be included along with strings.h */
+#undef STRING_WITH_STRINGS
+
+/* String containing extra underscores prepended to symbols loaded from
+   modules. */
+#undef SYMBOL_PREFIX
+
+/* Maximum topic length (<=390) */
+#undef TOPICLEN
+
+/* Use kqueue() for I/O loop */
+#undef USE_KQUEUE
+
+/* Define to 1 if `lex' declares `yytext' as a `char *' by default, not a
+   `char[]'. */
+#undef YYTEXT_POINTER
+
+/* Enable GNU extensions on systems that have them.  */
+#ifndef _GNU_SOURCE
+# undef _GNU_SOURCE
+#endif
+
+/* Define as `__inline' if that's what the C compiler calls it, or to nothing
+   if it is not supported. */
+#undef inline
+
+/* If we don't have a real socklen_t, int is good enough. */
+#undef socklen_t

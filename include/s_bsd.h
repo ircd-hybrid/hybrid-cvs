@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.h,v 7.40 2003/04/23 17:40:07 adx Exp $
+ *  $Id: s_bsd.h,v 7.41 2003/05/06 05:41:01 db Exp $
  */
 
 #ifndef INCLUDED_s_bsd_h
@@ -27,10 +27,6 @@
 
 #include "config.h"       
 #include "fdlist.h"
-
-#ifndef HAVE_SOCKLEN_T
-typedef int socklen_t;
-#endif
 
 /* Size of a read buffer */
 #define READBUF_SIZE    16384   /* used by src/packet.c and src/s_serv.c */

@@ -20,11 +20,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_kqueue.c,v 1.29 2003/04/06 04:18:03 db Exp $
+ *  $Id: s_bsd_kqueue.c,v 1.30 2003/05/06 05:41:05 db Exp $
  */
 
 #include "config.h"
-#ifdef USE_KQUEUE
 #include "stdinc.h"
 #include <sys/event.h>
 
@@ -285,10 +284,3 @@ comm_select(unsigned long delay)
   /* XXX Get here, we broke! */
   return 0;
 }
-
-#else /* USE_KQUEUE */
-/**
- * Don't let an empty compilation unit slip through.
- */
-static int dummy;
-#endif /* USE_KQUEUE */

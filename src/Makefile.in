@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.117 2003/05/04 16:26:07 adx Exp $
+# $Id: Makefile.in,v 7.118 2003/05/06 05:41:05 db Exp $
 #
 CC		= @CC@
 INSTALL		= @INSTALL@
@@ -23,6 +23,8 @@ bindir		= @bindir@
 libexecdir	= @libexecdir@
 sysconfdir	= @sysconfdir@
 localstatedir	= @localstatedir@
+
+NETIO_SRC	= s_bsd_@SELECT_TYPE@.c
 
 DOLLAR = $$
 
@@ -50,7 +52,7 @@ y.tab.c:	ircd_parser.y
 lex.yy.o:	lex.yy.c ircd_lexer.l
 	${CC} ${CPPFLAGS} ${CFLAGS} -I. -c lex.yy.c
 
-lex.yy.c:	ircd_lexer.l
+lex.yy.c:	ircd_lexer.l y.tab.c
 	${LEX} ircd_lexer.l
 
 BASE_SRCS =                     \
@@ -92,11 +94,7 @@ BASE_SRCS =                     \
   resv.c			\
   s_auth.c                      \
   s_bsd.c                       \
-  s_bsd_kqueue.c                \
-  s_bsd_poll.c                  \
-  s_bsd_select.c                \
-  s_bsd_devpoll.c               \
-  s_bsd_sigio.c			\
+  $(NETIO_SRC)			\
   s_conf.c                      \
   s_debug.c                     \
   s_gline.c                     \
