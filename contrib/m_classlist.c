@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_classlist.c,v 1.3 2003/05/23 04:10:56 metalrock Exp $
+ *  $Id: m_classlist.c,v 1.4 2003/05/23 04:46:39 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -62,14 +62,13 @@ _moddeinit(void)
   mod_del_cmd(&classlist_msgtab);
 }
 
-const char *_version = "$Revision: 1.3 $";
+const char *_version = "$Revision: 1.4 $";
 #endif
 
 /* mo_classlist()
  *
  *      parv[0] = sender prefix
- *      parv[1] = channel
- *      parv[2] = vkey
+ *      parv[1] = classname
  */
 static void
 mo_classlist(struct Client *client_p, struct Client *source_p,
@@ -100,6 +99,6 @@ mo_classlist(struct Client *client_p, struct Client *source_p,
     }
   }
 
-  sendto_one(source_p, ":%s NOTICE %s :Not found",
-		 me.name, source_p->name);
+  sendto_one(source_p, ":%s NOTICE %s :Class %s not found",
+		 me.name, source_p->name, classname);
 }
