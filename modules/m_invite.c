@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_invite.c,v 1.29 2001/10/25 02:36:21 db Exp $
+ *   $Id: m_invite.c,v 1.30 2001/10/26 21:04:56 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -91,7 +91,7 @@ static void m_invite(struct Client *client_p,
   if(source_p->user == NULL)
     return;
 
-  if ((target_p = find_person(parv[1])) != NULL)
+  if ((target_p = find_person(parv[1])) == NULL)
     {
       sendto_one(source_p, form_str(ERR_NOSUCHNICK),
                  me.name, parv[0], parv[1]);
