@@ -1,3 +1,23 @@
+leeh        2002/01/06 13:12:19 EST	(20020106_2)
+
+  Modified files:
+    help/opers           set 
+    include              ircd.h 
+    modules              m_set.c 
+    src                  channel.c client.c ircd.c 
+  Log:
+  - fixed up splitmode
+  
+  Revision  Changes    Path
+  1.2       +9 -1      ircd-hybrid-7/help/opers/set
+  7.44      +1 -0      ircd-hybrid-7/include/ircd.h
+  1.41      +69 -18    ircd-hybrid-7/modules/m_set.c
+  7.292     +16 -16    ircd-hybrid-7/src/channel.c
+  7.217     +1 -2      ircd-hybrid-7/src/client.c
+  7.213     +6 -1      ircd-hybrid-7/src/ircd.c
+
+
+
 a1kmm       2002/01/06 01:26:30 EST	(20020106_1)
 
   Modified files:
@@ -2541,7 +2561,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3293 2002/01/06 06:26:35 a1kmm Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3294 2002/01/06 18:12:25 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -20895,4 +20915,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3293 2002/01/06 06:26:35 a1kmm Exp $
+$Id: ChangeLog,v 7.3294 2002/01/06 18:12:25 leeh Exp $
