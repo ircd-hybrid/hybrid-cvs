@@ -1,3 +1,15 @@
+db          2002/09/09 09:32:20 EDT	(20020909_1)
+
+  Modified files:
+    modules              m_oper.c 
+  Log:
+  - fixed typo umodes not umode
+  
+  Revision  Changes    Path
+  1.55      +2 -2      ircd-hybrid-7/modules/m_oper.c
+
+
+
 db          2002/09/08 23:05:28 EDT	(20020909_0)
 
   Modified files:
@@ -31916,4 +31928,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4026 2002/09/09 03:05:31 db Exp $
+$Id: ChangeLog,v 7.4027 2002/09/09 13:32:22 db Exp $
