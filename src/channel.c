@@ -34,7 +34,7 @@
  *                mode * -p etc. if flag was clear
  *
  *
- * $Id: channel.c,v 7.13 1999/09/10 05:12:04 tomh Exp $
+ * $Id: channel.c,v 7.14 1999/10/23 00:49:30 db Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -1766,8 +1766,6 @@ void set_channel_mode(struct Client *cptr,
 
           break;
 
-
-
         case 'l':
           if (whatt == MODE_QUERY)
             break;
@@ -1791,7 +1789,7 @@ void set_channel_mode(struct Client *cptr,
               arg = check_string(*parv++);
               /*              if (MyClient(sptr) && opcnt >= MAXMODEPARAMS)
                 break; */
-              if (!(nusers = atoi(arg)))
+              if ((nusers = atoi(arg)) <= 0)
                 break;
               ircsprintf(numeric, "%d", nusers);
               if ((tmpc = strchr(numeric, ' ')))
