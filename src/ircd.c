@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.32 2000/10/25 00:04:18 adrian Exp $
+ * $Id: ircd.c,v 7.33 2000/10/25 22:20:27 db Exp $
  */
 #include "ircd.h"
 #include "channel.h"
@@ -376,16 +376,6 @@ static time_t io_loop(time_t delay)
   /* Do new-style pending events */
   /* Once the crap has been stripped out, we can make this use delay .. */
   comm_select(0);
-
-  /* LazyLinks */
-  if(!ConfigFileEntry.hub)
-    {
-      if(CurrentTime - lastCleanup >= CLEANUP_CHANNELS_TIME)
-        {
-          lastCleanup = CurrentTime;
-          cleanup_channels();
-        }
-    }
 
   /*
    * This chunk of code determines whether or not
@@ -874,6 +864,10 @@ int main(int argc, char *argv[])
   write_pidfile();
 
   log(L_NOTICE, "Server Ready");
+
+/* LazyLinks */
+  if(!ConfigFileEntry.hub)
+    eventAdd("cchan",(EVH *)cleanup_channels, 0, CLEANUP_CHANNELS_TIME, 0 );
 
   ServerRunning = 1;
   while (ServerRunning)

@@ -4,7 +4,7 @@
  *
  * This code was borrowed from the squid web cache by Adrian Chadd.
  *
- * $Id: event.c,v 7.1 2000/10/23 15:10:30 adrian Exp $
+ * $Id: event.c,v 7.2 2000/10/25 22:20:27 db Exp $
  *
  * Original header follows:
  *
@@ -229,3 +229,8 @@ eventFind(EVH * func, void *arg)
     }
     return 0;
 }
+
+
+
+
+

@@ -34,7 +34,7 @@
  *                mode * -p etc. if flag was clear
  *
  *
- * $Id: channel.c,v 7.57 2000/10/23 16:42:26 toot Exp $
+ * $Id: channel.c,v 7.58 2000/10/25 22:20:26 db Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -50,6 +50,7 @@
 #include "whowas.h"
 #include "s_conf.h" /* ConfigFileEntry */
 #include "vchannel.h"
+#include "event.h"
 
 #include <assert.h>
 #include <string.h>
@@ -2885,6 +2886,9 @@ void cleanup_channels(void)
    struct Channel *chptr;
    struct Channel *next_chptr;
  
+   if(!ConfigFileEntry.hub)
+     eventAdd("cchan", (EVH *)cleanup_channels, 0, CLEANUP_CHANNELS_TIME, 0 );
+
    if(!serv_cptr_list)
      {
        sendto_ops_flags(FLAGS_DEBUG,
