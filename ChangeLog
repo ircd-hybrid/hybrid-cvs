@@ -1,3 +1,19 @@
+bill        2002/12/13 00:38:48 EST	(20021213_1)
+
+  Modified files:
+    src                  client.c s_user.c send.c 
+  Log:
+  - changed all instances of nick[user@host] to nick [user@host] .. this fixes a nasty bug that can be described by this:
+  
+     wheres[the[nick@start.com]
+  
+  Revision  Changes    Path
+  7.307     +3 -3      ircd-hybrid-7/src/client.c
+  7.216     +1 -1      ircd-hybrid-7/src/s_user.c
+  7.208     +3 -3      ircd-hybrid-7/src/send.c
+
+
+
 db          2002/12/12 22:21:14 EST	(20021213_0)
 
   Modified files:
@@ -33475,4 +33491,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4131 2002/12/13 03:21:17 db Exp $
+$Id: ChangeLog,v 7.4132 2002/12/13 05:38:51 bill Exp $
