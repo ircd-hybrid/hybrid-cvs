@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: irc_string.c,v 7.41 2001/10/09 13:47:17 androsyn Exp $
+ *  $Id: irc_string.c,v 7.42 2001/12/10 02:59:46 db Exp $
  */
 #include "config.h"
 #include "tools.h"
@@ -226,10 +226,10 @@ static const char *IpQuadTab[] =
 
 const char* inetntoa(const char* in)
 {
-  static char                    buf[16];
-  register char*                bufptr = buf;
-  register const unsigned char* a = (const unsigned char*)in;
-  register const char*          n;
+  static char buf[16];
+  char *bufptr = buf;
+  const unsigned char *a = (const unsigned char*)in;
+  const char *n;
 
   n = IpQuadTab[ *a++ ];
   while (*n)
@@ -732,8 +732,8 @@ size_t strlcpy(char *dst, const char *src, size_t siz)
 
 char* strncpy_irc(char* s1, const char* s2, size_t n)
 {
-  register char* endp = s1 + n;
-  register char* s = s1;
+  char *endp = s1 + n;
+  char *s = s1;
   while (s < endp && (*s++ = *s2++))
     ;
   return s1;

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: ircdauth.c,v 7.42 2001/09/06 11:34:39 leeh Exp $
+ *   $Id: ircdauth.c,v 7.43 2001/12/10 02:59:46 db Exp $
  */
 
 #include <stdio.h>
@@ -102,7 +102,7 @@ ConnectToIAuth()
 
 {
 	struct sockaddr_in ServAddr;
-	register struct hostent *hostptr;
+	struct hostent *hostptr;
 	struct in_addr *ptr;
 
 	iAuth.socket = comm_open(AF_INET, SOCK_STREAM, 0, "iAuth socket");
@@ -315,8 +315,8 @@ ParseIAuth(int fd, void *notused)
 
 {
 	int length; /* number of bytes we read */
-	register char *ch;
-	register char *linech;
+	char *ch;
+	char *linech;
 
 	/* read in a line */
 	length = recv(fd, buffer, BUFSIZE, 0);
@@ -375,7 +375,7 @@ ParseIAuth(int fd, void *notused)
 
 	while (*ch)
 	{
-		register char tmp;
+		char tmp;
 
 		tmp = *ch;
 		if (IsEol(tmp))

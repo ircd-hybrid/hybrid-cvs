@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- * $Id: hostmask.c,v 7.57 2001/11/12 23:32:20 kreator Exp $ 
+ * $Id: hostmask.c,v 7.58 2001/12/10 02:59:46 db Exp $ 
  */
 
 #include <stdlib.h>
@@ -333,8 +333,8 @@ hash_ipv6(struct irc_inaddr *addr, int bits)
 static int
 hash_text(const char *start)
 {
-  register const char *p = start;
-  register unsigned long h = 0;
+  const char *p = start;
+  unsigned long h = 0;
 
   while (*p)
   {

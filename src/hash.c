@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: hash.c,v 7.35 2001/10/25 02:36:21 db Exp $
+ *  $Id: hash.c,v 7.36 2001/12/10 02:59:46 db Exp $
  */
 
 #include <sys/types.h>
@@ -171,7 +171,7 @@ hash_id(const char *nname)
 static unsigned
 int hash_channel_name(const char* name)
 {
-  register int i = 30;
+  int i = 30;
   unsigned int h = 0;
 
   while (*name && --i)
@@ -192,7 +192,7 @@ int hash_channel_name(const char* name)
 static unsigned
 int hash_resv_channel(const char *name)
 {
-  register int i = 30;
+  int i = 30;
   unsigned int h = 0;
 
   while (*name && --i)

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: sprintf_irc.c,v 7.9 2001/10/04 20:47:09 androsyn Exp $
+ *   $Id: sprintf_irc.c,v 7.10 2001/12/10 02:59:46 db Exp $
  */
 #include "sprintf_irc.h"
 #include "irc_string.h"
@@ -260,12 +260,11 @@ static char scratch_buffer[32];
  */
 
 int
-vsprintf_irc(register char *str, register const char *format,
-             register va_list args)
+vsprintf_irc(char *str, const char *format, va_list args)
 
 {
-  register char c;
-  register int bytes = 0;
+  char c;
+  int bytes = 0;
 
   while ((c = *format++))
     {
@@ -275,7 +274,7 @@ vsprintf_irc(register char *str, register const char *format,
 
 	  if (c == 's')
 	    {
-	      register const char *p1 = va_arg(args, const char *);
+	      const char *p1 = va_arg(args, const char *);
 	      if ((*str = *p1))
 		{
 		  ++bytes;
@@ -301,8 +300,8 @@ vsprintf_irc(register char *str, register const char *format,
 	   */
 	  if (c == 'l' && *format == 'u')
 	    {
-	      register unsigned long v1, v2;
-	      register const char *ap;
+	      unsigned long v1, v2;
+	      const char *ap;
 
 	      ++format;
 	      v1 = va_arg(args, unsigned long);
@@ -337,7 +336,7 @@ vsprintf_irc(register char *str, register const char *format,
 	    }
 	  if (c == 't')
 	    {
-	      register unsigned int v1;
+	      unsigned int v1;
 
 	      v1 = va_arg(args,int);
                             
@@ -351,9 +350,9 @@ vsprintf_irc(register char *str, register const char *format,
 
 	  if (c == 'd')
 	    {
-	      register unsigned int v1, v2;
-	      register const char *ap;
-	      register char *s = &scratch_buffer[sizeof(scratch_buffer) - 2];
+	      unsigned int v1, v2;
+	      const char *ap;
+	      char *s = &scratch_buffer[sizeof(scratch_buffer) - 2];
 	      
 	      v1 = va_arg(args, int);
 	      if ((int)v1 <= 0)
@@ -392,9 +391,9 @@ vsprintf_irc(register char *str, register const char *format,
 
 	  if (c == 'u')
 	    {
-	      register unsigned int v1, v2;
-	      register const char *ap;
-	      register char *s = &scratch_buffer[sizeof(scratch_buffer) - 2];
+	      unsigned int v1, v2;
+	      const char *ap;
+	      char *s = &scratch_buffer[sizeof(scratch_buffer) - 2];
 	      
 	      v1 = va_arg(args, unsigned int);
 	      if (v1 == 0)
@@ -427,7 +426,7 @@ vsprintf_irc(register char *str, register const char *format,
 
 	  if (c != '%')
 	    {
-	      register int ret;
+	      int ret;
 	      
 	      format -= 2;
 	      ret = vsprintf(str, format, args);
@@ -448,11 +447,11 @@ vsprintf_irc(register char *str, register const char *format,
 } /* vsprintf_irc() */
 
 int
-ircsprintf(register char *str, const char *format, ...)
+ircsprintf(char *str, char *format, ...)
 
 {
   va_list args;
-  register int bytes;
+  int bytes;
 
   va_start(args, format);
 
