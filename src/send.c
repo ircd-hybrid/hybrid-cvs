@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.216 2003/02/01 03:55:20 db Exp $
+ *  $Id: send.c,v 7.217 2003/02/01 19:13:07 db Exp $
  */
 
 #include "stdinc.h"
@@ -945,7 +945,7 @@ sendto_list_local(struct Client *one, dlink_list *list,
     if (target_p == one)
       continue;
 
-    if (!MyConnect(target_p) || IsDead(target_p))
+    if (!MyConnect(target_p) || IsDefunct(target_p))
       continue;
    
     if (target_p->serial == current_serial)
