@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_privmsg.c,v 7.21 2000/11/07 05:16:17 db Exp $
+ *   $Id: m_privmsg.c,v 7.22 2000/11/07 05:30:50 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -98,16 +98,7 @@
  *                      non-NULL pointers.
  */
 
-#define MAX_MULTI_MESSAGES 10
-
-
-#define ENTITY_NONE    0
-#define ENTITY_CHANNEL 1
-#define ENTITY_CHANOPS_ON_CHANNEL 2
-#define ENTITY_CLIENT  3
-
 struct entity target_table[MAX_MULTI_MESSAGES];
-
 
 static int duplicate_ptr( void *ptr,
 			  struct entity target_table[], int n);
@@ -193,6 +184,10 @@ int     m_privmsg(struct Client *cptr,
 	  break;
 	}
     }
+
+  if(ntargets == 0)
+    sendto_one(sptr, form_str(ERR_NOSUCHNICK), me.name,
+	       parv[0], parv[1]);
 
   return 1;
 }
