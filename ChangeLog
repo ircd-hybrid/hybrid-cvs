@@ -1,3 +1,15 @@
+lusky       2003/01/27 16:01:06 EST	(20030127_1)
+
+  Modified files:
+    .                    Hybrid-team 
+  Log:
+  - fixed cryogen's entry in Hybrid-team
+  
+  Revision  Changes    Path
+  7.59      +1 -1      ircd-hybrid-7/Hybrid-team
+
+
+
 lusky       2003/01/26 23:42:18 EST	(20030127_0)
 
   Modified files:
@@ -34499,4 +34511,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4200 2003/01/27 04:42:20 lusky Exp $
+$Id: ChangeLog,v 7.4201 2003/01/27 21:01:09 lusky Exp $
