@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: irc_string.h,v 7.21 2001/07/20 15:22:25 androsyn Exp $
+ *   $Id: irc_string.h,v 7.22 2001/07/20 19:35:38 androsyn Exp $
  */
 #ifndef INCLUDED_irc_string_h
 #define INCLUDED_irc_string_h
@@ -92,7 +92,6 @@ int inetpton(int af, const char *src, void *dst);
 char* strncpy_irc(char* s1, const char* s2, size_t n);
 #define strncpy_irc(x, y, z) ((char *)memcpy(x, y, z))
 #else
-#ifdef inline
 extern inline char* strncpy_irc(char* s1, const char* s2, size_t n)
 {
 	register char* endp = s1 + n;
@@ -101,9 +100,6 @@ extern inline char* strncpy_irc(char* s1, const char* s2, size_t n)
 		; 
 	return s1;
 }
-#else            
-char* strncpy_irc(char* s1, const char* s2, size_t n);
-#endif /* #ifdef inline */
 #endif /* #ifdef __GNUC__ */
 
 
