@@ -1,4 +1,4 @@
-/* $Id: memory.h,v 7.15 2001/04/21 16:01:40 toot Exp $ */
+/* $Id: memory.h,v 7.16 2001/06/03 19:03:54 davidt Exp $ */
 
 #ifndef _I_MEMORY_H
 #define _I_MEMORY_H
@@ -9,7 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern void outofmemory();
+extern void outofmemory(void);
 
 #ifndef WE_ARE_MEMORY_C
 #undef strdup

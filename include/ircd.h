@@ -19,7 +19,7 @@
  *
  * "ircd.h". - Headers file.
  *
- * $Id: ircd.h,v 7.32 2001/05/25 01:02:46 ejb Exp $
+ * $Id: ircd.h,v 7.33 2001/06/03 19:03:53 davidt Exp $
  *
  */
 #ifndef INCLUDED_ircd_h
@@ -104,6 +104,6 @@ extern int callbacks_called;
 
 extern int make_daemon(void);
 extern size_t get_maxrss(void);
-extern void set_time();
+extern void set_time(void);
 
 #endif
