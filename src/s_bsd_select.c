@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_select.c,v 7.11 2001/01/19 10:59:31 adrian Exp $
+ *  $Id: s_bsd_select.c,v 7.12 2001/01/19 11:04:51 adrian Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -189,7 +189,7 @@ comm_select(time_t delay)
     bcopy(&select_writefds, &tmpwritefds, sizeof(fd_set));
 
     for (;;) {
-        to.tv_sec = 1;
+        to.tv_sec = delay;
         to.tv_usec = 0;
         num = select(highest_fd + 1, &tmpreadfds, &tmpwritefds, NULL, &to);
         if (num >= 0)
