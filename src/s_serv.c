@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.135 2001/01/30 19:11:45 fl_ Exp $
+ *   $Id: s_serv.c,v 7.136 2001/02/03 00:33:21 jdc Exp $
  */
 
 #include <sys/types.h>
@@ -382,15 +382,17 @@ int check_server(const char *name, struct Client* cptr)
 	   
 	 if (IsConfEncrypted(aconf))
 	   {
-	     if (strcmp(aconf->passwd, 
-			crypt(cptr->localClient->passwd, aconf->passwd)) == 0)
+	     /* jdc -- aconf->spasswd is what we need to check against! */
+	     if (strcmp(aconf->spasswd, 
+		   crypt(cptr->localClient->passwd, aconf->spasswd)) == 0)
 	       {
 		 server_aconf = aconf;
 	       }
 	   }
 	 else
 	   {
-	     if (strcmp(aconf->passwd, cptr->localClient->passwd) == 0)
+	     /* jdc -- aconf->spasswd is what we need to check against! */
+	     if (strcmp(aconf->spasswd, cptr->localClient->passwd) == 0)
 	       {
 		 server_aconf = aconf;
 	       }
