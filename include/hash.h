@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.h,v 7.19 2003/04/06 18:24:43 db Exp $
+ *  $Id: hash.h,v 7.20 2003/04/07 03:19:19 db Exp $
  */
 
 #ifndef INCLUDED_hash_h
@@ -87,8 +87,7 @@ extern void del_from_resv_hash_table(const char *name,
 extern struct ResvChannel *hash_find_resv(const char *name);
 
 /* XXX ZZZ */
-extern int safe_list_all_channels(struct Client *source_p);
-void finish_safe_list_all_channels(struct Client *source_p);
+extern void safe_list_all_channels(struct Client *source_p);
 
 #endif  /* INCLUDED_hash_h */
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: msg.h,v 7.43 2003/04/06 18:24:43 db Exp $
+ *  $Id: msg.h,v 7.44 2003/04/07 03:19:19 db Exp $
  */
 
 #ifndef INCLUDED_msg_h
@@ -74,9 +74,6 @@ struct Message
 					 */
 #define   MFLG_HIDDEN		 0x08   /* Command is hidden from everyone
 					 * but opers			      
-					 */
-#define	  MFLG_NO_ABORT_SAFE_LIST  0x10	/* Command does not cause abort
-					 * of a safe_list /list
 					 */
 #define MAXPARA    15 
 

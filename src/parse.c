@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.151 2003/04/06 18:24:47 db Exp $
+ *  $Id: parse.c,v 7.152 2003/04/07 03:19:23 db Exp $
  */
 
 #include "stdinc.h"
@@ -293,19 +293,7 @@ parse(struct Client *client_p, char *pbuffer, char *bufend)
   if (mptr == NULL)
     do_numeric(numeric, client_p, from, i, para);
   else
-    {
-      /* Cancel safe_list if any command received, excepting
-       * commands with MFLG_NO_ABORT_SAFE_LIST (e.g. PONG)
-       * - Dianora
-       */
-      if (MyConnect(client_p) && !(mptr->flags & MFLG_NO_ABORT_SAFE_LIST))
-      {
-	if (client_p->localClient->hash_index > 0)
-	  finish_safe_list_all_channels(client_p);
-	client_p->localClient->hash_index = 0;
-      }
-      handle_command(mptr, client_p, from, i, para);
-    }
+    handle_command(mptr, client_p, from, i, para);
 
 #ifdef INTENSIVE_DEBUG
   do_channel_integrity_check();

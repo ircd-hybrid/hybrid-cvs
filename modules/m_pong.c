@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_pong.c,v 1.34 2003/04/06 18:24:45 db Exp $
+ *  $Id: m_pong.c,v 1.35 2003/04/07 03:19:21 db Exp $
  */
 
 #include "stdinc.h"
@@ -42,7 +42,7 @@ static void mr_pong(struct Client*, struct Client*, int, char**);
 static void ms_pong(struct Client*, struct Client*, int, char**);
 
 struct Message pong_msgtab = {
-  "PONG", 0, 0, 1, 0, MFLG_SLOW | MFLG_UNREG | MFLG_NO_ABORT_SAFE_LIST, 0,
+  "PONG", 0, 0, 1, 0, MFLG_SLOW | MFLG_UNREG, 0,
   {mr_pong, m_ignore, ms_pong, m_ignore}
 };
 
@@ -59,7 +59,7 @@ _moddeinit(void)
   mod_del_cmd(&pong_msgtab);
 }
 
-const char *_version = "$Revision: 1.34 $";
+const char *_version = "$Revision: 1.35 $";
 #endif
 static void ms_pong(struct Client *client_p,
                    struct Client *source_p,

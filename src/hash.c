@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.53 2003/04/06 18:24:47 db Exp $
+ *  $Id: hash.c,v 7.54 2003/04/07 03:19:23 db Exp $
  */
 
 #include "stdinc.h"
@@ -881,9 +881,12 @@ list_one_channel(struct Client *source_p, struct Channel *chptr)
  * Walk the channel buckets, ensure all pointers in a bucket are
  * traversed before blocking on a sendq. This means, no locking is needed.
  *
+ * N.B. This code is "remote" safe, but is not currently used for
+ * remote clients.
+ *
  * - Dianora
  */
-int
+void
 safe_list_all_channels(struct Client *source_p)
 {
   struct Channel *chptr;
@@ -915,22 +918,5 @@ safe_list_all_channels(struct Client *source_p)
   sendto_one(source_p, form_str(RPL_LISTEND), me.name, source_p->name);
   if (MyConnect(source_p))
     source_p->localClient->hash_index = 0;
-
-
-  return(0);
+  return;
 }   
-
-/*
- * finish_safe_list_all_channels
- * inputs	- pointer to client requesting list
- * output	- none
- * side effects	- Simply RPL_LISTEND
- *
- * - Dianora
- */
-
-void
-finish_safe_list_all_channels(struct Client *source_p)
-{
-  sendto_one(source_p, form_str(RPL_LISTEND), me.name, source_p->name);
-}
