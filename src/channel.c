@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.316 2002/05/24 23:34:44 androsyn Exp $
+ *  $Id: channel.c,v 7.317 2002/05/31 00:32:21 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -456,7 +456,9 @@ int
 check_channel_name(const char *name)
 {
   assert(name != NULL);
-
+  if(name == NULL)
+    return 0;
+    
   for (; *name; ++name)
   {
     if (!IsChanChar(*name))
