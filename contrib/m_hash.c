@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_hash.c,v 1.5 2001/05/16 08:50:56 toot Exp $
+ *   $Id: m_hash.c,v 1.6 2001/08/27 08:28:21 jdc Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -105,7 +105,7 @@ static void mo_hash(struct Client* client_p, struct Client* source_p,
     for (client = GlobalClientList; client; client = client->next)
       {
 	++client_count;
-	if (hash_find_client(client->name, 0) != client)
+	if (find_client(client->name, 0) != client)
 	  {
 	    sendto_one(source_p, "NOTICE %s :Can't find client %s in hash table",
 		       parv[0], client->name);
