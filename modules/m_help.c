@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_help.c,v 1.23 2001/11/13 23:30:40 leeh Exp $
+ *   $Id: m_help.c,v 1.24 2001/11/20 19:29:23 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -91,7 +91,7 @@ static void m_help(struct Client *client_p, struct Client *source_p,
   if(parc > 1)
     dohelp(source_p, UHPATH, parv[1], parv[0]);
   else
-    dohelp(source_p, UHPATH, "", parv[0]);
+    dohelp(source_p, UHPATH, "index", parv[0]);
 }
 
 /*
@@ -104,7 +104,7 @@ static void mo_help(struct Client *client_p, struct Client *source_p,
   if(parc > 1)
     dohelp(source_p, HPATH, parv[1], parv[0]);
   else
-    dohelp(source_p, HPATH, "", parv[0]);
+    dohelp(source_p, HPATH, "index", parv[0]);
 }
 
 /*
