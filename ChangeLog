@@ -1,3 +1,18 @@
+db          2003/01/09 02:48:44 EST	(20030109_2)
+
+  Modified files:
+    .                    RELNOTES 
+    src                  s_conf.c 
+  Log:
+  - fixed broken throttling code. There was a decrement that should
+    not have been there. all fixed. tested.
+  
+  Revision  Changes    Path
+  1.50      +1 -0      ircd-hybrid-7/RELNOTES
+  7.333     +17 -18    ircd-hybrid-7/src/s_conf.c
+
+
+
 db          2003/01/09 01:20:08 EST	(20030109_1)
 
   Modified files:
@@ -33804,4 +33819,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4153 2003/01/09 06:20:10 db Exp $
+$Id: ChangeLog,v 7.4154 2003/01/09 07:48:46 db Exp $
