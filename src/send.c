@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.251 2003/04/27 12:10:30 adx Exp $
+ *  $Id: send.c,v 7.252 2003/04/27 12:55:25 adx Exp $
  */
 
 #include "stdinc.h"
@@ -95,6 +95,8 @@ send_format(char *lsendbuf, int bufsize, const char *pattern, va_list args)
    * current implementations.
    */
   len = vsnprintf(lsendbuf, bufsize - 1, pattern, args);
+  if (len > bufsize - 2)
+    len = bufsize - 2;  /* required by some versions of vsnprintf */
 
   /*
    * We have to get a \r\n\0 onto sendbuf[] somehow to satisfy
@@ -113,16 +115,6 @@ send_format(char *lsendbuf, int bufsize, const char *pattern, va_list args)
    * whether len > 510. We also don't need to terminate the buffer
    * with a '\0', since the dbuf code is raw-oriented. --adx
    */
-
-#if 0
-  if(len > 510)
-  {
-    lsendbuf[IRCD_BUFSIZE-2] = '\r';
-    lsendbuf[IRCD_BUFSIZE-1] = '\n';
-    lsendbuf[IRCD_BUFSIZE] = '\0';
-    return(IRCD_BUFSIZE);
-  }
-#endif
 
   lsendbuf[len++] = '\r';
   lsendbuf[len++] = '\n';
