@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_jupe.c,v 1.6 2001/01/07 01:01:05 fl_ Exp $
+ *   $Id: m_jupe.c,v 1.7 2001/01/18 00:34:49 fl_ Exp $
  */
 
 /*
@@ -107,7 +107,7 @@ int mo_jupe(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
       return 0;
     }
     
-  sendto_all_local_opers(sptr, NULL, "JUPE for %s requested by %s!%s@%s: %s",
+  sendto_realops_flags_opers(FLAGS_WALLOP, &me, "JUPE for %s requested by %s!%s@%s: %s",
 			 parv[1], sptr->name, sptr->username,
                          sptr->host, parv[2]);
   sendto_ll_serv_butone(NULL, sptr, 1,

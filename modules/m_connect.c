@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_connect.c,v 1.18 2001/01/05 14:52:41 toot Exp $
+ *   $Id: m_connect.c,v 1.19 2001/01/18 00:34:54 fl_ Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -258,7 +258,7 @@ static int ms_connect(struct Client* cptr, struct Client* sptr,
   /*
    * Notify all operators about remote connect requests
    */
-  sendto_all_local_opers( &me, NULL,
+  sendto_realops_flags_opers(FLAGS_WALLOP, &me,
 			  "Remote CONNECT %s %s from %s",
 			  parv[1], parv[2] ? parv[2] : "",
 			  get_client_name(sptr, MASK_IP));
