@@ -15,16 +15,17 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- * $Id: hostmask.h,v 1.4 2001/02/17 00:37:36 a1kmm Exp $ 
+ * $Id: hostmask.h,v 1.5 2001/03/09 10:19:13 a1kmm Exp $ 
  */
 
 struct HostMaskEntry
 {
-  int type;
+  int type, subtype;
   unsigned long precedence;
   char *hostmask;
+  
   void *data;
-  struct HostMaskEntry *next, *nexthash;
+  struct HostMaskEntry *next, *nexthash, *nextiphash;
 };
 
 void add_hostmask(const char *mask, int type, void *data);
@@ -36,4 +37,8 @@ void clear_conf(void);
 void report_hostmask_conf_links(struct Client*, int);
 
 #define HOST_CONFITEM 1
+#define HOST_DLINE 2
 #define MAXPREFIX HOSTLEN+USERLEN+15
+
+#define HOST_IPCONF 1
+#define HOST_NAMECONF 2

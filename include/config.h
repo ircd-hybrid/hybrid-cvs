@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.96 2001/02/27 06:18:02 androsyn Exp $
+ * $Id: config.h,v 7.97 2001/03/09 10:19:13 a1kmm Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -41,7 +41,7 @@
 /* VMS NOTE - VMS is basically unlimited with FDs, so just set this
    to any suitable value.. */
 
-#define HARD_FDLIMIT_   1024
+#define HARD_FDLIMIT_   2048
 #define INIT_MAXCLIENTS 800
 
 /*
