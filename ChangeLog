@@ -1,3 +1,19 @@
+lusky       2003/01/25 17:42:21 EST	(20030125_4)
+
+  Modified files:
+    tools/rsa_respond    Makefile respond.c 
+  Log:
+  - check for getpass() failure so it doesn't core when called incorrectly
+    from old ircII
+  - add INCLUDES and LDFLAGS to Makefile to make it simpler to build
+    for those of us without system-installed OpenSSL
+  
+  Revision  Changes    Path
+  1.8       +10 -2     ircd-hybrid-7/tools/rsa_respond/Makefile
+  1.9       +5 -0      ircd-hybrid-7/tools/rsa_respond/respond.c
+
+
+
 lusky       2003/01/25 00:00:34 EST	(20030125_3)
 
   Modified files:
@@ -34442,4 +34458,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4196 2003/01/25 05:00:36 lusky Exp $
+$Id: ChangeLog,v 7.4197 2003/01/25 22:42:24 lusky Exp $
