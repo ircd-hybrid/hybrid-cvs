@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.154 2001/01/20 07:43:59 db Exp $
+ *  $Id: s_conf.c,v 7.155 2001/01/21 19:25:42 spookey Exp $
  */
 
 #include <sys/types.h>
@@ -1345,16 +1345,18 @@ static void clear_special_conf(struct ConfItem **this_conf)
 int rehash(struct Client *cptr,struct Client *sptr, int sig)
 {
   if (sig)
-    sendto_realops_flags(FLAGS_ALL,
-			 "Got signal SIGHUP, reloading ircd conf. file");
+  {
+    sendto_realops_flags(FLAGS_ALL,"Got signal SIGHUP, reloading ircd conf. file");
+  }
 
   close_listeners();
+  restart_resolver();
   read_conf_files(NO);
 
   if (ServerInfo.description != NULL)
-    {
-      strncpy_irc(me.info, ServerInfo.description, REALLEN);
-    }
+  {
+    strncpy_irc(me.info, ServerInfo.description, REALLEN);
+  }
 
   flush_deleted_I_P();
   return 0;
