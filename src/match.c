@@ -22,7 +22,7 @@
  * Cleanup of collapse and match
  * Moved static calls variable to match
  * Added asserts for null pointers
- * $Id: match.c,v 7.6 2000/12/21 13:39:45 db Exp $
+ * $Id: match.c,v 7.7 2000/12/22 03:47:15 ejb Exp $
  *
  */
 #include "irc_string.h"
@@ -354,11 +354,7 @@ const unsigned int CharAttrs[] = {
 /* , */      PRINT_C|NONEOS_C,
 /* - */      PRINT_C|NICK_C|CHAN_C|NONEOS_C|USER_C|HOST_C,
 /* . */      PRINT_C|KWILD_C|CHAN_C|NONEOS_C|HOST_C|SERV_C,
-#ifdef RFC1035_ANAL
 /* / */      PRINT_C|CHAN_C|NONEOS_C,
-#else
-/* / */      PRINT_C|CHAN_C|NONEOS_C|HOST_C,
-#endif
 /* 0 */      PRINT_C|DIGIT_C|NICK_C|CHAN_C|NONEOS_C|USER_C|HOST_C,
 /* 1 */      PRINT_C|DIGIT_C|NICK_C|CHAN_C|NONEOS_C|USER_C|HOST_C,
 /* 2 */      PRINT_C|DIGIT_C|NICK_C|CHAN_C|NONEOS_C|USER_C|HOST_C,
@@ -406,11 +402,7 @@ const unsigned int CharAttrs[] = {
 /* \ */      PRINT_C|ALPHA_C|NICK_C|CHAN_C|NONEOS_C|USER_C,
 /* ] */      PRINT_C|ALPHA_C|NICK_C|CHAN_C|NONEOS_C|USER_C,
 /* ^ */      PRINT_C|ALPHA_C|NICK_C|CHAN_C|NONEOS_C|USER_C,
-#ifdef RFC1035_ANAL
 /* _ */      PRINT_C|NICK_C|CHAN_C|NONEOS_C|USER_C,
-#else
-/* _ */      PRINT_C|NICK_C|CHAN_C|NONEOS_C|USER_C|HOST_C,
-#endif
 /* ` */      PRINT_C|NICK_C|CHAN_C|NONEOS_C|USER_C,
 /* a */      PRINT_C|ALPHA_C|NICK_C|CHAN_C|NONEOS_C|USER_C|HOST_C,
 /* b */      PRINT_C|ALPHA_C|NICK_C|CHAN_C|NONEOS_C|USER_C|HOST_C,

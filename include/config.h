@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.58 2000/12/15 19:30:04 db Exp $
+ * $Id: config.h,v 7.59 2000/12/22 03:47:10 ejb Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -139,12 +139,6 @@
  */
 #define NETWORK_NAME_DEFAULT "EFnet"
 #define NETWORK_DESC_DEFAULT "Eris Free Network"
-
-/* RFC1035_ANAL
- * Defining this causes ircd to reject hostnames with non-compliant chars.
- * undef'ing it will allow hostnames with _ or / to connect
- */
-#define RFC1035_ANAL
 
 /*
  * OPER_UMODES LOCOP_UMODES - set these to be the initial umodes when OPER'ing
