@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 1.60 2001/04/09 08:29:48 a1kmm Exp $
+ *  $Id: m_stats.c,v 1.61 2001/04/09 12:41:50 fl_ Exp $
  */
 #include "tools.h"	 /* dlink_node/dlink_list */
 #include "handlers.h"    /* m_pass prototype */
@@ -136,8 +136,11 @@ static void m_stats(struct Client *client_p, struct Client *source_p,
       last_used = CurrentTime;
     }
 
-  if (hunt_server(client_p,source_p,":%s STATS %s :%s",2,parc,parv)!=HUNTED_ISME)
-    return;
+  if (!GlobalSetOptions.hide_server)
+    {
+      if (hunt_server(client_p,source_p,":%s STATS %s :%s",2,parc,parv) != HUNTED_ISME)
+        return;
+    }
 
   name = parse_stats_args(parc,parv,&doall,&wilds);
 

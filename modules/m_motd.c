@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_motd.c,v 1.17 2001/04/04 15:22:30 androsyn Exp $
+ *   $Id: m_motd.c,v 1.18 2001/04/09 12:41:50 fl_ Exp $
  */
 #include "client.h"
 #include "tools.h"
@@ -71,13 +71,6 @@ static void m_motd(struct Client *client_p, struct Client *source_p,
 {
   static time_t last_used = 0;
 
-  /* This is safe enough to use during non hidden server mode */
-  if(!GlobalSetOptions.hide_server)
-    {
-      if (hunt_server(client_p, source_p, ":%s MOTD :%s", 1,parc,parv)!=HUNTED_ISME)
-	return;
-    }
-
   if((last_used + ConfigFileEntry.pace_wait) > CurrentTime)
     {
       /* safe enough to give this on a local connect only */
@@ -87,6 +80,13 @@ static void m_motd(struct Client *client_p, struct Client *source_p,
     }
   else
     last_used = CurrentTime;
+
+  /* This is safe enough to use during non hidden server mode */
+  if(!GlobalSetOptions.hide_server)
+    {
+      if (hunt_server(client_p, source_p, ":%s MOTD :%s", 1,parc,parv)!=HUNTED_ISME)
+	return;
+    }
 
   sendto_realops_flags(FLAGS_SPY, "motd requested by %s (%s@%s) [%s]",
                      source_p->name, source_p->username, source_p->host,

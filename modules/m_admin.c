@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_admin.c,v 1.22 2001/04/04 15:22:22 androsyn Exp $
+ *   $Id: m_admin.c,v 1.23 2001/04/09 12:41:49 fl_ Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -95,8 +95,11 @@ static void m_admin(struct Client *client_p, struct Client *source_p, int parc,
   else
     last_used = CurrentTime;
 
-  if (hunt_server(client_p,source_p,":%s ADMIN :%s",1,parc,parv) != HUNTED_ISME)
-    return;
+  if (!GlobalSetOptions.hide_server)
+    {
+      if (hunt_server(client_p,source_p,":%s ADMIN :%s",1,parc,parv) != HUNTED_ISME)
+        return;
+    }
 
   do_admin(source_p);
 }

@@ -16,7 +16,7 @@
 *   along with this program; if not, write to the Free Software
 *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 *
-*   $Id: m_whowas.c,v 1.19 2001/04/04 15:22:40 androsyn Exp $
+*   $Id: m_whowas.c,v 1.20 2001/04/09 12:41:51 fl_ Exp $
 */
 #include "whowas.h"
 #include "handlers.h"
@@ -86,6 +86,7 @@ static void m_whowas(struct Client *client_p,
 
   if((last_used + ConfigFileEntry.whois_wait) > CurrentTime)
     {
+      sendto_one(source_p,form_str(RPL_LOAD2HI),me.name,source_p->name);
       return;
     }
   else

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.c,v 1.30 2001/04/04 15:22:26 androsyn Exp $
+ * $Id: m_info.c,v 1.31 2001/04/09 12:41:49 fl_ Exp $
  */
 #include "tools.h"
 #include "m_info.h"
@@ -86,26 +86,30 @@ static void m_info(struct Client *client_p, struct Client *source_p,
 {
   static time_t last_used=0L;
 
-  if (hunt_server(client_p,source_p,":%s INFO :%s",1,parc,parv) == HUNTED_ISME)
-  {
-    sendto_realops_flags(FLAGS_SPY, "info requested by %s (%s@%s) [%s]",
-      source_p->name, source_p->username, source_p->host,
-      source_p->user->server);
-
-    if ((last_used + ConfigFileEntry.pace_wait) > CurrentTime)
-      {
-        /* safe enough to give this on a local connect only */
-        sendto_one(source_p,form_str(RPL_LOAD2HI),me.name,parv[0]);
-        return;
-      }
+  if ((last_used + ConfigFileEntry.pace_wait) > CurrentTime)
+    {
+      /* safe enough to give this on a local connect only */
+      sendto_one(source_p,form_str(RPL_LOAD2HI),me.name,parv[0]);
+      return;
+    }
       else
         last_used = CurrentTime;
 
-    send_info_text(source_p);
-    send_birthdate_online_time(source_p);
+  if (!GlobalSetOptions.hide_server)
+    {
+      if (hunt_server(client_p,source_p,":%s INFO :%s",1,parc,parv) != HUNTED_ISME)
+        return;
+    }
 
-    sendto_one(source_p, form_str(RPL_ENDOFINFO), me.name, parv[0]);
-  } /* if (hunt_server(client_p,source_p,":%s INFO :%s",1,parc,parv) == HUNTED_ISME) */
+  sendto_realops_flags(FLAGS_SPY, "info requested by %s (%s@%s) [%s]",
+      source_p->name, source_p->username, source_p->host,
+      source_p->user->server);
+
+  send_info_text(source_p);
+  send_birthdate_online_time(source_p);
+
+  sendto_one(source_p, form_str(RPL_ENDOFINFO), me.name, parv[0]);
+
 } /* m_info() */
 
 /*
