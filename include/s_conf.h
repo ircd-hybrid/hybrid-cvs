@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.205 2003/05/01 15:53:32 michael Exp $
+ *  $Id: s_conf.h,v 7.206 2003/05/01 19:42:24 michael Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -330,7 +330,9 @@ extern dlink_list temporary_dlines;
 extern dlink_list temporary_ip_klines;
 
 extern void init_ip_hash_table(void);
+#if 0
 extern void iphash_stats(struct Client *,struct Client *,int,char **,FBFILE*);
+#endif
 extern void count_ip_hash(int *, u_long *);
 
 extern void remove_one_ip(struct irc_ssaddr *ip);

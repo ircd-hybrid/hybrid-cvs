@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_debug.c,v 7.75 2003/04/21 13:32:58 michael Exp $
+ *  $Id: s_debug.c,v 7.76 2003/05/01 19:42:26 michael Exp $
  */
 
 #include "stdinc.h"
@@ -77,8 +77,9 @@ debug(int level, char *format, ...)
 
     ilog(L_DEBUG, "%s", debugbuf);
   }
+
   errno = err;
-} /* debug() */
+}
 
 /*
  * This is part of the STATS replies. There is no offical numeric for this
@@ -104,23 +105,26 @@ send_usage(struct Client *source_p)
 #endif
 
 #ifdef VMS
-  sendto_one(source_p, ":%s NOTICE %s :getrusage not supported on this system");
+  sendto_one(source_p, ":%s NOTICE %s :getrusage not supported on this system",
+             me.name, source_p->name);
   return;
 #else
   if (getrusage(RUSAGE_SELF, &rus) == -1)
-    {
-      sendto_one(source_p,":%s NOTICE %s :Getruseage error: %s.",
-                 me.name, source_p->name, strerror(errno));
-      return;
-    }
+  {
+    sendto_one(source_p,":%s NOTICE %s :Getruseage error: %s.",
+               me.name, source_p->name, strerror(errno));
+    return;
+  }
+
   secs = rus.ru_utime.tv_sec + rus.ru_stime.tv_sec;
+
   if (0 == secs)
     secs = 1;
 
   rup = (CurrentTime - me.since) * hzz;
+
   if (0 == rup)
     rup = 1;
-
 
   sendto_one(source_p,
              ":%s %d %s R :CPU Secs %d:%d User %d:%d System %d:%d",
@@ -234,33 +238,25 @@ count_memory(struct Client *source_p)
     }
 
   /* Count up all channels, ban lists, except lists, Invex lists */
-
   DLINK_FOREACH(gptr, global_channel_list.head)
   {
     chptr = gptr->data;
     channel_memory += (strlen(chptr->chname) + sizeof(struct Channel));
 
-    DLINK_FOREACH(dlink, chptr->peons.head)
-      channel_users++;
-    DLINK_FOREACH(dlink, chptr->chanops.head)
-      channel_users++;
+    channel_users += dlink_list_length(&chptr->peons);
+    channel_users += dlink_list_length(&chptr->chanops);
 #ifdef REQUIRE_OANDV
-      DLINK_FOREACH(dlink, chptr->chanops_voiced.head)
-        channel_users++;
+    channel_users += dlink_list_length(&chptr->chanops_voiced);
 #endif
-      DLINK_FOREACH(dlink, chptr->voiced.head)
-        channel_users++;
+    channel_users += dlink_list_length(&chptr->voiced);
 #ifdef HALFOPS
-      DLINK_FOREACH(dlink, chptr->halfops.head)
-        channel_users++;
+    channel_users += dlink_list_length(&chptr->halfops);
 #endif
+    channel_invites += dlink_list_length(&chptr->invites);
 
-      DLINK_FOREACH(dlink, chptr->invites.head)
-        channel_invites++;
-
-      DLINK_FOREACH(dlink, chptr->banlist.head)
-        {
-	  actualBan = dlink->data;
+    DLINK_FOREACH(dlink, chptr->banlist.head)
+    {
+          actualBan = dlink->data;
           channel_bans++;
 
           channel_ban_memory += sizeof(dlink_node) +
@@ -269,10 +265,10 @@ count_memory(struct Client *source_p)
             channel_ban_memory += strlen(actualBan->banstr);
           if (actualBan->who)
             channel_ban_memory += strlen(actualBan->who);
-        }
+    }
 
-      DLINK_FOREACH(dlink, chptr->exceptlist.head)
-        {
+    DLINK_FOREACH(dlink, chptr->exceptlist.head)
+    {
 	  actualBan = dlink->data;
           channel_except++;
 
@@ -282,10 +278,10 @@ count_memory(struct Client *source_p)
             channel_except_memory += strlen(actualBan->banstr);
           if (actualBan->who)
             channel_except_memory += strlen(actualBan->who);
-        }
+    }
 
-      DLINK_FOREACH(dlink, chptr->invexlist.head)
-        {
+    DLINK_FOREACH(dlink, chptr->invexlist.head)
+    {
 	  actualBan = dlink->data;
           channel_invex++;
 
@@ -295,11 +291,10 @@ count_memory(struct Client *source_p)
             channel_invex_memory += strlen(actualBan->banstr);
           if (actualBan->who)
             channel_invex_memory += strlen(actualBan->who);
-        }
     }
+  }
 
   /* count up all config items */
-
   DLINK_FOREACH(dlink, ConfigItemList.head)
   {
       aconf = dlink->data;
