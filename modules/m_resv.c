@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_resv.c,v 1.26 2003/05/29 03:35:55 db Exp $
+ *  $Id: m_resv.c,v 1.27 2003/06/14 18:12:00 db Exp $
  */
 
 #include "stdinc.h"
@@ -72,7 +72,7 @@ _moddeinit(void)
   mod_del_cmd(&unresv_msgtab);
 }
 
-const char *_version = "$Revision: 1.26 $";
+const char *_version = "$Revision: 1.27 $";
 #endif
 
 /* mo_resv()
@@ -222,17 +222,22 @@ static void
 parse_resv(struct Client *source_p, char *name,
            char *reason, int cluster)
 {
+  struct ConfItem *conf;
+
   if (IsChannelName(name))
   {
     struct ResvChannel *resv_p;
 
-    if ((resv_p = create_channel_resv(name, reason, 0)) == NULL)
+    if ((conf = create_channel_resv(name, reason, 0)) == NULL)
     {
       if (!cluster)
-        sendto_one(source_p, ":%s NOTICE %s :A RESV has already been placed on channel: %s",
+        sendto_one(source_p,
+	   ":%s NOTICE %s :A RESV has already been placed on channel: %s",
                    me.name, source_p->name, name);
       return;
     }
+
+    resv_p = (struct ResvChannel *)map_to_conf(conf);
 
     if (!cluster)
       sendto_one(source_p,
@@ -244,7 +249,7 @@ parse_resv(struct Client *source_p, char *name,
                          get_oper_name(source_p),
                          (MyClient(source_p) ? "local" : "remote"),
                          resv_p->name, resv_p->reason);
-    write_resv_line(CRESV_TYPE, source_p, resv_p);
+    write_conf_line(source_p, conf, NULL /* not used */, 0 /* not used */);
   }
   else if (clean_resv_nick(name))
   {
@@ -259,13 +264,16 @@ parse_resv(struct Client *source_p, char *name,
       return;
     }
 
-    if ((resv_p = create_nick_resv(name, reason, 0)) == NULL)
+    if ((conf = create_nick_resv(name, reason, 0)) == NULL)
     {
       if (!cluster)
-        sendto_one(source_p, ":%s NOTICE %s :A RESV has already been placed on nick: %s",
+        sendto_one(source_p,
+		   ":%s NOTICE %s :A RESV has already been placed on nick: %s",
                    me.name, source_p->name, name);
       return;
     }
+
+    resv_p = (struct ResvNick *)map_to_conf(conf);
 
     if (!cluster)
       sendto_one(source_p,
@@ -278,7 +286,7 @@ parse_resv(struct Client *source_p, char *name,
                          get_oper_name(source_p),
                          (MyClient(source_p) ? "local" : "remote"),
                          resv_p->name, resv_p->reason);
-    write_resv_line(NRESV_TYPE, source_p, resv_p);
+    write_conf_line(source_p, conf, NULL /* not used */, 0 /* not used */);
   }
   else if (!cluster)
     sendto_one(source_p,

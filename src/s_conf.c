@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.429 2003/06/14 17:31:18 adx Exp $
+ *  $Id: s_conf.c,v 7.430 2003/06/14 18:12:02 db Exp $
  */
 
 #include "stdinc.h"
@@ -59,7 +59,9 @@
 struct config_server_hide ConfigServerHide;
 
 /* general conf items link list root, other than k lines etc. */
-dlink_list all_conf_items = { NULL, NULL, 0 };
+dlink_list uconf_items = { NULL, NULL, 0 };
+dlink_list xconf_items = { NULL, NULL, 0 };
+
 dlink_list ConfigItemList = { NULL, NULL, 0 };
 dlink_list temporary_klines = { NULL, NULL, 0 };
 dlink_list temporary_dlines = { NULL, NULL, 0 };
@@ -88,6 +90,7 @@ static int verify_access(struct Client *client_p, const char *username);
 static int attach_iline(struct Client *, struct AccessItem *);
 static struct ip_entry *find_or_add_ip(struct irc_ssaddr *);
 static void parse_conf_file(int type, int cold);
+static void clear_conf_items(void);
 
 FBFILE *conf_fbfile_in;
 extern char yytext[];
@@ -197,6 +200,9 @@ make_conf_item(ConfType type)
     switch(type)
     {
     case EXEMPTDLINE_TYPE:
+      status = CONF_EXEMPTDLINE;
+      break;
+
     case DLINE_TYPE:
       status = CONF_DLINE;
       break;
@@ -221,6 +227,11 @@ make_conf_item(ConfType type)
     case SERVER_TYPE:
       status = CONF_SERVER;
       break;
+
+    case HUB_TYPE:
+      status = CONF_HUB; 
+      break;
+
     default:
       break;
     }
@@ -228,9 +239,25 @@ make_conf_item(ConfType type)
     break;
 
   case ULINE_TYPE:
+    conf = (struct ConfItem *)MyMalloc(sizeof(struct ConfItem) +
+					 sizeof(struct MatchItem));
+    dlinkAdd(conf, &conf->node, &uconf_items);
+    break;
+
   case XLINE_TYPE:
     conf = (struct ConfItem *)MyMalloc(sizeof(struct ConfItem) +
 					 sizeof(struct MatchItem));
+    dlinkAdd(conf, &conf->node, &xconf_items);
+    break;
+
+  case CRESV_TYPE:
+    conf = (struct ConfItem *)MyMalloc(sizeof(struct ConfItem) +
+					 sizeof(struct ResvChannel));
+    break;
+
+  case NRESV_TYPE:
+    conf = (struct ConfItem *)MyMalloc(sizeof(struct ConfItem) +
+					 sizeof(struct ResvNick));
     break;
 
   default:
@@ -240,8 +267,37 @@ make_conf_item(ConfType type)
 
   /* XXX Yes, this will core if default is hit. I want it to for now - db */
   conf->type = type;
-  dlinkAdd(conf, &conf->node, &all_conf_items);
+
   return(conf);
+}
+
+/*
+ * clear_conf_items
+ *
+ * inputs	- none
+ * output	- none
+ * side effects	-
+ */
+static void
+clear_conf_items(void)
+{
+  dlink_node *ptr;
+  dlink_node *next_ptr;
+  struct ConfItem *conf;
+
+  DLINK_FOREACH_SAFE(ptr, next_ptr, uconf_items.head)
+  {
+    conf = ptr->data;
+    dlinkDelete(&conf->node, &uconf_items);
+    MyFree(conf);
+  }
+
+  DLINK_FOREACH_SAFE(ptr, next_ptr, xconf_items.head)
+  {
+    conf = ptr->data;
+    dlinkDelete(&conf->node, &xconf_items);
+    MyFree(conf);
+  }
 }
 
 /* free_conf_item()
@@ -261,12 +317,13 @@ free_conf_item(struct ConfItem *conf, ConfType type)
   case HUB_TYPE:
   case LEAF_TYPE:
   case OPER_TYPE:
+  case SERVER_TYPE:
+  case NRESV_TYPE:
+  case CRESV_TYPE:
     break;
 
   case ULINE_TYPE:
   case XLINE_TYPE:
-    dlinkDelete(&conf->node, &all_conf_items);
-    MyFree(conf);
     break;
 
   default:
@@ -283,7 +340,7 @@ free_conf_item(struct ConfItem *conf, ConfType type)
 void
 free_access_item(struct AccessItem *aconf)
 {
-  struct ConfItem *confitem;
+  struct ConfItem *conf;
 
   if (aconf == NULL)
     return;
@@ -313,10 +370,9 @@ free_access_item(struct AccessItem *aconf)
   /* XXX Isn't this just horrible? 
    * Lets use address arithemetic !
    */
-  confitem = (struct ConfItem *)((unsigned long)aconf -
-				 (unsigned long)sizeof(struct ConfItem));
-  dlinkDelete(&confitem->node, &all_conf_items);
-  MyFree(confitem);
+  conf = (struct ConfItem *)((unsigned long)aconf -
+			     (unsigned long)sizeof(struct ConfItem));
+  MyFree(conf);
 }
 
 /* det_confs_butmask()
@@ -357,26 +413,43 @@ report_confitem_types(struct Client *source_p, ConfType type)
   struct ConfItem *conf;
   struct MatchItem *matchitem;
 
-  DLINK_FOREACH(ptr, all_conf_items.head)
+  switch (type)
   {
-    conf = ptr->data;
-    switch (conf->type)
+  case XLINE_TYPE:
+    DLINK_FOREACH(ptr, xconf_items.head)
     {
-    case XLINE_TYPE:
+      conf = ptr->data;
       matchitem = (struct MatchItem *)map_to_conf(conf);
       sendto_one(source_p, form_str(RPL_STATSXLINE),
 		 me.name, source_p->name, matchitem->action,
 		 matchitem->name, matchitem->reason);
-      break;
+    }
+    break;
 
-    case ULINE_TYPE:
+  case ULINE_TYPE:
+    DLINK_FOREACH(ptr, uconf_items.head)
+    {
+      conf = ptr->data;
+      break;
       matchitem = (struct MatchItem *)map_to_conf(conf);
       sendto_one(source_p, form_str(RPL_STATSULINE),
 		 me.name, source_p->name,
 		 matchitem->name, matchitem->reason);
-    default:
-      break;
     }
+    break;
+  case CONF_TYPE:
+  case OPER_TYPE:
+  case CLIENT_TYPE:
+  case SERVER_TYPE:
+  case HUB_TYPE:
+  case LEAF_TYPE:
+  case KLINE_TYPE:
+  case DLINE_TYPE:
+  case EXEMPTDLINE_TYPE:
+  case GLINE_TYPE:
+  case CRESV_TYPE:
+  case NRESV_TYPE:
+    break;
   }
 }
 
@@ -1378,18 +1451,14 @@ struct MatchItem *
 find_x_conf(const char *to_find)
 {
   dlink_node *ptr;
-  struct ConfItem *aconf;
+  struct ConfItem *conf;
   struct MatchItem *match_item;
 
-  DLINK_FOREACH(ptr, all_conf_items.head)
+  DLINK_FOREACH(ptr, xconf_items.head)
   {
-    aconf = ptr->data;
+    conf = ptr->data;
 
-    if (aconf->type != XLINE_TYPE)
-      continue;
-
-    match_item = (struct MatchItem *)((unsigned long)aconf + 
-				      (unsigned long)(sizeof(struct ConfItem)));
+    match_item = (struct MatchItem *)map_to_conf(conf);
     if (EmptyString(match_item->name))
       continue;
 
@@ -1416,12 +1485,9 @@ find_u_conf(const char *server, const char *user, const char *host, int type)
   struct ConfItem *conf;
   struct MatchItem *match_item;
 
-  DLINK_FOREACH(ptr, all_conf_items.head)
+  DLINK_FOREACH(ptr, uconf_items.head)
   {
     conf = ptr->data;
-
-    if (conf->type != ULINE_TYPE)
-      continue;
 
     match_item = (struct MatchItem *)map_to_conf(conf);
     if (EmptyString(match_item->name))
@@ -2171,6 +2237,9 @@ clear_out_old_conf(void)
   MyFree(ServerInfo.rsa_private_key_file);
   ServerInfo.rsa_private_key_file = NULL;
 #endif
+
+  /* Clear struct ConfItem s out */
+  clear_conf_items();
 
   clear_clusters();
   /* clean out old resvs from the conf */

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.240 2003/06/14 17:31:14 adx Exp $
+ *  $Id: s_conf.h,v 7.241 2003/06/14 18:11:58 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -410,9 +410,8 @@ extern void yyerror(const char *);
 extern int conf_yy_fatal_error(const char *);
 extern int conf_fbgets(char *, int, FBFILE *);
 
-extern void write_conf_line(ConfType type, struct Client *,
-			    struct ConfItem *, const char *, time_t);
-extern void write_resv_line(ConfType type, struct Client *, void *);
+extern void write_conf_line(struct Client *, struct ConfItem *,
+			    const char *, time_t);
 
 extern int remove_conf_line(ConfType, struct Client *, const char *,
 			    const char *);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: resv.c,v 7.26 2003/06/13 22:07:42 joshk Exp $
+ *  $Id: resv.c,v 7.27 2003/06/14 18:12:02 db Exp $
  */
 
 #include "stdinc.h"
@@ -48,30 +48,32 @@ dlink_list resv_nick_list    = { NULL, NULL, 0 };
  * output	- pointer to struct ResvChannel
  * side effects	-
  */
-struct ResvChannel *
-create_channel_resv(char *name, char *reason, int conf)
+struct ConfItem *
+create_channel_resv(char *name, char *reason, int in_conf)
 {
+  struct ConfItem *conf;
   struct ResvChannel *resv_p;
 
   if (name == NULL || reason == NULL)
     return(NULL);
 
-  if (find_channel_resv(name))
+  if (find_channel_resv(name) != NULL)
     return(NULL);
 
   if (strlen(reason) > TOPICLEN)
     reason[TOPICLEN] = '\0';
 
-  resv_p = (struct ResvChannel *)MyMalloc(sizeof(struct ResvChannel));
+  conf = make_conf_item(CRESV_TYPE);
+  resv_p = (struct ResvChannel *)map_to_conf(conf);
 
   strlcpy(resv_p->name, name, sizeof(resv_p->name));
   DupString(resv_p->reason, reason);
-  resv_p->conf = conf;
+  resv_p->conf = in_conf;
 
   dlinkAdd(resv_p, &resv_p->node, &resv_channel_list);
   add_to_resv_hash_table(resv_p->name, resv_p);
 
-  return(resv_p);
+  return(conf);
 }
 
 /* create_nick_resv()
@@ -82,29 +84,31 @@ create_channel_resv(char *name, char *reason, int conf)
  * output	- pointer to struct ResvNick
  * side effects	-
  */
-struct ResvNick *
-create_nick_resv(char *name, char *reason, int conf)
+struct ConfItem *
+create_nick_resv(char *name, char *reason, int in_conf)
 {
+  struct ConfItem *conf;
   struct ResvNick *resv_p;
 
   if (name == NULL || reason == NULL)
     return(NULL);
 
-  if (find_nick_resv(name))
+  if (find_nick_resv(name) != NULL)
     return(NULL);
 
   if (strlen(reason) > TOPICLEN)
     reason[TOPICLEN] = '\0';
 
-  resv_p = (struct ResvNick *)MyMalloc(sizeof(struct ResvNick));
+  conf = make_conf_item(NRESV_TYPE);
+  resv_p = (struct ResvNick *)map_to_conf(conf);
 
   strlcpy(resv_p->name, name, sizeof(resv_p->name));
   DupString(resv_p->reason, reason);
-  resv_p->conf = conf;
+  resv_p->conf = in_conf;
 
   dlinkAdd(resv_p, &resv_p->node, &resv_nick_list);
 
-  return(resv_p);
+  return(conf);
 }
 
 /* clear_conf_resv()
@@ -143,6 +147,7 @@ clear_conf_resv(void)
 int
 delete_channel_resv(struct ResvChannel *resv_p)
 {
+  struct ConfItem *conf;
   assert(resv_p != NULL);
 
   if (resv_p == NULL)
@@ -150,7 +155,13 @@ delete_channel_resv(struct ResvChannel *resv_p)
 
   del_from_resv_hash_table(resv_p->name, resv_p);
   dlinkDelete(&resv_p->node, &resv_channel_list);
-  MyFree(resv_p);
+
+  /* XXX Isn't this just horrible? 
+   * Lets use address arithemetic !
+   */
+  conf = (struct ConfItem *)((unsigned long)resv_p -
+			     (unsigned long)sizeof(struct ConfItem));
+  MyFree(conf);
 
   return(1);
 }
@@ -164,13 +175,20 @@ delete_channel_resv(struct ResvChannel *resv_p)
 int
 delete_nick_resv(struct ResvNick *resv_p)
 {
+  struct ConfItem *conf;
   assert(resv_p != NULL);
 
   if (resv_p == NULL)
     return(0);
 
   dlinkDelete(&resv_p->node, &resv_nick_list);
-  MyFree(resv_p);
+
+  /* XXX Isn't this just horrible? 
+   * Lets use address arithemetic !
+   */
+  conf = (struct ConfItem *)((unsigned long)resv_p -
+			     (unsigned long)sizeof(struct ConfItem));
+  MyFree(conf);
 
   return(1);
 }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.116 2003/06/14 13:58:39 michael Exp $
+ *  $Id: m_gline.c,v 1.117 2003/06/14 18:12:00 db Exp $
  */
 
 #include "stdinc.h"
@@ -95,7 +95,7 @@ _moddeinit(void)
   delete_capability("GLN");
 }
 
-const char *_version = "$Revision: 1.116 $";
+const char *_version = "$Revision: 1.117 $";
 #endif
 
 /* mo_gline()
@@ -450,7 +450,7 @@ set_local_gline(struct Client *source_p, const char *user,
 
   dlinkAdd(aconf, make_dlink_node(), &glines);
 
-  write_conf_line(GLINE_TYPE, source_p, conf, current_date, cur_time);
+  write_conf_line(source_p, conf, current_date, cur_time);
   check_klines();
 }
 

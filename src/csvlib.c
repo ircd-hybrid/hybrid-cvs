@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.20 2003/06/14 03:39:25 db Exp $
+ *  $Id: csvlib.c,v 7.21 2003/06/14 18:12:02 db Exp $
  */
 
 #include "stdinc.h"
@@ -175,16 +175,20 @@ parse_csv_line(char *line, ...)
  * - Dianora
  */
 void 
-write_conf_line(ConfType type, struct Client *source_p,
-		struct ConfItem *conf,
+write_conf_line(struct Client *source_p, struct ConfItem *conf,
 		const char *current_date, time_t cur_time)
 {
   FBFILE *out;
   const char *filename;
   struct AccessItem *aconf;
   struct MatchItem *xconf;
+  struct ResvChannel *cresv_p=NULL;
+  struct ResvNick *nresv_p=NULL;
+  ConfType type;
 
+  type = conf->type;
   filename = get_conf_name(type);
+
   if ((out = fbopen(filename, "a")) == NULL)
   {
     sendto_realops_flags(UMODE_ALL, L_ALL,
@@ -253,58 +257,15 @@ write_conf_line(ConfType type, struct Client *source_p,
 		   get_oper_name(source_p), (long)aconf->hold);
     break;
 
-  default:
-    fbclose(out);
-    return;
-  }
-
-  fbclose(out);
-}
-
-/* write_resv_line()
- *
- * blah. special form of write_conf_line() above for resvs only.
- *
- * inputs       - pointer to void * resv_p either struct * ResvChannel
- *		  or struct * ResvNick
- *              - time_t cur_time
- * output       - NONE
- * side effects - This function takes care of
- *                finding right conf file, writing
- *                the right lines to this file, 
- *                notifying the oper that their kline/dline etc. is in place
- *                notifying the opers on the server about the k/d etc. line
- *
- * - Dianora
- */
-void 
-write_resv_line(ConfType type, 
-		struct Client *source_p /*unused*/, void *resv_p)
-{
-  FBFILE *out;
-  const char *filename;
-  struct ResvChannel *cresv_p=NULL;
-  struct ResvNick *nresv_p=NULL;
-  
-  filename = get_conf_name(type);
-  if ((out = fbopen(filename, "a")) == NULL)
-  {
-    sendto_realops_flags(UMODE_ALL, L_ALL,
-                         "*** Problem opening %s ", filename);
-    return;
-  }
-
-  switch(type)
-  {
-  case CONF_CRESV:
-    cresv_p = (struct ResvChannel *)resv_p;
+  case CRESV_TYPE:
+    cresv_p = (struct ResvChannel *)map_to_conf(conf);
 
     write_csv_line(out, "%s%s",
 		   cresv_p->name, cresv_p->reason);
     break;
 
-  case CONF_NRESV:
-    nresv_p = (struct ResvNick *)resv_p;
+  case NRESV_TYPE:
+    nresv_p = (struct ResvNick *)map_to_conf(conf);
 
     write_csv_line(out, "%s%s",
 		   nresv_p->name, nresv_p->reason);
@@ -314,6 +275,7 @@ write_resv_line(ConfType type,
     fbclose(out);
     return;
   }
+
   fbclose(out);
 }
 
