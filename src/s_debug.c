@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_debug.c,v 7.10 1999/12/30 20:36:09 db Exp $
+ *   $Id: s_debug.c,v 7.11 1999/12/30 20:52:33 db Exp $
  */
 #include "s_debug.h"
 #include "channel.h"
@@ -366,7 +366,7 @@ void count_memory(struct Client *cptr,char *nick)
              me.name, RPL_STATSDEBUG, nick, co, com);
 
   sendto_one(cptr, ":%s %d %s :Classes %d(%d)",
-             me.name, RPL_STATSDEBUG, nick, cl, cl*sizeof(aClass));
+             me.name, RPL_STATSDEBUG, nick, cl, cl*sizeof(struct Class));
 
   sendto_one(cptr, ":%s %d %s :Channels %d(%d) Bans %d(%d)",
              me.name, RPL_STATSDEBUG, nick, ch, chm, chb, chbm);
@@ -411,7 +411,7 @@ void count_memory(struct Client *cptr,char *nick)
              number_ips_stored,
              mem_ips_stored);
 
-  tot = totww + totch + totcl + com + cl*sizeof(aClass) + dbuf_allocated + rm;
+  tot = totww + totch + totcl + com + cl*sizeof(struct Class) + dbuf_allocated + rm;
   tot += client_hash_table_size;
   tot += channel_hash_table_size;
 
