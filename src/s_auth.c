@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.c,v 7.54 2001/02/07 06:16:25 androsyn Exp $
+ *   $Id: s_auth.c,v 7.55 2001/02/12 07:23:54 androsyn Exp $
  *
  * Changes:
  *   July 6, 1999 - Rewrote most of the code here. When a client connects
@@ -225,7 +225,8 @@ static void auth_dns_callback(void* vptr, adns_answer* reply)
 		strcpy(auth->client->host, auth->client->localClient->sockhost);
 		sendheader(auth->client, REPORT_FAIL_DNS);
 	}
-	
+	if(reply)
+		MyFree(reply);
 	if (!IsDoingAuth(auth))
 	{
 		release_auth_client(auth->client);
