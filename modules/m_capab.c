@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_capab.c,v 1.10 2000/12/22 16:12:31 db Exp $
+ *   $Id: m_capab.c,v 1.11 2001/01/01 22:07:07 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -64,10 +64,9 @@ int mr_capab(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   char* p;
   char* s;
 
-#if 0
-  if ((!IsUnknown(cptr) && !IsHandshake(cptr)) || parc < 2)
+  /* ummm, this shouldn't happen. Could argue this should be logged etc. */
+  if (cptr->localClient == NULL)
     return 0;
-#endif
 
   if (cptr->localClient->caps)
     return exit_client(cptr, cptr, cptr, "CAPAB received twice");
