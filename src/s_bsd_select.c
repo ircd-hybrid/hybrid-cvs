@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_select.c,v 7.25 2002/05/24 23:34:50 androsyn Exp $
+ *  $Id: s_bsd_select.c,v 7.26 2002/05/25 01:42:54 androsyn Exp $
  */
 
 #include "config.h"
@@ -169,8 +169,8 @@ comm_select(unsigned long delay)
     struct timeval to;
 
     /* Copy over the read/write sets so we don't have to rebuild em */
-    bcopy(&select_readfds, &tmpreadfds, sizeof(fd_set));
-    bcopy(&select_writefds, &tmpwritefds, sizeof(fd_set));
+    memcpy(&tmpreadfds, &select_readfds, sizeof(fd_set));
+    memcpy(&tmpwritefds, &select_writefds, sizeof(fd_set));
 
     for (;;) {
         to.tv_sec = 0;
