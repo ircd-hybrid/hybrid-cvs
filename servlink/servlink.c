@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: servlink.c,v 1.17 2001/05/25 15:19:27 davidt Exp $
+ *   $Id: servlink.c,v 1.18 2001/05/25 15:35:23 davidt Exp $
  */
 
 #include "../include/setup.h"                                                   
@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
 #endif
 
   /* Make sure we are running under hybrid.. */
-  if (isatty(0) || argc != 1 || strcmp(argv[0], "-slink"))
+  if (argc != 1 || strcmp(argv[0], "-slink"))
     usage(); /* exits */
   
   for (i = 0; i < 3; i++)
