@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: control.c,v 1.5 2003/05/14 18:38:24 joshk Exp $
+ *   $Id: control.c,v 1.6 2003/05/26 00:55:49 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -82,16 +82,16 @@ void cmd_start_zip_out(struct ctrl_command *cmd)
   if (out_state.zip)
     send_error("can't start compression - already started!");
 
-  out_state.zip_state.z_stream.total_in = 0;
-  out_state.zip_state.z_stream.total_out = 0;
-  out_state.zip_state.z_stream.zalloc = (alloc_func)0;
-  out_state.zip_state.z_stream.zfree = (free_func)0;
-  out_state.zip_state.z_stream.data_type = Z_ASCII;
+  out_state.zip_state.stream.total_in = 0;
+  out_state.zip_state.stream.total_out = 0;
+  out_state.zip_state.stream.zalloc = (alloc_func)0;
+  out_state.zip_state.stream.zfree = (free_func)0;
+  out_state.zip_state.stream.data_type = Z_ASCII;
 
   if (out_state.zip_state.level <= 0)
     out_state.zip_state.level = Z_DEFAULT_COMPRESSION;
 
-  if ((ret = deflateInit(&out_state.zip_state.z_stream,
+  if ((ret = deflateInit(&out_state.zip_state.stream,
                          out_state.zip_state.level)) != Z_OK)
     send_error("deflateInit failed: %d", ret);
 
@@ -109,12 +109,12 @@ void cmd_start_zip_in(struct ctrl_command *cmd)
   if (in_state.zip)
     send_error("can't start decompression - already started!");
 
-  in_state.zip_state.z_stream.total_in = 0;
-  in_state.zip_state.z_stream.total_out = 0;
-  in_state.zip_state.z_stream.zalloc = (alloc_func)0;
-  in_state.zip_state.z_stream.zfree = (free_func)0;
-  in_state.zip_state.z_stream.data_type = Z_ASCII;
-  if ((ret = inflateInit(&in_state.zip_state.z_stream)) != Z_OK)
+  in_state.zip_state.stream.total_in = 0;
+  in_state.zip_state.stream.total_out = 0;
+  in_state.zip_state.stream.zalloc = (alloc_func)0;
+  in_state.zip_state.stream.zfree = (free_func)0;
+  in_state.zip_state.stream.data_type = Z_ASCII;
+  if ((ret = inflateInit(&in_state.zip_state.stream)) != Z_OK)
     send_error("inflateInit failed: %d", ret);
   in_state.zip = 1;
 #else

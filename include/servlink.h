@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: servlink.h,v 1.1 2003/05/14 18:38:23 joshk Exp $
+ *   $Id: servlink.h,v 1.2 2003/05/26 00:55:47 joshk Exp $
  */
 
 #ifndef INCLUDED_servlink_servlink_h
@@ -74,7 +74,7 @@ struct crypt_state
 #ifdef HAVE_LIBZ
 struct zip_state
 {
-  z_stream             z_stream;
+  z_stream             stream;
   int                  level;           /* compression level */
 };
 #endif

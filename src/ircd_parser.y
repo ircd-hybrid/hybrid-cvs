@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.292 2003/05/25 05:56:38 db Exp $
+ *  $Id: ircd_parser.y,v 1.293 2003/05/26 00:55:51 joshk Exp $
  */
 
 %{
@@ -102,7 +102,7 @@ init_parser_confs(void)
 %token  AFTYPE
 %token  ANTI_NICK_FLOOD
 %token  ANTI_SPAM_EXIT_MESSAGE_TIME
-%token  AUTH
+%token  IRCD_AUTH
 %token  AUTOCONN
 %token  BYTES KBYTES MBYTES GBYTES TBYTES
 %token  CALLER_ID_WAIT
@@ -1156,7 +1156,7 @@ listen_host: HOST '=' QSTRING ';'
 /***************************************************************************
  *  section auth
  ***************************************************************************/
-auth_entry: AUTH
+auth_entry: IRCD_AUTH
 {
   if (ypass == 2)
   {
