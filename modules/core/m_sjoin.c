@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.34 2000/12/21 02:35:40 ejb Exp $
+ *   $Id: m_sjoin.c,v 1.35 2000/12/21 03:18:14 ejb Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -113,11 +113,6 @@ int     ms_sjoin(struct Client *cptr,
   int hide_or_not;
   dlink_node *m;
 
-  if(chptr->mode.mode & MODE_HIDEOPS)
-    hide_or_not = ONLY_CHANOPS;
-  else
-    hide_or_not = ALL_MEMBERS;
-
   if (IsClient(sptr) || parc < 5)
     return 0;
   if (!IsChannelName(parv[2]))
@@ -179,6 +174,11 @@ int     ms_sjoin(struct Client *cptr,
       }
 
   *parabuf = '\0';
+
+  if(mode.mode & MODE_HIDEOPS)
+    hide_or_not = ONLY_CHANOPS;
+  else
+    hide_or_not = ALL_MEMBERS;
 
   isnew = ChannelExists(parv[2]) ? 0 : 1;
   chptr = get_channel(sptr, parv[2], CREATE);
