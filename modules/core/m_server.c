@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.95 2003/02/23 04:16:08 db Exp $
+ *  $Id: m_server.c,v 1.96 2003/03/29 00:23:40 michael Exp $
  */
 
 #include "stdinc.h"
@@ -67,7 +67,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&server_msgtab);
 }
-const char *_version = "$Revision: 1.95 $";
+const char *_version = "$Revision: 1.96 $";
 #endif
 
 int bogus_host(char *host);
@@ -525,7 +525,7 @@ ms_server(struct Client *client_p, struct Client *source_p,
 
       sendto_one(bclient_p, ":%s SERVER %s %d :%s%s",
 		 parv[0], target_p->name, hop + 1,
-		 target_p->hidden_server ? "(H) " : "",
+		 IsHidden(target_p) ? "(H) " : "",
 		 target_p->info);
     }
       
@@ -581,7 +581,7 @@ set_server_gecos(struct Client *client_p, char *info)
       /* check for (H) which is a hidden server */
       if(!strcmp(s, "(H)"))
       {
-        client_p->hidden_server = 1;
+        SetHidden(client_p);
 
         /* if there was no space.. theres nothing to set info to */
         if(p)

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.230 2003/03/28 11:14:38 michael Exp $
+ *  $Id: s_user.c,v 7.231 2003/03/29 00:23:42 michael Exp $
  */
 
 #include "stdinc.h"
@@ -894,7 +894,6 @@ do_remote_user(char* nick, struct Client* client_p, struct Client* source_p,
 		   char* username, char *host, char *server, char *realname,
 		   char *id)
 {
-  unsigned int oflags;
   struct User* user;
 
   assert(NULL != source_p);

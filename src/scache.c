@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: scache.c,v 7.17 2002/10/10 18:49:31 androsyn Exp $
+ *  $Id: scache.c,v 7.18 2003/03/29 00:23:42 michael Exp $
  */
 
 #include "stdinc.h"
@@ -45,13 +45,13 @@
 
 #define SCACHE_HASH_SIZE 257
 
-typedef struct scache_entry
+struct scache_entry
 {
   char name[HOSTLEN+1];
   struct scache_entry *next;
-} SCACHE;
+};
 
-static SCACHE *scache_hash[SCACHE_HASH_SIZE];
+static struct scache_entry *scache_hash[SCACHE_HASH_SIZE];
 
 void clear_scache_hash_table(void)
 {
@@ -60,9 +60,8 @@ void clear_scache_hash_table(void)
 
 static int hash(const char* string)
 {
-  int hash_value;
+  int hash_value = 0;
 
-  hash_value = 0;
   while (*string)
     {
       hash_value += ToLower(*string);
@@ -83,8 +82,8 @@ static int hash(const char* string)
 
 const char* find_or_add(const char* name)
 {
-  int     hash_index;
-  SCACHE* ptr;
+  int    hash_index;
+  struct scache_entry *ptr;
 
   ptr = scache_hash[hash_index = hash(name)];
   for ( ; ptr; ptr = ptr->next) 
@@ -93,7 +92,7 @@ const char* find_or_add(const char* name)
         return(ptr->name);
     }
 
-  ptr = (SCACHE*) MyMalloc(sizeof(SCACHE));
+  ptr = (struct scache_entry *)MyMalloc(sizeof(struct scache_entry));
   assert(0 != ptr);
 
   strlcpy(ptr->name, name, sizeof(ptr->name));
@@ -112,7 +111,7 @@ const char* find_or_add(const char* name)
  */
 void count_scache(int *number_servers_cached,u_long *mem_servers_cached)
 {
-  SCACHE *scache_ptr;
+  struct scache_entry *scache_ptr;
   int i;
 
   *number_servers_cached = 0;
@@ -126,7 +125,7 @@ void count_scache(int *number_servers_cached,u_long *mem_servers_cached)
           *number_servers_cached = *number_servers_cached + 1;
           *mem_servers_cached = *mem_servers_cached +
             (strlen(scache_ptr->name) +
-             sizeof(SCACHE *));
+             sizeof(struct scache_entry *));
 
           scache_ptr = scache_ptr->next;
         }

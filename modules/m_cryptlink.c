@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_cryptlink.c,v 1.38 2003/02/17 16:09:28 db Exp $
+ *  $Id: m_cryptlink.c,v 1.39 2003/03/29 00:23:38 michael Exp $
  */
 
 /*
@@ -68,7 +68,7 @@
 void _modinit(void) {}
 void _moddeinit(void) {}
 
-const char *_version = "$Revision: 1.38 $";
+const char *_version = "$Revision: 1.39 $";
 #endif
 #else
 
@@ -114,7 +114,7 @@ _moddeinit(void)
   mod_del_cmd(&cryptlink_msgtab);
 }
 
-const char *_version = "$Revision: 1.38 $";
+const char *_version = "$Revision: 1.39 $";
 #endif
 
 
@@ -420,7 +420,7 @@ static void cryptlink_serv(struct Client *client_p, struct Client *source_p,
 
   if(!strncmp(info, "(H)", 3))
   {
-    client_p->hidden_server = 1;
+    SetHidden(client_p);
 
     if((p = strchr(info, ' ')))
     {

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.169 2003/03/21 17:52:20 db Exp $
+ *  $Id: client.h,v 7.170 2003/03/29 00:23:37 michael Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -146,7 +146,6 @@ struct Client
 
   int               slink_pid;  /* pid of servlink process if any */
   int               hopcount;   /* number of servers to this 0 = local */
-  int		    hidden_server;
   unsigned short    status;     /* Client type */
   unsigned char     handler;    /* Handler index */
   unsigned long     serial;	/* used to enforce 1 send per nick */
@@ -454,6 +453,8 @@ struct LocalUser
 #define FLAGS2_FLOODDONE        0x200000      /* Flood grace period has
                                                * been ended. */
 #define FLAGS2_EOB		0x400000
+#define FLAGS2_HIDDEN           0x800000
+
 
 #define SEND_UMODES  (UMODE_INVISIBLE | UMODE_OPER | UMODE_WALLOP | \
                       UMODE_ADMIN)
@@ -594,6 +595,10 @@ struct LocalUser
 #define SetPingCookie(x)	((x)->flags2 |= FLAGS2_PING_COOKIE)
 #define ClearPingCookie(x)	((x)->flags2 &= ~FLAGS2_PING_COOKIE)
 #define ClearOperFlags(x)	((x)->flags2 &= ~FLAGS2_OPER_FLAGS)
+
+#define IsHidden(x)             ((x)->flags2 & FLAGS2_HIDDEN)
+#define SetHidden(x)            ((x)->flags2 |= FLAGS2_HIDDEN)
+
 
 /*
  * definitions for get_client_name
