@@ -4,7 +4,7 @@
  * shape or form. The author takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: res.c,v 7.25 2000/11/08 09:34:20 adrian Exp $
+ * $Id: res.c,v 7.26 2000/11/29 23:35:40 db Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -911,13 +911,11 @@ static int proc_answer(ResRQ* request, HEADER* header,
 	    return answer_count;
 	  }
       /*
-       * This comment is based on analysis by Shadowfax, Wohali and johan, 
-       * not me.  (Dianora) I am only commenting it.
+       * This comment is based on analysis by Shadowfax, Wohali and johan. 
        *
        * dn_expand is guaranteed to not return more than sizeof(hostbuf)
        * but do all implementations of dn_expand also guarantee
        * buffer is terminated with null byte? Lets not take chances.
-       *  -Dianora
        */
       hostbuf[HOSTLEN] = '\0';
       current += (size_t) n;
@@ -1076,8 +1074,6 @@ res_readreply(int fd, void *data)
 	{
 	  /*
 	   * got a name and address response, client resolved
-	   *
-	   * I liked the undernet comment better:
 	   *
 	   * XXX - Bug found here by Dianora -
 	   * make_cache() occasionally returns a NULL pointer when a

@@ -1,7 +1,7 @@
 /*
  * scache.c
  *
- * $Id: scache.c,v 7.4 2000/10/30 08:22:27 db Exp $
+ * $Id: scache.c,v 7.5 2000/11/29 23:35:42 db Exp $
  */
 
 #include "client.h"
@@ -85,8 +85,13 @@ const char* find_or_add(const char* name)
   return ptr->name;  
 }
 
-/* Added so s_debug could check memory usage in here -Dianora */
-
+/*
+ * count_scache
+ * inputs	- pointer to where to leave number of servers cached
+ *		- pointer to where to leave total memory usage
+ * output	- NONE
+ * side effects	-
+ */
 void count_scache(int *number_servers_cached,u_long *mem_servers_cached)
 {
   SCACHE *scache_ptr;

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.56 2000/11/28 23:21:05 db Exp $
+ * $Id: ircd.c,v 7.57 2000/11/29 23:35:37 db Exp $
  */
 #include "ircd.h"
 #include "channel.h"
@@ -133,7 +133,7 @@ int     ServerRunning;          /* GLOBAL - server execution state */
 struct Client me;                     /* That's me */
 
 struct Client* GlobalClientList = 0; /* Pointer to beginning of Client list */
-/* client pointer lists -Dianora */ 
+/* client pointer lists */ 
 struct Client *LocalClientList = NULL;
 struct Client *oper_cptr_list  = NULL;
 struct Client *serv_cptr_list  = NULL;

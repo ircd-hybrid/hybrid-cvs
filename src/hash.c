@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: hash.c,v 7.8 2000/11/06 08:13:34 db Exp $
+ *  $Id: hash.c,v 7.9 2000/11/29 23:35:37 db Exp $
  */
 #include "s_conf.h"
 #include "channel.h"
@@ -76,7 +76,6 @@ size_t hash_get_client_table_size(void)
 /*
  *
  * look in whowas.c for the missing ...[WW_MAX]; entry
- *   - Dianora
  */
 
 /*
@@ -102,12 +101,7 @@ size_t hash_get_client_table_size(void)
  *
  * A - GOPbot, B - chang, C - hanuaway, D - *.mu.OZ.AU
  *
- * The order shown above is just one instant of the server.  Each time a
- * lookup is made on an entry in the hash table and it is found, the entry
- * is moved to the top of the chain.
- *
- *    ^^^^^^^^^^^^^^^^ **** Not anymore - Dianora
- *
+ * The order shown above is just one instant of the server. 
  */
 
 unsigned int hash_nick_name(const char* name)
@@ -318,8 +312,6 @@ return cptr;
    *
    * I don't believe it does.. it only wastes CPU, lets try it and
    * see....
-   *
-   * - Dianora
    */
 }
 
@@ -434,8 +426,6 @@ struct Channel* hash_find_channel(const char* name, struct Channel* chptr)
  *       performance of the hash functions and table, enabling a better
  *       algorithm to be sought if this one becomes troublesome.
  *       -avalon
- *
- * partially rewritten (finally) -Dianora
  *
  * XXX - spaghetti still, sigh
  */

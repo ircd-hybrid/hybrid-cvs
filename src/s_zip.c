@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_zip.c,v 7.7 2000/10/24 18:47:25 adrian Exp $
+ *   $Id: s_zip.c,v 7.8 2000/11/29 23:35:42 db Exp $
  */
 #include "s_zip.h"
 #include "client.h"
@@ -65,8 +65,6 @@
 /*
  * On an hybrid test net, we kept filling up unzipbuf
  * original was 4*ZIP_BUFFER_SIZE
- *
- * -Dianora
  */
 
 #define UNZIP_BUFFER_SIZE       6 * ZIP_BUFFER_SIZE
@@ -148,7 +146,6 @@ char *unzip_packet(struct Client *cptr, char *buffer, int *length)
       /* There was a "chunk" of uncompressed data without a newline
        * left over from last unzip_packet. So pick that up, and unzip
        * some more data. Note, buffer parameter isn't used in this case.
-       * -Dianora
        */
       memcpy((void *)unzipbuf,(void *)cptr->zip->inbuf,cptr->zip->incount);
       zin->avail_out = UNZIP_BUFFER_SIZE - cptr->zip->incount;
@@ -161,7 +158,6 @@ char *unzip_packet(struct Client *cptr, char *buffer, int *length)
       /* Start unzipping this buffer, if I fill up output buffer,
        * then snag whatever uncompressed incomplete chunk I have at
        * the top of the uncompressed buffer, save it for next pass.
-       * -Dianora
        */
       if(!buffer)       /* Sanity test never hurts */
         {
@@ -234,7 +230,6 @@ char *unzip_packet(struct Client *cptr, char *buffer, int *length)
                       return((char *)NULL);
                     }
                   /* Ok, stuff this "chunk" into inbuf
-                   * for next call -Dianora 
                    */
                   p++;
                   cptr->zip->incount--;

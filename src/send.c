@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.52 2000/11/28 23:38:20 adrian Exp $
+ *   $Id: send.c,v 7.53 2000/11/29 23:35:42 db Exp $
  */
 #include "send.h"
 #include "channel.h"
@@ -400,8 +400,6 @@ sendto_channel_type(struct Client *one, struct Client *from, struct Channel *chp
            * If the target's server can do CAP_CHW, only
            * one send is needed, otherwise, I do a bunch of
            * send's to each target on that server. (kludge)
-           *
-           * -Dianora
            */
           if(!IsCapable(acptr->from,CAP_CHW))
             {
@@ -451,13 +449,6 @@ sendto_serv_butone(struct Client *one, const char *pattern, ...)
 {
   va_list args;
   register struct Client *cptr;
-
-  /*
-   * USE_VARARGS IS BROKEN someone volunteer to fix it :-) -Dianora
-   *
-   * fixed! :-)
-   * -wnder
-   */
 
   va_start(args, pattern);
   

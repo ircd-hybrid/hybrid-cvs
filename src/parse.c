@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.34 2000/11/27 23:38:47 db Exp $
+ *   $Id: parse.c,v 7.35 2000/11/29 23:35:40 db Exp $
  */
 #include "parse.h"
 #include "client.h"
@@ -180,7 +180,7 @@ int parse(struct Client *cptr, char *buffer, char *bufend)
   ** numerics must have parameters and thus a space after the command
   ** code. -avalon
   *
-  * ummm???? - Dianora
+  * ummm????
   */
 
   if( *(ch + 3) == ' ' && /* ok, lets see if its a possible numeric.. */

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 1.5 2000/11/28 03:53:56 bill Exp $
+ *   $Id: m_join.c,v 1.6 2000/11/29 23:35:34 db Exp $
  */
 
 #include "handlers.h"
@@ -129,16 +129,12 @@ int     m_join(struct Client *cptr,
 	  continue;
 	}
 
-      /*
-      ** local client is first to enter previously nonexistent
-      ** channel so make them (rightfully) the Channel
-      ** Operator.
-      */
-           
-      if((chptr = hash_find_channel(name, NullChn)))
+      if( (chptr = hash_find_channel(name, NullChn)) != NULL )
 	{
 	  /* there's subchans so check those
-	   * but not if it was a subchan's realname they specified */
+	   * but not if it was a subchan's realname they specified
+	   */
+
 	  if (IsVchanTop(chptr))
 	    {
 	      if( on_sub_vchan(chptr,sptr) )
@@ -171,7 +167,8 @@ int     m_join(struct Client *cptr,
 		{
 		  /* one special case here i think..
 		   * if there's only one vchan, and the root is empty
-		   * let them join that vchan */
+		   * let them join that vchan
+		   */
 		  if( (!chptr->members) && (!chptr->next_vchan->next_vchan) )
 		    {
 		      root_chptr = chptr;
@@ -197,14 +194,18 @@ int     m_join(struct Client *cptr,
 		}
 	    }
 	  /* trying to join a sub chans 'real' name
-	   * don't allow that */
+	   * don't allow that
+	   */
 	  else if (IsVchan(chptr))
 	    {
 	      sendto_one(sptr, form_str(ERR_BADCHANNAME),
 			 me.name, parv[0], (unsigned char*) name);
 	      continue;
 	    }
-	  flags = 0;
+	  if (chptr->members == NULL)
+	    flags = CHFL_CHANOP;
+	  else
+	    flags = 0;
 	}
       else
 	{

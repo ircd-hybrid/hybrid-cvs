@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: oldparse.c,v 1.7 2000/11/27 18:50:34 db Exp $
+ *  $Id: oldparse.c,v 1.8 2000/11/29 23:35:39 db Exp $
  */
 #include "s_log.h"
 #include "s_conf.h"
@@ -382,8 +382,6 @@ static int oper_privs_from_string(int int_privs,char *privs)
  * inputs        - flags as string
  * output        - flags as bit mask
  * side effects -
- *
- * -Dianora
  */
 
 static int oper_flags_from_string(char *flags)

@@ -3,7 +3,7 @@
  *   Copyright (C) 1990 Jarkko Oikarinen and
  *                      University of Oulu, Co Center
  *
- * $Id: m_list.c,v 1.8 2000/11/27 23:58:19 db Exp $ 
+ * $Id: m_list.c,v 1.9 2000/11/29 23:35:34 db Exp $ 
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -218,7 +218,7 @@ int list_named_channel(struct Client *sptr,char *name)
   chptr = hash_find_channel(name, NullChn);
   root_chptr = find_bchan(chptr);
   for (tmpchptr = root_chptr; tmpchptr; tmpchptr = tmpchptr->next_vchan)
-    if (ShowChannel(sptr, tmpchptr) && tmpchptr->members && sptr->user)
+    if (ShowChannel(sptr, tmpchptr) && sptr->user)
       {
         if( (IsVchan(tmpchptr) || HasVchans(tmpchptr)) &&
 	    (root_chptr->members || root_chptr->next_vchan->next_vchan) )

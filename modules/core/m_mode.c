@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_mode.c,v 1.5 2000/11/28 04:06:55 db Exp $
+ *   $Id: m_mode.c,v 1.6 2000/11/29 23:35:34 db Exp $
  */
 #include "handlers.h"
 #include "channel.h"
@@ -116,8 +116,6 @@ int m_mode(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
       *modebuf = *parabuf = '\0';
       modebuf[1] = '\0';
 
-      /* was returning chan modes for empty & MODE_JUPED channels.  -pro */
-      if (!chptr->members) return 0;
       if (HasVchans(chptr))
 	{
 	  vchan = map_vchan(chptr,sptr);

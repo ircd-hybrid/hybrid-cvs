@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: listener.c,v 7.12 2000/11/08 09:34:19 adrian Exp $
+ *  $Id: listener.c,v 7.13 2000/11/29 23:35:38 db Exp $
  */
 #include "listener.h"
 #include "client.h"
@@ -118,7 +118,7 @@ void show_ports(struct Client* sptr)
  * returns true (1) if successful false (0) on error.
  *
  * If the operating system has a define for SOMAXCONN, use it, otherwise
- *   use HYBRID_SOMAXCONN -Dianora
+ * use HYBRID_SOMAXCONN 
  */
 #ifdef SOMAXCONN
 #undef HYBRID_SOMAXCONN

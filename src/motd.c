@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: motd.c,v 7.6 2000/11/19 15:43:50 davidt Exp $
+ *   $Id: motd.c,v 7.7 2000/11/29 23:35:38 db Exp $
  */
 #include "motd.h"
 #include "ircd.h"
@@ -59,7 +59,6 @@ void InitMessageFile(MotdType motdType, char *fileName, MessageFile *motd)
 **
 ** This function split off so a server notice could be generated on a
 ** user requested motd, but not on each connecting client.
-** -Dianora
 */
 
 int SendMessageFile(struct Client *sptr, MessageFile *motdToPrint)
@@ -130,7 +129,10 @@ int SendMessageFile(struct Client *sptr, MessageFile *motdToPrint)
 
 /*
  * ReadMessageFile() - original From CoMSTuD, added Aug 29, 1996
- * modified by -Dianora
+ *
+ * inputs	- poiner to MessageFileptr
+ * output	-
+ * side effects	-
  */
 
 int ReadMessageFile(MessageFile *MessageFileptr)

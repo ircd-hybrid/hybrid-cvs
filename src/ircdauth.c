@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: ircdauth.c,v 7.12 2000/11/29 18:52:02 db Exp $
+ *   $Id: ircdauth.c,v 7.13 2000/11/29 23:35:37 db Exp $
  */
 
 #include <stdio.h>
@@ -659,7 +659,7 @@ GreetUser(struct Client *client)
 	}
   
   /* LINKLIST 
-   * add to local client link list -Dianora
+   * add to local client link list
    * I really want to move this add to link list
    * inside the if (MyConnect(client)) up above
    * but I also want to make sure its really good and registered
@@ -667,7 +667,7 @@ GreetUser(struct Client *client)
    *
    * double link list only for clients, traversing
    * a small link list for opers/servers isn't a big deal
-   * but it is for clients -Dianora
+   * but it is for clients
    */
 
 	if (LocalClientList)
