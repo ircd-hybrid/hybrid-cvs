@@ -92,7 +92,7 @@
 #define DNS_LABELTYPE_BITSTRING		0x41
 #define MAXLINE 128
 
-/* $Id: irc_reslib.c,v 7.9 2003/05/13 15:03:54 joshk Exp $ */
+/* $Id: irc_reslib.c,v 7.10 2003/05/13 17:46:37 joshk Exp $ */
 
 static FBFILE *file;
 
@@ -1131,7 +1131,7 @@ irc_res_mkquery(
 	hp->id = 0;
 	hp->opcode = op;
 	hp->rd = 1;		/* recurse */
-	hp->rcode = NO_ERROR;
+	hp->rcode = NO_ERRORS;
 	cp = buf + HFIXEDSZ;
 	buflen -= HFIXEDSZ;
 	dpp = dnptrs;

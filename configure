@@ -8362,7 +8362,6 @@ fi
 
 
 
-
 if test x$prefix = xNONE; then
 
 cat >>confdefs.h <<_ACEOF
@@ -8381,7 +8380,7 @@ _ACEOF
 
 fi
 
-                                                                                                              ac_config_files="$ac_config_files Makefile iauth/Makefile iauth/source/Makefile servlink/Makefile contrib/Makefile src/Makefile include/Makefile messages/Makefile modules/Makefile tools/Makefile doc/Makefile"
+                                                                                          ac_config_files="$ac_config_files Makefile servlink/Makefile contrib/Makefile src/Makefile include/Makefile messages/Makefile modules/Makefile tools/Makefile doc/Makefile"
 
 
 cat >confcache <<\_ACEOF
@@ -8909,8 +8908,6 @@ do
   case "$ac_config_target" in
   # Handling of arguments.
   "Makefile" ) CONFIG_FILES="$CONFIG_FILES Makefile" ;;
-  "iauth/Makefile" ) CONFIG_FILES="$CONFIG_FILES iauth/Makefile" ;;
-  "iauth/source/Makefile" ) CONFIG_FILES="$CONFIG_FILES iauth/source/Makefile" ;;
   "servlink/Makefile" ) CONFIG_FILES="$CONFIG_FILES servlink/Makefile" ;;
   "contrib/Makefile" ) CONFIG_FILES="$CONFIG_FILES contrib/Makefile" ;;
   "src/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/Makefile" ;;
@@ -9521,7 +9518,7 @@ else
 	echo no
 fi
 
-echo -n "OpenSSL ................. "
+echo -n "OpenSSL (Cryptlinks)..... "
 
 if test "X${cf_openssl_ciphers}" != "X"; then
 	echo "yes - ${cf_openssl_ciphers}"

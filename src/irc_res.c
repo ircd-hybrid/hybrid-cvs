@@ -7,7 +7,7 @@
  * The authors takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: irc_res.c,v 7.11 2003/05/13 15:03:54 joshk Exp $
+ * $Id: irc_res.c,v 7.12 2003/05/13 17:46:37 joshk Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -49,7 +49,7 @@
 #error this code needs to be able to address individual octets 
 #endif
 
-/* $Id: irc_res.c,v 7.11 2003/05/13 15:03:54 joshk Exp $ */
+/* $Id: irc_res.c,v 7.12 2003/05/13 17:46:37 joshk Exp $ */
 
 static PF res_readreply;
 
@@ -508,7 +508,9 @@ do_query_number(const struct DNSQuery* query, const struct irc_ssaddr* addr,
 {
   char  ipbuf[128];
   const unsigned char* cp;
+#ifdef IPV6
   char *intarpa;
+#endif
 
   if(addr->ss.ss_family == AF_INET)
   {
@@ -823,7 +825,7 @@ res_readreply(int fd, void *data)
   if (!res_ourserver(&lsin))
     return;
 
-  if ((header->rcode != NO_ERROR) || (header->ancount == 0))
+  if ((header->rcode != NO_ERRORS) || (header->ancount == 0))
   {
     if (SERVFAIL == header->rcode)
       resend_query(request);

@@ -1,7 +1,7 @@
 /*
  * include/irc_res.h for referencing functions in src/irc_res.c
  *
- * $Id: irc_res.h,v 7.3 2003/05/13 15:03:52 joshk Exp $
+ * $Id: irc_res.h,v 7.4 2003/05/13 17:46:35 joshk Exp $
  */
 
 #ifndef INCLUDED_irc_res_h
@@ -20,7 +20,7 @@
 #define NS_MAXCDNAME 255
 #define QUERY 0
 #define IQUERY 1
-#define NO_ERROR 0
+#define NO_ERRORS 0
 #define SERVFAIL 2
 #define T_A 1
 #define T_AAAA 28

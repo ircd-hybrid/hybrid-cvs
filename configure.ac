@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.18 2003/05/13 15:03:50 joshk Exp $
+dnl $Id: configure.ac,v 7.19 2003/05/13 17:46:33 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -806,7 +806,6 @@ AC_SUBST(SSL_INCLUDES)
 AC_SUBST(SSL_LIBS)
 
 AC_SUBST(LDFLAGS)
-
 AC_SUBST(IRC_CFLAGS)
 AC_SUBST(SEDOBJ)
 
@@ -824,8 +823,8 @@ fi
 
 AC_CONFIG_FILES(		\
 	Makefile		\
-	iauth/Makefile		\
-	iauth/source/Makefile	\
+dnl	iauth/Makefile		\
+dnl	iauth/source/Makefile	\
 	servlink/Makefile	\
 	contrib/Makefile	\
 	src/Makefile		\
@@ -854,7 +853,7 @@ else
 	echo no
 fi
 
-echo -n "OpenSSL ................. "
+echo -n "OpenSSL (Cryptlinks)..... "
 
 if test "X${cf_openssl_ciphers}" != "X"; then
 	echo "yes - ${cf_openssl_ciphers}"
