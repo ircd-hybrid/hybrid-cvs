@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: config.h.dist,v 7.68 2003/05/12 08:09:26 michael Exp $
+ *  $Id: config.h.dist,v 7.69 2003/05/14 23:17:32 joshk Exp $
  */
 
 #ifndef INCLUDED_config_h
@@ -56,7 +56,7 @@
  * systems may require kernel patches, configuration tweaks, or ulimit
  * adjustments in order to exceed certain limits (e.g. 1024, 4096 fds).
  */
-#define HARD_FDLIMIT_    MAX_CLIENTS + 60 + 20
+#define HARD_FDLIMIT_ MAX_CLIENTS + 60 + 20
 
 /* XXX - MAX_BUFFER is mostly ignored. */
 /*
@@ -69,7 +69,7 @@
  * so MAX_CLIENTS + MAX_BUFFER + 10 must not exceed HARD_FDLIMIT.
  * NOTE: MAX_CLIENTS is set with configure now
  */
-#define MAX_BUFFER      60
+#define MAX_BUFFER 60
 
 #ifdef VMS
 /* *PATH - directory locations and filenames for VMS.
@@ -92,14 +92,15 @@
 #define ETCPATH         "IRCD$CONFDIR:"
 #define LOGPATH         "IRCD$LOGDIR:"
 
-#undef  MODPATH
-#undef  AUTOMODPATH
-#undef  MSGPATH
+#undef MODPATH
+#undef AUTOMODPATH
+#undef MSGPATH
 
 #define SPATH   BINPATH "IRCD.EXE"              /* server executable */
 #define SLPATH  BINPATH "SERVLINK.EXE"          /* servlink executable */
 #define CPATH   ETCPATH "IRCD.CONF"             /* config file */
 #define KPATH   ETCPATH "KLINE.CONF"            /* kline file */
+#define XPATH   ETCPATH "XLINE.CONF"            /* xline file */
 #define DLPATH  ETCPATH "DLINE.CONF"            /* dline file */
 #define GPATH   LOGPATH "GLINE.LOG"             /* gline logfile */
 #define RPATH   ETCPATH "IRCD.RSA"              /* RSA private key file */
@@ -146,6 +147,7 @@
 #define SLPATH  BINPATH "/servlink"             /* servlink executable */
 #define CPATH   ETCPATH "/ircd.conf"            /* ircd.conf file */
 #define KPATH   ETCPATH "/kline.conf"           /* kline file */
+#define XPATH   ETCPATH "/xline.conf"           /* xline file */
 #define DLPATH  ETCPATH "/dline.conf"           /* dline file */
 #define GPATH   LOGPATH "/gline.log"            /* gline logfile */
 #define RPATH   ETCPATH "/ircd.rsa"             /* ircd rsa private keyfile */
@@ -162,7 +164,7 @@
  *
  * This should be enabled network wide, or not at all.
  */
-#undef  IGNORE_BOGUS_TS
+#undef IGNORE_BOGUS_TS
 
 /* HIDE_SERVERS_IPS
  *
@@ -175,7 +177,7 @@
  * We recommend you leave this undefined, and just take care with who you
  * give admin=yes; to.
  */
-#undef  HIDE_SERVERS_IPS
+#undef HIDE_SERVERS_IPS
 
 /* HIDE_SPOOF_IPS
  *
@@ -206,18 +208,18 @@
  * this option is used unless you tell the system administrator beforehand
  * and obtain their permission to send messages to the system log files.
  */
-#undef  USE_SYSLOG
+#undef USE_SYSLOG
 
-#ifdef  USE_SYSLOG
+#ifdef USE_SYSLOG
 /* SYSLOG_KILL SYSLOG_SQUIT SYSLOG_CONNECT SYSLOG_USERS SYSLOG_OPER
  * If you use syslog above, you may want to turn some (none) of the
  * spurious log messages for KILL,SQUIT,etc off.
  */
-#undef  SYSLOG_KILL     /* log all operator kills to syslog */
-#undef  SYSLOG_SQUIT    /* log all remote squits for all servers to syslog */
-#undef  SYSLOG_CONNECT  /* log remote connect messages for other all servs */
-#undef  SYSLOG_USERS    /* send userlog stuff to syslog */
-#undef  SYSLOG_OPER     /* log all users who successfully become an Op */
+#undef SYSLOG_KILL     /* log all operator kills to syslog */
+#undef SYSLOG_SQUIT    /* log all remote squits for all servers to syslog */
+#undef SYSLOG_CONNECT  /* log remote connect messages for other all servs */
+#undef SYSLOG_USERS    /* send userlog stuff to syslog */
+#undef SYSLOG_OPER     /* log all users who successfully become an Op */
 
 /* LOG_FACILITY - facility to use for syslog()
  * Define the facility you want to use for syslog().  Ask your
