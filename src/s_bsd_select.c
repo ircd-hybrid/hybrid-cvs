@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_select.c,v 7.14 2001/02/27 04:46:24 androsyn Exp $
+ *  $Id: s_bsd_select.c,v 7.15 2001/04/19 22:29:43 a1kmm Exp $
  */
 #include "config.h"
 #ifdef USE_SELECT
@@ -180,10 +180,7 @@ comm_select(time_t delay)
     struct timeval to;
 
     /* update current time */
-    if ((CurrentTime = time(0)) == -1) {
-        log(L_CRIT, "Clock Failure");
-        restart("Clock failed");
-    }   
+    set_time();
 
     /* Copy over the read/write sets so we don't have to rebuild em */
     bcopy(&select_readfds, &tmpreadfds, sizeof(fd_set));

@@ -3,7 +3,7 @@
  *
  * This code was borrowed from the squid web cache by Adrian Chadd.
  *
- * $Id: event.c,v 7.15 2001/03/28 05:50:14 db Exp $
+ * $Id: event.c,v 7.16 2001/04/19 22:29:42 a1kmm blalloc.c $
  *
  * Original header follows:
  *
@@ -267,6 +267,18 @@ show_events(struct Client *source_p)
 }
 #endif
 
-
-
-
+/* void set_back_events(time_t by)
+ * Input: Time to set back events by.
+ * Output: None.
+ * Side-effects: Sets back all events by "by" seconds.
+ */
+void
+set_back_events(time_t by)
+{
+ struct ev_entry *e;
+ for (e = tasks; e; e=e->next)
+  if (e->when > by)
+   e->when -= by;
+  else
+   e->when = 0;
+}

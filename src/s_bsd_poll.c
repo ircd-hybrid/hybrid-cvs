@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_poll.c,v 7.32 2001/02/27 04:46:24 androsyn Exp $
+ *  $Id: s_bsd_poll.c,v 7.33 2001/04/19 22:29:43 a1kmm Exp $
  */
 #include "config.h"
 #ifdef USE_POLL
@@ -273,10 +273,7 @@ comm_select_fdlist(fdlist_t fdlist, time_t delay)
     pollfd_list_t *pf = &pollfd_lists[fdlist];
 
     /* update current time */
-    if ((CurrentTime = time(0)) == -1) {
-        log(L_CRIT, "Clock Failure");
-        restart("Clock failed");
-    }   
+    set_time();
 
     for (;;) {
         /* XXX kill that +1 later ! -- adrian */
