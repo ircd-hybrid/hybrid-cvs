@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.c,v 7.88 2003/06/26 12:19:49 michael Exp $
+ *  $Id: listener.c,v 7.89 2003/08/10 03:48:16 stu Exp $
  */
 
 #include "stdinc.h"
@@ -251,6 +251,10 @@ add_listener(int port, const char* vhost_ip)
   struct irc_ssaddr vaddr;
   struct addrinfo hints, *res;
   char portname[PORTNAMELEN + 1];
+#ifdef IPV6
+  static short int pass = 0; /* if ipv6 and no address specified we need to
+				have two listeners; one for each protocol. */
+#endif
 
   /*
    * if no port in conf line, don't bother
@@ -270,11 +274,15 @@ add_listener(int port, const char* vhost_ip)
 #ifdef IPV6
   if (ServerInfo.can_use_v6)
   {
-    struct sockaddr_in6 *v6 = (struct sockaddr_in6*) &vaddr;
-    memcpy(&vaddr, &in6addr_any, sizeof(in6addr_any));
+    snprintf(portname, PORTNAMELEN, "%d", port);
+    irc_getaddrinfo("::", portname, &hints, &res);
     vaddr.ss.ss_family = AF_INET6;
-    vaddr.ss_len = sizeof(struct sockaddr_in6);
-    v6->sin6_port = htons(port);
+    assert(res != NULL);
+
+    memcpy((struct sockaddr*)&vaddr, res->ai_addr, res->ai_addrlen);
+    vaddr.ss_port = port;
+    vaddr.ss_len = res->ai_addrlen;
+    irc_freeaddrinfo(res);
   }
   else
 #endif
@@ -300,6 +308,15 @@ add_listener(int port, const char* vhost_ip)
     vaddr.ss_len = res->ai_addrlen;
     irc_freeaddrinfo(res);
   }
+#ifdef IPV6
+  else if (pass == 0 && ServerInfo.can_use_v6)
+  {
+    /* add the ipv4 listener if we havent already */
+    pass = 1;
+    add_listener(port, "0.0.0.0");
+  }
+  pass = 0;
+#endif
 
   if ((listener = find_listener(port, &vaddr)))
   {
