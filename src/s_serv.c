@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.401 2004/04/01 02:53:25 bill Exp $
+ *  $Id: s_serv.c,v 7.402 2004/10/31 22:44:28 adx Exp $
  */
 
 #include "stdinc.h"
@@ -481,7 +481,6 @@ hunt_server(struct Client *client_p, struct Client *source_p, const char *comman
 void
 try_connections(void *unused)
 {
-  struct Client *pending_connection;
   dlink_node *ptr;
   struct ConfItem *conf;
   struct AccessItem *aconf;
@@ -534,16 +533,8 @@ try_connections(void *unused)
         dlinkAddTail(conf, &conf->node, &server_items);
       }
 
-      DLINK_FOREACH(ptr, unknown_list.head)
-      {
-        pending_connection = ptr->data;
-
-        if (pending_connection->name[0] && conf->name != NULL)
-        {
-          if (0 == irccmp(conf->name, pending_connection->name))
-            return;
-        }
-      }
+      if (find_servconn_in_progress(conf->name))
+        return;
 
       /* We used to only print this if serv_connect() actually
        * succeeded, but since comm_tcp_connect() can call the callback
@@ -2229,6 +2220,24 @@ serv_connect_callback(int fd, int status, void *data)
   /* If we get here, we're ok, so lets start reading some data */
   comm_setselect(fd, FDLIST_SERVER, COMM_SELECT_READ, read_packet,
                  client_p, 0);
+}
+
+struct Client *
+find_servconn_in_progress(const char *name)
+{
+  dlink_node *ptr;
+  struct Client *cptr;
+
+  DLINK_FOREACH(ptr, unknown_list.head)
+  {
+    cptr = ptr->data;
+
+    if (cptr && cptr->name[0])
+      if (match(cptr->name, name) || match(name, cptr->name))
+        return cptr;
+  }
+  
+  return NULL;
 }
 
 #ifdef HAVE_LIBCRYPTO

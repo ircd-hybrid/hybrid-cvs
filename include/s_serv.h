@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.h,v 7.89 2003/10/16 23:13:46 stu Exp $
+ *  $Id: s_serv.h,v 7.90 2004/10/31 22:44:23 adx Exp $
  */
 
 #ifndef INCLUDED_serv_h
@@ -257,6 +257,7 @@ extern void initServerMask(void);
 extern void burst_channel(struct Client *client_p, struct Channel *chptr);
 extern void sendnick_TS(struct Client *, struct Client *);
 extern int serv_connect(struct AccessItem *, struct Client *);
+struct Client *find_servconn_in_progress(const char *);
 extern unsigned long nextFreeMask(void);
 extern void cryptlink_init(struct Client *client_p, struct ConfItem *conf,
 			   int fd);

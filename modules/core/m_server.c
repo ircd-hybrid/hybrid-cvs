@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.122 2004/07/08 00:27:30 erik Exp $
+ *  $Id: m_server.c,v 1.123 2004/10/31 22:44:27 adx Exp $
  */
 
 #include "stdinc.h"
@@ -77,7 +77,7 @@ _moddeinit(void)
   mod_del_cmd(&sid_msgtab);
 }
 
-const char *_version = "$Revision: 1.122 $";
+const char *_version = "$Revision: 1.123 $";
 #endif
 
 
@@ -189,6 +189,9 @@ mr_server(struct Client *client_p, struct Client *source_p,
       /* NOT REACHED */
       break;
   }
+
+  while ((target_p = find_servconn_in_progress(name)))
+    exit_client(target_p, target_p, &me, "Overridden");
 
   if ((target_p = server_exists(name)))
   {
