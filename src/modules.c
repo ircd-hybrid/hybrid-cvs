@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.98 2002/02/27 17:51:44 enygma Exp $
+ *  $Id: modules.c,v 7.99 2002/03/02 00:23:57 enygma Exp $
  */
 
 #include "config.h"
@@ -311,8 +311,6 @@ load_core_modules(int warn)
 
 #ifdef HAVE_SHL_LOAD
   hpux = 1;
-#else
-  hpux = 0;
 #endif
 
   for(i = 0; core_module_table[i]; i++)
@@ -322,8 +320,8 @@ load_core_modules(int warn)
 	    
     if(load_a_module(module_name, warn, 1) == -1)
     {
-      ilog(L_CRIT, "Error loading core module %s: terminating ircd", 
-           core_module_table[i]);
+      ilog(L_CRIT, "Error loading core module %s%c: terminating ircd", 
+           core_module_table[i], hpux ? 'l' : 'o');
       exit(0);
     }
   }
