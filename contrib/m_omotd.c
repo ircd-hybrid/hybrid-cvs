@@ -1,6 +1,6 @@
 /*
  *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
- *  m_ctrace.c: Shows totals of classes 
+ *  m_omotd.c: Shows oper motd
  *
  *  Copyright (C) 2002 by the past and present ircd coders, and others.
  *
@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_omotd.c,v 1.1.2.1 2003/05/22 03:26:44 db Exp $
+ *  $Id: m_omotd.c,v 1.1.2.2 2003/05/22 04:13:55 db Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&omotd_msgtab);
 }
 
-const char *_version = "$Revision: 1.1.2.1 $";
+const char *_version = "$Revision: 1.1.2.2 $";
 #endif
 
 /*
