@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.250 2003/02/14 23:01:55 db Exp $
+ *  $Id: ircd.c,v 7.251 2003/02/16 00:22:23 db Exp $
  */
 
 #include "stdinc.h"
@@ -635,7 +635,7 @@ int main(int argc, char *argv[])
   init_hash();
   id_init();
   clear_scache_hash_table();    /* server cache name table */
-  clear_ip_hash_table();        /* client host ip hash table */
+  init_ip_hash_table();        /* client host ip hash table */
   init_host_hash();             /* Host-hashtable. */
   clear_hash_parse();
   init_client();
