@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# $Id: version.c.SH,v 7.23 2003/06/24 04:18:21 joshk Exp $
+# $Id: version.c.SH,v 7.24 2004/02/03 04:16:33 michael Exp $
 
 spitshell=cat
 package=IRC
@@ -9,7 +9,7 @@ echo "Extracting $package/src/version.c..."
 
 if test -r version.c.last
 then
-   generation=`sed -n 's/^char \*generation = \"\(.*\)\";/\1/p' < version.c.last`
+   generation=`sed -n 's/^const char \*generation = \"\(.*\)\";/\1/p' < version.c.last`
    if test ! "$generation" ; then generation=0; fi
 else
    generation=0
