@@ -17,8 +17,25 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_debug.c,v 7.36 2001/01/11 05:32:07 a1kmm Exp $
+ *   $Id: s_debug.c,v 7.37 2001/01/18 13:08:08 ejb Exp $
  */
+
+#include <sys/types.h>
+#include <sys/time.h>
+#include <sys/resource.h>
+
+#ifdef HAVE_SYS_PARAM_H
+#include <sys/param.h>
+#endif
+
+#include <stdio.h>
+#include <string.h>
+#include <stdarg.h>
+#include <unistd.h>
+#include <errno.h>
+#include <time.h>
+#include <sys/file.h>
+
 #include "tools.h"
 #include "s_debug.h"
 #include "channel.h"
@@ -39,16 +56,6 @@
 #include "send.h"
 #include "whowas.h"
 #include "memory.h"
-
-#include <stdio.h>
-#include <string.h>
-#include <stdarg.h>
-#include <unistd.h>
-#include <errno.h>
-#include <time.h>
-#include <sys/file.h>
-#include <sys/param.h>
-#include <sys/resource.h>
 
 extern  void    count_ip_hash(int *,u_long *);    /* defined in s_conf.c */
 
@@ -127,6 +134,10 @@ void send_usage(struct Client *sptr)
 # endif
 #endif
 
+#ifdef VMS
+  sendto_one(sptr, ":%s NOTICE %s :getrusage not supported on this system");
+  return;
+#else
   if (getrusage(RUSAGE_SELF, &rus) == -1)
     {
       sendto_one(sptr,":%s NOTICE %s :Getruseage error: %s.",
@@ -162,7 +173,7 @@ void send_usage(struct Client *sptr)
   sendto_one(sptr, ":%s %d %s :Signals %lu Context Vol. %lu Invol %lu",
              me.name, RPL_STATSDEBUG, sptr->name, rus.ru_nsignals,
              rus.ru_nvcsw, rus.ru_nivcsw);
-
+#endif /* VMS */
 }
 
 void count_memory(struct Client *sptr)

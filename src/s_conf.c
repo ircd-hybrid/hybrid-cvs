@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.147 2001/01/18 09:07:43 ejb Exp $
+ *  $Id: s_conf.c,v 7.148 2001/01/18 13:08:07 ejb Exp $
  */
 #include "tools.h"
 #include "s_conf.h"
@@ -1709,7 +1709,7 @@ show_temp_klines(struct Client *sptr, dlink_list *tklist)
   char *user;
   char *reason;
 
-  for (kill_node = tklist->head; kill_node; kill_node = kill_node = kill_node->next)
+  for (kill_node = tklist->head; kill_node; kill_node = kill_node->next)
     {
       kill_list_ptr = kill_node->data;
 

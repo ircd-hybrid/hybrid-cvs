@@ -1,7 +1,7 @@
 /*
  * restart.c
  *
- * $Id: restart.c,v 7.10 2001/01/11 05:32:04 a1kmm Exp $
+ * $Id: restart.c,v 7.11 2001/01/18 13:08:06 ejb Exp $
  */
 #include "tools.h"
 #include "restart.h"
@@ -15,6 +15,8 @@
 #include "memory.h"
 
 #include <unistd.h>
+#include <stdlib.h>
+
 
 /* external var */
 extern char** myargv;

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_log.c,v 7.19 2001/01/11 09:30:29 a1kmm Exp $
+ *   $Id: s_log.c,v 7.20 2001/01/18 13:08:09 ejb Exp $
  */
 #include "client.h"	/* Needed for struct Client */
 #include "s_log.h"
@@ -38,7 +38,9 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include <string.h>
+#ifdef HAVE_SYSLOG_H
 #include <syslog.h>
+#endif
 #include <unistd.h>
 
 
@@ -81,8 +83,10 @@ static int open_log(const char* filename)
 {
   logFile = fbopen(filename, "an");
   if (logFile == NULL) {
+#ifdef USE_SYSLOG
     syslog(LOG_ERR, "Unable to open log file: %s: %s",
            filename, strerror(errno));
+#endif
     return 0;
   }
   return 1;
@@ -110,7 +114,11 @@ static void write_log(const char* message)
   if( !logFile )
     return;
 
+#ifdef HAVE_SNPRINTF
   snprintf(buf, LOG_BUFSIZE, "[%s] %s\n", smalldate(CurrentTime), message);
+#else
+  sprintf(buf, "[%s] %s\n", smalldate(CurrentTime), message);
+#endif
   fbputs(buf, logFile);
 }
 #endif

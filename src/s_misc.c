@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_misc.c,v 7.16 2001/01/17 06:02:00 toot Exp $
+ *  $Id: s_misc.c,v 7.17 2001/01/18 13:08:09 ejb Exp $
  */
 #include "s_misc.h"
 #include "client.h"
@@ -40,7 +40,9 @@
 #include <fcntl.h>
 #include <netdb.h>
 #include <sys/stat.h>
+#ifdef HAVE_SYS_PARAM_H
 #include <sys/param.h>
+#endif
 #include <time.h>
 #include <unistd.h>
 

@@ -1,7 +1,7 @@
 /*
  * include/res.h (C)opyright 1992 Darren Reed.
  *
- * $Id: res.h,v 7.8 2001/01/18 10:54:41 ejb Exp $
+ * $Id: res.h,v 7.9 2001/01/18 13:08:05 ejb Exp $
  */
 #ifndef INCLUDED_res_h
 #define INCLUDED_res_h

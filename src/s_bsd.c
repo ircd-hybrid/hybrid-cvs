@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.87 2001/01/18 09:07:41 ejb Exp $
+ *  $Id: s_bsd.c,v 7.88 2001/01/18 13:08:07 ejb Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -757,7 +757,7 @@ comm_open(int family, int sock_type, int proto, const char *note)
  * comm_open() does.
  */
 int
-comm_accept(int fd, struct sockaddr *pn, socklen_t *addrlen)
+comm_accept(int fd, struct sockaddr *pn, unsigned int *addrlen)
 {
     int new;
 
