@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_cburst.c,v 1.13 2000/12/16 22:48:31 db Exp $
+ * $Id: m_cburst.c,v 1.14 2000/12/17 02:56:51 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -118,6 +118,8 @@ int     ms_cburst(struct Client *cptr,
   if(IsCapable(cptr,CAP_LL))
     {
       sjoin_channel(cptr,chptr);
+
+
       if(nick)
 	sendto_one(cptr,":%s LLJOIN %s %s %s", me.name, name, nick, key);
     }
