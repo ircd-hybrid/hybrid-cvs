@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_ojoin.c,v 1.26 2003/09/28 02:16:01 metalrock Exp $
+ *   $Id: m_ojoin.c,v 1.27 2003/10/13 02:38:18 bill Exp $
  */
 
 /* Remove this if you do not wish /OJOIN to support multiple channels
@@ -60,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&ojoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.26 $";
+const char *_version = "$Revision: 1.27 $";
 
 #endif
 
@@ -145,6 +145,11 @@ mo_ojoin(struct Client *client_p, struct Client *source_p,
   
       if (chptr->chname[0] == '#')
       {
+        sendto_server(client_p, source_p, chptr, NOCAPS, NOCAPS, LL_ICLIENT,
+                      ":%s SJOIN %lu %s + :%c%s",
+                      me.id, (unsigned long)chptr->channelts, chptr->chname,
+                      (modeletter != '\0') ? *name : ' ',
+                      source_p->id);
         sendto_server(client_p, source_p, chptr, NOCAPS, NOCAPS, LL_ICLIENT, 
                      ":%s SJOIN %lu %s + :%c%s", me.name,
                      (unsigned long)chptr->channelts,

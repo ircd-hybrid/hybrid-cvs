@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_clearchan.c,v 1.45 2003/08/03 14:22:16 michael Exp $
+ *   $Id: m_clearchan.c,v 1.46 2003/10/13 02:38:18 bill Exp $
  */
 
 #include "stdinc.h"
@@ -67,7 +67,7 @@ _moddeinit(void)
   mod_del_cmd(&clearchan_msgtab);
 }
 
-const char *_version = "$Revision: 1.45 $";
+const char *_version = "$Revision: 1.46 $";
 #endif
 
 /*
@@ -120,7 +120,11 @@ mo_clearchan(struct Client *client_p, struct Client *source_p,
   remove_our_modes(chptr, source_p);
 
   /* SJOIN the user to give them ops, and lock the channel */
-  sendto_server(client_p, source_p, chptr, NOCAPS, NOCAPS,
+  sendto_server(client_p, source_p, chptr, CAP_TS6, NOCAPS, LL_ICLIENT,
+                ":%s JOIN %lu %s +ntsi",
+                source_p->id, (unsigned long)(chptr->channelts - 1),
+                chptr->chname);
+  sendto_server(client_p, source_p, chptr, NOCAPS, CAP_TS6,
                 LL_ICLIENT, ":%s SJOIN %lu %s +ntsi :@%s",
                 me.name, (unsigned long)(chptr->channelts - 1),
                 chptr->chname, source_p->name);

@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_opme.c,v 1.49 2003/10/07 22:37:08 bill Exp $
+ *   $Id: m_opme.c,v 1.50 2003/10/13 02:38:18 bill Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -57,7 +57,7 @@ _moddeinit(void)
   mod_del_cmd(&opme_msgtab);
 }
 
-const char *_version = "$Revision: 1.49 $";
+const char *_version = "$Revision: 1.50 $";
 
 #endif
 
@@ -147,7 +147,7 @@ mo_opme(struct Client *client_p, struct Client *source_p,
                 ":%s PART %s", source_p->name, parv[1]);
   sendto_server(NULL, source_p, chptr, CAP_TS6, NOCAPS, NOFLAGS,
                 ":%s SJOIN %ld %s + :@%s",
-                me.name, (unsigned long)chptr->channelts,
+                me.id, (unsigned long)chptr->channelts,
                 parv[1], ID(source_p));
   sendto_server(NULL, source_p, chptr, NOCAPS, CAP_TS6, NOFLAGS,
                 ":%s SJOIN %ld %s + :@%s",

@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: m_force.c,v 1.30 2003/09/20 04:47:19 bill Exp $
+ * $Id: m_force.c,v 1.31 2003/10/13 02:38:18 bill Exp $
  */
 
 #include "stdinc.h"
@@ -75,7 +75,7 @@ _moddeinit(void)
   mod_del_cmd(&forcepart_msgtab);
 }
 
-const char *_version = "$Revision: 1.30 $";
+const char *_version = "$Revision: 1.31 $";
 #endif
 
 /* m_forcejoin()
@@ -158,10 +158,16 @@ mo_forcejoin(struct Client *client_p, struct Client *source_p,
     add_user_to_channel(chptr, target_p, type);
 
     if (chptr->chname[0] == '#')
-      sendto_server(target_p, target_p, chptr, NOCAPS, NOCAPS, LL_ICLIENT,
+    {
+      sendto_server(target_p, target_p, chptr, CAP_TS6, NOCAPS, LL_ICLIENT,
+                    ":%s SJOIN %lu %s + :%c%s",
+                    me.id, (unsigned long)chptr->channelts,
+                    chptr->chname, sjmode, target_p->id);
+      sendto_server(target_p, target_p, chptr, NOCAPS, CAP_TS6, LL_ICLIENT,
                     ":%s SJOIN %lu %s + :%c%s",
 	            me.name, (unsigned long)chptr->channelts,
 	            chptr->chname, sjmode, target_p->name);
+    }
 
     sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s JOIN :%s",
                          target_p->name, target_p->username,
@@ -228,10 +234,16 @@ mo_forcejoin(struct Client *client_p, struct Client *source_p,
 
     /* send out a join, make target_p join chptr */
     if (chptr->chname[0] == '#')
+    {
+      sendto_server(target_p, target_p, chptr, CAP_TS6, NOCAPS, LL_ICLIENT,
+                    ":%s SJOIN %lu %s +nt :@%s",
+                    me.id, (unsigned long)chptr->channelts,
+                    chptr->chname, ID(target_p));
       sendto_server(target_p, target_p, chptr, NOCAPS, NOCAPS, LL_ICLIENT,
                     ":%s SJOIN %lu %s +nt :@%s",
                     me.name, (unsigned long)chptr->channelts,
-                    chptr->chname, target_p->name);
+                    chptr->chname, ID(target_p));
+    }
 
     sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s JOIN :%s",
                          target_p->name, target_p->username,
@@ -299,9 +311,14 @@ mo_forcepart(struct Client *client_p, struct Client *source_p,
   }
 
   if (chptr->chname[0] == '#')
-    sendto_server(target_p, target_p, chptr, NOCAPS, NOCAPS, LL_ICLIENT,
+  {
+    sendto_server(target_p, target_p, chptr, CAP_TS6, NOCAPS, LL_ICLIENT,
+                  ":%s PART %s :%s", ID(target_p),
+                  chptr->chname, target_p->name);
+    sendto_server(target_p, target_p, chptr, NOCAPS, CAP_TS6, LL_ICLIENT,
                   ":%s PART %s :%s", target_p->name,
                   chptr->chname, target_p->name);
+  }
 
   sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s PART %s :%s",
                        target_p->name, target_p->username,
