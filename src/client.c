@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.225 2002/02/14 05:50:31 a1kmm Exp $
+ *  $Id: client.c,v 7.226 2002/02/17 00:54:08 db Exp $
  */
 
 #include "tools.h"
@@ -184,10 +184,9 @@ void _free_client(struct Client* client_p)
   assert(NULL == client_p->prev);
   assert(NULL == client_p->next);
 
-  /* If localClient is non NULL, its a local client */
-  if (client_p->localClient != NULL)
+  if (MyConnect(client_p))
     {
-      if (-1 < client_p->fd)
+      if (client_p->fd >= 0)
 	fd_close(client_p->fd);
 
 #ifndef NDEBUG
