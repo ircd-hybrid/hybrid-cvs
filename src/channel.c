@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.331 2002/10/03 15:33:45 bill Exp $
+ *  $Id: channel.c,v 7.332 2002/10/08 21:06:55 db Exp $
  */
 
 #include "stdinc.h"
@@ -466,8 +466,8 @@ sub1_from_channel(struct Channel *chptr)
     chptr->users = 0;           /* if chptr->users < 0, make sure it sticks at 0
                                  * It should never happen but...
                                  */
-    /* persistent channel */
-    if ((chptr->channelts + ConfigChannel.persist_time) > CurrentTime)
+    /* if persistent channel time is 0, destroy immediately */
+    if (ConfigChannel.persist_time == 0)
     {
       destroy_channel(chptr);
       return (1);
