@@ -16,7 +16,7 @@
 *   along with this program; if not, write to the Free Software
 *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 *
-*   $Id: whowas.c,v 7.12 2001/03/06 02:05:44 androsyn blalloc.c $
+*   $Id: whowas.c,v 7.13 2001/12/25 06:48:42 db Exp $
 */
 
 #include <sys/types.h>
