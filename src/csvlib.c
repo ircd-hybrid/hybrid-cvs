@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.4 2003/05/14 22:29:41 db Exp $
+ *  $Id: csvlib.c,v 7.5 2003/05/14 22:35:02 db Exp $
  */
 
 #include "stdinc.h"
@@ -43,7 +43,7 @@ parse_csv_file(FBFILE *file, int conf_type)
   char  *reason_field=NULL;
   char  *oper_reason=NULL;
   char  *host_field=NULL;
-  char  *port=0;
+  char  *port=NULL;
   char  line[BUFSIZE];
   char  *p;
 
@@ -81,7 +81,7 @@ parse_csv_file(FBFILE *file, int conf_type)
       break;
 
     case CONF_XLINE:
-      parse_csv_line(line, &name_field, &reason_field, &oper_reason, port,
+      parse_csv_line(line, &name_field, &reason_field, &oper_reason, &port,
 		     NULL);
       aconf = make_conf(CONF_XLINE);
       if (name_field != NULL)
@@ -90,7 +90,7 @@ parse_csv_file(FBFILE *file, int conf_type)
 	DupString(aconf->reason, reason_field);
       if (user_field != NULL)
 	DupString(aconf->user, user_field);
-      aconf->port = port;
+      aconf->port = atoi(port);
       conf_add_d_conf(aconf);
       break;
     }
