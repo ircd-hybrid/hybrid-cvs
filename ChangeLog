@@ -1,3 +1,15 @@
+androsyn    2002/02/04 14:14:36 EST	(20020204_11)
+
+  Modified files:
+    src                  adns.c 
+  Log:
+  The bugfix that went in -6. Well here it is for -7.
+  
+  Revision  Changes    Path
+  7.36      +1 -4      ircd-hybrid-7/src/adns.c
+
+
+
 leeh        2002/02/04 11:57:01 EST	(20020204_10)
 
   Modified files:
@@ -22101,4 +22113,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3376 2002/02/04 16:57:06 leeh Exp $
+$Id: ChangeLog,v 7.3377 2002/02/04 19:14:41 androsyn Exp $
