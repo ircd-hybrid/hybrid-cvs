@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hook.c,v 7.12 2002/01/12 18:38:42 jmallett Exp $
+ *  $Id: hook.c,v 7.13 2002/02/09 08:55:34 a1kmm Exp $
  */
 
 /* hooks are used by modules to hook into events called by other parts of
@@ -117,7 +117,7 @@ hook_del_hook(char *event, hookfn *fn)
  if (!h)
   return -1;
    
- for (node = h->hooks.head; node; node = node->next)
+ for (node = h->hooks.head; node; node = nnode)
  {
   nnode = node->next;
   if (fn == node->data)
