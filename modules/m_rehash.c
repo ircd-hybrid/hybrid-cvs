@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_rehash.c,v 1.36 2002/01/05 09:14:48 a1kmm Exp $
+ *  $Id: m_rehash.c,v 1.37 2002/02/04 04:52:47 androsyn Exp $
  */
 
 #include "handlers.h"
@@ -59,7 +59,7 @@ _moddeinit(void)
   mod_del_cmd(&rehash_msgtab);
 }
 
-char *_version = "$Revision: 1.36 $";
+char *_version = "$Revision: 1.37 $";
 #endif
 /*
  * mo_rehash - REHASH message handler
@@ -82,6 +82,7 @@ static void mo_rehash(struct Client *client_p, struct Client *source_p,
         {
           sendto_realops_flags(FLAGS_ALL, L_ALL,
                        "%s is forcing cleanup of channels",parv[0]);
+	  cleanup_channels(NULL);
           found = YES;
         }
       else if(irccmp(parv[1],"DNS") == 0)
