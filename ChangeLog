@@ -1,3 +1,25 @@
+db          2002/12/15 18:50:18 EST	(20021215_0)
+
+  Modified files:
+    doc/technical        send.txt 
+    modules              m_invite.c 
+    src                  packet.c 
+  Log:
+  - updated the send docs. a couple of functions disapeared to be replaced
+    with one function in its place. oops.
+  - a client can have a localClient part of NULL when we go try to read from it
+    oops. We can't do that. Notably this happened when a server was unauthed,
+    coring the server.
+  - m_invite was not sending invites properly when +p was on. I admit
+    this code could be finessed, but I wanted to get it working first.
+  
+  Revision  Changes    Path
+  1.17      +11 -15    ircd-hybrid-7/doc/technical/send.txt
+  1.48      +124 -13   ircd-hybrid-7/modules/m_invite.c
+  7.93      +8 -0      ircd-hybrid-7/src/packet.c
+
+
+
 db          2002/12/14 02:37:10 EST	(20021214_1)
 
   Modified files:
@@ -33520,4 +33542,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4134 2002/12/14 07:37:13 db Exp $
+$Id: ChangeLog,v 7.4135 2002/12/15 23:50:20 db Exp $
