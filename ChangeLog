@@ -1,3 +1,7 @@
+*** 20001202_11 by toot
+small bugfix in m_who
+
+
 *** 20001202_10 by toot
 made vchan_map in to a dlink_list,
 not tested loads, but it seems to work
@@ -1340,7 +1344,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.665 2000/12/02 19:55:07 toot Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.666 2000/12/02 20:25:46 toot Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
