@@ -1,6 +1,6 @@
 /* include/setup.h.in.  Generated automatically from autoconf/configure.in by autoheader.  */
 /*
- * $Id: setup.h.in,v 7.33 2001/09/24 11:13:45 a1kmm Exp $
+ * $Id: setup.h.in,v 7.34 2001/09/25 08:11:03 a1kmm Exp $
  */
 
 /* Define if you have the poll() system call.  */

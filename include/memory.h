@@ -1,4 +1,4 @@
-/* $Id: memory.h,v 7.23 2001/09/24 11:13:45 a1kmm Exp $ */
+/* $Id: memory.h,v 7.24 2001/09/25 08:11:03 a1kmm Exp $ */
 
 #ifndef _I_MEMORY_H
 #define _I_MEMORY_H
@@ -66,7 +66,7 @@ extern void * _MyMalloc(size_t size);
 extern void* _MyRealloc(void* x, size_t y);
 extern inline void _MyFree(void *x);
 extern inline void _DupString(char **x, const char *y);
-extern int         _BlockHeapFree(BlockHeap *bh, void *ptr);
+extern void         _BlockHeapFree(BlockHeap *bh, void *ptr);
 extern void *	  _BlockHeapAlloc(BlockHeap *bh);
 
 #define MyMalloc(x) _MyMalloc(x)
@@ -85,4 +85,3 @@ extern void *	  _BlockHeapAlloc(BlockHeap *bh);
 #endif
 
 #endif /* _I_MEMORY_H */
-

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.205 2001/09/12 17:00:27 leeh Exp $
+ *  $Id: client.c,v 7.206 2001/09/25 08:11:03 a1kmm Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -190,7 +190,7 @@ void _free_client(struct Client* client_p)
       if (-1 < client_p->fd)
 	fd_close(client_p->fd);
 
-#ifndef NDEBUG
+#ifdef MEMDEBUG
       mem_frob(client_p->localClient, sizeof(struct LocalUser));
 #endif
 
@@ -203,7 +203,7 @@ void _free_client(struct Client* client_p)
       --remote_client_count;
     }
 
-#ifndef NDEBUG
+#ifdef MEMDEBUG
   mem_frob(client_p, sizeof(struct Client));
 #endif
   BlockHeapFree(client_heap, client_p);
