@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.243 2001/06/17 15:17:26 toot Exp $
+ * $Id: channel.c,v 7.244 2001/06/17 17:10:00 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -1035,12 +1035,12 @@ pretty_mask(char *mask)
 
   if ((t = strchr(mask, '@')) != NULL)
     {
-      *t++ = 0;
+      *t++ = '\0';
       host = t;
 
       if ((t = strchr(mask, '!')) != NULL)
         {
-          *t++ = 0;
+          *t++ = '\0';
           user = t;
           nick = mask;
         }
@@ -1049,7 +1049,7 @@ pretty_mask(char *mask)
     }
   else if ((t = strchr(mask, '!')) != NULL)
     {
-      *t++ = 0;
+      *t++ = '\0';
       nick = mask;
       user = t;
     }
@@ -1058,9 +1058,9 @@ pretty_mask(char *mask)
   else
     nick = mask;
 
-  ircsprintf(mask_buf + mask_pos, "%s!%s@%s", nick, user, host);
+  mask_pos += ircsprintf(mask_buf + mask_pos, "%s!%s@%s", nick, user, host)
+								          + 1;
 
-  mask_pos = strlen(mask_buf) + 1;
   return mask_buf + old_mask_pos;
 }
 #else
