@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_admin.c,v 1.7 2000/12/02 14:33:07 toot Exp $
+ *   $Id: m_admin.c,v 1.8 2000/12/02 14:41:37 toot Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -92,7 +92,7 @@ int m_admin(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   else
     last_used = CurrentTime;
 
-  if (hunt_server(cptr,sptr,":%s ADMIN :%s",1,parc,parv) != HUNTED_ISME))
+  if (hunt_server(cptr,sptr,":%s ADMIN :%s",1,parc,parv) != HUNTED_ISME)
     return 0;
 
   do_admin(sptr);
@@ -107,7 +107,7 @@ int m_admin(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
  */
 int mo_admin(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 {
-  if (hunt_server(cptr,sptr,":%s ADMIN :%s",1,parc,parv) != HUNTED_ISME))
+  if (hunt_server(cptr,sptr,":%s ADMIN :%s",1,parc,parv) != HUNTED_ISME)
     return 0;
 
   do_admin( sptr );
