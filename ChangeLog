@@ -1,3 +1,15 @@
+leeh        2002/04/25 13:57:43 EDT	(20020425_5)
+
+  Modified files:
+    modules              m_info.c 
+  Log:
+  - and /info..
+  
+  Revision  Changes    Path
+  1.56      +7 -1      ircd-hybrid-7/modules/m_info.c
+
+
+
 leeh        2002/04/25 13:55:22 EDT	(20020425_4)
 
   Modified files:
@@ -25490,4 +25502,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3590 2002/04/25 17:55:28 leeh Exp $
+$Id: ChangeLog,v 7.3591 2002/04/25 17:57:49 leeh Exp $
