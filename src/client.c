@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.313 2003/01/16 23:13:39 db Exp $
+ *  $Id: client.c,v 7.314 2003/01/17 07:55:18 db Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -174,7 +174,8 @@ struct Client* make_client(struct Client* from)
   return client_p;
 }
 
-void free_local_client(struct Client *client_p)
+void
+free_local_client(struct Client *client_p)
 {
   if (MyConnect(client_p))
   {
@@ -1298,7 +1299,7 @@ exit_client(
 
       log_user_exit(source_p);
 
-      if (source_p->localClient->fd >= 0)
+      if (!IsDead(source_p))
 	{
 	  if (client_p != NULL && source_p != client_p)
 	    sendto_one(source_p, "ERROR :Closing Link: %s %s (%s)",
