@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_kqueue.c,v 1.12 2001/04/25 04:37:20 db Exp $
+ *  $Id: s_bsd_kqueue.c,v 1.13 2001/04/27 02:48:25 jdc Exp $
  */
 #include "config.h"
 #ifdef USE_KQUEUE
@@ -89,7 +89,9 @@ void
 kq_update_events(int fd, short filter, PF * handler)
 {
     PF *cur_handler;
+#if 0
     int retval;
+#endif
 
     switch (filter) {
     case EVFILT_READ:
@@ -130,7 +132,7 @@ kq_update_events(int fd, short filter, PF * handler)
 	}
 	if (kqoff == kqmax) {
 		kevent(kq, kqlst, kqoff, NULL, 0, &zero_timespec);
-		kqoff == 0;
+		kqoff = 0;
 	} else {
 		kqoff++;
 	}
