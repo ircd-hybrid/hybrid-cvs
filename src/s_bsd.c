@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.149 2001/09/12 05:39:21 habeeb Exp $
+ *  $Id: s_bsd.c,v 7.150 2001/09/25 05:22:32 db Exp $
  */
 #include "config.h"
 #include "fdlist.h"
@@ -94,11 +94,17 @@ void close_all_connections(void)
   int fd;
 #endif
 
+  /* XXX someone tell me why we care about 4 fd's ? */
+  /* XXX btw, fd 3 is used for profiler ! */
+#if 0
 #ifndef VMS
   for (i = 0; i < MAXCONNECTIONS; ++i)
 #else
   for (i = 3; i < MAXCONNECTIONS; ++i)
 #endif
+#endif
+
+  for (i = 4; i < MAXCONNECTIONS; ++i)
     {
       if (fd_table[i].flags.open)
         fd_close(i);
@@ -106,6 +112,7 @@ void close_all_connections(void)
         close(i);
     }
 
+  /* XXX should his hack be done in all cases? */
 #ifndef NDEBUG
   /* fugly hack to reserve fd == 2 */
   (void)close(2);
