@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.164 2001/08/31 12:48:33 leeh Exp $
+ *  $Id: s_user.c,v 7.165 2001/09/19 18:08:42 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -664,8 +664,6 @@ introduce_client(struct Client *client_p, struct Client *source_p,
  */
 static int valid_hostname(const char* hostname)
 {
-  int         dots  = 0;
-  int         chars = 0;
   const char* p     = hostname;
 
   assert(0 != p);
@@ -677,19 +675,9 @@ static int valid_hostname(const char* hostname)
     {
       if (!IsHostChar(*p))
         return NO;
-
-      if ('.' == *p || ':' == *p)
-        ++dots;
-      else
-        ++chars;
-
       p++;
     }
-
-  if( dots == 0 )
-    return NO;
-
-  return ( (dots > chars) ? NO : YES);
+  return (YES);
 }
 
 /* 
