@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: irc_string.c,v 7.0 1999/08/01 21:19:47 lusky Exp $
+ *  $Id: irc_string.c,v 7.1 1999/09/10 06:28:38 tomh Exp $
  */
 #include "irc_string.h"
 #include "list.h"
@@ -81,7 +81,7 @@ void* MyMalloc(size_t x)
  */
 void* MyRealloc(void* x, size_t y)
 {
-  char *ret = realloc(x, y);
+  void* ret = realloc(x, y);
 
   if (!ret)
     outofmemory();
