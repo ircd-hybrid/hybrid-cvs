@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.50 2000/12/15 03:32:17 toot Exp $
+ * $Id: ircd_parser.y,v 1.51 2000/12/15 23:26:57 db Exp $
  */
 
 %{
@@ -73,6 +73,7 @@ int   class_sendq_var;
 %token  AUTOCONN
 %token  CLASS
 %token  CONNECT
+%token  CONNECTFREQ
 %token  DENY
 %token  DESCRIPTION
 %token  DIE
@@ -527,6 +528,7 @@ class_items:    class_items class_item |
 class_item:     class_name |
                 class_ping_time |
                 class_number_per_ip |
+                class_connectfreq |
                 class_max_number |
                 class_sendq
 
@@ -542,6 +544,11 @@ class_ping_time:        PING_TIME '=' NUMBER ';'
   };
 
 class_number_per_ip:    NUMBER_PER_IP '=' NUMBER ';'
+  {
+    class_number_per_ip_var = yylval.number;
+  };
+
+class_connectfreq:     CONNECTFREQ '=' NUMBER ';'
   {
     class_number_per_ip_var = yylval.number;
   };
