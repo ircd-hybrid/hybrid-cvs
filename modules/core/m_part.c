@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_part.c,v 1.22 2001/01/01 04:47:14 wcampbel Exp $
+ *   $Id: m_part.c,v 1.23 2001/01/01 16:48:28 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -160,54 +160,38 @@ static void part_one_client(struct Client *cptr,
       return;
     }
 
-  if (HasVchans(chptr))
+  if (IsVchan(chptr) || HasVchans(chptr))
     {
-      vchan = map_vchan(chptr,sptr);
-      if(vchan == 0)
-	{
-	  if (!IsMember(sptr, chptr))
-	    {
-	      sendto_one(sptr, form_str(ERR_NOTONCHANNEL),
-			 me.name, sptr->name, name);
-	      return;
-	    }
-	  /*
-	  **  Remove user from the old channel (if any)
-	  */
-	  
-	  sendto_channel_remote(chptr, cptr, ":%s PART %s", sptr->name,
-                                name);
-	  
-	  sendto_channel_local(ALL_MEMBERS,
-			       chptr, ":%s!%s@%s PART %s",
-			       sptr->name,
-			       sptr->username,
-			       sptr->host,
-			       name);
-	  remove_user_from_channel(chptr, sptr);
-	}
+      if(HasVchans(chptr))
+        vchan = map_vchan(chptr,sptr);
       else
-	{
-	  if (!IsMember(sptr, vchan))
-	    {
-	      sendto_one(sptr, form_str(ERR_NOTONCHANNEL),
-			 me.name, sptr->name, name);
-	      return;
-	    }
-	  /*
-	  **  Remove user from the old channel (if any)
-	  */
-            
-	  sendto_channel_remote(chptr, cptr, ":%s PART %s", sptr->name, name);
-            
-	  sendto_channel_local(ALL_MEMBERS,
-			       vchan, ":%s!%s@%s PART %s",
-			       sptr->name,
-			       sptr->username,
-			       sptr->host,
-			       name);
-	  remove_user_from_channel(vchan, sptr);
-	}
+      {
+        vchan = chptr;
+        chptr = map_bchan(vchan,sptr);
+      }
+      
+      if (!IsMember(sptr, vchan))
+      {
+        sendto_one(sptr, form_str(ERR_NOTONCHANNEL),
+        me.name, sptr->name, name);
+        return;
+       }
+
+      /*
+       **  Remove user from the old channel (if any)
+       */
+
+      sendto_channel_remote(chptr, cptr, ":%s PART %s", sptr->name,
+                            vchan->chname);
+
+      sendto_channel_local(ALL_MEMBERS,
+                           vchan, ":%s!%s@%s PART %s",
+                           sptr->name,
+                           sptr->username,
+                           sptr->host,
+                           chptr->chname);
+
+      remove_user_from_channel(vchan, sptr);
     }
   else
     {
