@@ -34,7 +34,7 @@
  *                mode * -p etc. if flag was clear
  *
  *
- * $Id: channel.c,v 7.23 2000/01/03 00:33:41 db Exp $
+ * $Id: channel.c,v 7.24 2000/01/03 01:52:49 db Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -3047,7 +3047,7 @@ int     m_cburst(struct Client *cptr,
           return 0;
         }
 
-      if((*chptr->mode.key && !key) || irccmp(chptr->mode.key, key))
+      if((*chptr->mode.key && key) || irccmp(chptr->mode.key, key))
 
         {
           sendto_one(cptr,":%s LLJOIN %s %s :K",
