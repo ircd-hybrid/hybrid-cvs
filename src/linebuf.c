@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: linebuf.c,v 7.88 2002/07/21 04:55:20 a1kmm Exp $
+ *  $Id: linebuf.c,v 7.89 2002/08/03 21:45:08 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -102,8 +102,11 @@ linebuf_new_line(buf_head_t *bufhead)
   dlink_node *node;
 
   bufline = linebuf_allocate();
+  if(bufline == NULL)
+    return NULL;
   ++bufline_count;
-
+  
+  
   node = make_dlink_node();
   
   bufline->len = 0;
