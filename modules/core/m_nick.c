@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_nick.c,v 1.38 2001/01/02 02:10:48 a1kmm Exp $
+ *   $Id: m_nick.c,v 1.39 2001/01/03 01:30:38 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -709,8 +709,12 @@ nick_from_server(struct Client *cptr, struct Client *sptr, int parc,
           if (sptr->user)
             {
               add_history(sptr,1);
-              sendto_serv_butone(cptr, ":%s NICK %s :%lu",
-				    parv[0], nick, sptr->tsinfo);
+              if (ConfigFileEntry.hub)
+                sendto_ll_serv_butone(cptr, sptr, 0, ":%s NICK %s :%lu",
+                                      parv[0], nick, sptr->tsinfo);
+              else
+                sendto_serv_butone(cptr, ":%s NICK %s :%lu",
+                                   parv[0], nick, sptr->tsinfo);
             }
     }
 
@@ -781,7 +785,7 @@ set_initial_nick(struct Client *cptr, struct Client *sptr,
    */
 
   strcpy(nickbuf, "Nick: ");
-  /* XXX nick better be the right length! -- adrian */
+  /* nick better be the right length! -- adrian */
   strncat(nickbuf, nick, NICKLEN);
   fd_note(cptr->fd, nickbuf);
 
@@ -863,7 +867,7 @@ int change_local_nick(struct Client *cptr, struct Client *sptr,
    * .. and update the new nick in the fd note.
    */
   strcpy(nickbuf, "Nick: ");
-  /* XXX nick better be the right length! -- adrian */
+  /* nick better be the right length! -- adrian */
   strncat(nickbuf, nick, NICKLEN);
   fd_note(cptr->fd, nickbuf);
 
