@@ -2,7 +2,8 @@
  *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
  *  linebuf.c: Maintains linebuffers.
  *
- *  Copyright (C) 2002 by the past and present ircd coders, and others.
+ *  Copyright (C) 2001-2002 Adrian Chadd <adrian@creative.net.au>
+ *  Copyright (C) 2002 Hybrid Development Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: linebuf.c,v 7.78 2002/04/03 04:02:32 androsyn Exp $
+ *  $Id: linebuf.c,v 7.79 2002/04/15 00:05:45 leeh Exp $
  */
 
 #include <errno.h>

@@ -2,7 +2,7 @@
  *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
  *  m_post.c: Exits the user if unregistered, it is a web form.
  *
- *  Copyright (C) 2002 by the past and present ircd coders, and others.
+ *  Copyright (C) 2001-2002 Hybrid Development Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_post.c,v 1.8 2002/03/07 06:21:47 db Exp $
+ *  $Id: m_post.c,v 1.9 2002/04/15 00:05:42 leeh Exp $
  */
 
 #include "handlers.h"
@@ -53,7 +53,7 @@ _moddeinit(void)
   mod_del_cmd(&post_msgtab);
 }
 
-const char *_version = "$Revision: 1.8 $";
+const char *_version = "$Revision: 1.9 $";
 #endif
 /*
 ** mr_post
