@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_topic.c,v 1.9 2000/12/09 05:59:55 db Exp $
+ *   $Id: m_topic.c,v 1.10 2000/12/09 07:04:42 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -139,16 +139,16 @@ int     m_topic(struct Client *cptr,
 	      if(GlobalSetOptions.hide_chanops)
 		{
 		  sendto_channel_local(ONLY_CHANOPS,
-					 chptr, sptr, ":%s TOPIC %s :%s",
-					 parv[0],
-					 name, chptr->topic);
+				       chptr, ":%s TOPIC %s :%s",
+				       parv[0],
+				       name, chptr->topic);
 		}
 	      else
 		{
 		  sendto_channel_local(ALL_MEMBERS,
-					 chptr, sptr, ":%s TOPIC %s :%s",
-					 parv[0],
-					 name, chptr->topic);
+				       chptr, ":%s TOPIC %s :%s",
+				       parv[0],
+				       name, chptr->topic);
 		}
 	    }
 	  else

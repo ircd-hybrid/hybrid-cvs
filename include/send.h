@@ -2,7 +2,7 @@
  * send.h
  * Copyright (C) 1999 Patrick Alken
  *
- * $Id: send.h,v 7.15 2000/12/09 05:59:37 db Exp $
+ * $Id: send.h,v 7.16 2000/12/09 07:04:36 db Exp $
  */
 
 #ifndef INCLUDED_send_h
@@ -16,7 +16,7 @@
  */
 struct Client;
 struct Channel;
-struct DBuf;
+struct dlink_list;
 
 /* send.c prototypes */
 
@@ -37,7 +37,7 @@ extern  void sendto_serv_butone(struct Client *, const char *, ...);
 extern  void sendto_cap_serv_butone(int, struct Client *, const char *, ...);
 extern  void sendto_common_channels(struct Client *, const char *, ...);
 extern  void sendto_channel_local(int type,
-				  struct Channel *, struct Client *, 
+				  struct Channel *,
 				  const char *, ...);
 #define ALL_MEMBERS  0
 #define ONLY_CHANOPS 1

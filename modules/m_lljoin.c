@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_lljoin.c,v 1.8 2000/12/09 05:59:49 db Exp $
+ * $Id: m_lljoin.c,v 1.9 2000/12/09 07:04:41 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -144,7 +144,7 @@ int     ms_lljoin(struct Client *cptr,
 
           add_user_to_channel(chptr, acptr, flags);
  
-          sendto_channel_local(ALL_MEMBERS,chptr, acptr, ":%s JOIN :%s",
+          sendto_channel_local(ALL_MEMBERS, chptr, ":%s JOIN :%s",
                                  nick, name);
       
           if( flags & CHFL_CHANOP )
@@ -154,13 +154,13 @@ int     ms_lljoin(struct Client *cptr,
 
 	      if(GlobalSetOptions.hide_chanops)
 		{
-		  sendto_channel_local(ONLY_CHANOPS,chptr, sptr,
+		  sendto_channel_local(ONLY_CHANOPS,chptr,
 					 ":%s MODE %s +nt",
 					 me.name, chptr->chname);
 		}
 	      else
 		{
-		  sendto_channel_local(ALL_MEMBERS,chptr, sptr,
+		  sendto_channel_local(ALL_MEMBERS,chptr,
 					 ":%s MODE %s +nt",
 					 me.name, chptr->chname);
 		}
