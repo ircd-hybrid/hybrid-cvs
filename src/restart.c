@@ -1,7 +1,7 @@
 /*
  * restart.c
  *
- * $Id: restart.c,v 7.3 2000/10/24 18:47:21 adrian Exp $
+ * $Id: restart.c,v 7.4 2000/10/29 21:01:24 adrian Exp $
  */
 #include "restart.h"
 #include "common.h"
@@ -37,8 +37,13 @@ void server_reboot(void)
   sendto_ops("Aieeeee!!!  Restarting server... memory: %d", get_maxrss());
 
   log(L_NOTICE, "Restarting server...");
-  flush_connections(0);
-
+  /*
+   * XXX we used to call flush_connections() here. But since this routine
+   * doesn't exist anymore, we won't be flushing. This is ok, since 
+   * when close handlers come into existance, comm_close() will be called
+   * below, and the data flushing will be implicit.
+   *    -- adrian
+   */
   for (i = 0; i < MAXCONNECTIONS; ++i)
     fd_close(i);
   execv(SPATH, myargv);

@@ -17,13 +17,12 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_signal.c,v 7.1 1999/12/30 20:35:46 db Exp $
+ * $Id: ircd_signal.c,v 7.2 2000/10/29 21:01:24 adrian Exp $
  */
 #include "ircd_signal.h"
 #include "ircd.h"         /* dorehash */
 #include "restart.h"      /* server_reboot */
 #include "s_log.h"
-#include "send.h"         /* flush_connections */
 
 #include <signal.h>
 
@@ -41,7 +40,10 @@ static void dummy_handler(int sig)
  */
 static void sigterm_handler(int sig)  
 {
-  flush_connections(0);
+  /* XXX we had a flush_connections() here - we should close all the
+   * connections and flush data. read server_reboot() for my explanation.
+   *     -- adrian
+   */
   log(L_CRIT, "Server killed By SIGTERM");
   exit(-1);
 }

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_die.c,v 7.4 2000/10/24 18:47:17 adrian Exp $
+ *   $Id: m_die.c,v 7.5 2000/10/29 21:01:24 adrian Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -146,7 +146,11 @@ int mo_die(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
         sendto_one(acptr, ":%s ERROR :Terminated by %s",
                    me.name, get_client_name(sptr, MASK_IP));
     }
-  flush_connections(0);
+  /*
+   * XXX we called flush_connections() here. Read server_rebot()
+   * for an explanation as to what we should do.
+   *     -- adrian
+   */
   log(L_NOTICE, "Server terminated by %s", get_client_name(sptr, HIDE_IP));
   /* 
    * this is a normal exit, tell the os it's ok 

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.37 2000/10/26 21:07:49 adrian Exp $
+ *  $Id: s_bsd.c,v 7.38 2000/10/29 21:01:25 adrian Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -661,7 +661,7 @@ void close_connection(struct Client *cptr)
     cptr->dns_reply = 0;
   }
   if (-1 < cptr->fd) {
-    flush_connections(cptr);
+    send_queued(cptr);
     local[cptr->fd] = NULL;
     fdlist_delete(cptr->fd, FDL_ALL);
     fd_close(cptr->fd);
