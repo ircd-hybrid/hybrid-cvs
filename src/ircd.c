@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.238 2002/07/12 00:51:08 androsyn Exp $
+ *  $Id: ircd.c,v 7.239 2002/07/19 12:31:47 leeh Exp $
  */
 
 #include "stdinc.h"
@@ -364,8 +364,8 @@ static void initialize_global_set_options(void)
   else
     GlobalSetOptions.floodcount = 10;
 
-  split_users = ConfigChannel.default_split_server_count;
-  split_servers = ConfigChannel.default_split_user_count;
+  split_servers = ConfigChannel.default_split_server_count;
+  split_users = ConfigChannel.default_split_user_count;
 
   if(split_users && split_servers && (ConfigChannel.no_create_on_split ||
      ConfigChannel.no_join_on_split))
