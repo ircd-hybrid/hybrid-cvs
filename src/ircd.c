@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.267 2003/04/19 10:44:04 michael Exp $
+ *  $Id: ircd.c,v 7.268 2003/04/19 17:45:29 adx Exp $
  */
 
 #include "stdinc.h"
@@ -613,6 +613,7 @@ main(int argc, char *argv[])
   init_slink_nodes();
   initialize_message_files();
   linebuf_init();       /* set up some linebuf stuff to control paging */
+  dbuf_init();
   init_hash();
   id_init();
   clear_scache_hash_table();    /* server cache name table */
