@@ -34,7 +34,7 @@
  *                mode * -p etc. if flag was clear
  *
  *
- * $Id: channel.c,v 7.11 1999/09/10 04:57:52 tomh Exp $
+ * $Id: channel.c,v 7.12 1999/09/10 05:04:01 tomh Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -2518,7 +2518,7 @@ static  void    sub1_from_channel(struct Channel *chptr)
           free_fluders(NULL, chptr);
 #endif
           del_from_channel_hash_table(chptr->chname, chptr);
-          MyFree((char*) chptr);
+          MyFree(chptr);
           Count.chan--;
         }
     }

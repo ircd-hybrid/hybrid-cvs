@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu, Computing Center and Jarkko Oikarinen
  *
- * $Id: list.c,v 7.3 1999/08/15 10:44:17 tomh Exp $
+ * $Id: list.c,v 7.4 1999/09/10 05:04:02 tomh Exp $
  */
 #include "list.h"
 #include "blalloc.h"
@@ -179,7 +179,7 @@ void _free_user(struct User* user, struct Client* cptr)
   if (--user->refcnt <= 0)
     {
       if (user->away)
-        MyFree((char *)user->away);
+        MyFree(user->away);
       /*
        * sanity check
        */
@@ -260,7 +260,7 @@ aClass *make_class()
 
 void free_class(aClass *tmp)
 {
-  MyFree((char *)tmp);
+  MyFree(tmp);
 }
 
 /*

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.10 1999/09/10 02:15:47 tomh Exp $
+ *  $Id: client.c,v 7.11 1999/09/10 05:04:01 tomh Exp $
  */
 #include "client.h"
 #include "class.h"
@@ -706,7 +706,7 @@ static void release_client_state(struct Client* cptr)
     {
       if (cptr->serv->user)
         free_user(cptr->serv->user, cptr);
-      MyFree((char*) cptr->serv);
+      MyFree(cptr->serv);
     }
 
 #ifdef FLUD

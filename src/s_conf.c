@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.14 1999/08/31 04:34:08 db Exp $
+ *  $Id: s_conf.c,v 7.15 1999/09/10 05:04:02 tomh Exp $
  */
 #include "s_conf.h"
 #include "channel.h"
@@ -225,7 +225,7 @@ void free_conf(struct ConfItem* aconf)
   MyFree(aconf->passwd);
   MyFree(aconf->user);
   MyFree(aconf->name);
-  MyFree((char*) aconf);
+  MyFree(aconf);
 }
 
 /*
