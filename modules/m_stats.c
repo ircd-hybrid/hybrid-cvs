@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 1.97 2001/12/16 11:36:44 leeh Exp $
+ *  $Id: m_stats.c,v 1.98 2001/12/16 12:03:59 leeh Exp $
  */
 #include "tools.h"	 /* dlink_node/dlink_list */
 #include "handlers.h"    /* m_pass prototype */
@@ -397,6 +397,7 @@ static void stats_glines(struct Client *client_p)
         pending_node = pending_node->next)
     {
       glp_ptr = pending_node->data;
+      
       tmptr = localtime(&glp_ptr->time_request1);
       strftime(timebuffer, MAX_DATE_STRING, "%Y/%m/%d %H:%M:%S", tmptr);
 

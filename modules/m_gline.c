@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_gline.c,v 1.69 2001/12/14 15:26:32 leeh Exp $
+ *  $Id: m_gline.c,v 1.70 2001/12/16 12:03:59 leeh Exp $
  */
 
 #include <assert.h>
@@ -195,20 +195,6 @@ static void mo_gline(struct Client *client_p,
       if(invalid_gline(source_p, user, host, parv[2]))
         return;
 			
-	  
-      /*
-       * Now we must check the user and host to make sure there
-       * are at least NONWILDCHARS non-wildcard characters in
-       * them, otherwise assume they are attempting to gline
-       * *@* or some variant of that. This code will also catch
-       * people attempting to gline *@*.tld, as long as NONWILDCHARS
-       * is greater than 3. In that case, there are only 3 non-wild
-       * characters (tld), so if NONWILDCHARS is 4, the gline will
-       * be disallowed.
-       * -wnder
-       */
-      /* A config file options is better, I think :) -- fl */
-
       /* Not enough non-wild characters were found, assume they are trying to gline *@*. */
       if (check_wild_gline(user, host))
 	{
@@ -497,8 +483,11 @@ check_majority_gline(struct Client *source_p,
 {
   if(majority_gline(source_p,oper_nick,oper_user, oper_host,
 		    oper_server, user, host, reason))
+  {
     set_local_gline(oper_nick,oper_user,oper_host,oper_server,
 		    user,host,reason);
+    cleanup_glines();
+  }
 }
 
 /*
@@ -782,6 +771,10 @@ majority_gline(struct Client *source_p,
   dlink_node *pending_node;
   struct gline_pending *gline_pending_ptr;
 
+  /* if its already glined, why bother? :) -- fl_ */
+  if(find_is_glined(host, user))
+    return NO;
+    
   /* special case condition where there are no pending glines */
 
   if (dlink_list_length(&pending_glines) == 0) /* first gline request placed */
@@ -822,9 +815,6 @@ majority_gline(struct Client *source_p,
 				       "oper or server has already voted");
                   return NO;
                 }
-
-              if(find_is_glined(host, user))
-                return NO;
 
               log_gline(source_p,gline_pending_ptr,
                         oper_nick,oper_user,oper_host,oper_server,

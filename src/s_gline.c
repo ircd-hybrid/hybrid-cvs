@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_gline.c,v 1.16 2001/09/12 05:39:21 habeeb Exp $
+ *  $Id: s_gline.c,v 1.17 2001/12/16 12:04:01 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -150,7 +150,7 @@ remove_gline_match(const char* user, const char* host)
  *                This is an event started off in ircd.c
  */
 void
-cleanup_glines(void *notused)
+cleanup_glines()
 {
   expire_glines();
   expire_pending_glines();
@@ -208,7 +208,9 @@ expire_pending_glines()
       glp_ptr = pending_node->data;
       next_node = pending_node->next;
 
-      if( (glp_ptr->last_gline_time + GLINE_PENDING_EXPIRE) <= CurrentTime )
+      if(((glp_ptr->last_gline_time + GLINE_PENDING_EXPIRE) <= CurrentTime)
+        || find_is_glined(glp_ptr->host, glp_ptr->user))
+      
         {
           MyFree(glp_ptr->reason1);
           MyFree(glp_ptr->reason2);
