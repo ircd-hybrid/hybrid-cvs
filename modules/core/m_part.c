@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_part.c,v 1.56 2002/05/24 23:34:39 androsyn Exp $
+ *  $Id: m_part.c,v 1.57 2002/11/12 13:12:41 db Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&part_msgtab);
 }
-const char *_version = "$Revision: 1.56 $";
+const char *_version = "$Revision: 1.57 $";
 #endif
 
 static void part_one_client(struct Client *client_p,
@@ -175,7 +175,7 @@ static void part_one_client(struct Client *client_p,
                     ":%s PART %s :%s", ID(source_p), chptr->chname,
                     reason);
       sendto_server(client_p, NULL, chptr, NOCAPS, CAP_UID, NOFLAGS,
-                    ":%s PART %s  :%s", source_p->name, chptr->chname,
+                    ":%s PART %s :%s", source_p->name, chptr->chname,
                     reason);
       sendto_channel_local(ALL_MEMBERS,
                            chptr, ":%s!%s@%s PART %s :%s",
