@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_mode.c,v 1.19 2000/12/26 22:18:39 db Exp $
+ *   $Id: m_mode.c,v 1.20 2000/12/28 22:19:32 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -132,7 +132,7 @@ int m_mode(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 
   if(parc < 3)
     {
-      channel_modes(chptr, sptr, modebuf, parabuf);
+      channel_modes(chptr, sptr, modebuf, parabuf,0);
       sendto_one(sptr, form_str(RPL_CHANNELMODEIS),
 		 me.name, parv[0], parv[1],
 		 modebuf, parabuf);

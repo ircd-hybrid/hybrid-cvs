@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.51 2000/12/21 13:39:27 db Exp $
+ * $Id: channel.h,v 7.52 2000/12/28 22:19:27 davidt Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -120,7 +120,7 @@ extern int     is_voiced (struct Channel *chptr,struct Client *who);
 extern void    send_channel_modes (struct Client *, struct Channel *);
 extern int     check_channel_name(const char* name);
 extern void    channel_modes(struct Channel *chptr, struct Client *who,
-			     char *, char *);
+			     char *, char *, int);
 extern void    set_channel_mode(struct Client *, struct Client *, 
                                 struct Channel *, int, char **, char *);
 extern struct  Channel* get_channel(struct Client *,char*,int );

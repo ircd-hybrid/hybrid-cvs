@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.h,v 7.24 2000/12/28 20:26:37 toot Exp $
+ * $Id: m_info.h,v 7.25 2000/12/28 22:19:28 davidt Exp $
  */
 #ifndef INCLUDED_m_info_h
 #define INCLUDED_m_info_h
@@ -179,6 +179,12 @@ Info MyInformation[] = {
   { "TS_MAX_DELTA_DEFAULT", "", TS_MAX_DELTA_DEFAULT, "Maximum Allowed TS Delta from another Server" },
   { "TS_WARN_DELTA_DEFAULT", "", TS_WARN_DELTA_DEFAULT, "Maximum TS Delta before Sending Warning" },
 
+#ifdef USE_GETTEXT
+  { "USE_GETTEXT", "ON", 0, "Use gettext() for message customisation at runtime" },
+#else
+  { "USE_GETTEXT", "OFF", 0, "Use gettext() for message customisation at runtime" },
+#endif /* USE_GETTEXT */
+  
 #ifdef USE_RCS
   { "USE_RCS", "ON", 0, "Use \"ci\" to Keep RCS Control" },
 #else
