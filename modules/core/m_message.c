@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.57 2001/02/05 20:12:41 davidt Exp $
+ *   $Id: m_message.c,v 1.58 2001/02/14 20:07:55 fl_ Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -422,7 +422,7 @@ static int build_target_list(int p_or_n,
 	{
           if(*nick == '$')
             {
-              handle_opers(p_or_n, command, cptr,sptr,nick+1,text);
+              handle_opers(p_or_n, command, cptr,sptr,nick,text);
               continue;
             }
           if(strchr(nick, '@'))
@@ -827,8 +827,7 @@ static int flood_attack_channel(struct Client *sptr,struct Channel *chptr,
  *		  However, syntax has been changed.
  *		  previous syntax "/msg #some.host.mask"
  *		  now becomes     "/msg $#some.host.mask"
- *		  previous syntax "/msg $some.server.mask"
- *		  now becomes	  "/msg $$some.server.mask"
+ *		  previous syntax of: "/msg $some.server.mask" remains
  *		  This disambiguates the syntax.
  */
 static void handle_opers(int p_or_n,
