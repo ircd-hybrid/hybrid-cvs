@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: balloc.c,v 7.24 2002/02/27 17:20:15 androsyn Exp $
+ *  $Id: balloc.c,v 7.25 2002/02/27 17:28:17 androsyn Exp $
  */
 
 /* 
@@ -78,7 +78,7 @@ static int newblock(BlockHeap * bh);
 /* HP-UX sucks */
 #ifdef MAP_ANONYMOUS
 #ifndef MAP_ANON
-#define MAP_ANONYMOUS MAP_ANON
+#define MAP_ANON MAP_ANONYMOUS
 #endif
 #endif
 
