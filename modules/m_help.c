@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_help.c,v 1.18 2001/07/20 03:51:06 wcampbel Exp $
+ *   $Id: m_help.c,v 1.19 2001/07/20 12:45:37 wcampbel Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -36,10 +36,16 @@
 
 static void m_help(struct Client*, struct Client*, int, char**);
 static void mo_help(struct Client*, struct Client*, int, char**);
+static void mo_uhelp(struct Client*, struct Client*, int, char**);
 
 struct Message help_msgtab = {
   "HELP", 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_help, m_ignore, mo_help}
+};
+
+struct Message uhelp_msgtab = {
+  "UHELP", 0, 0, 0, MFLG_SLOW, 0,
+  {m_unregistered, m_help, m_ignore, mo_uhelp}
 };
 #ifndef STATIC_MODULES
 
@@ -47,12 +53,14 @@ void
 _modinit(void)
 {
   mod_add_cmd(&help_msgtab);
+  mod_add_cmd(&uhelp_msgtab);
 }
 
 void
 _moddeinit(void)
 {
   mod_del_cmd(&help_msgtab);
+  mod_del_cmd(&uhelp_msgtab);
 }
 
 char *_version = "20001122";
@@ -91,3 +99,14 @@ static void mo_help(struct Client *client_p, struct Client *source_p,
   SendMessageFile(source_p, &ConfigFileEntry.helpfile);
 }
 
+/*
+ * mo_uhelp - HELP message handler
+ * This is used so that opers can view the user help file without deopering
+ *      parv[0] = sender prefix
+ */
+
+static void mo_uhelp(struct Client *client_p, struct Client *source_p,
+                   int parc, char *parv[])
+{
+  SendMessageFile(source_p, &ConfigFileEntry.uhelpfile);
+}
