@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 1.40 2001/01/02 03:29:02 bysin Exp $
+ *   $Id: m_join.c,v 1.41 2001/01/02 03:41:51 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -395,14 +395,11 @@ void build_list_of_channels( struct Client *sptr,
           continue;
         }
 
-      /* We can't do this for interoperability reasons ;-( */
-#if 0
-      if (strlen(name) > CHANNELLEN-15)
+      if (strlen(name) > CHANNELLEN)
         {
-          sendto_one(sptr, form_str(ERR_BADCHANNAME),me.name, parv[0], name);
+          sendto_one(sptr, form_str(ERR_BADCHANNAME),me.name,sptr->name,name);
           continue;
         }
-#endif
 
       if (*jbuf)
         (void)strcat(jbuf, ",");
