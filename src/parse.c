@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.115 2001/11/13 11:45:49 leeh Exp $
+ *   $Id: parse.c,v 7.116 2001/11/28 17:48:51 db Exp $
  */
 
 #include <assert.h>
@@ -153,7 +153,7 @@ void parse(struct Client *client_p, char *pbuffer, char *bufend)
 
       sender = ch;
 
-      if( (s = strchr(ch, ' ')))
+      if((s = strchr(ch, ' ')))
 	{
 	  *s = '\0';
 	  s++;
@@ -178,7 +178,7 @@ void parse(struct Client *client_p, char *pbuffer, char *bufend)
            * (old IRC just let it through as if the
            * prefix just wasn't there...) --msa
            */
-          if (!from)
+          if (from == NULL)
             {
               Debug((DEBUG_ERROR, "Unknown prefix (%s)(%s) from (%s)",
                      sender, pbuffer, client_p->name));
