@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.113 2001/07/18 16:03:46 androsyn Exp $
+ * $Id: ircd_lexer.l,v 1.114 2001/07/19 07:15:39 a1kmm Exp $
  */
 
 %option case-insensitive
@@ -216,6 +216,7 @@ use_egd { return USE_EGD; }
 use_except	{ return USE_EXCEPT; }
 use_invex	{ return USE_INVEX; }
 use_knock	{ return USE_KNOCK; }
+throttle_time { return THROTTLE_TIME; }
 user		{ return USER;} 
 vchans_oper_only { return VCHANS_OPER_ONLY; }
 vhost	{ return VHOST; }
