@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_hash.c,v 1.3 2001/02/05 20:12:21 davidt Exp $
+ *   $Id: m_hash.c,v 1.4 2001/03/06 02:24:28 androsyn Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -74,7 +74,7 @@ char *_version = "20001122";
  *       -avalon
  *
  */
-static void mo_hash(struct Client* cptr, struct Client* sptr,
+static void mo_hash(struct Client* client_p, struct Client* source_p,
                     int parc, char* parv[])
 {
   struct Channel*  chan;
@@ -91,13 +91,13 @@ static void mo_hash(struct Client* cptr, struct Client* sptr,
 	  ++channel_count;
 	  if (hash_find_channel(chan->chname, 0) != chan)
 	    {
-	      sendto_one(sptr,
+	      sendto_one(source_p,
 			 "NOTICE %s :Can't find channel %s in hash table",
 			 parv[0], chan->chname);
 	      ++missing_count;
 	    }
 	}
-      sendto_one(sptr, "NOTICE %s :Channels: %d Missing Channels: %d",
+      sendto_one(source_p, "NOTICE %s :Channels: %d Missing Channels: %d",
                  parv[0], channel_count, missing_count);
       break;
 
@@ -107,12 +107,12 @@ static void mo_hash(struct Client* cptr, struct Client* sptr,
 	++client_count;
 	if (hash_find_client(client->name, 0) != client)
 	  {
-	    sendto_one(sptr, "NOTICE %s :Can't find client %s in hash table",
+	    sendto_one(source_p, "NOTICE %s :Can't find client %s in hash table",
 		       parv[0], client->name);
 	    ++missing_count;
 	  }
       }
-    sendto_one(sptr,"NOTICE %s :Clients: %d Missing Clients: %d",
+    sendto_one(source_p,"NOTICE %s :Clients: %d Missing Clients: %d",
 	       parv[0], client_count, missing_count);
     break;
 

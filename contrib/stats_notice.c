@@ -1,6 +1,6 @@
 /* copyright (c) 2000 Edward Brocklesby, Hybrid Development Team */
 /*
- * $Id: stats_notice.c,v 1.3 2001/01/26 23:16:09 db Exp $
+ * $Id: stats_notice.c,v 1.4 2001/03/06 02:24:29 androsyn Exp $
  */
 
 #include "modules.h"
@@ -36,25 +36,25 @@ show_stats(struct hook_stats_data *data)
 	sendto_realops_flags(FLAGS_SPY,
 			     "STATS %c requested by %s (%s@%s) [%s] on %s",
 			     data->statchar,
-			     data->sptr->name,
-			     data->sptr->username,
-			     data->sptr->host,
-			     data->sptr->user->server,
+			     data->source_p->name,
+			     data->source_p->username,
+			     data->source_p->host,
+			     data->source_p->user->server,
 			     data->name);
       else
 	sendto_realops_flags(FLAGS_SPY,
 			     "STATS %c requested by %s (%s@%s) [%s]",
 			     data->statchar,
-			     data->sptr->name,
-			     data->sptr->username,
-			     data->sptr->host,
-			     data->sptr->user->server);
+			     data->source_p->name,
+			     data->source_p->username,
+			     data->source_p->host,
+			     data->source_p->user->server);
     }
   else
     {
       sendto_realops_flags(FLAGS_SPY, "STATS %c requested by %s (%s@%s) [%s]",
-			   data->statchar, data->sptr->name, data->sptr->username,
-			   data->sptr->host, data->sptr->user->server);
+			   data->statchar, data->source_p->name, data->source_p->username,
+			   data->source_p->host, data->source_p->user->server);
     }
   return 0;
 }
