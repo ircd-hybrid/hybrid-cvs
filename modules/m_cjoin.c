@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_cjoin.c,v 1.51 2002/05/23 22:20:12 leeh Exp $
+ *  $Id: m_cjoin.c,v 1.52 2002/05/24 00:28:26 androsyn Exp $
  */
 
 #include "tools.h"
@@ -72,7 +72,7 @@ _moddeinit(void)
 #endif
 }
 
-const char *_version = "$Revision: 1.51 $";
+const char *_version = "$Revision: 1.52 $";
 #endif
 /*
 ** m_cjoin
@@ -220,4 +220,3 @@ static void m_cjoin(struct Client *client_p,
   channel_member_names(source_p, vchan_chptr, root_vchan->chname, 1);
 }
 
-#endif /* VCHANS */
