@@ -1,3 +1,13 @@
+*** 20001107_4 by db
+- this should add back the lameo weird oper privmsg masks
+  but it doesn't work. No matter, debug tomorrow ;) it still compiles
+
+  I'm going to "steal" the ircu new mask format for opers, its saner...
+  I believe everything is prefixed with $ for special oper thingies
+  Isomer, care to help out on this one?
+
+
+
 *** 20001107_3 by db
 - reworked ison slightly. *sigh* dunno what kind of drugs I was on
 
@@ -194,7 +204,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.504 2000/11/07 05:49:34 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.505 2000/11/07 08:56:25 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
