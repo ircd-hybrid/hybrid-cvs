@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.69 2003/06/24 02:36:16 joshk Exp $
+dnl $Id: configure.ac,v 7.70 2003/06/25 00:41:13 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -8,7 +8,7 @@ dnl said functions need to be just about as complex as they already are.
 AC_PREREQ(2.57)
 
 dnl Sneaky way to get an Id tag into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.69 2003/06/24 02:36:16 joshk Exp $])
+AC_COPYRIGHT([$Id: configure.ac,v 7.70 2003/06/25 00:41:13 joshk Exp $])
 
 AC_INIT([ircd-hybrid],[7-CURRENT])
 
@@ -305,8 +305,7 @@ AC_COMPILE_IFELSE(
 [AC_MSG_RESULT(no)
 have_v6="no"])
 
-AC_SEARCH_LIBS(crypt, [descrypt crypt],,
-[AC_MSG_ERROR([No crypt implementation found on your system!])])
+AC_SEARCH_LIBS(crypt, [crypt descrypt],,)
 
 CRYPT_LIB=$ac_cv_search_crypt
 
@@ -887,6 +886,16 @@ AC_HELP_STRING([--with-topiclen=NUMBER],[Set the max topic length to NUMBER (def
 AC_ARG_WITH(maxconn,
 AC_HELP_STRING([--with-maxconn=NUMBER],[Maximum number of connections the ircd can handle]),
         MAXCONN="$withval", MAXCONN=`ulimit -Hn`)
+
+
+if test "$MAXCONN" = unlimited; then
+	MAXCONN=65536
+fi
+
+if test $MAXCONN -gt 65536; then
+	MAXCONN=65536
+	AC_MSG_WARN([Max connections cannot be larger than 65536!])
+fi
 
 AC_DEFINE_UNQUOTED(TOPICLEN, ${TOPICLEN}, [Maximum topic length (<=390)])
 AC_DEFINE_UNQUOTED(NICKLEN, (${NICKLEN}+1), [Nickname length])
