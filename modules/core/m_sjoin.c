@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.123 2001/12/30 07:49:44 a1kmm Exp $
+ *   $Id: m_sjoin.c,v 1.124 2001/12/30 09:11:25 a1kmm Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-char *_version = "$Revision: 1.123 $";
+char *_version = "$Revision: 1.124 $";
 #endif
 /*
  * ms_sjoin
@@ -770,15 +770,21 @@ static void remove_our_modes( int hide_or_not,
   remove_a_mode(hide_or_not, chptr, top_chptr, source_p, &chptr->chanops, 'o');
   remove_a_mode(hide_or_not, chptr, top_chptr, source_p, &chptr->halfops, 'h');
   remove_a_mode(hide_or_not, chptr, top_chptr, source_p, &chptr->voiced, 'v');
+  remove_a_mode(hide_or_not, chptr, top_chptr, source_p,
+                &chptr->chanops_voiced, 'o');
+  remove_a_mode(hide_or_not, chptr, top_chptr, source_p,
+                &chptr->chanops_voiced, 'v');    
 
   /* Move all voice/ops etc. to non opped list */
   dlinkMoveList(&chptr->chanops, &chptr->peons);
   dlinkMoveList(&chptr->halfops, &chptr->peons);
   dlinkMoveList(&chptr->voiced, &chptr->peons);
+  dlinkMoveList(&chptr->chanops_voiced, &chptr->peons);
 
   dlinkMoveList(&chptr->locchanops, &chptr->locpeons);
   dlinkMoveList(&chptr->lochalfops, &chptr->locpeons);
   dlinkMoveList(&chptr->locvoiced, &chptr->locpeons);
+  dlinkMoveList(&chptr->locchanops_voiced, &chptr->peons);
 }
 
 

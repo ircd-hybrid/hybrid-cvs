@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_debug.c,v 7.62 2001/12/30 04:19:45 db Exp $
+ *   $Id: s_debug.c,v 7.63 2001/12/30 09:11:27 a1kmm Exp $
  */
 
 #include <sys/types.h> 
@@ -258,6 +258,10 @@ void count_memory(struct Client *source_p)
         channel_users++;
       for (dlink = chptr->chanops.head; dlink; dlink = dlink->next)
         channel_users++;
+#ifdef REQUIRE_OANDV
+      for (dlink = chptr->chanops_voiced.head; dlink; dlink = dlink->next)
+        channel_users++;
+#endif
       for (dlink = chptr->voiced.head; dlink; dlink = dlink->next)
         channel_users++;
       for (dlink = chptr->halfops.head; dlink; dlink = dlink->next)

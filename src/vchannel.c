@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: vchannel.c,v 7.59 2001/11/13 13:35:14 leeh Exp $
+ * $Id: vchannel.c,v 7.60 2001/12/30 09:11:28 a1kmm Exp $
  */
 
 #include "tools.h"
@@ -466,6 +466,15 @@ pick_vchan_id(struct Channel *chptr)
         target_p = lp->data;
         return target_p->name;
       }
+
+#ifdef REQUIRE_OANDV
+  for (lp = chptr->chanops_voiced.head; lp; lp = lp->next)
+    if (!lp->next)
+      {
+        target_p = lp->data;
+        return target_p->name;
+      }
+#endif
 
   for (lp = chptr->halfops.head; lp; lp = lp->next)
     if (!lp->next)

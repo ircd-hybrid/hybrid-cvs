@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.229 2001/12/30 07:45:15 db Exp $
+ *   $Id: s_serv.c,v 7.230 2001/12/30 09:11:28 a1kmm Exp $
  */
 
 #include <sys/types.h>
@@ -1564,6 +1564,9 @@ burst_all(struct Client *client_p)
       if(chptr->users != 0)
         {
           burst_members(client_p,&chptr->chanops);
+#ifdef REQUIRE_OANDV
+          burst_members(client_p,&chptr->chanops_voiced);
+#endif
           burst_members(client_p,&chptr->voiced);
           burst_members(client_p,&chptr->halfops);
           burst_members(client_p,&chptr->peons);
@@ -1582,6 +1585,9 @@ burst_all(struct Client *client_p)
               if(vchan->users != 0)
                 {
                   burst_members(client_p,&vchan->chanops);
+#ifdef REQUIRE_OANDV
+                  burst_members(client_p,&vchan->chanops_voiced);
+#endif
                   burst_members(client_p,&vchan->voiced);
                   burst_members(client_p,&vchan->halfops);
                   burst_members(client_p,&vchan->peons);
@@ -1653,6 +1659,9 @@ burst_channel(struct Client *client_p, struct Channel *chptr)
   struct Channel*   vchan;
 
   burst_ll_members(client_p,&chptr->chanops);
+#ifdef REQUIRE_OANDV
+  burst_ll_members(client_p, &chptr->chanops_voiced);
+#endif
   burst_ll_members(client_p,&chptr->voiced);
   burst_ll_members(client_p,&chptr->halfops);
   burst_ll_members(client_p,&chptr->peons);
@@ -1675,6 +1684,9 @@ burst_channel(struct Client *client_p, struct Channel *chptr)
 	{
 	  vchan = ptr->data;
 	  burst_ll_members(client_p,&vchan->chanops);
+#ifdef REQUIRE_OANDV
+	  burst_ll_members(client_p,&vchan->chanops_voiced);
+#endif
 	  burst_ll_members(client_p,&vchan->voiced);
 	  burst_ll_members(client_p,&vchan->halfops);
 	  burst_ll_members(client_p,&vchan->peons);
