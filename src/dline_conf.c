@@ -2,7 +2,7 @@
  * A slightly nicer version of dline_conf.c
  * Written by Aaron Sethman <androsyn@ratbox.org>
  *
- * $Id: dline_conf.c,v 7.26 2001/02/14 05:53:19 toot Exp $
+ * $Id: dline_conf.c,v 7.27 2001/02/16 04:55:30 androsyn Exp $
  */
 
 #include "config.h"
@@ -108,14 +108,16 @@ void add_Eline(struct ConfItem *conf_ptr)
 	conf_ptr->status = CONF_DLINE;
 	conf_ptr->flags |= CONF_FLAGS_E_LINED;
 	node = make_and_lookup(eline, conf_ptr->host);
-	node->data = conf_ptr;
+	if(node != NULL)
+		node->data = conf_ptr;
 }
 
 void add_ip_Kline(struct ConfItem *conf_ptr)
 {
 	patricia_node_t *node;
 	node = make_and_lookup(kline, conf_ptr->host);
-	node->data = conf_ptr;	
+	if(node != NULL)
+		node->data = conf_ptr;	
 }
 
 void report_dlines(struct Client *sptr)
@@ -155,7 +157,8 @@ void add_ip_Iline(struct ConfItem *conf_ptr)
 {
 	patricia_node_t *node;
 	node = make_and_lookup(iline, conf_ptr->host);
-	node->data = conf_ptr;	
+	if(node != NULL)
+		node->data = conf_ptr;	
 }
 
 void report_ip_Ilines(struct Client *sptr)
