@@ -19,8 +19,10 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.53 2000/12/24 00:04:46 ejb Exp $
+ * $Id: s_conf.h,v 7.54 2000/12/24 01:43:54 ejb Exp $
  */
+
+#include <sys/param.h>
 
 #ifndef INCLUDED_config_h
 #include "config.h"             /* defines */
@@ -176,9 +178,9 @@ typedef struct
   char* network_name;
   char* network_desc;
 
-	char *fname_operlog;
-	char *fname_userlog;
-	char *fname_foperlog;
+	char fname_operlog[MAXPATHLEN];
+	char fname_userlog[MAXPATHLEN];
+	char fname_foperlog[MAXPATHLEN];
 	
   MessageFile helpfile;
   MessageFile motd;

@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.68 2000/12/24 01:36:55 ejb Exp $
+ * $Id: ircd_parser.y,v 1.69 2000/12/24 01:43:58 ejb Exp $
  */
 
 %{
@@ -234,7 +234,8 @@ modules_entry:          MODULES
 modules_items:   modules_items modules_item |
                     modules_item
 
-modules_item:    modules_module | modules_path
+modules_item:    modules_module | modules_path |
+                 error
 
 modules_module:  MODULE '=' QSTRING ';'
 {
