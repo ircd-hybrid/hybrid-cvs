@@ -1,6 +1,5 @@
-/* $Id: setup.h.in,v 7.46 2002/02/27 17:51:36 enygma Exp $ */
-/* include/setup.h.in.  Generated automatically from autoconf/configure.in by autoheader.  */
-
+/* include/setup.h.in.  Generated automatically from autoconf/configure.in by autoheader 2.13.  */
+/* $Id: setup.h.in,v 7.47 2002/03/01 14:30:21 androsyn Exp $ */
 /* Define as __inline if that's what the C compiler calls it.  */
 #undef inline
 
@@ -113,6 +112,9 @@
 
 /* Define if you have the mmap function.  */
 #undef HAVE_MMAP
+
+/* Define if you have the nanosleep function.  */
+#undef HAVE_NANOSLEEP
 
 /* Define if you have the snprintf function.  */
 #undef HAVE_SNPRINTF

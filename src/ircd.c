@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.220 2002/02/17 05:39:27 androsyn Exp $
+ *  $Id: ircd.c,v 7.221 2002/03/01 14:30:24 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -158,6 +158,21 @@ int splitmode;
 int splitchecking;
 int split_users;
 int split_servers;
+
+static int irc_sleep(unsigned long useconds)
+{
+#ifdef HAVE_NANOSLEEP
+	struct timespec t;
+	t.tv_sec = useconds / (unsigned long)  1000000;
+	t.tv_nsec = (useconds % (unsigned long) 1000000) * 1000 ;
+	return nanosleep(&t, (struct timespec *) NULL);
+#else
+	struct timeval t;
+	t.tv_sec = 0;
+	tv.tv_usec = useconds;
+	select(0, NULL, NULL, NULL, &t);
+#endif
+}
 
 /*
  * get_vm_top - get the operating systems notion of the resident set size
@@ -346,7 +361,7 @@ io_loop(void)
       if(st > 250000)
       	st = 250000;
       
-      usleep(st);
+      irc_sleep(st);
 
       comm_select(0);
   
