@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.79 2000/12/15 19:55:52 db Exp $
+ *   $Id: send.c,v 7.80 2000/12/16 22:48:36 db Exp $
  */
 #include "tools.h"
 #include "send.h"
@@ -351,7 +351,6 @@ send_queued_write(int fd, void *data)
  * output	- NONE
  * side effects	- send message to single client
  */
-
 void
 sendto_one(struct Client *to, const char *pattern, ...)
 
@@ -501,7 +500,11 @@ sendto_list_anywhere(struct Client *one, struct Client *from,
 /*
  * sendto_serv_butone
  *
- * Send a message to all connected servers except the client 'one'.
+ * inputs	- pointer to client to not send to
+ *		- var arg pattern to send
+ * output	- NONE
+ * side effects	- Send a message to all connected servers
+ *                except the client 'one'.
  */
 void
 sendto_serv_butone(struct Client *one, const char *pattern, ...)

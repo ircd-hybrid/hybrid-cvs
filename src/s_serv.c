@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.75 2000/12/16 17:46:48 db Exp $
+ *   $Id: s_serv.c,v 7.76 2000/12/16 22:48:35 db Exp $
  */
 #include "tools.h"
 #include "s_serv.h"
@@ -978,8 +978,8 @@ burst_all(struct Client *cptr)
 /*
  * do_lazy_link_burst
  *
- * inputs	- pointer to server to send burst to 
- * output	- NONE
+ * inputs       - pointer to server to send burst to 
+ * output       - NONE
  * side effects - shortened burst from LazyLink capable hub
  */
 static  void
@@ -995,8 +995,8 @@ do_lazy_link_burst(struct Client *cptr)
 /*
  * cjoin_all
  *
- * inputs	- server to ask for channel info from
- * output	- NONE
+ * inputs       - server to ask for channel info from
+ * output       - NONE
  * side effects	- CJOINS for all the leafs known channels is sent
  */
 static void
@@ -1015,14 +1015,17 @@ cjoin_all(struct Client *cptr)
  * sjoin_channel
  *
  * inputs	- pointer to server to send sjoins to
- * 		- channel pointer
+ *              - channel pointer
  * output	- none
  * side effects	- All sjoins for channel(s) given by chptr are sent
- *		  for all channel members.
+ *                for all channel members. If channel has vchans, send
+ *                them on.
  */
 void
 sjoin_channel(struct Client *cptr, struct Channel *chptr)
 {
+  dlink_node *ptr;
+  struct Channel *vchan;
 
   /* serial counter borrowed from send.c */
   current_serial++;
@@ -1034,9 +1037,29 @@ sjoin_channel(struct Client *cptr, struct Channel *chptr)
 
   send_channel_modes(cptr, chptr);
   chptr->lazyLinkChannelExists |= cptr->localClient->serverMask;
-  /* Send the topic */
+
   sendto_one(cptr, ":%s TOPIC %s :%s",
 	     me.name, chptr->chname, chptr->topic);
+
+  if (HasVchans(chptr))
+    {
+      for (ptr = chptr->vchan_list.head; ptr; ptr->next)
+	{
+          vchan = ptr->data;
+
+          sjoin_members(cptr, vchan, &vchan->chanops, "@");
+          sjoin_members(cptr, vchan, &vchan->voiced, "+");
+          sjoin_members(cptr, vchan, &vchan->halfops, "");
+          sjoin_members(cptr, vchan, &vchan->peons, "");
+
+	  send_channel_modes(cptr, vchan);
+          vchan->lazyLinkChannelExists |= cptr->localClient->serverMask;
+
+          sendto_one(cptr, ":%s TOPIC %s :%s",
+	     me.name, vchan->chname, vchan->topic);
+
+	}
+    }
 }
 
 /*
@@ -1058,19 +1081,15 @@ sjoin_members(struct Client *cptr, struct Channel *chptr,
     {
       acptr = ptr->data;
 
-      if (acptr->serial != current_serial)
+      if (acptr->from != cptr)
 	{
-	  acptr->serial = current_serial;
-	  if (acptr->from != cptr)
-	    {
-	      sendto_channel_remote(chptr, cptr,
-				    ":%s SJOIN %lu %s + :%s%s",
-				    me.name,
-				    chptr->channelts,
-				    chptr->chname,
-				    op_flag,
-				    acptr->name);
-	    }
+	  sendto_one(cptr,
+		     ":%s SJOIN %lu %s + :%s%s",
+		     me.name,
+		     chptr->channelts,
+		     chptr->chname,
+		     op_flag,
+		     acptr->name);
 	}
     }
 }
