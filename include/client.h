@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.190 2003/05/22 03:55:03 db Exp $
+ *  $Id: client.h,v 7.191 2003/05/22 17:09:01 michael Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -36,15 +36,13 @@
 #include "dbuf.h"
 #include "channel.h"
 #include "irc_res.h"
+
 #define HOSTIPLEN	53 /* sizeof("ffff:ffff:ffff:ffff:ffff:ffff:255.255.255.255.ipv6") */
 #define PASSWDLEN       20
-#define CIPHERKEYLEN    64      /* 512bit */
-
-#define IDLEN           12      /* this is the maximum length, not the actual
-                                   generated length; DO NOT CHANGE! */
-#define COOKIELEN       IDLEN
-
-#define CLIENT_BUFSIZE 512      /* must be at least 512 bytes */
+#define CIPHERKEYLEN    64 /* 512bit */
+#define IDLEN           12 /* this is the maximum length, not the actual
+                              generated length; DO NOT CHANGE! */
+#define CLIENT_BUFSIZE 512 /* must be at least 512 bytes */
 
 
 /*
@@ -62,22 +60,17 @@ struct LocalUser;
  */
 struct User
 {
-  dlink_list     channel;       /* chain of channel pointer blocks */
-  dlink_list     invited;       /* chain of invite pointer blocks */
-  char*          away;          /* pointer to away message */
-  time_t         last_away;     /* Away since... */
+  dlink_list     channel;   /* chain of channel pointer blocks */
+  dlink_list     invited;   /* chain of invite pointer blocks */
+  char*          away;      /* pointer to away message */
+  time_t         last_away; /* Away since... */
   time_t         last;
-  int            refcnt;        /* Number of times this block is referenced */
-  int            joined;        /* number of channels joined */
-  struct Client *server;        /* pointer to server */
+  int            refcnt;    /* Number of times this block is referenced */
+  int            joined;    /* number of channels joined */
+  struct Client *server;    /* pointer to server */
   char*          response;  /* expected response from client */
   char*          auth_oper; /* Operator to become if they supply the response.*/
-	/* client ID, unique ID per client */
-  char id[IDLEN + 1];
-#if 0
-  /* unused */
-  char id_key[IDLEN + 1];
-#endif
+  char id[IDLEN + 1];       /* client ID, unique ID per client */
 };
 
 struct Server
@@ -109,13 +102,23 @@ struct ZipStats
   double out_ratio;
 };
 
+struct ListTask
+{
+  int hash_index;       /* the bucket we are currently in */
+  dlink_list show_mask; /* show these channels..          */
+  dlink_list hide_mask; /* ..and hide these ones          */
+  unsigned int users_min, users_max;
+  unsigned int created_min, created_max;
+  unsigned int topicts_min, topicts_max;
+};
+
 struct Client
 {
   dlink_node node;
   dlink_node lnode;      /* Used for Server->servers/users */
 
-  slink_node snode;
-  slink_node idsnode;
+  struct Client *hnext;
+  struct Client *idhnext;
 
   struct User*      user;       /* ...defined, if this is a User */
   struct Server*    serv;       /* ...defined, if this is a server */
@@ -174,20 +177,8 @@ struct Client
    */
   dlink_list	allow_list;	/* clients I'll allow to talk to me */
   dlink_list	on_allow_list;	/* clients that have =me= on their allow list*/
-  
-  
+
   struct LocalUser *localClient;
-
-};
-
-struct ListTask
-{
-  int           hash_index;     /* the bucket we are currently in */
-  dlink_list    show_mask;      /* show these channels.. */
-  dlink_list    hide_mask;      /* ..and hide these ones */
-  unsigned int  users_min, users_max;
-  unsigned int  created_min, created_max;
-  unsigned int  topicts_min, topicts_max;
 };
 
 struct LocalUser
@@ -446,10 +437,8 @@ struct LocalUser
 #define OPER_FLAG_REHASH      0x00000100 /* oper can rehash             */
 #define OPER_FLAG_ADMIN       0x00000200 /* oper can set umode +a       */
 
-#define FLAGS_ID     (FLAGS_NEEDID | FLAGS_GOTID)
 
-/* flags macros.
- */
+/* flags macros. */
 #define IsPerson(x)             (IsClient(x) && (x)->user)
 #define DoAccess(x)             ((x)->flags & FLAGS_CHKACCESS)
 #define IsDead(x)               ((x)->flags & FLAGS_DEADSOCKET)
@@ -596,8 +585,8 @@ extern void check_klines(void);
 extern void check_xlines(void);
 extern const char *get_client_name(struct Client* client, int show_ip);
 extern void init_client(void);
-extern struct Client *make_client(struct Client* from);
-extern void free_client(struct Client* client);
+extern struct Client *make_client(struct Client *from);
+extern void free_client(struct Client *client);
 extern void remove_client_from_list(struct Client *);
 extern int exit_client(struct Client *, struct Client *, struct Client *, const char *);
 extern void count_local_client_memory(int *count, int *memory);

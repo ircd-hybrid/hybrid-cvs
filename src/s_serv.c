@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.329 2003/05/22 12:45:42 adx Exp $
+ *  $Id: s_serv.c,v 7.330 2003/05/22 17:09:08 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1296,7 +1296,8 @@ fork_server(struct Client *server)
   slink_fds[1][1][0] = fd_temp[0];
   slink_fds[1][0][1] = fd_temp[1];
 #endif
-  if ((ret = fork()) < 0) {
+  if ((ret = fork()) < 0)
+  {
     goto fork_error;
   }
   else if (ret == 0)

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: tools.h,v 1.24 2003/05/07 16:19:02 michael Exp $
+ *  $Id: tools.h,v 1.25 2003/05/22 17:09:01 michael Exp $
  */
 
 #ifndef __TOOLS_H__
@@ -219,13 +219,14 @@ dlinkMoveList(dlink_list *from, dlink_list *to)
   /* There are three cases */
   /* case one, nothing in from list */
 
-    if(from->head == NULL)
+    if (from->head == NULL)
       return;
 
   /* case two, nothing in to list */
   /* actually if to->head is NULL and to->tail isn't, thats a bug */
 
-    if(to->head == NULL) {
+    if (to->head == NULL)
+    {
        to->head = from->head;
        to->tail = from->tail;
        from->head = from->tail = NULL;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.100 2003/05/20 06:51:47 michael Exp $
+ *  $Id: m_whois.c,v 1.101 2003/05/22 17:09:03 michael Exp $
  */
 
 #include "stdinc.h"
@@ -72,7 +72,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-const char *_version = "$Revision: 1.100 $";
+const char *_version = "$Revision: 1.101 $";
 #endif
 
 /*
@@ -256,11 +256,8 @@ global_whois(struct Client *source_p, char *nick, int wilds, int glob)
   {
     target_p = ptr->data;
 
-    if (IsServer(target_p))
+    if (!IsPerson(target_p))
       continue;
-
-    if (IsMe(target_p))
-      break;
 
     if (!match(nick, target_p->name))
       continue;
@@ -350,10 +347,8 @@ static void
 whois_person(struct Client *source_p,struct Client *target_p, int glob)
 {
   char buf[BUFSIZE];
-  const char *chname;
-  const char *server_name;
   dlink_node *lp;
-  struct Client *a2client_p;
+  struct Client *server_p;
   struct Channel *chptr;
   int cur_len = 0;
   int mlen;
@@ -364,13 +359,11 @@ whois_person(struct Client *source_p,struct Client *target_p, int glob)
 
   assert(target_p->user != NULL);
 
-  a2client_p = target_p->user->server;
+  server_p = target_p->user->server;
 
   sendto_one(source_p, form_str(RPL_WHOISUSER),
              me.name, source_p->name, target_p->name,
              target_p->username, target_p->host, target_p->info);
-  server_name = target_p->user->server->name;
-
   ircsprintf(buf, form_str(RPL_WHOISCHANNELS),
              me.name, source_p->name, target_p->name, "");
 
@@ -381,18 +374,17 @@ whois_person(struct Client *source_p,struct Client *target_p, int glob)
   DLINK_FOREACH(lp, target_p->user->channel.head)
   {
     chptr  = lp->data;
-    chname = chptr->chname;
 
     if (ShowChannel(source_p, chptr))
     {
-      if ((cur_len + strlen(chname) + 2) > (BUFSIZE - 4))
+      if ((cur_len + strlen(chptr->chname) + 2) > (BUFSIZE - 4))
       {
 	sendto_one(source_p, "%s", buf);
 	cur_len = mlen;
 	t = buf + mlen;
       }
 
-      ircsprintf(t, "%s%s ", channel_chanop_or_voice(chptr, target_p), chname);
+      ircsprintf(t, "%s%s ", channel_chanop_or_voice(chptr, target_p), chptr->chname);
 
       tlen = strlen(t);
       t += tlen;
@@ -406,8 +398,8 @@ whois_person(struct Client *source_p,struct Client *target_p, int glob)
 
   if ((IsOper(source_p) || !ConfigServerHide.hide_servers) || target_p == source_p)
     sendto_one(source_p, form_str(RPL_WHOISSERVER),
-	       me.name, source_p->name, target_p->name, server_name,
-	       a2client_p->info);
+               me.name, source_p->name, target_p->name,
+               server_p->name, server_p->info);
   else
     sendto_one(source_p, form_str(RPL_WHOISSERVER),
 	       me.name, source_p->name, target_p->name,
@@ -415,12 +407,13 @@ whois_person(struct Client *source_p,struct Client *target_p, int glob)
 	       ServerInfo.network_desc);
 
   if (target_p->user->away)
-    sendto_one(source_p, form_str(RPL_AWAY), me.name,
-	       source_p->name, target_p->name, target_p->user->away);
+    sendto_one(source_p, form_str(RPL_AWAY),
+               me.name, source_p->name, target_p->name,
+               target_p->user->away);
 
   if (IsOper(target_p))
     sendto_one(source_p, form_str(RPL_WHOISOPERATOR),
-	       me.name, source_p->name, target_p->name);
+               me.name, source_p->name, target_p->name);
 
   if (MyConnect(target_p)) /* Can't do any of this if not local! db */
   {
@@ -439,9 +432,9 @@ whois_person(struct Client *source_p,struct Client *target_p, int glob)
   hd.client_p = target_p;
   hd.source_p = source_p;
 
-/* although we should fill in parc and parv, we don't ..
- *	 be careful of this when writing whois hooks
- */
+  /* although we should fill in parc and parv, we don't ..
+   * be careful of this when writing whois hooks
+   */
   if (MyClient(source_p)) 
     hook_call_event("doing_whois", &hd);
 }

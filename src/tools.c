@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: tools.c,v 7.30 2003/05/07 16:19:04 michael Exp $
+ *  $Id: tools.c,v 7.31 2003/05/22 17:09:09 michael Exp $
  *
  * When you update these functions make sure you update the ones in tools.h
  * as well!!!
@@ -41,7 +41,8 @@ mem_frob(void *data, int len)
     unsigned char b[4] = { 0xef, 0xbe, 0xad, 0xde };
     int i;
     char *cdata = data;
-    for (i = 0; i < len; i++) {
+    for (i = 0; i < len; i++)
+    {
         *cdata = b[i % 4];
         cdata++;
     }

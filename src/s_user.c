@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.263 2003/05/22 06:03:55 metalrock Exp $
+ *  $Id: s_user.c,v 7.264 2003/05/22 17:09:08 michael Exp $
  */
 
 #include "stdinc.h"
@@ -422,11 +422,6 @@ register_local_user(struct Client *client_p, struct Client *source_p,
 
     strlcpy(source_p->user->id, id, sizeof(source_p->user->id));
     add_to_id_hash_table(id, source_p);
-#if 0
-    /* unused */
-    id = id_get();
-    strcpy(user->id_key, id);
-#endif
   }
 
   irc_getnameinfo((struct sockaddr *)&source_p->localClient->ip,

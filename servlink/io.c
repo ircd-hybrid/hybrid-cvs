@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: io.c,v 1.30 2003/05/14 18:38:24 joshk Exp $
+ *   $Id: io.c,v 1.31 2003/05/22 17:09:06 michael Exp $
  */
 
 #include "stdinc.h"
@@ -671,7 +671,8 @@ int check_error(int ret, int io, int fd)
   }
   
   /* ret == -1.. */
-  switch (errno) {
+  switch (errno)
+  {
     case EINPROGRESS:
     case EWOULDBLOCK:
 #if EAGAIN != EWOULDBLOCK

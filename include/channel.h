@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.136 2003/05/12 08:34:22 michael Exp $
+ *  $Id: channel.h,v 7.137 2003/05/22 17:09:00 michael Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -45,7 +45,8 @@ struct Mode
 struct Channel
 {
   dlink_node node;
-  slink_node snode;
+
+  struct Channel *hnextch;
 
   struct Mode     mode;
   char            *topic;
@@ -93,7 +94,6 @@ extern int is_chan_op(struct Channel *chptr,struct Client *who);
 extern int is_voiced(struct Channel *chptr,struct Client *who);
 
 #define find_user_link(list,who) who!=NULL?dlinkFind(list,who):NULL
-#define FIND_AND_DELETE(list,who) who!=NULL?dlinkFindDelete(list,who)
 
 extern void add_user_to_channel(struct Channel *chptr, struct Client *who, int flags);
 extern int remove_user_from_channel(struct Channel *chptr, struct Client *who);

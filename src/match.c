@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: match.c,v 7.26 2003/05/19 19:10:53 stu Exp $
+ * $Id: match.c,v 7.27 2003/05/22 17:09:08 michael Exp $
  *
  */
 #include "stdinc.h"
@@ -190,7 +190,8 @@ int match_esc(const char *mask, const char *name)
         m++;
       return (*m == 0);
     }
-    if (ToLower(*m) != ToLower(*n) && !(!quote && *m == '?')) {
+    if (ToLower(*m) != ToLower(*n) && !(!quote && *m == '?'))
+    {
       if (!wild)
         return 0;
       m = ma;
@@ -204,7 +205,7 @@ int match_esc(const char *mask, const char *name)
         n++;
     }
   }
-  return 0;
+  return(0);
 }
 
 static inline int 
@@ -221,13 +222,11 @@ comp_with_mask(void *addr, void *dest, unsigned int mask)
   return (0);
 }
 
-
 /* match_cidr()
  *
  * Input - mask, address
  * Ouput - 1 = Matched 0 = Did not match
  */
-
 int
 match_cidr(const char *s1, const char *s2)
 {

@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_kqueue.c,v 1.32 2003/05/18 23:29:27 michael Exp $
+ *  $Id: s_bsd_kqueue.c,v 1.33 2003/05/22 17:09:08 michael Exp $
  */
 
 #include "stdinc.h"
@@ -264,12 +264,14 @@ comm_select(unsigned long delay)
 	switch (ke[i].filter)
 	  {
 	  case EVFILT_READ:
-	    if ((hdl = F->read_handler) != NULL) {
+	    if ((hdl = F->read_handler) != NULL)
+            {
 	      F->read_handler = NULL;
 	      hdl(fd, F->read_data);
 	    }
 	  case EVFILT_WRITE:
-	    if ((hdl = F->write_handler) != NULL) {
+	    if ((hdl = F->write_handler) != NULL)
+            {
 	      F->write_handler = NULL;
 	      hdl(fd, F->write_data);
 	    }

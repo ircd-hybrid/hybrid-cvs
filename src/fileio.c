@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fileio.c,v 7.30 2003/05/22 05:32:58 lusky Exp $
+ *  $Id: fileio.c,v 7.31 2003/05/22 17:09:08 michael Exp $
  */
 #include "stdinc.h"
 #include "fileio.h"
@@ -44,11 +44,13 @@ file_open(const char *filename, int mode, int fmode)
 {
     int fd;
     fd = open(filename, mode, fmode);
-    if (fd == MASTER_MAX) {
+    if (fd == MASTER_MAX)
+    {
         close(fd); /* Too many FDs! */
         errno = ENFILE;
         fd = -1;
-    } else if (fd >= 0)
+    }
+    else if (fd >= 0)
         fd_open(fd, FD_FILE, filename);
     
     return(fd);
@@ -146,8 +148,9 @@ fbrewind(FBFILE *fb)
     fb->flags = 0;
     fb->pbptr = NULL;
   }
+
   lseek(fb->fd, 0l, SEEK_SET);
-  return (0);
+  return(0);
 }
 
 void

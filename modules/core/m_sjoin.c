@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.152 2003/05/13 02:32:16 joshk Exp $
+ *  $Id: m_sjoin.c,v 1.153 2003/05/22 17:09:05 michael Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.152 $";
+const char *_version = "$Revision: 1.153 $";
 #endif
 /*
  * ms_sjoin
@@ -78,25 +78,20 @@ const char *_version = "$Revision: 1.152 $";
  * all the specified users while sending JOIN/MODEs to local clients
  */
 
-static char    modebuf[MODEBUFLEN];
-static char    parabuf[MODEBUFLEN];
-static char    *para[MAXMODEPARAMS];
-static char    *mbuf;
-static int     pargs;
+static char modebuf[MODEBUFLEN];
+static char parabuf[MODEBUFLEN];
+static char *para[MAXMODEPARAMS];
+static char *mbuf;
+static int pargs;
 
 static void set_final_mode(struct Mode *mode,struct Mode *oldmode);
-static void remove_our_modes(int type,
-		      struct Channel *chptr,
-		      struct Client *source_p);
-
-static void remove_a_mode(int hide_or_not,
-                          struct Channel *chptr,
+static void remove_our_modes(struct Channel *chptr, struct Client *source_p);
+static void remove_a_mode(struct Channel *chptr,
                           struct Client *source_p, dlink_list *list, char flag);
-
 
 static void
 ms_sjoin(struct Client *client_p, struct Client *source_p,
-	 int parc, char *parv[])
+         int parc, char *parv[])
 {
   struct Channel *chptr;
   struct Client  *target_p, *lclient_p;
@@ -113,11 +108,10 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   int		 num_prefix=0;
   int            isnew;
   int		 buflen = 0;
-  register       char *s, *nhops;
+  char *s, *nhops;
   static         char buf[2*BUFSIZE]; /* buffer for modes and prefix */
   static         char sjbuf_nhops[BUFSIZE]; /* buffer with halfops as @ */
   char           *p; /* pointer used making sjbuf */
-  int hide_or_not;
   int i;
   dlink_node *m;
 
@@ -203,7 +197,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
     newts = (oldts==0) ? oldts : 800000000;
   }
 #else
-  if(!isnew && !newts && oldts)
+  if (!isnew && !newts && oldts)
   {
     sendto_channel_local(ALL_MEMBERS, chptr,
  		":%s NOTICE %s :*** Notice -- TS for %s changed from %lu to 0",
@@ -256,15 +250,13 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
       strcpy(mode.key, oldmode->key);
   }
 
-  hide_or_not = ALL_MEMBERS;
-
   set_final_mode(&mode,oldmode);
   chptr->mode = mode;
 
   /* Lost the TS, other side wins, so remove modes on this side */
   if (!keep_our_modes)
   {
-    remove_our_modes(ALL_MEMBERS, chptr, source_p);
+    remove_our_modes(chptr, source_p);
     sendto_channel_local(ALL_MEMBERS, chptr,
    		         ":%s NOTICE %s :*** Notice -- TS for %s changed from %lu to %lu",
 	 		 me.name, chptr->chname, chptr->chname,
@@ -517,19 +509,19 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   {
     target_p = m->data;
 
-    if(target_p == client_p->from)
+    if (target_p == client_p->from)
       continue;
 
     /* skip lazylinks that don't know about this server */
     if(ServerInfo.hub && IsCapable(target_p,CAP_LL))
     {
       if (!(chptr->lazyLinkChannelExists &
-          target_p->localClient->serverMask) )
+          target_p->localClient->serverMask))
         continue;
     }
 
     /* Its a blank sjoin, ugh */
-    if(!parv[4+args][0])
+    if (!parv[4+args][0])
       return;
 
     sendto_one(target_p, "%s%s", buf, sjbuf_nhops);
@@ -545,8 +537,8 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
  */
 struct mode_letter
 {
-  int mode;
-  char letter;
+  unsigned int mode;
+  unsigned char letter;
 };
 
 struct mode_letter flags[] =
@@ -609,7 +601,7 @@ set_final_mode(struct Mode *mode,struct Mode *oldmode)
           what = -1;
         }
       *mbuf++ = 'k';
-      len = ircsprintf(pbuf,"%s ", oldmode->key);
+      len = ircsprintf(pbuf, "%s ", oldmode->key);
       pbuf += len;
       pargs++;
     }
@@ -650,11 +642,10 @@ set_final_mode(struct Mode *mode,struct Mode *oldmode)
  *		  chanop modes etc., this side lost the TS.
  */
 static void
-remove_our_modes(int hide_or_not,
-		 struct Channel *chptr, struct Client *source_p)
+remove_our_modes(struct Channel *chptr, struct Client *source_p)
 {
-  remove_a_mode(hide_or_not, chptr, source_p, &chptr->chanops, 'o');
-  remove_a_mode(hide_or_not, chptr, source_p, &chptr->voiced, 'v');
+  remove_a_mode(chptr, source_p, &chptr->chanops, 'o');
+  remove_a_mode(chptr, source_p, &chptr->voiced, 'v');
 
   /* Move all voice/ops etc. to non opped list */
   dlinkMoveList(&chptr->chanops, &chptr->peons);
@@ -664,10 +655,8 @@ remove_our_modes(int hide_or_not,
   dlinkMoveList(&chptr->locvoiced, &chptr->locpeons);
 
 #ifdef REQUIRE_OANDV
-  remove_a_mode(hide_or_not, chptr, source_p,
-                &chptr->chanops_voiced, 'o');
-  remove_a_mode(hide_or_not, chptr, source_p,
-                &chptr->chanops_voiced, 'v');    
+  remove_a_mode(chptr, source_p, &chptr->chanops_voiced, 'o');
+  remove_a_mode(chptr, source_p, &chptr->chanops_voiced, 'v');    
   dlinkMoveList(&chptr->chanops_voiced, &chptr->peons);
   dlinkMoveList(&chptr->locchanops_voiced, &chptr->locpeons);
 #endif
@@ -680,13 +669,11 @@ remove_our_modes(int hide_or_not,
  * side effects	- remove ONE mode from a channel
  */
 static
-void remove_a_mode(int hide_or_not,
-		   struct Channel *chptr, struct Client *source_p,
-		   dlink_list *list, char flag)
+void remove_a_mode(struct Channel *chptr, struct Client *source_p,
+                   dlink_list *list, char flag)
 {
   dlink_node *ptr;
   struct Client *target_p;
-  char buf[BUFSIZE];
   char lmodebuf[MODEBUFLEN];
   char *lpara[MAXMODEPARAMS];
   char *chname;
@@ -698,10 +685,6 @@ void remove_a_mode(int hide_or_not,
   lpara[0] = lpara[1] = lpara[2] = lpara[3] = "";
 
   chname = chptr->chname;
-
-  ircsprintf(buf,":%s MODE %s ", (IsHidden(source_p) ||
-	     ConfigServerHide.hide_servers) ? me.name :
-	     source_p->name, chname);
 
   DLINK_FOREACH(ptr, list->head)
   {
@@ -720,7 +703,7 @@ void remove_a_mode(int hide_or_not,
 			   ConfigServerHide.hide_servers) ?
 			   me.name : source_p->name,
 			   chname, lmodebuf,
-			   lpara[0], lpara[1], lpara[2], lpara[3] );
+			   lpara[0], lpara[1], lpara[2], lpara[3]);
 
       mbuf = lmodebuf;
       *mbuf++ = '-';
@@ -737,6 +720,6 @@ void remove_a_mode(int hide_or_not,
 			 (IsHidden(source_p) || ConfigServerHide.hide_servers) ?
 			 me.name : source_p->name,
 			 chname, lmodebuf,
-			 lpara[0], lpara[1], lpara[2], lpara[3] );
+			 lpara[0], lpara[1], lpara[2], lpara[3]);
   }
 }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.c,v 7.83 2003/05/13 02:32:19 joshk Exp $
+ *  $Id: listener.c,v 7.84 2003/05/22 17:09:08 michael Exp $
  */
 
 #include "stdinc.h"
@@ -134,16 +134,15 @@ show_ports(struct Client *source_p)
 static int 
 inetport(struct Listener *listener)
 {
-  struct irc_ssaddr  lsin;
-  int                fd;
-  int                opt = 1;
+  struct irc_ssaddr lsin;
+  int fd;
+  int opt = 1;
 
   /*
    * At first, open a new socket
    */
   fd = comm_open(listener->addr.ss.ss_family, SOCK_STREAM, 0, "Listener socket");
   memset(&lsin, 0, sizeof(lsin));
-
   memcpy(&lsin, &listener->addr, sizeof(struct irc_ssaddr));
   
   irc_getnameinfo((struct sockaddr*)&lsin, lsin.ss_len, listener->vhost, 
@@ -154,14 +153,14 @@ inetport(struct Listener *listener)
   {
     report_error(L_ALL, "opening listener socket %s:%s",
                  get_listener_name(listener), errno);
-    return 0;
+    return(0);
   }
   else if ((HARD_FDLIMIT - 10) < fd)
   {
     report_error(L_ALL, "no more connections left for listener %s:%s",
                  get_listener_name(listener), errno);
     fd_close(fd);
-    return 0;
+    return(0);
   }
   /*
    * XXX - we don't want to do all this crap for a listener
@@ -172,7 +171,7 @@ inetport(struct Listener *listener)
     report_error(L_ALL, "setting SO_REUSEADDR for listener %s:%s",
                  get_listener_name(listener), errno);
     fd_close(fd);
-    return 0;
+    return(0);
   }
 
   /*
@@ -188,14 +187,15 @@ inetport(struct Listener *listener)
     report_error(L_ALL, "binding listener socket %s:%s",
                  get_listener_name(listener), errno);
     fd_close(fd);
-    return 0;
+    return(0);
   }
 
-  if (listen(fd, HYBRID_SOMAXCONN)) {
+  if (listen(fd, HYBRID_SOMAXCONN))
+  {
     report_error(L_ALL, "listen failed for %s:%s",
                  get_listener_name(listener), errno);
     fd_close(fd);
-    return 0;
+    return(0);
   }
 
   /*
@@ -209,7 +209,7 @@ inetport(struct Listener *listener)
   /* Listen completion events are READ events .. */
 
   accept_connection(fd, listener);
-  return 1;
+  return(1);
 }
 
 static struct Listener *

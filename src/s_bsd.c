@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.200 2003/05/19 19:10:53 stu Exp $
+ *  $Id: s_bsd.c,v 7.201 2003/05/22 17:09:08 michael Exp $
  */
 
 #include "stdinc.h"
@@ -473,7 +473,8 @@ add_connection(struct Listener* listener, int fd)
 int
 ignoreErrno(int ierrno)
 {
-    switch (ierrno) {
+  switch (ierrno)
+  {
     case EINPROGRESS:
     case EWOULDBLOCK:
 #if EAGAIN != EWOULDBLOCK
@@ -487,7 +488,7 @@ ignoreErrno(int ierrno)
         return 1;
     default:
         return 0;
-    }
+  }
 }
 
 
