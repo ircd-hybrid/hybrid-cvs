@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fileio.c,v 7.26 2003/03/01 01:15:44 db Exp $
+ *  $Id: fileio.c,v 7.27 2003/03/01 06:25:40 db Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -68,7 +68,8 @@ file_close(int fd)
     fd_close(fd);
 }
 
-FBFILE* fbopen(const char* filename, const char* mode)
+FBFILE*
+fbopen(const char* filename, const char* mode)
 {
   int openmode = 0;
   int pmode = 0;
@@ -107,7 +108,8 @@ FBFILE* fbopen(const char* filename, const char* mode)
     ++mode;
   }
 
-  if ((fd = file_open(filename, openmode, pmode)) == -1) {
+  if ((fd = file_open(filename, openmode, pmode)) == -1)
+  {
     return fb;
   }
 
@@ -123,7 +125,8 @@ FBFILE* fdbopen(int fd, const char* mode)
    * correct mode, the first use will fail
    */
   FBFILE* fb = (FBFILE*) MyMalloc(sizeof(FBFILE));
-  if (NULL != fb) {
+  if (NULL != fb)
+  {
     fb->ptr = fb->endp = fb->buf;
     fb->fd = fd;
     fb->flags = 0;
@@ -147,19 +150,22 @@ fbrewind(FBFILE *fb)
   return (0);
 }
 
-void fbclose(FBFILE* fb)
+void
+fbclose(FBFILE* fb)
 {
   assert(fb);
   if(fb != NULL)
   {
     file_close(fb->fd);
     MyFree(fb);
-  } else
+  }
+  else
     errno = EINVAL;
    
 }
 
-static int fbfill(FBFILE* fb)
+static int
+fbfill(FBFILE* fb)
 {
   int n;
   assert(fb);
@@ -183,7 +189,8 @@ static int fbfill(FBFILE* fb)
   return n;
 }
 
-int fbgetc(FBFILE* fb)
+int
+fbgetc(FBFILE* fb)
 {
   assert(fb);
   if(fb == NULL)
@@ -191,10 +198,10 @@ int fbgetc(FBFILE* fb)
     errno = EINVAL;
     return -1;
   }
-  if(fb->pbptr)
+  if(fb->pbptr != NULL)
   {
-    if( (fb->pbptr == (fb->pbuf+BUFSIZ)) ||
-	(!*fb->pbptr) )
+    if((fb->pbptr == (fb->pbuf+BUFSIZ)) ||
+       (!*fb->pbptr) )
       fb->pbptr = NULL;
   }
 
@@ -203,7 +210,8 @@ int fbgetc(FBFILE* fb)
   return EOF;
 }
 
-void fbungetc(char c, FBFILE* fb)
+void
+fbungetc(char c, FBFILE* fb)
 {
   assert(fb);
   if(fb == NULL)
@@ -223,7 +231,8 @@ void fbungetc(char c, FBFILE* fb)
   }
 }
 
-char* fbgets(char* buf, size_t len, FBFILE* fb)
+char*
+fbgets(char* buf, size_t len, FBFILE* fb)
 {
   char* p = buf;
   assert(buf);
@@ -235,7 +244,7 @@ char* fbgets(char* buf, size_t len, FBFILE* fb)
     errno = EINVAL;
     return NULL;
   }
-  if(fb->pbptr)
+  if(fb->pbptr != NULL)
   {
     strlcpy(buf,fb->pbptr,len);
     fb->pbptr = NULL;
@@ -274,7 +283,8 @@ char* fbgets(char* buf, size_t len, FBFILE* fb)
   return buf;
 }
  
-int fbputs(const char* str, FBFILE* fb)
+int
+fbputs(const char* str, FBFILE* fb)
 {
   int n = -1;
   assert(str);
@@ -294,7 +304,8 @@ int fbputs(const char* str, FBFILE* fb)
   return n;
 }
 
-int fbstat(struct stat* sb, FBFILE* fb)
+int
+fbstat(struct stat* sb, FBFILE* fb)
 {
   assert(sb);
   assert(fb);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fdlist.c,v 7.31 2002/06/15 07:19:56 androsyn Exp $
+ *  $Id: fdlist.c,v 7.32 2003/03/01 06:25:40 db Exp $
  */
 #include "stdinc.h"
 #include "config.h"  /* option settings */
@@ -67,7 +67,8 @@ fdlist_update_biggest(int fd, int opening)
 }
 
 
-void fdlist_init(void)
+void
+fdlist_init(void)
 {
   static int initialized = 0;
 
