@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_trace.c,v 1.29 2001/07/18 15:39:14 androsyn Exp $
+ *   $Id: m_trace.c,v 1.30 2001/08/03 13:10:29 leeh Exp $
  */
 #include "handlers.h"
 #include "class.h"
@@ -116,7 +116,8 @@ static void mo_trace(struct Client *client_p, struct Client *source_p,
     }
 
   if(MyClient(source_p))
-    sendto_realops_flags(FLAGS_SPY, "trace requested by %s (%s@%s) [%s]",
+    sendto_realops_flags(FLAGS_SPY, L_ADMIN,
+                       "trace requested by %s (%s@%s) [%s]",
                        source_p->name, source_p->username, source_p->host,
                        source_p->user->server);
 

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_nburst.c,v 1.10 2001/04/04 15:22:31 androsyn Exp $
+ * $Id: m_nburst.c,v 1.11 2001/08/03 13:10:28 leeh Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -101,7 +101,7 @@ static void ms_nburst(struct Client *client_p,
     return;
 
 #ifdef DEBUGLL
-  sendto_realops_flags(FLAGS_ALL, "NBURST called by %s for %s %s %s",
+  sendto_realops_flags(FLAGS_ALL, L_ALL, "NBURST called by %s for %s %s %s",
     client_p->name,
     nick,
     nick_new ? nick_new : "",

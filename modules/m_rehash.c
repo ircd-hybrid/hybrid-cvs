@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_rehash.c,v 1.27 2001/07/20 03:51:06 wcampbel Exp $
+ *   $Id: m_rehash.c,v 1.28 2001/08/03 13:10:28 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -83,14 +83,14 @@ static void mo_rehash(struct Client *client_p, struct Client *source_p,
         {
           eventDelete(cleanup_channels, NULL);
           eventAdd("cleanup_channels", cleanup_channels, NULL, 1, 0);
-          sendto_realops_flags(FLAGS_ALL,
+          sendto_realops_flags(FLAGS_ALL, L_ALL,
                        "%s is forcing cleanup of channels",parv[0]);
           found = YES;
         }
       else if(irccmp(parv[1],"DNS") == 0)
         {
           sendto_one(source_p, form_str(RPL_REHASHING), me.name, parv[0], "DNS");
-          sendto_realops_flags(FLAGS_ALL,"%s is rehashing DNS",
+          sendto_realops_flags(FLAGS_ALL, L_ALL,"%s is rehashing DNS",
                                get_oper_name(source_p));
           restart_resolver();   /* re-read /etc/resolv.conf AGAIN?
                                    and close/re-open res socket */
@@ -98,7 +98,7 @@ static void mo_rehash(struct Client *client_p, struct Client *source_p,
         }
       else if(irccmp(parv[1],"MOTD") == 0)
         {
-          sendto_realops_flags(FLAGS_ALL,
+          sendto_realops_flags(FLAGS_ALL, L_ALL,
 		       "%s is forcing re-reading of MOTD file",
 		       get_oper_name(source_p));
           ReadMessageFile( &ConfigFileEntry.motd );
@@ -106,7 +106,7 @@ static void mo_rehash(struct Client *client_p, struct Client *source_p,
         }
       else if(irccmp(parv[1],"OMOTD") == 0)
         {
-          sendto_realops_flags(FLAGS_ALL,
+          sendto_realops_flags(FLAGS_ALL, L_ALL,
 		       "%s is forcing re-reading of OPER MOTD file",
 		       get_oper_name(source_p));
           ReadMessageFile( &ConfigFileEntry.opermotd );
@@ -114,7 +114,7 @@ static void mo_rehash(struct Client *client_p, struct Client *source_p,
         }
       else if(irccmp(parv[1],"HELP") == 0)
         {
-          sendto_realops_flags(FLAGS_ALL,
+          sendto_realops_flags(FLAGS_ALL, L_ALL,
 		       "%s is forcing re-reading of oper and user help files",
                        parv[0]);
           ReadMessageFile( &ConfigFileEntry.helpfile );
@@ -137,7 +137,7 @@ static void mo_rehash(struct Client *client_p, struct Client *source_p,
     {
       sendto_one(source_p, form_str(RPL_REHASHING), me.name, parv[0],
                  ConfigFileEntry.configfile);
-      sendto_realops_flags(FLAGS_ALL,
+      sendto_realops_flags(FLAGS_ALL, L_ALL,
 			   "%s is rehashing server config file",
 			   get_oper_name(source_p));
       ilog(L_NOTICE, "REHASH From %s[%s]", get_oper_name(source_p),

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_motd.c,v 1.19 2001/06/06 13:46:28 leeh Exp $
+ *   $Id: m_motd.c,v 1.20 2001/08/03 13:10:28 leeh Exp $
  */
 #include "client.h"
 #include "tools.h"
@@ -88,7 +88,8 @@ static void m_motd(struct Client *client_p, struct Client *source_p,
 	return;
     }
 
-  sendto_realops_flags(FLAGS_SPY, "motd requested by %s (%s@%s) [%s]",
+  sendto_realops_flags(FLAGS_SPY, L_ADMIN,
+                     "motd requested by %s (%s@%s) [%s]",
                      source_p->name, source_p->username, source_p->host,
                      source_p->user->server);
 
@@ -109,7 +110,8 @@ static void mo_motd(struct Client *client_p, struct Client *source_p,
   if (hunt_server(client_p, source_p, ":%s MOTD :%s", 1,parc,parv)!=HUNTED_ISME)
     return;
 
-  sendto_realops_flags(FLAGS_SPY, "motd requested by %s (%s@%s) [%s]",
+  sendto_realops_flags(FLAGS_SPY, L_ADMIN,
+                     "motd requested by %s (%s@%s) [%s]",
                      source_p->name, source_p->username, source_p->host,
                      source_p->user->server);
 

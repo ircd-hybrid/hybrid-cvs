@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_post.c,v 1.3 2001/06/26 19:48:50 leeh Exp $
+ *   $Id: m_post.c,v 1.4 2001/08/03 13:10:28 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -33,11 +33,11 @@
 #include "modules.h"
 #include "s_conf.h"
 
-static void m_post(struct Client*, struct Client*, int, char**);
+static void mr_post(struct Client*, struct Client*, int, char**);
 
 struct Message post_msgtab = {
   "POST", 0, 0, 0, MFLG_SLOW | MFLG_UNREG, 0,
-  {m_post, m_ignore, m_ignore, m_ignore}
+  {mr_post, m_ignore, m_ignore, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -56,16 +56,17 @@ _moddeinit(void)
 char *_version = "20010309";
 #endif
 /*
-** m_post
+** mr_post
 **      parv[0] = sender prefix
 **      parv[1] = comment
 */
-static void m_post(struct Client *client_p,
+static void mr_post(struct Client *client_p,
                   struct Client *source_p,
                   int parc,
                   char *parv[])
 {
-  sendto_realops_flags(FLAGS_REJ, "Client rejected for POST command: [%s@%s]",
+  sendto_realops_flags(FLAGS_REJ, L_ALL,
+                       "Client rejected for POST command: [%s@%s]",
                        client_p->username, client_p->host);
   exit_client(client_p, source_p, source_p, "Client Exit");
 }

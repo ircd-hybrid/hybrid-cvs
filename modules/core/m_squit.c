@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_squit.c,v 1.38 2001/07/26 15:52:10 leeh Exp $
+ *   $Id: m_squit.c,v 1.39 2001/08/03 13:10:29 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -100,7 +100,7 @@ static void mo_squit(struct Client *client_p, struct Client *source_p,
     {
       if(MyConnect(found_squit->target_p))
 	{
-	  sendto_realops_flags(FLAGS_ALL,
+	  sendto_realops_flags(FLAGS_ALL, L_ALL,
 			       "Received SQUIT %s from %s (%s)",
 			       found_squit->target_p->name,
 			       get_client_name(source_p, HIDE_IP), comment);

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_away.c,v 1.22 2001/06/01 00:55:54 davidt Exp $
+ *   $Id: m_away.c,v 1.23 2001/08/03 13:10:26 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -81,9 +81,9 @@ static void m_away(struct Client *client_p,
   /* make sure the user exists */
   if (!(source_p->user))
     {
-      sendto_realops_flags(FLAGS_DEBUG,
-                           "Got AWAY from nil user, from %s (%s)\n",
-			   client_p->name,source_p->name);
+      sendto_realops_flags(FLAGS_DEBUG, L_ALL,
+                           "Got AWAY from nil user, from %s (%s)",
+			   client_p->name, source_p->name);
       return;
     }
   away = source_p->user->away;

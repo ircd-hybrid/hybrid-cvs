@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.c,v 1.40 2001/06/06 13:46:28 leeh Exp $
+ * $Id: m_info.c,v 1.41 2001/08/03 13:10:27 leeh Exp $
  */
 
 #include <time.h>
@@ -366,7 +366,8 @@ static void m_info(struct Client *client_p, struct Client *source_p,
     }
   }
 
-  sendto_realops_flags(FLAGS_SPY, "info requested by %s (%s@%s) [%s]",
+  sendto_realops_flags(FLAGS_SPY, L_ADMIN,
+    "info requested by %s (%s@%s) [%s]",
     source_p->name, source_p->username, source_p->host,
     source_p->user->server);
 
@@ -388,7 +389,8 @@ static void mo_info(struct Client *client_p, struct Client *source_p,
 {
   if (hunt_server(client_p,source_p,":%s INFO :%s",1,parc,parv) == HUNTED_ISME)
   {
-    sendto_realops_flags(FLAGS_SPY, "info requested by %s (%s@%s) [%s]",
+    sendto_realops_flags(FLAGS_SPY, L_ADMIN,
+      "info requested by %s (%s@%s) [%s]",
       source_p->name, source_p->username, source_p->host,
       source_p->user->server);
 

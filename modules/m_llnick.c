@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_llnick.c,v 1.10 2001/04/04 15:22:29 androsyn Exp $
+ * $Id: m_llnick.c,v 1.11 2001/08/03 13:10:27 leeh Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -82,7 +82,7 @@ static void ms_llnick(struct Client *client_p,
   
   if(!IsCapable(client_p,CAP_LL))
     {
-      sendto_realops_flags(FLAGS_ALL,
+      sendto_realops_flags(FLAGS_ALL, L_ALL,
 			   "*** LLNICK requested from non LL server %s",
 			   client_p->name);
       return;

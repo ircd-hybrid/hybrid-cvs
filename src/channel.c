@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.263 2001/07/29 20:06:05 leeh Exp $
+ * $Id: channel.c,v 7.264 2001/08/03 13:10:29 leeh Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -199,7 +199,7 @@ add_id(struct Client *client_p, struct Channel *chptr, char *banid, int type)
       list = &chptr->invexlist;
       break;
     default:
-      sendto_realops_flags(FLAGS_ALL,
+      sendto_realops_flags(FLAGS_ALL, L_ALL,
                            "add_id() called with unknown ban type %d!", type);
       return -1;
   }
@@ -269,7 +269,7 @@ del_id(struct Channel *chptr, char *banid, int type)
       list = &chptr->invexlist;
       break;
     default:
-      sendto_realops_flags(FLAGS_ALL,
+      sendto_realops_flags(FLAGS_ALL, L_ALL,
                            "del_id() called with unknown ban type %d!", type);
       return -1;
   }
@@ -4942,12 +4942,12 @@ check_spambot_warning(struct Client *source_p, const char *name)
     {
       /* Its already known as a possible spambot */
       if (name != NULL)
-        sendto_realops_flags(FLAGS_BOTS,
+        sendto_realops_flags(FLAGS_BOTS, L_ALL,
                              "User %s (%s@%s) trying to join %s is a possible spambot",
                              source_p->name, source_p->username,
                              source_p->host, name);
       else
-        sendto_realops_flags(FLAGS_BOTS,
+        sendto_realops_flags(FLAGS_BOTS, L_ALL,
                              "User %s (%s@%s) is a possible spambot",
                              source_p->name, source_p->username,
                              source_p->host);

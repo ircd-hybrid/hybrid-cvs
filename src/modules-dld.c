@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules-dld.c,v 1.5 2001/06/05 01:45:34 ejb Exp $
+ * $Id: modules-dld.c,v 1.6 2001/08/03 13:10:31 leeh blalloc.c $
  *
  * This is based on modules.c, but for OSes like HP-UX which use shl_open
  * instead of dlopen
@@ -208,7 +208,7 @@ int unload_one_module (char *name, int check)
   if(check == 1)
     {
       ilog (L_INFO, "Module %s unloaded", name);
-      sendto_realops_flags(FLAGS_ALL,"Module %s unloaded", name);
+      sendto_realops_flags(FLAGS_ALL, L_ALL,"Module %s unloaded", name);
     }
 
   return 0;

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_admin.c,v 1.26 2001/07/16 18:48:52 leeh Exp $
+ *   $Id: m_admin.c,v 1.27 2001/08/03 13:10:26 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -134,7 +134,7 @@ static void do_admin( struct Client *source_p )
   char *nick;
 
   if (IsPerson(source_p))
-    sendto_realops_flags(FLAGS_SPY,
+    sendto_realops_flags(FLAGS_SPY, L_ADMIN,
                          "ADMIN requested by %s (%s@%s) [%s]", source_p->name,
                          source_p->username, source_p->host, source_p->user->server);
 

@@ -2,7 +2,7 @@
  * modules/m_resv.c
  * Copyright (C) 2001 Hybrid Development Team
  *
- * $Id: m_resv.c,v 1.8 2001/07/04 14:09:53 leeh Exp $
+ * $Id: m_resv.c,v 1.9 2001/08/03 13:10:28 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -79,7 +79,7 @@ static void mo_resv(struct Client *client_p, struct Client *source_p,
                ":%s NOTICE %s :A local RESV has been placed on channel: %s [%s]",
                me.name, source_p->name, resv_p->name, resv_p->reason);
 	       
-    sendto_realops_flags(FLAGS_ALL,
+    sendto_realops_flags(FLAGS_ALL, L_ALL,
                          "%s has placed a local RESV on channel: %s [%s]",
              	         get_oper_name(source_p),
 		         resv_p->name, resv_p->reason);
@@ -111,7 +111,7 @@ static void mo_resv(struct Client *client_p, struct Client *source_p,
 	       me.name, source_p->name,
 	       resv_p->name, resv_p->reason);
 
-    sendto_realops_flags(FLAGS_ALL,
+    sendto_realops_flags(FLAGS_ALL, L_ALL,
                          "%s has placed a local RESV on nick: %s [%s]",
 			 get_oper_name(source_p),
 			 resv_p->name, resv_p->reason);
@@ -160,7 +160,7 @@ static void mo_unresv(struct Client *client_p, struct Client *source_p,
                  ":%s NOTICE %s :The local RESV has been removed on channel: %s",
   	         me.name, source_p->name, parv[1]);
 		 
-      sendto_realops_flags(FLAGS_ALL,
+      sendto_realops_flags(FLAGS_ALL, L_ALL,
                            "%s has removed the local RESV for channel: %s",
 	  		   get_oper_name(source_p), parv[1]);
 	      
@@ -194,7 +194,7 @@ static void mo_unresv(struct Client *client_p, struct Client *source_p,
                  ":%s NOTICE %s :The local RESV has been removed on nick: %s",
 		 me.name, source_p->name, parv[1]);
 
-      sendto_realops_flags(FLAGS_ALL,
+      sendto_realops_flags(FLAGS_ALL, L_ALL,
                            "%s has removed the local RESV for nick: %s",
 			   get_oper_name(source_p), parv[1]);
     }

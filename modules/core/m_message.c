@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.69 2001/06/10 00:03:17 db Exp $
+ *   $Id: m_message.c,v 1.70 2001/08/03 13:10:28 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -766,7 +766,7 @@ static int flood_attack_client(int p_or_n, struct Client *source_p,struct Client
 	{
 	  if(target_p->localClient->flood_noticed == 0)
 	    {
-	      sendto_realops_flags(FLAGS_BOTS,
+	      sendto_realops_flags(FLAGS_BOTS, L_ALL,
 				   "Possible Flooder %s [%s@%s] on %s target: %s",
 				   source_p->name, source_p->username,
 				   source_p->host,
@@ -820,7 +820,7 @@ static int flood_attack_channel(int p_or_n,struct Client *source_p,struct Channe
 	{
 	  if(chptr->flood_noticed == 0)
 	    {
-	      sendto_realops_flags(FLAGS_BOTS,
+	      sendto_realops_flags(FLAGS_BOTS, L_ALL,
 				   "Possible Flooder %s [%s@%s] on %s target: %s",
 				   source_p->name, source_p->username,
 				   source_p->host,
@@ -931,7 +931,7 @@ static void handle_opers(int p_or_n,
       if (!strcmp(nick,"opers"))
         {
 #if 0
-          sendto_realops_flags(FLAGS_ALL, "To opers: From: %s!%s@%s: %s", 
+          sendto_realops_flags(FLAGS_ALL, L_ALL, "To opers: From: %s!%s@%s: %s", 
                                source_p->name, source_p->username, source_p->host, text);      
 #endif
 	  sendto_wallops_flags(FLAGS_LOCOPS, source_p, "%s", text);

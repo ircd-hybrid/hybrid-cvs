@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_cburst.c,v 1.32 2001/07/14 23:04:28 leeh Exp $
+ * $Id: m_cburst.c,v 1.33 2001/08/03 13:10:27 leeh Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -98,7 +98,7 @@ static void ms_cburst(struct Client *client_p,
     key = "";
 
 #ifdef DEBUGLL
-  sendto_realops_flags(FLAGS_ALL, "CBURST called by %s for %s %s %s",
+  sendto_realops_flags(FLAGS_ALL, L_ALL, "CBURST called by %s for %s %s %s",
     client_p->name,
     name,
     nick ? nick : "",
@@ -132,7 +132,7 @@ static void ms_cburst(struct Client *client_p,
     }
   else
     {
-      sendto_realops_flags(FLAGS_ALL,
+      sendto_realops_flags(FLAGS_ALL, L_ALL,
 		   "*** CBURST request received from non LL capable server! [%s]",
 			   client_p->name);
     }

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: listener.c,v 7.53 2001/07/16 20:06:12 leeh Exp $
+ *  $Id: listener.c,v 7.54 2001/08/03 13:10:31 leeh blalloc.c $
  */
 #include "config.h"
 #include "listener.h"
@@ -407,7 +407,7 @@ static void accept_connection(int pfd, void *data)
        */
       if((last_oper_notice + 20) <= CurrentTime)
 	{
-	  sendto_realops_flags(FLAGS_ALL,"All connections in use. (%s)", 
+	  sendto_realops_flags(FLAGS_ALL, L_ALL,"All connections in use. (%s)", 
 			       get_listener_name(listener));
 	  last_oper_notice = CurrentTime;
 	}

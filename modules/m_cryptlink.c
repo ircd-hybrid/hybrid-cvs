@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_cryptlink.c,v 1.19 2001/07/14 23:08:07 leeh Exp $
+ *   $Id: m_cryptlink.c,v 1.20 2001/08/03 13:10:27 leeh Exp $
  */
 
 /*
@@ -212,7 +212,7 @@ static void cryptlink_auth(struct Client *client_p, struct Client *source_p,
 
   if ( verify_private_key() == -1 )
   {
-    sendto_realops_flags(FLAGS_SERVADMIN,
+    sendto_realops_flags(FLAGS_ALL, L_ADMIN,
       "verify_private_key() returned -1.  Check log for information.");
   }
 
@@ -378,7 +378,7 @@ static void cryptlink_serv(struct Client *client_p, struct Client *source_p,
       if(IsCapable(client_p, CAP_HUB))
       {
           ClearCap(client_p,CAP_LL);
-          sendto_realops_flags(FLAGS_ALL,
+          sendto_realops_flags(FLAGS_ALL, L_ALL,
                "*** LazyLinks to a hub from a hub, thats a no-no.");
       }
       else
@@ -387,7 +387,7 @@ static void cryptlink_serv(struct Client *client_p, struct Client *source_p,
 
           if(!client_p->localClient->serverMask)
           {
-              sendto_realops_flags(FLAGS_ALL,
+              sendto_realops_flags(FLAGS_ALL, L_ALL,
                                    "serverMask is full!");
               /* try and negotiate a non LL connect */
               ClearCap(client_p,CAP_LL);
@@ -399,7 +399,7 @@ static void cryptlink_serv(struct Client *client_p, struct Client *source_p,
       if (!IsCapable(client_p, CAP_HUB))
       {
         ClearCap(client_p,CAP_LL);
-        sendto_realops_flags(FLAGS_ALL,
+        sendto_realops_flags(FLAGS_ALL, L_ALL,
           "*** LazyLinks to a leaf from a leaf, thats a no-no.");
       }
   }
@@ -503,7 +503,7 @@ static char *parse_cryptserv_args(struct Client *client_p,
 
   if (verify_private_key() == -1)
   {
-    sendto_realops_flags(FLAGS_SERVADMIN,
+    sendto_realops_flags(FLAGS_ALL, L_ADMIN,
       "verify_private_key() returned -1.  Check log for information.");
   }
 

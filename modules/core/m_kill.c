@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kill.c,v 1.49 2001/06/05 01:46:49 db Exp $
+ *   $Id: m_kill.c,v 1.50 2001/08/03 13:10:27 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -136,7 +136,7 @@ static void mo_kill(struct Client *client_p, struct Client *source_p,
 
   /* Do not change the format of this message.  There's no point in changing messages
    * that have been around for ever, for no reason.. */
-  sendto_realops_flags(FLAGS_ALL,
+  sendto_realops_flags(FLAGS_ALL, L_ALL,
 		       "Received KILL message for %s. From %s Path: %s (%s)", 
 		       target_p->name, parv[0], me.name, reason);
 
@@ -255,13 +255,13 @@ static void ms_kill(struct Client *client_p, struct Client *source_p,
    * so dont change it to From: or the case or anything! -- fl -- db */
   if (IsOper(source_p)) /* send it normally */
     {
-      sendto_realops_flags(FLAGS_ALL,
+      sendto_realops_flags(FLAGS_ALL, L_ALL,
 			   "Received KILL message for %s. From %s Path: %s %s",
 			   target_p->name, parv[0], source_p->user->server, reason);
     }
   else
     {
-      sendto_realops_flags(FLAGS_SKILL,
+      sendto_realops_flags(FLAGS_SKILL, L_ALL,
 			   "Received KILL message for %s. From %s %s",
 			   target_p->name, parv[0], reason);
     }

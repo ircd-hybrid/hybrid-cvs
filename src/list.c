@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu, Computing Center and Jarkko Oikarinen
  *
- * $Id: list.c,v 7.31 2001/05/10 06:30:44 a1kmm Exp $
+ * $Id: list.c,v 7.32 2001/08/03 13:10:31 leeh blalloc.c $
  */
 #include "tools.h"
 #include "channel.h"
@@ -137,7 +137,7 @@ void _free_user(struct User* user, struct Client* client_p)
       if (user->joined || user->refcnt < 0 ||
           user->invited.head || user->channel.head)
       {
-        sendto_realops_flags(FLAGS_ALL,
+        sendto_realops_flags(FLAGS_ALL, L_ALL,
 			     "* %#lx user (%s!%s@%s) %#lx %#lx %#lx %d %d *",
 			     (unsigned long)client_p, client_p ? client_p->name : "<noname>",
 			     client_p->username, client_p->host, (unsigned long)user,

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.173 2001/07/29 01:51:31 leeh Exp $
+ * $Id: ircd.c,v 7.174 2001/08/03 13:10:30 leeh blalloc.c $
  */
 
 #include <sys/types.h>
@@ -287,7 +287,7 @@ set_time(void)
  if (newtime == -1)
  {
   ilog(L_ERROR, "Clock Failure (%d)", errno);
-  sendto_realops_flags(FLAGS_ALL,
+  sendto_realops_flags(FLAGS_ALL, L_ALL,
                        "Clock Failure (%d), TS can be corrupted", errno);
   restart("Clock Failure");
  }

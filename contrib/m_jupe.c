@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_jupe.c,v 1.16 2001/07/18 12:11:20 leeh Exp $
+ *   $Id: m_jupe.c,v 1.17 2001/08/03 13:10:24 leeh Exp $
  */
 
 #include "tools.h"
@@ -125,7 +125,7 @@ static void mo_jupe(struct Client *client_p, struct Client *source_p,
                 ":%s SERVER %s 1 :Juped: %s",
                 me.name, parv[1], parv[2]);
 
-  sendto_realops_flags(FLAGS_ALL,
+  sendto_realops_flags(FLAGS_ALL, L_ALL,
                        "Link with %s established: (JUPED) link",
 		       parv[1]);
 

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_debug.c,v 7.58 2001/07/19 13:31:58 androsyn Exp $
+ *   $Id: s_debug.c,v 7.59 2001/08/03 13:10:32 leeh Exp $
  */
 
 #include <sys/types.h> 
@@ -449,7 +449,7 @@ void count_memory(struct Client *source_p)
 
 /*  assert (users_counted == user_count); */
   if(users_counted != user_count)
-    sendto_realops_flags(FLAGS_ALL, "*** WARNING: Users counted: %d != User count: %d",
+    sendto_realops_flags(FLAGS_ALL, L_ALL, "*** WARNING: Users counted: %d != User count: %d",
                            users_counted, user_count);
   
 
