@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.10 2003/05/24 16:15:13 bill Exp $
+ *  $Id: m_xline.c,v 1.11 2003/05/24 18:37:11 db Exp $
  */
 
 #include "stdinc.h"
@@ -70,7 +70,6 @@ struct Message unxline_msgtab = {
 
 
 #ifndef STATIC_MODULES
-
 void
 _modinit(void)
 {
@@ -84,7 +83,7 @@ _moddeinit(void)
   mod_del_cmd(&xline_msgtab);
   mod_del_cmd(&unxline_msgtab);
 }
-const char *_version = "$Revision: 1.10 $";
+const char *_version = "$Revision: 1.11 $";
 #endif
 
 

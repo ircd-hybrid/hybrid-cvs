@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.h,v 7.37 2003/05/19 05:54:14 michael Exp $
+ *  $Id: modules.h,v 7.38 2003/05/24 18:37:09 db Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -140,6 +140,7 @@ extern struct Message topic_msgtab;
 extern struct Message trace_msgtab;
 extern struct Message msgtabs[];
 extern struct Message unresv_msgtab;
+extern struct Message unxline_msgtab;
 extern struct Message user_msgtab;
 extern struct Message userhost_msgtab;
 extern struct Message users_msgtab;
@@ -148,6 +149,7 @@ extern struct Message wallops_msgtab;
 extern struct Message who_msgtab;
 extern struct Message whois_msgtab;
 extern struct Message whowas_msgtab;
+extern struct Message xline_msgtab;
 extern struct Message get_msgtab;
 extern struct Message put_msgtab;
 extern void load_all_modules(int check);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.116 2003/05/19 05:54:15 michael Exp $
+ *  $Id: modules.c,v 7.117 2003/05/24 18:37:12 db Exp $
  */
 
 #include "stdinc.h"
@@ -610,6 +610,7 @@ load_all_modules(int warn)
   mod_add_cmd(&msgtabs[1]);
   mod_add_cmd(&msgtabs[2]);
   mod_add_cmd(&unresv_msgtab);
+  mod_add_cmd(&unxline_msgtab);
   mod_add_cmd(&user_msgtab);
   mod_add_cmd(&userhost_msgtab);
   mod_add_cmd(&users_msgtab);
@@ -618,5 +619,6 @@ load_all_modules(int warn)
   mod_add_cmd(&who_msgtab);
   mod_add_cmd(&whois_msgtab);
   mod_add_cmd(&whowas_msgtab);
+  mod_add_cmd(&xline_msgtab);
 }
 #endif /* STATIC_MODULES */
