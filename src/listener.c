@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.c,v 7.65 2002/03/09 21:48:41 androsyn Exp $
+ *  $Id: listener.c,v 7.66 2002/05/18 05:42:20 androsyn Exp $
  */
 
 #include "config.h"
@@ -403,18 +403,6 @@ accept_connection(int pfd, void *data)
 
   if (fd < 0)
     {
-      if(!ignoreErrno(errno))
-      {
-      /*
-       * slow down the whining to opers bit
-       */
-      if((last_oper_notice + 20) <= CurrentTime)
-	{
-	  report_error(L_ALL, "Error accepting connection %s:%s",
-		       listener->name, errno);
-	  last_oper_notice = CurrentTime;
-	}
-      }
       /* Re-register a new IO request for the next accept .. */
       comm_setselect(listener->fd, FDLIST_SERVICE, COMM_SELECT_READ,
                      accept_connection, listener, 0);
