@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.144 2003/05/29 23:29:04 metalrock Exp $
+ *  $Id: m_kline.c,v 1.145 2003/05/30 01:03:28 db Exp $
  */
 
 #include "stdinc.h"
@@ -81,7 +81,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.144 $";
+const char *_version = "$Revision: 1.145 $";
 #endif
 
 /* Local function prototypes */
@@ -140,7 +140,7 @@ mo_kline(struct Client *client_p, struct Client *source_p,
 
   tkline_time = valid_tkline(*parv);
 
-  if (tkline_time > 0)
+  if (tkline_time != 0)
   {
     parv++;
     parc--;
@@ -229,7 +229,7 @@ mo_kline(struct Client *client_p, struct Client *source_p,
   DupString(aconf->user, user);
   aconf->port = 0;
 
-  if (tkline_time)
+  if (tkline_time != 0)
   {
     ircsprintf(buffer,
 	       "Temporary K-line %d min. - %s (%s)",
@@ -300,7 +300,7 @@ ms_kline(struct Client *client_p, struct Client *source_p,
     DupString(aconf->host, khost);
     DupString(aconf->reason, kreason);
 
-    if (tkline_time)
+    if (tkline_time != 0)
       apply_tkline(source_p, aconf, tkline_time);
     else
       apply_kline(source_p, aconf, current_date, cur_time);
@@ -339,7 +339,7 @@ ms_kline(struct Client *client_p, struct Client *source_p,
     DupString(aconf->reason, kreason);
     DupString(aconf->user, kuser);
 
-    if (tkline_time)
+    if (tkline_time != 0)
       apply_tkline(source_p, aconf, tkline_time);
     else
       apply_kline(source_p, aconf, current_date, cur_time);
