@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.155 2001/04/02 00:06:13 toot Exp $
+ * $Id: ircd_parser.y,v 1.156 2001/04/04 16:17:44 androsyn Exp $
  */
 
 %{
@@ -393,6 +393,7 @@ modules_item:    modules_module | modules_path |
 
 modules_module:  MODULE '=' QSTRING ';'
 {
+#ifndef STATIC_MODULES /* NOOP in the static case */
   char *m_bn;
 
   m_bn = irc_basename(yylval.string);
@@ -405,11 +406,14 @@ modules_module:  MODULE '=' QSTRING ';'
   load_one_module (yylval.string);
 
   MyFree(m_bn);
+#endif
 };
 
 modules_path: PATH '=' QSTRING ';'
 {
+#ifndef STATIC_MODULES
   mod_add_path(yylval.string);
+#endif
 };
 
 
