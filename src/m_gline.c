@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_gline.c,v 7.3 1999/12/30 20:35:49 db Exp $
+ *  $Id: m_gline.c,v 7.4 2000/01/23 21:02:38 db Exp $
  */
 #include "m_gline.h"
 #include "channel.h"
@@ -104,7 +104,7 @@ int     m_gline(struct Client *cptr,
   register char tmpch;
   register int nonwild;
 #ifdef GLINES
-  char buffer[512];
+  char buffer[IRCD_BUFSIZE];
   const char *current_date;
   char tempuser[USERLEN + 2];
   char temphost[HOSTLEN + 1];

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kline.c,v 7.8 2000/01/06 03:19:36 db Exp $
+ *   $Id: m_kline.c,v 7.9 2000/01/23 21:02:38 db Exp $
  */
 #include "m_kline.h"
 #include "channel.h"
@@ -359,7 +359,7 @@ m_kline(struct Client *cptr,
                 int parc,
                 char *parv[])
 {
-  char buffer[512];
+  char buffer[IRCD_BUFSIZE];
   char *p;
   char cidr_form_host[HOSTLEN + 1];
   char *user, *host;

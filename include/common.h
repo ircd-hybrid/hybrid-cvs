@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: common.h,v 7.1 1999/12/30 20:35:26 db Exp $
+ * $Id: common.h,v 7.2 2000/01/23 21:02:35 db Exp $
  */
 #ifndef INCLUDED_common_h
 #define INCLUDED_common_h
@@ -55,5 +55,8 @@
 
 #define IRCD_MAX(a, b)  ((a) > (b) ? (a) : (b))
 #define IRCD_MIN(a, b)  ((a) < (b) ? (a) : (b))
+
+/* Right out of the RFC */
+#define IRCD_BUFSIZE 512
 
 #endif /* INCLUDED_common_h */

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.24 2000/01/17 03:21:32 db Exp $
+ *  $Id: s_user.c,v 7.25 2000/01/23 21:02:39 db Exp $
  */
 #include "s_user.h"
 #include "channel.h"
@@ -487,7 +487,7 @@ int register_user(struct Client *cptr, struct Client *sptr,
   static char ubuf[12];
   struct User*     user = sptr->user;
   char*       reason;
-  char        tmpstr2[512];
+  char        tmpstr2[IRCD_BUFSIZE];
 
   assert(0 != sptr);
   assert(sptr->username != username);
