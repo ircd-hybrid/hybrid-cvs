@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.h,v 7.63 2002/03/09 23:01:24 androsyn Exp $
+ *  $Id: s_serv.h,v 7.64 2002/03/09 23:14:08 androsyn Exp $
  */
 
 #ifndef INCLUDED_serv_h
@@ -305,6 +305,7 @@ void remove_lazylink_flags(unsigned long mask);
 void client_burst_if_needed(struct Client *client_p, struct Client *target_p);
 struct EncCapability *check_cipher(struct Client *client_p,
                                    struct ConfItem *aconf);
+void        add_lazylinkclient(struct Client *client_p, struct Client *source_p);
 
 #endif /* INCLUDED_s_serv_h */
 
