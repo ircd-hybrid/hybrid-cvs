@@ -2269,11 +2269,6 @@ echo "${ECHO_T}HP-UX found - Assuming HPUX C compiler cc" >&6
 		;;
 	CYGWIN*)
 		CYGWIN=yes
-
-cat >>confdefs.h <<\_ACEOF
-#define CYGWIN 1
-_ACEOF
-
 		;;
 esac
 

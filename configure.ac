@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.34 2003/05/25 22:13:12 joshk Exp $
+dnl $Id: configure.ac,v 7.35 2003/05/26 17:56:09 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -98,7 +98,6 @@ case `uname -s` in
 		;;
 	CYGWIN*)
 		CYGWIN=yes
-		AC_DEFINE(CYGWIN, 1, [Cygwin requires a different set of headers to compile, so define to 1 if compiling on Cygwin.])
 		;;
 esac
 
