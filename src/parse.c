@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.138 2002/08/22 02:01:38 lusky Exp $
+ *  $Id: parse.c,v 7.139 2002/08/23 02:26:10 db Exp $
  */
 
 #include "stdinc.h"
@@ -85,8 +85,6 @@ string_to_array(char *string, char *parv[MAXPARA])
     if (*buf == ':') /* Last parameter */
     {
       buf++;
-      if (*buf == '\0')
-        return x;
       parv[x++] = buf;
       parv[x] = NULL;
       return x;
@@ -243,7 +241,7 @@ parse(struct Client *client_p, char *pbuffer, char *bufend)
     { 
       int ii = 0;
 
-      if( (s = strchr(ch, ' ')) )
+      if((s = strchr(ch, ' ')) != NULL)
         *s++ = '\0';
 
       mptr = hash_parse(ch);
