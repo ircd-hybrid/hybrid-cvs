@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.130 2000/12/19 05:38:18 ejb Exp $
+ * $Id: channel.c,v 7.131 2000/12/19 10:14:59 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -550,8 +550,8 @@ static int change_channel_membership(struct Channel *chptr,
  */
 int can_join(struct Client *sptr, struct Channel *chptr, char *key)
 {
-  dlink_node  *lp;
-  dlink_node *tmp;
+  dlink_node *lp;
+  dlink_node *ptr;
   struct Ban *invex = NULL;
   char  s[NICKLEN+USERLEN+HOSTLEN+6];
   char  *s2;
@@ -569,19 +569,20 @@ int can_join(struct Client *sptr, struct Channel *chptr, char *key)
           break;
       if (!lp)
         {
-			for (tmp = chptr->invexlist.head; tmp; tmp = tmp->next) {
-				invex = tmp->data;
-				if (match(invex->banstr, s) ||
-					match(invex->banstr, s2))
-					/* yes, i hate goto, if you can find a better way
-					 * please tell me -is */
-					goto invexdone;
-			}
-			return (ERR_INVITEONLYCHAN);
-		}
+	  for (ptr = chptr->invexlist.head; ptr; ptr = ptr->next)
+	    {
+	      invex = ptr->data;
+	      if (match(invex->banstr, s) ||
+		  match(invex->banstr, s2))
+		/* yes, i hate goto, if you can find a better way
+		 * please tell me -is sure -db */
+		break;
+	    }
+	  if (ptr == NULL)
+	    return (ERR_INVITEONLYCHAN);
+	}
     }
 
-  invexdone:
   if (*chptr->mode.key && (BadPtr(key) || irccmp(chptr->mode.key, key)))
     return (ERR_BADCHANNELKEY);
 
