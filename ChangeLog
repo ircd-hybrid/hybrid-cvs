@@ -1,3 +1,16 @@
+lusky       2002/07/10 22:29:03 EDT	(20020711_0)
+
+  Modified files:
+    .                    INSTALL RELNOTES 
+  Log:
+  - fixing hybrid@ subscription instructions
+  
+  Revision  Changes    Path
+  7.29      +3 -3      ircd-hybrid-7/INSTALL
+  1.35      +4 -4      ircd-hybrid-7/RELNOTES
+
+
+
 leeh        2002/07/10 06:35:08 EDT	(20020710_5)
 
   Modified files:
@@ -29424,4 +29437,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3851 2002/07/10 10:35:16 leeh Exp $
+$Id: ChangeLog,v 7.3852 2002/07/11 02:29:10 lusky Exp $
