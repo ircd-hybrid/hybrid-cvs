@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: memory.h,v 7.27 2002/01/05 09:14:28 a1kmm Exp $
+ *  $Id: memory.h,v 7.28 2002/01/16 16:02:23 jmallett Exp $
  */
 
 #ifndef _I_MEMORY_H
@@ -30,6 +30,15 @@
 #include "balloc.h"
 #include <stdlib.h>
 #include <string.h>
+
+/* Needed to use uintptr_t for some pointer manipulation. */
+#ifdef HAVE_INTTYPES_H
+#include <inttypes.h>
+#else
+#ifndef HAVE_UINTPTR_T
+typedef unsigned long uintptr_t;
+#endif
+#endif
 
 extern void outofmemory(void);
 #ifndef WE_ARE_MEMORY_C
