@@ -1,3 +1,15 @@
+leeh        2001/12/20 13:22:45 EST	(20011220_1)
+
+  Modified files:
+    modules              m_info.c 
+  Log:
+  - removed a pointless IsOper()
+  
+  Revision  Changes    Path
+  1.49      +1 -1      ircd-hybrid-7/modules/m_info.c
+
+
+
 leeh        2001/12/20 05:05:33 EST	(20011220_0)
 
   Modified files:
@@ -1162,7 +1174,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3220 2001/12/20 10:05:38 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3221 2001/12/20 18:22:50 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -19516,4 +19528,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3220 2001/12/20 10:05:38 leeh Exp $
+$Id: ChangeLog,v 7.3221 2001/12/20 18:22:50 leeh Exp $
