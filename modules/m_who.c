@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_who.c,v 1.39 2001/04/20 04:59:27 db Exp $
+ *   $Id: m_who.c,v 1.40 2001/08/03 06:30:57 spookey Exp $
  */
 #include "tools.h"
 #include "common.h"   /* bleah */
@@ -247,8 +247,7 @@ static void m_who(struct Client *client_p,
 	}
       else
 	{
-	  if (!isinvis)
-	    do_who(source_p, target_p, NULL, "");
+	  do_who(source_p, target_p, NULL, "");
 	}
 
       sendto_one(source_p, form_str(RPL_ENDOFWHO), me.name, parv[0], mask );
