@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.53 2000/04/02 17:42:01 db Exp $
+ *  $Id: s_conf.c,v 7.54 2000/04/03 02:00:47 db Exp $
  */
 #include "s_conf.h"
 #include "channel.h"
@@ -3360,7 +3360,7 @@ void conf_add_me(struct ConfItem *aconf)
 	{
 	  memset(&vserv,0, sizeof(vserv));
 	  vserv.sin_family = AF_INET;
-	  vserv.sin_addr.s_addr = aconf->ip;
+	  vserv.sin_addr.s_addr = htonl(aconf->ip);
 	  specific_virtual_host = 1;
 	}
       else if (aconf->passwd && 

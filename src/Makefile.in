@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.16 2000/03/31 02:38:28 db Exp $
+# $Id: Makefile.in,v 7.17 2000/04/03 02:00:47 db Exp $
 #
 CC = @CC@
 RM = @RM@
@@ -154,7 +154,7 @@ depend:
 	${MKDEP} ${CPPFLAGS} ${SRCS} > .depend
 
 clean:
-	${RM} -f *.o *~ ircd.core core ircd 
+	${RM} -f *.o *~ y.tab.c lex.yy.c ircd.core core ircd 
 
 distclean: clean
 	${RM} -f Makefile version.c.last
