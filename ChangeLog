@@ -1,3 +1,18 @@
+*** 20001130_13 by adrian
+
+
+* kill client[] buffer in the Client struct. We don't need this at all
+  with the advent of the linebuf
+* Tidy up a couple of assert()s to be more tasteful to me
+* note that the count; entry in the Client struct is now only used to
+  denote local/remote clients with some evil splitting of the client struct
+  and memory allocation. This is evil and should be killed at someone's
+  earliest convienence and replaced with a LocalClient struct which attaches
+  to the end of a struct Client ..
+
+
+
+
 *** 20001130_12 by adrian
 
 
@@ -1150,7 +1165,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.637 2000/11/30 10:20:45 adrian Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.638 2000/11/30 10:28:53 adrian Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
