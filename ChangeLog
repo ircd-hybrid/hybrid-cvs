@@ -1,3 +1,8 @@
+*** 20001206_9 by db
+- m_accept was using the wrong numeric for "no such nick"
+
+
+
 *** 20001206_8 by db
 - ummm there is a bug where an struct Confitem aconf will have a NULL
   c_class (pointer to class) this will core the server in attach_iline
@@ -1753,7 +1758,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.716 2000/12/06 23:35:01 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.717 2000/12/07 00:23:16 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
