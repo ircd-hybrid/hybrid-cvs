@@ -1,5 +1,5 @@
 /* Hybrid 7 Example configuration file
- * $Id: example.conf.efnet,v 7.3 2001/12/29 22:52:11 wcampbel Exp $
+ * $Id: example.conf.efnet,v 7.4 2002/01/01 15:58:40 leeh Exp $
  * December 2000 - ejb, wcampbel, db and others
  */
 
@@ -378,6 +378,11 @@ connect {
 
 	/* Set your server to autoconnect */
 	autoconn = yes;
+
+        /* The IP to bind to for an outgoing connection for this server.
+         * This may be IPv4 or IPv6.  Uses default if none exists
+         */
+        vhost = "127.0.0.1";
 };
 
 connect {
