@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.44 2000/01/18 02:12:24 db Exp $
+ *  $Id: s_conf.c,v 7.45 2000/01/21 04:21:37 db Exp $
  */
 #include "s_conf.h"
 #include "channel.h"
@@ -1740,14 +1740,19 @@ static FBFILE* openconf(const char *filename)
 
 #define MAXCONFLINKS 150
 
+/* bleh. unfortunately, these have to become globals as well */
+
+int              ccount = 0;
+int              ncount = 0;
+
 static void initconf(FBFILE* file)
 {
   char             line[BUFSIZE];
   char             quotedLine[BUFSIZE];
   char*            p;
-  int              ccount = 0;
-  int              ncount = 0;
   struct ConfItem* aconf;
+
+  ccount = ncount = 0;
 
   class0 = find_class("0");       /* which one is class 0 ? */
   aconf = NULL;

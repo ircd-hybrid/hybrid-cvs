@@ -21,9 +21,12 @@
  */
 
 /*
- * $Id: s_conf.h,v 7.10 2000/01/17 03:21:24 db Exp $
+ * $Id: s_conf.h,v 7.11 2000/01/21 04:21:32 db Exp $
  *
  * $Log: s_conf.h,v $
+ * Revision 7.11  2000/01/21 04:21:32  db
+ * - CONNECT in new parser works, needs full testing
+ *
  * Revision 7.10  2000/01/17 03:21:24  db
  * - bunch of changes in order to have class names not numbers. *sigh*
  *   I toyed with the idea of keeping class #'s and having class_names
@@ -387,6 +390,10 @@ typedef struct
   MessageFile opermotd;
   int         hub; /* YES or NO */
 } ConfigFileEntryType;
+
+/* bleh. have to become global. */
+extern int ccount;
+extern int ncount;
 
 /* aConfItems */
 /* conf uline link list root */
