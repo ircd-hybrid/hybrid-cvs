@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: memory.c,v 7.27 2001/09/25 20:23:35 androsyn Exp $
+ * $Id: memory.c,v 7.28 2001/09/25 20:30:25 androsyn Exp $
  */
 #include <stdlib.h>
 #include <string.h>
@@ -34,6 +34,7 @@
 #include "tools.h"
 #include "s_log.h"
 #include "restart.h"
+#include <assert.h>
 #ifdef MEMDEBUG
 #include <fcntl.h>
 #include <unistd.h>
