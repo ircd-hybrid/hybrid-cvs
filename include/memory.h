@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: memory.h,v 7.28 2002/01/16 16:02:23 jmallett Exp $
+ *  $Id: memory.h,v 7.29 2002/01/20 06:26:44 jmallett Exp $
  */
 
 #ifndef _I_MEMORY_H
@@ -32,11 +32,15 @@
 #include <string.h>
 
 /* Needed to use uintptr_t for some pointer manipulation. */
+#ifdef __VMS
+#include inttypes
+#else /* Not VMS */
 #ifdef HAVE_INTTYPES_H
 #include <inttypes.h>
-#else
+#else /* No inttypes.h */
 #ifndef HAVE_UINTPTR_T
 typedef unsigned long uintptr_t;
+#endif
 #endif
 #endif
 
