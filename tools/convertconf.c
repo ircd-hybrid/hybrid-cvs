@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: convertconf.c,v 1.35 2002/07/18 09:49:05 leeh Exp $
+ * $Id: convertconf.c,v 1.36 2002/07/18 15:28:28 db Exp $
  */
 
 #include <stdio.h>
@@ -494,11 +494,12 @@ static void oldParseOneLine(FILE *out,char* line)
       if(host_field && (*host_field != '#'))
         {
           fprintf(out,"resv {\n");
-          fprintf(out,"\tname=\"%s\";\n", host_field);
+          fprintf(out,"\tnick=\"%s\";\n", host_field);
         }
       else
         {
-          puts("Cannot convert a channel quarantine, skipping");
+          fprintf(out,"resv {\n");
+          fprintf(out,"\tchannel=\"%s\";\n", host_field);
           break;
         } 
      if(passwd_field)
