@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.12 2000/08/13 22:35:09 ejb Exp $
+ *   $Id: parse.c,v 7.13 2000/09/29 17:17:05 ejb Exp $
  */
 #include "parse.h"
 #include "client.h"
@@ -260,36 +260,40 @@ int parse(struct Client *cptr, char *buffer, char *bufend)
     {
       if (paramcount > MAXPARA)
         paramcount = MAXPARA;
-
+      
+      {
+	char *longarg = NULL;
+	char *ap;
+	
+	longarg = s;
+	
+	if(strsep(&longarg,":")) /* Tear off short args */
+	  
+	  if(longarg)
+	    *(longarg-2) = '\0';
+	
+	while((ap = strsep(&s, " ")) != NULL) 
 	  {
-		  char *longarg = NULL;
-		  char *ap;
-		  
-		  longarg = s;
-		  
-		  if(strsep(&longarg,":")) /* Tear off short args */
-
-		  if(longarg)
-			  *(longarg-2) = '\0';
-		  
-		  while((ap = strsep(&s, " ")) != NULL) {
-			  if(*ap != '\0') {
-				  para[i] = ap;
-				  if(i < MAXPARA)
-					  ++i;
-				  else
-					  break;
-			  }
-		  }
-
-		  if(longarg) {
-			  para[i] = longarg;
-			  i++;
-		  }
+	    if(*ap != '\0') 
+	      {
+		para[i] = ap;
+		if(i < MAXPARA)
+		  ++i;
+		else
+		  break;
+	      }
 	  }
+	
+	if(longarg) 
+	  {
+	    para[i] = longarg;
+	    i++;
+	  }
+      }
     }
-
+  
   para[i] = NULL;
+
   if (mptr == (struct Message *)NULL)
     return (do_numeric(numeric, cptr, from, i, para));
 

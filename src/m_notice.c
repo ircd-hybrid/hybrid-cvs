@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_notice.c,v 7.8 2000/08/13 22:35:06 ejb Exp $
+ *   $Id: m_notice.c,v 7.9 2000/09/29 17:17:01 ejb Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -113,7 +113,7 @@ int     m_notice(struct Client *cptr,
                           char *parv[])
 {
   struct Client *acptr;
-  char *s, *nick, *server, *host;
+  char *nick, *server, *host;
   struct Channel *chptr;
   int type=0;
 

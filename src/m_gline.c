@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_gline.c,v 7.6 2000/08/13 22:35:05 ejb Exp $
+ *  $Id: m_gline.c,v 7.7 2000/09/29 17:16:59 ejb Exp $
  */
 #include "m_gline.h"
 #include "channel.h"
@@ -752,10 +752,10 @@ void flush_glines()
  * side effects - none
  */
 
-struct ConfItem *find_gkill(struct Client* cptr)
+struct ConfItem *find_gkill(struct Client* cptr, char* username)
 {
   assert(0 != cptr);
-  return (IsElined(cptr)) ? 0 : find_is_glined(cptr->host, cptr->username);
+  return (IsElined(cptr)) ? 0 : find_is_glined(cptr->host, username);
 }
 
 /*
@@ -1080,7 +1080,7 @@ static int majority_gline(struct Client *sptr,
                   (irccmp(gline_pending_ptr->oper_server2,oper_server)==0))
                 {
                   /* This oper or server has already "voted" */
-                  sendto_ops("oper or server has already voted");
+                  sendto_realops("oper or server has already voted");
                   return NO;
                 }
 

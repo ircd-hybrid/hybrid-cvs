@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_names.c,v 7.4 2000/07/20 02:42:51 db Exp $
+ *   $Id: m_names.c,v 7.5 2000/09/29 17:17:01 ejb Exp $
  */
 
 #include "handlers.h"
@@ -174,7 +174,7 @@ int     m_names( struct Client *cptr,
                              para,
                              get_client_name(sptr,FALSE));
               sendto_one(sptr, form_str(ERR_TOOMANYTARGETS),
-                         me.name, sptr->name, "NAMES");
+                         me.name, sptr->name, "NAMES", 1);
               return 0;
             }
         }
@@ -378,7 +378,7 @@ int     ms_names( struct Client *cptr,
                              para,
                              get_client_name(sptr,FALSE));
               sendto_one(sptr, form_str(ERR_TOOMANYTARGETS),
-                         me.name, sptr->name, "NAMES");
+                         me.name, sptr->name, "NAMES", 1);
               return 0;
             }
         }

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_log.c,v 7.5 1999/12/30 20:36:09 db Exp $
+ *   $Id: s_log.c,v 7.6 2000/09/29 17:17:07 ejb Exp $
  */
 #include "s_log.h"
 #include "irc_string.h"
@@ -39,9 +39,12 @@
 
 #define LOG_BUFSIZE 2048 
 
+#ifdef USE_LOGFILE
 static int logFile = -1;
+#endif
 static int logLevel = INIT_LOG_LEVEL;
 
+#ifdef USE_SYSLOG
 static int sysLogLevel[] = {
   LOG_CRIT,
   LOG_ERR,
@@ -51,6 +54,7 @@ static int sysLogLevel[] = {
   LOG_INFO,
   LOG_INFO
 };
+#endif
 
 static const char *logLevelToString[] =
 { "L_CRIT",
@@ -118,7 +122,7 @@ void log(int priority, const char* fmt, ...)
 
 #ifdef USE_SYSLOG  
   if (priority <= L_DEBUG)
-    syslog(sysLogLevel[priority], buf);
+    syslog(sysLogLevel[priority], "%s", buf);
 #endif
 #if defined(USE_LOGFILE) 
   write_log(buf);

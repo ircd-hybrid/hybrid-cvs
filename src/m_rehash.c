@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_rehash.c,v 7.4 2000/08/13 22:35:07 ejb Exp $
+ *   $Id: m_rehash.c,v 7.5 2000/09/29 17:17:02 ejb Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -108,7 +108,7 @@ int mo_rehash(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 
   if ( !IsOperRehash(sptr) )
     {
-      sendto_one(sptr,":%s NOTICE %s: You have no H flag", me.name, parv[0]);
+      sendto_one(sptr,":%s NOTICE %s :You have no H flag", me.name, parv[0]);
       return 0;
     }
 

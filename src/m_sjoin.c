@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 7.9 2000/07/20 02:42:52 db Exp $
+ *   $Id: m_sjoin.c,v 7.10 2000/09/29 17:17:03 ejb Exp $
  */
 #include "handlers.h"
 #include "channel.h"
@@ -226,15 +226,7 @@ int     ms_sjoin(struct Client *cptr,
       clear_bans_exceptions_denies(sptr,chptr);
 
       if (chptr->opcount && !doesop)
-        {
           tstosend = oldts;
-          /* Only warn of Hacked ops if the ops are hacked
-           * on a channel from this side of the join
-           */
-
-          sendto_realops("Hacked ops locally on opless channel: %s",
-                         chptr->chname);
-        }
       else
         chptr->channelts = tstosend = newts;
     }

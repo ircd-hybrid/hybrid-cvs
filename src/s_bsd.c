@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.28 2000/08/13 22:35:09 ejb Exp $
+ *  $Id: s_bsd.c,v 7.29 2000/09/29 17:17:06 ejb Exp $
  */
 #include "s_bsd.h"
 #include "class.h"
@@ -1384,11 +1384,8 @@ int read_message(time_t delay, unsigned char mask)
    */
   pfd = &poll_fdarray[++i];
     
-  for ( ; (nfds > 0) && (i < nbr_pfds); i++, pfd++)
+  for ( ; (i < nbr_pfds); i++, pfd++)
     {
-      if (!pfd->revents)
-        continue;
-      --nfds;
       fd = pfd->fd;                   
       rr = pfd->revents & POLLREADFLAGS;
       rw = pfd->revents & POLLWRITEFLAGS;

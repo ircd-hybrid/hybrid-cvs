@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.26 2000/08/13 22:35:04 ejb Exp $
+ * $Id: ircd.c,v 7.27 2000/09/29 17:16:59 ejb Exp $
  */
 #include "ircd.h"
 #include "channel.h"
@@ -64,6 +64,10 @@
 #include <sys/file.h>
 #include <sys/stat.h>
 #include <sys/socket.h>
+
+#if defined(HAVE_GETOPT_H)
+#include <getopt.h>
+#endif /* HAVE_GETOPT_H */
 
 #ifdef SETUID_ROOT
 #include <sys/lock.h>
@@ -239,7 +243,6 @@ static void init_sys(int boot_daemon)
     }
 #endif        /* RLIMIT_FD_MAX */
 
-#ifndef __CYGWIN__
   /* This is needed to not fork if -s is on */
   if (boot_daemon)
     {
@@ -263,7 +266,6 @@ static void init_sys(int boot_daemon)
 #endif
      setsid();
     }
-#endif /* __CYGWIN__ */
   close_all_connections();
 }
 

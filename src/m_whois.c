@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 7.8 2000/08/13 22:35:08 ejb Exp $
+ *   $Id: m_whois.c,v 7.9 2000/09/29 17:17:04 ejb Exp $
  */
 
 #include "handlers.h"
@@ -180,8 +180,16 @@ int     m_whois(struct Client *cptr,
       ** We're no longer allowing remote users to generate
       ** requests with wildcards.
       */
+#ifdef NO_WHOIS_WILDCARDS
+      if(wilds)
+#else
       if (!MyConnect(sptr) && wilds)
-        return 0;
+#endif
+	{
+	  sendto_one(sptr, form_str(ERR_NOSUCHNICK),
+		     me.name, parv[0], nick);
+	  return 0;
+	}
       /*        continue; */
 
       /* If the nick doesn't have any wild cards in it,
