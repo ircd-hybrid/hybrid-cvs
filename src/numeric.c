@@ -16,19 +16,13 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: numeric.c,v 7.4 2000/11/30 22:48:06 davidt Exp $
+ *   $Id: numeric.c,v 7.5 2000/11/30 23:01:29 db Exp $
  */
 #include "numeric.h"
 #include "irc_string.h"
 #include "common.h"     /* NULL cripes */
 
 #include <assert.h>
-
-#ifdef CUSTOM_ERR            /* ZZZZ ick */
-#include "messages_cust.tab"
-#else
-#include "messages.tab"
-#endif
 
 /*
  * form_str
