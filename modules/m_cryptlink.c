@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_cryptlink.c,v 1.55 2003/07/24 19:07:10 michael Exp $
+ *  $Id: m_cryptlink.c,v 1.56 2003/07/24 19:14:56 michael Exp $
  */
 
 /*
@@ -95,7 +95,7 @@ _moddeinit(void)
   mod_del_cmd(&cryptlink_msgtab);
 }
 
-const char *_version = "$Revision: 1.55 $";
+const char *_version = "$Revision: 1.56 $";
 #endif
 
 
@@ -567,5 +567,5 @@ bogus_host(char *host)
       ++dots;
   }
 
-  return(!dots || strlen(host) > HOSTLEN)
+  return(!dots || strlen(host) > HOSTLEN);
 }
