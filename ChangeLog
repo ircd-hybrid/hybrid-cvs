@@ -1,3 +1,21 @@
+db          2003/02/16 17:54:39 EST	(20030216_4)
+
+  Modified files:
+    include              client.h 
+    src                  client.c packet.c s_user.c send.c 
+  Log:
+  - linebuf_donebuf() should be called for every local client.
+  - tidied up other code.
+  
+  Revision  Changes    Path
+  7.164     +7 -0      ircd-hybrid-7/include/client.h
+  7.331     +13 -9     ircd-hybrid-7/src/client.c
+  7.103     +1 -1      ircd-hybrid-7/src/packet.c
+  7.223     +2 -3      ircd-hybrid-7/src/s_user.c
+  7.225     +1 -1      ircd-hybrid-7/src/send.c
+
+
+
 bill        2003/02/16 17:06:48 EST	(20030216_3)
 
   Modified files:
@@ -35133,4 +35151,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4236 2003/02/16 22:06:50 bill Exp $
+$Id: ChangeLog,v 7.4237 2003/02/16 22:54:41 db Exp $
