@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.10 2000/12/01 22:18:01 db Exp $
+ *   $Id: m_sjoin.c,v 1.11 2000/12/01 23:55:26 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -302,10 +302,27 @@ sendto_realops("Creating top_chptr for %s", (parv[2] + 1));
     {
       fl = 0;
 
-      if (*s == '@' || s[1] == '@')
-        fl |= MODE_CHANOP;
-      if (*s == '+' || s[1] == '+')
-        fl |= MODE_VOICE;
+      if (*s == '@')
+	{
+	  fl |= MODE_CHANOP;
+	  s++;
+	}
+      else if (*s == '+')
+	{
+	  fl |= MODE_VOICE;
+	  s++;
+	}
+
+      if (*s == '+')
+	{
+	  fl |= MODE_VOICE;
+	  s++;
+	}
+      else if (*s == '@')
+	{
+	  fl |= MODE_CHANOP;
+	  s++;
+	}
 
       if (!keep_new_modes)
        {
@@ -318,8 +335,7 @@ sendto_realops("Creating top_chptr for %s", (parv[2] + 1));
             fl = 0;
           }
        }
-      while (*s == '@' || *s == '+')
-        s++;
+
       if (!(acptr = find_chasing(sptr, s, NULL)))
         continue;
       if (acptr->from != cptr)
