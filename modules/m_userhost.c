@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_userhost.c,v 1.23 2001/01/28 22:44:40 jdc Exp $
+ *   $Id: m_userhost.c,v 1.24 2001/01/28 23:07:47 jdc Exp $
  */
 
 #include "handlers.h"
@@ -83,23 +83,30 @@ static int m_userhost(struct Client *cptr,
     {
       if ((acptr = find_person(parv[i+1], NULL)))
 	{
-	/* show real IP for USERHOST on yourself */
-	/*
+	  /*
+	   * Show real IP for USERHOST on yourself.
+	   * This is needed for things like mIRC, which do a server-based
+	   * lookup (USERHOST) to figure out what the clients' local IP
+	   * is.  Useful for things like NAT, and dynamic dial-up users.
+	   */
 	  if (acptr == sptr)
+	  {
             rl = ircsprintf(response, "%s%s=%c%s@%s ",
 			    acptr->name,
 			    IsOper(acptr) ? "*" : "",
 			    (acptr->user->away) ? '-' : '+',
 			    acptr->username,
 			    acptr->localClient->sockhost);
+	  }
           else
-	*/
+	  {
             rl = ircsprintf(response, "%s%s=%c%s@%s ",
 			    acptr->name,
 			    IsOper(acptr) ? "*" : "",
 			    (acptr->user->away) ? '-' : '+',
 			    acptr->username,
 			    acptr->host);
+	  }
 
 	  if((rl + cur_len) < (BUFSIZE-10))
 	    {
