@@ -50,4 +50,7 @@ Channel Modes:
 The third part of the 004 numeric lists channel modes that require arguments.
 Currently these are bkloveIh.
 
-# $Id: modes.txt,v 7.6 2001/08/22 21:44:36 leeh Exp $
+Note that most of the channel modes can be disabled in the conf file for
+networks that do not wish to support them.
+
+# $Id: modes.txt,v 7.7 2001/10/25 05:21:12 wcampbel Exp $

@@ -1,16 +1,5 @@
                                 rsa_respond
 
-genkey:
-
-genkey creates the private and public key pairs used in Hybrid's CHALLENGE
-oper system.
-
-Syntax:
-$ ./genkey <public key> <private key>
-
-Keep the private key safe with a copy of the respond program.
-Distribute the private key to the admin(s) of the server(s) you oper on.
-
 respond:
 
 respond takes the challenge from the server and creates a valid response
@@ -39,4 +28,4 @@ System support:
 genkey and respond compile properly, and have been tested on FreeBSD 4.x,
 Linux glibc, and Cygwin 1.2 or higher.
 
-# $Id: README,v 1.5 2001/02/18 05:44:49 wcampbel Exp $
+# $Id: README,v 1.6 2001/10/25 05:21:13 wcampbel Exp $

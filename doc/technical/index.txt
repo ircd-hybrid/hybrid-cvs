@@ -5,7 +5,6 @@ Persistent_Clients.txt    - A global UID and Persistent client (with cookies)
 README.TSora              - Description of the TS3 protocol
 README.openssl            - Information for users who have problems with
                             Hybrid, OpenSSL, and their operating system
-cookies.txt               - ircd Cookie proposal
 cryptlink.txt             - Outline of CRYPTLINK protocol
 event.txt                 - Outline of the event system
 fd-management.txt         - Outline of the file descriptor management system
@@ -20,4 +19,4 @@ rfc1459.txt               - The IRC RFC
 send.txt                  - Document on all of the send_to functions
 whats-new-code.txt        - Whats changed in the code
 
-# $Id: index.txt,v 1.1 2001/08/28 15:23:44 wcampbel Exp $
+# $Id: index.txt,v 1.2 2001/10/25 05:21:12 wcampbel Exp $
