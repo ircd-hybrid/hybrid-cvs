@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_ojoin.c,v 1.24 2003/06/18 00:52:58 joshk Exp $
+ *   $Id: m_ojoin.c,v 1.25 2003/06/18 07:51:42 joshk Exp $
  */
 
 /* Remove this if you do not wish /OJOIN to support multiple channels
@@ -46,6 +46,8 @@ struct Message ojoin_msgtab = {
   {m_unregistered, m_not_oper, m_ignore, mo_ojoin, m_ignore}
 };
 
+#ifndef STATIC_MODULES
+
 void
 _modinit(void)
 {
@@ -58,7 +60,9 @@ _moddeinit(void)
   mod_del_cmd(&ojoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.24 $";
+const char *_version = "$Revision: 1.25 $";
+
+#endif
 
 /*
 ** mo_ojoin

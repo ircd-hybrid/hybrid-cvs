@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/contrib
 #
-# $Id: Makefile.in,v 1.50 2003/06/09 23:23:58 bill Exp $
+# $Id: Makefile.in,v 1.51 2003/06/18 07:51:42 joshk Exp $
 #
 CC		= @CC@
 RM		= @RM@
@@ -12,6 +12,7 @@ MV		= @MV@
 LEX		= @LEX@
 LEXLIB		= @LEXLIB@
 CFLAGS		= @IRC_CFLAGS@
+LD		= @LD@
 LN		= @LN@
 PICFLAGS	= @PICFLAGS@
 MKDEP		= @MKDEP@
@@ -53,7 +54,6 @@ SRCS = \
   m_omotd.c     \
   m_operspy.c   \
   m_opme.c      \
-  m_tburst.c    \
   m_whois.c     \
   spy_admin_notice.c    \
   spy_info_notice.c     \
@@ -65,18 +65,57 @@ SRCS = \
   spy_whois_notice.c    \
   example_module.c
 
-OBJS = ${SRCS:.c=.so}
+SHARED_ONLY_SRCS = m_tburst.c
+
+OBJS = ${SRCS:.c=.so} ${SHARED_ONLY_SRCS:.c=.so}
+SOBJS = ${SRCS:.c=.o}
+SLOBJS = ${OBJS:.so=.sl}
 
 default:	build
 build: all
-all: .depend $(OBJS)
+all: .depend @MOD_TARGET@
 
-install: all install_help
+libmodules.a: ../modules/libmodules.a $(SOBJS)
+	@echo "WARNING WARNING WARNING"
+	@echo "These modules are unsupported by the hybrid team, but due to the"
+	@echo "limits of your OS we link them all in by default. If you do NOT"
+	@echo "want this to happen, take out references to the modules you don't"
+	@echo "want in include/modules.h, src/modules.c, and this Makefile (SRCS.)"
+	@echo "YOU HAVE BEEN WARNED!"
+	
+	$(AR) csrv ../modules/libmodules.a $(SOBJS)
+	
+	cd ../src && \
+	$(CC) $(CPPFLAGS) $(CFLAGS) -DBUILD_CONTRIB -c modules.c || exit; \
+	${MAKE} ircd
+	
+	@echo "New statically linked ircd binary has been generated; suggest $(MAKE) install."
+
+shared_modules: $(OBJS)
+
+hpux_shared: $(OBJS) $(SLOBJS)
+
+../modules/libmodules.a:
+	cd ../modules && ${MAKE}
+
+install: install_@MOD_TARGET@ all install_help
+
+install_shared_modules:
+	mkdir -p $(AUTOMODULEDIR)
 	@echo "Installing modules into $(AUTOMODULEDIR) .."
 	@for file in $(OBJS); do \
 		$(INSTALL_DATA) $$file $(AUTOMODULEDIR); \
 	done
 
+install_hpux_shared:
+	mkdir -p $(AUTOMODULEDIR)
+	@echo "Installing modules into $(AUTOMODULEDIR) .."
+	@for file in $(SLOBJS); do \
+		$(INSTALL_DATA) $$file $(AUTOMODULEDIR); \
+	done
+
+install_libmodules.a:
+# Ye olde noop.
 
 install_help:
 	@echo Installing help files...
@@ -96,11 +135,17 @@ install_help:
 		${LN} -s ../opers/$$link $(uhelpdir); \
 	done
 
-.SUFFIXES: .so
+.SUFFIXES: .so .sl .o
 
 .c.so:
-	${CC} ${PICFLAGS}  ${CPPFLAGS} ${CFLAGS} $< -o $@
+	${CC} ${PICFLAGS} ${CPPFLAGS} ${CFLAGS} $< -o $@
 
+.c.o:
+	${CC} ${CPPFLAGS} ${CFLAGS} -c $< -o $@
+
+.so.sl:
+	${LD} -b $< -o $@
+	
 .PHONY: depend clean distclean
 
 .depend:
@@ -113,7 +158,7 @@ install_help:
 	${MV} -f .depend.tmp .depend
 
 clean:
-	${RM} -f *.so *~ 
+	${RM} -f *.so *.o *.sl *~ 
 
 distclean: clean
 	${RM} -f Makefile .depend

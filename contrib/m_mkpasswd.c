@@ -6,7 +6,7 @@
  *
  *  You can use this code in any way as long as these names remain.
  *
- *  $Id: m_mkpasswd.c,v 1.11 2003/06/07 09:56:44 michael Exp $
+ *  $Id: m_mkpasswd.c,v 1.12 2003/06/18 07:51:42 joshk Exp $
  */
 
 /* List of ircd includes from ../include/ */
@@ -36,7 +36,7 @@ static char *make_md5_salt(void);
 
 static char saltChars[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789./";
 
-struct Message test_msgtab = {
+struct Message mkpasswd_msgtab = {
   "MKPASSWD", 0, 0, 1, 2, MFLG_SLOW, 0,
   {m_unregistered, m_mkpasswd, m_ignore, mo_mkpasswd, m_ignore}
 };
@@ -44,15 +44,15 @@ struct Message test_msgtab = {
 #ifndef STATIC_MODULES
 void _modinit(void)
 {
-  mod_add_cmd(&test_msgtab);
+  mod_add_cmd(&mkpasswd_msgtab);
 }
 
 void _moddeinit(void)
 {
-  mod_del_cmd(&test_msgtab);
+  mod_del_cmd(&mkpasswd_msgtab);
 }
 
-const char *_version = "$Revision: 1.11 $";
+const char *_version = "$Revision: 1.12 $";
 #endif
 
 static void

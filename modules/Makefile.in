@@ -1,11 +1,10 @@
 #
 # Makefile.in for ircd/modules
 #
-# $Id: Makefile.in,v 1.89 2003/06/16 20:57:52 joshk Exp $
+# $Id: Makefile.in,v 1.90 2003/06/18 07:51:45 joshk Exp $
 #
 CC		= @CC@
 AR		= @AR@
-RANLIB		= @RANLIB@
 RM		= @RM@
 SED		= @SED@
 SEDOBJ		= @SEDOBJ@
@@ -125,9 +124,7 @@ hpux_shared: $(SH_CORE_OBJS) $(SH_OBJS) hpux_modules
 
 libmodules.a: $(S_OBJS)
 	$(RM) -f $@
-	$(AR) cqv $@ $(S_OBJS) 
-	$(RANLIB) $@
-
+	$(AR) csrv $@ $(S_OBJS) 
 
 install-mkdirs:
 	mkdir -p $(prefix)

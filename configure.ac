@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.62 2003/06/18 06:26:25 metalrock Exp $
+dnl $Id: configure.ac,v 7.63 2003/06/18 07:51:39 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -191,7 +191,6 @@ AC_PATH_PROG(SED, sed)
 AC_PATH_PROG(AR, ar)
 AC_PATH_PROG(LD, ld)
 AC_PROG_YACC
-AC_PROG_RANLIB
 
 if test "$YACC" = "yacc" -a -z "`which $YACC 2>/dev/null`"; then
 	AC_MSG_ERROR([could not locate a suitable parser generator; install bison, yacc, or byacc])

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.h,v 7.46 2003/06/18 00:02:06 joshk Exp $
+ *  $Id: modules.h,v 7.47 2003/06/18 07:51:44 joshk Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -154,6 +154,28 @@ extern struct Message whowas_msgtab;
 extern struct Message xline_msgtab;
 extern struct Message get_msgtab;
 extern struct Message put_msgtab;
+
+#ifdef BUILD_CONTRIB
+extern struct Message test_msgtab;
+extern struct Message classlist_msgtab;
+extern struct Message clearchan_msgtab;
+extern struct Message ctrace_msgtab;
+extern struct Message test_msgtab;
+extern struct Message forcejoin_msgtab;
+extern struct Message forcepart_msgtab;
+extern struct Message help_msgtab;
+extern struct Message uhelp_msgtab;
+extern struct Message jupe_msgtab;
+extern struct Message killhost_msgtab;
+extern struct Message ltrace_msgtab;
+extern struct Message map_msgtab;
+extern struct Message test_msgtab;
+extern struct Message ojoin_msgtab;
+extern struct Message omotd_msgtab;
+extern struct Message operspy_msgtab;
+extern struct Message opme_msgtab;
+#endif
+
 extern void load_all_modules(int check);
 
 #endif /* STATIC_MODULES */

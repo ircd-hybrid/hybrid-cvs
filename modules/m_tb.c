@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: m_tb.c,v 1.18 2003/05/29 00:58:58 db Exp $
+ *  $Id: m_tb.c,v 1.19 2003/06/18 07:51:42 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -61,7 +61,6 @@ struct Message tburst_msgtab = {
   {m_ignore, m_ignore, ms_tburst, m_ignore, m_ignore}
 };
 
-#ifndef STATIC_MODULES
 void
 _modinit(void)
 {
@@ -81,8 +80,7 @@ _moddeinit(void)
   unset_tburst_capab();
 }
 
-const char *_version = "$Revision: 1.18 $";
-#endif
+const char *_version = "$Revision: 1.19 $";
 
 /* ms_tburst()
  * 
