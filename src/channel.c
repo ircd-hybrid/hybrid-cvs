@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.196 2001/03/01 21:02:54 fl_ Exp $
+ * $Id: channel.c,v 7.197 2001/03/01 22:00:58 fl_ Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -928,6 +928,33 @@ static void send_members(struct Client *cptr,
     {
       sendto_one(cptr, "%s", buf);
     }
+}
+
+/*
+ * send_perm_channel
+ *
+ * inputs       - pointer to client cptr
+ *              - pointer to channel pointer
+ * output       - NONE
+ * side effects - send "cptr" a full list of the modes for permanent channel chptr.
+ */
+void send_perm_channel(struct Client *cptr, struct Channel *chptr)
+{
+  *modebuf = *parabuf = '\0';
+  channel_modes(chptr, cptr, modebuf, parabuf);
+
+  /* Send a blank SJOIN */
+  ircsprintf(buf, ":%s SJOIN %lu %s %s %s :", me.name,
+             chptr->channelts, chptr->chname, modebuf, parabuf);
+
+  sendto_one(cptr, "%s", buf);
+  send_mode_list(cptr, chptr->chname, &chptr->banlist, 'b', 0);
+
+  if(IsCapable(cptr, CAP_EX))
+    send_mode_list(cptr, chptr->chname, &chptr->exceptlist, 'e', 0);
+
+  if (IsCapable(cptr, CAP_IE))
+    send_mode_list(cptr, chptr->chname, &chptr->invexlist, 'I', 0);
 }
 
 /*

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.61 2001/01/29 02:08:37 ejb Exp $
+ * $Id: channel.h,v 7.62 2001/03/01 22:00:53 fl_ Exp $
  */
 
 #include <sys/types.h>        /* time_t */
@@ -114,6 +114,7 @@ extern int     is_half_op (struct Channel *chptr,struct Client *who);
 extern int     is_voiced (struct Channel *chptr,struct Client *who);
 
 extern void    send_channel_modes (struct Client *, struct Channel *);
+extern void    send_perm_channel (struct Client *, struct Channel *);
 extern int     check_channel_name(const char* name);
 extern void    channel_modes(struct Channel *chptr, struct Client *who,
 			     char *, char *);

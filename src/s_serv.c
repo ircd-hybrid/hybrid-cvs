@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.144 2001/02/26 21:17:19 fl_ Exp $
+ *   $Id: s_serv.c,v 7.145 2001/03/01 22:00:59 fl_ Exp $
  */
 
 #include <sys/types.h>
@@ -1014,11 +1014,17 @@ burst_all(struct Client *cptr)
       if(IsVchan(chptr))
 	continue;
 	  
-      burst_members(cptr,&chptr->chanops);
-      burst_members(cptr,&chptr->voiced);
-      burst_members(cptr,&chptr->halfops);
-      burst_members(cptr,&chptr->peons);
-      send_channel_modes(cptr, chptr);
+      if(chptr->users != 0)
+        {
+          burst_members(cptr,&chptr->chanops);
+          burst_members(cptr,&chptr->voiced);
+          burst_members(cptr,&chptr->halfops);
+          burst_members(cptr,&chptr->peons);
+          send_channel_modes(cptr, chptr);
+        }
+      /* Send blank channels if they support them, if the channels blank, we dont need to burst users */
+      else if ((*chptr->chname == '#') && IsCapable(cptr, CAP_VCHAN))
+        send_perm_channel(cptr, chptr);
 
       if(IsVchanTop(chptr))
 	{
@@ -1026,11 +1032,16 @@ burst_all(struct Client *cptr)
 		ptr = ptr->next)
 	    {
 	      vchan = ptr->data;
-	      burst_members(cptr,&vchan->chanops);
-	      burst_members(cptr,&vchan->voiced);
-	      burst_members(cptr,&vchan->halfops);
-	      burst_members(cptr,&vchan->peons);
-	      send_channel_modes(cptr, vchan);
+              if(vchan->users != 0)
+                {
+                  burst_members(cptr,&vchan->chanops);
+                  burst_members(cptr,&vchan->voiced);
+                  burst_members(cptr,&vchan->halfops);
+                  burst_members(cptr,&vchan->peons);
+                  send_channel_modes(cptr, vchan);
+                }
+              else if ((*vchan->chname == '#') && IsCapable(cptr, CAP_VCHAN))
+                send_perm_channel(cptr, chptr);
 	    }
 	}
     }
