@@ -36,6 +36,9 @@
 4.  Solaris stock 32bit stdio is limited to 256 fds. This breaks when using
     cryptlinks.
 
+5.  Compiling using tinycc is incomplete and unsupported. Mostly the problem
+    is that our name resolver code breaks. Caveat emptor.
+ 
 BUG REPORTS: If you run this code and encounter problems, you must report
  the bug in by E-MAIL to ircd-hybrid@the-project.org.
 
@@ -43,4 +46,4 @@ BUG REPORTS: If you run this code and encounter problems, you must report
  with any report  (with passwords and other sensitive information masked).
 
 --------------------------------------------------------------------------------
-$Id: BUGS,v 7.53 2003/03/29 15:41:28 adx Exp $
+$Id: BUGS,v 7.54 2003/05/26 03:06:14 joshk Exp $
