@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.233 2001/06/10 05:12:47 a1kmm Exp $
+ * $Id: channel.c,v 7.234 2001/06/10 06:12:23 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -4042,6 +4042,14 @@ void cleanup_channels(void *unused)
    eventAdd("cleanup_channels", cleanup_channels, NULL,
             CLEANUP_CHANNELS_TIME, 0 );
 
+   assert (MyConnect(uplink) == 1);
+
+   if (!MyConnect(uplink))
+     {
+       ilog(L_ERROR, "non-local uplink [%s]", uplink->name);
+       uplink = NULL;
+     }
+
    for(chptr = GlobalChannelList; chptr; chptr = next_chptr)
      {
        next_chptr = chptr->nextch;
@@ -4059,7 +4067,7 @@ void cleanup_channels(void *unused)
                    if(chptr->users == 0)
                      {
                        if (uplink
-                           &&
+			   &&
                            IsCapable(uplink, CAP_LL))
                          {
                            sendto_one(uplink,":%s DROP %s",

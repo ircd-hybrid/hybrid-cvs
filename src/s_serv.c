@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.187 2001/06/08 22:31:40 kreator Exp $
+ *   $Id: s_serv.c,v 7.188 2001/06/10 06:12:25 db Exp $
  */
 
 #include <sys/types.h>
@@ -1182,7 +1182,7 @@ int server_estab(struct Client *client_p)
         }
     }
   
-  if(!ServerInfo.hub)
+  if((ServerInfo.hub == 0) && MyConnect(client_p))
     {
       uplink = client_p;
     }
