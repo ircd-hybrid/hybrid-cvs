@@ -1,3 +1,15 @@
+androsyn    2002/08/06 20:24:12 EDT	(20020807_0)
+
+  Modified files:
+    src                  linebuf.c 
+  Log:
+  Back out my last linebuf patch..
+  
+  Revision  Changes    Path
+  7.91      +41 -37    ircd-hybrid-7/src/linebuf.c
+
+
+
 androsyn    2002/08/05 12:30:41 EDT	(20020805_0)
 
   Modified files:
@@ -30836,4 +30848,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3951 2002/08/05 16:30:48 androsyn Exp $
+$Id: ChangeLog,v 7.3952 2002/08/07 00:24:19 androsyn Exp $
