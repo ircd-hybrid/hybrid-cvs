@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.176 2003/12/05 07:06:26 metalrock Exp $
+ *  $Id: m_kline.c,v 1.177 2003/12/21 00:56:42 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -106,7 +106,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.176 $";
+const char *_version = "$Revision: 1.177 $";
 #endif
 
 #define TK_SECONDS 0
@@ -435,9 +435,8 @@ apply_tkline(struct Client *source_p, struct ConfItem *conf,
 		       aconf->user, aconf->host,
 		       aconf->reason);
   sendto_one(source_p, ":%s NOTICE %s :Added temporary %d min. K-Line [%s@%s]",
-	     MyConnect(source_p) ? source_p->name : ID_or_name(&me, source_p->from),
-             source_p->name, tkline_time/60,
-	     aconf->user, aconf->host);
+	     MyConnect(source_p) ? me.name : ID_or_name(&me, source_p->from),
+	     source_p->name, tkline_time/60, aconf->user, aconf->host);
   ilog(L_TRACE, "%s added temporary %d min. K-Line for [%s@%s] [%s]",
        source_p->name, tkline_time/60,
        aconf->user, aconf->host, aconf->reason);
@@ -466,7 +465,7 @@ apply_tdline(struct Client *source_p, struct ConfItem *conf,
 		       aconf->host, aconf->reason);
 
   sendto_one(source_p, ":%s NOTICE %s :Added temporary %d min. D-Line [%s]",
-	     MyConnect(source_p) ? source_p->name : ID_or_name(&me, source_p->from),
+	     MyConnect(source_p) ? me.name : ID_or_name(&me, source_p->from),
              source_p->name, tkline_time/60, aconf->host);
   ilog(L_TRACE, "%s added temporary %d min. D-Line for [%s] [%s]",
        source_p->name, tkline_time/60, aconf->host, aconf->reason);
