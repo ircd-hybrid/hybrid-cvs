@@ -15,7 +15,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- * $Id: hostmask.c,v 7.21 2001/02/26 18:04:28 androsyn Exp $ 
+ * $Id: hostmask.c,v 7.22 2001/02/27 23:50:56 db Exp $ 
  */
 #include <unistd.h>
 #include <string.h>
@@ -204,7 +204,7 @@ find_matching_conf(const char *host, const char *user,
  ircsprintf(buffer, "%s@%s", user, host);
  if ((hm = match_hostmask(buffer, HOST_CONFITEM)))
    aconf = (struct ConfItem*)hm->data;
- if (aconf->status == CONF_KILL)
+ if (aconf && aconf->status == CONF_KILL)
    {
     aconf_k = aconf;
     aconf = NULL;
