@@ -1,3 +1,13 @@
+*** 20001213_3 by db
+- halfops wasn't being propogated by sjoin, so added quick change
+  to pass the halfop along
+- however... also added code to send halfops along as normal peons for now
+  they still will have their halfops respected on their server, just
+  no one else will notice. There should be a CAP_HALFOP added...
+- tidied up and added more comments to m_stats.c
+
+
+
 *** 20001213_2 by db
 - urgh stupid typo sorry ! sorry sorry sorry!
 
@@ -2486,7 +2496,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.811 2000/12/13 06:09:41 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.812 2000/12/13 07:57:48 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
