@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.96 2002/02/17 04:19:19 jmallett Exp $
+ *  $Id: modules.c,v 7.97 2002/02/18 01:30:28 jmallett Exp $
  */
 
 #include "config.h"
@@ -132,8 +132,8 @@ extern struct Message error_msgtab;
 #include <mach-o/dyld.h>
 
 #ifndef HAVE_DLOPEN
-#ifndef	RTLD_NOW
-#define RTLD_NOW 2185 /* built-in dl*(3) don't care */
+#ifndef	RTLD_LAZY
+#define RTLD_LAZY 2185 /* built-in dl*(3) don't care */
 #endif
 
 void undefinedErrorHandler(const char *);
@@ -171,9 +171,9 @@ NSModule multipleErrorHandler(NSSymbol s, NSModule old, NSModule new)
   ** module, maybe?
   */
   sendto_realops_flags(FLAGS_ALL, L_ALL, "Symbol `%s' found in `%s' and `%s'",
-                       NSNameOfSymbol(s), NSNameOfMdoule(old), NSNameOfMdoule(new));
+                       NSNameOfSymbol(s), NSNameOfModule(old), NSNameOfModule(new));
   ilog(L_WARN, "Symbol `%s' found in `%s' and `%s'", NSNameOfSymbol(s),
-       NSNameOfMdoule(old), NSNameOfMdoule(new));
+       NSNameOfModule(old), NSNameOfModule(new));
   /* We return which module should be considered valid, I believe */
   return new;
 }
