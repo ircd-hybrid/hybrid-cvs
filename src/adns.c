@@ -1,5 +1,5 @@
 /*
- * $Id: adns.c,v 7.1 2001/02/05 01:05:35 androsyn Exp $
+ * $Id: adns.c,v 7.2 2001/02/05 22:00:46 androsyn Exp $
  * adns.c  functions to enter libadns 
  *
  * Written by Aaron Sethman <androsyn@ratbox.org>
@@ -16,13 +16,14 @@ adns_state dns_state;
 
 void restart_resolver(void)
 {
+#if 0   /* Check why this core dumps us */
 	adns_finish(dns_state);
 	init_resolver();
+#endif
 }
 void init_resolver(void)
 {
 	adns_init(&dns_state, adns_if_noautosys, 0);	
-//	adns_forallqueries_begin(dns_state);
 	eventAdd("timeout_adns", timeout_adns, NULL, 1, 0);
 	dns_select();
 }
