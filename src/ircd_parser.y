@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.256 2002/10/03 15:33:45 bill Exp $
+ *  $Id: ircd_parser.y,v 1.257 2002/10/16 02:23:23 db Exp $
  */
 
 %{
@@ -284,8 +284,10 @@ int   class_redirport_var;
 
 %type   <string>   QSTRING
 %type   <number>   NUMBER
-%type   <number>   timespec, timespec_
-%type   <number>   sizespec, sizespec_
+%type   <number>   timespec
+%type	<number>   timespec_
+%type   <number>   sizespec
+%type   <number>   sizespec_
 
 %%
 conf:   
@@ -300,7 +302,7 @@ conf_item:        admin_entry
                 | listen_entry
                 | auth_entry
                 | serverinfo_entry
-		| serverhide_entry;
+		| serverhide_entry
                 | resv_entry
                 | shared_entry
                 | connect_entry
