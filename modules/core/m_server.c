@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_server.c,v 1.57 2001/05/28 07:34:45 a1kmm Exp $
+ *   $Id: m_server.c,v 1.58 2001/06/05 16:11:27 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"  /* m_server prototype */
@@ -296,10 +296,12 @@ static void ms_server(struct Client *client_p, struct Client *source_p,
        * for a while and servers to send stuff to the wrong place.
        */
       sendto_one(client_p,"ERROR :Nickname %s already exists!", name);
-      sendto_realops_flags(FLAGS_ALL,
+      sendto_realops_flags(FLAGS_ADMIN,
 			   "Link %s cancelled: Server/nick collision on %s",
-		/* inpath */ get_client_name(client_p, HIDE_IP),
-				name);
+		/* inpath */ get_client_name(client_p, HIDE_IP), name);
+      sendto_realops_flags(FLAGS_NOTADMIN,
+          "Link %s cancelled: Server/nick collision on %s",
+	  get_client_name(client_p, MASK_IP), name);
       exit_client(client_p, client_p, client_p, "Nick as Server");
       return;
     }
@@ -369,8 +371,12 @@ static void ms_server(struct Client *client_p, struct Client *source_p,
   if (!hlined || (IsCapable(client_p, CAP_LL) && !IsCapable(client_p, CAP_HUB)))
     {
       /* OOOPs nope can't HUB */
-      sendto_realops_flags(FLAGS_ALL,"Non-Hub link %s introduced %s.",
+      sendto_realops_flags(FLAGS_ADMIN, "Non-Hub link %s introduced %s.",
                 get_client_name(client_p, HIDE_IP), name);
+
+      sendto_realops_flags(FLAGS_NOTADMIN,
+          "Non-Hub link %s introduced %s.",
+	  get_client_name(client_p, MASK_IP), name);
       /* If it is new, we are probably misconfigured, so split the
        * non-hub server introducing this. Otherwise, split the new
        * server. -A1kmm. */
@@ -391,8 +397,12 @@ static void ms_server(struct Client *client_p, struct Client *source_p,
   if (llined)
     {
       /* OOOPs nope can't HUB this leaf */
-      sendto_realops_flags(FLAGS_ALL,"link %s introduced leafed %s.",
-                get_client_name(client_p, HIDE_IP), name);
+      sendto_realops_flags(FLAGS_ADMIN,
+            "link %s introduced leafed %s.",
+	    get_client_name(client_p, HIDE_IP), name);
+      sendto_realops_flags(FLAGS_NOTADMIN, 
+            "link %s introduced leafed %s.",
+            get_client_name(client_p, HIDE_IP), name);
       /* If it is new, we are probably misconfigured, so split the
        * non-hub server introducing this. Otherwise, split the new
        * server. -A1kmm. */
@@ -439,8 +449,12 @@ static void ms_server(struct Client *client_p, struct Client *source_p,
 	continue;
       if (!(aconf = bclient_p->serv->sconf))
 	{
-	  sendto_realops_flags(FLAGS_ALL,"Lost N-line for %s on %s. Closing",
-			       get_client_name(client_p, HIDE_IP), name);
+	  sendto_realops_flags(FLAGS_ADMIN, 
+	        "Lost N-line for %s on %s. Closing",
+		get_client_name(client_p, HIDE_IP), name);
+	  sendto_realops_flags(FLAGS_NOTADMIN, 
+	        "Lost N-line for %s on %s. Closing",
+		get_client_name(client_p, MASK_IP), name);
 	  exit_client(client_p, client_p, client_p, "Lost N line");
           return;
 	}
