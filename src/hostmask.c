@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.c,v 7.79 2003/04/23 00:22:24 bill Exp $
+ *  $Id: hostmask.c,v 7.80 2003/04/23 19:07:49 bill Exp $
  */
 
 #include "stdinc.h"
@@ -567,7 +567,6 @@ add_conf_by_address(const char *address, int type, const char *username,
   unsigned long hv;
   struct AddressRec *arec;
 
-  assert(!EmptyString(username));
   assert(type != 0); 
   assert(aconf != NULL);
 
