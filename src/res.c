@@ -4,7 +4,7 @@
  * shape or form. The author takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: res.c,v 7.4 1999/08/16 23:34:23 tomh Exp $
+ * $Id: res.c,v 7.5 1999/08/17 04:17:14 tomh Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -844,8 +844,19 @@ static int proc_answer(struct ResRequest* request, HEADER* header,
    * process each answer sent to us blech.
    */
   while (header->ancount-- > 0 && current < eob && name < endp) {
-    if ((n = dn_expand(buf, eob, current, hostbuf, sizeof(hostbuf))) <= 0)
+    n = dn_expand(buf, eob, current, hostbuf, sizeof(hostbuf));
+    if (n < 0) {
+      /*
+       * broken message
+       */
+      return 0;
+    }
+    else if (n == 0) {
+      /*
+       * no more answers left
+       */
       return answer_count;
+    }
     hostbuf[HOSTLEN] = '\0';
     /* 
      * With Address arithmetic you have to be very anal
@@ -902,8 +913,19 @@ static int proc_answer(struct ResRequest* request, HEADER* header,
       ++answer_count;
       break;
     case T_PTR:
-      if ((n = dn_expand(buf, eob, current, hostbuf, sizeof(hostbuf))) < 0)
+      n = dn_expand(buf, eob, current, hostbuf, sizeof(hostbuf));
+      if (n < 0) {
+        /*
+         * broken message
+         */
+        return 0;
+      }
+      else if (n == 0) {
+        /*
+         * no more answers left
+         */
         return answer_count;
+      }
       /*
        * This comment is based on analysis by Shadowfax, Wohali and johan, 
        * not me.  (Dianora) I am only commenting it.
