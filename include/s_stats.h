@@ -18,7 +18,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: s_stats.h,v 7.3 2000/11/28 23:20:57 db Exp $
+ * $Id: s_stats.h,v 7.4 2000/12/12 00:28:08 db Exp $
  */
 #ifndef INCLUDED_s_stats_h
 #define INCLUDED_s_stats_h
@@ -67,6 +67,6 @@ struct  ServerStatistics {
 extern struct ServerStatistics* ServerStats;
 
 extern void init_stats(void);
-extern void tstats(struct Client* client, const char* name);
+extern void tstats(struct Client* client);
 
 #endif /* INCLUDED_s_stats_h */

@@ -1,16 +1,13 @@
 #
 # Makefile.in for ircd/modules
 #
-# $Id: Makefile.in,v 1.15 2000/12/09 03:12:48 db Exp $
+# $Id: Makefile.in,v 1.16 2000/12/12 00:28:09 db Exp $
 #
 CC		= @CC@
 RM		= @RM@
 LEX		= @LEX@
 LEXLIB		= @LEXLIB@
-#CFLAGS		= @CFLAGS@
-# umm -O2 was screwing up modules
-CFLAGS		= -g
-
+CFLAGS		= @CFLAGS@
 MKDEP		= ${CC} -MM
 
 IRCDLIBS	= @LIBS@ @SSL_LIBS@

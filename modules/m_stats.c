@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 1.14 2000/12/10 23:59:00 db Exp $
+ *  $Id: m_stats.c,v 1.15 2000/12/12 00:28:09 db Exp $
  */
 #include "handlers.h"  /* m_pass prototype */
 #include "class.h"       /* report_classes */
@@ -456,7 +456,7 @@ void do_priv_stats(struct Client *sptr, char *name, char *target,
       break;
 
     case 'T' : case 't' :
-      tstats(sptr, sptr->name);
+      tstats(sptr);
       stats_spy(sptr,stat);
       break;
 
