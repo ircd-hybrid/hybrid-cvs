@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_oper.c,v 7.1 1999/08/02 11:47:02 db Exp $
+ *   $Id: m_oper.c,v 7.2 1999/08/22 06:30:33 tomh Exp $
  */
 
 #include "m_commands.h"
@@ -130,8 +130,7 @@ int m_oper(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
       Count.oper++;
       sendto_serv_butone(cptr, ":%s MODE %s :+o", parv[0], parv[0]);
       if (IsMe(cptr))
-        sendto_one(sptr, form_str(RPL_YOUREOPER),
-                   me.name, parv[0]);
+        sendto_one(sptr, form_str(RPL_YOUREOPER), me.name, parv[0]);
       return 0;
     }
   else if (IsAnOper(sptr))
@@ -144,8 +143,7 @@ int m_oper(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
         }
       return 0;
     }
-  if (!(aconf = find_conf_exact(name, sptr->username, sptr->host,
-                                CONF_OPS)) &&
+  if (!(aconf = find_conf_exact(name, sptr->username, sptr->host, CONF_OPS)) &&
       !(aconf = find_conf_exact(name, sptr->username,
                                 inetntoa((char *)&cptr->ip), CONF_OPS)))
     {
@@ -181,9 +179,9 @@ int m_oper(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
       if (aconf->status == CONF_LOCOP)
         {
           SetLocOp(sptr);
-          if((int)aconf->hold)
+          if (aconf->hold)
             {
-              sptr->umodes |= ((int)aconf->hold & ALL_UMODES); 
+              sptr->umodes |= (aconf->hold & ALL_UMODES); 
               sendto_one(sptr, ":%s NOTICE %s:*** Oper flags set from conf",
                          me.name,parv[0]);
             }
@@ -204,8 +202,8 @@ int m_oper(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
           SetOper(sptr);
           if((int)aconf->hold)
             {
-              sptr->umodes |= ((int)aconf->hold & ALL_UMODES); 
-              if( !IsSetOperN(sptr) )
+              sptr->umodes |= (aconf->hold & ALL_UMODES); 
+              if (!IsSetOperN(sptr))
                 sptr->umodes &= ~FLAGS_NCHANGE;
               
               sendto_one(sptr, ":%s NOTICE %s:*** Oper flags set from conf",

@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.6 1999/08/21 02:52:12 tomh Exp $
+ * $Id: client.h,v 7.7 1999/08/22 06:30:29 tomh Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -193,6 +193,8 @@ struct Client
 
   struct Zdata*     zip;        /* zip data */
 
+  unsigned short    port;       /* and the remote port# too :-) */
+
   short             lastsq;     /* # of 2k blocks when sendqueued called last*/
   dbuf              sendQ;      /* Outgoing message queue--if socket full */
   dbuf              recvQ;      /* Hold for data incoming yet to be parsed */
@@ -217,7 +219,6 @@ struct Client
   struct Listener*  listener;   /* listener accepted from */
   struct SLink*     confs;      /* Configuration record associated */
   struct in_addr    ip;         /* keep real ip# too */
-  unsigned short    port;       /* and the remote port# too :-) */
   struct DNSReply*  dns_reply;  /* result returned from resolver query */
   time_t            last_knock; /* don't allow knock to flood */
   /*

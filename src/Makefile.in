@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.2 1999/08/20 04:38:22 tomh Exp $
+# $Id: Makefile.in,v 7.3 1999/08/22 06:30:32 tomh Exp $
 #
 CC = @CC@
 RM = @RM@
@@ -41,6 +41,7 @@ SRCS = \
 	m_die.c \
 	m_error.c \
 	m_gline.c \
+	m_hash.c \
 	m_help.c \
 	m_kick.c \
 	m_htm.c \
@@ -136,6 +137,7 @@ SRCS = \
 #	m_die.o \
 #	m_error.o \
 #	m_gline.o \
+#	m_hash.o \
 #	m_help.o \
 #	m_kick.o \
 #	m_htm.o \
