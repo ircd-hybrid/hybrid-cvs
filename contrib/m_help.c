@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_help.c,v 1.9 2003/08/16 23:32:51 metalrock Exp $
+ *  $Id: m_help.c,v 1.10 2003/08/17 04:34:38 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&uhelp_msgtab);
 }
 
-const char *_version = "$Revision: 1.9 $";
+const char *_version = "$Revision: 1.10 $";
 #endif
 
 /*
@@ -197,8 +197,11 @@ sendhelpfile(struct Client *source_p, char *path, char *topic)
     return;
   }
 
-  sendto_one(source_p, form_str(RPL_HELPSTART),
+  else if (line[0] != '#')
+  {
+    sendto_one(source_p, form_str(RPL_HELPSTART),
              me.name, source_p->name, topic, line);
+  }
 
   while (fbgets(line, sizeof(line), file))
     if(line[0] != '#')

@@ -1,4 +1,4 @@
-# $Id: index,v 1.6 2003/08/17 02:24:24 metalrock Exp $
+# $Id: index,v 1.7 2003/08/17 04:34:40 joshk Exp $
 Help topics available to opers:
 
 ACCEPT          ADMIN           AWAY            CAPAB
@@ -19,6 +19,6 @@ RESTART         RESV            SERVER          SET
 SJOIN           SQUIT           STATS           SVINFO
 TESTLINE        TIME            TOPIC           TRACE
 UHELP           UMODE           UNDLINE         UNGLINE
-UNKLINE         UNRESV          UNXLINE		USER
-USERHOST	USERS           VERSION         WALLOPS
-WHO		WHOIS           WHOWAS		XLINE
+UNKLINE         UNRESV          UNXLINE         USER
+USERHOST        USERS           VERSION         WALLOPS
+WHO             WHOIS           WHOWAS          XLINE
