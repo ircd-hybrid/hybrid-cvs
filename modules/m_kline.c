@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kline.c,v 1.85 2001/06/08 10:24:53 a1kmm Exp $
+ *   $Id: m_kline.c,v 1.86 2001/06/09 18:56:16 toot Exp $
  */
 #include "tools.h"
 #include "m_kline.h"
@@ -51,6 +51,7 @@
 #include <fcntl.h>
 #include <string.h>
 #include <errno.h>
+#include <time.h>
 
 static void mo_kline(struct Client *,struct Client *,int,char **);
 static void ms_kline(struct Client *,struct Client *,int,char **);

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.159 2001/06/09 08:36:07 androsyn Exp $
+ * $Id: ircd.c,v 7.160 2001/06/09 18:56:23 toot Exp $
  */
 
 #include <sys/types.h>
@@ -320,10 +320,12 @@ io_loop(void)
   if (callbacks_called > 0)
    empty_cycles = 0;
   else if (empty_cycles++ > 10)
-   if(empty_cycles - 10 > 5000)
+  {
+    if(empty_cycles - 10 > 5000)
    	st = 5000;
-   else
+    else
    	st = empty_cycles;
+  }
   /* Do IO events */
   comm_select(st);
   
