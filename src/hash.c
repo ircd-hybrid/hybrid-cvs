@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.44 2002/08/15 14:15:36 db Exp $
+ *  $Id: hash.c,v 7.45 2002/10/04 04:18:38 db Exp $
  */
 
 #include "stdinc.h"
@@ -324,7 +324,7 @@ add_to_resv_hash_table(const char *name, struct ResvChannel *resv_p)
 
 
 /*
- * del_from_client_hash_table - remove a client/server from the client
+ * del_from_id_hash_table - remove a client/server from the id
  * hash table
  */
 void
