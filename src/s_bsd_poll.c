@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_poll.c,v 7.4 2000/10/25 00:04:19 adrian Exp $
+ *  $Id: s_bsd_poll.c,v 7.5 2000/10/25 07:07:05 adrian Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -476,7 +476,7 @@ comm_select(time_t delay)
 	    (pollfds[fd].fd) == -1)
 	    continue;
         F = &fd_table[fd];
-	if (revents & (POLLRDNORM | POLLIN | POLLHUP | POLLERR)) {
+	if (revents & (POLLREADFLAGS | POLLERRORS)) {
 	    hdl = F->read_handler;
 	    poll_update_pollfds(fd, POLLRDNORM, NULL);
 	    if (!hdl) {
@@ -485,7 +485,7 @@ comm_select(time_t delay)
 		hdl(fd, F->read_data);
             }
 	}
-	if (revents & (POLLWRNORM | POLLOUT | POLLHUP | POLLERR)) {
+	if (revents & (POLLWRITEFLAGS | POLLERRORS)) {
 	    hdl = F->write_handler;
 	    poll_update_pollfds(fd, POLLWRNORM, NULL);
 	    if (!hdl) {
