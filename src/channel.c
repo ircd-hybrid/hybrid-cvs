@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.272 2001/10/01 19:18:32 davidt Exp $
+ * $Id: channel.c,v 7.273 2001/10/02 16:13:24 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -106,7 +106,8 @@ void check_spambot_warning(struct Client *source_p, const char *name);
  *
  * Initializes the channel blockheap
  */
-static BlockHeap *channel_heap, *ban_heap;
+BlockHeap *channel_heap;
+static BlockHeap *ban_heap;
 static void channelheap_garbage_collect(void *unused)
 {
   BlockHeapGarbageCollect(channel_heap);
@@ -4353,6 +4354,7 @@ get_channel(struct Client *client_p, char *chname, int flag)
   }
   return chptr;
 }
+
 
 /*
 **  Subtract one user from channel (and free channel

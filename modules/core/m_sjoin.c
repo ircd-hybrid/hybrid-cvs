@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.110 2001/10/01 19:18:32 davidt Exp $
+ *   $Id: m_sjoin.c,v 1.111 2001/10/02 16:13:24 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -190,9 +190,7 @@ static void ms_sjoin(struct Client *client_p,
 
   *parabuf = '\0';
 
-  isnew = ChannelExists(parv[2]) ? 0 : 1;
-
-  if (!(chptr = get_channel(source_p, parv[2], CREATE)))
+  if ( (chptr = get_or_create_channel(source_p, parv[2], &isnew)) == NULL )
     return; /* channel name too long? */
 
   /* XXX vchan cruft */

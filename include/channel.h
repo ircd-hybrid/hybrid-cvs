@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.88 2001/10/02 05:34:09 a1kmm Exp $
+ * $Id: channel.h,v 7.89 2001/10/02 16:13:23 db Exp $
  */
 
 #include <sys/types.h>        /* time_t */
@@ -105,7 +105,6 @@ void cleanup_channels(void *);
 
 #define NullChn ((struct Channel *)0)
 
-#define ChannelExists(n)        (hash_find_channel(n, NullChn) != NullChn)
 
 /* Maximum mode changes allowed per client, per server is different */
 #define MAXMODEPARAMS   4
