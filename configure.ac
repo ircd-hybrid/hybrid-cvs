@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.24 2003/05/17 18:59:10 joshk Exp $
+dnl $Id: configure.ac,v 7.25 2003/05/17 20:26:47 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -175,7 +175,7 @@ fi
 dnl Networking Functions
 dnl ====================
 
-AC_SEARCH_LIBS(socket, socket)
+AC_SEARCH_LIBS(socket, socket, , [AC_MSG_ERROR([You have no socket()! Aborting.])])
 
 dnl Don't use them if they're available natively... else, they're available in inet_misc
 AC_SEARCH_LIBS(inet_aton, resolv, , [inet_misc=1; AC_DEFINE(NO_INET_ATON, 1, [Define if you have no native inet_aton() function.])])
@@ -493,9 +493,13 @@ AC_HELP_STRING([--disable-zlib],[Disable ziplinks support]),
 [
 	AC_CHECK_LIB(z, deflate,
 		[AC_CHECK_LIB(z, zlibVersion,
-			[],
+			[
+				ZLIB_LD="-lz"
+				AC_DEFINE(HAVE_LIBZ, 1, [Define to 1 if you have the `z' library (-lz).])
+			],
 			[
 				AC_MSG_RESULT([yes, but not using it - v1.0.2 is required])
+				ZLIB_LD=""
 				zlib=no
 			]
 		)],
@@ -504,6 +508,8 @@ AC_HELP_STRING([--disable-zlib],[Disable ziplinks support]),
 			zlib=no
 		])
 ])
+
+AC_SUBST(ZLIB_LD)
 
 dnl IO Loop Selection
 dnl =================

@@ -1,7 +1,7 @@
 #
 # Makefile.in for servlink/src
 #
-# $Id: Makefile.in,v 1.17 2003/05/17 17:17:59 joshk Exp $
+# $Id: Makefile.in,v 1.18 2003/05/17 20:26:51 joshk Exp $
 #
 
 CC              = @CC@
@@ -22,8 +22,9 @@ localstatedir   = @localstatedir@
 
 SSL_LIBS	= @SSL_LIBS@
 SSL_INCLUDES	= @SSL_INCLUDES@
+ZIP_LIB		= @ZLIB_LD@
 
-IRCDLIBS        = @LIBS@ $(SSL_LIBS)
+IRCDLIBS        = @LIBS@ $(SSL_LIBS) $(ZIP_LIB)
 
 INCLUDES        = -I../include -I. $(SSL_INCLUDES)
 CPPFLAGS        = ${INCLUDES} @CPPFLAGS@

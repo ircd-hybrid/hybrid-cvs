@@ -8,7 +8,7 @@ At the present time, the following languages are supported:
 
 swedish - maintained by trbz - Chris C <chris@mircscripter.com>
 croatian - maintained by Martin - Vid Strpic <strpic@bofhlet.net>
-french - in progress
+french - maintained by Joshua Kwan <joshk@triplehelix.org>
 german - maintained by dmalloc - Darian Lanx <bio@gmx.net>
 norwegian - maintained by inglish - Stephen Olsen <inglish@sol.no>
 macedonian - in progress
@@ -38,4 +38,4 @@ Contributions are welcome, at present time please send contributed translations
 to ircd-hybrid@the-project.org, hybrid@the-project.org, or directly to one
 of the people who work with the translations, currently wcampbel@botbay.net.
 
-# $Id: README,v 1.2 2003/05/15 07:01:45 joshk Exp $
+# $Id: README,v 1.3 2003/05/17 20:26:49 joshk Exp $

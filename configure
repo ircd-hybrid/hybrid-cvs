@@ -308,7 +308,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT MKDEP MAKEDEPEND CPP EGREP SET_MAKE INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA RM CP MV LN SED AR LD YACC RANLIB ac_ct_RANLIB LEX LEXLIB LEX_OUTPUT_ROOT INET_MISC CRYPT_LIB SNPRINTF_C ENCSPEED SELECT_TYPE CLOBBER PICFLAGS MODULES_DEFINE MODULES_LIBS MOD_TARGET SSL_INCLUDES SSL_LIBS IRC_CFLAGS SEDOBJ LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT MKDEP MAKEDEPEND CPP EGREP SET_MAKE INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA RM CP MV LN SED AR LD YACC RANLIB ac_ct_RANLIB LEX LEXLIB LEX_OUTPUT_ROOT INET_MISC CRYPT_LIB SNPRINTF_C ENCSPEED ZLIB_LD SELECT_TYPE CLOBBER PICFLAGS MODULES_DEFINE MODULES_LIBS MOD_TARGET SSL_INCLUDES SSL_LIBS IRC_CFLAGS SEDOBJ LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -3762,6 +3762,10 @@ echo "${ECHO_T}$ac_cv_search_socket" >&6
 if test "$ac_cv_search_socket" != no; then
   test "$ac_cv_search_socket" = "none required" || LIBS="$ac_cv_search_socket $LIBS"
 
+else
+  { { echo "$as_me:$LINENO: error: You have no socket()! Aborting." >&5
+echo "$as_me: error: You have no socket()! Aborting." >&2;}
+   { (exit 1); exit 1; }; }
 fi
 
 
@@ -7125,8 +7129,7 @@ fi
 echo "$as_me:$LINENO: result: $ac_cv_lib_z_deflate" >&5
 echo "${ECHO_T}$ac_cv_lib_z_deflate" >&6
 if test $ac_cv_lib_z_deflate = yes; then
-
-echo "$as_me:$LINENO: checking for zlibVersion in -lz" >&5
+  echo "$as_me:$LINENO: checking for zlibVersion in -lz" >&5
 echo $ECHO_N "checking for zlibVersion in -lz... $ECHO_C" >&6
 if test "${ac_cv_lib_z_zlibVersion+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -7181,16 +7184,19 @@ fi
 echo "$as_me:$LINENO: result: $ac_cv_lib_z_zlibVersion" >&5
 echo "${ECHO_T}$ac_cv_lib_z_zlibVersion" >&6
 if test $ac_cv_lib_z_zlibVersion = yes; then
-  cat >>confdefs.h <<_ACEOF
+
+				ZLIB_LD="-lz"
+
+cat >>confdefs.h <<\_ACEOF
 #define HAVE_LIBZ 1
 _ACEOF
 
-  LIBS="-lz $LIBS"
 
 else
 
 				echo "$as_me:$LINENO: result: yes, but not using it - v1.0.2 is required" >&5
 echo "${ECHO_T}yes, but not using it - v1.0.2 is required" >&6
+				ZLIB_LD=""
 				zlib=no
 
 
@@ -7206,6 +7212,8 @@ fi
 
 
 fi;
+
+
 
 
 # Check whether --enable-poll or --disable-poll was given.
@@ -9839,6 +9847,7 @@ s,@INET_MISC@,$INET_MISC,;t t
 s,@CRYPT_LIB@,$CRYPT_LIB,;t t
 s,@SNPRINTF_C@,$SNPRINTF_C,;t t
 s,@ENCSPEED@,$ENCSPEED,;t t
+s,@ZLIB_LD@,$ZLIB_LD,;t t
 s,@SELECT_TYPE@,$SELECT_TYPE,;t t
 s,@CLOBBER@,$CLOBBER,;t t
 s,@PICFLAGS@,$PICFLAGS,;t t

@@ -1,0 +1,17 @@
+; ircd-hybrid-7 custom message file
+; Copyright (C) 2003
+; Joshua Kwan <joshk@triplehelix.org>
+; $Id: ircd-french.lang,v 1.1 2003/05/17 20:26:49 joshk Exp $
+
+RPL_LUSEROP:             :%s 252 %s %d :opérateurs IRC en ligne
+RPL_LOAD2HI:             :%s 263 %s :Veuillez patienter, le serveur est trop occupé
+RPL_UNAWAY:              :%s 305 %s :Vous n'êtes plus marqué 'absent'
+RPL_NOWAWAY:             :%s 306 %s :Vous êtes maintenant marqué 'absent'
+RPL_WHOISOPERATOR:       :%s 313 %s %s :est un opérateur IRC
+RPL_YOUREOPER:           :%s 381 %s :Vous êtes maintenant un opérateur IRC
+RPL_REHASHING:           :%s 382 %s %s :Le serveur relit le fichier de configuration
+ERR_PASSWDMISMATCH:      :%s 464 %s :Faux mot de passe
+ERR_NOPRIVILEGES:        :%s 481 %s :Vous n'êtes pas un opérateur
+ERR_CHANOPRIVSNEEDED:    :%s 482 %s %s :Vous n'avez pas assez de pouvoir dans cette chaîne IRC pour faire ça
+ERR_CANTKILLSERVER:      :%s 483 %s :Impossible de /KILLer un serveur!
+ERR_NOOPERHOST:          :%s 491 %s :Vous manquez la bonne addresse ou le bon mot de passe pour devenir opérateur IRC

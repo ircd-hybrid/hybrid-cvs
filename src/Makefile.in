@@ -1,14 +1,13 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.131 2003/05/17 17:18:00 joshk Exp $
+# $Id: Makefile.in,v 7.132 2003/05/17 20:26:53 joshk Exp $
 #
 CC		= @CC@
 INSTALL		= @INSTALL@
 INSTALL_BIN	= @INSTALL_PROGRAM@
 INSTALL_DATA	= @INSTALL_DATA@
 LEX		= @LEX@
-LEXLIB		= @LEXLIB@
 CFLAGS		= @IRC_CFLAGS@
 LDFLAGS   	= @LDFLAGS@
 MKDEP		= @MKDEP@
@@ -115,7 +114,7 @@ all: ircd
 build: all
 
 ircd: $(OBJS) y.tab.o lex.yy.o version.o
-	${CC} ${CFLAGS} ${LDFLAGS} -o $@ ${OBJS} lex.yy.o y.tab.o version.o ${IRCDLIBS} ${LEXLIB}
+	${CC} ${CFLAGS} ${LDFLAGS} -o $@ ${OBJS} lex.yy.o y.tab.o version.o ${IRCDLIBS}
 	${MV} -f version.c version.c.last
 
 install-mkdirs:

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.16 2003/05/15 07:05:05 joshk Exp $
+# $Id: Makefile.in,v 1.17 2003/05/17 20:26:49 joshk Exp $
 #
 RM            = @RM@
 MV            = @MV@
@@ -14,13 +14,14 @@ LANGFILES     = ayb.lang            \
                 ircd-croatian.lang  \
                 ircd-danish.lang    \
                 ircd-dutch.lang     \
+		ircd-french.lang    \
                 ircd-german.lang    \
                 ircd-norwegian.lang \
                 ircd-russian.lang   \
                 ircd-spanish.lang   \
                 ircd-swedish.lang
 
-
+all:
 
 install:
 	mkdir -p $(messagedir);       
@@ -38,4 +39,3 @@ install:
 distclean:
 	${RM} -f Makefile
 
-all build clean depend:
