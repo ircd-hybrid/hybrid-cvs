@@ -1,3 +1,15 @@
+androsyn    2002/12/17 07:35:09 EST	(20021217_0)
+
+  Modified files:
+    adns                 parse.c 
+  Log:
+  Allow '_' in hostnames per rfc1033 recommendations
+  
+  Revision  Changes    Path
+  1.6       +1 -1      ircd-hybrid-7/adns/parse.c
+
+
+
 db          2002/12/16 17:43:30 EST	(20021216_5)
 
   Modified files:
@@ -33621,4 +33633,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4141 2002/12/16 22:43:33 db Exp $
+$Id: ChangeLog,v 7.4142 2002/12/17 12:35:12 androsyn Exp $
