@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_poll.c,v 7.20 2000/11/28 23:38:19 adrian Exp $
+ *  $Id: s_bsd_poll.c,v 7.21 2000/12/17 22:45:46 db Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -88,7 +88,6 @@
 #define INADDR_NONE ((unsigned int) 0xffffffff)
 #endif
 
-extern struct sockaddr_in vserv;               /* defined in s_conf.c */
 
 struct _pollfd_list {
     struct pollfd pollfds[MAXCONNECTIONS];

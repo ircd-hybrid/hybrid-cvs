@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.102 2000/12/17 14:10:47 db Exp $
+ *  $Id: s_conf.c,v 7.103 2000/12/17 22:45:46 db Exp $
  */
 #include "tools.h"
 #include "s_conf.h"
@@ -243,6 +243,14 @@ static struct LinkReport {
   { 0, 0, '\0' }
 };
 
+/*
+ * report_configured_links
+ *
+ * inputs	- pointer to client to report to
+ *		- type of line to report
+ * output	- NONE
+ * side effects	-
+ */
 void report_configured_links(struct Client* sptr, int mask)
 {
   struct ConfItem*   tmp;
@@ -447,6 +455,7 @@ int check_client(struct Client *cptr, struct Client *sptr, char *username)
 
 /*
  * attach_Iline
+ *
  * inputs	-
  * output	-
  * side effect	- find the first (best) I line to attach.
@@ -3019,7 +3028,6 @@ struct ConfItem *conf_add_o_line(struct ConfItem *aconf)
  * output       - NONE
  * side effects - Add the M line
  */
-
 void conf_add_me(struct ConfItem *aconf)
 {
   /*

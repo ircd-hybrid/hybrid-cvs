@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.73 2000/12/12 02:40:37 db Exp $
+ *  $Id: s_bsd.c,v 7.74 2000/12/17 22:45:45 db Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -68,8 +68,6 @@
 #ifndef INADDR_NONE
 #define INADDR_NONE ((unsigned int) 0xffffffff)
 #endif
-
-extern struct sockaddr_in vserv;               /* defined in s_conf.c */
 
 const char* const NONB_ERROR_MSG   = "set_non_blocking failed for %s:%s"; 
 const char* const OPT_ERROR_MSG    = "disable_sock_options failed for %s:%s";
