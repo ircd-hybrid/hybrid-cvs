@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_poll.c,v 7.46 2001/08/20 20:41:09 androsyn Exp $
+ *  $Id: s_bsd_poll.c,v 7.47 2001/10/13 04:41:04 db Exp $
  */
 #include "config.h"
 #ifdef USE_POLL
@@ -149,7 +149,7 @@ poll_update_pollfds(int fd, fdlist_t list, short event, PF * handler)
 
         /* update maxindex here */
         if (comm_index == pf->maxindex)
-            while( pf->pollfds[pf->maxindex].fd == -1 && pf->maxindex >= 0 )
+            while (pf->maxindex >= 0 && pf->pollfds[pf->maxindex].fd == -1)
               pf->maxindex--;
 
         if (ncomm_index > npf->maxindex)
@@ -184,8 +184,8 @@ poll_update_pollfds(int fd, fdlist_t list, short event, PF * handler)
 
 		/* update pf->maxindex here */
 		if (comm_index == pf->maxindex)
-		  while( pf->pollfds[pf->maxindex].fd == -1 && 
-			 pf->maxindex >= 0 )
+		  while (pf->maxindex >= 0 &&
+		  	pf->pollfds[pf->maxindex].fd == -1)
                     pf->maxindex--;
 	      }
 	  }

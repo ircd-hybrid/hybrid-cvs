@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_bsd.h,v 7.30 2001/09/06 11:34:38 leeh Exp $
+ *   $Id: s_bsd.h,v 7.31 2001/10/13 04:41:02 db Exp $
  *
  */
 #ifndef INCLUDED_s_bsd_h
@@ -61,7 +61,6 @@ extern void  report_error(int, const char*, const char*, int);
 extern int   set_non_blocking(int);
 extern int   set_sock_buffers(int, int);
 
-extern int   completed_connection(struct Client*);
 extern void  error_exit_client(struct Client*, int);
 extern int   get_sockerr(int);
 extern int   ignoreErrno(int ierrno);
