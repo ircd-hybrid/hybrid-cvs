@@ -38,7 +38,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: event.c,v 7.37 2003/07/25 23:49:20 michael Exp $
+ *  $Id: event.c,v 7.38 2003/08/21 21:12:56 michael Exp $
  */
 
 /*
@@ -60,7 +60,7 @@
 #include "numeric.h"
 
 static const char *last_event_ran = NULL;
-struct ev_entry event_table[MAX_EVENTS];
+static struct ev_entry event_table[MAX_EVENTS];
 static time_t event_time_min = -1;
 static int eventFind(EVH *func, void *arg);
 

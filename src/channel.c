@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.404 2003/08/01 12:24:48 michael Exp $
+ *  $Id: channel.c,v 7.405 2003/08/21 21:12:56 michael Exp $
  */
 
 #include "stdinc.h"
@@ -37,7 +37,6 @@
 #include "s_serv.h"             /* captab */
 #include "s_user.h"
 #include "send.h"
-#include "whowas.h"
 #include "s_conf.h"             /* ConfigFileEntry, ConfigChannel */
 #include "event.h"
 #include "memory.h"
@@ -51,18 +50,18 @@ dlink_list lazylink_channels = { NULL, NULL, 0 };
 BlockHeap *channel_heap;
 BlockHeap *ban_heap;
 
+static char buf[BUFSIZE];
+static char modebuf[MODEBUFLEN];
+static char parabuf[MODEBUFLEN];
+
 static BlockHeap *topic_heap;
 static BlockHeap *member_heap;
 
 static void destroy_channel(struct Channel *);
-static void send_mode_list(struct Client *client_p, const char *chname,
-                           dlink_list *top, char flag, int clear);
-static int check_banned(struct Channel *chptr, const char *s, const char *s2);
-static const char *channel_pub_or_secret(struct Channel *chptr);
+static void send_mode_list(struct Client *, const char *, dlink_list *, char, int);
+static int check_banned(struct Channel *, const char *, const char *);
+static const char *channel_pub_or_secret(struct Channel *);
 
-static char buf[BUFSIZE];
-static char modebuf[MODEBUFLEN];
-static char parabuf[MODEBUFLEN];
 
 /* init_channels()
  *
@@ -119,7 +118,7 @@ add_user_to_channel(struct Channel *chptr, struct Client *who,
 
 /* remove_user_from_channel()
  *
- * inputs       - pointer to membership
+ * inputs       - pointer to Membership struct
  * output       - NONE
  * side effects - deletes an user from a channel by removing a link in the
  *                channels member chain.
@@ -162,7 +161,7 @@ send_members(struct Client *client_p, struct Channel *chptr,
   char *t, *start;       /* temp char pointer */
 
   start = t = buf + ircsprintf(buf, ":%s SJOIN %lu %s %s %s:", me.name,
-                               (unsigned long) chptr->channelts,
+                               (unsigned long)chptr->channelts,
                                chptr->chname, lmodebuf, lparabuf);
 
   DLINK_FOREACH(ptr, chptr->members.head)
@@ -319,13 +318,11 @@ check_channel_name(const char *name)
 void
 free_channel_list(dlink_list *list)
 {
-  dlink_node *ptr;
-  dlink_node *next_ptr;
-  struct Ban *actualBan;
+  dlink_node *ptr, *next_ptr;
 
   DLINK_FOREACH_SAFE(ptr, next_ptr, list->head)
   {
-    actualBan = ptr->data;
+    struct Ban *actualBan = ptr->data;
 
     MyFree(actualBan->banstr);
     MyFree(actualBan->who);
@@ -343,9 +340,7 @@ free_channel_list(dlink_list *list)
 static void
 destroy_channel(struct Channel *chptr)
 {
-  dlink_node *m;
-  dlink_node *ptr;
-  dlink_node *ptr_next;
+  dlink_node *ptr, *ptr_next;
 
   DLINK_FOREACH_SAFE(ptr, ptr_next, chptr->invites.head)
     del_invite(chptr, ptr->data);
@@ -367,6 +362,8 @@ destroy_channel(struct Channel *chptr)
 
   if (ServerInfo.hub == 1)
   {
+    dlink_node *m;
+
     DLINK_FOREACH(m, lazylink_channels.head)
     {
       if (m->data != chptr)
@@ -384,7 +381,6 @@ destroy_channel(struct Channel *chptr)
  *
  * inputs       - pointer to client struct requesting names
  *              - pointer to channel block
- *              - pointer to name of channel
  *              - show ENDOFNAMES numeric or not
  *                (don't want it with /names with no params)
  * output       - none
@@ -476,7 +472,7 @@ add_invite(struct Channel *chptr, struct Client *who)
    * delete last link in chain if the list is max length
    */
   if (dlink_list_length(&who->user->invited) >=
-      (unsigned int)ConfigChannel.max_chans_per_user)
+      ConfigChannel.max_chans_per_user)
   {
     del_invite(chptr, who);
   }
@@ -490,12 +486,11 @@ add_invite(struct Channel *chptr, struct Client *who)
 
 /* del_invite()
  *
- * inputs       - pointer to dlink_list
+ * inputs       - pointer to Channel struct
  *              - pointer to client to remove invites from
  * output       - NONE
  * side effects - Delete Invite block from channel invite list
  *                and client invite list
- *
  */
 void
 del_invite(struct Channel *chptr, struct Client *who)
@@ -596,7 +591,6 @@ is_banned(struct Channel *chptr, struct Client *who)
 /* check_banned()
  *
  * inputs       - pointer to channel block
- *              - pointer to client to check access fo
  *              - pointer to pre-formed nick!user@host
  *              - pointer to pre-formed nick!user@ip
  * output       - returns an int 0 if not banned,
@@ -874,13 +868,13 @@ check_splitmode(void *unused)
       splitmode = 1;
 
       sendto_realops_flags(UMODE_ALL,L_ALL,
-                         "Network split, activating splitmode");
+                           "Network split, activating splitmode");
       eventAddIsh("check_splitmode", check_splitmode, NULL, 10);
     }
     else if (splitmode && (server > split_servers) && (Count.total > split_users))
     {
       splitmode = 0;
-    
+
       sendto_realops_flags(UMODE_ALL, L_ALL,
                            "Network rejoined, deactivating splitmode");
       eventDelete(check_splitmode, NULL);
@@ -891,7 +885,7 @@ check_splitmode(void *unused)
 /* allocate_topic()
  *
  * inputs       - Channel to allocate a new topic for
- * output       - Success or failure
+ * output       - NONE
  * side effects - Allocates a new topic
  */
 static void
@@ -918,7 +912,7 @@ void
 free_topic(struct Channel *chptr)
 {
   void *ptr;
-  
+
   if (chptr == NULL || chptr->topic == NULL)
     return;
 
@@ -951,6 +945,7 @@ set_channel_topic(struct Channel *chptr, const char *topic,
   {
     if (chptr->topic != NULL)
       free_topic(chptr);
+
     chptr->topic_time = 0;
   }
 }

@@ -19,32 +19,27 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: list.c,v 7.64 2003/07/31 23:13:25 michael Exp $
+ *  $Id: list.c,v 7.65 2003/08/21 21:12:56 michael Exp $
  */
 
 #include "stdinc.h"
 #include "tools.h"
-#include "channel.h"
 #include "client.h"
-#include "common.h"
-#include "irc_string.h"
 #include "list.h"
-#include "hostmask.h"
-#include "numeric.h"
-#include "irc_res.h"
-#include "restart.h"
-#include "s_log.h"
-#include "send.h"
 #include "memory.h"
 #include "balloc.h"
 
-int32_t links_count  = 0;
-int32_t slinks_count = 0;
+static int32_t dlinks_count = 0;
+static int32_t slinks_count = 0;
+
+static BlockHeap *dnode_heap;
+static BlockHeap *snode_heap;
+
 
 /* make_server()
  *
- * inputs	- pointer to client struct
- * output	- pointer to struct Server
+ * inputs       - pointer to client struct
+ * output       - pointer to struct Server
  * side effects - add's an Server information block to a client
  *                if it was not previously allocated.
  */
@@ -64,26 +59,28 @@ make_server(struct Client *client_p)
 
 /* init_dlink_nodes()
  *
+ * inputs       - NONE
+ * output       - NONE
+ * side effects - initializes the dnode BlockHeap
  */
-static BlockHeap *dnode_heap;
-void init_dlink_nodes(void)
+void
+init_dlink_nodes(void)
 {
   dnode_heap = BlockHeapCreate(sizeof(dlink_node), DNODE_HEAP_SIZE);
 }
 
 /* make_dlink_node()
  *
- * inputs	- NONE
- * output	- pointer to new dlink_node
+ * inputs       - NONE
+ * output       - pointer to new dlink_node
  * side effects	- NONE
  */
 dlink_node *
 make_dlink_node(void)
 {
-  dlink_node *lp;
+  dlink_node *lp = BlockHeapAlloc(dnode_heap);
 
-  lp = BlockHeapAlloc(dnode_heap);
-  ++links_count;
+  ++dlinks_count;
 
   lp->next = NULL;
   lp->prev = NULL;
@@ -92,39 +89,41 @@ make_dlink_node(void)
 
 /* free_dlink_node()
  *
- * inputs	- pointer to dlink_node
- * output	- NONE
+ * inputs       - pointer to dlink_node
+ * output       - NONE
  * side effects	- free given dlink_node 
  */
 void
 free_dlink_node(dlink_node *ptr)
 {
   BlockHeapFree(dnode_heap, ptr);
-  --links_count;
-  assert(links_count >= 0);
+  --dlinks_count;
+  assert(dlinks_count >= 0);
 }
 
 /* init_slink_nodes()
  *
+ * inputs       - NONE
+ * output       - NONE
+ * side effects - initializes the snode BlockHeap
  */
-static BlockHeap *snode_heap;
-void init_slink_nodes(void)
+void
+init_slink_nodes(void)
 {
   snode_heap = BlockHeapCreate(sizeof(slink_node), SNODE_HEAP_SIZE);
 }
 
 /* make_slink_node()
  *
- * inputs   - NONE
- * output   - pointer to new slink_node
+ * inputs       - NONE
+ * output       - pointer to new slink_node
  * side effects - NONE
  */
 slink_node *
 make_slink_node(void)
 {
-  slink_node *lp;
+  slink_node *lp = BlockHeapAlloc(snode_heap);
 
-  lp = BlockHeapAlloc(snode_heap);
   ++slinks_count;
 
   lp->next = NULL;
@@ -133,8 +132,8 @@ make_slink_node(void)
 
 /* free_slink_node()
  *
- * inputs   - pointer to slink_node
- * output   - NONE
+ * inputs       - pointer to slink_node
+ * output       - NONE
  * side effects - free given slink_node
  */
 void
@@ -147,14 +146,14 @@ free_slink_node(slink_node *ptr)
 
 /* count_links_memory()
  *
- * inputs	- pointer to dlinks memory actually used
- *		- pointer to dlinks memory allocated total in block allocator
- * output	- NONE
- * side effects	- NONE
+ * inputs       - pointer to dlinks memory actually used
+ *              - pointer to dlinks memory allocated total in block allocator
+ * output       - NONE
+ * side effects - NONE
  */
 void
 count_links_memory(int *count, unsigned long *links_memory_used)
 {
-  *count = links_count;
-  *links_memory_used = links_count * sizeof(dlink_node);
+  *count = dlinks_count;
+  *links_memory_used = dlinks_count * sizeof(dlink_node);
 }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.305 2003/08/20 00:02:47 michael Exp $
+ *  $Id: s_user.c,v 7.306 2003/08/21 21:12:56 michael Exp $
  */
 
 #include "stdinc.h"
@@ -342,10 +342,8 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   struct AccessItem *aconf;
   char ipaddr[HOSTIPLEN];
   int status;
-  int i = 0;
   dlink_node *ptr;
   dlink_node *m;
-  const char *p;
 
   assert(source_p != NULL);
   assert(MyConnect(source_p));
@@ -393,6 +391,9 @@ register_local_user(struct Client *client_p, struct Client *source_p,
 
   if (!IsGotId(source_p))
   {
+    const char *p;
+    unsigned int i = 0;
+
     if (IsNeedIdentd(aconf))
     {
       ServerStats->is_ref++;
@@ -638,7 +639,6 @@ static int
 introduce_client(struct Client *client_p, struct Client *source_p)
 {
   dlink_node *server_node;
-  struct Client *server;
   static char ubuf[12];
 
   if (MyClient(source_p))
@@ -694,7 +694,7 @@ introduce_client(struct Client *client_p, struct Client *source_p)
   {
     DLINK_FOREACH(server_node, serv_list.head)
     {
-      server = server_node->data;
+      struct Client *server = server_node->data;
 
       if (IsCapable(server, CAP_LL) || server == client_p)
         continue;
@@ -722,7 +722,7 @@ introduce_client(struct Client *client_p, struct Client *source_p)
 
 /* valid_hostname()
  *
- * Inputs       - pointer to user
+ * Inputs       - pointer to hostname
  * Output       - 1 if valid, 0 if not
  * Side effects - check hostname for validity
  *

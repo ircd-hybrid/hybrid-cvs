@@ -19,19 +19,17 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_gline.c,v 1.41 2003/08/03 14:22:23 michael Exp $
+ *  $Id: s_gline.c,v 1.42 2003/08/21 21:12:56 michael Exp $
  */
 
 #include "stdinc.h"
 #include "tools.h"
 #include "handlers.h"
-#include "channel.h"
 #include "client.h"
 #include "common.h"
 #include "irc_string.h"
 #include "ircd.h"
 #include "hostmask.h"
-#include "numeric.h"
 #include "fdlist.h"
 #include "s_bsd.h"
 #include "s_conf.h"
@@ -41,7 +39,6 @@
 #include "fileio.h"
 #include "s_serv.h"
 #include "s_gline.h"
-#include "hash.h"
 #include "event.h"
 #include "list.h"
 #include "memory.h"
@@ -55,6 +52,7 @@ static void expire_pending_glines(void);
 /* find_gkill()
  *
  * inputs       - pointer to a Client struct
+ *              - username
  * output       - struct AccessItem pointer if a gline was found for this client
  * side effects - NONE
  */
@@ -99,7 +97,8 @@ find_is_glined(const char *host, const char *user)
 
 /* remove_gline_match()
  *
- * inputs       - user@host
+ * inputs       - username
+ *              - hostname
  * output       - 1 if successfully removed, otherwise 0
  * side effects -
  */

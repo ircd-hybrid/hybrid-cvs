@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.314 2003/07/31 23:13:25 michael Exp $
+ *  $Id: ircd.c,v 7.315 2003/08/21 21:12:56 michael Exp $
  */
 
 #include "stdinc.h"
@@ -76,7 +76,7 @@ struct config_file_entry ConfigFileEntry;
 /* server info set from ircd.conf */
 struct server_info ServerInfo;
 /* admin info set from ircd.conf */
-struct admin_info AdminInfo;
+struct admin_info AdminInfo = { NULL, NULL, NULL };
 
 struct Counter Count = { 0, 0, 0, 0, 0, 0, 0, 0 };
 struct ServerState_t server_state = { 0 };
@@ -166,7 +166,7 @@ print_startup(int pid)
 
 /* init_sys()
  *
- * inputs	- boot_daemon flag
+ * inputs	- NONE
  * output	- none
  * side effects	- if boot_daemon flag is not set, don't daemonize
  */
@@ -531,7 +531,6 @@ main(int argc, char *argv[])
 						   of Client list */
 
   memset(&ServerInfo, 0, sizeof(ServerInfo));
-  memset(&AdminInfo, 0, sizeof(AdminInfo));
 
   /* Initialise the channel capability usage counts... */
   init_chcap_usage_counts();
@@ -658,8 +657,8 @@ main(int argc, char *argv[])
     exit(EXIT_FAILURE);
   }
 #endif
-  me.from     = &me;
-  me.servptr  = &me;
+  me.from    = &me;
+  me.servptr = &me;
 
   SetMe(&me);
   make_server(&me);

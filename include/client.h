@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.213 2003/08/20 00:02:43 michael Exp $
+ *  $Id: client.h,v 7.214 2003/08/21 21:12:54 michael Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -37,8 +37,6 @@
 #define CIPHERKEYLEN    64 /* 512bit */
 #define IDLEN           12 /* this is the maximum length, not the actual
                               generated length; DO NOT CHANGE! */
-#define CLIENT_BUFSIZE 512 /* must be at least 512 bytes */
-
 
 /*
  * pre declare structs

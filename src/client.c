@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.405 2003/08/20 00:02:47 michael Exp $
+ *  $Id: client.c,v 7.406 2003/08/21 21:12:56 michael Exp $
  */
 
 #include "stdinc.h"
@@ -57,23 +57,25 @@
 /* Pointer to beginning of Client list */
 dlink_list global_client_list = {NULL, NULL, 0};
 /* unknown/client pointer lists */
-dlink_list dead_list = {NULL, NULL, 0};
-dlink_list abort_list = {NULL, NULL, 0};
 dlink_list unknown_list = {NULL, NULL, 0};
 dlink_list local_client_list = {NULL, NULL, 0};
 dlink_list serv_list = {NULL, NULL, 0};
 dlink_list global_serv_list = {NULL, NULL, 0};
 dlink_list oper_list = {NULL, NULL, 0};
 
-static void check_pings_list(dlink_list *);
-static void check_unknowns_list(void);
-
 static EVH check_pings;
 
 static BlockHeap *client_heap  = NULL;
 static BlockHeap *lclient_heap = NULL;
 
+static dlink_list dead_list  = { NULL, NULL, 0};
+static dlink_list abort_list = { NULL, NULL, 0};
+
 static dlink_node *eac_next;  /* next aborted client to exit */
+
+static void check_pings_list(dlink_list *);
+static void check_unknowns_list(void);
+
 
 /* init_client()
  *
@@ -89,7 +91,7 @@ init_client(void)
    * check_pings has to deal with safe lists now,
    * let's call it every 5 seconds -adx
    */
-  client_heap  = BlockHeapCreate(sizeof(struct Client), CLIENT_HEAP_SIZE);
+  client_heap = BlockHeapCreate(sizeof(struct Client), CLIENT_HEAP_SIZE);
   lclient_heap = BlockHeapCreate(sizeof(struct LocalUser), LCLIENT_HEAP_SIZE);
   eventAdd("check_pings", check_pings, NULL, 5);
 }
@@ -158,7 +160,7 @@ free_client(struct Client *client_p)
   if (MyConnect(client_p))
   {
     assert(IsClosing(client_p) && IsDead(client_p));
-      
+
     /*
      * clean up extra sockets from P-lines which have been discarded.
      */
@@ -629,12 +631,11 @@ release_client_state(struct Client *client_p)
  * output	- return client pointer
  * side effects - find person by (nick)name
  */
+/* XXX - ugly wrapper */
 struct Client *
 find_person(const char *name)
 {
-  struct Client *c2ptr;
-
-  c2ptr = find_client(name);
+  struct Client *c2ptr = find_client(name);
 
   if (c2ptr != NULL && IsPerson(c2ptr))
     return(c2ptr);
@@ -651,7 +652,7 @@ struct Client *
 find_chasing(struct Client *source_p, const char *user, int *chasing)
 {
   struct Client *who = find_client(user);
-  
+
   if (chasing)
     *chasing = 0;
   if (who)
@@ -761,9 +762,6 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
                 struct Client *from, const char *comment)
 {
   struct Client *target_p;
-  dlink_node *lp;
-  dlink_node *next_lp;
-  dlink_node *m;
 
   if (IsServer(source_p))
   {
@@ -774,6 +772,8 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
 
     if (!IsMe(source_p))
     {
+      dlink_node *m;
+
       if ((m = dlinkFindDelete(&global_serv_list, source_p)) != NULL)
         free_dlink_node(m);
     }
@@ -826,6 +826,8 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
   }
   else if (IsPerson(source_p)) /* ...just clean all others with QUIT... */
   {
+    dlink_node *lp, *next_lp;
+
     /* If this exit is generated from "m_kill", then there
      * is no sense in sending the QUIT--KILL's have been
      * sent instead.
@@ -1201,7 +1203,6 @@ exit_client(
 	    const char* comment      /* Reason for the exit */
 	    )
 {
-  char comment1[HOSTLEN + HOSTLEN + 2];
   dlink_node *m;
 
   if (MyConnect(source_p))
@@ -1224,7 +1225,7 @@ exit_client(
     }
 
     delete_identd_queries(source_p);
-    
+
     /* This source_p could have status of one of STAT_UNKNOWN, STAT_CONNECTING
      * STAT_HANDSHAKE or STAT_UNKNOWN
      * all of which are lumped together into unknown_list
@@ -1312,6 +1313,8 @@ exit_client(
 
   if (IsServer(source_p))
   {
+    char comment1[HOSTLEN + HOSTLEN + 2];
+
     if (ConfigServerHide.hide_servers)
     {
       /* set netsplit message to "*.net *.split" to still show 
@@ -1386,11 +1389,10 @@ int
 accept_message(struct Client *source, struct Client *target)
 {
   dlink_node *ptr;
-  struct Client *target_p;
 
   DLINK_FOREACH(ptr, target->allow_list.head)
   {
-    target_p = ptr->data;
+    struct Client *target_p = ptr->data;
 
     if (source == target_p)
       return(1);
@@ -1451,8 +1453,7 @@ del_from_accept(struct Client *source, struct Client *target)
 void
 del_all_accepts(struct Client *client_p)
 {
-  dlink_node *ptr;
-  dlink_node *next_ptr;
+  dlink_node *ptr, *next_ptr;
 
   DLINK_FOREACH_SAFE(ptr, next_ptr, client_p->allow_list.head)
   {
@@ -1521,6 +1522,7 @@ set_initial_nick(struct Client *client_p, struct Client *source_p,
  *
  * inputs	- pointer to server
  *		- pointer to client
+ *              - nick
  * output	- 
  * side effects	- changes nick of a LOCAL user
  */
