@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.118 2002/08/20 16:41:58 db Exp $
+ *  $Id: channel.h,v 7.119 2002/10/10 22:17:19 bill Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -105,6 +105,7 @@ struct Channel
 extern  struct  Channel *GlobalChannelList;
 
 void init_channels(void);
+void expire_channels(void *);
 void cleanup_channels(void *);
 
 
@@ -161,6 +162,10 @@ extern void check_splitmode(void *);
                 dlinkFind(&who->user->channel, chan)) ? 1 : 0)
 
 #define IsChannelName(name) ((name) && (*(name) == '#' || *(name) == '&'))
+
+#define IsExpiring(name) (name->mode.mode & MODE_EXPIRING)
+#define SetExpiring(name) (name->mode.mode |= MODE_EXPIRING)
+#define ClearExpiring(name) (name->mode.mode &= ~MODE_EXPIRING)
 
 struct Ban          /* also used for exceptions -orabidoo */
 {

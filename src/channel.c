@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.333 2002/10/09 15:08:31 db Exp $
+ *  $Id: channel.c,v 7.334 2002/10/10 22:17:21 bill Exp $
  */
 
 #include "stdinc.h"
@@ -65,6 +65,7 @@ static void send_mode_list(struct Client *client_p, char *chname,
 static int check_banned(struct Channel *chptr, struct Client *who,
                                                 char *s, char *s2);
 
+static dlink_list *expiring_channels;
 static char buf[BUFSIZE];
 static char modebuf[MODEBUFLEN], parabuf[MODEBUFLEN];
 
@@ -242,8 +243,6 @@ remove_user_from_channel(struct Channel *chptr, struct Client *who)
 
     free_dlink_node(ptr);
   }
-
-  chptr->users_last = CurrentTime;
 
   DLINK_FOREACH_SAFE(ptr, next_ptr, who->user->channel.head)
   {
@@ -460,22 +459,82 @@ check_channel_name(const char *name)
 static int
 sub1_from_channel(struct Channel *chptr)
 {
+  dlink_node *c;
+
   if (--chptr->users <= 0)
   {
-    assert(chptr->users >= 0);
+#ifdef INVARIANTS
+    assert(chptr->users == 0);
+#else
     chptr->users = 0;           /* if chptr->users < 0, make sure it sticks at 0
                                  * It should never happen but...
                                  */
+#endif
+
     /* if persistent channel time is 0, destroy immediately */
     if (ConfigChannel.persist_time == 0)
     {
       destroy_channel(chptr);
       return (1);
     }
+    chptr->users_last = CurrentTime;
+
+    /* if it is already expiring, we do not have to do anything */
+    if (!IsExpiring(chptr))
+    {
+      SetExpiring(chptr);
+      c = make_dlink_node();
+      dlinkAdd(chptr, c, expiring_channels);
+    }
   }
   return (0);
 }
 
+/*
+ * expire_channels
+ *
+ * inputs	- NONE
+ * outputs	- NONE
+ * side effexts - destroys expired channels
+ */
+void expire_channels(void *unused)
+{
+  dlink_node *c;
+  struct Channel *chptr;
+
+  /*
+   * we walk the list backwards because the items that were first
+   * added will be at the end of the list.  if they have not yet
+   * expired, then we assume the more recently added channels also
+   * have yet to expire.  this can save us some calculations. we
+   * also check to be sure the channel is still empty. 
+   * note: this will leave some channels on the linked list, even
+   * though they are no longer empty.  its not a problem, though, as
+   * one of two things can happen: either the channel reaches its
+   * expiration time, in which case if it is empty it will be deleted,
+   * or if its not, it will simply be removed from the list, or the
+   * cleanup_channels() event will occur, in which case it will be
+   * removed from the list.
+   */
+  DLINK_FOREACH_PREV(c, expiring_channels->tail)
+  {
+    chptr = (struct Channel *)c->data;
+    if ((chptr->users_last + ConfigChannel.persist_time) <= CurrentTime &&
+        (chptr->users <= 0))
+    {
+      destroy_channel(chptr);
+      dlinkDelete(c, expiring_channels);
+    }
+    else if (chptr->users > 0)
+    {
+      ClearExpiring(chptr);
+      dlinkDelete(c, expiring_channels);
+    }
+    else
+      break;
+  }
+}
+ 
 /*
  * free_channel_list
  *
@@ -559,7 +618,7 @@ cleanup_channels(void *unused)
     {
       if(chptr->users == 0)
       {
-        if((chptr->users_last + ConfigChannel.persist_time) < CurrentTime)
+        if((chptr->users_last + ConfigChannel.persist_time) <= CurrentTime)
 	{
 	  if(uplink && IsCapable(uplink, CAP_LL))
 	    sendto_one(uplink, ":%s DROP %s", me.name, chptr->chname);
@@ -568,6 +627,13 @@ cleanup_channels(void *unused)
       }
       else
       {
+        /* channel was set to expire, but now has users */
+        if (IsExpiring(chptr))
+        {
+          ClearExpiring(chptr);
+          dlinkFindDelete(expiring_channels, (void *)chptr);
+        }
+
         if ((CurrentTime - chptr->users_last >= CLEANUP_CHANNELS_TIME))
         {
           if (uplink
