@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.195 2004/03/17 04:09:02 db Exp $
+ *  $Id: parse.c,v 7.196 2005/02/03 00:06:26 michael Exp $
  */
 
 #include "stdinc.h"
@@ -519,6 +519,8 @@ msg_tree_parse(const char *cmd, struct MessageTree *root)
   for (mtree = root->pointers[(*cmd) & (MAXPTRLEN-1)]; mtree != NULL;
        mtree = mtree->pointers[(*++cmd) & (MAXPTRLEN-1)])
   {
+    if (!IsAlpha(*cmd))
+      return(NULL);
     if (*(cmd + 1) == '\0')
       return(mtree->msg); /* NULL if parsed invalid/unknown command */
 
