@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.348 2003/01/17 04:18:19 db Exp $
+ *  $Id: channel.c,v 7.349 2003/01/17 13:00:52 db Exp $
  */
 
 #include "stdinc.h"
@@ -501,8 +501,6 @@ clear_channels(void *unused)
 static int
 sub1_from_channel(struct Channel *chptr)
 {
-  dlink_node *c;
-
   if (--chptr->users <= 0)
   {
 #ifdef INVARIANTS

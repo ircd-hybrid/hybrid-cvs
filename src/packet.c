@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.97 2003/01/11 03:52:29 db Exp $
+ *  $Id: packet.c,v 7.98 2003/01/17 13:00:53 db Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -120,10 +120,12 @@ parse_client_queued(struct Client *client_p)
   {
 
     if (ConfigFileEntry.no_oper_flood && (IsOper(client_p) || IsCanFlood(client_p)))
+    {
       if (ConfigFileEntry.true_no_oper_flood)
         checkflood = -1;
       else
         checkflood = 0;
+    }
 
     /*
      * Handle flood protection here - if we exceed our flood limit on

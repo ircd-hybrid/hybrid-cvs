@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.114 2002/11/11 20:43:18 bill Exp $
+ *  $Id: m_stats.c,v 1.115 2003/01/17 13:00:50 db Exp $
  */
 
 #include "stdinc.h"
@@ -80,7 +80,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.114 $";
+const char *_version = "$Revision: 1.115 $";
 #endif
 
 const char* Lformat = ":%s %d %s %s %u %u %u %u %u :%u %u %s";
@@ -389,12 +389,8 @@ stats_pending_glines(struct Client *source_p)
 {
   dlink_node *pending_node;
   struct gline_pending *glp_ptr;
-  struct ConfItem *kill_ptr;
   char timebuffer[MAX_DATE_STRING];
   struct tm *tmptr;
-  char *host;
-  char *name;
-  char *reason;
 
   if(!ConfigFileEntry.glines)
   {
@@ -449,8 +445,6 @@ stats_glines(struct Client *source_p)
 {
   dlink_node *gline_node;
   struct ConfItem *kill_ptr;
-  char timebuffer[MAX_DATE_STRING];
-  struct tm *tmptr;
   char *host;
   char *name;
   char *reason;

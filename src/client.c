@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.314 2003/01/17 07:55:18 db Exp $
+ *  $Id: client.c,v 7.315 2003/01/17 13:00:53 db Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -58,6 +58,7 @@
 static void check_pings_list(dlink_list *list);
 static void check_unknowns_list(dlink_list *list);
 static void free_exited_clients(void *unused);
+static void free_local_client(struct Client *client_p);
 
 static EVH check_pings;
 
@@ -174,7 +175,7 @@ struct Client* make_client(struct Client* from)
   return client_p;
 }
 
-void
+static void
 free_local_client(struct Client *client_p)
 {
   if (MyConnect(client_p))
@@ -857,7 +858,7 @@ get_client_name(struct Client* client, int showip)
 static void
 free_exited_clients(void *unused)
 {
-  dlink_node *ptr, *next, *ptr_a;
+  dlink_node *ptr, *next;
   struct Client *target_p;
   
   DLINK_FOREACH_SAFE(ptr, next, dead_list.head)
@@ -1145,7 +1146,6 @@ remove_dependents(struct Client* client_p,
 void
 dead_link(struct Client *client_p)
 {
-  dlink_node *m;
   const char *notice;
 
   if(IsDead(client_p))

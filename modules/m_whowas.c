@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whowas.c,v 1.29 2002/11/01 14:38:03 bill Exp $
+ *  $Id: m_whowas.c,v 1.30 2003/01/17 13:00:51 db Exp $
  */
 
 #include "stdinc.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&whowas_msgtab);
 }
-const char *_version = "$Revision: 1.29 $";
+const char *_version = "$Revision: 1.30 $";
 #endif
 static int whowas_do(struct Client *client_p, struct Client *source_p,
                      int parc, char *parv[]);
@@ -132,7 +132,7 @@ static int whowas_do(struct Client *client_p, struct Client *source_p,
     max = atoi(parv[2]);
   if (parc > 3)
     if (hunt_server(client_p,source_p,":%s WHOWAS %s %s :%s", 3,parc,parv))
-      return 0;
+      return(0);
 
   nick = parv[1];
   while (*nick == ',')
@@ -140,7 +140,7 @@ static int whowas_do(struct Client *client_p, struct Client *source_p,
   if((p = strchr(nick,',')) != NULL)
     *p = '\0';
   if (!*nick)
-    return;
+    return(0);
 
   temp = WHOWASHASH[hash_whowas_name(nick)];
   found = 0;
