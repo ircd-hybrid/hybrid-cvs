@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: oldparse.c,v 1.9 2000/12/01 22:18:07 db Exp $
+ *  $Id: oldparse.c,v 1.10 2000/12/01 22:24:58 db Exp $
  */
 #include "tools.h"
 #include "s_log.h"
@@ -137,11 +137,8 @@ void oldParseOneLine(char* line,struct ConfItem* aconf,
     case 'i': /* Just plain normal irc client trying  */
                   /* to connect to me */
 
-      /* drop into normal I line code */
-
-#ifdef LITTLE_I_LINES
       aconf->flags |= CONF_FLAGS_LITTLE_I_LINE;
-#endif
+
     case 'I': /* Just plain normal irc client trying  */
       /* to connect to me */
       aconf->status = CONF_CLIENT;

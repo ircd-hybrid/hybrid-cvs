@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.43 2000/12/01 22:17:50 db Exp $
+ * $Id: config.h,v 7.44 2000/12/01 22:24:55 db Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -298,13 +298,6 @@
  * flooding it.  Values greater than 8000 make no difference to the server.
  */
 #define CLIENT_FLOOD    2560
-
-/*
- * LITTLE_I_LINE support
- * clients with a little i instead of an I in their I line
- * can be chanopped, but cannot chanop anyone else.
- */
-#define LITTLE_I_LINES
 
 /* LIMIT_UH
  * If this is defined, Y line limit is made against the actual
