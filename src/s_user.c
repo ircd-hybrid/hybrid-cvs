@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.252 2003/05/08 09:39:25 michael Exp $
+ *  $Id: s_user.c,v 7.253 2003/05/10 04:05:06 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1214,7 +1214,7 @@ user_welcome(struct Client *source_p)
                me.name, source_p->name);
   }
   else  
-    SendMessageFile(source_p, &ConfigFileEntry.motd);
+    send_message_file(source_p, &ConfigFileEntry.motd);
 #if 0
   /* restrictions are broken since diane commented out some code.
    * local restrictions are just pointless
@@ -1342,6 +1342,5 @@ oper_up(struct Client *source_p, struct ConfItem *aconf)
   sendto_one(source_p, form_str(RPL_YOUREOPER), me.name, source_p->name);
   sendto_one(source_p, ":%s NOTICE %s :*** Oper privs are %s",
              me.name, source_p->name, operprivs);
-  SendMessageFile(source_p, &ConfigFileEntry.opermotd);
+  send_message_file(source_p, &ConfigFileEntry.opermotd);
 }
-

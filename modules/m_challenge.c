@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_challenge.c,v 1.44 2003/04/18 02:13:42 db Exp $
+ *  $Id: m_challenge.c,v 1.45 2003/05/10 04:05:03 michael Exp $
  */
 
 #include "stdinc.h"
@@ -54,7 +54,7 @@ _moddeinit(void)
   return;
 }
 
-const char *_version = "$Revision: 1.44 $";
+const char *_version = "$Revision: 1.45 $";
 #endif
 #else
 
@@ -81,7 +81,7 @@ _moddeinit(void)
   mod_del_cmd(&challenge_msgtab);
 }
 
-const char *_version = "$Revision: 1.44 $";
+const char *_version = "$Revision: 1.45 $";
 #endif
 /*
  * m_challenge - generate RSA challenge for wouldbe oper
@@ -91,9 +91,9 @@ const char *_version = "$Revision: 1.44 $";
  */
 static void
 m_challenge(struct Client *client_p, struct Client *source_p,
-	    int parc, char *parv[])
+            int parc, char *parv[])
 {
-  char * challenge;
+  char *challenge;
   dlink_node *ptr;
   struct ConfItem *aconf, *oconf;
 
@@ -104,7 +104,7 @@ m_challenge(struct Client *client_p, struct Client *source_p,
   if (IsOper(source_p))
   {
     sendto_one(source_p, form_str(RPL_YOUREOPER), me.name, parv[0]);
-    SendMessageFile(source_p, &ConfigFileEntry.opermotd);
+    send_message_file(source_p, &ConfigFileEntry.opermotd);
     return;
   }
 
@@ -113,7 +113,7 @@ m_challenge(struct Client *client_p, struct Client *source_p,
     /* Ignore it if we aren't expecting this... -A1kmm */
     if (!source_p->user->response)
       return;
-     
+
     if (irccmp(source_p->user->response, ++parv[1]))
     {
       sendto_one(source_p, form_str(ERR_PASSWDMISMATCH), me.name,
@@ -133,7 +133,7 @@ m_challenge(struct Client *client_p, struct Client *source_p,
     oconf = ptr->data;
     detach_conf(source_p,oconf);
 
-    if(attach_conf(source_p, aconf) != 0)
+    if (attach_conf(source_p, aconf) != 0)
     {
       sendto_one(source_p,":%s NOTICE %s :Can't attach conf!",
 		 me.name, source_p->name);   
@@ -210,4 +210,3 @@ failed_challenge_notice(struct Client *source_p, const char *name, const char *r
                          source_p->username, source_p->host, reason);
 }
 #endif /* HAVE_LIBCRYPTO */
-

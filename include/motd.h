@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: motd.h,v 7.12 2003/04/16 10:38:15 michael Exp $
+ *  $Id: motd.h,v 7.13 2003/05/10 04:04:59 michael Exp $
  */
 
 #ifndef INCLUDED_motd_h
@@ -56,7 +56,7 @@ typedef struct MessageFile MessageFile;
 
 struct Client;
 
-extern void InitMessageFile(MotdType, const char *, struct MessageFile *);
-extern int SendMessageFile(struct Client *, struct MessageFile *);
-extern int ReadMessageFile(MessageFile *);
+extern void init_message_file(MotdType, const char *, struct MessageFile *);
+extern int send_message_file(struct Client *, struct MessageFile *);
+extern int read_message_file(MessageFile *);
 #endif /* INCLUDED_motd_h */

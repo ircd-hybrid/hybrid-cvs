@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircdauth.c,v 7.55 2003/04/16 19:56:38 michael Exp $
+ *  $Id: ircdauth.c,v 7.56 2003/05/10 04:05:06 michael Exp $
  */
 
 #include "stdinc.h"
@@ -683,7 +683,7 @@ GreetUser(struct Client *client)
 
   }
   else
-    SendMessageFile(client, &ConfigFileEntry.motd);
+    send_message_file(client, &ConfigFileEntry.motd);
 
   send_umode(NULL, client, 0, SEND_UMODES, ubuf);
   if (!*ubuf)

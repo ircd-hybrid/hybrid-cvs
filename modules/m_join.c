@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_join.c,v 1.100 2003/05/09 21:38:18 bill Exp $
+ *  $Id: m_join.c,v 1.101 2003/05/10 04:05:03 michael Exp $
  */
 
 #include "stdinc.h"
@@ -64,7 +64,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&join_msgtab);
 }
-const char *_version = "$Revision: 1.100 $";
+const char *_version = "$Revision: 1.101 $";
 
 #endif
 static void do_join_0(struct Client *client_p, struct Client *source_p);
@@ -77,28 +77,26 @@ static void do_join_0(struct Client *client_p, struct Client *source_p);
  *      parv[2] = channel password (key)
  */
 static void
-m_join(struct Client *client_p,
-       struct Client *source_p,
+m_join(struct Client *client_p, struct Client *source_p,
        int parc, char *parv[])
 {
   struct Channel *chptr = NULL;
   char  *name, *key = NULL;
   int   i, flags = 0, error_reported = 0;
-  char  *p = NULL, *p2 = NULL, *p3 = NULL;
+  char  *p = NULL, *p2 = NULL;
   int   successful_join_count = 0; /* Number of channels successfully joined */
   char modebuf[MODEBUFLEN];
   char parabuf[MODEBUFLEN];
 
   if (*parv[1] == '\0')
-    {
-      sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-                 me.name, parv[0], "JOIN");
-      return;
-    }
+  {
+    sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
+               me.name, parv[0], "JOIN");
+    return;
+  }
 
   if (parc > 2)
     key = strtoken(&p2, parv[2], ",");
-
 
   for (name = strtoken(&p, parv[1], ","); name;
          key = (key) ? strtoken(&p2, NULL, ",") : NULL,
@@ -108,10 +106,10 @@ m_join(struct Client *client_p,
       modebuf[1] = '\0';
       parabuf[0] = '\0';
 
-      if(!check_channel_name(name))
+      if (!check_channel_name(name))
       {
         sendto_one(source_p, form_str(ERR_BADCHANNAME),
-	           me.name, source_p->name, (unsigned char*)name);
+	           me.name, source_p->name, name);
         continue;
       }
 
@@ -398,8 +396,8 @@ ms_join(struct Client *client_p, struct Client *source_p,
 static void
 do_join_0(struct Client *client_p, struct Client *source_p)
 {
-  struct Channel *chptr=NULL;
-  dlink_node   *lp;
+  struct Channel *chptr = NULL;
+  dlink_node *lp;
 
   sendto_server(client_p, source_p, NULL, NOCAPS, NOCAPS, NOFLAGS,
                 ":%s JOIN 0", source_p->name);
@@ -409,8 +407,8 @@ do_join_0(struct Client *client_p, struct Client *source_p)
    check_spambot_warning(source_p, NULL);
 
   while ((lp = source_p->user->channel.head))
-    {
-      chptr = lp->data;
+  {
+    chptr = lp->data;
 
       sendto_channel_local(ALL_MEMBERS,chptr, ":%s!%s@%s PART %s",
 			   source_p->name, source_p->username,

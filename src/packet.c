@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.106 2003/05/04 16:26:08 adx Exp $
+ *  $Id: packet.c,v 7.107 2003/05/10 04:05:06 michael Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -403,15 +403,12 @@ void
 read_packet(int fd, void *data)
 {
   struct Client *client_p = data;
-  struct LocalUser *lclient_p = client_p->localClient;
   int length = 0;
-  int lbuf_len;
-  int fd_r; 
-  int binary = 0;
+  int fd_r;
 #ifndef NDEBUG
   struct hook_io_data hdata;
 #endif
-  if(IsDefunct(client_p))
+  if (IsDefunct(client_p))
     return;
   
   assert(lclient_p != NULL);
@@ -450,17 +447,16 @@ read_packet(int fd, void *data)
   hdata.len = length;
   hook_call_event("iorecv", &hdata);
 #endif
-  
+
   if (client_p->lasttime < CurrentTime)
     client_p->lasttime = CurrentTime;
   if (client_p->lasttime > client_p->since)
     client_p->since = CurrentTime;
   ClearPingSent(client_p);
 
-  dbuf_put(&client_p->localClient->buf_recvq, (void *) readBuf, length);
+  dbuf_put(&client_p->localClient->buf_recvq, (void *)readBuf, length);
   
   /* Attempt to parse what we have */
-
   parse_client_queued(client_p);
 
   /* Check to make sure we're not flooding */
@@ -484,8 +480,6 @@ read_packet(int fd, void *data)
     fd_r = client_p->localClient->fd_r;
   }
 #endif
-
-  
   if (!IsDefunct(client_p))
   {
     /* If we get here, we need to register for another COMM_SELECT_READ */
@@ -537,10 +531,10 @@ client_dopacket(struct Client *client_p, char *buffer, size_t length)
   me.localClient->receiveB += length;
 
   if (me.localClient->receiveB > 1023)
-    {
-      me.localClient->receiveK += (me.localClient->receiveB >> 10);
-      me.localClient->receiveB &= 0x03ff;
-    }
+  {
+    me.localClient->receiveK += (me.localClient->receiveB >> 10);
+    me.localClient->receiveB &= 0x03ff;
+  }
 
   parse(client_p, buffer, buffer + length);
 }

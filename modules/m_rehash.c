@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_rehash.c,v 1.44 2003/04/18 02:13:43 db Exp $
+ *  $Id: m_rehash.c,v 1.45 2003/05/10 04:05:03 michael Exp $
  */
 
 #include "stdinc.h"
@@ -60,23 +60,25 @@ _moddeinit(void)
   mod_del_cmd(&rehash_msgtab);
 }
 
-const char *_version = "$Revision: 1.44 $";
+const char *_version = "$Revision: 1.45 $";
 #endif
+
 /*
  * mo_rehash - REHASH message handler
  *
  */
 static void
 mo_rehash(struct Client *client_p, struct Client *source_p,
-	  int parc, char *parv[])
+          int parc, char *parv[])
 {
   int found = NO;
 
-  if ( !IsOperRehash(source_p) )
-    {
-      sendto_one(source_p,":%s NOTICE %s :You need rehash = yes;", me.name, parv[0]);
-      return;
-    }
+  if (!IsOperRehash(source_p))
+  {
+    sendto_one(source_p,":%s NOTICE %s :You need rehash = yes;",
+               me.name, parv[0]);
+    return;
+  }
 
   if (parc > 1)
     {
@@ -94,7 +96,7 @@ mo_rehash(struct Client *client_p, struct Client *source_p,
           sendto_realops_flags(UMODE_ALL, L_ALL,
 		       "%s is forcing re-reading of MOTD file",
 		       get_oper_name(source_p));
-          ReadMessageFile( &ConfigFileEntry.motd );
+          read_message_file(&ConfigFileEntry.motd);
           found = YES;
         }
       else if(irccmp(parv[1],"OMOTD") == 0)
@@ -102,7 +104,7 @@ mo_rehash(struct Client *client_p, struct Client *source_p,
           sendto_realops_flags(UMODE_ALL, L_ALL,
 		       "%s is forcing re-reading of OPER MOTD file",
 		       get_oper_name(source_p));
-          ReadMessageFile( &ConfigFileEntry.opermotd );
+          read_message_file(&ConfigFileEntry.opermotd);
           found = YES;
         }
       if(found)

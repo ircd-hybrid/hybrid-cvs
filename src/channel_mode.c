@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.87 2003/05/09 21:38:24 bill Exp $
+ *  $Id: channel_mode.c,v 7.88 2003/05/10 04:05:05 michael Exp $
  */
 
 #include "stdinc.h"
@@ -2638,8 +2638,8 @@ update_channel_info(struct Channel *chptr)
    */
   else if(chptr->mode.mode & MODE_HIDEOPS)
   {
-    dlink_list deopped = {NULL, NULL};
-    dlink_list opped = {NULL, NULL};
+    dlink_list deopped = {NULL, NULL, 0};
+    dlink_list opped = {NULL, NULL, 0};
 
     for (i = 0; i < mode_count; i++)
     {

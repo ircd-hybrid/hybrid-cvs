@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_oper.c,v 1.68 2003/04/30 04:55:13 michael Exp $
+ *  $Id: m_oper.c,v 1.69 2003/05/10 04:05:03 michael Exp $
  */
 
 #include "stdinc.h"
@@ -68,7 +68,7 @@ _moddeinit(void)
   mod_del_cmd(&oper_msgtab);
 }
 
-const char *_version = "$Revision: 1.68 $";
+const char *_version = "$Revision: 1.69 $";
 #endif
 
 /*
@@ -163,7 +163,7 @@ mo_oper(struct Client *client_p, struct Client *source_p,
         int parc, char *parv[])
 {
   sendto_one(source_p, form_str(RPL_YOUREOPER), me.name, parv[0]);
-  SendMessageFile(source_p, &ConfigFileEntry.opermotd);
+  send_message_file(source_p, &ConfigFileEntry.opermotd);
 }
 
 /* find_password_aconf()

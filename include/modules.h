@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.h,v 7.35 2003/05/03 11:10:04 michael Exp $
+ *  $Id: modules.h,v 7.36 2003/05/10 04:04:59 michael Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -94,7 +94,6 @@ extern struct Message drop_msgtab;
 extern struct Message eob_msgtab;
 extern struct Message error_msgtab;
 extern struct Message gline_msgtab;
-extern struct Message help_msgtab;
 extern struct Message info_msgtab;
 extern struct Message invite_msgtab;
 extern struct Message ison_msgtab;

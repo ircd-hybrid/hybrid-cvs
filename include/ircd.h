@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.h,v 7.62 2003/05/05 02:01:14 michael Exp $
+ *  $Id: ircd.h,v 7.63 2003/05/10 04:04:59 michael Exp $
  */
 
 #ifndef INCLUDED_ircd_h
@@ -65,20 +65,19 @@ struct ServerState_t
 
 extern struct ServerState_t server_state;
 
-extern char*          debugmode;
-extern int            debuglevel;
-extern int            debugtty;
+extern const char *debugmode;
+extern int debuglevel;
 extern const char *creation;
 extern const char *generation;
 extern const char *platform;
 extern const char *infotext[];
 extern const char *serno;
 extern const char *ircd_version;
-extern const char*    logFileName;
-extern const char*    pidFileName;
-extern const char     serveropts[];
-extern int            dorehash;
-extern int            doremotd;
+extern const char *logFileName;
+extern const char *pidFileName;
+extern const char serveropts[];
+extern int dorehash;
+extern int doremotd;
 extern struct Counter Count;
 extern struct timeval SystemTime;
 #define CurrentTime SystemTime.tv_sec
@@ -97,7 +96,6 @@ extern dlink_list local_client_list;  /* local clients only ON this server */
 extern dlink_list serv_list;          /* local servers to this server ONLY */
 extern dlink_list global_serv_list;   /* global servers on the network */
 extern dlink_list oper_list;          /* our opers, duplicated in local_client_list */
-extern dlink_list closing_list;
 extern dlink_list lazylink_channels;  /* known about lazylink channels on HUB */
 extern int callbacks_called;
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_links.c,v 1.40 2003/04/18 02:13:42 db Exp $
+ *  $Id: m_links.c,v 1.41 2003/05/10 04:05:03 michael Exp $
  */
 
 #include "stdinc.h"
@@ -62,8 +62,9 @@ _moddeinit(void)
   mod_del_cmd(&links_msgtab);
 }
 
-const char *_version = "$Revision: 1.40 $";
+const char *_version = "$Revision: 1.41 $";
 #endif
+
 /*
  * m_links - LINKS message handler
  *      parv[0] = sender prefix
@@ -73,9 +74,9 @@ const char *_version = "$Revision: 1.40 $";
  *      parv[1] = server to query 
  *      parv[2] = servername mask
  */
-
-static void m_links(struct Client *client_p, struct Client *source_p,
-                    int parc, char *parv[])
+static void
+m_links(struct Client *client_p, struct Client *source_p,
+        int parc, char *parv[])
 {
   if (!ConfigServerHide.flatten_links)
   {
@@ -83,8 +84,8 @@ static void m_links(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  SendMessageFile(source_p, &ConfigFileEntry.linksfile);
-    
+  send_message_file(source_p, &ConfigFileEntry.linksfile);
+
 /*
  * Print our own info so at least it looks like a normal links
  * then print out the file (which may or may not be empty)
@@ -97,8 +98,9 @@ static void m_links(struct Client *client_p, struct Client *source_p,
   sendto_one(source_p, form_str(RPL_ENDOFLINKS), me.name, parv[0], "*");
 }
 
-static void mo_links(struct Client *client_p, struct Client *source_p,
-                     int parc, char *parv[])
+static void
+mo_links(struct Client *client_p, struct Client *source_p,
+         int parc, char *parv[])
 {
   const char *mask = "";
   struct Client *target_p;
@@ -172,8 +174,9 @@ static void mo_links(struct Client *client_p, struct Client *source_p,
  *      parv[1] = server to query 
  *      parv[2] = servername mask
  */
-static void ms_links(struct Client *client_p, struct Client *source_p,
-                     int parc, char *parv[])
+static void
+ms_links(struct Client *client_p, struct Client *source_p,
+         int parc, char *parv[])
 {
   if (hunt_server(client_p, source_p, ":%s LINKS %s :%s", 1, parc, parv)
       != HUNTED_ISME)

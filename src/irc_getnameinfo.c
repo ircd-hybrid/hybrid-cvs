@@ -48,7 +48,7 @@
 #include "irc_string.h"
 
 
-/*  $Id: irc_getnameinfo.c,v 7.6 2003/05/10 02:20:23 joshk Exp $ */
+/*  $Id: irc_getnameinfo.c,v 7.7 2003/05/10 04:05:06 michael Exp $ */
 
 static const struct afd {
   int a_af;
@@ -62,10 +62,11 @@ static const struct afd {
 #endif
     {PF_INET, sizeof(struct in_addr), sizeof(struct sockaddr_in),
             offsetof(struct sockaddr_in, sin_addr)},
-    {0, 0, 0},
+    {0, 0, 0, 0},
 };
 
-struct sockinet {
+struct sockinet
+{
   u_char si_len;
   u_char si_family;
   u_short si_port;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_motd.c,v 1.36 2003/04/18 02:13:43 db Exp $
+ *  $Id: m_motd.c,v 1.37 2003/05/10 04:05:03 michael Exp $
  */
 
 #include "stdinc.h"
@@ -70,7 +70,7 @@ _moddeinit(void)
   mod_del_cmd(&motd_msgtab);
 }
 
-const char *_version = "$Revision: 1.36 $";
+const char *_version = "$Revision: 1.37 $";
 #endif
 
 /* mr_motd()
@@ -79,10 +79,10 @@ const char *_version = "$Revision: 1.36 $";
  */
 static void
 mr_motd(struct Client *client_p, struct Client *source_p,
-	int parc, char *parv[])
+        int parc, char *parv[])
 {
   /* allow unregistered clients to see the motd, but exit them */
-  SendMessageFile(source_p,&ConfigFileEntry.motd);
+  send_message_file(source_p,&ConfigFileEntry.motd);
   exit_client(client_p, source_p, source_p, "Client Exit after MOTD");
 }
 
@@ -97,25 +97,24 @@ m_motd(struct Client *client_p, struct Client *source_p,
 {
   static time_t last_used = 0;
 
-  if((last_used + ConfigFileEntry.pace_wait) > CurrentTime)
-    {
-      /* safe enough to give this on a local connect only */
-      sendto_one(source_p,form_str(RPL_LOAD2HI),me.name,source_p->name);
-      return;
-    }
+  if ((last_used + ConfigFileEntry.pace_wait) > CurrentTime)
+  {
+    /* safe enough to give this on a local connect only */
+    sendto_one(source_p,form_str(RPL_LOAD2HI),me.name,source_p->name);
+    return;
+  }
   else
     last_used = CurrentTime;
 
   /* This is safe enough to use during non hidden server mode */
-  if(!ConfigServerHide.disable_remote && !ConfigServerHide.hide_servers)
-    {
-      if (hunt_server(client_p, source_p, ":%s MOTD :%s", 1,parc,parv)!=HUNTED_ISME)
-	return;
-    }
+  if (!ConfigServerHide.disable_remote && !ConfigServerHide.hide_servers)
+  {
+    if (hunt_server(client_p, source_p, ":%s MOTD :%s", 1,parc,parv)!=HUNTED_ISME)
+      return;
+  }
 
   motd_spy(source_p);
-  
-  SendMessageFile(source_p,&ConfigFileEntry.motd);
+  send_message_file(source_p,&ConfigFileEntry.motd);
 }
 
 /*
@@ -125,9 +124,9 @@ m_motd(struct Client *client_p, struct Client *source_p,
 */
 static void
 mo_motd(struct Client *client_p, struct Client *source_p,
-	int parc, char *parv[])
+        int parc, char *parv[])
 {
-  if(!IsClient(source_p))
+  if (!IsClient(source_p))
     return;
 
   if (hunt_server(client_p, source_p, ":%s MOTD :%s", 1,parc,parv)!=HUNTED_ISME)
@@ -135,7 +134,7 @@ mo_motd(struct Client *client_p, struct Client *source_p,
 
   motd_spy(source_p);
   
-  SendMessageFile(source_p,&ConfigFileEntry.motd);
+  send_message_file(source_p,&ConfigFileEntry.motd);
 }
 
 /* motd_spy()

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.122 2003/05/08 03:42:52 michael Exp $
+ *  $Id: m_kline.c,v 1.123 2003/05/10 04:05:03 michael Exp $
  */
 
 #include "stdinc.h"
@@ -75,7 +75,7 @@ _moddeinit(void)
   mod_del_cmd(&kline_msgtab);
   mod_del_cmd(&dline_msgtab);
 }
-const char *_version = "$Revision: 1.122 $";
+const char *_version = "$Revision: 1.123 $";
 #endif
 
 /* Local function prototypes */
@@ -553,8 +553,10 @@ mo_dline(struct Client *client_p, struct Client *source_p,
 	 int parc, char *parv[])
 {
   char *dlhost, *reason, *oper_reason;
+#ifndef IPV6
   char *p;
   struct Client *target_p;
+#endif
   struct irc_ssaddr daddr;
   char cidr_form_host[HOSTLEN + 1];
   struct ConfItem *aconf;
@@ -564,11 +566,11 @@ mo_dline(struct Client *client_p, struct Client *source_p,
   time_t cur_time;
 
   if (!IsOperK(source_p))
-    {
-      sendto_one(source_p,":%s NOTICE %s :You need kline = yes;",
-		 me.name, parv[0]);
-      return;
-    }
+  {
+    sendto_one(source_p,":%s NOTICE %s :You need kline = yes;",
+               me.name, parv[0]);
+    return;
+  }
 
   dlhost = parv[1];
   strlcpy(cidr_form_host, dlhost, sizeof(cidr_form_host));

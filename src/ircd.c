@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.272 2003/05/09 21:38:24 bill Exp $
+ *  $Id: ircd.c,v 7.273 2003/05/10 04:05:06 michael Exp $
  */
 
 #include "stdinc.h"
@@ -104,38 +104,42 @@ char**  myargv;
 int     dorehash   = 0;
 int     doremotd   = 0;
 int     debuglevel = -1;        /* Server debug level */
-char*   debugmode  = "";        /*  -"-    -"-   -"-  */
+const char *debugmode = "";     /*  -"-    -"-   -"-  */
 time_t  nextconnect = 1;        /* time for next try_connections call */
 
 /* Set to zero because it should be initialized later using
  * initialize_server_capabs
  */
-int     default_server_capabs = CAP_MASK;
+int default_server_capabs = CAP_MASK;
 
 int splitmode;
 int splitchecking;
 int split_users;
 int split_servers;
 
-static int irc_sleep(unsigned long useconds)
+static int
+irc_sleep(unsigned long useconds)
 {
 #ifdef HAVE_NANOSLEEP
-	struct timespec t;
-	t.tv_sec = useconds / (unsigned long)  1000000;
-	t.tv_nsec = (useconds % (unsigned long) 1000000) * 1000 ;
-	return nanosleep(&t, NULL);
+  struct timespec t;
+
+  t.tv_sec  =  useconds / (unsigned long)1000000;
+  t.tv_nsec = (useconds % (unsigned long)1000000) * 1000;
+  return(nanosleep(&t, NULL));
 #else
-	struct timeval t;
-	t.tv_sec = 0;
-	t.tv_usec = useconds;
-	return select(0, NULL, NULL, NULL, &t);
+  struct timeval t;
+
+  t.tv_sec  = 0;
+  t.tv_usec = useconds;
+  return(select(0, NULL, NULL, NULL, &t));
 #endif
 }
 
 /*
  * get_vm_top - get the operating systems notion of the resident set size
  */
-static unsigned long get_vm_top(void)
+static unsigned long
+get_vm_top(void)
 {
   /*
    * NOTE: sbrk is not part of the ANSI C library or the POSIX.1 standard
@@ -216,7 +220,7 @@ make_daemon(void)
 {
 #ifndef VMS
   int pid;
-  
+
   if ((pid = fork()) < 0)
   {
     perror("fork");
@@ -333,7 +337,7 @@ io_loop(void)
     }
     if (doremotd)
     {
-      ReadMessageFile(&ConfigFileEntry.motd);
+      read_message_file(&ConfigFileEntry.motd);
       sendto_realops_flags(UMODE_ALL, L_ALL,
                            "Got signal SIGUSR1, reloading ircd motd file");
       doremotd = 0;
@@ -347,7 +351,8 @@ io_loop(void)
  * output       - none
  * side effects - This sets all global set options needed 
  */
-static void initialize_global_set_options(void)
+static void
+initialize_global_set_options(void)
 {
   memset(&GlobalSetOptions, 0, sizeof(GlobalSetOptions));
 
@@ -382,15 +387,16 @@ static void initialize_global_set_options(void)
  * output       - none
  * side effects - Set up all message files needed, motd etc.
  */
-static void initialize_message_files(void)
+static void
+initialize_message_files(void)
 {
-  InitMessageFile(USER_MOTD, MPATH, &ConfigFileEntry.motd);
-  InitMessageFile(OPER_MOTD, OPATH, &ConfigFileEntry.opermotd);
-  InitMessageFile(USER_LINKS, LIPATH, &ConfigFileEntry.linksfile);
+  init_message_file(USER_MOTD, MPATH, &ConfigFileEntry.motd);
+  init_message_file(OPER_MOTD, OPATH, &ConfigFileEntry.opermotd);
+  init_message_file(USER_LINKS, LIPATH, &ConfigFileEntry.linksfile);
 
-  ReadMessageFile(&ConfigFileEntry.motd);
-  ReadMessageFile(&ConfigFileEntry.opermotd);
-  ReadMessageFile(&ConfigFileEntry.linksfile);
+  read_message_file(&ConfigFileEntry.motd);
+  read_message_file(&ConfigFileEntry.opermotd);
+  read_message_file(&ConfigFileEntry.linksfile);
 }
 
 /* initialize_server_capabs
