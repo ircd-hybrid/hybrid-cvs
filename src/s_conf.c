@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.492 2004/10/03 07:54:44 metalrock Exp $
+ *  $Id: s_conf.c,v 7.493 2005/01/04 05:52:14 michael Exp $
  */
 
 #include "stdinc.h"
@@ -73,7 +73,7 @@ dlink_list gdeny_items	 = { NULL, NULL, 0 };
 dlink_list temporary_klines = { NULL, NULL, 0 };
 dlink_list temporary_dlines = { NULL, NULL, 0 };
 
-extern int lineno;
+extern unsigned int lineno;
 extern char linebuf[];
 extern char conffilebuf[IRCD_BUFSIZE];
 extern int yyparse(); /* defined in y.tab.c */
@@ -3136,9 +3136,9 @@ yyerror(const char *msg)
     return;
 
   strip_tabs(newlinebuf, (const unsigned char *)linebuf, strlen(linebuf));
-  sendto_realops_flags(UMODE_ALL, L_ALL,"\"%s\", line %d: %s: %s",
+  sendto_realops_flags(UMODE_ALL, L_ALL,"\"%s\", line %u: %s: %s",
                        conffilebuf, lineno + 1, msg, newlinebuf);
-  ilog(L_WARN, "\"%s\", line %d: %s: %s",
+  ilog(L_WARN, "\"%s\", line %u: %s: %s",
        conffilebuf, lineno + 1, msg, newlinebuf);
 }
 

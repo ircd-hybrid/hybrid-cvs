@@ -19,12 +19,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_lexer.l,v 1.179 2003/10/04 19:31:19 metalrock Exp $
+ *  $Id: ircd_lexer.l,v 1.180 2005/01/04 05:52:13 michael Exp $
  */
 
 %option case-insensitive
 %option noyywrap
 %option nounput
+%option never-interactive
 
 %{
 /* XXX - No we aren't but lex calls malloc :(. It is even worse that it
@@ -50,18 +51,19 @@
 #define MAX_INCLUDE_DEPTH 10
 
 
-int lineno = 1;
+unsigned int lineno = 1;
 char linebuf[IRCD_BUFSIZE];
 char conffilebuf[IRCD_BUFSIZE];
-int include_stack_ptr = 0;
-YY_BUFFER_STATE include_stack[MAX_INCLUDE_DEPTH];
-int lineno_stack[MAX_INCLUDE_DEPTH];
-FBFILE* inc_fbfile_in[MAX_INCLUDE_DEPTH];
-char conffile_stack[MAX_INCLUDE_DEPTH][IRCD_BUFSIZE];
-void ccomment(void);
-void hashcomment(void);
-void cinclude(void);
-int ieof(void);
+
+static int include_stack_ptr = 0;
+static YY_BUFFER_STATE include_stack[MAX_INCLUDE_DEPTH];
+static unsigned int lineno_stack[MAX_INCLUDE_DEPTH];
+static FBFILE *inc_fbfile_in[MAX_INCLUDE_DEPTH];
+static char conffile_stack[MAX_INCLUDE_DEPTH][IRCD_BUFSIZE];
+static void ccomment(void);
+static void hashcomment(void);
+static void cinclude(void);
+static int ieof(void);
 %}
 
 ws        [ \t]*
@@ -74,7 +76,7 @@ include   \.include{ws}(\<.*\>|\".*\")
 {include}       { cinclude(); }
 "/*"	        { ccomment(); }
 
-\n.*	        { strcpy(linebuf, yytext+1); lineno++; yyless(1); }
+\n.*	        { strcpy(linebuf, yytext+1); ++lineno; yyless(1); }
 
 {ws}            ;
 {comment}       { hashcomment(); }
@@ -376,9 +378,9 @@ tb			{ return TBYTES; }
 %%
 
 /* C-comment ignoring routine -kre*/
-void ccomment(void)
+static void ccomment(void)
 {
-  int c;
+  int c = 0;
 
   /* log(L_NOTICE, "got comment"); */
   while (1)
@@ -389,6 +391,8 @@ void ccomment(void)
     {
       while ((c = input()) == '*');
       if (c == '/') break;
+      else if (c == '\n')
+        ++lineno;
     }
     if (c == EOF)
     {
@@ -406,7 +410,7 @@ void ccomment(void)
 
 /* #-comment style, look for #include */
 #define INCLUDE "#include"
-void hashcomment(void) 
+static void hashcomment(void) 
 {
   if (strlen(yytext) < strlen(INCLUDE))
     return;
@@ -417,7 +421,7 @@ void hashcomment(void)
 
 /* C-style .includes. This function will properly swap input conf buffers,
  * and lineno -kre */
-void cinclude(void)
+static void cinclude(void)
 {
   char *c;
   if ((c = strchr(yytext, '<')) == NULL)
@@ -457,7 +461,7 @@ void cinclude(void)
 /* This is function that will be called on EOF in conf file. It will
  * apropriately close conf if it not main conf and swap input buffers -kre
  * */
-int ieof(void)
+static int ieof(void)
 {
   /* log(L_NOTICE, "return from include stack!"); */
   if (include_stack_ptr)
