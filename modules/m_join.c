@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 1.28 2000/12/19 09:46:45 db Exp $
+ *   $Id: m_join.c,v 1.29 2000/12/19 19:47:24 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -329,7 +329,7 @@ int     m_join(struct Client *cptr,
 			       me.name,
 			       chptr->chname);
 	  
-	  sendto_ll_channel_remote(chptr, cptr, sptr, 
+	  sendto_ll_channel_remote(chptr, cptr, sptr,
 				   ":%s MODE %s +nt",
 				   me.name,
 				   chptr->chname);

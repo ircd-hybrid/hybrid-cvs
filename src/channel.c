@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.131 2000/12/19 10:14:59 db Exp $
+ * $Id: channel.c,v 7.132 2000/12/19 19:47:29 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -1425,7 +1425,8 @@ void set_channel_mode(struct Client *cptr,
           if (len + tmp + 2 >= MODEBUFLEN)
             break;
 
-          if (!(((whatt & MODE_ADD) && !add_id(sptr, chptr, arg, CHFL_INVEX)) ||
+          if (!(((whatt & MODE_ADD) && !add_id(sptr, chptr, arg, CHFL_INVEX))
+		||
                 ((whatt & MODE_DEL) && !del_id(chptr, arg, CHFL_INVEX))))
             break;
 

@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.107 2000/12/18 21:43:12 bill Exp $
+ *  $Id: s_conf.c,v 7.108 2000/12/19 19:47:30 db Exp $
  */
 #include "tools.h"
 #include "s_conf.h"
@@ -1600,44 +1600,6 @@ static void initconf(FBFILE* file)
 	}
 
       ReplaceQuotes(quotedLine,line);
-
-      if(quotedLine[0] == '.')
-        {
-          char *filename;
-          char *back;
-	  FBFILE* includeFile;
-
-          if(!ircncmp(quotedLine+1,"include ",8))
-            {
-              if( (filename = strchr(quotedLine+8,'"')) )
-                filename++;
-              else
-                {
-                  log(L_ERROR, "Bad config line: %s", quotedLine);
-                  continue;
-                }
-
-              if( (back = strchr(filename,'"')) )
-                *back = '\0';
-              else
-                {
-                  log(L_ERROR, "Bad config line: %s", quotedLine);
-                  continue;
-                }
-
-	      if( (includeFile = openconf(filename)) == 0 )
-		{
-                  log(L_ERROR, "Can't open: %s", filename);
-                  continue;
-		}
-	      else
-		{
-		  initconf(includeFile);
-		  fbclose(includeFile);
-		  continue;
-		}
-	    }
-	}
 
       aconf = make_conf();
 
