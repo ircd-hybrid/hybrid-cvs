@@ -20,10 +20,11 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_rehash.c,v 1.14 2000/12/25 04:39:39 db Exp $
+ *   $Id: m_rehash.c,v 1.15 2000/12/31 17:20:04 wcampbel Exp $
  */
 #include "handlers.h"
 #include "client.h"
+#include "channel.h"
 #include "common.h"
 #include "irc_string.h"
 #include "ircd.h"
@@ -37,6 +38,7 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
+#include "event.h"
 
 struct Message rehash_msgtab = {
   MSG_REHASH, 0, 0, 0, MFLG_SLOW, 0,
@@ -73,7 +75,15 @@ int mo_rehash(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 
   if (parc > 1)
     {
-      if (irccmp(parv[1],"DNS") == 0)
+      if (irccmp(parv[1],"CHANNELS") == 0)
+        {
+          eventDelete(cleanup_channels, NULL);
+          eventAdd("cleanup_channels", cleanup_channels, NULL, 1, 0);
+          sendto_realops_flags(FLAGS_ALL,
+                       "%s is forcing cleanup of channels",parv[0]);
+          found = YES;
+        }
+      else if(irccmp(parv[1],"DNS") == 0)
         {
           sendto_one(sptr, form_str(RPL_REHASHING), me.name, parv[0], "DNS");
           sendto_realops_flags(FLAGS_ALL,"%s is rehashing DNS", parv[0]);
@@ -109,7 +119,6 @@ int mo_rehash(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
           ReadMessageFile( &ConfigFileEntry.helpfile );
           found = YES;
         }
-
       if(found)
         {
           log(L_NOTICE, "REHASH %s From %s\n", parv[1], 
@@ -118,7 +127,7 @@ int mo_rehash(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
         }
       else
         {
-          sendto_one(sptr,":%s NOTICE %s :rehash one of :DNS GC HELP MOTD OMOTD" ,me.name,sptr->name);
+          sendto_one(sptr,":%s NOTICE %s :rehash one of :CHANNELS DNS GC HELP MOTD OMOTD" ,me.name,sptr->name);
           return(0);
         }
     }
