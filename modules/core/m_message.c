@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.84 2002/01/05 09:15:04 a1kmm Exp $
+ *  $Id: m_message.c,v 1.85 2002/01/12 20:08:07 leeh Exp $
  */
 
 #include "handlers.h"
@@ -122,7 +122,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-char *_version = "$Revision: 1.84 $";
+char *_version = "$Revision: 1.85 $";
 #endif
 
 /*
@@ -176,17 +176,11 @@ m_message(int p_or_n,
 {
   int i;
 
-#if 0  /* Allow servers to send notices to individual people */
-  if (!IsPerson(source_p))
-    return;
-#endif
-
-  /* It is stupid to disallow servers to send privmsgs but not notices.
+  /* servers have no reason to send privmsgs, yet sometimes there is cause
+   * for a notice.. (for example remote kline replies) --fl_
    */
-#if 0
   if (!IsPerson(source_p) && p_or_n != NOTICE)
     return;
-#endif
 
   if (parc < 2 || *parv[1] == '\0')
   {
