@@ -1,3 +1,15 @@
+db          2003/02/15 19:40:45 EST	(20030216_1)
+
+  Modified files:
+    .                    RELNOTES 
+  Log:
+  - just noted iphash changes
+  
+  Revision  Changes    Path
+  1.65      +1 -0      ircd-hybrid-7/RELNOTES
+
+
+
 db          2003/02/15 19:22:24 EST	(20030216_0)
 
   Modified files:
@@ -35093,4 +35105,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4233 2003/02/16 00:22:27 db Exp $
+$Id: ChangeLog,v 7.4234 2003/02/16 00:40:48 db Exp $
