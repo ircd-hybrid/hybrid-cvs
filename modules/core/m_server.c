@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.107 2003/05/26 05:43:18 db Exp $
+ *  $Id: m_server.c,v 1.108 2003/05/28 07:06:37 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -77,7 +77,7 @@ _moddeinit(void)
   mod_del_cmd(&sid_msgtab);
 }
 
-const char *_version = "$Revision: 1.107 $";
+const char *_version = "$Revision: 1.108 $";
 #endif
 
 
@@ -753,7 +753,7 @@ ms_sid(struct Client *client_p, struct Client *source_p,
     if (match(my_name_for_link(aconf), target_p->name))
       continue;
 
-    sendto_one(bclient_p, ":%s SID %s %d :%s%s",
+    sendto_one(bclient_p, ":%s SID %s %d %s:%s%s",
                parv[0], target_p->name, hop + 1,
 	       SID_SID, IsHidden(target_p) ? "(H) " : "",
                target_p->info);
