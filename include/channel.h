@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.130 2003/05/03 12:14:01 michael Exp $
+ *  $Id: channel.h,v 7.131 2003/05/03 13:57:18 michael Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -49,7 +49,7 @@ struct Channel
 {
   dlink_node node;
   slink_node snode;
-  struct Channel* hnextch;
+
   struct Mode     mode;
   char            *topic;
   char            *topic_info;
@@ -126,7 +126,7 @@ extern void    add_user_to_channel(struct Channel *chptr,
 extern int     remove_user_from_channel(struct Channel *chptr,
 					struct Client *who);
 
-extern int     check_channel_name(const char* name);
+extern int     check_channel_name(const char *name);
 
 extern void    channel_member_names( struct Client *source_p,
 				     struct Channel *chptr,
@@ -165,8 +165,6 @@ struct Ban          /* also used for exceptions -orabidoo */
   time_t when;
 };
 
-#define CLEANUP_CHANNELS_TIME (30*60)
-#define MAX_VCHAN_TIME (60*60)
 /* Number of chanops, peon, voiced, halfops sublists */
 #ifdef REQUIRE_OANDV
 #define NUMLISTS 5
@@ -175,11 +173,10 @@ struct Ban          /* also used for exceptions -orabidoo */
 #endif
 
 #ifdef INTENSIVE_DEBUG
-void do_channel_integrity_check(void);
+extern void do_channel_integrity_check(void);
 #endif
 
-void set_channel_topic(struct Channel *chptr, const char *topic, const char *topic_info, time_t topicts); 
-void free_topic(struct Channel *);
-int allocate_topic(struct Channel *);
-
+extern void set_channel_topic(struct Channel *chptr, const char *topic, const char *topic_info, time_t topicts); 
+extern void free_topic(struct Channel *);
+extern int allocate_topic(struct Channel *);
 #endif  /* INCLUDED_channel_h */

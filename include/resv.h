@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: resv.h,v 1.11 2003/05/03 12:14:01 michael Exp $
+ *  $Id: resv.h,v 1.12 2003/05/03 13:57:18 michael Exp $
  */
 
 #ifndef INCLUDED_resv_h
@@ -29,7 +29,6 @@ struct ResvChannel
 {
   slink_node snode;
   dlink_node node;
-  struct ResvChannel *hnext;
 
   /* +1 for \0 */
   char name[CHANNELLEN + 1];
