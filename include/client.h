@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.144 2002/05/18 20:53:49 androsyn Exp $
+ *  $Id: client.h,v 7.145 2002/05/20 16:41:09 androsyn Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -621,6 +621,5 @@ extern int set_initial_nick(struct Client *client_p, struct Client *source_p,
 extern int change_local_nick(struct Client *client_p, struct Client *source_p,
                              char *nick);
 extern void dead_link(struct Client *client_p);
-extern void exit_aborted_clients(void);
 #endif /* INCLUDED_client_h */
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.h,v 7.54 2002/03/07 06:21:41 db Exp $
+ *  $Id: send.h,v 7.55 2002/05/20 16:41:09 androsyn Exp $
  */
 
 #ifndef INCLUDED_send_h
@@ -64,6 +64,8 @@ extern  void sendto_one_prefix(struct Client *, struct Client *,
                                const char *, ...) AFP(3, 4);
 
 extern  void sendto_common_channels_local(struct Client *, const char *,
+                                          ...) AFP(2, 3);
+extern  void sendto_remove_channels_local(struct Client *, const char *,
                                           ...) AFP(2, 3);
 
 extern  void sendto_channel_local(int type, struct Channel *,
