@@ -1,3 +1,4 @@
+# $Id: stats,v 1.2 2003/08/17 02:24:24 metalrock Exp $
 STATS <letter> [server|nick]
 
 Queries server [server] (or your own server if no
@@ -9,11 +10,13 @@ LETTER (* = Oper only.)
 ------ (^ = Can be configured to be oper only.)
 X A - Shows the ADNS DNS servers in use
 * c - Shows connect blocks
-* d - Shows D lines
+* d - Shows temporary D lines
+* D - Shows D lines
 * e - Shows exemptions to D lines
 X E - Shows Events
 X f - Shows File Descriptors
-* g - Shows G lines
+* g - Shows pending lines
+* G - Shows G lines
 * h - Shows H/L lines
 ^ i - Shows I lines
 ^ K - Shows K lines (or matched klines)

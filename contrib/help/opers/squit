@@ -1,4 +1,5 @@
-SQUIT <server> [reason]
+# $Id: squit,v 1.2 2003/08/17 02:24:24 metalrock Exp $
+SQUIT <server> :[reason]
 
 Splits <server> away from your side of the net with [reason].
 - Requires Oper Priv: R for servers not connected to you

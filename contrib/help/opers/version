@@ -1,6 +1,5 @@
+# $Id: version,v 1.2 2003/08/17 02:24:25 metalrock Exp $
 VERSION [servername]
 
 VERSION will display the server version of the specified
 server, or the local server if there was no parameter.
-
-Only operators can query a remote server.
