@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.70 2000/12/11 22:07:33 db Exp $
+ * $Id: ircd.c,v 7.71 2000/12/13 16:09:06 db Exp $
  */
 #include "tools.h"
 #include "ircd.h"
@@ -33,7 +33,7 @@
 #include "ircdauth.h"
 #include "ircd_signal.h"
 #include "list.h"
-#include "m_gline.h"
+#include "s_gline.h"
 #include "motd.h"
 #include "ircd_handler.h"
 #include "msg.h"         /* msgtab */

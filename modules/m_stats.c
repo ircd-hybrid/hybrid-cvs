@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 1.18 2000/12/13 07:57:44 db Exp $
+ *  $Id: m_stats.c,v 1.19 2000/12/13 16:09:04 db Exp $
  */
 #include "tools.h"	 /* dlink_node/dlink_list */
 #include "handlers.h"    /* m_pass prototype */
@@ -34,7 +34,7 @@
 #include "ircd_handler.h"
 #include "msg.h"         /* Message */
 #include "mtrie_conf.h"  /* report_mtrie_conf_links */
-#include "m_gline.h"     /* report_glines */
+#include "s_gline.h"     /* report_glines */
 #include "numeric.h"     /* ERR_xxx */
 #include "scache.h"      /* list_scache */
 #include "send.h"        /* sendto_one */

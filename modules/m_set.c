@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_set.c,v 1.15 2000/12/10 03:52:17 db Exp $ */
+ *   $Id: m_set.c,v 1.16 2000/12/13 16:09:03 db Exp $ */
 
 /* rewritten by jdc */
 
@@ -427,7 +427,7 @@ int mo_set(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 		  newval = atoi(intarg);
 		  if(newval < 0)
 		    {
-		      sento_one(sptr,
+		      sendto_one(sptr,
 				":%s NOTICE %s :Value less than 0 illegal for %s",
 				me.name, sptr->name,
 				set_cmd_table[i].name);

@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.44 2000/12/11 01:02:32 db Exp $
+ * $Id: ircd_parser.y,v 1.45 2000/12/13 16:09:07 db Exp $
  */
 
 %{
@@ -1190,7 +1190,6 @@ general_item:       general_quiet_on_ban | general_moderate_nickchange |
                     general_short_motd | general_no_oper_flood |
 	            general_iauth_server |
                     general_iauth_port | general_stats_p_notice |
-	            general_invite_plus_i_only |
                     general_glines | general_topic_uh | general_gline_time |
 		    general_idletime |
 		    general_hide_server | general_hide_chanops |
@@ -1407,14 +1406,6 @@ general_stats_p_notice: STATS_P_NOTICE '=' TYES ';'
 } | STATS_P_NOTICE '=' TNO ';'
 {
 	ConfigFileEntry.stats_p_notice = 0;
-} ;
-
-general_invite_plus_i_only: INVITE_PLUS_I_ONLY '=' TYES ';'
-{
-	ConfigFileEntry.invite_plus_i_only = 1;
-} | INVITE_PLUS_I_ONLY '=' TNO ';'
-{
-	ConfigFileEntry.invite_plus_i_only = 0;
 } ;
 
 general_glines: GLINES '=' TYES ';'

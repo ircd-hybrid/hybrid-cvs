@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.43 2000/12/12 23:07:13 adrian Exp $
+# $Id: Makefile.in,v 7.44 2000/12/13 16:09:05 db Exp $
 #
 CC		= @CC@
 INSTALL		= @INSTALL@
@@ -88,6 +88,7 @@ SRCS =                          \
   @SELECT_SRC@                  \
   s_conf.c                      \
   s_debug.c                     \
+  s_gline.c                     \
   s_log.c                       \
   s_misc.c                      \
   s_serv.c                      \

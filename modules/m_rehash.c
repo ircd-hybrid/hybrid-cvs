@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_rehash.c,v 1.9 2000/12/10 03:52:16 db Exp $
+ *   $Id: m_rehash.c,v 1.10 2000/12/13 16:09:03 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -28,7 +28,7 @@
 #include "irc_string.h"
 #include "ircd.h"
 #include "list.h"
-#include "m_gline.h"
+#include "s_gline.h"
 #include "numeric.h"
 #include "res.h"
 #include "s_conf.h"

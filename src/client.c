@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.74 2000/12/13 01:31:39 db Exp $
+ *  $Id: client.c,v 7.75 2000/12/13 16:09:05 db Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -35,7 +35,7 @@
 #include "irc_string.h"
 #include "ircd.h"
 #include "list.h"
-#include "m_gline.h"
+#include "s_gline.h"
 #include "numeric.h"
 #include "packet.h"
 #include "res.h"

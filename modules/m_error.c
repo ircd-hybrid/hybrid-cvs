@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_error.c,v 1.6 2000/12/10 03:52:13 db Exp $
+ *   $Id: m_error.c,v 1.7 2000/12/13 16:09:02 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -126,7 +126,7 @@ int ms_error(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
     return 0;
   if (cptr == sptr)
     sendto_realops_flags(FLAGS_ALL,"ERROR :from %s -- %s",
-			 get_cnlient_name(cptr, FALSE), para);
+			 get_client_name(cptr, FALSE), para);
   else
     sendto_realops_flags(FLAGS_ALL,"ERROR :from %s via %s -- %s", sptr->name,
 			 get_client_name(cptr,FALSE), para);
