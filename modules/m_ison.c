@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_ison.c,v 1.11 2000/12/23 20:57:41 ejb Exp $
+ *   $Id: m_ison.c,v 1.12 2000/12/23 23:12:58 ejb Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -35,7 +35,7 @@
 #include <string.h>
 
 struct Message ison_msgtab = {
-  MSG_ISON, 0, 2, 1, MFLG_SLOW, 0,
+  MSG_ISON, 0, 1, 1, MFLG_SLOW, 0,
   {m_unregistered, m_ison, m_ignore, m_ison}
 };
 

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.c,v 7.22 2000/12/22 16:12:50 db Exp $
+ * $Id: modules.c,v 7.23 2000/12/23 23:13:09 ejb Exp $
  */
 
 #include <dlfcn.h>
@@ -112,12 +112,12 @@ int unload_one_module (char *name)
 }
 
 struct Message modload_msgtab = {
-  MSG_MODLOAD, 0, 2, 0, MFLG_SLOW, 0,
+  MSG_MODLOAD, 0, 1, 0, MFLG_SLOW, 0,
   {m_unregistered, m_ignore, m_ignore, mo_modload}
 };
 
 struct Message modunload_msgtab = {
-  MSG_MODUNLOAD, 0, 2, 0, MFLG_SLOW, 0,
+  MSG_MODUNLOAD, 0, 1, 0, MFLG_SLOW, 0,
   {m_unregistered, m_ignore, m_ignore, mo_modunload}
 };
 
@@ -127,7 +127,7 @@ struct Message modlist_msgtab = {
 };
 
 struct Message hash_msgtab = {
-  MSG_HASH, 0, 2, 0, MFLG_SLOW, 0,
+  MSG_HASH, 0, 1, 0, MFLG_SLOW, 0,
   {m_unregistered, m_ignore, m_ignore, mo_hash}
 };
 
