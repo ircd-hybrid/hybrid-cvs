@@ -1,3 +1,15 @@
+leeh        2002/06/19 16:49:56 EDT	(20020619_3)
+
+  Modified files:
+    modules              m_trace.c 
+  Log:
+  - audited the IP stuff in relation to spoofing and /trace
+  
+  Revision  Changes    Path
+  1.48      +10 -2     ircd-hybrid-7/modules/m_trace.c
+
+
+
 leeh        2002/06/19 16:39:07 EDT	(20020619_2)
 
   Modified files:
@@ -28586,4 +28598,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3791 2002/06/19 20:39:14 leeh Exp $
+$Id: ChangeLog,v 7.3792 2002/06/19 20:50:03 leeh Exp $
