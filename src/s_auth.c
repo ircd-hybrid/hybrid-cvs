@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.124 2003/05/14 22:29:42 db Exp $
+ *  $Id: s_auth.c,v 7.125 2003/05/16 06:17:30 db Exp $
  */
 
 /*
@@ -47,7 +47,7 @@
 #include "ircdauth.h"
 #include "numeric.h"
 #include "packet.h"
-#include "res.h"
+#include "irc_res.h"
 #include "s_bsd.h"
 #include "s_log.h"
 #include "s_stats.h"
@@ -120,15 +120,6 @@ make_auth_request(struct Client* client)
   request->client  = client;
   request->timeout = CurrentTime + CONNECTTIMEOUT;
   return request;
-}
-
-/*
- * free_auth_request - cleanup auth request allocations
- */
-static void
-free_auth_request(struct AuthRequest *request)
-{
-  MyFree(request);
 }
 
 /*
@@ -249,7 +240,7 @@ auth_dns_callback(void* vptr, struct DNSReply *reply)
     ilog(L_ERROR, "Linking to auth client list");
     link_auth_request(auth, &auth_client_list);
 #else
-    free_auth_request(auth);
+    MyFree(auth);
 #endif
     release_auth_client(client_p);
   }
@@ -277,7 +268,7 @@ auth_error(struct AuthRequest* auth)
     ilog(L_ERROR, "linking to auth client list 2");
     link_auth_request(auth, &auth_client_list);
 #else
-    free_auth_request(auth);
+    MyFree(auth);
 #endif
   }
 }
@@ -451,7 +442,6 @@ start_auth(struct Client* client)
   sendheader(client, REPORT_DO_DNS);
 
   /* No DNS cache now, remember? -- adrian */
-  /* Only set DNS pending if no error! -- Dianora */
   gethost_byaddr(&client->localClient->ip, client->localClient->dns_query);
   SetDNSPending(auth);
 
@@ -483,7 +473,7 @@ timeout_auth_queries_event(void *notused)
 	sendheader(auth->client, REPORT_FAIL_ID);
       if (IsDNSPending(auth))
       {
-	delete_resolver_queries(auth);
+	delete_resolver_queries(auth->client);
 	auth->client->localClient->dns_query = NULL;
 	sendheader(auth->client, REPORT_FAIL_DNS);
       }
@@ -498,7 +488,7 @@ timeout_auth_queries_event(void *notused)
       ilog(L_ERROR, "linking to auth client list 3");
       link_auth_request(auth, &auth_client_list);
 #else
-      free_auth_request(auth);
+      MyFree(auth);
 #endif
     }
   }
@@ -652,7 +642,7 @@ read_auth_reply(int fd, void *data)
     ilog(L_ERROR, "linking to auth client list 4");
       link_auth_request(auth, &auth_client_list);
 #else
-      free_auth_request(auth);
+      MyFree(auth);
 #endif
     }
 }
@@ -667,7 +657,7 @@ void
 remove_auth_request(struct AuthRequest *auth)
 {
   unlink_auth_request(auth, &auth_client_list);
-  free_auth_request(auth);
+  MyFree(auth);
 } /* remove_auth_request() */
 
 /*
@@ -715,7 +705,7 @@ delete_identd_queries(struct Client *target_p)
         fd_close(auth->fd);
 
       dlinkDelete(ptr, &auth_poll_list);
-      free_auth_request(auth);
+      MyFree(auth);
       free_dlink_node(ptr);
     }
   }
@@ -730,7 +720,7 @@ delete_identd_queries(struct Client *target_p)
         fd_close(auth->fd);
 
       dlinkDelete(ptr, &auth_client_list);
-      free_auth_request(auth);
+      MyFree(auth);
       free_dlink_node(ptr);
     }
   }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.3 2003/05/15 03:50:46 db Exp $
+ *  $Id: m_xline.c,v 1.4 2003/05/16 06:17:28 db Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&xline_msgtab);
   mod_add_cmd(&unxline_msgtab);
 }
-const char *_version = "$Revision: 1.3 $";
+const char *_version = "$Revision: 1.4 $";
 #endif
 
 
@@ -112,7 +112,7 @@ mo_xline(struct Client *client_p, struct Client *source_p,
 
   if (parc < 3)
   {
-    sendto_one(source_p,":%s NOTICE %s :XLINE {WARN|REJECT|SILENT| pattern reason",
+    sendto_one(source_p,":%s NOTICE %s :XLINE WARN|REJECT|SILENT pattern reason",
 	       me.name,source_p->name);
     return;
   }

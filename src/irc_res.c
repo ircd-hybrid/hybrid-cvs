@@ -7,7 +7,7 @@
  * The authors takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: irc_res.c,v 7.14 2003/05/14 22:56:26 stu Exp $
+ * $Id: irc_res.c,v 7.15 2003/05/16 06:17:30 db Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -49,7 +49,7 @@
 #error this code needs to be able to address individual octets 
 #endif
 
-/* $Id: irc_res.c,v 7.14 2003/05/14 22:56:26 stu Exp $ */
+/* $Id: irc_res.c,v 7.15 2003/05/16 06:17:30 db Exp $ */
 
 static PF res_readreply;
 
@@ -368,7 +368,7 @@ timeout_resolver(void *notused)
  * for which there no longer exist clients or conf lines.
  */
 void
-delete_resolver_queries(const void* vptr)
+delete_resolver_queries(const void *vptr)
 {
   dlink_node *ptr;
   dlink_node *next_ptr;
@@ -473,7 +473,7 @@ gethost_byaddr(const struct irc_ssaddr* addr, const struct DNSQuery* query)
  */
 static void
 do_query_name(const struct DNSQuery* query, const char* name,
-    struct reslist *request, int type)
+	      struct reslist *request, int type)
 {
   char  host_name[HOSTLEN + 1];
 
@@ -504,7 +504,7 @@ do_query_name(const struct DNSQuery* query, const char* name,
  */
 static void
 do_query_number(const struct DNSQuery* query, const struct irc_ssaddr* addr,
-    struct reslist *request)
+		struct reslist *request)
 {
   char  ipbuf[128];
   const unsigned char* cp;
@@ -566,7 +566,7 @@ do_query_number(const struct DNSQuery* query, const struct irc_ssaddr* addr,
  */
 static void
 query_name(const char* name, int query_class, int type,
-    struct reslist *request)
+	   struct reslist *request)
 {
   char buf[MAXPACKET];
   int  request_len = 0;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.366 2003/05/13 02:32:18 joshk Exp $
+ *  $Id: client.c,v 7.367 2003/05/16 06:17:30 db Exp $
  */
 
 #include "stdinc.h"
@@ -53,6 +53,7 @@
 #include "hostmask.h"
 #include "balloc.h"
 #include "listener.h"
+#include "irc_res.h"
 
 /* Pointer to beginning of Client list */
 dlink_list global_client_list = {NULL, NULL, 0};
@@ -1194,8 +1195,7 @@ exit_client(
     if (IsIpHash(source_p))
       remove_one_ip(&source_p->localClient->ip);
     
-    /* ZZZ IP RES */
-    delete_resolver_queries(source_p);
+    delete_resolver_queries(source_p->localClient->dns_query->ptr);
     delete_identd_queries(source_p);
     
     /* This source_p could have status of one of STAT_UNKNOWN, STAT_CONNECTING

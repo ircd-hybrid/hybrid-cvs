@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.389 2003/05/14 22:29:42 db Exp $
+ *  $Id: s_conf.c,v 7.390 2003/05/16 06:17:30 db Exp $
  */
 
 #include "stdinc.h"
@@ -53,6 +53,7 @@
 #include "s_debug.h"
 #include "fileio.h"
 #include "memory.h"
+#include "irc_res.h"
 
 struct config_server_hide ConfigServerHide;
 

@@ -1,7 +1,7 @@
 /*
  * include/res.h (C)opyright 1992 Darren Reed.
  *
- * $Id: res.h,v 7.26 2003/05/13 01:53:33 db Exp $
+ * $Id: res.h,v 7.27 2003/05/16 06:17:27 db Exp $
  */
 #ifndef INCLUDED_res_h
 #define INCLUDED_res_h
@@ -31,8 +31,6 @@ extern void gethost_byaddr(const struct irc_ssaddr* name,
     const struct DNSQuery* req);
 extern int             init_resolver(void);
 extern void            restart_resolver(void);
-extern void            timeout_resolver(void *);
-extern void            delete_resolver_queries(const void* vptr);
 extern unsigned long   cres_mem(struct Client* cptr);
 
 /*
