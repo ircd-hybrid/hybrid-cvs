@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_server.c,v 1.56 2001/04/13 22:39:46 davidt Exp $
+ *   $Id: m_server.c,v 1.57 2001/05/28 07:34:45 a1kmm Exp $
  */
 #include "tools.h"
 #include "handlers.h"  /* m_server prototype */
@@ -246,6 +246,10 @@ static void ms_server(struct Client *client_p, struct Client *source_p,
   int              hlined = 0;
   int              llined = 0;
   dlink_node	   *ptr;
+
+  /* Just to be sure -A1kmm. */
+  if (!IsServer(source_p))
+   return;
 
   if ( (name = parse_server_args(parv, parc, info, &hop)) == NULL )
     {
