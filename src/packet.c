@@ -18,7 +18,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: packet.c,v 7.47 2001/05/02 08:09:06 a1kmm Exp $
+ *   $Id: packet.c,v 7.48 2001/05/13 02:33:09 a1kmm Exp $
  */ 
 
 #include <stdio.h>
@@ -106,8 +106,6 @@ flood_recalc(int fd, void *data)
  /* This can happen in the event that the client detached. */
  if (!lclient_p)
   return;
- assert(client_p != NULL);
- assert(lclient_p != NULL);
  /* If we're a server, skip to the end. Realising here that this call is
   * cheap and it means that if a op is downgraded they still get considered
   * for anti-flood protection ..
