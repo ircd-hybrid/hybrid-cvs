@@ -1,3 +1,12 @@
+*** 20001116_4 by davidt
+- Fixed a small bug in m_message.c, where @@<chan>, @+<chan>, +@<chan>,
+  and ++<chan> would all be treated as +<chan>.  Now @@ and ++ are treated
+  as invalid, @+ and @+ are treated as +
+- Made sendto_channel_type's check for MODE_VOICE before MODE_CHANOP.
+- m_notice.c and m_privmsg.c are obsolete (merged into m_message.c),
+  and weren't being built anyway.
+
+
 *** 20001116_3 by davidt
 - Figured out how to create a .so without the .tmp file..
 
@@ -569,7 +578,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.553 2000/11/16 18:14:43 davidt Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.554 2000/11/16 21:50:36 davidt Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
