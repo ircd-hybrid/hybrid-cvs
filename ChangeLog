@@ -1,3 +1,12 @@
+*** 20001108_6 by adrian
+
+
+* Adding socket timeout information
+* remove FD list code, since its in a seperate file
+* cosmetic changes
+
+
+
 *** 20001108_5 by adrian
 
 
@@ -282,7 +291,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.515 2000/11/08 19:57:57 adrian Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.516 2000/11/08 20:36:23 adrian Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
