@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_cryptlink.c,v 1.13 2001/06/18 07:30:24 jdc Exp $
+ *   $Id: m_cryptlink.c,v 1.14 2001/06/18 09:20:40 jdc Exp $
  */
 
 /*
@@ -31,6 +31,8 @@
  */
 
 #include <assert.h>
+
+#include "rsa.h"
 
 #ifdef HAVE_LIBCRYPTO
 #include <openssl/rsa.h>

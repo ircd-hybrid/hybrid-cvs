@@ -19,9 +19,11 @@
  *
  *
  *
- * $Id: rsa.h,v 7.3 2001/06/08 22:31:36 kreator Exp $
+ * $Id: rsa.h,v 7.4 2001/06/18 09:20:33 jdc Exp $
  */
 
+void report_crypto_errors(void);
+void verify_private_key(void);
 int generate_challenge( char ** r_challenge, char ** r_response, char * key );
 int crypt_data(char **out, char *in, int len, char *key);
 int decrypt_data(char **out, char *in, int len, char *key);

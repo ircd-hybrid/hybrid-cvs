@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.140 2001/06/18 07:30:17 jdc Exp $
+ * $Id: s_conf.h,v 7.141 2001/06/18 09:20:34 jdc Exp $
  */
 
 #include "setup.h"
@@ -82,7 +82,6 @@ struct ConfItem
   int              dns_pending; /* 1 if dns query pending, 0 otherwise */
 #ifdef HAVE_LIBCRYPTO
   RSA *            rsa_public_key;
-  char *           rsa_private_key_filename;
   struct EncPreference *cipher_preference;
 #endif
 };
@@ -260,6 +259,7 @@ struct server_info
   char        *network_desc;
 #ifdef HAVE_LIBCRYPTO
   RSA         *rsa_private_key;
+  char *      rsa_private_key_filename;
 #endif
   int         hub;
   struct      irc_inaddr ip;
