@@ -41,26 +41,14 @@
  *   beware on merge.
  */
 
-#include <sys/cdefs.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <net/if.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <arpa/nameser.h>
-#include <netdb.h>
-#include <resolv.h>
-#include <string.h>
-#include <stddef.h>
-#include <errno.h>
-
+#include "stdinc.h"
 #include "setup.h"
 
 #include "irc_getnameinfo.h"
 #include "irc_string.h"
 
 
-/*  $Id: irc_getnameinfo.c,v 7.5 2003/05/06 05:41:05 db Exp $ */
+/*  $Id: irc_getnameinfo.c,v 7.6 2003/05/10 02:20:23 joshk Exp $ */
 
 static const struct afd {
   int a_af;

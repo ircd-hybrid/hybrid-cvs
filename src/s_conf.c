@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.378 2003/05/09 21:38:24 bill Exp $
+ *  $Id: s_conf.c,v 7.379 2003/05/10 02:20:23 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -360,7 +360,7 @@ report_configured_links(struct Client *source_p, unsigned int mask)
  * inputs	- pointer to client
  * output	- 0 = Success
  * 		  NOT_AUTHORIZED (-1) = Access denied (no I line match)
- * 		  SOCKET_ERROR   (-2) = Bad socket.
+ * 		  IRCD_SOCKET_ERROR   (-2) = Bad socket.
  * 		  I_LINE_FULL    (-3) = I-line is full
  *		  TOO_MANY       (-4) = Too many connections from hostname
  * 		  BANNED_CLIENT  (-5) = K-lined
@@ -384,7 +384,7 @@ check_client(struct Client *client_p, struct Client *source_p, char *username)
 
   switch (i)
   {
-    case SOCKET_ERROR:
+    case IRCD_SOCKET_ERROR:
       exit_client(client_p, source_p, &me, "Socket Error");
       break;
 

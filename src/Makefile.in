@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.122 2003/05/09 21:38:24 bill Exp $
+# $Id: Makefile.in,v 7.123 2003/05/10 02:20:23 joshk Exp $
 #
 CC		= @CC@
 INSTALL		= @INSTALL@
@@ -41,10 +41,10 @@ y.tab.o:	y.tab.c ircd_parser.y
 y.tab.c:	ircd_parser.y
 	${YACC} -d ircd_parser.y
 
-lex.yy.o:	lex.yy.c ircd_lexer.l
+lex.yy.o:	y.tab.c lex.yy.c ircd_lexer.l
 	${CC} ${CPPFLAGS} ${CFLAGS} -I. -c lex.yy.c
 
-lex.yy.c:	ircd_lexer.l y.tab.c
+lex.yy.c:	ircd_lexer.l
 	${LEX} ircd_lexer.l
 
 BASE_SRCS =                     \

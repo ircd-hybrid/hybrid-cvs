@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.8 2003/01/25 22:42:20 lusky Exp $
+# $Id: Makefile,v 1.9 2003/05/10 02:20:25 joshk Exp $
 
 LIBS = -lcrypto
 
@@ -14,4 +14,4 @@ respond: respond.c
 	gcc -g -O2 -Wall -o respond respond.c -ggdb ${INCLUDES} ${LDFLAGS} ${LIBS}
 
 clean:
-	rm -f respond *.core *~
+	rm -f respond *.core *~ *.exe

@@ -27,69 +27,13 @@
  * SUCH DAMAGE.
  */
 
-#include <sys/cdefs.h>
-#include <sys/types.h>
-#include <sys/param.h>
-#include <sys/socket.h>
-#include <net/if.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <arpa/nameser.h>
-#include <rpc/rpc.h>
-#include <rpcsvc/yp_prot.h>
-#include <rpcsvc/ypclnt.h>
-#include <netdb.h>
-#include <resolv.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stddef.h>
-#include <ctype.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <errno.h>
+#include "stdinc.h"
 
 #include <stdarg.h>
 #include "setup.h"
 #include "irc_getaddrinfo.h"
 
-#define SUCCESS 0
-#define ANY 0
-#define YES 1
-#define NO  0
-
-#undef EAI_ADDRFAMILY
-#undef EAI_AGAIN
-#undef EAI_BADFLAGS
-#undef EAI_FAIL
-#undef EAI_FAMILY
-#undef EAI_MEMORY
-#undef EAI_NODATA
-#undef EAI_NONAME
-#undef EAI_SERVICE
-#undef EAI_SOCKTYPE
-#undef EAI_SYSTEM
-#undef EAI_BADHINTS
-#undef EAI_PROTOCOL
-#undef EAI_MAX
-#undef AI_MASK
-
-#define EAI_ADDRFAMILY   1  /* address family for hostname not supported */
-#define EAI_AGAIN    2  /* temporary failure in name resolution */
-#define EAI_BADFLAGS     3  /* invalid value for ai_flags */
-#define EAI_FAIL     4  /* non-recoverable failure in name resolution */
-#define EAI_FAMILY   5  /* ai_family not supported */
-#define EAI_MEMORY   6  /* memory allocation failure */
-#define EAI_NODATA   7  /* no address associated with hostname */
-#define EAI_NONAME   8  /* hostname nor servname provided, or not known */
-#define EAI_SERVICE  9  /* servname not supported for ai_socktype */
-#define EAI_SOCKTYPE    10  /* ai_socktype not supported */
-#define EAI_SYSTEM  11  /* system error returned in errno */
-#define EAI_BADHINTS    12
-#define EAI_PROTOCOL    13
-#define EAI_MAX     14
-#define AI_MASK (AI_PASSIVE | AI_NUMERICHOST)
-
-/*  $Id: irc_getaddrinfo.c,v 7.5 2003/05/07 20:19:03 stu Exp $ */
+/*  $Id: irc_getaddrinfo.c,v 7.6 2003/05/10 02:20:23 joshk Exp $ */
 
 static const char in_addrany[]  = { 0, 0, 0, 0 };
 static const char in_loopback[] = { 127, 0, 0, 1 };

@@ -26,8 +26,12 @@
  * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  *
- *  $Id: irc_getnameinfo.h,v 1.1 2003/04/12 08:12:47 michael Exp $
+ *  $Id: irc_getnameinfo.h,v 1.2 2003/05/10 02:20:21 joshk Exp $
  */
 
 extern int irc_getnameinfo(const struct sockaddr *sa, socklen_t salen, char *host,
                            size_t hostlen, char *serv, size_t servlen, int flags);
+
+#ifndef IN_EXPERIMENTAL
+#define IN_EXPERIMENTAL(a)      ((((long int) (a)) & 0xe0000000) == 0xe0000000)
+#endif

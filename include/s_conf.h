@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.213 2003/05/09 21:38:13 bill Exp $
+ *  $Id: s_conf.h,v 7.214 2003/05/10 02:20:21 joshk Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -400,7 +400,7 @@ extern char *get_oper_name(struct Client *client_p);
 extern int yylex(void);
 
 #define NOT_AUTHORIZED  (-1)
-#define SOCKET_ERROR    (-2)
+#define IRCD_SOCKET_ERROR    (-2)
 #define I_LINE_FULL     (-3)
 #define TOO_MANY        (-4)
 #define BANNED_CLIENT   (-5)

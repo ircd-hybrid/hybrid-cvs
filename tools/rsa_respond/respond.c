@@ -17,9 +17,10 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- *  $Id: respond.c,v 1.9 2003/01/25 22:42:20 lusky Exp $
+ *  $Id: respond.c,v 1.10 2003/05/10 02:20:25 joshk Exp $
  */
 #include <stdio.h>
+#include <string.h>
 #include <openssl/err.h>
 #include <openssl/rsa.h>
 #include <openssl/pem.h>

@@ -2264,6 +2264,15 @@ echo "${ECHO_T}HP-UX found - Assuming HPUX C compiler cc" >&6
 	OSF*)
 		OSF=yes
 		;;
+	CYGWIN*)
+		CYGWIN=yes
+
+cat >>confdefs.h <<\_ACEOF
+#define CYGWIN 1
+_ACEOF
+
+		LIBS="$LIBS -lws2_32"
+		;;
 esac
 
 echo "$as_me:$LINENO: checking how to generate dependency info" >&5
@@ -6451,11 +6460,18 @@ if test "${enable_shared_modules+set}" = set; then
   ac_cv_shared_modules="no"
 else
 
+
   	if test "$ac_cv_profile" = "no"; then
 		ac_cv_shared_modules="yes"
 	else
-		echo "Shared modules and profiling don't work together."
-		echo "Disabling shared modules."
+		{ echo "$as_me:$LINENO: WARNING: disabling shared modules; cannot coexist with profile builds" >&5
+echo "$as_me: WARNING: disabling shared modules; cannot coexist with profile builds" >&2;}
+		ac_cv_shared_modules="no"
+	fi
+
+	if test "$CYGWIN" = yes; then
+		{ echo "$as_me:$LINENO: WARNING: disabling shared modules; Cygwin is at present unable to build them." >&5
+echo "$as_me: WARNING: disabling shared modules; Cygwin is at present unable to build them." >&2;}
 		ac_cv_shared_modules="no"
 	fi
 

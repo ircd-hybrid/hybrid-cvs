@@ -1,5 +1,9 @@
 /* include/setup.h.in.  Generated from configure.ac by autoheader.  */
 
+/* Cygwin requires a different set of headers to compile, so define to 1 if
+   compiling on Cygwin. */
+#undef CYGWIN
+
 /* Define if this ircd will be an EFnet server. */
 #undef EFNET
 

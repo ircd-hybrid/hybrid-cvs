@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.8 2003/05/08 21:42:48 joshk Exp $
+dnl $Id: configure.ac,v 7.9 2003/05/10 02:20:16 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -18,7 +18,7 @@ dnl Checks for programs.
 AC_PROG_CC
 AC_LANG(C)
 
-dnl Make sure autoconf doesnt interfere with cflags -jmallett
+dnl Make sure autoconf doesn't interfere with cflags -jmallett
 CFLAGS="$OLD_CFLAGS"
 
 dnl Check for various compilers. -jmallett
@@ -92,6 +92,11 @@ case `uname -s` in
 		;;
 	OSF*)
 		OSF=yes
+		;;
+	CYGWIN*)
+		CYGWIN=yes
+		AC_DEFINE(CYGWIN, 1, [Cygwin requires a different set of headers to compile, so define to 1 if compiling on Cygwin.])
+		LIBS="$LIBS -lws2_32"
 		;;
 esac
 
@@ -619,11 +624,17 @@ AC_ARG_ENABLE(shared-modules,
 AC_HELP_STRING([--disable-shared-modules],[ Disable shared modules.]),
 [ac_cv_shared_modules="no"],
 [
+	dnl Some sanity checks.
+	
   	if test "$ac_cv_profile" = "no"; then
 		ac_cv_shared_modules="yes"
 	else
-		echo "Shared modules and profiling don't work together."
-		echo "Disabling shared modules."
+		AC_MSG_WARN([disabling shared modules; cannot coexist with profile builds])
+		ac_cv_shared_modules="no"
+	fi
+
+	if test "$CYGWIN" = yes; then
+		AC_MSG_WARN([disabling shared modules; Cygwin is at present unable to build them.])
 		ac_cv_shared_modules="no"
 	fi
 ])

@@ -19,9 +19,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- * $Id: stdinc.h,v 1.4 2003/04/30 04:55:11 michael Exp $
+ * $Id: stdinc.h,v 1.5 2003/05/10 02:20:21 joshk Exp $
  *
  */
+
+#ifndef STDINC_H /* prevent multiple #includes */
+#define STDINC_H
  
 #ifndef IN_AUTOCONF     
 #include "config.h" /* Gotta pull in the autoconf stuff */
@@ -43,6 +46,11 @@
 # endif 
 #endif  
 
+#ifdef CYGWIN
+#include <w32api/winsock2.h>
+#include <w32api/ws2tcpip.h>
+#endif
+
 #ifdef HAVE_STDDEF_H
 #include <stddef.h>
 #endif
@@ -56,11 +64,17 @@
 #include <stdio.h>
 #include <time.h>
 #include <fcntl.h>
-#include <netdb.h>
 #include <stdarg.h>
 #include <signal.h>
 #include <dirent.h>
 #include <ctype.h>
+
+#ifndef CYGWIN
+#include <netdb.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#endif
 
 #ifdef VMS
 #define _XOPEN_SOURCE 1
@@ -73,21 +87,23 @@
 
 #include <sys/time.h>
 #include <sys/types.h>
+
+#ifdef CYGWIN
+typedef uint16_t in_port_t;
+#endif
+
 #include <sys/file.h>
 #ifdef HAVE_SYS_RESOURCE_H
 #include <sys/resource.h>
 #endif
 
 
-#include <sys/socket.h>
 #include <sys/stat.h>
 #include <sys/wait.h>
 
 #ifdef HAVE_SYS_PARAM_H
 #include <sys/param.h>
 #endif
-#include <netinet/in.h>
-#include <arpa/inet.h>
 
 #ifdef HAVE_ERRNO_H
 #include <errno.h>
@@ -97,4 +113,6 @@ extern int errno;
 
 #ifdef VMS
 #include <sys/ioctl.h>
+#endif
+
 #endif
