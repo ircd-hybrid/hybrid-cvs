@@ -1,3 +1,15 @@
+db          2002/09/09 22:25:52 EDT	(20020910_0)
+
+  Modified files:
+    src                  hostmask.c 
+  Log:
+  - conf->status not conf->flags for CONF_ILLEGAL
+  
+  Revision  Changes    Path
+  7.72      +4 -4      ircd-hybrid-7/src/hostmask.c
+
+
+
 db          2002/09/09 09:43:49 EDT	(20020909_2)
 
   Modified files:
@@ -31944,4 +31956,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4028 2002/09/09 13:43:52 db Exp $
+$Id: ChangeLog,v 7.4029 2002/09/10 02:25:55 db Exp $
