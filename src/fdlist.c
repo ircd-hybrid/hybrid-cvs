@@ -3,7 +3,7 @@
  * fdlist.c   maintain lists of certain important fds 
  *
  *
- * $Id: fdlist.c,v 7.7 2000/10/31 22:41:35 adrian Exp $
+ * $Id: fdlist.c,v 7.8 2000/11/02 18:30:02 adrian Exp $
  */
 #include "fdlist.h"
 #include "client.h"  /* struct Client */
@@ -127,5 +127,7 @@ fd_close(int fd)
 #endif
     memset(F, '\0', sizeof(fde_t));
     F->timeout = 0;
+    /* Unlike squid, we're actually closing the FD here! -- adrian */
+    close(fd);
 }
 
