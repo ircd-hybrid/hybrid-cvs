@@ -1,6 +1,6 @@
                        Oper Challenge and Response System
 
-   $Id: challenge.txt,v 1.6 2001/12/15 05:10:40 wcampbel Exp $
+   $Id: challenge.txt,v 1.7 2001/12/21 04:57:45 wcampbel Exp $
 
    Copyright (c) 2001 by ircd-hybrid team
 
@@ -16,6 +16,8 @@
                                   Requirements
 
    The ircd must be compiled with the --enable-openssl option to configure .
+   If configure detects a working openssl library, --enable-openssl is
+   implicitly enabled.
 
    oper {} blocks should not have normal passwords, but should contain the
    the name of the private key file. However it is possible for the user to
@@ -128,6 +130,14 @@
      Note: The '+' is needed
 
    If successful, the oper will obtain operator status on the server.
+
+   +------------------------------------------------------------------------+
+   |                                Warning                                 |
+   |------------------------------------------------------------------------|
+   | If the CHALLENGE fails, and you use ircii, EPIC, or BX, you may get    |
+   | disconnected with the client asking for the server password. This is a |
+   | client bug, not an ircd bug.                                           |
+   +------------------------------------------------------------------------+
 
      ----------------------------------------------------------------------
 
