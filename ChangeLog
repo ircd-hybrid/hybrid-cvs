@@ -1,3 +1,15 @@
+androsyn    2002/05/26 01:51:24 EDT	(20020526_1)
+
+  Modified files:
+    .                    ChangeLog 
+  Log:
+  Dumb ChangeLog script didn't understand branches...
+  
+  Revision  Changes    Path
+  7.3698    +1 -12     ircd-hybrid-7/ChangeLog
+
+
+
 
 androsyn    2002/05/25 05:05:56 EDT	(20020525_13)
 
@@ -27279,4 +27291,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3698 2002/05/26 05:51:18 androsyn Exp $
+$Id: ChangeLog,v 7.3699 2002/05/26 05:51:30 androsyn Exp $
