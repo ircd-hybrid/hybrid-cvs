@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_opme.c,v 1.4 2001/01/07 00:09:06 fl_ Exp $
+ *   $Id: m_opme.c,v 1.5 2001/01/07 01:01:05 fl_ Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -114,27 +114,7 @@ int mo_opme(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 				 me.name, parv[0], parv[1]);
 	  return 0;
   }
-  
-  if (!on_vchan)
-    {
-     sendto_all_local_opers(sptr, NULL, "OPME called for %s by %s",
-              parv[1], parv[0]);
-     sendto_ll_serv_butone(NULL, sptr, 1,
-            ":%s WALLOPS :OPME called for %s by %s",
-              me.name, parv[1], parv[0]);
-    }
-  else
-    {
-     sendto_all_local_opers(sptr, NULL, "OPME called for %s %s by %s",
-              parv[1], parv[2], parv[0]);
-     sendto_ll_serv_butone(NULL, sptr, 1,
-            ":%s WALLOPS :OPME called for %s %s by %s",
-              me.name, parv[1], parv[2], parv[0]);
-    }
 
-/*
-  change_channel_membership(chptr,&chptr->chanops, sptr);
-*/
   if ((ptr = find_user_link(&chptr->peons, sptr)))
 	  dlinkDelete(ptr, &chptr->peons);
   else if ((ptr = find_user_link(&chptr->voiced, sptr)))
@@ -143,9 +123,35 @@ int mo_opme(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 	  dlinkDelete(ptr, &chptr->halfops);
   else if ((ptr = find_user_link(&chptr->chanops, sptr)))
 	  dlinkDelete(ptr, &chptr->chanops);
+  else
+    {
+       /* Theyre not even on the channel, bail. */
+       return 0;      
+    }
    
   dlinkAdd(sptr, ptr, &chptr->chanops);
   
+  if (!on_vchan)
+    {
+     sendto_all_local_opers(sptr, NULL, "OPME called for [%s] by %s!%s@%s",
+              parv[1], sptr->name, sptr->username, sptr->host);
+     sendto_ll_serv_butone(NULL, sptr, 1,
+            ":%s WALLOPS :OPME called for [%s] by %s!%s@%s",
+              me.name, parv[1], sptr->name, sptr->username, sptr->host);
+     log(L_NOTICE, "OPME called for [%s] by %s!%s@%s",
+                   parv[1], sptr->name, sptr->username, sptr->host);
+    }
+  else
+    {
+     sendto_all_local_opers(sptr, NULL, "OPME called for [%s %s] by %s!%s@%s",
+               parv[1], parv[2], sptr->name, sptr->username, sptr->host);
+     sendto_ll_serv_butone(NULL, sptr, 1,
+            ":%s WALLOPS :OPME called for [%s %s] by %s!%s@%s",
+              me.name, parv[1], parv[2], sptr->name, sptr->username, sptr->host);
+     log(L_NOTICE, "OPME called for [%s %s] by %s!%s@%s",
+                   parv[1], parv[2], sptr->name, sptr->username, sptr->host);
+    }
+
   sendto_match_cap_servs(chptr, sptr, CAP_UID, ":%s PART %s",
 						 ID(sptr), parv[1]);
   sendto_match_nocap_servs(chptr, sptr, CAP_UID, ":%s PART %s",

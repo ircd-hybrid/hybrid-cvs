@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_clearchan.c,v 1.4 2001/01/06 13:42:05 db Exp $
+ *   $Id: m_clearchan.c,v 1.5 2001/01/07 01:01:05 fl_ Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -106,19 +106,23 @@ int mo_clearchan(struct Client *cptr, struct Client *sptr, int parc, char *parv[
 
   if (!on_vchan)
     {
-     sendto_all_local_opers(sptr, NULL, "CLEARCHAN called for %s by %s",
-              parv[1], parv[0]);
+     sendto_all_local_opers(sptr, NULL, "CLEARCHAN called for [%s] by %s!%s@%s",
+              parv[1], sptr->name, sptr->username, sptr->host);
      sendto_ll_serv_butone(NULL, sptr, 1,
-            ":%s WALLOPS :CLEARCHAN called for %s by %s",
-              me.name, parv[1], parv[0]);
+            ":%s WALLOPS :CLEARCHAN called for [%s] by %s!%s@%s",
+              me.name, parv[1], sptr->name, sptr->username, sptr->host);
+     log(L_NOTICE, "CLEARCHAN called for [%s] by %s!%s@%s",
+                   parv[1], sptr->name, sptr->username, sptr->host);
     }
   else
     {
-     sendto_all_local_opers(sptr, NULL, "CLEARCHAN called for %s %s by %s",
-              parv[1], parv[2], parv[0]);
+     sendto_all_local_opers(sptr, NULL, "CLEARCHAN called for [%s %s] by %s!%s@%s",
+              parv[1], parv[2], sptr->name, sptr->username, sptr->host);
      sendto_ll_serv_butone(NULL, sptr, 1,
-            ":%s WALLOPS :CLEARCHAN called for %s %s by %s",
-              me.name, parv[1], parv[2], parv[0]);
+            ":%s WALLOPS :CLEARCHAN called for [%s %s] by %s!%s@%s",
+              me.name, parv[1], parv[2], sptr->name, sptr->username, sptr->host);
+     log(L_NOTICE, "CLEARCHAN called for [%s %s] by %s!%s@%s",
+                   parv[1], parv[2], sptr->name, sptr->username, sptr->host);
     }
   
   add_user_to_channel(chptr, sptr, CHFL_CHANOP);
@@ -153,6 +157,8 @@ int mo_clearchan(struct Client *cptr, struct Client *sptr, int parc, char *parv[
 	     sptr->host,
 	     root_chptr->chname);
   channel_member_names(sptr, chptr, root_chptr->chname);
+
+
   return 0;
 }
 

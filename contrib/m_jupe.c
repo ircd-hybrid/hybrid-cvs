@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_jupe.c,v 1.5 2001/01/06 15:33:11 fl_ Exp $
+ *   $Id: m_jupe.c,v 1.6 2001/01/07 01:01:05 fl_ Exp $
  */
 
 /*
@@ -114,6 +114,8 @@ int mo_jupe(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 			":%s WALLOPS :JUPE for %s requested by %s!%s@%s: %s",
 			parv[0], parv[1], sptr->name, 
                         sptr->username, sptr->host, parv[2]);
+  log(L_NOTICE, "JUPE for %s requested by %s!%s@%s: %s",
+                parv[1], sptr->name, sptr->username, sptr->host, parv[2]);
 
   acptr= find_server(parv[1]);
 
