@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_poll.c,v 7.30 2001/01/19 21:56:41 adrian Exp $
+ *  $Id: s_bsd_poll.c,v 7.31 2001/01/20 10:43:39 toot Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -67,11 +67,9 @@
 #ifdef HAVE_SYS_PARAM_H
 #include <sys/param.h>    /* NOFILE */
 #endif
+
 #include <arpa/inet.h>
-
-#define __USE_XOPEN    /* XXXX had to add this define to make it compile -toby */
 #include <sys/poll.h>
-
 
 /* I hate linux -- adrian */
 #ifndef POLLRDNORM

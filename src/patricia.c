@@ -1,9 +1,7 @@
 /*
  * Yanked out of Net::Patricia by Aaron Sethman <androsyn@ratbox.org>
  *
- *
- *
- * $Id: patricia.c,v 7.1 2001/01/18 21:46:53 db Exp $
+ * $Id: patricia.c,v 7.2 2001/01/20 10:43:39 toot Exp $
  * Dave Plonka <plonka@doit.wisc.edu>
  *
  * This product includes software developed by the University of Michigan,
@@ -14,11 +12,11 @@
  * I renamed it to "patricia.c" since it's not an implementation of a general
  * radix trie.  Also I pulled in various requirements from "prefix.c" and
  * "demo.c" so that it could be used as a standalone API.
+ *
+ * This product includes software developed by the University of Michigan, Merit
+ * Network, Inc., and their contributors.
+ *
  */
-
-static char copyright[] =
-    "This product includes software developed by the University of Michigan, Merit"
-    "Network, Inc., and their contributors.";
 
 #include "patricia.h"
 
