@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.128 2003/06/13 21:18:02 joshk Exp $
+ *  $Id: modules.c,v 7.129 2003/06/13 21:32:02 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -328,7 +328,8 @@ load_one_module(char *path, int coremodule)
 
     if ((m_len = strlen(mpath->path) + strlen(path) + 1) > PATH_MAX)
     {
-      ilog (L_ERROR, "Path for %s/%s was truncated, not loading module from there");
+      ilog (L_ERROR, "Path for %s/%s was truncated, not loading module from there",
+             mpath->path, path);
       continue;
     }
     else
