@@ -20,14 +20,13 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 1.59 2001/04/04 15:22:36 androsyn Exp $
+ *  $Id: m_stats.c,v 1.60 2001/04/09 08:29:48 a1kmm Exp $
  */
 #include "tools.h"	 /* dlink_node/dlink_list */
 #include "handlers.h"    /* m_pass prototype */
 #include "class.h"       /* report_classes */
 #include "client.h"      /* Client */
 #include "common.h"      /* TRUE/FALSE */
-#include "dline_conf.h"  /* report_dlines */
 #include "irc_string.h"  /* strncpy_irc */
 #include "ircd.h"        /* me */
 #include "listener.h"    /* show_ports */
@@ -388,17 +387,17 @@ static void do_priv_stats(struct Client *source_p, char *name, char *target,
       break;
 
     case 'I' : case 'i' :
-      report_hostmask_conf_links(source_p, CONF_CLIENT);
+      report_Ilines(source_p);
       stats_spy(source_p,statchar);
       break;
 
     case 'K' :
-      report_hostmask_conf_links(source_p, CONF_KILL);
+      report_Klines(source_p);
       stats_spy(source_p,statchar);
       break;
 
     case 'k' :
-      report_temp_klines(source_p);
+      /* report_temp_klines(source_p); */
       stats_spy(source_p,statchar);
       break;
 

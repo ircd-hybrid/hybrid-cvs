@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_gline.c,v 1.12 2001/03/06 02:23:08 androsyn Exp $
+ *  $Id: s_gline.c,v 1.13 2001/04/09 08:29:56 a1kmm Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -28,7 +28,6 @@
 #include "client.h"
 #include "common.h"
 #include "config.h"
-#include "dline_conf.h"
 #include "irc_string.h"
 #include "ircd.h"
 #include "m_kline.h"

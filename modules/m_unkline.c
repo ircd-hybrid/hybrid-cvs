@@ -21,14 +21,13 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: m_unkline.c,v 1.28 2001/04/04 15:22:37 androsyn Exp $
+ *   $Id: m_unkline.c,v 1.29 2001/04/09 08:29:49 a1kmm Exp $
  */
 #include "tools.h"
 #include "handlers.h"
 #include "channel.h"
 #include "client.h"
 #include "common.h"
-#include "dline_conf.h"
 #include "fileio.h"
 #include "irc_string.h"
 #include "ircd.h"
@@ -448,8 +447,8 @@ static void mo_undline (struct Client *client_p, struct Client *source_p,
 
   char  *cidr;
   char  *p;
-  unsigned long ip_host;
-  unsigned long ip_mask;
+  struct irc_inaddr ip_host;
+  int ip_mask;
   int   error_on_write = NO;
   mode_t oldumask;
 
@@ -464,7 +463,7 @@ static void mo_undline (struct Client *client_p, struct Client *source_p,
 
   cidr = parv[1];
 
-  if (!is_address(cidr,&ip_host,&ip_mask))
+  if (parse_netmask(cidr,&ip_host,&ip_mask) == HM_HOST)
     {
       sendto_one(source_p, ":%s NOTICE %s :Invalid parameters",
                  me.name, parv[0]);

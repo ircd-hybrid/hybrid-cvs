@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.87 2001/04/02 00:06:13 toot Exp $
+ * $Id: ircd_lexer.l,v 1.88 2001/04/09 08:29:53 a1kmm Exp $
  */
 
 %option case-insensitive
@@ -37,6 +37,7 @@
 #include "s_conf.h"
 #include "y.tab.h"
 #include "memory.h"
+#include "hostmask.h"
 
 char *ip_string;
 
@@ -66,25 +67,7 @@ qstring		\"[^\"\n]*[\"\n]
 {ws}		;
 {comment}	;
 
-[0-9]+		{ yylval.number = atoi(yytext); return NUMBER; }
-([0-9]{1,3}\.){1,3}[0-9]{1,3}(\/[0-3][0-9])?  {
-
-	if(is_address(yytext,&yylval.ip_entry.ip,&yylval.ip_entry.ip_mask))
-          {
-            ip_string = yytext;
-	    return( IP_TYPE );
-          }
-	 }
-
-([0-9][a-f]{0,4}\:){1,7}[0-9][1-f]{0,4}(\/[0-9]+)?  {
-
-	if(is_ipv6_address(yytext,(unsigned char*)&yylval.ip_entry.ip,
-	   (unsigned char*)&yylval.ip_entry.ip_mask))
-          {
-            ip_string = yytext;
-	    return( IPV6_TYPE );
-          }
-	 }
+[0-9]+          { yylval.number = atoi(yytext); return NUMBER; }
 
 {qstring}	{ yylval.string = yytext+1;
 		  if(yylval.string[yyleng-2] != '"')

@@ -20,14 +20,13 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.158 2001/03/31 18:35:23 toot Exp $
+ *  $Id: client.c,v 7.159 2001/04/09 08:29:51 a1kmm Exp $
  */
 #include "tools.h"
 #include "client.h"
 #include "class.h"
 #include "channel.h"
 #include "common.h"
-#include "dline_conf.h"
 #include "event.h"
 #include "fdlist.h"
 #include "hash.h"
@@ -50,6 +49,7 @@
 #include "linebuf.h"
 #include "hash.h"
 #include "memory.h"
+#include "hostmask.h"
 
 #include <assert.h>
 #include <fcntl.h>
@@ -396,7 +396,8 @@ check_klines(void)
       if(IsMe(client_p))
 	continue;
 
-      if ((aconf = match_Dline(&client_p->localClient->ip)))
+      if ((aconf = find_dline(&client_p->localClient->ip,
+                              client_p->localClient->aftype)))
 	/* if there is a returned struct ConfItem then kill it */
 	{
 	  if(IsConfElined(aconf))

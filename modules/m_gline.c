@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_gline.c,v 1.44 2001/04/04 15:22:25 androsyn Exp $
+ *  $Id: m_gline.c,v 1.45 2001/04/09 08:29:47 a1kmm Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -29,7 +29,6 @@
 #include "client.h"
 #include "common.h"
 #include "config.h"
-#include "dline_conf.h"
 #include "irc_string.h"
 #include "ircd.h"
 #include "m_kline.h"
@@ -761,9 +760,8 @@ majority_gline(struct Client *source_p,
 
               if(find_is_glined(host, user))
                 return NO;
-
-              if(find_is_klined(host, user, 0))
-                return NO;
+              if (find_conf_by_address(host, NULL, CONF_KILL, 0, user))
+               return NO;
 
               log_gline(source_p,gline_pending_ptr,
                         oper_nick,oper_user,oper_host,oper_server,

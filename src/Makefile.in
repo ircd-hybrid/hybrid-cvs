@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.76 2001/04/01 18:30:34 ejb Exp $
+# $Id: Makefile.in,v 7.77 2001/04/09 08:29:51 a1kmm Exp $
 #
 CC		= @CC@
 INSTALL		= @INSTALL@
@@ -60,7 +60,6 @@ BASE_SRCS =                     \
   class.c                       \
   client.c                      \
   debug.c                       \
-  dline_conf.c                  \
   event.c                       \
   fdlist.c                      \
   fileio.c                      \
@@ -84,7 +83,6 @@ BASE_SRCS =                     \
   numeric.c                     \
   packet.c                      \
   parse.c                       \
-  patricia.c                    \
   rsa.c                         \
   restart.c                     \
   s_auth.c                      \

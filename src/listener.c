@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: listener.c,v 7.44 2001/03/06 02:22:59 androsyn Exp $
+ *  $Id: listener.c,v 7.45 2001/04/09 08:29:54 a1kmm Exp $
  */
 #include "config.h"
 #include "listener.h"
@@ -399,7 +399,7 @@ static void accept_connection(int pfd, void *data)
   /*
    * check conf for ip address access
    */
-  if (!conf_connect_allowed(&addr))
+  if (!conf_connect_allowed(&addr, sai.sins.sin.sin_family))
     {
       ServerStats->is_ref++;
       send(fd, "NOTICE DLINE :*** You have been D-lined\r\n", 41, 0);
