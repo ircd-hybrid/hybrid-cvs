@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.157 2001/01/23 00:42:48 ejb Exp $
+ *  $Id: s_conf.c,v 7.158 2001/01/23 04:49:00 wcampbel Exp $
  */
 
 #include <sys/types.h>
@@ -2666,10 +2666,10 @@ void yyerror(char *msg)
   strip_tabs(newlinebuf, (const unsigned char *)linebuf, strlen(linebuf));
 
   sendto_realops_flags(FLAGS_ALL,"%d: %s on line: %s",
-		       lineno, msg, newlinebuf);
+		       lineno + 1, msg, newlinebuf);
 
   log(L_WARN, "%d: %s on line: %s",
-      lineno, msg, newlinebuf);
+      lineno + 1, msg, newlinebuf);
 }
 
 int conf_fbgets(char *lbuf,int max_size, FBFILE *fb)
