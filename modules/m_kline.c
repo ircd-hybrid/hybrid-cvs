@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kline.c,v 1.42 2000/12/29 01:19:50 davidt Exp $
+ *   $Id: m_kline.c,v 1.43 2000/12/29 02:25:28 fl_ Exp $
  */
 #include "tools.h"
 #include "m_kline.h"
@@ -211,11 +211,13 @@ int mo_kline(struct Client *cptr,
 			   target_server,
 			   tkline_time, user, host, reason);
 
-      if(*target_server != '*' || target_server[1] != '\0')
+      /* If we are sending it somewhere that doesnt include us, we stop
+       * else we apply it locally too
+       */
+      if(!match(target_server,me.name))
 	return 0;
     }
 
-  /* We check if we've already got the kline, after sending it */
   if ( already_placed_kline(sptr, user, host, tkline_time, ip) )
     return 0;
 
@@ -272,6 +274,7 @@ int ms_kline(struct Client *cptr,
 			  parv[0], parv[1],
 			  parv[2], parv[3],
 			  parv[4], parv[5],parv[6]);
+
 
   if(!match(parv[2],me.name))
     return 0;
