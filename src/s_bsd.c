@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.182 2003/03/30 16:16:10 adx Exp $
+ *  $Id: s_bsd.c,v 7.183 2003/03/30 16:27:45 adx Exp $
  */
 
 #include "stdinc.h"
@@ -362,11 +362,14 @@ add_connection(struct Listener* listener, int fd)
   new_client = make_client(NULL);
   if (getpeername(fd, (struct sockaddr *)&SOCKADDR(irn), (socklen_t *)&len))
     {
+      dlink_node *m;
+
       report_error(L_ALL, "Failed in adding new connection %s :%s", 
 		   get_listener_name(listener), errno);
       ServerStats->is_ref++;
       fd_close(fd);
-      free_client(new_client);
+      SetDead(new_client);
+      exit_client(new_client, new_client, &me, "Error adding new connection");
       return;
     }
 
