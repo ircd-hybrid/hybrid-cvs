@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/modules
 #
-# $Id: Makefile.in,v 1.64 2002/01/04 15:01:54 leeh Exp $
+# $Id: Makefile.in,v 1.65 2002/01/27 19:05:06 leeh Exp $
 #
 CC		= @CC@
 AR		= @AR@
@@ -178,14 +178,14 @@ install_shared_modules: install-mkdirs
 depend:
 	grep "Id:" .depend > .depend.out
 	${MV} .depend.out .depend
-	${MKDEP} ${CPPFLAGS} ${SRCS} >> .depend
+	${MKDEP} ${CPPFLAGS} ${ALL_SRCS} >> .depend
 
 clean:
 	${RM} -f *.so *~ *.o *.a
 	${RM} -f core/*.so core/*~ core/*.o
 
 lint:
-	lint -aacgprxhH ${CFLAGS} $(SRCS) >../lint.out
+	lint -aacgprxhH ${CFLAGS} $(ALL_SRCS) >../lint.out
 
 distclean: clean
 	${RM} -f Makefile
