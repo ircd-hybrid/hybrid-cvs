@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.50 2000/12/23 05:05:50 toot Exp $
+ * $Id: s_conf.h,v 7.51 2000/12/23 17:02:48 ejb Exp $
  */
 
 #ifndef INCLUDED_config_h
@@ -176,6 +176,10 @@ typedef struct
   char* network_name;
   char* network_desc;
 
+	char *fname_operlog;
+	char *fname_userlog;
+	char *fname_foperlog;
+	
   MessageFile helpfile;
   MessageFile motd;
   MessageFile opermotd;

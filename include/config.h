@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.61 2000/12/23 01:11:45 db Exp $
+ * $Id: config.h,v 7.62 2000/12/23 17:02:47 ejb Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -121,18 +121,6 @@
 #define TS_MAX_DELTA_DEFAULT  600
 #define TS_WARN_DELTA_MIN     10
 #define TS_WARN_DELTA_DEFAULT 30
-
-/* FNAME_USERLOG and FNAME_OPERLOG - logs of local USERS and OPERS
- * Define this filename to maintain a list of persons who log
- * into this server. Logging will stop when the file does not exist.
- * Logging will be disable also if you do not define this.
- * FNAME_USERLOG just logs user connections, FNAME_OPERLOG logs every
- * successful use of /oper.  These are either full paths or files within DPATH.
- *
- * These need to be defined if you want to use SYSLOG logging, too.
- */
-#define FNAME_USERLOG ETCPATH "/users"
-#define FNAME_OPERLOG ETCPATH "/opers"
 
 /* NETWORK_NAME_DEFAULT and NETWORK_DESC_DEFAULT - these are used
  * instead of a servers name/description if you enable server hiding.
