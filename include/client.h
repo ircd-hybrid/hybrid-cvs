@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.84 2001/01/21 19:21:29 db Exp $
+ * $Id: client.h,v 7.85 2001/01/22 19:43:14 db Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -544,10 +544,10 @@ extern struct Client* next_client_double(struct Client* next,
 #define MAX_ALLOW 20
 
 extern int accept_message(struct Client *source, struct Client *target);
-extern int add_to_accept(struct Client *source, struct Client *target);
-extern int del_from_accept(struct Client *source, struct Client *target);
-extern int del_all_accepts(struct Client *cptr);
-extern int list_all_accepts(struct Client *sptr);
+extern void add_to_accept(struct Client *source, struct Client *target);
+extern void del_from_accept(struct Client *source, struct Client *target);
+extern void del_all_accepts(struct Client *cptr);
+extern void list_all_accepts(struct Client *sptr);
 
 extern void free_exited_clients(void);
 extern int set_initial_nick(struct Client *cptr, struct Client *sptr,
