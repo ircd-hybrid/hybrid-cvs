@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_admin.c,v 7.1 1999/12/30 20:35:47 db Exp $
+ *   $Id: m_admin.c,v 7.2 2000/01/06 03:31:33 db Exp $
  */
 #include "m_commands.h"
 #include "client.h"
@@ -131,6 +131,14 @@ int m_admin(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   else
     sendto_one(sptr, form_str(ERR_NOADMININFO),
                me.name, parv[0], me.name);
+
+  if(ConfigFileEntry.hub)
+    sendto_one(sptr, ":%s NOTICE %s :Server is a HUB",
+                     me.name,parv[0]);
+  else
+    sendto_one(sptr, ":%s NOTICE %s :Server is a LEAF",
+                     me.name,parv[0]);
+
   return 0;
 }
 

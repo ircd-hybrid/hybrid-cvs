@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.30 2000/01/06 01:31:12 db Exp $
+ *  $Id: s_conf.c,v 7.31 2000/01/06 03:31:33 db Exp $
  */
 #include "s_conf.h"
 #include "channel.h"
@@ -2115,6 +2115,12 @@ static struct ConfItem* oldParseOneLine(char* line,struct ConfItem* aconf,
       aconf->status = CONF_ME;
       add_host_user_port_fields(aconf,host_field,user_field,port_field);
       conf_add_me(aconf);
+      ConfigFileEntry.hub = 0;
+      if(port_field)
+        {
+          if(*port_field == '1')
+            ConfigFileEntry.hub = 1;
+	}
       break;
 
     case 'n': /* connect in case of lp failures     */
