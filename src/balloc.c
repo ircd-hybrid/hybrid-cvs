@@ -8,7 +8,7 @@
  * Owner:  Wohali (Joan Touzet)
  *
  *
- * $Id: balloc.c,v 7.15 2001/10/04 20:53:29 androsyn Exp $
+ * $Id: balloc.c,v 7.16 2001/10/06 02:50:46 androsyn Exp $
  */
 
 #define WE_ARE_MEMORY_C
@@ -127,7 +127,7 @@ static int newblock(BlockHeap * bh)
         void *data;
         newblk = (void *)offset;
         newblk->block = b;
-        data = (unsigned char *)offset + sizeof(MemBlock);
+        data = offset + sizeof(MemBlock);
         newblk->block = b;
         newblk->data = data;
         dlinkAdd(data, &newblk->self, &b->free_list);
@@ -276,7 +276,7 @@ int _BlockHeapFree(BlockHeap * bh, void *ptr)
         return 1;
     }
 
-    memblock = (struct MemBlock *)ptr - sizeof(MemBlock);
+    memblock = ptr - sizeof(MemBlock);
     assert(memblock->block != NULL);
     /* XXX: Should check that the block is really our block */
     block = memblock->block;
