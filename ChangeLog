@@ -1,3 +1,10 @@
+*** 20001108_4 by adrian
+
+
+Enforce FD limits in file_open()
+
+
+
 *** 20001108_3 by adrian
 
 
@@ -267,7 +274,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.513 2000/11/08 19:54:10 adrian Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.514 2000/11/08 19:55:33 adrian Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
