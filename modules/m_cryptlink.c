@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_cryptlink.c,v 1.10 2001/05/29 22:25:59 davidt Exp $
+ *   $Id: m_cryptlink.c,v 1.11 2001/06/03 14:17:42 davidt Exp $
  */
 
 /*
@@ -218,6 +218,9 @@ static void mr_cryptauth(struct Client *client_p, struct Client *source_p,
       return;
     }
 
+  /* set hopcount */
+  client_p->hopcount = 1;
+  
   SetCryptIn(client_p);
   ClearWaitAuth(client_p);
   server_estab(client_p);
