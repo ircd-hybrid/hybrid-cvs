@@ -1,3 +1,20 @@
+db          2002/12/17 23:44:36 EST	(20021218_0)
+
+  Modified files:
+    src                  client.c 
+  Log:
+  - removed a redundant free_client(), this was placed just before
+    exit_one_client() which caused localClient part to go to NULL.
+    This confused MyConnect() etc. so clients were not being removed
+    from channel lists properly. The free_client() call is being called
+    after exit_client() anyway.
+  - tidied up a bit the formatting in one place...
+  
+  Revision  Changes    Path
+  7.308     +7 -8      ircd-hybrid-7/src/client.c
+
+
+
 androsyn    2002/12/17 07:35:09 EST	(20021217_0)
 
   Modified files:
@@ -33633,4 +33650,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4142 2002/12/17 12:35:12 androsyn Exp $
+$Id: ChangeLog,v 7.4143 2002/12/18 04:44:38 db Exp $
