@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: irc_string.h,v 7.16 2001/03/14 21:50:04 androsyn Exp $
+ *   $Id: irc_string.h,v 7.17 2001/06/13 04:48:07 androsyn Exp $
  */
 #ifndef INCLUDED_irc_string_h
 #define INCLUDED_irc_string_h
@@ -106,7 +106,9 @@ char* clean_string(char* dest, const unsigned char* src, size_t len);
  */
 char *strip_tabs(char *dest, const unsigned char *src, size_t len);
 
+#ifdef DEAD_CODE 
 unsigned long textip_to_ul(const char *ip);
+#endif
 const char* myctime(time_t);
 char*       strtoken(char** save, char* str, char* fs);
 
