@@ -1,21 +1,15 @@
                        Oper Challenge and Response System
 
-  W. Campbell
-
-   wcampbel@botbay.net
-
-   $Id: challenge.txt,v 1.5 2001/11/05 01:02:50 wcampbel Exp $
+   $Id: challenge.txt,v 1.6 2001/12/15 05:10:40 wcampbel Exp $
 
    Copyright (c) 2001 by ircd-hybrid team
 
-   $Date: 2001/11/05 01:02:50 $
+     ----------------------------------------------------------------------
 
    In an effort to reduce the damage caused to a network by a hacked O-line,
    Hybrid supports an OpenSSL based challenge-response system. This new
    system allows the admin to remove all oper block passwords from the conf
    file. Authentication is done through a public/private key.
-
-     ----------------------------------------------------------------------
 
      ----------------------------------------------------------------------
 
