@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: linebuf.c,v 7.84 2002/07/14 22:00:45 db Exp $
+ *  $Id: linebuf.c,v 7.85 2002/07/14 23:41:00 db Exp $
  */
 
 #include "stdinc.h"
@@ -591,19 +591,21 @@ linebuf_putmsg(buf_head_t *bufhead, const char *format, va_list *va_args,
 	{
 	  len--;
 	}
-      bufline->buf[len++] = '\r';
-      bufline->buf[len++] = '\n';
-      bufline->buf[len++] = '\0'; 
+      bufline->buf[++len] = '\r';
+      bufline->buf[++len] = '\n';
+      bufline->buf[++len] = '\0'; 
 
       bufline->len  = len;
       bufhead->len += len;
     }
-  else
+  elsej
     {
       bufline->buf[0] = '\r';
       bufline->buf[1] = '\n';
       bufline->buf[2] = '\0'; 
-      bufline->len  = 0;
+
+      bufline->len  = 2;
+      bufhead->len += 2;
     }
 
   bufline->terminated = 1;
