@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.3 1999/08/06 02:43:21 db Exp $
+ *  $Id: s_user.c,v 7.4 1999/08/06 03:17:50 db Exp $
  */
 #include "s_user.h"
 #include "channel.h"
@@ -1865,16 +1865,21 @@ int user_mode(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
         case 'o':
           if(what == MODE_ADD)
             {
-              if(IsServer(cptr))
+              if(IsServer(cptr) && !IsOper(sptr))
                 {
                   ++Count.oper;
-
                   SetOper(sptr);
-                  sptr->umodes |= FLAGS_OPER;
                 }
             }
           else
             {
+	      /* Only decrement the oper counts if an oper to begin with
+               * found by Pat Szuta, Perly , perly@xnet.com 
+               */
+
+              if(!IsAnOper(sptr))
+                break;
+
               sptr->umodes &= ~(FLAGS_OPER|FLAGS_LOCOP);
 
               --Count.oper;
