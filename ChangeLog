@@ -1,3 +1,15 @@
+androsyn    2002/10/19 18:35:21 EDT	(20021019_1)
+
+  Modified files:
+    src                  s_conf.c 
+  Log:
+  Make fallback to ip6.int support the default
+  
+  Revision  Changes    Path
+  7.330     +5 -2      ircd-hybrid-7/src/s_conf.c
+
+
+
 androsyn    2002/10/19 18:32:53 EDT	(20021019_0)
 
   Modified files:
@@ -32564,4 +32576,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4069 2002/10/19 22:32:56 androsyn Exp $
+$Id: ChangeLog,v 7.4070 2002/10/19 22:35:23 androsyn Exp $
