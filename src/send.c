@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.225.2.2 2003/04/03 01:29:04 lusky Exp $
+ *  $Id: send.c,v 7.225.2.3 2004/02/10 04:28:40 ievil Exp $
  */
 
 #include "stdinc.h"
@@ -1117,6 +1117,64 @@ sendto_match_butone(struct Client *one, struct Client *from,
 
 } /* sendto_match_butone() */
 
+
+/* sendto_match_servs()
+ *
+ * inputs       - source client
+ *              - mask to send to
+ *              - capab needed
+ *              - data
+ * outputs      - none
+ * side effects - data sent to servers matching with capab
+ */
+
+void
+sendto_match_servs(struct Client *source_p, const char *mask, int cap,
+                   const char *pattern, ...)
+{
+  va_list args;
+  struct Client *target_p;
+  dlink_node *ptr;
+  /* char buffer[BUFSIZE]; replaced by nbuf  */ 
+  char nbuf[IRCD_BUFSIZE];     /* is this really safe?? it's set to *2 other places*/
+  int found = 0;
+
+  va_start(args, pattern); 
+  send_format(nbuf, pattern, args);
+  va_end(args);
+
+  current_serial++;
+
+  DLINK_FOREACH(ptr, global_serv_list.head)
+  {
+    target_p = ptr->data;
+
+    /* Do not attempt to send to ourselves, or the source */
+    if (IsMe(target_p) || target_p->from == source_p->from)
+      continue;
+
+    if (target_p->from->serial == current_serial)
+      continue;
+
+    if (match(mask, target_p->name))
+    {
+      /*
+       * if we set the serial here, then we'll never do a
+       * match() again, if !IsCapable()
+       */
+      target_p->from->serial = current_serial;
+      found++;
+
+      if (!IsCapable(target_p->from, cap))
+        continue;
+
+      sendto_anywhere(target_p, source_p, "%s", nbuf);
+    }
+  }
+  if (!found && IsClient(source_p) && !match(mask, me.name))
+    sendto_one(source_p, form_str(ERR_NOSUCHSERVER),
+               me.name, source_p->name, mask);
+} /* sendto_match_servs() */
 
 /*
  * sendto_anywhere

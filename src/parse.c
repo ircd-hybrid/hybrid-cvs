@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.146.2.2 2003/06/10 02:16:54 bill Exp $
+ *  $Id: parse.c,v 7.146.2.3 2004/02/10 04:28:39 ievil Exp $
  */
 
 #include "stdinc.h"
@@ -60,7 +60,7 @@ static  int    handle_command(struct Message *, struct Client *,
 
 static int hash(char *p);
 
-static struct Message *hash_parse(char *);
+struct Message *hash_parse(char *);
 
 struct MessageHash *msg_hash_table[MAX_MSG_HASH];
 
@@ -498,7 +498,7 @@ mod_del_cmd(struct Message *msg)
  * output	- pointer to struct Message
  * side effects - 
  */
-static struct Message *
+struct Message *
 hash_parse(char *cmd)
 {
   struct MessageHash *ptr;

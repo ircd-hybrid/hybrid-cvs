@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.h,v 7.66.4.3 2003/06/10 02:16:52 bill Exp $
+ *  $Id: s_serv.h,v 7.66.4.4 2004/02/10 04:28:35 ievil Exp $
  */
 
 #ifndef INCLUDED_serv_h
@@ -74,12 +74,13 @@ struct Capability
 
 #define CAP_TBURST	0x00040000   /* supports TBURST */
 #define CAP_PARA	0x00080000   /* supports invite broadcasting for +p */
+#define CAP_ENCAP	0x00100000
 
 #define CAP_MASK        (CAP_QS  | CAP_EX   | CAP_CHW  | \
                          CAP_IE  | CAP_EOB  | CAP_KLN  | \
                          CAP_GLN | CAP_HOPS | CAP_AOPS | \
                          CAP_UID | CAP_ZIP  | CAP_ENC | \
-                         CAP_KNOCK  | CAP_PARA)
+                         CAP_KNOCK  | CAP_PARA | CAP_ENCAP )
 
 #ifdef HAVE_LIBZ
 #define CAP_ZIP_SUPPORTED       CAP_ZIP

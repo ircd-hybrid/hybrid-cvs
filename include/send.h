@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.h,v 7.61 2003/02/14 23:01:49 db Exp $
+ *  $Id: send.h,v 7.61.2.1 2004/02/10 04:28:35 ievil Exp $
  */
 
 #ifndef INCLUDED_send_h
@@ -105,6 +105,9 @@ extern void
 kill_client_ll_serv_butone(struct Client *one, struct Client *source_p,
                            const char *pattern, ...) AFP(3, 4);
 
+
+extern void 
+sendto_match_servs(struct Client *, const char *, int, const char *, ...);
 
 #define ALL_MEMBERS  0
 #define NON_CHANOPS  1

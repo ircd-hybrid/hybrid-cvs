@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_unkline.c,v 1.51.2.1 2003/10/26 02:08:16 db Exp $
+ *  $Id: m_unkline.c,v 1.51.2.2 2004/02/10 04:28:37 ievil Exp $
  */
 
 #include "stdinc.h"
@@ -75,7 +75,7 @@ _moddeinit(void)
   mod_del_cmd(&msgtabs[1]);
   mod_del_cmd(&msgtabs[2]);
 }
-const char *_version = "$Revision: 1.51.2.1 $";
+const char *_version = "$Revision: 1.51.2.2 $";
 #endif
 
 static int flush_write(struct Client *, FBFILE *in, FBFILE *out,
@@ -186,7 +186,7 @@ mo_unkline (struct Client *client_p,struct Client *source_p,
 static void
 ms_unkline(struct Client *client_p, struct Client *source_p, int parc, char *parv[])
 {
-  const char *kuser, *khost;
+  char *kuser, *khost;
 
   if (parc != 4)
     return;
@@ -201,7 +201,7 @@ ms_unkline(struct Client *client_p, struct Client *source_p, int parc, char *par
   if (!IsPerson(source_p))
     return;
 
-  if (find_u_conf(source_p->user->server,
+  if (find_u_conf((char *)source_p->user->server,
 		  source_p->username, source_p->host))
   {
     if (remove_tkline_match(khost, kuser))

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.h,v 7.15.2.2 2003/06/10 02:16:52 bill Exp $
+ *  $Id: parse.h,v 7.15.2.3 2004/02/10 04:28:35 ievil Exp $
  */
 
 #ifndef INCLUDED_parse_h_h
@@ -38,6 +38,7 @@ struct MessageHash
 #define MAX_MSG_HASH  387
 
 extern  void           parse (struct Client *, char *, char *);
+extern  struct Message *hash_parse(char *);
 extern  void           clear_hash_parse (void);
 extern  void           mod_add_cmd(struct Message *msg);
 extern  void           mod_del_cmd(struct Message *msg);

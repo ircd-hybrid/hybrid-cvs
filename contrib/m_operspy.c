@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.13.2.2 2003/06/10 21:21:47 bill Exp $
+ *   $Id: m_operspy.c,v 1.13.2.3 2004/02/10 04:28:33 ievil Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -58,6 +58,12 @@
 /* enable this to send incoming operspy usage to active +y (FLAGS_SPY) opers */
 #define OPERSPY_NOTICE
 
+/* enable per-oper logging of OPERSPY functions */
+#define OPERSPY_LOG
+
+/* enable this to send incoming operspy usage to active +y (FLAGS_SPY) opers */
+#define OPERSPY_NOTICE
+
 /* enable OPERSPY version of LIST */
 #define OPERSPY_LIST
 
@@ -82,6 +88,8 @@
  * The commands we will add
  */
 static void m_operspy(struct Client *client_p, struct Client *source_p,
+                       int parc, char *parv[]);
+static void ms_operspy(struct Client *client_p, struct Client *source_p,
                        int parc, char *parv[]);
 static void mo_operspy(struct Client *client_p, struct Client *source_p,
                        int parc, char *parv[]);
@@ -133,7 +141,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.13.2.2 $";
+const char *_version = "$Revision: 1.13.2.3 $";
 #endif
 
 #ifdef OPERSPY_LOG
@@ -158,6 +166,37 @@ static void m_operspy(struct Client *client_p, struct Client *source_p,
   sendto_one(client_p, ":%s %d %s %s :Unknown command",
              me.name, ERR_UNKNOWNCOMMAND, client_p->name,
              operspy);
+}
+
+static void
+ms_operspy(struct Client *client_p, struct Client *source_p,
+           int parc, char *parv[])
+{
+#ifdef OPERSPY_LOGFILE
+  FBFILE *log_fb;
+  char logfile[BUFSIZE], linebuf[BUFSIZE];
+
+  ircsprintf(logfile, "%s/operspy.remote.log", LOGPATH);
+  if ((log_fb = fbopen(logfile, "a")) == NULL)
+  {
+#ifdef OPERSPY_NOTICE
+    sendto_realops_flags(FLAGS_ADMIN, L_ALL, "Failed to open remote operspy logfile");
+#endif
+    return;
+  }
+
+  ircsprintf(linebuf, "[%s] %s -- OPERSPY %s :%s\n",
+             smalldate(CurrentTime),
+             get_oper_name(source_p),
+             parv[1], parv[2]);
+  fbputs(linebuf, log_fb);
+  fbclose(log_fb);
+#endif
+
+#ifdef OPERSPY_NOTICE
+  sendto_realops_flags(FLAGS_SPY, L_ALL, "Received OPERSPY message from %s -- %s :%s",
+                       get_oper_name(source_p), parv[1], parv[2]);
+#endif
 }
 
 /*
@@ -803,16 +842,13 @@ do_who_list(struct Client *source_p, struct Channel *chptr,
 static void
 operspy_log(struct Client *source_p, const char *command, const char *target)
 {
-#ifdef OPERSPY_LOGFILE
   FBFILE *operspy_fb;
   dlink_node *cnode;
   const char *opername = source_p->name;
   char linebuf[BUFSIZE], logfile[BUFSIZE];
-#endif
 
   assert(source_p != NULL);
 
-#ifdef OPERSPY_LOGFILE
   if (IsOper(source_p) && MyClient(source_p))
   {
     DLINK_FOREACH(cnode, source_p->localClient->confs.head)
@@ -821,24 +857,20 @@ operspy_log(struct Client *source_p, const char *command, const char *target)
         opername = ((struct ConfItem *)cnode->data)->name;
     }
   }
-  else if (!MyClient(source_p))
-    opername = "remote";
 
   ircsprintf(logfile, "%s/operspy.%s.log", LOGPATH, opername);
   if ((operspy_fb = fbopen(logfile, "a")) == NULL)
     return;
 
-  ircsprintf(linebuf, "[%s] OPERSPY %s %s %s\n",
+  ircsprintf(linebuf, "[%s] %s!%s@%s -- OPERSPY %s %s\n",
              smalldate(CurrentTime),
              get_oper_name(source_p),
              command, target);
   fbputs(linebuf, operspy_fb);
   fbclose(operspy_fb);
-#endif
 
-#ifdef OPERSPY_NOTICE
-  sendto_realops_flags(FLAGS_SPY, L_ALL, "OPERSPY %s %s %s",
-                       get_oper_name(source_p), command, target);
-#endif
+  sendto_match_servs(source_p, "*", CAP_ENCAP, "ENCAP * OPERSPY %s :%s",
+                     command, target);
 }
 #endif /* OPERSPY_LOG */
+
