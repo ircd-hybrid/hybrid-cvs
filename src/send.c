@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.235 2003/04/19 10:21:48 michael Exp $
+ *  $Id: send.c,v 7.236 2003/04/19 12:03:56 adx Exp $
  */
 
 #include "stdinc.h"
@@ -185,7 +185,7 @@ _send_linebuf(struct Client *to, buf_head_t *linebuf)
   to->localClient->sendM += 1;
   me.localClient->sendM += 1;
 
-  send_queued_write(to->localClient->fd, to);
+  send_queued_write(to);
 }
 
 /*
@@ -246,13 +246,35 @@ send_linebuf_remote(struct Client *to, struct Client *from,
 }
 
 /*
+ ** sendq_unblocked
+ **      Called when a socket is ready for writing.
+ */
+static void
+sendq_unblocked(int fd, struct Client *client_p)
+{
+  ClearSendqBlocked(client_p);
+  send_queued_write(client_p);
+}
+
+/*
+ ** slinkq_unblocked
+ **      Called when a server control socket is ready for writing.
+ */
+static void
+slinkq_unblocked(int fd, struct Client *client_p)
+{
+  ClearSlinkqBlocked(client_p);
+  send_queued_slink_write(client_p);
+}
+
+/*
  ** send_queued_write
  **      This is called when there is a chance that some output would
  **      be possible. This attempts to empty the send queue as far as
  **      possible, and then if any data is left, a write is rescheduled.
  */
 void
-send_queued_write(int fd, struct Client *to)
+send_queued_write(struct Client *to)
 {
   int retlen;
 #ifndef NDEBUG
@@ -274,6 +296,9 @@ send_queued_write(int fd, struct Client *to)
     return;
   } /* if (IsDead(to)) */
 #endif
+
+  if (IsSendqBlocked(to))
+    return;  /* no use in calling send() now */
 
   /* Next, lets try to write some data */
 #ifndef NDEBUG
@@ -319,12 +344,15 @@ send_queued_write(int fd, struct Client *to)
       dead_link_on_write(to, errno);
       return;
     }
-  }
 
-  /* Finally, if we have any more data, reschedule a write */
-  if (linebuf_len(&to->localClient->buf_sendq))
-    comm_setselect(fd, FDLIST_IDLECLIENT, COMM_SELECT_WRITE,
-                   (PF *)send_queued_write, (void *)to, 0);
+    /* Finally, if we have any more data, reschedule a write */
+    if (linebuf_len(&to->localClient->buf_sendq))
+    {
+      SetSendqBlocked(to);
+      comm_setselect(to->localClient->fd, FDLIST_IDLECLIENT, COMM_SELECT_WRITE,
+                     (PF *)sendq_unblocked, (void *)to, 0);
+    }
+  }
 }
 
 /*
@@ -334,7 +362,7 @@ send_queued_write(int fd, struct Client *to)
  **      possible, and then if any data is left, a write is rescheduled.
  */
 void
-send_queued_slink_write(int fd, struct Client *to)
+send_queued_slink_write(struct Client *to)
 {
   int retlen;
 
@@ -352,6 +380,9 @@ send_queued_slink_write(int fd, struct Client *to)
     return;
   } /* if (IsDead(to)) */
 #endif
+
+  if (IsSlinkqBlocked(to))
+    return;
 
   /* Next, lets try to write some data */
   if (to->localClient->slinkq)
@@ -388,13 +419,16 @@ send_queued_slink_write(int fd, struct Client *to)
         to->localClient->slinkq = NULL;
       }
     }
-  }
 
-  /* Finally, if we have any more data, reschedule a write */
-  if (to->localClient->slinkq_len)
-    comm_setselect(to->localClient->ctrlfd, FDLIST_IDLECLIENT,
-                   COMM_SELECT_WRITE, (PF *)send_queued_slink_write,
-                   (void *)to, 0);
+    /* Finally, if we have any more data, reschedule a write */
+    if (to->localClient->slinkq_len)
+    {
+      SetSlinkqBlocked(to);
+      comm_setselect(to->localClient->ctrlfd, FDLIST_IDLECLIENT,
+                     COMM_SELECT_WRITE, (PF *)slinkq_unblocked,
+                     (void *)to, 0);
+    }
+  }
 }
 
 /* sendto_one()

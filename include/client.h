@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.179 2003/04/16 19:56:34 michael Exp $
+ *  $Id: client.h,v 7.180 2003/04/19 12:03:54 adx Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -408,8 +408,8 @@ struct LocalUser
 #define FLAGS_FLOODDONE   0x00800000 /* Flood grace period has been ended.       */
 #define FLAGS_EOB         0x01000000 /* server has received EOB                  */
 #define FLAGS_HIDDEN      0x02000000
-/*                        0x04000000  */
-/*                        0x08000000  */
+#define FLAGS_BLOCKED     0x04000000 /* must wait for COMM_SELECT_WRITE */
+#define FLAGS_SBLOCKED    0x08000000 /* slinkq is blocked */
 /*                        0x10000000  */
 /*                        0x20000000  */
 /*                        0x40000000  */
@@ -568,6 +568,12 @@ struct LocalUser
 #define IsHidden(x)             ((x)->flags &  FLAGS_HIDDEN)
 #define SetHidden(x)            ((x)->flags |= FLAGS_HIDDEN)
 
+#define IsSendqBlocked(x)       ((x)->flags &  FLAGS_BLOCKED)
+#define SetSendqBlocked(x)      ((x)->flags |= FLAGS_BLOCKED)
+#define ClearSendqBlocked(x)    ((x)->flags &= ~FLAGS_BLOCKED)
+#define IsSlinkqBlocked(x)      ((x)->flags &  FLAGS_SBLOCKED)
+#define SetSlinkqBlocked(x)     ((x)->flags |= FLAGS_SBLOCKED)
+#define ClearSlinkqBlocked(x)   ((x)->flags &= ~FLAGS_SBLOCKED)
 
 /* operflags macros */
 #define ClearOperFlags(x)	((x)->localClient->operflags = 0)

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.189 2003/04/15 10:26:36 stu Exp $
+ *  $Id: s_bsd.c,v 7.190 2003/04/19 12:03:56 adx Exp $
  */
 
 #include "stdinc.h"
@@ -329,7 +329,11 @@ close_connection(struct Client *client_p)
   if (!IsDead(client_p))
     {
       /* attempt to flush any pending dbufs. Evil, but .. -- adrian */
-      send_queued_write(client_p->localClient->fd, client_p);
+      /* there is still a chance that we might send data to this socket
+       * even if it is marked as blocked (COMM_SELECT_READ handler is called
+       * before COMM_SELECT_WRITE). Let's try, nothing to lose.. -adx */
+      ClearSendqBlocked(client_p);
+      send_queued_write(client_p);
       fd_close(client_p->localClient->fd);
       client_p->localClient->fd = -1;
     }

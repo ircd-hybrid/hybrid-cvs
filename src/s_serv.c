@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.305 2003/04/19 10:44:04 michael Exp $
+ *  $Id: s_serv.c,v 7.306 2003/04/19 12:03:56 adx Exp $
  */
 
 #include "stdinc.h"
@@ -252,7 +252,7 @@ collect_zipstats(void *unused)
         target_p->localClient->slinkq[0]  = SLINKCMD_ZIPSTATS;
         target_p->localClient->slinkq_ofs = 0;
         target_p->localClient->slinkq_len = 1;
-        send_queued_slink_write(target_p->localClient->ctrlfd, target_p);
+        send_queued_slink_write(target_p);
       }
     }
   }
@@ -1247,7 +1247,7 @@ start_io(struct Client *server)
   server->localClient->slinkq_len = c;
  
   /* schedule a write */ 
-  send_queued_slink_write(server->localClient->ctrlfd, server);
+  send_queued_slink_write(server);
 }
 
 #ifndef VMS
