@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.100 2001/10/11 02:42:37 androsyn Exp $
+# $Id: Makefile.in,v 7.101 2001/10/21 19:10:22 davidt Exp $
 #
 CC		= @CC@
 INSTALL		= @INSTALL@
@@ -55,6 +55,7 @@ BASE_SRCS =                     \
   adns.c                        \
   balloc.c			\
   channel.c                     \
+  channel_mode.c		\
   vchannel.c                    \
   class.c                       \
   client.c                      \
