@@ -1,7 +1,7 @@
 #
 # Makefile.in for servlink/src
 #
-# $Id: Makefile.in,v 1.22 2003/07/08 21:06:42 joshk Exp $
+# $Id: Makefile.in,v 1.23 2003/09/11 04:19:52 joshk Exp $
 #
 
 CC              = @CC@
@@ -14,7 +14,7 @@ STDOUT		= @STDOUT@
 MV              = @MV@
 RM              = @RM@
 SED		= @SED@
-prefix          = @prefix@
+prefix          = $(DESTDIR)@prefix@
 exec_prefix     = @exec_prefix@
 bindir          = @bindir@
 

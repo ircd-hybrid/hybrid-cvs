@@ -1,11 +1,11 @@
-# $Id: Makefile.in,v 1.20 2003/07/08 21:06:38 joshk Exp $
+# $Id: Makefile.in,v 1.21 2003/09/11 04:19:49 joshk Exp $
 #
 RM            = @RM@
 MV            = @MV@
 INSTALL       = @INSTALL@
 INSTALL_DATA  = @INSTALL_DATA@
-prefix        = @prefix@
-messagedir    = @prefix@/messages
+prefix        = $(DESTDIR)@prefix@
+messagedir    = $(prefix)/messages
 
 CLOBBER=@CLOBBER@
 

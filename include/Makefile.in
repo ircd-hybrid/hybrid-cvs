@@ -1,11 +1,11 @@
-# $Id: Makefile.in,v 1.12 2003/08/18 23:31:26 joshk Exp $
+# $Id: Makefile.in,v 1.13 2003/09/11 04:19:47 joshk Exp $
 # makefile for include/
 
 INSTALL		= @INSTALL@
 INSTALL_DATA	= @INSTALL_DATA@
 RM		= @RM@
 
-prefix		= @prefix@
+prefix		= $(DESTDIR)@prefix@
 includedir	= @includedir@
 
 all:
