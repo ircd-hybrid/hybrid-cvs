@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.203 2002/08/11 14:46:22 androsyn Exp $
+ *  $Id: send.c,v 7.204 2002/08/11 15:13:11 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -115,9 +115,9 @@ send_trim(char *lsendbuf,int len)
 
   if(len > 510)
   {
-    lsendbuf[IRCD_BUFSIZE-3] = '\r';
-    lsendbuf[IRCD_BUFSIZE-2] = '\n';
-    lsendbuf[IRCD_BUFSIZE-1] = '\0';
+    lsendbuf[IRCD_BUFSIZE-2] = '\r';
+    lsendbuf[IRCD_BUFSIZE-1] = '\n';
+    lsendbuf[IRCD_BUFSIZE] = '\0';
     return(IRCD_BUFSIZE);
   }
   return len;
