@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.h,v 7.16 2002/01/05 09:14:28 a1kmm Exp $
+ *  $Id: hash.h,v 7.17 2002/03/09 21:48:35 androsyn Exp $
  */
 
 #ifndef INCLUDED_hash_h
@@ -77,8 +77,6 @@ extern void   add_to_client_hash_table(const char* name,
 extern void   del_from_client_hash_table(const char* name, 
                                          struct Client* client);
 extern void   del_from_id_hash_table(const char *name, struct Client *client);
-
-extern void   add_to_channel_hash_table(const char* name, struct Channel* chan);
 extern void   del_from_channel_hash_table(const char* name, 
                                           struct Channel* chan);
 extern struct Channel* hash_find_channel(const char* name);

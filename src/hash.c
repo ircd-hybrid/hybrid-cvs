@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.39 2002/02/25 17:39:14 androsyn Exp $
+ *  $Id: hash.c,v 7.40 2002/03/09 21:48:40 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -307,23 +307,6 @@ add_to_client_hash_table(const char* name, struct Client* client_p)
   clientTable[hashv].list = (void*) client_p;
   ++clientTable[hashv].links;
   ++clientTable[hashv].hits;
-}
-
-/*
- * add_to_channel_hash_table
- */
-void
-add_to_channel_hash_table(const char* name, struct Channel* chptr)
-{
-  unsigned int hashv;
-  assert(name != NULL);
-  assert(chptr != NULL);
-
-  hashv = hash_channel_name(name);
-  chptr->hnextch = (struct Channel*) channelTable[hashv].list;
-  channelTable[hashv].list = (void*) chptr;
-  ++channelTable[hashv].links;
-  ++channelTable[hashv].hits;
 }
 
 /*

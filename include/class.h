@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: class.h,v 7.9 2002/01/05 09:14:27 a1kmm Exp $
+ *  $Id: class.h,v 7.10 2002/03/09 21:48:35 androsyn Exp $
  */
 
 #ifndef INCLUDED_class_h
@@ -68,7 +68,6 @@ extern  const   char* get_client_class (struct Client *);
 extern  int     get_client_ping (struct Client *);
 extern  void    check_class(void);
 extern  void    initclass(void);
-extern  struct  Class* make_class(void);
 extern  void    free_class(struct Class* );
 extern  void    add_class (char *, int, int, int, long);
 extern  void    fix_class (struct ConfItem *, struct ConfItem *);

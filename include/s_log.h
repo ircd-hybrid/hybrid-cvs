@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.h,v 7.8 2002/01/05 09:14:29 a1kmm Exp $
+ *  $Id: s_log.h,v 7.9 2002/03/09 21:48:35 androsyn Exp $
  */
 
 #ifndef INCLUDED_s_log_h
@@ -36,7 +36,6 @@ struct Client;
 #define L_DEBUG   6
 
 extern void init_log(const char* filename);
-extern void close_log(void);
 extern void set_log_level(int level);
 extern int  get_log_level(void);
 extern void ilog(int priority, const char* fmt, ...);

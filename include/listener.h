@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.h,v 7.8 2002/01/05 09:14:28 a1kmm Exp $
+ *  $Id: listener.h,v 7.9 2002/03/09 21:48:35 androsyn Exp $
  */
 
 #ifndef INCLUDED_listener_h
@@ -61,7 +61,6 @@ extern void        close_listener(struct Listener* listener);
 extern void        close_listeners(void);
 extern const char* get_listener_name(const struct Listener* listener);
 extern void        show_ports(struct Client* client);
-extern struct Listener* make_listener(int port, struct irc_inaddr *addr);
 extern void free_listener(struct Listener * );
 
 #endif /* INCLUDED_listener_h */

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: scache.c,v 7.13 2002/02/25 17:39:17 androsyn Exp $
+ *  $Id: scache.c,v 7.14 2002/03/09 21:48:41 androsyn Exp $
  */
 
 #include "client.h"
@@ -134,23 +134,3 @@ void count_scache(int *number_servers_cached,u_long *mem_servers_cached)
     }
 }
 
-/* list all server names in scache very verbose */
-   
-void list_scache(struct Client *source_p)
-{
-  int hash_index;
-  SCACHE *ptr;
-
-  for (hash_index = 0; hash_index < SCACHE_HASH_SIZE ;hash_index++)
-    {
-      ptr = scache_hash[hash_index];
-      while(ptr)
-        {
-          if(ptr->name)
-            sendto_one(source_p,":%s NOTICE %s :%s",
-                       me.name, source_p->name, ptr->name);
-          ptr = ptr->next;
-        }
-    }
-
-}

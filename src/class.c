@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: class.c,v 7.34 2002/02/23 21:20:40 leeh Exp $
+ *  $Id: class.c,v 7.35 2002/03/09 21:48:40 androsyn Exp $
  */
 
 #include "tools.h"
@@ -44,7 +44,7 @@
 
 struct Class* ClassList;
 
-struct Class *make_class()
+static struct Class *make_class()
 {
   struct Class        *tmp;
 

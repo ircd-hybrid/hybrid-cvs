@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.c,v 7.64 2002/02/17 07:29:58 db Exp $
+ *  $Id: listener.c,v 7.65 2002/03/09 21:48:41 androsyn Exp $
  */
 
 #include "config.h"
@@ -58,7 +58,7 @@ static PF accept_connection;
 
 static struct Listener* ListenerPollList = NULL;
 
-struct Listener* 
+static struct Listener* 
 make_listener(int port, struct irc_inaddr *addr)
 {
   struct Listener* listener =

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.c,v 7.39 2002/03/01 20:22:58 androsyn Exp $
+ *  $Id: s_log.c,v 7.40 2002/03/09 21:48:41 androsyn Exp $
  */
 
 #include "client.h"	/* Needed for struct Client */
@@ -102,18 +102,6 @@ static int open_log(const char* filename)
 }
 #endif
 
-void close_log(void)
-{
-#if defined(USE_LOGFILE) 
-  if (logFile != NULL) {
-    fbclose(logFile);
-    logFile = NULL;
-  }
-#endif
-#ifdef USE_SYSLOG  
-  closelog();
-#endif
-}
 
 #if defined(USE_LOGFILE) 
 static void write_log(const char* message)

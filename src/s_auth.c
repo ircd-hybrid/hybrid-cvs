@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.89 2002/03/01 20:22:58 androsyn Exp $
+ *  $Id: s_auth.c,v 7.90 2002/03/09 21:48:41 androsyn Exp $
  */
 
 /*
@@ -139,7 +139,7 @@ static struct AuthRequest* make_auth_request(struct Client* client)
 /*
  * free_auth_request - cleanup auth request allocations
  */
-void free_auth_request(struct AuthRequest* request)
+static void free_auth_request(struct AuthRequest* request)
 {
   MyFree(request);
 }

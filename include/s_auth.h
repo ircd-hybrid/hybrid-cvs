@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.h,v 7.14 2002/01/05 09:14:29 a1kmm Exp $
+ *  $Id: s_auth.h,v 7.15 2002/03/09 21:48:35 androsyn Exp $
  */
 
 #ifndef INCLUDED_s_auth_h
@@ -78,7 +78,6 @@ struct AuthRequest {
 extern void start_auth(struct Client *);
 extern void send_auth_query(struct AuthRequest* req);
 extern void remove_auth_request(struct AuthRequest *req);
-extern void free_auth_request(struct AuthRequest *);
 extern struct AuthRequest *FindAuthClient(long id);
 extern void init_auth(void);
 extern void delete_identd_queries(struct Client *);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: scache.h,v 7.6 2002/01/05 09:14:30 a1kmm Exp $
+ *  $Id: scache.h,v 7.7 2002/03/09 21:48:35 androsyn Exp $
  */
 
 #ifndef INCLUDED_scache_h
@@ -28,6 +28,5 @@
 extern void        clear_scache_hash_table(void);
 extern const char* find_or_add(const char* name);
 extern void        count_scache(int *,unsigned long *);
-extern void        list_scache(struct Client *source_p);
 
 #endif

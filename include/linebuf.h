@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: linebuf.h,v 1.21 2002/01/05 09:14:28 a1kmm Exp $
+ *  $Id: linebuf.h,v 1.22 2002/03/09 21:48:35 androsyn Exp $
  */
 
 #ifndef __LINEBUF_H__
@@ -67,8 +67,6 @@ struct _buf_head {
 #define linebuf_numlines(x)	((x)->numlines)
 
 extern void linebuf_init(void);
-extern buf_line_t *linebuf_allocate(void);
-extern void linebuf_free(buf_line_t *);
 /* declared as static */
 /* extern buf_line_t *linebuf_new_line(buf_head_t *); */
 /* extern void linebuf_done_line(buf_head_t *, buf_line_t *, dlink_node *); */
@@ -79,7 +77,6 @@ extern void client_flush_input(struct Client *);
 extern void linebuf_donebuf(buf_head_t *);
 extern int linebuf_parse(buf_head_t *, char *, int, int);
 extern int linebuf_get(buf_head_t *, char *, int, int, int);
-extern void linebuf_put(buf_head_t *, char *, int);
 extern void linebuf_putmsg(buf_head_t *, const char *, va_list,
                            const char *, ...);
 extern int linebuf_flush(int, buf_head_t *);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.h,v 7.44 2002/01/06 18:12:10 leeh Exp $
+ *  $Id: ircd.h,v 7.45 2002/03/09 21:48:35 androsyn Exp $
  */
 
 #ifndef INCLUDED_ircd_h
@@ -107,10 +107,8 @@ extern dlink_list oper_list;
 extern dlink_list dead_list;
 
 extern dlink_list lazylink_channels;
-extern dlink_list lazylink_nicks;
 extern int callbacks_called;
 
-extern int make_daemon(void);
 extern unsigned long get_maxrss(void);
 extern void set_time(void);
 
