@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu, Computing Center and Jarkko Oikarinen
  *
- * $Id: list.c,v 7.36 2001/09/23 16:39:43 davidt Exp $
+ * $Id: list.c,v 7.37 2001/09/23 21:38:38 davidt Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -155,7 +155,7 @@ void _free_user(struct User* user, struct Client* client_p)
 			     (unsigned long)user->channel.head, user->joined,
 			     user->refcnt);
         assert(!user->joined);
-        assert(!user->refcount);
+        assert(!user->refcnt);
         assert(!user->invited.head);
         assert(!user->channel.head);
       }
