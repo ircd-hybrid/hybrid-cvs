@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.113 2003/07/06 23:38:47 db Exp $
+ *  $Id: m_server.c,v 1.114 2003/07/21 01:58:22 michael Exp $
  */
 
 #include "stdinc.h"
@@ -77,7 +77,7 @@ _moddeinit(void)
   mod_del_cmd(&sid_msgtab);
 }
 
-const char *_version = "$Revision: 1.113 $";
+const char *_version = "$Revision: 1.114 $";
 #endif
 
 
@@ -463,7 +463,6 @@ ms_server(struct Client *client_p, struct Client *source_p,
   target_p->servptr  = source_p;
 
   SetServer(target_p);
-  Count.server++;
 
   dlinkAdd(target_p, &target_p->node, &global_client_list);
   dlinkAdd(target_p, make_dlink_node(), &global_serv_list);
@@ -724,7 +723,6 @@ ms_sid(struct Client *client_p, struct Client *source_p,
   target_p->servptr  = source_p;
 
   SetServer(target_p);
-  Count.server++;
 
   dlinkAdd(target_p, &target_p->node, &global_client_list);
   dlinkAdd(target_p, make_dlink_node(), &global_serv_list);
@@ -854,26 +852,19 @@ set_server_gecos(struct Client *client_p, char *info)
 static int
 bogus_host(char *host)
 {
-  int dots = 0;
-  int bogus_server = 0;
+  unsigned int dots = 0;
   char *s;
 
   for (s = host; *s; s++)
   {
     if (!IsServChar(*s))
-    {
-      bogus_server = 1;
-      break;
-    }
+      return(1);
 
     if ('.' == *s)
       ++dots;
   }
 
-  if ((dots == 0) || bogus_server)
-    return(1);
-
-  return(0);
+  return(!dots);
 }
 
 /* server_exists()

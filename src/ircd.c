@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.312 2003/07/08 04:01:50 db Exp $
+ *  $Id: ircd.c,v 7.313 2003/07/21 01:58:24 michael Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ struct server_info ServerInfo;
 /* admin info set from ircd.conf */
 struct admin_info AdminInfo;
 
-struct Counter Count = { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+struct Counter Count = { 0, 0, 0, 0, 0, 0, 0, 0 };
 struct ServerState_t server_state = { 0 };
 
 struct timeval SystemTime;
@@ -530,7 +530,6 @@ main(int argc, char *argv[])
   dlinkAdd(&me, &me.node, &global_client_list);	/* Pointer to beginning
 						   of Client list */
 
-  Count.server = 1;     /* us */
   memset(&ServerInfo, 0, sizeof(ServerInfo));
   memset(&AdminInfo, 0, sizeof(AdminInfo));
 
@@ -584,6 +583,7 @@ main(int argc, char *argv[])
   {
       check_can_use_v6(); /* Done in close_all_connections normally */
   }
+
   init_log(logFileName);
   init_netio();         /* This needs to be setup early ! -- adrian */
   /* Check if there is pidfile and daemon already running */

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.294 2003/07/17 06:25:28 metalrock Exp $
+ *  $Id: s_user.c,v 7.295 2003/07/21 01:58:24 michael Exp $
  */
 
 #include "stdinc.h"
@@ -176,8 +176,9 @@ void
 show_lusers(struct Client *source_p) 
 {
   if (!ConfigServerHide.hide_servers || IsOper(source_p))
-    sendto_one(source_p, form_str(RPL_LUSERCLIENT), me.name, source_p->name,
-	      (Count.total-Count.invisi), Count.invisi, Count.server);
+    sendto_one(source_p, form_str(RPL_LUSERCLIENT),
+               me.name, source_p->name, (Count.total-Count.invisi),
+               Count.invisi, dlink_list_length(&global_serv_list));
   else
     sendto_one(source_p, form_str(RPL_LUSERCLIENT), me.name, source_p->name,
 	      (Count.total-Count.invisi), Count.invisi, 1);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.401 2003/07/07 21:18:56 michael Exp $
+ *  $Id: channel.c,v 7.402 2003/07/21 01:58:24 michael Exp $
  */
 
 #include "stdinc.h"
@@ -826,8 +826,8 @@ check_spambot_warning(struct Client *source_p, const char *name)
   }
   else
   {
-    if ((t_delta = (CurrentTime - source_p->localClient->last_leave_time))
-        > JOIN_LEAVE_COUNT_EXPIRE_TIME)
+    if ((t_delta = (CurrentTime - source_p->localClient->last_leave_time)) >
+         JOIN_LEAVE_COUNT_EXPIRE_TIME)
     {
       decrement_count = (t_delta / JOIN_LEAVE_COUNT_EXPIRE_TIME);
       if (decrement_count > source_p->localClient->join_leave_count)
@@ -864,7 +864,9 @@ check_splitmode(void *unused)
   if (splitchecking && (ConfigChannel.no_join_on_split ||
       ConfigChannel.no_create_on_split))
   {
-    if (!splitmode && ((Count.server < split_servers) || (Count.total < split_users)))
+    const unsigned int server = dlink_list_length(&global_serv_list);
+
+    if (!splitmode && ((server < split_servers) || (Count.total < split_users)))
     {
       splitmode = 1;
 
@@ -872,7 +874,7 @@ check_splitmode(void *unused)
                          "Network split, activating splitmode");
       eventAddIsh("check_splitmode", check_splitmode, NULL, 10);
     }
-    else if (splitmode && (Count.server > split_servers) && (Count.total > split_users))
+    else if (splitmode && (server > split_servers) && (Count.total > split_users))
     {
       splitmode = 0;
     

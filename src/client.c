@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.397 2003/07/19 05:23:44 metalrock Exp $
+ *  $Id: client.c,v 7.398 2003/07/21 01:58:24 michael Exp $
  */
 
 #include "stdinc.h"
@@ -605,7 +605,6 @@ update_client_exit_stats(struct Client *client_p)
 {
   if (IsServer(client_p))
   {
-    --Count.server;
     sendto_realops_flags(UMODE_EXTERNAL, L_ALL, 
 			 "Server %s split from %s",
 			 client_p->name, client_p->servptr->name);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.366 2003/07/18 22:19:50 metalrock Exp $
+ *  $Id: s_serv.c,v 7.367 2003/07/21 01:58:24 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1101,7 +1101,6 @@ server_estab(struct Client *client_p)
                 "Tried to register server but it was already registered?!?");
   }
 
-  Count.server++;
   Count.myserver++;
 
   dlinkAdd(client_p, make_dlink_node(), &global_serv_list);
@@ -1782,7 +1781,6 @@ burst_ll_members(struct Client *client_p, struct Channel *chptr)
     }
   }
 }
-
 
 /* set_autoconn()
  *

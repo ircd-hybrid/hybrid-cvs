@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_jupe.c,v 1.56 2003/07/05 06:20:53 db Exp $
+ *  $Id: m_jupe.c,v 1.57 2003/07/21 01:58:19 michael Exp $
  */
 
 #include "stdinc.h"
@@ -66,7 +66,7 @@ _moddeinit(void)
   mod_del_cmd(&jupe_msgtab);
 }
 
-const char *_version = "$Revision: 1.56 $";
+const char *_version = "$Revision: 1.57 $";
 #endif
 
 /*
@@ -157,7 +157,6 @@ mo_jupe(struct Client *client_p, struct Client *source_p,
   SetServer(ajupe);
   SetDead(ajupe);
 
-  Count.server++;
   Count.myserver++;
 
   /* Some day, all these lists will be consolidated *sigh* */
@@ -181,24 +180,17 @@ mo_jupe(struct Client *client_p, struct Client *source_p,
 static int
 bogus_host(char *host)
 {
-  int dots = 0;
-  int bogus_server = 0;
+  unsigned int dots = 0;
   char *s;
- 
+
   for (s = host; *s; s++)
   {
     if (!IsServChar(*s))  
-    {
-      bogus_server = 1;
-      break;
-    }
+      return(1);
 
     if ('.' == *s)
       ++dots;
   }
 
-  if (!dots || bogus_server || strlen(host) > HOSTLEN)
-    return(1);
-
-  return(0);
+  return(!dots || strlen(host) > HOSTLEN);
 }

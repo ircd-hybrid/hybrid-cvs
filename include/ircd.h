@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.h,v 7.72 2003/06/30 17:49:37 adx Exp $
+ *  $Id: ircd.h,v 7.73 2003/07/21 01:58:21 michael Exp $
  */
 
 #ifndef INCLUDED_ircd_h
@@ -45,7 +45,6 @@ struct SetOptions
 
 struct Counter 
 {
-  int server;   /* servers             */
   int myserver; /* my servers          */
   int oper;     /* Opers               */
   int local;    /* Local Clients       */
