@@ -1,3 +1,15 @@
+db          2002/07/02 19:58:14 EDT	(20020703_1)
+
+  Modified files:
+    modules/core         m_message.c 
+  Log:
+  - fixed off by one error in too many recipients code in m_message.c
+  
+  Revision  Changes    Path
+  1.98      +9 -12     ircd-hybrid-7/modules/core/m_message.c
+
+
+
 db          2002/07/02 19:24:24 EDT	(20020703_0)
 
   Modified files:
@@ -28963,4 +28975,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3824 2002/07/02 23:24:31 db Exp $
+$Id: ChangeLog,v 7.3825 2002/07/02 23:58:21 db Exp $
