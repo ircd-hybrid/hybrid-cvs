@@ -23,7 +23,7 @@ character wide terminal) and added a couple missing :'s to the /quote lines
 
 *** 20010126_15 by db
 - corrected formatting
-- added CVS $Id: ChangeLog,v 7.1678 2001/01/27 04:47:04 wcampbel Exp $ string in comments
+- added CVS Id string in comments
 
 
 
