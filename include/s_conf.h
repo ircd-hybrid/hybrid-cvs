@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.193 2003/02/23 04:16:03 db Exp $
+ *  $Id: s_conf.h,v 7.194 2003/02/26 05:32:02 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -169,7 +169,7 @@ struct ConfItem
 #define SetConfAllowAutoConn(x)	((x)->flags |= CONF_FLAGS_ALLOW_AUTO_CONN)
 #define ClearConfAllowAutoConn(x) ((x)->flags &= ~CONF_FLAGS_ALLOW_AUTO_CONN)
 #define IsConfTemporary(x)      ((x)->flags & CONF_FLAGS_TEMPORARY)
-#define SetConfTemporary(x)	((x)->flags | CONF_FLAGS_TEMPORARY)
+#define SetConfTemporary(x)	((x)->flags |= CONF_FLAGS_TEMPORARY)
 #define IsConfRedir(x)          ((x)->flags & CONF_FLAGS_REDIR)
 /* port definitions for Opers */
 
