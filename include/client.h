@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.139 2002/02/17 02:48:15 androsyn Exp $
+ *  $Id: client.h,v 7.140 2002/02/17 05:39:21 androsyn Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -157,10 +157,6 @@ struct Client
   unsigned int      umodes;     /* opers, normal users subset */
   unsigned int      flags;      /* client flags */
   unsigned int      flags2;     /* ugh. overflow */
-  int               fd;         /* >= 0, for local clients */
-#ifndef HAVE_SOCKETPAIR
-  int               fd_r;       /* fd for reading */
-#endif
 
   int               slink_pid;  /* pid of servlink process if any */
   int               hopcount;   /* number of servers to this 0 = local */
@@ -298,6 +294,11 @@ struct LocalUser
 
   char              in_key[CIPHERKEYLEN];
   char              out_key[CIPHERKEYLEN];
+#endif
+
+  int               fd;         /* >= 0, for local clients */
+#ifndef HAVE_SOCKETPAIR
+  int               fd_r;       /* fd for reading */
 #endif
 
   int               ctrlfd;     /* For servers:

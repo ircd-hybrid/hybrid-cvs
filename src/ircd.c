@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.219 2002/02/10 17:26:33 androsyn Exp $
+ *  $Id: ircd.c,v 7.220 2002/02/17 05:39:27 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -734,7 +734,6 @@ int main(int argc, char *argv[])
  }
 #endif
 
-  me.fd = -1;
   me.from = &me;
   me.servptr = &me;
   SetMe(&me);

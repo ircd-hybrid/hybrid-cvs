@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.37 2002/01/05 09:15:12 a1kmm Exp $
+ *  $Id: hash.c,v 7.38 2002/02/17 05:39:27 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -381,7 +381,7 @@ del_from_id_hash_table(const char* id, struct Client* client_p)
     }
   Debug((DEBUG_ERROR, "%#x !in tab %s[%s] %#x %#x %#x %d %d %#x",
          client_p, client_p->name, client_p->from ? client_p->from->host : "??host",
-         client_p->from, client_p->next, client_p->prev, client_p->fd, 
+         client_p->from, client_p->next, client_p->prev, client_p->localClient->fd, 
          client_p->status, client_p->user));
 }
 
@@ -420,7 +420,7 @@ del_from_client_hash_table(const char* name, struct Client* client_p)
     }
   Debug((DEBUG_ERROR, "%#x !in tab %s[%s] %#x %#x %#x %d %d %#x",
          client_p, client_p->name, client_p->from ? client_p->from->host : "??host",
-         client_p->from, client_p->next, client_p->prev, client_p->fd, 
+         client_p->from, client_p->next, client_p->prev, client_p->localClient->fd, 
          client_p->status, client_p->user));
 }
 

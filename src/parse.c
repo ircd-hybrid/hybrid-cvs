@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.120 2002/02/02 15:25:44 leeh Exp $
+ *  $Id: parse.c,v 7.121 2002/02/17 05:39:27 androsyn Exp $
  */
 
 #include <assert.h>
@@ -138,7 +138,7 @@ void parse(struct Client *client_p, char *pbuffer, char *bufend)
   Debug((DEBUG_DEBUG, "Parsing %s:", pbuffer));
 
   assert(!IsDead(client_p));
-  assert(client_p->fd >= 0);
+  assert(client_p->localClient->fd >= 0);
 
   assert((bufend-pbuffer) < 512);
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_trace.c,v 1.43 2002/02/03 18:58:06 androsyn Exp $
+ *  $Id: m_trace.c,v 1.44 2002/02/17 05:39:24 androsyn Exp $
  */
 
 #include "handlers.h"
@@ -68,7 +68,7 @@ _moddeinit(void)
   hook_del_event("doing_trace");
   mod_del_cmd(&trace_msgtab);
 }
-char *_version = "$Revision: 1.43 $";
+char *_version = "$Revision: 1.44 $";
 #endif
 static int report_this_status(struct Client *source_p, struct Client *target_p,int dow,
                               int link_u_p, int link_u_s);
@@ -202,11 +202,11 @@ static void mo_trace(struct Client *client_p, struct Client *source_p,
      {
       if (IsPerson(target_p))
         {
-          link_u[target_p->from->fd]++;
+          link_u[target_p->from->localClient->fd]++;
         }
       else if (IsServer(target_p))
 	{
-	  link_s[target_p->from->fd]++;
+	  link_s[target_p->from->localClient->fd]++;
 	}
      }
    }
@@ -238,8 +238,8 @@ static void mo_trace(struct Client *client_p, struct Client *source_p,
         continue;
 
       cnt = report_this_status(source_p, target_p, dow,
-                               link_u[target_p->fd],
-                               link_s[target_p->fd]);
+                               link_u[target_p->localClient->fd],
+                               link_s[target_p->localClient->fd]);
     }
 
   /* This section is to report the unknowns */
@@ -266,8 +266,8 @@ static void mo_trace(struct Client *client_p, struct Client *source_p,
        */
       if(!cnt)
 	sendto_one(source_p, form_str(RPL_TRACESERVER),
-	           me.name, parv[0], 0, link_s[me.fd],
-		   link_u[me.fd], me.name, "*", "*", me.name);
+	           me.name, parv[0], 0, link_s[me.localClient->fd],
+		   link_u[me.localClient->fd], me.name, "*", "*", me.name);
 		   
       /* let the user have some idea that its at the end of the
        * trace

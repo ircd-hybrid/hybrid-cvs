@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.291 2002/01/09 17:16:54 leeh Exp $
+ *  $Id: s_conf.c,v 7.292 2002/02/17 05:39:28 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -1033,7 +1033,7 @@ attach_conf(struct Client *client_p,struct ConfItem *aconf)
             }
           else
             {
-              send(client_p->fd,
+              send(client_p->localClient->fd,
                    "NOTICE FLINE :I: line is full, but you have an >I: line!\n",
                    56, 0);
               SetExemptLimits(client_p);
