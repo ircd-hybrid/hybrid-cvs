@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_unkline.c,v 1.50 2002/11/13 13:15:06 db Exp $
+ *  $Id: m_unkline.c,v 1.51 2002/11/18 19:54:58 db Exp $
  */
 
 #include "stdinc.h"
@@ -73,7 +73,7 @@ _moddeinit(void)
   mod_del_cmd(&msgtabs[1]);
   mod_del_cmd(&msgtabs[2]);
 }
-const char *_version = "$Revision: 1.50 $";
+const char *_version = "$Revision: 1.51 $";
 #endif
 
 static int flush_write(struct Client *, FBFILE *in, FBFILE *out,
@@ -188,12 +188,14 @@ mo_unkline (struct Client *client_p,struct Client *source_p,
 	{
 	  if(flush_write(source_p, in, out, buf, temppath) < 0)
 	    return;
+	  continue;
 	}
 
       if ((found_host = getfield(NULL)) == NULL)
 	{
 	  if(flush_write(source_p, in, out, buf, temppath) < 0)
 	    return;
+	  continue;
 	}
 
       if ((irccmp(host,found_host) == 0) && (irccmp(user,found_user) == 0))
@@ -381,12 +383,14 @@ mo_undline (struct Client *client_p, struct Client *source_p,
 	{
 	  if(flush_write(source_p, in, out, buf, temppath) < 0)
 	    return;
+  	   continue;
 	}
 
       if ((found_cidr = getfield(buff)) == NULL)
 	{
 	  if(flush_write(source_p, in, out, buf, temppath) < 0)
 	    return;
+	  continue;
 	}
       
       if (irccmp(found_cidr,cidr) == 0)
