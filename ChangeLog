@@ -1,3 +1,16 @@
+leeh        2002/06/11 16:29:08 EDT	(20020611_8)
+
+  Modified files:
+    src                  s_auth.c 
+  Log:
+  - auth tweaks.  strip *all* ['s
+    strip ~ and ^ from the beginning of the ident
+  
+  Revision  Changes    Path
+  7.97      +5 -1      ircd-hybrid-7/src/s_auth.c
+
+
+
 androsyn    2002/06/10 21:49:26 EDT	(20020611_7)
 
   Modified files:
@@ -28166,4 +28179,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3761 2002/06/11 01:49:32 androsyn Exp $
+$Id: ChangeLog,v 7.3762 2002/06/11 20:29:15 leeh Exp $
