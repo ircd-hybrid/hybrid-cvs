@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_version.c,v 1.30 2001/08/31 12:48:32 leeh Exp $
+ *   $Id: m_version.c,v 1.31 2001/09/04 12:26:15 leeh Exp $
  */
 #include <string.h>
 #include "handlers.h"
@@ -124,51 +124,56 @@ static void ms_version(struct Client* client_p, struct Client* source_p,
 static char* confopts(struct Client *source_p)
 {
   static char result[15];
-
+  char *p;
+  
   result[0] = '\0';
+  p = result;
 
 #ifdef DEBUGMODE
-  strcat(result, "D");
+  *p++ = 'D';
 #endif
 
   if(ConfigChannel.use_except)
-    strcat(result, "e");
+    *p++ = 'e';
     
   if (ConfigFileEntry.glines)
-    strcat(result, "gG");
+    *p++ = 'g';
+    *p++ = 'G';
 
   /* might wanna hide this :P */
   if (ServerInfo.hub && 
       (!ConfigServerHide.disable_remote || IsOper(source_p)) )
     {
-      strcat(result, "H");
+      *p++ = 'H';
     }
 
   if(ConfigChannel.use_invex)
-    strcat(result, "I");
+    *p++ = 'I';
 
   if(ConfigChannel.use_knock)
-    strcat(result, "K");
+    *p++ = 'K';
     
-  strcat(result, "M");
+  *p++ = 'M';
 
 #ifdef CRYPT_OPER_PASSWORD
-  strcat(result, "p");
+  *p++ = 'p';
 #endif
 
-  strcat(result, "T");
+  *p++ = 'T';
 
 #ifdef USE_SYSLOG
-  strcat(result, "Y");
+  *p++ = 'Y';
 #endif
 
 #ifdef HAVE_LIBZ
-  strcat(result, "Z");
+  *p++ = 'Z';
 #endif
 
 #ifdef IPV6
-  strcat(result, "6");
-#endif  
+  *p++ = '6';
+#endif
+  
+  *p = '\0';
 
   return result;
 }
