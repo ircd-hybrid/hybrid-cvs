@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.441 2003/06/21 20:09:26 metalrock Exp $
+ *  $Id: s_conf.c,v 7.442 2003/06/24 09:39:32 michael Exp $
  */
 
 #include "stdinc.h"
@@ -2173,9 +2173,9 @@ expire_tklines(dlink_list *tklist)
  */
 static const struct oper_privs
 {
-  unsigned int oprivs;
-  unsigned int hidden;
-  unsigned char c;
+  const unsigned int oprivs;
+  const unsigned int hidden;
+  const unsigned char c;
 } flag_list[] = {
   { OPER_FLAG_ADMIN,       OPER_FLAG_HIDDEN_ADMIN,  'A' },
   { OPER_FLAG_DIE,         0,                       'D' },

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.117 2003/06/21 14:09:12 michael Exp $
+ *  $Id: channel_mode.c,v 7.118 2003/06/24 09:39:32 michael Exp $
  */
 
 #include "stdinc.h"
@@ -315,8 +315,8 @@ change_channel_membership(struct Membership *member,
 
 static const struct mode_letter
 {
-  unsigned int mode;
-  unsigned char letter;
+  const unsigned int mode;
+  const unsigned char letter;
 } flags[] = {
   { MODE_INVITEONLY, 'i' },
   { MODE_MODERATED,  'm' },

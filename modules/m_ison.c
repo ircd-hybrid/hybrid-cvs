@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ison.c,v 1.33 2003/06/20 10:29:31 michael Exp $
+ *  $Id: m_ison.c,v 1.34 2003/06/24 09:39:30 michael Exp $
  */
 
 #include "stdinc.h"
@@ -59,11 +59,9 @@ _moddeinit(void)
 {
   mod_del_cmd(&ison_msgtab);
 }
-const char *_version = "$Revision: 1.33 $";
+const char *_version = "$Revision: 1.34 $";
 #endif
 
-static char buf[BUFSIZE];
-static char buf2[BUFSIZE];
 
 
 /*
@@ -111,6 +109,8 @@ do_ison(struct Client *up, struct Client *source_p,
   char *nick;
   char *p;
   char *current_insert_point, *current_insert_point2;
+  char buf[BUFSIZE];
+  char buf2[BUFSIZE];
   int len;
   int i;
   int done = 0;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: whowas.c,v 7.27 2003/06/14 13:58:42 michael Exp $
+ *  $Id: whowas.c,v 7.28 2003/06/24 09:39:33 michael Exp $
  */
 
 #include "stdinc.h"
@@ -47,7 +47,7 @@ static void del_whowas_from_list(struct Whowas **, struct Whowas *);
 struct Whowas WHOWAS[NICKNAMEHISTORYLENGTH];
 struct Whowas *WHOWASHASH[WW_MAX];
 
-static int whowas_next = 0;
+static unsigned int whowas_next = 0;
 
 unsigned int
 hash_whowas_name(const char *name)
@@ -226,4 +226,3 @@ del_whowas_from_list(struct Whowas **bucket, struct Whowas *whowas)
   if (whowas->next)
     whowas->next->prev = whowas->prev;
 }
-

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.117 2003/06/14 18:12:00 db Exp $
+ *  $Id: m_gline.c,v 1.118 2003/06/24 09:39:30 michael Exp $
  */
 
 #include "stdinc.h"
@@ -95,7 +95,7 @@ _moddeinit(void)
   delete_capability("GLN");
 }
 
-const char *_version = "$Revision: 1.117 $";
+const char *_version = "$Revision: 1.118 $";
 #endif
 
 /* mo_gline()
@@ -118,7 +118,7 @@ mo_gline(struct Client *client_p, struct Client *source_p,
 {
   char *user = NULL;
   char *host = NULL;	     /* user and host of GLINE "victim" */
-  char *reason = NULL;	     /* reason for "victims" demise     */
+  const char *reason = NULL; /* reason for "victims" demise     */
   char star[] = "*";
   char tempuser[USERLEN * 2 + 2];
   char temphost[HOSTLEN * 2 + 2];
@@ -254,7 +254,7 @@ ms_gline(struct Client *client_p, struct Client *source_p,
   const char *oper_user = NULL;   /* username of oper requesting GLINE */
   const char *oper_host = NULL;   /* hostname of oper requesting GLINE */
   const char *oper_server = NULL; /* server of oper requesting GLINE   */
-  char *reason = NULL;            /* reason for "victims" demise       */
+  const char *reason = NULL;      /* reason for "victims" demise       */
   char *user = NULL;
   char *host = NULL;              /* user and host of GLINE "victim"   */
   struct Client *target_p;
@@ -359,7 +359,8 @@ check_wild_gline(char *user, char *host)
 {
   char *p;
   char tmpch;
-  int nonwild = 0;
+  unsigned int nonwild = 0;
+  const unsigned int min_nonwildcard = ConfigFileEntry.min_nonwildcard;
 
   p = user;
 
@@ -370,12 +371,12 @@ check_wild_gline(char *user, char *host)
       /* If we find enough non-wild characters, we can
        * break - no point in searching further.
        */
-      if (++nonwild >= ConfigFileEntry.min_nonwildcard)
+      if (++nonwild >= min_nonwildcard)
         break;
     }
   }
 
-  if (nonwild < ConfigFileEntry.min_nonwildcard)
+  if (nonwild < min_nonwildcard)
   {
     /* The user portion did not contain enough non-wild
      * characters, try the host.
@@ -385,12 +386,12 @@ check_wild_gline(char *user, char *host)
     while ((tmpch = *p++))
     {
       if (!IsKWildChar(tmpch))
-        if (++nonwild >= ConfigFileEntry.min_nonwildcard)
+        if (++nonwild >= min_nonwildcard)
           break;
     }
   }
 
-  if (nonwild < ConfigFileEntry.min_nonwildcard)
+  if (nonwild < min_nonwildcard)
     return(1);
   else
     return(0);

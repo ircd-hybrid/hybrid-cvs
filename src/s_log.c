@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.c,v 7.57 2003/06/22 00:53:01 joshk Exp $
+ *  $Id: s_log.c,v 7.58 2003/06/24 09:39:33 michael Exp $
  */
 
 #include "stdinc.h"
@@ -148,7 +148,6 @@ ilog(int priority, const char *fmt, ...)
 #endif
   if (use_logging)
     write_log(buf);
-
 }
   
 void
@@ -234,8 +233,8 @@ log_user_exit(struct Client *source_p)
     {
       if (user_log_fb == NULL)
       {
-	if((fuserlog[0] != '\0') && 
-	   (user_log_fb = fbopen(fuserlog, "r")) != NULL )
+	if ((fuserlog[0] != '\0') && 
+	   (user_log_fb = fbopen(fuserlog, "r")) != NULL)
 	{
 	  fbclose(user_log_fb);
 	  user_log_fb = fbopen(fuserlog, "a");
@@ -288,14 +287,13 @@ user_log_resync(void *notused)
 void
 log_oper(struct Client *source_p, const char *name)
 {
-  FBFILE *oper_fb;
-  char linebuf[BUFSIZE];
-
   if (foperlog[0] == '\0')
     return;
   
   if (IsPerson(source_p))
   {
+    FBFILE *oper_fb;
+
     if ((oper_fb = fbopen(foperlog, "r")) != NULL)
     {
       fbclose(oper_fb);
@@ -304,6 +302,8 @@ log_oper(struct Client *source_p, const char *name)
 
     if (oper_fb != NULL)
     {
+      char linebuf[BUFSIZE];
+
       ircsprintf(linebuf, "%s OPER (%s) by (%s!%s@%s)\n",
 		 myctime(CurrentTime), name, source_p->name,
                  source_p->username, source_p->host);
@@ -323,14 +323,13 @@ log_oper(struct Client *source_p, const char *name)
 void
 log_failed_oper(struct Client *source_p, const char *name)
 {
-  FBFILE *oper_fb;
-  char linebuf[BUFSIZE];
-
   if (ffailed_operlog[0] == '\0')
     return;
   
   if (IsPerson(source_p))
   {
+    FBFILE *oper_fb;
+
     if ((oper_fb = fbopen(ffailed_operlog, "r")) != NULL)
     {
       fbclose(oper_fb);
@@ -339,6 +338,8 @@ log_failed_oper(struct Client *source_p, const char *name)
 
     if (oper_fb != NULL)
     {
+      char linebuf[BUFSIZE];
+
       ircsprintf(linebuf, "%s FAILED OPER (%s) by (%s!%s@%s)\n",
 		 myctime(CurrentTime), name, source_p->name,
                  source_p->username, source_p->host);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.287 2003/06/24 00:55:30 metalrock Exp $
+ *  $Id: s_user.c,v 7.288 2003/06/24 09:39:33 michael Exp $
  */
 
 #include "stdinc.h"
@@ -66,37 +66,34 @@ static int introduce_client(struct Client *client_p, struct Client *source_p);
 /* table of ascii char letters
  * to corresponding bitmask
  */
-struct flag_item
+static const struct flag_item
 {
-  unsigned int mode;
-  unsigned char letter;
-};
-
-static const struct flag_item user_modes[] =
-{
-  {UMODE_ADMIN,      'a'},
-  {UMODE_BOTS,       'b'},
-  {UMODE_CCONN,      'c'},
-  {UMODE_DEBUG,      'd'},
-  {UMODE_FULL,       'f'},
-  {UMODE_CALLERID,   'g'},
-  {UMODE_INVISIBLE,  'i'},
-  {UMODE_SKILL,      'k'},
-  {UMODE_LOCOPS,     'l'},
-  {UMODE_NCHANGE,    'n'},
-  {UMODE_OPER,       'o'},
-  {UMODE_REJ,        'r'},
-  {UMODE_SERVNOTICE, 's'},
-  {UMODE_UNAUTH,     'u'},
-  {UMODE_WALLOP,     'w'},
-  {UMODE_EXTERNAL,   'x'},
-  {UMODE_SPY,        'y'},
-  {UMODE_OPERWALL,   'z'},
-  {0, '\0'}
+  const unsigned int mode;
+  const unsigned char letter;
+} user_modes[] = {
+  { UMODE_ADMIN,      'a' },
+  { UMODE_BOTS,       'b' },
+  { UMODE_CCONN,      'c' },
+  { UMODE_DEBUG,      'd' },
+  { UMODE_FULL,       'f' },
+  { UMODE_CALLERID,   'g' },
+  { UMODE_INVISIBLE,  'i' },
+  { UMODE_SKILL,      'k' },
+  { UMODE_LOCOPS,     'l' },
+  { UMODE_NCHANGE,    'n' },
+  { UMODE_OPER,       'o' },
+  { UMODE_REJ,        'r' },
+  { UMODE_SERVNOTICE, 's' },
+  { UMODE_UNAUTH,     'u' },
+  { UMODE_WALLOP,     'w' },
+  { UMODE_EXTERNAL,   'x' },
+  { UMODE_SPY,        'y' },
+  { UMODE_OPERWALL,   'z' },
+  { 0, '\0' }
 };
 
 /* memory is cheap. map 0-255 to equivalent mode */
-unsigned int user_modes_from_c_to_bitmask[] =
+const unsigned int user_modes_from_c_to_bitmask[] =
 {
   /* 0x00 */ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, /* 0x0F */
   /* 0x10 */ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, /* 0x1F */
@@ -278,7 +275,6 @@ register_local_user(struct Client *client_p, struct Client *source_p,
                     const char *nick, const char *username)
 {
   struct AccessItem *aconf;
-  char tmpstr2[IRCD_BUFSIZE];
   char ipaddr[HOSTIPLEN];
   int status;
   dlink_node *ptr;
@@ -403,6 +399,8 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   /* valid user name check */
   if (valid_username(source_p->username) == 0)
   {
+    char tmpstr2[IRCD_BUFSIZE];
+
     sendto_realops_flags(UMODE_REJ, L_ALL, "Invalid username: %s (%s@%s)",
                          nick, source_p->username, source_p->host);
     ServerStats->is_ref++;

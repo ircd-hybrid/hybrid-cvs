@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.136 2003/06/21 20:09:21 metalrock Exp $
+ *  $Id: m_stats.c,v 1.137 2003/06/24 09:39:30 michael Exp $
  */
 
 #include "stdinc.h"
@@ -79,7 +79,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.136 $";
+const char *_version = "$Revision: 1.137 $";
 #endif
 
 const char *Lformat = ":%s %d %s %s %u %u %u %u %u :%u %u %s";
@@ -90,15 +90,6 @@ static void stats_L_list(struct Client *s, char *, int, int, dlink_list *, char)
 static void stats_spy(struct Client *, char);
 static void stats_p_spy(struct Client *);
 static void stats_L_spy(struct Client *, char, char *);
-
-/* Heres our struct for the stats table */
-struct StatsStruct
-{
-  char letter;
-  void (*handler)();
-  int need_oper;
-  int need_admin;
-};
 
 static void stats_dns_servers(struct Client *);
 static void stats_connect(struct Client *);
@@ -132,8 +123,13 @@ static void stats_ziplinks(struct Client *);
 /* This table contains the possible stats items, in order:
  * /stats name,  function to call, operonly? adminonly? /stats letter
  * case only matters in the stats letter column.. -- fl_ */
-static struct StatsStruct stats_cmd_table[] =
+static const struct StatsStruct
 {
+  const unsigned char letter;
+  void (*handler)();
+  const unsigned int need_oper;
+  const unsigned int need_admin;
+} stats_cmd_table[] = {
   /* letter     function            need_oper need_admin */
   { 'a',	stats_dns_servers,	1,	1,	},
   { 'A',	stats_dns_servers,	1,	1,	},

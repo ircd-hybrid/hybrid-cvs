@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_pong.c,v 1.39 2003/06/07 17:27:59 michael Exp $
+ *  $Id: m_pong.c,v 1.40 2003/06/24 09:39:30 michael Exp $
  */
 
 #include "stdinc.h"
@@ -57,7 +57,7 @@ _moddeinit(void)
   mod_del_cmd(&pong_msgtab);
 }
 
-const char *_version = "$Revision: 1.39 $";
+const char *_version = "$Revision: 1.40 $";
 #endif
 
 static void
@@ -65,7 +65,7 @@ ms_pong(struct Client *client_p, struct Client *source_p,
         int parc, char *parv[])
 {
   struct Client *target_p;
-  char *origin, *destination;
+  const char *origin, *destination;
 
   if (parc < 2 || *parv[1] == '\0')
   {
@@ -85,7 +85,7 @@ ms_pong(struct Client *client_p, struct Client *source_p,
    * case can be made to allow them only from servers). -Shadowfax
    */
   if (!EmptyString(destination) && !match(destination, me.name))
-    {
+  {
       if ((target_p = find_client(destination)) ||
           (target_p = find_server(destination)))
         sendto_one(target_p,":%s PONG %s %s",
@@ -96,7 +96,7 @@ ms_pong(struct Client *client_p, struct Client *source_p,
                      me.name, parv[0], destination);
           return;
         }
-    }
+  }
 }
 
 static void

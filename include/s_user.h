@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.h,v 7.34 2003/06/24 00:55:27 metalrock Exp $
+ *  $Id: s_user.h,v 7.35 2003/06/24 09:39:29 michael Exp $
  */
 
 #ifndef INCLUDED_s_user_h
@@ -51,7 +51,7 @@ extern int register_remote_user(struct Client *, struct Client *,
 extern int do_local_user(const char *, struct Client *, struct Client *,
                          const char *, const char *, const char *,
                          const char *);
-extern unsigned int user_modes_from_c_to_bitmask[];
+extern const unsigned int user_modes_from_c_to_bitmask[];
 extern void uid_init(void);
 extern char *uid_get(void);
 #endif

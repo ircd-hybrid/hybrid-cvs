@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: rsa.c,v 7.31 2003/06/01 23:46:55 joshk Exp $
+ *  $Id: rsa.c,v 7.32 2003/06/24 09:39:32 michael Exp $
  */
 
 #include "stdinc.h"
@@ -164,7 +164,7 @@ verify_private_key(void)
 static void
 binary_to_hex(unsigned char *bin, char *hex, int length)
 {
-  static char trans[] = "0123456789ABCDEF";
+  static const char trans[] = "0123456789ABCDEF";
   int i;
 
   for(i = 0; i < length; i++)
