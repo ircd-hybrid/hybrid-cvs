@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: hook.c,v 7.7 2001/05/10 06:30:44 a1kmm blalloc.c $
+ * $Id: hook.c,v 7.8 2001/08/26 15:26:58 davidt Exp $
  */
 
 /* hooks are used by modules to hook into events called by other parts of
@@ -38,6 +38,11 @@ void
 init_hooks(void)
 {
 	memset(&hooks, 0, sizeof(hooks));
+#ifndef NDEBUG
+        hook_add_event("iosend");
+        hook_add_event("iorecv");
+        hook_add_event("iorecvctrl");
+#endif
 }
 
 static hook *
