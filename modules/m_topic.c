@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_topic.c,v 1.42 2001/12/02 12:05:19 leeh Exp $
+ *   $Id: m_topic.c,v 1.43 2001/12/04 09:00:00 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -209,7 +209,11 @@ static void m_topic(struct Client *client_p,
               sendto_one(source_p, form_str(RPL_TOPIC),
                          me.name, parv[0],
                          root_chan->chname, chptr->topic);
-              if (!(chptr->mode.mode & MODE_HIDEOPS) ||
+
+              /* only send topic to members */
+              if(IsMember(source_p, chptr))
+	      { 
+                if(!(chptr->mode.mode & MODE_HIDEOPS) ||
                   is_any_op(chptr,source_p))
                 {
                   sendto_one(source_p, form_str(RPL_TOPICWHOTIME),
@@ -217,25 +221,26 @@ static void m_topic(struct Client *client_p,
                              chptr->topic_info,
                              chptr->topic_time);
                 }
-	      /* client on LL needing the topic - if we have serverhide, say
-	       * its the actual LL server that set the topic, not us the
-	       * uplink -- fl_
-	       */
-	      else if(ConfigServerHide.hide_servers && !MyClient(source_p)
-	             && IsCapable(client_p, CAP_LL) && ServerInfo.hub)
-	      {
-	        sendto_one(source_p, form_str(RPL_TOPICWHOTIME),
-		           me.name, parv[0], root_chan->chname,
-			   client_p->name, chptr->topic_time);
-              }
-	      /* just normal topic hiding.. */
-	      else
-		{
+	        /* client on LL needing the topic - if we have serverhide, say
+	         * its the actual LL server that set the topic, not us the
+	         * uplink -- fl_
+	         */
+	        else if(ConfigServerHide.hide_servers && !MyClient(source_p)
+	                && IsCapable(client_p, CAP_LL) && ServerInfo.hub)
+  	        {
+	          sendto_one(source_p, form_str(RPL_TOPICWHOTIME),
+	  	             me.name, parv[0], root_chan->chname,
+	  		     client_p->name, chptr->topic_time);
+                }
+  	        /* just normal topic hiding.. */
+	        else
+	 	{
                   sendto_one(source_p, form_str(RPL_TOPICWHOTIME),
                              me.name, parv[0], root_chan->chname,
                              me.name,
                              chptr->topic_time);
                 }
+              }
             }
         }
     }
