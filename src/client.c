@@ -20,12 +20,13 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.34 2000/11/03 18:54:10 adrian Exp $
+ *  $Id: client.c,v 7.35 2000/11/06 06:56:47 db Exp $
  */
 #include "client.h"
 #include "class.h"
 #include "blalloc.h"
 #include "channel.h"
+#include "m_invite.h"
 #include "common.h"
 #include "dline_conf.h"
 #include "fdlist.h"
@@ -1296,11 +1297,11 @@ static void exit_one_client(struct Client *cptr, struct Client *sptr, struct Cli
                                    sptr->name, comment);
 
           while ((lp = sptr->user->channel))
-            remove_user_from_channel(sptr,lp->value.chptr,0);
+            remove_user_from_channel(lp->value.chptr,sptr,0);
           
           /* Clean up invitefield */
           while ((lp = sptr->user->invited))
-            del_invite(sptr, lp->value.chptr);
+            del_invite(lp->value.chptr, sptr);
           /* again, this is all that is needed */
         }
     }

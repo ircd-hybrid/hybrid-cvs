@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_part.c,v 7.9 2000/11/05 06:23:54 db Exp $
+ *   $Id: m_part.c,v 7.10 2000/11/06 06:56:51 db Exp $
  */
 #include "handlers.h"
 #include "channel.h"
@@ -213,7 +213,7 @@ static void part_one_client(struct Client *cptr,
 	  sendto_match_servs(chptr, cptr, ":%s PART %s", sptr->name, name);
 	  
 	  sendto_channel_butserv(chptr, sptr, ":%s PART %s", sptr->name, name);
-	  remove_user_from_channel(sptr, chptr, 0);
+	  remove_user_from_channel(chptr, sptr, 0);
 	}
       else
 	{
@@ -230,7 +230,7 @@ static void part_one_client(struct Client *cptr,
 	  sendto_match_servs(chptr, cptr, ":%s PART %s", sptr->name, name);
             
 	  sendto_channel_butserv(vchan, sptr, ":%s PART %s", sptr->name, name);
-	  remove_user_from_channel(sptr, vchan, 0);
+	  remove_user_from_channel(vchan, sptr, 0);
 	}
     }
   else
@@ -248,7 +248,7 @@ static void part_one_client(struct Client *cptr,
       sendto_match_servs(chptr, cptr, ":%s PART %s", sptr->name, name);
             
       sendto_channel_butserv(chptr, sptr, ":%s PART %s", sptr->name, name);
-      remove_user_from_channel(sptr, chptr, 0);
+      remove_user_from_channel(chptr, sptr, 0);
     }
 }
 

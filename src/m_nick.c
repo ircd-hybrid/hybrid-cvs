@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_nick.c,v 7.13 2000/11/05 01:53:51 db Exp $
+ *   $Id: m_nick.c,v 7.14 2000/11/06 06:56:50 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -274,7 +274,7 @@ int m_nick(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
       struct SLink *tmp = sptr->user->channel;
       while (tmp)
 	{
-	  if (is_banned(sptr, tmp->value.chptr))
+	  if (is_banned(tmp->value.chptr,sptr))
 	    {
 	      sendto_one(sptr, form_str(ERR_BANNEDNICK),
 			 me.name,

@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu, Computing Center and Jarkko Oikarinen
  *
- * $Id: list.c,v 7.8 2000/10/26 07:57:49 db Exp $
+ * $Id: list.c,v 7.9 2000/11/06 06:56:48 db Exp $
  */
 #include "blalloc.h"
 #include "channel.h"
@@ -212,15 +212,6 @@ struct SLink *find_user_link(struct SLink *lp, struct Client *ptr)
           return (lp);
         lp = lp->next;
       }
-  return ((struct SLink *)NULL);
-}
-
-struct SLink *find_channel_link(struct SLink *lp, struct Channel *chptr)
-{ 
-  if (chptr)
-    for(;lp;lp=lp->next)
-      if (lp->value.chptr == chptr)
-        return lp;
   return ((struct SLink *)NULL);
 }
 

@@ -20,12 +20,13 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_cjoin.c,v 7.14 2000/10/23 18:44:58 db Exp $
+ *   $Id: m_cjoin.c,v 7.15 2000/11/06 06:56:49 db Exp $
  */
 
 #include "handlers.h"
 #include "channel.h"
 #include "vchannel.h"
+#include "m_invite.h"
 #include "client.h"
 #include "common.h"   /* bleah */
 #include "hash.h"
@@ -267,7 +268,7 @@ int     m_cjoin(struct Client *cptr,
 		     ":%s MODE %s +nt",
 		     me.name, vchan_chptr->chname);
 
-  del_invite(sptr, vchan_chptr);
+  del_invite(vchan_chptr, sptr);
   (void)names_on_this_channel(sptr, vchan_chptr, chptr->chname);
 
   return 0;

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_topic.c,v 7.8 2000/10/22 01:47:08 toot Exp $
+ *   $Id: m_topic.c,v 7.9 2000/11/06 06:56:52 db Exp $
  */
 #include "handlers.h"
 #include "channel.h"
@@ -146,7 +146,7 @@ int     m_topic(struct Client *cptr,
 	      return 0;
 	    }
 	  if ((chptr->mode.mode & MODE_TOPICLIMIT) == 0 ||
-	      is_chan_op(sptr, chptr))
+	      is_chan_op(chptr,sptr))
 	    {
 	      /* setting a topic */
 	      /*
@@ -266,7 +266,7 @@ int     ms_topic(struct Client *cptr,
 	    }
 		
 	  if ((chptr->mode.mode & MODE_TOPICLIMIT) == 0 ||
-	      is_chan_op(sptr, chptr))
+	      is_chan_op(chptr,sptr))
 	    {
 	      /* setting a topic */
 	      /*

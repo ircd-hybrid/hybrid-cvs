@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_who.c,v 7.12 2000/11/05 06:23:54 db Exp $
+ *   $Id: m_who.c,v 7.13 2000/11/06 06:56:52 db Exp $
  */
 
 #include "common.h"   /* bleah */
@@ -441,5 +441,4 @@ int     ms_who(struct Client *cptr,
     }
 
   return( m_who(cptr,sptr,parc,parv) );
-
 }

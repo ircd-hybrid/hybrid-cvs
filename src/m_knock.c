@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_knock.c,v 7.7 2000/11/05 21:23:40 toot Exp $
+ *   $Id: m_knock.c,v 7.8 2000/11/06 06:56:50 db Exp $
  */
 #include "handlers.h"
 #include "channel.h"
@@ -284,7 +284,7 @@ static struct Channel *parse_knock_args(struct Client *cptr,
 
   /* don't allow a knock if the user is banned, or the channel is secret */
   if ((chptr->mode.mode & MODE_SECRET) ||
-      (is_banned(sptr, chptr) == CHFL_BAN) )
+      (is_banned(chptr,sptr) == CHFL_BAN) )
     {
       sendto_one(sptr, form_str(ERR_CANNOTSENDTOCHAN), me.name, parv[0],
                  name);

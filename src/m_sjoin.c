@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 7.15 2000/11/05 08:15:36 db Exp $
+ *   $Id: m_sjoin.c,v 7.16 2000/11/06 06:56:51 db Exp $
  */
 #include "handlers.h"
 #include "channel.h"
@@ -163,13 +163,25 @@ int     ms_sjoin(struct Client *cptr,
 
 	  *p = '\0';	/* fugly hack for now ... */
 
-	  if((top_chptr = hash_find_channel(parv[2], NULL)))
+	  /* + 1 skip the extra '#' in the name */
+	  if((top_chptr = hash_find_channel((parv[2] + 1), NULL)))
 	    {
+sendto_realops("ZZZ Found top_chptr for %s", (parv[2] + 1));
+
 	      if (top_chptr->next_vchan)
 		{
 		  chptr->next_vchan = top_chptr->next_vchan;
 		  top_chptr->next_vchan->prev_vchan = chptr;
 		}
+
+	      top_chptr->next_vchan = chptr;
+	      chptr->prev_vchan = top_chptr;
+	    }
+	  else
+	    {
+sendto_realops("ZZZ Creating top_chptr for %s", (parv[2] + 1));
+
+	      top_chptr = get_channel(sptr, (parv[2] + 1), CREATE);
 
 	      top_chptr->next_vchan = chptr;
 	      chptr->prev_vchan = top_chptr;
@@ -213,11 +225,6 @@ int     ms_sjoin(struct Client *cptr,
 
   chptr->locally_created = NO;
   oldts = chptr->channelts;
-
-  /*
-   * If an SJOIN ever happens on a channel, assume the split is over
-   * for this channel. best I think we can do for now -Dianora
-   */
 
   /* If the TS goes to 0 for whatever reason, flag it
    * ya, I know its an invasion of privacy for those channels that

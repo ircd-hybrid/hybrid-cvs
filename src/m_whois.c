@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 7.16 2000/11/05 06:23:54 db Exp $
+ *   $Id: m_whois.c,v 7.17 2000/11/06 06:56:53 db Exp $
  */
 
 #include "common.h"   /* bleah */
@@ -345,7 +345,7 @@ static int single_whois(struct Client *sptr,struct Client *acptr,int wilds)
 	      *buf = '\0';
 	      len = 0;
 	    }
-	  found_mode = user_channel_mode(acptr, chptr);
+	  found_mode = user_channel_mode(chptr, acptr);
 	  if (found_mode & CHFL_CHANOP)
 	    *(buf + len++) = '@';
 	  else if (found_mode & CHFL_VOICE)
