@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.h,v 7.49 2003/09/11 03:41:42 metalrock Exp $
+ *  $Id: m_info.h,v 7.50 2004/10/07 19:35:45 metalrock Exp $
  */
 
 #ifndef INCLUDED_m_info_h
@@ -37,12 +37,6 @@ typedef struct Information
 } Info;
 
 Info MyInformation[] = {
-
-#ifdef CLIENT_FLOOD
-  { "CLIENT_FLOOD", "", CLIENT_FLOOD, "Client Excess Flood Threshold" },
-#else
-  { "CLIENT_FLOOD", "OFF", 0, "Client Excess Flood Threshold" },
-#endif /* CLIENT_FLOOD */
 
 #ifdef CPATH
   { "CPATH", CPATH, 0, "Path to Main Configuration File" },
