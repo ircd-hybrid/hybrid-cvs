@@ -20,7 +20,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: s_conf.h,v 7.1 1999/08/15 10:41:19 tomh Exp $
+ * $Id: s_conf.h,v 7.2 1999/09/11 04:38:58 tomh Exp $
  */
 #ifndef INCLUDED_config_h
 #include "config.h"             /* defines */
@@ -229,8 +229,10 @@ extern struct ConfItem* find_conf_host(struct SLink* lp, const char* host,
                                        int statmask);
 extern struct ConfItem* find_conf_ip(struct SLink* lp, char* ip, char* name, 
                                      int);
-extern struct ConfItem* find_conf_by_name(const char* name, int status);
-extern struct ConfItem* find_conf_by_host(const char* host, int status);
+extern struct ConfItem* find_conf_by_name(const char* name, 
+                                          unsigned int status);
+extern struct ConfItem* find_conf_by_host(const char* host, 
+                                          unsinged int status);
 extern struct ConfItem* find_kill (struct Client *);
 extern int conf_connect_allowed(struct in_addr addr);
 extern char *oper_flags_as_string(int);

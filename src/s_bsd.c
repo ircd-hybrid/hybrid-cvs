@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.14 1999/09/11 02:59:12 tomh Exp $
+ *  $Id: s_bsd.c,v 7.15 1999/09/11 04:39:01 tomh Exp $
  */
 #include "s_bsd.h"
 #include "class.h"
@@ -130,8 +130,8 @@ static int get_sockerr(int fd)
 {
   int errtmp = errno;
 #ifdef SO_ERROR
-  int err = 0;
-  int len = sizeof(err);
+  int    err = 0;
+  size_t len = sizeof(err);
 
   if (-1 < fd && !getsockopt(fd, SOL_SOCKET, SO_ERROR, (char*) &err, &len)) {
     if (err)
@@ -719,9 +719,9 @@ void close_connection(struct Client *cptr)
  */
 void add_connection(struct Listener* listener, int fd)
 {
-  struct Client*           new_client;
+  struct Client*     new_client;
   struct sockaddr_in addr;
-  int                len = sizeof(struct sockaddr_in);
+  size_t             len = sizeof(struct sockaddr_in);
 
   assert(0 != listener);
 
