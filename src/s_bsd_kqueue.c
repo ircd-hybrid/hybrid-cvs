@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_kqueue.c,v 1.17 2001/06/12 21:23:19 androsyn Exp $
+ *  $Id: s_bsd_kqueue.c,v 1.18 2001/06/16 02:55:41 a1kmm blalloc.c $
  */
 #include "config.h"
 #ifdef USE_KQUEUE
@@ -232,7 +232,7 @@ comm_select(unsigned long delay)
          *   -- Adrian
          */
         poll_time.tv_sec = 0;
-        poll_time.tv_nsec = delay * 1000;
+        poll_time.tv_nsec = delay * 1000000;
         for (;;) {
             num = kevent(kq, kqlst, kqoff, ke,  KE_LENGTH, &poll_time);
 	    kqoff = 0;

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: listener.c,v 7.48 2001/05/24 04:22:10 ejb Exp $
+ *  $Id: listener.c,v 7.49 2001/06/16 02:55:40 a1kmm Exp $
  */
 #include "config.h"
 #include "listener.h"
@@ -333,6 +333,10 @@ void close_listeners()
   }
 }
 
+#define TOOMANY_WARNING "ERROR :Too many connections from IP address.\r\n"
+#define TOOFAST_WARNING "ERROR :Trying to reconnect too fast.\r\n"
+#define DLINE_WARNING "ERROR :You have been D-lined.\r\n"
+
 static void accept_connection(int pfd, void *data)
 {
   static time_t      last_oper_notice = 0;
@@ -340,6 +344,7 @@ static void accept_connection(int pfd, void *data)
   struct irc_sockaddr sai;
   struct irc_inaddr addr;
   int                fd;
+  int pe;
   struct Listener *  listener = data;
 
   assert(0 != listener);
@@ -402,19 +407,32 @@ static void accept_connection(int pfd, void *data)
                      accept_connection, listener, 0);
       return;
     }
-  /*
-   * check conf for ip address access
-   */
-  if (!conf_connect_allowed(&addr, sai.sins.sin.sin_family))
-    {
-      ServerStats->is_ref++;
-      send(fd, "NOTICE DLINE :*** You have been D-lined\r\n", 41, 0);
-      fd_close(fd);
-      /* Re-register a new IO request for the next accept .. */
-      comm_setselect(listener->fd, FDLIST_SERVICE, COMM_SELECT_READ,
-                     accept_connection, listener, 0);
-      return;
-    }
+
+  /* Do an initial check we aren't connecting too fast or with too many
+   * from this IP... */
+  if ((pe = conf_connect_allowed(&addr, sai.sins.sin.sin_family)) != 0)
+  {
+   ServerStats->is_ref++;
+   switch (pe)
+   {
+    case BANNED_CLIENT:
+     send(fd, DLINE_WARNING, sizeof(DLINE_WARNING)-1, 0);
+     break;
+#ifdef PACE_CONNECT      
+    case TOO_MANY:
+     send(fd, TOOMANY_WARNING, sizeof(TOOMANY_WARNING)-1, 0);
+     break;
+    case TOO_FAST:
+     send(fd, TOOFAST_WARNING, sizeof(TOOFAST_WARNING)-1, 0);
+     break;
+#endif
+   }
+   fd_close(fd);
+   /* Re-register a new IO request for the next accept .. */
+   comm_setselect(listener->fd, FDLIST_SERVICE, COMM_SELECT_READ,
+                  accept_connection, listener, 0);
+   return;
+  }
   ServerStats->is_ac++;
 
   add_connection(listener, fd);

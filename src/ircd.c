@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.162 2001/06/11 19:38:22 androsyn Exp $
+ * $Id: ircd.c,v 7.163 2001/06/16 02:55:40 a1kmm Exp $
  */
 
 #include <sys/types.h>
@@ -321,10 +321,10 @@ io_loop(void)
    empty_cycles = 0;
   else if (empty_cycles++ > 10)
   {
-    if(empty_cycles - 10 > 5000)
-   	st = 5000;
+    if (empty_cycles - 10 > 256*500)
+   	st = 500;
     else
-   	st = empty_cycles;
+   	st = empty_cycles>>8;
   }
   /* Do IO events */
   comm_select(st);
@@ -669,6 +669,9 @@ int main(int argc, char *argv[])
  eventAdd("comm_checktimeouts", comm_checktimeouts, NULL, 1, 0);
 
  eventAdd("cleanup_zombies", cleanup_zombies, NULL, 30, 0); 
+#ifdef PACE_CONNECT
+ eventAdd("flush_expired_ips", flush_expired_ips, NULL, 30, 0);
+#endif
  ServerRunning = 1;
  io_loop();
  return 0;
