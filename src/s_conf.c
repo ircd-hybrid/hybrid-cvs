@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.40 2000/01/16 16:19:29 db Exp $
+ *  $Id: s_conf.c,v 7.41 2000/01/16 22:16:49 db Exp $
  */
 #include "s_conf.h"
 #include "channel.h"
@@ -79,6 +79,7 @@ static void     flush_deleted_I_P(void);
 
 FBFILE* conf_fbfile_in;
 char    conf_line_in[256];
+struct ConfItem* yy_aconf;
 
 
 /* address of class 0 conf */
@@ -223,6 +224,7 @@ void free_conf(struct ConfItem* aconf)
   MyFree(aconf->passwd);
   MyFree(aconf->user);
   MyFree(aconf->name);
+  MyFree(aconf->class_name);
   MyFree((char*) aconf);
 }
 

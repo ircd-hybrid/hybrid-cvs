@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.2 2000/01/16 16:19:28 db Exp $
+ * $Id: ircd_lexer.l,v 1.3 2000/01/16 22:16:48 db Exp $
  */
 
 %{
@@ -76,7 +76,9 @@ admin		{ return ADMIN; }
 class		{ return CLASS; }
 client		{ return CLIENT; }
 operator	{ return OPERATOR; }
+global		{ return GLOBAL; }
 oper		{ return OPERATOR; }
+user		{ return USER;} 
 host		{ return HOST; }
 kill		{ return KILL; }
 deny		{ return DENY; }
