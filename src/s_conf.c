@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.344 2003/02/19 09:51:08 a1kmm Exp $
+ *  $Id: s_conf.c,v 7.345 2003/02/19 13:22:03 db Exp $
  */
 
 #include "stdinc.h"
@@ -201,12 +201,8 @@ make_conf(int status)
 void 
 free_conf(struct ConfItem* aconf)
 {
-  assert(aconf != NULL);
   if(aconf == NULL)
     return;
-  assert(!(aconf->status & CONF_CLIENT) ||
-         (aconf->host && strcmp(aconf->host, "NOMATCH")) ||
-         (aconf->clients == -1));
   delete_adns_queries(aconf->dns_query);
   MyFree(aconf->host);
   if (aconf->passwd)
@@ -317,7 +313,9 @@ report_configured_links(struct Client* source_p, int mask)
 	  *s++ = 'M';
 	    
 	if (buf[0] == '\0')
-	  *s++ = '\0';
+          *s++ = '*';
+
+	*s++ = '\0';
 
 	/* Allow admins to see actual ips */
 	/* except if HIDE_SERVERS_IPS is defined */
@@ -967,7 +965,7 @@ attach_conf(struct Client *client_p,struct ConfItem *aconf)
     }
   }
 
-  if(aconf->status & FLAGS2_RESTRICTED)
+  if(IsConfRestriced(aconf))
     SetRestricted(client_p);
 
   lp = make_dlink_node();
