@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_bsd.h,v 7.20 2000/12/04 16:53:56 db Exp $
+ *   $Id: s_bsd.h,v 7.21 2000/12/28 05:18:35 lusky Exp $
  *
  */
 #ifndef INCLUDED_s_bsd_h
@@ -25,8 +25,15 @@
 #include <sys/types.h>
 #define INCLUDED_sys_types_h
 #endif
+#ifndef INCLUDED_config_h
+#include "config.h"       /* HAVE_SOCKLEN_T */
+#endif
 
 #include "fdlist.h"
+
+#ifndef HAVE_SOCKLEN_T
+typedef unsigned int socklen_t;
+#endif
 
 #define READBUF_SIZE    16384   /* used in s_bsd *AND* s_zip.c ! */
 
