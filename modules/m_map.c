@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_map.c,v 1.3 2001/08/31 12:48:30 leeh Exp $
+ *   $Id: m_map.c,v 1.4 2001/09/05 22:03:27 davidt Exp $
  */
 
 #include <assert.h>
@@ -31,6 +31,7 @@
 #include "handlers.h"
 #include "numeric.h"
 #include "send.h"
+#include "s_conf.h"
 
 static void m_map(struct Client *client_p, struct Client *source_p,
                     int parc, char *parv[]);
