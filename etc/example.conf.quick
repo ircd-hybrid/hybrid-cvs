@@ -3,7 +3,7 @@
  *
  * Written by ejb, wcampbel, db, leeh and others
  *
- * $Id: example.conf.quick,v 1.14 2003/06/21 03:55:09 michael Exp $
+ * $Id: example.conf.quick,v 1.15 2003/06/21 20:09:17 metalrock Exp $
  */
 
 /* IMPORTANT NOTES:
@@ -61,6 +61,9 @@ admin {
 /* logging {}: contains information about logfiles. */
 logging {
         use_logging = yes;
+        userlog = "logs/userlog";
+        operlog = "logs/operlog";
+        failed_operlog = "logs/foperlog";
 	log_level = L_INFO;
 };
 
@@ -276,6 +279,7 @@ gecos {
 };
 
 channel {
+	disable_local_channels = no;
 	use_invex = yes;
 	use_except = yes;
 	use_knock = yes;
@@ -288,7 +292,6 @@ channel {
 	default_split_server_count = 0;
 	no_create_on_split = no;
 	no_join_on_split = no;
-	oper_pass_resv = yes;
 };
 
 serverhide {
@@ -297,8 +300,6 @@ serverhide {
 	hidden = no;
 	disable_hidden = no;
 	hide_servers = no;
-	disable_remote_commands = no;
-	disable_local_channels = no;
 	hide_server_ips = no;
 };
 
@@ -306,6 +307,7 @@ general {
         ignore_bogus_ts = no;
 
 	disable_auth = no;
+        disable_remote_commands = no;
 	default_floodcount = 10;
 	failed_oper_notice = yes;
 	dots_in_ident=2;
@@ -324,7 +326,6 @@ general {
 
 	kline_with_reason = yes;
 	kline_with_connection_closed = no;
-	non_redundant_klines = yes;
 
 	warn_no_nline = yes;
 	stats_o_oper_only=yes;
@@ -338,15 +339,13 @@ general {
 	ping_cookie = no;
 	no_oper_flood = yes;
 	true_no_oper_flood = yes;
+	oper_pass_resv = yes;
 	glines = yes;
 	gline_time = 1 day;
 	idletime = 0;
 	maximum_links = 1;
 	/* REMOVE ME.  The following line checks you've been reading. */
 	havent_read_conf = 1;
-	fname_userlog = "logs/userlog";
-	fname_operlog = "logs/operlog";
-	fname_foperlog = "logs/foperlog";
 
 	max_targets = 4;
 	client_flood = 2560;

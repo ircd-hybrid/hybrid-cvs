@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.247 2003/06/21 03:55:11 michael Exp $
+ *  $Id: s_conf.h,v 7.248 2003/06/21 20:09:19 metalrock Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -306,6 +306,7 @@ struct config_file_entry
 
 struct config_channel_entry
 {
+  int disable_local_channels;
   int use_except;
   int use_invex;
   int use_knock;
@@ -315,7 +316,6 @@ struct config_channel_entry
   int max_chans_per_user;
   int no_create_on_split;
   int no_join_on_split;
-  int oper_pass_resv;
   int quiet_on_ban;
   int default_split_server_count;
   int default_split_user_count;
@@ -325,8 +325,6 @@ struct config_server_hide
 {
   int flatten_links;
   int hide_servers;
-  int disable_remote;
-  int disable_local_channels;
   int links_delay;
   int links_disabled;
   int hidden;

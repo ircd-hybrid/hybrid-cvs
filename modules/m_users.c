@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_users.c,v 1.26 2003/04/18 02:13:43 db Exp $
+ *  $Id: m_users.c,v 1.27 2003/06/21 20:09:21 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -55,7 +55,7 @@ _moddeinit(void)
   mod_del_cmd(&users_msgtab);
 }
 
-const char *_version = "$Revision: 1.26 $";
+const char *_version = "$Revision: 1.27 $";
 #endif
 
 /*
@@ -67,7 +67,7 @@ static void
 m_users(struct Client *client_p, struct Client *source_p,
 	int parc, char *parv[])
 {
-  if(!ConfigServerHide.disable_remote)
+  if(!ConfigFileEntry.disable_remote)
   {
     if(hunt_server(client_p,source_p,":%s USERS :%s",1,parc,parv) != HUNTED_ISME)
       return;

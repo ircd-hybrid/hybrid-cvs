@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: supported.h,v 1.33 2003/06/16 19:02:23 joshk Exp $
+ *  $Id: supported.h,v 1.34 2003/06/21 20:09:19 metalrock Exp $
  */
 
 #ifndef INCLUDED_supported_h
@@ -61,7 +61,7 @@
 # define PREFIX "(ov)@+"
 #endif
 		  
-#define FEATURES2VALUES ConfigServerHide.disable_local_channels ? "#" : "#&", \
+#define FEATURES2VALUES ConfigChannel.disable_local_channels ? "#" : "#&", \
                         PREFIX, \
                         ConfigChannel.use_except ? "e" : "", \
                         ConfigChannel.use_invex ? "I" : "", \

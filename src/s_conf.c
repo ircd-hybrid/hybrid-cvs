@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.440 2003/06/21 17:13:23 db Exp $
+ *  $Id: s_conf.c,v 7.441 2003/06/21 20:09:26 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -1792,8 +1792,12 @@ set_default_conf(void)
 
   set_log_level(L_NOTICE);
   use_logging = YES;
+  fuserlog[0] = '\0';
+  ffailed_operlog[0] = '\0';
+  foperlog[0] = '\0';
   
   ConfigFileEntry.ignore_bogus_ts = NO;
+  ConfigFileEntry.disable_remote = 0;
   ConfigFileEntry.failed_oper_notice = YES;
   ConfigFileEntry.anti_nick_flood = NO;
   ConfigFileEntry.max_nick_time = 20;
@@ -1805,7 +1809,6 @@ set_default_conf(void)
   ConfigFileEntry.kline_with_reason = YES;
   ConfigFileEntry.kline_with_connection_closed = NO;
   ConfigFileEntry.warn_no_nline = YES;
-  ConfigFileEntry.non_redundant_klines = YES;
   ConfigFileEntry.stats_o_oper_only = NO;
   ConfigFileEntry.stats_k_oper_only = 1; /* masked */
   ConfigFileEntry.stats_i_oper_only = 1; /* masked */
@@ -1816,9 +1819,7 @@ set_default_conf(void)
   ConfigFileEntry.short_motd = NO;
   ConfigFileEntry.no_oper_flood = NO;
   ConfigFileEntry.true_no_oper_flood = NO;
-  ConfigFileEntry.fname_userlog[0] = '\0';
-  ConfigFileEntry.fname_foperlog[0] = '\0';
-  ConfigFileEntry.fname_operlog[0] = '\0';
+  ConfigFileEntry.oper_pass_resv = YES;
   ConfigFileEntry.glines = NO;
   ConfigFileEntry.use_egd = NO;
   ConfigFileEntry.gline_time = 12 * 3600;
@@ -1856,17 +1857,14 @@ set_default_conf(void)
   ConfigChannel.knock_delay_channel = 60;
   ConfigChannel.max_chans_per_user = 15;
   ConfigChannel.max_bans = 25;
-
   ConfigChannel.default_split_user_count = 0;
   ConfigChannel.default_split_server_count = 0;
   ConfigChannel.no_join_on_split = NO;
   ConfigChannel.no_create_on_split = NO;
-  ConfigChannel.oper_pass_resv = YES;
 
   ConfigServerHide.flatten_links = 0;
   ConfigServerHide.hide_server_ips = 0;
   ConfigServerHide.hide_servers = 0;
-  ConfigServerHide.disable_remote = 0;
   ConfigServerHide.links_delay = 300;
   ConfigServerHide.hidden = 0;
   ConfigServerHide.disable_hidden = 0;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.157 2003/06/16 05:32:42 db Exp $
+ *  $Id: m_kline.c,v 1.158 2003/06/21 20:09:21 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -81,7 +81,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.157 $";
+const char *_version = "$Revision: 1.158 $";
 #endif
 
 /* Local function prototypes */
@@ -603,6 +603,7 @@ mo_dline(struct Client *client_p, struct Client *source_p,
 {
   char def_reason[] = "No Reason";
   char *dlhost, *oper_reason, *reason;
+  const char *creason;
 #ifndef IPV6
   struct Client *target_p;
 #endif
@@ -702,7 +703,6 @@ mo_dline(struct Client *client_p, struct Client *source_p,
   else
     reason = def_reason;
 
-
   if (bits < 8)
   {
     sendto_one(source_p,
@@ -718,25 +718,21 @@ mo_dline(struct Client *client_p, struct Client *source_p,
   else
 #endif
     t = AF_INET;
-  if (ConfigFileEntry.non_redundant_klines)
+
+  (void)parse_netmask(dlhost, &daddr, NULL);
+
+  if ((aconf = find_dline_conf(&daddr, t)) != NULL)
   {
-    const char *creason;
-
-    (void)parse_netmask(dlhost, &daddr, NULL);
-
-    if ((aconf = find_dline_conf(&daddr, t)) != NULL)
-    {
-      creason = aconf->reason ? aconf->reason : def_reason;
-      if (IsConfExemptKline(aconf))
-	sendto_one(source_p,
-		   ":%s NOTICE %s :[%s] is (E)d-lined by [%s] - %s",
-		   me.name, source_p->name, dlhost, aconf->host, creason);
-      else
-	sendto_one(source_p,
-		   ":%s NOTICE %s :[%s] already D-lined by [%s] - %s",
-		   me.name, source_p->name, dlhost, aconf->host, creason);
-      return;
-    }
+    creason = aconf->reason ? aconf->reason : def_reason;
+    if (IsConfExemptKline(aconf))
+      sendto_one(source_p,
+		 ":%s NOTICE %s :[%s] is (E)d-lined by [%s] - %s",
+		 me.name, source_p->name, dlhost, aconf->host, creason);
+    else
+      sendto_one(source_p,
+		 ":%s NOTICE %s :[%s] already D-lined by [%s] - %s",
+		 me.name, source_p->name, dlhost, aconf->host, creason);
+    return;
   }
 
   set_time();
@@ -994,34 +990,31 @@ already_placed_kline(struct Client *source_p, const char *luser, const char *lho
   struct AccessItem *aconf;
   int t;
 
-  if (ConfigFileEntry.non_redundant_klines) 
+  if ((t=parse_netmask(lhost, &iphost, &t)) != HM_HOST)
   {
-    if ((t=parse_netmask(lhost, &iphost, &t)) != HM_HOST)
-    {
 #ifdef IPV6
-      if (t == HM_IPV6)
-        t = AF_INET6;
-      else
-#endif
-        t = AF_INET;
-      piphost = &iphost;
-    }
+    if (t == HM_IPV6)
+      t = AF_INET6;
     else
-    {
-      t = 0;
-      piphost = NULL;
-    }
+#endif
+      t = AF_INET;
+    piphost = &iphost;
+  }
+  else
+  {
+    t = 0;
+    piphost = NULL;
+  }
 
-    if ((aconf = find_conf_by_address(lhost, piphost, CONF_KILL, t, luser)))
-    {
-      reason = aconf->reason ? aconf->reason : "No Reason";
+  if ((aconf = find_conf_by_address(lhost, piphost, CONF_KILL, t, luser)))
+  {
+    reason = aconf->reason ? aconf->reason : "No Reason";
 
-      sendto_one(source_p,
-                 ":%s NOTICE %s :[%s@%s] already K-Lined by [%s@%s] - %s",
-                 me.name, source_p->name, luser, lhost, aconf->user,
-                 aconf->host, reason);
-      return(1);
-    }
+    sendto_one(source_p,
+               ":%s NOTICE %s :[%s@%s] already K-Lined by [%s@%s] - %s",
+               me.name, source_p->name, luser, lhost, aconf->user,
+               aconf->host, reason);
+    return(1);
   }
 
   return(0);

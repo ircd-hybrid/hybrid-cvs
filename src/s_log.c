@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.c,v 7.55 2003/06/15 19:00:36 joshk Exp $
+ *  $Id: s_log.c,v 7.56 2003/06/21 20:09:26 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -53,6 +53,9 @@ static FBFILE *logFile;
 static int logLevel = INIT_LOG_LEVEL;
 int use_logging = YES;
 
+char foperlog[MAXPATHLEN+1];
+char fuserlog[MAXPATHLEN+1];
+char ffailed_operlog[MAXPATHLEN+1];
 
 #ifndef SYSLOG_USERS
 static EVH user_log_resync;
@@ -262,11 +265,11 @@ log_user_exit(struct Client *source_p)
     {
       if (user_log_fb == NULL)
       {
-	if((ConfigFileEntry.fname_userlog[0] != '\0') && 
-	   (user_log_fb = fbopen(ConfigFileEntry.fname_userlog, "r")) != NULL )
+	if((fuserlog[0] != '\0') && 
+	   (user_log_fb = fbopen(fuserlog, "r")) != NULL )
 	{
 	  fbclose(user_log_fb);
-	  user_log_fb = fbopen(ConfigFileEntry.fname_userlog, "a");
+	  user_log_fb = fbopen(fuserlog, "a");
 	}
       }
       if (user_log_fb != NULL)
@@ -311,7 +314,7 @@ user_log_resync(void *notused)
  *
  * inputs	- pointer to client being opered up
  * output	- none
- * side effects - ConfigFileEntry.fname_operlog is written to, if its present
+ * side effects - foperlog is written to, if its present
  */
 void
 log_oper(struct Client *source_p, const char *name)
@@ -319,15 +322,15 @@ log_oper(struct Client *source_p, const char *name)
   FBFILE *oper_fb;
   char linebuf[BUFSIZE];
 
-  if (ConfigFileEntry.fname_operlog[0] == '\0')
+  if (foperlog[0] == '\0')
     return;
   
   if (IsPerson(source_p))
   {
-    if ((oper_fb = fbopen(ConfigFileEntry.fname_operlog, "r")) != NULL)
+    if ((oper_fb = fbopen(foperlog, "r")) != NULL)
     {
       fbclose(oper_fb);
-      oper_fb = fbopen(ConfigFileEntry.fname_operlog, "a");
+      oper_fb = fbopen(foperlog, "a");
     }
 
     if (oper_fb != NULL)
@@ -346,7 +349,7 @@ log_oper(struct Client *source_p, const char *name)
  *
  * inputs	- pointer to client that failed top oper up
  * output	- none
- * side effects - ConfigFileEntry.fname_foperlog is written to, if its present
+ * side effects - ffailed_operlog is written to, if its present
  */
 void
 log_failed_oper(struct Client *source_p, const char *name)
@@ -354,15 +357,15 @@ log_failed_oper(struct Client *source_p, const char *name)
   FBFILE *oper_fb;
   char linebuf[BUFSIZE];
 
-  if (ConfigFileEntry.fname_foperlog[0] == '\0')
+  if (ffailed_operlog[0] == '\0')
     return;
   
   if (IsPerson(source_p))
   {
-    if ((oper_fb = fbopen(ConfigFileEntry.fname_foperlog, "r")) != NULL)
+    if ((oper_fb = fbopen(ffailed_operlog, "r")) != NULL)
     {
       fbclose(oper_fb);
-      oper_fb = fbopen(ConfigFileEntry.fname_foperlog, "a");
+      oper_fb = fbopen(ffailed_operlog, "a");
     }
 
     if (oper_fb != NULL)

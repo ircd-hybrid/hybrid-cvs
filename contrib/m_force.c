@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: m_force.c,v 1.26 2003/06/12 15:17:17 michael Exp $
+ * $Id: m_force.c,v 1.27 2003/06/21 20:09:13 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -75,7 +75,7 @@ _moddeinit(void)
   mod_del_cmd(&forcepart_msgtab);
 }
 
-const char *_version = "$Revision: 1.26 $";
+const char *_version = "$Revision: 1.27 $";
 #endif
 
 /* m_forcejoin()
@@ -208,9 +208,9 @@ mo_forcejoin(struct Client *client_p, struct Client *source_p,
      * local channels... but...
      * I don't want to break anything - scuzzy
      */
-    if (ConfigServerHide.disable_local_channels && (*newch == '&'))
+    if (ConfigChannel.disable_local_channels && (*newch == '&'))
     {
-      sendto_one(source_p, ":%s NOTICE %s :No such channel (%s)",
+      sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
                  me.name, source_p->name, newch);
       return;
     }
@@ -218,8 +218,8 @@ mo_forcejoin(struct Client *client_p, struct Client *source_p,
     /* newch can't be longer than CHANNELLEN */
     if (strlen(newch) > CHANNELLEN)
     {
-      sendto_one(source_p, ":%s NOTICE %s :Channel name is too long",
-                 me.name, source_p->name);
+      sendto_one(source_p, form_str(ERR_BADCHANNAME),
+                 me.name, source_p->name, newch);
       return;
     }
 

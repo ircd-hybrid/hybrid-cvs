@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_links.c,v 1.41 2003/05/10 04:05:03 michael Exp $
+ *  $Id: m_links.c,v 1.42 2003/06/21 20:09:21 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&links_msgtab);
 }
 
-const char *_version = "$Revision: 1.41 $";
+const char *_version = "$Revision: 1.42 $";
 #endif
 
 /*
@@ -111,7 +111,7 @@ mo_links(struct Client *client_p, struct Client *source_p,
 
   if (parc > 2) 
   {
-    if (!ConfigServerHide.disable_remote || IsOper(source_p))
+    if (!ConfigFileEntry.disable_remote || IsOper(source_p))
     {
         if (hunt_server(client_p, source_p, ":%s LINKS %s :%s", 1, parc, parv)
             != HUNTED_ISME)

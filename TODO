@@ -1,4 +1,4 @@
-$Id: TODO,v 7.90 2003/06/21 03:40:53 joshk Exp $
+$Id: TODO,v 7.91 2003/06/21 20:09:12 metalrock Exp $
 
 - add more stderr debugging (ircd -s)... one for every place we syslog()
 - ircd -s doesn't work through a restart
@@ -125,9 +125,11 @@ Little things to be done given enough time and initiative -Hwy
 * Make modules.c more flexible in anticipation of Win32 modules usability.
 * LAZY LINKS ARE BROKEN!!!
 
--- MeTaLRoCk's list
+-- metalrock's list
 
-* <empty>
+* Rewrite the horrendous trace modules.
+* Write hide_spoof_ips for ircd.conf.
+* Don't show local channels in a remote whois.
 
 -- adx's list
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.321 2003/06/21 03:55:16 michael Exp $
+ *  $Id: ircd_parser.y,v 1.322 2003/06/21 20:09:26 metalrock Exp $
  */
 
 %{
@@ -134,9 +134,9 @@ init_parser_confs(void)
 %token  FAKENAME
 %token  FALLBACK_IP6_INT
 %token  FLATTEN_LINKS
-%token  FNAME_FOPERLOG
-%token  FNAME_OPERLOG
-%token  FNAME_USERLOG
+%token  FFAILED_OPERLOG
+%token  FOPERLOG
+%token  FUSERLOG
 %token  GECOS
 %token  GENERAL
 %token  GLINE
@@ -193,7 +193,6 @@ init_parser_confs(void)
 %token  NETWORK_NAME
 %token	NICK
 %token  NICK_CHANGES
-%token  NON_REDUNDANT_KLINES
 %token  NO_CREATE_ON_SPLIT
 %token  NO_JOIN_ON_SPLIT
 %token  NO_OPER_FLOOD
@@ -712,7 +711,9 @@ logging_items:          logging_items logging_item |
 
 logging_item:           logging_path | logging_oper_log |
                         logging_gline_log | logging_log_level |
-			logging_use_logging | error;
+			logging_use_logging | logging_fuserlog |
+			logging_foperlog | logging_ffailed_operlog |
+			error;
 
 logging_path:           T_LOGPATH '=' QSTRING ';' 
                         {
@@ -725,6 +726,27 @@ logging_oper_log:	OPER_LOG '=' QSTRING ';'
 logging_gline_log:	GLINE_LOG '=' QSTRING ';'
                         {
                         };
+
+logging_fuserlog: FUSERLOG '=' QSTRING ';'
+{
+  if (ypass == 2)
+    strlcpy(fuserlog, yylval.string,
+            sizeof(fuserlog));
+};
+
+logging_ffailed_operlog: FFAILED_OPERLOG '=' QSTRING ';'
+{
+  if (ypass == 2)
+    strlcpy(ffailed_operlog, yylval.string,
+            sizeof(ffailed_operlog));
+};
+
+logging_foperlog: FOPERLOG '=' QSTRING ';'
+{
+  if (ypass == 2)
+    strlcpy(foperlog, yylval.string,
+            sizeof(foperlog));
+};
 
 logging_log_level: LOG_LEVEL '=' T_L_CRIT ';'
 { 
@@ -2240,38 +2262,39 @@ general_item:       general_ignore_bogus_ts | general_failed_oper_notice |
                     general_ts_warn_delta | general_ts_max_delta |
                     general_kline_with_reason |
                     general_kline_with_connection_closed |
-                    general_warn_no_nline |
-                    general_non_redundant_klines | general_dots_in_ident |
+                    general_warn_no_nline | general_dots_in_ident |
                     general_stats_o_oper_only | general_stats_k_oper_only |
                     general_pace_wait | general_stats_i_oper_only |
                     general_pace_wait_simple | general_stats_P_oper_only |
                     general_short_motd | general_no_oper_flood |
-                    general_true_no_oper_flood |
-                    general_iauth_server |
-                    general_iauth_port |
+                    general_true_no_oper_flood | general_oper_pass_resv |
+                    general_iauth_server | general_iauth_port |
                     general_glines | general_gline_time |
-                    general_idletime |
-                    general_maximum_links |
+                    general_idletime | general_maximum_links |
                     general_message_locale |
-                    general_fname_userlog | general_fname_operlog |
-                    general_fname_foperlog | general_oper_only_umodes |
-                    general_max_targets |
+                    general_oper_only_umodes | general_max_targets |
                     general_use_egd | general_egdpool_path |
                     general_oper_umodes | general_crypt_oper_password |
                     general_caller_id_wait | general_default_floodcount |
                     general_min_nonwildcard | general_min_nonwildcard_simple |
-                    general_servlink_path |
+                    general_servlink_path | general_disable_remote_commands |
                     general_default_cipher_preference |
                     general_compression_level | general_client_flood |
                     general_throttle_time | general_havent_read_conf |
                     general_dot_in_ip6_addr | general_ping_cookie |
-                    general_disable_auth | general_fallback_to_ip6_int | 
+                    general_disable_auth | general_fallback_to_ip6_int |
                     error;
 
 general_ignore_bogus_ts: IGNORE_BOGUS_TS '=' TBOOL ';'
 {
   if (ypass == 2)
     ConfigFileEntry.ignore_bogus_ts = yylval.number;
+};
+
+general_disable_remote_commands: DISABLE_REMOTE_COMMANDS '=' TBOOL ';'
+{
+  if (ypass == 2)
+    ConfigFileEntry.disable_remote = yylval.number;
 };
 
 general_failed_oper_notice: FAILED_OPER_NOTICE '=' TBOOL ';'
@@ -2351,12 +2374,6 @@ general_warn_no_nline: WARN_NO_NLINE '=' TBOOL ';'
     ConfigFileEntry.warn_no_nline = yylval.number;
 };
 
-general_non_redundant_klines: NON_REDUNDANT_KLINES '=' TBOOL ';'
-{
-  if (ypass == 2)
-    ConfigFileEntry.non_redundant_klines = yylval.number;
-};
-
 general_stats_o_oper_only: STATS_O_OPER_ONLY '=' TBOOL ';'
 {
   if (ypass == 2)
@@ -2425,6 +2442,12 @@ general_true_no_oper_flood: TRUE_NO_OPER_FLOOD '=' TBOOL ';'
     ConfigFileEntry.true_no_oper_flood = yylval.number;
 };
 
+general_oper_pass_resv: OPER_PASS_RESV '=' TBOOL ';'
+{
+  if (ypass == 2)
+    ConfigFileEntry.oper_pass_resv = yylval.number;
+};
+
 general_iauth_server: IAUTH_SERVER '=' QSTRING ';'
 {
 #if 0
@@ -2439,27 +2462,6 @@ general_iauth_port: IAUTH_PORT '=' NUMBER ';'
   if (ypass == 2)
     iAuth.port = $3;
 #endif
-};
-
-general_fname_userlog: FNAME_USERLOG '=' QSTRING ';'
-{
-  if (ypass == 2)
-    strlcpy(ConfigFileEntry.fname_userlog, yylval.string,
-            sizeof(ConfigFileEntry.fname_userlog));
-};
-
-general_fname_foperlog: FNAME_FOPERLOG '=' QSTRING ';'
-{
-  if (ypass == 2)
-    strlcpy(ConfigFileEntry.fname_foperlog, yylval.string,
-            sizeof(ConfigFileEntry.fname_foperlog));
-};
-
-general_fname_operlog: FNAME_OPERLOG '=' QSTRING ';'
-{
-  if (ypass == 2)
-    strlcpy(ConfigFileEntry.fname_operlog, yylval.string,
-            sizeof(ConfigFileEntry.fname_operlog));
 };
 
 general_glines: GLINES '=' TBOOL ';'
@@ -2808,7 +2810,8 @@ channel_entry: CHANNEL
   '{' channel_items '}' ';';
 
 channel_items:      channel_items channel_item | channel_item;
-channel_item:       channel_use_except |
+channel_item:       channel_disable_local_channels |
+	            channel_use_except |
                     channel_use_invex |
                     channel_use_knock |
                     channel_max_bans |
@@ -2820,7 +2823,13 @@ channel_item:       channel_use_except |
 		    channel_default_split_server_count |
 		    channel_no_create_on_split | 
 		    channel_no_join_on_split |
-		    channel_oper_pass_resv | error;
+		    error;
+
+channel_disable_local_channels: DISABLE_LOCAL_CHANNELS '=' TBOOL ';'
+{
+  if (ypass == 2)
+    ConfigChannel.disable_local_channels = yylval.number;
+};
 
 channel_use_except: USE_EXCEPT '=' TBOOL ';'
 {
@@ -2894,12 +2903,6 @@ channel_no_join_on_split: NO_JOIN_ON_SPLIT '=' TBOOL ';'
     ConfigChannel.no_join_on_split = yylval.number;
 };
 
-channel_oper_pass_resv: OPER_PASS_RESV '=' TBOOL ';'
-{
-  if (ypass == 2)
-    ConfigChannel.oper_pass_resv = yylval.number;
-};
-
 /***************************************************************************
  *  section serverhide
  ***************************************************************************/
@@ -2908,11 +2911,9 @@ serverhide_entry: SERVERHIDE
 
 serverhide_items:   serverhide_items serverhide_item | serverhide_item;
 serverhide_item:    serverhide_flatten_links | serverhide_hide_servers |
-		    serverhide_disable_remote_commands |
 		    serverhide_links_delay |
 		    serverhide_disable_hidden |
 		    serverhide_hidden |
-		    serverhide_disable_local_channels | 
 		    serverhide_hide_server_ips |
                     error;
 
@@ -2926,18 +2927,6 @@ serverhide_hide_servers: HIDE_SERVERS '=' TBOOL ';'
 {
   if (ypass == 2)
     ConfigServerHide.hide_servers = yylval.number;
-};
-
-serverhide_disable_remote_commands: DISABLE_REMOTE_COMMANDS '=' TBOOL ';'
-{
-  if (ypass == 2)
-    ConfigServerHide.disable_remote = yylval.number;
-};
-
-serverhide_disable_local_channels: DISABLE_LOCAL_CHANNELS '=' TBOOL ';'
-{
-  if (ypass == 2)
-    ConfigServerHide.disable_local_channels = yylval.number;
 };
 
 serverhide_links_delay: LINKS_DELAY '=' timespec ';'
@@ -2971,4 +2960,3 @@ serverhide_hide_server_ips: HIDE_SERVER_IPS '=' TBOOL ';'
   if (ypass == 2)
     ConfigServerHide.hide_server_ips = yylval.number;
 };
-

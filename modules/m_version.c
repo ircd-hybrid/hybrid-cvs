@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_version.c,v 1.46 2003/06/12 01:08:12 metalrock Exp $
+ *  $Id: m_version.c,v 1.47 2003/06/21 20:09:21 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -58,7 +58,7 @@ _moddeinit(void)
   mod_del_cmd(&version_msgtab);
 }
 
-const char *_version = "$Revision: 1.46 $";
+const char *_version = "$Revision: 1.47 $";
 #endif
 
 /*
@@ -82,7 +82,7 @@ m_version(struct Client *client_p, struct Client *source_p,
   else
     last_used = CurrentTime;
 
-  if (!ConfigServerHide.disable_remote)
+  if (!ConfigFileEntry.disable_remote)
   {
     if (hunt_server(client_p, source_p, ":%s VERSION :%s",
                     1, parc, parv) != HUNTED_ISME)
@@ -157,7 +157,7 @@ confopts(struct Client *source_p)
 
   /* might wanna hide this :P */
   if (ServerInfo.hub && 
-      (!ConfigServerHide.disable_remote || IsOper(source_p)))
+      (!ConfigFileEntry.disable_remote || IsOper(source_p)))
   {
     *p++ = 'H';
   }

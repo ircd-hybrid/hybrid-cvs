@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.135 2003/06/21 17:13:21 db Exp $
+ *  $Id: m_stats.c,v 1.136 2003/06/21 20:09:21 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -79,7 +79,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.135 $";
+const char *_version = "$Revision: 1.136 $";
 #endif
 
 const char *Lformat = ":%s %d %s %s %u %u %u %u %u :%u %u %s";
@@ -209,7 +209,7 @@ m_stats(struct Client *client_p, struct Client *source_p,
     last_used = CurrentTime;
 
   /* Is the stats meant for us? */
-  if (!ConfigServerHide.disable_remote)
+  if (!ConfigFileEntry.disable_remote)
     if (hunt_server(client_p,source_p,":%s STATS %s :%s",2,parc,parv) != HUNTED_ISME)
       return;
 
@@ -735,7 +735,7 @@ stats_uptime(struct Client *source_p)
   now = CurrentTime - me.since;
   sendto_one(source_p, form_str(RPL_STATSUPTIME), me.name, source_p->name,
              now/86400, (now/3600)%24, (now/60)%60, now%60);
-  if(!ConfigServerHide.disable_remote || IsOper(source_p))
+  if(!ConfigFileEntry.disable_remote || IsOper(source_p))
      sendto_one(source_p, form_str(RPL_STATSCONN), me.name, source_p->name,
                 MaxConnectionCount, MaxClientCount, Count.totalrestartcount);
 }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.c,v 1.76 2003/06/21 03:55:13 michael Exp $
+ *  $Id: m_info.c,v 1.77 2003/06/21 20:09:21 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -70,7 +70,7 @@ _moddeinit(void)
   hook_del_event("doing_info");
   mod_del_cmd(&info_msgtab);
 }
-const char *_version = "$Revision: 1.76 $";
+const char *_version = "$Revision: 1.77 $";
 #endif
 
 /*
@@ -142,27 +142,6 @@ static struct InfoStruct info_table[] =
     OUTPUT_BOOLEAN,
     &ConfigFileEntry.failed_oper_notice,
     "Inform opers if someone /oper's with the wrong password"
-  },
-  {
-    /* fname_operlog is a char [] */
-    "fname_operlog",
-    OUTPUT_STRING_PTR,
-    &ConfigFileEntry.fname_operlog,
-    "Operator log file"
-  },
-  {
-    /* fname_foperlog is a char [] */
-    "fname_foperlog",
-    OUTPUT_STRING_PTR,
-    &ConfigFileEntry.fname_foperlog,
-    "Failed operator log file"
-  },
-  {
-    /* fname_userlog is a char [] */
-    "fname_userlog",
-    OUTPUT_STRING_PTR,
-    &ConfigFileEntry.fname_userlog,
-    "User log file"
   },
   {
     "glines",
@@ -259,12 +238,6 @@ static struct InfoStruct info_table[] =
     OUTPUT_BOOLEAN,
     &ConfigFileEntry.true_no_oper_flood,
     "Completely disable flood control for operators",
-  },
-  {
-    "non_redundant_klines",
-    OUTPUT_BOOLEAN,
-    &ConfigFileEntry.non_redundant_klines,
-    "Check for and disallow redundant K-lines"
   },
   {
     "pace_wait",
@@ -395,7 +368,7 @@ static struct InfoStruct info_table[] =
   {
     "oper_pass_resv",
     OUTPUT_BOOLEAN_YN,
-    &ConfigChannel.oper_pass_resv,
+    &ConfigFileEntry.oper_pass_resv,
     "Opers can over-ride RESVs",
   },
   {
@@ -429,6 +402,27 @@ static struct InfoStruct info_table[] =
     "Enable logging"
   },
   {
+    /* foperlog is a char [] */
+    "foperlog",
+    OUTPUT_STRING_PTR,
+    &foperlog,
+    "Operator log file"
+  },
+  {
+    /* ffailed_operlog is a char [] */
+    "ffailed_operlog",
+    OUTPUT_STRING_PTR,
+    &ffailed_operlog,
+    "Failed operator log file"
+  },
+  {
+    /* fuserlog is a char [] */
+    "fuserlog",
+    OUTPUT_STRING_PTR,
+    &fuserlog,
+    "User log file"
+  },
+  {
     "disable_hidden",
     OUTPUT_BOOLEAN_YN,
     &ConfigServerHide.disable_hidden,
@@ -437,13 +431,13 @@ static struct InfoStruct info_table[] =
   {
     "disable_local_channels",
     OUTPUT_BOOLEAN_YN,
-    &ConfigServerHide.disable_local_channels,
+    &ConfigChannel.disable_local_channels,
     "Prevent users joining &channels",
   },
   {
     "disable_remote_commands",
     OUTPUT_BOOLEAN_YN,
-    &ConfigServerHide.disable_remote,
+    &ConfigFileEntry.disable_remote,
     "Prevent users issuing commands on remote servers",
   },
   {
@@ -501,7 +495,7 @@ m_info(struct Client *client_p, struct Client *source_p,
     last_used = CurrentTime;
   }
 
-  if (!ConfigServerHide.disable_remote)
+  if (!ConfigFileEntry.disable_remote)
   {
     if (hunt_server(client_p,source_p,
         ":%s INFO :%s", 1, parc, parv) != HUNTED_ISME)

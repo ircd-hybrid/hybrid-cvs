@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_lusers.c,v 1.25 2003/05/24 12:26:34 db Exp $
+ *  $Id: m_lusers.c,v 1.26 2003/06/21 20:09:21 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -58,7 +58,7 @@ _moddeinit(void)
   mod_del_cmd(&lusers_msgtab);
 }
 
-const char *_version = "$Revision: 1.25 $";
+const char *_version = "$Revision: 1.26 $";
 #endif
 /*
  * m_lusers - LUSERS message handler
@@ -87,7 +87,7 @@ m_lusers(struct Client *client_p, struct Client *source_p,
   else
     last_used = CurrentTime;
 
-  if (parc > 2 && !ConfigServerHide.disable_remote)
+  if (parc > 2 && !ConfigFileEntry.disable_remote)
     {   
        if (hunt_server(client_p, source_p, ":%s LUSERS %s :%s", 2, parc, parv) != HUNTED_ISME)
          return;

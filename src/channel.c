@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.396 2003/06/21 12:26:29 michael Exp $
+ *  $Id: channel.c,v 7.397 2003/06/21 20:09:26 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -756,7 +756,7 @@ can_send(struct Channel *chptr, struct Client *source_p)
 
   if (MyClient(source_p) &&
      (find_channel_resv(chptr->chname) &&
-      !(IsOper(source_p)) && ConfigChannel.oper_pass_resv))
+      !(IsOper(source_p)) && ConfigFileEntry.oper_pass_resv))
     return(CAN_SEND_NO);
 
   ms = find_channel_link(source_p, chptr);

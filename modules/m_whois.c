@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.107 2003/06/06 23:19:33 bill Exp $
+ *  $Id: m_whois.c,v 1.108 2003/06/21 20:09:21 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -72,7 +72,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-const char *_version = "$Revision: 1.107 $";
+const char *_version = "$Revision: 1.108 $";
 #endif
 
 /*
@@ -109,7 +109,7 @@ m_whois(struct Client *client_p, struct Client *source_p,
      * server, or our server.. I dont see why they would need to ask
      * anything else for info about the client.. --fl_
      */
-    if (ConfigServerHide.disable_remote)
+    if (ConfigFileEntry.disable_remote)
       parv[1] = parv[2];
 
     if (hunt_server(client_p,source_p,":%s WHOIS %s :%s", 1, parc, parv) != HUNTED_ISME)

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_lexer.l,v 1.171 2003/06/21 03:55:16 michael Exp $
+ *  $Id: ircd_lexer.l,v 1.172 2003/06/21 20:09:26 metalrock Exp $
  */
 
 %option case-insensitive
@@ -171,9 +171,9 @@ exempt		{ return EXEMPT; }
 fakename	{ return FAKENAME; }
 fallback_to_ip6_int { return FALLBACK_IP6_INT; }
 flatten_links	{ return FLATTEN_LINKS; }
-fname_foperlog  { return FNAME_FOPERLOG; }
-fname_operlog   { return FNAME_OPERLOG; }
-fname_userlog   { return FNAME_USERLOG; }
+ffailed_operlog	{ return FFAILED_OPERLOG; }
+foperlog   	{ return FOPERLOG; }
+fuserlog   	{ return FUSERLOG; }
 gecos		{ return GECOS; }
 general		{ return GENERAL; }
 gline		{ return GLINE; }
@@ -293,7 +293,6 @@ links_delay           { return LINKS_DELAY; }
 kline_with_connection_closed { return KLINE_WITH_CONNECTION_CLOSED; }
 kline_with_reason       { return KLINE_WITH_REASON; }
 warn_no_nline           { return WARN_NO_NLINE; }
-non_redundant_klines    { return NON_REDUNDANT_KLINES; }
 
 stats_o_oper_only       { return STATS_O_OPER_ONLY; }
 stats_k_oper_only	{ return STATS_K_OPER_ONLY; }

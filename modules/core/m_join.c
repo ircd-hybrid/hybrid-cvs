@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_join.c,v 1.2 2003/06/07 09:56:49 michael Exp $
+ *  $Id: m_join.c,v 1.3 2003/06/21 20:09:24 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -66,7 +66,7 @@ _moddeinit(void)
   mod_del_cmd(&join_msgtab);
 }
 
-const char *_version = "$Revision: 1.2 $";
+const char *_version = "$Revision: 1.3 $";
 #endif
 
 /*
@@ -132,7 +132,7 @@ m_join(struct Client *client_p, struct Client *source_p,
       continue;
     }
 
-    if (ConfigServerHide.disable_local_channels && (*name == '&'))
+    if (ConfigChannel.disable_local_channels && (*name == '&'))
     {
       sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
                  me.name, source_p->name, name);
@@ -149,7 +149,7 @@ m_join(struct Client *client_p, struct Client *source_p,
 
     /* see if its resv'd */
     if (find_channel_resv(name) &&
-        !(IsOper(source_p) && ConfigChannel.oper_pass_resv))
+        !(IsOper(source_p) && ConfigFileEntry.oper_pass_resv))
     {
       sendto_one(source_p, form_str(ERR_UNAVAILRESOURCE),
                  me.name, source_p->name, name);

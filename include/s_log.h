@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.h,v 7.14 2003/06/14 17:31:14 adx Exp $
+ *  $Id: s_log.h,v 7.15 2003/06/21 20:09:19 metalrock Exp $
  */
 
 #ifndef INCLUDED_s_log_h
@@ -36,6 +36,10 @@ struct Client;
 #define L_DEBUG   6
 
 extern int use_logging;
+
+extern char foperlog[MAXPATHLEN+1];
+extern char fuserlog[MAXPATHLEN+1];
+extern char ffailed_operlog[MAXPATHLEN+1];
 
 extern void init_log(const char* filename);
 extern void reopen_log(const char* filename);

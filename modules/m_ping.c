@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ping.c,v 1.33 2003/04/18 02:13:43 db Exp $
+ *  $Id: m_ping.c,v 1.34 2003/06/21 20:09:21 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -57,7 +57,7 @@ _moddeinit(void)
   mod_del_cmd(&ping_msgtab);
 }
 
-const char *_version = "$Revision: 1.33 $";
+const char *_version = "$Revision: 1.34 $";
 #endif
 /*
 ** m_ping
@@ -81,7 +81,7 @@ m_ping(struct Client *client_p, struct Client *source_p,
   origin = parv[1];
   destination = parv[2]; /* Will get NULL or pointer (parc >= 2!!) */
 
-  if (ConfigServerHide.disable_remote && !IsOper(source_p))
+  if (ConfigFileEntry.disable_remote && !IsOper(source_p))
   {
    sendto_one(source_p,":%s PONG %s :%s", me.name,
               (destination) ? destination : me.name, origin);

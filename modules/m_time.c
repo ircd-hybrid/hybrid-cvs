@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_time.c,v 1.27 2003/04/18 02:13:43 db Exp $
+ *  $Id: m_time.c,v 1.28 2003/06/21 20:09:21 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -57,7 +57,7 @@ _moddeinit(void)
   mod_del_cmd(&time_msgtab);
 }
 
-const char *_version = "$Revision: 1.27 $";
+const char *_version = "$Revision: 1.28 $";
 #endif
 /*
  * m_time
@@ -73,7 +73,7 @@ m_time(struct Client *client_p, struct Client *source_p,
     flood_endgrace(source_p);
 
   /* This is safe enough to use during non hidden server mode */
-  if(!ConfigServerHide.disable_remote)
+  if(!ConfigFileEntry.disable_remote)
     {
       if (hunt_server(client_p,source_p,":%s TIME :%s",1,parc,parv) != HUNTED_ISME)
         return;
