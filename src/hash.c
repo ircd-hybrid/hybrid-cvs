@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.68 2003/06/25 08:47:00 michael Exp $
+ *  $Id: hash.c,v 7.69 2003/06/26 12:19:49 michael Exp $
  */
 
 #include "stdinc.h"
@@ -995,15 +995,16 @@ void free_list_task(struct ListTask *lt, struct Client *source_p)
  *                0 otherwise
  * side effects -
  */
-static int list_allow_channel(char *chname, struct ListTask *lt)
+static int
+list_allow_channel(const char *chname, struct ListTask *lt)
 {
   dlink_node *dl;
 
   DLINK_FOREACH(dl, lt->show_mask.head)
-    if (!match((char *)dl->data, chname))
+    if (!match((const char *)dl->data, chname))
       return(0);
   DLINK_FOREACH(dl, lt->hide_mask.head)
-    if (match((char *)dl->data, chname))
+    if (match((const char *)dl->data, chname))
       return(0);
   return(1);
 }

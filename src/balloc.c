@@ -25,7 +25,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: balloc.c,v 7.46 2003/06/17 20:05:12 joshk Exp $
+ *  $Id: balloc.c,v 7.47 2003/06/26 12:19:49 michael Exp $
  */
 
 /* 
@@ -130,10 +130,10 @@ get_block(size_t size)
 {
   void *ptr;
   ptr = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_PRIVATE, zero_fd, 0);
-  if(ptr == MAP_FAILED)
-    {
-      ptr = NULL;
-    }
+  if (ptr == MAP_FAILED)
+  {
+    ptr = NULL;
+  }
   return(ptr);
 }
 #else /* MAP_ANON */ 
@@ -149,7 +149,6 @@ void
 initBlockHeap(void)
 {
   eventAdd("heap_garbage_collection", &heap_garbage_collection, NULL, 119);
-  return;
 }
 
 /*
@@ -166,10 +165,10 @@ get_block(size_t size)
 {
   void *ptr;
   ptr = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANON, -1, 0);
-  if(ptr == MAP_FAILED)
-    {
-      ptr = NULL;
-    }
+  if (ptr == MAP_FAILED)
+  {
+    ptr = NULL;
+  }
   return(ptr);
 }
 
@@ -214,10 +213,9 @@ free_block(void *ptr, size_t unused)
  */ 
 
 void
-initBlockHeap()
+initBlockHeap(void)
 {
   eventAdd("heap_garbage_collection", &heap_garbage_collection, NULL, 119);
-  return;
 }
 #endif /* HAVE_MMAP */
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: whowas.h,v 7.13 2003/05/25 01:05:20 michael Exp $
+ *  $Id: whowas.h,v 7.14 2003/06/26 12:19:46 michael Exp $
  */
 #ifndef INCLUDED_whowas_h
 #define INCLUDED_whowas_h
@@ -95,7 +95,6 @@ extern struct Client *get_history(const char *, time_t);
 extern void count_whowas_memory(int *, unsigned long *);
 
 /* XXX m_whowas.c in modules needs these */
-extern struct Whowas WHOWAS[];
 extern struct Whowas *WHOWASHASH[];
 extern unsigned int hash_whowas_name(const char* name);
 #endif /* INCLUDED_whowas_h */

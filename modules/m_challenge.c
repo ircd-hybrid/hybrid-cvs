@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_challenge.c,v 1.50 2003/06/26 11:36:41 db Exp $
+ *  $Id: m_challenge.c,v 1.51 2003/06/26 12:19:47 michael Exp $
  */
 
 #include "stdinc.h"
@@ -40,7 +40,6 @@
 
 static void failed_challenge_notice(struct Client *, const char *, const char *);
 static void m_challenge(struct Client *, struct Client *, int, char **);
-void binary_to_hex(unsigned char * bin, char * hex, int length);
 
 /* We have openssl support, so include /CHALLENGE */
 struct Message challenge_msgtab = {
@@ -61,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&challenge_msgtab);
 }
 
-const char *_version = "$Revision: 1.50 $";
+const char *_version = "$Revision: 1.51 $";
 #endif
 
 /*
@@ -82,7 +81,7 @@ m_challenge(struct Client *client_p, struct Client *source_p,
 
   if (!(source_p->user) || !source_p->localClient)
     return;
-  
+
   /* if theyre an oper, reprint oper motd and ignore */
   if (IsOper(source_p))
   {

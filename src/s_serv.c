@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.354 2003/06/26 04:35:08 db Exp $
+ *  $Id: s_serv.c,v 7.355 2003/06/26 12:19:49 michael Exp $
  */
 
 #include "stdinc.h"
@@ -585,7 +585,7 @@ check_server(const char *name, struct Client *client_p, int cryptlink)
         if (IsConfEncrypted(aconf))
         {
           if (strcmp(aconf->passwd,
-              (char *)crypt(client_p->localClient->passwd, aconf->passwd)) == 0)
+              (const char *)crypt(client_p->localClient->passwd, aconf->passwd)) == 0)
             server_aconf = aconf;
         }
         else

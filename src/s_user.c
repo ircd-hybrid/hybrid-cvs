@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.288 2003/06/24 09:39:33 michael Exp $
+ *  $Id: s_user.c,v 7.289 2003/06/26 12:19:49 michael Exp $
  */
 
 #include "stdinc.h"
@@ -298,7 +298,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
     {
       source_p->localClient->random_ping = (unsigned long)rand();
       sendto_one(source_p, "PING :%lu",
-		 (unsigned long)source_p->localClient->random_ping);
+                 source_p->localClient->random_ping);
       SetPingSent(source_p);
       return(-1);
     }
@@ -813,8 +813,7 @@ report_and_set_user_flags(struct Client *source_p, struct AccessItem *aconf)
  * side effects -
  */
 int
-do_local_user(const char *nick, struct Client *client_p,
-	      struct Client *source_p,
+do_local_user(const char *nick, struct Client *client_p, struct Client *source_p,
               const char *username, const char *host, const char *server,
               const char *realname)
 {
@@ -865,7 +864,7 @@ do_local_user(const char *nick, struct Client *client_p,
  */
 void
 set_user_mode(struct Client *client_p, struct Client *source_p,
-	      int parc, char *parv[])
+              int parc, char *parv[])
 {
   unsigned int i;
   unsigned int flag;
@@ -1213,7 +1212,7 @@ check_x_line(struct Client *client_p, struct Client *source_p)
   const char *reason;
 
   if ((conf = find_matching_name_conf(XLINE_TYPE, source_p->info,
-				      NULL, NULL, 0)) != NULL)
+                                      NULL, NULL, 0)) != NULL)
   {
     match_item = (struct MatchItem *)map_to_conf(conf);
     if (match_item->reason != NULL)

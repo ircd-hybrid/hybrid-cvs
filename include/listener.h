@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.h,v 7.13 2003/05/25 01:05:20 michael Exp $
+ *  $Id: listener.h,v 7.14 2003/06/26 12:19:45 michael Exp $
  */
 
 #ifndef INCLUDED_listener_h
@@ -49,10 +49,8 @@ struct Listener
 };
 
 extern void add_listener(int port, const char *vaddr_ip);
-extern void close_listener(struct Listener *listener);
 extern void close_listeners(void);
 extern const char *get_listener_name(const struct Listener *listener);
 extern void show_ports(struct Client *source_p);
 extern void free_listener(struct Listener *);
-
 #endif /* INCLUDED_listener_h */

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.c,v 7.87 2003/06/18 06:26:33 metalrock Exp $
+ *  $Id: listener.c,v 7.88 2003/06/26 12:19:49 michael Exp $
  */
 
 #include "stdinc.h"
@@ -47,6 +47,7 @@
 static PF accept_connection;
 
 static dlink_list ListenerPollList = { NULL, NULL, 0 };
+static void close_listener(struct Listener *listener);
 
 static struct Listener *
 make_listener(int port, struct irc_ssaddr *addr)
@@ -322,7 +323,7 @@ add_listener(int port, const char* vhost_ip)
 /*
  * close_listener - close a single listener
  */
-void
+static void
 close_listener(struct Listener *listener)
 {
   assert(listener != NULL);
