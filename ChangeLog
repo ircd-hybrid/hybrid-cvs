@@ -1,3 +1,17 @@
+db          2001/12/12 02:41:33 EST	(20011212_2)
+
+  Modified files:
+    modules              m_server.c 
+  Log:
+  - changed "no H-line" to "no matching hub_mask"
+  - changed comments to match docs host_mask->hub_mask
+  - made an if clearer and a tad more efficient
+  
+  Revision  Changes    Path
+  1.74      +8 -7      ircd-hybrid-7/modules/m_server.c
+
+
+
 db          2001/12/11 23:58:36 EST	(20011212_1)
 
   Modified files:
@@ -96,7 +110,7 @@ a1kmm       2001/12/10 22:42:48 EST	(20011211_5)
     modules              .depend Makefile.in 
     src                  .depend Makefile.in 
   Log:
-  - Fixed $Id: ChangeLog,v 7.3149 2001/12/12 04:58:42 db Exp $ tags echoed from Makefile.in into .depend
+  - Fixed $Id: ChangeLog,v 7.3150 2001/12/12 07:41:39 db Exp $ tags echoed from Makefile.in into .depend
   
   Revision  Changes    Path
   1.39      +0 -0      ircd-hybrid-7/modules/.depend
@@ -144,7 +158,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3149 2001/12/12 04:58:42 db Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3150 2001/12/12 07:41:39 db Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -18498,4 +18512,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3149 2001/12/12 04:58:42 db Exp $
+$Id: ChangeLog,v 7.3150 2001/12/12 07:41:39 db Exp $
