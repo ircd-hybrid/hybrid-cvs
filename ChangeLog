@@ -1,3 +1,19 @@
+db          2002/01/05 00:27:14 EST	(20020105_1)
+
+  Modified files:
+    src                  md5.c 
+  Log:
+  - alarm() is deprecated, use setitimer
+  - timer is not needed anyway, since NO one in their right minds would
+    run an efnet server on an NFS mount
+  - this code sucketh majorly and will be dealt with, but I couldn't
+    take the alarm anymore
+  
+  Revision  Changes    Path
+  1.10      +2 -6      ircd-hybrid-7/src/md5.c
+
+
+
 db          2002/01/04 21:15:43 EST	(20020105_0)
 
   Modified files:
@@ -2229,7 +2245,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3289 2002/01/05 02:15:49 db Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3290 2002/01/05 05:27:20 db Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -20583,4 +20599,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3289 2002/01/05 02:15:49 db Exp $
+$Id: ChangeLog,v 7.3290 2002/01/05 05:27:20 db Exp $
