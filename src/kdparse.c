@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: kdparse.c,v 7.4 2001/06/08 07:37:29 db blalloc.c $
+ *  $Id: kdparse.c,v 7.5 2001/09/19 03:19:17 db Exp $
  */
 
 #include <sys/types.h>
@@ -31,6 +31,7 @@
 #include "tools.h"
 #include "s_log.h"
 #include "s_conf.h"
+#include "hostmask.h"
 #include "client.h"
 #include "irc_string.h"
 #include "memory.h"
@@ -71,7 +72,9 @@ void parse_k_file(FBFILE *file)
       aconf = make_conf();
       aconf->status = CONF_KILL;
       conf_add_fields(aconf,host_field,reason_field,user_field,0,NULL);
-      conf_add_k_conf(aconf);
+
+      if (aconf->host != NULL)
+	add_conf_by_address(aconf->host, CONF_KILL, aconf->user, aconf);
     }
 }
 

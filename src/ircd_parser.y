@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.211 2001/09/12 05:09:30 db Exp $
+ * $Id: ircd_parser.y,v 1.212 2001/09/19 03:19:16 db Exp $
  */
 
 %{
@@ -1636,7 +1636,9 @@ kill_entry:     KILL
   {
     if(yy_aconf->user && yy_aconf->passwd && yy_aconf->host)
       {
-        conf_add_k_conf(yy_aconf);
+        if (yy_aconf->host != NULL)
+	  add_conf_by_address(yy_aconf->host, CONF_KILL,
+			      yy_aconf->user, yy_aconf);
       }
     else
       {

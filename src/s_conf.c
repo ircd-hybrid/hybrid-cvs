@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.268 2001/09/18 13:33:01 db Exp $
+ *  $Id: s_conf.c,v 7.269 2001/09/19 03:19:17 db Exp $
  */
 
 #include <sys/types.h>
@@ -2511,23 +2511,6 @@ conf_add_server(struct ConfItem *aconf, int lcount)
     }
   lookup_confhost(aconf);
   return 0;
-}
-
-/*
- * conf_add_k_conf
- *
- * inputs       - pointer to config item
- * output       - NONE
- * side effects - Add a K line
- */
-
-void 
-conf_add_k_conf(struct ConfItem *aconf)
-{
-  if (aconf->host != NULL)
-    {
-      add_conf_by_address(aconf->host, CONF_KILL, aconf->user, aconf);
-    }
 }
 
 /*

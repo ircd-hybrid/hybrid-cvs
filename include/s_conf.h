@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.157 2001/09/18 13:33:00 db Exp $
+ * $Id: s_conf.h,v 7.158 2001/09/19 03:19:15 db Exp $
  */
 
 #include "setup.h"
@@ -386,7 +386,6 @@ extern void conf_add_class_to_conf(struct ConfItem *);
 extern void conf_delist_old_conf(struct ConfItem *);
 extern void conf_add_me(struct ConfItem *);
 extern void conf_add_class(struct ConfItem *,int );
-extern void conf_add_k_conf(struct ConfItem *);
 extern void conf_add_d_conf(struct ConfItem *);
 extern void conf_add_x_conf(struct ConfItem *);
 extern void conf_add_u_conf(struct ConfItem *);
