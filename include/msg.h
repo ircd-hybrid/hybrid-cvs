@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: msg.h,v 7.28 2000/11/30 08:54:37 db Exp $
+ * $Id: msg.h,v 7.29 2000/12/09 03:12:44 db Exp $
  */
 #ifndef INCLUDED_msg_h
 #define INCLUDED_msg_h
@@ -66,6 +66,7 @@ struct  Message
 #define MSG_PRIVMSG  "PRIVMSG"  /* PRIV */
 #define MSG_CBURST   "CBURST"   /* LazyLink channel burst */
 #define MSG_DROP     "DROP"     /* LazyLink channel drop */
+#define MSG_EOB      "EOB"      /* End of burst */
 #define MSG_LLJOIN   "LLJOIN"   /* LazyLink join */
 #define MSG_WHO      "WHO"      /* WHO  -> WHOC */
 #define MSG_WHOIS    "WHOIS"    /* WHOI */

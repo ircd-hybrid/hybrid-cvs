@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.57 2000/12/07 09:09:54 db Exp $
+ *   $Id: s_serv.c,v 7.58 2000/12/09 03:12:49 db Exp $
  */
 #include "tools.h"
 #include "s_serv.h"
@@ -824,7 +824,7 @@ static void server_burst(struct Client *cptr)
   struct Channel*   chptr;
   struct Channel*   vchan; 
   dlink_node *ptr;
-
+  time_t StartBurst=CurrentTime;
   /*
   ** Send it in the shortened format with the TS, if
   ** it's a TS server; walk the list of channels, sending
@@ -914,7 +914,7 @@ static void server_burst(struct Client *cptr)
 
   /* XXX maybe `EOB %d %d` where we send length of burst and time? */
   if(IsCapable(cptr, CAP_EOB))
-    sendto_one(cptr, "EOB", me.name ); 
+    sendto_one(cptr, ":%s EOB %lu", me.name, CurrentTime - StartBurst ); 
 }
 
 /*

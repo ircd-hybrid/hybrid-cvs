@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: handlers.h,v 7.22 2000/12/06 20:04:44 db Exp $
+ * $Id: handlers.h,v 7.23 2000/12/09 03:12:44 db Exp $
  */
 #ifndef INCLUDED_handlers_h
 #define INCLUDED_handlers_h
@@ -188,6 +188,7 @@ extern int ms_capab(struct Client*, struct Client*, int, char**);
 extern int ms_cburst(struct Client*, struct Client*, int, char**);
 extern int ms_connect(struct Client*, struct Client*, int, char**);
 extern int ms_drop(struct Client *,struct Client *,int,char **);
+extern int ms_eob(struct Client*, struct Client*, int, char**);
 extern int ms_error(struct Client*, struct Client*, int, char**);
 extern int ms_gline(struct Client*, struct Client*, int, char**);
 extern int ms_info(struct Client*, struct Client*, int, char**);
