@@ -1,5 +1,5 @@
 /************************************************************************
- *   IRC - Internet Relay Chat, src/m_version.c
+ *   IRC - Internet Relay Chat, src/m_challenge.c
  *   Copyright (C) 1990 Jarkko Oikarinen and
  *                      University of Oulu, Computing Center
  *
@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_challenge.c,v 7.1 2000/11/05 03:37:51 ryan Exp $
+ *   $Id: m_challenge.c,v 7.2 2000/11/05 07:27:25 db Exp $
  */
 #include <stdlib.h>
 #include "handlers.h"
