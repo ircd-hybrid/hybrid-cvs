@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: messages.tab,v 7.84 2003/05/11 22:04:50 michael Exp $
+ *   $Id: messages.tab,v 7.85 2003/05/18 11:45:12 adx Exp $
  */
 
 static struct NumericInfo replies[] = {
@@ -40,7 +40,7 @@ static struct NumericInfo replies[] = {
 /* 017 */  {"RPL_MAPEND", ":%s 017 %s :End of /MAP", NULL},
 /* 018 */  {NULL, NULL, NULL},
 /* 019 */  {NULL, NULL, NULL},
-/* 020 */  {"RPL_YOURID", ":%s 020 %s %s %s :Your ID and key is", NULL},
+/* 020 */  {NULL, NULL, NULL},
 /* 021 */  {NULL, NULL, NULL},
 /* 022 */  {NULL, NULL, NULL},
 /* 023 */  {NULL, NULL, NULL},
