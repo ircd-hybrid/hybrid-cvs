@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.70 2003/07/02 17:32:26 michael Exp $
+ *  $Id: hash.c,v 7.71 2003/07/03 02:57:27 db Exp $
  */
 
 #include "stdinc.h"
@@ -268,6 +268,10 @@ hash_del_id(struct Client *client_p)
   unsigned int hashv = strhash(client_p->id);
   struct Client *tmp = idTable[hashv];
 
+  /* id was not found in the hash */
+  if (tmp == NULL)
+    return;
+
   if (tmp == client_p)
   {
     idTable[hashv] = client_p->idhnext;
@@ -293,6 +297,10 @@ hash_del_client(struct Client *client_p)
   unsigned int hashv = strhash(client_p->name);
   struct Client *tmp = clientTable[hashv];
 
+  /* client was not found in the hash */
+  if (tmp == NULL)
+    return;
+
   if (tmp == client_p)
   {
     clientTable[hashv] = client_p->hnext;
@@ -317,6 +325,10 @@ hash_del_userhost(struct UserHost *userhost)
 {
   unsigned int hashv = strhash(userhost->host);
   struct UserHost *tmp = userhostTable[hashv];
+
+  /* userhost was not found in the hash */
+  if (tmp == NULL)
+    return;
 
   if (tmp == userhost)
   {
@@ -344,6 +356,10 @@ hash_del_channel(struct Channel *chptr)
   unsigned int hashv = strhash(chptr->chname);
   struct Channel *tmp = channelTable[hashv];
 
+  /* channel was not found in the hash */
+  if (tmp == NULL)
+    return;
+
   if (tmp == chptr)
   {
     channelTable[hashv] = chptr->hnextch;
@@ -362,6 +378,10 @@ hash_del_resv(struct ResvChannel *chptr)
 {
   unsigned int hashv = strhash(chptr->name);
   struct ResvChannel *tmp = resvchannelTable[hashv];
+
+  /* resv was not found in the hash */
+  if (tmp == NULL)
+    return;
 
   if (tmp == chptr)
   {
