@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.196 2001/08/13 21:44:06 leeh Exp $
+ *  $Id: client.c,v 7.197 2001/08/16 20:19:21 leeh Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -169,8 +169,6 @@ struct Client* make_client(struct Client* from)
   client_p->serv    = NULL;
   client_p->servptr = NULL;
   client_p->whowas  = NULL;
-  client_p->servnext = NULL;
-  client_p->servprev = NULL;
   client_p->allow_list.head = NULL;
   client_p->allow_list.tail = NULL;
   client_p->on_allow_list.head = NULL;

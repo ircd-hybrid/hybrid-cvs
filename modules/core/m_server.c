@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_server.c,v 1.65 2001/08/11 20:42:51 leeh Exp $
+ *   $Id: m_server.c,v 1.66 2001/08/16 20:19:21 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"  /* m_server prototype */
@@ -528,6 +528,7 @@ void write_links_file(void* notused)
   char *p;
   FBFILE* file;
   char buff[512];
+  dlink_node *ptr;
 
   refresh_user_links = 0;
 
@@ -544,8 +545,10 @@ void write_links_file(void* notused)
   MessageFileptr->contentsOfFile = NULL;
   currentMessageLine = NULL;
 
-  for (target_p = GlobalServerList; target_p; target_p = target_p->servnext) 
+  for (ptr = global_serv_list.head; ptr; ptr = ptr->next) 
   {
+    target_p = ptr->data;
+
     if(target_p->info[0])
     {
       if( (p = strchr(target_p->info,']')) )
@@ -679,9 +682,12 @@ int bogus_host(char *host)
 struct Client *server_exists(char *servername)
 {
   struct Client *target_p;
+  dlink_node *ptr;
 
-  for(target_p = GlobalServerList; target_p; target_p = target_p->servnext)
+  for(ptr = global_serv_list.head; ptr; ptr = ptr->next)
   {
+    target_p = ptr->data;
+
     if(match(target_p->name, servername) || 
          match(servername, target_p->name))
       return target_p;

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_links.c,v 1.29 2001/07/26 15:31:33 leeh Exp $
+ *   $Id: m_links.c,v 1.30 2001/08/16 20:19:21 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -108,6 +108,8 @@ static void mo_links(struct Client *client_p, struct Client *source_p,
   char*          p;
   struct hook_links_data hd;
   
+  dlink_node *ptr;
+
   if (parc > 2)
     {
       if (hunt_server(client_p, source_p, ":%s LINKS %s :%s", 1, parc, parv)
@@ -131,8 +133,10 @@ static void mo_links(struct Client *client_p, struct Client *source_p,
   
   hook_call_event("doing_links", &hd);
   
-  for (target_p = GlobalServerList; target_p; target_p = target_p->servnext) 
+  for (ptr = global_serv_list.head; ptr; ptr = ptr->next)
     {
+      target_p = ptr->data;
+
       if (*mask && !match(mask, target_p->name))
         continue;
     
