@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.71 2003/02/06 10:12:39 a1kmm Exp $
+ *  $Id: channel_mode.c,v 7.71.2.1 2003/04/03 02:44:24 lusky Exp $
  */
 
 #include "stdinc.h"
@@ -1710,7 +1710,7 @@ chm_limit(struct Client *client_p, struct Client *source_p,
   {
     lstr = parv[(*parn)++];
 
-    if ((limit = strtoul(lstr, NULL, 10)) <= 0)
+    if ((limit = atoi(lstr)) <= 0)
       return;
 
     ircsprintf(lstr, "%d", limit);
