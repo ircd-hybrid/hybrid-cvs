@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: irc_string.c,v 7.39 2001/09/08 15:27:35 androsyn Exp $
+ *  $Id: irc_string.c,v 7.40 2001/10/04 20:47:09 androsyn Exp $
  */
 #include "config.h"
 #include "tools.h"
@@ -147,7 +147,7 @@ char *strip_tabs(char *dest, const unsigned char *src, size_t len)
   return dest;
 }
 
-#if !defined( HAVE_STRTOK_R )
+#ifndef HAVE_STRTOK_R
 /*
  * strtoken - walk through a string of tokens, using a set of separators
  *   argv 9/90
@@ -180,8 +180,7 @@ char* strtoken(char** save, char* str, char* fs)
   *save = pos;
   return tmp;
 }
-#endif /* !HAVE_STRTOKEN */
-
+#endif
 
 /* 
  * From: Thomas Helvey <tomh@inxpress.net>
