@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: match.c,v 7.28 2003/05/24 16:15:15 bill Exp $
+ * $Id: match.c,v 7.29 2003/06/29 02:44:22 joshk Exp $
  *
  */
 #include "stdinc.h"
@@ -376,6 +376,7 @@ char *collapse_esc(char *pattern)
  *              <0, if s1 lexicographically less than s2
  *              >0, if s1 lexicographically greater than s2
  */
+#ifndef HAVE_STRCASECMP
 int irccmp(const char *s1, const char *s2)
 {
   const unsigned char* str1 = (const unsigned char*) s1;
@@ -394,8 +395,10 @@ int irccmp(const char *s1, const char *s2)
   }
   return (res);
 }
+#endif /* !HAVE_STRCASECMP */
 
-int ircncmp(const char* s1, const char *s2, int n)
+#ifndef HAVE_STRNCASECMP
+int ircncmp(const char* s1, const char *s2, size_t n)
 {
   const unsigned char* str1 = (const unsigned char*) s1;
   const unsigned char* str2 = (const unsigned char*) s2;
@@ -411,6 +414,7 @@ int ircncmp(const char* s1, const char *s2, int n)
   }
   return (res);
 }
+#endif /* !HAVE_STRNCASECMP */
 
 const unsigned char ToLowerTab[] = { 
   0, 0x1, 0x2, 0x3, 0x4, 0x5, 0x6, 0x7, 0x8, 0x9, 0xa,
