@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.109 2000/12/20 22:00:47 db Exp $
+ *  $Id: s_conf.c,v 7.110 2000/12/21 02:05:53 ejb Exp $
  */
 #include "tools.h"
 #include "s_conf.h"
@@ -1642,7 +1642,6 @@ static void initconf(FBFILE* file)
 
   GlobalSetOptions.idletime = (ConfigFileEntry.idletime * 60);
   GlobalSetOptions.hide_server = ConfigFileEntry.hide_server;
-  GlobalSetOptions.hide_chanops = ConfigFileEntry.hide_chanops;
 
   if(me.name[0] == '\0')
     {
