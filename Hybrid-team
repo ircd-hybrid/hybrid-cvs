@@ -1,4 +1,4 @@
-$Id: Hybrid-team,v 7.59.2.1 2003/02/18 02:15:59 lusky Exp $
+$Id: Hybrid-team,v 7.59.2.2 2003/12/30 20:53:29 ievil Exp $
 
 The hybrid team is a group of ircd coders who were frustrated
 with the instability and all-out "dirtiness" of the EFnet ircd's
@@ -23,6 +23,7 @@ einride, Erik S. Johansen, <einride@einride.org>
 fl, Lee Hardy <lee@leeh.co.uk>
 Hwy101, W. Campbell <wcampbel@botbay.net>
 larne, Edward Brocklesby <ejb@sdf.lonestar.org>
+ievil, Arnvid L. Karstad <ievil@isd.no>
 isomer, Perry Lorier <perry@coders.net>
 jmallett, Juli Mallett <jmallett@FreeBSD.org>
 k9, Jeremy Chadwick <yoshi@parodius.com>
