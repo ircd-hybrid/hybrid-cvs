@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.146 2003/05/30 05:37:35 metalrock Exp $
+ *  $Id: m_kline.c,v 1.147 2003/05/31 04:46:55 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -81,7 +81,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.146 $";
+const char *_version = "$Revision: 1.147 $";
 #endif
 
 /* Local function prototypes */
@@ -737,7 +737,7 @@ mo_dline(struct Client *client_p, struct Client *source_p,
   DupString(aconf->host, dlhost);
   DupString(aconf->reason, dlbuffer);
 
-  if (tkline_time)
+  if (tkline_time != 0)
   {
     ircsprintf(buffer, "Temporary D-line %d min. - %s (%s)",
 	       (int)(tkline_time/60), reason, current_date);
