@@ -1,14 +1,14 @@
 #
 # Makefile.in for ircd/contrib
 #
-# $Id: Makefile.in,v 1.18 2001/07/18 03:05:56 androsyn Exp $
+# $Id: Makefile.in,v 1.19 2001/07/18 12:11:20 leeh Exp $
 #
 CC		= @CC@
 RM		= @RM@
 SED             = @SED@
 LEX		= @LEX@
 LEXLIB		= @LEXLIB@
-CFLAGS		= @IRCD_CFLAGS@ -DIRCD_PREFIX=\"@prefix@\"
+CFLAGS		= @IRC_CFLAGS@ -DIRCD_PREFIX=\"@prefix@\"
 MKDEP		= ${CC} -MM
 INSTALL		= @INSTALL@
 INSTALL_PROGRAM	= @INSTALL_PROGRAM@
