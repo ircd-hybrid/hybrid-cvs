@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kill.c,v 1.19 2001/01/07 23:03:01 db Exp $
+ *   $Id: m_kill.c,v 1.20 2001/01/08 00:04:21 fl_ Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -76,7 +76,6 @@ int mo_kill(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   const char* inpath = cptr->name;
   char*       user;
   char*       path;
-  char*       killer;
   char*       reason;
   int         chasing = 0;
 
@@ -227,7 +226,6 @@ int ms_kill(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   const char* inpath = cptr->name;
   char*       user;
   char*       path;
-  char*       killer;
   char*       reason;
   int         chasing = 0;
 
