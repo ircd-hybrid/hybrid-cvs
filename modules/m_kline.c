@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.158 2003/06/21 20:09:21 metalrock Exp $
+ *  $Id: m_kline.c,v 1.159 2003/06/21 23:44:13 michael Exp $
  */
 
 #include "stdinc.h"
@@ -81,7 +81,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.158 $";
+const char *_version = "$Revision: 1.159 $";
 #endif
 
 /* Local function prototypes */
@@ -1027,27 +1027,23 @@ make_cidr(char *dlhost, struct Client *target_p)
   static char cidr_form_host[HOSTLEN + 2];
   char *p;
 
-  /*
-   * XXX - this is always a fixed length output, we can get away
-   * with strcpy here
-   *
-   */
-  strcpy(cidr_form_host, inetntoa((char*) &target_p->localClient->ip));
-      
+  strlcpy(cidr_form_host, inetntoa((const char *)&target_p->localClient->ip),
+          sizeof(cidr_form_host));
+
   if ((p = strchr(cidr_form_host,'.')) == NULL)
     return(NULL);
+
   /* 192. <- p */
-
    p++;
    if ((p = strchr(p,'.')) == NULL)
      return(NULL);
+
    /* 192.168. <- p */
-
    p++;
    if ((p = strchr(p,'.')) == NULL)
      return(NULL);
-   /* 192.168.0. <- p */
 
+   /* 192.168.0. <- p */
    p++;
    *p++ = '0';
    *p++ = '/';

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_challenge.c,v 1.48 2003/06/19 02:32:16 db Exp $
+ *  $Id: m_challenge.c,v 1.49 2003/06/21 23:44:13 michael Exp $
  */
 
 #include "stdinc.h"
@@ -61,8 +61,9 @@ _moddeinit(void)
   mod_del_cmd(&challenge_msgtab);
 }
 
-const char *_version = "$Revision: 1.48 $";
+const char *_version = "$Revision: 1.49 $";
 #endif
+
 /*
  * m_challenge - generate RSA challenge for wouldbe oper
  * parv[0] = sender prefix
@@ -122,7 +123,7 @@ m_challenge(struct Client *client_p, struct Client *source_p,
       log_failed_oper(source_p, source_p->user->auth_oper);
       return;
     }
-     
+
     oper_up(source_p);
 
     ilog(L_TRACE, "OPER %s by %s!%s@%s",
@@ -165,12 +166,12 @@ m_challenge(struct Client *client_p, struct Client *source_p,
    !generate_challenge (&challenge, &(source_p->user->response), aconf->rsa_public_key)
      )
   {
-    sendto_one (source_p, form_str(RPL_RSACHALLENGE), me.name, parv[0],
+    sendto_one(source_p, form_str(RPL_RSACHALLENGE), me.name, parv[0],
 		challenge);
   }
+
   DupString(source_p->user->auth_oper, aconf->name);
   MyFree(challenge);
-  return;
 }
 
 /* failed_challenge_notice()
