@@ -6,7 +6,7 @@
  *  If you use it anywhere you like, if you like it buy us a beer.
  *  If its broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.1 2003/05/14 18:15:20 db Exp $
+ *  $Id: csvlib.c,v 7.2 2003/05/14 18:26:54 db Exp $
  */
 
 #include "stdinc.h"
@@ -198,7 +198,7 @@ static int
 write_csv_line(FBFILE *out, const char *format, ...)
 {
   char c;
-  int bytes;
+  int bytes=0;
   va_list args;
   char tmp[1024];
   char *str = tmp;

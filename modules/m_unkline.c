@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_unkline.c,v 1.59 2003/05/14 18:15:19 db Exp $
+ *  $Id: m_unkline.c,v 1.60 2003/05/14 18:26:52 db Exp $
  */
 
 #include "stdinc.h"
@@ -74,11 +74,9 @@ _moddeinit(void)
   mod_del_cmd(&msgtabs[1]);
   mod_del_cmd(&msgtabs[2]);
 }
-const char *_version = "$Revision: 1.59 $";
+const char *_version = "$Revision: 1.60 $";
 #endif
 
-static int flush_write(struct Client *, FBFILE *in, FBFILE *out,
-		       char *, char *);
 static int remove_tkline_match(char *,char *);
 
 
@@ -211,7 +209,7 @@ static void
 mo_undline (struct Client *client_p, struct Client *source_p,
             int parc,char *parv[])
 {
-  const char  *cidr, *found_cidr;
+  char  *cidr;
 
   if (!IsOperUnkline(source_p))
   {
