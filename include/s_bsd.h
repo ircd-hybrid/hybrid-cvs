@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_bsd.h,v 7.27 2001/02/12 05:13:24 androsyn Exp $
+ *   $Id: s_bsd.h,v 7.28 2001/06/09 08:35:59 androsyn Exp $
  *
  */
 #ifndef INCLUDED_s_bsd_h
@@ -66,8 +66,8 @@ extern void  error_exit_client(struct Client*, int);
 extern int   get_sockerr(int);
 extern int   ignoreErrno(int ierrno);
 
-extern void  comm_settimeout(int, time_t, PF *, void *);
-extern void  comm_setflush(int, time_t, PF *, void *);
+extern void  comm_settimeout(int, unsigned long, PF *, void *);
+extern void  comm_setflush(int, unsigned long, PF *, void *);
 extern void  comm_checktimeouts(void *);
 extern void  comm_connect_tcp(int, const char *, u_short,
                  struct sockaddr *, int, CNCB *, void *, int);
@@ -78,11 +78,10 @@ extern int   comm_accept(int fd, struct irc_sockaddr *pn);
 
 /* These must be defined in the network IO loop code of your choice */
 extern void  comm_setselect(int fd, fdlist_t list, unsigned int type,
-                 PF *handler, void *client_data, time_t timeout);
+                 PF *handler, void *client_data, unsigned long timeout);
 extern void  init_netio(void);
 extern int   read_message (time_t, unsigned char);
-extern int   comm_select(time_t);
-extern int   comm_select_fdlist(fdlist_t, time_t);
+extern int   comm_select(unsigned long);
 extern int   disable_sock_options(int);
 
 

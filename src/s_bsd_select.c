@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_select.c,v 7.18 2001/05/24 15:54:22 ejb Exp $
+ *  $Id: s_bsd_select.c,v 7.19 2001/06/09 08:36:10 androsyn Exp $
  */
 #include "config.h"
 #ifdef USE_SELECT
@@ -135,7 +135,7 @@ void init_netio(void)
  */
 void
 comm_setselect(int fd, fdlist_t list, unsigned int type, PF * handler,
-    void *client_data, time_t timeout)
+    void *client_data, unsigned long timeout)
 {  
     fde_t *F = &fd_table[fd];
     assert(fd >= 0);
@@ -156,7 +156,7 @@ comm_setselect(int fd, fdlist_t list, unsigned int type, PF * handler,
         select_update_selectfds(fd, COMM_SELECT_WRITE, handler);
     }
     if (timeout)
-        F->timeout = CurrentTime + timeout;
+        F->timeout = CurrentTime + (timeout / 1000);
 }
  
 /*
@@ -172,7 +172,7 @@ comm_setselect(int fd, fdlist_t list, unsigned int type, PF * handler,
  */
 
 int
-comm_select(time_t delay)
+comm_select(unsigned long delay)
 {
     int num;
     int fd;
@@ -185,8 +185,8 @@ comm_select(time_t delay)
     bcopy(&select_writefds, &tmpwritefds, sizeof(fd_set));
 
     for (;;) {
-        to.tv_sec = delay;
-        to.tv_usec = 0;
+        to.tv_sec = 0;
+        to.tv_usec = delay * 1000;
         num = select(highest_fd + 1, &tmpreadfds, &tmpwritefds, NULL, &to);
         if (num >= 0)
             break;

@@ -18,7 +18,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: packet.c,v 7.57 2001/05/31 16:30:39 davidt Exp $
+ *   $Id: packet.c,v 7.58 2001/06/09 08:36:08 androsyn blalloc.c $
  */ 
 
 #include <stdio.h>
@@ -145,7 +145,7 @@ flood_recalc(int fd, void *data)
  if (!IsDead(client_p))
  {
   /* and finally, reset the flood check */
-  comm_setflush(fd, 1, flood_recalc, client_p);
+  comm_setflush(fd, 1000, flood_recalc, client_p);
  }
 }
 
