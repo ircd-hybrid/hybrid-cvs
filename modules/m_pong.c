@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_pong.c,v 1.41 2004/01/30 20:53:41 adx Exp $
+ *  $Id: m_pong.c,v 1.42 2004/04/01 02:53:23 bill Exp $
  */
 
 #include "stdinc.h"
@@ -57,7 +57,7 @@ _moddeinit(void)
   mod_del_cmd(&pong_msgtab);
 }
 
-const char *_version = "$Revision: 1.41 $";
+const char *_version = "$Revision: 1.42 $";
 #endif
 
 static void
@@ -83,7 +83,8 @@ ms_pong(struct Client *client_p, struct Client *source_p,
    * That being the case, we will route, but only for registered clients (a
    * case can be made to allow them only from servers). -Shadowfax
    */
-  if (!EmptyString(destination) && !match(destination, me.name))
+  if (!EmptyString(destination) && !match(destination, me.name) &&
+      irccmp(destination, me.id))
   {
       if ((target_p = find_client(destination)) ||
           (target_p = find_server(destination)))

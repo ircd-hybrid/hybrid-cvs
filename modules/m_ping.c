@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ping.c,v 1.37 2004/03/16 00:24:34 db Exp $
+ *  $Id: m_ping.c,v 1.38 2004/04/01 02:53:23 bill Exp $
  */
 
 #include "stdinc.h"
@@ -57,7 +57,7 @@ _moddeinit(void)
   mod_del_cmd(&ping_msgtab);
 }
 
-const char *_version = "$Revision: 1.37 $";
+const char *_version = "$Revision: 1.38 $";
 #endif
 
 /*
@@ -139,7 +139,7 @@ ms_ping(struct Client *client_p, struct Client *source_p,
   origin = source_p->name;
   destination = parv[2]; /* Will get NULL or pointer (parc >= 2!!) */
 
-  if (!EmptyString(destination) && irccmp(destination, me.name) != 0)
+  if (!EmptyString(destination) && irccmp(destination, me.name) != 0 && irccmp(destination, me.id) != 0)
   {
     if ((target_p = find_server(destination)))
       sendto_one(target_p,":%s PING %s :%s", parv[0],
@@ -147,12 +147,12 @@ ms_ping(struct Client *client_p, struct Client *source_p,
     else
     {
       sendto_one(source_p, form_str(ERR_NOSUCHSERVER),
-                 me.name, parv[0], destination);
+                 ID_or_name(&me, source_p), parv[0], destination);
       return;
     }
   }
   else
-    sendto_one(source_p,":%s PONG %s :%s", me.name,
-               (destination) ? destination : me.name, origin);
+    sendto_one(source_p,":%s PONG %s :%s",
+               ID_or_name(&me, source_p), (destination) ? destination : me.name, origin);
 }
 

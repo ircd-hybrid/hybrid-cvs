@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.424 2004/03/17 18:34:21 db Exp $
+ *  $Id: client.c,v 7.425 2004/04/01 02:53:24 bill Exp $
  */
 
 #include "stdinc.h"
@@ -323,7 +323,7 @@ check_pings_list(dlink_list *list)
 	 */
 	SetPingSent(client_p);
 	client_p->lasttime = CurrentTime - ping;
-	sendto_one(client_p, "PING :%s", me.name);
+	sendto_one(client_p, "PING :%s", ID_or_name(&me, client_p));
       }
     }
     /* ping_timeout: */
