@@ -1,3 +1,23 @@
+db          2002/12/18 22:51:36 EST	(20021219_0)
+
+  Modified files:
+    .                    Hybrid-team RELNOTES 
+    src                  channel_mode.c 
+  Log:
+  - fixed a very nasty buffer overflow in ban handling.
+    ban strings cannot be longer than MODEBUFLEN (200 chars)
+    this fix to channel_mode.c ensures this happens.
+  - updated RELNOTES to note this change
+  - added MetalRock to the team listing, he's done more than a lot of
+    folk at helping us find bugs.
+  
+  Revision  Changes    Path
+  7.55      +1 -0      ircd-hybrid-7/Hybrid-team
+  1.48      +1 -0      ircd-hybrid-7/RELNOTES
+  7.67      +86 -52    ircd-hybrid-7/src/channel_mode.c
+
+
+
 bill        2002/12/18 12:03:46 EST	(20021218_2)
 
   Modified files:
@@ -33674,4 +33694,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4145 2002/12/18 17:03:49 bill Exp $
+$Id: ChangeLog,v 7.4146 2002/12/19 03:51:38 db Exp $
