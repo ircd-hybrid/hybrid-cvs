@@ -21,7 +21,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: m_unkline.c,v 1.18 2000/12/24 23:27:53 toot Exp $
+ *   $Id: m_unkline.c,v 1.19 2000/12/27 17:15:02 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -49,11 +49,11 @@
 #include <unistd.h>
 
 struct Message msgtabs[] = {
-  {MSG_UNKLINE, 0, 1, 0, MFLG_SLOW, 0,
+  {MSG_UNKLINE, 0, 2, 0, MFLG_SLOW, 0,
    {m_unregistered, m_not_oper, m_error, mo_unkline}},
-  {MSG_UNDLINE, 0, 1, 0, MFLG_SLOW, 0,
+  {MSG_UNDLINE, 0, 2, 0, MFLG_SLOW, 0,
    {m_unregistered, m_not_oper, m_error, mo_undline}}, 
-  {MSG_UNGLINE, 0, 1, 0, MFLG_SLOW, 0,
+  {MSG_UNGLINE, 0, 2, 0, MFLG_SLOW, 0,
    {m_unregistered, m_not_oper, m_error, mo_ungline}}
 };
 
