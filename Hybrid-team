@@ -1,4 +1,4 @@
-$Id: Hybrid-team,v 7.75 2003/12/30 20:56:04 ievil Exp $
+$Id: Hybrid-team,v 7.76 2004/04/22 03:40:53 bill Exp $
 
 The hybrid team is a group of ircd coders who were frustrated
 with the instability and all-out "dirtiness" of the EFnet ircd's
@@ -16,7 +16,7 @@ A1kmm, Andrew Miller <a1kmm@mware.virtualave.net>
 adrian, Adrian Chadd <adrian@creative.net.au>
 adx, Piotr Nizynski <adx@crashnet.pl>
 AndroSyn, Aaron Sethman <androsyn@ratbox.org>
-billy-jon, Bill Jonus <bill@mu.org>
+billy-jon, William Bierman III <bill@mu.org>
 cosine, Patrick Alken <wnder@uwns.underworld.net>
 cryogen, Stuart Walsh <stu@ipng.org.uk>
 David-T, David Taylor <davidt@yadt.co.uk>
@@ -49,7 +49,7 @@ jv, Jakub Vlasek <jv@pilsedu.cz>
 kre, Dinko Korunic <kreator@fly.srk.fer.hr>
 madmax, Paul Lomax <madmax@efnet.org>
 Neph|l|m, Adel Mezibra <adel@cybercable.fr>
-Riedel, Dennis Vink, <dennisv@vuurwerk.nl>
+Riedel, Dennis Vink, <riedel@chaotic.nl>
 Robert Alan Byer <byer@mail.ourservers.net>
 scuzzy, David Todd <scuzzy@aniverse.net>
 spookey, David Colburn <spookey@spookey.org>

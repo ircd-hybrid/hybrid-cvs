@@ -62,10 +62,10 @@ ircd features
   just like klines and dlines are stored in kline.conf and dline.conf,
   respectively.
 - Nick and channel RESVs are now stored in nresv.conf and cresv.conf, respectively.
-- Bill Jonus has written clustering support for IRC networks that wish to share
+- Bill Bierman has written clustering support for IRC networks that wish to share
   a common list of resvs, klines, xlines, and locops.
 - New ACL G-lines can now be 'rejected' from being placed on the local server as
   well as 'blocked' from being propagated through the local server onto another
   server. Failures can also be logged for rejected and/or blocked glines.
 
-$Id: whats-new.txt,v 7.47 2004/02/28 06:12:21 metalrock Exp $
+$Id: whats-new.txt,v 7.48 2004/04/22 03:40:56 bill Exp $

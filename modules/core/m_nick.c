@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nick.c,v 1.139 2004/02/23 07:23:25 metalrock Exp $
+ *  $Id: m_nick.c,v 1.140 2004/04/22 03:40:57 bill Exp $
  */
 
 #include "stdinc.h"
@@ -67,7 +67,7 @@ static int clean_nick_name(char *);
 static int clean_user_name(char *);
 static int clean_host_name(char *);
 static void perform_nick_collides(struct Client *, struct Client *, struct Client *,
-				  int, char **, time_t, char *, char *);
+				  int, char **, time_t, char *, char *, char *);
 struct Message nick_msgtab = {
   "NICK", 0, 0, 1, 0, MFLG_SLOW, 0,
   {mr_nick, m_nick, ms_nick, m_nick, m_ignore}
@@ -93,7 +93,7 @@ _moddeinit(void)
   mod_del_cmd(&uid_msgtab);
 }
 
-const char *_version = "$Revision: 1.139 $";
+const char *_version = "$Revision: 1.140 $";
 #endif
 
 /* mr_nick()
@@ -406,7 +406,7 @@ ms_nick(struct Client *client_p, struct Client *source_p,
   }
 
   perform_nick_collides(source_p, client_p, target_p,
-                        parc, parv, newts, nick, ngecos);
+                        parc, parv, newts, nick, ngecos, NULL);
 }
 
 /* ms_uid()
@@ -487,7 +487,7 @@ ms_uid(struct Client *client_p, struct Client *source_p,
   }
   else
     perform_nick_collides(source_p, client_p, target_p,
-                          parc, parv, newts, nick, ugecos);
+                          parc, parv, newts, nick, ugecos, uid);
 }			  
 
 /* check_clean_nick()
@@ -812,7 +812,7 @@ client_from_server(struct Client *client_p, struct Client *source_p, int parc,
 static void
 perform_nick_collides(struct Client *source_p, struct Client *client_p, 
                       struct Client *target_p, int parc, char *parv[], 
-                      time_t newts, char *nick, char *gecos)
+                      time_t newts, char *nick, char *gecos, char *uid)
 {
   int sameuser;
   
@@ -829,6 +829,11 @@ perform_nick_collides(struct Client *source_p, struct Client *client_p,
       
       if (ServerInfo.hub && IsCapable(client_p,CAP_LL))
         add_lazylinkclient(client_p, target_p);
+
+      /* if we have a UID, issue a kill for it */
+      if (uid)
+        sendto_one(client_p, ":%s KILL %s :%s (Nick collision (new))",
+                   me.id, uid, me.name);
 
       kill_client_ll_serv_butone(NULL, target_p,
                                  "%s (Nick collision (new))",
@@ -854,6 +859,10 @@ perform_nick_collides(struct Client *source_p, struct Client *client_p,
       if ((sameuser && newts < target_p->tsinfo) ||
          (!sameuser && newts > target_p->tsinfo))
       {
+        if (uid)
+          sendto_one(client_p, ":%s KILL %s :%s (Nick collision (new))",
+                     me.id, uid, me.name);
+
         client_burst_if_needed(client_p, target_p);
 	return;
       }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.182 2004/04/12 01:57:42 metalrock Exp $
+ *  $Id: m_sjoin.c,v 1.183 2004/04/22 03:40:58 bill Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.182 $";
+const char *_version = "$Revision: 1.183 $";
 #endif
 
 static char modebuf[MODEBUFLEN];
@@ -245,21 +245,6 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   if (!keep_our_modes)
   {
     remove_our_modes(chptr, source_p);
-
-    if (HasID(source_p))
-    {
-      if (dlink_list_length(&chptr->banlist) > 0)
-        remove_ban_list(chptr, client_p, &chptr->banlist,
-                        'b', NOCAPS);
-
-      if (dlink_list_length(&chptr->exceptlist) > 0)
-        remove_ban_list(chptr, client_p, &chptr->exceptlist,
-                        'e', CAP_EX);
-
-      if (dlink_list_length(&chptr->invexlist) > 0)
-        remove_ban_list(chptr, client_p, &chptr->invexlist,
-                        'I', CAP_IE);
-    }
     sendto_channel_local(ALL_MEMBERS, chptr,
    		         ":%s NOTICE %s :*** Notice -- TS for %s changed from %lu to %lu",
 	 		 me.name, chptr->chname, chptr->chname,
@@ -559,6 +544,21 @@ nextnick:
     else
       sendto_one(target_p, "%s", nick_buf);
   }
+
+  if (HasID(source_p))
+  {
+    if (dlink_list_length(&chptr->banlist) > 0)
+      remove_ban_list(chptr, client_p, &chptr->banlist,
+                      'b', NOCAPS);
+
+    if (dlink_list_length(&chptr->exceptlist) > 0)
+      remove_ban_list(chptr, client_p, &chptr->exceptlist,
+                      'e', CAP_EX);
+
+    if (dlink_list_length(&chptr->invexlist) > 0)
+      remove_ban_list(chptr, client_p, &chptr->invexlist,
+                      'I', CAP_IE);
+  }               
 }
 
 /* set_final_mode()
