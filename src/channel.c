@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.135 2000/12/21 04:48:18 db Exp $
+ * $Id: channel.c,v 7.136 2000/12/21 13:39:38 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -40,6 +40,7 @@
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>
+#include "memdebug.h"
 
 
 struct Channel *GlobalChannelList = NullChn;

@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.60 2000/12/21 02:05:53 ejb Exp $
+ * $Id: ircd_parser.y,v 1.61 2000/12/21 13:39:43 db Exp $
  */
 
 %{
@@ -33,7 +33,7 @@
 #include "client.h"	/* for FLAGS_ALL only */
 #include "irc_string.h"
 #include "ircdauth.h"
-
+#include "memdebug.h"
 extern char *ip_string;
 
 int yyparse();

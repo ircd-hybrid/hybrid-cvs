@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: msg.h,v 7.31 2000/12/15 02:28:32 db Exp $
+ * $Id: msg.h,v 7.32 2000/12/21 13:39:29 db Exp $
  */
 #ifndef INCLUDED_msg_h
 #define INCLUDED_msg_h
@@ -134,7 +134,7 @@ struct  Message
 #define MSG_MODLIST  "MODLIST"  /* MODLIST */
 #define MSG_MODLOAD  "MODLOAD"  /* MODLOAD */
 #define MSG_MODUNLOAD  "MODUNLOAD"  /* MODUNLOAD */
-
+#define MSG_DMEM     "DMEM" 
 /*
  * Constants
  */

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.c,v 7.29 2000/12/11 22:07:33 db Exp $
+ *   $Id: s_auth.c,v 7.30 2000/12/21 13:39:49 db Exp $
  *
  * Changes:
  *   July 6, 1999 - Rewrote most of the code here. When a client connects
@@ -54,6 +54,7 @@
 #include <sys/socket.h>
 #include <sys/file.h>
 #include <sys/ioctl.h>
+#include "memdebug.h"
 
 /*
  * a bit different approach

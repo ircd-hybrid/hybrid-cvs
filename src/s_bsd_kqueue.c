@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_kqueue.c,v 1.5 2000/12/17 22:45:45 db Exp $
+ *  $Id: s_bsd_kqueue.c,v 1.6 2000/12/21 13:39:50 db Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -67,6 +67,7 @@
 #include <sys/resource.h>
 #include <sys/param.h>    /* NOFILE */
 #include <arpa/inet.h>
+#include "memdebug.h"
 
 
 #define KE_LENGTH	16

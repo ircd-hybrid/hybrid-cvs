@@ -1,7 +1,7 @@
 /*
  * scache.c
  *
- * $Id: scache.c,v 7.6 2000/12/18 04:00:03 db Exp $
+ * $Id: scache.c,v 7.7 2000/12/21 13:39:54 db Exp $
  */
 
 #include "client.h"
@@ -14,6 +14,7 @@
 
 #include <assert.h>
 #include <string.h>
+#include "memdebug.h"
 
 /*
  * ircd used to store full servernames in anUser as well as in the 

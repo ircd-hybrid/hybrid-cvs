@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.84 2000/12/20 02:39:24 db Exp $
+ *   $Id: send.c,v 7.85 2000/12/21 13:39:55 db Exp $
  */
 #include "tools.h"
 #include "send.h"
@@ -45,6 +45,7 @@
 #include <time.h>
 #include <assert.h>
 #include <sys/errno.h>
+#include "memdebug.h"
 
 #define LOG_BUFSIZE 2048
 

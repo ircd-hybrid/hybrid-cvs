@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.h,v 7.4 2000/12/18 03:59:40 db Exp $
+ * $Id: modules.h,v 7.5 2000/12/21 13:39:28 db Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -24,6 +24,7 @@
 
 #include "ircd_handler.h"
 #include "msg.h"
+#include "memdebug.h"
 
 struct module {
   char *name;

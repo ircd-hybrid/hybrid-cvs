@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.46 2000/12/18 04:00:02 db Exp $
+ *   $Id: parse.c,v 7.47 2000/12/21 13:39:48 db Exp $
  */
 #include "parse.h"
 #include "client.h"
@@ -39,6 +39,7 @@
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>
+#include "memdebug.h"
 
 /*
  * NOTE: parse() should not be called recursively by other functions!

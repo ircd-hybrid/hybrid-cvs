@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: ircd_defs.h,v 7.7 2000/12/03 00:05:41 db Exp $
+ * $Id: ircd_defs.h,v 7.8 2000/12/21 13:39:28 db Exp $
  *
  * ircd_defs.h - Global size definitions for record entries used
  * througout ircd. Please think 3 times before adding anything to this
@@ -65,8 +65,9 @@
 /* 
  * Macros everyone uses :/ moved here from sys.h
  */
+/*
 #define MyFree(x)       if ((x)) free((x))
-
+*/
 #define DEBUG_BLOCK_ALLOCATOR
 #ifdef DEBUG_BLOCK_ALLOCATOR
 extern const char* BH_CurrentFile;

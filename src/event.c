@@ -4,7 +4,7 @@
  *
  * This code was borrowed from the squid web cache by Adrian Chadd.
  *
- * $Id: event.c,v 7.6 2000/10/30 08:22:27 db Exp $
+ * $Id: event.c,v 7.7 2000/12/21 13:39:40 db Exp $
  *
  * Original header follows:
  *
@@ -59,6 +59,7 @@
 #include "event.h"
 #include "client.h"
 #include "send.h"
+#include "memdebug.h"
 
 /* The list of event processes */
 struct ev_entry {

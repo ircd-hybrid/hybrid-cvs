@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: class.c,v 7.17 2000/12/14 17:04:40 db Exp $
+ *   $Id: class.c,v 7.18 2000/12/21 13:39:39 db Exp $
  */
 #include "tools.h"
 #include "class.h"
@@ -32,6 +32,7 @@
 
 #include <string.h>
 #include <stdlib.h>
+#include "memdebug.h"
 
 #define BAD_CONF_CLASS          -1
 #define BAD_PING                -2

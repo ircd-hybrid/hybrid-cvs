@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.79 2000/12/18 22:55:43 db Exp $
+ * $Id: ircd.c,v 7.80 2000/12/21 13:39:42 db Exp $
  */
 #include "tools.h"
 #include "ircd.h"
@@ -76,6 +76,7 @@
 #include <sys/lock.h>
 #include <unistd.h>
 #endif /* SETUID_ROOT */
+#include "memdebug.h"
 
 /*
  * for getopt

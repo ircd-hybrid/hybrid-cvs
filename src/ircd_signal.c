@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_signal.c,v 7.2 2000/10/29 21:01:24 adrian Exp $
+ * $Id: ircd_signal.c,v 7.3 2000/12/21 13:39:43 db Exp $
  */
 #include "ircd_signal.h"
 #include "ircd.h"         /* dorehash */
@@ -25,6 +25,7 @@
 #include "s_log.h"
 
 #include <signal.h>
+#include "memdebug.h"
 
 /*
  * dummy_handler - don't know if this is really needed but if alarm is still

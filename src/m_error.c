@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_error.c,v 7.6 2000/12/10 03:52:23 db Exp $
+ *   $Id: m_error.c,v 7.7 2000/12/21 13:39:45 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -30,6 +30,7 @@
 #include "send.h"
 #include "s_debug.h"
 #include "msg.h"
+#include "memdebug.h"
 
 #if 0
 struct Message error_msgtab = {

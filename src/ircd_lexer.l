@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.39 2000/12/21 02:14:23 ejb Exp $
+ * $Id: ircd_lexer.l,v 1.40 2000/12/21 13:39:42 db Exp $
  */
 
 %option case-insensitive
@@ -34,6 +34,7 @@
 #include "common.h"
 #include "s_conf.h"
 #include "y.tab.h"
+#include "memdebug.h"
 
 char *ip_string;
 
@@ -71,7 +72,7 @@ qstring		\"[^\"\n]*[\"\n]
           }
 	 }
 
-{qstring}	{ DupString(yylval.string,strdup(yytext+1));
+{qstring}	{ DupStringNoDbg(&yylval.string,strdup(yytext+1));
 		  if(yylval.string[yyleng-2] != '"')
 		    fprintf(stderr,"Unterminated character string\n");
 		  else

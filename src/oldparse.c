@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: oldparse.c,v 1.14 2000/12/20 08:10:03 db Exp $
+ *  $Id: oldparse.c,v 1.15 2000/12/21 13:39:47 db Exp $
  */
 #include "tools.h"
 #include "s_log.h"
@@ -30,6 +30,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include "memdebug.h"
 
 static char *getfield(char *newline);
 static  int  oper_privs_from_string(int,char *);

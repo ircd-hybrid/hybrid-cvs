@@ -43,7 +43,7 @@
  *
  * Diane Bruce -db (db@db.net)
  *
- * $Id: mtrie_conf.c,v 7.16 2000/12/15 03:32:18 toot Exp $
+ * $Id: mtrie_conf.c,v 7.17 2000/12/21 13:39:46 db Exp $
  */
 #include "mtrie_conf.h"
 #include "class.h"
@@ -59,6 +59,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <assert.h>
+#include "memdebug.h"
 
 #define MAXPREFIX (HOSTLEN + USERLEN + 15)
 

@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_select.c,v 7.5 2000/12/17 22:45:46 db Exp $
+ *  $Id: s_bsd_select.c,v 7.6 2000/12/21 13:39:51 db Exp $
  */
 #include "tools.h"
 #include "s_bsd.h"
@@ -66,6 +66,7 @@
 #include <sys/resource.h>
 #include <sys/param.h>    /* NOFILE */
 #include <arpa/inet.h>
+#include "memdebug.h"
 
 #ifndef IN_LOOPBACKNET
 #define IN_LOOPBACKNET        0x7f

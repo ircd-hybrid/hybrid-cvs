@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_gline.c,v 1.4 2000/12/18 04:00:03 db Exp $
+ *  $Id: s_gline.c,v 1.5 2000/12/21 13:39:52 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -53,6 +53,7 @@
 #include <unistd.h>
 #include <time.h>
 #include <fcntl.h>
+#include "memdebug.h"
 
 static struct ConfItem *glines=NULL;
 struct gline_pending *pending_glines=NULL;

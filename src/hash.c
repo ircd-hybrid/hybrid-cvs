@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: hash.c,v 7.12 2000/12/18 05:42:56 bill Exp $
+ *  $Id: hash.c,v 7.13 2000/12/21 13:39:41 db Exp $
  */
 #include "tools.h"
 #include "s_conf.h"
@@ -41,6 +41,7 @@
 #include <unistd.h>
 #include <time.h>
 #include <sys/stat.h>
+#include "memdebug.h"
 
 /* New hash code */
 /*
@@ -156,8 +157,7 @@ static void clear_client_hash_table()
   clhits = 0;
   clmiss = 0;
   if(!clientTable)
-    clientTable = (struct HashEntry*) MyMalloc(U_MAX * 
-                                               sizeof(struct HashEntry));
+    clientTable = (struct HashEntry*) MyMalloc(U_MAX * sizeof(struct HashEntry));
 #endif
   memset(clientTable, 0, sizeof(struct HashEntry) * U_MAX);
 }

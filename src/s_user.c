@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.73 2000/12/20 22:00:48 db Exp $
+ *  $Id: s_user.c,v 7.74 2000/12/21 13:39:54 db Exp $
  */
 #include "tools.h"
 #include "s_user.h"
@@ -54,7 +54,7 @@
 #include <assert.h>
 #include <time.h>
 #include <sys/stat.h>
-
+#include "memdebug.h"
 
 static int valid_hostname(const char* hostname);
 static int valid_username(const char* username);

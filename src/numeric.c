@@ -16,13 +16,14 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: numeric.c,v 7.9 2000/12/11 21:02:15 davidt Exp $
+ *   $Id: numeric.c,v 7.10 2000/12/21 13:39:46 db Exp $
  */
 #include "numeric.h"
 #include "irc_string.h"
 #include "common.h"     /* NULL cripes */
 
 #include <assert.h>
+#include "memdebug.h"
 
 #include "messages.tab"
 

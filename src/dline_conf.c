@@ -1,7 +1,7 @@
 /*
  * dline_conf.c
  *
- * $Id: dline_conf.c,v 7.10 2000/12/18 04:00:01 db Exp $
+ * $Id: dline_conf.c,v 7.11 2000/12/21 13:39:40 db Exp $
  */
 #include "dline_conf.h"
 #include "class.h"
@@ -18,6 +18,7 @@
 #include <signal.h>
 #include <string.h>
 #include <stdlib.h>
+#include "memdebug.h"
 
 typedef struct ip_subtree
 {

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.83 2000/12/21 03:46:28 db Exp $
+ *  $Id: client.c,v 7.84 2000/12/21 13:39:40 db Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -55,6 +55,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include "memdebug.h"
 
 
 /* 

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.50 2000/12/21 04:48:12 db Exp $
+ * $Id: channel.h,v 7.51 2000/12/21 13:39:27 db Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -55,15 +55,16 @@ struct Channel
   char            topic[TOPICLEN + 1];
   char           *topic_info;
   time_t          topic_time;
+  char            vchan_id[NICKLEN*2];   /* use this for empty vchans */
   int             users;      /* user count */
   int             locusers;   /* local user count */
   int             opcount;    /* number of chanops */
   unsigned long   lazyLinkChannelExists;
   time_t          users_last;		/* when last user was in channel */
   time_t          last_knock;           /* don't allow knock to flood */
-  struct Channel  *root_chptr;
+  struct Channel  *root_chptr;		/* pointer back to root if vchan */
   dlink_list	  vchan_list;	        /* vchan sublist */
-  dlink_list      chanops;
+  dlink_list      chanops;		/* lists of chanops etc. */
   dlink_list      halfops;
   dlink_list      voiced;
   dlink_list      peons;                /* non ops, just members */
@@ -74,7 +75,7 @@ struct Channel
   dlink_list      denylist;
   dlink_list      invexlist;
 
-  time_t          first_received_message_time;
+  time_t          first_received_message_time; /* channel flood control */
   int             received_number_of_privmsgs;
   int             flood_noticed;
 

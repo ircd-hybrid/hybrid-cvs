@@ -3,7 +3,7 @@
  * fdlist.c   maintain lists of file descriptors
  *
  *
- * $Id: fdlist.c,v 7.15 2000/11/19 14:45:14 davidt Exp $
+ * $Id: fdlist.c,v 7.16 2000/12/21 13:39:41 db Exp $
  */
 #include "fdlist.h"
 #include "client.h"  /* struct Client */
@@ -16,6 +16,7 @@
 #include <string.h>
 #include <assert.h>
 #include <unistd.h>
+#include "memdebug.h"
 
 fde_t *fd_table = NULL;
 

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 1.25 2000/12/21 02:26:51 ejb Exp $
+ *   $Id: m_whois.c,v 1.26 2000/12/21 13:39:35 db Exp $
  */
 #include "tools.h"
 #include "common.h"   /* bleah */
@@ -43,6 +43,7 @@
 #include "modules.h"
 
 #include <string.h>
+#include "memdebug.h"
 
 int do_whois(struct Client *cptr, struct Client *sptr, int parc, char *parv[]);int single_whois(struct Client *sptr, struct Client *acptr, int wilds);
 void whois_person(struct Client *sptr,struct Client *acptr);

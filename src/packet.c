@@ -18,7 +18,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: packet.c,v 7.24 2000/12/10 20:04:08 db Exp $
+ *   $Id: packet.c,v 7.25 2000/12/21 13:39:47 db Exp $
  */ 
 
 #include <stdio.h>
@@ -35,6 +35,7 @@
 #include "fdlist.h"
 #include "packet.h"
 #include "irc_string.h"
+#include "memdebug.h"
 
 
 static char               readBuf[READBUF_SIZE];

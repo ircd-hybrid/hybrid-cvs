@@ -5,7 +5,7 @@
  *
  * adrian chadd <adrian@creative.net.au>
  *
- * $Id: tools.c,v 7.12 2000/12/04 01:18:38 db Exp $
+ * $Id: tools.c,v 7.13 2000/12/21 13:39:55 db Exp $
  */
 
 #include <assert.h>
@@ -13,7 +13,7 @@
 #include <stdlib.h>
 
 #include "tools.h"
-
+#include "memdebug.h"
 
 /* 
  * dlink_ routines are stolen from squid, except for dlinkAddBefore,
