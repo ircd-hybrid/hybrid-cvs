@@ -177,9 +177,6 @@
 /* Path to /dev/null */
 #undef PATH_DEVNULL
 
-/* RLIMIT value found in sys/resource.h if found */
-#undef RLIMIT_FD_MAX
-
 /* This is the type of IO loop we are using */
 #undef SELECT_TYPE
 

@@ -2226,6 +2226,7 @@ echo "${ECHO_T}Sun Workshop/Forte" >&6
 	echo "$as_me:$LINENO: result: Tru64 cc" >&5
 echo "${ECHO_T}Tru64 cc" >&6
 	IRC_CFLAGS="-O1"
+	CPPFLAGS="-I/usr/local/include"
 	Tru=yes
 ;;
 *)
@@ -2363,7 +2364,12 @@ STDOUT="> .depend"
 if test ! -z "$MKDEP"; then
 	echo "$as_me:$LINENO: result: BSD mkdep" >&5
 echo "${ECHO_T}BSD mkdep" >&6
-	STDOUT=""
+
+		if test -z "$Tru"; then
+		STDOUT=""
+	else
+		STDOUT=" 2> /dev/null"
+	fi
 elif test ! -z "$MAKEDEPEND" -a "$HPUX" = yes; then
 	echo "$as_me:$LINENO: result: X11 makedepend for HPUX" >&5
 echo "${ECHO_T}X11 makedepend for HPUX" >&6
@@ -6408,71 +6414,6 @@ fi
 
 
 
-cpp_flags_backup="$CPPFLAGS"
-CPPFLAGS="$CPPFLAGS -dM"
-echo "$as_me:$LINENO: checking for getrlimit max open files parameter" >&5
-echo $ECHO_N "checking for getrlimit max open files parameter... $ECHO_C" >&6
-cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-#include <sys/resource.h>
-
-_ACEOF
-if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
-  $EGREP "RLIMIT_FDMAX" >/dev/null 2>&1; then
-  cf_rlimit_type="RLIMIT_FDMAX"
-fi
-rm -f conftest*
-
-cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-#include <sys/resource.h>
-
-_ACEOF
-if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
-  $EGREP "RLIMIT_NOFILE" >/dev/null 2>&1; then
-  cf_rlimit_type="RLIMIT_NOFILE"
-fi
-rm -f conftest*
-
-cat >conftest.$ac_ext <<_ACEOF
-#line $LINENO "configure"
-/* confdefs.h.  */
-_ACEOF
-cat confdefs.h >>conftest.$ac_ext
-cat >>conftest.$ac_ext <<_ACEOF
-/* end confdefs.h.  */
-#include <sys/resource.h>
-
-_ACEOF
-if (eval "$ac_cpp conftest.$ac_ext") 2>&5 |
-  $EGREP "RLIMIT_OPEN_MAX" >/dev/null 2>&1; then
-  cf_rlimit_type="RLIMIT_OPEN_MAX"
-fi
-rm -f conftest*
-
-CPPFLAGS="$cpp_flags_backup"
-unset cpp_flags_backup
-if test "x$cf_rlimit_type" != "x"; then
-
-cat >>confdefs.h <<_ACEOF
-#define RLIMIT_FD_MAX $cf_rlimit_type
-_ACEOF
-
-	echo "$as_me:$LINENO: result: $cf_rlimit_type" >&5
-echo "${ECHO_T}$cf_rlimit_type" >&6
-fi
-
-
 echo "$as_me:$LINENO: checking for OpenSSL" >&5
 echo $ECHO_N "checking for OpenSSL... $ECHO_C" >&6
 # Check whether --enable-openssl or --disable-openssl was given.
@@ -6548,10 +6489,8 @@ cat >>conftest.$ac_ext <<_ACEOF
 int
 main ()
 {
-int main(void) {
-		if ( (OPENSSL_VERSION_NUMBER & 0x00906000) == 0x00906000)
-		exit(0);
-		else exit(1);}
+if ( (OPENSSL_VERSION_NUMBER & 0x00906000) == 0x00906000)
+		exit(0); else exit(1);
   ;
   return 0;
 }
@@ -7381,10 +7320,14 @@ cat >>confdefs.h <<\_ACEOF
 _ACEOF
 
 
+else
+  zlib=no
 
 fi
 
 
+else
+  zlib=no
 fi
 
 
@@ -8849,9 +8792,10 @@ echo "${ECHO_T}HP-UX - Assuming HPUX C compiler cc: +z -r -q -n +ESfic" >&6
 		LDFLAGS="${LDFLAGS} -Wl,-E"
 	fi
 	if test "$Tru" = yes; then
-		echo "$as_me:$LINENO: result: Tru64: -shared" >&5
-echo "${ECHO_T}Tru64: -shared" >&6
-		PICFLAGS="-shared "
+		echo "$as_me:$LINENO: result: Tru64: -shared -expect_unresolved '*'" >&5
+echo "${ECHO_T}Tru64: -shared -expect_unresolved '*'" >&6
+		PICFLAGS="-shared -expect_unresolved '*' "
+		LDFLAGS="-call_shared"
 		SEDOBJ="s/\.o/.so/g"
 	fi
 	if test -z "$PICFLAGS"; then
@@ -10709,7 +10653,7 @@ echo "Installing into: $prefix"
 
 echo -n "Ziplinks ................ "
 
-if test "$zlib" != no; then
+if test -z "$zlib"; then
 	echo yes
 else
 	echo no
@@ -10717,7 +10661,7 @@ fi
 
 echo -n "OpenSSL (Cryptlinks)..... "
 
-if test "X${cf_openssl_ciphers}" != "X"; then
+if test ! -z "$cf_openssl_ciphers"; then
 	echo "yes - ${cf_openssl_ciphers}"
 else
 	echo no

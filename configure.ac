@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.40 2003/05/29 00:23:47 joshk Exp $
+dnl $Id: configure.ac,v 7.41 2003/05/29 04:06:38 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -57,6 +57,7 @@ case `$CC -V 2>&1` in
 *Tru64*)
 	AC_MSG_RESULT(Tru64 cc)
 	IRC_CFLAGS="-O1"
+	CPPFLAGS="-I/usr/local/include"
 	Tru=yes
 ;;
 *)
@@ -115,7 +116,13 @@ STDOUT="> .depend"
 
 if test ! -z "$MKDEP"; then
 	AC_MSG_RESULT(BSD mkdep)
-	STDOUT=""
+
+	dnl Tru64's mkdep is very loud
+	if test -z "$Tru"; then
+		STDOUT=""
+	else
+		STDOUT=" 2> /dev/null"
+	fi
 elif test ! -z "$MAKEDEPEND" -a "$HPUX" = yes; then
 	AC_MSG_RESULT(X11 makedepend for HPUX)
 	MKDEP="$MAKEDEPEND -f-"
@@ -366,27 +373,6 @@ AC_SEARCH_LIBS(nanosleep, [rt posix4],
 [AC_DEFINE(HAVE_NANOSLEEP, 1, [Define if the nanosleep function is available somewhere.])]
 [])
 
-dnl Look for definitions such as RLIMIT_FDMAX, RLIMIT_NOFILE, and
-dnl RLIMIT_OPEN_MAX.  These are used for getrlimit().
-dnl NOTE: It seems stock autoconf doesn't use the -dM flag for cpp.
-dnl       We need this for the following tests to work.
-
-cpp_flags_backup="$CPPFLAGS"
-CPPFLAGS="$CPPFLAGS -dM"
-AC_MSG_CHECKING(for getrlimit max open files parameter)
-AC_EGREP_HEADER(RLIMIT_FDMAX, sys/resource.h,
-		cf_rlimit_type="RLIMIT_FDMAX")
-AC_EGREP_HEADER(RLIMIT_NOFILE, sys/resource.h,
-		cf_rlimit_type="RLIMIT_NOFILE")
-AC_EGREP_HEADER(RLIMIT_OPEN_MAX, sys/resource.h,
-		cf_rlimit_type="RLIMIT_OPEN_MAX")
-CPPFLAGS="$cpp_flags_backup"
-unset cpp_flags_backup
-if test "x$cf_rlimit_type" != "x"; then
-	AC_DEFINE_UNQUOTED(RLIMIT_FD_MAX, $cf_rlimit_type, [RLIMIT value found in sys/resource.h if found])
-	AC_MSG_RESULT($cf_rlimit_type)
-fi
-
 dnl Specialized functions checks
 dnl ============================
 
@@ -463,10 +449,8 @@ if test "X$cf_enable_openssl" != "Xno"; then
 		AC_LANG_PROGRAM(
 	    	[#include <openssl/opensslv.h>
 		#include <stdlib.h>],
-		[[int main(void) {
-		if ( (OPENSSL_VERSION_NUMBER & 0x00906000) == 0x00906000)
-		exit(0);
-		else exit(1);}]]),
+		[[if ( (OPENSSL_VERSION_NUMBER & 0x00906000) == 0x00906000)
+		exit(0); else exit(1);]]),
 	cf_openssl_version_ok=yes,
 	cf_openssl_version_ok=no,
 	cf_openssl_version_ok=no)
@@ -525,9 +509,9 @@ AC_HELP_STRING([--disable-zlib],[Disable ziplinks support]),
 	[
 		AC_SUBST(ZLIB_LD, -lz)
 		AC_DEFINE(HAVE_LIBZ, 1, [Define to 1 if zlib (-lz) is available.])
-	]
+	], zlib=no
 	)
-	])
+	], zlib=no)
 ])
 
 dnl IO Loop Selection
@@ -821,8 +805,9 @@ else
 		LDFLAGS="${LDFLAGS} -Wl,-E"
 	fi
 	if test "$Tru" = yes; then
-		AC_MSG_RESULT(Tru64: -shared)
-		PICFLAGS="-shared "
+		AC_MSG_RESULT([Tru64: -shared -expect_unresolved '*'])
+		PICFLAGS="-shared -expect_unresolved '*' "
+		LDFLAGS="-call_shared"
 		SEDOBJ="s/\.o/.so/g"
 	fi
 	if test -z "$PICFLAGS"; then
@@ -954,7 +939,7 @@ echo "Installing into: $prefix"
 
 echo -n "Ziplinks ................ "
 
-if test "$zlib" != no; then
+if test -z "$zlib"; then
 	echo yes
 else
 	echo no
@@ -962,7 +947,7 @@ fi
 
 echo -n "OpenSSL (Cryptlinks)..... "
 
-if test "X${cf_openssl_ciphers}" != "X"; then
+if test ! -z "$cf_openssl_ciphers"; then
 	echo "yes - ${cf_openssl_ciphers}"
 else
 	echo no
