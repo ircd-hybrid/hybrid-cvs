@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_debug.c,v 7.74 2003/04/21 13:10:45 michael Exp $
+ *  $Id: s_debug.c,v 7.75 2003/04/21 13:32:58 michael Exp $
  */
 
 #include "stdinc.h"
@@ -156,7 +156,6 @@ count_memory(struct Client *source_p)
   struct Ban *actualBan;
   dlink_node *dlink;
 
-  int channel_count = 0; 
   int local_client_conf_count = 0;      /* local client conf links */
   int users_counted = 0;                /* user structs */
 
@@ -168,7 +167,6 @@ count_memory(struct Client *source_p)
 
   int wwu = 0;                  /* whowas users */
   int class_count = 0;          /* classes */
-  int conf_count = 0;           /* conf lines */
   int users_invited_count = 0;  /* users invited */
   int user_channels = 0;        /* users in channels */
   int aways_counted = 0;   
@@ -211,17 +209,16 @@ count_memory(struct Client *source_p)
   count_whowas_memory(&wwu, &wwm);
 
   DLINK_FOREACH(gptr, global_client_list.head)
+  {
+    target_p = gptr->data;
+
+    if (MyConnect(target_p))
     {
-      target_p = gptr->data;
+      local_client_conf_count += dlink_list_length(&target_p->localClient->confs);
+    }
 
-      if (MyConnect(target_p))
-        {
-	  local_client_conf_count +=
-	    dlink_list_length(&target_p->localClient->confs);
-        }
-
-      if (target_p->user != NULL)
-        {
+    if (target_p->user != NULL)
+    {
           users_counted++;
 	  users_invited_count += 
 	    dlink_list_length(&target_p->user->invited);
@@ -239,15 +236,14 @@ count_memory(struct Client *source_p)
   /* Count up all channels, ban lists, except lists, Invex lists */
 
   DLINK_FOREACH(gptr, global_channel_list.head)
-    {
-      chptr = gptr->data;
-      channel_count++;
-      channel_memory += (strlen(chptr->chname) + sizeof(struct Channel));
+  {
+    chptr = gptr->data;
+    channel_memory += (strlen(chptr->chname) + sizeof(struct Channel));
 
-      DLINK_FOREACH(dlink, chptr->peons.head)
-        channel_users++;
-      DLINK_FOREACH(dlink, chptr->chanops.head)
-        channel_users++;
+    DLINK_FOREACH(dlink, chptr->peons.head)
+      channel_users++;
+    DLINK_FOREACH(dlink, chptr->chanops.head)
+      channel_users++;
 #ifdef REQUIRE_OANDV
       DLINK_FOREACH(dlink, chptr->chanops_voiced.head)
         channel_users++;
@@ -305,14 +301,13 @@ count_memory(struct Client *source_p)
   /* count up all config items */
 
   DLINK_FOREACH(dlink, ConfigItemList.head)
-    {
+  {
       aconf = dlink->data;
-      conf_count++;
       conf_memory += aconf->host ? strlen(aconf->host)+1 : 0;
       conf_memory += aconf->passwd ? strlen(aconf->passwd)+1 : 0;
       conf_memory += aconf->name ? strlen(aconf->name)+1 : 0;
       conf_memory += sizeof(struct ConfItem);
-    }
+  }
 
   /* count up all classes */
   class_count = dlink_list_length(&ClassList);
@@ -334,17 +329,17 @@ count_memory(struct Client *source_p)
 	     local_client_conf_count,
 	     (unsigned long)local_client_conf_count * sizeof(dlink_node));
 
-  sendto_one(source_p, ":%s %d %s z :Conflines %u(%d)",
+  sendto_one(source_p, ":%s %d %s z :Conflines %lu(%d)",
              me.name, RPL_STATSDEBUG, source_p->name,
-	     conf_count, (int)conf_memory);
+	     dlink_list_length(&ConfigItemList), (int)conf_memory);
 
   sendto_one(source_p, ":%s %d %s z :Classes %u(%lu)",
              me.name, RPL_STATSDEBUG, source_p->name,
 	     class_count, (unsigned long)class_count*sizeof(struct Class));
 
-  sendto_one(source_p, ":%s %d %s z :Channels %u(%d)",
+  sendto_one(source_p, ":%s %d %s z :Channels %lu(%d)",
              me.name, RPL_STATSDEBUG, source_p->name,
-	     channel_count, (int)channel_memory);
+	     dlink_list_length(&global_channel_list), (int)channel_memory);
 
   sendto_one(source_p, ":%s %d %s z :Bans %u(%d)",
              me.name, RPL_STATSDEBUG, source_p->name,
