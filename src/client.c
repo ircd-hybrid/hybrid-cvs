@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.319 2003/01/31 23:00:31 db Exp $
+ *  $Id: client.c,v 7.320 2003/02/01 03:55:20 db Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -982,10 +982,8 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
       ** (Note: The notice is to the local clients *only*)
       */
       sendto_common_channels_local(source_p, ":%s!%s@%s QUIT :%s",
-				   source_p->name,
-				   source_p->username,
-				   source_p->host,
-				   comment);
+				   source_p->name, source_p->username,
+				   source_p->host, comment);
 
       DLINK_FOREACH_SAFE(lp, next_lp, source_p->user->channel.head)
       {
@@ -1667,8 +1665,8 @@ change_local_nick(struct Client *client_p, struct Client *source_p, char *nick)
 			   source_p->host);
 
       sendto_common_channels_local(source_p, ":%s!%s@%s NICK :%s",
-				   source_p->name, source_p->username, source_p->host,
-				   nick);
+				   source_p->name, source_p->username,
+				   source_p->host, nick);
       if (source_p->user)
 	{
 	  add_history(source_p, 1);
