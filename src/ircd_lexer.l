@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_lexer.l,v 1.175 2003/07/17 06:25:28 metalrock Exp $
+ *  $Id: ircd_lexer.l,v 1.176 2003/07/23 15:26:52 adx Exp $
  */
 
 %option case-insensitive
@@ -165,7 +165,6 @@ encrypted       { return ENCRYPTED; }
 exceed_limit    { return EXCEED_LIMIT; }
 exempt		{ return EXEMPT; }
 fakename	{ return FAKENAME; }
-fallback_to_ip6_int { return FALLBACK_IP6_INT; }
 flatten_links	{ return FLATTEN_LINKS; }
 ffailed_operlog	{ return FFAILED_OPERLOG; }
 foperlog   	{ return FOPERLOG; }

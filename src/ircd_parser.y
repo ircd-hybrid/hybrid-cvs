@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.344 2003/07/22 12:23:11 adx Exp $
+ *  $Id: ircd_parser.y,v 1.345 2003/07/23 15:26:52 adx Exp $
  */
 
 %{
@@ -167,7 +167,6 @@ unhook_hub_leaf_confs(void)
 %token  EXEMPT
 %token  FAILED_OPER_NOTICE
 %token  FAKENAME
-%token  FALLBACK_IP6_INT
 %token  FLATTEN_LINKS
 %token  FFAILED_OPERLOG
 %token  FOPERLOG
@@ -2406,8 +2405,8 @@ general_item:       general_hide_spoof_ips | general_ignore_bogus_ts |
                     general_compression_level | general_client_flood |
                     general_throttle_time | general_havent_read_conf |
                     general_dot_in_ip6_addr | general_ping_cookie |
-                    general_disable_auth | general_fallback_to_ip6_int |
-                    error;
+                    general_disable_auth |
+		    error;
 
 general_hide_spoof_ips: HIDE_SPOOF_IPS '=' TBOOL ';'
 {
@@ -2730,11 +2729,6 @@ general_throttle_time: THROTTLE_TIME '=' timespec ';'
 {
   if (ypass == 2)
     ConfigFileEntry.throttle_time = yylval.number;
-};
-
-general_fallback_to_ip6_int: FALLBACK_IP6_INT '=' TBOOL ';'
-{
-  ConfigFileEntry.fallback_to_ip6_int = yylval.number;
 };
 
 general_oper_umodes: OPER_UMODES
