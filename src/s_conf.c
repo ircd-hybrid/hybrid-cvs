@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.489 2004/02/01 05:34:45 metalrock Exp $
+ *  $Id: s_conf.c,v 7.490 2004/02/27 09:26:49 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -2460,8 +2460,8 @@ get_printable_conf(struct ConfItem *conf, char **host, char **reason,
   aconf = (struct AccessItem *)map_to_conf(conf);
 
   *host = EmptyString(aconf->host) ? null : aconf->host;
-  *reason = EmptyString(aconf->reason) ? null : aconf->reason;
-  *oreason = EmptyString(aconf->oper_reason) ? null : aconf->oper_reason;
+  *reason = EmptyString(aconf->reason) ? "No reason" : aconf->reason;
+  *oreason = EmptyString(aconf->oper_reason) ? "" : aconf->oper_reason;
   *user = EmptyString(aconf->user) ? null : aconf->user;
   *classname = aconf->class_ptr == NULL ? zero : aconf->class_ptr->name;
   *port = (int)aconf->port;
