@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kline.c,v 7.3 1999/08/09 22:15:10 db Exp $
+ *   $Id: m_kline.c,v 7.4 1999/08/18 22:59:39 db Exp $
  */
 #include "m_kline.h"
 #include "channel.h"
@@ -56,10 +56,6 @@ static char *cluster(char *);
  * the conf
  */
 aPendingLine *PendingLines = (aPendingLine *) NULL;
-
-#ifdef SLAVE_SERVERS
-extern aConfItem *find_special_conf(char *,int); /* defined in s_conf.c */
-#endif
 
 /*
  * LockFile routines
