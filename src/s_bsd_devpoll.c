@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_devpoll.c,v 7.21 2003/06/07 17:28:01 michael Exp $
+ *  $Id: s_bsd_devpoll.c,v 7.22 2003/06/30 17:49:38 adx Exp $
  */
 
 #include "stdinc.h"
@@ -252,7 +252,6 @@ comm_select(unsigned long delay)
 	        set_time();
 		if (num == 0)
 			continue;
-		callbacks_called += num;
 
 		for (i = 0; i < num; i++) 
         	{

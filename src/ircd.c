@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.307 2003/06/22 00:53:01 joshk Exp $
+ *  $Id: ircd.c,v 7.308 2003/06/30 17:49:38 adx Exp $
  */
 
 #include "stdinc.h"
@@ -87,8 +87,6 @@ int ServerRunning;            /* GLOBAL - server execution state */
 struct Client me;             /* That's me */
 struct LocalUser meLocalUser; /* That's also part of me */
 
-int callbacks_called;         /* A measure of server load... */
-
 static unsigned long initialVMTop = 0;   /* top of virtual memory at init */
 const char *logFileName = LPATH;
 const char *pidFileName = PPATH;
@@ -124,24 +122,6 @@ int split_servers;
 
 int rehashed_klines = 0;
 int rehashed_xlines = 0;
-
-static int
-irc_sleep(unsigned long useconds)
-{
-#ifdef HAVE_NANOSLEEP
-  struct timespec t;
-
-  t.tv_sec  =  useconds / (unsigned long)1000000;
-  t.tv_nsec = (useconds % (unsigned long)1000000) * 1000;
-  return(nanosleep(&t, NULL));
-#else
-  struct timeval t;
-
-  t.tv_sec  = 0;
-  t.tv_usec = useconds;
-  return(select(0, NULL, NULL, NULL, &t));
-#endif
-}
 
 /*
  * get_vm_top - get the operating systems notion of the resident set size
@@ -296,7 +276,6 @@ set_time(void)
 static void
 io_loop(void)
 {
-  unsigned long empty_cycles = 0, st = 0;
   time_t delay;
 
   while (ServerRunning)
@@ -325,23 +304,13 @@ io_loop(void)
      */
     delay = eventNextTime();
 
-    if (delay <= CurrentTime)
+    while (delay <= CurrentTime)
+    {
       eventRun();
+      delay = eventNextTime();
+    }
 
-    if (callbacks_called > 0)
-      empty_cycles = 0;
-    else
-      empty_cycles++;
-
-    /* Reset the callback counter... */
-    callbacks_called = 0;
-    st = (empty_cycles+1) * 15000;
-
-    if (st > 250000)
-      st = 250000;
-
-    irc_sleep(st);
-    comm_select(0);
+    comm_select(delay * 1000);
     exit_aborted_clients();
     free_exited_clients();
     send_queued_all();

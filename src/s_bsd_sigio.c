@@ -21,7 +21,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_sigio.c,v 7.29 2003/06/18 06:26:33 metalrock Exp $
+ *  $Id: s_bsd_sigio.c,v 7.30 2003/06/30 17:49:39 adx Exp $
  */
 
 #ifndef _GNU_SOURCE
@@ -266,7 +266,6 @@ int comm_select(unsigned long delay)
                 set_time();
                 if (revents & (POLLRDNORM | POLLIN | POLLHUP | POLLERR))
                 {
-                    callbacks_called++;
                     hdl = F->read_handler;
                     F->read_handler = NULL;
                     poll_update_pollfds(fd, POLLIN, NULL);
@@ -275,7 +274,6 @@ int comm_select(unsigned long delay)
                 }
                 if (revents & (POLLWRNORM | POLLOUT | POLLHUP | POLLERR))
                 {
-                    callbacks_called++;
                     hdl = F->write_handler;
                     F->write_handler = NULL;
                     poll_update_pollfds(fd, POLLOUT, NULL);
@@ -328,7 +326,6 @@ int comm_select(unsigned long delay)
         F = &fd_table[fd];
         if (revents & (POLLRDNORM | POLLIN | POLLHUP | POLLERR))
         {
-            callbacks_called++;
             hdl = F->read_handler;
             F->read_handler = NULL;
             poll_update_pollfds(fd, POLLIN, NULL);
@@ -337,7 +334,6 @@ int comm_select(unsigned long delay)
         }
         if (revents & (POLLWRNORM | POLLOUT | POLLHUP | POLLERR))
         {
-            callbacks_called++;
             hdl = F->write_handler;
             F->write_handler = NULL;
             poll_update_pollfds(fd, POLLOUT, NULL);

@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.77 2003/06/29 18:09:33 joshk Exp $
+dnl $Id: configure.ac,v 7.78 2003/06/30 17:49:35 adx Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -8,7 +8,7 @@ dnl said functions need to be just about as complex as they already are.
 AC_PREREQ(2.57)
 
 dnl Sneaky way to get an Id tag into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.77 2003/06/29 18:09:33 joshk Exp $])
+AC_COPYRIGHT([$Id: configure.ac,v 7.78 2003/06/30 17:49:35 adx Exp $])
 
 AC_INIT([ircd-hybrid],[7-CURRENT])
 
@@ -449,10 +449,6 @@ if test "$ac_cv_func_snprintf" = no -o "$ac_cv_func_vsnprintf" = no; then
 fi
 
 AC_SUBST(SNPRINTF_C)
-
-AC_SEARCH_LIBS(nanosleep, [rt posix4],
-[AC_DEFINE(HAVE_NANOSLEEP, 1, [Define if the nanosleep function is available somewhere.])]
-[])
 
 dnl Specialized functions checks
 dnl ============================

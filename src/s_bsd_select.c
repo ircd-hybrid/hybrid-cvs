@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_select.c,v 7.33 2003/06/18 06:26:33 metalrock Exp $
+ *  $Id: s_bsd_select.c,v 7.34 2003/06/30 17:49:39 adx Exp $
  */
 
 #include "stdinc.h"
@@ -186,7 +186,6 @@ comm_select(unsigned long delay)
         return -1;
         /* NOTREACHED */
     }
-    callbacks_called += num;
     set_time();
 
     if (num == 0)
