@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_join.c,v 1.15 2003/10/11 12:29:25 bill Exp $
+ *  $Id: m_join.c,v 1.16 2003/10/13 00:32:50 bill Exp $
  */
 
 #include "stdinc.h"
@@ -87,7 +87,7 @@ _moddeinit(void)
   mod_del_cmd(&join_msgtab);
 }
 
-const char *_version = "$Revision: 1.15 $";
+const char *_version = "$Revision: 1.16 $";
 #endif
 
 /* m_join()
@@ -376,9 +376,6 @@ ms_join(struct Client *client_p, struct Client *source_p,
                          servername, chptr->chname, modebuf, parabuf);
   }
 
-  *modebuf = *parabuf = '\0';
-  channel_modes(chptr, source_p, modebuf, parabuf);
-
   if (!IsMember(source_p, chptr))
   {
     add_user_to_channel(chptr, source_p, 0);
@@ -388,13 +385,12 @@ ms_join(struct Client *client_p, struct Client *source_p,
   }
 
   sendto_server(client_p, NULL, chptr, CAP_TS6, NOCAPS, NOFLAGS,
-                ":%s JOIN %lu %s %s %s",
-                source_p->id, (unsigned long)chptr->channelts, chptr->chname,
-                modebuf, parabuf);
+                ":%s JOIN %lu %s +",
+                source_p->id, (unsigned long)chptr->channelts, chptr->chname);
   sendto_server(client_p, NULL, chptr, NOCAPS, CAP_TS6, NOFLAGS,
-                ":%s SJOIN %lu %s %s %s:%s",
-                source_p->user->server->name, (unsigned long)chptr->channelts, chptr->chname,
-                modebuf, parabuf, source_p->name);
+                ":%s SJOIN %lu %s + :%s",
+                source_p->user->server->name, (unsigned long)chptr->channelts,
+                chptr->chname, source_p->name);
 }
 
 /* do_join_0()
