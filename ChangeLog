@@ -1,3 +1,15 @@
+leeh        2002/06/11 17:37:10 EDT	(20020611_9)
+
+  Modified files:
+    src                  s_user.c 
+  Log:
+  - aaaaand to unidented clients too.  this is slightly unoptimal, but.
+  
+  Revision  Changes    Path
+  7.199     +16 -11    ircd-hybrid-7/src/s_user.c
+
+
+
 leeh        2002/06/11 16:29:08 EDT	(20020611_8)
 
   Modified files:
@@ -28179,4 +28191,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3762 2002/06/11 20:29:15 leeh Exp $
+$Id: ChangeLog,v 7.3763 2002/06/11 21:37:16 leeh Exp $
