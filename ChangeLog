@@ -1,3 +1,15 @@
+lusky       2002/08/25 00:30:09 EDT	(20020825_1)
+
+  Modified files:
+    doc                  example.efnet.conf 
+  Log:
+  - corrected disclaimer in example.efnet.com to per Disciple's rant
+  
+  Revision  Changes    Path
+  7.6       +2 -5      ircd-hybrid-7/doc/example.efnet.conf
+
+
+
 lusky       2002/08/25 00:19:53 EDT	(20020825_0)
 
   Modified files:
@@ -31534,4 +31546,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4001 2002/08/25 04:19:55 lusky Exp $
+$Id: ChangeLog,v 7.4002 2002/08/25 04:30:11 lusky Exp $
