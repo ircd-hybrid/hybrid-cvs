@@ -1,5 +1,5 @@
 /*  contrib/m_tburst.c
- *  Copyright (C) 2002 Hybrid Develompent Team
+ *  Copyright (C) 2002 Hybrid Development Team
  *
  *  Redistribution and use in source and binary forms, with or without
  *  modification, are permitted provided that the following conditions are
@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: m_tb.c,v 1.4 2002/04/14 19:42:36 leeh Exp $
+ *  $Id: m_tb.c,v 1.5 2002/04/15 06:13:29 db Exp $
  */
 
 #include <string.h>
@@ -81,7 +81,7 @@ _moddeinit(void)
   unset_tburst_capab();
 }
 
-const char *_version = "$Revision: 1.4 $";
+const char *_version = "$Revision: 1.5 $";
 #endif
 
 /* ms_tburst()
