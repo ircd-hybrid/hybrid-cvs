@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.110 2001/01/05 23:13:36 ejb Exp $
+ *  $Id: s_user.c,v 7.111 2001/01/05 23:46:01 ejb Exp $
  */
 #include "tools.h"
 #include "s_user.h"
@@ -850,6 +850,11 @@ int do_remote_user(char* nick, struct Client* cptr, struct Client* sptr,
   user->server = find_or_add(server);
   strncpy_irc(sptr->host, host, HOSTLEN); 
   strncpy_irc(sptr->info, realname, REALLEN);
+
+  /* if it has no ID, set the ID to the nick just in case */
+  if (!id)
+	  strcpy(sptr->user->id, nick);
+	
   return register_remote_user(cptr, sptr, sptr->name, username);
 }
 
