@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: hook.c,v 7.3 2001/01/17 04:19:39 ejb Exp $
+ * $Id: hook.c,v 7.4 2001/01/17 17:23:00 ejb Exp $
  */
 
 /* hooks are used by modules to hook into events called by other parts of
@@ -124,9 +124,9 @@ hook_add_hook(char *event, hookfn *fn)
 	dlink_node *node;
 	
 	h = find_hook(event);
-	if (!h)
+	if (!h) 
 		return -1;
-	
+
 	node = make_dlink_node();
 	
 	dlinkAdd(fn, node, &h->hooks);
@@ -143,7 +143,7 @@ hook_call_event(char *event, void *data)
 	h = find_hook(event);
 	if (!h)
 		return -1;
-	
+
 	for (node = h->hooks.head; node; node = node->next)
 	{
 		fn = node->data;
