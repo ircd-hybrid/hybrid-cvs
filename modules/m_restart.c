@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_restart.c,v 1.8 2000/12/23 01:42:15 db Exp $
+ *   $Id: m_restart.c,v 1.9 2000/12/28 02:27:06 ejb Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -76,6 +76,22 @@ int     mo_restart(struct Client *cptr,
       return 0;
     }
 
+  if (parc < 2)
+  {
+	  sendto_one(sptr, ":%s NOTICE %s :Need server name /restart %s",
+				 me.name, sptr->name, me.name);
+	  return 0;
+  }
+  else
+  {
+	  if (irccmp(parv[1], me.name))
+	  {
+		  sendto_one(sptr, ":%s NOTICE %s :Mismatch on /restart %s",
+					 me.name, sptr->name, me.name);
+		  return 0;
+	  }
+  }
+  
   log(L_WARN, "Server RESTART by %s\n", get_client_name(sptr, SHOW_IP));
   ircsprintf(buf, "Server RESTART by %s", get_client_name(sptr, SHOW_IP));
   restart(buf);
