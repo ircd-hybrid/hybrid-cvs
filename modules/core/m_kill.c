@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kill.c,v 1.28 2001/01/28 20:33:26 fl_ Exp $
+ *   $Id: m_kill.c,v 1.29 2001/01/28 21:11:06 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -331,43 +331,32 @@ static void relay_kill(struct Client *one, struct Client *sptr,
         }
       }
     }
-    else
+    else /* force introduction of killed client */
       client_burst_if_needed(cptr, acptr);
 
+    /* introduce source of kill */
     client_burst_if_needed(cptr, sptr);
+
+    if (IsCapable(cptr, CAP_UID))
+      nickoruid = ID(acptr);
+    else
+      nickoruid = acptr->name;
+
+    if(MyConnect(sptr))
+    {
+      sendto_one(cptr, ":%s KILL %s :%s!%s!%s!%s %s",
+                 sptr->name, nickoruid,
+                 me.name, sptr->host, sptr->username,
+                 sptr->name, reason);
+    }
+    else
+    {
+      sendto_one(cptr, ":%s KILL %s :%s!%s %s",
+                 sptr->name, nickoruid, me.name,
+                 inpath, reason);
+    }
   }
 
-  /* check they have a UID */
-  if(HasID(acptr))
-      nickoruid = ID(acptr);
-  else
-    nickoruid = acptr->name;
-
-    /* Oper is local, send it to everyone and build a path */
-    if(MyConnect(sptr))
-      {
-        sendto_cap_serv_butone(CAP_UID, NULL,
-                               ":%s KILL %s :%s!%s!%s!%s %s",
-                               sptr->name, nickoruid,
-                               me.name, sptr->host, sptr->username,
-                               sptr->name, reason);
-        sendto_nocap_serv_butone(CAP_UID, NULL,
-                               ":%s KILL %s :%s!%s!%s!%s %s",
-                               sptr->name, acptr->name, 
-                               me.name, sptr->host, sptr->username,
-                               sptr->name, reason);
-      }
-    else
-      {
-        sendto_cap_serv_butone(CAP_UID, one,
-                               ":%s KILL %s :%s!%s %s",
-                               sptr->name, nickoruid, me.name,
-                               inpath, reason);
-        sendto_nocap_serv_butone(CAP_UID, one,
-                               ":%s KILL %s :%s!%s %s",
-                               sptr->name, acptr->name, me.name,
-                               inpath, reason);
-      }
 #if 0
     sendto_one(cptr, ":%s KILL %s :%s!%s", sptr->name, acptr->name,
                inpath, path);
