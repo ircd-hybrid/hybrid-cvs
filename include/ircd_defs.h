@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: ircd_defs.h,v 7.16 2001/01/26 05:40:36 ejb Exp $
+ * $Id: ircd_defs.h,v 7.17 2001/02/05 01:05:33 androsyn Exp $
  *
  * ircd_defs.h - Global size definitions for record entries used
  * througout ircd. Please think 3 times before adding anything to this
@@ -161,7 +161,9 @@ do { \
 #define PIN_ADDR(x) x->sins.sin.s_addr 
 #define IN_ADDR(x) x.sins.sin.s_addr
 
-
+#ifndef AF_INET6
+#define AF_INET6 10 /* Dummy AF_INET6 declaration */
+#endif 
 #define DEF_FAM AF_INET
 
 #endif

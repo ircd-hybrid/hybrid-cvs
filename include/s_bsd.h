@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_bsd.h,v 7.25 2001/01/27 06:38:07 lusky Exp $
+ *   $Id: s_bsd.h,v 7.26 2001/02/05 01:05:34 androsyn Exp $
  *
  */
 #ifndef INCLUDED_s_bsd_h
@@ -70,7 +70,7 @@ extern void  comm_settimeout(int, time_t, PF *, void *);
 extern void  comm_setflush(int, time_t, PF *, void *);
 extern void  comm_checktimeouts(void *);
 extern void  comm_connect_tcp(int, const char *, u_short,
-                 struct sockaddr *, int, CNCB *, void *);
+                 struct sockaddr *, int, CNCB *, void *, int);
 extern const char * comm_errstr(int status);
 extern int   comm_open(int family, int sock_type, int proto,
                  const char *note);

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_debug.c,v 7.39 2001/01/18 17:38:02 ejb Exp $
+ *   $Id: s_debug.c,v 7.40 2001/02/05 01:05:41 androsyn Exp $
  */
 
 #include <sys/types.h> 
@@ -386,8 +386,9 @@ void count_memory(struct Client *sptr)
              dbuf_used_count, dbuf_used, DBufMaxAllocated );
 #endif
 
+#if 0
   rm = cres_mem(sptr);
-
+#endif
   count_scache(&number_servers_cached,&mem_servers_cached);
 
   sendto_one(sptr, ":%s %d %s :scache %u(%lu)",

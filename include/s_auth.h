@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.h,v 7.10 2001/01/08 15:36:56 db Exp $
+ *   $Id: s_auth.h,v 7.11 2001/02/05 01:05:33 androsyn Exp $
  */
 #ifndef INCLUDED_s_auth_h
 #define INCLUDED_s_auth_h
@@ -26,7 +26,7 @@
 #ifndef INCLUDED_config_h
 #include "config.h"
 #endif
-
+#include "res.h"
 /* 
  * How many auth allocations to allocate in a block. I'm guessing that
  * a good number here is 64, because these are temporary and don't live
@@ -39,6 +39,7 @@ struct Client;
 
 struct AuthRequest {
   struct Client*      client;    /* pointer to client struct for request */
+  struct DNSQuery     query;     /* DNS query */
   unsigned int        flags;     /* current state of request */
   int                 fd;        /* file descriptor for auth queries */
   time_t              timeout;   /* time when query expires */

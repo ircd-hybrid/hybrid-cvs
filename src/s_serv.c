@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.138 2001/02/03 01:59:50 jdc Exp $
+ *   $Id: s_serv.c,v 7.139 2001/02/05 01:05:41 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -824,7 +824,9 @@ int server_estab(struct Client *cptr)
   sendto_one(cptr,"SVINFO %d %d 0 :%lu", TS_CURRENT, TS_MIN, CurrentTime);
   
   det_confs_butmask(cptr, CONF_LEAF|CONF_HUB|CONF_SERVER);
+#if 0
   release_client_dns_reply(cptr);
+#endif
   /*
   ** *WARNING*
   **    In the following code in place of plain server's
@@ -1567,12 +1569,12 @@ serv_connect(struct ConfItem *aconf, struct Client *by)
 #endif
 	comm_connect_tcp(cptr->fd, aconf->host, aconf->port,
 			 (struct sockaddr *)&SOCKADDR(ipn), sizeof(struct irc_sockaddr), 
-			 serv_connect_callback, cptr);
+			 serv_connect_callback, cptr, aconf->aftype);
       }
     else
       {
 	comm_connect_tcp(cptr->fd, aconf->host, aconf->port, NULL, 0, 
-			 serv_connect_callback, cptr);
+			 serv_connect_callback, cptr, aconf->aftype);
       }
 
     return 1;

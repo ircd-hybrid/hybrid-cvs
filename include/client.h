@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.93 2001/02/02 08:36:32 a1kmm Exp $
+ * $Id: client.h,v 7.94 2001/02/05 01:05:32 androsyn Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -42,7 +42,7 @@
 #include "ircd_handler.h"
 #include "linebuf.h"
 #include "channel.h"
-
+#include "res.h"
 #ifdef IPV6
 #define HOSTIPLEN	53 /* sizeof("ffff:ffff:ffff:ffff:ffff:ffff:255.255.255.255.ipv6") */
 #else
@@ -233,7 +233,7 @@ struct LocalUser
   struct irc_inaddr ip;
   unsigned short    port;       /* and the remote port# too :-) */
   int 		    aftype;	/* Makes life easier for DNS res in IPV6 */
-  struct DNSReply*  dns_reply;  /* result returned from resolver query */
+  struct DNSQuery   dns_query;  /* result returned from resolver query */
   unsigned long     serverMask; /* Only used for Lazy Links */
   time_t            last_nick_change;
   int               number_of_nick_changes;
