@@ -1,3 +1,16 @@
+db          2002/10/08 17:06:56 EDT	(20021008_1)
+
+  Modified files:
+    src                  channel.c 
+  Log:
+  - an oopsies here. if we have a zero persist time, then the channel
+    disapears immediately if no one is left in it.
+  
+  Revision  Changes    Path
+  7.332     +2 -2      ircd-hybrid-7/src/channel.c
+
+
+
 db          2002/10/07 20:23:46 EDT	(20021008_0)
 
   Modified files:
@@ -32261,4 +32274,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4049 2002/10/08 00:23:49 db Exp $
+$Id: ChangeLog,v 7.4050 2002/10/08 21:06:59 db Exp $
