@@ -1,3 +1,15 @@
+wcampbel    2002/02/18 17:07:45 EST	(20020218_2)
+
+  Modified files:
+    doc                  whats-new.txt 
+  Log:
+  Documented CAP_PARA...
+  
+  Revision  Changes    Path
+  7.33      +1 -0      ircd-hybrid-7/doc/whats-new.txt
+
+
+
 jmallett    2002/02/17 21:32:53 EST	(20020218_1)
 
   Modified files:
@@ -22897,4 +22909,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3430 2002/02/18 02:32:59 jmallett Exp $
+$Id: ChangeLog,v 7.3431 2002/02/18 22:07:51 wcampbel Exp $
