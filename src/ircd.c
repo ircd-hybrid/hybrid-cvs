@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.41 2000/11/02 18:23:01 adrian Exp $
+ * $Id: ircd.c,v 7.42 2000/11/03 09:43:53 adrian Exp $
  */
 #include "ircd.h"
 #include "channel.h"
@@ -650,6 +650,7 @@ int main(int argc, char *argv[])
 
   init_sys(bootDaemon);
   init_log(logFileName);
+  init_netio();		/* This needs to be setup early ! -- adrian */
 
   initialize_message_files();
 
@@ -668,7 +669,6 @@ int main(int argc, char *argv[])
   initServerMask();
 
   init_resolver();
-  init_netio();
 
   init_auth();			/* Initialise the auth code */
 
