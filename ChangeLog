@@ -1,3 +1,15 @@
+leeh        2002/04/29 18:30:25 EDT	(20020429_3)
+
+  Modified files:
+    include              Makefile.in 
+  Log:
+  - larnes makefile fix.
+  
+  Revision  Changes    Path
+  1.5       +2 -0      ircd-hybrid-7/include/Makefile.in
+
+
+
 androsyn    2002/04/29 18:12:37 EDT	(20020429_2)
 
   Modified files:
@@ -25847,4 +25859,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3614 2002/04/29 22:12:43 androsyn Exp $
+$Id: ChangeLog,v 7.3615 2002/04/29 22:30:31 leeh Exp $
