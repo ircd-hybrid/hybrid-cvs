@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_names.c,v 1.43 2002/07/31 16:24:07 leeh Exp $
+ *  $Id: m_names.c,v 1.44 2002/08/15 15:00:59 adx Exp $
  */
 
 #include "stdinc.h"
@@ -67,7 +67,7 @@ _moddeinit(void)
   mod_del_cmd(&names_msgtab);
 }
 
-const char *_version = "$Revision: 1.43 $";
+const char *_version = "$Revision: 1.44 $";
 #endif
 
 /************************************************************************
@@ -95,8 +95,12 @@ static void m_names(struct Client *client_p,
 
   if (!BadPtr(para))
     {
-      if( (s = strchr(para, ',')) )
+      while (*para == ',')
+        para++;
+      if ((s = strchr(para, ',')) != NULL)
         *s = '\0';
+      if (!*para)
+        return;
 
 #ifdef VCHANS
       if (parc > 2)

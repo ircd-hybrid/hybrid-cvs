@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.78 2002/07/31 16:24:07 leeh Exp $
+ *  $Id: m_whois.c,v 1.79 2002/08/15 15:00:59 adx Exp $
  */
 
 #include "stdinc.h"
@@ -76,7 +76,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-const char *_version = "$Revision: 1.78 $";
+const char *_version = "$Revision: 1.79 $";
 #endif
 /*
 ** m_whois
@@ -182,8 +182,12 @@ static int do_whois(struct Client *client_p, struct Client *source_p,
     glob = 1;
 
   nick = parv[1];
-  if ( (p = strchr(parv[1],',')) )
+  while (*nick == ',')
+    nick++;
+  if ((p = strchr(nick,',')) != NULL)
     *p = '\0';
+  if (!*nick)
+    return;
 
   (void)collapse(nick);
   wilds = (strchr(nick, '?') || strchr(nick, '*'));

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_list.c,v 1.43 2002/06/11 01:02:27 androsyn Exp $
+ *  $Id: m_list.c,v 1.44 2002/08/15 15:00:59 adx Exp $
  */
 
 #include "stdinc.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&list_msgtab);
 }
-const char *_version = "$Revision: 1.43 $";
+const char *_version = "$Revision: 1.44 $";
 #endif
 static int list_all_channels(struct Client *source_p);
 static int list_named_channel(struct Client *source_p,char *name);
@@ -223,18 +223,14 @@ static int list_named_channel(struct Client *source_p,char *name)
 
   sendto_one(source_p, form_str(RPL_LISTSTART), me.name, source_p->name);
 
-  if((p = strchr(name,',')))
+  while (*name == ',')
+    name++;
+  if ((p = strchr(name,',')) != NULL)
     *p = '\0';
-      
-  if(*name == '\0')
-    {
-      sendto_one(source_p, form_str(ERR_NOSUCHNICK),me.name, source_p->name, name);
-      sendto_one(source_p, form_str(RPL_LISTEND), me.name, source_p->name);
-      return 0;
-    }
+  if (!*name)
+    return;
 
   chptr = hash_find_channel(name);
-
   if (chptr == NULL)
     {
       sendto_one(source_p, form_str(ERR_NOSUCHNICK),me.name, source_p->name, name);

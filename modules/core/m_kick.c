@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kick.c,v 1.46 2002/07/20 15:51:50 leeh Exp $
+ *  $Id: m_kick.c,v 1.47 2002/08/15 15:01:02 adx Exp $
  */
 
 #include "stdinc.h"
@@ -60,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&kick_msgtab);
 }
 
-const char *_version = "$Revision: 1.46 $";
+const char *_version = "$Revision: 1.47 $";
 #endif
 /*
 ** m_kick
@@ -101,10 +101,13 @@ static void m_kick(struct Client *client_p,
     comment[TOPICLEN] = '\0';
 
   *buf = '\0';
-  if( (p = strchr(parv[1],',')) )
-    *p = '\0';
-
   name = parv[1];
+  while (*name == ',')
+    name++;
+  if((p = strchr(name,',')) != NULL)
+    *p = '\0';
+  if (!*name)
+    return;
 
   chptr = hash_find_channel(name);
   if (!chptr)
@@ -169,10 +172,13 @@ static void m_kick(struct Client *client_p,
        */
     }
 
-  if( (p = strchr(parv[2],',')) )
+  user = parv[2];
+  while (*user == ',')
+    user++;
+  if((p = strchr(user,',')) != NULL)
     *p = '\0';
-
-  user = parv[2]; /* strtoken(&p2, parv[2], ","); */
+  if (!*user)
+    return;
 
   if (!(who = find_chasing(source_p, user, &chasing)))
     {
