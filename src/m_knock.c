@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_knock.c,v 7.2 1999/11/10 04:23:44 db Exp $
+ *   $Id: m_knock.c,v 7.3 1999/12/30 20:35:51 db Exp $
  */
 #include "m_commands.h"
 #include "channel.h"
@@ -104,11 +104,13 @@
 ** Just some flood control added here, five minute delay between each
 ** KNOCK -Dianora
 **/
-int m_knock(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
+int     m_knock(struct Client *cptr,
+               struct Client *sptr,
+               int parc,
+               char *parv[])
 {
-  struct Channel* chptr;
-  char* p;
-  char* name;
+  struct Channel      *chptr;
+  char  *p, *name;
 
   /* anti flooding code,
    * I did have this in parse.c with a table lookup
@@ -233,4 +235,3 @@ int m_knock(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   }
   return 0;
 }
-

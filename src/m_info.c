@@ -1,7 +1,7 @@
 /*
  * m_info.c 
  *
- * $Id: m_info.c,v 7.2 1999/08/03 01:41:30 tomh Exp $
+ * $Id: m_info.c,v 7.3 1999/12/30 20:35:49 db Exp $
  */
 #define DEFINE_M_INFO_DATA
 #include "m_info.h"

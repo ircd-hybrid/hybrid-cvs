@@ -19,7 +19,7 @@
  *
  * "m_gline.h". - Headers file.
  *
- * $Id: m_gline.h,v 7.0 1999/08/01 21:19:45 lusky Exp $
+ * $Id: m_gline.h,v 7.1 1999/12/30 20:35:31 db Exp $
  *
  */
 

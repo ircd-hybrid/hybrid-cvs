@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: s_log.h,v 7.2 1999/10/14 01:50:05 db Exp $
+ * $Id: s_log.h,v 7.3 1999/12/30 20:35:36 db Exp $
  */
 #ifndef INCLUDED_s_log_h
 #define INCLUDED_s_log_h

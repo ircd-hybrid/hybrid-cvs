@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_userhost.c,v 7.2 1999/11/10 04:23:45 db Exp $
+ *   $Id: m_userhost.c,v 7.3 1999/12/30 20:36:02 db Exp $
  */
 
 #include "m_commands.h"
@@ -105,7 +105,7 @@ int     m_userhost(struct Client *cptr,
   char  *p;            /* scratch end pointer */
   char  *cn;           /* current name */
   struct Client *acptr;
-  char response[5][NICKLEN+USERLEN+HOSTLEN+30];
+  char response[5][NICKLEN*2+CHANNELLEN+USERLEN+HOSTLEN+30];
   int i;               /* loop counter */
 
   if (parc < 2)

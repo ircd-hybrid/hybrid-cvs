@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-/* $Id: dbuf.h,v 7.3 1999/09/03 05:05:34 tomh Exp $ */
+/* $Id: dbuf.h,v 7.4 1999/12/30 20:35:27 db Exp $ */
 #ifndef INCLUDED_dbuf_h
 #define INCLUDED_dbuf_h
 #ifndef INCLUDED_config_h

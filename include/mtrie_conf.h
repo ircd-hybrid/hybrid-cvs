@@ -1,4 +1,4 @@
-/* $Id: mtrie_conf.h,v 7.0 1999/08/01 21:19:45 lusky Exp $ */
+/* $Id: mtrie_conf.h,v 7.1 1999/12/30 20:35:33 db Exp $ */
 #ifndef INCLUDED_mtrie_conf_h
 #define INCLUDED_mtrie_conf_h
 

@@ -16,7 +16,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: fileio.h,v 7.0 1999/08/01 21:19:45 lusky Exp $
+ * $Id: fileio.h,v 7.1 1999/12/30 20:35:28 db Exp $
  */
 #ifndef INCLUDED_fileio_h
 #define INCLUDED_fileio_h

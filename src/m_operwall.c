@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operwall.c,v 7.1 1999/08/09 23:01:48 db Exp $
+ *   $Id: m_operwall.c,v 7.2 1999/12/30 20:35:54 db Exp $
  */
 #include "m_commands.h"
 #include "client.h"

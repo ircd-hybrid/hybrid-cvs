@@ -1,7 +1,7 @@
 /*
  * fdlist.h
  *
- * $Id: fdlist.h,v 7.0 1999/08/01 21:19:45 lusky Exp $
+ * $Id: fdlist.h,v 7.1 1999/12/30 20:35:28 db Exp $
  */
 #ifndef INCLUDED_fdlist_h
 #define INCLUDED_fdlist_h

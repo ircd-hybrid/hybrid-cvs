@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: irc_string.h,v 7.2 1999/09/01 04:27:59 tomh Exp $
+ *   $Id: irc_string.h,v 7.3 1999/12/30 20:35:29 db Exp $
  */
 #ifndef INCLUDED_irc_string_h
 #define INCLUDED_irc_string_h
@@ -66,7 +66,6 @@ extern const char* myctime(time_t);
 extern char*       strtoken(char** save, char* str, char* fs);
 extern void*       MyMalloc(size_t size);
 extern void*       MyRealloc(void* p, size_t size);
-
 /* MyFree is defined as a macro in ircd_defs.h */
 /* extern void MyFree(void* p); */
 
@@ -131,6 +130,6 @@ extern const unsigned int CharAttrs[];
                                            (CNTRL_C | ALPHA_C | DIGIT_C)))
 
 #define IsNonEOS(c) (CharAttrs[(unsigned char)(c)] & NONEOS_C)
-#define IsEol(c)    (CharAttrs[(unsigned char)(c)] & EOL_C)
+#define IsEol(c) (CharAttrs[(unsigned char)(c)] & EOL_C)
 
 #endif /* INCLUDED_irc_string_h */

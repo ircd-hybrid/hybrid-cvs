@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kick.c,v 7.1 1999/08/20 04:38:24 tomh Exp $
+ *   $Id: m_kick.c,v 7.2 1999/12/30 20:35:50 db Exp $
  */
 #include "m_commands.h"
 #include "channel.h"
@@ -110,15 +110,18 @@
  *
  * -Dianora
  */
-int m_kick(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
+int     m_kick(struct Client *cptr,
+               struct Client *sptr,
+               int parc,
+               char *parv[])
 {
-  struct Client*  who;
-  struct Channel* chptr;
-  int             chasing = 0;
-  char*           comment;
-  char*           name;
-  char*           p = NULL;
-  char*           user;
+  struct Client *who;
+  struct Channel *chptr;
+  int   chasing = 0;
+  char  *comment;
+  char  *name;
+  char  *p = (char *)NULL;
+  char  *user;
   static char     buf[BUFSIZE];
 
   if (parc < 3 || *parv[1] == '\0')
@@ -130,7 +133,7 @@ int m_kick(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   if (IsServer(sptr))
     sendto_ops("KICK from %s for %s %s",
                parv[0], parv[1], parv[2]);
-  comment = (EmptyString(parv[3])) ? parv[0] : parv[3];
+  comment = (BadPtr(parv[3])) ? parv[0] : parv[3];
   if (strlen(comment) > (size_t) TOPICLEN)
     comment[TOPICLEN] = '\0';
 
@@ -241,4 +244,3 @@ int m_kick(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 
   return (0);
 }
-

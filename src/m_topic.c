@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_topic.c,v 7.1 1999/08/20 04:38:25 tomh Exp $
+ *   $Id: m_topic.c,v 7.2 1999/12/30 20:36:01 db Exp $
  */
 #include "m_commands.h"
 #include "channel.h"
@@ -94,12 +94,13 @@
 **      parv[0] = sender prefix
 **      parv[1] = topic text
 */
-int m_topic(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
+int     m_topic(struct Client *cptr,
+                struct Client *sptr,
+                int parc,
+                char *parv[])
 {
-  struct Channel* chptr = 0;
-  char*  topic = 0;
-  char*  name;
-  char*  p = 0;
+  struct Channel *chptr = NullChn;
+  char  *topic = (char *)NULL, *name, *p = (char *)NULL;
   
   if (parc < 2)
     {
@@ -193,4 +194,3 @@ int m_topic(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 
   return 0;
 }
-

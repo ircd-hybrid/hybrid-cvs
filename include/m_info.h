@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.h,v 7.1 1999/08/02 04:27:38 tomh Exp $
+ * $Id: m_info.h,v 7.2 1999/12/30 20:35:31 db Exp $
  */
 #ifndef INCLUDED_m_info_h
 #define INCLUDED_m_info_h
@@ -603,7 +603,11 @@ Info MyInformation[] = {
   { "ZIP_LEVEL", "NONE", 0, "Compression Value for Zipped Links" },
 #endif /* ZIP_LEVEL */
 
+#ifdef ZIP_LINKS
   { "ZIP_LINKS", "ON", 0, "Compress Server to Server Links" },
+#else
+  { "ZIP_LINKS", "OFF", 0, "Compress Server to Server Links" },
+#endif /* ZIP_LINKS */
 
   /*
    * since we don't want to include the world here, NULL probably

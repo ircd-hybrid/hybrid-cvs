@@ -16,7 +16,7 @@
 *   along with this program; if not, write to the Free Software
 *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 *
-*   $Id: whowas.c,v 7.1 1999/08/02 11:47:08 db Exp $
+*   $Id: whowas.c,v 7.2 1999/12/30 20:36:12 db Exp $
 */
 #include "whowas.h"
 #include "client.h"

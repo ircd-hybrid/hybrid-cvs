@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 7.3 1999/08/10 11:26:20 db Exp $
+ *   $Id: m_whois.c,v 7.4 1999/12/30 20:36:04 db Exp $
  */
 
 #include "m_commands.h"
@@ -116,15 +116,14 @@ int     m_whois(struct Client *cptr,
     0,          /* joined */
     "<Unknown>"         /* server */
   };
-  struct SLink *lp;
-  struct User *user;
+  struct SLink  *lp;
+  struct User        *user;
   struct Client *acptr, *a2cptr;
-  aChannel *chptr;
-  char *nick, *name;
-  char *p = NULL;
-  int found;
-  int len;
-  int mlen;
+  struct Channel *chptr;
+  char  *nick, *name;
+  /* char  *tmp; */
+  char  *p = NULL;
+  int   found, len, mlen;
   static time_t last_used=0L;
   int found_mode;
 
@@ -166,6 +165,7 @@ int     m_whois(struct Client *cptr,
    * -Dianora 
    */
 
+  /*  for (tmp = parv[1]; (nick = strtoken(&p, tmp, ",")); tmp = NULL) */
   nick = parv[1];
   p = strchr(parv[1],',');
   if(p)

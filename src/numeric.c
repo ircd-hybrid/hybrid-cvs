@@ -19,7 +19,7 @@
  *
  *      I kind of modernized this code a bit. -Dianora
  *
- *   $Id: numeric.c,v 7.0 1999/08/01 21:19:49 lusky Exp $
+ *   $Id: numeric.c,v 7.1 1999/12/30 20:36:06 db Exp $
  */
 #include "numeric.h"
 #include "irc_string.h"

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 7.2 1999/11/10 04:23:44 db Exp $
+ *   $Id: m_message.c,v 7.3 1999/12/30 20:35:53 db Exp $
  */
 #include "m_commands.h"
 #include "client.h"

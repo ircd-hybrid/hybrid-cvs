@@ -20,7 +20,7 @@
  * "parse.h". - Headers file.
  *
  *
- * $Id: parse.h,v 7.0 1999/08/01 21:19:46 lusky Exp $
+ * $Id: parse.h,v 7.1 1999/12/30 20:35:34 db Exp $
  *
  */
 #ifndef INCLUDED_parse_h_h

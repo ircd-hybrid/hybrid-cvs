@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: common.h,v 7.0 1999/08/01 21:19:45 lusky Exp $
+ * $Id: common.h,v 7.1 1999/12/30 20:35:26 db Exp $
  */
 #ifndef INCLUDED_common_h
 #define INCLUDED_common_h
@@ -55,20 +55,5 @@
 
 #define IRCD_MAX(a, b)  ((a) > (b) ? (a) : (b))
 #define IRCD_MIN(a, b)  ((a) < (b) ? (a) : (b))
-
-#if 0
-extern struct SLink *find_user_link(/* struct SLink *, struct Client * */);
-#endif
-
-/* 
- * argh where should this go? who uses it? ;-)
- */
-
-typedef struct
-{
-  int mode;
-  char letter;
-} FLAG_ITEM;
-
 
 #endif /* INCLUDED_common_h */

@@ -1,5 +1,4 @@
 #!/bin/sh
-# $Id: version.c.SH,v 7.2 1999/08/26 03:36:29 lusky Exp $
 spitshell=cat
 package=IRC
 

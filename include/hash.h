@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: hash.h,v 7.2 1999/08/22 06:33:56 tomh Exp $
+ *   $Id: hash.h,v 7.3 1999/12/30 20:35:29 db Exp $
  */
 #ifndef INCLUDED_hash_h
 #define INCLUDED_hash_h
@@ -43,17 +43,11 @@ struct Client;
 struct Channel;
 
 struct HashEntry {
+  int    hits;
   int    links;
   void*  list;
 };
 
-struct HashStats {
-  int    table_size;
-  int    buckets_used;
-  int    longest_chain;
-  int    entries;
-  int    link_counts[10];
-};
 
 extern struct HashEntry hash_get_channel_block(int i);
 extern size_t hash_get_client_table_size(void);
@@ -72,11 +66,6 @@ extern struct Channel* hash_find_channel(const char* name,
 extern struct Client* hash_find_client(const char* name, 
                                        struct Client* client);
 extern struct Client* hash_find_server(const char* name);
-
-extern void hash_rebuild_client();
-extern void hash_rebuild_channel();
-extern void hash_get_channel_stats(struct HashStats* stats_out);
-extern void hash_get_client_stats(struct HashStats* stats_out);
 
 #endif  /* INCLUDED_hash_h */
 

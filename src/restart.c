@@ -1,7 +1,7 @@
 /*
  * restart.c
  *
- * $Id: restart.c,v 7.1 1999/08/02 11:47:04 db Exp $
+ * $Id: restart.c,v 7.2 1999/12/30 20:36:07 db Exp $
  */
 #include "restart.h"
 #include "common.h"

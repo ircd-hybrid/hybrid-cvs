@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: listener.c,v 7.4 1999/09/10 05:42:18 tomh Exp $
+ *  $Id: listener.c,v 7.5 1999/12/30 20:35:46 db Exp $
  */
 #include "listener.h"
 #include "client.h"
@@ -85,21 +85,6 @@ const char* get_listener_name(const struct Listener* listener)
   return buf;
 }
 
-/*
- * count_listener_memory - count memory and listeners
- */
-void count_listener_memory(int* count_out, size_t* size_out)
-{
-  struct Listener* l;
-  int              count = 0;
-  assert(0 != count_out);
-  assert(0 != size_out);
-  for (l = ListenerPollList; l; l = l->next)
-    ++count;
-  *count_out = count;
-  *size_out  = count * sizeof(struct Listener);
-}
-  
 /*
  * show_ports - send port listing to a client
  * inputs       - pointer to client to show ports to
@@ -320,7 +305,7 @@ void accept_connection(struct Listener* listener)
 {
   static time_t      last_oper_notice = 0;
   struct sockaddr_in addr;
-  size_t             addrlen = sizeof(struct sockaddr_in);
+  int                addrlen = sizeof(struct sockaddr_in);
   int                fd;
 
   assert(0 != listener);
@@ -338,8 +323,13 @@ void accept_connection(struct Listener* listener)
    * be accepted until some old is closed first.
    */
   if (-1 == (fd = accept(listener->fd, (struct sockaddr*) &addr, &addrlen))) {
+    if (EAGAIN == errno)
+       return;
+    /*
+     * slow down the whining to opers bit
+     */
     if((last_oper_notice + 20) <= CurrentTime) {
-      report_error("Error accepting connection %s:%s",
+      report_error("Error accepting connection %s:%s", 
                  listener->name, errno);
       last_oper_notice = CurrentTime;
     }

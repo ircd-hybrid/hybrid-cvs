@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: motd.c,v 7.1 1999/08/26 02:58:10 db Exp $
+ *   $Id: motd.c,v 7.2 1999/12/30 20:36:05 db Exp $
  */
 #include "motd.h"
 #include "ircd.h"
@@ -183,7 +183,7 @@ int ReadMessageFile(MessageFile *MessageFileptr)
   char *p;
   FBFILE* file;
 
-  if( stat(MessageFileptr->fileName, &sb) < 0)
+  if( stat(MessageFileptr->fileName, &sb) < 0 )
   /* file doesn't exist oh oh */
   /* might consider printing error message to all opers */
     return -1;

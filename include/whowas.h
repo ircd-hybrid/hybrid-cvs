@@ -29,7 +29,7 @@
  * frozen beta revision 2.6.1
  *
  * th+hybrid rcs version
- * $Id: whowas.h,v 7.0 1999/08/01 21:19:46 lusky Exp $
+ * $Id: whowas.h,v 7.1 1999/12/30 20:35:39 db Exp $
  */
 #ifndef INCLUDED_whowas_h
 #define INCLUDED_whowas_h

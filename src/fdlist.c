@@ -3,7 +3,7 @@
  * fdlist.c   maintain lists of certain important fds 
  *
  *
- * $Id: fdlist.c,v 7.0 1999/08/01 21:19:47 lusky Exp $
+ * $Id: fdlist.c,v 7.1 1999/12/30 20:35:44 db Exp $
  */
 #include "fdlist.h"
 #include "client.h"  /* struct Client */

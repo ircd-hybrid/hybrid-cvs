@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_misc.c,v 7.1 1999/08/02 11:47:06 db Exp $
+ *  $Id: s_misc.c,v 7.2 1999/12/30 20:36:09 db Exp $
  */
 #include "s_misc.h"
 #include "client.h"

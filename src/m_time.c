@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_time.c,v 7.0 1999/08/01 21:19:48 lusky Exp $
+ *   $Id: m_time.c,v 7.1 1999/12/30 20:36:01 db Exp $
  */
 #include "m_commands.h"
 #include "client.h"

@@ -18,7 +18,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: oratime.h,v 7.0 1999/08/01 21:19:45 lusky Exp $
+ * $Id: oratime.h,v 7.1 1999/12/30 20:35:33 db Exp $
  */
 #ifndef INCLUDED_oratime_h
 #define INCLUDED_oratime_h

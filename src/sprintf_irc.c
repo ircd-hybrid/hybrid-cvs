@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: sprintf_irc.c,v 7.0 1999/08/01 21:19:49 lusky Exp $
+ *   $Id: sprintf_irc.c,v 7.1 1999/12/30 20:36:11 db Exp $
  */
 #include "sprintf_irc.h"
 

@@ -22,7 +22,7 @@
  * Cleanup of collapse and match
  * Moved static calls variable to match
  * Added asserts for null pointers
- * $Id: match.c,v 7.1 1999/08/31 19:43:07 wnder Exp $
+ * $Id: match.c,v 7.2 1999/12/30 20:36:04 db Exp $
  *
  */
 #include "irc_string.h"

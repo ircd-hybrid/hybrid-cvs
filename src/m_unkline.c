@@ -21,7 +21,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: m_unkline.c,v 7.4 1999/08/06 17:59:38 sean Exp $
+ *   $Id: m_unkline.c,v 7.5 1999/12/30 20:36:02 db Exp $
  */
 #include "m_commands.h"
 #include "channel.h"
