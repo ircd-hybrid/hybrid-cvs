@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.250 2003/04/27 11:58:10 adx Exp $
+ *  $Id: send.c,v 7.251 2003/04/27 12:10:30 adx Exp $
  */
 
 #include "stdinc.h"
@@ -94,7 +94,7 @@ send_format(char *lsendbuf, int bufsize, const char *pattern, va_list args)
    * continuation message lines.  See section 7 for more details about
    * current implementations.
    */
-  len = vsnprintf(lsendbuf, bufsize - 2, pattern, args);
+  len = vsnprintf(lsendbuf, bufsize - 1, pattern, args);
 
   /*
    * We have to get a \r\n\0 onto sendbuf[] somehow to satisfy
@@ -130,7 +130,7 @@ send_format(char *lsendbuf, int bufsize, const char *pattern, va_list args)
 }
 
 /*
- ** _send_message
+ ** send_message
  **      Internal utility which appends given buffer to the sockets
  **      sendq.
  */
