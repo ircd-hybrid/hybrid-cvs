@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.308 2003/04/23 15:10:37 adx Exp $
+ *  $Id: s_serv.c,v 7.309 2003/04/23 15:13:06 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1938,9 +1938,6 @@ serv_connect(struct ConfItem *aconf, struct Client *by)
     char buf[HOSTIPLEN];
     /* conversion structs */
     struct sockaddr_in *v4;
-#ifdef IPV6
-    struct sockaddr_in6 *v6;
-#endif
     /* Make sure aconf is useful */
     assert(aconf != NULL);
     if(aconf == NULL)

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.241 2003/04/23 15:04:41 adx Exp $
+ *  $Id: send.c,v 7.242 2003/04/23 15:13:06 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1244,7 +1244,7 @@ kill_client_ll_serv_butone(struct Client *one, struct Client *source_p,
   struct Client *client_p;
   dlink_node *ptr;
   char buf_uid[IRCD_BUFSIZE], buf_nick[IRCD_BUFSIZE];
-  int len_uid, len_nick;
+  int len_uid = 0, len_nick;
 
   va_start(args, pattern);
   if (HasID(source_p))
