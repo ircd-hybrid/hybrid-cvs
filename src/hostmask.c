@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.c,v 7.66 2002/07/06 16:58:57 db Exp $
+ *  $Id: hostmask.c,v 7.67 2002/07/09 20:49:29 leeh Exp $
  */
 
 #include "stdinc.h"
@@ -707,8 +707,11 @@ report_auth(struct Client *client_p)
       {
         aconf = arec->aconf;
 
-        if (!(MyConnect(client_p) && IsOper(client_p)) &&
-            IsConfDoSpoofIp(aconf))
+#ifndef HIDE_SPOOF_IPS
+        if (!IsOperAdmin(client_p) && IsConfDoSpoofIp(aconf))
+#else
+        if(IsConfDoSpoofIp(aconf))
+#endif
           continue;
 
         get_printable_conf(aconf, &name, &host, &pass, &user, &port,
