@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_misc.c,v 7.0 1999/08/01 21:19:49 lusky Exp $
+ *  $Id: s_misc.c,v 7.1 1999/08/02 11:47:06 db Exp $
  */
 #include "s_misc.h"
 #include "client.h"
@@ -33,7 +33,6 @@
 #include "s_conf.h"
 #include "s_serv.h"
 #include "send.h"
-#include "struct.h"
 
 #include <string.h>
 #include <fcntl.h>
@@ -140,12 +139,12 @@ char* small_file_date(time_t clock)
 #define _GMKv(x)  ( (x > _1TER) ? (float)(x/_1TER) : ((x > _1GIG) ? \
                (float)(x/_1GIG) : ((x > _1MEG) ? (float)(x/_1MEG) : (float)x)))
 
-void serv_info(aClient *cptr,char *name)
+void serv_info(struct Client *cptr,char *name)
 {
   static char Lformat[] = ":%s %d %s %s %u %u %u %u %u :%u %u %s";
   int        j;
   long        sendK, receiveK, uptime;
-  aClient        *acptr;
+  struct Client        *acptr;
 
   sendK = receiveK = 0;
   j = 1;

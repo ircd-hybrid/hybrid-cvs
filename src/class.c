@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: class.c,v 7.0 1999/08/01 21:19:47 lusky Exp $
+ *   $Id: class.c,v 7.1 1999/08/02 11:47:00 db Exp $
  */
 #include "class.h"
 #include "client.h"
@@ -34,7 +34,7 @@
 
 aClass* ClassList;
 
-int     get_conf_class(aConfItem *aconf)
+int     get_conf_class(struct ConfItem *aconf)
 {
   if ((aconf) && ClassPtr(aconf))
     return (ConfClassType(aconf));
@@ -46,7 +46,7 @@ int     get_conf_class(aConfItem *aconf)
 
 }
 
-static  int     get_conf_ping(aConfItem *aconf)
+static  int     get_conf_ping(struct ConfItem *aconf)
 {
   if ((aconf) && ClassPtr(aconf))
     return (ConfPingFreq(aconf));
@@ -57,9 +57,9 @@ static  int     get_conf_ping(aConfItem *aconf)
   return (BAD_PING);
 }
 
-int     get_client_class(aClient *acptr)
+int     get_client_class(struct Client *acptr)
 {
-  Link  *tmp;
+  struct SLink  *tmp;
   aClass        *cl;
   int   retc = BAD_CLIENT_CLASS;
 
@@ -78,11 +78,11 @@ int     get_client_class(aClient *acptr)
   return (retc);
 }
 
-int     get_client_ping(aClient *acptr)
+int     get_client_ping(struct Client *acptr)
 {
   int   ping = 0, ping2;
-  aConfItem     *aconf;
-  Link  *link;
+  struct ConfItem     *aconf;
+  struct SLink  *link;
 
   link = acptr->confs;
 
@@ -201,7 +201,7 @@ void    initclass()
   ClassList->next = NULL;
 }
 
-void    report_classes(aClient *sptr)
+void    report_classes(struct Client *sptr)
 {
   aClass *cltmp;
 
@@ -211,10 +211,11 @@ void    report_classes(aClient *sptr)
                MaxLinks(cltmp), MaxSendq(cltmp));
 }
 
-long    get_sendq(aClient *cptr)
+long    get_sendq(struct Client *cptr)
 {
-  int   sendq = MAXSENDQLENGTH, retc = BAD_CLIENT_CLASS;
-  Link  *tmp;
+  int   sendq = MAXSENDQLENGTH;
+  int   retc = BAD_CLIENT_CLASS;
+  struct SLink  *tmp;
   aClass        *cl;
 
   if (cptr && !IsMe(cptr)  && (cptr->confs))

@@ -1,13 +1,12 @@
 /*
  * restart.c
  *
- * $Id: restart.c,v 7.0 1999/08/01 21:19:49 lusky Exp $
+ * $Id: restart.c,v 7.1 1999/08/02 11:47:04 db Exp $
  */
 #include "restart.h"
 #include "common.h"
 #include "ircd.h"
 #include "send.h"
-#include "struct.h"
 #include "s_debug.h"
 #include "s_log.h"
 

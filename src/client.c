@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.1 1999/08/02 04:27:40 tomh Exp $
+ *  $Id: client.c,v 7.2 1999/08/02 11:47:00 db Exp $
  */
 #include "client.h"
 #include "class.h"
@@ -1155,7 +1155,7 @@ static void exit_one_client(struct Client *cptr, struct Client *sptr, struct Cli
                             const char* comment)
 {
   struct Client* acptr;
-  Link*    lp;
+  struct SLink*    lp;
 
   if (IsServer(sptr))
     {

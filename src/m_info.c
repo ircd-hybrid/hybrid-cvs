@@ -1,7 +1,7 @@
 /*
  * m_info.c 
  *
- * $Id: m_info.c,v 7.0 1999/08/01 21:19:47 lusky Exp $
+ * $Id: m_info.c,v 7.1 1999/08/02 11:47:02 db Exp $
  */
 #define DEFINE_M_INFO_DATA
 #include "m_info.h"
@@ -27,7 +27,7 @@
 */
 
 int
-m_info(aClient *cptr, aClient *sptr, int parc, char *parv[])
+m_info(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 
 {
   char **text = infotext;

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.3 1999/08/02 06:49:45 lusky Exp $
+ * $Id: ircd.c,v 7.4 1999/08/02 11:47:01 db Exp $
  */
 
 
@@ -646,7 +646,7 @@ int main(int argc, char *argv[])
   uid_t       uid;
   uid_t       euid;
   time_t      delay = 0;
-  aConfItem*  aconf;
+  struct ConfItem*  aconf;
 
   /*
    * save server boot time right away, so getrusage works correctly

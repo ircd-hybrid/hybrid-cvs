@@ -1,5 +1,5 @@
 /************************************************************************
- *   IRC - Internet Relay Chat, src/m_who.c
+ *   Ircd - Internet Relay Chat, src/m_who.c
  *   Copyright (C) 1990 Jarkko Oikarinen and
  *                      University of Oulu, Computing Center
  *
@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_who.c,v 7.0 1999/08/01 21:19:48 lusky Exp $
+ *   $Id: m_who.c,v 7.1 1999/08/02 11:47:03 db Exp $
  */
 
 #include "m_commands.h"
@@ -95,7 +95,7 @@
 static  void    do_who(struct Client *sptr,
                        struct Client *acptr,
                        struct Channel *repchan,
-                       Link *lp)
+                       struct SLink *lp)
 {
   char  status[5];
   /* Using a pointer will compile faster than an index */
@@ -137,7 +137,7 @@ int     m_who(struct Client *cptr,
 {
   struct Client *acptr;
   char  *mask = parc > 1 ? parv[1] : NULL;
-  Link  *lp;
+  struct SLink  *lp;
   struct Channel *chptr;
   struct Channel *mychannel = NULL;
   char  *channame = NULL;

@@ -1,7 +1,7 @@
 /*
  * scache.c
  *
- * $Id: scache.c,v 7.0 1999/08/01 21:19:49 lusky Exp $
+ * $Id: scache.c,v 7.1 1999/08/02 11:47:07 db Exp $
  */
 
 #include "client.h"
@@ -10,8 +10,6 @@
 #include "ircd.h"
 #include "numeric.h"
 #include "send.h"
-#include "struct.h"
-
 
 #include <assert.h>
 #include <string.h>
@@ -116,7 +114,7 @@ void count_scache(int *number_servers_cached,u_long *mem_servers_cached)
 
 /* list all server names in scache very verbose */
    
-void list_scache(aClient *cptr,aClient *sptr,int parc,char *parv[])
+void list_scache(struct Client *cptr,struct Client *sptr,int parc,char *parv[])
 {
   int hash_index;
   SCACHE *ptr;

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.2 1999/08/02 04:27:42 tomh Exp $
+ *   $Id: s_serv.c,v 7.3 1999/08/02 11:47:06 db Exp $
  */
 #include "s_serv.h"
 #include "channel.h"
@@ -34,7 +34,6 @@
 #include "list.h"
 #include "numeric.h"
 #include "res.h"
-#include "struct.h"
 #include "s_bsd.h"
 #include "s_conf.h"
 #include "s_stats.h"
@@ -80,7 +79,7 @@ struct Capability captab[] = {
  * according to given config entry --Jto
  * XXX - this is only called with me.name as name
  */
-const char* my_name_for_link(const char* name, aConfItem* aconf)
+const char* my_name_for_link(const char* name, struct ConfItem* aconf)
 {
   static char          namebuf[HOSTLEN + 1];
   register int         count = aconf->port;

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.1 1999/08/02 04:27:42 tomh Exp $
+ *  $Id: s_bsd.c,v 7.2 1999/08/02 11:47:05 db Exp $
  */
 #include "s_bsd.h"
 #include "class.h"
@@ -40,7 +40,6 @@
 #include "s_stats.h"
 #include "s_zip.h"
 #include "send.h"
-#include "struct.h"
 
 #include <assert.h>
 #include <stdio.h>
@@ -289,7 +288,7 @@ int set_non_blocking(int fd)
  *              work equally well whether blocking or non-blocking
  *              mode is used...
  */
-int deliver_it(aClient *cptr, char *str, int len)
+int deliver_it(struct Client *cptr, char *str, int len)
 {
   int   retval;
 

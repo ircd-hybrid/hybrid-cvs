@@ -18,7 +18,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: packet.c,v 7.1 1999/08/02 04:27:42 tomh Exp $
+ *   $Id: packet.c,v 7.2 1999/08/02 11:47:04 db Exp $
  */ 
 #include "packet.h"
 #include "client.h"
@@ -49,7 +49,7 @@
 **      with cptr of "local" variation, which contains all the
 **      necessary fields (buffer etc..)
 */
-int     dopacket(aClient *cptr, char *buffer, int length)
+int     dopacket(struct Client *cptr, char *buffer, int length)
 {
   char  *ch1;
   char  *ch2;
