@@ -1,3 +1,21 @@
+jmallett    2002/11/26 22:46:59 EST	(20021127_0)
+
+  Modified files:
+    src                  s_bsd_devpoll.c s_bsd_kqueue.c 
+                         s_bsd_poll.c s_bsd_select.c s_bsd_sigio.c 
+  Log:
+  Fix compilation (mostly) with TenDRA 4.1.2 on FreeBSD 5.0-CURRENT, by
+  not letting unused s_bsd_*.c become empty compilation units.
+  
+  Revision  Changes    Path
+  7.16      +5 -1      ircd-hybrid-7/src/s_bsd_devpoll.c
+  1.28      +5 -0      ircd-hybrid-7/src/s_bsd_kqueue.c
+  7.55      +5 -1      ircd-hybrid-7/src/s_bsd_poll.c
+  7.27      +5 -0      ircd-hybrid-7/src/s_bsd_select.c
+  7.24      +5 -1      ircd-hybrid-7/src/s_bsd_sigio.c
+
+
+
 db          2002/11/26 15:34:59 EST	(20021126_0)
 
   Modified files:
@@ -33288,4 +33306,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4118 2002/11/26 20:35:01 db Exp $
+$Id: ChangeLog,v 7.4119 2002/11/27 03:47:01 jmallett Exp $
