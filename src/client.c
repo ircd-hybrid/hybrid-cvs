@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.218 2002/01/08 16:23:25 jmallett Exp $
+ *  $Id: client.c,v 7.219 2002/01/09 12:20:44 jmallett Exp $
  */
 
 #include "tools.h"
@@ -1051,7 +1051,7 @@ static void exit_one_client(struct Client *client_p, struct
           for (lp = source_p->user->channel.head; lp; lp = next_lp)
 	    {
 	      next_lp = lp->next;
-	      remove_user_from_channel(lp->data,source_p, 1);
+	      remove_user_from_channel(lp->data, source_p, 1);
 	    }
           /* Should not be in any channels now */
           assert(source_p->user->channel.head == NULL);
