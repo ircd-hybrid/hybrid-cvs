@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.430 2003/06/14 18:12:02 db Exp $
+ *  $Id: s_conf.c,v 7.431 2003/06/16 03:07:54 db Exp $
  */
 
 #include "stdinc.h"
@@ -61,12 +61,12 @@ struct config_server_hide ConfigServerHide;
 /* general conf items link list root, other than k lines etc. */
 dlink_list uconf_items = { NULL, NULL, 0 };
 dlink_list xconf_items = { NULL, NULL, 0 };
+dlink_list nresv_items    = { NULL, NULL, 0 };
 
 dlink_list ConfigItemList = { NULL, NULL, 0 };
 dlink_list temporary_klines = { NULL, NULL, 0 };
 dlink_list temporary_dlines = { NULL, NULL, 0 };
 dlink_list temporary_ip_klines = { NULL, NULL, 0 };
-
 
 extern int yyparse(); /* defined in y.tab.c */
 extern int lineno;
@@ -91,6 +91,7 @@ static int attach_iline(struct Client *, struct AccessItem *);
 static struct ip_entry *find_or_add_ip(struct irc_ssaddr *);
 static void parse_conf_file(int type, int cold);
 static void clear_conf_items(void);
+static dlink_list *map_to_list(ConfType conf);
 
 FBFILE *conf_fbfile_in;
 extern char yytext[];
@@ -257,7 +258,8 @@ make_conf_item(ConfType type)
 
   case NRESV_TYPE:
     conf = (struct ConfItem *)MyMalloc(sizeof(struct ConfItem) +
-					 sizeof(struct ResvNick));
+					 sizeof(struct MatchItem));
+    dlinkAdd(conf, &conf->node, &nresv_items);
     break;
 
   default:
@@ -269,6 +271,79 @@ make_conf_item(ConfType type)
   conf->type = type;
 
   return(conf);
+}
+
+void
+delete_conf_item(struct ConfItem *conf)
+{
+  ConfType type = conf->type;
+
+  switch(type)
+  {
+  case DLINE_TYPE:
+  case EXEMPTDLINE_TYPE:
+  case GLINE_TYPE:
+  case KLINE_TYPE:
+  case CLIENT_TYPE:
+  case LEAF_TYPE:
+  case HUB_TYPE:
+  case OPER_TYPE:
+  case SERVER_TYPE:
+
+    /* Yes, sigh. switch on type again */
+    switch(type)
+    {
+    case EXEMPTDLINE_TYPE:
+      break;
+
+    case DLINE_TYPE:
+      break;
+
+    case GLINE_TYPE:
+    case KLINE_TYPE:
+      break;
+
+    case CLIENT_TYPE:
+      break;
+
+    case LEAF_TYPE:
+      break;
+
+    case OPER_TYPE:
+      break;
+
+    case SERVER_TYPE:
+      break;
+
+    case HUB_TYPE:
+      break;
+
+    default:
+      break;
+    }
+    break;
+
+  case ULINE_TYPE:
+    dlinkDelete(&conf->node, &uconf_items);
+    MyFree(conf);
+    break;
+
+  case XLINE_TYPE:
+    dlinkDelete(&conf->node, &xconf_items);
+    MyFree(conf);
+    break;
+
+  case CRESV_TYPE:
+    break;
+
+  case NRESV_TYPE:
+    dlinkDelete(&conf->node, &nresv_items);
+    MyFree(conf);
+    break;
+
+  default:
+    break;
+  }
 }
 
 /*
@@ -296,6 +371,13 @@ clear_conf_items(void)
   {
     conf = ptr->data;
     dlinkDelete(&conf->node, &xconf_items);
+    MyFree(conf);
+  }
+
+  DLINK_FOREACH_SAFE(ptr, next_ptr, nresv_items.head)
+  {
+    conf = ptr->data;
+    dlinkDelete(&conf->node, &nresv_items);
     MyFree(conf);
   }
 }
@@ -1441,67 +1523,70 @@ find_conf_by_host(const char *host, unsigned int status)
   return(NULL);
 }
 
-/* find_x_conf()
+/*
+ * map_to_list
  *
- * inputs       - pointer to char string to find
- * output       - NULL or pointer to found struct MatchItem
- * side effects - looks for a match on name field
+ * inputs	- ConfType conf
+ * output	- pointer to dlink_list to use
+ * side effects	- none
  */
-struct MatchItem *
-find_x_conf(const char *to_find)
+static dlink_list *
+map_to_list(ConfType type)
 {
-  dlink_node *ptr;
-  struct ConfItem *conf;
-  struct MatchItem *match_item;
-
-  DLINK_FOREACH(ptr, xconf_items.head)
-  {
-    conf = ptr->data;
-
-    match_item = (struct MatchItem *)map_to_conf(conf);
-    if (EmptyString(match_item->name))
-      continue;
-
-    if (match_esc(match_item->name, to_find))
-      return(match_item);
-  }
-
+  if(type == XLINE_TYPE)
+    return(&xconf_items);
+  else if(type == ULINE_TYPE)
+    return(&uconf_items);
+  else if(type == NRESV_TYPE)
+    return(&nresv_items);
+  /* XXX boom */
   return(NULL);
 }
 
-/* find_u_conf()
+/* find_matching_name_conf()
  *
- * inputs       - pointer to servername
- *		- pointer to user of oper
- *		- pointer to host of oper
- *		- type of sharing
- * output       - 1 or 0
- * side effects - looks for a matches on all fields
+ * inputs       - type of link list to look in
+ *		- pointer to name string to find
+ *		- pointer to user
+ *		- pointer to host
+ *		- optional action to match on as well
+ * output       - NULL or pointer to found struct MatchItem
+ * side effects - looks for a match on name field
  */
-int 
-find_u_conf(const char *server, const char *user, const char *host, int type)
+struct ConfItem *
+find_matching_name_conf(ConfType type, 
+			const char *name, const char *user,
+			const char *host, int action)
 {
-  dlink_node *ptr;
+  dlink_node *ptr=NULL;
   struct ConfItem *conf;
   struct MatchItem *match_item;
+  dlink_list *list_p;
 
-  DLINK_FOREACH(ptr, uconf_items.head)
+  list_p = map_to_list(type);
+
+  DLINK_FOREACH(ptr, (*list_p).head)
   {
     conf = ptr->data;
 
     match_item = (struct MatchItem *)map_to_conf(conf);
     if (EmptyString(match_item->name))
       continue;
-    if (match(match_item->name, server))
+    if (match_esc(match_item->name, name))
     {
+      if ((user == NULL && (host == NULL)))
+	return (conf);
+      if (action != 0)
+	if (match_item->action != action)
+	  continue;
       if (EmptyString(match_item->user) || EmptyString(match_item->host))
-	return (1);
+	return (conf);
       if (match(match_item->user, user) && match(match_item->host, host))
-	return (1);
+	return (conf);
     }
   }
 
-  return(0);
+  return(NULL);
 }
 
 /* rehash()

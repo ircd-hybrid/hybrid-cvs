@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_debug.c,v 7.89 2003/06/12 22:06:00 db Exp $
+ *  $Id: s_debug.c,v 7.90 2003/06/16 03:07:54 db Exp $
  */
 
 #include "stdinc.h"
@@ -293,8 +293,8 @@ count_memory(struct Client *source_p)
              me.name, RPL_STATSDEBUG, source_p->name,
              dlink_list_length(&resv_channel_list),
              dlink_list_length(&resv_channel_list) * sizeof(struct ResvChannel),
-             dlink_list_length(&resv_nick_list),
-             dlink_list_length(&resv_nick_list) * sizeof(struct ResvNick));
+             dlink_list_length(&nresv_items),
+             dlink_list_length(&nresv_items) * sizeof(struct MatchItem));
 
   sendto_one(source_p, ":%s %d %s z :Classes %u(%lu)",
              me.name, RPL_STATSDEBUG, source_p->name,

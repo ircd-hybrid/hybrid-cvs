@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.283 2003/06/15 10:56:19 michael Exp $
+ *  $Id: s_user.c,v 7.284 2003/06/16 03:07:54 db Exp $
  */
 
 #include "stdinc.h"
@@ -1240,11 +1240,14 @@ user_welcome(struct Client *source_p)
 static int
 check_x_line(struct Client *client_p, struct Client *source_p)
 {
+  struct ConfItem *conf;
   struct MatchItem *match_item;
   const char *reason;
 
-  if ((match_item = find_x_conf(source_p->info)) != NULL)
+  if ((conf = find_matching_name_conf(XLINE_TYPE, source_p->info,
+				      NULL, NULL, 0)) != NULL)
   {
+    match_item = (struct MatchItem *)map_to_conf(conf);
     if (match_item->reason != NULL)
       reason = match_item->reason;
     else

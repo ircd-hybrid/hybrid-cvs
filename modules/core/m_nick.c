@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nick.c,v 1.120 2003/05/28 07:18:25 michael Exp $
+ *  $Id: m_nick.c,v 1.121 2003/06/16 03:07:52 db Exp $
  */
 
 #include "stdinc.h"
@@ -98,7 +98,7 @@ _moddeinit(void)
   mod_del_cmd(&uid_msgtab);
 }
 
-const char *_version = "$Revision: 1.120 $";
+const char *_version = "$Revision: 1.121 $";
 #endif
 
 /*
@@ -139,7 +139,8 @@ mr_nick(struct Client *client_p, struct Client *source_p,
   }
 
   /* check if the nick is resv'd */
-  if(find_nick_resv(nick) &&
+  if(find_matching_name_conf(NRESV_TYPE, nick,
+			     NULL, NULL, 0) &&
      !(IsOper(source_p) && ConfigChannel.oper_pass_resv))
   {
     sendto_one(source_p, form_str(ERR_UNAVAILRESOURCE),
@@ -229,7 +230,8 @@ m_nick(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if(find_nick_resv(nick) &&
+  if(find_matching_name_conf(NRESV_TYPE, nick,
+			     NULL, NULL, 0) &&
      !(IsOper(source_p) && ConfigChannel.oper_pass_resv))
   {
     sendto_one(source_p, form_str(ERR_UNAVAILRESOURCE),

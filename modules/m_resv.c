@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_resv.c,v 1.28 2003/06/15 18:47:21 michael Exp $
+ *  $Id: m_resv.c,v 1.29 2003/06/16 03:07:49 db Exp $
  */
 
 #include "stdinc.h"
@@ -72,7 +72,7 @@ _moddeinit(void)
   mod_del_cmd(&unresv_msgtab);
 }
 
-const char *_version = "$Revision: 1.28 $";
+const char *_version = "$Revision: 1.29 $";
 #endif
 
 /* mo_resv()
@@ -143,9 +143,10 @@ ms_resv(struct Client *client_p, struct Client *source_p,
 
   if (find_cluster(source_p->user->server->name, CLUSTER_RESV))
     parse_resv(source_p, parv[2], parv[3], 1);
-  else if (find_u_conf(source_p->user->server->name,
-                       source_p->username, source_p->host,
-                       SHARED_RESV))
+  else if (find_matching_name_conf(ULINE_TYPE,
+				   source_p->user->server->name,
+				   source_p->username, source_p->host,
+				   SHARED_RESV))
   parse_resv(source_p, parv[2], parv[3], 0);
 }
 
@@ -205,9 +206,10 @@ ms_unresv(struct Client *client_p, struct Client *source_p,
 
   if (find_cluster(source_p->user->server->name, CLUSTER_UNRESV))
     remove_resv(source_p, parv[2], 1);
-  else if (find_u_conf(source_p->user->server->name,
-                       source_p->username, source_p->host,
-                       SHARED_UNRESV))
+  else if (find_matching_name_conf(ULINE_TYPE,
+				   source_p->user->server->name,
+				   source_p->username, source_p->host,
+				   SHARED_UNRESV))
     remove_resv(source_p, parv[2], 0);
 }
 
@@ -254,7 +256,7 @@ parse_resv(struct Client *source_p, char *name,
   }
   else if (clean_resv_nick(name))
   {
-    struct ResvNick *resv_p;
+    struct MatchItem *resv_p;
 
     if ((strchr(name, '*') || strchr(name, '?')) && !IsAdmin(source_p))
     {
@@ -274,7 +276,7 @@ parse_resv(struct Client *source_p, char *name,
       return;
     }
 
-    resv_p = (struct ResvNick *)map_to_conf(conf);
+    resv_p = (struct MatchItem *)map_to_conf(conf);
 
     if (!cluster)
       sendto_one(source_p,
@@ -298,6 +300,8 @@ parse_resv(struct Client *source_p, char *name,
 static void
 remove_resv(struct Client *source_p, char *name, int cluster)
 {
+  struct ConfItem *conf;
+
   if (IsChannelName(name))
   {
     struct ResvChannel *resv_p;
@@ -335,10 +339,11 @@ remove_resv(struct Client *source_p, char *name, int cluster)
   }
   else if (clean_resv_nick(name))
   {
-    struct ResvNick *resv_p;
+    struct MatchItem *resv_p;
+    conf = find_matching_name_conf(NRESV_TYPE, name,
+				   NULL, NULL, 0);
 
-    if (resv_nick_list.head == NULL ||
-        !(resv_p = return_nick_resv(name)))
+    if (conf == NULL)
     {
       if (!cluster)
         sendto_one(source_p,
@@ -346,7 +351,8 @@ remove_resv(struct Client *source_p, char *name, int cluster)
                    me.name, source_p->name, name);
       return;
     }
-    else if (resv_p->conf)
+    resv_p = (struct MatchItem *)map_to_conf(conf);
+    if (resv_p->action)
     {
       if (!cluster)
         sendto_one(source_p,
@@ -356,7 +362,7 @@ remove_resv(struct Client *source_p, char *name, int cluster)
     }
     else
     {
-      delete_nick_resv(resv_p);
+      delete_conf_item(conf);
       (void)remove_conf_line(NRESV_TYPE, source_p, name, NULL);
 
       if (!cluster)

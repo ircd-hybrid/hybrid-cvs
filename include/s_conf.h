@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.241 2003/06/14 18:11:58 db Exp $
+ *  $Id: s_conf.h,v 7.242 2003/06/16 03:07:48 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -397,8 +397,10 @@ extern char *oper_privs_as_string(struct Client *, unsigned int);
 extern void split_user_host(char *user_host, char **user_p, char **host_p);
 
 extern int find_u_conf(const char *, const char *, const char *, int);
-extern struct MatchItem *find_x_conf(const char *);
-
+extern struct ConfItem *find_matching_name_conf(ConfType type, const char *,
+						const char *, const char *,
+						int );
+extern void delete_conf_item(struct ConfItem *);
 extern struct AccessItem *find_tkline(const char *, const char *, struct irc_ssaddr *);
 extern char *show_iline_prefix(struct Client *, struct AccessItem *, char *);
 extern void get_printable_conf(struct AccessItem *, char **, char **, char **,

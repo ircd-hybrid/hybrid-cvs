@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: resv.h,v 1.16 2003/06/14 18:11:58 db Exp $
+ *  $Id: resv.h,v 1.17 2003/06/16 03:07:48 db Exp $
  */
 
 #ifndef INCLUDED_resv_h
@@ -36,30 +36,19 @@ struct ResvChannel
   int	conf;		/* 1 if set from ircd.conf, 0 if from elsewhere */
 };
 
-struct ResvNick
-{
-  dlink_node node;
-  /* *nicknick* etc */
-  char name[NICKLEN * 2];
-  char *reason;
-  int	conf;		/* 1 if set from ircd.conf, 0 if from elsewhere */
-};
-
 extern dlink_list resv_channel_list;
-extern dlink_list resv_nick_list;
 
 extern struct ConfItem *create_channel_resv(char *, char *, int);
 extern struct ConfItem *create_nick_resv(char *, char *, int);
-extern struct ResvNick *return_nick_resv(const char *);
 
 extern int find_channel_resv(const char *);
 extern int find_nick_resv(const char *);
 extern int clean_resv_nick(char *);
 extern int delete_channel_resv(struct ResvChannel *);
-extern int delete_nick_resv(struct ResvNick *);
 
 extern void clear_conf_resv(void);
 extern void report_resv(struct Client *);
 
 extern int valid_wild_card_simple(char *);
+extern dlink_list nresv_items;
 #endif  /* INCLUDED_resv_h */

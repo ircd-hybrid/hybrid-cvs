@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.22 2003/06/14 18:12:00 db Exp $
+ *  $Id: m_xline.c,v 1.23 2003/06/16 03:07:50 db Exp $
  */
 
 #include "stdinc.h"
@@ -83,7 +83,7 @@ _moddeinit(void)
   mod_del_cmd(&unxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.22 $";
+const char *_version = "$Revision: 1.23 $";
 #endif
 
 
@@ -101,6 +101,7 @@ static void
 mo_xline(struct Client *client_p, struct Client *source_p,
          int parc, char *parv[])
 {
+  struct ConfItem *conf;
   struct MatchItem *match_item;
   char *reason, *pattern, *target_server;
   const char *type;
@@ -116,8 +117,11 @@ mo_xline(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if ((match_item = find_x_conf(parv[1])) != NULL)
+  if ((conf = find_matching_name_conf(XLINE_TYPE, parv[1],
+				      NULL, NULL, 0)) != NULL)
   {
+    match_item = (struct MatchItem *)map_to_conf(conf);
+
     sendto_one(source_p, ":%s NOTICE %s :[%s] already X-Lined by [%s] - %s",
                me.name, source_p->name, parv[1],
 	       match_item->name, match_item->reason);
@@ -216,6 +220,7 @@ static void
 ms_xline(struct Client *client_p, struct Client *source_p,
          int parc, char *parv[])
 {
+  struct ConfItem *conf;
   struct MatchItem *match_item;
 
   if (parc != 5 || EmptyString(parv[4]))
@@ -236,7 +241,8 @@ ms_xline(struct Client *client_p, struct Client *source_p,
     if (!valid_xline(source_p, parv[2], parv[4], 0))
       return;
 
-    if (find_x_conf(parv[1]) != NULL)
+    if ((find_matching_name_conf(XLINE_TYPE, parv[1],
+				NULL, NULL, 0)) != NULL)
       return;
 
     write_xline(source_p, parv[2], parv[4], atoi(parv[3]));
@@ -248,8 +254,10 @@ ms_xline(struct Client *client_p, struct Client *source_p,
     if (!valid_xline(source_p, parv[2], parv[4], 1))
       return;
 
-    if ((match_item = find_x_conf(parv[2])) != NULL)
+    if ((conf = find_matching_name_conf(XLINE_TYPE, parv[2],
+					NULL, NULL, 0)) != NULL)
     {
+      match_item = (struct MatchItem *)map_to_conf(conf);
       sendto_one(source_p, ":%s NOTICE %s :[%s] already X-Lined by [%s] - %s",
                  me.name, source_p->name, parv[1],
                  match_item->name, match_item->reason);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.385 2003/06/14 03:39:25 db Exp $
+ *  $Id: client.c,v 7.386 2003/06/16 03:07:53 db Exp $
  */
 
 #include "stdinc.h"
@@ -544,6 +544,7 @@ void
 check_xlines(void)
 {               
   struct Client *client_p;       /* current local client_p being examined */
+  struct ConfItem *conf;
   struct MatchItem *xconf = NULL;
   const char *reason;            /* pointer to reason string */
   dlink_node *ptr, *next_ptr;
@@ -558,8 +559,12 @@ check_xlines(void)
       continue;
 	
     /* if there is a returned struct AccessItem then kill it */
-    if ((xconf = find_x_conf(client_p->info)) != NULL)
+    if ((conf = find_matching_name_conf(
+					XLINE_TYPE, client_p->info,
+					NULL, NULL, 0)) != NULL)
     {
+      xconf = (struct MatchItem *)map_to_conf(conf);
+
       sendto_realops_flags(UMODE_ALL, L_ALL,"XLINE active for %s",
 			   get_client_name(client_p, HIDE_IP));
       

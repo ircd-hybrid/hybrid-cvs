@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: resv.c,v 7.28 2003/06/15 01:16:42 db Exp $
+ *  $Id: resv.c,v 7.29 2003/06/16 03:07:53 db Exp $
  */
 
 #include "stdinc.h"
@@ -38,7 +38,7 @@
 #include "s_conf.h"
 
 dlink_list resv_channel_list = { NULL, NULL, 0 };
-dlink_list resv_nick_list    = { NULL, NULL, 0 };
+
 
 /* create_channel_resv()
  *
@@ -88,25 +88,24 @@ struct ConfItem *
 create_nick_resv(char *name, char *reason, int in_conf)
 {
   struct ConfItem *conf;
-  struct ResvNick *resv_p;
+  struct MatchItem *resv_p;
 
   if (name == NULL || reason == NULL)
     return(NULL);
 
-  if (find_nick_resv(name))
+  if (find_matching_name_conf(NRESV_TYPE, name,
+			      NULL, NULL, 0))
     return(NULL);
 
   if (strlen(reason) > TOPICLEN)
     reason[TOPICLEN] = '\0';
 
   conf = make_conf_item(NRESV_TYPE);
-  resv_p = (struct ResvNick *)map_to_conf(conf);
+  resv_p = (struct MatchItem *)map_to_conf(conf);
 
-  strlcpy(resv_p->name, name, sizeof(resv_p->name));
+  DupString(resv_p->name, name);
   DupString(resv_p->reason, reason);
-  resv_p->conf = in_conf;
-
-  dlinkAdd(resv_p, &resv_p->node, &resv_nick_list);
+  resv_p->action = in_conf;
 
   return(conf);
 }
@@ -123,18 +122,11 @@ clear_conf_resv(void)
   dlink_node *ptr;
   dlink_node *next_ptr;
   struct ResvChannel *resv_cp;
-  struct ResvNick *resv_np;
 
   DLINK_FOREACH_SAFE(ptr, next_ptr, resv_channel_list.head)
   {
     resv_cp = ptr->data;
     delete_channel_resv(resv_cp);
-  }
-
-  DLINK_FOREACH_SAFE(ptr, next_ptr, resv_nick_list.head)
-  {
-    resv_np = ptr->data;
-    delete_nick_resv(resv_np);
   }
 }
 
@@ -166,33 +158,6 @@ delete_channel_resv(struct ResvChannel *resv_p)
   return(1);
 }
 
-/* delete_nick_resv()
- *
- * inputs	- pointer to nick resv to delete
- * output	- none
- * side effects	- given struct ResvNick * is removed
- */
-int
-delete_nick_resv(struct ResvNick *resv_p)
-{
-  struct ConfItem *conf;
-  assert(resv_p != NULL);
-
-  if (resv_p == NULL)
-    return(0);
-
-  dlinkDelete(&resv_p->node, &resv_nick_list);
-
-  /* XXX Isn't this just horrible? 
-   * Lets use address arithemetic !
-   */
-  conf = (struct ConfItem *)((unsigned long)resv_p -
-			     (unsigned long)sizeof(struct ConfItem));
-  MyFree(conf);
-
-  return(1);
-}
-
 int
 find_channel_resv(const char *name)
 {
@@ -204,23 +169,7 @@ find_channel_resv(const char *name)
   return(0);
 }
 
-int
-find_nick_resv(const char *name)
-{
-  dlink_node *ptr;
-  struct ResvNick *resv_p;
-
-  DLINK_FOREACH(ptr, resv_nick_list.head)
-  {
-    resv_p = ptr->data;
-
-    if (match(resv_p->name, name))
-      return(1);
-  }
-
-  return(0);
-}
-
+#if 0
 struct ResvNick *
 return_nick_resv(const char *name)
 {
@@ -237,31 +186,33 @@ return_nick_resv(const char *name)
 
   return(NULL);
 }
+#endif
 
 void
 report_resv(struct Client *source_p)
 {
   dlink_node *ptr;
+  struct ConfItem *conf;
   struct ResvChannel *resv_cp;
-  struct ResvNick *resv_np;
+  struct MatchItem *resv_np;
 
   DLINK_FOREACH(ptr, resv_channel_list.head)
   {
     resv_cp = ptr->data;
-
     sendto_one(source_p, form_str(RPL_STATSQLINE),
                me.name, source_p->name,
 	       resv_cp->conf ? 'Q' : 'q',
 	       resv_cp->name, resv_cp->reason);
   }
 
-  DLINK_FOREACH(ptr, resv_nick_list.head)
+  DLINK_FOREACH(ptr, nresv_items.head)
   {
-    resv_np = ptr->data;
+    conf = ptr->data;
+    resv_np = (struct MatchItem *)map_to_conf(conf);
 
     sendto_one(source_p, form_str(RPL_STATSQLINE),
                me.name, source_p->name,
-	       resv_np->conf ? 'Q' : 'q',
+	       resv_np->action ? 'Q' : 'q',
 	       resv_np->name, resv_np->reason);
   }
 }

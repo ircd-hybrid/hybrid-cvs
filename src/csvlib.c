@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.21 2003/06/14 18:12:02 db Exp $
+ *  $Id: csvlib.c,v 7.22 2003/06/16 03:07:53 db Exp $
  */
 
 #include "stdinc.h"
@@ -183,7 +183,7 @@ write_conf_line(struct Client *source_p, struct ConfItem *conf,
   struct AccessItem *aconf;
   struct MatchItem *xconf;
   struct ResvChannel *cresv_p=NULL;
-  struct ResvNick *nresv_p=NULL;
+  struct MatchItem *nresv_p=NULL;
   ConfType type;
 
   type = conf->type;
@@ -265,7 +265,7 @@ write_conf_line(struct Client *source_p, struct ConfItem *conf,
     break;
 
   case NRESV_TYPE:
-    nresv_p = (struct ResvNick *)map_to_conf(conf);
+    nresv_p = (struct MatchItem *)map_to_conf(conf);
 
     write_csv_line(out, "%s%s",
 		   nresv_p->name, nresv_p->reason);
