@@ -4,7 +4,7 @@
  * shape or form. The author takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: res.c,v 7.23 2000/11/06 13:48:18 adrian Exp $
+ * $Id: res.c,v 7.24 2000/11/06 22:02:40 adrian Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -1070,6 +1070,7 @@ res_readreply(int fd, void *data)
 	  requestListTail->he.buf = request->he.buf;
 	  request->he.buf = 0;
 	  memcpy(&requestListTail->he.h, &request->he.h, sizeof(struct hostent));
+	  rem_request(request);
 	}
       else
 	{
