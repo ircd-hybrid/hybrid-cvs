@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_nick.c,v 1.17 2000/12/04 18:30:44 db Exp $
+ *   $Id: m_nick.c,v 1.18 2000/12/08 23:03:10 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -260,7 +260,7 @@ int m_nick(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 **      parv[1] = nickname
 **      parv[2] = TS when nick change
 **
-** when its a server introucing a new nick
+** when its a server introducing a new nick
 **      parv[0] = sender prefix
 **      parv[1] = nickname
 **      parv[2] = hop count
