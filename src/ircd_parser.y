@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.332 2003/07/07 21:18:57 michael Exp $
+ *  $Id: ircd_parser.y,v 1.333 2003/07/08 03:59:23 db Exp $
  */
 
 %{
@@ -1725,7 +1725,7 @@ cluster_item:	cluster_name | cluster_type | error;
 cluster_name: NAME '=' QSTRING ';'
 {
   if (ypass == 2)
-    Dupstring(yy_conf->name, yylval.string);
+    DupString(yy_conf->name, yylval.string);
 };
 
 cluster_type: TYPE
