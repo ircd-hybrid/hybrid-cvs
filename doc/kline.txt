@@ -2,18 +2,16 @@
  * 
  * Copyright (C) 2001-2002 Hybrid Development Team
  *
- * $Id: kline.txt,v 1.6 2003/10/13 02:15:18 metalrock Exp $
+ * $Id: kline.txt,v 1.7 2003/10/13 03:03:28 metalrock Exp $
  */
 
 
 Introduction
 ------------
 
-ircd-hybrid-7 will allow opers to add klines on multiple servers, an extension
-and replacement of the old ircd-hybrid-6 method of sharing all klines between
-servers.  Remote unkline is not currently supported, however an unofficial
-patch to support this exists in contrib/. Read contrib/README for more
-information.
+ircd-hybrid-7 will allow opers to add and remove klines on multiple servers,
+an extension and replacement of the old ircd-hybrid-6 method of sharing
+all klines between servers.
 
 In this implementation, it is extended to be routable among servers which
 understand the "KLN" capability. This allows us to continue to "talk"
