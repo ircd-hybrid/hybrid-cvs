@@ -11,6 +11,7 @@ o) missing ':' in messages.tab numeric 513 ERR_WRONGPONG fixed.
 o) removed bogus #ifdef ANONOPS in m_who.c
 o) fixed bogus log message in check_client()
 o) fixed fd leak in m_help.c
+o) fix to vchans
 
 -- ircd-hybrid-7rc6 RELNOTES
 o) fixed a nasty ban overflow which causes desyncs
@@ -138,4 +139,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.59 2003/01/17 03:57:58 db Exp $
+$Id: RELNOTES,v 1.60 2003/01/17 04:19:27 db Exp $
