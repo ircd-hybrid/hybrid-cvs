@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.12 2000/01/02 22:11:59 db Exp $
+ *   $Id: s_serv.c,v 7.13 2000/01/02 22:35:57 db Exp $
  */
 #include "s_serv.h"
 #include "channel.h"
@@ -982,6 +982,9 @@ void restoreUnusedServerMask(unsigned long mask)
 #ifdef DEBUGLL
   sendto_realops("restoreUnusedServerMask: Returning mask %X", mask);
 #endif
+
+  if(!mask) /* On 0 mask, don't do anything */
+    return;
 
   freeMask |= mask;
 
