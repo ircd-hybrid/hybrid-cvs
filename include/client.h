@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.59 2000/12/15 13:55:52 db Exp $
+ * $Id: client.h,v 7.60 2000/12/17 21:18:11 db Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -64,7 +64,6 @@
  */
 struct ConfItem;
 struct Whowas;
-struct Zdata;
 struct DNSReply;
 struct Listener;
 struct Client;

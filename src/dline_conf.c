@@ -1,7 +1,7 @@
 /*
  * dline_conf.c
  *
- * $Id: dline_conf.c,v 7.8 2000/01/17 03:21:29 db Exp $
+ * $Id: dline_conf.c,v 7.9 2000/12/17 21:18:16 db Exp $
  */
 #include "dline_conf.h"
 #include "class.h"
@@ -312,11 +312,9 @@ struct ConfItem *find_exception(unsigned long ip)
 void add_dline(struct ConfItem *conf_ptr)
 {
   unsigned long host_ip;
-  unsigned long host_mask;
   struct ip_subtree *node;
 
   host_ip = conf_ptr->ip;
-  host_mask = conf_ptr->ip_mask;
 
   conf_ptr->status = CONF_DLINE;
   conf_ptr->flags = CONF_FLAGS_E_LINED;

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.45 2000/12/17 00:14:54 db Exp $
+ * $Id: channel.h,v 7.46 2000/12/17 21:18:11 db Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -134,15 +134,6 @@ extern void del_invite(struct Channel *chptr, struct Client *who);
 extern int list_continue(struct Client *sptr);
 extern void list_one_channel(struct Client *sptr,struct Channel *chptr);
 
-void channel_member_list(struct Client *sptr,
-			 dlink_list *list,
-			 struct Channel *chptr,
-			 char *name_of_channel,
-			 char *show_flag,
-			 char *buf,
-			 int mlen,
-			 int *cur_len,
-			 int *reply_to_send);
 
 /*
 ** Channel Related macros follow

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.76 2000/12/17 20:36:55 db Exp $
+ *  $Id: client.c,v 7.77 2000/12/17 21:18:16 db Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -75,7 +75,6 @@ BlockHeap*        localUserFreeList;
 static const char* const BH_FREE_ERROR_MESSAGE = \
         "client.c BlockHeapFree failed for cptr = %p";
 
-static void exit_marked_for_death_clients();
 static void check_pings_list(dlink_list *list);
 static void check_unknowns_list(dlink_list *list);
 
@@ -380,7 +379,6 @@ check_unknowns_list(dlink_list *list)
 {
   dlink_node *ptr;
   struct Client *cptr;
-  dlink_node *m;
 
   for(ptr = list->head; ptr; ptr = ptr->next)
     {

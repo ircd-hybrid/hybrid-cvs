@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.126 2000/12/17 00:14:59 db Exp $
+ * $Id: channel.c,v 7.127 2000/12/17 21:18:15 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -60,6 +60,14 @@ static void send_members(struct Client *cptr,
 			 struct Channel *chptr,
 			 dlink_list *list,
 			 char *op_flag );
+
+static void channel_member_list(struct Client *sptr,
+				dlink_list *list,
+				char *show_flag,
+				char *buf,
+				int mlen,
+				int *cur_len,
+				int *reply_to_send);
 
 static void delete_members(dlink_list *list);
 
@@ -542,9 +550,8 @@ static int change_channel_membership(struct Channel *chptr,
 int can_join(struct Client *sptr, struct Channel *chptr, char *key)
 {
   dlink_node  *lp;
-  int ban_or_exception;
 
-  if ((ban_or_exception = is_banned(chptr,sptr)) == CHFL_BAN)
+  if ((is_banned(chptr,sptr)) == CHFL_BAN)
     return (ERR_BANNEDFROMCHAN);
 
   if (chptr->mode.mode & MODE_INVITEONLY)
@@ -2572,18 +2579,18 @@ void channel_member_names( struct Client *sptr,
     }
 
   channel_member_list(sptr,
-		      &chptr->chanops, chptr, name_of_channel, show_ops_flag,
+		      &chptr->chanops, show_ops_flag,
 		      buf, mlen, &cur_len, &reply_to_send);
 
   channel_member_list(sptr,
-		      &chptr->voiced, chptr, name_of_channel, show_voiced_flag,
+		      &chptr->voiced, show_voiced_flag,
 		      buf, mlen, &cur_len, &reply_to_send);
 
   channel_member_list(sptr,
-		      &chptr->halfops, chptr,name_of_channel,show_halfops_flag,
+		      &chptr->halfops, show_halfops_flag,
 		      buf, mlen, &cur_len, &reply_to_send);
 
-  channel_member_list(sptr, &chptr->peons, chptr, name_of_channel, "",
+  channel_member_list(sptr, &chptr->peons, "",
 		      buf, mlen, &cur_len, &reply_to_send);
 
   if(reply_to_send)
@@ -2598,8 +2605,6 @@ void channel_member_names( struct Client *sptr,
  *
  * inputs	- pointer to client struct requesting names
  *		- pointer to list on channel
- *		- pointer to channel block
- *		- pointer to name of channel
  *		- pointer to show flag, i.e. what to show '@' etc.
  *		- buffer to use
  *		- minimum length
@@ -2608,10 +2613,9 @@ void channel_member_names( struct Client *sptr,
  * output	- none
  * side effects	- lists all names on given list of channel
  */
-void channel_member_list(struct Client *sptr,
+static void
+channel_member_list(struct Client *sptr,
 			 dlink_list *list,
-			 struct Channel *chptr,
-			 char *name_of_channel,
 			 char *show_flag,
 			 char *buf,
 			 int mlen,

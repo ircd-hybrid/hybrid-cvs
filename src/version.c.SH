@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# $Id: version.c.SH,v 7.13 2000/12/17 20:36:57 db Exp $ 
+# $Id: version.c.SH,v 7.14 2000/12/17 21:18:17 db Exp $ 
 
 spitshell=cat
 package=IRC
@@ -90,6 +90,7 @@ char *infotext[] =
   "David-T             David Taylor        davidt@yadt.co.uk",
   "desrt               Ryan Lortie         desertangel@mindless.com",
   "echo                Adam J. Durana      adam@caca.com",
+  "einride             anon                einride@einride.net",
   "FlashMan            Craig A. Huegen     chuegen@quadrunner.com",
   "Hwy101              Walter Campbell     wcampbel@botbay.net",
   "jailbird            Dustin Marquess     jailbird@alcatraz.fdf.net",
