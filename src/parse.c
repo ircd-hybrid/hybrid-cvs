@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.33 2000/11/27 21:38:28 db Exp $
+ *   $Id: parse.c,v 7.34 2000/11/27 23:38:47 db Exp $
  */
 #include "parse.h"
 #include "client.h"
@@ -530,12 +530,15 @@ mod_add_cmd(char *cmd, struct Message *msg)
   do_msg_tree(msg_tree_root, "", msgtab);
 }
 
-void
-mod_del_cmd(char *cmd)
+/* mod_del_cmd
+ *
+ * inputs	- command name
+ * output	- none
+ * side effects - unload this one command name
+ */
+int mod_del_cmd(char *cmd)
 {
   int i; 
-
-  clear_msg_tree();
 
   for (i = 0; i < num_msgs && msgtab[i].cmd; i++)
     {
@@ -547,12 +550,14 @@ mod_del_cmd(char *cmd)
 	  if(num_msgs != 0)
 	    num_msgs--;
 
+	  clear_msg_tree();
 	  qsort((void *)msgtab, num_msgs, sizeof(struct Message), 
 		(int (*)(const void *, const void *)) mcmp);
 	  do_msg_tree(msg_tree_root, "", msgtab);
-	  return;
+	  return 0;
 	}
     }
+  return -1;
 }
 
 /*
