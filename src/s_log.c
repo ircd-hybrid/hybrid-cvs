@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.c,v 7.45 2002/09/09 13:43:48 db Exp $
+ *  $Id: s_log.c,v 7.46 2003/02/15 16:32:46 lusky Exp $
  */
 
 #include "stdinc.h"
@@ -86,6 +86,10 @@ static const char *logLevelToString[] =
 static int 
 open_log(const char* filename)
 {
+  if (!server_state.foreground)
+  {
+    close(2); /* let the logfile grab fd 2 to catch stderr */
+  }
   logFile = fbopen(filename, "a");
   if (logFile == NULL)
   {

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.279 2003/02/14 23:01:56 db Exp $
+ *  $Id: s_serv.c,v 7.280 2003/02/15 16:32:46 lusky Exp $
  */
 
 #include "stdinc.h"
@@ -1383,7 +1383,7 @@ fork_server(struct Client *server)
   else if (ret == 0)
   {
     /* set our fds as non blocking and close everything else */
-    for(i = 0; i < HARD_FDLIMIT; i++)
+    for(i = LOWEST_SAFE_FD; i < HARD_FDLIMIT; i++)
     {
       
       if ((i == slink_fds[0][0][0]) || (i == slink_fds[0][0][1]) ||
@@ -1401,10 +1401,7 @@ fork_server(struct Client *server)
       }
       else
       {
-#if defined(VMS) || defined(__CYGWIN__)
-        if (i > 2) /* don't close std* */
-#endif
-          close(i);
+        close(i);
       }
     }
 

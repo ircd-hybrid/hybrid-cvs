@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.179 2003/02/14 23:01:55 db Exp $
+ *  $Id: s_bsd.c,v 7.180 2003/02/15 16:32:46 lusky Exp $
  */
 
 #include "stdinc.h"
@@ -77,21 +77,9 @@ void
 close_all_connections(void)
 {
   int i;
-#ifndef NDEBUG
   int fd;
-#endif
 
-  /* XXX someone tell me why we care about 4 fd's ? */
-  /* XXX btw, fd 3 is used for profiler ! */
-#if 0
-#ifndef VMS
   for (i = 0; i < MAXCONNECTIONS; ++i)
-#else
-  for (i = 3; i < MAXCONNECTIONS; ++i)
-#endif
-#endif
-
-  for (i = 4; i < MAXCONNECTIONS; ++i)
     {
       if (fd_table[i].flags.open)
         fd_close(i);
@@ -99,17 +87,14 @@ close_all_connections(void)
         close(i);
     }
 
-  /* XXX should his hack be done in all cases? */
-#ifndef NDEBUG
-  /* fugly hack to reserve fd == 2 */
-  (void)close(2);
-  fd = open("stderr.log",O_WRONLY|O_CREAT|O_APPEND,0644);
-  if( fd >= 0 )
+  /* Make sure stdio descriptors (0-2) and profiler descriptor (3)
+     always go somewhere harmless.  Use -foreground for profiling
+     or executing from gdb */
+  for (i = 0; i < LOWEST_SAFE_FD; i++)
     {
-      dup2(fd, 2);
-      close(fd);
+      if ((fd = open(PATH_DEVNULL, O_RDWR)) < 0)
+        exit(-1); /* we're hosed if we can't even open /dev/null */
     }
-#endif
 }
 
 /*

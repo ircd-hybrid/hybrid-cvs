@@ -1,3 +1,10 @@
+-- ircd-hybrid-7rc9 RELNOTES
+o) massive revert to rc4 exit_client code
+o) fixed handling of file descriptors 0 through 3
+o) fixed a desync bug with chm_key when removing keys
+o) reverted get_client_name() format to %s[%s@%s]
+o) changed possible flooder notices to use get_client_name()
+
 -- ircd-hybrid-7rc8 RELNOTES
 o) fixed ziplinks hang/error on initial connection
 o) fixed contrib/m_whois core and bogus idle for non-local in modules/m_whois
@@ -146,4 +153,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.63 2003/01/25 23:43:18 lusky Exp $
+$Id: RELNOTES,v 1.64 2003/02/15 16:32:39 lusky Exp $

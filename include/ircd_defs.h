@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_defs.h,v 7.31 2002/07/12 00:43:20 androsyn Exp $
+ *  $Id: ircd_defs.h,v 7.32 2003/02/15 16:32:43 lusky Exp $
  */
 
 /*
@@ -59,6 +59,8 @@
 #define MAX_DATE_STRING 32      /* maximum string length for a date string */
 
 #define HELPLEN         400
+
+#define LOWEST_SAFE_FD  4	/* skip stdin, stdout, stderr, and profiler */
 
 /* 
  * message return values 

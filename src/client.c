@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.329 2003/02/14 23:01:55 db Exp $
+ *  $Id: client.c,v 7.330 2003/02/15 16:32:45 lusky Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -1193,7 +1193,6 @@ dead_link_on_write(struct Client *client_p, int ierrno)
 void
 dead_link_on_read(struct Client* client_p, int error)
 {
-  dlink_node *m;
   char errmsg[255];
   int  current_error = get_sockerr(client_p->localClient->fd);
 
