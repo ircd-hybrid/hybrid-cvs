@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.347 2003/03/01 01:15:44 db Exp $
+ *  $Id: s_conf.c,v 7.348 2003/03/01 05:07:20 db Exp $
  */
 
 #include "stdinc.h"
@@ -60,8 +60,8 @@ extern int yyparse(); /* defined in y.tab.c */
 extern int lineno;
 extern char linebuf[];
 extern char conffilebuf[IRCD_BUFSIZE];
-int scount = 0;         /* used by yyparse(), etc */
-int pass = 1;		/* used by yyparse() */
+int scount = 0; /* used by yyparse(), etc */
+int ypass  = 1; /* used by yyparse()      */
 
 #ifndef INADDR_NONE
 #define INADDR_NONE ((unsigned int) 0xffffffff)
@@ -599,7 +599,7 @@ attach_iline(struct Client *client_p, struct ConfItem *aconf)
  *			- clear the ip hash table
  */
 void 
-init_ip_hash_table()
+init_ip_hash_table(void)
 {
   ip_entry_heap = BlockHeapCreate(sizeof(struct ip_entry), 2*MAXCONNECTIONS);
   memset((void *)ip_hash_table, 0, sizeof(ip_hash_table));
@@ -1436,10 +1436,10 @@ read_conf(FBFILE* file)
   scount = lineno = 0;
 
   set_default_conf(); /* Set default values prior to conf parsing */
-  pass = 1;
+  ypass = 1;
   yyparse();	      /* pick up the classes first */
   (void)fbrewind(file);
-  pass = 2;
+  ypass = 2;
   yyparse();          /* Load the values from the conf */
   validate_conf();    /* Check to make sure some values are still okay. */
                       /* Some global values are also loaded here. */
@@ -1899,13 +1899,12 @@ get_oper_name(struct Client *client_p)
  * of name, host, pass, user to values either
  * in aconf, or "<NULL>" port is set to aconf->port in all cases.
  */
-
 void 
 get_printable_conf(struct ConfItem *aconf, char **name, char **host,
-                           char **pass, char **user,int *port,char **classname)
+                   char **pass, char **user,int *port,char **classname)
 {
-  static  char        null[] = "<NULL>";
-  static  char        zero[] = "default";
+  static char null[] = "<NULL>";
+  static char zero[] = "default";
 
   *name = BadPtr(aconf->name) ? null : aconf->name;
   *host = BadPtr(aconf->host) ? null : aconf->host;
@@ -2133,7 +2132,6 @@ clear_out_old_conf(void)
  * output       - none
  * side effects - This function removes I/P conf items
  */
-
 static void
 flush_deleted_I_P(void)
 {

@@ -19,14 +19,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.195 2003/03/01 01:15:37 db Exp $
+ *  $Id: s_conf.h,v 7.196 2003/03/01 05:07:19 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
 #define INCLUDED_s_conf_h
 #include "setup.h"
-
-
 
 #ifdef HAVE_LIBCRYPTO
 #include <openssl/rsa.h>
@@ -395,7 +393,7 @@ extern  void    show_temp_klines(struct Client *, dlink_list *);
 extern  void    cleanup_tklines(void *notused);
 
 extern  const   char *get_conf_name(KlineType);
-extern  int     rehash (int);
+extern  int     rehash(int);
 
 extern int  conf_add_server(struct ConfItem *,int);
 extern void conf_add_class_to_conf(struct ConfItem *);
