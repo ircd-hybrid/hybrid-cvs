@@ -1,3 +1,23 @@
+bill        2003/02/03 00:25:50 EST	(20030203_2)
+
+  Modified files:
+    modules/core         m_message.c 
+    src                  client.c s_user.c send.c 
+  Log:
+  - reverted get_client_name() format to %s[%s@%s]
+  - changed possible flooder notices to use get_client_name()
+  
+     note: the only notice left with the %s [%s@%s] format is the nick change notice,
+           which should also eventually be changed to use get_client_name()
+  
+  Revision  Changes    Path
+  1.107     +7 -9      ircd-hybrid-7/modules/core/m_message.c
+  7.323     +6 -3      ircd-hybrid-7/src/client.c
+  7.219     +1 -1      ircd-hybrid-7/src/s_user.c
+  7.220     +2 -2      ircd-hybrid-7/src/send.c
+
+
+
 db          2003/02/03 00:08:40 EST	(20030203_1)
 
   Modified files:
@@ -34769,4 +34789,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4217 2003/02/03 05:08:42 db Exp $
+$Id: ChangeLog,v 7.4218 2003/02/03 05:25:53 bill Exp $
