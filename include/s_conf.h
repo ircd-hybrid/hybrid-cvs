@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.74 2001/01/18 17:32:15 ejb Exp $
+ * $Id: s_conf.h,v 7.75 2001/01/18 20:06:15 davidt Exp $
  */
 
 #include "setup.h"
@@ -35,7 +35,7 @@
 #include "ircd_defs.h"
 #include "motd.h"               /* MessageFile */
 #include "class.h"
-
+#include "client.h"
 struct Client;
 struct DNSReply;
 struct hostent;

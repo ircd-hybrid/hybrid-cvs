@@ -20,20 +20,20 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_motd.c,v 1.12 2001/01/05 00:14:31 davidt Exp $
+ *   $Id: m_motd.c,v 1.13 2001/01/18 20:06:21 davidt Exp $
  */
+#include "client.h"
 #include "tools.h"
 #include "motd.h"
 #include "ircd.h"
-#include "s_conf.h"
 #include "send.h"
 #include "numeric.h"
-#include "client.h"
 #include "handlers.h"
 #include "msg.h"
 #include "s_serv.h"     /* hunt_server */
 #include "parse.h"
 #include "modules.h"
+#include "s_conf.h"
 
 #include <string.h>
 #include <stdlib.h>
