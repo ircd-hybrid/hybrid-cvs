@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.51 2000/12/15 23:26:57 db Exp $
+ * $Id: ircd_parser.y,v 1.52 2000/12/16 01:55:40 db Exp $
  */
 
 %{
@@ -1121,7 +1121,7 @@ gecos_entry:     GECOS
   };
  '{' gecos_items '}' ';'
   {
-    if(yy_aconf->name)
+    if(yy_aconf->host)
       {
 	if(!yy_aconf->passwd)
 	  {
@@ -1144,7 +1144,7 @@ gecos_item:      gecos_name | gecos_reason | gecos_action
 
 gecos_name:    NAME '=' QSTRING ';' 
   {
-    yy_aconf->name = yylval.string; 
+    yy_aconf->host = yylval.string; 
     yylval.string = (char *)NULL;
   };
 
@@ -1154,18 +1154,15 @@ gecos_reason:    REASON '=' QSTRING ';'
     yylval.string = (char *)NULL;
   };
 
-gecos_action:    ACTION '='
-                 TREJECT 
+gecos_action:    ACTION '=' TREJECT ';'
   {
     yy_aconf->port = 1;
   }
                  |
-                 WARN
+                 ACTION '=' WARN ';'
   {
     yy_aconf->port = 0;
   };
-
- ';' 
 
 
 /***************************************************************************
