@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel_mode.c,v 7.3 2001/10/21 20:45:46 leeh Exp $
+ * $Id: channel_mode.c,v 7.4 2001/10/21 20:48:28 leeh Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -1033,7 +1033,7 @@ chm_except(struct Client *client_p, struct Client *source_p,
 #endif    
 
   /* If we're adding a NEW id */
-  if ((dir == MODE_QUERY) && add_id(source_p, chptr, mask, CHFL_EXCEPTION) == 0)
+  if ((dir == MODE_ADD) && add_id(source_p, chptr, mask, CHFL_EXCEPTION) == 0)
   {
     for (i = 0; i < mode_count_minus; i++)
     {
