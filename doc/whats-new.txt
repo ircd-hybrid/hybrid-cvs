@@ -116,6 +116,19 @@ Autoconnects are far more customizable now.
 A number of new options are in the general {} block of ircd.conf.  Look at
 example.conf for more information
 
+kline directed at a specific server
+  /quote kline user@host ON server :reason
+  /quote kline [time] user@host on server :reason
+
+kline directed at all servers
+  /quote kline user@host on * :reason
+  /quote kline [time] user@host on * :reason
+
+original normal local klines
+
+  /quote kline user@host :reason
+  /quote kline [time] user@host :reason
+
 # complete me
 
-# $Id: whats-new.txt,v 7.2 2000/12/22 08:11:19 db Exp $
+# $Id: whats-new.txt,v 7.3 2000/12/22 15:29:39 wcampbel Exp $
