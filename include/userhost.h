@@ -1,6 +1,6 @@
 /*
  *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
- *  resv.h: A header for the RESV functions.
+ *  userhost.h: A header for global user limits.
  *
  *  Copyright (C) 2002 by the past and present ircd coders, and others.
  *
@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: userhost.h,v 1.1 2003/06/01 20:55:44 db Exp $
+ *  $Id: userhost.h,v 1.2 2003/06/01 22:10:10 metalrock Exp $
  */
 
 #ifndef INCLUDED_userhost_h
