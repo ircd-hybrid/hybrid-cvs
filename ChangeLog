@@ -4,6 +4,10 @@
 
 
 *** 20001114_5 by spookey
+- configure & autoconf/configure.in & src/Makefile.in updated for -ldl
+  linking with IRC (added DL_DEFINE stuff to IRCDLIBS and defined it if 
+  it's a linux machine)
+- src/s_bsd_poll.c added the glibc compatibility fixes
 
 
 
@@ -525,7 +529,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.545 2000/11/15 05:34:04 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.546 2000/11/15 07:44:24 lusky Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
