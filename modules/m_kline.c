@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kline.c,v 1.40 2000/12/27 17:05:48 db Exp $
+ *   $Id: m_kline.c,v 1.41 2000/12/28 00:39:04 db Exp $
  */
 #include "tools.h"
 #include "m_kline.h"
@@ -194,10 +194,6 @@ int mo_kline(struct Client *cptr,
     return 0;
 
   ip_kline = is_ip_kline(host,&ip,&ip_mask);
-
-  if ( already_placed_kline(sptr, user, host, tkline_time, ip) )
-    return 0;
-
   current_date = smalldate((time_t) 0);
 
   aconf = make_conf();
@@ -206,6 +202,22 @@ int mo_kline(struct Client *cptr,
   DupString(aconf->user, user);
 
   aconf->port = 0;
+
+  if(target_server != NULL)
+    {
+      sendto_cap_serv_butone(CAP_KLN, &me,
+			   ":%s KLINE %s %s %d %s %s :%s",
+			   me.name, sptr->name,
+			   target_server,
+			   tkline_time, user, host, reason);
+
+      if(*target_server != '*' && target_server[1] != '\0')
+	return 0;
+    }
+
+  /* We check if we've already got the kline, after sending it */
+  if ( already_placed_kline(sptr, user, host, tkline_time, ip) )
+    return 0;
 
   if(tkline_time)
     {
@@ -232,13 +244,6 @@ int mo_kline(struct Client *cptr,
 
       apply_kline(sptr, aconf, reason, current_date, ip_kline, ip, ip_mask);
     }
-
-  if(target_server != NULL)
-    sendto_cap_serv_butone(CAP_KLN, &me,
-			   ":%s KLINE %s %s %d %s %s : %s",
-			   me.name, sptr->name,
-			   target_server,
-			   tkline_time, user, host, reason);
 
   return 0;
 } /* mo_kline() */
@@ -292,7 +297,9 @@ int ms_kline(struct Client *cptr,
   if(find_u_conf(sptr->name,rcptr->username,rcptr->host))
     {
       sendto_realops_flags(FLAGS_ALL,
-			   "*** Received K-Line from %s!%s@%s on %s",
+			   "*** Received K-Line for %s@%s, from %s!%s@%s on %s",
+			   parv[4],
+			   parv[5],
 			   rcptr->name,
 			   rcptr->username,
 			   rcptr->host,
@@ -304,6 +311,7 @@ int ms_kline(struct Client *cptr,
       DupString(aconf->host, parv[5]);
       DupString(aconf->passwd, parv[6]);
       current_date = smalldate((time_t) 0);
+
       if(tkline_time)
 	apply_tkline(rcptr, aconf, current_date, tkline_time, 0, 0, 0);
       else
