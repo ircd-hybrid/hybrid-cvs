@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: memory.c,v 7.14 2001/03/11 20:20:31 toot Exp $
+ * $Id: memory.c,v 7.15 2001/03/12 06:37:00 a1kmm Exp $
  */
 #include <stdlib.h>
 #include <string.h>
@@ -81,7 +81,7 @@ _MyFree(void *what, char *file, int line)
  MemoryEntry *mme;
  if (!what)
    return;
- mme = (MemoryEntry*)(what - sizeof(MemoryEntry));
+ mme = (MemoryEntry*)((char *)what - sizeof(MemoryEntry));
  if (mme->last)
    mme->last->next = mme->next;
  else
@@ -107,7 +107,7 @@ _MyRealloc(void *what, size_t size, char *file, int line)
     _MyFree(what, file, line);
     return NULL;
    }
- mme = (MemoryEntry*)(what - sizeof(MemoryEntry));
+ mme = (MemoryEntry*)((char *)what - sizeof(MemoryEntry));
  mme = realloc(mme, size+sizeof(MemoryEntry));
  mme->size = size;
  mme->next->last = mme;

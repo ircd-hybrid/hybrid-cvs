@@ -18,7 +18,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: packet.c,v 7.39 2001/03/11 17:44:19 fl_ Exp $
+ *   $Id: packet.c,v 7.40 2001/03/12 06:37:01 a1kmm Exp $
  */ 
 
 #include <stdio.h>
@@ -112,7 +112,10 @@ flood_recalc(int fd, void *data)
 {
     struct Client *client_p = data;
     struct LocalUser *lclient_p = client_p->localClient;
-
+    
+    /* This can happen in the event that the client detached. */
+    if (!lclient_p)
+      return;
     assert(client_p != NULL);
     assert(lclient_p != NULL);
 
