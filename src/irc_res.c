@@ -7,7 +7,7 @@
  * The authors takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: irc_res.c,v 7.12 2003/05/13 17:46:37 joshk Exp $
+ * $Id: irc_res.c,v 7.13 2003/05/14 03:52:03 db Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -49,7 +49,7 @@
 #error this code needs to be able to address individual octets 
 #endif
 
-/* $Id: irc_res.c,v 7.12 2003/05/13 17:46:37 joshk Exp $ */
+/* $Id: irc_res.c,v 7.13 2003/05/14 03:52:03 db Exp $ */
 
 static PF res_readreply;
 
@@ -572,9 +572,9 @@ query_name(const char* name, int query_class, int type,
   int  request_len = 0;
 
   memset(buf, 0, sizeof(buf));
-  if ((request_len = irc_res_mkquery(QUERY, name, query_class, type, 
-          NULL, 0, (unsigned char *)buf,
-          sizeof(buf))) > 0)
+
+  if ((request_len = irc_res_mkquery(name, query_class, type, 
+          (unsigned char *)buf, sizeof(buf))) > 0)
   {
     HEADER* header = (HEADER*) buf;
 #ifndef LRAND48
@@ -582,7 +582,7 @@ query_name(const char* name, int query_class, int type,
     struct timeval tv;
 #endif
     /*
-     * generate a unique id
+     * generate an unique id
      * NOTE: we don't have to worry about converting this to and from
      * network byte order, the nameserver does not interpret this value
      * and returns it unchanged
