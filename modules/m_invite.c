@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_invite.c,v 1.11 2000/12/19 04:39:32 db Exp $
+ *   $Id: m_invite.c,v 1.12 2000/12/20 03:43:17 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -183,10 +183,7 @@ int     m_invite(struct Client *cptr,
   if(MyConnect(acptr) && chop)
     add_invite(chptr, acptr);
 
-  sendto_anywhere(acptr, sptr, ":%s!%s@%s INVITE %s :%s",
-		  sptr->name,
-		  sptr->username,
-		  sptr->host,
+  sendto_anywhere(acptr, sptr, "INVITE %s :%s",
 		  acptr->name, parv[2]);
   return 0;
 }
