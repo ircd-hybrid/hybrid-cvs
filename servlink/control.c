@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: control.c,v 1.2 2001/05/27 19:57:23 davidt Exp $
+ *   $Id: control.c,v 1.3 2001/06/03 17:39:26 davidt Exp $
  */
 
 #include "setup.h"                                                   
@@ -403,10 +403,10 @@ void cmd_init(struct ctrl_command *cmd)
 
   in_state.active = 1;
   out_state.active = 1;
-  fds[CONTROL_FD_R].read_cb = read_ctrl;
-  fds[CONTROL_FD_W].write_cb = NULL;
-  fds[LOCAL_FD_R].read_cb = read_data;
-  fds[LOCAL_FD_W].write_cb = NULL;
-  fds[REMOTE_FD_R].read_cb = read_net;
-  fds[REMOTE_FD_W].write_cb = NULL;
+  CONTROL_R.read_cb = read_ctrl;
+  CONTROL_W.write_cb = NULL;
+  LOCAL_R.read_cb = read_data;
+  LOCAL_W.write_cb = NULL;
+  REMOTE_R.read_cb = read_net;
+  REMOTE_W.write_cb = NULL;
 }

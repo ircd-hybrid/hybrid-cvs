@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: io.h,v 1.6 2001/05/26 23:56:46 davidt Exp $
+ *   $Id: io.h,v 1.7 2001/06/03 17:39:27 davidt Exp $
  */
 
 #ifndef INCLUDED_servlink_io_h
@@ -30,7 +30,7 @@
 #define IO_TYPE(io)     ((io==IO_SELECT)?"select": \
                          ((io==IO_WRITE)?"write":"read"))
 
-#define FD_NAME(fd)     (fd_name[fd-3])
+#define FD_NAME(fd)     (fd_name(fd))
 
 extern void write_data(void);
 extern void read_data(void);
