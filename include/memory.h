@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: memory.h,v 7.35 2002/07/12 00:43:20 androsyn Exp $
+ *  $Id: memory.h,v 7.36 2002/07/13 22:54:47 androsyn Exp $
  */
 
 #ifndef _I_MEMORY_H
@@ -84,7 +84,7 @@ extern inline void _DupString(char **x, const char *y)
     outofmemory();
   strcpy((*x), y); 
 }
-#endif __GNUC__
+#endif /* __GNUC__ */
 
 #define DupString(x,y) _DupString(&x, y)
 
