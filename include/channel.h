@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.106 2002/04/17 01:02:17 leeh Exp $
+ *  $Id: channel.h,v 7.107 2002/04/19 16:21:04 leeh Exp $
  */
 
 #include <sys/types.h>        /* time_t */
@@ -35,7 +35,7 @@
 #endif
 
 /* Efnet wanted this... Maybe we should do this from configure? */
-#define REQUIRE_OANDV
+#undef REQUIRE_OANDV
 
 /* #define INTENSIVE_DEBUG */
 
@@ -71,7 +71,9 @@ struct Channel
   dlink_list	  vchan_list;	        /* vchan sublist */
 
   dlink_list      chanops;		/* lists of chanops etc. */
+#ifdef REQUIRE_OANDV
   dlink_list	  chanops_voiced;	/* UGH I'm sorry */
+#endif
   dlink_list      halfops;
   dlink_list      voiced;
   dlink_list      peons;                /* non ops, just members */
