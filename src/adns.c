@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: adns.c,v 7.43 2002/06/01 05:28:05 androsyn Exp $
+ *  $Id: adns.c,v 7.44 2002/06/03 18:54:21 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -225,7 +225,7 @@ void adns_gethost(const char *name, int aftype, struct DNSQuery *req)
                 &req->query);
   else
 #endif
-    adns_submit(dns_state, name, adns_r_addr, adns_qf_owner|adns_qf_usevc, req,
+    adns_submit(dns_state, name, adns_r_addr, adns_qf_owner, req,
                 &req->query);
 }
 
@@ -269,7 +269,7 @@ void adns_getaddr(struct irc_inaddr *addr, int aftype,
   ipn.sins.sin.sin_port = 0;
   ipn.sins.sin.sin_addr.s_addr = addr->sins.sin.s_addr;
   adns_submit_reverse(dns_state, (struct sockaddr *)&ipn.sins.sin, adns_r_ptr, 
-                      adns_qf_owner|adns_qf_cname_loose|adns_qf_quoteok_anshost|adns_qf_usevc, 
+                      adns_qf_owner|adns_qf_cname_loose|adns_qf_quoteok_anshost, 
                       req, &req->query);
 #endif
 }
