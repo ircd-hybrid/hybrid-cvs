@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.131 2003/06/14 02:08:57 joshk Exp $
+ *  $Id: modules.c,v 7.132 2003/06/14 02:16:22 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -210,12 +210,12 @@ load_pending (void)
 void
 mod_set_base (char* path)
 {
+  unsigned int len;
   base_valid = 1;
 
   MyFree (base_path);
   MyFree (base_autoload);
 
-  unsigned int len;
   DupString (base_path, path);
   
   len = strlen(path) + 10;
