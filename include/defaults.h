@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: defaults.h,v 7.7 2003/03/25 01:17:49 db Exp $
+ *  $Id: defaults.h,v 7.8 2003/05/04 16:37:43 adx Exp $
  */
 
 #ifndef INCLUDED_defaults_h
@@ -58,7 +58,7 @@
 /* General defaults */
 #define MAXIMUM_LINKS_DEFAULT 1         /* default for maximum_links */
 
-#define CLIENT_FLOOD_DEFAULT 20         /* default for client_flood */
+#define CLIENT_FLOOD_DEFAULT 2560       /* default for client_flood */
 #define CLIENT_FLOOD_MAX     2000
 #define CLIENT_FLOOD_MIN     10
 
