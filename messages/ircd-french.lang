@@ -1,7 +1,7 @@
 ; ircd-hybrid-7 custom message file
 ; Copyright (C) 2003
 ; Joshua Kwan <joshk@triplehelix.org>
-; $Id: ircd-french.lang,v 1.7 2003/09/28 01:17:45 joshk Exp $
+; $Id: ircd-french.lang,v 1.8 2003/11/30 04:17:41 metalrock Exp $
 
 RPL_LUSEROP:             :%s 252 %s %d :opérateurs IRC en ligne
 RPL_LOAD2HI:             :%s 263 %s :Veuillez patienter, le serveur est trop occupé
@@ -13,7 +13,6 @@ RPL_REHASHING:           :%s 382 %s %s :Le serveur relit le fichier de configura
 RPL_WELCOME:		 :%s 001 %s :Bienvenue au réseau IRC %s %s
 RPL_YOURHOST:		 :%s 002 %s :Votre serveur est %s, version %s
 RPL_CREATED:		 :%s 003 %s :Ce serveur a été crée %s
-RPL_MYINFO:		 :%s 004 %s %s %s oiwszcerkfydnxbaugl biklmnopstveIha bkloveIh
 RPL_ISUPPORT:		 :%s 005 %s %s :sont supportés par ce serveur
 RPL_REDIR:		 :%s 010 %s %s %d :Veuillez utiliser ce serveur
 RPL_MAPEND:		 :%s 017 %s :Fin de /MAP
