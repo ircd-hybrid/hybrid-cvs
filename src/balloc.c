@@ -25,7 +25,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: balloc.c,v 7.33 2002/05/29 16:13:42 db Exp $
+ *  $Id: balloc.c,v 7.34 2002/05/31 00:29:46 androsyn Exp $
  */
 
 /* 
@@ -379,6 +379,8 @@ void *_BlockHeapAlloc(BlockHeap * bh)
             dlinkDelete(new_node, &walker->free_list);
             dlinkAdd(new_node->data, new_node, &walker->used_list);
             assert(new_node->data != NULL);
+            if(new_node->data == NULL)
+              outofmemory();
             return (new_node->data);
 	  }
       }
@@ -421,6 +423,10 @@ int _BlockHeapFree(BlockHeap * bh, void *ptr)
 
     memblock = (void *)((size_t)ptr - sizeof(MemBlock));
     assert(memblock->block != NULL);
+    if(memblock->block == NULL)
+    {
+      outofmemory();
+    }
     /* Is this block really on the used list? */
     assert(dlinkFind(&memblock->block->used_list, memblock) == NULL); 
 
