@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kill.c,v 1.57 2001/12/24 16:15:09 androsyn Exp $
+ *   $Id: m_kill.c,v 1.58 2002/01/01 22:27:25 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -64,7 +64,7 @@ _moddeinit(void)
   mod_del_cmd(&kill_msgtab);
 }
 
-char *_version = "$Revision: 1.57 $";
+char *_version = "$Revision: 1.58 $";
 #endif
 /*
 ** mo_kill
@@ -132,8 +132,7 @@ static void mo_kill(struct Client *client_p, struct Client *source_p,
 	     inpath, client_p->username, reason);
 #endif
 
-  if(MyOper(target_p))
-      sendto_one(target_p, ":%s KILL %s :%s", parv[0], target_p->name, reason);
+  sendto_one(target_p, ":%s KILL %s :%s", parv[0], target_p->name, reason);
 
   /* Do not change the format of this message.  There's no point in changing messages
    * that have been around for ever, for no reason.. */
