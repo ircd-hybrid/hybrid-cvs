@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_cburst.c,v 1.1 2000/11/08 23:57:24 ejb Exp $
+ * $Id: m_cburst.c,v 1.2 2000/11/13 22:16:27 db Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -123,7 +123,7 @@ int     ms_cburst(struct Client *cptr,
 	    sendnick_TS(cptr, acptr);
 	}
 #endif
-      chptr->lazyLinkChannelExists = cptr->serverMask;
+      chptr->lazyLinkChannelExists |= cptr->serverMask;
       send_channel_modes(cptr, chptr);
        /* Send the topic */
       sendto_one(cptr, ":%s TOPIC %s :%s",
