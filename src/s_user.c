@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.209 2002/10/10 15:44:05 db Exp $
+ *  $Id: s_user.c,v 7.210 2002/10/10 18:30:31 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -305,7 +305,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
            source_p->localClient->random_ping = (unsigned long)rand();
            sendto_one(source_p, "PING :%lu", (unsigned long)source_p->localClient->random_ping);
            source_p->flags |= FLAGS_PINGSENT;
-	   strlcpy(source_p->username, username, USERLEN + 1);
+	   strlcpy(source_p->username, username, sizeof(source_p->username));
   	   return -1;
   	} 
   	if(!(source_p->flags2 & FLAGS2_PING_COOKIE))
@@ -523,7 +523,7 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
 
   user->last = CurrentTime;
 
-  strlcpy(source_p->username, username, USERLEN + 1);
+  strlcpy(source_p->username, username, sizeof(source_p->username));
 
   SetClient(source_p);
 
@@ -856,7 +856,7 @@ do_local_user(char* nick, struct Client* client_p, struct Client* source_p,
    */
   user->server = me.name;
 
-  strlcpy(source_p->info, realname, REALLEN + 1);
+  strlcpy(source_p->info, realname, sizeof(source_p->info));
  
   if (source_p->name[0])
   { 
@@ -870,7 +870,7 @@ do_local_user(char* nick, struct Client* client_p, struct Client* source_p,
           /*
            * save the username in the client
            */
-          strlcpy(source_p->username, username, USERLEN + 1);
+          strlcpy(source_p->username, username, sizeof(source_p->username));
         }
     }
   return 0;
@@ -904,8 +904,8 @@ do_remote_user(char* nick, struct Client* client_p, struct Client* source_p,
    * coming from another server, take the servers word for it
    */
   user->server = find_or_add(server);
-  strlcpy(source_p->host, host, HOSTLEN + 1); 
-  strlcpy(source_p->info, realname, REALLEN);
+  strlcpy(source_p->host, host, sizeof(source_p->host)); 
+  strlcpy(source_p->info, realname, sizeof(source_p->info));
   if (id != NULL)
     strcpy(source_p->user->id, id);
   
