@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.188 2003/10/21 01:27:41 bill Exp $
+ *  $Id: parse.c,v 7.189 2003/10/30 19:53:01 bill Exp $
  */
 
 #include "stdinc.h"
@@ -310,13 +310,6 @@ parse(struct Client *client_p, char *pbuffer, char *bufend)
 
     ii = bufend - ((s) ? s : ch);
     mptr->bytes += ii;
-
-    /*
-     * hidden commands set para[0] to the command (case intact)
-     * used to call their function
-     */
-    if (mptr->flags & MFLG_HIDDEN)
-      para[0] = ch;
   }
 
   if (s != NULL)
@@ -574,11 +567,10 @@ recurse_report_messages(struct Client *source_p, struct MessageTree *mtree)
 
   if (mtree->msg != NULL)
   {
-    if (!((mtree->msg->flags & MFLG_HIDDEN) && !IsAdmin(source_p)))
-      sendto_one(source_p, form_str(RPL_STATSCOMMANDS),
-		 me.name, source_p->name, mtree->msg->cmd,
-		 mtree->msg->count, mtree->msg->bytes,
-		 mtree->msg->rcount);
+    sendto_one(source_p, form_str(RPL_STATSCOMMANDS),
+               me.name, source_p->name, mtree->msg->cmd,
+               mtree->msg->count, mtree->msg->bytes,
+               mtree->msg->rcount);
   }
 
   for (i = 0; i < MAXPTRLEN; i++)

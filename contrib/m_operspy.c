@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.50 2003/10/24 11:08:15 michael Exp $
+ *   $Id: m_operspy.c,v 1.51 2003/10/30 19:52:57 bill Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -82,7 +82,6 @@
 #define IsOperspy(x) (IsOper(x) && MyClient(x) && IsAdmin(x))
 
 /* The commands we will add */
-static void m_operspy(struct Client *, struct Client *, int, char **);
 static void ms_operspy(struct Client *, struct Client *, int, char **);
 static void mo_operspy(struct Client *, struct Client *, int, char **);
 
@@ -99,8 +98,8 @@ static void do_who_on_channel(struct Client *source_p, struct Channel *chptr,
 #endif
 
 struct Message operspy_msgtab = {
-  "OPERSPY", 0, 0, 0, 0, MFLG_HIDDEN, 0,
-  {m_ignore, m_operspy, ms_operspy, mo_operspy, m_ignore}
+  "OPERSPY", 0, 0, 2, 4, MFLG_SLOW, 0,
+  {m_ignore, m_not_oper, ms_operspy, mo_operspy, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -115,24 +114,12 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.50 $";
+const char *_version = "$Revision: 1.51 $";
 #endif
 
 #ifdef OPERSPY_LOG
 static void operspy_log(struct Client *, const char *, const char *);
 #endif
-
-/* m_operspy()
- *      parv[1] = operspy command
- *      parv[2] = command parameter
- */
-static void
-m_operspy(struct Client *client_p, struct Client *source_p,
-          int parc, char *parv[])
-{
-  sendto_one(client_p, form_str(ERR_UNKNOWNCOMMAND),
-	     me.name, client_p->name, parv[0]);
-}
 
 static void
 ms_operspy(struct Client *client_p, struct Client *source_p,
@@ -153,7 +140,6 @@ static
 void mo_operspy(struct Client *client_p, struct Client *source_p,
 		int parc, char *parv[])
 {
-  char *operspy = parv[0];
   dlink_node *ptr;
 #ifdef OPERSPY_LOG
   /* "nick!user@host server\0" */
@@ -201,17 +187,17 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
   int			reply_to_send = NO;
 #endif
 
-  if (parc != 3)
+  if (parc < 3)
   {
-    sendto_one(client_p, form_str(ERR_UNKNOWNCOMMAND),
-               me.name, client_p->name, operspy);
+    sendto_one(client_p, form_str(ERR_NEEDMOREPARAMS),
+               me.name, client_p->name, "OPERSPY");
     return;
   }
 
   if (!IsOperspy(client_p))
   {
-    sendto_one(client_p, form_str(ERR_UNKNOWNCOMMAND),
-               me.name, client_p->name, operspy);
+    sendto_one(client_p, form_str(ERR_NOPRIVILEGES),
+               me.name, client_p->name);
     return;
   }
 
