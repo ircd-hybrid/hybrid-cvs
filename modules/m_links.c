@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_links.c,v 1.4 2000/11/28 03:53:59 bill Exp $
+ *   $Id: m_links.c,v 1.5 2000/11/30 07:54:21 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -117,9 +117,18 @@ int m_links(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
           else
             p = "(Unknown Location)";
 
-          sendto_one(sptr, form_str(RPL_LINKS),
-                    me.name, parv[0], acptr->name, acptr->serv->up,
-                    IsAnyOper(sptr) ? acptr->hopcount : 0, p);
+	  if(GlobalSetOptions.hide_server)
+	    {
+	      sendto_one(sptr, form_str(RPL_LINKS),
+			 me.name, parv[0], acptr->name, "",
+			 0, p);
+	    }
+	  else
+	    {
+	      sendto_one(sptr, form_str(RPL_LINKS),
+			 me.name, parv[0], acptr->name, acptr->serv->up,
+			 acptr->hopcount, p);
+	    }
         }
 
     }
