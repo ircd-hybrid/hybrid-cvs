@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.h,v 7.64 2002/03/09 23:14:08 androsyn Exp $
+ *  $Id: s_serv.h,v 7.65 2002/03/13 03:28:08 androsyn Exp $
  */
 
 #ifndef INCLUDED_serv_h
@@ -84,7 +84,7 @@ struct Capability
                          CAP_IE  | CAP_EOB  | CAP_KLN  | \
                          CAP_GLN | CAP_HOPS | CAP_AOPS | \
                          CAP_UID | CAP_ZIP  | CAP_ENC | \
-                         CAP_KNOCK | CAP_TBURST | CAP_PARA)
+                         CAP_KNOCK  | CAP_PARA)
 
 #ifdef HAVE_LIBZ
 #define CAP_ZIP_SUPPORTED       CAP_ZIP
