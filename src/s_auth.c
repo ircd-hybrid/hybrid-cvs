@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.139 2004/01/26 03:35:20 metalrock Exp $
+ *  $Id: s_auth.c,v 7.140 2005/01/11 21:10:47 db Exp $
  */
 
 /*
@@ -145,7 +145,17 @@ release_auth_client(struct Client *client)
   client->localClient->allow_read = MAX_FLOOD;
   comm_setflush(client->localClient->fd, 1000, flood_recalc, client);
   set_no_delay(client->localClient->fd);
-  dlinkAdd(client, &client->node, &global_client_list);
+  if((client->node.prev != NULL) || (client->node.next != NULL))
+  {
+    sendto_realops_flags(UMODE_ALL, L_OPER,
+			 "already linked %s at %s:%d", client->name,
+			 __FILE__, __LINE__);
+    ilog(L_ERROR, "already linked %s at %s:%d", client->name,
+	 __FILE__, __LINE__);
+    assert(0==5);
+  }
+  else
+    dlinkAdd(client, &client->node, &global_client_list);
   read_packet(client->localClient->fd, client);
 }
  
