@@ -1,3 +1,17 @@
+androsyn    2002/04/27 20:50:27 EDT	(20020428_2)
+
+  Modified files:
+    .                    configure 
+    autoconf             configure.in 
+  Log:
+  Fix the nanosleep check..
+  
+  Revision  Changes    Path
+  7.131     +1 -1      ircd-hybrid-7/autoconf/configure.in
+  7.134     +1 -1      ircd-hybrid-7/configure
+
+
+
 leeh        2002/04/27 20:26:09 EDT	(20020428_1)
 
   Modified files:
@@ -25726,4 +25740,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3605 2002/04/28 00:26:15 leeh Exp $
+$Id: ChangeLog,v 7.3606 2002/04/28 00:50:33 androsyn Exp $
