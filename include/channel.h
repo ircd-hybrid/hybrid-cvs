@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.108 2002/04/20 17:33:54 leeh Exp $
+ *  $Id: channel.h,v 7.109 2002/04/20 17:47:48 leeh Exp $
  */
 
 #include <sys/types.h>        /* time_t */
@@ -35,7 +35,7 @@
 #endif
 
 /* Efnet wanted this... Maybe we should do this from configure? */
-#undef REQUIRE_OANDV
+#define REQUIRE_OANDV
 
 /* #define INTENSIVE_DEBUG */
 
