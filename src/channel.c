@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.234 2001/06/10 06:12:23 db Exp $
+ * $Id: channel.c,v 7.235 2001/06/10 06:46:24 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -4042,7 +4042,10 @@ void cleanup_channels(void *unused)
    eventAdd("cleanup_channels", cleanup_channels, NULL,
             CLEANUP_CHANNELS_TIME, 0 );
 
-   assert (MyConnect(uplink) == 1);
+   if (uplink != NULL)
+     {
+       assert (MyConnect(uplink) == 1);
+     }
 
    if (!MyConnect(uplink))
      {
