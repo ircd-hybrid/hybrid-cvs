@@ -1,3 +1,17 @@
+db          2003/01/13 11:35:40 EST	(20030113_0)
+
+  Modified files:
+    .                    Hybrid-team 
+    src                  client.c 
+  Log:
+  - added Yusuf Iskenderaglu to contributors
+  
+  Revision  Changes    Path
+  7.57      +1 -0      ircd-hybrid-7/Hybrid-team
+  7.312     +1 -1      ircd-hybrid-7/src/client.c
+
+
+
 db          2003/01/10 22:52:32 EST	(20030111_0)
 
   Modified files:
@@ -33914,4 +33928,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4160 2003/01/11 03:52:35 db Exp $
+$Id: ChangeLog,v 7.4161 2003/01/13 16:35:43 db Exp $
