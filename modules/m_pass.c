@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_pass.c,v 1.6 2000/12/09 05:59:51 db Exp $
+ *  $Id: m_pass.c,v 1.7 2000/12/18 03:59:52 db Exp $
  */
 #include "handlers.h"  /* m_pass prototype */
 #include "client.h"      /* client struct */
@@ -29,6 +29,8 @@
 #include "numeric.h"     /* ERR_xxx */
 #include "ircd.h"        /* me */
 #include "msg.h"
+#include "parse.h"
+#include "modules.h"
 
 struct Message pass_msgtab = {
   MSG_PASS, 0, 1, MFLG_SLOW | MFLG_UNREG, 0,
@@ -38,13 +40,13 @@ struct Message pass_msgtab = {
 void
 _modinit(void)
 {
-  mod_add_cmd(MSG_PASS, &pass_msgtab);
+  mod_add_cmd(&pass_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  mod_del_cmd(MSG_PASS);
+  mod_del_cmd(&pass_msgtab);
 }
 
 char *_version = "20001122";

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_wallops.c,v 1.8 2000/12/11 02:50:48 db Exp $
+ *   $Id: m_wallops.c,v 1.9 2000/12/18 03:59:58 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -31,6 +31,8 @@
 #include "s_user.h"
 #include "s_conf.h"
 #include "msg.h"
+#include "parse.h"
+#include "modules.h"
 
 struct Message wallops_msgtab = {
   MSG_WALLOPS, 0, 1, MFLG_SLOW, 0,
@@ -40,13 +42,13 @@ struct Message wallops_msgtab = {
 void
 _modinit(void)
 {
-  mod_add_cmd(MSG_WALLOPS, &wallops_msgtab);
+  mod_add_cmd(&wallops_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  mod_del_cmd(MSG_WALLOPS);
+  mod_del_cmd(&wallops_msgtab);
 }
  
 char *_version = "20001122";

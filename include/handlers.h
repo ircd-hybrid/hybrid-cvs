@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: handlers.h,v 7.25 2000/12/16 18:19:19 db Exp $
+ * $Id: handlers.h,v 7.26 2000/12/18 03:59:40 db Exp $
  */
 #ifndef INCLUDED_handlers_h
 #define INCLUDED_handlers_h
@@ -154,6 +154,7 @@ extern int mo_die(struct Client*, struct Client*, int, char**);
 extern int mo_dline(struct Client*, struct Client*, int, char**);
 extern int mo_gline(struct Client*, struct Client*, int, char**);
 extern int mo_help(struct Client*, struct Client*, int, char**);
+extern int mo_hash(struct Client*, struct Client*, int, char**);
 extern int mo_info(struct Client*, struct Client*, int, char**);
 extern int mo_kill(struct Client*, struct Client*, int, char**);
 extern int mo_kline(struct Client*, struct Client*, int, char**);

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 1.26 2000/12/18 01:44:00 db Exp $
+ *   $Id: m_join.c,v 1.27 2000/12/18 03:59:47 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -37,6 +37,8 @@
 #include "s_serv.h"
 #include "s_conf.h"
 #include "msg.h"
+#include "parse.h"
+#include "modules.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -50,13 +52,13 @@ struct Message join_msgtab = {
 void
 _modinit(void)
 {
-  mod_add_cmd(MSG_JOIN, &join_msgtab);
+  mod_add_cmd(&join_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  mod_del_cmd(MSG_JOIN);
+  mod_del_cmd(&join_msgtab);
 }
 
 void build_list_of_channels( struct Client *sptr,

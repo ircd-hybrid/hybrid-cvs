@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_server.c,v 1.13 2000/12/10 20:04:04 db Exp $
+ *   $Id: m_server.c,v 1.14 2000/12/18 03:59:54 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"  /* m_server prototype */
@@ -37,6 +37,8 @@
 #include "scache.h"      /* find_or_add */
 #include "send.h"        /* sendto_one */
 #include "msg.h"
+#include "parse.h"
+#include "modules.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -49,13 +51,13 @@ struct Message server_msgtab = {
 void 
 _modinit(void)
 {
-  mod_add_cmd(MSG_SERVER, &server_msgtab);
+  mod_add_cmd(&server_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  mod_del_cmd(MSG_SERVER);
+  mod_del_cmd(&server_msgtab);
 }
 
 char *parse_server_args(char *parv[], int parc, char *info, int *hop);

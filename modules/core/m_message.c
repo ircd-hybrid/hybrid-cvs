@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.30 2000/12/11 04:54:42 db Exp $
+ *   $Id: m_message.c,v 1.31 2000/12/18 03:59:50 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -31,6 +31,8 @@
 #include "s_serv.h"
 #include "send.h"
 #include "msg.h"
+#include "parse.h"
+#include "modules.h"
 
 #include "channel.h"
 #include "vchannel.h"
@@ -103,15 +105,15 @@ struct Message notice_msgtab = {
 void
 _modinit(void)
 {
-  mod_add_cmd(MSG_PRIVMSG, &privmsg_msgtab);
-  mod_add_cmd(MSG_NOTICE, &notice_msgtab);
+  mod_add_cmd(&privmsg_msgtab);
+  mod_add_cmd(&notice_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  mod_del_cmd(MSG_PRIVMSG);
-  mod_del_cmd(MSG_NOTICE);
+  mod_del_cmd(&privmsg_msgtab);
+  mod_del_cmd(&notice_msgtab);
 }
 
 char *_version = "20001122";

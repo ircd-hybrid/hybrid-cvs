@@ -3,7 +3,7 @@
  *   Copyright (C) 1990 Jarkko Oikarinen and
  *                      University of Oulu, Co Center
  *
- * $Id: m_list.c,v 1.16 2000/12/18 01:44:01 db Exp $ 
+ * $Id: m_list.c,v 1.17 2000/12/18 03:59:49 db Exp $ 
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -33,6 +33,8 @@
 #include "vchannel.h"
 #include "list.h"
 #include "msg.h"
+#include "parse.h"
+#include "modules.h"
 
 #include <assert.h>
 #include <string.h>
@@ -46,13 +48,13 @@ struct Message list_msgtab = {
 void
 _modinit(void)
 {
-  mod_add_cmd(MSG_LIST, &list_msgtab);
+  mod_add_cmd(&list_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  mod_del_cmd(MSG_LIST);
+  mod_del_cmd(&list_msgtab);
 }
 
 int list_all_channels(struct Client *sptr);

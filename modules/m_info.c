@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.c,v 1.7 2000/12/09 05:59:45 db Exp $
+ * $Id: m_info.c,v 1.8 2000/12/18 03:59:46 db Exp $
  */
 #include "tools.h"
 #include "m_info.h"
@@ -35,8 +35,9 @@
 #include "send.h"
 #include "s_conf.h"
 #include "handlers.h"
-
 #include "msg.h"
+#include "parse.h"
+#include "modules.h"
 
 #include <time.h>
 #include <string.h>
@@ -49,13 +50,13 @@ struct Message info_msgtab = {
 void
 _modinit(void)
 {
-  mod_add_cmd(MSG_INFO, &info_msgtab);
+  mod_add_cmd(&info_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  mod_del_cmd(MSG_INFO);
+  mod_del_cmd(&info_msgtab);
 }
 
 void send_info_text(struct Client *sptr);

@@ -19,7 +19,7 @@
  *
  * "m_gline.h". - Headers file.
  *
- * $Id: s_gline.h,v 7.2 2000/12/17 14:10:40 db Exp $
+ * $Id: s_gline.h,v 7.3 2000/12/18 03:59:41 db Exp $
  *
  */
 
@@ -76,8 +76,5 @@ typedef struct gline_pending
 #define GLINE_PENDING_EXPIRE 600
 #define CLEANUP_GLINES_TIME  1800
 
-
-
-extern gline_pending_t *pending_glines;
-
+extern struct gline_pending *pending_glines;
 #endif

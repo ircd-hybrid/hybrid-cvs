@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_gline.c,v 1.3 2000/12/17 14:10:48 db Exp $
+ *  $Id: s_gline.c,v 1.4 2000/12/18 04:00:03 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -45,6 +45,7 @@
 #include "s_serv.h"
 #include "s_gline.h"
 #include "hash.h"
+#include "event.h"
 
 #include <assert.h>
 #include <string.h>
@@ -54,7 +55,7 @@
 #include <fcntl.h>
 
 static struct ConfItem *glines=NULL;
-static struct gline_pending *pending_glines=NULL;
+struct gline_pending *pending_glines=NULL;
 
 static void expire_glines(void);
 static void expire_pending_glines(void);

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_away.c,v 1.5 2000/12/09 05:59:42 db Exp $
+ *   $Id: m_away.c,v 1.6 2000/12/18 03:59:42 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -29,6 +29,8 @@
 #include "numeric.h"
 #include "send.h"
 #include "msg.h"
+#include "parse.h"
+#include "modules.h"
 
 #include <stdlib.h>
 
@@ -40,13 +42,13 @@ struct Message away_msgtab = {
 void
 _modinit(void)
 {
-  mod_add_cmd(MSG_AWAY, &away_msgtab);
+  mod_add_cmd(&away_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  mod_del_cmd(MSG_AWAY);
+  mod_del_cmd(&away_msgtab);
 }
 
 char *_version = "20001122";

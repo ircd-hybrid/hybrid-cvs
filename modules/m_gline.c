@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_gline.c,v 1.18 2000/12/17 14:10:45 db Exp $
+ *  $Id: m_gline.c,v 1.19 2000/12/18 03:59:45 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -45,6 +45,8 @@
 #include "fileio.h"
 #include "s_serv.h"
 #include "hash.h"
+#include "parse.h"
+#include "modules.h"
 
 #include <assert.h>
 #include <string.h>
@@ -102,13 +104,13 @@ struct Message gline_msgtab = {
 void
 _modinit(void)
 {
-    mod_add_cmd(MSG_GLINE, &gline_msgtab);
+    mod_add_cmd(&gline_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  mod_del_cmd(MSG_GLINE);
+  mod_del_cmd(&gline_msgtab);
 }
 
 char *_version = "20001122";

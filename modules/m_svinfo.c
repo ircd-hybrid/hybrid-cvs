@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_svinfo.c,v 1.7 2000/12/15 13:55:56 db Exp $
+ *   $Id: m_svinfo.c,v 1.8 2000/12/18 03:59:55 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -31,6 +31,8 @@
 #include "send.h"
 #include "s_conf.h"
 #include "msg.h"
+#include "parse.h"
+#include "modules.h"
 
 #include <assert.h>
 #include <time.h>
@@ -44,13 +46,13 @@ struct Message svinfo_msgtab = {
 void
 _modinit(void)
 {
-  mod_add_cmd(MSG_SVINFO, &svinfo_msgtab);
+  mod_add_cmd(&svinfo_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  mod_del_cmd(MSG_SVINFO);
+  mod_del_cmd(&svinfo_msgtab);
 }
 
 char *_version = "20001122";

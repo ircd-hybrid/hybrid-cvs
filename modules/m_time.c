@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_time.c,v 1.7 2000/12/09 05:59:55 db Exp $
+ *   $Id: m_time.c,v 1.8 2000/12/18 03:59:56 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -31,6 +31,8 @@
 #include "s_serv.h"
 #include "send.h"
 #include "msg.h"
+#include "parse.h"
+#include "modules.h"
 
 struct Message time_msgtab = {
   MSG_TIME, 0, 0, MFLG_SLOW, 0,
@@ -40,13 +42,13 @@ struct Message time_msgtab = {
 void
 _modinit(void)
 {
-  mod_add_cmd(MSG_TIME, &time_msgtab);
+  mod_add_cmd(&time_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  mod_del_cmd(MSG_TIME);
+  mod_del_cmd(&time_msgtab);
 }
 
 char *_version = "20001202";

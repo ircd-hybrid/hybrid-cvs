@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operwall.c,v 1.7 2000/12/11 02:50:48 db Exp $
+ *   $Id: m_operwall.c,v 1.8 2000/12/18 03:59:52 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -30,6 +30,8 @@
 #include "send.h"
 #include "s_user.h"
 #include "msg.h"
+#include "parse.h"
+#include "modules.h"
 
 struct Message operwall_msgtab = {
   MSG_OPERWALL, 0, 1, MFLG_SLOW, 0,
@@ -39,13 +41,13 @@ struct Message operwall_msgtab = {
 void
 _modinit(void)
 {
-  mod_add_cmd(MSG_OPERWALL, &operwall_msgtab);
+  mod_add_cmd(&operwall_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  mod_del_cmd(MSG_OPERWALL);
+  mod_del_cmd(&operwall_msgtab);
 }
 
 char *_version = "20001122";

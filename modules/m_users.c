@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_users.c,v 1.5 2000/12/09 05:59:56 db Exp $
+ *   $Id: m_users.c,v 1.6 2000/12/18 03:59:57 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -29,6 +29,8 @@
 #include "s_serv.h"
 #include "send.h"
 #include "msg.h"
+#include "parse.h"
+#include "modules.h"
 
 struct Message users_msgtab = {
   MSG_USERS, 0, 0, MFLG_SLOW, 0,
@@ -38,13 +40,13 @@ struct Message users_msgtab = {
 void
 _modinit(void)
 {
-  mod_add_cmd(MSG_USERS, &users_msgtab);
+  mod_add_cmd(&users_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  mod_del_cmd(MSG_USERS);
+  mod_del_cmd(&users_msgtab);
 }
 
 char *_version = "20001122";

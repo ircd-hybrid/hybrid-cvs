@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 1.20 2000/12/18 01:44:02 db Exp $
+ *   $Id: m_whois.c,v 1.21 2000/12/18 03:59:59 db Exp $
  */
 #include "tools.h"
 #include "common.h"   /* bleah */
@@ -39,10 +39,12 @@
 #include "irc_string.h"
 #include "s_conf.h"
 #include "msg.h"
+#include "parse.h"
+#include "modules.h"
 
 #include <string.h>
 
-int single_whois(struct Client *sptr, struct Client *acptr, int wilds);
+int do_whois(struct Client *cptr, struct Client *sptr, int parc, char *parv[]);int single_whois(struct Client *sptr, struct Client *acptr, int wilds);
 void whois_person(struct Client *sptr,struct Client *acptr);
 int global_whois(struct Client *sptr, char *nick, int wilds);
 
@@ -53,13 +55,13 @@ struct Message whois_msgtab = {
 void
 _modinit(void)
 {
-  mod_add_cmd(MSG_WHOIS, &whois_msgtab);
+  mod_add_cmd(&whois_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  mod_del_cmd(MSG_WHOIS);
+  mod_del_cmd(&whois_msgtab);
 }
 
 char *_version = "20001126";

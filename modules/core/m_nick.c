@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_nick.c,v 1.24 2000/12/12 16:36:53 db Exp $
+ *   $Id: m_nick.c,v 1.25 2000/12/18 03:59:51 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -39,6 +39,8 @@
 #include "channel.h"
 #include "s_log.h"
 #include "msg.h"
+#include "parse.h"
+#include "modules.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -60,13 +62,13 @@ struct Message nick_msgtab = {
 void
 _modinit(void)
 {
-  mod_add_cmd(MSG_NICK, &nick_msgtab);
+  mod_add_cmd(&nick_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  mod_del_cmd(MSG_NICK);
+  mod_del_cmd(&nick_msgtab);
 }
 
 char *_version = "20001122";

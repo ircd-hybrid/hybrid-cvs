@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_squit.c,v 1.13 2000/12/11 05:40:13 db Exp $
+ *   $Id: m_squit.c,v 1.14 2000/12/18 03:59:55 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -33,6 +33,9 @@
 #include "s_serv.h"
 #include "send.h"
 #include "msg.h"
+#include "parse.h"
+#include "modules.h"
+
 
 #include <assert.h>
 
@@ -44,13 +47,13 @@ struct Message squit_msgtab = {
 void
 _modinit(void)
 {
-  mod_add_cmd(MSG_SQUIT, &squit_msgtab);
+  mod_add_cmd(&squit_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  mod_del_cmd(MSG_SQUIT);
+  mod_del_cmd(&squit_msgtab);
 }
 
 struct squit_parms 

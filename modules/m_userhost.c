@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_userhost.c,v 1.12 2000/12/16 05:23:10 toot Exp $
+ *   $Id: m_userhost.c,v 1.13 2000/12/18 03:59:57 db Exp $
  */
 
 #include "handlers.h"
@@ -31,6 +31,8 @@
 #include "send.h"
 #include "irc_string.h"
 #include "msg.h"
+#include "parse.h"
+#include "modules.h"
 #include <string.h>
 
 static char buf[BUFSIZE];
@@ -43,13 +45,13 @@ struct Message userhost_msgtab = {
 void
 _modinit(void)
 {
-  mod_add_cmd(MSG_USERHOST, &userhost_msgtab);
+  mod_add_cmd(&userhost_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  mod_del_cmd(MSG_USERHOST);
+  mod_del_cmd(&userhost_msgtab);
 }
 
 char *_version = "20001122";

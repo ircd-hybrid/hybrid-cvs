@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_part.c,v 1.16 2000/12/12 16:36:54 db Exp $
+ *   $Id: m_part.c,v 1.17 2000/12/18 03:59:52 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -36,6 +36,8 @@
 #include "send.h"
 #include "s_serv.h"
 #include "msg.h"
+#include "parse.h"
+#include "modules.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -49,13 +51,13 @@ struct Message part_msgtab = {
 void
 _modinit(void)
 {
-  mod_add_cmd(MSG_PART, &part_msgtab);
+  mod_add_cmd(&part_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  mod_del_cmd(MSG_PART);
+  mod_del_cmd(&part_msgtab);
 }
 
 static void part_one_client(struct Client *cptr,

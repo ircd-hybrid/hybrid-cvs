@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_trace.c,v 1.8 2000/12/12 05:03:00 db Exp $
+ *   $Id: m_trace.c,v 1.9 2000/12/18 03:59:56 db Exp $
  */
 #include "handlers.h"
 #include "class.h"
@@ -35,6 +35,8 @@
 #include "s_serv.h"
 #include "send.h"
 #include "msg.h"
+#include "parse.h"
+#include "modules.h"
 
 #include <string.h>
 #include <time.h>
@@ -47,13 +49,13 @@ struct Message trace_msgtab = {
 void
 _modinit(void)
 {
-  mod_add_cmd(MSG_TRACE, &trace_msgtab);
+  mod_add_cmd(&trace_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  mod_del_cmd(MSG_TRACE);
+  mod_del_cmd(&trace_msgtab);
 }
 
 int report_this_status(struct Client *sptr, struct Client *acptr,int dow,
@@ -258,6 +260,7 @@ int ms_trace(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 
   if( IsAnyOper(sptr) )
     mo_trace(cptr,sptr,parc,parv);
+  return 0;
 }
 
 
@@ -275,7 +278,7 @@ int report_this_status(struct Client *sptr, struct Client *acptr,
   const char* name;
   const char* class_name;
   const char* ip;
-  int cnt;
+  int cnt=0;
   static time_t now;
 
   ip = inetntoa((const char*) &acptr->localClient->ip);

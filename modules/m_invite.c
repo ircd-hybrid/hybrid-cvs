@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_invite.c,v 1.9 2000/12/13 19:58:13 db Exp $
+ *   $Id: m_invite.c,v 1.10 2000/12/18 03:59:46 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -36,6 +36,8 @@
 #include "send.h"
 #include "s_conf.h"
 #include "msg.h"
+#include "parse.h"
+#include "modules.h"
 
 struct Message invite_msgtab = {
   MSG_INVITE, 0, 2, MFLG_SLOW, 0,
@@ -45,13 +47,13 @@ struct Message invite_msgtab = {
 void
 _modinit(void)
 {
-  mod_add_cmd(MSG_INVITE, &invite_msgtab);
+  mod_add_cmd(&invite_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  mod_del_cmd(MSG_INVITE);
+  mod_del_cmd(&invite_msgtab);
 }
 
 char *_version = "20001122";

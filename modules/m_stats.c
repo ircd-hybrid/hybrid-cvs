@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 1.24 2000/12/15 19:55:47 db Exp $
+ *  $Id: m_stats.c,v 1.25 2000/12/18 03:59:55 db Exp $
  */
 #include "tools.h"	 /* dlink_node/dlink_list */
 #include "handlers.h"    /* m_pass prototype */
@@ -48,7 +48,8 @@
 #include "s_user.h"      /* show_opers */
 #include "event.h"	 /* events */
 #include "linebuf.h"
-
+#include "parse.h"
+#include "modules.h"
 #include <string.h>
 
 struct Message stats_msgtab = {
@@ -59,13 +60,13 @@ struct Message stats_msgtab = {
 void
 _modinit(void)
 {
-  mod_add_cmd(MSG_STATS, &stats_msgtab);
+  mod_add_cmd(&stats_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  mod_del_cmd(MSG_STATS);
+  mod_del_cmd(&stats_msgtab);
 }
 
 char *_version = "20001122";

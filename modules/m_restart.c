@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_restart.c,v 1.5 2000/12/09 05:59:53 db Exp $
+ *   $Id: m_restart.c,v 1.6 2000/12/18 03:59:53 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -32,6 +32,8 @@
 #include "s_log.h"
 #include "send.h"
 #include "msg.h"
+#include "parse.h"
+#include "modules.h"
 
 struct Message restart_msgtab = {
   MSG_RESTART, 0, 0, MFLG_SLOW, 0,
@@ -41,13 +43,13 @@ struct Message restart_msgtab = {
 void
 _modinit(void)
 {
-  mod_add_cmd(MSG_RESTART, &restart_msgtab);
+  mod_add_cmd(&restart_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  mod_del_cmd(MSG_RESTART);
+  mod_del_cmd(&restart_msgtab);
 }
 
 char *_version = "20001122";

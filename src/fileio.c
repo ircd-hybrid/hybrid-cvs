@@ -4,7 +4,7 @@
  * Copyright (C) 1990 Jarkko Oikarinen and
  *                    University of Oulu, Co Center
  *
- * $Id: fileio.c,v 7.9 2000/12/17 21:18:17 db Exp $
+ * $Id: fileio.c,v 7.10 2000/12/18 04:00:02 db Exp $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 #include "fileio.h"
 #include "irc_string.h"
 #include "client.h"	/* for FLAGS_ALL */
+#include "send.h"	/* sendto_realops_flags */
 
 /* The following are to get the fd manipulation routines. eww. */
 #include "fdlist.h"

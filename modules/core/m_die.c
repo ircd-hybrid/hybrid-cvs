@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_die.c,v 1.7 2000/12/12 04:43:20 db Exp $
+ *   $Id: m_die.c,v 1.8 2000/12/18 03:59:44 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -33,6 +33,8 @@
 #include "s_log.h"
 #include "send.h"
 #include "msg.h"
+#include "parse.h"
+#include "modules.h"
 
 struct Message die_msgtab = {
   MSG_DIE, 0, 1, MFLG_SLOW, 0,
@@ -42,13 +44,13 @@ struct Message die_msgtab = {
 void
 _modinit(void)
 {
-  mod_add_cmd(MSG_DIE, &die_msgtab);
+  mod_add_cmd(&die_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  mod_del_cmd(MSG_DIE);
+  mod_del_cmd(&die_msgtab);
 }
 
 char *_version = "20001122";

@@ -16,7 +16,7 @@
 *   along with this program; if not, write to the Free Software
 *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 *
-*   $Id: m_whowas.c,v 1.6 2000/12/15 06:27:10 toot Exp $
+*   $Id: m_whowas.c,v 1.7 2000/12/18 03:59:59 db Exp $
 */
 #include "whowas.h"
 #include "handlers.h"
@@ -32,6 +32,8 @@
 #include "send.h"
 #include "s_conf.h"
 #include "msg.h"
+#include "parse.h"
+#include "modules.h"
 
 #include <assert.h>
 #include <string.h>
@@ -45,13 +47,13 @@ struct Message whowas_msgtab = {
 void
 _modinit(void)
 {
-  mod_add_cmd(MSG_WHOWAS, &whowas_msgtab);
+  mod_add_cmd(&whowas_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  mod_del_cmd(MSG_WHOWAS);
+  mod_del_cmd(&whowas_msgtab);
 }
 
 int whowas_do(struct Client *cptr, struct Client *sptr,

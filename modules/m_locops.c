@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_locops.c,v 1.9 2000/12/11 02:50:47 db Exp $
+ *   $Id: m_locops.c,v 1.10 2000/12/18 03:59:49 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -32,6 +32,8 @@
 #include "s_conf.h"
 #include "hash.h"
 #include "msg.h"
+#include "parse.h"
+#include "modules.h"
 
 struct Message locops_msgtab = {
   MSG_LOCOPS, 0, 1, MFLG_SLOW, 0,
@@ -41,13 +43,13 @@ struct Message locops_msgtab = {
 void
 _modinit(void)
 {
-  mod_add_cmd(MSG_LOCOPS, &locops_msgtab);
+  mod_add_cmd(&locops_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  mod_del_cmd(MSG_LOCOPS);
+  mod_del_cmd(&locops_msgtab);
 }
 
 char *_version = "20001122";

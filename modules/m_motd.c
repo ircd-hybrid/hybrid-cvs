@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_motd.c,v 1.5 2000/12/09 05:59:50 db Exp $
+ *   $Id: m_motd.c,v 1.6 2000/12/18 03:59:50 db Exp $
  */
 #include "tools.h"
 #include "motd.h"
@@ -32,6 +32,8 @@
 #include "handlers.h"
 #include "msg.h"
 #include "s_serv.h"     /* hunt_server */
+#include "parse.h"
+#include "modules.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -45,13 +47,13 @@ struct Message motd_msgtab = {
 void
 _modinit(void)
 {
-  mod_add_cmd(MSG_MOTD, &motd_msgtab);
+  mod_add_cmd(&motd_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  mod_del_cmd(MSG_MOTD);
+  mod_del_cmd(&motd_msgtab);
 }
 
 char *_version = "20001122";

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kill.c,v 1.8 2000/12/10 08:01:36 db Exp $
+ *   $Id: m_kill.c,v 1.9 2000/12/18 03:59:47 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -32,6 +32,8 @@
 #include "whowas.h"
 #include "irc_string.h"
 #include "msg.h"
+#include "parse.h"
+#include "modules.h"
 
 #include <string.h>
 
@@ -45,13 +47,13 @@ struct Message kill_msgtab = {
 void
 _modinit(void)
 {
-  mod_add_cmd(MSG_KILL, &kill_msgtab);
+  mod_add_cmd(&kill_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  mod_del_cmd(MSG_KILL);
+  mod_del_cmd(&kill_msgtab);
 }
 
 char *_version = "20001122";

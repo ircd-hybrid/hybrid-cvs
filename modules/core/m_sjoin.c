@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.30 2000/12/15 08:10:55 db Exp $
+ *   $Id: m_sjoin.c,v 1.31 2000/12/18 03:59:54 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -35,6 +35,8 @@
 #include "send.h"
 #include "common.h"
 #include "msg.h"
+#include "parse.h"
+#include "modules.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -49,13 +51,13 @@ struct Message sjoin_msgtab = {
 void
 _modinit(void)
 {
-  mod_add_cmd(MSG_SJOIN, &sjoin_msgtab);
+  mod_add_cmd(&sjoin_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  mod_del_cmd(MSG_SJOIN);
+  mod_del_cmd(&sjoin_msgtab);
 }
 
 char *_version = "20001122";

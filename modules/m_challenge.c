@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_challenge.c,v 1.7 2000/12/15 00:46:06 spookey Exp $
+ *   $Id: m_challenge.c,v 1.8 2000/12/18 03:59:43 db Exp $
  */
 #include <stdlib.h>
 #include "handlers.h"
@@ -56,13 +56,13 @@ struct Message challenge_msgtab = {
 void
 _modinit(void)
 {
-  mod_add_cmd(MSG_CHALLENGE, &challenge_msgtab);
+  mod_add_cmd(&challenge_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  mod_del_cmd(MSG_CHALLENGE);
+  mod_del_cmd(&challenge_msgtab);
 }
 
 /* isn't this cute? :) */

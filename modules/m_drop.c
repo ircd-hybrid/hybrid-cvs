@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_drop.c,v 1.9 2000/12/10 03:52:13 db Exp $
+ * $Id: m_drop.c,v 1.10 2000/12/18 03:59:45 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -33,6 +33,8 @@
 #include "send.h"
 #include "handlers.h"
 #include "msg.h"
+#include "parse.h"
+#include "modules.h"
 
 #include <assert.h>
 #include <string.h>
@@ -46,13 +48,13 @@ struct Message drop_msgtab = {
 void
 _modinit(void)
 {
-  mod_add_cmd(MSG_DROP, &drop_msgtab);
+  mod_add_cmd(&drop_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  mod_del_cmd(MSG_DROP);
+  mod_del_cmd(&drop_msgtab);
 }
 
 char *_version = "20001122";

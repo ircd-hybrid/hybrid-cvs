@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_error.c,v 1.7 2000/12/13 16:09:02 db Exp $
+ *   $Id: m_error.c,v 1.8 2000/12/18 03:59:45 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -30,6 +30,8 @@
 #include "send.h"
 #include "s_debug.h"
 #include "msg.h"
+#include "parse.h"
+#include "modules.h"
 
 struct Message error_msgtab = {
   MSG_ERROR, 0, 0, MFLG_SLOW | MFLG_UNREG, 0,
@@ -39,13 +41,13 @@ struct Message error_msgtab = {
 void
 _modinit(void)
 {
-  mod_add_cmd(MSG_ERROR, &error_msgtab);
+  mod_add_cmd(&error_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  mod_del_cmd(MSG_ERROR);
+  mod_del_cmd(&error_msgtab);
 }
 
 char *_version = "20001122";

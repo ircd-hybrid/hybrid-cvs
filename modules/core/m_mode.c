@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_mode.c,v 1.14 2000/12/18 01:44:01 db Exp $
+ *   $Id: m_mode.c,v 1.15 2000/12/18 03:59:50 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -36,6 +36,8 @@
 #include "s_serv.h"
 #include "send.h"
 #include "msg.h"
+#include "parse.h"
+#include "modules.h"
 
 struct Message mode_msgtab = {
   MSG_MODE, 0, 1, MFLG_SLOW, 0,
@@ -45,13 +47,13 @@ struct Message mode_msgtab = {
 void
 _modinit(void)
 {
-  mod_add_cmd(MSG_MODE, &mode_msgtab);
+  mod_add_cmd(&mode_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  mod_del_cmd(MSG_MODE);
+  mod_del_cmd(&mode_msgtab);
 }
 
 

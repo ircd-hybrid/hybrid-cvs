@@ -1,7 +1,7 @@
 /*
  * dline_conf.c
  *
- * $Id: dline_conf.c,v 7.9 2000/12/17 21:18:16 db Exp $
+ * $Id: dline_conf.c,v 7.10 2000/12/18 04:00:01 db Exp $
  */
 #include "dline_conf.h"
 #include "class.h"
@@ -18,7 +18,6 @@
 #include <signal.h>
 #include <string.h>
 #include <stdlib.h>
-
 
 typedef struct ip_subtree
 {
@@ -45,6 +44,31 @@ struct ConfItem *leftover = NULL;
 /* defined in mtrie_conf.c */
 extern char *show_iline_prefix(struct Client *,struct ConfItem *,char *);
 
+
+struct ip_subtree *new_ip_subtree(unsigned long ip, 
+                                  unsigned long mask,
+                                  struct ConfItem *clist,
+                                  struct ip_subtree *left,
+                                  struct ip_subtree *right);
+
+struct ip_subtree *insert_ip_subtree(struct ip_subtree *head, 
+                                     struct ip_subtree *node);
+
+struct ip_subtree *find_ip_subtree(struct ip_subtree *head,
+                                   unsigned long ip);
+
+struct ConfItem *trim_Dlines(struct ConfItem *cl);
+struct ConfItem *trim_ip_Klines(struct ConfItem *cl, int mask);
+struct ConfItem *trim_ip_Elines(struct ConfItem *cl, int mask);
+struct ip_subtree *destroy_ip_subtree(struct ip_subtree *head);
+struct ConfItem *find_exception(unsigned long ip);
+struct ConfItem *rescan_dlines(struct ConfItem *s);
+void report_ip_Ilines(struct Client *sptr);
+struct ip_subtree *delete_ip_subtree(struct ip_subtree *head,
+                                     unsigned long ip,
+                                     unsigned long mask,
+                                     struct ConfItem **clist);
+void add_ip_Eline(struct ConfItem *conf_ptr);
 
 /*
  * new_ip_subtree - just makes a new node 

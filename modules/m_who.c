@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_who.c,v 1.14 2000/12/10 20:04:05 db Exp $
+ *   $Id: m_who.c,v 1.15 2000/12/18 03:59:58 db Exp $
  */
 #include "tools.h"
 #include "common.h"   /* bleah */
@@ -38,6 +38,8 @@
 #include "irc_string.h"
 #include "s_conf.h"
 #include "msg.h"
+#include "parse.h"
+#include "modules.h"
 
 struct Message who_msgtab = {
   MSG_WHO, 0, 1, MFLG_SLOW, 0,
@@ -47,13 +49,13 @@ struct Message who_msgtab = {
 void
 _modinit(void)
 {
-  mod_add_cmd(MSG_WHO, &who_msgtab);
+  mod_add_cmd(&who_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  mod_del_cmd(MSG_WHO);
+  mod_del_cmd(&who_msgtab);
 }
 
 void do_who_on_channel(struct Client *sptr,
@@ -197,7 +199,7 @@ int     m_who(struct Client *cptr,
       IsPerson(acptr) && (!oper || IsAnyOper(acptr)))
     {
       struct Channel *bchan;
-      char *chname;
+      char *chname=NULL;
       int isinvis = 0;
 
       isinvis = IsInvisible(acptr);

@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.60 2000/12/17 21:18:11 db Exp $
+ * $Id: client.h,v 7.61 2000/12/18 03:59:39 db Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -548,6 +548,7 @@ extern int accept_message(struct Client *source, struct Client *target);
 extern int add_to_accept(struct Client *source, struct Client *target);
 extern int del_from_accept(struct Client *source, struct Client *target);
 extern int del_all_accepts(struct Client *dying);
+extern int list_all_accepts(struct Client *sptr);
 
 #endif /* INCLUDED_client_h */
 

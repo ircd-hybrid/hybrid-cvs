@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.h,v 7.3 2000/11/27 08:47:09 db Exp $
+ * $Id: modules.h,v 7.4 2000/12/18 03:59:40 db Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -32,12 +32,12 @@ struct module {
 };
 
 /* load a module */
-void load_module(char *path);
+extern void load_module(char *path);
 
 /* load all modules */
-void load_all_module(void);
+extern void load_all_module(void);
 
-/* add a command */
-void mod_add_cmd(char *cmd, struct Message *msg);
+extern void _modinit(void);
+extern void _moddeinit(void);
 
 #endif

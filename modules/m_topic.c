@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_topic.c,v 1.13 2000/12/10 01:32:13 db Exp $
+ *   $Id: m_topic.c,v 1.14 2000/12/18 03:59:56 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -34,6 +34,8 @@
 #include "send.h"
 #include "s_conf.h"
 #include "msg.h"
+#include "parse.h"
+#include "modules.h"
 
 #include <string.h>
 #include <stdlib.h>
@@ -46,13 +48,13 @@ struct Message topic_msgtab = {
 void
 _modinit(void)
 {
-  mod_add_cmd(MSG_TOPIC, &topic_msgtab);
+  mod_add_cmd(&topic_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  mod_del_cmd(MSG_TOPIC);
+  mod_del_cmd(&topic_msgtab);
 }
 
 char *_version = "20001122";

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_testline.c,v 1.4 2000/12/07 21:44:04 db Exp $
+ *   $Id: m_testline.c,v 1.5 2000/12/18 03:59:56 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -34,6 +34,8 @@
 #include "msg.h"
 #include "mtrie_conf.h"
 #include "numeric.h"
+#include "parse.h"
+#include "modules.h"
 
 struct Message testline_msgtab = {
   MSG_TESTLINE, 0, 0, MFLG_SLOW, 0,
@@ -43,13 +45,13 @@ struct Message testline_msgtab = {
 void
 _modinit(void)
 {
-  mod_add_cmd(MSG_TESTLINE, &testline_msgtab);
+  mod_add_cmd(&testline_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  mod_del_cmd(MSG_TESTLINE);
+  mod_del_cmd(&testline_msgtab);
 }
  
 char *_version = "20001124";

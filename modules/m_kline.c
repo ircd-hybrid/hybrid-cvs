@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kline.c,v 1.28 2000/12/16 05:23:09 toot Exp $
+ *   $Id: m_kline.c,v 1.29 2000/12/18 03:59:48 db Exp $
  */
 #include "tools.h"
 #include "m_kline.h"
@@ -43,6 +43,8 @@
 #include "handlers.h"
 #include "s_serv.h"
 #include "msg.h"
+#include "parse.h"
+#include "modules.h"
 
 #include <stdlib.h>
 #include <unistd.h>
@@ -64,15 +66,15 @@ struct Message dline_msgtab = {
 void
 _modinit(void)
 {
-  mod_add_cmd(MSG_KLINE, &kline_msgtab);
-  mod_add_cmd(MSG_DLINE, &dline_msgtab);
+  mod_add_cmd(&kline_msgtab);
+  mod_add_cmd(&dline_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  mod_del_cmd(MSG_KLINE);
-  mod_del_cmd(MSG_DLINE);
+  mod_del_cmd(&kline_msgtab);
+  mod_del_cmd(&dline_msgtab);
 }
 
 extern ConfigFileEntryType ConfigFileEntry; /* defined in ircd.c */

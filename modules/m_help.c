@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_help.c,v 1.8 2000/12/15 19:55:47 db Exp $
+ *   $Id: m_help.c,v 1.9 2000/12/18 03:59:46 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -32,6 +32,7 @@
 #include "send.h"
 #include "s_conf.h"
 #include "parse.h"
+#include "modules.h"
 
 struct Message help_msgtab = {
   MSG_HELP, 0, 0, MFLG_SLOW, 0,
@@ -41,13 +42,13 @@ struct Message help_msgtab = {
 void
 _modinit(void)
 {
-  mod_add_cmd(MSG_HELP, &help_msgtab);
+  mod_add_cmd(&help_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  mod_del_cmd(MSG_HELP);
+  mod_del_cmd(&help_msgtab);
 }
 
 char *_version = "20001122";
