@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_select.c,v 7.10 2001/01/19 10:52:39 adrian Exp $
+ *  $Id: s_bsd_select.c,v 7.11 2001/01/19 10:59:31 adrian Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -94,13 +94,13 @@ static void
 select_update_selectfds(int fd, short event, PF *handler)
 {  
     /* Update the read / write set */
-    if (event || COMM_SELECT_READ) {
+    if (event && COMM_SELECT_READ) {
         if (handler)
             FD_SET(fd, &select_readfds);
         else
             FD_CLR(fd, &select_readfds);
     }
-    if (event || COMM_SELECT_WRITE) {
+    if (event && COMM_SELECT_WRITE) {
         if (handler)
             FD_SET(fd, &select_writefds);
         else
