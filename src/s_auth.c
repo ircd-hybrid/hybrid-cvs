@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.128 2003/05/24 00:14:39 db Exp $
+ *  $Id: s_auth.c,v 7.129 2003/05/24 07:01:03 db Exp $
  */
 
 /*
@@ -89,9 +89,13 @@ typedef enum {
    send((c)->localClient->fd, HeaderMessages[(r)].message, HeaderMessages[(r)].length, 0)
 
 /*
+ * Ok, the original was confusing.
+ * Now there are two lists, an auth request can be on both at the same time
+ * or only on one or the other.
+ * - Dianora
  */
-dlink_list auth_client_list = {NULL, NULL, 0};
-dlink_list auth_poll_list   = {NULL, NULL, 0};
+dlink_list auth_doing_dns_list     = {NULL, NULL, 0};
+dlink_list auth_doing_ident_list   = {NULL, NULL, 0};
 
 static EVH timeout_auth_queries_event;
 
@@ -120,27 +124,6 @@ make_auth_request(struct Client* client)
   request->client  = client;
   request->timeout = CurrentTime + CONNECTTIMEOUT;
   return request;
-}
-
-/*
- * unlink_auth_request - remove auth request from a list
- */
-static void
-unlink_auth_request(struct AuthRequest *request, dlink_list *list)
-{
-  dlink_node *ptr;
-
-  if ((ptr = dlinkFindDelete(list, request)) != NULL)
-    free_dlink_node(ptr);
-}
-
-/*
- * link_auth_request - add auth request to a list
- */
-static void
-link_auth_request(struct AuthRequest *request, dlink_list *list)
-{
-  dlinkAdd(request, make_dlink_node(), list);
 }
 
 /*
@@ -177,14 +160,10 @@ static void
 auth_dns_callback(void* vptr, struct DNSReply *reply)
 {
   struct AuthRequest* auth = (struct AuthRequest*) vptr;
-  ClearDNSPending(auth);
 
-  /* If either of the following happen, there is no reason to continue */
-  if ((auth->client == NULL) || (auth->client->localClient == NULL))
-  {
-    MyFree(reply);
-    return;
-  }
+  if (IsDNSPending(auth))
+    dlinkDelete(&auth->dns_node, &auth_doing_dns_list);
+  ClearDNSPending(auth);
 
   if (reply != NULL)
   {
@@ -235,13 +214,7 @@ auth_dns_callback(void* vptr, struct DNSReply *reply)
   if (!IsDoingAuth(auth))
   {
     struct Client *client_p = auth->client;
-    unlink_auth_request(auth, &auth_poll_list);
-#ifdef USE_IAUTH
-    ilog(L_ERROR, "Linking to auth client list");
-    link_auth_request(auth, &auth_client_list);
-#else
     MyFree(auth);
-#endif
     release_auth_client(client_p);
   }
 }
@@ -257,19 +230,16 @@ auth_error(struct AuthRequest* auth)
   fd_close(auth->fd);
   auth->fd = -1;
 
+  if (IsAuthPending(auth))
+    dlinkDelete(&auth->ident_node, &auth_doing_ident_list);
   ClearAuth(auth);
+
   sendheader(auth->client, REPORT_FAIL_ID);
 
   if (!IsDNSPending(auth))
   {
-    unlink_auth_request(auth, &auth_poll_list);
     release_auth_client(auth->client);
-#ifdef USE_IAUTH
-    ilog(L_ERROR, "linking to auth client list 2");
-    link_auth_request(auth, &auth_client_list);
-#else
     MyFree(auth);
-#endif
   }
 }
 
@@ -444,9 +414,10 @@ start_auth(struct Client* client)
   /* No DNS cache now, remember? -- adrian */
   gethost_byaddr(&client->localClient->ip, client->localClient->dns_query);
   SetDNSPending(auth);
+  dlinkAdd(auth, &auth->dns_node, &auth_doing_dns_list);
 
   (void)start_auth_query(auth);
-  link_auth_request(auth, &auth_poll_list);
+
 }
 
 /*
@@ -460,7 +431,7 @@ timeout_auth_queries_event(void *notused)
   dlink_node *next_ptr;
   struct AuthRequest* auth;
 
-  DLINK_FOREACH_SAFE(ptr, next_ptr, auth_poll_list.head)
+  DLINK_FOREACH_SAFE(ptr, next_ptr, auth_doing_ident_list.head)
   {
     auth = ptr->data;
 
@@ -471,26 +442,26 @@ timeout_auth_queries_event(void *notused)
 
       if (IsDoingAuth(auth))
 	sendheader(auth->client, REPORT_FAIL_ID);
+
       if (IsDNSPending(auth))
       {
+	struct Client *client_p=auth->client;
+
 	ClearDNSPending(auth);
-	delete_resolver_queries(auth->client);
+	dlinkDelete(&auth->dns_node, &auth_doing_dns_list);
+	if (client_p->localClient->dns_query != NULL)
+	  delete_resolver_queries(client_p->localClient->dns_query);
 	auth->client->localClient->dns_query = NULL;
-	sendheader(auth->client, REPORT_FAIL_DNS);
+	sendheader(client_p, REPORT_FAIL_DNS);
       }
       ilog(L_INFO, "DNS/AUTH timeout %s",
 	   get_client_name(auth->client, SHOW_IP));
 
       auth->client->since = CurrentTime;
-      dlinkDelete(ptr, &auth_poll_list);
-      free_dlink_node(ptr);
+      if (IsAuthPending(auth))
+	dlinkDelete(&auth->ident_node, &auth_doing_ident_list);
       release_auth_client(auth->client);
-#ifdef USE_IAUTH
-      ilog(L_ERROR, "linking to auth client list 3");
-      link_auth_request(auth, &auth_client_list);
-#else
       MyFree(auth);
-#endif
     }
   }
 }
@@ -562,6 +533,7 @@ auth_connect_callback(int fd, int error, void *data)
   }
   ClearAuthConnect(auth);
   SetAuthPending(auth);
+  dlinkAdd(auth, &auth->ident_node, &auth_doing_ident_list);
   read_auth_reply(auth->fd, auth);
 }
 
@@ -596,7 +568,7 @@ read_auth_reply(int fd, void *data)
     {
       buf[len] = '\0';
 
-      if( (s = GetValidIdent(buf)) )
+      if ((s = GetValidIdent(buf)))
 	{
 	  t = auth->client->username;
 
@@ -609,7 +581,7 @@ read_auth_reply(int fd, void *data)
 		{
 		  break;
 		}
-	      if ( !IsSpace(*s) && *s != ':' && *s != '[')
+	      if (!IsSpace(*s) && *s != ':' && *s != '[')
 		{
 		  *t++ = *s;
 		  count--;
@@ -621,69 +593,29 @@ read_auth_reply(int fd, void *data)
 
   fd_close(auth->fd);
   auth->fd = -1;
+
+  if (IsAuthPending(auth))
+    dlinkDelete(&auth->ident_node, &auth_doing_ident_list);  
   ClearAuth(auth);
-  
+
   if (s == NULL)
-    {
-      ++ServerStats->is_abad;
-      strcpy(auth->client->username, "unknown");
-    }
-  else
-    {
-      sendheader(auth->client, REPORT_FIN_ID);
-      ++ServerStats->is_asuc;
-      SetGotId(auth->client);
-    }
-
-  if (!IsDNSPending(auth))
-    {
-      unlink_auth_request(auth, &auth_poll_list);
-      release_auth_client(auth->client);
-#ifdef USE_IAUTH
-    ilog(L_ERROR, "linking to auth client list 4");
-      link_auth_request(auth, &auth_client_list);
-#else
-      MyFree(auth);
-#endif
-    }
-}
-
-/* remove_auth_request()
- *
- * Remove request 'auth' from AuthClientList, and free it.
- * There is no need to release auth->client since it has
- * already been done
- */
-void
-remove_auth_request(struct AuthRequest *auth)
-{
-  unlink_auth_request(auth, &auth_client_list);
-  MyFree(auth);
-} /* remove_auth_request() */
-
-/*
- * FindAuthClient()
- * Find the client matching 'id' in the AuthClientList. The
- * id will match the memory address of the client structure.
- */
-
-struct AuthRequest *
-/* XXX This is just wrong, should be a *void at least */
-FindAuthClient(long id)
-{
-  dlink_node *ptr;
-  struct AuthRequest *auth;
-
-  DLINK_FOREACH(ptr, auth_client_list.head)
   {
-    auth = ptr->data;
-
-    if (auth->client == (struct Client *)id)
-      return auth;
+    ++ServerStats->is_abad;
+    strcpy(auth->client->username, "unknown");
+  }
+  else
+  {
+    sendheader(auth->client, REPORT_FIN_ID);
+    ++ServerStats->is_asuc;
+    SetGotId(auth->client);
   }
 
-  return(NULL);
-} /* FindAuthClient() */
+  if (!IsDNSPending(auth))
+  {
+    release_auth_client(auth->client);
+    MyFree(auth);
+  }
+}
 
 /*
  * delete_identd_queries()
@@ -696,33 +628,24 @@ delete_identd_queries(struct Client *target_p)
   dlink_node *next_ptr;
   struct AuthRequest *auth;
 
-  DLINK_FOREACH_SAFE(ptr, next_ptr, auth_poll_list.head)
+  DLINK_FOREACH_SAFE(ptr, next_ptr, auth_doing_ident_list.head)
   {
     auth = ptr->data;
 
     if (auth->client == target_p)
     {
       if (auth->fd >= 0)
+      {
         fd_close(auth->fd);
+	auth->fd = -1;
+      }
 
-      dlinkDelete(ptr, &auth_poll_list);
-      MyFree(auth);
-      free_dlink_node(ptr);
-    }
-  }
-
-  DLINK_FOREACH_SAFE(ptr, next_ptr, auth_client_list.head)
-  {
-    auth = ptr->data;
-
-    if (auth->client == target_p)
-    {
-      if (auth->fd >= 0)
-        fd_close(auth->fd);
-
-      dlinkDelete(ptr, &auth_client_list);
-      MyFree(auth);
-      free_dlink_node(ptr);
+      if (IsAuthPending(auth))
+	dlinkDelete(&auth->ident_node, &auth_doing_ident_list);
+#if xxx
+      if (!IsDNSPending(auth))
+#endif
+	MyFree(auth);
     }
   }
 }

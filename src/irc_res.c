@@ -7,7 +7,7 @@
  * The authors takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: irc_res.c,v 7.22 2003/05/24 00:14:39 db Exp $
+ * $Id: irc_res.c,v 7.23 2003/05/24 07:01:03 db Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -81,9 +81,10 @@ typedef enum
 
 struct reslist 
 {
+  dlink_node	    node;
   int               id;
   int               sent;              /* number of requests sent */
-  request_state     state;              /* State the resolver machine is in */
+  request_state     state;             /* State the resolver machine is in */
   time_t            ttl;
   char              type;
   char              retries;           /* retry counter */
@@ -258,21 +259,9 @@ add_local_domain(char* hname, int size)
 static void 
 rem_request(struct reslist *request)
 {
-  dlink_node *ptr;
-  dlink_node *next_ptr;
-
-  DLINK_FOREACH_SAFE(ptr, next_ptr, request_list.head)
-  {
-    /* The request =should= only be in the list once */
-    if (ptr->data == request)
-    {
-      dlinkDelete(ptr, &request_list);
-      MyFree(request->name);
-      MyFree(request);
-      free_dlink_node(ptr);
-      return;
-    }
-  }
+  dlinkDelete(&request->node, &request_list);
+  MyFree(request->name);
+  MyFree(request);
 }
 
 /*
@@ -295,7 +284,7 @@ make_request(const struct DNSQuery* query)
   request->query.callback = query->callback;
   request->state          = REQ_IDLE;
 
-  dlinkAdd(request, make_dlink_node(), &request_list);
+  dlinkAdd(request, &request->node, &request_list);
   return(request);
 }
 
@@ -366,12 +355,7 @@ delete_resolver_queries(const void *vptr)
     if ((request = ptr->data) != NULL)
     {
       if (vptr == request->query.ptr)
-      {
-        dlinkDelete(ptr, &request_list);
-        MyFree(request->name);
-        MyFree(request);
-        free_dlink_node(ptr);
-      }
+        rem_request(request);
     }
   }
 }
@@ -854,7 +838,7 @@ res_readreply(int fd, void *data)
          * send any more (no retries granted).
          */
         (*request->query.callback)(request->query.ptr, 0);
-        rem_request(request);
+	rem_request(request);
       } 
     }
     return;

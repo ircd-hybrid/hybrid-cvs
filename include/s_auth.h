@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.h,v 7.20 2003/05/18 23:29:22 michael Exp $
+ *  $Id: s_auth.h,v 7.21 2003/05/24 07:01:00 db Exp $
  */
 
 #ifndef INCLUDED_s_auth_h
@@ -39,8 +39,10 @@ struct Client;
 
 struct AuthRequest
 {
+  dlink_node	      dns_node;	 /* auth_doing_dns_list */
+  dlink_node	      ident_node; /* auth_doing_ident_list */
+  int 		      flags;
   struct Client*      client;    /* pointer to client struct for request */
-  unsigned int        flags;     /* current state of request */
   int                 fd;        /* file descriptor for auth queries */
   time_t              timeout;   /* time when query expires */
   unsigned int	      ip6_int;
