@@ -1,3 +1,17 @@
+androsyn    2002/05/30 20:22:53 EDT	(20020531_3)
+
+  Modified files:
+    src                  s_serv.c 
+  Log:
+  If a you are trying to register a server and its not on the unknown list
+  something very bad has happened.  assert() if debugging..exit the client
+  otherwise
+  
+  Revision  Changes    Path
+  7.257     +4 -0      ircd-hybrid-7/src/s_serv.c
+
+
+
 androsyn    2002/05/30 20:12:36 EDT	(20020531_2)
 
   Modified files:
@@ -27548,4 +27562,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3716 2002/05/31 00:12:43 androsyn Exp $
+$Id: ChangeLog,v 7.3717 2002/05/31 00:22:59 androsyn Exp $
