@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.363 2003/07/06 23:38:49 db Exp $
+ *  $Id: s_serv.c,v 7.364 2003/07/07 00:50:59 db Exp $
  */
 
 #include "stdinc.h"
@@ -228,8 +228,8 @@ collect_zipstats(void *unused)
 }
 
 #ifdef HAVE_LIBCRYPTO
-struct EncCapability *check_cipher(struct Client *client_p,
-                                   struct AccessItem *aconf)
+struct EncCapability *
+check_cipher(struct Client *client_p, struct AccessItem *aconf)
 {
   struct EncCapability *epref;
 
