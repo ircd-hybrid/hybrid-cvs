@@ -1,3 +1,16 @@
+db          2003/02/02 15:45:01 EST	(20030202_0)
+
+  Modified files:
+    src                  send.c 
+  Log:
+  - sending a linebuf to a client thats dead or closing is not a good idea
+    at least, if its not an error message or "you are dead"
+  
+  Revision  Changes    Path
+  7.218     +11 -6     ircd-hybrid-7/src/send.c
+
+
+
 db          2003/02/01 15:12:25 EST	(20030201_3)
 
   Modified files:
@@ -34711,4 +34724,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4213 2003/02/01 20:12:27 db Exp $
+$Id: ChangeLog,v 7.4214 2003/02/02 20:45:04 db Exp $
