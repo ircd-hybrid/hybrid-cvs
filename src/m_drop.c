@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_drop.c,v 7.2 2000/01/06 02:08:44 db Exp $
+ * $Id: m_drop.c,v 7.3 2000/01/06 02:14:41 db Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -30,7 +30,6 @@
 #include "s_serv.h"       /* captab */
 #include "s_user.h"
 #include "send.h"
-#include "whowas.h"
 
 #include <assert.h>
 #include <string.h>
