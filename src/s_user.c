@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.243 2003/04/16 19:56:38 michael Exp $
+ *  $Id: s_user.c,v 7.244 2003/04/17 00:32:18 db Exp $
  */
 
 #include "stdinc.h"
@@ -393,9 +393,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
    */
   /* Except "F:" clients */
   if (((Count.local + 1) >= (GlobalSetOptions.maxclients + MAX_BUFFER) ||
-      (Count.local >= ServerInfo.max_clients) ||
-      (Count.local +1) >= (GlobalSetOptions.maxclients - 5)) &&
-      !(IsExemptLimits(source_p)))
+      (Count.local >= ServerInfo.max_clients) || !IsExemptLimits(source_p))
   {
     sendto_realops_flags(UMODE_FULL, L_ALL, "Too many clients, rejecting %s[%s].",
                          nick, source_p->host);
