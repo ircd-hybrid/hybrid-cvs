@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.179 2001/02/08 00:00:03 db Exp $
+ *  $Id: s_conf.c,v 7.180 2001/02/10 22:01:54 db Exp $
  */
 
 #include <sys/types.h>
@@ -1399,6 +1399,7 @@ int rehash(struct Client *cptr,struct Client *sptr, int sig)
   }
 
   flush_deleted_I_P();
+  check_klines();
   return 0;
 }
 
