@@ -1,3 +1,16 @@
+a1kmm       2002/01/05 23:46:02 EST	(20020106_0)
+
+  Modified files:
+    modules              m_invite.c 
+  Log:
+  - Don't send invite back to the source even if they are the target of the
+    invite.
+  
+  Revision  Changes    Path
+  1.37      +3 -2      ircd-hybrid-7/modules/m_invite.c
+
+
+
 a1kmm       2002/01/05 04:15:36 EST	(20020105_2)
 
   Modified files:
@@ -2514,7 +2527,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3291 2002/01/05 09:15:42 a1kmm Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3292 2002/01/06 04:46:08 a1kmm Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -20868,4 +20881,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3291 2002/01/05 09:15:42 a1kmm Exp $
+$Id: ChangeLog,v 7.3292 2002/01/06 04:46:08 a1kmm Exp $
