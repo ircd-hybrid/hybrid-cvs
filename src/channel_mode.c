@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.32 2002/04/25 17:53:21 leeh Exp $
+ *  $Id: channel_mode.c,v 7.33 2002/04/27 20:34:32 leeh Exp $
  */
 
 #include "tools.h"
@@ -1569,8 +1569,7 @@ chm_halfop(struct Client *client_p, struct Client *source_p,
   if ((dir == MODE_QUERY) || parc <= *parn)
     return;
 
-  if (MyClient(source_p) && alev < CHACCESS_CHANOP && 
-     (++mode_limit > MAXMODEPARAMS))
+  if (MyClient(source_p) && (++mode_limit > MAXMODEPARAMS))
     return;
 
   opnick = parv[(*parn)++];
