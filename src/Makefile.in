@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.110 2002/05/24 23:34:44 androsyn Exp $
+# $Id: Makefile.in,v 7.111 2002/06/03 12:15:11 leeh Exp $
 #
 CC		= @CC@
 INSTALL		= @INSTALL@
@@ -174,7 +174,7 @@ clean:
 	${RM} -f *.o *.exe *~ y.tab.* lex.yy.c ircd.core core ircd 
 
 lint:
-	lint -aacgprxhH $(CPPFLAGS) $(SRCS) >>../lint.out
+	lint -aacgprxhH $(CPPFLAGS) -DIRCD_PREFIX=\"@prefix@\" $(SRCS) >>../lint.out
 
 distclean: clean
 	${RM} -f Makefile version.c.last

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 7.30 2002/04/06 18:09:03 leeh Exp $
+# $Id: Makefile.in,v 7.31 2002/06/03 12:15:13 leeh Exp $
 
 CC		= @CC@
 INSTALL		= @INSTALL@
@@ -83,7 +83,7 @@ distclean: clean
 	$(RM) -f Makefile
 
 lint:
-	lint -aacgprxhH $(CPPFLAGS) $(convertconf_SOURCES) $(convertklines_SOURCES) $(mkpasswd_SOURCES) $(viconf_SOURCES) $(fixklines_SOURCES) $(encspeed_SOURCES) >>../lint.out
+	lint -aacgprxhH $(CPPFLAGS) -DIRCD_PREFIX=\"@prefix@\" $(convertconf_SOURCES) $(convertklines_SOURCES) $(mkpasswd_SOURCES) $(viconf_SOURCES) $(fixklines_SOURCES) $(encspeed_SOURCES) >>../lint.out
 
 depend:
 
