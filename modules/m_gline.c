@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.121 2003/07/08 21:06:40 joshk Exp $
+ *  $Id: m_gline.c,v 1.122 2003/09/17 17:16:50 bill Exp $
  */
 
 #include "stdinc.h"
@@ -103,7 +103,7 @@ _moddeinit(void)
   delete_capability("GLN");
 }
 
-const char *_version = "$Revision: 1.121 $";
+const char *_version = "$Revision: 1.122 $";
 #endif
 
 /* mo_gline()
@@ -267,12 +267,12 @@ ms_gline(struct Client *client_p, struct Client *source_p,
   char *host = NULL;              /* user and host of GLINE "victim"   */
   struct Client *target_p;
 
-  assert(source_p->user != NULL);
-  assert(source_p->user->server != NULL);
-
   /* hyb-7 style gline (post beta3) */
   if (parc == 4 && IsPerson(source_p))
   {
+    assert(source_p->user != NULL);
+    assert(source_p->user->server != NULL);
+
     oper_nick   = source_p->name;
     oper_user   = source_p->username;
     oper_host   = source_p->host;
