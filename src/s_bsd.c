@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.49 2000/11/01 19:13:48 adrian Exp $
+ *  $Id: s_bsd.c,v 7.50 2000/11/02 14:29:02 adrian Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -1026,6 +1026,7 @@ comm_connect_tcp(int fd, const char *host, u_short port,
         /* Failure, call the callback with COMM_ERR_BIND */
         comm_connect_callback(fd, COMM_ERR_BIND);
         /* ... and quit */
+        return;
     }
 
     /* If we get here, we're on our way to connecting .. */
