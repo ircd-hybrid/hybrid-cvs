@@ -21,7 +21,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: m_unkline.c,v 1.40 2001/12/15 02:31:29 db Exp $
+ *   $Id: m_unkline.c,v 1.41 2001/12/24 16:15:12 androsyn Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -77,7 +77,7 @@ _moddeinit(void)
   mod_del_cmd(&msgtabs[1]);
   mod_del_cmd(&msgtabs[2]);
 }
-char *_version = "20001122";
+char *_version = "$Revision: 1.41 $";
 #endif
 
 static int flush_write(struct Client *, FBFILE* , char *, char *);

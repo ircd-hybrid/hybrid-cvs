@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_cryptlink.c,v 1.27 2001/11/29 01:28:03 jdc Exp $
+ *   $Id: m_cryptlink.c,v 1.28 2001/12/24 16:15:08 androsyn Exp $
  */
 
 /*
@@ -72,7 +72,7 @@
 void _modinit(void) {}
 void _moddeinit(void) {}
 
-char *_version = "20010702";
+char *_version = "$Revision: 1.28 $";
 #endif
 #else
 
@@ -118,7 +118,7 @@ _moddeinit(void)
   mod_del_cmd(&cryptlink_msgtab);
 }
 
-char *_version = "20010701";
+char *_version = "$Revision: 1.28 $";
 #endif
 
 

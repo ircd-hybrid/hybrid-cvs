@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_rehash.c,v 1.34 2001/12/02 15:00:55 leeh Exp $
+ *   $Id: m_rehash.c,v 1.35 2001/12/24 16:15:11 androsyn Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -59,7 +59,7 @@ _moddeinit(void)
   mod_del_cmd(&rehash_msgtab);
 }
 
-char *_version = "20001122";
+char *_version = "$Revision: 1.35 $";
 #endif
 /*
  * mo_rehash - REHASH message handler

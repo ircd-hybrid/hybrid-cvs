@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_llnick.c,v 1.14 2001/11/13 11:45:48 leeh Exp $
+ * $Id: m_llnick.c,v 1.15 2001/12/24 16:15:09 androsyn Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -59,7 +59,7 @@ _moddeinit(void)
   mod_del_cmd(&llnick_msgtab);
 }
 
-char *_version = "20001122";
+char *_version = "$Revision: 1.15 $";
 #endif
 /*
  * m_llnick

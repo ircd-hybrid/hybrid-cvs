@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_svinfo.c,v 1.29 2001/11/13 11:45:48 leeh Exp $
+ *   $Id: m_svinfo.c,v 1.30 2001/12/24 16:15:11 androsyn Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -59,7 +59,7 @@ _moddeinit(void)
   mod_del_cmd(&svinfo_msgtab);
 }
 
-char *_version = "20010611";
+char *_version = "$Revision: 1.30 $";
 #endif
 /*
  * ms_svinfo - SVINFO message handler

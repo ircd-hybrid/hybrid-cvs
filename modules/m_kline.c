@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kline.c,v 1.93 2001/12/15 02:24:46 db Exp $
+ *   $Id: m_kline.c,v 1.94 2001/12/24 16:15:09 androsyn Exp $
  */
 #include "tools.h"
 #include "m_kline.h"
@@ -82,7 +82,7 @@ _moddeinit(void)
   mod_del_cmd(&kline_msgtab);
   mod_del_cmd(&dline_msgtab);
 }
-char *_version = "20010517";
+char *_version = "$Revision: 1.94 $";
 #endif
 
 /* Local function prototypes */

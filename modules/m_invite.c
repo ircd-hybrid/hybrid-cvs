@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_invite.c,v 1.34 2001/12/07 22:53:52 db Exp $
+ *   $Id: m_invite.c,v 1.35 2001/12/24 16:15:08 androsyn Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
   mod_del_cmd(&invite_msgtab);
 }
 
-char *_version = "20010407";
+char *_version = "$Revision: 1.35 $";
 #endif
 
 /*

@@ -2,7 +2,7 @@
  * modules/m_help.c
  * Copyright (C) 2001 Hybrid Development Team
  *
- *   $Id: m_help.c,v 1.25 2001/11/21 20:04:55 leeh Exp $
+ *   $Id: m_help.c,v 1.26 2001/12/24 16:15:08 androsyn Exp $
  */
  
 #include "handlers.h"
@@ -48,7 +48,7 @@ _moddeinit(void)
   mod_del_cmd(&uhelp_msgtab);
 }
 
-char *_version = "20001122";
+char *_version = "$Revision: 1.26 $";
 #endif
 /*
  * m_help - HELP message handler

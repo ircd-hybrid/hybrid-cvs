@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_oper.c,v 1.41 2001/12/21 04:11:08 db Exp $
+ *   $Id: m_oper.c,v 1.42 2001/12/24 16:15:10 androsyn Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -74,7 +74,7 @@ _moddeinit(void)
   mod_del_cmd(&oper_msgtab);
 }
 
-char *_version = "20010507";
+char *_version = "$Revision: 1.42 $";
 #endif
 
 /*

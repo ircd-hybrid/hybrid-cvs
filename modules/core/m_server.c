@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_server.c,v 1.74 2001/12/12 07:41:32 db Exp $
+ *   $Id: m_server.c,v 1.75 2001/12/24 16:15:11 androsyn Exp $
  */
 #include "tools.h"
 #include "handlers.h"  /* m_server prototype */
@@ -68,7 +68,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&server_msgtab);
 }
-char *_version = "20001122";
+char *_version = "$Revision: 1.75 $";
 #endif
 
 int bogus_host(char *host);

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_part.c,v 1.48 2001/11/13 12:55:47 leeh Exp $
+ *   $Id: m_part.c,v 1.49 2001/12/24 16:15:10 androsyn Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&part_msgtab);
 }
-char *_version = "20001122";
+char *_version = "$Revision: 1.49 $";
 #endif
 
 static void part_one_client(struct Client *client_p,

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_admin.c,v 1.30 2001/11/13 11:45:47 leeh Exp $
+ *   $Id: m_admin.c,v 1.31 2001/12/24 16:15:07 androsyn Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -59,7 +59,7 @@ _moddeinit(void)
   hook_del_event("doing_admin");
   mod_del_cmd(&admin_msgtab);
 }
-char *_version = "20001202";
+char *_version = "$Revision: 1.31 $";
 #endif
 /*
  * mr_admin - ADMIN command handler

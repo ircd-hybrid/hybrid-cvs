@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_trace.c,v 1.40 2001/12/19 17:45:49 leeh Exp $
+ *   $Id: m_trace.c,v 1.41 2001/12/24 16:15:12 androsyn Exp $
  */
 #include "handlers.h"
 #include "class.h"
@@ -68,7 +68,7 @@ _moddeinit(void)
   hook_del_event("doing_trace");
   mod_del_cmd(&trace_msgtab);
 }
-char *_version = "20010109";
+char *_version = "$Revision: 1.41 $";
 #endif
 static int report_this_status(struct Client *source_p, struct Client *target_p,int dow,
                               int link_u_p, int link_u_s);

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_die.c,v 1.20 2001/12/13 20:09:58 leeh Exp $
+ *   $Id: m_die.c,v 1.21 2001/12/24 16:15:08 androsyn Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -56,7 +56,7 @@ _moddeinit(void)
   mod_del_cmd(&die_msgtab);
 }
 
-char *_version = "20001122";
+char *_version = "$Revision: 1.21 $";
 #endif
 /*
  * mo_die - DIE command handler

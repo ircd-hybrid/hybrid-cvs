@@ -16,7 +16,7 @@
 *   along with this program; if not, write to the Free Software
 *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 *
-*   $Id: m_whowas.c,v 1.22 2001/11/13 11:45:49 leeh Exp $
+*   $Id: m_whowas.c,v 1.23 2001/12/24 16:15:12 androsyn Exp $
 */
 #include "whowas.h"
 #include "handlers.h"
@@ -59,7 +59,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&whowas_msgtab);
 }
-char *_version = "20001122";
+char *_version = "$Revision: 1.23 $";
 #endif
 static int whowas_do(struct Client *client_p, struct Client *source_p,
                      int parc, char *parv[]);

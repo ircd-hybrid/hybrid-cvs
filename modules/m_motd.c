@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_motd.c,v 1.25 2001/12/16 11:04:00 leeh Exp $
+ *   $Id: m_motd.c,v 1.26 2001/12/24 16:15:10 androsyn Exp $
  */
 #include "client.h"
 #include "tools.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&motd_msgtab);
 }
 
-char *_version = "20001122";
+char *_version = "$Revision: 1.26 $";
 #endif
 
 /* mr_motd()

@@ -2,7 +2,7 @@
  * modules/m_nick.c
  * Copyright (C) 2001 Hybrid Development Team
  *
- * $Id: m_nick.c,v 1.81 2001/12/02 13:31:22 leeh Exp $
+ * $Id: m_nick.c,v 1.82 2001/12/24 16:15:10 androsyn Exp $
  */
 
 #include "handlers.h"
@@ -81,7 +81,7 @@ _moddeinit(void)
   mod_del_cmd(&client_msgtab);
 }
 
-char *_version = "20010718";
+char *_version = "$Revision: 1.82 $";
 #endif
 
 /*

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_away.c,v 1.25 2001/11/13 11:45:47 leeh Exp $
+ *   $Id: m_away.c,v 1.26 2001/12/24 16:15:07 androsyn Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -54,7 +54,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&away_msgtab);
 }
-char *_version = "20010128";
+char *_version = "$Revision: 1.26 $";
 #endif
 /***********************************************************************
  * m_away() - Added 14 Dec 1988 by jto. 

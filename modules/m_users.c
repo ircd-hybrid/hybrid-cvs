@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_users.c,v 1.20 2001/11/13 11:45:49 leeh Exp $
+ *   $Id: m_users.c,v 1.21 2001/12/24 16:15:12 androsyn Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -54,7 +54,7 @@ _moddeinit(void)
   mod_del_cmd(&users_msgtab);
 }
 
-char *_version = "20001122";
+char *_version = "$Revision: 1.21 $";
 #endif
 
 /*

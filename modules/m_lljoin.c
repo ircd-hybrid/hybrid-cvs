@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_lljoin.c,v 1.52 2001/11/13 12:55:47 leeh Exp $
+ * $Id: m_lljoin.c,v 1.53 2001/12/24 16:15:09 androsyn Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&lljoin_msgtab);
 }
 
-char *_version = "20001122";
+char *_version = "$Revision: 1.53 $";
 #endif
 /*
  * m_lljoin

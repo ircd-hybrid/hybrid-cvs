@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 1.100 2001/12/20 10:05:31 leeh Exp $
+ *  $Id: m_stats.c,v 1.101 2001/12/24 16:15:11 androsyn Exp $
  */
 #include "tools.h"	 /* dlink_node/dlink_list */
 #include "handlers.h"    /* m_pass prototype */
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-char *_version = "20010128";
+char *_version = "$Revision: 1.101 $";
 #endif
 
 const char* Lformat = ":%s %d %s %s %u %u %u %u %u :%u %u %s";

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_who.c,v 1.46 2001/11/13 11:45:49 leeh Exp $
+ *   $Id: m_who.c,v 1.47 2001/12/24 16:15:12 androsyn Exp $
  */
 #include "tools.h"
 #include "common.h"   /* bleah */
@@ -61,7 +61,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&who_msgtab);
 }
-char *_version = "20010210";
+char *_version = "$Revision: 1.47 $";
 #endif
 static void do_who_on_channel(struct Client *source_p,
 			      struct Channel *chptr, char *real_name,

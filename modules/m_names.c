@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_names.c,v 1.37 2001/11/13 12:55:47 leeh Exp $
+ *   $Id: m_names.c,v 1.38 2001/12/24 16:15:10 androsyn Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -69,7 +69,7 @@ _moddeinit(void)
   mod_del_cmd(&names_msgtab);
 }
 
-char *_version = "20010615";
+char *_version = "$Revision: 1.38 $";
 #endif
 
 /************************************************************************

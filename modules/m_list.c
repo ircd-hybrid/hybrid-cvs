@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_list.c,v 1.37 2001/11/13 11:45:48 leeh Exp $
+ *  $Id: m_list.c,v 1.38 2001/12/24 16:15:09 androsyn Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -64,7 +64,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&list_msgtab);
 }
-char *_version = "20010522";
+char *_version = "$Revision: 1.38 $";
 #endif
 static int list_all_channels(struct Client *source_p);
 static int list_named_channel(struct Client *source_p,char *name);

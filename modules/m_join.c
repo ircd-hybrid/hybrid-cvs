@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 1.79 2001/12/13 19:27:18 leeh Exp $
+ *   $Id: m_join.c,v 1.80 2001/12/24 16:15:08 androsyn Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -67,7 +67,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&join_msgtab);
 }
-char *_version = "20001122";
+char *_version = "$Revision: 1.80 $";
 
 #endif
 static void do_join_0(struct Client *client_p, struct Client *source_p);

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_quit.c,v 1.21 2001/12/20 18:38:05 leeh Exp $
+ *   $Id: m_quit.c,v 1.22 2001/12/24 16:15:10 androsyn Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -54,7 +54,7 @@ _moddeinit(void)
   mod_del_cmd(&quit_msgtab);
 }
 
-char *_version = "20001122";
+char *_version = "$Revision: 1.22 $";
 #endif
 /*
 ** m_quit

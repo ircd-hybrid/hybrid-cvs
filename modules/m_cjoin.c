@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_cjoin.c,v 1.45 2001/11/13 13:35:14 leeh Exp $
+ *   $Id: m_cjoin.c,v 1.46 2001/12/24 16:15:07 androsyn Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -64,7 +64,7 @@ _moddeinit(void)
   mod_del_cmd(&cjoin_msgtab);
 }
 
-char *_version = "20001122";
+char *_version = "$Revision: 1.46 $";
 #endif
 /*
 ** m_cjoin

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.c,v 1.49 2001/12/20 18:22:43 leeh Exp $
+ * $Id: m_info.c,v 1.50 2001/12/24 16:15:08 androsyn Exp $
  */
 
 #include <time.h>
@@ -73,7 +73,7 @@ _moddeinit(void)
   hook_del_event("doing_info");
   mod_del_cmd(&info_msgtab);
 }
-char *_version = "20010530";
+char *_version = "$Revision: 1.50 $";
 #endif
 
 void send_info_text(struct Client *source_p);

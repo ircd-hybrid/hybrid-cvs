@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_set.c,v 1.38 2001/12/13 20:09:59 leeh Exp $ */
+ *   $Id: m_set.c,v 1.39 2001/12/24 16:15:11 androsyn Exp $ */
 
 /* rewritten by jdc */
 
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&set_msgtab);
 }
 
-char *_version = "20001122";
+char *_version = "$Revision: 1.39 $";
 #endif
 /* Structure used for the SET table itself */
 struct SetStruct

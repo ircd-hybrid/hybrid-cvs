@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_links.c,v 1.32 2001/11/13 11:45:48 leeh Exp $
+ *   $Id: m_links.c,v 1.33 2001/12/24 16:15:09 androsyn Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&links_msgtab);
 }
 
-char *_version = "20001122";
+char *_version = "$Revision: 1.33 $";
 #endif
 /*
  * m_links - LINKS message handler

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_gline.c,v 1.70 2001/12/16 12:03:59 leeh Exp $
+ *  $Id: m_gline.c,v 1.71 2001/12/24 16:15:08 androsyn Exp $
  */
 
 #include <assert.h>
@@ -123,7 +123,7 @@ _moddeinit(void)
   mod_del_cmd(&gline_msgtab);
 }
 
-char *_version = "20001122";
+char *_version = "$Revision: 1.71 $";
 #endif
 /*
  * mo_gline()

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.121 2001/12/03 16:21:06 androsyn Exp $
+ *   $Id: m_sjoin.c,v 1.122 2001/12/24 16:15:11 androsyn Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-char *_version = "20010821";
+char *_version = "$Revision: 1.122 $";
 #endif
 /*
  * ms_sjoin

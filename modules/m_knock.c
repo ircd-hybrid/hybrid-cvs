@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_knock.c,v 1.44 2001/12/19 17:45:49 leeh Exp $
+ *   $Id: m_knock.c,v 1.45 2001/12/24 16:15:09 androsyn Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -80,7 +80,7 @@ _moddeinit(void)
   mod_del_cmd(&knockll_msgtab);
 }
 
-char *_version = "20010105";
+char *_version = "$Revision: 1.45 $";
 #endif
 
 /* m_knock

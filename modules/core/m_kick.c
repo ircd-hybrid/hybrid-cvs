@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kick.c,v 1.36 2001/11/28 13:47:43 leeh Exp $
+ *   $Id: m_kick.c,v 1.37 2001/12/24 16:15:09 androsyn Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -59,7 +59,7 @@ _moddeinit(void)
   mod_del_cmd(&kick_msgtab);
 }
 
-char *_version = "20010428";
+char *_version = "$Revision: 1.37 $";
 #endif
 /*
 ** m_kick

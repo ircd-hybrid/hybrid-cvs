@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_post.c,v 1.5 2001/11/13 11:45:48 leeh Exp $
+ *   $Id: m_post.c,v 1.6 2001/12/24 16:15:10 androsyn Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -53,7 +53,7 @@ _moddeinit(void)
   mod_del_cmd(&post_msgtab);
 }
 
-char *_version = "20010309";
+char *_version = "$Revision: 1.6 $";
 #endif
 /*
 ** mr_post

@@ -2,7 +2,7 @@
  * modules/m_resv.c
  * Copyright (C) 2001 Hybrid Development Team
  *
- * $Id: m_resv.c,v 1.11 2001/11/13 11:45:48 leeh Exp $
+ * $Id: m_resv.c,v 1.12 2001/12/24 16:15:11 androsyn Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -46,7 +46,7 @@ _moddeinit(void)
   mod_del_cmd(&unresv_msgtab);
 }
 
-char *_version = "20010626";
+char *_version = "$Revision: 1.12 $";
 #endif
 
 /*
