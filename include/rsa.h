@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: rsa.h,v 7.10 2002/05/24 23:34:08 androsyn Exp $
+ *  $Id: rsa.h,v 7.11 2002/07/11 09:23:19 androsyn Exp $
  */
 #ifndef INCLUDED_rsa_h
 #define INCLUDED_rsa_h 1
@@ -34,3 +34,4 @@ extern int get_randomness( unsigned char * buf, int length );
 #endif
 
 #endif /* INCLUDED_rsa_h */
+
