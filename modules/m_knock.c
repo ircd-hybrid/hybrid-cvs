@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_knock.c,v 1.42 2001/12/10 03:52:00 jdc Exp $
+ *   $Id: m_knock.c,v 1.43 2001/12/15 20:35:19 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -402,6 +402,7 @@ static void send_knock(struct Client *client_p, struct Client *source_p,
   			     chptr,
   			     form_str(RPL_KNOCK),
 			     me.name,
+			     source_p->name,
 			     name,
 			     source_p->name,
 			     source_p->username,
