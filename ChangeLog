@@ -1,3 +1,13 @@
+*** 20001214_1 by db
+- removed find_class(0) from m_kline.c was never used, no one ever
+  referred to the class on a kline, BLOAT gone.
+- /rehash caused opering clients to core server, traced to an incorrect
+  find_class(0) 0 should return "default" class not 0. found by einride.
+- first fixes to lazy links, don't use , it nick collides everyone
+  still needs fixes
+
+
+
 *** 20001213_16 by db
 - HUB info does not belong in m_admin.c
 
@@ -2588,7 +2598,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.825 2000/12/14 04:53:17 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.826 2000/12/14 17:04:36 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
