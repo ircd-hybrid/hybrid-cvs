@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.171 2003/03/31 00:21:57 michael Exp $
+ *  $Id: client.h,v 7.172 2003/03/31 10:33:51 michael Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -140,7 +140,6 @@ struct Client
   time_t            tsinfo;     /* TS on the nick, SVINFO on server */
   unsigned int      umodes;     /* opers, normal users subset */
   unsigned int      flags;      /* client flags */
-  unsigned int      flags2;     /* ugh. overflow */
 
   int               slink_pid;  /* pid of servlink process if any */
   int               hopcount;   /* number of servers to this 0 = local */
@@ -221,6 +220,8 @@ struct LocalUser
   int               flood_noticed;
 
   dlink_node        lclient_node;
+
+  unsigned int      operflags; /* oper priv flags */
 
   /* Send and receive linebuf queues .. */
   buf_head_t        buf_sendq;
@@ -306,7 +307,6 @@ struct LocalUser
   int sent_parsed;      /* how many messages we've parsed in this second */
   time_t last_knock;    /* time of last knock */
   unsigned long random_ping;
-
 };
 
 /*
@@ -361,8 +361,8 @@ struct LocalUser
 #define PARSE_AS_CLIENT(x)      ((x)->status & STAT_CLIENT_PARSE)
 #define PARSE_AS_SERVER(x)      ((x)->status & STAT_SERVER_PARSE)
 
-#define SetEob(x)		((x)->flags2 |= FLAGS2_EOB)
-#define HasSentEob(x)		((x)->flags2 & FLAGS2_EOB)
+#define SetEob(x)		((x)->flags |= FLAGS_EOB)
+#define HasSentEob(x)		((x)->flags & FLAGS_EOB)
 
 /*
  * ts stuff
@@ -378,21 +378,39 @@ struct LocalUser
 
 
 /* housekeeping flags */
-#define FLAGS_PINGSENT     0x00001 /* Unreplied ping sent */
-#define FLAGS_DEADSOCKET   0x00002 /* Local socket is dead--Exiting soon */
-#define FLAGS_KILLED       0x00004 /* Prevents "QUIT" from being sent for this*/
-#define FLAGS_CLOSING      0x00008 /* set when closing to suppress errors */
-#define FLAGS_CHKACCESS    0x00010 /* ok to check clients access if set */
-#define FLAGS_GOTID        0x00020 /* successful ident lookup achieved */
-#define FLAGS_NEEDID       0x00040 /* I-lines say must use ident return */
-#define FLAGS_SENDQEX      0x00080 /* Sendq exceeded */
-#define FLAGS_IPHASH       0x00100 /* iphashed this client */
-#define FLAGS_CRYPTIN      0x00200 /* incoming data must be decrypted */
-#define FLAGS_CRYPTOUT     0x00400 /* outgoing data must be encrypted */
-#define FLAGS_WAITAUTH     0x00800 /* waiting for CRYPTLINK AUTH command */
-#define FLAGS_SERVLINK     0x01000 /* servlink has servlink process */
-#define FLAGS_MARK	   0x02000 /* marked client */
-#define FLAGS_CANFLOOD	   0x04000 /* client has the ability to flood */
+#define FLAGS_PINGSENT    0x00000001 /* Unreplied ping sent                      */
+#define FLAGS_DEADSOCKET  0x00000002 /* Local socket is dead--Exiting soon       */
+#define FLAGS_KILLED      0x00000004 /* Prevents "QUIT" from being sent for this */
+#define FLAGS_CLOSING     0x00000008 /* set when closing to suppress errors      */
+#define FLAGS_CHKACCESS   0x00000010 /* ok to check clients access if set        */
+#define FLAGS_GOTID       0x00000020 /* successful ident lookup achieved         */
+#define FLAGS_NEEDID      0x00000040 /* I-lines say must use ident return        */
+#define FLAGS_SENDQEX     0x00000080 /* Sendq exceeded                           */
+#define FLAGS_IPHASH      0x00000100 /* iphashed this client                     */
+#define FLAGS_CRYPTIN     0x00000200 /* incoming data must be decrypted          */
+#define FLAGS_CRYPTOUT    0x00000400 /* outgoing data must be encrypted          */
+#define FLAGS_WAITAUTH    0x00000800 /* waiting for CRYPTLINK AUTH command       */
+#define FLAGS_SERVLINK    0x00001000 /* servlink has servlink process            */
+#define FLAGS_MARK	  0x00002000 /* marked client                            */
+#define FLAGS_CANFLOOD	  0x00004000 /* client has the ability to flood          */
+#define FLAGS_EXEMPTGLINE 0x00008000 /* client can't be G-lined                  */
+#define FLAGS_EXEMPTKLINE 0x00010000 /* client is exempt from kline              */
+#define FLAGS_NOLIMIT     0x00020000 /* client is exempt from limits             */
+#define FLAGS_RESTRICTED  0x00040000 /* client cannot op others                  */
+#define FLAGS_CBURST      0x00080000 /* connection burst being sent              */
+#define FLAGS_PING_COOKIE 0x00100000 /* PING Cookie                              */
+#define FLAGS_IDLE_LINED  0x00200000
+#define FLAGS_IP_SPOOFING 0x00400000 /* client IP is spoofed                     */
+#define FLAGS_FLOODDONE   0x00800000 /* Flood grace period has been ended.       */
+#define FLAGS_EOB         0x01000000 /* server has received EOB                  */
+#define FLAGS_HIDDEN      0x02000000
+/*                        0x04000000  */
+/*                        0x08000000  */
+/*                        0x10000000  */
+/*                        0x20000000  */
+/*                        0x40000000  */
+/*                        0x80000000  */
+
 
 /* umodes, settable flags */
 #define UMODE_SERVNOTICE   0x00001 /* server notices such as kill */
@@ -417,55 +435,29 @@ struct LocalUser
 #define UMODE_ADMIN        0x20000 /* Admin on server */
 #define UMODE_ALL	   UMODE_SERVNOTICE
 
-
-/* overflow flags */
-#define FLAGS2_EXEMPTGLINE  0x0001	/* client can't be G-lined */
-#define FLAGS2_EXEMPTKLINE  0x0002      /* client is exempt from kline */
-#define FLAGS2_NOLIMIT      0x0004      /* client is exempt from limits */
-#define FLAGS2_RESTRICTED   0x0008      /* client cannot op others */
-
-/* oper priv flags */
-#define FLAGS2_OPER_GLOBAL_KILL 0x0020  /* oper can global kill */
-#define FLAGS2_OPER_REMOTE      0x0040  /* oper can do squits/connects */
-#define FLAGS2_OPER_UNKLINE     0x0080  /* oper can use unkline */
-#define FLAGS2_OPER_GLINE       0x0100  /* oper can use gline */
-#define FLAGS2_OPER_N           0x0200  /* oper can umode n */
-#define FLAGS2_OPER_K           0x0400  /* oper can kill/kline */
-#define FLAGS2_OPER_DIE         0x0800  /* oper can die */
-#define FLAGS2_OPER_REHASH      0x1000  /* oper can rehash */
-#define FLAGS2_OPER_ADMIN       0x2000  /* oper can set umode +a */
-#define FLAGS2_OPER_FLAGS       (FLAGS2_OPER_GLOBAL_KILL | \
-                                 FLAGS2_OPER_REMOTE | \
-                                 FLAGS2_OPER_UNKLINE | \
-                                 FLAGS2_OPER_GLINE | \
-                                 FLAGS2_OPER_N | \
-                                 FLAGS2_OPER_K | \
-                                 FLAGS2_OPER_DIE | \
-                                 FLAGS2_OPER_REHASH| \
-                                 FLAGS2_OPER_ADMIN)
-
-#define FLAGS2_CBURST		0x10000       /* connection burst being sent */
-#define FLAGS2_PING_COOKIE	0x20000	      /* PING Cookie */
-#define FLAGS2_IDLE_LINED       0x40000
-#define FLAGS2_IP_SPOOFING      0x80000       /* client IP is spoofed */
-#define FLAGS2_FLOODDONE        0x200000      /* Flood grace period has
-                                               * been ended. */
-#define FLAGS2_EOB		0x400000
-#define FLAGS2_HIDDEN           0x800000
-
-
 #define SEND_UMODES  (UMODE_INVISIBLE | UMODE_OPER | UMODE_WALLOP | \
                       UMODE_ADMIN)
 #define ALL_UMODES   (SEND_UMODES | UMODE_SERVNOTICE | UMODE_CCONN | \
                       UMODE_REJ | UMODE_SKILL | UMODE_FULL | UMODE_SPY | \
                       UMODE_NCHANGE | UMODE_OPERWALL | UMODE_DEBUG | \
                       UMODE_BOTS | UMODE_EXTERNAL | UMODE_LOCOPS | \
- 		      UMODE_ADMIN | UMODE_UNAUTH | UMODE_CALLERID)
+                      UMODE_ADMIN | UMODE_UNAUTH | UMODE_CALLERID)
+
+
+/* oper priv flags */
+#define OPER_FLAG_GLOBAL_KILL 0x00000001 /* oper can global kill        */
+#define OPER_FLAG_REMOTE      0x00000002 /* oper can do squits/connects */
+#define OPER_FLAG_UNKLINE     0x00000004 /* oper can use unkline        */
+#define OPER_FLAG_GLINE       0x00000008 /* oper can use gline          */
+#define OPER_FLAG_N           0x00000010 /* oper can umode n            */
+#define OPER_FLAG_K           0x00000020 /* oper can kill/kline         */
+#define OPER_FLAG_DIE         0x00000040 /* oper can die                */
+#define OPER_FLAG_REHASH      0x00000080 /* oper can rehash             */
+#define OPER_FLAG_ADMIN       0x00000100 /* oper can set umode +a       */
 
 #define FLAGS_ID     (FLAGS_NEEDID | FLAGS_GOTID)
 
-/*
- * flags macros.
+/* flags macros.
  */
 #define IsPerson(x)             (IsClient(x) && (x)->user)
 #define DoAccess(x)             ((x)->flags & FLAGS_CHKACCESS)
@@ -531,7 +523,7 @@ struct LocalUser
 #define IsSetCallerId(x)	((x)->umodes & UMODE_CALLERID)
 
 #define SetSendQExceeded(x)	((x)->flags |= FLAGS_SENDQEX)
-#define IsSendQExceeded(x)	((x)->flags & FLAGS_SENDQEX)
+#define IsSendQExceeded(x)	((x)->flags &  FLAGS_SENDQEX)
 
 #define SetIpHash(x)            ((x)->flags |= FLAGS_IPHASH)
 #define ClearIpHash(x)          ((x)->flags &= ~FLAGS_IPHASH)
@@ -547,55 +539,52 @@ struct LocalUser
 #define SetGotId(x)             ((x)->flags |= FLAGS_GOTID)
 #define IsGotId(x)              (((x)->flags & FLAGS_GOTID) != 0)
 
-/*
- * flags2 macros.
- */
-#define IsExemptKline(x)        ((x)->flags2 & FLAGS2_EXEMPTKLINE)
-#define SetExemptKline(x)       ((x)->flags2 |= FLAGS2_EXEMPTKLINE)
-#define IsExemptLimits(x)       ((x)->flags2 & FLAGS2_NOLIMIT)
-#define SetExemptLimits(x)      ((x)->flags2 |= FLAGS2_NOLIMIT)
-#define IsExemptGline(x)        ((x)->flags2 & FLAGS2_EXEMPTGLINE)
-#define SetExemptGline(x)       ((x)->flags2 |= FLAGS2_EXEMPTGLINE)
-#define SetIPSpoof(x)           ((x)->flags2 |= FLAGS2_IP_SPOOFING)
-#define IsIPSpoof(x)            ((x)->flags2 & FLAGS2_IP_SPOOFING)
+#define IsExemptKline(x)        ((x)->flags & FLAGS_EXEMPTKLINE)
+#define SetExemptKline(x)       ((x)->flags |= FLAGS_EXEMPTKLINE)
+#define IsExemptLimits(x)       ((x)->flags & FLAGS_NOLIMIT)
+#define SetExemptLimits(x)      ((x)->flags |= FLAGS_NOLIMIT)
+#define IsExemptGline(x)        ((x)->flags & FLAGS_EXEMPTGLINE)
+#define SetExemptGline(x)       ((x)->flags |= FLAGS_EXEMPTGLINE)
+#define SetIPSpoof(x)           ((x)->flags |= FLAGS_IP_SPOOFING)
+#define IsIPSpoof(x)            ((x)->flags & FLAGS_IP_SPOOFING)
 
-#define SetIdlelined(x)         ((x)->flags2 |= FLAGS2_IDLE_LINED)
-#define IsIdlelined(x)          ((x)->flags2 & FLAGS2_IDLE_LINED)
+#define IsIdlelined(x)          ((x)->flags &  FLAGS_IDLE_LINED)
+#define SetIdlelined(x)         ((x)->flags |= FLAGS_IDLE_LINED)
+#define IsRestricted(x)         ((x)->flags &  FLAGS_RESTRICTED)
+#define SetRestricted(x)        ((x)->flags |= FLAGS_RESTRICTED)
 
-#define IsRestricted(x)         ((x)->flags2 &  FLAGS2_RESTRICTED)
-#define SetRestricted(x)        ((x)->flags2 |= FLAGS2_RESTRICTED)
+#define IsFloodDone(x)          ((x)->flags &  FLAGS_FLOODDONE)
+#define SetFloodDone(x)         ((x)->flags |= FLAGS_FLOODDONE)
+#define SetCBurst(x)            ((x)->flags |=  FLAGS_CBURST)
+#define ClearCBurst(x)          ((x)->flags &= ~FLAGS_CBURST)
+#define CBurst(x)               ((x)->flags & FLAGS_CBURST)
+#define HasPingCookie(x)        ((x)->flags & FLAGS_PING_COOKIE)
+#define SetPingCookie(x)        ((x)->flags |= FLAGS_PING_COOKIE)
+#define ClearPingCookie(x)      ((x)->flags &= ~FLAGS_PING_COOKIE)
+#define IsHidden(x)             ((x)->flags &  FLAGS_HIDDEN)
+#define SetHidden(x)            ((x)->flags |= FLAGS_HIDDEN)
 
-#define IsOperGlobalKill(x)     ((x)->flags2 & FLAGS2_OPER_GLOBAL_KILL)
-#define SetOperGlobalKill(x)    ((x)->flags2 |= FLAGS2_OPER_GLOBAL_KILL)
-#define IsOperRemote(x)         ((x)->flags2 & FLAGS2_OPER_REMOTE)
-#define SetOperRemote(x)        ((x)->flags2 |= FLAGS2_OPER_REMOTE)
-#define IsOperUnkline(x)        ((x)->flags2 & FLAGS2_OPER_UNKLINE)
-#define SetOperUnkline(x)       ((x)->flags2 |= FLAGS2_OPER_UNKLINE)
-#define IsOperGline(x)          ((x)->flags2 & FLAGS2_OPER_GLINE)
-#define SetOperGline(x)         ((x)->flags2 |= FLAGS2_OPER_GLINE)
-#define IsOperN(x)              ((x)->flags2 & FLAGS2_OPER_N)
-#define SetOperN(x)             ((x)->flags2 |= FLAGS2_OPER_N)
-#define IsOperK(x)              ((x)->flags2 & FLAGS2_OPER_K)
-#define SetOperK(x)             ((x)->flags2 |= FLAGS2_OPER_K)
-#define IsOperDie(x)            ((x)->flags2 & FLAGS2_OPER_DIE)
-#define SetOperDie(x)           ((x)->flags2 |= FLAGS2_OPER_DIE)
-#define IsOperRehash(x)         ((x)->flags2 & FLAGS2_OPER_REHASH)
-#define SetOperRehash(x)        ((x)->flags2 |= FLAGS2_OPER_REHASH)
-#define IsOperAdmin(x)          ((x)->flags2 & FLAGS2_OPER_ADMIN)
-#define SetOperAdmin(x)         ((x)->flags2 |= FLAGS2_OPER_ADMIN)
 
-#define IsFloodDone(x)          ((x)->flags2 & FLAGS2_FLOODDONE)
-#define SetFloodDone(x)         ((x)->flags2 |= FLAGS2_FLOODDONE)
-#define SetCBurst(x)		((x)->flags2 |= FLAGS2_CBURST)
-#define ClearCBurst(x)		((x)->flags2 &= ~FLAGS2_CBURST)
-#define CBurst(x)               ((x)->flags2 & FLAGS2_CBURST)
-#define HasPingCookie(x)	((x)->flags2 & FLAGS2_PING_COOKIE)
-#define SetPingCookie(x)	((x)->flags2 |= FLAGS2_PING_COOKIE)
-#define ClearPingCookie(x)	((x)->flags2 &= ~FLAGS2_PING_COOKIE)
-#define ClearOperFlags(x)	((x)->flags2 &= ~FLAGS2_OPER_FLAGS)
-
-#define IsHidden(x)             ((x)->flags2 & FLAGS2_HIDDEN)
-#define SetHidden(x)            ((x)->flags2 |= FLAGS2_HIDDEN)
+/* operflags macros */
+#define ClearOperFlags(x)	((x)->localClient->operflags = 0)
+#define IsOperGlobalKill(x)     ((x)->localClient->operflags & OPER_FLAG_GLOBAL_KILL)
+#define SetOperGlobalKill(x)    ((x)->localClient->operflags |= OPER_FLAG_GLOBAL_KILL)
+#define IsOperRemote(x)         ((x)->localClient->operflags & OPER_FLAG_REMOTE)
+#define SetOperRemote(x)        ((x)->localClient->operflags |= OPER_FLAG_REMOTE)
+#define IsOperUnkline(x)        ((x)->localClient->operflags & OPER_FLAG_UNKLINE)
+#define SetOperUnkline(x)       ((x)->localClient->operflags |= OPER_FLAG_UNKLINE)
+#define IsOperGline(x)          ((x)->localClient->operflags & OPER_FLAG_GLINE)
+#define SetOperGline(x)         ((x)->localClient->operflags |= OPER_FLAG_GLINE)
+#define IsOperN(x)              ((x)->localClient->operflags & OPER_FLAG_N)
+#define SetOperN(x)             ((x)->localClient->operflags |= OPER_FLAG_N)
+#define IsOperK(x)              ((x)->localClient->operflags & OPER_FLAG_K)
+#define SetOperK(x)             ((x)->localClient->operflags |= OPER_FLAG_K)
+#define IsOperDie(x)            ((x)->localClient->operflags & OPER_FLAG_DIE)
+#define SetOperDie(x)           ((x)->localClient->operflags |= OPER_FLAG_DIE)
+#define IsOperRehash(x)         ((x)->localClient->operflags & OPER_FLAG_REHASH)
+#define SetOperRehash(x)        ((x)->localClient->operflags |= OPER_FLAG_REHASH)
+#define IsOperAdmin(x)          ((x)->localClient->operflags & OPER_FLAG_ADMIN)
+#define SetOperAdmin(x)         ((x)->localClient->operflags |= OPER_FLAG_ADMIN)
 
 
 /*
@@ -641,4 +630,3 @@ extern void exit_aborted_clients(void);
 extern void free_exited_clients(void);
 
 #endif /* INCLUDED_client_h */
-
