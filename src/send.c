@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.5 1999/08/18 22:59:39 db Exp $
+ *   $Id: send.c,v 7.6 1999/08/19 00:19:10 db Exp $
  */
 #include "send.h"
 #include "channel.h"
@@ -1376,7 +1376,7 @@ sendto_slaves(struct Client *one, char *message, char *nick, int parc, char *par
       
       for (aconf = u_conf; aconf; aconf = aconf->next)
         {
-          if (match(acptr->name,aconf->user))
+          if (match(acptr->name,aconf->name))
             { 
               if(parc > 3)
                 sendto_one(acptr,":%s %s %s %s %s :%s",
