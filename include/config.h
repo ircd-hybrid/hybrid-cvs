@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: config.h,v 7.154 2003/05/17 00:52:50 michael Exp $
+ *  $Id: config.h,v 7.155 2003/05/23 17:53:18 joshk Exp $
  */
 
 #ifndef INCLUDED_config_h
@@ -71,7 +71,7 @@
  */
 #define MAX_BUFFER 60
 
-#ifdef VMS
+#ifdef __vms
 /* *PATH - directory locations and filenames for VMS.
  *
  * Non VMS systems see below.
@@ -91,6 +91,7 @@
 #define BINPATH         "IRCD$BINDIR:"
 #define ETCPATH         "IRCD$CONFDIR:"
 #define LOGPATH         "IRCD$LOGDIR:"
+#define MSGPATH		"IRCD$MSGDIR:"
 
 #undef MODPATH
 #undef AUTOMODPATH

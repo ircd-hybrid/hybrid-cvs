@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_help.c,v 1.4 2003/05/19 02:58:36 metalrock Exp $
+ *  $Id: m_help.c,v 1.5 2003/05/23 17:53:11 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -36,7 +36,7 @@
 #include "modules.h"
 #include "irc_string.h"
 
-#ifdef VMS
+#ifdef __vms
 #define HPATH  ETCPATH "OPERS.TXT" /* oper help file */
 #define UHPATH ETCPATH "USERS.TXT" /* user help file */
 #else
@@ -75,7 +75,7 @@ _moddeinit(void)
   mod_del_cmd(&uhelp_msgtab);
 }
 
-const char *_version = "$Revision: 1.4 $";
+const char *_version = "$Revision: 1.5 $";
 #endif
 
 /*

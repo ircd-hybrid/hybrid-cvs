@@ -12,7 +12,7 @@
 ** VMS support by Edward Brocklesby, crypt.c implementation
 ** phk@login.dknet.dk
 **
-** $Id: mkpasswd.c,v 7.14 2003/05/18 01:08:00 michael Exp $
+** $Id: mkpasswd.c,v 7.15 2003/05/23 17:53:15 joshk Exp $
 */
 #include <stdio.h>
 #include <string.h>
@@ -21,7 +21,7 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-#ifdef VMS
+#ifdef __vms
 # include descrip
 # include psldef
 # include iodef
@@ -43,7 +43,7 @@
 #define FLAG_USER    0x00000200
 #define FLAG_RAW     0x00000400
 
-#ifdef VMS
+#ifdef __vms
 static char *getpass();
 #else
 extern char *getpass();
@@ -92,14 +92,14 @@ int main(int argc, char *argv[])
         flag |= FLAG_MD5;
         break;
       case 'd':
-#ifdef VMS
+#ifdef __vms
         printf("DES is not supported on VMS.  Sorry\n");
 #else
         flag |= FLAG_DES;
 #endif
         break;
       case 'b':
-#ifdef VMS
+#ifdef __vms
 	printf("BlowFish is not supported on VMS.  Sorry\n");
 #else
         flag |= FLAG_BLOWFISH;
@@ -107,7 +107,7 @@ int main(int argc, char *argv[])
 #endif
         break;
       case 'e':
-#ifdef VMS
+#ifdef __vms
         printf("Extended DES is not supported on VMS.  Sorry\n");
 #else
         flag |= FLAG_EXT;
@@ -159,7 +159,7 @@ int main(int argc, char *argv[])
     }
   }
 
-#ifdef VMS
+#ifdef __vms
         /* default to md5 */
         if (!(flag & FLAG_MD5) && !(flag & FLAG_PURDY))
                 flag |= FLAG_MD5;
@@ -240,7 +240,7 @@ int main(int argc, char *argv[])
   if ((flag & FLAG_PURDY) && !username)
         username = getpass("username: ");
 
-#ifdef VMS
+#ifdef __vms
   if (flag & FLAG_PURDY)
   {
         $DESCRIPTOR(plain_desc, plaintext);
@@ -419,17 +419,21 @@ static void full_usage(void)
   printf("         [-R rawsalt]\n");
   printf("-m Generate an MD5 password\n");
   printf("-d Generate a DES password\n");
+#ifndef VMS
   printf("-b Generate a BlowFish password\n");
   printf("-e Generate an Extended DES password\n");
+#endif
   printf("-l Specify a length for a random MD5 or BlowFish salt\n");
+#ifndef VMS
   printf("-r Specify a number of rounds for a BlowFish or Extended DES password\n");
   printf("   BlowFish:  default 4, no more than 6 recommended\n");
   printf("   Extended DES:  default 25\n");
+#endif
   printf("-s Specify a salt, 2 alphanumeric characters for DES, up to 16 for MD5,\n");
   printf("   up to 22 for BlowFish, and 4 for Extended DES\n");
   printf("-R Specify a raw salt passed directly to crypt()\n");
   printf("-p Specify a plaintext password to use\n");
-#ifdef VMS
+#ifdef __vms
   printf("-u Specify the username for Purdy hash\n");
   printf("-v Generate a VMS Purdy password\n");
 #endif
@@ -441,12 +445,16 @@ static void brief_usage(void)
 {
   printf("mkpasswd - password hash generator\n");
   printf("Standard DES:  mkpasswd [-d] [-s salt] [-p plaintext]\n");
+#ifndef VMS
   printf("Extended DES:  mkpasswd -e [-r rounds] [-s salt] [-p plaintext]\n");
+#endif
   printf("         MD5:  mkpasswd -m [-l saltlength] [-s salt] [-p plaintext]\n");
+#ifndef VMS
   printf("    BlowFish:  mkpasswd -b [-r rounds] [-l saltlength] [-s salt]\n");
+#endif
   printf("                           [-p plaintext]\n");
   printf("         Raw:  mkpasswd -R <rawsalt> [-p plaintext]\n");
-#ifdef VMS
+#ifdef __vms
   printf("       Purdy:  mkpasswd -v [-u username] [-p plaintext]\n");
 #endif
   printf("Use -h for full usage\n");
@@ -454,7 +462,7 @@ static void brief_usage(void)
 }
 
 /* getpass replacement for VMS */
-#ifdef VMS
+#ifdef __vms
 
 static char *
 getpass(char *prompt)

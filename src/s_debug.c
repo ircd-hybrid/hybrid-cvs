@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_debug.c,v 7.85 2003/05/22 17:53:25 joshk Exp $
+ *  $Id: s_debug.c,v 7.86 2003/05/23 17:53:13 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -84,7 +84,7 @@ send_usage(struct Client *source_p)
 # endif
 #endif
 
-#ifdef VMS
+#ifdef __vms
   sendto_one(source_p, ":%s NOTICE %s :getrusage not supported on this system",
              me.name, source_p->name);
   return;

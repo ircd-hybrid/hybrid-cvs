@@ -1,4 +1,4 @@
-$Id: TODO,v 7.82 2003/05/17 17:17:48 joshk Exp $
+$Id: TODO,v 7.83 2003/05/23 17:53:16 joshk Exp $
 
 - add more stderr debugging (ircd -s)... one for every place we syslog()
 - ircd -s doesn't work through a restart
@@ -120,9 +120,9 @@ Little things to be done given enough time and initiative -Hwy
 
 -- Josh's list
 
-* Help out with the IRIX port.
-* Portability issues (inet_misc) iron out any last bugs.
-* dependency system; get a consensus
+* Smack ejb about until he either tells us to rip out VMS support or 
+fixes it himself.
+* Find out the status of the build with IRIX64/MIPSpro.
 
 -- MeTaLRoCk's list
 
