@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 7.4 1999/12/31 00:23:22 db Exp $
+ *   $Id: m_sjoin.c,v 7.5 1999/12/31 02:12:24 db Exp $
  */
 #include "m_commands.h"
 #include "channel.h"
@@ -437,6 +437,9 @@ int     m_sjoin(struct Client *cptr,
         {
           if (l->flags & MODE_CHANOP)
             {
+              if( chptr->opcount )
+                chptr->opcount--;
+
               if (what != -1)
                 {
                   *mbuf++ = '-';

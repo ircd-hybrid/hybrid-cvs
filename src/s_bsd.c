@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.20 1999/12/30 22:32:26 db Exp $
+ *  $Id: s_bsd.c,v 7.21 1999/12/31 02:12:25 db Exp $
  */
 #include "s_bsd.h"
 #include "class.h"
@@ -743,6 +743,7 @@ void add_connection(struct Listener* listener, int fd)
       close(fd);
       return;
     }
+#endif
 
   /* 
    * get the client socket name from the socket
