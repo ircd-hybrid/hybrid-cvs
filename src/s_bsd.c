@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.55 2000/11/03 18:54:12 adrian Exp $
+ *  $Id: s_bsd.c,v 7.56 2000/11/03 20:35:45 adrian Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -76,9 +76,6 @@ const char* const OPT_ERROR_MSG    = "disable_sock_options failed for %s:%s";
 const char* const SETBUF_ERROR_MSG = "set_sock_buffers failed for server %s:%s";
 
 struct Client* local[MAXCONNECTIONS];
-
-/* Its -1 because at startup, we don't have any FDs opened -- adrian */
-int            highest_fd = -1;
 
 static char               readBuf[READBUF_SIZE];
 

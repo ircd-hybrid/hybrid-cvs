@@ -1,7 +1,7 @@
 /*
  * fdlist.h
  *
- * $Id: fdlist.h,v 7.7 2000/11/03 18:54:06 adrian Exp $
+ * $Id: fdlist.h,v 7.8 2000/11/03 20:35:41 adrian Exp $
  */
 #ifndef INCLUDED_fdlist_h
 #define INCLUDED_fdlist_h
@@ -55,6 +55,9 @@ typedef void PF(int, void *);
 /* Callback for completed connections */
 /* int fd, int status, void * */
 typedef void CNCB(int, int, void *);
+
+extern int highest_fd;
+extern int number_fd;
 
 struct _fde {
     /* New-school stuff, again pretty much ripped from squid */

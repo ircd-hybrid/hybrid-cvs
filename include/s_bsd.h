@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_bsd.h,v 7.12 2000/11/02 18:22:58 adrian Exp $
+ *   $Id: s_bsd.h,v 7.13 2000/11/03 20:35:41 adrian Exp $
  *
  */
 #ifndef INCLUDED_s_bsd_h
@@ -38,7 +38,6 @@ struct hostent;
 struct DNSReply;
 struct Listener;
 
-extern int   highest_fd;
 extern int   readcalls;
 extern const char* const NONB_ERROR_MSG; 
 extern const char* const SETBUF_ERROR_MSG;
