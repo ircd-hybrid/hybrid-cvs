@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.304 2002/12/10 03:10:56 androsyn Exp $
+ *  $Id: client.c,v 7.305 2002/12/10 21:29:10 bill Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -208,7 +208,7 @@ void free_client(struct Client* client_p)
   assert(NULL == client_p->prev);
   assert(NULL == client_p->next);
 
-  if(MyConnect(client_p)
+  if(MyConnect(client_p))
      free_local_client(client_p);
   else
       --remote_client_count;
