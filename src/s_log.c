@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_log.c,v 7.2 1999/10/14 01:50:07 db Exp $
+ *   $Id: s_log.c,v 7.3 1999/10/14 02:01:00 db Exp $
  */
 #include "s_log.h"
 #include "irc_string.h"
@@ -52,13 +52,14 @@ static int sysLogLevel[] = {
 };
 
 static const char *sysLogLevelToString[] =
-{ "LOG_CRIT",
-  "LOG_ERR",
-  "LOG_WARNING",
-  "LOG_NOTICE",
-  "LOG_INFO",
-  "LOG_INFO",
-  "LOG_INFO"};
+{ "L_CRIT",
+  "L_ERROR",
+  "L_WARN",
+  "L_NOTICE",
+  "L_TRACE",
+  "L_INFO",
+  "L_DEBUG"
+};
 
 /*
  * open_log - open ircd logging file
@@ -136,8 +137,10 @@ int get_log_level(void)
 
 const char *get_log_level_as_string(int level)
 {
-  if(level > LOG_DEBUG)
-    level = LOG_DEBUG;
+  if(level > L_DEBUG)
+    level = L_DEBUG;
+  else if(level < L_ERROR)
+    level = L_ERROR;
 
   return(sysLogLevelToString[level]);
 }
