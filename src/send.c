@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.244 2003/04/23 18:17:10 adx Exp $
+ *  $Id: send.c,v 7.245 2003/04/23 18:36:52 adx Exp $
  */
 
 #include "stdinc.h"
@@ -371,23 +371,18 @@ void
 send_queued_all(void)
 {
   dlink_node *ptr;
-  struct Client *client_p;
 
   /* Servers are processed first, mainly because this can generate
    * a notice to opers, which is to be delivered by this function.
    */
   DLINK_FOREACH(ptr, serv_list.head)
-  {
-    client_p = ptr->data;
-    send_queued_write(client_p);
-  }
+    send_queued_write((struct Client *) ptr->data);
+
+  DLINK_FOREACH(ptr, unknown_list.head)
+    send_queued_write((struct Client *) ptr->data);
 
   DLINK_FOREACH(ptr, local_client_list.head)
-  {
-    client_p = ptr->data;
-    if (!IsServer(client_p))
-      send_queued_write(client_p);
-  }
+    send_queued_write((struct Client *) ptr->data);
 
   /* NOTE: This can still put clients on aborted_list; unfortunately,
    * exit_aborted_clients takes precedence over send_queued_all,
