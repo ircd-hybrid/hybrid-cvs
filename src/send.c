@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.66 2000/12/10 01:32:15 db Exp $
+ *   $Id: send.c,v 7.67 2000/12/10 02:09:14 db Exp $
  */
 #include "tools.h"
 #include "send.h"
@@ -380,79 +380,6 @@ send_channel_members(struct Client *one, struct Client *from,
         }
     }
 }
-
-/* XXX THIS FUNCTION MUST DIE 
- *  it can be replaced fairly easily removing more bloat
- */
-void
-sendto_channel_type(struct Client *one, struct Client *from,
-		    dlink_list *list,
-                    char  char_type,
-                    const char *nick,
-                    const char *cmd,
-                    const char *message)
-
-{
-  dlink_node *ptr;
-  struct Client *acptr;
-  int i;
-
-  ++current_serial;
-
-  for (ptr = list->head; ptr; ptr = ptr->next)
-    {
-      acptr = ptr->data;
-
-      if (acptr->from == one)
-        continue;
-
-      if (MyConnect(acptr) && IsRegisteredUser(acptr))
-        {
-          sendto_prefix_one(acptr, from,
-                  ":%s %s %c%s :%s",
-                  from->name,
-                  cmd,                    /* PRIVMSG or NOTICE */
-                  char_type,              /* @ or + */
-                  nick,
-                  message);
-        }
-      else
-        {
-          if(!IsCapable(acptr->from,CAP_CHW))
-            {
-              /* Send it individually to each opered or voiced
-               * client on channel
-               */
-              if (acptr->serial != current_serial)
-                {
-                  sendto_prefix_one(acptr, from,
-                    ":%s NOTICE %s :%s",
-                    from->name,
-                    acptr->name, /* target name */
-                    message);
-                }
-              acptr->serial = current_serial;
-            }
-          else
-            {
-              /* Now check whether a message has been sent to this
-               * remote link already
-               */
-              if (acptr->serial != current_serial)
-                {
-                  sendto_prefix_one(acptr, from,
-                  ":%s NOTICE %c%s :%s",
-                  from->name,
-                  char_type,
-                  nick,
-                  message);
-		  acptr->serial = current_serial;
-                }
-            }
-        }
-      }
-
-} /* sendto_channel_type() */
 
 /*
  * sendto_serv_butone

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_knock.c,v 1.10 2000/12/09 05:59:48 db Exp $
+ *   $Id: m_knock.c,v 1.11 2000/12/10 02:09:12 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -290,8 +290,16 @@ void send_knock(struct Client *cptr, struct Client *sptr,
                  name, sptr->name, sptr->username, sptr->host);
 
       /* XXX needs vchan support */
-      sendto_channel_type(cptr, cptr, &chptr->chanops, '@', sptr->name,
-			  "NOTICE", message);
+      sendto_channel_local(ONLY_CHANOPS,
+			   chptr,
+			   ":%s!%s@%s NOTICE %s :%s",
+			   sptr->name,
+			   sptr->username,
+			   sptr->host,
+			   chptr->chname,
+			   message);
+
+      /* XXX needs remote send or CAP_KNOCK or something */
     }
 
   return;

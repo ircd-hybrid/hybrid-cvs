@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.24 2000/12/09 05:59:49 db Exp $
+ *   $Id: m_message.c,v 1.25 2000/12/10 02:09:12 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -491,15 +491,16 @@ void msg_channel_flags( int p_or_n, char *command,
     {
       if(sptr->user)
 	sptr->user->last = CurrentTime;
-    }
 
-  sendto_channel_type(cptr,
-		      sptr,
-		      &chptr->chanops,
-		      '@',
-		      channel_name,
-		      command,
-		      text);
+      sendto_channel_local(ONLY_CHANOPS_VOICED,
+			   chptr,
+			   ":%s %s!@%s :%s",
+			   sptr->name,
+			   sptr->username,
+			   sptr->host,
+			   text);
+    }
+  /* XXX Will need code to remotely send... */
 }
 
 /*
@@ -535,7 +536,7 @@ void msg_client(int n_or_p, char *command,
     {
       if(IsSetCallerId(acptr))
 	{
-	  /* Here is the anti-flood bot/spambot bloat^H^H^H^H^Hcode -db */
+	  /* Here is the anti-flood bot/spambot code -db */
 	  if(accept_message(sptr,acptr))
 	    {
 	      sendto_prefix_one(acptr, sptr, ":%s %s %s :%s",

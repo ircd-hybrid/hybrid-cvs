@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.61 2000/12/10 01:32:15 db Exp $
+ *  $Id: client.c,v 7.62 2000/12/10 02:09:13 db Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -1197,8 +1197,11 @@ static void exit_one_client(struct Client *cptr, struct Client *sptr, struct Cli
       */
       if (sptr->user)
         {
-          sendto_common_channels_local(sptr, ":%s QUIT :%s",
-				       sptr->name, comment);
+          sendto_common_channels_local(sptr, ":%s!%s@%s QUIT :%s",
+				       sptr->name,
+				       sptr->username,
+				       sptr->host,
+				       comment);
 
           for (lp = sptr->user->channel.head; lp; lp = next_lp)
 	    {
