@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.192 2004/01/24 19:16:35 adx Exp $
+ *  $Id: parse.c,v 7.193 2004/01/31 15:03:08 adx Exp $
  */
 
 #include "stdinc.h"
@@ -740,6 +740,8 @@ do_numeric(char numeric[], struct Client *client_p, struct Client *source_p,
 {
   struct Client *target_p;
   struct Channel *chptr;
+  char *t;    /* current position within the buffer */
+  int i, tl;  /* current length of presently being built string in t */
 
   if (parc < 2 || !IsServer(source_p))
     return;
@@ -752,22 +754,14 @@ do_numeric(char numeric[], struct Client *client_p, struct Client *source_p,
    * (Because the buffer is twice as large as the message buffer
    * for the socket, no overflow can occur here... ...on current
    * assumptions--bets are off, if these are changed --msa)
-   * Note: if buffer is non-empty, it will begin with SPACE.
    */
-  if (parc > 1)
+  t = buffer;
+  for (i = 2; i < (parc - 1); i++)
   {
-    char *t = buffer; /* Current position within the buffer */
-    int i;
-    int tl; /* current length of presently being built string in t */
-
-    for (i = 2; i < (parc - 1); i++)
-    {
-      tl = ircsprintf(t, " %s", parv[i]);
-      t += tl;
-    }
-
-    ircsprintf(t," :%s", parv[parc-1]);
+    tl = ircsprintf(t, " %s", parv[i]);
+    t += tl;
   }
+  ircsprintf(t," :%s", parv[parc-1]);
 
   if (((target_p = find_person(parv[1])) != NULL) ||
       ((target_p = find_server(parv[1])) != NULL))
