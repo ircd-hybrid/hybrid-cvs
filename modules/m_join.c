@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 1.6 2000/11/29 23:35:34 db Exp $
+ *   $Id: m_join.c,v 1.7 2000/11/30 04:11:31 db Exp $
  */
 
 #include "handlers.h"
@@ -214,7 +214,7 @@ int     m_join(struct Client *cptr,
 	    {
 	      /* LazyLinks */
 	      if( (*name != '&') && serv_cptr_list
-		  && IsCapable( serv_cptr_list, CAP_LL) )
+		  && IsCapable(serv_cptr_list, CAP_LL) )
 		{
 		  sendto_one(serv_cptr_list,":%s CBURST %s %s %s",
 			     me.name,name,sptr->name, key ? key: "" );

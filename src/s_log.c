@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_log.c,v 7.9 2000/11/29 21:18:34 db Exp $
+ *   $Id: s_log.c,v 7.10 2000/11/30 04:11:34 db Exp $
  */
 #include "client.h"	/* Needed for struct Client */
 #include "s_log.h"
@@ -259,9 +259,6 @@ user_log_resync(void *notused)
       fbclose(user_log_fb);
       user_log_fb = NULL;
     }
-
-  /* XXX Consider not rescheduling this in future */
-  eventAdd("user_log_resync", user_log_resync, NULL, 60, 0 );
 }
 
 /*

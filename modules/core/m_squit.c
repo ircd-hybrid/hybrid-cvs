@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_squit.c,v 1.8 2000/11/28 03:54:12 bill Exp $
+ *   $Id: m_squit.c,v 1.9 2000/11/30 04:11:32 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -59,7 +59,8 @@ struct squit_parms
   struct Client *acptr;
 };
 
-struct squit_parms *find_squit(struct Client *cptr, struct Client *sptr,
+struct squit_parms *find_squit(struct Client *cptr,
+			       struct Client *sptr,
 			       char *server);
 
 char *_version = "20001122";
@@ -164,7 +165,7 @@ int ms_squit(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 
 /*
  * find_squit
- * inputs	- local server connectin
+ * inputs	- local server connection
  *		-
  *		-
  * output	- pointer to struct containing found squit or none if not found
@@ -211,6 +212,9 @@ struct squit_parms *find_squit(struct Client *cptr, struct Client *sptr,
       if (IsServer(acptr) || IsMe(acptr))
 	break;
     }
+
+  found_squit.acptr = acptr;
+  found_squit.server_name = server;
 
   if (acptr && IsMe(acptr))
     {

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.34 2000/11/29 23:35:29 db Exp $
+ * $Id: channel.h,v 7.35 2000/11/30 04:11:28 db Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -58,6 +58,7 @@ struct Channel
   char           *topic_info;
   time_t          topic_time;
   int             users;      /* user count */
+  int             locusers;   /* local user count */
   int             opcount;    /* number of chanops */
   unsigned long   lazyLinkChannelExists;
   time_t          users_last;		/* when last user was in channel */
