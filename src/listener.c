@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: listener.c,v 7.3 1999/08/16 01:33:33 tomh Exp $
+ *  $Id: listener.c,v 7.4 1999/09/10 05:42:18 tomh Exp $
  */
 #include "listener.h"
 #include "client.h"
@@ -320,7 +320,7 @@ void accept_connection(struct Listener* listener)
 {
   static time_t      last_oper_notice = 0;
   struct sockaddr_in addr;
-  int                addrlen = sizeof(struct sockaddr_in);
+  size_t             addrlen = sizeof(struct sockaddr_in);
   int                fd;
 
   assert(0 != listener);
