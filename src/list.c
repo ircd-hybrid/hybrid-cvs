@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: list.c,v 7.49 2003/02/17 16:09:37 db Exp $
+ *  $Id: list.c,v 7.50 2003/03/01 01:15:44 db Exp $
  */
 
 #include "stdinc.h"
@@ -72,7 +72,7 @@ initUser(void)
 struct User*
 make_user(struct Client *client_p)
 {
-  struct User        *user;
+  struct User *user;
 
   user = client_p->user;
   if (!user)

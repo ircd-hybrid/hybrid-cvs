@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_part.c,v 1.63 2003/02/06 08:46:06 a1kmm Exp $
+ *  $Id: m_part.c,v 1.64 2003/03/01 01:15:41 db Exp $
  */
 
 #include "stdinc.h"
@@ -43,7 +43,6 @@
 #include "packet.h"
 
 static void m_part(struct Client*, struct Client*, int, char**);
-void check_spambot_warning(struct Client *source_p, const char *name);
 
 struct Message part_msgtab = {
   "PART", 0, 0, 2, 0, MFLG_SLOW, 0,
@@ -62,7 +61,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&part_msgtab);
 }
-const char *_version = "$Revision: 1.63 $";
+const char *_version = "$Revision: 1.64 $";
 #endif
 
 static void part_one_client(struct Client *client_p,

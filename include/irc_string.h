@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: irc_string.h,v 7.37 2002/08/28 17:00:12 androsyn Exp $
+ *  $Id: irc_string.h,v 7.38 2003/03/01 01:15:37 db Exp $
  */
 
 #ifndef INCLUDED_irc_string_h
@@ -54,13 +54,7 @@ extern int irccmp(const char *s1, const char *s2);
  * ircncmp - counted case insensitive comparison of s1 and s2
  */
 extern int ircncmp(const char *s1, const char *s2, int n);
-/*
-** canonize - reduce a string of duplicate list entries to contain
-** only the unique items.
-*/  
-#ifdef NO_DUPE_MULTI_MESSAGES
-extern char* canonize(char *);
-#endif
+
 /*
  * inetntoa - optimized inet_ntoa
  */

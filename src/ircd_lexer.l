@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_lexer.l,v 1.146 2002/10/30 17:44:56 wiz Exp $
+ *  $Id: ircd_lexer.l,v 1.147 2003/03/01 01:15:44 db Exp $
  */
 
 %option case-insensitive
@@ -410,7 +410,7 @@ void hashcomment(void)
   if (strlen(yytext) < strlen(INCLUDE))
     return;
 
-  if ( !strncasecmp(yytext, INCLUDE, strlen(INCLUDE)) ) 
+  if (!strncasecmp(yytext, INCLUDE, strlen(INCLUDE))) 
       yyerror("You probably meant '.include', skipping");
 }
 
@@ -434,11 +434,7 @@ void cinclude(void)
     FBFILE *tmp_fbfile_in;
     char filenamebuf[IRCD_BUFSIZE];
     
-#ifdef HAVE_SNPRINTF
-    snprintf(filenamebuf, IRCD_BUFSIZE, "%s/%s", ETCPATH, c);
-#else
-    sprintf(filenamebuf, "%s/%s", ETCPATH, c);
-#endif
+    snprintf(filenamebuf, sizeof(filenamebuf), "%s/%s", ETCPATH, c);
     tmp_fbfile_in = fbopen(filenamebuf, "r");
     
     if (tmp_fbfile_in == NULL)

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_restart.c,v 1.23 2002/05/24 23:34:22 androsyn Exp $
+ *  $Id: m_restart.c,v 1.24 2003/03/01 01:15:39 db Exp $
  */
 
 #include "stdinc.h"
@@ -57,7 +57,7 @@ _moddeinit(void)
   mod_del_cmd(&restart_msgtab);
 }
 
-const char *_version = "$Revision: 1.23 $";
+const char *_version = "$Revision: 1.24 $";
 #endif
 /*
  * mo_restart
@@ -78,9 +78,10 @@ static void mo_restart(struct Client *client_p,
       return;
     }
 
-  if ( !IsOperDie(source_p) )
+  if (!IsOperDie(source_p))
     {
-      sendto_one(source_p,":%s NOTICE %s :You have no D flag", me.name, parv[0]);
+      sendto_one(source_p, ":%s NOTICE %s :You need die = yes;",
+                 me.name, parv[0]);
       return;
     }
 
@@ -100,7 +101,7 @@ static void mo_restart(struct Client *client_p,
     }
   }
   
-  for(ptr = lclient_list.head; ptr; ptr = ptr->next)
+  DLINK_FOREACH(ptr, lclient_list.head)
   {
     target_p = ptr->data;
 
@@ -110,7 +111,7 @@ static void mo_restart(struct Client *client_p,
 	       get_client_name(source_p, HIDE_IP));
   }
 
-  for(ptr = serv_list.head; ptr; ptr = ptr->next)
+  DLINK_FOREACH(ptr, serv_list.head)
   {
     target_p = ptr->data;
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.194 2003/02/26 05:32:02 db Exp $
+ *  $Id: s_conf.h,v 7.195 2003/03/01 01:15:37 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -199,9 +199,6 @@ struct config_file_entry
   char *servlink_path;
   char *egdpool_path;
 
-  char* network_name;
-  char* network_desc;
-
   char fname_operlog[MAXPATHLEN];
   char fname_userlog[MAXPATHLEN];
   char fname_foperlog[MAXPATHLEN];
@@ -210,7 +207,6 @@ struct config_file_entry
   MessageFile opermotd;
   MessageFile linksfile;
 
-  int           hub;
   unsigned char compression_level;
   int		dot_in_ip6_addr;
   int           dots_in_ident;
@@ -238,7 +234,6 @@ struct config_file_entry
   int           glines;
   int           gline_time;
   int           idletime;
-  int           hide_server;
   int           client_exit;
   int           maximum_links;
   int           oper_only_umodes;
@@ -405,7 +400,7 @@ extern  int     rehash (int);
 extern int  conf_add_server(struct ConfItem *,int);
 extern void conf_add_class_to_conf(struct ConfItem *);
 extern void conf_add_me(struct ConfItem *);
-extern void conf_add_class(struct ConfItem *,int );
+extern void conf_add_class(struct ConfItem *, int);
 extern void conf_add_d_conf(struct ConfItem *);
 extern void conf_add_x_conf(struct ConfItem *);
 extern void conf_add_u_conf(struct ConfItem *);

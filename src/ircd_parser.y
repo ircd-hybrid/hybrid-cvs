@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.266 2003/02/23 19:10:16 db Exp $
+ *  $Id: ircd_parser.y,v 1.267 2003/03/01 01:15:44 db Exp $
  */
 
 %{
@@ -73,12 +73,10 @@ static int   class_sendq_var;
 static char  *listener_address;
 
 static char *resv_reason;
-static char  *class_redirserv_var;
-static int   class_redirport_var;
 extern int   pass;
 
 static void
-init_parser_confs()
+init_parser_confs(void)
 {
   struct ConfItem *yy_tmp;
   dlink_node *ptr;
@@ -2559,8 +2557,8 @@ general_compression_level: COMPRESSION_LEVEL '=' NUMBER ';'
 			     ConfigFileEntry.compression_level);
 	ConfigFileEntry.compression_level = 0;
       }
-    }
 #endif
+    }
   };
 
 general_use_egd: USE_EGD '=' TYES ';'

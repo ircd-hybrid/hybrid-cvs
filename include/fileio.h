@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fileio.h,v 7.11 2002/05/24 23:34:07 androsyn Exp $
+ *  $Id: fileio.h,v 7.12 2003/03/01 01:15:37 db Exp $
  */
 
 #ifndef INCLUDED_fileio_h
@@ -52,6 +52,12 @@ typedef struct FileBuf FBFILE;
  * open a file and return a FBFILE*, see fopen(3)
  */
 extern FBFILE* fbopen(const char* filename, const char* mode);
+
+/*
+ * Positions the file pointer at the beginning of the file
+ */
+extern int fbrewind(FBFILE *fb);
+
 /*
  * associate a file descriptor with a FBFILE*
  * if a FBFILE* is associated here it MUST be closed using fbclose

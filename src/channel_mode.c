@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.74 2003/02/26 22:58:47 bill Exp $
+ *  $Id: channel_mode.c,v 7.75 2003/03/01 01:15:44 db Exp $
  */
 
 #include "stdinc.h"
@@ -689,7 +689,6 @@ fix_key_old(char *arg)
 #define SM_ERR_NOTONCHANNEL     0x00000040      /* Not on channel */
 #define SM_ERR_RESTRICTED       0x00000080      /* Restricted chanop */
 #define SM_ERR_RPL_I            0x00000100
-#define SM_ERR_RPL_D            0x00000200
 
 /* Now lets do some stuff to keep track of what combinations of
  * servers exist...
@@ -765,7 +764,6 @@ set_chcap_usage_counts(struct Client *serv_p)
  * Side-effects	- Decrements the usage counts for the correct capab
  *                combination.
  */
-
 void
 unset_chcap_usage_counts(struct Client *serv_p)
 {

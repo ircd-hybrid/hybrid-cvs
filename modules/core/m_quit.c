@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_quit.c,v 1.28 2003/02/14 23:01:53 db Exp $
+ *  $Id: m_quit.c,v 1.29 2003/03/01 01:15:41 db Exp $
  */
 
 #include "stdinc.h"
@@ -55,7 +55,7 @@ _moddeinit(void)
   mod_del_cmd(&quit_msgtab);
 }
 
-const char *_version = "$Revision: 1.28 $";
+const char *_version = "$Revision: 1.29 $";
 #endif
 /*
 ** m_quit
@@ -67,10 +67,9 @@ m_quit(struct Client *client_p, struct Client *source_p,
        int parc, char *parv[])
 {
   char *comment = (parc > 1 && parv[1]) ? parv[1] : client_p->name;
-  char reason [TOPICLEN + 1];
+  char reason[TOPICLEN + 1];
 
-  source_p->flags |= FLAGS_NORMALEX;
-  if (strlen(comment) > (size_t) TOPICLEN)
+  if (strlen(comment) > (size_t)TOPICLEN)
     comment[TOPICLEN] = '\0';
 
   if (ConfigFileEntry.client_exit && comment[0])
@@ -104,8 +103,7 @@ ms_quit(struct Client *client_p, struct Client *source_p,
 {
   char *comment = (parc > 1 && parv[1]) ? parv[1] : client_p->name;
 
-  source_p->flags |= FLAGS_NORMALEX;
-  if (strlen(comment) > (size_t) TOPICLEN)
+  if (strlen(comment) > (size_t)TOPICLEN)
     comment[TOPICLEN] = '\0';
 
   exit_client(client_p, source_p, source_p, comment);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: resv.h,v 1.7 2002/05/24 23:34:08 androsyn Exp $
+ *  $Id: resv.h,v 1.8 2003/03/01 01:15:37 db Exp $
  */
 
 #ifndef INCLUDED_resv_h
@@ -59,7 +59,7 @@ extern struct ResvNick *create_nick_resv(char *, char *, int);
 extern int delete_channel_resv(struct ResvChannel *);
 extern int delete_nick_resv(struct ResvNick *);
 
-extern int clear_conf_resv();
+extern int clear_conf_resv(void);
 
 extern int find_channel_resv(char *);
 extern int find_nick_resv(char *);

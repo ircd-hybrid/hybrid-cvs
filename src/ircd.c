@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.254 2003/02/23 04:16:11 db Exp $
+ *  $Id: ircd.c,v 7.255 2003/03/01 01:15:44 db Exp $
  */
 
 #include "stdinc.h"
@@ -517,14 +517,12 @@ static void setup_corefile(void)
 
 int main(int argc, char *argv[])
 {
-  dlink_node *ptr;
-
   /* Check to see if the user is running us as root, which is a nono */
   
   if(geteuid() == 0)
   {
     fprintf(stderr, "Don't run ircd as root!!!\n");
-    return -1;
+    return(-1);
   }
 
   /*
@@ -753,7 +751,7 @@ int main(int argc, char *argv[])
 
   ServerRunning = 1;
   io_loop();
-  return 0;
+  return(0);
 }
 
 

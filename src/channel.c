@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.357 2003/02/23 04:16:10 db Exp $
+ *  $Id: channel.c,v 7.358 2003/03/01 01:15:43 db Exp $
  */
 
 #include "stdinc.h"
@@ -46,8 +46,6 @@
 #include "resv.h"
 
 
-#include "s_log.h"
-
 struct config_channel_entry ConfigChannel;
 dlink_list GlobalChannelList = {NULL, NULL, 0};
 BlockHeap *channel_heap;
@@ -73,14 +71,16 @@ static char modebuf[MODEBUFLEN], parabuf[MODEBUFLEN];
  *
  * Initializes the channel blockheap
  */
-static void channelheap_garbage_collect(void *unused)
+static void
+channelheap_garbage_collect(void *unused)
 {
   BlockHeapGarbageCollect(channel_heap);
   BlockHeapGarbageCollect(ban_heap);
   BlockHeapGarbageCollect(topic_heap);
 }
 
-void init_channels(void)
+void
+init_channels(void)
 {
   channel_heap = BlockHeapCreate(sizeof(struct Channel), CHANNEL_HEAP_SIZE);
   ban_heap = BlockHeapCreate(sizeof(struct Ban), BAN_HEAP_SIZE);
@@ -464,7 +464,6 @@ void
 clear_channels(void *unused)
 {
   struct Channel *chptr;
-  struct Channel *next_chptr;
   dlink_node *ptr;
   dlink_node *next_ptr;
 

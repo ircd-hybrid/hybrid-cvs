@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.h,v 1.23 2002/09/11 15:27:07 db Exp $
+ *  $Id: hostmask.h,v 1.24 2003/03/01 01:15:37 db Exp $
  */
 
 #ifndef INCLUDE_hostmask_h
@@ -43,8 +43,6 @@ struct HostMaskEntry
 };
 
 int parse_netmask(const char*, struct irc_inaddr*, int*);
-int match_ipv6(struct irc_inaddr*, struct irc_inaddr*, int);
-int match_ipv4(struct irc_inaddr*, struct irc_inaddr*, int);
 struct ConfItem* find_conf_by_address(const char*, struct irc_inaddr*,
                                       int, int, const char*);
 void add_conf_by_address(const char*, int, const char*, struct ConfItem*);

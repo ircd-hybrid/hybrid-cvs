@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.h,v 7.61 2003/02/14 23:01:49 db Exp $
+ *  $Id: send.h,v 7.62 2003/03/01 01:15:37 db Exp $
  */
 
 #ifndef INCLUDED_send_h
@@ -44,7 +44,7 @@ struct Channel;
 struct dlink_list;
 
 /* The nasty global also used in s_serv.c for server bursts */
-unsigned long current_serial;
+extern unsigned long current_serial;
 
 /* send.c prototypes */
 

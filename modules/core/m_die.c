@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_die.c,v 1.25 2003/01/24 07:01:59 lusky Exp $
+ *  $Id: m_die.c,v 1.26 2003/03/01 01:15:41 db Exp $
  */
 
 #include "stdinc.h"
@@ -57,7 +57,7 @@ _moddeinit(void)
   mod_del_cmd(&die_msgtab);
 }
 
-const char *_version = "$Revision: 1.25 $";
+const char *_version = "$Revision: 1.26 $";
 #endif
 /*
  * mo_die - DIE command handler
@@ -90,23 +90,23 @@ static void mo_die(struct Client *client_p, struct Client *source_p,
         }
     }
 
-  for(ptr = lclient_list.head; ptr; ptr = ptr->next)
-    {
+  DLINK_FOREACH(ptr, lclient_list.head)
+  {
       target_p = ptr->data;
 
       sendto_one(target_p,
 		 ":%s NOTICE %s :Server Terminating. %s",
 		 me.name, target_p->name,
 		 get_client_name(source_p, HIDE_IP));
-    }
+  }
 
-  for(ptr = serv_list.head; ptr; ptr = ptr->next)
-    {
+  DLINK_FOREACH(ptr, serv_list.head)
+  {
       target_p = ptr->data;
 
       sendto_one(target_p, ":%s ERROR :Terminated by %s",
 		 me.name, get_client_name(source_p, HIDE_IP));
-    }
+  }
 
   /*
    * XXX we called flush_connections() here. Read server_reboot()

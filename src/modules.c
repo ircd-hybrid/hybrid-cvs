@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.107 2003/02/17 16:09:37 db Exp $
+ *  $Id: modules.c,v 7.108 2003/03/01 01:15:44 db Exp $
  */
 
 #include "stdinc.h"
@@ -113,12 +113,12 @@ extern struct Message error_msgtab;
 void
 modules_init(void)
 {
-	mod_add_cmd(&modload_msgtab);
-	mod_add_cmd(&modunload_msgtab);
-        mod_add_cmd(&modreload_msgtab);
-	mod_add_cmd(&modlist_msgtab);
-	mod_add_cmd(&modrestart_msgtab);
-	mod_add_cmd(&error_msgtab);
+  mod_add_cmd(&modload_msgtab);
+  mod_add_cmd(&modunload_msgtab);
+  mod_add_cmd(&modreload_msgtab);
+  mod_add_cmd(&modlist_msgtab);
+  mod_add_cmd(&modrestart_msgtab);
+  mod_add_cmd(&error_msgtab);
 }
 
 /* mod_find_path()
@@ -130,21 +130,18 @@ modules_init(void)
 static struct module_path *
 mod_find_path(char *path)
 {
-  dlink_node *pathst = mod_paths.head;
+  dlink_node *pathst;
   struct module_path *mpath;
-  
-  if (!pathst)
-    return NULL;
 
-  for (; pathst; pathst = pathst->next)
+  DLINK_FOREACH(pathst, mod_paths.head)
   {
     mpath = (struct module_path *)pathst->data;
 
     if (!strcmp(path, mpath->path))
-      return mpath;
+      return(mpath);
   }
   
-  return NULL;
+  return(NULL);
 }
 
 /* mod_add_path
@@ -181,14 +178,13 @@ mod_clear_paths(void)
   struct module_path *pathst;
   dlink_node *node, *next;
 
-  for(node = mod_paths.head; node; node = next)
-    {
-      next = node->next;
-      pathst = (struct module_path *)node->data;
-      dlinkDelete(node, &mod_paths);
-      free_dlink_node(node);
-      MyFree(pathst);
-    }
+  DLINK_FOREACH_SAFE(node, next, mod_paths.head)
+  {
+    pathst = (struct module_path *)node->data;
+    dlinkDelete(node, &mod_paths);
+    free_dlink_node(node);
+    MyFree(pathst);
+  }
 }
 
 /* irc_basename
@@ -203,13 +199,13 @@ irc_basename(char *path)
   char *mod_basename = MyMalloc (strlen (path) + 1);
   char *s;
 
-  if (!(s = strrchr (path, '/')))
+  if (!(s = strrchr(path, '/')))
     s = path;
   else
     s++;
 
   (void)strcpy (mod_basename, s);
-  return mod_basename;
+  return(mod_basename);
 }
 
 /* findmodule_byname
@@ -218,7 +214,6 @@ irc_basename(char *path)
  * output       -
  * side effects -
  */
-
 int 
 findmodule_byname (char *name)
 {
@@ -226,10 +221,10 @@ findmodule_byname (char *name)
 
   for (i = 0; i < num_mods; i++) 
     {
-      if (!irccmp (modlist[i]->name, name))
-	return i;
+      if (!irccmp(modlist[i]->name, name))
+	return(i);
     }
-  return -1;
+  return(-1);
 }
 
 /* load_all_modules()
@@ -248,7 +243,7 @@ load_all_modules (int warn)
 
   modules_init();
   
-  modlist = (struct module **)MyMalloc ( sizeof (struct module) *
+  modlist = (struct module **)MyMalloc(sizeof (struct module) *
                                          (MODS_INCREMENT));
 
   max_mods = MODS_INCREMENT;
@@ -274,13 +269,13 @@ load_all_modules (int warn)
           (ldirent->d_name[len-2] == 's') &&
           ((ldirent->d_name[len-1] == 'o') || (ldirent->d_name[len-1] == 'l')))
 	{
-	  (void)sprintf (module_fq_name, "%s/%s",  AUTOMODPATH,
+	  (void)sprintf(module_fq_name, "%s/%s",  AUTOMODPATH,
 			 ldirent->d_name);
 	  (void)load_a_module (module_fq_name, warn, 0);
 	}
     }
 
-  (void)closedir (system_module_dir);
+  (void)closedir(system_module_dir);
 }
 
 /* load_core_modules()
@@ -325,10 +320,9 @@ load_one_module (char *path, int coremodule)
   char modpath[MAXPATHLEN];
   dlink_node *pathst;
   struct module_path *mpath;
-	
   struct stat statbuf;
-  
-  for (pathst = mod_paths.head; pathst; pathst = pathst->next)
+
+  DLINK_FOREACH(pathst, mod_paths.head)
     {
       mpath = (struct module_path *)pathst->data;
       
@@ -341,9 +335,9 @@ load_one_module (char *path, int coremodule)
 		    {
 		       /* Regular files only please */
 		       if (coremodule)
-		         return load_a_module(modpath, 1, 1);
+		         return(load_a_module(modpath, 1, 1));
 		       else
-		         return load_a_module(modpath, 1, 0);
+		         return(load_a_module(modpath, 1, 0));
 		    }
 	      }
 	    
@@ -353,13 +347,13 @@ load_one_module (char *path, int coremodule)
   sendto_realops_flags(UMODE_ALL, L_ALL,
                        "Cannot locate module %s", path);
   ilog(L_WARN, "Cannot locate module %s", path);
-  return -1;
+  return(-1);
 }
 		
 
 /* load a module .. */
 static void
-mo_modload (struct Client *client_p, struct Client *source_p, int parc, char **parv)
+mo_modload(struct Client *client_p, struct Client *source_p, int parc, char **parv)
 {
   char *m_bn;
 
@@ -369,17 +363,17 @@ mo_modload (struct Client *client_p, struct Client *source_p, int parc, char **p
     return;
   }
 
-  m_bn = irc_basename (parv[1]);
+  m_bn = irc_basename(parv[1]);
 
-  if (findmodule_byname (m_bn) != -1)
+  if (findmodule_byname(m_bn) != -1)
   {
-    sendto_one (source_p, ":%s NOTICE %s :Module %s is already loaded",
+    sendto_one(source_p, ":%s NOTICE %s :Module %s is already loaded",
                 me.name, source_p->name, m_bn);
     MyFree(m_bn);
     return;
   }
 
-  load_one_module (parv[1], 0);
+  load_one_module(parv[1], 0);
 
   MyFree(m_bn);
 }
@@ -387,14 +381,14 @@ mo_modload (struct Client *client_p, struct Client *source_p, int parc, char **p
 
 /* unload a module .. */
 static void
-mo_modunload (struct Client *client_p, struct Client *source_p, int parc, char **parv)
+mo_modunload(struct Client *client_p, struct Client *source_p, int parc, char **parv)
 {
   char *m_bn;
   int modindex;
 
-  if (!IsOperAdmin (source_p))
+  if (!IsOperAdmin(source_p))
   {
-    sendto_one (source_p, ":%s NOTICE %s :You have no A flag",
+    sendto_one(source_p, ":%s NOTICE %s :You have no A flag",
                 me.name, parv[0]);
     return;
   }
@@ -403,9 +397,9 @@ mo_modunload (struct Client *client_p, struct Client *source_p, int parc, char *
 
   if((modindex = findmodule_byname (m_bn)) == -1)
   {
-    sendto_one (source_p, ":%s NOTICE %s :Module %s is not loaded",
+    sendto_one(source_p, ":%s NOTICE %s :Module %s is not loaded",
                 me.name, source_p->name, m_bn);
-    MyFree (m_bn);
+    MyFree(m_bn);
     return;
   }
 
@@ -420,23 +414,23 @@ mo_modunload (struct Client *client_p, struct Client *source_p, int parc, char *
 
   if(unload_one_module (m_bn, 1) == -1)
   {
-    sendto_one (source_p, ":%s NOTICE %s :Module %s is not loaded",
+    sendto_one(source_p, ":%s NOTICE %s :Module %s is not loaded",
                 me.name, source_p->name, m_bn);
   }
-  MyFree (m_bn);
+  MyFree(m_bn);
 }
 
 /* unload and load in one! */
 static void
-mo_modreload (struct Client *client_p, struct Client *source_p, int parc, char **parv)
+mo_modreload(struct Client *client_p, struct Client *source_p, int parc, char **parv)
 {
   char *m_bn;
   int modindex;
   int check_core;
 
-  if (!IsOperAdmin (source_p))
+  if (!IsOperAdmin(source_p))
     {
-      sendto_one (source_p, ":%s NOTICE %s :You have no A flag",
+      sendto_one(source_p, ":%s NOTICE %s :You have no A flag",
                   me.name, parv[0]);
       return;
     }
@@ -445,15 +439,15 @@ mo_modreload (struct Client *client_p, struct Client *source_p, int parc, char *
 
   if((modindex = findmodule_byname(m_bn)) == -1)
     {
-      sendto_one (source_p, ":%s NOTICE %s :Module %s is not loaded",
+      sendto_one(source_p, ":%s NOTICE %s :Module %s is not loaded",
                   me.name, source_p->name, m_bn);
-      MyFree (m_bn);
+      MyFree(m_bn);
       return;
     }
 
   check_core = modlist[modindex]->core;
 
-  if(unload_one_module (m_bn, 1) == -1)
+  if(unload_one_module(m_bn, 1) == -1)
     {
       sendto_one (source_p, ":%s NOTICE %s :Module %s is not loaded",
                   me.name, source_p->name, m_bn);
@@ -479,9 +473,9 @@ mo_modlist (struct Client *client_p, struct Client *source_p, int parc, char **p
 {
   int i;
 
-  if (!IsOperAdmin (source_p))
+  if (!IsOperAdmin(source_p))
   {
-    sendto_one (source_p, ":%s NOTICE %s :You have no A flag",
+    sendto_one(source_p, ":%s NOTICE %s :You have no A flag",
                 me.name, parv[0]);
     return;
   }
@@ -517,7 +511,7 @@ mo_modrestart (struct Client *client_p, struct Client *source_p, int parc, char 
 
   if (!IsOperAdmin (source_p))
   {
-    sendto_one (source_p, ":%s NOTICE %s :You have no A flag",
+    sendto_one(source_p, ":%s NOTICE %s :You have no A flag",
                 me.name, parv[0]);
     return;
   }

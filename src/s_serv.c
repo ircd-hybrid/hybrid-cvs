@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.284 2003/02/23 04:16:12 db Exp $
+ *  $Id: s_serv.c,v 7.285 2003/03/01 01:15:45 db Exp $
  */
 
 #include "stdinc.h"
@@ -351,7 +351,7 @@ write_links_file(void* notused)
   MessageFileptr->contentsOfFile = NULL;
   currentMessageLine = NULL;
 
-  for (ptr = global_serv_list.head; ptr; ptr = ptr->next)
+  DLINK_FOREACH(ptr, global_serv_list.head)
   {
     target_p = ptr->data;
 
@@ -1653,11 +1653,11 @@ cjoin_all(struct Client *client_p)
   struct Channel *chptr;
 
   DLINK_FOREACH(gptr, GlobalChannelList.head)
-    {
-      client_p = gptr->data;
+  {
+      chptr = gptr->data;
       sendto_one(client_p, ":%s CBURST %s",
 		 me.name, chptr->chname);
-    }
+  }
 }
 
 /*
@@ -1941,7 +1941,7 @@ initServerMask(void)
  * side effects	-
  */
 unsigned long
-nextFreeMask()
+nextFreeMask(void)
 {
   int i;
   unsigned long mask;

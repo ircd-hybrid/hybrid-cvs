@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.167 2003/02/23 04:16:03 db Exp $
+ *  $Id: client.h,v 7.168 2003/03/01 01:15:37 db Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -381,47 +381,45 @@ struct LocalUser
 
 
 /* housekeeping flags */
-
-#define FLAGS_PINGSENT     0x0001 /* Unreplied ping sent */
-#define FLAGS_DEADSOCKET   0x0002 /* Local socket is dead--Exiting soon */
-#define FLAGS_KILLED       0x0004 /* Prevents "QUIT" from being sent for this*/
-#define FLAGS_CLOSING      0x0020 /* set when closing to suppress errors */
-#define FLAGS_CHKACCESS    0x0040 /* ok to check clients access if set */
-#define FLAGS_GOTID        0x0080 /* successful ident lookup achieved */
-#define FLAGS_NEEDID       0x0100 /* I-lines say must use ident return */
-#define FLAGS_NORMALEX     0x0400 /* Client exited normally */
-#define FLAGS_SENDQEX      0x0800 /* Sendq exceeded */
-#define FLAGS_IPHASH       0x1000 /* iphashed this client */
-#define FLAGS_CRYPTIN      0x2000 /* incoming data must be decrypted */
-#define FLAGS_CRYPTOUT     0x4000 /* outgoing data must be encrypted */
-#define FLAGS_WAITAUTH     0x8000 /* waiting for CRYPTLINK AUTH command */
-#define FLAGS_SERVLINK     0x10000 /* servlink has servlink process */
-#define FLAGS_MARK	   0x20000 /* marked client */
-#define FLAGS_CANFLOOD	   0x40000 /* client has the ability to flood */
+#define FLAGS_PINGSENT     0x00001 /* Unreplied ping sent */
+#define FLAGS_DEADSOCKET   0x00002 /* Local socket is dead--Exiting soon */
+#define FLAGS_KILLED       0x00004 /* Prevents "QUIT" from being sent for this*/
+#define FLAGS_CLOSING      0x00008 /* set when closing to suppress errors */
+#define FLAGS_CHKACCESS    0x00010 /* ok to check clients access if set */
+#define FLAGS_GOTID        0x00020 /* successful ident lookup achieved */
+#define FLAGS_NEEDID       0x00040 /* I-lines say must use ident return */
+#define FLAGS_SENDQEX      0x00080 /* Sendq exceeded */
+#define FLAGS_IPHASH       0x00100 /* iphashed this client */
+#define FLAGS_CRYPTIN      0x00200 /* incoming data must be decrypted */
+#define FLAGS_CRYPTOUT     0x00400 /* outgoing data must be encrypted */
+#define FLAGS_WAITAUTH     0x00800 /* waiting for CRYPTLINK AUTH command */
+#define FLAGS_SERVLINK     0x01000 /* servlink has servlink process */
+#define FLAGS_MARK	   0x02000 /* marked client */
+#define FLAGS_CANFLOOD	   0x04000 /* client has the ability to flood */
 
 /* umodes, settable flags */
-#define UMODE_SERVNOTICE   0x0001 /* server notices such as kill */
-#define UMODE_CCONN        0x0002 /* Client Connections */
-#define UMODE_REJ          0x0004 /* Bot Rejections */
-#define UMODE_SKILL        0x0008 /* Server Killed */
-#define UMODE_FULL         0x0010 /* Full messages */
-#define UMODE_SPY          0x0020 /* see STATS / LINKS */
-#define UMODE_DEBUG        0x0040 /* 'debugging' info */
-#define UMODE_NCHANGE      0x0080 /* Nick change notice */
-#define UMODE_WALLOP       0x0100 /* send wallops to them */
-#define UMODE_OPERWALL     0x0200 /* Operwalls */
-#define UMODE_INVISIBLE    0x0400 /* makes user invisible */
-#define UMODE_BOTS         0x0800 /* shows bots */
-#define UMODE_EXTERNAL     0x1000 /* show servers introduced and splitting */
-#define UMODE_CALLERID     0x4000 /* block unless caller id's */
-#define UMODE_UNAUTH       0x8000 /* show unauth connects here */
-#define UMODE_LOCOPS       0x10000 /* show locops */
+#define UMODE_SERVNOTICE   0x00001 /* server notices such as kill */
+#define UMODE_CCONN        0x00002 /* Client Connections */
+#define UMODE_REJ          0x00004 /* Bot Rejections */
+#define UMODE_SKILL        0x00008 /* Server Killed */
+#define UMODE_FULL         0x00010 /* Full messages */
+#define UMODE_SPY          0x00020 /* see STATS / LINKS */
+#define UMODE_DEBUG        0x00040 /* 'debugging' info */
+#define UMODE_NCHANGE      0x00080 /* Nick change notice */
+#define UMODE_WALLOP       0x00100 /* send wallops to them */
+#define UMODE_OPERWALL     0x00200 /* Operwalls */
+#define UMODE_INVISIBLE    0x00400 /* makes user invisible */
+#define UMODE_BOTS         0x00800 /* shows bots */
+#define UMODE_EXTERNAL     0x01000 /* show servers introduced and splitting */
+#define UMODE_CALLERID     0x02000 /* block unless caller id's */
+#define UMODE_UNAUTH       0x04000 /* show unauth connects here */
+#define UMODE_LOCOPS       0x08000 /* show locops */
 
 /* user information flags, only settable by remote mode or local oper */
-#define UMODE_OPER         0x20000 /* Operator */
-#define UMODE_ADMIN        0x40000 /* Admin on server */
-
+#define UMODE_OPER         0x10000 /* Operator */
+#define UMODE_ADMIN        0x20000 /* Admin on server */
 #define UMODE_ALL	   UMODE_SERVNOTICE
+
 
 /* overflow flags */
 #define FLAGS2_EXEMPTGLINE  0x0001	/* client can't be G-lined */

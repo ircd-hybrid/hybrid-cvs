@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_debug.c,v 7.70 2003/02/26 22:40:58 bill Exp $
+ *  $Id: s_debug.c,v 7.71 2003/03/01 01:15:45 db Exp $
  */
 
 #include "stdinc.h"
@@ -154,7 +154,6 @@ count_memory(struct Client *source_p)
   struct Channel *chptr;
   struct ConfItem *aconf;
   struct Ban *actualBan;
-  struct Class *cltmp;
   dlink_node *dlink;
 
   int channel_count = 0; 

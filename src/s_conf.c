@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.346 2003/02/23 04:16:11 db Exp $
+ *  $Id: s_conf.c,v 7.347 2003/03/01 01:15:44 db Exp $
  */
 
 #include "stdinc.h"
@@ -184,10 +184,10 @@ make_conf(int status)
 {
   struct ConfItem* aconf;
 
-  aconf = (struct ConfItem*) MyMalloc(sizeof(struct ConfItem));
+  aconf = (struct ConfItem*)MyMalloc(sizeof(struct ConfItem));
   memset(aconf, 0, sizeof(*aconf));
-  aconf->status       = status;
-  aconf->aftype       = AF_INET;
+  aconf->status = status;
+  aconf->aftype = AF_INET;
   return(aconf);
 }
 
@@ -216,10 +216,11 @@ free_conf(struct ConfItem* aconf)
   MyFree(aconf->user);
   MyFree(aconf->fakename);
 #ifdef HAVE_LIBCRYPTO
-  if (aconf->rsa_public_key)        { RSA_free(aconf->rsa_public_key); }
-  if (aconf->rsa_public_key_file)   { MyFree(aconf->rsa_public_key_file); }
+  if (aconf->rsa_public_key)
+    RSA_free(aconf->rsa_public_key);
+  MyFree(aconf->rsa_public_key_file);
 #endif
-  MyFree((char*) aconf);
+  MyFree((char*)aconf);
 }
 
 /*
@@ -392,7 +393,7 @@ check_client(struct Client *client_p, struct Client *source_p, char *username)
 	 source_p->name, source_p->localClient->sockhost);
   }
 
-  switch( i )
+  switch(i)
     {
     case SOCKET_ERROR:
       exit_client(client_p, source_p, &me, "Socket Error");
@@ -408,7 +409,7 @@ check_client(struct Client *client_p, struct Client *source_p, char *username)
 	   get_client_name(source_p, SHOW_IP));
       
       ServerStats->is_ref++;
-      (void)exit_client(client_p, source_p, &me, 
+      exit_client(client_p, source_p, &me, 
 			"No more connections allowed on that IP" );
       break;
 
@@ -422,7 +423,7 @@ check_client(struct Client *client_p, struct Client *source_p, char *username)
 	   get_client_name(source_p, SHOW_IP));
       
       ServerStats->is_ref++;
-      (void)exit_client(client_p, source_p, &me, 
+      exit_client(client_p, source_p, &me, 
 		"No more connections allowed in your connection class" );
       break;
 
@@ -597,7 +598,6 @@ attach_iline(struct Client *client_p, struct ConfItem *aconf)
  * side effects         - allocate memory for ip_entry(s)
  *			- clear the ip hash table
  */
-
 void 
 init_ip_hash_table()
 {
@@ -617,7 +617,6 @@ init_ip_hash_table()
  * If the ip # was not found, a new struct ip_entry is created, and the ip
  * count set to 0.
  */
-
 static struct ip_entry *
 find_or_add_ip(struct irc_inaddr *ip_in)
 {
@@ -661,7 +660,6 @@ find_or_add_ip(struct irc_inaddr *ip_in)
  *                 If ip # count reaches 0 and has expired,
  *		   the struct ip_entry is returned to the ip_entry_heap
  */
-
 void 
 remove_one_ip(struct irc_inaddr *ip_in)
 {
@@ -749,7 +747,6 @@ hash_ip(struct irc_inaddr *addr)
  * number of hashed ip #'s is counted up, plus the amount of memory
  * used in the hash.
  */
-
 void 
 count_ip_hash(int *number_ips_stored,u_long *mem_ips_stored)
 {

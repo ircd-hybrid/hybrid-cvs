@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.226 2003/02/23 04:16:12 db Exp $
+ *  $Id: s_user.c,v 7.227 2003/03/01 01:15:45 db Exp $
  */
 
 #include "stdinc.h"
@@ -394,11 +394,9 @@ register_local_user(struct Client *client_p, struct Client *source_p,
    *   -Taner
    */
   /* Except "F:" clients */
-  if ( ( (Count.local + 1) >= (GlobalSetOptions.maxclients+MAX_BUFFER)
-	 ||
-	 (Count.local +1) >= (GlobalSetOptions.maxclients - 5) )
-       &&
-       !(IsExemptLimits(source_p)) )
+  if (((Count.local + 1) >= (GlobalSetOptions.maxclients + MAX_BUFFER) ||
+      (Count.local +1) >= (GlobalSetOptions.maxclients - 5)) &&
+      !(IsExemptLimits(source_p)))
     {
       sendto_realops_flags(UMODE_FULL, L_ALL,
 			   "Too many clients, rejecting %s[%s].",
@@ -426,10 +424,10 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   /* end of valid user name check */
   
   if ((status = check_X_line(client_p,source_p)) < 0)
-    return status;
+    return(status);
 
   if (IsDead(client_p))
-    return CLIENT_EXITED;
+    return(CLIENT_EXITED);
 
   if (source_p->user->id[0] == '\0') 
     {
@@ -901,10 +899,8 @@ do_remote_user(char* nick, struct Client* client_p, struct Client* source_p,
   assert(source_p->username != username);
 
   if(source_p == NULL)
-    return 0;
+    return(0);
   user = make_user(source_p);
-
-  oflags = source_p->flags;
 
   /*
    * coming from another server, take the servers word for it
@@ -1109,8 +1105,8 @@ user_mode(struct Client *client_p, struct Client *source_p, int parc, char *parv
  * -avalon
  */
 void
-send_umode(struct Client *client_p, struct Client *source_p, int old, 
-		int sendmask,  char *umode_buf)
+send_umode(struct Client *client_p, struct Client *source_p,
+           int old, int sendmask, char *umode_buf)
 {
   int   i;
   int flag;
@@ -1168,8 +1164,7 @@ send_umode(struct Client *client_p, struct Client *source_p, int old,
  */
 void
 send_umode_out(struct Client *client_p,
-		    struct Client *source_p,
-		    int old)
+               struct Client *source_p, int old)
 {
   struct Client *target_p;
   char buf[BUFSIZE];
@@ -1177,8 +1172,8 @@ send_umode_out(struct Client *client_p,
 
   send_umode(NULL, source_p, old, SEND_UMODES, buf);
 
-  for(ptr = serv_list.head; ptr; ptr = ptr->next)
-    {
+  DLINK_FOREACH(ptr, serv_list.head)
+  {
       target_p = ptr->data;
 
       if((target_p != client_p) && (target_p != source_p) && (*buf))
@@ -1189,7 +1184,7 @@ send_umode_out(struct Client *client_p,
             sendto_one(target_p, ":%s MODE %s :%s",
                        source_p->name, source_p->name, buf);
         }
-    }
+  }
 
   if (client_p && MyClient(client_p))
     send_umode(client_p, source_p, old, ALL_UMODES, buf);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: list.h,v 7.15 2002/07/12 00:43:20 androsyn Exp $
+ *  $Id: list.h,v 7.16 2003/03/01 01:15:37 db Exp $
  */
 
 #ifndef INCLUDED_list_h
@@ -37,11 +37,10 @@ struct Ban;
 extern void initUser(void);
 extern void count_user_memory(int *count,int *user_memory_used);
 extern void count_links_memory(int *count,int *links_memory_used);
-extern void outofmemory(void);
 extern void free_user (struct User *, struct Client *);
 extern dlink_node *make_dlink_node (void);
 extern void free_dlink_node(dlink_node *lp);
-extern void init_dlink_nodes();
+extern void init_dlink_nodes(void);
 
 extern struct User     *make_user (struct Client *);
 extern struct Server   *make_server (struct Client *);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.142 2003/02/23 04:16:08 db Exp $
+ *  $Id: m_sjoin.c,v 1.143 2003/03/01 01:15:41 db Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.142 $";
+const char *_version = "$Revision: 1.143 $";
 #endif
 /*
  * ms_sjoin
@@ -144,7 +144,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
     return;
 
   /* SJOIN's for local channels can't happen. */
-  if (*parv[2] == '&')
+  if (*parv[2] != '#')
     return;
 
   mbuf = modebuf;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_gline.c,v 1.23 2002/09/05 02:48:42 db Exp $
+ *  $Id: s_gline.c,v 1.24 2003/03/01 01:15:45 db Exp $
  */
 
 #include "stdinc.h"
@@ -147,7 +147,7 @@ remove_gline_match(const char* user, const char* host)
  *                This is an event started off in ircd.c
  */
 void
-cleanup_glines()
+cleanup_glines(void *unused)
 {
   expire_glines();
   expire_pending_glines();
@@ -193,7 +193,7 @@ expire_glines()
  * enough "votes" in the time period allowed
  */
 static void
-expire_pending_glines()
+expire_pending_glines(void)
 {
   dlink_node *pending_node;
   dlink_node *next_node;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.226 2003/02/17 16:09:38 db Exp $
+ *  $Id: send.c,v 7.227 2003/03/01 01:15:45 db Exp $
  */
 
 #include "stdinc.h"
@@ -650,7 +650,7 @@ sendto_server(struct Client *one, struct Client *source_p,
   buf_head_t linebuf;
 
   if (chptr != NULL)
-    if (*chptr->chname == '&')
+    if (*chptr->chname != '#')
       return;
 
   linebuf_newbuf(&linebuf);

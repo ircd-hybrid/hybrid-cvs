@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_gline.h,v 7.11 2002/05/24 23:34:08 androsyn Exp $
+ *  $Id: s_gline.h,v 7.12 2003/03/01 01:15:37 db Exp $
  */
 
 #ifndef INCLUDED_s_gline_h
@@ -34,7 +34,7 @@ struct ConfItem;
 extern struct ConfItem* find_gkill(struct Client* client, char *);
 extern struct ConfItem* find_is_glined(const char* host, const char* name);
 extern int    remove_gline_match(const char *user, const char *host);
-extern void   cleanup_glines();
+extern void   cleanup_glines(void *unused);
 extern void   add_gline(struct ConfItem *);
 
 

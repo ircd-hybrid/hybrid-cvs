@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_join.c,v 1.96 2003/02/17 16:09:29 db Exp $
+ *  $Id: m_join.c,v 1.97 2003/03/01 01:15:39 db Exp $
  */
 
 #include "stdinc.h"
@@ -65,11 +65,10 @@ _moddeinit(void)
 {
   mod_del_cmd(&join_msgtab);
 }
-const char *_version = "$Revision: 1.96 $";
+const char *_version = "$Revision: 1.97 $";
 
 #endif
 static void do_join_0(struct Client *client_p, struct Client *source_p);
-void check_spambot_warning(struct Client *source_p, const char *name);
 
 
 /*
@@ -82,8 +81,7 @@ void check_spambot_warning(struct Client *source_p, const char *name);
 static void
 m_join(struct Client *client_p,
        struct Client *source_p,
-       int parc,
-       char *parv[])
+       int parc, char *parv[])
 {
   struct Channel *chptr = NULL;
   struct Channel *root_chptr = NULL;

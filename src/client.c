@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.335 2003/02/23 04:16:10 db Exp $
+ *  $Id: client.c,v 7.336 2003/03/01 01:15:44 db Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -1201,13 +1201,12 @@ dead_link_on_read(struct Client* client_p, int error)
   }
 
   if (error == 0)
-  {
-    strcpy(errmsg, "Remote host closed the connection");
-  }
+    strlcpy(errmsg, "Remote host closed the connection",
+            sizeof(errmsg));
   else
-  {
-    ircsprintf(errmsg, "Read error: %s", strerror(current_error));
-  }
+    ircsprintf(errmsg, "Read error: %s",
+               strerror(current_error));
+
   exit_client(client_p, client_p, &me, errmsg);
 }
 
@@ -1216,7 +1215,7 @@ exit_aborted_clients(void)
 {
   dlink_node *ptr, *next;
   struct Client *target_p;
-  char *notice;
+  const char *notice;
 
   DLINK_FOREACH_SAFE(ptr, next, abort_list.head)
     {
@@ -1306,15 +1305,16 @@ exit_client(
       if ((m = dlinkFindDelete(&unknown_list, source_p)) != NULL)
         free_dlink_node(m);
     }
-    else if (IsOper(source_p))
-    {
-      if ((m = dlinkFindDelete(&oper_list, source_p)) != NULL)
-        free_dlink_node(m);
-    }
-    if (IsClient(source_p))
+    else if (IsClient(source_p))
     {
       Count.local--;
-      
+
+      if (IsOper(source_p))
+      {
+        if ((m = dlinkFindDelete(&oper_list, source_p)) != NULL)
+          free_dlink_node(m);
+      }
+
       /* a little extra paranoia */
       if (IsPerson(source_p))
         dlinkDelete(&source_p->localClient->lclient_node, &lclient_list);
@@ -1425,7 +1425,7 @@ exit_client(
   assert(dlinkFind(&oper_list, source_p) == NULL);
 
   exit_one_client(client_p, source_p, from, comment);
-  return client_p == source_p ? CLIENT_EXITED : 0;
+  return(client_p == source_p ? CLIENT_EXITED : 0);
 }
 
 /*

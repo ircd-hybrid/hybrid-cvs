@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.105 2003/02/23 04:16:11 db Exp $
+ *  $Id: s_auth.c,v 7.106 2003/03/01 01:15:44 db Exp $
  */
 
 /*
@@ -78,7 +78,6 @@ static struct {
 typedef enum {
   REPORT_DO_DNS,
   REPORT_FIN_DNS,
-  REPORT_FIN_DNSC,
   REPORT_FAIL_DNS,
   REPORT_DO_ID,
   REPORT_FIN_ID,
@@ -425,9 +424,8 @@ timeout_auth_queries_event(void *notused)
   dlink_node *next_ptr;
   struct AuthRequest* auth;
 
-  for (ptr = auth_poll_list.head; ptr; ptr = next_ptr)
-    {
-      next_ptr = ptr->next;
+  DLINK_FOREACH_SAFE(ptr, next_ptr, auth_poll_list.head)
+  {
       auth = ptr->data;
 
       if (auth->timeout < CurrentTime)
@@ -642,10 +640,10 @@ delete_identd_queries(struct Client *target_p)
   dlink_node *ptr;
   dlink_node *next_ptr;
   struct AuthRequest* auth;
-  for (ptr = auth_poll_list.head; ptr; ptr = next_ptr)
-    {
+
+  DLINK_FOREACH_SAFE(ptr, next_ptr, auth_poll_list.head)
+  {
       auth = ptr->data;
-      next_ptr = ptr->next;
 
       if(auth->client == target_p)
 	{
@@ -655,10 +653,10 @@ delete_identd_queries(struct Client *target_p)
 	  free_auth_request(auth);
 	  free_dlink_node(ptr);
 	}
-    }
+  }
 
   DLINK_FOREACH_SAFE(ptr, next_ptr, auth_client_list.head)
-    {
+  {
       auth = ptr->data;
 
       if(auth->client == target_p)
@@ -669,5 +667,5 @@ delete_identd_queries(struct Client *target_p)
 	  free_auth_request(auth);
 	  free_dlink_node(ptr);
 	}
-    }
+  }
 }

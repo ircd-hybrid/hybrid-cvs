@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_list.c,v 1.46 2003/02/23 04:16:05 db Exp $
+ *  $Id: m_list.c,v 1.47 2003/03/01 01:15:39 db Exp $
  */
 
 #include "stdinc.h"
@@ -45,8 +45,9 @@
 static void m_list(struct Client*, struct Client*, int, char**);
 static void ms_list(struct Client*, struct Client*, int, char**);
 static void mo_list(struct Client*, struct Client*, int, char**);
-static int list_all_channels(struct Client *);
-static void list_one_channel(struct Client *,struct Channel *);
+static void list_one_channel(struct Client *, struct Channel *);
+static int list_all_channels(struct Client *source_p);
+static int list_named_channel(struct Client *source_p,char *name);
 
 struct Message list_msgtab = {
   "LIST", 0, 0, 0, 0, MFLG_SLOW, 0,
@@ -65,10 +66,8 @@ _moddeinit(void)
 {
   mod_del_cmd(&list_msgtab);
 }
-const char *_version = "$Revision: 1.46 $";
+const char *_version = "$Revision: 1.47 $";
 #endif
-static int list_all_channels(struct Client *source_p);
-static int list_named_channel(struct Client *source_p,char *name);
 
 
 /*
@@ -86,7 +85,7 @@ static void m_list(struct Client *client_p,
   /* If not a LazyLink connection, see if its still paced */
   /* If we're forwarding this to uplinks.. it should be paced due to the
    * traffic involved in /list.. -- fl_ */
-  if( ( (last_used + ConfigFileEntry.pace_wait) > CurrentTime) )
+  if(((last_used + ConfigFileEntry.pace_wait) > CurrentTime))
     {
       sendto_one(source_p,form_str(RPL_LOAD2HI),me.name,parv[0]);
       return;
@@ -96,7 +95,7 @@ static void m_list(struct Client *client_p,
 
 
   /* If its a LazyLinks connection, let uplink handle the list */
-  if( uplink && IsCapable(uplink,CAP_LL) )
+  if(uplink && IsCapable(uplink, CAP_LL))
     {
       if(parc < 2)
 	sendto_one( uplink, ":%s LIST", source_p->name );
@@ -132,12 +131,12 @@ static void mo_list(struct Client *client_p,
    * even for opers!
    */
 
-  if( uplink && IsCapable( uplink, CAP_LL) )
+  if(uplink && IsCapable(uplink, CAP_LL))
     {
       if(parc < 2)
-	sendto_one( uplink, ":%s LIST", source_p->name );
+	sendto_one(uplink, ":%s LIST", source_p->name);
       else
-	sendto_one( uplink, ":%s LIST %s", source_p->name, parv[1] );
+	sendto_one(uplink, ":%s LIST %s", source_p->name, parv[1]);
       return;
     }
 
@@ -164,9 +163,9 @@ static void ms_list(struct Client *client_p,
 {
   /* Only allow remote list if LazyLink request */
 
-  if( ServerInfo.hub )
+  if(ServerInfo.hub)
     {
-      if(!IsCapable(client_p->from,CAP_LL) && !MyConnect(source_p))
+      if(!IsCapable(client_p->from, CAP_LL) && !MyConnect(source_p))
 	return;
 
       if (parc < 2 || BadPtr(parv[1]))
@@ -204,7 +203,7 @@ list_all_channels(struct Client *source_p)
     }
 
   sendto_one(source_p, form_str(RPL_LISTEND), me.name, source_p->name);
-  return 0;
+  return(0);
 }   
           
 /*
