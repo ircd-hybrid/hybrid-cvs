@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.335 2003/01/16 23:10:56 db Exp $
+ *  $Id: s_conf.c,v 7.336 2003/01/17 03:15:59 db Exp $
  */
 
 #include "stdinc.h"
@@ -422,15 +422,16 @@ report_specials(struct Client* source_p, int flags, int numeric)
 int 
 check_client(struct Client *client_p, struct Client *source_p, char *username)
 {
-  static char     sockname[HOSTLEN + 1];
-  int             i;
+  int i;
  
   ClearAccess(source_p);
 
+  /* I'm already in big trouble if source_p->localClient is NULL -db */
   if ((i = verify_access(source_p, username)))
-    {
-      ilog(L_INFO, "Access denied: %s[%s]", source_p->name, sockname);
-    }
+  {
+    ilog(L_INFO, "Access denied: %s[%s]", 
+	 source_p->name, source_p->localClient->sockhost);
+  }
 
   switch( i )
     {
