@@ -1,3 +1,15 @@
+leeh        2002/01/03 18:46:18 EST	(20020103_1)
+
+  Modified files:
+    src                  channel.c 
+  Log:
+  - dont allow users to send to resv'd channels
+  
+  Revision  Changes    Path
+  7.289     +4 -0      ircd-hybrid-7/src/channel.c
+
+
+
 leeh        2002/01/03 07:11:33 EST	(20020103_0)
 
   Modified files:
@@ -2135,7 +2147,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3282 2002/01/03 12:11:38 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3283 2002/01/03 23:46:23 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -20489,4 +20501,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3282 2002/01/03 12:11:38 leeh Exp $
+$Id: ChangeLog,v 7.3283 2002/01/03 23:46:23 leeh Exp $
