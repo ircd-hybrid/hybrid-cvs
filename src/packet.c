@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.98 2003/01/17 13:00:53 db Exp $
+ *  $Id: packet.c,v 7.99 2003/01/19 13:19:51 db Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -298,7 +298,7 @@ read_ctrl_packet(int fd, void *data)
     {
       if((length == -1) && ignoreErrno(errno))
         goto nodata;
-      error_exit_client(server, length);
+      dead_link_on_read(server, length);
       return;
     }
 
@@ -329,7 +329,7 @@ read_ctrl_packet(int fd, void *data)
     {
       if((length == -1) && ignoreErrno(errno))
         goto nodata;
-      error_exit_client(server, length);
+      dead_link_on_read(server, length);
       return;
     }
 
@@ -406,7 +406,7 @@ read_packet(int fd, void *data)
       		read_packet, client_p, 0);
       return;
     }  	
-    error_exit_client(client_p, length);
+    dead_link_on_read(client_p, length);
     return;
   }
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.272 2003/01/11 03:52:29 db Exp $
+ *  $Id: s_serv.c,v 7.273 2003/01/19 13:19:52 db Exp $
  */
 
 #include "stdinc.h"
@@ -2199,11 +2199,7 @@ serv_connect_callback(int fd, int status, void *data)
 	/* If a fd goes bad, call dead_link() the socket is no
 	 * longer valid for reading or writing.
 	 */
-	dead_link(client_p);
-#if 0
-	/* might pass comm_errstr() into dead_link in future -db */
-	exit_client(client_p, client_p, &me, comm_errstr(status));
-#endif
+	dead_link_on_write(client_p);
         return;
       }
 
@@ -2272,13 +2268,6 @@ serv_connect_callback(int fd, int status, void *data)
         sendto_realops_flags(FLAGS_ALL, L_OPER,
 			     "%s went dead during handshake", client_p->name);
 
-	/* Only dead_link() sets IsDead()
-	 * dead_link() already calls exit_client()
-	 * so this exit_client() is unnecessary -db
-	 */
-#if 0
-        exit_client(client_p, client_p, &me, "Went dead during handshake");
-#endif
         return;
     }
 

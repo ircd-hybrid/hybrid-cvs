@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.336 2003/01/17 03:15:59 db Exp $
+ *  $Id: s_conf.c,v 7.337 2003/01/19 13:19:52 db Exp $
  */
 
 #include "stdinc.h"
@@ -276,7 +276,8 @@ report_configured_links(struct Client* source_p, int mask)
   char*		     classname;
   int                port;
 
-  for (tmp = ConfigItemList; tmp; tmp = tmp->next) {
+  for (tmp = ConfigItemList; tmp; tmp = tmp->next)
+  {
     if (tmp->status & mask)
       {
         for (p = &report_array[0]; p->conf_type; p++)

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.h,v 7.36 2002/05/24 23:34:08 androsyn Exp $
+ *  $Id: s_bsd.h,v 7.37 2003/01/19 13:19:50 db Exp $
  */
 
 #ifndef INCLUDED_s_bsd_h
@@ -59,7 +59,6 @@ extern void  report_error(int, const char*, const char*, int);
 extern int   set_non_blocking(int);
 extern int   set_sock_buffers(int, int);
 
-extern void  error_exit_client(struct Client*, int);
 extern int   get_sockerr(int);
 extern int   ignoreErrno(int ierrno);
 
