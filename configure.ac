@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.72 2003/06/26 01:41:55 joshk Exp $
+dnl $Id: configure.ac,v 7.73 2003/06/27 07:35:31 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -8,7 +8,7 @@ dnl said functions need to be just about as complex as they already are.
 AC_PREREQ(2.57)
 
 dnl Sneaky way to get an Id tag into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.72 2003/06/26 01:41:55 joshk Exp $])
+AC_COPYRIGHT([$Id: configure.ac,v 7.73 2003/06/27 07:35:31 joshk Exp $])
 
 AC_INIT([ircd-hybrid],[7-CURRENT])
 
@@ -77,9 +77,14 @@ case `$CC -V 2>&1` in
 ;;
 esac
 
-fi
+AC_MSG_CHECKING([uname -s for old HP-UX])
 
-AC_MSG_CHECKING(uname -s for old HP-UX or Cygwin)
+else
+
+dnl Cygwin only has gcc :)
+AC_MSG_CHECKING([uname -s for Cygwin])
+
+fi
 
 case `uname -s` in
         HP-UX*)
@@ -135,7 +140,7 @@ else
 	AC_MSG_RESULT(no)
 fi
 
-dnl We prefer BSD mkdep
+dnl We prefer gcc -MM because it's a lot less bloated
 AC_PATH_PROG(MKDEP, mkdep)
 AC_PATH_PROG(MAKEDEPEND, makedepend)
 
@@ -143,8 +148,11 @@ AC_MSG_CHECKING(how to generate dependency info)
 
 STDOUT="> .depend"
 
-if test ! -z "$MKDEP"; then
-	AC_MSG_RESULT(BSD mkdep)
+if test "$ac_cv_c_compiler_gnu" = yes; then
+	AC_MSG_RESULT(gcc -MM)
+	MKDEP="$CC -MM"
+elif test ! -z "$MKDEP"; then
+	AC_MSG_RESULT(mkdep)
 
 	dnl Tru64's mkdep is very loud
 	if test -z "$Tru"; then
@@ -153,14 +161,14 @@ if test ! -z "$MKDEP"; then
 		STDOUT=" 2> /dev/null"
 	fi
 elif test "$SunWorkShop" = yes; then
-	AC_MSG_RESULT([Sun WorkShop/Forte using $CC -xM])
+	AC_MSG_RESULT($CC -xM)
 	MKDEP="$CC -xM"
 	STDOUT="> .depend 2> /dev/null"
 elif test ! -z "$MAKEDEPEND"; then
-	AC_MSG_RESULT(X11 makedepend)
+	AC_MSG_RESULT(makedepend)
 	MKDEP="$MAKEDEPEND -f-"
 else
-	AC_MSG_RESULT([nothing useful found, assuming $CC -MM])
+	AC_MSG_RESULT([beats me, assuming $CC -MM])
 	MKDEP="$CC -MM"
 fi
 

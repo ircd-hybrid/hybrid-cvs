@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.445 2003/06/27 04:39:34 db Exp $
+ *  $Id: s_conf.c,v 7.446 2003/06/27 07:35:34 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -1693,7 +1693,7 @@ find_exact_name_conf(ConfType type,
       {
 	if (EmptyString(aconf->host))
 	  continue;
-	if (irccmp(aconf->host, name) == 0)
+	if (irccmp(aconf->host, host) == 0)
 	  return(conf);
       }
       else if (irccmp(aconf->name, name) == 0)
