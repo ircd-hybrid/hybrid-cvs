@@ -1,3 +1,15 @@
+wiz         2002/10/29 17:53:10 EST	(20021029_2)
+
+  Modified files:
+    .                    Hybrid-team 
+  Log:
+  Hi everybody, I'm wiz.
+  
+  Revision  Changes    Path
+  7.53      +1 -0      ircd-hybrid-7/Hybrid-team
+
+
+
 db          2002/10/29 15:14:37 EST	(20021029_1)
 
   Modified files:
@@ -32746,4 +32758,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4081 2002/10/29 20:14:39 db Exp $
+$Id: ChangeLog,v 7.4082 2002/10/29 22:53:13 wiz Exp $
