@@ -1,5 +1,5 @@
 This file outlines the features that ircd-hybrid has for IRC Operators.
-$Id: opers.txt,v 7.3 2000/09/29 17:16:48 ejb Exp $
+$Id: opers.txt,v 7.4 2000/10/14 20:54:27 toot Exp $
 
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
@@ -22,8 +22,9 @@ Usermodes: (* designates that the umode is oper only)
        * +y     - Can see stats/links/admin requests to name a few.
        * +d     - Can see server debug messages.
        * +n     - Can see client nick changes.
-       * +x	- Can see new server introduction messages.
-       * +b	- Can see possible bot warnings.
+       * +x     - Can see new server introduction messages.
+       * +b     - Can see possible bot warnings.
+       * +a     - Is marked as a server admin in whois.
 
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
@@ -242,6 +243,7 @@ COMMAND         - USAGE and DESCRIPTION
                                   constitutes a possible spambot.
                       SPAMTIME  - Below this time on a channel
                                   counts as a join/part as above.
+
 + GLINE         - GLINE <user@host> :[reason]
 		   -- if glines are enabled --
                    Attempts to add a global IRC-network wide ban on

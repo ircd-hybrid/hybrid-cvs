@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 7.9 2000/09/29 17:17:04 ejb Exp $
+ *   $Id: m_whois.c,v 7.10 2000/10/14 20:54:31 toot Exp $
  */
 
 #include "handlers.h"
@@ -274,9 +274,11 @@ int     m_whois(struct Client *cptr,
           if (IsAnOper(acptr))
             sendto_one(sptr, form_str(RPL_WHOISOPERATOR),
                        me.name, parv[0], name);
-		  if (IsOper(acptr) && acptr->umodes & FLAGS_ADMIN )
-			  sendto_one(sptr, form_str(RPL_WHOISADMIN),
-						 me.name, parv[0], name);
+
+          if (IsOper(acptr) && acptr->umodes & FLAGS_ADMIN )
+            sendto_one(sptr, form_str(RPL_WHOISADMIN),
+                       me.name, parv[0], name);
+
           if (ConfigFileEntry.whois_notice && 
               (MyOper(acptr)) && ((acptr)->umodes & FLAGS_SPY) &&
               (MyConnect(sptr)) && (IsPerson(sptr)) && (acptr != sptr))
@@ -402,8 +404,13 @@ int     m_whois(struct Client *cptr,
           if (IsAnOper(acptr))
             sendto_one(sptr, form_str(RPL_WHOISOPERATOR),
                        me.name, parv[0], name);
+
+          if (IsOper(acptr) && acptr->umodes & FLAGS_ADMIN )
+            sendto_one(sptr, form_str(RPL_WHOISADMIN),
+                       me.name, parv[0], name);
+
           if (ConfigFileEntry.whois_notice && 
-              (MyOper(acptr)) && ((acptr)->flags & FLAGS_SPY) &&
+              (MyOper(acptr)) && ((acptr)->umodes & FLAGS_SPY) &&
               (MyConnect(sptr)) && (IsPerson(sptr)) && (acptr != sptr))
             sendto_one(acptr,
                        ":%s NOTICE %s :*** Notice -- %s (%s@%s) is doing a /whois on you.",

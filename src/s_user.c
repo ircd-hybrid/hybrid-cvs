@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.31 2000/10/06 04:27:04 lusky Exp $
+ *  $Id: s_user.c,v 7.32 2000/10/14 20:54:32 toot Exp $
  */
 #include "s_user.h"
 #include "channel.h"
@@ -120,7 +120,7 @@ int user_modes_from_c_to_bitmask[] =
   0,            /* L */
   0,            /* M */
   0,            /* N */
-  FLAGS_LOCOPS, /* O */
+  FLAGS_LOCOP,  /* O */
   0,            /* P */
   0,            /* Q */
   0,            /* R */
