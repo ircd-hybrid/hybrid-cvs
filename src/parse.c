@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.193 2004/01/31 15:03:08 adx Exp $
+ *  $Id: parse.c,v 7.194 2004/02/03 03:59:55 michael Exp $
  */
 
 #include "stdinc.h"
@@ -283,9 +283,7 @@ parse(struct Client *client_p, char *pbuffer, char *bufend)
     if ((s = strchr(ch, ' ')) != NULL)
       *s++ = '\0';
 
-    mptr = find_command(ch);
-
-    if ((mptr == NULL) || (mptr->cmd == NULL))
+    if ((mptr = find_command(ch)) == NULL)
     {
       /* Note: Give error message *only* to recognized
        * persons. It's a nightmare situation to have
@@ -307,6 +305,8 @@ parse(struct Client *client_p, char *pbuffer, char *bufend)
       ServerStats->is_unco++;
       return;
     }
+
+    assert(mptr->cmd != NULL);
 
     paramcount = mptr->parameters;
     mpara      = mptr->maxpara;
@@ -388,15 +388,15 @@ handle_command(struct Message *mptr, struct Client *client_p,
     (*handler)(client_p, from, i, hpara);
 }
 
-/* clear_hash_parse()
+/* clear_tree_parse()
  *
- * inputs       -
+ * inputs       - NONE
  * output       - NONE
  * side effects - MUST MUST be called at startup ONCE before
  *                any other keyword routine is used.
  */
 void
-clear_hash_parse(void)
+clear_tree_parse(void)
 {
   memset(&msg_tree, 0, sizeof(msg_tree));
 }
@@ -515,11 +515,12 @@ static struct Message *
 msg_tree_parse(const char *cmd, struct MessageTree *root)
 {
   struct MessageTree *mtree;
+  assert(cmd && *cmd);
   for (mtree = root->pointers[(*cmd) & (MAXPTRLEN-1)]; mtree != NULL;
        mtree = mtree->pointers[(*++cmd) & (MAXPTRLEN-1)])
   {
-    if ((*(cmd+1) == '\0') && (mtree->msg != NULL))
-      return(mtree->msg);
+    if (*(cmd + 1) == '\0')
+      return(mtree->msg); /* NULL if parsed invalid/unknown command */
 
   }
 
@@ -528,8 +529,7 @@ msg_tree_parse(const char *cmd, struct MessageTree *root)
 
 /* mod_add_cmd()
  *
- * inputs	- command name
- *		- pointer to struct Message
+ * inputs	- pointer to struct Message
  * output	- none
  * side effects - load this one command name
  *		  msg->count msg->bytes is modified in place, in
@@ -543,6 +543,9 @@ mod_add_cmd(struct Message *msg)
   if (msg == NULL)
     return;
 
+  /* someone loaded a module with a bad messagetab */
+  assert(msg->cmd != NULL);
+
   /* command already added? */
   if ((found_msg = msg_tree_parse(msg->cmd, &msg_tree)) != NULL)
     return;
@@ -553,7 +556,7 @@ mod_add_cmd(struct Message *msg)
 
 /* mod_del_cmd()
  *
- * inputs	- command name
+ * inputs	- pointer to struct Message
  * output	- none
  * side effects - unload this one command name
  */
@@ -589,10 +592,8 @@ find_command(const char *cmd)
 void
 report_messages(struct Client *source_p)
 {
-  struct MessageTree *mtree;
+  struct MessageTree *mtree = &msg_tree;
   int i;
-
-  mtree = &msg_tree;
 
   for (i = 0; i < MAXPTRLEN; i++)
   {
