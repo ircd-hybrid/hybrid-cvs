@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.175 2001/01/05 01:11:29 ejb Exp $
+ * $Id: channel.c,v 7.176 2001/01/05 02:19:36 davidt Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -60,10 +60,6 @@ static  void    destroy_channel(struct Channel *);
 static void send_mode_list(struct Client *, char *, dlink_list *,
                            char, int);
 
-static void sync_channel_oplists(struct Channel *,
-                                 int);
-static void sync_oplists(struct Channel *,
-                         struct Client *, int, char *);
 static void send_oplist(char *, struct Client *,
                         dlink_list *, char *, int);
 
@@ -3212,7 +3208,7 @@ char *channel_chanop_or_voice(struct Channel *chptr, struct Client *acptr)
  * side effects - Sends MODE +o/+h/+v list to user
  *                (for +a channels)
  */
-static void sync_oplists(struct Channel *chptr, struct Client *acptr,
+void sync_oplists(struct Channel *chptr, struct Client *acptr,
                          int clear, char *name)
 {
   send_oplist(name, acptr, &chptr->chanops, "o", clear);
@@ -3274,7 +3270,7 @@ static void send_oplist(char *chname, struct Client *cptr,
     }
 }
 
-static void sync_channel_oplists(struct Channel *chptr,
+void sync_channel_oplists(struct Channel *chptr,
                                  int clear)
 {
   dlink_node *ptr;

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.56 2001/01/04 20:36:42 a1kmm Exp $
+ * $Id: channel.h,v 7.57 2001/01/05 02:19:31 davidt Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -144,6 +144,8 @@ extern void    channel_member_list(struct Client *sptr,
 				   int *cur_len,
 				   int *reply_to_send);
 
+extern void sync_channel_oplists(struct Channel *, int);
+extern void sync_oplists(struct Channel *, struct Client *, int, char *);
 
 /*
 ** Channel Related macros follow
