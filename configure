@@ -4510,9 +4510,15 @@ echo "${ECHO_T}$ac_cv_type_u_int32_t" >&6
 if test $ac_cv_type_u_int32_t = yes; then
   :
 else
-  { { echo "$as_me:$LINENO: error: u_int32_t is not defined; aborting" >&5
-echo "$as_me: error: u_int32_t is not defined; aborting" >&2;}
-   { (exit 1); exit 1; }; }
+
+	{ echo "$as_me:$LINENO: WARNING: system does not define u_int32_t - defaulting to using unsigned int" >&5
+echo "$as_me: WARNING: system does not define u_int32_t - defaulting to using unsigned int" >&2;}
+
+cat >>confdefs.h <<\_ACEOF
+#define u_int32_t unsigned int
+_ACEOF
+
+
 fi
 
 echo "$as_me:$LINENO: checking for unsigned int" >&5

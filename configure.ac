@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.9 2003/05/10 02:20:16 joshk Exp $
+dnl $Id: configure.ac,v 7.10 2003/05/10 08:57:06 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -223,7 +223,11 @@ AC_CHECK_HEADER(stdarg.h, , [AC_MSG_ERROR([** stdarg.h could not be found - ircd
 dnl Checks for the existance of strlcat
 AC_CHECK_FUNCS([strlcat strlcpy socketpair])
 
-AC_CHECK_TYPE([u_int32_t], [], [AC_MSG_ERROR([u_int32_t is not defined; aborting])])
+AC_CHECK_TYPE([u_int32_t], [],
+[
+	AC_MSG_WARN([system does not define u_int32_t - defaulting to using unsigned int])
+	AC_DEFINE(u_int32_t, [unsigned int], [If system does not define u_int32_t, define to unsigned int here.])
+])
 AC_CHECK_TYPE([unsigned int], [], [AC_MSG_ERROR([unsigned int is not defined; aborting])])
 AC_CHECK_TYPES([uintptr_t])
 
