@@ -1,3 +1,11 @@
+*** 20001201_2 by adrian
+
+
+aiee! clear the socket timeout *before* calling the timeout handler.
+If we clear it after, we miss any timeouts set by the timeout handler.
+(think multiple-ping checks ..)
+
+
 *** 20001201_1 by adrian
 
 
@@ -1244,7 +1252,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.648 2000/12/01 15:01:49 adrian Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.649 2000/12/01 15:03:30 adrian Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
