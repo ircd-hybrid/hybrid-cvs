@@ -1,5 +1,6 @@
 # MMS/MMK Makefile for OpenVMS
 # Copyright (c) 2001 Edward Brocklesby
+# $Id: descrip.mms,v 7.5 2002/02/05 21:34:01 ejb Exp $
 
 CC=	CC
 CFLAGS=	/STANDARD=ISOC94
@@ -9,6 +10,9 @@ ALL : CONVERTCONF,MKPASSWD
 
 CRYPT.C : [-.SRC]CRYPT.C
 	COPY [-.SRC]CRYPT.C []
+
+CRYPT.OBJ : CRYPT.C
+	$(CC)$(CFLAGS) CRYPT.C
 
 MKPASSWD : MKPASSWD.OBJ CRYPT.OBJ 
 	LINK MKPASSWD, CRYPT
