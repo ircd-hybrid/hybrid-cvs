@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.344 2002/11/28 17:36:58 db Exp $
+ *  $Id: channel.c,v 7.345 2002/12/16 05:00:39 db Exp $
  */
 
 #include "stdinc.h"
@@ -250,11 +250,10 @@ remove_user_from_channel(struct Channel *chptr, struct Client *who)
     {
       dlinkDelete(ptr, &who->user->channel);
       free_dlink_node(ptr);
+      who->user->joined--;
       break;
     }
   }
-
-  who->user->joined--;
 
 #ifdef VCHANS
   if (IsVchan(chptr))
@@ -635,11 +634,11 @@ delete_members(struct Channel *chptr, dlink_list * list)
       {
         dlinkDelete(ptr_ch, &who->user->channel);
         free_dlink_node(ptr_ch);
+	who->user->joined--;
         break;
       }
     }
 
-    who->user->joined--;
 
 #ifdef VCHANS
     if (IsVchan(chptr))
