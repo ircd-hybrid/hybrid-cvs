@@ -1,29 +1,10 @@
 /*
  * include/res.h (C)opyright 1992 Darren Reed.
  *
- * $Id: irc_reslib.h,v 7.4 2003/05/13 03:06:25 joshk Exp $
+ * $Id: irc_reslib.h,v 7.5 2003/05/13 05:16:24 joshk Exp $
  */
 #ifndef INCLUDED_ircdreslib_h
 #define INCLUDED_ircdreslib_h
-
-/* OpenBSD and Cygwin (and probably others) don't define these in
- * arpa/nameser.h like FreeBSD and Linux do... */
-
-#ifndef NS_INT16SZ
-#define NS_INT16SZ 2
-#endif
-
-#ifndef NS_INT32SZ
-#define NS_INT32SZ 4
-#endif
-
-#ifndef NS_CMPRSFLGS
-#define NS_CMPRSFLGS    0xc0
-#endif
-
-#ifndef NS_MAXCDNAME
-#define NS_MAXCDNAME    255
-#endif
 
 /*
  * Inline versions of get/put short/long.  Pointer is advanced.
@@ -72,14 +53,14 @@ int irc_ns_name_ntop(const u_char *src, char *dst, size_t dstsiz);
 int irc_dn_comp(const char *src, u_char *dst, int dstsiz, u_char **dnptrs, u_char **lastdnptr);
 int irc_dn_skipname(const u_char *ptr, const u_char *eom);
 int ns_name_skip(const u_char **ptrptr, const u_char *eom);
-u_int ns_get16(const u_char *src);
-u_long ns_get32(const u_char *src);
-void ns_put16(u_int src, u_char *dst);
-void ns_put32(u_long src, u_char *dst);
+u_int __ns_get16(const u_char *src);
+u_long __ns_get32(const u_char *src);
+void __ns_put16(u_int src, u_char *dst);
+void __ns_put32(u_long src, u_char *dst);
 int irc_ns_name_pton(const char *src, u_char *dst, size_t dstsiz);
 int irc_ns_name_pack(const u_char *src, u_char *dst, int dstsiz, const u_char **dnptrs, const u_char **lastdnptr);
 int irc_res_mkquery(int op, const char *dname, int class, int type, const u_char *data, int datalen, u_char *buf, int buflen);
 
 #endif /* INCLUDED_res_h */
 
-/* $Id: irc_reslib.h,v 7.4 2003/05/13 03:06:25 joshk Exp $ */
+/* $Id: irc_reslib.h,v 7.5 2003/05/13 05:16:24 joshk Exp $ */

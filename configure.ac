@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.16 2003/05/13 02:32:09 joshk Exp $
+dnl $Id: configure.ac,v 7.17 2003/05/13 05:16:22 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -184,7 +184,7 @@ AC_SUBST(CRYPT_LIB)
 
 dnl Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS([crypt.h inttypes.h sys/resource.h sys/param.h unistd.h errno.h string.h strings.h sys/syslog.h stdlib.h stddef.h getopt.h])
+AC_CHECK_HEADERS([crypt.h inttypes.h sys/resource.h sys/param.h unistd.h errno.h string.h strings.h sys/syslog.h stdlib.h stddef.h getopt.h arpa/nameser.h])
 
 dnl See whether we can include both string.h and strings.h.
 AC_CACHE_CHECK([whether string.h and strings.h may both be included],
@@ -217,6 +217,8 @@ AC_CACHE_CHECK([for socklen_t], have_socklen_t,
 if test $have_socklen_t != yes; then
 	AC_DEFINE([socklen_t], [int], [If we don't have a real socklen_t, int is good enough.])
 fi
+
+AC_C_BIGENDIAN
 
 dnl Check for stdarg.h - if we can't find it, halt configure
 AC_CHECK_HEADER(stdarg.h, , [AC_MSG_ERROR([** stdarg.h could not be found - ircd-hybrid will not compile without it **])])

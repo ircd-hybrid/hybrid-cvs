@@ -80,10 +80,9 @@
  * - Dianora
  */
 
-#include <arpa/nameser.h>
-
 #include "stdinc.h"
 #include "irc_reslib.h"	
+#include "irc_res.h"	
 #include "ircd_defs.h"
 #include "fileio.h"
 #include "irc_string.h"
@@ -93,7 +92,7 @@
 #define DNS_LABELTYPE_BITSTRING		0x41
 #define MAXLINE 128
 
-/* $Id: irc_reslib.c,v 7.6 2003/05/13 04:21:38 joshk Exp $ */
+/* $Id: irc_reslib.c,v 7.7 2003/05/13 05:16:26 joshk Exp $ */
 
 static FBFILE *file;
 
@@ -749,7 +748,7 @@ irc_ns_name_pton(const char *src, u_char *dst, size_t dstsiz)
           }
           *bp++ = '\0';
         }
-        if ((bp - dst) > MAXCDNAME) {
+        if ((bp - dst) > NS_MAXCDNAME) {
           errno = EMSGSIZE;
           return (-1);
         }
@@ -786,7 +785,7 @@ irc_ns_name_pton(const char *src, u_char *dst, size_t dstsiz)
     }
     *bp++ = 0;
   }
-  if ((bp - dst) > MAXCDNAME) { /* src too big */
+  if ((bp - dst) > NS_MAXCDNAME) { /* src too big */
     errno = EMSGSIZE;
     return (-1);
   }
@@ -847,7 +846,7 @@ irc_ns_name_pack(const u_char *src, u_char *dst, int dstsiz,
       return(-1);
     }
     l += l0 + 1;
-    if (l > MAXCDNAME) {
+    if (l > NS_MAXCDNAME) {
       errno = EMSGSIZE;
       return (-1);
     }
@@ -1155,10 +1154,10 @@ irc_res_mkquery(
 			return (-1);
 		cp += n;
 		buflen -= n;
-		NS_PUT16(type, cp);
-		cp += INT16SZ;
-		NS_PUT16(class, cp);
-		cp += INT16SZ;
+		IRC_NS_PUT16(type, cp);
+		cp += NS_INT16SZ;
+		IRC_NS_PUT16(class, cp);
+		cp += NS_INT16SZ;
 		hp->qdcount = htons(1);
 		if (op == QUERY || data == NULL)
 			break;
@@ -1171,14 +1170,14 @@ irc_res_mkquery(
 			return (-1);
 		cp += n;
 		buflen -= n;
-		NS_PUT16(T_NULL, cp);
-		cp += INT16SZ;
-		NS_PUT16(class, cp);
-		cp += INT16SZ;
-		NS_PUT32(0, cp);
-		cp += INT32SZ;
-		NS_PUT16(0, cp);
-		cp += INT16SZ;
+		IRC_NS_PUT16(T_NULL, cp);
+		cp += NS_INT16SZ;
+		IRC_NS_PUT16(class, cp);
+		cp += NS_INT16SZ;
+		IRC_NS_PUT32(0, cp);
+		cp += NS_INT32SZ;
+		IRC_NS_PUT16(0, cp);
+		cp += NS_INT16SZ;
 		hp->arcount = htons(1);
 		break;
 
@@ -1189,14 +1188,14 @@ irc_res_mkquery(
 		if (buflen < 1 + RRFIXEDSZ + datalen)
 			return (-1);
 		*cp++ = '\0';	/* no domain name */
-		NS_PUT16(type, cp);
-		cp += INT16SZ;
-		NS_PUT16(class, cp);
-		cp += INT16SZ;
-		NS_PUT32(0, cp);
-		cp += INT32SZ;
-		NS_PUT16(datalen, cp);
-		cp += INT16SZ;
+		IRC_NS_PUT16(type, cp);
+		cp += NS_INT16SZ;
+		IRC_NS_PUT16(class, cp);
+		cp += NS_INT16SZ;
+		IRC_NS_PUT32(0, cp);
+		cp += NS_INT32SZ;
+		IRC_NS_PUT16(datalen, cp);
+		cp += NS_INT16SZ;
 		if (datalen) {
 			memcpy(cp, data, datalen);
 			cp += datalen;

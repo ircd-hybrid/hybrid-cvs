@@ -7,6 +7,9 @@
 /* Define if this ircd will be an EFnet server. */
 #undef EFNET
 
+/* Define to 1 if you have the <arpa/nameser.h> header file. */
+#undef HAVE_ARPA_NAMESER_H
+
 /* Define to 1 if you have the <crypt.h> header file. */
 #undef HAVE_CRYPT_H
 
@@ -188,6 +191,10 @@
 /* Using sigio futzes around with the ircd - if you want sigio to work, this
    has to be 1. */
 #undef USE_SIGIO
+
+/* Define to 1 if your processor stores words with the most significant byte
+   first (like Motorola and SPARC, unlike Intel and VAX). */
+#undef WORDS_BIGENDIAN
 
 /* Define to 1 if `lex' declares `yytext' as a `char *' by default, not a
    `char[]'. */
