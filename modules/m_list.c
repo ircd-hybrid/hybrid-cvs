@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_list.c,v 1.55 2003/04/18 21:48:36 adx Exp $
+ *  $Id: m_list.c,v 1.56 2003/05/01 15:53:35 michael Exp $
  */
 
 #include "stdinc.h"
@@ -41,12 +41,9 @@
 #include "parse.h"
 #include "modules.h"
 
-static void m_list(struct Client*, struct Client*, int, char**);
-static void ms_list(struct Client*, struct Client*, int, char**);
-static void mo_list(struct Client*, struct Client*, int, char**);
-static void list_one_channel(struct Client *, struct Channel *);
-static int list_all_channels(struct Client *source_p);
-static int list_named_channel(struct Client *source_p,char *name);
+static void m_list(struct Client *, struct Client *, int, char **);
+static void ms_list(struct Client *, struct Client *, int, char **);
+static void mo_list(struct Client *, struct Client *, int, char **);
 
 struct Message list_msgtab = {
   "LIST", 0, 0, 0, 0, MFLG_SLOW, 0,
@@ -65,7 +62,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&list_msgtab);
 }
-const char *_version = "$Revision: 1.55 $";
+const char *_version = "$Revision: 1.56 $";
 #endif
 
 

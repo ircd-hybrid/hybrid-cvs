@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: io.c,v 1.28 2001/10/04 21:22:10 androsyn Exp $
+ *   $Id: io.c,v 1.29 2003/05/01 15:53:37 michael Exp $
  */
 
 #include "setup.h"
@@ -45,7 +45,8 @@
 
 static int check_error(int, int, int);
 
-static char *fd_name(int fd)
+static const char *
+fd_name(int fd)
 {
   if (fd == CONTROL_R.fd)
     return "control read";
@@ -59,7 +60,7 @@ static char *fd_name(int fd)
     return "network";
 
   /* uh oh... */
-  return "unknown";
+  return("unknown");
 }
 
 #if defined( HAVE_LIBCRYPTO ) || defined( HAVE_LIBZ )
@@ -73,7 +74,8 @@ static unsigned char ctrl_buf[256] = "";
 static unsigned int  ctrl_len = 0;
 static unsigned int  ctrl_ofs = 0;
 
-void io_loop(int nfds)
+void
+io_loop(int nfds)
 {
   fd_set rfds;
   fd_set wfds;
@@ -114,7 +116,8 @@ void io_loop(int nfds)
   }
 }
 
-void send_data_blocking(int fd, unsigned char *data, int datalen)
+void
+send_data_blocking(int fd, unsigned char *data, int datalen)
 {
   int ret;
   fd_set wfds;
@@ -158,7 +161,8 @@ void send_data_blocking(int fd, unsigned char *data, int datalen)
  * used before CMD_INIT to pass contents of SendQ from ircd
  * to servlink.  This data must _not_ be encrypted/compressed.
  */
-void process_sendq(struct ctrl_command *cmd)
+void
+process_sendq(struct ctrl_command *cmd)
 {
   send_data_blocking(REMOTE_W.fd, cmd->data, cmd->datalen);
 }
@@ -170,7 +174,8 @@ void process_sendq(struct ctrl_command *cmd)
  * to servlink.  This data must be decrypted/decopmressed before
  * sending back to the ircd.
  */
-void process_recvq(struct ctrl_command *cmd)
+void
+process_recvq(struct ctrl_command *cmd)
 {
   int ret;
   unsigned char *buf;
@@ -291,7 +296,7 @@ void send_zipstats(struct ctrl_command *unused)
  *     flush the control fd sendq, then (blocking) send an
  *     error message over the control fd.
  */
-void send_error(char *message, ...)
+void send_error(const char *message, ...)
 {
   va_list args;
   static int sending_error = 0;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: rsa.c,v 7.26 2003/02/23 04:16:11 db Exp $
+ *  $Id: rsa.c,v 7.27 2003/05/01 15:53:39 michael Exp $
  */
 
 #include "stdinc.h"
@@ -42,23 +42,22 @@
 #include "client.h" /* CIPHERKEYLEN .. eww */
 
 #ifdef HAVE_LIBCRYPTO
-
-void report_crypto_errors(void);
-int verify_private_key(void);
-static void binary_to_hex( unsigned char * bin, char * hex, int length );
+static void binary_to_hex(unsigned char *bin, char *hex, int length);
 
         
 
 /*
  * report_crypto_errors - Dump crypto error list to log
  */
-void report_crypto_errors(void)
+void
+report_crypto_errors(void)
 {
   unsigned long e = 0;
   unsigned long cnt = 0;
 
   ERR_load_crypto_strings();
-  while ( (cnt < 100) && (e = ERR_get_error()) )
+
+  while ((cnt < 100) && (e = ERR_get_error()))
   {
     ilog(L_CRIT, "SSL error: %s", ERR_error_string(e, 0));
     cnt++;
@@ -68,7 +67,8 @@ void report_crypto_errors(void)
 /*
  * verify_private_key - reread private key and verify against inmem key
  */
-int verify_private_key(void)
+int
+verify_private_key(void)
 {
   BIO * file;
   RSA * key;
@@ -189,8 +189,7 @@ int get_randomness( unsigned char * buf, int length )
     return RAND_pseudo_bytes( buf, length );
 }
 
-int generate_challenge( char **, char **, RSA *);
-int generate_challenge( char ** r_challenge, char ** r_response, RSA *rsa )
+int generate_challenge(char **r_challenge, char **r_response, RSA *rsa)
 {
   unsigned char secret[32], *tmp;
   unsigned long length, ret;

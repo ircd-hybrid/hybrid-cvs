@@ -19,12 +19,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: dbuf.h,v 7.10 2003/04/30 07:20:54 michael Exp $
+ *  $Id: dbuf.h,v 7.11 2003/05/01 15:53:32 michael Exp $
  */
 
 #ifndef __DBUF_H_INCLUDED
 #define __DBUF_H_INCLUDED
-
 #include "tools.h"
 
 #define DBUF_HEAP_SIZE  512   /* preallocate 0,5 MB */
@@ -42,11 +41,10 @@ struct dbuf_queue
   size_t total_size;
 };
 
-void dbuf_init(void);
-void dbuf_put(struct dbuf_queue *, void *, size_t);
-void dbuf_delete(struct dbuf_queue *, size_t);
+extern void dbuf_init(void);
+extern void dbuf_put(struct dbuf_queue *, void *, size_t);
+extern void dbuf_delete(struct dbuf_queue *, size_t);
 
 #define dbuf_length(x) ((x)->total_size)
 #define dbuf_clear(x) dbuf_delete(x, dbuf_length(x))
-
 #endif

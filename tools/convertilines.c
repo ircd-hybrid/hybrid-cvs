@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: convertilines.c,v 7.3 2002/07/16 22:30:21 db Exp $
+ * $Id: convertilines.c,v 7.4 2003/05/01 15:53:41 michael Exp $
  */
 
 #include <stdio.h>
@@ -510,7 +510,7 @@ static int match(struct AuthBlock *ptr, struct AuthBlock *acptr)
        (ptr->gline_exempt == acptr->gline_exempt) &&
        (ptr->no_tilde == acptr->no_tilde))
     {
-	char *p1, *p2;
+	const char *p1, *p2;
 	
 	/* check the spoofs match.. */
 	if(ptr->spoof)

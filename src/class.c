@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: class.c,v 7.44 2003/04/18 21:48:38 adx Exp $
+ *  $Id: class.c,v 7.45 2003/05/01 15:53:39 michael Exp $
  */
 
 #include "stdinc.h"
@@ -50,7 +50,7 @@ dlink_list ClassList;
  * side effects	- NONE
  */
 static dlink_node *
-find_class_ptr(char *classname)
+find_class_ptr(const char *classname)
 {
   dlink_node *ptr;
   struct Class *aclass;
@@ -247,7 +247,7 @@ find_class(const char *classname)
   dlink_node *ptr;
   struct Class *aclass;
 
-  if ((ptr = find_class_ptr((char *)classname)) != NULL)
+  if ((ptr = find_class_ptr(classname)) != NULL)
   {
     return(ptr->data);
   }

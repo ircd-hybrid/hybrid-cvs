@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_wallops.c,v 1.32 2003/04/18 02:13:43 db Exp $
+ *  $Id: m_wallops.c,v 1.33 2003/05/01 15:53:35 michael Exp $
  */
 
 #include "stdinc.h"
@@ -35,8 +35,8 @@
 #include "parse.h"
 #include "modules.h"
 
-static void ms_wallops(struct Client*, struct Client*, int, char**);
-static void mo_wallops(struct Client*, struct Client*, int, char**);
+static void ms_wallops(struct Client *, struct Client *, int, char **);
+static void mo_wallops(struct Client *, struct Client *, int, char **);
 
 struct Message wallops_msgtab = {
   "WALLOPS", 0, 0, 2, 0, MFLG_SLOW, 0,
@@ -56,8 +56,9 @@ _moddeinit(void)
   mod_del_cmd(&wallops_msgtab);
 }
  
-const char *_version = "$Revision: 1.32 $";
+const char *_version = "$Revision: 1.33 $";
 #endif
+
 /*
  * mo_wallops (write to *all* opers currently online)
  *      parv[0] = sender prefix
@@ -67,16 +68,14 @@ static void
 mo_wallops(struct Client *client_p, struct Client *source_p,
 	   int parc, char *parv[])
 { 
-  char* message;
+  const char *message = parv[1];
 
-  message = parv[1];
-  
   if (EmptyString(message))
-    {
-      sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-                 me.name, parv[0], "WALLOPS");
-      return;
-    }
+  {
+    sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
+               me.name, parv[0], "WALLOPS");
+    return;
+  }
 
   sendto_wallops_flags(UMODE_OPERWALL, source_p, "OPERWALL - %s", message);
   sendto_server(NULL, source_p, NULL, NOCAPS, NOCAPS, LL_ICLIENT,
@@ -92,18 +91,12 @@ static void
 ms_wallops(struct Client *client_p, struct Client *source_p,
 	   int parc, char *parv[])
 { 
-  char* message;
+  const char *message = parv[1];
 
-  message = parv[1];
-  
   if (EmptyString(message))
-    {
-      sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-                 me.name, parv[0], "WALLOPS");
-      return;
-    }
+    return;
 
-  if(IsClient(source_p))
+  if (IsClient(source_p))
     sendto_wallops_flags(UMODE_OPERWALL, source_p, "OPERWALL - %s", message);
   else
     sendto_wallops_flags(UMODE_WALLOP, source_p, "%s", message); 

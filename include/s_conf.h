@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.204 2003/05/01 12:21:43 michael Exp $
+ *  $Id: s_conf.h,v 7.205 2003/05/01 15:53:32 michael Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -183,10 +183,10 @@ struct ConfItem
 
 struct config_file_entry
 {
-  char *dpath;          /* DPATH if set from command line */
-  char *configfile;
-  char *klinefile;
-  char *dlinefile;
+  const char *dpath;          /* DPATH if set from command line */
+  const char *configfile;
+  const char *klinefile;
+  const char *dlinefile;
 
   char *glinefile;
 
@@ -369,7 +369,7 @@ extern void report_configured_links(struct Client* client_p, unsigned int mask);
 extern void report_specials(struct Client* source_p, int flags, int numeric);
 
 extern void yyerror(const char *);
-extern int conf_yy_fatal_error(char *);
+extern int conf_yy_fatal_error(const char *);
 extern int conf_fbgets(char *, int, FBFILE *);
 
 typedef enum {

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.120 2003/04/18 02:13:42 db Exp $
+ *  $Id: m_kline.c,v 1.121 2003/05/01 15:53:34 michael Exp $
  */
 
 #include "stdinc.h"
@@ -46,9 +46,9 @@
 #include "parse.h"
 #include "modules.h"
 
-static void mo_kline(struct Client *,struct Client *,int,char **);
-static void ms_kline(struct Client *,struct Client *,int,char **);
-static void mo_dline(struct Client *,struct Client *,int,char **);
+static void mo_kline(struct Client *, struct Client *, int, char **);
+static void ms_kline(struct Client *, struct Client *, int, char **);
+static void mo_dline(struct Client *, struct Client *, int, char **);
 
 struct Message kline_msgtab = {
   "KLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
@@ -75,7 +75,7 @@ _moddeinit(void)
   mod_del_cmd(&kline_msgtab);
   mod_del_cmd(&dline_msgtab);
 }
-const char *_version = "$Revision: 1.120 $";
+const char *_version = "$Revision: 1.121 $";
 #endif
 
 /* Local function prototypes */
@@ -89,7 +89,7 @@ static int find_user_host(struct Client *source_p,
 static int valid_comment(struct Client *source_p, char *comment);
 static int valid_user_host(struct Client *source_p, char *user, char *host);
 static int valid_wild_card(char *user, char *host);
-static int already_placed_kline(struct Client*, char*, char*);
+static int already_placed_kline(struct Client *, const char *, const char *);
 static void apply_kline(struct Client *source_p, struct ConfItem *aconf,
                         const char *reason, const char *oper_reason,
 			const char *current_date, time_t cur_time);
@@ -943,7 +943,7 @@ valid_comment(struct Client *source_p, char *comment)
  *       have to walk the hash and check every existing K-line. -A1kmm.
  */
 static int
-already_placed_kline(struct Client *source_p, char *luser, char *lhost)
+already_placed_kline(struct Client *source_p, const char *luser, const char *lhost)
 {
  char *reason;
  struct irc_ssaddr iphost, *piphost;

@@ -19,22 +19,21 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_getopt.h,v 1.3 2002/05/24 23:34:07 androsyn Exp $
+ *  $Id: ircd_getopt.h,v 1.4 2003/05/01 15:53:32 michael Exp $
  */
 
 #ifndef __GETOPT_H_INCLUDED__
 #define __GETOPT_H_INCLUDED__
 
 struct lgetopt {
-  char *opt; /* name of the argument */
+  const char *opt; /* name of the argument */
   void *argloc; /* where we store the argument to it (-option argument) */
   enum {INTEGER, YESNO, STRING, USAGE, ENDEBUG} argtype;
-  char *desc; /* description of the argument, usage for printing help */
+  const char *desc; /* description of the argument, usage for printing help */
 };
 
 extern struct lgetopt myopts[];
-
-void usage(char *);
-void parseargs(int *, char ***, struct lgetopt *);
+extern void usage(char *);
+extern void parseargs(int *, char ***, struct lgetopt *);
 
 #endif /* __GETOPT_H_INCLUDED__ */

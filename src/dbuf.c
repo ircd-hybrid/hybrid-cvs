@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: dbuf.c,v 7.18 2003/04/23 17:40:09 adx Exp $
+ *  $Id: dbuf.c,v 7.19 2003/05/01 15:53:39 michael Exp $
  */
 
 #include "stdinc.h"
@@ -32,7 +32,7 @@
 static BlockHeap *dbuf_heap;
 
 void
-dbuf_init()
+dbuf_init(void)
 {
   dbuf_heap = BlockHeapCreate(sizeof(struct dbuf_block), DBUF_HEAP_SIZE);
 }
@@ -106,3 +106,4 @@ dbuf_delete(struct dbuf_queue *qptr, size_t count)
   qptr->total_size -= count;
   memmove((void *) &first->data, (void *) &first->data[count], first->size);
 }
+

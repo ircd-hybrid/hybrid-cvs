@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.366 2003/04/30 03:59:53 michael Exp $
+ *  $Id: s_conf.c,v 7.367 2003/05/01 15:53:39 michael Exp $
  */
 
 #include "stdinc.h"
@@ -2383,7 +2383,7 @@ conf_fbgets(char *lbuf, int max_size, FBFILE *fb)
 }
 
 int 
-conf_yy_fatal_error(char *msg)
+conf_yy_fatal_error(const char *msg)
 {
   return(0);
 }

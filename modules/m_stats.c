@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.120 2003/04/20 15:14:03 adx Exp $
+ *  $Id: m_stats.c,v 1.121 2003/05/01 15:53:35 michael Exp $
  */
 
 #include "stdinc.h"
@@ -80,7 +80,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.120 $";
+const char *_version = "$Revision: 1.121 $";
 #endif
 
 const char* Lformat = ":%s %d %s %s %u %u %u %u %u :%u %u %s";
@@ -392,7 +392,7 @@ stats_pending_glines(struct Client *source_p)
   char timebuffer[MAX_DATE_STRING];
   struct tm *tmptr;
 
-  if(!ConfigFileEntry.glines)
+  if (!ConfigFileEntry.glines)
   {
     sendto_one(source_p, ":%s NOTICE %s :This server does not support G-Lines",
                me.name, source_p->name); 
@@ -401,7 +401,7 @@ stats_pending_glines(struct Client *source_p)
 
   if (dlink_list_length(&pending_glines) > 0)
     sendto_one(source_p, ":%s NOTICE %s :Pending G-lines",
-	       me.name, source_p->name);
+               me.name, source_p->name);
 
   DLINK_FOREACH(pending_node, pending_glines.head)
   {
@@ -445,11 +445,8 @@ stats_glines(struct Client *source_p)
 {
   dlink_node *gline_node;
   struct ConfItem *kill_ptr;
-  char *host;
-  char *name;
-  char *reason;
 
-  if(!ConfigFileEntry.glines)
+  if (!ConfigFileEntry.glines)
   {
     sendto_one(source_p, ":%s NOTICE %s :This server does not support G-Lines",
                me.name, source_p->name); 
@@ -460,33 +457,19 @@ stats_glines(struct Client *source_p)
   {
     kill_ptr = gline_node->data;
 
-    if(kill_ptr->host)
-      host = kill_ptr->host;
-    else
-      host = "*";
-
-    if(kill_ptr->name)
-      name = kill_ptr->name;
-    else
-      name = "*";
-
-    if(kill_ptr->passwd)
-      reason = kill_ptr->passwd;
-    else
-      reason = "No Reason";
-    
-    sendto_one(source_p, form_str(RPL_STATSKLINE), me.name,
-	       source_p->name, 'G', host, name, reason);
+    sendto_one(source_p, form_str(RPL_STATSKLINE),
+               me.name, source_p->name, 'G',
+               kill_ptr->host ? kill_ptr->host : "*",
+               kill_ptr->name ? kill_ptr->name : "*",
+               kill_ptr->passwd ? kill_ptr->passwd : "No reason specified");
   }
 }
-
 
 static void
 stats_hubleaf(struct Client *source_p)
 {
   report_configured_links(source_p, CONF_HUB|CONF_LEAF);
 }
-
 
 static void
 stats_auth(struct Client *source_p)

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.365 2003/04/19 16:00:11 michael Exp $
+ *  $Id: channel.c,v 7.366 2003/05/01 15:53:38 michael Exp $
  */
 
 #include "stdinc.h"
@@ -59,6 +59,7 @@ static void delete_members(struct Channel *chptr, dlink_list * list);
 static void send_mode_list(struct Client *client_p, char *chname,
                            dlink_list *top, char flag, int clear);
 static int check_banned(struct Channel *chptr, char *s, char *s2);
+static const char *channel_pub_or_secret(struct Channel *chptr);
 
 static char buf[BUFSIZE];
 static char modebuf[MODEBUFLEN], parabuf[MODEBUFLEN];
@@ -851,14 +852,14 @@ channel_member_names(struct Client *source_p,
  * output       - string pointer "=" if public, "@" if secret else "*"
  * side effects - NONE
  */
-char *
+static const char *
 channel_pub_or_secret(struct Channel *chptr)
 {
   if (PubChannel(chptr))
-    return ("=");
+    return("=");
   else if (SecretChannel(chptr))
     return ("@");
-  return ("*");
+  return("*");
 }
 
 /* add_invite()
@@ -936,22 +937,22 @@ del_invite(struct Channel *chptr, struct Client *who)
  *                chanop, voiced, halfop or user
  * side effects -
  */
-char *
+const char *
 channel_chanop_or_voice(struct Channel *chptr, struct Client *target_p)
 {
   if (find_user_link(&chptr->chanops, target_p))
-    return ("@");
+    return("@");
 #ifdef HALFOPS
   else if (find_user_link(&chptr->halfops, target_p))
-    return ("%");
+    return("%");
 #endif
   else if (find_user_link(&chptr->voiced, target_p))
-    return ("+");
+    return("+");
 #ifdef REQUIRE_OANDV
   else if (find_user_link(&chptr->chanops_voiced, target_p))
-    return ("@+");
+    return("@+");
 #endif
-  return ("");
+  return("");
 }
 
 /*

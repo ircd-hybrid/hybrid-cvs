@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_locops.c,v 1.29 2003/04/18 02:13:43 db Exp $
+ *  $Id: m_locops.c,v 1.30 2003/05/01 15:53:35 michael Exp $
  */
 
 #include "stdinc.h"
@@ -30,13 +30,12 @@
 #include "numeric.h"
 #include "send.h"
 #include "s_user.h"
-#include "s_conf.h"
 #include "hash.h"
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
 
-static void m_locops(struct Client *,struct Client *,int,char **);
+static void m_locops(struct Client *, struct Client *, int, char **);
 
 struct Message locops_msgtab = {
   "LOCOPS", 0, 0, 2, 0, MFLG_SLOW, 0,
@@ -56,8 +55,9 @@ _moddeinit(void)
   mod_del_cmd(&locops_msgtab);
 }
 
-const char *_version = "$Revision: 1.29 $";
+const char *_version = "$Revision: 1.30 $";
 #endif
+
 /*
  * m_locops - LOCOPS message handler
  * (write to *all* local opers currently online)
@@ -66,20 +66,17 @@ const char *_version = "$Revision: 1.29 $";
  */
 static void
 m_locops(struct Client *client_p, struct Client *source_p,
-	 int parc, char *parv[])
+         int parc, char *parv[])
 {
-  char *message = NULL;
-
-  message = parv[1];
+  const char *message = parv[1];
 
   if (EmptyString(message))
-    {
-      sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-                 me.name, parv[0], "LOCOPS");
-      return;
-    }
+  {
+    sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
+               me.name, parv[0], "LOCOPS");
+    return;
+  }
 
   sendto_wallops_flags(UMODE_LOCOPS, source_p, "LOCOPS - %s", message);
 }
-
 
