@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.106 2003/03/01 01:15:44 db Exp $
+ *  $Id: s_auth.c,v 7.107 2003/03/05 16:42:27 db Exp $
  */
 
 /*
@@ -65,7 +65,6 @@ static struct {
   /* 123456789012345678901234567890123456789012345678901234567890 */
   { "NOTICE AUTH :*** Looking up your hostname...\r\n",    46 },
   { "NOTICE AUTH :*** Found your hostname\r\n",            38 },
-  { "NOTICE AUTH :*** Found your hostname, cached\r\n",    46 },
   { "NOTICE AUTH :*** Couldn't look up your hostname\r\n", 49 },
   { "NOTICE AUTH :*** Checking Ident\r\n",                 33 },
   { "NOTICE AUTH :*** Got Ident response\r\n",             37 },
@@ -115,7 +114,8 @@ init_auth(void)
 /*
  * make_auth_request - allocate a new auth request
  */
-static struct AuthRequest* make_auth_request(struct Client* client)
+static struct AuthRequest*
+make_auth_request(struct Client* client)
 {
   struct AuthRequest* request = 
     (struct AuthRequest *)MyMalloc(sizeof(struct AuthRequest));
@@ -128,7 +128,8 @@ static struct AuthRequest* make_auth_request(struct Client* client)
 /*
  * free_auth_request - cleanup auth request allocations
  */
-static void free_auth_request(struct AuthRequest* request)
+static void
+free_auth_request(struct AuthRequest* request)
 {
   MyFree(request);
 }
@@ -136,7 +137,8 @@ static void free_auth_request(struct AuthRequest* request)
 /*
  * unlink_auth_request - remove auth request from a list
  */
-static void unlink_auth_request(struct AuthRequest* request, dlink_list *list)
+static void
+unlink_auth_request(struct AuthRequest* request, dlink_list *list)
 {
   dlink_node *ptr;
   if((ptr = dlinkFind(list, request)) != NULL)
@@ -149,7 +151,8 @@ static void unlink_auth_request(struct AuthRequest* request, dlink_list *list)
 /*
  * link_auth_request - add auth request to a list
  */
-static void link_auth_request(struct AuthRequest* request, dlink_list *list)
+static void
+link_auth_request(struct AuthRequest* request, dlink_list *list)
 {
   dlink_node *m;
 
@@ -162,7 +165,8 @@ static void link_auth_request(struct AuthRequest* request, dlink_list *list)
  * this adds the client into the local client lists so it can be read by
  * the main io processing loop
  */
-static void release_auth_client(struct Client* client)
+static void
+release_auth_client(struct Client* client)
 {
   if (client->localClient->fd > highest_fd)
     highest_fd = client->localClient->fd;
@@ -237,7 +241,8 @@ auth_dns_callback(void* vptr, adns_answer* reply)
 /*
  * authsenderr - handle auth send errors
  */
-static void auth_error(struct AuthRequest* auth)
+static void
+auth_error(struct AuthRequest* auth)
 {
   ++ServerStats->is_abad;
 
@@ -268,7 +273,8 @@ static void auth_error(struct AuthRequest* auth)
  * identifing process fail, it is aborted and the user is given a username
  * of "unknown".
  */
-static int start_auth_query(struct AuthRequest* auth)
+static int
+start_auth_query(struct AuthRequest* auth)
 {
 /*  struct sockaddr_in sock; */
   struct irc_sockaddr localaddr;
@@ -343,7 +349,8 @@ static int start_auth_query(struct AuthRequest* auth)
  *
  * - Dianora
  */
-static char* GetValidIdent(char *buf)
+static char*
+GetValidIdent(char *buf)
 {
   int   remp = 0;
   int   locp = 0;
@@ -391,7 +398,8 @@ static char* GetValidIdent(char *buf)
 /*
  * start_auth - starts auth (identd) and dns queries for a client
  */
-void start_auth(struct Client* client)
+void
+start_auth(struct Client* client)
 {
   struct AuthRequest* auth = 0;
   assert(0 != client);
@@ -469,8 +477,8 @@ timeout_auth_queries_event(void *notused)
  * a write buffer far greater than this message to store it in should
  * problems arise. -avalon
  */
-static
-void auth_connect_callback(int fd, int error, void *data)
+static void
+auth_connect_callback(int fd, int error, void *data)
 {
   struct AuthRequest *auth = data;
   struct sockaddr_in us;
