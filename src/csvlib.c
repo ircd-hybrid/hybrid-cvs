@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.13 2003/05/24 19:25:31 michael Exp $
+ *  $Id: csvlib.c,v 7.14 2003/05/25 03:04:59 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -318,8 +318,7 @@ write_csv_line(FBFILE *out, const char *format, ...)
 	if (p1 == NULL)
 	  p1 = null_string;
 	*str++ = '\"';
-	++bytes;
-	++bytes;
+	bytes += 2;
 	while (*p1 != '\0')
 	{
 	  *str++ = *p1++;

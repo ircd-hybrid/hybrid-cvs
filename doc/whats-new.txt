@@ -110,8 +110,8 @@ options that were in config.h, to be changed with a /rehash.
   To RESV a channel
     /quote resv #channel :reason
 
-  You may also UNRESV, and add resv's in the config.  See resv.txt for more
-  details.
+  You may also UNRESV, and add resv's in cresv.conf and nresv.conf.  See
+  resv.txt for more details.
 
 
 -----------------------
@@ -225,5 +225,5 @@ options that were in config.h, to be changed with a /rehash.
     PARA    - Controls propogation of INVITE notices for +p (paranoid) channels
     ENC:a   - Encrypted link, where 'a' is the cipher being used
 
-# $Id: whats-new.txt,v 7.41 2003/05/15 22:16:43 joshk Exp $
+# $Id: whats-new.txt,v 7.42 2003/05/25 03:04:56 joshk Exp $
 

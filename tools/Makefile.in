@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 7.41 2003/05/23 19:06:57 joshk Exp $
+# $Id: Makefile.in,v 7.42 2003/05/25 03:05:05 joshk Exp $
 
 CC		= @CC@
 INSTALL		= @INSTALL@
@@ -39,11 +39,6 @@ mkpasswd: ../include/setup.h mkpasswd.c
 # Default rule for everything
 .c: ../include/setup.h $<
 	$(CC) $(CFLAGS) $(INCLUDES) $(CPPFLAGS) -o $(<:.c=) $< 
-
-../include/setup.h:
-	cd .. && sh configure
-	# XXX!
-	make all
 
 clean:
 	$(RM) -f *.o *~ core *.exe $(PROGS)

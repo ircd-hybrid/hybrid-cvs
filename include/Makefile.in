@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.8 2003/05/14 18:38:23 joshk Exp $
+# $Id: Makefile.in,v 1.9 2003/05/25 03:04:58 joshk Exp $
 # makefile for include/
 
 INSTALL=	@INSTALL@
@@ -11,9 +11,6 @@ bindir=		@bindir@
 sysconfdir=	@sysconfdir@
 
 all:
-build:
-clean:
-depend:
 
 install:
 	@echo Installing header files...
