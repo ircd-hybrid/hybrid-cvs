@@ -8,7 +8,7 @@
  * Owner:  Wohali (Joan Touzet)
  *
  *
- * $Id: balloc.c,v 7.1 2001/08/13 05:09:05 androsyn Exp $
+ * $Id: balloc.c,v 7.2 2001/08/13 05:25:33 androsyn Exp $
  */
 
 #define WE_ARE_MEMORY_C
@@ -256,7 +256,7 @@ int BlockHeapGarbageCollect(BlockHeap * bh)
 	if (bh == NULL)
 		return 1;
 
-	if (bh->freeElems < bh->elemsPerBlock)
+	if (bh->freeElems < bh->elemsPerBlock || bh->blocksAllocated == 1)
 	{
 		/* There couldn't possibly be an entire free block.  Return. */
 		return 0;
