@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.301 2003/06/04 06:25:54 michael Exp $
+ *  $Id: ircd.c,v 7.302 2003/06/07 17:28:01 michael Exp $
  */
 
 #include "stdinc.h"
@@ -56,7 +56,6 @@
 #include "s_auth.h"
 #include "s_bsd.h"
 #include "s_conf.h"
-#include "s_debug.h"
 #include "s_log.h"
 #include "s_misc.h"
 #include "s_serv.h"      /* try_connections */

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_error.c,v 7.30 2003/04/16 10:38:19 michael Exp $
+ *  $Id: m_error.c,v 7.31 2003/06/07 17:28:01 michael Exp $
  */
 
 #include "stdinc.h"
@@ -27,9 +27,7 @@
 #include "client.h"
 #include "common.h"   /* FALSE */
 #include "ircd.h"
-#include "numeric.h"
 #include "send.h"
-#include "s_debug.h"
 #include "msg.h"
 #include "memory.h"
 #include "s_log.h"

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.420 2003/06/03 14:39:02 db Exp $
+ *  $Id: s_conf.c,v 7.421 2003/06/07 17:28:02 michael Exp $
  */
 
 #include "stdinc.h"
@@ -51,7 +51,6 @@
 #include "s_log.h"
 #include "send.h"
 #include "s_gline.h"
-#include "s_debug.h"
 #include "fileio.h"
 #include "memory.h"
 #include "irc_res.h"

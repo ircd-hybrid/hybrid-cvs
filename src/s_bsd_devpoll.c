@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_devpoll.c,v 7.20 2003/05/27 17:11:19 joshk Exp $
+ *  $Id: s_bsd_devpoll.c,v 7.21 2003/06/07 17:28:01 michael Exp $
  */
 
 #include "stdinc.h"
@@ -54,8 +54,6 @@
 #include "s_serv.h"
 #include "s_stats.h"
 #include "send.h"
-#include "s_debug.h"
-#include "s_bsd.h"
 #include "memory.h"
 
 #define POLL_LENGTH HARD_FDLIMIT

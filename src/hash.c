@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.65 2003/06/01 18:45:31 db Exp $
+ *  $Id: hash.c,v 7.66 2003/06/07 17:28:01 michael Exp $
  */
 
 #include "stdinc.h"
@@ -36,7 +36,6 @@
 #include "ircd.h"
 #include "numeric.h"
 #include "send.h"
-#include "s_debug.h"
 #include "memory.h"
 #include "dbuf.h"
 
@@ -53,7 +52,7 @@ static unsigned int hash_channel_name(const char *name);
 static struct UserHost *find_userhost(const char *host);
 static struct UserHost *find_or_add_userhost(const char *host);
 static void del_from_userhost_hash_table(const char *host,
-					 struct UserHost *userhost_p);
+                                         struct UserHost *userhost_p);
 
 static struct HashEntry clientTable[U_MAX];
 static struct HashEntry channelTable[CH_MAX];

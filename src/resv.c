@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: resv.c,v 7.24 2003/06/03 14:10:06 michael Exp $
+ *  $Id: resv.c,v 7.25 2003/06/07 17:28:01 michael Exp $
  */
 
 #include "stdinc.h"
@@ -28,7 +28,6 @@
 #include "fdlist.h"
 #include "ircd.h"
 #include "send.h"
-#include "s_debug.h"
 #include "client.h"   
 #include "memory.h"
 #include "numeric.h"
@@ -41,8 +40,7 @@
 dlink_list resv_channel_list = { NULL, NULL, 0 };
 dlink_list resv_nick_list    = { NULL, NULL, 0 };
 
-/*
- * create_channel_resv
+/* create_channel_resv()
  *
  * inputs	- name of channel to create resv for
  *		- reason for resv
@@ -76,8 +74,7 @@ create_channel_resv(char *name, char *reason, int conf)
   return(resv_p);
 }
 
-/*
- * create_nick_resv
+/* create_nick_resv()
  *
  * inputs	- name of nick to create resv for
  *		- reason for resv
@@ -110,8 +107,7 @@ create_nick_resv(char *name, char *reason, int conf)
   return(resv_p);
 }
 
-/*
- * clear_conf_resv
+/* clear_conf_resv()
  *
  * inputs	- none
  * output	- none
@@ -140,8 +136,7 @@ clear_conf_resv(void)
   }
 }
 
-/*
- * delete_channel_resv
+/* delete_channel_resv()
  *
  * inputs	- pointer to channel resv to delete
  * output	- none
@@ -162,8 +157,7 @@ delete_channel_resv(struct ResvChannel *resv_p)
   return(1);
 }
 
-/*
- * delete_nick_resv
+/* delete_nick_resv()
  *
  * inputs	- pointer to nick resv to delete
  * output	- none

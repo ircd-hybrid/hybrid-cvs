@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.345 2003/06/03 14:10:07 michael Exp $
+ *  $Id: s_serv.c,v 7.346 2003/06/07 17:28:02 michael Exp $
  */
 
 #include "stdinc.h"
@@ -52,7 +52,6 @@
 #include "s_stats.h"
 #include "s_user.h"
 #include "send.h"
-#include "s_debug.h"
 #include "memory.h"
 #include "channel.h" /* chcap_usage_counts stuff...*/
 #include "hook.h"
@@ -70,21 +69,15 @@ int MaxClientCount     = 1;
 struct Client *uplink  = NULL;
 
 static void start_io(struct Client *server);
-#if 0
-static void burst_members(struct Client *client_p, dlink_list *list);
-static void burst_ll_members(struct Client *client_p, dlink_list *list);
-#endif
-
 static void burst_members(struct Client *client_p, struct Channel *chptr);
 static void burst_ll_members(struct Client *client_p, struct Channel *chptr);
-
 static void add_lazylinkchannel(struct Client *client_p, struct Channel *chptr);
 
 
 static SlinkRplHnd slink_error;
 static SlinkRplHnd slink_zipstats;
 
-dlink_list cap_list = {NULL, NULL, 0};
+dlink_list cap_list = { NULL, NULL, 0 };
 
 #ifdef HAVE_LIBCRYPTO
 struct EncCapability CipherTable[] =

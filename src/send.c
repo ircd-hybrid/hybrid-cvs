@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.267 2003/06/03 23:41:26 bill Exp $
+ *  $Id: send.c,v 7.268 2003/06/07 17:28:02 michael Exp $
  */
 
 #include "stdinc.h"
@@ -40,7 +40,6 @@
 #include "sprintf_irc.h"
 #include "s_conf.h"
 #include "list.h"
-#include "s_debug.h"
 #include "s_log.h"
 #include "memory.h"
 #include "hook.h"
@@ -152,8 +151,7 @@ send_message(struct Client *to, char *buf, int len)
     send_queued_write(to);
 }
 
-/*
- * send_message_remote
+/* send_message_remote()
  *
  * inputs	- pointer to client from message is being sent
  * 		- pointer to client to send to

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_pong.c,v 1.38 2003/05/11 22:04:48 michael Exp $
+ *  $Id: m_pong.c,v 1.39 2003/06/07 17:27:59 michael Exp $
  */
 
 #include "stdinc.h"
@@ -31,15 +31,13 @@
 #include "numeric.h"
 #include "s_conf.h"
 #include "send.h"
-#include "channel.h"
 #include "irc_string.h"
-#include "s_debug.h"
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
 
-static void mr_pong(struct Client*, struct Client*, int, char**);
-static void ms_pong(struct Client*, struct Client*, int, char**);
+static void mr_pong(struct Client *, struct Client *, int, char **);
+static void ms_pong(struct Client *, struct Client *, int, char **);
 
 struct Message pong_msgtab = {
   "PONG", 0, 0, 1, 0, MFLG_SLOW | MFLG_UNREG, 0,
@@ -59,14 +57,15 @@ _moddeinit(void)
   mod_del_cmd(&pong_msgtab);
 }
 
-const char *_version = "$Revision: 1.38 $";
+const char *_version = "$Revision: 1.39 $";
 #endif
+
 static void
 ms_pong(struct Client *client_p, struct Client *source_p,
-	int parc, char *parv[])
+        int parc, char *parv[])
 {
   struct Client *target_p;
-  char  *origin, *destination;
+  char *origin, *destination;
 
   if (parc < 2 || *parv[1] == '\0')
   {
@@ -105,9 +104,9 @@ mr_pong(struct Client *client_p, struct Client *source_p,
         int parc, char *parv[])
 {
   if (parc == 2 && *parv[1] != '\0')
+  {
+    if(ConfigFileEntry.ping_cookie && source_p->user && source_p->name[0])
     {
-      if(ConfigFileEntry.ping_cookie && source_p->user && source_p->name[0])
-      {
 	unsigned long incoming_ping = strtoul(parv[1], NULL, 10);
 	if(incoming_ping)
 	{
@@ -130,7 +129,7 @@ mr_pong(struct Client *client_p, struct Client *source_p,
     }
   else
     sendto_one(source_p, form_str(ERR_NOORIGIN), me.name, parv[0]);
-  
+
   ClearPingSent(source_p);
 }
 

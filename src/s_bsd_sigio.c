@@ -21,7 +21,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_sigio.c,v 7.27 2003/05/18 23:29:27 michael Exp $
+ *  $Id: s_bsd_sigio.c,v 7.28 2003/06/07 17:28:02 michael Exp $
  */
 
 #ifndef _GNU_SOURCE
@@ -51,18 +51,15 @@
 #include "s_serv.h"
 #include "s_stats.h"
 #include "send.h"
-#include "s_debug.h"
-#include "s_bsd.h"
 #include "memory.h"
-
 
 
 static int sigio_signal;
 static int sigio_is_screwed = 0;        /* We overflowed our sigio queue */
 static sigset_t our_sigset;
 struct _pollfd_list {
-    struct pollfd pollfds[MAXCONNECTIONS];
-    int maxindex;               /* highest FD number */
+  struct pollfd pollfds[MAXCONNECTIONS];
+  int maxindex; /* highest FD number */
 };
 
 typedef struct _pollfd_list pollfd_list_t;

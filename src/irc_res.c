@@ -7,7 +7,7 @@
  * The authors takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: irc_res.c,v 7.27 2003/06/04 00:49:24 joshk Exp $
+ * $Id: irc_res.c,v 7.28 2003/06/07 17:28:01 michael Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -35,14 +35,11 @@
 #include "s_bsd.h"
 #include "s_log.h"
 #include "send.h"
-#include "s_debug.h"
-#include "handlers.h"
 #include "memory.h"
 #include "irc_res.h"
 #include "irc_reslib.h"
 #include "irc_getnameinfo.h"
 
-#include <limits.h>
 #if (CHAR_BIT != 8)
 #error this code needs to be able to address individual octets 
 #endif

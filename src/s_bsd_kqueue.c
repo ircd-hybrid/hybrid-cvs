@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_kqueue.c,v 1.33 2003/05/22 17:09:08 michael Exp $
+ *  $Id: s_bsd_kqueue.c,v 1.34 2003/06/07 17:28:01 michael Exp $
  */
 
 #include "stdinc.h"
@@ -46,8 +46,6 @@
 #include "s_serv.h"
 #include "s_stats.h"
 #include "send.h"
-#include "s_debug.h"
-#include "s_bsd.h"
 #include "memory.h"
 
 
@@ -174,7 +172,7 @@ void init_netio(void)
  */
 void
 comm_setselect(int fd, fdlist_t list, unsigned int type, PF * handler,
-    void *client_data, time_t timeout)
+               void *client_data, time_t timeout)
 {  
   fde_t *F = &fd_table[fd];
   assert(fd >= 0);

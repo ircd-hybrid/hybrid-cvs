@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: class.c,v 7.57 2003/06/04 00:49:24 joshk Exp $
+ *  $Id: class.c,v 7.58 2003/06/07 17:28:01 michael Exp $
  */
 
 #include "stdinc.h"
@@ -33,7 +33,6 @@
 #include "s_conf.h"
 #include "send.h"
 #include "irc_string.h"
-#include "s_debug.h"
 #include "memory.h"
 
 #define BAD_PING -1
