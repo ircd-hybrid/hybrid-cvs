@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.244 2003/04/17 00:32:18 db Exp $
+ *  $Id: s_user.c,v 7.245 2003/04/17 01:08:07 db Exp $
  */
 
 #include "stdinc.h"
@@ -383,8 +383,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   /* report if user has &^>= etc. and set flags as needed in source_p */
   report_and_set_user_flags(source_p, aconf);
   
-  /* Limit clients */
-  /*
+  /* Limit clients -
    * We want to be able to have servers and F-line clients
    * connect, so save room for "buffer" connections.
    * Smaller servers may want to decrease this, and it should
@@ -392,8 +391,8 @@ register_local_user(struct Client *client_p, struct Client *source_p,
    *   -Taner
    */
   /* Except "F:" clients */
-  if (((Count.local + 1) >= (GlobalSetOptions.maxclients + MAX_BUFFER) ||
-      (Count.local >= ServerInfo.max_clients) || !IsExemptLimits(source_p))
+  if ((((Count.local + 1) >= (GlobalSetOptions.maxclients + MAX_BUFFER))) ||
+     ((Count.local >= ServerInfo.max_clients) && !IsExemptLimits(source_p)))
   {
     sendto_realops_flags(UMODE_FULL, L_ALL, "Too many clients, rejecting %s[%s].",
                          nick, source_p->host);
