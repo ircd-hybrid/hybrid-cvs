@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.314 2003/06/14 17:31:18 adx Exp $
+ *  $Id: ircd_parser.y,v 1.315 2003/06/14 18:28:41 adx Exp $
  */
 
 %{
@@ -244,13 +244,12 @@ init_parser_confs(void)
 %token  STATS_K_OPER_ONLY
 %token  STATS_O_OPER_ONLY
 %token  STATS_P_OPER_ONLY
+%token  TBOOL
 %token  TMASKED
-%token  TNO
 %token  TREJECT
 %token  TS_MAX_DELTA
 %token  TS_WARN_DELTA
 %token  TWODOTS
-%token  TYES
 %token	T_ALL
 %token  T_BOTS
 %token  T_CALLERID
@@ -627,52 +626,46 @@ serverinfo_max_buffer: T_MAX_BUFFER '=' NUMBER ';'
     ServerInfo.max_buffer = $3;
 };
 
-serverinfo_hub: HUB '=' TYES ';' 
+serverinfo_hub: HUB '=' TBOOL ';' 
 {
   if (ypass == 2)
   {
-    /* Don't become a hub if we have a lazylink active. */
-    if (!ServerInfo.hub && uplink && IsCapable(uplink, CAP_LL))
+    if (yylval.number)
     {
-      sendto_realops_flags(UMODE_ALL, L_ALL,
-                           "Ignoring config file line hub = yes; due to active LazyLink (%s)",
-                           uplink->name);
-    }
-    else
-    {
-      ServerInfo.hub = 1;
-      uplink = NULL;
-      delete_capability("HUB");
-      add_capability("HUB", CAP_HUB, 1);
-    }
-  }
-} | HUB '=' TNO ';'
-{
-  if (ypass == 2)
-  {
-    dlink_node *ptr;
-
-    /* Don't become a leaf if we have a lazylink active. */
-    if (ServerInfo.hub)
-    {
-      ServerInfo.hub = 0;
-
-      DLINK_FOREACH(ptr, serv_list.head)
+      /* Don't become a hub if we have a lazylink active. */
+      if (!ServerInfo.hub && uplink && IsCapable(uplink, CAP_LL))
       {
+        sendto_realops_flags(UMODE_ALL, L_ALL,
+                             "Ignoring config file line hub = yes; "
+                             "due to active LazyLink (%s)", uplink->name);
+      }
+      else
+      {
+        ServerInfo.hub = 1;
+        uplink = NULL;
+        delete_capability("HUB");
+        add_capability("HUB", CAP_HUB, 1);
+      }
+    }
+    else if (ServerInfo.hub)
+    {
+      dlink_node *ptr;
+
+      ServerInfo.hub = 0;
+      delete_capability("HUB");
+
+      /* Don't become a leaf if we have a lazylink active. */
+      DLINK_FOREACH(ptr, serv_list.head)
         if (MyConnect((struct Client *)ptr->data) &&
             IsCapable((struct Client *)ptr->data, CAP_LL))
         {
           sendto_realops_flags(UMODE_ALL, L_ALL,
-                               "Ignoring config file line hub = no; due to active LazyLink (%s)",
+                               "Ignoring config file line hub = no; "
+                               "due to active LazyLink (%s)",
                                ((struct Client *)ptr->data)->name);
+          add_capability("HUB", CAP_HUB, 1);
           ServerInfo.hub = 1;
         }
-      }
-    }
-    else
-    {
-      ServerInfo.hub = 0;
-      delete_capability("HUB");
     }
   }
 };
@@ -767,14 +760,10 @@ logging_log_level: LOG_LEVEL '=' T_L_CRIT ';'
     set_log_level(L_DEBUG);
 };
 
-logging_use_logging: USE_LOGGING '=' TYES ';'
+logging_use_logging: USE_LOGGING '=' TBOOL ';'
 {
   if (ypass == 2)
-    use_logging = YES;
-} | USE_LOGGING '=' TNO ';'
-{
-  if (ypass == 2)
-    use_logging = NO;
+    use_logging = yylval.number;
 };
 
 /***************************************************************************
@@ -898,14 +887,15 @@ oper_password: PASSWORD '=' QSTRING ';'
   }
 };
 
-oper_hidden_admin: HIDDEN_ADMIN '=' TYES ';'
+oper_hidden_admin: HIDDEN_ADMIN '=' TBOOL ';'
 {
   if (ypass == 2)
-    yy_aconf->port |= OPER_FLAG_HIDDEN_ADMIN;
-} | HIDDEN_ADMIN '=' TNO ';'
-{
-  if (ypass == 2)
-    yy_aconf->port &= ~OPER_FLAG_HIDDEN_ADMIN;
+  {
+    if (yylval.number)
+      yy_aconf->port |= OPER_FLAG_HIDDEN_ADMIN;
+    else
+      yy_aconf->port &= ~OPER_FLAG_HIDDEN_ADMIN;
+  }
 };
 
 oper_rsa_public_key_file: RSA_PUBLIC_KEY_FILE '=' QSTRING ';'
@@ -961,104 +951,114 @@ oper_class: CLASS '=' QSTRING ';'
   }
 };
 
-oper_global_kill: GLOBAL_KILL '=' TYES ';'
+oper_global_kill: GLOBAL_KILL '=' TBOOL ';'
 {
   if (ypass == 2)
-    yy_aconf->port |= OPER_FLAG_GLOBAL_KILL;
-} | GLOBAL_KILL '=' TNO ';'
-{
-  if (ypass == 2)
-    yy_aconf->port &= ~OPER_FLAG_GLOBAL_KILL;
+  {
+    if (yylval.number)
+      yy_aconf->port |= OPER_FLAG_GLOBAL_KILL;
+    else
+      yy_aconf->port &= ~OPER_FLAG_GLOBAL_KILL;
+  }
 };
 
-oper_remote: REMOTE '=' TYES ';'
+oper_remote: REMOTE '=' TBOOL ';'
 {
   if (ypass == 2)
-    yy_aconf->port |= OPER_FLAG_REMOTE;
-} | REMOTE '=' TNO ';'
-{
-  if (ypass == 2)
-    yy_aconf->port &= ~OPER_FLAG_REMOTE; 
+  {
+    if (yylval.number)
+      yy_aconf->port |= OPER_FLAG_REMOTE;
+    else
+      yy_aconf->port &= ~OPER_FLAG_REMOTE; 
+  }
 };
 
-oper_kline: KLINE '=' TYES ';'
+oper_kline: KLINE '=' TBOOL ';'
 {
   if (ypass == 2)
-    yy_aconf->port |= OPER_FLAG_K;
-} | KLINE '=' TNO ';'
-{
-  if (ypass == 2)
-    yy_aconf->port &= ~OPER_FLAG_K;
+  {
+    if (yylval.number)
+      yy_aconf->port |= OPER_FLAG_K;
+    else
+      yy_aconf->port &= ~OPER_FLAG_K;
+  }
 };
 
-oper_xline: XLINE '=' TYES ';'
+oper_xline: XLINE '=' TBOOL ';'
 {
   if (ypass == 2)
-    yy_aconf->port |= OPER_FLAG_X;
-} | XLINE '=' TNO ';'
-{
-  if (ypass == 2)
-    yy_aconf->port &= ~OPER_FLAG_X;
+  {
+    if (yylval.number)
+      yy_aconf->port |= OPER_FLAG_X;
+    else
+      yy_aconf->port &= ~OPER_FLAG_X;
+  }
 };
 
-oper_unkline: UNKLINE '=' TYES ';'
+oper_unkline: UNKLINE '=' TBOOL ';'
 {
   if (ypass == 2)
-    yy_aconf->port |= OPER_FLAG_UNKLINE;
-} | UNKLINE '=' TNO ';'
-{
-  if (ypass == 2)
-    yy_aconf->port &= ~OPER_FLAG_UNKLINE; 
+  {
+    if (yylval.number)
+      yy_aconf->port |= OPER_FLAG_UNKLINE;
+    else
+      yy_aconf->port &= ~OPER_FLAG_UNKLINE; 
+  }
 };
 
-oper_gline: GLINE '=' TYES ';'
+oper_gline: GLINE '=' TBOOL ';'
 {
   if (ypass == 2)
-    yy_aconf->port |= OPER_FLAG_GLINE;
-} | GLINE '=' TNO ';'
-{
-  if (ypass == 2)
-    yy_aconf->port &= ~OPER_FLAG_GLINE;
+  {
+    if (yylval.number)
+      yy_aconf->port |= OPER_FLAG_GLINE;
+    else
+      yy_aconf->port &= ~OPER_FLAG_GLINE;
+  }
 };
 
-oper_nick_changes: NICK_CHANGES '=' TYES ';'
+oper_nick_changes: NICK_CHANGES '=' TBOOL ';'
 {
   if (ypass == 2)
-    yy_aconf->port |= OPER_FLAG_N;
-} | NICK_CHANGES '=' TNO ';'
-{
-  if (ypass == 2)
-    yy_aconf->port &= ~OPER_FLAG_N;
+  {
+    if (yylval.number)
+      yy_aconf->port |= OPER_FLAG_N;
+    else
+      yy_aconf->port &= ~OPER_FLAG_N;
+  }
 };
 
-oper_die: DIE '=' TYES ';'
+oper_die: DIE '=' TBOOL ';'
 {
   if (ypass == 2)
-    yy_aconf->port |= OPER_FLAG_DIE;
-} | DIE '=' TNO ';'
-{
-  if (ypass == 2)
-    yy_aconf->port &= ~OPER_FLAG_DIE;
+  {
+    if (yylval.number)
+      yy_aconf->port |= OPER_FLAG_DIE;
+    else
+      yy_aconf->port &= ~OPER_FLAG_DIE;
+  }
 };
 
-oper_rehash: REHASH '=' TYES ';'
+oper_rehash: REHASH '=' TBOOL ';'
 {
   if (ypass == 2)
-    yy_aconf->port |= OPER_FLAG_REHASH;
-} | REHASH '=' TNO ';'
-{
-  if (ypass == 2)
-    yy_aconf->port &= ~OPER_FLAG_REHASH;
+  {
+    if (yylval.number)
+      yy_aconf->port |= OPER_FLAG_REHASH;
+    else
+      yy_aconf->port &= ~OPER_FLAG_REHASH;
+  }
 };
 
-oper_admin: ADMIN '=' TYES ';'
+oper_admin: ADMIN '=' TBOOL ';'
 {
   if (ypass == 2)
-    yy_aconf->port |= OPER_FLAG_ADMIN;
-} | ADMIN '=' TNO ';'
-{
-  if (ypass == 2)
-    yy_aconf->port &= ~OPER_FLAG_ADMIN;
+  {
+    if (yylval.number)
+      yy_aconf->port |= OPER_FLAG_ADMIN;
+    else
+      yy_aconf->port &= ~OPER_FLAG_ADMIN;
+  }
 };
 
 /***************************************************************************
@@ -1315,14 +1315,15 @@ auth_passwd: PASSWORD '=' QSTRING ';'
 };
 
 /* TYES/TNO are flipped to change the default value to YES */
-auth_spoof_notice: SPOOF_NOTICE '=' TNO ';'
+auth_spoof_notice: SPOOF_NOTICE '=' TBOOL ';'
 {
   if (ypass == 2)
-    yy_aconf->flags |= CONF_FLAGS_SPOOF_NOTICE;
-} | SPOOF_NOTICE '=' TYES ';'
-{
-  if (ypass == 2)
-    yy_aconf->flags &= ~CONF_FLAGS_SPOOF_NOTICE;
+  {
+    if (yylval.number)
+      yy_aconf->flags &= ~CONF_FLAGS_SPOOF_NOTICE;
+    else
+      yy_aconf->flags |= CONF_FLAGS_SPOOF_NOTICE;
+  }
 };
 
 /* XXX - need check for illegal hostnames here */
@@ -1342,74 +1343,81 @@ auth_spoof: SPOOF '=' QSTRING ';'
   }
 };
 
-auth_exceed_limit: EXCEED_LIMIT '=' TYES ';'
+auth_exceed_limit: EXCEED_LIMIT '=' TBOOL ';'
 {
   if (ypass == 2)
-    yy_aconf->flags |= CONF_FLAGS_NOLIMIT;
-} | EXCEED_LIMIT '=' TNO ';'
-{
-  if (ypass == 2)
-    yy_aconf->flags &= ~CONF_FLAGS_NOLIMIT;
+  {
+    if (yylval.number)
+      yy_aconf->flags |= CONF_FLAGS_NOLIMIT;
+    else
+      yy_aconf->flags &= ~CONF_FLAGS_NOLIMIT;
+  }
 };
 
-auth_is_restricted: RESTRICTED '=' TYES ';'
+auth_is_restricted: RESTRICTED '=' TBOOL ';'
 {
   if (ypass == 2)
-    yy_aconf->flags |= CONF_FLAGS_RESTRICTED;
-} | RESTRICTED '=' TNO ';'
-{
-  if (ypass == 2)
-    yy_aconf->flags &= ~CONF_FLAGS_RESTRICTED;
+  {
+    if (yylval.number)
+      yy_aconf->flags |= CONF_FLAGS_RESTRICTED;
+    else
+      yy_aconf->flags &= ~CONF_FLAGS_RESTRICTED;
+  }
 };
 
-auth_kline_exempt: KLINE_EXEMPT '=' TYES ';'
+auth_kline_exempt: KLINE_EXEMPT '=' TBOOL ';'
 {
   if (ypass == 2)
-    yy_aconf->flags |= CONF_FLAGS_EXEMPTKLINE;
-} | KLINE_EXEMPT '=' TNO ';'
-{
-  if (ypass == 2)
-    yy_aconf->flags &= ~CONF_FLAGS_EXEMPTKLINE;
+  {
+    if (yylval.number)
+      yy_aconf->flags |= CONF_FLAGS_EXEMPTKLINE;
+    else
+      yy_aconf->flags &= ~CONF_FLAGS_EXEMPTKLINE;
+  }
 };
 
-auth_have_ident: HAVE_IDENT '=' TYES ';'
+auth_have_ident: HAVE_IDENT '=' TBOOL ';'
 {
   if (ypass == 2)
-    yy_aconf->flags |= CONF_FLAGS_NEED_IDENTD;
-} | HAVE_IDENT '=' TNO ';'
-{
-  if (ypass == 2)
-    yy_aconf->flags &= ~CONF_FLAGS_NEED_IDENTD;
+  {
+    if (yylval.number)
+      yy_aconf->flags |= CONF_FLAGS_NEED_IDENTD;
+    else
+      yy_aconf->flags &= ~CONF_FLAGS_NEED_IDENTD;
+  }
 };
 
-auth_can_flood: CAN_FLOOD '=' TYES ';'
+auth_can_flood: CAN_FLOOD '=' TBOOL ';'
 {
   if (ypass == 2)
-    yy_aconf->flags |= CONF_FLAGS_CAN_FLOOD;
-} | CAN_FLOOD '=' TNO ';'
-{
-  if (ypass == 2)
-    yy_aconf->flags &= ~CONF_FLAGS_CAN_FLOOD;
+  {
+    if (yylval.number)
+      yy_aconf->flags |= CONF_FLAGS_CAN_FLOOD;
+    else
+      yy_aconf->flags &= ~CONF_FLAGS_CAN_FLOOD;
+  }
 };
 
-auth_no_tilde: NO_TILDE '=' TYES ';' 
+auth_no_tilde: NO_TILDE '=' TBOOL ';' 
 {
   if (ypass == 2)
-    yy_aconf->flags |= CONF_FLAGS_NO_TILDE;
-} | NO_TILDE '=' TNO ';'
-{
-  if (ypass == 2)
-    yy_aconf->flags &= ~CONF_FLAGS_NO_TILDE;
+  {
+    if (yylval.number)
+      yy_aconf->flags |= CONF_FLAGS_NO_TILDE;
+    else
+      yy_aconf->flags &= ~CONF_FLAGS_NO_TILDE;
+  }
 };
 
-auth_gline_exempt: GLINE_EXEMPT '=' TYES ';' 
+auth_gline_exempt: GLINE_EXEMPT '=' TBOOL ';' 
 {
   if (ypass == 2)
-    yy_aconf->flags |= CONF_FLAGS_EXEMPTGLINE;
-} | GLINE_EXEMPT '=' TNO ';'
-{
-  if (ypass == 2)
-    yy_aconf->flags &= ~CONF_FLAGS_EXEMPTGLINE;
+  {
+    if (yylval.number)
+      yy_aconf->flags |= CONF_FLAGS_EXEMPTGLINE;
+    else
+      yy_aconf->flags &= ~CONF_FLAGS_EXEMPTGLINE;
+  }
 };
 
 auth_redir_serv: REDIRSERV '=' QSTRING ';'
@@ -1857,24 +1865,26 @@ connect_fakename: FAKENAME '=' QSTRING ';'
   }
 };
 
-connect_lazylink: LAZYLINK '=' TYES ';'
+connect_lazylink: LAZYLINK '=' TBOOL ';'
 {
   if (ypass == 2)
-    yy_aconf->flags |= CONF_FLAGS_LAZY_LINK;
-} | LAZYLINK '=' TNO ';'
-{
-  if (ypass == 2)
-    yy_aconf->flags &= ~CONF_FLAGS_LAZY_LINK;
+  {
+    if (yylval.number)
+      yy_aconf->flags |= CONF_FLAGS_LAZY_LINK;
+    else
+      yy_aconf->flags &= ~CONF_FLAGS_LAZY_LINK;
+  }
 };
 
-connect_encrypted: ENCRYPTED '=' TYES ';'
+connect_encrypted: ENCRYPTED '=' TBOOL ';'
 {
   if (ypass == 2)
-    yy_aconf->flags |= CONF_FLAGS_ENCRYPTED;
-} | ENCRYPTED '=' TNO ';'
-{
-  if (ypass == 2)
-    yy_aconf->flags &= ~CONF_FLAGS_ENCRYPTED;
+  {
+    if (yylval.number)
+      yy_aconf->flags |= CONF_FLAGS_ENCRYPTED;
+    else
+      yy_aconf->flags &= ~CONF_FLAGS_ENCRYPTED;
+  }
 };
 
 connect_rsa_public_key_file: RSA_PUBLIC_KEY_FILE '=' QSTRING ';'
@@ -1921,40 +1931,42 @@ connect_rsa_public_key_file: RSA_PUBLIC_KEY_FILE '=' QSTRING ';'
 #endif /* HAVE_LIBCRYPTO */
 };
 
-connect_cryptlink: CRYPTLINK '=' TYES ';'
+connect_cryptlink: CRYPTLINK '=' TBOOL ';'
 {
   if (ypass == 2)
-    yy_aconf->flags |= CONF_FLAGS_CRYPTLINK;
-} | CRYPTLINK '=' TNO ';'
-{
-  if (ypass == 2)
-    yy_aconf->flags &= ~CONF_FLAGS_CRYPTLINK;
+  {
+    if (yylval.number)
+      yy_aconf->flags |= CONF_FLAGS_CRYPTLINK;
+    else
+      yy_aconf->flags &= ~CONF_FLAGS_CRYPTLINK;
+  }
 };
 
-connect_compressed: COMPRESSED '=' TYES ';'
+connect_compressed: COMPRESSED '=' TBOOL ';'
 {
+  if (ypass == 2)
+  {
+    if (yylval.number)
 #ifndef HAVE_LIBZ
-  if (ypass == 2)
-    sendto_realops_flags(UMODE_ALL, L_ALL,
-                         "Ignoring compressed = yes; -- no zlib support");
+      sendto_realops_flags(UMODE_ALL, L_ALL,
+                           "Ignoring compressed = yes; -- no zlib support");
 #else
-  if (ypass == 2)
-    yy_aconf->flags |= CONF_FLAGS_COMPRESSED;
+      yy_aconf->flags |= CONF_FLAGS_COMPRESSED;
 #endif
-} | COMPRESSED '=' TNO ';'
-{
-  if (ypass == 2)
-    yy_aconf->flags &= ~CONF_FLAGS_COMPRESSED;
+    else
+      yy_aconf->flags &= ~CONF_FLAGS_COMPRESSED;
+  }
 };
 
-connect_auto: AUTOCONN '=' TYES ';'
+connect_auto: AUTOCONN '=' TBOOL ';'
 {
   if (ypass == 2)
-    yy_aconf->flags |= CONF_FLAGS_ALLOW_AUTO_CONN;
-} | AUTOCONN '=' TNO ';'
-{
-  if (ypass == 2)
-    yy_aconf->flags &= ~CONF_FLAGS_ALLOW_AUTO_CONN;
+  {
+    if (yylval.number)
+      yy_aconf->flags |= CONF_FLAGS_ALLOW_AUTO_CONN;
+    else
+      yy_aconf->flags &= ~CONF_FLAGS_ALLOW_AUTO_CONN;
+  }
 };
 
 connect_hub_mask: HUB_MASK '=' QSTRING ';' 
@@ -2262,34 +2274,22 @@ general_item:       general_ignore_bogus_ts | general_failed_oper_notice |
                     general_disable_auth | general_fallback_to_ip6_int | 
                     error;
 
-general_ignore_bogus_ts: IGNORE_BOGUS_TS '=' TNO ';'
+general_ignore_bogus_ts: IGNORE_BOGUS_TS '=' TBOOL ';'
 {
   if (ypass == 2)
-    ConfigFileEntry.ignore_bogus_ts = 1;
-} | IGNORE_BOGUS_TS '=' TYES ';'
-{
-  if (ypass == 2)
-    ConfigFileEntry.ignore_bogus_ts = 0;
+    ConfigFileEntry.ignore_bogus_ts = yylval.number;
 };
 
-general_failed_oper_notice: FAILED_OPER_NOTICE '=' TYES ';'
+general_failed_oper_notice: FAILED_OPER_NOTICE '=' TBOOL ';'
 {
   if (ypass == 2)
-    ConfigFileEntry.failed_oper_notice = 1;
-} | FAILED_OPER_NOTICE '=' TNO ';'
-{
-  if (ypass == 2)
-    ConfigFileEntry.failed_oper_notice = 0;
+    ConfigFileEntry.failed_oper_notice = yylval.number;
 };
 
-general_anti_nick_flood: ANTI_NICK_FLOOD '=' TYES ';'
+general_anti_nick_flood: ANTI_NICK_FLOOD '=' TBOOL ';'
 {
   if (ypass == 2)
-    ConfigFileEntry.anti_nick_flood = 1;
-} | ANTI_NICK_FLOOD '=' TNO ';'
-{
-  if (ypass == 2)
-    ConfigFileEntry.anti_nick_flood = 0;
+    ConfigFileEntry.anti_nick_flood = yylval.number;
 };
 
 general_max_nick_time: MAX_NICK_TIME '=' timespec ';'
@@ -2339,102 +2339,66 @@ general_havent_read_conf: HAVENT_READ_CONF '=' NUMBER ';'
   }
 };
 
-general_kline_with_reason: KLINE_WITH_REASON '=' TYES ';'
+general_kline_with_reason: KLINE_WITH_REASON '=' TBOOL ';'
 {
   if (ypass == 2)
-    ConfigFileEntry.kline_with_reason = 1;
-} | KLINE_WITH_REASON '=' TNO ';'
-{
-  if (ypass == 2)
-    ConfigFileEntry.kline_with_reason = 0;
+    ConfigFileEntry.kline_with_reason = yylval.number;
 };
 
-general_client_exit: CLIENT_EXIT '=' TYES ';'
+general_client_exit: CLIENT_EXIT '=' TBOOL ';'
 {
   if (ypass == 2)
-    ConfigFileEntry.client_exit = 1;
-} | CLIENT_EXIT '=' TNO ';'
-{
-  if (ypass == 2)
-    ConfigFileEntry.client_exit = 0;
+    ConfigFileEntry.client_exit = yylval.number;
 };
 
-general_kline_with_connection_closed: KLINE_WITH_CONNECTION_CLOSED '=' TYES ';'
+general_kline_with_connection_closed: KLINE_WITH_CONNECTION_CLOSED '=' TBOOL ';'
 {
   if (ypass == 2)
-    ConfigFileEntry.kline_with_connection_closed = 1;
-} | KLINE_WITH_CONNECTION_CLOSED '=' TNO ';'
-{
-  if (ypass == 2)
-    ConfigFileEntry.kline_with_connection_closed = 0;
+    ConfigFileEntry.kline_with_connection_closed = yylval.number;
 };
 
-general_warn_no_nline: WARN_NO_NLINE '=' TYES ';'
+general_warn_no_nline: WARN_NO_NLINE '=' TBOOL ';'
 {
   if (ypass == 2)
-    ConfigFileEntry.warn_no_nline = 1;
-} | WARN_NO_NLINE '=' TNO ';'
-{
-  if (ypass == 2)
-    ConfigFileEntry.warn_no_nline = 0;
+    ConfigFileEntry.warn_no_nline = yylval.number;
 };
 
-general_non_redundant_klines: NON_REDUNDANT_KLINES '=' TYES ';'
+general_non_redundant_klines: NON_REDUNDANT_KLINES '=' TBOOL ';'
 {
   if (ypass == 2)
-    ConfigFileEntry.non_redundant_klines = 1;
-} | NON_REDUNDANT_KLINES '=' TNO ';'
-{
-  if (ypass == 2)
-    ConfigFileEntry.non_redundant_klines = 0;
+    ConfigFileEntry.non_redundant_klines = yylval.number;
 };
 
-general_stats_o_oper_only: STATS_O_OPER_ONLY '=' TYES ';'
+general_stats_o_oper_only: STATS_O_OPER_ONLY '=' TBOOL ';'
 {
   if (ypass == 2)
-    ConfigFileEntry.stats_o_oper_only = 1;
-} | STATS_O_OPER_ONLY '=' TNO ';'
-{
-  if (ypass == 2)
-    ConfigFileEntry.stats_o_oper_only = 0;
+    ConfigFileEntry.stats_o_oper_only = yylval.number;
 };
 
-general_stats_P_oper_only: STATS_P_OPER_ONLY '=' TYES ';'
+general_stats_P_oper_only: STATS_P_OPER_ONLY '=' TBOOL ';'
 {
   if (ypass == 2)
-    ConfigFileEntry.stats_P_oper_only = 1;
-} | STATS_P_OPER_ONLY '=' TNO ';'
-{
-  if (ypass == 2)
-    ConfigFileEntry.stats_P_oper_only = 0;
+    ConfigFileEntry.stats_P_oper_only = yylval.number;
 };
 
-general_stats_k_oper_only: STATS_K_OPER_ONLY '=' TYES ';'
+general_stats_k_oper_only: STATS_K_OPER_ONLY '=' TBOOL ';'
 {
   if (ypass == 2)
-    ConfigFileEntry.stats_k_oper_only = 2;
+    ConfigFileEntry.stats_k_oper_only = 2 * yylval.number;
 } | STATS_K_OPER_ONLY '=' TMASKED ';'
 {
   if (ypass == 2)
     ConfigFileEntry.stats_k_oper_only = 1;
-} | STATS_K_OPER_ONLY '=' TNO ';'
-{
-  if (ypass == 2)
-    ConfigFileEntry.stats_k_oper_only = 0;
 };
 
-general_stats_i_oper_only: STATS_I_OPER_ONLY '=' TYES ';'
+general_stats_i_oper_only: STATS_I_OPER_ONLY '=' TBOOL ';'
 {
   if (ypass == 2)
-    ConfigFileEntry.stats_i_oper_only = 2;
+    ConfigFileEntry.stats_i_oper_only = 2 * yylval.number;
 } | STATS_I_OPER_ONLY '=' TMASKED ';'
 {
   if (ypass == 2)
     ConfigFileEntry.stats_i_oper_only = 1;
-} | STATS_I_OPER_ONLY '=' TNO ';'
-{
-  if (ypass == 2)
-    ConfigFileEntry.stats_i_oper_only = 0;
 };
 
 general_pace_wait: PACE_WAIT '=' timespec ';'
@@ -2455,34 +2419,22 @@ general_pace_wait_simple: PACE_WAIT_SIMPLE '=' timespec ';'
     ConfigFileEntry.pace_wait_simple = $3;
 };
 
-general_short_motd: SHORT_MOTD '=' TYES ';'
+general_short_motd: SHORT_MOTD '=' TBOOL ';'
 {
   if (ypass == 2)
-    ConfigFileEntry.short_motd = 1;
-} | SHORT_MOTD '=' TNO ';'
-{
-  if (ypass == 2)
-    ConfigFileEntry.short_motd = 0;
+    ConfigFileEntry.short_motd = yylval.number;
 };
   
-general_no_oper_flood: NO_OPER_FLOOD '=' TYES ';'
+general_no_oper_flood: NO_OPER_FLOOD '=' TBOOL ';'
 {
   if (ypass == 2)
-    ConfigFileEntry.no_oper_flood = 1;
-} | NO_OPER_FLOOD '=' TNO ';'
-{
-  if (ypass == 2)
-    ConfigFileEntry.no_oper_flood = 0;
+    ConfigFileEntry.no_oper_flood = yylval.number;
 };
 
-general_true_no_oper_flood: TRUE_NO_OPER_FLOOD '=' TYES ';'
+general_true_no_oper_flood: TRUE_NO_OPER_FLOOD '=' TBOOL ';'
 {
   if (ypass == 2)
-    ConfigFileEntry.true_no_oper_flood = 1;
-} | TRUE_NO_OPER_FLOOD '=' TNO ';'
-{
-  if (ypass == 2)
-    ConfigFileEntry.true_no_oper_flood = 0;
+    ConfigFileEntry.true_no_oper_flood = yylval.number;
 };
 
 general_iauth_server: IAUTH_SERVER '=' QSTRING ';'
@@ -2522,14 +2474,10 @@ general_fname_operlog: FNAME_OPERLOG '=' QSTRING ';'
             sizeof(ConfigFileEntry.fname_operlog));
 };
 
-general_glines: GLINES '=' TYES ';'
+general_glines: GLINES '=' TBOOL ';'
 {
   if (ypass == 2)
-    ConfigFileEntry.glines = 1;
-} | GLINES '=' TNO ';'
-{
-  if (ypass == 2)
-    ConfigFileEntry.glines = 0;
+    ConfigFileEntry.glines = yylval.number;
 };
 
 general_message_locale: MESSAGE_LOCALE '=' QSTRING ';'
@@ -2646,14 +2594,10 @@ general_compression_level: COMPRESSION_LEVEL '=' NUMBER ';'
   }
 };
 
-general_use_egd: USE_EGD '=' TYES ';'
+general_use_egd: USE_EGD '=' TBOOL ';'
 {
   if (ypass == 2)
-    ConfigFileEntry.use_egd = 1;
-} | USE_EGD '=' TNO ';'
-{
-  if (ypass == 2)
-    ConfigFileEntry.use_egd = 0;
+    ConfigFileEntry.use_egd = yylval.number;
 };
 
 general_egdpool_path: EGDPOOL_PATH '=' QSTRING ';'
@@ -2665,24 +2609,16 @@ general_egdpool_path: EGDPOOL_PATH '=' QSTRING ';'
   }
 };
 
-general_ping_cookie: PING_COOKIE '=' TYES ';'
+general_ping_cookie: PING_COOKIE '=' TBOOL ';'
 {
   if (ypass == 2)
-    ConfigFileEntry.ping_cookie = 1;
-} | PING_COOKIE '=' TNO ';'
-{
-  if (ypass == 2)
-    ConfigFileEntry.ping_cookie = 0;
+    ConfigFileEntry.ping_cookie = yylval.number;
 };
 
-general_disable_auth: DISABLE_AUTH '=' TYES ';'
+general_disable_auth: DISABLE_AUTH '=' TBOOL ';'
 {
-  ConfigFileEntry.disable_auth = 1;
-} |
-  DISABLE_AUTH '=' TNO ';'
-{
-  ConfigFileEntry.disable_auth = 0;
-} ;
+  ConfigFileEntry.disable_auth = yylval.number;
+};
 
 general_throttle_time: THROTTLE_TIME '=' timespec ';'
 {
@@ -2690,12 +2626,9 @@ general_throttle_time: THROTTLE_TIME '=' timespec ';'
     ConfigFileEntry.throttle_time = yylval.number;
 };
 
-general_fallback_to_ip6_int: FALLBACK_IP6_INT '=' TYES ';'
+general_fallback_to_ip6_int: FALLBACK_IP6_INT '=' TBOOL ';'
 {
-  ConfigFileEntry.fallback_to_ip6_int = 1;
-} | FALLBACK_IP6_INT '=' TNO ';'
-{
-  ConfigFileEntry.fallback_to_ip6_int = 0;
+  ConfigFileEntry.fallback_to_ip6_int = yylval.number;
 };
 
 general_oper_umodes: OPER_UMODES
@@ -2844,14 +2777,10 @@ umode_item:	T_BOTS
     ConfigFileEntry.oper_only_umodes |= UMODE_LOCOPS;
 };
 
-general_crypt_oper_password: CRYPT_OPER_PASSWORD '=' TYES ';'
+general_crypt_oper_password: CRYPT_OPER_PASSWORD '=' TBOOL ';'
 {
   if (ypass == 2)
-    ConfigFileEntry.crypt_oper_password = 1;
-} | CRYPT_OPER_PASSWORD '=' TNO ';'
-{
-  if (ypass == 2)
-    ConfigFileEntry.crypt_oper_password = 0;
+    ConfigFileEntry.crypt_oper_password = yylval.number;
 };
 
 general_min_nonwildcard: MIN_NONWILDCARD '=' NUMBER ';'
@@ -2878,14 +2807,10 @@ general_client_flood: T_CLIENT_FLOOD '=' sizespec ';'
     ConfigFileEntry.client_flood = $3;
 };
 
-general_dot_in_ip6_addr: DOT_IN_IP6_ADDR '=' TYES ';'
+general_dot_in_ip6_addr: DOT_IN_IP6_ADDR '=' TBOOL ';'
 {
   if (ypass == 2)
-    ConfigFileEntry.dot_in_ip6_addr = 1;
-} | DOT_IN_IP6_ADDR '=' TNO ';'
-{
-  if (ypass == 2)
-    ConfigFileEntry.dot_in_ip6_addr = 0;
+    ConfigFileEntry.dot_in_ip6_addr = yylval.number;
 };
 
 /***************************************************************************
@@ -2909,34 +2834,22 @@ channel_item:       channel_use_except |
 		    channel_no_join_on_split |
 		    channel_oper_pass_resv | error;
 
-channel_use_except: USE_EXCEPT '=' TYES ';'
+channel_use_except: USE_EXCEPT '=' TBOOL ';'
 {
   if (ypass == 2)
-    ConfigChannel.use_except = 1;
-} | USE_EXCEPT '=' TNO ';'
-{
-  if (ypass == 2)
-    ConfigChannel.use_except = 0;
+    ConfigChannel.use_except = yylval.number;
 };
 
-channel_use_invex: USE_INVEX '=' TYES ';'
+channel_use_invex: USE_INVEX '=' TBOOL ';'
 {
   if (ypass == 2)
-    ConfigChannel.use_invex = 1;
-} | USE_INVEX '=' TNO ';'
-{
-  if (ypass == 2)
-    ConfigChannel.use_invex = 0;
+    ConfigChannel.use_invex = yylval.number;
 };
 
-channel_use_knock: USE_KNOCK '=' TYES ';'
+channel_use_knock: USE_KNOCK '=' TBOOL ';'
 {
   if (ypass == 2)
-    ConfigChannel.use_knock = 1;
-} | USE_KNOCK '=' TNO ';'
-{
-  if (ypass == 2)
-    ConfigChannel.use_knock = 0;
+    ConfigChannel.use_knock = yylval.number;
 };
 
 channel_knock_delay: KNOCK_DELAY '=' timespec ';'
@@ -2957,14 +2870,10 @@ channel_max_chans_per_user: MAX_CHANS_PER_USER '=' NUMBER ';'
     ConfigChannel.max_chans_per_user = $3;
 };
 
-channel_quiet_on_ban: QUIET_ON_BAN '=' TYES ';'
+channel_quiet_on_ban: QUIET_ON_BAN '=' TBOOL ';'
 {
   if (ypass == 2)
-    ConfigChannel.quiet_on_ban = 1;
-} | QUIET_ON_BAN '=' TNO ';'
-{
-  if (ypass == 2)
-    ConfigChannel.quiet_on_ban = 0;
+    ConfigChannel.quiet_on_ban = yylval.number;
 };
 
 channel_max_bans: MAX_BANS '=' NUMBER ';'
@@ -2985,34 +2894,22 @@ channel_default_split_server_count: DEFAULT_SPLIT_SERVER_COUNT '=' NUMBER ';'
     ConfigChannel.default_split_server_count = $3;
 };
 
-channel_no_create_on_split: NO_CREATE_ON_SPLIT '=' TYES ';'
+channel_no_create_on_split: NO_CREATE_ON_SPLIT '=' TBOOL ';'
 {
   if (ypass == 2)
-    ConfigChannel.no_create_on_split = 1;
-} | NO_CREATE_ON_SPLIT '=' TNO ';'
-{
-  if (ypass == 2)
-    ConfigChannel.no_create_on_split = 0;
+    ConfigChannel.no_create_on_split = yylval.number;
 };
 
-channel_no_join_on_split: NO_JOIN_ON_SPLIT '=' TYES ';'
+channel_no_join_on_split: NO_JOIN_ON_SPLIT '=' TBOOL ';'
 {
   if (ypass == 2)
-    ConfigChannel.no_join_on_split = 1;
-} | NO_JOIN_ON_SPLIT '=' TNO ';'
-{
-  if (ypass == 2)
-    ConfigChannel.no_join_on_split = 0;
+    ConfigChannel.no_join_on_split = yylval.number;
 };
 
-channel_oper_pass_resv: OPER_PASS_RESV '=' TYES ';'
+channel_oper_pass_resv: OPER_PASS_RESV '=' TBOOL ';'
 {
   if (ypass == 2)
-    ConfigChannel.oper_pass_resv = 1;
-} | OPER_PASS_RESV '=' TNO ';'
-{
-  if (ypass == 2)
-    ConfigChannel.oper_pass_resv = 0;
+    ConfigChannel.oper_pass_resv = yylval.number;
 };
 
 /***************************************************************************
@@ -3030,44 +2927,28 @@ serverhide_item:    serverhide_flatten_links | serverhide_hide_servers |
 		    serverhide_disable_local_channels |
                     error;
 
-serverhide_flatten_links: FLATTEN_LINKS '=' TYES ';'
+serverhide_flatten_links: FLATTEN_LINKS '=' TBOOL ';'
 {
   if (ypass == 2)
-    ConfigServerHide.flatten_links = 1;
-} | FLATTEN_LINKS '=' TNO ';'
-{
-  if (ypass == 2)
-    ConfigServerHide.flatten_links = 0;
+    ConfigServerHide.flatten_links = yylval.number;
 };
 
-serverhide_hide_servers: HIDE_SERVERS '=' TYES ';'
+serverhide_hide_servers: HIDE_SERVERS '=' TBOOL ';'
 {
   if (ypass == 2)
-    ConfigServerHide.hide_servers = 1;
-} | HIDE_SERVERS '=' TNO ';'
-{
-  if (ypass == 2)
-    ConfigServerHide.hide_servers = 0;
+    ConfigServerHide.hide_servers = yylval.number;
 };
 
-serverhide_disable_remote_commands: DISABLE_REMOTE_COMMANDS '=' TYES ';'
+serverhide_disable_remote_commands: DISABLE_REMOTE_COMMANDS '=' TBOOL ';'
 {
   if (ypass == 2)
-    ConfigServerHide.disable_remote = 1;
-} | DISABLE_REMOTE_COMMANDS '=' TNO ';'
-{
-  if (ypass == 2)
-    ConfigServerHide.disable_remote = 0;
+    ConfigServerHide.disable_remote = yylval.number;
 };
 
-serverhide_disable_local_channels: DISABLE_LOCAL_CHANNELS '=' TYES ';'
+serverhide_disable_local_channels: DISABLE_LOCAL_CHANNELS '=' TBOOL ';'
 {
   if (ypass == 2)
-    ConfigServerHide.disable_local_channels = 1;
-} | DISABLE_LOCAL_CHANNELS '=' TNO ';'
-{
-  if (ypass == 2)
-    ConfigServerHide.disable_local_channels = 0;
+    ConfigServerHide.disable_local_channels = yylval.number;
 };
 
 serverhide_links_delay: LINKS_DELAY '=' timespec ';'
@@ -3084,22 +2965,14 @@ serverhide_links_delay: LINKS_DELAY '=' timespec ';'
   }
 };
 
-serverhide_hidden: HIDDEN '=' TYES ';'
+serverhide_hidden: HIDDEN '=' TBOOL ';'
 {
   if (ypass == 2)
-    ConfigServerHide.hidden = 1;
-} | HIDDEN '=' TNO ';'
-{
-  if (ypass == 2)
-    ConfigServerHide.hidden = 0;
+    ConfigServerHide.hidden = yylval.number;
 };
 
-serverhide_disable_hidden: DISABLE_HIDDEN '=' TYES ';'
+serverhide_disable_hidden: DISABLE_HIDDEN '=' TBOOL ';'
 {
   if (ypass == 2)
-    ConfigServerHide.disable_hidden = 1;
-} | DISABLE_HIDDEN '=' TNO ';'
-{
-  if (ypass == 2)
-    ConfigServerHide.disable_hidden = 0;
+    ConfigServerHide.disable_hidden = yylval.number;
 };
