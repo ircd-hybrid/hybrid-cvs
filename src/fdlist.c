@@ -3,7 +3,7 @@
  * fdlist.c   maintain lists of certain important fds 
  *
  *
- * $Id: fdlist.c,v 7.6 2000/10/31 14:21:52 adrian Exp $
+ * $Id: fdlist.c,v 7.7 2000/10/31 22:41:35 adrian Exp $
  */
 #include "fdlist.h"
 #include "client.h"  /* struct Client */
@@ -88,6 +88,7 @@ fd_open(int fd, unsigned int type, const char *desc)
 #ifdef NOTYET
     debug(51, 3) ("fd_open FD %d %s\n", fd, desc);
 #endif
+    F->fd = fd;
     F->type = type;
     F->flags.open = 1;
 #ifdef NOTYET
