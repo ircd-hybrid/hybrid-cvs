@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.335 2002/10/11 19:57:49 db Exp $
+ *  $Id: channel.c,v 7.336 2002/10/14 01:26:08 bill Exp $
  */
 
 #include "stdinc.h"
@@ -499,7 +499,7 @@ sub1_from_channel(struct Channel *chptr)
  *
  * inputs	- NONE
  * outputs	- NONE
- * side effexts - destroys expired channels
+ * side effects - destroys expired channels
  */
 void
 expire_channels(void *unused)
