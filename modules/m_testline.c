@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_testline.c,v 1.17 2001/04/09 08:29:49 a1kmm Exp $
+ *   $Id: m_testline.c,v 1.18 2001/04/10 05:21:46 a1kmm Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -119,7 +119,7 @@ static void mo_testline(struct Client *client_p, struct Client *source_p,
       p++;
       given_host = p;
       if ((t=parse_netmask(given_host, &ip, &host_mask)) != HM_HOST)
-       aconf = find_address_conf(NULL, given_name, &ip,
+       aconf = find_address_conf(given_host, given_name, &ip,
 #ifdef IPV6
           (t==HM_IPV6)?AF_INET6 : AF_INET
 #else
