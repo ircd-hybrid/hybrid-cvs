@@ -1,5 +1,5 @@
 /************************************************************************
- *   IRC - Internet Relay Chat, src/channel.c
+ *   IRC - Internet Relay Chat, src/m_lljoin.c
  *   Copyright (C) 1990 Jarkko Oikarinen and
  *                      University of Oulu, Co Center
  *
@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_lljoin.c,v 7.2 2000/01/06 02:08:44 db Exp $
+ * $Id: m_lljoin.c,v 7.3 2000/01/06 02:10:36 db Exp $
  */
 #include "channel.h"
 #include "client.h"
