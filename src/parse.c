@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.189 2003/10/30 19:53:01 bill Exp $
+ *  $Id: parse.c,v 7.190 2003/11/01 06:15:44 db Exp $
  */
 
 #include "stdinc.h"
@@ -93,7 +93,9 @@
 
 struct MessageTree
 {
-  int links; /* Count of nodes =under= this node */
+  int links; /* Count of all pointers (including msg) at this node 
+	      * used as reference count for deletion of _this_ node.
+	      */
   struct Message *msg;
   struct MessageTree *pointers[MAXPTRLEN];
 };
@@ -406,27 +408,44 @@ clear_hash_parse(void)
  * output	- NONE
  * side effects	- recursively build the Message Tree ;-)
  */
+/*
+ * How this works.
+ *
+ * The code first checks to see if its reached the end of the command
+ * If so, that struct MessageTree has a msg pointer updated and the links
+ * count incremented, since a msg pointer is a reference.
+ * Then the code descends recursively, building the trie.
+ * If a pointer index inside the struct MessageTree is NULL a new
+ * child struct MessageTree has to be allocated.
+ * The links (reference count) is incremented as they are created
+ * in the parent.
+ */
 static void
-add_msg_element(struct MessageTree *mtree_p, struct Message *msg_p, const char *cmd)
+add_msg_element(struct MessageTree *mtree_p, 
+		struct Message *msg_p, const char *cmd)
 {
   struct MessageTree *ntree_p;
 
-  if (*cmd == '\0')
+  if (*(cmd+1) == '\0')
   {
     mtree_p->msg = msg_p;
-    return;
-  }
-
-  if ((ntree_p = mtree_p->pointers[*cmd & (MAXPTRLEN-1)]) != NULL)
-  {
-    mtree_p->links++;
-    add_msg_element(ntree_p, msg_p, cmd+1);
+    mtree_p->links++;		/* Have msg pointer, so up ref count */
   }
   else
   {
-    ntree_p = (struct MessageTree *)MyMalloc(sizeof(struct MessageTree));
-    mtree_p->pointers[*cmd & (MAXPTRLEN-1)] = ntree_p;
-    mtree_p->links++;
+    /* *cmd & (MAXPTRLEN-1) 
+     * convert the char pointed to at *cmd from ASCII to an integer
+     * between 0 and MAXPTRLEN.
+     * Thus 'A' -> 0x1 'B' -> 0x2 'c' -> 0x3 etc.
+     */
+
+    if ((ntree_p = mtree_p->pointers[*cmd & (MAXPTRLEN-1)]) == NULL)
+    {
+      ntree_p = (struct MessageTree *)MyMalloc(sizeof(struct MessageTree));
+      mtree_p->pointers[*cmd & (MAXPTRLEN-1)] = ntree_p;
+
+      mtree_p->links++;		/* Have new pointer, so up ref count */
+    }
     add_msg_element(ntree_p, msg_p, cmd+1);
   }
 }
@@ -438,27 +457,47 @@ add_msg_element(struct MessageTree *mtree_p, struct Message *msg_p, const char *
  * output	- NONE
  * side effects	- recursively deletes a token from the Message Tree ;-)
  */
+/*
+ * How this works.
+ *
+ * Well, first off, the code recursively descends into the trie
+ * until it finds the terminating letter of the command being removed.
+ * Once it has done that, it marks the msg pointer as NULL then
+ * reduces the reference count on that allocated struct MessageTree
+ * since a command counts as a reference.
+ *
+ * Then it pops up the recurse stack. As it comes back up the recurse
+ * The code checks to see if the child now has no pointers or msg
+ * i.e. the links count has gone to zero. If its no longer used, the
+ * child struct MessageTree can be deleted. The parent reference
+ * to this child is then removed and the parents link count goes down.
+ * Thus, we continue to go back up removing all unused MessageTree(s)
+ */
 static void
 del_msg_element(struct MessageTree *mtree_p, const char *cmd)
 {
   struct MessageTree *ntree_p;
 
-  if (*cmd == '\0')
-    return;
+  /* In case this is called for a nonexistent command
+   * check that there is a msg pointer here, else links-- goes -ve
+   * -db
+   */
 
-  if ((ntree_p = mtree_p->pointers[*cmd & (MAXPTRLEN-1)]) != NULL)
+  if ((*(cmd+1) == '\0') && (mtree_p->msg != NULL))
   {
-    del_msg_element(ntree_p, cmd+1);
-    ntree_p->links--;
-
-    /* this would be bad if it happened */
-    if (ntree_p != &msg_tree)
+    mtree_p->msg = NULL;
+    mtree_p->links--;
+  }
+  else
+  {
+    if ((ntree_p = mtree_p->pointers[*cmd & (MAXPTRLEN-1)]) != NULL)
     {
-      ntree_p->msg = NULL;
+      del_msg_element(ntree_p, cmd+1);
       if (ntree_p->links == 0)
       {
-	MyFree(ntree_p);
 	mtree_p->pointers[*cmd & (MAXPTRLEN-1)] = NULL;
+	mtree_p->links--;
+	MyFree(ntree_p);
       }
     }
   }
@@ -478,7 +517,7 @@ msg_tree_parse(const char *cmd, struct MessageTree *root)
   for (mtree = root->pointers[(*cmd++) & (MAXPTRLEN-1)]; mtree != NULL;
        mtree = mtree->pointers[(*cmd++) & (MAXPTRLEN-1)])
   {
-    if ((mtree->msg != NULL) && (*cmd == '\0'))
+    if ((mtree->msg != NULL) && (*(cmd+1) == '\0'))
       return(mtree->msg);
   }
 
