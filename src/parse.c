@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.139 2002/08/23 02:26:10 db Exp $
+ *  $Id: parse.c,v 7.140 2002/10/24 03:35:58 bill Exp $
  */
 
 #include "stdinc.h"
@@ -557,11 +557,12 @@ report_messages(struct Client *source_p)
 	{
 	  assert(ptr->msg != NULL);
 	  assert(ptr->cmd != NULL);
-	  
-	  sendto_one(source_p, form_str(RPL_STATSCOMMANDS),
-		     me.name, source_p->name, ptr->cmd,
-		     ptr->msg->count, ptr->msg->bytes,
-		     ptr->msg->rcount);
+
+	  if (!((ptr->msg->flags & MFLG_HIDDEN) && !IsAdmin(source_p)))
+	    sendto_one(source_p, form_str(RPL_STATSCOMMANDS),
+		       me.name, source_p->name, ptr->cmd,
+		       ptr->msg->count, ptr->msg->bytes,
+		       ptr->msg->rcount);
 	}
     }
 }

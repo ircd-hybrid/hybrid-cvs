@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: msg.h,v 7.41 2002/05/24 23:34:07 androsyn Exp $
+ *  $Id: msg.h,v 7.42 2002/10/24 03:35:56 bill Exp $
  */
 
 #ifndef INCLUDED_msg_h
@@ -69,6 +69,8 @@ struct Message
                                          * clients.                           */
 #define   MFLG_IGNORE            0x04   /* silently ignore command from
                                          * unregistered clients */
+#define   MFLG_HIDDEN		 0x08   /* Command is hidden from everyone    *
+					 * but opers			      */
 #define MAXPARA    15 
 
 #endif /* INCLUDED_msg_h */
