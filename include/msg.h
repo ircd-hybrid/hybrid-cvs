@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: msg.h,v 7.18 2000/10/28 17:54:28 db Exp $
+ * $Id: msg.h,v 7.19 2000/10/30 07:32:48 db Exp $
  */
 #ifndef INCLUDED_msg_h
 #define INCLUDED_msg_h
@@ -133,9 +133,6 @@ typedef struct MessageTree MESSAGE_TREE;
 #define MSG_KNOCK    "KNOCK"    /* KNOCK */
 #define MSG_OPERWALL "OPERWALL" /* OPERWALL */
 #define MSG_ZIP      "ZIP"      /* ZIP */
-
-/* ZZZ */
-#define MSG_EVENTS   "EVENTS"	/* EVENTS */
 
 /*
  * Constants

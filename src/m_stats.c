@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 7.11 2000/10/30 07:17:04 db Exp $
+ *  $Id: m_stats.c,v 7.12 2000/10/30 07:32:52 db Exp $
  */
 #include "handlers.h"  /* m_pass prototype */
 #include "class.h"       /* report_classes */
@@ -45,7 +45,7 @@
 #include "s_serv.h"      /* hunt_server, show_servers */
 #include "s_stats.h"     /* tstats */
 #include "s_user.h"      /* show_opers */
-
+#include "event.h"	 /* events */
 #include <string.h>
 
 /*
@@ -400,7 +400,7 @@ int mo_stats(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
       break;
 
     case 'E' : case 'e' :
-      sendto_one(sptr,":%s NOTICE %s :Use stats I instead", me.name, parv[0]);
+      show_events(cptr,sptr,parc,parv);
       break;
 
     case 'F' : case 'f' :

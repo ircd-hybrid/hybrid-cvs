@@ -4,7 +4,7 @@
  *
  * This code was borrowed from the squid web cache by Adrian Chadd.
  *
- * $Id: event.c,v 7.4 2000/10/28 22:13:47 adrian Exp $
+ * $Id: event.c,v 7.5 2000/10/30 07:32:52 db Exp $
  *
  * Original header follows:
  *
@@ -235,7 +235,7 @@ eventFind(EVH * func, void *arg)
 
 #ifndef SQUID
 int
-mo_events( struct Client *cptr,
+show_events( struct Client *cptr,
 	   struct Client *sptr,
 	   int parc,
 	   char *parv[])
