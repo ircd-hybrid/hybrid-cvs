@@ -2,11 +2,11 @@
 ** copyright 1991, all rights reserved.
 ** You can use this code as long as my name stays with it.
 **
-** md5 patch by Walter Campbell <wcampbel@botbay.net>
+** md5 patch by W. Campbell <wcampbel@botbay.net>
 ** Modernization, getopt, etc for the Hybrid IRCD team
-** by Walter Campbell
+** by W. Campbell
 **
-** $Id: mkpasswd.c,v 7.6 2001/08/28 01:54:47 wcampbel Exp $
+** $Id: mkpasswd.c,v 7.7 2001/10/19 15:51:17 wcampbel Exp $
 */
 #include <stdio.h>
 #include <string.h>
