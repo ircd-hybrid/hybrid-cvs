@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.52 2003/10/31 01:27:59 bill Exp $
+ *   $Id: m_operspy.c,v 1.53 2004/03/22 22:52:59 metalrock Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -98,7 +98,7 @@ static void do_who_on_channel(struct Client *source_p, struct Channel *chptr,
 #endif
 
 struct Message operspy_msgtab = {
-  "OPERSPY", 0, 0, 2, 4, MFLG_SLOW, 0,
+  "OPERSPY", 0, 0, 3, 4, MFLG_SLOW, 0,
   {m_ignore, m_not_oper, ms_operspy, mo_operspy, m_ignore}
 };
 
@@ -114,7 +114,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.52 $";
+const char *_version = "$Revision: 1.53 $";
 #endif
 
 #ifdef OPERSPY_LOG
@@ -125,8 +125,6 @@ static void
 ms_operspy(struct Client *client_p, struct Client *source_p,
            int parc, char *parv[])
 {
-  assert(parc > 2);
-
 #ifdef OPERSPY_LOG
   operspy_log(source_p, parv[1], parv[2]);
 #endif
@@ -186,13 +184,6 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
   int			cur_len = 0;
   int			reply_to_send = NO;
 #endif
-
-  if (parc < 3)
-  {
-    sendto_one(client_p, form_str(ERR_NEEDMOREPARAMS),
-               me.name, client_p->name, "OPERSPY");
-    return;
-  }
 
   if (!IsOperspy(client_p))
   {
