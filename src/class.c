@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: class.c,v 7.58 2003/06/07 17:28:01 michael Exp $
+ *  $Id: class.c,v 7.59 2003/06/12 22:05:59 db Exp $
  */
 
 #include "stdinc.h"
@@ -87,12 +87,12 @@ free_class(struct Class *aclass)
 
 /* get_conf_ping()
  *
- * inputs       - pointer to struct ConfItem
+ * inputs       - pointer to struct AccessItem
  * output       - ping frequency
  * side effects - NONE
  */
 static int
-get_conf_ping(struct ConfItem *aconf)
+get_conf_ping(struct AccessItem *aconf)
 {
   if (aconf != NULL && ClassPtr(aconf))
     return(ConfPingFreq(aconf));
@@ -110,7 +110,7 @@ const char *
 get_client_class(struct Client *target_p)
 {
   dlink_node *ptr;
-  struct ConfItem *aconf;
+  struct AccessItem *aconf;
   const char *retc = "unknown";
 
   if (target_p && !IsMe(target_p) && (target_p->localClient->confs.head))
@@ -140,7 +140,7 @@ get_client_ping(struct Client *target_p)
 {
   int ping = 0;
   int ping2;
-  struct ConfItem *aconf;
+  struct AccessItem *aconf;
   dlink_node *nlink;
 
   if (target_p->localClient->confs.head != NULL)
@@ -321,7 +321,7 @@ get_sendq(struct Client *client_p)
   unsigned long sendq = DEFAULT_SENDQ;
   dlink_node *ptr;
   struct Class *aclass;
-  struct ConfItem *aconf;
+  struct AccessItem *aconf;
 
   if (client_p && !IsMe(client_p) && (client_p->localClient->confs.head))
   {

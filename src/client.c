@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.382 2003/06/07 17:28:01 michael Exp $
+ *  $Id: client.c,v 7.383 2003/06/12 22:05:59 db Exp $
  */
 
 #include "stdinc.h"
@@ -262,7 +262,7 @@ check_pings_list(dlink_list *list)
 	 !IsIdlelined(client_p) && 
 	 ((CurrentTime - client_p->user->last) > GlobalSetOptions.idletime))
 	{
-	  struct ConfItem *aconf;
+	  struct AccessItem *aconf;
 
 	  aconf = make_conf(CONF_KILL);
 
@@ -368,7 +368,7 @@ void
 check_klines(void)
 {               
   struct Client *client_p;       /* current local client_p being examined */
-  struct ConfItem *aconf = NULL;
+  struct AccessItem *aconf = NULL;
   const char *reason;            /* pointer to reason string */
   dlink_node *ptr, *next_ptr;
  
@@ -385,7 +385,7 @@ check_klines(void)
     if (IsDead(client_p))
       continue;
 	
-    /* if there is a returned struct ConfItem then kill it */
+    /* if there is a returned struct AccessItem then kill it */
     if ((aconf = find_dline_conf(&client_p->localClient->ip,
 				 client_p->localClient->aftype)) != NULL)
     {
@@ -475,7 +475,7 @@ check_klines(void)
       } 
       else if ((aconf = find_kill(client_p)) != NULL) 
       {
-	/* if there is a returned struct ConfItem.. then kill it */
+	/* if there is a returned struct AccessItem.. then kill it */
 	if (IsExemptKline(client_p))
 	{
 	  sendto_realops_flags(UMODE_ALL, L_ALL,
@@ -542,7 +542,7 @@ void
 check_xlines(void)
 {               
   struct Client *client_p;       /* current local client_p being examined */
-  struct ConfItem *aconf = NULL;
+  struct AccessItem *aconf = NULL;
   const char *reason;            /* pointer to reason string */
   dlink_node *ptr, *next_ptr;
  
@@ -555,7 +555,7 @@ check_xlines(void)
     if (IsDead(client_p))
       continue;
 	
-    /* if there is a returned struct ConfItem then kill it */
+    /* if there is a returned struct AccessItem then kill it */
     if ((aconf = find_x_conf(client_p->info)) != NULL)
     {
       sendto_realops_flags(UMODE_ALL, L_ALL,"XLINE active for %s",
@@ -1014,7 +1014,7 @@ remove_dependents(struct Client *client_p, struct Client *source_p,
                   const char *comment1)
 {
   struct Client *to;
-  struct ConfItem *aconf;
+  struct AccessItem *aconf;
   static char myname[HOSTLEN+1];
   dlink_node *ptr;
 

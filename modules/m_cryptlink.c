@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_cryptlink.c,v 1.50 2003/06/01 23:46:53 joshk Exp $
+ *  $Id: m_cryptlink.c,v 1.51 2003/06/12 22:05:54 db Exp $
  */
 
 /*
@@ -47,7 +47,7 @@
 #include "event.h"
 #include "hash.h"        /* add_to_client_hash_table */
 #include "list.h"        /* make_server */
-#include "s_conf.h"      /* struct ConfItem */
+#include "s_conf.h"      /* struct AccessItem */
 #include "s_log.h"       /* log level defines */
 #include "s_serv.h"      /* server_estab, check_server, my_name_for_link */
 #include "s_stats.h"     /* ServerStats */
@@ -95,7 +95,7 @@ _moddeinit(void)
   mod_del_cmd(&cryptlink_msgtab);
 }
 
-const char *_version = "$Revision: 1.50 $";
+const char *_version = "$Revision: 1.51 $";
 #endif
 
 
@@ -144,7 +144,7 @@ static void cryptlink_auth(struct Client *client_p, struct Client *source_p,
                            int parc, char *parv[])
 {
   struct EncCapability *ecap;
-  struct ConfItem *aconf;
+  struct AccessItem *aconf;
   int   enc_len;
   int   len;
   char *enc;
@@ -268,7 +268,7 @@ static void cryptlink_serv(struct Client *client_p, struct Client *source_p,
   struct Client   *target_p;
   char *key = client_p->localClient->out_key;
   char *b64_key;
-  struct ConfItem *aconf;
+  struct AccessItem *aconf;
   char *encrypted;
   const char *p;
   int enc_len;

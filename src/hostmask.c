@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.c,v 7.82 2003/05/14 22:29:41 db Exp $
+ *  $Id: hostmask.c,v 7.83 2003/06/12 22:05:59 db Exp $
  */
 
 #include "stdinc.h"
@@ -383,7 +383,7 @@ get_mask_hash(const char *text)
   return hash_text(text);
 }
 
-/* struct ConfItem* find_conf_by_address(const char*, struct irc_ssaddr*,
+/* struct AccessItem* find_conf_by_address(const char*, struct irc_ssaddr*,
  *         int type, int fam, const char *username)
  * Input: The hostname, the address, the type of mask to find, the address
  *        family, the username.
@@ -391,12 +391,12 @@ get_mask_hash(const char *text)
  * Side-effects: None
  * Note: Setting bit 0 of the type means that the username is ignored.
  */
-struct ConfItem *
+struct AccessItem *
 find_conf_by_address(const char *name, struct irc_ssaddr *addr, int type,
                      int fam, const char *username)
 {
   unsigned long hprecv = 0;
-  struct ConfItem *hprec = NULL;
+  struct AccessItem *hprec = NULL;
   struct AddressRec *arec;
   int b;
 
@@ -482,17 +482,17 @@ find_conf_by_address(const char *name, struct irc_ssaddr *addr, int type,
   return hprec;
 }
 
-/* struct ConfItem* find_address_conf(const char*, const char*,
+/* struct AccessItem* find_address_conf(const char*, const char*,
  * 	                               struct irc_ssaddr*, int);
  * Input: The hostname, username, address, address family.
- * Output: The applicable ConfItem.
+ * Output: The applicable AccessItem.
  * Side-effects: None
  */
-struct ConfItem *
+struct AccessItem *
 find_address_conf(const char *host, const char *user,
                   struct irc_ssaddr *ip, int aftype)
 {
-  struct ConfItem *iconf, *kconf;
+  struct AccessItem *iconf, *kconf;
 
   /* Find the best I-line... If none, return NULL -A1kmm */
   if (!(iconf = find_conf_by_address(host, ip, CONF_CLIENT, aftype, user)))
@@ -521,11 +521,11 @@ find_address_conf(const char *host, const char *user,
  * outut	- pointer to kline conf if found NULL if not
  * side effects	-
  */
-struct ConfItem *
+struct AccessItem *
 find_kline_conf(const char *host, const char *user,
 		struct irc_ssaddr *ip, int aftype)
 {
-  struct ConfItem *kconf;
+  struct AccessItem *kconf;
 
   /* Find the best K-line... -A1kmm */
   kconf = find_conf_by_address(host, ip, CONF_KILL, aftype, user);
@@ -535,16 +535,16 @@ find_kline_conf(const char *host, const char *user,
   return (kconf);
 }
 
-/* struct ConfItem* find_dline_conf(struct irc_ssaddr*, int)
+/* struct AccessItem* find_dline_conf(struct irc_ssaddr*, int)
  *
  * Input:	An address, an address family.
  * Output:	The best matching D-line or exempt line.
  * Side effects: None.
  */
-struct ConfItem *
+struct AccessItem *
 find_dline_conf(struct irc_ssaddr *addr, int aftype)
 {
-  struct ConfItem *eline;
+  struct AccessItem *eline;
   eline = find_conf_by_address(NULL, addr, CONF_EXEMPTDLINE | 1, aftype,
                                NULL);
   if (eline)
@@ -553,14 +553,14 @@ find_dline_conf(struct irc_ssaddr *addr, int aftype)
 }
 
 /* void add_conf_by_address(const char*, int, const char *,
- *         struct ConfItem *aconf)
+ *         struct AccessItem *aconf)
  * Input: 
  * Output: None
  * Side-effects: Adds this entry to the hash table.
  */
 void
 add_conf_by_address(const char *address, int type, const char *username,
-                    struct ConfItem *aconf)
+                    struct AccessItem *aconf)
 {
   static unsigned long prec_value = 0xFFFFFFFF;
   int masktype, bits;
@@ -606,14 +606,14 @@ add_conf_by_address(const char *address, int type, const char *username,
   arec->type = type;
 }
 
-/* void delete_one_address(const char*, struct ConfItem*)
- * Input: An address string, the associated ConfItem.
+/* void delete_one_address(const char*, struct AccessItem*)
+ * Input: An address string, the associated AccessItem.
  * Output: None
- * Side effects: Deletes an address record. Frees the ConfItem if there
+ * Side effects: Deletes an address record. Frees the AccessItem if there
  *               is nothing referencing it, sets it as illegal otherwise.
  */
 void
-delete_one_address_conf(const char *address, struct ConfItem *aconf)
+delete_one_address_conf(const char *address, struct AccessItem *aconf)
 {
   int masktype, bits;
   unsigned long hv;
@@ -659,7 +659,7 @@ delete_one_address_conf(const char *address, struct ConfItem *aconf)
  * Input: None
  * Output: None
  * Side effects: Clears out all address records in the hash table,
- *               frees them, and frees the ConfItems if nothing references
+ *               frees them, and frees the AccessItems if nothing references
  *               them, otherwise sets them as illegal.   
  */
 void
@@ -710,13 +710,13 @@ clear_out_address_conf(void)
  * show_iline_prefix()
  *
  * inputs       - pointer to struct Client requesting output
- *              - pointer to struct ConfItem 
+ *              - pointer to struct AccessItem 
  *              - name to which iline prefix will be prefixed to
  * output       - pointer to static string with prefixes listed in ascii form
  * side effects - NONE
  */
 char *
-show_iline_prefix(struct Client *sptr, struct ConfItem *aconf, char *name)
+show_iline_prefix(struct Client *sptr, struct AccessItem *aconf, char *name)
 {
   static char prefix_of_host[USERLEN + 15];
   char *prefix_ptr;
@@ -756,7 +756,7 @@ report_auth(struct Client *client_p)
 {
   char *name, *host, *reason, *user, *classname;
   struct AddressRec *arec;
-  struct ConfItem *aconf;
+  struct AccessItem *aconf;
   int i, port;
 
   for (i = 0; i < ATABLE_SIZE; i++)
@@ -796,7 +796,7 @@ report_Klines(struct Client *client_p, int tkline)
 {
   char *name, *host, *reason, *user, *classname, c;
   struct AddressRec *arec;
-  struct ConfItem *aconf = NULL;
+  struct AccessItem *aconf = NULL;
   int i, port;
 
   if (tkline)

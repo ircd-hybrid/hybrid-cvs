@@ -19,14 +19,14 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: class.h,v 7.21 2003/06/04 00:49:18 joshk Exp $
+ *  $Id: class.h,v 7.22 2003/06/12 22:05:52 db Exp $
  */
 
 #ifndef INCLUDED_class_h
 #define INCLUDED_class_h
 #include "tools.h"
 
-struct ConfItem;
+struct AccessItem;
 struct Client;
 
 struct Class
@@ -79,6 +79,6 @@ extern int get_client_ping(struct Client *);
 extern void check_class(void);
 extern void init_class(void);
 extern void free_class(struct Class *);
-extern void fix_class(struct ConfItem *, struct ConfItem *);
+extern void fix_class(struct AccessItem *, struct AccessItem *);
 extern void report_classes(struct Client *);
 #endif /* INCLUDED_class_h */

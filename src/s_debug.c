@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_debug.c,v 7.88 2003/06/01 18:47:03 joshk Exp $
+ *  $Id: s_debug.c,v 7.89 2003/06/12 22:06:00 db Exp $
  */
 
 #include "stdinc.h"
@@ -136,7 +136,7 @@ count_memory(struct Client *source_p)
   dlink_node *gptr;
   struct Client *target_p;
   struct Channel *chptr;
-  struct ConfItem *aconf;
+  struct AccessItem *aconf;
   struct Ban *actualBan;
   dlink_node *dlink;
 
@@ -265,7 +265,7 @@ count_memory(struct Client *source_p)
       conf_memory += aconf->host ? strlen(aconf->host)+1 : 0;
       conf_memory += aconf->passwd ? strlen(aconf->passwd)+1 : 0;
       conf_memory += aconf->name ? strlen(aconf->name)+1 : 0;
-      conf_memory += sizeof(struct ConfItem);
+      conf_memory += sizeof(struct AccessItem);
   }
 
   /* count up all classes */

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.133 2003/06/04 06:25:50 michael Exp $
+ *  $Id: m_stats.c,v 1.134 2003/06/12 22:05:55 db Exp $
  */
 
 #include "stdinc.h"
@@ -39,7 +39,7 @@
 #include "send.h"        /* sendto_one */
 #include "fdlist.h"      /* PF and friends */
 #include "s_bsd.h"       /* highest_fd */
-#include "s_conf.h"      /* ConfItem, report_configured_links */
+#include "s_conf.h"      /* AccessItem, report_configured_links */
 #include "s_debug.h"     /* send_usage */
 #include "s_misc.h"      /* serv_info */
 #include "s_serv.h"      /* hunt_server */
@@ -79,7 +79,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.133 $";
+const char *_version = "$Revision: 1.134 $";
 #endif
 
 const char *Lformat = ":%s %d %s %s %u %u %u %u %u :%u %u %s";
@@ -319,7 +319,7 @@ stats_deny(struct Client *source_p)
 {
   char *name, *host, *pass, *user, *classname;
   struct AddressRec *arec;
-  struct ConfItem *aconf;
+  struct AccessItem *aconf;
   int i, port;
 
   for (i = 0; i < ATABLE_SIZE; i++)
@@ -353,7 +353,7 @@ stats_tdeny(struct Client *source_p)
 {
   char *name, *host, *pass, *user, *classname;
   struct AddressRec *arec;
-  struct ConfItem *aconf;
+  struct AccessItem *aconf;
   int i, port;
 
   for (i = 0; i < ATABLE_SIZE; i++)
@@ -388,7 +388,7 @@ stats_exempt(struct Client *source_p)
 {
   char *name, *host, *pass, *user, *classname;
   struct AddressRec *arec;
-  struct ConfItem *aconf;
+  struct AccessItem *aconf;
   int i, port;
 
   for (i = 0; i < ATABLE_SIZE; i++)
@@ -479,7 +479,7 @@ static void
 stats_glines(struct Client *source_p)
 {
   dlink_node *gline_node;
-  struct ConfItem *kill_ptr;
+  struct AccessItem *kill_ptr;
 
   if (!ConfigFileEntry.glines)
   {
@@ -517,7 +517,7 @@ stats_auth(struct Client *source_p)
   /* If unopered, Only return matching auth blocks */
   else if ((ConfigFileEntry.stats_i_oper_only == 1) && !IsOper(source_p))
   {
-    struct ConfItem *aconf;
+    struct AccessItem *aconf;
     char *name, *host, *pass, *user, *classname;
     int port;
 
@@ -557,7 +557,7 @@ stats_tklines(struct Client *source_p)
   /* If unopered, Only return matching klines */
   else if((ConfigFileEntry.stats_k_oper_only == 1) && !IsOper(source_p))
   {
-    struct ConfItem *aconf;
+    struct AccessItem *aconf;
     char *name, *host, *pass, *user, *classname;
     int port;
 
@@ -600,7 +600,7 @@ stats_klines(struct Client *source_p)
   /* If unopered, Only return matching klines */
   else if((ConfigFileEntry.stats_k_oper_only == 1) && !IsOper(source_p))
   {
-    struct ConfItem *aconf;
+    struct AccessItem *aconf;
     char *name, *host, *pass, *user, *classname;
     int port;
 
@@ -659,7 +659,7 @@ static void
 stats_operedup(struct Client *source_p)
 {
   struct Client *target_p;
-  struct ConfItem *aconf;
+  struct AccessItem *aconf;
   dlink_node *oper_ptr;
   dlink_node *ptr;
   int j = 0;

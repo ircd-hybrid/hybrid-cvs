@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.h,v 7.83 2003/06/12 03:40:29 joshk Exp $
+ *  $Id: s_serv.h,v 7.84 2003/06/12 22:05:52 db Exp $
  */
 
 #ifndef INCLUDED_serv_h
@@ -37,7 +37,7 @@
 #define STARTUP_CONNECTIONS_TIME 60
 
 struct Client;
-struct ConfItem;
+struct AccessItem;
 struct Channel;
 
 /* Capabilities */
@@ -243,11 +243,11 @@ extern int MaxConnectionCount; /* GLOBAL - highest number of connections */
 extern int check_server(const char *name, struct Client *server, int cryptlink);
 extern int hunt_server(struct Client *client_p, struct Client *source_p,
                        const char *command, int server, int parc, char **parv);
-extern const char *my_name_for_link(struct ConfItem* conf);
+extern const char *my_name_for_link(struct AccessItem* conf);
 extern void add_capability(const char *capab_name, int cap_flag, int defaults_flag);
 extern int delete_capability(const char *capab_name);
 extern int find_capability(const char *capab);
-extern void send_capabilities(struct Client *, struct ConfItem *conf, int, int);
+extern void send_capabilities(struct Client *, struct AccessItem *conf, int, int);
 extern void write_links_file(void *);
 extern int server_estab(struct Client *client_p);
 extern void set_autoconn(struct Client *, const char *, int);
@@ -258,9 +258,9 @@ extern void collect_zipstats(void *unused);
 extern void initServerMask(void);
 extern void burst_channel(struct Client *client_p, struct Channel *chptr);
 extern void sendnick_TS(struct Client *, struct Client *);
-extern int serv_connect(struct ConfItem *, struct Client *);
+extern int serv_connect(struct AccessItem *, struct Client *);
 extern unsigned long nextFreeMask(void);
-extern void cryptlink_init(struct Client *client_p, struct ConfItem *aconf, int fd);
+extern void cryptlink_init(struct Client *client_p, struct AccessItem *aconf, int fd);
 extern void cryptlink_regen_key(void *);
 extern void cryptlink_error(struct Client *client_p, const char *type,
                             const char *reason, const char *client_reason);
@@ -270,7 +270,7 @@ extern struct Client *uplink; /* NON NULL if leaf and is this servers uplink */
 extern void remove_lazylink_flags(unsigned long mask);
 extern void client_burst_if_needed(struct Client *client_p, struct Client *target_p);
 extern struct EncCapability *check_cipher(struct Client *client_p,
-                                   struct ConfItem *aconf);
+                                   struct AccessItem *aconf);
 extern void add_lazylinkclient(struct Client *client_p, struct Client *source_p);
 
 /* XXX don't belong in the now gone md5, but do these belong in s_serv.c ? */

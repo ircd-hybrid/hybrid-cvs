@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.108 2003/05/28 07:06:37 metalrock Exp $
+ *  $Id: m_server.c,v 1.109 2003/06/12 22:05:57 db Exp $
  */
 
 #include "stdinc.h"
@@ -33,7 +33,7 @@
 #include "ircd.h"        /* me */
 #include "list.h"        /* make_server */
 #include "numeric.h"     /* ERR_xxx */
-#include "s_conf.h"      /* struct ConfItem */
+#include "s_conf.h"      /* struct AccessItem */
 #include "s_log.h"       /* log level defines */
 #include "s_serv.h"      /* server_estab, check_server, my_name_for_link */
 #include "s_stats.h"     /* ServerStats */
@@ -77,7 +77,7 @@ _moddeinit(void)
   mod_del_cmd(&sid_msgtab);
 }
 
-const char *_version = "$Revision: 1.108 $";
+const char *_version = "$Revision: 1.109 $";
 #endif
 
 
@@ -266,7 +266,7 @@ ms_server(struct Client *client_p, struct Client *source_p,
   char *name;
   struct Client *target_p;
   struct Client *bclient_p;
-  struct ConfItem *aconf;
+  struct AccessItem *aconf;
   int hop;
   int hlined = 0;
   int llined = 0;
@@ -518,7 +518,7 @@ ms_sid(struct Client *client_p, struct Client *source_p,
   char info[REALLEN + 1];
   struct Client *target_p;
   struct Client *bclient_p;
-  struct ConfItem *aconf;
+  struct AccessItem *aconf;
   int hlined = 0;
   int llined = 0;
   dlink_node *ptr;

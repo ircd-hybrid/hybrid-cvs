@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.423 2003/06/12 01:08:15 metalrock Exp $
+ *  $Id: s_conf.c,v 7.424 2003/06/12 22:06:00 db Exp $
  */
 
 #include "stdinc.h"
@@ -72,7 +72,7 @@ int scount = 0; /* used by yyparse(), etc */
 int ypass  = 1; /* used by yyparse()      */
 
 /* internally defined functions */
-static void lookup_confhost(struct ConfItem *aconf);
+static void lookup_confhost(struct AccessItem *aconf);
 static void set_default_conf(void);
 static void validate_conf(void);
 static void read_conf(FBFILE *);
@@ -81,9 +81,9 @@ static void flush_deleted_I_P(void);
 static void expire_tklines(dlink_list *);
 static void garbage_collect_ip_entries(void);
 static int hash_ip(struct irc_ssaddr *);
-static int is_attached(struct Client *client_p, struct ConfItem *aconf);
+static int is_attached(struct Client *client_p, struct AccessItem *aconf);
 static int verify_access(struct Client *client_p, const char *username);
-static int attach_iline(struct Client *, struct ConfItem *);
+static int attach_iline(struct Client *, struct AccessItem *);
 static struct ip_entry *find_or_add_ip(struct irc_ssaddr *);
 static void parse_conf_file(int type, int cold);
 
@@ -114,7 +114,7 @@ static int ip_entries_count = 0;
 
 /* conf_dns_callback()
  *
- * inputs	- pointer to struct ConfItem
+ * inputs	- pointer to struct AccessItem
  *		- pointer to DNSReply reply
  * output	- none
  * side effects	- called when resolver query finishes
@@ -125,7 +125,7 @@ static int ip_entries_count = 0;
 static void
 conf_dns_callback(void *vptr, struct DNSReply *reply)
 {
-  struct ConfItem *aconf = (struct ConfItem *)vptr;
+  struct AccessItem *aconf = (struct AccessItem *)vptr;
 
   if (reply != NULL)
     memcpy(&aconf->ipnum, &reply->addr, sizeof(reply->addr));
@@ -140,7 +140,7 @@ conf_dns_callback(void *vptr, struct DNSReply *reply)
  * allocate a dns_query and start ns lookup.
  */
 static void
-conf_dns_lookup(struct ConfItem *aconf)
+conf_dns_lookup(struct AccessItem *aconf)
 {
   if (aconf->dns_query == NULL)
   {
@@ -157,12 +157,12 @@ conf_dns_lookup(struct ConfItem *aconf)
  * output	- pointer to new conf entry
  * side effects	- none
  */
-struct ConfItem *
+struct AccessItem *
 make_conf(unsigned int status)
 {
-  struct ConfItem *aconf;
+  struct AccessItem *aconf;
 
-  aconf = (struct ConfItem *)MyMalloc(sizeof(struct ConfItem));
+  aconf = (struct AccessItem *)MyMalloc(sizeof(struct AccessItem));
 
   aconf->status = status;
   aconf->aftype = AF_INET;
@@ -176,7 +176,7 @@ make_conf(unsigned int status)
  * side effects	- crucial password fields are zeroed, conf is freed
  */
 void
-free_conf(struct ConfItem *aconf)
+free_conf(struct AccessItem *aconf)
 {
   if (aconf == NULL)
     return;
@@ -215,7 +215,7 @@ det_confs_butmask(struct Client *client_p, unsigned int mask)
 {
   dlink_node *ptr;
   dlink_node *next_ptr;
-  struct ConfItem *aconf;
+  struct AccessItem *aconf;
 
   DLINK_FOREACH_SAFE(ptr, next_ptr, client_p->localClient->confs.head)
   {
@@ -253,7 +253,7 @@ void
 report_configured_links(struct Client *source_p, unsigned int mask)
 {
   dlink_node *ptr;
-  struct ConfItem *aconf;
+  struct AccessItem *aconf;
   struct LinkReport *p;
   char *host;
   char *reason;
@@ -448,8 +448,8 @@ check_client(struct Client *client_p, struct Client *source_p, const char *usern
 static int
 verify_access(struct Client* client_p, const char *username)
 {
-  struct ConfItem *aconf;
-  struct ConfItem *gkill_conf;
+  struct AccessItem *aconf;
+  struct AccessItem *gkill_conf;
   char non_ident[USERLEN + 1];
 
   if (IsGotId(client_p))
@@ -540,7 +540,7 @@ verify_access(struct Client* client_p, const char *username)
  * side effects	- do actual attach
  */
 static int
-attach_iline(struct Client *client_p, struct ConfItem *aconf)
+attach_iline(struct Client *client_p, struct AccessItem *aconf)
 {
   struct ip_entry *ip_found;
   int a_limit_reached = 0;
@@ -899,7 +899,7 @@ iphash_stats(struct Client *client_p, struct Client *source_p,
  *		  Also removes a class from the list if marked for deleting.
  */
 int
-detach_conf(struct Client *client_p, struct ConfItem *aconf)
+detach_conf(struct Client *client_p, struct AccessItem *aconf)
 {
   dlink_node *ptr;
   struct Class *aclass;
@@ -947,7 +947,7 @@ detach_conf(struct Client *client_p, struct ConfItem *aconf)
  * side effects	- 
  */
 static int
-is_attached(struct Client *client_p, struct ConfItem *aconf)
+is_attached(struct Client *client_p, struct AccessItem *aconf)
 {
   dlink_node *ptr;
 
@@ -971,7 +971,7 @@ is_attached(struct Client *client_p, struct ConfItem *aconf)
  *                attachment if there was an old one...
  */
 int
-attach_conf(struct Client *client_p, struct ConfItem *aconf)
+attach_conf(struct Client *client_p, struct AccessItem *aconf)
 {
   if (is_attached(client_p, aconf))
     return(1);
@@ -1025,7 +1025,7 @@ int
 attach_confs(struct Client *client_p, const char *name, unsigned int statmask)
 {
   dlink_node *ptr;
-  struct ConfItem *aconf;
+  struct AccessItem *aconf;
   int conf_counter = 0;
 
   DLINK_FOREACH(ptr, ConfigItemList.head)
@@ -1062,7 +1062,7 @@ attach_connect_block(struct Client *client_p, const char *name,
                      const char *host)
 {
   dlink_node *ptr;
-  struct ConfItem *aconf;
+  struct AccessItem *aconf;
 
   assert(client_p != NULL);
   assert(host != NULL);
@@ -1099,12 +1099,12 @@ attach_connect_block(struct Client *client_p, const char *name,
  * side effects	- find a conf entry which matches the hostname
  *		  and has the same name.
  */
-struct ConfItem *
+struct AccessItem *
 find_conf_exact(const char *name, const char *user,
                 const char *host, unsigned int statmask)
 {
   dlink_node *ptr;
-  struct ConfItem *aconf;
+  struct AccessItem *aconf;
 
   DLINK_FOREACH(ptr, ConfigItemList.head)
   {
@@ -1145,11 +1145,11 @@ find_conf_exact(const char *name, const char *user,
  * side effects	- find a conf entry which matches the name
  *		  and has the given mask.
  */
-struct ConfItem *
+struct AccessItem *
 find_conf_name(dlink_list *list, const char *name, unsigned int statmask)
 {
   dlink_node *ptr;
-  struct ConfItem* aconf;
+  struct AccessItem* aconf;
 
   DLINK_FOREACH(ptr, list->head)
   {
@@ -1172,11 +1172,11 @@ find_conf_name(dlink_list *list, const char *name, unsigned int statmask)
  *		  and has the given mask.
  *
  */
-struct ConfItem *
+struct AccessItem *
 find_conf_by_name(const char *name, unsigned int status)
 {
   dlink_node *ptr;
-  struct ConfItem *conf;
+  struct AccessItem *conf;
 
   assert(name != NULL);
 
@@ -1204,11 +1204,11 @@ find_conf_by_name(const char *name, unsigned int status)
  *		  and has the given mask.
  *
  */
-struct ConfItem *
+struct AccessItem *
 find_conf_by_host(const char *host, unsigned int status)
 {
   dlink_node *ptr;
-  struct ConfItem *conf;
+  struct AccessItem *conf;
 
   assert(host != NULL);
 
@@ -1230,14 +1230,14 @@ find_conf_by_host(const char *host, unsigned int status)
 /* find_x_conf()
  *
  * inputs       - pointer to char string to find
- * output       - NULL or pointer to found struct ConfItem
+ * output       - NULL or pointer to found struct AccessItem
  * side effects - looks for a match on name field
  */
-struct ConfItem *
+struct AccessItem *
 find_x_conf(const char *to_find)
 {
   dlink_node *ptr;
-  struct ConfItem *aconf;
+  struct AccessItem *aconf;
 
   DLINK_FOREACH(ptr, ConfigItemList.head)
   {
@@ -1262,14 +1262,14 @@ find_x_conf(const char *to_find)
  *		- pointer to user of oper
  *		- pointer to host of oper
  *		- type of sharing
- * output       - NULL or pointer to found struct ConfItem
+ * output       - NULL or pointer to found struct AccessItem
  * side effects - looks for a matches on all fields
  */
 int 
 find_u_conf(const char *server, const char *user, const char *host, int type)
 {
   dlink_node *ptr;
-  struct ConfItem *aconf;
+  struct AccessItem *aconf;
 
   DLINK_FOREACH(ptr, ConfigItemList.head)
   {
@@ -1507,12 +1507,12 @@ validate_conf(void)
 
 /* conf_add_conf()
  *
- * Inputs	- ConfItem
+ * Inputs	- AccessItem
  * Output	- NONE
  * Side effects	- add given conf to link list
  */
 void
-conf_add_conf(struct ConfItem *aconf)
+conf_add_conf(struct AccessItem *aconf)
 {
   collapse(aconf->host);
   collapse(aconf->user);
@@ -1521,13 +1521,13 @@ conf_add_conf(struct ConfItem *aconf)
 
 /* split_user_host()
  *
- * inputs	- struct ConfItem pointer
+ * inputs	- struct AccessItem pointer
  * output	- NONE
  * side effects - splits user@host found in a name field of conf given
  *		  stuff the user into ->user and the host into ->host
  */
 void
-split_user_host(struct ConfItem *aconf)
+split_user_host(struct AccessItem *aconf)
 {
   char *p;
   char *new_user;
@@ -1558,7 +1558,7 @@ split_user_host(struct ConfItem *aconf)
  * line and convert an IP addresses in a.b.c.d number for to IP#s.
  */
 static void
-lookup_confhost(struct ConfItem* aconf)
+lookup_confhost(struct AccessItem* aconf)
 {
   struct addrinfo hints, *res;
   int ret;
@@ -1611,7 +1611,7 @@ int
 conf_connect_allowed(struct irc_ssaddr *addr, int aftype)
 {
   struct ip_entry *ip_found;
-  struct ConfItem *aconf = find_dline_conf(addr, aftype);
+  struct AccessItem *aconf = find_dline_conf(addr, aftype);
 
   /* DLINE exempt also gets you out of static limits/pacing... */
   if (aconf && (aconf->status & CONF_EXEMPTDLINE))
@@ -1636,14 +1636,14 @@ conf_connect_allowed(struct irc_ssaddr *addr, int aftype)
 /* find_kill()
  *
  * inputs	- pointer to client structure
- * output	- pointer to struct ConfItem if found
+ * output	- pointer to struct AccessItem if found
  * side effects	- See if this user is klined already,
- *		  and if so, return struct ConfItem pointer
+ *		  and if so, return struct AccessItem pointer
  */
-struct ConfItem *
+struct AccessItem *
 find_kill(struct Client *client_p)
 {
-  struct ConfItem *aconf;
+  struct AccessItem *aconf;
 
   assert(client_p != NULL);
 
@@ -1663,13 +1663,13 @@ find_kill(struct Client *client_p)
 
 /* add_temp_kline()
  *
- * inputs        - pointer to struct ConfItem
+ * inputs        - pointer to struct AccessItem
  * output        - none
- * Side effects  - links in given struct ConfItem into 
+ * Side effects  - links in given struct AccessItem into 
  *                 temporary kline link list
  */
 void
-add_temp_kline(struct ConfItem *aconf)
+add_temp_kline(struct AccessItem *aconf)
 {
   dlinkAdd(aconf, make_dlink_node(), &temporary_klines);
   SetConfTemporary(aconf);
@@ -1678,13 +1678,13 @@ add_temp_kline(struct ConfItem *aconf)
 
 /* add_temp_dline()
  *
- * inputs        - pointer to struct ConfItem
+ * inputs        - pointer to struct AccessItem
  * output        - none
- * Side effects  - links in given struct ConfItem into 
+ * Side effects  - links in given struct AccessItem into 
  *                 temporary kline link list
  */
 void
-add_temp_dline(struct ConfItem *aconf)
+add_temp_dline(struct AccessItem *aconf)
 {
   dlinkAdd(aconf, make_dlink_node(), &temporary_dlines);
   SetConfTemporary(aconf);
@@ -1716,7 +1716,7 @@ expire_tklines(dlink_list *tklist)
 {
   dlink_node *kill_node;
   dlink_node *next_node;
-  struct ConfItem *kill_ptr;
+  struct AccessItem *kill_ptr;
 
   DLINK_FOREACH_SAFE(kill_node, next_node, tklist->head)
   {
@@ -1817,11 +1817,11 @@ get_oper_name(struct Client *client_p)
   {
     DLINK_FOREACH(cnode, client_p->localClient->confs.head)
     {
-      if (IsConfOperator((struct ConfItem *)cnode->data))
+      if (IsConfOperator((struct AccessItem *)cnode->data))
       {
 	ircsprintf(buffer, "%s!%s@%s{%s}", client_p->name,
 		   client_p->username, client_p->host,
-		   ((struct ConfItem *)cnode->data)->name);
+		   ((struct AccessItem *)cnode->data)->name);
 	return(buffer);
       }
     }
@@ -1838,7 +1838,7 @@ get_oper_name(struct Client *client_p)
 
 /* get_printable_conf()
  *
- * inputs        - struct ConfItem
+ * inputs        - struct AccessItem
  *
  * output         - name 
  *                - host
@@ -1847,12 +1847,12 @@ get_oper_name(struct Client *client_p)
  *                - port
  *
  * side effects        -
- * Examine the struct struct ConfItem, setting the values
+ * Examine the struct struct AccessItem, setting the values
  * of name, host, pass, user to values either
  * in aconf, or "<NULL>" port is set to aconf->port in all cases.
  */
 void
-get_printable_conf(struct ConfItem *aconf, char **name, char **host, char **reason,
+get_printable_conf(struct AccessItem *aconf, char **name, char **host, char **reason,
                    char **user, int *port, char **classname)
 {
   static char null[] = "<NULL>";
@@ -1958,7 +1958,7 @@ clear_out_old_conf(void)
 {
   dlink_node *ptr;
   dlink_node *next_ptr;
-  struct ConfItem *aconf;
+  struct AccessItem *aconf;
   struct Class *cltmp;
 
   /* We only need to free anything allocated by yyparse() here.
@@ -2065,7 +2065,7 @@ flush_deleted_I_P(void)
 {
   dlink_node *ptr;
   dlink_node *next_ptr;
-  struct ConfItem *aconf;
+  struct AccessItem *aconf;
 
   /* flush out deleted I and P lines
    * although still in use.
@@ -2133,7 +2133,7 @@ get_conf_name(ConfType type)
  * side effects - Add a class pointer to a conf 
  */
 void
-conf_add_class_to_conf(struct ConfItem *aconf)
+conf_add_class_to_conf(struct AccessItem *aconf)
 {
   if (aconf->class_name == NULL)
   {
@@ -2174,7 +2174,7 @@ conf_add_class_to_conf(struct ConfItem *aconf)
  * side effects - Add a connect block
  */
 int
-conf_add_server(struct ConfItem *aconf, unsigned int lcount)
+conf_add_server(struct AccessItem *aconf, unsigned int lcount)
 {
   conf_add_class_to_conf(aconf);
 
@@ -2206,7 +2206,7 @@ conf_add_server(struct ConfItem *aconf, unsigned int lcount)
  * side effects - Add a d/D line
  */
 void
-conf_add_d_conf(struct ConfItem *aconf)
+conf_add_d_conf(struct AccessItem *aconf)
 {
   if (aconf->host == NULL)
     return;

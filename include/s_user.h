@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.h,v 7.30 2003/06/12 03:40:29 joshk Exp $
+ *  $Id: s_user.h,v 7.31 2003/06/12 22:05:52 db Exp $
  */
 
 #ifndef INCLUDED_s_user_h
@@ -30,7 +30,7 @@
 #define TOTALSIDUID     (IRC_MAXSID+IRC_MAXUID)
 
 struct Client;
-struct ConfItem;
+struct AccessItem;
 
 extern void set_user_mode(struct Client *, struct Client *, int, char **);
 extern void send_umode(struct Client *, struct Client *,
@@ -38,7 +38,7 @@ extern void send_umode(struct Client *, struct Client *,
 extern void send_umode_out(struct Client* , struct Client* , unsigned int);
 extern void show_lusers(struct Client *source_p, char *show_mask);
 extern void show_isupport(struct Client *);
-extern void oper_up(struct Client *source_p, struct ConfItem *aconf);
+extern void oper_up(struct Client *source_p, struct AccessItem *aconf);
 
 extern int register_local_user(struct Client *, struct Client *,
 			       const char *, const char *);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_gline.h,v 7.19 2003/06/12 03:40:29 joshk Exp $
+ *  $Id: s_gline.h,v 7.20 2003/06/12 22:05:52 db Exp $
  */
 
 #ifndef INCLUDED_s_gline_h
@@ -28,11 +28,11 @@
 #include "ircd_defs.h"
 
 struct Client;
-struct ConfItem;
+struct AccessItem;
 
 extern int remove_gline_match(const char *user, const char *host);
-extern struct ConfItem *find_gkill(struct Client *client, const char *);
-extern struct ConfItem *find_is_glined(const char *host, const char *name);
+extern struct AccessItem *find_gkill(struct Client *client, const char *);
+extern struct AccessItem *find_is_glined(const char *host, const char *name);
 extern void cleanup_glines(void *unused);
 
 struct gline_pending

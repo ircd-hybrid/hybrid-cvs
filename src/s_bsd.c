@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.203 2003/06/07 17:28:01 michael Exp $
+ *  $Id: s_bsd.c,v 7.204 2003/06/12 22:06:00 db Exp $
  */
 
 #include "stdinc.h"
@@ -275,7 +275,7 @@ set_no_delay(int fd)
 void
 close_connection(struct Client *client_p)
 {
-  struct ConfItem *aconf;
+  struct AccessItem *aconf;
   assert(NULL != client_p);
   if(client_p == NULL)
     return;

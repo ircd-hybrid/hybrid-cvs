@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.17 2003/05/29 05:16:55 db Exp $
+ *  $Id: csvlib.c,v 7.18 2003/06/12 22:05:59 db Exp $
  */
 
 #include "stdinc.h"
@@ -36,7 +36,7 @@ static int flush_write(struct Client *source_p, FBFILE *in, FBFILE* out,
 void
 parse_csv_file(FBFILE *file, ConfType conf_type)
 {
-  struct ConfItem *aconf;
+  struct AccessItem *aconf;
   char  *name_field=NULL;
   char  *user_field=NULL;
   char  *reason_field=NULL;
@@ -153,7 +153,7 @@ parse_csv_line(char *line, ...)
 
 /* write_conf_line()
  *
- * inputs       - pointer to struct ConfItem
+ * inputs       - pointer to struct AccessItem
  *		- string current_date (small date)
  *              - time_t cur_time
  * output       - NONE
@@ -167,7 +167,7 @@ parse_csv_line(char *line, ...)
  */
 void 
 write_conf_line(ConfType type, struct Client *source_p,
-		struct ConfItem *aconf,
+		struct AccessItem *aconf,
 		const char *current_date, time_t cur_time)
 {
   FBFILE *out;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.h,v 1.25 2003/04/09 11:19:32 stu Exp $
+ *  $Id: hostmask.h,v 1.26 2003/06/12 22:05:52 db Exp $
  */
 
 #ifndef INCLUDE_hostmask_h
@@ -41,17 +41,17 @@ struct HostMaskEntry
 };
 
 int parse_netmask(const char*, struct irc_ssaddr*, int*);
-struct ConfItem* find_conf_by_address(const char*, struct irc_ssaddr*,
+struct AccessItem* find_conf_by_address(const char*, struct irc_ssaddr*,
                                       int, int, const char*);
-void add_conf_by_address(const char*, int, const char*, struct ConfItem*);
-void delete_one_address_conf(const char*, struct ConfItem*);
+void add_conf_by_address(const char*, int, const char*, struct AccessItem*);
+void delete_one_address_conf(const char*, struct AccessItem*);
 void clear_out_address_conf(void);
 void init_host_hash(void);
-struct ConfItem* find_address_conf(const char*, const char*,
+struct AccessItem* find_address_conf(const char*, const char*,
                                    struct irc_ssaddr*, int);
-struct ConfItem* find_kline_conf(const char*, const char*,
+struct AccessItem* find_kline_conf(const char*, const char*,
                                  struct irc_ssaddr*, int);
-struct ConfItem* find_dline_conf(struct irc_ssaddr *, int);
+struct AccessItem* find_dline_conf(struct irc_ssaddr *, int);
 int match_ipv6(struct irc_ssaddr*, struct irc_ssaddr*, int);
 int match_ipv4(struct irc_ssaddr*, struct irc_ssaddr*, int);
 
@@ -72,12 +72,12 @@ struct AddressRec
   {
     struct
     {
-      /* Pointer into ConfItem... -A1kmm */
+      /* Pointer into AccessItem... -A1kmm */
       struct irc_ssaddr addr;
       int bits;
     } ipa;
 
-  /* Pointer into ConfItem... -A1kmm */
+  /* Pointer into AccessItem... -A1kmm */
   const char *hostname;
   } Mask;
 
@@ -89,7 +89,7 @@ struct AddressRec
 
   /* Only checked if !(type & 1)... */
   const char *username;
-  struct ConfItem *aconf;
+  struct AccessItem *aconf;
 
   /* The next record in this hash bucket. */
   struct AddressRec *next;

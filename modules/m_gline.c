@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.112 2003/06/12 03:40:33 joshk Exp $
+ *  $Id: m_gline.c,v 1.113 2003/06/12 22:05:54 db Exp $
  */
 
 #include "stdinc.h"
@@ -96,7 +96,7 @@ _moddeinit(void)
   delete_capability("GLN");
 }
 
-const char *_version = "$Revision: 1.112 $";
+const char *_version = "$Revision: 1.113 $";
 #endif
 
 /* mo_gline()
@@ -433,7 +433,7 @@ set_local_gline(struct Client *source_p, const char *user,
                 const char *host, const char *reason)
 {
   char buffer[IRCD_BUFSIZE];
-  struct ConfItem *aconf;
+  struct AccessItem *aconf;
   const char *current_date;
   time_t cur_time;
 

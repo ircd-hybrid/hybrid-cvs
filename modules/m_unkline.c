@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_unkline.c,v 1.73 2003/06/04 06:25:50 michael Exp $
+ *  $Id: m_unkline.c,v 1.74 2003/06/12 22:05:55 db Exp $
  */
 
 #include "stdinc.h"
@@ -82,7 +82,7 @@ _moddeinit(void)
   delete_capability("UNKLN");
 }
 
-const char *_version = "$Revision: 1.73 $";
+const char *_version = "$Revision: 1.74 $";
 #endif
 
 /*
@@ -273,7 +273,7 @@ ms_unkline(struct Client *client_p, struct Client *source_p,
 static int
 remove_tkline_match(const char *host, const char *user)
 {
-  struct ConfItem *tk_c;
+  struct AccessItem *tk_c;
   dlink_node *tk_n;
   struct irc_ssaddr addr, caddr;
   int nm_t, cnm_t, bits, cbits;
@@ -281,7 +281,7 @@ remove_tkline_match(const char *host, const char *user)
 
   for (tk_n=temporary_klines.head; tk_n; tk_n=tk_n->next)
     {
-      tk_c = (struct ConfItem*)tk_n->data;
+      tk_c = (struct AccessItem*)tk_n->data;
       cnm_t = parse_netmask(tk_c->host, &caddr, &cbits);
       if (cnm_t != nm_t || irccmp(user, tk_c->user))
 	continue;
@@ -309,7 +309,7 @@ remove_tkline_match(const char *host, const char *user)
  */
 static int remove_tdline_match(const char *cidr)
 {
-  struct ConfItem *td_conf;
+  struct AccessItem *td_conf;
   dlink_node *td_node;
   struct irc_ssaddr addr, caddr;
   int nm_t, cnm_t, bits, cbits;
@@ -317,7 +317,7 @@ static int remove_tdline_match(const char *cidr)
 
   for (td_node = temporary_dlines.head; td_node; td_node = td_node->next)
   {
-    td_conf = (struct ConfItem *)td_node->data;
+    td_conf = (struct AccessItem *)td_node->data;
     cnm_t   = parse_netmask(td_conf->host, &caddr, &cbits);
 
     if (cnm_t != nm_t)

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_gline.c,v 1.36 2003/06/09 18:00:54 michael Exp $
+ *  $Id: s_gline.c,v 1.37 2003/06/12 22:06:00 db Exp $
  */
 
 #include "stdinc.h"
@@ -57,10 +57,10 @@ static void expire_pending_glines(void);
 /* find_gkill()
  *
  * inputs       - pointer to a Client struct
- * output       - struct ConfItem pointer if a gline was found for this client
+ * output       - struct AccessItem pointer if a gline was found for this client
  * side effects - NONE
  */
-struct ConfItem *
+struct AccessItem *
 find_gkill(struct Client *client_p, const char *username)
 {
   assert(client_p != NULL);
@@ -76,14 +76,14 @@ find_gkill(struct Client *client_p, const char *username)
  *
  * inputs       - hostname
  *              - username
- * output       - pointer to struct ConfItem if user@host glined
+ * output       - pointer to struct AccessItem if user@host glined
  * side effects -
  */
-struct ConfItem *
+struct AccessItem *
 find_is_glined(const char *host, const char *name)
 {
   dlink_node *ptr;
-  struct ConfItem *kill_ptr; 
+  struct AccessItem *kill_ptr; 
 
   DLINK_FOREACH(ptr, glines.head)
   {
@@ -109,7 +109,7 @@ int
 remove_gline_match(const char *user, const char *host)
 {
   dlink_node *ptr;
-  struct ConfItem *kill_ptr;
+  struct AccessItem *kill_ptr;
 
   DLINK_FOREACH(ptr, glines.head)
   {
@@ -155,7 +155,7 @@ expire_glines(void)
 {
   dlink_node *ptr;
   dlink_node *next_ptr;
-  struct ConfItem *kill_ptr;
+  struct AccessItem *kill_ptr;
 
   DLINK_FOREACH_SAFE(ptr, next_ptr, glines.head)
   {

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_challenge.c,v 1.46 2003/06/01 23:46:53 joshk Exp $
+ *  $Id: m_challenge.c,v 1.47 2003/06/12 22:05:54 db Exp $
  */
 
 #include "stdinc.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
   mod_del_cmd(&challenge_msgtab);
 }
 
-const char *_version = "$Revision: 1.46 $";
+const char *_version = "$Revision: 1.47 $";
 #endif
 /*
  * m_challenge - generate RSA challenge for wouldbe oper
@@ -75,7 +75,7 @@ m_challenge(struct Client *client_p, struct Client *source_p,
 {
   char *challenge;
   dlink_node *ptr;
-  struct ConfItem *aconf, *oconf;
+  struct AccessItem *aconf, *oconf;
 
   if (!(source_p->user) || !source_p->localClient)
     return;

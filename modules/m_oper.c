@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_oper.c,v 1.69 2003/05/10 04:05:03 michael Exp $
+ *  $Id: m_oper.c,v 1.70 2003/06/12 22:05:55 db Exp $
  */
 
 #include "stdinc.h"
@@ -43,8 +43,8 @@
 #include "modules.h"
 #include "packet.h"
 
-static struct ConfItem *find_password_aconf(const char *name, struct Client *source_p);
-static int match_oper_password(const char *password, struct ConfItem *aconf);
+static struct AccessItem *find_password_aconf(const char *name, struct Client *source_p);
+static int match_oper_password(const char *password, struct AccessItem *aconf);
 static void failed_oper_notice(struct Client *source_p, const char *name, const char *reason);
 static void m_oper(struct Client*, struct Client*, int, char**);
 static void mo_oper(struct Client*, struct Client*, int, char**);
@@ -68,7 +68,7 @@ _moddeinit(void)
   mod_del_cmd(&oper_msgtab);
 }
 
-const char *_version = "$Revision: 1.69 $";
+const char *_version = "$Revision: 1.70 $";
 #endif
 
 /*
@@ -81,8 +81,8 @@ static void
 m_oper(struct Client *client_p, struct Client *source_p,
        int parc, char *parv[])
 {
-  struct ConfItem *aconf;
-  struct ConfItem *oconf = NULL;
+  struct AccessItem *aconf;
+  struct AccessItem *oconf = NULL;
   const char *name;
   const char *password;
   dlink_node *ptr;
@@ -171,10 +171,10 @@ mo_oper(struct Client *client_p, struct Client *source_p,
  * inputs       -
  * output       -
  */
-static struct ConfItem *
+static struct AccessItem *
 find_password_aconf(const char *name, struct Client *source_p)
 {
-  struct ConfItem *aconf;
+  struct AccessItem *aconf;
 
   if ((aconf = find_conf_exact(name, source_p->username, source_p->host,
 			       CONF_OPERATOR)) != NULL)
@@ -194,7 +194,7 @@ find_password_aconf(const char *name, struct Client *source_p)
  * side effects - none
  */
 static int
-match_oper_password(const char *password, struct ConfItem *aconf)
+match_oper_password(const char *password, struct AccessItem *aconf)
 {
   const char *encr = NULL;
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.235 2003/06/12 03:40:29 joshk Exp $
+ *  $Id: s_conf.h,v 7.236 2003/06/12 22:05:52 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -49,9 +49,27 @@ struct ip_value
 
 extern FBFILE *conf_fbfile_in;
 extern char conf_line_in[256];
-extern struct ConfItem* yy_aconf;
+extern struct AccessItem* yy_aconf;
+
+typedef enum {  
+  CONF_TYPE, 
+  KLINE_TYPE,
+  DLINE_TYPE,
+  XLINE_TYPE,    
+  GLINE_TYPE,
+  CRESV_TYPE,     
+  NRESV_TYPE
+} ConfType;
+  
 
 struct ConfItem
+{
+  dlink_node node;
+  ConfType type;
+  void *conf;
+};
+
+struct AccessItem
 {
   dlink_node node;
   unsigned int     status;   /* If CONF_ILLEGAL, delete when no clients */
@@ -123,7 +141,7 @@ struct ConfItem
 #define IsConfXline(x)		((x)->status & CONF_XLINE)
 #define IsConfCluster(x)	((x)->status & CONF_CLUSTER)
 
-/* aConfItem->flags */
+/* aAccessItem->flags */
 
 /* Generic flags... */
 /* access flags... */
@@ -150,7 +168,7 @@ struct ConfItem
 #define CONF_FLAGS_TEMPORARY            0x00040000
 #define CONF_FLAGS_CRYPTLINK            0x00080000
 
-/* Macros for struct ConfItem */
+/* Macros for struct AccessItem */
 #define IsLimitIp(x)            ((x)->flags & CONF_FLAGS_LIMIT_IP)
 #define IsNoTilde(x)            ((x)->flags & CONF_FLAGS_NO_TILDE)
 #define IsConfCanFlood(x)       ((x)->flags & CONF_FLAGS_CAN_FLOOD)
@@ -340,31 +358,31 @@ extern void init_ip_hash_table(void);
 extern void count_ip_hash(int *, unsigned long *);
 extern void remove_one_ip(struct irc_ssaddr *ip);
 
-extern struct ConfItem *make_conf(unsigned int status);
-extern void free_conf(struct ConfItem *);
+extern struct AccessItem *make_conf(unsigned int status);
+extern void free_conf(struct AccessItem *);
 extern void read_conf_files(int cold);
-extern int attach_conf(struct Client *, struct ConfItem *);
+extern int attach_conf(struct Client *, struct AccessItem *);
 extern int attach_confs(struct Client *client, const char *name, unsigned int statmask);
 extern int attach_connect_block(struct Client *client, const char *name, const char *host);
 extern int check_client(struct Client *client_p, struct Client *source_p, const char *);
 extern void det_confs_butmask(struct Client *, unsigned int);
-extern int detach_conf(struct Client *, struct ConfItem *);
-extern struct ConfItem *det_confs_butone(struct Client *, struct ConfItem *);
-extern struct ConfItem *find_conf_exact(const char *name, const char *user, const char *host, unsigned int statmask);
-extern struct ConfItem *find_conf_name(dlink_list *list, const char *name, unsigned int statmask);
-extern struct ConfItem *find_conf_by_name(const char *name, unsigned int status);
-extern struct ConfItem *find_conf_by_host(const char *host, unsigned int status);
-extern struct ConfItem *find_kill(struct Client *);
+extern int detach_conf(struct Client *, struct AccessItem *);
+extern struct AccessItem *det_confs_butone(struct Client *, struct AccessItem *);
+extern struct AccessItem *find_conf_exact(const char *name, const char *user, const char *host, unsigned int statmask);
+extern struct AccessItem *find_conf_name(dlink_list *list, const char *name, unsigned int statmask);
+extern struct AccessItem *find_conf_by_name(const char *name, unsigned int status);
+extern struct AccessItem *find_conf_by_host(const char *host, unsigned int status);
+extern struct AccessItem *find_kill(struct Client *);
 extern int conf_connect_allowed(struct irc_ssaddr *addr, int aftype);
 extern char *oper_privs_as_string(struct Client *, unsigned int);
-extern void split_user_host(struct ConfItem *aconf);
+extern void split_user_host(struct AccessItem *aconf);
 
 extern int find_u_conf(const char *, const char *, const char *, int);
-extern struct ConfItem *find_x_conf(const char *);
+extern struct AccessItem *find_x_conf(const char *);
 
-extern struct ConfItem *find_tkline(const char *, const char *, struct irc_ssaddr *);
-extern char *show_iline_prefix(struct Client *, struct ConfItem *, char *);
-extern void get_printable_conf(struct ConfItem *, char **, char **, char **,
+extern struct AccessItem *find_tkline(const char *, const char *, struct irc_ssaddr *);
+extern char *show_iline_prefix(struct Client *, struct AccessItem *, char *);
+extern void get_printable_conf(struct AccessItem *, char **, char **, char **,
                                     char **, int *,char **);
 extern void report_configured_links(struct Client* client_p, unsigned int mask);
 extern void report_specials(struct Client* source_p, int flags, int numeric);
@@ -373,34 +391,24 @@ extern void yyerror(const char *);
 extern int conf_yy_fatal_error(const char *);
 extern int conf_fbgets(char *, int, FBFILE *);
 
-typedef enum {
-  CONF_TYPE,
-  KLINE_TYPE,
-  DLINE_TYPE,
-  XLINE_TYPE,
-  GLINE_TYPE,
-  CRESV_TYPE,
-  NRESV_TYPE
-} ConfType;
-
-extern void write_conf_line(ConfType type, struct Client *, struct ConfItem *,
+extern void write_conf_line(ConfType type, struct Client *, struct AccessItem *,
 			    const char *, time_t);
 extern void write_resv_line(ConfType type, struct Client *, void *);
 
 extern int remove_conf_line(ConfType, struct Client *, const char *,
 			    const char *);
-extern void add_temp_kline(struct ConfItem *);
-extern void add_temp_dline(struct ConfItem *);
+extern void add_temp_kline(struct AccessItem *);
+extern void add_temp_dline(struct AccessItem *);
 extern void cleanup_tklines(void *notused);
 
 extern const char *get_conf_name(ConfType);
 extern int rehash(int);
 
-extern int conf_add_server(struct ConfItem *, unsigned int);
-extern void conf_add_class_to_conf(struct ConfItem *);
-extern void conf_add_me(struct ConfItem *);
-extern void conf_add_d_conf(struct ConfItem *);
-extern void conf_add_conf(struct ConfItem *);
+extern int conf_add_server(struct AccessItem *, unsigned int);
+extern void conf_add_class_to_conf(struct AccessItem *);
+extern void conf_add_me(struct AccessItem *);
+extern void conf_add_d_conf(struct AccessItem *);
+extern void conf_add_conf(struct AccessItem *);
 
 /* XXX consider moving these into csvlib.h */
 extern void parse_csv_file(FBFILE *file, ConfType);

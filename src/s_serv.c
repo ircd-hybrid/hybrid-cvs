@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.347 2003/06/08 14:39:00 michael Exp $
+ *  $Id: s_serv.c,v 7.348 2003/06/12 22:06:00 db Exp $
  */
 
 #include "stdinc.h"
@@ -235,7 +235,7 @@ collect_zipstats(void *unused)
 
 #ifdef HAVE_LIBCRYPTO
 struct EncCapability *check_cipher(struct Client *client_p,
-                                   struct ConfItem *aconf)
+                                   struct AccessItem *aconf)
 {
   struct EncCapability *epref;
 
@@ -260,7 +260,7 @@ struct EncCapability *check_cipher(struct Client *client_p,
  * according to given config entry --Jto
  */
 const char *
-my_name_for_link(struct ConfItem *aconf)
+my_name_for_link(struct AccessItem *aconf)
 {
   if (aconf->fakename)
     return(aconf->fakename);
@@ -474,7 +474,7 @@ void
 try_connections(void *unused)
 {
   dlink_node *ptr;
-  struct ConfItem *aconf;
+  struct AccessItem *aconf;
   struct Class *cltmp;
   int confrq;
 
@@ -544,8 +544,8 @@ int
 check_server(const char *name, struct Client *client_p, int cryptlink)
 {
   dlink_node *ptr;
-  struct ConfItem *aconf        = NULL;
-  struct ConfItem *server_aconf = NULL;
+  struct AccessItem *aconf        = NULL;
+  struct AccessItem *server_aconf = NULL;
   int error = -1;
 
   assert(client_p != NULL);
@@ -752,7 +752,7 @@ find_capability(const char *capab)
  *
  */
 void
-send_capabilities(struct Client *client_p, struct ConfItem *aconf,
+send_capabilities(struct Client *client_p, struct AccessItem *aconf,
                   int cap_can_send, int enc_can_send)
 {
   struct Capability *cap=NULL;
@@ -933,7 +933,7 @@ int
 server_estab(struct Client *client_p)
 {
   struct Client *target_p;
-  struct ConfItem *aconf;
+  struct AccessItem *aconf;
   char *host;
   const char *inpath;
   static char inpath_ip[HOSTLEN * 2 + USERLEN + 6];
@@ -1807,7 +1807,7 @@ burst_ll_members(struct Client *client_p, struct Channel *chptr)
 void
 set_autoconn(struct Client *source_p, const char *name, int newval)
 {
-  struct ConfItem *aconf;
+  struct AccessItem *aconf;
 
   if (name && (aconf = find_conf_by_name(name, CONF_SERVER)))
   {
@@ -1891,7 +1891,7 @@ nextFreeMask(void)
  * it suceeded or not, and 0 if it fails in here somewhere.
  */
 int
-serv_connect(struct ConfItem *aconf, struct Client *by)
+serv_connect(struct AccessItem *aconf, struct Client *by)
 {
     struct Client *client_p;
     int fd;
@@ -2082,7 +2082,7 @@ static void
 serv_connect_callback(int fd, int status, void *data)
 {
   struct Client *client_p = data;
-  struct ConfItem *aconf;
+  struct AccessItem *aconf;
 
   /* First, make sure its a real client! */
   assert(client_p != NULL);
@@ -2198,7 +2198,7 @@ serv_connect_callback(int fd, int status, void *data)
  * sends a CRYPTLINK SERV command.
  */
 void
-cryptlink_init(struct Client *client_p, struct ConfItem *aconf, int fd)
+cryptlink_init(struct Client *client_p, struct AccessItem *aconf, int fd)
 {
   char *encrypted;
   char *key_to_send;

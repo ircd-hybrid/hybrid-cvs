@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.18 2003/06/04 06:25:50 michael Exp $
+ *  $Id: m_xline.c,v 1.19 2003/06/12 22:05:55 db Exp $
  */
 
 #include "stdinc.h"
@@ -83,7 +83,7 @@ _moddeinit(void)
   mod_del_cmd(&unxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.18 $";
+const char *_version = "$Revision: 1.19 $";
 #endif
 
 
@@ -101,7 +101,7 @@ static void
 mo_xline(struct Client *client_p, struct Client *source_p,
          int parc, char *parv[])
 {
-  struct ConfItem *aconf;
+  struct AccessItem *aconf;
   char *reason, *pattern, *target_server;
   const char *type;
   int type_i = 1;
@@ -215,7 +215,7 @@ static void
 ms_xline(struct Client *client_p, struct Client *source_p,
          int parc, char *parv[])
 {
-  struct ConfItem *aconf;
+  struct AccessItem *aconf;
 
   if (parc != 5 || EmptyString(parv[4]))
     return;
@@ -404,7 +404,7 @@ valid_xline(struct Client *source_p, char *gecos, char *reason, int warn)
 static void
 write_xline(struct Client *source_p, char *gecos, char *reason, int type)
 {
-  struct ConfItem *aconf;
+  struct AccessItem *aconf;
   const char *current_date;
   time_t cur_time;
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.280 2003/06/01 21:21:59 joshk Exp $
+ *  $Id: s_user.c,v 7.281 2003/06/12 22:06:00 db Exp $
  */
 
 #include "stdinc.h"
@@ -55,7 +55,7 @@
 static int valid_hostname(const char *hostname);
 static int valid_username(const char *username);
 static void user_welcome(struct Client *source_p);
-static void report_and_set_user_flags(struct Client *, struct ConfItem *);
+static void report_and_set_user_flags(struct Client *, struct AccessItem *);
 static int check_x_line(struct Client *client_p, struct Client *source_p);
 static int introduce_client(struct Client *client_p, struct Client *source_p);
 
@@ -307,7 +307,7 @@ int
 register_local_user(struct Client *client_p, struct Client *source_p, 
                     const char *nick, const char *username)
 {
-  struct ConfItem *aconf;
+  struct AccessItem *aconf;
   char tmpstr2[IRCD_BUFSIZE];
   char ipaddr[HOSTIPLEN];
   int status;
@@ -782,7 +782,7 @@ valid_username(const char *username)
  * Report to user any special flags they are getting, and set them.
  */
 static void
-report_and_set_user_flags(struct Client *source_p, struct ConfItem *aconf)
+report_and_set_user_flags(struct Client *source_p, struct AccessItem *aconf)
 {
   /* If this user is being spoofed, tell them so */
   if (IsConfDoSpoofIp(aconf))
@@ -1240,7 +1240,7 @@ user_welcome(struct Client *source_p)
 static int
 check_x_line(struct Client *client_p, struct Client *source_p)
 {
-  struct ConfItem *aconf;
+  struct AccessItem *aconf;
   const char *reason;
 
   if ((aconf = find_x_conf(source_p->info)) != NULL)
@@ -1279,7 +1279,7 @@ check_x_line(struct Client *client_p, struct Client *source_p)
 /* oper_up()
  *
  * inputs	- pointer to given client to oper
- *		- pointer to ConfItem to use
+ *		- pointer to AccessItem to use
  * output	- NONE
  * side effects	-
  * Blindly opers up given source_p, using aconf info
@@ -1287,7 +1287,7 @@ check_x_line(struct Client *client_p, struct Client *source_p)
  * This could also be used by rsa oper routines. 
  */
 void
-oper_up(struct Client *source_p, struct ConfItem *aconf)
+oper_up(struct Client *source_p, struct AccessItem *aconf)
 {
   unsigned int old = (source_p->umodes & ALL_UMODES);
   const char *operprivs = "";
@@ -1307,7 +1307,7 @@ oper_up(struct Client *source_p, struct ConfItem *aconf)
 
   if ((ptr = source_p->localClient->confs.head) != NULL)
     operprivs = oper_privs_as_string(source_p,
-				     ((struct ConfItem *)ptr->data)->port);
+				     ((struct AccessItem *)ptr->data)->port);
   else
     operprivs = "";
 

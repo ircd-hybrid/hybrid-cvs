@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.151 2003/06/11 21:10:57 db Exp $
+ *  $Id: m_kline.c,v 1.152 2003/06/12 22:05:54 db Exp $
  */
 
 #include "stdinc.h"
@@ -81,7 +81,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.151 $";
+const char *_version = "$Revision: 1.152 $";
 #endif
 
 /* Local function prototypes */
@@ -95,9 +95,9 @@ static int valid_comment(struct Client *source_p, char *comment);
 static int valid_user_host(struct Client *source_p, char *user, char *host);
 static int valid_wild_card(char *user, char *host);
 static int already_placed_kline(struct Client *, const char *, const char *);
-static void apply_kline(struct Client *source_p, struct ConfItem *aconf,
+static void apply_kline(struct Client *source_p, struct AccessItem *aconf,
 			const char *, time_t);
-static void apply_tkline(struct Client *source_p, struct ConfItem *aconf,
+static void apply_tkline(struct Client *source_p, struct AccessItem *aconf,
                          int temporary_kline_time);
 
 
@@ -125,7 +125,7 @@ mo_kline(struct Client *client_p, struct Client *source_p,
   char *oper_reason;
   const char *current_date;
   const char *target_server=NULL;
-  struct ConfItem *aconf;
+  struct AccessItem *aconf;
   time_t tkline_time = 0;
   time_t cur_time;
 
@@ -259,7 +259,7 @@ static void
 ms_kline(struct Client *client_p, struct Client *source_p,
 	 int parc, char *parv[])
 {
-  struct ConfItem *aconf=NULL;
+  struct AccessItem *aconf=NULL;
   int    tkline_time;
   const char* current_date;
   time_t cur_time;
@@ -359,7 +359,7 @@ ms_kline(struct Client *client_p, struct Client *source_p,
  *		  and conf file
  */
 static void 
-apply_kline(struct Client *source_p, struct ConfItem *aconf,
+apply_kline(struct Client *source_p, struct AccessItem *aconf,
 	    const char *current_date, time_t cur_time)
 {
   add_conf_by_address(aconf->host, CONF_KILL, aconf->user, aconf);
@@ -375,7 +375,7 @@ apply_kline(struct Client *source_p, struct ConfItem *aconf,
  * side effects	- tkline as given is placed
  */
 static void
-apply_tkline(struct Client *source_p, struct ConfItem *aconf,
+apply_tkline(struct Client *source_p, struct AccessItem *aconf,
              int tkline_time)
 {
   aconf->hold = CurrentTime + tkline_time;
@@ -402,7 +402,7 @@ apply_tkline(struct Client *source_p, struct ConfItem *aconf,
  * side effects	- tkline as given is placed
  */
 static void
-apply_tdline(struct Client *source_p, struct ConfItem *aconf,
+apply_tdline(struct Client *source_p, struct AccessItem *aconf,
 	     const char *current_date, int tkline_time)
 {
   aconf->hold = CurrentTime + tkline_time;
@@ -592,7 +592,7 @@ mo_dline(struct Client *client_p, struct Client *source_p,
   struct Client *target_p;
 #endif
   struct irc_ssaddr daddr;
-  struct ConfItem *aconf=NULL;
+  struct AccessItem *aconf=NULL;
   time_t tkline_time=0;
   int bits, t;
   char dlbuffer[IRCD_BUFSIZE];		/* XXX FIX this ! */
@@ -974,7 +974,7 @@ already_placed_kline(struct Client *source_p, const char *luser, const char *lho
 {
   const char *reason;
   struct irc_ssaddr iphost, *piphost;
-  struct ConfItem *aconf;
+  struct AccessItem *aconf;
   int t;
 
   if (ConfigFileEntry.non_redundant_klines) 

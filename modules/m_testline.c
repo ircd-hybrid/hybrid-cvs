@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_testline.c,v 1.28 2003/04/18 02:13:43 db Exp $
+ *  $Id: m_testline.c,v 1.29 2003/06/12 22:05:55 db Exp $
  */
 
 #include "stdinc.h"
@@ -59,7 +59,7 @@ _moddeinit(void)
   mod_del_cmd(&testline_msgtab);
 }
  
-const char *_version = "$Revision: 1.28 $";
+const char *_version = "$Revision: 1.29 $";
 #endif
 /*
  * mo_testline
@@ -80,7 +80,7 @@ static void
 mo_testline(struct Client *client_p, struct Client *source_p,
 	    int parc, char *parv[])
 {
-  struct ConfItem *aconf;
+  struct AccessItem *aconf;
   struct irc_ssaddr ip;
   int host_mask;
   char *host, *pass, *user, *name, *classname, *given_host, *given_name, *p;

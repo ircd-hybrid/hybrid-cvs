@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.h,v 7.43 2003/06/12 03:40:29 joshk Exp $
+ *  $Id: s_bsd.h,v 7.44 2003/06/12 22:05:52 db Exp $
  */
 
 #ifndef INCLUDED_s_bsd_h
@@ -36,7 +36,7 @@
 #define	COMM_SELECT_WRITE		2
 
 struct Client;
-struct ConfItem;
+struct AccessItem;
 struct hostent;
 struct DNSReply;
 struct Listener;
@@ -48,7 +48,7 @@ extern const char* const SETBUF_ERROR_MSG;
 extern void  add_connection(struct Listener*, int);
 extern void  close_connection(struct Client*);
 extern void  close_all_connections(void);
-extern int   connect_server(struct ConfItem*, struct Client*, 
+extern int   connect_server(struct AccessItem*, struct Client*, 
                             struct DNSReply*);
 extern void  get_my_name(struct Client *, char *, int);
 extern void  report_error(int, const char*, const char*, int);

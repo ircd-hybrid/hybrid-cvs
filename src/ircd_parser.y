@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.307 2003/06/12 01:08:15 metalrock Exp $
+ *  $Id: ircd_parser.y,v 1.308 2003/06/12 22:05:59 db Exp $
  */
 
 %{
@@ -56,7 +56,7 @@
 #include <openssl/pem.h>
 #endif
 
-static struct ConfItem *yy_aconf = NULL;
+static struct AccessItem *yy_aconf = NULL;
 static struct cluster *cptr = NULL;
 static struct Class *yy_class = NULL;
 
@@ -70,7 +70,7 @@ static char *listener_address;
 static void
 init_parser_confs(void)
 {
-  struct ConfItem *yy_tmp;
+  struct AccessItem *yy_tmp;
   dlink_node *ptr;
   dlink_node *next_ptr;
 
@@ -772,7 +772,7 @@ oper_entry: OPERATOR
 {
   if (ypass == 2)
   {
-    struct ConfItem *yy_tmp;
+    struct AccessItem *yy_tmp;
     dlink_node *ptr;
     dlink_node *next_ptr;
 
@@ -854,7 +854,7 @@ oper_user: USER '=' QSTRING ';'
 {
   if (ypass == 2)
   {
-    struct ConfItem *yy_tmp;
+    struct AccessItem *yy_tmp;
 
     yy_tmp = make_conf(CONF_OPERATOR);
 
@@ -1203,7 +1203,7 @@ auth_entry: IRCD_AUTH
   {
     dlink_node *ptr;
     dlink_node *next_ptr;
-    struct ConfItem *yy_tmp;
+    struct AccessItem *yy_tmp;
 
     /* copy over settings from first struct */
     DLINK_FOREACH(ptr, aconf_list.head)
@@ -1264,7 +1264,7 @@ auth_user: USER '=' QSTRING ';'
 {
   if (ypass == 2)
   {
-    struct ConfItem *yy_tmp;
+    struct AccessItem *yy_tmp;
 
     yy_tmp = make_conf(CONF_CLIENT);
 
@@ -1638,8 +1638,8 @@ connect_entry: CONNECT
 {
   if (ypass == 2)
   {
-    struct ConfItem *yy_hconf;
-    struct ConfItem *yy_lconf;
+    struct AccessItem *yy_hconf;
+    struct AccessItem *yy_lconf;
     dlink_node *ptr;
     dlink_node *next_ptr;
 #ifdef HAVE_LIBCRYPTO
@@ -1927,7 +1927,7 @@ connect_hub_mask: HUB_MASK '=' QSTRING ';'
 {
   if (ypass == 2)
   {
-    struct ConfItem *hub_conf;
+    struct AccessItem *hub_conf;
 
     hub_conf = make_conf(CONF_HUB);
     DupString(hub_conf->host, yylval.string);
@@ -1940,7 +1940,7 @@ connect_leaf_mask: LEAF_MASK '=' QSTRING ';'
 {
   if (ypass == 2)
   {
-    struct ConfItem *leaf_conf;
+    struct AccessItem *leaf_conf;
 
     leaf_conf = make_conf(CONF_LEAF);
     DupString(leaf_conf->host, yylval.string);
