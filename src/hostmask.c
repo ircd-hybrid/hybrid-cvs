@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- * $Id: hostmask.c,v 7.39 2001/05/30 22:03:16 leeh Exp $ 
+ * $Id: hostmask.c,v 7.40 2001/05/30 22:12:27 leeh Exp $ 
  */
  
 #include <stdlib.h>
@@ -723,16 +723,21 @@ report_Ilines(struct Client *client_p, int mask)
 
     get_printable_conf(aconf, &name, &host, &pass, &user, &port,
                        &classname);
+
+    /* We are doing a partial list, based on what matches the u@h of the
+     * sender, so prepare the strings for comparing --fl_ */
     if(mask)
       {
         char usermask[USERLEN+HOSTLEN+10], maskmatch[USERLEN+HOSTLEN+10];
         ircsprintf(usermask, "%s@%s", user, host);
         ircsprintf(maskmatch, "%s@%s", client_p->username, client_p->host);
 
+        /* If the strings dont match, continue to the next auth block */
         if(!match(host, maskmatch))
           continue;
 
       }
+
     sendto_one(client_p, form_str(RPL_STATSILINE), me.name,
                client_p->name, 'I', name,
                show_iline_prefix(client_p, aconf, user), 
