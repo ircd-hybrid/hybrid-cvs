@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_user.c,v 1.25 2003/04/06 00:07:13 michael Exp $
+ *  $Id: m_user.c,v 1.26 2003/04/15 13:25:23 adx Exp $
  */
 
 #include "stdinc.h"
@@ -35,8 +35,6 @@
 #include "parse.h"
 #include "modules.h"
 
-
-#define UMODES  (UMODE_INVISIBLE|UMODE_WALLOP|UMODE_SERVNOTICE)
 
 static void mr_user(struct Client*, struct Client*, int, char**);
 
@@ -58,7 +56,7 @@ _moddeinit(void)
   mod_del_cmd(&user_msgtab);
 }
 
-const char *_version = "$Revision: 1.25 $";
+const char *_version = "$Revision: 1.26 $";
 #endif
 /*
 ** mr_user
