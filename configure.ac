@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.25 2003/05/17 20:26:47 joshk Exp $
+dnl $Id: configure.ac,v 7.26 2003/05/17 21:57:55 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -746,8 +746,8 @@ else
         if test "$have_dlopen" = "no"; then
             AC_MSG_ERROR([shared module support could not be found - try running configure with --disable-shared-modules])
         fi
-	dnl Without this, include/setup.h will not be set up right.
-	AC_CHECK_LIB(dl, dlsym)
+
+	AC_SEARCH_LIBS(dlsym, [dl c_r])
 	AC_CHECK_FUNCS([dlopen dlfunc])
 	AC_CHECK_HEADERS(mach-o/dyld.h dlfcn.h)
 
