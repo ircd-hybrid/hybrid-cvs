@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kill.c,v 1.65 2002/07/19 10:56:01 leeh Exp $
+ *  $Id: m_kill.c,v 1.66 2002/07/27 13:27:14 leeh Exp $
  */
 
 #include "stdinc.h"
@@ -64,7 +64,7 @@ _moddeinit(void)
   mod_del_cmd(&kill_msgtab);
 }
 
-const char *_version = "$Revision: 1.65 $";
+const char *_version = "$Revision: 1.66 $";
 #endif
 /*
 ** mo_kill
@@ -83,9 +83,9 @@ static void mo_kill(struct Client *client_p, struct Client *source_p,
   user = parv[1];
   reason = parv[2]; /* Either defined or NULL (parc >= 2!!) */
 
-  if (!IsOperGlobalKill(source_p))
+  if (!IsOperK(source_p))
     {
-      sendto_one(source_p,":%s NOTICE %s :You need global_kill = yes;",me.name,parv[0]);
+      sendto_one(source_p,":%s NOTICE %s :You need kline = yes;",me.name,parv[0]);
       return;
     }
 
