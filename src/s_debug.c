@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_debug.c,v 7.73 2003/04/02 11:44:58 michael Exp $
+ *  $Id: s_debug.c,v 7.74 2003/04/21 13:10:45 michael Exp $
  */
 
 #include "stdinc.h"
@@ -275,7 +275,7 @@ count_memory(struct Client *source_p)
             channel_ban_memory += strlen(actualBan->who);
         }
 
-      DLINK_FOREACH(dlink, chptr->invexlist.head)
+      DLINK_FOREACH(dlink, chptr->exceptlist.head)
         {
 	  actualBan = dlink->data;
           channel_except++;
