@@ -1,3 +1,22 @@
+jmallett    2002/12/03 21:42:21 EST	(20021204_0)
+
+  Modified files:
+    .                    configure 
+    autoconf             configure.in 
+    include              setup.h.in 
+    src                  dynlink.c 
+  Log:
+  Use dlfunc(3) if we have it, fake it otherwise, at least abstracting out the
+  hideousness of data pointer integral casts.
+  
+  Revision  Changes    Path
+  7.149     +1 -0      ircd-hybrid-7/autoconf/configure.in
+  7.152     +76 -0     ircd-hybrid-7/configure
+  7.57      +3 -0      ircd-hybrid-7/include/setup.h.in
+  7.4       +29 -11    ircd-hybrid-7/src/dynlink.c
+
+
+
 androsyn    2002/11/30 08:39:51 EST	(20021130_0)
 
   Modified files:
@@ -33385,4 +33404,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4125 2002/11/30 13:39:54 androsyn Exp $
+$Id: ChangeLog,v 7.4126 2002/12/04 02:42:24 jmallett Exp $
