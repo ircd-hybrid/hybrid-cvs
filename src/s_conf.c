@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.10 1999/08/19 00:19:10 db Exp $
+ *  $Id: s_conf.c,v 7.11 1999/08/20 00:12:30 db Exp $
  */
 #include "s_conf.h"
 #include "channel.h"
@@ -2388,6 +2388,8 @@ static void initconf(FBFILE* file, int use_include)
           MyFree(aconf->user);
           aconf->name = aconf->host;
           aconf->host = (char *)NULL;
+          if(!aconf->passwd)
+             DupString(aconf->passwd,"*");
           aconf->next = u_conf;
           u_conf = aconf;
         }
