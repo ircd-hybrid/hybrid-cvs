@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: irc_string.c,v 7.59 2003/05/04 15:43:23 michael Exp $
+ *  $Id: irc_string.c,v 7.60 2003/05/11 22:27:44 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -28,7 +28,6 @@
 #include "client.h"
 #include "list.h"
 #include "memory.h"
-#include "setup.h"
 
 #ifndef INADDRSZ 
 #define INADDRSZ 4

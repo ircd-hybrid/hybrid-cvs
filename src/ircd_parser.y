@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.284 2003/05/09 21:38:24 bill Exp $
+ *  $Id: ircd_parser.y,v 1.285 2003/05/11 22:27:44 joshk Exp $
  */
 
 %{
@@ -29,7 +29,6 @@
 
 #define YY_NO_UNPUT
 #include "stdinc.h"
-#include "config.h"
 #include "ircd.h"
 #include "tools.h"
 #include "list.h"

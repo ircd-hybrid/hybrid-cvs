@@ -38,11 +38,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: event.c,v 7.32 2003/04/18 21:48:38 adx Exp $
+ *  $Id: event.c,v 7.33 2003/05/11 22:27:44 joshk Exp $
  */
 
 /*
- * How its used:
+ * How it's used:
  *
  * Should be pretty self-explanatory. Events are added to the static
  * array event_table with a frequency time telling eventRun how often
@@ -50,7 +50,6 @@
  */
 
 #include "stdinc.h"
-#include "config.h"
 
 #include "ircd.h"
 #include "event.h"

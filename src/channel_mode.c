@@ -19,11 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.89 2003/05/11 22:04:50 michael Exp $
+ *  $Id: channel_mode.c,v 7.90 2003/05/11 22:27:44 joshk Exp $
  */
 
 #include "stdinc.h"
-#include "setup.h"
 #include "tools.h"
 #include "channel.h"
 #include "channel_mode.h"

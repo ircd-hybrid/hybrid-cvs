@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.12 2003/05/11 01:10:05 joshk Exp $
+dnl $Id: configure.ac,v 7.13 2003/05/11 22:27:28 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -10,7 +10,9 @@ AC_PREREQ(2.57)
 AC_INIT([ircd-hybrid],[7-CURRENT])
 
 AC_CONFIG_HEADER(include/setup.h servlink/setup.h)
+
 AC_PREFIX_DEFAULT(/usr/local/ircd)
+
 AC_GNU_SOURCE
 
 OLD_CFLAGS="$CFLAGS"
@@ -175,7 +177,7 @@ AC_SEARCH_LIBS(crypt, [descrypt crypt],,
 [AC_MSG_ERROR([No crypt implementation found on your system!])])
 
 CRYPT_LIB=$ac_cv_search_crypt
-if test "$ac_cv_search_crypt" = "none required"; then
+if test "$CRYPT_LIB" = "none required"; then
 	unset CRYPT_LIB;
 fi
 AC_SUBST(CRYPT_LIB)
@@ -201,18 +203,18 @@ fi
 
 dnl check for socklen_t
 
-AC_CACHE_CHECK([for socklen_t], ac_cv_type_socklen_t,
+AC_CACHE_CHECK([for socklen_t], have_socklen_t,
 [
 	AC_COMPILE_IFELSE(
 	AC_LANG_PROGRAM(
 	[#include <sys/types.h>
 	 #include <sys/socket.h>],
 	[socklen_t len = 42; return 0;]),
-	ac_cv_type_socklen_t=yes,
-	ac_cv_type_socklen_t=no)
+	have_socklen_t=yes,
+	have_socklen_t=no)
 ])
 
-if test $ac_cv_type_socklen_t != yes; then
+if test $have_socklen_t != yes; then
 	AC_DEFINE([socklen_t], [int], [If we don't have a real socklen_t, int is good enough.])
 fi
 
@@ -362,8 +364,9 @@ if test "X$cf_enable_openssl" != "Xno"; then
 		dnl Do all the HAVE_LIBCRYPTO magic -- and check for ciphers
 		save_CPPFLAGS="$CPPFLAGS"
 		CPPFLAGS="$CPPFLAGS $SSL_LIBS"
-		AC_CHECK_LIB(crypto, RSA_free)
-		if test "X$ac_cv_lib_crypto_RSA_free" = "Xyes"; then
+		AC_CHECK_LIB(crypto, RSA_free,
+		[
+			LIBS="$LIBS -lcrypto"
 			cf_openssl_ciphers=''
 			AC_CHECK_FUNCS(EVP_bf_cfb,
 			cf_openssl_ciphers="${cf_openssl_ciphers}BF/256 BF/128 ")
@@ -377,7 +380,7 @@ if test "X$cf_enable_openssl" != "Xno"; then
 			cf_openssl_ciphers="${cf_openssl_ciphers}3DES/168 ")
 			AC_CHECK_FUNCS(EVP_des_cfb,
 			cf_openssl_ciphers="${cf_openssl_ciphers}DES/56 ")
-	        fi
+		])
 		CPPFLAGS="$save_CPPFLAGS"
 		SSL_LIBS="$SSL_LIBS -lcrypto"
 	else
@@ -522,14 +525,14 @@ AC_HELP_STRING([--enable-clobber], [Don't preserve old binaries on make install]
 
 AC_ARG_ENABLE(assert,
 AC_HELP_STRING([--enable-assert],[Enable assert().]),
-[], [IRC_CFLAGS="$IRC_CFLAGS -DNDEBUG"])
+[], [AC_DEFINE(NDEBUG, 1, [Define this to disable debugging support.])])
 
 AC_MSG_CHECKING(if you want to do a profile build)
 AC_ARG_ENABLE(profile,
 AC_HELP_STRING([--enable-profile],[Enable profiling]),
-[ac_cv_profile="yes"; IRC_CFLAGS="$IRC_CFLAGS -pg -a -static"], ac_cv_profile="no")
+[profile="yes"; IRC_CFLAGS="$IRC_CFLAGS -pg -a -static"], profile="no")
 
-AC_MSG_RESULT($ac_cv_profile)
+AC_MSG_RESULT($profile)
 
 dnl Check if we want to use efence
 AC_MSG_CHECKING(if you want ElectricFence)
@@ -581,27 +584,27 @@ AC_HELP_STRING([--enable-efnet],[For IRCDs running on EFnet.]),
 
 AC_ARG_WITH(nicklen,
 AC_HELP_STRING([--with-nicklen=LENGTH],[Set the nick length to LENGTH.]),
-	ac_cv_nicklen="$withval", ac_cv_nicklen="9")
+	NICKLEN="$withval", NICKLEN="9")
 
 AC_ARG_WITH(maxclients,
 AC_HELP_STRING([--with-maxclients=NUMBER],[Set the maximum number of clients to NUMBER.]),
-	ac_cv_maxclients="$withval", ac_cv_maxclients="200")
+	MAXCLIENTS="$withval", MAXCLIENTS="200")
 
 AC_ARG_WITH(topiclen,           
 AC_HELP_STRING([--with-topiclen=NUMBER],[Set the max topic length to NUMBER.]),
 [
 	if test $withval -gt 390; then
-		ac_cv_topiclen="390"
+		TOPICLEN="390"
 		AC_MSG_WARN([TOPICLEN has a hard limit of 390. Setting TOPICLEN=390])
 	else
-		ac_cv_topiclen="$withval"
+		TOPICLEN="$withval"
 	fi
 ],
-ac_cv_topiclen="120")
+TOPICLEN="120")
 
-AC_DEFINE_UNQUOTED(TOPICLEN, ${ac_cv_topiclen}, [Maximum topic length (<=390)])
-AC_DEFINE_UNQUOTED(NICKLEN, (${ac_cv_nicklen}+1), [Nickname length])
-AC_DEFINE_UNQUOTED(MAX_CLIENTS, ${ac_cv_maxclients}, [Maximum no. of clients that can connect to the ircd.])
+AC_DEFINE_UNQUOTED(TOPICLEN, ${TOPICLEN}, [Maximum topic length (<=390)])
+AC_DEFINE_UNQUOTED(NICKLEN, (${NICKLEN}+1), [Nickname length])
+AC_DEFINE_UNQUOTED(MAX_CLIENTS, ${MAXCLIENTS}, [Maximum no. of clients that can connect to the ircd.])
 
 dnl Shared Modules Support
 dnl ======================
@@ -613,55 +616,52 @@ AC_DEFUN(CHECK_DLOPEN_LD,
 [AC_SEARCH_LIBS(shl_load, dld,
 [
 	AC_DEFINE(HAVE_SHL_LOAD, 1, [shl_load() is available])
-        ac_cv_have_shl_load='yes'
+        have_shl_load='yes'
 ]
-[ac_cv_have_shl_load='no'])])
+[have_shl_load='no'])])
 
 AC_DEFUN(CHECK_DLOPEN_DL,
 [AC_SEARCH_LIBS(dlopen, [dl c_r], 
-[ac_cv_have_dlopen='yes'],[ac_cv_have_dlopen='no'])])
+[have_dlopen='yes'],[have_dlopen='no'])])
 
 dnl And now the actual meat of the checking.
 
 AC_ARG_ENABLE(shared-modules,
 AC_HELP_STRING([--disable-shared-modules],[ Disable shared modules.]),
-[ac_cv_shared_modules="no"],
+[shared_modules="no"],
 [
 	dnl Some sanity checks.
 	
-  	if test "$ac_cv_profile" = "no"; then
-		ac_cv_shared_modules="yes"
+  	if test "$profile" = "no"; then
+		shared_modules="yes"
 	else
 		AC_MSG_WARN([disabling shared modules; cannot coexist with profile builds])
-		ac_cv_shared_modules="no"
+		shared_modules="no"
 	fi
 
 	if test "$CYGWIN" = yes; then
 		AC_MSG_WARN([disabling shared modules; Cygwin is at present unable to build them.])
-		ac_cv_shared_modules="no"
+		shared_modules="no"
 	fi
 ])
 
-if test "$ac_cv_shared_modules" = "no"; then
+if test "$shared_modules" = "no"; then
 	echo "Not using shared modules.."
 	MODULES_DEFINE=""
 	MOD_TARGET="libmodules.a"
 	MODULES_LIBS="../modules/libmodules.a"
-dnl This is a kludge, but it should work...
-	SEDOBJ="-e s/.so:/.o:/"
 	AC_DEFINE(STATIC_MODULES, 1, [Define to 1 if dynamic modules can't be used.])
 else
 	echo "Checking for shared module support"
 	MODULES_DEFINE=""
 	MODULES_LIBS=""
 	MOD_TARGET="shared_modules"
-	SEDOBJ="-e s/.o:/.so:/"
         CHECK_DLOPEN_LD
-        if test "$ac_cv_have_shl_load" = "no"; then
+        if test "$have_shl_load" = "no"; then
             AC_CHECK_HEADER([mach-o/dyld.h],, [CHECK_DLOPEN_DL])
         fi
-        if test "$ac_cv_have_dlopen" = "no"; then
-            AC_MSG_ERROR(shared module support could not be found - try running configure with --disable-shared-modules)
+        if test "$have_dlopen" = "no"; then
+            AC_MSG_ERROR([shared module support could not be found - try running configure with --disable-shared-modules])
         fi
 	dnl Without this, include/setup.h will not be set up right.
 	AC_CHECK_LIB(dl, dlsym)
@@ -790,10 +790,18 @@ AC_SUBST(SSL_LIBS)
 
 AC_SUBST(LDFLAGS)
 AC_SUBST(IRC_CFLAGS)
-AC_SUBST(SEDOBJ)
 
-dnl Don't get bitten by Cygwin's stupidity
-prefix=`echo $prefix | sed 's/\/$//'`
+if test x$prefix = xNONE; then 
+	AC_DEFINE_UNQUOTED(IRCD_PREFIX, "$ac_default_prefix", [Prefix where the ircd is installed.])
+
+else
+
+dnl Don't get bitten by Cygwin's stupidity if the user specified
+dnl a custom path with a trailing slash
+
+	prefix=`echo $prefix | sed 's/\/$//'`
+	AC_DEFINE_UNQUOTED(IRCD_PREFIX, "$prefix", [Prefix where the ircd is installed.])
+fi
 
 AC_CONFIG_FILES(		\
 	Makefile		\
@@ -838,7 +846,7 @@ fi
 
 echo -n "Modules ................. "
 
-if test "$ac_cv_shared_modules" = yes; then
+if test "$shared_modules" = yes; then
 	echo shared
 else
 	echo static
@@ -859,7 +867,7 @@ echo "Small network ........... $small_net"
 
 echo
 echo "Configured limits:"
-echo "NICKLEN ................. $ac_cv_nicklen"
-echo "TOPICLEN ................ $ac_cv_topiclen"
-echo "MAXCLIENTS .............. $ac_cv_maxclients"
+echo "NICKLEN ................. $NICKLEN"
+echo "TOPICLEN ................ $TOPICLEN"
+echo "MAXCLIENTS .............. $MAXCLIENTS"
 echo

@@ -308,7 +308,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT MKDEP CPP EGREP SET_MAKE INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA RM CP MV LN SED AR LD YACC RANLIB ac_ct_RANLIB LEX LEXLIB LEX_OUTPUT_ROOT CRYPT_LIB SNPRINTF_C ENCSPEED SELECT_TYPE CLOBBER PICFLAGS MODULES_DEFINE MODULES_LIBS MOD_TARGET SSL_INCLUDES SSL_LIBS IRC_CFLAGS SEDOBJ LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT MKDEP CPP EGREP SET_MAKE INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA RM CP MV LN SED AR LD YACC RANLIB ac_ct_RANLIB LEX LEXLIB LEX_OUTPUT_ROOT CRYPT_LIB SNPRINTF_C ENCSPEED SELECT_TYPE CLOBBER PICFLAGS MODULES_DEFINE MODULES_LIBS MOD_TARGET SSL_INCLUDES SSL_LIBS IRC_CFLAGS LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -1300,6 +1300,8 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 
+
+
 cat >>confdefs.h <<\_ACEOF
 #define _GNU_SOURCE 1
 _ACEOF
@@ -2076,12 +2078,12 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (exit $ac_status); }; }; then
   for ac_declaration in \
    ''\
+   '#include <stdlib.h>' \
    'extern "C" void std::exit (int) throw (); using std::exit;' \
    'extern "C" void std::exit (int); using std::exit;' \
    'extern "C" void exit (int) throw ();' \
    'extern "C" void exit (int);' \
-   'void exit (int);' \
-   '#include <stdlib.h>'
+   'void exit (int);'
 do
   cat >conftest.$ac_ext <<_ACEOF
 #line $LINENO "configure"
@@ -3962,7 +3964,7 @@ fi
 
 
 CRYPT_LIB=$ac_cv_search_crypt
-if test "$ac_cv_search_crypt" = "none required"; then
+if test "$CRYPT_LIB" = "none required"; then
 	unset CRYPT_LIB;
 fi
 
@@ -4390,7 +4392,7 @@ fi
 
 echo "$as_me:$LINENO: checking for socklen_t" >&5
 echo $ECHO_N "checking for socklen_t... $ECHO_C" >&6
-if test "${ac_cv_type_socklen_t+set}" = set; then
+if test "${have_socklen_t+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
 
@@ -4423,20 +4425,20 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  ac_cv_type_socklen_t=yes
+  have_socklen_t=yes
 else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-ac_cv_type_socklen_t=no
+have_socklen_t=no
 fi
 rm -f conftest.$ac_objext conftest.$ac_ext
 
 fi
-echo "$as_me:$LINENO: result: $ac_cv_type_socklen_t" >&5
-echo "${ECHO_T}$ac_cv_type_socklen_t" >&6
+echo "$as_me:$LINENO: result: $have_socklen_t" >&5
+echo "${ECHO_T}$have_socklen_t" >&6
 
-if test $ac_cv_type_socklen_t != yes; then
+if test $have_socklen_t != yes; then
 
 cat >>confdefs.h <<\_ACEOF
 #define socklen_t int
@@ -5395,8 +5397,7 @@ echo "${ECHO_T}found" >&6
 
 				save_CPPFLAGS="$CPPFLAGS"
 		CPPFLAGS="$CPPFLAGS $SSL_LIBS"
-
-echo "$as_me:$LINENO: checking for RSA_free in -lcrypto" >&5
+		echo "$as_me:$LINENO: checking for RSA_free in -lcrypto" >&5
 echo $ECHO_N "checking for RSA_free in -lcrypto... $ECHO_C" >&6
 if test "${ac_cv_lib_crypto_RSA_free+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
@@ -5451,15 +5452,8 @@ fi
 echo "$as_me:$LINENO: result: $ac_cv_lib_crypto_RSA_free" >&5
 echo "${ECHO_T}$ac_cv_lib_crypto_RSA_free" >&6
 if test $ac_cv_lib_crypto_RSA_free = yes; then
-  cat >>confdefs.h <<_ACEOF
-#define HAVE_LIBCRYPTO 1
-_ACEOF
 
-  LIBS="-lcrypto $LIBS"
-
-fi
-
-		if test "X$ac_cv_lib_crypto_RSA_free" = "Xyes"; then
+			LIBS="$LIBS -lcrypto"
 			cf_openssl_ciphers=''
 
 for ac_func in EVP_bf_cfb
@@ -5965,7 +5959,9 @@ _ACEOF
 fi
 done
 
-	        fi
+
+fi
+
 		CPPFLAGS="$save_CPPFLAGS"
 		SSL_LIBS="$SSL_LIBS -lcrypto"
 	else
@@ -6468,7 +6464,11 @@ if test "${enable_assert+set}" = set; then
   enableval="$enable_assert"
 
 else
-  IRC_CFLAGS="$IRC_CFLAGS -DNDEBUG"
+
+cat >>confdefs.h <<\_ACEOF
+#define NDEBUG 1
+_ACEOF
+
 fi;
 
 echo "$as_me:$LINENO: checking if you want to do a profile build" >&5
@@ -6476,13 +6476,13 @@ echo $ECHO_N "checking if you want to do a profile build... $ECHO_C" >&6
 # Check whether --enable-profile or --disable-profile was given.
 if test "${enable_profile+set}" = set; then
   enableval="$enable_profile"
-  ac_cv_profile="yes"; IRC_CFLAGS="$IRC_CFLAGS -pg -a -static"
+  profile="yes"; IRC_CFLAGS="$IRC_CFLAGS -pg -a -static"
 else
-  ac_cv_profile="no"
+  profile="no"
 fi;
 
-echo "$as_me:$LINENO: result: $ac_cv_profile" >&5
-echo "${ECHO_T}$ac_cv_profile" >&6
+echo "$as_me:$LINENO: result: $profile" >&5
+echo "${ECHO_T}$profile" >&6
 
 echo "$as_me:$LINENO: checking if you want ElectricFence" >&5
 echo $ECHO_N "checking if you want ElectricFence... $ECHO_C" >&6
@@ -6617,18 +6617,18 @@ fi;
 # Check whether --with-nicklen or --without-nicklen was given.
 if test "${with_nicklen+set}" = set; then
   withval="$with_nicklen"
-  ac_cv_nicklen="$withval"
+  NICKLEN="$withval"
 else
-  ac_cv_nicklen="9"
+  NICKLEN="9"
 fi;
 
 
 # Check whether --with-maxclients or --without-maxclients was given.
 if test "${with_maxclients+set}" = set; then
   withval="$with_maxclients"
-  ac_cv_maxclients="$withval"
+  MAXCLIENTS="$withval"
 else
-  ac_cv_maxclients="200"
+  MAXCLIENTS="200"
 fi;
 
 
@@ -6637,30 +6637,30 @@ if test "${with_topiclen+set}" = set; then
   withval="$with_topiclen"
 
 	if test $withval -gt 390; then
-		ac_cv_topiclen="390"
+		TOPICLEN="390"
 		{ echo "$as_me:$LINENO: WARNING: TOPICLEN has a hard limit of 390. Setting TOPICLEN=390" >&5
 echo "$as_me: WARNING: TOPICLEN has a hard limit of 390. Setting TOPICLEN=390" >&2;}
 	else
-		ac_cv_topiclen="$withval"
+		TOPICLEN="$withval"
 	fi
 
 else
-  ac_cv_topiclen="120"
+  TOPICLEN="120"
 fi;
 
 
 cat >>confdefs.h <<_ACEOF
-#define TOPICLEN ${ac_cv_topiclen}
+#define TOPICLEN ${TOPICLEN}
 _ACEOF
 
 
 cat >>confdefs.h <<_ACEOF
-#define NICKLEN (${ac_cv_nicklen}+1)
+#define NICKLEN (${NICKLEN}+1)
 _ACEOF
 
 
 cat >>confdefs.h <<_ACEOF
-#define MAX_CLIENTS ${ac_cv_maxclients}
+#define MAX_CLIENTS ${MAXCLIENTS}
 _ACEOF
 
 
@@ -6673,32 +6673,31 @@ _ACEOF
 # Check whether --enable-shared-modules or --disable-shared-modules was given.
 if test "${enable_shared_modules+set}" = set; then
   enableval="$enable_shared_modules"
-  ac_cv_shared_modules="no"
+  shared_modules="no"
 else
 
 
-  	if test "$ac_cv_profile" = "no"; then
-		ac_cv_shared_modules="yes"
+  	if test "$profile" = "no"; then
+		shared_modules="yes"
 	else
 		{ echo "$as_me:$LINENO: WARNING: disabling shared modules; cannot coexist with profile builds" >&5
 echo "$as_me: WARNING: disabling shared modules; cannot coexist with profile builds" >&2;}
-		ac_cv_shared_modules="no"
+		shared_modules="no"
 	fi
 
 	if test "$CYGWIN" = yes; then
 		{ echo "$as_me:$LINENO: WARNING: disabling shared modules; Cygwin is at present unable to build them." >&5
 echo "$as_me: WARNING: disabling shared modules; Cygwin is at present unable to build them." >&2;}
-		ac_cv_shared_modules="no"
+		shared_modules="no"
 	fi
 
 fi;
 
-if test "$ac_cv_shared_modules" = "no"; then
+if test "$shared_modules" = "no"; then
 	echo "Not using shared modules.."
 	MODULES_DEFINE=""
 	MOD_TARGET="libmodules.a"
 	MODULES_LIBS="../modules/libmodules.a"
-	SEDOBJ="-e s/.so:/.o:/"
 
 cat >>confdefs.h <<\_ACEOF
 #define STATIC_MODULES 1
@@ -6709,7 +6708,6 @@ else
 	MODULES_DEFINE=""
 	MODULES_LIBS=""
 	MOD_TARGET="shared_modules"
-	SEDOBJ="-e s/.o:/.so:/"
         echo "$as_me:$LINENO: checking for library containing shl_load" >&5
 echo $ECHO_N "checking for library containing shl_load... $ECHO_C" >&6
 if test "${ac_cv_search_shl_load+set}" = set; then
@@ -6819,12 +6817,12 @@ cat >>confdefs.h <<\_ACEOF
 #define HAVE_SHL_LOAD 1
 _ACEOF
 
-        ac_cv_have_shl_load='yes'
+        have_shl_load='yes'
 
-ac_cv_have_shl_load='no'
+have_shl_load='no'
 fi
 
-        if test "$ac_cv_have_shl_load" = "no"; then
+        if test "$have_shl_load" = "no"; then
             if test "${ac_cv_header_mach_o_dyld_h+set}" = set; then
   echo "$as_me:$LINENO: checking for mach-o/dyld.h" >&5
 echo $ECHO_N "checking for mach-o/dyld.h... $ECHO_C" >&6
@@ -7060,16 +7058,16 @@ echo "$as_me:$LINENO: result: $ac_cv_search_dlopen" >&5
 echo "${ECHO_T}$ac_cv_search_dlopen" >&6
 if test "$ac_cv_search_dlopen" != no; then
   test "$ac_cv_search_dlopen" = "none required" || LIBS="$ac_cv_search_dlopen $LIBS"
-  ac_cv_have_dlopen='yes'
+  have_dlopen='yes'
 else
-  ac_cv_have_dlopen='no'
+  have_dlopen='no'
 fi
 
 fi
 
 
         fi
-        if test "$ac_cv_have_dlopen" = "no"; then
+        if test "$have_dlopen" = "no"; then
             { { echo "$as_me:$LINENO: error: shared module support could not be found - try running configure with --disable-shared-modules" >&5
 echo "$as_me: error: shared module support could not be found - try running configure with --disable-shared-modules" >&2;}
    { (exit 1); exit 1; }; }
@@ -8129,8 +8127,23 @@ fi
 
 
 
+if test x$prefix = xNONE; then
 
-prefix=`echo $prefix | sed 's/\/$//'`
+cat >>confdefs.h <<_ACEOF
+#define IRCD_PREFIX "$ac_default_prefix"
+_ACEOF
+
+
+else
+
+
+	prefix=`echo $prefix | sed 's/\/$//'`
+
+cat >>confdefs.h <<_ACEOF
+#define IRCD_PREFIX "$prefix"
+_ACEOF
+
+fi
 
                                                                                                                         ac_config_files="$ac_config_files Makefile iauth/Makefile iauth/source/Makefile servlink/Makefile contrib/Makefile src/Makefile adns/Makefile include/Makefile messages/Makefile modules/Makefile tools/Makefile doc/Makefile"
 
@@ -8796,7 +8809,6 @@ s,@MOD_TARGET@,$MOD_TARGET,;t t
 s,@SSL_INCLUDES@,$SSL_INCLUDES,;t t
 s,@SSL_LIBS@,$SSL_LIBS,;t t
 s,@IRC_CFLAGS@,$IRC_CFLAGS,;t t
-s,@SEDOBJ@,$SEDOBJ,;t t
 s,@LIBOBJS@,$LIBOBJS,;t t
 s,@LTLIBOBJS@,$LTLIBOBJS,;t t
 CEOF
@@ -9282,7 +9294,7 @@ fi
 
 echo -n "Modules ................. "
 
-if test "$ac_cv_shared_modules" = yes; then
+if test "$shared_modules" = yes; then
 	echo shared
 else
 	echo static
@@ -9303,7 +9315,7 @@ echo "Small network ........... $small_net"
 
 echo
 echo "Configured limits:"
-echo "NICKLEN ................. $ac_cv_nicklen"
-echo "TOPICLEN ................ $ac_cv_topiclen"
-echo "MAXCLIENTS .............. $ac_cv_maxclients"
+echo "NICKLEN ................. $NICKLEN"
+echo "TOPICLEN ................ $TOPICLEN"
+echo "MAXCLIENTS .............. $MAXCLIENTS"
 echo

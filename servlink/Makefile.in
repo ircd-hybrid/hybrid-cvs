@@ -1,7 +1,7 @@
 #
 # Makefile.in for servlink/src
 #
-# $Id: Makefile.in,v 1.14 2003/05/06 23:02:31 michael Exp $
+# $Id: Makefile.in,v 1.15 2003/05/11 22:27:42 joshk Exp $
 #
 
 CC              = @CC@
@@ -9,11 +9,12 @@ INSTALL         = @INSTALL@
 INSTALL_BIN     = @INSTALL_PROGRAM@
 INSTALL_DATA    = @INSTALL_DATA@
 INSTALL_SUID    = @INSTALL_PROGRAM@ -o root -m 4755
-CFLAGS          = @IRC_CFLAGS@ -DIRCD_PREFIX=\"@prefix@\"
+CFLAGS          = @IRC_CFLAGS@
 LDFLAGS         = @LDFLAGS@
-MKDEP           = @MKDEP@ -DIRCD_PREFIX=\"@prefix@\"
+MKDEP           = @MKDEP@
 MV              = @MV@
 RM              = @RM@
+SED		= @SED@
 prefix          = @prefix@
 exec_prefix     = @exec_prefix@
 bindir          = @bindir@
@@ -47,6 +48,7 @@ servlink: ${OBJECTS}
 	${CC} ${CFLAGS} ${LDFLAGS} -o $@ ${OBJECTS} ${IRCDLIBS}
 
 install: build
+	mkdir -p $(bindir)
 	@for i in $(PROGS); do \
                 if test -f $(bindir)/$$i; then \
                         echo $(MV) $(bindir)/$$i $(bindir)/$$i.old; \
@@ -62,15 +64,15 @@ install: build
 .PHONY: depend clean distclean
 depend:
 	@${MKDEP} ${CPPFLAGS} ${SOURCES} > .depend.tmp
-	@sed -e '/^# DO NOT DELETE THIS LINE/,$$d' <Makefile >Makefile.depend
+	@${SED} -e '/^# DO NOT DELETE THIS LINE/,$$d' <Makefile >Makefile.depend
 	@echo '# DO NOT DELETE THIS LINE!!!' >>Makefile.depend
 	@echo '# make depend needs it.' >>Makefile.depend
 	@cat .depend.tmp >>Makefile.depend
-	@mv Makefile.depend Makefile
-	@rm -f .depend.tmp
+	@${MV} Makefile.depend Makefile
+	@${RM} -f .depend.tmp
 
 clean:
-	${RM} -f *.o *~ *.core core servlink
+	${RM} -f *.o *~ *core servlink
 
 distclean: clean
 	${RM} -f Makefile setup.h

@@ -19,11 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: class.c,v 7.48 2003/05/11 22:04:50 michael Exp $
+ *  $Id: class.c,v 7.49 2003/05/11 22:27:44 joshk Exp $
  */
 
 #include "stdinc.h"
-#include "config.h"
 #include "tools.h"
 #include "class.h"
 #include "client.h"

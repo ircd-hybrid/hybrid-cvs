@@ -19,12 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: numeric.c,v 7.23 2003/03/31 15:49:26 adx Exp $
+ *  $Id: numeric.c,v 7.24 2003/05/11 22:27:45 joshk Exp $
  */
 
 #include "stdinc.h"
-#include "setup.h"
-#include "config.h"
 
 #include "numeric.h"
 #include "irc_string.h"

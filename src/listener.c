@@ -19,11 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.c,v 7.81 2003/04/30 07:20:56 michael Exp $
+ *  $Id: listener.c,v 7.82 2003/05/11 22:27:44 joshk Exp $
  */
 
 #include "stdinc.h"
-#include "config.h"
 #include "listener.h"
 #include "client.h"
 #include "fdlist.h"
@@ -38,7 +37,6 @@
 #include "s_stats.h"
 #include "send.h"
 #include "memory.h"
-#include "setup.h"
 #include "tools.h"
 #ifdef HAVE_LIBCRYPTO
 #include <openssl/bio.h>

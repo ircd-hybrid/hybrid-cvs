@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.6 2003/05/06 23:02:26 michael Exp $
+# $Id: Makefile.in,v 1.7 2003/05/11 22:27:37 joshk Exp $
 # makefile for include/
 
 INSTALL=	@INSTALL@
@@ -17,12 +17,9 @@ clean:
 depend:
 
 install:
-	@echo installing header files...
-	-@if test ! -d $(prefix)/include; then \
-		echo "mkdir $(prefix)/include"; \
-		mkdir $(prefix)/include; \
-		mkdir $(prefix)/include/ircd-hybrid-7; \
-	fi
+	@echo Installing header files...
+	mkdir -p $(prefix)/include/ircd-hybrid-7
+
 	@for header in *.h; do \
 		${INSTALL_DATA} $$header $(prefix)/include/ircd-hybrid-7; \
 	done

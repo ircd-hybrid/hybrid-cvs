@@ -42,13 +42,12 @@
  */
 
 #include "stdinc.h"
-#include "setup.h"
 
 #include "irc_getnameinfo.h"
 #include "irc_string.h"
 
 
-/*  $Id: irc_getnameinfo.c,v 7.7 2003/05/10 04:05:06 michael Exp $ */
+/*  $Id: irc_getnameinfo.c,v 7.8 2003/05/11 22:27:44 joshk Exp $ */
 
 static const struct afd {
   int a_af;

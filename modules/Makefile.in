@@ -1,24 +1,17 @@
 #
 # Makefile.in for ircd/modules
 #
-# $Id: Makefile.in,v 1.72 2003/05/09 21:38:18 bill Exp $
+# $Id: Makefile.in,v 1.73 2003/05/11 22:27:40 joshk Exp $
 #
 CC		= @CC@
 AR		= @AR@
 RANLIB		= @RANLIB@
 RM		= @RM@
-SED             = @SED@
-LEX		= @LEX@
-LEXLIB		= @LEXLIB@
-CFLAGS		= @IRC_CFLAGS@ -DIRCD_PREFIX=\"@prefix@\"
+CFLAGS		= @IRC_CFLAGS@
 PICFLAGS	= @PICFLAGS@
-MKDEP		= @MKDEP@ -DIRCD_PREFIX=\"@prefix@\"
+MKDEP		= @MKDEP@
 INSTALL		= @INSTALL@
-INSTALL_PROGRAM	= @INSTALL_PROGRAM@
 INSTALL_DATA	= @INSTALL_DATA@
-INSTALL_SUID    = @INSTALL_PROGRAM@ -o root -m 4755
-SEDOBJ		= @SEDOBJ@
-SHELL		= /bin/sh
 MV		= @MV@
 LD		= @LD@
 
@@ -133,29 +126,19 @@ libmodules.a: $(S_OBJS)
 
 
 install-mkdirs:
-	-@if test ! -d $(prefix); then \
-                echo "mkdir $(prefix)"; \
-                mkdir $(prefix); \
-        fi
-	
+	mkdir -p $(prefix)
+
 	-@if test -d $(moduledir)-old; then \
-		echo "rm -rf $(moduledir)-old"; \
-		rm -rf $(moduledir)-old; \
+		echo "${RM} -rf $(moduledir)-old"; \
+		${RM} -rf $(moduledir)-old; \
 	fi
 	-@if test -d $(moduledir); then \
-		echo "mv $(moduledir) $(moduledir)-old"; \
-		mv $(moduledir) $(moduledir)-old; \
+		echo "${MV} $(moduledir) $(moduledir)-old"; \
+		${MV} $(moduledir) $(moduledir)-old; \
 	fi
 
-	-@if test ! -d $(moduledir); then \
-                echo "mkdir $(moduledir)"; \
-                mkdir $(moduledir); \
-        fi
-	-@if test ! -d $(automoduledir); then \
-                echo "mkdir $(automoduledir)"; \
-                mkdir $(automoduledir); \
-        fi
-
+	mkdir -p $(moduledir) $(automoduledir)
+	
 install: install_@MOD_TARGET@
 
 install_libmodules.a: libmodules.a

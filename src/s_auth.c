@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.119 2003/05/07 20:19:04 stu Exp $
+ *  $Id: s_auth.c,v 7.120 2003/05/11 22:27:45 joshk Exp $
  */
 
 /*
@@ -52,7 +52,6 @@
 #include "s_stats.h"
 #include "send.h"
 #include "memory.h"
-#include "config.h"
 
 /*
  * a bit different approach

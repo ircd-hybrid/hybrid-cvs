@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_gline.c,v 1.29 2003/05/11 16:05:54 michael Exp $
+ *  $Id: s_gline.c,v 1.30 2003/05/11 22:27:45 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -28,7 +28,6 @@
 #include "channel.h"
 #include "client.h"
 #include "common.h"
-#include "config.h"
 #include "irc_string.h"
 #include "ircd.h"
 #include "m_kline.h"

@@ -46,9 +46,6 @@
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
-/* Define to 1 if you have the `crypto' library (-lcrypto). */
-#undef HAVE_LIBCRYPTO
-
 /* Define to 1 if you have the `dl' library (-ldl). */
 #undef HAVE_LIBDL
 
@@ -127,8 +124,14 @@
 /* Define if IPv6 support is present and available. */
 #undef IPV6
 
+/* Prefix where the ircd is installed. */
+#undef IRCD_PREFIX
+
 /* Maximum no. of clients that can connect to the ircd. */
 #undef MAX_CLIENTS
+
+/* Define this to disable debugging support. */
+#undef NDEBUG
 
 /* Nickname length */
 #undef NICKLEN

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_lexer.l,v 1.151 2003/05/09 21:38:24 bill Exp $
+ *  $Id: ircd_lexer.l,v 1.152 2003/05/11 22:27:44 joshk Exp $
  */
 
 %option case-insensitive
@@ -42,8 +42,6 @@
 #endif
 #include "memory.h"
 #include "hostmask.h"
-#include "setup.h"
-#include "config.h"
 #include "s_log.h"
 
 #undef YY_INPUT

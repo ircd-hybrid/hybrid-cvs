@@ -2,10 +2,10 @@
  * encspeed.c - originally written by einride
  *            - modified for ircd-hybrid-7 by davidt
  *
- * $Id: encspeed.c,v 7.6 2003/02/07 07:17:02 a1kmm Exp $
+ * $Id: encspeed.c,v 7.7 2003/05/11 22:27:50 joshk Exp $
  */
 
-#include "../include/setup.h"
+#include "setup.h"
 
 #ifndef HAVE_LIBCRYPTO
 #include <stdio.h>

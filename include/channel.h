@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.133 2003/05/11 22:04:44 michael Exp $
+ *  $Id: channel.h,v 7.134 2003/05/11 22:27:37 joshk Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -27,10 +27,8 @@
 #include "config.h"           /* config settings */
 #include "ircd_defs.h"        /* buffer sizes */
 
-/* Efnet wanted this... Maybe we should do this from configure? */
+/* Efnet wanted this... */
 #define REQUIRE_OANDV
-
-/* #define INTENSIVE_DEBUG */
 
 struct Client;
 

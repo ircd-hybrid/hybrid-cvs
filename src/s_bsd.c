@@ -19,12 +19,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.195 2003/05/07 20:19:04 stu Exp $
+ *  $Id: s_bsd.c,v 7.196 2003/05/11 22:27:45 joshk Exp $
  */
 
 #include "stdinc.h"
 #include <netinet/tcp.h>
-#include "config.h"
 #include "fdlist.h"
 #include "s_bsd.h"
 #include "class.h"

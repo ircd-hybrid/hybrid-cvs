@@ -21,14 +21,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_sigio.c,v 7.25 2003/05/06 05:41:05 db Exp $
+ *  $Id: s_bsd_sigio.c,v 7.26 2003/05/11 22:27:45 joshk Exp $
  */
 
 #ifndef _GNU_SOURCE
 #define _GNU_SOURCE 1           /* Needed for F_SETSIG */
 #endif
 
-#include "config.h"
 #include "stdinc.h"
 #include <sys/poll.h>
 

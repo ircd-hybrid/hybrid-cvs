@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.14 2003/05/06 23:02:28 michael Exp $
+# $Id: Makefile.in,v 1.15 2003/05/11 22:27:39 joshk Exp $
 #
 RM            = @RM@
 MV            = @MV@
@@ -6,6 +6,7 @@ INSTALL       = @INSTALL@
 INSTALL_DATA  = @INSTALL_DATA@
 prefix        = @prefix@
 messagedir    = @prefix@/messages
+CLOBBER       = @CLOBBER@
 
 LANGFILES     = ayb.lang            \
                 custom.lang         \
@@ -19,18 +20,9 @@ LANGFILES     = ayb.lang            \
                 ircd-swedish.lang
 
 
-install-mkdirs:
-	-@if test ! -d $(prefix); then      \
-                echo "mkdir $(prefix)";     \
-                mkdir $(prefix);            \
-        fi
 
-	-@if test ! -d $(messagedir); then  \
-		echo "mkdir $(messagedir)"; \
-		mkdir $(messagedir);        \
-	fi;
-
-install: install-mkdirs
+install:
+	mkdir -p $(messagedir);       
 	-@echo    "Installing language files to $(messagedir)...";          \
 
 	@for i in $(LANGFILES); do                                          \
@@ -41,6 +33,10 @@ install: install-mkdirs
 		echo $(INSTALL_DATA) $$i $(messagedir);                     \
 		$(INSTALL_DATA) $$i $(messagedir);                          \
 	done
+
+	@if test "$(CLOBBER)" = "yes"; then \
+		${RM} -f $(messagedir)/*.old; \
+	fi
 
 distclean:
 	${RM} -f Makefile

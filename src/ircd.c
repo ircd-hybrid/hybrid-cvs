@@ -19,12 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.274 2003/05/11 22:04:50 michael Exp $
+ *  $Id: ircd.c,v 7.275 2003/05/11 22:27:44 joshk Exp $
  */
 
 #include "stdinc.h"
-#include "setup.h"
-#include "config.h"
 
 #ifdef VMS
 # include descrip

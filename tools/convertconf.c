@@ -15,15 +15,14 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: convertconf.c,v 1.36 2002/07/18 15:28:28 db Exp $
+ * $Id: convertconf.c,v 1.37 2003/05/11 22:27:49 joshk Exp $
  */
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
 #include <string.h>
-#include "../include/config.h"
-#include "../include/setup.h"
+#include "config.h"
 
 #define CONFPATH ETCPATH "/.convertconf-example.conf"
 #define BUFSIZE 512

@@ -19,10 +19,9 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fileio.c,v 7.28 2003/04/05 01:08:29 michael Exp $
+ *  $Id: fileio.c,v 7.29 2003/05/11 22:27:44 joshk Exp $
  */
 #include "stdinc.h"
-#include "config.h"
 #include "fileio.h"
 #include "irc_string.h"
 #include "client.h"	/* for FLAGS_ALL */

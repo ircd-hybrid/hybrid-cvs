@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: md5.c,v 1.15 2002/11/24 08:27:15 jmallett Exp $
+ *  $Id: md5.c,v 1.16 2003/05/11 22:27:45 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -28,7 +28,6 @@
 #include "s_log.h"
 #include "client.h"
 #include "md5.h"
-#include "setup.h"
 
 /*
 ** how unique ID generation works:

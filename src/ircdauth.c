@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircdauth.c,v 7.56 2003/05/10 04:05:06 michael Exp $
+ *  $Id: ircdauth.c,v 7.57 2003/05/11 22:27:44 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -42,7 +42,6 @@
 #include "send.h"
 #include "memory.h"
 #include "s_serv.h"
-#include "config.h"
 
 static PF CompleteIAuthConnection;
 static PF ParseIAuth;

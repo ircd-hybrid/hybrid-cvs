@@ -1,21 +1,22 @@
 #
 # Makefile.in for ircd/contrib
 #
-# $Id: Makefile.in,v 1.37 2003/05/11 21:20:45 db Exp $
+# $Id: Makefile.in,v 1.38 2003/05/11 22:27:32 joshk Exp $
 #
 CC		= @CC@
 RM		= @RM@
-SED             = @SED@
+SED		= @SED@
+MV		= @MV@
 LEX		= @LEX@
 LEXLIB		= @LEXLIB@
-CFLAGS		= @IRC_CFLAGS@ -DIRCD_PREFIX=\"@prefix@\"
+CFLAGS		= @IRC_CFLAGS@
+LN		= @LN@
 PICFLAGS	= @PICFLAGS@
 MKDEP		= @MKDEP@
 INSTALL		= @INSTALL@
 INSTALL_PROGRAM	= @INSTALL_PROGRAM@
 INSTALL_DATA	= @INSTALL_DATA@
 INSTALL_SUID    = @INSTALL_PROGRAM@ -o root -m 4755
-SHELL		= /bin/sh
 AUTOMODULEDIR	= @prefix@/modules
 
 SSL_LIBS	= @SSL_LIBS@
@@ -75,14 +76,7 @@ install: all install_help
 
 install_help:
 	@echo installing help files...
-	-@if test ! -d $(prefix)/help; then \
-		echo "mkdir $(prefix)/help"; \
-		mkdir $(prefix)/help; \
-		echo "mkdir $(prefix)/help/users"; \
-		mkdir $(prefix)/help/users; \
-		echo "mkdir $(prefix)/help/opers"; \
-		mkdir $(prefix)/help/opers; \
-	fi
+	mkdir -p $(ohelpdir) $(uhelpdir)
 	@for help in help/opers/*; do \
 	if [ -f $$help ]; then \
 		${INSTALL_DATA} $$help $(ohelpdir); \
@@ -94,8 +88,8 @@ install_help:
 	fi \
 	done
 	@for link in $(SYMLINKS); do \
-		rm -f $(uhelpdir)/$$link; \
-		ln -s $(ohelpdir)/$$link $(uhelpdir); \
+		${RM} -f $(uhelpdir)/$$link; \
+		${LN} -s $(ohelpdir)/$$link $(uhelpdir); \
 	done
 
 .SUFFIXES: .so
@@ -106,13 +100,13 @@ install_help:
 .PHONY: depend clean distclean
 depend:
 	@${MKDEP} ${CPPFLAGS} ${SRCS} > .depend
-	@sed s/\\\.o/\\\.so/ < .depend > .depend.tmp
-	@sed -e '/^# DO NOT DELETE THIS LINE/,$$d' <Makefile >Makefile.depend
+	@${SED} s/\\\.o/\\\.so/ < .depend > .depend.tmp
+	@${SED} -e '/^# DO NOT DELETE THIS LINE/,$$d' <Makefile >Makefile.depend
 	@echo '# DO NOT DELETE THIS LINE!!!' >>Makefile.depend
 	@echo '# make depend needs it.' >>Makefile.depend
 	@cat .depend.tmp >>Makefile.depend
-	@mv Makefile.depend Makefile
-	@rm -f .depend.tmp .depend
+	@${MV} Makefile.depend Makefile
+	@${RM} -f .depend.tmp .depend
 
 clean:
 	${RM} -f *.so *~ 

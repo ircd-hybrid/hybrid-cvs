@@ -20,15 +20,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_devpoll.c,v 7.17 2003/05/06 05:41:05 db Exp $
+ *  $Id: s_bsd_devpoll.c,v 7.18 2003/05/11 22:27:45 joshk Exp $
  */
-
-#include "config.h"
 
 #include "stdinc.h"
 #include <sys/devpoll.h>
 
-#include "config.h"
 #include "fdlist.h"
 #include "s_bsd.h"
 #include "class.h"
