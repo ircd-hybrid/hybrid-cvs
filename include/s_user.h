@@ -19,7 +19,7 @@
  *
  * "s_user.h". - Headers file.
  *
- * $Id: s_user.h,v 7.6 2000/11/29 18:51:58 db Exp $
+ * $Id: s_user.h,v 7.7 2000/11/29 21:00:55 db Exp $
  *
  */
 #ifndef INCLUDED_s_user_h
@@ -48,10 +48,5 @@ extern int   do_user(char* ,struct Client* ,struct Client*,
 
 extern int   user_modes_from_c_to_bitmask[];
 
-#define NOT_AUTHORIZED  (-1)
-#define SOCKET_ERROR    (-2)
-#define I_LINE_FULL     (-3)
-#define I_LINE_FULL2    (-4)
-#define BANNED_CLIENT   (-5)
 
 #endif
