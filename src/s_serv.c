@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.255 2002/05/24 23:34:51 androsyn Exp $
+ *  $Id: s_serv.c,v 7.256 2002/05/31 00:12:34 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -2187,10 +2187,10 @@ serv_connect_callback(int fd, int status, void *data)
     if (!aconf)
       {
         sendto_realops_flags(FLAGS_ALL, L_ADMIN,
-	             "Lost C-Line for %s", get_client_name(client_p, HIDE_IP));
+	             "Lost connect{} block for %s", get_client_name(client_p, HIDE_IP));
         sendto_realops_flags(FLAGS_ALL, L_OPER,
-		     "Lost C-Line for %s", get_client_name(client_p, MASK_IP));
-        exit_client(client_p, client_p, &me, "Lost C-line");
+		     "Lost connect{} block for %s", get_client_name(client_p, MASK_IP));
+        exit_client(client_p, client_p, &me, "Lost connect{} block");
         return;
       }
     /* Next, send the initial handshake */
