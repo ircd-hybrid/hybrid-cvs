@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.194 2001/07/03 21:15:00 leeh Exp $
+ * $Id: ircd_parser.y,v 1.195 2001/07/17 19:32:00 leeh Exp $
  */
 
 %{
@@ -1583,7 +1583,7 @@ connect_compressed:       COMPRESSED '=' TYES ';'
   {
 #ifndef HAVE_LIBZ
     sendto_realops_flags(FLAGS_ALL,
-      "Ignoring compressed = no; -- no zlib support");
+      "Ignoring compressed = yes; -- no zlib support");
 #else
     yy_aconf->flags |= CONF_FLAGS_COMPRESSED;
 #endif
@@ -1591,12 +1591,7 @@ connect_compressed:       COMPRESSED '=' TYES ';'
                         |
                         COMPRESSED '=' TNO ';'
   {
-#ifndef HAVE_LIBZ
-    sendto_realops_flags(FLAGS_ALL,
-      "Ignoring compressed = yes; -- no zlib support");
-#else
     yy_aconf->flags &= ~CONF_FLAGS_COMPRESSED;
-#endif
   };
 
 connect_auto:           AUTOCONN '=' TYES ';'
