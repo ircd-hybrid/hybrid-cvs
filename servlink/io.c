@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: io.c,v 1.1 2001/05/22 19:11:45 davidt Exp $
+ *   $Id: io.c,v 1.2 2001/05/23 13:23:26 davidt Exp $
  */
 
 #include "../include/setup.h"                                                   
@@ -38,7 +38,7 @@ static struct ctrl_command cmd = {0, 0, 0, 0, NULL};
 #define BUFLEN                  2048
 
 #ifdef HAVE_LIBZ
-#define ZIP_BUFLEN              BUFLEN * 6 /* allow for decompression */
+#define ZIP_BUFLEN              BUFLEN * 16 /* allow for decompression */
 #else
 #define ZIP_BUFLEN              BUFLEN
 #endif

@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: servlink.c,v 1.1 2001/05/22 19:11:46 davidt Exp $
+ *   $Id: servlink.c,v 1.2 2001/05/23 13:23:26 davidt Exp $
  */
 
 #include "../include/setup.h"                                                   
@@ -56,8 +56,8 @@ struct fd_table          fds[3] =
  */
 static void usage(void)
 {
-  fprintf(stderr, "ircd-hybrid server link v0.1\n");
-  fprintf(stderr, "2001-05-13\n");
+  fprintf(stderr, "ircd-hybrid server link v1.0-beta\n");
+  fprintf(stderr, "2001-05-23\n");
   fprintf(stderr, "\n");
   fprintf(stderr, "This program is called by the ircd-hybrid ircd.\n");
   fprintf(stderr, "It cannot be used on its own.\n");
