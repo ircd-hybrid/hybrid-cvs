@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.198 2001/11/29 01:28:04 jdc Exp $
+ * $Id: ircd.c,v 7.199 2001/12/02 15:00:55 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -345,7 +345,7 @@ io_loop(void)
        */
       if (dorehash)
 	{
-	  rehash(&me, &me, 1);
+	  rehash(1);
 	  dorehash = 0;
 	}
     }

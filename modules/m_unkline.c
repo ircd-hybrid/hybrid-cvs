@@ -21,7 +21,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: m_unkline.c,v 1.38 2001/11/13 11:45:48 leeh Exp $
+ *   $Id: m_unkline.c,v 1.39 2001/12/02 15:00:55 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -221,7 +221,7 @@ static void mo_unkline (struct Client *client_p,struct Client *source_p,
   if(!error_on_write)
     {
       (void)rename(temppath, filename);
-      rehash(client_p,source_p,0);
+      rehash(0);
     }
   else
     {
@@ -422,7 +422,7 @@ mo_undline (struct Client *client_p, struct Client *source_p,
     {
 
       (void)rename(temppath, filename);
-      rehash(client_p,source_p,0);
+      rehash(0);
     }
   else
     {

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules-dld.c,v 1.10 2001/11/13 12:55:48 leeh Exp $
+ * $Id: modules-dld.c,v 1.11 2001/12/02 15:00:56 leeh Exp $
  *
  * This is based on modules.c, but for OSes like HP-UX which use shl_open
  * instead of dlopen
@@ -533,6 +533,7 @@ mo_modrestart (struct Client *client_p, struct Client *source_p, int parc, char 
      unload_one_module(modlist[0]->name, 0);
 
   load_all_modules(0);
+  rehash(0);
 
   sendto_realops_flags (FLAGS_ALL, "Module Restart: %d modules unloaded, %d modules loaded",
 			modnum, num_mods);

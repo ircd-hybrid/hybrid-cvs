@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_rehash.c,v 1.33 2001/11/13 11:45:48 leeh Exp $
+ *   $Id: m_rehash.c,v 1.34 2001/12/02 15:00:55 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -139,7 +139,7 @@ static void mo_rehash(struct Client *client_p, struct Client *source_p,
 			   get_oper_name(source_p));
       ilog(L_NOTICE, "REHASH From %s[%s]", get_oper_name(source_p),
            source_p->localClient->sockhost);
-      rehash(client_p, source_p, 0);
+      rehash(0);
       return;
     }
 }

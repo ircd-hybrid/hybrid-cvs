@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.163 2001/11/29 20:23:57 leeh Exp $
+ * $Id: s_conf.h,v 7.164 2001/12/02 15:00:54 leeh Exp $
  */
 
 #include "setup.h"
@@ -383,7 +383,7 @@ extern  void    show_temp_klines(struct Client *, dlink_list *);
 extern  void    cleanup_tklines(void *notused);
 
 extern  const   char *get_conf_name(KlineType);
-extern  int     rehash (struct Client *, struct Client *, int);
+extern  int     rehash (int);
 
 extern int  conf_add_server(struct ConfItem *,int);
 extern void conf_add_class_to_conf(struct ConfItem *);

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.c,v 7.77 2001/11/13 12:55:48 leeh Exp $
+ * $Id: modules.c,v 7.78 2001/12/02 15:00:56 leeh Exp $
  */
 #include "config.h"
 
@@ -39,6 +39,7 @@
 #include "ircd.h"
 #include "client.h"
 #include "send.h"
+#include "s_conf.h"
 #include "handlers.h"
 #include "numeric.h"
 #include "parse.h"
@@ -553,7 +554,8 @@ mo_modrestart (struct Client *client_p, struct Client *source_p, int parc, char 
      unload_one_module(modlist[0]->name, 0);
 
   load_all_modules(0);
-
+  rehash(0);
+  
   sendto_realops_flags(FLAGS_ALL, L_ALL,
               "Module Restart: %d modules unloaded, %d modules loaded",
 			modnum, num_mods);
@@ -595,6 +597,7 @@ load_all_modules(int check)
 	mod_add_cmd(&kline_msgtab);
 	mod_add_cmd(&dline_msgtab);
 	mod_add_cmd(&knock_msgtab);
+	mod_add_cmd(&knockll_msgtab);
 	mod_add_cmd(&links_msgtab);
 	mod_add_cmd(&list_msgtab);
 	mod_add_cmd(&lljoin_msgtab);
