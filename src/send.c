@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.80 2000/12/16 22:48:36 db Exp $
+ *   $Id: send.c,v 7.81 2000/12/19 06:23:39 db Exp $
  */
 #include "tools.h"
 #include "send.h"
@@ -528,6 +528,45 @@ sendto_serv_butone(struct Client *one, const char *pattern, ...)
       send_message(cptr, (char *)sendbuf, len);
     }
 } /* sendto_serv_butone() */
+
+/*
+ * sendto_ll_serv_butone
+ *
+ * inputs	- pointer to client to not send to
+ *		- var arg pattern to send
+ * output	- NONE
+ * side effects	- Send a message to all connected servers
+ *                except the client 'one'. Also deal with
+ *		  client being unknown to leaf, as in lazylink...
+ */
+void
+sendto_ll_serv_butone(struct Client *one, struct Client *sptr,
+		      const char *pattern, ...)
+{
+  int len;
+  va_list args;
+  struct Client *cptr;
+  dlink_node *ptr;
+
+  va_start(args, pattern);
+  len = send_format(sendbuf,pattern,args);
+  va_end(args);
+  
+  for(ptr = serv_list.head; ptr; ptr = ptr->next)
+    {
+      cptr = ptr->data;
+
+      if (one && (cptr == one->from))
+        continue;
+      
+      if (IsCapable(cptr,CAP_LL) 
+	  &&
+	  (sptr->lazyLinkClientExists & cptr->localClient->serverMask) != 0)
+	send_message(cptr, (char *)sendbuf, len);
+      else
+	send_message(cptr, (char *)sendbuf, len);
+    }
+} /* sendto_ll_serv_butone() */
 
 /*
  * sendto_cap_serv_butone
