@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.104 2001/01/07 23:03:07 db Exp $
+ *  $Id: client.c,v 7.105 2001/01/08 00:57:20 db Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -1304,6 +1304,8 @@ const char* comment         /* Reason for the exit */
 #else
       remove_one_ip(sptr->localClient->ip.s_addr);
 #endif
+
+      delete_resolver_queries(sptr);
 
       /* This sptr could have status of one of STAT_UNKNOWN, STAT_CONNECTING
        * STAT_HANDSHAKE or STAT_UNKNOWN
