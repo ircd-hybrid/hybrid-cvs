@@ -1,3 +1,15 @@
+db          2003/01/21 01:13:37 EST	(20030121_0)
+
+  Modified files:
+    modules              m_post.c 
+  Log:
+  - put/get was missing in the init code, so put/get would never trigger exit
+  
+  Revision  Changes    Path
+  1.12      +5 -2      ircd-hybrid-7/modules/m_post.c
+
+
+
 db          2003/01/20 07:44:01 EST	(20030120_0)
 
   Modified files:
@@ -34294,4 +34306,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4186 2003/01/20 12:44:04 db Exp $
+$Id: ChangeLog,v 7.4187 2003/01/21 06:13:40 db Exp $
