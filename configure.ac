@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.6 2003/05/08 20:20:20 joshk Exp $
+dnl $Id: configure.ac,v 7.7 2003/05/08 20:42:48 metalrock Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -58,11 +58,14 @@ case `$CC -V 2>&1` in
 esac
 
 AC_MSG_CHECKING(if we are using Apple GCC)
-if test expr "`$CC -v 2>&1 | tail -1`" : Apple; then
+case `$CC -v 2>&1 | tail -1` in
+*Apple*)
 	AppleGCC=yes
-else
+;;
+*)
 	AppleGCC=no
-fi
+;;
+esac
 
 AC_MSG_RESULT($AppleGCC)
 
@@ -407,25 +410,18 @@ AC_HELP_STRING([--disable-zlib],[Disable ziplinks support]),
 		])
 ])
 
-AC_ARG_ENABLE(ipv6,
-AC_HELP_STRING([--disable-ipv6], [Explicitly disable IPv6 support]),
-[have_v6=no],
+AC_CACHE_CHECK([for IPv6 support], have_v6,
 [
-	AC_CACHE_CHECK([for IPv6 support], have_v6,
-	[
-	    AC_COMPILE_IFELSE(
-
-		[AC_LANG_PROGRAM(
-			[[#define IN_AUTOCONF
-			#include "include/stdinc.h"]],
-			[[struct sockaddr_in6 s; 
-			    s.sin6_family = 0;
-			    struct sockaddr_storage t;]]
-		)],
-
-		[have_v6="yes"],
-		[have_v6="no"])
-	])
+    AC_COMPILE_IFELSE(
+	[AC_LANG_PROGRAM(
+		[[#define IN_AUTOCONF
+		#include "include/stdinc.h"]],
+		[[struct sockaddr_in6 s; 
+		    s.sin6_family = 0;
+		    struct sockaddr_storage t;]]
+	)],
+	[have_v6="yes"],
+	[have_v6="no"])
 ])
 
 if test "$have_v6" = "yes"; then
