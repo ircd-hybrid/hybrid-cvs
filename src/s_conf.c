@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.447 2003/06/28 03:33:55 db Exp $
+ *  $Id: s_conf.c,v 7.448 2003/06/29 17:28:15 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1577,9 +1577,8 @@ find_matching_name_conf(ConfType type,
       {
 	if ((user == NULL && (host == NULL)))
 	  return (conf);
-	if (action != 0)
-	  if (match_item->action != action)
-	    continue;
+	if ((match_item->action & action) != action)
+          continue;
 	if (EmptyString(match_item->user) || EmptyString(match_item->host))
 	  return (conf);
 	if (match(match_item->user, user) && match(match_item->host, host))
