@@ -1,3 +1,17 @@
+leeh        2001/12/16 17:22:48 EST	(20011216_19)
+
+  Modified files:
+    include              channel_mode.h 
+    src                  channel_mode.c 
+  Log:
+  - removed MODE_KEY and MODE_LIMIT (ahahahha!)
+  
+  Revision  Changes    Path
+  7.3       +2 -4      ircd-hybrid-7/include/channel_mode.h
+  7.11      +2 -6      ircd-hybrid-7/src/channel_mode.c
+
+
+
 leeh        2001/12/16 13:09:43 EST	(20011216_18)
 
   Modified files:
@@ -924,7 +938,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3204 2001/12/16 18:09:48 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3205 2001/12/16 22:22:54 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -19278,4 +19292,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3204 2001/12/16 18:09:48 leeh Exp $
+$Id: ChangeLog,v 7.3205 2001/12/16 22:22:54 leeh Exp $
