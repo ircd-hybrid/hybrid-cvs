@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.172 2001/12/02 12:11:41 leeh Exp $
+ *  $Id: s_user.c,v 7.173 2001/12/19 17:45:52 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -1307,7 +1307,6 @@ int oper_up( struct Client *source_p,
         }
     }
 	
-  SetIPHidden(source_p);
   Count.oper++;
 
   SetExemptKline(source_p);

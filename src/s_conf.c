@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.285 2001/12/15 22:39:10 leeh Exp $
+ *  $Id: s_conf.c,v 7.286 2001/12/19 17:45:52 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -619,7 +619,6 @@ verify_access(struct Client* client_p, const char* username)
 		}
 	      strncpy_irc(client_p->host, aconf->name, HOSTLEN);
 	      SetIPSpoof(client_p);
-	      SetIPHidden(client_p);
 	    }
 	  return(attach_iline(client_p, aconf));
 	}

@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_knock.c,v 1.43 2001/12/15 20:35:19 leeh Exp $
+ *   $Id: m_knock.c,v 1.44 2001/12/19 17:45:49 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -202,7 +202,7 @@ static void parse_knock_local(struct Client *client_p,
     {
       sendto_one(uplink, ":%s KNOCKLL %s %s %s",
                  source_p->name, parv[1],
-		 IsIPHidden(source_p) ? "255.255.255.255" :
+		 IsIPSpoof(source_p) ? "255.255.255.255" :
 		 source_p->localClient->sockhost,
 		 (parc > 2) ? parv[2] : "");
     }

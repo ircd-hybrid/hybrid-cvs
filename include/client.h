@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.134 2001/11/29 20:23:57 leeh Exp $
+ * $Id: client.h,v 7.135 2001/12/19 17:45:46 leeh Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -450,8 +450,6 @@ struct LocalUser
 
 #define FLAGS2_IDLE_LINED       0x40000
 #define FLAGS2_IP_SPOOFING      0x80000        /* client IP is spoofed */
-#define FLAGS2_IP_HIDDEN        0x100000        /* client IP should be hidden
-                                                   from non opers */
 #define FLAGS2_FLOODDONE        0x200000      /* Flood grace period has
                                                * been ended. */
 
@@ -542,8 +540,6 @@ struct LocalUser
 #define SetExemptGline(x)       ((x)->flags2 |= FLAGS2_EXEMPTGLINE)
 #define SetIPSpoof(x)           ((x)->flags2 |= FLAGS2_IP_SPOOFING)
 #define IsIPSpoof(x)            ((x)->flags2 & FLAGS2_IP_SPOOFING)
-#define SetIPHidden(x)          ((x)->flags2 |= FLAGS2_IP_HIDDEN)
-#define IsIPHidden(x)           ((x)->flags2 & FLAGS2_IP_HIDDEN)
 
 #define SetIdlelined(x)         ((x)->flags2 |= FLAGS2_IDLE_LINED)
 #define IsIdlelined(x)          ((x)->flags2 & FLAGS2_IDLE_LINED)

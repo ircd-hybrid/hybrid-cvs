@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 1.98 2001/12/16 12:03:59 leeh Exp $
+ *  $Id: m_stats.c,v 1.99 2001/12/19 17:45:49 leeh Exp $
  */
 #include "tools.h"	 /* dlink_node/dlink_list */
 #include "handlers.h"    /* m_pass prototype */
@@ -874,7 +874,7 @@ static void stats_L_list(struct Client *source_p,char *name, int doall, int wild
       else
 	{
           /* If its a hidden ip, an admin, or a server, mask the real IP */
-	  if(IsIPHidden(target_p) || IsServer(target_p) || IsAdmin(target_p)
+	  if(IsIPSpoof(target_p) || IsServer(target_p) || IsAdmin(target_p)
 	     || IsHandshake(target_p) || IsConnecting(target_p))
 	    sendto_one(source_p, Lformat, me.name,
 		       RPL_STATSLINKINFO, source_p->name,
