@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.h,v 7.11 2003/03/12 04:46:38 db Exp $
+ *  $Id: listener.h,v 7.12 2003/04/09 11:19:32 stu Exp $
  */
 
 #ifndef INCLUDED_listener_h
@@ -42,7 +42,7 @@ struct Listener {
 /*
   struct in_addr    addr;
 */
-  struct irc_inaddr addr;              /* virtual address or INADDR_ANY */
+  struct irc_ssaddr addr;              /* virtual address or INADDR_ANY */
   struct DNSQuery   *dns_query;
   char             vhost[HOSTLEN + 1]; /* virtual name of listener */
 };

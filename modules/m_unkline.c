@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_unkline.c,v 1.54 2003/04/05 01:08:25 michael Exp $
+ *  $Id: m_unkline.c,v 1.55 2003/04/09 11:19:34 stu Exp $
  */
 
 #include "stdinc.h"
@@ -73,7 +73,7 @@ _moddeinit(void)
   mod_del_cmd(&msgtabs[1]);
   mod_del_cmd(&msgtabs[2]);
 }
-const char *_version = "$Revision: 1.54 $";
+const char *_version = "$Revision: 1.55 $";
 #endif
 
 static int flush_write(struct Client *, FBFILE *in, FBFILE *out,
@@ -286,7 +286,7 @@ remove_tkline_match(char *host, char *user)
 {
   struct ConfItem *tk_c;
   dlink_node *tk_n;
-  struct irc_inaddr addr, caddr;
+  struct irc_ssaddr addr, caddr;
   int nm_t, cnm_t, bits, cbits;
   nm_t = parse_netmask(host, &addr, &bits);
 
@@ -298,9 +298,7 @@ remove_tkline_match(char *host, char *user)
 	continue;
       if ((nm_t==HM_HOST && !irccmp(tk_c->host, host)) ||
 	  (nm_t==HM_IPV4 && bits==cbits && match_ipv4(&addr, &caddr, bits))
-#ifdef IPV6
 	  || (nm_t==HM_IPV6 && bits==cbits && match_ipv6(&addr, &caddr, bits))
-#endif
 	  )
 	{
 	  dlinkDelete(tk_n, &temporary_klines);

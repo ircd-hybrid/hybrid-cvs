@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_trace.c,v 1.55 2003/04/02 11:19:41 michael Exp $
+ *  $Id: m_trace.c,v 1.56 2003/04/09 11:19:34 stu Exp $
  */
 
 #include "stdinc.h"
@@ -66,7 +66,7 @@ _moddeinit(void)
   hook_del_event("doing_trace");
   mod_del_cmd(&trace_msgtab);
 }
-const char *_version = "$Revision: 1.55 $";
+const char *_version = "$Revision: 1.56 $";
 #endif
 static int report_this_status(struct Client *source_p, struct Client *target_p,int dow,
                               int link_u_p, int link_u_s);
@@ -173,7 +173,10 @@ mo_trace(struct Client *client_p, struct Client *source_p,
       if(target_p && IsPerson(target_p)) 
       {
         name = get_client_name(target_p, HIDE_IP);
-        inetntop(target_p->localClient->aftype, &IN_ADDR(target_p->localClient->ip), ipaddr, HOSTIPLEN);
+        /* should we not use sockhost here? - stu */
+        getnameinfo((struct sockaddr*)&target_p->localClient->ip,
+            target_p->localClient->ip.ss_len, ipaddr, HOSTIPLEN, NULL, 0,
+            NI_NUMERICHOST);
 
         class_name = get_client_class(target_p);
 
@@ -337,7 +340,10 @@ report_this_status(struct Client *source_p, struct Client *target_p,
   char  ip[HOSTIPLEN];
   int cnt=0;
 
-  inetntop(target_p->localClient->aftype, &IN_ADDR(target_p->localClient->ip), ip, HOSTIPLEN);
+  /* Should this be sockhost? - stu */
+  getnameinfo((struct sockaddr*)&target_p->localClient->ip, 
+        target_p->localClient->ip.ss_len, ip, HOSTIPLEN, NULL, 0, 
+        NI_NUMERICHOST);
   name = get_client_name(target_p, HIDE_IP);
   class_name = get_client_class(target_p);
 

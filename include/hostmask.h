@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.h,v 1.24 2003/03/01 01:15:37 db Exp $
+ *  $Id: hostmask.h,v 1.25 2003/04/09 11:19:32 stu Exp $
  */
 
 #ifndef INCLUDE_hostmask_h
@@ -27,10 +27,8 @@
 enum
 {
  HM_HOST,
- HM_IPV4
-#ifdef IPV6
- ,HM_IPV6
-#endif
+ HM_IPV4,
+ HM_IPV6
 };
 
 struct HostMaskEntry
@@ -42,25 +40,23 @@ struct HostMaskEntry
   struct HostMaskEntry *next, *nexthash;
 };
 
-int parse_netmask(const char*, struct irc_inaddr*, int*);
-struct ConfItem* find_conf_by_address(const char*, struct irc_inaddr*,
+int parse_netmask(const char*, struct irc_ssaddr*, int*);
+struct ConfItem* find_conf_by_address(const char*, struct irc_ssaddr*,
                                       int, int, const char*);
 void add_conf_by_address(const char*, int, const char*, struct ConfItem*);
 void delete_one_address_conf(const char*, struct ConfItem*);
 void clear_out_address_conf(void);
 void init_host_hash(void);
 struct ConfItem* find_address_conf(const char*, const char*,
-                                   struct irc_inaddr*, int);
+                                   struct irc_ssaddr*, int);
 struct ConfItem* find_kline_conf(const char*, const char*,
-				 struct irc_inaddr*, int);
-struct ConfItem* find_dline_conf(struct irc_inaddr *, int);
+                                 struct irc_ssaddr*, int);
+struct ConfItem* find_dline_conf(struct irc_ssaddr *, int);
+int match_ipv6(struct irc_ssaddr*, struct irc_ssaddr*, int);
+int match_ipv4(struct irc_ssaddr*, struct irc_ssaddr*, int);
 
 void report_Klines(struct Client*, int temp);
 void report_auth(struct Client*);
-#ifdef IPV6
-int match_ipv6(struct irc_inaddr*, struct irc_inaddr*, int);
-#endif
-int match_ipv4(struct irc_inaddr*, struct irc_inaddr*, int);
 
 /* Hashtable stuff... */
 #define ATABLE_SIZE 0x1000
@@ -77,7 +73,7 @@ struct AddressRec
     struct
     {
       /* Pointer into ConfItem... -A1kmm */
-      struct irc_inaddr addr;
+      struct irc_ssaddr addr;
       int bits;
     } ipa;
 

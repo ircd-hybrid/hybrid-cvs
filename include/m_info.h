@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.h,v 7.41 2003/03/25 01:17:49 db Exp $
+ *  $Id: m_info.h,v 7.42 2003/04/09 11:19:32 stu Exp $
  */
 
 #ifndef INCLUDED_m_info_h
@@ -99,12 +99,12 @@ Info MyInformation[] = {
   { "HYBRID_SOMAXCONN", "", HYBRID_SOMAXCONN, "Maximum Queue Length of Pending Connections" },
 #endif /* SOMAXCONN */
 
-#ifdef IPV6
+/*#ifdef IPV6
   { "IPV6", "ON", 0, "IPv6 Support" },
 #else
   { "IPV6", "OFF", 0, "IPv6 Support" },
 #endif
-
+*/
   { "MAX_CLIENTS", "", MAX_CLIENTS, "Default maximum Clients" },
 
   { "JOIN_LEAVE_COUNT_EXPIRE_TIME", "", JOIN_LEAVE_COUNT_EXPIRE_TIME, "Anti SpamBot Parameter" },

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.h,v 7.37 2003/01/19 13:19:50 db Exp $
+ *  $Id: s_bsd.h,v 7.38 2003/04/09 11:19:32 stu Exp $
  */
 
 #ifndef INCLUDED_s_bsd_h
@@ -70,7 +70,7 @@ extern void  comm_connect_tcp(int, const char *, u_short,
 extern const char * comm_errstr(int status);
 extern int   comm_open(int family, int sock_type, int proto,
                  const char *note);
-extern int   comm_accept(int fd, struct irc_sockaddr *pn);
+extern int   comm_accept(int fd, struct irc_ssaddr *pn);
 
 /* These must be defined in the network IO loop code of your choice */
 extern void  comm_setselect(int fd, fdlist_t list, unsigned int type,
@@ -79,6 +79,7 @@ extern void  init_netio(void);
 extern int   read_message (time_t, unsigned char);
 extern int   comm_select(unsigned long);
 extern int   disable_sock_options(int);
+extern void  check_can_use_v6();
 
 #ifdef USE_SIGIO
 void do_sigio(int);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.355 2003/04/06 00:07:18 michael Exp $
+ *  $Id: s_conf.c,v 7.356 2003/04/09 11:19:37 stu Exp $
  */
 
 #include "stdinc.h"
@@ -98,12 +98,8 @@ static  int     attach_iline(struct Client *, struct ConfItem *);
 
 struct ip_entry
 {
-#ifndef IPV6
-  u_int32_t ip;
-#else
-  struct irc_inaddr ip;
-#endif
-  int        count;
+  struct irc_ssaddr ip;
+  int     count;
   time_t last_attempt;
   struct ip_entry *next;
 };
@@ -111,9 +107,9 @@ struct ip_entry
 static struct ip_entry *ip_hash_table[IP_HASH_SIZE];
 static BlockHeap *ip_entry_heap = NULL;
 static int ip_entries_count = 0;
-static int hash_ip(struct irc_inaddr *);
+static int hash_ip(struct irc_ssaddr *);
 static void garbage_collect_ip_entries(void);
-static struct ip_entry *find_or_add_ip(struct irc_inaddr*);
+static struct ip_entry *find_or_add_ip(struct irc_ssaddr*);
 
 /* general conf items link list root, other than k lines etc. */
 dlink_list ConfigItemList = { NULL, NULL, 0 };
@@ -142,12 +138,14 @@ conf_dns_callback(void* vptr, adns_answer *reply)
   if (reply && reply->status == adns_s_ok)
   {
 #ifdef IPV6
-    copy_s_addr(IN_ADDR(aconf->ipnum),
-                reply->rrs.addr->addr.inet6.sin6_addr.s6_addr);
-#else
-    copy_s_addr(IN_ADDR(aconf->ipnum),
-                reply->rrs.addr->addr.inet.sin_addr.s_addr);
+      if(aconf->aftype == AF_INET6)
+        memcpy(&aconf->ipnum, &reply->rrs.addr->addr.inet6, 
+            sizeof(struct irc_ssaddr));
+    else
 #endif
+      if(aconf->aftype == AF_INET)
+        memcpy(&aconf->ipnum, &reply->rrs.addr->addr.inet,
+            sizeof(struct irc_ssaddr));
     MyFree(reply);
   }
 
@@ -433,7 +431,9 @@ check_client(struct Client *client_p, struct Client *source_p, char *username)
       ServerStats->is_ref++;
       /* jdc - lists server name & port connections are on */
       /*       a purely cosmetical change */
-      inetntop(source_p->localClient->aftype, &IN_ADDR(source_p->localClient->ip), ipaddr, HOSTIPLEN);
+      irc_getnameinfo((struct sockaddr*)&source_p->localClient->ip,
+            source_p->localClient->ip.ss_len, ipaddr, HOSTIPLEN, NULL, 0,
+            NI_NUMERICHOST);
       sendto_realops_flags(UMODE_UNAUTH, L_ALL,
 			   "Unauthorized client connection from %s [%s] on [%s/%u].",
 			   get_client_name(source_p, SHOW_IP),
@@ -618,14 +618,14 @@ init_ip_hash_table(void)
  * count set to 0.
  */
 static struct ip_entry *
-find_or_add_ip(struct irc_inaddr *ip_in)
+find_or_add_ip(struct irc_ssaddr *ip_in)
 {
   struct ip_entry *ptr, *newptr;
   int hash_index=hash_ip(ip_in);
 
   for(ptr = ip_hash_table[hash_index]; ptr; ptr = ptr->next)
   {
-    if(memcmp(&ptr->ip, ip_in, sizeof(struct irc_inaddr)) == 0)
+    if(memcmp(&ptr->ip, ip_in, sizeof(struct irc_ssaddr)) == 0)
     {
       /* Found entry already in hash, return it. */
       return(ptr);
@@ -637,7 +637,7 @@ find_or_add_ip(struct irc_inaddr *ip_in)
 
   newptr = BlockHeapAlloc(ip_entry_heap);
   ip_entries_count++;
-  memcpy(&newptr->ip, ip_in, sizeof(struct irc_inaddr));
+  memcpy(&newptr->ip, ip_in, sizeof(struct irc_ssaddr));
   newptr->count = 0;
   newptr->last_attempt = 0;
 
@@ -661,7 +661,7 @@ find_or_add_ip(struct irc_inaddr *ip_in)
  *		   the struct ip_entry is returned to the ip_entry_heap
  */
 void 
-remove_one_ip(struct irc_inaddr *ip_in)
+remove_one_ip(struct irc_ssaddr *ip_in)
 {
   struct ip_entry *ptr;
   struct ip_entry *last_ptr = NULL;
@@ -669,14 +669,8 @@ remove_one_ip(struct irc_inaddr *ip_in)
 
   for(ptr = ip_hash_table[hash_index]; ptr; ptr = ptr->next)
   {
-#ifndef IPV6
-    if (ptr->ip != PIN_ADDR(ip_in))
+    if (memcmp(&ptr->ip, ip_in, sizeof(struct irc_ssaddr)))
       continue;
-#else
-    if (memcmp(&IN_ADDR(ptr->ip), &PIN_ADDR(ip_in),
-	       sizeof(struct irc_inaddr)))
-      continue;
-#endif
     if (ptr->count > 0)
       ptr->count--;
     if (ptr->count == 0 &&
@@ -703,38 +697,34 @@ remove_one_ip(struct irc_inaddr *ip_in)
  * side effects - hopefully, none
  */
 
-#ifndef IPV6
 static int  
-hash_ip(struct irc_inaddr *addr)
+hash_ip(struct irc_ssaddr *addr)
 {
-  int hash;
-  u_int32_t ip;
-
-  ip = ntohl(PIN_ADDR(addr));
-  hash = ((ip >> 12) + ip) & (IP_HASH_SIZE-1);
-  return(hash);
-}
-#else /* IPV6 */
-static int
-hash_ip(struct irc_inaddr *addr)
-{
-  int hash;
-  u_int32_t *ip = (u_int32_t *)&PIN_ADDR(addr);
-
-  if(IN6_IS_ADDR_V4MAPPED((struct in6_addr *)ip))
+  if(addr->ss.ss_family == AF_INET)
   {
-     hash = ((ip[3] >> 12) + ip[3]) & (IP_HASH_SIZE-1);
-     return(hash);
-  } 
-    
-  hash = ip[0] ^ ip[3];
-  hash ^= hash >> 16;  
-  hash ^= hash >> 8;   
-  hash = hash & (IP_HASH_SIZE - 1);
-  return(hash);
-}
-#endif /* IPV6 */
+    struct sockaddr_in *v4 = (struct sockaddr_in *)addr;
+    int hash;
+    u_int32_t ip;
 
+    ip = ntohl(v4->sin_addr.s_addr);
+    hash = ((ip >> 12) + ip) & (IP_HASH_SIZE-1);
+    return(hash);
+  }
+#ifdef IPV6
+  else
+  {
+    int hash;
+    struct sockaddr_in6 *v6 = (struct sockaddr_in6 *)addr;
+    u_int32_t *ip = (u_int32_t *)&v6->sin6_addr.s6_addr;
+
+    hash = ip[0] ^ ip[3];
+    hash ^= hash >> 16;  
+    hash ^= hash >> 8;   
+    hash = hash & (IP_HASH_SIZE - 1);
+    return(hash);
+  }
+#endif
+}
 
 /*
  * count_ip_hash
@@ -1260,12 +1250,17 @@ find_u_conf(const char *server, const char *user, const char *host)
 int
 rehash(int sig)
 {
+  int fd;
   if (sig != 0)
     sendto_realops_flags(UMODE_ALL, L_ALL,
 			 "Got signal SIGHUP, reloading ircd conf. file");
 
   restart_resolver();
   /* don't close listeners until we know we can go ahead with the rehash */
+
+  /* Check to see if we magically got(or lost) IPv6 support */
+  check_can_use_v6();
+  
   read_conf_files(NO);
 
   if (ServerInfo.description != NULL)
@@ -1274,6 +1269,7 @@ rehash(int sig)
   flush_deleted_I_P();
   check_klines();
   reopen_log(logFileName);
+
   return(0);
 }
 
@@ -1408,9 +1404,7 @@ set_default_conf(void)
   ConfigFileEntry.default_floodcount = 8;
   ConfigFileEntry.client_flood = CLIENT_FLOOD_DEFAULT;
 
-#ifdef IPV6  
   ConfigFileEntry.fallback_to_ip6_int = 1;
-#endif
 
 #ifdef EFNET
   ConfigFileEntry.use_help = 0;
@@ -1545,6 +1539,9 @@ split_user_host(struct ConfItem *aconf)
 static void 
 lookup_confhost(struct ConfItem* aconf)
 {
+  struct addrinfo hints, *res;
+  int ret;
+  
   if (EmptyString(aconf->host) || EmptyString(aconf->name))
     {
       ilog(L_ERROR, "Host/server name error: (%s) (%s)",
@@ -1558,10 +1555,25 @@ lookup_confhost(struct ConfItem* aconf)
   ** Do name lookup now on hostnames given and store the
   ** ip numbers in conf structure.
   */
-  if (inetpton(DEF_FAM, aconf->host, &IN_ADDR(aconf->ipnum)) <= 0)
-    {
-      conf_dns_lookup(aconf);
-    }
+
+  memset(&hints, 0, sizeof(hints));
+  hints.ai_family = AF_UNSPEC;
+  hints.ai_socktype = SOCK_STREAM;
+  /* Get us ready for a bind() and don't bother doing dns lookup */
+  hints.ai_flags = AI_PASSIVE | AI_NUMERICHOST;
+
+  if((ret = irc_getaddrinfo(aconf->host, NULL, &hints, &res)))
+  {
+    conf_dns_lookup(aconf);
+    return;
+  }
+
+  assert(res != NULL);
+  
+  memcpy(&aconf->ipnum, res->ai_addr, res->ai_addrlen);
+  aconf->ipnum.ss_len = res->ai_addrlen;
+  aconf->ipnum.ss.ss_family = res->ai_family;
+  freeaddrinfo(res);
 }
 
 /*
@@ -1573,7 +1585,7 @@ lookup_confhost(struct ConfItem* aconf)
  * side effects	- none
  */
 int 
-conf_connect_allowed(struct irc_inaddr *addr, int aftype)
+conf_connect_allowed(struct irc_ssaddr *addr, int aftype)
 {
   struct ip_entry *ip_found;
   struct ConfItem *aconf = find_dline_conf(addr,aftype);

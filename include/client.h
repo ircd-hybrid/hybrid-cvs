@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.176 2003/04/06 18:24:43 db Exp $
+ *  $Id: client.h,v 7.177 2003/04/09 11:19:31 stu Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -36,11 +36,7 @@
 #include "linebuf.h"
 #include "channel.h"
 #include "res.h"
-#ifdef IPV6
 #define HOSTIPLEN	53 /* sizeof("ffff:ffff:ffff:ffff:ffff:ffff:255.255.255.255.ipv6") */
-#else
-#define HOSTIPLEN       16      /* Length of dotted quad form of IP        */
-#endif
 #define PASSWDLEN       20
 #define CIPHERKEYLEN    64      /* 512bit */
 
@@ -246,7 +242,7 @@ struct LocalUser
   struct Listener*  listener;   /* listener accepted from */
   dlink_list        confs;      /* Configuration record associated */
 
-  struct irc_inaddr ip;
+  struct irc_ssaddr ip;
   unsigned short    port;       /* and the remote port# too :-) */
   int 		    aftype;	/* Makes life easier for DNS res in IPV6 */
   struct DNSQuery   *dns_query;  /* result returned from resolver query */

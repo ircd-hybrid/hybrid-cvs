@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.113 2003/04/05 02:06:19 db Exp $
+ *  $Id: s_auth.c,v 7.114 2003/04/09 11:19:37 stu Exp $
  */
 
 /*
@@ -206,8 +206,8 @@ auth_dns_callback(void* vptr, adns_answer* reply)
   else
     {
 #ifdef IPV6
-      if(auth->client->localClient->aftype == AF_INET6 
-	 && ConfigFileEntry.fallback_to_ip6_int == 1 && auth->ip6_int == 0)
+      if(auth->client->localClient->aftype == AF_INET6 && 
+              ConfigFileEntry.fallback_to_ip6_int == 1 && auth->ip6_int == 0)
       {
         struct Client *client = auth->client;
         auth->ip6_int = 1;
@@ -284,11 +284,13 @@ static int
 start_auth_query(struct AuthRequest* auth)
 {
 /*  struct sockaddr_in sock; */
-  struct irc_sockaddr localaddr;
-  socklen_t locallen = sizeof(struct irc_sockaddr);
+  struct irc_ssaddr localaddr;
+  socklen_t locallen = sizeof(struct irc_ssaddr);
   int                fd;
 
-  if ((fd = comm_open(DEF_FAM, SOCK_STREAM, 0, "ident")) == -1)
+  /* open a socket of the same type as the client socket */
+  if ((fd = comm_open(auth->client->localClient->ip.ss.ss_family, SOCK_STREAM,
+        0, "ident")) == -1)
     {
       report_error(L_ALL, "creating auth stream socket %s:%s", 
 		   get_client_name(auth->client, SHOW_IP), errno);
@@ -321,16 +323,18 @@ start_auth_query(struct AuthRequest* auth)
    * and machines with multiple IP addresses are common now
    */
   memset(&localaddr, 0, locallen);
-  getsockname(auth->client->localClient->fd, (struct sockaddr*)&SOCKADDR(localaddr), &locallen);
-  S_PORT(localaddr) = htons(0);
+  getsockname(auth->client->localClient->fd, (struct sockaddr*)&localaddr,
+        &locallen);
+  localaddr.ss_port = htons(0);
+  localaddr.ss_len = locallen;
 
   auth->fd = fd;
   SetAuthConnect(auth);
   
   comm_connect_tcp(fd, auth->client->localClient->sockhost, 113, 
-                   (struct sockaddr *)&SOCKADDR(localaddr), locallen, 
-		   auth_connect_callback, auth, DEF_FAM, 
-		   GlobalSetOptions.ident_timeout);
+        (struct sockaddr *)&localaddr, locallen, auth_connect_callback, auth,
+        auth->client->localClient->ip.ss.ss_family, 
+        GlobalSetOptions.ident_timeout);
   return 1; /* We suceed here for now */
 }
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fdlist.h,v 7.26 2003/04/05 01:08:23 michael Exp $
+ *  $Id: fdlist.h,v 7.27 2003/04/09 11:19:32 stu Exp $
  */
 
 #ifndef INCLUDED_fdlist_h
@@ -109,8 +109,8 @@ struct _fde {
     } flags;
     struct {
         /* We don't need the host here ? */
-	struct irc_sockaddr S;
-	struct irc_sockaddr hostaddr;
+	struct irc_ssaddr S;
+	struct irc_ssaddr hostaddr;
         CNCB *callback;
         void *data;
         /* We'd also add the retry count here when we get to that -- adrian */

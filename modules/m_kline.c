@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.117 2003/04/05 01:08:25 michael Exp $
+ *  $Id: m_kline.c,v 1.118 2003/04/09 11:19:34 stu Exp $
  */
 
 #include "stdinc.h"
@@ -75,7 +75,7 @@ _moddeinit(void)
   mod_del_cmd(&kline_msgtab);
   mod_del_cmd(&dline_msgtab);
 }
-const char *_version = "$Revision: 1.117 $";
+const char *_version = "$Revision: 1.118 $";
 #endif
 
 /* Local function prototypes */
@@ -553,11 +553,9 @@ mo_dline(struct Client *client_p, struct Client *source_p,
 	 int parc, char *parv[])
 {
   char *dlhost, *reason, *oper_reason;
-#ifndef IPV6
   char *p;
   struct Client *target_p;
-#endif
-  struct irc_inaddr daddr;
+  struct irc_ssaddr daddr;
   char cidr_form_host[HOSTLEN + 1];
   struct ConfItem *aconf;
   int bits, t;
@@ -578,7 +576,7 @@ mo_dline(struct Client *client_p, struct Client *source_p,
 
   if ((t=parse_netmask(dlhost, NULL, &bits)) == HM_HOST)
   {
-#ifdef IPV6
+#if 1 /* was IPV6 */
    sendto_one(source_p, ":%s NOTICE %s :Sorry, please supply an address.",
               me.name, parv[0]);
    return;
@@ -690,7 +688,7 @@ mo_dline(struct Client *client_p, struct Client *source_p,
     t = AF_INET6;
   else
 #endif
-  t = AF_INET;
+    t = AF_INET;
   if (ConfigFileEntry.non_redundant_klines)
     {
       char *creason;
@@ -948,7 +946,7 @@ static int
 already_placed_kline(struct Client *source_p, char *luser, char *lhost)
 {
  char *reason;
- struct irc_inaddr iphost, *piphost;
+ struct irc_ssaddr iphost, *piphost;
  struct ConfItem *aconf;
  int t;
  if (ConfigFileEntry.non_redundant_klines) 
@@ -957,10 +955,10 @@ already_placed_kline(struct Client *source_p, char *luser, char *lhost)
   {
 #ifdef IPV6
    if (t == HM_IPV6)
-    t = AF_INET6;
+     t = AF_INET6;
    else
 #endif
-   t = AF_INET;
+     t = AF_INET;
    piphost = &iphost;
   }
   else

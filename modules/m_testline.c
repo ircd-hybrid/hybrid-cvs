@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_testline.c,v 1.26 2002/09/11 22:01:05 db Exp $
+ *  $Id: m_testline.c,v 1.27 2003/04/09 11:19:34 stu Exp $
  */
 
 #include "stdinc.h"
@@ -59,7 +59,7 @@ _moddeinit(void)
   mod_del_cmd(&testline_msgtab);
 }
  
-const char *_version = "$Revision: 1.26 $";
+const char *_version = "$Revision: 1.27 $";
 #endif
 /*
  * mo_testline
@@ -80,7 +80,7 @@ static void mo_testline(struct Client *client_p, struct Client *source_p,
                        int parc, char *parv[])
 {
   struct ConfItem *aconf;
-  struct irc_inaddr ip;
+  struct irc_ssaddr ip;
   int host_mask;
   char *host, *pass, *user, *name, *classname, *given_host, *given_name, *p;
   int port, t;
@@ -92,13 +92,13 @@ static void mo_testline(struct Client *client_p, struct Client *source_p,
       {
        if ((t=parse_netmask(given_name, &ip, &host_mask))!= HM_HOST)
        {
-        aconf = find_dline_conf(&ip,
-#ifdef IPV6
-                  (t==HM_IPV6) ? AF_INET6 : AF_INET
+        aconf = find_dline_conf(&ip, 
+#ifdef IPV6 
+                (t==HM_IPV6) ? AF_INET6 : AF_INET
 #else
-                  AF_INET
+                AF_INET
 #endif
-         );
+                );
         if (aconf)
         {
          get_printable_conf(aconf, &name, &host, &pass, &user, &port,&classname);
@@ -126,13 +126,13 @@ static void mo_testline(struct Client *client_p, struct Client *source_p,
       p++;
       given_host = p;
       if ((t=parse_netmask(given_host, &ip, &host_mask)) != HM_HOST)
-       aconf = find_address_conf(given_host, given_name, &ip,
+       aconf = find_address_conf(given_host, given_name, &ip, 
 #ifdef IPV6
-          (t==HM_IPV6)?AF_INET6 : AF_INET
+               (t==HM_IPV6)?AF_INET6 : AF_INET
 #else
-          AF_INET
+               AF_INET
 #endif
-         );
+               );
       else
        aconf = find_address_conf(given_host, given_name, NULL, 0);
                  

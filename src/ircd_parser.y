@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.271 2003/03/04 17:09:22 db Exp $
+ *  $Id: ircd_parser.y,v 1.272 2003/04/09 11:19:37 stu Exp $
  */
 
 %{
@@ -532,27 +532,55 @@ serverinfo_vhost: VHOST '=' QSTRING ';'
 {
   if(ypass == 2)
   {
-    if(inetpton(DEF_FAM, yylval.string, &IN_ADDR(ServerInfo.ip)) <= 0)
-    {
-      ilog(L_ERROR, "Invalid netmask for server vhost(%s)",
-           yylval.string);
-    }
+    struct addrinfo hints, *res;
 
-    ServerInfo.specific_ipv4_vhost = 1;
+    memset(&hints, 0, sizeof(hints));
+
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_flags = AI_PASSIVE | AI_NUMERICHOST;
+
+    if(ypass == 2)
+    {
+      if(irc_getaddrinfo(yylval.string, NULL, &hints, &res))
+      {
+        ilog(L_ERROR, "Invalid netmask for server vhost(%s)", yylval.string);
+      }
+      ServerInfo.specific_ipv4_vhost = 1;
+
+      assert(res != NULL);
+      memcpy(&ServerInfo.ip, res->ai_addr, res->ai_addrlen);
+      ServerInfo.ip.ss.ss_family = res->ai_family;
+      ServerInfo.ip.ss_len = res->ai_addrlen;
+      freeaddrinfo(res);
+
+      ServerInfo.specific_ipv4_vhost = 1;
+    }
   }
 };
 
-serverinfo_vhost6: VHOST6 '=' QSTRING ';'
+serverinfo_vhost6:    VHOST6 '=' QSTRING ';'
 {
 #ifdef IPV6
+  struct addrinfo hints, *res;
+  memset(&hints, 0, sizeof(hints));
+
+  hints.ai_family = AF_UNSPEC;
+  hints.ai_socktype = SOCK_STREAM;
+  hints.ai_flags = AI_PASSIVE | AI_NUMERICHOST;
+
   if(ypass == 2)
   {
-    if(inetpton(DEF_FAM, yylval.string, &IN_ADDR(ServerInfo.ip6)) <= 0)
+    if(irc_getaddrinfo(yylval.string, NULL, &hints, &res))
     {
-      ilog(L_ERROR, "Invalid netmask for server vhost(%s)",
-           yylval.string);
+      ilog(L_ERROR, "Invalid netmask for server vhost(%s)", yylval.string);
     }
 
+    assert(res != NULL);
+    memcpy(&ServerInfo.ip6, res->ai_addr, res->ai_addrlen);
+    ServerInfo.ip6.ss.ss_family = res->ai_family;
+    ServerInfo.ip6.ss_len = res->ai_addrlen;
+    freeaddrinfo(res);
     ServerInfo.specific_ipv6_vhost = 1;
   }
 #endif
@@ -1691,7 +1719,7 @@ connect_aftype: 	AFTYPE '=' T_IPV4 ';'
   {
 #ifdef IPV6
     if(ypass == 2)
-    yy_aconf->aftype = AF_INET6;
+      yy_aconf->aftype = AF_INET6;
 #endif
   };
 
@@ -2616,15 +2644,11 @@ general_throttle_time: THROTTLE_TIME '=' timespec ';'
 
 general_fallback_to_ip6_int: FALLBACK_IP6_INT '=' TYES ';'
 {
-#ifdef IPV6
  ConfigFileEntry.fallback_to_ip6_int = 1;
-#endif
 } |
   FALLBACK_IP6_INT '=' TNO ';'
 {
-#ifdef IPV6
  ConfigFileEntry.fallback_to_ip6_int = 0;
-#endif
 };
 
 general_oper_umodes: OPER_UMODES

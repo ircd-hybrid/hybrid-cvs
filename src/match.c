@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: match.c,v 7.21 2002/08/28 17:00:14 androsyn Exp $
+ * $Id: match.c,v 7.22 2003/04/09 11:19:37 stu Exp $
  *
  */
 #include "stdinc.h"
@@ -231,11 +231,16 @@ comp_with_mask(void *addr, void *dest, u_int mask)
 int
 match_cidr(const char *s1, const char *s2)
 {
-  struct irc_inaddr ipaddr, maskaddr;
-  char address[NICKLEN + USERLEN + HOSTLEN + 6], mask[NICKLEN + USERLEN + HOSTLEN + 6], *ipmask, *ip, *len;
+  struct irc_ssaddr ipaddr, maskaddr;
+  char address[NICKLEN + USERLEN + HOSTLEN + 6];
+  char mask[NICKLEN + USERLEN + HOSTLEN + 6];
+  char *ipmask, *ip, *len;
   int cidrlen, aftype;
-  strcpy(mask, s1);
-  strcpy(address, s2);
+  struct addrinfo hints, *res;
+  
+  /* Unlikely to ever overflow, but we may as well be consistant - stu */
+  strlcpy(mask, s1, sizeof(mask));
+  strlcpy(address, s2, sizeof(address));
   
   ipmask = strrchr(mask, '@');
   if(ipmask == NULL)
@@ -257,20 +262,40 @@ match_cidr(const char *s1, const char *s2)
   cidrlen = atoi(len);
   if(cidrlen == 0) 
     return 0;
-  
-#ifdef IPV6
+
+#ifdef IPV6  
   if(strchr(ip, ':') && strchr(ipmask, ':'))
     aftype = AF_INET6;
-  else
+  else 
 #endif
   if(!strchr(ip, ':') && !strchr(ipmask, ':'))
     aftype = AF_INET;
   else
     return 0;
   
-  inetpton(aftype, ip, &ipaddr);
-  inetpton(aftype, ipmask, &maskaddr);
-  if(comp_with_mask(&IN_ADDR(ipaddr), &IN_ADDR(maskaddr), cidrlen) && match(mask, address))
+  memset(&hints, 0, sizeof(hints));
+  hints.ai_family = AF_UNSPEC;
+  hints.ai_flags = AI_NUMERICHOST;
+
+  irc_getaddrinfo(ip, NULL, &hints, &res);
+  if(res)
+  {
+    memcpy(&ipaddr, res->ai_addr, res->ai_addrlen);
+    ipaddr.ss_len = res->ai_addrlen;
+    ipaddr.ss.ss_family = res->ai_family;
+    freeaddrinfo(res);
+  }
+
+  irc_getaddrinfo(ipmask, NULL, &hints, &res);
+  if(res)
+  {
+    memcpy(&maskaddr, res->ai_addr, res->ai_addrlen);
+    maskaddr.ss_len = res->ai_addrlen;
+    maskaddr.ss.ss_family = res->ai_family;
+    freeaddrinfo(res);
+  }
+  
+  if(comp_with_mask(&ipaddr, &maskaddr, cidrlen) && match(mask, address))
     return 1;
   else
     return 0;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.235 2003/04/02 11:19:46 michael Exp $
+ *  $Id: s_user.c,v 7.236 2003/04/09 11:19:37 stu Exp $
  */
 
 #include "stdinc.h"
@@ -437,8 +437,9 @@ register_local_user(struct Client *client_p, struct Client *source_p,
       strcpy(user->id_key, id);
     }
 
-  inetntop(source_p->localClient->aftype, &IN_ADDR(source_p->localClient->ip), 
-  				ipaddr, HOSTIPLEN);
+  irc_getnameinfo((struct sockaddr*)&source_p->localClient->ip, 
+        source_p->localClient->ip.ss_len, ipaddr, HOSTIPLEN, NULL, 0,
+        NI_NUMERICHOST);
   sendto_realops_flags(UMODE_CCONN, L_ALL,
 		       "Client connecting: %s (%s@%s) [%s] {%s} [%s]",
 		       nick, source_p->username, source_p->host,

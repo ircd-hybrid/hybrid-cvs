@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.262 2003/04/05 01:08:29 michael Exp $
+ *  $Id: ircd.c,v 7.263 2003/04/09 11:19:37 stu Exp $
  */
 
 #include "stdinc.h"
@@ -598,6 +598,10 @@ int main(int argc, char *argv[])
   if (!server_state.foreground)
   {
     close_all_connections(); /* this needs to be before init_netio()! */
+  }
+  else
+  {
+      check_can_use_v6(); /* Done in close_all_connections normally */
   }
   init_log(logFileName);
   init_netio();         /* This needs to be setup early ! -- adrian */

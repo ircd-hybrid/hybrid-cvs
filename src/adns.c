@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: adns.c,v 7.50 2003/04/05 00:16:55 db Exp $
+ *  $Id: adns.c,v 7.51 2003/04/09 11:19:36 stu Exp $
  */
 
 #include "stdinc.h"
@@ -223,7 +223,7 @@ adns_gethost(const char *name, int aftype, struct DNSQuery *req)
   int result;
 
   assert(dns_state->nservers > 0);
-#ifdef IPV6 
+#ifdef IPV6
   if (aftype == AF_INET6)
     result = adns_submit(dns_state, name, adns_r_addr6, adns_qf_owner, req,
 			 &req->query);
@@ -244,65 +244,45 @@ adns_gethost(const char *name, int aftype, struct DNSQuery *req)
  * Side effects: Sets up a query entry and sends it to the DNS server to
  *               resolve an IP address to a domain name.
  */
-int 
-adns_getaddr(struct irc_inaddr *addr, int aftype,
+int adns_getaddr(struct irc_ssaddr *addr, int aftype,
 	     struct DNSQuery *req, int arpa_type)
 {
-  struct irc_sockaddr ipn;
+  struct irc_ssaddr ipn;
   int result;
 
-  memset(&ipn, 0, sizeof(struct irc_sockaddr));
+  memset(&ipn, 0, sizeof(struct irc_ssaddr));
   assert(dns_state->nservers > 0);
 
 #ifdef IPV6
   if (aftype == AF_INET6)
   {
-    ipn.sins.sin6.sin6_family = AF_INET6;
-    ipn.sins.sin6.sin6_port = 0;
-    memcpy(&ipn.sins.sin6.sin6_addr.s6_addr, &addr->sins.sin6.s6_addr,
-           sizeof(struct in6_addr));
-           
+    memcpy(&ipn, addr, sizeof(struct irc_ssaddr));
+    ipn.ss.ss_family = AF_INET6;
+    
     if(!arpa_type)
     {
-      result = adns_submit_reverse(dns_state,
-				   (struct sockaddr *)&ipn.sins.sin6, 
-				   adns_r_ptr_ip6,
-				   adns_qf_owner|adns_qf_cname_loose|
-				   adns_qf_quoteok_anshost, 
-				   req, &req->query);
+      result = adns_submit_reverse(dns_state, (struct sockaddr *)&ipn, 
+              adns_r_ptr_ip6, 
+              adns_qf_owner|adns_qf_cname_loose|adns_qf_quoteok_anshost, req,
+              &req->query);
     }
     else
     {
-      result = adns_submit_reverse(dns_state,
-				   (struct sockaddr *)&ipn.sins.sin6, 
-				   adns_r_ptr_ip6_old,
-				   adns_qf_owner|adns_qf_cname_loose|
-				   adns_qf_quoteok_anshost, 
-				   req, &req->query);
-    
+      result = adns_submit_reverse(dns_state, (struct sockaddr *)&ipn,
+              adns_r_ptr_ip6_old,
+              adns_qf_owner|adns_qf_cname_loose|adns_qf_quoteok_anshost, req,
+              &req->query);
     }
   } 
   else
-  {
-    ipn.sins.sin.sin_family = AF_INET;
-    ipn.sins.sin.sin_port = 0;
-    ipn.sins.sin.sin_addr.s_addr = addr->sins.sin.s_addr;
-    result = adns_submit_reverse(dns_state,
-				 (struct sockaddr *)&ipn.sins.sin, adns_r_ptr, 
-				 adns_qf_owner|adns_qf_cname_loose|
-				 adns_qf_quoteok_anshost, 
-				 req, &req->query);
-  }
-#else
-  ipn.sins.sin.sin_family = AF_INET;
-  ipn.sins.sin.sin_port = 0;
-  ipn.sins.sin.sin_addr.s_addr = addr->sins.sin.s_addr;
-  result = adns_submit_reverse(dns_state,
-			       (struct sockaddr *)&ipn.sins.sin, adns_r_ptr, 
-			       adns_qf_owner|adns_qf_cname_loose|
-			       adns_qf_quoteok_anshost, 
-			       req, &req->query);
 #endif
-
+  {
+    ipn.ss.ss_family = AF_INET;
+    ipn.ss_port = 0;
+    memcpy(&ipn, addr, sizeof(struct irc_ssaddr));
+    result = adns_submit_reverse(dns_state, (struct sockaddr *)&ipn, adns_r_ptr,
+            adns_qf_owner|adns_qf_cname_loose|adns_qf_quoteok_anshost, req,
+            &req->query);
+  }
   return(result);
 }

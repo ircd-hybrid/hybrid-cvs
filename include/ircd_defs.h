@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_defs.h,v 7.32 2003/02/15 16:32:43 lusky Exp $
+ *  $Id: ircd_defs.h,v 7.33 2003/04/09 11:19:32 stu Exp $
  */
 
 /*
@@ -42,6 +42,7 @@
 
 #define HOSTLEN         63      /* Length of hostname.  Updated to         */
                                 /* comply with RFC1123                     */
+#define PORTNAMELEN 6  /* ":31337" */
 
 #define USERLEN         10
 #define REALLEN         50
@@ -69,76 +70,14 @@
 #define CLIENT_PARSE_ERROR -1
 #define CLIENT_OK	1
 
-
-struct irc_inaddr
+/* This is to get around the fact that some implementations have ss_len and
+ * others do not
+ */
+struct irc_ssaddr
 {
-	union {
-		struct in_addr sin;
-#ifdef IPV6
-		struct in6_addr sin6;	
-#endif
-	} sins;
+  struct sockaddr_storage ss;
+  unsigned char   ss_len;   
+  in_port_t       ss_port;
 };
-
-struct irc_sockaddr
-{
-	union {
-		struct sockaddr_in sin;
-#ifdef IPV6
-		struct sockaddr_in6 sin6;
-#endif			
-	} sins;
-};
-
-
-#ifdef IPV6
-#define copy_s_addr(a, b)  \
-do { \
-((uint32_t *)a)[0] = ((uint32_t *)b)[0]; \
-((uint32_t *)a)[1] = ((uint32_t *)b)[1]; \
-((uint32_t *)a)[2] = ((uint32_t *)b)[2]; \
-((uint32_t *)a)[3] = ((uint32_t *)b)[3]; \
-} while(0)
-
-
-/* irc_sockaddr macros */
-#define PS_ADDR(x) x->sins.sin6.sin6_addr.s6_addr  	/* s6_addr for pointer */
-#define S_ADDR(x) x.sins.sin6.sin6_addr.s6_addr 	/* s6_addr for non pointer */
-#define S_PORT(x) x.sins.sin6.sin6_port			/* s6_port */
-#define S_FAM(x) x.sins.sin6.sin6_family		/* sin6_family */
-#define SOCKADDR(x) x.sins.sin6				/* struct sockaddr_in6 for nonpointer */
-#define PSOCKADDR(x) x->sins.sin6			/* struct sockaddr_in6 for pointer */
-
-
-/* irc_inaddr macros */
-#define IN_ADDR(x) x.sins.sin6.s6_addr
-#define IPV4_MAPPED(x) ((uint32_t *)x.sins.sin6.s6_addr)[3]
-#define PIN_ADDR(x) x->sins.sin6.s6_addr /* For Pointers */
-#define IN_ADDR2(x) x.sins.sin6
-
-#define DEF_FAM AF_INET6
-
-#else
-#define copy_s_addr(a, b) a = b
-
-
-#define PS_ADDR(x)	x->sins.sin.sin_addr.s_addr	/* s_addr for pointer */
-#define S_ADDR(x)	x.sins.sin.sin_addr.s_addr	/* s_addr for nonpointer */
-#define S_PORT(x)	x.sins.sin.sin_port		/* sin_port   */
-#define S_FAM(x)	x.sins.sin.sin_family		/* sin_family */
-#define SOCKADDR(x)	x.sins.sin			/* struct sockaddr_in */
-#define PSOCKADDR(x)	x->sins.sin			/* struct sockaddr_in */
-
-
-#define PIN_ADDR(x) x->sins.sin.s_addr 
-#define IN_ADDR(x) x.sins.sin.s_addr
-
-#ifndef AF_INET6
-#define AF_INET6 10 /* Dummy AF_INET6 declaration */
-#endif 
-#define DEF_FAM AF_INET
-
-#endif
-
 
 #endif /* INCLUDED_ircd_defs_h */

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.200 2003/04/05 01:08:23 michael Exp $
+ *  $Id: s_conf.h,v 7.201 2003/04/09 11:19:32 stu Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -44,7 +44,7 @@ struct hostent;
 /* yacc/lex love globals!!! */
 
 struct ip_value {
-  struct irc_inaddr ip;
+  struct irc_ssaddr ip;
   int ip_mask;
   int type;
 };
@@ -59,8 +59,8 @@ struct ConfItem
   unsigned int     status;   /* If CONF_ILLEGAL, delete when no clients */
   unsigned int     flags;
   int              clients;  /* Number of *LOCAL* clients using this */
-  struct irc_inaddr my_ipnum; /* ip to bind to for outgoing connect */
-  struct irc_inaddr ipnum;	/* ip to connect to */
+  struct irc_ssaddr my_ipnum; /* ip to bind to for outgoing connect */
+  struct irc_ssaddr ipnum;	/* ip to connect to */
   char *           name;     /* IRC name, nick, server name, or original u@h */
   char *           host;     /* host part of user@host */
   char *           passwd;   /* doubles as kline reason *ugh* */
@@ -246,9 +246,7 @@ struct config_file_entry
   int           use_egd;
   int		ping_cookie;
   int           use_help;
-#ifdef IPV6  
   int		fallback_to_ip6_int;
-#endif
 #ifdef HAVE_LIBCRYPTO
   struct EncCapability *default_cipher_preference;
 #endif
@@ -298,13 +296,14 @@ struct server_info
   RSA *       rsa_private_key;
 #endif
   int         hub;
-  struct      irc_inaddr ip;
-  struct      irc_inaddr ip6;
+  struct      irc_ssaddr ip;
+  struct      irc_ssaddr ip6;
   int         max_clients;
   int         max_buffer;
   int         specific_ipv4_vhost;
   int         specific_ipv6_vhost;
   struct      sockaddr_in dns_host;
+  int         can_use_v6;
 };
 
 struct admin_info
@@ -333,7 +332,7 @@ extern void init_ip_hash_table(void);
 extern void iphash_stats(struct Client *,struct Client *,int,char **,FBFILE*);
 extern void count_ip_hash(int *, u_long *);
 
-extern void remove_one_ip(struct irc_inaddr *ip);
+extern void remove_one_ip(struct irc_ssaddr *ip);
 
 extern struct ConfItem* make_conf(unsigned int status);
 extern void             free_conf(struct ConfItem*);
@@ -354,14 +353,14 @@ extern struct ConfItem* find_conf_name(dlink_list *list, const char* name, unsig
 extern struct ConfItem* find_conf_by_name(const char* name, unsigned int status);
 extern struct ConfItem* find_conf_by_host(const char* host, unsigned int status);
 extern struct ConfItem* find_kill (struct Client *);
-extern int conf_connect_allowed(struct irc_inaddr *addr, int aftype);
+extern int conf_connect_allowed(struct irc_ssaddr *addr, int aftype);
 extern char *oper_privs_as_string(struct Client *, int);
 extern void split_user_host(struct ConfItem *aconf);
 
 extern int find_u_conf(const char *, const char *, const char *);
 extern struct ConfItem *find_x_conf(const char *);
 
-extern struct ConfItem* find_tkline(const char*, const char*, struct irc_inaddr *);
+extern struct ConfItem* find_tkline(const char*, const char*, struct irc_ssaddr *);
 extern char* show_iline_prefix(struct Client *,struct ConfItem *,char *);
 extern void get_printable_conf(struct ConfItem *, char **, char **, char **,
                                     char **, int *,char **);

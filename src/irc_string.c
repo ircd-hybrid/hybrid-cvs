@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: irc_string.c,v 7.56 2003/04/03 23:48:59 michael Exp $
+ *  $Id: irc_string.c,v 7.57 2003/04/09 11:19:37 stu Exp $
  */
 
 #include "stdinc.h"
@@ -34,15 +34,15 @@
 #define INADDRSZ 4
 #endif
 
-#ifdef IPV6
 #ifndef IN6ADDRSZ
 #define IN6ADDRSZ 16
-#endif
 #endif
 
 #ifndef INT16SZ
 #define INT16SZ 2
 #endif
+
+
 /*
  * myctime - This is like standard ctime()-function, but it zaps away
  *   the newline from the end of that string. Also, it takes
@@ -244,6 +244,8 @@ const char* inetntoa(const char* in)
   *bufptr = '\0';
   return buf;
 }
+
+
 /*
  * Copyright (c) 1996-1999 by Internet Software Consortium.
  *
@@ -269,9 +271,7 @@ const char* inetntoa(const char* in)
  */
 
 static const char *inet_ntop4 (const u_char *src, char *dst, unsigned int size);
-#ifdef IPV6
 static const char *inet_ntop6 (const u_char *src, char *dst, unsigned int size);
-#endif
 
 /* const char *
  * inet_ntop4(src, dst, size)
@@ -298,7 +298,6 @@ inet_ntop4(const unsigned char *src, char *dst, unsigned int size)
  * author:
  *	Paul Vixie, 1996.
  */
-#ifdef IPV6
 static const char *
 inet_ntop6(const unsigned char *src, char *dst, unsigned int size)
 {
@@ -385,7 +384,6 @@ inet_ntop6(const unsigned char *src, char *dst, unsigned int size)
 	}
 	return strcpy(dst, tmp);
 }
-#endif
 
 /* char *
  * inetntop(af, src, dst, size)
@@ -407,9 +405,8 @@ const char *inetntop(int af, const void *src, char *dst, unsigned int size)
 			return(inet_ntop4((unsigned char *)&((struct in6_addr *)src)->s6_addr[12], dst, size));
 		else 
 			return (inet_ntop6(src, dst, size));
-		
-
 #endif
+
 	default:
 		return (NULL);
 	}
@@ -479,7 +476,6 @@ inet_pton4(const char *src, u_char *dst)
 	return (1);
 }
 
-#ifdef IPV6
 /* int
  * inet_pton6(src, dst)
  *	convert presentation level address to network order binary form.
@@ -581,7 +577,6 @@ inet_pton6(const char *src, u_char *dst)
 	memcpy(dst, tmp, IN6ADDRSZ);
 	return (1);
 }
-#endif
 int
 inetpton(int af, const char *src, void *dst)
 {
@@ -689,5 +684,3 @@ size_t strlcpy(char *dst, const char *src, size_t siz)
  	return(s - src - 1);	/* count does not include NUL */
 }
 #endif
-
-
