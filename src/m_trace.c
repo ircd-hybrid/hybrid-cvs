@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_trace.c,v 7.4 2000/03/31 02:38:30 db Exp $
+ *   $Id: m_trace.c,v 7.5 2000/04/01 21:14:58 db Exp $
  */
 #include "m_commands.h"
 #include "class.h"
@@ -227,7 +227,7 @@ int m_trace(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
       return 0;
     }
 
-  if (dow && LIFESUX && !IsOper(sptr))
+  if (dow && GlobalSetOptions.lifesux && !IsOper(sptr))
     {
       sendto_one(sptr,form_str(RPL_LOAD2HI),me.name,parv[0]);
       return 0;

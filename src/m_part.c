@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_part.c,v 7.3 2000/01/02 22:11:58 db Exp $
+ *   $Id: m_part.c,v 7.4 2000/04/01 21:14:58 db Exp $
  */
 #include "m_commands.h"
 #include "channel.h"
@@ -122,7 +122,8 @@ int     m_part(struct Client *cptr,
 
       if (name && MyConnect(sptr) && !IsAnOper(sptr))
         {
-          if(SPAMNUM && (sptr->join_leave_count >= SPAMNUM))
+          if(GlobalSetOptions.spam_num &&
+	     (sptr->join_leave_count >= GlobalSetOptions.spam_num))
             {
               sendto_ops_flags(FLAGS_BOTS,
                                "User %s (%s@%s) is a possible spambot",
@@ -147,7 +148,8 @@ int     m_part(struct Client *cptr,
                 }
               else
                 {
-                  if( (CurrentTime - (sptr->last_join_time)) < SPAMTIME)
+                  if( (CurrentTime - (sptr->last_join_time)) < 
+		      GlobalSetOptions.spam_time)
                     {
                       /* oh, its a possible spambot */
                       sptr->join_leave_count++;

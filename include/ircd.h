@@ -19,7 +19,7 @@
  *
  * "ircd.h". - Headers file.
  *
- * $Id: ircd.h,v 7.3 1999/12/31 03:24:00 db Exp $
+ * $Id: ircd.h,v 7.4 2000/04/01 21:14:56 db Exp $
  *
  */
 #ifndef INCLUDED_ircd_h
@@ -82,31 +82,6 @@ struct Counter {
 };
 
 extern struct SetOptions GlobalSetOptions;  /* defined in ircd.c */
-/*
- * XXX - ACK!!!
- */
-/*
- * ZZZ - These can go away slowly as they are rewritten.
- * calm down Tom.
- * heh :) --Bleep
- *
- */
-#define AUTOCONN   GlobalSetOptions.autoconn
-#define DRONECOUNT GlobalSetOptions.dronecount
-#define DRONETIME  GlobalSetOptions.dronetime
-#define FLUDBLOCK  GlobalSetOptions.fludblock
-#define FLUDNUM    GlobalSetOptions.fludnum
-#define FLUDTIME   GlobalSetOptions.fludtime
-#define IDLETIME   GlobalSetOptions.idletime
-#define LIFESUX    GlobalSetOptions.lifesux
-#define MAXCLIENTS GlobalSetOptions.maxclients
-#define NOISYHTM   GlobalSetOptions.noisy_htm
-#define SPAMNUM    GlobalSetOptions.spam_num
-#define SPAMTIME   GlobalSetOptions.spam_time
-#define SPLITDELAY GlobalSetOptions.server_split_recovery_time
-#define SPLITNUM   GlobalSetOptions.split_smallnet_size
-#define SPLITUSERS GlobalSetOptions.split_smallnet_users
-
 
 extern char*          debugmode;
 extern int            debuglevel;

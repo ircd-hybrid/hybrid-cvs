@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 7.10 2000/01/06 03:19:36 db Exp $
+ *   $Id: m_join.c,v 7.11 2000/04/01 21:14:58 db Exp $
  */
 
 #include "m_commands.h"
@@ -235,7 +235,8 @@ int     m_join(struct Client *cptr,
 
           if( MyConnect(sptr) && !IsAnOper(sptr) )
             {
-              if(SPAMNUM && (sptr->join_leave_count >= SPAMNUM))
+              if(GlobalSetOptions.spam_num &&
+		 (sptr->join_leave_count >= GlobalSetOptions.spam_num))
                 {
                   sendto_ops_flags(FLAGS_BOTS,
                                      "User %s (%s@%s) is a possible spambot",
@@ -260,7 +261,8 @@ int     m_join(struct Client *cptr,
                     }
                   else
                     {
-                      if((CurrentTime - (sptr->last_join_time)) < SPAMTIME)
+                      if((CurrentTime - (sptr->last_join_time)) < 
+			 GlobalSetOptions.spam_time)
                         {
                           /* oh, its a possible spambot */
                           sptr->join_leave_count++;
@@ -336,7 +338,8 @@ int     m_join(struct Client *cptr,
 #ifdef ANTI_SPAMBOT       /* Dianora */
           if(flags == 0)        /* if channel doesn't exist, don't penalize */
             successful_join_count++;
-          if( SPAMNUM && (sptr->join_leave_count >= SPAMNUM))
+          if( GlobalSetOptions.spam_num &&
+	      (sptr->join_leave_count >= GlobalSetOptions.spam_num))
             { 
               /* Its already known as a possible spambot */
  

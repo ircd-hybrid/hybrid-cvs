@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_notice.c,v 7.5 2000/01/09 22:44:24 db Exp $
+ *   $Id: m_notice.c,v 7.6 2000/04/01 21:14:58 db Exp $
  */
 #include "m_commands.h"
 #include "client.h"
@@ -262,9 +262,11 @@ int     m_notice(struct Client *cptr,
         sptr->user->last = CurrentTime;
 #endif
 #ifdef ANTI_DRONE_FLOOD
-      if(MyConnect(acptr) && IsClient(sptr) && !IsAnOper(sptr) && DRONETIME)
+      if(MyConnect(acptr) && IsClient(sptr) && !IsAnOper(sptr) &&
+	 GlobalSetOptions.dronetime)
         {
-          if((acptr->first_received_message_time+DRONETIME) < CurrentTime)
+          if((acptr->first_received_message_time+GlobalSetOptions.dronetime)
+	     < CurrentTime)
             {
               acptr->received_number_of_privmsgs=1;
               acptr->first_received_message_time = CurrentTime;
@@ -272,7 +274,8 @@ int     m_notice(struct Client *cptr,
             }
           else
             {
-              if(acptr->received_number_of_privmsgs > DRONECOUNT)
+              if(acptr->received_number_of_privmsgs > 
+		 GlobalSetOptions.dronecount)
                 {
                   if(acptr->drone_noticed == 0) /* tiny FSM */
                     {

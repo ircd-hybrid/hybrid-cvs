@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.26 2000/03/31 02:38:32 db Exp $
+ *  $Id: s_user.c,v 7.27 2000/04/01 21:14:59 db Exp $
  */
 #include "s_user.h"
 #include "channel.h"
@@ -638,8 +638,10 @@ int register_user(struct Client *cptr, struct Client *sptr,
       /* Except "F:" clients */
       if ( (ConfigFileEntry.botcheck && (
           !sptr->isbot &&
-          ((Count.local + 1) >= (MAXCLIENTS+MAX_BUFFER)))) ||
-            (((Count.local +1) >= (MAXCLIENTS - 5)) && !(IsFlined(sptr))))
+          ((Count.local + 1) >= (
+				 GlobalSetOptions.maxclients+MAX_BUFFER)))) ||
+            (((Count.local +1) >= (GlobalSetOptions.maxclients - 5)) &&
+	     !(IsFlined(sptr))))
         {
           sendto_realops_flags(FLAGS_FULL,
                                "Too many clients, rejecting %s[%s].",
