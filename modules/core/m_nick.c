@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nick.c,v 1.136 2003/11/02 21:16:53 garion Exp $
+ *  $Id: m_nick.c,v 1.137 2003/11/08 23:30:27 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -97,11 +97,10 @@ _moddeinit(void)
   mod_del_cmd(&uid_msgtab);
 }
 
-const char *_version = "$Revision: 1.136 $";
+const char *_version = "$Revision: 1.137 $";
 #endif
 
-/*
- * mr_nick()
+/* mr_nick()
  *
  *       parv[0] = sender prefix
  *       parv[1] = nickname
@@ -138,9 +137,7 @@ mr_nick(struct Client *client_p, struct Client *source_p,
   }
 
   /* check if the nick is resv'd */
-  if(find_matching_name_conf(NRESV_TYPE, nick,
-			     NULL, NULL, 0) &&
-     !(IsOper(source_p) && ConfigFileEntry.oper_pass_resv))
+  if(find_matching_name_conf(NRESV_TYPE, nick, NULL, NULL, 0))
   {
     sendto_one(source_p, form_str(ERR_ERRONEUSNICKNAME),
                me.name, EmptyString(parv[0]) ? "*" : parv[0], nick);
@@ -194,8 +191,7 @@ mr_nick(struct Client *client_p, struct Client *source_p,
   }
 }
 
-/*
- * m_nick()
+/* m_nick()
  *
  *     parv[0] = sender prefix
  *     parv[1] = nickname
