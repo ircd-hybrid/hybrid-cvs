@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_server.c,v 1.20 2000/12/29 14:08:40 madmax Exp $
+ *   $Id: m_server.c,v 1.21 2000/12/30 07:11:30 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"  /* m_server prototype */
@@ -385,7 +385,7 @@ int ms_server(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
     {
       refresh_user_links = 1;
       eventAdd("write_links_file", write_links_file, NULL,
-	       300, 0);
+	ConfigFileEntry.links_delay, 0);
     }
 
   return 0;

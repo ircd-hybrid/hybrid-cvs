@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.61 2000/12/30 06:03:35 lusky Exp $
+ * $Id: s_conf.h,v 7.62 2000/12/30 07:11:25 db Exp $
  */
 
 #include <sys/param.h>
@@ -221,6 +221,7 @@ typedef struct
   int         oper_only_umodes;
   int         max_targets;
   int         links_notice;
+  int         links_delay;
 } ConfigFileEntryType;
 
 /* bleh. have to become global. */

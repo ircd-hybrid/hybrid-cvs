@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.50 2000/12/29 00:50:31 wcampbel Exp $
+ * $Id: ircd_lexer.l,v 1.51 2000/12/30 07:11:32 db Exp $
  */
 
 %option case-insensitive
@@ -176,6 +176,7 @@ max_nick_time           { return MAX_NICK_TIME; }
 anti_nick_flood         { return ANTI_NICK_FLOOD; }
 ts_max_delta            { return TS_MAX_DELTA; }
 ts_warn_delta           { return TS_WARN_DELTA; }
+links_delay           { return LINKS_DELAY; }
 kline_with_connection_closed { return KLINE_WITH_CONNECTION_CLOSED; }
 kline_with_reason       { return KLINE_WITH_REASON; }
 warn_no_nline           { return WARN_NO_NLINE; }

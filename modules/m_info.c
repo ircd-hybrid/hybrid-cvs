@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.c,v 1.11 2000/12/28 20:26:42 toot Exp $
+ * $Id: m_info.c,v 1.12 2000/12/30 07:11:30 db Exp $
  */
 #include "tools.h"
 #include "m_info.h"
@@ -302,6 +302,15 @@ void send_conf_options(struct Client *sptr)
                 ConfigFileEntry.max_nick_time : 0,
               "Anti nick flood time setting");
 
+    sendto_one(sptr,
+              ":%s %d %s :%-30s %-5d [%-30s]",
+              me.name,
+              RPL_INFO,
+              sptr->name,
+              "links_delay",
+              ConfigFileEntry.links_delay ?
+                ConfigFileEntry.links_delay : 0,
+              "How often the links file is rehashed");
    sendto_one(sptr,
               ":%s %d %s :%-30s %-5d [%-30s]",
               me.name,

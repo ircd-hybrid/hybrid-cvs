@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.71 2000/12/30 00:52:36 lusky Exp $
+ * $Id: config.h,v 7.72 2000/12/30 07:11:24 db Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -377,6 +377,10 @@
 /* 300 is five minutes, seems reasonable */
 #define ANTI_SPAM_EXIT_MESSAGE_TIME 300
 
+/*
+ * Links rehash delay
+ */
+#define LINKS_DELAY_DEFAULT 300
 /*
  * If the OS has SOMAXCONN use that value, otherwise
  * Use the value in HYBRID_SOMAXCONN for the listen(); backlog
