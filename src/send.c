@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.245 2003/04/23 18:36:52 adx Exp $
+ *  $Id: send.c,v 7.246 2003/04/24 12:54:08 adx Exp $
  */
 
 #include "stdinc.h"
@@ -259,8 +259,8 @@ send_queued_write(struct Client *to)
         break;
 
 #ifndef NDEBUG
-      hdata.data = &((struct dbuf_block *)
-                     to->localClient->buf_sendq.blocks.head->data)->data;
+      hdata.data = ((struct dbuf_block *)
+                    to->localClient->buf_sendq.blocks.head->data)->data;
       hdata.len = retlen;
       hook_call_event("iosend", &hdata);
 #endif
