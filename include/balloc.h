@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: balloc.h,v 1.13 2003/03/09 23:15:46 db Exp $
+ *  $Id: balloc.h,v 1.14 2003/06/01 23:46:49 joshk Exp $
  */
 
 #ifndef INCLUDED_blalloc_h
@@ -85,11 +85,8 @@ extern void	  initBlockHeap(void);
 #else /* NOBALLOC */
 
 typedef struct BlockHeap BlockHeap;
-#define initBlockHeap()
-#define BlockHeapGarbageCollect(x)
 /* This is really kludgy, passing ints as pointers is always bad. */
 #define BlockHeapCreate(es, epb) ((BlockHeap*)(es))
-#define BlockHeapDestroy(x)
 #define BlockHeapAlloc(x) MyMalloc((int)x)
 #define BlockHeapFree(x,y) MyFree(y)
 

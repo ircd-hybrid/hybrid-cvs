@@ -25,7 +25,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: balloc.c,v 7.44 2003/05/22 20:19:37 jmallett Exp $
+ *  $Id: balloc.c,v 7.45 2003/06/01 23:46:55 joshk Exp $
  */
 
 /* 
@@ -70,10 +70,10 @@
 
 /* HP-UX sucks */
 #ifdef MAP_ANONYMOUS
-#ifndef MAP_ANON
-#define MAP_ANON MAP_ANONYMOUS
-#endif
-#endif
+# ifndef MAP_ANON
+#  define MAP_ANON MAP_ANONYMOUS
+# endif
+#endif /* MAP_ANONYMOUS */
 
 static BlockHeap *heap_list = NULL;
 
@@ -175,9 +175,9 @@ get_block(size_t size)
   return(ptr);
 }
 
-#endif /* MAP_ANON */
+#endif /* !MAP_ANON */
 
-#else  /* HAVE_MMAP */
+#else  /* !HAVE_MMAP */
 /* Poor bastards don't even have mmap() */
 
 /* 
@@ -569,4 +569,4 @@ BlockHeapDestroy(BlockHeap * bh)
     free(bh);
     return(0);
 }
-#endif
+#endif /* !NOBALLOC */

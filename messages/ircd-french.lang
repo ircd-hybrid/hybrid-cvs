@@ -1,7 +1,7 @@
 ; ircd-hybrid-7 custom message file
 ; Copyright (C) 2003
 ; Joshua Kwan <joshk@triplehelix.org>
-; $Id: ircd-french.lang,v 1.4 2003/05/27 17:11:17 joshk Exp $
+; $Id: ircd-french.lang,v 1.5 2003/06/01 23:46:51 joshk Exp $
 
 RPL_LUSEROP:             :%s 252 %s %d :opérateurs IRC en ligne
 RPL_LOAD2HI:             :%s 263 %s :Veuillez patienter, le serveur est trop occupé
@@ -78,7 +78,7 @@ ERR_NOADMININFO:	 :%s 423 %s %s :Il n'y a pas de renseignements administratives
 ERR_NONICKNAMEGIVEN:	 :%s 431 %s :Aucun nom donné
 ERR_ERRONEUSNICKNAME:	 :%s 432 %s %s :Nom inapproprié
 ERR_NICKNAMEINUSE:	 :%s 433 %s %s :Ce nom est déjà utilisé.
-ERR_NICKCOLLISION:	 :%s 436 %s %s :Nickname collision KILL
+ERR_NICKCOLLISION:	 :%s 436 %s %s :Collision de noms KILL
 ERR_UNAVAILRESOURCE:	 :%s 437 %s %s :Client/chaîne temporairement indisponible
 ERR_NICKTOOFAST:	 :%s 438 %s %s %s :Attendez %d secondes avant de changer votre nom encore.
 ERR_USERNOTINCHANNEL:	 :%s 441 %s %s %s :Il n'est pas sur cette chaîne
@@ -96,7 +96,7 @@ ERR_UNKNOWNMODE:	 :%s 472 %s %c :m'est inconnu
 ERR_INVITEONLYCHAN:	 :%s 473 %s %s :Impossible de joindre (+i)
 ERR_BANNEDFROMCHAN:	 :%s 474 %s %s :Impossible de joindre (+b)
 ERR_BADCHANNELKEY:	 :%s 475 %s %s :Impossible de joindre (+k)
-ERR_BANLISTFULL:	 :%s 478 %s %s %s :Channel ban list is full
+ERR_BANLISTFULL:	 :%s 478 %s %s %s :Liste d'interdits est plein
 ERR_BADCHANNAME:	 :%s 479 %s %s :Nom de chaîne illégale
 ERR_RESTRICTED:		 :%s 484 %s :Vous êtes restraints
 ERR_UMODEUNKNOWNFLAG:	 :%s 501 %s :MODE client inconnue

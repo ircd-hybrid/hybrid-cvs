@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.141 2003/05/30 03:17:34 joshk Exp $
+# $Id: Makefile.in,v 7.142 2003/06/01 23:46:55 joshk Exp $
 #
 @SET_MAKE@
 
@@ -56,8 +56,9 @@ lex.yy.o:	y.tab.c lex.yy.c ircd_lexer.l
 lex.yy.c:	ircd_lexer.l
 	${LEX} ircd_lexer.l
 
+SSL_SRCS = rsa.c
+
 BASE_SRCS =	\
- balloc.c \
  channel.c \
  channel_mode.c \
  class.c \
@@ -90,7 +91,6 @@ BASE_SRCS =	\
  numeric.c \
  packet.c \
  parse.c \
- rsa.c \
  restart.c \
  resv.c	\
  s_auth.c \
@@ -106,7 +106,9 @@ BASE_SRCS =	\
  send.c \
  sprintf_irc.c \
  @SNPRINTF_C@ \
+ @BALLOC_C@ \
  @INET_MISC@ \
+ @SSL_SRCS_ENABLE@ \
  tools.c \
  whowas.c
 

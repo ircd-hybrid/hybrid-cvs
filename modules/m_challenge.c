@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_challenge.c,v 1.45 2003/05/10 04:05:03 michael Exp $
+ *  $Id: m_challenge.c,v 1.46 2003/06/01 23:46:53 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -30,33 +30,13 @@
 #include "numeric.h"
 #include "send.h"
 #include "s_conf.h"
-#ifdef HAVE_LIBCRYPTO
+/* -lcrypto is implicit for building this module! */
 #include "rsa.h"
-#endif
 #include "msg.h"
 #include "parse.h"
 #include "irc_string.h"
 #include "s_log.h"
 #include "s_user.h"
-
-#ifndef HAVE_LIBCRYPTO
-/* Maybe this should be an error or something?-davidt */
-#ifndef STATIC_MODULES
-void
-_modinit(void)
-{
-  return;
-}
-
-void
-_moddeinit(void)
-{
-  return;
-}
-
-const char *_version = "$Revision: 1.45 $";
-#endif
-#else
 
 static void failed_challenge_notice(struct Client *, const char *, const char *);
 static void m_challenge(struct Client *, struct Client *, int, char **);
@@ -81,7 +61,7 @@ _moddeinit(void)
   mod_del_cmd(&challenge_msgtab);
 }
 
-const char *_version = "$Revision: 1.45 $";
+const char *_version = "$Revision: 1.46 $";
 #endif
 /*
  * m_challenge - generate RSA challenge for wouldbe oper
@@ -209,4 +189,3 @@ failed_challenge_notice(struct Client *source_p, const char *name, const char *r
                          "by %s (%s@%s) - %s", name, source_p->name,
                          source_p->username, source_p->host, reason);
 }
-#endif /* HAVE_LIBCRYPTO */

@@ -19,12 +19,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: rsa.c,v 7.30 2003/05/22 05:32:58 lusky Exp $
+ *  $Id: rsa.c,v 7.31 2003/06/01 23:46:55 joshk Exp $
  */
 
 #include "stdinc.h"
 
-#ifdef HAVE_LIBCRYPTO
 #include <openssl/pem.h>
 #include <openssl/rand.h>
 #include <openssl/rsa.h>
@@ -32,7 +31,6 @@
 #include <openssl/bn.h>
 #include <openssl/evp.h>
 #include <openssl/err.h>
-#endif
 
 #include "memory.h"
 #include "rsa.h"
@@ -42,10 +40,7 @@
 #include "client.h" /* CIPHERKEYLEN .. eww */
 #include "ircd.h" /* bio_spare_fd */
 
-#ifdef HAVE_LIBCRYPTO
 static void binary_to_hex(unsigned char *bin, char *hex, int length);
-
-        
 
 /*
  * report_crypto_errors - Dump crypto error list to log
@@ -227,5 +222,3 @@ generate_challenge(char **r_challenge, char **r_response, RSA *rsa)
   }
   return(0);
 }
-
-#endif /* HAVE_LIBCRYPTO */

@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/modules
 #
-# $Id: Makefile.in,v 1.86 2003/05/31 18:52:50 adx Exp $
+# $Id: Makefile.in,v 1.87 2003/06/01 23:46:53 joshk Exp $
 #
 CC		= @CC@
 AR		= @AR@
@@ -44,16 +44,19 @@ CORE_SRCS = \
   core/m_sjoin.c \
   core/m_squit.c
 
+SSL_SRCS = \
+  m_challenge.c \
+  m_cryptlink.c
+
 SRCS =       \
   m_accept.c \
   m_admin.c \
   m_away.c \
   m_capab.c \
   m_cburst.c \
-  m_challenge.c \
   m_close.c \
+  @SSL_SRCS_ENABLE@ \
   m_connect.c \
-  m_cryptlink.c \
   m_dmem.c \
   m_drop.c \
   m_encap.c \
@@ -101,7 +104,8 @@ SRCS =       \
   m_xline.c
 
 ALL_SRCS = $(CORE_SRCS) \
-           $(SRCS)
+           $(SRCS) \
+	   @SSL_SRCS_ENABLE@
 
 SH_OBJS = ${SRCS:.c=.so}
 SH_CORE_OBJS = ${CORE_SRCS:.c=.so}

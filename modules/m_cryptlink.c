@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_cryptlink.c,v 1.49 2003/05/31 07:01:44 lusky Exp $
+ *  $Id: m_cryptlink.c,v 1.50 2003/06/01 23:46:53 joshk Exp $
  */
 
 /*
@@ -36,10 +36,8 @@
 #include "modules.h"
 #include "numeric.h"     /* ERR_xxx */
 #include "send.h"        /* sendto_one */
-#ifdef HAVE_LIBCRYPTO
-#include <openssl/rsa.h>
+#include <openssl/rsa.h> /* rsa.h is implicit when building this */
 #include "rsa.h"
-#endif
 #include "msg.h"
 #include "parse.h"
 #include "irc_string.h"  /* strncpy_irc */
@@ -54,16 +52,6 @@
 #include "s_serv.h"      /* server_estab, check_server, my_name_for_link */
 #include "s_stats.h"     /* ServerStats */
 #include "motd.h"
-
-#ifndef HAVE_LIBCRYPTO
-#ifndef STATIC_MODULES
-/* XXX - print error? */
-void _modinit(void) {}
-void _moddeinit(void) {}
-
-const char *_version = "$Revision: 1.49 $";
-#endif
-#else
 
 static int bogus_host(char *host);
 static char *parse_cryptserv_args(struct Client *client_p,
@@ -107,7 +95,7 @@ _moddeinit(void)
   mod_del_cmd(&cryptlink_msgtab);
 }
 
-const char *_version = "$Revision: 1.49 $";
+const char *_version = "$Revision: 1.50 $";
 #endif
 
 
@@ -582,4 +570,3 @@ static int bogus_host(char *host)
   return(0);
 }
 
-#endif /* HAVE_LIBCRYPTO */

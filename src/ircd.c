@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.298 2003/06/01 18:47:03 joshk Exp $
+ *  $Id: ircd.c,v 7.299 2003/06/01 23:46:55 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -650,7 +650,9 @@ main(int argc, char *argv[])
   eventInit();
   init_sys();
 
+#ifndef NOBALLOC
   initBlockHeap();
+#endif
   init_dlink_nodes();
   init_slink_nodes();
   initialize_message_files();

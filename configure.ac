@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.44 2003/06/01 01:01:45 joshk Exp $
+dnl $Id: configure.ac,v 7.45 2003/06/01 23:46:45 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -481,6 +481,7 @@ if test "X$cf_enable_openssl" != "Xno"; then
 			cf_openssl_ciphers="${cf_openssl_ciphers}DES/56 ")
 		fi
 		SSL_LIBS="$SSL_LIBS -lcrypto"
+		SSL_SRCS_ENABLE='$(SSL_SRCS)'
 	else
 	        AC_MSG_RESULT(no - OpenSSL support disabled)
 	fi
@@ -640,8 +641,14 @@ dnl Check if we want to enable the block allocator
 AC_MSG_CHECKING(if you want the block allocator)
 AC_ARG_ENABLE(block-alloc,
 AC_HELP_STRING([--disable-block-alloc],[Disable the block allocator (Only useful with ElectricFence)]),
-[balloc="no"; AC_DEFINE(NOBALLOC, 1, [Disable the block allocator.])],
-[balloc="yes"; AC_MSG_RESULT([yes (default)])])
+[
+	balloc="no"
+	AC_SUBST(BALLOC_C, [])
+	AC_DEFINE(NOBALLOC, 1, [Disable the block allocator.])
+],
+[balloc="yes"; AC_SUBST(BALLOC_C, balloc.c)])
+
+AC_MSG_RESULT($balloc)
 
 AC_ARG_ENABLE(warnings,
 AC_HELP_STRING([--enable-warnings],[Enable all sorts of warnings for debugging.]),
@@ -897,6 +904,7 @@ AC_SUBST(MODULES_DEFINE)
 AC_SUBST(MODULES_LIBS)
 AC_SUBST(MOD_TARGET)
 
+AC_SUBST(SSL_SRCS_ENABLE)
 AC_SUBST(SSL_INCLUDES)
 AC_SUBST(SSL_LIBS)
 
