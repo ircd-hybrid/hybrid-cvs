@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.163 2001/01/25 07:23:04 db Exp $
+ *  $Id: s_conf.c,v 7.164 2001/01/25 09:39:52 ejb Exp $
  */
 
 #include <sys/types.h>
@@ -105,7 +105,7 @@ static void clear_special_conf(struct ConfItem **);
 
 typedef struct ip_entry
 {
-  unsigned long ip;
+  struct irc_inaddr ip;
   int        count;
   struct ip_entry *next;
 }IP_ENTRY;
@@ -715,7 +715,7 @@ void remove_one_ip(struct irc_inaddr *ip_in)
   while(ptr)
     {
       /* XXX - XXX - XXX - XXX */
-      if(ptr->ip == PIN_ADDR(ip_in))
+      if(!memcmp(IN_ADDR(ptr->ip), PIN_ADDR(ip_in), sizeof(struct irc_inaddr)))
         {
           if(ptr->count != 0)
             ptr->count--;
@@ -768,8 +768,15 @@ static int hash_ip(struct irc_inaddr *addr)
   hash = ((ip >> 12) + ip) & (IP_HASH_SIZE-1);
   return(hash);
 #else
-  /* XXX */
-  return(0);
+  unsigned int hash = 0;
+  char *ip = &PIN_ADDR(addr);
+
+  while (*ip)
+    { 
+      hash = (hash << 4) - (hash + (unsigned char)*ip++);
+    }
+
+  return(hash & (IP_HASH_SIZE - 1));
 #endif
 }
 
