@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: memory.h,v 7.30 2002/05/24 23:34:07 androsyn Exp $
+ *  $Id: memory.h,v 7.31 2002/06/15 07:30:40 androsyn Exp $
  */
 
 #ifndef _I_MEMORY_H
@@ -95,10 +95,37 @@ extern MemoryEntry *first_mem_entry;
 #else /* MEMDEBUG */
 
 
-extern void * _MyMalloc(size_t size);
-extern void* _MyRealloc(void* x, size_t y);
-extern void _MyFree(void *x);
-extern void _DupString(char **x, const char *y);
+extern inline void * _MyMalloc(size_t size)
+{
+  void *ret = calloc(1, size);
+  if(ret == NULL)
+    outofmemory();
+  return(ret);
+}
+
+extern inline void* _MyRealloc(void* x, size_t y)
+{
+  void *ret = realloc(x, y);
+  
+  if(ret == NULL)
+    outofmemory();
+  return(ret);    
+}
+
+extern inline void _MyFree(void *x)
+{
+  if(x != NULL)
+    free(x);
+}
+
+extern inline void _DupString(char **x, const char *y)
+{
+  (*x) = malloc(strlen(y) + 1);
+  if(x == NULL)
+    outofmemory();
+  strcpy((*x), y); 
+}
+
 extern int         _BlockHeapFree(BlockHeap *bh, void *ptr);
 extern void *	  _BlockHeapAlloc(BlockHeap *bh);
 
