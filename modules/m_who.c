@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_who.c,v 1.80 2003/06/01 15:05:52 adx Exp $
+ *  $Id: m_who.c,v 1.81 2003/06/02 05:35:06 michael Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -41,8 +41,8 @@
 #include "parse.h"
 #include "modules.h"
 
-static void m_who(struct Client*, struct Client*, int, char**);
-static void ms_who(struct Client*, struct Client*, int, char**);
+static void m_who(struct Client *, struct Client *, int, char **);
+static void ms_who(struct Client *, struct Client *, int, char **);
 
 struct Message who_msgtab = {
   "WHO", 0, 0, 2, 0, MFLG_SLOW, 0,
@@ -61,17 +61,15 @@ _moddeinit(void)
 {
   mod_del_cmd(&who_msgtab);
 }
-const char *_version = "$Revision: 1.80 $";
+
+const char *_version = "$Revision: 1.81 $";
 #endif
 
 static void who_global(struct Client *source_p, char *mask, int server_oper);
-
 static void do_who(struct Client *source_p, struct Client *target_p,
                    char *chname, char *op_flags);
-
-static void
-do_who_on_channel(struct Client *source_p, struct Channel *chptr,
-                  char *chname, int member);
+static void do_who_on_channel(struct Client *source_p, struct Channel *chptr,
+                              char *chname, int member);
 
 /*
 ** m_who
@@ -84,7 +82,7 @@ m_who(struct Client *client_p, struct Client *source_p,
       int parc, char *parv[])
 {
   struct Client *target_p;
-  char  *mask = parv[1];
+  char *mask = parv[1];
   dlink_node *lp;
   struct Channel *chptr = NULL;
   struct Channel *mychannel = NULL;
@@ -92,7 +90,6 @@ m_who(struct Client *client_p, struct Client *source_p,
   int member;
 
   /* See if mask is there, collapse it or return if not there */
-
   if (mask != NULL)
   {
     collapse(mask);
@@ -118,7 +115,7 @@ m_who(struct Client *client_p, struct Client *source_p,
   {
     if (source_p->user != NULL)
       if ((lp = source_p->user->channel.head) != NULL)
-        mychannel = ((struct Membership *) lp->data)->chptr;
+        mychannel = ((struct Membership *)lp->data)->chptr;
 
     if (mychannel == NULL)
     {
@@ -133,7 +130,6 @@ m_who(struct Client *client_p, struct Client *source_p,
   }
 
   /* '/who #some_channel' */
-
   if (IsChannelName(mask))
   {
     /*
@@ -164,7 +160,7 @@ m_who(struct Client *client_p, struct Client *source_p,
     isinvis = IsInvisible(target_p);
     DLINK_FOREACH(lp, target_p->user->channel.head)
     {
-      chptr = ((struct Membership *) lp->data)->chptr;
+      chptr = ((struct Membership *)lp->data)->chptr;
       member = IsMember(source_p, chptr);
       if (isinvis && !member)
       {
@@ -220,14 +216,14 @@ m_who(struct Client *client_p, struct Client *source_p,
  */
 static void
 who_common_channel(struct Client *source_p, struct Channel *chptr,
-		   char *mask, int server_oper, int *maxmatches)
+                   char *mask, int server_oper, int *maxmatches)
 {
-  dlink_node *clp;
+  dlink_node *ptr;
   struct Client *target_p;
 
-  DLINK_FOREACH(clp, chptr->members.head)
+  DLINK_FOREACH(ptr, chptr->members.head)
   {
-    target_p = clp->data;
+    target_p = ((struct Membership *)ptr->data)->client_p;
 
     if (!IsInvisible(target_p) || IsMarked(target_p))
       continue;
@@ -236,6 +232,9 @@ who_common_channel(struct Client *source_p, struct Channel *chptr,
       continue;
 
     SetMark(target_p);
+
+    assert(target_p->user != NULL);
+    assert(target_p->user->server != NULL);
 
     if ((mask == NULL) ||
 	match(mask, target_p->name) || match(mask, target_p->username) ||
@@ -278,7 +277,7 @@ who_global(struct Client *source_p,char *mask, int server_oper)
   /* first, list all matching invisible clients on common channels */
   DLINK_FOREACH(lp, source_p->user->channel.head)
   {
-    chptr = ((struct Membership *) lp->data)->chptr;
+    chptr = ((struct Membership *)lp->data)->chptr;
     who_common_channel(source_p, chptr, mask, server_oper, &maxmatches);
   }
 
@@ -299,6 +298,8 @@ who_global(struct Client *source_p,char *mask, int server_oper)
     if (server_oper && !IsOper(target_p))
       continue;
 
+    assert(target_p->user->server != NULL);
+
     if (!mask ||
         match(mask, target_p->name) || match(mask, target_p->username) ||
 	match(mask, target_p->host) || match(mask, target_p->user->server->name) ||
@@ -315,8 +316,7 @@ who_global(struct Client *source_p,char *mask, int server_oper)
   }
 }
 
-/*
- * do_who_on_channel
+/* do_who_on_channel()
  *
  * inputs	- pointer to client requesting who
  *		- pointer to channel to do who on
