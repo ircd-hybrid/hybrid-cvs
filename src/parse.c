@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.154 2003/04/16 09:01:52 michael Exp $
+ *  $Id: parse.c,v 7.155 2003/05/01 13:58:11 michael Exp $
  */
 
 #include "stdinc.h"
@@ -363,7 +363,7 @@ handle_command(struct Message *mptr, struct Client *client_p,
 void
 clear_hash_parse(void)
 {
-  memset(msg_hash_table,0,sizeof(msg_hash_table));
+  memset(msg_hash_table, 0, sizeof(msg_hash_table));
 }
 
 /* mod_add_cmd()
@@ -390,9 +390,9 @@ mod_add_cmd(struct Message *msg)
 
   msgindex = hash(msg->cmd);
 
-  for (ptr = msg_hash_table[msgindex]; ptr; ptr = ptr->next )
+  for (ptr = msg_hash_table[msgindex]; ptr; ptr = ptr->next)
   {
-    if (strcasecmp(msg->cmd,ptr->cmd) == 0)
+    if (irccmp(msg->cmd,ptr->cmd) == 0)
       return; /* Its already added */
 
     last_ptr = ptr;
@@ -400,7 +400,7 @@ mod_add_cmd(struct Message *msg)
 
   new_ptr = (struct MessageHash *)MyMalloc(sizeof(struct MessageHash));
   new_ptr->next = NULL;
-  DupString(new_ptr->cmd,msg->cmd);
+  DupString(new_ptr->cmd, msg->cmd);
   new_ptr->msg  = msg;
 
   msg->count  = 0;
@@ -435,7 +435,7 @@ mod_del_cmd(struct Message *msg)
 
   for (ptr = msg_hash_table[msgindex]; ptr; ptr = ptr->next)
   {
-    if (strcasecmp(msg->cmd, ptr->cmd) == 0)
+    if (irccmp(msg->cmd, ptr->cmd) == 0)
     {
       MyFree(ptr->cmd);
 
@@ -461,14 +461,11 @@ mod_del_cmd(struct Message *msg)
 static struct Message *
 hash_parse(char *cmd)
 {
-  int msgindex;
   struct MessageHash *ptr;
 
-  msgindex = hash(cmd);
-
-  for (ptr = msg_hash_table[msgindex]; ptr; ptr = ptr->next)
+  for (ptr = msg_hash_table[hash(cmd)]; ptr; ptr = ptr->next)
   {
-    if (strcasecmp(cmd, ptr->cmd) == 0)
+    if (irccmp(cmd, ptr->cmd) == 0)
     {
       return(ptr->msg);
     }
@@ -699,11 +696,8 @@ remove_unknown(struct Client *client_p, char *lsender, char *lbuffer)
  *      a ping pong error message...
  */
 static void
-do_numeric(char numeric[],
-                       struct Client *client_p,
-                       struct Client *source_p,
-                       int parc,
-                       char *parv[])
+do_numeric(char numeric[], struct Client *client_p, struct Client *source_p,
+           int parc, char *parv[])
 {
   struct Client *target_p;
   struct Channel *chptr;

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.21 2003/04/18 02:13:37 db Exp $
+ *   $Id: m_operspy.c,v 1.22 2003/05/01 13:58:09 michael Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -125,7 +125,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.21 $";
+const char *_version = "$Revision: 1.22 $";
 #endif
 
 /*
@@ -225,7 +225,7 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
   }
 
 #ifdef OPERSPY_LIST
-  if (strcasecmp(parv[1], "LIST") == 0)
+  if (irccmp(parv[1], "LIST") == 0)
   {
     sendto_one(client_p, form_str(RPL_LISTSTART), me.name, client_p->name);
 
@@ -245,7 +245,7 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
 #endif
 
 #ifdef OPERSPY_MODE
-  if (strcasecmp(parv[1], "MODE") == 0)
+  if (irccmp(parv[1], "MODE") == 0)
   {
     if (!IsChanPrefix(parv[2][0]) || !check_channel_name(parv[2]))
     {
@@ -282,16 +282,16 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
 #endif
 
 #ifdef OPERSPY_NAMES
-  if (strcasecmp(parv[1], "NAMES") == 0)
+  if (irccmp(parv[1], "NAMES") == 0)
   {
     if (!IsChanPrefix(parv[2][0]) || !check_channel_name(parv[2]))
     {
       sendto_one(client_p, form_str(ERR_BADCHANNAME),
-                 me.name, parv[0], (unsigned char *)parv[2]);
+                 me.name, parv[0], parv[2]);
       return;
     }
 
-    if ((chptr_names = (struct Channel *)hash_find_channel(parv[2])) == NULL)
+    if ((chptr_names = hash_find_channel(parv[2])) == NULL)
     {
       sendto_one(client_p, form_str(ERR_NOSUCHCHANNEL),
                  me.name, parv[0], parv[2]);
@@ -314,7 +314,7 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
 #endif
 
 #ifdef OPERSPY_TOPIC
-  if (strcasecmp(parv[1], "TOPIC") == 0)
+  if (irccmp(parv[1], "TOPIC") == 0)
   {
     if ((chptr_topic = (struct Channel *)hash_find_channel(parv[2])) == NULL)
     {
@@ -339,7 +339,7 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
 #endif
 
 #ifdef OPERSPY_WHO
-  if (strcasecmp(parv[1], "WHO") == 0)
+  if (irccmp(parv[1], "WHO") == 0)
   {
     if (mask != NULL)
     {
@@ -409,7 +409,7 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
 #endif
 
 #ifdef OPERSPY_WHOIS
-  if (strcasecmp(parv[1], "WHOIS") == 0)
+  if (irccmp(parv[1], "WHOIS") == 0)
   {
     if (strchr(parv[2], '?') || strchr(parv[2], '*'))
     {
