@@ -1,3 +1,15 @@
+leeh        2002/02/23 16:20:41 EST	(20020223_6)
+
+  Modified files:
+    src                  class.c 
+  Log:
+  - apparently you cant do that, oh well
+  
+  Revision  Changes    Path
+  7.34      +7 -3      ircd-hybrid-7/src/class.c
+
+
+
 leeh        2002/02/23 12:54:37 EST	(20020223_5)
 
   Modified files:
@@ -23059,4 +23071,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3442 2002/02/23 17:54:43 leeh Exp $
+$Id: ChangeLog,v 7.3443 2002/02/23 21:20:47 leeh Exp $
