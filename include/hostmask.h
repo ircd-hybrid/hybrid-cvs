@@ -15,7 +15,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- * $Id: hostmask.h,v 1.16 2001/08/24 12:14:56 leeh Exp $ 
+ * $Id: hostmask.h,v 1.17 2001/12/16 11:36:41 leeh Exp $ 
  */
 
 enum
@@ -50,7 +50,7 @@ struct ConfItem* find_address_conf(const char*, const char*,
 struct ConfItem* find_dline(struct irc_inaddr *, int);
 
 void report_Klines(struct Client*, int temp, int mask);
-void report_Ilines(struct Client*, int mask);
+void report_auth(struct Client*);
 #ifdef IPV6
 int match_ipv6(struct irc_inaddr*, struct irc_inaddr*, int);
 #endif
