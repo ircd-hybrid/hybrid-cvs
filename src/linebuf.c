@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: linebuf.c,v 7.80 2002/05/24 23:34:48 androsyn Exp $
+ *  $Id: linebuf.c,v 7.81 2002/05/25 03:06:28 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -637,8 +637,8 @@ linebuf_flush(int fd, buf_head_t *bufhead)
     }
 
   /* Now, try writing data */
-  retval = write(fd, bufline->buf + bufhead->writeofs, bufline->len
-		 - bufhead->writeofs);
+  retval = send(fd, bufline->buf + bufhead->writeofs, bufline->len
+		 - bufhead->writeofs, 0);
    
   /* Deal with return code */
   if (retval < 0)

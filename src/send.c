@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.196 2002/05/24 23:34:52 androsyn Exp $
+ *  $Id: send.c,v 7.197 2002/05/25 03:06:28 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -307,9 +307,9 @@ send_queued_slink_write(int fd, void *data)
   /* Next, lets try to write some data */
   if (to->localClient->slinkq)
   {
-    retlen = write(to->localClient->ctrlfd,
+    retlen = send(to->localClient->ctrlfd,
                    to->localClient->slinkq + to->localClient->slinkq_ofs,
-                   to->localClient->slinkq_len);
+                   to->localClient->slinkq_len, 0);
     if (retlen < 0)
     {
       /* If we have a fatal error */
