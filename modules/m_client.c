@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_client.c,v 1.5 2001/01/05 00:14:24 davidt Exp $
+ *   $Id: m_client.c,v 1.6 2001/01/05 02:15:18 a1kmm Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -100,8 +100,11 @@ static int ms_client(struct Client *cptr, struct Client *sptr,
   char    *id;
   char    *name;
   
-  if (parc < 2)
+  if (parc < 10)
     {
+      sendto_realops_flags(FLAGS_ALL, "Warning: Received a CLIENT "
+        "message from %s(via %s) with too few(%d) parameters.", sptr->name,
+        cptr->name, parc);
       sendto_one(sptr, form_str(ERR_NONICKNAMEGIVEN), me.name, parv[0]);
       return 0;
     }
