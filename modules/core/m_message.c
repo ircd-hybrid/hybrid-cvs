@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.20 2000/12/06 17:01:16 db Exp $
+ *   $Id: m_message.c,v 1.21 2000/12/07 08:18:59 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -414,16 +414,12 @@ void msg_channel( int p_or_n, char *command,
   char *channel_name=NULL;
   int result;
 
-  if (HasVchans(chptr))
+  channel_name = chptr->chname;
+
+  if ( (HasVchans(chptr)) && (vchan = map_vchan(chptr,sptr)) )
     {
-      if( (vchan = map_vchan(chptr,sptr)) )
-	{
-	  channel_name = chptr->chname;
-	  chptr = vchan;
-	}
+      chptr = vchan;
     }
-  else
-    channel_name = chptr->chname;
 
   if(MyClient(sptr))
     {
