@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_debug.c,v 7.48 2001/03/31 03:44:12 db Exp $
+ *   $Id: s_debug.c,v 7.49 2001/03/31 17:56:49 ejb Exp $
  */
 
 #include <sys/types.h> 
@@ -68,10 +68,6 @@ const char serveropts[] = {
 #ifdef  DEBUGMODE
   'D',
 #endif
-  'i',  /* SHOW_INVISIBLE_LUSERS (to opers) - always on */
-  'I',  /* NO_DEFAULT_INVISIBLE - always on */
-  'M',  /* IDLE_FROM_MSG - only /msg re-sets idle time
-         * always on */
 #ifdef  CRYPT_OPER_PASSWORD
   'p',
 #endif
