@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-/* $Id: dbuf.h,v 7.0 1999/08/01 21:19:45 lusky Exp $ */
+/* $Id: dbuf.h,v 7.1 1999/08/15 10:41:18 tomh Exp $ */
 #ifndef INCLUDED_dbuf_h
 #define INCLUDED_dbuf_h
 #ifndef INCLUDED_config_h
@@ -128,11 +128,11 @@ int     dbuf_get ( dbuf *, char *, int);
 **      Note:   delete can be used alone, there is no real binding
 **              between map and delete functions...
 */
-char *dbuf_map (dbuf *, int *);
+char* dbuf_map(dbuf* dyn, int* len);
                                         /* Dynamic buffer header */
                                         /* Return number of bytes accessible */
 
-int dbuf_delete (dbuf *, int);
+void dbuf_delete(dbuf* dyn, int len);
                                         /* Dynamic buffer header */
                                         /* Number of bytes to delete */
 
@@ -151,12 +151,10 @@ int dbuf_delete (dbuf *, int);
 */
 #define DBufClear(dyn)  dbuf_delete((dyn),DBufLength(dyn))
 
-extern  int     dbuf_getmsg (dbuf *, char *, int);
-extern  void     dbuf_init(void);
+extern int DBufCount;
+extern int DBufUsedCount;
 
-extern  int     dbufalloc;
-extern  int     dbufblocks;
-extern  int     maxdbufalloc;
-extern  int     maxdbufblocks;
+extern int     dbuf_getmsg (dbuf *, char *, int);
+extern void    dbuf_init(void);
 
 #endif /* INCLUDED_dbuf_h */
