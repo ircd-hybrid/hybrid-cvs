@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.319 2003/06/19 02:32:18 db Exp $
+ *  $Id: ircd_parser.y,v 1.320 2003/06/21 01:28:29 michael Exp $
  */
 
 %{
@@ -62,7 +62,7 @@ static struct MatchItem *yy_match_item = NULL;
 static struct cluster *cptr = NULL;
 static struct Class *yy_class = NULL;
 
-static dlink_list aconf_list      = { NULL, NULL, 0 };
+static dlink_list aconf_list       = { NULL, NULL, 0 };
 static dlink_list hub_aconfs_list  = { NULL, NULL, 0 };
 static dlink_list leaf_aconfs_list = { NULL, NULL, 0 };
 
@@ -650,6 +650,7 @@ serverinfo_hub: HUB '=' TBOOL ';'
 
       /* Don't become a leaf if we have a lazylink active. */
       DLINK_FOREACH(ptr, serv_list.head)
+      {
         if (MyConnect((struct Client *)ptr->data) &&
             IsCapable((struct Client *)ptr->data, CAP_LL))
         {
@@ -659,7 +660,9 @@ serverinfo_hub: HUB '=' TBOOL ';'
                                ((struct Client *)ptr->data)->name);
           add_capability("HUB", CAP_HUB, 1);
           ServerInfo.hub = 1;
+          break;
         }
+      }
     }
   }
 };
@@ -2018,6 +2021,7 @@ connect_cipher_preference: CIPHER_PREFERENCE '=' QSTRING ';'
       {
         yy_aconf->cipher_preference = ecap;
         found = 1;
+        break;
       }
     }
 
