@@ -1,3 +1,16 @@
+db          2002/12/14 02:37:10 EST	(20021214_1)
+
+  Modified files:
+    src                  send.c 
+  Log:
+  - be careful with IsCapable() when the state of localClient is not known
+    if its NULL, it will panic the server.
+  
+  Revision  Changes    Path
+  7.209     +6 -3      ircd-hybrid-7/src/send.c
+
+
+
 db          2002/12/13 23:08:39 EST	(20021214_0)
 
   Modified files:
@@ -33507,4 +33520,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4133 2002/12/14 04:08:42 db Exp $
+$Id: ChangeLog,v 7.4134 2002/12/14 07:37:13 db Exp $
