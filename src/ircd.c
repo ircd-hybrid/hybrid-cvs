@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.83 2000/12/24 03:55:14 ejb Exp $
+ * $Id: ircd.c,v 7.84 2000/12/24 04:42:16 isomer Exp $
  */
 #include "tools.h"
 #include "ircd.h"
@@ -53,7 +53,6 @@
 #include "scache.h"
 #include "send.h"
 #include "setup.h"
-#include "supported.h"
 #include "whowas.h"
 #include "modules.h"
 
@@ -123,9 +122,6 @@ struct SetOptions GlobalSetOptions;
 
 /* config.h config file paths etc */
 ConfigFileEntryType ConfigFileEntry; 
-
-/* ISUPPORT buffer */
-char isupportbuffer[512];
 
 struct  Counter Count;
 

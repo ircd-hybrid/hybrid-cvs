@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: supported.h,v 1.3 2000/12/24 03:55:13 ejb Exp $
+ * $Id: supported.h,v 1.4 2000/12/24 04:42:10 isomer Exp $
  * 
  */
 #ifndef INCLUDED_supported_h
@@ -34,12 +34,9 @@
                 " TOPICLEN=%i" \
                 " KICKLEN=%i" \
                 " CHANTYPES=%s" \
-                " PART_REASON" \
                 " PREFIX=%s"
                  
-#define FEATURESVALUES MAXMODEPARAMS,MAXCHANNELSPERUSER,MAXBANS,ConfigFileEntry.max_targets, \
-        NICKLEN,TOPICLEN,TOPICLEN,"#&","@+%"
-
-extern char isupportbuffer[512];
+#define FEATURESVALUES MAXMODEPARAMS,MAXCHANNELSPERUSER,MAXBANS, \
+        ConfigFileEntry.max_targets,NICKLEN,TOPICLEN,TOPICLEN,"#&","@+%"
 
 #endif /* INCLUDED_supported_h */
