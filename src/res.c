@@ -4,7 +4,7 @@
  * shape or form. The author takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: res.c,v 7.3 1999/08/16 01:33:33 tomh Exp $
+ * $Id: res.c,v 7.4 1999/08/16 23:34:23 tomh Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -955,11 +955,11 @@ static int proc_answer(struct ResRequest* request, HEADER* header,
 void get_res(void)
 {
   char               buf[sizeof(HEADER) + MAXPACKET];
-  HEADER*            header;
-  struct ResRequest*             request = NULL;
-  struct CacheEntry*            cp = NULL;
-  int                rc;
-  int                answer_count;
+  HEADER*            header       = 0;
+  struct ResRequest* request      = 0;
+  struct CacheEntry* cp           = 0;
+  int                rc           = 0;
+  int                answer_count = 0;
   int                len = sizeof(struct sockaddr_in);
   struct sockaddr_in sin;
 
@@ -1019,9 +1019,17 @@ void get_res(void)
   Debug((DEBUG_INFO,"get_res:Proc answer = %d",a));
 #endif
   if (answer_count) {
-    if (request->type == T_PTR) {
+    if (T_PTR == request->type) {
       struct DNSReply* reply = NULL;
-      
+      if (0 == request->he.h.h_name) {
+        /*
+         * got a PTR response with no name, something bogus is happening
+         * don't bother trying again, the client address doesn't resolve 
+         */
+        (*request->query.callback)(request->query.vptr, reply);
+        rem_request(request); 
+        return;
+      }
       Debug((DEBUG_DNS, "relookup %s <-> %s",
              request->he.h.h_name, inetntoa((char*) &request->he.h.h_addr)));
       /*
