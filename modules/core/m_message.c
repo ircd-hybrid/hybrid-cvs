@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.131 2003/10/07 22:37:17 bill Exp $
+ *  $Id: m_message.c,v 1.132 2003/10/21 22:49:46 bill Exp $
  */
 
 #include "stdinc.h"
@@ -117,7 +117,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.131 $";
+const char *_version = "$Revision: 1.132 $";
 #endif
 
 /*
@@ -179,7 +179,8 @@ m_message(int p_or_n, const char *command, struct Client *client_p,
   {
     if (p_or_n != NOTICE)
       sendto_one(source_p, form_str(ERR_NORECIPIENT),
-                 me.name, source_p->name, command);
+                 ID_or_name(&me, client_p),
+                 ID_or_name(source_p, client_p), command);
     return;
   }
 
@@ -187,7 +188,8 @@ m_message(int p_or_n, const char *command, struct Client *client_p,
   {
     if (p_or_n != NOTICE)
       sendto_one(source_p, form_str(ERR_NOTEXTTOSEND),
-                 me.name, source_p->name);
+                 ID_or_name(&me, client_p),
+                 ID_or_name(source_p, client_p));
     return;
   }
 
@@ -290,7 +292,8 @@ build_target_list(int p_or_n, const char *command, struct Client *client_p,
           if (ntargets >= ConfigFileEntry.max_targets)
           {
             sendto_one(source_p, form_str(ERR_TOOMANYTARGETS),
-                       me.name, source_p->name, nick);
+                       ID_or_name(&me, client_p),
+                       ID_or_name(source_p, client_p), nick);
             return (1);
           }
           targets[ntargets].ptr = (void *)chptr;
@@ -302,7 +305,8 @@ build_target_list(int p_or_n, const char *command, struct Client *client_p,
         if (!ServerInfo.hub && (uplink != NULL) && IsCapable(uplink, CAP_LL))
           return -1;
         else if (p_or_n != NOTICE)
-          sendto_one(source_p, form_str(ERR_NOSUCHNICK), me.name,
+          sendto_one(source_p, form_str(ERR_NOSUCHNICK),
+                     ID_or_name(&me, client_p),
                      ID_or_name(source_p, client_p), nick);
       }
       continue;
@@ -316,7 +320,8 @@ build_target_list(int p_or_n, const char *command, struct Client *client_p,
         if (ntargets >= ConfigFileEntry.max_targets)
 	  {
 	    sendto_one(source_p, form_str(ERR_TOOMANYTARGETS),
-		       me.name, source_p->name, nick);
+                       ID_or_name(&me, client_p),
+                       ID_or_name(source_p, client_p), nick);
 	    return (1);
 	  }
         targets[ntargets].ptr = (void *)target_p;
@@ -350,7 +355,8 @@ build_target_list(int p_or_n, const char *command, struct Client *client_p,
       if (*nick == '\0')      /* if its a '\0' dump it, there is no recipient */
       {
         sendto_one(source_p, form_str(ERR_NORECIPIENT),
-                   me.name, source_p->name, command);
+                   ID_or_name(&me, client_p),
+                   ID_or_name(source_p, client_p), command);
         continue;
       }
 
@@ -364,7 +370,8 @@ build_target_list(int p_or_n, const char *command, struct Client *client_p,
                               CHFL_CHANOP|CHFL_HALFOP|CHFL_VOICE))
         {
           sendto_one(source_p, form_str(ERR_CHANOPRIVSNEEDED),
-                     me.name, source_p->name, with_prefix);
+                     ID_or_name(&me, client_p),
+                     ID_or_name(source_p, client_p), with_prefix);
           return(-1);
         }
 
@@ -373,7 +380,8 @@ build_target_list(int p_or_n, const char *command, struct Client *client_p,
           if (ntargets >= ConfigFileEntry.max_targets)
           {
 	    sendto_one(source_p, form_str(ERR_TOOMANYTARGETS),
-	               me.name, source_p->name, nick);
+                       ID_or_name(&me, client_p),
+                       ID_or_name(source_p, client_p), nick);
             return(1);
           }
           targets[ntargets].ptr = (void *)chptr;
@@ -386,8 +394,9 @@ build_target_list(int p_or_n, const char *command, struct Client *client_p,
         if (!ServerInfo.hub && (uplink != NULL) && IsCapable(uplink, CAP_LL))
           return -1;
         else if (p_or_n != NOTICE)
-          sendto_one(source_p, form_str(ERR_NOSUCHNICK), me.name,
-                     source_p->name, nick);
+          sendto_one(source_p, form_str(ERR_NOSUCHNICK),
+                     ID_or_name(&me, client_p),
+                     ID_or_name(source_p, client_p), nick);
       }
       continue;
     }
@@ -402,7 +411,8 @@ build_target_list(int p_or_n, const char *command, struct Client *client_p,
         return -1;
       else if (p_or_n != NOTICE)
         sendto_one(source_p, form_str(ERR_NOSUCHNICK),
-	           me.name, source_p->name, nick);
+                   ID_or_name(&me, client_p),
+                   ID_or_name(source_p, client_p), nick);
     }
     /* continue; */
   }
@@ -469,7 +479,8 @@ msg_channel(int p_or_n, const char *command, struct Client *client_p,
   {
     if (p_or_n != NOTICE)
       sendto_one(source_p, form_str(ERR_CANNOTSENDTOCHAN),
-                 me.name, source_p->name, chptr->chname);
+                 ID_or_name(&me, client_p),
+                 ID_or_name(source_p, client_p), chptr->chname);
   }
 }
 
@@ -786,7 +797,8 @@ handle_special(int p_or_n, const char *command, struct Client *client_p,
     if ((host = strchr(nick, '%')) && !IsOper(source_p))
     {
       sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
-		 me.name, source_p->name);
+                 ID_or_name(&me, client_p),
+                 ID_or_name(source_p, client_p));
       return;
     }
 
@@ -797,7 +809,8 @@ handle_special(int p_or_n, const char *command, struct Client *client_p,
 	/*
 	 * Not destined for a user on me :-(
 	 */
-	sendto_one(target_p, ":%s %s %s :%s", source_p->name,
+	sendto_one(target_p, ":%s %s %s :%s",
+                   ID_or_name(source_p, target_p->from),
 		   command, nick, text);
 	if ((p_or_n != NOTICE) && source_p->user)
 	  source_p->user->last = CurrentTime;
@@ -814,7 +827,8 @@ handle_special(int p_or_n, const char *command, struct Client *client_p,
       {
 	if (!IsOper(source_p))
 	  sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
-		     me.name, source_p->name);
+                     ID_or_name(&me, client_p),
+                     ID_or_name(source_p, client_p));
 	else
 	  sendto_realops_flags(UMODE_ALL, L_ALL, "To opers: From: %s: %s",
 			       source_p->name, text);
@@ -837,29 +851,34 @@ handle_special(int p_or_n, const char *command, struct Client *client_p,
 
 	if (count == 1)
 	{
-	  sendto_one(target_p, ":%s %s %s :%s",
-		     source_p->name, command, nick, text);
+	  sendto_one(target_p, ":%s!%s@%s %s %s :%s",
+		     source_p->name, source_p->username, source_p->host,
+                     command, nick, text);
 	  if ((p_or_n != NOTICE) && source_p->user)
 	    source_p->user->last = CurrentTime;
 	}
 	else
 	  sendto_one(source_p, form_str(ERR_TOOMANYTARGETS),
-		     me.name, source_p->name, nick);
+                     ID_or_name(&me, client_p),
+                     ID_or_name(source_p, client_p), nick);
       }
     }
     else if (server && *(server+1) && (target_p == NULL))
-	sendto_one(source_p, form_str(ERR_NOSUCHSERVER), me.name,
-		   source_p->name, server+1);
+	sendto_one(source_p, form_str(ERR_NOSUCHSERVER),
+                   ID_or_name(&me, client_p),
+                   ID_or_name(source_p, client_p), server+1);
     else if (server && (target_p == NULL))
-	sendto_one(source_p, form_str(ERR_NOSUCHNICK), me.name,
-		   source_p->name, nick);
+	sendto_one(source_p, form_str(ERR_NOSUCHNICK),
+                   ID_or_name(&me, client_p),
+                   ID_or_name(source_p, client_p), nick);
     return;
   }
 
   if (!IsOper(source_p))
   {
     sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
-	       me.name, source_p->name);
+               ID_or_name(&me, client_p),
+               ID_or_name(source_p, client_p));
     return;
   }
 
@@ -895,7 +914,8 @@ handle_special(int p_or_n, const char *command, struct Client *client_p,
     if (*s == '*' || *s == '?')
     {
       sendto_one(source_p, form_str(ERR_WILDTOPLEVEL),
-                 me.name, source_p->name, nick);
+                 ID_or_name(&me, client_p),
+                 ID_or_name(source_p, client_p), nick);
       return;
     }
     
@@ -925,17 +945,17 @@ find_userhost(char *user, char *host, int *count)
 {
   struct Client *c2ptr;
   struct Client *res = NULL;
-  dlink_node *gc2ptr;
+  dlink_node *lc2ptr;
 
   *count = 0;
 
   if (collapse(user) != NULL)
   {
-    DLINK_FOREACH(gc2ptr, global_client_list.head)
+    DLINK_FOREACH(lc2ptr, local_client_list.head)
     {
-      c2ptr = gc2ptr->data;
+      c2ptr = lc2ptr->data;
 
-      if (!MyClient(c2ptr)) /* implies mine and an user */
+      if (!IsClient(c2ptr)) /* something other than a client */
         continue;
 
       if ((!host || match(host, c2ptr->host)) &&
