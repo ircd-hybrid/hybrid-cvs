@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.c,v 1.57 2002/05/24 23:34:20 androsyn Exp $
+ *  $Id: m_info.c,v 1.58 2002/07/22 00:40:41 leeh Exp $
  */
 
 #include "stdinc.h"
@@ -69,7 +69,7 @@ _moddeinit(void)
   hook_del_event("doing_info");
   mod_del_cmd(&info_msgtab);
 }
-const char *_version = "$Revision: 1.57 $";
+const char *_version = "$Revision: 1.58 $";
 #endif
 
 /*
@@ -777,6 +777,7 @@ static void send_conf_options(struct Client *source_p)
   ** in order for it to show up properly to opers who issue INFO
   */
 
+#ifndef EFNET
   /* jdc -- Only send compile information to admins. */
   if (IsOperAdmin(source_p))
   {
@@ -787,6 +788,7 @@ static void send_conf_options(struct Client *source_p)
 	source_p->name,
 	platform); 
   }
+#endif
 
   sendto_one(source_p, form_str(RPL_INFO), me.name, source_p->name, "");
 }
