@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 1.40 2001/01/02 01:09:18 a1kmm Exp $
+ *   $Id: m_whois.c,v 1.41 2001/01/02 01:14:34 a1kmm Exp $
  */
 #include "tools.h"
 #include "common.h"   /* bleah */
@@ -110,10 +110,6 @@ int     m_whois(struct Client *cptr,
  */
 
  return(do_whois(cptr,sptr,parc,parv));
- 
- 
-
->>>>>>> 1.39
 }
 
 /*
