@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.c,v 7.28 2000/12/27 16:50:53 davidt Exp $
+ * $Id: modules.c,v 7.29 2000/12/28 06:55:28 lusky Exp $
  */
 
 #include <dlfcn.h>
@@ -38,6 +38,10 @@
 #include "ircd_defs.h"
 #include "irc_string.h"
 #include "memdebug.h"
+
+#ifndef RTLD_NOW
+#define RTLD_NOW RTLD_LAZY /* openbsd deficiency */
+#endif
 
 static char unknown_ver[] = "<unknown>";
 
