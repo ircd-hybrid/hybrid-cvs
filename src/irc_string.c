@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: irc_string.c,v 7.9 2000/12/01 22:18:06 db Exp $
+ *  $Id: irc_string.c,v 7.10 2000/12/12 17:25:33 db Exp $
  */
 #include "tools.h"
 #include "irc_string.h"
@@ -268,7 +268,7 @@ mk6addrstr(struct in6_addr *addr)
         {
                 if (dest2[j] == ':') 
                 {
-                        dest[2++] = dest2[j++];
+                        dest[k++] = dest2[j++];
                         while(dest2[j] == '0')
                                 j++;
                         continue;

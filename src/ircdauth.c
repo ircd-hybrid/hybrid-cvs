@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: ircdauth.c,v 7.20 2000/12/10 20:04:08 db Exp $
+ *   $Id: ircdauth.c,v 7.21 2000/12/12 17:25:33 db Exp $
  */
 
 #include <stdio.h>
@@ -235,12 +235,20 @@ BeginAuthorization(struct Client *client)
 	 */
 
 	len = sprintf(buf,
+#ifdef IPV6
+		"DoAuth %p %s %s %s %lu %s\n",
+#else
 		"DoAuth %p %s %s %s %u %s\n",
+#endif
 		client,
 		client->name,
 		client->username,
 		client->host,
+#ifdef IPV6
+		(unsigned int) client->localClient->ip6.s6_addr,
+#else
 		(unsigned int) client->localClient->ip.s_addr,
+#endif
 		client->localClient->passwd);
 
 	send(iAuth.socket, buf, len, 0);
@@ -538,7 +546,11 @@ GreetUser(struct Client *client)
 		       client->name,
 		       client->username,
 		       client->host,
+#ifdef IPV6
+		       inetntoa((char *)&client->localClient->ip6),
+#else
 		       inetntoa((char *)&client->localClient->ip),
+#endif
 		       get_client_class(client));
 
   if ((++Count.local) > Count.max_loc)
