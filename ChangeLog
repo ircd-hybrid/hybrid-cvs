@@ -1,3 +1,19 @@
+jmallett    2002/11/26 22:56:25 EST	(20021127_1)
+
+  Modified files:
+    src                  Makefile.in 
+  Log:
+  Take the easy way out for non-GNU compilers, and make people make sure tools.c
+  always compiles with whatever changes they're making - roll-back revision
+  7.113's unexplained delta here, and compile it always.  If we really do care
+  enough to rip it out of the build where it isn't needed, there are other ways
+  to do that, like we do for @SPRINTF@.
+  
+  Revision  Changes    Path
+  7.114     +1 -2      ircd-hybrid-7/src/Makefile.in
+
+
+
 jmallett    2002/11/26 22:46:59 EST	(20021127_0)
 
   Modified files:
@@ -33306,4 +33322,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4119 2002/11/27 03:47:01 jmallett Exp $
+$Id: ChangeLog,v 7.4120 2002/11/27 03:56:28 jmallett Exp $
