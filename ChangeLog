@@ -1,3 +1,16 @@
+androsyn    2002/05/31 22:32:17 EDT	(20020601_0)
+
+  Modified files:
+    contrib              m_force.c 
+  Log:
+  Scuzzy's modifications to allow the forcing of a user into a new channel.
+  Also adds support for remote forcing.
+  
+  Revision  Changes    Path
+  1.8       +162 -18   ircd-hybrid-7/contrib/m_force.c
+
+
+
 androsyn    2002/05/31 00:49:25 EDT	(20020531_14)
 
   Modified files:
@@ -27714,4 +27727,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3728 2002/05/31 04:49:31 androsyn Exp $
+$Id: ChangeLog,v 7.3729 2002/06/01 02:32:23 androsyn Exp $
