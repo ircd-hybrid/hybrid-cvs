@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.165 2001/05/24 13:28:19 davidt Exp $
+ *   $Id: s_serv.c,v 7.166 2001/05/24 23:37:59 davidt Exp $
  */
 
 #include <sys/types.h>
@@ -2047,6 +2047,14 @@ void cryptlink_init(struct Client *client_p,
   char *key_to_send;
   char randkey[CIPHERKEYLEN];
   int enc_len;
+
+  /* check compatability */
+  if (!IsCapable(client_p, CAP_ENC))
+  {
+    cryptlink_error(client_p,
+      "%s[%s]: CRYPTLINK failed - remote server has no ENC capab");
+    return;
+  }
 
   /* get key */
   if (!ServerInfo.rsa_private_key ||
