@@ -1,3 +1,20 @@
+bill        2002/10/24 14:16:42 EDT	(20021024_2)
+
+  Modified files:
+    modules/core         m_message.c 
+    src                  channel.c parse.c 
+  Log:
+  - opers can no longer over-ride umode +g
+  - made expire_channels() use DLINK_FOREACH_SAFE
+  - made HELP use MFLG_HIDDEN when listing commands
+  
+  Revision  Changes    Path
+  1.103     +2 -3      ircd-hybrid-7/modules/core/m_message.c
+  7.339     +2 -2      ircd-hybrid-7/src/channel.c
+  7.141     +4 -3      ircd-hybrid-7/src/parse.c
+
+
+
 bill        2002/10/23 23:35:59 EDT	(20021024_1)
 
   Modified files:
@@ -32643,4 +32660,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4075 2002/10/24 03:36:01 bill Exp $
+$Id: ChangeLog,v 7.4076 2002/10/24 18:16:44 bill Exp $
