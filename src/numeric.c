@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: numeric.c,v 7.18 2002/01/05 09:15:15 a1kmm Exp $
+ *  $Id: numeric.c,v 7.19 2002/04/14 21:50:15 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -63,7 +63,7 @@ const char* form_str(int numeric)
   if (num_ptr == NULL)
     num_ptr = replies[ERR_LAST_ERR_MSG];
 
-  return (num_ptr);
+  return ((const char *) _(num_ptr));
 }
 
 
