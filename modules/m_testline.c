@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_testline.c,v 1.19 2001/04/18 11:37:17 a1kmm Exp $
+ *   $Id: m_testline.c,v 1.20 2001/04/19 02:53:23 a1kmm Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -160,16 +160,6 @@ static void mo_testline(struct Client *client_p, struct Client *source_p,
                          port,
                          classname);
       
-              aconf = find_tkline(given_host, given_name, 0);
-              if(aconf)
-                {
-                  sendto_one(source_p,
-                     ":%s NOTICE %s :k-line name [%s] host [%s] pass [%s]",
-                             me.name, parv[0],
-                             aconf->user,
-                             aconf->host,
-                             aconf->passwd);
-                }
             }
         }
       else

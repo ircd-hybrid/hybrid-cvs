@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- * $Id: hostmask.c,v 7.36 2001/04/18 11:37:24 a1kmm Exp $ 
+ * $Id: hostmask.c,v 7.37 2001/04/19 02:53:24 a1kmm Exp $ 
  */
  
 #include <stdlib.h>
@@ -612,6 +612,11 @@ clear_out_address_conf(void)
  }
 }
 
+/* void report_dlines(struct Client *client_p)
+ * Input: Client to report to.
+ * Output: None
+ * Side effects: Reports configured D-lines to client_p
+ */
 void
 report_dlines(struct Client *client_p)
 {
@@ -631,6 +636,11 @@ report_dlines(struct Client *client_p)
    }
 }
 
+/* void report_exemptlines(struct Client *client_p)
+ * Input: Client to report to.
+ * Output: None
+ * Side effects: Reports configured exemptions to client_p
+ */
 void
 report_exemptlines(struct Client *client_p)
 {
@@ -689,7 +699,11 @@ show_iline_prefix(struct Client *sptr,struct ConfItem *aconf,char *name)
  return(prefix_of_host);
 }
 
-
+/* void report_Ilines(struct Client *client_p)
+ * Input: None
+ * Output: None
+ * Side effects: Reports configured auth{} blocks to client_p
+ */
 void
 report_Ilines(struct Client *client_p)
 {
@@ -714,7 +728,11 @@ report_Ilines(struct Client *client_p)
    }
 }
 
-
+/* void report_Klines(struct Client *client_p, int t)
+ * Input: Client to report to, type(==0 for perm, !=0 for temporary).
+ * Output: None
+ * Side effects: Reports configured K(or k)-lines to client_p.
+ */
 void
 report_Klines(struct Client *client_p, int t)
 {
@@ -739,4 +757,3 @@ report_Klines(struct Client *client_p, int t)
                client_p->name, c, host, user, pass);
    }
 }
-
