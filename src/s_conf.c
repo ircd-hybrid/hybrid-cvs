@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.409 2003/05/28 16:38:00 db Exp $
+ *  $Id: s_conf.c,v 7.410 2003/05/28 20:12:09 db Exp $
  */
 
 #include "stdinc.h"
@@ -200,7 +200,7 @@ free_conf(struct ConfItem *aconf)
   MyFree(aconf->name);
   MyFree(aconf->user);
   MyFree(aconf->host);
-  MyFree(aconf->className);
+  MyFree(aconf->class_name);
   MyFree(aconf->fakename);
 #ifdef HAVE_LIBCRYPTO
   if (aconf->rsa_public_key)
@@ -1748,7 +1748,19 @@ oper_privs_as_string(struct Client *source_p, unsigned int port)
   *privs_ptr = '\0';
 
   if (source_p != NULL)
+  {
     SetOFlag(source_p, port);
+ 
+    if (IsOperAdmin(source_p))
+    {
+      if (!IsOperHiddenAdmin(source_p))
+	*privs_ptr++ = 'A';
+      else
+	*privs_ptr++ = 'a';
+    }
+    else
+      *privs_ptr++ = 'a';
+  }
 
   for (i = 0; flag_list[i].oflag; i++)
   {
@@ -1757,16 +1769,6 @@ oper_privs_as_string(struct Client *source_p, unsigned int port)
     else
       *privs_ptr++ = flag_list[i].neg;
   }
-
-  if (IsOperAdmin(source_p))
-  {
-    if (!IsOperHiddenAdmin(source_p))
-      *privs_ptr++ = 'A';
-    else
-      *privs_ptr++ = 'a';
-  }
-  else
-    *privs_ptr++ = 'a';
 
   *privs_ptr = '\0';
 
@@ -1836,7 +1838,7 @@ get_printable_conf(struct ConfItem *aconf, char **name, char **host, char **reas
   *host = EmptyString(aconf->host) ? null : aconf->host;
   *reason = EmptyString(aconf->reason) ? null : aconf->reason;
   *user = EmptyString(aconf->user) ? null : aconf->user;
-  *classname = EmptyString(aconf->className) ? zero : aconf->className;
+  *classname = EmptyString(aconf->class_name) ? zero : aconf->class_name;
   *port = (int)aconf->port;
 }
 
@@ -2106,31 +2108,31 @@ get_conf_name(int type)
 void
 conf_add_class_to_conf(struct ConfItem *aconf)
 {
-  if (aconf->className == NULL)
+  if (aconf->class_name == NULL)
   {
-    DupString(aconf->className, "default");
+    DupString(aconf->class_name, "default");
     ClassPtr(aconf) = class0;
     return;
   }
 
-  ClassPtr(aconf) = find_class(aconf->className);
+  ClassPtr(aconf) = find_class(aconf->class_name);
 
   if (ClassPtr(aconf) == class0)
   {
     sendto_realops_flags(UMODE_ALL, L_ALL,
 	   "Warning *** Defaulting to default "
            "class for missing class \"%s\"",
-                         aconf->className);
-    MyFree(aconf->className);
-    DupString(aconf->className, "default");
+                         aconf->class_name);
+    MyFree(aconf->class_name);
+    DupString(aconf->class_name, "default");
     return;
   }
 
   if (ConfMaxLinks(aconf) < 0)
   {
     ClassPtr(aconf) = find_class(0);
-    MyFree(aconf->className);
-    DupString(aconf->className, "default");
+    MyFree(aconf->class_name);
+    DupString(aconf->class_name, "default");
     return;
   }
 }
