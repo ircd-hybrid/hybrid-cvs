@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kill.c,v 1.62 2002/03/07 06:22:03 db Exp $
+ *  $Id: m_kill.c,v 1.63 2002/04/14 11:06:47 leeh Exp $
  */
 
 #include "handlers.h"
@@ -64,7 +64,7 @@ _moddeinit(void)
   mod_del_cmd(&kill_msgtab);
 }
 
-const char *_version = "$Revision: 1.62 $";
+const char *_version = "$Revision: 1.63 $";
 #endif
 /*
 ** mo_kill
@@ -128,7 +128,9 @@ static void mo_kill(struct Client *client_p, struct Client *source_p,
     }
 
   if(MyConnect(target_p))
-    sendto_one(target_p, ":%s KILL %s :%s", parv[0], target_p->name, reason);
+    sendto_one(target_p, ":%s!%s@%s KILL %s :%s", 
+	       source_p->name, source_p->username, source_p->host,
+	       target_p->name, reason);
 
   /* Do not change the format of this message.  There's no point in changing messages
    * that have been around for ever, for no reason.. */
@@ -236,15 +238,22 @@ static void ms_kill(struct Client *client_p, struct Client *source_p,
       return;
     }
 
-  /* dont send clients kills from a hidden server */
   if(MyConnect(target_p))
   {
-    if(ConfigServerHide.hide_servers && IsServer(source_p) && 
-       !IsOper(source_p))
-      sendto_one(target_p, ":%s KILL %s :%s",
-                 me.name, target_p->name, reason);
+    if(IsServer(source_p))
+    {
+      /* dont send clients kills from a hidden server */
+      if(ConfigServerHide.hide_servers && !IsOper(target_p))
+        sendto_one(target_p, ":%s KILL %s :%s",
+ 		   me.name, target_p->name, reason);
+      else
+	sendto_one(target_p, ":%s KILL %s :%s",
+	           source_p->name, target_p->name, reason);
+    }
     else
-      sendto_one(target_p, ":%s KILL %s :%s", parv[0], target_p->name, reason);
+      sendto_one(target_p, ":%s!%s@%s KILL %s :%s",
+		 source_p->name, source_p->username, source_p->host,
+		 target_p->name, reason);
   }
 
   /* Be warned, this message must be From %s, or it confuses clients
