@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.178 2001/06/05 01:45:31 ejb Exp $
+ *  $Id: client.c,v 7.179 2001/06/06 14:27:18 leeh Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -1769,7 +1769,8 @@ int change_local_nick(struct Client *client_p, struct Client *source_p,
   if((ConfigFileEntry.anti_nick_flood && 
       (source_p->localClient->number_of_nick_changes
        <= ConfigFileEntry.max_nick_changes)) ||
-     !ConfigFileEntry.anti_nick_flood)
+     !ConfigFileEntry.anti_nick_flood || 
+     (IsOper(source_p) && ConfigFileEntry.no_oper_flood))
     {
       sendto_realops_flags(FLAGS_NCHANGE,
 			   "Nick change: From %s to %s [%s@%s]",
