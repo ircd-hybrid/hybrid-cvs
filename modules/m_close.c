@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_close.c,v 1.16 2001/04/13 22:39:45 davidt Exp $
+ *   $Id: m_close.c,v 1.17 2001/05/13 21:39:19 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -64,13 +64,15 @@ static void mo_close(struct Client *client_p, struct Client *source_p,
 {
   struct Client  *target_p;
   dlink_node     *ptr;
+  dlink_node     *ptr_next;
   int            closed = 0;
 
 
 
-  for (ptr = unknown_list.head; ptr; ptr = ptr->next)
+  for (ptr = unknown_list.head; ptr; ptr = ptr_next)
     {
       target_p = ptr->data;
+      ptr_next = ptr->next;
 
   /* Which list would connecting servers be found in? serv_list ? */
 #if 0
