@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: handlers.h,v 7.24 2000/12/15 02:28:31 db Exp $
+ * $Id: handlers.h,v 7.25 2000/12/16 18:19:19 db Exp $
  */
 #ifndef INCLUDED_handlers_h
 #define INCLUDED_handlers_h
@@ -199,6 +199,7 @@ extern int ms_kick(struct Client*, struct Client*, int, char**);
 extern int ms_kill(struct Client*, struct Client*, int, char**);
 extern int ms_kline(struct Client *,struct Client *,int,char **);
 extern int ms_links(struct Client*, struct Client*, int, char**);
+extern int ms_list(struct Client*, struct Client*, int, char**);
 extern int ms_lljoin(struct Client *,struct Client *,int,char **);
 extern int ms_lusers(struct Client*, struct Client*, int, char**);
 extern int ms_mode(struct Client*, struct Client*, int, char**);
