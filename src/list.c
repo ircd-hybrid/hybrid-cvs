@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu, Computing Center and Jarkko Oikarinen
  *
- * $Id: list.c,v 7.39 2001/09/25 08:11:03 a1kmm Exp $
+ * $Id: list.c,v 7.40 2001/12/19 09:59:28 a1kmm Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -80,14 +80,7 @@ struct User* make_user(struct Client *client_p)
 
       ++user_count;
 
-      user->away = NULL;
-      user->server = (char *)NULL;      /* scache server name */
-      user->joined = 0;
-      user->channel.head = NULL;
-      user->channel.tail = NULL;
-      user->invited.head = NULL;
-      user->invited.tail = NULL;
-      user->id[0] = '\0';
+      memset(user, 0, sizeof(*user));
       user->refcnt = 1;
       client_p->user = user;
     }
