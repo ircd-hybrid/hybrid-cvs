@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_misc.c,v 7.20 2001/01/22 10:31:28 toot Exp $
+ *  $Id: s_misc.c,v 7.21 2001/01/29 18:52:45 jdc Exp $
  */
 #include "s_misc.h"
 #include "client.h"
@@ -164,7 +164,7 @@ void serv_info(struct Client *cptr)
        */
       if(IsOper(cptr))
         sendto_one(cptr, Lformat, me.name, RPL_STATSLINKINFO,
-                   cptr->name, get_client_name(acptr, TRUE),
+                   cptr->name, get_client_name(acptr, SHOW_IP),
                    (int)linebuf_len(&acptr->localClient->buf_sendq),
                    (int)acptr->localClient->sendM,
 		   (int)acptr->localClient->sendK,
@@ -176,7 +176,7 @@ void serv_info(struct Client *cptr)
       else
         {
           sendto_one(cptr, Lformat, me.name, RPL_STATSLINKINFO,
-                     cptr->name, get_client_name(acptr, HIDEME),
+                     cptr->name, get_client_name(acptr, MASK_IP),
                      (int)linebuf_len(&acptr->localClient->buf_sendq),
                      (int)acptr->localClient->sendM,
 		     (int)acptr->localClient->sendK,

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_error.c,v 7.9 2001/01/11 05:32:00 a1kmm Exp $
+ *   $Id: m_error.c,v 7.10 2001/01/29 18:52:44 jdc Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -77,10 +77,10 @@ int m_error(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
     return 0;
   if (cptr == sptr)
     sendto_realops_flags(FLAGS_ALL,"ERROR :from %s -- %s",
-			 get_client_name(cptr, FALSE), para);
+			 get_client_name(cptr, HIDE_IP), para);
   else
     sendto_realops_flags(FLAGS_ALL,"ERROR :from %s via %s -- %s", sptr->name,
-			 get_client_name(cptr,FALSE), para);
+			 get_client_name(cptr, HIDE_IP), para);
   return 0;
 }
 
@@ -102,10 +102,10 @@ int mr_error(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
     return 0;
   if (cptr == sptr)
     sendto_realops_flags(FLAGS_ALL,"ERROR :from %s -- %s",
-			 get_client_name(cptr, FALSE), para);
+			 get_client_name(cptr, HIDE_IP), para);
   else
     sendto_realops_flags(FLAGS_ALL,"ERROR :from %s via %s -- %s", sptr->name,
-			 get_client_name(cptr,FALSE), para);
+			 get_client_name(cptr, HIDE_IP), para);
   return 0;
 }
 
@@ -127,10 +127,10 @@ int ms_error(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
     return 0;
   if (cptr == sptr)
     sendto_realops_flags(FLAGS_ALL,"ERROR :from %s -- %s",
-			 get_client_name(cptr, FALSE), para);
+			 get_client_name(cptr, HIDE_IP), para);
   else
     sendto_realops_flags(FLAGS_ALL,"ERROR :from %s via %s -- %s", sptr->name,
-			 get_client_name(cptr,FALSE), para);
+			 get_client_name(cptr, HIDE_IP), para);
   return 0;
 }
 

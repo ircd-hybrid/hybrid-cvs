@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.c,v 7.49 2001/01/27 06:38:15 lusky Exp $
+ *   $Id: s_auth.c,v 7.50 2001/01/29 18:52:45 jdc Exp $
  *
  * Changes:
  *   July 6, 1999 - Rewrote most of the code here. When a client connects
@@ -295,7 +295,7 @@ static int start_auth_query(struct AuthRequest* auth)
   if ((fd = comm_open(DEF_FAM, SOCK_STREAM, 0, "ident")) == -1)
     {
       report_error("creating auth stream socket %s:%s", 
-		   get_client_name(auth->client, TRUE), errno);
+		   get_client_name(auth->client, SHOW_IP), errno);
       log(L_ERROR, "Unable to create auth socket for %s:%m",
 	  get_client_name(auth->client, SHOW_IP));
       ++ServerStats->is_abad;
@@ -304,7 +304,7 @@ static int start_auth_query(struct AuthRequest* auth)
   if ((MAXCONNECTIONS - 10) < fd)
     {
       sendto_realops_flags(FLAGS_ALL,"Can't allocate fd for auth on %s",
-			   get_client_name(auth->client, TRUE));
+			   get_client_name(auth->client, SHOW_IP));
       fd_close(fd);
       return 0;
     }
