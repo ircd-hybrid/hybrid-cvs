@@ -1,3 +1,15 @@
+db          2002/11/27 17:54:13 EST	(20021127_3)
+
+  Modified files:
+    src                  balloc.c 
+  Log:
+  - As pointed out by TimeMr14C...
+  
+  Revision  Changes    Path
+  7.39      +1 -1      ircd-hybrid-7/src/balloc.c
+
+
+
 db          2002/11/27 10:46:25 EST	(20021127_2)
 
   Modified files:
@@ -33334,4 +33346,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4121 2002/11/27 15:46:28 db Exp $
+$Id: ChangeLog,v 7.4122 2002/11/27 22:54:16 db Exp $
