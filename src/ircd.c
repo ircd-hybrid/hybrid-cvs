@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.77 2000/12/17 14:10:46 db Exp $
+ * $Id: ircd.c,v 7.78 2000/12/18 05:42:56 bill Exp $
  */
 #include "tools.h"
 #include "ircd.h"
@@ -222,11 +222,11 @@ static void init_sys(int boot_daemon)
         exit(0);
 #ifdef TIOCNOTTY
       { /* scope */
-        int fd;
-        if ((fd = file_open("/dev/tty", O_RDWR)) >= 0)
+        FBFILE* fd;
+        if ((fd = fbopen("/dev/tty", "+")))
           {
-            ioctl(fd, TIOCNOTTY, NULL);
-            file_close(fd);
+            ioctl(fd->fd, TIOCNOTTY, NULL);
+            fbclose(fd);
           }
       }
 #endif
@@ -439,14 +439,15 @@ static void initialize_message_files(void)
 
 static void write_pidfile(void)
 {
-  int fd;
+  FBFILE* fd;
   char buff[20];
-  if ((fd = file_open(PPATH, O_CREAT|O_WRONLY, 0600))>=0)
+  if ((fd = fbopen(PPATH, "wt")))
     {
       ircsprintf(buff,"%d\n", (int)getpid());
-      if (write(fd, buff, strlen(buff)) == -1)
-        log(L_ERROR,"Error writing to pid file %s", PPATH);
-      file_close(fd);
+      if ((fbputs(buff, fd) == -1))
+        log(L_ERROR,"Error writing to pid file %s (%s)", PPATH,
+		    strerror(errno));
+      fbclose(fd);
       return;
     }
   else

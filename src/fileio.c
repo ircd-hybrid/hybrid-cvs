@@ -4,7 +4,7 @@
  * Copyright (C) 1990 Jarkko Oikarinen and
  *                    University of Oulu, Co Center
  *
- * $Id: fileio.c,v 7.11 2000/12/18 04:29:05 db Exp $
+ * $Id: fileio.c,v 7.12 2000/12/18 05:42:56 bill Exp $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -34,19 +34,6 @@
 #include <unistd.h> /* read, write, open, close */
 #include <assert.h> /* assert */
 #include <sys/errno.h>
-
-#define FB_EOF  0x01
-#define FB_FAIL 0x02
-
-struct FileBuf {
-  int   fd;           /* file descriptor */
-  char* endp;         /* one past the end */
-  char* ptr;          /* current read pos */
-  char* pbptr;        /* pointer to push back char */
-  int   flags;        /* file state */
-  char  buf[BUFSIZ];  /* buffer */
-  char  pbuf[BUFSIZ+1]; /* push back buffer */
-};
 
 /*
  * Wrappers around open() / close() for fileio, since a whole bunch of

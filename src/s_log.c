@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_log.c,v 7.11 2000/11/30 16:01:55 db Exp $
+ *   $Id: s_log.c,v 7.12 2000/12/18 05:42:58 bill Exp $
  */
 #include "client.h"	/* Needed for struct Client */
 #include "s_log.h"
@@ -43,7 +43,7 @@
 #define LOG_BUFSIZE 2048 
 
 #ifdef USE_LOGFILE
-static int logFile = -1;
+static FBFILE* logFile;
 #endif
 static int logLevel = INIT_LOG_LEVEL;
 
@@ -77,9 +77,8 @@ static const char *logLevelToString[] =
 
 static int open_log(const char* filename)
 {
-  logFile = file_open(filename, 
-                 O_WRONLY | O_APPEND | O_CREAT | O_NONBLOCK, 0644);
-  if (-1 == logFile) {
+  logFile = fbopen(filename, "an");
+  if (logFile == NULL) {
     syslog(LOG_ERR, "Unable to open log file: %s: %s",
            filename, strerror(errno));
     return 0;
@@ -91,9 +90,9 @@ static int open_log(const char* filename)
 void close_log(void)
 {
 #if defined(USE_LOGFILE) 
-  if (-1 < logFile) {
-    file_close(logFile);
-    logFile = -1;
+  if (logFile != NULL) {
+    fbclose(logFile);
+    logFile = NULL;
   }
 #endif
 #ifdef USE_SYSLOG  
@@ -106,7 +105,7 @@ static void write_log(const char* message)
 {
   char buf[LOG_BUFSIZE];
   sprintf(buf, "[%s] %s\n", smalldate(CurrentTime), message);
-  write(logFile, buf, strlen(buf));
+  fbputs(buf, logFile);
 }
 #endif
    

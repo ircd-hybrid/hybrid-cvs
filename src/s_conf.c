@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.104 2000/12/18 04:29:06 db Exp $
+ *  $Id: s_conf.c,v 7.105 2000/12/18 05:42:57 bill Exp $
  */
 #include "tools.h"
 #include "s_conf.h"
@@ -804,20 +804,20 @@ void count_ip_hash(int *number_ips_stored,u_long *mem_ips_stored)
  * side effects        -
  */
 void iphash_stats(struct Client *cptr, struct Client *sptr,
-		  int parc, char *parv[],int out)
+		  int parc, char *parv[],FBFILE* out)
 {
   IP_ENTRY *ip_hash_ptr;
   int i;
   int collision_count;
   char result_buf[256];
 
-  if(out < 0)
+  if(out == NULL)
     sendto_one(sptr,":%s NOTICE %s :*** hash stats for iphash",
                me.name,cptr->name);
   else
     {
       (void)sprintf(result_buf,"*** hash stats for iphash\n");
-      (void)write(out,result_buf,strlen(result_buf));
+      (void)fbputs(result_buf,out);
     }
 
   for(i = 0; i < IP_HASH_SIZE ;i++)
@@ -832,7 +832,7 @@ void iphash_stats(struct Client *cptr, struct Client *sptr,
         }
       if(collision_count)
         {
-          if(out < 0)
+          if(out == NULL)
             {
               sendto_one(sptr,":%s NOTICE %s :Entry %d (0x%X) Collisions %d",
                          me.name,cptr->name,i,i,collision_count);
@@ -841,7 +841,7 @@ void iphash_stats(struct Client *cptr, struct Client *sptr,
             {
               (void)sprintf(result_buf,"Entry %d (0x%X) Collisions %d\n",
                             i,i,collision_count);
-              (void)write(out,result_buf,strlen(result_buf));
+              (void)fbputs(result_buf,out);
             }
         }
     }
