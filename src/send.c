@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.12 1999/09/12 02:01:43 tomh Exp $
+ *   $Id: send.c,v 7.13 1999/10/11 15:09:15 db Exp $
  */
 #include "send.h"
 #include "channel.h"
@@ -692,7 +692,8 @@ sendto_common_channels(struct Client *user, const char *pattern, ...)
         for(users = channels->value.chptr->members; users; users = users->next)
           {
             cptr = users->value.cptr;
-            if (!MyConnect(cptr) || (sentalong[cptr->fd] == current_serial))
+            if (!MyConnect(cptr) || (cptr->fd < 0) ||
+                (sentalong[cptr->fd] == current_serial))
               continue;
             
             sentalong[cptr->fd] = current_serial;
