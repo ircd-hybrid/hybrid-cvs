@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_kqueue.c,v 1.18 2001/06/16 02:55:41 a1kmm blalloc.c $
+ *  $Id: s_bsd_kqueue.c,v 1.19 2001/09/24 14:31:14 jdc Exp $
  */
 #include "config.h"
 #ifdef USE_KQUEUE
@@ -131,7 +131,14 @@ kq_update_events(int fd, short filter, PF * handler)
 		kep->flags = EV_DELETE;
 	}
 	if (kqoff == kqmax) {
-		kevent(kq, kqlst, kqoff, NULL, 0, &zero_timespec);
+		int ret;
+		ret = kevent(kq, kqlst, kqoff, NULL, 0, &zero_timespec);
+		/* jdc -- someone needs to do error checking... */
+		if (ret == -1)
+		{
+		  perror("kq_update_events(): kevent()")
+		  break;
+		}
 		kqoff = 0;
 	} else {
 		kqoff++;
