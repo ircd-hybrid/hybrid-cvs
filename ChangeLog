@@ -1,3 +1,8 @@
+*** 20001208_4 by db
+- UNGLINE was missing from init for m_unkline.c
+
+
+
 *** 20001208_3 by db
 - cleaned up m_gline.c module considerably, but still untested.
   Need to enable it locally =AND= have three servers at least to 
@@ -1927,7 +1932,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.741 2000/12/08 08:19:58 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.742 2000/12/08 14:18:44 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
