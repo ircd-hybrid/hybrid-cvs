@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_jupe.c,v 1.38 2003/02/23 04:16:01 db Exp $
+ *  $Id: m_jupe.c,v 1.39 2003/02/24 04:36:00 db Exp $
  */
 
 #include "stdinc.h"
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&jupe_msgtab);
 }
 
-const char *_version = "$Revision: 1.38 $";
+const char *_version = "$Revision: 1.39 $";
 #endif
 
 /*
@@ -168,7 +168,6 @@ mo_jupe(struct Client *client_p, struct Client *source_p,
   Count.myserver++;
 
   /* Some day, all these lists will be consolidated *sigh* */
-  add_client_to_list(ajupe);
   add_to_client_hash_table(ajupe->name, ajupe);
   add_client_to_llist(&(ajupe->servptr->serv->servers), ajupe);
   m = make_dlink_node();
