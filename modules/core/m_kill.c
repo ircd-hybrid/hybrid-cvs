@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kill.c,v 1.43 2001/04/28 15:21:58 jdc Exp $
+ *   $Id: m_kill.c,v 1.44 2001/05/08 22:50:28 ejb Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -138,8 +138,8 @@ static void mo_kill(struct Client *client_p, struct Client *source_p,
   if(MyOper(target_p))
       sendto_one(target_p, ":%s KILL %s :%s", parv[0], target_p->name, reason);
 
-  /* Do NOT change the format of this message at ALL.  Doing so will break
-   * epics precious formatting rules that it complains about like hell --fl */
+  /* Do not change the format of this message.  There's no point in changing messages
+   * that have been around for ever, for no reason.. */
   sendto_realops_flags(FLAGS_ALL,
 		       "Received KILL message for %s. From %s Path: %s (%s)", 
 		       target_p->name, parv[0], me.name, reason);
