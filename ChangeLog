@@ -1,3 +1,15 @@
+leeh        2002/01/04 07:10:06 EST	(20020104_3)
+
+  Modified files:
+    src                  modules.c 
+  Log:
+  - there was an #ifdef STATIC_MODULES at the top :)
+  
+  Revision  Changes    Path
+  7.85      +2 -3      ircd-hybrid-7/src/modules.c
+
+
+
 db          2002/01/04 00:33:43 EST	(20020104_2)
 
   Modified files:
@@ -2186,7 +2198,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3286 2002/01/04 05:33:48 db Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3287 2002/01/04 12:10:11 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -20540,4 +20552,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3286 2002/01/04 05:33:48 db Exp $
+$Id: ChangeLog,v 7.3287 2002/01/04 12:10:11 leeh Exp $
