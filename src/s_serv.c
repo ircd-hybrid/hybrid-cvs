@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.155 2001/05/05 21:50:42 fl_ Exp $
+ *   $Id: s_serv.c,v 7.156 2001/05/10 18:33:55 fl_ Exp $
  */
 
 #include <sys/types.h>
@@ -107,7 +107,9 @@ struct Capability captab[] = {
   { "HUB",      CAP_HUB },
   { "AOPS",     CAP_AOPS },
   { "UID",      CAP_UID },
+#if 0 /* We dont actually have ziplinks anymore.. but they should come back */
   { "ZIP",	CAP_ZIP },
+#endif
   { "CRYPT",    CAP_CRYPT },
 
   { 0,   0 }
