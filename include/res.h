@@ -1,5 +1,5 @@
 /*
- * $Id: res.h,v 7.15 2001/02/26 06:53:47 androsyn Exp $ 
+ * $Id: res.h,v 7.16 2001/03/01 13:14:37 androsyn Exp $ 
  * New res.h
  * Aaron Sethman <androsyn@ratbox.org>
  */
@@ -33,6 +33,6 @@ void dns_select (void);
 void adns_gethost (const char *name , int aftype , struct DNSQuery *req );
 void adns_getaddr (struct irc_inaddr *addr , int aftype , struct DNSQuery *req );
 void delete_adns_queries(struct DNSQuery *q);
-
+void report_adns_servers(struct Client *);
 extern BlockHeap *dns_blk;
 #endif
