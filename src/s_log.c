@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.c,v 7.44 2002/09/06 19:37:13 db Exp $
+ *  $Id: s_log.c,v 7.45 2002/09/09 13:43:48 db Exp $
  */
 
 #include "stdinc.h"
@@ -237,21 +237,20 @@ log_user_exit(struct Client *source_p)
 	  fbclose(user_log_fb);
 	  user_log_fb = fbopen(ConfigFileEntry.fname_userlog, "a");
 	}
-
-	if (user_log_fb != NULL)
-	{
-	  ircsprintf(linebuf,
-		     "%s (%3ld:%02ld:%02ld): %s!%s@%s %d/%d\n",
-		     myctime(source_p->firsttime),
-		     (signed long) on_for / 3600,
-		     (signed long) (on_for % 3600)/60,
-		     (signed long) on_for % 60,
-		     source_p->name, source_p->username, source_p->host,
-		     source_p->localClient->sendK,
-		     source_p->localClient->receiveK);
-	  
-	  fbputs(linebuf, user_log_fb);
-	}
+      }
+      if (user_log_fb != NULL)
+      {
+	ircsprintf(linebuf,
+		   "%s (%3ld:%02ld:%02ld): %s!%s@%s %d/%d\n",
+		   myctime(source_p->firsttime),
+		   (signed long) on_for / 3600,
+		   (signed long) (on_for % 3600)/60,
+		   (signed long) on_for % 60,
+		   source_p->name, source_p->username, source_p->host,
+		   source_p->localClient->sendK,
+		   source_p->localClient->receiveK);
+	
+	fbputs(linebuf, user_log_fb);
       }
     }
   }

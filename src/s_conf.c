@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.322 2002/09/05 14:06:16 db Exp $
+ *  $Id: s_conf.c,v 7.323 2002/09/09 13:43:48 db Exp $
  */
 
 #include "stdinc.h"
@@ -2422,16 +2422,12 @@ conf_add_d_conf(struct ConfItem *aconf)
 void 
 conf_add_x_conf(struct ConfItem *aconf)
 {
-  MyFree(aconf->user);
-  aconf->user = NULL;
-  aconf->name = aconf->host;
-  aconf->host = (char *)NULL;
   aconf->next = x_conf;
   x_conf = aconf;
 }
 
 /*
- * conf_add_x_conf
+ * conf_add_u_conf
  * inputs       - pointer to config item
  * output       - NONE
  * side effects - Add an U line

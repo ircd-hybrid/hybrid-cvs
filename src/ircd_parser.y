@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.254 2002/08/15 13:32:43 db Exp $
+ *  $Id: ircd_parser.y,v 1.255 2002/09/09 13:43:48 db Exp $
  */
 
 %{
@@ -1865,10 +1865,10 @@ exempt_ip:        IP '=' QSTRING ';'
 
 gecos_entry:     GECOS
   {
-    if(yy_aconf)
+    if(yy_aconf != NULL)
       {
         free_conf(yy_aconf);
-        yy_aconf = (struct ConfItem *)NULL;
+        yy_aconf = NULL;
       }
     yy_aconf=make_conf();
     yy_aconf->status = CONF_XLINE;
@@ -1877,11 +1877,11 @@ gecos_entry:     GECOS
   }
  '{' gecos_items '}' ';'
   {
-    if(yy_aconf->host)
+    if(yy_aconf->name != NULL)
       conf_add_x_conf(yy_aconf);
     else
       free_conf(yy_aconf);
-    yy_aconf = (struct ConfItem *)NULL;
+    yy_aconf = NULL;
   }; 
 
 gecos_items:     gecos_items gecos_item |
@@ -1892,9 +1892,8 @@ gecos_item:      gecos_name | gecos_reason | gecos_action | error;
 
 gecos_name:    NAME '=' QSTRING ';' 
   {
-    MyFree(yy_aconf->host);
-    DupString(yy_aconf->host, yylval.string);
-    (void)collapse(yy_aconf->host);
+    DupString(yy_aconf->name, yylval.string);
+    collapse(yy_aconf->name);
   };
 
 gecos_reason:    REASON '=' QSTRING ';' 
