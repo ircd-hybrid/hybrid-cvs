@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.341 2002/10/28 21:09:23 bill Exp $
+ *  $Id: channel.c,v 7.342 2002/10/29 19:38:21 bill Exp $
  */
 
 #include "stdinc.h"
@@ -475,6 +475,7 @@ sub1_from_channel(struct Channel *chptr)
                                  * It should never happen but...
                                  */
 #endif
+    destroy_channel(chptr);
   }
   return (0);
 }
