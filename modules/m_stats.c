@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.148 2003/09/25 21:17:02 bill Exp $
+ *  $Id: m_stats.c,v 1.149 2003/09/26 10:49:16 bill Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.148 $";
+const char *_version = "$Revision: 1.149 $";
 #endif
 
 static char *parse_stats_args(int, char **, int *, int *);
@@ -798,14 +798,14 @@ stats_servers(struct Client *source_p)
 
     j++;
 
-    sendto_one(source_p, ":%s %d %s V :%s (%s!%s@%s) Idle: %d",
+    sendto_one(source_p, ":%s %d %s v :%s (%s!%s@%s) Idle: %d",
                me.name, RPL_STATSDEBUG, source_p->name,
 	       target_p->name,
 	       (target_p->serv->by[0] ? target_p->serv->by : "Remote."),
 	       "*", "*", (int)(CurrentTime - target_p->lasttime));
   }
 
-  sendto_one(source_p, ":%s %d %s V :%d Server(s)",
+  sendto_one(source_p, ":%s %d %s v :%d Server(s)",
              me.name, RPL_STATSDEBUG, source_p->name, j);
 }
 
