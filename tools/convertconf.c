@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: convertconf.c,v 1.20 2000/12/20 18:02:48 db Exp $
+ * $Id: convertconf.c,v 1.21 2000/12/21 20:48:25 db Exp $
  */
 
 #include <stdio.h>
@@ -855,7 +855,6 @@ static char* ClientFlags(FILE *out, char* spoof, char *tmp)
 	  fprintf(out,"\t\tkline_exempt=yes;\n");	  
           break;
         case '&':        /* can run a bot */
-	  fprintf(out,"\t\tallow_bots=yes;\n");	  
           break;
         case '>':        /* can exceed max connects */
 	  fprintf(out,"\t\texceed_limit=yes;\n");	  
