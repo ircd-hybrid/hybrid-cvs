@@ -1,10 +1,10 @@
 Translated message files (user/admin submitted)
 
-There are user submitted message files for ircd-hybrid-7.  There is not as
-of yet an easy way of creating or installing these files, but any submission
-is well appreciated.
+There are user submitted message files for ircd-hybrid-7. Read the file
+doc/messages.txt to learn how to create, install, and possibly submit
+your own .lang files.
 
-At the present time, the following languages are supported
+At the present time, the following languages are supported:
 
 swedish - maintained by trbz - Chris C <chris@mircscripter.com>
 croatian - maintained by Martin - Vid Strpic <strpic@bofhlet.net>
@@ -38,4 +38,4 @@ Contributions are welcome, at present time please send contributed translations
 to ircd-hybrid@the-project.org, hybrid@the-project.org, or directly to one
 of the people who work with the translations, currently wcampbel@botbay.net.
 
-# $Id: README,v 1.1 2003/05/04 16:59:06 adx Exp $
+# $Id: README,v 1.2 2003/05/15 07:01:45 joshk Exp $

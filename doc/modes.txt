@@ -8,7 +8,7 @@ User Modes:
 +c - cconn      - Client connection/quit notices
 +d - debug      - See debugging notices
 +f - full       - See I: line full notices
-+g - callerid   - Server Side Ignore
++g - callerid   - Server Side Ignore (see modeg.txt)
 +i - invisible  - Not shown in NAMES or WHO unless you share a
                   a channel
 +k - skill      - See server generated KILL messages
@@ -50,4 +50,4 @@ Currently these are bkloveIh.
 Note that most of the channel modes can be disabled in the conf file for
 networks that do not wish to support them.
 
-# $Id: modes.txt,v 7.12 2003/05/12 08:09:22 michael Exp $
+# $Id: modes.txt,v 7.13 2003/05/15 07:01:42 joshk Exp $
