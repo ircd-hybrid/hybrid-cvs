@@ -1,3 +1,15 @@
+db          2002/10/31 00:30:36 EST	(20021031_1)
+
+  Modified files:
+    .                    RELNOTES 
+  Log:
+  - updated RELNOTES
+  
+  Revision  Changes    Path
+  1.44      +20 -0     ircd-hybrid-7/RELNOTES
+
+
+
 wiz         2002/10/30 22:12:31 EST	(20021031_0)
 
   Modified files:
@@ -32920,4 +32932,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4092 2002/10/31 03:12:34 wiz Exp $
+$Id: ChangeLog,v 7.4093 2002/10/31 05:30:39 db Exp $
