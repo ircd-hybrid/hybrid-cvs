@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: listener.c,v 7.38 2001/02/25 23:28:42 androsyn Exp $
+ *  $Id: listener.c,v 7.39 2001/02/25 23:59:19 jdc Exp $
  */
 #include "config.h"
 #include "listener.h"
@@ -191,7 +191,7 @@ static int inetport(struct Listener* listener)
    */
   memset(&lsin, 0, sizeof(struct irc_sockaddr));
   S_FAM(lsin) = DEF_FAM;
-  copy_s_addr(&S_ADDR(lsin), &IN_ADDR(listener->addr));
+  copy_s_addr(S_ADDR(lsin), IN_ADDR(listener->addr));
   S_PORT(lsin) = htons(listener->port);
 
 
@@ -244,7 +244,10 @@ static struct Listener* find_listener(int port, struct irc_inaddr *addr)
   for (listener = ListenerPollList; listener; listener = listener->next)
   {
     
-    if (port == listener->port && memcmp(PIN_ADDR(addr), IN_ADDR(listener->addr), sizeof(struct irc_inaddr)))
+    if ( (port == listener->port) &&
+         (!memcmp(&PIN_ADDR(addr),
+                 &IN_ADDR(listener->addr),
+                 sizeof(struct irc_inaddr))))
     {
       /* Try to return an open listener, otherwise reuse a closed one */
       if (listener->fd == -1)
