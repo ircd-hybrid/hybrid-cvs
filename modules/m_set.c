@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_set.c,v 1.49 2003/04/18 02:13:43 db Exp $
+ *  $Id: m_set.c,v 1.50 2003/05/01 23:28:38 michael Exp $
  */
 
 /* rewritten by jdc */
@@ -64,7 +64,7 @@ _moddeinit(void)
   mod_del_cmd(&set_msgtab);
 }
 
-const char *_version = "$Revision: 1.49 $";
+const char *_version = "$Revision: 1.50 $";
 #endif
 
 /* Structure used for the SET table itself */
@@ -120,7 +120,7 @@ static struct SetStruct set_cmd_table[] =
   { "SPLITNUM",		quote_splitnum,		0,	1 },
   { "SPLITUSERS",	quote_splitusers,	0,	1 },
   /* -------------------------------------------------------- */
-  { (char *) 0,		(void (*)()) 0,		0,	0 }
+  { (char *)0,		(void(*)()) 0,		0,	0 }
 };
 
 /*
@@ -139,7 +139,7 @@ list_quote_commands(struct Client *source_p)
 
   names[0] = names[1] = names[2] = names[3] = "";
 
-  for (i=0; set_cmd_table[i].handler; i++)
+  for (i = 0; set_cmd_table[i].handler; i++)
   {
     names[j++] = set_cmd_table[i].name;
 
@@ -148,33 +148,33 @@ list_quote_commands(struct Client *source_p)
       sendto_one(source_p, ":%s NOTICE %s :%s %s %s %s",
                  me.name, source_p->name,
                  names[0], names[1], 
-                 names[2],names[3]);
+                 names[2], names[3]);
       j = 0;
       names[0] = names[1] = names[2] = names[3] = "";
     }
 
   }
-  if(j)
+  if (j)
     sendto_one(source_p, ":%s NOTICE %s :%s %s %s %s",
                me.name, source_p->name,
                names[0], names[1], 
-               names[2],names[3]);
+               names[2], names[3]);
 }
 
 /* SET AUTOCONN */
 static void
-quote_autoconn( struct Client *source_p, char *arg, int newval)
+quote_autoconn(struct Client *source_p, const char *arg, int newval)
 {
-  set_autoconn(source_p, source_p->name, arg, newval);
+  set_autoconn(source_p, arg, newval);
 }
 
 /* SET AUTOCONNALL */
 static void
-quote_autoconnall( struct Client *source_p, int newval)
+quote_autoconnall(struct Client *source_p, int newval)
 {
-  if(newval >= 0)
+  if (newval >= 0)
   {
-    sendto_realops_flags(UMODE_ALL, L_ALL,"%s has changed AUTOCONNALL to %i",
+    sendto_realops_flags(UMODE_ALL, L_ALL, "%s has changed AUTOCONNALL to %i",
                          source_p->name, newval);
 
     GlobalSetOptions.autoconn = newval;
@@ -186,12 +186,11 @@ quote_autoconnall( struct Client *source_p, int newval)
   }
 }
 
-
 /* SET FLOODCOUNT */
 static void
-quote_floodcount( struct Client *source_p, int newval)
+quote_floodcount(struct Client *source_p, int newval)
 {
-  if(newval >= 0)
+  if (newval >= 0)
   {
     GlobalSetOptions.floodcount = newval;
     sendto_realops_flags(UMODE_ALL, L_ALL,
@@ -209,14 +208,14 @@ quote_floodcount( struct Client *source_p, int newval)
 static void
 quote_identtimeout(struct Client *source_p, int newval)
 {
-  if(!IsOperAdmin(source_p))
+  if (!IsOperAdmin(source_p))
   {
-    sendto_one(source_p, ":%s NOTICE %s :You have no A flag", 
-	       me.name, source_p->name);
+    sendto_one(source_p, ":%s NOTICE %s :You need admin = yes;", 
+               me.name, source_p->name);
     return;
   }
 
-  if(newval > 0)
+  if (newval > 0)
   {
     sendto_realops_flags(UMODE_ALL, L_ALL,
 		         "%s has changed IDENTTIMEOUT to %d",
@@ -230,9 +229,9 @@ quote_identtimeout(struct Client *source_p, int newval)
 
 /* SET IDLETIME */
 static void
-quote_idletime( struct Client *source_p, int newval )
+quote_idletime(struct Client *source_p, int newval)
 {
-  if(newval >= 0)
+  if (newval >= 0)
   {
     if (newval == 0)
     {

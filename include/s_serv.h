@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.h,v 7.70 2003/04/19 10:44:01 michael Exp $
+ *  $Id: s_serv.h,v 7.71 2003/05/01 23:28:37 michael Exp $
  */
 
 #ifndef INCLUDED_serv_h
@@ -254,9 +254,9 @@ extern int         hunt_server(struct Client *client_pt,
 extern const char* my_name_for_link(const char* name, struct ConfItem* conf);
 extern void        send_capabilities(struct Client*, struct ConfItem* conf,
                                      int, int);
-extern void	   write_links_file(void*);				     
-extern int         server_estab(struct Client* client_p);
-extern void        set_autoconn(struct Client *,char *,char *,int);
+extern void	   write_links_file(void *);				     
+extern int         server_estab(struct Client *client_p);
+extern void set_autoconn(struct Client *, const char *, int);
 extern const char* show_capabilities(struct Client* client);
 extern void        try_connections(void *unused);
 extern void        start_collect_zipstats(void);

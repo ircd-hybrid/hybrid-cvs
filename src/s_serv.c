@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.311 2003/04/30 04:55:14 michael Exp $
+ *  $Id: s_serv.c,v 7.312 2003/05/01 23:28:40 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1830,20 +1830,18 @@ burst_ll_members(struct Client *client_p, dlink_list *list)
   }
 }
 
-/*
- * set_autoconn - set autoconnect mode
+/* set_autoconn()
  *
  * inputs       - struct Client pointer to oper requesting change
- *              -
  * output       - none
- * side effects -
+ * side effects - set autoconnect mode
  */
 void
-set_autoconn(struct Client *source_p, char *parv0, char *name, int newval)
+set_autoconn(struct Client *source_p, const char *name, int newval)
 {
   struct ConfItem *aconf;
 
-  if (name && (aconf= find_conf_by_name(name, CONF_SERVER)))
+  if (name && (aconf = find_conf_by_name(name, CONF_SERVER)))
   {
     if (newval)
       SetConfAllowAutoConn(aconf);
@@ -1852,20 +1850,20 @@ set_autoconn(struct Client *source_p, char *parv0, char *name, int newval)
 
     sendto_realops_flags(UMODE_ALL, L_ALL,
                          "%s has changed AUTOCONN for %s to %i",
-                         parv0, name, newval);
+                         source_p->name, name, newval);
     sendto_one(source_p,
                ":%s NOTICE %s :AUTOCONN for %s is now set to %i",
-               me.name, parv0, name, newval);
+               me.name, source_p->name, name, newval);
   }
   else if (name != NULL)
   {
     sendto_one(source_p, ":%s NOTICE %s :Can't find %s",
-               me.name, parv0, name);
+               me.name, source_p->name, name);
   }
   else
   {
     sendto_one(source_p, ":%s NOTICE %s :Please specify a server name!",
-               me.name, parv0);
+               me.name, source_p->name);
   }
 }
 
