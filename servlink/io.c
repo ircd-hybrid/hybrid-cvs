@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: io.c,v 1.32 2003/05/26 00:55:49 joshk Exp $
+ *   $Id: io.c,v 1.33 2003/06/26 01:25:25 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -463,10 +463,12 @@ void read_data(void)
       out_state.zip_state.stream.avail_in = ret;
 
       buf = out_state.buf;
-#ifdef HAVE_LIB_CRYPTO
+      
+#ifdef HAVE_LIBCRYPTO
       if (out_state.crypt)
         buf = tmp2_buf;
 #endif
+
       out_state.zip_state.stream.next_out = buf;
       out_state.zip_state.stream.avail_out = BUFLEN;
       if(!(ret2 = deflate(&out_state.zip_state.stream,

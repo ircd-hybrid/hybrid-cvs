@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 7.43 2003/05/26 00:14:16 joshk Exp $
+# $Id: Makefile.in,v 7.44 2003/06/26 01:25:27 joshk Exp $
 
 CC		= @CC@
 INSTALL		= @INSTALL@
@@ -31,10 +31,10 @@ build: all
 
 # We must link these two against special libs
 encspeed: ../include/setup.h encspeed.c
-	$(CC) $(CFLAGS) $(INCLUDES) $(LDFLAGS) -o encspeed encspeed.c $(SSL_LIBS)
+	$(CC) $(CFLAGS) $(INCLUDES) $(LDFLAGS) encspeed.c -o encspeed $(SSL_LIBS)
 
 mkpasswd: ../include/setup.h mkpasswd.c
-	$(CC) $(CFLAGS) $(INCLUDES) $(LDFLAGS) -o mkpasswd mkpasswd.c $(CRYPT_LIB)
+	$(CC) $(CFLAGS) $(INCLUDES) $(LDFLAGS) mkpasswd.c -o mkpasswd $(CRYPT_LIB)
 
 # Default rule for everything
 

@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.70 2003/06/25 00:41:13 joshk Exp $
+dnl $Id: configure.ac,v 7.71 2003/06/26 01:25:23 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -8,7 +8,7 @@ dnl said functions need to be just about as complex as they already are.
 AC_PREREQ(2.57)
 
 dnl Sneaky way to get an Id tag into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.70 2003/06/25 00:41:13 joshk Exp $])
+AC_COPYRIGHT([$Id: configure.ac,v 7.71 2003/06/26 01:25:23 joshk Exp $])
 
 AC_INIT([ircd-hybrid],[7-CURRENT])
 
@@ -58,6 +58,7 @@ case `$CC -V 2>&1` in
 *Sun*WorkShop* | *Forte*Developer*)
 	AC_MSG_RESULT(Sun Workshop/Forte)
 	IRC_CFLAGS="-fast -xinline=dlinkAdd,dlinkAddBefore,dlinkAddTail,dlinkDelete,dlink_list_length,dlink_node,dlinkMoveList,_MyMalloc,_MyRealloc,_MyFree,_DupString"
+	SunWorkShop=yes
 	SGS=yes
 ;;
 *Tru64*)
@@ -151,12 +152,12 @@ if test ! -z "$MKDEP"; then
 	else
 		STDOUT=" 2> /dev/null"
 	fi
-elif test ! -z "$MAKEDEPEND" -a "$HPUX" = yes; then
-	AC_MSG_RESULT(X11 makedepend for HPUX)
-	MKDEP="$MAKEDEPEND -f-"
-elif test "$SunWorkShop" = "yes"; then
+elif test "$SunWorkShop" = yes; then
 	AC_MSG_RESULT([Sun WorkShop/Forte using $CC -xM])
 	MKDEP="$CC -xM"
+elif test ! -z "$MAKEDEPEND"; then
+	AC_MSG_RESULT(X11 makedepend)
+	MKDEP="$MAKEDEPEND -f-"
 else
 	AC_MSG_RESULT([nothing useful found, assuming $CC -MM])
 	MKDEP="$CC -MM"
