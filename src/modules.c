@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.c,v 7.10 2000/11/28 04:42:16 db Exp $
+ * $Id: modules.c,v 7.11 2000/11/28 06:21:12 db Exp $
  */
 
 #include <dlfcn.h>
@@ -249,7 +249,7 @@ static void increase_modlist(void)
     return;
 
   new_modlist = (struct module **)MyMalloc ( sizeof (struct module) *
-					     (num_mods + MODS_INCREMENT));
+					     (max_mods + MODS_INCREMENT));
   memcpy((void *)new_modlist,
 	 (void *)modlist, sizeof(struct module) * num_mods);
 
