@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_cryptlink.c,v 1.8 2001/05/29 00:56:25 a1kmm Exp $
+ *   $Id: m_cryptlink.c,v 1.9 2001/05/29 00:58:59 a1kmm Exp $
  */
 
 /*
@@ -222,7 +222,7 @@ static void mr_cryptserv(struct Client *client_p, struct Client *source_p,
   char            *encrypted;
   int              enc_len;
 
-  if (cptr->name[0] != 0)
+  if (client_p->name[0] != 0)
    return;
 
   if ( (name = parse_cryptserv_args(client_p, parv, parc, info, key)) == NULL )
