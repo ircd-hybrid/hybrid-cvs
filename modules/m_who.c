@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_who.c,v 1.3 2000/11/13 07:27:51 db Exp $
+ *   $Id: m_who.c,v 1.4 2000/11/21 05:03:14 db Exp $
  */
 
 #include "common.h"   /* bleah */
@@ -357,10 +357,20 @@ void    do_who(struct Client *sptr,
 	     IsAnyOper(acptr) ? "*" : "",
 	     channel_chanop_or_voice(flags));
 
-  sendto_one(sptr, form_str(RPL_WHOREPLY), me.name, sptr->name,
+  if(ConfigFileEntry.hide_server)
+    {
+      sendto_one(sptr, form_str(RPL_WHOREPLY), me.name, sptr->name,
              repname, acptr->username,
-             acptr->host, acptr->user->server, acptr->name,
+             acptr->host, IsAnyOper(sptr) ? acptr->user->server : "*", acptr->name,
              status, acptr->hopcount, acptr->info);
+    }
+  else
+    {
+      sendto_one(sptr, form_str(RPL_WHOREPLY), me.name, sptr->name,
+             repname, acptr->username,
+             acptr->host,  acptr->user->server, acptr->name,
+             status, acptr->hopcount, acptr->info);
+    }
 }
 
 /*

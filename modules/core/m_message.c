@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.2 2000/11/16 21:50:32 davidt Exp $
+ *   $Id: m_message.c,v 1.3 2000/11/21 05:03:12 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -316,6 +316,14 @@ int build_target_list(int p_or_n,
 	      continue;
 	    }
 	}
+
+      /* anything else below needs global oper privs */
+      if (IsGlobalOper(sptr) && (*nick == '$'))
+	{
+	  handle_opers(p_or_n, command, cptr,sptr,nick+1,text);
+	  continue;
+	}
+
       /* At this point, its likely its another client */
 
       if ( (acptr = find_person(nick, NULL)) &&
@@ -331,11 +339,6 @@ int build_target_list(int p_or_n,
 	  continue;
 	}
 
-      /* anything else below needs global oper privs */
-      if (IsGlobalOper(sptr))
-	{
-	  handle_opers(p_or_n, command, cptr,sptr,nick,text);
-	}
     }
   return i;
 }

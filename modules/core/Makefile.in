@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/modules
 #
-# $Id: Makefile.in,v 1.8 2000/11/19 15:43:46 davidt Exp $
+# $Id: Makefile.in,v 1.9 2000/11/21 05:03:10 db Exp $
 #
 CC		= @CC@
 RM		= @RM@
@@ -42,7 +42,6 @@ SRCS =                          \
   m_list.c \
   m_lljoin.c \
   m_locops.c \
-  m_ltrace.c \
   m_lusers.c \
   m_mode.c \
   m_motd.c \
@@ -75,6 +74,7 @@ SRCS =                          \
   m_wallops.c \
   m_who.c \
   m_whois.c \
+  m_whowas.c 
 
 OBJS = ${SRCS:.c=.so}
 

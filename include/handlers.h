@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: handlers.h,v 7.15 2000/11/17 00:15:19 toot Exp $
+ * $Id: handlers.h,v 7.16 2000/11/21 05:03:06 db Exp $
  */
 #ifndef INCLUDED_handlers_h
 #define INCLUDED_handlers_h
@@ -153,6 +153,7 @@ extern int mo_gline(struct Client*, struct Client*, int, char**);
 extern int mo_info(struct Client*, struct Client*, int, char**);
 extern int mo_kill(struct Client*, struct Client*, int, char**);
 extern int mo_kline(struct Client*, struct Client*, int, char**);
+extern int mo_links(struct Client*, struct Client*, int, char**);
 extern int mo_notice(struct Client*, struct Client*, int, char**);
 extern int mo_oper(struct Client*, struct Client*, int, char**);
 extern int mo_operwall(struct Client*, struct Client*, int, char**);
@@ -162,6 +163,7 @@ extern int mo_restart(struct Client*, struct Client*, int, char**);
 extern int mo_set(struct Client*, struct Client*, int, char**);
 extern int mo_squit(struct Client*, struct Client*, int, char**);
 extern int mo_stats(struct Client*, struct Client*, int, char**);
+extern int mo_time(struct Client*, struct Client*, int, char**);
 extern int mo_testline(struct Client *,struct Client *,int,char **);
 extern int mo_trace(struct Client*, struct Client*, int, char**);
 extern int mo_unkline(struct Client *,struct Client *,int,char **);
@@ -171,6 +173,7 @@ extern int mo_wallops(struct Client*, struct Client*, int, char**);
 extern int mo_htm(struct Client *,struct Client *,int,char **);
 extern int mo_quit(struct Client*, struct Client*, int, char**);
 extern int mo_part(struct Client*, struct Client*, int, char**);
+extern int mo_whois(struct Client*, struct Client*, int, char**);
 extern int mo_whowas(struct Client*, struct Client*, int, char**);
 
 /* server */
@@ -192,10 +195,11 @@ extern int ms_lljoin(struct Client *,struct Client *,int,char **);
 extern int ms_lusers(struct Client*, struct Client*, int, char**);
 extern int ms_mode(struct Client*, struct Client*, int, char**);
 extern int ms_motd(struct Client*, struct Client*, int, char**);
-extern int ms_sjoin(struct Client*, struct Client*, int, char**);
-extern int ms_names(struct Client*, struct Client*, int, char**);
 extern int ms_nick(struct Client*, struct Client*, int, char**);
 extern int ms_notice(struct Client*, struct Client*, int, char**);
+extern int ms_sjoin(struct Client*, struct Client*, int, char**);
+extern int ms_time(struct Client*, struct Client*, int, char**);
+extern int ms_names(struct Client*, struct Client*, int, char**);
 extern int ms_oper(struct Client*, struct Client*, int, char**);
 extern int ms_operwall(struct Client*, struct Client*, int, char**);
 extern int ms_part(struct Client*, struct Client*, int, char**);

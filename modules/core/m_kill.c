@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kill.c,v 1.1 2000/11/08 23:57:29 ejb Exp $
+ *   $Id: m_kill.c,v 1.2 2000/11/21 05:03:11 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -242,7 +242,7 @@ int mo_kill(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   ** set in any other place)
   */
   if (MyConnect(acptr) && MyConnect(sptr) && IsAnyOper(sptr))
-    ircsprintf(buf2, "Local kill by %s (%s)", sptr->name,
+    ircsprintf(buf2, "Killed by %s (%s)", sptr->name,
                      BadPtr(parv[2]) ? sptr->name : parv[2]);
   else
     {
@@ -463,7 +463,7 @@ int ms_kill(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   ** set in any other place)
   */
   if (MyConnect(acptr) && MyConnect(sptr) && IsAnyOper(sptr))
-    ircsprintf(buf2, "Local kill by %s (%s)", sptr->name,
+    ircsprintf(buf2, "Killed by %s (%s)", sptr->name,
                      BadPtr(parv[2]) ? sptr->name : parv[2]);
   else
     {

@@ -19,7 +19,7 @@
  *
  * "ircd.h". - Headers file.
  *
- * $Id: ircd.h,v 7.8 2000/10/28 17:27:59 adrian Exp $
+ * $Id: ircd.h,v 7.9 2000/11/21 05:03:06 db Exp $
  *
  */
 #ifndef INCLUDED_ircd_h
@@ -52,6 +52,8 @@ struct SetOptions
 
   int spam_num;
   int spam_time;
+
+  int hide_server;
 };
 
 struct Counter {

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_admin.c,v 1.2 2000/11/11 13:05:21 db Exp $
+ *   $Id: m_admin.c,v 1.3 2000/11/21 05:03:11 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -81,8 +81,8 @@ int m_admin(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
  */
 int ms_admin(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 {
-  if (hunt_server(cptr,sptr,":%s ADMIN :%s",1,parc,parv) != HUNTED_ISME)
-    return 0;
+  /*if (hunt_server(cptr,sptr,":%s ADMIN :%s",1,parc,parv) != HUNTED_ISME)
+    return 0;*/
 
   do_admin( sptr );
 
@@ -121,10 +121,15 @@ static void do_admin( struct Client *sptr )
     sendto_one(sptr, form_str(ERR_NOADMININFO),
                me.name, sptr->name, me.name);
 
+/* UHHHHHHHHHHHHHHHHHHHHHHHHHH NO
+ * - bysin
+ */
+#if 0
   if(ConfigFileEntry.hub)
     sendto_one(sptr, ":%s NOTICE %s :Server is a HUB",
                      me.name,sptr->name);
   else
     sendto_one(sptr, ":%s NOTICE %s :Server is a LEAF",
                      me.name,sptr->name);
+#endif
 }

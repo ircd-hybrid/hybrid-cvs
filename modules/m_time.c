@@ -20,20 +20,21 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_time.c,v 1.2 2000/11/09 08:26:16 ejb Exp $
+ *   $Id: m_time.c,v 1.3 2000/11/21 05:03:13 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
 #include "ircd.h"
 #include "numeric.h"
 #include "s_misc.h"
+#include "s_conf.h"
 #include "s_serv.h"
 #include "send.h"
 #include "msg.h"
 
 struct Message time_msgtab = {
   MSG_TIME, 0, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_time, m_time, m_time}
+  {m_unregistered, m_time, ms_time, mo_time}
 };
 
 void
@@ -49,9 +50,36 @@ _modinit(void)
  */
 int m_time(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 {
+  sendto_one(sptr, ":%s NOTICE %s :*** Use your watch",me.name,sptr->name);
+  return 0;
+}
+
+/*
+ * m_time
+ *      parv[0] = sender prefix
+ *      parv[1] = servername
+ */
+int mo_time(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
+{
   if (hunt_server(cptr,sptr,":%s TIME :%s",1,parc,parv) == HUNTED_ISME)
     sendto_one(sptr, form_str(RPL_TIME), me.name,
                parv[0], me.name, date(0));
+  return 0;
+}
+
+/*
+ * ms_time
+ *      parv[0] = sender prefix
+ *      parv[1] = servername
+ */
+int ms_time(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
+{
+  if (hunt_server(cptr,sptr,":%s TIME :%s",1,parc,parv) == HUNTED_ISME)
+    {
+      if(ConfigFileEntry.hide_server && IsAnyOper(sptr))
+	sendto_one(sptr, form_str(RPL_TIME), me.name,
+		   parv[0], me.name, date(0));
+    }
   return 0;
 }
 
