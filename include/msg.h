@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: msg.h,v 7.10 2000/01/09 19:54:02 db Exp $
+ * $Id: msg.h,v 7.11 2000/01/17 03:21:23 db Exp $
  */
 #ifndef INCLUDED_msg_h
 #define INCLUDED_msg_h
@@ -227,9 +227,6 @@ struct Message msgtab[] = {
   { MSG_NAMES,   m_names,    0, MAXPARA, 1, 0, 0, 0L },
   { MSG_USERHOST,m_userhost, 0, 1,       1, 0, 0, 0L },
   { MSG_TRACE,   m_trace,    0, MAXPARA, 1, 0, 0, 0L },
-#ifdef LTRACE
-  { MSG_LTRACE,  m_ltrace,   0, MAXPARA, 1, 0, 0, 0L },
-#endif /* LTRACE */
   { MSG_PASS,    m_pass,     0, MAXPARA, 1, 1, 0, 0L },
   { MSG_LUSERS,  m_lusers,   0, MAXPARA, 1, 0, 0, 0L },
   { MSG_TIME,    m_time,     0, MAXPARA, 1, 0, 0, 0L },

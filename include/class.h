@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  */
-/* $Id: class.h,v 7.5 2000/01/16 22:49:42 db Exp $ */
+/* $Id: class.h,v 7.6 2000/01/17 03:21:22 db Exp $ */
 
 #ifndef INCLUDED_class_h
 #define INCLUDED_class_h
@@ -26,7 +26,7 @@ struct Client;
 
 struct Class {
   struct Class* next;     /* list node pointer */
-  char*		class_name;	/* *sigh* */
+  char*		className;	/* *sigh* */
   int           type;
   int           conFreq;
   int           pingFreq;
@@ -36,6 +36,7 @@ struct Class {
 };
 
 
+#define ClassName(x)	((x)->className)
 #define ClassType(x)    ((x)->type)
 #define ConFreq(x)      ((x)->conFreq)
 #define PingFreq(x)     ((x)->pingFreq)
@@ -46,6 +47,7 @@ struct Class {
 #define ClassPtr(x)      ((x)->c_class)
 #define ConfLinks(x)     (ClassPtr(x)->links)
 #define ConfMaxLinks(x)  (ClassPtr(x)->maxLinks)
+#define ConfClassName(x) (ClassPtr(x)->class_name)
 #define ConfClassType(x) (ClassPtr(x)->type)
 #define ConfConFreq(x)   (ClassPtr(x)->conFreq)
 #define ConfPingFreq(x)  (ClassPtr(x)->pingFreq)
@@ -55,16 +57,14 @@ extern struct Class* ClassList;  /* GLOBAL - class list */
 
 extern  long    get_sendq(struct Client *);
 extern  int     get_con_freq(struct Class* );
-extern  struct Class  *find_class(int);
-extern  int     get_conf_class (struct ConfItem *);
-extern  int     get_client_class (struct Client *);
+extern  struct Class  *find_class(char* );
+extern  const   char* get_client_class (struct Client *);
 extern  int     get_client_ping (struct Client *);
-extern  void    add_class(int, int, int, int, long);
 extern  void    check_class(void);
 extern  void    initclass(void);
 extern  struct  Class* make_class(void);
 extern  void    free_class(struct Class* );
-extern  void    add_class (int, int, int, int, long);
+extern  void    add_class (char *, int, int, int, long);
 extern  void    fix_class (struct ConfItem *, struct ConfItem *);
 extern  void    report_classes (struct Client *);
 

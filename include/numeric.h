@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: numeric.h,v 7.3 2000/01/03 16:45:19 db Exp $
+ * $Id: numeric.h,v 7.4 2000/01/17 03:21:24 db Exp $
  */
 #ifndef INCLUDED_numeric_h
 #define INCLUDED_numeric_h
@@ -179,6 +179,7 @@ extern const char* form_str(int);
 #define RPL_STATSUPTIME      242
 #define RPL_STATSOLINE       243
 #define RPL_STATSHLINE       244
+/* 245 No longer used in ircd-hybrid */
 #define RPL_STATSSLINE       245
 #define RPL_STATSXLINE       247
 #define RPL_STATSULINE       248

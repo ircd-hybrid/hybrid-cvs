@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.23 2000/01/08 01:59:23 db Exp $
+ *  $Id: s_user.c,v 7.24 2000/01/17 03:21:32 db Exp $
  */
 #include "s_user.h"
 #include "channel.h"
@@ -732,7 +732,7 @@ int register_user(struct Client *cptr, struct Client *sptr,
 #endif /* USE_IAUTH */
 
       sendto_realops_flags(FLAGS_CCONN,
-                         "Client connecting: %s (%s@%s) [%s] {%d}",
+                         "Client connecting: %s (%s@%s) [%s] {%s}",
                          nick, sptr->username, sptr->host,
                          inetntoa((char *)&sptr->ip),
                          get_client_class(sptr));

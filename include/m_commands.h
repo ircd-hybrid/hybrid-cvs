@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_commands.h,v 7.7 2000/01/09 19:54:02 db Exp $
+ * $Id: m_commands.h,v 7.8 2000/01/17 03:21:23 db Exp $
  */
 #ifndef INCLUDED_m_commands_h
 #define INCLUDED_m_commands_h
@@ -80,9 +80,6 @@ extern int m_connect(struct Client *,struct Client *,int,char **);
 extern int m_oper(struct Client *,struct Client *,int,char **);
 extern int m_pass(struct Client *,struct Client *,int,char **);
 extern int m_trace(struct Client *,struct Client *,int,char **);
-#ifdef LTRACE
-extern int m_ltrace(struct Client *,struct Client *,int,char **);
-#endif /* LTRACE */
 extern int m_time(struct Client *,struct Client *,int, char **);
 extern int m_names(struct Client *,struct Client *,int,char **);
 
