@@ -1,3 +1,11 @@
+*** 20001213_8 by adrian
+
+
+How'd I forget to pre-initialise linebuf_initialised to 0? Its implied
+due to it being a global variable, but _still_ ..
+
+
+
 *** 20001213_7 by db
 - removed an obsolete line from the example.conf 
 - added s_gline.c that I forgot
@@ -2528,7 +2536,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.816 2000/12/13 19:58:12 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.817 2000/12/13 21:05:01 adrian Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
