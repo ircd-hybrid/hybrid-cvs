@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.145 2001/08/21 20:54:24 davidt Exp $
+ *  $Id: s_bsd.c,v 7.146 2001/08/24 23:53:08 davidt Exp $
  */
 #include "config.h"
 #include "fdlist.h"
@@ -109,7 +109,7 @@ void close_all_connections(void)
 #ifndef NDEBUG
   /* fugly hack to reserve fd == 2 */
   (void)close(2);
-  fd = open("stderr.log",O_WRONLY|O_CREAT|O_APPEND,0755);
+  fd = open("stderr.log",O_WRONLY|O_CREAT|O_APPEND,0644);
   if( fd >= 0 )
     {
       dup2(fd, 2);

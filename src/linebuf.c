@@ -6,7 +6,7 @@
  * The idea here is that we should really be maintaining pre-munged
  * buffer "lines" which we can later refcount to save needless copies.
  *
- * $Id: linebuf.c,v 7.55 2001/08/21 22:11:17 davidt Exp $
+ * $Id: linebuf.c,v 7.56 2001/08/24 23:53:08 davidt Exp $
  */
 
 #include <errno.h>
@@ -23,6 +23,7 @@
 #include "event.h"
 #include "list.h"
 #include "balloc.h"
+#include "hook.h"
 
 #ifdef STRING_WITH_STRINGS
 # include <string.h>
@@ -588,7 +589,7 @@ linebuf_flush(int fd, buf_head_t *bufhead)
   /* Now, try writing data */
   retval = write(fd, bufline->buf + bufhead->writeofs, bufline->len
 		 - bufhead->writeofs);
-    
+   
   /* Deal with return code */
   if (retval < 0)
     return retval;
