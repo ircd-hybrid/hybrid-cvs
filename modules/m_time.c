@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_time.c,v 1.18 2001/04/09 12:41:50 fl_ Exp $
+ *   $Id: m_time.c,v 1.19 2001/04/15 09:44:46 toot Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -35,7 +35,6 @@
 #include "modules.h"
 
 static void m_time(struct Client*, struct Client*, int, char**);
-static void ms_time(struct Client*, struct Client*, int, char**);
 static void mo_time(struct Client*, struct Client*, int, char**);
 
 struct Message time_msgtab = {
@@ -66,8 +65,6 @@ char *_version = "20001202";
 static void m_time(struct Client *client_p, struct Client *source_p,
                   int parc, char *parv[])
 {
-  static time_t last_used = 0;
-
   /* This is safe enough to use during non hidden server mode */
   if(!GlobalSetOptions.hide_server)
     {

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_log.c,v 7.26 2001/04/12 03:37:15 db Exp $
+ *   $Id: s_log.c,v 7.27 2001/04/15 09:44:53 toot Exp $
  */
 #include "client.h"	/* Needed for struct Client */
 #include "s_log.h"
@@ -240,7 +240,7 @@ void log_user_exit(struct Client *source_p)
 	if( user_log_fb != NULL )
 	  {
 	    ircsprintf(linebuf,
-		       "%s (%3ld:%02ld:%02ld): %s!%s@%s %ld/%ld\n",
+		       "%s (%3ld:%02ld:%02ld): %s!%s@%s %d/%d\n",
 		       myctime(source_p->firsttime), on_for / 3600,
 		       (on_for % 3600)/60, on_for % 60,
 		       source_p->name,
