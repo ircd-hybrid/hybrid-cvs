@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.306 2003/04/19 12:03:56 adx Exp $
+ *  $Id: s_serv.c,v 7.307 2003/04/20 16:45:49 adx Exp $
  */
 
 #include "stdinc.h"
@@ -35,6 +35,7 @@
 #include "class.h"
 #include "client.h"
 #include "common.h"
+#include "dbuf.h"
 #include "event.h"
 #include "fdlist.h"
 #include "hash.h"
@@ -1223,16 +1224,19 @@ start_io(struct Client *server)
     buf = MyRealloc(buf, (c + BUF_DATA_SIZE + 64));
 
     /* store data in c+3 to allow for SLINKCMD_INJECT_RECVQ and len u16 */
-    linelen = linebuf_get(&server->localClient->buf_sendq,
-                          (char *)(buf + c + 3),
-                          READBUF_SIZE, LINEBUF_PARTIAL,
-                          LINEBUF_PARSED); /* include partial lines */
-
+    if (dbuf_length(&server->localClient->buf_sendq))
+      linelen = ((struct dbuf_block *)
+                 server->localClient->buf_sendq.blocks.head->data)->size;
+    else
+      linelen = 0;
     if (linelen)
     {
       buf[c++] = SLINKCMD_INJECT_SENDQ;
       buf[c++] = (linelen >> 8);
       buf[c++] = (linelen & 0xff);
+      memcpy((void *) &buf[c], (void *) &((struct dbuf_block *)
+             server->localClient->buf_sendq.blocks.head->data)->data, linelen);
+      dbuf_delete(&server->localClient->buf_sendq, linelen);
       c += linelen;
     }
     else

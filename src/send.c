@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.236 2003/04/19 12:03:56 adx Exp $
+ *  $Id: send.c,v 7.237 2003/04/20 16:45:49 adx Exp $
  */
 
 #include "stdinc.h"
@@ -29,6 +29,7 @@
 #include "class.h"
 #include "client.h"
 #include "common.h"
+#include "dbuf.h"
 #include "irc_string.h"
 #include "ircd.h"
 #include "handlers.h"
@@ -158,13 +159,13 @@ _send_linebuf(struct Client *to, buf_head_t *linebuf)
   if (IsDead(to))
     return; 
 
-  if (linebuf_len(&to->localClient->buf_sendq) > get_sendq(to))
+  if (dbuf_length(&to->localClient->buf_sendq) > get_sendq(to))
   {
     if (IsServer(to))
       sendto_realops_flags(UMODE_ALL, L_ALL,
                            "Max SendQ limit exceeded for %s: %u > %lu",
                            get_client_name(to, HIDE_IP),
-                           linebuf_len(&to->localClient->buf_sendq),
+                           dbuf_length(&to->localClient->buf_sendq),
                            get_sendq(to));
     if (IsClient(to))
       SetSendQExceeded(to);
@@ -175,7 +176,8 @@ _send_linebuf(struct Client *to, buf_head_t *linebuf)
   {
     /* just attach the linebuf to the sendq instead of
      * generating a new one */
-    linebuf_attach(&to->localClient->buf_sendq, linebuf);
+    dbuf_put(&to->localClient->buf_sendq, linebuf->list.head->data,
+             linebuf->len);
   }
   /*
    ** Update statistics. The following is slightly incorrect
@@ -280,6 +282,7 @@ send_queued_write(struct Client *to)
 #ifndef NDEBUG
   struct hook_io_data hdata;
 #endif
+  struct dbuf_block *first;
   
   /*
    ** Once socket is marked dead, we cannot start writing to it,
@@ -301,27 +304,25 @@ send_queued_write(struct Client *to)
     return;  /* no use in calling send() now */
 
   /* Next, lets try to write some data */
-#ifndef NDEBUG
-  hdata.connection = to;
-  if (to->localClient->buf_sendq.list.head)
-    hdata.data =
-      ((buf_line_t *)to->localClient->buf_sendq.list.head->data)->buf +
-      to->localClient->buf_sendq.writeofs;
-#endif
   
-  if (linebuf_len(&to->localClient->buf_sendq))
+  if (dbuf_length(&to->localClient->buf_sendq))
   {
-    while((retlen = linebuf_flush(to->localClient->fd, &to->localClient->buf_sendq)) > 0)
-    {
+#ifndef NDEBUG
+    hdata.connection = to;
+#endif
+    do {
+      first = to->localClient->buf_sendq.blocks.head->data;
+      if ((retlen = send(to->localClient->fd, first->data,
+                         first->size, 0)) <= 0)
+        break;
       /* We have some data written .. update counters */
 #ifndef NDEBUG
+      hdata.data = &((struct dbuf_block *)
+                     to->localClient->buf_sendq.blocks.head->data)->data;
       hdata.len = retlen;
       hook_call_event("iosend", &hdata);
-      if (to->localClient->buf_sendq.list.head)
-        hdata.data = 
-          ((buf_line_t *)to->localClient->buf_sendq.list.head->data)->buf +
-          to->localClient->buf_sendq.writeofs;
 #endif
+      dbuf_delete(&to->localClient->buf_sendq, retlen);
       to->localClient->sendB += retlen;
       me.localClient->sendB += retlen;
       if (to->localClient->sendB > 1023)
@@ -334,7 +335,7 @@ send_queued_write(struct Client *to)
         me.localClient->sendK += (me.localClient->sendB >> 10);
         me.localClient->sendB &= 0x03ff;
       }
-    }
+    } while (dbuf_length(&to->localClient->buf_sendq));
     if ((retlen < 0) && (ignoreErrno(errno)))
     {
       /* we have a non-fatal error, so just continue */
@@ -346,7 +347,7 @@ send_queued_write(struct Client *to)
     }
 
     /* Finally, if we have any more data, reschedule a write */
-    if (linebuf_len(&to->localClient->buf_sendq))
+    if (dbuf_length(&to->localClient->buf_sendq))
     {
       SetSendqBlocked(to);
       comm_setselect(to->localClient->fd, FDLIST_IDLECLIENT, COMM_SELECT_WRITE,
