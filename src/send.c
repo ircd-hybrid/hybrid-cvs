@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.28 2000/05/17 03:54:35 wnder Exp $
+ *   $Id: send.c,v 7.29 2000/05/25 21:24:22 wnder Exp $
  */
 #include "send.h"
 #include "channel.h"
@@ -1131,12 +1131,12 @@ vsendto_prefix_one(register struct Client *to, register struct Client *from,
 
       to->flags |= FLAGS_KILLED;
 
-      exit_client(NULL, to, &me, "Ghosted client");
-
       if (IsPerson(from))
         sendto_one(from, form_str(ERR_GHOSTEDCLIENT),
                    me.name, from->name, to->name, to->username,
                    to->host, to->from);
+
+      exit_client(NULL, to, &me, "Ghosted client");
       
       return;
     } /* if (!MyClient(from) && IsPerson(to) && (to->from == from->from)) */
@@ -1179,7 +1179,7 @@ vsendto_prefix_one(register struct Client *to, register struct Client *from,
 #endif
 
   *sendbuf = ':';
-  strncpy(sendbuf + 1, par, sizeof(sendbuf) - 1);
+  strncpy_irc(sendbuf + 1, par, sizeof(sendbuf) - 1);
 
   parlen = strlen(par) + 1;
   sendbuf[parlen++] = ' ';
