@@ -1,5 +1,5 @@
 /* dalloca.h - alloca function for tinycc which doesn't have one natively
- * $Id: dalloca.h,v 1.1 2003/05/26 03:06:16 joshk Exp $
+ * $Id: dalloca.h,v 1.2 2003/06/01 01:01:47 joshk Exp $
  */
 
 /*
@@ -7,7 +7,7 @@
  *    Released under LGPL 2.1
  */
 
-#if __TINYC__
+#ifdef __TINYC__
 
 #ifdef NO_ALLOCA_CHECK
 #define alloca_assert(expr)

@@ -2246,11 +2246,11 @@ fi
 echo "$as_me:$LINENO: result: $AppleGCC" >&5
 echo "${ECHO_T}$AppleGCC" >&6
 
-if test "x$GCC" = "xyes"; then
+if test "$GCC" = yes; then
 	IRC_CFLAGS="$IRC_CFLAGS -O2 -Wall"
 fi
 
-if test "x$ac_cv_prog_cc_g" = "xyes"; then
+if test "$ac_cv_prog_cc_g" = yes; then
 	IRC_CFLAGS="$IRC_CFLAGS -g"
 fi
 
@@ -2407,8 +2407,8 @@ _ACEOF
 echo "${ECHO_T}no - using devnull.log" >&6
 fi
 
-if test "x$CFLAGS" != "x"; then
-	IRC_CFLAGS="$IRC_CFLAGS $CPPFLAGS"
+if test ! -z "$CFLAGS"; then
+	IRC_CFLAGS="$IRC_CFLAGS $CFLAGS"
 fi
 
 
@@ -7767,7 +7767,15 @@ echo $ECHO_N "checking if you want to do a profile build... $ECHO_C" >&6
 # Check whether --enable-profile or --disable-profile was given.
 if test "${enable_profile+set}" = set; then
   enableval="$enable_profile"
-  profile="yes"; IRC_CFLAGS="$IRC_CFLAGS -pg -a -static"
+
+	profile="yes"
+	if test "$GCC" = yes; then
+		IRC_CFLAGS="$IRC_CFLAGS -pg -a -static"
+	else
+		echo "Warning: profile builds only work with gcc, ignoring"
+	fi
+
+
 else
   profile="no"
 fi;
@@ -7781,7 +7789,7 @@ echo $ECHO_N "checking if you want ElectricFence... $ECHO_C" >&6
 if test "${enable_efence+set}" = set; then
   enableval="$enable_efence"
 
-	if test "x$enableval" != "x"; then
+	if test ! -z "$enableval"; then
 		LIBS="$LIBS -L$enableval"
 	fi
 

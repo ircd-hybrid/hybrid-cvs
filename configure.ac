@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.43 2003/05/31 07:01:37 lusky Exp $
+dnl $Id: configure.ac,v 7.44 2003/06/01 01:01:45 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -74,12 +74,12 @@ fi
 
 AC_MSG_RESULT($AppleGCC)
 
-if test "x$GCC" = "xyes"; then
+if test "$GCC" = yes; then
 	IRC_CFLAGS="$IRC_CFLAGS -O2 -Wall"
 fi
 
 dnl If we support -g, use it!
-if test "x$ac_cv_prog_cc_g" = "xyes"; then
+if test "$ac_cv_prog_cc_g" = yes; then
 	IRC_CFLAGS="$IRC_CFLAGS -g"
 fi
 
@@ -150,8 +150,8 @@ fi
 dnl jdc -- If CFLAGS is defined, best use it everywhere...
 dnl NOTE: jv says it must be added to the *END*, because things like
 dnl "gcc -O9 -O2" will result in -O2 getting preference.  How stupid.
-if test "x$CFLAGS" != "x"; then
-	IRC_CFLAGS="$IRC_CFLAGS $CPPFLAGS"
+if test ! -z "$CFLAGS"; then
+	IRC_CFLAGS="$IRC_CFLAGS $CFLAGS"
 fi
 
 AC_ISC_POSIX
@@ -607,7 +607,15 @@ AC_HELP_STRING([--enable-assert],[Enable assert().]),
 AC_MSG_CHECKING(if you want to do a profile build)
 AC_ARG_ENABLE(profile,
 AC_HELP_STRING([--enable-profile],[Enable profiling]),
-[profile="yes"; IRC_CFLAGS="$IRC_CFLAGS -pg -a -static"], profile="no")
+[
+	profile="yes"
+	if test "$GCC" = yes; then
+		IRC_CFLAGS="$IRC_CFLAGS -pg -a -static"
+	else
+		echo "Warning: profile builds only work with gcc, ignoring"
+	fi
+	
+], profile="no")
 
 AC_MSG_RESULT($profile)
 
@@ -616,7 +624,7 @@ AC_MSG_CHECKING(if you want ElectricFence)
 AC_ARG_ENABLE(efence,
 AC_HELP_STRING([--enable-efence],[Enable ElectricFence (memory debugger).]),
 [
-	if test "x$enableval" != "x"; then
+	if test ! -z "$enableval"; then
 		LIBS="$LIBS -L$enableval"
 	fi
 
