@@ -5,7 +5,7 @@
  *
  * adrian chadd <adrian@creative.net.au>
  *
- * $Id: tools.c,v 7.2 2000/12/01 22:18:11 db Exp $
+ * $Id: tools.c,v 7.3 2000/12/02 05:03:26 db Exp $
  */
 
 #include <assert.h>
@@ -68,10 +68,12 @@ dlinkDelete(dlink_node * m, dlink_list * list)
         m->next->prev = m->prev;
     if (m->prev)
         m->prev->next = m->next;
+
     if (m == list->head)
         list->head = m->next;
     if (m == list->tail)
         list->tail = m->prev;
+        
     m->next = m->prev = NULL;
 }
 
@@ -79,4 +81,5 @@ dlinkDelete(dlink_node * m, dlink_list * list)
 void
 dlinkMoveList(dlink_list *from, dlink_list *to)
 {
+    
 }
