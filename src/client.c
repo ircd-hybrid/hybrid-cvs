@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.353 2003/04/18 23:50:54 adx Exp $
+ *  $Id: client.c,v 7.354 2003/04/19 10:47:34 adx Exp $
  */
 
 #include "stdinc.h"
@@ -75,6 +75,8 @@ static int local_client_count  = 0;
 
 static BlockHeap *client_heap  = NULL;
 static BlockHeap *lclient_heap = NULL;
+
+static dlink_node *eac_next;  /* next aborted client to exit */
 
 /* init_client()
  *
@@ -1014,6 +1016,7 @@ void
 dead_link_on_write(struct Client *client_p, int ierrno)
 {
   const char *notice;
+  dlink_node *ptr;
 
   if (IsDefunct(client_p))
     return;
@@ -1036,9 +1039,11 @@ dead_link_on_write(struct Client *client_p, int ierrno)
 
   Debug((DEBUG_ERROR, "Closing link to %s: %s", get_client_name(client_p, HIDE_IP), notice));
   assert(dlinkFind(&abort_list, client_p) == NULL);
-  /* put this client onto the tail of abort_list - let
-   * exit_aborted_clients() catch it yet in the same pass -adx */
-  dlinkAddTail(client_p, make_dlink_node(), &abort_list);
+  ptr = make_dlink_node();
+  /* don't let exit_aborted_clients() finish yet */
+  dlinkAddTail(client_p, ptr, &abort_list);
+  if (eac_next == NULL)
+    eac_next = ptr;
   SetDead(client_p); /* You are dead my friend */
 }
 
@@ -1110,15 +1115,16 @@ dead_link_on_read(struct Client* client_p, int error)
 void
 exit_aborted_clients(void)
 {
-  dlink_node *ptr, *next;
+  dlink_node *ptr;
   struct Client *target_p;
   const char *notice;
 
-  DLINK_FOREACH_SAFE(ptr, next, abort_list.head)
+  for (ptr = abort_list.head; ptr != NULL; ptr = eac_next)
   {
     target_p = ptr->data;
+    eac_next = ptr->next;
 
-    if (ptr->data == NULL)
+    if (target_p == NULL)
     {
       sendto_realops_flags(UMODE_ALL, L_ALL,
                            "Warning: null client on abort_list!");
