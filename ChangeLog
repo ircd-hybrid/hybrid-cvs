@@ -1,3 +1,18 @@
+leeh        2002/05/08 08:19:52 EDT	(20020508_1)
+
+  Modified files:
+    contrib              README 
+  Added files:
+    contrib              temp-dline.diff 
+  Log:
+  - added my temp dline patch to contrib/
+  
+  Revision  Changes    Path
+  1.18      +1 -0      ircd-hybrid-7/contrib/README
+  1.1       +353 -0    ircd-hybrid-7/contrib/temp-dline.diff (new)
+
+
+
 androsyn    2002/05/07 22:54:04 EDT	(20020508_0)
 
   Modified files:
@@ -26095,4 +26110,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3631 2002/05/08 02:54:10 androsyn Exp $
+$Id: ChangeLog,v 7.3632 2002/05/08 12:19:59 leeh Exp $
