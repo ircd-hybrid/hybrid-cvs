@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_cjoin.c,v 7.5 2000/10/14 13:04:48 db Exp $
+ *   $Id: m_cjoin.c,v 7.6 2000/10/14 13:22:43 db Exp $
  */
 
 #include "handlers.h"
@@ -241,6 +241,7 @@ int     m_cjoin(struct Client *cptr,
 		     me.name, vchan_chptr->chname);
 
   del_invite(sptr, vchan_chptr);
+  (void)m_names(vchan_cptr, sptr, 2, parv);
 
   return 0;
 }
