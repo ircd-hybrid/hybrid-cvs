@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: listener.c,v 7.37 2001/02/25 23:20:43 androsyn Exp $
+ *  $Id: listener.c,v 7.38 2001/02/25 23:28:42 androsyn Exp $
  */
 #include "config.h"
 #include "listener.h"
@@ -244,15 +244,7 @@ static struct Listener* find_listener(int port, struct irc_inaddr *addr)
   for (listener = ListenerPollList; listener; listener = listener->next)
   {
     
-    /* jdc -- this breaks shit when addr is irc_inaddr but not in listener.h */
-    /*
     if (port == listener->port && memcmp(PIN_ADDR(addr), IN_ADDR(listener->addr), sizeof(struct irc_inaddr)))
-    */
-    if ( (port == listener->port) &&
-         (!memcmp(&PIN_ADDR(addr),
-                 &IN_ADDR(listener->addr),
-                 sizeof(struct irc_inaddr)))
-       )
     {
       /* Try to return an open listener, otherwise reuse a closed one */
       if (listener->fd == -1)
