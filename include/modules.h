@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.h,v 7.38 2003/05/24 18:37:09 db Exp $
+ *  $Id: modules.h,v 7.39 2003/05/28 19:23:50 joshk Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -85,7 +85,6 @@ extern struct Message challenge_msgtab;
 extern struct Message cryptlink_msgtab;
 #endif
 extern struct Message cjoin_msgtab;
-extern struct Message client_msgtab;
 extern struct Message close_msgtab;
 extern struct Message connect_msgtab;
 extern struct Message die_msgtab;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.119 2003/05/25 23:41:40 joshk Exp $
+ *  $Id: modules.c,v 7.120 2003/05/28 19:23:52 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -550,7 +550,6 @@ load_all_modules(int warn)
   mod_add_cmd(&away_msgtab);
   mod_add_cmd(&capab_msgtab);
   mod_add_cmd(&cburst_msgtab);
-  mod_add_cmd(&client_msgtab);
   mod_add_cmd(&close_msgtab);
   mod_add_cmd(&connect_msgtab);
 #ifdef HAVE_LIBCRYPTO

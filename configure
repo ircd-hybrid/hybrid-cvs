@@ -2214,14 +2214,20 @@ echo "${ECHO_T}no" >&6
 ;;
 esac
 
-echo "$as_me:$LINENO: checking if we are using Sun WorkShop/Forte" >&5
-echo $ECHO_N "checking if we are using Sun WorkShop/Forte... $ECHO_C" >&6
+echo "$as_me:$LINENO: checking $CC -V for Sun Workshop" >&5
+echo $ECHO_N "checking $CC -V for Sun Workshop... $ECHO_C" >&6
 case `$CC -V 2>&1` in
 *Sun*WorkShop* | *Forte*Developer*)
-	echo "$as_me:$LINENO: result: yes" >&5
-echo "${ECHO_T}yes" >&6
+	echo "$as_me:$LINENO: result: Sun Workshop/Forte" >&5
+echo "${ECHO_T}Sun Workshop/Forte" >&6
 	IRC_CFLAGS="-fast -g -xinline=dlinkAdd,dlinkAddBefore,dlinkAddTail,dlinkDelete,dlink_list_length,dlink_node,dlinkMoveList,_MyMalloc,_MyRealloc,_MyFree,_DupString"
 	SGS=yes
+;;
+*Tru64*)
+	echo "$as_me:$LINENO: result: Tru64 cc" >&5
+echo "${ECHO_T}Tru64 cc" >&6
+	IRC_CFLAGS="-O1"
+	Tru=yes
 ;;
 *)
 	echo "$as_me:$LINENO: result: no" >&5
@@ -2240,10 +2246,11 @@ fi
 echo "$as_me:$LINENO: result: $AppleGCC" >&5
 echo "${ECHO_T}$AppleGCC" >&6
 
+
 if test "x$GCC" = "xyes"; then
-	IRC_CFLAGS="-O2 -g -Wall"
+	IRC_CFLAGS="$IRC_CFLAGS -O2 -g -Wall"
 elif test "x$ac_cv_prog_cc_g" = "xyes"; then
-	IRC_CFLAGS="-g -Wall"
+	IRC_CFLAGS="$IRC_CFLAGS -g"
 fi
 
 echo "$as_me:$LINENO: checking if your compiler supports the SVR4 Software Generation System interfaces" >&5
@@ -4838,6 +4845,8 @@ _ACEOF
 
 fi
 
+if test -z "$Tru"; then
+
 echo "$as_me:$LINENO: checking for broken glibc with __ss_family" >&5
 echo $ECHO_N "checking for broken glibc with __ss_family... $ECHO_C" >&6
 cat >conftest.$ac_ext <<_ACEOF
@@ -4885,6 +4894,8 @@ echo "$as_me:$LINENO: result: no" >&5
 echo "${ECHO_T}no" >&6
 fi
 rm -f conftest.$ac_objext conftest.$ac_ext
+
+fi
 
 echo "$as_me:$LINENO: checking for IPv6 support" >&5
 echo $ECHO_N "checking for IPv6 support... $ECHO_C" >&6
@@ -8839,6 +8850,9 @@ echo "${ECHO_T}HP-UX - Assuming HPUX C compiler cc: +z -r -q -n +ESfic" >&6
 		SEDOBJ="s/\.o/.sl/g"
 		MOD_TARGET="hpux_shared"
 		LDFLAGS="${LDFLAGS} -Wl,-E"
+	fi
+	if test "$Tru64" = yes; then
+		PICFLAGS="-shared "
 	fi
 	if test -z "$PICFLAGS"; then
 		if test "$ac_cv_c_compiler_gnu" = "yes"; then

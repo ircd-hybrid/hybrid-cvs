@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.38 2003/05/28 03:33:43 joshk Exp $
+dnl $Id: configure.ac,v 7.39 2003/05/28 19:23:48 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -48,12 +48,17 @@ case `$CC -version 2>&1` in
 ;;
 esac
 
-AC_MSG_CHECKING(if we are using Sun WorkShop/Forte)
+AC_MSG_CHECKING($CC -V for Sun Workshop, Forte or Tru64 cc)
 case `$CC -V 2>&1` in
 *Sun*WorkShop* | *Forte*Developer*)
-	AC_MSG_RESULT(yes)
+	AC_MSG_RESULT(Sun Workshop/Forte)
 	IRC_CFLAGS="-fast -g -xinline=dlinkAdd,dlinkAddBefore,dlinkAddTail,dlinkDelete,dlink_list_length,dlink_node,dlinkMoveList,_MyMalloc,_MyRealloc,_MyFree,_DupString"
 	SGS=yes
+;;
+*Tru64*)
+	AC_MSG_RESULT(Tru64 cc)
+	IRC_CFLAGS="-O1"
+	Tru=yes
 ;;
 *)
 	AC_MSG_RESULT(no)
@@ -69,10 +74,12 @@ fi
 
 AC_MSG_RESULT($AppleGCC)
 
+dnl If we support -g, use it!
+
 if test "x$GCC" = "xyes"; then
-	IRC_CFLAGS="-O2 -g -Wall"
+	IRC_CFLAGS="$IRC_CFLAGS -O2 -g -Wall"
 elif test "x$ac_cv_prog_cc_g" = "xyes"; then
-	IRC_CFLAGS="-g -Wall"
+	IRC_CFLAGS="$IRC_CFLAGS -g"
 fi
 
 dnl SVR4 SGS based on what we know about the compiler -jmallett
@@ -223,6 +230,9 @@ if test "$have_socklen_t" != yes; then
 	AC_DEFINE([socklen_t], [int], [If we don't have a real socklen_t, int is good enough.])
 fi
 
+dnl Tru64 accepts *both*
+if test -z "$Tru"; then
+
 AC_MSG_CHECKING(for broken glibc with __ss_family)
 AC_COMPILE_IFELSE(
 [AC_LANG_PROGRAM([#include <sys/socket.h>],
@@ -232,6 +242,8 @@ AC_COMPILE_IFELSE(
 	AC_DEFINE(ss_family, __ss_family, [Broken glibc implementations use __ss_family instead of ss_family. Define to __ss_family if true.])
 ],
 [AC_MSG_RESULT(no)])
+
+fi
 
 AC_CACHE_CHECK([for IPv6 support], have_v6,
 [
@@ -810,6 +822,9 @@ else
 		SEDOBJ="s/\.o/.sl/g"
 		MOD_TARGET="hpux_shared"
 		LDFLAGS="${LDFLAGS} -Wl,-E"
+	fi
+	if test "$Tru64" = yes; then
+		PICFLAGS="-shared "
 	fi
 	if test -z "$PICFLAGS"; then
 		if test "$ac_cv_c_compiler_gnu" = "yes"; then
