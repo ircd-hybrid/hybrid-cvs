@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kick.c,v 1.29 2001/04/28 15:17:31 jdc Exp $
+ *   $Id: m_kick.c,v 1.30 2001/04/28 15:56:50 fl_ Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -174,9 +174,6 @@ static void m_kick(struct Client *client_p,
       /* half ops cannot kick full chanops */
       if (is_half_op(chptr,source_p) && is_chan_op(chptr,who))
 	{
-	  sendto_one(who, ":%s NOTICE %s :half-op %s tried to kick you",
-		     me.name, who->name, source_p->name);
-
           sendto_one(source_p, form_str(ERR_CHANOPRIVSNEEDED),
                      me.name, parv[0], name);
 	  return;
