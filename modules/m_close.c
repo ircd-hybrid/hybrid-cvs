@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_close.c,v 1.15 2001/04/04 15:22:24 androsyn Exp $
+ *   $Id: m_close.c,v 1.16 2001/04/13 22:39:45 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -75,7 +75,7 @@ static void mo_close(struct Client *client_p, struct Client *source_p,
   /* Which list would connecting servers be found in? serv_list ? */
 #if 0
       if (!IsUnknown(target_p) && !IsConnecting(target_p) &&
-          !IsHandshake(target_p))
+          !IsHandshake(target_p) && !IsDoingKauth(target_p))
         continue;
 #endif
       sendto_one(source_p, form_str(RPL_CLOSING), me.name, parv[0],

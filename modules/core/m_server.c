@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_server.c,v 1.55 2001/04/04 15:22:34 androsyn Exp $
+ *   $Id: m_server.c,v 1.56 2001/04/13 22:39:46 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"  /* m_server prototype */
@@ -116,7 +116,7 @@ static void mr_server(struct Client *client_p, struct Client *source_p,
 
   /* Now we just have to call check_server and everything should be
    * check for us... -A1kmm. */
-  switch (check_server(name, client_p))
+  switch (check_server(name, client_p, CHECK_SERVER_NOCRYPTLINK))
     {
      case -1:
       if (ConfigFileEntry.warn_no_nline)

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: listener.c,v 7.45 2001/04/09 08:29:54 a1kmm Exp $
+ *  $Id: listener.c,v 7.46 2001/04/13 22:39:50 davidt Exp $
  */
 #include "config.h"
 #include "listener.h"
@@ -31,6 +31,10 @@
 #include "s_stats.h"
 #include "send.h"
 #include "memory.h"
+
+#ifdef OPENSSL
+#include <openssl/bio.h>
+#endif
 
 #include <assert.h>
 #include <string.h>
@@ -353,6 +357,7 @@ static void accept_connection(int pfd, void *data)
    */
 
   fd = comm_accept(listener->fd, &sai);
+
   copy_s_addr(IN_ADDR(addr), S_ADDR(sai));  
   if (fd < 0)
     {

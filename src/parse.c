@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.98 2001/03/07 19:49:02 fl_ Exp $
+ *   $Id: parse.c,v 7.99 2001/04/13 22:39:51 davidt Exp $
  */
 
 #include <assert.h>
@@ -43,6 +43,7 @@
 #include "s_conf.h"
 #include "vchannel.h"
 #include "memory.h"
+#include "s_serv.h"
 
 /*
  * NOTE: parse() should not be called recursively by other functions!
@@ -142,7 +143,7 @@ void parse(struct Client *client_p, char *pbuffer, char *bufend)
   int             paramcount, mpara=0;
   char*           numeric = 0;
   struct Message* mptr;
-
+  
   Debug((DEBUG_DEBUG, "Parsing %s:", pbuffer));
 
   assert(!IsDead(client_p));
@@ -152,6 +153,7 @@ void parse(struct Client *client_p, char *pbuffer, char *bufend)
     /* null statement */ ;
 
   para[0] = from->name;
+
   if (*ch == ':')
     {
       ch++;
@@ -331,11 +333,12 @@ handle_command(struct Message *mptr, struct Client *client_p,
        * ignore it.. more than likely its a header thats sneaked through
        */
 		
-      if((IsHandshake(client_p) || IsConnecting(client_p) || IsServer(client_p))
+      if((IsHandshake(client_p) || IsConnecting(client_p)
+          || IsServer(client_p))
 	 && !(mptr->flags & MFLG_UNREG))
 	return;
     }
-	
+
   handler = mptr->handlers[client_p->handler];
 	
   /* check right amount of params is passed... --is */

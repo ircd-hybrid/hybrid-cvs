@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.204 2001/04/09 08:29:55 a1kmm Exp $
+ *  $Id: s_conf.c,v 7.205 2001/04/13 22:39:52 davidt Exp $
  */
 
 #include <sys/types.h>
@@ -206,7 +206,8 @@ void free_conf(struct ConfItem* aconf)
 {
   assert(0 != aconf);
   assert(!(aconf->status & CONF_CLIENT) ||
-         strcmp(aconf->host, "NOMATCH") || (aconf->clients == -1));
+         (aconf->host && strcmp(aconf->host, "NOMATCH")) ||
+         (aconf->clients == -1));
   delete_adns_queries(aconf->dns_query);
   MyFree(aconf->host);
   if (aconf->passwd)

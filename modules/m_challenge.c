@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_challenge.c,v 1.20 2001/04/04 15:22:23 androsyn Exp $
+ *   $Id: m_challenge.c,v 1.21 2001/04/13 22:39:45 davidt Exp $
  */
 #include <stdlib.h>
 #include <string.h>
@@ -138,6 +138,7 @@ static void m_challenge( struct Client *client_p, struct Client *source_p,
      sendto_one (source_p, form_str(ERR_NOOPERHOST), me.name, parv[0]);
      return;
     }
+  /* XXX this should be a config flag.. */
   if (!strchr(aconf->passwd, ' '))
     {
      sendto_one (source_p, ":%s NOTICE %s :I'm sorry, PK authentication "

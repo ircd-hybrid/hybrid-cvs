@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.90 2001/04/11 10:20:45 kreator Exp $
+ * $Id: ircd_lexer.l,v 1.91 2001/04/13 22:39:49 davidt Exp $
  */
 
 %option case-insensitive
@@ -81,16 +81,15 @@ qstring   \"[^\"\n]*[\"\n]
 include   \.include{ws}(\<.*\>|\".*\")
 
 %%
+{include}       { cinclude(); }
+"/*"	        { ccomment(); }
 
-{include}   { cinclude(); }
-"/*"	      { ccomment(); }
+\n.*	        { strcpy(linebuf, yytext+1); lineno++; yyless(1); }
 
-\n.*	      { strcpy(linebuf, yytext+1); lineno++; yyless(1); }
+{ws}            ;
+{comment}       ;
 
-{ws}		    ;
-{comment}	  ;
-
-{digit}+          { yylval.number = atoi(yytext); return NUMBER; }
+{digit}+        { yylval.number = atoi(yytext); return NUMBER; }
 
 {qstring}	{ yylval.string = yytext+1;
 		  if(yylval.string[yyleng-2] != '"')
@@ -146,6 +145,7 @@ ipv6            { return T_IPV6; }
 kill		{ return KILL; }
 kline		{ return KLINE; }
 kline_exempt	{ return KLINE_EXEMPT; }
+cryptlink	{ return CRYPTLINK; }
 l_crit		{ return T_L_CRIT; }
 l_debug		{ return T_L_DEBUG; }
 l_error		{ return T_L_ERROR; }
@@ -189,6 +189,8 @@ redirport       { return REDIRPORT; }
 reject		{ return TREJECT; }
 remote		{ return REMOTE; }
 restricted      { return RESTRICTED; }
+rsa_public_key	{ return RSA_PUBLIC_KEY; }
+rsa_private_key { return RSA_PRIVATE_KEY; }
 send_password	{ return SEND_PASSWORD; }
 sendq		{ return SENDQ; }
 serverinfo	{ return SERVERINFO; }

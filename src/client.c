@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.159 2001/04/09 08:29:51 a1kmm Exp $
+ *  $Id: client.c,v 7.160 2001/04/13 22:39:48 davidt Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -1349,7 +1349,8 @@ const char* comment         /* Reason for the exit */
        * it has to be put on the serv_list, or SJOIN's to this new server
        * from the connect burst will not be seen.
        */
-      if (IsServer(source_p) || IsConnecting(source_p) || IsHandshake(source_p))
+      if (IsServer(source_p) || IsConnecting(source_p) ||
+          IsHandshake(source_p))
 	{
 	  m = dlinkFind(&serv_list,source_p);
 	  if( m != NULL )

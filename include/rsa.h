@@ -19,7 +19,10 @@
  *
  *
  *
- * $Id: rsa.h,v 7.1 2000/11/05 03:37:48 ryan Exp $
+ * $Id: rsa.h,v 7.2 2001/04/13 22:39:43 davidt Exp $
  */
 
 int generate_challenge( char ** r_challenge, char ** r_response, char * key );
+int crypt_data(char **out, char *in, int len, char *key);
+int decrypt_data(char **out, char *in, int len, char *key);
+  
