@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.81 2000/12/20 03:43:21 db Exp $
+ *  $Id: client.c,v 7.82 2000/12/21 02:31:52 db Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -344,7 +344,7 @@ check_pings_list(dlink_list *list)
                 }
 
               cptr->flags2 |= FLAGS2_PING_TIMEOUT;
-	      (void)exit_client(cptr, cptr, &me, "ping timeout" );
+	      (void)exit_client(cptr, cptr, &me, "Ping timeout:");
               continue;
             }
           else if ((cptr->flags & FLAGS_PINGSENT) == 0)
