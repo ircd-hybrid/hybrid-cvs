@@ -18,7 +18,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: packet.c,v 7.25 2000/12/21 13:39:47 db Exp $
+ *   $Id: packet.c,v 7.26 2000/12/21 14:16:10 adrian Exp $
  */ 
 
 #include <stdio.h>
@@ -88,7 +88,7 @@ int parse_client_queued(struct Client *cptr)
 	}
       }
 #endif
-    return 1;
+    return CLIENT_OK;
 }
 
 /*
@@ -143,10 +143,10 @@ flood_recalc(int fd, void *data)
     lcptr->actually_read = 0;
 
     /* And now, try flushing .. */
-    parse_client_queued(cptr);
-
-    /* and finally, reset the flood check */
-    comm_setflush(fd, 1, flood_recalc, cptr);
+    if (parse_client_queued(cptr) == CLIENT_OK) {
+        /* and finally, reset the flood check */
+        comm_setflush(fd, 1, flood_recalc, cptr);
+    }
 }
 
 /*
@@ -224,10 +224,8 @@ read_packet(int fd, void *data)
     }
 
   /* Attempt to parse what we have */
-  parse_client_queued(cptr);
-
-  /* If we get here, we need to register for another COMM_SELECT_READ */
-  if (cptr->fd > -1) {
+  if (parse_client_queued(cptr) == CLIENT_OK) {
+    /* If we get here, we need to register for another COMM_SELECT_READ */
     if (PARSE_AS_SERVER(cptr)) {
       comm_setselect(cptr->fd, FDLIST_SERVER, COMM_SELECT_READ,
         read_packet, cptr, 0);
