@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.92 2002/02/12 14:13:34 jmallett Exp $
+ *  $Id: modules.c,v 7.93 2002/02/12 14:27:42 jmallett Exp $
  */
 
 #include "config.h"
@@ -188,7 +188,7 @@ void linkEditErrorHandler(NSLinkEditErrors errorClass, int errnum,
 
 char *dlerror(void)
 {
-  return myDlError == NSObjectFileImageSuccess ? NULL : myErrorTable[myDlError % 6];
+  return myDlError == NSObjectFileImageSuccess ? NULL : myErrorTable[myDlError % 7];
 }
 
 void *dlopen(char *filename, int unused)
