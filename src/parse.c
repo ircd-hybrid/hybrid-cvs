@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.18 2000/10/31 22:59:54 db Exp $
+ *   $Id: parse.c,v 7.19 2000/11/05 01:53:51 db Exp $
  */
 #include "parse.h"
 #include "client.h"
@@ -566,7 +566,7 @@ struct Message msgtab[] = {
     { m_user, m_registered, m_ignore, m_registered }
   },
   {MSG_NICK, 0, 1, MFLG_SLOW, 0,
-    { m_nick, m_nick, m_nick, m_nick }
+    { mr_nick, m_nick, ms_nick, m_nick }
   },
   {MSG_AWAY, 0, 0, MFLG_SLOW, 0,
     /* UNREG, CLIENT, SERVER, OPER */
