@@ -1,3 +1,17 @@
+androsyn    2002/05/26 14:54:14 EDT	(20020526_7)
+
+  Modified files:        (Branch: WIN32_WIP)
+    src                  io_unix.c io_win32.c listener.c 
+  Log:
+  Some additional changes on the new IO abstraction layer...
+  
+  Revision  Changes    Path
+  1.1.2.2   +45 -4     ircd-hybrid-7/src/io_unix.c
+  1.1.2.2   +36 -4     ircd-hybrid-7/src/io_win32.c
+  7.67.2.2  +2 -2      ircd-hybrid-7/src/listener.c
+
+
+
 androsyn    2002/05/26 06:56:01 EDT	(20020526_6)
 
   Modified files:        (Branch: WIN32_WIP)
@@ -27392,4 +27406,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3705 2002/05/26 10:56:07 androsyn Exp $
+$Id: ChangeLog,v 7.3706 2002/05/26 18:54:21 androsyn Exp $
