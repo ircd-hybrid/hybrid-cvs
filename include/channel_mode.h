@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.h,v 7.7 2002/05/12 12:15:15 leeh Exp $
+ *  $Id: channel_mode.h,v 7.8 2002/05/12 14:50:40 leeh Exp $
  */
 
 #include <sys/types.h>        /* time_t */
@@ -134,14 +134,16 @@ struct ChModeChange
  int caps, nocaps, mems;
 };
 
+#ifdef HALFOPS
 struct ChModeBounce
 {
   char letter;
   char *arg, *id;
   int dir;
 };
+#endif
 
-#ifndef ANONOPS
+#ifdef ANONOPS
 struct ChResyncOp
 {
  struct Client *client_p;

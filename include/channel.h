@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.110 2002/05/12 12:28:16 leeh Exp $
+ *  $Id: channel.h,v 7.111 2002/05/12 14:50:40 leeh Exp $
  */
 
 #include <sys/types.h>        /* time_t */
@@ -74,7 +74,9 @@ struct Channel
 #ifdef REQUIRE_OANDV
   dlink_list	  chanops_voiced;	/* UGH I'm sorry */
 #endif
+#ifdef HALFOPS
   dlink_list      halfops;
+#endif
   dlink_list      voiced;
   dlink_list      peons;                /* non ops, just members */
   dlink_list	  deopped;              /* users deopped on sjoin */
@@ -83,7 +85,9 @@ struct Channel
 #ifdef REQUIRE_OANDV
   dlink_list	  locchanops_voiced;	/* UGH I'm sorry */
 #endif
+#ifdef HALFOPS
   dlink_list      lochalfops;
+#endif
   dlink_list      locvoiced;
   dlink_list      locpeons;             /* ... */
   
@@ -114,7 +118,9 @@ extern int     can_join(struct Client *source_p, struct Channel *chptr,
                         char *key);
 extern int     is_chan_op (struct Channel *chptr,struct Client *who);
 extern int     is_any_op (struct Channel *chptr,struct Client *who);
+#ifdef HALFOPS
 extern int     is_half_op (struct Channel *chptr,struct Client *who);
+#endif
 extern int     is_voiced (struct Channel *chptr,struct Client *who);
 
 extern dlink_node *find_user_link (dlink_list *, struct Client *);

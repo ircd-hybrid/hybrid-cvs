@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: vchannel.c,v 7.61 2002/01/05 09:15:19 a1kmm Exp $
+ *  $Id: vchannel.c,v 7.62 2002/05/12 14:50:50 leeh Exp $
  */
 
 #include "tools.h"
@@ -478,12 +478,14 @@ pick_vchan_id(struct Channel *chptr)
       }
 #endif
 
+#ifdef HALFOPS
   for (lp = chptr->halfops.head; lp; lp = lp->next)
     if (!lp->next)
       {
         target_p = lp->data;
         return target_p->name;
       }
+#endif
 
   for (lp = chptr->voiced.head; lp; lp = lp->next)
     if (!lp->next)

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.247 2002/05/12 12:15:19 leeh Exp $
+ *  $Id: ircd_parser.y,v 1.248 2002/05/12 14:50:49 leeh Exp $
  */
 
 %{
@@ -2590,7 +2590,7 @@ channel_use_halfops:   USE_HALFOPS '=' TYES ';'
 channel_use_anonops: USE_ANONOPS '=' TYES ';'
   {
 #ifdef ANONOPS
-    if(ConfigChannel.use_anonops)
+    if(ConfigChannel.use_anonops == 0)
     {
       ilog(L_ERROR, "Ignoring config file entry 'use_anonops = yes' "
                     "-- can only be changed on boot");

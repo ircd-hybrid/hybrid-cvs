@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.252 2002/04/28 00:26:07 leeh Exp $
+ *  $Id: s_serv.c,v 7.253 2002/05/12 14:50:50 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -1583,7 +1583,9 @@ burst_all(struct Client *client_p)
           burst_members(client_p,&chptr->chanops_voiced);
 #endif
           burst_members(client_p,&chptr->voiced);
+#ifdef HALFOPS
           burst_members(client_p,&chptr->halfops);
+#endif
           burst_members(client_p,&chptr->peons);
           send_channel_modes(client_p, chptr);
           hinfo.chptr = chptr;
@@ -1604,7 +1606,9 @@ burst_all(struct Client *client_p)
                   burst_members(client_p,&vchan->chanops_voiced);
 #endif
                   burst_members(client_p,&vchan->voiced);
+#ifdef HALFOPS
                   burst_members(client_p,&vchan->halfops);
+#endif
                   burst_members(client_p,&vchan->peons);
                   send_channel_modes(client_p, vchan);
 	          hinfo.chptr = chptr;
@@ -1678,7 +1682,9 @@ burst_channel(struct Client *client_p, struct Channel *chptr)
   burst_ll_members(client_p, &chptr->chanops_voiced);
 #endif
   burst_ll_members(client_p,&chptr->voiced);
+#ifdef HALFOPS
   burst_ll_members(client_p,&chptr->halfops);
+#endif
   burst_ll_members(client_p,&chptr->peons);
   send_channel_modes(client_p, chptr);
   add_lazylinkchannel(client_p,chptr);
@@ -1703,7 +1709,9 @@ burst_channel(struct Client *client_p, struct Channel *chptr)
 	  burst_ll_members(client_p,&vchan->chanops_voiced);
 #endif
 	  burst_ll_members(client_p,&vchan->voiced);
+#ifdef HALFOPS
 	  burst_ll_members(client_p,&vchan->halfops);
+#endif
 	  burst_ll_members(client_p,&vchan->peons);
 	  send_channel_modes(client_p, vchan);
 	  add_lazylinkchannel(client_p,vchan);
