@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_locops.c,v 1.2 2000/11/09 08:26:11 ejb Exp $
+ *   $Id: m_locops.c,v 1.3 2000/11/09 09:46:58 ejb Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -33,9 +33,9 @@
 #include "hash.h"
 #include "msg.h"
 
-struct locops_msgtab = {
+struct Message locops_msgtab = {
   MSG_LOCOPS, 0, 1, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, m_ignore, mo_locops}
+  {m_unregistered, m_not_oper, m_ignore, m_locops}
 };
 
 void

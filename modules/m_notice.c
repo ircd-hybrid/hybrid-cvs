@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_notice.c,v 1.1 2000/11/08 23:57:32 ejb Exp $
+ *   $Id: m_notice.c,v 1.2 2000/11/09 09:46:59 ejb Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -77,7 +77,7 @@ _modinit(void)
 **
 */
 
-static void notice_client(struct Client *sptr, struct Client *acptr,
+void notice_client(struct Client *sptr, struct Client *acptr,
 			  char *text);
 
 
@@ -152,7 +152,7 @@ int     m_notice(struct Client *cptr,
  *		  note, this is canonilization
  * side effects	- message given channel
  */
-static void notice_channel( struct Client *cptr,
+void notice_channel( struct Client *cptr,
 			     struct Client *sptr,
 			     struct Channel *chptr,
 			     char *text)
@@ -196,7 +196,7 @@ static void notice_channel( struct Client *cptr,
  * output	- NONE
  * side effects	- message given channel either chanop or voice
  */
-static void notice_channel_flags( struct Client *cptr,
+void notice_channel_flags( struct Client *cptr,
 				   struct Client *sptr,
 				   struct Channel *chptr,
 				   int flags,
@@ -244,7 +244,7 @@ static void notice_channel_flags( struct Client *cptr,
  * output	- NONE
  * side effects	- message given channel either chanop or voice
  */
-static void notice_client(struct Client *sptr, struct Client *acptr,
+void notice_client(struct Client *sptr, struct Client *acptr,
 			  char *text)
 {
   /* reset idle time for message only if its not to self */

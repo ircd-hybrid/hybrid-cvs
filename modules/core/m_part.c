@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_part.c,v 1.2 2000/11/09 08:26:12 ejb Exp $
+ *   $Id: m_part.c,v 1.3 2000/11/09 09:46:59 ejb Exp $
  */
 #include "handlers.h"
 #include "channel.h"
@@ -34,6 +34,7 @@
 #include "numeric.h"
 #include "send.h"
 #include "s_serv.h"
+#include "msg.h"
 
 #include <stdlib.h>
 #include <string.h>

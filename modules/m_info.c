@@ -1,7 +1,7 @@
 /*
  * m_info.c 
  *
- * $Id: m_info.c,v 1.1 2000/11/08 23:57:28 ejb Exp $
+ * $Id: m_info.c,v 1.2 2000/11/09 09:46:57 ejb Exp $
  */
 #define DEFINE_M_INFO_DATA
 #include "m_info.h"
@@ -15,6 +15,8 @@
 #include "s_user.h"
 #include "send.h"
 #include "s_conf.h"
+#include "handlers.h"
+
 #include "msg.h"
 
 #include <time.h>

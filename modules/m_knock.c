@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_knock.c,v 1.1 2000/11/08 23:57:29 ejb Exp $
+ *   $Id: m_knock.c,v 1.2 2000/11/09 09:46:58 ejb Exp $
  */
 #include "handlers.h"
 #include "channel.h"
@@ -140,7 +140,7 @@ int     mo_knock(struct Client *cptr,
  *                or sends failure message to sptr
  */
 
-static struct Channel *parse_knock_args(struct Client *cptr,
+struct Channel *parse_knock_args(struct Client *cptr,
                                         struct Client *sptr,
                                         int parc, char *parv[])
 {
@@ -261,7 +261,7 @@ static struct Channel *parse_knock_args(struct Client *cptr,
  * side effects -
  */
 
-static void send_knock(struct Client *cptr, struct Client *sptr,
+void send_knock(struct Client *cptr, struct Client *sptr,
                        struct Channel *chptr, char *name)
 {
   char message[NICKLEN*2+CHANNELLEN+USERLEN+HOSTLEN+30];

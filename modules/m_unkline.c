@@ -21,7 +21,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: m_unkline.c,v 1.1 2000/11/08 23:57:37 ejb Exp $
+ *   $Id: m_unkline.c,v 1.2 2000/11/09 09:47:00 ejb Exp $
  */
 #include "handlers.h"
 #include "channel.h"
@@ -37,11 +37,26 @@
 #include "s_log.h"
 #include "s_misc.h"
 #include "send.h"
+#include "msg.h"
 
 #include <stdio.h>
 #include <time.h>
 #include <string.h>
 #include <unistd.h>
+
+struct Message msgtabs[2] = {
+  {MSG_UNKLINE, 0, 1, MFLG_SLOW, 0,
+   {m_unregistered, m_not_oper, m_error, mo_unkline}},
+  {MSG_UNDLINE, 0, 1, MFLG_SLOW, 0,
+   {m_unregistered, m_not_oper, m_error, mo_undline}}
+};
+
+void
+_modinit(void)
+{
+  mod_add_cmd(MSG_UNKLINE, &msgtabs[0]);
+  mod_add_cmd(MSG_UNDLINE, &msgtabs[1]);
+}
 
 extern ConfigFileEntryType ConfigFileEntry; /* defined in ircd.c */
 

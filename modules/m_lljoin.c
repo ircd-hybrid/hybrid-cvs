@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_lljoin.c,v 1.1 2000/11/08 23:57:30 ejb Exp $
+ * $Id: m_lljoin.c,v 1.2 2000/11/09 09:46:58 ejb Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -29,6 +29,7 @@
 #include "numeric.h"
 #include "s_serv.h"
 #include "send.h"
+#include "handlers.h"
 #include "msg.h"
 
 #include <assert.h>

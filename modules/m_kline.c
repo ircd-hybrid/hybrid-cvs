@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kline.c,v 1.1 2000/11/08 23:57:29 ejb Exp $
+ *   $Id: m_kline.c,v 1.2 2000/11/09 09:46:57 ejb Exp $
  */
 #include "m_kline.h"
 #include "channel.h"
@@ -39,6 +39,7 @@
 #include "s_misc.h"
 #include "send.h"
 #include "hash.h"
+#include "handlers.h"
 #include "msg.h"
 
 #include <stdlib.h>

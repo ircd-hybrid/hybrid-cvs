@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_privmsg.c,v 1.2 2000/11/09 08:26:13 ejb Exp $
+ *   $Id: m_privmsg.c,v 1.3 2000/11/09 09:47:00 ejb Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -31,6 +31,7 @@
 #include "s_conf.h"
 #include "s_serv.h"
 #include "send.h"
+#include "msg.h"
 
 #include "channel.h"
 #include "vchannel.h"
@@ -67,7 +68,7 @@ void handle_opers(struct Client *cptr,
 			 char *text);
 
 struct Message privmsg_msgtab = {
-  {MSG_PRIVMSG, 0, 1, MFLG_SLOW | MFLG_UNREG, 0L,
+  MSG_PRIVMSG, 0, 1, MFLG_SLOW | MFLG_UNREG, 0L,
   {m_unregistered, m_privmsg, ms_privmsg, mo_privmsg}
 };
 

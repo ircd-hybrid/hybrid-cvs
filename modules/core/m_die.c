@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_die.c,v 1.1 2000/11/08 23:57:25 ejb Exp $
+ *   $Id: m_die.c,v 1.2 2000/11/09 09:46:57 ejb Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -34,7 +34,7 @@
 #include "msg.h"
 
 struct Message die_msgtab = {
-  {MSG_DIE, 0, 1, MFLG_SLOW, 0,
+  MSG_DIE, 0, 1, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, m_ignore, mo_die}
 };
 

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_drop.c,v 1.1 2000/11/08 23:57:25 ejb Exp $
+ * $Id: m_drop.c,v 1.2 2000/11/09 09:46:57 ejb Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -30,14 +30,15 @@
 #include "s_serv.h"       /* captab */
 #include "s_user.h"
 #include "send.h"
+#include "handlers.h"
 #include "msg.h"
 
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>
 
-struct drop_msgtab = {
-  {MSG_DROP, 0, 2, MFLG_SLOW | MFLG_UNREG, 0L,
+struct Message drop_msgtab = {
+  MSG_DROP, 0, 2, MFLG_SLOW | MFLG_UNREG, 0L,
   {m_unregistered, m_error, ms_drop, m_error}
 };
 
