@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.h,v 7.21 2000/12/22 04:10:04 ejb Exp $
+ * $Id: m_info.h,v 7.22 2000/12/28 04:54:18 wcampbel Exp $
  */
 #ifndef INCLUDED_m_info_h
 #define INCLUDED_m_info_h
@@ -100,12 +100,6 @@ Info MyInformation[] = {
   { "DLPATH", "NONE", 0, "Path to D-line File" },
 #endif /* DLPATH */
 
-#ifdef GLINE_TIME
-  { "GLINE_TIME", "", GLINE_TIME, "Expire Time for Glines" },
-#else
-  { "GLINE_TIME", "NONE", 0, "Expire Time for Glines" },
-#endif /* GLINE_TIME */
-
   { "HARD_FDLIMIT_", "", HARD_FDLIMIT_, "Maximum Number of File Descriptors Available" },
 
 #ifdef HPATH
@@ -164,6 +158,12 @@ Info MyInformation[] = {
 
   { "OPER_SPAM_COUNTDOWN", "", OPER_SPAM_COUNTDOWN, "Anti SpamBot Parameter" },
 
+#ifdef OPENSSL
+  { "OPENSSL", "ON", 0, "Enable OpenSSL CHALLENGE Support" },
+#else
+  { "OPENSSL", "OFF", 0, "Enable OpenSSL CHALLENGE Support" },
+#endif /* OPENSSL */
+
 #ifdef PPATH
   { "PPATH", PPATH, 0, "Path to Pid File" },
 #else
@@ -181,12 +181,6 @@ Info MyInformation[] = {
 #else
   { "SPATH", "NONE", 0, "Path to Server Executable" },
 #endif /* SPATH */
-
-#ifdef STATS_NOTICE
-  { "STATS_NOTICE", "ON", 0, "Show Operators when a Client uses STATS" },
-#else
-  { "STATS_NOTICE", "OFF", 0, "Show Operators when a Client uses STATS" },
-#endif /* STATS_NOTICE */
 
   { "TIMESEC", "", TIMESEC, "Time Interval to Wait Before Checking Pings" },
 
