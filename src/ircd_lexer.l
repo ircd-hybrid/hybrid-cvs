@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.24 2000/11/30 22:48:05 davidt Exp $
+ * $Id: ircd_lexer.l,v 1.25 2000/12/01 22:18:06 db Exp $
  */
 
 %{
@@ -27,6 +27,7 @@
 #include <sys/types.h>
 #include <string.h>
 #include <ctype.h>
+#include "tools.h"
 #include "irc_string.h"
 #include "common.h"
 #include "s_conf.h"

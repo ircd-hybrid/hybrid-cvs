@@ -1,9 +1,10 @@
 /*
  * m_info.c 
  *
- * $Id: m_info.c,v 1.5 2000/11/28 03:53:54 bill Exp $
+ * $Id: m_info.c,v 1.6 2000/12/01 22:17:56 db Exp $
  */
 #define DEFINE_M_INFO_DATA
+#include "tools.h"
 #include "m_info.h"
 #include "channel.h"
 #include "client.h"

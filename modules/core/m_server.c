@@ -20,8 +20,9 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_server.c,v 1.6 2000/11/30 16:01:48 db Exp $
+ *   $Id: m_server.c,v 1.7 2000/12/01 22:18:01 db Exp $
  */
+#include "tools.h"
 #include "handlers.h"  /* m_server prototype */
 #include "client.h"      /* client struct */
 #include "common.h"      /* TRUE bleah */
@@ -274,7 +275,7 @@ int mr_server(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
        * See if the newly found server is behind a guaranteed
        * leaf (L-line). If so, close the link.
        */
-      if ((aconf = find_conf_host(cptr->localClient->confs, host, CONF_LEAF)) &&
+      if ((aconf = find_conf_host(&cptr->localClient->confs, host, CONF_LEAF)) &&
           (!aconf->port || (hop > aconf->port)))
         {
           sendto_realops("Leaf-only link %s->%s - Closing",
@@ -284,7 +285,7 @@ int mr_server(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
           return exit_client(cptr, cptr, cptr, "Leaf Only");
         }
 
-      if (!(aconf = find_conf_host(cptr->localClient->confs, host, CONF_HUB)) ||
+      if (!(aconf = find_conf_host(&cptr->localClient->confs, host, CONF_HUB)) ||
           (aconf->port && (hop > aconf->port)) )
         {
           sendto_realops("Non-Hub link %s introduced %s(%s).",
@@ -591,7 +592,7 @@ int ms_server(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
        * See if the newly found server is behind a guaranteed
        * leaf (L-line). If so, close the link.
        */
-      if ((aconf = find_conf_host(cptr->localClient->confs, host, CONF_LEAF)) &&
+      if ((aconf = find_conf_host(&cptr->localClient->confs, host, CONF_LEAF)) &&
           (!aconf->port || (hop > aconf->port)))
         {
           sendto_realops("Leaf-only link %s->%s - Closing",
@@ -601,7 +602,7 @@ int ms_server(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
           return exit_client(cptr, cptr, cptr, "Leaf Only");
         }
 
-      if (!(aconf = find_conf_host(cptr->localClient->confs, host, CONF_HUB)) ||
+      if (!(aconf = find_conf_host(&cptr->localClient->confs, host, CONF_HUB)) ||
           (aconf->port && (hop > aconf->port)) )
         {
           sendto_realops("Non-Hub link %s introduced %s(%s).",

@@ -20,8 +20,9 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.47 2000/11/30 16:01:52 db Exp $
+ *  $Id: client.c,v 7.48 2000/12/01 22:18:05 db Exp $
  */
+#include "tools.h"
 #include "client.h"
 #include "class.h"
 #include "blalloc.h"
@@ -148,6 +149,8 @@ struct Client* make_client(struct Client* from)
       cptr->since = cptr->lasttime = cptr->firsttime = CurrentTime;
 
       localClient = BlockHeapALLOC(localUserFreeList, struct LocalUser);
+      memset(localClient, 0, sizeof(struct LocalUser));
+
       if (localClient == NULL)
         outofmemory();
       assert(0 != localClient);
@@ -1156,7 +1159,7 @@ static void exit_one_client(struct Client *cptr, struct Client *sptr, struct Cli
                             const char* comment)
 {
   struct Client* acptr;
-  struct SLink*    lp;
+  dlink_node *lp;
 
   if (IsServer(sptr))
     {
@@ -1224,12 +1227,12 @@ static void exit_one_client(struct Client *cptr, struct Client *sptr, struct Cli
           sendto_common_channels(sptr, ":%s QUIT :%s",
                                    sptr->name, comment);
 
-          while ((lp = sptr->user->channel))
-            remove_user_from_channel(lp->value.chptr,sptr,0);
+          while ((lp = sptr->user->channel.head))
+            remove_user_from_channel(lp->data,sptr);
           
           /* Clean up invitefield */
-          while ((lp = sptr->user->invited))
-            del_invite(lp->value.chptr, sptr);
+          while ((lp = sptr->user->invited.head))
+            del_invite(lp->data, sptr);
           /* again, this is all that is needed */
         }
     }

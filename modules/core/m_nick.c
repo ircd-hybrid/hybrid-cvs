@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_nick.c,v 1.9 2000/11/30 16:01:47 db Exp $
+ *   $Id: m_nick.c,v 1.10 2000/12/01 22:18:00 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -227,31 +227,6 @@ int m_nick(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
       sendto_one(sptr, form_str(ERR_ERRONEUSNICKNAME),
 		 me.name, parv[0], parv[1]);
       return 0;
-    }
-
-  /* if moderate_nickchange is set, don't allow nick changes if the user
-   * is banned from a channel, or the channel is +m.
-   */
-
-  if (ConfigFileEntry.moderate_nickchange && sptr->user)
-    {
-      struct SLink *tmp;
-      for (tmp = sptr->user->channel; tmp; tmp = tmp->next)
-	{
-          /* skip if they are opped */
-          if (tmp->flags & (CHFL_CHANOP|CHFL_VOICE))
-            continue;
-
-	  if ( (is_banned(tmp->value.chptr,sptr) == CHFL_BAN) ||
-               (tmp->value.chptr->mode.mode & MODE_MODERATED) )
-	    {
-	      sendto_one(sptr, form_str(ERR_BANNEDNICK),
-			 me.name,
-			 BadPtr(parv[0]) ? "*" : parv[0],
-			 tmp->value.chptr->chname);
-	      return 0; /* NICK message ignored */
-	    }
-	}
     }
 
   if ((acptr = find_server(nick)))

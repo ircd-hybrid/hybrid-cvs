@@ -20,8 +20,9 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_mode.c,v 1.6 2000/11/29 23:35:34 db Exp $
+ *   $Id: m_mode.c,v 1.7 2000/12/01 22:17:59 db Exp $
  */
+#include "tools.h"
 #include "handlers.h"
 #include "channel.h"
 #include "vchannel.h"

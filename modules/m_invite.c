@@ -20,8 +20,9 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_invite.c,v 1.4 2000/11/28 03:53:54 bill Exp $
+ *   $Id: m_invite.c,v 1.5 2000/12/01 22:17:57 db Exp $
  */
+#include "tools.h"
 #include "handlers.h"
 #include "common.h"
 #include "channel.h"
@@ -205,8 +206,10 @@ int     m_invite(struct Client *cptr,
                              acptr->username,
                              acptr->host);
 
-                  sendto_channel_type(cptr, sptr, chptr,
-                                      MODE_CHANOP,
+		  /* XXX bchan needed for vchans */
+                  sendto_channel_type(cptr, sptr,
+				      &chptr->chanops,
+                                      '@',
                                       chptr->chname,
                                       "PRIVMSG",
                                       message);

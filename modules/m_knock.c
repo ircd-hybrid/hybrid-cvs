@@ -20,8 +20,9 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_knock.c,v 1.6 2000/11/28 06:15:15 db Exp $
+ *   $Id: m_knock.c,v 1.7 2000/12/01 22:17:58 db Exp $
  */
+#include "tools.h"
 #include "handlers.h"
 #include "channel.h"
 #include "client.h"
@@ -188,6 +189,8 @@ struct Channel *parse_knock_args(struct Client *cptr,
       else
         {
           /* No key specified */
+ /* XXX */
+#if 0
           if( (!chptr->members) && (!chptr->next_vchan->next_vchan) )
             {
               chptr = chptr->next_vchan;
@@ -198,6 +201,7 @@ struct Channel *parse_knock_args(struct Client *cptr,
               show_vchans(cptr, sptr, chptr, "knock");
               return NullChn;
             }
+#endif
         }
     }
   else if (IsVchan(chptr))
@@ -278,7 +282,9 @@ void send_knock(struct Client *cptr, struct Client *sptr,
     {
       ircsprintf(message,"KNOCK: %s (%s [%s@%s] has asked for an invite)",
                  name, sptr->name, sptr->username, sptr->host);
-      sendto_channel_type(cptr, cptr, chptr, MODE_CHANOP, sptr->name,
+
+      /* XXX needs vchan support */
+      sendto_channel_type(cptr, cptr, &chptr->chanops, '@', sptr->name,
 			  "NOTICE", message);
     }
 

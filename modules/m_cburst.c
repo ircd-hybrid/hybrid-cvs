@@ -17,8 +17,9 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_cburst.c,v 1.6 2000/11/30 16:01:45 db Exp $
+ * $Id: m_cburst.c,v 1.7 2000/12/01 22:17:55 db Exp $
  */
+#include "tools.h"
 #include "channel.h"
 #include "client.h"
 #include "common.h"
@@ -118,11 +119,11 @@ int     ms_cburst(struct Client *cptr,
     {
       /* for version 2 of LazyLinks, also have to send nicks on channel */
 #ifndef LLVER1
-      struct SLink* l;
+      dlink_node *l;
 
-      for (l = chptr->members; l; l = l->next)
+      for (l = chptr->members->next; l; l = l->next)
 	{
-	  acptr = l->value.cptr;
+	  acptr = l->data;
 	  if (acptr->from != cptr)
 	    sendnick_TS(cptr, acptr);
 	}

@@ -17,8 +17,9 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_drop.c,v 1.6 2000/11/30 16:01:46 db Exp $
+ * $Id: m_drop.c,v 1.7 2000/12/01 22:17:56 db Exp $
  */
+#include "tools.h"
 #include "channel.h"
 #include "client.h"
 #include "common.h"

@@ -20,8 +20,9 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kline.c,v 1.12 2000/11/30 16:01:46 db Exp $
+ *   $Id: m_kline.c,v 1.13 2000/12/01 22:17:57 db Exp $
  */
+#include "tools.h"
 #include "m_kline.h"
 #include "channel.h"
 #include "class.h"

@@ -1,8 +1,9 @@
 /*
  * restart.c
  *
- * $Id: restart.c,v 7.5 2000/11/26 00:42:11 db Exp $
+ * $Id: restart.c,v 7.6 2000/12/01 22:18:08 db Exp $
  */
+#include "tools.h"
 #include "restart.h"
 #include "common.h"
 #include "fdlist.h"

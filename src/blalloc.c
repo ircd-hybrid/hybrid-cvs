@@ -4,13 +4,14 @@
  * Owner:  Wohali (Joan Touzet)
  *
  *
- * $Id: blalloc.c,v 7.9 2000/11/30 16:01:50 db Exp $
+ * $Id: blalloc.c,v 7.10 2000/12/01 22:18:03 db Exp $
  */
 #include <stdio.h>
 #include <unistd.h>
 #include "blalloc.h"
 #include "ircd_defs.h"      /* DEBUG_BLOCK_ALLOCATOR */
 #include "irc_string.h"     /* MyMalloc */
+#include "tools.h"
 #include "s_log.h"
 
 #include <string.h>

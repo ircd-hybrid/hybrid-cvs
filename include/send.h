@@ -2,7 +2,7 @@
  * send.h
  * Copyright (C) 1999 Patrick Alken
  *
- * $Id: send.h,v 7.11 2000/11/30 07:38:49 db Exp $
+ * $Id: send.h,v 7.12 2000/12/01 22:17:51 db Exp $
  */
 
 #ifndef INCLUDED_send_h
@@ -30,8 +30,8 @@ extern  void sendto_channel_butone(struct Client *, struct Client *,
                                    struct Channel *, const char *, ...);
 extern  void sendto_channel_type(struct Client *,
                                  struct Client *, 
-                                 struct Channel *,
-                                 int type,
+                                 dlink_list *,
+                                 char char_type,
                                  const char *nick,
                                  const char *cmd,
                                  const char *message);

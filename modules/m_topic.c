@@ -20,8 +20,9 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_topic.c,v 1.5 2000/11/30 07:38:55 db Exp $
+ *   $Id: m_topic.c,v 1.6 2000/12/01 22:18:02 db Exp $
  */
+#include "tools.h"
 #include "handlers.h"
 #include "channel.h"
 #include "vchannel.h"

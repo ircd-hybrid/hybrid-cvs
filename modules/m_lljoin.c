@@ -17,8 +17,9 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_lljoin.c,v 1.5 2000/11/30 07:38:54 db Exp $
+ * $Id: m_lljoin.c,v 1.6 2000/12/01 22:17:59 db Exp $
  */
+#include "tools.h"
 #include "channel.h"
 #include "client.h"
 #include "common.h"

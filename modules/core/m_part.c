@@ -20,8 +20,9 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_part.c,v 1.9 2000/11/30 16:01:48 db Exp $
+ *   $Id: m_part.c,v 1.10 2000/12/01 22:18:01 db Exp $
  */
+#include "tools.h"
 #include "handlers.h"
 #include "channel.h"
 #include "vchannel.h"
@@ -177,7 +178,7 @@ static void part_one_client(struct Client *cptr,
 	  
 	  sendto_channel_butserv(ALL_MEMBERS,
 				 chptr, sptr, ":%s PART %s", sptr->name, name);
-	  remove_user_from_channel(chptr, sptr, 0);
+	  remove_user_from_channel(chptr, sptr);
 	}
       else
 	{
@@ -195,7 +196,7 @@ static void part_one_client(struct Client *cptr,
             
 	  sendto_channel_butserv(ALL_MEMBERS,
 				 vchan, sptr, ":%s PART %s", sptr->name, name);
-	  remove_user_from_channel(vchan, sptr, 0);
+	  remove_user_from_channel(vchan, sptr);
 	}
     }
   else
@@ -214,7 +215,7 @@ static void part_one_client(struct Client *cptr,
             
       sendto_channel_butserv(ALL_MEMBERS,
 			     chptr, sptr, ":%s PART %s", sptr->name, name);
-      remove_user_from_channel(chptr, sptr, 0);
+      remove_user_from_channel(chptr, sptr);
     }
 }
 

@@ -19,8 +19,9 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: oldparse.c,v 1.8 2000/11/29 23:35:39 db Exp $
+ *  $Id: oldparse.c,v 1.9 2000/12/01 22:18:07 db Exp $
  */
+#include "tools.h"
 #include "s_log.h"
 #include "s_conf.h"
 #include "client.h"

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: ircdauth.c,v 7.14 2000/11/30 16:01:53 db Exp $
+ *   $Id: ircdauth.c,v 7.15 2000/12/01 22:18:07 db Exp $
  */
 
 #include <stdio.h>
@@ -636,8 +636,10 @@ GreetUser(struct Client *client)
   else
     SendMessageFile(client, &ConfigFileEntry.motd);
 
-#ifdef LITTLE_I_LINES
-  if (client->localClient->confs && client->localClient->confs->value.aconf &&
+#if 0
+  if (client->localClient->confs.head &&  client->localClient->confs->data)
+    {
+
       (client->localClient->confs->value.aconf->flags & CONF_FLAGS_LITTLE_I_LINE))
     {
       SetRestricted(client);

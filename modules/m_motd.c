@@ -20,8 +20,9 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_motd.c,v 1.3 2000/11/28 03:54:03 bill Exp $
+ *   $Id: m_motd.c,v 1.4 2000/12/01 22:18:00 db Exp $
  */
+#include "tools.h"
 #include "motd.h"
 #include "ircd.h"
 #include "s_conf.h"

@@ -16,8 +16,9 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: hash.c,v 7.9 2000/11/29 23:35:37 db Exp $
+ *  $Id: hash.c,v 7.10 2000/12/01 22:18:05 db Exp $
  */
+#include "tools.h"
 #include "s_conf.h"
 #include "channel.h"
 #include "client.h"

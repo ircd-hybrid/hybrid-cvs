@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.13 2000/11/30 16:01:47 db Exp $
+ *   $Id: m_message.c,v 1.14 2000/12/01 22:17:59 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -431,16 +431,9 @@ void msg_channel( int p_or_n, char *command,
 	sptr->user->last = CurrentTime;
     }
 
-  if (can_send(chptr, sptr) == 0)
-    sendto_channel_butone(cptr, sptr, chptr,
-			  ":%s %s %s :%s",
-			  sptr->name, command, channel_name, text);
-  else
-    {
-      if(p_or_n != NOTICE)
-	sendto_one(sptr, form_str(ERR_CANNOTSENDTOCHAN),
-		   me.name, sptr->name, channel_name);
-    }
+  sendto_channel_butone(cptr, sptr, chptr,
+			":%s %s %s :%s",
+			sptr->name, command, channel_name, text);
 }
 
 /*
@@ -483,20 +476,13 @@ void msg_channel_flags( int p_or_n, char *command,
 	sptr->user->last = CurrentTime;
     }
 
-  if (can_send(chptr, sptr) == 0)
-    sendto_channel_type(cptr,
-			sptr,
-			chptr,
-			flags,
-			channel_name,
-			command,
-			text);
-  else
-    {
-      if(p_or_n != NOTICE)
-	sendto_one(sptr, form_str(ERR_CANNOTSENDTOCHAN),
-		   me.name, sptr->name, channel_name);
-    }
+  sendto_channel_type(cptr,
+		      sptr,
+		      &chptr->chanops,
+		      '@',
+		      channel_name,
+		      command,
+		      text);
 }
 
 /*
