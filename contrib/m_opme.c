@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_opme.c,v 1.36 2003/05/25 03:04:54 joshk Exp $
+ *   $Id: m_opme.c,v 1.37 2003/05/25 03:20:58 joshk Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -34,7 +34,9 @@
 #include "parse.h"
 #include "modules.h"
 
+
 static void mo_opme(struct Client *client_p, struct Client *source_p, int parc, char *parv[]);
+static int chan_is_opless(struct Channel *chptr);
 
 struct Message opme_msgtab = {
   "OPME", 0, 0, 2, 0, MFLG_SLOW, 0,
@@ -53,7 +55,20 @@ _moddeinit(void)
   mod_del_cmd(&opme_msgtab);
 }
 
-const char *_version = "$Revision: 1.36 $";
+const char *_version = "$Revision: 1.37 $";
+
+static int
+chan_is_opless(struct Channel *chptr)
+{
+#ifdef REQUIRE_OANDV
+  if (chptr->chanops.head != NULL || chptr->chanops_voiced.head != NULL)
+#else
+  if (chptr->chanops.head != NULL)
+#endif
+    return(0);
+  else
+    return(1);
+}
 
 /*
 ** mo_opme
@@ -69,7 +84,7 @@ mo_opme(struct Client *client_p, struct Client *source_p,
   dlink_node *locptr;
 
   /* admins only */
-  if (!IsOperAdmin(source_p))
+  if (!IsAdmin(source_p))
   {
     sendto_one(source_p, ":%s NOTICE %s :You need admin = yes;",
                me.name, source_p->name);
@@ -81,6 +96,13 @@ mo_opme(struct Client *client_p, struct Client *source_p,
   if ((chptr = hash_find_channel(parv[1])) == NULL)
   {
     sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
+               me.name, source_p->name, parv[1]);
+    return;
+  }
+
+  if (!chan_is_opless(chptr))
+  {
+    sendto_one(source_p, ":%s NOTICE %s :%s Channel is not opless",
                me.name, source_p->name, parv[1]);
     return;
   }
