@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.113 2003/04/05 01:08:27 michael Exp $
+ *  $Id: m_message.c,v 1.114 2003/04/05 05:45:39 michael Exp $
  */
 
 #include "stdinc.h"
@@ -34,14 +34,12 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
-
 #include "channel.h"
 #include "channel_mode.h"
 #include "vchannel.h"
 #include "irc_string.h"
 #include "hash.h"
 #include "class.h"
-#include "msg.h"
 #include "packet.h"
 
 
@@ -123,7 +121,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.113 $";
+const char *_version = "$Revision: 1.114 $";
 #endif
 
 /*

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_jupe.c,v 1.44 2003/04/02 11:19:37 michael Exp $
+ *  $Id: m_jupe.c,v 1.45 2003/04/05 05:45:35 michael Exp $
  */
 
 #include "stdinc.h"
@@ -34,7 +34,6 @@
 #include "s_serv.h"
 #include "send.h"
 #include "whowas.h"
-#include "irc_string.h"
 #include "hash.h"
 #include "msg.h"
 #include "parse.h"
@@ -68,7 +67,7 @@ _moddeinit(void)
   mod_del_cmd(&jupe_msgtab);
 }
 
-const char *_version = "$Revision: 1.44 $";
+const char *_version = "$Revision: 1.45 $";
 #endif
 
 /*

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.293 2003/04/05 01:08:30 michael Exp $
+ *  $Id: s_serv.c,v 7.294 2003/04/05 05:45:41 michael Exp $
  */
 
 #include "stdinc.h"
@@ -56,7 +56,6 @@
 #include "s_user.h"
 #include "scache.h"
 #include "send.h"
-#include "client.h"
 #include "s_debug.h"
 #include "memory.h"
 #include "channel.h" /* chcap_usage_counts stuff...*/

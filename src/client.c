@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.341 2003/04/02 14:29:23 adx Exp $
+ *  $Id: client.c,v 7.342 2003/04/05 05:45:41 michael Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -49,7 +49,6 @@
 #include "s_debug.h"
 #include "s_user.h"
 #include "linebuf.h"
-#include "hash.h"
 #include "memory.h"
 #include "hostmask.h"
 #include "balloc.h"

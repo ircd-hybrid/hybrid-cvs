@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_pong.c,v 1.32 2003/04/05 01:08:25 michael Exp $
+ *  $Id: m_pong.c,v 1.33 2003/04/05 05:45:37 michael Exp $
  */
 
 #include "stdinc.h"
@@ -36,7 +36,6 @@
 #include "s_debug.h"
 #include "msg.h"
 #include "parse.h"
-#include "hash.h"
 #include "modules.h"
 
 static void mr_pong(struct Client*, struct Client*, int, char**);
@@ -60,7 +59,7 @@ _moddeinit(void)
   mod_del_cmd(&pong_msgtab);
 }
 
-const char *_version = "$Revision: 1.32 $";
+const char *_version = "$Revision: 1.33 $";
 #endif
 static void ms_pong(struct Client *client_p,
                    struct Client *source_p,

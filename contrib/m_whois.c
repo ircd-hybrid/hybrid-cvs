@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.14 2003/04/02 11:19:37 michael Exp $
+ *  $Id: m_whois.c,v 1.15 2003/04/05 05:45:35 michael Exp $
  */
 
 #include "stdinc.h"
@@ -39,7 +39,6 @@
 #include "send.h"
 #include "list.h"
 #include "irc_string.h"
-#include "s_conf.h"
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
@@ -195,7 +194,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-const char *_version = "$Revision: 1.14 $";
+const char *_version = "$Revision: 1.15 $";
 #endif
 /*
 ** m_whois

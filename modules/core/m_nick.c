@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nick.c,v 1.109 2003/04/02 11:19:43 michael Exp $
+ *  $Id: m_nick.c,v 1.110 2003/04/05 05:45:39 michael Exp $
  */
 
 #include "stdinc.h"
@@ -33,7 +33,6 @@
 #include "s_conf.h"
 #include "s_stats.h"
 #include "s_user.h"
-#include "hash.h"
 #include "whowas.h"
 #include "s_serv.h"
 #include "send.h"
@@ -97,7 +96,7 @@ _moddeinit(void)
   mod_del_cmd(&client_msgtab);
 }
 
-const char *_version = "$Revision: 1.109 $";
+const char *_version = "$Revision: 1.110 $";
 #endif
 
 /*
@@ -123,7 +122,7 @@ mr_nick(struct Client *client_p, struct Client *source_p,
   }
 
   /* Terminate the nick at the first ~ */
-  if ((s = strchr(parv[1], '~')))
+  if ((s = strchr(parv[1], '~')) != NULL)
     *s = '\0';
                                
   /* copy the nick and terminate it */
