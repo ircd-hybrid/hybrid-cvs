@@ -1,3 +1,22 @@
+a1kmm       2003/01/30 05:28:48 EST	(20030130_1)
+
+  Modified files:
+    src                  listener.c fileio.c .depend 
+    modules              .depend 
+  Log:
+  - Fixed a harmless uninitialised memory bug, to stop "false" alarm in
+    valgrind.
+  - Fixed a fd_close() that should have been a close() when the system runs out
+    of fds(reported by Metalrock).
+  
+  Revision  Changes    Path
+  1.9       +648 -646  ircd-hybrid-7/modules/.depend
+  7.8       +418 -429  ircd-hybrid-7/src/.depend
+  7.24      +1 -1      ircd-hybrid-7/src/fileio.c
+  7.71      +8 -7      ircd-hybrid-7/src/listener.c
+
+
+
 lusky       2003/01/30 02:28:58 EST	(20030130_0)
 
   Modified files:
@@ -34551,4 +34570,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4204 2003/01/30 07:29:01 lusky Exp $
+$Id: ChangeLog,v 7.4205 2003/01/30 10:28:51 a1kmm Exp $
