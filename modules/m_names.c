@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_names.c,v 1.18 2000/12/30 07:30:28 lusky Exp $
+ *   $Id: m_names.c,v 1.19 2000/12/31 23:56:51 toot Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -186,21 +186,24 @@ void names_all_visible_channels(struct Client *sptr)
 	  cur_len = mlen;
 
 	  channel_member_list(sptr,
+                              chptr,
 			      &chptr->chanops,
 			      show_ops_flag,
 			      buf, mlen, &cur_len, &reply_to_send);
 
 	  channel_member_list(sptr,
+                              chptr,
 			      &chptr->voiced,
 			      show_voiced_flag,
 			      buf, mlen, &cur_len, &reply_to_send);
 
 	  channel_member_list(sptr,
+                              chptr,
 			      &chptr->halfops,
 			      show_voiced_flag,
 			      buf, mlen, &cur_len, &reply_to_send);
 
-	  channel_member_list(sptr, &chptr->peons,
+	  channel_member_list(sptr, chptr, &chptr->peons,
 			      "",
 			      buf, mlen, &cur_len, &reply_to_send);
 
