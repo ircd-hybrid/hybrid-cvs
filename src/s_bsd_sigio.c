@@ -21,7 +21,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_sigio.c,v 7.22 2002/05/25 09:00:15 androsyn Exp $
+ *  $Id: s_bsd_sigio.c,v 7.23 2002/05/25 09:05:55 androsyn Exp $
  */
 
 #ifndef _GNU_SOURCE
@@ -350,6 +350,7 @@ int comm_select(unsigned long delay)
                 hdl(fd, F->write_data);
         }
     }
+    mask_our_signal(sigio_signal);
     return 0;
 }
 
