@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.243 2003/04/23 17:40:10 adx Exp $
+ *  $Id: send.c,v 7.244 2003/04/23 18:17:10 adx Exp $
  */
 
 #include "stdinc.h"
@@ -142,7 +142,8 @@ send_message(struct Client *to, char *buf, int len)
   to->localClient->sendM += 1;
   me.localClient->sendM += 1;
 
-  if (dbuf_length(&to->localClient->buf_sendq) > DBUF_BLOCK_SIZE)
+  if (dbuf_length(&to->localClient->buf_sendq) >
+      (IsServer(to) ? 1024 : 4096))
     send_queued_write(to);
 }
 
