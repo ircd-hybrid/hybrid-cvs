@@ -4,6 +4,7 @@ o) fixed anonop handling
 o) fixed throttling code
 o) squit uplink in non HUB server cases 
 o) fixed m_invite code to send invite in +p mode
+o) fixed ip limit code (related to throttling)
 
 -- ircd-hybrid-7rc6 RELNOTES
 o) fixed a nasty ban overflow which causes desyncs
@@ -131,4 +132,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.52 2003/01/10 05:11:20 db Exp $
+$Id: RELNOTES,v 1.53 2003/01/16 12:25:42 db Exp $
