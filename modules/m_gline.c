@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.94 2003/04/14 08:41:10 michael Exp $
+ *  $Id: m_gline.c,v 1.95 2003/04/16 10:38:17 michael Exp $
  */
 
 #include "stdinc.h"
@@ -48,9 +48,9 @@
 #include "modules.h"
 #include "list.h"
 
-#define GLINE_NOT_PLACED 0
+#define GLINE_NOT_PLACED     0
 #define GLINE_ALREADY_VOTED -1
-#define GLINE_PLACED 1
+#define GLINE_PLACED         1
 
 /* internal functions */
 static void set_local_gline(
@@ -109,7 +109,7 @@ _moddeinit(void)
   mod_del_cmd(&gline_msgtab);
 }
 
-const char *_version = "$Revision: 1.94 $";
+const char *_version = "$Revision: 1.95 $";
 #endif
 /*
  * mo_gline()
@@ -138,17 +138,18 @@ mo_gline(struct Client *client_p, struct Client *source_p,
 
   if (!ConfigFileEntry.glines)
   {
-    sendto_one(source_p,":%s NOTICE %s :GLINE disabled",me.name,parv[0]);  
+    sendto_one(source_p,":%s NOTICE %s :GLINE disabled",
+               me.name, parv[0]);
     return;
   }
 
   if (!IsOperGline(source_p))
   {
-    sendto_one(source_p,
-	       ":%s NOTICE %s :You need gline = yes;",me.name,parv[0]);
+    sendto_one(source_p, ":%s NOTICE %s :You need gline = yes;",
+               me.name,parv[0]);
     return;
   }
-			
+
   if ((host = strchr(parv[1], '@')) || *parv[1] == '*')
   {
     /* Explicit user@host mask given */

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.201 2003/04/09 11:19:32 stu Exp $
+ *  $Id: s_conf.h,v 7.202 2003/04/16 10:38:15 michael Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -254,35 +254,35 @@ struct config_file_entry
 
 struct config_channel_entry
 {
-  int	use_anonops;
-  int   use_except;
-  int   use_halfops;
-  int   use_invex;
-  int   use_knock;
-  int   use_vchans;
-  int   knock_delay;
-  int	knock_delay_channel;
-  int   vchans_oper_only;
-  int   max_bans;
-  int   max_chans_per_user;
-  int   no_create_on_split;
-  int   no_join_on_split;
-  int	oper_pass_resv;
-  int   quiet_on_ban;
-  int   default_split_server_count;
-  int   default_split_user_count;
+  int use_anonops;
+  int use_except;
+  int use_halfops;
+  int use_invex;
+  int use_knock;
+  int use_vchans;
+  int knock_delay;
+  int knock_delay_channel;
+  int vchans_oper_only;
+  int max_bans;
+  int max_chans_per_user;
+  int no_create_on_split;
+  int no_join_on_split;
+  int oper_pass_resv;
+  int quiet_on_ban;
+  int default_split_server_count;
+  int default_split_user_count;
 };
 
 struct config_server_hide
 {
-  int	flatten_links;
-  int	hide_servers;
-  int	disable_remote;
-  int   disable_local_channels;
-  int	links_delay;
-  int   links_disabled;
-  int	hidden;
-  int	disable_hidden;
+  int flatten_links;
+  int hide_servers;
+  int disable_remote;
+  int disable_local_channels;
+  int links_delay;
+  int links_disabled;
+  int hidden;
+  int disable_hidden;
 };
 
 struct server_info
@@ -308,9 +308,9 @@ struct server_info
 
 struct admin_info
 {
-  char        *name;
-  char        *description;
-  char        *email;
+  char *name;
+  char *description;
+  char *email;
 };
 
 extern int scount;
@@ -367,7 +367,7 @@ extern void get_printable_conf(struct ConfItem *, char **, char **, char **,
 extern void report_configured_links(struct Client* client_p, unsigned int mask);
 extern void report_specials(struct Client* source_p, int flags, int numeric);
 
-extern void yyerror(char *);
+extern void yyerror(const char *);
 extern int conf_yy_fatal_error(char *);
 extern int conf_fbgets(char *, int, FBFILE *);
 
@@ -377,10 +377,10 @@ typedef enum {
   DLINE_TYPE
 } KlineType;
 
-extern void WriteKlineOrDline( KlineType, struct Client *,
-			       char *user, char *host, const char *reason,
-			       const char *oper_reason,
-			       const char *current_date, time_t cur_time );
+extern void WriteKlineOrDline(KlineType, struct Client *,
+			      char *user, char *host, const char *reason,
+			      const char *oper_reason,
+			      const char *current_date, time_t cur_time);
 extern  void    add_temp_kline(struct ConfItem *);
 extern  void    report_temp_klines(struct Client *);
 extern  void    show_temp_klines(struct Client *, dlink_list *);
@@ -416,5 +416,4 @@ extern int yylex(void);
 #define TOO_FAST        (-6)
 
 #define CLEANUP_TKLINES_TIME 60
-
 #endif /* INCLUDED_s_conf_h */

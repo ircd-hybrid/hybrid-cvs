@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: motd.c,v 7.28 2003/04/06 00:07:17 michael Exp $
+ *  $Id: motd.c,v 7.29 2003/04/16 10:38:19 michael Exp $
  */
 
 #include "stdinc.h"
@@ -44,13 +44,13 @@
 **
 */
 void
-InitMessageFile(MotdType motdType, char *fileName, MessageFile *motd)
-  {
-    strlcpy(motd->fileName, fileName, sizeof(motd->fileName));
-    motd->motdType = motdType;
-    motd->contentsOfFile = NULL;
-    motd->lastChangedDate[0] = '\0';
-  }
+InitMessageFile(MotdType motdType, const char *fileName, MessageFile *motd)
+{
+  strlcpy(motd->fileName, fileName, sizeof(motd->fileName));
+  motd->motdType = motdType;
+  motd->contentsOfFile = NULL;
+  motd->lastChangedDate[0] = '\0';
+}
 
 /*
 ** SendMessageFile

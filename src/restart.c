@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: restart.c,v 7.24 2003/02/17 16:09:37 db Exp $
+ *  $Id: restart.c,v 7.25 2003/04/16 10:38:19 michael Exp $
  */
 
 #include "stdinc.h"
@@ -37,9 +37,9 @@
 
 
 /* external var */
-extern char** myargv;
+extern char **myargv;
 
-void restart(char *mesg)
+void restart(const char *mesg)
 {
   static int was_here = NO; /* redundant due to restarting flag below */
 
@@ -48,7 +48,7 @@ void restart(char *mesg)
   was_here = YES;
 
   ilog(L_NOTICE, "Restarting Server because: %s, memory data limit: %ld",
-         mesg, get_maxrss());
+       mesg, get_maxrss());
 
   server_reboot();
 }

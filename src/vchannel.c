@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: vchannel.c,v 7.69 2003/04/14 08:41:15 michael Exp $
+ *  $Id: vchannel.c,v 7.70 2003/04/16 10:38:19 michael Exp $
  */
 
 #include "stdinc.h"
@@ -350,7 +350,7 @@ find_bchan(struct Channel *chptr)
  * side effects - client is shown list of vchans
  */
 void
-show_vchans(struct Client *source_p, struct Channel *chptr, char *command)
+show_vchans(struct Client *source_p, struct Channel *chptr, const char *command)
 {
   int no_of_vchans = 0;
 

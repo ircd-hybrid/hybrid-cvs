@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: vchannel.h,v 7.20 2002/05/24 23:34:08 androsyn Exp $
+ *  $Id: vchannel.h,v 7.21 2003/04/16 10:38:15 michael Exp $
  */
 
 #ifndef INCLUDED_vchannel_h
@@ -33,25 +33,23 @@ struct Channel;
 
 #ifdef VCHANS
 
-extern void	add_vchan_to_client_cache(struct Client *source_p,
-					  struct Channel *base_chan,
-					  struct Channel *vchan);
+extern void add_vchan_to_client_cache(struct Client *source_p,
+                                      struct Channel *base_chan,
+                                      struct Channel *vchan);
 
-extern void	del_vchan_from_client_cache(struct Client *source_p,
-					    struct Channel *vchan);
+extern void del_vchan_from_client_cache(struct Client *source_p,
+                                        struct Channel *vchan);
+extern struct Channel *map_vchan(struct Channel *chptr, struct Client *source_p);
+extern struct Channel *find_bchan(struct Channel *chptr);
 
-extern struct Channel* map_vchan(struct Channel *chptr, struct Client *source_p);
-extern struct Channel* find_bchan(struct Channel *chptr);
-
-extern void	show_vchans(struct Client *source_p,
-			    struct Channel *chptr,
-                            char *command);
+extern void show_vchans(struct Client *source_p, struct Channel *chptr,
+                        const char *command);
 
 /* pick a nickname from the channel, to show as an ID */
-extern char* pick_vchan_id(struct Channel *chptr);
+extern char *pick_vchan_id(struct Channel *chptr);
 
 /* find a matching vchan with a !key (nick) */ 
-extern struct Channel* find_vchan(struct Channel *, char *);
+extern struct Channel *find_vchan(struct Channel *, char *);
 
 /* See if this client is on a sub chan already */
 extern int on_sub_vchan(struct Channel *chptr, struct Client *source_p);

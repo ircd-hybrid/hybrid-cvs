@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.362 2003/04/15 13:46:01 adx Exp $
+ *  $Id: s_conf.c,v 7.363 2003/04/16 10:38:19 michael Exp $
  */
 
 #include "stdinc.h"
@@ -2354,31 +2354,31 @@ conf_add_fields(struct ConfItem *aconf, char *host_field, char *pass_field,
     DupString(aconf->className, class_field);
 }
 
-/*
- * yyerror
+/* yyerror()
  *
  * inputs	- message from parser
  * output	- none
  * side effects	- message to opers and log file entry is made
  */
 void 
-yyerror(char *msg)
+yyerror(const char *msg)
 {
   char newlinebuf[BUFSIZE];
 
-  if (ypass != 1) return;
+  if (ypass != 1)
+    return;
 
   strip_tabs(newlinebuf, (const unsigned char *)linebuf, strlen(linebuf));
   sendto_realops_flags(UMODE_ALL, L_ALL,"\"%s\", line %d: %s: %s",
-		       conffilebuf, lineno + 1, msg, newlinebuf);
+                       conffilebuf, lineno + 1, msg, newlinebuf);
   ilog(L_WARN, "\"%s\", line %d: %s: %s",
-		       conffilebuf, lineno + 1, msg, newlinebuf);
+       conffilebuf, lineno + 1, msg, newlinebuf);
 }
 
 int 
-conf_fbgets(char *lbuf,int max_size, FBFILE *fb)
+conf_fbgets(char *lbuf, int max_size, FBFILE *fb)
 {
-  char* buff;
+  char *buff;
 
   if ((buff = fbgets(lbuf,max_size,fb)) == NULL)
     return(0);

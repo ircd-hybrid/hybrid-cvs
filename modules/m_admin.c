@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_admin.c,v 1.36 2003/04/06 00:07:13 michael Exp $
+ *  $Id: m_admin.c,v 1.37 2003/04/16 10:38:16 michael Exp $
  */
 
 #include "stdinc.h"
@@ -35,10 +35,10 @@
 #include "hook.h"
 #include "modules.h"
 
-static void m_admin(struct Client*, struct Client*, int, char**);
-static void mr_admin(struct Client*, struct Client*, int, char**);
-static void ms_admin(struct Client*, struct Client*, int, char**);
-static void do_admin( struct Client *source_p );
+static void m_admin(struct Client *, struct Client *, int, char **);
+static void mr_admin(struct Client *, struct Client *, int, char **);
+static void ms_admin(struct Client *, struct Client *, int, char **);
+static void do_admin(struct Client *source_p);
 
 static void admin_spy(struct Client *);
 
@@ -60,8 +60,9 @@ _moddeinit(void)
   hook_del_event("doing_admin");
   mod_del_cmd(&admin_msgtab);
 }
-const char *_version = "$Revision: 1.36 $";
+const char *_version = "$Revision: 1.37 $";
 #endif
+
 /*
  * mr_admin - ADMIN command handler
  *      parv[0] = sender prefix   
@@ -70,14 +71,14 @@ const char *_version = "$Revision: 1.36 $";
 static void mr_admin(struct Client *client_p, struct Client *source_p,
                     int parc, char *parv[])
 {
-  static time_t last_used=0L;
+  static time_t last_used = 0;
  
-  if((last_used + ConfigFileEntry.pace_wait) > CurrentTime)
-    {
-      sendto_one(source_p,form_str(RPL_LOAD2HI), me.name, 
-                 EmptyString(parv[0]) ? "*" : parv[0]);
-      return;
-    }
+  if ((last_used + ConfigFileEntry.pace_wait) > CurrentTime)
+  {
+    sendto_one(source_p,form_str(RPL_LOAD2HI),
+               me.name, EmptyString(parv[0]) ? "*" : parv[0]);
+    return;
+  }
   else
     last_used = CurrentTime;
 
@@ -89,28 +90,28 @@ static void mr_admin(struct Client *client_p, struct Client *source_p,
  *      parv[0] = sender prefix
  *      parv[1] = servername
  */
-static void m_admin(struct Client *client_p, struct Client *source_p, int parc,
-                   char *parv[])
+static void m_admin(struct Client *client_p, struct Client *source_p,
+                    int parc, char *parv[])
 {
-  static time_t last_used=0L;
+  static time_t last_used = 0;
 
-  if((last_used + ConfigFileEntry.pace_wait) > CurrentTime)
-    {
-      sendto_one(source_p,form_str(RPL_LOAD2HI),me.name,parv[0]);
-      return;
-    }
+  if ((last_used + ConfigFileEntry.pace_wait) > CurrentTime)
+  {
+    sendto_one(source_p,form_str(RPL_LOAD2HI),
+               me.name, parv[0]);
+    return;
+  }
   else
     last_used = CurrentTime;
 
   if (!ConfigServerHide.disable_remote)
-    {
-      if (hunt_server(client_p,source_p,":%s ADMIN :%s",1,parc,parv) != HUNTED_ISME)
-        return;
-    }
+  {
+    if (hunt_server(client_p, source_p, ":%s ADMIN :%s", 1, parc, parv) != HUNTED_ISME)
+      return;
+  }
 
   do_admin(source_p);
 }
-
 
 /*
  * ms_admin - ADMIN command handler, used for OPERS as well
@@ -118,18 +119,16 @@ static void m_admin(struct Client *client_p, struct Client *source_p, int parc,
  *      parv[1] = servername
  */
 static void ms_admin(struct Client *client_p, struct Client *source_p,
-                    int parc, char *parv[])
+                     int parc, char *parv[])
 {
-  if (hunt_server(client_p,source_p,":%s ADMIN :%s",1,parc,parv) != HUNTED_ISME)
+  if (hunt_server(client_p, source_p, ":%s ADMIN :%s", 1, parc, parv) != HUNTED_ISME)
     return;
 
-  if(IsClient(source_p))
+  if (IsClient(source_p))
     do_admin(source_p);
 }
 
-
-/*
- * do_admin
+/* do_admin()
  *
  * inputs	- pointer to client to report to
  * output	- none
@@ -137,7 +136,7 @@ static void ms_admin(struct Client *client_p, struct Client *source_p,
  */
 static void do_admin( struct Client *source_p)
 {
-  char *nick;
+  const char *nick;
 
   if (IsPerson(source_p))
     admin_spy(source_p);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: motd.h,v 7.11 2003/04/13 05:55:20 michael Exp $
+ *  $Id: motd.h,v 7.12 2003/04/16 10:38:15 michael Exp $
  */
 
 #ifndef INCLUDED_motd_h
@@ -46,18 +46,17 @@ typedef struct MessageFileLine MessageFileLine;
 
 struct MessageFile
 {
-  char             fileName[PATH_MAX + 1];
-  MotdType         motdType;
-  MessageFileLine* contentsOfFile;
-  char             lastChangedDate[MAX_DATE_STRING + 1];
+  char fileName[PATH_MAX + 1];
+  MotdType motdType;
+  MessageFileLine *contentsOfFile;
+  char lastChangedDate[MAX_DATE_STRING + 1];
 };
 
 typedef struct MessageFile MessageFile;
 
 struct Client;
 
-extern void InitMessageFile(MotdType, char *, struct MessageFile *);
+extern void InitMessageFile(MotdType, const char *, struct MessageFile *);
 extern int SendMessageFile(struct Client *, struct MessageFile *);
 extern int ReadMessageFile(MessageFile *);
-
 #endif /* INCLUDED_motd_h */

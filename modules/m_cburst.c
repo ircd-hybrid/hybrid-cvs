@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_cburst.c,v 1.42 2003/02/17 16:09:28 db Exp $
+ *  $Id: m_cburst.c,v 1.43 2003/04/16 10:38:16 michael Exp $
  */
 
 #include "stdinc.h"
@@ -60,8 +60,9 @@ _moddeinit(void)
   mod_del_cmd(&cburst_msgtab);
 }
 
-const char *_version = "$Revision: 1.42 $";
+const char *_version = "$Revision: 1.43 $";
 #endif
+
 /*
 ** m_cburst
 **      parv[0] = sender prefix
@@ -75,42 +76,36 @@ const char *_version = "$Revision: 1.42 $";
  */
 
 static void 
-ms_cburst(struct Client *client_p,
-	  struct Client *source_p,
-	  int parc,
-	  char *parv[])
+ms_cburst(struct Client *client_p, struct Client *source_p,
+          int parc, char *parv[])
 {
   char *name;
   char *nick;
-  char *key;
+  const char *key;
   struct Channel *chptr;
 
-  if( parc < 2 || *parv[1] == '\0' )
+  if (parc < 2 || *parv[1] == '\0' )
      return;
 
   name = parv[1];
 
-  if( parc > 2 )
+  if (parc > 2)
     nick = parv[2];
   else
     nick = NULL;
 
-  if( parc > 3 )
+  if (parc > 3)
     key = parv[3];
   else
     key = "";
 
 #ifdef DEBUGLL
   sendto_realops_flags(UMODE_ALL, L_ALL, "CBURST called by %s for %s %s %s",
-    client_p->name,
-    name,
-    nick ? nick : "",
-    key ? key : "" );
+                       client_p->name, name, nick ? nick : "", key ? key : "");
 #endif
-
-  if((chptr = hash_find_channel(name)) == NULL)
+  if ((chptr = hash_find_channel(name)) == NULL)
   {
-    if((!nick) || (nick && *nick!='!'))
+    if ((!nick) || (nick && *nick != '!'))
     {
       chptr = get_or_create_channel(source_p, name, NULL);
       chptr->channelts = (time_t)(-1); /* highest possible TS so its always
@@ -125,18 +120,18 @@ ms_cburst(struct Client *client_p,
     }
   }
 
-  if(IsCapable(client_p,CAP_LL))
-    {
-      burst_channel(client_p,chptr);
+  if (IsCapable(client_p,CAP_LL))
+  {
+    burst_channel(client_p,chptr);
 
-      if(nick)
-	sendto_one(client_p,":%s LLJOIN %s %s %s", me.name, name,
-                   nick, key);
-    }
+    if (nick)
+      sendto_one(client_p, ":%s LLJOIN %s %s %s",
+                 me.name, name, nick, key);
+  }
   else
-    {
-      sendto_realops_flags(UMODE_ALL, L_ALL,
-		   "*** CBURST request received from non LL capable server! [%s]",
-			   client_p->name);
+  {
+    sendto_realops_flags(UMODE_ALL, L_ALL,
+                         "*** CBURST request received from non LL capable server! [%s]",
+                         client_p->name);
     }
 }

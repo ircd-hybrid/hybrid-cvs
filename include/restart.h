@@ -19,13 +19,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: restart.h,v 7.4 2002/01/05 09:14:29 a1kmm Exp $
+ *  $Id: restart.h,v 7.5 2003/04/16 10:38:15 michael Exp $
  */
 
 #ifndef INCLUDED_restart_h
 #define INCLUDED_restart_h
 
-void restart(char *);
-void server_reboot(void);
-
+extern void restart(const char *);
+extern void server_reboot(void);
 #endif
