@@ -16,7 +16,7 @@
 #*   along with this program; if not, write to the Free Software
 #*   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #*
-#*   $Id: Makefile.in,v 7.51 2003/05/12 21:56:54 stu Exp $
+#*   $Id: Makefile.in,v 7.52 2003/05/15 07:17:15 joshk Exp $
 #*/
 
 RM=@RM@
@@ -26,7 +26,7 @@ exec_prefix=@exec_prefix@
 
 # Default make flags - you may want to uncomment this on a multicpu machine
 #MFLAGS   = -j 4
-SUBDIRS   = modules src tools doc include servlink
+SUBDIRS   = modules src tools doc include servlink etc
 CLEANDIRS = ${SUBDIRS} contrib
 
 # The make used HAS to set $(MAKE). But then, if we don't do it this
@@ -83,10 +83,8 @@ install: all
 		cd ..; \
 	done
 
-	@if [ "$(CLOBBER)" = "yes" ]; then \
-		echo Clobbering old binaries... ;\
-		find @bindir@ -name '*.old' | xargs ${RM} -f;\
-	fi
-
 include/setup.h:
 	sh configure
+
+# A la Linux kernel config :)
+dep: depend

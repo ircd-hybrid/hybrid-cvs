@@ -1,0 +1,45 @@
+# $Id: Makefile.in,v 1.1 2003/05/15 07:17:22 joshk Exp $
+
+INSTALL		= @INSTALL@
+INSTALL_DATA	= @INSTALL_DATA@
+MV		= @MV@
+RM		= @RM@
+
+# no whitespace here, test will mess up
+CLOBBER=@CLOBBER@
+
+prefix		= @prefix@
+sysconfdir	= @sysconfdir@
+exec_prefix	= @exec_prefix@
+exec_suffix	= @exec_suffix@
+
+DISTFILES	= example.conf example.efnet.conf example.conf.quick simple.conf ircd.motd
+
+all:
+
+install:
+	mkdir -p $(sysconfdir)
+	@for i in $(DISTFILES); do \
+		if test -f $(sysconfdir)/$$i -a -z "$(CLOBBER)"; then \
+			echo $(MV) $(sysconfdir)/$$i $(sysconfdir)/$$i.old; \
+			$(MV) $(sysconfdir)/$$i $(sysconfdir)/$$i.old; \
+		fi; \
+		echo $(INSTALL_DATA) $$i $(sysconfdir); \
+		$(INSTALL_DATA) $$i $(sysconfdir); \
+	done
+
+	@for i in d k x; do \
+		if test ! -f "$(sysconfdir)/$${i}lines.conf"; then \
+			echo touch $(sysconfdir)/$${i}lines.conf; \
+			touch $(sysconfdir)/$${i}lines.conf; \
+		fi; \
+	done
+
+build depend clean:
+
+distclean:
+	${RM} -f Makefile
+
+# XXX what the heck is this for? it's truly an example of examples
+#$(CP) convertconf-example.conf $(sysconfdir)/.convertconf-example.conf
+

@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.20 2003/05/14 18:38:20 joshk Exp $
+dnl $Id: configure.ac,v 7.21 2003/05/15 07:17:16 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -447,7 +447,7 @@ AC_CACHE_CHECK([for IPv6 support], have_v6,
 ])
 
 if test "$have_v6" = "yes"; then
-		AC_DEFINE(IPV6, 1, [Define if IPv6 support is present and available.])
+	AC_DEFINE(IPV6, 1, [Define if IPv6 support is present and available.])
 fi
 
 dnl IO Loop Selection
@@ -825,6 +825,7 @@ AC_CONFIG_FILES(		\
 	Makefile		\
 dnl	iauth/Makefile		\
 dnl	iauth/source/Makefile	\
+	etc/Makefile		\
 	servlink/Makefile	\
 	contrib/Makefile	\
 	src/Makefile		\

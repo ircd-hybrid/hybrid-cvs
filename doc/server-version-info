@@ -1,12 +1,12 @@
                               Server VERSION Info
 
-   $Id: server-version-info,v 7.14 2003/05/11 22:04:39 michael Exp $
+   $Id: server-version-info,v 7.15 2003/05/15 07:17:18 joshk Exp $
 
    Copyright (c) 2003 by ircd-hybrid team
 
      ----------------------------------------------------------------------
 
-   Updated for Hybrid 7 (2000/05/11)
+   Updated for Hybrid 7 (2003/05/11)
 
    When you type /version, you will often see something like this:
 
