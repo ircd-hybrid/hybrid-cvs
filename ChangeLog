@@ -1,3 +1,16 @@
+db          2003/01/19 14:02:38 EST	(20030119_2)
+
+  Modified files:
+    src                  client.c 
+  Log:
+  - if client is exiting don't do anything in dead_link_on_read() its
+    already dying/dead
+  
+  Revision  Changes    Path
+  7.317     +2 -2      ircd-hybrid-7/src/client.c
+
+
+
 db          2003/01/19 08:25:22 EST	(20030119_1)
 
   Modified files:
@@ -34257,4 +34270,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4183 2003/01/19 13:25:24 db Exp $
+$Id: ChangeLog,v 7.4184 2003/01/19 19:02:41 db Exp $
