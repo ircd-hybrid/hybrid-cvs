@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.150 2001/03/11 05:13:05 a1kmm Exp $
+ *  $Id: client.c,v 7.151 2001/03/11 07:07:17 a1kmm Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -301,9 +301,15 @@ check_pings_list(dlink_list *list)
     {
       next_ptr = ptr->next;
       client_p = ptr->data;
-
+#ifdef PERSISTANT_CLIENTS
       if (IsPersisting(client_p))
-        continue;
+        {
+         if ((CurrentTime - client_p->user->last_detach_time)
+              > ConfigFileEntry.persist_expire)
+           exit_client(client_p, client_p, client_p, "Client Expired");
+         continue;
+        }
+#endif
       /*
       ** Note: No need to notify opers here. It's
       ** already done when "FLAGS_DEADSOCKET" is set.

@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.102 2001/03/07 19:03:13 androsyn Exp $
+ * $Id: s_conf.h,v 7.103 2001/03/11 07:07:15 a1kmm Exp $
  */
 
 #include "setup.h"
@@ -209,6 +209,7 @@ typedef struct config_file_entry
   int         vchans_oper_only;
   int         quiet_on_ban;
   int         caller_id_wait;
+  int         persist_expire;
 } ConfigFileEntryType;
 
 struct server_info

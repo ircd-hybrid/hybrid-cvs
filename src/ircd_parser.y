@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.137 2001/03/09 14:22:12 davidt Exp $
+ * $Id: ircd_parser.y,v 1.138 2001/03/11 07:07:19 a1kmm Exp $
  */
 
 %{
@@ -222,6 +222,7 @@ int   class_redirport_var;
 %token  T_WALLOP
 %token  OPER_ONLY_UMODES
 %token  PATH
+%token  PERSISTANT_EXPIRE_TIME
 %token  MAX_TARGETS
 %token  T_MAX_CLIENTS
 %token  LINKS_NOTICE
@@ -1444,6 +1445,7 @@ general_item:       general_failed_oper_notice | general_show_failed_oper_id |
                     general_links_delay |
                     general_vchans_oper_only |
                     general_caller_id_wait |
+                    general_persistant_expire_time |
                     error
 
 general_failed_oper_notice:   FAILED_OPER_NOTICE '=' TYES ';'
@@ -1782,4 +1784,8 @@ general_vchans_oper_only: VCHANS_OPER_ONLY '=' TYES ';'
     VCHANS_OPER_ONLY '=' TNO ';'
   {
     ConfigFileEntry.vchans_oper_only = 0;
+  };
+general_persistant_expire_time:  PERSISTANT_EXPIRE_TIME '=' NUMBER ';'
+  {
+    ConfigFileEntry.persist_expire = yylval.number;  
   };

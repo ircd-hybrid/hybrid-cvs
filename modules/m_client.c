@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_client.c,v 1.16 2001/03/11 05:13:04 a1kmm Exp $
+ *   $Id: m_client.c,v 1.17 2001/03/11 07:07:16 a1kmm Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -53,6 +53,7 @@ static int nick_from_server(struct Client *, struct Client *, int, char **,
 
 int clean_nick_name(char* nick);
 void read_packet(int fd, void *data);
+void user_welcome(struct Client *source_p);
 static void ms_client(struct Client*, struct Client*, int, char**);
 static void m_client(struct Client*, struct Client*, int, char**);
 
@@ -537,9 +538,21 @@ m_client(struct Client *client_p, struct Client *source_p,
  /* Re-register for io... */
  comm_setselect(target_p->fd, FDLIST_IDLECLIENT, COMM_SELECT_READ,
                 read_packet, target_p, 0);
- /* And client_p now has moved over to target_p... */
- sendto_one(target_p, ":%s NOTICE %s :*** -- You are now re-attached",
-            me.name, target_p->name);
+ /* And client_p now has moved over to target_p...
+  * Welcome them in... */
+ user_welcome(target_p);
+ send_umode_out(target_p, target_p, 0);
+ /* Just for the sake of away scripts etc... */
+ sendto_one(target_p, form_str(RPL_NOWAWAY), me.name, target_p->name);
+ /* Now we have to send out stuff for every channel they are on... */
+ for (m=target_p->user->channel.head; m; m=m->next)
+   {
+    struct Channel *root_chptr, *chptr = m->data;
+    root_chptr = chptr->root_chptr ? chptr->root_chptr : chptr;
+    sendto_one(target_p, ":%s!%s@%s JOIN %s", target_p->name,
+               target_p->username, target_p->host, root_chptr->chname);
+    channel_member_names(target_p, chptr, root_chptr->chname);               
+   }
 }
 #endif
 
