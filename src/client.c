@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.107 2001/01/08 23:40:29 fl_ Exp $
+ *  $Id: client.c,v 7.108 2001/01/09 00:12:21 fl_ Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -202,7 +202,7 @@ void _free_client(struct Client* cptr)
   /* If localClient is non NULL, its a local client */
   if (cptr->localClient)
     {
-      if (0 > cptr->fd)
+      if (-1 < cptr->fd)
 	fd_close(cptr->fd);
 
       if (cptr->localClient->dns_reply)
