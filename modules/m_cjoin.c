@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_cjoin.c,v 1.8 2000/12/03 23:11:40 db Exp $
+ *   $Id: m_cjoin.c,v 1.9 2000/12/04 08:17:32 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -191,8 +191,8 @@ int     m_cjoin(struct Client *cptr,
     }
 
   m = make_dlink_node();
-  m->data = chptr;
   dlinkAdd(vchan_chptr, m, &chptr->vchan_list);
+  vchan_chptr->root_chptr = chptr;
 
   /*
   **  Complete user entry to the new channel

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 1.13 2000/12/03 23:11:40 db Exp $
+ *   $Id: m_join.c,v 1.14 2000/12/04 08:17:32 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -168,6 +168,10 @@ int     m_join(struct Client *cptr,
 		  /* one special case here i think..
 		   * if there's only one vchan, and the root is empty
 		   * let them join that vchan
+		   *
+		   * This has to be amended with persistent channels
+		   * a vchan will have to be given an unique id
+		   * when its empty... so it can be joined with that id
 		   */
 /* XXX FIXME */
 #if 0

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.101 2000/12/04 06:46:49 db Exp $
+ * $Id: channel.c,v 7.102 2000/12/04 08:17:33 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -913,19 +913,6 @@ static  int     errsent(int err, int *errs)
 ** messages and MODE commands out.  Rewritten to do the whole thing in
 ** one pass, in a desperate attempt to keep the code sane.  -orabidoo
 */
-/*
- * rewritten to remove +h/+c/z 
- * in spirit with the one pass idea, I've re-written how "imnspt"
- * handling was done
- * There isn't much that can be done to shorten it, its one giant
- * switch. *sigh*
- *
- * I've also left some "remnants" of the +h code in for possible
- * later addition.
- * For example, isok could be replaced witout half ops, with ischop() or
- * chan_op depending.
- */
-
 void set_channel_mode(struct Client *cptr,
                       struct Client *sptr,
                       struct Channel *chptr,

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: vchannel.h,v 7.11 2000/12/03 23:11:35 db Exp $
+ * $Id: vchannel.h,v 7.12 2000/12/04 08:17:29 db Exp $
  */
 
 #ifndef INCLUDED_vchannel_h
@@ -69,8 +69,7 @@ extern struct Channel* vchan_invites(struct Channel *chptr,
                                      struct Client *sptr);
 
 /* Valid to verify a channel is a subchan */
-#define IsVchan(chan)	(chan->vchan_list.head && \
-			 (chan->vchan_list.head->prev))
+#define IsVchan(chan)	(chan->root_chptr != 0)
 
 /* Only valid for top chan, i.e. only valid to determine if there are vchans
  * under hash table lookup of top level channel
@@ -78,8 +77,7 @@ extern struct Channel* vchan_invites(struct Channel *chptr,
 #define HasVchans(chan)	(chan->vchan_list.head)
 
 /* Valid to determine if this is the top of a set of vchans */
-#define IsVchanTop(chan) ((chan->vchan_list.head) && \
-                          (chan->vchan_list.head->prev == 0))
+#define IsVchanTop(chan) ((chan->root_chptr == 0) && (chan->vchan_list.head))
 
 #endif  /* INCLUDED_vchannel_h */
 

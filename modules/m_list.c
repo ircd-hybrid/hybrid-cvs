@@ -3,7 +3,7 @@
  *   Copyright (C) 1990 Jarkko Oikarinen and
  *                      University of Oulu, Co Center
  *
- * $Id: m_list.c,v 1.12 2000/12/03 23:11:41 db Exp $ 
+ * $Id: m_list.c,v 1.13 2000/12/04 08:17:32 db Exp $ 
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -271,11 +271,16 @@ void list_one_channel(struct Client *sptr,struct Channel *chptr)
     {
       root_chptr = find_bchan(chptr);
       if(root_chptr != NULL)
-	ircsprintf(vname, "%s<!%s>", root_chptr->chname,
-		   pick_vchan_id(chptr));
+	{
+	  ircsprintf(vname, "%s<!%s>", root_chptr->chname,
+		     pick_vchan_id(chptr));
+	}
+      else
+	ircsprintf(vname, "%s<!%s>", chptr->chname, pick_vchan_id(chptr));
     }
   else
     ircsprintf(vname, "%s", chptr->chname);
+
 
   sendto_one(sptr, form_str(RPL_LIST), me.name, sptr->name,
 	     vname, chptr->users, chptr->topic);
