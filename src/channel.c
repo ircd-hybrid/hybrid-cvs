@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.151 2000/12/29 09:55:00 toot Exp $
+ * $Id: channel.c,v 7.152 2000/12/29 10:34:51 toot Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -841,7 +841,7 @@ void send_channel_modes(struct Client *cptr, struct Channel *chptr)
 	  send_members(cptr,modebuf,parabuf,chptr,&chptr->halfops,"%");
   else
   /* Ok, halfops can still generate a kick, they'll just looked opped */
-	  send_members(cptr,modebuf,parabuf,chptr,&chptr->halfops,"@");
+  send_members(cptr,modebuf,parabuf,chptr,&chptr->halfops,"@");
   send_members(cptr,modebuf,parabuf,chptr,&chptr->voiced,"+");
   send_members(cptr,modebuf,parabuf,chptr,&chptr->peons,"");
 
@@ -3020,9 +3020,6 @@ static void sync_oplists(struct Channel *chptr, struct Client *acptr,
   send_oplist(chptr->chname, acptr, &chptr->chanops, "o", clear);
   send_oplist(chptr->chname, acptr, &chptr->halfops, "h", clear);
   send_oplist(chptr->chname, acptr, &chptr->voiced,  "v", clear);
-
-  send_mode_list(acptr, chptr->chname, &chptr->exceptlist, 'e', clear);
-  send_mode_list(acptr, chptr->chname, &chptr->invexlist,  'I', clear);
 }
 
 static void send_oplist(char *chname, struct Client *cptr,
