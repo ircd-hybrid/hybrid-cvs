@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: msg.h,v 7.29 2000/12/09 03:12:44 db Exp $
+ * $Id: msg.h,v 7.30 2000/12/13 23:20:52 db Exp $
  */
 #ifndef INCLUDED_msg_h
 #define INCLUDED_msg_h
@@ -147,8 +147,6 @@ struct  Message
 
 #define MSG_TESTLINE "TESTLINE"
 
-extern struct Message *msgtab;
-extern int num_msgs;
 
 #endif /* INCLUDED_msg_h */
 

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_help.c,v 1.6 2000/12/09 05:59:45 db Exp $
+ *   $Id: m_help.c,v 1.7 2000/12/13 23:20:56 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -32,7 +32,6 @@
 #include "send.h"
 #include "s_conf.h"
 #include "parse.h"
-#include "msg.h"
 
 struct Message help_msgtab = {
   MSG_HELP, 0, 0, MFLG_SLOW, 0,
@@ -74,9 +73,8 @@ int m_help(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
       last_used = CurrentTime;
     }
 
-  for (i = 0; i < num_msgs; i++)
-    sendto_one(sptr,":%s NOTICE %s :%s",
-	       me.name, parv[0], msgtab[i].cmd);
+  report_messages(sptr);
+
   return 0;
 }
 
