@@ -21,7 +21,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: m_unkline.c,v 1.2 2000/11/09 09:47:00 ejb Exp $
+ *   $Id: m_unkline.c,v 1.3 2000/11/23 23:17:15 db Exp $
  */
 #include "handlers.h"
 #include "channel.h"
@@ -62,6 +62,8 @@ extern ConfigFileEntryType ConfigFileEntry; /* defined in ircd.c */
 
 static int flush_write(struct Client *, FBFILE* , char *, char *);
 static int remove_tkline_match(char *,char *);
+
+char *_version = "20001122";
 
 /*
 ** mo_unkline

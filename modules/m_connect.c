@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_connect.c,v 1.1 2000/11/08 23:57:25 ejb Exp $
+ *   $Id: m_connect.c,v 1.2 2000/11/23 23:17:10 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -49,6 +49,8 @@ _modinit(void)
 {
   mod_add_cmd(MSG_CONNECT, &connect_msgtab);
 }
+
+char *_version = "20001122";
 
 /*
  * mo_connect - CONNECT command handler

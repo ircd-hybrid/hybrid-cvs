@@ -3,7 +3,7 @@
  *   Copyright (C) 1990 Jarkko Oikarinen and
  *                      University of Oulu, Co Center
  *
- * $Id: m_list.c,v 1.6 2000/11/13 06:08:17 db Exp $ 
+ * $Id: m_list.c,v 1.7 2000/11/23 23:17:11 db Exp $ 
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -50,6 +50,8 @@ _modinit(void)
 
 int list_all_channels(struct Client *sptr);
 int list_named_channel(struct Client *sptr,char *name);
+
+char *_version = "20001122";
 
 /*
 ** m_list

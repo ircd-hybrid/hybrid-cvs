@@ -16,7 +16,7 @@
 *   along with this program; if not, write to the Free Software
 *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 *
-*   $Id: m_whowas.c,v 1.2 2000/11/21 05:03:15 db Exp $
+*   $Id: m_whowas.c,v 1.3 2000/11/23 23:17:15 db Exp $
 */
 #include "whowas.h"
 #include "handlers.h"
@@ -50,6 +50,8 @@ _modinit(void)
 
 int whowas_do(struct Client *cptr, struct Client *sptr,
 	      int parc, char *parv[]);
+
+char *_version = "20001122";
 
 /*
 ** m_whowas

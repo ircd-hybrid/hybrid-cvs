@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_part.c,v 1.4 2000/11/18 17:41:53 davidt Exp $
+ *   $Id: m_part.c,v 1.5 2000/11/23 23:17:13 db Exp $
  */
 #include "handlers.h"
 #include "channel.h"
@@ -54,6 +54,8 @@ _modinit(void)
 static void part_one_client(struct Client *cptr,
 			    struct Client *sptr,
 			    char *name);
+
+char *_version = "20001122";
 
 /*
 ** m_part

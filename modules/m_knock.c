@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_knock.c,v 1.3 2000/11/17 00:15:23 toot Exp $
+ *   $Id: m_knock.c,v 1.4 2000/11/23 23:17:11 db Exp $
  */
 #include "handlers.h"
 #include "channel.h"
@@ -52,6 +52,8 @@ _modinit(void)
 {
   mod_add_cmd(MSG_KNOCK, &knock_msgtab);
 }
+
+char *_version = "20001122";
 
 /* m_knock
 **    parv[0] = sender prefix

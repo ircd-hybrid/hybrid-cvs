@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_gline.c,v 1.3 2000/11/18 01:02:56 davidt Exp $
+ *  $Id: m_gline.c,v 1.4 2000/11/23 23:17:10 db Exp $
  */
 #include "handlers.h"
 #include "m_gline.h"
@@ -86,6 +86,7 @@ _modinit(void)
     mod_add_cmd(MSG_GLINE, &gline_msgtab);
 }
 
+char *_version = "20001122";
 
 /*
  * mo_gline()

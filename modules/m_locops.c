@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_locops.c,v 1.3 2000/11/09 09:46:58 ejb Exp $
+ *   $Id: m_locops.c,v 1.4 2000/11/23 23:17:12 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -43,6 +43,8 @@ _modinit(void)
 {
   mod_add_cmd(MSG_LOCOPS, &locops_msgtab);
 }
+
+char *_version = "20001122";
 
 /*
  * m_locops - LOCOPS message handler

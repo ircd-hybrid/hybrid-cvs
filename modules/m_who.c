@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_who.c,v 1.4 2000/11/21 05:03:14 db Exp $
+ *   $Id: m_who.c,v 1.5 2000/11/23 23:17:15 db Exp $
  */
 
 #include "common.h"   /* bleah */
@@ -60,6 +60,8 @@ void    do_who(struct Client *sptr,
 			     struct Client *acptr,
 			     char *repname,
 			     int flags);
+
+char *_version = "20001122";
 
 /*
 ** m_who

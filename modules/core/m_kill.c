@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kill.c,v 1.2 2000/11/21 05:03:11 db Exp $
+ *   $Id: m_kill.c,v 1.3 2000/11/23 23:17:11 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -47,6 +47,8 @@ _modinit(void)
 {
   mod_add_cmd(MSG_KILL, &kill_msgtab);
 }
+
+char *_version = "20001122";
 
 /*
 ** m_kill
