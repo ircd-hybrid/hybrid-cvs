@@ -15,7 +15,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- * $Id: hostmask.c,v 7.23 2001/03/01 00:44:52 db Exp $ 
+ * $Id: hostmask.c,v 7.24 2001/03/01 13:20:28 davidt Exp $ 
  */
 #include <unistd.h>
 #include <string.h>
@@ -319,9 +319,9 @@ void clear_conf(void)
       if (conf->clients == 0)
 	{
 	  if(hmel)
-	    hmel->next = hmen->next;
+	    hmel->next = hmen;
 	  else
-	    deferred_masks = hmen->next;
+	    deferred_masks = hmen;
 	  conf->clients--;
 	  free_conf(conf);
 	  MyFree(hme->hostmask);
