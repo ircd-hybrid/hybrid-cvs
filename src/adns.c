@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: adns.c,v 7.35 2002/01/13 00:41:44 androsyn Exp $
+ *  $Id: adns.c,v 7.36 2002/02/04 19:14:34 androsyn Exp $
  */
 
 #include "fileio.h"
@@ -73,10 +73,7 @@ void delete_adns_queries(struct DNSQuery *q)
  */
 void restart_resolver(void)
 {
-  dns_cancel_all();
-  adns_finish(dns_state);
-  eventDelete(timeout_adns, NULL);
-  init_resolver();
+   adns__rereadconfig(dns_state);
 }
 
 /* void init_resolver(void)
