@@ -17,7 +17,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- *  $Id: respond.c,v 1.3 2001/02/03 03:46:13 a1kmm Exp $
+ *  $Id: respond.c,v 1.4 2001/02/03 04:02:55 a1kmm Exp $
  */
 #include <openssl/rsa.h>
 #include <openssl/md5.h>

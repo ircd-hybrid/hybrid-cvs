@@ -17,7 +17,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- *  $Id: genkey.c,v 1.4 2001/02/03 03:57:45 a1kmm Exp $
+ *  $Id: genkey.c,v 1.5 2001/02/03 04:02:55 a1kmm Exp $
  */
 
 #include <openssl/rsa.h>
@@ -50,7 +50,7 @@ main(int argc, char **argv)
  int l;
  FILE *kfile;
  /* genkey publicfile privatefile */
- if (argc < 2)
+ if (argc < 3)
    {
     puts("Usage: genkey publicfile privatefile");
     return -1;
@@ -67,7 +67,7 @@ main(int argc, char **argv)
  for (l = 0; l < 128; l++)
    bndt[l] ^= md5[l%16];
  binary_to_hex((unsigned char*)bndt, bnd, 128);
- umask(0600);
+ umask(0177);
  if (!(kfile = fopen(argv[2], "w")))
    {
     puts("Could not open the private key file.");
