@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.230 2001/12/30 07:45:14 db Exp $
+ * $Id: ircd_parser.y,v 1.231 2001/12/31 11:04:35 a1kmm Exp $
  */
 
 %{
@@ -106,6 +106,7 @@ int   class_redirport_var;
 %token  ANTI_SPAM_EXIT_MESSAGE_TIME
 %token  AUTH
 %token  AUTOCONN
+%token  BIND_ADDRESS
 %token  BYTES KBYTES MBYTES GBYTES TBYTES
 %token  CALLER_ID_WAIT
 %token  CHANNEL

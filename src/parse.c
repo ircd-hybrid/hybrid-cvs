@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.117 2001/12/30 04:19:45 db Exp $
+ *   $Id: parse.c,v 7.118 2001/12/31 11:04:36 a1kmm Exp $
  */
 
 #include <assert.h>
@@ -295,6 +295,9 @@ void parse(struct Client *client_p, char *pbuffer, char *bufend)
     }
 
   handle_command(mptr, client_p, from, i, para);
+#ifdef INTENSIVE_DEBUG
+  do_channel_integrity_check();
+#endif
 }
 
 static void 

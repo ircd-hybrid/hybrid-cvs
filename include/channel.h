@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.98 2001/12/30 07:49:41 a1kmm Exp $
+ * $Id: channel.h,v 7.99 2001/12/31 11:04:33 a1kmm Exp $
  */
 
 #include <sys/types.h>        /* time_t */
@@ -34,6 +34,8 @@
 
 /* Efnet wanted this... Maybe we should do this from configure? */
 #define REQUIRE_OANDV
+
+#define INTENSIVE_DEBUG
 
 struct Client;
 
@@ -177,5 +179,9 @@ struct Ban          /* also used for exceptions -orabidoo */
 #define MAX_VCHAN_TIME (60*60)
 /* Number of chanops, peon, voiced, halfops sublists */
 #define MAX_SUBLISTS 4
+
+#ifdef INTENSIVE_DEBUG
+void do_channel_integrity_check(void);
+#endif
 
 #endif  /* INCLUDED_channel_h */
