@@ -1104,8 +1104,6 @@ diff -u -r1.51 m_unkline.c
  
 -      if ((p = strchr(buff,'\n')) != NULL)
 -	*p = '\0';
-+  sendto_match_servs(source_p, parv[1], CAP_KLN,
-+                     "UNKLINE %s %s %s", parv[1], parv[2], parv[3]);
  
 -      if ((*buff == '\0') || (*buff == '#'))
 -	{
@@ -2495,7 +2493,7 @@ diff -u -r7.223.2.2 s_user.c
 + *  Use it anywhere you like, if you like it buy us a beer.
 + *  If it's broken, don't bother us with the lawyers.
 + *
-+ *  $Id: hyb7+angel.diff,v 1.1.2.5 2003/06/13 00:22:00 db Exp $
++ *  $Id: hyb7+angel.diff,v 1.1.2.6 2003/06/13 00:27:49 db Exp $
 + */
 +
 +#include "stdinc.h"
@@ -3150,7 +3148,7 @@ diff -u -r7.223.2.2 s_user.c
 + *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 + *  USA
 + *
-+ *  $Id: hyb7+angel.diff,v 1.1.2.5 2003/06/13 00:22:00 db Exp $
++ *  $Id: hyb7+angel.diff,v 1.1.2.6 2003/06/13 00:27:49 db Exp $
 + */
 +
 +#include "stdinc.h"
@@ -3214,7 +3212,7 @@ diff -u -r7.223.2.2 s_user.c
 +  mod_del_cmd(&xline_msgtab);
 +  mod_del_cmd(&unxline_msgtab);
 +}
-+const char *_version = "$Revision: 1.1.2.5 $";
++const char *_version = "$Revision: 1.1.2.6 $";
 +#endif
 +
 +
