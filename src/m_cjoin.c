@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_cjoin.c,v 7.4 2000/10/12 17:40:50 db Exp $
+ *   $Id: m_cjoin.c,v 7.5 2000/10/14 13:04:48 db Exp $
  */
 
 #include "handlers.h"
@@ -110,7 +110,6 @@ int     m_cjoin(struct Client *cptr,
                 char *parv[])
 {
   static char   jbuf[BUFSIZE];
-  struct SLink  *lp;
   struct Channel *chptr = NULL;
   struct Channel *vchan_chptr = NULL;
   char  *name;
@@ -226,14 +225,14 @@ int     m_cjoin(struct Client *cptr,
   /*
   ** notify all other users on the new channel
   */
-  sendto_channel_butserv(chptr, sptr, ":%s JOIN :%s",
-			 parv[0], name);
+  sendto_channel_butserv(vchan_chptr, sptr, ":%s JOIN :%s",
+			 parv[0], chptr->chname);
 
 
   vchan_chptr->mode.mode |= MODE_TOPICLIMIT;
   vchan_chptr->mode.mode |= MODE_NOPRIVMSGS;
 
-  sendto_channel_butserv(chptr, sptr,
+  sendto_channel_butserv(vchan_chptr, sptr,
 			 ":%s MODE %s +nt",
 			 me.name, chptr->chname);
 
