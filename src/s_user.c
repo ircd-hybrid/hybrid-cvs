@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.214 2002/10/30 21:53:30 androsyn Exp $
+ *  $Id: s_user.c,v 7.215 2002/11/12 13:09:50 db Exp $
  */
 
 #include "stdinc.h"
@@ -823,7 +823,7 @@ report_and_set_user_flags(struct Client *source_p,struct ConfItem *aconf)
   if (IsConfCanFlood(aconf))
     {
       SetCanFlood(source_p);
-      sendto_one(source_p, ":%s NOTICE %S :*** You are exempt from flood "
+      sendto_one(source_p, ":%s NOTICE %s :*** You are exempt from flood "
                  "protection, aren't you feersome.",
                  me.name, source_p->name);
     }
