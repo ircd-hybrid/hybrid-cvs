@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.1 1999/08/02 04:27:38 tomh Exp $
+ * $Id: config.h,v 7.2 1999/08/27 03:36:10 lusky Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -764,7 +764,7 @@
  * within 1 seconds. (I'm told it is usually that fast)
  * I'll do better next time, this is a Q&D -Dianora
  */
-#undef ANTI_DRONE_FLOOD
+#define ANTI_DRONE_FLOOD
 #define DEFAULT_DRONE_TIME 1
 #define DEFAULT_DRONE_COUNT 8
 
