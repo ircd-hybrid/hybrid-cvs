@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: spy_links_notice.c,v 1.9 2002/03/07 06:21:36 db Exp $
+ *  $Id: spy_links_notice.c,v 1.10 2002/04/23 14:25:21 leeh Exp $
  */
 
 #include "modules.h"
@@ -43,13 +43,12 @@ _moddeinit(void)
   hook_del_hook("doing_links", (hookfn *)show_links);
 }
 
-const char *_version = "$Revision: 1.9 $";
+const char *_version = "$Revision: 1.10 $";
 
 int
 show_links(struct hook_links_data *data)
 {
-  if(MyConnect(data->source_p))
-    sendto_realops_flags(FLAGS_SPY, L_ALL,
+  sendto_realops_flags(FLAGS_SPY, L_ALL,
                          "LINKS '%s' requested by %s (%s@%s) [%s]",
                          data->mask, data->source_p->name, data->source_p->username,
                          data->source_p->host, data->source_p->user->server);
