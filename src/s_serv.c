@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.189 2001/06/11 19:56:52 leeh Exp $
+ *   $Id: s_serv.c,v 7.190 2001/06/16 07:19:11 a1kmm Exp $
  */
 
 #include <sys/types.h>
@@ -1706,15 +1706,8 @@ add_lazylinkchannel(struct Client *client_p, struct Channel *chptr)
 void
 add_lazylinkclient(struct Client *client_p, struct Client *source_p)
 {
-  dlink_node *m;
-
-  assert(client_p->localClient != NULL);
-
-  source_p->lazyLinkClientExists |= client_p->localClient->serverMask;
-
-  m = make_dlink_node();
-
-  dlinkAdd(source_p, m, &lazylink_nicks);
+ assert(client_p->localClient != NULL);
+ source_p->lazyLinkClientExists |= client_p->localClient->serverMask;
 }
 
 /*
@@ -1747,41 +1740,27 @@ remove_lazylink_flags(unsigned long mask)
   struct Channel *chptr;
   struct Client *target_p;
   unsigned long clear_mask;
-
-  if(!mask) /* On 0 mask, don't do anything */
-    return;
-
+  
+  if (!mask) /* On 0 mask, don't do anything */
+   return;
+  
   clear_mask = ~mask;
-
+  
   freeMask |= mask;
-
+  
   for (ptr = lazylink_channels.head; ptr; ptr = next_ptr)
-    {
-      next_ptr = ptr->next;
-
-      chptr = ptr->data;
-      chptr->lazyLinkChannelExists &= clear_mask;
-
-      if ( chptr->lazyLinkChannelExists == 0 )
-	{
-	  dlinkDelete(ptr, &lazylink_channels);
-	  free_dlink_node(ptr);
-	}
-    }
-
-  for (ptr = lazylink_nicks.head; ptr; ptr = next_ptr)
-    {
-      next_ptr = ptr->next;
-
-      target_p = ptr->data;
-      target_p->lazyLinkClientExists &= clear_mask;
-
-      if ( target_p->lazyLinkClientExists == 0 )
-        {
-          dlinkDelete(ptr, &lazylink_nicks);
-          free_dlink_node(ptr);
-        }
-    }
+  {
+   next_ptr = ptr->next;
+   chptr = ptr->data;
+   chptr->lazyLinkChannelExists &= clear_mask;
+   if (chptr->lazyLinkChannelExists == 0)
+   {
+    dlinkDelete(ptr, &lazylink_channels);
+    free_dlink_node(ptr);
+   }
+  }
+  for (target_p = GlobalClientList; target_p; target_p = target_p->next)
+   target_p->lazyLinkClientExists &= clear_mask;
 }
 
 /*

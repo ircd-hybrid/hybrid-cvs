@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.237 2001/06/11 19:20:05 androsyn Exp $
+ * $Id: channel.c,v 7.238 2001/06/16 07:19:10 a1kmm Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -4183,6 +4183,17 @@ static void destroy_channel(struct Channel *chptr)
   MyFree(chptr->topic_info);
 
   del_from_channel_hash_table(chptr->chname, chptr);
+  if (ServerInfo.hub == 1)
+  {
+   for (m=lazylink_channels.head; m; m=m->next)
+   {
+    if (m->data != chptr)
+     continue;
+    dlinkDelete(m, &lazylink_channels);
+    free_dlink_node(m);
+    break;
+   }
+  }
   MyFree((char*) chptr);
   Count.chan--;
 }
