@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.71.2.1 2003/04/03 02:44:24 lusky Exp $
+ *  $Id: channel_mode.c,v 7.71.2.2 2003/04/20 02:33:41 lusky Exp $
  */
 
 #include "stdinc.h"
@@ -644,7 +644,7 @@ fix_key(char *arg)
   for (s = t = (u_char *) arg; (c = *s); s++)
   {
     c &= 0x7f;
-    if (c != ':' && c > ' ')
+    if (c != ':' && c > ' ' && c != ',')
       *t++ = c;
   }
   *t = '\0';
@@ -669,7 +669,7 @@ fix_key_old(char *arg)
   for (s = t = (u_char *) arg; (c = *s); s++)
   {
     c &= 0x7f;
-    if ((c != 0x0a) && (c != ':') && (c != 0x0d))
+    if ((c != 0x0a) && (c != ':') && (c != 0x0d) && (c != ','))
       *t++ = c;
   }
   *t = '\0';
@@ -1779,6 +1779,9 @@ chm_key(struct Client *client_p, struct Client *source_p,
     else
       fix_key_old(key);
 
+    if (*key == '\0')
+      return;
+
     assert(key[0] != ' ');
     strlcpy(chptr->mode.key, key, sizeof(chptr->mode.key));
 
@@ -1799,13 +1802,13 @@ chm_key(struct Client *client_p, struct Client *source_p,
   }
   else if (dir == MODE_DEL)
   {
-    if (!(*chptr->mode.key))
+    if ((*chptr->mode.key) == '\0')
       return;
 
     if (parc > *parn)
       (*parn)++;
 
-    *chptr->mode.key = 0;
+    *chptr->mode.key = '\0';
 
     mode_changes[mode_count].letter = c;
     mode_changes[mode_count].dir = MODE_DEL;
