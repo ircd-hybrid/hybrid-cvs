@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.20 2000/04/03 02:00:47 db Exp $
+ * $Id: ircd_parser.y,v 1.21 2000/04/03 03:33:29 db Exp $
  */
 
 %{
@@ -582,7 +582,7 @@ auth_user:   USER '=' QSTRING ';'
       }
   };
              |
-             HOST '=' IP_TYPE ';'
+             IP '=' IP_TYPE ';'
   {
     yy_aconf->ip = yylval.ip_entry.ip;
     yy_aconf->ip_mask = yylval.ip_entry.ip_mask;

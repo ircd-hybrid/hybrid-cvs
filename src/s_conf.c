@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.54 2000/04/03 02:00:47 db Exp $
+ *  $Id: s_conf.c,v 7.55 2000/04/03 03:33:29 db Exp $
  */
 #include "s_conf.h"
 #include "channel.h"
@@ -3554,8 +3554,8 @@ void conf_add_fields(struct ConfItem *aconf,
 
 void yyerror(char *msg)
 {
-  sendto_realops("%d: %s at %s in this line %s",
-		 lineno, msg, yytext, linebuf);
+  sendto_realops("%d: %s in this line %s",
+		 lineno, msg, linebuf);
 }
 
 int conf_fbgets(char *buf,int max_size, FBFILE *fb)
