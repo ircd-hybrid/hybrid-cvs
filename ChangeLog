@@ -1,3 +1,8 @@
+*** 20001205_7 by db
+- redid m_set.c precalculate newval etc.
+
+
+
 *** 20001205_6 by db
 - committed Jeremy Chadwicks (best.net) m_set table driven code
 - sprinkled some asserts into linebuf.c
@@ -1671,7 +1676,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.704 2000/12/05 20:43:23 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.705 2000/12/05 21:31:06 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
