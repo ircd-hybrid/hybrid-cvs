@@ -1,3 +1,15 @@
+lusky       2001/12/10 00:09:23 EST	(20011210_6)
+
+  Modified files:
+    include              patchlevel.h 
+  Log:
+  - revved patchlevel to 7beta9
+  
+  Revision  Changes    Path
+  7.17      +3 -1      ircd-hybrid-7/include/patchlevel.h
+
+
+
 jdc         2001/12/09 23:37:54 EST	(20011210_5)
 
   Modified files:
@@ -18201,4 +18213,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3130 2001/12/10 04:37:59 jdc Exp $
+$Id: ChangeLog,v 7.3131 2001/12/10 05:09:28 lusky Exp $
