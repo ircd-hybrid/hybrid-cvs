@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_who.c,v 1.51 2002/02/10 23:47:06 db Exp $
+ *  $Id: m_who.c,v 1.52 2002/02/13 18:16:43 androsyn Exp $
  */
 
 #include "tools.h"
@@ -41,6 +41,12 @@
 #include "parse.h"
 #include "modules.h"
 
+#ifdef REQUIRE_OANDV
+#define NUMLISTS 5
+#else
+#define NUMLISTS 4
+#endif
+
 static void m_who(struct Client*, struct Client*, int, char**);
 static void ms_who(struct Client*, struct Client*, int, char**);
 
@@ -61,7 +67,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&who_msgtab);
 }
-char *_version = "$Revision: 1.51 $";
+char *_version = "$Revision: 1.52 $";
 #endif
 static void do_who_on_channel(struct Client *source_p,
 			      struct Channel *chptr, char *real_name,
@@ -101,7 +107,7 @@ static void m_who(struct Client *client_p,
   struct Channel *chptr=NULL;
   struct Channel *vchan;
   struct Channel *mychannel = NULL;
-  char  flags[MAX_SUBLISTS][2];
+  char  flags[NUMLISTS][2];
   int   server_oper = parc > 2 ? (*parv[2] == 'o' ): 0; /* Show OPERS only */
   int   member;
 
@@ -386,7 +392,7 @@ static void do_who_on_channel(struct Client *source_p,
 			      char *chname,
 			      int server_oper, int member)
 {
-  char flags[MAX_SUBLISTS][2];
+  char flags[NUMLISTS][2];
 
   /* jdc -- Check is_any_op() for +o > +h > +v priorities */
   set_channel_mode_flags( flags, chptr, source_p );
@@ -486,6 +492,7 @@ static void do_who_list(struct Client *source_p, struct Channel *chptr,
       else
         done++;
 
+#ifdef REQUIRE_OANDV
       if(chanops_voiced_ptr != NULL)
         {
           target_p = chanops_voiced_ptr->data;
@@ -494,6 +501,7 @@ static void do_who_list(struct Client *source_p, struct Channel *chptr,
         }
       else
         done++;
+#endif
     }
 }
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.19 2002/01/09 17:16:53 leeh Exp $
+ *  $Id: channel_mode.c,v 7.20 2002/02/13 18:16:46 androsyn Exp $
  */
 
 #include "tools.h"
@@ -2745,8 +2745,18 @@ set_channel_mode(struct Client *client_p, struct Client *source_p,
  * output       - none
  * side effects -
  */
+#ifdef REQUIRE_OANDV
+#define NUMLISTS 5
+#else
+#define NUMLISTS 4
+#endif
 void
-set_channel_mode_flags(char flags_ptr[4][2],
+set_channel_mode_flags(
+#ifdef REQUIRE_OANDV 
+		       char flags_ptr[5][2],
+#elif
+		       char flags_ptr[MAX_SUBLISTS][2],
+#endif
                        struct Channel *chptr, struct Client *source_p)
 {
   if (chptr->mode.mode & MODE_HIDEOPS && !is_any_op(chptr, source_p))
@@ -2755,6 +2765,9 @@ set_channel_mode_flags(char flags_ptr[4][2],
     flags_ptr[1][0] = '\0';
     flags_ptr[2][0] = '\0';
     flags_ptr[3][0] = '\0';
+#ifdef REQUIRE_OANDV
+    flags_ptr[4][0] = '\0';
+#endif
   }
   else
   {
@@ -2762,10 +2775,16 @@ set_channel_mode_flags(char flags_ptr[4][2],
     flags_ptr[1][0] = '%';
     flags_ptr[2][0] = '+';
     flags_ptr[3][0] = '\0';
+#ifdef REQUIRE_OANDV
+    flags_ptr[4][0] = '@';
+#endif
 
     flags_ptr[0][1] = '\0';
     flags_ptr[1][1] = '\0';
     flags_ptr[2][1] = '\0';
+#ifdef REQUIRE_OANDV
+    flags_ptr[4][1] = '\0';
+#endif
   }
 }
 
