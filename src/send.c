@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.21 2000/01/08 04:22:24 db Exp $
+ *   $Id: send.c,v 7.22 2000/01/08 04:25:42 db Exp $
  */
 #include "send.h"
 #include "channel.h"
@@ -820,7 +820,7 @@ sendto_match_servs(struct Channel *chptr, struct Client *from, const char *patte
         return;
     }
   else
-    return; /* an ooopsies *
+    return; /* an ooopsies */
 
   for(cptr = serv_cptr_list; cptr; cptr = cptr->next_server_client)
     {
