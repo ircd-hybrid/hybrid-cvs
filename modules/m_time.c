@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_time.c,v 1.19 2001/04/15 09:44:46 toot Exp $
+ *   $Id: m_time.c,v 1.20 2001/08/31 12:48:32 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -66,7 +66,7 @@ static void m_time(struct Client *client_p, struct Client *source_p,
                   int parc, char *parv[])
 {
   /* This is safe enough to use during non hidden server mode */
-  if(!GlobalSetOptions.hide_server)
+  if(!ConfigServerHide.disable_remote)
     {
       if (hunt_server(client_p,source_p,":%s TIME :%s",1,parc,parv) != HUNTED_ISME)
         return;

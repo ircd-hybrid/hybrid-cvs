@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_motd.c,v 1.21 2001/08/30 10:45:36 leeh Exp $
+ *   $Id: m_motd.c,v 1.22 2001/08/31 12:48:32 leeh Exp $
  */
 #include "client.h"
 #include "tools.h"
@@ -96,7 +96,7 @@ static void m_motd(struct Client *client_p, struct Client *source_p,
     last_used = CurrentTime;
 
   /* This is safe enough to use during non hidden server mode */
-  if(!GlobalSetOptions.hide_server)
+  if(!ConfigServerHide.disable_remote)
     {
       if (hunt_server(client_p, source_p, ":%s MOTD :%s", 1,parc,parv)!=HUNTED_ISME)
 	return;

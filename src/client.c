@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.201 2001/08/30 17:38:47 davidt Exp $
+ *  $Id: client.c,v 7.202 2001/08/31 12:48:32 leeh Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -1373,7 +1373,7 @@ const char* comment         /* Reason for the exit */
 
   if(IsServer(source_p))
     {        
-      if( GlobalSetOptions.hide_server )
+      if(ConfigServerHide.hide_servers)
 	{
           /* 
           ** Replaces the name of the splitting server with

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_who.c,v 1.40 2001/08/03 06:30:57 spookey Exp $
+ *   $Id: m_who.c,v 1.41 2001/08/31 12:48:32 leeh Exp $
  */
 #include "tools.h"
 #include "common.h"   /* bleah */
@@ -485,7 +485,7 @@ static void do_who(struct Client *source_p,
 	     target_p->user->away ? 'G' : 'H',
 	     IsOper(target_p) ? "*" : "", op_flags );
 
-  if(GlobalSetOptions.hide_server)
+  if(ConfigServerHide.hide_servers)
     {
       sendto_one(source_p, form_str(RPL_WHOREPLY), me.name, source_p->name,
 		 (chname) ? (chname) : "*",

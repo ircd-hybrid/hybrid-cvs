@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.151 2001/08/29 15:14:06 leeh Exp $
+ * $Id: s_conf.h,v 7.152 2001/08/31 12:48:31 leeh Exp $
  */
 
 #include "setup.h"
@@ -228,7 +228,6 @@ struct config_file_entry
   int           oper_only_umodes;
   int           oper_umodes;
   int           max_targets;
-  int           links_delay;
   int           caller_id_wait;
   int           min_nonwildcard;
   int           default_floodcount;
@@ -253,6 +252,14 @@ struct config_channel_entry
   int           max_chans_per_user;
   int           quiet_on_ban;
   int		persist_time;
+};
+
+struct config_server_hide
+{
+  int	flatten_links;
+  int	hide_servers;
+  int	disable_remote;
+  int	links_delay;
 };
 
 struct server_info
@@ -296,6 +303,7 @@ extern int              specific_ipv4_vhost; /* GLOBAL - used in s_bsd.c */
 extern int		specific_ipv6_vhost;
 extern struct config_file_entry ConfigFileEntry;/* GLOBAL - defined in ircd.c*/
 extern struct config_channel_entry ConfigChannel;/* GLOBAL - defined in channel.c*/
+extern struct config_server_hide ConfigServerHide; /* GLOBAL - s_conf.c */
 extern struct server_info ServerInfo;	       /* GLOBAL - defined in ircd.c */
 extern struct admin_info  AdminInfo;           /* GLOBAL - defined in ircd.c */
 

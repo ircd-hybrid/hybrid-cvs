@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_links.c,v 1.30 2001/08/16 20:19:21 leeh Exp $
+ *   $Id: m_links.c,v 1.31 2001/08/31 12:48:32 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -79,7 +79,7 @@ static void m_links(struct Client *client_p, struct Client *source_p,
                    int parc, char *parv[])
 {
 
-  if (!GlobalSetOptions.hide_server)
+  if (!ConfigServerHide.flatten_links)
     {
      mo_links(client_p, source_p, parc, parv);
      return;

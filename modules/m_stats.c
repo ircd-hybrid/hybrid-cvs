@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 1.87 2001/08/29 15:14:06 leeh Exp $
+ *  $Id: m_stats.c,v 1.88 2001/08/31 12:48:32 leeh Exp $
  */
 #include "tools.h"	 /* dlink_node/dlink_list */
 #include "handlers.h"    /* m_pass prototype */
@@ -210,7 +210,7 @@ static void m_stats(struct Client *client_p, struct Client *source_p,
     }
 
   /* Is the stats meant for us? */
-  if (!GlobalSetOptions.hide_server)
+  if (!ConfigServerHide.disable_remote)
     {
       if (hunt_server(client_p,source_p,":%s STATS %s :%s",2,parc,parv) != HUNTED_ISME)
         return;
@@ -606,7 +606,7 @@ static void stats_uptime(struct Client *client_p)
    now = CurrentTime - me.since;
    sendto_one(client_p, form_str(RPL_STATSUPTIME), me.name, client_p->name,
               now/86400, (now/3600)%24, (now/60)%60, now%60);
-   if(!GlobalSetOptions.hide_server || IsOper(client_p))
+   if(!ConfigServerHide.disable_remote || IsOper(client_p))
       sendto_one(client_p, form_str(RPL_STATSCONN), me.name, client_p->name,
                  MaxConnectionCount, MaxClientCount, Count.totalrestartcount);
 }

@@ -20,13 +20,14 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_users.c,v 1.18 2001/04/09 12:41:50 fl_ Exp $
+ *   $Id: m_users.c,v 1.19 2001/08/31 12:48:32 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
 #include "ircd.h"
 #include "numeric.h"
 #include "s_serv.h"
+#include "s_conf.h"
 #include "send.h"
 #include "msg.h"
 #include "parse.h"
@@ -64,7 +65,7 @@ char *_version = "20001122";
 static void m_users(struct Client *client_p, struct Client *source_p,
                    int parc, char *parv[])
 {
-  if(!GlobalSetOptions.hide_server)
+  if(!ConfigServerHide.disable_remote)
     {
       if (hunt_server(client_p,source_p,":%s USERS :%s",1,parc,parv) != HUNTED_ISME)
         return;

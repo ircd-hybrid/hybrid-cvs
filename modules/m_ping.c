@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_ping.c,v 1.21 2001/07/17 00:01:36 leeh Exp $
+ *   $Id: m_ping.c,v 1.22 2001/08/31 12:48:32 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -79,7 +79,7 @@ static void m_ping(struct Client *client_p,
   origin = parv[1];
   destination = parv[2]; /* Will get NULL or pointer (parc >= 2!!) */
 
-  if (GlobalSetOptions.hide_server && !IsOper(source_p))
+  if (ConfigServerHide.disable_remote && !IsOper(source_p))
   {
    sendto_one(source_p,":%s PONG %s :%s", me.name,
               (destination) ? destination : me.name, origin);

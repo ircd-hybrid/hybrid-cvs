@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.c,v 1.42 2001/08/04 13:13:23 leeh Exp $
+ * $Id: m_info.c,v 1.43 2001/08/31 12:48:32 leeh Exp $
  */
 
 #include <time.h>
@@ -174,12 +174,6 @@ static struct InfoStruct info_table[] =
     "Expiry time for G-lines"
   },
   {
-    "hide_server",
-    OUTPUT_BOOLEAN_YN,
-    &GlobalSetOptions.hide_server,
-    "Hide all references to servers from clients"
-  },
-  {
     "hub",
     OUTPUT_BOOLEAN_YN,
     &ServerInfo.hub,
@@ -212,7 +206,7 @@ static struct InfoStruct info_table[] =
   {
     "links_delay",
     OUTPUT_DECIMAL,
-    &ConfigFileEntry.links_delay,
+    &ConfigServerHide.links_delay,
     "Links rehash delay"
   },
   {
@@ -387,7 +381,7 @@ static void m_info(struct Client *client_p, struct Client *source_p,
     last_used = CurrentTime;
   }
 
-  if (!GlobalSetOptions.hide_server)
+  if (!ConfigServerHide.disable_remote)
   {
     if (hunt_server(client_p,source_p,
         ":%s INFO :%s", 1, parc, parv) != HUNTED_ISME)

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_map.c,v 1.2 2001/08/26 04:05:33 db Exp $
+ *   $Id: m_map.c,v 1.3 2001/08/31 12:48:30 leeh Exp $
  */
 
 #include <assert.h>
@@ -62,7 +62,7 @@ static char buf[BUFSIZE];
 static void m_map(struct Client *client_p, struct Client *source_p,
                     int parc, char *parv[])
 {
-  if (!GlobalSetOptions.hide_server)
+  if (!ConfigServerHide.flatten_links)
   {
     dump_map(client_p,&me,buf);
     return;

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.109 2001/08/23 22:30:49 davidt Exp $
+ *   $Id: parse.c,v 7.110 2001/08/31 12:48:33 leeh Exp $
  */
 
 #include <assert.h>
@@ -728,7 +728,7 @@ static void do_numeric(char numeric[],
           return;
         }
       /* Fake it for server hiding, if its our client */
-      if(GlobalSetOptions.hide_server && MyClient(target_p) && !IsOper(target_p))
+      if(ConfigServerHide.hide_servers && MyClient(target_p) && !IsOper(target_p))
 	sendto_one(target_p, ":%s %s %s%s", me.name, numeric, parv[1], buffer);
       else
         sendto_one(target_p, ":%s %s %s%s", source_p->name, numeric, parv[1], buffer);

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_version.c,v 1.29 2001/08/10 11:25:20 leeh Exp $
+ *   $Id: m_version.c,v 1.30 2001/08/31 12:48:32 leeh Exp $
  */
 #include <string.h>
 #include "handlers.h"
@@ -139,7 +139,7 @@ static char* confopts(struct Client *source_p)
 
   /* might wanna hide this :P */
   if (ServerInfo.hub && 
-      (!GlobalSetOptions.hide_server || IsOper(source_p)) )
+      (!ConfigServerHide.disable_remote || IsOper(source_p)) )
     {
       strcat(result, "H");
     }

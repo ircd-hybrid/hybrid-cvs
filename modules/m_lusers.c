@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_lusers.c,v 1.16 2001/04/09 12:41:49 fl_ Exp $
+ *   $Id: m_lusers.c,v 1.17 2001/08/31 12:48:32 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -83,7 +83,7 @@ static void m_lusers(struct Client *client_p, struct Client *source_p,
   else
     last_used = CurrentTime;
 
-  if (parc > 2 && !GlobalSetOptions.hide_server)
+  if (parc > 2 && !ConfigServerHide.disable_remote)
     {   
        if (hunt_server(client_p, source_p, ":%s LUSERS %s :%s", 2, parc, parv) != HUNTED_ISME)
          return;

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_server.c,v 1.66 2001/08/16 20:19:21 leeh Exp $
+ *   $Id: m_server.c,v 1.67 2001/08/31 12:48:32 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"  /* m_server prototype */
@@ -508,7 +508,7 @@ static void ms_server(struct Client *client_p, struct Client *source_p,
     {
       refresh_user_links = 1;
       eventAdd("write_links_file", write_links_file, NULL,
-	ConfigFileEntry.links_delay, 0);
+	ConfigServerHide.links_delay, 0);
     }
 }
 
@@ -549,6 +549,10 @@ void write_links_file(void* notused)
   {
     target_p = ptr->data;
 
+    /* skip ourselves, we send ourselves in /links */
+    if(IsMe(target_p))
+      continue;
+      
     if(target_p->info[0])
     {
       if( (p = strchr(target_p->info,']')) )
@@ -566,9 +570,9 @@ void write_links_file(void* notused)
      * Mostly for aesthetic reasons - makes it look pretty in mIRC ;)
      * - madmax
      */
-     
+    
     ircsprintf(newMessageLine->line,"%s %s :1 %s",
-               target_p->name,me.name,p);
+               target_p->name, me.name, p);
     newMessageLine->next = (MessageFileLine *)NULL;
 
     if (MessageFileptr->contentsOfFile)
@@ -583,9 +587,9 @@ void write_links_file(void* notused)
         currentMessageLine = newMessageLine;
       }
       
-      ircsprintf(buff,"%s %s :1 %s\n",
-      target_p->name,me.name,p);
-      fbputs(buff,file);
+      ircsprintf(buff, "%s %s :1 %s\n", target_p->name, me.name, p);
+      fbputs(buff, file);
+      sendto_realops_flags(FLAGS_ALL, L_ALL, "%s", buff);
     }
     
   fbclose(file);
