@@ -16,7 +16,7 @@
 #*   along with this program; if not, write to the Free Software
 #*   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #*
-#* $Id: Makefile.in,v 7.2 1999/09/01 03:23:27 tomh Exp $
+#* $Id: Makefile.in,v 7.3 1999/09/02 01:10:57 wnder Exp $
 #*/
 
 RM=@RM@
@@ -76,7 +76,13 @@ CFLAGS= -g -Wall
 
 
 SHELL=/bin/sh
-SUBDIRS=zlib src tools
+
+SUBDIRS =          \
+ zlib              \
+ iauth             \
+ src               \
+ tools
+
 # ZSUBDIRS=zlib $(SUBDIRS)
 
 MAKE = make 'CFLAGS=${CFLAGS}' 'INSTALL=${INSTALL}' 'LDFLAGS=${LDFLAGS}'
