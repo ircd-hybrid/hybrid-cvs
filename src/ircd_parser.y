@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.74 2000/12/27 02:08:38 db Exp $
+ * $Id: ircd_parser.y,v 1.75 2000/12/27 02:31:36 db Exp $
  */
 
 %{
@@ -773,7 +773,7 @@ auth_redir_port:    REDIRPORT '=' NUMBER ';'
 
 auth_class:   CLASS '=' QSTRING ';'
   {
-    if(yy_aconf->name == NULL)
+    if(yy_aconf->className == NULL)
       DupString(yy_aconf->className,yylval.string);
   };
 

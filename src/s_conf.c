@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.127 2000/12/25 01:05:00 toot Exp $
+ *  $Id: s_conf.c,v 7.128 2000/12/27 02:31:37 db Exp $
  */
 #include "tools.h"
 #include "s_conf.h"
@@ -2804,10 +2804,8 @@ void conf_add_port(struct ConfItem *aconf)
 
 void conf_add_class_to_conf(struct ConfItem *aconf)
 {
-  if(!aconf->className)
+  if(aconf->className == NULL)
     {
-      sendto_realops_flags(FLAGS_ALL,
-			   "Warning *** Missing class field");
       DupString(aconf->className,"default");
       ClassPtr(aconf) = class0;
       return;
