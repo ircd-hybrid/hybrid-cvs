@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.376 2003/09/30 02:24:55 db Exp $
+ *  $Id: s_serv.c,v 7.377 2003/10/04 21:14:18 stu Exp $
  */
 
 #include "stdinc.h"
@@ -315,6 +315,14 @@ write_links_file(void* notused)
      * - madmax
      */
 
+    /* 
+     * For now, check this ircsprintf wont overflow - it shouldnt on a
+     * default config but it is configurable..
+     * This should be changed to an snprintf at some point, but I'm wanting to
+     * know if this is a cause of a bug - cryogen
+     */
+    assert(strlen(target_p->name) + strlen(me.name) + 6 + strlen(p) <= 
+            MESSAGELINELEN)
     ircsprintf(newMessageLine->line,"%s %s :1 %s",
                target_p->name, me.name, p);
     newMessageLine->next = NULL;
