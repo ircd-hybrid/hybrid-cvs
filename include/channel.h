@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.31 2000/11/11 13:05:17 db Exp $
+ * $Id: channel.h,v 7.32 2000/11/13 06:08:13 db Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -98,6 +98,7 @@ void cleanup_channels(void *);
 /* Maximum mode changes allowed per client, per server is different */
 #define MAXMODEPARAMS   4
 
+extern struct SLink    *find_user_link (struct SLink *, struct Client *);
 extern struct SLink*   find_channel_link(struct SLink *,
 					 struct Channel *chptr); 
 extern void    add_user_to_channel(struct Channel *chptr,
@@ -123,7 +124,7 @@ extern void    clear_bans_exceptions_denies(struct Client *,struct Channel *);
 extern void channel_member_names( struct Client *sptr, struct Channel *chptr,
 				  char *name_of_channel);
 extern char *channel_pub_or_secret(struct Channel *chptr);
-extern char *channel_chanop_or_voice(struct SLink *lp);
+extern char *channel_chanop_or_voice(int flags);
 
 extern void add_invite(struct Channel *chptr, struct Client *who);
 extern void del_invite(struct Channel *chptr, struct Client *who);

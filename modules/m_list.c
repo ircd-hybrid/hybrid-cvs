@@ -3,7 +3,7 @@
  *   Copyright (C) 1990 Jarkko Oikarinen and
  *                      University of Oulu, Co Center
  *
- * $Id: m_list.c,v 1.5 2000/11/11 15:55:02 db Exp $ 
+ * $Id: m_list.c,v 1.6 2000/11/13 06:08:17 db Exp $ 
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -255,6 +255,5 @@ void list_one_channel(struct Client *sptr,struct Channel *chptr)
   sendto_one(sptr, form_str(RPL_LIST), me.name, sptr->name,
 	     vname, chptr->users, chptr->topic);
 }
-
 
 

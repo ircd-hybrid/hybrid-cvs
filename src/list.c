@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu, Computing Center and Jarkko Oikarinen
  *
- * $Id: list.c,v 7.9 2000/11/06 06:56:48 db Exp $
+ * $Id: list.c,v 7.10 2000/11/13 06:08:20 db Exp $
  */
 #include "blalloc.h"
 #include "channel.h"
@@ -200,20 +200,6 @@ void _free_user(struct User* user, struct Client* cptr)
     }
 }
 
-/*
- * Look for ptr in the linked listed pointed to by link.
- */
-struct SLink *find_user_link(struct SLink *lp, struct Client *ptr)
-{
-  if (ptr)
-    while (lp)
-      {
-        if (lp->value.cptr == ptr)
-          return (lp);
-        lp = lp->next;
-      }
-  return ((struct SLink *)NULL);
-}
 
 struct SLink *make_link()
 {

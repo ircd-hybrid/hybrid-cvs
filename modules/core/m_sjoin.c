@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.2 2000/11/09 08:26:15 ejb Exp $
+ *   $Id: m_sjoin.c,v 1.3 2000/11/13 06:08:17 db Exp $
  */
 #include "handlers.h"
 #include "channel.h"
@@ -671,7 +671,7 @@ void set_final_mode(struct Mode *mode,struct Mode *oldmode)
  *		  chanop modes etc. We've lost the TS.
  */
   
-static void remove_our_modes( struct Channel *chptr, struct Channel *top_chptr,
+void remove_our_modes( struct Channel *chptr, struct Channel *top_chptr,
 			      struct Client *sptr)
 {
   int what;
