@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: tools.c,v 7.21 2002/06/01 21:49:46 androsyn Exp $
+ *  $Id: tools.c,v 7.22 2002/06/17 12:32:57 leeh Exp $
  *
  * When you update these functions make sure you update the ones in tools.h
  * as well!!!
@@ -57,7 +57,6 @@ void
 dlinkAdd(void *data, dlink_node * m, dlink_list * list)
 {
  m->data = data;
- m->next = NULL;
  m->next = list->head;
  /* Assumption: If list->tail != NULL, list->head != NULL */
  if (list->head != NULL)
