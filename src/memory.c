@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: memory.c,v 7.22 2001/09/23 08:44:39 a1kmm Exp $
+ * $Id: memory.c,v 7.23 2001/09/23 22:33:36 a1kmm Exp $
  */
 #include <stdlib.h>
 #include <string.h>
@@ -42,7 +42,7 @@
 #endif
 
 
-#ifdef MEMDEBUG
+#undef MEMDEBUG
 /* Hopefully this debugger will work better than the existing one...
  * -A1kmm. */
 
@@ -120,8 +120,10 @@ _MyRealloc(void *what, size_t size, char *file, int line)
   mme = (MemoryEntry*)((char *)what - sizeof(MemoryEntry));
   mme = realloc(mme, size+sizeof(MemoryEntry));
   mme->size = size;
-  mme->next->last = mme;
-  mme->last->next = mme; 
+  if (mme->next != NULL)
+    mme->next->last = mme;
+  if (mme->last != NULL)
+    mme->last->next = mme; 
   return DATA(mme);
 }
 
