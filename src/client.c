@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.421 2004/01/31 17:03:09 adx Exp $
+ *  $Id: client.c,v 7.422 2004/01/31 17:42:40 adx Exp $
  */
 
 #include "stdinc.h"
@@ -779,26 +779,20 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
                 struct Client *from, const char *comment)
 {
   struct Client *target_p;
+  dlink_node *m;
 
   if (IsServer(source_p))
   {
-    if (source_p->servptr && source_p->servptr->serv)
+    if (source_p->servptr != NULL && source_p->servptr->serv != NULL)
       dlinkDelete(&source_p->lnode, &source_p->servptr->serv->servers);
     else
       ts_warn("server %s without servptr!", source_p->name);
 
-    if (!IsMe(source_p))
-    {
-      dlink_node *m;
-
-      if ((m = dlinkFindDelete(&global_serv_list, source_p)) != NULL)
-        free_dlink_node(m);
-    }
+    if ((m = dlinkFindDelete(&global_serv_list, source_p)) != NULL)
+      free_dlink_node(m);
   }
-  else if (source_p->servptr && source_p->servptr->serv)
-  {
+  else if (source_p->servptr != NULL && source_p->servptr->serv != NULL)
     dlinkDelete(&source_p->lnode, &source_p->servptr->serv->users);
-  }
 
   /* there are clients w/o a servptr: unregistered ones */
 
@@ -983,11 +977,8 @@ recurse_remove_clients(struct Client *source_p, const char *comment)
   dlink_node *next;
   struct Client *target_p;
 
-  if (IsMe(source_p))
-    return;
-
-  if (source_p->serv == NULL) /* oooops. uh this is actually a major bug */
-    return;
+  if (IsMe(source_p) || source_p->serv == NULL)
+    return;  /* oooops. uh this is actually a major bug */
 
   DLINK_FOREACH_SAFE(ptr, next, source_p->serv->users.head)
   {

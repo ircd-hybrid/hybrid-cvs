@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.394 2004/01/31 17:03:09 adx Exp $
+ *  $Id: s_serv.c,v 7.395 2004/01/31 17:42:40 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1224,7 +1224,7 @@ server_estab(struct Client *client_p)
 
   conf = client_p->serv->sconf;
 
-  DLINK_FOREACH_PREV(ptr, global_client_list.tail)
+  DLINK_FOREACH_PREV(ptr, global_serv_list.tail)
   {
     target_p = ptr->data;
 
@@ -1232,28 +1232,25 @@ server_estab(struct Client *client_p)
     if (target_p->from == client_p)
       continue;
 
-    if (IsServer(target_p))
-    {
-      if (match(my_name_for_link(conf), target_p->name))
-        continue;
+    if (match(my_name_for_link(conf), target_p->name))
+      continue;
 
-      if (IsCapable(client_p, CAP_TS6))
-      {
-        if (HasID(target_p))
-          sendto_one(client_p, ":%s SID %s %d %s :%s%s",
-                     ID(target_p->servptr), target_p->name, target_p->hopcount+1,
-                     target_p->id, IsHidden(target_p) ? "(H) " : "",
-                     target_p->info);
-        else  /* introducing non-ts6 server */
-          sendto_one(client_p, ":%s SERVER %s %d :%s%s",
-                     ID(target_p->servptr), target_p->name, target_p->hopcount+1,
-                     IsHidden(target_p) ? "(H) " : "", target_p->info);
-      }
-      else
-        sendto_one(client_p, ":%s SERVER %s %d :%s%s", 
-                   target_p->servptr->name, target_p->name, target_p->hopcount+1,
-		   IsHidden(target_p) ? "(H) " : "", target_p->info);
+    if (IsCapable(client_p, CAP_TS6))
+    {
+      if (HasID(target_p))
+        sendto_one(client_p, ":%s SID %s %d %s :%s%s",
+                   ID(target_p->servptr), target_p->name, target_p->hopcount+1,
+                   target_p->id, IsHidden(target_p) ? "(H) " : "",
+                   target_p->info);
+      else  /* introducing non-ts6 server */
+        sendto_one(client_p, ":%s SERVER %s %d :%s%s",
+                   ID(target_p->servptr), target_p->name, target_p->hopcount+1,
+                   IsHidden(target_p) ? "(H) " : "", target_p->info);
     }
+    else
+      sendto_one(client_p, ":%s SERVER %s %d :%s%s", 
+                 target_p->servptr->name, target_p->name, target_p->hopcount+1,
+                 IsHidden(target_p) ? "(H) " : "", target_p->info);
   }
 
   if ((ServerInfo.hub == 0) && MyConnect(client_p))
