@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.239 2002/02/14 05:50:32 a1kmm Exp $
+ *  $Id: s_serv.c,v 7.240 2002/02/17 02:55:23 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -1365,6 +1365,7 @@ int fork_server(struct Client *server)
     /* set our fds as non blocking and close everything else */
     for(i = 0; i < HARD_FDLIMIT; i++)
     {
+      
       if ((i == slink_fds[0][0][0]) || (i == slink_fds[0][0][1]) ||
           (i == slink_fds[0][0][0]) || (i == slink_fds[1][0][1]) ||
           (i == server->fd)) {
@@ -1380,7 +1381,7 @@ int fork_server(struct Client *server)
       }
       else
       {
-#ifdef VMS
+#ifdef VMS || __CYGWIN__
         if (i > 2) /* don't close std* */
 #endif
           close(i);
