@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.264 2003/04/13 10:36:50 stu Exp $
+ *  $Id: ircd.c,v 7.265 2003/04/14 08:41:14 michael Exp $
  */
 
 #include "stdinc.h"
@@ -674,27 +674,28 @@ int main(int argc, char *argv[])
   ConnectToIAuth();
 
   if (iAuth.socket == NOSOCK)
-    {
-      fprintf(stderr, "Unable to connect to IAuth server\n");
-      exit (EXIT_FAILURE);
- }
+  {
+    fprintf(stderr, "Unable to connect to IAuth server\n");
+    exit(EXIT_FAILURE);
+  }
 #endif
 
-  me.from = &me;
-  me.servptr = &me;
+  me.from     = &me;
+  me.servptr  = &me;
+
   SetMe(&me);
   make_server(&me);
+
   me.serv->up = me.name;
   me.lasttime = me.since = me.firsttime = CurrentTime;
   add_to_client_hash_table(me.name, &me);
   
   add_server_to_list(&me); /* add ourselves to global_serv_list */
-#if 0
-  ptr = make_dlink_node();
-  dlinkAdd(&me, ptr, &global_serv_list);
 
+#if 0
+  dlinkAdd(&me, make_dlink_node(), &global_serv_list);
 #endif
-  
+
   check_class();
   write_pidfile(pidFileName);
   

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.114 2003/04/09 11:19:37 stu Exp $
+ *  $Id: s_auth.c,v 7.115 2003/04/14 08:41:15 michael Exp $
  */
 
 /*
@@ -154,10 +154,7 @@ unlink_auth_request(struct AuthRequest* request, dlink_list *list)
 static void
 link_auth_request(struct AuthRequest* request, dlink_list *list)
 {
-  dlink_node *m;
-
-  m = make_dlink_node();
-  dlinkAdd(request, m, list);
+  dlinkAdd(request, make_dlink_node(), list);
 }
 
 /*

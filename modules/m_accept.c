@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_accept.c,v 1.34 2003/04/05 01:08:25 michael Exp $
+ *  $Id: m_accept.c,v 1.35 2003/04/14 08:41:10 michael Exp $
  */
 
 #include "stdinc.h"
@@ -60,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&accept_msgtab);
 }
 
-const char *_version = "$Revision: 1.34 $";
+const char *_version = "$Revision: 1.35 $";
 #endif
 /*
  * m_accept - ACCEPT command handler
@@ -207,8 +207,7 @@ static void build_nicklist(struct Client *source_p, char *addbuf,
   }
 }
 
-/*
- * add_accept()
+/* add_accept()
  *
  * input	- pointer to clients accept list to add to
  * 		- pointer to client to add
@@ -218,18 +217,12 @@ static void build_nicklist(struct Client *source_p, char *addbuf,
 static void add_accept(struct Client *source_p, 
                        struct Client *target_p)
 {
-  dlink_node *m;
-
-  m = make_dlink_node();
-  dlinkAdd(target_p, m, &source_p->allow_list);
-
-  m = make_dlink_node();
-  dlinkAdd(source_p, m, &target_p->on_allow_list);
+  dlinkAdd(target_p, make_dlink_node(), &source_p->allow_list);
+  dlinkAdd(source_p, make_dlink_node(), &target_p->on_allow_list);
 }
   
 
-/*
- * list_accepts()
+/* list_accepts()
  *
  * input 	- pointer to client
  * output	- none

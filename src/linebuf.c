@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: linebuf.c,v 7.94 2003/03/09 23:15:49 db Exp $
+ *  $Id: linebuf.c,v 7.95 2003/04/14 08:41:15 michael Exp $
  */
 
 #include "stdinc.h"
@@ -78,8 +78,7 @@ linebuf_free(buf_line_t *p)
    BlockHeapFree(linebuf_heap, p);
 }
 
-/*
- * linebuf_new_line
+/* linebuf_new_line()
  *
  * Create a new line, and link it to the given linebuf.
  * It will be initially empty.
@@ -88,35 +87,31 @@ static buf_line_t *
 linebuf_new_line(buf_head_t *bufhead)
 {
   buf_line_t *bufline;
-  dlink_node *node;
 
   bufline = linebuf_allocate();
-  if(bufline == NULL)
-    return NULL;
+
+  if (bufline == NULL)
+    return(NULL);
+
   ++bufline_count;
-  
-  
-  node = make_dlink_node();
-  
-  bufline->len = 0;
+
+  bufline->len        = 0;
   bufline->terminated = 0;
-  bufline->flushing = 0;
-  bufline->raw = 0;
+  bufline->flushing   = 0;
+  bufline->raw        = 0;
 
   /* Stick it at the end of the buf list */
-  dlinkAddTail(bufline, node, &bufhead->list);
+  dlinkAddTail(bufline, make_dlink_node(), &bufhead->list);
   bufline->refcount++;
 
   /* And finally, update the allocated size */
   bufhead->alloclen++;
   bufhead->numlines++;
 
-  return bufline;
+  return(bufline);
 }
 
-
-/*
- * linebuf_done_line
+/* linebuf_done_line()
  *
  * We've finished with the given line, so deallocate it
  */
@@ -508,8 +503,7 @@ linebuf_get(buf_head_t *bufhead, char *buf, int buflen, int partial,
   return cpylen;
 }
 
-/*
- * linebuf_attach
+/* linebuf_attach()
  *
  * attach the lines in a buf_head_t to another buf_head_t
  * without copying the data (using refcounts).
@@ -517,15 +511,14 @@ linebuf_get(buf_head_t *bufhead, char *buf, int buflen, int partial,
 void
 linebuf_attach(buf_head_t *bufhead, buf_head_t *new)
 {
-  dlink_node *new_node;
   dlink_node *node;
   buf_line_t *line;
   
-  for (node = new->list.head; node; node = node->next)
+  DLINK_FOREACH(node, new->list.head)
   {
     line = (buf_line_t *)node->data;
-    new_node = make_dlink_node();
-    dlinkAddTail(line, new_node, &bufhead->list);
+
+    dlinkAddTail(line, make_dlink_node(), &bufhead->list);
 
     /* Update the allocated size */
     bufhead->alloclen++;

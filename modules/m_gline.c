@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.93 2003/03/29 14:25:11 michael Exp $
+ *  $Id: m_gline.c,v 1.94 2003/04/14 08:41:10 michael Exp $
  */
 
 #include "stdinc.h"
@@ -109,7 +109,7 @@ _moddeinit(void)
   mod_del_cmd(&gline_msgtab);
 }
 
-const char *_version = "$Revision: 1.93 $";
+const char *_version = "$Revision: 1.94 $";
 #endif
 /*
  * mo_gline()
@@ -663,8 +663,6 @@ add_new_majority_gline(const char* oper_nick, const char* oper_user,
 		       const char* user, const char* host,
 		       const char* reason)
 {
-  dlink_node *pending_node;
-
   struct gline_pending *pending = (struct gline_pending*)
     MyMalloc(sizeof(struct gline_pending));
 
@@ -677,17 +675,15 @@ add_new_majority_gline(const char* oper_nick, const char* oper_user,
   strlcpy(pending->user, user, sizeof(pending->user));
   strlcpy(pending->host, host, sizeof(pending->host));
   DupString(pending->reason1, reason);
-  pending->reason2 = NULL;
 
+  pending->reason2         = NULL;
   pending->last_gline_time = CurrentTime;
-  pending->time_request1 = CurrentTime;
+  pending->time_request1   = CurrentTime;
 
-  pending_node = make_dlink_node();
-  dlinkAdd(pending, pending_node, &pending_glines);
+  dlinkAdd(pending, make_dlink_node(), &pending_glines);
 }
 
-/*
- * check_majority_gline()
+/* check_majority_gline()
  *
  * inputs       - oper_nick, oper_user, oper_host, oper_server
  *                user,host reason

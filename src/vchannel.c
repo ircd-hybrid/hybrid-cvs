@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: vchannel.c,v 7.68 2003/03/01 05:07:21 db Exp $
+ *  $Id: vchannel.c,v 7.69 2003/04/14 08:41:15 michael Exp $
  */
 
 #include "stdinc.h"
@@ -42,8 +42,7 @@
 #ifdef VCHANS
 static void vchan_show_ids(struct Client *source_p, struct Channel *chptr);
 
-/*
- * cjoin_channel()
+/* cjoin_channel()
  *
  * input	- root channel
  *		- client whos joining
@@ -57,7 +56,6 @@ cjoin_channel(struct Channel *root, struct Client *source_p, char *name)
   char vchan_name[CHANNELLEN];
   struct Channel *vchan_chptr;
   int vchan_ts;
-  dlink_node *m;
 
   /* don't cjoin a vchan, only the top is allowed */
   if (IsVchan(root))
@@ -121,12 +119,11 @@ cjoin_channel(struct Channel *root, struct Client *source_p, char *name)
   if (vchan_chptr == NULL)
   {
       sendto_one(source_p, form_str(ERR_BADCHANNAME),
-                 me.name, source_p->name, (unsigned char *)name);
+                 me.name, source_p->name, name);
       return(NULL);
   }
 
-  m = make_dlink_node();
-  dlinkAdd(vchan_chptr, m, &root->vchan_list);
+  dlinkAdd(vchan_chptr, make_dlink_node(), &root->vchan_list);
   vchan_chptr->root_chptr = root;
 
   add_vchan_to_client_cache(source_p, root, vchan_chptr);
@@ -137,8 +134,7 @@ cjoin_channel(struct Channel *root, struct Client *source_p, char *name)
   return(vchan_chptr);
 }
 
-/*
- * select_vchan()
+/* select_vchan()
  * 
  * inputs	- pointer to root channel
  *		- pointer to client
@@ -202,8 +198,7 @@ select_vchan(struct Channel *root, struct Client *source_p,
   return(root);
 }
 
-/*
- * add_vchan_to_client_cache()
+/* add_vchan_to_client_cache()
  *
  * input	- pointer to client
  *		- pointer to root channel
@@ -216,12 +211,11 @@ add_vchan_to_client_cache(struct Client *source_p,
                           struct Channel *root_chan,
                           struct Channel *vchan)
 {
-  dlink_node *vchanmap_node;
   struct Vchan_map *vchan_info;
 
   assert(source_p != NULL);
 
-  if(source_p == NULL)
+  if (source_p == NULL)
     return;
 
   /* oops its the top channel of the subchans */
@@ -232,12 +226,10 @@ add_vchan_to_client_cache(struct Client *source_p,
   vchan_info->base_chan = root_chan;
   vchan_info->vchan = vchan;
 
-  vchanmap_node = make_dlink_node();
-  dlinkAdd(vchan_info, vchanmap_node, &source_p->vchan_map);
+  dlinkAdd(vchan_info, make_dlink_node(), &source_p->vchan_map);
 }
 
-/*
- * del_vchan_from_client_cache()
+/* del_vchan_from_client_cache()
  *
  * inputs	- pointer to client
  * 		- pointer to vchan
@@ -251,8 +243,8 @@ del_vchan_from_client_cache(struct Client *source_p, struct Channel *vchan)
   struct Vchan_map *vchan_info;
 
   assert(source_p != NULL);
-  
-  if(source_p == NULL)
+
+  if (source_p == NULL)
     return;
 
   DLINK_FOREACH(vchanmap_node, source_p->vchan_map.head)
@@ -269,8 +261,7 @@ del_vchan_from_client_cache(struct Client *source_p, struct Channel *vchan)
   }
 }
 
-/*
- * on_sub_vchan()
+/* on_sub_vchan()
  * 
  * input	- pointer to channel
  *		- pointer to client
@@ -284,7 +275,8 @@ on_sub_vchan(struct Channel *chptr, struct Client *source_p)
   struct Vchan_map *vchan_info;
 
   assert(source_p != NULL);
-  if(source_p == NULL)
+
+  if (source_p == NULL)
     return(NO);
 
   /* they are in the root chan */
@@ -303,8 +295,7 @@ on_sub_vchan(struct Channel *chptr, struct Client *source_p)
   return(NO);
 }
 
-/*
- * map_vchan()
+/* map_vchan()
  *
  * input	- pointer to channel
  *		- pointer to client
@@ -318,8 +309,8 @@ map_vchan(struct Channel *chptr, struct Client *source_p)
   struct Vchan_map *vchan_info;
 
   assert(source_p != NULL);
-  
-  if(source_p == NULL)
+
+  if (source_p == NULL)
     return(NULL);
 
   /* they're in the root chan */
@@ -338,8 +329,7 @@ map_vchan(struct Channel *chptr, struct Client *source_p)
   return(NULL);
 }
 
-/*
- * find_bchan()
+/* find_bchan()
  *
  * input	- pointer to channel
  * output	- none
@@ -351,8 +341,7 @@ find_bchan(struct Channel *chptr)
   return(chptr->root_chptr);
 }
 
-/*
- * show_vchans()
+/* show_vchans()
  *
  * input	- pointer to client
  *		- pointer to channel
@@ -377,8 +366,7 @@ show_vchans(struct Client *source_p, struct Channel *chptr, char *command)
              me.name, source_p->name, command, chptr->chname);
 }
 
-/*
- * vchan_show_ids
+/* vchan_show_ids()
  *
  * inputs	- pointer to client to report to
  *		- pointer to channel
@@ -455,8 +443,8 @@ vchan_show_ids(struct Client *source_p, struct Channel *chptr)
   sendto_one(source_p, "%s", buf);
 }
 
-/*
- * pick_vchan_id
+/* pick_vchan_id()
+ *
  * inputs	- pointer to vchan
  * output	- pointer to static string
  * side effects - pick a name from the channel.
@@ -518,8 +506,7 @@ pick_vchan_id(struct Channel *chptr)
   return(chptr->vchan_id);
 }
 
-/*
- * find_vchan()
+/* find_vchan()
  *
  * input	- pointer to channel
  * 		- vchan key
@@ -558,8 +545,7 @@ find_vchan(struct Channel *chptr, char *key)
   return(NULL);
 }
 
-/*
- * vchan_invites()
+/* vchan_invites()
  *
  * input	- pointer to channel
  * 		- pointer to client
@@ -594,5 +580,4 @@ vchan_invites(struct Channel *chptr, struct Client *source_p)
 
   return(NULL);
 }
-
 #endif

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.98 2003/04/02 11:19:44 michael Exp $
+ *  $Id: m_server.c,v 1.99 2003/04/14 08:41:12 michael Exp $
  */
 
 #include "stdinc.h"
@@ -67,7 +67,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&server_msgtab);
 }
-const char *_version = "$Revision: 1.98 $";
+const char *_version = "$Revision: 1.99 $";
 #endif
 
 int bogus_host(char *host);
@@ -479,11 +479,11 @@ ms_server(struct Client *client_p, struct Client *source_p,
   target_p->hopcount = hop;
 
   strlcpy(target_p->name, name, sizeof(target_p->name));
-  
+
   set_server_gecos(target_p, info);
 
   target_p->serv->up = find_or_add(parv[0]);
-  target_p->servptr = source_p;
+  target_p->servptr  = source_p;
 
   SetServer(target_p);
 
@@ -491,8 +491,7 @@ ms_server(struct Client *client_p, struct Client *source_p,
 
   dlinkAdd(target_p, &target_p->node, &global_client_list);
 #if 0
-  ptr = make_dlink_node();
-  dlinkAdd(target_p, ptr, &global_serv_list);
+  dlinkAdd(target_p, make_dlink_node(), &global_serv_list);
 #endif
   add_server_to_list(target_p);
   add_to_client_hash_table(target_p->name, target_p);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.360 2003/04/13 22:29:23 db Exp $
+ *  $Id: s_conf.c,v 7.361 2003/04/14 08:41:15 michael Exp $
  */
 
 #include "stdinc.h"
@@ -912,8 +912,7 @@ is_attached(struct Client *client_p, struct ConfItem *aconf)
   return((ptr != NULL) ? 1 : 0);
 }
 
-/*
- * attach_conf
+/* attach_conf()
  * 
  * inputs	- client pointer
  * 		- conf pointer
@@ -926,8 +925,6 @@ is_attached(struct Client *client_p, struct ConfItem *aconf)
 int 
 attach_conf(struct Client *client_p, struct ConfItem *aconf)
 {
-  dlink_node *lp;
-
   if (is_attached(client_p, aconf))
   {
     return(1);
@@ -961,11 +958,10 @@ attach_conf(struct Client *client_p, struct ConfItem *aconf)
     SetRestricted(client_p);
 #endif
 
-  lp = make_dlink_node();
-
-  dlinkAdd(aconf, lp, &client_p->localClient->confs);
+  dlinkAdd(aconf, make_dlink_node(), &client_p->localClient->confs);
 
   aconf->clients++;
+
   if (IsConfTypeOfClient(aconf))
     ConfLinks(aconf)++;
   return(0);
@@ -1634,7 +1630,7 @@ find_kill(struct Client* client_p)
   return(NULL);
 }
 
-/* add_temp_kline
+/* add_temp_kline()
  *
  * inputs        - pointer to struct ConfItem
  * output        - none
@@ -1644,15 +1640,12 @@ find_kill(struct Client* client_p)
 void
 add_temp_kline(struct ConfItem *aconf)
 {
-  dlink_node *kill_node;
-  kill_node = make_dlink_node();
-  dlinkAdd(aconf, kill_node, &temporary_klines);
+  dlinkAdd(aconf, make_dlink_node(), &temporary_klines);
   SetConfTemporary(aconf);
   add_conf_by_address(aconf->host, CONF_KILL, aconf->user, aconf);
 }
 
-/*
- * cleanup_tklines
+/* cleanup_tklines()
  *
  * inputs       - NONE
  * output       - NONE

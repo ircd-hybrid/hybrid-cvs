@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_jupe.c,v 1.45 2003/04/05 05:45:35 michael Exp $
+ *  $Id: m_jupe.c,v 1.46 2003/04/14 08:41:08 michael Exp $
  */
 
 #include "stdinc.h"
@@ -67,7 +67,7 @@ _moddeinit(void)
   mod_del_cmd(&jupe_msgtab);
 }
 
-const char *_version = "$Revision: 1.45 $";
+const char *_version = "$Revision: 1.46 $";
 #endif
 
 /*
@@ -88,21 +88,21 @@ mo_jupe(struct Client *client_p, struct Client *source_p,
   if (!ServerInfo.hub)
   {
     sendto_one(source_p, ":%s NOTICE %s :Must be used from a hub server",
-               me.name, parv[0]);
+               me.name, source_p->name);
     return;
   }
 
   if (!IsOperAdmin(source_p))
   {
     sendto_one(source_p, ":%s NOTICE %s :You must be an admin to use this command",
-               me.name, parv[0]);
+               me.name, source_p->name);
     return;
   }
 
   if (bogus_host(parv[1]))
   {
     sendto_one(source_p, ":%s NOTICE %s :Invalid servername: %s",
-               me.name, parv[0], parv[1]);
+               me.name, source_p->name, parv[1]);
     return;
   }
 
@@ -168,17 +168,15 @@ mo_jupe(struct Client *client_p, struct Client *source_p,
   add_to_client_hash_table(ajupe->name, ajupe);
   add_client_to_llist(&(ajupe->servptr->serv->servers), ajupe);
 
-  m = make_dlink_node();
-  dlinkAdd(ajupe, m, &global_serv_list);
+  dlinkAdd(ajupe, make_dlink_node(), &global_serv_list);
   /* XXX is this really necessary? 
    * for now, 'cause of the way squit works
    */
   dlinkAdd(ajupe, &ajupe->node, &global_client_list);
 }
 
-/*
- * bogus_host
- *   
+/* bogus_host()
+ *
  * inputs       - hostname
  * output       - 1 if a bogus hostname input, 0 if its valid
  * side effects - none

@@ -19,11 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.363 2003/04/06 00:07:17 michael Exp $
+ *  $Id: channel.c,v 7.364 2003/04/14 08:41:14 michael Exp $
  */
 
 #include "stdinc.h"
-
 #include "tools.h"
 #include "channel.h"
 #include "channel_mode.h"
@@ -79,8 +78,7 @@ init_channels(void)
   topic_heap = BlockHeapCreate(TOPICLEN+1 + USERHOST_REPLYLEN, TOPIC_HEAP_SIZE);
 }
 
-/*
- * add_user_to_channel
+/* add_user_to_channel()
  * 
  * inputs       - pointer to channel to add client to
  *              - pointer to client (who) to add
@@ -92,73 +90,61 @@ init_channels(void)
 void
 add_user_to_channel(struct Channel *chptr, struct Client *who, int flags)
 {
-  dlink_node *ptr;
-  dlink_node *lptr = NULL;
-
   if (who->user)
   {
-    ptr = make_dlink_node();
-    if (MyClient(who))
-      lptr = make_dlink_node();
     switch (flags)
     {
       default:
       case MODE_PEON:
-        dlinkAdd(who, ptr, &chptr->peons);
+        dlinkAdd(who, make_dlink_node(), &chptr->peons);
         if (MyClient(who))
-          dlinkAdd(who, lptr, &chptr->locpeons);
+          dlinkAdd(who, make_dlink_node(), &chptr->locpeons);
         break;
 
       case MODE_CHANOP:
-        dlinkAdd(who, ptr, &chptr->chanops);
+        dlinkAdd(who, make_dlink_node(), &chptr->chanops);
         if (MyClient(who))
-          dlinkAdd(who, lptr, &chptr->locchanops);
+          dlinkAdd(who, make_dlink_node(), &chptr->locchanops);
         break;
 
 #ifdef HALFOPS
       case MODE_HALFOP:
-        dlinkAdd(who, ptr, &chptr->halfops);
+        dlinkAdd(who, make_dlink_node(), &chptr->halfops);
         if (MyClient(who))
-          dlinkAdd(who, lptr, &chptr->lochalfops);
+          dlinkAdd(who, make_dlink_node(), &chptr->lochalfops);
         break;
 #endif
 
       case MODE_VOICE:
-        dlinkAdd(who, ptr, &chptr->voiced);
+        dlinkAdd(who, make_dlink_node(), &chptr->voiced);
         if (MyClient(who))
-          dlinkAdd(who, lptr, &chptr->locvoiced);
+          dlinkAdd(who, make_dlink_node(), &chptr->locvoiced);
         break;
 
 #ifdef REQUIRE_OANDV
       case MODE_CHANOP|MODE_VOICE:
-        dlinkAdd(who, ptr, &chptr->chanops_voiced);
+        dlinkAdd(who, make_dlink_node(), &chptr->chanops_voiced);
 	if (MyClient(who))
-	  dlinkAdd(who, lptr, &chptr->locchanops_voiced);
+	  dlinkAdd(who, make_dlink_node(), &chptr->locchanops_voiced);
         break;
 #else
       case MODE_CHANOP|MODE_VOICE:
-	dlinkAdd(who, ptr, &chptr->chanops);
+	dlinkAdd(who, make_dlink_node(), &chptr->chanops);
 	if (MyClient(who))
-	  dlinkAdd(who, lptr, &chptr->locchanops);
+	  dlinkAdd(who, make_dlink_node(), &chptr->locchanops);
 	break;
 #endif
     }
 
-    if(flags & MODE_DEOPPED)
-    {
-      dlink_node *dptr;
-      
-      dptr = make_dlink_node();
-      dlinkAdd(who, dptr, &chptr->deopped);
-    }
+    if (flags & MODE_DEOPPED)
+      dlinkAdd(who, make_dlink_node(), &chptr->deopped);
 
     chptr->users++;
 
     if (MyClient(who))
       chptr->locusers++;
 
-    ptr = make_dlink_node();
-    dlinkAdd(chptr, ptr, &who->user->channel);
+    dlinkAdd(chptr, make_dlink_node(), &who->user->channel);
     who->user->joined++;
   }
 }
@@ -879,8 +865,7 @@ channel_pub_or_secret(struct Channel *chptr)
   return ("*");
 }
 
-/*
- * add_invite
+/* add_invite()
  *
  * inputs       - pointer to channel block
  *              - pointer to client to add invite to
@@ -892,8 +877,6 @@ channel_pub_or_secret(struct Channel *chptr)
 void
 add_invite(struct Channel *chptr, struct Client *who)
 {
-  dlink_node *inv;
-
   del_invite(chptr, who);
   /*
    * delete last link in chain if the list is max length
@@ -906,18 +889,15 @@ add_invite(struct Channel *chptr, struct Client *who)
   /*
    * add client to channel invite list
    */
-  inv = make_dlink_node();
-  dlinkAdd(who, inv, &chptr->invites);
+  dlinkAdd(who, make_dlink_node(), &chptr->invites);
 
   /*
    * add channel to the end of the client invite list
    */
-  inv = make_dlink_node();
-  dlinkAdd(chptr, inv, &who->user->invited);
+  dlinkAdd(chptr, make_dlink_node(), &who->user->invited);
 }
 
-/*
- * del_invite
+/* del_invite()
  *
  * inputs       - pointer to dlink_list
  *              - pointer to client to remove invites from

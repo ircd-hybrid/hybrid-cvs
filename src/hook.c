@@ -19,15 +19,15 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hook.c,v 7.20 2003/04/13 05:55:22 michael Exp $
+ *  $Id: hook.c,v 7.21 2003/04/14 08:41:14 michael Exp $
  */
 
 /* hooks are used by modules to hook into events called by other parts of
-   the code.  modules can also register their own events, and call them
-   as appropriate. */
+ * the code.  modules can also register their own events, and call them
+ * as appropriate.
+ */
 
 #include "stdinc.h"
-
 #include "tools.h"
 #include "list.h"
 #include "hook.h"
@@ -61,16 +61,14 @@ new_hook(const char *name)
 int
 hook_add_event(const char *name)
 {
-  dlink_node *node;
   hook *newhook;
 
   if (find_hook(name) != NULL)
     return(-1);
 
-  node = make_dlink_node();
   newhook = new_hook(name);
 	
-  dlinkAdd(newhook, node, &hooks);
+  dlinkAdd(newhook, make_dlink_node(), &hooks);
   return(0);
 }
 
@@ -137,14 +135,11 @@ int
 hook_add_hook(const char *event, hookfn *fn)
 {
   hook *h;
-  dlink_node *node;
 
   if ((h = find_hook(event)) == NULL)
     return(-1);
 
-  node = make_dlink_node();
-
-  dlinkAdd(fn, node, &h->hooks);
+  dlinkAdd(fn, make_dlink_node(), &h->hooks);
   return(0);
 }
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.301 2003/04/13 22:29:24 db Exp $
+ *  $Id: s_serv.c,v 7.302 2003/04/14 08:41:15 michael Exp $
  */
 
 #include "stdinc.h"
@@ -300,8 +300,8 @@ my_name_for_link(const char* name, struct ConfItem* aconf)
     return(name);
 }
 
-/*
- * add_server_to_list()
+/* add_server_to_list()
+ *
  * input	- pointer to client
  * output	- none
  * side effects - server is added to global_serv_list
@@ -309,12 +309,7 @@ my_name_for_link(const char* name, struct ConfItem* aconf)
 void
 add_server_to_list(struct Client *client_p)
 {
-  dlink_node *ptr;
- 
-  ptr = make_dlink_node();
-  dlinkAdd(client_p, ptr, &global_serv_list);
-
-  return;
+  dlinkAdd(client_p, make_dlink_node(), &global_serv_list);
 }
 
 /*
@@ -1739,8 +1734,7 @@ burst_channel(struct Client *client_p, struct Channel *chptr)
 #endif
 }
 
-/*
- * add_lazlinkchannel
+/* add_lazlinkchannel()
  *
  * inputs	- pointer to directly connected leaf server
  *		  being introduced to this hub
@@ -1755,16 +1749,12 @@ burst_channel(struct Client *client_p, struct Channel *chptr)
 static void
 add_lazylinkchannel(struct Client *local_server_p, struct Channel *chptr)
 {
-  dlink_node *m;
-
   assert(MyConnect(local_server_p));
   chptr->lazyLinkChannelExists |= local_server_p->localClient->serverMask;
-  m = make_dlink_node();
-  dlinkAdd(chptr, m, &lazylink_channels);
+  dlinkAdd(chptr, make_dlink_node(), &lazylink_channels);
 }
 
-/*
- * add_lazylinkclient
+/* add_lazylinkclient()
  *
  * inputs       - pointer to directly connected leaf server
  *		  being introduced to this hub
@@ -1783,8 +1773,7 @@ add_lazylinkclient(struct Client *local_server_p, struct Client *client_p)
  client_p->lazyLinkClientExists |= local_server_p->localClient->serverMask;
 }
 
-/*
- * remove_lazylink_flags
+/* remove_lazylink_flags()
  *
  * inputs	- pointer to server quitting
  * output	- NONE
@@ -1838,8 +1827,7 @@ remove_lazylink_flags(unsigned long mask)
     }
 }
 
-/*
- * burst_members
+/* burst_members()
  *
  * inputs	- pointer to server to send members to
  * 		- dlink_list pointer to membership list to send
@@ -1853,19 +1841,20 @@ burst_members(struct Client *client_p, dlink_list *list)
   dlink_node *ptr;
 
   DLINK_FOREACH(ptr, list->head)
+  {
+    target_p = ptr->data;
+
+    if (target_p->serial != current_serial)
     {
-      target_p = ptr->data;
-      if (target_p->serial != current_serial)
-	{
-	  target_p->serial = current_serial;
-	  if (target_p->from != client_p)
-	    sendnick_TS(client_p, target_p);
-	}
+      target_p->serial = current_serial;
+
+      if (target_p->from != client_p)
+        sendnick_TS(client_p, target_p);
     }
+  }
 }
 
-/*
- * burst_ll_members
+/* burst_ll_members()
  *
  * inputs	- pointer to server to send members to
  * 		- dlink_list pointer to membership list to send
@@ -1879,17 +1868,18 @@ burst_ll_members(struct Client *client_p, dlink_list *list)
   dlink_node *ptr;
 
   DLINK_FOREACH(ptr, list->head)
+  {
+    target_p = ptr->data;
+
+    if ((target_p->lazyLinkClientExists & client_p->localClient->serverMask) == 0)
     {
-      target_p = ptr->data;
-      if ((target_p->lazyLinkClientExists & client_p->localClient->serverMask) == 0)
-        {
-          if (target_p->from != client_p)
-	    {
-	      add_lazylinkclient(client_p,target_p);
-	      sendnick_TS(client_p, target_p);
-	    }
-        }
+      if (target_p->from != client_p)
+      {
+        add_lazylinkclient(client_p,target_p);
+        sendnick_TS(client_p, target_p);
+      }
     }
+  }
 }
 
 /*

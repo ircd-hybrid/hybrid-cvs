@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.144 2003/04/12 07:00:04 michael Exp $
+ *  $Id: m_sjoin.c,v 1.145 2003/04/14 08:41:12 michael Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.144 $";
+const char *_version = "$Revision: 1.145 $";
 #endif
 /*
  * ms_sjoin
@@ -238,8 +238,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
 	      if (dlinkFind(&top_chptr->vchan_list,chptr) == NULL &&
                  newts == vc_ts)
 		{
-		  m = make_dlink_node();
-		  dlinkAdd(chptr, m, &top_chptr->vchan_list);
+		  dlinkAdd(chptr, make_dlink_node(), &top_chptr->vchan_list);
 		  chptr->root_chptr=top_chptr;
 		}
 	    }
@@ -247,8 +246,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
 	  else if (newts == vc_ts)
 	    {
 	      top_chptr = get_or_create_channel(source_p, (parv[2] + 1), NULL);
-	      m = make_dlink_node();
-	      dlinkAdd(chptr, m, &top_chptr->vchan_list);
+	      dlinkAdd(chptr, make_dlink_node(), &top_chptr->vchan_list);
 	      chptr->root_chptr=top_chptr;
               /* let users access it somehow... */
               chptr->vchan_id[0] = '!';

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_gline.c,v 1.26 2003/04/05 01:08:30 michael Exp $
+ *  $Id: s_gline.c,v 1.27 2003/04/14 08:41:15 michael Exp $
  */
 
 #include "stdinc.h"
@@ -55,7 +55,7 @@ dlink_list glines;
 static void expire_glines(void);
 static void expire_pending_glines(void);
 
-/* add_gline
+/* add_gline()
  *
  * inputs       - pointer to struct ConfItem
  * output       - none
@@ -64,9 +64,7 @@ static void expire_pending_glines(void);
 void
 add_gline(struct ConfItem *aconf)
 {
-  dlink_node *gline_node;
-  gline_node = make_dlink_node();
-  dlinkAdd(aconf, gline_node, &glines);
+  dlinkAdd(aconf, make_dlink_node(), &glines);
 }
 
 /* find_gkill
@@ -79,13 +77,14 @@ struct ConfItem*
 find_gkill(struct Client* client_p, char* username)
 {
   assert(NULL != client_p);
-  if(client_p == NULL)
-    return NULL;
+
+  if (client_p == NULL)
+    return(NULL);
   return (IsExemptKline(client_p)) ? 0 : find_is_glined(client_p->host, username);
 }
 
-/*
- * find_is_glined
+/* find_is_glined()
+ *
  * inputs       - hostname
  *              - username
  * output       - pointer to struct ConfItem if user@host glined
@@ -111,8 +110,7 @@ find_is_glined(const char* host, const char* name)
   return(NULL);
 }
 
-/*
- * remove_gline_match
+/* remove_gline_match()
  *
  * inputs       - user@host
  * output       - 1 if successfully removed, otherwise 0
@@ -127,19 +125,20 @@ remove_gline_match(const char* user, const char* host)
   DLINK_FOREACH(gline_node, glines.head)
   {
     kill_ptr = gline_node->data;
-    if(!irccmp(kill_ptr->host,host) && !irccmp(kill_ptr->name,user))
+
+    if (!irccmp(kill_ptr->host, host) &&
+        !irccmp(kill_ptr->name, user))
     {
       free_conf(kill_ptr);
       dlinkDelete(gline_node, &glines);
       free_dlink_node(gline_node);
-      return (1);
+      return(1);
     }
   }
-  return (0);
+  return(0);
 }
 
-/*
- * cleanup_glines
+/* cleanup_glines()
  *
  * inputs	- NONE
  * output	- NONE
@@ -153,8 +152,7 @@ cleanup_glines(void *unused)
   expire_pending_glines();
 }
 
-/*
- * expire_glines
+/* expire_glines()
  * 
  * inputs       - NONE
  * output       - NONE
@@ -173,7 +171,7 @@ expire_glines(void)
   {
     kill_ptr = gline_node->data;
 
-    if(kill_ptr->hold <= CurrentTime)
+    if (kill_ptr->hold <= CurrentTime)
     {
       free_conf(kill_ptr);
       dlinkDelete(gline_node, &glines);
@@ -182,8 +180,7 @@ expire_glines(void)
   }
 }
 
-/*
- * expire_pending_glines
+/* expire_pending_glines()
  * 
  * inputs       - NONE
  * output       - NONE

@@ -19,12 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.110 2003/04/13 09:46:58 michael Exp $
+ *  $Id: modules.c,v 7.111 2003/04/14 08:41:15 michael Exp $
  */
 
 #include "stdinc.h"
-
-
 #include "modules.h"
 #include "s_log.h"
 #include "ircd.h"
@@ -144,7 +142,7 @@ mod_find_path(const char *path)
   return(NULL);
 }
 
-/* mod_add_path
+/* mod_add_path()
  *
  * input	- path
  * ouput	- 
@@ -154,16 +152,14 @@ void
 mod_add_path(const char *path)
 {
   struct module_path *pathst;
-  dlink_node *node;
-  
+
   if (mod_find_path(path))
     return;
 
-  pathst = MyMalloc (sizeof (struct module_path));
-  node = make_dlink_node();
-  
+  pathst = MyMalloc(sizeof (struct module_path));
+
   strcpy(pathst->path, path);
-  dlinkAdd(pathst, node, &mod_paths);
+  dlinkAdd(pathst, make_dlink_node(), &mod_paths);
 }
 
 /* mod_clear_paths()
@@ -187,7 +183,7 @@ mod_clear_paths(void)
   }
 }
 
-/* irc_basename
+/* irc_basename()
  *
  * input	-
  * output	-

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.81 2003/04/02 11:19:46 michael Exp $
+ *  $Id: channel_mode.c,v 7.82 2003/04/14 08:41:14 michael Exp $
  */
 
 #include "stdinc.h"
@@ -244,8 +244,6 @@ add_id(struct Client *client_p, struct Channel *chptr, char *banid, int type)
       return(0);
   }
 
-  ban = make_dlink_node();
-
   actualBan = (struct Ban *)BlockHeapAlloc(ban_heap);
   DupString(actualBan->banstr, banid);
 
@@ -265,7 +263,7 @@ add_id(struct Client *client_p, struct Channel *chptr, char *banid, int type)
 
   actualBan->when = CurrentTime;
 
-  dlinkAdd(actualBan, ban, list);
+  dlinkAdd(actualBan, make_dlink_node(), list);
 
   chptr->num_mask++;
   return(1);
@@ -2654,8 +2652,7 @@ update_channel_info(struct Channel *chptr)
         {
           if((ptr = dlinkFind(&opped, mode_changes[i].client)) == NULL)
           {
-            ptr = make_dlink_node();
-            dlinkAdd(mode_changes[i].client, ptr, &deopped);
+            dlinkAdd(mode_changes[i].client, make_dlink_node(), &deopped);
           }
           else
           {
@@ -2671,8 +2668,7 @@ update_channel_info(struct Channel *chptr)
         {
           if((ptr = dlinkFind(&deopped, mode_changes[i].client)) == NULL)
           {
-            ptr = make_dlink_node();
-            dlinkAdd(mode_changes[i].client, ptr, &opped);
+            dlinkAdd(mode_changes[i].client, make_dlink_node(), &opped);
           }
           else
           {

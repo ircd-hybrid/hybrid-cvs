@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.239 2003/04/13 22:29:24 db Exp $
+ *  $Id: s_user.c,v 7.240 2003/04/14 08:41:15 michael Exp $
  */
 
 #include "stdinc.h"
@@ -72,29 +72,28 @@ struct flag_item
 
 static struct flag_item user_modes[] =
 {
-  {UMODE_ADMIN, 'a'},
-  {UMODE_BOTS,  'b'},
-  {UMODE_CCONN, 'c'},
-  {UMODE_DEBUG, 'd'},
-  {UMODE_FULL,  'f'},
-  {UMODE_CALLERID, 'g'},
-  {UMODE_INVISIBLE, 'i'},
-  {UMODE_SKILL, 'k'},
-  {UMODE_LOCOPS, 'l'},
-  {UMODE_NCHANGE, 'n'},
-  {UMODE_OPER, 'o'},
-  {UMODE_REJ, 'r'},
+  {UMODE_ADMIN,      'a'},
+  {UMODE_BOTS,       'b'},
+  {UMODE_CCONN,      'c'},
+  {UMODE_DEBUG,      'd'},
+  {UMODE_FULL,       'f'},
+  {UMODE_CALLERID,   'g'},
+  {UMODE_INVISIBLE,  'i'},
+  {UMODE_SKILL,      'k'},
+  {UMODE_LOCOPS,     'l'},
+  {UMODE_NCHANGE,    'n'},
+  {UMODE_OPER,       'o'},
+  {UMODE_REJ,        'r'},
   {UMODE_SERVNOTICE, 's'},
-  {UMODE_UNAUTH, 'u'},
-  {UMODE_WALLOP, 'w'},
-  {UMODE_EXTERNAL, 'x'},
-  {UMODE_SPY, 'y'},
-  {UMODE_OPERWALL, 'z'},
+  {UMODE_UNAUTH,     'u'},
+  {UMODE_WALLOP,     'w'},
+  {UMODE_EXTERNAL,   'x'},
+  {UMODE_SPY,        'y'},
+  {UMODE_OPERWALL,   'z'},
   {0, 0}
 };
 
 /* memory is cheap. map 0-255 to equivalent mode */
-
 unsigned int user_modes_from_c_to_bitmask[] =
 {
   /* 0x00 */ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, /* 0x0F */
@@ -168,8 +167,7 @@ unsigned int user_modes_from_c_to_bitmask[] =
   /* 0xF0 */ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0  /* 0xFF */
 };
 
-/*
- * show_lusers -
+/* show_lusers()
  *
  * inputs	- pointer to client
  * output	-
@@ -1151,8 +1149,7 @@ send_umode(struct Client *client_p, struct Client *source_p,
                source_p->name, source_p->name, umode_buf);
 }
 
-/*
- * send_umode_out
+/* send_umode_out()
  *
  * inputs	-
  * output	- NONE
@@ -1186,8 +1183,7 @@ send_umode_out(struct Client *client_p,
     send_umode(client_p, source_p, old, ALL_UMODES, buf);
 }
 
-/* 
- * user_welcome
+/* user_welcome()
  *
  * inputs	- client pointer to client to welcome
  * output	- NONE
@@ -1257,8 +1253,8 @@ user_welcome(struct Client *source_p)
     }
 }
 
-/*
- * check_X_line
+/* check_X_line()
+ *
  * inputs	- pointer to client to test
  * outupt	- -1 if exiting 0 if ok
  * side effects	-
@@ -1308,8 +1304,7 @@ check_X_line(struct Client *client_p, struct Client *source_p)
   return (0);
 }
 
-/*
- * oper_up
+/* oper_up()
  *
  * inputs	- pointer to given client to oper
  *		- pointer to ConfItem to use
@@ -1319,7 +1314,6 @@ check_X_line(struct Client *client_p, struct Client *source_p)
  * all checks on passwords have already been done.
  * This could also be used by rsa oper routines. 
  */
-
 int
 oper_up(struct Client *source_p, struct ConfItem *aconf)
 {
@@ -1327,7 +1321,6 @@ oper_up(struct Client *source_p, struct ConfItem *aconf)
   const char *operprivs = "";
   dlink_node *ptr;
   struct ConfItem *found_aconf;
-  dlink_node *m;
 
   SetOper(source_p);
 
@@ -1352,13 +1345,11 @@ oper_up(struct Client *source_p, struct ConfItem *aconf)
       source_p->umodes |= (UMODE_SERVNOTICE|UMODE_OPERWALL|UMODE_WALLOP|UMODE_LOCOPS) & ALL_UMODES;
     }
   }
-	
+
   Count.oper++;
 
   SetExemptKline(source_p);
-      
-  m = make_dlink_node();
-  dlinkAdd(source_p,m,&oper_list);
+  dlinkAdd(source_p, make_dlink_node(), &oper_list);
 
   if (source_p->localClient->confs.head)
   {
@@ -1369,7 +1360,7 @@ oper_up(struct Client *source_p, struct ConfItem *aconf)
       found_aconf = ptr->data;
 
       if (found_aconf)
-        operprivs = oper_privs_as_string(source_p,found_aconf->port);
+        operprivs = oper_privs_as_string(source_p, found_aconf->port);
     }
   }
   else

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.346 2003/04/13 13:02:09 adx Exp $
+ *  $Id: client.c,v 7.347 2003/04/14 08:41:14 michael Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -109,42 +109,40 @@ init_client(void)
  *                      associated with the client defined by
  *                      'from'). ('from' is a local client!!).
  */
-struct Client*
-make_client(struct Client* from)
+struct Client *
+make_client(struct Client *from)
 {
-  struct Client* client_p = NULL;
+  struct Client *client_p = NULL;
   struct LocalUser *localClient;
-  dlink_node *m;
 
   client_p = BlockHeapAlloc(client_heap);
   memset(client_p, 0, sizeof(struct Client)); 
+
   if (from == NULL)
-    {
-      client_p->from  = client_p; /* 'from' of local client is self! */
-      client_p->since = client_p->lasttime = client_p->firsttime = CurrentTime;
+  {
+    client_p->from  = client_p; /* 'from' of local client is self! */
+    client_p->since = client_p->lasttime = client_p->firsttime = CurrentTime;
 
-      localClient = (struct LocalUser *)BlockHeapAlloc(lclient_heap);
-      memset(localClient, 0, sizeof(struct LocalUser));
+    localClient = (struct LocalUser *)BlockHeapAlloc(lclient_heap);
+    memset(localClient, 0, sizeof(struct LocalUser));
 
-      client_p->localClient = localClient;
-       
-      client_p->localClient->fd = -1;
-      client_p->localClient->ctrlfd = -1;
+    client_p->localClient = localClient;
+    client_p->localClient->fd       = -1;
+    client_p->localClient->ctrlfd   = -1;
 #ifndef HAVE_SOCKETPAIR
-      client_p->localClient->fd_r = -1;
-      client_p->localClient->ctrlfd_r = -1;
+    client_p->localClient->fd_r     = -1;
+    client_p->localClient->ctrlfd_r = -1;
 #endif      
-      /* as good a place as any... */
-      m = make_dlink_node();
-      dlinkAdd(client_p, m, &unknown_list);
-      ++local_client_count;
-    }
+    /* as good a place as any... */
+    dlinkAdd(client_p, make_dlink_node(), &unknown_list);
+    ++local_client_count;
+  }
   else
-    { /* from is not NULL */
-      client_p->localClient = NULL;
-      client_p->from = from; /* 'from' of local client is self! */
-      ++remote_client_count;
-    }
+  { /* from is not NULL */
+    client_p->localClient = NULL;
+    client_p->from = from; /* 'from' of local client is self! */
+    ++remote_client_count;
+  }
 
   client_p->status = STAT_UNKNOWN;
   strcpy(client_p->username, "unknown");
@@ -165,7 +163,7 @@ make_client(struct Client* from)
   client_p->on_allow_list.head = NULL;
   client_p->on_allow_list.tail = NULL;
 #endif
-  return client_p;
+  return(client_p);
 }
 
 void
@@ -915,9 +913,8 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
   /* Check to see if the client isn't already on the dead list */
   assert(dlinkFind(&dead_list, source_p) == NULL);
   /* add to dead client dlist */
-  lp = make_dlink_node();
   SetDead(source_p);
-  dlinkAdd(source_p, lp, &dead_list);
+  dlinkAdd(source_p, make_dlink_node(), &dead_list);
 }
 
 /*
@@ -1050,10 +1047,9 @@ remove_dependents(struct Client* client_p,
 void
 dead_link_on_write(struct Client *client_p, int ierrno)
 {
-  dlink_node *m;
   const char *notice;
 
-  if(IsDefunct(client_p))
+  if (IsDefunct(client_p))
     return;
 
   linebuf_donebuf(&client_p->localClient->buf_recvq);
@@ -1063,20 +1059,18 @@ dead_link_on_write(struct Client *client_p, int ierrno)
     notice = "Max SendQ exceeded";
   else
     notice = "Write error: connection closed";
-    	
+
   if (!IsPerson(client_p) && !IsUnknown(client_p) && !IsClosing(client_p))
   {
-    sendto_realops_flags(UMODE_ALL, L_ADMIN,
-		         "Closing link to %s: %s",
+    sendto_realops_flags(UMODE_ALL, L_ADMIN, "Closing link to %s: %s",
                          get_client_name(client_p, HIDE_IP), notice);
-    sendto_realops_flags(UMODE_ALL, L_OPER,
-		         "Closing link to %s: %s",
+    sendto_realops_flags(UMODE_ALL, L_OPER,  "Closing link to %s: %s",
                          get_client_name(client_p, MASK_IP), notice);
   }
+
   Debug((DEBUG_ERROR, "Closing link to %s: %s", get_client_name(client_p, HIDE_IP), notice));
   assert(dlinkFind(&abort_list, client_p) == NULL);
-  m = make_dlink_node();
-  dlinkAdd(client_p, m, &abort_list);
+  dlinkAdd(client_p, make_dlink_node(), &abort_list);
   SetDead(client_p); /* You are dead my friend */
 }
 

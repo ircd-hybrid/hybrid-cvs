@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.275 2003/04/13 21:34:39 stu Exp $
+ *  $Id: ircd_parser.y,v 1.276 2003/04/14 08:41:14 michael Exp $
  */
 
 %{
@@ -666,29 +666,32 @@ admin_items:    admin_items admin_item |
 admin_item:     admin_name | admin_description |
                 admin_email | error;
 
-admin_name:     NAME '=' QSTRING ';' 
+admin_name: NAME '=' QSTRING ';' 
+{
+  if (ypass == 2)
   {
     MyFree(AdminInfo.name);
     DupString(AdminInfo.name, yylval.string);
-  };
+  }
+};
 
-admin_email:    EMAIL '=' QSTRING ';'
+admin_email: EMAIL '=' QSTRING ';'
+{
+  if (ypass == 2)
   {
-    if(ypass == 2)
-    {
-      MyFree(AdminInfo.email);
-      DupString(AdminInfo.email, yylval.string);
-    }
-  };
+    MyFree(AdminInfo.email);
+    DupString(AdminInfo.email, yylval.string);
+  }
+};
 
-admin_description:      DESCRIPTION '=' QSTRING ';'
+admin_description: DESCRIPTION '=' QSTRING ';'
+{
+  if (ypass == 2)
   {
-    if(ypass == 2)
-    {
-      MyFree(AdminInfo.description);
-      DupString(AdminInfo.description, yylval.string);
-    }
-  };
+    MyFree(AdminInfo.description);
+    DupString(AdminInfo.description, yylval.string);
+  }
+};
 
 /***************************************************************************
  *  section logging
@@ -821,45 +824,47 @@ oper_item:      oper_name  | oper_user | oper_password |
                 oper_kline | oper_unkline | oper_gline | oper_nick_changes |
                 oper_die | oper_rehash | oper_admin | oper_rsa_public_key_file | error;
 
-oper_name:      NAME '=' QSTRING ';'
+oper_name: NAME '=' QSTRING ';'
+{
+  if (ypass == 2)
   {
-    if(ypass == 2)
-    {
-      int oname_len;
-      MyFree(yy_aconf->name);
-      if((oname_len = strlen(yylval.string)) > OPERNICKLEN)
-	yylval.string[OPERNICKLEN] = '\0';
-      DupString(yy_aconf->name, yylval.string);
-    }
-  };
+    int oname_len;
 
-oper_user:      USER '='  QSTRING ';'
+    MyFree(yy_aconf->name);
+
+    if ((oname_len = strlen(yylval.string)) > OPERNICKLEN)
+      yylval.string[OPERNICKLEN] = '\0';
+
+    DupString(yy_aconf->name, yylval.string);
+  }
+};
+
+oper_user: USER '='  QSTRING ';'
+{
+  if (ypass == 2)
   {
-    if(ypass == 2)
-    {
-      struct ConfItem *yy_tmp;
-      dlink_node *ptr;
+    struct ConfItem *yy_tmp;
 
-      yy_tmp = make_conf(CONF_OPERATOR);
+    yy_tmp = make_conf(CONF_OPERATOR);
 
-      DupString(yy_tmp->host, yylval.string);
-      split_user_host(yy_tmp);
+    DupString(yy_tmp->host, yylval.string);
+    split_user_host(yy_tmp);
 
-      ptr = make_dlink_node();
-      dlinkAdd(yy_tmp, ptr, &aconf_list);
-    }
-  };
+    dlinkAdd(yy_tmp, make_dlink_node(), &aconf_list);
+  }
+};
 
-oper_password:  PASSWORD '=' QSTRING ';'
+oper_password: PASSWORD '=' QSTRING ';'
+{
+  if (ypass == 2)
   {
-    if(ypass == 2)
-    {
-      if(yy_aconf->passwd != NULL)
-	memset(yy_aconf->passwd, 0, strlen(yy_aconf->passwd));
-      MyFree(yy_aconf->passwd);
-      DupString(yy_aconf->passwd, yylval.string);
-    }
-  };
+    if (yy_aconf->passwd != NULL)
+      memset(yy_aconf->passwd, 0, strlen(yy_aconf->passwd));
+
+    MyFree(yy_aconf->passwd);
+    DupString(yy_aconf->passwd, yylval.string);
+  }
+};
 
 oper_rsa_public_key_file: RSA_PUBLIC_KEY_FILE '=' QSTRING ';'
   {
@@ -1240,23 +1245,20 @@ auth_item:      auth_user | auth_passwd | auth_class |
                 error;
 
 auth_user:   USER '=' QSTRING ';'
+{
+  if (ypass == 2)
   {
-    if(ypass == 2)
-    {
-      struct ConfItem *yy_tmp;
-      dlink_node *ptr;
+    struct ConfItem *yy_tmp;
 
-      yy_tmp = make_conf(CONF_CLIENT);
-      
-      DupString(yy_tmp->host, yylval.string);
-      split_user_host(yy_tmp);
+    yy_tmp = make_conf(CONF_CLIENT);
 
-      ptr = make_dlink_node();
-      dlinkAdd(yy_tmp, ptr, &aconf_list);
-    }
-  };
+    DupString(yy_tmp->host, yylval.string);
+    split_user_host(yy_tmp);
+    dlinkAdd(yy_tmp, make_dlink_node(), &aconf_list);
+  }
+};
+
 /* XXX - IP/IPV6 tags don't exist anymore - put IP/IPV6 into user. */
-
 auth_passwd:  PASSWORD '=' QSTRING ';' 
   {
     if(ypass == 2)
@@ -1830,56 +1832,50 @@ connect_compressed:       COMPRESSED '=' TYES ';'
       yy_aconf->flags &= ~CONF_FLAGS_COMPRESSED;
   };
 
-connect_auto:           AUTOCONN '=' TYES ';'
+connect_auto: AUTOCONN '=' TYES ';'
+{
+  if (ypass == 2)
+    yy_aconf->flags |= CONF_FLAGS_ALLOW_AUTO_CONN;
+} | AUTOCONN '=' TNO ';'
+{
+  if (ypass == 2)
+    yy_aconf->flags &= ~CONF_FLAGS_ALLOW_AUTO_CONN;
+};
+
+connect_hub_mask: HUB_MASK '=' QSTRING ';' 
+{
+  if (ypass == 2)
   {
-    if(ypass == 2)
-      yy_aconf->flags |= CONF_FLAGS_ALLOW_AUTO_CONN;
+    struct ConfItem *hub_conf;
+
+    hub_conf = make_conf(CONF_HUB);
+    DupString(hub_conf->host, yylval.string);
+    DupString(hub_conf->user, "*");
+    dlinkAdd(hub_conf, make_dlink_node(), &hub_confs_list);
   }
-                        |
-                        AUTOCONN '=' TNO ';'
+};
+
+connect_leaf_mask: LEAF_MASK '=' QSTRING ';' 
+{
+  if (ypass == 2)
   {
-    if(ypass == 2)
-      yy_aconf->flags &= ~CONF_FLAGS_ALLOW_AUTO_CONN;
-  };
+    struct ConfItem *leaf_conf;
 
-connect_hub_mask:       HUB_MASK '=' QSTRING ';' 
+    leaf_conf = make_conf(CONF_LEAF);
+    DupString(leaf_conf->host, yylval.string);
+    DupString(leaf_conf->user, "*");
+    dlinkAdd(leaf_conf, make_dlink_node(), &leaf_confs_list);
+  }
+};
+
+connect_class: CLASS '=' QSTRING ';'
+{
+  if (ypass == 2)
   {
-    if(ypass == 2)
-    {
-      struct ConfItem *hub_conf;
-      dlink_node *ptr;
-
-      hub_conf = make_conf(CONF_HUB);
-      DupString(hub_conf->host, yylval.string);
-      DupString(hub_conf->user, "*");
-      ptr = make_dlink_node();
-      dlinkAdd(hub_conf, ptr, &hub_confs_list);
-    }
-  };
-
-connect_leaf_mask:       LEAF_MASK '=' QSTRING ';' 
-  {
-    if(ypass == 2)
-    {
-      struct ConfItem *leaf_conf;
-      dlink_node *ptr;
-
-      leaf_conf = make_conf(CONF_LEAF);
-      DupString(leaf_conf->host, yylval.string);
-      DupString(leaf_conf->user, "*");
-      ptr = make_dlink_node();
-      dlinkAdd(leaf_conf, ptr, &leaf_confs_list);
-    }
-  };
-
-connect_class:  CLASS '=' QSTRING ';'
-  {
-    if(ypass == 2)
-    {
-      MyFree(yy_aconf->className);
-      DupString(yy_aconf->className, yylval.string);
-    }
-  };
+    MyFree(yy_aconf->className);
+    DupString(yy_aconf->className, yylval.string);
+  }
+};
 
 connect_cipher_preference: CIPHER_PREFERENCE '=' QSTRING ';'
   {
