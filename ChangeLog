@@ -1,3 +1,18 @@
+jmallett    2002/01/10 15:30:50 EST	(20020110_6)
+
+  Modified files:
+    src                  s_bsd.c 
+  Log:
+  Turn off disable_sock_options if we have IPV6 set up. The real solution
+  is to do "proper" things for IPV6 here but using IPPROTO_IPV6 just makes
+  protocol unavailable messages instead. So Here it is disabled, a temporary
+  and seemingly satisfactory fix.
+  
+  Revision  Changes    Path
+  7.158     +1 -1      ircd-hybrid-7/src/s_bsd.c
+
+
+
 jmallett    2002/01/10 11:00:03 EST	(20020110_5)
 
   Modified files:
@@ -2934,7 +2949,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3318 2002/01/10 16:00:09 jmallett Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3319 2002/01/10 20:30:56 jmallett Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -21288,4 +21303,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3318 2002/01/10 16:00:09 jmallett Exp $
+$Id: ChangeLog,v 7.3319 2002/01/10 20:30:56 jmallett Exp $
