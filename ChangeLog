@@ -1,3 +1,15 @@
+bill        2002/09/24 12:33:06 EDT	(20020924_0)
+
+  Modified files:
+    contrib              README 
+  Log:
+  - added m_operspy.c to contrib/ notes
+  
+  Revision  Changes    Path
+  1.24      +3 -0      ircd-hybrid-7/contrib/README
+
+
+
 db          2002/09/20 01:31:56 EDT	(20020920_0)
 
   Modified files:
@@ -32123,4 +32135,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4040 2002/09/20 05:31:58 db Exp $
+$Id: ChangeLog,v 7.4041 2002/09/24 16:33:09 bill Exp $
