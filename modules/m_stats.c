@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.126 2003/05/24 17:45:36 db Exp $
+ *  $Id: m_stats.c,v 1.127 2003/05/28 16:37:58 db Exp $
  */
 
 #include "stdinc.h"
@@ -79,7 +79,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.126 $";
+const char *_version = "$Revision: 1.127 $";
 #endif
 
 const char *Lformat = ":%s %d %s %s %u %u %u %u %u :%u %u %s";
@@ -683,7 +683,8 @@ stats_operedup(struct Client *source_p)
 
       sendto_one(source_p, ":%s %d %s p :[%c][%s] %s (%s@%s) Idle: %d",
                  me.name, RPL_STATSDEBUG, source_p->name,
-                 IsOperAdmin(target_p) ? 'A' : 'O',
+                 IsOperAdmin(target_p) ? 
+		 (IsOperHiddenAdmin(target_p) ? 'A' : 'O') : 'O',
 		 oper_privs_as_string(target_p, aconf->port),
 		 target_p->name, target_p->username, target_p->host,
 		 (int)(CurrentTime - target_p->user->last));
@@ -692,7 +693,8 @@ stats_operedup(struct Client *source_p)
     {
       sendto_one(source_p, ":%s %d %s p :[%c] %s (%s@%s) Idle: %d",
                  me.name, RPL_STATSDEBUG, source_p->name,
-                 IsOperAdmin(target_p) ? 'A' : 'O',
+                 IsOperAdmin(target_p) ?
+		 (IsOperHiddenAdmin(target_p) ? 'A' : 'O') : 'O',
 		 target_p->name, target_p->username, target_p->host,
 		 (int)(CurrentTime - target_p->user->last));
     }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_lexer.l,v 1.161 2003/05/26 18:35:18 joshk Exp $
+ *  $Id: ircd_lexer.l,v 1.162 2003/05/28 16:37:59 db Exp $
  */
 
 %option case-insensitive
@@ -185,6 +185,7 @@ global_kill	{ return GLOBAL_KILL; }
 have_ident	{ return HAVE_IDENT; }
 havent_read_conf { return HAVENT_READ_CONF; }
 hidden		{ return HIDDEN; }
+hidden_admin	{ return HIDDEN_ADMIN; }
 hide_servers	{ return HIDE_SERVERS; }
 host		{ return HOST; }
 hub		{ return HUB; }
@@ -331,16 +332,6 @@ callerid                { return T_CALLERID; }
 drone                   { return T_DRONE; }
 locops                  { return T_LOCOPS; }
 
-millennia		{ return MILLENNIA; }
-millennium		{ return MILLENNIA; }
-centuries		{ return CENTURIES; }
-century			{ return CENTURIES; }
-decades			{ return DECADES; }
-decade			{ return DECADES; }
-years			{ return YEARS; }
-year			{ return YEARS; }
-months			{ return MONTHS; }
-month			{ return MONTHS; }
 weeks			{ return WEEKS; }
 week			{ return WEEKS; }
 days			{ return DAYS; }

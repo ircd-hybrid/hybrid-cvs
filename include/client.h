@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.196 2003/05/26 05:43:16 db Exp $
+ *  $Id: client.h,v 7.197 2003/05/28 16:37:56 db Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -435,6 +435,7 @@ struct LocalUser
 #define OPER_FLAG_DIE         0x00000080 /* oper can die                */
 #define OPER_FLAG_REHASH      0x00000100 /* oper can rehash             */
 #define OPER_FLAG_ADMIN       0x00000200 /* oper can set umode +a       */
+#define OPER_FLAG_HIDDEN_ADMIN 0x00000400 /* admin is hidden            */
 
 #define SetOFlag(x, y) ((x)->localClient->operflags |= (y))
 
@@ -569,6 +570,8 @@ struct LocalUser
 #define SetOperRehash(x)        ((x)->localClient->operflags |= OPER_FLAG_REHASH)
 #define IsOperAdmin(x)          (MyConnect(x) ? (x)->localClient->operflags & OPER_FLAG_ADMIN : 0)
 #define SetOperAdmin(x)         ((x)->localClient->operflags |= OPER_FLAG_ADMIN)
+#define IsOperHiddenAdmin(x)	(MyConnect(x) ? (x)->localClient->operflags  & OPER_FLAG_HIDDEN_ADMIN : 0)
+#define SetOperHiddenAdmin(x)	((x)->localClient->operflags |= OPER_FLAG_HIDDEN_ADMIN)
 #define IsOperX(x)              (MyConnect(x) ? (x)->localClient->operflags & OPER_FLAG_X : 0)
 #define SetOperX(x)             ((x)->localClient->operflags |= OPER_FLAG_X)
 

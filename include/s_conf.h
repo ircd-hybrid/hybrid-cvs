@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.228 2003/05/26 18:35:16 joshk Exp $
+ *  $Id: s_conf.h,v 7.229 2003/05/28 16:37:56 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -87,6 +87,7 @@ struct ConfItem
 #define CONF_SERVER             0x00000004
 #define CONF_OPERATOR           0x00000008
 #define CONF_KILL               0x00000010
+#define CONF_KLINE              CONF_KILL
 #define CONF_CLASS              0x00000020
 #define CONF_LEAF               0x00000040
 #define CONF_LISTEN_PORT        0x00000080
@@ -335,9 +336,6 @@ extern struct admin_info AdminInfo;        /* defined in ircd.c */
 /* End GLOBAL section */
 
 extern void init_ip_hash_table(void);
-#if 0
-extern void iphash_stats(struct Client *,struct Client *,int,char **,FBFILE*);
-#endif
 extern void count_ip_hash(int *, unsigned long *);
 extern void remove_one_ip(struct irc_ssaddr *ip);
 
@@ -390,8 +388,6 @@ extern int conf_add_server(struct ConfItem *, unsigned int);
 extern void conf_add_class_to_conf(struct ConfItem *);
 extern void conf_add_me(struct ConfItem *);
 extern void conf_add_d_conf(struct ConfItem *);
-extern void conf_add_x_conf(struct ConfItem *);
-extern void conf_add_u_conf(struct ConfItem *);
 extern void conf_add_conf(struct ConfItem *);
 
 /* XXX consider moving these into csvlib.h */

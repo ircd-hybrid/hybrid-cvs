@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.408 2003/05/26 18:11:53 db Exp $
+ *  $Id: s_conf.c,v 7.409 2003/05/28 16:38:00 db Exp $
  */
 
 #include "stdinc.h"
@@ -1707,9 +1707,8 @@ expire_tklines(dlink_list *tklist)
  *
  * inputs        - pointer to client_p or NULL
  * output        - pointer to static string showing oper privs
- * side effects  -
- * return as string, the oper privs as derived from port
- * also, set the oper privs if given source_p non NULL
+ * side effects  - return as string, the oper privs as derived from port
+ * 		   also set the oper privs if given source_p non NULL
  */
 
 static const struct oper_privs
@@ -1719,9 +1718,13 @@ static const struct oper_privs
   unsigned char neg;
 }
 
+/*
+
+  { OPER_FLAG_HIDDEN_ADMIN 'Z', 'z' },
+  { OPER_FLAG_ADMIN,       'A', 'a' },
+*/
 flag_list[] =
 {
-  { OPER_FLAG_ADMIN,       'A', 'a' },
   { OPER_FLAG_DIE,         'D', 'd' },
   { OPER_FLAG_GLINE,       'G', 'g' },
   { OPER_FLAG_REHASH,      'H', 'h' },
@@ -1754,6 +1757,16 @@ oper_privs_as_string(struct Client *source_p, unsigned int port)
     else
       *privs_ptr++ = flag_list[i].neg;
   }
+
+  if (IsOperAdmin(source_p))
+  {
+    if (!IsOperHiddenAdmin(source_p))
+      *privs_ptr++ = 'A';
+    else
+      *privs_ptr++ = 'a';
+  }
+  else
+    *privs_ptr++ = 'a';
 
   *privs_ptr = '\0';
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.295 2003/05/26 18:35:18 joshk Exp $
+ *  $Id: ircd_parser.y,v 1.296 2003/05/28 16:37:59 db Exp $
  */
 
 %{
@@ -153,6 +153,7 @@ init_parser_confs(void)
 %token  HAVE_IDENT
 %token	HAVENT_READ_CONF
 %token  HIDDEN
+%token  HIDDEN_ADMIN
 %token  HIDE_SERVERS
 %token  HOST
 %token  HUB
@@ -223,7 +224,7 @@ init_parser_confs(void)
 %token  RSA_PRIVATE_KEY_FILE
 %token  RSA_PUBLIC_KEY_FILE
 %token	RESV
-%token  SECONDS MINUTES HOURS DAYS WEEKS MONTHS YEARS DECADES CENTURIES MILLENNIA
+%token  SECONDS MINUTES HOURS DAYS WEEKS
 %token  SENDQ
 %token  SEND_PASSWORD
 %token  SERVERHIDE
@@ -825,7 +826,7 @@ oper_entry: OPERATOR
 }; 
 
 oper_items:     oper_items oper_item | oper_item;
-oper_item:      oper_name  | oper_user | oper_password |
+oper_item:      oper_name  | oper_user | oper_password | oper_hidden_admin |
                 oper_class | oper_global_kill | oper_remote |
                 oper_kline | oper_xline | oper_unkline |
 		oper_gline | oper_nick_changes |
@@ -869,6 +870,16 @@ oper_password: PASSWORD '=' QSTRING ';'
     MyFree(yy_aconf->passwd);
     DupString(yy_aconf->passwd, yylval.string);
   }
+};
+
+oper_hidden_admin: HIDDEN_ADMIN '=' TYES ';'
+{
+  if (ypass == 2)
+    yy_aconf->port |= OPER_FLAG_HIDDEN_ADMIN;
+}   | HIDDEN_ADMIN '=' TNO ';'
+{
+  if (ypass == 2)
+    yy_aconf->port &= ~OPER_FLAG_HIDDEN_ADMIN;
 };
 
 oper_rsa_public_key_file: RSA_PUBLIC_KEY_FILE '=' QSTRING ';'
