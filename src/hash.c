@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.83 2003/10/24 11:38:44 michael Exp $
+ *  $Id: hash.c,v 7.84 2004/01/31 18:24:32 adx Exp $
  */
 
 #include "stdinc.h"
@@ -40,6 +40,7 @@
 #include "send.h"
 #include "memory.h"
 #include "dbuf.h"
+#include "s_user.h"
 
 /* XXX ZZZ for "safe_list" *ugh* */
 #include "channel.h"
@@ -527,7 +528,7 @@ find_server(const char *name)
   unsigned int hashv = strhash(name);
   struct Client *client_p = NULL;
 
-  if (IsDigit(*name) && strlen(name) == 3)
+  if (IsDigit(*name) && strlen(name) == IRC_MAXSID)
     client_p = hash_find_id(name);
 
   if ((client_p == NULL) && (client_p = clientTable[hashv]) != NULL)
