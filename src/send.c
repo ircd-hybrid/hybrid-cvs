@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.198 2002/05/26 07:11:14 androsyn Exp $
+ *  $Id: send.c,v 7.199 2002/06/23 23:02:43 leeh Exp $
  */
 
 #include "stdinc.h"
@@ -95,7 +95,7 @@ _send_linebuf(struct Client *to, buf_head_t *linebuf)
     return 0;
   }
 #endif
-  if (IsDead(to) || IsClosing(to))
+  if (IsDead(to))
     return 0; 
 
   if (linebuf_len(&to->localClient->buf_sendq) > get_sendq(to))
