@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.20 2003/06/12 23:13:11 db Exp $
+ *  $Id: m_xline.c,v 1.21 2003/06/14 03:38:20 db Exp $
  */
 
 #include "stdinc.h"
@@ -83,7 +83,7 @@ _moddeinit(void)
   mod_del_cmd(&unxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.20 $";
+const char *_version = "$Revision: 1.21 $";
 #endif
 
 
@@ -101,7 +101,7 @@ static void
 mo_xline(struct Client *client_p, struct Client *source_p,
          int parc, char *parv[])
 {
-  struct AccessItem *aconf;
+  struct MatchItem *match_item;
   char *reason, *pattern, *target_server;
   const char *type;
   int type_i = 1;
@@ -116,10 +116,11 @@ mo_xline(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if ((aconf = find_x_conf(parv[1])) != NULL)
+  if ((match_item = find_x_conf(parv[1])) != NULL)
   {
     sendto_one(source_p, ":%s NOTICE %s :[%s] already X-Lined by [%s] - %s",
-               me.name, source_p->name, parv[1], aconf->name, aconf->reason);
+               me.name, source_p->name, parv[1],
+	       match_item->name, match_item->reason);
     return;
   }
 
@@ -215,7 +216,7 @@ static void
 ms_xline(struct Client *client_p, struct Client *source_p,
          int parc, char *parv[])
 {
-  struct AccessItem *aconf;
+  struct MatchItem *match_item;
 
   if (parc != 5 || EmptyString(parv[4]))
     return;
@@ -247,11 +248,11 @@ ms_xline(struct Client *client_p, struct Client *source_p,
     if (!valid_xline(source_p, parv[2], parv[4], 1))
       return;
 
-    if ((aconf = find_x_conf(parv[2])) != NULL)
+    if ((match_item = find_x_conf(parv[2])) != NULL)
     {
       sendto_one(source_p, ":%s NOTICE %s :[%s] already X-Lined by [%s] - %s",
                  me.name, source_p->name, parv[1],
-                 aconf->name, aconf->reason);
+                 match_item->name, match_item->reason);
       return;
     }
 
@@ -404,21 +405,23 @@ valid_xline(struct Client *source_p, char *gecos, char *reason, int warn)
 static void
 write_xline(struct Client *source_p, char *gecos, char *reason, int type)
 {
-  struct AccessItem *aconf;
+  struct ConfItem *conf;
+  struct MatchItem *match_item;
   const char *current_date;
   time_t cur_time;
 
-  aconf = make_access_item(CONF_XLINE);
-  aconf->port = type;
+  conf = make_conf_item(XLINE_TYPE);
+  match_item = (struct MatchItem *)map_to_conf(conf);
+  match_item->action = type;
 
   collapse(gecos);
-  DupString(aconf->name, gecos);
-  DupString(aconf->reason, reason);
+  DupString(match_item->name, gecos);
+  DupString(match_item->reason, reason);
+  DupString(match_item->oper_reason, "");	/* XXX */
   set_time();
   cur_time = CurrentTime;
   current_date = smalldate(cur_time);
-  write_conf_line(XLINE_TYPE, source_p, aconf, current_date, cur_time);
-  conf_add_conf(aconf);
+  write_conf_line(XLINE_TYPE, source_p, conf, current_date, cur_time);
 }
 
 static void

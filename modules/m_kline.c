@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.153 2003/06/12 23:13:11 db Exp $
+ *  $Id: m_kline.c,v 1.154 2003/06/14 03:38:20 db Exp $
  */
 
 #include "stdinc.h"
@@ -81,7 +81,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.153 $";
+const char *_version = "$Revision: 1.154 $";
 #endif
 
 /* Local function prototypes */
@@ -95,9 +95,9 @@ static int valid_comment(struct Client *source_p, char *comment);
 static int valid_user_host(struct Client *source_p, char *user, char *host);
 static int valid_wild_card(char *user, char *host);
 static int already_placed_kline(struct Client *, const char *, const char *);
-static void apply_kline(struct Client *source_p, struct AccessItem *aconf,
+static void apply_kline(struct Client *source_p, struct ConfItem *conf,
 			const char *, time_t);
-static void apply_tkline(struct Client *source_p, struct AccessItem *aconf,
+static void apply_tkline(struct Client *source_p, struct ConfItem *conf,
                          int temporary_kline_time);
 
 
@@ -125,6 +125,7 @@ mo_kline(struct Client *client_p, struct Client *source_p,
   char *oper_reason;
   const char *current_date;
   const char *target_server=NULL;
+  struct ConfItem *conf;
   struct AccessItem *aconf;
   time_t tkline_time = 0;
   time_t cur_time;
@@ -225,7 +226,8 @@ mo_kline(struct Client *client_p, struct Client *source_p,
   set_time();
   cur_time = CurrentTime;
   current_date = smalldate(cur_time);
-  aconf = make_access_item(CONF_KILL);
+  conf = make_conf_item(KLINE_TYPE);
+  aconf = (struct AccessItem *)map_to_conf(conf);
   DupString(aconf->host, host);
   DupString(aconf->user, user);
   aconf->port = 0;
@@ -238,7 +240,7 @@ mo_kline(struct Client *client_p, struct Client *source_p,
     DupString(aconf->reason, buffer);
     if (oper_reason != NULL)
       DupString(aconf->oper_reason, oper_reason);
-    apply_tkline(source_p, aconf, tkline_time);
+    apply_tkline(source_p, conf, tkline_time);
   }
   else
   {
@@ -246,7 +248,7 @@ mo_kline(struct Client *client_p, struct Client *source_p,
     DupString(aconf->reason, buffer);
     if (oper_reason != NULL)
       DupString(aconf->oper_reason, oper_reason);
-    apply_kline(source_p, aconf, current_date, cur_time);
+    apply_kline(source_p, conf, current_date, cur_time);
   }
 } /* mo_kline() */
 
@@ -259,6 +261,7 @@ static void
 ms_kline(struct Client *client_p, struct Client *source_p,
 	 int parc, char *parv[])
 {
+  struct ConfItem *conf=NULL;
   struct AccessItem *aconf=NULL;
   int    tkline_time;
   const char* current_date;
@@ -299,15 +302,16 @@ ms_kline(struct Client *client_p, struct Client *source_p,
     cur_time = CurrentTime;
     current_date = smalldate(cur_time);
 
-    aconf = make_access_item(CONF_KILL);
+    conf = make_conf_item(KLINE_TYPE);
+    aconf = (struct AccessItem *)map_to_conf(conf);
     DupString(aconf->user, kuser);
     DupString(aconf->host, khost);
     DupString(aconf->reason, kreason);
 
     if (tkline_time != 0)
-      apply_tkline(source_p, aconf, tkline_time);
+      apply_tkline(source_p, conf, tkline_time);
     else
-      apply_kline(source_p, aconf, current_date, cur_time);
+      apply_kline(source_p, conf, current_date, cur_time);
   }
   else if (find_u_conf(source_p->user->server->name,
                        source_p->username, source_p->host,
@@ -338,15 +342,16 @@ ms_kline(struct Client *client_p, struct Client *source_p,
     cur_time = CurrentTime;
     current_date = smalldate(cur_time);
 
-    aconf = make_access_item(CONF_KILL);
+    conf = make_conf_item(KLINE_TYPE);
+    aconf = (struct AccessItem *)map_to_conf(conf);
     DupString(aconf->host, khost);
     DupString(aconf->reason, kreason);
     DupString(aconf->user, kuser);
 
     if (tkline_time != 0)
-      apply_tkline(source_p, aconf, tkline_time);
+      apply_tkline(source_p, conf, tkline_time);
     else
-      apply_kline(source_p, aconf, current_date, cur_time);
+      apply_kline(source_p, conf, current_date, cur_time);
   }
 
 } /* ms_kline() */
@@ -359,11 +364,14 @@ ms_kline(struct Client *client_p, struct Client *source_p,
  *		  and conf file
  */
 static void 
-apply_kline(struct Client *source_p, struct AccessItem *aconf,
+apply_kline(struct Client *source_p, struct ConfItem *conf,
 	    const char *current_date, time_t cur_time)
 {
+  struct AccessItem *aconf;
+
+  aconf = (struct AccessItem *)map_to_conf(conf);
   add_conf_by_address(aconf->host, CONF_KILL, aconf->user, aconf);
-  write_conf_line(KLINE_TYPE, source_p, aconf, current_date, cur_time);
+  write_conf_line(KLINE_TYPE, source_p, conf, current_date, cur_time);
   /* Now, activate kline against current online clients */
   rehashed_klines = 1;
 }
@@ -375,9 +383,12 @@ apply_kline(struct Client *source_p, struct AccessItem *aconf,
  * side effects	- tkline as given is placed
  */
 static void
-apply_tkline(struct Client *source_p, struct AccessItem *aconf,
+apply_tkline(struct Client *source_p, struct ConfItem *conf,
              int tkline_time)
 {
+  struct AccessItem *aconf;
+
+  aconf = (struct AccessItem *)map_to_conf(conf);
   aconf->hold = CurrentTime + tkline_time;
   add_temp_kline(aconf);
   sendto_realops_flags(UMODE_ALL, L_ALL,
@@ -402,9 +413,12 @@ apply_tkline(struct Client *source_p, struct AccessItem *aconf,
  * side effects	- tkline as given is placed
  */
 static void
-apply_tdline(struct Client *source_p, struct AccessItem *aconf,
+apply_tdline(struct Client *source_p, struct ConfItem *conf,
 	     const char *current_date, int tkline_time)
 {
+  struct AccessItem *aconf;
+
+  aconf = (struct AccessItem *)map_to_conf(conf);
   aconf->hold = CurrentTime + tkline_time;
 
   add_temp_dline(aconf);
@@ -592,6 +606,7 @@ mo_dline(struct Client *client_p, struct Client *source_p,
   struct Client *target_p;
 #endif
   struct irc_ssaddr daddr;
+  struct ConfItem *conf=NULL;
   struct AccessItem *aconf=NULL;
   time_t tkline_time=0;
   int bits, t;
@@ -738,7 +753,8 @@ mo_dline(struct Client *client_p, struct Client *source_p,
     return;
 
   ircsprintf(dlbuffer, "%s (%s)",reason, current_date);
-  aconf = make_access_item(CONF_DLINE);
+  conf = make_conf_item(DLINE_TYPE);
+  aconf = (struct AccessItem *)map_to_conf(conf);
   DupString(aconf->host, dlhost);
   DupString(aconf->reason, dlbuffer);
 
@@ -746,13 +762,13 @@ mo_dline(struct Client *client_p, struct Client *source_p,
   {
     ircsprintf(buffer, "Temporary D-line %d min. - %s (%s)",
 	       (int)(tkline_time/60), reason, current_date);
-    apply_tdline(source_p, aconf, current_date, tkline_time);
+    apply_tdline(source_p, conf, current_date, tkline_time);
   }
   else
   {
     ircsprintf(buffer, "%s (%s)", reason, current_date);
     add_conf_by_address(aconf->host, CONF_DLINE, NULL, aconf);
-    write_conf_line(DLINE_TYPE, source_p, aconf, current_date, cur_time);
+    write_conf_line(DLINE_TYPE, source_p, conf, current_date, cur_time);
   }
 
   rehashed_klines = 1;

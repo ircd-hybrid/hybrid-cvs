@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.238 2003/06/13 02:31:42 db Exp $
+ *  $Id: s_conf.h,v 7.239 2003/06/14 03:38:18 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -53,9 +53,16 @@ extern struct AccessItem* yy_aconf;
 
 typedef enum {  
   CONF_TYPE, 
+  OPER_TYPE,
+  CLIENT_TYPE,
+  SERVER_TYPE,
+  HUB_TYPE,
+  LEAF_TYPE,
   KLINE_TYPE,
   DLINE_TYPE,
+  EXEMPTDLINE_TYPE,
   XLINE_TYPE,    
+  ULINE_TYPE,
   GLINE_TYPE,
   CRESV_TYPE,     
   NRESV_TYPE
@@ -66,6 +73,19 @@ struct ConfItem
 {
   dlink_node node;
   ConfType type;
+};
+
+/*
+ * MatchItem - used for XLINE and ULINE types
+ */
+struct MatchItem
+{
+  char *name;
+  char *user;		/* Used for ULINE only */
+  char *host;		/* Used for ULINE only */
+  char *reason;
+  char *oper_reason;
+  int  action;		/* used for xline and uline */
 };
 
 struct AccessItem
@@ -356,7 +376,9 @@ extern struct admin_info AdminInfo;        /* defined in ircd.c */
 extern void init_ip_hash_table(void);
 extern void count_ip_hash(int *, unsigned long *);
 extern void remove_one_ip(struct irc_ssaddr *ip);
-extern struct AccessItem *make_access_item(unsigned int status);
+extern struct ConfItem *make_conf_item(ConfType type);
+extern void free_conf_item(struct ConfItem *conf, ConfType type);
+
 extern void free_access_item(struct AccessItem *);
 extern void read_conf_files(int cold);
 extern int attach_conf(struct Client *, struct AccessItem *);
@@ -373,24 +395,24 @@ extern struct AccessItem *find_conf_by_host(const char *host, unsigned int statu
 extern struct AccessItem *find_kill(struct Client *);
 extern int conf_connect_allowed(struct irc_ssaddr *addr, int aftype);
 extern char *oper_privs_as_string(struct Client *, unsigned int);
-extern void split_user_host(struct AccessItem *aconf);
+extern void split_user_host(char *user_host, char **user_p, char **host_p);
 
 extern int find_u_conf(const char *, const char *, const char *, int);
-extern struct AccessItem *find_x_conf(const char *);
+extern struct MatchItem *find_x_conf(const char *);
 
 extern struct AccessItem *find_tkline(const char *, const char *, struct irc_ssaddr *);
 extern char *show_iline_prefix(struct Client *, struct AccessItem *, char *);
 extern void get_printable_conf(struct AccessItem *, char **, char **, char **,
                                     char **, int *,char **);
 extern void report_configured_links(struct Client* client_p, unsigned int mask);
-extern void report_specials(struct Client* source_p, int flags, int numeric);
+extern void report_confitem_types(struct Client *source_p, ConfType type);
 
 extern void yyerror(const char *);
 extern int conf_yy_fatal_error(const char *);
 extern int conf_fbgets(char *, int, FBFILE *);
 
-extern void write_conf_line(ConfType type, struct Client *, struct AccessItem *,
-			    const char *, time_t);
+extern void write_conf_line(ConfType type, struct Client *,
+			    struct ConfItem *, const char *, time_t);
 extern void write_resv_line(ConfType type, struct Client *, void *);
 
 extern int remove_conf_line(ConfType, struct Client *, const char *,
@@ -413,6 +435,8 @@ extern void parse_csv_file(FBFILE *file, ConfType);
 extern char *getfield(char *newline);
 
 extern char *get_oper_name(struct Client *client_p);
+/* XXX consider inlining this */
+extern void *map_to_conf(struct ConfItem *conf);
 
 extern int yylex(void);
 

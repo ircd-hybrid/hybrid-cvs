@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.312 2003/06/14 02:08:57 joshk Exp $
+ *  $Id: ircd_parser.y,v 1.313 2003/06/14 03:39:25 db Exp $
  */
 
 %{
@@ -56,13 +56,15 @@
 #include <openssl/pem.h>
 #endif
 
+static struct ConfItem *yy_conf = NULL;
 static struct AccessItem *yy_aconf = NULL;
+static struct MatchItem *yy_match_item = NULL;
 static struct cluster *cptr = NULL;
 static struct Class *yy_class = NULL;
 
 static dlink_list aconf_list      = { NULL, NULL, 0 };
-static dlink_list hub_confs_list  = { NULL, NULL, 0 };
-static dlink_list leaf_confs_list = { NULL, NULL, 0 };
+static dlink_list hub_aconfs_list  = { NULL, NULL, 0 };
+static dlink_list leaf_aconfs_list = { NULL, NULL, 0 };
 
 static char *resv_reason;
 static char *listener_address;
@@ -773,7 +775,8 @@ oper_entry: OPERATOR
   if (ypass == 2)
   {
     init_parser_confs();
-    yy_aconf = make_access_item(CONF_OPERATOR);
+    yy_conf = make_conf_item(OPER_TYPE);
+    yy_aconf = (struct AccessItem *)map_to_conf(yy_conf);
   }
 } '{' oper_items '}' ';'
 {
@@ -863,10 +866,11 @@ oper_user: USER '=' QSTRING ';'
   {
     struct AccessItem *yy_tmp;
 
-    yy_tmp = make_access_item(CONF_OPERATOR);
+    yy_conf = make_conf_item(OPER_TYPE);
+    yy_tmp = (struct AccessItem *)map_to_conf(yy_conf);
 
     DupString(yy_tmp->host, yylval.string);
-    split_user_host(yy_tmp);
+    split_user_host(yy_tmp->host, &yy_tmp->user, &yy_tmp->host);
 
     dlinkAdd(yy_tmp, make_dlink_node(), &aconf_list);
   }
@@ -1202,7 +1206,8 @@ auth_entry: IRCD_AUTH
   if (ypass == 2)
   {
     init_parser_confs();
-    yy_aconf = make_access_item(CONF_CLIENT);
+    yy_conf = make_conf_item(CLIENT_TYPE);
+    yy_aconf = (struct AccessItem *)map_to_conf(yy_conf);
   }
 } '{' auth_items '}' ';' 
 {
@@ -1271,12 +1276,16 @@ auth_user: USER '=' QSTRING ';'
 {
   if (ypass == 2)
   {
-    struct AccessItem *yy_tmp;
+    struct AccessItem *yy_tmp=NULL;
 
-    yy_tmp = make_access_item(CONF_CLIENT);
+    yy_conf = make_conf_item(CLIENT_TYPE);
+    yy_tmp = (struct AccessItem *)map_to_conf(yy_conf);
 
-    DupString(yy_tmp->host, yylval.string);
-    split_user_host(yy_tmp);
+    if (yylval.string != NULL)
+    {
+      DupString(yy_tmp->host, yylval.string);
+      split_user_host(yy_tmp->host, &yy_tmp->user, &yy_tmp->host);
+    }
     dlinkAdd(yy_tmp, make_dlink_node(), &aconf_list);
   }
 };
@@ -1487,15 +1496,15 @@ shared_entry: T_SHARED
   if (ypass == 2)
   {
     free_access_item(yy_aconf);
-    yy_aconf = make_access_item(CONF_ULINE);
-    yy_aconf->port = SHARED_ALL;
+    yy_conf = make_conf_item(ULINE_TYPE);
+    yy_match_item = (struct MatchItem *)map_to_conf(yy_conf);
+    yy_match_item->action = SHARED_ALL;
   }
 } '{' shared_items '}' ';'
 {
   if (ypass == 2)
   {
-    conf_add_conf(yy_aconf);
-    yy_aconf = NULL;
+    yy_conf = NULL;
   }
 };
 
@@ -1506,8 +1515,13 @@ shared_name: NAME '=' QSTRING ';'
 {
   if (ypass == 2)
   {
-    MyFree(yy_aconf->name);
-    DupString(yy_aconf->name, yylval.string);
+    MyFree(yy_match_item->name);
+    DupString(yy_match_item->name, yylval.string);
+  }
+  else
+  {
+    yy_conf = make_conf_item(ULINE_TYPE);
+    yy_match_item = (struct MatchItem *)map_to_conf(yy_conf);
   }
 };
 
@@ -1515,46 +1529,48 @@ shared_user: USER '=' QSTRING ';'
 {
   if (ypass == 2)
   {
-    DupString(yy_aconf->host, yylval.string);
-    split_user_host(yy_aconf);
+    DupString(yy_match_item->user, yylval.string);
+    /* XXX */
   }
 };
 
 shared_type: TYPE
 {
   if (ypass == 2)
-    yy_aconf->port = 0;
+    yy_match_item->action = 0;
+
+
 } '=' shared_types ';' ;
 
 shared_types: shared_types ',' shared_type_item | shared_type_item;
 shared_type_item: KLINE
 {
   if (ypass == 2)
-    yy_aconf->port |= SHARED_KLINE;
+    yy_match_item->action |= SHARED_KLINE;
 } | UNKLINE
 {
   if (ypass == 2)
-    yy_aconf->port |= SHARED_UNKLINE;
+    yy_match_item->action |= SHARED_UNKLINE;
 } | XLINE
 {
   if (ypass == 2)
-    yy_aconf->port |= SHARED_XLINE;
+    yy_match_item->action |= SHARED_XLINE;
 } | T_UNXLINE
 {
   if (ypass == 2)
-    yy_aconf->port |= SHARED_UNXLINE;
+    yy_match_item->action |= SHARED_UNXLINE;
 } | RESV
 {
   if (ypass == 2)
-    yy_aconf->port |= SHARED_RESV;
+    yy_match_item->action |= SHARED_RESV;
 } | T_UNRESV
 {
   if (ypass == 2)
-    yy_aconf->port |= SHARED_UNRESV;
+    yy_match_item->action |= SHARED_UNRESV;
 } | T_ALL
 {
   if (ypass == 2)
-    yy_aconf->port = SHARED_ALL;
+    yy_match_item->action = SHARED_ALL;
 };
 
 /***************************************************************************
@@ -1636,7 +1652,8 @@ connect_entry: CONNECT
   if (ypass == 2)
   {
     free_access_item(yy_aconf);
-    yy_aconf = make_access_item(CONF_SERVER);
+    yy_conf = make_conf_item(SERVER_TYPE);
+    yy_aconf = (struct AccessItem *)map_to_conf(yy_conf);
     yy_aconf->passwd = NULL;
     /* defaults */
     yy_aconf->port = PORTNUM;
@@ -1707,7 +1724,7 @@ connect_entry: CONNECT
        * given in the link list at yy_hconf. Fill in the HUB confs
        * from this link list now.
        */        
-      DLINK_FOREACH_SAFE(ptr, next_ptr, hub_confs_list.head)
+      DLINK_FOREACH_SAFE(ptr, next_ptr, hub_aconfs_list.head)
       {
 	yy_hconf = ptr->data;
 	MyFree(yy_hconf->name);
@@ -1722,12 +1739,12 @@ connect_entry: CONNECT
 	}
 	else
 	  free_access_item(yy_hconf);
-	dlinkDelete(ptr, &hub_confs_list);
+	dlinkDelete(ptr, &hub_aconfs_list);
       }
 
       /* Ditto for the LEAF confs */
 
-      DLINK_FOREACH_SAFE(ptr, next_ptr, leaf_confs_list.head)
+      DLINK_FOREACH_SAFE(ptr, next_ptr, leaf_aconfs_list.head)
       {
 	yy_lconf = ptr->data;
 	if (yy_aconf != NULL)
@@ -1738,7 +1755,7 @@ connect_entry: CONNECT
 	}
 	else
 	  free_access_item(yy_lconf);
-	dlinkDelete(ptr, &leaf_confs_list);
+	dlinkDelete(ptr, &leaf_aconfs_list);
       }
 
       yy_aconf = NULL;
@@ -1934,12 +1951,14 @@ connect_hub_mask: HUB_MASK '=' QSTRING ';'
 {
   if (ypass == 2)
   {
-    struct AccessItem *hub_conf;
+    struct ConfItem *hub_conf;
+    struct AccessItem *hub_aconf;
 
-    hub_conf = make_access_item(CONF_HUB);
-    DupString(hub_conf->host, yylval.string);
-    DupString(hub_conf->user, "*");
-    dlinkAdd(hub_conf, make_dlink_node(), &hub_confs_list);
+    hub_conf = make_conf_item(HUB_TYPE);
+    hub_aconf = (struct AccessItem *)map_to_conf(hub_conf);
+    DupString(hub_aconf->host, yylval.string);
+    DupString(hub_aconf->user, "*");
+    dlinkAdd(hub_aconf, make_dlink_node(), &hub_aconfs_list);
   }
 };
 
@@ -1947,12 +1966,14 @@ connect_leaf_mask: LEAF_MASK '=' QSTRING ';'
 {
   if (ypass == 2)
   {
-    struct AccessItem *leaf_conf;
+    struct ConfItem *leaf_conf;
+    struct AccessItem *leaf_aconf;
 
-    leaf_conf = make_access_item(CONF_LEAF);
-    DupString(leaf_conf->host, yylval.string);
-    DupString(leaf_conf->user, "*");
-    dlinkAdd(leaf_conf, make_dlink_node(), &leaf_confs_list);
+    leaf_conf = make_conf_item(LEAF_TYPE);
+    leaf_aconf = (struct AccessItem *)map_to_conf(leaf_conf);
+    DupString(leaf_aconf->host, yylval.string);
+    DupString(leaf_aconf->user, "*");
+    dlinkAdd(leaf_aconf, make_dlink_node(), &leaf_aconfs_list);
   }
 };
 
@@ -2013,8 +2034,8 @@ kill_entry: KILL
 {
   if (ypass == 2)
   {
-    free_access_item(yy_aconf);
-    yy_aconf = make_access_item(CONF_KILL);
+    yy_conf = make_conf_item(KLINE_TYPE);
+    yy_aconf = (struct AccessItem *)map_to_conf(yy_conf);
   }
 } '{' kill_items '}' ';'
 {
@@ -2039,7 +2060,7 @@ kill_user: USER '=' QSTRING ';'
   if (ypass == 2)
   {
     DupString(yy_aconf->host, yylval.string);
-    split_user_host(yy_aconf);
+    split_user_host(yy_aconf->host, &yy_aconf->user, &yy_aconf->host);
   }
 };
 
@@ -2059,8 +2080,8 @@ deny_entry: DENY
 {
   if (ypass == 2)
   {
-    free_access_item(yy_aconf);
-    yy_aconf = make_access_item(CONF_DLINE);
+    yy_conf = make_conf_item(DLINE_TYPE);
+    yy_aconf = (struct AccessItem *)map_to_conf(yy_conf);
     /* default reason */
     DupString(yy_aconf->reason, "NO REASON");
   }
@@ -2104,8 +2125,8 @@ exempt_entry: EXEMPT
 {
   if (ypass == 2)
   {
-    free_access_item(yy_aconf);
-    yy_aconf = make_access_item(CONF_EXEMPTDLINE);
+    yy_conf = make_conf_item(EXEMPTDLINE_TYPE);
+    yy_aconf = (struct AccessItem *)map_to_conf(yy_conf);
     DupString(yy_aconf->passwd, "*");
   }
 } '{' exempt_items '}' ';'
@@ -2139,20 +2160,18 @@ gecos_entry: GECOS
 {
   if (ypass == 2)
   {
-    free_access_item(yy_aconf);
-    yy_aconf = make_access_item(CONF_XLINE);
+    yy_conf = make_conf_item(XLINE_TYPE);
+    yy_match_item = (struct MatchItem *)map_to_conf(yy_conf);
     /* default reason */
-    DupString(yy_aconf->reason,"Something about your name");
+    DupString(yy_match_item->reason,"Something about your name");
   }
 } '{' gecos_items '}' ';'
 {
   if (ypass == 2)
   {
-    if (yy_aconf->name != NULL)
-      conf_add_conf(yy_aconf);
-    else
-      free_access_item(yy_aconf);
-    yy_aconf = NULL;
+    if (yy_match_item->name == NULL)
+      free_conf_item(yy_conf, XLINE_TYPE);
+    yy_match_item = NULL;
   }
 }; 
 
@@ -2163,8 +2182,8 @@ gecos_name: NAME '=' QSTRING ';'
 {
   if (ypass == 2)
   {
-    DupString(yy_aconf->name, yylval.string);
-    collapse(yy_aconf->name);
+    DupString(yy_match_item->name, yylval.string);
+    collapse(yy_match_item->name);
   }
 };
 
@@ -2172,23 +2191,23 @@ gecos_reason: REASON '=' QSTRING ';'
 {
   if (ypass == 2)
   {
-    MyFree(yy_aconf->reason);
-    DupString(yy_aconf->reason, yylval.string);
+    MyFree(yy_match_item->reason);
+    DupString(yy_match_item->reason, yylval.string);
   }
 };
 
 gecos_action: ACTION '=' WARN ';'
 {
   if (ypass == 2)
-    yy_aconf->port = 0;
+    yy_match_item->action = 0;
 } | ACTION '=' TREJECT ';'
 {
   if (ypass == 2)
-    yy_aconf->port = 1;
+    yy_match_item->action = 1;
 } | ACTION '=' SILENT ';'
 {
   if (ypass == 2)
-    yy_aconf->port = 2;
+    yy_match_item->action = 2;
 };
 
 /***************************************************************************

@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.19 2003/06/12 23:13:13 db Exp $
+ *  $Id: csvlib.c,v 7.20 2003/06/14 03:39:25 db Exp $
  */
 
 #include "stdinc.h"
@@ -36,7 +36,9 @@ static int flush_write(struct Client *source_p, FBFILE *in, FBFILE* out,
 void
 parse_csv_file(FBFILE *file, ConfType conf_type)
 {
+  struct ConfItem *conf;
   struct AccessItem *aconf;
+  struct MatchItem *match_item;
   char  *name_field=NULL;
   char  *user_field=NULL;
   char  *reason_field=NULL;
@@ -58,7 +60,8 @@ parse_csv_file(FBFILE *file, ConfType conf_type)
     {
     case KLINE_TYPE:
       parse_csv_line(line, &user_field, &host_field, &reason_field, NULL);
-      aconf = make_access_item(conf_type);
+      conf = make_conf_item(KLINE_TYPE);
+      aconf = (struct AccessItem *)map_to_conf(conf);
       if (host_field != NULL)
 	DupString(aconf->host, host_field);
       if (reason_field != NULL)
@@ -71,7 +74,8 @@ parse_csv_file(FBFILE *file, ConfType conf_type)
 
     case DLINE_TYPE:
       parse_csv_line(line, &host_field, &reason_field, NULL);
-      aconf = make_access_item(CONF_DLINE);
+      conf = make_conf_item(DLINE_TYPE);
+      aconf = (struct AccessItem *)map_to_conf(conf);
       if (host_field != NULL)
 	DupString(aconf->host, host_field);
       if (reason_field != NULL)
@@ -82,16 +86,14 @@ parse_csv_file(FBFILE *file, ConfType conf_type)
     case XLINE_TYPE:
       parse_csv_line(line, &name_field, &reason_field, &oper_reason, &port,
 		     NULL);
-      aconf = make_access_item(CONF_XLINE);
+      conf = make_conf_item(XLINE_TYPE);
+      match_item = (struct MatchItem *)map_to_conf(conf);
       if (name_field != NULL)
-	DupString(aconf->name, name_field);
+	DupString(match_item->name, name_field);
       if (reason_field != NULL)
-	DupString(aconf->reason, reason_field);
-      if (user_field != NULL)
-	DupString(aconf->user, user_field);
+	DupString(match_item->reason, reason_field);
       if (port != NULL)
-	aconf->port = atoi(port);
-      conf_add_conf(aconf);
+	match_item->action = atoi(port);
       break;
 
     case CRESV_TYPE:
@@ -104,8 +106,15 @@ parse_csv_file(FBFILE *file, ConfType conf_type)
       (void)create_nick_resv(name_field, reason_field, 0);
       break;
 
-    case CONF_TYPE:
     case GLINE_TYPE:
+    case CONF_TYPE:
+    case OPER_TYPE:
+    case CLIENT_TYPE:
+    case SERVER_TYPE:
+    case HUB_TYPE:
+    case LEAF_TYPE:
+    case ULINE_TYPE:
+    case EXEMPTDLINE_TYPE:
       break;
     }
   }
@@ -167,11 +176,13 @@ parse_csv_line(char *line, ...)
  */
 void 
 write_conf_line(ConfType type, struct Client *source_p,
-		struct AccessItem *aconf,
+		struct ConfItem *conf,
 		const char *current_date, time_t cur_time)
 {
   FBFILE *out;
   const char *filename;
+  struct AccessItem *aconf;
+  struct MatchItem *xconf;
 
   filename = get_conf_name(type);
   if ((out = fbopen(filename, "a")) == NULL)
@@ -184,6 +195,7 @@ write_conf_line(ConfType type, struct Client *source_p,
   switch(type)
   {
   case KLINE_TYPE:
+    aconf = (struct AccessItem *)map_to_conf(conf);
     sendto_realops_flags(UMODE_ALL, L_ALL,
                          "%s added K-Line for [%s@%s] [%s]",
                          get_oper_name(source_p),
@@ -199,6 +211,7 @@ write_conf_line(ConfType type, struct Client *source_p,
     break;
 
   case DLINE_TYPE:
+    aconf = (struct AccessItem *)map_to_conf(conf);
     sendto_realops_flags(UMODE_ALL, L_ALL,
                          "%s added D-Line for [%s] [%s]",
                          get_oper_name(source_p), aconf->host, aconf->reason);
@@ -213,19 +226,22 @@ write_conf_line(ConfType type, struct Client *source_p,
     break;
 
   case XLINE_TYPE:
+    xconf = (struct MatchItem *)map_to_conf(conf);
     sendto_realops_flags(UMODE_ALL, L_ALL,
                          "%s added X-Line for [%s] [%s]",
-                         get_oper_name(source_p), aconf->name, aconf->reason);
+                         get_oper_name(source_p), xconf->name, xconf->reason);
     sendto_one(source_p, ":%s NOTICE %s :Added X-Line [%s] to %s",
-               me.name, source_p->name, aconf->name, filename);
+               me.name, source_p->name, xconf->name, filename);
     ilog(L_TRACE, "%s added X-Line for [%s] [%s]",
-         get_oper_name(source_p), aconf->name, aconf->reason);
+         get_oper_name(source_p), xconf->name, xconf->reason);
     write_csv_line(out, "%s%s%s%d%s%s%ld",
-		   aconf->name, aconf->reason, aconf->oper_reason, aconf->port,
+		   xconf->name, xconf->reason, xconf->oper_reason,
+		   xconf->action,
 		   current_date, get_oper_name(source_p), (long)cur_time);
     break;
 
   case GLINE_TYPE:
+    aconf = (struct AccessItem *)map_to_conf(conf);
     sendto_realops_flags(UMODE_ALL, L_ALL,
 			 "%s has triggered gline for [%s@%s] [%s]",
 			 get_oper_name(source_p),

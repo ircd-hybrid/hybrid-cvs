@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.384 2003/06/12 23:13:13 db Exp $
+ *  $Id: client.c,v 7.385 2003/06/14 03:39:25 db Exp $
  */
 
 #include "stdinc.h"
@@ -262,9 +262,11 @@ check_pings_list(dlink_list *list)
 	 !IsIdlelined(client_p) && 
 	 ((CurrentTime - client_p->user->last) > GlobalSetOptions.idletime))
 	{
+	  struct ConfItem *conf;
 	  struct AccessItem *aconf;
 
-	  aconf = make_access_item(CONF_KILL);
+	  conf = make_conf_item(KLINE_TYPE);
+	  aconf = (struct AccessItem *)map_to_conf(conf);
 
 	  DupString(aconf->host, client_p->host);
 	  DupString(aconf->passwd, "idle exceeder");
@@ -542,7 +544,7 @@ void
 check_xlines(void)
 {               
   struct Client *client_p;       /* current local client_p being examined */
-  struct AccessItem *aconf = NULL;
+  struct MatchItem *xconf = NULL;
   const char *reason;            /* pointer to reason string */
   dlink_node *ptr, *next_ptr;
  
@@ -556,7 +558,7 @@ check_xlines(void)
       continue;
 	
     /* if there is a returned struct AccessItem then kill it */
-    if ((aconf = find_x_conf(client_p->info)) != NULL)
+    if ((xconf = find_x_conf(client_p->info)) != NULL)
     {
       sendto_realops_flags(UMODE_ALL, L_ALL,"XLINE active for %s",
 			   get_client_name(client_p, HIDE_IP));
@@ -569,14 +571,14 @@ check_xlines(void)
 	if (IsPerson(client_p))
 	  sendto_one(client_p, form_str(ERR_YOUREBANNEDCREEP),
 		     me.name, client_p->name,
-		     aconf->reason ? aconf->reason : "X-lined");
+		     xconf->reason ? xconf->reason : "X-lined");
       }
       else
       {
 	if (ConfigFileEntry.kline_with_connection_closed)
 	  reason = "Connection closed";
-	else if (ConfigFileEntry.kline_with_reason && aconf->reason)
-	  reason = aconf->reason;
+	else if (ConfigFileEntry.kline_with_reason && xconf->reason)
+	  reason = xconf->reason;
 	else
 	  reason = "X-lined";
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.427 2003/06/14 01:23:19 joshk Exp $
+ *  $Id: s_conf.c,v 7.428 2003/06/14 03:39:25 db Exp $
  */
 
 #include "stdinc.h"
@@ -74,7 +74,6 @@ int scount = 0; /* used by yyparse(), etc */
 int ypass  = 1; /* used by yyparse()      */
 
 /* internally defined functions */
-static ConfType status_to_type(int status); /* XXX temp hack */
 static void lookup_confhost(struct AccessItem *aconf);
 static void set_default_conf(void);
 static void validate_conf(void);
@@ -154,55 +153,125 @@ conf_dns_lookup(struct AccessItem *aconf)
   }
 }
 
-/* XXX temporary hack */
-static ConfType
-status_to_type(int status)
+/* This should be inlined, its going to be used a lot */
+void *
+map_to_conf(struct ConfItem *aconf)
 {
-  switch(status)
-    {
-    case CONF_KLINE:
-      return KLINE_TYPE;
-      break;
-    case CONF_DLINE:
-      return DLINE_TYPE;
-      break;
-    default:
-      return CONF_CLIENT;
-      break;
-    }
+  void *conf;
+  conf = (void *)((unsigned long)aconf +
+		  (unsigned long)sizeof(struct ConfItem));
+  return(conf);
 }
 
-/* make_access_item()
+/* make_conf_item()
  *
- * inputs	- type of AccessItem to make
+ * inputs	- type of item
  * output	- pointer to new conf entry
  * side effects	- none
  */
-struct AccessItem *
-make_access_item(unsigned int status)
+struct ConfItem *
+make_conf_item(ConfType type)
 {
+  struct ConfItem *conf;
   struct AccessItem *aconf;
-  struct ConfItem *confitem;
+  int status=0;
 
-  confitem = (struct ConfItem *)MyMalloc(sizeof(struct ConfItem) +
+  switch(type)
+  {
+  case DLINE_TYPE:
+  case EXEMPTDLINE_TYPE:
+  case GLINE_TYPE:
+  case KLINE_TYPE:
+  case CLIENT_TYPE:
+  case LEAF_TYPE:
+  case HUB_TYPE:
+  case OPER_TYPE:
+  case SERVER_TYPE:
+
+    conf = (struct ConfItem *)MyMalloc(sizeof(struct ConfItem) +
 					 sizeof(struct AccessItem));
+    aconf = (struct AccessItem *)map_to_conf(conf);
+    aconf->aftype = AF_INET;
 
+    /* Yes, sigh. switch on type again */
+    switch(type)
+    {
+    case EXEMPTDLINE_TYPE:
+    case DLINE_TYPE:
+      status = CONF_DLINE;
+      break;
 
-  /* XXX possible cleanup...
-   * remove KLINE_TYPE, DLINE_TYPE, XLINE_TYPE, GLINE_TYPE
-   * replace with ACCESS_TYPE
-   * for now...
-   */
-  confitem->type = status_to_type(status);
+    case GLINE_TYPE:
+    case KLINE_TYPE:
+      status = CONF_KILL;
+      break;
 
-  dlinkAdd(confitem, &confitem->node, &all_conf_items);
-  
-  aconf = (struct AccessItem *)((unsigned long)confitem + 
-				(unsigned long)sizeof(struct ConfItem));
+    case CLIENT_TYPE:
+      status = CONF_CLIENT;
+      break;
 
-  aconf->status = status;
-  aconf->aftype = AF_INET;
-  return(aconf);
+    case LEAF_TYPE:
+      status = CONF_LEAF;
+      break;
+
+    case OPER_TYPE:
+      status = CONF_OPERATOR;
+      break;
+
+    case SERVER_TYPE:
+      status = CONF_SERVER;
+      break;
+    default:
+      break;
+    }
+    aconf->status = status;
+    break;
+
+  case ULINE_TYPE:
+  case XLINE_TYPE:
+    conf = (struct ConfItem *)MyMalloc(sizeof(struct ConfItem) +
+					 sizeof(struct MatchItem));
+    break;
+
+  default:
+    conf = NULL;
+    break;
+  }
+
+  /* XXX Yes, this will core if default is hit. I want it to for now - db */
+  conf->type = type;
+  dlinkAdd(conf, &conf->node, &all_conf_items);
+  return(conf);
+}
+
+/* free_conf_item()
+ *
+ * inputs	- type of item
+ * output	- pointer to new conf entry
+ * side effects	- none
+ */
+void
+free_conf_item(struct ConfItem *conf, ConfType type)
+{
+  switch(type)
+  {
+  case DLINE_TYPE:
+  case KLINE_TYPE:
+  case CLIENT_TYPE:
+  case HUB_TYPE:
+  case LEAF_TYPE:
+  case OPER_TYPE:
+    break;
+
+  case ULINE_TYPE:
+  case XLINE_TYPE:
+    dlinkDelete(&conf->node, &all_conf_items);
+    MyFree(conf);
+    break;
+
+  default:
+    break;
+  }
 }
 
 /* free_access_item()
@@ -273,6 +342,44 @@ det_confs_butmask(struct Client *client_p, unsigned int mask)
   }
 }
 
+/*
+ * report_confitem_types
+ *
+ * inputs	- pointer to client requesting confitem report
+ *		- ConfType to report
+ * output	- none
+ * side effects	-
+ */
+void
+report_confitem_types(struct Client *source_p, ConfType type)
+{
+  dlink_node *ptr;
+  struct ConfItem *conf;
+  struct MatchItem *matchitem;
+
+  DLINK_FOREACH(ptr, all_conf_items.head)
+  {
+    conf = ptr->data;
+    switch (conf->type)
+    {
+    case XLINE_TYPE:
+      matchitem = (struct MatchItem *)map_to_conf(conf);
+      sendto_one(source_p, form_str(RPL_STATSXLINE),
+		 me.name, source_p->name, matchitem->action,
+		 matchitem->name, matchitem->reason);
+      break;
+
+    case ULINE_TYPE:
+      matchitem = (struct MatchItem *)map_to_conf(conf);
+      sendto_one(source_p, form_str(RPL_STATSULINE),
+		 me.name, source_p->name,
+		 matchitem->name, matchitem->reason);
+    default:
+      break;
+    }
+  }
+}
+
 static struct LinkReport {
   unsigned int conf_type;
   unsigned int rpl_stats;
@@ -282,8 +389,6 @@ static struct LinkReport {
   { CONF_LEAF,     RPL_STATSLLINE, 'L'},
   { CONF_OPERATOR, RPL_STATSOLINE, 'O'},
   { CONF_HUB,      RPL_STATSHLINE, 'H'},
-  { CONF_XLINE,    RPL_STATSXLINE, 'X'},
-  { CONF_ULINE,    RPL_STATSULINE, 'U'},
   { 0, 0, '\0' }
 };
 
@@ -370,15 +475,6 @@ report_configured_links(struct Client *source_p, unsigned int mask)
           sendto_one(source_p, form_str(p->rpl_stats),
                      me.name, source_p->name, p->conf_char, user, host,
                      name, "0", classname);
-      }
-      else if (mask & (CONF_XLINE|CONF_ULINE))
-      {
-        if (mask & CONF_ULINE)
-          sendto_one(source_p, form_str(RPL_STATSULINE),
-                     me.name, source_p->name, name, reason);
-        else
-          sendto_one(source_p, form_str(RPL_STATSXLINE),
-                     me.name, source_p->name, port, name, reason);
       }
       else
         sendto_one(source_p, form_str(p->rpl_stats),
@@ -1275,27 +1371,30 @@ find_conf_by_host(const char *host, unsigned int status)
 /* find_x_conf()
  *
  * inputs       - pointer to char string to find
- * output       - NULL or pointer to found struct AccessItem
+ * output       - NULL or pointer to found struct MatchItem
  * side effects - looks for a match on name field
  */
-struct AccessItem *
+struct MatchItem *
 find_x_conf(const char *to_find)
 {
   dlink_node *ptr;
-  struct AccessItem *aconf;
+  struct ConfItem *aconf;
+  struct MatchItem *match_item;
 
-  DLINK_FOREACH(ptr, ConfigItemList.head)
+  DLINK_FOREACH(ptr, all_conf_items.head)
   {
     aconf = ptr->data;
 
-    if (!IsConfXline(aconf))
+    if (aconf->type != XLINE_TYPE)
       continue;
 
-    if (EmptyString(aconf->name))
+    match_item = (struct MatchItem *)((unsigned long)aconf + 
+				      (unsigned long)(sizeof(struct ConfItem)));
+    if (EmptyString(match_item->name))
       continue;
 
-    if (match_esc(aconf->name, to_find))
-      return(aconf);
+    if (match_esc(match_item->name, to_find))
+      return(match_item);
   }
 
   return(NULL);
@@ -1307,34 +1406,32 @@ find_x_conf(const char *to_find)
  *		- pointer to user of oper
  *		- pointer to host of oper
  *		- type of sharing
- * output       - NULL or pointer to found struct AccessItem
+ * output       - 1 or 0
  * side effects - looks for a matches on all fields
  */
 int 
 find_u_conf(const char *server, const char *user, const char *host, int type)
 {
   dlink_node *ptr;
-  struct AccessItem *aconf;
+  struct ConfItem *conf;
+  struct MatchItem *match_item;
 
-  DLINK_FOREACH(ptr, ConfigItemList.head)
+  DLINK_FOREACH(ptr, all_conf_items.head)
   {
-    aconf = ptr->data;
+    conf = ptr->data;
 
-    if (!IsConfUline(aconf))
+    if (conf->type != ULINE_TYPE)
       continue;
 
-    if (EmptyString(aconf->name))
+    match_item = (struct MatchItem *)map_to_conf(conf);
+    if (EmptyString(match_item->name))
       continue;
-
-    if ((type & aconf->port) && 
-        match(aconf->name,server))
+    if (match(match_item->name, server))
     {
-      if (EmptyString(aconf->user) ||
-          EmptyString(aconf->host))
-        return(1);
-      if (match(aconf->user, user) &&
-          match(aconf->host, host))
-        return(1);
+      if (EmptyString(match_item->user) || EmptyString(match_item->host))
+	return (1);
+      if (match(match_item->user, user) && match(match_item->host, host))
+	return (1);
     }
   }
 
@@ -1571,34 +1668,33 @@ conf_add_conf(struct AccessItem *aconf)
 
 /* split_user_host()
  *
- * inputs	- struct AccessItem pointer
+ * inputs	- pointer to original string of form "user@host"
+ *		- pointer to new user part
+ *		- pointer to new host part
  * output	- NONE
  * side effects - splits user@host found in a name field of conf given
  *		  stuff the user into ->user and the host into ->host
  */
 void
-split_user_host(struct AccessItem *aconf)
+split_user_host(char *user_host, char **user_p, char **host_p)
 {
   char *p;
   char *new_user;
   char *new_host;
 
-  if ((p = strchr(aconf->host, '@')) != NULL)
+  if ((p = strchr(user_host, '@')) != NULL)
   {
     *p = '\0';
-    DupString(new_user, aconf->host);
-    MyFree(aconf->user);
-    aconf->user = new_user;
-
+    DupString(new_user, user_host);
     p++;
-
-    DupString(new_host,p);
-    MyFree(aconf->host);
-    aconf->host = new_host;
+    DupString(new_host, p);
+    MyFree(user_host);
+    *user_p = new_user;
+    *host_p = new_host;
   }
   else
   {
-    DupString(aconf->user, "*");
+    DupString(*user_p, "*");
   }
 }
 
@@ -1897,13 +1993,13 @@ get_oper_name(struct Client *client_p)
  *                - port
  *
  * side effects        -
- * Examine the struct struct AccessItem, setting the values
+ * Examine the struct AccessItem *aconf, setting the values
  * of name, host, pass, user to values either
  * in aconf, or "<NULL>" port is set to aconf->port in all cases.
  */
 void
-get_printable_conf(struct AccessItem *aconf, char **name, char **host, char **reason,
-                   char **user, int *port, char **classname)
+get_printable_conf(struct AccessItem *aconf, char **name, char **host,
+		   char **reason, char **user, int *port, char **classname)
 {
   static char null[] = "<NULL>";
   static char zero[] = "default";
@@ -2243,7 +2339,7 @@ conf_add_server(struct AccessItem *aconf, unsigned int lcount)
     return(-1);
   }
 
-  split_user_host(aconf);
+  split_user_host(aconf->host, &aconf->user, &aconf->host);
   lookup_confhost(aconf);
 
   return(0);
