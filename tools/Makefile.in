@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 7.26 2001/07/18 03:48:54 androsyn Exp $
+# $Id: Makefile.in,v 7.27 2001/10/02 03:55:12 db Exp $
 
 CC		= @CC@
 INSTALL		= @INSTALL@
@@ -32,7 +32,7 @@ localstatedir	= @localstatedir@
 moduledir	= @prefix@/modules
 automoduledir	= @prefix@/modules/autoload
 
-PROGS		= viconf mkpasswd fixklines convertconf convertklines encspeed
+PROGS		= viconf mkpasswd convertconf convertklines encspeed
 
 mkpasswd_SOURCES = mkpasswd.c
 mkpasswd_OBJECTS = mkpasswd.o
