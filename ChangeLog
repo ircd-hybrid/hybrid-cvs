@@ -1,3 +1,17 @@
+androsyn    2002/05/24 19:40:18 EDT	(20020525_2)
+
+  Modified files:
+    modules              .depend 
+    src                  .depend 
+  Log:
+  Update .depend
+  
+  Revision  Changes    Path
+  1.7       +712 -1    ircd-hybrid-7/modules/.depend
+  7.6       +469 -480  ircd-hybrid-7/src/.depend
+
+
+
 androsyn    2002/05/24 19:39:15 EDT	(20020525_1)
 
   Added files:
@@ -27101,4 +27115,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3684 2002/05/24 23:39:22 androsyn Exp $
+$Id: ChangeLog,v 7.3685 2002/05/24 23:40:24 androsyn Exp $
