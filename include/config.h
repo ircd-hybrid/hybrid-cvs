@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.59 2000/12/22 03:47:10 ejb Exp $
+ * $Id: config.h,v 7.60 2000/12/22 04:10:03 ejb Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -174,7 +174,7 @@
  * a server is in class 0 (the default class if none is set).
  *
  */
-#define MAXIMUM_LINKS 1
+#define MAXIMUM_LINKS_DEFAULT 1
 
 /* CMDLINE_CONFIG - allow conf-file to be specified on command line
  * NOTE: defining CMDLINE_CONFIG and installing ircd SUID or SGID is a MAJOR

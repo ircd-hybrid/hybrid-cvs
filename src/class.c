@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: class.c,v 7.18 2000/12/21 13:39:39 db Exp $
+ *   $Id: class.c,v 7.19 2000/12/22 04:10:05 ejb Exp $
  */
 #include "tools.h"
 #include "class.h"
@@ -273,7 +273,7 @@ void    initclass()
   DupString(ClassName(ClassList),"default");
   ConFreq(ClassList) = CONNECTFREQUENCY;
   PingFreq(ClassList) = PINGFREQUENCY;
-  MaxLinks(ClassList) = MAXIMUM_LINKS;
+  MaxLinks(ClassList) = ConfigFileEntry.maximum_links;
   MaxSendq(ClassList) = MAXSENDQLENGTH;
   Links(ClassList) = 0;
   ClassList->next = NULL;

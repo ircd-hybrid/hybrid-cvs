@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.42 2000/12/22 02:19:49 db Exp $
+ * $Id: ircd_lexer.l,v 1.43 2000/12/22 04:10:06 ejb Exp $
  */
 
 %option case-insensitive
@@ -129,6 +129,7 @@ log_level	{ return LOG_LEVEL; }
 logging         { return LOGGING; }
 logpath         { return LOGPATH; }
 max_number	{ return MAX_NUMBER; }
+maximum_links   { return MAXIMUM_LINKS; }
 message_locale	{ return MESSAGE_LOCALE; }
 name		{ return NAME; }
 network_name    { return NETWORK_NAME; }
