@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_clearchan.c,v 1.12 2001/03/09 14:36:03 fl_ Exp $
+ *   $Id: m_clearchan.c,v 1.13 2001/03/28 08:23:26 fl_ Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -114,6 +114,13 @@ static void mo_clearchan(struct Client *client_p, struct Client *source_p,
     {
       sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
 		 me.name, parv[0], parv[1]);
+      return;
+    }
+
+  if(IsMember(source_p, chptr))
+    {
+      sendto_one(source_p, ":%s NOTICE %s :*** Please part %s before using CLEARCHAN",
+                 me.name, source_p->name, parv[1]);
       return;
     }
 
