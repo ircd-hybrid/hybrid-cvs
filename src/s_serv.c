@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.178 2001/05/30 10:12:54 leeh Exp $
+ *   $Id: s_serv.c,v 7.179 2001/05/30 15:06:53 davidt Exp $
  */
 
 #include <sys/types.h>
@@ -1356,7 +1356,7 @@ int fork_server(struct Client *server)
     return -1;
 #endif
 
-  if ((ret = vfork()) < 0)
+  if ((ret = fork()) < 0)
     return -1;
   else if (ret == 0)
   {
