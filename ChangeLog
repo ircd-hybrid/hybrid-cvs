@@ -1,3 +1,16 @@
+androsyn    2002/04/14 18:13:49 EDT	(20020414_9)
+
+  Modified files:
+    src                  balloc.c 
+  Log:
+  Fixed the credit lines on this.  Joan originally wrote and she should get
+  credit for it.
+  
+  Revision  Changes    Path
+  7.27      +6 -0      ircd-hybrid-7/src/balloc.c
+
+
+
 androsyn    2002/04/14 18:10:42 EDT	(20020414_8)
 
   Modified files:
@@ -25011,4 +25024,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3558 2002/04/14 22:10:48 androsyn Exp $
+$Id: ChangeLog,v 7.3559 2002/04/14 22:13:55 androsyn Exp $
