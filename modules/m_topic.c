@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_topic.c,v 1.11 2000/12/09 08:01:46 db Exp $
+ *   $Id: m_topic.c,v 1.12 2000/12/09 19:32:39 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -139,15 +139,21 @@ int     m_topic(struct Client *cptr,
 	      if(GlobalSetOptions.hide_chanops)
 		{
 		  sendto_channel_local(ONLY_CHANOPS,
-				       chptr, ":%s TOPIC %s :%s",
-				       parv[0],
-				       name, chptr->topic);
+				       chptr, ":%s!%s@%s TOPIC %s :%s",
+				       sptr->name,
+				       sptr->user,
+				       sptr->host,
+				       name,
+				       chptr->topic);
+	  /* XXX could send something to NON_CHANOPS suppressing prefix */
 		}
 	      else
 		{
 		  sendto_channel_local(ALL_MEMBERS,
-				       chptr, ":%s TOPIC %s :%s",
-				       parv[0],
+				       chptr, ":%s!%s@%s TOPIC %s :%s",
+				       sptr->name,
+				       sptr->user,
+				       sptr->host,
 				       name, chptr->topic);
 		}
 	    }

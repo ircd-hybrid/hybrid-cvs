@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_cjoin.c,v 1.12 2000/12/09 08:01:44 db Exp $
+ *   $Id: m_cjoin.c,v 1.13 2000/12/09 19:32:38 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -217,8 +217,11 @@ int     m_cjoin(struct Client *cptr,
   */
   sendto_channel_local(ALL_MEMBERS,
 		       vchan_chptr,
-		       ":%s JOIN :%s",
-		       parv[0], chptr->chname);
+		       ":%s!%s@%s JOIN :%s",
+		       sptr->name,
+		       sptr->user,
+		       sptr->host,
+		       chptr->chname);
 
 
   vchan_chptr->mode.mode |= MODE_TOPICLIMIT;
