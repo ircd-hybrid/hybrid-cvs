@@ -20,10 +20,11 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kill.c,v 1.50 2001/08/03 13:10:27 leeh Exp $
+ *   $Id: m_kill.c,v 1.51 2001/08/25 16:22:32 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
+#include "hash.h"       /* for find_client() */
 #include "ircd.h"
 #include "numeric.h"
 #include "s_log.h"

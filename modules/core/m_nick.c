@@ -2,11 +2,12 @@
  * modules/m_nick.c
  * Copyright (C) 2001 Hybrid Development Team
  *
- * $Id: m_nick.c,v 1.72 2001/08/19 23:12:34 leeh Exp $
+ * $Id: m_nick.c,v 1.73 2001/08/25 16:22:32 db Exp $
  */
 
 #include "handlers.h"
 #include "client.h"
+#include "hash.h"       /* for find_client() */
 #include "fdlist.h"
 #include "irc_string.h"
 #include "ircd.h"

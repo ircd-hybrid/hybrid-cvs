@@ -17,10 +17,11 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_llnick.c,v 1.11 2001/08/03 13:10:27 leeh Exp $
+ * $Id: m_llnick.c,v 1.12 2001/08/25 16:22:32 db Exp $
  */
 #include "tools.h"
 #include "client.h"
+#include "hash.h"       /* for find_client() */
 #include "common.h"
 #include "hash.h"
 #include "irc_string.h"
@@ -119,13 +120,13 @@ static void ms_llnick(struct Client *client_p,
   else
   {
     /* Existing user changing nickname */
-    target_p = hash_find_client(nick_old,(struct Client *)NULL);
+    target_p = find_client(nick_old,(struct Client *)NULL);
   
     if (!target_p) /* Can't find them -- maybe they got a different nick */
       return;
   }
   
-  if(hash_find_client(nick,(struct Client *)NULL) || exists)
+  if(find_client(nick,(struct Client *)NULL) || exists)
   {
     /* The nick they want is in use. complain */
     sendto_one(target_p, form_str(ERR_NICKNAMEINUSE), me.name,

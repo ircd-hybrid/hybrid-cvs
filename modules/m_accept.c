@@ -20,10 +20,11 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_accept.c,v 1.22 2001/08/13 21:44:06 leeh Exp $
+ *   $Id: m_accept.c,v 1.23 2001/08/25 16:22:32 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
+#include "hash.h"       /* for find_client() */
 #include "ircd.h"
 #include "list.h"
 #include "numeric.h"
