@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.27 2000/11/09 17:41:19 ejb Exp $
+ *   $Id: parse.c,v 7.28 2000/11/10 08:14:29 db Exp $
  */
 #include "parse.h"
 #include "client.h"
@@ -110,7 +110,8 @@ int parse(struct Client *cptr, char *buffer, char *bufend)
       for (i = 0; *ch && *ch != ' '; i++ )
 	{
 	  if (i < (sizeof(sender)-1))
-	    *s++ = *ch++; /* leave room for NULL */
+	    *s++ = *ch; /* leave room for NULL */
+	  ch++;
 	}
       *s = '\0';
       i = 0;
