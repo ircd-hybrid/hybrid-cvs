@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_connect.c,v 1.10 2000/12/22 16:12:32 db Exp $
+ *   $Id: m_connect.c,v 1.11 2000/12/23 01:11:49 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -79,14 +79,6 @@ int mo_connect(struct Client* cptr, struct Client* sptr, int parc, char* parv[])
   struct Client*   acptr;
 
   /* always privileged with handlers */
-
-  if (IsLocalOper(sptr) && parc > 3)
-    {
-      /* 
-       * Only allow LocOps to make local CONNECTS --SRB
-       */
-      return 0;
-    }
 
   if (MyConnect(sptr) && !IsOperRemote(sptr) && parc > 3)
     {

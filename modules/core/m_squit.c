@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_squit.c,v 1.15 2000/12/22 16:12:44 db Exp $
+ *   $Id: m_squit.c,v 1.16 2000/12/23 01:11:50 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -78,12 +78,6 @@ int mo_squit(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 {
   struct squit_parms *found_squit;
   char  *comment = (parc > 2 && parv[2]) ? parv[2] : cptr->name;
-
-  if (IsLocalOper(sptr))
-    {
-      sendto_one(sptr, form_str(ERR_NOPRIVILEGES), me.name, parv[0]);
-      return 0;
-    }
 
   if (!IsOperRemote(sptr))
     {

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.60 2000/12/22 04:10:03 ejb Exp $
+ * $Id: config.h,v 7.61 2000/12/23 01:11:45 db Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -141,11 +141,10 @@
 #define NETWORK_DESC_DEFAULT "Eris Free Network"
 
 /*
- * OPER_UMODES LOCOP_UMODES - set these to be the initial umodes when OPER'ing
- * These can be over-ridden in ircd.conf file, with flags in last O field
+ * OPER_UMODES - set these to be the initial umodes when OPER'ing
+ * These can be over-ridden in the ircd.conf file.
  */
 #define OPER_UMODES   (FLAGS_OPER|FLAGS_WALLOP|FLAGS_SERVNOTICE|FLAGS_OPERWALL)
-#define LOCOP_UMODES   (FLAGS_LOCOP|FLAGS_WALLOP|FLAGS_SERVNOTICE)
 
 /* MAXIMUM LINKS - max links for class 0 if no Y: line configured
  *
