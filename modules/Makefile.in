@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/modules
 #
-# $Id: Makefile.in,v 1.90 2003/06/18 07:51:45 joshk Exp $
+# $Id: Makefile.in,v 1.91 2003/06/18 09:17:23 joshk Exp $
 #
 CC		= @CC@
 AR		= @AR@
@@ -118,9 +118,7 @@ all: .depend @MOD_TARGET@
 
 shared_modules: $(SH_CORE_OBJS) $(SH_OBJS)
 
-hpux_modules: $(HPUX_CORE_OBJS) $(HPUX_OBJS)
-
-hpux_shared: $(SH_CORE_OBJS) $(SH_OBJS) hpux_modules
+hpux_shared: $(SH_CORE_OBJS) $(SH_OBJS) $(HPUX_CORE_OBJS) $(HPUX_OBJS)
 
 libmodules.a: $(S_OBJS)
 	$(RM) -f $@
