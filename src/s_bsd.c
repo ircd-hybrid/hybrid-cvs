@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.141 2001/07/23 13:48:38 androsyn Exp $
+ *  $Id: s_bsd.c,v 7.142 2001/08/02 17:29:33 leeh Exp $
  */
 #include "config.h"
 #include "fdlist.h"
@@ -453,8 +453,15 @@ void error_exit_client(struct Client* client_p, int error)
         }
       else
 	{
-          report_error("Lost connection to %s:%s", 
-		get_client_name(client_p, MASK_IP), current_error);
+	  sendto_realops_flags(FLAGS_SERVADMIN,
+	                      "Lost connection to %s: %s",
+			      get_client_name(client_p, SHOW_IP),
+			      current_error);
+          sendto_realops_flags(FLAGS_SERVOPER,
+	                       "Lost connection to %s: %s",
+			       client_p->name, current_error);
+          ilog(L_NOTICE, "Lost connection to %s: %s",
+	       get_client_name(client_p, SHOW_IP), current_error);
 	}
 
       sendto_realops_flags(FLAGS_ALL,
