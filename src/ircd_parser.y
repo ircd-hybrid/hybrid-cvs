@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.360 2003/09/27 23:34:25 bill Exp $
+ *  $Id: ircd_parser.y,v 1.361 2003/09/27 23:45:02 bill Exp $
  */
 
 %{
@@ -2960,7 +2960,7 @@ gline_entry: GLINES
      * since we re-allocate yy_conf/yy_aconf after the end of action=, at the
      * end we will have one extra, so we should free it.
      */
-    if (yy_conf->name == NULL)
+    if (yy_conf->name == NULL && gdeny_items.length)
     {
       dlinkDelete(gdeny_items.tail, &gdeny_items);
       MyFree(yy_conf);
