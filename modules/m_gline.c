@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.125 2003/09/18 09:14:37 bill Exp $
+ *  $Id: m_gline.c,v 1.126 2003/09/26 03:35:13 bill Exp $
  */
 
 #include "stdinc.h"
@@ -51,6 +51,8 @@
 #define GLINE_NOT_PLACED     0
 #define GLINE_ALREADY_VOTED -1
 #define GLINE_PLACED         1
+
+extern dlink_list gdeny_items;
 
 /* internal functions */
 static void set_local_gline(const struct Client *,
@@ -97,7 +99,7 @@ _moddeinit(void)
   delete_capability("GLN");
 }
 
-const char *_version = "$Revision: 1.125 $";
+const char *_version = "$Revision: 1.126 $";
 #endif
 
 /* mo_gline()
@@ -251,7 +253,10 @@ ms_gline(struct Client *client_p, struct Client *source_p,
   const char *reason = NULL;      /* reason for "victims" demise       */
   char *user = NULL;
   char *host = NULL;              /* user and host of GLINE "victim"   */
-  int var_offset;
+  int var_offset, logged = 0;
+  dlink_node *ptr;
+  struct ConfItem *conf;
+  struct AccessItem *aconf;
 
   /* hyb-7 style gline (post beta3) */
   if (parc == 4 && IsPerson(source_p))
@@ -295,18 +300,56 @@ ms_gline(struct Client *client_p, struct Client *source_p,
 
   if (invalid_gline(source_p, user))
      return;
+   
+  DLINK_FOREACH_PREV(ptr, gdeny_items.tail)
+  {
+    conf = ptr->data;
+    aconf = (struct AccessItem *)map_to_conf(conf);
+
+    if (match(conf->name, source_p->user->server->name) &&
+        match(aconf->user, source_p->username) &&
+        match(aconf->host, source_p->host))
+    {
+      var_offset = aconf->flags;
+      break;
+    }
+  }
+
+
+  if (!(var_offset & GDENY_BLOCK))
+  {
+    sendto_server(client_p, source_p->user->server, NULL, CAP_GLN, NOCAPS, LL_ICLIENT,
+                  ":%s GLINE %s %s :%s",
+                  source_p->name, user, host, reason);
+    /* hyb-6 version to the rest */
+    sendto_server(client_p, NULL, NULL, NOCAPS, CAP_GLN, NOFLAGS,
+                  ":%s GLINE %s %s %s %s %s %s :%s",
+                  source_p->user->server->name,
+                  source_p->name, source_p->username, source_p->host,
+                  source_p->user->server->name,
+                  user, host, reason);
+  }
+  else if (ConfigFileEntry.gline_logging & GDENY_BLOCK && ServerInfo.hub)
+  {
+    sendto_realops_flags(UMODE_ALL, L_ALL, "Blocked G-Line %s requested on [%s@%s] [%s]",
+                         get_oper_name(source_p), user, host, reason);
+    ilog(L_TRACE, "Blocked G-Line %s requested on [%s@%s] [%s]",
+         get_oper_name(source_p), user, host, reason);
+    logged = 1;
+  }
     
-  /* send in hyb-7 to compatible servers */
-  sendto_server(client_p, source_p->user->server, NULL, CAP_GLN, NOCAPS, LL_ICLIENT,
-                ":%s GLINE %s %s :%s",
-                source_p->name, user, host, reason);
-  /* hyb-6 version to the rest */
-  sendto_server(client_p, NULL, NULL, NOCAPS, CAP_GLN, NOFLAGS,
-                ":%s GLINE %s %s %s %s %s %s :%s",
-                source_p->user->server->name,
-                source_p->name, source_p->username, source_p->host,
-                source_p->user->server->name,
-                user, host, reason);
+
+  if (var_offset & GDENY_REJECT)
+  {
+    if (ConfigFileEntry.gline_logging & GDENY_REJECT && !logged)
+    {
+      sendto_realops_flags(UMODE_ALL, L_ALL, "Rejected G-Line %s requested on [%s@%s] [%s]",
+                           get_oper_name(source_p), user, host, reason);
+      ilog(L_TRACE, "Rejected G-Line %s requested on [%s@%s] [%s]",
+           get_oper_name(source_p), user, host, reason);
+    }
+    return;
+  }
 
   if (ConfigFileEntry.glines)
   {

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.479 2003/09/25 22:25:13 bill Exp $
+ *  $Id: s_conf.c,v 7.480 2003/09/26 03:35:15 bill Exp $
  */
 
 #include "stdinc.h"
@@ -278,7 +278,7 @@ make_conf_item(ConfType type)
 
   case GDENY_TYPE:
     conf = (struct ConfItem *)MyMalloc(sizeof(struct ConfItem) +
-                                       sizeof(struct MatchItem));
+                                       sizeof(struct AccessItem));
     dlinkAdd(conf, &conf->node, &gdeny_items);
     break;
 
@@ -455,6 +455,14 @@ delete_conf_item(struct ConfItem *conf)
     MyFree(conf);
     break;
 
+  case GDENY_TYPE:
+    aconf = (struct AccessItem *)map_to_conf(conf);
+    MyFree(aconf->user);
+    MyFree(aconf->host);
+    dlinkDelete(&conf->node, &gdeny_items);
+    MyFree(conf);
+    break;
+
   case CLUSTER_TYPE:
     match_item = (struct MatchItem *)map_to_conf(conf);
     MyFree(match_item->user);
@@ -528,15 +536,13 @@ report_confitem_types(struct Client *source_p, ConfType type)
   switch (type)
   {
   case GDENY_TYPE:
-    DLINK_FOREACH(ptr, gdeny_items.head)
+    DLINK_FOREACH_PREV(ptr, gdeny_items.tail)
     {
       conf = ptr->data;
       aconf = (struct AccessItem *)map_to_conf(conf);
 
-      if (aconf->flags & GDENY_ALLOW)
-        *p++ = 'A';
-      else
-        *p++ = 'a';
+      buf[0] = '\0';
+      p = buf;
 
       if (aconf->flags & GDENY_BLOCK)
         *p++ = 'B';
@@ -572,6 +578,9 @@ report_confitem_types(struct Client *source_p, ConfType type)
     {
       conf = ptr->data;
       matchitem = (struct MatchItem *)map_to_conf(conf);
+
+      buf[0] = '\0';
+      p = buf;
 
       if (matchitem->action & SHARED_KLINE)
         *p++ = 'K';
@@ -2492,7 +2501,7 @@ clear_out_old_conf(void)
   struct MatchItem *match_item;
   dlink_list * free_items [] = {
     &server_items, &oconf_items, &hub_items, &leaf_items, &uconf_items,
-    &xconf_items, &nresv_items, &cluster_items, NULL
+    &xconf_items, &nresv_items, &cluster_items, &gdeny_items, NULL
   };
 
   dlink_list ** iterator = free_items; /* C is dumb */

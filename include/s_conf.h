@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.265 2003/09/25 21:17:00 bill Exp $
+ *  $Id: s_conf.h,v 7.266 2003/09/26 03:35:12 bill Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -163,7 +163,6 @@ struct ClassItem
 #define CONF_ULINE              0x00002000
 #define CONF_EXEMPTDLINE        0x00004000
 #define CONF_CLUSTER		0x00008000
-#define CONF_GDENY		0x00010000
 
 #define CONF_SERVER_MASK       CONF_SERVER
 #define CONF_CLIENT_MASK       (CONF_CLIENT | CONF_OPERATOR | CONF_SERVER_MASK)
@@ -307,6 +306,7 @@ struct config_file_entry
   int oper_pass_resv;
   int glines;
   int gline_time;
+  int gline_logging;
   int hide_spoof_ips;
   int idletime;
   int ignore_bogus_ts;

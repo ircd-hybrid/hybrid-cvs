@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.356 2003/09/25 22:25:12 bill Exp $
+ *  $Id: ircd_parser.y,v 1.357 2003/09/26 03:35:15 bill Exp $
  */
 
 %{
@@ -65,6 +65,8 @@ static struct ClassItem *yy_class = NULL;
 static dlink_list col_conf_list  = { NULL, NULL, 0 };
 static dlink_list hub_conf_list  = { NULL, NULL, 0 };
 static dlink_list leaf_conf_list = { NULL, NULL, 0 };
+
+extern dlink_list gdeny_items;
 
 static char *resv_reason;
 static char *listener_address;
@@ -2944,11 +2946,29 @@ gline_entry: GLINES
     yy_aconf = (struct AccessItem *)map_to_conf(yy_conf);
     yy_aconf->flags = 0;
   }
-} '{' gline_items '}' ';'; 
+} '{' gline_items '}' ';'
+{
+  if (ypass == 2)
+  {
+    /*
+     * since we re-allocate yy_conf/yy_aconf after the end of action=, at the
+     * end we will have one extra, so we should free it.
+     */
+    if (yy_conf->name == NULL)
+    {
+      dlinkDelete(gdeny_items.head, &gdeny_items);
+      MyFree(yy_conf);
+      MyFree(yy_aconf);
+      yy_conf = NULL;
+      yy_aconf = NULL;
+    }
+  }
+};
 
 gline_items:        gline_items gline_item | gline_item;
 gline_item:         gline_enable | 
                     gline_duration |
+		    gline_logging |
                     gline_user |
                     gline_server | 
                     gline_action |
@@ -2964,6 +2984,22 @@ gline_duration: DURATION '=' timespec ';'
 {
   if (ypass == 2)
     ConfigFileEntry.gline_time = $3;
+};
+
+gline_logging: LOGGING
+{
+  if (ypass == 2)
+    ConfigFileEntry.gline_logging = 0;
+} '=' gline_logging_types ';';
+gline_logging_types:	 gline_logging_types ',' gline_logging_type_item | gline_logging_type_item;
+gline_logging_type_item: T_REJECT
+{
+  if (ypass == 2)
+    ConfigFileEntry.gline_logging |= GDENY_REJECT;
+} | T_BLOCK
+{
+  if (ypass == 2)
+    ConfigFileEntry.gline_logging |= GDENY_BLOCK;
 };
 
 gline_user: USER '=' QSTRING ';'
@@ -3010,7 +3046,7 @@ gline_action: ACTION
     dlink_node *ptr, *next_ptr;
 
     /* some idiot said to allow and reject it, default to reject */
-    if (yy_aconf->flags & (GDENY_REJECT|GDENY_ALLOW))
+   if ((yy_aconf->flags & GDENY_REJECT) && (yy_aconf->flags & GDENY_ALLOW))
       yy_aconf->flags &= ~GDENY_ALLOW; 
 
     DLINK_FOREACH_SAFE(ptr, next_ptr, col_conf_list.head)
@@ -3046,11 +3082,7 @@ gline_action: ACTION
 };
 
 gdeny_types: gdeny_types ',' gdeny_type_item | gdeny_type_item;
-gdeny_type_item: T_ALLOW
-{
-  if (ypass == 2)
-    yy_aconf->flags |= GDENY_ALLOW;
-} | T_REJECT
+gdeny_type_item: T_REJECT
 {
   if (ypass == 2)
     yy_aconf->flags |= GDENY_REJECT;
