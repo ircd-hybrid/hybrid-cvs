@@ -2,7 +2,7 @@
  * modules/m_help.c
  * Copyright (C) 2001 Hybrid Development Team
  *
- *   $Id: m_help.c,v 1.27 2001/12/28 16:41:48 davidt Exp $
+ *   $Id: m_help.c,v 1.28 2001/12/29 18:40:06 davidt Exp $
  */
 
 #include "handlers.h"
@@ -48,7 +48,7 @@ _moddeinit(void)
   mod_del_cmd(&uhelp_msgtab);
 }
 
-char *_version = "$Revision: 1.27 $";
+char *_version = "$Revision: 1.28 $";
 #endif
 /*
  * m_help - HELP message handler
@@ -74,7 +74,7 @@ static void m_help(struct Client *client_p, struct Client *source_p,
   if(parc > 1)
     dohelp(source_p, UHPATH, parv[1], parv[0]);
   else
-    dohelp(source_p, UHPATH, "index", parv[0]);
+    dohelp(source_p, UHPATH, NULL, parv[0]);
 }
 
 /*
@@ -87,7 +87,7 @@ static void mo_help(struct Client *client_p, struct Client *source_p,
   if(parc > 1)
     dohelp(source_p, HPATH, parv[1], parv[0]);
   else
-    dohelp(source_p, HPATH, "index", parv[0]);
+    dohelp(source_p, HPATH, NULL, parv[0]);
 }
 
 /*
@@ -102,7 +102,7 @@ static void mo_uhelp(struct Client *client_p, struct Client *source_p,
   if(parc > 1)
     dohelp(source_p, UHPATH, parv[1], parv[0]);
   else
-    dohelp(source_p, UHPATH, "index", parv[0]);
+    dohelp(source_p, UHPATH, NULL, parv[0]);
 }
 
 static void dohelp(struct Client *source_p, char *hpath,
@@ -112,11 +112,16 @@ static void dohelp(struct Client *source_p, char *hpath,
   struct stat sb;
   int i;
 
-  /* convert to lower case */
-  for (i = 0; topic[i] != '\0'; i++)
+  if (topic)
   {
-    topic[i] = ToLower(topic[i]);
+    /* convert to lower case */
+    for (i = 0; topic[i] != '\0'; i++)
+    {
+      topic[i] = ToLower(topic[i]);
+    }
   }
+  else
+    topic = "index"; /* list available help topics */
 
   if (strchr(topic, '/'))
   {
