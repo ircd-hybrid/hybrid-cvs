@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_jupe.c,v 1.19 2001/09/20 20:10:33 jdc Exp $
+ *   $Id: m_jupe.c,v 1.20 2001/12/07 10:45:37 leeh Exp $
  */
 
 #include "tools.h"
@@ -55,7 +55,7 @@ static void mo_jupe(struct Client *client_p, struct Client *source_p,
 static int bogus_host(char *host);
 
 struct Message jupe_msgtab = {
-  "JUPE", 0, 3, 0, MFLG_SLOW, 0,
+  "JUPE", 0, 0, 3, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, mo_jupe, mo_jupe}
 };
 
