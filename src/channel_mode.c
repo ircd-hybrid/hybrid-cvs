@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel_mode.c,v 7.10 2001/12/14 07:47:09 a1kmm Exp $
+ * $Id: channel_mode.c,v 7.11 2001/12/16 22:22:47 leeh Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -1879,15 +1879,13 @@ chm_limit(struct Client *client_p, struct Client *source_p,
     mode_changes_plus[mode_count_plus].id = NULL;
     mode_changes_plus[mode_count_plus++].arg = lstr;
 
-    chptr->mode.mode |= MODE_LIMIT;
     chptr->mode.limit = limit;
   }
   else if (dir == MODE_DEL)
   {
-    if (!(chptr->mode.mode & MODE_LIMIT))
+    if (!chptr->mode.limit)
       return;
 
-    chptr->mode.mode &= ~MODE_LIMIT;
     chptr->mode.limit = 0;
 
     for (i = 0; i < mode_count_plus; i++)
@@ -1959,14 +1957,12 @@ chm_key(struct Client *client_p, struct Client *source_p,
     mode_changes_plus[mode_count_plus].mems = ALL_MEMBERS;
     mode_changes_plus[mode_count_plus].id = NULL;
     mode_changes_plus[mode_count_plus++].arg = key;
-    chptr->mode.mode |= MODE_KEY;
   }
   else if (dir == MODE_DEL)
   {
-    if (!(chptr->mode.mode & MODE_KEY))
+    if (!(*chptr->mode.key))
       return;
 
-    chptr->mode.mode &= ~MODE_KEY;
     *chptr->mode.key = 0;
 
     for (i = 0; i < mode_count_plus; i++)

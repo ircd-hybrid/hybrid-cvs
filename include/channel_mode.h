@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel_mode.h,v 7.2 2001/11/28 12:34:43 leeh Exp $
+ * $Id: channel_mode.h,v 7.3 2001/12/16 22:22:44 leeh Exp $
  */
 
 #include <sys/types.h>        /* time_t */
@@ -99,18 +99,16 @@ extern void unset_chcap_usage_counts(struct Client *serv_p);
 #define MODE_TOPICLIMIT 0x0040
 #define MODE_INVITEONLY 0x0080
 #define MODE_NOPRIVMSGS 0x0100
-#define MODE_KEY        0x0200
 #define MODE_BAN        0x0400
 #define MODE_EXCEPTION  0x0800
 #define MODE_INVEX	0x2000
 #define MODE_HIDEOPS    0x4000
-#define MODE_LIMIT      0x8000
 
 /*
  * mode flags which take another parameter (With PARAmeterS)
  */
 #define MODE_WPARAS (MODE_CHANOP|MODE_VOICE|MODE_BAN|\
-                     MODE_EXCEPTION|MODE_KEY|MODE_LIMIT|MODE_INVEX)
+                     MODE_EXCEPTION|MODE_INVEX)
 
 #define MODE_QUERY     0
 #define MODE_ADD       1
