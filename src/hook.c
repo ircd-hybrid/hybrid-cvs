@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hook.c,v 7.17 2002/10/30 19:59:12 bill Exp $
+ *  $Id: hook.c,v 7.18 2002/10/30 20:24:20 bill Exp $
  */
 
 /* hooks are used by modules to hook into events called by other parts of
@@ -117,9 +117,8 @@ hook_del_hook(char *event, hookfn *fn)
   if ((h = find_hook(event)) == NULL)
     return -1;
 
-  DLINK_FOREACH(node, h->hooks.head)
+  DLINK_FOREACH_SAFE(node, nnode, h->hooks.head)
   {
-    nnode = node->next;
     if (fn == node->data)
     {
       dlinkDelete(node, &h->hooks);
@@ -134,9 +133,8 @@ hook_add_hook(char *event, hookfn *fn)
 {
 	hook *h;
 	dlink_node *node;
-	
-	h = find_hook(event);
-	if (!h) 
+
+	if ((h = find_hook(event) == NULL)
 		return -1;
 
 	node = make_dlink_node();
