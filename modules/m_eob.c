@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_eob.c,v 1.24 2001/05/30 10:12:47 leeh Exp $
+ *   $Id: m_eob.c,v 1.25 2001/06/05 18:25:08 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -64,7 +64,7 @@ static void ms_eob(struct Client *client_p, struct Client *source_p,
                   int parc, char *parv[])
 {
    sendto_realops_flags(
-       FLAGS_ALL,"*** End of burst from %s (%d seconds)",
+       FLAGS_ALL,"End of burst from %s (%d seconds)",
        source_p->name, (signed int)(CurrentTime - source_p->firsttime));
 
    SetEob(client_p);
