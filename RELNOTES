@@ -1,3 +1,12 @@
+-- ircd-hybrid-7rc3 RELNOTES
+
+o) Fixed hostile code in m_oper
+o) added gozems m_whois.c to contrib
+o) fixed possible buffer overflow in bans
+o) reworked hash_ip
+o) fixed ipv6 K-lines
+
+
 -- ircd-hybrid-7rc2 RELNOTES
 
 o) RPL_ISUPPORT will now report the correct status of +eIha
@@ -68,4 +77,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.40 2002/08/15 18:44:26 db Exp $
+$Id: RELNOTES,v 1.41 2002/08/21 02:01:47 lusky Exp $
