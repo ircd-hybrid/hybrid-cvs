@@ -1,3 +1,15 @@
+leeh        2002/01/09 12:17:50 EST	(20020109_6)
+
+  Modified files:
+    doc                  example.conf.efnet 
+  Log:
+  - missed pace_wait from here..
+  
+  Revision  Changes    Path
+  7.5       +3 -0      ircd-hybrid-7/doc/example.conf.efnet
+
+
+
 leeh        2002/01/09 12:16:58 EST	(20020109_5)
 
   Modified files:
@@ -2775,7 +2787,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3307 2002/01/09 17:17:03 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3308 2002/01/09 17:17:55 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -21129,4 +21141,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3307 2002/01/09 17:17:03 leeh Exp $
+$Id: ChangeLog,v 7.3308 2002/01/09 17:17:55 leeh Exp $
