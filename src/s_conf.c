@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.233 2001/06/08 10:24:56 a1kmm Exp $
+ *  $Id: s_conf.c,v 7.234 2001/06/08 15:01:41 jdc Exp $
  */
 
 #include <sys/types.h>
@@ -2246,14 +2246,14 @@ void WriteKlineOrDline( KlineType type,
                reason,
 	       current_date,
 	       get_oper_name(source_p),
-               cur_time);
+               (long) cur_time);
   else
     ircsprintf(buffer, "\"%s\",\"%s %s\",\"%s\",%ld\n",
                host,
                reason,
 	       current_date,
 	       get_oper_name(source_p),
-               cur_time);
+               (long) cur_time);
 
 
   if (fbputs(buffer,out) == -1)
