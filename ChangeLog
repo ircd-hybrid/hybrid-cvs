@@ -1,3 +1,20 @@
+*** 20001108_2 by adrian
+
+
+Initial non-optimised version of my fd list code.
+
+The idea is that for the most part, we can detect busy and idle clients
+at IO register time (and, at the outside, we can re-decide when we get
+a ping back from a client..)
+
+The FD list is passed through comm_setselect() as its second argument.
+There will be some weirdnesses where FDs shift lists frequently, but I
+will play with this code soon.
+
+Read include/fdlist.h for the list of FD lists.
+
+
+
 *** 20001108_1 by adrian
 
 
@@ -242,7 +259,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.511 2000/11/08 08:53:14 adrian Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.512 2000/11/08 09:34:18 adrian Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
