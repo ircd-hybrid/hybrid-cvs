@@ -2,6 +2,7 @@
  *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
  *  adns.c: Interfaces to the adns DNS library.
  *
+ *  Copyright (C) 2001-2002 Aaron Sethman <androsyn@ratbox.org> 
  *  Copyright (C) 2002 by the past and present ircd coders, and others.
  *
  *  This program is free software; you can redistribute it and/or modify
@@ -19,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: adns.c,v 7.39 2002/03/01 20:22:57 androsyn Exp $
+ *  $Id: adns.c,v 7.40 2002/04/14 22:10:40 androsyn Exp $
  */
 
 #include "fileio.h"
