@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_part.c,v 1.58 2003/01/31 12:15:20 a1kmm Exp $
+ *  $Id: m_part.c,v 1.59 2003/01/31 12:53:08 a1kmm Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&part_msgtab);
 }
-const char *_version = "$Revision: 1.58 $";
+const char *_version = "$Revision: 1.59 $";
 #endif
 
 static void part_one_client(struct Client *client_p,
@@ -126,7 +126,7 @@ static void part_one_client(struct Client *client_p,
 {
   struct Channel *chptr;
   struct Channel *bchan;
-  int part_with_reason = 0;
+  int part_with_reason = 0, dying = 0;
 
   if ((chptr = hash_find_channel(name)) == NULL)
     {
@@ -196,6 +196,7 @@ static void part_one_client(struct Client *client_p,
   /* Remove the user from the channel now, so they don't see the upcoming
    * messages again...
    */
+  chptr->users++;  /* Should be called "refcount" */
   remove_user_from_channel(chptr, source_p);
 
   /* There is no risk of a server client dying here because it is the
@@ -231,4 +232,5 @@ static void part_one_client(struct Client *client_p,
                          source_p->host,
                          bchan->chname);
   }
+  sub1_from_channel(chptr);
 }

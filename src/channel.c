@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.350 2003/01/31 12:15:17 a1kmm Exp $
+ *  $Id: channel.c,v 7.351 2003/01/31 12:53:05 a1kmm Exp $
  */
 
 #include "stdinc.h"
@@ -55,7 +55,6 @@ BlockHeap *ban_heap;
 BlockHeap *topic_heap;
 
 static void free_channel_list(dlink_list * list);
-static int  sub1_from_channel(struct Channel *);
 static void destroy_channel(struct Channel *);
 
 static void delete_members(struct Channel *chptr, dlink_list * list);
@@ -198,7 +197,7 @@ remove_user_from_channel(struct Channel *chptr, struct Client *who)
 
   /* last user in the channel.. set a vchan_id incase we need it */
 #ifdef VCHANS
-  if (chptr->users == 1)
+  if (chptr->users <= 2)
     ircsprintf(chptr->vchan_id, "!%s", who->name);
 #endif
 
@@ -504,7 +503,7 @@ clear_channels(void *unused)
  *		  channel is now empty, and it is not already
  *		  scheduled for destruction, schedule it
  */
-static int
+int
 sub1_from_channel(struct Channel *chptr)
 {
   if (--chptr->users <= 0)
