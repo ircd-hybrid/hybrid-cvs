@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: tools.h,v 1.17 2002/08/22 21:33:55 db Exp $
+ *  $Id: tools.h,v 1.18 2002/08/22 23:06:43 db Exp $
  */
 
 #ifndef __TOOLS_H__
@@ -214,7 +214,7 @@ dlinkMoveList(dlink_list *from, dlink_list *to)
        to->head = from->head;
        to->tail = from->tail;
        from->head = from->tail = NULL;
-       to->length = from_length;
+       to->length = from->length;
        from->length = 0;
        return;
     }
