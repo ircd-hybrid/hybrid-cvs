@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: irc_string.c,v 7.65 2003/06/17 04:13:08 joshk Exp $
+ *  $Id: irc_string.c,v 7.66 2003/06/29 02:48:18 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -148,6 +148,8 @@ strip_tabs(char *dest, const unsigned char *src, size_t len)
  *   argv 9/90
  *
  */
+#ifndef HAVE_STRTOK_R
+
 char *
 strtoken(char** save, char* str, const char* fs)
 {
@@ -176,6 +178,8 @@ strtoken(char** save, char* str, const char* fs)
   *save = pos;
   return tmp;
 }
+
+#endif /* !HAVE_STRTOK_R */
 
 /* 
  * From: Thomas Helvey <tomh@inxpress.net>
