@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.140 2002/10/24 03:35:58 bill Exp $
+ *  $Id: parse.c,v 7.141 2002/10/24 18:16:40 bill Exp $
  */
 
 #include "stdinc.h"
@@ -543,7 +543,7 @@ hash(char *p)
  *
  * inputs	- pointer to client to report to
  * output	- NONE
- * side effects	- NONE
+ * side effects	- client is shown list of commands
  */
 void
 report_messages(struct Client *source_p)
@@ -583,8 +583,9 @@ list_commands(struct Client *source_p)
   {
     for(ptr = msg_hash_table[i]; ptr; ptr = ptr->next)
     {
-      sendto_one(source_p, ":%s NOTICE %s :%s",
-                 me.name, source_p->name, ptr->cmd);
+      if (!((ptr->msg->flags & MFLG_HIDDEN) && !IsAdmin(source_p)))
+        sendto_one(source_p, ":%s NOTICE %s :%s",
+                   me.name, source_p->name, ptr->cmd);
     }
   }
 }

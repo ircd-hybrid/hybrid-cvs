@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.338 2002/10/23 22:12:14 bill Exp $
+ *  $Id: channel.c,v 7.339 2002/10/24 18:16:40 bill Exp $
  */
 
 #include "stdinc.h"
@@ -508,7 +508,7 @@ sub1_from_channel(struct Channel *chptr)
 void
 expire_channels(void *unused)
 {
-  dlink_node *ptr;
+  dlink_node *ptr, *next_ptr;
   struct Channel *chptr;
 
   /*
@@ -519,7 +519,7 @@ expire_channels(void *unused)
    * is not yet due to expire, we can safely assume that the rest of
    * the list is the same way.
    */
-  DLINK_FOREACH(ptr, expiring_channels.head)
+  DLINK_FOREACH_SAFE(ptr, next_ptr, expiring_channels.head)
   {
     /*
      * we cannot assume the channel has not been destroyed

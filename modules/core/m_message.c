@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.102 2002/10/16 20:52:36 bill Exp $
+ *  $Id: m_message.c,v 1.103 2002/10/24 18:16:38 bill Exp $
  */
 
 #include "stdinc.h"
@@ -123,7 +123,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.102 $";
+const char *_version = "$Revision: 1.103 $";
 #endif
 
 /*
@@ -604,11 +604,10 @@ msg_client(int p_or_n, char *command,
 
   if (MyClient(target_p))
   {
-    /* XXX Controversial? allow opers always to send through a +g */
     if (!IsServer(source_p) && IsSetCallerId(target_p))
     {
       /* Here is the anti-flood bot/spambot code -db */
-      if (accept_message(source_p, target_p) || IsOper(source_p))
+      if (accept_message(source_p, target_p))
       {
         sendto_one(target_p, ":%s!%s@%s %s %s :%s",
                    source_p->name,
