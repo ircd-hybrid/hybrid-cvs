@@ -4,7 +4,7 @@
  * shape or form. The author takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: res.c,v 7.5 1999/08/17 04:17:14 tomh Exp $
+ * $Id: res.c,v 7.6 1999/08/17 05:46:41 tomh Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -787,16 +787,9 @@ static int proc_answer(struct ResRequest* request, HEADER* header,
      */ 
     hp->h_addr_list = (char**)(request->he.buf + ALIAS_BLEN);
     /*
-     * copy the host address to the beginning of h_addr_list
+     * don't copy the host address to the beginning of h_addr_list
      */
-    if (request->addr.s_addr != INADDR_NONE) {
-      address = request->he.buf + ADDRS_OFFSET;
-      memcpy(address, &request->addr, sizeof(struct in_addr));
-      hp->h_addr_list[0] = address;
-      hp->h_addr_list[1] = NULL;
-    }
-    else
-      hp->h_addr_list[0] = NULL;
+    hp->h_addr_list[0] = NULL;
   }
   endp = request->he.buf + MAXGETHOSTLEN;
   /*
@@ -1082,9 +1075,6 @@ void get_res(void)
        */
       cp = make_cache(request);
       (*request->query.callback)(request->query.vptr, &cp->reply);
-#ifdef  DEBUG
-      Debug((DEBUG_INFO,"get_res:cp=%#x request=%#x (made)",cp,request));
-#endif
       rem_request(request);
     }
   }
