@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.73 2000/12/25 19:50:27 db Exp $
+ * $Id: ircd_parser.y,v 1.74 2000/12/27 02:08:38 db Exp $
  */
 
 %{
@@ -1066,6 +1066,7 @@ connect_leaf_mask:       LEAF_MASK '=' QSTRING ';'
  
 connect_class:  CLASS '=' QSTRING ';'
   {
+    DupString(yy_cconf->className,yylval.string);
     DupString(yy_nconf->className,yylval.string);
   };
 
