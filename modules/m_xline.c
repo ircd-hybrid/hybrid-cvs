@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.32 2004/02/11 16:41:38 db Exp $
+ *  $Id: m_xline.c,v 1.33 2004/02/13 03:48:15 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -82,7 +82,7 @@ _moddeinit(void)
   mod_del_cmd(&unxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.32 $";
+const char *_version = "$Revision: 1.33 $";
 #endif
 
 
@@ -248,7 +248,7 @@ ms_xline(struct Client *client_p, struct Client *source_p,
       sendto_one(source_p, ":%s NOTICE %s :[%s] already X-Lined by [%s] - %s",
                  ID_or_name(&me, source_p->from),
                  ID_or_name(source_p, source_p->from),
-                 parv[1], conf->name, match_item->reason);
+                 parv[2], conf->name, match_item->reason);
       return;
     }
 
