@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_nick.c,v 1.27 2000/12/20 02:39:20 db Exp $
+ *   $Id: m_nick.c,v 1.28 2000/12/20 05:59:44 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -809,7 +809,7 @@ int change_local_nick(struct Client *cptr, struct Client *sptr,
 	{
 	  add_history(sptr,1);
 	  
-	  sendto_serv_butone(cptr, ":%s NICK %s :%lu",
+	  sendto_ll_serv_butone(cptr, sptr, 0, ":%s NICK %s :%lu",
 				sptr->name, nick, sptr->tsinfo);
 	}
     }
