@@ -5,7 +5,7 @@
  *
  * adrian chadd <adrian@creative.net.au>
  *
- * $Id: tools.c,v 7.7 2000/12/02 16:42:12 db Exp $
+ * $Id: tools.c,v 7.8 2000/12/03 00:05:48 db Exp $
  */
 
 #include <assert.h>
@@ -23,6 +23,10 @@
 void
 dlinkAdd(void *data, dlink_node * m, dlink_list * list)
 {
+#ifdef DEBUG_DLINK
+assert(m->ref_count == 0);
+m->ref_count++;
+#endif
     m->data = data;
     m->prev = NULL;
     m->next = list->head;
@@ -36,6 +40,10 @@ dlinkAdd(void *data, dlink_node * m, dlink_list * list)
 void
 dlinkAddBefore(dlink_node *b, void *data, dlink_node *m, dlink_list *list)
 {
+#ifdef DEBUG_DLINK
+assert(m->ref_count == 0);
+m->ref_count++;
+#endif
     /* Shortcut - if its the first one, call dlinkAdd only */
     if (b == list->head)
         dlinkAdd(data, m, list);
@@ -51,6 +59,10 @@ dlinkAddBefore(dlink_node *b, void *data, dlink_node *m, dlink_list *list)
 void
 dlinkAddTail(void *data, dlink_node *m, dlink_list *list)
 {
+#ifdef DEBUG_DLINK
+assert(m->ref_count == 0);
+m->ref_count++;
+#endif
     m->data = data;
     m->next = NULL;
     m->prev = list->tail;
@@ -64,6 +76,10 @@ dlinkAddTail(void *data, dlink_node *m, dlink_list *list)
 void
 dlinkDelete(dlink_node *m, dlink_list *list)
 {
+#ifdef DEBUG_DLINK
+assert(m->ref_count == 1);
+m->ref_count++;
+#endif
     if (m->next)
         m->next->prev = m->prev;
     if (m->prev)

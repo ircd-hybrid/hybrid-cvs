@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.82 2000/12/01 22:18:08 db Exp $
+ *  $Id: s_conf.c,v 7.83 2000/12/03 00:05:47 db Exp $
  */
 #include "tools.h"
 #include "s_conf.h"
@@ -842,7 +842,7 @@ void remove_one_ip(unsigned long ip_in)
                     prev_link->next = cur_link->next;
                   else
                     ptr->ptr_clients_on_this_ip = cur_link->next;
-                  free_link(cur_link);
+                  free_dlink_node(cur_link);
                   break;
                 }
               else

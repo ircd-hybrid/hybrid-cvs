@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu, Computing Center and Jarkko Oikarinen
  *
- * $Id: list.c,v 7.15 2000/12/01 22:18:07 db Exp $
+ * $Id: list.c,v 7.16 2000/12/03 00:05:47 db Exp $
  */
 #include "tools.h"
 #include "blalloc.h"
@@ -190,14 +190,17 @@ dlink_node *make_dlink_node()
   lp->next = NULL;
   lp->prev = NULL;
 
+#ifdef DEBUG_DLINK
+lp->ref_count = 0;
+#endif
   return lp;
 }
 
-void free_dlink_node(dlink_node *lp)
+void _free_dlink_node(dlink_node *ptr)
 {
-  if(BlockHeapFree(free_dlink_nodes,lp))
+  if(BlockHeapFree(free_dlink_nodes,ptr))
     {
-      sendto_realops("list.c couldn't BlockHeapFree(free_dlink_nodes,lp) lp = %lX", lp );
+      sendto_realops("list.c couldn't BlockHeapFree(free_dlink_nodes,ptr) ptr = %lX", ptr );
     }
 }
 

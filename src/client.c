@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.48 2000/12/01 22:18:05 db Exp $
+ *  $Id: client.c,v 7.49 2000/12/03 00:05:46 db Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -1160,6 +1160,7 @@ static void exit_one_client(struct Client *cptr, struct Client *sptr, struct Cli
 {
   struct Client* acptr;
   dlink_node *lp;
+  dlink_node *next_lp;
 
   if (IsServer(sptr))
     {
@@ -1227,12 +1228,20 @@ static void exit_one_client(struct Client *cptr, struct Client *sptr, struct Cli
           sendto_common_channels(sptr, ":%s QUIT :%s",
                                    sptr->name, comment);
 
-          while ((lp = sptr->user->channel.head))
-            remove_user_from_channel(lp->data,sptr);
+          for (lp = sptr->user->channel.head; lp; lp = next_lp)
+	    {
+	      next_lp = lp->next;
+	      remove_user_from_channel(lp->data,sptr);
+	      free_dlink_node(lp);
+	    }
           
           /* Clean up invitefield */
-          while ((lp = sptr->user->invited.head))
-            del_invite(lp->data, sptr);
+          for (lp = sptr->user->invited.head; lp; lp = next_lp)
+	    {
+	      next_lp = lp->next;
+	      del_invite(lp->data, sptr);
+	      free_dlink_node(lp);
+	    }
           /* again, this is all that is needed */
         }
     }

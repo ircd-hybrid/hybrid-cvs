@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.94 2000/12/02 16:42:11 db Exp $
+ * $Id: channel.c,v 7.95 2000/12/03 00:05:45 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -421,25 +421,22 @@ void    add_user_to_channel(struct Channel *chptr, struct Client *who,
 void    remove_user_from_channel(struct Channel *chptr,struct Client *who)
 {
   dlink_node *ptr;
-  dlink_list *to_delete;
 
   if( (ptr = find_user_link(&chptr->peons,who)) )
-    to_delete = &chptr->peons;
+    dlinkDelete(ptr,&chptr->peons);
   else if( (ptr = find_user_link(&chptr->chanops,who)) )
     {
       chptr->opcount--;
-      to_delete = &chptr->chanops;
+      dlinkDelete(ptr,&chptr->chanops);
     }
   else if ((ptr = find_user_link(&chptr->voiced,who)) )
-    to_delete = &chptr->voiced;
+    dlinkDelete(ptr,&chptr->voiced);
   else if ((ptr = find_user_link(&chptr->halfops,who)) )
-    to_delete = &chptr->halfops;
+    dlinkDelete(ptr,&chptr->halfops);
   else 
     return;	/* oops */
 
   chptr->users_last = CurrentTime;
-
-  dlinkDelete(ptr,to_delete);
   free_dlink_node(ptr);
 
   for (ptr = who->user->channel.head; ptr; ptr = ptr->next)
@@ -459,7 +456,7 @@ void    remove_user_from_channel(struct Channel *chptr,struct Client *who)
 
   if(MyClient(who))
     {
-      if(chptr > 0)
+      if(chptr->locusers > 0)
 	chptr->locusers--;
     }
   sub1_from_channel(chptr);
