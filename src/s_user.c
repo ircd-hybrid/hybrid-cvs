@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.126 2001/01/24 20:04:44 fl_ Exp $
+ *  $Id: s_user.c,v 7.127 2001/01/25 06:26:11 db Exp $
  */
 
 #include <sys/types.h>
@@ -1237,6 +1237,12 @@ static void user_welcome(struct Client *sptr)
     }
   else  
     SendMessageFile(sptr, &ConfigFileEntry.motd);
+
+  if (IsRestricted(sptr))
+    {
+      sendto_one(sptr,form_str(ERR_RESTRICTED),
+		 me.name, sptr->name);
+    }
 }
 
 /*

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: numeric.h,v 7.13 2000/12/21 20:05:37 db Exp $
+ * $Id: numeric.h,v 7.14 2001/01/25 06:26:02 db Exp $
  */
 #ifndef INCLUDED_numeric_h
 #define INCLUDED_numeric_h
@@ -348,7 +348,7 @@ extern const char* form_str(int);
 #define ERR_NOPRIVILEGES     481
 #define ERR_CHANOPRIVSNEEDED 482
 #define ERR_CANTKILLSERVER   483
-#define ERR_DESYNC           484
+#define ERR_RESTRICTED       484
 #define ERR_BANNEDNICK       485
 
 #define ERR_NOOPERHOST       491
