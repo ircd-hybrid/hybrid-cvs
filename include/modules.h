@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.h,v 7.9 2001/01/02 04:38:23 a1kmm Exp $
+ * $Id: modules.h,v 7.10 2001/01/03 22:15:53 ejb Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -55,6 +55,7 @@ extern void _moddeinit(void);
 
 extern int unload_one_module (char *);
 extern int load_one_module (char *);
+extern int load_a_module (char *);
 extern int  findmodule_byname (char *);
 
 #endif
