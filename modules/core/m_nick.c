@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_nick.c,v 1.34 2000/12/26 15:55:58 db Exp $
+ *   $Id: m_nick.c,v 1.35 2000/12/26 23:54:15 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -809,8 +809,18 @@ int change_local_nick(struct Client *cptr, struct Client *sptr,
 	{
 	  add_history(sptr,1);
 	  
-          sendto_ll_serv_butone(cptr, sptr, 0, ":%s NICK %s :%lu",
-                                sptr->name, nick, sptr->tsinfo);
+	  /* Only hubs care about lazy link nicks not being sent on yet
+	   * lazylink leafs/leafs always send their nicks up to hub,
+	   * hence must always propogate nick changes.
+	   * hubs might not propogate a nick change, if the leaf
+	   * does not know about that client yet.
+	   */
+	  if (ConfigFileEntry.hub)
+	    sendto_ll_serv_butone(cptr, sptr, 0, ":%s NICK %s :%lu",
+				  sptr->name, nick, sptr->tsinfo);
+	  else
+	    sendto_serv_butone(cptr, ":%s NICK %s :%lu",
+			       sptr->name, nick, sptr->tsinfo);
 	}
     }
   else
