@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.99 2002/07/13 06:56:34 androsyn Exp $
+ *  $Id: m_message.c,v 1.100 2002/09/19 03:11:59 bill Exp $
  */
 
 #include "stdinc.h"
@@ -123,7 +123,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.99 $";
+const char *_version = "$Revision: 1.100 $";
 #endif
 
 /*
@@ -546,9 +546,9 @@ msg_channel_flags(int p_or_n, char *command, struct Client *client_p,
       source_p->user->last = CurrentTime;
   }
 
-  sendto_channel_local(type, vchan, ":%s!%s@%s %s %c%s :%s",
-                       source_p->name, source_p->username,
-                       source_p->host, command, c, chname, text);
+  sendto_channel_local_butone(source_p, type, vchan, ":%s!%s@%s %s %c%s :%s",
+                              source_p->name, source_p->username,
+                              source_p->host, command, c, chname, text);
 
   if (chptr->chname[0] == '&')
     return;

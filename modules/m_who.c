@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_who.c,v 1.62 2002/09/05 06:05:40 db Exp $
+ *  $Id: m_who.c,v 1.63 2002/09/19 03:11:58 bill Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&who_msgtab);
 }
-const char *_version = "$Revision: 1.62 $";
+const char *_version = "$Revision: 1.63 $";
 #endif
 static void do_who_on_channel(struct Client *source_p,
 			      struct Channel *chptr, char *real_name,
@@ -450,6 +450,9 @@ do_who_list(struct Client *source_p, struct Channel *chptr,
 	    char *halfop_flag, char *voiced_flag,
 	    char *chname, int member)
 {
+#ifndef ANONOPS
+  dlink_node *ptr;
+#endif
   struct Client *target_p;
   int done=0;
   int i=0;
