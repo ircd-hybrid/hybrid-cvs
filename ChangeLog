@@ -1,3 +1,21 @@
+db          2002/09/05 02:05:41 EDT	(20020905_3)
+
+  Modified files:
+    modules              m_accept.c m_close.c m_knock.c m_who.c 
+                         m_whois.c 
+  Log:
+  - converted a pile of for() to DLINK_NEXT
+  - cleaned up m_who (idea from Androsyn)
+  
+  Revision  Changes    Path
+  1.33      +2 -2      ircd-hybrid-7/modules/m_accept.c
+  1.24      +5 -5      ircd-hybrid-7/modules/m_close.c
+  1.52      +81 -85    ircd-hybrid-7/modules/m_knock.c
+  1.62      +153 -199  ircd-hybrid-7/modules/m_who.c
+  1.81      +8 -11     ircd-hybrid-7/modules/m_whois.c
+
+
+
 db          2002/09/04 22:48:43 EDT	(20020905_2)
 
   Modified files:
@@ -31794,4 +31812,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4018 2002/09/05 02:48:46 db Exp $
+$Id: ChangeLog,v 7.4019 2002/09/05 06:05:44 db Exp $
