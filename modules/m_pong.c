@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_pong.c,v 1.16 2001/08/25 16:22:32 db Exp $
+ *   $Id: m_pong.c,v 1.17 2001/09/26 19:28:11 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -74,7 +74,6 @@ static void ms_pong(struct Client *client_p,
 
   origin = parv[1];
   destination = parv[2];
-  client_p->flags &= ~FLAGS_PINGSENT;
   source_p->flags &= ~FLAGS_PINGSENT;
 
   /* Now attempt to route the PONG, comstud pointed out routable PING
