@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.119 2003/10/14 01:32:20 bill Exp $
+ *  $Id: m_server.c,v 1.120 2003/10/14 21:58:44 bill Exp $
  */
 
 #include "stdinc.h"
@@ -77,7 +77,7 @@ _moddeinit(void)
   mod_del_cmd(&sid_msgtab);
 }
 
-const char *_version = "$Revision: 1.119 $";
+const char *_version = "$Revision: 1.120 $";
 #endif
 
 
@@ -708,12 +708,12 @@ ms_sid(struct Client *client_p, struct Client *source_p,
    */
   sendto_server(client_p, NULL, NULL, CAP_TS6, NOCAPS, NOFLAGS,
                 ":%s SID %s %d %s :%s%s",
-                parv[0], target_p->name, hop + 1,
+                ID_or_name(source_p, client_p), target_p->name, hop + 1,
                 SID_SID, IsHidden(target_p) ? "(H) " : "",
                 target_p->info);
   sendto_server(client_p, NULL, NULL, NOCAPS, CAP_TS6, NOFLAGS,
                 ":%s SERVER %s %d :%s%s",
-                ID_or_name(source_p, client_p), target_p->name, hop + 1,
+                source_p->name, target_p->name, hop + 1,
                 IsHidden(target_p) ? "(H) " : "",
                 target_p->info);
 

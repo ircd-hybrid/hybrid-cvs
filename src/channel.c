@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.407 2003/10/11 22:35:54 stu Exp $
+ *  $Id: channel.c,v 7.408 2003/10/14 21:58:45 bill Exp $
  */
 
 #include "stdinc.h"
@@ -247,6 +247,9 @@ send_mode_list(struct Client *client_p, struct Channel *chptr, dlink_list *top,
   char *mp;
   char *pp;
   int count;
+
+  if (top == NULL || top->length == 0)
+    return;
 
   if(IsCapable(client_p, CAP_TS6))
       ircsprintf(buf, ":%s BMASK %lu %s ", ID(&me), (unsigned long)
