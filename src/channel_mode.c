@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel_mode.c,v 7.7 2001/11/28 12:33:17 leeh Exp $
+ * $Id: channel_mode.c,v 7.8 2001/11/28 12:34:49 leeh Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -875,8 +875,6 @@ chm_hideops(struct Client *client_p, struct Client *source_p,
     resync_ops[resync_count].send = 0;
     resync_ops[resync_count].whole_chan = 1;
     resync_ops[resync_count++].sync = 0;
-
-    sendto_realops_flags(FLAGS_ALL, L_ALL, "%c", c);
   }
 }
 

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel_mode.h,v 7.1 2001/10/21 15:40:50 davidt Exp $
+ * $Id: channel_mode.h,v 7.2 2001/11/28 12:34:43 leeh Exp $
  */
 
 #include <sys/types.h>        /* time_t */
@@ -43,7 +43,7 @@
  * of CAP_HOPS will also send a notice to the user performing the mode
  * (if it is indeed a user) informing them why.
  */
-#define BOUNCE_BAD_HOPS
+#undef BOUNCE_BAD_HOPS
 
 #define MODEBUFLEN      200
 
