@@ -19,14 +19,21 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.c,v 7.54 2003/06/14 17:31:18 adx Exp $
+ *  $Id: s_log.c,v 7.55 2003/06/15 19:00:36 joshk Exp $
  */
 
 #include "stdinc.h"
+
 #ifdef USE_SYSLOG
-/* XXX #ifdef HAVE_SYSLOG_H */
-#include <syslog.h>
+# ifdef HAVE_SYS_SYSLOG_H
+#  include <sys/syslog.h>
+# else
+#  ifdef HAVE_SYSLOG_H
+#   include <syslog.h>
+#  endif
+# endif
 #endif
+
 #include "client.h"	/* Needed for struct Client */
 #include "common.h"
 #include "s_log.h"

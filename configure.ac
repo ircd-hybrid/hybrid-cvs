@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.54 2003/06/14 03:54:01 joshk Exp $
+dnl $Id: configure.ac,v 7.55 2003/06/15 19:00:38 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -720,9 +720,11 @@ AC_HELP_STRING([--enable-syslog="EVENTS"], [Enable syslog for events: kill, squi
 [
 dnl Hopelessly swiped from the mozilla source (kind of)
 
+dnl We must have these headers for it to work..
+if test "$ac_cv_header_sys_syslog_h" = yes -o "$ac_cv_header_syslog_h" = yes; then
+
 if test "$enableval" != no; then
 	syslogstuff=core
-fi
 
 for option in $enableval; do
 case "$option" in
@@ -758,6 +760,14 @@ dnl yes is okay, shut up you
 	if test ! -z "$syslogstuff" -o "$enableval" = yes; then
 		AC_DEFINE(USE_SYSLOG, 1, [Send vital ircd messages to syslog])
 	fi
+else dnl $enableval is no
+	syslogstuff=none
+fi
+
+else dnl checking for syslog.h's
+	AC_MSG_WARN([both syslog.h and sys/syslog.h unavailable, not enabling syslog])
+	syslogstuff=none
+fi
 ],[syslogstuff=none])
 
 AC_MSG_RESULT($syslogstuff)
@@ -766,7 +776,9 @@ AC_ARG_WITH(syslog-facility,
 AC_HELP_STRING([--with-syslog-facility=LOG], [Define the log facility to use with ircd's syslog output (default LOG_LOCAL4)]),
 [facility=$withval],[facility="LOG_LOCAL4"])
 
+if test "$syslogstuff" != none; then
 AC_DEFINE_UNQUOTED(LOG_FACILITY, $facility, [Log facility to use for syslog()])
+fi
 
 AC_ARG_WITH(nicklen,
 AC_HELP_STRING([--with-nicklen=LENGTH],[Set the nick length to LENGTH (default 9)]),

@@ -8035,9 +8035,10 @@ if test "${enable_syslog+set}" = set; then
   enableval="$enable_syslog"
 
 
+if test "$ac_cv_header_sys_syslog_h" = yes -o "$ac_cv_header_syslog_h" = yes; then
+
 if test "$enableval" != no; then
 	syslogstuff=core
-fi
 
 for option in $enableval; do
 case "$option" in
@@ -8097,6 +8098,13 @@ cat >>confdefs.h <<\_ACEOF
 _ACEOF
 
 	fi
+else 	syslogstuff=none
+fi
+
+else 	{ echo "$as_me:$LINENO: WARNING: both syslog.h and sys/syslog.h unavailable, not enabling syslog" >&5
+echo "$as_me: WARNING: both syslog.h and sys/syslog.h unavailable, not enabling syslog" >&2;}
+	syslogstuff=none
+fi
 
 else
   syslogstuff=none
@@ -8114,11 +8122,13 @@ else
   facility="LOG_LOCAL4"
 fi;
 
+if test "$syslogstuff" != none; then
 
 cat >>confdefs.h <<_ACEOF
 #define LOG_FACILITY $facility
 _ACEOF
 
+fi
 
 
 # Check whether --with-nicklen or --without-nicklen was given.
