@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.84 2001/01/15 17:05:45 db Exp $
+ *  $Id: s_bsd.c,v 7.85 2001/01/16 09:00:59 db Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -720,12 +720,11 @@ comm_open(int family, int sock_type, int proto, const char *note)
 {
     int fd;
     /* First, make sure we aren't going to run out of file descriptors */
-    if (number_fd >= MASTER_MAX)
+    if (number_fd >= MASTER_MAX) {
+	errno = ENFILE;
 	return -1;
-#if 0
-    /* XXXX perhaps this instead */
-    errno = ENFILE;
-#endif
+    }
+
     /*
      * Next, we try to open the socket. We *should* drop the reserved FD
      * limit if/when we get an error, but we can deal with that later.
@@ -760,12 +759,10 @@ comm_accept(int fd, struct sockaddr *pn, socklen_t *addrlen)
 {
     int new;
 
-    if (number_fd >= MASTER_MAX)
+    if (number_fd >= MASTER_MAX) {
+	errno = ENFILE;
 	return -1;
-#if 0
-    /* XXXX perhaps this instead */
-    errno = ENFILE;
-#endif
+    }
 
     /*
      * Next, do the accept(). if we get an error, we should drop the
