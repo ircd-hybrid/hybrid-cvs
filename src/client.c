@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.176 2001/06/01 00:56:02 davidt Exp $
+ *  $Id: client.c,v 7.177 2001/06/03 13:55:34 db Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -475,7 +475,7 @@ check_klines(void)
     if (IsExemptKline(client_p))
     {
      sendto_realops_flags(FLAGS_ALL,
-       "KLINE over-ruled for %s, client is kline_exmpt",
+       "KLINE over-ruled for %s, client is kline_exempt",
        get_client_name(client_p, HIDE_IP));
      continue;
     }
