@@ -1,3 +1,11 @@
+*** 20001204_6 by db
+- ripped out LIMIT_UH for now. BLOAT BLOAT BLOAT
+  in preparation for doing IP throttling ...
+- ripped out #ifdef for invisible off or on, that should be in  
+  conf anyway. ugh
+
+
+
 *** 20001204_5 by db
 - redid clear_channel_list code to handle possible buffer overflows
   limiting to 3 mode changes isn't sufficient *sigh*
@@ -1500,7 +1508,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.686 2000/12/04 08:30:58 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.687 2000/12/04 08:41:28 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
