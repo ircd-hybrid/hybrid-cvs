@@ -1,3 +1,32 @@
+lusky       2003/02/15 11:32:47 EST	(20030215_0)
+
+  Modified files:
+    .                    RELNOTES configure 
+    autoconf             acconfig.h configure.in 
+    include              ircd_defs.h setup.h.in setup.h_vms 
+    src                  client.c s_bsd.c s_log.c s_serv.c 
+  Log:
+  - fixed handling of file descriptors 0 through 3
+  - remove unused var in client.c
+  - updated RELNOTES
+  
+  Reviewed by:    db
+  
+  Revision  Changes    Path
+  1.64      +7 -0      ircd-hybrid-7/RELNOTES
+  7.25      +3 -0      ircd-hybrid-7/autoconf/acconfig.h
+  7.150     +12 -0     ircd-hybrid-7/autoconf/configure.in
+  7.153     +20 -0     ircd-hybrid-7/configure
+  7.32      +2 -0      ircd-hybrid-7/include/ircd_defs.h
+  7.58      +3 -0      ircd-hybrid-7/include/setup.h.in
+  7.11      +3 -0      ircd-hybrid-7/include/setup.h_vms
+  7.330     +0 -1      ircd-hybrid-7/src/client.c
+  7.180     +6 -21     ircd-hybrid-7/src/s_bsd.c
+  7.46      +4 -0      ircd-hybrid-7/src/s_log.c
+  7.280     +2 -5      ircd-hybrid-7/src/s_serv.c
+
+
+
 db          2003/02/14 18:01:59 EST	(20030214_0)
 
   Modified files:
@@ -35036,4 +35065,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4231 2003/02/14 23:02:01 db Exp $
+$Id: ChangeLog,v 7.4232 2003/02/15 16:32:50 lusky Exp $
