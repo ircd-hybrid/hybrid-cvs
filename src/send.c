@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.119 2001/01/27 16:44:35 davidt Exp $
+ *   $Id: send.c,v 7.120 2001/01/29 18:37:54 db Exp $
  */
 
 #include <sys/types.h>
@@ -1386,40 +1386,19 @@ sendto_realops_flags(int flags, const char *pattern, ...)
   len = send_format(nbuf, pattern, args);
   va_end(args);
 
-  if (flags == FLAGS_ALL)
+  for (ptr = oper_list.head; ptr; ptr = ptr->next)
     {
-      for (ptr = oper_list.head; ptr; ptr = ptr->next)
+      cptr = ptr->data;
+
+      if(cptr->umodes & flags)
 	{
-	  cptr = ptr->data;
+	  len =ircsprintf(sendbuf, ":%s NOTICE %s :*** Notice -- %s",
+			  me.name,
+			  cptr->name,
+			  nbuf);
 
-	  if (SendServNotice(cptr))
-	    {
-	      len = ircsprintf(sendbuf, ":%s NOTICE %s :*** Notice -- %s",
-			       me.name,
-			       cptr->name,
-			       nbuf);
-
-	      len = send_trim(sendbuf,len);
-	      send_message(cptr, (char *)sendbuf, len);
-	    }
-	}
-    }
-  else
-    {
-      for (ptr = oper_list.head; ptr; ptr = ptr->next)
-	{
-	  cptr = ptr->data;
-
-	  if(cptr->umodes & flags)
-	    {
-	      len =ircsprintf(sendbuf, ":%s NOTICE %s :*** Notice -- %s",
-			      me.name,
-			      cptr->name,
-			      nbuf);
-
-	      len = send_trim(sendbuf,len);
-	      send_message(cptr, (char *)sendbuf, len);
-	    }
+	  len = send_trim(sendbuf,len);
+	  send_message(cptr, (char *)sendbuf, len);
 	}
     }
 } /* sendto_realops_flags() */
