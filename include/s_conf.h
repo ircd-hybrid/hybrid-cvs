@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.225 2003/05/25 01:05:20 michael Exp $
+ *  $Id: s_conf.h,v 7.226 2003/05/25 04:15:08 michael Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -177,18 +177,6 @@ struct ConfItem
 #define IsConfTemporary(x)      ((x)->flags & CONF_FLAGS_TEMPORARY)
 #define SetConfTemporary(x)	((x)->flags |= CONF_FLAGS_TEMPORARY)
 #define IsConfRedir(x)          ((x)->flags & CONF_FLAGS_REDIR)
-/* port definitions for Opers */
-
-#define CONF_OPER_GLOBAL_KILL   0x0001
-#define CONF_OPER_REMOTE        0x0002
-#define CONF_OPER_UNKLINE       0x0004
-#define CONF_OPER_GLINE         0x0008
-#define CONF_OPER_N             0x0010
-#define CONF_OPER_K             0x0020
-#define CONF_OPER_X             0x0040
-#define CONF_OPER_REHASH        0x0080
-#define CONF_OPER_DIE           0x0100
-#define CONF_OPER_ADMIN         0x0200
 
 /* shared server entry types */
 #define SHARED_KLINE		0x0001
@@ -197,8 +185,8 @@ struct ConfItem
 #define SHARED_UNXLINE		0x0008
 #define SHARED_RESV		0x0010
 #define SHARED_UNRESV		0x0020
-#define SHARED_ALL		( SHARED_KLINE | SHARED_UNKLINE | SHARED_XLINE |\
-				  SHARED_UNXLINE | SHARED_RESV | SHARED_UNRESV)
+#define SHARED_ALL		(SHARED_KLINE | SHARED_UNKLINE | SHARED_XLINE |\
+				 SHARED_UNXLINE | SHARED_RESV | SHARED_UNRESV)
 
 struct config_file_entry
 {

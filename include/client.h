@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.193 2003/05/25 01:05:20 michael Exp $
+ *  $Id: client.h,v 7.194 2003/05/25 04:15:08 michael Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -436,6 +436,8 @@ struct LocalUser
 #define OPER_FLAG_DIE         0x00000080 /* oper can die                */
 #define OPER_FLAG_REHASH      0x00000100 /* oper can rehash             */
 #define OPER_FLAG_ADMIN       0x00000200 /* oper can set umode +a       */
+
+#define SetOFlag(x, y) ((x)->localClient->operflags |= (y))
 
 
 /* flags macros. */
