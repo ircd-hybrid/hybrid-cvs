@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.313 2003/10/11 21:56:07 bill Exp $
+ *  $Id: s_user.c,v 7.314 2003/10/24 11:59:36 michael Exp $
  */
 
 #include "stdinc.h"
@@ -209,8 +209,10 @@ make_user(struct Client *client_p)
 void
 free_user(struct User *user, struct Client *client_p)
 {
-  if (user->away != NULL)
-    MyFree(user->away);
+
+  MyFree(user->away);
+  MyFree(user->response);
+  MyFree(user->auth_oper);
 
   /* sanity check */
   if (dlink_list_length(&user->channel) || user->invited.head || user->channel.head)
