@@ -16,7 +16,7 @@
 *   along with this program; if not, write to the Free Software
 *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 *
-*   $Id: m_whowas.c,v 1.13 2001/01/05 00:14:39 davidt Exp $
+*   $Id: m_whowas.c,v 1.14 2001/01/11 05:31:51 a1kmm Exp $
 */
 #include "whowas.h"
 #include "handlers.h"
@@ -38,7 +38,6 @@
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>
-#include "memdebug.h"
 
 static int m_whowas(struct Client*, struct Client*, int, char**);
 static int mo_whowas(struct Client*, struct Client*, int, char**);

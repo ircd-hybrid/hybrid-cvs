@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: class.c,v 7.21 2001/01/05 07:47:25 a1kmm Exp $
+ *   $Id: class.c,v 7.22 2001/01/11 05:31:54 a1kmm Exp $
  */
 #include "tools.h"
 #include "class.h"
@@ -29,10 +29,10 @@
 #include "send.h"
 #include "irc_string.h"
 #include "s_debug.h"
+#include "memory.h"
 
 #include <string.h>
 #include <stdlib.h>
-#include "memdebug.h"
 
 #define BAD_CONF_CLASS          -1
 #define BAD_PING                -2

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_stats.c,v 7.11 2001/01/04 20:36:53 a1kmm Exp $
+ *  $Id: s_stats.c,v 7.12 2001/01/11 05:32:09 a1kmm Exp $
  */
 #include "s_stats.h"
 #include "client.h"
@@ -30,9 +30,9 @@
 #include "fdlist.h"
 #include "s_bsd.h"
 #include "send.h"
+#include "memory.h"
 
 #include <string.h>
-#include "memdebug.h"
 
 /*
  * stats stuff

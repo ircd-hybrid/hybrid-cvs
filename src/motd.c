@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: motd.c,v 7.10 2000/12/29 05:46:11 db Exp $
+ *   $Id: motd.c,v 7.11 2001/01/11 05:32:02 a1kmm Exp $
  */
 #include "tools.h"
 #include "motd.h"
@@ -35,11 +35,11 @@
 #include "numeric.h"
 #include "client.h"
 #include "irc_string.h"
+#include "memory.h"
 
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
-#include "memdebug.h"
 
 extern ConfigFileEntryType ConfigFileEntry; /* defined in ircd.c */
 

@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_select.c,v 7.7 2000/12/24 22:58:48 adrian Exp $
+ *  $Id: s_bsd_select.c,v 7.8 2001/01/11 05:32:06 a1kmm Exp $
  */
 
 #error "s_bsd_select.c hasn't been rewritten yet. use poll or contact \
@@ -53,6 +53,7 @@ adrian chadd <adrian@creative.net.au>."
 #include "send.h"
 #include "s_debug.h"
 #include "s_bsd.h"
+#include "memory.h"
 
 #include <assert.h>
 #include <stdio.h>
@@ -70,7 +71,6 @@ adrian chadd <adrian@creative.net.au>."
 #include <sys/resource.h>
 #include <sys/param.h>    /* NOFILE */
 #include <arpa/inet.h>
-#include "memdebug.h"
 
 #ifndef IN_LOOPBACKNET
 #define IN_LOOPBACKNET        0x7f

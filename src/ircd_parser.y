@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.102 2001/01/08 15:46:00 wcampbel Exp $
+ * $Id: ircd_parser.y,v 1.103 2001/01/11 05:31:58 a1kmm Exp $
  */
 
 %{
@@ -34,7 +34,7 @@
 #include "client.h"	/* for FLAGS_ALL only */
 #include "irc_string.h"
 #include "ircdauth.h"
-#include "memdebug.h"
+#include "memory.h"
 #include "modules.h"
 #include "s_serv.h" /* for CAP_LL / IsCapable */
 

@@ -1,7 +1,7 @@
 /*
  * restart.c
  *
- * $Id: restart.c,v 7.9 2000/12/27 23:40:32 db Exp $
+ * $Id: restart.c,v 7.10 2001/01/11 05:32:04 a1kmm Exp $
  */
 #include "tools.h"
 #include "restart.h"
@@ -12,9 +12,9 @@
 #include "s_debug.h"
 #include "s_log.h"
 #include "client.h"	/* for FLAGS_ALL */
+#include "memory.h"
 
 #include <unistd.h>
-#include "memdebug.h"
 
 /* external var */
 extern char** myargv;

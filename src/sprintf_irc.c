@@ -17,12 +17,11 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: sprintf_irc.c,v 7.3 2000/12/21 13:39:55 db Exp $
+ *   $Id: sprintf_irc.c,v 7.4 2001/01/11 05:32:11 a1kmm Exp $
  */
 #include "sprintf_irc.h"
 
 #include <stdio.h>
-#include "memdebug.h"
 
 const char atoi_tab[4000] = {
     '0','0','0',0, '0','0','1',0, '0','0','2',0, '0','0','3',0, '0','0','4',0,

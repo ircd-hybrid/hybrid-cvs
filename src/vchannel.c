@@ -19,7 +19,7 @@
  *
  *
  *
- * $Id: vchannel.c,v 7.33 2001/01/02 05:30:27 davidt Exp $
+ * $Id: vchannel.c,v 7.34 2001/01/11 05:32:11 a1kmm Exp $
  */
 #include "tools.h"
 #include "vchannel.h"
@@ -32,11 +32,11 @@
 #include "list.h"
 #include "send.h"
 #include "numeric.h"
+#include "memory.h"
 
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>
-#include "memdebug.h"
 
 /* Given base chan pointer and vchan pointer add to
  * translation table cache for this client

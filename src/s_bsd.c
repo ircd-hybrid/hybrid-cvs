@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.82 2001/01/05 07:47:27 a1kmm Exp $
+ *  $Id: s_bsd.c,v 7.83 2001/01/11 05:32:05 a1kmm Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -43,6 +43,7 @@
 #include "s_stats.h"
 #include "send.h"
 #include "s_debug.h"
+#include "memory.h"
 
 #include <assert.h>
 #include <stdio.h>
@@ -60,7 +61,6 @@
 #include <sys/resource.h>
 #include <sys/param.h>    /* NOFILE */
 #include <arpa/inet.h>
-#include "memdebug.h"
 
 #ifndef IN_LOOPBACKNET
 #define IN_LOOPBACKNET        0x7f

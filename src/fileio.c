@@ -4,7 +4,7 @@
  * Copyright (C) 1990 Jarkko Oikarinen and
  *                    University of Oulu, Co Center
  *
- * $Id: fileio.c,v 7.14 2000/12/30 09:52:16 lusky Exp $
+ * $Id: fileio.c,v 7.15 2001/01/11 05:31:56 a1kmm Exp $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@
 #include "irc_string.h"
 #include "client.h"	/* for FLAGS_ALL */
 #include "send.h"	/* sendto_realops_flags */
+#include "memory.h"
 
 /* The following are to get the fd manipulation routines. eww. */
 #include "fdlist.h"
@@ -34,7 +35,6 @@
 #include <unistd.h> /* read, write, open, close */
 #include <assert.h> /* assert */
 #include <errno.h>
-#include "memdebug.h"
 
 /*
  * Wrappers around open() / close() for fileio, since a whole bunch of

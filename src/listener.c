@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: listener.c,v 7.20 2001/01/10 01:00:27 toot Exp $
+ *  $Id: listener.c,v 7.21 2001/01/11 05:31:59 a1kmm Exp $
  */
 #include "listener.h"
 #include "client.h"
@@ -30,6 +30,7 @@
 #include "s_stats.h"
 #include "send.h"
 #include "config.h"
+#include "memory.h"
 
 #include <assert.h>
 #include <string.h>
@@ -39,7 +40,6 @@
 #include <netdb.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
-#include "memdebug.h"
 
 #ifndef INADDR_NONE
 #define INADDR_NONE ((unsigned int) 0xffffffff)

@@ -3,7 +3,7 @@
  * fdlist.c   maintain lists of file descriptors
  *
  *
- * $Id: fdlist.c,v 7.18 2001/01/04 08:51:31 a1kmm Exp $
+ * $Id: fdlist.c,v 7.19 2001/01/11 05:31:56 a1kmm Exp $
  */
 #include "fdlist.h"
 #include "client.h"  /* struct Client */
@@ -12,11 +12,11 @@
 #include "s_bsd.h"   /* highest_fd */
 #include "config.h"  /* option settings */
 #include "send.h"
+#include "memory.h"
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
 #include <unistd.h>
-#include "memdebug.h"
 
 fde_t *fd_table = NULL;
 

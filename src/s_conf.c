@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.142 2001/01/08 03:16:33 toot Exp $
+ *  $Id: s_conf.c,v 7.143 2001/01/11 05:32:07 a1kmm Exp $
  */
 #include "tools.h"
 #include "s_conf.h"
@@ -45,6 +45,7 @@
 #include "s_gline.h"
 #include "s_debug.h"
 #include "fileio.h"
+#include "memory.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -56,7 +57,6 @@
 #include <netdb.h>
 #include <fcntl.h>
 #include <assert.h>
-#include "memdebug.h"
 
 extern int yyparse(); /* defined in yy.tab.c */
 extern ConfigFileEntryType ConfigFileEntry; /* defined in ircd.c */

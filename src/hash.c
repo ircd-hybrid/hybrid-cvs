@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: hash.c,v 7.24 2001/01/06 03:33:44 ejb Exp $
+ *  $Id: hash.c,v 7.25 2001/01/11 05:31:57 a1kmm Exp $
  */
 #include "tools.h"
 #include "s_conf.h"
@@ -31,6 +31,7 @@
 #include "s_debug.h"
 #include "fdlist.h"
 #include "fileio.h"
+#include "memory.h"
 
 #include <errno.h>
 #include <assert.h>
@@ -41,7 +42,6 @@
 #include <unistd.h>
 #include <time.h>
 #include <sys/stat.h>
-#include "memdebug.h"
 
 /* New hash code */
 /*

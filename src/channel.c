@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.184 2001/01/10 22:59:15 db Exp $
+ * $Id: channel.c,v 7.185 2001/01/11 05:31:54 a1kmm Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -36,11 +36,11 @@
 #include "s_conf.h" /* ConfigFileEntry */
 #include "vchannel.h"
 #include "event.h"
+#include "memory.h"
 
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>
-#include "memdebug.h"
 
 #include "s_log.h"
 

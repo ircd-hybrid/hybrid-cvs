@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.c,v 7.44 2001/01/05 11:57:32 toot Exp $
+ * $Id: modules.c,v 7.45 2001/01/11 05:32:01 a1kmm Exp $
  */
 
 #include <dlfcn.h>
@@ -41,7 +41,7 @@
 #include "parse.h"
 #include "ircd_defs.h"
 #include "irc_string.h"
-#include "memdebug.h"
+#include "memory.h"
 #include "tools.h"
 #include "list.h"
 

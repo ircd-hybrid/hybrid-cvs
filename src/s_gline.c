@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_gline.c,v 1.8 2001/01/08 03:16:34 toot Exp $
+ *  $Id: s_gline.c,v 1.9 2001/01/11 05:32:08 a1kmm Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -47,6 +47,7 @@
 #include "hash.h"
 #include "event.h"
 #include "list.h"
+#include "memory.h"
 
 #include <assert.h>
 #include <string.h>
@@ -54,7 +55,6 @@
 #include <unistd.h>
 #include <time.h>
 #include <fcntl.h>
-#include "memdebug.h"
 
 dlink_list glines;
 

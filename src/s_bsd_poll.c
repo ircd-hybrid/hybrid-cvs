@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_poll.c,v 7.27 2001/01/08 15:37:02 db Exp $
+ *  $Id: s_bsd_poll.c,v 7.28 2001/01/11 05:32:06 a1kmm Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -48,6 +48,7 @@
 #include "send.h"
 #include "s_debug.h"
 #include "s_bsd.h"
+#include "memory.h"
 
 #include <assert.h>
 #include <stdio.h>
@@ -65,7 +66,6 @@
 #include <sys/resource.h>
 #include <sys/param.h>    /* NOFILE */
 #include <arpa/inet.h>
-#include "memdebug.h"
 
 /*
  * Stuff for poll()

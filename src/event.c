@@ -3,7 +3,7 @@
  *
  * This code was borrowed from the squid web cache by Adrian Chadd.
  *
- * $Id: event.c,v 7.11 2001/01/05 15:27:19 toot Exp $
+ * $Id: event.c,v 7.12 2001/01/11 05:31:56 a1kmm Exp $
  *
  * Original header follows:
  *
@@ -58,7 +58,7 @@
 #include "event.h"
 #include "client.h"
 #include "send.h"
-#include "memdebug.h"
+#include "memory.h"
 
 /* The list of event processes */
 struct ev_entry

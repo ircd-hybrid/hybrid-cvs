@@ -5,7 +5,7 @@
  *
  * adrian chadd <adrian@creative.net.au>
  *
- * $Id: tools.c,v 7.14 2001/01/04 00:31:46 adrian Exp $
+ * $Id: tools.c,v 7.15 2001/01/11 05:32:11 a1kmm Exp $
  */
 
 #include <assert.h>
@@ -13,7 +13,6 @@
 #include <stdlib.h>
 
 #include "tools.h"
-#include "memdebug.h"
 
 
 /*

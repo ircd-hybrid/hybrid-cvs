@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 1.51 2001/01/06 18:12:04 davidt Exp $
+ *   $Id: m_whois.c,v 1.52 2001/01/11 05:31:51 a1kmm Exp $
  */
 #include "tools.h"
 #include "common.h"   /* bleah */
@@ -44,7 +44,6 @@
 
 #include <string.h>
 #include <time.h>
-#include "memdebug.h"
 
 static int do_whois(struct Client *cptr, struct Client *sptr,
                     int parc, char *parv[]);

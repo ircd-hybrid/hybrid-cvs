@@ -17,15 +17,15 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_signal.c,v 7.3 2000/12/21 13:39:43 db Exp $
+ * $Id: ircd_signal.c,v 7.4 2001/01/11 05:31:58 a1kmm Exp $
  */
 #include "ircd_signal.h"
 #include "ircd.h"         /* dorehash */
 #include "restart.h"      /* server_reboot */
 #include "s_log.h"
+#include "memory.h"
 
 #include <signal.h>
-#include "memdebug.h"
 
 /*
  * dummy_handler - don't know if this is really needed but if alarm is still

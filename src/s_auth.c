@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.c,v 7.38 2001/01/09 15:10:29 db Exp $
+ *   $Id: s_auth.c,v 7.39 2001/01/11 05:32:05 a1kmm Exp $
  *
  * Changes:
  *   July 6, 1999 - Rewrote most of the code here. When a client connects
@@ -45,6 +45,7 @@
 #include "s_log.h"
 #include "s_stats.h"
 #include "send.h"
+#include "memory.h"
 
 #include <netdb.h>               /* struct hostent */
 #include <string.h>
@@ -56,7 +57,6 @@
 #include <sys/socket.h>
 #include <sys/file.h>
 #include <sys/ioctl.h>
-#include "memdebug.h"
 
 /*
  * a bit different approach

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.46 2001/01/07 03:34:45 davidt Exp $
+ *   $Id: m_message.c,v 1.47 2001/01/11 05:31:50 a1kmm Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -135,9 +135,9 @@ free_target_table(void)
 	int i;
 	
 	for (i = 0; i < target_table_size; i++) 
-		free (target_table[i]);
+		MyFree (target_table[i]);
 	
-	free(target_table);
+	MyFree(target_table);
 	target_table = NULL;
 }
 
@@ -321,8 +321,8 @@ static int build_target_list(int p_or_n,
 	    {
 	      if( !duplicate_ptr(chptr, *targets, i) ) 
 		{
-			*targets = realloc(*targets, sizeof(struct entity *) * (i + 1));
-			(*targets)[i] = malloc (sizeof (struct entity));
+			*targets = MyRealloc(*targets, sizeof(struct entity *) * (i + 1));
+			(*targets)[i] = MyMalloc (sizeof (struct entity));
 			
 		  (*targets)[i]->ptr = (void *)chptr;
 		  (*targets)[i++]->type = ENTITY_CHANNEL;
@@ -379,8 +379,8 @@ static int build_target_list(int p_or_n,
 	    {
 	      if( !duplicate_ptr(chptr, *targets, i) )
 		{
-                  *targets = realloc(*targets, sizeof(struct entity *) * (i + 1));
-                  (*targets)[i] = malloc (sizeof (struct entity));
+                  *targets = MyRealloc(*targets, sizeof(struct entity *) * (i + 1));
+                  (*targets)[i] = MyMalloc (sizeof (struct entity));
 		  (*targets)[i]->ptr = (void *)chptr;
 		  (*targets)[i]->type = ENTITY_CHANOPS_ON_CHANNEL;
 		  (*targets)[i++]->flags = type;
@@ -413,8 +413,8 @@ static int build_target_list(int p_or_n,
 	{
 	  if( !duplicate_ptr(acptr, *targets, i) )
 	    {
-			*targets = realloc(*targets, sizeof(struct entity *) * (i + 1));
-			(*targets)[i] = malloc (sizeof (struct entity));
+			*targets = MyRealloc(*targets, sizeof(struct entity *) * (i + 1));
+			(*targets)[i] = MyMalloc (sizeof (struct entity));
 
 	      (*targets)[i]->ptr = (void *)acptr;
 	      (*targets)[i]->type = ENTITY_CLIENT;

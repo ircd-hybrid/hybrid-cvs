@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: ircd_defs.h,v 7.10 2000/12/30 23:10:11 db Exp $
+ * $Id: ircd_defs.h,v 7.11 2001/01/11 05:31:43 a1kmm Exp $
  *
  * ircd_defs.h - Global size definitions for record entries used
  * througout ircd. Please think 3 times before adding anything to this
@@ -32,6 +32,7 @@
 #  error Incorrect config.h for this revision of ircd.
 #endif
 
+#define MEMDEBUG
 #define HOSTLEN         63      /* Length of hostname.  Updated to         */
                                 /* comply with RFC1123                     */
 

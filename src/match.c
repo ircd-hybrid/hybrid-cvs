@@ -22,7 +22,7 @@
  * Cleanup of collapse and match
  * Moved static calls variable to match
  * Added asserts for null pointers
- * $Id: match.c,v 7.10 2001/01/01 16:29:50 davidt Exp $
+ * $Id: match.c,v 7.11 2001/01/11 05:32:00 a1kmm Exp $
  *
  */
 #include "irc_string.h"
@@ -33,7 +33,6 @@
 #include <ctype.h>
 #include <stdlib.h>
 #include "ircd.h"
-#include "memdebug.h"
 /*
 **  Compare if a given string (name) matches the given
 **  mask (which can contain wild cards: '*' - match any

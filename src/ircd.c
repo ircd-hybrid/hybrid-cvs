@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.99 2001/01/05 20:37:32 toot Exp $
+ * $Id: ircd.c,v 7.100 2001/01/11 05:31:57 a1kmm Exp $
  */
 #include "tools.h"
 #include "ircd.h"
@@ -56,6 +56,7 @@
 #include "setup.h"
 #include "whowas.h"
 #include "modules.h"
+#include "memory.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -76,8 +77,6 @@
 #ifdef USE_GETTEXT
 #include <libintl.h>
 #endif
-
-#include "memdebug.h"
 
 
 /*

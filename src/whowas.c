@@ -16,7 +16,7 @@
 *   along with this program; if not, write to the Free Software
 *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 *
-*   $Id: whowas.c,v 7.9 2000/12/30 06:47:29 lusky Exp $
+*   $Id: whowas.c,v 7.10 2001/01/11 05:32:12 a1kmm Exp $
 */
 #include "whowas.h"
 #include "client.h"
@@ -30,11 +30,11 @@
 #include "s_user.h"
 #include "send.h"
 #include "s_conf.h"
+#include "memory.h"
 
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>
-#include "memdebug.h"
 
 /* internally defined function */
 static void add_whowas_to_clist(struct Whowas **, struct Whowas *);

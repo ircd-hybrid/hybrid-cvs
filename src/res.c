@@ -4,7 +4,7 @@
  * shape or form. The author takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: res.c,v 7.37 2001/01/10 01:00:28 toot Exp $
+ * $Id: res.c,v 7.38 2001/01/11 05:32:04 a1kmm Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -36,12 +36,12 @@
 #include <sys/socket.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include "memory.h"
 
 #include <arpa/nameser.h>
 #include <resolv.h>
 #include <netdb.h>
 #include <arpa/inet.h>
-#include "memdebug.h"
 
 #include <limits.h>
 #if (CHAR_BIT != 8)

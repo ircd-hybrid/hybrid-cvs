@@ -19,18 +19,18 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: oldparse.c,v 1.20 2001/01/05 07:47:27 a1kmm Exp $
+ *  $Id: oldparse.c,v 1.21 2001/01/11 05:32:03 a1kmm Exp $
  */
 #include "tools.h"
 #include "s_log.h"
 #include "s_conf.h"
 #include "client.h"
 #include "irc_string.h"
+#include "memory.h"
 
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include "memdebug.h"
 
 static char *getfield(char *newline);
 

@@ -43,7 +43,7 @@
  *
  * Diane Bruce -db (db@db.net)
  *
- * $Id: mtrie_conf.c,v 7.21 2001/01/10 22:59:16 db Exp $
+ * $Id: mtrie_conf.c,v 7.22 2001/01/11 05:32:02 a1kmm Exp $
  */
 #include "mtrie_conf.h"
 #include "class.h"
@@ -55,11 +55,11 @@
 #include "numeric.h"
 #include "s_conf.h"
 #include "send.h"
+#include "memory.h"
 
 #include <string.h>
 #include <stdlib.h>
 #include <assert.h>
-#include "memdebug.h"
 
 static int stack_pointer;              /* dns piece stack */
 static char *dns_stack[MAX_TLD_STACK];

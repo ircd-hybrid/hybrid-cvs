@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_log.c,v 7.17 2000/12/23 17:02:50 ejb Exp $
+ *   $Id: s_log.c,v 7.18 2001/01/11 05:32:08 a1kmm Exp $
  */
 #include "client.h"	/* Needed for struct Client */
 #include "s_log.h"
@@ -30,6 +30,7 @@
 #include "s_misc.h"
 #include "event.h"	/* Needed for EVH etc. */
 #include "s_conf.h"
+#include "memory.h"
 
 #include <assert.h>
 #include <errno.h>
@@ -39,7 +40,6 @@
 #include <string.h>
 #include <syslog.h>
 #include <unistd.h>
-#include "memdebug.h"
 
 
 #define LOG_BUFSIZE 2048 

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.118 2001/01/06 17:46:30 davidt Exp $
+ *   $Id: s_serv.c,v 7.119 2001/01/11 05:32:08 a1kmm Exp $
  */
 #include "tools.h"
 #include "s_serv.h"
@@ -48,6 +48,7 @@
 #include "send.h"
 #include "client.h"
 #include "s_debug.h"
+#include "memory.h"
 
 #include <assert.h>
 #include <string.h>
@@ -55,7 +56,6 @@
 #include <errno.h>
 #include <time.h>
 #include <netdb.h>
-#include "memdebug.h"
 
 #define MIN_CONN_FREQ 300
 

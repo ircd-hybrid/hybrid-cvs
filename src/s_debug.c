@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_debug.c,v 7.35 2001/01/04 20:36:53 a1kmm Exp $
+ *   $Id: s_debug.c,v 7.36 2001/01/11 05:32:07 a1kmm Exp $
  */
 #include "tools.h"
 #include "s_debug.h"
@@ -38,6 +38,7 @@
 #include "scache.h"
 #include "send.h"
 #include "whowas.h"
+#include "memory.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -48,7 +49,6 @@
 #include <sys/file.h>
 #include <sys/param.h>
 #include <sys/resource.h>
-#include "memdebug.h"
 
 extern  void    count_ip_hash(int *,u_long *);    /* defined in s_conf.c */
 

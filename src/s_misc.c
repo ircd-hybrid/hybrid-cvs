@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_misc.c,v 7.12 2000/12/30 06:03:46 lusky Exp $
+ *  $Id: s_misc.c,v 7.13 2001/01/11 05:32:08 a1kmm Exp $
  */
 #include "s_misc.h"
 #include "client.h"
@@ -34,6 +34,7 @@
 #include "s_conf.h"
 #include "s_serv.h"
 #include "send.h"
+#include "memory.h"
 
 #include <string.h>
 #include <fcntl.h>
@@ -42,7 +43,6 @@
 #include <sys/param.h>
 #include <time.h>
 #include <unistd.h>
-#include "memdebug.h"
 
 
 static char* months[] = {

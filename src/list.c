@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu, Computing Center and Jarkko Oikarinen
  *
- * $Id: list.c,v 7.21 2001/01/06 05:28:35 ejb Exp $
+ * $Id: list.c,v 7.22 2001/01/11 05:31:59 a1kmm Exp $
  */
 #include "tools.h"
 #include "blalloc.h"
@@ -35,10 +35,10 @@
 #include "restart.h"
 #include "s_log.h"
 #include "send.h"
+#include "memory.h"
 
 #include <string.h>
 #include <stdlib.h>
-#include "memdebug.h"
 
 /*
  * re-written to use Wohali (joant@cadence.com)

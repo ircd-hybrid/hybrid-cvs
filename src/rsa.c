@@ -19,11 +19,11 @@
  *
  *
  *
- * $Id: rsa.c,v 7.4 2000/12/31 23:22:22 davidt Exp $
+ * $Id: rsa.c,v 7.5 2001/01/11 05:32:05 a1kmm Exp $
  */
 
 #include <string.h>
-#include "memdebug.h"
+#include "memory.h"
 
 #ifdef OPENSSL
 
