@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.203 2002/07/20 15:47:53 leeh Exp $
+ *  $Id: s_user.c,v 7.204 2002/08/08 15:43:27 bill Exp $
  */
 
 #include "stdinc.h"
@@ -787,6 +787,16 @@ report_and_set_user_flags(struct Client *source_p,struct ConfItem *aconf)
       SetExemptKline(source_p);
       sendto_one(source_p,
          ":%s NOTICE %s :*** You are exempt from K/D/G lines. congrats.",
+                 me.name,source_p->name);
+    }
+  /* The else here is to make sure that G line exempt users
+   * do not get noticed twice.
+   */
+  else if (IsConfExemptGline(aconf))
+    {
+      SetExemptGline(source_p);
+      sendto_one(source_p,
+         ":%S NOTICE %s :*** You are exempt from G lines.",
                  me.name,source_p->name);
     }
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_join.c,v 1.89 2002/08/07 17:59:20 androsyn Exp $
+ *  $Id: m_join.c,v 1.90 2002/08/08 15:43:24 bill Exp $
  */
 
 #include "stdinc.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&join_msgtab);
 }
-const char *_version = "$Revision: 1.89 $";
+const char *_version = "$Revision: 1.90 $";
 
 #endif
 static void do_join_0(struct Client *client_p, struct Client *source_p);
@@ -188,7 +188,7 @@ m_join(struct Client *client_p,
       /* look for the channel */
       if((chptr = hash_find_channel(name)) != NULL)
 	{
-	  if(IsMember(chptr, source_p))
+          if(IsMember(source_p, chptr))
             return;
 	  if(splitmode && !IsOper(source_p) && (*name != '&') && 
              ConfigChannel.no_join_on_split)

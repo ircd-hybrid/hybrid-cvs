@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.315 2002/07/22 05:08:02 db Exp $
+ *  $Id: s_conf.c,v 7.316 2002/08/08 15:43:27 bill Exp $
  */
 
 #include "stdinc.h"
@@ -544,7 +544,7 @@ verify_access(struct Client* client_p, const char* username)
 	    }
 	  if (ConfigFileEntry.glines)
 	    {
-	      if (!IsConfExemptKline(aconf))
+	      if (!IsConfExemptKline(aconf) && !IsConfExemptGline(aconf))
 		{
 		  if (IsGotId(client_p))
 		    gkill_conf = find_gkill(client_p, client_p->username);
