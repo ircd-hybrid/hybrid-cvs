@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.159 2001/08/30 17:38:47 davidt Exp $
+ *   $Id: send.c,v 7.160 2001/09/18 21:57:01 davidt Exp $
  */
 
 #include <sys/types.h>
@@ -310,6 +310,10 @@ send_queued_write(int fd, void *data)
 #ifndef NDEBUG
       hdata.len = retlen;
       hook_call_event("iosend", &hdata);
+      if (to->localClient->buf_sendq.list.head)
+        hdata.data = 
+          ((buf_line_t *)to->localClient->buf_sendq.list.head->data)->buf +
+          to->localClient->buf_sendq.writeofs;
 #endif
       to->localClient->sendB += retlen;
       me.localClient->sendB += retlen;

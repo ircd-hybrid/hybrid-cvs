@@ -2,7 +2,7 @@
  * event.h - defines for event.c, the event system. This has been ported
  * from squid by adrian to simplify scheduling events.
  *
- * $Id: event.h,v 1.9 2001/09/12 05:39:48 habeeb Exp $
+ * $Id: event.h,v 1.10 2001/09/18 21:57:00 davidt Exp $
  */
 #ifndef __EVENT_H__
 #define __EVENT_H__
@@ -33,6 +33,7 @@ extern void eventAddIsh(const char *name, EVH *func, void *arg, time_t delta_ish
 extern void eventRun(void);
 extern time_t eventNextTime(void);
 extern void eventInit(void);
+extern void eventDelete(EVH *func, void *);
 extern int eventFind(EVH *func, void *);
 extern void set_back_events(time_t);
 
