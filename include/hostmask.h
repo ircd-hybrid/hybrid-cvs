@@ -15,16 +15,16 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- * $Id: hostmask.h,v 1.2 2001/02/05 02:29:05 db Exp $ 
+ * $Id: hostmask.h,v 1.3 2001/02/16 17:22:02 db Exp $ 
  */
 
 struct HostMaskEntry
 {
- int type;
- unsigned long precedence;
- char *hostmask;
- void *data;
- struct HostMaskEntry *next, *nexthash;
+  int type;
+  unsigned long precedence;
+  char *hostmask;
+  void *data;
+  struct HostMaskEntry *next;
 };
 
 void add_hostmask(const char *mask, int type, void *data);
