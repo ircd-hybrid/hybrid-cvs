@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.107 2003/05/10 04:05:06 michael Exp $
+ *  $Id: packet.c,v 7.108 2003/05/10 05:56:53 metalrock Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -411,7 +411,6 @@ read_packet(int fd, void *data)
   if (IsDefunct(client_p))
     return;
   
-  assert(lclient_p != NULL);
   fd_r = client_p->localClient->fd;
 
 #ifndef HAVE_SOCKETPAIR
