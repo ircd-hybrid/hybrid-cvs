@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_poll.c,v 7.40 2001/05/08 18:18:12 fl_ Exp $
+ *  $Id: s_bsd_poll.c,v 7.41 2001/05/09 08:08:27 a1kmm Exp $
  */
 #include "config.h"
 #ifdef USE_POLL
@@ -273,9 +273,6 @@ comm_select_fdlist(fdlist_t fdlist, time_t delay)
  PF *hdl;
  pollfd_list_t *pf = &pollfd_lists[fdlist];
   
- /* update current time */
- set_time();
-  
  for (;;)
  {
   /* XXX kill that +1 later ! -- adrian */
@@ -284,6 +281,7 @@ comm_select_fdlist(fdlist_t fdlist, time_t delay)
    break;
   if (ignoreErrno(errno))
    continue;
+  set_time();
   /* error! */
   return -1;
   /* NOTREACHED */
@@ -291,6 +289,7 @@ comm_select_fdlist(fdlist_t fdlist, time_t delay)
   
  /* update current time again, eww.. */
  set_time();
+ callbacks_called += num;
  
  if (num == 0)
   return 0;

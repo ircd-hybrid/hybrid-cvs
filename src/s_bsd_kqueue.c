@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_kqueue.c,v 1.13 2001/04/27 02:48:25 jdc Exp $
+ *  $Id: s_bsd_kqueue.c,v 1.14 2001/05/09 08:08:27 a1kmm Exp $
  */
 #include "config.h"
 #ifdef USE_KQUEUE
@@ -240,12 +240,15 @@ comm_select(time_t delay)
                 break;
             if (ignoreErrno(errno))
                 break;
+            set_time();
             return COMM_ERROR;
             /* NOTREACHED */
         }
-    
+
+        set_time();
         if (num == 0)
             continue;
+        callbacks_called += num;
         
         for (i = 0; i < num; i++) {
             int fd = (int) ke[i].ident;

@@ -19,7 +19,7 @@
  *
  * "ircd.h". - Headers file.
  *
- * $Id: ircd.h,v 7.29 2001/04/25 08:18:52 toot Exp $
+ * $Id: ircd.h,v 7.30 2001/05/09 08:08:16 a1kmm Exp $
  *
  */
 #ifndef INCLUDED_ircd_h
@@ -93,6 +93,7 @@ extern dlink_list persist_list;
 
 extern dlink_list lazylink_channels;
 extern dlink_list lazylink_nicks;
+extern int callbacks_called;
 
 extern int make_daemon(void);
 extern size_t get_maxrss(void);

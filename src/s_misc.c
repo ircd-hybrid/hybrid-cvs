@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_misc.c,v 7.23 2001/03/06 15:53:38 toot Exp $
+ *  $Id: s_misc.c,v 7.24 2001/05/09 08:08:27 a1kmm Exp $
  */
 #include "s_misc.h"
 #include "client.h"
@@ -66,7 +66,7 @@ char* date(time_t lclock)
   int        minswest;
 
   if (!lclock) 
-    time(&lclock);
+    lclock = CurrentTime;
   gm = gmtime(&lclock);
   memcpy((void *)&gmbuf, (void *)gm, sizeof(gmbuf));
   gm = &gmbuf;
@@ -99,7 +99,7 @@ const char* smalldate(time_t lclock)
   struct  tm      gmbuf;
 
   if (!lclock)
-    time(&lclock);
+    lclock = CurrentTime;
   gm = gmtime(&lclock);
   memcpy((void *)&gmbuf, (void *)gm, sizeof(gmbuf));
   gm = &gmbuf; 
