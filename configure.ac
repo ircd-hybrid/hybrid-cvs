@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.88 2003/12/05 23:33:21 metalrock Exp $
+dnl $Id: configure.ac,v 7.89 2004/06/23 08:24:28 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -8,7 +8,7 @@ dnl said functions need to be just about as complex as they already are.
 AC_PREREQ(2.57)
 
 dnl Sneaky way to get an Id tag into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.88 2003/12/05 23:33:21 metalrock Exp $])
+AC_COPYRIGHT([$Id: configure.ac,v 7.89 2004/06/23 08:24:28 joshk Exp $])
 
 AC_INIT([ircd-hybrid],[7-CURRENT])
 
@@ -1005,7 +1005,7 @@ if test "$shared_modules" = yes; then
 	dnl In the second stage, we link the modules via ld -b.
 	dnl Additionally, HPUX does not like -export-dynamic, it likes -E instead.
 	dnl -TimeMr14C
-	if test "$HPUX" = "yes" -a "$CC" != gcc; then
+	if test "$HPUX" = "yes" -a "$ac_cv_c_compiler_gnu" = no; then
 		AC_MSG_RESULT(HP-UX cc: +z -r -q -n)
 		PICFLAGS="+z -r -q -n -c"
 		AC_MSG_CHECKING([if +ESfic is required on this platform])
@@ -1019,7 +1019,7 @@ if test "$shared_modules" = yes; then
 
 		LDFLAGS="${LDFLAGS} -Wl,-E"
 	fi
-	if test "$Tru" = yes -a "$CC" != gcc; then
+	if test "$Tru" = yes -a "$ac_cv_c_compiler_gnu" = no; then
 		AC_MSG_RESULT([Tru64: -shared -expect_unresolved '*'])
 		PICFLAGS="-shared -expect_unresolved '*' "
 		LDFLAGS="-call_shared"
