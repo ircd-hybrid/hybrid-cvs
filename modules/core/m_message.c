@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.89 2002/04/27 17:59:30 leeh Exp $
+ *  $Id: m_message.c,v 1.90 2002/04/29 16:58:05 leeh Exp $
  */
 
 #include "handlers.h"
@@ -122,7 +122,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.89 $";
+const char *_version = "$Revision: 1.90 $";
 #endif
 
 /*
@@ -853,12 +853,8 @@ handle_opers(int p_or_n,
     /* Check if someones msg'ing opers@our.server */
     if (!strcmp(nick, "opers"))
     {
-#if 0
-      sendto_realops_flags(FLAGS_ALL, L_ALL, "To opers: From: %s!%s@%s: %s",
-                           source_p->name, source_p->username, source_p->host,
-                           text);
-#endif
-      sendto_wallops_flags(FLAGS_LOCOPS, source_p, "%s", text);
+      sendto_realops_flags(FLAGS_ALL, L_ALL, "To opers: From: %s: %s",
+                           source_p->name, text);
       return;
     }
 
