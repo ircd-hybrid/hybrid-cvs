@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.1 1999/08/02 04:27:37 tomh Exp $
+ * $Id: client.h,v 7.2 1999/08/03 01:16:15 tomh Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -109,7 +109,6 @@ struct Client
   struct Client*    next;
   struct Client*    prev;
   struct Client*    hnext;
-  struct Client*    idhnext;
 
 /* QS */
 
