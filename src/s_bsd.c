@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.61 2000/11/06 16:12:04 adrian Exp $
+ *  $Id: s_bsd.c,v 7.62 2000/11/06 22:23:21 adrian Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -496,9 +496,6 @@ read_packet(int fd, void *data)
   struct Client *cptr = data;
   int length = 0;
   int done;
-#ifdef REJECT_HOLD
-  static char buf[8192];
-#endif
 
   /*
    * Check for a dead connection here. This is done here for legacy
@@ -544,9 +541,6 @@ read_packet(int fd, void *data)
    * FLAGS_REJECT_HOLD should NEVER be set for non local client 
    */
   if (IsRejectHeld(cptr)) {
-    /* Flush the socket buffer so event IO systems don't go nuts -- adrian */
-    if (read(fd, buf, 8191) < 0)
-      error_exit_client(cptr, -1); /* whee .. */
     goto finish;
   }
 #endif
