@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_part.c,v 1.40 2001/04/19 21:18:56 fl_ Exp $
+ *   $Id: m_part.c,v 1.41 2001/04/19 22:00:14 fl_ Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -176,7 +176,7 @@ static void part_one_client(struct Client *client_p,
    */
   if(reason[0] && (is_any_op(chptr, source_p) || !MyConnect(source_p)) ||
      (can_send(chptr, source_p) > 0 && 
-      (source_p->firsttime + ConfigFileEntry.anti_spam_exit_message_time) > CurrentTime))
+      (source_p->firsttime + ConfigFileEntry.anti_spam_exit_message_time) < CurrentTime))
     {
       sendto_channel_remote_prefix(chptr, client_p, source_p, "PART %s :%s",
                               chptr->chname,
