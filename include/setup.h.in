@@ -48,7 +48,7 @@
 /* Define to 1 if you have the `crypto' library (-lcrypto). */
 #undef HAVE_LIBCRYPTO
 
-/* Define to 1 if you have the `z' library (-lz). */
+/* Define to 1 if zlib (-lz) is available. */
 #undef HAVE_LIBZ
 
 /* Define to 1 if you have the <mach-o/dyld.h> header file. */

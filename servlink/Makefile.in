@@ -1,7 +1,7 @@
 #
 # Makefile.in for servlink/src
 #
-# $Id: Makefile.in,v 1.20 2003/05/22 02:34:27 joshk Exp $
+# $Id: Makefile.in,v 1.21 2003/05/28 03:33:47 joshk Exp $
 #
 
 CC              = @CC@
@@ -40,7 +40,7 @@ SOURCES =     \
 
 OBJECTS = ${SOURCES:.c=.o}
 
-all: servlink
+all: .depend servlink
 
 build: all
 

@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.37 2003/05/28 03:14:33 joshk Exp $
+dnl $Id: configure.ac,v 7.38 2003/05/28 03:33:43 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -512,14 +512,14 @@ AC_HELP_STRING([--disable-zlib],[Disable ziplinks support]),
 [zlib=no],
 [
 	AC_CHECK_HEADER(zlib.h,[
-	AC_CHECK_LIB(z, zlibVersion)
+	AC_CHECK_LIB(z, zlibVersion,
+	[
+		AC_SUBST(ZLIB_LD, -lz)
+		AC_DEFINE(HAVE_LIBZ, 1, [Define to 1 if zlib (-lz) is available.])
+	]
+	)
 	])
 ])
-
-dnl Eliminate the need for a secondary variable
-if test "$ac_cv_lib_z_zlibVersion" = yes; then
-	AC_SUBST(ZLIB_LD, -lz)
-fi
 
 dnl IO Loop Selection
 dnl =================

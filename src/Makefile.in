@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.139 2003/05/25 23:41:40 joshk Exp $
+# $Id: Makefile.in,v 7.140 2003/05/28 03:33:49 joshk Exp $
 #
 @SET_MAKE@
 
@@ -111,7 +111,7 @@ BASE_SRCS =	\
 SRCS = ${BASE_SRCS} $(NETIO_SRC)
 OBJS = ${SRCS:.c=.o}
 
-all: ircd
+all: .depend ircd
 
 build: all
 
