@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_oper.c,v 1.50 2002/08/13 19:35:09 db Exp $
+ *  $Id: m_oper.c,v 1.51 2002/08/16 11:07:22 db Exp $
  */
 
 #include "stdinc.h"
@@ -74,7 +74,7 @@ _moddeinit(void)
   mod_del_cmd(&oper_msgtab);
 }
 
-const char *_version = "$Revision: 1.50 $";
+const char *_version = "$Revision: 1.51 $";
 #endif
 
 /*
@@ -216,20 +216,16 @@ ms_oper(struct Client *client_p, struct Client *source_p,
  * output       -
  */
 
-static struct ConfItem
-*find_password_aconf(char *name, struct Client *source_p)
+static struct ConfItem *
+find_password_aconf(char *name, struct Client *source_p)
 {
   struct ConfItem *aconf;
 
-  if (!(aconf = find_conf_exact(name, source_p->username, source_p->host,
-                                CONF_OPERATOR)) &&
-      !(aconf = find_conf_exact(name, source_p->username,
-                                source_p->localClient->sockhost,
-                                CONF_OPERATOR)))
-    {
-      return aconf;
-    }
-  return(aconf);
+  if ((aconf = find_conf_exact(name, source_p->username, source_p->host,
+			       CONF_OPERATOR)) != NULL)
+    return(aconf);
+  else
+    return(NULL);
 }
 
 /*
@@ -247,7 +243,7 @@ match_oper_password(char *password, struct ConfItem *aconf)
   char *encr;
 
   if (!aconf->status & CONF_OPERATOR)
-    return NO;
+    return (NO);
 
   /* XXX another #ifdef that should go */
 #ifdef CRYPT_OPER_PASSWORD
@@ -260,7 +256,7 @@ match_oper_password(char *password, struct ConfItem *aconf)
 
   /* passwd may be NULL pointer. Head it off at the pass... */
   if (aconf->passwd == NULL)
-    return NO;
+    return (NO);
 
   if (password && *aconf->passwd)
     encr = crypt(password, aconf->passwd);
@@ -271,7 +267,7 @@ match_oper_password(char *password, struct ConfItem *aconf)
 #endif  /* CRYPT_OPER_PASSWORD */
 
   if (strcmp(encr, aconf->passwd) == 0)
-    return YES;
+    return (YES);
   else
-    return YES;
+    return (NO);
 }
