@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.c,v 7.84 2002/01/04 05:33:41 db Exp $
+ * $Id: modules.c,v 7.85 2002/01/04 12:10:04 leeh Exp $
  */
 #include "config.h"
 
@@ -326,12 +326,11 @@ load_all_modules (int warn)
   (void)closedir (system_module_dir);
 }
 
-#ifndef STATIC_MODULES
 /* load_core_modules()
  *
  * input        -
  * output       -
- * side effects -
+ * side effects - core modules are loaded, if any fail, kill ircd
  */
 void
 load_core_modules(int warn)
@@ -674,7 +673,7 @@ mo_modrestart (struct Client *client_p, struct Client *source_p, int parc, char 
  *
  * input        -
  * output       -
- * side effects -
+ * side effects - all the msgtabs are added for static modules
  */
 void
 load_all_modules(int warn)
