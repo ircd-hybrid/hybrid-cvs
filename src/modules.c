@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.148 2004/02/28 06:12:27 metalrock Exp $
+ *  $Id: modules.c,v 7.149 2004/03/03 05:06:44 db Exp $
  */
 
 #include "stdinc.h"
@@ -51,8 +51,7 @@
 
 #ifndef STATIC_MODULES
 
-struct module **modlist = NULL;
-static char modlist_valid = 0;
+dlink_list mod_list = { NULL, NULL, 0 };
 static char *base_autoload = NULL;
 
 static const char *core_module_table[] =
@@ -72,9 +71,7 @@ static const char *core_module_table[] =
   NULL
 };
 
-#define MODS_INCREMENT 10
 int num_mods = 0;
-int max_mods = MODS_INCREMENT;
 
 static dlink_list mod_paths = { NULL, NULL, 0 };
 
@@ -146,24 +143,6 @@ mod_find_path(const char *path)
   }
 
   return(NULL);
-}
-
-/* init_modlist()
- * Convenience function to malloc the modlist when necessary.
- *
- * input - nothing
- * output - nothing
- * side effect - modlist may have been malloc'd and modlist_valid set to 1.
- */
-static void
-init_modlist (void)
-{
-  if (!modlist_valid)
-  {
-    modlist = (struct module **)MyMalloc(sizeof(struct module) *
-                                        (MODS_INCREMENT));
-    modlist_valid = 1;
-  }
 }
 
 /* mod_set_base()
@@ -239,18 +218,20 @@ mod_clear_paths(void)
  * output       -
  * side effects -
  */
-int 
+dlink_node *
 findmodule_byname(const char *name)
 {
-  int i;
+  dlink_node *ptr;
+  struct module *modp;
 
-  for (i = 0; i < num_mods; i++) 
+  DLINK_FOREACH(ptr, mod_list.head)
   {
-    if (irccmp(modlist[i]->name, name) == 0)
-      return(i);
+    modp = ptr->data;
+    if (irccmp(modp->name, name) == 0)
+      return(ptr);
   }
 
-  return(-1);
+  return(NULL);
 }
 
 /* load_all_modules()
@@ -269,9 +250,6 @@ load_all_modules(int warn)
   unsigned int mq_len;
   
   modules_init();
-  init_modlist();
-  
-  max_mods = MODS_INCREMENT;
   system_module_dir = opendir(base_autoload);
 
   if (system_module_dir == NULL)
@@ -361,8 +339,6 @@ load_one_module(char *path, int coremodule)
   struct stat statbuf;
   unsigned int m_len;
 
-  init_modlist();
-  
   DLINK_FOREACH(ptr, mod_paths.head)
   {
     mpath = ptr->data;
@@ -415,7 +391,7 @@ mo_modload(struct Client *client_p, struct Client *source_p,
 
   m_bn = basename(parv[1]);
 
-  if (findmodule_byname(m_bn) != -1)
+  if (findmodule_byname(m_bn) != NULL)
   {
     sendto_one(source_p, ":%s NOTICE %s :Module %s is already loaded",
                me.name, source_p->name, m_bn);
@@ -431,7 +407,8 @@ mo_modunload(struct Client *client_p, struct Client *source_p,
              int parc, char *parv[])
 {
   char *m_bn;
-  int modindex;
+  dlink_node *ptr;
+  struct module *modp;
 
   if (!IsAdmin(source_p))
   {
@@ -442,20 +419,24 @@ mo_modunload(struct Client *client_p, struct Client *source_p,
 
   m_bn = basename(parv[1]);
 
-  if ((modindex = findmodule_byname(m_bn)) == -1)
+  if ((ptr = findmodule_byname(m_bn)) == NULL)
   {
     sendto_one(source_p, ":%s NOTICE %s :Module %s is not loaded",
                me.name, source_p->name, m_bn);
     return;
   }
 
-  if (modlist[modindex]->core == 1)
+  modp = ptr->data;
+
+  if (modp->core == 1)
   {
     sendto_one(source_p,
                ":%s NOTICE %s :Module %s is a core module and may not be unloaded",
 	       me.name, source_p->name, m_bn);
     return;
   }
+
+  /* XXX might want to simply un dlink it here */
 
   if (unload_one_module(m_bn, 1) == -1)
   {
@@ -470,7 +451,8 @@ mo_modreload(struct Client *client_p, struct Client *source_p,
              int parc, char *parv[])
 {
   char *m_bn;
-  int modindex;
+  dlink_node *ptr;
+  struct module *modp;
   int check_core;
 
   if (!IsAdmin(source_p))
@@ -482,14 +464,15 @@ mo_modreload(struct Client *client_p, struct Client *source_p,
 
   m_bn = basename(parv[1]);
 
-  if ((modindex = findmodule_byname(m_bn)) == -1)
+  if ((ptr = findmodule_byname(m_bn)) == NULL)
   {
     sendto_one(source_p, ":%s NOTICE %s :Module %s is not loaded",
                me.name, source_p->name, m_bn);
     return;
   }
 
-  check_core = modlist[modindex]->core;
+  modp = ptr->data;
+  check_core = modp->core;
 
   if (unload_one_module(m_bn, 1) == -1)
   {
@@ -512,7 +495,8 @@ static void
 mo_modlist(struct Client *client_p, struct Client *source_p,
 	   int parc, char *parv[])
 {
-  int i;
+  dlink_node *ptr;
+  struct module *modp;
 
   if (!IsAdmin(source_p))
   {
@@ -521,22 +505,24 @@ mo_modlist(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  for (i = 0; i < num_mods; i++)
+  DLINK_FOREACH(ptr, mod_list.head)
   {
+    modp = ptr->data;
+
     if (parc > 1)
     {
-      if (match(parv[1], modlist[i]->name))
+      if (match(parv[1], modp->name))
       {
         sendto_one(source_p, form_str(RPL_MODLIST), me.name, parv[0],
-                   modlist[i]->name, modlist[i]->address,
-                   modlist[i]->version, modlist[i]->core?"(core)":"");
+                   modp->name, modp->address,
+                   modp->version, modp->core?"(core)":"");
       }
     }
     else
     {
       sendto_one(source_p, form_str(RPL_MODLIST), me.name, parv[0],
-                 modlist[i]->name, modlist[i]->address,
-                 modlist[i]->version, modlist[i]->core?"(core)":"");
+                 modp->name, modp->address,
+                 modp->version, modp->core?"(core)":"");
     }
   }
 
@@ -549,7 +535,10 @@ static void
 mo_modrestart(struct Client *client_p, struct Client *source_p, int parc, char *parv[])
 {
   int modnum;
-
+  dlink_node *ptr;
+  dlink_node *tptr;
+  struct module *modp;
+  
   if (!IsAdmin(source_p))
   {
     sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
@@ -562,8 +551,11 @@ mo_modrestart(struct Client *client_p, struct Client *source_p, int parc, char *
 
   modnum = num_mods;
 
-  while (num_mods)
-    unload_one_module(modlist[0]->name, 0);
+  DLINK_FOREACH_SAFE(ptr, tptr, mod_paths.head)
+  {
+    modp = ptr->data;
+    unload_one_module(modp->name, 0);
+  }
 
   load_all_modules(0);
   load_core_modules(0);

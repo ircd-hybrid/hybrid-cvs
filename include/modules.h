@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.h,v 7.53 2003/11/01 06:57:38 joshk Exp $
+ *  $Id: modules.h,v 7.54 2004/03/03 05:06:42 db Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -42,6 +42,7 @@
 #ifndef STATIC_MODULES
 struct module
 {
+  dlink_node node;
   char *name;
   const char *version;
   void *address;
@@ -74,7 +75,7 @@ extern void _moddeinit(void);
 extern int unload_one_module(char *, int);
 extern int load_one_module(char *, int);
 extern int load_a_module(char *, int, int);
-extern int findmodule_byname(const char *);
+extern dlink_node *findmodule_byname(const char *);
 extern void modules_init(void);
 
 #else /* STATIC_MODULES */

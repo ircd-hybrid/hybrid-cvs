@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- * $Id: dynlink.c,v 7.15 2003/09/14 21:39:06 bill Exp $
+ * $Id: dynlink.c,v 7.16 2004/03/03 05:06:44 db Exp $
  *
  */
 #include "stdinc.h"
@@ -34,13 +34,8 @@
 #define RTLD_NOW RTLD_LAZY /* openbsd deficiency */
 #endif
 
-extern struct module **modlist;
+extern dlink_list mod_list;
 extern int num_mods;
-extern int max_mods;
-
-static void increase_modlist(void);
-
-#define MODS_INCREMENT 10
 
 static char unknown_ver[] = "<unknown>";
 
@@ -101,14 +96,16 @@ static const char *myErrorTable[] =
   NULL
 };
 
-void undefinedErrorHandler(const char *symbolName)
+void
+undefinedErrorHandler(const char *symbolName)
 {
   sendto_realops_flags(UMODE_ALL, L_ALL, "Undefined symbol: %s", symbolName);
   ilog(L_WARN, "Undefined symbol: %s", symbolName);
   return;
 }
 
-NSModule multipleErrorHandler(NSSymbol s, NSModule old, NSModule new)
+NSModule
+multipleErrorHandler(NSSymbol s, NSModule old, NSModule new)
 {
   /* XXX
   ** This results in substantial leaking of memory... Should free one
@@ -122,8 +119,9 @@ NSModule multipleErrorHandler(NSSymbol s, NSModule old, NSModule new)
   return(new);
 }
 
-void linkEditErrorHandler(NSLinkEditErrors errorClass, int errnum,
-                          const char *fileName, const char *errorString)
+void
+linkEditErrorHandler(NSLinkEditErrors errorClass, int errnum,
+		     const char *fileName, const char *errorString)
 {
   sendto_realops_flags(UMODE_ALL, L_ALL, "Link editor error: %s for %s",
                        errorString, fileName);
@@ -131,12 +129,14 @@ void linkEditErrorHandler(NSLinkEditErrors errorClass, int errnum,
   return;
 }
 
-char *dlerror(void)
+char *
+dlerror(void)
 {
   return(myDlError == NSObjectFileImageSuccess ? NULL : myErrorTable[myDlError % 7]);
 }
 
-void *dlopen(char *filename, int unused)
+void *
+dlopen(char *filename, int unused)
 {
   NSObjectFileImage myImage;
   NSModule myModule;
@@ -164,13 +164,15 @@ void *dlopen(char *filename, int unused)
   return((void *)myModule);
 }
 
-int dlclose(void *myModule)
+int
+dlclose(void *myModule)
 {
   NSUnLinkModule(myModule, FALSE);
   return(0);
 }
 
-void *dlsym(void *myModule, char *mySymbolName)
+void *
+dlsym(void *myModule, char *mySymbolName)
 {
   NSSymbol mySymbol;
 
@@ -190,19 +192,22 @@ void *dlsym(void *myModule, char *mySymbolName)
 int
 unload_one_module(char *name, int warn)
 {
-  int modindex;
+  dlink_node *ptr;
+  struct module *modp;
 
-  if ((modindex = findmodule_byname(name)) == -1) 
+  if ((ptr = findmodule_byname(name)) == NULL) 
     return(-1);
 
-  if (modlist[modindex]->modremove) (*(modlist[modindex]->modremove))();
+  modp = ptr->data;
+
+  if (modp->modremove) (*(modp->modremove))();
 
 #ifdef HAVE_SHL_LOAD
     /* shl_* and friends have a slightly different format than dl*. But it does not
      * require creation of a totally new modules.c, instead proper usage of
      * defines solve this case. -TimeMr14C
      */
-  shl_unload((shl_t) & (modlist[modindex]->address));
+  shl_unload((shl_t) & (modp->address));
 #else
   /* We use FreeBSD's dlfunc(3) interface, or fake it as we
    * used to here if it isn't there.  The interface should
@@ -210,11 +215,12 @@ unload_one_module(char *name, int warn)
    * providing something guaranteed to do the right thing here.
    *          -jmallett
    */
-  dlclose(modlist[modindex]->address);
+  dlclose(modp->address);
 #endif
-  MyFree(modlist[modindex]->name);
-  memcpy(&modlist[modindex], &modlist[modindex+1],
-         sizeof(struct module) * ((num_mods-1) - modindex));
+
+  dlinkDelete(ptr, &mod_list);
+  MyFree(modp->name);
+  MyFree(modp);
 
   if (num_mods != 0)
     num_mods--;
@@ -247,10 +253,11 @@ load_a_module(char *path, int warn, int core)
   void (*mod_deinit)(void) = NULL;
   char **verp;
   char *ver;
+  struct module *modp;
 
   mod_basename = basename(path);
 
-  if (findmodule_byname(mod_basename) != -1)
+  if (findmodule_byname(mod_basename) != NULL)
     return(1);
 
 #ifdef HAVE_SHL_LOAD
@@ -339,14 +346,13 @@ load_a_module(char *path, int warn, int core)
     ver = *verp;
 #endif
 
-  increase_modlist();
-
-  modlist[num_mods] = MyMalloc(sizeof(struct module));
-  modlist[num_mods]->address = tmpptr;
-  modlist[num_mods]->version = ver;
-  modlist[num_mods]->core    = core;
-  modlist[num_mods]->modremove = mod_deinit;
-  DupString(modlist[num_mods]->name, mod_basename);
+  modp = MyMalloc(sizeof(struct module));
+  modp->address = tmpptr;
+  modp->version = ver;
+  modp->core    = core;
+  modp->modremove = mod_deinit;
+  DupString(modp->name, mod_basename);
+  dlinkAdd(modp, &modp->node, &mod_list);
   num_mods++;
 
   initfunc();
@@ -361,28 +367,5 @@ load_a_module(char *path, int warn, int core)
   }
 
   return(0);
-}
-
-/* increase_modlist()
- *
- * inputs	- NONE
- * output	- NONE
- * side effects	- expand the size of modlist if necessary
- */
-static void increase_modlist(void)
-{
-  struct module **new_modlist = NULL;
-
-  if ((num_mods + 1) < max_mods)
-    return;
-
-  new_modlist = (struct module **)MyMalloc(sizeof(struct module) *
-                                           (max_mods + MODS_INCREMENT));
-  memcpy((void *)new_modlist,
-         (void *)modlist, sizeof(struct module) * num_mods);
-
-  MyFree(modlist);
-  modlist = new_modlist;
-  max_mods += MODS_INCREMENT;
 }
 
