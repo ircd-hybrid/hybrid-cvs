@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.108 2000/12/06 17:01:17 db Exp $
+ * $Id: channel.c,v 7.109 2000/12/07 01:42:52 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -267,11 +267,7 @@ static  int     del_id(struct Channel *chptr, char *banid, int type)
 	    chptr->num_bed = 0;
 
 	  dlinkDelete(ban, list);
-
-	  if( ban == list->head )
-	    list->head = list->tail = NULL;
-
-	  MyFree(ban);
+	  free_dlink_node(ban);
 
           break;
         }

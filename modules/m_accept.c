@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_accept.c,v 1.3 2000/12/07 00:23:14 db Exp $
+ *   $Id: m_accept.c,v 1.4 2000/12/07 01:42:49 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -92,6 +92,7 @@ int m_accept(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 
   if (add == 1)
     {
+      del_from_accept(source,sptr);
       add_to_accept(source,sptr);
       sendto_one(sptr, ":%s NOTICE %s :Now allowing %s", 
 		 me.name, parv[0], source->name);
