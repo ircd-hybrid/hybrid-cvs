@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.478 2003/09/25 21:17:04 bill Exp $
+ *  $Id: s_conf.c,v 7.479 2003/09/25 22:25:13 bill Exp $
  */
 
 #include "stdinc.h"
@@ -234,11 +234,6 @@ make_conf_item(ConfType type)
       dlinkAdd(conf, &conf->node, &gline_items);
       break;
 
-    case GDENY_TYPE:
-      status = CONF_GDENY;
-      dlinkAdd(conf, &conf->node, &gdeny_items);
-      break;
-
     case KLINE_TYPE:
       status = CONF_KILL;
       break;
@@ -279,6 +274,12 @@ make_conf_item(ConfType type)
     conf = (struct ConfItem *)MyMalloc(sizeof(struct ConfItem) +
                                        sizeof(struct MatchItem));
     dlinkAdd(conf, &conf->node, &uconf_items);
+    break;
+
+  case GDENY_TYPE:
+    conf = (struct ConfItem *)MyMalloc(sizeof(struct ConfItem) +
+                                       sizeof(struct MatchItem));
+    dlinkAdd(conf, &conf->node, &gdeny_items);
     break;
 
   case XLINE_TYPE:

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.355 2003/09/25 21:17:04 bill Exp $
+ *  $Id: ircd_parser.y,v 1.356 2003/09/25 22:25:12 bill Exp $
  */
 
 %{
@@ -370,6 +370,7 @@ conf_item:        admin_entry
                 | deny_entry
 		| exempt_entry
 		| general_entry
+		| gline_entry
                 | gecos_entry
                 | modules_entry
                 | error ';'
@@ -2959,13 +2960,13 @@ gline_enable: ENABLE '=' TBOOL ';'
     ConfigFileEntry.glines = yylval.number;
 };
 
-gline_duration: DURATION '=' timespec ';';
+gline_duration: DURATION '=' timespec ';'
 {
   if (ypass == 2)
     ConfigFileEntry.gline_time = $3;
 };
 
-gline_user: USER '=' QSTRING ';';
+gline_user: USER '=' QSTRING ';'
 {
   if (ypass == 2)
   {
@@ -2988,7 +2989,7 @@ gline_user: USER '=' QSTRING ';';
   }
 };
 
-gline_server: NAME '=' QSTRING ';';
+gline_server: NAME '=' QSTRING ';'
 {
   if (ypass == 2)  
   {
@@ -3003,41 +3004,45 @@ gline_action: ACTION
     yy_aconf->flags = 0;
 } '=' gdeny_types ';'
 {
-  struct CollectItem *yy_tmp;
-  dlink_node *ptr, *next_ptr;
-
-  /* some idiot said to allow and reject it, default to reject */
-  if (yy_aconf->flags & (GDENY_REJECT|GDENY_ALLOW))
-    yy_aconf->flags &= ~GDENY_ALLOW; 
-
-  DLINK_FOREACH_SAFE(ptr, next_ptr, col_conf_list.head)
+  if (ypass == 2)
   {
-    struct AccessItem *new_aconf;
-    struct ConfItem *new_conf;
+    struct CollectItem *yy_tmp;
+    dlink_node *ptr, *next_ptr;
 
-    yy_tmp = ptr->data;
-    new_conf = make_conf_item(GDENY_TYPE);
-    new_aconf = (struct AccessItem *)map_to_conf(new_conf);
+    /* some idiot said to allow and reject it, default to reject */
+    if (yy_aconf->flags & (GDENY_REJECT|GDENY_ALLOW))
+      yy_aconf->flags &= ~GDENY_ALLOW; 
 
-    new_aconf->flags = yy_aconf->flags;
+    DLINK_FOREACH_SAFE(ptr, next_ptr, col_conf_list.head)
+    {
+      struct AccessItem *new_aconf;
+      struct ConfItem *new_conf;
 
-    if (yy_conf->name != NULL)
-      DupString(new_conf->name, yy_conf->name);
-    else
-      DupString(new_aconf->user, "*");
-    if (yy_aconf->user != NULL)
-      DupString(new_aconf->user, yy_tmp->user);
-    else   
-      DupString(new_aconf->user, "*");
-    if (yy_aconf->host != NULL)
-      DupString(new_aconf->host, yy_tmp->host);
-    else
-      DupString(new_aconf->host, "*");
+      yy_tmp = ptr->data;
+      new_conf = make_conf_item(GDENY_TYPE);
+      new_aconf = (struct AccessItem *)map_to_conf(new_conf);
 
-    dlinkDelete(&yy_tmp->node, &col_conf_list);
+      new_aconf->flags = yy_aconf->flags;
+
+      if (yy_conf->name != NULL)
+        DupString(new_aconf->user, yy_tmp->user);
+      else
+        DupString(new_aconf->user, "*");
+      if (yy_aconf->user != NULL)
+         DupString(new_aconf->user, yy_tmp->user);
+      else   
+        DupString(new_aconf->user, "*");
+      if (yy_aconf->host != NULL)
+        DupString(new_aconf->host, yy_tmp->host);
+      else
+        DupString(new_aconf->host, "*");
+
+      dlinkDelete(&yy_tmp->node, &col_conf_list);
+    }
+    yy_conf = make_conf_item(GDENY_TYPE);
+    yy_aconf = (struct AccessItem *)map_to_conf(yy_conf);
+    yy_aconf->flags = 0;
   }
-  yy_conf = NULL;
-  yy_aconf = NULL;
 };
 
 gdeny_types: gdeny_types ',' gdeny_type_item | gdeny_type_item;

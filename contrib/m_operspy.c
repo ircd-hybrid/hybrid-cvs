@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.47 2003/09/20 04:47:19 bill Exp $
+ *   $Id: m_operspy.c,v 1.48 2003/09/25 22:25:11 bill Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -117,7 +117,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.47 $";
+const char *_version = "$Revision: 1.48 $";
 #endif
 
 #ifdef OPERSPY_LOG
@@ -142,6 +142,8 @@ static void
 ms_operspy(struct Client *client_p, struct Client *source_p,
            int parc, char *parv[])
 {
+  assert(parc > 2);
+
 #ifdef OPERSPY_LOG
   operspy_log(source_p, parv[1], parv[2]);
 #endif
