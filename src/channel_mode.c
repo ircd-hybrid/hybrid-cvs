@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.48 2002/07/28 23:43:07 leeh Exp $
+ *  $Id: channel_mode.c,v 7.49 2002/07/29 00:27:28 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -1302,13 +1302,6 @@ chm_op(struct Client *client_p, struct Client *source_p,
 
   if (dir == MODE_ADD)
   {
-    for (i = 0; i < mode_count; i++)
-      if (mode_changes[i].letter == 'o' && mode_changes[i].dir == MODE_DEL
-          && mode_changes[i].client == targ_p)
-      {
-        mode_changes[i].letter = 0; /* clear the mode */
-        return;
-      }
 
 #ifndef REQUIRE_OANDV
     if (!wasnt_voiced && t_voice)
@@ -1509,14 +1502,6 @@ chm_halfop(struct Client *client_p, struct Client *source_p,
 
   if (dir == MODE_ADD)
   {
-    for (i = 0; i < mode_count; i++)
-      if (mode_changes[i].dir == MODE_DEL && mode_changes[i].letter == 'h'
-          && mode_changes[i].client == targ_p)
-      {
-        mode_changes[i].letter = 0;
-        return;
-      }
-
     if (!wasnt_voiced && t_voice)
     {
       mode_changes[mode_count].letter = 'v';
@@ -1630,16 +1615,6 @@ chm_voice(struct Client *client_p, struct Client *source_p,
 
   if (dir == MODE_ADD)
   {
-    for (i = 0; i < mode_count; i++)
-    {
-      if (mode_changes[i].dir == MODE_DEL && mode_changes[i].letter == 'v'
-          && mode_changes[i].client == targ_p)
-      {
-        mode_changes[i].letter = 0;
-	return;
-      }
-    }
-
     mode_changes[mode_count].letter = c;
     mode_changes[mode_count].dir = MODE_ADD;
     mode_changes[mode_count].caps = 0;
