@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.80 2001/01/20 07:25:47 db Exp $
+ * $Id: s_conf.h,v 7.81 2001/01/20 07:43:53 db Exp $
  */
 
 #include "setup.h"
@@ -315,7 +315,6 @@ extern  int     is_address(char *,unsigned long *,unsigned long *);
 extern  int     rehash (struct Client *, struct Client *, int);
 
 extern struct ConfItem* conf_add_server(struct ConfItem *,int);
-extern void conf_add_port(struct ConfItem *);
 extern void conf_add_class_to_conf(struct ConfItem *);
 extern void conf_delist_old_conf(struct ConfItem *);
 extern void conf_add_me(struct ConfItem *);

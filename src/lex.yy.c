@@ -891,7 +891,7 @@ char *yytext;
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: lex.yy.c,v 7.9 2001/01/20 07:25:54 db Exp $
+ * $Id: lex.yy.c,v 7.10 2001/01/20 07:43:58 db Exp $
  */
 #line 27 "ircd_lexer.l"
 #include <stdio.h>

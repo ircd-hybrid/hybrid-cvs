@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.153 2001/01/20 07:25:55 db Exp $
+ *  $Id: s_conf.c,v 7.154 2001/01/20 07:43:59 db Exp $
  */
 
 #include <sys/types.h>
@@ -2396,24 +2396,6 @@ void conf_add_class(struct ConfItem *aconf,int sendq)
 		atoi(aconf->user), aconf->port,
 		sendq);
     }
-}
-
-/*
- * conf_add_port
- * inputs       - pointer to config item
- * output       - NONE
- * side effects - Add a port
- */
-
-void conf_add_port(struct ConfItem *aconf)
-{
-  /*
-   * P: line - listener port
-   */
-  if((aconf->passwd[0] == '\0') || (aconf->passwd[0] == '*'))
-    add_listener(aconf->port, NULL );
-  else
-    add_listener(aconf->port, (const char *)aconf->passwd);
 }
 
 /*
