@@ -1,3 +1,8 @@
+*** 20001115_1 by db
+- oops. just noticed I forgot to cvs add these *sigh* sorry
+
+
+
 *** 20001114_5 by spookey
 
 
@@ -520,7 +525,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.544 2000/11/15 03:26:19 spookey Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.545 2000/11/15 05:34:04 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
