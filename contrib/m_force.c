@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: m_force.c,v 1.10 2002/06/03 15:42:52 leeh Exp $
+ * $Id: m_force.c,v 1.11 2002/06/03 16:04:37 leeh Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&forcepart_msgtab);
 }
 
-char *_version = "$Revision: 1.10 $";
+char *_version = "$Revision: 1.11 $";
 #endif
 
 /*
@@ -115,6 +115,9 @@ static void mo_forcejoin(struct Client *client_p, struct Client *source_p,
 	       source_p->name, parv[1]);
     return;
   }
+
+  if(!IsClient(target_p))
+    return;
 
   /* select our modes from parv[2] if they exist... (chanop)*/
   if(*parv[2] == '@')
@@ -274,6 +277,9 @@ static void mo_forcepart(struct Client *client_p, struct Client *source_p,
                source_p->name, parv[1]);
     return;
   }
+
+  if(!IsClient(target_p))
+    return;
 
   if((chptr = hash_find_channel(parv[2])) == NULL)
   {
