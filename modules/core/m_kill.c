@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kill.c,v 1.14 2000/12/31 16:10:20 toot Exp $
+ *   $Id: m_kill.c,v 1.15 2001/01/03 22:21:11 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -193,7 +193,7 @@ int mo_kill(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   */
   if (!MyConnect(acptr) || !MyConnect(sptr) || !IsOper(sptr))
     {
-      sendto_serv_butone(cptr, ":%s KILL %s :%s!%s",
+      sendto_ll_serv_butone(cptr, sptr, 1, ":%s KILL %s :%s!%s",
                          parv[0], acptr->name, inpath, path);
       if (chasing && IsServer(cptr))
         sendto_one(cptr, ":%s KILL %s :%s!%s",
@@ -382,7 +382,7 @@ int ms_kill(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   */
   if (!MyConnect(acptr) || !MyConnect(sptr) || !IsOper(sptr))
     {
-      sendto_serv_butone(cptr, ":%s KILL %s :%s!%s",
+      sendto_ll_serv_butone(cptr, sptr, 1, ":%s KILL %s :%s!%s",
                          parv[0], acptr->name, inpath, path);
       if (chasing && IsServer(cptr))
         sendto_one(cptr, ":%s KILL %s :%s!%s",

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_squit.c,v 1.19 2000/12/31 16:10:22 toot Exp $
+ *   $Id: m_squit.c,v 1.20 2001/01/03 22:21:13 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -132,13 +132,13 @@ int ms_squit(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
       if (MyConnect(found_squit->acptr))
 	{
 	  sendto_all_local_opers(&me, NULL,
-				 "Received SQUIT %s from %s (%s)",
+				 "Remote SQUIT %s from %s (%s)",
 				 found_squit->server_name,
 				 get_client_name(sptr,FALSE), comment);
 
           sendto_serv_butone(NULL,
-			     "Received SQUIT %s from %s (%s)",
-			     found_squit->server_name,
+			     ":%s WALLOPS :Remote SQUIT %s from %s (%s)",
+			     me.name, found_squit->server_name,
 			     get_client_name(sptr,FALSE),comment);
 
 	  log(L_TRACE, "SQUIT From %s : %s (%s)", parv[0],

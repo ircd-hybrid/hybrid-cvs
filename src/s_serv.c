@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.104 2001/01/03 04:59:45 spookey Exp $
+ *   $Id: s_serv.c,v 7.105 2001/01/03 22:21:25 davidt Exp $
  */
 #include "tools.h"
 #include "s_serv.h"
@@ -220,6 +220,9 @@ int hunt_server(struct Client *cptr, struct Client *sptr, char *command,
         return HUNTED_ISME;
       if (!match(acptr->name, parv[server]))
         parv[server] = acptr->name;
+
+      /* Deal with lazylinks */
+      client_burst_if_needed(acptr, sptr);
       sendto_one(acptr, command, parv[0],
                  parv[1], parv[2], parv[3], parv[4],
                  parv[5], parv[6], parv[7], parv[8]);
