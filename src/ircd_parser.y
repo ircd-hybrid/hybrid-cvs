@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.258 2002/10/19 22:32:51 androsyn Exp $
+ *  $Id: ircd_parser.y,v 1.259 2002/10/22 18:47:26 androsyn Exp $
  */
 
 %{
@@ -2339,11 +2339,15 @@ general_throttle_time: THROTTLE_TIME '=' timespec ';'
 
 general_fallback_to_ip6_int: FALLBACK_IP6_INT '=' TYES ';'
 {
+#ifdef IPV6
  ConfigFileEntry.fallback_to_ip6_int = 1;
+#endif
 } |
   FALLBACK_IP6_INT '=' TNO ';'
 {
+#ifdef IPV6
  ConfigFileEntry.fallback_to_ip6_int = 0;
+#endif
 } ;
 
 general_oper_umodes: OPER_UMODES
