@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: listener.c,v 7.49 2001/06/16 02:55:40 a1kmm Exp $
+ *  $Id: listener.c,v 7.50 2001/06/16 07:57:14 a1kmm Exp $
  */
 #include "config.h"
 #include "listener.h"
@@ -333,7 +333,6 @@ void close_listeners()
   }
 }
 
-#define TOOMANY_WARNING "ERROR :Too many connections from IP address.\r\n"
 #define TOOFAST_WARNING "ERROR :Trying to reconnect too fast.\r\n"
 #define DLINE_WARNING "ERROR :You have been D-lined.\r\n"
 
@@ -419,9 +418,6 @@ static void accept_connection(int pfd, void *data)
      send(fd, DLINE_WARNING, sizeof(DLINE_WARNING)-1, 0);
      break;
 #ifdef PACE_CONNECT      
-    case TOO_MANY:
-     send(fd, TOOMANY_WARNING, sizeof(TOOMANY_WARNING)-1, 0);
-     break;
     case TOO_FAST:
      send(fd, TOOFAST_WARNING, sizeof(TOOFAST_WARNING)-1, 0);
      break;
