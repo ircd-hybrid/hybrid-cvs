@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: rsa.c,v 7.25 2002/05/24 23:34:49 androsyn Exp $
+ *  $Id: rsa.c,v 7.25.4.1 2003/05/29 05:13:26 lusky Exp $
  */
 
 #include "stdinc.h"
@@ -87,6 +87,9 @@ int verify_private_key(void)
     return(-1);
   }
 
+  if (bio_spare_fd > -1)
+    close(bio_spare_fd);
+
   file = BIO_new_file(ServerInfo.rsa_private_key_file, "r");
 
   /*
@@ -95,6 +98,7 @@ int verify_private_key(void)
    */
   if (file == NULL)
   {
+    bio_spare_fd=save_spare_fd("SSL private key validation");
     ilog(L_NOTICE, "Failed to open private key file - can't validate it");
     return(-1);
   }
@@ -121,6 +125,7 @@ int verify_private_key(void)
 
   BIO_set_close(file, BIO_CLOSE);
   BIO_free(file);
+  bio_spare_fd=save_spare_fd("SSL private key validation");
 
   mkey = ServerInfo.rsa_private_key;
 

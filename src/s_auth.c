@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.103.2.2 2003/04/05 18:51:45 lusky Exp $
+ *  $Id: s_auth.c,v 7.103.2.3 2003/05/29 05:13:26 lusky Exp $
  */
 
 /*
@@ -175,6 +175,7 @@ static void release_auth_client(struct Client* client)
    */
   client->localClient->allow_read = MAX_FLOOD;
   comm_setflush(client->localClient->fd, 1000, flood_recalc, client);
+  set_no_delay(client->localClient->fd);
   add_client_to_list(client);
   read_packet(client->localClient->fd, client);
 }

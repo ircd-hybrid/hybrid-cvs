@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.h,v 7.54 2003/02/06 08:46:10 a1kmm Exp $
+ *  $Id: ircd.h,v 7.54.2.1 2003/05/29 05:13:23 lusky Exp $
  */
 
 #ifndef INCLUDED_ircd_h
@@ -94,6 +94,9 @@ extern struct timeval SystemTime;
 #define CurrentTime SystemTime.tv_sec
 extern time_t         nextconnect;
 extern int            default_server_capabs;
+#ifdef HAVE_LIBCRYPTO
+extern int            bio_spare_fd;
+#endif /* HAVE_LIBCRYPTO */
 
 extern int splitmode;
 extern int splitchecking;

@@ -19,10 +19,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.180.2.1 2003/04/03 01:29:04 lusky Exp $
+ *  $Id: s_bsd.c,v 7.180.2.2 2003/05/29 05:13:26 lusky Exp $
  */
 
 #include "stdinc.h"
+#include <netinet/tcp.h>
 #include "config.h"
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -223,6 +224,21 @@ set_non_blocking(int fd)
   fd_table[fd].flags.nonblocking = 1;
   return 1;
 #endif
+}
+
+/*
+ * set_no_delay()
+ *
+ * inputs       - fd
+ * output       - NONE
+ * side effects - disable Nagle algorithm if possible
+ */
+void
+set_no_delay(int fd)
+{
+  int opt = 1;
+
+  setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, (char *) &opt, sizeof(opt));
 }
 
 /*

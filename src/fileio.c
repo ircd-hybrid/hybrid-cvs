@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fileio.c,v 7.24 2003/01/30 10:28:45 a1kmm Exp $
+ *  $Id: fileio.c,v 7.24.2.1 2003/05/29 05:13:26 lusky Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -28,6 +28,7 @@
 #include "client.h"	/* for FLAGS_ALL */
 #include "send.h"	/* sendto_realops_flags */
 #include "memory.h"
+#include "s_log.h"
 
 /* The following are to get the fd manipulation routines. eww. */
 #include "fdlist.h"
@@ -291,4 +292,22 @@ int fbstat(struct stat* sb, FBFILE* fb)
   return fstat(fb->fd, sb);
 }
 
+int save_spare_fd(const char *spare_purpose)
+{
+  int  spare_fd;
+
+  spare_fd = open(PATH_DEVNULL,O_RDONLY,0);
+  if (spare_fd < 0)
+  {
+    ilog(L_NOTICE, "Failed to reserve low fd for %s - open failed", spare_purpose);
+    return(-1);
+  }
+  else if (spare_fd > 255)
+  {
+    ilog(L_NOTICE, "Failed to reserve low fd for %s - too high", spare_purpose);
+    close(spare_fd);
+    return(-1);
+  }
+  return(spare_fd);
+}
 
