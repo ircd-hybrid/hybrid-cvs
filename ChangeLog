@@ -1,3 +1,26 @@
+androsyn    2002/10/19 18:32:53 EDT	(20021019_0)
+
+  Modified files:
+    include              res.h s_auth.h s_conf.h 
+    src                  adns.c ircd_lexer.l ircd_parser.y 
+                         s_auth.c s_conf.c 
+  Log:
+  Added support for ip6.arpa and fallback support for ip6.int.  Also fixed a
+  buglet where the server would spit out a failed host lookup message twice
+  when compiled for IPv6.
+  
+  Revision  Changes    Path
+  7.21      +1 -1      ircd-hybrid-7/include/res.h
+  7.17      +3 -0      ircd-hybrid-7/include/s_auth.h
+  7.186     +3 -0      ircd-hybrid-7/include/s_conf.h
+  7.46      +17 -7     ircd-hybrid-7/src/adns.c
+  1.144     +1 -0      ircd-hybrid-7/src/ircd_lexer.l
+  1.258     +11 -0     ircd-hybrid-7/src/ircd_parser.y
+  7.102     +16 -3     ircd-hybrid-7/src/s_auth.c
+  7.329     +1 -1      ircd-hybrid-7/src/s_conf.c
+
+
+
 bill        2002/10/17 13:06:33 EDT	(20021017_2)
 
   Modified files:
@@ -32541,4 +32564,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4068 2002/10/17 17:06:36 bill Exp $
+$Id: ChangeLog,v 7.4069 2002/10/19 22:32:56 androsyn Exp $
