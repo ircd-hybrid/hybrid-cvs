@@ -7,7 +7,7 @@
  * The authors takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: irc_res.c,v 7.7 2003/05/13 02:36:23 db Exp $
+ * $Id: irc_res.c,v 7.8 2003/05/13 03:06:29 joshk Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -43,13 +43,14 @@
 #include <resolv.h>
 #include <arpa/nameser.h>
 #include "irc_reslib.h"
+#include "irc_getnameinfo.h"
 
 #include <limits.h>
 #if (CHAR_BIT != 8)
 #error this code needs to be able to address individual octets 
 #endif
 
-/* $Id: irc_res.c,v 7.7 2003/05/13 02:36:23 db Exp $ */
+/* $Id: irc_res.c,v 7.8 2003/05/13 03:06:29 joshk Exp $ */
 
 static PF res_readreply;
 
@@ -689,16 +690,16 @@ proc_answer(struct reslist *request, HEADER* header, char* buf, char* eob)
     if (!(((char *)current + ANSWER_FIXED_SIZE) < eob))
       break;
 
-    type = getshort(current);
+    type = ns_get16(current);
     current += TYPE_SIZE;
 
-    query_class = getshort(current);
+    query_class = ns_get16(current);
     current += CLASS_SIZE;
 
-    request->ttl = getlong(current);
+    request->ttl = ns_get32(current);
     current += TTL_SIZE;
 
-    rd_length = getshort(current);
+    rd_length = ns_get16(current);
     current += RDLENGTH_SIZE;
 
     /* 

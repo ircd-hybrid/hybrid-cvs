@@ -102,7 +102,7 @@
 #define DNS_LABELTYPE_BITSTRING		0x41
 #define MAXLINE 128
 
-/* $Id: irc_reslib.c,v 7.3 2003/05/13 02:36:23 db Exp $ */
+/* $Id: irc_reslib.c,v 7.4 2003/05/13 03:06:29 joshk Exp $ */
 
 static FBFILE *file;
 
@@ -215,6 +215,8 @@ parse_resvconf(void)
   }
 
   (void)fbclose(file);
+
+  return (0);
 }
 
 /*
@@ -544,7 +546,7 @@ u_int
 ns_get16(const u_char *src) {
 	u_int dst;
 
-	NS_GET16(dst, src);
+	IRC_NS_GET16(dst, src);
 	return (dst);
 }
 
@@ -552,18 +554,18 @@ u_long
 ns_get32(const u_char *src) {
 	u_long dst;
 
-	NS_GET32(dst, src);
+	IRC_NS_GET32(dst, src);
 	return (dst);
 }
 
 void
 ns_put16(u_int src, u_char *dst) {
-	NS_PUT16(src, dst);
+	IRC_NS_PUT16(src, dst);
 }
 
 void
 ns_put32(u_long src, u_char *dst) {
-	NS_PUT32(src, dst);
+	IRC_NS_PUT32(src, dst);
 }
 
 /* From ns_name.c */
@@ -1162,9 +1164,9 @@ irc_res_mkquery(
 			return (-1);
 		cp += n;
 		buflen -= n;
-		__putshort(type, cp);
+		NS_PUT16(type, cp);
 		cp += INT16SZ;
-		__putshort(class, cp);
+		NS_PUT16(class, cp);
 		cp += INT16SZ;
 		hp->qdcount = htons(1);
 		if (op == QUERY || data == NULL)
@@ -1178,13 +1180,13 @@ irc_res_mkquery(
 			return (-1);
 		cp += n;
 		buflen -= n;
-		__putshort(T_NULL, cp);
+		NS_PUT16(T_NULL, cp);
 		cp += INT16SZ;
-		__putshort(class, cp);
+		NS_PUT16(class, cp);
 		cp += INT16SZ;
-		__putlong(0, cp);
+		NS_PUT32(0, cp);
 		cp += INT32SZ;
-		__putshort(0, cp);
+		NS_PUT16(0, cp);
 		cp += INT16SZ;
 		hp->arcount = htons(1);
 		break;
@@ -1196,13 +1198,13 @@ irc_res_mkquery(
 		if (buflen < 1 + RRFIXEDSZ + datalen)
 			return (-1);
 		*cp++ = '\0';	/* no domain name */
-		__putshort(type, cp);
+		NS_PUT16(type, cp);
 		cp += INT16SZ;
-		__putshort(class, cp);
+		NS_PUT16(class, cp);
 		cp += INT16SZ;
-		__putlong(0, cp);
+		NS_PUT32(0, cp);
 		cp += INT32SZ;
-		__putshort(datalen, cp);
+		NS_PUT16(datalen, cp);
 		cp += INT16SZ;
 		if (datalen) {
 			memcpy(cp, data, datalen);
