@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.298 2002/02/13 18:16:46 androsyn Exp $
+ *  $Id: channel.c,v 7.299 2002/02/13 18:41:17 jmallett Exp $
  */
 
 #include "tools.h"
@@ -704,12 +704,6 @@ channel_member_names(struct Client *source_p,
                      struct Channel *chptr,
                      char *name_of_channel, int show_eon)
 {
-#ifdef REQUIRE_OANDV
-#define NUMLISTS 5
-#else
-#define NUMLISTS 4
-#endif
-
   int mlen;
   int sublists_done = 0;
   int tlen;

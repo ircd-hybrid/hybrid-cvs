@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.20 2002/02/13 18:16:46 androsyn Exp $
+ *  $Id: channel_mode.c,v 7.21 2002/02/13 18:41:17 jmallett Exp $
  */
 
 #include "tools.h"
@@ -2745,19 +2745,9 @@ set_channel_mode(struct Client *client_p, struct Client *source_p,
  * output       - none
  * side effects -
  */
-#ifdef REQUIRE_OANDV
-#define NUMLISTS 5
-#else
-#define NUMLISTS 4
-#endif
 void
-set_channel_mode_flags(
-#ifdef REQUIRE_OANDV 
-		       char flags_ptr[5][2],
-#elif
-		       char flags_ptr[MAX_SUBLISTS][2],
-#endif
-                       struct Channel *chptr, struct Client *source_p)
+set_channel_mode_flags(char flags_ptr[NUMLISTS][2], struct Channel *chptr,
+                       struct Client *source_p)
 {
   if (chptr->mode.mode & MODE_HIDEOPS && !is_any_op(chptr, source_p))
   {
