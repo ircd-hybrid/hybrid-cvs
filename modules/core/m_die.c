@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_die.c,v 1.3 2000/11/23 23:04:13 db Exp $
+ *   $Id: m_die.c,v 1.4 2000/11/24 08:02:10 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -53,12 +53,6 @@ int mo_die(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 {
   struct Client* acptr;
   int      i;
-
-  if (!MyClient(sptr) || !IsAnyOper(sptr))
-    {
-      sendto_one(sptr, form_str(ERR_NOPRIVILEGES), me.name, parv[0]);
-      return 0;
-    }
 
   if (!IsOperDie(sptr))
     {

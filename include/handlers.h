@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: handlers.h,v 7.17 2000/11/23 22:39:36 db Exp $
+ * $Id: handlers.h,v 7.18 2000/11/24 08:02:05 db Exp $
  */
 #ifndef INCLUDED_handlers_h
 #define INCLUDED_handlers_h
@@ -145,6 +145,7 @@ extern int m_whois(struct Client*, struct Client*, int, char**);
 extern int m_whowas(struct Client*, struct Client*, int, char**);
 
 /* registered local OPERED */
+extern int mo_admin(struct Client*, struct Client*, int, char**);
 extern int mo_close(struct Client*, struct Client*, int, char**);
 extern int mo_connect(struct Client*, struct Client*, int, char**);
 extern int mo_die(struct Client*, struct Client*, int, char**);

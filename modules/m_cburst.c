@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_cburst.c,v 1.3 2000/11/23 23:04:12 db Exp $
+ * $Id: m_cburst.c,v 1.4 2000/11/24 08:02:10 db Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -79,10 +79,6 @@ int     ms_cburst(struct Client *cptr,
 
   if( parc < 2 || *parv[1] == '\0' )
      return 0;
-
-  /* If not a server just ignore it */
-  if ( !IsServer(cptr) )
-    return 0;
 
   name = parv[1];
   nick = NULL;
