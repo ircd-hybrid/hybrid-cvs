@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_cryptlink.c,v 1.18 2001/07/02 19:09:19 jdc Exp $
+ *   $Id: m_cryptlink.c,v 1.19 2001/07/14 23:08:07 leeh Exp $
  */
 
 /*
@@ -88,7 +88,7 @@ static void cryptlink_auth(struct Client *, struct Client *, int, char **);
 
 struct Message cryptlink_msgtab = {
   "CRYPTLINK", 0, 4, 0, MFLG_SLOW | MFLG_UNREG, 0,
-  {mr_cryptlink, m_registered, m_error, m_registered}
+  {mr_cryptlink, m_ignore, m_error, m_ignore}
 };
 
 struct CryptLinkStruct
