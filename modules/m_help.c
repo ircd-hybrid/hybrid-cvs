@@ -1,8 +1,25 @@
 /*
- * modules/m_help.c
- * Copyright (C) 2001 Hybrid Development Team
+ *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
+ *  m_help.c: Provides help information to a user/operator.
  *
- *   $Id: m_help.c,v 1.28 2001/12/29 18:40:06 davidt Exp $
+ *  Copyright (C) 2002 by the past and present ircd coders, and others.
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
+ *  USA
+ *
+ *  $Id: m_help.c,v 1.29 2002/01/05 09:14:46 a1kmm Exp $
  */
 
 #include "handlers.h"
@@ -48,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&uhelp_msgtab);
 }
 
-char *_version = "$Revision: 1.28 $";
+char *_version = "$Revision: 1.29 $";
 #endif
 /*
  * m_help - HELP message handler

@@ -1,7 +1,9 @@
-/***********************************************************************
- *   ircd-hybrid project - Internet Relay Chat
- *  hostmask.h: Hostmask header file.
- *  All parts of this program are Copyright(C) 2001(or later).
+/*
+ *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
+ *  hostmask.h: A header for the hostmask code.
+ *
+ *  Copyright (C) 2002 by the past and present ircd coders, and others.
+ *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
  *  the Free Software Foundation; either version 2 of the License, or
@@ -14,8 +16,10 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- * $Id: hostmask.h,v 1.17 2001/12/16 11:36:41 leeh Exp $ 
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
+ *  USA
+ *
+ *  $Id: hostmask.h,v 1.18 2002/01/05 09:14:28 a1kmm Exp $
  */
 
 enum

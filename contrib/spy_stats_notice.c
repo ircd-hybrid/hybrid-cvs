@@ -1,7 +1,25 @@
-/* contrib/spy_stats_notice.c
- * Copyright (c) 2000,2001 Edward Brocklesby, Hybrid Development Team
+/*
+ *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
+ *  spy_stats_notice.c: Sends a notice when someone uses STATS.
  *
- * $Id: spy_stats_notice.c,v 1.9 2001/12/27 11:38:18 leeh Exp $
+ *  Copyright (C) 2002 by the past and present ircd coders, and others.
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
+ *  USA
+ *
+ *  $Id: spy_stats_notice.c,v 1.10 2002/01/05 09:14:22 a1kmm Exp $
  */
 
 #include "modules.h"
@@ -25,7 +43,7 @@ _moddeinit(void)
 	hook_del_hook("doing_stats", (hookfn *)show_stats);
 }
 
-char *_version = "$Revision: 1.9 $";
+char *_version = "$Revision: 1.10 $";
 
 /* show a stats request */
 int

@@ -1,12 +1,25 @@
 /*
- * linebuf.c - a replacement message buffer mechanism
+ *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
+ *  linebuf.c: Maintains linebuffers.
  *
- * Adrian Chadd <adrian@creative.net.au>
+ *  Copyright (C) 2002 by the past and present ircd coders, and others.
  *
- * The idea here is that we should really be maintaining pre-munged
- * buffer "lines" which we can later refcount to save needless copies.
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
  *
- * $Id: linebuf.c,v 7.74 2001/12/10 02:59:46 db Exp $
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
+ *  USA
+ *
+ *  $Id: linebuf.c,v 7.75 2002/01/05 09:15:14 a1kmm Exp $
  */
 
 #include <errno.h>
