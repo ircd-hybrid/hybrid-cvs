@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: m_force.c,v 1.15 2002/10/09 15:08:28 db Exp $
+ * $Id: m_force.c,v 1.16 2002/10/11 19:57:47 db Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&forcepart_msgtab);
 }
 
-char *_version = "$Revision: 1.15 $";
+char *_version = "$Revision: 1.16 $";
 #endif
 
 /*
@@ -103,10 +103,10 @@ static void mo_forcejoin(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  /* if target_p is not existant, print message
+  /* if target_p is not existent, print message
    * to source_p and bail - scuzzy
    */
-  if ((target_p = find_client(parv[1])) == NULL || !IsClient(target_p))
+  if ((target_p = find_client(parv[1])) == NULL)
   {
     sendto_one(source_p, form_str(ERR_NOSUCHNICK), me.name,
 	       source_p->name, parv[1]);
@@ -272,7 +272,7 @@ static void mo_forcepart(struct Client *client_p, struct Client *source_p,
   }
 
   /* if target_p == NULL then let the oper know */
-  if ((target_p = find_client(parv[1])) == NULL || !IsClient(target_p))
+  if ((target_p = find_client(parv[1])) == NULL)
   {
     sendto_one(source_p, form_str(ERR_NOSUCHNICK), me.name,
                source_p->name, parv[1]);

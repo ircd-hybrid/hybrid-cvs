@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.100 2002/10/10 18:49:30 androsyn Exp $
+ *  $Id: s_auth.c,v 7.101 2002/10/11 19:57:49 db Exp $
  */
 
 /*
@@ -186,10 +186,11 @@ static void release_auth_client(struct Client* client)
  * set the client on it's way to a connection completion, regardless
  * of success of failure
  */
-static void auth_dns_callback(void* vptr, adns_answer* reply)
+static void
+auth_dns_callback(void* vptr, adns_answer* reply)
 {
-  
   struct AuthRequest* auth = (struct AuthRequest*) vptr;
+  char *str = auth->client->host;
   ClearDNSPending(auth);
   *auth->client->host = '\0';
   if(reply && (reply->status == adns_s_ok))

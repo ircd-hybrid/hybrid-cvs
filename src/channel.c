@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.334 2002/10/10 22:17:21 bill Exp $
+ *  $Id: channel.c,v 7.335 2002/10/11 19:57:49 db Exp $
  */
 
 #include "stdinc.h"
@@ -65,7 +65,7 @@ static void send_mode_list(struct Client *client_p, char *chname,
 static int check_banned(struct Channel *chptr, struct Client *who,
                                                 char *s, char *s2);
 
-static dlink_list *expiring_channels;
+static dlink_list expiring_channels;
 static char buf[BUFSIZE];
 static char modebuf[MODEBUFLEN], parabuf[MODEBUFLEN];
 
@@ -86,6 +86,10 @@ void init_channels(void)
   channel_heap = BlockHeapCreate(sizeof(struct Channel), CHANNEL_HEAP_SIZE);
   ban_heap = BlockHeapCreate(sizeof(struct Ban), BAN_HEAP_SIZE);
   topic_heap = BlockHeapCreate(TOPICLEN+1 + USERHOST_REPLYLEN, TOPIC_HEAP_SIZE);
+  expiring_channels.head = NULL;
+  expiring_channels.tail = NULL;
+  expiring_channels.length = 0;
+
   eventAddIsh("channelheap_garbage_collect", channelheap_garbage_collect,
               NULL, 45);
 }
@@ -484,12 +488,12 @@ sub1_from_channel(struct Channel *chptr)
     {
       SetExpiring(chptr);
       c = make_dlink_node();
-      dlinkAdd(chptr, c, expiring_channels);
+      dlinkAdd(chptr, c, &expiring_channels);
     }
   }
   return (0);
 }
-
+ 
 /*
  * expire_channels
  *
@@ -497,44 +501,63 @@ sub1_from_channel(struct Channel *chptr)
  * outputs	- NONE
  * side effexts - destroys expired channels
  */
-void expire_channels(void *unused)
+void
+expire_channels(void *unused)
 {
-  dlink_node *c;
+  dlink_node *ptr;
   struct Channel *chptr;
 
   /*
-   * we walk the list backwards because the items that were first
+   * walk the list backwards because the items that were first
    * added will be at the end of the list.  if they have not yet
-   * expired, then we assume the more recently added channels also
-   * have yet to expire.  this can save us some calculations. we
+   * expired, then assume the more recently added channels also
+   * have yet to expire. this can save some calculations.
    * also check to be sure the channel is still empty. 
    * note: this will leave some channels on the linked list, even
    * though they are no longer empty.  its not a problem, though, as
    * one of two things can happen: either the channel reaches its
    * expiration time, in which case if it is empty it will be deleted,
-   * or if its not, it will simply be removed from the list, or the
-   * cleanup_channels() event will occur, in which case it will be
-   * removed from the list.
+   * or if its not, it will simply be removed from the list.
    */
-  DLINK_FOREACH_PREV(c, expiring_channels->tail)
+  DLINK_FOREACH_PREV(ptr, expiring_channels.tail)
   {
-    chptr = (struct Channel *)c->data;
-    if ((chptr->users_last + ConfigChannel.persist_time) <= CurrentTime &&
-        (chptr->users <= 0))
+    chptr = (struct Channel *)ptr->data;
+
+#ifdef VCHANS
+    if (IsVchan(chptr) && !IsVchanTop(chptr))
     {
-      destroy_channel(chptr);
-      dlinkDelete(c, expiring_channels);
-    }
-    else if (chptr->users > 0)
-    {
-      ClearExpiring(chptr);
-      dlinkDelete(c, expiring_channels);
+      if ((CurrentTime - chptr->users_last >= MAX_VCHAN_TIME))
+      {
+	if (chptr->users == 0)
+        {
+	  if (uplink && IsCapable(uplink, CAP_LL))
+	    sendto_one(uplink, ":%s DROP %s", me.name, chptr->chname);
+	  destroy_channel(chptr);
+	}
+	else
+          ClearExpiring(chptr);
+	dlinkDelete(ptr, &expiring_channels);
+      }
     }
     else
-      break;
+#endif
+    {
+      if((chptr->users_last + ConfigChannel.persist_time) <= CurrentTime)
+      {
+	if (chptr->users == 0)
+        {
+	  if (uplink && IsCapable(uplink, CAP_LL))
+	    sendto_one(uplink, ":%s DROP %s", me.name, chptr->chname);
+	  destroy_channel(chptr);
+	}
+	else
+          ClearExpiring(chptr);
+	dlinkDelete(ptr, &expiring_channels);
+      }
+    }
   }
 }
- 
+
 /*
  * free_channel_list
  *
@@ -557,94 +580,6 @@ free_channel_list(dlink_list * list)
     BlockHeapFree(ban_heap, actualBan);
 
     free_dlink_node(ptr);
-  }
-}
-
-/*
- * cleanup_channels
- *
- * inputs       - not used
- * output       - none
- * side effects - persistent channels... vchans get a long long timeout
- */
-void
-cleanup_channels(void *unused)
-{
-  struct Channel *chptr;
-  struct Channel *next_chptr;
-
-  if (uplink != NULL)
-  {
-    /* XXX The assert disapears when NDEBUG is set */
-    assert(MyConnect(uplink) == 1);
-
-    if (!MyConnect(uplink))
-    {
-      ilog(L_ERROR, "non-local uplink [%s]", uplink->name);
-      uplink = NULL;
-    }
-  }
-
-  for (chptr = GlobalChannelList; chptr; chptr = next_chptr)
-  {
-    next_chptr = chptr->nextch;
-
-#ifdef VCHANS
-    if (IsVchan(chptr))
-    {
-      if (IsVchanTop(chptr))
-      {
-        chptr->users_last = CurrentTime;
-      }
-      else
-      {
-        if ((CurrentTime - chptr->users_last >= MAX_VCHAN_TIME))
-        {
-          if (chptr->users == 0)
-          {
-            if (uplink && IsCapable(uplink, CAP_LL))
-            {
-              sendto_one(uplink, ":%s DROP %s", me.name, chptr->chname);
-            }
-            destroy_channel(chptr);
-          }
-          else
-            chptr->users_last = CurrentTime;
-        }
-      }
-    }
-    else
-#endif
-    {
-      if(chptr->users == 0)
-      {
-        if((chptr->users_last + ConfigChannel.persist_time) <= CurrentTime)
-	{
-	  if(uplink && IsCapable(uplink, CAP_LL))
-	    sendto_one(uplink, ":%s DROP %s", me.name, chptr->chname);
-	  destroy_channel(chptr);
-	}
-      }
-      else
-      {
-        /* channel was set to expire, but now has users */
-        if (IsExpiring(chptr))
-        {
-          ClearExpiring(chptr);
-          dlinkFindDelete(expiring_channels, (void *)chptr);
-        }
-
-        if ((CurrentTime - chptr->users_last >= CLEANUP_CHANNELS_TIME))
-        {
-          if (uplink
-                 && IsCapable(uplink, CAP_LL) && (chptr->locusers == 0))
-          {
-            sendto_one(uplink, ":%s DROP %s", me.name, chptr->chname);
-            destroy_channel(chptr);
-          }
-        }
-      }
-    }
   }
 }
 
