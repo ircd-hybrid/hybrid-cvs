@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.94 2001/06/05 21:33:31 db Exp $
+ *   $Id: m_sjoin.c,v 1.95 2001/07/08 10:12:03 a1kmm Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -260,7 +260,7 @@ static void ms_sjoin(struct Client *client_p,
 			chptr->chname,
 			client_p->name);
 
-      newts = oldts;
+      newts = (oldts==0) ? oldts : 800000000;
     }
 
   /*
