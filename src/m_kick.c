@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kick.c,v 7.4 2000/10/16 06:44:18 db Exp $
+ *   $Id: m_kick.c,v 7.5 2000/10/21 07:15:25 lusky Exp $
  */
 #include "handlers.h"
 #include "channel.h"
@@ -233,8 +233,6 @@ int     m_kick(struct Client *cptr,
 
   if (!(who = find_chasing(sptr, user, &chasing)))
     {
-      sendto_one(sptr, form_str(ERR_NOSUCHNICK),
-                 me.name, parv[0], user, name);
       return(0);
     }
 
@@ -368,8 +366,6 @@ int     ms_kick(struct Client *cptr,
 
   if (!(who = find_chasing(sptr, user, &chasing)))
     {
-      sendto_one(sptr, form_str(ERR_NOSUCHNICK),
-                 me.name, parv[0], user, name);
       return(0);
     }
 

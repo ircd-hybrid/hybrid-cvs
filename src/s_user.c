@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.32 2000/10/14 20:54:32 toot Exp $
+ *  $Id: s_user.c,v 7.33 2000/10/21 07:15:26 lusky Exp $
  */
 #include "s_user.h"
 #include "channel.h"
@@ -558,7 +558,6 @@ int register_user(struct Client *cptr, struct Client *sptr,
 		  sptr->listener->port
 		  );
 
-              ServerStats->is_ref++;
               return exit_client(cptr, sptr, &me,
                                  "You are not authorized to use this server");
             }
@@ -710,12 +709,14 @@ int register_user(struct Client *cptr, struct Client *sptr,
               
               if(aconf->port)
                 {
-                  ServerStats->is_ref++;
-                  sendto_realops_flags(FLAGS_REJ,
-                                     "X-line Rejecting [%s] [%s], user %s",
-                                     sptr->info,
-                                     reason,
-                                     get_client_name(cptr, FALSE));
+                  if (aconf->port == 1)
+                    {
+                      sendto_realops_flags(FLAGS_REJ,
+                                           "X-line Rejecting [%s] [%s], user %s",
+                                           sptr->info,
+                                           reason,
+                                           get_client_name(cptr, FALSE));
+                    }
                   ServerStats->is_ref++;      
                   return exit_client(cptr, sptr, &me, "Bad user info");
                 }

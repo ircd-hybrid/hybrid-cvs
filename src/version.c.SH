@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# $Id: version.c.SH,v 7.7 2000/10/12 17:40:50 db Exp $ 
+# $Id: version.c.SH,v 7.8 2000/10/21 07:15:26 lusky Exp $ 
 
 spitshell=cat
 package=IRC
@@ -54,6 +54,7 @@ $spitshell >version.c <<!SUB!THIS!
 
 char *generation = "$generation";
 char *creation = "$creation";
+char *platform = "$uname";
 char *version = PATCHLEVEL;
 char *serno = SERIALNUM;
 
@@ -118,7 +119,6 @@ char *infotext[] =
   "Thanks also to those who provide the kind sys admins who let me and",
   "others continue to develop IRC.",
   "",
-  "Compiled on [$uname]",
   0,
 };
 !SUB!THIS!
