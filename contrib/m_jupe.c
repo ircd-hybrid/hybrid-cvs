@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_jupe.c,v 1.7 2001/01/18 00:34:49 fl_ Exp $
+ *   $Id: m_jupe.c,v 1.8 2001/01/27 19:24:09 fl_ Exp $
  */
 
 /*
@@ -90,7 +90,7 @@ int mo_jupe(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   dlink_node *m;
   char reason[REALLEN];
 
-  if(!ConfigFileEntry.hub)
+  if(!ServerInfo.hub)
     return 0;
 
   if(!IsSetOperAdmin(sptr))
