@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.c,v 7.15 2000/11/01 15:28:57 adrian Exp $
+ *   $Id: s_auth.c,v 7.16 2000/11/01 15:53:14 adrian Exp $
  *
  * Changes:
  *   July 6, 1999 - Rewrote most of the code here. When a client connects
@@ -99,6 +99,8 @@ struct AuthRequest *AuthClientList = NULL;
 static struct AuthRequest* AuthIncompleteList = 0;
 static EVH timeout_auth_queries_event;
 static BlockHeap *auth_bl = NULL;
+
+static PF read_auth_reply;
 
 /*
  * init_auth()
@@ -560,6 +562,7 @@ void send_auth_query(struct AuthRequest* auth)
   }
   ClearAuthConnect(auth);
   SetAuthPending(auth);
+  comm_setselect(auth->fd, COMM_SELECT_READ, read_auth_reply, auth, 0);
 }
 
 
@@ -571,8 +574,10 @@ void send_auth_query(struct AuthRequest* auth)
  */
 #define AUTH_BUFSIZ 128
 
-void read_auth_reply(struct AuthRequest* auth)
+static void
+read_auth_reply(int fd, void *data)
 {
+  struct AuthRequest *auth = data;
   char* s=(char *)NULL;
   char* t=(char *)NULL;
   int   len;
