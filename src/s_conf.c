@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.226 2001/06/05 19:24:56 toot Exp $
+ *  $Id: s_conf.c,v 7.227 2001/06/05 20:18:27 db Exp $
  */
 
 #include <sys/types.h>
@@ -1461,17 +1461,24 @@ static void set_default_conf(void)
 #ifdef HAVE_LIBZ
   ConfigFileEntry.compression_level = 0;
 #endif
+  /* XXX might want to put this into a ConfigChannel struct as well */
   ConfigFileEntry.max_chans_per_user = 10;
+
   ConfigFileEntry.oper_umodes = FLAGS_LOCOPS | FLAGS_SERVNOTICE |
     FLAGS_OPERWALL | FLAGS_WALLOP;
   ConfigFileEntry.oper_only_umodes = FLAGS_BOTS | FLAGS_CCONN |
     FLAGS_DEBUG | FLAGS_FULL | FLAGS_SKILL | FLAGS_NCHANGE |
     FLAGS_REJ | FLAGS_SPY | FLAGS_EXTERNAL | FLAGS_OPERWALL |
     FLAGS_DRONE | FLAGS_LOCOPS | FLAGS_UNAUTH;
+
+  /* XXX These should be in a ConfigChannel struct */
   ConfigFileEntry.vchans_oper_only = NO;
   ConfigFileEntry.disable_vchans = NO;
   ConfigFileEntry.use_invex = NO;
   ConfigFileEntry.use_except= YES;
+  ConfigFileEntry.use_knock= YES;
+  /* XXX Down to here should be in a ConfigChannel struct */
+
   ConfigFileEntry.persist_expire = 30 * 60;
   ConfigFileEntry.min_nonwildcard = 4;
   ConfigFileEntry.default_floodcount = 8;

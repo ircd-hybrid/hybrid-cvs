@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.129 2001/06/05 19:24:47 toot Exp $
+ * $Id: s_conf.h,v 7.130 2001/06/05 20:18:24 db Exp $
  */
 
 #include "setup.h"
@@ -234,8 +234,10 @@ typedef struct config_file_entry
   int           min_nonwildcard;
   int           default_floodcount;
   int           client_flood;
+  /* XXX Consider moving these into a ConfigChannel struct see s_conf.c */
   int		use_invex;
   int           use_except;
+  int           use_knock;
 #ifdef HAVE_LIBCRYPTO
   struct EncPreference *default_cipher_preference;
 #endif
