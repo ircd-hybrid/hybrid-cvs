@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.126 2000/12/24 23:27:54 toot Exp $
+ *  $Id: s_conf.c,v 7.127 2000/12/25 01:05:00 toot Exp $
  */
 #include "tools.h"
 #include "s_conf.h"
@@ -2594,7 +2594,7 @@ void WriteKlineOrDline( KlineType type,
 			struct Client *sptr,
 			char *user,
 			char *host,
-			char *reason,
+			const char *reason,
 			const char *current_date)
 {
   char buffer[1024];
