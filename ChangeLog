@@ -1,3 +1,15 @@
+db          2002/11/23 12:12:56 EST	(20021123_0)
+
+  Modified files:
+    include              defaults.h 
+  Log:
+  - should be #error not error as pointed out by michael@phat-net.de
+  
+  Revision  Changes    Path
+  7.6       +1 -1      ircd-hybrid-7/include/defaults.h
+
+
+
 bill        2002/11/20 22:35:09 EST	(20021121_0)
 
   Modified files:
@@ -33243,4 +33255,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4115 2002/11/21 03:35:12 bill Exp $
+$Id: ChangeLog,v 7.4116 2002/11/23 17:12:59 db Exp $
