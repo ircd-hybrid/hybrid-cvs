@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nick.c,v 1.123 2003/07/02 17:32:24 michael Exp $
+ *  $Id: m_nick.c,v 1.124 2003/07/25 23:16:08 michael Exp $
  */
 
 #include "stdinc.h"
@@ -70,8 +70,8 @@ static int clean_nick_name(char *);
 static int clean_user_name(char *);
 static int clean_host_name(char *);
 
-static int perform_nick_collides(struct Client *, struct Client *,
-                                 struct Client *, int, char **, time_t, char *);
+static void perform_nick_collides(struct Client *, struct Client *,
+                                  struct Client *, int, char **, time_t, char *);
                             
 struct Message nick_msgtab = {
   "NICK", 0, 0, 1, 0, MFLG_SLOW, 0,
@@ -98,7 +98,7 @@ _moddeinit(void)
   mod_del_cmd(&uid_msgtab);
 }
 
-const char *_version = "$Revision: 1.123 $";
+const char *_version = "$Revision: 1.124 $";
 #endif
 
 /*
@@ -757,7 +757,7 @@ nick_from_server(struct Client *client_p, struct Client *source_p, int parc,
       }
 
       return(register_remote_user(client_p, source_p, parv[5], parv[6],
-                                  parv[7], NULL, parv[8]));
+                                  parv[7], parv[8]));
     }
   }
   else if(source_p->name[0])
@@ -815,8 +815,10 @@ client_from_server(struct Client *client_p, struct Client *source_p, int parc,
 
   /* copy the nick in place */
   strcpy(source_p->name, nick);
+  strlcpy(source_p->id, id, sizeof(source_p->id));
+
   hash_add_client(source_p);
-  hash_add_id(id, source_p);
+  hash_add_id(source_p);
 
   /* parse usermodes */
   m = &parv[4][1];
@@ -834,13 +836,13 @@ client_from_server(struct Client *client_p, struct Client *source_p, int parc,
   }
 
   return(register_remote_user(client_p, source_p, parv[5], parv[6],
-                              parv[7], id, parv[9]));
+                              parv[7], parv[9]));
 }
 
-static int 
+static void
 perform_nick_collides(struct Client *source_p, struct Client *client_p, 
                       struct Client *target_p, int parc, char *parv[], 
-		      time_t newts, char *nick)
+                      time_t newts, char *nick)
 {
   int sameuser;
   
@@ -848,8 +850,7 @@ perform_nick_collides(struct Client *source_p, struct Client *client_p,
   if (IsServer(source_p))
   {
     /* if we dont have a ts, or their TS's are the same, kill both */
-    if (!newts || !target_p->tsinfo ||
-       (newts == target_p->tsinfo))
+    if (!newts || !target_p->tsinfo || (newts == target_p->tsinfo))
     {
       sendto_realops_flags(UMODE_ALL, L_ALL,
                            "Nick collision on %s(%s <- %s)(both killed)",
@@ -868,7 +869,7 @@ perform_nick_collides(struct Client *source_p, struct Client *client_p,
 
       SetKilled(target_p);
       exit_client(client_p, target_p, &me, "Nick collision (new)");
-      return 0;
+      return;
     }
     /* the timestamps are different */
     else
@@ -884,7 +885,7 @@ perform_nick_collides(struct Client *source_p, struct Client *client_p,
          (!sameuser && newts > target_p->tsinfo))
       {
         client_burst_if_needed(client_p, target_p);
-	return 0;
+	return;
       }
       else
       {
@@ -918,7 +919,7 @@ perform_nick_collides(struct Client *source_p, struct Client *client_p,
 	else if (parc == 10)
 	  client_from_server(client_p,source_p,parc,parv,newts,nick);
 	  
-	return 0;
+	return;
       }
     }
   }
@@ -954,7 +955,7 @@ perform_nick_collides(struct Client *source_p, struct Client *client_p,
       exit_client(NULL, target_p, &me, "Nick collision(new)");
       SetKilled(source_p);
       exit_client(client_p, source_p, &me, "Nick collision(old)");
-      return 0;
+      return;
     }
     else
     {
@@ -988,7 +989,7 @@ perform_nick_collides(struct Client *source_p, struct Client *client_p,
 	  exit_client(client_p, source_p, &me, "Nick collision(old)");
 	else
 	  exit_client(client_p, source_p, &me, "Nick collision(new)");
-	return 0;
+	return;
      }
      else
      {
@@ -1017,10 +1018,8 @@ perform_nick_collides(struct Client *source_p, struct Client *client_p,
    }
 
    
-   /* we should only ever call nick_from_server() here, as
-    * this is a client changing nick, not a new client
-    */
-   nick_from_server(client_p,source_p,parc,parv,newts,nick);
-
-  return 0;
+  /* we should only ever call nick_from_server() here, as
+   * this is a client changing nick, not a new client
+   */
+  nick_from_server(client_p,source_p,parc,parv,newts,nick);
 }

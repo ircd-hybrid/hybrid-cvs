@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.74 2003/07/20 03:34:50 db Exp $
+ *  $Id: hash.c,v 7.75 2003/07/25 23:16:10 michael Exp $
  */
 
 #include "stdinc.h"
@@ -247,10 +247,10 @@ hash_add_userhost(struct UserHost *userhost)
   userhostTable[hashv] = userhost;
 }
 
-void               /* XXX */
-hash_add_id(const char *name, struct Client *client_p)
+void
+hash_add_id(struct Client *client_p)
 {
-  unsigned int hashv = strhash(name);
+  unsigned int hashv = strhash(client_p->id);
 
   client_p->idhnext = idTable[hashv];
   idTable[hashv] = client_p;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.h,v 7.27 2003/07/02 17:32:22 michael Exp $
+ *  $Id: hash.h,v 7.28 2003/07/25 23:16:06 michael Exp $
  */
 
 #ifndef INCLUDED_hash_h
@@ -40,7 +40,7 @@ extern void hash_add_channel(struct Channel *);
 extern void hash_del_channel(struct Channel *);
 extern void hash_add_resv(struct ResvChannel *);
 extern void hash_del_resv(struct ResvChannel *);
-extern void hash_add_id(const char *, struct Client *); /* XXX */
+extern void hash_add_id(struct Client *);
 extern void hash_del_id(struct Client *);
 extern void hash_add_userhost(struct UserHost *);
 extern void hash_del_userhost(struct UserHost *);

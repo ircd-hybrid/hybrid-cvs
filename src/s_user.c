@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.297 2003/07/22 11:14:32 adx Exp $
+ *  $Id: s_user.c,v 7.298 2003/07/25 23:16:10 michael Exp $
  */
 
 #include "stdinc.h"
@@ -419,7 +419,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
       ;
 
     strlcpy(source_p->id, id, sizeof(source_p->id));
-    hash_add_id(source_p->id, source_p);
+    hash_add_id(source_p);
   }
 
   irc_getnameinfo((struct sockaddr *)&source_p->localClient->ip,
@@ -499,7 +499,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
 int
 register_remote_user(struct Client *client_p, struct Client *source_p,
 		     const char *username, const char *host, const char *server,
-		     const char *id, const char *realname)
+		     const char *realname)
 {
   struct Client *target_p;
 
@@ -517,9 +517,6 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
   strlcpy(source_p->host, host, sizeof(source_p->host)); 
   strlcpy(source_p->info, realname, sizeof(source_p->info));
   strlcpy(source_p->username, username, sizeof(source_p->username));
-
-  if (id != NULL)
-    strlcpy(source_p->id, id, sizeof(source_p->id));
 
   SetClient(source_p);
 

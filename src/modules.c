@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.140 2003/07/08 21:06:43 joshk Exp $
+ *  $Id: modules.c,v 7.141 2003/07/25 23:16:10 michael Exp $
  */
 
 #include "stdinc.h"
@@ -379,7 +379,7 @@ load_one_module(char *path, int coremodule)
   struct stat statbuf;
   unsigned int m_len;
 
-  init_modlist ();
+  init_modlist();
   
   DLINK_FOREACH(ptr, mod_paths.head)
   {
@@ -387,27 +387,24 @@ load_one_module(char *path, int coremodule)
 
     if ((m_len = strlen(mpath->path) + strlen(path) + 1) > PATH_MAX)
     {
-      ilog (L_ERROR, "Path for %s/%s was truncated, not loading module from there",
-             mpath->path, path);
+      ilog(L_ERROR, "Path for %s/%s was truncated, not loading module from there",
+           mpath->path, path);
       continue;
     }
     else
     {
-      modpath = MyMalloc (m_len + 1);
-      snprintf (modpath, m_len + 1, "%s/%s", mpath->path, path);
+      modpath = MyMalloc(m_len + 1);
+      snprintf(modpath, m_len + 1, "%s/%s", mpath->path, path);
 
       if ((strstr(modpath, "../") == NULL) &&
-           (strstr(modpath, "/..") == NULL)) 
+          (strstr(modpath, "/..") == NULL)) 
       {
         if (stat(modpath, &statbuf) == 0)
         {
           if (S_ISREG(statbuf.st_mode))
           {
             /* Regular files only please */
-            if (coremodule)
-              return(load_a_module(modpath, 1, 1));
-            else
-              return(load_a_module(modpath, 1, 0));
+            return(load_a_module(modpath, 1, coremodule));
           }
         }
       }
@@ -422,7 +419,8 @@ load_one_module(char *path, int coremodule)
 
 /* load a module .. */
 static void
-mo_modload(struct Client *client_p, struct Client *source_p, int parc, char *parv[])
+mo_modload(struct Client *client_p, struct Client *source_p,
+           int parc, char *parv[])
 {
   char *m_bn;
 
@@ -445,10 +443,10 @@ mo_modload(struct Client *client_p, struct Client *source_p, int parc, char *par
   load_one_module(parv[1], 0);
 }
 
-
 /* unload a module .. */
 static void
-mo_modunload(struct Client *client_p, struct Client *source_p, int parc, char *parv[])
+mo_modunload(struct Client *client_p, struct Client *source_p,
+             int parc, char *parv[])
 {
   char *m_bn;
   int modindex;
@@ -486,7 +484,8 @@ mo_modunload(struct Client *client_p, struct Client *source_p, int parc, char *p
 
 /* unload and load in one! */
 static void
-mo_modreload(struct Client *client_p, struct Client *source_p, int parc, char *parv[])
+mo_modreload(struct Client *client_p, struct Client *source_p,
+             int parc, char *parv[])
 {
   char *m_bn;
   int modindex;

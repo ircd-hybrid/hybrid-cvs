@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.164 2003/06/30 16:09:44 adx Exp $
+ *  $Id: m_sjoin.c,v 1.165 2003/07/25 23:16:08 michael Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.164 $";
+const char *_version = "$Revision: 1.165 $";
 #endif
 
 /* ms_sjoin()
@@ -112,21 +112,21 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   char           *p; /* pointer used making sjbuf */
   int            i;
   dlink_node     *m;
+  const char *servername;
 
   *buf = '\0';
   *sjbuf_nhops = '\0';
 
   if (IsClient(source_p) || parc < 5)
     return;
-  
-  if (!IsChannelName(parv[2]))
+  /* SJOIN's for local channels can't happen. */
+  if (*parv[2] != '#')
     return;
   if (!check_channel_name(parv[2]))
     return;
 
-  /* SJOIN's for local channels can't happen. */
-  if (*parv[2] != '#')
-    return;
+  servername = (IsHidden(source_p) || ConfigServerHide.hide_servers) ?
+                me.name : source_p->name;
 
   mbuf = modebuf;
   *mbuf = '\0';
@@ -142,11 +142,14 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   {
     switch (*(s++))
     {
-      case 'i':
-        mode.mode |= MODE_INVITEONLY;
+      case 't':
+        mode.mode |= MODE_TOPICLIMIT;
         break;
       case 'n':
         mode.mode |= MODE_NOPRIVMSGS;
+        break;
+      case 'i':
+        mode.mode |= MODE_INVITEONLY;
         break;
       case 'p':
         mode.mode |= MODE_PRIVATE;
@@ -156,9 +159,6 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
         break;
       case 'm':
         mode.mode |= MODE_MODERATED;
-        break;
-      case 't':
-        mode.mode |= MODE_TOPICLIMIT;
         break;
       case 'k':
         strlcpy(mode.key, parv[4 + args], sizeof(mode.key));
@@ -255,8 +255,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
     /* This _SHOULD_ be to ALL_MEMBERS
      * It contains only +imnpstlk, etc */
     sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s %s %s",
-	                 (IsHidden(source_p) || ConfigServerHide.hide_servers) ?
-		         me.name : source_p->name, chptr->chname, modebuf, parabuf);
+	                 servername, chptr->chname, modebuf, parabuf);
   }
 
   *modebuf = *parabuf = '\0';
@@ -386,7 +385,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
       DLINK_FOREACH(m, serv_list.head)
       {
         lclient_p = m->data;
-	      
+
         /* Hopefully, the server knows about it's own clients. */
         if (client_p == lclient_p)
 	  continue;
@@ -429,9 +428,8 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
       {
         *mbuf = '\0';
         sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s %s %s %s %s %s",
-                             (IsHidden(source_p) || ConfigServerHide.hide_servers) ?
-                             me.name : source_p->name, chptr->chname,
-                             modebuf, para[0], para[1], para[2], para[3]);
+                             servername, chptr->chname, modebuf, para[0],
+                             para[1], para[2], para[3]);
         mbuf = modebuf;
         *mbuf++ = '+';
 
@@ -449,9 +447,8 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
       {
         *mbuf = '\0';
         sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s %s %s %s %s %s",
-                             (IsHidden(source_p) || ConfigServerHide.hide_servers) ?
-                             me.name : source_p->name, chptr->chname,
-                             modebuf, para[0], para[1], para[2], para[3]);
+                             servername, chptr->chname, modebuf, para[0],
+                             para[1], para[2], para[3]);
         mbuf = modebuf;
         *mbuf++ = '+';
 
@@ -469,9 +466,8 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
       {
         *mbuf = '\0';
         sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s %s %s %s %s %s",
-                             (IsHidden(source_p) || ConfigServerHide.hide_servers) ?
-                             me.name : source_p->name, chptr->chname,
-                             modebuf, para[0], para[1], para[2], para[3]);
+                             servername, chptr->chname, modebuf, para[0],
+                             para[1], para[2], para[3]);
         mbuf = modebuf;
         *mbuf++ = '+';
 
@@ -504,9 +500,8 @@ nextnick:
   if (pargs != 0)
   {
     sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s %s %s %s %s %s",
-                         (IsHidden(source_p) || ConfigServerHide.hide_servers) ?
-                         me.name : source_p->name, chptr->chname, modebuf,
-                         para[0], para[1], para[2], para[3]);
+                         servername, chptr->chname, modebuf, para[0],
+                         para[1], para[2], para[3]);
   }
 
   if (people == 0)
@@ -717,7 +712,7 @@ void remove_a_mode(struct Channel *chptr, struct Client *source_p,
 
   if (count != 0)
   {
-    *mbuf   = '\0';
+    *mbuf = '\0';
     sendto_channel_local(ALL_MEMBERS, chptr,
 			 ":%s MODE %s %s %s %s %s %s",
 			 (IsHidden(source_p) || ConfigServerHide.hide_servers) ?

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.398 2003/07/21 01:58:24 michael Exp $
+ *  $Id: client.c,v 7.399 2003/07/25 23:16:10 michael Exp $
  */
 
 #include "stdinc.h"
@@ -890,16 +890,7 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
     hash_del_client(source_p);
 
   if (IsPerson(source_p) && IsUserHostIp(source_p))
-  {
-    if (MyConnect(source_p))
-    {
-      delete_user_host(source_p->username, source_p->host, 0);
-    }
-    else
-    {
-      delete_user_host(source_p->username, source_p->host, 1);
-    }
-  }
+    delete_user_host(source_p->username, source_p->host, !MyConnect(source_p));
 
   /* remove from global client list
    * NOTE: source_p->node.next cannot be NULL if the client is added
@@ -1585,7 +1576,7 @@ set_initial_nick(struct Client *client_p, struct Client *source_p,
  * output	- 
  * side effects	- changes nick of a LOCAL user
  */
-int
+void
 change_local_nick(struct Client *client_p, struct Client *source_p, const char *nick)
 {
   /*
@@ -1636,7 +1627,7 @@ change_local_nick(struct Client *client_p, struct Client *source_p, const char *
     sendto_one(source_p, form_str(ERR_NICKTOOFAST),
                me.name, source_p->name, source_p->name,
                nick, ConfigFileEntry.max_nick_time);
-    return(0);
+    return;
   }
 
   /* Finally, add to hash */
@@ -1653,7 +1644,5 @@ change_local_nick(struct Client *client_p, struct Client *source_p, const char *
 
   /* fd_desc is long enough */
   fd_note(client_p->localClient->fd, "Nick: %s", nick);
-
-  return(1);
 }
 

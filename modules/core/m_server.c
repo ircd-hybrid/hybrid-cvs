@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.114 2003/07/21 01:58:22 michael Exp $
+ *  $Id: m_server.c,v 1.115 2003/07/25 23:16:08 michael Exp $
  */
 
 #include "stdinc.h"
@@ -49,7 +49,7 @@ static void ms_server(struct Client *, struct Client *, int, char **);
 static void ms_sid(struct Client *, struct Client *, int, char **);
 
 static int bogus_host(char *host);
-static int set_server_gecos(struct Client *, char *);
+static void set_server_gecos(struct Client *, char *);
 static struct Client *server_exists(char *);
 
 struct Message server_msgtab = {
@@ -77,7 +77,7 @@ _moddeinit(void)
   mod_del_cmd(&sid_msgtab);
 }
 
-const char *_version = "$Revision: 1.114 $";
+const char *_version = "$Revision: 1.115 $";
 #endif
 
 
@@ -189,7 +189,7 @@ mr_server(struct Client *client_p, struct Client *source_p,
       /* NOT REACHED */
       break;
   }
-    
+
   if ((target_p = server_exists(name)))
   {
     /* This link is trying feed me a server that I already have
@@ -244,7 +244,7 @@ mr_server(struct Client *client_p, struct Client *source_p,
   }
 
   /* if we are connecting (Handshake), we already have the name from the
-   * C:line in client_p->name
+   * connect{} block in client_p->name
    */
   strlcpy(client_p->name, name, sizeof(client_p->name));
   set_server_gecos(client_p, info);
@@ -327,7 +327,7 @@ ms_server(struct Client *client_p, struct Client *source_p,
   /* User nicks never have '.' in them and server names
    * must always have '.' in them.
    */
-  if (strchr(name,'.') == NULL)
+  if (strchr(name, '.') == NULL)
   {
     /* Server trying to use the same name as a person. Would
      * cause a fair bit of confusion. Enough to make it hellish
@@ -460,7 +460,7 @@ ms_server(struct Client *client_p, struct Client *source_p,
   set_server_gecos(target_p, info);
 
   strlcpy(target_p->serv->up, source_p->name, sizeof(target_p->serv->up));
-  target_p->servptr  = source_p;
+  target_p->servptr = source_p;
 
   SetServer(target_p);
 
@@ -587,7 +587,7 @@ ms_sid(struct Client *client_p, struct Client *source_p,
   /* User nicks never have '.' in them and server names
    * must always have '.' in them.
    */
-  if (strchr(name,'.') == NULL)
+  if (strchr(name, '.') == NULL)
   {
     /* Server trying to use the same name as a person. Would
      * cause a fair bit of confusion. Enough to make it hellish
@@ -720,7 +720,7 @@ ms_sid(struct Client *client_p, struct Client *source_p,
   set_server_gecos(target_p, info);
 
   strlcpy(target_p->serv->up, source_p->name, sizeof(target_p->serv->up));
-  target_p->servptr  = source_p;
+  target_p->servptr = source_p;
 
   SetServer(target_p);
 
@@ -731,7 +731,7 @@ ms_sid(struct Client *client_p, struct Client *source_p,
   dlinkAdd(target_p, &target_p->lnode, &target_p->servptr->serv->servers);
 
   strlcpy(target_p->id, sid, sizeof(target_p->id));
-  hash_add_id(target_p->id, target_p);
+  hash_add_id(target_p);
 
   /* Old sendto_serv_but_one() call removed because we now
    * need to send different names to different servers
@@ -773,10 +773,10 @@ ms_sid(struct Client *client_p, struct Client *source_p,
 /* set_server_gecos()
  *
  * input	- pointer to client
- * output	- none
+ * output	- NONE
  * side effects - servers gecos field is set
  */
-static int
+static void
 set_server_gecos(struct Client *client_p, char *info)
 {
   /* check the info for [IP] */
@@ -838,8 +838,6 @@ set_server_gecos(struct Client *client_p, char *info)
   }
   else
     strlcpy(client_p->info, "(Unknown Location)", sizeof(client_p->info));
-
-  return(1);
 }
 
 /* bogus_host()
