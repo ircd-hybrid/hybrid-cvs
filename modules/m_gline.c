@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_gline.c,v 1.22 2000/12/18 05:48:10 bill Exp $
+ *  $Id: m_gline.c,v 1.23 2000/12/18 06:17:11 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -485,7 +485,7 @@ log_gline_request(
 
   ircsprintf(filenamebuf, "%s.%s", 
              ConfigFileEntry.glinefile, small_file_date((time_t)0));
-  if (!(out = fbopen(filenamebuf, "+a")))
+  if ( (out = fbopen(filenamebuf, "+a")) == NULL )
     {
       sendto_realops_flags(FLAGS_ALL,"*** Problem opening %s",filenamebuf,
 				     strerror(errno));
@@ -501,7 +501,7 @@ log_gline_request(
            oper_nick,oper_user,oper_host,oper_server,
            timebuffer);
 
-  if (fbputs(buffer, out) == -1)
+  if ( (fbputs(buffer, out) == NULL) )
     {
       sendto_realops_flags(FLAGS_ALL,"*** Problem writing to %s (%s)",
 				     filenamebuf, strerror(errno));

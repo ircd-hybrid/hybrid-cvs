@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 1.21 2000/12/18 03:59:59 db Exp $
+ *   $Id: m_whois.c,v 1.22 2000/12/18 06:17:11 db Exp $
  */
 #include "tools.h"
 #include "common.h"   /* bleah */
@@ -130,9 +130,24 @@ int do_whois(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 	      found = YES;
 	    }
 	}
+      else
+	{
+	  if (uplink && IsCapable(uplink,CAP_LL))
+	    {
+	      sendto_one(uplink,":%s WHOIS %s",
+			 sptr->name, nick);
+	      return 0;
+	    }
+	}
     }
   else
     {
+      /* disallow wild card whois on lazylink leafs for now */
+
+      if (uplink && IsCapable(uplink,CAP_LL))
+	{
+	  return 0;
+	}
       /* Oh-oh wilds is true so have to do it the hard expensive way */
       found = global_whois(sptr, nick, wilds);
     }
