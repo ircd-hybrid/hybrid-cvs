@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.138 2001/05/02 16:53:30 androsyn Exp $
+ *   $Id: send.c,v 7.139 2001/05/05 02:17:35 db Exp $
  */
 
 #include <sys/types.h>
@@ -454,9 +454,9 @@ sendto_channel_butone(struct Client *one, struct Client *from,
                       const char *pattern, ...)
 {
   char buf[IRCD_BUFSIZE*2];
-  char local_prefix[NICKLEN+HOSTLEN+USERLEN+5];
+  char local_prefix[NICKLEN+HOSTLEN+USERLEN+CHANNELLEN+10];
   char local_sendbuf[IRCD_BUFSIZE*2];
-  char remote_prefix[NICKLEN+HOSTLEN+USERLEN+5];
+  char remote_prefix[NICKLEN+HOSTLEN+USERLEN+CHANNELLEN+10];
   char remote_sendbuf[IRCD_BUFSIZE*2];
   int remote_len;
   int local_len;
