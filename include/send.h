@@ -2,7 +2,7 @@
  * send.h
  * Copyright (C) 1999 Patrick Alken
  *
- * $Id: send.h,v 7.42 2001/03/06 02:22:11 androsyn Exp $
+ * $Id: send.h,v 7.43 2001/03/22 05:51:49 ejb Exp $
  */
 
 #ifndef INCLUDED_send_h
@@ -93,6 +93,8 @@ extern  void sendto_ll_channel_remote(struct Channel *, struct Client *client_p,
 extern  void sendto_match_cap_servs(struct Channel *, struct Client *, 
                                     int, const char *, ...);
 
+extern  void sendto_match_vacap_servs(struct Channel *, struct Client *, ...);
+
 extern  void sendto_match_cap_servs_nocap(struct Channel *, struct Client *,
 											int, int, const char *, ...);
 
@@ -131,6 +133,8 @@ extern  void sendto_match_cap_servs(struct Channel *, struct Client *,
                                     int, const char *, ...)
 	    __attribute__((format (printf, 4, 5)));
 
+extern  void sendto_match_vacap_servs(struct Channel *, struct Client *, ...);
+		
 extern void sendto_match_cap_servs_nocap(struct Channel *, struct Client *, int, int, const char *, ...)
 	__attribute__((format (printf, 5, 6)));
 
