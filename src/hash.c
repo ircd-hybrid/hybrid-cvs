@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.42 2002/05/31 02:21:03 androsyn Exp $
+ *  $Id: hash.c,v 7.43 2002/06/07 21:59:17 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -731,8 +731,8 @@ get_or_create_channel(struct Client *client_p, char *chname, int *isnew)
     *isnew = 1;
 
   chptr = BlockHeapAlloc(channel_heap);
-  memset(chptr, 0, sizeof(*chptr)-CHANNELLEN);
-  strcpy(chptr->chname, chname);
+  memset(chptr, 0, sizeof(struct Channel));
+  strlcpy(chptr->chname, chname, CHANNELLEN+1);
 
   if (GlobalChannelList)
     GlobalChannelList->prevch = chptr;
