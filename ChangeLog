@@ -1,3 +1,15 @@
+leeh        2002/07/17 19:09:11 EDT	(20020718_0)
+
+  Modified files:
+    modules              m_version.c 
+  Log:
+  - wrapped 'T' in #ifdef IGNORE_BOGUS_TS
+  
+  Revision  Changes    Path
+  1.39      +3 -1      ircd-hybrid-7/modules/m_version.c
+
+
+
 db          2002/07/17 18:02:36 EDT	(20020717_3)
 
   Modified files:
@@ -30031,4 +30043,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3894 2002/07/17 22:02:43 db Exp $
+$Id: ChangeLog,v 7.3895 2002/07/17 23:09:18 leeh Exp $
