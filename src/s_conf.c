@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.460 2003/07/21 18:27:33 db Exp $
+ *  $Id: s_conf.c,v 7.461 2003/07/22 10:33:33 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1803,12 +1803,7 @@ set_default_conf(void)
   /* verify init_class() ran, this should be an unnecessary check
    * but its not much work.
    */
-
-  class_default = find_class("default"); /* which one is the default class ? */
-  if (class_default == NULL)
-  {
-    abort();
-  }
+  assert(class_default == (struct ConfItem *) class_items.tail->data);
 
 #ifdef HAVE_LIBCRYPTO
   ServerInfo.rsa_private_key = NULL;
@@ -2324,7 +2319,7 @@ get_printable_conf(struct ConfItem *conf, char **host,
   *host = EmptyString(aconf->host) ? null : aconf->host;
   *reason = EmptyString(aconf->reason) ? null : aconf->reason;
   *user = EmptyString(aconf->user) ? null : aconf->user;
-  *classname = EmptyString(conf->name) ? zero : conf->name;
+  *classname = aconf->class_ptr == NULL ? zero : aconf->class_ptr->name;
   *port = (int)aconf->port;
 }
 
@@ -2505,7 +2500,8 @@ clear_out_old_conf(void)
   {
     conf = ptr->data;
     cltmp = (struct ClassItem *)map_to_conf(conf);
-    CurrUserCount(cltmp) = -1;
+    if (ptr != class_items.tail)  /* never mark the "default" class */
+      MaxTotal(cltmp) = -1;
   }
 
   clear_out_address_conf();
@@ -2680,22 +2676,26 @@ get_client_class(struct Client *target_p)
 {
   dlink_node *ptr;
   struct ConfItem *conf;
-  const char *retc = "unknown";
+  struct AccessItem *aconf;
 
-  if (target_p && !IsMe(target_p) && (target_p->localClient->confs.head))
+  if (target_p != NULL && !IsMe(target_p) &&
+      target_p->localClient->confs.head != NULL)
   {
     DLINK_FOREACH(ptr, target_p->localClient->confs.head)
     {
       conf = ptr->data;
 
-      if (conf->name == NULL)
-        retc = "default";
-      else
-        retc = conf->name;
+      if (conf->type == CLIENT_TYPE || conf->type == SERVER_TYPE ||
+          conf->type == OPER_TYPE)
+      {
+        aconf = (struct AccessItem *) map_to_conf(conf);
+	if (aconf->class_ptr != NULL)
+	  return aconf->class_ptr->name;
+      }
     }
   }
 
-  return(retc);
+  return "default";
 }
 
 /* get_client_ping()
@@ -2707,13 +2707,11 @@ get_client_class(struct Client *target_p)
 int
 get_client_ping(struct Client *target_p)
 {
-  int ping = 0;
-  int ping2;
+  int ping;
   struct ConfItem *conf;
   dlink_node *nlink;
 
   if (target_p->localClient->confs.head != NULL)
-  {
     DLINK_FOREACH(nlink, target_p->localClient->confs.head)
     {
       conf = nlink->data;
@@ -2721,21 +2719,13 @@ get_client_ping(struct Client *target_p)
       if ((conf->type == CLIENT_TYPE) || (conf->type == SERVER_TYPE) ||
 	  (conf->type == OPER_TYPE))
       {
-        ping2 = get_conf_ping(conf);
-        if ((ping2 != BAD_PING) && ((ping > ping2) || (ping == 0)))
-          ping = ping2;
+        ping = get_conf_ping(conf);
+        if (ping > 0)
+          return ping;
       }
     }
-  }
-  else
-  {
-    ping = DEFAULT_PINGFREQUENCY;
-  }
 
-  if (ping <= 0)
-    ping = DEFAULT_PINGFREQUENCY;
-
-  return(ping);
+  return DEFAULT_PINGFREQUENCY;
 }
 
 /* get_con_freq()
@@ -2765,21 +2755,9 @@ find_class(const char *classname)
   struct ConfItem *conf;
 
   if ((conf = find_exact_name_conf(CLASS_TYPE, classname, NULL, NULL)) != NULL)
-  {
     return(conf);
-  }
-  else
-  {
-    if ((conf = find_exact_name_conf(CLASS_TYPE, "default",
-				     NULL, NULL)) != NULL)
-    {
-      return(conf);
-    }
-    else
-    {
-      return(NULL);	/* This should never ever happen */
-    }
-  }
+
+  return class_default;
 }
 
 /* check_class()
@@ -2803,8 +2781,9 @@ check_class(void)
 
     if (MaxTotal(aclass) < 0)
     {
-      dlinkDelete(&conf->node, &class_items);
-      if (CurrUserCount(aclass) <= 0)
+      if (CurrUserCount(aclass) > 0)
+        dlinkDelete(&conf->node, &class_items);
+      else
         delete_conf_item(conf);
     }
   }
