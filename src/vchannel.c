@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: vchannel.c,v 7.45 2001/03/06 15:53:41 toot Exp $
+ * $Id: vchannel.c,v 7.46 2001/04/07 20:26:16 toot Exp $
  */
 
 #include "tools.h"
@@ -482,6 +482,11 @@ struct Channel* vchan_invites(struct Channel *chptr, struct Client *source_p)
 
   for (lp = source_p->user->invited.head; lp; lp = lp->next)
     {
+      /* check root first */    
+      if (lp->data == chptr)
+        return chptr;
+
+      /* then vchan list */
       for (vptr = chptr->vchan_list.head; vptr; vptr = vptr->next)
 	{
 	  cp = vptr->data;
