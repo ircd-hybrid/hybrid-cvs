@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.337 2003/05/27 20:20:05 metalrock Exp $
+ *  $Id: s_serv.c,v 7.338 2003/05/29 00:59:05 db Exp $
  */
 
 #include "stdinc.h"
@@ -514,7 +514,7 @@ try_connections(void *unused)
     if (find_server(aconf->name) != NULL)
       continue;
 
-    if (Links(cltmp) < MaxLinks(cltmp))
+    if (CurrUserCount(cltmp) < MaxTotal(cltmp))
     {
       /* Go to the end of the list, if not already last */
       if (ptr->next != NULL)
@@ -671,7 +671,7 @@ check_server(const char *name, struct Client *client_p, int cryptlink)
  *
  */
 void
-add_capability(const char *capab_name, int cap_flag)
+add_capability(const char *capab_name, int cap_flag, int add_to_default)
 {
   struct Capability *cap;
 
@@ -679,6 +679,8 @@ add_capability(const char *capab_name, int cap_flag)
   DupString(cap->name, capab_name);
   cap->cap = cap_flag;
   dlinkAdd(cap, &cap->node, &cap_list);
+  if (add_to_default)
+    default_server_capabs |= cap_flag;
 }
 
 /* delete_capability()
@@ -703,6 +705,7 @@ delete_capability(const char *capab_name)
     {
       if (irccmp(cap->name, capab_name) == 0)
       {
+	default_server_capabs &= ~(cap->cap);
 	MyFree((char *)cap->name);
 	cap->name = NULL;
 	MyFree((char *)cap);
@@ -751,7 +754,7 @@ void
 send_capabilities(struct Client *client_p, struct ConfItem *aconf,
                   int cap_can_send, int enc_can_send)
 {
-  struct Capability *cap;
+  struct Capability *cap=NULL;
   char msgbuf[BUFSIZE];
   char *t;
   int tl;
@@ -768,7 +771,7 @@ send_capabilities(struct Client *client_p, struct ConfItem *aconf,
   {
     cap = ptr->data;
 
-    if (cap->cap & cap_can_send)
+    if (cap->cap & (cap_can_send|default_server_capabs))
     {
       tl = ircsprintf(t, "%s ", cap->name);
       t += tl;
@@ -833,8 +836,7 @@ sendnick_TS(struct Client *client_p, struct Client *target_p)
 	       (unsigned long) target_p->tsinfo,
 	       ubuf, target_p->username, target_p->host,
 	       "0", /* IP */
-	       target_p->id,
-	       target_p->user->server->id,
+	       target_p->id, target_p->user->server->id,
 	       target_p->info);
   else
     sendto_one(client_p, "NICK %s %d %lu %s %s %s %s :%s",
@@ -992,11 +994,9 @@ server_estab(struct Client *client_p)
      * If this is a HUB, pass on CAP_HUB
      */
 
-     send_capabilities(client_p, aconf, default_server_capabs
-             | ((aconf->flags & CONF_FLAGS_LAZY_LINK) ? CAP_LL : 0)
-             | (ServerInfo.hub ? CAP_HUB : 0)
-             | ((aconf->flags & CONF_FLAGS_COMPRESSED) ? CAP_ZIP_SUPPORTED : 0),
-             0);
+     send_capabilities(client_p, aconf,
+       ((aconf->flags & CONF_FLAGS_LAZY_LINK) ? CAP_LL : 0)
+       | ((aconf->flags & CONF_FLAGS_COMPRESSED) ? CAP_ZIP_SUPPORTED : 0) , 0);
 
     /* SERVER is the last command sent before switching to ziplinks.
      * We set TCPNODELAY on the socket to make sure it gets sent out
@@ -1502,8 +1502,8 @@ fork_error:
  * side effects - send a server burst
  * bugs		- still too long
  */
-static
-void server_burst(struct Client *client_p)
+static void
+server_burst(struct Client *client_p)
 {
   /* Send it in the shortened format with the TS, if
   ** it's a TS server; walk the list of channels, sending
@@ -2162,11 +2162,10 @@ serv_connect_callback(int fd, int status, void *data)
      * If this is a HUB, pass on CAP_HUB
      */
 
-    send_capabilities(client_p, aconf, default_server_capabs
-             | ((aconf->flags & CONF_FLAGS_LAZY_LINK) ? CAP_LL : 0)
-             | ((aconf->flags & CONF_FLAGS_COMPRESSED) ? CAP_ZIP_SUPPORTED : 0)
-             | (ServerInfo.hub ? CAP_HUB : 0),
-             0);
+    send_capabilities(client_p, aconf,
+        ((aconf->flags & CONF_FLAGS_LAZY_LINK) ? CAP_LL : 0)
+      | ((aconf->flags & CONF_FLAGS_COMPRESSED) ? CAP_ZIP_SUPPORTED : 0)
+		      , 0);
 
     sendto_one(client_p, "SERVER %s 1 :%s%s",
                my_name_for_link(aconf), 
@@ -2257,10 +2256,9 @@ cryptlink_init(struct Client *client_p, struct ConfItem *aconf, int fd)
     return;
   }
 
-  send_capabilities(client_p, aconf, default_server_capabs
-         | ((aconf->flags & CONF_FLAGS_LAZY_LINK) ? CAP_LL : 0)
-         | ((aconf->flags & CONF_FLAGS_COMPRESSED) ? CAP_ZIP_SUPPORTED : 0)
-         | (ServerInfo.hub ? CAP_HUB : 0),
+  send_capabilities(client_p, aconf,
+		    ((aconf->flags & CONF_FLAGS_LAZY_LINK) ? CAP_LL : 0)
+    | ((aconf->flags & CONF_FLAGS_COMPRESSED) ? CAP_ZIP_SUPPORTED : 0) ,
          CAP_ENC_MASK);
 
   sendto_one(client_p, "CRYPTLINK SERV %s %s :%s%s",

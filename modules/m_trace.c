@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_trace.c,v 1.64 2003/05/24 20:59:59 db Exp $
+ *  $Id: m_trace.c,v 1.65 2003/05/29 00:59:02 db Exp $
  */
 
 #include "stdinc.h"
@@ -94,7 +94,7 @@ _moddeinit(void)
   mod_del_cmd(&trace_msgtab6);
 #endif
 }
-const char *_version = "$Revision: 1.64 $";
+const char *_version = "$Revision: 1.65 $";
 #endif
 
 static int report_this_status(struct Client *source_p, struct Client *target_p,
@@ -393,9 +393,9 @@ do_actual_trace(int ttype, const char *tname,
   DLINK_FOREACH(ptr, ClassList.head)
   {
     cltmp = ptr->data;
-    if (Links(cltmp) > 0)
+    if (CurrUserCount(cltmp) > 0)
       sendto_one(source_p, form_str(RPL_TRACECLASS), me.name,
-		 parv[0], ClassName(cltmp), Links(cltmp));
+		 parv[0], ClassName(cltmp), CurrUserCount(cltmp));
   }
   sendto_one(source_p, form_str(RPL_ENDOFTRACE),me.name, parv[0],tname);
 }

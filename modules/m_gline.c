@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.105 2003/05/28 21:11:52 bill Exp $
+ *  $Id: m_gline.c,v 1.106 2003/05/29 00:59:02 db Exp $
  */
 
 #include "stdinc.h"
@@ -98,7 +98,7 @@ void
 _modinit(void)
 {
     mod_add_cmd(&gline_msgtab);
-    add_capability("GLN", CAP_GLN);
+    add_capability("GLN", CAP_GLN, 1);
 }
 
 void
@@ -108,7 +108,7 @@ _moddeinit(void)
   delete_capability("GLN");
 }
 
-const char *_version = "$Revision: 1.105 $";
+const char *_version = "$Revision: 1.106 $";
 #endif
 
 /* mo_gline()

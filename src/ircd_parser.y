@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.298 2003/05/28 23:40:19 db Exp $
+ *  $Id: ircd_parser.y,v 1.299 2003/05/29 00:59:05 db Exp $
  */
 
 %{
@@ -634,6 +634,8 @@ serverinfo_hub: HUB '=' TYES ';'
     {
       ServerInfo.hub = 1;
       uplink = NULL;
+      delete_capability("HUB");
+      add_capability("HUB", CAP_HUB, 1);
     }
   }
 } | HUB '=' TNO ';'
@@ -660,7 +662,10 @@ serverinfo_hub: HUB '=' TYES ';'
       }
     }
     else
+    {
       ServerInfo.hub = 0;
+      delete_capability("HUB");
+    }
   }
 };
 
@@ -1086,7 +1091,7 @@ class_ping_time: PING_TIME '=' timespec ';'
 class_number_per_ip: NUMBER_PER_IP '=' NUMBER ';'
 {
   if (ypass == 1)
-    MaxLinks(yy_class) = $3;
+    MaxTotal(yy_class) = $3;
 };
 
 class_connectfreq: CONNECTFREQ '=' timespec ';'

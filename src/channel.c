@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.378 2003/05/25 04:24:59 db Exp $
+ *  $Id: channel.c,v 7.379 2003/05/29 00:59:05 db Exp $
  */
 
 #include "stdinc.h"
@@ -76,9 +76,9 @@ void
 init_channels(void)
 {
   /* XXX */
-  add_capability("EX", CAP_EX);
-  add_capability("IE", CAP_IE);
-  add_capability("CHW", CAP_CHW);
+  add_capability("EX", CAP_EX, 1);
+  add_capability("IE", CAP_IE, 1);
+  add_capability("CHW", CAP_CHW, 1);
 
   channel_heap = BlockHeapCreate(sizeof(struct Channel), CHANNEL_HEAP_SIZE);
   ban_heap = BlockHeapCreate(sizeof(struct Ban), BAN_HEAP_SIZE);

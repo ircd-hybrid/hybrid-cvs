@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.413 2003/05/28 23:40:19 db Exp $
+ *  $Id: s_conf.c,v 7.414 2003/05/29 00:59:05 db Exp $
  */
 
 #include "stdinc.h"
@@ -875,10 +875,10 @@ detach_conf(struct Client *client_p, struct ConfItem *aconf)
     {
       if ((aclass = ClassPtr(aconf)) != NULL)
       {
-	if (aclass->links > 0)
-	  aclass->links--;
+	if (CurrUserCount(aclass) > 0)
+	  aclass->curr_user_count--;
 
-	if (MaxLinks(aclass) < 0 && Links(aclass) <= 0)
+	if (MaxTotal(aclass) < 0 && CurrUserCount(aclass) <= 0)
 	{
 	  dlinkDelete(&aclass->class_node, &ClassList);
 	  free_class(ClassPtr(aconf));
@@ -943,7 +943,8 @@ attach_conf(struct Client *client_p, struct ConfItem *aconf)
 
   if (!IsConfOperator(aconf))
   {
-    if (IsConfClient(aconf) && CurrUserCount(aconf) >= ConfMaxTotal(aconf) &&
+    if (IsConfClient(aconf) &&
+	ConfCurrUserCount(aconf) >= ConfMaxTotal(aconf) &&
         ConfMaxTotal(aconf) > 0)
     {
       if (!IsConfExemptLimits(aconf))
@@ -967,7 +968,7 @@ attach_conf(struct Client *client_p, struct ConfItem *aconf)
   aconf->clients++;
 
   if (IsConfTypeOfClient(aconf))
-    ConfLinks(aconf)++;
+    ConfCurrUserCount(aconf)++;
   return(0);
 }
 
@@ -1953,7 +1954,7 @@ clear_out_old_conf(void)
   DLINK_FOREACH(ptr, ClassList.head)
   {
     cltmp = ptr->data;
-    MaxLinks(cltmp) = -1;
+    CurrUserCount(cltmp) = -1;
   }
 
   clear_out_address_conf();

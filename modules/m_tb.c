@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: m_tb.c,v 1.17 2003/05/25 04:24:53 db Exp $
+ *  $Id: m_tb.c,v 1.18 2003/05/29 00:58:58 db Exp $
  */
 
 #include "stdinc.h"
@@ -68,7 +68,7 @@ _modinit(void)
   mod_add_cmd(&tburst_msgtab);
   hook_add_hook("burst_channel", (hookfn *)send_tburst);
   set_tburst_capab();
-  add_capability("TBURST", CAP_TBURST);
+  add_capability("TBURST", CAP_TBURST, 1);
 }
 
 void
@@ -81,7 +81,7 @@ _moddeinit(void)
   unset_tburst_capab();
 }
 
-const char *_version = "$Revision: 1.17 $";
+const char *_version = "$Revision: 1.18 $";
 #endif
 
 /* ms_tburst()

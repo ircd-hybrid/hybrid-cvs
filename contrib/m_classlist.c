@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_classlist.c,v 1.5 2003/05/24 11:43:35 db Exp $
+ *  $Id: m_classlist.c,v 1.6 2003/05/29 00:58:58 db Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&classlist_msgtab);
 }
 
-const char *_version = "$Revision: 1.5 $";
+const char *_version = "$Revision: 1.6 $";
 #endif
 
 /* mo_classlist()
@@ -100,7 +100,8 @@ mo_classlist(struct Client *client_p, struct Client *source_p,
     if (match(classname, ClassName(aclass)))
     {
       sendto_one(source_p, ":%s NOTICE %s :%s %d",
-		 me.name, source_p->name, ClassName(aclass), Links(aclass));
+		 me.name, source_p->name, ClassName(aclass),
+		 CurrUserCount(aclass));
       return;
     }
   }

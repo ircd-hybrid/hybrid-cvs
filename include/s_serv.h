@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.h,v 7.79 2003/05/25 05:56:34 db Exp $
+ *  $Id: s_serv.h,v 7.80 2003/05/29 00:59:00 db Exp $
  */
 
 #ifndef INCLUDED_serv_h
@@ -68,10 +68,6 @@ struct Capability
 #define CAP_UNKLN	0x00040000 /* Can do UNKLINE message		  */
 #define CAP_CLUSTER	0x00080000 /* supports server clustering	  */
 #define CAP_ENCAP	0x00100000 /* supports ENCAP message		  */
-
-#define CAP_MASK   (CAP_QS | CAP_EX | CAP_CHW | CAP_IE | CAP_EOB |\
-                    CAP_KLN | CAP_GLN | CAP_UNKLN | CAP_CLUSTER | \
-                    CAP_SID | CAP_ZIP | CAP_ENC | CAP_KNOCK | CAP_PARA)
 
 #ifdef HAVE_LIBZ
 #define CAP_ZIP_SUPPORTED CAP_ZIP
@@ -253,7 +249,7 @@ extern int hunt_server(struct Client *client_p,
                                const char *command, int server, 
                                int parc, char **parv);
 extern const char *my_name_for_link(struct ConfItem* conf);
-void add_capability(const char *capab_name, int cap_flag);
+void add_capability(const char *capab_name, int cap_flag, int defaults_flag);
 int delete_capability(const char *capab_name);
 int find_capability(const char *capab);
 extern void send_capabilities(struct Client*, struct ConfItem* conf,

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: class.h,v 7.18 2003/05/28 23:40:17 db Exp $
+ *  $Id: class.h,v 7.19 2003/05/29 00:58:59 db Exp $
  */
 
 #ifndef INCLUDED_class_h
@@ -40,7 +40,7 @@ struct Class
   int max_global;
   int max_ident;
   long max_sendq;
-  int user_count;
+  int curr_user_count;
 };
 
 #define ClassName(x)	((x)->class_name)

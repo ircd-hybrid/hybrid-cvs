@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_knock.c,v 1.59 2003/05/25 04:24:57 db Exp $
+ *  $Id: m_knock.c,v 1.60 2003/05/29 00:59:02 db Exp $
  */
 
 #include "stdinc.h"
@@ -72,7 +72,7 @@ _modinit(void)
 {
   mod_add_cmd(&knock_msgtab);
   mod_add_cmd(&knockll_msgtab);
-  add_capability("KNOCK", CAP_KNOCK);
+  add_capability("KNOCK", CAP_KNOCK, 1);
 }
 
 void
@@ -83,7 +83,7 @@ _moddeinit(void)
   delete_capability("KNOCK");
 }
 
-const char *_version = "$Revision: 1.59 $";
+const char *_version = "$Revision: 1.60 $";
 #endif
 
 /* m_knock

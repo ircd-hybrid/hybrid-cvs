@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.293 2003/05/25 23:08:17 db Exp $
+ *  $Id: ircd.c,v 7.294 2003/05/29 00:59:05 db Exp $
  */
 
 #include "stdinc.h"
@@ -105,7 +105,7 @@ time_t nextconnect = 1;        /* time for next try_connections call */
 /* Set to zero because it should be initialized later using
  * initialize_server_capabs
  */
-int default_server_capabs = CAP_MASK;
+int default_server_capabs = 0;
 
 #ifdef HAVE_LIBCRYPTO
 int bio_spare_fd = -1;
@@ -439,18 +439,16 @@ initialize_message_files(void)
 static void
 initialize_server_capabs(void)
 {
-  /* XXX -Michael */
-  default_server_capabs &= ~CAP_ZIP;
-  add_capability("QS", CAP_QS);
-  add_capability("LL", CAP_LL);
-  add_capability("EOB", CAP_EOB);
-  add_capability("HUB", CAP_HUB);
+  add_capability("QS", CAP_QS, 1);
+  add_capability("LL", CAP_LL, 1);
+  add_capability("EOB", CAP_EOB, 1);
+
 #if 0
-  add_capability("SID", CAP_SID);
+  add_capability("SID", CAP_SID, 0);
 #endif
-  add_capability("ZIP", CAP_ZIP);
-  add_capability("PARA", CAP_PARA);
-  add_capability("CLUSTER", CAP_CLUSTER);
+  add_capability("ZIP", CAP_ZIP, 0);
+  add_capability("PARA", CAP_PARA, 1);
+  add_capability("CLUSTER", CAP_CLUSTER, 1);
 }
 
 /* write_pidfile
