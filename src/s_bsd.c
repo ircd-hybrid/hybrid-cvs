@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.181 2003/02/17 16:09:37 db Exp $
+ *  $Id: s_bsd.c,v 7.182 2003/03/30 16:16:10 adx Exp $
  */
 
 #include "stdinc.h"
@@ -366,6 +366,7 @@ add_connection(struct Listener* listener, int fd)
 		   get_listener_name(listener), errno);
       ServerStats->is_ref++;
       fd_close(fd);
+      free_client(new_client);
       return;
     }
 
