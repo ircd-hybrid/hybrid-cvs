@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.4 1999/08/14 06:46:02 tomh Exp $
+ *  $Id: s_bsd.c,v 7.5 1999/08/15 10:44:18 tomh Exp $
  */
 #include "s_bsd.h"
 #include "class.h"
@@ -343,24 +343,13 @@ int deliver_it(struct Client *cptr, char *str, int len)
  * also updates reason if a K-line
  *
  */
-int check_client(struct Client *cptr,char *username,char **reason)
+int check_client(struct Client *cptr, const char* username, char **reason)
 {
-  static char     sockname[HOSTLEN + 1];
-  int             i;
-  struct hostent* hp = 0;
- 
-  ClearAccess(cptr);
+  int i = attach_Iline(cptr, username, reason);
 
-  if (cptr->dns_reply)
-    hp = cptr->dns_reply->hp;
-
-  if ((i = attach_Iline(cptr, hp, sockname, username, reason)))
-    {
-      log(L_INFO, "Access denied: %s[%s]", cptr->name, sockname);
-      return i;
-    }
-
-  return 0;
+  if (0 != i)
+    log(L_INFO, "Access denied: %s[%s]", cptr->name, cptr->sockhost);
+  return i;
 }
 
 /*

@@ -34,7 +34,7 @@
  *                mode * -p etc. if flag was clear
  *
  *
- * $Id: channel.c,v 7.3 1999/08/10 23:13:12 lusky Exp $
+ * $Id: channel.c,v 7.4 1999/08/15 10:44:16 tomh Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -3822,10 +3822,7 @@ int     m_topic(struct Client *cptr,
 **      parv[1] - user to invite
 **      parv[2] - channel number
 */
-int     m_invite(struct Client *cptr,
-                 struct Client *sptr,
-                 int parc,
-                 char *parv[])
+int m_invite(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 {
   struct Client *acptr;
   struct Channel *chptr;
