@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_oper.c,v 1.57 2002/11/01 14:38:03 bill Exp $
+ *  $Id: m_oper.c,v 1.58 2002/11/06 21:17:59 wiz Exp $
  */
 
 #include "stdinc.h"
@@ -46,6 +46,7 @@
 
 static struct ConfItem *find_password_aconf(char *name, struct Client *source_p);
 static int match_oper_password(char *password, struct ConfItem *aconf);
+static void failed_oper_notice(struct Client *source_p, char *name, char *reason);
 int oper_up( struct Client *source_p, struct ConfItem *aconf );
 #ifdef CRYPT_OPER_PASSWORD
 extern        char *crypt();
@@ -74,7 +75,7 @@ _moddeinit(void)
   mod_del_cmd(&oper_msgtab);
 }
 
-const char *_version = "$Revision: 1.57 $";
+const char *_version = "$Revision: 1.58 $";
 #endif
 
 /*
@@ -110,13 +111,8 @@ m_oper(struct Client *client_p, struct Client *source_p,
   if((aconf = find_password_aconf(name,source_p)) == NULL)
   {
     sendto_one(source_p, form_str(ERR_NOOPERHOST), me.name, source_p->name);
-    if (ConfigFileEntry.failed_oper_notice)
-    {
-      sendto_realops_flags(FLAGS_ALL, L_ALL,
-			   "Failed OPER attempt - host mismatch by %s (%s@%s)",
-			   source_p->name, source_p->username, 
-			   source_p->host);
-    }
+    failed_oper_notice(source_p, name, find_conf_by_name(name, CONF_OPERATOR) ?
+                       "host mismatch" : "no oper {} block");
     log_failed_oper(source_p, name);
     return;
   }
@@ -137,11 +133,8 @@ m_oper(struct Client *client_p, struct Client *source_p,
     if(attach_conf(source_p, aconf) != 0)
     {
       sendto_one(source_p,":%s NOTICE %s :Can't attach conf!",
-		 me.name,source_p->name);
-      sendto_realops_flags(FLAGS_ALL, L_ALL,
-			   "Failed OPER attempt by %s (%s@%s) can't attach conf!",
-			   source_p->name, source_p->username,
-			   source_p->host);
+		 me.name, source_p->name);
+      failed_oper_notice(source_p, name, "can't attach conf!");
       /* 
        * 20001216:
        * Reattach old iline
@@ -161,15 +154,9 @@ m_oper(struct Client *client_p, struct Client *source_p,
   else
   {
     sendto_one(source_p,form_str(ERR_PASSWDMISMATCH),me.name, parv[0]);
-    if (ConfigFileEntry.failed_oper_notice)
-    {
-      sendto_realops_flags(FLAGS_ALL, L_ALL,
-			   "Failed OPER attempt by %s (%s@%s)",
-			   source_p->name, source_p->username,
-			   source_p->host);
-    }
-    log_failed_oper(source_p, name);
+    failed_oper_notice(source_p, name, "password mismatch");
   }
+  log_failed_oper(source_p, name);
 }
 
 /*
@@ -272,4 +259,24 @@ match_oper_password(char *password, struct ConfItem *aconf)
     return (YES);
   else
     return (NO);
+}
+
+
+/*
+ * failed_oper_notice
+ *
+ * inputs       - pointer to client doing /oper ...
+ *              - pointer to nick they tried to oper as
+ *              - pointer to reason they have failed
+ * output       - nothing
+ * side effects - notices all opers of the failed oper attempt if enabled
+ */
+
+static void
+failed_oper_notice(struct Client *source_p, char *name, char *reason)
+{
+    if (ConfigFileEntry.failed_oper_notice)
+      sendto_realops_flags(FLAGS_ALL, L_ALL, "Failed OPER attempt as %s "
+                           "by %s (%s@%s) - %s", name, source_p->name,
+                           source_p->username, source_p->host, reason);
 }
