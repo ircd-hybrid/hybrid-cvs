@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.29 2003/05/23 19:06:50 joshk Exp $
+dnl $Id: configure.ac,v 7.30 2003/05/24 05:48:45 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -670,7 +670,10 @@ AC_HELP_STRING([--enable-efnet],[For IRCDs running on EFnet.]),
 	AC_DEFINE(EFNET, 1, [Define if this ircd will be an EFnet server.])
 	echo "Building ircd for use with EFnet"
 	efnet=yes
-],)
+	EXAMPLE_CONF=example.efnet.conf
+], EXAMPLE_CONF=example.conf)
+
+AC_SUBST(EXAMPLE_CONF)
 
 AC_ARG_WITH(nicklen,
 AC_HELP_STRING([--with-nicklen=LENGTH],[Set the nick length to LENGTH.]),

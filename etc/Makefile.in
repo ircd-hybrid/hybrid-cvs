@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.6 2003/05/24 01:40:17 joshk Exp $
+# $Id: Makefile.in,v 1.7 2003/05/24 05:48:49 joshk Exp $
 
 INSTALL		= @INSTALL@
 INSTALL_DATA	= @INSTALL_DATA@
@@ -12,7 +12,7 @@ prefix		= @prefix@
 sysconfdir	= @sysconfdir@
 exec_prefix	= @exec_prefix@
 
-DISTFILES	= example.conf example.efnet.conf example.conf.quick simple.conf
+DISTFILES	= @EXAMPLE_CONF@
 NOMVFILES	= ircd.motd
 
 all:
@@ -27,6 +27,8 @@ install:
 		echo $(INSTALL_DATA) $$i $(sysconfdir); \
 		$(INSTALL_DATA) $$i $(sysconfdir); \
 	done
+
+	@echo "Note: additional example configuration files can be found in this directory (etc/)."
 
 	@for i in $(NOMVFILES); do \
 		if test ! -f $(sysconfdir)/$$i; then \

@@ -308,7 +308,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT MKDEP MAKEDEPEND STDOUT CPP EGREP SET_MAKE INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA RM CP MV LN SED AR LD YACC RANLIB ac_ct_RANLIB LEX LEXLIB LEX_OUTPUT_ROOT INET_MISC CRYPT_LIB VICONF SNPRINTF_C ENCSPEED ZLIB_LD SELECT_TYPE CLOBBER PICFLAGS MODULES_DEFINE MODULES_LIBS MOD_TARGET SSL_INCLUDES SSL_LIBS IRC_CFLAGS SEDOBJ LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT MKDEP MAKEDEPEND STDOUT CPP EGREP SET_MAKE INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA RM CP MV LN SED AR LD YACC RANLIB ac_ct_RANLIB LEX LEXLIB LEX_OUTPUT_ROOT INET_MISC CRYPT_LIB VICONF SNPRINTF_C ENCSPEED ZLIB_LD SELECT_TYPE CLOBBER EXAMPLE_CONF PICFLAGS MODULES_DEFINE MODULES_LIBS MOD_TARGET SSL_INCLUDES SSL_LIBS IRC_CFLAGS SEDOBJ LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -7655,8 +7655,13 @@ _ACEOF
 
 	echo "Building ircd for use with EFnet"
 	efnet=yes
+	EXAMPLE_CONF=example.efnet.conf
 
+else
+  EXAMPLE_CONF=example.conf
 fi;
+
+
 
 
 # Check whether --with-nicklen or --without-nicklen was given.
@@ -9909,6 +9914,7 @@ s,@ENCSPEED@,$ENCSPEED,;t t
 s,@ZLIB_LD@,$ZLIB_LD,;t t
 s,@SELECT_TYPE@,$SELECT_TYPE,;t t
 s,@CLOBBER@,$CLOBBER,;t t
+s,@EXAMPLE_CONF@,$EXAMPLE_CONF,;t t
 s,@PICFLAGS@,$PICFLAGS,;t t
 s,@MODULES_DEFINE@,$MODULES_DEFINE,;t t
 s,@MODULES_LIBS@,$MODULES_LIBS,;t t
