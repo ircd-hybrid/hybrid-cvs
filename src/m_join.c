@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 7.4 1999/12/30 20:35:50 db Exp $
+ *   $Id: m_join.c,v 7.5 1999/12/31 00:23:21 db Exp $
  */
 
 #include "m_commands.h"
@@ -514,3 +514,35 @@ int     m_join(struct Client *cptr,
   return 0;
 }
 
+#ifdef DBOP
+/* ZZZZZZZZZZZZ Q&D debug function */
+int     m_dbop(struct Client *cptr,
+               struct Client *sptr,
+               int parc,
+               char *parv[])
+{
+  int counted_ops=0;
+  struct SLink  *l;
+  char *name;
+  struct Channel *chptr;
+
+  name = parv[1];
+
+  if(!(chptr=hash_find_channel(name, NullChn)))
+    {
+      sendto_one(sptr,
+      ":%s NOTICE %s :*** Notice %s does not exist",
+        me.name, sptr->name,  name );
+      return -1;
+    }
+
+  for (l = chptr->members; l && l->value.cptr; l = l->next)
+    if (l->flags & MODE_CHANOP)
+      {
+        counted_ops++;
+      }
+
+  sendto_one(sptr,":%s NOTICE %s :*** Notice %s chptr->opcount %d counted %d",
+    me.name, sptr->name, name, chptr->opcount, counted_ops);
+}
+#endif

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: msg.h,v 7.4 1999/12/30 20:35:32 db Exp $
+ * $Id: msg.h,v 7.5 1999/12/31 00:23:18 db Exp $
  */
 #ifndef INCLUDED_msg_h
 #define INCLUDED_msg_h
@@ -60,7 +60,9 @@ struct MessageTree
 
 typedef struct MessageTree MESSAGE_TREE;
 
-
+#ifdef DBOP
+#define MSG_DBOP     "DBOP"
+#endif
 #define MSG_PRIVATE  "PRIVMSG"  /* PRIV */
 #define MSG_WHO      "WHO"      /* WHO  -> WHOC */
 #define MSG_WHOIS    "WHOIS"    /* WHOI */
@@ -163,6 +165,9 @@ struct Message msgtab[] = {
   { MSG_NICK,    m_nick,     0, MAXPARA, 1, 1, 0, 0L },
   { MSG_NOTICE,  m_notice,   0, MAXPARA, 1, 0, 0, 0L },
   { MSG_JOIN,    m_join,     0, MAXPARA, 1, 0, 0, 0L },
+#ifdef DBOP
+  { MSG_DBOP,    m_dbop,     0, MAXPARA, 1, 0, 0, 0L },
+#endif
   { MSG_MODE,    m_mode,     0, MAXPARA, 1, 0, 0, 0L },
   { MSG_QUIT,    m_quit,     0, MAXPARA, 1, 1, 0, 0L },
   { MSG_PART,    m_part,     0, MAXPARA, 1, 0, 0, 0L },
