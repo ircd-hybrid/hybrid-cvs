@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.473 2003/09/11 03:41:47 metalrock Exp $
+ *  $Id: s_conf.c,v 7.474 2003/09/15 01:44:18 bill Exp $
  */
 
 #include "stdinc.h"
@@ -516,6 +516,7 @@ report_confitem_types(struct Client *source_p, ConfType type)
   struct MatchItem *matchitem;
   struct ClassItem *classitem;
   char *host, *reason, *user, *classname;
+  char buf[5], *p = buf;
   int port;
 
   switch (type)
@@ -536,9 +537,32 @@ report_confitem_types(struct Client *source_p, ConfType type)
     {
       conf = ptr->data;
       matchitem = (struct MatchItem *)map_to_conf(conf);
+
+      if (matchitem->action & SHARED_KLINE)
+        *p++ = 'K';
+      else
+        *p++ = 'k';
+
+      if (matchitem->action & SHARED_UNKLINE)
+        *p++ = 'U';
+      else
+        *p++ = 'u';
+
+      if (matchitem->action & SHARED_XLINE)
+        *p++ = 'X';
+      else
+        *p++ = 'x';
+
+      if (matchitem->action & SHARED_RESV)
+        *p++ = 'Q';
+      else
+        *p++ = 'q';
+
+      *p++ = '\0';
+
       sendto_one(source_p, form_str(RPL_STATSULINE),
-		 me.name, source_p->name,
-		 conf->name, matchitem->user);
+		 me.name, source_p->name, conf->name,
+                 matchitem->user, matchitem->host, buf);
     }
     break;
 
