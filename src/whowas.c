@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: whowas.c,v 7.14 2002/01/05 09:15:20 a1kmm Exp $
+ *  $Id: whowas.c,v 7.15 2002/01/09 17:38:35 jmallett Exp $
  */
 
 #include <sys/types.h>
@@ -69,7 +69,7 @@ void add_history(struct Client* client_p, int online)
 {
   struct Whowas* who = &WHOWAS[whowas_next];
 
-  assert(0 != client_p);
+  assert(NULL != client_p);
 
   if (who->hashv != -1)
     {

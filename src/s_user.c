@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.177 2002/01/05 09:15:18 a1kmm Exp $
+ *  $Id: s_user.c,v 7.178 2002/01/09 17:38:34 jmallett Exp $
  */
 
 #include <sys/types.h>
@@ -291,8 +291,8 @@ int register_local_user(struct Client *client_p, struct Client *source_p,
   dlink_node *ptr;
   dlink_node *m;
   char *id;
-  assert(0 != source_p);
-  assert(0 != source_p->localClient);
+  assert(NULL != source_p);
+  assert(NULL != source_p->localClient);
   assert(source_p->username != username);
 
 
@@ -481,7 +481,7 @@ int register_remote_user(struct Client *client_p, struct Client *source_p,
   struct User*     user = source_p->user;
   struct Client *target_p;
   
-  assert(0 != source_p);
+  assert(NULL != source_p);
   assert(source_p->username != username);
 
   user->last = CurrentTime;
@@ -665,7 +665,7 @@ static int valid_hostname(const char* hostname)
 {
   const char* p     = hostname;
 
-  assert(0 != p);
+  assert(NULL != p);
 
   if ('.' == *p)
     return NO;
@@ -696,7 +696,7 @@ static int valid_username(const char* username)
   int dots = 0;
   const char *p = username;
 
-  assert(0 != p);
+  assert(NULL != p);
 
   if ('~' == *p)
     ++p;
@@ -786,7 +786,7 @@ int do_local_user(char* nick, struct Client* client_p, struct Client* source_p,
   unsigned int oflags;
   struct User* user;
 
-  assert(0 != source_p);
+  assert(NULL != source_p);
   assert(source_p->username != username);
 
   user = make_user(source_p);
@@ -842,7 +842,7 @@ int do_remote_user(char* nick, struct Client* client_p, struct Client* source_p,
   unsigned int oflags;
   struct User* user;
 
-  assert(0 != source_p);
+  assert(NULL != source_p);
   assert(source_p->username != username);
 
   user = make_user(source_p);

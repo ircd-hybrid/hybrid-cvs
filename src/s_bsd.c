@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.156 2002/01/07 06:12:40 joant Exp $
+ *  $Id: s_bsd.c,v 7.157 2002/01/09 17:38:33 jmallett Exp $
  */
 
 #include "config.h"
@@ -258,7 +258,7 @@ int set_non_blocking(int fd)
 void close_connection(struct Client *client_p)
 {
   struct ConfItem *aconf;
-  assert(0 != client_p);
+  assert(NULL != client_p);
 
   if (IsServer(client_p))
     {
@@ -368,7 +368,7 @@ void add_connection(struct Listener* listener, int fd)
 
   socklen_t len = sizeof(struct irc_sockaddr);
   struct irc_sockaddr   irn;
-  assert(0 != listener);
+  assert(NULL != listener);
 
 #ifdef USE_IAUTH
   if (iAuth.socket == NOSOCK)

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_gline.c,v 1.18 2002/01/05 09:15:17 a1kmm Exp $
+ *  $Id: s_gline.c,v 1.19 2002/01/09 17:38:34 jmallett Exp $
  */
 
 #include "tools.h"
@@ -83,7 +83,7 @@ add_gline(struct ConfItem *aconf)
 struct ConfItem*
 find_gkill(struct Client* client_p, char* username)
 {
-  assert(0 != client_p);
+  assert(NULL != client_p);
   return (IsExemptKline(client_p)) ? 0 : find_is_glined(client_p->host, username);
 }
 
