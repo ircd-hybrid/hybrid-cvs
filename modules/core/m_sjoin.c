@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.13 2000/12/03 23:11:42 db Exp $
+ *   $Id: m_sjoin.c,v 1.14 2000/12/07 05:46:14 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -200,8 +200,8 @@ int     ms_sjoin(struct Client *cptr,
 	      sendto_realops("Found top_chptr for %s", (parv[2] + 1));
 
 	      m = make_dlink_node();
-	      m->data = chptr;
 	      dlinkAdd(chptr, m, &top_chptr->vchan_list);
+	      chptr->root_chptr=top_chptr;
 	    }
 	  else
 	    {
@@ -210,8 +210,8 @@ int     ms_sjoin(struct Client *cptr,
 	      top_chptr = get_channel(sptr, (parv[2] + 1), CREATE);
 
 	      m = make_dlink_node();
-	      m->data = chptr;
 	      dlinkAdd(chptr, m, &top_chptr->vchan_list);
+	      chptr->root_chptr=top_chptr;
 	    }
 
 	  *p = '_';	/* fugly hack, restore '_' */

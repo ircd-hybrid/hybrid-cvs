@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.109 2000/12/07 01:42:52 db Exp $
+ * $Id: channel.c,v 7.110 2000/12/07 05:46:17 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -1607,7 +1607,7 @@ void set_channel_mode(struct Client *cptr,
         case 'l':
           if (whatt == MODE_QUERY)
             break;
-          if (!isok || limitset++)
+          if (!isok_c || limitset++)
             {
               if (whatt == MODE_ADD && parc-- > 0)
                 parv++;
@@ -1669,7 +1669,7 @@ void set_channel_mode(struct Client *cptr,
         case 'i' :
           if (whatt == MODE_QUERY)      /* shouldn't happen. */
             break;
-          if (!isok)
+          if (!isok_c)
             {
               if (MyClient(sptr) && !errsent(SM_ERR_NOOPS, &errors_sent))
                 sendto_one(sptr, form_str(ERR_CHANOPRIVSNEEDED), me.name, 
@@ -1713,7 +1713,7 @@ void set_channel_mode(struct Client *cptr,
           break;
 
         case 'm' :
-          if (!isok)
+          if (!isok_c)
             {
               if (MyClient(sptr) && !errsent(SM_ERR_NOOPS, &errors_sent))
                 sendto_one(sptr, form_str(ERR_CHANOPRIVSNEEDED), me.name, 
@@ -1752,7 +1752,7 @@ void set_channel_mode(struct Client *cptr,
           break;
 
         case 'n' :
-          if (!isok)
+          if (!isok_c)
             {
               if (MyClient(sptr) && !errsent(SM_ERR_NOOPS, &errors_sent))
                 sendto_one(sptr, form_str(ERR_CHANOPRIVSNEEDED), me.name, 
@@ -1793,7 +1793,7 @@ void set_channel_mode(struct Client *cptr,
           break;
 
         case 'p' :
-          if (!isok)
+          if (!isok_c)
             {
               if (MyClient(sptr) && !errsent(SM_ERR_NOOPS, &errors_sent))
                 sendto_one(sptr, form_str(ERR_CHANOPRIVSNEEDED), me.name, 
@@ -1831,7 +1831,7 @@ void set_channel_mode(struct Client *cptr,
           break;
 
         case 's' :
-          if (!isok)
+          if (!isok_c)
             {
               if (MyClient(sptr) && !errsent(SM_ERR_NOOPS, &errors_sent))
                 sendto_one(sptr, form_str(ERR_CHANOPRIVSNEEDED), me.name, 
@@ -1870,7 +1870,7 @@ void set_channel_mode(struct Client *cptr,
           break;
 
         case 't' :
-          if (!isok)
+          if (!isok_c)
             {
               if (MyClient(sptr) && !errsent(SM_ERR_NOOPS, &errors_sent))
                 sendto_one(sptr, form_str(ERR_CHANOPRIVSNEEDED), me.name, 
