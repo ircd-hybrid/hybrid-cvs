@@ -1,3 +1,17 @@
+wcampbel    2001/12/15 23:53:29 EST	(20011216_0)
+
+  Modified files:
+    .                    INSTALL 
+    doc                  serverhide.txt 
+  Log:
+  Doc updates
+  
+  Revision  Changes    Path
+  7.21      +3 -0      ircd-hybrid-7/INSTALL
+  7.2       +15 -6     ircd-hybrid-7/doc/serverhide.txt
+
+
+
 leeh        2001/12/15 17:39:12 EST	(20011215_12)
 
   Modified files:
@@ -673,7 +687,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3185 2001/12/15 22:39:17 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3186 2001/12/16 04:53:34 wcampbel Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -19027,4 +19041,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3185 2001/12/15 22:39:17 leeh Exp $
+$Id: ChangeLog,v 7.3186 2001/12/16 04:53:34 wcampbel Exp $
