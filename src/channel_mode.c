@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.21 2002/02/13 18:41:17 jmallett Exp $
+ *  $Id: channel_mode.c,v 7.22 2002/02/25 17:39:14 androsyn Exp $
  */
 
 #include "tools.h"
@@ -2028,7 +2028,7 @@ chm_key(struct Client *client_p, struct Client *source_p,
       fix_key_old(key);
 
     assert(key[0] != ' ');
-    strncpy_irc(chptr->mode.key, key, KEYLEN - 1)[KEYLEN - 1] = 0;
+    strlcpy(chptr->mode.key, key, KEYLEN);;
 
     for (i = 0; i < mode_count_minus; i++)
     {

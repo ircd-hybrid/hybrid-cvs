@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: motd.c,v 7.21 2002/02/10 03:35:09 wcampbel Exp $
+ *  $Id: motd.c,v 7.22 2002/02/25 17:39:15 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -48,8 +48,7 @@
 */
 void InitMessageFile(MotdType motdType, char *fileName, MessageFile *motd)
   {
-    strncpy_irc(motd->fileName, fileName, PATH_MAX);
-    motd->fileName[PATH_MAX] = '\0';
+    strlcpy(motd->fileName, fileName, PATH_MAX);
     motd->motdType = motdType;
     motd->contentsOfFile = NULL;
     motd->lastChangedDate[0] = '\0';
@@ -199,8 +198,7 @@ int ReadMessageFile(MessageFile *MessageFileptr)
         *p = '\0';
       newMessageLine = (MessageFileLine*) MyMalloc(sizeof(MessageFileLine));
 
-      strncpy_irc(newMessageLine->line, buffer, MESSAGELINELEN);
-      newMessageLine->line[MESSAGELINELEN] = '\0';
+      strlcpy(newMessageLine->line, buffer, MESSAGELINELEN);
       newMessageLine->next = (MessageFileLine *)NULL;
 
       if (MessageFileptr->contentsOfFile)

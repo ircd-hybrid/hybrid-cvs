@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.105 2002/01/09 16:19:14 leeh Exp $
+ *  $Id: m_stats.c,v 1.106 2002/02/25 17:39:06 androsyn Exp $
  */
 
 #include "tools.h"	 /* dlink_node/dlink_list */
@@ -27,7 +27,7 @@
 #include "class.h"       /* report_classes */
 #include "client.h"      /* Client */
 #include "common.h"      /* TRUE/FALSE */
-#include "irc_string.h"  /* strncpy_irc */
+#include "irc_string.h"  
 #include "ircd.h"        /* me */
 #include "listener.h"    /* show_ports */
 #include "s_gline.h"
@@ -80,7 +80,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-char *_version = "$Revision: 1.105 $";
+char *_version = "$Revision: 1.106 $";
 #endif
 
 const char* Lformat = ":%s %d %s %s %u %u %u %u %u :%u %u %s";

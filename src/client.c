@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.238 2002/02/24 17:37:40 leeh Exp $
+ *  $Id: client.c,v 7.239 2002/02/25 17:39:14 androsyn Exp $
  */
 
 #include "tools.h"
@@ -1280,9 +1280,9 @@ static void remove_dependents(struct Client* client_p,
        */
 
       if ((aconf = to->serv->sconf))
-        strncpy_irc(myname, my_name_for_link(me.name, aconf), HOSTLEN);
+        strlcpy(myname, my_name_for_link(me.name, aconf), HOSTLEN);
       else
-        strncpy_irc(myname, me.name, HOSTLEN);
+        strlcpy(myname, me.name, HOSTLEN);
       recurse_send_quits(client_p, source_p, to, comment1, myname);
     }
 
@@ -1672,8 +1672,7 @@ set_initial_nick(struct Client *client_p, struct Client *source_p,
 
  if (source_p->user)
  {
-  strncpy_irc(buf, source_p->username, USERLEN);
-  buf[USERLEN] = '\0';
+  strlcpy(buf, source_p->username, USERLEN);
   /*
    * USER already received, now we have NICK.
    * *NOTE* For servers "NICK" *must* precede the

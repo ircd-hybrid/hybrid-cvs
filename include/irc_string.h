@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: irc_string.h,v 7.33 2002/01/05 09:14:28 a1kmm Exp $
+ *  $Id: irc_string.h,v 7.34 2002/02/25 17:39:02 androsyn Exp $
  */
 
 #ifndef INCLUDED_irc_string_h
@@ -74,11 +74,6 @@ const char* inetntoa(const char* in_addr);
 const char *inetntop(int af, const void *src, char *dst, unsigned int size);
 int inetpton(int af, const char *src, void *dst);
                                 
-/*
- * strncpy_irc - optimized strncpy
- */
-char* strncpy_irc(char* s1, const char* s2, size_t n);
-
 
 #ifndef HAVE_STRLCPY
 size_t strlcpy(char *dst, const char *src, size_t siz);

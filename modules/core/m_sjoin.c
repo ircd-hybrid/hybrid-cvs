@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.126 2002/01/05 09:15:04 a1kmm Exp $
+ *  $Id: m_sjoin.c,v 1.127 2002/02/25 17:39:11 androsyn Exp $
  */
 
 #include "tools.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-char *_version = "$Revision: 1.126 $";
+char *_version = "$Revision: 1.127 $";
 #endif
 /*
  * ms_sjoin
@@ -177,7 +177,7 @@ static void ms_sjoin(struct Client *client_p,
         mode.mode |= MODE_HIDEOPS;
         break;
       case 'k':
-        strncpy_irc(mode.key, parv[4 + args], KEYLEN);
+        strlcpy(mode.key, parv[4 + args], KEYLEN);
         args++;
         if (parc < 5+args)
           return;

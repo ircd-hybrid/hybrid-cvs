@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: irc_string.c,v 7.51 2002/01/05 09:15:13 a1kmm Exp $
+ *  $Id: irc_string.c,v 7.52 2002/02/25 17:39:15 androsyn Exp $
  */
 
 #include "config.h"
@@ -710,22 +710,3 @@ size_t strlcpy(char *dst, const char *src, size_t siz)
 #endif
 
 
-/*
- * strncpy_irc - optimized strncpy
- * This may not look like it would be the fastest possible way to do it,
- * but it generally outperforms everything else on many platforms, 
- * including asm library versions and memcpy, if compiled with the 
- * optimizer on. (-O2 for gcc) --Bleep
- */
-#ifdef strncpy_irc
-#undef strncpy_irc
-#endif
-
-char* strncpy_irc(char* s1, const char* s2, size_t n)
-{
-  char *endp = s1 + n;
-  char *s = s1;
-  while (s < endp && (*s++ = *s2++))
-    ;
-  return s1;
-}

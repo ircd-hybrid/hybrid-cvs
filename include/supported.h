@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: supported.h,v 1.18 2002/02/02 15:34:57 leeh Exp $
+ *  $Id: supported.h,v 1.19 2002/02/25 17:39:02 androsyn Exp $
  */
 
 #ifndef INCLUDED_supported_h
@@ -45,7 +45,7 @@
         ConfigChannel.use_invex ? " INVEX" : "", \
         MAXMODEPARAMS,ConfigChannel.max_chans_per_user, \
         ConfigChannel.max_bans, \
-        ConfigFileEntry.max_targets,NICKLEN,TOPICLEN,TOPICLEN
+        ConfigFileEntry.max_targets,NICKLEN-1,TOPICLEN,TOPICLEN
 
 #define FEATURES2 "CHANTYPES=%s" \
                   " PREFIX=%s" \

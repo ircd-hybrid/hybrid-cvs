@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.292 2002/02/17 05:39:28 androsyn Exp $
+ *  $Id: s_conf.c,v 7.293 2002/02/25 17:39:15 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -567,8 +567,7 @@ verify_access(struct Client* client_p, const char* username)
   else
     {
       non_ident[0] = '~';
-      strncpy_irc(&non_ident[1],username, USERLEN - 1);
-      non_ident[USERLEN] = '\0';
+      strlcpy(&non_ident[1],username, USERLEN);
       aconf = find_address_conf(client_p->host,non_ident,
 				&client_p->localClient->ip,
 				client_p->localClient->aftype);
@@ -617,7 +616,7 @@ verify_access(struct Client* client_p, const char* username)
 				       "%s spoofing: %s as %s", client_p->name,
 				       client_p->host, aconf->name);
 		}
-	      strncpy_irc(client_p->host, aconf->name, HOSTLEN);
+	      strlcpy(client_p->host, aconf->name, HOSTLEN);
 	      SetIPSpoof(client_p);
 	    }
 	  return(attach_iline(client_p, aconf));
@@ -1443,7 +1442,7 @@ int rehash(int sig)
 
   if (ServerInfo.description != NULL)
     {
-      strncpy_irc(me.info, ServerInfo.description, REALLEN);
+      strlcpy(me.info, ServerInfo.description, REALLEN);
     }
 
   flush_deleted_I_P();

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fileio.c,v 7.18 2002/01/05 09:15:12 a1kmm Exp $
+ *  $Id: fileio.c,v 7.19 2002/02/25 17:39:14 androsyn Exp $
  */
 
 #include "fileio.h"
@@ -199,7 +199,7 @@ char* fbgets(char* buf, size_t len, FBFILE* fb)
 
   if(fb->pbptr)
   {
-    strncpy_irc(buf,fb->pbptr,len);
+    strlcpy(buf,fb->pbptr,len);
     fb->pbptr = NULL;
     return(buf);
   }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircdauth.c,v 7.46 2002/01/10 20:45:16 jmallett Exp $
+ *  $Id: ircdauth.c,v 7.47 2002/02/25 17:39:15 androsyn Exp $
  */
 
 #include <stdio.h>
@@ -550,12 +550,12 @@ GoodAuth(int parc, char **parv)
        * if ident failed, but the client's I: line specified
        * no tilde character
        */
-      strncpy_irc(auth->client->username, parv[2], USERLEN);
+      strlcpy(auth->client->username, parv[2], USERLEN);
 
       /*
        * Also use IAuth's hostname in case of SPOOF_FREEFORM
        */
-      strncpy_irc(auth->client->host, parv[3], HOSTLEN);
+      strlcpy(auth->client->host, parv[3], HOSTLEN);
 
       /*
        * Register them

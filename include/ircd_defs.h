@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_defs.h,v 7.24 2002/01/05 09:14:28 a1kmm Exp $
+ *  $Id: ircd_defs.h,v 7.25 2002/02/25 17:39:02 androsyn Exp $
  */
 
  /* ircd_defs.h - Global size definitions for record entries used
@@ -38,11 +38,7 @@
 #define HOSTLEN         63      /* Length of hostname.  Updated to         */
                                 /* comply with RFC1123                     */
 
-#define NICKLEN         9       /* Necessary to put 9 here instead of 10
-                                 * if s_msg.c/m_nick has been corrected.
-                                 * This preserves compatibility with old
-                                 * servers --msa
-                                 */
+#define NICKLEN         10       /* Nicklen + 1 for the NUL character */
 #define USERLEN         10
 #define REALLEN         50
 #define TOPICLEN        120     /* old value 90, truncated on other servers */

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.76 2002/01/05 09:15:04 a1kmm Exp $
+ *  $Id: m_server.c,v 1.77 2002/02/25 17:39:10 androsyn Exp $
  */
 
 #include "tools.h"
@@ -28,7 +28,7 @@
 #include "common.h"      /* TRUE bleah */
 #include "event.h"
 #include "hash.h"        /* add_to_client_hash_table */
-#include "irc_string.h"  /* strncpy_irc */
+#include "irc_string.h" 
 #include "ircd.h"        /* me */
 #include "list.h"        /* make_server */
 #include "numeric.h"     /* ERR_xxx */
@@ -68,7 +68,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&server_msgtab);
 }
-char *_version = "$Revision: 1.76 $";
+char *_version = "$Revision: 1.77 $";
 #endif
 
 int bogus_host(char *host);
@@ -98,8 +98,7 @@ static void mr_server(struct Client *client_p, struct Client *source_p,
 
   name = parv[1];
   hop = atoi(parv[2]);
-  strncpy_irc(info, parv[3], REALLEN);
-  info[REALLEN] = '\0';
+  strlcpy(info, parv[3], REALLEN);
 
   /* 
    * Reject a direct nonTS server connection if we're TS_ONLY -orabidoo
@@ -229,7 +228,7 @@ static void mr_server(struct Client *client_p, struct Client *source_p,
    * C:line in client_p->name
    */
 
-  strncpy_irc(client_p->name, name, HOSTLEN);
+  strlcpy(client_p->name, name, HOSTLEN);
   set_server_gecos(client_p, info);
   client_p->hopcount = hop;
   server_estab(client_p);
@@ -268,8 +267,7 @@ static void ms_server(struct Client *client_p, struct Client *source_p,
 
   name = parv[1];
   hop = atoi(parv[2]);
-  strncpy_irc(info, parv[3], REALLEN);
-  info[REALLEN] = '\0';
+  strlcpy(info, parv[3], REALLEN);
 
   if ((target_p = server_exists(name)))
     {
@@ -466,7 +464,7 @@ static void ms_server(struct Client *client_p, struct Client *source_p,
   target_p = make_client(client_p);
   make_server(target_p);
   target_p->hopcount = hop;
-  strncpy_irc(target_p->name, name, HOSTLEN);
+  strlcpy(target_p->name, name, HOSTLEN);
   set_server_gecos(target_p, info);
 
   target_p->serv->up = find_or_add(parv[0]);
@@ -577,15 +575,15 @@ int set_server_gecos(struct Client *client_p, char *info)
       
       /* if there was a trailing space, s could point to \0, so check */
       if(s && (*s != '\0'))
-        strncpy_irc(client_p->info, s, REALLEN);
+        strlcpy(client_p->info, s, REALLEN);
       else
-        strncpy_irc(client_p->info, "(Unknown Location)", REALLEN);
+        strlcpy(client_p->info, "(Unknown Location)", REALLEN);
     }
     else
-      strncpy_irc(client_p->info, "(Unknown Location)", REALLEN);
+      strlcpy(client_p->info, "(Unknown Location)", REALLEN);
   }
   else
-    strncpy_irc(client_p->info, "(Unknown Location)", REALLEN);
+    strlcpy(client_p->info, "(Unknown Location)", REALLEN);
 
   return 1;
 }

@@ -19,12 +19,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_pass.c,v 1.20 2002/01/05 09:14:48 a1kmm Exp $
+ *  $Id: m_pass.c,v 1.21 2002/02/25 17:39:06 androsyn Exp $
  */
 
 #include "handlers.h"  /* m_pass prototype */
 #include "client.h"      /* client struct */
-#include "irc_string.h"  /* strncpy_irc */
+#include "irc_string.h" 
 #include "send.h"        /* sendto_one */
 #include "numeric.h"     /* ERR_xxx */
 #include "ircd.h"        /* me */
@@ -52,7 +52,7 @@ _moddeinit(void)
   mod_del_cmd(&pass_msgtab);
 }
 
-char *_version = "$Revision: 1.20 $";
+char *_version = "$Revision: 1.21 $";
 #endif
 /*
  * m_pass() - Added Sat, 4 March 1989
@@ -75,7 +75,7 @@ static void mr_pass(struct Client *client_p, struct Client *source_p,
       return;
     }
 
-  strncpy_irc(client_p->localClient->passwd, password, PASSWDLEN);
+  strlcpy(client_p->localClient->passwd, password, PASSWDLEN);
 
   if (parc > 2)
     {

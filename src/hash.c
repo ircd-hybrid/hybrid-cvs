@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.38 2002/02/17 05:39:27 androsyn Exp $
+ *  $Id: hash.c,v 7.39 2002/02/25 17:39:14 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -585,8 +585,7 @@ hash_find_masked_server(const char* name)
   /*
    * copy the damn thing and be done with it
    */
-  strncpy_irc(buf, name, HOSTLEN);
-  buf[HOSTLEN] = '\0';
+  strlcpy(buf, name, HOSTLEN);
 
   while ((s = strchr(p, '.')) != 0)
     {
