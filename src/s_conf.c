@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.467 2003/08/13 09:57:13 michael Exp $
+ *  $Id: s_conf.c,v 7.468 2003/08/19 12:15:32 stu Exp $
  */
 
 #include "stdinc.h"
@@ -137,7 +137,11 @@ conf_dns_callback(void *vptr, struct DNSReply *reply)
   struct AccessItem *aconf = (struct AccessItem *)vptr;
 
   if (reply != NULL)
+  {
     memcpy(&aconf->ipnum, &reply->addr, sizeof(reply->addr));
+    MyFree(reply->h_name);
+    MyFree(reply);
+  }
 
   aconf->dns_query = NULL;
 }

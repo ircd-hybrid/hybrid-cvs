@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.208 2003/07/05 06:21:03 db Exp $
+ *  $Id: s_bsd.c,v 7.209 2003/08/19 12:15:32 stu Exp $
  */
 
 #include "stdinc.h"
@@ -710,19 +710,10 @@ comm_connect_dns_callback(void *vptr, struct DNSReply *reply)
      * the DNS record around, and the DNS cache is gone anyway.. 
      *     -- adrian
      */
-#ifdef IPV6
-    if(reply->h_addrtype == AF_INET6)
-    {
-      memcpy(&F->connect.hostaddr, &reply->addr, 
-            sizeof(struct irc_ssaddr));
-    }
-    else
-#endif
-    {
-      memcpy(&F->connect.hostaddr, &reply->addr,
-            sizeof(struct irc_ssaddr));
-    }
+    memcpy(&F->connect.hostaddr, &reply->addr, 
+          sizeof(struct irc_ssaddr));
     /* Now, call the tryconnect() routine to try a connect() */
+    MyFree(reply->h_name);
     MyFree(reply); 
     comm_connect_tryconnect(F->fd, NULL);
 }

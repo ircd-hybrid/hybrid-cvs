@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.368 2003/08/05 16:23:15 michael Exp $
+ *  $Id: s_serv.c,v 7.369 2003/08/19 12:15:32 stu Exp $
  */
 
 #include "stdinc.h"
@@ -58,10 +58,6 @@
 
 
 #define MIN_CONN_FREQ 300
-
-#ifndef INADDR_NONE
-#define INADDR_NONE ((unsigned int)0xffffffff)
-#endif
 
 struct Client *uplink  = NULL;
 
