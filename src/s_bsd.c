@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.100 2001/02/05 02:24:24 ejb Exp $
+ *  $Id: s_bsd.c,v 7.101 2001/02/08 22:59:20 db Exp $
  */
 #include "config.h"
 #include "fdlist.h"
@@ -441,6 +441,7 @@ void error_exit_client(struct Client* cptr, int error)
                current_error, strerror(current_error));
   }
 
+  cptr->flags |= FLAGS_DEADSOCKET;
   exit_client(cptr, cptr, &me, errmsg);
 }
 
