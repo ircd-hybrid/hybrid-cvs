@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.89 2004/06/23 08:24:28 joshk Exp $
+dnl $Id: configure.ac,v 7.90 2005/03/28 00:56:09 michael Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -8,7 +8,7 @@ dnl said functions need to be just about as complex as they already are.
 AC_PREREQ(2.57)
 
 dnl Sneaky way to get an Id tag into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.89 2004/06/23 08:24:28 joshk Exp $])
+AC_COPYRIGHT([$Id: configure.ac,v 7.90 2005/03/28 00:56:09 michael Exp $])
 
 AC_INIT([ircd-hybrid],[7-CURRENT])
 
@@ -1042,66 +1042,6 @@ if test "$shared_modules" = no; then
 	SEDOBJ=""
 	AC_DEFINE(STATIC_MODULES, 1, [Define to 1 if dynamic modules can't be used.])
 	AC_MSG_WARN([shared module support has been disabled!])
-fi
-
-dnl Stage 5 - underscores in front of symbol names.
-if test "$shared_modules" = yes; then
-
-	AC_CHECK_FUNC(nlist,,
-		AC_CHECK_LIB(dl, nlist, nlist_lib="-ldl",
-			AC_CHECK_LIB(elf, nlist, nlist_lib="-lelf",)
-		)
-	)
-
-        dnl We need to find out whether underscores are appended to symbol
-        dnl names in executable files.  First, though, we need to see
-        dnl where nlist.h is hiding.
-	AC_CHECK_HEADER(libelf/nlist.h, [ nlist_h="libelf/nlist.h" ], )
-	AC_CHECK_HEADER(elf/nlist.h, [ nlist_h="elf/nlist.h" ], )
-	AC_CHECK_HEADER(nlist.h, [ nlist_h="nlist.h" ], )
-	if test x"$nlist_h" = "x"; then
-		AC_DEFINE_UNQUOTED(SYMBOL_PREFIX, "", [String containing extra underscores prepended to symbols loaded from modules.])
-	else
-		AC_MSG_CHECKING(for extra underscores prepended to symbol names)
-		AC_CACHE_VAL(symbol_underscores,
-		[
-cat << EOF > conftest.c
-#include <$nlist_h>
-#include <stdio.h>
-#include <stdlib.h>
-void _modinit(void);
-int main(int argc, char *argv[[]]) {
-	int i;
-	struct nlist nl[[5]];
-
-	/* fill the names in this way, so it'll work almost everywhere */
-	nl[[0]].n_name = "_modinit";
-	nl[[1]].n_name = "__modinit";
-	nl[[2]].n_name = "___modinit";
-	nl[[3]].n_name = "____modinit";
-	nl[[0]].n_value = nl[[1]].n_value = nl[[2]].n_value = nl[[3]].n_value = nl[[4]].n_name = NULL;
-
-	if(argc < 2 || (nlist(argv[[1]], nl)) == -1) exit(-1);
-	for(i = 0; i < 4; i++) {
-		if(nl[[i]].n_value != NULL)
-		{
-			int j;
-			for(j = 0; j < i; j++)
-				printf("_");
-			exit(i);
-		}
-	}
-	exit(-1);
-}
-void _modinit(void) { return; }
-EOF
-		$CC $CPPFLAGS $IRC_CFLAGS -o conftest conftest.c $nlist_lib >/dev/null 2>&1
-		symbol_underscores=`./conftest conftest`
-		AC_MSG_RESULT($symbol_underscores)
-		$RM -f conftest conftest.c
-		])
-		AC_DEFINE_UNQUOTED(SYMBOL_PREFIX, "${symbol_underscores}", [String containing extra underscores prepended to symbols loaded from modules.])
-	fi
 fi
 
 AC_SUBST(MODULES_LIBS)

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- * $Id: dynlink.c,v 7.16 2004/03/03 05:06:44 db Exp $
+ * $Id: dynlink.c,v 7.17 2005/03/28 00:56:13 michael Exp $
  *
  */
 #include "stdinc.h"
@@ -316,14 +316,15 @@ load_a_module(char *path, int warn, int core)
   else
     ver = *verp;
 #else
-  initfunc = (void(*)(void))dlfunc(tmpptr, "_modinit");
-
-  if (initfunc == NULL && (initfunc = (void(*)(void))dlfunc(tmpptr, "__modinit")) == NULL)
+  if ((initfunc = (void(*)(void))dlfunc(tmpptr, "_modinit")) == NULL &&
+      /* Only for compatibility, because some systems have underscore
+       * prepended symbol names */
+      (initfunc = (void(*)(void))dlfunc(tmpptr, "__modinit")) == NULL)
   {
     sendto_realops_flags(UMODE_ALL, L_ALL, "Module %s has no _modinit() function",
                          mod_basename);
     ilog(L_WARN, "Module %s has no _modinit() function", mod_basename);
-    (void)dlclose(tmpptr);
+    dlclose(tmpptr);
     return(-1);
   }
 
@@ -333,7 +334,7 @@ load_a_module(char *path, int warn, int core)
   {
     sendto_realops_flags(UMODE_ALL, L_ALL, "Module %s has no _moddeinit() function",
                          mod_basename);
-    ilog (L_WARN, "Module %s has no _moddeinit() function", mod_basename);
+    ilog(L_WARN, "Module %s has no _moddeinit() function", mod_basename);
     /* blah blah soft error, see above. */
     mod_deinit = NULL;
   }

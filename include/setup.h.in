@@ -240,10 +240,6 @@
 /* Define to 1 if string.h may be included along with strings.h */
 #undef STRING_WITH_STRINGS
 
-/* String containing extra underscores prepended to symbols loaded from
-   modules. */
-#undef SYMBOL_PREFIX
-
 /* Send connect notices for other servers to syslog */
 #undef SYSLOG_CONNECT
 
