@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.c,v 7.47 2001/01/25 16:49:03 androsyn Exp $
+ *   $Id: s_auth.c,v 7.48 2001/01/25 19:03:10 androsyn Exp $
  *
  * Changes:
  *   July 6, 1999 - Rewrote most of the code here. When a client connects
@@ -288,8 +288,8 @@ static void auth_error(struct AuthRequest* auth)
 static int start_auth_query(struct AuthRequest* auth)
 {
 /*  struct sockaddr_in sock; */
-  struct sockaddr_in localaddr;
-  unsigned int          locallen = sizeof(struct sockaddr_in);
+  struct irc_sockaddr localaddr;
+  unsigned int          locallen = sizeof(struct irc_sockaddr);
   int                fd;
 
   if ((fd = comm_open(DEF_FAM, SOCK_STREAM, 0, "ident")) == -1)
@@ -325,13 +325,13 @@ static int start_auth_query(struct AuthRequest* auth)
    * and machines with multiple IP addresses are common now
    */
   memset(&localaddr, 0, locallen);
-  getsockname(auth->client->fd, (struct sockaddr*) &localaddr, &locallen);
-  localaddr.sin_port = htons(0);
+  getsockname(auth->client->fd, (struct sockaddr*)&SOCKADDR(localaddr), &locallen);
+  S_PORT(localaddr) = htons(0);
 
   auth->fd = fd;
   SetAuthConnect(auth);
   comm_connect_tcp(fd, auth->client->localClient->sockhost, 113, 
-    (struct sockaddr *)&localaddr, locallen, auth_connect_callback, auth);
+    (struct sockaddr *)&SOCKADDR(localaddr), locallen, auth_connect_callback, auth);
   return 1; /* We suceed here for now */
 }
 
