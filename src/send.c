@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.238 2003/04/21 21:11:58 adx Exp $
+ *  $Id: send.c,v 7.239 2003/04/22 08:05:50 adx Exp $
  */
 
 #include "stdinc.h"
@@ -547,9 +547,9 @@ sendto_list_anywhere(struct Client *one, struct Client *from, dlink_list *list,
       if (target_p->from->serial != current_serial)
       {
         if (IsCapable(target_p->from, CAP_UID))
-          send_message_remote(target_p, from, uid_buf, uid_len);
+          send_message_remote(target_p->from, from, uid_buf, uid_len);
         else
-          send_message_remote(target_p, from, remote_buf, remote_len);
+          send_message_remote(target_p->from, from, remote_buf, remote_len);
         target_p->from->serial = current_serial;
       }
     }
