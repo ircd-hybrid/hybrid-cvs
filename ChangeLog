@@ -1,3 +1,17 @@
+androsyn    2001/12/14 11:47:56 EST	(20011214_10)
+
+  Modified files:
+    .                    configure 
+    include              setup.h.in 
+  Log:
+  Last of the sigio changes..
+  
+  Revision  Changes    Path
+  7.107     +218 -203  ircd-hybrid-7/configure
+  7.40      +69 -85    ircd-hybrid-7/include/setup.h.in
+
+
+
 androsyn    2001/12/14 10:48:22 EST	(20011214_9)
 
   Modified files:
@@ -443,7 +457,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3171 2001/12/14 15:48:27 androsyn Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3172 2001/12/14 16:48:01 androsyn Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -18797,4 +18811,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3171 2001/12/14 15:48:27 androsyn Exp $
+$Id: ChangeLog,v 7.3172 2001/12/14 16:48:01 androsyn Exp $
