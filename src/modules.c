@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.134 2003/06/17 03:58:29 joshk Exp $
+ *  $Id: modules.c,v 7.135 2003/06/18 00:02:08 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -54,6 +54,7 @@
 struct module **modlist = NULL;
 
 static char base_valid = 0;
+static char modlist_valid = 0;
 
 static char* base_path = NULL;
 static char* base_autoload = NULL;
@@ -79,7 +80,6 @@ static const char *core_module_table[] =
 int num_mods = 0;
 int max_mods = MODS_INCREMENT;
 
-static dlink_list pending = { NULL, NULL, 0 }; 
 static dlink_list mod_paths = { NULL, NULL, 0 };
 
 static void mo_modload(struct Client *, struct Client *, int, char **);
@@ -149,56 +149,25 @@ mod_find_path(const char *path)
   return(NULL);
 }
 
-/* add_pending()
+/* init_modlist()
+ * Convenience function to malloc the modlist when necessary.
  *
- * Adds a module name to the list of pending modules to be loaded.
- *
- * input - module name (without path)
- * output - none
- * side effects - pending has a new item.
+ * input - nothing
+ * output - nothing
+ * side effect - modlist may have been malloc'd and modlist_valid set to 1.
  */
 
-void
-add_pending (char* modname)
+static void
+init_modlist (void)
 {
-  char* mod;
-  dlink_node *ptr;
-
-  if (findmodule_byname (modname) != -1)
-    return;
-  
-  DLINK_FOREACH (ptr, pending.head)
+  if (!modlist_valid)
   {
-    if (strcmp ((char*)ptr->data, modname) == 0)
-      return;  
-  }
-
-  DupString (mod, modname); /* We're passed yylval.string. This changes! */
-  dlinkAddTail ((void*)mod, make_dlink_node(), &pending);
-}
-
-void
-clear_pending (void)
-{
-  dlink_node *ptr, *next_ptr;
-  DLINK_FOREACH_SAFE (ptr, next_ptr, pending.head)
-  {
-    MyFree (ptr->data);
-    dlinkDelete (ptr, &pending);
-    free_dlink_node (ptr);
+    modlist = (struct module **)MyMalloc(sizeof(struct module) *
+                                        (MODS_INCREMENT));
+    modlist_valid = 1;
   }
 }
 
-void
-load_pending (void)
-{
-  dlink_node *ptr;
-  
-  DLINK_FOREACH (ptr, pending.head)
-  {
-    load_one_module ((char*)ptr->data, 0);
-  }
-}
 /* mod_set_base()
  * Defines the base path to find the official hybrid modules.
  * I.E., all core/ modules MUST be in this directory. Specified in ircd.conf.
@@ -315,8 +284,8 @@ load_all_modules(int warn)
 
   modules_init();
 
-  modlist  = (struct module **)MyMalloc(sizeof(struct module) *
-                                        (MODS_INCREMENT));
+  init_modlist();
+  
   max_mods = MODS_INCREMENT;
   system_module_dir = opendir(base_autoload);
 
@@ -354,9 +323,6 @@ load_all_modules(int warn)
     }
   }
 
-  /* Now we load the pending stuff we read from ircd.conf */
-  load_pending ();
-  
   closedir(system_module_dir);
 }
 
@@ -415,6 +381,8 @@ load_one_module(char *path, int coremodule)
   struct stat statbuf;
   unsigned int m_len;
 
+  init_modlist ();
+  
   DLINK_FOREACH(ptr, mod_paths.head)
   {
     mpath = ptr->data;

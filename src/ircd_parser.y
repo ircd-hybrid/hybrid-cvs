@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.315 2003/06/14 18:28:41 adx Exp $
+ *  $Id: ircd_parser.y,v 1.316 2003/06/18 00:02:08 joshk Exp $
  */
 
 %{
@@ -392,7 +392,7 @@ modules_module: MODULE '=' QSTRING ';'
      */
     if (findmodule_byname(m_bn) == -1)
       /* XXX - should we unload this module on /rehash, if it isn't listed? */
-      add_pending(yylval.string);
+      load_one_module(yylval.string, 0);
   }
 #endif
 };
