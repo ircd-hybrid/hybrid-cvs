@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 1.53 2001/03/06 02:22:24 androsyn Exp $
+ *   $Id: m_join.c,v 1.54 2001/03/14 23:01:14 toot Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -441,7 +441,7 @@ static void build_list_of_channels( struct Client *source_p,
         }
       if (*name == '0' && (atoi(name) == 0))
 	{
-	  strcat(jbuf,"0");
+	  strcpy(jbuf,"0");
 	  continue;
 	}
       else if (!IsChannelName(name))
