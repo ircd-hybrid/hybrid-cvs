@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_rehash.c,v 1.40 2002/05/24 23:34:22 androsyn Exp $
+ *  $Id: m_rehash.c,v 1.41 2002/10/12 01:32:59 db Exp $
  */
 
 #include "stdinc.h"
@@ -60,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&rehash_msgtab);
 }
 
-const char *_version = "$Revision: 1.40 $";
+const char *_version = "$Revision: 1.41 $";
 #endif
 /*
  * mo_rehash - REHASH message handler
@@ -79,14 +79,7 @@ static void mo_rehash(struct Client *client_p, struct Client *source_p,
 
   if (parc > 1)
     {
-      if (irccmp(parv[1],"CHANNELS") == 0)
-        {
-          sendto_realops_flags(FLAGS_ALL, L_ALL,
-                       "%s is forcing cleanup of channels",parv[0]);
-	  cleanup_channels(NULL);
-          found = YES;
-        }
-      else if(irccmp(parv[1],"DNS") == 0)
+      if(irccmp(parv[1],"DNS") == 0)
         {
           sendto_one(source_p, form_str(RPL_REHASHING), me.name, parv[0], "DNS");
           sendto_realops_flags(FLAGS_ALL, L_ALL,"%s is rehashing DNS",
