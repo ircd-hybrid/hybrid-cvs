@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_links.c,v 1.17 2000/12/30 07:30:27 lusky Exp $
+ *   $Id: m_links.c,v 1.18 2001/01/02 04:38:28 a1kmm Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -70,7 +70,11 @@ char *_version = "20001122";
 int m_links(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 {
 
-
+  if (!GlobalSetOptions.hide_server)
+    {
+     mo_links(cptr, sptr, parc, parv);
+     return 0;
+    }
   SendMessageFile(sptr, &ConfigFileEntry.linksfile);
 
     
