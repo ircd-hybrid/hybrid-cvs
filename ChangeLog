@@ -1,3 +1,8 @@
+*** 20001204_9 by db
+- had logic wrong in can_send
+
+
+
 *** 20001204_8 by db
 This is a patch which implements client send flood protection.
 This is the type of flood where someone goes
@@ -1559,7 +1564,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.689 2000/12/04 16:53:59 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.690 2000/12/04 17:03:26 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
