@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.49 2000/12/02 06:54:35 db Exp $
+ *   $Id: s_serv.c,v 7.50 2000/12/02 07:41:44 db Exp $
  */
 #include "tools.h"
 #include "s_serv.h"
@@ -878,9 +878,9 @@ static void server_burst(struct Client *cptr)
       burst_members(cptr,&chptr->halfops, nickissent);
       burst_members(cptr,&chptr->peons, nickissent);
       send_channel_modes(cptr, chptr);
+
       if(IsVchanTop(chptr))
 	{
-	  send_channel_modes(cptr, chptr);
 	  for ( vchan = chptr->next_vchan; vchan;
 		vchan = vchan->next_vchan)
 	    {
