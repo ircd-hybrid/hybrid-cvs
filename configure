@@ -6662,8 +6662,8 @@ _ACEOF
 _ACEOF
 
         else
-                echo "Eep!  Can't find kqueue, devpoll, poll, rtsigio _or_ select!"
-                echo "I'll try select and hope for the best."
+		{ echo "$as_me:$LINENO: WARNING: poll and kevent not found and none explicitly declared; defaulting to select()" >&5
+echo "$as_me: WARNING: poll and kevent not found and none explicitly declared; defaulting to select()" >&2;}
                 SELECT_TYPE="select"
                 cat >>confdefs.h <<\_ACEOF
 #define USE_SELECT 1
