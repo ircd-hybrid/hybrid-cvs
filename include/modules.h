@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.h,v 7.11 2001/01/04 00:30:11 ejb Exp $
+ * $Id: modules.h,v 7.12 2001/01/04 01:18:41 ejb Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -36,8 +36,6 @@ struct module {
 
 struct module_path
 {
-	struct module_path *next;
-	struct module_path *prev;
 	char path[MAXPATHLEN];
 };
 
