@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.221 2003/02/06 08:45:58 a1kmm Exp $
+ *  $Id: s_user.c,v 7.222 2003/02/14 23:01:56 db Exp $
  */
 
 #include "stdinc.h"
@@ -336,8 +336,10 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   aconf = ptr->data;
 
   if (aconf == NULL)
-    return enqueue_closing_client(client_p, source_p, &me,
-                                  "*** Not Authorized");
+  {
+    exit_client(client_p, source_p, &me, "*** Not Authorized");
+    return(CLIENT_EXITED);
+  }
 
   if (!IsGotId(source_p))
     {
@@ -345,14 +347,14 @@ register_local_user(struct Client *client_p, struct Client *source_p,
       int i = 0;
 
       if (IsNeedIdentd(aconf))
-	{
-	  ServerStats->is_ref++;
-	  sendto_one(source_p,
-		     ":%s NOTICE %s :*** Notice -- You need to install identd to use this server",
-		     me.name, client_p->name);
-          return enqueue_closing_client(client_p, source_p, &me,
-                                        "Install identd");
-	}
+      {
+	ServerStats->is_ref++;
+	sendto_one(source_p,
+		   ":%s NOTICE %s :*** Notice -- You need to install identd to use this server",
+		   me.name, client_p->name);
+	exit_client(client_p, source_p, &me, "Install identd");
+	return(CLIENT_EXITED);
+      }
 
       p = username;
       
@@ -376,7 +378,8 @@ register_local_user(struct Client *client_p, struct Client *source_p,
     ServerStats->is_ref++;
     sendto_one(source_p, form_str(ERR_PASSWDMISMATCH),
                me.name, source_p->name);
-    return enqueue_closing_client(client_p, source_p, &me, "Bad Password");
+    exit_client(client_p, source_p, &me, "Bad Password");
+    return(CLIENT_EXITED);
   }
   memset(source_p->localClient->passwd,0, sizeof(source_p->localClient->passwd));
 
@@ -403,8 +406,9 @@ register_local_user(struct Client *client_p, struct Client *source_p,
 			   nick, source_p->host);
 			   
       ServerStats->is_ref++;
-      return enqueue_closing_client(client_p, source_p, &me,
-                                    "Sorry, server is full - try later");
+      exit_client(client_p, source_p, &me,
+		  "Sorry, server is full - try later");
+      return(CLIENT_EXITED);
     }
 
   /* valid user name check */
@@ -416,7 +420,8 @@ register_local_user(struct Client *client_p, struct Client *source_p,
 			   nick, source_p->username, source_p->host);
       ServerStats->is_ref++;
       ircsprintf(tmpstr2, "Invalid username [%s]", source_p->username);
-      return enqueue_closing_client(client_p, source_p, &me, tmpstr2);
+      exit_client(client_p, source_p, &me, tmpstr2);
+      return(CLIENT_EXITED);
     }
 
   /* end of valid user name check */
@@ -488,7 +493,8 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   {
     sendto_realops_flags(FLAGS_ALL, L_ADMIN, "Tried to register %s (%s@%s) but I couldn't find it?!?", 
                          nick, source_p->username, source_p->host);
-    enqueue_closing_client(client_p, source_p, &me, "Internal error");
+    exit_client(client_p, source_p, &me, "Client exited");
+    return CLIENT_EXITED;
   }
   user_welcome(source_p);
 
@@ -536,8 +542,9 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
       kill_client(client_p, source_p, "%s (Server doesn't exist)",
 		  me.name);
 
+      /* XXX */
       SetKilled(source_p);
-      return enqueue_closing_client(NULL, source_p, &me, "Ghosted Client");
+      return exit_client(NULL, source_p, &me, "Ghosted Client");
     }
 
   add_client_to_llist(&(source_p->servptr->serv->users), source_p);
@@ -556,9 +563,8 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
 		  target_p->from->name);
 
       SetKilled(source_p);
-      return enqueue_closing_client(source_p, source_p, &me,
-                                    "USER server wrong direction");
-      
+      return exit_client(source_p, source_p, &me,
+			 "USER server wrong direction");
     }
   /*
    * Super GhostDetect:
@@ -573,7 +579,7 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
 			   user->server, source_p->name, source_p->username,
 			   source_p->host, source_p->from->name);
       SetKilled(source_p);
-      return enqueue_closing_client(source_p, source_p, &me, "Ghosted Client");
+      return exit_client(source_p, source_p, &me, "Ghosted Client");
     }
 
   return (introduce_client(client_p, source_p, user, nick));
@@ -1206,13 +1212,20 @@ user_welcome(struct Client *source_p)
   sendto_one(source_p, form_str(RPL_YOURHOST), me.name, source_p->name,
 	     get_listener_name(source_p->localClient->listener), ircd_version);
   
+#if 0
   /*
   ** Don't mess with this one - IRCII needs it! -Avalon
   */
+  /* No one has needed this in years, but I remember when IRCII did!
+   * It sure confused me why my IRCII client hung at start up
+   * when I was writing my first ircd from scratch. ;-)
+   * - Dianora
+   */
   sendto_one(source_p,
 	     "NOTICE %s :*** Your host is %s, running version %s",
 	     source_p->name, get_listener_name(source_p->localClient->listener),
 	     ircd_version);
+#endif
   
   sendto_one(source_p, form_str(RPL_CREATED),me.name,source_p->name,creation);
   sendto_one(source_p, form_str(RPL_MYINFO), me.name, source_p->name,
@@ -1287,8 +1300,8 @@ check_X_line(struct Client *client_p, struct Client *source_p)
 				   get_client_name(client_p, HIDE_IP));
 	    }
 	  ServerStats->is_ref++;      
-	  return enqueue_closing_client(client_p, source_p, &me,
-                                        "Bad user info");
+	  exit_client(client_p, source_p, &me, "Bad user info");
+	  return (CLIENT_EXITED);
 	}
       else
 	sendto_realops_flags(FLAGS_REJ, L_ALL,

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_error.c,v 7.27 2003/02/06 08:46:00 a1kmm Exp $
+ *  $Id: m_error.c,v 7.28 2003/02/14 23:01:55 db Exp $
  */
 
 #include "stdinc.h"
@@ -48,15 +48,43 @@ struct Message error_msgtab = {
  *      parv[0] = sender prefix
  *      parv[*] = parameters
  */
-void m_error(struct Client *client_p, struct Client *source_p,
-             int parc, char *parv[])
+void
+m_error(struct Client *client_p, struct Client *source_p, 
+	int parc, char *parv[])
 {
-  if (MyClient(source_p))
-    enqueue_closing_client(client_p, source_p, source_p, "ERROR");
+  char* para;
+
+  para = (parc > 1 && *parv[1] != '\0') ? parv[1] : "<>";
+  
+  ilog(L_ERROR, "Received ERROR message from %s: %s",
+	   source_p->name, para);
+
+  if (client_p == source_p)
+    {
+      sendto_realops_flags(FLAGS_ALL, L_ADMIN,
+            "ERROR :from %s -- %s",
+	    get_client_name(client_p, HIDE_IP), para);
+      sendto_realops_flags(FLAGS_ALL, L_OPER,
+            "ERROR :from %s -- %s",
+	    get_client_name(client_p, MASK_IP), para);
+    }
+  else
+    {
+      sendto_realops_flags(FLAGS_ALL, L_OPER,
+            "ERROR :from %s via %s -- %s",
+	    source_p->name, get_client_name(client_p, MASK_IP), para);
+      sendto_realops_flags(FLAGS_ALL, L_ADMIN,"ERROR :from %s via %s -- %s",
+			   source_p->name,
+			   get_client_name(client_p, HIDE_IP), para);
+    }
+
+  if(MyClient(source_p))
+    exit_client(client_p, source_p, source_p, "ERROR");
 }
 
-void ms_error(struct Client *client_p, struct Client *source_p,
-              int parc, char *parv[])
+void
+ms_error(struct Client *client_p, struct Client *source_p,
+	 int parc, char *parv[])
 {
   char* para;
 

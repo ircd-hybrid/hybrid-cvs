@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_svinfo.c,v 1.35 2003/02/06 08:46:08 a1kmm Exp $
+ *  $Id: m_svinfo.c,v 1.36 2003/02/14 23:01:51 db Exp $
  */
 #include "stdinc.h"
 #include "handlers.h"
@@ -56,7 +56,7 @@ _moddeinit(void)
   mod_del_cmd(&svinfo_msgtab);
 }
 
-const char *_version = "$Revision: 1.35 $";
+const char *_version = "$Revision: 1.36 $";
 #endif
 /*
  * ms_svinfo - SVINFO message handler
@@ -66,16 +66,16 @@ const char *_version = "$Revision: 1.35 $";
  *      parv[3] = server is standalone or connected to non-TS only
  *      parv[4] = server's idea of UTC time
  */
-static void ms_svinfo(struct Client *client_p, struct Client *source_p,
-                     int parc, char *parv[])
+static void
+ms_svinfo(struct Client *client_p, struct Client *source_p,
+	  int parc, char *parv[])
 {
   time_t deltat;
   time_t theirtime;
 
   if (MyConnect(source_p) && IsUnknown(source_p))
   {
-    enqueue_closing_client(source_p, source_p, source_p,
-                           "Need SERVER before SVINFO");
+    exit_client(source_p, source_p, source_p, "Need SERVER before SVINFO");
     return;
   }
 
@@ -95,8 +95,7 @@ static void ms_svinfo(struct Client *client_p, struct Client *source_p,
       sendto_realops_flags(FLAGS_ALL, L_OPER,
                  "Link %s dropped, wrong TS protocol version (%s,%s)",
                  get_client_name(source_p, MASK_IP), parv[1], parv[2]);
-      enqueue_closing_client(source_p, source_p, source_p,
-                             "Incompatible TS version");
+      exit_client(source_p, source_p, source_p, "Incompatible TS version");
       return;
     }
 
@@ -127,8 +126,7 @@ static void ms_svinfo(struct Client *client_p, struct Client *source_p,
           (unsigned long) CurrentTime,
           (unsigned long) theirtime,
           (int) deltat);
-      enqueue_closing_client(source_p, source_p, source_p,
-                             "Excessive TS delta");
+      exit_client(source_p, source_p, source_p, "Excessive TS delta");
       return;
     }
 

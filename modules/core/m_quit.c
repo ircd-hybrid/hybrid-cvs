@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_quit.c,v 1.27 2003/02/06 08:46:05 a1kmm Exp $
+ *  $Id: m_quit.c,v 1.28 2003/02/14 23:01:53 db Exp $
  */
 
 #include "stdinc.h"
@@ -55,17 +55,16 @@ _moddeinit(void)
   mod_del_cmd(&quit_msgtab);
 }
 
-const char *_version = "$Revision: 1.27 $";
+const char *_version = "$Revision: 1.28 $";
 #endif
 /*
 ** m_quit
 **      parv[0] = sender prefix
 **      parv[1] = comment
 */
-static void m_quit(struct Client *client_p,
-                  struct Client *source_p,
-                  int parc,
-                  char *parv[])
+static void
+m_quit(struct Client *client_p, struct Client *source_p,
+       int parc, char *parv[])
 {
   char *comment = (parc > 1 && parv[1]) ? parv[1] : client_p->name;
   char reason [TOPICLEN + 1];
@@ -91,7 +90,7 @@ static void m_quit(struct Client *client_p,
       comment = "Client Quit";
     }
 
-  enqueue_closing_client(client_p, source_p, source_p, comment);
+  exit_client(client_p, source_p, source_p, comment);
 }
 
 /*
@@ -99,10 +98,9 @@ static void m_quit(struct Client *client_p,
 **      parv[0] = sender prefix
 **      parv[1] = comment
 */
-static void ms_quit(struct Client *client_p,
-                   struct Client *source_p,
-                   int parc,
-                   char *parv[])
+static void
+ms_quit(struct Client *client_p, struct Client *source_p,
+	int parc, char *parv[])
 {
   char *comment = (parc > 1 && parv[1]) ? parv[1] : client_p->name;
 
@@ -110,6 +108,6 @@ static void ms_quit(struct Client *client_p,
   if (strlen(comment) > (size_t) TOPICLEN)
     comment[TOPICLEN] = '\0';
 
-  enqueue_closing_client(client_p, source_p, source_p, comment);
+  exit_client(client_p, source_p, source_p, comment);
 }
 

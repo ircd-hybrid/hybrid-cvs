@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_motd.c,v 1.34 2003/02/06 08:46:08 a1kmm Exp $
+ *  $Id: m_motd.c,v 1.35 2003/02/14 23:01:51 db Exp $
  */
 
 #include "stdinc.h"
@@ -70,20 +70,20 @@ _moddeinit(void)
   mod_del_cmd(&motd_msgtab);
 }
 
-const char *_version = "$Revision: 1.34 $";
+const char *_version = "$Revision: 1.35 $";
 #endif
 
 /* mr_motd()
  *
  * parv[0] = sender prefix
  */
-static void mr_motd(struct Client *client_p, struct Client *source_p,
+static void
+mr_motd(struct Client *client_p, struct Client *source_p,
                     int parc, char *parv[])
 {
   /* allow unregistered clients to see the motd, but exit them */
   SendMessageFile(source_p,&ConfigFileEntry.motd);
-  enqueue_closing_client(client_p, source_p, source_p,
-                         "Client Exit after MOTD");
+  exit_client(client_p, source_p, source_p, "Client Exit after MOTD");
 }
 
 /*
@@ -91,8 +91,9 @@ static void mr_motd(struct Client *client_p, struct Client *source_p,
 **      parv[0] = sender prefix
 **      parv[1] = servername
 */
-static void m_motd(struct Client *client_p, struct Client *source_p,
-                   int parc, char *parv[])
+static void
+m_motd(struct Client *client_p, struct Client *source_p,
+       int parc, char *parv[])
 {
   static time_t last_used = 0;
 
@@ -122,8 +123,9 @@ static void m_motd(struct Client *client_p, struct Client *source_p,
 **      parv[0] = sender prefix
 **      parv[1] = servername
 */
-static void mo_motd(struct Client *client_p, struct Client *source_p,
-                    int parc, char *parv[])
+static void
+mo_motd(struct Client *client_p, struct Client *source_p,
+	int parc, char *parv[])
 {
   if(!IsClient(source_p))
     return;
@@ -142,7 +144,8 @@ static void mo_motd(struct Client *client_p, struct Client *source_p,
  * output       - none
  * side effects - hook doing_motd is called
  */
-static void motd_spy(struct Client *source_p)
+static void
+motd_spy(struct Client *source_p)
 {
   struct hook_spy_data data;
 

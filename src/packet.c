@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.101 2003/02/06 08:46:00 a1kmm Exp $
+ *  $Id: packet.c,v 7.102 2003/02/14 23:01:55 db Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -73,7 +73,7 @@ parse_client_queued(struct Client *client_p)
 	if(dolen <= 0)
 	  break;
                           
-      if(!IsClosing(client_p))
+      if(!IsDefunct(client_p))
       {
         client_dopacket(client_p, readBuf, dolen);
         i++;
@@ -95,7 +95,7 @@ parse_client_queued(struct Client *client_p)
 
   if (IsServer(client_p) || IsConnecting(client_p) || IsHandshake(client_p))
   {
-    if(IsClosing(client_p))
+    if(IsDefunct(client_p))
       return;
     if(client_p->localClient == NULL)
       return;
@@ -104,7 +104,7 @@ parse_client_queued(struct Client *client_p)
                               readBuf, READBUF_SIZE, LINEBUF_COMPLETE,
                               LINEBUF_PARSED)) > 0)
     {
-      if (!IsClosing(client_p))
+      if (!IsDefunct(client_p))
         client_dopacket(client_p, readBuf, dolen);
       else if(MyConnect(client_p))
       {
@@ -134,7 +134,7 @@ parse_client_queued(struct Client *client_p)
      */
     for(;;)
     {
-      if (IsClosing(client_p))
+      if (IsDefunct(client_p))
 	break;
 
       /* This flood protection works as follows:
@@ -233,9 +233,6 @@ flood_recalc(int fd, void *data)
     /* and finally, reset the flood check */
     comm_setflush(fd, 1000, flood_recalc, client_p);
   }
-
-  /* And get rid of the closing clients... */
-  exit_closing_clients();
 }
 
 /*
@@ -278,7 +275,7 @@ read_ctrl_packet(int fd, void *data)
     {
       if((length == -1) && ignoreErrno(errno))
         goto nodata;
-      SetDead(server);
+      dead_link_on_read(server, length);
       return;
     }
     reply->command = tmp[0];
@@ -442,40 +439,33 @@ read_packet(int fd, void *data)
   
   /* Attempt to parse what we have */
 
-  if (!IsClosing(client_p))
+  parse_client_queued(client_p);
+
+  /* Check to make sure we're not flooding */
+  if (IsPerson(client_p) &&
+      (linebuf_alloclen(&client_p->localClient->buf_recvq) >
+       ConfigFileEntry.client_flood))
   {
-    parse_client_queued(client_p);
-    /* Check this before we call exit_closing_clients... */
-    if (IsClosing(client_p))
+    if (!(ConfigFileEntry.no_oper_flood && IsOper(client_p)))
     {
-      exit_closing_clients();
+      exit_client(client_p, client_p, client_p, "Excess Flood");
       return;
     }
-    exit_closing_clients();
+  }
 
-    /* Check to make sure we're not flooding */
-    if (IsPerson(client_p) &&
-	(linebuf_alloclen(&client_p->localClient->buf_recvq) >
-	 ConfigFileEntry.client_flood))
-    {
-      if (!(ConfigFileEntry.no_oper_flood && IsOper(client_p)))
-      {
-	exit_client(client_p, client_p, client_p, "Excess Flood");
-	return;
-      }
-    }
-
-    /* server fd may have changed */
-    fd_r = client_p->localClient->fd;
+  /* server fd may have changed */
+  fd_r = client_p->localClient->fd;
 #ifndef HAVE_SOCKETPAIR
-    if (HasServlink(client_p))
-    {
-      assert(client_p->localClient->fd_r > -1);
-      fd_r = client_p->localClient->fd_r;
-    }
+  if (HasServlink(client_p))
+  {
+    assert(client_p->localClient->fd_r > -1);
+    fd_r = client_p->localClient->fd_r;
+  }
 #endif
 
   
+  if (!IsDefunct(client_p))
+  {
     /* If we get here, we need to register for another COMM_SELECT_READ */
     if (PARSE_AS_SERVER(client_p))
     {

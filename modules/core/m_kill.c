@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kill.c,v 1.67 2003/02/06 08:46:06 a1kmm Exp $
+ *  $Id: m_kill.c,v 1.68 2003/02/14 23:01:53 db Exp $
  */
 
 #include "stdinc.h"
@@ -64,7 +64,7 @@ _moddeinit(void)
   mod_del_cmd(&kill_msgtab);
 }
 
-const char *_version = "$Revision: 1.67 $";
+const char *_version = "$Revision: 1.68 $";
 #endif
 /*
 ** mo_kill
@@ -72,8 +72,9 @@ const char *_version = "$Revision: 1.67 $";
 **      parv[1] = kill victim
 **      parv[2] = kill path
 */
-static void mo_kill(struct Client *client_p, struct Client *source_p,
-                    int parc, char *parv[])
+static void
+mo_kill(struct Client *client_p, struct Client *source_p,
+	int parc, char *parv[])
 {
   struct Client*    target_p;
   const char* inpath = client_p->name;
@@ -161,7 +162,7 @@ static void mo_kill(struct Client *client_p, struct Client *source_p,
 
   ircsprintf(buf, "Killed (%s (%s))", source_p->name, reason);
   
-  enqueue_closing_client(client_p, target_p, source_p, buf);
+  exit_client(client_p, target_p, source_p, buf);
 }
 
 /*
@@ -170,8 +171,9 @@ static void mo_kill(struct Client *client_p, struct Client *source_p,
  *      parv[1] = kill victim
  *      parv[2] = kill path and reason
  */
-static void ms_kill(struct Client *client_p, struct Client *source_p,
-                    int parc, char *parv[])
+static void
+ms_kill(struct Client *client_p, struct Client *source_p,
+	int parc, char *parv[])
 {
   struct Client *target_p;
   char *user;
@@ -281,7 +283,7 @@ static void ms_kill(struct Client *client_p, struct Client *source_p,
   relay_kill(client_p, source_p, target_p, path, reason);
 
   /* FLAGS_KILLED prevents a quit being sent out */ 
-  target_p->flags |= FLAGS_KILLED;
+  SetKilled(target_p);
 
   /* reason comes supplied with its own ()'s */
   if(ConfigServerHide.hide_servers && IsServer(source_p))
@@ -289,13 +291,12 @@ static void ms_kill(struct Client *client_p, struct Client *source_p,
   else
     ircsprintf(buf, "Killed (%s %s)", source_p->name, reason);
     
-  enqueue_closing_client(client_p, target_p, source_p, buf);
+  exit_client(client_p, target_p, source_p, buf);
 }
 
-static void relay_kill(struct Client *one, struct Client *source_p,
-                       struct Client *target_p,
-                       const char *inpath,
-		       const char *reason)
+static void
+relay_kill(struct Client *one, struct Client *source_p,
+	   struct Client *target_p, const char *inpath, const char *reason)
 {
   dlink_node *ptr;
   struct Client *client_p;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.91 2003/02/06 08:46:05 a1kmm Exp $
+ *  $Id: m_server.c,v 1.92 2003/02/14 23:01:53 db Exp $
  */
 
 #include "stdinc.h"
@@ -67,7 +67,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&server_msgtab);
 }
-const char *_version = "$Revision: 1.91 $";
+const char *_version = "$Revision: 1.92 $";
 #endif
 
 int bogus_host(char *host);
@@ -89,11 +89,11 @@ static void mr_server(struct Client *client_p, struct Client *source_p,
   int hop;
 
   if (parc < 4)
-    {
-      sendto_one(client_p,"ERROR :No servername");
-      enqueue_closing_client(client_p, client_p, client_p, "Wrong number of args");
-      return;
-    }
+  {
+    sendto_one(client_p,"ERROR :No servername");
+    exit_client(client_p, client_p, client_p, "Wrong number of args");
+    return;
+  }
 
   name = parv[1];
   hop = atoi(parv[2]);
@@ -103,18 +103,18 @@ static void mr_server(struct Client *client_p, struct Client *source_p,
    * Reject a direct nonTS server connection if we're TS_ONLY -orabidoo
    */
   if (!DoesTS(client_p))
-    {
-      sendto_realops_flags(FLAGS_ALL, L_ADMIN,"Link %s dropped, non-TS server",
-			   get_client_name(client_p, HIDE_IP));
-      sendto_realops_flags(FLAGS_ALL, L_OPER,"Link %s dropped, non-TS server",
-			   get_client_name(client_p, MASK_IP));
-      enqueue_closing_client(client_p, client_p, client_p, "Non-TS server");
-      return;
-    }
+  {
+    sendto_realops_flags(FLAGS_ALL, L_ADMIN,"Link %s dropped, non-TS server",
+			 get_client_name(client_p, HIDE_IP));
+    sendto_realops_flags(FLAGS_ALL, L_OPER,"Link %s dropped, non-TS server",
+			 get_client_name(client_p, MASK_IP));
+    exit_client(client_p, client_p, client_p, "Non-TS server");
+    return;
+  }
 
   if (bogus_host(name))
   {
-    enqueue_closing_client(client_p, client_p, client_p, "Bogus server name");
+    exit_client(client_p, client_p, client_p, "Bogus server name");
     return;
   }
 
@@ -134,8 +134,7 @@ static void mr_server(struct Client *client_p, struct Client *source_p,
            "servername %s", get_client_name(client_p, MASK_IP), name);
       }
       
-      enqueue_closing_client(client_p, client_p, client_p,
-                             "Invalid servername.");
+      exit_client(client_p, client_p, client_p, "Invalid servername.");
       return;
       /* NOT REACHED */
       break;
@@ -149,8 +148,7 @@ static void mr_server(struct Client *client_p, struct Client *source_p,
            "Unauthorized server connection attempt from %s: Bad password "
            "for server %s", get_client_name(client_p, MASK_IP), name);
 
-      enqueue_closing_client(client_p, client_p, client_p,
-                             "Invalid password.");
+      exit_client(client_p, client_p, client_p, "Invalid password.");
       return;
       /* NOT REACHED */
       break;
@@ -164,7 +162,7 @@ static void mr_server(struct Client *client_p, struct Client *source_p,
            "Unauthorized server connection attempt from %s: Invalid host "
            "for server %s", get_client_name(client_p, MASK_IP), name);
 
-      enqueue_closing_client(client_p, client_p, client_p, "Invalid host.");
+      exit_client(client_p, client_p, client_p, "Invalid host.");
       return;
       /* NOT REACHED */
       break;
@@ -178,8 +176,7 @@ static void mr_server(struct Client *client_p, struct Client *source_p,
 		           "Invalid servername %s from %s",
 			   name, get_client_name(client_p, MASK_IP));
 
-      enqueue_closing_client(client_p, client_p, client_p,
-                             "Invalid servername.");
+      exit_client(client_p, client_p, client_p, "Invalid servername.");
       return;
       /* NOT REACHED */
       break;
@@ -207,8 +204,7 @@ static void mr_server(struct Client *client_p, struct Client *source_p,
          get_client_name(client_p, MASK_IP));
 
       sendto_one(client_p, "ERROR :Server already exists.");
-      enqueue_closing_client(client_p, client_p, client_p,
-                             "Server Exists");
+      exit_client(client_p, client_p, client_p, "Server Exists");
       return;
     }
 
@@ -324,8 +320,8 @@ static void ms_server(struct Client *client_p, struct Client *source_p,
 	                   "Link %s cancelled, server %s already exists",
 		 	   client_p->name, name);
       
-        enqueue_closing_client(client_p, client_p, &me, "Server Exists");
-	return;
+      exit_client(client_p, client_p, &me, "Server Exists");
+      return;
     }
   
   /* 
@@ -346,7 +342,7 @@ static void ms_server(struct Client *client_p, struct Client *source_p,
       sendto_realops_flags(FLAGS_ALL, L_OPER,
           "Link %s cancelled: Server/nick collision on %s",
 	  get_client_name(client_p, MASK_IP), name);
-      enqueue_closing_client(client_p, client_p, client_p, "Nick as Server");
+      exit_client(client_p, client_p, client_p, "Nick as Server");
       return;
     }
 
@@ -422,7 +418,7 @@ static void ms_server(struct Client *client_p, struct Client *source_p,
           "Non-Hub link %s introduced %s.",
 	  get_client_name(client_p, MASK_IP), name);
 
-      enqueue_closing_client(NULL, client_p, &me, "No matching hub_mask.");
+      exit_client(NULL, source_p, &me, "No matching hub_mask.");
       return;
     }
 
@@ -446,7 +442,7 @@ static void ms_server(struct Client *client_p, struct Client *source_p,
 #if 0
       if ((CurrentTime - source_p->firsttime) < 20)
         {
-          enqueue_closing_client(NULL, source_p, &me, "Leafed Server.");
+          exit_client(NULL, source_p, &me, "Leafed Server.");
           return;
         }
       else
@@ -457,7 +453,7 @@ static void ms_server(struct Client *client_p, struct Client *source_p,
         }
 #endif
 
-      enqueue_closing_client(NULL, client_p, &me, "Leafed Server.");
+      exit_client(NULL, client_p, &me, "Leafed Server.");
       return;
     }
   
@@ -472,8 +468,7 @@ static void ms_server(struct Client *client_p, struct Client *source_p,
 		         "Link %s introduced server with invalid servername %s",
 			 client_p->name, name);
     
-    enqueue_closing_client(NULL, client_p, &me,
-                           "Invalid servername introduced.");
+    exit_client(NULL, client_p, &me, "Invalid servername introduced.");
     return;
   }
 
@@ -517,7 +512,7 @@ static void ms_server(struct Client *client_p, struct Client *source_p,
 	  sendto_realops_flags(FLAGS_ALL, L_OPER, 
 	        "Lost N-line for %s on %s. Closing",
 		get_client_name(client_p, MASK_IP), name);
-	  enqueue_closing_client(client_p, client_p, client_p, "Lost N line");
+	  exit_client(client_p, client_p, client_p, "Lost connect{} block");
           return;
 	}
       if (match(my_name_for_link(me.name, aconf), target_p->name))

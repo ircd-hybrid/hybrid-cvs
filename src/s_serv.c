@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.278 2003/02/12 02:09:28 db Exp $
+ *  $Id: s_serv.c,v 7.279 2003/02/14 23:01:56 db Exp $
  */
 
 #include "stdinc.h"
@@ -944,8 +944,7 @@ server_estab(struct Client *client_p)
      /* This shouldn't happen, better tell the ops... -A1kmm */
      sendto_realops_flags(FLAGS_ALL, L_ALL, "Warning: Lost connect{} block "
        "for server %s(this shouldn't happen)!", host);
-     return enqueue_closing_client(client_p, client_p, client_p,
-                                   "Lost connect{} block!");
+     return exit_client(client_p, client_p, client_p, "Lost connect{} block!");
     }
   /* We shouldn't have to check this, it should already done before
    * server_estab is called. -A1kmm
@@ -964,8 +963,7 @@ server_estab(struct Client *client_p)
         {
          ServerStats->is_ref++;
          sendto_one(client_p, "ERROR :I'm a leaf not a hub");
-         return enqueue_closing_client(client_p, client_p, client_p,
-                                       "I'm a leaf");
+         return exit_client(client_p, client_p, client_p, "I'm a leaf");
         }
     }
 
@@ -1032,7 +1030,7 @@ server_estab(struct Client *client_p)
           "%s -- check servlink_path (%s)",
            get_client_name(client_p, MASK_IP),
            ConfigFileEntry.servlink_path);
-        return enqueue_closing_client(client_p, client_p, client_p, "Fork failed");
+        return exit_client(client_p, client_p, client_p, "Fork failed");
       }
       start_io(client_p);
       SetServlink(client_p);
@@ -1081,9 +1079,8 @@ server_estab(struct Client *client_p)
     sendto_realops_flags(FLAGS_ALL, L_ADMIN,
 	 "Tried to register (%s) server but it was already registered!?!",
 			 host);
-    enqueue_closing_client(client_p, client_p, client_p,
-                           "Tried to register server but it was already "
-                           "registered?!?");
+      exit_client(client_p, client_p, client_p,
+		  "Tried to register server but it was already registered?!?");
     }
 
   Count.server++;
@@ -2212,7 +2209,7 @@ serv_connect_callback(int fd, int status, void *data)
 	/* If a fd goes bad, call dead_link() the socket is no
 	 * longer valid for reading or writing.
 	 */
-	dead_link_on_write(client_p, 0, 0);
+	dead_link_on_write(client_p, 0);
         return;
       }
 
@@ -2227,7 +2224,7 @@ serv_connect_callback(int fd, int status, void *data)
         sendto_realops_flags(FLAGS_ALL, L_OPER,
 		     "Lost connect{} block for %s", get_client_name(client_p, MASK_IP));
 
-	enqueue_closing_client(client_p, client_p, &me, "Lost connect{} block");
+        exit_client(client_p, client_p, &me, "Lost connect{} block");
         return;
       }
     /* Next, send the initial handshake */
@@ -2401,7 +2398,7 @@ cryptlink_error(struct Client *client_p, char *type,
    */
   if ((client_reason != NULL) && (!IsDead(client_p)))
   {
-    enqueue_closing_client(client_p, client_p, &me, client_reason);
+    exit_client(client_p, client_p, &me, client_reason);
   }
   return;
 }

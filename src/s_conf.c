@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.338 2003/02/06 08:45:59 a1kmm Exp $
+ *  $Id: s_conf.c,v 7.339 2003/02/14 23:01:56 db Exp $
  */
 
 #include "stdinc.h"
@@ -437,7 +437,7 @@ check_client(struct Client *client_p, struct Client *source_p, char *username)
   switch( i )
     {
     case SOCKET_ERROR:
-      enqueue_closing_client(client_p, source_p, &me, "Socket Error");
+      exit_client(client_p, source_p, &me, "Socket Error");
       break;
 
     case TOO_MANY:
@@ -450,8 +450,8 @@ check_client(struct Client *client_p, struct Client *source_p, char *username)
 	   get_client_name(source_p, SHOW_IP));
       
       ServerStats->is_ref++;
-      enqueue_closing_client(client_p, source_p, &me, 
-                             "No more connections allowed on that IP" );
+      (void)exit_client(client_p, source_p, &me, 
+			"No more connections allowed on that IP" );
       break;
 
     case I_LINE_FULL:
@@ -464,9 +464,8 @@ check_client(struct Client *client_p, struct Client *source_p, char *username)
 	   get_client_name(source_p, SHOW_IP));
       
       ServerStats->is_ref++;
-      enqueue_closing_client(client_p, source_p, &me, 
-                             "No more connections allowed in your "
-                             "connection class" );
+      (void)exit_client(client_p, source_p, &me, 
+		"No more connections allowed in your connection class" );
       break;
 
     case NOT_AUTHORIZED:
@@ -489,12 +488,12 @@ check_client(struct Client *client_p, struct Client *source_p, char *username)
 	  source_p->localClient->listener->name,
 	  source_p->localClient->listener->port);
 	  
-      enqueue_closing_client(client_p, source_p, &me,
-                             "You are not authorized to use this server");
+      exit_client(client_p, source_p, &me,
+		  "You are not authorised to use this server");
       break;
     }
     case BANNED_CLIENT:
-      enqueue_closing_client(client_p,client_p, &me, "*** Banned ");
+      exit_client(client_p,client_p, &me, "*** Banned ");
       ServerStats->is_ref++;
       break;
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nick.c,v 1.99 2003/02/07 07:09:27 a1kmm Exp $
+ *  $Id: m_nick.c,v 1.100 2003/02/14 23:01:53 db Exp $
  */
 
 #include "stdinc.h"
@@ -97,7 +97,7 @@ _moddeinit(void)
   mod_del_cmd(&client_msgtab);
 }
 
-const char *_version = "$Revision: 1.99 $";
+const char *_version = "$Revision: 1.100 $";
 #endif
 
 /*
@@ -199,8 +199,9 @@ mr_nick(struct Client *client_p, struct Client *source_p,
  *     parv[0] = sender prefix
  *     parv[1] = nickname
  */
- static void m_nick(struct Client *client_p, struct Client *source_p,
-                   int parc, char *parv[])
+ static void
+ m_nick(struct Client *client_p, struct Client *source_p,
+	int parc, char *parv[])
 {
   char     nick[NICKLEN];
   struct   Client *target_p;
@@ -268,7 +269,7 @@ mr_nick(struct Client *client_p, struct Client *source_p,
        * how that can happen, m_nick() is local only --fl_
        */
       
-      enqueue_closing_client(NULL, target_p, &me, "Overridden");
+      exit_client(NULL, target_p, &me, "Overridden");
       change_local_nick(client_p, source_p, nick);
       return;
     }
@@ -349,8 +350,7 @@ ms_nick(struct Client *client_p, struct Client *source_p,
                          client_p->name, parc, tbuf);
     ilog(L_CRIT, "Insufficient parameters (%d) for command 'NICK' from %s.  Buf: %s",
          parc, client_p->name, tbuf);
-    enqueue_closing_client(client_p, client_p, client_p,
-                           "Not enough arguments to server command.");
+    exit_client(client_p, client_p, client_p, "Not enough arguments to server command.");
     return;
   }
 
@@ -393,7 +393,7 @@ ms_nick(struct Client *client_p, struct Client *source_p,
   /* we're not living in the past anymore, an unknown client is local only. */
   if(IsUnknown(target_p))
   {
-    enqueue_closing_client(NULL, target_p, &me, "Overridden");
+    exit_client(NULL, target_p, &me, "Overridden");
     nick_from_server(client_p,source_p,parc,parv,newts,nick);
     return;
   }
@@ -475,8 +475,8 @@ ms_client(struct Client *client_p, struct Client *source_p,
 
     ServerStats->is_kill++;
 	    
-    target_p->flags |= FLAGS_KILLED;
-    enqueue_closing_client(client_p, target_p, &me, "ID Collision");
+    SetKilled(target_p);
+    exit_client(client_p, target_p, &me, "ID Collision");
     return;
   }
     
@@ -489,7 +489,7 @@ ms_client(struct Client *client_p, struct Client *source_p,
 
   if(IsUnknown(target_p))
   {
-    enqueue_closing_client(NULL, target_p, &me, "Overridden");
+    exit_client(NULL, target_p, &me, "Overridden");
     client_from_server(client_p,source_p,parc,parv,newts,nick);
     return;
   }
@@ -510,8 +510,9 @@ ms_client(struct Client *client_p, struct Client *source_p,
  * side effects - if nickname is erroneous, or a different length to
  *                truncated nickname, return 1
  */
-static int check_clean_nick(struct Client *client_p, struct Client *source_p, 
-                            char *nick, char *newnick, char *server)
+static int
+check_clean_nick(struct Client *client_p, struct Client *source_p, 
+		 char *nick, char *newnick, char *server)
 {
   /* the old code did some wacky stuff here, if the nick is invalid, kill it
    * and dont bother messing at all
@@ -533,14 +534,14 @@ static int check_clean_nick(struct Client *client_p, struct Client *source_p,
       kill_client_ll_serv_butone(client_p, source_p,
                                  "%s (Bad Nickname)",
 				 me.name);
-      source_p->flags |= FLAGS_KILLED;
-      enqueue_closing_client(client_p, source_p, &me, "Bad Nickname");
+      SetKilled(source_p);
+      exit_client(client_p, source_p, &me, "Bad Nickname");
     }
 
-    return 1;
+    return (1);
   }
 
-  return 0;
+  return (0);
 }
 
 /* check_clean_user()
@@ -566,7 +567,7 @@ check_clean_user(struct Client *client_p, char *nick,
     sendto_one(client_p, ":%s KILL %s :%s (Bad Username)",
                me.name, nick, me.name);
   
-    return 1;
+    return (1);
   }
 
   if(!clean_user_name(user))
@@ -574,7 +575,7 @@ check_clean_user(struct Client *client_p, char *nick,
                          "Bad Username: %s Nickname: %s From: %s(via %s)",
 			 user, nick, server, client_p->name);
 			 
-  return 0;
+  return (0);
 }
 
 /* check_clean_host()
@@ -600,7 +601,7 @@ check_clean_host(struct Client *client_p, char *nick,
     sendto_one(client_p, ":%s KILL %s :%s (Bad Hostname)",
                me.name, nick, me.name);
 
-    return 1;
+    return (1);
   }
 
   if(!clean_host_name(host))
@@ -608,7 +609,7 @@ check_clean_host(struct Client *client_p, char *nick,
                          "Bad Hostname: %s Nickname: %s From: %s(via %s)",
 			 host, nick, server, client_p->name);
 
-  return 0;
+  return (0);
 }
 
 /* clean_nick_name()
@@ -622,21 +623,21 @@ clean_nick_name(char *nick)
 {
   assert(nick);
   if(nick == NULL)
-    return 0;
+    return (0);
 
   /* nicks cant start with a digit or - or be 0 length */
   /* This closer duplicates behaviour of hybrid-6 */
 
   if (*nick == '-' || IsDigit(*nick) || *nick == '\0')
-    return 0;
+    return (0);
 
   for(; *nick; nick++)
   {
     if(!IsNickChar(*nick))
-      return 0;
+      return (0);
   }
 
-  return 1;
+  return (1);
 }
 
 /* clean_user_name()
@@ -849,8 +850,8 @@ perform_nick_collides(struct Client *source_p, struct Client *client_p,
       sendto_one(target_p, form_str(ERR_NICKCOLLISION),
                  me.name, target_p->name, target_p->name);
 
-      target_p->flags |= FLAGS_KILLED;
-      enqueue_closing_client(client_p, target_p, &me, "Nick collision (new)");
+      SetKilled(target_p);
+      exit_client(client_p, target_p, &me, "Nick collision (new)");
       return 0;
     }
     /* the timestamps are different */
@@ -893,8 +894,8 @@ perform_nick_collides(struct Client *source_p, struct Client *client_p,
 	                           "%s (Nick collision (new))",
 				   me.name);
 
-        target_p->flags |= FLAGS_KILLED;
-	enqueue_closing_client(client_p, target_p, &me, "Nick collision");
+        SetKilled(target_p);
+	exit_client(client_p, target_p, &me, "Nick collision");
 	
 	if(parc == 9)
 	  nick_from_server(client_p,source_p,parc,parv,newts,nick);
@@ -933,10 +934,10 @@ perform_nick_collides(struct Client *source_p, struct Client *client_p,
                                  "%s (Nick change collision)",
 				 me.name);
 
-      target_p->flags |= FLAGS_KILLED;
-      enqueue_closing_client(NULL, target_p, &me, "Nick collision(new)");
-      source_p->flags |= FLAGS_KILLED;
-      enqueue_closing_client(client_p, source_p, &me, "Nick collision(old)");
+      SetKilled(target_p);
+      exit_client(NULL, target_p, &me, "Nick collision(new)");
+      SetKilled(source_p);
+      exit_client(client_p, source_p, &me, "Nick collision(old)");
       return 0;
     }
     else
@@ -965,14 +966,12 @@ perform_nick_collides(struct Client *source_p, struct Client *client_p,
 	                           "%s (Nick change collision)",
 				   me.name);
 
-        source_p->flags |= FLAGS_KILLED;
+        SetKilled(source_p);
 	
 	if(sameuser)
-	  enqueue_closing_client(client_p, source_p, &me,
-                                 "Nick collision(old)");
+	  exit_client(client_p, source_p, &me, "Nick collision(old)");
 	else
-	  enqueue_closing_client(client_p, source_p, &me,
-                                 "Nick collision(new)");
+	  exit_client(client_p, source_p, &me, "Nick collision(new)");
 	return 0;
      }
      else
@@ -996,8 +995,8 @@ perform_nick_collides(struct Client *source_p, struct Client *client_p,
        sendto_one(target_p, form_str(ERR_NICKCOLLISION),
                   me.name, target_p->name, target_p->name);
 
-       target_p->flags |= FLAGS_KILLED;
-       enqueue_closing_client(client_p, target_p, &me, "Nick collision");
+       SetKilled(target_p);
+       exit_client(client_p, target_p, &me, "Nick collision");
      }
    }
 

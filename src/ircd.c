@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.249 2003/02/04 05:30:50 db Exp $
+ *  $Id: ircd.c,v 7.250 2003/02/14 23:01:55 db Exp $
  */
 
 #include "stdinc.h"
@@ -90,7 +90,7 @@ struct  Counter Count;
 struct  ServerState_t server_state;
 
 struct timeval SystemTime;
-int     ServerRunning;          /* GLOBAL - server execution state */
+int    ServerRunning;           /* GLOBAL - server execution state */
 struct Client me;               /* That's me */
 struct LocalUser meLocalUser;	/* That's also part of me */
 
@@ -169,7 +169,8 @@ static unsigned long get_vm_top(void)
 /*
  * get_maxrss - get the operating systems notion of the resident set size
  */
-unsigned long get_maxrss(void)
+unsigned long
+get_maxrss(void)
 {
   return get_vm_top() - initialVMTop;
 }
@@ -329,7 +330,9 @@ io_loop(void)
       irc_sleep(st);
 
       comm_select(0);
-  
+      exit_aborted_clients();
+      free_exited_clients();
+
       /*
        * Check to see whether we have to rehash the configuration ..
        */
