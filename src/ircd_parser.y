@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.244 2002/04/30 10:46:51 leeh Exp $
+ *  $Id: ircd_parser.y,v 1.245 2002/04/30 11:35:00 leeh Exp $
  */
 
 %{
@@ -718,7 +718,7 @@ oper_entry:     OPERATOR
       {
         BIO *file;
 
-	file = BIO_new_file(yy_achead->rsa_public_key_file);
+	file = BIO_new_file(yy_achead->rsa_public_key_file, "r");
 	yy_tmp->rsa_public_key = (RSA *)PEM_read_bio_RSA_PUBKEY(file,
 	                                           NULL, 0, NULL);
         BIO_set_close(file, BIO_CLOSE);
