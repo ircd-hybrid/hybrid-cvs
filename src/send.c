@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.168 2001/12/16 07:55:25 androsyn Exp $
+ *   $Id: send.c,v 7.169 2001/12/20 20:32:02 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -207,7 +207,9 @@ send_linebuf_remote(struct Client *to, struct Client *from,
   }
 
   /* Optimize by checking if (from && to) before everything */
-  if (!MyClient(from) && IsPerson(to) && (to->from == from->from))
+  /* we set to->from up there.. */
+
+  if (!MyClient(from) && IsPerson(to) && (to == from->from))
   {
     if (IsServer(from))
     {
@@ -238,7 +240,7 @@ send_linebuf_remote(struct Client *to, struct Client *from,
     exit_client(NULL, to, &me, "Ghosted client");
 
     return;
-  } /* if (!MyClient(from) && IsPerson(to) && (to->from == from->from)) */
+  } 
 
   _send_linebuf(to, linebuf);
   return;
