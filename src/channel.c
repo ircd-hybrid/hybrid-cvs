@@ -34,11 +34,12 @@
  *                mode * -p etc. if flag was clear
  *
  *
- * $Id: channel.c,v 7.10 1999/09/08 02:22:51 lusky Exp $
+ * $Id: channel.c,v 7.11 1999/09/10 04:57:52 tomh Exp $
  */
 #include "channel.h"
 #include "client.h"
 #include "common.h"
+#include "flud.h"
 #include "hash.h"
 #include "irc_string.h"
 #include "ircd.h"
