@@ -1,8 +1,13 @@
   Things to reduce, to use less startup memory.
-(from flier@globecom.net) All of these are in config.h
+(originally from flier@globecom.net)
+
+in config.h:
 
    - reduce NICKNAMEHISTORYLENGTH from 15000 to say 1000
-   - reduce MAXSENDQLENGTH from 5050000 to 500000
+
+in defaults.h:
+
+   - reduce MAXSENDQLENGTH from 9000000 to 500000 or 1000000
 
 --------------------------------------------------------------------------------
-$Id: README.small_nets,v 7.5 2001/06/08 05:41:59 db Exp $
+$Id: README.small_nets,v 7.6 2001/08/26 04:31:35 wcampbel Exp $

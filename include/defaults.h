@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: defaults.h,v 7.2 2001/05/31 19:42:59 davidt Exp $
+ * $Id: defaults.h,v 7.3 2001/08/26 04:31:36 wcampbel Exp $
  */
 
 #ifndef INCLUDED_defaults_h
@@ -38,7 +38,7 @@ error HARD_FDLIMIT_ undefined
 #define MASTER_MAX      (HARD_FDLIMIT - MAX_BUFFER)
 
 /* class {} default values */
-#define DEFAULT_SENDQ 7050000           /* default max SendQ */
+#define DEFAULT_SENDQ 9000000           /* default max SendQ */
 #define PORTNUM 6667                    /* default outgoing portnum */
 #define DEFAULT_PINGFREQUENCY    120    /* Default ping frequency */
 #define DEFAULT_CONNECTFREQUENCY 600    /* Default connect frequency */

@@ -1,4 +1,4 @@
-$Id: Hybrid-team,v 7.34 2001/07/18 20:57:51 wcampbel Exp $
+$Id: Hybrid-team,v 7.35 2001/08/26 04:31:35 wcampbel Exp $
 
 The hybrid team is a group of ircd coders who were frustrated
 with the instability and all-out "dirtiness" of the EFnet ircd's
@@ -56,4 +56,3 @@ previous versions of this ircd and it's ancestors, too many to list
 here.
  
 Send bug fixes/complaints/rotten tomatoes to ircd-hybrid@the-project.org.
-It may also be worth your while to visit http://bugs.efnow.net/.
