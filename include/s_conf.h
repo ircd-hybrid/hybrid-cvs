@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.89 2001/01/25 06:26:02 db Exp $
+ * $Id: s_conf.h,v 7.90 2001/01/26 02:54:23 androsyn Exp $
  */
 
 #include "setup.h"
@@ -209,11 +209,7 @@ struct server_info
   char        *network_name;
   char        *network_desc;
   int         hub;
-#ifdef IPV6
-  struct in6_addr ip;
-#else
-  struct in_addr ip;
-#endif
+  struct      irc_inaddr ip;
   int         max_clients;
   int         no_hack_ops;
 };

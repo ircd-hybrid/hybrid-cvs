@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.128 2001/01/25 06:26:10 db Exp $
+ *   $Id: s_serv.c,v 7.129 2001/01/26 02:54:28 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -69,7 +69,7 @@ extern char *crypt();
 #define INADDR_NONE ((unsigned int) 0xffffffff)
 #endif
 
-extern struct sockaddr_in vserv;               /* defined in s_conf.c */
+extern struct irc_inaddr vserv;               /* defined in ircd.c */
 
 int MaxConnectionCount = 1;
 int MaxClientCount     = 1;
@@ -1544,8 +1544,12 @@ serv_connect(struct ConfItem *aconf, struct Client *by)
     /* Now, initiate the connection */
     if(specific_virtual_host)
       {
+	struct irc_sockaddr ipn;
+	S_FAM(ipn) = DEF_FAM;
+	S_PORT(ipn) = 0;
+	copy_s_addr(S_ADDR(ipn), IN_ADDR(vserv));
 	comm_connect_tcp(cptr->fd, aconf->host, aconf->port,
-			 (struct sockaddr *)&vserv, sizeof(vserv), 
+			 (struct sockaddr *)&SOCKADDR(ipn), sizeof(vserv), 
 			 serv_connect_callback, cptr);
       }
     else
