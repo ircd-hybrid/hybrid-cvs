@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_mode.c,v 1.49 2002/04/06 05:04:43 androsyn Exp $
+ *  $Id: m_mode.c,v 1.50 2002/04/18 13:15:52 leeh Exp $
  */
 
 #include "tools.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
 }
 
 
-const char *_version = "$Revision: 1.49 $";
+const char *_version = "$Revision: 1.50 $";
 #endif
 /*
  * m_mode - MODE command handler
@@ -87,8 +87,7 @@ static void m_mode(struct Client *client_p, struct Client *source_p,
       user_mode(client_p, source_p, parc, parv);
       return;
     }
-  /* Finish the flood grace period... */
-  SetFloodDone(source_p);
+
   if (!check_channel_name(parv[1]))
     { 
       sendto_one(source_p, form_str(ERR_BADCHANNAME),
@@ -204,8 +203,13 @@ static void m_mode(struct Client *client_p, struct Client *source_p,
     }
   /* bounce all modes from people we deop on sjoin */
   else if((ptr = find_user_link(&chptr->deopped, source_p)) == NULL)
+  {
+    /* Finish the flood grace period... */
+    SetFloodDone(source_p);
+
     set_channel_mode(client_p, source_p, chptr, parc - n, parv + n, 
                      root->chname);
+  }
 }
 
 
