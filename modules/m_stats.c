@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 1.46 2001/01/15 14:27:29 ejb Exp $
+ *  $Id: m_stats.c,v 1.47 2001/01/15 14:43:23 ejb Exp $
  */
 #include "tools.h"	 /* dlink_node/dlink_list */
 #include "handlers.h"    /* m_pass prototype */
@@ -67,13 +67,15 @@ struct Message stats_msgtab = {
 void
 _modinit(void)
 {
-  mod_add_cmd(&stats_msgtab);
+	hook_add_event("doing_stats");
+	mod_add_cmd(&stats_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  mod_del_cmd(&stats_msgtab);
+	hook_del_event("doing_stats");
+	mod_del_cmd(&stats_msgtab);
 }
 
 char *_version = "20001228";
@@ -109,7 +111,6 @@ static void stats_L_list(struct Client *s, char *, int, int,
                          dlink_list *, char);
 static void stats_spy(struct Client *, char);
 static void stats_L_spy(struct Client *, char, char *);
-static void stats_p_spy(struct Client *);
 static void do_normal_stats(struct Client *, char *, char *, char, int, int);
 static void do_non_priv_stats(struct Client *, char *, char *, char, int, int);
 static void do_priv_stats(struct Client *, char *, char *, char, int, int);
@@ -629,28 +630,13 @@ static void stats_spy(struct Client *sptr,char statchar)
  */
 static void stats_L_spy(struct Client *sptr, char statchar, char *name)
 {
-  if (ConfigFileEntry.stats_notice)
-    {
-      if(name != NULL)
-	sendto_realops_flags(FLAGS_SPY,
-			     "STATS %c requested by %s (%s@%s) [%s] on %s",
-			     statchar,
-			     sptr->name,
-			     sptr->username,
-			     sptr->host,
-			     sptr->user->server,
-			     name );
-      else
-	sendto_realops_flags(FLAGS_SPY,
-			     "STATS %c requested by %s (%s@%s) [%s]",
-			     statchar,
-			     sptr->name,
-			     sptr->username,
-
-			     sptr->host,
-			     sptr->user->server);
+	struct hook_stats_data data;
 	
-    }
+	data.sptr = sptr;
+	data.statchar = statchar;
+	data.name = name;
+	
+	hook_call_event("doing_stats", &data);
 }
 
 /*
