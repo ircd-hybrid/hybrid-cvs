@@ -1,3 +1,16 @@
+androsyn    2002/10/30 16:23:52 EST	(20021030_5)
+
+  Modified files:
+    src                  s_user.c 
+  Log:
+  Fix dumb bug that caused the USER response to be taken instead of the identd
+  response..
+  
+  Revision  Changes    Path
+  7.212     +3 -12     ircd-hybrid-7/src/s_user.c
+
+
+
 bill        2002/10/30 15:24:21 EST	(20021030_4)
 
   Modified files:
@@ -32852,4 +32865,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4087 2002/10/30 20:24:23 bill Exp $
+$Id: ChangeLog,v 7.4088 2002/10/30 21:23:54 androsyn Exp $
