@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.50 2000/12/06 09:49:52 db Exp $
+ * $Id: client.h,v 7.51 2000/12/09 08:15:40 db Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -112,12 +112,6 @@ struct Client
   struct Client*    lnext;      /* Used for Server->servers/users */
   struct Client*    lprev;      /* Used for Server->servers/users */
 
-  struct Client*    next_local_client;      /* keep track of these */
-  struct Client*    previous_local_client;
-
-  struct Client*    next_server_client;
-  struct Client*    next_oper_client;
-
   struct User*      user;       /* ...defined, if this is a User */
   struct Server*    serv;       /* ...defined, if this is a server */
   struct Client*    servptr;    /* Points to server this Client is on */
@@ -136,7 +130,6 @@ struct Client
   unsigned short    status;     /* Client type */
   unsigned char     handler;    /* Handler index */
   char              nicksent;
-  unsigned char     local_flag; /* if this is 1 this client is local */
 
   /*
    * client->name is the unique name for a client nick or host
@@ -255,7 +248,7 @@ struct LocalUser
    *   -- adrian
    */
   int allow_read;	/* how many we're allowed to read in this second */
-  int actually_read;  /* how many we've actually read in this second */
+  int actually_read;    /* how many we've actually read in this second */
   int sent_parsed;      /* how many messages we've parsed in this second */
 
 };
@@ -418,7 +411,7 @@ struct LocalUser
 #define SetAccess(x)            ((x)->flags |= FLAGS_CHKACCESS)
 #define NoNewLine(x)            ((x)->flags & FLAGS_NONL)
 #define ClearAccess(x)          ((x)->flags &= ~FLAGS_CHKACCESS)
-#define MyConnect(x)            ((x)->local_flag != 0)
+#define MyConnect(x)            ((x)->localClient != NULL)
 #define MyClient(x)             (MyConnect(x) && IsClient(x))
 
 /* oper flags */
