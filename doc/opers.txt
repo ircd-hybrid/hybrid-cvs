@@ -1,5 +1,5 @@
 This file outlines the features that ircd-hybrid has for IRC Operators.
-$Id: opers.txt,v 7.17 2001/03/03 16:47:48 wcampbel Exp $
+$Id: opers.txt,v 7.18 2001/03/31 03:44:06 db Exp $
 
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
@@ -125,8 +125,6 @@ COMMAND         - USAGE and DESCRIPTION
 
                   [option] can be one of the following:
                     DNS      - Re-read the /etc/resolv.conf file
-                    GC       - Performs garbage collecting of excess
-                              memory.
                     MOTD     - Re-reads MOTD file
                     OMOTD    - Re-reads Oper MOTD file
                     HELP     - Re-reads this HELP file
