@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.227 2003/03/01 01:15:45 db Exp $
+ *  $Id: s_user.c,v 7.228 2003/03/03 04:10:37 db Exp $
  */
 
 #include "stdinc.h"
@@ -395,6 +395,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
    */
   /* Except "F:" clients */
   if (((Count.local + 1) >= (GlobalSetOptions.maxclients + MAX_BUFFER) ||
+      (Count.local >= ServerInfo.max_clients) ||
       (Count.local +1) >= (GlobalSetOptions.maxclients - 5)) &&
       !(IsExemptLimits(source_p)))
     {
