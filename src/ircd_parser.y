@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.322 2003/06/21 20:09:26 metalrock Exp $
+ *  $Id: ircd_parser.y,v 1.323 2003/06/22 02:37:36 db Exp $
  */
 
 %{
@@ -62,12 +62,38 @@ static struct MatchItem *yy_match_item = NULL;
 static struct cluster *cptr = NULL;
 static struct Class *yy_class = NULL;
 
+static dlink_list col_conf_list    = { NULL, NULL, 0 };
 static dlink_list aconf_list       = { NULL, NULL, 0 };
 static dlink_list hub_aconfs_list  = { NULL, NULL, 0 };
 static dlink_list leaf_aconfs_list = { NULL, NULL, 0 };
 
 static char *resv_reason;
 static char *listener_address;
+
+struct CollectItem {
+  dlink_node node;
+  char *name;
+  char *user;
+  char *host;
+  char *class_name;
+  char *passwd;
+  int  port;
+#ifdef HAVE_LIBCRYPTO
+  char *rsa_public_key_file;
+  RSA *rsa_public_key;
+#endif
+};
+
+static void
+free_collect_item(struct CollectItem *item)
+{
+  MyFree(item->name);
+  MyFree(item->user);
+  MyFree(item->host);
+  MyFree(item->class_name);
+  MyFree(item->passwd);
+  MyFree(item->rsa_public_key_file);
+}
 
 static void
 init_parser_confs(void)
@@ -791,7 +817,6 @@ oper_entry: OPERATOR
 {
   if (ypass == 2)
   {
-    init_parser_confs();
     yy_conf = make_conf_item(OPER_TYPE);
     yy_aconf = (struct AccessItem *)map_to_conf(yy_conf);
   }
@@ -799,12 +824,15 @@ oper_entry: OPERATOR
 {
   if (ypass == 2)
   {
-    struct AccessItem *yy_tmp;
+    struct CollectItem *yy_tmp;
     dlink_node *ptr;
     dlink_node *next_ptr;
 
-    /* Fill in oper block */
-    DLINK_FOREACH_SAFE(ptr, next_ptr, aconf_list.head)
+    /* Now, make sure there is a copy of the "base" given oper
+     * block in each of the collected copies
+     */
+
+    DLINK_FOREACH_SAFE(ptr, next_ptr, col_conf_list.head)
     {
       yy_tmp = ptr->data;
 
@@ -832,8 +860,14 @@ oper_entry: OPERATOR
 #endif
     }
 
-    DLINK_FOREACH_SAFE(ptr, next_ptr, aconf_list.head)
+    /* Now make sure each collected item is replicated
+     * as a "real" oper block
+     */
+
+    DLINK_FOREACH_SAFE(ptr, next_ptr, col_conf_list.head)
     {
+      struct AccessItem *new_aconf;
+      struct ConfItem *new_conf;
       yy_tmp = ptr->data;
 #ifdef HAVE_LIBCRYPTO
       if (yy_tmp->name && (yy_tmp->passwd || yy_aconf->rsa_public_key) && yy_tmp->host)
@@ -841,13 +875,42 @@ oper_entry: OPERATOR
       if (yy_tmp->name && yy_tmp->passwd && yy_tmp->host)
 #endif
       {
-        conf_add_class_to_conf(yy_tmp);
-        dlinkDelete(ptr, &aconf_list);
+	new_conf = make_conf_item(OPER_TYPE);
+	new_aconf = (struct AccessItem *)map_to_conf(new_conf);
+
+	if (yy_tmp->class_name != NULL)
+	  DupString(new_aconf->class_name, yy_tmp->class_name);
+        conf_add_class_to_conf(new_aconf);
+	if (yy_tmp->name != NULL)
+	  DupString(new_aconf->name, yy_tmp->name);
+	if (yy_tmp->passwd != NULL)
+	  DupString(new_aconf->passwd, yy_tmp->passwd);
+
+	new_aconf->port = yy_tmp->port;
+
+#ifdef HAVE_LIBCRYPTO
+	if (yy_tmp->rsa_public_key_file != NULL)
+	  DupString(new_aconf->rsa_public_key_file,
+		    yy_tmp->rsa_public_key_file);
+
+	if (new_aconf->rsa_public_key != NULL)
+	{
+	  BIO *file;
+
+	  file = BIO_new_file(new_aconf->rsa_public_key_file, "r");
+	  new_aconf->rsa_public_key = 
+	    (RSA *)PEM_read_bio_RSA_PUBKEY(file, NULL, 0, NULL);
+	  BIO_set_close(file, BIO_CLOSE);
+	  BIO_free(file);
+	}
+#endif
+        dlinkDelete(&yy_tmp->node, &col_conf_list);
+	free_collect_item(yy_tmp);
       }
       else
       {
-        dlinkDelete(ptr, &aconf_list);
-        free_access_item(yy_tmp);
+        dlinkDelete(&yy_tmp->node, &col_conf_list);
+        free_collect_item(yy_tmp);
       }
     }
     yy_aconf = NULL;
@@ -878,15 +941,22 @@ oper_user: USER '=' QSTRING ';'
 {
   if (ypass == 2)
   {
-    struct AccessItem *yy_tmp;
+    struct CollectItem *yy_tmp;
 
-    yy_conf = make_conf_item(OPER_TYPE);
-    yy_tmp = (struct AccessItem *)map_to_conf(yy_conf);
+    if (yy_aconf->user == NULL)
+    {
+      DupString(yy_aconf->host, yylval.string);
+      split_user_host(yy_aconf->host, &yy_aconf->user, &yy_aconf->host);
+    }
+    else
+    {
+      yy_tmp = (struct CollectItem *)MyMalloc(sizeof(struct CollectItem));
 
-    DupString(yy_tmp->host, yylval.string);
-    split_user_host(yy_tmp->host, &yy_tmp->user, &yy_tmp->host);
+      DupString(yy_tmp->host, yylval.string);
+      split_user_host(yy_tmp->host, &yy_tmp->user, &yy_tmp->host);
 
-    dlinkAdd(yy_tmp, make_dlink_node(), &aconf_list);
+      dlinkAdd(yy_tmp, &yy_tmp->node, &col_conf_list);
+    }
   }
 };
 
@@ -963,6 +1033,7 @@ oper_class: CLASS '=' QSTRING ';'
   {
     MyFree(yy_aconf->class_name);
     DupString(yy_aconf->class_name, yylval.string);
+    conf_add_class_to_conf(yy_aconf);
   }
 };
 
