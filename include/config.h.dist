@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: config.h.dist,v 7.74 2003/05/28 05:01:27 metalrock Exp $
+ *  $Id: config.h.dist,v 7.75 2003/05/29 06:39:15 metalrock Exp $
  */
 
 #ifndef INCLUDED_config_h
@@ -106,7 +106,7 @@
 #define CRESVPATH   ETCPATH "CRESV.CONF"        /* channel resvs file */
 #define NRESVPATH   ETCPATH "NRESV.CONF"        /* channel resvs file */
 #define DLPATH  ETCPATH "DLINE.CONF"            /* dline file */
-#define GPATH   LOGPATH "GLINE.LOG"             /* gline logfile */
+#define GPATH   ETCPATH "GLINE.CONF"             /* gline logfile */
 #define RPATH   ETCPATH "IRCD.RSA"              /* RSA private key file */
 #define MPATH   ETCPATH "IRCD.MOTD"             /* MOTD filename */
 #define LPATH   LOGPATH "IRCD.LOG"              /* logfile */
@@ -151,14 +151,14 @@
 #define CRESVPATH   ETCPATH "/cresv.conf"       /* channel resvs file */
 #define NRESVPATH   ETCPATH "/nresv.conf"       /* nick resvs file */
 #define DLPATH  ETCPATH "/dline.conf"           /* dline file */
-#define GPATH   LOGPATH "/gline.log"            /* gline logfile */
+#define GPATH   ETCPATH "/gline.conf"           /* gline conffile */
 #define RPATH   ETCPATH "/ircd.rsa"             /* ircd rsa private keyfile */
 #define MPATH   ETCPATH "/ircd.motd"            /* MOTD file */
 #define LPATH   LOGPATH "/ircd.log"             /* ircd logfile */
 #define PPATH   ETCPATH "/ircd.pid"             /* pid file */
 #define OPATH   ETCPATH "/opers.motd"           /* oper MOTD file */
 #define LIPATH  ETCPATH "/links.txt"            /* cached links file */
-#endif /* __vms */
+#endif /* !__vms */
 
 
 /* Ignore bogus timestamps from other servers. Yes this will desync
