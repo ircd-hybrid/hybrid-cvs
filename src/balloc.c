@@ -25,7 +25,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: balloc.c,v 7.36 2002/06/16 17:23:54 db Exp $
+ *  $Id: balloc.c,v 7.37 2002/07/12 00:43:23 androsyn Exp $
  */
 
 /* 
@@ -320,9 +320,6 @@ BlockHeapCreate(size_t elemsize, int elemsperblock)
         outofmemory();          /* die.. out of memory */
       }
 
-#ifdef MEMDEBUG
-    elemsize += sizeof(MemoryEntry);
-#endif
     if((elemsize % sizeof(void *)) != 0)
       {
 	/* Pad to even pointer boundary */
@@ -365,7 +362,7 @@ BlockHeapCreate(size_t elemsize, int elemsperblock)
 /* ************************************************************************ */
 
 void *
-_BlockHeapAlloc(BlockHeap * bh)
+BlockHeapAlloc(BlockHeap * bh)
 {
     Block *walker;
     dlink_node *new_node;
@@ -424,7 +421,7 @@ _BlockHeapAlloc(BlockHeap * bh)
 /*    0 if successful, 1 if element not contained within BlockHeap.         */
 /* ************************************************************************ */
 int
-_BlockHeapFree(BlockHeap * bh, void *ptr)
+BlockHeapFree(BlockHeap * bh, void *ptr)
 {
     Block *block;
     struct MemBlock *memblock;

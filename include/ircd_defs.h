@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_defs.h,v 7.30 2002/07/10 08:31:14 androsyn Exp $
+ *  $Id: ircd_defs.h,v 7.31 2002/07/12 00:43:20 androsyn Exp $
  */
 
 /*
@@ -66,19 +66,6 @@
 #define CLIENT_EXITED    -2
 #define CLIENT_PARSE_ERROR -1
 #define CLIENT_OK	1
-
-/* 
- * Macros everyone uses :/ moved here from sys.h
- */
-/*
-#define MyFree(x)       if ((x)) free((x))
-*/
-#define free_client(x) _free_client((x))
-#define free_link(x)   _free_link((x))
-#define free_user(x,y) _free_user((x), (y))
-#define free_dlink_node(x) _free_dlink_node((x))
-
-
 
 
 struct irc_inaddr

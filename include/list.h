@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: list.h,v 7.14 2002/01/05 09:14:28 a1kmm Exp $
+ *  $Id: list.h,v 7.15 2002/07/12 00:43:20 androsyn Exp $
  */
 
 #ifndef INCLUDED_list_h
@@ -38,15 +38,9 @@ extern void initUser(void);
 extern void count_user_memory(int *count,int *user_memory_used);
 extern void count_links_memory(int *count,int *links_memory_used);
 extern void outofmemory(void);
-extern void _free_user (struct User *, struct Client *);
-#ifdef MEMDEBUG
-extern dlink_node* _make_dlink_node(const char*, int);
-#define make_dlink_node() _make_dlink_node(__FILE__, __LINE__);
-#else
-extern dlink_node *_make_dlink_node (void);
-#define make_dlink_node() _make_dlink_node();
-#endif
-extern void _free_dlink_node(dlink_node *lp);
+extern void free_user (struct User *, struct Client *);
+extern dlink_node *make_dlink_node (void);
+extern void free_dlink_node(dlink_node *lp);
 extern void init_dlink_nodes();
 
 extern struct User     *make_user (struct Client *);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.151 2002/07/10 00:05:51 leeh Exp $
+ *  $Id: client.h,v 7.152 2002/07/12 00:43:19 androsyn Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -585,7 +585,7 @@ extern void           check_klines(void);
 extern const char*    get_client_name(struct Client* client, int show_ip);
 extern void           init_client(void);
 extern struct Client* make_client(struct Client* from);
-extern void           _free_client(struct Client* client);
+extern void           free_client(struct Client* client);
 extern void           add_client_to_list(struct Client* client);
 extern void           remove_client_from_list(struct Client *);
 extern void           add_client_to_llist(struct Client** list, 
