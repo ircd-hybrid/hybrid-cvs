@@ -15,7 +15,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- * $Id: hostmask.c,v 7.12 2001/02/11 02:52:07 a1kmm Exp $ 
+ * $Id: hostmask.c,v 7.13 2001/02/11 08:28:11 a1kmm Exp $ 
  */
 #include <unistd.h>
 #include <string.h>
@@ -195,22 +195,44 @@ void add_conf(struct ConfItem *aconf)
 void clear_conf(void)
 {
  struct ConfItem *conf=NULL;
- struct HostMaskEntry *hme=NULL, *hmen;
+ static struct HostMaskEntry *deferred_masks;
+ struct HostMaskEntry *hme=NULL, *hmen, *hmel = NULL;
 
- for (hme = first_mask; hme; hme = hmen)
+ for (hme = deferred_masks; hme; hme=hmen)
+   {
+    hmen = hme->next;
+    conf = ((struct ConfItem*)hme->data);
+    if (!conf->clients)
+      {
+       hmel ? hmel->next : deferred_masks = hmen;
+       free_conf(conf);
+       MyFree(hme->hostmask);
+       MyFree(hme);
+      }
+    else
+     hmel = hme;
+   }
+ for (hmel = NULL, hme = first_mask; hme; hme = hmen)
    {
     hmen = hme->next;
     if (hme->type != HOST_CONFITEM)
       continue;
     conf = (struct ConfItem*)hme->data;
+    hmel ? hmel->next : first_mask = hme->next;
     if (conf->clients)
-      conf->status |= CONF_ILLEGAL;
+      {
+       conf->status |= CONF_ILLEGAL;
+       hmel = hme;
+       hme->next = deferred_masks;
+       deferred_masks = hme;
+      }
     else
-      free_conf(conf);
-    MyFree(hme->hostmask);
-    MyFree(hme);
+      {
+       free_conf(conf);
+       MyFree(hme->hostmask);
+       MyFree(hme);
+      }
    }
- first_mask = NULL;
  first_miscmask = NULL;
  memset((void *)hmhash,0,sizeof(hmhash));
 }
