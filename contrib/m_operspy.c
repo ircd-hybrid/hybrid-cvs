@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.17 2003/04/02 11:19:37 michael Exp $
+ *   $Id: m_operspy.c,v 1.18 2003/04/02 11:44:52 michael Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -124,7 +124,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.17 $";
+const char *_version = "$Revision: 1.18 $";
 #endif
 
 /*
@@ -228,7 +228,7 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
   {
     sendto_one(client_p, form_str(RPL_LISTSTART), me.name, client_p->name);
 
-    DLINK_FOREACH(ptr, GlobalChannelList.head)
+    DLINK_FOREACH(ptr, global_channel_list.head)
     {
       chptr_list = ptr->data;
       if (match(parv[2], chptr_list->chname))

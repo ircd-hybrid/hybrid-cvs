@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_names.c,v 1.46 2003/04/02 11:19:41 michael Exp $
+ *  $Id: m_names.c,v 1.47 2003/04/02 11:44:56 michael Exp $
  */
 
 #include "stdinc.h"
@@ -67,7 +67,7 @@ _moddeinit(void)
   mod_del_cmd(&names_msgtab);
 }
 
-const char *_version = "$Revision: 1.46 $";
+const char *_version = "$Revision: 1.47 $";
 #endif
 
 /************************************************************************
@@ -175,7 +175,7 @@ names_all_visible_channels(struct Client *source_p)
    * First, do all visible channels (public and the one user self is)
    */
 
-  DLINK_FOREACH(gptr, GlobalChannelList.head)
+  DLINK_FOREACH(gptr, global_channel_list.head)
     {
       chptr = gptr->data;
 #ifdef VCHANS

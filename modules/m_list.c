@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_list.c,v 1.48 2003/03/31 04:30:17 michael Exp $
+ *  $Id: m_list.c,v 1.49 2003/04/02 11:44:56 michael Exp $
  */
 
 #include "stdinc.h"
@@ -66,7 +66,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&list_msgtab);
 }
-const char *_version = "$Revision: 1.48 $";
+const char *_version = "$Revision: 1.49 $";
 #endif
 
 
@@ -189,7 +189,7 @@ list_all_channels(struct Client *source_p)
 
   sendto_one(source_p, form_str(RPL_LISTSTART), me.name, source_p->name);
 
-  DLINK_FOREACH(gptr, GlobalChannelList.head)
+  DLINK_FOREACH(gptr, global_channel_list.head)
     {
       chptr = gptr->data;
       if (!source_p->user ||

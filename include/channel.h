@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.125 2003/02/23 04:16:03 db Exp $
+ *  $Id: channel.h,v 7.126 2003/04/02 11:44:54 michael Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -100,7 +100,7 @@ struct Channel
   char            chname[CHANNELLEN+1];
 };
 
-extern dlink_list GlobalChannelList;
+extern dlink_list global_channel_list;
 
 extern void init_channels(void);
 #ifdef VCHANS

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_debug.c,v 7.72 2003/04/02 11:19:46 michael Exp $
+ *  $Id: s_debug.c,v 7.73 2003/04/02 11:44:58 michael Exp $
  */
 
 #include "stdinc.h"
@@ -238,7 +238,7 @@ count_memory(struct Client *source_p)
 
   /* Count up all channels, ban lists, except lists, Invex lists */
 
-  DLINK_FOREACH(gptr, GlobalChannelList.head)
+  DLINK_FOREACH(gptr, global_channel_list.head)
     {
       chptr = gptr->data;
       channel_count++;

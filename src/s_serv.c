@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.291 2003/04/02 11:19:46 michael Exp $
+ *  $Id: s_serv.c,v 7.292 2003/04/02 11:44:58 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1555,7 +1555,7 @@ burst_all(struct Client *client_p)
   /* serial counter borrowed from send.c */
   current_serial++;
 
-  DLINK_FOREACH(gptr, GlobalChannelList.head)
+  DLINK_FOREACH(gptr, global_channel_list.head)
     {
       chptr = gptr->data;
       /* Don't send vchannels twice; vchannels will be
@@ -1647,7 +1647,7 @@ cjoin_all(struct Client *client_p)
   dlink_node *gptr;
   struct Channel *chptr;
 
-  DLINK_FOREACH(gptr, GlobalChannelList.head)
+  DLINK_FOREACH(gptr, global_channel_list.head)
   {
       chptr = gptr->data;
       sendto_one(client_p, ":%s CBURST %s",

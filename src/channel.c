@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.360 2003/03/29 14:25:15 michael Exp $
+ *  $Id: channel.c,v 7.361 2003/04/02 11:44:57 michael Exp $
  */
 
 #include "stdinc.h"
@@ -47,7 +47,7 @@
 
 
 struct config_channel_entry ConfigChannel;
-dlink_list GlobalChannelList = {NULL, NULL, 0};
+dlink_list global_channel_list = {NULL, NULL, 0};
 BlockHeap *channel_heap;
 BlockHeap *ban_heap;
 BlockHeap *topic_heap;
@@ -455,7 +455,7 @@ clear_channels(void *unused)
   dlink_node *ptr;
   dlink_node *next_ptr;
 
-  DLINK_FOREACH_SAFE(ptr, next_ptr, GlobalChannelList.head)
+  DLINK_FOREACH_SAFE(ptr, next_ptr, global_channel_list.head)
   {
     chptr = ptr->data;
 
@@ -605,7 +605,7 @@ destroy_channel(struct Channel *chptr)
   chptr->banlist.tail = chptr->exceptlist.tail = chptr->invexlist.tail = NULL;
 
   gptr = &chptr->node;
-  dlinkDelete(gptr, &GlobalChannelList);
+  dlinkDelete(gptr, &global_channel_list);
 
   del_from_channel_hash_table(chptr->chname, chptr);
   if (ServerInfo.hub == 1)
