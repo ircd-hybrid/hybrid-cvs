@@ -19,7 +19,7 @@
  *
  *
  *
- * $Id: vchannel.c,v 7.27 2000/12/30 12:34:06 toot Exp $
+ * $Id: vchannel.c,v 7.28 2000/12/30 14:14:56 db Exp $
  */
 #include "tools.h"
 #include "vchannel.h"
@@ -290,10 +290,7 @@ char* pick_vchan_id(struct Channel *chptr)
 
   /* all else failed, must be an empty channel, 
    * so we use the vchan_id */
-  if (chptr->vchan_id)
-    ircsprintf(vchan_id, "%s", chptr->vchan_id);
-  else
-    ircsprintf(vchan_id, "-ERROR-");
+  ircsprintf(vchan_id, "%s", chptr->vchan_id);
 
   return(vchan_id);
 }
