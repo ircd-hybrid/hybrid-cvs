@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_who.c,v 1.90 2003/10/07 22:37:13 bill Exp $
+ *  $Id: m_who.c,v 1.91 2003/11/22 04:58:56 db Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&who_msgtab);
 }
 
-const char *_version = "$Revision: 1.90 $";
+const char *_version = "$Revision: 1.91 $";
 #endif
 
 static void who_global(struct Client *source_p, char *mask, int server_oper);
@@ -84,6 +84,7 @@ m_who(struct Client *client_p, struct Client *source_p,
   struct Client *target_p;
   char *mask = parv[1];
   dlink_node *lp;
+  dlink_node *lp_next;
   struct Channel *chptr = NULL;
   struct Channel *mychannel = NULL;
   int server_oper = parc > 2 ? (*parv[2] == 'o') : 0; /* Show OPERS only */
@@ -168,7 +169,7 @@ m_who(struct Client *client_p, struct Client *source_p,
       client_burst_if_needed(client_p,target_p);
 
     isinvis = IsInvisible(target_p);
-    DLINK_FOREACH(lp, target_p->user->channel.head)
+    DLINK_FOREACH_SAFE(lp, lp_next, target_p->user->channel.head)
     {
       chptr = ((struct Membership *) lp->data)->chptr;
       member = IsMember(source_p, chptr);
@@ -216,9 +217,10 @@ who_common_channel(struct Client *source_p, struct Channel *chptr,
                    char *mask, int server_oper, int *maxmatches)
 {
   dlink_node *ptr;
+  dlink_node *ptr_next;
   struct Client *target_p;
 
-  DLINK_FOREACH(ptr, chptr->members.head)
+  DLINK_FOREACH_SAFE(ptr, ptr_next, chptr->members.head)
   {
     target_p = ((struct Membership *)ptr->data)->client_p;
 
@@ -266,18 +268,20 @@ who_global(struct Client *source_p,char *mask, int server_oper)
   struct Channel *chptr;
   struct Client *target_p;
   dlink_node *lp;
+  dlink_node *lp_next;
   dlink_node *gcptr;
+  dlink_node *gcptr_next;
   int maxmatches = 500;
 
   /* first, list all matching invisible clients on common channels */
-  DLINK_FOREACH(lp, source_p->user->channel.head)
+  DLINK_FOREACH_SAFE(lp, lp_next, source_p->user->channel.head)
   {
     chptr = ((struct Membership *)lp->data)->chptr;
     who_common_channel(source_p, chptr, mask, server_oper, &maxmatches);
   }
 
   /* second, list all matching visible clients */
-  DLINK_FOREACH(gcptr, global_client_list.head)
+  DLINK_FOREACH_SAFE(gcptr, gcptr_next, global_client_list.head)
   {
     target_p = gcptr->data;
 
@@ -327,10 +331,11 @@ do_who_on_channel(struct Client *source_p, struct Channel *chptr,
                   const char *chname, int member, int server_oper)
 {
   dlink_node *ptr;
+  dlink_node *ptr_next;
   struct Client *target_p;
   struct Membership *ms;
 
-  DLINK_FOREACH(ptr, chptr->members.head)
+  DLINK_FOREACH_SAFE(ptr, ptr_next, chptr->members.head)
   {
     ms = ptr->data;
     target_p = ms->client_p;
