@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.132 2003/10/21 22:49:46 bill Exp $
+ *  $Id: m_message.c,v 1.133 2003/11/05 05:23:31 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -117,7 +117,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.132 $";
+const char *_version = "$Revision: 1.133 $";
 #endif
 
 /*
@@ -639,7 +639,6 @@ msg_client(int p_or_n, const char *command, struct Client *source_p,
            && !flood_attack_client(p_or_n, source_p, target_p)))
     sendto_anywhere(target_p, source_p, "%s %s :%s", command, target_p->name,
                     text);
-  return;
 }
 
 /* flood_attack_client()
