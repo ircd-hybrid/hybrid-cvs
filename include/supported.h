@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: supported.h,v 1.21 2002/04/27 09:30:51 leeh Exp $
+ *  $Id: supported.h,v 1.22 2002/04/28 16:38:22 leeh Exp $
  */
 
 #ifndef INCLUDED_supported_h
@@ -52,6 +52,7 @@
 		  " CHANMODES=%s" \
 		  " NETWORK=%s" \
 		  " CHARSET=rfc1459" \
+		  " CASEMAPPING=rfc1459" \
 		  " CALLERID"
 
 #define FEATURES2VALUES ConfigServerHide.disable_local_channels ? "#" : "#&", \
