@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.26 2000/11/05 01:28:27 ryan Exp $
+# $Id: Makefile.in,v 7.27 2000/11/05 03:37:51 ryan Exp $
 #
 CC = @CC@
 RM = @RM@
@@ -50,6 +50,7 @@ SRCS =                          \
   m_away.c                      \
   m_capab.c                     \
   m_cburst.c                    \
+  m_challenge.c                 \
   m_cjoin.c                     \
   m_close.c                     \
   m_connect.c                   \

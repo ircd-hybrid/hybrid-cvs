@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: messages_cust.tab,v 7.14 2000/10/28 02:29:10 toot Exp $
+ * $Id: messages_cust.tab,v 7.15 2000/11/05 03:37:52 ryan Exp $
  *
  */
 /* 
@@ -414,7 +414,7 @@ static  char *  replies[] = {
 /* 383 */       (char *)NULL,
 /* 384 RPL_MYPORTIS, */         ":%s 384 %s %d :Port to local server is\r\n",
 /* 385 RPL_NOTOPERANYMORE, */   (char *)NULL,
-/* 386 */       (char *)NULL,
+/* 386 */                       ":%s 386 %s :%s",
 /* 387 */       (char *)NULL,
 /* 388 */       (char *)NULL,
 /* 389 */       (char *)NULL,

@@ -19,7 +19,7 @@
  *
  *      I kind of modernized this code a bit. -Dianora
  *
- *   $Id: messages.tab,v 7.15 2000/10/28 02:29:10 toot Exp $
+ *   $Id: messages.tab,v 7.16 2000/11/05 03:37:52 ryan Exp $
  */
 
 static  char *  replies[] = {
@@ -413,7 +413,7 @@ static  char *  replies[] = {
 /* 383 */       (char *)NULL,
 /* 384 RPL_MYPORTIS, */         ":%s 384 %s %d :Port to local server is\r\n",
 /* 385 RPL_NOTOPERANYMORE, */   (char *)NULL,
-/* 386 */       (char *)NULL,
+/* 386 */                       ":%s 386 %s :%s",
 /* 387 */       (char *)NULL,
 /* 388 */       (char *)NULL,
 /* 389 */       (char *)NULL,

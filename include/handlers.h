@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: handlers.h,v 7.6 2000/11/05 01:53:47 db Exp $
+ * $Id: handlers.h,v 7.7 2000/11/05 03:37:47 ryan Exp $
  */
 #ifndef INCLUDED_handlers_h
 #define INCLUDED_handlers_h
@@ -118,6 +118,7 @@ extern int m_nick(struct Client*, struct Client*, int, char**);
 extern int m_not_oper(struct Client*, struct Client*, int, char**);
 extern int m_notice(struct Client*, struct Client*, int, char**);
 extern int m_oper(struct Client*, struct Client*, int, char**);
+extern int m_challenge(struct Client*, struct Client*, int, char**);
 extern int m_part(struct Client*, struct Client*, int, char**);
 extern int m_pass(struct Client*, struct Client*, int, char**);
 extern int m_ping(struct Client*, struct Client*, int, char**);

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: msg.h,v 7.19 2000/10/30 07:32:48 db Exp $
+ * $Id: msg.h,v 7.20 2000/11/05 03:37:48 ryan Exp $
  */
 #ifndef INCLUDED_msg_h
 #define INCLUDED_msg_h
@@ -98,6 +98,7 @@ typedef struct MessageTree MESSAGE_TREE;
 #define MSG_PING     "PING"     /* PING */
 #define MSG_PONG     "PONG"     /* PONG */
 #define MSG_OPER     "OPER"     /* OPER */
+#define MSG_CHALLENGE "CHALLENGE" /* CHALLENGE */
 #define MSG_PASS     "PASS"     /* PASS */
 #define MSG_WALLOPS  "WALLOPS"  /* WALL */
 #define MSG_TIME     "TIME"     /* TIME */

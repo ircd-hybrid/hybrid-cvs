@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.25 2000/10/31 22:59:38 db Exp $
+ * $Id: client.h,v 7.26 2000/11/05 03:37:47 ryan Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -84,6 +84,7 @@ struct User
   int            joined;        /* number of channels joined */
   char           id[IDLEN + 1]; /* for future use *hint* */
   const char*    server;        /* pointer to scached server name */
+  char*          RSA_response;  /* expected response from client */
   /*
   ** In a perfect world the 'server' name
   ** should not be needed, a pointer to the

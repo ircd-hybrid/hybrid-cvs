@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.19 2000/11/05 01:53:51 db Exp $
+ *   $Id: parse.c,v 7.20 2000/11/05 03:37:52 ryan Exp $
  */
 #include "parse.h"
 #include "client.h"
@@ -630,6 +630,12 @@ struct Message msgtab[] = {
     /* UNREG, CLIENT, SERVER, OPER */
     { m_unregistered, m_time, m_time, m_time }
   },
+#ifdef OPENSSL
+  {MSG_CHALLENGE, 0, 0, MFLG_SLOW, 0,
+    /* UNREG, CLIENT, SERVER, OPER */
+    { m_unregistered, m_challenge, m_ignore, m_challenge }
+  },
+#endif /* OPENSSL */
   {MSG_OPER, 0, 2, MFLG_SLOW, 0,
     /* UNREG, CLIENT, SERVER, OPER */
     { m_unregistered, m_oper, ms_oper, mo_oper }
