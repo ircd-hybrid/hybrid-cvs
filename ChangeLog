@@ -1,3 +1,15 @@
+leeh        2001/12/27 06:39:31 EST	(20011227_2)
+
+  Modified files:
+    modules              m_stats.c 
+  Log:
+  - commiting in contrib/ only doesnt work, oops ;p
+  
+  Revision  Changes    Path
+  1.102     +21 -6     ircd-hybrid-7/modules/m_stats.c
+
+
+
 leeh        2001/12/27 06:38:22 EST	(20011227_1)
 
   Modified files:
@@ -1494,7 +1506,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3239 2001/12/27 11:38:28 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3240 2001/12/27 11:39:37 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -19848,4 +19860,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3239 2001/12/27 11:38:28 leeh Exp $
+$Id: ChangeLog,v 7.3240 2001/12/27 11:39:37 leeh Exp $
