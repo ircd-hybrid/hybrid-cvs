@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: msg.h,v 7.24 2000/11/09 14:21:02 ejb Exp $
+ * $Id: msg.h,v 7.25 2000/11/27 08:47:09 db Exp $
  */
 #ifndef INCLUDED_msg_h
 #define INCLUDED_msg_h
@@ -152,7 +152,7 @@ typedef struct MessageTree MESSAGE_TREE;
 
 #define MSG_TESTLINE "TESTLINE"
 
-extern struct Message **msgtab;
+extern struct Message *msgtab;
 extern int num_msgs;
 
 #endif /* INCLUDED_msg_h */

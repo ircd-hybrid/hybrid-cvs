@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_help.c,v 1.3 2000/11/24 08:02:10 db Exp $
+ *   $Id: m_help.c,v 1.4 2000/11/27 08:47:13 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -70,7 +70,7 @@ int m_help(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 
   for (i = 0; i < num_msgs; i++)
     sendto_one(sptr,":%s NOTICE %s :%s",
-	       me.name, parv[0], msgtab[i]->cmd);
+	       me.name, parv[0], msgtab[i].cmd);
   return 0;
 }
 

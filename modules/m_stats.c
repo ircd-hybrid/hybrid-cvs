@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 1.6 2000/11/26 19:34:31 adrian Exp $
+ *  $Id: m_stats.c,v 1.7 2000/11/27 08:47:13 db Exp $
  */
 #include "handlers.h"  /* m_pass prototype */
 #include "class.h"       /* report_classes */
@@ -397,7 +397,7 @@ void do_priv_stats(struct Client *sptr, char *name, char *target,
       break;
 
     case 'M' : case 'm' :
-      for (mptr = *msgtab; mptr->cmd; mptr++)
+      for (mptr = msgtab; mptr->cmd; mptr++)
           sendto_one(sptr, form_str(RPL_STATSCOMMANDS),
                      me.name, sptr->name, mptr->cmd,
                      mptr->count, mptr->bytes);

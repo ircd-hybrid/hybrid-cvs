@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.54 2000/11/26 19:34:32 adrian Exp $
+ * $Id: ircd.c,v 7.55 2000/11/27 08:47:14 db Exp $
  */
 #include "ircd.h"
 #include "channel.h"
@@ -622,8 +622,7 @@ int main(int argc, char *argv[])
   initclass();
   initwhowas();
   init_stats();
-
-  do_msg_tree(msgtab);      /* tree parse code (orabidoo) */
+  init_tree_parse(msgtab);      /* tree parse code (orabidoo) */
 
   load_all_modules();
 

@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.31 2000/11/26 03:35:41 db Exp $
+ * $Id: ircd_parser.y,v 1.32 2000/11/27 08:47:14 db Exp $
  */
 
 %{
@@ -209,7 +209,7 @@ modules_item:    modules_module
 
 modules_module:  MODULE '=' QSTRING
 {
-  load_module (yylval.string);
+  load_one_module (yylval.string);
 };
 
 /***************************************************************************
