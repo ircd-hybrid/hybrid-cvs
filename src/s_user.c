@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.249 2003/04/19 16:00:11 michael Exp $
+ *  $Id: s_user.c,v 7.250 2003/04/19 22:18:42 db Exp $
  */
 
 #include "stdinc.h"
@@ -1313,7 +1313,6 @@ oper_up(struct Client *source_p, struct ConfItem *aconf)
 
   Count.oper++;
 
-  SetExemptKline(source_p);
   dlinkAdd(source_p, make_dlink_node(), &oper_list);
 
   if (source_p->localClient->confs.head)
