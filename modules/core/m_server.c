@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.87 2002/07/18 16:24:05 ejb Exp $
+ *  $Id: m_server.c,v 1.88 2002/10/09 15:08:30 db Exp $
  */
 
 #include "stdinc.h"
@@ -67,7 +67,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&server_msgtab);
 }
-const char *_version = "$Revision: 1.87 $";
+const char *_version = "$Revision: 1.88 $";
 #endif
 
 int bogus_host(char *host);
@@ -464,6 +464,8 @@ static void ms_server(struct Client *client_p, struct Client *source_p,
 
   if(strlen(name) > HOSTLEN)
   {
+    MyFree(target_p->serv);
+    free_client(target_p);
     sendto_realops_flags(FLAGS_ALL, L_ADMIN,
  		         "Link %s introduced server with invalid servername %s",
 		         get_client_name(client_p, HIDE_IP), name);

@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: m_force.c,v 1.14 2002/06/11 01:49:18 androsyn Exp $
+ * $Id: m_force.c,v 1.15 2002/10/09 15:08:28 db Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&forcepart_msgtab);
 }
 
-char *_version = "$Revision: 1.14 $";
+char *_version = "$Revision: 1.15 $";
 #endif
 
 /*
@@ -103,21 +103,21 @@ static void mo_forcejoin(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if((hunt_server(client_p, source_p, ":%s FORCEJOIN %s %s", 1, parc, parv)) != HUNTED_ISME)
-    return;
-
   /* if target_p is not existant, print message
    * to source_p and bail - scuzzy
    */
-  if ((target_p = find_client(parv[1])) == NULL)
+  if ((target_p = find_client(parv[1])) == NULL || !IsClient(target_p))
   {
     sendto_one(source_p, form_str(ERR_NOSUCHNICK), me.name,
 	       source_p->name, parv[1]);
     return;
   }
 
-  if(!IsClient(target_p))
+  if (!MyConnect(target_p))
+  {
+    sendto_one(target_p, ":%s FORCEJOIN %s %s", parv[0], parv[1], parv[2]);
     return;
+  }
 
   /* select our modes from parv[2] if they exist... (chanop)*/
   if(*parv[2] == '@')
@@ -271,19 +271,19 @@ static void mo_forcepart(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if((hunt_server(client_p, source_p, ":%s FORCEPART %s %s", 1, parc, parv)) != HUNTED_ISME)
-    return;
-
   /* if target_p == NULL then let the oper know */
-  if ((target_p = find_client(parv[1])) == NULL)
+  if ((target_p = find_client(parv[1])) == NULL || !IsClient(target_p))
   {
     sendto_one(source_p, form_str(ERR_NOSUCHNICK), me.name,
                source_p->name, parv[1]);
     return;
   }
 
-  if(!IsClient(target_p))
+  if (!MyConnect(target_p))
+  {
+    sendto_one(target_p, ":%s FORCEPART %s %s", parv[0], parv[1], parv[2]);
     return;
+  }
 
   if((chptr = hash_find_channel(parv[2])) == NULL)
   {

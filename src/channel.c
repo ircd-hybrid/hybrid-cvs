@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.332 2002/10/08 21:06:55 db Exp $
+ *  $Id: channel.c,v 7.333 2002/10/09 15:08:31 db Exp $
  */
 
 #include "stdinc.h"
@@ -1425,19 +1425,15 @@ allocate_topic(struct Channel *chptr)
     return FALSE;
   
   ptr = BlockHeapAlloc(topic_heap);  
-  if(ptr != NULL)
-  {
-    /* Basically we allocate one large block for the topic and
-     * the topic info.  We then split it up into two and shove it
-     * in the chptr 
-     */
-    chptr->topic = ptr;
-    chptr->topic_info = (char *)ptr + TOPICLEN+1;
-    *chptr->topic = '\0';
-    *chptr->topic_info = '\0';
-    return (TRUE);
-  }
-  return (FALSE);
+  /* Basically we allocate one large block for the topic and
+   * the topic info.  We then split it up into two and shove it
+   * in the chptr 
+   */
+  chptr->topic = ptr;
+  chptr->topic_info = (char *)ptr + TOPICLEN+1;
+  *chptr->topic = '\0';
+  *chptr->topic_info = '\0';
+  return (TRUE);
 }
 
 void

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.300 2002/09/11 15:27:08 db Exp $
+ *  $Id: client.c,v 7.301 2002/10/09 15:08:32 db Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -124,8 +124,6 @@ struct Client* make_client(struct Client* from)
   dlink_node *m;
 
   client_p = BlockHeapAlloc(client_heap);
-  if(client_p == NULL)
-    return NULL;
   memset(client_p, 0, sizeof(struct Client)); 
   if (from == NULL)
     {
