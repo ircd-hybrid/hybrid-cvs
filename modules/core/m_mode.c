@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_mode.c,v 1.29 2001/02/05 22:12:36 davidt Exp $
+ *   $Id: m_mode.c,v 1.30 2001/02/20 09:25:19 toot Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -149,29 +149,30 @@ static void m_mode(struct Client *cptr, struct Client *sptr,
        }
      n++;
     }
+
   else if (HasVchans(chptr) || IsVchan(chptr))
-  {
-    if(HasVchans(chptr))
     {
-      if ((vchan = map_vchan(chptr,sptr)) != NULL)
-        chptr = vchan; /* root = chptr, chptr = vchan */
+      if(HasVchans(chptr))
+        {
+          if ((vchan = map_vchan(chptr,sptr)) != NULL)
+            chptr = vchan; /* root = chptr, chptr = vchan */
 
-      /* XXX - else? the user isn't on any vchan, so we
-       *       end up giving them the mode of the root
-       *       channel.  MODE #vchan !nick ? (ugh)
-       */
-    }
-    else
-    {
-      if ((vchan = map_bchan(chptr,sptr)) != NULL)
-        root = vchan;  /* root = vchan, chptr = chptr */
+          /* XXX - else? the user isn't on any vchan, so we
+           *       end up giving them the mode of the root
+           *       channel.  MODE #vchan !nick ? (ugh)
+           */
+        }
+      else
+        {
+          vchan = find_bchan(chptr);
+          root = vchan;  /* root = vchan, chptr = chptr */
 
-      /* XXX - else? the user isn't on any vchan,
-       *       but they asked for MODE ##vchan_12345
-       *       we send MODE #vchan
-       */
+          /* XXX - else? the user isn't on any vchan,
+           *       but they asked for MODE ##vchan_12345
+           *       we send MODE #vchan
+           */
+        }
     }
-  }
 
   if(parc < n+1)
     {

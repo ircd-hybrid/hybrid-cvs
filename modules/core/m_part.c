@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_part.c,v 1.33 2001/02/05 20:12:43 davidt Exp $
+ *   $Id: m_part.c,v 1.34 2001/02/20 09:25:19 toot Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -173,16 +173,16 @@ static void part_one_client(struct Client *cptr,
   if (IsVchan(chptr) || HasVchans(chptr))
     {
       if(HasVchans(chptr))
-      {
-        /* Set chptr to actual channel, bchan to the base channel */
-        bchan = chptr;
-        chptr = map_vchan(bchan,sptr);
-      }
+        {
+          /* Set chptr to actual channel, bchan to the base channel */
+          bchan = chptr;
+          chptr = map_vchan(bchan,sptr);
+        }
       else
-      {
-        /* chptr = chptr; */
-        bchan = map_bchan(chptr,sptr);
-      }
+        {
+          /* chptr = chptr; */
+          bchan = find_bchan(chptr);
+        }
     }
   else
     bchan = chptr; /* not a vchan */
