@@ -19,7 +19,7 @@
  *
  * "ircd.h". - Headers file.
  *
- * $Id: ircd.h,v 7.16 2000/12/07 21:43:59 db Exp $
+ * $Id: ircd.h,v 7.17 2000/12/09 05:20:42 db Exp $
  *
  */
 #ifndef INCLUDED_ircd_h
@@ -66,7 +66,7 @@ struct Counter {
   int     unknown;        /* unknown connections */
   int     max_loc;        /* MAX local clients */
   int     max_tot;        /* MAX global clients */
-  unsigned long total_client_count; /* Total client count ever */
+  unsigned long totalrestartcount; /* Total client count ever */
 };
 
 extern struct SetOptions GlobalSetOptions;  /* defined in ircd.c */
