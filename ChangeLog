@@ -1,3 +1,9 @@
+*** 20001209_4 by db
+- removed unused extra parameter in sendto_channel_local
+  I think I got them, all ;) if not it will just core mysteriously.. ;)
+
+
+
 *** 20001209_3 by db
 - removed obsolete #ifdef's in m_info.h
 - removed obsolete comments in m_unkline.c
@@ -2028,7 +2034,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.758 2000/12/09 06:10:16 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.759 2000/12/09 07:04:40 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
