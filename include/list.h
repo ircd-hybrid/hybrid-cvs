@@ -20,7 +20,7 @@
  * "list.h". - Headers file.
  *
  *
- * $Id: list.h,v 7.9 2000/12/30 04:36:54 lusky Exp $
+ * $Id: list.h,v 7.10 2001/03/29 09:11:10 db Exp $
  *
  */
 
@@ -36,16 +36,13 @@ struct ConfItem;
 struct Ban;
 
 
-extern void count_user_memory(int *, int *);
-extern void count_links_memory(int *, int *);
-extern void     outofmemory(void);
-extern  void    _free_user (struct User *, struct Client *);
-extern  dlink_node *make_dlink_node (void);
-extern  void   _free_dlink_node(dlink_node *lp);
-extern  struct User     *make_user (struct Client *);
-extern  struct Server   *make_server (struct Client *);
-extern  void    initlists (void);
-extern  void    block_garbage_collect(void);
-extern  void    block_destroy(void);
+extern void count_user_memory(int *count,int *user_memory_used);
+extern void count_links_memory(int *count,int *links_memory_used);
+extern void outofmemory(void);
+extern void _free_user (struct User *, struct Client *);
+extern dlink_node *make_dlink_node (void);
+extern void _free_dlink_node(dlink_node *lp);
+extern struct User     *make_user (struct Client *);
+extern struct Server   *make_server (struct Client *);
 
 #endif

@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/modules
 #
-# $Id: Makefile.in,v 1.33 2001/03/28 09:04:12 fl_ Exp $
+# $Id: Makefile.in,v 1.34 2001/03/29 09:11:12 db Exp $
 #
 CC		= @CC@
 RM		= @RM@
@@ -119,5 +119,5 @@ clean:
 distclean: clean
 	${RM} -f Makefile
 
-@INCLUDE@ .depend
+#@INCLUDE@ .depend
 

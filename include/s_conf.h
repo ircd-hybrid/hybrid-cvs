@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.110 2001/03/19 09:59:56 toot Exp $
+ * $Id: s_conf.h,v 7.111 2001/03/29 09:11:11 db Exp $
  */
 
 #include "setup.h"
@@ -261,7 +261,6 @@ dlink_list temporary_ip_klines;
 extern void clear_ip_hash_table(void);
 extern void iphash_stats(struct Client *,struct Client *,int,char **,FBFILE*);
 extern void count_ip_hash(int *, u_long *);
-
 
 void remove_one_ip(struct irc_inaddr *ip);
 

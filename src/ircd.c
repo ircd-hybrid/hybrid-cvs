@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.121 2001/03/13 20:38:23 fl_ Exp $
+ * $Id: ircd.c,v 7.122 2001/03/29 09:11:14 db Exp $
  */
 
 #include <sys/types.h>
@@ -536,7 +536,7 @@ int main(int argc, char *argv[])
   clear_Dline_table();          /* d line tree */
   clear_hash_parse();
 
-  initlists();
+  init_client();
   initclass();
   initwhowas();
   init_stats();
@@ -546,7 +546,6 @@ int main(int argc, char *argv[])
   load_all_modules(1);
 
   initServerMask();
-
 
   init_auth();			/* Initialise the auth code */
 
