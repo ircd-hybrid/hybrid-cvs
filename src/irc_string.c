@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: irc_string.c,v 7.23 2001/01/26 05:40:42 ejb Exp $
+ *  $Id: irc_string.c,v 7.24 2001/01/26 17:10:48 androsyn Exp $
  */
 #include "config.h"
 #include "tools.h"
@@ -572,12 +572,15 @@ inet_pton6(src, dst)
 			val = 0;
 			continue;
 		}
-		if (ch == '.' && ((tp + INADDRSZ) <= endp) &&
-		    inet_pton4(curtok, tp) > 0) {
-			tp += INADDRSZ;
-			saw_xdigit = 0;
-			break;	/* '\0' was seen by inet_pton4(). */
-		}
+		if(*src != '\0' && ch == '.')
+		{
+			if ( ((tp + INADDRSZ) <= endp) && inet_pton4(curtok, tp) > 0) {
+				tp += INADDRSZ;
+				saw_xdigit = 0;
+				break;	/* '\0' was seen by inet_pton4(). */
+			}
+		} else
+			continue;
 		return (0);
 	}
 	if (saw_xdigit) {

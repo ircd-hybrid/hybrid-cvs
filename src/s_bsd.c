@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.92 2001/01/24 21:40:25 davidt Exp $
+ *  $Id: s_bsd.c,v 7.93 2001/01/26 17:10:48 androsyn Exp $
  */
 #include "config.h"
 #include "fdlist.h"
@@ -194,7 +194,6 @@ int set_non_blocking(int fd)
 {
   int nonb = 0;
   int res;
-
   nonb |= O_NONBLOCK;
 
   res = fcntl(fd, F_GETFL, 0);
@@ -568,13 +567,8 @@ comm_connect_tcp(int fd, const char *host, u_short port,
      * Next, if we have been given an IP, get the addr and skip the
      * DNS check (and head direct to comm_connect_tryconnect().
      */
-    inetpton(DEF_FAM, host, S_ADDR(&fd_table[fd].connect.hostaddr));
-#ifdef IPV6
-    if(IN6_IS_ADDR_UNSPECIFIED((struct in6_addr *)
-                               S_ADDR(&fd_table[fd].connect.hostaddr))) {
-#else
-    if (S_ADDR(fd_table[fd].connect.hostaddr) == INADDR_NONE) {
-#endif
+    if(!inetpton(DEF_FAM, host, S_ADDR(&fd_table[fd].connect.hostaddr)))
+    {
         /* Send the DNS request, for the next level */
         query.vptr = &fd_table[fd];
         query.callback = comm_connect_dns_callback;
