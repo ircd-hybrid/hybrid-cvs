@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.109 2001/05/24 15:26:31 db Exp $
+ * $Id: config.h,v 7.110 2001/05/24 15:54:19 ejb Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -93,6 +93,8 @@
  * 
  * Use: ./configure --prefix="/home/dir"
  */
+
+#ifndef VMS
 #define DPATH   IRCD_PREFIX
 #define MODPATH IRCD_PREFIX "/modules/autoload/"
 #define MSGPATH IRCD_PREFIX "/messages/"
@@ -113,6 +115,27 @@
 #define HPATH   ETCPATH "/opers.txt"
 #define OPATH   ETCPATH "/opers.motd"
 #define LIPATH  ETCPATH "/links.txt"
+#else
+#define DPATH   IRCD_PREFIX "]"
+#define MODPATH IRCD_PREFIX ".MODULES.AUTOLOAD]"
+#define MSGPATH IRCD_PREFIX ".MESSAGES]"
+#define SPATH   IRCD_PREFIX ".BIN]IRCD.EXE"
+#define SLPATH  IRCD_PREFIX ".BIN]SERVLINK.EXE"
+
+#define ETCPATH IRCD_PREFIX ".ETC"
+#define LOGPATH IRCD_PREFIX ".LOGS"
+#define CPATH   ETCPATH "]IRCD.CONF"
+#define KPATH   ETCPATH "]KLINE.CONF"
+#define DLPATH  ETCPATH "]KLINE.CONF"
+#define GPATH   ETCPATH "]GLINE.LOG"
+#define RPATH   ETCPATH "]IRCD.RSA"
+#define MPATH   ETCPATH "]IRCD.MOTD"
+#define LPATH   ETCPATH "]IRCD.LOG"
+#define PPATH   ETCPATH "]IRCD.PID"
+#define HPATH   ETCPATH "]OPERS.TXT"
+#define OPATH   ETCPATH "]OPERS.MOTD"
+#define LIPATH  ETCPATH "]LINKS.TXT"
+#endif
 
 /* TS_MAX_DELTA_DEFAULT and TS_WARN_DELTA_DEFAULT -
  * allowed delta for TS when another server connects.

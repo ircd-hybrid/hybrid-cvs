@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.145 2001/05/24 09:29:11 leeh Exp $
+ * $Id: ircd.c,v 7.146 2001/05/24 15:54:21 ejb Exp $
  */
 
 #include <sys/types.h>
@@ -524,7 +524,6 @@ int main(int argc, char *argv[])
  init_log(logFileName);
  init_netio();		/* This needs to be setup early ! -- adrian */
  init_resolver();	/* Needs to be setup before the io loop */
- printf("done some startup\n"); 
  initialize_message_files();
  linebuf_init();	/* set up some linebuf stuff to control paging */
  init_hash();

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_select.c,v 7.17 2001/05/09 08:08:27 a1kmm Exp $
+ *  $Id: s_bsd_select.c,v 7.18 2001/05/24 15:54:22 ejb Exp $
  */
 #include "config.h"
 #ifdef USE_SELECT
@@ -65,6 +65,7 @@
 #include <netdb.h>
 #include <unistd.h>
 #include <time.h>
+#include <string.h>
 
 /*
  * Note that this is only a single list - multiple lists is kinda pointless
