@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_knock.c,v 1.47 2002/03/07 06:21:45 db Exp $
+ *  $Id: m_knock.c,v 1.48 2002/03/25 15:57:31 androsyn Exp $
  */
 
 #include "tools.h"
@@ -81,7 +81,7 @@ _moddeinit(void)
   mod_del_cmd(&knockll_msgtab);
 }
 
-const char *_version = "$Revision: 1.47 $";
+const char *_version = "$Revision: 1.48 $";
 #endif
 
 /* m_knock
@@ -403,7 +403,7 @@ static void send_knock(struct Client *client_p, struct Client *source_p,
   			     chptr,
   			     form_str(RPL_KNOCK),
 			     me.name,
-			     source_p->name,
+			     name,
 			     name,
 			     source_p->name,
 			     source_p->username,
