@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.273 2003/01/19 13:19:52 db Exp $
+ *  $Id: s_serv.c,v 7.274 2003/01/19 13:25:21 db Exp $
  */
 
 #include "stdinc.h"
@@ -2199,7 +2199,7 @@ serv_connect_callback(int fd, int status, void *data)
 	/* If a fd goes bad, call dead_link() the socket is no
 	 * longer valid for reading or writing.
 	 */
-	dead_link_on_write(client_p);
+	dead_link_on_write(client_p, 0);
         return;
       }
 
