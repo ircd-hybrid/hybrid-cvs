@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.204 2002/08/11 15:13:11 androsyn Exp $
+ *  $Id: send.c,v 7.205 2002/09/05 14:06:16 db Exp $
  */
 
 #include "stdinc.h"
@@ -573,9 +573,8 @@ sendto_list_anywhere(struct Client *one, struct Client *from,
   dlink_node *ptr_next;
   struct Client *target_p;
 
-  for (ptr = list->head; ptr; ptr = ptr_next)
+  DLINK_FOREACH_SAFE(ptr, ptr_next, list->head)
   {
-    ptr_next = ptr->next;
     target_p = ptr->data;
 
     if (target_p->from == one)
@@ -656,9 +655,8 @@ sendto_server(struct Client *one, struct Client *source_p,
   linebuf_putmsg(&linebuf, format, &args, NULL);
   va_end(args);
 
-  for(ptr = serv_list.head; ptr; ptr = ptr_next)
+  DLINK_FOREACH_SAFE(ptr, ptr_next, serv_list.head)
   {
-    ptr_next = ptr->next;
     client_p = ptr->data;
 
     /* check against 'one' */
@@ -733,9 +731,8 @@ sendto_common_channels_local(struct Client *user, const char *pattern, ...)
 
   if (user->user != NULL)
   {
-    for (ptr = user->user->channel.head; ptr; ptr = ptr_next)
+    DLINK_FOREACH_SAFE(ptr, ptr_next, user->user->channel.head)
     {
-      ptr_next = ptr->next;
       chptr = ptr->data;
 
       sendto_list_local(&chptr->locchanops, &linebuf);
@@ -884,9 +881,8 @@ sendto_list_local(dlink_list *list, buf_head_t *linebuf_ptr)
   dlink_node *ptr_next;
   struct Client *target_p;
 
-  for (ptr = list->head; ptr; ptr = ptr_next)
+  DLINK_FOREACH_SAFE(ptr, ptr_next, list->head)
   {
-    ptr_next = ptr->next;
     if ((target_p = ptr->data) == NULL)
       continue;
 
@@ -926,9 +922,8 @@ sendto_list_remote(struct Client *one,
   dlink_node *ptr_next;
   struct Client *target_p;
 
-  for (ptr = list->head; ptr; ptr = ptr_next)
+  DLINK_FOREACH_SAFE(ptr, ptr_next, list->head)
   {
-    ptr_next = ptr->next;
     if ((target_p = ptr->data) == NULL)
       continue;
 
@@ -1009,9 +1004,8 @@ sendto_match_butone(struct Client *one, struct Client *from,
   va_end(args);
 
   /* scan the local clients */
-  for(ptr = lclient_list.head; ptr; ptr = ptr_next)
+  DLINK_FOREACH_SAFE(ptr, ptr_next, lclient_list.head)
   {
-    ptr_next = ptr->next;
     client_p = ptr->data;
 
     if (client_p == one)  /* must skip the origin !! */
@@ -1022,7 +1016,7 @@ sendto_match_butone(struct Client *one, struct Client *from,
   }
 
   /* Now scan servers */
-  for (ptr = serv_list.head; ptr; ptr = ptr->next)
+  DLINK_FOREACH_SAFE(ptr, ptr_next, serv_list.head)
   {
     client_p = ptr->data;
 
@@ -1093,12 +1087,12 @@ sendto_anywhere(struct Client *to, struct Client *from,
       linebuf_putmsg(&linebuf, pattern, &args, ":%s!%s@%s ", from->name,
                      from->username, from->host);
   }
-  else {
+  else
+  {
     if(IsCapable(to->from, CAP_UID))
       linebuf_putmsg(&linebuf, pattern, &args, ":%s ", ID(from));
     else
       linebuf_putmsg(&linebuf, pattern, &args, ":%s ", from->name);
-
   }
   va_end(args);
 
@@ -1135,9 +1129,8 @@ sendto_realops_flags(int flags, int level, const char *pattern, ...)
   send_format(nbuf, pattern, args);
   va_end(args);
 
-  for (ptr = oper_list.head; ptr; ptr = ptr_next)
+  DLINK_FOREACH_SAFE(ptr, ptr_next, oper_list.head)
   {
-    ptr_next = ptr->next;
     client_p = ptr->data;
 
     /* If we're sending it to opers and theyre an admin, skip.
@@ -1193,9 +1186,8 @@ sendto_wallops_flags(int flags, struct Client *source_p,
 
   va_end(args);
 
-  for (ptr = oper_list.head; ptr; ptr = ptr_next)
+  DLINK_FOREACH_SAFE(ptr, ptr_next, oper_list.head)
   {
-    ptr_next = ptr->next;
     client_p = ptr->data;
 
     if(client_p->umodes & flags)
@@ -1245,9 +1237,6 @@ ts_warn(const char *pattern, ...)
   sendto_realops_flags(FLAGS_ALL, L_ALL,"%s",lbuf);
   ilog(L_CRIT, "%s", lbuf);
 } /* ts_warn() */
-
-
-
 
 /*
  * kill_client
