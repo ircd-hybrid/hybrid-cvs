@@ -1,3 +1,15 @@
+db          2001/12/16 17:25:01 EST	(20011216_20)
+
+  Modified files:
+    include              channel.h 
+  Log:
+  - typedef aBan no longer used. GOOD! DIE DIE DIE!
+  
+  Revision  Changes    Path
+  7.96      +2 -2      ircd-hybrid-7/include/channel.h
+
+
+
 leeh        2001/12/16 17:22:48 EST	(20011216_19)
 
   Modified files:
@@ -938,7 +950,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3205 2001/12/16 22:22:54 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3206 2001/12/16 22:25:06 db Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -19292,4 +19304,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3205 2001/12/16 22:22:54 leeh Exp $
+$Id: ChangeLog,v 7.3206 2001/12/16 22:25:06 db Exp $
