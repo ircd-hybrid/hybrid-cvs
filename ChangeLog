@@ -1,3 +1,15 @@
+androsyn    2002/01/10 09:05:36 EST	(20020110_4)
+
+  Modified files:
+    .                    README.PLATFORMS 
+  Log:
+  I suppose I'll claim Linux on x86 and sparc
+  
+  Revision  Changes    Path
+  7.5       +2 -0      ircd-hybrid-7/README.PLATFORMS
+
+
+
 wcampbel    2002/01/09 21:17:15 EST	(20020110_3)
 
   Modified files:
@@ -2903,7 +2915,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3316 2002/01/10 02:17:21 wcampbel Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3317 2002/01/10 14:05:41 androsyn Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -21257,4 +21269,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3316 2002/01/10 02:17:21 wcampbel Exp $
+$Id: ChangeLog,v 7.3317 2002/01/10 14:05:41 androsyn Exp $
