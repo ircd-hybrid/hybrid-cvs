@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_version.c,v 1.38 2002/05/24 23:34:23 androsyn Exp $
+ *  $Id: m_version.c,v 1.39 2002/07/17 23:09:10 leeh Exp $
  */
 
 #include <stdinc.h>
@@ -59,7 +59,7 @@ _moddeinit(void)
   mod_del_cmd(&version_msgtab);
 }
 
-const char *_version = "$Revision: 1.38 $";
+const char *_version = "$Revision: 1.39 $";
 #endif
 /*
  * m_version - VERSION command handler
@@ -180,7 +180,9 @@ static char* confopts(struct Client *source_p)
   *p++ = 'p';
 #endif
 
+#ifdef IGNORE_BOGUS_TS
   *p++ = 'T';
+#endif
 
 #ifdef USE_SYSLOG
   *p++ = 'Y';
