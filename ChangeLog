@@ -1,3 +1,15 @@
+androsyn    2002/02/03 23:52:48 EST	(20020204_1)
+
+  Modified files:
+    modules              m_rehash.c 
+  Log:
+  Ponder..who took out cleanup_channels() from rehash channels anyways..
+  
+  Revision  Changes    Path
+  1.37      +2 -1      ircd-hybrid-7/modules/m_rehash.c
+
+
+
 androsyn    2002/02/03 23:29:54 EST	(20020204_0)
 
   Modified files:
@@ -21971,4 +21983,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3366 2002/02/04 04:29:59 androsyn Exp $
+$Id: ChangeLog,v 7.3367 2002/02/04 04:52:54 androsyn Exp $
