@@ -1,3 +1,15 @@
+db          2002/01/26 15:17:01 EST	(20020126_0)
+
+  Modified files:
+    src                  channel.c 
+  Log:
+  Don't use strlen() when sprintf() already returns it
+  
+  Revision  Changes    Path
+  7.295     +3 -4      ircd-hybrid-7/src/channel.c
+
+
+
 leeh        2002/01/23 13:14:09 EST	(20020123_1)
 
   Modified files:
@@ -21784,4 +21796,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3353 2002/01/23 18:14:15 leeh Exp $
+$Id: ChangeLog,v 7.3354 2002/01/26 20:17:07 db Exp $
