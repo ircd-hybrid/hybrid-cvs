@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_names.c,v 7.10 2000/10/15 18:17:57 db Exp $
+ *   $Id: m_names.c,v 7.11 2000/10/25 17:19:47 db Exp $
  */
 
 #include "handlers.h"
@@ -146,14 +146,6 @@ int     m_names( struct Client *cptr,
   /* And throw away non local names requests that do get here -Dianora */
   if(!MyConnect(sptr))
     return 0;
-
-  /*
-   * names is called by m_join() when client joins a channel,
-   * hence I cannot easily rate limit it.. perhaps that won't
-   * be necessary now that remote names is prohibited.
-   *
-   * -Dianora
-   */
 
   if (!BadPtr(para))
     {
@@ -358,16 +350,6 @@ int     ms_names( struct Client *cptr,
   /* And throw away non local names requests that do get here -Dianora */
   if(!MyConnect(sptr))
     return 0;
-
-  /*
-   * names is called by m_join() when client joins a channel,
-   * hence I cannot easily rate limit it.. perhaps that won't
-   * be necessary now that remote names is prohibited.
-   *
-   * -Dianora
-   */
-
-
 
   if (!BadPtr(para))
     {
@@ -607,3 +589,9 @@ void names_on_this_channel( struct Client *sptr,
   sendto_one(sptr, form_str(RPL_ENDOFNAMES), me.name, sptr->name,
 	     name_of_channel);
 }
+
+
+
+
+
+
