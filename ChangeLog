@@ -1,3 +1,8 @@
+*** 20001208_12 by db
+- removed unnecessary strcat in m_whois
+
+
+
 *** 20001208_11 by db
 - Show the top channel name on a subchannel 
 
@@ -1969,7 +1974,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.749 2000/12/08 18:35:39 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.750 2000/12/08 19:30:37 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
