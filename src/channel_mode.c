@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.60 2002/09/02 05:34:22 db Exp $
+ *  $Id: channel_mode.c,v 7.61 2002/09/03 17:15:43 db Exp $
  */
 
 #include "stdinc.h"
@@ -147,7 +147,8 @@ static int bounce_count;
 static int hideops_changed;
 #endif
 
-static int mode_limit;
+static int mode_limit;		/* number of modes set other than simple */
+static int simple_modes_mask;	/* bit mask of simple modes already set */
 
 static int channel_capabs[] = { CAP_HOPS, CAP_AOPS, CAP_EX, CAP_IE, CAP_UID };
 
@@ -819,8 +820,10 @@ chm_simple(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if (MyClient(source_p) && (++mode_limit > MAXMODEPARAMS))
+  /* If have already dealt with this simple mode, ignore it */
+  if (simple_modes_mask & mode_type)
     return;
+  simple_modes_mask |= mode_type;
 
   /* setting + */
   if ((dir == MODE_ADD) && !(chptr->mode.mode & mode_type))
@@ -2290,6 +2293,7 @@ set_channel_mode(struct Client *client_p, struct Client *source_p,
   hideops_changed = (chptr->mode.mode & MODE_HIDEOPS);
 #endif
   mode_limit = 0;
+  simple_modes_mask = 0;
 
   alevel = get_channel_access(source_p, chptr);
 
