@@ -4,7 +4,7 @@
  * Owner:   Wohali (Joan Touzet)
  *
  *
- * $Id: blalloc.h,v 7.3 2000/04/05 22:12:33 db Exp $
+ * $Id: blalloc.h,v 7.4 2000/12/30 04:36:53 lusky Exp $
  */
 #ifndef INCLUDED_blalloc_h
 #define INCLUDED_blalloc_h
@@ -67,6 +67,17 @@ extern void       BlockHeapCountMemory(BlockHeap *bh,int *, int *);
 extern void       BlockHeapDump(BlockHeap *bh,int fd);
 
 #define BlockHeapALLOC(bh, type)  ((type*) BlockHeapAlloc(bh))
+
+#ifdef DEBUGMEM
+extern void * _BlockHeapAlloc(BlockHeap *, char *, int);
+#else
+extern void * _BlockHeapAlloc(BlockHeap *);
+#endif
+#ifdef DEBUGMEM
+extern int _BlockHeapFree(BlockHeap *, void *, char *, int);
+#else
+extern int _BlockHeapFree(BlockHeap *, void *);
+#endif
 
 #endif /* INCLUDED_blalloc_h */
 

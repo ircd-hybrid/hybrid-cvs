@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: irc_string.h,v 7.9 2000/12/21 13:39:28 db Exp $
+ *   $Id: irc_string.h,v 7.10 2000/12/30 04:36:53 lusky Exp $
  */
 #ifndef INCLUDED_irc_string_h
 #define INCLUDED_irc_string_h
@@ -79,6 +79,7 @@ extern char* clean_string(char* dest, const unsigned char* src, size_t len);
  */
 extern char *strip_tabs(char *dest, const unsigned char *src, size_t len);
 
+extern unsigned long textip_to_ul(const char *ip);
 extern const char* myctime(time_t);
 extern char*       strtoken(char** save, char* str, char* fs);
 #ifdef DEBUGMEM
@@ -86,6 +87,7 @@ extern void*       _MyMalloc(size_t size, char * file, int line);
 extern void*       _MyRealloc(void* p, size_t size, char * file, int line);
 extern void        _MyFree(void* p, char * file, int line);
 #else
+
 extern void*       _MyMalloc(size_t size);
 extern void*       _MyRealloc(void* p, size_t size);
 /* MyFree is defined as a macro in ircd_defs.h */

@@ -6,12 +6,13 @@
  * The idea here is that we should really be maintaining pre-munged
  * buffer "lines" which we can later refcount to save needless copies.
  *
- * $Id: linebuf.c,v 7.14 2000/12/21 16:00:01 db Exp $
+ * $Id: linebuf.c,v 7.15 2000/12/30 04:37:00 lusky Exp $
  */
 
 #include <sys/errno.h>
 #include <assert.h>
 #include <stdio.h>
+#include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
 

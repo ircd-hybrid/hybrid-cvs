@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.h,v 7.6 2000/12/24 01:36:54 ejb Exp $
+ * $Id: modules.h,v 7.7 2000/12/30 04:36:54 lusky Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -48,7 +48,7 @@ void mod_add_path(char *path);
 extern void load_module(char *path);
 
 /* load all modules */
-extern void load_all_module(void);
+extern void load_all_modules(void);
 
 extern void _modinit(void);
 extern void _moddeinit(void);

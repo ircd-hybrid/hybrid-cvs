@@ -20,7 +20,7 @@
  * "list.h". - Headers file.
  *
  *
- * $Id: list.h,v 7.8 2000/12/03 00:05:41 db Exp $
+ * $Id: list.h,v 7.9 2000/12/30 04:36:54 lusky Exp $
  *
  */
 
@@ -37,6 +37,7 @@ struct Ban;
 
 
 extern void count_user_memory(int *, int *);
+extern void count_links_memory(int *, int *);
 extern void     outofmemory(void);
 extern  void    _free_user (struct User *, struct Client *);
 extern  dlink_node *make_dlink_node (void);

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: hash.c,v 7.13 2000/12/21 13:39:41 db Exp $
+ *  $Id: hash.c,v 7.14 2000/12/30 04:36:59 lusky Exp $
  */
 #include "tools.h"
 #include "s_conf.h"
@@ -456,7 +456,7 @@ int mo_hash(struct Client *cptr, struct Client *sptr,int parc,char *parv[])
   int   totlink = 0;
   int   size = U_MAX;
   char        ch;
-  FBFILE*    out;
+  FBFILE*    out=NULL;
   int        link_pop[10];
   char  result_buf[256];
   char  hash_log_file[256];

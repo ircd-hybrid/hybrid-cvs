@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: irc_string.c,v 7.13 2000/12/23 13:29:47 toot Exp $
+ *  $Id: irc_string.c,v 7.14 2000/12/30 04:36:59 lusky Exp $
  */
 #include "tools.h"
 #include "irc_string.h"
@@ -123,7 +123,7 @@ void _MyFree(void *x)
 void DupStringNoDbg(char **x, char *y) {
   (*x) = MyMalloc(strlen(y) + 1);
   strcpy((*x), y);
-};
+}
 
 /*
  * clean_string - clean up a string possibly containing garbage
