@@ -92,7 +92,7 @@
 #define DNS_LABELTYPE_BITSTRING 0x41
 #define MAXLINE 128
 
-/* $Id: irc_reslib.c,v 7.21 2003/06/07 11:05:24 michael Exp $ */
+/* $Id: irc_reslib.c,v 7.22 2003/06/25 09:22:56 michael Exp $ */
 
 struct irc_ssaddr irc_nsaddr_list[IRCD_MAXNS];
 int irc_nscount = 0;
@@ -131,6 +131,13 @@ static int irc_dn_find(const unsigned char *, const unsigned char *, const unsig
                        const unsigned char * const *);
 static int irc_encode_bitsring(const char **, const char *, unsigned char **, unsigned char **, 
                                const char *);
+static int irc_ns_name_uncompress(const unsigned char *, const unsigned char *,
+                                  const unsigned char *, char *, size_t);
+static int irc_ns_name_unpack(const unsigned char *, const unsigned char *,
+                              const unsigned char *, unsigned char *,
+                              size_t);
+static int irc_ns_name_ntop(const char *, char *, size_t);
+static int irc_ns_name_skip(const unsigned char **, const unsigned char *);
 static int mklower(int ch);
   
 int
@@ -263,7 +270,7 @@ irc_dn_expand(const unsigned char *msg, const unsigned char *eom,
  * note:
  *	Root domain returns as "." not "".
  */
-int
+static int
 irc_ns_name_uncompress(const unsigned char *msg, const unsigned char *eom,
                        const unsigned char *src, char *dst, size_t dstsiz)
 {
@@ -282,7 +289,7 @@ irc_ns_name_uncompress(const unsigned char *msg, const unsigned char *eom,
  * return:
  *	-1 if it fails, or consumed octets if it succeeds.
  */
-int
+static int
 irc_ns_name_unpack(const unsigned char *msg, const unsigned char *eom,
                    const unsigned char *src, unsigned char *dst,
                    size_t dstsiz)
@@ -366,7 +373,7 @@ irc_ns_name_unpack(const unsigned char *msg, const unsigned char *eom,
  *	The root is returned as "."
  *	All other domains are returned in non absolute form
  */
-int
+static int
 irc_ns_name_ntop(const char *src, char *dst, size_t dstsiz)
 {
 	const char *cp;
@@ -463,7 +470,7 @@ irc_ns_name_ntop(const char *src, char *dst, size_t dstsiz)
  * Return the size of the compressed name or -1.
  * 'length' is the size of the array pointed to by 'comp_dn'.
  */
-int
+static int
 irc_dn_comp(const char *src, unsigned char *dst, int dstsiz,
             unsigned char **dnptrs, unsigned char **lastdnptr)
 {
@@ -490,7 +497,7 @@ irc_dn_skipname(const unsigned char *ptr, const unsigned char *eom) {
  * return:
  *	0 on success, -1 (with errno set) on failure.
  */
-int
+static int
 irc_ns_name_skip(const unsigned char **ptrptr, const unsigned char *eom)
 {
   const unsigned char *cp;
@@ -679,7 +686,7 @@ irc_decode_bitstring(const char **cpp, char *dn, const char *eom)
  * notes:
  *  Enforces label and domain length limits.
  */
-int
+static int
 irc_ns_name_pton(const char *src, unsigned char *dst, size_t dstsiz)
 {
   unsigned char *label, *bp, *eom;
@@ -826,7 +833,7 @@ irc_ns_name_pton(const char *src, unsigned char *dst, size_t dstsiz)
  *  try to compress names. If 'lastdnptr' is NULL, we don't update the
  *  list.
  */
-int
+static int
 irc_ns_name_pack(const unsigned char *src, unsigned char *dst, int dstsiz,
                  const unsigned char **dnptrs, const unsigned char **lastdnptr)
 {

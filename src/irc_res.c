@@ -7,7 +7,7 @@
  * The authors takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: irc_res.c,v 7.29 2003/06/24 02:36:24 joshk Exp $
+ * $Id: irc_res.c,v 7.30 2003/06/25 09:22:56 michael Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -111,7 +111,7 @@ static struct DNSReply *make_dnsreply(struct reslist *request);
 
 extern struct irc_ssaddr irc_nsaddr_list[IRCD_MAXNS];
 extern int irc_nscount;
-extern char irc_domain[HOSTLEN];
+extern char irc_domain[HOSTLEN+1];
 
 
 /*

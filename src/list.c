@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: list.c,v 7.60 2003/06/25 08:47:00 michael Exp $
+ *  $Id: list.c,v 7.61 2003/06/25 09:22:56 michael Exp $
  */
 
 #include "stdinc.h"
@@ -123,7 +123,7 @@ free_user(struct User *user, struct Client *client_p)
         user->invited.head || user->channel.head)
     {
       sendto_realops_flags(UMODE_ALL, L_ALL,
-			   "* %#lx user (%s!%s@%s) %#lx %#lx %#lx %d %lu *",
+			   "* %#lx user (%s!%s@%s) %#lx %#lx %#lx %lu %d *",
 			   (unsigned long)client_p, client_p ? client_p->name : "<noname>",
 			   client_p->username, client_p->host, (unsigned long)user,
 			   (unsigned long)user->invited.head,
@@ -156,7 +156,7 @@ void init_dlink_nodes(void)
  * output	- pointer to new dlink_node
  * side effects	- NONE
  */
-dlink_node*
+dlink_node *
 make_dlink_node(void)
 {
   dlink_node *lp;
