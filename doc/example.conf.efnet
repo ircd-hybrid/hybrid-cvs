@@ -1,5 +1,5 @@
 /* Hybrid 7 Example configuration file
- * $Id: example.conf.efnet,v 7.4 2002/01/01 15:58:40 leeh Exp $
+ * $Id: example.conf.efnet,v 7.5 2002/01/09 17:17:48 leeh Exp $
  * December 2000 - ejb, wcampbel, db and others
  */
 
@@ -855,6 +855,9 @@ general {
 
 	/* time between uses (server wide) of /whois and /whowas */
 	whois_wait = 5 seconds;
+
+	/* time between uses of various commands such as INFO */
+	pace_wait = 10 seconds;
 
 	/* There are clients ignoring the FORCE_MOTD numeric.  There is no 
 	 * no point forcing MOTD on connecting clients IMO.  Give them a short
