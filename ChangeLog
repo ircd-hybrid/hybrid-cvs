@@ -1,3 +1,22 @@
+jmallett    2002/01/10 11:00:03 EST	(20020110_5)
+
+  Modified files:
+    .                    configure 
+    autoconf             configure.in 
+    src                  Makefile.in snprintf.c 
+  Log:
+  Conditionalise src/snprintf.c on whether or not we actually need it using
+  configure! This also means we don't need to produce a bogus non-empty
+  translation unit for strict compilers like TenDRA, Forte, and aCC.
+  
+  Revision  Changes    Path
+  7.109     +13 -3     ircd-hybrid-7/autoconf/configure.in
+  7.112     +160 -111  ircd-hybrid-7/configure
+  7.107     +1 -1      ircd-hybrid-7/src/Makefile.in
+  1.5       +0 -4      ircd-hybrid-7/src/snprintf.c
+
+
+
 androsyn    2002/01/10 09:05:36 EST	(20020110_4)
 
   Modified files:
@@ -2915,7 +2934,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3317 2002/01/10 14:05:41 androsyn Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3318 2002/01/10 16:00:09 jmallett Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -21269,4 +21288,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3317 2002/01/10 14:05:41 androsyn Exp $
+$Id: ChangeLog,v 7.3318 2002/01/10 16:00:09 jmallett Exp $
