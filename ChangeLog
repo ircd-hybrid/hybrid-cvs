@@ -1,3 +1,18 @@
+db          2003/01/16 07:25:43 EST	(20030116_2)
+
+  Modified files:
+    .                    Hybrid-team RELNOTES 
+  Log:
+  - added cryogen (Stuart Walsh) to contributors list. He has helped
+    considerably with testing.
+  - added note about fix to broken ip limiting to RELNOTES
+  
+  Revision  Changes    Path
+  7.58      +1 -0      ircd-hybrid-7/Hybrid-team
+  1.53      +1 -0      ircd-hybrid-7/RELNOTES
+
+
+
 db          2003/01/15 23:08:02 EST	(20030116_1)
 
   Modified files:
@@ -33957,4 +33972,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4163 2003/01/16 04:08:05 db Exp $
+$Id: ChangeLog,v 7.4164 2003/01/16 12:25:46 db Exp $
