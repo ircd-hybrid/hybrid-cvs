@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.119 2003/06/30 16:09:46 adx Exp $
+ *  $Id: channel_mode.c,v 7.120 2003/07/04 12:09:05 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1021,7 +1021,7 @@ chm_invex(struct Client *client_p, struct Client *source_p,
     mode_changes[mode_count].caps = CAP_IE;
     mode_changes[mode_count].nocaps = 0;
 
-    if(ConfigChannel.use_invex)
+    if (ConfigChannel.use_invex)
       mode_changes[mode_count].mems = ONLY_CHANOPS;
     else
       mode_changes[mode_count].mems = ONLY_SERVERS;
@@ -1094,36 +1094,12 @@ chm_op(struct Client *client_p, struct Client *source_p,
   if (dir == MODE_ADD)
   {
     for (i = 0; i < mode_count; i++)
-      if (mode_changes[i].client == targ_p)
+      if (mode_changes[i].dir == MODE_DEL && mode_changes[i].letter == 'o' &&
+          mode_changes[i].client == targ_p)
       {
-        if (mode_changes[i].dir == MODE_DEL && mode_changes[i].letter == 'o')
-        {
-          mode_changes[i].letter = 0;
-          return;
-        }
-#ifdef USE_HALFOPS
-        /* cancel /mode +h */
-        if (mode_changes[i].dir == MODE_ADD && mode_changes[i].letter == 'h')
-        {
-          mode_changes[i].letter = 0;
-          change_channel_membership(member, 0, CHFL_HALFOP);
-        }
-#endif
+        mode_changes[i].letter = 0;
+        return;
       }
-
-#ifdef USE_HALFOPS
-    if (has_member_flags(member, CHFL_HALFOP))
-    {
-      mode_changes[mode_count].letter = 'h';
-      mode_changes[mode_count].dir = MODE_DEL;
-      mode_changes[mode_count].caps = 0;
-      mode_changes[mode_count].nocaps = 0;
-      mode_changes[mode_count].mems = ALL_MEMBERS;
-      mode_changes[mode_count].id = targ_p->id;
-      mode_changes[mode_count].arg = targ_p->name;
-      mode_changes[mode_count++].client = targ_p;
-    }
-#endif
 
     mode_changes[mode_count].letter = 'o';
     mode_changes[mode_count].dir = MODE_ADD;
@@ -1134,19 +1110,17 @@ chm_op(struct Client *client_p, struct Client *source_p,
     mode_changes[mode_count].arg = targ_p->name;
     mode_changes[mode_count++].client = targ_p;
 
-    change_channel_membership(member, CHFL_CHANOP, CHFL_DEOPPED | CHFL_HALFOP);
+    change_channel_membership(member, CHFL_CHANOP, CHFL_DEOPPED);
   }
   else
   {
     for (i = 0; i < mode_count; i++)
-    {
-      if (mode_changes[i].dir == MODE_ADD && mode_changes[i].letter == 'o'
-          && mode_changes[i].client == targ_p)
+      if (mode_changes[i].dir == MODE_ADD && mode_changes[i].letter == 'o' &&
+          mode_changes[i].client == targ_p)
       {
         mode_changes[i].letter = 0;
         return;
       }
-    }
 
     mode_changes[mode_count].letter = 'o';
     mode_changes[mode_count].dir = MODE_DEL;
@@ -1174,21 +1148,20 @@ chm_hop(struct Client *client_p, struct Client *source_p,
   struct Membership *member;
 
   /* *sigh* - dont allow halfops to set +/-h, they could fully control a
-   * channel if there were no ops - it doesnt solve anything.. MODE_PRIVATE   
-   * when used with MODE_SECRET is paranoid - cant use +p   
-   *   
-   * it needs to be optional per channel - but not via +p, that or remove   
-   * paranoid.. -- fl_   
-   *   
-   * +p means paranoid, it is useless for anything else on modern IRC, as   
-   * list isn't really usable. If you want to have a private channel these   
-   * days, you set it +s. Halfops can no longer remove simple modes when   
-   * +p is set(although they can set +p) so it is safe to use this to   
-   * control whether they can (de)halfop...   
+   * channel if there were no ops - it doesnt solve anything.. MODE_PRIVATE
+   * when used with MODE_SECRET is paranoid - cant use +p
+   *
+   * it needs to be optional per channel - but not via +p, that or remove
+   * paranoid.. -- fl_
+   *
+   * +p means paranoid, it is useless for anything else on modern IRC, as
+   * list isn't really usable. If you want to have a private channel these
+   * days, you set it +s. Halfops can no longer remove simple modes when
+   * +p is set (although they can set +p) so it is safe to use this to
+   * control whether they can (de)halfop...
    */
   if (alev <
-      ((chptr->mode.mode & MODE_PRIVATE) ?
-       CHACCESS_CHANOP : CHACCESS_HALFOP))
+      ((chptr->mode.mode & MODE_PRIVATE) ? CHACCESS_CHANOP : CHACCESS_HALFOP))
   {
     if (!(*errors & SM_ERR_NOOPS))
       sendto_one(source_p, form_str(alev == CHACCESS_NOTONCHAN ?
@@ -1231,7 +1204,7 @@ chm_hop(struct Client *client_p, struct Client *source_p,
     return;
 
   /* no redundant mode changes */
-  if (dir == MODE_ADD &&  has_member_flags(member, CHFL_HALFOP | CHFL_CHANOP))
+  if (dir == MODE_ADD &&  has_member_flags(member, CHFL_HALFOP))
     return;
   if (dir == MODE_DEL && !has_member_flags(member, CHFL_HALFOP))
     return;
@@ -1239,32 +1212,12 @@ chm_hop(struct Client *client_p, struct Client *source_p,
   if (dir == MODE_ADD)
   {
     for (i = 0; i < mode_count; i++)
-      if (mode_changes[i].client == targ_p)
+      if (mode_changes[i].dir == MODE_DEL && mode_changes[i].letter == 'h' &&
+          mode_changes[i].client_p == targ_p)
       {
-        if (mode_changes[i].dir == MODE_DEL && mode_changes[i].letter == 'h')
-        {
-          mode_changes[i].letter = 0;
-          return;
-        }
-        /* cancel /mode +v */
-        if (mode_changes[i].dir == MODE_ADD && mode_changes[i].letter == 'v')
-        {
-          mode_changes[i].letter = 0;
-          change_channel_membership(member, 0, CHFL_VOICE);
-        }
+        mode_changes[i].letter = 0;
+        return;
       }
-
-    if (has_member_flags(member, CHFL_VOICE))
-    {
-      mode_changes[mode_count].letter = 'v';
-      mode_changes[mode_count].dir = MODE_DEL;
-      mode_changes[mode_count].caps = 0;
-      mode_changes[mode_count].nocaps = 0;
-      mode_changes[mode_count].mems = ALL_MEMBERS;
-      mode_changes[mode_count].id = targ_p->id;
-      mode_changes[mode_count].arg = targ_p->name;
-      mode_changes[mode_count++].client = targ_p;
-    }
 
     mode_changes[mode_count].letter = 'h';
     mode_changes[mode_count].dir = MODE_ADD;
@@ -1280,14 +1233,12 @@ chm_hop(struct Client *client_p, struct Client *source_p,
   else
   {
     for (i = 0; i < mode_count; i++)
-    {
-      if (mode_changes[i].dir == MODE_ADD && mode_changes[i].letter == 'h'
-          && mode_changes[i].client == targ_p)
+      if (mode_changes[i].dir == MODE_ADD && mode_changes[i].letter == 'h' &&
+          mode_changes[i].client == targ_p)
       {
         mode_changes[i].letter = 0;
         return;
       }
-    }
 
     mode_changes[mode_count].letter = 'h';
     mode_changes[mode_count].dir = MODE_DEL;
@@ -1347,7 +1298,7 @@ chm_voice(struct Client *client_p, struct Client *source_p,
     return;
 
   /* no redundant mode changes */
-  if (dir == MODE_ADD &&  has_member_flags(member, CHFL_VOICE | CHFL_HALFOP))
+  if (dir == MODE_ADD &&  has_member_flags(member, CHFL_VOICE))
     return;
   if (dir == MODE_DEL && !has_member_flags(member, CHFL_VOICE))
     return;
@@ -1355,14 +1306,12 @@ chm_voice(struct Client *client_p, struct Client *source_p,
   if (dir == MODE_ADD)
   {
     for (i = 0; i < mode_count; i++)
-    {
-      if (mode_changes[i].dir == MODE_DEL && mode_changes[i].letter == 'v'
-          && mode_changes[i].client == targ_p)
+      if (mode_changes[i].dir == MODE_DEL && mode_changes[i].letter == 'v' &&
+          mode_changes[i].client == targ_p)
       {
         mode_changes[i].letter = 0;
 	return;
       }
-    }
 
     mode_changes[mode_count].letter = 'v';
     mode_changes[mode_count].dir = MODE_ADD;
@@ -1378,14 +1327,12 @@ chm_voice(struct Client *client_p, struct Client *source_p,
   else
   {
     for (i = 0; i < mode_count; i++)
-    {
-      if (mode_changes[i].dir == MODE_ADD && mode_changes[i].letter == 'v'
-          && mode_changes[i].client == targ_p)
+      if (mode_changes[i].dir == MODE_ADD && mode_changes[i].letter == 'v' &&
+          mode_changes[i].client == targ_p)
       {
         mode_changes[i].letter = 0;
         return;
       }
-    }
 
     mode_changes[mode_count].letter = 'v';
     mode_changes[mode_count].dir = MODE_DEL;
