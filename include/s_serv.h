@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.h,v 7.66.4.1 2003/05/31 07:30:29 lusky Exp $
+ *  $Id: s_serv.h,v 7.66.4.2 2003/06/10 01:26:08 bill Exp $
  */
 
 #ifndef INCLUDED_serv_h
@@ -74,6 +74,7 @@ struct Capability
 
 #define CAP_TBURST	0x00040000   /* supports TBURST */
 #define CAP_PARA	0x00080000   /* supports invite broadcasting for +p */
+#define CAP_ENCAP	0x00100000
 
 #define CAP_MASK        (CAP_QS  | CAP_EX   | CAP_CHW  | \
                          CAP_IE  | CAP_EOB  | CAP_KLN  | \

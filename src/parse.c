@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.146 2003/02/14 23:01:55 db Exp $
+ *  $Id: parse.c,v 7.146.2.1 2003/06/10 01:26:10 bill Exp $
  */
 
 #include "stdinc.h"
@@ -59,7 +59,8 @@ static  int    handle_command(struct Message *, struct Client *,
 			      struct Client *, int, char **);
 
 static int hash(char *p);
-static struct Message *hash_parse(char *);
+
+struct Message *hash_parse(char *);
 
 struct MessageHash *msg_hash_table[MAX_MSG_HASH];
 
