@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.114 2000/12/22 04:10:06 ejb Exp $
+ *  $Id: s_conf.c,v 7.115 2000/12/22 08:11:25 db Exp $
  */
 #include "tools.h"
 #include "s_conf.h"
@@ -3146,6 +3146,7 @@ void conf_add_x_line(struct ConfItem *aconf)
 
 void conf_add_u_line(struct ConfItem *aconf)
 {
+  aconf->next = u_conf;
   u_conf = aconf;
 }
 

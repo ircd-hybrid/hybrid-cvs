@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.85 2000/12/21 13:39:55 db Exp $
+ *   $Id: send.c,v 7.86 2000/12/22 08:11:26 db Exp $
  */
 #include "tools.h"
 #include "send.h"
@@ -1136,13 +1136,6 @@ sendto_realops_flags(int flags, const char *pattern, ...)
   va_start(args, pattern);
   len = send_format(nbuf, pattern, args);
   va_end(args);
-
-  if(len > 400)
-    {
-      nbuf[400] = '\r';
-      nbuf[401] = '\n';
-      nbuf[402] = '\0';
-    }
 
   if (flags == FLAGS_ALL)
     {
