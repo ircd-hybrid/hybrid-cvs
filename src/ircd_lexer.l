@@ -18,11 +18,10 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.73 2001/02/13 05:22:47 androsyn Exp $
+ * $Id: ircd_lexer.l,v 1.74 2001/02/26 13:51:16 ejb Exp $
  */
 
 %option case-insensitive
-
 %{
 /* XXX - No we aren't but lex calls malloc :(. It is even worse that it
    doesn't call free! */
