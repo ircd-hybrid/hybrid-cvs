@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.c,v 7.78 2001/12/02 15:00:56 leeh Exp $
+ * $Id: modules.c,v 7.79 2002/01/02 16:44:00 leeh Exp $
  */
 #include "config.h"
 
@@ -250,12 +250,12 @@ load_all_modules (int check)
 
   max_mods = MODS_INCREMENT;
 
-  system_module_dir = opendir (MODPATH);
+  system_module_dir = opendir (AUTOMODPATH);
 
   if (system_module_dir == NULL)
     {
       ilog (L_WARN, "Could not load modules from %s: %s",
-	   MODPATH, strerror (errno));
+	   AUTOMODPATH, strerror (errno));
       return;
     }
 
@@ -268,7 +268,7 @@ load_all_modules (int check)
           (ldirent->d_name[len-2] == 's') &&
           (ldirent->d_name[len-1] == 'o'))
 	{
-	  (void)sprintf (module_fq_name, "%s/%s",  MODPATH,
+	  (void)sprintf (module_fq_name, "%s/%s",  AUTOMODPATH,
 			 ldirent->d_name);
 	  (void)load_a_module (module_fq_name, check);
 	}
