@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.48 2000/11/01 18:53:14 adrian Exp $
+ *  $Id: s_bsd.c,v 7.49 2000/11/01 19:13:48 adrian Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -1141,7 +1141,14 @@ comm_connect_tryconnect(int fd, void *notused)
 
     /* Error? */
     if (retval < 0) {
-        if (ignoreErrno(errno))
+        /*
+         * If we get EISCONN, then we've already connect()ed the socket,
+         * which is a good thing.
+         *   -- adrian
+         */
+        if (errno == EISCONN)
+            comm_connect_callback(fd, COMM_OK);
+        else if (ignoreErrno(errno))
             /* Ignore error? Reschedule */
             comm_setselect(fd, COMM_SELECT_WRITE, comm_connect_tryconnect,
               NULL, 0);
