@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.130 2002/07/11 23:40:23 leeh Exp $
+ *  $Id: parse.c,v 7.131 2002/07/18 15:43:16 db Exp $
  */
 
 #include "stdinc.h"
@@ -336,7 +336,7 @@ handle_command(struct Message *mptr, struct Client *client_p,
     {
       if(IsServer(client_p))
          sendto_realops_flags(FLAGS_ALL, L_ALL, 
-                "Not enough parameters for command %s from servers %s! (%d < %d)",
+                "Not enough parameters for command %s from server %s! (%d < %d)",
                 mptr->cmd, client_p->name, i, mptr->parameters);
        sendto_one(client_p, form_str(ERR_NEEDMOREPARAMS),
                   me.name, BadPtr(hpara[0]) ? "*" : hpara[0], mptr->cmd);
