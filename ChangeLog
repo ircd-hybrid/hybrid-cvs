@@ -1,3 +1,14 @@
+*** 20001106_13 by adrian
+
+
+Make sure we remove the query from the pending DNS requets when we actually
+get the reply.
+
+I forgot this line when I ripped out some of the remaining DNS cache code
+:-)
+
+
+
 *** 20001106_12 by adrian
 
 
@@ -121,7 +132,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.495 2000/11/06 21:51:08 adrian Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.496 2000/11/06 22:02:42 adrian Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
