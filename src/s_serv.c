@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.214 2001/10/11 17:18:30 jdc Exp $
+ *   $Id: s_serv.c,v 7.215 2001/10/15 22:42:53 davidt Exp $
  */
 
 #include <sys/types.h>
@@ -1410,7 +1410,8 @@ static void start_io(struct Client *server)
     /* store data in c+3 to allow for SLINKCMD_INJECT_RECVQ and len u16 */
     linelen = linebuf_get(&server->localClient->buf_recvq,
                           (char *)(buf + c + 3),
-                          READBUF_SIZE, 1); /* include partial lines */
+                          READBUF_SIZE, 1, 1); /* include partial/binary
+                                                  lines */
 
     if (linelen)
     {
@@ -1432,7 +1433,7 @@ static void start_io(struct Client *server)
     /* store data in c+3 to allow for SLINKCMD_INJECT_RECVQ and len u16 */
     linelen = linebuf_get(&server->localClient->buf_sendq,
                           (char *)(buf + c + 3),
-                          READBUF_SIZE, 1); /* include partial lines */
+                          READBUF_SIZE, 1, 0); /* include partial lines */
 
     if (linelen)
     {
