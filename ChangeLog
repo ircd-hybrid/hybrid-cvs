@@ -1,3 +1,18 @@
+db          2002/09/20 01:31:56 EDT	(20020920_0)
+
+  Modified files:
+    include              event.h 
+    src                  event.c 
+  Log:
+  - major major bug here. There is the potential of overflowing
+    the event_table[]. Range checking was not being done. <g>
+  
+  Revision  Changes    Path
+  1.13      +0 -1      ircd-hybrid-7/include/event.h
+  7.29      +24 -28    ircd-hybrid-7/src/event.c
+
+
+
 bill        2002/09/19 12:14:34 EDT	(20020919_2)
 
   Modified files:
@@ -32108,4 +32123,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4039 2002/09/19 16:14:37 bill Exp $
+$Id: ChangeLog,v 7.4040 2002/09/20 05:31:58 db Exp $
