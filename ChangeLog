@@ -1,6 +1,18 @@
+*** 20001106_1 by db
+- made some functions consistent in use... i.e. always start with chptr
+- removed some dead functions
+- removed del_invite add_invite from channel.c moved to m_invite.c
+
+  I think I got this right. There were functions that had chptr
+first, then others that had sptr first.. inconsistent... 
+
+  Removed a few no longer used or defined functions. duh
+  
+
+
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.483 2000/11/06 03:28:15 ryan Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.484 2000/11/06 06:56:46 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
