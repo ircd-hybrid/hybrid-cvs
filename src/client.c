@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.415 2003/10/12 00:48:12 bill Exp $
+ *  $Id: client.c,v 7.416 2003/10/12 01:02:30 bill Exp $
  */
 
 #include "stdinc.h"
@@ -883,13 +883,13 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
     add_history(source_p, 0);
     off_history(source_p);
 
-    if (HasID(source_p))
-      hash_del_id(source_p);
     /* again, this is all that is needed */
   }
 
   /* Remove source_p from the client lists
    */
+  if (HasID(source_p))
+    hash_del_id(source_p);
   if (source_p->name[0])
     hash_del_client(source_p);
 
@@ -1274,6 +1274,9 @@ exit_client(
         unset_chcap_usage_counts(source_p);
       }
     }
+
+    if (HasID(source_p))
+      hash_del_id(source_p);
 
     if (IsServer(source_p))
     {
