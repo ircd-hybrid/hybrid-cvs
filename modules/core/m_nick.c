@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_nick.c,v 1.67 2001/06/28 22:49:51 leeh Exp $
+ *   $Id: m_nick.c,v 1.68 2001/07/03 21:14:58 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -124,22 +124,12 @@ static void mr_nick(struct Client *client_p, struct Client *source_p, int parc,
       return;
     }
 
-  if(find_resv(nick, RESV_NICK))
+  if(find_nick_resv(nick))
   {
     sendto_one(source_p, form_str(ERR_UNAVAILRESOURCE),
                me.name, BadPtr(parv[0]) ? "*" : parv[0], nick);
     return;
   }
-
-  if(find_q_conf(nick, source_p->username, source_p->host)) 
-    {
-      sendto_realops_flags(FLAGS_REJ,
-			   "Quarantined nick [%s] from user %s",
-			   nick, client_p->name);
-      sendto_one(source_p, form_str(ERR_UNAVAILRESOURCE),
-		 me.name, BadPtr(parv[0]) ? "*" : parv[0], nick);
-      return;
-    }
 
   if ( (target_p = find_client(nick, NULL)) == NULL )
    {
@@ -226,23 +216,13 @@ static void m_nick(struct Client *client_p, struct Client *source_p,
       return;
     }
 
-  if(find_resv(nick, RESV_NICK))
+  if(find_nick_resv(nick))
   {
     sendto_one(source_p, form_str(ERR_UNAVAILRESOURCE),
                me.name, parv[0], nick);
     return;
   }
   
-  if (!IsOper(source_p) && find_q_conf(nick, source_p->username, source_p->host))
-    {
-      sendto_realops_flags(FLAGS_REJ,
-			   "Quarantined nick [%s] from user %s",
-			   nick, source_p->name);
-      sendto_one(source_p, form_str(ERR_UNAVAILRESOURCE),
-		 me.name, parv[0], nick);
-      return;
-    }
-
   if ((target_p = find_client(nick, NULL)))
     {
       /*

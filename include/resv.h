@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: resv.h,v 1.3 2001/07/03 11:46:11 leeh Exp $
+ *   $Id: resv.h,v 1.4 2001/07/03 21:14:51 leeh Exp $
  */
 #ifndef INCLUDED_resv_h
 #define INCLUDED_resv_h
@@ -25,28 +25,45 @@
 #define INCLUDED_sys_types_h
 #endif
 
-struct Resv
+struct ResvChannel
 {
-  struct Resv *next;
-  struct Resv *prev;
-  struct Resv *hnext;
+  struct ResvChannel *next;
+  struct ResvChannel *prev;
+  struct ResvChannel *hnext;
 
   char	name[CHANNELLEN];
   char	*reason;
-  int	type;
   int	conf;
 };
 
-#define RESV_NICK 0
-#define RESV_CHANNEL 1
+struct ResvNick
+{
+  struct ResvNick *next;
+  struct ResvNick *prev;
 
-extern struct Resv *ResvList;
+  char	name[NICKLEN];
+  char	*reason;
+  int	conf;
+};
 
-extern struct Resv *create_resv(char *, char *, int, int);
-extern int delete_resv(struct Resv *);
+extern struct ResvChannel *ResvChannelList;
+extern struct ResvNick *ResvNickList;
+
+extern struct ResvChannel *create_channel_resv(char *, char *, int);
+extern struct ResvNick *create_nick_resv(char *, char *, int);
+
+extern int delete_channel_resv(struct ResvChannel *);
+extern int delete_nick_resv(struct ResvNick *);
+
 extern int clear_conf_resv();
-extern int find_resv(char *name, int type);
+
+extern int find_channel_resv(char *);
+extern int find_nick_resv(char *);
+
 extern void report_resv(struct Client *);
+extern struct ResvNick *return_nick_resv(char *);
+
+extern int clean_resv_nick(char *);
 
 #endif  /* INCLUDED_hash_h */
 
