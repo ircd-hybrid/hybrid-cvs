@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.406 2003/10/11 12:29:27 bill Exp $
+ *  $Id: channel.c,v 7.407 2003/10/11 22:35:54 stu Exp $
  */
 
 #include "stdinc.h"
@@ -58,7 +58,7 @@ static BlockHeap *topic_heap;
 static BlockHeap *member_heap;
 
 static void destroy_channel(struct Channel *);
-static void send_mode_list(struct Client *, const char *, dlink_list *, char, int);
+static void send_mode_list(struct Client *, struct Channel *, dlink_list *, char, int);
 static int check_banned(struct Channel *, const char *, const char *);
 static const char *channel_pub_or_secret(struct Channel *);
 
@@ -215,11 +215,11 @@ send_channel_modes(struct Client *client_p, struct Channel *chptr)
   channel_modes(chptr, client_p, modebuf, parabuf);
   send_members(client_p, chptr, modebuf, parabuf);
 
-  send_mode_list(client_p, chptr->chname, &chptr->banlist, 'b', 0);
+  send_mode_list(client_p, chptr, &chptr->banlist, 'b', 0);
   if (IsCapable(client_p, CAP_EX))
-    send_mode_list(client_p, chptr->chname, &chptr->exceptlist, 'e', 0);
+    send_mode_list(client_p, chptr, &chptr->exceptlist, 'e', 0);
   if (IsCapable(client_p, CAP_IE))
-    send_mode_list(client_p, chptr->chname, &chptr->invexlist, 'I', 0);
+    send_mode_list(client_p, chptr, &chptr->invexlist, 'I', 0);
 }
 
 /* send_mode_list()
@@ -234,7 +234,7 @@ send_channel_modes(struct Client *client_p, struct Channel *chptr)
  *
  */
 static void
-send_mode_list(struct Client *client_p, const char *chname, dlink_list *top,
+send_mode_list(struct Client *client_p, struct Channel *chptr, dlink_list *top,
                char flag, int clear)
 {
   dlink_node *lp;
@@ -248,7 +248,11 @@ send_mode_list(struct Client *client_p, const char *chname, dlink_list *top,
   char *pp;
   int count;
 
-  ircsprintf(buf, ":%s MODE %s ", me.name, chname);
+  if(IsCapable(client_p, CAP_TS6))
+      ircsprintf(buf, ":%s BMASK %lu %s ", ID(&me), (unsigned long)
+              chptr->channelts, chptr->chname);
+  else
+    ircsprintf(buf, ":%s MODE %s ", me.name, chptr->chname);
   cur_len = mlen = (strlen(buf) + 2);
   count = 0;
   mp = mbuf;
@@ -264,7 +268,10 @@ send_mode_list(struct Client *client_p, const char *chname, dlink_list *top,
 
     if ((count >= MAXMODEPARAMS) || ((cur_len + tlen + 2) > MODEBUFLEN))
     {
-      sendto_one(client_p, "%s%s %s", buf, mbuf, pbuf);
+      if(IsCapable(client_p, CAP_TS6))
+        sendto_one(client_p, "%s%c %s", buf, flag, pbuf);
+      else
+        sendto_one(client_p, "%s%s %s", buf, mbuf, pbuf);
       mp = mbuf;
       *mp++ = (clear ? '-' : '+');
       *mp = '\0';
@@ -282,7 +289,12 @@ send_mode_list(struct Client *client_p, const char *chname, dlink_list *top,
   }
 
   if (count != 0)
-    sendto_one(client_p, "%s%s %s", buf, mbuf, pbuf);
+  {
+    if(IsCapable(client_p, CAP_TS6))
+      sendto_one(client_p, "%s%c %s", buf, flag, pbuf);
+    else
+      sendto_one(client_p, "%s%s %s", buf, mbuf, pbuf);
+  }
 }
 
 /* check_channel_name()
