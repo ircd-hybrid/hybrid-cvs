@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 7.1 1999/12/30 20:36:01 db Exp $
+ *  $Id: m_stats.c,v 7.2 2000/01/01 06:35:15 db Exp $
  */
 #include "m_commands.h"  /* m_pass prototype */
 #include "class.h"       /* report_classes */
@@ -254,7 +254,7 @@ int m_stats(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
       report_configured_links(sptr, CONF_CONNECT_SERVER|CONF_NOCONNECT_SERVER);
       valid_stats++;
       break;
-
+ 
     case 'B' : case 'b' :
       sendto_one(sptr,":%s NOTICE %s Use stats I instead", me.name, parv[0]);
       break;
