@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_testline.c,v 1.32 2003/08/29 06:05:10 michael Exp $
+ *  $Id: m_testline.c,v 1.33 2003/12/05 07:06:27 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -59,11 +59,10 @@ _moddeinit(void)
   mod_del_cmd(&testline_msgtab);
 }
  
-const char *_version = "$Revision: 1.32 $";
+const char *_version = "$Revision: 1.33 $";
 #endif
 
-/*
- * mo_testline
+/* mo_testline()
  *
  * inputs       - pointer to physical connection request is coming from
  *              - pointer to source connection request is comming from
@@ -75,8 +74,7 @@ const char *_version = "$Revision: 1.32 $";
  *   
  * i.e. /quote testline user@host,ip [password]
  *
- */  
-  
+ */
 static void
 mo_testline(struct Client *client_p, struct Client *source_p,
             int parc, char *parv[])
@@ -84,13 +82,13 @@ mo_testline(struct Client *client_p, struct Client *source_p,
   struct AccessItem *aconf;
   struct irc_ssaddr ip;
   int host_mask;
-  char *host, *pass, *user, *classname, *given_host, *given_name, *p;
+  char *host, *pass, *user, *classname, *given_host, *given_name, *p, *oreason;
   int port, t;
   
   if (parc < 2)
   {
     sendto_one(source_p, ":%s NOTICE %s :usage: user@host|ip [password]",
-               me.name, parv[0]);
+               me.name, source_p->name);
     return;
   }
 
@@ -113,21 +111,21 @@ mo_testline(struct Client *client_p, struct Client *source_p,
 	conf = unmap_conf_item(aconf);
 
         get_printable_conf(conf, &host, &pass, &user, &port, 
-			   &classname);
+			   &classname, &oreason);
         if (aconf->status & CONF_EXEMPTDLINE)
           sendto_one(source_p,
-                     ":%s NOTICE %s :Exempt D-line host [%s] pass [%s]",
-                     me.name, parv[0], host, pass);
+                     ":%s NOTICE %s :Exempt D-line host [%s] reason [%s]",
+                     me.name, source_p->name, host, pass);
         else
           sendto_one(source_p,
-                     ":%s NOTICE %s :D-line host [%s] pass [%s]", me.name,
-                     parv[0], host, pass);
+                     ":%s NOTICE %s :D-line host [%s] reason [%s] oper_reason [%s]",
+		     me.name, source_p->name, host, pass, oreason);
       }
       else sendto_one(source_p, ":%s NOTICE %s :No D-line found",
-                      me.name, parv[0]);
+                      me.name, source_p->name);
     }
     else sendto_one(source_p, ":%s NOTICE %s :usage: user@host|ip [password]",
-                    me.name, parv[0]);
+                    me.name, source_p->name);
     return;
   }
 
@@ -149,19 +147,19 @@ mo_testline(struct Client *client_p, struct Client *source_p,
   {
     struct ConfItem *conf;
     conf = unmap_conf_item(aconf);
-    get_printable_conf(conf, &host, &pass, &user, &port, &classname);
+    get_printable_conf(conf, &host, &pass, &user, &port, &classname, &oreason);
     if (aconf->status & CONF_KILL)
       sendto_one(source_p,
-                 ":%s NOTICE %s :%c-line name [%s] host [%s] pass [%s]",
-                 me.name, parv[0],
+                 ":%s NOTICE %s :%c-line ident [%s] host [%s] reason [%s] oper_reason [%s]",
+                 me.name, source_p->name,
                  (aconf->flags & CONF_FLAGS_TEMPORARY) ? 'k' : 'K',
-                 user, host,  pass);
+                 user, host, pass, oreason);
     else if (aconf->status & CONF_CLIENT)
       sendto_one(source_p, ":%s NOTICE %s :I-line mask [%s] prefix [%s] "
-                 "name [%s] host [%s] port [%d] class [%s]",
-                 me.name, parv[0], "*",	/* XXX "*" -> change to mask? */
+                 "ident [%s] host [%s] port [%d] class [%s]",
+                 me.name, source_p->name, "*",	/* XXX "*" -> change to mask? */
                  show_iline_prefix(source_p, aconf, user), user, host,
                  port, classname);
   }
-  else sendto_one(source_p, ":%s NOTICE %s :No aconf found", me.name, parv[0]);
+  else sendto_one(source_p, ":%s NOTICE %s :No aconf found", me.name, source_p->name);
 }

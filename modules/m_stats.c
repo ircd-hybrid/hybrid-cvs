@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.153 2003/10/13 08:25:51 michael Exp $
+ *  $Id: m_stats.c,v 1.154 2003/12/05 07:06:26 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.153 $";
+const char *_version = "$Revision: 1.154 $";
 #endif
 
 static char *parse_stats_args(int, char **, int *, int *);
@@ -335,7 +335,7 @@ stats_connect(struct Client *source_p)
 static void
 stats_deny(struct Client *source_p)
 {
-  char *host, *pass, *user, *classname;
+  char *host, *pass, *user, *classname, *oreason;
   struct AddressRec *arec;
   struct ConfItem *conf;
   struct AccessItem *aconf;
@@ -355,9 +355,9 @@ stats_deny(struct Client *source_p)
 
 	conf = unmap_conf_item(aconf);
 
-        get_printable_conf(conf, &host, &pass, &user, &port, &classname);
+        get_printable_conf(conf, &host, &pass, &user, &port, &classname, &oreason);
         sendto_one(source_p, form_str(RPL_STATSDLINE),
-                   from, to, 'D', host, pass);
+                   from, to, 'D', host, pass, oreason);
       }
     }
   }
@@ -372,7 +372,7 @@ stats_deny(struct Client *source_p)
 static void
 stats_tdeny(struct Client *source_p)
 {
-  char *host, *pass, *user, *classname;
+  char *host, *pass, *user, *classname, *oreason;
   struct AddressRec *arec;
   struct ConfItem *conf;
   struct AccessItem *aconf;
@@ -391,9 +391,9 @@ stats_tdeny(struct Client *source_p)
           continue;
 
         conf = unmap_conf_item(aconf);
-        get_printable_conf(conf, &host, &pass, &user, &port, &classname);
+        get_printable_conf(conf, &host, &pass, &user, &port, &classname, &oreason);
         sendto_one(source_p, form_str(RPL_STATSDLINE),
-                   from, to, 'd', host, pass);
+                   from, to, 'd', host, pass, oreason);
       }
     }
   }
@@ -408,7 +408,7 @@ stats_tdeny(struct Client *source_p)
 static void
 stats_exempt(struct Client *source_p)
 {
-  char  *host, *pass, *user, *classname;
+  char *host, *pass, *user, *classname, *oreason;
   struct AddressRec *arec;
   struct ConfItem *conf;
   struct AccessItem *aconf;
@@ -423,7 +423,7 @@ stats_exempt(struct Client *source_p)
         aconf = arec->aconf;
 
         conf = unmap_conf_item(aconf);
-        get_printable_conf(conf, &host, &pass, &user, &port, &classname);
+        get_printable_conf(conf, &host, &pass, &user, &port, &classname, &oreason);
         sendto_one(source_p, form_str(RPL_STATSDLINE),
                    from, to, 'e', host, pass);
       }
@@ -562,7 +562,7 @@ stats_auth(struct Client *source_p)
   {
     struct ConfItem *conf;
     struct AccessItem *aconf;
-    char *host, *pass, *user, *classname;
+    char *host, *pass, *user, *classname, *oreason;
     int port;
 
     if(MyConnect(source_p))
@@ -580,7 +580,7 @@ stats_auth(struct Client *source_p)
       return;
 
     conf = unmap_conf_item(aconf);
-    get_printable_conf(conf, &host, &pass, &user, &port, &classname);
+    get_printable_conf(conf, &host, &pass, &user, &port, &classname, &oreason);
     sendto_one(source_p, form_str(RPL_STATSILINE), from,
                to, (IsConfRestricted(aconf)) ? 'i' : 'I',
 	       "*", show_iline_prefix(source_p, aconf, user), host,
@@ -604,7 +604,7 @@ stats_tklines(struct Client *source_p)
   else if((ConfigFileEntry.stats_k_oper_only == 1) && !IsOper(source_p))
   {
     struct AccessItem *aconf;
-    char *host, *pass, *user, *classname;
+    char *host, *pass, *user, *classname, *oreason;
     int port;
 
     if(MyConnect(source_p))
@@ -626,10 +626,10 @@ stats_tklines(struct Client *source_p)
 
     conf = unmap_conf_item(aconf);
 
-    get_printable_conf(conf, &host, &pass, &user, &port, &classname);
+    get_printable_conf(conf, &host, &pass, &user, &port, &classname, &oreason);
 
     sendto_one(source_p, form_str(RPL_STATSKLINE), from,
-               to, 'k', host, user, pass);
+               to, 'k', host, user, pass, oreason);
   }
   /* Theyre opered, or allowed to see all klines */
   else
@@ -650,7 +650,7 @@ stats_klines(struct Client *source_p)
   else if((ConfigFileEntry.stats_k_oper_only == 1) && !IsOper(source_p))
   {
     struct AccessItem *aconf;
-    char *host, *pass, *user, *classname;
+    char *host, *pass, *user, *classname, *oreason;
     int port;
 
     /* search for a kline */
@@ -671,10 +671,10 @@ stats_klines(struct Client *source_p)
     if(aconf->flags & CONF_FLAGS_TEMPORARY)
       return;
       
-    get_printable_conf(conf, &host, &pass, &user, &port, &classname);
+    get_printable_conf(conf, &host, &pass, &user, &port, &classname, &oreason);
 
     sendto_one(source_p, form_str(RPL_STATSKLINE), from,
-               to, 'K', host, user, pass);
+               to, 'K', host, user, pass, oreason);
   }
   /* Theyre opered, or allowed to see all klines */
   else

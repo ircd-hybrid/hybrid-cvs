@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: messages.tab,v 7.90 2003/09/29 05:09:39 metalrock Exp $
+ *   $Id: messages.tab,v 7.91 2003/12/05 07:06:29 metalrock Exp $
  */
 
 static struct NumericInfo replies[] = {
@@ -236,7 +236,7 @@ static struct NumericInfo replies[] = {
 /* 213 */  {"RPL_STATSCLINE", ":%s 213 %s %c %s %s %s %d %s", NULL},
 /* 214 */  {"RPL_STATSNLINE", ":%s 214 %s %c %s * %s %d %s", NULL},
 /* 215 */  {"RPL_STATSILINE", ":%s 215 %s %c %s * %s@%s %d %s", NULL},
-/* 216 */  {"RPL_STATSKLINE", ":%s 216 %s %c %s * %s :%s", NULL},
+/* 216 */  {"RPL_STATSKLINE", ":%s 216 %s %c %s * %s :%s | %s", NULL},
 /* 217 */  {"RPL_STATSQLINE", ":%s 217 %s %c %s :%s", NULL},
 /* 218 */  {"RPL_STATSYLINE", ":%s 218 %s %c %s %d %d %d %lu", NULL},
 /* 219 */  {"RPL_ENDOFSTATS", ":%s 219 %s %c :End of /STATS report", NULL},
@@ -245,7 +245,7 @@ static struct NumericInfo replies[] = {
 /* 222 */  {NULL, NULL, NULL},
 /* 223 */  {NULL, NULL, NULL},
 /* 224 */  {NULL, NULL, NULL},
-/* 225 */  {"RPL_STATSDLINE", ":%s 225 %s %c %s :%s", NULL},
+/* 225 */  {"RPL_STATSDLINE", ":%s 225 %s %c %s :%s | %s", NULL},
 /* 226 */  {"RPL_STATSALINE", ":%s 226 %s %s", NULL},
 /* 227 */  {NULL, NULL, NULL},
 /* 228 */  {NULL, NULL, NULL},

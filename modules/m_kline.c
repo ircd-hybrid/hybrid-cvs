@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.175 2003/10/21 01:39:48 bill Exp $
+ *  $Id: m_kline.c,v 1.176 2003/12/05 07:06:26 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -106,7 +106,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.175 $";
+const char *_version = "$Revision: 1.176 $";
 #endif
 
 #define TK_SECONDS 0
@@ -289,12 +289,10 @@ ms_kline(struct Client *client_p, struct Client *source_p,
 {
   struct ConfItem *conf=NULL;
   struct AccessItem *aconf=NULL;
-  int    tkline_time;
+  int tkline_time;
   const char* current_date;
   time_t cur_time;
-  char *kuser;
-  char *khost;
-  char *kreason;
+  char *kuser, *khost, *kreason, *oper_reason;
 
   if (parc != 6)
     return;
@@ -309,9 +307,15 @@ ms_kline(struct Client *client_p, struct Client *source_p,
     return;
 
   tkline_time = valid_tkline(parv[2], TK_SECONDS);
-  kuser   = parv[3];
-  khost   = parv[4];
+  kuser = parv[3];
+  khost = parv[4];
   kreason = parv[5];
+
+  if ((oper_reason = strchr(kreason, '|')) != NULL)
+  {
+    *oper_reason = '\0';
+    oper_reason++;
+  }
 
   set_time();
   cur_time = CurrentTime;
@@ -332,18 +336,23 @@ ms_kline(struct Client *client_p, struct Client *source_p,
     DupString(aconf->host, khost);
     DupString(aconf->user, kuser);
 
+
     if (tkline_time != 0)
     {
       ircsprintf(buffer,
                  "Temporary K-line %d min. - %s (%s)",
                  (int)(tkline_time/60), kreason, current_date);
       DupString(aconf->reason, buffer);
+      if (oper_reason != NULL)
+        DupString(aconf->oper_reason, oper_reason);
       apply_tkline(source_p, conf, tkline_time);
     }
     else
     {
       ircsprintf(buffer, "%s (%s)", kreason, current_date);
       DupString(aconf->reason, buffer);
+      if (oper_reason != NULL)
+        DupString(aconf->oper_reason, oper_reason);
       apply_kline(source_p, conf, current_date, cur_time);
     }
   }
@@ -370,12 +379,16 @@ ms_kline(struct Client *client_p, struct Client *source_p,
                  "Temporary K-line %d min. - %s (%s)",
                  (int)(tkline_time/60), kreason, current_date);
       DupString(aconf->reason, buffer);
+      if (oper_reason != NULL)
+        DupString(aconf->oper_reason, oper_reason);
       apply_tkline(source_p, conf, tkline_time);
     }
     else
     {
       ircsprintf(buffer, "%s (%s)", kreason, current_date);
       DupString(aconf->reason, buffer);
+      if (oper_reason != NULL)
+        DupString(aconf->oper_reason, oper_reason);
       apply_kline(source_p, conf, current_date, cur_time);
     }
   }
@@ -789,12 +802,16 @@ mo_dline(struct Client *client_p, struct Client *source_p,
     ircsprintf(buffer, "Temporary D-line %d min. - %s (%s)",
 	       (int)(tkline_time/60), reason, current_date);
     DupString(aconf->reason, buffer);
+    if (oper_reason != NULL)
+      DupString(aconf->oper_reason, oper_reason);
     apply_tdline(source_p, conf, current_date, tkline_time);
   }
   else
   {
     ircsprintf(buffer, "%s (%s)", reason, current_date);
     DupString(aconf->reason, buffer);
+    if (oper_reason != NULL)
+      DupString(aconf->oper_reason, oper_reason);
     add_conf_by_address(CONF_DLINE, aconf);
     write_conf_line(source_p, conf, current_date, cur_time);
   }

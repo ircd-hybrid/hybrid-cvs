@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.c,v 7.91 2003/08/12 21:39:09 metalrock Exp $
+ *  $Id: hostmask.c,v 7.92 2003/12/05 07:06:28 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -778,7 +778,7 @@ show_iline_prefix(struct Client *sptr, struct AccessItem *aconf, char *name)
 void
 report_auth(struct Client *client_p)
 {
-  char *host, *reason, *user, *classname;
+  char *host, *reason, *user, *classname, *oreason;
   struct AddressRec *arec;
   struct ConfItem *conf;
   struct AccessItem *aconf;
@@ -796,12 +796,11 @@ report_auth(struct Client *client_p)
           continue;
 
 	conf = unmap_conf_item(aconf);
-        get_printable_conf(conf, &host, &reason, &user, &port, &classname);
+        get_printable_conf(conf, &host, &reason, &user, &port, &classname, &oreason);
 
         /* We are doing a partial list, based on what matches the u@h of the
          * sender, so prepare the strings for comparing --fl_
 	 */
-
         if (ConfigFileEntry.hide_spoof_ips)
           sendto_one(client_p, form_str(RPL_STATSILINE), me.name,
                      client_p->name, (IsConfRestricted(aconf)) ? 'i' : 'I',
@@ -831,9 +830,9 @@ report_auth(struct Client *client_p)
 void
 report_Klines(struct Client *client_p, int tkline)
 {
-  char *host, *reason, *user, *classname, c;
+  char *host, *reason, *user, *classname, *oreason, c;
   struct AddressRec *arec;
-  struct ConfItem *conf=NULL;
+  struct ConfItem *conf = NULL;
   struct AccessItem *aconf = NULL;
   int i, port;
 
@@ -851,8 +850,8 @@ report_Klines(struct Client *client_p, int tkline)
                 && ((aconf = arec->aconf)->flags & CONF_FLAGS_TEMPORARY)))
           continue;
 	conf = unmap_conf_item(aconf);
-        get_printable_conf(conf, &host, &reason, &user, &port, &classname);
+        get_printable_conf(conf, &host, &reason, &user, &port, &classname, &oreason);
         sendto_one(client_p, form_str(RPL_STATSKLINE), me.name,
-                   client_p->name, c, host, user, reason);
+                   client_p->name, c, host, user, reason, oreason);
       }
 }

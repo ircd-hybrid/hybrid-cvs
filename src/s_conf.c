@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.485 2003/11/23 22:36:55 db Exp $
+ *  $Id: s_conf.c,v 7.486 2003/12/05 07:06:29 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -529,7 +529,7 @@ report_confitem_types(struct Client *source_p, ConfType type)
   struct AccessItem *aconf;
   struct MatchItem *matchitem;
   struct ClassItem *classitem;
-  char *host, *reason, *user, *classname;
+  char *host, *reason, *user, *classname, *oreason;
   char buf[10], *p = buf;
   int port;
 
@@ -685,7 +685,7 @@ report_confitem_types(struct Client *source_p, ConfType type)
     {
       conf = ptr->data;
       aconf = (struct AccessItem *)map_to_conf(conf);
-      get_printable_conf(conf, &host, &reason, &user, &port, &classname);
+      get_printable_conf(conf, &host, &reason, &user, &port, &classname, &oreason);
 
       /* Don't allow non opers to see oper privs */
       if (IsOper(source_p))
@@ -724,7 +724,7 @@ report_confitem_types(struct Client *source_p, ConfType type)
 
       conf = ptr->data;
       aconf = (struct AccessItem *)map_to_conf(conf);
-      get_printable_conf(conf, &host, &reason, &user, &port, &classname);
+      get_printable_conf(conf, &host, &reason, &user, &port, &classname, &oreason);
 
       sbuf[0] = '\0';
 
@@ -2450,8 +2450,8 @@ get_oper_name(const struct Client *client_p)
  * in aconf, or "<NULL>" port is set to aconf->port in all cases.
  */
 void
-get_printable_conf(struct ConfItem *conf, char **host,
-		   char **reason, char **user, int *port, char **classname)
+get_printable_conf(struct ConfItem *conf, char **host, char **reason,
+		   char **user, int *port, char **classname, char **oreason)
 {
   struct AccessItem *aconf;
   static char null[] = "<NULL>";
@@ -2461,6 +2461,7 @@ get_printable_conf(struct ConfItem *conf, char **host,
 
   *host = EmptyString(aconf->host) ? null : aconf->host;
   *reason = EmptyString(aconf->reason) ? null : aconf->reason;
+  *oreason = EmptyString(aconf->oper_reason) ? null : aconf->oper_reason;
   *user = EmptyString(aconf->user) ? null : aconf->user;
   *classname = aconf->class_ptr == NULL ? zero : aconf->class_ptr->name;
   *port = (int)aconf->port;
