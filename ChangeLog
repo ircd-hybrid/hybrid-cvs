@@ -1,3 +1,7 @@
+*** 20001114_5 by spookey
+
+
+
 *** 20001114_4 by db
 - small change to parse.c, this makes more sense to me
 - added configure change suggested by David-T, this still needs to
@@ -516,7 +520,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.543 2000/11/15 02:19:01 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.544 2000/11/15 03:26:19 spookey Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
