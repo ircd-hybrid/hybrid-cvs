@@ -1,3 +1,8 @@
+*** 20001106_11 by db
+- don't list secret channels in vchan ! list
+
+
+
 *** 20001106_10 by db
 - cryptic code must die if(!--maxmatches) ...
 - minor cleanups
@@ -109,7 +114,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.493 2000/11/06 18:11:56 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.494 2000/11/06 18:57:45 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
