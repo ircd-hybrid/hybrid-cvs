@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_lljoin.c,v 1.22 2000/12/25 16:04:48 db Exp $
+ * $Id: m_lljoin.c,v 1.23 2000/12/26 19:17:39 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -95,9 +95,6 @@ int     ms_lljoin(struct Client *cptr,
 			   cptr->name);
       return 0;
     }
-
-  if( parc < 3 )
-    return 0;
 
   chname = parv[1];
   if(chname == NULL)

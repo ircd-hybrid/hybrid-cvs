@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.c,v 7.26 2000/12/26 05:14:23 spookey Exp $
+ * $Id: modules.c,v 7.27 2000/12/26 19:17:44 db Exp $
  */
 
 #include <dlfcn.h>
@@ -353,7 +353,7 @@ mo_modload (struct Client *cptr, struct Client *sptr, int parc, char **parv)
       return 0;
     }
 
-  m_bn = basename (parv[1]);
+  m_bn = irc_basename (parv[1]);
 
   if (findmodule_byname (m_bn) != -1)
     {
@@ -380,7 +380,7 @@ mo_modunload (struct Client *cptr, struct Client *sptr, int parc, char **parv)
       return 0;
     }
 
-  m_bn = basename (parv[1]);
+  m_bn = irc_basename (parv[1]);
 
   if (findmodule_byname (m_bn) == -1)
     {
