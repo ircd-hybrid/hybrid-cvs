@@ -3,7 +3,7 @@ androsyn    2001/12/25 01:51:46 EST	(20011225_1)
   Modified files:
     src                  s_stats.c scache.c 
   Log:
-  Fixed more bogus $Id: ChangeLog,v 7.3235 2001/12/25 06:51:51 androsyn Exp $ tags..
+  Fixed more bogus $Id tags..
   
   Revision  Changes    Path
   7.18      +1 -1      ircd-hybrid-7/src/s_stats.c
@@ -1437,7 +1437,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3235 2001/12/25 06:51:51 androsyn Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3236 2001/12/25 06:53:40 androsyn Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -19791,4 +19791,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3235 2001/12/25 06:51:51 androsyn Exp $
+$Id: ChangeLog,v 7.3236 2001/12/25 06:53:40 androsyn Exp $
