@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.48 2000/12/29 16:33:31 davidt Exp $
+# $Id: Makefile.in,v 7.49 2000/12/30 20:22:06 lusky Exp $
 #
 CC		= @CC@
 INSTALL		= @INSTALL@
@@ -12,7 +12,7 @@ RM		= @RM@
 LEX		= @LEX@
 LEXLIB		= @LEXLIB@
 CFLAGS		= @CFLAGS@ -DIRCD_PREFIX=\"@prefix@\"
-LDFLAGS   	= -Wl,-export-dynamic @LDFLAGS_EXTRA@
+LDFLAGS   	= @LDFLAGS@
 MKDEP		= ${CC} -MM
 MV		= @MV@
 RM		= @RM@
