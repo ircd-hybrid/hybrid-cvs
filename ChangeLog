@@ -1,3 +1,9 @@
+*** 20001204_16 by db
+- removed duplicate function from m_kline.c replaced with function
+  already in place but unused in s_conf.c duh. can we say BLOAT?
+
+
+
 *** 20001204_15 by db
 - fixed bug in parse_client_queued to do with opered clients.
   code was nver resetting lcptr->sent_parsed = 0 and actually_read = 0
@@ -1605,7 +1611,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.696 2000/12/05 02:24:22 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.697 2000/12/05 02:53:39 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
