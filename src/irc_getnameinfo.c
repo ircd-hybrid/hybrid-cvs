@@ -46,7 +46,7 @@
 #include "irc_getnameinfo.h"
 #include "irc_string.h"
 
-/*  $Id: irc_getnameinfo.c,v 7.11 2003/09/15 23:24:48 metalrock Exp $ */
+/*  $Id: irc_getnameinfo.c,v 7.12 2003/12/20 23:01:57 metalrock Exp $ */
 
 static const struct afd {
   int a_af;
@@ -228,7 +228,14 @@ ip6_parsenumeric(const struct sockaddr *sa, const char *addr,
   if (numaddrlen + 1 > hostlen) /* don't forget terminator */
     return(EAI_MEMORY);
 
-  strlcpy(host, numaddr, hostlen);
+  if (*numaddr == ':')
+  {
+    *host = '0';
+    strlcpy(host+1, numaddr, hostlen-1);
+  }
+  else
+    strlcpy(host, numaddr, hostlen);
+
   return(0);
 }
 #endif
