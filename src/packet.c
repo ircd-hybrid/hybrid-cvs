@@ -18,7 +18,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: packet.c,v 7.61 2001/08/24 23:53:08 davidt Exp $
+ *   $Id: packet.c,v 7.62 2001/09/10 16:28:33 davidt Exp $
  */ 
 
 #include <stdio.h>
@@ -234,6 +234,9 @@ read_ctrl_packet(int fd, void *data)
       if (reply->datalen > 0)
         reply->data = MyMalloc(reply->datalen);
     }
+
+    if (reply->gotdatalen < 2)
+      return; /* wait for more data */
   }
 
   if (reply->readdata < reply->datalen) /* try to get any remaining data */
