@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.101 2001/02/08 22:59:20 db Exp $
+ *  $Id: s_bsd.c,v 7.102 2001/02/12 05:13:18 androsyn Exp $
  */
 #include "config.h"
 #include "fdlist.h"
@@ -790,10 +790,10 @@ comm_open(int family, int sock_type, int proto, const char *note)
  * comm_open() does.
  */
 int
-comm_accept(int fd, struct sockaddr *pn, socklen_t *addrlen)
+comm_accept(int fd, struct irc_sockaddr *pn)
 {
     int newfd;
-
+    socklen_t addrlen = sizeof(struct irc_sockaddr);
     if (number_fd >= MASTER_MAX) {
 	errno = ENFILE;
 	return -1;
@@ -804,7 +804,7 @@ comm_accept(int fd, struct sockaddr *pn, socklen_t *addrlen)
      * reserved fd limit, but we can deal with that when comm_open()
      * also does it. XXX -- adrian
      */
-    newfd = accept(fd, pn, addrlen);
+    newfd = accept(fd, (struct sockaddr *)&PSOCKADDR(pn), &addrlen);
     if (newfd < 0)
         return -1;
 
