@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.165 2001/05/05 01:38:18 androsyn Exp $
+ * $Id: ircd_parser.y,v 1.166 2001/05/07 15:50:32 toot Exp $
  */
 
 %{
@@ -193,7 +193,6 @@ int   class_redirport_var;
 %token  SILENT
 %token  GENERAL
 %token  FAILED_OPER_NOTICE
-%token  SHOW_FAILED_OPER_ID
 %token  ANTI_NICK_FLOOD
 %token  ANTI_SPAM_EXIT_MESSAGE_TIME
 %token  MAX_ACCEPT
@@ -1792,7 +1791,7 @@ general_entry:      GENERAL
 general_items:      general_items general_item |
                     general_item
 
-general_item:       general_failed_oper_notice | general_show_failed_oper_id |
+general_item:       general_failed_oper_notice |
                     general_anti_nick_flood | general_max_nick_time |
                     general_max_nick_changes | general_max_accept |
                     general_anti_spam_exit_message_time |
@@ -1829,16 +1828,6 @@ general_failed_oper_notice:   FAILED_OPER_NOTICE '=' TYES ';'
                         FAILED_OPER_NOTICE '=' TNO ';'
   {
     ConfigFileEntry.failed_oper_notice = 0;
-  } ;
-
-general_show_failed_oper_id:   SHOW_FAILED_OPER_ID '=' TYES ';'
-  {
-    ConfigFileEntry.show_failed_oper_id = 1;
-  }
-                        |
-                        SHOW_FAILED_OPER_ID '=' TNO ';'
-  {
-    ConfigFileEntry.show_failed_oper_id = 0;
   } ;
 
 general_anti_nick_flood:   ANTI_NICK_FLOOD '=' TYES ';'

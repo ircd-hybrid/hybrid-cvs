@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.117 2001/04/26 11:34:30 toot Exp $
+ * $Id: s_conf.h,v 7.118 2001/05/07 15:50:29 toot Exp $
  */
 
 #include "setup.h"
@@ -192,7 +192,6 @@ typedef struct config_file_entry
   int         hub;
   int         dots_in_ident;
   int         failed_oper_notice;
-  int         show_failed_oper_id;
   int         anti_nick_flood;
   int         anti_spam_exit_message_time;
   int         max_accept;
