@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# $Id: version.c.SH,v 7.22 2003/06/13 07:40:32 joshk Exp $
+# $Id: version.c.SH,v 7.23 2003/06/24 04:18:21 joshk Exp $
 
 spitshell=cat
 package=IRC
@@ -63,7 +63,7 @@ const char *infotext[] =
   "$package --",
   "Based on the original code written by Jarkko Oikarinen",
   "Copyright 1988, 1989, 1990, 1991 University of Oulu, Computing Center",
-  "Copyright (c) 1996-2001 Hybrid Development Team", 
+  "Copyright (c) 1996-2003 Hybrid Development Team", 
   "",
   "This program is free software; you can redistribute it and/or",
   "modify it under the terms of the GNU General Public License as",
