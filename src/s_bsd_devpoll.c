@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_devpoll.c,v 7.6 2001/06/09 08:36:09 androsyn Exp $
+ *  $Id: s_bsd_devpoll.c,v 7.7 2001/06/11 02:49:56 androsyn Exp $
  */
 #include "config.h"
 #ifdef USE_DEVPOLL
@@ -80,7 +80,7 @@ static void devpoll_write_update(int, int);
 
 /* static void devpoll_incoming_stats(StoreEntry *); */
 /* Does this do anything?? -AS */
-#define NOTYET 1
+/* #define NOTYET 1 */
 
 /* XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX */
 /* Private functions */
