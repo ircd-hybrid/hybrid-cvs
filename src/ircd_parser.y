@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.345 2003/07/23 15:26:52 adx Exp $
+ *  $Id: ircd_parser.y,v 1.346 2003/08/03 13:01:36 adx Exp $
  */
 
 %{
@@ -1362,8 +1362,6 @@ auth_entry: IRCD_AUTH
         DupString(new_aconf->passwd, yy_aconf->passwd);
       if (yy_conf->name != NULL)
         DupString(new_conf->name, yy_conf->name);
-      else
-	DupString(new_conf->name, "NOMATCH");
 
       if (yy_aconf->passwd != NULL)
 	DupString(new_aconf->passwd, yy_aconf->passwd);

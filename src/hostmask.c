@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.c,v 7.87 2003/07/17 06:25:28 metalrock Exp $
+ *  $Id: hostmask.c,v 7.88 2003/08/03 13:01:36 adx Exp $
  */
 
 #include "stdinc.h"
@@ -798,14 +798,16 @@ report_auth(struct Client *client_p)
 
         if (ConfigFileEntry.hide_spoof_ips)
           sendto_one(client_p, form_str(RPL_STATSILINE), me.name,
-                     client_p->name, (IsConfRestricted(aconf)) ? 'i' : 'I', "*",
-                     show_iline_prefix(client_p, aconf, user),
+                     client_p->name, (IsConfRestricted(aconf)) ? 'i' : 'I',
+		     conf->name == NULL ? "*" : conf->name,
+		     show_iline_prefix(client_p, aconf, user),
                      IsConfDoSpoofIp(aconf) ? "255.255.255.255" :
                      host, port, classname);
         else
           sendto_one(client_p, form_str(RPL_STATSILINE), me.name,
-                     client_p->name, (IsConfRestricted(aconf)) ? 'i' : 'I', "*",
-                     show_iline_prefix(client_p, aconf, user),
+                     client_p->name, (IsConfRestricted(aconf)) ? 'i' : 'I',
+		     conf->name == NULL ? "*" : conf->name,
+		     show_iline_prefix(client_p, aconf, user),
                      host, port, classname);
 
       }
