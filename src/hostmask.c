@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- * $Id: hostmask.c,v 7.41 2001/05/31 06:24:07 db Exp $ 
+ * $Id: hostmask.c,v 7.42 2001/06/11 19:20:06 androsyn Exp $ 
  */
  
 #include <stdlib.h>
@@ -759,7 +759,7 @@ report_Klines(struct Client *client_p, int temp, int mask)
 {
  char *name, *host, *pass, *user, *classname, c;
  struct AddressRec *arec;
- struct ConfItem *aconf;
+ struct ConfItem *aconf = NULL;
  int i, port;
 
  if (temp)

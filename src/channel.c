@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.236 2001/06/10 13:13:43 db Exp $
+ * $Id: channel.c,v 7.237 2001/06/11 19:20:05 androsyn Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -1262,6 +1262,7 @@ chm_simple(struct Client *client_p,struct Client *source_p,
   *errors |= SM_ERR_NOOPS;
   return;
  }
+ /* XXX this causes warnings on a 64bit compiler sizeof(void *) > sizeof(int) */
  chf = (int)d;
  if (dir < 0 && !(chptr->mode.mode & chf))
  {

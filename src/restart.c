@@ -1,7 +1,7 @@
 /*
  * restart.c
  *
- * $Id: restart.c,v 7.13 2001/06/05 01:45:36 ejb Exp $
+ * $Id: restart.c,v 7.14 2001/06/11 19:20:06 androsyn Exp $
  */
 #include "tools.h"
 #include "restart.h"
@@ -40,7 +40,7 @@ void server_reboot(void)
   int i;
 
   sendto_realops_flags(FLAGS_ALL,
-		       "Aieeeee!!!  Restarting server... memory: %d",
+		       "Aieeeee!!!  Restarting server... memory: %ld",
 		       get_maxrss());
 
   ilog(L_NOTICE, "Restarting server...");

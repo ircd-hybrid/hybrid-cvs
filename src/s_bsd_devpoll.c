@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_devpoll.c,v 7.8 2001/06/11 18:05:09 androsyn Exp $
+ *  $Id: s_bsd_devpoll.c,v 7.9 2001/06/11 19:20:06 androsyn Exp $
  */
 #include "config.h"
 #ifdef USE_DEVPOLL
@@ -272,7 +272,7 @@ comm_select(unsigned long delay)
 			int fd = dopoll.dp_fds[i].fd;
 			PF *hdl = NULL;
 			fde_t *F = &fd_table[fd];
-			if ((dopoll.dp_fds[i].revents & (POLLRDNORM | POLLIN | POLLHUP | POLLERR)) && (dopoll.dp_fds[i].events & POLLRDNORM|POLLIN)) 
+			if ((dopoll.dp_fds[i].revents & (POLLRDNORM | POLLIN | POLLHUP | POLLERR)) && (dopoll.dp_fds[i].events & (POLLRDNORM|POLLIN))) 
 			{
 				if ((hdl = F->read_handler) != NULL) 
 				{
@@ -288,7 +288,7 @@ comm_select(unsigned long delay)
 				} else
 					ilog(L_NOTICE, "comm_select: Unhandled read event: fdmask: %x\n", fdmask[fd]);
 			}
-			if ((dopoll.dp_fds[i].revents & (POLLWRNORM | POLLOUT | POLLHUP | POLLERR)) && (dopoll.dp_fds[i].events & POLLWRNORM|POLLOUT)) 
+			if ((dopoll.dp_fds[i].revents & (POLLWRNORM | POLLOUT | POLLHUP | POLLERR)) && (dopoll.dp_fds[i].events & (POLLWRNORM|POLLOUT))) 
 			{
 				if ((hdl = F->write_handler) != NULL) 
 				{

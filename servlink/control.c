@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: control.c,v 1.3 2001/06/03 17:39:26 davidt Exp $
+ *   $Id: control.c,v 1.4 2001/06/11 19:19:57 androsyn Exp $
  */
 
 #include "setup.h"                                                   
@@ -25,7 +25,7 @@
 #include <assert.h>
 #include <stdio.h>
 #include <unistd.h>
-
+#include <string.h>
 #ifdef HAVE_LIBCRYPTO
 #include <openssl/evp.h>
 #include <openssl/err.h>
