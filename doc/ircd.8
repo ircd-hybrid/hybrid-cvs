@@ -1,8 +1,8 @@
 .\" @(#)ircd.8 7b10 25 Oct 2001
-.\" $Id: ircd.8,v 1.6 2002/01/13 18:31:46 wcampbel Exp $
-.TH IRCD 8 "ircd-hybrid-7 25 Oct 2001
+.\" $Id: ircd.8,v 1.7 2003/05/14 19:20:13 joshk Exp $
+.TH IRCD 8 "ircd-hybrid-7" 14 May 2003
 .SH NAME
-ircd \- The Internet Relay Chat Program Server 
+ircd \- The IRCD-Hybrid Internet Relay Chat server
 .SH SYNOPSIS
 .hy 0
 .IP \fBircd\fP
@@ -12,9 +12,13 @@ ircd \- The Internet Relay Chat Program Server
 .LP
 \fIircd\fP is the server (daemon) program for the Internet Relay Chat
 Program.  The \fIircd\fP is a server in that its function is to "serve"
-the client program \fIirc(1)\fP with messages and commands.  All commands
-and user messages are passed directly to the \fIircd\fP for processing
-and relaying to other ircd sites.
+the client program \fIirc(1)\fP and other compatible programs with
+messages and commands.  All commands and user messages are passed
+directly to the \fIircd\fP for processing and relaying to other IRC
+servers.
+
+This is \fIircd-hybrid\fP, the highly modified (and hopefully improved)
+variant of the original ircd program by Jarkko Oikarinen.
 .SH OPTIONS
 .TP
 .B \-dlinefile filename
@@ -46,62 +50,54 @@ Makes \fIircd\fP print its version, and exit.
 Makes \fIircd\fP start in debug mode.  \fIIrcd\fP must be compiled in DEBUGMODE
 for this to work.
 .SH USAGE
-If you plan to connect your \fIircd\fP server to an existing Irc-Network,
+If you plan to connect your \fIircd\fP server to an existing IRC network,
 you will need to alter your local IRC configuration file (typically named
-"ircd.conf") so that it will accept and make connections to other \fIircd\fP
-servers.  This file contains the hostnames, Network Addresses, and sometimes
-passwords for connections to other ircds around the world.  Because 
-description of the actual file format of the "ircd.conf" file is beyond the
-scope of this document, please refer to the file INSTALL in the IRC source
-files documentation directory.
+"ircd.conf") so that it will accept and make connections to other \fIIRC\fP
+servers.  This file contains the hostnames, IP addresses, and sometimes
+passwords for connections to other ircds around the world.
+
+The example ircd.conf in the docs/ directory documents itself. Read it 
+carefully or you may expose a risk on your network simply by having your 
+ircd running!
 .LP
 .SH BOOTING THE SERVER
-The \fIircd\fP server can be started as part of the
-Unix boot procedure or just by placing the server into Unix Background.
-Keep in mind that if it is \fBnot\fP part of your Unix's boot-up procedure 
-then you will have to manually start the \fIircd\fP server each time your
-Unix is rebooted.  This means if your Unix is prone to crashing
-or going for for repairs a lot it would make sense to start the \fIircd\fP
-server as part of your UNIX bootup procedure.  
+It is sufficient to type \fBircd\fP at the command line to start 
+ircd-hybrid into the background. If you wish to run ircd in the 
+foreground (perhaps for debugging purposes), use the \fB-foreground\fP 
+parameter.
+
+The ircd-hybrid package in your distribution may ship with an rc-script 
+which handles this for you. In Debian, it is \fB/etc/init.d/ircd-hybrid.\fP
+
 .SH EXAMPLE
-.RS
-.nf
-tolsun% \fBbin/ircd\fP
-.fi
-.RE
-.LP
-Places \fIircd\fP into Unix background and starts up the server for use.
-Note:  You do not have to add the "&" to this command, the program will
-automatically detach itself from tty.
-.RS
-.nf
-leguin% \fBbin/ircd -foreground\fP
-.fi
-.RE
-.LP
-Runs ircd in the foreground.
-.RS
-.nf
+# ircd -configfile /usr/share/ircd/ircd.conf -logfile /var/log/ircd.log
+
+Starts \fBircd\fP with the config file /usr/share/ircd/ircd.conf and 
+with a log file /var/log/ircd.log. It implicitly forks back to the 
+console -- to prevent this use -foreground.
+
+Many of the above settings are hardcoded at compile time in the 
+\fBinclude/config.h\fP file, so it may be convenient to edit these to 
+suit your needs before you compile the ircd.
 .SH COPYRIGHT
 (c) 1988,1989 University of Oulu, Computing Center, Finland,
 .LP
 (c) 1988,1989 Department of Information Processing Science,
 University of Oulu, Finland
 .LP
-(c) 1988,1989,1990,1991 Jarkko Oikarinen
+(c) 1988-1991 Jarkko Oikarinen
 .LP
-(c) 1997,1998,1999,2000,2001 The IRCD-Hybrid project.
+(c) 1997-2003 The IRCD-Hybrid project.
 .LP
-For full COPYRIGHT see LICENSE file with IRC package.
+For full COPYRIGHT see the LICENSE file within the IRC source package.
 .LP
 .RE
-.SH FILES
- "ircd.conf"
-.SH "SEE ALSO"
-ircd.conf(5)
 .SH BUGS
-None... ;-) if somebody finds one, please inform author
-.SH AUTHOR
+If you find a bug and you have a core file from ircd as a result, use a 
+debugger like \fBgdb(1)\fP to process the core file and send a backtrace 
+to \fBhybrid@the-project.org\fP.
+
+.SH AUTHORS
 irc2.8 and earlier: Jarkko Oikarinen, currently jto@tolsun.oulu.fi.
 .LP
 ircd-hybrid-7: IRCD-Hybrid Project, ircd-hybrid@the-project.org.
@@ -109,6 +105,6 @@ ircd-hybrid-7: IRCD-Hybrid Project, ircd-hybrid@the-project.org.
 manual page written by Jeff Trim, jtrim@orion.cair.du.edu,
 later modified by jto@tolsun.oulu.fi.
 .LP
-modified for ircd-hybrid-7 by Edward Brocklesby, ejb@klamath.uucp.leguin.org.uk.
-.LP
-updated by W. Campbell, wcampbel@botbay.net
+updated by W. Campbell, wcampbel@botbay.net, Edward Brocklesby, 
+ejb@klamath.uucp.leguin.org.uk, and highly revised by Joshua Kwan 
+(joshk@triplehelix.org) for the Debian distribution.
