@@ -1,3 +1,6 @@
+-- ircd-hybrid-7.0.3 RELNOTES
+o) fixed crash when you use the modlist/modload/modrestart/etc. functions
+
 -- ircd-hybrid-7.0.2 RELNOTES
 o) fixed ban desync bug caused by faulty redundant mode checking code
 o) fixed flood limit bug
@@ -74,4 +77,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.65.2.10 2004/06/19 14:30:34 lusky Exp $
+$Id: RELNOTES,v 1.65.2.11 2004/06/29 20:45:05 bill Exp $
