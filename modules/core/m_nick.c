@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nick.c,v 1.119 2003/05/26 05:43:18 db Exp $
+ *  $Id: m_nick.c,v 1.120 2003/05/28 07:18:25 michael Exp $
  */
 
 #include "stdinc.h"
@@ -98,7 +98,7 @@ _moddeinit(void)
   mod_del_cmd(&uid_msgtab);
 }
 
-const char *_version = "$Revision: 1.119 $";
+const char *_version = "$Revision: 1.120 $";
 #endif
 
 /*
@@ -710,9 +710,6 @@ static int
 nick_from_server(struct Client *client_p, struct Client *source_p, int parc,
                  char *parv[], time_t newts, char *nick)
 {
-  unsigned int flag;
-  char *m;
-
   if (IsServer(source_p))
   {
     /* A server introducing a new client, change source */
@@ -737,25 +734,48 @@ nick_from_server(struct Client *client_p, struct Client *source_p, int parc,
     strcpy(source_p->name, nick);
     add_to_client_hash_table(nick, source_p);
 
-
-    /* parse usermodes */
-    m = &parv[4][1];
-    while (*m)
+    if (parc > 8)
     {
-      flag = user_modes_from_c_to_bitmask[(unsigned char)*m];
-      if (!(source_p->umodes & UMODE_INVISIBLE) && (flag & UMODE_INVISIBLE))
-	Count.invisi++;
-      if (!(source_p->umodes & UMODE_OPER) && (flag & UMODE_OPER))
-	Count.oper++;
+      unsigned int flag;
+      char *m;
 
-      source_p->umodes |= flag & SEND_UMODES;
-      m++;
-    }
+      /* parse usermodes */
+      m = &parv[4][1];
 
-    return(register_remote_user(client_p, source_p, parv[5], parv[6],
+      while (*m)
+      {
+        flag = user_modes_from_c_to_bitmask[(unsigned char)*m];
+        if (!(source_p->umodes & UMODE_INVISIBLE) && (flag & UMODE_INVISIBLE))
+	  Count.invisi++;
+        if (!(source_p->umodes & UMODE_OPER) && (flag & UMODE_OPER))
+	  Count.oper++;
+
+        source_p->umodes |= flag & SEND_UMODES;
+        m++;
+      }
+
+      return(register_remote_user(client_p, source_p, parv[5], parv[6],
                                   parv[7], NULL, parv[8]));
+    }
   }
+  else if(source_p->name[0])
+  {
+    /* client changing their nick */
+    if (irccmp(parv[0], nick))
+      source_p->tsinfo = newts ? newts : CurrentTime;
 
+    sendto_common_channels_local(source_p, 1, ":%s!%s@%s NICK :%s",
+                                 source_p->name,source_p->username,
+                                 source_p->host, nick);
+
+    if (source_p->user != NULL)
+    {
+      add_history(source_p,1);
+      sendto_server(client_p, source_p, NULL, NOCAPS, NOCAPS, NOFLAGS,
+                    ":%s NICK %s :%lu",
+		      parv[0], nick, (unsigned long)source_p->tsinfo);
+    }
+  }
 
   /* set the new nick name */
   if (source_p->name[0])
