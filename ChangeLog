@@ -1,3 +1,15 @@
+androsyn    2001/12/14 23:25:37 EST	(20011215_5)
+
+  Modified files:
+    .                    configure 
+  Log:
+  Fixed the check for sigio...
+  
+  Revision  Changes    Path
+  7.108     +6 -6      ircd-hybrid-7/configure
+
+
+
 db          2001/12/14 23:24:18 EST	(20011215_4)
 
   Modified files:
@@ -529,7 +541,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3177 2001/12/15 04:24:23 db Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3178 2001/12/15 04:25:42 androsyn Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -18883,4 +18895,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3177 2001/12/15 04:24:23 db Exp $
+$Id: ChangeLog,v 7.3178 2001/12/15 04:25:42 androsyn Exp $
