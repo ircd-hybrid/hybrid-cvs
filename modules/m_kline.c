@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.111.2.1 2003/10/26 02:08:15 db Exp $
+ *  $Id: m_kline.c,v 1.111.2.2 2003/10/26 20:01:25 db Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&kline_msgtab);
   mod_del_cmd(&dline_msgtab);
 }
-const char *_version = "$Revision: 1.111.2.1 $";
+const char *_version = "$Revision: 1.111.2.2 $";
 #endif
 
 /* Local function prototypes */
@@ -293,6 +293,10 @@ ms_kline(struct Client *client_p, struct Client *source_p,
   if (!IsPerson(source_p))
     return;
 
+  if (!find_u_conf((char *)source_p->user->server,
+		   source_p->username, source_p->host))
+    return;
+
   if (valid_user_host(source_p, kuser, khost))
     {
       sendto_realops_flags(FLAGS_ALL, L_ALL,
@@ -314,40 +318,38 @@ ms_kline(struct Client *client_p, struct Client *source_p,
   if(!valid_comment(source_p, kreason))
     return;
 
-  /* We check if the kline already exists after we've announced its 
-   * arrived, to avoid confusing opers - fl
-   */
-  if (already_placed_kline(source_p, kuser, khost))
-    return;
-
   tkline_time = atoi(parv[2]);
 
   set_time();
   cur_time = CurrentTime;
   current_date = smalldate(cur_time);
 
-  if (find_u_conf((char *)source_p->user->server,
-		  source_p->username, source_p->host))
-    {
-      sendto_realops_flags(FLAGS_ALL, L_ALL,
-			   "*** Received K-Line for [%s@%s] [%s], from %s!%s@%s on %s",
-			   kuser, khost, kreason,
-			   source_p->name, source_p->username,
-			   source_p->host, source_p->user->server);
+  /* We check if the kline already exists after we've announced its 
+   * arrived, to avoid confusing opers - fl
+   * No, 'cause if there are remote klines, it has to be checked here -db
+   */
 
-      aconf = make_conf();
+  if (already_placed_kline(source_p, kuser, khost))
+    return;
 
-      aconf->status = CONF_KILL;
-      DupString(aconf->user, kuser);
-      DupString(aconf->host, khost);
-      DupString(aconf->passwd, kreason);
+  sendto_realops_flags(FLAGS_ALL, L_ALL,
+		       "*** Received K-Line for [%s@%s] [%s], from %s!%s@%s on %s",
+		       kuser, khost, kreason,
+		       source_p->name, source_p->username,
+		       source_p->host, source_p->user->server);
+  
+  aconf = make_conf();
+  
+  aconf->status = CONF_KILL;
+  DupString(aconf->user, kuser);
+  DupString(aconf->host, khost);
+  DupString(aconf->passwd, kreason);
 
-      if (tkline_time != 0)
-	apply_tkline(source_p, aconf, current_date, tkline_time);
-      else
-	apply_kline(source_p, aconf, current_date, cur_time);
+  if (tkline_time != 0)
+    apply_tkline(source_p, aconf, current_date, tkline_time);
+  else
+    apply_kline(source_p, aconf, current_date, cur_time);
 
-      }
 } /* ms_kline() */
 
 /*
