@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 1.68 2001/06/26 19:57:11 leeh Exp $
+ *   $Id: m_join.c,v 1.69 2001/06/28 22:49:51 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -28,6 +28,7 @@
 #include "vchannel.h"
 #include "client.h"
 #include "common.h"   /* bleah */
+#include "resv.h"
 #include "hash.h"
 #include "irc_string.h"
 #include "ircd.h"
@@ -144,13 +145,14 @@ static void m_join(struct Client *client_p,
 	  do_join_0(&me,source_p);
 	  continue;
 	}
-
-      if(is_resv(name))
+	
+      if(find_resv(name, RESV_CHANNEL))
       {
         sendto_one(source_p, form_str(ERR_UNAVAILRESOURCE),
 	           me.name, source_p->name, name);
         continue;
       }
+
 
       if( (chptr = hash_find_channel(name, NullChn)) != NULL )
 	{
