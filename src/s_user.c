@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.80 2000/12/24 02:15:36 isomer Exp $
+ *  $Id: s_user.c,v 7.81 2000/12/24 03:55:15 ejb Exp $
  */
 #include "tools.h"
 #include "s_user.h"
@@ -1031,6 +1031,8 @@ static void user_welcome(struct Client *sptr)
   sendto_one(sptr, form_str(RPL_CREATED),me.name,sptr->name,creation);
   sendto_one(sptr, form_str(RPL_MYINFO), me.name, sptr->name,
 	     me.name, version);
+
+  ircsprintf(isupportbuffer,FEATURES,FEATURESVALUES);
   sendto_one(sptr, form_str(RPL_ISUPPORT), me.name, sptr->name, 
   	     isupportbuffer);
   show_lusers(sptr);

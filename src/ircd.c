@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.82 2000/12/24 02:15:35 isomer Exp $
+ * $Id: ircd.c,v 7.83 2000/12/24 03:55:14 ejb Exp $
  */
 #include "tools.h"
 #include "ircd.h"
@@ -435,8 +435,6 @@ static void initialize_message_files(void)
     ReadMessageFile( &ConfigFileEntry.helpfile );
     ReadMessageFile( &ConfigFileEntry.motd );
     ReadMessageFile( &ConfigFileEntry.opermotd );
-    
-    ircsprintf(isupportbuffer,FEATURES,FEATURESVALUES);
   }
 
 /*
