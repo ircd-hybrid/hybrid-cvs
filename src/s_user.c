@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.259 2003/05/19 01:38:22 michael Exp $
+ *  $Id: s_user.c,v 7.260 2003/05/19 03:11:27 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -1032,14 +1032,14 @@ user_mode(struct Client *client_p, struct Client *source_p, int parc, char *parv
 
   if ((source_p->umodes & UMODE_NCHANGE) && !IsOperN(source_p))
   {
-    sendto_one(source_p, ":%s NOTICE %s :*** You need oper and N flag for +n",
+    sendto_one(source_p, ":%s NOTICE %s :*** You need nick_changes = yes;",
                me.name, source_p->name);
     source_p->umodes &= ~UMODE_NCHANGE; /* only tcm's really need this */
   }
 
   if (MyConnect(source_p) && (source_p->umodes & UMODE_ADMIN) && !IsOperAdmin(source_p))
   {
-    sendto_one(source_p, ":%s NOTICE %s :*** You need oper and A flag for +a",
+    sendto_one(source_p, ":%s NOTICE %s :*** You need admin = yes;",
                me.name, source_p->name);
     source_p->umodes &= ~UMODE_ADMIN;
   }
