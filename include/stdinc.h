@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- * $Id: stdinc.h,v 1.1 2002/05/24 23:39:13 androsyn Exp $
+ * $Id: stdinc.h,v 1.2 2003/03/25 01:17:49 db Exp $
  *
  */
  
@@ -48,7 +48,6 @@
 #endif
 
 
-
 #include <stdio.h>
 #include <assert.h>
 #include <stdio.h>
@@ -57,9 +56,6 @@
 #include <netdb.h>
 #include <stdarg.h>
 #include <signal.h>
-#ifdef USE_GETTEXT
-#include <libintl.h>
-#endif
 #include <dirent.h>
 #include <ctype.h>
 

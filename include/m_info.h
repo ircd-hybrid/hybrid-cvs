@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.h,v 7.40 2002/05/24 23:34:07 androsyn Exp $
+ *  $Id: m_info.h,v 7.41 2003/03/25 01:17:49 db Exp $
  */
 
 #ifndef INCLUDED_m_info_h
@@ -181,12 +181,6 @@ Info MyInformation[] = {
 
   { "TS_MAX_DELTA_DEFAULT", "", TS_MAX_DELTA_DEFAULT, "Maximum Allowed TS Delta from another Server" },
   { "TS_WARN_DELTA_DEFAULT", "", TS_WARN_DELTA_DEFAULT, "Maximum TS Delta before Sending Warning" },
-
-#ifdef USE_GETTEXT
-  { "USE_GETTEXT", "ON", 0, "Use gettext() for message customisation" },
-#else
-  { "USE_GETTEXT", "OFF", 0, "Use gettext() for message customisation" },
-#endif /* USE_GETTEXT */
 
 #ifdef USE_SYSLOG
   { "USE_SYSLOG", "ON", 0, "Log Errors to syslog file" },

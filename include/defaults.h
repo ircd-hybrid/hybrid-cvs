@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: defaults.h,v 7.6 2002/11/23 17:12:55 db Exp $
+ *  $Id: defaults.h,v 7.7 2003/03/25 01:17:49 db Exp $
  */
 
 #ifndef INCLUDED_defaults_h
@@ -85,14 +85,6 @@
 
 #define MIN_SPAM_NUM 5
 #define MIN_SPAM_TIME 60
-
-#if defined( WANT_GETTEXT ) && defined( HAVE_GETTEXT ) && defined( MSGPATH )
-#define USE_GETTEXT 1
-#define _(a)       (gettext(a))
-#else
-#undef USE_GETTEXT
-#define _(a)       (a)
-#endif
 
 #define CONFIG_H_LEVEL_7
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: setup.h_vms,v 7.11 2003/02/15 16:32:44 lusky Exp $
+ *  $Id: setup.h_vms,v 7.12 2003/03/25 01:17:49 db Exp $
  */
 
 /* include/setup.h.in.  Generated automatically from autoconf/configure.in by autoheader.  */
@@ -55,9 +55,6 @@
  * to symbols loaded from modules.
  */
 #undef SYMBOL_PREFIX
-
-/* Define if you have the gettext function.  */
-#undef HAVE_GETTEXT
 
 /* Define if you have the <errno.h> header file.  */
 #define HAVE_ERRNO_H

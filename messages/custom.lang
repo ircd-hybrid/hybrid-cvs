@@ -1,0 +1,18 @@
+; ircd-hybrid-7 custom message file
+; Copyright (C) 2000
+; David Taylor <davidt@yadt.co.uk>, 2000.
+; $Id: custom.lang,v 1.1 2003/03/25 01:17:51 db Exp $
+
+RPL_LUSEROP:             :%s 252 %s %d :Smurf Targets (IRC Operators) online
+RPL_LOAD2HI:             :%s 263 %s :Hold your horses... the server load is temporarily too heavy. Try again later, ok?
+RPL_UNAWAY:              :%s 305 %s :OK, you're not /away anymore. Did you have fun?
+RPL_NOWAWAY:             :%s 306 %s :OK, you're /away now. Hurry back!
+RPL_WHOISADMIN:          :%s 308 %s %s :is a Goon Gumpa (Server Admin)
+RPL_WHOISOPERATOR:       :%s 313 %s %s :is a Smurf Target (IRC Operator)
+RPL_YOUREOPER:           :%s 381 %s :You are now one bad motherfucker - Go /kill someone.
+RPL_REHASHING:           :%s 382 %s %s :it slices, dices, and even reloads config files! Rehashing config file, mang.
+ERR_PASSWDMISMATCH:      :%s 464 %s :BZZT!! Wrong password, homez. Are you sure you know what you're doing??
+ERR_NOPRIVILEGES:        :%s 481 %s :I don't THINK so, homez... you ain't got what it takes. (IRC operator)
+ERR_CHANOPRIVSNEEDED:    :%s 482 %s %s :You can't do that thing, when you don't have that swing (You're not channel operator)
+ERR_CANTKILLSERVER:      :%s 483 %s :Don't be an idiot - you can't kill a SERVER, fool.
+ERR_NOOPERHOST:          :%s 491 %s :Sorry, you just don't have what it takes to be an IRC Operator here.

@@ -1,75 +1,54 @@
-MSGFMT = @MSGFMT@
-RM=	@RM@
+# $Id: Makefile.in,v 1.12 2003/03/25 01:17:51 db Exp $
+#
+RM            = @RM@
+MV            = @MV@
+INSTALL       = @INSTALL@
+INSTALL_DATA  = @INSTALL_DATA@
+prefix        = @prefix@
+messagedir    = @prefix@/messages
 
-default: all
+LANGFILES     = ayb.lang            \
+                custom.lang         \
+                ircd-croatian.lang  \
+                ircd-danish.lang    \
+                ircd-dutch.lang     \
+                ircd-german.lang    \
+                ircd-norwegian.lang \
+                ircd-spanish.lang   \
+                ircd-swedish.lang   \
 
-SRCS = \
-  custom.po \
-  ayb.po
-
-OBJS = ${SRCS:.po=.mo}
-
-prefix          = @prefix@
-exec_prefix     = @exec_prefix@
-exec_suffix     = @exec_suffix@
-bindir          = @bindir@
-libexecdir      = @libexecdir@
-sysconfdir      = @sysconfdir@
-localstatedir   = @localstatedir@
-messagedir       = @prefix@/messages
-
-
-all: ${OBJS}
-build: all
-
-.SUFFIXES:
-.SUFFIXES: .po .mo
-
-.po.mo:
-	${MSGFMT} $@ $<
-
-.PHONY: install depend clean distclean
 
 install-mkdirs:
-	-@if test ! -d $(messagedir); then \
+	-@if test ! -d $(prefix); then      \
+                echo "mkdir $(prefix)";     \
+                mkdir $(prefix);            \
+        fi
+
+	-@if test ! -d $(messagedir); then  \
 		echo "mkdir $(messagedir)"; \
-		mkdir $(messagedir); \
-	fi; \
-	for i in ./*.mo; do \
-		LNAME=`echo $$i | sed 's/^\.\///' | sed 's/\.mo$$//'`; \
-		if test ! -d $(messagedir)/$${LNAME}/LC_MESSAGES/; then \
-			echo "mkdir $(messagedir)/$${LNAME}/LC_MESSAGES/"; \
-			mkdir -p $(messagedir)/$${LNAME}/LC_MESSAGES/; \
-		fi; \
+		mkdir $(messagedir);        \
+	fi;
+
+install: install-mkdirs
+	-@echo    "Installing language files to $(messagedir)...";          \
+
+	@for i in $(LANGFILES); do                                          \
+		if test -f $(messagedir)/$$i; then                          \
+			echo $(MV) $(messagedir)/$$i $(messagedir)/$$i.old; \
+			$(MV) $(messagedir)/$$i $(messagedir)/$$i.old;      \
+		fi;                                                         \
+		echo $(INSTALL_DATA) $$i $(messagedir);                     \
+		$(INSTALL_DATA) $$i $(messagedir);                          \
 	done
 
-install: build install-mkdirs
-	-@echo    "Installing message files to $(messagedir)..."; \
-	for i in ./*.mo; do \
-		LNAME=`echo $$i | sed 's/^\.\///' | sed 's/\.mo$$//'`; \
-		echo "$${LNAME} "; \
-		cp $$i "$(messagedir)/$${LNAME}/LC_MESSAGES/ircd-hybrid.mo"; \
-	done; \
-	echo
-
-depend:
-
-distclean: clean
+distclean:
 	${RM} -f Makefile
-	${RM} -f translations/Makefile
-
-clean:
-	${RM} -f *.mo
 
 lint:
 
-mrupdate:
-	@for i in $(SRCS); do \
-                echo "Updating $$i"; \
-                xgettext -a -LC -o $$i.tmp$$$$ ../src/messages.tab; \
-                xgettext --keyword=_ -j -LC -o $$i.tmp$$$$ ../include/*.h; \
-                xgettext --keyword=_ -j -LC -o $$i.tmp$$$$ ../src/*.c; \
-                xgettext --keyword=_ -j -LC -o $$i.tmp$$$$ ../modules/*.c; \
-                msgmerge -E -i -o $$i $$i $$i.tmp$$$$; \
-                rm $$i.tmp$$$$; \
-        done
+build:
+
+depend:
+
+clean:
+

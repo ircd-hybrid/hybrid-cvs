@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: config.h,v 7.142 2003/02/06 08:46:11 a1kmm Exp $
+ *  $Id: config.h,v 7.143 2003/03/25 01:17:49 db Exp $
  */
 
 #ifndef INCLUDED_config_h
@@ -157,11 +157,7 @@
 #define LIPATH  ETCPATH "/links.txt"            /* cached links file */
 #endif /* !VMS */
 
-/* WANT_GETTEXT - toggle gettext support.
- * NOTE: if configure doesn't detect gettext, this won't do anything.
- */
-#define WANT_GETTEXT
- 
+
 /* Ignore bogus timestamps from other servers. Yes this will desync
  * the network, but it will allow chanops to resync with a valid non TS 0
  *
