@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.120 2001/11/13 11:45:48 leeh Exp $
+ *   $Id: m_sjoin.c,v 1.121 2001/12/03 16:21:06 androsyn Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -334,7 +334,11 @@ static void ms_sjoin(struct Client *client_p,
     {
       remove_our_modes(hide_or_not, chptr, top_chptr, source_p);
     }
-
+  if(!keep_our_modes)
+     chptr->ts_winner = NO;
+  else
+     chptr->ts_winner = YES;
+     
   if (*modebuf != '\0')
     {
       /* This _SHOULD_ be to ALL_MEMBERS
