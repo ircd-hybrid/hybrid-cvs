@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.102 2001/05/31 16:30:38 davidt Exp $
+ * $Id: ircd_lexer.l,v 1.103 2001/05/31 19:43:01 davidt Exp $
  */
 
 %option case-insensitive
@@ -165,6 +165,7 @@ logging         { return LOGGING; }
 logpath         { return T_LOGPATH; }
 masked		{ return TMASKED; }
 max_clients     { return T_MAX_CLIENTS; }
+max_buffer	{ return T_MAX_BUFFER; }
 client_flood	{ return T_CLIENT_FLOOD; }
 max_number	{ return MAX_NUMBER; }
 maximum_links   { return MAXIMUM_LINKS; }

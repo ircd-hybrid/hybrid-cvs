@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.h,v 7.19 2001/05/30 15:06:46 davidt Exp $
+ * $Id: modules.h,v 7.20 2001/05/31 19:42:59 davidt Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -46,6 +46,7 @@ struct module_path
 
 /* add a path */
 void mod_add_path(char *path);
+void mod_clear_paths(void);
 
 /* load a module */
 extern void load_module(char *path);

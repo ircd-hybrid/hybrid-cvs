@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.125 2001/05/31 16:30:35 davidt Exp $
+ * $Id: s_conf.h,v 7.126 2001/05/31 19:43:00 davidt Exp $
  */
 
 #include "setup.h"
@@ -129,7 +129,7 @@ struct ConfItem
 #define CONF_FLAGS_ALLOW_AUTO_CONN      0x00004000
 #define CONF_FLAGS_LAZY_LINK            0x00008000
 #define CONF_FLAGS_ENCRYPTED            0x00010000
-#define CONF_FLAGS_NOCOMPRESSED         0x00020000
+#define CONF_FLAGS_COMPRESSED           0x00020000
 #define CONF_FLAGS_PERSISTANT           0x00040000
 #define CONF_FLAGS_TEMPORARY            0x00080000
 #define CONF_FLAGS_CRYPTLINK            0x00100000
@@ -252,6 +252,7 @@ struct server_info
   struct      irc_inaddr ip;
   struct      irc_inaddr ip6;
   int         max_clients;
+  int         max_buffer;
   int         no_hack_ops;
   int	      specific_ipv4_vhost;
   int         specific_ipv6_vhost;

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.c,v 7.61 2001/05/24 23:15:33 davidt Exp $
+ * $Id: modules.c,v 7.62 2001/05/31 19:43:02 davidt Exp $
  */
 #include "config.h"
 
@@ -143,6 +143,22 @@ mod_add_path(char *path)
   dlinkAdd(pathst, node, &mod_paths);
 }
 
+void
+mod_clear_paths(void)
+{
+  struct module_path *pathst;
+  dlink_node *node, *next;
+
+  next = mod_paths.head->next;
+  while(node = next)
+  {
+    next = node->next;
+    pathst = (struct module_path *)node->data;
+    dlinkDelete(node, &mod_paths);
+    MyFree(pathst);
+    MyFree(node);
+  }
+}
 
 char *
 irc_basename(char *path)
