@@ -55,6 +55,9 @@
     the file is installed, you can SET MSGLOCALE back to the language that
     was just updated.
 
+6.  PRIVMSG/NOTICE oper@server :message
+    This translates into a WALLOPS message, broken.
+
 BUG REPORTS: If you run this code and encounter problems, you must report
  the bug in one of the following ways:
   a) By EMAIL to ircd-hybrid@the-project.org.
@@ -64,4 +67,4 @@ BUG REPORTS: If you run this code and encounter problems, you must report
  with any report  (with passwords and other sensitive information masked).
 
 --------------------------------------------------------------------------------
-$Id: BUGS,v 7.27 2001/08/26 04:31:35 wcampbel Exp $
+$Id: BUGS,v 7.28 2001/09/03 01:56:23 wcampbel Exp $
