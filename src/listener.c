@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.c,v 7.61 2002/01/05 09:15:14 a1kmm Exp $
+ *  $Id: listener.c,v 7.62 2002/02/04 04:29:50 androsyn Exp $
  */
 
 #include "config.h"
@@ -225,10 +225,7 @@ static int inetport(struct Listener* listener)
 
   /* Listen completion events are READ events .. */
 
-
-  comm_setselect(fd, FDLIST_SERVICE, COMM_SELECT_READ, accept_connection,
-    listener, 0);
-
+   accept_connection(fd, listener);
   return 1;
 }
 

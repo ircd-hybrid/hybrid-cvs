@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.235 2002/01/23 17:59:25 leeh Exp $
+ *  $Id: s_serv.c,v 7.236 2002/02/04 04:29:51 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -258,11 +258,7 @@ void collect_zipstats(void *unused)
               target_p->localClient->slinkq[0] = SLINKCMD_ZIPSTATS;
               target_p->localClient->slinkq_ofs = 0;
               target_p->localClient->slinkq_len = 1;
-
-              /* schedule a write */
-              comm_setselect(target_p->localClient->ctrlfd, FDLIST_IDLECLIENT,
-                             COMM_SELECT_WRITE, send_queued_slink_write,
-                             target_p, 0);
+	      send_queued_slink_write(target_p->localClient->ctrlfd, target_p);
             }
         }
     }
@@ -1468,10 +1464,8 @@ int fork_server(struct Client *server)
     fd_open(server->fd_r, FD_PIPE, NULL);
 #endif
 
-    comm_setselect(slink_fds[0][1][0], FDLIST_SERVER, COMM_SELECT_READ,
-                   read_ctrl_packet, server, 0);
-    comm_setselect(slink_fds[1][1][0], FDLIST_SERVER, COMM_SELECT_READ,
-                   read_packet, server, 0);
+   read_ctrl_packet(slink_fds[0][1][0], server);
+   read_packet(slink_fds[1][1][0], server);	
   }
 
   return 0;

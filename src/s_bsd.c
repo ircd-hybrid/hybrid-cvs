@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.158 2002/01/10 20:30:49 jmallett Exp $
+ *  $Id: s_bsd.c,v 7.159 2002/02/04 04:29:51 androsyn Exp $
  */
 
 #include "config.h"
@@ -321,13 +321,6 @@ void close_connection(struct Client *client_p)
   else
     ServerStats->is_ni++;
   
-#if 0
-  if (client_p->localClient->dns_reply)
-    {
-      --client_p->localClient->dns_reply->ref_count;
-      client_p->localClient->dns_reply = 0;
-    }
-#endif
   if (-1 < client_p->fd)
     {
       /* attempt to flush any pending dbufs. Evil, but .. -- adrian */

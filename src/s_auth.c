@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.80 2002/01/05 09:15:15 a1kmm Exp $
+ *  $Id: s_auth.c,v 7.81 2002/02/04 04:29:51 androsyn Exp $
  */
 
 /*
@@ -196,8 +196,7 @@ static void release_auth_client(struct Client* client)
   client->localClient->allow_read = MAX_FLOOD_PER_SEC;
   comm_setflush(client->fd, 1000, flood_recalc, client);
   add_client_to_list(client);
-  comm_setselect(client->fd, FDLIST_IDLECLIENT, COMM_SELECT_READ, read_packet,
-    client, 0);
+  read_packet(client->fd, client);
 }
  
 /*
@@ -537,9 +536,7 @@ void auth_connect_callback(int fd, int error, void *data)
     }
   ClearAuthConnect(auth);
   SetAuthPending(auth);
-  /* Its idle, because we don't mind this taking a little time -- adrian */
-  comm_setselect(auth->fd, FDLIST_IDLECLIENT, COMM_SELECT_READ,
-    read_auth_reply, auth, 0);
+  read_auth_reply(auth->fd, auth);
 }
 
 
