@@ -1,3 +1,15 @@
+leeh        2002/07/17 19:31:13 EDT	(20020718_1)
+
+  Modified files:
+    doc                  challenge.txt 
+  Log:
+  - hwys updated challenge.txt
+  
+  Revision  Changes    Path
+  1.9       +333 -191  ircd-hybrid-7/doc/challenge.txt
+
+
+
 leeh        2002/07/17 19:09:11 EDT	(20020718_0)
 
   Modified files:
@@ -30043,4 +30055,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3895 2002/07/17 23:09:18 leeh Exp $
+$Id: ChangeLog,v 7.3896 2002/07/17 23:31:20 leeh Exp $
