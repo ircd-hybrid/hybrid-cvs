@@ -59,10 +59,7 @@
     the file is installed, you can SET MSGLOCALE back to the language that
     was just updated.
 
-8.  kqueue seems to be break on some FreeBSD systems; this bug was confirmed
-    by Adrian Chadd, and will be fixed in the future (I hope!).
-
-9.  While on a LL server, doing a /TOPIC or /MODE against a channel which
+8.  While on a LL server, doing a /TOPIC or /MODE against a channel which
     doesn't exist results in the channel being shown as existing, and
     with a timestamp of 'Mon Jan 18 19:14:07 2038'.
 
@@ -78,4 +75,4 @@ BUG REPORTS: If you run this code and encounter problems, you must report
  with any report  (with passwords and other sensitive information masked).
 
 --------------------------------------------------------------------------------
-$Id: BUGS,v 7.20 2001/04/19 23:54:06 jdc Exp $
+$Id: BUGS,v 7.21 2001/04/24 09:41:56 jdc Exp $
