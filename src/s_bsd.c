@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.180.2.2 2003/05/29 05:13:26 lusky Exp $
+ *  $Id: s_bsd.c,v 7.180.2.3 2003/05/31 07:37:05 lusky Exp $
  */
 
 #include "stdinc.h"
@@ -49,6 +49,7 @@
 #include "send.h"
 #include "s_debug.h"
 #include "memory.h"
+#include "ircd_defs.h"
 
 
 #ifndef IN_LOOPBACKNET
