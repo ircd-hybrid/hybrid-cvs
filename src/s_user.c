@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.169 2001/10/25 23:46:46 androsyn Exp $
+ *  $Id: s_user.c,v 7.170 2001/11/30 09:52:23 a1kmm Exp $
  */
 
 #include <sys/types.h>
@@ -534,9 +534,8 @@ int register_remote_user(struct Client *client_p, struct Client *source_p,
    */
   if (!target_p)
     {
-      kill_client(client_p, source_p,
-		  "%s GHOST (no server found)",		  
-		  me.name, user->server);
+      kill_client(client_p, source_p, "%s GHOST (no server found)",
+                  me.name);
 #if 0
       sendto_one(client_p,
 		 ":%s KILL %s :%s GHOST (no server %s on the net)",
