@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_set.c,v 1.41 2002/01/06 18:12:13 leeh Exp $
+ *  $Id: m_set.c,v 1.42 2002/01/30 14:59:58 leeh Exp $
  */
 
 /* rewritten by jdc */
@@ -64,7 +64,7 @@ _moddeinit(void)
   mod_del_cmd(&set_msgtab);
 }
 
-char *_version = "$Revision: 1.41 $";
+char *_version = "$Revision: 1.42 $";
 #endif
 /* Structure used for the SET table itself */
 struct SetStruct
@@ -444,7 +444,7 @@ static void quote_splitmode(struct Client *source_p, char *charval)
 			   get_oper_name(source_p));
 
       splitchecking = 1;
-      check_splitmode();
+      check_splitmode(NULL);
     }
   }
   else
@@ -468,7 +468,7 @@ static void quote_splitnum(struct Client *source_p, int newval)
     split_servers = newval;
 
     if(splitchecking)
-      check_splitmode();
+      check_splitmode(NULL);
   }
   else
     sendto_one(source_p, ":%s NOTICE %s :SPLITNUM is currently %i", 
@@ -486,7 +486,7 @@ static void quote_splitusers(struct Client *source_p, int newval)
     split_users = newval;
 
     if(splitchecking)
-      check_splitmode();
+      check_splitmode(NULL);
   }
   else
     sendto_one(source_p, ":%s NOTICE %s :SPLITUSERS is currently %i", 
