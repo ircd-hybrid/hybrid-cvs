@@ -1,3 +1,8 @@
+*** 20001210_7 by db
+- missed a place where send_trim() should have been used
+
+
+
 *** 20001210_6 by db
 - as promised, tidied up send.c added to send.txt document
 
@@ -2184,7 +2189,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.778 2000/12/10 21:36:09 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.779 2000/12/10 21:49:23 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
