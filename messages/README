@@ -36,7 +36,7 @@ will try, but cannot guarantee that the translations are up to date with the
 rest of the source tree, and with the "customized" messages.
 
 Contributions are welcome, at present time please send contributed translations
-to ircd-hybrid@the-project.org, hybrid@the-project.org, or directly to one
-of the people who work with the translations, currently wcampbel@botbay.net.
+to bugs@ircd-hybrid.org, hybrid@ircd-hybrid.org, or directly to one of the people
+who work with the translations.
 
-$Id: README,v 1.4 2003/05/19 04:08:36 joshk Exp $
+$Id: README,v 1.5 2004/07/17 00:12:09 lusky Exp $

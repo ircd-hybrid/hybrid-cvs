@@ -1,4 +1,4 @@
-$Id: Hybrid-team,v 7.77 2004/07/16 23:58:03 joshk Exp $
+$Id: Hybrid-team,v 7.78 2004/07/17 00:12:05 lusky Exp $
 
 The hybrid team is a group of ircd coders who were frustrated
 with the instability and all-out "dirtiness" of the EFnet ircd's
@@ -7,8 +7,8 @@ of people, all of us.
  
 Anyone is welcome to contribute to this effort. You are encouraged
 to participate in the Hybrid mailing list. To subscribe to the
-mailing list, send email to listmanager@the-project.org with the
-subject "subscribe hybrid".
+Hybrid List, use this link:
+  https://lists.ircd-hybrid.org/mailman/listinfo/hybrid
  
 The core team as, of this major release:
  
@@ -63,5 +63,6 @@ Others are welcome. Always. And if we left anyone off the above list,
 be sure to let us know that too. Many others have contributed to
 previous versions of this ircd and its ancestors, too many to list
 here.
+
+Send bug fixes/complaints/rotten tomatoes to bugs@ircd-hybrid.org.
  
-Send bug fixes/complaints/rotten tomatoes to ircd-hybrid@the-project.org.
