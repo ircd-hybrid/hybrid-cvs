@@ -16,7 +16,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: listener.h,v 7.4 2000/12/30 04:36:54 lusky Exp $
+ * $Id: listener.h,v 7.5 2001/01/17 19:35:42 davidt Exp $
  */
 #ifndef INCLUDED_listener_h
 #define INCLUDED_listener_h
@@ -51,7 +51,6 @@ extern void        add_listener(int port, const char* vaddr_ip);
 extern void        close_listener(struct Listener* listener);
 extern void        close_listeners(void);
 extern const char* get_listener_name(const struct Listener* listener);
-extern void        mark_listeners_closing(void);
 extern void        show_ports(struct Client* client);
 extern struct Listener* make_listener(int, struct in_addr);
 extern void free_listener(struct Listener * );

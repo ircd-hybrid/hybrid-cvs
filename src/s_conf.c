@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.144 2001/01/11 07:48:28 a1kmm Exp $
+ *  $Id: s_conf.c,v 7.145 2001/01/17 19:35:47 davidt Exp $
  */
 #include "tools.h"
 #include "s_conf.h"
@@ -1372,8 +1372,8 @@ int rehash(struct Client *cptr,struct Client *sptr, int sig)
     sendto_realops_flags(FLAGS_ALL,
 			 "Got signal SIGHUP, reloading ircd conf. file");
 
-  read_conf_files(NO);
   close_listeners();
+  read_conf_files(NO);
   flush_deleted_I_P();
   return 0;
 }

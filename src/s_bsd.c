@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.85 2001/01/16 09:00:59 db Exp $
+ *  $Id: s_bsd.c,v 7.86 2001/01/17 19:35:47 davidt Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -299,7 +299,7 @@ void close_connection(struct Client *cptr)
       assert(0 < cptr->localClient->listener->ref_count);
       if (0 == --cptr->localClient->listener->ref_count &&
 	  !cptr->localClient->listener->active) 
-	close_listener(cptr->localClient->listener);
+	free_listener(cptr->localClient->listener);
       cptr->localClient->listener = 0;
     }
 
