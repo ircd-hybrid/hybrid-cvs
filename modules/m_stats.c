@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.152 2003/10/07 22:37:13 bill Exp $
+ *  $Id: m_stats.c,v 1.153 2003/10/13 08:25:51 michael Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.152 $";
+const char *_version = "$Revision: 1.153 $";
 #endif
 
 static char *parse_stats_args(int, char **, int *, int *);
@@ -387,7 +387,7 @@ stats_tdeny(struct Client *source_p)
         aconf = arec->aconf;
 
         /* dont report a permanent dline as a tdline */
-        if ((aconf->flags & CONF_FLAGS_TEMPORARY) == 0)
+        if (!(aconf->flags & CONF_FLAGS_TEMPORARY))
           continue;
 
         conf = unmap_conf_item(aconf);
@@ -621,7 +621,7 @@ stats_tklines(struct Client *source_p)
       return;
 
     /* dont report a permanent kline as a tkline */
-    if((aconf->flags & CONF_FLAGS_TEMPORARY) == 0)
+    if (!(aconf->flags & CONF_FLAGS_TEMPORARY))
       return;
 
     conf = unmap_conf_item(aconf);
@@ -706,28 +706,19 @@ stats_oper(struct Client *source_p)
 static void
 stats_operedup(struct Client *source_p)
 {
-  struct Client *target_p;
-  struct AccessItem *aconf;
-  dlink_node *oper_ptr;
   dlink_node *ptr;
-  unsigned int j = 0;
 
-  DLINK_FOREACH(oper_ptr, oper_list.head)
+  DLINK_FOREACH(ptr, oper_list.head)
   {
-    target_p = oper_ptr->data;
-
-    j++;
+    struct Client *target_p = ptr->data;
 
     if (MyClient(source_p) && IsOper(source_p))
     {
-      ptr   = target_p->localClient->confs.head;
-      aconf = map_to_conf(ptr->data);
-
       sendto_one(source_p, ":%s %d %s p :[%c][%s] %s (%s@%s) Idle: %d",
                  from, RPL_STATSDEBUG, to,
                  IsAdmin(target_p) ?
 		 (IsOperHiddenAdmin(target_p) ? 'O' : 'A') : 'O',
-		 oper_privs_as_string(aconf->port),
+		 oper_privs_as_string(target_p->localClient->operflags),
 		 target_p->name, target_p->username, target_p->host,
 		 (int)(CurrentTime - target_p->user->last));
     }
@@ -742,8 +733,8 @@ stats_operedup(struct Client *source_p)
     }
   }
 
-  sendto_one(source_p, ":%s %d %s p :%d OPER(s)",
-             from, RPL_STATSDEBUG, to, j);
+  sendto_one(source_p, ":%s %d %s p :%lu OPER(s)",
+             from, RPL_STATSDEBUG, to, dlink_list_length(&oper_list));
   stats_p_spy(source_p);
 }
 
@@ -778,9 +769,7 @@ stats_tstats(struct Client *source_p)
 static void
 stats_uptime(struct Client *source_p)
 {
-  time_t now;
-
-  now = CurrentTime - me.since;
+  time_t now = CurrentTime - me.since;
   sendto_one(source_p, form_str(RPL_STATSUPTIME), from, to,
              now/86400, (now/3600)%24, (now/60)%60, now%60);
   if (!ConfigFileEntry.disable_remote || IsOper(source_p))
