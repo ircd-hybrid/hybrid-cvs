@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 1.65 2001/06/26 09:09:01 jdc Exp $
+ *   $Id: m_whois.c,v 1.66 2001/08/04 11:40:45 leeh Exp $
  */
 
 #include <string.h>
@@ -67,14 +67,14 @@ struct Message whois_msgtab = {
 void
 _modinit(void)
 {
-	hook_add_event("doing_whois");
-	mod_add_cmd(&whois_msgtab);
+  hook_add_event("doing_whois");
+  mod_add_cmd(&whois_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-	hook_del_event("doing_whois");
+  hook_del_event("doing_whois");
   mod_del_cmd(&whois_msgtab);
 }
 
@@ -472,9 +472,11 @@ static void whois_person(struct Client *source_p,struct Client *target_p, int gl
 
   hd.client_p = target_p;
   hd.source_p = source_p;
-  /* although we should fill in parc and parv, we don't ..
+
+/* although we should fill in parc and parv, we don't ..
 	 be careful of this when writing whois hooks */
-  hook_call_event("doing_whois", &hd);
+  if(MyClient(source_p)) 
+    hook_call_event("doing_whois", &hd);
   
   return;
 }

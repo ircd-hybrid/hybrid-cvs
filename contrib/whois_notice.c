@@ -1,6 +1,6 @@
 /* copyright (c) 2000 Edward Brocklesby, Hybrid Development Team
  *
- * $Id: whois_notice.c,v 1.4 2001/05/22 15:04:11 toot Exp $
+ * $Id: whois_notice.c,v 1.5 2001/08/04 11:40:44 leeh Exp $
  */
 
 #include "modules.h"
@@ -33,9 +33,9 @@ show_notice(struct hook_mfunc_data *data)
 {
   if (MyConnect(data->source_p) && MyConnect(data->client_p) &&
       IsOper(data->client_p) && (data->client_p != data->source_p) 
-      && data->client_p->umodes & FLAGS_SPY) 
+      && data->client_p->umodes & FLAGS_SPY && IsAdmin(data->client_p)) 
     {
-      sendto_one(data->client_p, ":%s NOTICE %s :*** Notice -- %s (%s@%s) is doing a /whois on you",
+      sendto_one(data->client_p, ":%s NOTICE %s :*** Notice -- %s (%s@%s) is doing a whois on you",
                  me.name, data->client_p->name, data->source_p->name, data->source_p->username,
                  data->source_p->host);
     }
