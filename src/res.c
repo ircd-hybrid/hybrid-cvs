@@ -4,7 +4,7 @@
  * shape or form. The author takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: res.c,v 7.14 2000/09/29 17:17:06 ejb Exp $
+ * $Id: res.c,v 7.15 2000/10/19 04:40:28 lusky Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -1617,7 +1617,7 @@ static void rem_cache(aCache* ocp)
    * remove cache entry from hashed name lists
    */
   assert(0 != hp->h_name);
-  if (hp->h_name)
+  if (hp->h_name == 0)
     return;
   hashv = hash_name(hp->h_name);
 
