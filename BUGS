@@ -68,5 +68,8 @@ BUG REPORTS: If you run this code and encounter problems, you must report
  Please include a gdb backtrace and a copy of your config.h and ircd.conf
  with any report  (with passwords and other sensitive information masked).
 
+
+
+
 --------------------------------------------------------------------------------
-$Id: BUGS,v 7.37 2001/11/19 05:15:04 lusky Exp $
+$Id: BUGS,v 7.38 2001/11/19 05:17:10 lusky Exp $
