@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.352 2003/04/16 20:54:11 michael Exp $
+ *  $Id: client.c,v 7.353 2003/04/18 23:50:54 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1036,7 +1036,9 @@ dead_link_on_write(struct Client *client_p, int ierrno)
 
   Debug((DEBUG_ERROR, "Closing link to %s: %s", get_client_name(client_p, HIDE_IP), notice));
   assert(dlinkFind(&abort_list, client_p) == NULL);
-  dlinkAdd(client_p, make_dlink_node(), &abort_list);
+  /* put this client onto the tail of abort_list - let
+   * exit_aborted_clients() catch it yet in the same pass -adx */
+  dlinkAddTail(client_p, make_dlink_node(), &abort_list);
   SetDead(client_p); /* You are dead my friend */
 }
 
