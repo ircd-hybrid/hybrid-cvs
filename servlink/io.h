@@ -1,5 +1,5 @@
 /************************************************************************
- *   IRC - Internet Relay Chat, servlink/src/servlink.c
+ *   IRC - Internet Relay Chat, servlink/io.h
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: io.h,v 1.2 2001/05/23 09:07:27 toot Exp $
+ *   $Id: io.h,v 1.3 2001/05/24 19:38:37 davidt Exp $
  */
 
 extern void write_data(void);

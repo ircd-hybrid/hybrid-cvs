@@ -1,5 +1,5 @@
 /************************************************************************
- *   IRC - Internet Relay Chat, servlink/src/control.h
+ *   IRC - Internet Relay Chat, servlink/control.h
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: control.h,v 1.1 2001/05/22 19:11:45 davidt Exp $
+ *   $Id: control.h,v 1.2 2001/05/24 19:38:37 davidt Exp $
  */
 
 #define CMD_SET_ZIP_OUT_LEVEL           1       /* data */
