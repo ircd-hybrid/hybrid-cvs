@@ -1,3 +1,17 @@
+androsyn    2002/07/11 19:32:32 EDT	(20020712_0)
+
+  Modified files:
+    autoconf             configure.in 
+    .                    configure 
+  Log:
+  Fixed formatting for ./configure --help
+  
+  Revision  Changes    Path
+  7.142     +1 -1      ircd-hybrid-7/autoconf/configure.in
+  7.145     +5 -5      ircd-hybrid-7/configure
+
+
+
 leeh        2002/07/11 11:27:05 EDT	(20020711_6)
 
   Modified files:
@@ -29514,4 +29528,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3858 2002/07/11 15:27:12 leeh Exp $
+$Id: ChangeLog,v 7.3859 2002/07/11 23:32:39 androsyn Exp $
