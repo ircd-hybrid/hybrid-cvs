@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.265 2002/06/24 04:28:03 db Exp $
+ *  $Id: s_serv.c,v 7.266 2002/07/12 03:30:04 joant Exp $
  */
 
 #include "stdinc.h"
@@ -1929,7 +1929,7 @@ void set_autoconn(struct Client *source_p,char *parv0,char *name,int newval)
 
 void initServerMask(void)
 {
-  freeMask = 0xFFFFFFFFL;
+  freeMask = 0xFFFFFFFFUL;
 }
 
 /*

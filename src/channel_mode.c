@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.42 2002/06/18 17:34:13 androsyn Exp $
+ *  $Id: channel_mode.c,v 7.43 2002/07/12 03:30:03 joant Exp $
  */
 
 #include "stdinc.h"
@@ -1909,9 +1909,9 @@ struct ChannelMode
                 int *errors, int alev, int dir, char c, void *d,
                 const char *chname);
   void *d;
-}
+};
 /* *INDENT-OFF* */
-static ModeTable[255] =
+static struct ChannelMode ModeTable[255] =
 {
   {chm_nosuch, NULL},
   {chm_nosuch, NULL},                             /* A */

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: motd.c,v 7.24 2002/05/24 23:34:49 androsyn Exp $
+ *  $Id: motd.c,v 7.25 2002/07/12 03:30:04 joant Exp $
  */
 
 #include "stdinc.h"
@@ -106,8 +106,8 @@ SendMessageFile(struct Client *source_p, MessageFile *motdToPrint)
           sendto_one(source_p, ":%s 364 %s %s",
 		     me.name, source_p->name, linePointer->line);
         }
-      /* NOT REACHED */
       return 0;
+      /* NOT REACHED */
       break;
 
     case OPER_MOTD:

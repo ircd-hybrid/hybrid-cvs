@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.105 2002/07/06 20:14:33 leeh Exp $
+ *  $Id: m_kline.c,v 1.106 2002/07/12 03:29:55 joant Exp $
  */
 
 #include "stdinc.h"
@@ -75,7 +75,7 @@ _moddeinit(void)
   mod_del_cmd(&kline_msgtab);
   mod_del_cmd(&dline_msgtab);
 }
-const char *_version = "$Revision: 1.105 $";
+const char *_version = "$Revision: 1.106 $";
 #endif
 
 /* Local function prototypes */
@@ -655,7 +655,7 @@ mo_dline(struct Client *client_p, struct Client *source_p,
       *p++ = '\0';
       dlhost = cidr_form_host;
 
-      bits = 0xFFFFFF00L;
+      bits = 0xFFFFFF00UL;
 /* XXX: Fix me for IPV6 */
 #endif
     }

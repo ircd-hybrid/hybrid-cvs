@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: servlink.c,v 1.23 2001/06/05 22:06:40 toot Exp $
+ *   $Id: servlink.c,v 1.24 2002/07/12 03:30:01 joant Exp $
  */
 
 #include "setup.h"                                                   
@@ -108,5 +108,5 @@ int main(int argc, char *argv[])
   io_loop(max_fd + 1);
 
   /* NOTREACHED */
-  exit(0);
+  return(0);
 } /* main() */

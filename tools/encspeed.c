@@ -2,7 +2,7 @@
  * encspeed.c - originally written by einride
  *            - modified for ircd-hybrid-7 by davidt
  *
- * $Id: encspeed.c,v 7.4 2001/10/04 21:22:37 androsyn Exp $
+ * $Id: encspeed.c,v 7.5 2002/07/12 03:30:07 joant Exp $
  */
 
 #include "../include/setup.h"
@@ -233,6 +233,6 @@ int main(int argc, char * argv[]) {
     printf("%20.20s decryption: not supported by OpenSSL\n", cipherstr);
   }
 
-  exit(0);
+  return(0);
 }
 #endif

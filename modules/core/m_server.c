@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.84 2002/06/24 18:12:20 leeh Exp $
+ *  $Id: m_server.c,v 1.85 2002/07/12 03:29:58 joant Exp $
  */
 
 #include "stdinc.h"
@@ -67,7 +67,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&server_msgtab);
 }
-const char *_version = "$Revision: 1.84 $";
+const char *_version = "$Revision: 1.85 $";
 #endif
 
 int bogus_host(char *host);
@@ -136,6 +136,7 @@ static void mr_server(struct Client *client_p, struct Client *source_p,
       
       exit_client(client_p, client_p, client_p, "Invalid servername.");
       return;
+      /* NOT REACHED */
       break;
       
     case -2:
@@ -149,6 +150,7 @@ static void mr_server(struct Client *client_p, struct Client *source_p,
 
       exit_client(client_p, client_p, client_p, "Invalid password.");
       return;
+      /* NOT REACHED */
       break;
       
     case -3:
@@ -162,6 +164,7 @@ static void mr_server(struct Client *client_p, struct Client *source_p,
 
       exit_client(client_p, client_p, client_p, "Invalid host.");
       return;
+      /* NOT REACHED */
       break;
     
     /* servername is > HOSTLEN */
@@ -175,6 +178,7 @@ static void mr_server(struct Client *client_p, struct Client *source_p,
 
       exit_client(client_p, client_p, client_p, "Invalid servername.");
       return;
+      /* NOT REACHED */
       break;
   }
     
