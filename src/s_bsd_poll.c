@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_poll.c,v 7.17 2000/11/08 09:34:21 adrian Exp $
+ *  $Id: s_bsd_poll.c,v 7.18 2000/11/15 03:53:06 spookey Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -69,6 +69,13 @@
 /*
  * Stuff for poll()
  */
+#ifdef linux
+# include <features.h>
+# if ((__GLIBC__ == 2) && (__GLIBC_MINOR__ < 1))
+#  define POLLRDNORM  0x0040
+# endif
+#endif
+
 #define __USE_XOPEN    /* XXXX had to add this define to make it compile -toby */
 #include <sys/poll.h>
 #define CONNECTFAST

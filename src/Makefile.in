@@ -1,17 +1,17 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.34 2000/11/11 14:52:54 ejb Exp $
+# $Id: Makefile.in,v 7.35 2000/11/15 03:53:06 spookey Exp $
 #
 CC		= @CC@
 RM		= @RM@
 LEX		= @LEX@
 LEXLIB		= @LEXLIB@
 CFLAGS		= @CFLAGS@
-LDFLAGS   = -Wl,-export-dynamic
+LDFLAGS   	= -Wl,-export-dynamic
 MKDEP		= ${CC} -MM
 
-IRCDLIBS	= @LIBS@ @SSL_LIBS@
+IRCDLIBS	= @LIBS@ @SSL_LIBS@ @DL_DEFINE@
 
 INCLUDES	= -I../include
 CPPFLAGS	= ${INCLUDES} @SSL_DEFINE@ @CPPFLAGS@
