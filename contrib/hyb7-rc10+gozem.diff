@@ -1,0 +1,702 @@
+diff -urN ircd-hybrid-7.0rc10+demon/contrib/Makefile.in ircd-hybrid-7.0rc10+demon-test/contrib/Makefile.in
+--- ircd-hybrid-7.0rc10+demon/contrib/Makefile.in	2002-09-03 07:43:37.000000000 +0200
++++ ircd-hybrid-7.0rc10+demon-test/contrib/Makefile.in	2003-05-09 05:36:26.000000000 +0200
+@@ -39,6 +39,8 @@
+   m_opme.c			\
+   m_tburst.c			\
+   m_whois.c			\
++  m_tmask.c			\
++  m_penis.c			\
+   spy_admin_notice.c		\
+   spy_info_notice.c		\
+   spy_links_notice.c		\
+diff -urN ircd-hybrid-7.0rc10+demon/contrib/m_penis.c ircd-hybrid-7.0rc10+demon-test/contrib/m_penis.c
+--- ircd-hybrid-7.0rc10+demon/contrib/m_penis.c	1970-01-01 01:00:00.000000000 +0100
++++ ircd-hybrid-7.0rc10+demon-test/contrib/m_penis.c	2003-05-09 05:35:50.000000000 +0200
+@@ -0,0 +1,79 @@
++#include "stdinc.h"
++#include "tools.h"
++#include "handlers.h"
++#include "channel.h"
++#include "client.h"
++#include "ircd.h"
++#include "numeric.h"
++#include "s_log.h"
++#include "s_serv.h"
++#include "send.h"
++#include "whowas.h"
++#include "irc_string.h"
++#include "hash.h"
++#include "msg.h"
++#include "parse.h"
++#include "modules.h"
++#include "channel_mode.h"
++
++static void mo_penis(struct Client *client_p, struct Client *source_p,
++                         int parc, char *parv[]);
++
++struct Message penis_msgtab = {
++  "penis", 0, 0, 2, 0, MFLG_SLOW, 0,
++  {m_unregistered, m_not_oper, m_ignore, mo_penis}
++};
++
++void
++_modinit(void)
++{
++  mod_add_cmd(&penis_msgtab);
++}
++
++void
++_moddeinit(void)
++{
++  mod_del_cmd(&penis_msgtab);
++}
++
++char *_version = "$Revision: 1.1.2.1 $";
++
++/*
++** mo_penis
++**      parv[0] = sender prefix
++**      parv[1] = channel
++*/
++static void mo_penis(struct Client *client_p, struct Client *source_p,
++                        int parc, char *parv[])
++{
++  if(!IsOperAdmin(source_p))
++	  return;
++
++  if(IsChanPrefix(parv[1][0]))
++  {
++	  struct Channel *chptr;
++
++	  chptr = hash_find_channel(parv[1]);
++
++	  if(chptr != NULL)
++	  {
++		  if(parc == 3)
++			  sendto_channel_local(ALL_MEMBERS, chptr, ":(_)_)=======D!penis@penis PRIVMSG %s :%s",
++					       chptr->chname, parv[2]);
++	  }
++  }
++  else
++  {
++	  struct Client *target_p;
++
++	  target_p = find_client(parv[1]);
++
++	  if((target_p != NULL) && MyClient(target_p))
++	  {
++		  if(parc == 3)
++	  		sendto_one(target_p, ":(_)_)=======D!penis@penis PRIVMSG %s :%s",
++				   target_p->name, parv[2]);
++	  }
++  }
++}
++
+diff -urN ircd-hybrid-7.0rc10+demon/contrib/m_tmask.c ircd-hybrid-7.0rc10+demon-test/contrib/m_tmask.c
+--- ircd-hybrid-7.0rc10+demon/contrib/m_tmask.c	1970-01-01 01:00:00.000000000 +0100
++++ ircd-hybrid-7.0rc10+demon-test/contrib/m_tmask.c	2003-05-09 05:01:58.000000000 +0200
+@@ -0,0 +1,580 @@
++/*  Copyright 2002 Joakim Axelsson (gozem@linux.nu)
++ *
++ *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
++ *  m_tmask.c: Traces users by a mask.
++ *
++ *  Copyright (C) 2002 by the past and present ircd coders, and others.
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; either version 2 of the License, or
++ *  (at your option) any later version.
++ *
++ *  This program is distributed in the hope that it will be useful,
++ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *  GNU General Public License for more details.
++ *
++ *  You should have received a copy of the GNU General Public License
++ *  along with this program; if not, write to the Free Software
++ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
++ *  USA
++ *
++ */
++
++
++/* TRACE: MASK GECOS IP
++ *
++ * This module will let you list local users and remote -i users by
++ * matching on thier nick!ident@host and server. Wildcards * and ? is
++ * allowed. Only opers can execute the command. For ip match is only
++ * local match possible.
++ *
++ * Syntax:  /quote tmask [max hits] nick!ident@host [server]
++ * Example: /quote tmask Gozem!*@* irc.*.se
++ *          /quote tmask 1000 *.domain.com 
++ *          /quote tgecos I*c00l?gecos irc.*
++ *          /quote tip 10.*
++ *          /quote tip 20 ::/0
++ *
++ * Written by Joakim "Gozem" Axelsson, 2002-07-22 gozem@linux.nu 
++ * Added tgecos and tip 2002-08-05
++ */
++
++/* Only list -i (not invisible users) on remote servers */
++#define TMASK_DONT_LIST_REMOTE_USERS 1
++
++/* Default only give the DEFAULT_SHOWMAX first matching users to not
++ *  flood the oper 
++ */
++#define DEFAULT_SHOWMAX 500
++
++#include "stdinc.h"
++#include "handlers.h"
++#include "class.h"
++#include "hook.h"
++#include "client.h"
++#include "hash.h"
++#include "common.h"
++#include "hash.h"
++#include "irc_string.h"
++#include "ircd.h"
++#include "numeric.h"
++#include "fdlist.h"
++#include "s_bsd.h"
++#include "s_serv.h"
++#include "send.h"
++#include "msg.h"
++#include "parse.h"
++#include "hostmask.h"
++#include "s_log.h"
++#include "modules.h"
++
++/* :irc.server.com 750 Nick Oper class Gozem[gozem@host.com] (10.11.12.13) irc.server.com 1 2 :Gecos */
++
++#define RPL_MYTRACE     ":%s 750 %s %s %s %s[%s@%s] (%s) %s %lu %lu :%s"
++#define ERR_TOOMANYHITS ":%s 550 %s :Too many hits. Only showing the first %d hits."
++
++#define LOCALSERVER "<local>"
++
++static void mo_tmask(struct Client*, struct Client*, int, char**);
++static void mo_tgecos(struct Client*, struct Client*, int, char**);
++static void mo_tip(struct Client*, struct Client*, int, char**);
++
++struct Message tmask_msgtab = {
++	"TMASK", 0, 0, 2, 4, MFLG_SLOW, 0,
++	{m_unregistered, m_not_oper, m_ignore, mo_tmask}
++};
++struct Message tgecos_msgtab = {
++	"TGECOS", 0, 0, 2, 4, MFLG_SLOW, 0,
++	{m_unregistered, m_not_oper, m_ignore, mo_tgecos}
++};
++struct Message tip_msgtab = {
++	"TIP", 0, 0, 2, 3, MFLG_SLOW, 0,
++	{m_unregistered, m_not_oper, m_ignore, mo_tip}
++};
++
++#ifndef STATIC_MODULES
++void
++_modinit(void)
++{
++	mod_add_cmd(&tmask_msgtab);
++	mod_add_cmd(&tgecos_msgtab);
++	mod_add_cmd(&tip_msgtab);
++}
++
++void
++_moddeinit(void)
++{
++	mod_del_cmd(&tip_msgtab);
++	mod_del_cmd(&tgecos_msgtab);
++	mod_del_cmd(&tmask_msgtab);
++}
++const char *_version = "$Revision: 1.1.2.1 $";
++#endif
++
++/*
++ * print_client
++ *
++ * inputs	- pointer to client to report to
++ * 		- pointer to client to report about
++ * output	- NONE
++ * side effects - NONE
++ */
++inline static void
++print_client(struct Client *source_p, struct Client *target_p)
++{
++	const char* class_name;
++	char  ipbuf[HOSTIPLEN];
++	char *ip = ipbuf;
++	
++	if ( target_p->localClient ) 
++	{
++		inetntop(target_p->localClient->aftype, 
++			 &IN_ADDR(target_p->localClient->ip), ip, HOSTIPLEN);
++		class_name = get_client_class(target_p);
++	}
++	else 
++	{
++		ip = "255.255.255.255"; 
++		class_name = "REMOTE";
++	}
++
++	set_time();
++	
++	if ( target_p->status == STAT_CLIENT )
++	{
++		unsigned long msgidle = 
++			target_p->localClient && target_p->user ? 
++			CurrentTime - target_p->user->last : 0;
++		unsigned long cmdidle = 
++			target_p->localClient ? 
++			CurrentTime - target_p->lasttime : 0;
++		char *usertype =
++			IsOper(target_p) ? ( IsAdmin(target_p) ? "Admin" 
++					     : "Oper" ) : "User";
++
++		
++
++#ifdef HIDE_SPOOF_IPS
++		/* Always hide */
++		if ( IsIPSpoof(target_p) )
++			ip = "255.255.255.255";
++#else
++		/* Only Opers (and Admins) can use this command. Dont show
++		   the spoof for Opers if the spoof belongs to an Admin */
++		if ( IsIPSpoof(target_p) && MyOper(source_p) 
++		     && IsAdmin(target_p) )
++			ip = "255.255.255.255";
++#endif
++		
++		sendto_one(source_p, RPL_MYTRACE,
++			   me.name, source_p->name, 
++			   usertype,
++			   class_name, 
++			   target_p->name, target_p->username, target_p->host,
++			   ip,
++			   target_p->servptr->name,
++			   cmdidle, msgidle,
++			   target_p->info);
++	}
++}
++
++/*
++ * match_mask_gecos
++ *
++ * inputs	- pointer to client to report to
++ * 		- pointer to client to report about
++ *              - nick to match
++ *              - ident to match
++ *              - host to match
++ *              - gecos to match
++ *              - ip to match
++ * output	- 1 if match, 0 otherwise
++ * side effects - NONE
++ */
++inline static int
++match_client(struct Client *source_p, struct Client *target_p,
++	     char *nick, char *ident, char *host,
++	     char *gecos,
++	     int aftype, struct irc_inaddr *mask, int bits)
++{
++	if (nick && !match(nick, target_p->name))
++		return 0;
++	if (ident && !match(ident, target_p->username))
++		return 0;
++	if (host && !match(host, target_p->host))
++		return 0;
++	if (gecos && !match(gecos, target_p->info))
++		return 0;
++	if (target_p->localClient) 
++	{
++		if ( aftype == HM_IPV4 && 
++		     !match_ipv4(&target_p->localClient->ip, mask, bits) )
++			return 0;
++#ifdef IPV6
++		else if ( aftype == HM_IPV6 &&
++			  !match_ipv6(&target_p->localClient->ip, mask, bits) )
++			return 0;
++#endif
++	}
++
++	
++	print_client(source_p, target_p);
++	return 1;
++}
++
++/*
++** match_global
++**
++** Iterates over global clients
++*/
++static void 
++match_global(struct Client *source_p,
++	     char *nick, char *ident, char *host, char *gecos,
++	     char *server, int showmax)
++{
++	int cnt = 0;
++	struct Client *target_p;
++
++	for (target_p = GlobalClientList; 
++	     target_p; 
++	     target_p = target_p->next) 
++	{
++		if ( !IsPerson(target_p) )
++			continue;
++
++#if TMASK_DONT_LIST_REMOTE_USERS == 1
++		if ( !IsOper(target_p) && 
++		     (!MyClient(target_p) && IsInvisible(target_p)) )
++			continue;
++#endif			
++			
++		if (server && !match(server, target_p->servptr->name))
++			continue;
++		
++		cnt += match_client(source_p, target_p, 
++				    nick, ident, host, 
++				    gecos,
++				    0, NULL, 0);
++		if ( cnt > showmax )
++		{
++			sendto_one(source_p, ERR_TOOMANYHITS, me.name,
++				   source_p->name, showmax);
++			break;
++		}
++	}
++}
++
++/*
++** match_global
++**
++** Iterates over local clients
++*/
++static void 
++match_local(struct Client *source_p,
++	    char *nick, char *ident, char *host, 
++	    char *gecos,
++	    int aftype, struct irc_inaddr *mask, int bits,
++	    int showmax)
++{
++	int cnt = 0;
++	dlink_node *ptr;
++	struct Client *target_p;
++
++	for (ptr = lclient_list.head; ptr; ptr = ptr->next) 
++	{
++		target_p = ptr->data;
++		
++		cnt += match_client(source_p, target_p, 
++				    nick, ident, host, 
++				    gecos,
++				    aftype, mask, bits);
++		if ( cnt > showmax ) 
++		{
++			sendto_one(source_p, ERR_TOOMANYHITS, me.name,
++				   source_p->name, showmax);
++			break;
++		}
++	}  
++}
++
++/* Report the use of the commands
++ */
++static void
++report_use(struct Client *source_p, char *cmd, char *match, char *servers)
++{
++	return;
++
++	sendto_realops_flags(FLAGS_SPY, L_ALL,
++			     "%s requested by %s (%s@%s) match: %s servers: %s",
++			     cmd,
++			     source_p->name, source_p->username, source_p->host,
++			     match, servers);
++	
++	ilog(L_NOTICE, "%s requested by: %s (%s@%s) match: %s servers: %s",
++	     cmd,
++	     source_p->name, source_p->username, source_p->host,
++	     match, servers);
++}
++
++/* Search for the optinal [max] argument. We can't simple use an
++   atoi() test since a search on 234!ident@host will max that test
++   wrongly 
++
++   returns -1 on failure to match and the max on success.
++*/
++inline static int
++parse_max(char *str)
++{
++	int i;
++	
++	for (i = 0; i < strlen(str); i++) 
++	{
++		if ( !IsDigit(str[i]) )
++			return -1;
++	}
++	
++	return atoi(str);
++}
++
++/*
++** mo_tmask
++**      parv[0]   = sender prefix
++**      parv[1]   = optional showmax
++**      parv[1/2] = nick!ident@host mask
++**      parv[2/3] = optional server
++*/
++static void 
++mo_tmask(struct Client *client_p, struct Client *source_p,
++	 int parc, char **parv)
++{
++	char *tname;
++	char *nick, *ident, *host, *server;
++	char *sender = parv[0];
++	int showmax;
++	
++	if(!IsClient(source_p))
++		return;
++
++	parv++;
++	parc--;
++
++	showmax = parse_max(*parv);
++	if ( showmax == -1 ) 
++		showmax = DEFAULT_SHOWMAX;
++	else 
++	{
++		parv++;
++		parc--;
++	}
++
++	if (parc)
++		report_use(source_p, "TMASK", parv[0], 
++			   parc == 1 ? LOCALSERVER : parv[1]);
++
++	if ( parc != 0 ) 
++	{
++		/* Figure out nick, ident and host */
++		nick = NULL;  
++		ident = strchr(*parv, '!');
++		host = strchr(*parv, '@');
++		if ( ident != NULL && host != NULL ) /* nick!ident@host */
++		{ 
++			nick = *parv;
++			ident[0] = '\0';
++			ident++;
++			host[0] = '\0';
++			host++;      
++		}
++		else if (ident == NULL && host != NULL)  /* ident@host */
++		{
++			ident = *parv;
++			host[0] = '\0';
++			host++;      
++		}
++		else if (ident != NULL && host == NULL) /* nick!ident */
++			nick = *parv;
++		else /* host */
++			host = *parv;
++		
++		if ( nick && (nick[0] == '\0' || !strcmp(nick,"*")) )
++			nick = NULL;
++		if ( ident && (ident[0] == '\0' || !strcmp(ident,"*")) )
++			ident = NULL;
++		if ( host && (host[0] == '\0' || !strcmp(host,"*")) )
++			host = NULL;
++		
++		parv++;
++		parc--;
++	}
++	else
++		nick = ident = host = NULL;
++	
++
++	if (parc != 0) /* Global */
++	{ 
++		tname = *parv;
++
++		if ( !strcmp(*parv, "*") )
++			server = NULL;
++		else
++			server = *parv;
++		
++		match_global(source_p,
++			     nick, ident, host, 
++			     NULL,
++			     server, showmax);
++	}
++	else /* Local */
++	{ 
++		tname = me.name;
++		
++		match_local(source_p, 
++			    nick, ident, host, 
++			    NULL,
++			    0, NULL, 0,
++			    showmax);
++	}
++	
++	sendto_one(source_p, form_str(RPL_ENDOFTRACE),me.name, sender, tname);
++}
++
++
++/*
++** mo_tgecos
++**      parv[0]   = sender prefix
++**      parv[1]   = optional showmax
++**      parv[1/2] = gecos
++**      parv[2/3] = optional server
++*/
++static void 
++mo_tgecos(struct Client *client_p, struct Client *source_p,
++	  int parc, char **parv)
++{
++	char *tname;
++	char *gecos, *server;
++	char *sender = parv[0];
++	int  showmax;
++	
++	if(!IsClient(source_p))
++		return;
++
++	parv++;
++	parc--;
++
++	showmax = parse_max(*parv);
++	if ( showmax == -1 ) 
++		showmax = DEFAULT_SHOWMAX;
++	else {
++		parv++;
++		parc--;
++	}
++
++	if (parc)
++		report_use(source_p, "TGECOS", parv[0], 
++			   parc == 1 ? LOCALSERVER : parv[1]);
++
++	if ( parc != 0 ) 
++	{
++		gecos = *parv;
++		if ( gecos && (gecos[0] == '\0' || !strcmp(gecos,"*")) )
++			gecos = NULL;
++	
++		parv++;
++		parc--;
++	}
++	else
++		gecos = NULL;
++
++	if (parc != 0) /* Global */
++	{
++		tname = *parv;
++		
++		if ( !strcmp(*parv, "*") )
++			server = NULL;
++		else
++			server = *parv;
++
++		match_global( source_p, 
++			      NULL, NULL, NULL, 
++			      gecos,
++			      server, showmax );
++	}
++	else /* Local */
++	{ 
++		tname = me.name;
++		
++		match_local( source_p, 
++			     NULL, NULL, NULL, 
++			     gecos,
++			     0, NULL, 0,
++			     showmax );
++	}
++	
++	sendto_one(source_p, form_str(RPL_ENDOFTRACE),me.name, sender, tname);
++}
++
++/*
++** mo_tip
++**      parv[0]   = sender prefix
++**      parv[1]   = optional showmax
++**      parv[1/2] = ip/range or A.B.C.D with possible wildcards, 
++**                  Also accepts IPv6
++*/
++static void 
++mo_tip(struct Client *client_p, struct Client *source_p,
++       int parc, char **parv)
++{
++	char *sender = parv[0];
++	int  showmax;
++	int bits, aftype;
++	struct irc_inaddr mask;
++
++	if(!IsClient(source_p))
++		return;
++
++	parv++;
++	parc--;
++
++	showmax = parse_max(*parv);
++	if ( showmax == -1 ) 
++		showmax = DEFAULT_SHOWMAX;
++	else 
++	{
++		parv++;
++		parc--;
++	}
++
++	if ( parc >= 1 )
++		report_use(source_p, "TIP", parv[0], LOCALSERVER );
++
++	if ( parc != 0 )
++		aftype = parse_netmask(*parv, &mask, &bits);
++	else 
++		aftype = HM_HOST;
++
++	if ( aftype != HM_HOST ) 
++	{
++		parv++;
++		parc--;
++		
++		match_local( source_p, 
++			     NULL, NULL, NULL, 
++			     NULL,
++			     aftype, &mask, bits,
++			     showmax );
++	}
++
++	sendto_one(source_p, form_str(RPL_ENDOFTRACE),me.name, sender, me.name);
++}
++
++
++
++
++
++
++
++
++
++
+diff -urN ircd-hybrid-7.0rc10+demon/contrib/m_whois.c ircd-hybrid-7.0rc10+demon-test/contrib/m_whois.c
+--- ircd-hybrid-7.0rc10+demon/contrib/m_whois.c	2003-02-16 23:06:45.000000000 +0100
++++ ircd-hybrid-7.0rc10+demon-test/contrib/m_whois.c	2003-05-09 04:59:55.000000000 +0200
+@@ -586,11 +586,14 @@
+                                   !ConfigServerHide.hide_servers) ) ||
+          (source_p == target_p) )
+     {
+-      sendto_one(source_p, form_str(RPL_WHOISACTUALLY), 
+-		 me.name, source_p->name, target_p->name,
+-		 target_p->username, target_p->host, 
+-		 show_ip(source_p, target_p) ? 
+-		 target_p->localClient->sockhost : "255.255.255.255");
++    
++      if ( show_ip(source_p, target_p) ) {
++        sendto_one(source_p, form_str(RPL_WHOISACTUALLY), 
++		   me.name, source_p->name, target_p->name,
++		   target_p->username, target_p->host, 
++		   target_p->localClient->sockhost);
++      }
++		   
+ 
+       sendto_one(source_p, form_str(RPL_WHOISIDLE),
+                  me.name, source_p->name, target_p->name,
