@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_part.c,v 1.30 2001/01/20 13:49:53 davidt Exp $
+ *   $Id: m_part.c,v 1.31 2001/01/27 15:18:01 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -189,22 +189,7 @@ static void part_one_client(struct Client *cptr,
   else
     bchan = chptr; /* not a vchan */
 
-  /* XXX - we get here somehow.  we shouldn't */
-  if ( !( bchan && chptr ) )
-  {
-    sendto_realops_flags(FLAGS_ALL,
-                "Uh oh.  Parting %s from %s, but couldn't find bchan/chptr!",
-                sptr->name, name);
-    sendto_realops_flags(FLAGS_ALL,
-                "chptr == %p, bchan == %p", chptr, bchan);
-
-    /* yell at the user a bit too */
-    sendto_one(sptr, form_str(ERR_NOTONCHANNEL),
-               me.name, sptr->name, name);
-    return;
-  }
-      
-  if (!IsMember(sptr, chptr))
+  if (!chptr || !bchan || !IsMember(sptr, chptr))
     {
       sendto_one(sptr, form_str(ERR_NOTONCHANNEL),
                  me.name, sptr->name, name);
