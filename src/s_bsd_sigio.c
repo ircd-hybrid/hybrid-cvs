@@ -21,7 +21,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_sigio.c,v 7.19 2002/04/15 00:05:46 leeh Exp $
+ *  $Id: s_bsd_sigio.c,v 7.20 2002/05/06 05:48:47 androsyn Exp $
  */
 
 #ifndef _GNU_SOURCE
@@ -188,6 +188,7 @@ static void poll_update_pollfds(int fd, short event, PF * handler)
 void do_sigio(int s)
 {
     sigio_is_screwed = 1;
+    ilog(L_WARN, "Kernel RT Signal queue overflowed.  Is /proc/sys/kernel/rtsig-nr too small?");
 }
 
 /*
