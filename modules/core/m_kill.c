@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kill.c,v 1.44 2001/05/08 22:50:28 ejb Exp $
+ *   $Id: m_kill.c,v 1.45 2001/05/09 00:30:40 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -258,8 +258,8 @@ static void ms_kill(struct Client *client_p, struct Client *source_p,
   if(MyOper(target_p))
       sendto_one(target_p, ":%s KILL %s :%s", parv[0], target_p->name, reason);
 
-  /* Be warned, if this message isnt anything but From %s, epic will moan
-   * like hell.. so dont change it to From: or the case or anything! -- fl */
+  /* Be warned, this message must be From %s, or it confuses clients
+   * so dont change it to From: or the case or anything! -- fl -- db */
   if (IsOper(source_p)) /* send it normally */
     {
       sendto_realops_flags(FLAGS_ALL,
