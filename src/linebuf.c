@@ -6,7 +6,7 @@
  * The idea here is that we should really be maintaining pre-munged
  * buffer "lines" which we can later refcount to save needless copies.
  *
- * $Id: linebuf.c,v 7.71 2001/11/26 18:01:32 davidt Exp $
+ * $Id: linebuf.c,v 7.72 2001/11/26 20:25:34 a1kmm Exp $
  */
 
 #include <errno.h>
@@ -263,7 +263,8 @@ linebuf_copy_line(buf_head_t *bufhead, buf_line_t *bufline,
   /* If its full or terminated, ignore it */
 
   bufline->binary = 0;
-  if ((bufline->len == BUF_DATA_SIZE) || (bufline->terminated == 1))
+  assert(bufline->len < BUF_DATA_SIZE);
+  if (bufline->terminated == 1)
     return 0;
 
   clen = cpylen = linebuf_skip_crlf(ch, len);

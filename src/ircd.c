@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.196 2001/11/26 12:27:19 androsyn Exp $
+ * $Id: ircd.c,v 7.197 2001/11/26 20:25:34 a1kmm Exp $
  */
 
 #include <sys/types.h>
@@ -607,7 +607,6 @@ int main(int argc, char *argv[])
   setup_signals();
   /* We need this to initialise the fd array before anything else */
   fdlist_init();
-  init_resolver();      /* Needs to be setup before the io loop */
   init_netio();         /* This needs to be setup early ! -- adrian */
   /* Check if there is pidfile and daemon already running */
   check_pidfile(pidFileName);
@@ -640,6 +639,7 @@ int main(int argc, char *argv[])
   load_all_modules(1);
   initServerMask();
   init_auth();                  /* Initialise the auth code */
+  init_resolver();      /* Needs to be setup before the io loop */
   read_conf_files(YES);         /* cold start init conf files */
 
   initialize_server_capabs();   /* Set up default_server_capabs */
