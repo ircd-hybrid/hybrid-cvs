@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.117 2003/02/26 22:40:56 bill Exp $
+ *  $Id: m_stats.c,v 1.118 2003/04/02 11:19:41 michael Exp $
  */
 
 #include "stdinc.h"
@@ -80,7 +80,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.117 $";
+const char *_version = "$Revision: 1.118 $";
 #endif
 
 const char* Lformat = ":%s %d %s %s %u %u %u %u %u :%u %u %s";
@@ -925,7 +925,7 @@ stats_L(struct Client *source_p,char *name,int doall,
                     int wilds,char statchar)
 {
   stats_L_list(source_p, name, doall, wilds, &unknown_list, statchar);
-  stats_L_list(source_p, name, doall, wilds, &lclient_list, statchar);
+  stats_L_list(source_p, name, doall, wilds, &local_client_list, statchar);
   stats_L_list(source_p, name, doall, wilds, &serv_list, statchar);
 }
 

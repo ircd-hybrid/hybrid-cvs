@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_stats.c,v 7.25 2003/03/30 04:16:10 michael Exp $
+ *  $Id: s_stats.c,v 7.26 2003/04/02 11:19:46 michael Exp $
  */
 
 #include "stdinc.h"
@@ -85,8 +85,8 @@ tstats(struct Client *source_p)
 	}
     }
 
-  sp->is_cl = dlink_list_length(&lclient_list);
-  DLINK_FOREACH(ptr, lclient_list.head)
+  sp->is_cl = dlink_list_length(&local_client_list);
+  DLINK_FOREACH(ptr, local_client_list.head)
     {
       target_p = ptr->data;
 
@@ -127,7 +127,7 @@ tstats(struct Client *source_p)
 
   sendto_one(source_p, ":%s %d %s T :connected %u %u",
              me.name, RPL_STATSDEBUG, source_p->name, 
-	     (unsigned int)dlink_list_length(&lclient_list), 
+	     (unsigned int)dlink_list_length(&local_client_list), 
 	     (unsigned int)dlink_list_length(&serv_list));
   sendto_one(source_p, ":%s %d %s T :bytes sent %d.%uK %d.%uK",
              me.name, RPL_STATSDEBUG, source_p->name,

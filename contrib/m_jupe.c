@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_jupe.c,v 1.43 2003/03/31 15:49:21 adx Exp $
+ *  $Id: m_jupe.c,v 1.44 2003/04/02 11:19:37 michael Exp $
  */
 
 #include "stdinc.h"
@@ -68,7 +68,7 @@ _moddeinit(void)
   mod_del_cmd(&jupe_msgtab);
 }
 
-const char *_version = "$Revision: 1.43 $";
+const char *_version = "$Revision: 1.44 $";
 #endif
 
 /*
@@ -174,7 +174,7 @@ mo_jupe(struct Client *client_p, struct Client *source_p,
   /* XXX is this really necessary? 
    * for now, 'cause of the way squit works
    */
-  dlinkAdd(ajupe, &ajupe->node, &GlobalClientList);
+  dlinkAdd(ajupe, &ajupe->node, &global_client_list);
 }
 
 /*

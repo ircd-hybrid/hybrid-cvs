@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_debug.c,v 7.71 2003/03/01 01:15:45 db Exp $
+ *  $Id: s_debug.c,v 7.72 2003/04/02 11:19:46 michael Exp $
  */
 
 #include "stdinc.h"
@@ -210,7 +210,7 @@ count_memory(struct Client *source_p)
 
   count_whowas_memory(&wwu, &wwm);
 
-  DLINK_FOREACH(gptr, GlobalClientList.head)
+  DLINK_FOREACH(gptr, global_client_list.head)
     {
       target_p = gptr->data;
 

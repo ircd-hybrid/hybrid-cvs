@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_restart.c,v 1.24 2003/03/01 01:15:39 db Exp $
+ *  $Id: m_restart.c,v 1.25 2003/04/02 11:19:41 michael Exp $
  */
 
 #include "stdinc.h"
@@ -57,7 +57,7 @@ _moddeinit(void)
   mod_del_cmd(&restart_msgtab);
 }
 
-const char *_version = "$Revision: 1.24 $";
+const char *_version = "$Revision: 1.25 $";
 #endif
 /*
  * mo_restart
@@ -101,7 +101,7 @@ static void mo_restart(struct Client *client_p,
     }
   }
   
-  DLINK_FOREACH(ptr, lclient_list.head)
+  DLINK_FOREACH(ptr, local_client_list.head)
   {
     target_p = ptr->data;
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.234 2003/04/02 02:12:08 michael Exp $
+ *  $Id: s_user.c,v 7.235 2003/04/02 11:19:46 michael Exp $
  */
 
 #include "stdinc.h"
@@ -482,7 +482,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   if ((m = dlinkFindDelete(&unknown_list, source_p)) != NULL)
   {
     free_dlink_node(m);
-    dlinkAdd(source_p, &source_p->localClient->lclient_node, &lclient_list);
+    dlinkAdd(source_p, &source_p->localClient->lclient_node, &local_client_list);
   }
   else
   {

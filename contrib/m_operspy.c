@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.16 2003/03/30 02:34:47 michael Exp $
+ *   $Id: m_operspy.c,v 1.17 2003/04/02 11:19:37 michael Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -124,7 +124,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.16 $";
+const char *_version = "$Revision: 1.17 $";
 #endif
 
 /*
@@ -580,7 +580,7 @@ who_global(struct Client *source_p,char *mask, int server_oper)
   }
 
   /* second, list all matching visible clients */
-  DLINK_FOREACH(lp, GlobalClientList.head)
+  DLINK_FOREACH(lp, global_client_list.head)
   {
     target_p = lp->data;
 

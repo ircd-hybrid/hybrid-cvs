@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.97 2003/03/31 15:49:24 adx Exp $
+ *  $Id: m_server.c,v 1.98 2003/04/02 11:19:44 michael Exp $
  */
 
 #include "stdinc.h"
@@ -67,7 +67,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&server_msgtab);
 }
-const char *_version = "$Revision: 1.97 $";
+const char *_version = "$Revision: 1.98 $";
 #endif
 
 int bogus_host(char *host);
@@ -489,7 +489,7 @@ ms_server(struct Client *client_p, struct Client *source_p,
 
   Count.server++;
 
-  dlinkAdd(target_p, &target_p->node, &GlobalClientList);
+  dlinkAdd(target_p, &target_p->node, &global_client_list);
 #if 0
   ptr = make_dlink_node();
   dlinkAdd(target_p, ptr, &global_serv_list);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.339 2003/04/01 17:04:47 adx Exp $
+ *  $Id: client.c,v 7.340 2003/04/02 11:19:46 michael Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -56,13 +56,13 @@
 #include "listener.h"
 
 /* Pointer to beginning of Client list */
-dlink_list GlobalClientList = {NULL, NULL, 0};
+dlink_list global_client_list = {NULL, NULL, 0};
 /* unknown/client pointer lists */ 
 dlink_list unknown_list;        /* unknown clients ON this server only */
-dlink_list lclient_list;        /* local clients only ON this server */
+dlink_list local_client_list;   /* local clients only ON this server */
 dlink_list serv_list;           /* local servers to this server ONLY */
 dlink_list global_serv_list;    /* global servers on the network */
-dlink_list oper_list;           /* our opers, duplicated in lclient_list */
+dlink_list oper_list;           /* our opers, duplicated in local_client_list */
 dlink_list lazylink_channels;   /* known about lazylink channels on HUB */
 
 static void check_pings_list(dlink_list *list);
@@ -238,7 +238,7 @@ free_client(struct Client* client_p)
 static void
 check_pings(void *notused)
 {               
-  check_pings_list(&lclient_list);
+  check_pings_list(&local_client_list);
   check_pings_list(&serv_list);
   check_unknowns_list(&unknown_list);
 }
@@ -394,7 +394,7 @@ check_klines(void)
   char *reason;                /* pointer to reason string */
   dlink_node *ptr, *next_ptr;
  
-  DLINK_FOREACH_SAFE(ptr, next_ptr, lclient_list.head)
+  DLINK_FOREACH_SAFE(ptr, next_ptr, local_client_list.head)
   {
     client_p = ptr->data;
       
@@ -907,7 +907,7 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
 
   /* remove from global client list */
   if (source_p != NULL && source_p->node.next != NULL)
-    dlinkDelete(&source_p->node, &GlobalClientList);
+    dlinkDelete(&source_p->node, &global_client_list);
   update_client_exit_stats(source_p);
 
   /* Check to see if the client isn't already on the dead list */
@@ -1250,7 +1250,7 @@ exit_client(
 
       /* a little extra paranoia */
       if (IsPerson(source_p))
-        dlinkDelete(&source_p->localClient->lclient_node, &lclient_list);
+        dlinkDelete(&source_p->localClient->lclient_node, &local_client_list);
     }
 
     /* As soon as a client is known to be a server of some sort
@@ -1353,7 +1353,7 @@ exit_client(
   
   /* The client *better* be off all of the lists */
   assert(dlinkFind(&unknown_list, source_p) == NULL);
-  assert(dlinkFind(&lclient_list, source_p) == NULL);
+  assert(dlinkFind(&local_client_list, source_p) == NULL);
   assert(dlinkFind(&serv_list, source_p) == NULL);
   assert(dlinkFind(&oper_list, source_p) == NULL);
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.90 2003/03/29 14:25:11 michael Exp $
+ *  $Id: m_whois.c,v 1.91 2003/04/02 11:19:41 michael Exp $
  */
 
 #include "stdinc.h"
@@ -76,7 +76,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-const char *_version = "$Revision: 1.90 $";
+const char *_version = "$Revision: 1.91 $";
 #endif
 /*
 ** m_whois
@@ -263,7 +263,7 @@ global_whois(struct Client *source_p, char *nick, int wilds, int glob)
   int found = NO;
   dlink_node *gcptr;
 
-  DLINK_FOREACH(gcptr, GlobalClientList.head)
+  DLINK_FOREACH(gcptr, global_client_list.head)
   {
     target_p = gcptr->data;
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_trace.c,v 1.54 2003/03/21 17:52:21 db Exp $
+ *  $Id: m_trace.c,v 1.55 2003/04/02 11:19:41 michael Exp $
  */
 
 #include "stdinc.h"
@@ -66,7 +66,7 @@ _moddeinit(void)
   hook_del_event("doing_trace");
   mod_del_cmd(&trace_msgtab);
 }
-const char *_version = "$Revision: 1.54 $";
+const char *_version = "$Revision: 1.55 $";
 #endif
 static int report_this_status(struct Client *source_p, struct Client *target_p,int dow,
                               int link_u_p, int link_u_s);
@@ -106,7 +106,7 @@ mo_trace(struct Client *client_p, struct Client *source_p,
   int   doall, link_s[MAXCONNECTIONS], link_u[MAXCONNECTIONS];
   int   cnt = 0, wilds, dow;
   dlink_node *ptr;
-  dlink_node *gcptr;	/* GlobalClientList ptr */
+  dlink_node *gcptr;	/* global_client_list ptr */
   char *looking_for = parv[0];
 
   if(!IsClient(source_p))
@@ -129,9 +129,9 @@ mo_trace(struct Client *client_p, struct Client *source_p,
         
         if ((ac2ptr = find_client(tname)) == NULL)
         {
-          DLINK_FOREACH(ptr, GlobalClientList.head)
+          DLINK_FOREACH(ptr, global_client_list.head)
           {
-            ac2ptr = (struct Client *)ptr->data;
+            ac2ptr = ptr->data;
 
             if (match(tname, ac2ptr->name) || match(ac2ptr->name, tname))
               break;
@@ -210,7 +210,7 @@ mo_trace(struct Client *client_p, struct Client *source_p,
    */
   if (doall)
    {
-    DLINK_FOREACH(gcptr, GlobalClientList.head)
+    DLINK_FOREACH(gcptr, global_client_list.head)
      {
       target_p = gcptr->data;
 
@@ -226,7 +226,7 @@ mo_trace(struct Client *client_p, struct Client *source_p,
    }
    
   /* report all direct connections */
-  DLINK_FOREACH(ptr, lclient_list.head)
+  DLINK_FOREACH(ptr, local_client_list.head)
     {
       target_p = ptr->data;
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.290 2003/04/02 05:03:46 michael Exp $
+ *  $Id: s_serv.c,v 7.291 2003/04/02 11:19:46 michael Exp $
  */
 
 #include "stdinc.h"
@@ -465,7 +465,7 @@ hunt_server(struct Client *client_p, struct Client *source_p, char *command,
         }
       else
         {
-          DLINK_FOREACH(ptr, GlobalClientList.head)
+          DLINK_FOREACH(ptr, global_client_list.head)
           {
             target_p = NULL;
 
@@ -1150,7 +1150,7 @@ server_estab(struct Client *client_p)
   */
 
   aconf = client_p->serv->sconf;
-  DLINK_FOREACH_PREV(ptr, GlobalClientList.tail)
+  DLINK_FOREACH_PREV(ptr, global_client_list.tail)
     {
       target_p = ptr->data;
 
@@ -1614,7 +1614,7 @@ burst_all(struct Client *client_p)
   /*
   ** also send out those that are not on any channel
   */
-  DLINK_FOREACH(ptr, GlobalClientList.head)
+  DLINK_FOREACH(ptr, global_client_list.head)
     {
       target_p = ptr->data;
       if (target_p->serial != current_serial)
@@ -1820,7 +1820,7 @@ remove_lazylink_flags(unsigned long mask)
     free_dlink_node(ptr);
    }
   }
-  DLINK_FOREACH(ptr, GlobalClientList.head)
+  DLINK_FOREACH(ptr, global_client_list.head)
     {
       target_p = ptr->data;
       target_p->lazyLinkClientExists &= clear_mask;
@@ -2091,7 +2091,7 @@ serv_connect(struct ConfItem *aconf, struct Client *by)
       }
     client_p->serv->up = me.name;
     SetConnecting(client_p);
-    dlinkAdd(client_p, &client_p->node, &GlobalClientList);
+    dlinkAdd(client_p, &client_p->node, &global_client_list);
     /* from def_fam */
     client_p->localClient->aftype = aconf->aftype;
     

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ltrace.c,v 1.6 2003/03/21 17:52:18 db Exp $
+ *  $Id: m_ltrace.c,v 1.7 2003/04/02 11:19:37 michael Exp $
  */
 
 #include "stdinc.h"
@@ -66,7 +66,7 @@ _moddeinit(void)
   mod_del_cmd(&ltrace_msgtab);
 }
 
-const char *_version = "$Revision: 1.6 $";
+const char *_version = "$Revision: 1.7 $";
 #endif
 
 static int report_this_status(struct Client *source_p, struct Client *target_p,int dow,
@@ -105,7 +105,7 @@ mo_ltrace(struct Client *client_p, struct Client *source_p,
   int   doall, link_s[MAXCONNECTIONS], link_u[MAXCONNECTIONS];
   int   wilds, dow;
   dlink_node *ptr;
-  dlink_node *gcptr;	/* GlobalClientList ptr */
+  dlink_node *gcptr;	/* global_client_list ptr */
   char *looking_for = parv[0];
 
   if (parc > 1)
@@ -131,9 +131,9 @@ mo_ltrace(struct Client *client_p, struct Client *source_p,
 
         if ((ac2ptr = find_client(tname)) == NULL)
         {
-          DLINK_FOREACH(ptr, GlobalClientList.head)
+          DLINK_FOREACH(ptr, global_client_list.head)
           {
-            ac2ptr = (struct Client *)ptr->data;
+            ac2ptr = ptr->data;
 
             if (match(tname, ac2ptr->name) || match(ac2ptr->name, tname))
               break;
@@ -204,7 +204,7 @@ mo_ltrace(struct Client *client_p, struct Client *source_p,
    */
   if (doall)
    {
-    DLINK_FOREACH(gcptr, GlobalClientList.head)
+    DLINK_FOREACH(gcptr, global_client_list.head)
      {
        target_p = gcptr->data;
        if (IsPerson(target_p))
@@ -219,7 +219,7 @@ mo_ltrace(struct Client *client_p, struct Client *source_p,
    }
    
   /* report all opers */
-  DLINK_FOREACH(ptr, lclient_list.head)
+  DLINK_FOREACH(ptr, local_client_list.head)
     {
       target_p = ptr->data;
 

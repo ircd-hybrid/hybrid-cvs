@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircdauth.c,v 7.53 2003/03/31 15:49:26 adx Exp $
+ *  $Id: ircdauth.c,v 7.54 2003/04/02 11:19:46 michael Exp $
  */
 
 #include "stdinc.h"
@@ -696,7 +696,7 @@ GreetUser(struct Client *client)
   if ((m = dlinkFindDelete(&unknown_list, client)) != NULL)
     free_dlink_node(m);
 
-  dlinkAdd(client, &client->localClient->lclient_node, &lclient_list);
+  dlinkAdd(client, &client->localClient->lclient_node, &local_client_list);
 
 #if 0
   sendto_serv_butone(client,

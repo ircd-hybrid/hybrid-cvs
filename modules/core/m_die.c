@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_die.c,v 1.26 2003/03/01 01:15:41 db Exp $
+ *  $Id: m_die.c,v 1.27 2003/04/02 11:19:43 michael Exp $
  */
 
 #include "stdinc.h"
@@ -57,7 +57,7 @@ _moddeinit(void)
   mod_del_cmd(&die_msgtab);
 }
 
-const char *_version = "$Revision: 1.26 $";
+const char *_version = "$Revision: 1.27 $";
 #endif
 /*
  * mo_die - DIE command handler
@@ -90,7 +90,7 @@ static void mo_die(struct Client *client_p, struct Client *source_p,
         }
     }
 
-  DLINK_FOREACH(ptr, lclient_list.head)
+  DLINK_FOREACH(ptr, local_client_list.head)
   {
       target_p = ptr->data;
 

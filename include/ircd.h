@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.h,v 7.55 2003/02/23 04:16:03 db Exp $
+ *  $Id: ircd.h,v 7.56 2003/04/02 11:19:39 michael Exp $
  */
 
 #ifndef INCLUDED_ircd_h
@@ -95,7 +95,7 @@ extern int split_users;
 extern int split_servers;
 
 extern dlink_list unknown_list;
-extern dlink_list lclient_list;
+extern dlink_list local_client_list;
 extern dlink_list serv_list;
 extern dlink_list global_serv_list;
 extern dlink_list oper_list;

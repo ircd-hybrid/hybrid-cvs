@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.80 2003/03/31 00:29:08 michael Exp $
+ *  $Id: channel_mode.c,v 7.81 2003/04/02 11:19:46 michael Exp $
  */
 
 #include "stdinc.h"
@@ -2799,7 +2799,7 @@ do_channel_integrity_check(void)
   dlink_node *ptr = NULL;
   struct Client *cl;
   struct Channel *ch;
-  DLINK_FOREACH(cl_ptr, GlobalClientList.head)
+  DLINK_FOREACH(cl_ptr, global_client_list.head)
   {
     cl = cl_ptr->data;
 
@@ -2843,7 +2843,7 @@ do_channel_integrity_check(void)
     }
   }
 
-  DLINK_FOREACH(ch_ptr, GlobalClientList.head)
+  DLINK_FOREACH(ch_ptr, global_client_list.head)
   {
     ch = ch_ptr->data;
 

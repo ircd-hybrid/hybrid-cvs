@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_names.c,v 1.45 2003/02/23 04:16:05 db Exp $
+ *  $Id: m_names.c,v 1.46 2003/04/02 11:19:41 michael Exp $
  */
 
 #include "stdinc.h"
@@ -67,7 +67,7 @@ _moddeinit(void)
   mod_del_cmd(&names_msgtab);
 }
 
-const char *_version = "$Revision: 1.45 $";
+const char *_version = "$Revision: 1.46 $";
 #endif
 
 /************************************************************************
@@ -227,7 +227,7 @@ names_non_public_non_secret(struct Client *source_p)
 
   /* Second, do all non-public, non-secret channels in one big sweep */
 
-  DLINK_FOREACH(gc2ptr, GlobalClientList.head)
+  DLINK_FOREACH(gc2ptr, global_client_list.head)
     {
       c2ptr = gc2ptr->data;
 

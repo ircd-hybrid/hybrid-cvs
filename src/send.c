@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.230 2003/03/30 02:34:52 michael Exp $
+ *  $Id: send.c,v 7.231 2003/04/02 11:19:46 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1062,7 +1062,7 @@ sendto_match_butone(struct Client *one, struct Client *from,
   va_end(args);
 
   /* scan the local clients */
-  DLINK_FOREACH_SAFE(ptr, ptr_next, lclient_list.head)
+  DLINK_FOREACH_SAFE(ptr, ptr_next, local_client_list.head)
   {
     client_p = ptr->data;
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.111 2003/03/02 06:46:41 db Exp $
+ *  $Id: m_message.c,v 1.112 2003/04/02 11:19:43 michael Exp $
  */
 
 #include "stdinc.h"
@@ -123,7 +123,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.111 $";
+const char *_version = "$Revision: 1.112 $";
 #endif
 
 /*
@@ -967,7 +967,7 @@ find_userhost(char *user, char *host, int *count)
   *count = 0;
   if (collapse(user) != NULL)
     {
-      DLINK_FOREACH(gc2ptr, GlobalClientList.head)
+      DLINK_FOREACH(gc2ptr, global_client_list.head)
 	{
 	  c2ptr = gc2ptr->data;
 
