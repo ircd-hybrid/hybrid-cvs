@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_userhost.c,v 1.5 2000/11/23 22:21:51 db Exp $
+ *   $Id: m_userhost.c,v 1.6 2000/11/23 22:59:27 db Exp $
  */
 
 #include "handlers.h"
@@ -45,6 +45,8 @@ _modinit(void)
 {
   mod_add_cmd(MSG_USERHOST, &userhost_msgtab);
 }
+
+char *_version = "20001122";
 
 /*
  * m_userhost added by Darren Reed 13/8/91 to aid clients and reduce

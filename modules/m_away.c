@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_away.c,v 1.1 2000/11/08 23:57:23 ejb Exp $
+ *   $Id: m_away.c,v 1.2 2000/11/23 22:59:27 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -42,6 +42,8 @@ _modinit(void)
 {
   mod_add_cmd(MSG_AWAY, &away_msgtab);
 }
+
+char *_version = "20001122";
 
 /***********************************************************************
  * m_away() - Added 14 Dec 1988 by jto. 

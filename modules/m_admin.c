@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_admin.c,v 1.3 2000/11/21 05:03:11 db Exp $
+ *   $Id: m_admin.c,v 1.4 2000/11/23 22:58:59 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -44,6 +44,8 @@ _modinit(void)
 {
   mod_add_cmd(MSG_ADMIN, &admin_msgtab);
 }
+
+char *_version = "20001122";
 
 /*
  * m_admin - ADMIN command handler
