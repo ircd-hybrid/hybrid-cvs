@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_gline.c,v 1.22 2002/09/05 01:10:26 db Exp $
+ *  $Id: s_gline.c,v 1.23 2002/09/05 02:48:42 db Exp $
  */
 
 #include "stdinc.h"
@@ -98,15 +98,15 @@ find_is_glined(const char* host, const char* name)
   struct ConfItem *kill_ptr; 
 
   DLINK_FOREACH(gline_node, glines.head)
+  {
+    kill_ptr = gline_node->data;
+    if( (kill_ptr->name && (!name || match(kill_ptr->name,name)))
+	&&
+	(kill_ptr->host && (!host || match(kill_ptr->host,host))))
     {
-      kill_ptr = gline_node->data;
-      if( (kill_ptr->name && (!name || match(kill_ptr->name,name)))
-	  &&
-	  (kill_ptr->host && (!host || match(kill_ptr->host,host))))
-        {
-          return(kill_ptr);
-        }
+      return(kill_ptr);
     }
+  }
 
   return((struct ConfItem *)NULL);
 }
@@ -125,17 +125,17 @@ remove_gline_match(const char* user, const char* host)
   struct ConfItem *kill_ptr;
 
   DLINK_FOREACH(gline_node, glines.head)
+  {
+    kill_ptr = gline_node->data;
+    if(!irccmp(kill_ptr->host,host) && !irccmp(kill_ptr->name,user))
     {
-      kill_ptr = gline_node->data;
-      if(!irccmp(kill_ptr->host,host) && !irccmp(kill_ptr->name,user))
-	{
-          free_conf(kill_ptr);
-          dlinkDelete(gline_node, &glines);
-          free_dlink_node(gline_node);
-          return 1;
-	}
+      free_conf(kill_ptr);
+      dlinkDelete(gline_node, &glines);
+      free_dlink_node(gline_node);
+      return (1);
     }
-  return 0;
+  }
+  return (0);
 }
 
 /*
@@ -170,16 +170,16 @@ expire_glines()
   struct ConfItem *kill_ptr;
 
   DLINK_FOREACH_SAFE(gline_node, next_node, glines.head)
-    {
-      kill_ptr = gline_node->data;
+  {
+    kill_ptr = gline_node->data;
 
-      if(kill_ptr->hold <= CurrentTime)
-	{
-	  free_conf(kill_ptr);
-          dlinkDelete(gline_node, &glines);
-          free_dlink_node(gline_node);
-	}
+    if(kill_ptr->hold <= CurrentTime)
+    {
+      free_conf(kill_ptr);
+      dlinkDelete(gline_node, &glines);
+      free_dlink_node(gline_node);
     }
+  }
 }
 
 /*
@@ -200,18 +200,18 @@ expire_pending_glines()
   struct gline_pending *glp_ptr;
 
   DLINK_FOREACH_SAFE(pending_node, next_node, pending_glines.head)
-    {
-      glp_ptr = pending_node->data;
+  {
+    glp_ptr = pending_node->data;
 
-      if(((glp_ptr->last_gline_time + GLINE_PENDING_EXPIRE) <= CurrentTime)
-        || find_is_glined(glp_ptr->host, glp_ptr->user))
+    if(((glp_ptr->last_gline_time + GLINE_PENDING_EXPIRE) <= CurrentTime)
+       || find_is_glined(glp_ptr->host, glp_ptr->user))
       
-        {
-          MyFree(glp_ptr->reason1);
-          MyFree(glp_ptr->reason2);
-          MyFree(glp_ptr);
-          dlinkDelete(pending_node, &pending_glines);
-          free_dlink_node(pending_node);
-        }
+    {
+      MyFree(glp_ptr->reason1);
+      MyFree(glp_ptr->reason2);
+      MyFree(glp_ptr);
+      dlinkDelete(pending_node, &pending_glines);
+      free_dlink_node(pending_node);
     }
+  }
 }
