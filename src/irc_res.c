@@ -7,7 +7,7 @@
  * The authors takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: irc_res.c,v 7.21 2003/05/22 03:58:01 lusky Exp $
+ * $Id: irc_res.c,v 7.22 2003/05/24 00:14:39 db Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -881,7 +881,7 @@ res_readreply(int fd, void *data)
       }
 
       /*
-       * Lookup the 'authoritive' name that we were given for the
+       * Lookup the 'authoritative' name that we were given for the
        * ip#. 
        *
        */

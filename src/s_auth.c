@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.127 2003/05/20 02:19:54 db Exp $
+ *  $Id: s_auth.c,v 7.128 2003/05/24 00:14:39 db Exp $
  */
 
 /*
@@ -230,8 +230,8 @@ auth_dns_callback(void* vptr, struct DNSReply *reply)
 
   MyFree(reply);
   MyFree(auth->client->localClient->dns_query);
-
   auth->client->localClient->dns_query = NULL;
+
   if (!IsDoingAuth(auth))
   {
     struct Client *client_p = auth->client;
@@ -473,6 +473,7 @@ timeout_auth_queries_event(void *notused)
 	sendheader(auth->client, REPORT_FAIL_ID);
       if (IsDNSPending(auth))
       {
+	ClearDNSPending(auth);
 	delete_resolver_queries(auth->client);
 	auth->client->localClient->dns_query = NULL;
 	sendheader(auth->client, REPORT_FAIL_DNS);
