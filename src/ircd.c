@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.192 2001/10/30 23:39:15 bill Exp $
+ * $Id: ircd.c,v 7.193 2001/11/08 22:36:12 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -727,14 +727,16 @@ int main(int argc, char *argv[])
   eventAdd("comm_checktimeouts", comm_checktimeouts, NULL, 1);
 
   eventAdd("cleanup_zombies", cleanup_zombies, NULL, 30); 
+  
 #ifdef PACE_CONNECT
  if (ConfigFileEntry.throttle_time > 0)
-  eventAdd("flush_expired_ips", flush_expired_ips, NULL, ConfigFileEntry.throttle_time);
+   eventAdd("flush_expired_ips", flush_expired_ips, NULL, ConfigFileEntry.throttle_time);
  else
-  eventAdd("flush_expired_ips", flush_expired_ips, NULL, 300);
+   eventAdd("flush_expired_ips", flush_expired_ips, NULL, 300);
 #endif
 
-  eventAdd("write_links_file", write_links_file, NULL, ConfigServerHide.links_delay);
+  if(ConfigFileEntry.links_delay > 0)
+    eventAdd("write_links_file", write_links_file, NULL, ConfigServerHide.links_delay);
 
   ServerRunning = 1;
   io_loop();
