@@ -8,11 +8,11 @@
  * Owner:   Wohali (Joan Touzet)
  *
  *
- * $Id: balloc.h,v 1.6 2001/09/25 20:23:34 androsyn Exp $
+ * $Id: balloc.h,v 1.7 2001/10/03 19:12:40 androsyn Exp $
  */
 #ifndef INCLUDED_blalloc_h
-#ifndef NOBALLOC
 #define INCLUDED_blalloc_h
+#ifndef NOBALLOC
 #ifndef INCLUDED_sys_types_h
 #include <sys/types.h>       /* size_t */
 #define INCLUDED_sys_types_h
