@@ -1,3 +1,9 @@
+*** 20001209_15 by db
+- removed little used function... will have to replace functionality
+  for remote send of KNOCK and msg @#channel code...
+
+
+
 *** 20001209_14 by db
 - I was using ->user instead of ->username in prefix. *DUH*
 - removed pretty much identical function in send.c (MORE BLOAT GONE!)
@@ -2109,7 +2115,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.769 2000/12/10 01:32:10 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.770 2000/12/10 02:09:11 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
