@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.87 2003/02/09 00:02:28 bill Exp $
+ *  $Id: m_whois.c,v 1.87.2.1 2003/06/12 11:44:03 db Exp $
  */
 
 #include "stdinc.h"
@@ -76,7 +76,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-const char *_version = "$Revision: 1.87 $";
+const char *_version = "$Revision: 1.87.2.1 $";
 #endif
 /*
 ** m_whois
@@ -499,6 +499,8 @@ static void
 ms_whois(struct Client *client_p, struct Client *source_p,
                     int parc, char *parv[])
 {
+  char* wild_ptr;
+
   /* its a misconfigured server */
   /* XXX Need BadPtr */
   if (parc < 2 || BadPtr(parv[1]))
@@ -609,7 +611,22 @@ ms_whois(struct Client *client_p, struct Client *source_p,
    * to whois, so make parv[1] = parv[2] so do_whois is ok -- fl_
    */
     parv[1] = parv[2];
-    do_whois(client_p,source_p,parc,parv);
+
+    /*
+     * do not allow remote users to generate requests with wildcards,
+     * too much potential for abuse.  -bill 05/03
+     */
+    for (wild_ptr = parv[2]; *wild_ptr; ++wild_ptr)
+    {
+      if (*wild_ptr == '?' || *wild_ptr == '*')
+      {
+        sendto_one(source_p, form_str(ERR_NOSUCHNICK),
+                   me.name, source_p->name, parv[2]);
+        return;
+      }
+    }
+
+    do_whois(client_p, source_p, parc, parv);
     return;
   }
 
