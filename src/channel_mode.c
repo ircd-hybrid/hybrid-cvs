@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.97 2003/05/25 04:37:59 db Exp $
+ *  $Id: channel_mode.c,v 7.98 2003/05/26 05:43:19 db Exp $
  */
 
 #include "stdinc.h"
@@ -1206,7 +1206,7 @@ chm_op(struct Client *client_p, struct Client *source_p,
     mode_changes[mode_count].caps = 0;
     mode_changes[mode_count].nocaps = 0;
     mode_changes[mode_count].mems = ALL_MEMBERS;
-    mode_changes[mode_count].id = targ_p->user->id;
+    mode_changes[mode_count].id = targ_p->id;
     mode_changes[mode_count].arg = targ_p->name;
     mode_changes[mode_count++].client = targ_p;
   }
@@ -1218,7 +1218,7 @@ chm_op(struct Client *client_p, struct Client *source_p,
       mode_changes[mode_count].caps = 0;
       mode_changes[mode_count].nocaps = 0;
       mode_changes[mode_count].mems = ALL_MEMBERS;
-      mode_changes[mode_count].id = targ_p->user->id;
+      mode_changes[mode_count].id = targ_p->id;
       mode_changes[mode_count].arg = targ_p->name;
       mode_changes[mode_count++].client = targ_p;
     }
@@ -1283,7 +1283,7 @@ chm_voice(struct Client *client_p, struct Client *source_p,
     mode_changes[mode_count].caps = 0;
     mode_changes[mode_count].nocaps = 0;
     mode_changes[mode_count].mems = ALL_MEMBERS;
-    mode_changes[mode_count].id = targ_p->user->id;
+    mode_changes[mode_count].id = targ_p->id;
     mode_changes[mode_count].arg = targ_p->name;
     mode_changes[mode_count++].client = targ_p;
   }
@@ -1304,7 +1304,7 @@ chm_voice(struct Client *client_p, struct Client *source_p,
     mode_changes[mode_count].caps = 0;
     mode_changes[mode_count].nocaps = 0;
     mode_changes[mode_count].mems = ALL_MEMBERS;
-    mode_changes[mode_count].id = targ_p->user->id;
+    mode_changes[mode_count].id = targ_p->id;
     mode_changes[mode_count].arg = targ_p->name;
     mode_changes[mode_count++].client = targ_p;
   }
@@ -1576,8 +1576,8 @@ send_cap_mode_changes(struct Client *client_p, struct Client *source_p,
   parptr = parabuf;
 
   if ((cap & CAP_SID) && source_p->user &&
-      (source_p->user->id[0] == '.'))
-    mbl = ircsprintf(modebuf, ":%s MODE %s ", source_p->user->id,
+      (source_p->id[0] != '\0'))
+    mbl = ircsprintf(modebuf, ":%s MODE %s ", source_p->id,
                      chptr->chname);
   else
     mbl = ircsprintf(modebuf, ":%s MODE %s ", source_p->name,
@@ -1625,8 +1625,8 @@ send_cap_mode_changes(struct Client *client_p, struct Client *source_p,
       mc = 0;
 
       if ((cap & CAP_SID) && source_p->user &&
-          (source_p->user->id[0] == '.'))
-        mbl = ircsprintf(modebuf, ":%s MODE %s ", source_p->user->id,
+          (source_p->id[0] != '\0'))
+        mbl = ircsprintf(modebuf, ":%s MODE %s ", source_p->id,
                          chptr->chname);
       else
         mbl = ircsprintf(modebuf, ":%s MODE %s ", source_p->name,

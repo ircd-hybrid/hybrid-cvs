@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.274 2003/05/25 23:08:17 db Exp $
+ *  $Id: s_user.c,v 7.275 2003/05/26 05:43:20 db Exp $
  */
 
 #include "stdinc.h"
@@ -447,12 +447,12 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   if (IsDead(client_p))
     return(CLIENT_EXITED);
 
-  if (source_p->user->id[0] == '\0') 
+  if (source_p->id[0] == '\0') 
   {
     for (id = uid_get(); find_id(id); id = uid_get())
       ;
 
-    strlcpy(source_p->user->id, id, sizeof(source_p->user->id));
+    strlcpy(source_p->id, id, sizeof(source_p->id));
     add_to_id_hash_table(id, source_p);
   }
 
@@ -546,7 +546,7 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
   strlcpy(source_p->username, username, sizeof(source_p->username));
 
   if (id != NULL)
-    strlcpy(source_p->user->id, id, sizeof(source_p->user->id));
+    strlcpy(source_p->id, id, sizeof(source_p->id));
 
   SetClient(source_p);
 
@@ -638,16 +638,20 @@ introduce_client(struct Client *client_p, struct Client *source_p)
   {
     if (IsCapable(uplink, CAP_SID) && HasID(source_p))
     {
-      sendto_one(uplink, "CLIENT %s %d %lu %s %s %s %s %s :%s",
-                 source_p->name, source_p->hopcount+1, (unsigned long)source_p->tsinfo,
-                 ubuf, source_p->username, source_p->host, source_p->user->server->name,
-                 source_p->user->id, source_p->info);
+      sendto_one(uplink, "UID %s %d %lu %s %s %s %s %s :%s",
+                 source_p->name, source_p->hopcount+1,
+		 (unsigned long)source_p->tsinfo,
+                 ubuf, source_p->username, source_p->host,
+		 source_p->user->server->name,
+                 source_p->id, source_p->info);
     }
     else
     {
       sendto_one(uplink, "NICK %s %d %lu %s %s %s %s :%s",
-                 source_p->name, source_p->hopcount+1, (unsigned long)source_p->tsinfo,
-                 ubuf, source_p->username, source_p->host, source_p->user->server->name,
+                 source_p->name, source_p->hopcount+1,
+		 (unsigned long)source_p->tsinfo,
+                 ubuf, source_p->username, source_p->host,
+		 source_p->user->server->name,
                  source_p->info);
     }
   }
@@ -661,14 +665,18 @@ introduce_client(struct Client *client_p, struct Client *source_p)
         continue;
 
       if (IsCapable(server, CAP_SID) && HasID(source_p))
-        sendto_one(server, "CLIENT %s %d %lu %s %s %s %s %s :%s",
-                   source_p->name, source_p->hopcount+1, (unsigned long)source_p->tsinfo,
-                   ubuf, source_p->username, source_p->host, source_p->user->server->name,
-                   source_p->user->id, source_p->info);
+        sendto_one(server, "UID %s %d %lu %s %s %s %s %s :%s",
+                   source_p->name, source_p->hopcount+1,
+		   (unsigned long)source_p->tsinfo,
+                   ubuf, source_p->username, source_p->host,
+		   source_p->user->server->name,
+                   source_p->id, source_p->info);
       else
         sendto_one(server, "NICK %s %d %lu %s %s %s %s :%s",
-                   source_p->name, source_p->hopcount+1, (unsigned long)source_p->tsinfo,
-                   ubuf, source_p->username, source_p->host, source_p->user->server->name,
+                   source_p->name, source_p->hopcount+1,
+		   (unsigned long)source_p->tsinfo,
+                   ubuf, source_p->username, source_p->host,
+		   source_p->user->server->name,
                    source_p->info);
     }
   }
@@ -1280,14 +1288,16 @@ oper_up(struct Client *source_p, struct ConfItem *aconf)
   if (ConfigFileEntry.oper_umodes)
     source_p->umodes |= ConfigFileEntry.oper_umodes & ALL_UMODES;
   else
-    source_p->umodes |= (UMODE_SERVNOTICE|UMODE_OPERWALL|UMODE_WALLOP|UMODE_LOCOPS) & ALL_UMODES;
+    source_p->umodes |= (UMODE_SERVNOTICE|UMODE_OPERWALL|
+			 UMODE_WALLOP|UMODE_LOCOPS) & ALL_UMODES;
 
   Count.oper++;
 
   dlinkAdd(source_p, make_dlink_node(), &oper_list);
 
   if ((ptr = source_p->localClient->confs.head) != NULL)
-    operprivs = oper_privs_as_string(source_p, ((struct ConfItem *)ptr->data)->port);
+    operprivs = oper_privs_as_string(source_p,
+				     ((struct ConfItem *)ptr->data)->port);
   else
     operprivs = "";
 

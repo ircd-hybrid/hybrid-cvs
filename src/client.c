@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.375 2003/05/25 01:05:24 michael Exp $
+ *  $Id: client.c,v 7.376 2003/05/26 05:43:20 db Exp $
  */
 
 #include "stdinc.h"
@@ -887,7 +887,7 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
     off_history(source_p);
 
     if (HasID(source_p))
-      del_from_id_hash_table(source_p->user->id, source_p);
+      del_from_id_hash_table(source_p->id, source_p);
     /* again, this is all that is needed */
   }
 

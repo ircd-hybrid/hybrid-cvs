@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.63 2003/05/22 17:09:08 michael Exp $
+ *  $Id: hash.c,v 7.64 2003/05/26 05:43:20 db Exp $
  */
 
 #include "stdinc.h"
@@ -129,8 +129,6 @@ hash_nick_name(const char *name)
 
 /* hash_id()
  *
- * IDs are a easy to hash -- they're already evenly distributed,
- * and they are always case sensitive.   -orabidoo
  */
 static unsigned int 
 hash_id(const char *nname)
@@ -413,7 +411,7 @@ find_id(const char *name)
 
   /* Got the bucket, now search the chain. */
   for (; found_client; found_client = found_client->idhnext)
-    if (found_client->user && strcmp(name, found_client->user->id) == 0)
+    if (found_client->user && strcmp(name, found_client->id) == 0)
       return(found_client);
 
   return(NULL);
@@ -435,9 +433,6 @@ find_client(const char *name)
 
   if (name == NULL)
     return(NULL);
-
-  if (*name == '.') /* it's an ID .. */
-    return(find_id(name));
 
   hashv        = hash_nick_name(name);
   found_client = (struct Client *)clientTable[hashv].list;

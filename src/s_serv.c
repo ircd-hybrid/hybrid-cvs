@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.335 2003/05/25 05:56:38 db Exp $
+ *  $Id: s_serv.c,v 7.336 2003/05/26 05:43:20 db Exp $
  */
 
 #include "stdinc.h"
@@ -823,11 +823,14 @@ sendnick_TS(struct Client *client_p, struct Client *target_p)
   }
 
   if (HasID(target_p) && IsCapable(client_p, CAP_SID))
-    sendto_one(client_p, "CLIENT %s %d %lu %s %s %s %s %s :%s",
+    sendto_one(client_p, "UID %s %d %lu %s %s %s %s %s %s :%s",
 	       target_p->name, target_p->hopcount + 1,
 	       (unsigned long) target_p->tsinfo,
 	       ubuf, target_p->username, target_p->host,
-	       target_p->user->server->name, target_p->user->id, target_p->info);
+	       "0", /* IP */
+	       target_p->id,
+	       target_p->user->server->id,
+	       target_p->info);
   else
     sendto_one(client_p, "NICK %s %d %lu %s %s %s %s :%s",
 	       target_p->name, target_p->hopcount + 1,

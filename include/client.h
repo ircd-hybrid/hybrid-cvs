@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.195 2003/05/25 04:37:54 db Exp $
+ *  $Id: client.h,v 7.196 2003/05/26 05:43:16 db Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -70,7 +70,6 @@ struct User
   struct Client *server;    /* pointer to server */
   char*          response;  /* expected response from client */
   char*          auth_oper; /* Operator to become if they supply the response.*/
-  char id[IDLEN + 1];       /* client ID, unique ID per client */
 };
 
 struct Server
@@ -145,6 +144,7 @@ struct Client
    * client->name is the unique name for a client nick or host
    */
   char              name[HOSTLEN + 1]; 
+  char id[IDLEN + 1];       /* client ID, unique ID per client */
   /*
    * client->llname is used to store the clients requested nick
    * temporarily for new connections.
@@ -300,10 +300,9 @@ struct LocalUser
 #define STAT_SERVER             0x10
 #define STAT_CLIENT             0x20
 
-#define HasID(x) (!IsServer(x) && (x)->user && (x)->user->id[0] != '\0')
-#define ID(source_p) (HasID(source_p) ? source_p->user->id : source_p->name)
-
-#define ID_or_name(x,client_p) (IsCapable(client_p,CAP_SID)?(x)->user->id:(x)->name)
+#define HasID(x) ((x)->id[0] != '\0')
+#define ID(source_p) (HasID(source_p) ? source_p->id : source_p->name)
+#define ID_or_name(x,client_p) (IsCapable(client_p,CAP_SID)?(x)->id:(x)->name)
 
 #define IsRegisteredUser(x)     ((x)->status == STAT_CLIENT)
 #define IsRegistered(x)         ((x)->status  > STAT_UNKNOWN)
