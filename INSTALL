@@ -1,10 +1,10 @@
                             Hybrid INSTALL Document
 
-   $Id: INSTALL,v 7.17 2001/11/05 01:02:50 wcampbel Exp $
+   $Id: INSTALL,v 7.18 2001/12/14 15:46:18 leeh Exp $
 
    Copyright (c) 2001 by ircd-hybrid team
 
-   $Date: 2001/11/05 01:02:50 $
+   $Date: 2001/12/14 15:46:18 $
 
      ----------------------------------------------------------------------
 
@@ -32,6 +32,9 @@
        Read the ChangeLog file to find out about the exciting new features in
        this version. Other good reads are doc/whats-new.txt, BUGS,
        doc/example.conf, and README.FIRST.
+
+       An example.conf for efnet is in doc/ with the values "approved" at
+       14/12/01
 
    2. 
 

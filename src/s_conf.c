@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.281 2001/12/14 04:20:53 bill Exp $
+ *  $Id: s_conf.c,v 7.282 2001/12/14 15:46:23 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -1584,7 +1584,7 @@ set_default_conf(void)
   ConfigChannel.use_except  = YES;
   /* ConfigChannel.use_halfops = YES; */ /* Don't set, as this can't
                                             be changed at runtime */
-  ConfigChannel.use_invex   = NO;
+  ConfigChannel.use_invex   = YES;
   ConfigChannel.use_knock   = YES;
   ConfigChannel.use_vchans = NO;
   ConfigChannel.knock_delay = 300;
