@@ -20,8 +20,18 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_gline.c,v 1.55 2001/06/01 00:55:56 davidt Exp $
+ *  $Id: m_gline.c,v 1.56 2001/06/02 05:52:43 ejb Exp $
  */
+
+#include <assert.h>
+#include <string.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <time.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <limits.h>
+
 #include "tools.h"
 #include "handlers.h"
 #include "s_gline.h"
@@ -47,14 +57,6 @@
 #include "parse.h"
 #include "modules.h"
 #include "list.h"
-
-#include <assert.h>
-#include <string.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <time.h>
-#include <fcntl.h>
-#include <errno.h>
 
 /* internal functions */
 static void set_local_gline(
