@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.62 2000/12/11 22:07:34 db Exp $
+ *   $Id: s_serv.c,v 7.63 2000/12/12 02:10:31 db Exp $
  */
 #include "tools.h"
 #include "s_serv.h"
@@ -1195,7 +1195,6 @@ serv_connect(struct ConfItem *aconf, struct Client *by)
         cptr->serv->user = NULL;
       }
     cptr->serv->up = me.name;
-    local[cptr->fd] = cptr;
     SetConnecting(cptr);
     add_client_to_list(cptr);
 
