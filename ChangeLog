@@ -1,3 +1,13 @@
+*** 20001111_6 by db
+- more cleanup on m_kline.c
+  with iauth, kline file locking etc. will be handled by iauthd anyway..
+  We'll need a local link list of klines to place as they are handed to 
+iauthd eventually...
+
+- fixed small bug in s_conf.c removed another #ifdef
+
+
+
 *** 20001111_5 by db
 - more clean ups on m_kline.c, I'll make this sane yet!
 
@@ -439,7 +449,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.533 2000/11/11 15:55:06 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.534 2000/11/11 21:59:45 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
