@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_links.c,v 1.11 2000/12/23 01:42:12 db Exp $
+ *   $Id: m_links.c,v 1.12 2000/12/23 14:19:08 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -120,11 +120,11 @@ int m_links(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 	    {
 	      if(&me == acptr)
 		sendto_one(sptr, form_str(RPL_LINKS),
-			   me.name, parv[0], acptr->name, "",
+			   me.name, parv[0], acptr->name, me.name,
 			   0, p);
 	      else
 		sendto_one(sptr, form_str(RPL_LINKS),
-			   me.name, parv[0], acptr->name, "",
+			   me.name, parv[0], acptr->name, me.name,
 			   1, p);
 	    }
 	  else

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.76 2000/12/23 01:42:21 db Exp $
+ *  $Id: s_user.c,v 7.77 2000/12/23 14:19:13 db Exp $
  */
 #include "tools.h"
 #include "s_user.h"
@@ -817,7 +817,7 @@ int user_mode(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
               if(!IsOper(sptr))
                 break;
 
-              sptr->umodes &= ~FLAGS_OPER;
+              sptr->umodes &= ~(FLAGS_OPER|FLAGS_ADMIN);
 
               Count.oper--;
 
@@ -878,11 +878,11 @@ int user_mode(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
               if (what == MODE_ADD)
                 sptr->umodes |= flag;
               else
-                sptr->umodes &= ~flag;  
+		sptr->umodes &= ~flag;  
             }
           else
             {
-              if ( MyConnect(sptr))
+              if (MyConnect(sptr))
                 badflag = YES;
             }
           break;
