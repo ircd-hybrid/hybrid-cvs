@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_list.c,v 1.44 2002/08/15 15:00:59 adx Exp $
+ *  $Id: m_list.c,v 1.45 2003/01/17 05:11:53 db Exp $
  */
 
 #include "stdinc.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&list_msgtab);
 }
-const char *_version = "$Revision: 1.44 $";
+const char *_version = "$Revision: 1.45 $";
 #endif
 static int list_all_channels(struct Client *source_p);
 static int list_named_channel(struct Client *source_p,char *name);
@@ -228,7 +228,7 @@ static int list_named_channel(struct Client *source_p,char *name)
   if ((p = strchr(name,',')) != NULL)
     *p = '\0';
   if (!*name)
-    return;
+    return 0;
 
   chptr = hash_find_channel(name);
   if (chptr == NULL)
