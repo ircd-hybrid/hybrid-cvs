@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.17 1999/10/14 06:18:39 lusky Exp $
+ *  $Id: s_bsd.c,v 7.18 1999/10/14 06:27:30 tomh Exp $
  */
 #include "s_bsd.h"
 #include "class.h"
@@ -1215,6 +1215,7 @@ int read_message(time_t delay, unsigned char mask)        /* mika */
                 pfd->events = 0;                \
         }
 
+
 int read_message(time_t delay, unsigned char mask)
 {
   struct Client*       cptr;
@@ -1269,23 +1270,8 @@ int read_message(time_t delay, unsigned char mask)
      */
     for (listener = ListenerPollList; listener; listener = listener->next) {
       assert(-1 < listener->fd);
-#ifdef CONNECTFAST
       listener->index = nbr_pfds;
       PFD_SETR(listener->fd);
-#else
-     /* 
-      * It is VERY bad if someone tries to send a lot
-      * of clones to the server though, as mbuf's can't
-      * be allocated quickly enough... - Comstud
-      */
-      listener->index = -1;
-      if (CurrentTime > (listener->last_accept + 2)) {
-        listener->index = nbr_pfds;
-        PFD_SETR(listener->fd);
-      }
-      else if (delay2 > 2)
-        delay2 = 2;
-#endif
     }
     /*
      * set client descriptors
