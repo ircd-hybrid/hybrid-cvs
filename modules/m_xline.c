@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.31 2004/02/10 06:00:13 db Exp $
+ *  $Id: m_xline.c,v 1.32 2004/02/11 16:41:38 db Exp $
  */
 
 #include "stdinc.h"
@@ -82,7 +82,7 @@ _moddeinit(void)
   mod_del_cmd(&unxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.31 $";
+const char *_version = "$Revision: 1.32 $";
 #endif
 
 
@@ -102,7 +102,8 @@ mo_xline(struct Client *client_p, struct Client *source_p,
 {
   struct ConfItem *conf;
   struct MatchItem *match_item;
-  char *reason, *target_server;
+  char *reason;
+  char *target_server=NULL;
   const char *type;
   int type_i = 1;
   char def_reason[] = "No Reason";
@@ -133,13 +134,14 @@ mo_xline(struct Client *client_p, struct Client *source_p,
   }
 
   /* XLINE <gecos> <type> ON <server> :reason */
-  if (parc > 5)
+  if (parc >= 5)
   {
     if (irccmp(parv[3], "ON") == 0)
     {
-      target_server = parv[4];
-      reason = parv[5];
       type = parv[2];
+      target_server = parv[4];
+      if (parc > 5)
+	reason = parv[5];
     }
     else
     {
@@ -149,21 +151,6 @@ mo_xline(struct Client *client_p, struct Client *source_p,
        * rather than duplicating the case with which
        * the command was issued.
        */
-      sendto_one(source_p, form_str(ERR_NORECIPIENT),
-                 me.name, source_p->name, "XLINE");
-      return;
-    }
-  }
-  /* XLINE <gecos> <type> ON <server> */
-  else if (parc == 5)
-  {
-    if (irccmp(parv[3], "ON") == 0)
-    {
-      target_server = parv[4];
-      type = parv[2];
-    }
-    else
-    {
       sendto_one(source_p, form_str(ERR_NORECIPIENT),
                  me.name, source_p->name, "XLINE");
       return;
@@ -202,7 +189,7 @@ mo_xline(struct Client *client_p, struct Client *source_p,
     if (!match(target_server, me.name))
       return;
   }
-  else if (dlink_list_length(&cluster_items))
+  else if (dlink_list_length(&cluster_items) != 0)
     cluster_xline(source_p, parv[1], type_i, reason);
 
   write_xline(source_p, parv[1], reason, type_i);
