@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.91 2000/12/06 03:28:09 db Exp $
+ *  $Id: s_conf.c,v 7.92 2000/12/06 23:34:58 db Exp $
  */
 #include "tools.h"
 #include "s_conf.h"
@@ -564,7 +564,8 @@ static int attach_iline(struct Client *cptr, struct ConfItem *aconf)
   ip_found->count++;
 
   /* only check it if its non zero */
-  if (ConfConFreq(aconf) && ip_found->count > ConfConFreq(aconf))
+  if ( aconf->c_class /* This should never non NULL *grin* */ &&
+       ConfConFreq(aconf) && ip_found->count > ConfConFreq(aconf))
     {
       if(!IsConfFlined(aconf))
         return TOO_MANY; /* Already at maximum allowed ip#'s */
