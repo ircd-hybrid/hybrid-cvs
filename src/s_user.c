@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.168 2001/10/25 02:36:21 db Exp $
+ *  $Id: s_user.c,v 7.169 2001/10/25 23:46:46 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -897,7 +897,7 @@ int user_mode(struct Client *client_p, struct Client *source_p, int parc, char *
       return 0;
     }
 
-  if ((target_p = find_person(parv[1])) != NULL)
+  if ((target_p = find_person(parv[1])) == NULL)
     {
       if (MyConnect(source_p))
         sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
