@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.245 2001/06/16 22:56:59 a1kmm Exp $
+ *  $Id: s_conf.c,v 7.246 2001/06/22 00:09:30 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -677,7 +677,9 @@ find_or_add_ip(struct irc_inaddr *ip_in)
 
       memcpy(&newptr->ip, ip_in, sizeof(*ip_in));
       newptr->count = 0;
+#ifdef PACE_CONNECT
       newptr->last_attempt = 0;
+#endif      
       newptr->next = ptr;
       return(newptr);
     }
