@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.115 2001/01/05 17:00:38 ejb Exp $
+ *   $Id: s_serv.c,v 7.116 2001/01/05 17:19:24 ejb Exp $
  */
 #include "tools.h"
 #include "s_serv.h"
@@ -598,7 +598,6 @@ void sendnick_TS(struct Client *cptr, struct Client *acptr)
 	  ubuf[1] = '\0';
   }
  
-  sendto_realops_flags(FLAGS_ALL, "sending client %s, %sID %s", acptr->name, HasID(acptr) ? "" : "no ", HasID(acptr) ? acptr->user->id : "");
   if (HasID(acptr) && IsCapable(cptr, CAP_UID))
 	  sendto_one(cptr, "CLIENT %s %d %lu %s %s %s %s %s :%s",
 				 acptr->name, acptr->hopcount + 1, acptr->tsinfo, ubuf,

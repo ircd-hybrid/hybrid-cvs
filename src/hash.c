@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: hash.c,v 7.17 2001/01/05 17:00:38 ejb Exp $
+ *  $Id: hash.c,v 7.18 2001/01/05 17:19:24 ejb Exp $
  */
 #include "tools.h"
 #include "s_conf.h"
@@ -387,15 +387,10 @@ hash_find_id(const char *name, struct Client *cptr)
 	hashv = hash_id(name);
 	tmp = (struct Client *)idTable[hashv].list;
 
-	sendto_realops_flags(FLAGS_ALL, "looking up client %d from ID hash table", hashv);
-	
 	/*
 	 * Got the bucket, now search the chain.
 	 */
 	for (; tmp; tmp = tmp->idhnext) {
-		
-		sendto_realops_flags(FLAGS_ALL, "checking client %s ID %s", tmp->name, tmp->user->id);
-	
 		if (tmp->user && strcmp(name, tmp->user->id) == 0)
 		{
 			return(tmp);
