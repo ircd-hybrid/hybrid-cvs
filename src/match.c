@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: match.c,v 7.34 2004/01/31 19:02:23 michael Exp $
+ * $Id: match.c,v 7.35 2004/01/31 20:34:22 michael Exp $
  *
  */
 #include "stdinc.h"
@@ -331,7 +331,7 @@ collapse(char *pattern)
     }
   }
 
-  *po++ = '\0';
+  *po = '\0';
 
   return(pattern);
 }
