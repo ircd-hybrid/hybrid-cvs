@@ -1,5 +1,5 @@
 /*
- * $Id: adns.c,v 7.32 2001/12/06 15:02:59 androsyn Exp $
+ * $Id: adns.c,v 7.33 2001/12/06 15:03:48 androsyn Exp $
  * adns.c  functions to enter libadns 
  *
  * Written by Aaron Sethman <androsyn@ratbox.org>
@@ -119,14 +119,12 @@ static void dns_cancel_all(void)
  adns_forallqueries_begin(dns_state);
  while((q = adns_forallqueries_next(dns_state, (void **)&r)) != NULL)
  {
-//	dns_kill_state(q);
 	adns_cancel(q);
 	adns__query_done(q);
  	adns_check(dns_state, &q, &answer, (void **)&query);
  	assert(query->callback != NULL);
 	query->query = NULL;
  	query->callback(query->ptr, NULL);
-//	adns_cancel(q);
  }
 }
 
