@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# $Id: version.c.SH,v 7.19 2001/11/13 08:59:01 leeh Exp $ 
+# $Id: version.c.SH,v 7.20 2003/05/05 01:52:28 michael Exp $
 
 spitshell=cat
 package=IRC
@@ -74,7 +74,7 @@ char *infotext[] =
 
 IFS='
 '
-for i in `grep -v '^$Id' ../Hybrid-team |tr -d '"'` ; do
+for i in `grep -v '^$[I]d' ../Hybrid-team |tr -d '"'` ; do
 echo "  \"$i\"," >> version.c
 done
 $spitshell >>version.c <<!SUB!THISTOO!
