@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: irc_string.c,v 7.64 2003/06/13 07:40:31 joshk Exp $
+ *  $Id: irc_string.c,v 7.65 2003/06/17 04:13:08 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -253,12 +253,11 @@ inetntoa(const char *in)
  *
  * input	- i.e. "/usr/local/ircd/modules/m_whois.so"
  * output	- i.e. "m_whois.so"
- * side effects - none
+ * side effects - this will be overwritten on subsequent calls
  */
 char *
 basename(char *path)
 {
-  char *mod_basename = MyMalloc(strlen(path) + 1);
   char *s;
 
   if ((s = strrchr(path, '/')) == NULL)
@@ -266,8 +265,7 @@ basename(char *path)
   else
     s++;
 
-  strcpy(mod_basename, s);
-  return(mod_basename);
+  return (s);
 }
 
 #endif /* !HAVE_BASENAME */
