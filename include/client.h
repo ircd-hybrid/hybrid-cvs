@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.71 2001/01/04 21:11:51 davidt Exp $
+ * $Id: client.h,v 7.72 2001/01/05 05:43:52 db Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -357,9 +357,10 @@ struct LocalUser
 #define FLAGS_EXTERNAL     0x1000 /* show servers introduced and splitting */
 #define FLAGS_CALLERID     0x4000 /* block unless caller id's */
 #define FLAGS_UNAUTH       0x8000 /* show unauth connects here */
+#define FLAGS_DRONE        0x10000 /* show drone connects */
 
 /* user information flags, only settable by remote mode or local oper */
-#define FLAGS_OPER         0x10000 /* Operator */
+#define FLAGS_OPER         0x20000 /* Operator */
 #define FLAGS_ADMIN        0x40000 /* Admin on server */
 
 
