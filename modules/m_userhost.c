@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_userhost.c,v 1.17 2001/01/01 20:39:44 bysin Exp $
+ *   $Id: m_userhost.c,v 1.18 2001/01/01 20:45:52 bysin Exp $
  */
 
 #include "handlers.h"
@@ -98,7 +98,7 @@ int     m_userhost(struct Client *cptr,
 	}
     }
 
-  ircsprintf(buf, "%s %s %s %s %s",
+  ircsprintf(buf, "%s %s %s %s",
     response[0], response[1], response[2], response[3] );
   sendto_one(sptr, form_str(RPL_USERHOST), me.name, parv[0], buf);
 
