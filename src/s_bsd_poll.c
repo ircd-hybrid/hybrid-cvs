@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_poll.c,v 7.16 2000/11/06 16:12:05 adrian Exp $
+ *  $Id: s_bsd_poll.c,v 7.17 2000/11/08 09:34:21 adrian Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -131,8 +131,8 @@ void init_netio(void)
  * and deregister interest in a pending IO state for a given FD.
  */
 void
-comm_setselect(int fd, unsigned int type, PF * handler, void *client_data,
-    time_t timeout)
+comm_setselect(int fd, fdlist_t list, unsigned int type, PF * handler,
+    void *client_data, time_t timeout)
 {  
     fde_t *F = &fd_table[fd];
     assert(fd >= 0);
@@ -141,6 +141,7 @@ comm_setselect(int fd, unsigned int type, PF * handler, void *client_data,
     debug(5, 5) ("commSetSelect: FD %d type %d, %s\n", fd, type, handler ? "SET"
  : "CLEAR");
 #endif
+    F->list = list;
     if (type & COMM_SELECT_READ) {
         F->read_handler = handler;
         F->read_data = client_data;

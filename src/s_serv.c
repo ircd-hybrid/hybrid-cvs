@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.41 2000/11/06 16:12:06 adrian Exp $
+ *   $Id: s_serv.c,v 7.42 2000/11/08 09:34:21 adrian Exp $
  */
 #include "s_serv.h"
 #include "channel.h"
@@ -1238,5 +1238,5 @@ serv_connect_callback(int fd, int status, void *data)
     }
 
     /* If we get here, we're ok, so lets start reading some data */
-    comm_setselect(fd, COMM_SELECT_READ, read_packet, cptr, 0);
+    comm_setselect(fd, FDLIST_SERVER, COMM_SELECT_READ, read_packet, cptr, 0);
 }

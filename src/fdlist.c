@@ -3,7 +3,7 @@
  * fdlist.c   maintain lists of file descriptors
  *
  *
- * $Id: fdlist.c,v 7.12 2000/11/04 17:44:18 adrian Exp $
+ * $Id: fdlist.c,v 7.13 2000/11/08 09:34:19 adrian Exp $
  */
 #include "fdlist.h"
 #include "client.h"  /* struct Client */
@@ -110,7 +110,8 @@ fd_close(int fd)
 #ifdef NOTYET
     debug(51, 3) ("fd_close FD %d %s\n", fd, F->desc);
 #endif
-    comm_setselect(fd, COMM_SELECT_WRITE|COMM_SELECT_READ, NULL, NULL, 0);
+    comm_setselect(fd, FDLIST_NONE, COMM_SELECT_WRITE|COMM_SELECT_READ,
+      NULL, NULL, 0);
     F->flags.open = 0;
     fdlist_update_biggest(fd, 0);
     number_fd--;

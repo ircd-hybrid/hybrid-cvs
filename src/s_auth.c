@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.c,v 7.22 2000/11/06 21:51:05 adrian Exp $
+ *   $Id: s_auth.c,v 7.23 2000/11/08 09:34:20 adrian Exp $
  *
  * Changes:
  *   July 6, 1999 - Rewrote most of the code here. When a client connects
@@ -180,7 +180,8 @@ static void release_auth_client(struct Client* client)
    * us. This is what read_packet() does.
    *     -- adrian
    */
-  comm_setselect(client->fd, COMM_SELECT_READ, read_packet, client, 0);
+  comm_setselect(client->fd, FDLIST_BUSYCLIENT, COMM_SELECT_READ, read_packet,
+    client, 0);
   add_client_to_list(client);
 }
  
@@ -520,7 +521,9 @@ void auth_connect_callback(int fd, int error, void *data)
   }
   ClearAuthConnect(auth);
   SetAuthPending(auth);
-  comm_setselect(auth->fd, COMM_SELECT_READ, read_auth_reply, auth, 0);
+  /* Its idle, because we don't mind this taking a little time -- adrian */
+  comm_setselect(auth->fd, FDLIST_IDLECLIENT, COMM_SELECT_READ,
+    read_auth_reply, auth, 0);
 }
 
 

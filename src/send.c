@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.39 2000/11/06 16:12:08 adrian Exp $
+ *   $Id: send.c,v 7.40 2000/11/08 09:34:22 adrian Exp $
  */
 #include "send.h"
 #include "channel.h"
@@ -161,7 +161,8 @@ send_message(struct Client *to, char *msg, int len)
      * later.
      *     -- adrian
      */
-    comm_setselect(to->fd, COMM_SELECT_WRITE, send_queued_write, to, 0);
+    comm_setselect(to->fd, FDLIST_BUSYCLIENT, COMM_SELECT_WRITE,
+      send_queued_write, to, 0);
     return 0;
 } /* send_message() */
 
@@ -237,7 +238,8 @@ send_queued_write(int fd, void *data)
   /* return (IsDead(to)) ? -1 : 0; */
   /* If we have any more data, reschedule a write */
   if (more)
-      comm_setselect(fd, COMM_SELECT_WRITE, send_queued_write, to, 0);
+      comm_setselect(fd, FDLIST_BUSYCLIENT, COMM_SELECT_WRITE,
+        send_queued_write, to, 0);
 } /* send_queued_write() */
 
 /*

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: listener.c,v 7.11 2000/11/04 12:17:51 adrian Exp $
+ *  $Id: listener.c,v 7.12 2000/11/08 09:34:19 adrian Exp $
  */
 #include "listener.h"
 #include "client.h"
@@ -224,7 +224,8 @@ static int inetport(struct Listener* listener)
   listener->fd = fd;
 
   /* Listen completion events are READ events .. */
-  comm_setselect(fd, COMM_SELECT_READ, accept_connection, listener, 0);
+  comm_setselect(fd, FDLIST_SERVICE, COMM_SELECT_READ, accept_connection,
+    listener, 0);
 
   return 1;
 }
@@ -411,6 +412,7 @@ static void accept_connection(int pfd, void *data)
   } while (0);
 
   /* Re-register a new IO request for the next accept .. */
-  comm_setselect(listener->fd, COMM_SELECT_READ, accept_connection, listener, 0);
+  comm_setselect(listener->fd, FDLIST_SERVICE, COMM_SELECT_READ,
+    accept_connection, listener, 0);
 }
 

@@ -4,7 +4,7 @@
  * shape or form. The author takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: res.c,v 7.24 2000/11/06 22:02:40 adrian Exp $
+ * $Id: res.c,v 7.25 2000/11/08 09:34:20 adrian Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -301,8 +301,8 @@ static void start_resolver(void)
         "Resolver socket");
       set_non_blocking(ResolverFileDescriptor);
       /* At the moment, the resolver FD data is global .. */
-      comm_setselect(ResolverFileDescriptor, COMM_SELECT_READ, res_readreply,
-          NULL, 0);
+      comm_setselect(ResolverFileDescriptor, FDLIST_SERVICE, COMM_SELECT_READ,
+          res_readreply, NULL, 0);
       eventAdd("timeout_resolver", timeout_resolver, NULL, 1, 0);
     }
 }
@@ -978,8 +978,8 @@ res_readreply(int fd, void *data)
    * Re-schedule a read *after* recvfrom, or we'll be registering
    * interest where it'll instantly be ready for read :-) -- adrian
    */
-  comm_setselect(ResolverFileDescriptor, COMM_SELECT_READ, res_readreply,
-    NULL, 0);
+  comm_setselect(ResolverFileDescriptor, FDLIST_SERVICE, COMM_SELECT_READ,
+    res_readreply, NULL, 0);
 
   if (rc <= sizeof(HEADER))
     return;
