@@ -15,8 +15,14 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_ojoin.c,v 1.21 2003/06/10 05:23:00 joshk Exp $
+ *   $Id: m_ojoin.c,v 1.22 2003/06/10 22:30:00 joshk Exp $
  */
+
+/* Remove this if you do not wish /OJOIN to support multiple channels
+ * at once. Or add an #undef for it in config.h, since it is subsequently
+ * #included. */
+
+#define OJOIN_MULTIJOIN
 
 #include "stdinc.h"
 #include "tools.h"
@@ -25,12 +31,10 @@
 #include "client.h"
 #include "ircd.h"
 #include "numeric.h"
-#include "s_serv.h"
 #include "send.h"
 #include "irc_string.h"
 #include "hash.h"
 #include "msg.h"
-#include "parse.h"
 #include "modules.h"
 #include "list.h"
 #include "channel_mode.h"
@@ -54,19 +58,22 @@ _moddeinit(void)
   mod_del_cmd(&ojoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.21 $";
+const char *_version = "$Revision: 1.22 $";
 
 /*
 ** mo_ojoin
 **      parv[0] = sender prefix
-**      parv[1] = channels separated by commas
+**      parv[1] = channels separated by commas (#ifdef OJOIN_MULTIJOIN)
 */
 static void
 mo_ojoin(struct Client *client_p, struct Client *source_p,
          int parc, char *parv[])
 {
   struct Channel *chptr;
-  char *name = parv[1], *t = NULL, modeletter;
+  char *name = parv[1], modeletter;
+#ifdef OJOIN_MULTIJOIN
+  char *t;
+#endif
   int move_me;
   unsigned int tmp_flags;
 
@@ -78,13 +85,17 @@ mo_ojoin(struct Client *client_p, struct Client *source_p,
     return;
   }
 
+#ifdef OJOIN_MULTIJOIN
   for (name = strtoken (&t, name, ","); name;
-	  name = strtoken (&t, NULL, ",")) {
+	  name = strtoken (&t, NULL, ","))
+  {
+#endif
 
     /* Default - only #/& sets this to 0 */  
     move_me = 1;
     
-    switch (*name) {
+    switch (*name)
+    {
       case '@': tmp_flags = CHFL_CHANOP;
                 modeletter = 'o'; name++; break;
       case '+': tmp_flags = CHFL_VOICE;
@@ -102,31 +113,38 @@ mo_ojoin(struct Client *client_p, struct Client *source_p,
 	break;
 	
       default:
-        sendto_one (source_p, ":%s NOTICE %s :Invalid mode symbol %c",
+        sendto_one (source_p, ":%s NOTICE %s :Invalid mode symbol \'%c\'",
           me.name, source_p->name, *name);
+#ifdef OJOIN_MULTIJOIN
 	continue;
+#else
+	return;
+#endif
     }
     
     /* Error checking here */
     
-    if ((chptr = hash_find_channel(name)) == NULL) {
+    if ((chptr = hash_find_channel(name)) == NULL)
+    {
       sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
                  me.name, source_p->name, name);
     }
   
-    else if (IsMember(source_p, chptr)) {
+    else if (IsMember(source_p, chptr))
+    {
       sendto_one(source_p, ":%s NOTICE %s :Please part %s before using OJOIN",
                  me.name, source_p->name, name);
     }
   
-    else {
-      if (move_me == 1) {
+    else
+    {
+      if (move_me == 1) 
         name--;
-      }
   
       add_user_to_channel(chptr, source_p, tmp_flags);
   
-      if (chptr->chname[0] == '#') {
+      if (chptr->chname[0] == '#')
+      {
         sendto_server(client_p, source_p, chptr, NOCAPS, NOCAPS, LL_ICLIENT, 
                      ":%s SJOIN %lu %s + :%c%s", me.name,
                      (unsigned long)chptr->channelts,
@@ -140,13 +158,15 @@ mo_ojoin(struct Client *client_p, struct Client *source_p,
                       source_p->host,
                       chptr->chname);
       
-      if (modeletter != '\0') {     
+      if (modeletter != '\0')
+      {
         sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s +%c %s",
                         me.name, chptr->chname, modeletter, source_p->name);
       }
       
       /* send the topic... */
-      if (chptr->topic != NULL) {
+      if (chptr->topic != NULL)
+      {
         sendto_one(source_p, form_str(RPL_TOPIC),
                  me.name, source_p->name, chptr->chname,
                  chptr->topic);
@@ -158,5 +178,7 @@ mo_ojoin(struct Client *client_p, struct Client *source_p,
       source_p->localClient->last_join_time = CurrentTime;
       channel_member_names(source_p, chptr, 1);
     }
+#ifdef OJOIN_MULTIJOIN
   }
+#endif
 }

@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.49 2003/06/10 05:22:58 joshk Exp $
+dnl $Id: configure.ac,v 7.50 2003/06/10 22:29:58 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -224,20 +224,9 @@ fi
 
 AC_CHECK_TYPES([struct addrinfo], , , [[#include <netdb.h>]])
 
-AC_CACHE_CHECK([for socklen_t], have_socklen_t,
-[
-	AC_COMPILE_IFELSE(
-	AC_LANG_PROGRAM(
-	[#include <sys/types.h>
-	 #include <sys/socket.h>],
-	[socklen_t len = 42; return 0;]),
-	have_socklen_t=yes,
-	have_socklen_t=no)
-])
-
-if test "$have_socklen_t" != yes; then
-	AC_DEFINE([socklen_t], [int], [If we don't have a real socklen_t, int is good enough.])
-fi
+AC_CHECK_TYPES(socklen_t, ,
+[AC_DEFINE([socklen_t], [int], [If we don't have a real socklen_t, int is good
+enough.])], [#include <sys/socket.h>])
 
 dnl Tru64 accepts *both*
 if test -z "$Tru"; then
@@ -499,6 +488,8 @@ dnl End OpenSSL detection
 
 dnl Specialized functions and libraries
 dnl ===================================
+
+zlib=yes
 
 AC_ARG_WITH(zlib-path,
 AC_HELP_STRING([--with-zlib-path=DIR],[Path to libz.so for ziplinks support.]),
@@ -960,43 +951,34 @@ echo
 
 echo "Installing into: $prefix"
 
-echo -n "Ziplinks ................ "
-
-if test -z "$zlib"; then
-	echo yes
-else
-	echo no
-fi
-
-echo -n "OpenSSL (Cryptlinks)..... "
+echo "Ziplinks ................ $zlib"
 
 if test ! -z "$cf_openssl_ciphers"; then
-	echo "yes - ${cf_openssl_ciphers}"
+	tmpresult="yes - ${cf_openssl_ciphers}"
 else
-	echo no
+	tmpresult=no
 fi
 
-echo -n "Modules ................. "
+echo "OpenSSL (Cryptlinks)..... $tmpresult"
 
 if test "$shared_modules" = yes; then
-	echo shared
+	tmpresult=shared
 else
-	echo static
+	tmpresult=static
 fi
 
+echo  "Modules ................. $tmpresult"
 echo  "IPv6 support ............ $have_v6"
 echo  "Net I/O implementation .. $SELECT_TYPE"
 
-echo -n "EFnet server ............ "
-
 if test "$efnet" = "yes"; then
-	echo "yes (use example.efnet.conf)"
+	tmpresult="yes (use example.efnet.conf)"
 else
-	echo "no (use example.conf)"
+	tmpresult="no (use example.conf)"
 fi
 
+echo "EFnet server ............ $tmpresult"
 echo "Small network ........... $small_net"
-
 echo
 echo "Configured limits:"
 echo "NICKLEN ................. $NICKLEN"

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.39 2003/06/10 21:23:50 bill Exp $
+ *   $Id: m_operspy.c,v 1.40 2003/06/10 22:30:00 joshk Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -117,7 +117,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.39 $";
+const char *_version = "$Revision: 1.40 $";
 #endif
 
 #ifdef OPERSPY_LOG
@@ -280,7 +280,7 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
     }
 
 #ifdef OPERSPY_LOG
-    operpy_log(client_p, "MODE", parv[2]);
+    operspy_log(client_p, "MODE", parv[2]);
 #endif
 
     /* this is a dirty nasty kludge to trick channel_modes() into giving us the key */
@@ -412,7 +412,7 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
 #ifdef OPERSPY_LOG
       ircsprintf(nuh, "%s!%s@%s %s",
                  target_p_who->name, target_p_who->username, target_p_who->host,
-                 target_p_who->user->server);
+                 target_p_who->user->server->name);
       operspy_log(client_p, "WHO", nuh);
 #endif
 
@@ -474,7 +474,7 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
 #ifdef OPERSPY_LOG
     ircsprintf(nuh, "%s!%s@%s %s",
                target_p->name, target_p->username, target_p->host,
-               target_p->user->server);
+               target_p->user->server->name);
     operspy_log(client_p, "WHOIS", nuh);
 #endif
 
