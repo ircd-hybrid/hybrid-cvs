@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_debug.c,v 7.53 2001/04/21 18:23:42 fl_ Exp $
+ *   $Id: s_debug.c,v 7.54 2001/04/21 21:59:10 toot Exp $
  */
 
 #include <sys/types.h> 
@@ -425,7 +425,7 @@ void count_memory(struct Client *source_p)
   total_memory += channel_hash_table_size;
 
   total_memory += mem_servers_cached;
-  sendto_one(source_p, ":%s %d %s :Total: ww %d ch %d co %d",
+  sendto_one(source_p, ":%s %d %s :Total: whowas %d channel %d conf %d",
              me.name, RPL_STATSDEBUG, source_p->name,
 	     (int)totww,
 	     (int)total_channel_memory,
