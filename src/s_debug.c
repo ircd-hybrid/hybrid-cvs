@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_debug.c,v 7.91 2003/06/22 00:53:01 joshk Exp $
+ *  $Id: s_debug.c,v 7.92 2003/06/24 00:29:51 michael Exp $
  */
 
 #include "stdinc.h"
@@ -208,7 +208,7 @@ count_memory(struct Client *source_p)
   DLINK_FOREACH(gptr, global_channel_list.head)
   {
     chptr = gptr->data;
-    channel_memory += (strlen(chptr->chname) + sizeof(struct Channel));
+    channel_memory += sizeof(struct Channel);
     channel_users += dlink_list_length(&chptr->members);
     channel_invites += dlink_list_length(&chptr->invites);
 
