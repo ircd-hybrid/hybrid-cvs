@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.312 2003/01/13 16:35:39 db Exp $
+ *  $Id: client.c,v 7.313 2003/01/16 23:13:39 db Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -1209,7 +1209,7 @@ exit_client(
   dlink_node *m;
 
   if (IsClosing(source_p))
-    return;
+    return(0);
 
   SetClosing(source_p);
 
