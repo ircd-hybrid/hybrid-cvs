@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/contrib
 #
-# $Id: Makefile.in,v 1.19 2001/07/18 12:11:20 leeh Exp $
+# $Id: Makefile.in,v 1.20 2001/08/18 00:54:03 jdc Exp $
 #
 CC		= @CC@
 RM		= @RM@
@@ -51,7 +51,7 @@ install: all
 .SUFFIXES: .so
 
 .c.so:
-	${CC} -DPIC -fPIC -shared ${CPPFLAGS} $(CFLAGS) $< -o $@
+	${CC} -DPIC -fPIC -shared ${CPPFLAGS} ${CFLAGS} $< -o $@
 
 .PHONY: depend clean distclean
 depend:
