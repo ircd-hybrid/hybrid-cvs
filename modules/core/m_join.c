@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_join.c,v 1.16 2003/10/13 00:32:50 bill Exp $
+ *  $Id: m_join.c,v 1.17 2003/11/02 21:16:53 garion Exp $
  */
 
 #include "stdinc.h"
@@ -87,7 +87,7 @@ _moddeinit(void)
   mod_del_cmd(&join_msgtab);
 }
 
-const char *_version = "$Revision: 1.16 $";
+const char *_version = "$Revision: 1.17 $";
 #endif
 
 /* m_join()
@@ -498,7 +498,7 @@ build_target_list(struct Client *client_p, struct Client *source_p,
     if (find_channel_resv(chan) &&
         (!IsOper(source_p) && ConfigFileEntry.oper_pass_resv))
     {
-      sendto_one(source_p, form_str(ERR_UNAVAILRESOURCE),
+      sendto_one(source_p, form_str(ERR_BADCHANNAME),
                  me.name, source_p->name, chan);
       sendto_realops_flags(UMODE_SPY, L_ALL,
                            "User %s (%s@%s) is attempting to join locally juped channel %s",
