@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.127 2003/09/26 10:35:49 bill Exp $
+ *  $Id: m_gline.c,v 1.128 2003/10/07 22:37:12 bill Exp $
  */
 
 #include "stdinc.h"
@@ -99,7 +99,7 @@ _moddeinit(void)
   delete_capability("GLN");
 }
 
-const char *_version = "$Revision: 1.127 $";
+const char *_version = "$Revision: 1.128 $";
 #endif
 
 /* mo_gline()
@@ -213,20 +213,21 @@ mo_gline(struct Client *client_p, struct Client *source_p,
        source_p->host);
 
   /* 4 param version for hyb-7 servers */
-  sendto_server(NULL, source_p, NULL, CAP_GLN|CAP_SID, NOCAPS,
+  sendto_server(NULL, source_p, NULL, CAP_GLN|CAP_TS6, NOCAPS,
 		LL_ICLIENT, ":%s GLINE %s %s :%s",
 		ID(source_p), user, host, reason);
-  sendto_server(NULL, source_p, NULL, CAP_GLN, CAP_SID,
+  sendto_server(NULL, source_p, NULL, CAP_GLN, CAP_TS6,
 		LL_ICLIENT, ":%s GLINE %s %s :%s",
 		source_p->name, user, host, reason);
 
   /* 8 param for hyb-6 */
-  sendto_server(NULL, NULL, NULL, CAP_SID, CAP_GLN, NOFLAGS,
+  sendto_server(NULL, NULL, NULL, CAP_TS6, CAP_GLN, NOFLAGS,
 		":%s GLINE %s %s %s %s %s %s :%s",
-		me.name, ID(source_p), source_p->username,
+		ID(&me),
+                ID(source_p), source_p->username,
 		source_p->host, source_p->user->server->name, user, host,
 		reason);
-  sendto_server(NULL, NULL, NULL, NOCAPS, CAP_GLN|CAP_SID, NOFLAGS,
+  sendto_server(NULL, NULL, NULL, NOCAPS, CAP_GLN|CAP_TS6, NOFLAGS,
 		":%s GLINE %s %s %s %s %s %s :%s",
 		me.name, source_p->name, source_p->username,
 		source_p->host, source_p->user->server->name, user, host,
@@ -272,13 +273,12 @@ ms_gline(struct Client *client_p, struct Client *source_p,
      * so we update source_p to point to the oper now, so that
      * logging works down the line.  -bill
      */
-    if ((source_p = find_client(parv[1])) == NULL)
+    if ((source_p = find_person(parv[1])) == NULL)
       return;
 
-    if(irccmp(parv[1], source_p->name) != 0 ||
-       irccmp(parv[2], source_p->username) != 0 ||
-       irccmp(parv[3], source_p->host) != 0 ||
-       irccmp(parv[4], source_p->user->server->name) != 0)
+    if (irccmp(parv[2], source_p->username) != 0 ||
+        irccmp(parv[3], source_p->host) != 0 ||
+        irccmp(parv[4], source_p->user->server->name) != 0)
     {
       /*
        * at this point we know one of the parameters provided by
@@ -297,6 +297,8 @@ ms_gline(struct Client *client_p, struct Client *source_p,
   user = parv[++var_offset];
   host = parv[++var_offset];
   reason = parv[++var_offset];
+
+  var_offset = 0;
 
   if (invalid_gline(source_p, user))
      return;

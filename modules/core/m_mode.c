@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_mode.c,v 1.66 2003/09/18 22:51:51 bill Exp $
+ *  $Id: m_mode.c,v 1.67 2003/10/07 22:37:17 bill Exp $
  */
 
 #include "stdinc.h"
@@ -30,6 +30,7 @@
 #include "client.h"
 #include "hash.h"
 #include "irc_string.h"
+#include "sprintf_irc.h"
 #include "ircd.h"
 #include "numeric.h"
 #include "s_user.h"
@@ -42,13 +43,23 @@
 #include "packet.h"
 
 static void m_mode(struct Client *, struct Client *, int, char **);
+static void ms_tmode(struct Client *, struct Client *, int, char **);
+static void ms_bmask(struct Client *, struct Client *, int, char **);
 
 struct Message mode_msgtab = {
   "MODE", 0, 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_mode, m_mode, m_mode, m_ignore}
 };
-#ifndef STATIC_MODULES
+struct Message tmode_msgtab = { 
+  "TMODE", 0, 0, 4, 0, MFLG_SLOW, 0,
+  {m_ignore, m_ignore, m_ignore, ms_tmode, m_ignore}
+};
+struct Message bmask_msgtab = {
+  "BMASK", 0, 0, 5, 0, MFLG_SLOW, 0,
+  {m_ignore, m_ignore, m_ignore, ms_bmask, m_ignore}
+};
 
+#ifndef STATIC_MODULES
 void
 _modinit(void)
 {
@@ -61,7 +72,7 @@ _moddeinit(void)
   mod_del_cmd(&mode_msgtab);
 }
 
-const char *_version = "$Revision: 1.66 $";
+const char *_version = "$Revision: 1.67 $";
 #endif
 
 /*
@@ -171,4 +182,176 @@ m_mode(struct Client *client_p, struct Client *source_p,
                        chptr->chname);
     }
   }
+}
+
+/*
+ * ms_tmode()
+ *
+ * inputs	- parv[0] = UID
+ *		  parv[1] = TS
+ *		  parv[2] = channel name
+ *		  parv[3] = modestring
+ */
+static void
+ms_tmode(struct Client *client_p, struct Client *source_p, int parc, char *parv[])
+{
+  struct Channel *chptr = NULL;
+  struct Membership *member;
+
+  if (!IsChanPrefix(parv[2][0]) || !check_channel_name(parv[2]))
+  {
+    sendto_one(source_p, form_str(ERR_BADCHANNAME),
+               me.name, source_p->name, parv[2]);
+    return;
+  }
+
+  if ((chptr = hash_find_channel(parv[2])) == NULL)
+  {
+    sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
+               me.name, source_p->name, parv[2]);
+    return;
+  }
+
+  if (atol(parv[1]) > chptr->channelts)
+    return;
+
+  if (IsServer(source_p))
+    set_channel_mode(client_p, source_p, chptr, NULL, parc - 2, parv + 2, chptr->chname);
+  else
+  {
+    member = find_channel_link(source_p, chptr);
+
+    /* XXX are we sure we just want to bail here? */
+    if (has_member_flags(member, CHFL_DEOPPED))
+      return;
+
+    set_channel_mode(client_p, source_p, chptr, member, parc - 2, parv + 2, chptr->chname);
+  }
+}
+
+/*
+ * ms_bmask()
+ *
+ * inputs	- parv[0] = SID
+ *		  parv[1] = TS
+ *		  parv[2] = channel name
+ *		  parv[3] = type of ban to add ('b' 'I' or 'e')
+ *		  parv[4] = space delimited list of masks to add
+ * outputs	- none
+ * side effects	- propgates unchanged bmask line to CAP_TS6 servers,
+ *		  sends plain modes to the others.  nothing is sent
+ *		  to the server the issuing server is connected through
+ */
+static void
+ms_bmask(struct Client *client_p, struct Client *source_p, int parc, char *parv[])
+{
+  static char modebuf[BUFSIZE];
+  static char parabuf[BUFSIZE];
+  struct Channel *chptr;
+  char *s, *t, *mbuf, *pbuf;
+  long mode_type;
+  int mlen;
+  int plen = 0;
+  int tlen;
+  int modecount = 0;
+  int needcap = NOCAPS;
+
+  if(!IsChanPrefix(parv[2][0]) || !check_channel_name(parv[2]))
+    return;
+
+  if((chptr = hash_find_channel(parv[2])) == NULL)
+    return;
+
+  /* TS is higher, drop it. */
+  if(atol(parv[1]) > chptr->channelts)
+    return;
+
+  switch(parv[3][0])
+  {
+    case 'b':
+      mode_type = CHFL_BAN;
+      break;
+
+    case 'e':
+      mode_type = CHFL_EXCEPTION;
+      needcap = CAP_EX;
+      break;
+
+    case 'I':
+      mode_type = CHFL_INVEX;
+      needcap = CAP_IE;
+      break;
+
+    /* maybe we should just blindly propagate this? */
+    default:
+      return; 
+  }
+
+  parabuf[0] = '\0';
+  s = MyMalloc(BUFSIZE);
+
+  mlen = ircsprintf(modebuf, ":%s MODE %s +",
+        source_p->name, chptr->chname);
+  mbuf = modebuf + mlen;
+  pbuf = parabuf;
+
+  if((t = strchr(s, ' ')) != NULL)
+    *t++ = '\0';
+
+  while(s != NULL)
+  {
+    tlen = strlen(s);
+
+    /* I dont even want to begin parsing this.. */
+    if(tlen > MODEBUFLEN)
+      break;
+
+    if(add_id(source_p, chptr, s, mode_type))
+    {
+      /* this new one wont fit.. */
+      if(mlen + MAXMODEPARAMS + plen + tlen > BUFSIZE - 4 ||
+         modecount >= MAXMODEPARAMS)
+      {
+        *mbuf = '\0';
+        *(pbuf - 1) = '\0';
+        sendto_channel_local(ALL_MEMBERS, chptr, "%s %s", modebuf, parabuf);
+        sendto_server(client_p, NULL, chptr, needcap, CAP_TS6, NOFLAGS,
+                      "%s %s", modebuf, parabuf);
+
+        mbuf = modebuf + mlen;
+        pbuf = parabuf;
+        plen = modecount = 0;
+      }
+
+      *mbuf++ = parv[3][0];
+      plen = ircsprintf(pbuf, "%s ", s);
+      pbuf += plen;
+      modecount++;
+    }
+
+    s = t;
+
+    if(s != NULL)
+    {
+      /* trailing space marking the end. */
+      if(*s == '\0')
+        break;
+
+      if((t = strchr(s, ' ')) != NULL)
+        *t++ = '\0';
+    }
+  }
+
+  if(modecount)
+  {
+    *mbuf = *(pbuf - 1) = '\0';
+    sendto_channel_local(ALL_MEMBERS, chptr, "%s %s", modebuf, parabuf);
+    sendto_server(client_p, NULL, chptr, needcap, CAP_TS6, NOFLAGS,
+                  "%s %s", modebuf, parabuf);
+  }
+
+  sendto_server(client_p, NULL, chptr, CAP_TS6|needcap, NOCAPS, NOFLAGS,
+                ":%s BMASK %lu %s %s :%s",
+                 source_p->id, chptr->channelts, chptr->chname,
+                 parv[3], parv[4]);
 }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_knock.c,v 1.64 2003/09/20 04:47:22 bill Exp $
+ *  $Id: m_knock.c,v 1.65 2003/10/07 22:37:13 bill Exp $
  */
 
 #include "stdinc.h"
@@ -83,7 +83,7 @@ _moddeinit(void)
   delete_capability("KNOCK");
 }
 
-const char *_version = "$Revision: 1.64 $";
+const char *_version = "$Revision: 1.65 $";
 #endif
 
 /* m_knock
@@ -202,7 +202,7 @@ parse_knock_local(struct Client *client_p, struct Client *source_p,
     if (!ServerInfo.hub && uplink && IsCapable(uplink, CAP_LL))
     {
       sendto_one(uplink, ":%s KNOCKLL %s %s %s",
-                 source_p->name, parv[1],
+                 ID_or_name(source_p, uplink), parv[1],
 		 IsIPSpoof(source_p) ? "255.255.255.255" :
 		 source_p->localClient->sockhost,
 		 (parc > 2) ? parv[2] : "");
@@ -343,7 +343,10 @@ send_knock(struct Client *client_p, struct Client *source_p,
 			     source_p->name, source_p->username,
 			     source_p->host);
 
-      sendto_server(client_p, source_p, chptr, CAP_KNOCK, NOCAPS, LL_ICLIENT,
+      sendto_server(client_p, source_p, chptr, CAP_KNOCK|CAP_TS6, NOCAPS, LL_ICLIENT,
+                    ":%s KNOCK %s %s",
+                    ID(source_p), name, key != NULL ? key : "");
+      sendto_server(client_p, source_p, chptr, CAP_KNOCK, CAP_TS6, LL_ICLIENT,
                     ":%s KNOCK %s %s",
 		    source_p->name, name, key != NULL ? key : "");
   }

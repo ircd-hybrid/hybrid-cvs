@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_links.c,v 1.42 2003/06/21 20:09:21 metalrock Exp $
+ *  $Id: m_links.c,v 1.43 2003/10/07 22:37:13 bill Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&links_msgtab);
 }
 
-const char *_version = "$Revision: 1.42 $";
+const char *_version = "$Revision: 1.43 $";
 #endif
 
 /*
@@ -92,10 +92,13 @@ m_links(struct Client *client_p, struct Client *source_p,
  */
   
   sendto_one(source_p, form_str(RPL_LINKS),
-                           me.name, parv[0], me.name, me.name,
-                           0, me.info);
+             MyConnect(source_p) ? me.name : me.id,
+             MyConnect(source_p) ? parv[0] : ID(source_p),
+             me.name, me.name, 0, me.info);
       
-  sendto_one(source_p, form_str(RPL_ENDOFLINKS), me.name, parv[0], "*");
+  sendto_one(source_p, form_str(RPL_ENDOFLINKS),
+             MyConnect(source_p) ? me.name : me.id, 
+             MyConnect(source_p) ? parv[0] : ID(source_p), "*");
 }
 
 static void
@@ -157,11 +160,15 @@ mo_links(struct Client *client_p, struct Client *source_p,
       * or theyre an oper..  
       */
       sendto_one(source_p, form_str(RPL_LINKS),
-		      me.name, parv[0], target_p->name, target_p->serv->up,
-                      target_p->hopcount, p);
+                 MyConnect(source_p) ? me.name : me.id, 
+                 MyConnect(source_p) ? parv[0] : ID(source_p),
+		 target_p->name, target_p->serv->up,
+                 target_p->hopcount, p);
     }
   
-  sendto_one(source_p, form_str(RPL_ENDOFLINKS), me.name, parv[0],
+  sendto_one(source_p, form_str(RPL_ENDOFLINKS),
+             MyConnect(source_p) ? me.name : me.id, 
+             MyConnect(source_p) ? parv[0] : ID(source_p),
              EmptyString(mask) ? "*" : mask);
 }
 

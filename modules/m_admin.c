@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_admin.c,v 1.42 2003/08/03 14:22:19 michael Exp $
+ *  $Id: m_admin.c,v 1.43 2003/10/07 22:37:12 bill Exp $
  */
 
 #include "stdinc.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
   hook_del_event("doing_admin");
   mod_del_cmd(&admin_msgtab);
 }
-const char *_version = "$Revision: 1.42 $";
+const char *_version = "$Revision: 1.43 $";
 #endif
 
 /*
@@ -146,19 +146,19 @@ do_admin(struct Client *source_p)
   if (IsPerson(source_p))
     admin_spy(source_p);
 
-  nick = EmptyString(source_p->name) ? "*" : source_p->name;
+  nick = ID_or_name(source_p, source_p->from);
 
   sendto_one(source_p, form_str(RPL_ADMINME),
-	     me.name, nick, me.name);
+	     ID_or_name(&me, source_p->from), nick, me.name);
   if (AdminInfo.name != NULL)
     sendto_one(source_p, form_str(RPL_ADMINLOC1),
-	       me.name, nick, AdminInfo.name);
+	       ID_or_name(&me, source_p->from), nick, AdminInfo.name);
   if (AdminInfo.description != NULL)
     sendto_one(source_p, form_str(RPL_ADMINLOC2),
-	       me.name, nick, AdminInfo.description);
+	       ID_or_name(&me, source_p->from), nick, AdminInfo.description);
   if (AdminInfo.email != NULL)
     sendto_one(source_p, form_str(RPL_ADMINEMAIL),
-	       me.name, nick, AdminInfo.email);
+	       ID_or_name(&me, source_p->from), nick, AdminInfo.email);
 }
 
 /* admin_spy()

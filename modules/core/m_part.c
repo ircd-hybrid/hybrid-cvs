@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_part.c,v 1.76 2003/06/29 22:46:15 michael Exp $
+ *  $Id: m_part.c,v 1.77 2003/10/07 22:37:17 bill Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&part_msgtab);
 }
 
-const char *_version = "$Revision: 1.76 $";
+const char *_version = "$Revision: 1.77 $";
 #endif
 
 static void part_one_client(struct Client *client_p,
@@ -151,10 +151,10 @@ part_one_client(struct Client *client_p, struct Client *source_p,
        (source_p->firsttime + ConfigFileEntry.anti_spam_exit_message_time)
         < CurrentTime))))
   {
-    sendto_server(client_p, NULL, chptr, CAP_SID, NOCAPS, NOFLAGS,
+    sendto_server(client_p, NULL, chptr, CAP_TS6, NOCAPS, NOFLAGS,
                   ":%s PART %s :%s", ID(source_p), chptr->chname,
                   reason);
-    sendto_server(client_p, NULL, chptr, NOCAPS, CAP_SID, NOFLAGS,
+    sendto_server(client_p, NULL, chptr, NOCAPS, CAP_TS6, NOFLAGS,
                   ":%s PART %s :%s", source_p->name, chptr->chname,
                   reason);
     sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s PART %s :%s",
@@ -163,9 +163,9 @@ part_one_client(struct Client *client_p, struct Client *source_p,
   }
   else
   {
-    sendto_server(client_p, NULL, chptr, CAP_SID, NOCAPS, NOFLAGS,
+    sendto_server(client_p, NULL, chptr, CAP_TS6, NOCAPS, NOFLAGS,
                   ":%s PART %s", ID(source_p), chptr->chname);
-    sendto_server(client_p, NULL, chptr, NOCAPS, CAP_SID, NOFLAGS,
+    sendto_server(client_p, NULL, chptr, NOCAPS, CAP_TS6, NOFLAGS,
                   ":%s PART %s", source_p->name, chptr->chname);
     sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s PART %s",
                          source_p->name, source_p->username,

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.28 2003/08/16 19:50:39 metalrock Exp $
+ *  $Id: m_xline.c,v 1.29 2003/10/07 22:37:13 bill Exp $
  */
 
 #include "stdinc.h"
@@ -82,7 +82,7 @@ _moddeinit(void)
   mod_del_cmd(&unxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.28 $";
+const char *_version = "$Revision: 1.29 $";
 #endif
 
 
@@ -242,7 +242,7 @@ ms_xline(struct Client *client_p, struct Client *source_p,
     if (!valid_xline(source_p, parv[2], parv[4], 0))
       return;
 
-    if ((find_matching_name_conf(XLINE_TYPE, parv[1],
+    if ((find_matching_name_conf(XLINE_TYPE, parv[2],
 				NULL, NULL, 0)) != NULL)
       return;
 
@@ -261,8 +261,9 @@ ms_xline(struct Client *client_p, struct Client *source_p,
     {
       match_item = (struct MatchItem *)map_to_conf(conf);
       sendto_one(source_p, ":%s NOTICE %s :[%s] already X-Lined by [%s] - %s",
-                 me.name, source_p->name, parv[1],
-                 conf->name, match_item->reason);
+                 ID_or_name(&me, source_p->from),
+                 ID_or_name(source_p, source_p->from),
+                 parv[1], conf->name, match_item->reason);
       return;
     }
 
@@ -353,7 +354,8 @@ ms_unxline(struct Client *client_p, struct Client *source_p,
     if (remove_conf_line(XLINE_TYPE, source_p, parv[2], NULL) > 0)
     {
       sendto_one(source_p, ":%s NOTICE %s :X-Line for [%s] is removed",
-                 me.name, parv[0], parv[2]);
+                 ID_or_name(&me, source_p->from),
+                 ID_or_name(source_p, source_p->from), parv[2]);
       sendto_realops_flags(UMODE_ALL, L_ALL,
                            "%s has removed the X-Line for: [%s]",
                            get_oper_name(source_p), parv[2]);
@@ -362,7 +364,8 @@ ms_unxline(struct Client *client_p, struct Client *source_p,
     }
     else
       sendto_one(source_p, ":%s NOTICE %s :No X-Line for %s",
-                 me.name, source_p->name, parv[2]);
+                 ID_or_name(&me, source_p->from),
+                 ID_or_name(source_p, source_p->from), parv[2]);
   }
 }
 

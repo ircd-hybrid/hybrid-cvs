@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.378 2003/10/04 21:43:40 metalrock Exp $
+ *  $Id: s_serv.c,v 7.379 2003/10/07 22:37:20 bill Exp $
  */
 
 #include "stdinc.h"
@@ -448,8 +448,8 @@ hunt_server(struct Client *client_p, struct Client *source_p, const char *comman
 
     /* This is a little kludgy but should work... */
     if (IsClient(source_p) &&
-        ((MyConnect(target_p) && IsCapable(target_p, CAP_SID)) ||
-         (!MyConnect(target_p) && IsCapable(target_p->from, CAP_SID))))
+        ((MyConnect(target_p) && IsCapable(target_p, CAP_TS6)) ||
+         (!MyConnect(target_p) && IsCapable(target_p->from, CAP_TS6))))
       parv[0] = ID(source_p);
 
     sendto_one(target_p, command, parv[0],
@@ -858,13 +858,14 @@ sendnick_TS(struct Client *client_p, struct Client *target_p)
     ubuf[1] = '\0';
   }
 
-  if (HasID(target_p) && IsCapable(client_p, CAP_SID))
-    sendto_one(client_p, "UID %s %d %lu %s %s %s %s %s %s :%s",
+  /* XXX Both of these need to have a :me.name or :mySID!?!?! */
+  if (HasID(target_p) && IsCapable(client_p, CAP_TS6))
+    sendto_one(client_p, ":%s UID %s %d %lu %s %s %s %s %s :%s",
+               target_p->user->server->id,
 	       target_p->name, target_p->hopcount + 1,
 	       (unsigned long) target_p->tsinfo,
 	       ubuf, target_p->username, target_p->host,
 	       (MyClient(target_p)?target_p->localClient->sockhost:""),
-	       target_p->user->server->id,
 	       target_p->id, target_p->info);
   else
     sendto_one(client_p, "NICK %s %d %lu %s %s %s %s :%s",
@@ -1015,7 +1016,13 @@ server_estab(struct Client *client_p)
      *        2.  Check aconf->spasswd, not aconf->passwd.
      */
     if (!EmptyString(aconf->spasswd))
-      sendto_one(client_p,"PASS %s :TS", aconf->spasswd);
+    {
+      if (IsCapable(client_p, CAP_TS6))
+        sendto_one(client_p, "PASS %s TS 6 %s",
+                   aconf->spasswd, me.id);
+      else
+        sendto_one(client_p,"PASS %s :TS", aconf->spasswd);
+    }
 
     /* Pass my info to the new server
      *
@@ -1069,6 +1076,10 @@ server_estab(struct Client *client_p)
   
   sendto_one(client_p, "SVINFO %d %d 0 :%lu",
              TS_CURRENT, TS_MIN, (unsigned long)CurrentTime);
+
+  /* assumption here is if they passed the correct TS version, they also passed an SID */
+  if (IsCapable(client_p, CAP_TS6))
+    hash_add_id(client_p);
 
   /* XXX Does this ever happen? I don't think so -db */
   detach_conf(client_p, OPER_TYPE);
@@ -1591,7 +1602,7 @@ burst_all(struct Client *client_p)
   */
   /* Its simpler to just send EOB and use the time its been connected.. --fl_ */
   if (IsCapable(client_p, CAP_EOB))
-    sendto_one(client_p, ":%s EOB", me.name);
+    sendto_one(client_p, ":%s EOB", ID_or_name(&me, client_p));
 }
 
 /* cjoin_all()

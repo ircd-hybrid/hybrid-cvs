@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.29 2003/09/25 21:17:04 bill Exp $
+ *  $Id: csvlib.c,v 7.30 2003/10/07 22:37:20 bill Exp $
  */
 
 #include "stdinc.h"
@@ -20,6 +20,7 @@
 #include "memory.h"
 #include "send.h"
 #include "resv.h"
+#include "s_serv.h"
 
 static void parse_csv_line(char *line, ...);
 static int write_csv_line(FBFILE *out, const char *format, ...);
@@ -180,7 +181,7 @@ write_conf_line(const struct Client *source_p, struct ConfItem *conf,
 		const char *current_date, time_t cur_time)
 {
   FBFILE *out;
-  const char *filename;
+  const char *filename, *from, *to;
   struct AccessItem *aconf;
   struct MatchItem *xconf;
   struct ResvChannel *cresv_p=NULL;
@@ -189,6 +190,17 @@ write_conf_line(const struct Client *source_p, struct ConfItem *conf,
 
   type = conf->type;
   filename = get_conf_name(type);
+
+  if (!MyConnect(source_p) && IsCapable(source_p->from, CAP_TS6) && HasID(source_p))
+  {
+    from = me.id;
+    to = source_p->id;
+  }
+  else
+  {
+    from = me.name;
+    to = source_p->name;
+  }
 
   if ((out = fbopen(filename, "a")) == NULL)
   {
@@ -206,7 +218,7 @@ write_conf_line(const struct Client *source_p, struct ConfItem *conf,
                          get_oper_name(source_p),
 			 aconf->user, aconf->host, aconf->reason);
     sendto_one((struct Client *)source_p, ":%s NOTICE %s :Added K-Line [%s@%s]",
-               me.name, source_p->name, aconf->user, aconf->host);
+               from, to, aconf->user, aconf->host);
     ilog(L_TRACE, "%s added K-Line for [%s@%s] [%s]",
          source_p->name, aconf->user, aconf->host, aconf->reason);
     write_csv_line(out, "%s%s%s%s%s%s%ld",
@@ -221,7 +233,7 @@ write_conf_line(const struct Client *source_p, struct ConfItem *conf,
                          "%s added D-Line for [%s] [%s]",
                          get_oper_name(source_p), aconf->host, aconf->reason);
     sendto_one((struct Client *)source_p, ":%s NOTICE %s :Added D-Line [%s] to %s",
-               me.name, source_p->name, aconf->host, filename);
+               from, to, aconf->host, filename);
     ilog(L_TRACE, "%s added D-Line for [%s] [%s]",
          get_oper_name(source_p), aconf->host, aconf->reason);
     write_csv_line(out, "%s%s%s%s%s%ld",
@@ -236,7 +248,7 @@ write_conf_line(const struct Client *source_p, struct ConfItem *conf,
                          "%s added X-Line for [%s] [%s]",
                          get_oper_name(source_p), conf->name, xconf->reason);
     sendto_one((struct Client *)source_p, ":%s NOTICE %s :Added X-Line [%s] to %s",
-               me.name, source_p->name, conf->name, filename);
+               from, to, conf->name, filename);
     ilog(L_TRACE, "%s added X-Line for [%s] [%s]",
          get_oper_name(source_p), conf->name, xconf->reason);
     write_csv_line(out, "%s%s%s%d%s%s%ld",

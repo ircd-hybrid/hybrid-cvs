@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_pass.c,v 1.28 2003/07/04 11:45:17 adx Exp $
+ *  $Id: m_pass.c,v 1.29 2003/10/07 22:37:13 bill Exp $
  */
 
 #include "stdinc.h"
@@ -32,6 +32,7 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
+#include "s_serv.h"
 
 static void mr_pass(struct Client *, struct Client *, int, char **);
 
@@ -53,7 +54,7 @@ _moddeinit(void)
   mod_del_cmd(&pass_msgtab);
 }
 
-const char *_version = "$Revision: 1.28 $";
+const char *_version = "$Revision: 1.29 $";
 #endif
 
 /*
@@ -94,6 +95,14 @@ mr_pass(struct Client *client_p, struct Client *source_p,
      */
     if (!irccmp(parv[2], "TS") && client_p->tsinfo == 0)
       client_p->tsinfo = TS_DOESTS;
+  }
+  if (parc > 4)
+  {
+    if (atoi(parv[3]) >= 6)
+    {
+      strlcpy(client_p->id, parv[4], sizeof(client_p->id));
+      client_p->localClient->caps |= CAP_TS6;
+    }
   }
 }
 

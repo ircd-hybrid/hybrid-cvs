@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.319 2003/10/04 19:31:18 metalrock Exp $
+ *  $Id: ircd.c,v 7.320 2003/10/07 22:37:20 bill Exp $
  */
 
 #include "stdinc.h"
@@ -385,9 +385,7 @@ initialize_server_capabs(void)
   add_capability("QS", CAP_QS, 1);
   add_capability("LL", CAP_LL, 1);
   add_capability("EOB", CAP_EOB, 1);
-#if 0
-  add_capability("SID", CAP_SID, 0);
-#endif
+  add_capability("TS6", CAP_TS6, 0);
   add_capability("ZIP", CAP_ZIP, 0);
   add_capability("PARA", CAP_PARA, 1);
   add_capability("CLUSTER", CAP_CLUSTER, 1);
@@ -581,7 +579,6 @@ main(int argc, char *argv[])
   initialize_message_files();
   dbuf_init();
   init_hash();
-  uid_init();
   init_ip_hash_table();      /* client host ip hash table */
   init_host_hash();          /* Host-hashtable. */
   clear_hash_parse();
@@ -594,6 +591,7 @@ main(int argc, char *argv[])
   init_hooks();
   read_conf_files(1);   /* cold start init conf files */
   initServerMask();
+  init_uid();
   init_auth();          /* Initialise the auth code */
   init_resolver();      /* Needs to be setup before the io loop */
 #ifdef HAVE_LIBCRYPTO

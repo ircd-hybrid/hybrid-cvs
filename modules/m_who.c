@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_who.c,v 1.89 2003/09/20 04:47:23 bill Exp $
+ *  $Id: m_who.c,v 1.90 2003/10/07 22:37:13 bill Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&who_msgtab);
 }
 
-const char *_version = "$Revision: 1.89 $";
+const char *_version = "$Revision: 1.90 $";
 #endif
 
 static void who_global(struct Client *source_p, char *mask, int server_oper);
@@ -88,6 +88,18 @@ m_who(struct Client *client_p, struct Client *source_p,
   struct Channel *mychannel = NULL;
   int server_oper = parc > 2 ? (*parv[2] == 'o') : 0; /* Show OPERS only */
   int member;
+  const char *from, *to;
+
+  if (!MyConnect(source_p) && IsCapable(source_p->from, CAP_TS6) && HasID(source_p))
+  {
+    from = me.id;
+    to = source_p->id;
+  }
+  else
+  {
+    from = me.name;
+    to = source_p->name;
+  }
 
   /* See if mask is there, collapse it or return if not there */
   if (mask != NULL)
@@ -97,7 +109,7 @@ m_who(struct Client *client_p, struct Client *source_p,
     if (*mask == '\0')
     {
       sendto_one(source_p, form_str(RPL_ENDOFWHO),
-                 me.name, source_p->name, "*");
+                 from, to, "*");
       return;
     }
   }
@@ -105,7 +117,7 @@ m_who(struct Client *client_p, struct Client *source_p,
   {
     who_global(source_p, mask, server_oper);
     sendto_one(source_p, form_str(RPL_ENDOFWHO),
-               me.name, source_p->name, "*");
+               from, to, "*");
     return;
   }
 
@@ -120,12 +132,12 @@ m_who(struct Client *client_p, struct Client *source_p,
 
     if (mychannel == NULL)
     {
-      sendto_one(source_p, form_str(RPL_ENDOFWHO), me.name, parv[0], "*");
+      sendto_one(source_p, form_str(RPL_ENDOFWHO), from, to, "*");
       return;
     }
 
     do_who_on_channel(source_p, mychannel, mychannel->chname, YES, server_oper);
-    sendto_one(source_p, form_str(RPL_ENDOFWHO), me.name, parv[0], "*");
+    sendto_one(source_p, form_str(RPL_ENDOFWHO), from, to, "*");
     return;
   }
 
@@ -142,7 +154,7 @@ m_who(struct Client *client_p, struct Client *source_p,
     }
 
     sendto_one(source_p, form_str(RPL_ENDOFWHO),
-               me.name, source_p->name, mask);
+               from, to, mask);
     return;
   }
 
@@ -173,7 +185,7 @@ m_who(struct Client *client_p, struct Client *source_p,
       do_who(source_p, target_p, NULL, "");
 
     sendto_one(source_p, form_str(RPL_ENDOFWHO),
-               me.name, source_p->name, mask);
+               from, to, mask);
     return;
   }
 
@@ -185,7 +197,7 @@ m_who(struct Client *client_p, struct Client *source_p,
 
  /* Wasn't a nick, wasn't a channel, wasn't a '*' so ... */
   sendto_one(source_p, form_str(RPL_ENDOFWHO),
-             me.name, source_p->name, mask);
+             from, to, mask);
 }
 
 /* who_common_channel
@@ -346,13 +358,25 @@ do_who(struct Client *source_p, struct Client *target_p,
        const char *chname, const char *op_flags)
 {
   char status[5];
+  const char *from, *to;
+
+  if (!MyConnect(source_p) && IsCapable(source_p->from, CAP_TS6) && HasID(source_p))
+  {
+    from = me.id;
+    to = source_p->id;
+  }
+  else
+  {
+    from = me.name;
+    to = source_p->name;
+  }
 
   ircsprintf(status, "%c%s%s", target_p->user->away ? 'G' : 'H',
              IsOper(target_p) ? "*" : "", op_flags);
 
   if (ConfigServerHide.hide_servers)
   {
-    sendto_one(source_p, form_str(RPL_WHOREPLY), me.name, source_p->name,
+    sendto_one(source_p, form_str(RPL_WHOREPLY), from, to,
 	       (chname) ? (chname) : "*",
 	       target_p->username,
 	       target_p->host, IsOper(source_p) ? target_p->user->server->name : "*",
@@ -361,7 +385,7 @@ do_who(struct Client *source_p, struct Client *target_p,
   }
   else
   {
-    sendto_one(source_p, form_str(RPL_WHOREPLY), me.name, source_p->name,
+    sendto_one(source_p, form_str(RPL_WHOREPLY), from, to,
 	       (chname) ? (chname) : "*",
 	       target_p->username,
 	       target_p->host,  target_p->user->server->name, target_p->name,

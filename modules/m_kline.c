@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.173 2003/10/03 09:40:01 stu Exp $
+ *  $Id: m_kline.c,v 1.174 2003/10/07 22:37:12 bill Exp $
  */
 
 #include "stdinc.h"
@@ -106,7 +106,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.173 $";
+const char *_version = "$Revision: 1.174 $";
 #endif
 
 #define TK_SECONDS 0
@@ -217,10 +217,22 @@ mo_kline(struct Client *client_p, struct Client *source_p,
 
   if (target_server != NULL)
   {
-    sendto_server(NULL, source_p, NULL, CAP_KLN, NOCAPS, LL_ICLIENT,
-                  ":%s KLINE %s %lu %s %s :%s",
-                  source_p->name, target_server, (unsigned long)tkline_time,
-                  user, host, reason);
+    if (HasID(source_p))
+    {
+      sendto_server(NULL, source_p, NULL, CAP_KLN|CAP_TS6, NOCAPS, LL_ICLIENT,
+                    ":%s KLINE %s %lu %s %s :%s",
+                    source_p->id, target_server, (unsigned long)tkline_time,
+                    user, host, reason);
+      sendto_server(NULL, source_p, NULL, CAP_KLN, CAP_TS6, LL_ICLIENT,
+                    ":%s KLINE %s %lu %s %s :%s",
+                    source_p->name, target_server, (unsigned long)tkline_time,
+                    user, host, reason);
+    }
+    else
+      sendto_server(NULL, source_p, NULL, CAP_KLN, NOCAPS, LL_ICLIENT,
+                    ":%s KLINE %s %lu %s %s :%s",
+                    source_p->name, target_server, (unsigned long)tkline_time,
+                    user, host, reason);
 
     /* If we are sending it somewhere that doesnt include us, we stop
      * else we apply it locally too
@@ -410,7 +422,8 @@ apply_tkline(struct Client *source_p, struct ConfItem *conf,
 		       aconf->user, aconf->host,
 		       aconf->reason);
   sendto_one(source_p, ":%s NOTICE %s :Added temporary %d min. K-Line [%s@%s]",
-	     me.name, source_p->name, tkline_time/60,
+	     MyConnect(source_p) ? source_p->name : ID_or_name(&me, source_p->from),
+             source_p->name, tkline_time/60,
 	     aconf->user, aconf->host);
   ilog(L_TRACE, "%s added temporary %d min. K-Line for [%s@%s] [%s]",
        source_p->name, tkline_time/60,
@@ -440,7 +453,8 @@ apply_tdline(struct Client *source_p, struct ConfItem *conf,
 		       aconf->host, aconf->reason);
 
   sendto_one(source_p, ":%s NOTICE %s :Added temporary %d min. D-Line [%s]",
-	     me.name, source_p->name, tkline_time/60, aconf->host);
+	     MyConnect(source_p) ? source_p->name : ID_or_name(&me, source_p->from),
+             source_p->name, tkline_time/60, aconf->host);
   ilog(L_TRACE, "%s added temporary %d min. D-Line for [%s] [%s]",
        source_p->name, tkline_time/60, aconf->host, aconf->reason);
   rehashed_klines = 1;

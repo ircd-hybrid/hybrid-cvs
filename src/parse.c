@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.182 2003/09/20 01:05:12 db Exp $
+ *  $Id: parse.c,v 7.183 2003/10/07 22:37:20 bill Exp $
  */
 
 #include "stdinc.h"
@@ -215,15 +215,14 @@ parse(struct Client *client_p, char *pbuffer, char *bufend)
 
     if (*sender && IsServer(client_p))
     {
-      from = find_client(sender);
-
-      if (from == NULL)
-      {
+      /*
+       * XXX it could be useful to know which of these occurs most frequently.
+       * the ID check should always come first, though, since it is so easy.
+       */
+      if (IsDigit(*sender))
+        from = hash_find_id(sender);
+      else if ((from = find_client(sender)) == NULL)
         from = find_server(sender);
-
-        if (from == NULL)
-          from = hash_find_id(sender);
-      }
 
       /* Hmm! If the client corresponding to the
        * prefix is not found--what is the correct

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.c,v 1.80 2003/09/21 09:59:02 michael Exp $
+ *  $Id: m_info.c,v 1.81 2003/10/07 22:37:12 bill Exp $
  */
 
 #include "stdinc.h"
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&info_msgtab);
 }
 
-const char *_version = "$Revision: 1.80 $";
+const char *_version = "$Revision: 1.81 $";
 #endif
 
 /*
@@ -566,7 +566,8 @@ ms_info(struct Client *client_p, struct Client *source_p,
       
     send_birthdate_online_time(source_p);
     sendto_one(source_p, form_str(RPL_ENDOFINFO),
-               me.name, source_p->name);
+               ID_or_name(&me, client_p), ID_or_name(source_p, client_p));
+
   }
 }
 
@@ -581,14 +582,28 @@ send_info_text(struct Client *source_p)
 {
   const char **text = infotext;
 
-  while (*text)
+  if (!MyClient(source_p) && IsCapable(source_p->from, CAP_TS6) && HasID(source_p))
   {
-    sendto_one(source_p, form_str(RPL_INFO),
-               me.name, source_p->name, *text++);
-  }
+    while (*text)
+    {
+      sendto_one(source_p, form_str(RPL_INFO),
+                 me.id, source_p->id, *text++);
+    }
 
-  sendto_one(source_p, form_str(RPL_INFO),
-             me.name, source_p->name, "");
+    sendto_one(source_p, form_str(RPL_INFO),
+               me.id, source_p->id);
+  }
+  else
+  {
+    while (*text)
+    {
+      sendto_one(source_p, form_str(RPL_INFO),
+                 me.name, source_p->name, *text++);
+    }
+
+    sendto_one(source_p, form_str(RPL_INFO),
+               me.name, source_p->name);
+  }
 }
 
 /* send_birthdate_online_time()
@@ -600,13 +615,26 @@ send_info_text(struct Client *source_p)
 static void
 send_birthdate_online_time(struct Client *source_p)
 {
-  sendto_one(source_p, ":%s %d %s :Birth Date: %s, compile # %s",
-             me.name, RPL_INFO, source_p->name,
-             creation, generation);
+  if (!MyClient(source_p) && IsCapable(source_p->from, CAP_TS6) && HasID(source_p))
+  {
+    sendto_one(source_p, ":%s %d %s :Birth Date: %s, compile # %s",
+               me.id, RPL_INFO, source_p->id,
+               creation, generation);
+             
+    sendto_one(source_p, ":%s %d %s :On-line since %s",
+               me.id, RPL_INFO, source_p->id,
+               myctime(me.firsttime));
+  }
+  else
+  {
+    sendto_one(source_p, ":%s %d %s :Birth Date: %s, compile # %s",
+               me.name, RPL_INFO, source_p->name,
+               creation, generation);
 
-  sendto_one(source_p, ":%s %d %s :On-line since %s",
-             me.name, RPL_INFO, source_p->name,
-             myctime(me.firsttime));
+    sendto_one(source_p, ":%s %d %s :On-line since %s",
+               me.name, RPL_INFO, source_p->name,
+               myctime(me.firsttime));
+  }
 }
 
 /* send_conf_options()
@@ -620,22 +648,36 @@ send_conf_options(struct Client *source_p)
 {
   Info *infoptr;
   int i = 0;
+  const char *from, *to;
+
+  
 
   /* Now send them a list of all our configuration options
    * (mostly from defaults.h and setup.h)
    */
+  if (!MyClient(source_p) && IsCapable(source_p->from, CAP_TS6) && HasID(source_p))
+  {
+    from = me.id;
+    to = source_p->id;
+  }
+  else
+  {
+    from = me.name;
+    to = source_p->name;
+  }
+
   for (infoptr = MyInformation; infoptr->name; infoptr++)
   {
     if (infoptr->intvalue)
     {
       sendto_one(source_p, ":%s %d %s :%-30s %-5d [%-30s]",
-                 me.name, RPL_INFO, source_p->name, infoptr->name,
+                 from, RPL_INFO, to, infoptr->name,
                  infoptr->intvalue, infoptr->desc);
     }
     else
     {
       sendto_one(source_p, ":%s %d %s :%-30s %-5s [%-30s]",
-                 me.name, RPL_INFO, source_p->name, infoptr->name,
+                 from, RPL_INFO, to, infoptr->name,
                  infoptr->strvalue, infoptr->desc);
     }
   }
@@ -653,7 +695,7 @@ send_conf_options(struct Client *source_p)
         char *option = *((char **)info_table[i].option);
 
         sendto_one(source_p, ":%s %d %s :%-30s %-5s [%-30s]",
-                   me.name, RPL_INFO, source_p->name,
+                   from, RPL_INFO, to,
                    info_table[i].name, option ? option : "NONE",
                    info_table[i].desc ? info_table[i].desc : "<none>");
         break;
@@ -665,7 +707,7 @@ send_conf_options(struct Client *source_p)
         char *option = (char *)info_table[i].option;
 
         sendto_one(source_p, ":%s %d %s :%-30s %-5s [%-30s]",
-                   me.name, RPL_INFO, source_p->name,
+                   from, RPL_INFO, to,
                    info_table[i].name, option ? option : "NONE",
                    info_table[i].desc ? info_table[i].desc : "<none>");
         break;
@@ -677,7 +719,7 @@ send_conf_options(struct Client *source_p)
         int option = *((int *)info_table[i].option);
 
         sendto_one(source_p, ":%s %d %s :%-30s %-5d [%-30s]",
-                   me.name, RPL_INFO, source_p->name, info_table[i].name,
+                   from, RPL_INFO, to, info_table[i].name,
                    option, info_table[i].desc ? info_table[i].desc : "<none>");
         break;
       }
@@ -688,7 +730,7 @@ send_conf_options(struct Client *source_p)
         int option = *((int *)info_table[i].option);
 
         sendto_one(source_p, ":%s %d %s :%-30s %-5s [%-30s]",
-                   me.name, RPL_INFO, source_p->name,
+                   from, RPL_INFO, to,
                    info_table[i].name, option ? "ON" : "OFF",
                    info_table[i].desc ? info_table[i].desc : "<none>");
 
@@ -701,7 +743,7 @@ send_conf_options(struct Client *source_p)
         int option = *((int *)info_table[i].option);
 
         sendto_one(source_p, ":%s %d %s :%-30s %-5s [%-30s]",
-                   me.name, RPL_INFO, source_p->name,
+                   from, RPL_INFO, to,
                    info_table[i].name, option ? "YES" : "NO",
                    info_table[i].desc ? info_table[i].desc : "<none>");
         break;
@@ -717,11 +759,11 @@ send_conf_options(struct Client *source_p)
   if (IsAdmin(source_p))
   {
     sendto_one(source_p, ":%s %d %s :Compiled on [%s]",
-               me.name, RPL_INFO, source_p->name, platform); 
+               from, RPL_INFO, to, platform); 
   }
 #endif
   sendto_one(source_p, form_str(RPL_INFO),
-             me.name, source_p->name, "");
+             from, to, "");
 }
 
 /* info_spy()

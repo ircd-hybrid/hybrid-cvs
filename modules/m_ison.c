@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ison.c,v 1.34 2003/06/24 09:39:30 michael Exp $
+ *  $Id: m_ison.c,v 1.35 2003/10/07 22:37:12 bill Exp $
  */
 
 #include "stdinc.h"
@@ -59,7 +59,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&ison_msgtab);
 }
-const char *_version = "$Revision: 1.34 $";
+const char *_version = "$Revision: 1.35 $";
 #endif
 
 
@@ -169,7 +169,7 @@ do_ison(struct Client *up, struct Client *source_p,
           relay_to_hub = 1;
 
           /* Also cache info about nick */
-          sendto_one(up, ":%s NBURST %s", me.name, nick);
+          sendto_one(up, ":%s NBURST %s", ID_or_name(&me, up), nick);
         }
       }
     }
@@ -185,7 +185,7 @@ do_ison(struct Client *up, struct Client *source_p,
   *current_insert_point2 = '\0'; 
   
   if (relay_to_hub)
-    sendto_one(up, ":%s ISON :%s", source_p->name, buf2);
+    sendto_one(up, ":%s ISON :%s", ID_or_name(source_p, up), buf2);
   else
     sendto_one(source_p, "%s", buf);
 }

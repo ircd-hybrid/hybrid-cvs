@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nick.c,v 1.131 2003/09/30 21:43:17 stu Exp $
+ *  $Id: m_nick.c,v 1.132 2003/10/07 22:37:17 bill Exp $
  */
 
 #include "stdinc.h"
@@ -97,7 +97,7 @@ _moddeinit(void)
   mod_del_cmd(&uid_msgtab);
 }
 
-const char *_version = "$Revision: 1.131 $";
+const char *_version = "$Revision: 1.132 $";
 #endif
 
 /*
@@ -423,19 +423,16 @@ ms_nick(struct Client *client_p, struct Client *source_p,
  *  parv[6] = hostname
  *  parv[7] = ip
  *  parv[8] = uid
- *  parv[9] = sid
- *  parv[10] = ircname (gecos)
+ *  parv[9] = ircname (gecos)
  */
 static void
 ms_uid(struct Client *client_p, struct Client *source_p,
        int parc, char *parv[])
 {
   struct Client *target_p;
-  struct Client *server_p;
   char nick[NICKLEN];
   time_t newts = 0;
-  const char *id;
-  char *name;
+#define ID_SID		parv[0]
 #define ID_NICK		parv[1]
 #define ID_HOP		parv[2]
 #define ID_TS		parv[3]
@@ -444,37 +441,27 @@ ms_uid(struct Client *client_p, struct Client *source_p,
 #define ID_HOSTNAME	parv[6]
 #define ID_IP		parv[7]
 #define ID_ID		parv[8]
-#define ID_SID		parv[9]
-#define ID_GECOS	parv[10]
-
-  id   = ID_ID;
-  name = ID_GECOS;
+#define ID_GECOS	parv[9]
 
   /* XXX can this happen ? */
   if (EmptyString(ID_NICK))
     return;
 
-  if ((server_p = hash_find_id(ID_SID)) == NULL)
-  {
-    exit_client(client_p, client_p, &me, "Unknown SID!");
-    return;
-  }
-
   /* parse the nickname */
   strlcpy(nick, ID_NICK, sizeof(nick));
 
   /* check the nicknames, usernames and hostnames are ok */
-  if (check_clean_nick(client_p, source_p, nick, ID_NICK, server_p) ||
-      check_clean_user(client_p, nick, ID_USERNAME, server_p) ||
-      check_clean_host(client_p, nick, ID_HOSTNAME, server_p))
+  if (check_clean_nick(client_p, source_p, nick, ID_NICK, source_p) ||
+      check_clean_user(client_p, nick, ID_USERNAME, source_p) ||
+      check_clean_host(client_p, nick, ID_HOSTNAME, source_p))
     return;
 
   /* check length of clients gecos */
-  if (strlen(name) > REALLEN)
+  if (strlen(ID_GECOS) > REALLEN)
   {
     sendto_realops_flags(UMODE_ALL, L_ALL, "Long realname from server %s for %s",
                          parv[0], parv[1]);
-    name[REALLEN] = '\0';			 
+    ID_GECOS[REALLEN] = '\0';			 
   }
 
   newts = atol(ID_TS);
@@ -484,7 +471,7 @@ ms_uid(struct Client *client_p, struct Client *source_p,
    * go, even if the other server refuses to do the right thing.
    */
 
-  if ((target_p = hash_find_id(id)) != NULL)
+  if ((target_p = hash_find_id(ID_ID)) != NULL)
   {
     sendto_realops_flags(UMODE_ALL, L_ALL,
 		         "ID collision on %s(%s <- %s)(both killed)",
@@ -504,21 +491,16 @@ ms_uid(struct Client *client_p, struct Client *source_p,
     return;
   }
     
-  if ((target_p = find_client(id)) == NULL)
-  {
+  if ((target_p = find_client(ID_NICK)) == NULL)
     client_from_server(client_p, source_p, parc, parv, newts, nick);
-    return;
-  }
-
-  if (IsUnknown(target_p))
+  else if (IsUnknown(target_p))
   {
     exit_client(NULL, target_p, &me, "Overridden");
     client_from_server(client_p, source_p, parc, parv, newts, nick);
-    return;
   }
-
-  perform_nick_collides(source_p, client_p, target_p,
-                        parc, parv, newts, nick);
+  else
+    perform_nick_collides(source_p, client_p, target_p,
+                          parc, parv, newts, nick);
 }			  
 
 /* check_clean_nick()
@@ -714,6 +696,8 @@ nick_from_server(struct Client *client_p, struct Client *source_p, int parc,
 {
   if (IsServer(source_p))
   {
+    const char *servername = source_p->name;
+
     /* A server introducing a new client, change source */
     source_p = make_client(client_p);
     dlinkAdd(source_p, &source_p->node, &global_client_list);
@@ -757,7 +741,7 @@ nick_from_server(struct Client *client_p, struct Client *source_p, int parc,
       }
 
       return(register_remote_user(client_p, source_p, parv[5], parv[6],
-                                  parv[7], parv[8]));
+                                  servername, parv[8]));
     }
   }
   else if(source_p->name[0])
@@ -802,6 +786,7 @@ client_from_server(struct Client *client_p, struct Client *source_p, int parc,
   char *m;
   unsigned int flag;
   const char *id = ID_ID;
+  const char *servername = source_p->name;
 
   source_p = make_client(client_p);
   dlinkAdd(source_p, &source_p->node, &global_client_list);
@@ -836,7 +821,7 @@ client_from_server(struct Client *client_p, struct Client *source_p, int parc,
   }
 
   return(register_remote_user(client_p, source_p, parv[5], parv[6],
-                              parv[7], parv[9]));
+                              servername, parv[9]));
 }
 
 static void

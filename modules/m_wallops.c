@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_wallops.c,v 1.34 2003/05/08 09:39:21 michael Exp $
+ *  $Id: m_wallops.c,v 1.35 2003/10/07 22:37:13 bill Exp $
  */
 
 #include "stdinc.h"
@@ -34,6 +34,7 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
+#include "s_serv.h"
 
 static void ms_wallops(struct Client *, struct Client *, int, char **);
 static void mo_wallops(struct Client *, struct Client *, int, char **);
@@ -56,7 +57,7 @@ _moddeinit(void)
   mod_del_cmd(&wallops_msgtab);
 }
  
-const char *_version = "$Revision: 1.34 $";
+const char *_version = "$Revision: 1.35 $";
 #endif
 
 /*
@@ -78,7 +79,9 @@ mo_wallops(struct Client *client_p, struct Client *source_p,
   }
 
   sendto_wallops_flags(UMODE_OPERWALL, source_p, "OPERWALL - %s", message);
-  sendto_server(NULL, source_p, NULL, NOCAPS, NOCAPS, LL_ICLIENT,
+  sendto_server(NULL, source_p, NULL, CAP_TS6, NOCAPS, LL_ICLIENT,
+                ":%s WALLOPS :%s", ID(source_p), message);
+  sendto_server(NULL, source_p, NULL, NOCAPS, CAP_TS6, LL_ICLIENT,
                 ":%s WALLOPS :%s", source_p->name, message);
 }
 
@@ -101,7 +104,9 @@ ms_wallops(struct Client *client_p, struct Client *source_p,
   else
     sendto_wallops_flags(UMODE_WALLOP, source_p, "%s", message); 
 
-  sendto_server(client_p, source_p, NULL, NOCAPS, NOCAPS, LL_ICLIENT,
+  sendto_server(client_p, source_p, NULL, CAP_TS6, NOCAPS, LL_ICLIENT,
+                ":%s WALLOPS :%s", ID(source_p), message);
+  sendto_server(client_p, source_p, NULL, NOCAPS, CAP_TS6, LL_ICLIENT,
                 ":%s WALLOPS :%s", source_p->name, message);
 }
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kill.c,v 1.81 2003/09/11 03:41:45 metalrock Exp $
+ *  $Id: m_kill.c,v 1.82 2003/10/07 22:37:17 bill Exp $
  */
 
 #include "stdinc.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&kill_msgtab);
 }
 
-const char *_version = "$Revision: 1.81 $";
+const char *_version = "$Revision: 1.82 $";
 #endif
 
 /* mo_kill()
@@ -357,11 +357,8 @@ relay_kill(struct Client *one, struct Client *source_p,
     /* introduce source of kill */
     client_burst_if_needed(client_p, source_p);
 
-    /* check the server supports SID */
-    if (IsCapable(client_p, CAP_SID))
-      user = ID(target_p);
-    else
-      user = target_p->name;
+    /* use UID if possible */
+    user = ID_or_name(source_p, client_p);
 
     if (MyClient(source_p))
     {

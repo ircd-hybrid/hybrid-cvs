@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.168 2003/09/28 02:16:04 metalrock Exp $
+ *  $Id: m_sjoin.c,v 1.169 2003/10/07 22:37:17 bill Exp $
  */
 
 #include "stdinc.h"
@@ -42,6 +42,7 @@
 #include "s_serv.h"
 #include "s_conf.h"
 
+extern BlockHeap *ban_heap;
 static void ms_sjoin(struct Client *, struct Client *, int, char **);
 
 struct Message sjoin_msgtab = {
@@ -62,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.168 $";
+const char *_version = "$Revision: 1.169 $";
 #endif
 
 /* ms_sjoin()
@@ -87,6 +88,7 @@ static int pargs;
 static void set_final_mode(struct Mode *, struct Mode *);
 static void remove_our_modes(struct Channel *, struct Client *);
 static void remove_a_mode(struct Channel *, struct Client *, int, char);
+static void remove_ban_list(struct Channel *, struct Client *, dlink_list *, char, int);
 
 static void
 ms_sjoin(struct Client *client_p, struct Client *source_p,
@@ -107,14 +109,16 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   int            isnew;
   int		 buflen = 0;
   char           *s, *nhops;
-  static         char buf[2*BUFSIZE]; /* buffer for modes and prefix */
+  static         char nick_buf[2*BUFSIZE]; /* buffer for modes and prefix */
+  static	 char uid_buf[2*BUFSIZE];  /* buffer for modes/prefixes for CAP_TS6 servers */
   static         char sjbuf_nhops[BUFSIZE]; /* buffer with halfops as @ */
+  char		 *nick_ptr, *uid_ptr;	   /* pointers used for making the two mode/prefix buffers */
   char           *p; /* pointer used making sjbuf */
   int            i;
   dlink_node     *m;
   const char *servername;
 
-  buf[0] = sjbuf_nhops[0] = '\0';
+  sjbuf_nhops[0] = '\0';
 
   if (IsClient(source_p) || parc < 5)
     return;
@@ -211,8 +215,6 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
     chptr->channelts = tstosend = newts;
   else if (newts == 0 || oldts == 0)
     chptr->channelts = tstosend = 0;
-  else if (newts == 0)
-    chptr->channelts = tstosend = oldts;
   else if (newts == oldts)
     tstosend = oldts;
   else if (newts < oldts)
@@ -269,9 +271,15 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
     modebuf[1] = '\0';
   }
 
-  buflen = ircsprintf(buf, ":%s SJOIN %lu %s %s %s:",
-		      parv[0], (unsigned long)tstosend,
+  buflen = ircsprintf(nick_buf, ":%s SJOIN %lu %s %s %s:",
+		      source_p->name, (unsigned long)tstosend,
 		      parv[2], modebuf, parabuf);
+  nick_ptr = nick_buf + buflen;
+
+  buflen = ircsprintf(uid_buf, ":%s SJOIN %lu %s %s %s:",
+                      ID(source_p), (unsigned long)tstosend,
+                      parv[2], modebuf, parabuf);
+  uid_ptr = uid_buf + buflen;
 
   /* check we can fit a nick on the end, as well as \r\n and a prefix "
    * @+".
@@ -310,49 +318,55 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
     fl = 0;
     num_prefix = 0;
 
-    /* XXXXXXXX THIS IS JUST DUMB */
     for (i = 0; i < 2; i++)
     {
       if (*s == '@')
       {
         fl |= CHFL_CHANOP;
-        if (keep_new_modes)
-        {
-	  *nhops++ = *s;
-	  num_prefix++;
-        }
-	s++;
+        s++;
       }
       else if (*s == '+')
       {
         fl |= CHFL_VOICE;
-        if (keep_new_modes)
-        {
-	  *nhops++ = *s;
-          num_prefix++;
-        }
         s++;
       }
     }
-    /* if the client doesnt exist, backtrack over the prefix (@%+) that we
-     * just added and skip to the next nick
-     *
-     * also do this if its fake direction or a server
-     */
-    if (!(target_p = find_client(s)) ||
-        (target_p->from != client_p) || !IsPerson(target_p))
-    {
-      sendto_one(source_p, form_str(ERR_NOSUCHNICK),
-                 me.name, source_p->name, s);
 
-      nhops -= num_prefix;
-      *nhops = '\0';
+    if (IsDigit(*s))
+      target_p = hash_find_id(s);
+    else
+      target_p = find_client(s);
+
+    /*
+     * if the client doesnt exist, or if its fake direction/server, skip.
+     * we cannot send ERR_NOSUCHNICK here because if its a UID, we cannot
+     * lookup the nick, and its better to never send the numeric than only
+     * sometimes.
+     */
+    if (target_p == NULL ||
+        target_p->from != client_p ||
+        !IsPerson(target_p))
+    {
       goto nextnick;
     }
 
+    if (keep_new_modes)
+    {
+      if (fl & CHFL_CHANOP)
+      {
+        *nick_ptr++ = '@';
+        *uid_ptr++  = '@';
+      }
+      if (fl & CHFL_VOICE)
+      {
+        *nick_ptr++ = '+';
+        *uid_ptr++  = '+';
+      }
+    }
+
     /* copy the nick to the two buffers */
-    nhops += ircsprintf(nhops, "%s ", s);
-    assert((unsigned int)(nhops - sjbuf_nhops) < sizeof(sjbuf_nhops));
+    nick_ptr += ircsprintf(nick_ptr, "%s ", target_p->name);
+    uid_ptr  += ircsprintf(uid_ptr,  "%s ", ID(target_p));
 
     if (!keep_new_modes)
     {
@@ -398,7 +412,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
     if (!IsMember(target_p, chptr))
     {
       add_user_to_channel(chptr, target_p, fl);
-      sendto_channel_local(ALL_MEMBERS,chptr, ":%s!%s@%s JOIN :%s",
+      sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s JOIN :%s",
                            target_p->name, target_p->username,
                            target_p->host, parv[2]);
     }
@@ -460,6 +474,8 @@ nextnick:
   }
 
   *mbuf = '\0';
+  *(nick_ptr - 1) = '\0';
+  *(uid_ptr - 1) = '\0';
 
   if (pargs != 0)
   {
@@ -471,28 +487,37 @@ nextnick:
   if (people == 0)
     return;
 
+  if (parv[4 + args][0] == '\0')
+    return;
+
   /* relay the SJOIN to other servers */
   DLINK_FOREACH(m, serv_list.head)
   {
     target_p = m->data;
 
-    if (target_p == client_p->from)
+    if (target_p == client_p)
       continue;
 
-    /* skip lazylinks that don't know about this server */
-    if (IsCapable(target_p, CAP_LL) && ServerInfo.hub)
-    {
-      if (!(chptr->lazyLinkChannelExists &
-          target_p->localClient->serverMask))
-        continue;
-    }
+    if (IsCapable(target_p, CAP_TS6))
+      sendto_one(target_p, "%s", uid_buf);
+    else
+      sendto_one(target_p, "%s", nick_buf);
+  }
 
-    /* Its a blank sjoin, ugh */
-    if (!parv[4 + args][0])
-      return;
+  /* if the source does TS6, remove our bans, if there are any */
+  if (!keep_our_modes && IsCapable(source_p, CAP_TS6))
+  {
+    if (dlink_list_length(&chptr->banlist) > 0)
+      remove_ban_list(chptr, client_p, &chptr->banlist,
+                      'b', NOCAPS);
 
-    sendto_one(target_p, "%s%s",
-               buf, sjbuf_nhops);
+    if (dlink_list_length(&chptr->exceptlist) > 0)
+      remove_ban_list(chptr, client_p, &chptr->exceptlist,
+                      'e', CAP_EX);
+
+    if (dlink_list_length(&chptr->invexlist) > 0)
+      remove_ban_list(chptr, client_p, &chptr->invexlist,
+                      'I', CAP_IE);
   }
 }
 
@@ -681,4 +706,69 @@ void remove_a_mode(struct Channel *chptr, struct Client *source_p,
 			 chptr->chname, lmodebuf,
 			 lpara[0], lpara[1], lpara[2], lpara[3]);
   }
+}
+
+/*
+ * remove_ban_list()
+ *
+ * inputs	- channel, source, list to remove, char of mode, caps required
+ * outputs	- none
+ * side effects	- given ban list is removed, modes are sent to local clients and
+ *		  non-ts6 servers linked through another uplink other than source_p
+ */
+static void
+remove_ban_list(struct Channel *chptr, struct Client *source_p,
+                dlink_list *list, char c, int cap)
+{
+  static char lmodebuf[MODEBUFLEN];
+  static char lparabuf[BUFSIZE];
+  struct Ban *banptr;    
+  dlink_node *ptr;
+  dlink_node *next_ptr;
+  char *pbuf;
+  int count = 0;      
+  int cur_len, mlen, plen;
+
+  pbuf = lparabuf;
+  
+  cur_len = mlen = ircsprintf(lmodebuf, ":%s MODE %s +",
+            source_p->name, chptr->chname);
+  mbuf = lmodebuf + mlen;
+ 
+  DLINK_FOREACH_SAFE(ptr, next_ptr, list->head)
+  {
+    banptr = ptr->data;
+ 
+    plen = strlen(banptr->banstr) + 1;
+ 
+    if(count >= MAXMODEPARAMS || (cur_len + plen) > BUFSIZE - 4)
+    {
+      /* remove trailing space */
+      *(pbuf - 1) = '\0';
+
+      sendto_channel_local(ALL_MEMBERS, chptr, "%s%s",
+               lmodebuf, lparabuf);
+      sendto_server(source_p, NULL, chptr, cap, CAP_TS6, NOFLAGS,
+              "%s%s", lmodebuf, lparabuf);
+
+      cur_len = mlen;
+      mbuf = lmodebuf + mlen;
+      count = 0;
+    }     
+
+    *mbuf++ = c;
+    cur_len += plen;
+    pbuf += ircsprintf(pbuf, "%s ", banptr->banstr);
+    count++;
+
+    BlockHeapFree(ban_heap, banptr);
+  }
+
+  *(pbuf - 1) = '\0';
+  sendto_channel_local(ALL_MEMBERS, chptr, "%s%s", lmodebuf, lparabuf);
+  sendto_server(source_p, NULL, chptr, cap, CAP_TS6, NOFLAGS,
+          "%s%s", lmodebuf, lparabuf);
+
+  list->head = list->tail = NULL;
+  list->length = 0;
 }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.411 2003/09/15 23:24:48 metalrock Exp $
+ *  $Id: client.c,v 7.412 2003/10/07 22:37:20 bill Exp $
  */
 
 #include "stdinc.h"
@@ -645,6 +645,11 @@ struct Client *
 find_person(const char *name)
 {
   struct Client *c2ptr = find_client(name);
+
+  if (IsDigit(*name))
+    c2ptr = hash_find_id(name);
+  else
+    c2ptr = find_client(name);
 
   if (c2ptr != NULL && IsPerson(c2ptr))
     return(c2ptr);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.216 2003/09/15 22:34:07 db Exp $
+ *  $Id: client.h,v 7.217 2003/10/07 22:37:10 bill Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -282,9 +282,9 @@ struct LocalUser
 #define STAT_SERVER             0x10
 #define STAT_CLIENT             0x20
 
-#define HasID(x) ((x)->id[0] != '\0')
-#define ID(source_p) (HasID(source_p) ? source_p->id : source_p->name)
-#define ID_or_name(x,client_p) (IsCapable(client_p,CAP_SID)?(x)->id:(x)->name)
+#define HasID(x)		((x)->id[0] != '\0')
+#define ID(x)			(HasID(x) ? (x)->id : (x)->name)
+#define ID_or_name(x,client_p)	(IsCapable(client_p, CAP_TS6) ? (x)->id : (x)->name)
 
 #define IsRegisteredUser(x)     ((x)->status == STAT_CLIENT)
 #define IsRegistered(x)         ((x)->status  > STAT_UNKNOWN)
@@ -329,7 +329,7 @@ struct LocalUser
 /*
  * ts stuff
  */
-#define TS_CURRENT      5       /* current TS protocol version */
+#define TS_CURRENT      6       /* current TS protocol version */
 #ifdef TS5_ONLY
 #define TS_MIN          5
 #else

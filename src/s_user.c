@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.311 2003/10/04 19:31:19 metalrock Exp $
+ *  $Id: s_user.c,v 7.312 2003/10/07 22:37:20 bill Exp $
  */
 
 #include "stdinc.h"
@@ -240,49 +240,62 @@ free_user(struct User *user, struct Client *client_p)
 void
 show_lusers(struct Client *source_p) 
 {
+  const char *from, *to;
+
+  if (!MyConnect(source_p) && IsCapable(source_p->from, CAP_TS6) && HasID(source_p))
+  {
+    from = me.id;
+    to = source_p->id;
+  }
+  else
+  {
+    from = me.name;
+    to = source_p->name;
+  }
+
   if (!ConfigServerHide.hide_servers || IsOper(source_p))
     sendto_one(source_p, form_str(RPL_LUSERCLIENT),
-               me.name, source_p->name, (Count.total-Count.invisi),
+               from, to, (Count.total-Count.invisi),
                Count.invisi, dlink_list_length(&global_serv_list));
   else
-    sendto_one(source_p, form_str(RPL_LUSERCLIENT), me.name, source_p->name,
+    sendto_one(source_p, form_str(RPL_LUSERCLIENT), from, to,
 	      (Count.total-Count.invisi), Count.invisi, 1);
 
   if (Count.oper > 0)
     sendto_one(source_p, form_str(RPL_LUSEROP),
-	       me.name, source_p->name, Count.oper);
+	       from, to, Count.oper);
 
   if (dlink_list_length(&unknown_list) > 0)
     sendto_one(source_p, form_str(RPL_LUSERUNKNOWN),
-	       me.name, source_p->name, dlink_list_length(&unknown_list));
+	       from, to, dlink_list_length(&unknown_list));
 
   if (dlink_list_length(&global_channel_list) > 0)
     sendto_one(source_p, form_str(RPL_LUSERCHANNELS),
-	       me.name, source_p->name,
+	       from, to,
 	       dlink_list_length(&global_channel_list));
 
   if (!ConfigServerHide.hide_servers || IsOper(source_p))
   {
     sendto_one(source_p, form_str(RPL_LUSERME),
-	       me.name, source_p->name,
+	       from, to,
 	       Count.local, Count.myserver);
     sendto_one(source_p, form_str(RPL_LOCALUSERS),
-	       me.name, source_p->name,
+	       from, to,
 	       Count.local, Count.max_loc);
   }
   else
   {
     sendto_one(source_p, form_str(RPL_LUSERME),
-	       me.name, source_p->name, Count.total, 0);
+	       from, to, Count.total, 0);
     sendto_one(source_p, form_str(RPL_LOCALUSERS), 
-	       me.name, source_p->name, Count.total, Count.max_tot);
+	       from, to, Count.total, Count.max_tot);
   }
 
   sendto_one(source_p, form_str(RPL_GLOBALUSERS),
-             me.name, source_p->name, Count.total, Count.max_tot);
+             from, to, Count.total, Count.max_tot);
 
   if (!ConfigServerHide.hide_servers || IsOper(source_p))
-    sendto_one(source_p, form_str(RPL_STATSCONN), me.name, source_p->name,
+    sendto_one(source_p, form_str(RPL_STATSCONN), from, to,
 	       MaxConnectionCount, MaxClientCount, Count.totalrestartcount);
 
   if (Count.local > MaxClientCount)
@@ -305,11 +318,15 @@ show_isupport(struct Client *source_p)
 
   ircsprintf(isupportbuffer, FEATURES, FEATURESVALUES);
   sendto_one(source_p, form_str(RPL_ISUPPORT),
-             me.name, source_p->name, isupportbuffer);
+             ID_or_name(&me, source_p->from),
+             ID_or_name(source_p, source_p->from),
+             isupportbuffer);
 
   ircsprintf(isupportbuffer, FEATURES2, FEATURES2VALUES);
   sendto_one(source_p, form_str(RPL_ISUPPORT),
-             me.name, source_p->name, isupportbuffer);
+             ID_or_name(&me, source_p->from),
+             ID_or_name(source_p, source_p->from),
+             isupportbuffer);
 }
 
 /*
@@ -667,17 +684,19 @@ introduce_client(struct Client *client_p, struct Client *source_p)
    * -davidt
    * rewritten to cope with SIDs .. eww eww eww --is
    */
+
+  /* XXX THESE NEED A PREFIX!?!?!? */
   if (!ServerInfo.hub && uplink && IsCapable(uplink, CAP_LL) &&
       client_p != uplink)
   {
-    if (IsCapable(uplink, CAP_SID) && HasID(source_p))
+    if (IsCapable(uplink, CAP_TS6) && HasID(source_p))
     {
-      sendto_one(uplink, "UID %s %d %lu %s %s %s %s %s %s :%s",
+      sendto_one(uplink, ":%s UID %s %d %lu %s %s %s %s %s :%s",
+                 source_p->user->server->id,
                  source_p->name, source_p->hopcount+1,
 		 (unsigned long)source_p->tsinfo,
                  ubuf, source_p->username, source_p->host,
 		 (MyClient(source_p)?source_p->localClient->sockhost:"0"),
-		 source_p->user->server->id,
                  source_p->id, source_p->info);
     }
     else
@@ -699,13 +718,13 @@ introduce_client(struct Client *client_p, struct Client *source_p)
       if (IsCapable(server, CAP_LL) || server == client_p)
         continue;
 
-      if (IsCapable(server, CAP_SID) && HasID(source_p))
-        sendto_one(server, "UID %s %d %lu %s %s %s %s %s %s :%s",
+      if (IsCapable(server, CAP_TS6) && HasID(source_p))
+        sendto_one(server, ":%s UID %s %d %lu %s %s %s %s %s :%s",
+                   source_p->user->server->id,
                    source_p->name, source_p->hopcount+1,
 		   (unsigned long)source_p->tsinfo,
                    ubuf, source_p->username, source_p->host,
 		   (MyClient(source_p)?source_p->localClient->sockhost:"0"),
-		   source_p->user->server->id,
                    source_p->id, source_p->info);
       else
         sendto_one(server, "NICK %s %d %lu %s %s %s %s :%s",
@@ -1362,7 +1381,7 @@ static char new_uid[TOTALSIDUID+1];     /* allow for \0 */
 static void add_one_to_uid(int i);
   
 /*
- * uid_init()
+ * init_uid()
  * 
  * inputs	- NONE
  * output	- NONE
@@ -1372,7 +1391,7 @@ static void add_one_to_uid(int i);
  */
 
 void
-uid_init(void)
+init_uid(void)
 {
   int i;
 

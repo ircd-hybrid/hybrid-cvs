@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.131 2003/09/28 02:16:06 metalrock Exp $
+ *  $Id: channel_mode.c,v 7.132 2003/10/07 22:37:20 bill Exp $
  */
 
 #include "stdinc.h"
@@ -44,8 +44,8 @@
 #include "balloc.h"
 #include "s_log.h"
 
-static int add_id(struct Client *, struct Channel *, char *, int);
-static int del_id(struct Channel *, const char *, int);
+int add_id(struct Client *, struct Channel *, char *, int);
+int del_id(struct Channel *, const char *, int);
 
 /* some small utility functions */
 static char *check_string(char *s);
@@ -114,7 +114,7 @@ static int mode_count;
 static int mode_limit;		/* number of modes set other than simple */
 static int simple_modes_mask;	/* bit mask of simple modes already set */
 
-static int channel_capabs[] = { CAP_EX, CAP_IE, CAP_SID };
+static int channel_capabs[] = { CAP_EX, CAP_IE, CAP_TS6 };
 
 #define NCHCAPS         (sizeof(channel_capabs)/sizeof(int))
 #define NCHCAP_COMBOS   (1 << NCHCAPS)
@@ -160,7 +160,7 @@ check_string(char *s)
  *   -is 8/9/00 
  */
 
-static int
+int
 add_id(struct Client *client_p, struct Channel *chptr, char *banid, int type)
 {
   dlink_list *list;
@@ -250,7 +250,7 @@ add_id(struct Client *client_p, struct Channel *chptr, char *banid, int type)
  * output	- 0 for failure, 1 for success
  * side effects	-
  */
-static int
+int
 del_id(struct Channel *chptr, const char *banid, int type)
 {
   dlink_list *list;
@@ -1425,7 +1425,7 @@ send_cap_mode_changes(struct Client *client_p, struct Client *source_p,
   parabuf[0] = '\0';
   parptr = parabuf;
 
-  if ((cap & CAP_SID) && source_p->user &&
+  if ((cap & CAP_TS6) && source_p->user &&
       (source_p->id[0] != '\0'))
     mbl = ircsprintf(modebuf, ":%s MODE %s ", source_p->id,
                      chptr->chname);
@@ -1447,7 +1447,7 @@ send_cap_mode_changes(struct Client *client_p, struct Client *source_p,
 
     arg = "";
 
-    if ((cap & CAP_SID) && mode_changes[i].id)
+    if ((cap & CAP_TS6) && mode_changes[i].id)
       arg = mode_changes[i].id;
     if (*arg == '\0')
       arg = mode_changes[i].arg;
@@ -1475,7 +1475,7 @@ send_cap_mode_changes(struct Client *client_p, struct Client *source_p,
       nc = 0;
       mc = 0;
 
-      if ((cap & CAP_SID) && source_p->user &&
+      if ((cap & CAP_TS6) && source_p->user &&
           (source_p->id[0] != '\0'))
         mbl = ircsprintf(modebuf, ":%s MODE %s ", source_p->id,
                          chptr->chname);

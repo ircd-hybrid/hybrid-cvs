@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_lljoin.c,v 1.64 2003/06/25 08:46:56 michael Exp $
+ *  $Id: m_lljoin.c,v 1.65 2003/10/07 22:37:13 bill Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&lljoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.64 $";
+const char *_version = "$Revision: 1.65 $";
 #endif
 /*
  * m_lljoin
@@ -117,7 +117,7 @@ ms_lljoin(struct Client *client_p, struct Client *source_p,
 
   flags = 0;
 
-  target_p = find_client(nick);
+  target_p = find_person(nick);
 
   if( !target_p || !target_p->user )
     return;

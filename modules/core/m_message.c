@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.130 2003/09/21 07:09:32 metalrock Exp $
+ *  $Id: m_message.c,v 1.131 2003/10/07 22:37:17 bill Exp $
  */
 
 #include "stdinc.h"
@@ -117,7 +117,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.130 $";
+const char *_version = "$Revision: 1.131 $";
 #endif
 
 /*
@@ -303,7 +303,7 @@ build_target_list(int p_or_n, const char *command, struct Client *client_p,
           return -1;
         else if (p_or_n != NOTICE)
           sendto_one(source_p, form_str(ERR_NOSUCHNICK), me.name,
-                     source_p->name, nick);
+                     ID_or_name(source_p, client_p), nick);
       }
       continue;
     }
@@ -534,9 +534,9 @@ msg_channel_flags(int p_or_n, const char *command, struct Client *client_p,
   if (chptr->chname[0] != '#')
     return;
 
-  sendto_channel_remote(source_p, client_p, type, CAP_CHW, CAP_SID, chptr,
+  sendto_channel_remote(source_p, client_p, type, CAP_CHW, CAP_TS6, chptr,
                 ":%s %s %c%s :%s", source_p->name, command, c, chptr->chname, text);
-  sendto_channel_remote(source_p, client_p, type, CAP_CHW|CAP_SID, NOCAPS, chptr,
+  sendto_channel_remote(source_p, client_p, type, CAP_CHW|CAP_TS6, NOCAPS, chptr,
                 ":%s %s %c%s :%s", ID(source_p), command, c, chptr->chname, text);
   /* non CAP_CHW servers? */
 }

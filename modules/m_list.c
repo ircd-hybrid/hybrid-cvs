@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_list.c,v 1.59 2003/09/20 04:47:23 bill Exp $
+ *  $Id: m_list.c,v 1.60 2003/10/07 22:37:13 bill Exp $
  */
 
 #include "stdinc.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&list_msgtab);
 }
-const char *_version = "$Revision: 1.59 $";
+const char *_version = "$Revision: 1.60 $";
 #endif
 
 
@@ -169,12 +169,16 @@ do_list(struct Client *source_p, int parc, char *parv[])
     if (errors)
     {
       free_list_task(lt, source_p);
-      sendto_one(source_p, form_str(ERR_LISTSYNTAX), me.name, source_p->name);
+      sendto_one(source_p, form_str(ERR_LISTSYNTAX),
+                 MyConnect(source_p) ? me.name : ID(&me),
+                 MyConnect(source_p) ? source_p->name : ID(source_p));
       return;
     }
   }
 
-  sendto_one(source_p, form_str(RPL_LISTSTART), me.name, source_p->name);
+  sendto_one(source_p, form_str(RPL_LISTSTART),
+             MyConnect(source_p) ? me.name : ID(&me),
+             MyConnect(source_p) ? source_p->name : ID(source_p));
   safe_list_channels(source_p, lt, no_masked_channels &&
                      lt->show_mask.head != NULL, !MyConnect(source_p));
 }

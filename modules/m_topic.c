@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_topic.c,v 1.65 2003/09/20 04:47:23 bill Exp $
+ *  $Id: m_topic.c,v 1.66 2003/10/07 22:37:13 bill Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&topic_msgtab);
 }
 
-const char *_version = "$Revision: 1.65 $";
+const char *_version = "$Revision: 1.66 $";
 #endif
 
 /* m_topic()
@@ -77,6 +77,18 @@ m_topic(struct Client *client_p, struct Client *source_p,
   struct Channel *chptr = NULL;
   char *p;
   struct Membership *ms;
+  const char *from, *to;
+
+  if (!MyClient(source_p) && IsCapable(source_p->from, CAP_TS6) && HasID(source_p))
+  {
+    from = me.id;
+    to = source_p->id;
+  }
+  else
+  {
+    from = me.name;
+    to = source_p->name;
+  }
 
   if ((p = strchr(parv[1], ',')) != NULL)
     *p = '\0';
@@ -84,7 +96,7 @@ m_topic(struct Client *client_p, struct Client *source_p,
   if (parv[1][0] == '\0')
   {
     sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-               me.name, source_p->name, "TOPIC");
+               from, to, "TOPIC");
     return;
   }
 
@@ -101,14 +113,14 @@ m_topic(struct Client *client_p, struct Client *source_p,
       if (!ServerInfo.hub && uplink && IsCapable(uplink, CAP_LL))
       {
         sendto_one(uplink, ":%s TOPIC %s %s",
-                   source_p->name, parv[1],
+                   ID_or_name(source_p, uplink), parv[1],
                    ((parc > 2) ? parv[2] : ""));
         return;
       }
       else
       {
         sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
-                   me.name, source_p->name, parv[1]);
+                   from, to, parv[1]);
         return;
       }
     }
@@ -118,8 +130,8 @@ m_topic(struct Client *client_p, struct Client *source_p,
     {
       if ((ms = find_channel_link(source_p, chptr)) == NULL)
       {
-        sendto_one(source_p, form_str(ERR_NOTONCHANNEL), me.name,
-                   source_p->name, parv[1]);
+        sendto_one(source_p, form_str(ERR_NOTONCHANNEL), from,
+                   to, parv[1]);
         return;
       }
       if ((chptr->mode.mode & MODE_TOPICLIMIT) == 0 ||
@@ -129,10 +141,14 @@ m_topic(struct Client *client_p, struct Client *source_p,
         ircsprintf(topic_info, "%s!%s@%s",
                    source_p->name, source_p->username, source_p->host);
         set_channel_topic(chptr, parv[2], topic_info, CurrentTime);
-	      
-        sendto_server(client_p, NULL, chptr, NOCAPS, NOCAPS, NOFLAGS,
+
+        sendto_server(client_p, NULL, chptr, CAP_TS6, NOCAPS, NOFLAGS,
                       ":%s TOPIC %s :%s",
-                      parv[0], chptr->chname,
+                      ID(source_p), chptr->chname,
+                      chptr->topic == NULL ? "" : chptr->topic);
+        sendto_server(client_p, NULL, chptr, NOCAPS, CAP_TS6, NOFLAGS,
+                      ":%s TOPIC %s :%s",
+                      source_p->name, chptr->chname,
                       chptr->topic == NULL ? "" : chptr->topic);
         sendto_channel_local(ALL_MEMBERS,
                              chptr, ":%s!%s@%s TOPIC %s :%s",
@@ -144,7 +160,7 @@ m_topic(struct Client *client_p, struct Client *source_p,
       }
       else
         sendto_one(source_p, form_str(ERR_CHANOPRIVSNEEDED),
-                   me.name, source_p->name, parv[1]);
+                   from, to, parv[1]);
     }
     else /* only asking for topic */
     {
@@ -152,11 +168,11 @@ m_topic(struct Client *client_p, struct Client *source_p,
       {
         if (chptr->topic == NULL)
           sendto_one(source_p, form_str(RPL_NOTOPIC),
-                     me.name, source_p->name, parv[1]);
+                     from, to, parv[1]);
         else
         {
           sendto_one(source_p, form_str(RPL_TOPIC),
-                     me.name, source_p->name,
+                     from, to,
                      chptr->chname, chptr->topic);
 
           /* client on LL needing the topic - if we have serverhide, say
@@ -167,13 +183,13 @@ m_topic(struct Client *client_p, struct Client *source_p,
               && IsCapable(client_p, CAP_LL) && ServerInfo.hub)
           {
             sendto_one(source_p, form_str(RPL_TOPICWHOTIME),
-  	               me.name, source_p->name, chptr->chname,
+  	               from, to, chptr->chname,
                        client_p->name, chptr->topic_time);
           }
           else
           {
             sendto_one(source_p, form_str(RPL_TOPICWHOTIME),
-                       me.name, source_p->name, chptr->chname,
+                       from, to, chptr->chname,
                        chptr->topic_info,
                        chptr->topic_time);
           }
@@ -182,7 +198,7 @@ m_topic(struct Client *client_p, struct Client *source_p,
       else
       {
         sendto_one(source_p, form_str(ERR_NOTONCHANNEL),
-                   me.name, source_p->name, parv[1]);
+                   from, to, parv[1]);
         return;
       }
     }
@@ -190,7 +206,7 @@ m_topic(struct Client *client_p, struct Client *source_p,
   else
   {
     sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
-               me.name, source_p->name, parv[1]);
+               from, to, parv[1]);
   }
 }
 

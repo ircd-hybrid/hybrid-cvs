@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_capab.c,v 1.35 2003/05/30 08:05:38 michael Exp $
+ *  $Id: m_capab.c,v 1.36 2003/10/07 22:37:12 bill Exp $
  */
 
 #include "stdinc.h"
@@ -52,7 +52,7 @@ _moddeinit(void)
   mod_del_cmd(&capab_msgtab);
 }
 
-const char *_version = "$Revision: 1.35 $";
+const char *_version = "$Revision: 1.36 $";
 #endif
 
 /*
@@ -78,7 +78,7 @@ mr_capab(struct Client *client_p, struct Client *source_p,
   if (client_p->localClient == NULL)
     return;
 
-  if (client_p->localClient->caps)
+  if (client_p->localClient->caps && !(client_p->localClient->caps & CAP_TS6))
   {
     exit_client(client_p, client_p, client_p, "CAPAB received twice");
     return;

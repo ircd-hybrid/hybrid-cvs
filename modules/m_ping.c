@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ping.c,v 1.35 2003/08/03 14:22:20 michael Exp $
+ *  $Id: m_ping.c,v 1.36 2003/10/07 22:37:13 bill Exp $
  */
 
 #include "stdinc.h"
@@ -57,7 +57,7 @@ _moddeinit(void)
   mod_del_cmd(&ping_msgtab);
 }
 
-const char *_version = "$Revision: 1.35 $";
+const char *_version = "$Revision: 1.36 $";
 #endif
 
 /*
@@ -126,44 +126,42 @@ ms_ping(struct Client *client_p, struct Client *source_p,
         int parc, char *parv[])
 {
   struct Client *target_p;
-  char *origin, *destination;
+  const char *from, *to, *destination;
+
+  if (IsCapable(client_p, CAP_TS6) && HasID(source_p))
+  {
+    from = me.id;
+    to = source_p->id;
+  }
+  else
+  {
+    from = me.name;
+    to = source_p->name;
+  }
 
   if (parc < 2 || *parv[1] == '\0')
   {
     sendto_one(source_p, form_str(ERR_NOORIGIN),
-               me.name, parv[0]);
+               from, to);
     return;
   }
 
-/* origin == source_p->name, lets not even both wasting effort on it --fl_ */
-#if 0
-  origin = parv[1];
-#endif
-  origin = source_p->name;
   destination = parv[2]; /* Will get NULL or pointer (parc >= 2!!) */
-
-#if 0
-  target_p = find_client(origin, NULL);
-  if (!target_p)
-    target_p = find_server(origin);
-  if (target_p && target_p != source_p)
-    origin = client_p->name;
-#endif
 
   if (!EmptyString(destination) && irccmp(destination, me.name) != 0)
   {
     if ((target_p = find_server(destination)))
-      sendto_one(target_p,":%s PING %s :%s", parv[0],
-                 origin, destination);
+      sendto_one(target_p,":%s PING %s :%s", from,
+                 from, destination);
     else
     {
       sendto_one(source_p, form_str(ERR_NOSUCHSERVER),
-                 me.name, parv[0], destination);
+                 from, to, destination);
       return;
     }
   }
   else
-    sendto_one(source_p,":%s PONG %s :%s", me.name,
-               (destination) ? destination : me.name, origin);
+    sendto_one(source_p,":%s PONG %s :%s", from, from,
+               (parv[1]) ? parv[1] : source_p->name);
 }
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.h,v 7.87 2003/07/06 23:38:44 db Exp $
+ *  $Id: s_serv.h,v 7.88 2003/10/07 22:37:10 bill Exp $
  */
 
 #ifndef INCLUDED_serv_h
@@ -60,7 +60,7 @@ struct Capability
 #define CAP_KLN		0x00000080 /* Can do KLINE message                */
 #define CAP_GLN		0x00000100 /* Can do GLINE message                */
 #define CAP_HUB		0x00000400 /* This server is a HUB                */
-#define CAP_SID		0x00001000 /* Can do SIDs                         */
+#define CAP_TS6		0x00001000 /* Can do TS6                          */
 #define CAP_ZIP		0x00002000 /* Can do ZIPlinks                     */
 #define CAP_ENC		0x00004000 /* Can do ENCrypted links              */
 #define CAP_KNOCK	0x00008000 /* supports KNOCK                      */

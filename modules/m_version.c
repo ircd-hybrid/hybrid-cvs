@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_version.c,v 1.49 2003/08/20 00:02:45 michael Exp $
+ *  $Id: m_version.c,v 1.50 2003/10/07 22:37:13 bill Exp $
  */
 
 #include "stdinc.h"
@@ -73,7 +73,7 @@ _moddeinit(void)
   mod_del_cmd(&version_msgtab);
 }
 
-const char *_version = "$Revision: 1.49 $";
+const char *_version = "$Revision: 1.50 $";
 #endif
 
 /*
@@ -143,7 +143,9 @@ ms_version(struct Client *client_p, struct Client *source_p,
                   1, parc, parv) == HUNTED_ISME)
   {
     sendto_one(source_p, form_str(RPL_VERSION),
-               me.name, parv[0], ircd_version, serno,
+               ID_or_name(&me, client_p),
+               ID_or_name(source_p, client_p),
+               ircd_version, serno,
                me.name, confopts(source_p), serveropts);
     show_isupport(source_p);
   }
