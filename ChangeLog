@@ -1,3 +1,15 @@
+a1kmm       2003/02/07 02:17:03 EST	(20030207_1)
+
+  Modified files:
+    tools                encspeed.c 
+  Log:
+  - Remove a warning caused by a missing const, needed by newer OpenSSL versions.
+  
+  Revision  Changes    Path
+  7.6       +2 -2      ircd-hybrid-7/tools/encspeed.c
+
+
+
 a1kmm       2003/02/07 02:09:30 EST	(20030207_0)
 
   Modified files:
@@ -34931,4 +34943,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4225 2003/02/07 07:09:33 a1kmm Exp $
+$Id: ChangeLog,v 7.4226 2003/02/07 07:17:05 a1kmm Exp $
