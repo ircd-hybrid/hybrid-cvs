@@ -1,3 +1,15 @@
+leeh        2002/01/14 15:17:40 EST	(20020114_1)
+
+  Modified files:
+    src                  s_user.c 
+  Log:
+  - we needed a send_umode() for local clients..
+  
+  Revision  Changes    Path
+  7.182     +4 -2      ircd-hybrid-7/src/s_user.c
+
+
+
 androsyn    2002/01/13 19:56:05 EST	(20020114_0)
 
   Modified files:
@@ -21644,4 +21656,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3343 2002/01/14 00:56:11 androsyn Exp $
+$Id: ChangeLog,v 7.3344 2002/01/14 20:17:46 leeh Exp $
