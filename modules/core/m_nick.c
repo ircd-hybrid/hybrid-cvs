@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nick.c,v 1.95 2002/09/10 18:50:29 androsyn Exp $
+ *  $Id: m_nick.c,v 1.96 2002/09/10 19:58:33 db Exp $
  */
 
 #include "stdinc.h"
@@ -97,7 +97,7 @@ _moddeinit(void)
   mod_del_cmd(&client_msgtab);
 }
 
-const char *_version = "$Revision: 1.95 $";
+const char *_version = "$Revision: 1.96 $";
 #endif
 
 /*
@@ -125,14 +125,6 @@ mr_nick(struct Client *client_p, struct Client *source_p,
   /* Terminate the nick at the first ~ */
   if ((s = strchr(parv[1], '~')))
     *s = '\0';
-
-  /* and if the first ~ was the first letter.. */
-  if(BadPtr(parv[1]))
-  {
-    sendto_one(source_p, form_str(ERR_ERRONEUSNICKNAME),
-               me.name, BadPtr(parv[0]) ? "*" : parv[0], parv[1]);
-    return;
-  }
                                
   /* copy the nick and terminate it */
   strlcpy(nick, parv[1], NICKLEN);
@@ -629,8 +621,10 @@ clean_nick_name(char *nick)
   if(nick == NULL)
     return 0;
 
-  /* nicks cant start with a digit or - */
-  if (*nick == '-' || IsDigit(*nick))
+  /* nicks cant start with a digit or - or be 0 length */
+  /* This closer duplicates behaviour of hybrid-6 */
+
+  if (*nick == '-' || IsDigit(*nick) || *nick == '\0')
     return 0;
 
   for(; *nick; nick++)
