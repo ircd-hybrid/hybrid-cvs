@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_pong.c,v 1.12 2001/03/06 02:22:31 androsyn Exp $
+ *   $Id: m_pong.c,v 1.13 2001/03/06 15:53:30 toot Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -61,7 +61,7 @@ static void ms_pong(struct Client *client_p,
                    int parc,
                    char *parv[])
 {
-  struct Client *aclient_p;
+  struct Client *target_p;
   char  *origin, *destination;
 
   if (parc < 2 || *parv[1] == '\0')
@@ -84,9 +84,9 @@ static void ms_pong(struct Client *client_p,
   if (!EmptyString(destination) && irccmp(destination, me.name) != 0
                 && IsRegistered(source_p))
     {
-      if ((aclient_p = find_client(destination, NULL)) ||
-          (aclient_p = find_server(destination)))
-        sendto_one(aclient_p,":%s PONG %s %s",
+      if ((target_p = find_client(destination, NULL)) ||
+          (target_p = find_server(destination)))
+        sendto_one(target_p,":%s PONG %s %s",
                    parv[0], origin, destination);
       else
         {
@@ -109,7 +109,7 @@ static void mr_pong(struct Client *client_p,
                     int parc,
                     char *parv[])
 {
-  struct Client *aclient_p;
+  struct Client *target_p;
   char  *origin, *destination;
 
   if (parc < 2 || *parv[1] == '\0')
@@ -132,9 +132,9 @@ static void mr_pong(struct Client *client_p,
   if (!EmptyString(destination) && irccmp(destination, me.name) != 0
                 && IsRegistered(source_p))
     {
-      if ((aclient_p = find_client(destination, NULL)) ||
-          (aclient_p = find_server(destination)))
-        sendto_one(aclient_p,":%s PONG %s %s",
+      if ((target_p = find_client(destination, NULL)) ||
+          (target_p = find_server(destination)))
+        sendto_one(target_p,":%s PONG %s %s",
                    parv[0], origin, destination);
       else
         {

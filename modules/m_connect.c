@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_connect.c,v 1.23 2001/03/06 02:22:21 androsyn Exp $
+ *   $Id: m_connect.c,v 1.24 2001/03/06 15:53:25 toot Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -80,7 +80,7 @@ static void mo_connect(struct Client* client_p, struct Client* source_p,
   int              port;
   int              tmpport;
   struct ConfItem* aconf;
-  struct Client*   aclient_p;
+  struct Client*   target_p;
 
   /* always privileged with handlers */
 
@@ -103,11 +103,11 @@ static void mo_connect(struct Client* client_p, struct Client* source_p,
       return;
     }
 
-  if ((aclient_p = find_server(parv[1])))
+  if ((target_p = find_server(parv[1])))
     {
       sendto_one(source_p, ":%s NOTICE %s :Connect: Server %s %s %s.",
                  me.name, parv[0], parv[1], "already exists from",
-                 aclient_p->from->name);
+                 target_p->from->name);
       return;
     }
 
@@ -198,7 +198,7 @@ static void ms_connect(struct Client* client_p, struct Client* source_p,
   int              port;
   int              tmpport;
   struct ConfItem* aconf;
-  struct Client*   aclient_p;
+  struct Client*   target_p;
 
   if (hunt_server(client_p, source_p,
                   ":%s CONNECT %s %s :%s", 3, parc, parv) != HUNTED_ISME)
@@ -213,11 +213,11 @@ static void ms_connect(struct Client* client_p, struct Client* source_p,
       return;
     }
 
-  if ((aclient_p = find_server(parv[1])))
+  if ((target_p = find_server(parv[1])))
     {
       sendto_one(source_p, ":%s NOTICE %s :Connect: Server %s %s %s.",
                  me.name, parv[0], parv[1], "already exists from",
-                 aclient_p->from->name);
+                 target_p->from->name);
       return;
     }
 

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.c,v 7.60 2001/03/06 02:05:38 androsyn Exp $
+ *   $Id: s_auth.c,v 7.61 2001/03/06 15:53:37 toot Exp $
  *
  * Changes:
  *   July 6, 1999 - Rewrote most of the code here. When a client connects
@@ -659,7 +659,7 @@ FindAuthClient(long id)
  *
  */
 void 
-delete_identd_queries(struct Client *aclient_p)
+delete_identd_queries(struct Client *target_p)
 {
   dlink_node *ptr;
   dlink_node *next_ptr;
@@ -670,7 +670,7 @@ delete_identd_queries(struct Client *aclient_p)
       auth = ptr->data;
       next_ptr = ptr->next;
 
-      if(auth->client == aclient_p)
+      if(auth->client == target_p)
 	{
 	  if (auth->fd >= 0)
 	    fd_close(auth->fd);
@@ -685,7 +685,7 @@ delete_identd_queries(struct Client *aclient_p)
       auth = ptr->data;
       next_ptr = ptr->next;
 
-      if(auth->client == aclient_p)
+      if(auth->client == target_p)
 	{
 	  if (auth->fd >= 0)
 	    fd_close(auth->fd);

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_die.c,v 1.14 2001/03/06 02:22:21 androsyn Exp $
+ *   $Id: m_die.c,v 1.15 2001/03/06 15:53:25 toot Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -63,7 +63,7 @@ char *_version = "20001122";
 static void mo_die(struct Client *client_p, struct Client *source_p,
                   int parc, char *parv[])
 {
-  struct Client* aclient_p;
+  struct Client* target_p;
   dlink_node *ptr;
 
   if (!IsOperDie(source_p))
@@ -90,29 +90,29 @@ static void mo_die(struct Client *client_p, struct Client *source_p,
 
   for(ptr = lclient_list.head; ptr; ptr = ptr->next)
     {
-      aclient_p = ptr->data;
+      target_p = ptr->data;
 
-      sendto_one(aclient_p,
+      sendto_one(target_p,
 		 ":%s NOTICE %s :Server Terminating. %s",
-		 me.name, aclient_p->name,
+		 me.name, target_p->name,
 		 get_client_name(source_p, MASK_IP));
     }
 
   for(ptr = lclient_list.head; ptr; ptr = ptr->next)
     {
-      aclient_p = ptr->data;
+      target_p = ptr->data;
 
-      sendto_one(aclient_p,
+      sendto_one(target_p,
 		 ":%s NOTICE %s :Server Terminating. %s",
-		 me.name, aclient_p->name,
+		 me.name, target_p->name,
 		 get_client_name(source_p, HIDE_IP));
     }
 
   for(ptr = serv_list.head; ptr; ptr = ptr->next)
     {
-      aclient_p = ptr->data;
+      target_p = ptr->data;
 
-      sendto_one(aclient_p, ":%s ERROR :Terminated by %s",
+      sendto_one(target_p, ":%s ERROR :Terminated by %s",
 		 me.name, get_client_name(source_p, MASK_IP));
     }
 
