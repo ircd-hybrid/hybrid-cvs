@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.248 2001/06/26 09:18:22 a1kmm Exp $
+ * $Id: channel.c,v 7.249 2001/06/26 19:48:52 leeh Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -100,6 +100,46 @@ static int mask_pos;
 #endif
 void check_spambot_warning(struct Client *source_p, const char *name);
 
+
+/*
+ * find_resv()
+ */
+struct JupedChannel *find_resv(char *resv)
+{
+  struct JupedChannel *jptr;
+  
+  if(JupedChannelList)
+  {
+
+    for(jptr = JupedChannelList; jptr; jptr = jptr->next)
+    {
+      if(!irccmp(resv, jptr->chname))
+        return jptr;
+    }
+  }
+
+  return NULL;
+}
+
+/*
+ * IsResv()
+ */
+
+int is_resv(char *resv)
+{
+  struct JupedChannel *jptr;
+
+  if(JupedChannelList)
+  {
+    for(jptr = JupedChannelList; jptr; jptr = jptr->next)
+    {
+      if(!irccmp(resv, jptr->chname))
+        return 1;
+    }
+  }
+  
+  return 0;
+}
 
 /*
  * check_string

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 1.66 2001/06/06 03:16:14 toot Exp $
+ *   $Id: m_join.c,v 1.67 2001/06/26 19:48:50 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -110,6 +110,13 @@ static void m_join(struct Client *client_p,
                  me.name, parv[0], "JOIN");
       return;
     }
+
+  if(is_resv(parv[1]))
+  {
+    sendto_one(source_p, form_str(ERR_UNAVAILRESOURCE),
+               me.name, source_p->name, parv[1]);
+    return;
+  }
 
   build_list_of_channels( source_p, jbuf , parv[1] );
 

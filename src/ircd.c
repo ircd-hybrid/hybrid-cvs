@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.164 2001/06/26 18:07:24 androsyn Exp $
+ * $Id: ircd.c,v 7.165 2001/06/26 19:48:53 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -117,6 +117,8 @@ struct Client me;               /* That's me */
 struct LocalUser meLocalUser;	/* That's also part of me */
 
 struct Client* GlobalClientList = 0; /* Pointer to beginning of Client list */
+
+struct JupedChannel *JupedChannelList = 0;
 
 /* unknown/client pointer lists */ 
 dlink_list unknown_list;        /* unknown clients ON this server only */

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.76 2001/06/25 09:23:45 a1kmm Exp $
+ * $Id: channel.h,v 7.77 2001/06/26 19:48:42 leeh Exp $
  */
 
 #include <sys/types.h>        /* time_t */
@@ -93,6 +93,16 @@ struct Channel
 
 extern  struct  Channel *GlobalChannelList;
 
+struct JupedChannel
+{
+  struct JupedChannel *next;
+  struct JupedChannel *prev;
+
+  char		      chname[1];
+};
+
+extern struct JupedChannel *JupedChannelList;
+
 void cleanup_channels(void *);
 
 #define CREATE 1        /* whether a channel should be
@@ -107,6 +117,8 @@ void cleanup_channels(void *);
 /* Maximum mode changes allowed per client, per server is different */
 #define MAXMODEPARAMS   4
 
+extern struct JupedChannel *find_resv(char *);
+
 extern dlink_node *find_user_link (dlink_list *, struct Client *);
 extern void    add_user_to_channel(struct Channel *chptr,
 				   struct Client *who, int flags);
@@ -115,6 +127,8 @@ extern void    remove_user_from_channel(struct Channel *chptr,
 
 extern int     can_send (struct Channel *chptr, struct Client *who);
 extern int     is_banned (struct Channel *chptr, struct Client *who);
+
+extern int     is_resv(char *);
 
 extern int     can_join(struct Client *source_p, struct Channel *chptr, char *key);
 extern int     is_chan_op (struct Channel *chptr,struct Client *who);
