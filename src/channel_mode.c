@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.134 2003/10/11 23:20:52 bill Exp $
+ *  $Id: channel_mode.c,v 7.135 2003/10/11 23:23:33 stu Exp $
  */
 
 #include "stdinc.h"
@@ -1427,7 +1427,7 @@ send_cap_mode_changes(struct Client *client_p, struct Client *source_p,
   if ((cap & CAP_TS6) && source_p->user &&
       (source_p->id[0] != '\0'))
     mbl = ircsprintf(modebuf, ":%s TMODE %lu %s ", source_p->id,
-                     chptr->channelts, chptr->chname);
+                     (unsigned long)chptr->channelts, chptr->chname);
   else
     mbl = ircsprintf(modebuf, ":%s MODE %s ", source_p->name,
                      chptr->chname);
