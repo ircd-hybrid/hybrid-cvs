@@ -1,3 +1,12 @@
+*** 20001130_5 by adrian
+
+
+bzero() the memory we get from malloc() before returning. This is a good
+thing(tm), and it means we can possibly start removing bzero/memset's
+from around the code.
+
+
+
 *** 20001130_4 by db
 - fixed kick so nonops see user kicking themselves in chanop hide mode
 - don't show uplink on links and hopcount if in server hide mode
@@ -1097,7 +1106,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.629 2000/11/30 07:54:23 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.630 2000/11/30 08:52:13 adrian Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
