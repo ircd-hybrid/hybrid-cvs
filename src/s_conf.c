@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.2 1999/08/02 11:47:05 db Exp $
+ *  $Id: s_conf.c,v 7.3 1999/08/02 16:38:31 db Exp $
  */
 #include "s_conf.h"
 #include "channel.h"
@@ -3377,7 +3377,7 @@ void read_conf_files(int cold)
 
   /* ZZZ have to deal with single ircd.conf situations */
 
-#ifdef KLINE_PATH
+#ifdef KPATH
   filename = get_conf_name(KLINE_TYPE);
 
   if ((file = openconf(filename)) == 0)
