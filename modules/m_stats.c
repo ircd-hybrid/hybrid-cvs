@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 1.28 2000/12/22 16:12:45 db Exp $
+ *  $Id: m_stats.c,v 1.29 2000/12/22 17:01:59 wcampbel Exp $
  */
 #include "tools.h"	 /* dlink_node/dlink_list */
 #include "handlers.h"    /* m_pass prototype */
@@ -310,7 +310,7 @@ void do_non_priv_stats(struct Client *sptr, char *name, char *target,
       break;
 
     case 'P' :
-      show_ports(sptr);
+      sendto_one(sptr, form_str(ERR_NOPRIVILEGES), me.name, sptr->name);
       stats_spy(sptr,stat);
       break;
 
@@ -333,6 +333,7 @@ void do_non_priv_stats(struct Client *sptr, char *name, char *target,
     case '?':
       break;
 
+    case 'G' : case 'g' :
     case 'D' : case 'd' :
     case 'S' : case 's' :
     case 'T' : case 't' :
@@ -458,6 +459,7 @@ void do_priv_stats(struct Client *sptr, char *name, char *target,
       else
 	{
 	  show_opers(sptr);
+          stats_spy(sptr,stat);
 	}
       break;
 
