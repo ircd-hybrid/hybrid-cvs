@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.93 2001/01/04 11:32:05 ejb Exp $
+ *  $Id: s_user.c,v 7.94 2001/01/04 12:19:15 ejb Exp $
  */
 #include "tools.h"
 #include "s_user.h"
@@ -445,8 +445,6 @@ int register_user(struct Client *cptr, struct Client *sptr,
 		  strcpy(sptr->user->id, id);
 		  add_to_id_hash_table(sptr->user->id, sptr);
 	  }
-	  
-	  sendto_one(sptr, ":%s NOTICE %s :You have client ID %s", me.name, sptr->name, sptr->user->id);
 	  
       sendto_realops_flags(FLAGS_CCONN,
 			   "Client connecting: %s (%s@%s) [%s] {%s}",

@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.69 2001/01/04 11:31:53 ejb Exp $
+ * $Id: client.h,v 7.70 2001/01/04 12:19:08 ejb Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -273,6 +273,7 @@ struct LocalUser
 
 
 #define HasID(x) ((x)->user->id[0] != '\0')
+#define ID_or_name(x,cptr) (IsCapable(cptr,CAP_UID)?(x)->user->id:(x)->name)
 
 #define IsRegisteredUser(x)     ((x)->status == STAT_CLIENT)
 #define IsRegistered(x)         ((x)->status  > STAT_UNKNOWN)
