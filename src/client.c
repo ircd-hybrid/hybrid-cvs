@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.111 2001/01/10 02:24:53 db Exp $
+ *  $Id: client.c,v 7.112 2001/01/10 15:08:41 db Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -281,7 +281,9 @@ check_pings_list(dlink_list *list)
   char         scratch[32];	/* way too generous but... */
   struct Client *cptr;          /* current local cptr being examined */
   int           ping = 0;       /* ping time value from client */
+#if 0
   time_t        timeout;        /* found necessary ping time */
+#endif
   char          *reason;
   dlink_node    *ptr;
 

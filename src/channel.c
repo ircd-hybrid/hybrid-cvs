@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.182 2001/01/07 03:25:26 davidt Exp $
+ * $Id: channel.c,v 7.183 2001/01/10 15:08:40 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -53,7 +53,6 @@ static  void    clear_channel_list(int type, struct Channel *chptr,
 				   dlink_list *ptr, char flag);
 
 static  void    free_channel_list(dlink_list *list);
-static  void    ban_free(dlink_node *ptr);
 static  void    sub1_from_channel (struct Channel *);
 static  void    destroy_channel(struct Channel *);
 
@@ -2754,23 +2753,23 @@ static void clear_channel_list(int type, struct Channel *chptr,
 
       if ((count >= MAXMODEPARAMS) || ((cur_len + tlen) > BUFSIZE))
         {
-	 if (IsServer(sptr)) 
-	  sendto_channel_local(type,
-			       chptr,
-			       ":%s MODE %s %s %s",
-			       me.name,
-			       chname,
-			       modebuf,parabuf);
-	 else
-	      sendto_channel_local(type, 
-                               chptr,
-                               ":%s MODE %s %s %s",
-                               sptr->name,
-                               chname,
-                               modebuf,parabuf);
-          mp = modebuf;
-          *mp++ = '-';
-          *mp = '\0';
+	  if (IsServer(sptr)) 
+	    sendto_channel_local(type,
+				 chptr,
+				 ":%s MODE %s %s %s",
+				 me.name,
+				 chname,
+				 modebuf,parabuf);
+	  else
+	    sendto_channel_local(type, 
+				 chptr,
+				 ":%s MODE %s %s %s",
+				 sptr->name,
+				 chname,
+				 modebuf,parabuf);
+	  mp = modebuf;
+	  *mp++ = '-';
+	  *mp = '\0';
 	  pp = parabuf;
 	  cur_len = mlen;
 	  count = 0;
@@ -2793,11 +2792,11 @@ static void clear_channel_list(int type, struct Channel *chptr,
 			   chname,
 			   modebuf,parabuf);
       else
-	  sendto_channel_local(type, chptr,
-                           ":%s MODE %s %s %s",
-                           sptr->name,
-                           chname,
-                           modebuf,parabuf);
+	sendto_channel_local(type, chptr,
+			     ":%s MODE %s %s %s",
+			     sptr->name,
+			     chname,
+			     modebuf,parabuf);
     }
 }
 
@@ -2812,35 +2811,19 @@ static void free_channel_list(dlink_list *list)
 {
   dlink_node *ptr;
   dlink_node *next_ptr;
+  struct Ban *actualBan;
   
   for (ptr = list->head; ptr; ptr = next_ptr)
     {
       next_ptr = ptr->next;
-      ban_free(ptr);
+
+      actualBan = ptr->data;
+      MyFree(actualBan->banstr);
+      MyFree(actualBan->who);
+      MyFree(actualBan);
+
+      free_dlink_node(ptr);
     }
-}
-
-/*
- * ban_free
- *
- * input	- pointer to a dlink_node
- * output	- none
- * side effects	- 
- */
-static void ban_free(dlink_node *ptr)
-{
-  struct Ban *actualBan;
-
-  if(ptr == NULL)
-     return;
-
-  actualBan = ptr->data;
-
-  MyFree(actualBan->banstr);
-  MyFree(actualBan->who);
-  MyFree(actualBan);
-
-  free_dlink_node(ptr);
 }
 
 /*
@@ -3329,3 +3312,6 @@ void sync_channel_oplists(struct Channel *chptr,
         sync_oplists(chptr, acptr, clear, RootChan(chptr)->chname);
     }
 }
+
+
+
