@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/contrib
 #
-# $Id: Makefile.in,v 1.59 2003/11/01 06:18:40 joshk Exp $
+# $Id: Makefile.in,v 1.60 2004/10/23 14:47:27 adx Exp $
 #
 CC		= @CC@
 RM		= @RM@
@@ -32,7 +32,7 @@ CPPFLAGS	= ${INCLUDES} @CPPFLAGS@
 uhelpdir	= ${prefix}/help/users
 ohelpdir	= ${prefix}/help/opers
 
-SYMLINKS	= topic accept cjoin cmode admin names links away whowas \
+SYMLINKS	= topic accept cmode admin names links away whowas \
 		  version kick who invite quit join list nick oper part \
 		  time credits motd userhost users whois ison lusers \
 		  user help pass error challenge knock ping pong
