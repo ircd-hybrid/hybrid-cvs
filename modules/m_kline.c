@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.150 2003/06/04 06:25:50 michael Exp $
+ *  $Id: m_kline.c,v 1.151 2003/06/11 21:10:57 db Exp $
  */
 
 #include "stdinc.h"
@@ -81,7 +81,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.150 $";
+const char *_version = "$Revision: 1.151 $";
 #endif
 
 /* Local function prototypes */
@@ -236,13 +236,16 @@ mo_kline(struct Client *client_p, struct Client *source_p,
 	       "Temporary K-line %d min. - %s (%s)",
 	       (int)(tkline_time/60), reason, current_date);
     DupString(aconf->reason, buffer);
+    if (oper_reason != NULL)
+      DupString(aconf->oper_reason, oper_reason);
     apply_tkline(source_p, aconf, tkline_time);
   }
   else
   {
     ircsprintf(buffer, "%s (%s)", reason, current_date);
     DupString(aconf->reason, buffer);
-    DupString(aconf->oper_reason, oper_reason);
+    if (oper_reason != NULL)
+      DupString(aconf->oper_reason, oper_reason);
     apply_kline(source_p, aconf, current_date, cur_time);
   }
 } /* mo_kline() */
