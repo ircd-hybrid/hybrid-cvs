@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.138 2002/01/22 17:21:11 davidt Exp $
+ *  $Id: client.h,v 7.139 2002/02/17 02:48:15 androsyn Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -484,6 +484,8 @@ struct LocalUser
 #define IsDead(x)               ((x)->flags & FLAGS_DEADSOCKET)
 #define SetDead(x)              ((x)->flags |= FLAGS_DEADSOCKET)
 #define SetAccess(x)            ((x)->flags |= FLAGS_CHKACCESS)
+#define IsClosing(x)		((x)->flags & FLAGS_CLOSING)
+#define SetClosing(x)		((x)->flags |= FLAGS_CLOSING)
 #define ClearAccess(x)          ((x)->flags &= ~FLAGS_CHKACCESS)
 #define IsCryptIn(x)            ((x)->flags &  FLAGS_CRYPTIN)
 #define SetCryptIn(x)           ((x)->flags |= FLAGS_CRYPTIN)

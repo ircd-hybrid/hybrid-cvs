@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.172 2002/02/14 05:50:32 a1kmm Exp $
+ *  $Id: send.c,v 7.173 2002/02/17 02:48:18 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -122,7 +122,7 @@ dead_link(struct Client *to, char *notice)
    */
   linebuf_donebuf(&to->localClient->buf_recvq);
   linebuf_donebuf(&to->localClient->buf_sendq);
-  if (!IsPerson(to) && !IsUnknown(to) && !(to->flags & FLAGS_CLOSING))
+  if (!IsPerson(to) && !IsUnknown(to) && !IsClosing(to))
   {
     sendto_realops_flags(FLAGS_ALL, L_ADMIN,
                          notice, get_client_name(to, HIDE_IP));

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.226 2002/02/17 00:54:08 db Exp $
+ *  $Id: client.c,v 7.227 2002/02/17 02:48:17 androsyn Exp $
  */
 
 #include "tools.h"
@@ -1364,7 +1364,7 @@ int exit_client(
 	    uplink = NULL;
         }
 
-      source_p->flags |= FLAGS_CLOSING;
+      SetClosing(source_p);
 
       if (IsPerson(source_p))
         sendto_realops_flags(FLAGS_CCONN, L_ALL,
