@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.h,v 7.52 2002/11/11 23:25:15 db Exp $
+ *  $Id: ircd.h,v 7.53 2003/01/24 07:01:57 lusky Exp $
  */
 
 #ifndef INCLUDED_ircd_h
@@ -78,6 +78,7 @@ extern char*          infotext[];
 extern char*          serno;
 extern char*          ircd_version;
 extern const char*    logFileName;
+extern const char*    pidFileName;
 extern const char     serveropts[];
 extern int            cold_start;
 extern int            dorehash;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.247 2003/01/17 04:18:20 db Exp $
+ *  $Id: ircd.c,v 7.248 2003/01/24 07:02:01 lusky Exp $
  */
 
 #include "stdinc.h"
@@ -110,7 +110,7 @@ int callbacks_called;          /* A measure of server load... */
 
 static unsigned long       initialVMTop = 0;   /* top of virtual memory at init */
 const char * logFileName = LPATH;
-static const char * pidFileName = PPATH;
+const char * pidFileName = PPATH;
 
 char**  myargv;
 int     dorehash   = 0;
@@ -496,7 +496,7 @@ static void check_pidfile(const char *filename)
 	}
       fbclose(fb);
     }
-  else
+  else if(errno != ENOENT)
     {
       /* log(L_ERROR, "Error opening pid file %s", filename); */
     }

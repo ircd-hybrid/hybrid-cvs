@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_die.c,v 1.24 2002/05/24 23:34:38 androsyn Exp $
+ *  $Id: m_die.c,v 1.25 2003/01/24 07:01:59 lusky Exp $
  */
 
 #include "stdinc.h"
@@ -57,7 +57,7 @@ _moddeinit(void)
   mod_del_cmd(&die_msgtab);
 }
 
-const char *_version = "$Revision: 1.24 $";
+const char *_version = "$Revision: 1.25 $";
 #endif
 /*
  * mo_die - DIE command handler
@@ -117,6 +117,7 @@ static void mo_die(struct Client *client_p, struct Client *source_p,
   /* 
    * this is a normal exit, tell the os it's ok 
    */
+  unlink(pidFileName);
   exit(0);
   /* NOT REACHED */
 }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: restart.c,v 7.21 2002/05/24 23:34:49 androsyn Exp $
+ *  $Id: restart.c,v 7.22 2003/01/24 07:02:01 lusky Exp $
  */
 
 #include "stdinc.h"
@@ -56,11 +56,12 @@ void restart(char *mesg)
 void server_reboot(void)
 {
   int i;
+  int ret;
 
   sendto_realops_flags(FLAGS_ALL, L_ALL,
                        "Restarting server...");
 
-  ilog(L_NOTICE, "Restarting server...");
+  ilog(L_NOTICE, "Restarting server... (%s)",SPATH);
   /*
    * XXX we used to call flush_connections() here. But since this routine
    * doesn't exist anymore, we won't be flushing. This is ok, since 
@@ -71,11 +72,11 @@ void server_reboot(void)
    * bah, for now, the program ain't coming back to here, so forcibly
    * close everything the "wrong" way for now, and just LEAVE...
    */
-  for (i = 0; i < MAXCONNECTIONS; ++i)
+  for (i = 3; i < MAXCONNECTIONS; ++i)
     close(i);
+  unlink(pidFileName);
   execv(SPATH, myargv);
-
+  fprintf(stderr, "ircd: execv() failed: %s\n", strerror(errno));
   exit(-1);
 }
-
 
