@@ -15,7 +15,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- * $Id: hostmask.c,v 7.19 2001/02/23 21:21:26 a1kmm Exp $ 
+ * $Id: hostmask.c,v 7.20 2001/02/23 23:36:10 a1kmm Exp $ 
  */
 #include <unistd.h>
 #include <string.h>
@@ -215,7 +215,7 @@ find_matching_conf(const char *host, const char *user,
    {
     aconf = match_ip_Iline(ip, user);
    }
- if (!aconf_k)
+ if (!aconf_k && ip)
    {
     aconf_k = match_ip_Kline(ip, user);
    }

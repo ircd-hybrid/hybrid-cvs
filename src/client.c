@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.139 2001/02/21 14:07:58 androsyn Exp $
+ *  $Id: client.c,v 7.140 2001/02/23 23:36:09 a1kmm Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -1316,7 +1316,7 @@ const char* comment         /* Reason for the exit */
   char comment1[HOSTLEN + HOSTLEN + 2];
   dlink_node *m;
 
-  sptr->flags |= FLAGS_DEADSOCKET;
+  /* sptr->flags |= FLAGS_DEADSOCKET; */
 
   if (MyConnect(sptr))
     {
