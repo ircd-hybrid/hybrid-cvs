@@ -1,3 +1,16 @@
+leeh        2002/01/01 10:58:42 EST	(20020101_3)
+
+  Modified files:
+    doc                  example.conf example.conf.efnet 
+  Log:
+  - documented vhost=""
+  
+  Revision  Changes    Path
+  7.148     +5 -0      ircd-hybrid-7/doc/example.conf
+  7.4       +5 -0      ircd-hybrid-7/doc/example.conf.efnet
+
+
+
 leeh        2002/01/01 10:53:47 EST	(20020101_2)
 
   Modified files:
@@ -1927,7 +1940,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3267 2002/01/01 15:53:52 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3268 2002/01/01 15:58:47 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -20281,4 +20294,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3267 2002/01/01 15:53:52 leeh Exp $
+$Id: ChangeLog,v 7.3268 2002/01/01 15:58:47 leeh Exp $
