@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.127 2003/07/05 06:21:00 db Exp $
+ *  $Id: m_message.c,v 1.128 2003/09/20 01:05:10 db Exp $
  */
 
 #include "stdinc.h"
@@ -118,7 +118,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.127 $";
+const char *_version = "$Revision: 1.128 $";
 #endif
 
 /*
@@ -176,7 +176,7 @@ m_message(int p_or_n, const char *command, struct Client *client_p,
 {
   int i;
 
-  if (parc < 2 || *parv[1] == '\0')
+  if (parc < 2 || EmptyString(parv[1]))
   {
     if (p_or_n != NOTICE)
       sendto_one(source_p, form_str(ERR_NORECIPIENT),
@@ -184,7 +184,7 @@ m_message(int p_or_n, const char *command, struct Client *client_p,
     return;
   }
 
-  if (parc < 3 || *parv[2] == '\0')
+  if (parc < 3 || EmptyString(parv[2]))
   {
     if (p_or_n != NOTICE)
       sendto_one(source_p, form_str(ERR_NOTEXTTOSEND),

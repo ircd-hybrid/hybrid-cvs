@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.181 2003/09/19 22:13:13 bill Exp $
+ *  $Id: parse.c,v 7.182 2003/09/20 01:05:12 db Exp $
  */
 
 #include "stdinc.h"
@@ -464,6 +464,7 @@ del_msg_element(struct MessageTree *mtree_p, const char *cmd)
     /* this would be bad if it happened */
     if (ntree_p != &msg_tree)
     {
+      ntree_p->msg = NULL;
       if (ntree_p->links == 0)
       {
 	MyFree(ntree_p);
