@@ -1,3 +1,15 @@
+db          2002/09/06 22:18:58 EDT	(20020907_0)
+
+  Modified files:
+    .                    RELNOTES 
+  Log:
+  - updated release notes with bugs fixed since last release
+  
+  Revision  Changes    Path
+  1.42      +10 -0     ircd-hybrid-7/RELNOTES
+
+
+
 db          2002/09/06 15:37:15 EDT	(20020906_0)
 
   Modified files:
@@ -31865,4 +31877,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4022 2002/09/06 19:37:17 db Exp $
+$Id: ChangeLog,v 7.4023 2002/09/07 02:19:00 db Exp $
