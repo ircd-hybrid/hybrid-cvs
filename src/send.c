@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.26 2000/04/02 16:56:51 db Exp $
+ *   $Id: send.c,v 7.27 2000/04/07 12:39:00 db Exp $
  */
 #include "send.h"
 #include "channel.h"
@@ -537,7 +537,6 @@ sendto_channel_type(struct Client *one, struct Client *from, struct Channel *chp
         }
       } /* for (lp = chptr->members; lp; lp = lp->next) */
 
-      va_end(args);
 } /* sendto_channel_type() */
 
 
