@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.273 2002/05/31 00:36:36 androsyn Exp $
+ *  $Id: client.c,v 7.274 2002/05/31 02:21:03 androsyn Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -624,6 +624,7 @@ void
 remove_client_from_list(struct Client* client_p)
 {
   assert(NULL != client_p);
+
   if(client_p == NULL)
     return;
   /* A client made with make_client()
@@ -1058,7 +1059,6 @@ static void exit_one_client(struct Client *client_p,
 	  del_from_id_hash_table(source_p->user->id, source_p);
   
         /* again, this is all that is needed */
-        }
     }
   
   /* 

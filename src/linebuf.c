@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: linebuf.c,v 7.81 2002/05/25 03:06:28 androsyn Exp $
+ *  $Id: linebuf.c,v 7.82 2002/05/31 02:21:03 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -76,8 +76,11 @@ linebuf_allocate(void)
   buf_line_t *t;
   t = BlockHeapAlloc(linebuf_heap);
   assert(t != NULL);
+  if(t == NULL)
+    return NULL;
   t->refcount = 0;
   return(t);
+ 
 }
 
 static void

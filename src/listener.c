@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.c,v 7.67 2002/05/24 23:34:48 androsyn Exp $
+ *  $Id: listener.c,v 7.68 2002/05/31 02:21:04 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -58,7 +58,7 @@ make_listener(int port, struct irc_inaddr *addr)
     (struct Listener*) MyMalloc(sizeof(struct Listener));
   memset(listener, 0, sizeof(*listener));
   assert(0 != listener);
-
+  
   listener->name        = me.name;
   listener->fd          = -1;
   copy_s_addr(IN_ADDR(listener->addr),PIN_ADDR(addr));
@@ -72,7 +72,9 @@ make_listener(int port, struct irc_inaddr *addr)
 void
 free_listener(struct Listener* listener)
 {
-  assert(0 != listener);
+  assert(NULL != listener);
+  if(listener == NULL)
+    return;
   /*
    * remove from listener list
    */
@@ -105,7 +107,9 @@ const char*
 get_listener_name(const struct Listener* listener)
 {
   static char buf[HOSTLEN + HOSTLEN + PORTNAMELEN + 4];
-  assert(0 != listener);
+  assert(NULL != listener);
+  if(listener == NULL)
+    return NULL;
   ircsprintf(buf, "%s[%s/%u]",
              me.name, listener->name, listener->port);
   return buf;
@@ -317,7 +321,8 @@ add_listener(int port, const char* vhost_ip)
 void close_listener(struct Listener* listener)
 {
   assert(listener != NULL);
-
+  if(listener == NULL)
+    return;
   if (listener->fd >= 0)
   {
     fd_close(listener->fd);
@@ -365,7 +370,8 @@ accept_connection(int pfd, void *data)
   struct Listener *  listener = data;
 
   assert(listener != NULL);
-
+  if(listener == NULL)
+    return;
   listener->last_accept = CurrentTime;
   /*
    * There may be many reasons for error return, but

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: match.c,v 7.19 2002/05/24 23:34:48 androsyn Exp $
+ * $Id: match.c,v 7.20 2002/05/31 02:21:04 androsyn Exp $
  *
  */
 #include "stdinc.h"
@@ -291,7 +291,7 @@ int irccmp(const char *s1, const char *s2)
 
   assert(s1 != NULL);
   assert(s2 != NULL);
-
+  
   while ((res = ToUpper(*str1) - ToUpper(*str2)) == 0)
   {
     if (*str1 == '\0')

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_gline.c,v 1.20 2002/05/24 23:34:51 androsyn Exp $
+ *  $Id: s_gline.c,v 1.21 2002/05/31 02:21:05 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -79,6 +79,8 @@ struct ConfItem*
 find_gkill(struct Client* client_p, char* username)
 {
   assert(NULL != client_p);
+  if(client_p == NULL)
+    return NULL;
   return (IsExemptKline(client_p)) ? 0 : find_is_glined(client_p->host, username);
 }
 

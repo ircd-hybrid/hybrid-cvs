@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.c,v 7.41 2002/05/24 23:34:51 androsyn Exp $
+ *  $Id: s_log.c,v 7.42 2002/05/31 02:21:05 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -120,6 +120,8 @@ void ilog(int priority, const char* fmt, ...)
   char    buf[LOG_BUFSIZE];
   va_list args;
   assert(-1 < priority);
+  if(fmt == NULL)
+    return;
   assert(0 != fmt);
 
   if (priority > logLevel)

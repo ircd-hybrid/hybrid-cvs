@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: irc_string.c,v 7.53 2002/05/24 23:34:47 androsyn Exp $
+ *  $Id: irc_string.c,v 7.54 2002/05/31 02:21:03 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -81,6 +81,9 @@ clean_string(char* dest, const unsigned char* src, size_t len)
   assert(0 != dest);
   assert(0 != src);
 
+  if(dest == NULL || src == NULL)
+    return NULL;
+    
   len -= 3;  /* allow for worst case, '^A\0' */
 
   while (*src && (len > 0))
@@ -119,6 +122,9 @@ char *strip_tabs(char *dest, const unsigned char *src, size_t len)
   assert(0 != dest);
   assert(0 != src);
 
+  if(dest == NULL || src == NULL)
+    return NULL;
+    
   while (*src && (len > 0))
   {
     if (*src == '\t')

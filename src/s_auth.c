@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.95 2002/05/24 23:34:49 androsyn Exp $
+ *  $Id: s_auth.c,v 7.96 2002/05/31 02:21:04 androsyn Exp $
  */
 
 /*
@@ -409,6 +409,8 @@ void start_auth(struct Client* client)
 {
   struct AuthRequest* auth = 0;
   assert(0 != client);
+  if(client == NULL)
+    return;
   auth = make_auth_request(client);
 
   client->localClient->dns_query = MyMalloc(sizeof(struct DNSQuery));

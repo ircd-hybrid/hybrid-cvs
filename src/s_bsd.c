@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.169 2002/05/24 23:34:50 androsyn Exp $
+ *  $Id: s_bsd.c,v 7.170 2002/05/31 02:21:04 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -242,7 +242,8 @@ void close_connection(struct Client *client_p)
 {
   struct ConfItem *aconf;
   assert(NULL != client_p);
-
+  if(client_p == NULL)
+    return;
   if (IsServer(client_p))
     {
       ServerStats->is_sv++;
