@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.141 2001/01/07 04:27:13 db Exp $
+ *  $Id: s_conf.c,v 7.142 2001/01/08 03:16:33 toot Exp $
  */
 #include "tools.h"
 #include "s_conf.h"
@@ -1761,11 +1761,13 @@ static void
 expire_tklines(dlink_list *tklist)
 {
   dlink_node *kill_node;
+  dlink_node *next_node;
   struct ConfItem *kill_ptr;
 
-  for (kill_node = tklist->head; kill_node; kill_node = kill_node->next)
+  for (kill_node = tklist->head; kill_node; kill_node = next_node)
     {
       kill_ptr = kill_node->data;
+      next_node = kill_node->next;
 
       if (kill_ptr->hold <= CurrentTime)
         {
