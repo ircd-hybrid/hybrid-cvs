@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_cburst.c,v 1.16 2000/12/18 03:59:43 db Exp $
+ * $Id: m_cburst.c,v 1.17 2000/12/18 22:55:41 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -69,10 +69,6 @@ char *_version = "20001122";
 /*
  * This function will "burst" the given channel onto
  * the given LL capable server.
- * If the nick is given as well, then I also check ot
- * see if that nick can join the given channel. If
- * the nick can join, a LLJOIN message is sent back to leaf
- * stating the nick can join, otherwise a non join message is sent.
  */
 
 int     ms_cburst(struct Client *cptr,

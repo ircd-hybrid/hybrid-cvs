@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.78 2000/12/18 01:44:04 db Exp $
+ *  $Id: client.c,v 7.79 2000/12/18 22:55:42 db Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -1321,7 +1321,7 @@ const char* comment         /* Reason for the exit */
           Count.myserver--;
 
 	  if(ConfigFileEntry.hub)
-	    restoreUnusedServerMask(sptr->localClient->serverMask);
+	    remove_lazylink_flags(sptr->localClient->serverMask);
 	  else
 	    uplink = NULL;
         }

@@ -19,7 +19,7 @@
  *
  * "ircd.h". - Headers file.
  *
- * $Id: ircd.h,v 7.19 2000/12/16 17:46:42 db Exp $
+ * $Id: ircd.h,v 7.20 2000/12/18 22:55:37 db Exp $
  *
  */
 #ifndef INCLUDED_ircd_h
@@ -94,6 +94,8 @@ extern dlink_list unknown_list;
 extern dlink_list lclient_list;
 extern dlink_list serv_list;
 extern dlink_list oper_list;
+extern dlink_list lazylink_channels;
+extern dlink_list lazylink_nicks;
 
 #ifdef REJECT_HOLD
 extern int reject_held_fds;

@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.61 2000/12/18 03:59:39 db Exp $
+ * $Id: client.h,v 7.62 2000/12/18 22:55:36 db Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -131,6 +131,10 @@ struct Client
   unsigned char     handler;    /* Handler index */
   char              eob;	/* server eob has been received */
   unsigned long     serial;	/* used to enforce 1 send per nick */
+  unsigned long     lazyLinkClientExists; /* This client exists on the
+					   * bit mapped lazylink servers 
+					   * mapped here
+					   */
 
   /*
    * client->name is the unique name for a client nick or host
