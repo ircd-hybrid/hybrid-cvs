@@ -1,3 +1,17 @@
+androsyn    2002/04/29 18:12:37 EDT	(20020429_2)
+
+  Modified files:
+    .                    configure 
+    include              setup.h.in 
+  Log:
+  Rebuilt configure with autoconf 2.13
+  
+  Revision  Changes      Path
+  7.136     +3077 -7081  ircd-hybrid-7/configure
+  7.52      +1 -1        ircd-hybrid-7/include/setup.h.in
+
+
+
 leeh        2002/04/29 15:59:07 EDT	(20020429_1)
 
   Modified files:
@@ -25833,4 +25847,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3613 2002/04/29 19:59:13 leeh Exp $
+$Id: ChangeLog,v 7.3614 2002/04/29 22:12:43 androsyn Exp $
