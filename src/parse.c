@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.161 2003/05/18 14:16:00 adx Exp $
+ *  $Id: parse.c,v 7.162 2003/05/19 03:48:27 bill Exp $
  */
 
 #include "stdinc.h"
@@ -260,6 +260,13 @@ parse(struct Client *client_p, char *pbuffer, char *bufend)
 
     ii = bufend - ((s) ? s : ch);
     mptr->bytes += ii;
+
+    /*
+     * hidden commands set para[0] to the command (case intact)
+     * used to call their function
+     */
+    if (mptr->flags & MFLG_HIDDEN)
+      para[0] = ch;
   }
 
   end = bufend - 1;
@@ -267,13 +274,6 @@ parse(struct Client *client_p, char *pbuffer, char *bufend)
   /* XXX this should be done before parse() is called */
   if (*end == '\n') *end-- = '\0';
   if (*end == '\r') *end = '\0';
-
-  /*
-   * hidden commands set para[0] to the command (case intact)
-   * used to call their function
-   */
-  if (mptr->flags & MFLG_HIDDEN)
-    para[0] = ch;
 
   if (s != NULL)
     i = string_to_array(s, para);
