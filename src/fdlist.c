@@ -3,7 +3,7 @@
  * fdlist.c   maintain lists of file descriptors
  *
  *
- * $Id: fdlist.c,v 7.16 2000/12/21 13:39:41 db Exp $
+ * $Id: fdlist.c,v 7.17 2001/01/03 01:55:35 a1kmm Exp $
  */
 #include "fdlist.h"
 #include "client.h"  /* struct Client */
@@ -47,7 +47,7 @@ fdlist_update_biggest(int fd, int opening)
      * re-opening it
      */
     assert(!opening);
-    while (!fd_table[highest_fd].flags.open)
+    while (highest_fd >= 0 && !fd_table[highest_fd].flags.open)
         highest_fd--;
 }
 
