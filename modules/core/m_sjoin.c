@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.58 2001/01/02 22:24:23 davidt Exp $
+ *   $Id: m_sjoin.c,v 1.59 2001/01/02 22:40:38 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -401,6 +401,10 @@ int     ms_sjoin(struct Client *cptr,
         for(m = serv_list.head; m; m = m->next)
         {
           lcptr = m->data;
+
+          /* Hopefully, the server knows about it's own clients. */
+          if (acptr == cptr->from)
+            continue;
 
           /* Ignore non lazylinks */
           if (!IsCapable(lcptr,CAP_LL))
