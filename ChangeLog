@@ -1,3 +1,17 @@
+leeh        2002/01/02 16:43:32 EST	(20020102_5)
+
+  Modified files:
+    include              modules.h 
+    src                  modules.c 
+  Log:
+  - added headers to most of the modules functions
+  
+  Revision  Changes    Path
+  7.25      +1 -0      ircd-hybrid-7/include/modules.h
+  7.81      +57 -4     ircd-hybrid-7/src/modules.c
+
+
+
 leeh        2002/01/02 12:45:42 EST	(20020102_4)
 
   Modified files:
@@ -2080,7 +2094,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3278 2002/01/02 17:45:47 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3279 2002/01/02 21:43:38 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -20434,4 +20448,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3278 2002/01/02 17:45:47 leeh Exp $
+$Id: ChangeLog,v 7.3279 2002/01/02 21:43:38 leeh Exp $
