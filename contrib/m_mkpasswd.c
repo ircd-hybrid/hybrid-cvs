@@ -6,7 +6,7 @@
  *
  *  You can use this code in any way as long as these names remain.
  *
- *  $Id: m_mkpasswd.c,v 1.13 2003/12/03 07:39:42 metalrock Exp $
+ *  $Id: m_mkpasswd.c,v 1.14 2004/07/08 00:27:16 erik Exp $
  */
 
 #include "handlers.h"
@@ -29,7 +29,7 @@ static char saltChars[] = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0
 
 struct Message mkpasswd_msgtab = {
   "MKPASSWD", 0, 0, 1, 2, MFLG_SLOW, 0,
-  {m_unregistered, m_mkpasswd, m_ignore, mo_mkpasswd, m_ignore}
+  {m_unregistered, m_mkpasswd, m_ignore, m_ignore, mo_mkpasswd, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -43,7 +43,7 @@ void _moddeinit(void)
   mod_del_cmd(&mkpasswd_msgtab);
 }
 
-const char *_version = "$Revision: 1.13 $";
+const char *_version = "$Revision: 1.14 $";
 #endif
 
 static void

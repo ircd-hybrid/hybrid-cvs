@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_userhost.c,v 1.39 2003/05/13 02:32:13 joshk Exp $
+ *  $Id: m_userhost.c,v 1.40 2004/07/08 00:27:23 erik Exp $
  */
 
 #include "stdinc.h"
@@ -42,7 +42,7 @@ static void m_userhost(struct Client*, struct Client*, int, char**);
 
 struct Message userhost_msgtab = {
   "USERHOST", 0, 0, 1, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_userhost, m_userhost, m_userhost, m_ignore}
+  {m_unregistered, m_userhost, m_userhost, m_ignore, m_userhost, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -58,7 +58,7 @@ _moddeinit(void)
   mod_del_cmd(&userhost_msgtab);
 }
 
-const char *_version = "$Revision: 1.39 $";
+const char *_version = "$Revision: 1.40 $";
 #endif
 /*
  * m_userhost added by Darren Reed 13/8/91 to aid clients and reduce

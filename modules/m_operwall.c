@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_operwall.c,v 1.33 2003/10/07 22:37:13 bill Exp $
+ *  $Id: m_operwall.c,v 1.34 2004/07/08 00:27:22 erik Exp $
  */
 
 #include "stdinc.h"
@@ -37,10 +37,11 @@
 
 static void mo_operwall(struct Client *, struct Client *, int, char **);
 static void ms_operwall(struct Client *, struct Client *, int, char **);
+static void me_operwall(struct Client *, struct Client *, int, char **);
 
 struct Message operwall_msgtab = {
   "OPERWALL", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, ms_operwall, mo_operwall, m_ignore}
+  {m_unregistered, m_not_oper, ms_operwall, me_operwall, mo_operwall, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -56,7 +57,7 @@ _moddeinit(void)
   mod_del_cmd(&operwall_msgtab);
 }
 
-const char *_version = "$Revision: 1.33 $";
+const char *_version = "$Revision: 1.34 $";
 #endif
 
 /*
@@ -105,3 +106,22 @@ ms_operwall(struct Client *client_p, struct Client *source_p,
   sendto_wallops_flags(UMODE_OPERWALL, source_p, "OPERWALL - %s", message);
 }
 
+/*
+ * me_operwall - OPERWALL message handler
+ *  (write to *all* local opers currently online)
+ *      parv[0] = sender prefix
+ *      parv[1] = message text
+ *
+ * Lets ms_encap handle propagation.
+ */
+static void
+me_operwall(struct Client *client_p, struct Client *source_p,
+            int parc, char *parv[])
+{
+  const char *message = parv[1];
+
+  if (EmptyString(message))
+    return;
+
+  sendto_wallops_flags(UMODE_OPERWALL, source_p, "OPERWALL - %s", message);
+}

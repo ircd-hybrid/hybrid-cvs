@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_handler.h,v 7.7 2003/09/08 23:39:47 metalrock Exp $
+ *  $Id: ircd_handler.h,v 7.8 2004/07/08 00:27:20 erik Exp $
  */
 
 #ifndef INCLUDED_ircd_handler_h
@@ -34,6 +34,7 @@ typedef enum HandlerType {
   UNREGISTERED_HANDLER,
   CLIENT_HANDLER,
   SERVER_HANDLER,
+  ENCAP_HANDLER,
   OPER_HANDLER,
   DUMMY_HANDLER,
   LAST_HANDLER_TYPE

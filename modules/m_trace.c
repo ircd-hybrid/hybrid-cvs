@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_trace.c,v 1.77 2004/06/14 15:25:32 bill Exp $
+ *  $Id: m_trace.c,v 1.78 2004/07/08 00:27:23 erik Exp $
  */
 
 #include "stdinc.h"
@@ -51,7 +51,7 @@ static void do_actual_trace(const char *, struct Client *, struct Client *, int,
 
 struct Message trace_msgtab = {
   "TRACE", 0, 0, 0, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_trace, ms_trace, mo_trace, m_ignore}
+  {m_unregistered, m_trace, ms_trace, m_ignore, mo_trace, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -68,7 +68,7 @@ _moddeinit(void)
   hook_del_event("doing_trace");
   mod_del_cmd(&trace_msgtab);
 }
-const char *_version = "$Revision: 1.77 $";
+const char *_version = "$Revision: 1.78 $";
 #endif
 
 static int report_this_status(struct Client *source_p, struct Client *target_p,

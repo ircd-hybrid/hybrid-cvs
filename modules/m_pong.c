@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_pong.c,v 1.42 2004/04/01 02:53:23 bill Exp $
+ *  $Id: m_pong.c,v 1.43 2004/07/08 00:27:22 erik Exp $
  */
 
 #include "stdinc.h"
@@ -41,7 +41,7 @@ static void ms_pong(struct Client *, struct Client *, int, char **);
 
 struct Message pong_msgtab = {
   "PONG", 0, 0, 1, 0, MFLG_SLOW | MFLG_UNREG, 0,
-  {mr_pong, m_ignore, ms_pong, m_ignore, m_ignore}
+  {mr_pong, m_ignore, ms_pong, m_ignore, m_ignore, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -57,7 +57,7 @@ _moddeinit(void)
   mod_del_cmd(&pong_msgtab);
 }
 
-const char *_version = "$Revision: 1.42 $";
+const char *_version = "$Revision: 1.43 $";
 #endif
 
 static void

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_set.c,v 1.55 2003/10/11 22:51:42 metalrock Exp $
+ *  $Id: m_set.c,v 1.56 2004/07/08 00:27:23 erik Exp $
  */
 
 /* rewritten by jdc */
@@ -48,7 +48,7 @@ static void mo_set(struct Client*, struct Client*, int, char**);
 
 struct Message set_msgtab = {
   "SET", 0, 0, 0, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, m_error, mo_set, m_ignore}
+  {m_unregistered, m_not_oper, m_error, m_ignore, mo_set, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -64,7 +64,7 @@ _moddeinit(void)
   mod_del_cmd(&set_msgtab);
 }
 
-const char *_version = "$Revision: 1.55 $";
+const char *_version = "$Revision: 1.56 $";
 #endif
 
 /* Structure used for the SET table itself */

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_join.c,v 1.22 2004/04/05 23:27:05 ievil Exp $
+ *  $Id: m_join.c,v 1.23 2004/07/08 00:27:30 erik Exp $
  */
 
 #include "stdinc.h"
@@ -71,7 +71,7 @@ static char *mbuf;
 
 struct Message join_msgtab = {
   "JOIN", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_join, ms_join, m_join, m_ignore}
+  {m_unregistered, m_join, ms_join, m_ignore, m_join, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -88,7 +88,7 @@ _moddeinit(void)
   mod_del_cmd(&join_msgtab);
 }
 
-const char *_version = "$Revision: 1.22 $";
+const char *_version = "$Revision: 1.23 $";
 #endif
 
 /* m_join()

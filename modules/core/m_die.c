@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_die.c,v 1.31 2003/06/06 04:31:48 michael Exp $
+ *  $Id: m_die.c,v 1.32 2004/07/08 00:27:30 erik Exp $
  */
 
 #include "stdinc.h"
@@ -42,7 +42,7 @@ static void mo_die(struct Client *, struct Client *, int, char **);
 
 struct Message die_msgtab = {
   "DIE", 0, 0, 1, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, m_ignore, mo_die, m_ignore}
+  {m_unregistered, m_not_oper, m_ignore, m_ignore, mo_die, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -58,7 +58,7 @@ _moddeinit(void)
   mod_del_cmd(&die_msgtab);
 }
 
-const char *_version = "$Revision: 1.31 $";
+const char *_version = "$Revision: 1.32 $";
 #endif
 
 /*

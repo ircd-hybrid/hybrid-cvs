@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_mode.c,v 1.73 2004/02/18 13:51:48 metalrock Exp $
+ *  $Id: m_mode.c,v 1.74 2004/07/08 00:27:30 erik Exp $
  */
 
 #include "stdinc.h"
@@ -48,15 +48,15 @@ static void ms_bmask(struct Client *, struct Client *, int, char **);
 
 struct Message mode_msgtab = {
   "MODE", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_mode, m_mode, m_mode, m_ignore}
+  {m_unregistered, m_mode, m_mode, m_ignore, m_mode, m_ignore}
 };
 struct Message tmode_msgtab = { 
   "TMODE", 0, 0, 4, 0, MFLG_SLOW, 0,
-  {m_ignore, m_ignore, ms_tmode, m_ignore, m_ignore}
+  {m_ignore, m_ignore, ms_tmode, m_ignore, m_ignore, m_ignore}
 };
 struct Message bmask_msgtab = {
   "BMASK", 0, 0, 5, 0, MFLG_SLOW, 0,
-  {m_ignore, m_ignore, ms_bmask, m_ignore, m_ignore}
+  {m_ignore, m_ignore, ms_bmask, m_ignore, m_ignore, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -76,7 +76,7 @@ _moddeinit(void)
   mod_del_cmd(&bmask_msgtab);
 }
 
-const char *_version = "$Revision: 1.73 $";
+const char *_version = "$Revision: 1.74 $";
 #endif
 
 /*

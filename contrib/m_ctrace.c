@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ctrace.c,v 1.8 2004/03/20 18:18:08 metalrock Exp $
+ *  $Id: m_ctrace.c,v 1.9 2004/07/08 00:27:16 erik Exp $
  */
 
 #include "stdinc.h"
@@ -48,7 +48,7 @@ static void ctrace_spy(struct Client *);
 
 struct Message ctrace_msgtab = {
   "CTRACE", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, m_ignore, mo_ctrace, m_ignore}
+  {m_unregistered, m_not_oper, m_ignore, m_ignore, mo_ctrace, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -65,7 +65,7 @@ _moddeinit(void)
   hook_del_event("doing_ctrace");
   mod_del_cmd(&ctrace_msgtab);
 }
-const char *_version = "$Revision: 1.8 $";
+const char *_version = "$Revision: 1.9 $";
 #endif
 static int report_this_status(struct Client *source_p, struct Client *target_p);
 

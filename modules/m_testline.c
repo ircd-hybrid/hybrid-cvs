@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_testline.c,v 1.33 2003/12/05 07:06:27 metalrock Exp $
+ *  $Id: m_testline.c,v 1.34 2004/07/08 00:27:23 erik Exp $
  */
 
 #include "stdinc.h"
@@ -43,7 +43,7 @@ static void mo_testline(struct Client*, struct Client*, int, char**);
 
 struct Message testline_msgtab = {
   "TESTLINE", 0, 0, 0, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, m_ignore, mo_testline, m_ignore}
+  {m_unregistered, m_not_oper, m_ignore, m_ignore, mo_testline, m_ignore}
 };
  
 #ifndef STATIC_MODULES
@@ -59,7 +59,7 @@ _moddeinit(void)
   mod_del_cmd(&testline_msgtab);
 }
  
-const char *_version = "$Revision: 1.33 $";
+const char *_version = "$Revision: 1.34 $";
 #endif
 
 /* mo_testline()

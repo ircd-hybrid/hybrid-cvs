@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_list.c,v 1.60 2003/10/07 22:37:13 bill Exp $
+ *  $Id: m_list.c,v 1.61 2004/07/08 00:27:22 erik Exp $
  */
 
 #include "stdinc.h"
@@ -46,7 +46,7 @@ static void mo_list(struct Client *, struct Client *, int, char **);
 
 struct Message list_msgtab = {
   "LIST", 0, 0, 0, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_list, ms_list, mo_list, m_ignore}
+  {m_unregistered, m_list, ms_list, m_ignore, mo_list, m_ignore}
 };
 #ifndef STATIC_MODULES
 
@@ -61,7 +61,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&list_msgtab);
 }
-const char *_version = "$Revision: 1.60 $";
+const char *_version = "$Revision: 1.61 $";
 #endif
 
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_admin.c,v 1.43 2003/10/07 22:37:12 bill Exp $
+ *  $Id: m_admin.c,v 1.44 2004/07/08 00:27:21 erik Exp $
  */
 
 #include "stdinc.h"
@@ -44,7 +44,7 @@ static void admin_spy(struct Client *);
 
 struct Message admin_msgtab = {
   "ADMIN", 0, 0, 0, 0, MFLG_SLOW | MFLG_UNREG, 0, 
-  {mr_admin, m_admin, ms_admin, ms_admin, m_ignore}
+  {mr_admin, m_admin, ms_admin, m_ignore, ms_admin, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -61,7 +61,7 @@ _moddeinit(void)
   hook_del_event("doing_admin");
   mod_del_cmd(&admin_msgtab);
 }
-const char *_version = "$Revision: 1.43 $";
+const char *_version = "$Revision: 1.44 $";
 #endif
 
 /*

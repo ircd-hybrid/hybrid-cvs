@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kill.c,v 1.87 2004/03/17 04:09:00 db Exp $
+ *  $Id: m_kill.c,v 1.88 2004/07/08 00:27:30 erik Exp $
  */
 
 #include "stdinc.h"
@@ -49,7 +49,7 @@ static void relay_kill(struct Client *, struct Client *, struct Client *,
 
 struct Message kill_msgtab = {
   "KILL", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, ms_kill, mo_kill, m_ignore}
+  {m_unregistered, m_not_oper, ms_kill, m_ignore, mo_kill, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&kill_msgtab);
 }
 
-const char *_version = "$Revision: 1.87 $";
+const char *_version = "$Revision: 1.88 $";
 #endif
 
 /* mo_kill()

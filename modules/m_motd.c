@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_motd.c,v 1.38 2003/06/21 20:09:21 metalrock Exp $
+ *  $Id: m_motd.c,v 1.39 2004/07/08 00:27:22 erik Exp $
  */
 
 #include "stdinc.h"
@@ -53,7 +53,7 @@ static void motd_spy(struct Client *);
  */
 struct Message motd_msgtab = {
   "MOTD", 0, 0, 0, 1, MFLG_SLOW, 0,
-  {mr_motd, m_motd, mo_motd, mo_motd, m_ignore}
+  {mr_motd, m_motd, mo_motd, m_ignore, mo_motd, m_ignore}
 };
 #ifndef STATIC_MODULES
 void
@@ -70,7 +70,7 @@ _moddeinit(void)
   mod_del_cmd(&motd_msgtab);
 }
 
-const char *_version = "$Revision: 1.38 $";
+const char *_version = "$Revision: 1.39 $";
 #endif
 
 /* mr_motd()

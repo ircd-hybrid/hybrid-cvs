@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_users.c,v 1.27 2003/06/21 20:09:21 metalrock Exp $
+ *  $Id: m_users.c,v 1.28 2004/07/08 00:27:23 erik Exp $
  */
 
 #include "stdinc.h"
@@ -39,7 +39,7 @@ static void mo_users(struct Client*, struct Client*, int, char**);
 
 struct Message users_msgtab = {
   "USERS", 0, 0, 0, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_users, mo_users, mo_users, m_ignore}
+  {m_unregistered, m_users, mo_users, m_ignore, mo_users, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -55,7 +55,7 @@ _moddeinit(void)
   mod_del_cmd(&users_msgtab);
 }
 
-const char *_version = "$Revision: 1.27 $";
+const char *_version = "$Revision: 1.28 $";
 #endif
 
 /*

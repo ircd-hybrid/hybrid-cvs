@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.128 2003/10/07 22:37:12 bill Exp $
+ *  $Id: m_gline.c,v 1.129 2004/07/08 00:27:22 erik Exp $
  */
 
 #include "stdinc.h"
@@ -67,19 +67,22 @@ static void add_new_majority_gline(const struct Client *,
 
 static int check_wild_gline(char *, char *);
 static int invalid_gline(struct Client *, const char *);
-		       
+
+static inline void do_sgline(struct Client *, struct Client *, int, char **, int);
+
+static void me_gline(struct Client *, struct Client *, int, char **);
 static void ms_gline(struct Client *, struct Client *, int, char **);
 static void mo_gline(struct Client *, struct Client *, int, char **);
 static void mo_ungline(struct Client *, struct Client *, int, char **);
 
 struct Message gline_msgtab = {
   "GLINE", 0, 0, 3, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, ms_gline, mo_gline, m_ignore}
+  {m_unregistered, m_not_oper, ms_gline, me_gline, mo_gline, m_ignore}
 };
 
 struct Message ungline_msgtab = {
   "UNGLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, m_error, mo_ungline, m_ignore}
+  {m_unregistered, m_not_oper, m_error, m_ignore, mo_ungline, m_ignore}
 };
 		
 #ifndef STATIC_MODULES
@@ -99,7 +102,7 @@ _moddeinit(void)
   delete_capability("GLN");
 }
 
-const char *_version = "$Revision: 1.128 $";
+const char *_version = "$Revision: 1.129 $";
 #endif
 
 /* mo_gline()
@@ -235,6 +238,8 @@ mo_gline(struct Client *client_p, struct Client *source_p,
 }
 
 /* ms_gline()
+ * me_gline()
+ * do_sgline()
  *
  * inputs       - The usual for a m_ function
  * output       -
@@ -242,14 +247,29 @@ mo_gline(struct Client *client_p, struct Client *source_p,
  *
  * Place a G line if 3 opers agree on the identical user@host
  * 
- */
-/* Allow this server to pass along GLINE if received and
+ * Allow this server to pass along GLINE if received and
  * GLINES is not defined.
+ *
+ * ENCAP'd GLINES are propagated by encap code.
  */
 
 static void
 ms_gline(struct Client *client_p, struct Client *source_p,
          int parc, char *parv[])
+{
+  do_sgline(client_p, source_p, parc, parv, 1);
+}
+
+static void
+me_gline(struct Client *client_p, struct Client *source_p,
+         int parc, char *parv[])
+{
+  do_sgline(client_p, source_p, parc, parv, 0);
+}
+
+static inline void
+do_sgline(struct Client *client_p, struct Client *source_p,
+         int parc, char *parv[], int prop)
 {
   const char *reason = NULL;      /* reason for "victims" demise       */
   char *user = NULL;
@@ -318,7 +338,7 @@ ms_gline(struct Client *client_p, struct Client *source_p,
   }
 
 
-  if (!(var_offset & GDENY_BLOCK))
+  if (prop && !(var_offset & GDENY_BLOCK))
   {
     sendto_server(client_p, source_p->user->server, NULL, CAP_GLN, NOCAPS, LL_ICLIENT,
                   ":%s GLINE %s %s :%s",
@@ -385,6 +405,7 @@ ms_gline(struct Client *client_p, struct Client *source_p,
           user, host, reason, get_oper_name(source_p));
   }
 }
+
 
 /* check_wild_gline()
  *

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_wallops.c,v 1.35 2003/10/07 22:37:13 bill Exp $
+ *  $Id: m_wallops.c,v 1.36 2004/07/08 00:27:23 erik Exp $
  */
 
 #include "stdinc.h"
@@ -41,7 +41,7 @@ static void mo_wallops(struct Client *, struct Client *, int, char **);
 
 struct Message wallops_msgtab = {
   "WALLOPS", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, ms_wallops, mo_wallops, m_ignore}
+  {m_unregistered, m_not_oper, ms_wallops, m_ignore, mo_wallops, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -57,7 +57,7 @@ _moddeinit(void)
   mod_del_cmd(&wallops_msgtab);
 }
  
-const char *_version = "$Revision: 1.35 $";
+const char *_version = "$Revision: 1.36 $";
 #endif
 
 /*

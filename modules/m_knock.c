@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_knock.c,v 1.66 2004/04/12 01:57:40 metalrock Exp $
+ *  $Id: m_knock.c,v 1.67 2004/07/08 00:27:22 erik Exp $
  */
 
 #include "stdinc.h"
@@ -43,14 +43,15 @@
 
 static void m_knock(struct Client*, struct Client*, int, char**);
 static void ms_knock(struct Client *, struct Client *, int, char**);
+static void me_knock(struct Client *, struct Client *, int, char**);
 
 static void parse_knock_local(struct Client *, struct Client *,
                               int, char **, char *);
 static void parse_knock_remote(struct Client *, struct Client *,
-                               int, char **);
+                                      int, char **, int);
 
 static void send_knock(struct Client *, struct Client *,
-                       struct Channel *, char *, char *, int);
+                       struct Channel *, char *, char *, int, int);
 
 static int is_banned_knock(struct Channel *, struct Client *, char *);
 static int check_banned_knock(struct Channel *, struct Client *,
@@ -58,11 +59,11 @@ static int check_banned_knock(struct Channel *, struct Client *,
 
 struct Message knock_msgtab = {
   "KNOCK", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_knock, ms_knock, m_knock, m_ignore}
+  {m_unregistered, m_knock, ms_knock, me_knock, m_knock, m_ignore}
 };
 struct Message knockll_msgtab = {
   "KNOCKLL", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_ignore, m_knock, m_ignore, m_ignore}
+  {m_unregistered, m_ignore, m_knock, m_ignore, m_ignore, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -83,7 +84,7 @@ _moddeinit(void)
   delete_capability("KNOCK");
 }
 
-const char *_version = "$Revision: 1.66 $";
+const char *_version = "$Revision: 1.67 $";
 #endif
 
 /* m_knock
@@ -153,7 +154,21 @@ ms_knock(struct Client *client_p, struct Client *source_p,
 	 int parc, char *parv[])
 {
   if (IsClient(source_p))
-    parse_knock_remote(client_p, source_p, parc, parv);
+    parse_knock_remote(client_p, source_p, parc, parv, 1);
+}
+
+/* 
+ * me_knock()
+ *	parv[0] = sender prefix
+ *	parv[1] = channel
+ */
+ 
+static void
+me_knock(struct Client *client_p, struct Client *source_p,
+	 int parc, char *parv[])
+{
+  if (IsClient(source_p))
+    parse_knock_remote(client_p, source_p, parc, parv, 0);
 }
 
 /* parse_knock_local()
@@ -267,7 +282,7 @@ parse_knock_local(struct Client *client_p, struct Client *source_p,
 
   /* pass on the knock */
   send_knock(client_p, source_p, chptr, name, key,
-             MyClient(source_p) ? 0 : 1);
+             MyClient(source_p) ? 0 : 1, 1);
 }
 
 /* parse_knock_remote()
@@ -282,7 +297,7 @@ parse_knock_local(struct Client *client_p, struct Client *source_p,
  */
 static void
 parse_knock_remote(struct Client *client_p, struct Client *source_p,
-		   int parc, char *parv[])
+		   int parc, char *parv[], int prop)
 {
   struct Channel *chptr;
   char *p, *name, *key;
@@ -305,7 +320,7 @@ parse_knock_remote(struct Client *client_p, struct Client *source_p,
     return;
 
   if (chptr)
-    send_knock(client_p, source_p, chptr, name, key, 0);
+    send_knock(client_p, source_p, chptr, name, key, 0, prop);
 }
 
 /* send_knock()
@@ -319,7 +334,8 @@ parse_knock_remote(struct Client *client_p, struct Client *source_p,
  */
 static void
 send_knock(struct Client *client_p, struct Client *source_p,
-	   struct Channel *chptr, char *name, char *key, int llclient)
+	   struct Channel *chptr, char *name, char *key, int llclient,
+	   int prop)
 {
   chptr->last_knock = CurrentTime;
 
@@ -343,12 +359,15 @@ send_knock(struct Client *client_p, struct Client *source_p,
 			     source_p->name, source_p->username,
 			     source_p->host);
 
-      sendto_server(client_p, source_p, chptr, CAP_KNOCK|CAP_TS6, NOCAPS, LL_ICLIENT,
+      if (prop)
+      {
+        sendto_server(client_p, source_p, chptr, CAP_KNOCK|CAP_TS6, NOCAPS, LL_ICLIENT,
                     ":%s KNOCK %s %s",
                     ID(source_p), name, key != NULL ? key : "");
-      sendto_server(client_p, source_p, chptr, CAP_KNOCK, CAP_TS6, LL_ICLIENT,
+        sendto_server(client_p, source_p, chptr, CAP_KNOCK, CAP_TS6, LL_ICLIENT,
                     ":%s KNOCK %s %s",
 		    source_p->name, name, key != NULL ? key : "");
+      }
   }
 }
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_llnick.c,v 1.23 2003/10/21 01:39:48 bill Exp $
+ *  $Id: m_llnick.c,v 1.24 2004/07/08 00:27:22 erik Exp $
  */
 
 #include "stdinc.h"
@@ -44,7 +44,7 @@ static void ms_llnick(struct Client*, struct Client*, int, char**);
 
 struct Message llnick_msgtab = {
   "LLNICK", 0, 0, 3, 0, MFLG_SLOW | MFLG_UNREG, 0L,
-  {m_unregistered, m_ignore, ms_llnick, m_ignore, m_ignore}
+  {m_unregistered, m_ignore, ms_llnick, m_ignore, m_ignore, m_ignore}
 };
 #ifndef STATIC_MODULES
 
@@ -60,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&llnick_msgtab);
 }
 
-const char *_version = "$Revision: 1.23 $";
+const char *_version = "$Revision: 1.24 $";
 #endif
 /*
  * m_llnick

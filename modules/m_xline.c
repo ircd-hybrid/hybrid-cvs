@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.40 2004/04/12 04:01:46 metalrock Exp $
+ *  $Id: m_xline.c,v 1.41 2004/07/08 00:27:23 erik Exp $
  */
 
 #include "stdinc.h"
@@ -58,12 +58,12 @@ static void remove_xline(struct Client *, char *, int);
 
 struct Message xline_msgtab = {
   "XLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, ms_xline, mo_xline, m_ignore}
+  {m_unregistered, m_not_oper, ms_xline, m_ignore, mo_xline, m_ignore}
 };
 
 struct Message unxline_msgtab = {
   "UNXLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, ms_unxline, mo_unxline, m_ignore}
+  {m_unregistered, m_not_oper, ms_unxline, m_ignore, mo_unxline, m_ignore}
 };
 
 
@@ -82,7 +82,7 @@ _moddeinit(void)
   mod_del_cmd(&unxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.40 $";
+const char *_version = "$Revision: 1.41 $";
 #endif
 
 /* mo_xline()

@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: m_tb.c,v 1.23 2004/05/08 05:15:14 metalrock Exp $
+ *  $Id: m_tb.c,v 1.24 2004/07/08 00:27:17 erik Exp $
  */
 
 #include "stdinc.h"
@@ -56,7 +56,7 @@ int send_tburst(struct hook_burst_channel *);
 
 struct Message tburst_msgtab = {
   "TBURST", 0, 0, 6, 0, MFLG_SLOW, 0,
-  {m_ignore, m_ignore, ms_tburst, m_ignore, m_ignore}
+  {m_ignore, m_ignore, ms_tburst, m_ignore, m_ignore, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -77,7 +77,7 @@ _moddeinit(void)
   delete_capability("TBURST");
 }
 
-const char *_version = "$Revision: 1.23 $";
+const char *_version = "$Revision: 1.24 $";
 
 #endif /* !STATIC_MODULES */
 

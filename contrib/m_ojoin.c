@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_ojoin.c,v 1.28 2003/10/22 09:08:46 metalrock Exp $
+ *   $Id: m_ojoin.c,v 1.29 2004/07/08 00:27:16 erik Exp $
  */
 
 /* Remove this if you do not wish /OJOIN to support multiple channels
@@ -44,7 +44,7 @@ static void mo_ojoin(struct Client *, struct Client *, int, char **);
 
 struct Message ojoin_msgtab = {
   "OJOIN", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, m_ignore, mo_ojoin, m_ignore}
+  {m_unregistered, m_not_oper, m_ignore, m_ignore, mo_ojoin, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -61,7 +61,7 @@ _moddeinit(void)
   mod_del_cmd(&ojoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.28 $";
+const char *_version = "$Revision: 1.29 $";
 
 #endif
 

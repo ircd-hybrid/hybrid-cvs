@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.159 2004/05/16 20:19:25 metalrock Exp $
+ *  $Id: m_stats.c,v 1.160 2004/07/08 00:27:23 erik Exp $
  */
 
 #include "stdinc.h"
@@ -58,7 +58,7 @@ static void ms_stats(struct Client *, struct Client *, int, char **);
 
 struct Message stats_msgtab = {
   "STATS", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_stats, ms_stats, mo_stats, m_ignore}
+  {m_unregistered, m_stats, ms_stats, m_ignore, mo_stats, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.159 $";
+const char *_version = "$Revision: 1.160 $";
 #endif
 
 static char *parse_stats_args(int, char **, int *, int *);

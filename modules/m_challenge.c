@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_challenge.c,v 1.54 2003/07/05 06:20:57 db Exp $
+ *  $Id: m_challenge.c,v 1.55 2004/07/08 00:27:21 erik Exp $
  */
 
 #include "stdinc.h"
@@ -45,7 +45,7 @@ static void m_challenge(struct Client *, struct Client *, int, char **);
 /* We have openssl support, so include /CHALLENGE */
 struct Message challenge_msgtab = {
   "CHALLENGE", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_challenge, m_ignore, m_challenge, m_ignore}
+  {m_unregistered, m_challenge, m_ignore, m_ignore, m_challenge, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -61,7 +61,7 @@ _moddeinit(void)
   mod_del_cmd(&challenge_msgtab);
 }
 
-const char *_version = "$Revision: 1.54 $";
+const char *_version = "$Revision: 1.55 $";
 #endif
 
 /*

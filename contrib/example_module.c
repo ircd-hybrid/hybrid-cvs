@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: example_module.c,v 1.8 2003/06/16 19:02:21 joshk Exp $
+ *   $Id: example_module.c,v 1.9 2004/07/08 00:27:16 erik Exp $
  */
 
 /* List of ircd includes from ../include/ 
@@ -85,13 +85,15 @@ struct Message test_msgtab = {
   "TEST", 0, 0, 1, 0, MFLG_SLOW, 0,
 
  /* Fields are in order:
-  *-> {unregged, regged, remote, oper}
+  *-> {unregged, regged, remote, encap, oper, dummy}
   *
   * where:
   * unregged == function to call for unregistered clients
   * regged == function to call for normal users
   * remote == function to call for servers/remote users
+  * encap == function to call for encap'd server/remote commands
   * oper == function to call for operators
+  * dummy == 
   *
   * There are also some pre-coded functions for use:
   * m_unregistered: prevent the client using this if unregistered
@@ -99,7 +101,7 @@ struct Message test_msgtab = {
   * m_ignore:       ignore the command when it comes from certain types
   * m_error:        give an error when the command comes from certain types
   */
-  {mr_test, m_test, ms_test, mo_test}
+  {mr_test, m_test, ms_test, m_ignore, mo_test, m_ignore}
 
  /* It is normal for unregistered functions to be prefixed with mr_
   *   "      "       normal users to be prefixed with m_
@@ -128,7 +130,7 @@ _moddeinit(void)
 
 /* When we last modified the file (shown in /modlist), this is usually:
  */
-const char *_version = "$Revision: 1.8 $";
+const char *_version = "$Revision: 1.9 $";
 #endif
 
 /*

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_time.c,v 1.29 2003/06/24 14:23:54 michael Exp $
+ *  $Id: m_time.c,v 1.30 2004/07/08 00:27:23 erik Exp $
  */
 
 #include "stdinc.h"
@@ -41,7 +41,7 @@ static void mo_time(struct Client*, struct Client*, int, char**);
 
 struct Message time_msgtab = {
   "TIME", 0, 0, 0, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_time, mo_time, mo_time, m_ignore}
+  {m_unregistered, m_time, mo_time, m_ignore, mo_time, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -57,7 +57,7 @@ _moddeinit(void)
   mod_del_cmd(&time_msgtab);
 }
 
-const char *_version = "$Revision: 1.29 $";
+const char *_version = "$Revision: 1.30 $";
 #endif
 /*
  * m_time

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_error.c,v 7.32 2003/06/24 14:23:57 michael Exp $
+ *  $Id: m_error.c,v 7.33 2004/07/08 00:27:33 erik Exp $
  */
 
 #include "stdinc.h"
@@ -34,7 +34,7 @@
 
 struct Message error_msgtab = {
  "ERROR", 0, 0, 1, 0, MFLG_SLOW | MFLG_UNREG, 0,
-  { m_error, m_ignore, ms_error, m_ignore, m_ignore }
+  { m_error, m_ignore, ms_error, m_ignore, m_ignore, m_ignore }
 };
 
 /*

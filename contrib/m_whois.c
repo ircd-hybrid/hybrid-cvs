@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.33 2003/10/21 02:31:10 metalrock Exp $
+ *  $Id: m_whois.c,v 1.34 2004/07/08 00:27:17 erik Exp $
  */
 
 #include "stdinc.h"
@@ -64,7 +64,7 @@ static void mo_whois(struct Client*, struct Client*, int, char**);
 
 struct Message whois_msgtab = {
   "WHOIS", 0, 0, 0, 0, MFLG_SLOW, 0L,
-  {m_unregistered, m_whois, ms_whois, mo_whois, m_ignore}
+  {m_unregistered, m_whois, ms_whois, m_ignore, mo_whois, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -82,7 +82,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-const char *_version = "$Revision: 1.33 $";
+const char *_version = "$Revision: 1.34 $";
 #endif
 
 /* m_whois

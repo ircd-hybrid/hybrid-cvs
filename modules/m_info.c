@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.c,v 1.82 2004/01/30 08:30:49 metalrock Exp $
+ *  $Id: m_info.c,v 1.83 2004/07/08 00:27:22 erik Exp $
  */
 
 #include "stdinc.h"
@@ -53,7 +53,7 @@ static void mo_info(struct Client *, struct Client *, int, char **);
 
 struct Message info_msgtab = {
   "INFO", 0, 0, 0, 0, MFLG_SLOW, 0,
-  { m_unregistered, m_info, ms_info, mo_info, m_ignore }
+  { m_unregistered, m_info, ms_info, m_ignore, mo_info, m_ignore }
 };
 
 #ifndef STATIC_MODULES
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&info_msgtab);
 }
 
-const char *_version = "$Revision: 1.82 $";
+const char *_version = "$Revision: 1.83 $";
 #endif
 
 /*

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_accept.c,v 1.40 2003/06/15 18:47:21 michael Exp $
+ *  $Id: m_accept.c,v 1.41 2004/07/08 00:27:21 erik Exp $
  */
 
 #include "stdinc.h"
@@ -45,7 +45,7 @@ static void list_accepts(struct Client *);
 
 struct Message accept_msgtab = {
   "ACCEPT", 0, 0, 2, 0, MFLG_SLOW, 0, 
-  {m_unregistered, m_accept, m_ignore, m_accept, m_ignore}
+  {m_unregistered, m_accept, m_ignore, m_ignore, m_accept, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -61,7 +61,7 @@ _moddeinit(void)
   mod_del_cmd(&accept_msgtab);
 }
 
-const char *_version = "$Revision: 1.40 $";
+const char *_version = "$Revision: 1.41 $";
 #endif
 
 /*

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.136 2004/04/12 01:57:42 metalrock Exp $
+ *  $Id: m_message.c,v 1.137 2004/07/08 00:27:30 erik Exp $
  */
 
 #include "stdinc.h"
@@ -94,12 +94,12 @@ static void handle_special(int p_or_n, const char *command,
 
 struct Message privmsg_msgtab = {
   "PRIVMSG", 0, 0, 1, 0, MFLG_SLOW | MFLG_UNREG, 0L,
-  {m_unregistered, m_privmsg, m_privmsg, m_privmsg, m_ignore}
+  {m_unregistered, m_privmsg, m_privmsg, m_ignore, m_privmsg, m_ignore}
 };
 
 struct Message notice_msgtab = {
   "NOTICE", 0, 0, 1, 0, MFLG_SLOW, 0L,
-  {m_unregistered, m_notice, m_notice, m_notice, m_ignore}
+  {m_unregistered, m_notice, m_notice, m_ignore, m_notice, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -117,7 +117,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.136 $";
+const char *_version = "$Revision: 1.137 $";
 #endif
 
 /*

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_clearchan.c,v 1.47 2004/02/18 13:51:44 metalrock Exp $
+ *   $Id: m_clearchan.c,v 1.48 2004/07/08 00:27:16 erik Exp $
  */
 
 #include "stdinc.h"
@@ -51,7 +51,7 @@ static void remove_a_mode(struct Channel *, int, char);
 
 struct Message clearchan_msgtab = {
   "CLEARCHAN", 0, 0, 2, 0, MFLG_SLOW, 0,
-  { m_unregistered, m_not_oper, m_ignore, mo_clearchan, m_ignore }
+  { m_unregistered, m_not_oper, m_ignore, m_ignore, mo_clearchan, m_ignore }
 };
 
 #ifndef STATIC_MODULES
@@ -67,7 +67,7 @@ _moddeinit(void)
   mod_del_cmd(&clearchan_msgtab);
 }
 
-const char *_version = "$Revision: 1.47 $";
+const char *_version = "$Revision: 1.48 $";
 #endif
 
 /*

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_topic.c,v 1.68 2004/04/12 01:57:40 metalrock Exp $
+ *  $Id: m_topic.c,v 1.69 2004/07/08 00:27:23 erik Exp $
  */
 
 #include "stdinc.h"
@@ -46,7 +46,7 @@ static void ms_topic(struct Client *, struct Client *, int, char **);
 
 struct Message topic_msgtab = {
   "TOPIC", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_topic, ms_topic, m_topic, m_ignore}
+  {m_unregistered, m_topic, ms_topic, m_ignore, m_topic, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&topic_msgtab);
 }
 
-const char *_version = "$Revision: 1.68 $";
+const char *_version = "$Revision: 1.69 $";
 #endif
 
 /* m_topic()

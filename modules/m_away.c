@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_away.c,v 1.37 2003/10/24 11:08:19 michael Exp $
+ *  $Id: m_away.c,v 1.38 2004/07/08 00:27:21 erik Exp $
  */
 
 #include "stdinc.h"
@@ -43,7 +43,7 @@ static void ms_away(struct Client *, struct Client *, int, char **);
 
 struct Message away_msgtab = {
   "AWAY", 0, 0, 0, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_away, ms_away, mo_away, m_ignore}
+  {m_unregistered, m_away, ms_away, m_ignore, mo_away, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -58,7 +58,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&away_msgtab);
 }
-const char *_version = "$Revision: 1.37 $";
+const char *_version = "$Revision: 1.38 $";
 #endif
 
 /***********************************************************************

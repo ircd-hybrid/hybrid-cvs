@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_map.c,v 1.18 2003/10/15 03:23:44 metalrock Exp $
+ *  $Id: m_map.c,v 1.19 2004/07/08 00:27:16 erik Exp $
  */
 
 #include "stdinc.h"
@@ -39,7 +39,7 @@ static void dump_map(struct Client *client_p,struct Client *root, char *pbuf);
 
 struct Message map_msgtab = {
   "MAP", 0, 0, 0, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_map, m_ignore, mo_map, m_ignore}
+  {m_unregistered, m_map, m_ignore, m_ignore, mo_map, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -53,7 +53,7 @@ void _moddeinit(void)
   mod_del_cmd(&map_msgtab);
 }
 
-const char *_version = "$Revision: 1.18 $";
+const char *_version = "$Revision: 1.19 $";
 #endif
 
 static char buf[BUFSIZE];

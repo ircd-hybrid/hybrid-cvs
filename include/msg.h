@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: msg.h,v 7.50 2003/10/30 19:52:59 bill Exp $
+ *  $Id: msg.h,v 7.51 2004/07/08 00:27:20 erik Exp $
  */
 
 #ifndef INCLUDED_msg_h
@@ -54,7 +54,7 @@ struct Message
    * parv = parameter variable array
    */
   /* handlers:
-   * UNREGISTERED, CLIENT, SERVER, OPER, LAST
+   * UNREGISTERED, CLIENT, SERVER, ENCAP, OPER, DUMMY, LAST
    */
   MessageHandler handlers[LAST_HANDLER_TYPE];
 };

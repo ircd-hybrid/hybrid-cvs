@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_post.c,v 1.17 2003/08/03 14:22:20 michael Exp $
+ *  $Id: m_post.c,v 1.18 2004/07/08 00:27:22 erik Exp $
  */
 
 #include "stdinc.h"
@@ -38,17 +38,17 @@ static void mr_dumb_proxy(struct Client*, struct Client*, int, char**);
 
 struct Message post_msgtab = {
   "POST", 0, 0, 0, 0, MFLG_SLOW | MFLG_UNREG, 0,
-  {mr_dumb_proxy, m_ignore, m_ignore, m_ignore, m_ignore}
+  {mr_dumb_proxy, m_ignore, m_ignore, m_ignore, m_ignore, m_ignore}
 };
 
 struct Message get_msgtab = {
   "GET", 0, 0, 0, 0, MFLG_SLOW | MFLG_UNREG, 0,
-  {mr_dumb_proxy, m_ignore, m_ignore, m_ignore, m_ignore}
+  {mr_dumb_proxy, m_ignore, m_ignore, m_ignore, m_ignore, m_ignore}
 };
 
 struct Message put_msgtab = {
   "PUT", 0, 0, 0, 0, MFLG_SLOW | MFLG_UNREG, 0,
-  {mr_dumb_proxy, m_ignore, m_ignore, m_ignore, m_ignore}
+  {mr_dumb_proxy, m_ignore, m_ignore, m_ignore, m_ignore, m_ignore}
 };
 
 
@@ -69,7 +69,7 @@ _moddeinit(void)
   mod_del_cmd(&put_msgtab);
 }
 
-const char *_version = "$Revision: 1.17 $";
+const char *_version = "$Revision: 1.18 $";
 #endif
 
 /*

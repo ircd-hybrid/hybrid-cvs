@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_who.c,v 1.91 2003/11/22 04:58:56 db Exp $
+ *  $Id: m_who.c,v 1.92 2004/07/08 00:27:23 erik Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -46,7 +46,7 @@ static void ms_who(struct Client *, struct Client *, int, char **);
 
 struct Message who_msgtab = {
   "WHO", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_who, ms_who, m_who, m_ignore}
+  {m_unregistered, m_who, ms_who, m_ignore, m_who, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&who_msgtab);
 }
 
-const char *_version = "$Revision: 1.91 $";
+const char *_version = "$Revision: 1.92 $";
 #endif
 
 static void who_global(struct Client *source_p, char *mask, int server_oper);

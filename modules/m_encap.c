@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_encap.c,v 1.9 2004/02/28 06:12:25 metalrock Exp $
+ *  $Id: m_encap.c,v 1.10 2004/07/08 00:27:22 erik Exp $
  */
 
 #include "stdinc.h"
@@ -38,7 +38,7 @@ static void ms_encap(struct Client *client_p, struct Client *source_p,
 
 struct Message encap_msgtab = {
   "ENCAP", 0, 0, 3, 0, MFLG_SLOW, 0,
-  {m_ignore, m_ignore, ms_encap, m_ignore, m_ignore}
+  {m_ignore, m_ignore, ms_encap, m_ignore, m_ignore, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -55,7 +55,7 @@ _moddeinit(void)
   mod_del_cmd(&encap_msgtab);
   delete_capability("ENCAP");
 }
-const char *_version = "$Revision: 1.9 $";
+const char *_version = "$Revision: 1.10 $";
 #endif
 
 /*

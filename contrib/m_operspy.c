@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.54 2004/04/22 03:40:54 bill Exp $
+ *   $Id: m_operspy.c,v 1.55 2004/07/08 00:27:16 erik Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -99,7 +99,7 @@ static void do_who_on_channel(struct Client *source_p, struct Channel *chptr,
 
 struct Message operspy_msgtab = {
   "OPERSPY", 0, 0, 3, 4, MFLG_SLOW, 0,
-  {m_ignore, m_not_oper, ms_operspy, mo_operspy, m_ignore}
+  {m_ignore, m_not_oper, ms_operspy, ms_operspy, mo_operspy, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -114,7 +114,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.54 $";
+const char *_version = "$Revision: 1.55 $";
 #endif
 
 #ifdef OPERSPY_LOG

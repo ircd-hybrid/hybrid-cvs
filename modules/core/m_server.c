@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.121 2004/01/31 17:03:07 adx Exp $
+ *  $Id: m_server.c,v 1.122 2004/07/08 00:27:30 erik Exp $
  */
 
 #include "stdinc.h"
@@ -54,12 +54,12 @@ static struct Client *server_exists(char *);
 
 struct Message server_msgtab = {
   "SERVER", 0, 0, 4, 0, MFLG_SLOW | MFLG_UNREG, 0,
-  {mr_server, m_registered, ms_server, m_registered, m_ignore}
+  {mr_server, m_registered, ms_server, m_ignore, m_registered, m_ignore}
 };
 
 struct Message sid_msgtab = {
   "SID", 0, 0, 5, 0, MFLG_SLOW, 0,
-  {m_error, m_ignore, ms_sid, m_ignore, m_ignore}
+  {m_error, m_ignore, ms_sid, m_ignore, m_ignore, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -77,7 +77,7 @@ _moddeinit(void)
   mod_del_cmd(&sid_msgtab);
 }
 
-const char *_version = "$Revision: 1.121 $";
+const char *_version = "$Revision: 1.122 $";
 #endif
 
 

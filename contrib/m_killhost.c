@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_killhost.c,v 1.9 2004/05/12 05:30:53 metalrock Exp $
+ *  $Id: m_killhost.c,v 1.10 2004/07/08 00:27:16 erik Exp $
  *
  */
 
@@ -49,7 +49,7 @@ static void kh_relay_kill(struct Client *, struct Client *, struct Client *,
 
 struct Message killhost_msgtab = {
   "KILLHOST", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_ignore, m_ignore, mo_killhost,  m_ignore}
+  {m_unregistered, m_ignore, m_ignore, m_ignore, mo_killhost,  m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&killhost_msgtab);
 }
 
-const char *_version = "$Revision: 1.9 $";
+const char *_version = "$Revision: 1.10 $";
 #endif
 
 /* mo_killhost()

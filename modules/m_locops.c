@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_locops.c,v 1.34 2003/07/07 21:18:54 michael Exp $
+ *  $Id: m_locops.c,v 1.35 2004/07/08 00:27:22 erik Exp $
  */
 
 #include "stdinc.h"
@@ -43,7 +43,7 @@ static void ms_locops(struct Client *, struct Client *, int, char **);
 
 struct Message locops_msgtab = {
   "LOCOPS", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, ms_locops, m_locops, m_ignore}
+  {m_unregistered, m_not_oper, ms_locops, m_ignore, m_locops, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -59,7 +59,7 @@ _moddeinit(void)
   mod_del_cmd(&locops_msgtab);
 }
 
-const char *_version = "$Revision: 1.34 $";
+const char *_version = "$Revision: 1.35 $";
 #endif
 
 /*

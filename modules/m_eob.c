@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_eob.c,v 1.33 2003/04/18 02:13:42 db Exp $
+ *  $Id: m_eob.c,v 1.34 2004/07/08 00:27:22 erik Exp $
  */
 
 #include "stdinc.h"
@@ -39,7 +39,7 @@ static void ms_eob(struct Client*, struct Client*, int, char**);
 
 struct Message eob_msgtab = {
   "EOB", 0, 0, 0, 0, MFLG_SLOW | MFLG_UNREG, 0, 
-  {m_unregistered, m_ignore, ms_eob, m_ignore, m_ignore}
+  {m_unregistered, m_ignore, ms_eob, m_ignore, m_ignore, m_ignore}
 };
 #ifndef STATIC_MODULES
 void
@@ -54,7 +54,7 @@ _moddeinit(void)
   mod_del_cmd(&eob_msgtab);
 }
 
-const char *_version = "$Revision: 1.33 $";
+const char *_version = "$Revision: 1.34 $";
 #endif
 /*
  * ms_eob - EOB command handler

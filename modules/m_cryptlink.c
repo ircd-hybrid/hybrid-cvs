@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_cryptlink.c,v 1.59 2003/10/24 11:08:19 michael Exp $
+ *  $Id: m_cryptlink.c,v 1.60 2004/07/08 00:27:22 erik Exp $
  */
 
 /*
@@ -64,7 +64,7 @@ static void cryptlink_auth(struct Client *, struct Client *, int, char **);
 
 struct Message cryptlink_msgtab = {
   "CRYPTLINK", 0, 0, 4, 0, MFLG_SLOW | MFLG_UNREG, 0,
-  {mr_cryptlink, m_ignore, m_error, m_ignore, m_ignore}
+  {mr_cryptlink, m_ignore, m_error, m_ignore, m_ignore, m_ignore}
 };
 
 struct CryptLinkStruct
@@ -95,7 +95,7 @@ _moddeinit(void)
   mod_del_cmd(&cryptlink_msgtab);
 }
 
-const char *_version = "$Revision: 1.59 $";
+const char *_version = "$Revision: 1.60 $";
 #endif
 
 

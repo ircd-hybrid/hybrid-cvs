@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_capture.c,v 1.1 2003/09/23 03:53:22 db Exp $
+ *  $Id: m_capture.c,v 1.2 2004/07/08 00:27:16 erik Exp $
  */
 
 #include "stdinc.h"
@@ -49,7 +49,7 @@ static void mo_capture(struct Client*, struct Client*, int, char**);
 
 struct Message capture_msgtab = {
   "CAPTURE", 0, 0, 0, 0, MFLG_SLOW, 0L,
-  {m_unregistered, m_ignore, m_ignore, mo_capture, m_ignore}
+  {m_unregistered, m_ignore, m_ignore, m_ignore, mo_capture, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&capture_msgtab);
 }
 
-const char *_version = "$Revision: 1.1 $";
+const char *_version = "$Revision: 1.2 $";
 #endif
 
 /* mo_capture

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ison.c,v 1.36 2003/10/24 11:08:19 michael Exp $
+ *  $Id: m_ison.c,v 1.37 2004/07/08 00:27:22 erik Exp $
  */
 
 #include "stdinc.h"
@@ -44,7 +44,7 @@ static void ms_ison(struct Client*, struct Client*, int, char**);
 
 struct Message ison_msgtab = {
   "ISON", 0, 0, 1, 1, MFLG_SLOW, 0,
-  {m_unregistered, m_ison, ms_ison, m_ison, m_ignore}
+  {m_unregistered, m_ison, ms_ison, m_ignore, m_ison, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -59,7 +59,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&ison_msgtab);
 }
-const char *_version = "$Revision: 1.36 $";
+const char *_version = "$Revision: 1.37 $";
 #endif
 
 

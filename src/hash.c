@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.85 2004/02/28 06:12:27 metalrock Exp $
+ *  $Id: hash.c,v 7.86 2004/07/08 00:27:33 erik Exp $
  */
 
 #include "stdinc.h"
@@ -908,7 +908,7 @@ find_or_add_userhost(const char *host)
 
 struct Message hash_msgtab = {
  "HASH", 0, 0, 0, 0, MFLG_SLOW, 0,
-  { m_unregistered, m_not_oper, m_ignore, mo_hash, m_ignore }
+  { m_unregistered, m_not_oper, m_ignore, m_ignore, mo_hash, m_ignore }
 };
 
 /* I will add some useful(?) statistics here one of these days,

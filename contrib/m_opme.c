@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_opme.c,v 1.51 2004/02/18 13:51:44 metalrock Exp $
+ *   $Id: m_opme.c,v 1.52 2004/07/08 00:27:16 erik Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -41,7 +41,7 @@ static int chan_is_opless(struct Channel *chptr);
 
 struct Message opme_msgtab = {
   "OPME", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, m_ignore, mo_opme, m_ignore}
+  {m_unregistered, m_not_oper, m_ignore, m_ignore, mo_opme, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -57,7 +57,7 @@ _moddeinit(void)
   mod_del_cmd(&opme_msgtab);
 }
 
-const char *_version = "$Revision: 1.51 $";
+const char *_version = "$Revision: 1.52 $";
 
 #endif
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.177 2003/12/21 00:56:42 metalrock Exp $
+ *  $Id: m_kline.c,v 1.178 2004/07/08 00:27:22 erik Exp $
  */
 
 #include "stdinc.h"
@@ -49,9 +49,11 @@
 #include "cluster.h"
 #include "tools.h"
 
+static inline void me_kline(struct Client *, struct Client *, int, char **);
 static void mo_kline(struct Client *, struct Client *, int, char **);
 static void ms_kline(struct Client *, struct Client *, int, char **);
 static void mo_dline(struct Client *, struct Client *, int, char **);
+static inline void me_unkline(struct Client *, struct Client *, int, char **);
 static void mo_unkline(struct Client *, struct Client *, int, char **);
 static void ms_unkline(struct Client *, struct Client *, int, char **);
 static void mo_undline(struct Client *, struct Client *, int, char **);
@@ -65,22 +67,22 @@ static int remove_tdline_match(const char *);
 
 struct Message kline_msgtab = {
   "KLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
-   {m_unregistered, m_not_oper, ms_kline, mo_kline, m_ignore}
+   {m_unregistered, m_not_oper, ms_kline, me_kline, mo_kline, m_ignore}
 };
 
 struct Message dline_msgtab = {
   "DLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
-   {m_unregistered, m_not_oper, m_error, mo_dline, m_ignore}
+   {m_unregistered, m_not_oper, m_error, m_ignore, mo_dline, m_ignore}
 };
 
 struct Message unkline_msgtab = {
   "UNKLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
-   {m_unregistered, m_not_oper, ms_unkline, mo_unkline, m_ignore}
+   {m_unregistered, m_not_oper, ms_unkline, me_unkline, mo_unkline, m_ignore}
 };
 
 struct Message undline_msgtab = {
   "UNDLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
-   {m_unregistered, m_not_oper, m_error, mo_undline, m_ignore}
+   {m_unregistered, m_not_oper, m_error, m_ignore, mo_undline, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -106,7 +108,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.177 $";
+const char *_version = "$Revision: 1.178 $";
 #endif
 
 #define TK_SECONDS 0
@@ -283,8 +285,9 @@ mo_kline(struct Client *client_p, struct Client *source_p,
   }
 }
 
-static void
-ms_kline(struct Client *client_p, struct Client *source_p,
+/* me_kline - handle remote kline. no propagation */
+static inline void
+me_kline(struct Client *client_p, struct Client *source_p,
 	 int parc, char *parv[])
 {
   struct ConfItem *conf=NULL;
@@ -296,12 +299,6 @@ ms_kline(struct Client *client_p, struct Client *source_p,
 
   if (parc != 6)
     return;
-
-  /* parv[0]  parv[1]        parv[2]      parv[3]  parv[4]  parv[5] */
-  /* oper     target_server  tkline_time  user     host     reason */
-  sendto_match_servs(source_p, parv[1], CAP_KLN,
-                     "KLINE %s %s %s %s :%s",
-                     parv[1], parv[2], parv[3], parv[4], parv[5]);
 
   if (!match(parv[1], me.name))
     return;
@@ -392,6 +389,23 @@ ms_kline(struct Client *client_p, struct Client *source_p,
       apply_kline(source_p, conf, current_date, cur_time);
     }
   }
+}
+
+static void
+ms_kline(struct Client *client_p, struct Client *source_p,
+	 int parc, char *parv[])
+{
+  if (parc != 6)
+    return;
+
+  /* parv[0]  parv[1]        parv[2]      parv[3]  parv[4]  parv[5] */
+  /* oper     target_server  tkline_time  user     host     reason */
+  sendto_match_servs(source_p, parv[1], CAP_KLN,
+                     "KLINE %s %s %s %s :%s",
+                     parv[1], parv[2], parv[3], parv[4], parv[5]);
+
+  
+  me_kline(client_p, source_p, parc, parv);
 }
 
 /* apply_kline()
@@ -1205,7 +1219,7 @@ mo_unkline(struct Client *client_p,struct Client *source_p,
 	       me.name, source_p->name, user, host);
 }
 
-/* ms_unkline()
+/* me_unkline()
  *
  * inputs	- server
  *		- client
@@ -1213,19 +1227,16 @@ mo_unkline(struct Client *client_p,struct Client *source_p,
  *		- parv
  * outputs	- none
  * side effects	- if server is authorized, kline is removed
+ *                does not propagate message
  */
-static void
-ms_unkline(struct Client *client_p, struct Client *source_p,
+static inline void
+me_unkline(struct Client *client_p, struct Client *source_p,
            int parc, char *parv[])
 {
   const char *kuser, *khost;
 
   if (parc != 4)
     return;
-
-  sendto_match_servs(source_p, parv[1], CAP_UNKLN,
-                     "UNKLINE %s %s %s",
-                     parv[1], parv[2], parv[3]);
 
   kuser = parv[2];
   khost = parv[3];
@@ -1293,6 +1304,21 @@ ms_unkline(struct Client *client_p, struct Client *source_p,
   }
 }
 
+/* ms_unkline - propagates and handles a remote unkline message */
+static void
+ms_unkline(struct Client *client_p, struct Client *source_p,
+           int parc, char *parv[])
+{
+  if (parc != 4)
+    return;
+
+  sendto_match_servs(source_p, parv[1], CAP_UNKLN,
+                     "UNKLINE %s %s %s",
+                     parv[1], parv[2], parv[3]);
+
+  me_unkline(client_p, source_p, parc, parv);
+
+}
 /* static int remove_tkline_match(const char *host, const char *user)
  * Input: A hostname, a username to unkline.
  * Output: returns YES on success, NO if no tkline removed.
