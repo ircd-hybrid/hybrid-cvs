@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_topic.c,v 1.40 2001/11/13 11:45:48 leeh Exp $
+ *   $Id: m_topic.c,v 1.41 2001/11/30 16:59:13 androsyn Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -153,12 +153,7 @@ static void m_topic(struct Client *client_p,
 	       */
 	      strncpy_irc(chptr->topic, parv[2], TOPICLEN);
 	      
-              MyFree(chptr->topic_info);
 	      
-	      chptr->topic_info = 
-		(char *)MyMalloc(strlen(source_p->name)+
-				 strlen(source_p->username)+
-				 strlen(source_p->host)+3);
 	      ircsprintf(chptr->topic_info, "%s!%s@%s",
 			 source_p->name, source_p->username, source_p->host);
 
@@ -272,9 +267,7 @@ static void ms_topic(struct Client *client_p,
 
       strncpy_irc(chptr->topic, parv[4], TOPICLEN);
 	      
-      MyFree(chptr->topic_info);
-	      
-      DupString(chptr->topic_info,parv[2]);
+      strncpy_irc(chptr->topic_info, parv[2], USERHOST_REPLYLEN);	      
 
       chptr->topic_time = atoi(parv[3]);
 

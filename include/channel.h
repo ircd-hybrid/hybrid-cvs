@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.92 2001/10/24 06:19:43 db Exp $
+ * $Id: channel.h,v 7.93 2001/11/30 16:59:06 androsyn Exp $
  */
 
 #include <sys/types.h>        /* time_t */
@@ -52,7 +52,7 @@ struct Channel
   struct Channel* hnextch;
   struct Mode     mode;
   char            topic[TOPICLEN + 1];
-  char           *topic_info;
+  char            topic_info[USERHOST_REPLYLEN];
   time_t          topic_time;
   char            vchan_id[NICKLEN*2];   /* use this for empty vchans */
   int             users;      /* user count */
