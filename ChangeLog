@@ -1,3 +1,15 @@
+leeh        2002/02/02 11:01:14 EST	(20020202_3)
+
+  Modified files:
+    help                 Makefile.in 
+  Log:
+  - dont build index files by default, we can keep them updated and in cvs
+  
+  Revision  Changes    Path
+  1.15      +3 -4      ircd-hybrid-7/help/Makefile.in
+
+
+
 leeh        2002/02/02 10:57:02 EST	(20020202_2)
 
   Modified files:
@@ -21922,4 +21934,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3363 2002/02/02 15:57:08 leeh Exp $
+$Id: ChangeLog,v 7.3364 2002/02/02 16:01:20 leeh Exp $
