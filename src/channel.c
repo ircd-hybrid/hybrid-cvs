@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.293 2002/01/12 23:06:05 a1kmm Exp $
+ *  $Id: channel.c,v 7.294 2002/01/13 16:22:12 db Exp $
  */
 
 #include "tools.h"
@@ -245,7 +245,7 @@ remove_user_from_channel(struct Channel *chptr, struct Client *who, int perm)
 dlink_node *
 find_user_link(dlink_list * list, struct Client *who)
 {
-  if (who)
+  if (who != NULL)
     return (dlinkFind(list, who));
   return (NULL);
 }
