@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_poll.c,v 7.2 2000/10/24 18:47:22 adrian Exp $
+ *  $Id: s_bsd_poll.c,v 7.3 2000/10/24 23:42:17 adrian Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -111,6 +111,7 @@ poll_update_pollfds(int fd, short event, PF * handler)
         }
         while (pollfds[npollfds].fd == -1 && npollfds > 0)
             npollfds--;
+        npollfds++; /* array start at 0, not 1, remember? */
     }
 }
 
