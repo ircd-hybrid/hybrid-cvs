@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules-dld.c,v 1.15 2002/01/03 12:11:31 leeh Exp $
+ * $Id: modules-dld.c,v 1.16 2002/01/04 15:01:56 leeh Exp $
  *
  * This is based on modules.c, but for OSes like HP-UX which use shl_open
  * instead of dlopen
@@ -66,6 +66,7 @@ static char *core_module_table[] =
   "m_die.so",
   "m_kick.so",
   "m_kill.so",
+  "m_message.so",
   "m_mode.so",
   "m_nick.so",
   "m_part.so",

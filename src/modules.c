@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.c,v 7.85 2002/01/04 12:10:04 leeh Exp $
+ * $Id: modules.c,v 7.86 2002/01/04 15:01:56 leeh Exp $
  */
 #include "config.h"
 
@@ -66,6 +66,7 @@ static char *core_module_table[] =
   "m_die.so",
   "m_kick.so",
   "m_kill.so",
+  "m_message.so",
   "m_mode.so",
   "m_nick.so",
   "m_part.so",
