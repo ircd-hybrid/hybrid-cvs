@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.86 2001/03/30 20:14:01 ejb Exp $
+ * $Id: ircd_lexer.l,v 1.87 2001/04/02 00:06:13 toot Exp $
  */
 
 %option case-insensitive
@@ -94,7 +94,6 @@ qstring		\"[^\"\n]*[\"\n]
 		  return QSTRING;
 		}
 
-accept		{ return ACCEPT; }
 accept_password { return ACCEPT_PASSWORD; }
 action		{ return ACTION; }
 admin		{ return ADMIN; }
@@ -135,7 +134,6 @@ hub		{ return HUB; }
 hub_mask	{ return HUB_MASK; }
 persistant_expire_time { return PERSISTANT_EXPIRE_TIME; }
 idletime        { return IDLETIME; }
-include		{ return INCLUDE; }
 ip		{ return IP; }
 ipv4            { return T_IPV4; }
 ipv6            { return T_IPV6; }
@@ -188,7 +186,6 @@ restricted      { return RESTRICTED; }
 send_password	{ return SEND_PASSWORD; }
 sendq		{ return SENDQ; }
 serverinfo	{ return SERVERINFO; }
-server_mask     { return SERVER_MASK; }
 silent          { return SILENT; }
 shared          { return SHARED; }
 short_motd      { return SHORT_MOTD; }
@@ -222,7 +219,6 @@ pace_wait               { return PACE_WAIT; }
 knock_delay             { return KNOCK_DELAY; }
 iauth_server            { return IAUTH_SERVER; }
 iauth_port		{ return IAUTH_PORT; }
-stats_p_notice	        { return STATS_P_NOTICE; }
 glines                  { return GLINES; }
 modules                 { return MODULES; }
 module                  { return MODULE; }
