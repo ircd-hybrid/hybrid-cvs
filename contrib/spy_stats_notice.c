@@ -1,6 +1,6 @@
 /* copyright (c) 2000 Edward Brocklesby, Hybrid Development Team */
 /*
- * $Id: spy_stats_notice.c,v 1.7 2001/08/31 14:02:07 leeh Exp $
+ * $Id: spy_stats_notice.c,v 1.8 2001/09/05 12:14:44 leeh Exp $
  */
 
 #include "modules.h"
@@ -33,7 +33,7 @@ show_stats(struct hook_stats_data *data)
   if((data->statchar == 'L') || (data->statchar == 'l'))
     {
       if(data->name != NULL)
-	sendto_realops_flags(FLAGS_SPY, L_ADMIN,
+	sendto_realops_flags(FLAGS_SPY, L_ALL,
 			     "STATS %c requested by %s (%s@%s) [%s] on %s",
 			     data->statchar,
 			     data->source_p->name,
@@ -42,7 +42,7 @@ show_stats(struct hook_stats_data *data)
 			     data->source_p->user->server,
 			     data->name);
       else
-	sendto_realops_flags(FLAGS_SPY, L_ADMIN,
+	sendto_realops_flags(FLAGS_SPY, L_ALL,
 			     "STATS %c requested by %s (%s@%s) [%s]",
 			     data->statchar,
 			     data->source_p->name,
@@ -52,7 +52,7 @@ show_stats(struct hook_stats_data *data)
     }
   else
     {
-      sendto_realops_flags(FLAGS_SPY, L_ADMIN,
+      sendto_realops_flags(FLAGS_SPY, L_ALL,
                            "STATS %c requested by %s (%s@%s) [%s]",
 			   data->statchar, data->source_p->name, data->source_p->username,
 			   data->source_p->host, data->source_p->user->server);

@@ -1,6 +1,6 @@
 /* copyright (c) 2000 Edward Brocklesby, Hybrid Development Team
  *
- * $Id: spy_links_notice.c,v 1.5 2001/08/03 13:10:24 leeh Exp $
+ * $Id: spy_links_notice.c,v 1.6 2001/09/05 12:14:44 leeh Exp $
  */
 
 #include "modules.h"
@@ -33,7 +33,7 @@ show_links(struct hook_links_data *data)
   if (!MyConnect(data->source_p))
     return 0;
 	
-  sendto_realops_flags(FLAGS_SPY, L_ADMIN,
+  sendto_realops_flags(FLAGS_SPY, L_ALL,
                        "LINKS '%s' requested by %s (%s@%s) [%s]",
                        data->mask, data->source_p->name, data->source_p->username,
                        data->source_p->host, data->source_p->user->server);
