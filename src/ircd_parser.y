@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.325 2003/06/23 01:31:50 joshk Exp $
+ *  $Id: ircd_parser.y,v 1.326 2003/06/23 02:39:33 db Exp $
  */
 
 %{
@@ -830,6 +830,7 @@ oper_entry: OPERATOR
 
       if (yy_aconf->class_name != NULL)
         DupString(new_aconf->class_name, yy_aconf->class_name);
+      conf_add_class_to_conf(new_aconf);
       if (yy_aconf->name != NULL)
         DupString(new_aconf->name, yy_aconf->name);
       if (yy_aconf->passwd != NULL)
