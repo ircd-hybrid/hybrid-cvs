@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.h,v 1.19 2002/01/09 16:19:12 leeh Exp $
+ *  $Id: hostmask.h,v 1.20 2002/04/29 19:59:05 leeh Exp $
  */
 
 enum
@@ -67,25 +67,33 @@ extern struct AddressRec *atable[ATABLE_SIZE];
 
 struct AddressRec
 {
- /* masktype: HM_HOST, HM_IPV4, HM_IPV6 -A1kmm */
- int masktype;
- union {
-  struct {
-   /* Pointer into ConfItem... -A1kmm */
-   struct irc_inaddr addr;
-   int bits;
-  } ipa;
-   /* Pointer into ConfItem... -A1kmm */
+  /* masktype: HM_HOST, HM_IPV4, HM_IPV6 -A1kmm */
+  int masktype;
+
+  union
+  {
+    struct
+    {
+      /* Pointer into ConfItem... -A1kmm */
+      struct irc_inaddr addr;
+      int bits;
+    } ipa;
+
+  /* Pointer into ConfItem... -A1kmm */
   const char *hostname;
- } Mask;
- /* type: CONF_CLIENT, CONF_DLINE, CONF_KILL etc... -A1kmm */
- int type;
- /* Higher precedences overrule lower ones... */
- unsigned long precedence;
- /* Only checked if !(type & 1)... */
- const char *username;
- struct ConfItem *aconf;
- /* The next record in this hash bucket. */
- struct AddressRec *next;
+  } Mask;
+
+  /* type: CONF_CLIENT, CONF_DLINE, CONF_KILL etc... -A1kmm */
+  int type;
+
+  /* Higher precedences overrule lower ones... */
+  unsigned long precedence;
+
+  /* Only checked if !(type & 1)... */
+  const char *username;
+  struct ConfItem *aconf;
+
+  /* The next record in this hash bucket. */
+  struct AddressRec *next;
 };
 
