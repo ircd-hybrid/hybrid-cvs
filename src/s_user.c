@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.16 1999/09/25 16:53:06 db Exp $
+ *  $Id: s_user.c,v 7.17 1999/10/10 03:15:40 db Exp $
  */
 #include "s_user.h"
 #include "channel.h"
@@ -1280,7 +1280,7 @@ int nickkilldone(struct Client *cptr, struct Client *sptr, int parc,
           m = &parv[4][1];
           while (*m)
             {
-              flag = user_modes_from_c_to_bitmask[(int)(*m)];
+              flag = user_modes_from_c_to_bitmask[(unsigned char)*m];
               if ((flag & FLAGS_INVISIBLE))
                 {
                   ++Count.invisi;
@@ -1649,7 +1649,7 @@ int user_mode(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
         case '\t' :
           break;
         default :
-          if((flag = user_modes_from_c_to_bitmask[(int)(*m & 0x1F)]))
+          if((flag = user_modes_from_c_to_bitmask[(unsigned char)*m]))
             {
               if (what == MODE_ADD)
                 sptr->umodes |= flag;
