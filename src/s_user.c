@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.241 2003/04/15 09:10:33 michael Exp $
+ *  $Id: s_user.c,v 7.242 2003/04/16 09:01:52 michael Exp $
  */
 
 #include "stdinc.h"
@@ -305,7 +305,8 @@ register_local_user(struct Client *client_p, struct Client *source_p,
 		 (unsigned long)source_p->localClient->random_ping);
       SetPingSent(source_p);
       return(-1);
-    } 
+    }
+
     if (!HasPingCookie(source_p))
     {
       return(-1);
@@ -322,9 +323,9 @@ register_local_user(struct Client *client_p, struct Client *source_p,
 
   if (!valid_hostname(source_p->host))
   {
-    sendto_one(source_p,":%s NOTICE %s :*** Notice -- You have an illegal character in your hostname", 
+    sendto_one(source_p, ":%s NOTICE %s :*** Notice -- You have an illegal character in your hostname", 
                me.name, source_p->name);
-    strlcpy(source_p->host,source_p->localClient->sockhost,sizeof(source_p->host));
+    strlcpy(source_p->host, source_p->localClient->sockhost, sizeof(source_p->host));
   }
 
   ptr   = source_p->localClient->confs.head;
@@ -377,7 +378,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
     return(CLIENT_EXITED);
   }
 
-  memset(source_p->localClient->passwd,0, sizeof(source_p->localClient->passwd));
+  memset(source_p->localClient->passwd, 0, sizeof(source_p->localClient->passwd));
 
   /* report if user has &^>= etc. and set flags as needed in source_p */
   report_and_set_user_flags(source_p, aconf);
@@ -404,7 +405,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   }
 
   /* valid user name check */
-  if (!valid_username(source_p->username))
+  if (valid_username(source_p->username) == 0)
   {
     sendto_realops_flags(UMODE_REJ, L_ALL,
                          "Invalid username: %s (%s@%s)",
@@ -426,10 +427,14 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   {
     for (id = id_get(); find_id(id); id = id_get())
       ;
+
     strcpy(source_p->user->id, id);
     add_to_id_hash_table(id, source_p);
+#if 0
+    /* unused */
     id = id_get();
     strcpy(user->id_key, id);
+#endif
   }
 
   irc_getnameinfo((struct sockaddr*)&source_p->localClient->ip, 
@@ -810,8 +815,8 @@ report_and_set_user_flags(struct Client *source_p, struct ConfItem *aconf)
  * side effects -
  */
 int
-do_local_user(char* nick, struct Client* client_p, struct Client* source_p,
-              char* username, char* host, char* server, char* realname)
+do_local_user(char *nick, struct Client *client_p, struct Client *source_p,
+              char *username, char *host, char *server, char *realname)
 {
   struct User *user;
 
@@ -819,7 +824,7 @@ do_local_user(char* nick, struct Client* client_p, struct Client* source_p,
   assert(source_p->username != username);
   
   if (source_p == NULL)
-    return 0;
+    return(0);
 
   if (!IsUnknown(source_p))
   {
@@ -900,10 +905,11 @@ user_mode(struct Client *client_p, struct Client *source_p, int parc, char *parv
   unsigned int i;
   unsigned int flag;
   unsigned int setflags;
-  char **p, *m;
+  char **p;
+  char *m;
   struct Client *target_p;
-  int  what = MODE_ADD;
-  int  badflag = NO;		/* Only send one bad flag notice */
+  int what = MODE_ADD;
+  int badflag = NO; /* Only send one bad flag notice */
   char buf[BUFSIZE];
 
   if (parc < 2)
@@ -955,61 +961,61 @@ user_mode(struct Client *client_p, struct Client *source_p, int parc, char *parv
 
   /* find flags already set for user */
   setflags = source_p->umodes;
-  
-  /* parse mode change string(s)
-   */
+
+  /* parse mode change string(s) */
   for (p = &parv[2]; p && *p; p++)
+  {
     for (m = *p; *m; m++)
-      switch(*m)
-        {
+    {
+      switch (*m)
+      {
         case '+' :
           what = MODE_ADD;
           break;
         case '-' :
           what = MODE_DEL;
-          break;        
-
+          break;
         case 'o' :
-          if(what == MODE_ADD)
+          if (what == MODE_ADD)
+          {
+            if (IsServer(client_p) && !IsOper(source_p))
             {
-              if(IsServer(client_p) && !IsOper(source_p))
-                {
-                  ++Count.oper;
-                  SetOper(source_p);
-                }
+              ++Count.oper;
+              SetOper(source_p);
             }
+          }
           else
+          {
+            /* Only decrement the oper counts if an oper to begin with
+             * found by Pat Szuta, Perly , perly@xnet.com 
+             */
+            if (!IsOper(source_p))
+              break;
+
+            ClearOper(source_p);
+            source_p->umodes &= ~ConfigFileEntry.oper_only_umodes;
+            Count.oper--;
+
+            if (MyConnect(source_p))
             {
-	      /* Only decrement the oper counts if an oper to begin with
-               * found by Pat Szuta, Perly , perly@xnet.com 
-               */
+              dlink_node *dm;
 
-              if(!IsOper(source_p))
-                break;
+              ClearOperFlags(source_p);
+              dm = dlinkFind(&oper_list,source_p);
 
-              ClearOper(source_p);
-	      source_p->umodes &= ~ConfigFileEntry.oper_only_umodes;
-			  
-              Count.oper--;
-
-              if (MyConnect(source_p))
-                {
-                  dlink_node *dm;
-
-		  ClearOperFlags(source_p);
-		  dm = dlinkFind(&oper_list,source_p);
-		  if(dm != NULL)
-		    {
-		      dlinkDelete(dm,&oper_list);
-		      free_dlink_node(dm);
-		    }
-                }
+              if (dm != NULL)
+              {
+                dlinkDelete(dm,&oper_list);
+                free_dlink_node(dm);
+              }
             }
+          }
+
           break;
 
-          /* we may not get these,
-           * but they shouldnt be in default
-           */
+        /* we may not get these,
+         * but they shouldnt be in default
+         */
         case ' ' :
         case '\n' :
         case '\r' :
@@ -1017,28 +1023,31 @@ user_mode(struct Client *client_p, struct Client *source_p, int parc, char *parv
           break;
 
         default :
-          if( (flag = user_modes_from_c_to_bitmask[(unsigned char)*m]))
+          if ((flag = user_modes_from_c_to_bitmask[(unsigned char)*m]))
+          {
+            if (MyConnect(source_p) && !IsOper(source_p) &&
+                (ConfigFileEntry.oper_only_umodes & flag))
             {
-              if (MyConnect(source_p) && !IsOper(source_p) &&
-                 (ConfigFileEntry.oper_only_umodes & flag))
-                {
-                  badflag = YES;
-                }
+              badflag = YES;
+            }
+            else
+            {
+              if (what == MODE_ADD)
+                source_p->umodes |= flag;
               else
-                {
-                  if (what == MODE_ADD)
-                    source_p->umodes |= flag;
-                  else
-                    source_p->umodes &= ~flag;  
-                }
+                source_p->umodes &= ~flag;  
             }
+          }
           else
-            {
-              if (MyConnect(source_p))
-                badflag = YES;
-            }
+          {
+            if (MyConnect(source_p))
+              badflag = YES;
+          }
+
           break;
         }
+    }
+  }
 
   if (badflag)
     sendto_one(source_p, form_str(ERR_UMODEUNKNOWNFLAG),

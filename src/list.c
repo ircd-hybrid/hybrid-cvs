@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: list.c,v 7.53 2003/04/13 10:36:50 stu Exp $
+ *  $Id: list.c,v 7.54 2003/04/16 09:01:52 michael Exp $
  */
 
 #include "stdinc.h"
@@ -41,12 +41,11 @@
 
 
 /* XXX assummed 32 bit ints */
-int links_count=0;
-int slinks_count=0;
-int user_count=0;
+int links_count  = 0;
+int slinks_count = 0;
+int user_count   = 0;
 
-/*
- * initUser
+/* initUser()
  *
  * inputs	- none
  * outputs	- none
@@ -60,35 +59,33 @@ initUser(void)
 {
   user_heap = BlockHeapCreate(sizeof(struct User), USER_HEAP_SIZE);
 }
-/*
- * make_user
+
+/* make_user()
  *
  * inputs	- pointer to client struct
  * output	- pointer to struct User
  * side effects - add's an User information block to a client
  *                if it was not previously allocated.
  */
-struct User*
+struct User *
 make_user(struct Client *client_p)
 {
-  struct User *user;
+  struct User *user = client_p->user;
 
-  user = client_p->user;
   if (!user)
-    {
-      user = (struct User *)BlockHeapAlloc(user_heap);
+  {
+    user = (struct User *)BlockHeapAlloc(user_heap);
+    ++user_count;
 
-      ++user_count;
+    memset(user, 0, sizeof(struct User));
+    user->refcnt = 1;
+    client_p->user = user;
+  }
 
-      memset(user, 0, sizeof(struct User));
-      user->refcnt = 1;
-      client_p->user = user;
-    }
-  return user;
+  return(user);
 }
 
-/*
- * make_server
+/* make_server()
  *
  * inputs	- pointer to client struct
  * output	- pointer to struct Server
@@ -101,27 +98,27 @@ make_server(struct Client *client_p)
   struct Server* serv = client_p->serv;
 
   if (!serv)
-    {
-      serv = (struct Server *)MyMalloc(sizeof(struct Server));
+  {
+    serv = (struct Server *)MyMalloc(sizeof(struct Server));
 
-      /* The commented out lines here are
-       * for documentation purposes only
-       * as they are zeroed by MyMalloc above
-       */
+    /* The commented out lines here are
+     * for documentation purposes only
+     * as they are zeroed by MyMalloc above
+     */
 #if 0
-      serv->user = NULL;
-      serv->users = NULL;
-      serv->servers = NULL;
-      *serv->by = '\0'; 
-      serv->up = NULL;
+    serv->user = NULL;
+    serv->users = NULL;
+    serv->servers = NULL;
+    *serv->by = '\0'; 
+    serv->up = NULL;
 #endif
-      client_p->serv = serv;
-    }
-  return client_p->serv;
+    client_p->serv = serv;
+  }
+
+  return(client_p->serv);
 }
 
-/*
- * free_user
+/* free_user()
  * 
  * inputs	- pointer to user struct
  *		- pointer to client struct
@@ -136,11 +133,11 @@ free_user(struct User* user, struct Client* client_p)
   {
     if (user->away)
       MyFree((char *)user->away);
-    /*
-     * sanity check
+
+    /* sanity check
      */
     if (user->joined || user->refcnt < 0 ||
-	user->invited.head || user->channel.head)
+        user->invited.head || user->channel.head)
     {
       sendto_realops_flags(UMODE_ALL, L_ALL,
 			   "* %#lx user (%s!%s@%s) %#lx %#lx %#lx %d %d *",
@@ -161,9 +158,7 @@ free_user(struct User* user, struct Client* client_p)
   }
 }
 
-
-/*
- * init_dlink_nodes
+/* init_dlink_nodes()
  *
  */
 static BlockHeap *dnode_heap;
@@ -171,9 +166,8 @@ void init_dlink_nodes(void)
 {
   dnode_heap = BlockHeapCreate(sizeof(dlink_node), DNODE_HEAP_SIZE);
 }
- 
-/*
- * make_dlink_node
+
+/* make_dlink_node()
  *
  * inputs	- NONE
  * output	- pointer to new dlink_node
@@ -189,11 +183,10 @@ make_dlink_node(void)
 
   lp->next = NULL;
   lp->prev = NULL;
-  return lp;
+  return(lp);
 }
 
-/*
- * free_dlink_node
+/* free_dlink_node()
  *
  * inputs	- pointer to dlink_node
  * output	- NONE
@@ -207,8 +200,7 @@ free_dlink_node(dlink_node *ptr)
   assert(links_count >= 0);
 }
 
-/*
- * init_slink_nodes
+/* init_slink_nodes()
  *
  */
 static BlockHeap *snode_heap;
@@ -217,14 +209,13 @@ void init_slink_nodes(void)
   snode_heap = BlockHeapCreate(sizeof(slink_node), SNODE_HEAP_SIZE);
 }
 
-/*
- * make_slink_node
+/* make_slink_node()
  *
  * inputs   - NONE
  * output   - pointer to new slink_node
  * side effects - NONE
  */
-slink_node*
+slink_node *
 make_slink_node(void)
 {
   slink_node *lp;
@@ -233,11 +224,10 @@ make_slink_node(void)
   ++slinks_count;
 
   lp->next = NULL;
-  return lp;
+  return(lp);
 }
 
-/*
- * free_slink_node
+/* free_slink_node()
  *
  * inputs   - pointer to slink_node
  * output   - NONE
@@ -251,8 +241,7 @@ free_slink_node(slink_node *ptr)
   assert(slinks_count >= 0);
 }
 
-/*
- * count_user_memory
+/* count_user_memory()
  *
  * inputs	- pointer to user memory actually used
  *		- pointer to user memory allocated total in block allocator
@@ -266,8 +255,7 @@ count_user_memory(int *count,int *user_memory_used)
   *user_memory_used = user_count * sizeof(struct User);
 }
 
-/*
- * count_links_memory
+/* count_links_memory()
  *
  * inputs	- pointer to dlinks memory actually used
  *		- pointer to dlinks memory allocated total in block allocator
@@ -280,7 +268,4 @@ count_links_memory(int *count,int *links_memory_used)
   *count = links_count;
   *links_memory_used = links_count * sizeof(dlink_node);
 }
-
-
-
 
