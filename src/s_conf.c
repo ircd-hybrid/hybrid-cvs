@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.414 2003/05/29 00:59:05 db Exp $
+ *  $Id: s_conf.c,v 7.415 2003/05/29 03:35:57 db Exp $
  */
 
 #include "stdinc.h"
@@ -1869,11 +1869,11 @@ read_conf_files(int cold)
   read_conf(conf_fbfile_in);
   fbclose(conf_fbfile_in);
 
-  parse_conf_file(CONF_KILL, cold);
-  parse_conf_file(CONF_DLINE, cold);
-  parse_conf_file(CONF_XLINE, cold);
-  parse_conf_file(CONF_NRESV, cold);
-  parse_conf_file(CONF_CRESV, cold);
+  parse_conf_file(KLINE_TYPE, cold);
+  parse_conf_file(DLINE_TYPE, cold);
+  parse_conf_file(XLINE_TYPE, cold);
+  parse_conf_file(NRESV_TYPE, cold);
+  parse_conf_file(CRESV_TYPE, cold);
 }
 
 /*
@@ -2050,27 +2050,30 @@ flush_deleted_I_P(void)
  * side effects - none
  */
 const char *
-get_conf_name(int type)
+get_conf_name(ConfType type)
 {
   switch (type)
   {
   case CONF_TYPE:
     return(ConfigFileEntry.configfile);
     break;
-  case CONF_KILL:
+  case KLINE_TYPE:
     return(ConfigFileEntry.klinefile);
     break;
-  case CONF_DLINE:
+  case DLINE_TYPE:
     return(ConfigFileEntry.dlinefile);
     break;
-  case CONF_XLINE:
+  case XLINE_TYPE:
     return(ConfigFileEntry.xlinefile);
     break;
-  case CONF_CRESV:
+  case CRESV_TYPE:
     return(ConfigFileEntry.cresvfile);
     break;
-  case CONF_NRESV:
+  case NRESV_TYPE:
     return(ConfigFileEntry.nresvfile);
+    break;
+  case GLINE_TYPE:
+    return(ConfigFileEntry.glinefile);
     break;
 
   default:

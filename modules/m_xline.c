@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.15 2003/05/28 21:11:52 bill Exp $
+ *  $Id: m_xline.c,v 1.16 2003/05/29 03:35:55 db Exp $
  */
 
 #include "stdinc.h"
@@ -82,7 +82,7 @@ _moddeinit(void)
   mod_del_cmd(&xline_msgtab);
   mod_del_cmd(&unxline_msgtab);
 }
-const char *_version = "$Revision: 1.15 $";
+const char *_version = "$Revision: 1.16 $";
 #endif
 
 
@@ -345,7 +345,7 @@ ms_unxline(struct Client *client_p, struct Client *source_p,
                        source_p->username, source_p->host,
                        SHARED_UNXLINE))
   {
-    if (remove_conf_line(CONF_XLINE, source_p, parv[2], NULL) > 0)
+    if (remove_conf_line(XLINE_TYPE, source_p, parv[2], NULL) > 0)
     {
       sendto_one(source_p, ":%s NOTICE %s :X-Line for [%s] is removed",
                  me.name, parv[0], parv[2]);
@@ -420,14 +420,14 @@ write_xline(struct Client *source_p, char *gecos, char *reason, int type)
   set_time();
   cur_time = CurrentTime;
   current_date = smalldate(cur_time);
-  write_conf_line(source_p, aconf, current_date, cur_time);
+  write_conf_line(XLINE_TYPE, source_p, aconf, current_date, cur_time);
   conf_add_conf(aconf);
 }
 
 static void
 remove_xline(struct Client *source_p, char *gecos, int cluster)
 {
-  if (remove_conf_line(CONF_XLINE, source_p, gecos, NULL) > 0)
+  if (remove_conf_line(XLINE_TYPE, source_p, gecos, NULL) > 0)
   {
     if (!cluster)
       sendto_one(source_p, ":%s NOTICE %s :X-Line for [%s] is removed",

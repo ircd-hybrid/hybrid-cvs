@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.15 2003/05/25 05:10:18 db Exp $
+ *  $Id: csvlib.c,v 7.16 2003/05/29 03:35:57 db Exp $
  */
 
 #include "stdinc.h"
@@ -34,7 +34,7 @@ static int flush_write(struct Client *source_p, FBFILE *in, FBFILE* out,
  * side effects	-
  */
 void
-parse_csv_file(FBFILE *file, int conf_type)
+parse_csv_file(FBFILE *file, ConfType conf_type)
 {
   struct ConfItem *aconf;
   char  *name_field=NULL;
@@ -56,7 +56,7 @@ parse_csv_file(FBFILE *file, int conf_type)
 
     switch(conf_type)
     {
-    case CONF_KILL:
+    case KLINE_TYPE:
       parse_csv_line(line, &user_field, &host_field, &reason_field, NULL);
       aconf = make_conf(conf_type);
       if (host_field != NULL)
@@ -69,7 +69,7 @@ parse_csv_file(FBFILE *file, int conf_type)
 	add_conf_by_address(aconf->host, CONF_KILL, aconf->user, aconf);
       break;
 
-    case CONF_DLINE:
+    case DLINE_TYPE:
       parse_csv_line(line, &host_field, &reason_field, NULL);
       aconf = make_conf(CONF_DLINE);
       if (host_field != NULL)
@@ -79,7 +79,7 @@ parse_csv_file(FBFILE *file, int conf_type)
       conf_add_d_conf(aconf);
       break;
 
-    case CONF_XLINE:
+    case XLINE_TYPE:
       parse_csv_line(line, &name_field, &reason_field, &oper_reason, &port,
 		     NULL);
       aconf = make_conf(CONF_XLINE);
@@ -94,16 +94,19 @@ parse_csv_file(FBFILE *file, int conf_type)
       conf_add_conf(aconf);
       break;
 
-    case CONF_CRESV:
+    case CRESV_TYPE:
       parse_csv_line(line, &name_field, &reason_field, NULL);
       (void)create_channel_resv(name_field, reason_field, 0);
       break;
 
-    case CONF_NRESV:
+    case NRESV_TYPE:
       parse_csv_line(line, &name_field, &reason_field, NULL);
       (void)create_nick_resv(name_field, reason_field, 0);
       break;
 
+    case CONF_TYPE:
+    case GLINE_TYPE:
+      break;
     }
   }
 }
@@ -163,7 +166,8 @@ parse_csv_line(char *line, ...)
  * - Dianora
  */
 void 
-write_conf_line(struct Client *source_p, struct ConfItem *aconf,
+write_conf_line(ConfType type, struct Client *source_p,
+		struct ConfItem *aconf,
 		const char *current_date, time_t cur_time)
 {
   FBFILE *out;
@@ -177,9 +181,9 @@ write_conf_line(struct Client *source_p, struct ConfItem *aconf,
     return;
   }
 
-  switch(aconf->status)
+  switch(type)
   {
-  case CONF_KILL:
+  case KLINE_TYPE:
     sendto_realops_flags(UMODE_ALL, L_ALL,
                          "%s added K-Line for [%s@%s] [%s]",
                          get_oper_name(source_p),
@@ -194,7 +198,7 @@ write_conf_line(struct Client *source_p, struct ConfItem *aconf,
 		   get_oper_name(source_p), (long)cur_time);
     break;
 
-  case CONF_DLINE:
+  case DLINE_TYPE:
     sendto_realops_flags(UMODE_ALL, L_ALL,
                          "%s added D-Line for [%s] [%s]",
                          get_oper_name(source_p), aconf->host, aconf->reason);
@@ -208,7 +212,7 @@ write_conf_line(struct Client *source_p, struct ConfItem *aconf,
 		   get_oper_name(source_p), (long)cur_time);
     break;
 
-  case CONF_XLINE:
+  case XLINE_TYPE:
     sendto_realops_flags(UMODE_ALL, L_ALL,
                          "%s added X-Line for [%s] [%s]",
                          get_oper_name(source_p), aconf->name, aconf->reason);
@@ -246,7 +250,8 @@ write_conf_line(struct Client *source_p, struct ConfItem *aconf,
  * - Dianora
  */
 void 
-write_resv_line(struct Client *source_p /*unused*/ , int type, void *resv_p)
+write_resv_line(ConfType type, 
+		struct Client *source_p /*unused*/, void *resv_p)
 {
   FBFILE *out;
   const char *filename;
@@ -481,7 +486,7 @@ getfield(char *newline)
  * side effects	-
  */
 int
-remove_conf_line(int type, struct Client *source_p, const char *pat1, const char *pat2)
+remove_conf_line(ConfType type, struct Client *source_p, const char *pat1, const char *pat2)
 {
   const char *filename;
   FBFILE *in, *out;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.230 2003/05/28 21:02:41 db Exp $
+ *  $Id: s_conf.h,v 7.231 2003/05/29 03:35:53 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -102,7 +102,6 @@ struct ConfItem
 
 #define CONF_SERVER_MASK       CONF_SERVER
 #define CONF_CLIENT_MASK       (CONF_CLIENT | CONF_OPERATOR | CONF_SERVER_MASK)
-#define CONF_TYPE CONF_CLIENT_MASK
 
 /* XXX temporary hack */
 #define CONF_CRESV	        0x80000001
@@ -372,16 +371,27 @@ extern void yyerror(const char *);
 extern int conf_yy_fatal_error(const char *);
 extern int conf_fbgets(char *, int, FBFILE *);
 
-extern void write_conf_line(struct Client *, struct ConfItem *,
-			    const char *, time_t);
-extern void write_resv_line(struct Client *, int type, void *);
+typedef enum {
+  CONF_TYPE,
+  KLINE_TYPE,
+  DLINE_TYPE,
+  XLINE_TYPE,
+  GLINE_TYPE,
+  CRESV_TYPE,
+  NRESV_TYPE
+} ConfType;
 
-extern int remove_conf_line(int, struct Client *, const char *, const char *);
+extern void write_conf_line(ConfType type, struct Client *, struct ConfItem *,
+			    const char *, time_t);
+extern void write_resv_line(ConfType type, struct Client *, void *);
+
+extern int remove_conf_line(ConfType, struct Client *, const char *,
+			    const char *);
 extern void add_temp_kline(struct ConfItem *);
 extern void add_temp_dline(struct ConfItem *);
 extern void cleanup_tklines(void *notused);
 
-extern const char *get_conf_name(int);
+extern const char *get_conf_name(ConfType);
 extern int rehash(int);
 
 extern int conf_add_server(struct ConfItem *, unsigned int);
@@ -391,7 +401,7 @@ extern void conf_add_d_conf(struct ConfItem *);
 extern void conf_add_conf(struct ConfItem *);
 
 /* XXX consider moving these into csvlib.h */
-extern void parse_csv_file(FBFILE *file, int conf_type);
+extern void parse_csv_file(FBFILE *file, ConfType);
 extern char *getfield(char *newline);
 
 extern char *get_oper_name(struct Client *client_p);

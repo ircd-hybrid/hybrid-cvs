@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_unkline.c,v 1.67 2003/05/29 00:59:03 db Exp $
+ *  $Id: m_unkline.c,v 1.68 2003/05/29 03:35:55 db Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&msgtabs[2]);
   delete_capability("UNKLN");
 }
-const char *_version = "$Revision: 1.67 $";
+const char *_version = "$Revision: 1.68 $";
 #endif
 
 static int remove_tkline_match(const char *, const char *);
@@ -160,7 +160,7 @@ mo_unkline(struct Client *client_p,struct Client *source_p,
       return;
     }
 
-  if (remove_conf_line(CONF_KILL, source_p, user, host) > 0)
+  if (remove_conf_line(KLINE_TYPE, source_p, user, host) > 0)
   {
     sendto_one(source_p, ":%s NOTICE %s :K-Line for [%s@%s] is removed", 
 	       me.name, source_p->name, user,host);
@@ -218,7 +218,7 @@ ms_unkline(struct Client *client_p, struct Client *source_p, int parc, char *par
       return;
     }
 
-    if (remove_conf_line(CONF_KILL, source_p, kuser, khost))
+    if (remove_conf_line(KLINE_TYPE, source_p, kuser, khost))
     {
       sendto_realops_flags(UMODE_ALL, L_ALL,
                            "%s has removed the K-Line for: [%s@%s]",
@@ -245,7 +245,7 @@ ms_unkline(struct Client *client_p, struct Client *source_p, int parc, char *par
       return;
     } 
 
-    if (remove_conf_line(CONF_KILL, source_p, kuser, khost) > 0)
+    if (remove_conf_line(KLINE_TYPE, source_p, kuser, khost) > 0)
     {
       sendto_one(source_p, ":%s NOTICE %s :K-Line for [%s@%s] is removed",
                  me.name, source_p->name, kuser, khost);
@@ -371,7 +371,7 @@ mo_undline(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if (remove_conf_line(CONF_DLINE, source_p, cidr, NULL) > 0)
+  if (remove_conf_line(DLINE_TYPE, source_p, cidr, NULL) > 0)
   {
     sendto_one(source_p, ":%s NOTICE %s :D-Line for [%s] is removed",
 	       me.name, parv[0], cidr);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_resv.c,v 1.25 2003/05/24 19:25:29 michael Exp $
+ *  $Id: m_resv.c,v 1.26 2003/05/29 03:35:55 db Exp $
  */
 
 #include "stdinc.h"
@@ -72,7 +72,7 @@ _moddeinit(void)
   mod_del_cmd(&unresv_msgtab);
 }
 
-const char *_version = "$Revision: 1.25 $";
+const char *_version = "$Revision: 1.26 $";
 #endif
 
 /* mo_resv()
@@ -244,7 +244,7 @@ parse_resv(struct Client *source_p, char *name,
                          get_oper_name(source_p),
                          (MyClient(source_p) ? "local" : "remote"),
                          resv_p->name, resv_p->reason);
-    write_resv_line(source_p, CONF_CRESV, resv_p);
+    write_resv_line(CRESV_TYPE, source_p, resv_p);
   }
   else if (clean_resv_nick(name))
   {
@@ -278,7 +278,7 @@ parse_resv(struct Client *source_p, char *name,
                          get_oper_name(source_p),
                          (MyClient(source_p) ? "local" : "remote"),
                          resv_p->name, resv_p->reason);
-    write_resv_line(source_p, CONF_NRESV, resv_p);
+    write_resv_line(NRESV_TYPE, source_p, resv_p);
   }
   else if (!cluster)
     sendto_one(source_p,
@@ -313,7 +313,7 @@ remove_resv(struct Client *source_p, char *name, int cluster)
     else
     {
       delete_channel_resv(resv_p);
-      (void)remove_conf_line(CONF_CRESV, source_p, name, NULL);
+      (void)remove_conf_line(CRESV_TYPE, source_p, name, NULL);
 
       if (!cluster)
         sendto_one(source_p,
@@ -348,7 +348,7 @@ remove_resv(struct Client *source_p, char *name, int cluster)
     else
     {
       delete_nick_resv(resv_p);
-      (void)remove_conf_line(CONF_NRESV, source_p, name, NULL);
+      (void)remove_conf_line(NRESV_TYPE, source_p, name, NULL);
 
       if (!cluster)
         sendto_one(source_p,
