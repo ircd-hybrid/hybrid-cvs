@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_opme.c,v 1.46 2003/07/01 01:19:48 joshk Exp $
+ *   $Id: m_opme.c,v 1.47 2003/07/07 12:27:15 michael Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -45,7 +45,6 @@ struct Message opme_msgtab = {
 };
 
 #ifndef STATIC_MODULES
-
 void
 _modinit(void)
 {
@@ -58,7 +57,7 @@ _moddeinit(void)
   mod_del_cmd(&opme_msgtab);
 }
 
-const char *_version = "$Revision: 1.46 $";
+const char *_version = "$Revision: 1.47 $";
 
 #endif
 
@@ -85,12 +84,6 @@ mo_opme(struct Client *client_p, struct Client *source_p,
 {
   struct Channel *chptr;
   struct Membership *member;
-#ifdef USE_HALFOPS
-  int dehalfop = 0;
-#endif
-  int devoice = 0;
-  char *modebuf, *parabuf;
-  char buf[NICKLEN*2 + 2];
 
   /* admins only */
   if (!IsAdmin(source_p))
@@ -123,15 +116,7 @@ mo_opme(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-#ifdef USE_HALFOPS
-  if (has_member_flags(member, CHFL_HALFOP))
-    dehalfop = 1;
-#endif
-
-  if (has_member_flags(member, CHFL_VOICE))
-    devoice = 1;
-
-  change_channel_membership(member, CHFL_CHANOP, CHFL_HALFOP | CHFL_VOICE);
+  change_channel_membership(member, CHFL_CHANOP, 0);
 
   if (parv[1][0] == '&')
   {
@@ -162,34 +147,14 @@ mo_opme(struct Client *client_p, struct Client *source_p,
                 ":%s PART %s", source_p->name, parv[1]);
   sendto_server(NULL, source_p, chptr, CAP_SID, NOCAPS, NOFLAGS,
                 ":%s SJOIN %ld %s + :@%s",
-                me.name, (signed long) chptr->channelts,
+                me.name, (unsigned long)chptr->channelts,
                 parv[1],
                 source_p->name /* XXX ID(source_p) */ );
   sendto_server(NULL, source_p, chptr, NOCAPS, CAP_SID, NOFLAGS,
                 ":%s SJOIN %ld %s + :@%s",
-                me.name, (signed long) chptr->channelts,
+                me.name, (unsigned long)chptr->channelts,
                 parv[1], source_p->name);
-  if (devoice)
-    modebuf = "-v+o";
-#ifdef USE_HALFOPS
-  else if (dehalfop)
-    modebuf = "-h+o";
-#endif
-  else
-    modebuf = "+o";
 
-#ifdef USE_HALFOPS
-  if (devoice || dehalfop)
-#else
-  if (devoice)
-#endif
-  {
-    snprintf(buf, sizeof(buf), "%s %s", source_p->name, source_p->name);
-    parabuf = buf;
-  }
-  else parabuf = source_p->name;
-
-  sendto_channel_local(ALL_MEMBERS, chptr,
-                       ":%s MODE %s %s %s",
-                       me.name, parv[1], modebuf, parabuf);
+  sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s +o %s",
+                       me.name, parv[1], source_p->name);
 }
