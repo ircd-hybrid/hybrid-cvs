@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.192 2001/06/26 09:00:24 jdc Exp $
+ *   $Id: s_serv.c,v 7.193 2001/07/01 05:31:01 greg Exp $
  */
 
 #include <sys/types.h>
@@ -1107,7 +1107,9 @@ int server_estab(struct Client *client_p)
   client_p->serv->up = me.name;
   /* add it to scache */
   find_or_add(client_p->name);
-  
+  client_p->firsttime = CurrentTime;
+  /* fixing eob timings.. -gnp */
+
   client_p->serv->sconf = aconf;
   client_p->flags2 |= FLAGS2_CBURST;
 

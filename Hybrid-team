@@ -1,4 +1,4 @@
-$Id: Hybrid-team,v 7.32 2001/05/30 13:43:59 jdc Exp $
+$Id: Hybrid-team,v 7.33 2001/07/01 05:30:53 greg Exp $
 
 The hybrid team is a group of ircd coders who were frustrated
 with the instability and all-out "dirtiness" of the EFnet ircd's
@@ -31,6 +31,7 @@ pro, Bill Jonus <proggy@earthling.net>
 Rodder, Jon Lusky <lusky@blown.net>
 toot, Toby Verrall <to7@antipope.fsnet.co.uk>
 Wohali, Joan Touzet <joant@ieee.org>
+xyst, Greg Prosser <gnp@arrogant.org>
  
 The following people have contributed blood, sweat, and/or code to
 this release of hybrid, in nick alphabetical order:
