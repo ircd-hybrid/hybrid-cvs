@@ -1,3 +1,11 @@
+*** 20001107_1 by db
+- added back anti drone flood code. *sigh* Though I suspect this all
+  has to be modified in the grand scheme of things eventually...
+
+  Still have to re-add oper prefix privmsg support.
+
+
+
 *** 20001106_18 by db
 - slight tweak to m_privmsg code to allow sending of errors to client
   
@@ -176,7 +184,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.501 2000/11/07 04:13:00 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.502 2000/11/07 05:16:17 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
