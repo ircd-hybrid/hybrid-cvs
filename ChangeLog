@@ -1,3 +1,15 @@
+db          2002/12/16 15:53:01 EST	(20021216_4)
+
+  Modified files:
+    src                  packet.c 
+  Log:
+  - localClient can go NULL after a parse here as well.
+  
+  Revision  Changes    Path
+  7.94      +2 -0      ircd-hybrid-7/src/packet.c
+
+
+
 db          2002/12/16 02:18:50 EST	(20021216_3)
 
   Modified files:
@@ -33595,4 +33607,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4139 2002/12/16 07:18:52 db Exp $
+$Id: ChangeLog,v 7.4140 2002/12/16 20:53:04 db Exp $
