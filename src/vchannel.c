@@ -19,7 +19,7 @@
  *
  *
  *
- * $Id: vchannel.c,v 7.21 2000/12/04 19:32:13 db Exp $
+ * $Id: vchannel.c,v 7.22 2000/12/07 00:52:29 db Exp $
  */
 #include "tools.h"
 #include "vchannel.h"
@@ -175,7 +175,7 @@ void show_vchans(struct Client *cptr,
    /* include the root itself in the count */
    no_of_vchans = dlink_list_length(&chptr->vchan_list) + 1;
 
-   sendto_one(sptr, form_str(RPL_VCHANEXIST),
+   Sendto_one(sptr, form_str(RPL_VCHANEXIST),
               me.name, sptr->name, chptr->chname, no_of_vchans);
 
    vchan_show_ids(sptr, chptr);
