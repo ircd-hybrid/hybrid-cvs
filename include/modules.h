@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.h,v 7.36 2003/05/10 04:04:59 michael Exp $
+ *  $Id: modules.h,v 7.37 2003/05/19 05:54:14 michael Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -50,7 +50,7 @@ struct module
 
 struct module_path
 {
-  char path[MAXPATHLEN];
+  char path[MAXPATHLEN + 1];
 };
 
 /* add a path */
@@ -69,7 +69,7 @@ extern void _moddeinit(void);
 extern int unload_one_module(char *, int);
 extern int load_one_module(char *, int);
 extern int load_a_module(char *, int, int);
-extern int findmodule_byname(char *);
+extern int findmodule_byname(const char *);
 extern char *irc_basename(char *);
 extern void modules_init(void);
 

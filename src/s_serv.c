@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.325 2003/05/18 23:29:27 michael Exp $
+ *  $Id: s_serv.c,v 7.326 2003/05/19 05:54:15 michael Exp $
  */
 
 #include "stdinc.h"
@@ -866,17 +866,17 @@ server_estab(struct Client *client_p)
   struct ConfItem *aconf;
   char *host;
   const char *inpath;
-  static char inpath_ip[HOSTLEN * 2 + USERLEN + 5];
+  static char inpath_ip[HOSTLEN * 2 + USERLEN + 6];
   dlink_node *m;
   dlink_node *ptr;
 
-  assert(NULL != client_p);
+  assert(client_p != NULL);
 
   if (client_p == NULL)
     return(-1);
 
   ClearAccess(client_p);
-  strcpy(inpath_ip, get_client_name(client_p, SHOW_IP));
+  strlcpy(inpath_ip, get_client_name(client_p, SHOW_IP), sizeof(inpath_ip));
 
   inpath = get_client_name(client_p, MASK_IP); /* "refresh" inpath with host */
   host   = client_p->name;
@@ -1927,7 +1927,7 @@ serv_connect(struct ConfItem *aconf, struct Client *by)
     make_server(client_p);
     if (by && IsPerson(by))
       {
-        strcpy(client_p->serv->by, by->name);
+        strlcpy(client_p->serv->by, by->name, sizeof(client_p->serv->by));
         if (client_p->serv->user)
             free_user(client_p->serv->user, NULL);
         client_p->serv->user = by->user;
@@ -1935,7 +1935,7 @@ serv_connect(struct ConfItem *aconf, struct Client *by)
       }
     else
       {
-        strcpy(client_p->serv->by, "AutoConn.");
+        strlcpy(client_p->serv->by, "AutoConn.", sizeof(client_p->serv->by));
         if (client_p->serv->user)
             free_user(client_p->serv->user, NULL);
         client_p->serv->user = NULL;
