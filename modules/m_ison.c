@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_ison.c,v 1.21 2001/03/06 15:53:26 toot Exp $
+ *   $Id: m_ison.c,v 1.22 2001/04/04 15:22:26 androsyn Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -47,6 +47,8 @@ struct Message ison_msgtab = {
   {m_unregistered, m_ison, ms_ison, m_ison}
 };
 
+#ifndef STATIC_MODULES
+
   void
 _modinit(void)
 {
@@ -58,11 +60,12 @@ _moddeinit(void)
 {
   mod_del_cmd(&ison_msgtab);
 }
+char *_version = "20001122";
+#endif
 
 static char buf[BUFSIZE];
 static char buf2[BUFSIZE];
 
-char *_version = "20001122";
 
 /*
  * m_ison added by Darren Reed 13/8/91 to act as an efficent user indicator

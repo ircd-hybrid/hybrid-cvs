@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_server.c,v 1.54 2001/03/06 15:53:30 toot Exp $
+ *   $Id: m_server.c,v 1.55 2001/04/04 15:22:34 androsyn Exp $
  */
 #include "tools.h"
 #include "handlers.h"  /* m_server prototype */
@@ -53,6 +53,7 @@ struct Message server_msgtab = {
   {mr_server, m_registered, ms_server, m_registered}
 };
 
+#ifndef STATIC_MODULES
 void 
 _modinit(void)
 {
@@ -64,12 +65,13 @@ _moddeinit(void)
 {
   mod_del_cmd(&server_msgtab);
 }
+char *_version = "20001122";
+#endif
 
 char *parse_server_args(char *parv[], int parc, char *info, int *hop);
 int bogus_host(char *host);
 void write_links_file(void*);
 
-char *_version = "20001122";
 
 static int       refresh_user_links=0;
 

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_accept.c,v 1.20 2001/03/06 02:22:18 androsyn Exp $
+ *   $Id: m_accept.c,v 1.21 2001/04/04 15:22:22 androsyn Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -40,6 +40,7 @@ struct Message accept_msgtab = {
   {m_unregistered, m_accept, m_ignore, m_accept}
 };
 
+#ifndef STATIC_MODULES
 void
 _modinit(void)
 {
@@ -53,7 +54,7 @@ _moddeinit(void)
 }
 
 char *_version = "20001122";
-
+#endif
 /*
  * m_accept - ACCEPT command handler
  *      parv[0] = sender prefix

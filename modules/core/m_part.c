@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_part.c,v 1.36 2001/03/06 02:22:30 androsyn Exp $
+ *   $Id: m_part.c,v 1.37 2001/04/04 15:22:32 androsyn Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -52,6 +52,7 @@ struct Message part_msgtab = {
   {m_unregistered, m_part, ms_part, mo_part}
 };
 
+#ifndef STATIC_MODULES
 void
 _modinit(void)
 {
@@ -63,12 +64,13 @@ _moddeinit(void)
 {
   mod_del_cmd(&part_msgtab);
 }
+char *_version = "20001122";
+#endif
 
 static void part_one_client(struct Client *client_p,
 			    struct Client *source_p,
 			    char *name, char *reason);
 
-char *_version = "20001122";
 
 /*
 ** m_part

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.c,v 1.29 2001/03/19 09:59:57 toot Exp $
+ * $Id: m_info.c,v 1.30 2001/04/04 15:22:26 androsyn Exp $
  */
 #include "tools.h"
 #include "m_info.h"
@@ -54,6 +54,7 @@ struct Message info_msgtab = {
   "INFO", 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_info, ms_info, mo_info}
 };
+#ifndef STATIC_MODULES
 
 void
 _modinit(void)
@@ -66,12 +67,13 @@ _moddeinit(void)
 {
   mod_del_cmd(&info_msgtab);
 }
+char *_version = "20010109";
+#endif
 
 void send_info_text(struct Client *source_p);
 void send_birthdate_online_time(struct Client *source_p);
 void send_conf_options(struct Client *source_p);
 
-char *_version = "20010109";
 
 /*
 ** m_info

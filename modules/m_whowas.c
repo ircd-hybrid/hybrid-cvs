@@ -16,7 +16,7 @@
 *   along with this program; if not, write to the Free Software
 *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 *
-*   $Id: m_whowas.c,v 1.18 2001/03/06 02:22:46 androsyn Exp $
+*   $Id: m_whowas.c,v 1.19 2001/04/04 15:22:40 androsyn Exp $
 */
 #include "whowas.h"
 #include "handlers.h"
@@ -47,6 +47,7 @@ struct Message whowas_msgtab = {
   {m_unregistered, m_whowas, m_error, mo_whowas}
 };
 
+#ifndef STATIC_MODULES
 void
 _modinit(void)
 {
@@ -58,11 +59,11 @@ _moddeinit(void)
 {
   mod_del_cmd(&whowas_msgtab);
 }
-
+char *_version = "20001122";
+#endif
 static int whowas_do(struct Client *client_p, struct Client *source_p,
                      int parc, char *parv[]);
 
-char *_version = "20001122";
 
 /*
 ** m_whowas

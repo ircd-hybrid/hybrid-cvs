@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_user.c,v 1.17 2001/03/06 02:22:40 androsyn Exp $
+ *   $Id: m_user.c,v 1.18 2001/04/04 15:22:38 androsyn Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -45,6 +45,7 @@ struct Message user_msgtab = {
   {mr_user, m_registered, m_ignore, m_registered}
 };
 
+#ifndef STATIC_MODULES
 void
 _modinit(void)
 {
@@ -58,7 +59,7 @@ _moddeinit(void)
 }
 
 char *_version = "20001122";
-
+#endif
 /*
 ** mr_user
 **      parv[0] = sender prefix

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_testline.c,v 1.15 2001/03/06 02:22:36 androsyn Exp $
+ *   $Id: m_testline.c,v 1.16 2001/04/04 15:22:36 androsyn Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -47,6 +47,7 @@ struct Message testline_msgtab = {
   {m_unregistered, m_not_oper, m_ignore, mo_testline}
 };
  
+#ifndef STATIC_MODULES
 void
 _modinit(void)
 {
@@ -60,7 +61,7 @@ _moddeinit(void)
 }
  
 char *_version = "20001124";
-
+#endif
 /*
  * mo_testline
  *

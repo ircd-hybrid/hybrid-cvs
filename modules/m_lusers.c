@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_lusers.c,v 1.14 2001/03/06 02:22:27 androsyn Exp $
+ *   $Id: m_lusers.c,v 1.15 2001/04/04 15:22:30 androsyn Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -43,6 +43,7 @@ struct Message lusers_msgtab = {
   "LUSERS", 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_lusers, ms_lusers, m_lusers}
 };
+#ifndef STATIC_MODULES
 
 void
 _modinit(void)
@@ -57,7 +58,7 @@ _moddeinit(void)
 }
 
 char *_version = "20001122";
-
+#endif
 /*
  * m_lusers - LUSERS message handler
  * parv[0] = sender

@@ -3,7 +3,7 @@
  *   Copyright (C) 1990 Jarkko Oikarinen and
  *                      University of Oulu, Co Center
  *
- * $Id: m_list.c,v 1.29 2001/03/07 23:01:10 db Exp $ 
+ * $Id: m_list.c,v 1.30 2001/04/04 15:22:29 androsyn Exp $ 
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -50,6 +50,7 @@ struct Message list_msgtab = {
   "LIST", 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_list, ms_list, mo_list}
 };
+#ifndef STATIC_MODULES
 
 void
 _modinit(void)
@@ -62,11 +63,11 @@ _moddeinit(void)
 {
   mod_del_cmd(&list_msgtab);
 }
-
+char *_version = "20001122";
+#endif
 static int list_all_channels(struct Client *source_p);
 static int list_named_channel(struct Client *source_p,char *name);
 
-char *_version = "20001122";
 
 /*
 ** m_list

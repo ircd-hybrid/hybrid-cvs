@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_userhost.c,v 1.30 2001/03/06 15:53:32 toot Exp $
+ *   $Id: m_userhost.c,v 1.31 2001/04/04 15:22:38 androsyn Exp $
  */
 
 #include "handlers.h"
@@ -45,6 +45,7 @@ struct Message userhost_msgtab = {
   {m_unregistered, m_userhost, m_userhost, m_userhost}
 };
 
+#ifndef STATIC_MODULES
 void
 _modinit(void)
 {
@@ -58,7 +59,7 @@ _moddeinit(void)
 }
 
 char *_version = "20001122";
-
+#endif
 /*
  * m_userhost added by Darren Reed 13/8/91 to aid clients and reduce
  * the need for complicated requests like WHOIS. It returns user/host

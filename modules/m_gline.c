@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_gline.c,v 1.43 2001/03/14 05:27:09 toot Exp $
+ *  $Id: m_gline.c,v 1.44 2001/04/04 15:22:25 androsyn Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -107,6 +107,8 @@ struct Message gline_msgtab = {
       {m_unregistered, m_not_oper, ms_gline, mo_gline}
 };
 
+#ifndef STATIC_MODULES
+
 void
 _modinit(void)
 {
@@ -120,6 +122,7 @@ _moddeinit(void)
 }
 
 char *_version = "20001122";
+#endif
 /*
  * mo_gline()
  *

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_locops.c,v 1.21 2001/03/06 02:22:27 androsyn Exp $
+ *   $Id: m_locops.c,v 1.22 2001/04/04 15:22:29 androsyn Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -41,6 +41,7 @@ struct Message locops_msgtab = {
   "LOCOPS", 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, m_ignore, m_locops}
 };
+#ifndef STATIC_MODULES
 
 void
 _modinit(void)
@@ -55,7 +56,7 @@ _moddeinit(void)
 }
 
 char *_version = "20001122";
-
+#endif
 /*
  * m_locops - LOCOPS message handler
  * (write to *all* local opers currently online)

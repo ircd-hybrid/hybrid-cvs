@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kick.c,v 1.27 2001/03/06 02:22:24 androsyn Exp $
+ *   $Id: m_kick.c,v 1.28 2001/04/04 15:22:27 androsyn Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -44,7 +44,7 @@ struct Message kick_msgtab = {
   "KICK", 0, 3, 0, MFLG_SLOW, 0,
   {m_unregistered, m_kick, ms_kick, m_kick}
 };
-
+#ifndef STATIC_MODULES
 void
 _modinit(void)
 {
@@ -58,7 +58,7 @@ _moddeinit(void)
 }
 
 char *_version = "20010121";
-
+#endif
 /*
 ** m_kick
 **      parv[0] = sender prefix

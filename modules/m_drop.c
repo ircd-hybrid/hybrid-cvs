@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_drop.c,v 1.16 2001/03/06 02:22:22 androsyn Exp $
+ * $Id: m_drop.c,v 1.17 2001/04/04 15:22:25 androsyn Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -45,7 +45,7 @@ struct Message drop_msgtab = {
   "DROP", 0, 2, 0, MFLG_SLOW | MFLG_UNREG, 0L,
   {m_unregistered, m_ignore, ms_drop, m_ignore}
 };
-
+#ifndef STATIC_MODULES
 void
 _modinit(void)
 {
@@ -59,7 +59,7 @@ _moddeinit(void)
 }
 
 char *_version = "20001122";
-
+#endif
 /*
 ** ms_drop
 **      parv[0] = sender prefix

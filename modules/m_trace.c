@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_trace.c,v 1.23 2001/03/22 05:31:40 androsyn Exp $
+ *   $Id: m_trace.c,v 1.24 2001/04/04 15:22:37 androsyn Exp $
  */
 #include "handlers.h"
 #include "class.h"
@@ -49,6 +49,7 @@ struct Message trace_msgtab = {
   {m_unregistered, m_ignore, ms_trace, mo_trace}
 };
 
+#ifndef STATIC_MODULES
 void
 _modinit(void)
 {
@@ -60,11 +61,11 @@ _moddeinit(void)
 {
   mod_del_cmd(&trace_msgtab);
 }
-
+char *_version = "20010109";
+#endif
 static int report_this_status(struct Client *source_p, struct Client *target_p,int dow,
                               int link_u_p, int link_u_s);
 
-char *_version = "20010109";
 
 /*
 ** mo_trace

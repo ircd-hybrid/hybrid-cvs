@@ -21,7 +21,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: m_unkline.c,v 1.27 2001/03/06 02:22:39 androsyn Exp $
+ *   $Id: m_unkline.c,v 1.28 2001/04/04 15:22:37 androsyn Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -62,6 +62,7 @@ struct Message msgtabs[] = {
    {m_unregistered, m_not_oper, m_error, mo_ungline}}
 };
 
+#ifndef STATIC_MODULES
 void
 _modinit(void)
 {
@@ -77,11 +78,12 @@ _moddeinit(void)
   mod_del_cmd(&msgtabs[1]);
   mod_del_cmd(&msgtabs[2]);
 }
+char *_version = "20001122";
+#endif
 
 static int flush_write(struct Client *, FBFILE* , char *, char *);
 static int remove_tkline_match(char *,char *);
 
-char *_version = "20001122";
 
 /*
 ** mo_unkline

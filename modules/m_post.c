@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_post.c,v 1.1 2001/03/09 16:02:34 fl_ Exp $
+ *   $Id: m_post.c,v 1.2 2001/04/04 15:22:33 androsyn Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -40,6 +40,7 @@ struct Message post_msgtab = {
   {m_post, m_ignore, m_ignore, m_ignore}
 };
 
+#ifndef STATIC_MODULES
 void
 _modinit(void)
 {
@@ -53,7 +54,7 @@ _moddeinit(void)
 }
 
 char *_version = "20010309";
-
+#endif
 /*
 ** m_post
 **      parv[0] = sender prefix

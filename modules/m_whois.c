@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 1.59 2001/03/06 15:53:33 toot Exp $
+ *   $Id: m_whois.c,v 1.60 2001/04/04 15:22:39 androsyn Exp $
  */
 
 #include <string.h>
@@ -63,6 +63,7 @@ struct Message whois_msgtab = {
   {m_unregistered, m_whois, ms_whois, mo_whois}
 };
 
+#ifndef STATIC_MODULES
 void
 _modinit(void)
 {
@@ -78,7 +79,7 @@ _moddeinit(void)
 }
 
 char *_version = "20010105";
-
+#endif
 /*
 ** m_whois
 **      parv[0] = sender prefix

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_invite.c,v 1.23 2001/03/06 15:53:26 toot Exp $
+ *   $Id: m_invite.c,v 1.24 2001/04/04 15:22:26 androsyn Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -47,6 +47,7 @@ struct Message invite_msgtab = {
   "INVITE", 0, 3, 0, MFLG_SLOW, 0,
   {m_unregistered, m_invite, ms_invite, m_invite}
 };
+#ifndef STATIC_MODULES
 
 void
 _modinit(void)
@@ -61,7 +62,7 @@ _moddeinit(void)
 }
 
 char *_version = "20001122";
-
+#endif
 /*
 ** m_invite
 **      parv[0] - sender prefix

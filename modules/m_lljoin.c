@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_lljoin.c,v 1.37 2001/03/06 15:53:27 toot Exp $
+ * $Id: m_lljoin.c,v 1.38 2001/04/04 15:22:29 androsyn Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -46,6 +46,7 @@ struct Message lljoin_msgtab = {
   "LLJOIN", 0, 3, 0, MFLG_SLOW | MFLG_UNREG, 0L,
   {m_unregistered, m_ignore, ms_lljoin, m_ignore}
 };
+#ifndef STATIC_MODULES
 
 void
 _modinit(void)
@@ -60,7 +61,7 @@ _moddeinit(void)
 }
 
 char *_version = "20001122";
-
+#endif
 /*
  * m_lljoin
  *      parv[0] = sender prefix

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_rehash.c,v 1.22 2001/03/30 20:13:55 ejb Exp $
+ *   $Id: m_rehash.c,v 1.23 2001/04/04 15:22:34 androsyn Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -47,6 +47,7 @@ struct Message rehash_msgtab = {
   {m_unregistered, m_not_oper, m_ignore, mo_rehash}
 };
 
+#ifndef STATIC_MODULES
 void
 _modinit(void)
 {
@@ -60,7 +61,7 @@ _moddeinit(void)
 }
 
 char *_version = "20001122";
-
+#endif
 /*
  * mo_rehash - REHASH message handler
  *

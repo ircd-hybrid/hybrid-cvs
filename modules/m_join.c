@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 1.54 2001/03/14 23:01:14 toot Exp $
+ *   $Id: m_join.c,v 1.55 2001/04/04 15:22:27 androsyn Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -52,6 +52,8 @@ struct Message join_msgtab = {
   {m_unregistered, m_join, ms_join, m_join}
 };
 
+#ifndef STATIC_MODULES
+
 void
 _modinit(void)
 {
@@ -63,13 +65,14 @@ _moddeinit(void)
 {
   mod_del_cmd(&join_msgtab);
 }
+char *_version = "20001122";
 
+#endif
 static void build_list_of_channels( struct Client *source_p,
                                     char *jbuf, char *given_names);
 static void do_join_0(struct Client *client_p, struct Client *source_p);
 static void check_spambot_warning( struct Client *source_p, char *name );
 
-char *_version = "20001122";
 
 /*
 ** m_join

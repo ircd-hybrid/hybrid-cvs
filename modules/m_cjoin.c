@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_cjoin.c,v 1.28 2001/03/06 02:22:20 androsyn Exp $
+ *   $Id: m_cjoin.c,v 1.29 2001/04/04 15:22:23 androsyn Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -50,7 +50,7 @@ struct Message cjoin_msgtab = {
   {m_unregistered, m_cjoin, m_error, m_cjoin}
 };
 
-
+#ifndef STATIC_MODULES
 void
 _modinit(void)
 {
@@ -64,7 +64,7 @@ _moddeinit(void)
 }
 
 char *_version = "20001122";
-
+#endif
 /*
 ** m_cjoin
 **      parv[0] = sender prefix

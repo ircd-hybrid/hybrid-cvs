@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_eob.c,v 1.21 2001/03/06 16:07:40 toot Exp $
+ *   $Id: m_eob.c,v 1.22 2001/04/04 15:22:25 androsyn Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -40,7 +40,7 @@ struct Message eob_msgtab = {
   "EOB", 0, 0, 0, MFLG_SLOW | MFLG_UNREG, 0, 
   {m_unregistered, m_ignore, ms_eob, m_ignore}
 };
-
+#ifndef STATIC_MODULES
 void
 _modinit(void)
 {
@@ -54,7 +54,7 @@ _moddeinit(void)
 }
 
 char *_version = "20001202";
-
+#endif
 /*
  * ms_eob - EOB command handler
  *      parv[0] = sender prefix   

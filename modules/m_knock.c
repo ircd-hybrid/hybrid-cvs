@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_knock.c,v 1.26 2001/03/06 02:22:26 androsyn Exp $
+ *   $Id: m_knock.c,v 1.27 2001/04/04 15:22:28 androsyn Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -53,6 +53,7 @@ struct Message knock_msgtab = {
   "KNOCK", 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_knock, m_ignore, m_knock}
 };
+#ifndef STATIC_MODULES
 
 void
 _modinit(void)
@@ -67,7 +68,7 @@ _moddeinit(void)
 }
 
 char *_version = "20010105";
-
+#endif
 /* m_knock
 **    parv[0] = sender prefix
 **    parv[1] = channel

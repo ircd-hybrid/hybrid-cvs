@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.63 2001/03/06 15:53:28 toot Exp $
+ *   $Id: m_message.c,v 1.64 2001/04/04 15:22:30 androsyn Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -109,6 +109,8 @@ struct Message notice_msgtab = {
   {m_unregistered, m_notice, m_notice, m_notice}
 };
 
+#ifndef STATIC_MODULES
+
 void
 _modinit(void)
 {
@@ -124,7 +126,7 @@ _moddeinit(void)
 }
 
 char *_version = "20001122";
-
+#endif
 /* 
  * free_target_table -
  *

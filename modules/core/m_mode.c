@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_mode.c,v 1.34 2001/03/06 15:53:29 toot Exp $
+ *   $Id: m_mode.c,v 1.35 2001/04/04 15:22:30 androsyn Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -45,6 +45,7 @@ struct Message mode_msgtab = {
   "MODE", 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_mode, m_mode, m_mode}
 };
+#ifndef STATIC_MODULES
 
 void
 _modinit(void)
@@ -60,7 +61,7 @@ _moddeinit(void)
 
 
 char *_version = "20001122";
-
+#endif
 /*
  * m_mode - MODE command handler
  * parv[0] - sender

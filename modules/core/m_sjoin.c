@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.80 2001/03/14 22:37:12 fl_ Exp $
+ *   $Id: m_sjoin.c,v 1.81 2001/04/04 15:22:35 androsyn Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -51,6 +51,7 @@ struct Message sjoin_msgtab = {
   {m_unregistered, m_ignore, ms_sjoin, m_ignore}
 };
 
+#ifndef STATIC_MODULES
 void
 _modinit(void)
 {
@@ -64,7 +65,7 @@ _moddeinit(void)
 }
 
 char *_version = "20010102";
-
+#endif
 /*
  * ms_sjoin
  * parv[0] - sender

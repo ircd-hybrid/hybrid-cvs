@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_version.c,v 1.23 2001/03/06 02:22:43 androsyn Exp $
+ *   $Id: m_version.c,v 1.24 2001/04/04 15:22:38 androsyn Exp $
  */
 #include <string.h>
 #include "handlers.h"
@@ -46,6 +46,7 @@ struct Message version_msgtab = {
   {m_unregistered, m_version, ms_version, mo_version}
 };
 
+#ifndef STATIC_MODULES
 void
 _modinit(void)
 {
@@ -59,7 +60,7 @@ _moddeinit(void)
 }
 
 char *_version = "20001223";
-
+#endif
 /*
  * m_version - VERSION command handler
  *      parv[0] = sender prefix

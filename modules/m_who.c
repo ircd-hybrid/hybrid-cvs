@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_who.c,v 1.37 2001/03/29 22:21:01 fl_ Exp $
+ *   $Id: m_who.c,v 1.38 2001/04/04 15:22:39 androsyn Exp $
  */
 #include "tools.h"
 #include "common.h"   /* bleah */
@@ -48,6 +48,7 @@ struct Message who_msgtab = {
   {m_unregistered, m_who, ms_who, m_who}
 };
 
+#ifndef STATIC_MODULES
 void
 _modinit(void)
 {
@@ -59,7 +60,8 @@ _moddeinit(void)
 {
   mod_del_cmd(&who_msgtab);
 }
-
+char *_version = "20010210";
+#endif
 static void do_who_on_channel(struct Client *source_p,
 			      struct Channel *chptr, char *real_name,
 			      int server_oper, int member);
@@ -77,7 +79,6 @@ static void do_who(struct Client *source_p,
                    char *chname,
                    char *op_flags);
 
-char *_version = "20010210";
 
 /*
 ** m_who

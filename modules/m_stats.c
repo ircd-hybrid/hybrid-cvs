@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 1.58 2001/03/06 15:53:32 toot Exp $
+ *  $Id: m_stats.c,v 1.59 2001/04/04 15:22:36 androsyn Exp $
  */
 #include "tools.h"	 /* dlink_node/dlink_list */
 #include "handlers.h"    /* m_pass prototype */
@@ -63,6 +63,7 @@ struct Message stats_msgtab = {
   {m_unregistered, m_stats, ms_stats, mo_stats}
 };
 
+#ifndef STATIC_MODULES
 void
 _modinit(void)
 {
@@ -78,7 +79,7 @@ _moddeinit(void)
 }
 
 char *_version = "20010127";
-
+#endif
 /*
  * m_stats - STATS message handler
  *      parv[0] = sender prefix

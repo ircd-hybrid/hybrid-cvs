@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kline.c,v 1.66 2001/03/13 20:38:22 fl_ Exp $
+ *   $Id: m_kline.c,v 1.67 2001/04/04 15:22:28 androsyn Exp $
  */
 #include "tools.h"
 #include "m_kline.h"
@@ -67,6 +67,8 @@ struct Message dline_msgtab = {
   {m_unregistered, m_not_oper, m_error, mo_dline}
 };
 
+#ifndef STATIC_MODULES
+
 void
 _modinit(void)
 {
@@ -80,6 +82,8 @@ _moddeinit(void)
   mod_del_cmd(&kline_msgtab);
   mod_del_cmd(&dline_msgtab);
 }
+char *_version = "20001122";
+#endif
 
 /* Local function prototypes */
 
@@ -109,7 +113,6 @@ static void apply_tkline(struct Client *source_p, struct ConfItem *aconf,
                          int ip_kline, struct irc_inaddr *ip,
                          unsigned long ip_mask);
 
-char *_version = "20001122";
 
 char buffer[IRCD_BUFSIZE];
 char user[USERLEN+2];

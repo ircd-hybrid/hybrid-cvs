@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_names.c,v 1.27 2001/03/15 20:03:56 db Exp $
+ *   $Id: m_names.c,v 1.28 2001/04/04 15:22:31 androsyn Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -54,6 +54,7 @@ struct Message names_msgtab = {
   "NAMES", 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_names, ms_names, m_names}
 };
+#ifndef STATIC_MODULES
 
 void
 _modinit(void)
@@ -68,7 +69,7 @@ _moddeinit(void)
 }
 
 char *_version = "20001122";
-
+#endif
 
 /************************************************************************
  * m_names() - Added by Jto 27 Apr 1989

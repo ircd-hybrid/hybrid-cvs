@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_wallops.c,v 1.21 2001/03/06 02:22:43 androsyn Exp $
+ *   $Id: m_wallops.c,v 1.22 2001/04/04 15:22:39 androsyn Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -43,6 +43,7 @@ struct Message wallops_msgtab = {
   {m_unregistered, m_not_oper, ms_wallops, mo_wallops}
 };
 
+#ifndef STATIC_MODULES
 void
 _modinit(void)
 {
@@ -56,7 +57,7 @@ _moddeinit(void)
 }
  
 char *_version = "20001122";
-
+#endif
 /*
  * mo_wallops (write to *all* opers currently online)
  *      parv[0] = sender prefix

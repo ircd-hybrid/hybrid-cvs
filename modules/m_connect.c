@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_connect.c,v 1.24 2001/03/06 15:53:25 toot Exp $
+ *   $Id: m_connect.c,v 1.25 2001/04/04 15:22:24 androsyn Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -49,6 +49,7 @@ struct Message connect_msgtab = {
   {m_unregistered, m_not_oper, ms_connect, mo_connect}
 };
 
+#ifndef STATIC_MODULES
 void
 _modinit(void)
 {
@@ -62,7 +63,7 @@ _moddeinit(void)
 }
 
 char *_version = "20001122";
-
+#endif
 /*
  * mo_connect - CONNECT command handler
  * 

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_llnick.c,v 1.9 2001/03/06 15:53:28 toot Exp $
+ * $Id: m_llnick.c,v 1.10 2001/04/04 15:22:29 androsyn Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -44,6 +44,7 @@ struct Message llnick_msgtab = {
   "LLNICK", 0, 3, 0, MFLG_SLOW | MFLG_UNREG, 0L,
   {m_unregistered, m_ignore, ms_llnick, m_ignore}
 };
+#ifndef STATIC_MODULES
 
 void
 _modinit(void)
@@ -58,7 +59,7 @@ _moddeinit(void)
 }
 
 char *_version = "20001122";
-
+#endif
 /*
  * m_llnick
  *      parv[0] = sender prefix

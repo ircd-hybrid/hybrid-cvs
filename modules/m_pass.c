@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_pass.c,v 1.15 2001/03/06 02:22:31 androsyn Exp $
+ *  $Id: m_pass.c,v 1.16 2001/04/04 15:22:33 androsyn Exp $
  */
 #include "handlers.h"  /* m_pass prototype */
 #include "client.h"      /* client struct */
@@ -39,6 +39,7 @@ struct Message pass_msgtab = {
   {mr_pass, m_registered, m_ignore, m_registered}
 };
 
+#ifndef STATIC_MODULES
 void
 _modinit(void)
 {
@@ -52,7 +53,7 @@ _moddeinit(void)
 }
 
 char *_version = "20001122";
-
+#endif
 /*
  * m_pass() - Added Sat, 4 March 1989
  *

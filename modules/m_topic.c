@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_topic.c,v 1.33 2001/03/11 17:47:55 davidt Exp $
+ *   $Id: m_topic.c,v 1.34 2001/04/04 15:22:37 androsyn Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -49,6 +49,7 @@ struct Message topic_msgtab = {
   {m_unregistered, m_topic, ms_topic, m_topic}
 };
 
+#ifndef STATIC_MODULES
 void
 _modinit(void)
 {
@@ -62,7 +63,7 @@ _moddeinit(void)
 }
 
 char *_version = "20001122";
-
+#endif
 /*
  * m_topic
  *      parv[0] = sender prefix

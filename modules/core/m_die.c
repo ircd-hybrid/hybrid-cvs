@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_die.c,v 1.15 2001/03/06 15:53:25 toot Exp $
+ *   $Id: m_die.c,v 1.16 2001/04/04 15:22:24 androsyn Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -42,7 +42,7 @@ struct Message die_msgtab = {
   "DIE", 0, 1, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, m_ignore, mo_die}
 };
-
+#ifndef STATIC_MODULES
 void
 _modinit(void)
 {
@@ -56,7 +56,7 @@ _moddeinit(void)
 }
 
 char *_version = "20001122";
-
+#endif
 /*
  * mo_die - DIE command handler
  */

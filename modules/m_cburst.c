@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_cburst.c,v 1.30 2001/03/06 02:22:19 androsyn Exp $
+ * $Id: m_cburst.c,v 1.31 2001/04/04 15:22:23 androsyn Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -45,7 +45,7 @@ struct Message cburst_msgtab = {
   "CBURST", 0, 1, 0, MFLG_SLOW | MFLG_UNREG, 0L,
   {m_unregistered, m_error, ms_cburst, m_error}
 };
-
+#ifndef STATIC_MODULES
 void
 _modinit(void)
 {
@@ -59,7 +59,7 @@ _moddeinit(void)
 }
 
 char *_version = "20001122";
-
+#endif
 /*
 ** m_cburst
 **      parv[0] = sender prefix

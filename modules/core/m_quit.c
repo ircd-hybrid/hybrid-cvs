@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_quit.c,v 1.17 2001/03/19 09:59:57 toot Exp $
+ *   $Id: m_quit.c,v 1.18 2001/04/04 15:22:34 androsyn Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -41,6 +41,7 @@ struct Message quit_msgtab = {
   {m_quit, m_quit, ms_quit, m_quit}
 };
 
+#ifndef STATIC_MODULES
 void
 _modinit(void)
 {
@@ -54,7 +55,7 @@ _moddeinit(void)
 }
 
 char *_version = "20001122";
-
+#endif
 /*
 ** m_quit
 **      parv[0] = sender prefix

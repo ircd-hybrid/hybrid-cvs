@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_away.c,v 1.19 2001/03/19 17:12:15 toot Exp $
+ *   $Id: m_away.c,v 1.20 2001/04/04 15:22:22 androsyn Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -41,7 +41,7 @@ struct Message away_msgtab = {
   "AWAY", 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_away, m_away, m_away}
 };
-
+#ifndef STATIC_MODULES
 void
 _modinit(void)
 {
@@ -53,9 +53,8 @@ _moddeinit(void)
 {
   mod_del_cmd(&away_msgtab);
 }
-
 char *_version = "20010128";
-
+#endif
 /***********************************************************************
  * m_away() - Added 14 Dec 1988 by jto. 
  *            Not currently really working, I don't like this

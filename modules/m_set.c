@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_set.c,v 1.32 2001/03/06 02:22:33 androsyn Exp $ */
+ *   $Id: m_set.c,v 1.33 2001/04/04 15:22:35 androsyn Exp $ */
 
 /* rewritten by jdc */
 
@@ -48,6 +48,7 @@ struct Message set_msgtab = {
   {m_unregistered, m_not_oper, m_error, mo_set}
 };
 
+#ifndef STATIC_MODULES
   void
 _modinit(void)
 {
@@ -61,7 +62,7 @@ _moddeinit(void)
 }
 
 char *_version = "20001122";
-
+#endif
 /* Structure used for the SET table itself */
 struct SetStruct
 {

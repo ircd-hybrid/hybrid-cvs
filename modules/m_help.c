@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_help.c,v 1.16 2001/03/06 02:22:23 androsyn Exp $
+ *   $Id: m_help.c,v 1.17 2001/04/04 15:22:26 androsyn Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -41,6 +41,7 @@ struct Message help_msgtab = {
   "HELP", 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_help, m_ignore, mo_help}
 };
+#ifndef STATIC_MODULES
 
 void
 _modinit(void)
@@ -55,7 +56,7 @@ _moddeinit(void)
 }
 
 char *_version = "20001122";
-
+#endif
 /*
  * m_help - HELP message handler
  *      parv[0] = sender prefix

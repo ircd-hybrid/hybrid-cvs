@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_dmem.c,v 1.8 2001/03/06 02:22:21 androsyn Exp $
+ *   $Id: m_dmem.c,v 1.9 2001/04/04 15:22:24 androsyn Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -45,7 +45,7 @@ struct Message dmem_msgtab = {
   "DMEM", 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, m_ignore, mo_dmem}
 };
-
+#ifndef STATIC_MODULES
 void
 _modinit(void)
 {
@@ -59,7 +59,7 @@ _moddeinit(void)
 }
 
 char *_version = "20001221";
-
+#endif
 #ifdef MEMDEBUG
 void ReportAllocated(struct Client*);
 #endif
