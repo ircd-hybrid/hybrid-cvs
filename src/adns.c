@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: adns.c,v 7.48 2002/10/30 02:56:18 androsyn Exp $
+ *  $Id: adns.c,v 7.48.2.1 2003/04/05 01:20:03 lusky Exp $
  */
 
 #include "stdinc.h"
@@ -211,26 +211,30 @@ void dns_select(void)
  */
 }
 
-/* void adns_gethost(const char *name, int aftype, struct DNSQuery *req);
+/* int adns_gethost(const char *name, int aftype, struct DNSQuery *req);
  * Input: A name, an address family, a DNSQuery structure.
- * Output: None
+ * Output: error result from adns_submit_reverse
  * Side effects: Sets up a query structure and sends off a DNS query to
  *               the DNS server to resolve an "A"(address) entry by name.
  */
-void adns_gethost(const char *name, int aftype, struct DNSQuery *req)
+int
+adns_gethost(const char *name, int aftype, struct DNSQuery *req)
 {
+  int result;
+
   assert(dns_state->nservers > 0);
 #ifdef IPV6 
   if (aftype == AF_INET6)
-    adns_submit(dns_state, name, adns_r_addr6, adns_qf_owner, req,
-                &req->query);
+    result = adns_submit(dns_state, name, adns_r_addr6, adns_qf_owner, req,
+			 &req->query);
   else
 #endif
-    adns_submit(dns_state, name, adns_r_addr, adns_qf_owner, req,
-                &req->query);
+    result = adns_submit(dns_state, name, adns_r_addr, adns_qf_owner, req,
+			 &req->query);
+  return(result);
 }
 
-/* void adns_getaddr(struct irc_inaddr *addr, int aftype,
+/* int adns_getaddr(struct irc_inaddr *addr, int aftype,
  *                   struct DNSQuery *req, int arpa_type);
  * Input: An address, an address family, a DNSQuery structure.
  *        arpa_type is used for deciding on using ip6.int or ip6.arpa
@@ -240,10 +244,12 @@ void adns_gethost(const char *name, int aftype, struct DNSQuery *req)
  * Side effects: Sets up a query entry and sends it to the DNS server to
  *               resolve an IP address to a domain name.
  */
-void adns_getaddr(struct irc_inaddr *addr, int aftype,
-                  struct DNSQuery *req, int arpa_type)
+int
+adns_getaddr(struct irc_inaddr *addr, int aftype,
+	     struct DNSQuery *req, int arpa_type)
 {
   struct irc_sockaddr ipn;
+  int result;
 
   memset(&ipn, 0, sizeof(struct irc_sockaddr));
   assert(dns_state->nservers > 0);
@@ -258,16 +264,21 @@ void adns_getaddr(struct irc_inaddr *addr, int aftype,
            
     if(!arpa_type)
     {
-    	adns_submit_reverse(dns_state,(struct sockaddr *)&ipn.sins.sin6, 
-                            adns_r_ptr_ip6,
-    			    adns_qf_owner|adns_qf_cname_loose|adns_qf_quoteok_anshost, 
-    			    req, &req->query);
-    } else
+    	result = adns_submit_reverse(dns_state,
+				     (struct sockaddr *)&ipn.sins.sin6, 
+				     adns_r_ptr_ip6,
+				     adns_qf_owner|adns_qf_cname_loose|
+				     adns_qf_quoteok_anshost, 
+				     req, &req->query);
+    }
+    else
     {
-    	adns_submit_reverse(dns_state,(struct sockaddr *)&ipn.sins.sin6, 
-                            adns_r_ptr_ip6_old,
-    			    adns_qf_owner|adns_qf_cname_loose|adns_qf_quoteok_anshost, 
-    			    req, &req->query);
+      result = adns_submit_reverse(dns_state,
+				   (struct sockaddr *)&ipn.sins.sin6, 
+				   adns_r_ptr_ip6_old,
+				   adns_qf_owner|adns_qf_cname_loose|
+				   adns_qf_quoteok_anshost, 
+				   req, &req->query);
     
     }
   } 
@@ -276,16 +287,21 @@ void adns_getaddr(struct irc_inaddr *addr, int aftype,
     ipn.sins.sin.sin_family = AF_INET;
     ipn.sins.sin.sin_port = 0;
     ipn.sins.sin.sin_addr.s_addr = addr->sins.sin.s_addr;
-    adns_submit_reverse(dns_state, (struct sockaddr *)&ipn.sins.sin, adns_r_ptr, 
-                        adns_qf_owner|adns_qf_cname_loose|adns_qf_quoteok_anshost, 
-			req, &req->query);
+    result = adns_submit_reverse(dns_state,
+				 (struct sockaddr *)&ipn.sins.sin, adns_r_ptr, 
+				 adns_qf_owner|adns_qf_cname_loose|
+				 adns_qf_quoteok_anshost, 
+				 req, &req->query);
   }
 #else
   ipn.sins.sin.sin_family = AF_INET;
   ipn.sins.sin.sin_port = 0;
   ipn.sins.sin.sin_addr.s_addr = addr->sins.sin.s_addr;
-  adns_submit_reverse(dns_state, (struct sockaddr *)&ipn.sins.sin, adns_r_ptr, 
-                      adns_qf_owner|adns_qf_cname_loose|adns_qf_quoteok_anshost, 
-                      req, &req->query);
+  result = adns_submit_reverse(dns_state,
+			       (struct sockaddr *)&ipn.sins.sin, adns_r_ptr, 
+			       adns_qf_owner|adns_qf_cname_loose|
+			       adns_qf_quoteok_anshost, 
+			       req, &req->query);
 #endif
+  return(result);
 }

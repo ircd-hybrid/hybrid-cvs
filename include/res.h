@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: res.h,v 7.21 2002/10/19 22:32:49 androsyn Exp $
+ *  $Id: res.h,v 7.21.2.1 2003/04/05 01:19:59 lusky Exp $
  */
 
 #ifndef _RES_H_INCLUDED
@@ -46,8 +46,8 @@ void dns_writeable (int fd , void *ptr );
 void dns_readable (int fd , void *ptr );
 void dns_do_callbacks(void);
 void dns_select (void);
-void adns_gethost (const char *name , int aftype , struct DNSQuery *req );
-void adns_getaddr (struct irc_inaddr *addr , int aftype , struct DNSQuery *req, int arpa_type );
+int adns_gethost (const char *name , int aftype , struct DNSQuery *req );
+int adns_getaddr (struct irc_inaddr *addr , int aftype , struct DNSQuery *req, int arpa_type );
 void delete_adns_queries(struct DNSQuery *q);
 void report_adns_servers(struct Client *);
 #endif

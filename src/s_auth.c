@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.103 2002/10/30 02:56:18 androsyn Exp $
+ *  $Id: s_auth.c,v 7.103.2.1 2003/04/05 01:20:03 lusky Exp $
  */
 
 /*
@@ -407,10 +407,12 @@ void start_auth(struct Client* client)
   sendheader(client, REPORT_DO_DNS);
 
   /* No DNS cache now, remember? -- adrian */
-  adns_getaddr(&client->localClient->ip, client->localClient->aftype, client->localClient->dns_query, 0);
-  SetDNSPending(auth);
+  /* Only set DNS pending if no error! -- Dianora */
+  if (adns_getaddr(&client->localClient->ip, client->localClient->aftype,
+		   client->localClient->dns_query, 0) == 0)
+    SetDNSPending(auth);
 
-  start_auth_query(auth);
+  (void)start_auth_query(auth);
   link_auth_request(auth, &auth_poll_list);
 }
 
