@@ -1,3 +1,6 @@
+NOTES:  This document is obsolete for Hybrid 7.  It will be updated
+        at a later date.  
+
   On a stand alone server, make sure you #undef all of
 NO_CHANOPS_ON_SPLIT, NO_JOIN_ON_SPLIT, PRESERVE_CHANNEL_ON_SPLIT
 NO_JOIN_ON_SPLIT_SIMPLE in config.h Otherwise, you will have trouble
@@ -48,4 +51,4 @@ bit maps.
   - Dianora
 
 --
-$Id: README.small_nets,v 7.1 1999/08/26 03:36:15 lusky Exp $
+$Id: README.small_nets,v 7.2 2001/01/02 19:02:50 wcampbel Exp $
