@@ -5,7 +5,7 @@
  *
  * Adrian Chadd <adrian@creative.net.au>
  *
- * $Id: tools.h,v 1.6 2000/12/04 01:18:34 db Exp $
+ * $Id: tools.h,v 1.7 2001/01/04 00:31:41 adrian Exp $
  */
 #ifndef __TOOLS_H__
 #define __TOOLS_H__
@@ -49,4 +49,7 @@ dlink_list_length(dlink_list *m);
 
 dlink_node *
 dlinkFind(dlink_list *m, void *data);
+
+void mem_frob(void *data, int len);
+
 #endif

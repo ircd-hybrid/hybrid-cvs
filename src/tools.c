@@ -5,7 +5,7 @@
  *
  * adrian chadd <adrian@creative.net.au>
  *
- * $Id: tools.c,v 7.13 2000/12/21 13:39:55 db Exp $
+ * $Id: tools.c,v 7.14 2001/01/04 00:31:46 adrian Exp $
  */
 
 #include <assert.h>
@@ -14,6 +14,23 @@
 
 #include "tools.h"
 #include "memdebug.h"
+
+
+/*
+ * frob some memory. debugging time.
+ * -- adrian
+ */
+void
+mem_frob(void *data, int len)
+{
+    unsigned char b[4] = { 0xde, 0xad, 0xbe, 0xef };
+    int i;
+    char *cdata = data;
+    for (i = 0; i < len; i++) {
+        *cdata = b[i % 4];
+        cdata++;
+    }
+}
 
 /* 
  * dlink_ routines are stolen from squid, except for dlinkAddBefore,
