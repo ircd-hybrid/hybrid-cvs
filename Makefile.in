@@ -16,7 +16,7 @@
 #*   along with this program; if not, write to the Free Software
 #*   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #*
-#*   $Id: Makefile.in,v 7.12 2000/11/30 22:47:54 davidt Exp $
+#*   $Id: Makefile.in,v 7.13 2000/12/01 00:59:55 db Exp $
 #*/
 
 RM=@RM@
@@ -80,9 +80,11 @@ CFLAGS		= @CFLAGS@
 
 
 SHELL=/bin/sh
-SUBDIRS=src tools modules messages
+#SUBDIRS=src tools modules messages
+SUBDIRS=src tools modules
 # XXX removed `iauth' from the build since it doesn't compile currently
 # SUBDIRS=src tools iauth
+# XXX removed 'messages' from the build until thats fixed
 
 MAKE = make ${MFLAGS} 
 

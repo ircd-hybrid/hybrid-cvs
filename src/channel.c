@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.83 2000/11/30 16:01:51 db Exp $
+ * $Id: channel.c,v 7.84 2000/12/01 01:00:01 db Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -1181,10 +1181,6 @@ void set_channel_mode(struct Client *cptr,
 
           if (!(who = find_chasing(sptr, arg, NULL)))
             break;
-
-          /* there is always the remote possibility of picking up
-           * a bogus user, be nasty to core for that.
-           */
 
           if (!who->user)
             break;
