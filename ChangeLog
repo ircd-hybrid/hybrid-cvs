@@ -1,3 +1,23 @@
+db          2002/10/09 11:08:33 EDT	(20021009_0)
+
+  Modified files:
+    contrib              m_force.c 
+    modules/core         m_server.c 
+    src                  channel.c client.c linebuf.c 
+  Log:
+  - as noted by adx. There were a few unnecessary checks for NULL pointer
+    as we already have called outofmemory(), its pointless.
+    adx also spotted an unfreed server struct.
+  
+  Revision  Changes    Path
+  1.15      +11 -11    ircd-hybrid-7/contrib/m_force.c
+  1.88      +3 -1      ircd-hybrid-7/modules/core/m_server.c
+  7.333     +9 -13     ircd-hybrid-7/src/channel.c
+  7.301     +0 -2      ircd-hybrid-7/src/client.c
+  7.93      +0 -3      ircd-hybrid-7/src/linebuf.c
+
+
+
 db          2002/10/08 17:06:56 EDT	(20021008_1)
 
   Modified files:
@@ -32274,4 +32294,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4050 2002/10/08 21:06:59 db Exp $
+$Id: ChangeLog,v 7.4051 2002/10/09 15:08:36 db Exp $
