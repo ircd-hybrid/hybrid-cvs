@@ -25,7 +25,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_sigio.c,v 7.4 2001/12/10 07:24:10 androsyn Exp $
+ *  $Id: s_bsd_sigio.c,v 7.5 2001/12/10 07:26:00 androsyn Exp $
  */
 #ifndef _GNU_SOURCE
 #define _GNU_SOURCE 1 /* Needed for F_SETSIG */
@@ -254,7 +254,6 @@ comm_select(unsigned long delay)
 {
  int num = 0;
  int revents = 0;
- static int loop_count = 0;
  int sig;
  int fd;
  int ci;
@@ -266,7 +265,7 @@ comm_select(unsigned long delay)
  timeout.tv_nsec = 1000000 * delay;
  for (;;)
  {
-  if(!sigio_is_screwed && loop_count <= 3 )
+  if(!sigio_is_screwed)
   {
   	if((sig = sigtimedwait(&our_sigset, &si, &timeout)) > 0)
   	{
@@ -304,7 +303,7 @@ comm_select(unsigned long delay)
   }  else
   	break;
  }
- if(!sigio_is_screwed && loop_count < 3) /* We don't need to proceed */
+ if(!sigio_is_screwed) /* We don't need to proceed */
  	return 0;
  for(;;)
  {
@@ -315,7 +314,6 @@ comm_select(unsigned long delay)
 		sigio_is_screwed = 0;
   	}
   		num = poll(pollfd_list.pollfds, pollfd_list.maxindex + 1, 0);
-  		loop_count = 0;
   		if (num >= 0)
     			break;
   		if (ignoreErrno(errno))
