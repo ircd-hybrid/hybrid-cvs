@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: m_tb.c,v 1.10 2002/06/11 01:49:18 androsyn Exp $
+ *  $Id: m_tb.c,v 1.11 2002/07/06 22:20:09 leeh Exp $
  */
 
 #include "stdinc.h"
@@ -81,7 +81,7 @@ _moddeinit(void)
   unset_tburst_capab();
 }
 
-const char *_version = "$Revision: 1.10 $";
+const char *_version = "$Revision: 1.11 $";
 #endif
 
 /* ms_tburst()
@@ -134,7 +134,9 @@ static void set_topic(struct Client *source_p, struct Channel *chptr,
   sendto_server(source_p, NULL, chptr, CAP_TBURST, NOCAPS, NOFLAGS,
 		":%s TBURST %ld %s %ld %s :%s",
 		source_p->name, chptr->channelts, chptr->chname,
-		chptr->topic_time, chptr->topic_info == NULL ? "" : chptr->topic , chptr->topic == NULL ? "" : chptr->topic);
+		chptr->topic_time, 
+                chptr->topic_info == NULL ? "" : chptr->topic_info,
+                chptr->topic == NULL ? "" : chptr->topic);
 #endif
 }
 
