@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.315 2003/10/30 08:29:19 bill Exp $
+ *  $Id: s_user.c,v 7.316 2003/12/31 01:54:14 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -1266,16 +1266,10 @@ user_welcome(struct Client *source_p)
   }
   else  
     send_message_file(source_p, &ConfigFileEntry.motd);
-#if 0
-  /* restrictions are broken since diane commented out some code.
-   * local restrictions are just pointless
-   */
+
   if (IsRestricted(source_p))
-  {
     sendto_one(source_p,form_str(ERR_RESTRICTED),
                me.name, source_p->name);
-  }
-#endif
 }
 
 /* check_x_line()
