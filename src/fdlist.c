@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fdlist.c,v 7.27 2002/01/05 09:15:12 a1kmm Exp $
+ *  $Id: fdlist.c,v 7.28 2002/04/08 04:13:44 androsyn Exp $
  */
 
 #include "fdlist.h"
@@ -180,13 +180,11 @@ void
 fd_note(int fd, const char *format, ...)
 {
   va_list args;
-  int len;
   
   if (format)
     {
       va_start(args, format);
-      len = vsprintf_irc(fd_table[fd].desc, format, args);
-      assert(len < FD_DESC_SZ); /* + '\0' */
+      vsnprintf(fd_table[fd].desc, FD_DESC_SZ, format, args);
       va_end(args);
     }
   else
