@@ -46,6 +46,13 @@
     403 numerics.  This is caused by the NOTICE AUTH :*** ... messages,
     and is normal.
 
+6.  Admins receiving multiple notices
+    - Due to the fact we try to hide a servers real IP, we send some 
+      notices that have an IP address in them twice.  We send one to
+      the admins with the real IP in, and one to all opers (admins inc.)
+      with the servername instead.
+
+
 For more information see http://bugs.efnow.net
 
 BUG REPORTS: If you run this code and encounter problems, you must report
@@ -58,4 +65,4 @@ BUG REPORTS: If you run this code and encounter problems, you must report
  with any report  (with passwords and other sensitive information masked).
 
 --------------------------------------------------------------------------------
-$Id: BUGS,v 7.8 2001/01/20 18:08:07 wcampbel Exp $
+$Id: BUGS,v 7.9 2001/01/22 20:33:58 fl_ Exp $
