@@ -50,9 +50,8 @@
     the file is installed, you can SET MSGLOCALE back to the language that
     was just updated.
 
-6.  PRIVMSG/NOTICE oper@server :message
-    This translates into a WALLOPS message, and not marked as an oper@server
-    message.
+6,  Multiple dlines on the same IP/subnet can be set.  They will all be
+    removed with one /undline however.
 
 7.  IAuthd is broken beyond belief.  It does not work at this time.  If this
     bothers you, fix it for us.
@@ -64,4 +63,4 @@ BUG REPORTS: If you run this code and encounter problems, you must report
  with any report  (with passwords and other sensitive information masked).
 
 --------------------------------------------------------------------------------
-$Id: BUGS,v 7.48 2002/06/01 21:56:34 androsyn Exp $
+$Id: BUGS,v 7.49 2002/07/06 11:15:29 leeh Exp $
