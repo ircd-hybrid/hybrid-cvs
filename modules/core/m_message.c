@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.75 2001/11/13 11:45:48 leeh Exp $
+ *   $Id: m_message.c,v 1.76 2001/11/29 01:03:53 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -461,7 +461,7 @@ static int build_target_list(int p_or_n,
 	      (*targets)[i]->type = ENTITY_CLIENT;
 	      (*targets)[i++]->flags = 0;
 	      
-	      if( i >= ConfigFileEntry.max_targets)
+	      if(i >= ConfigFileEntry.max_targets)
 		return(i);
 	      continue;
 	    }
