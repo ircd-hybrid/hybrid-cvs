@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.102 2003/02/14 23:01:55 db Exp $
+ *  $Id: packet.c,v 7.103 2003/02/16 22:54:37 db Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -422,7 +422,7 @@ read_packet(int fd, void *data)
     client_p->lasttime = CurrentTime;
   if (client_p->lasttime > client_p->since)
     client_p->since = CurrentTime;
-  client_p->flags &= ~FLAGS_PINGSENT;
+  ClearPingSent(client_p);
 
   /*
    * Before we even think of parsing what we just read, stick

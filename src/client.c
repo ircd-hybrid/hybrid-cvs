@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.330 2003/02/15 16:32:45 lusky Exp $
+ *  $Id: client.c,v 7.331 2003/02/16 22:54:37 db Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -201,6 +201,9 @@ free_client(struct Client* client_p)
       if (client_p->localClient->fd >= 0)
 	fd_close(client_p->localClient->fd);
 
+      linebuf_donebuf(&client_p->localClient->buf_recvq);
+      linebuf_donebuf(&client_p->localClient->buf_sendq);
+
       BlockHeapFree(lclient_heap, client_p->localClient);
       --local_client_count;
       assert(local_client_count >= 0);
@@ -317,7 +320,7 @@ check_pings_list(dlink_list *list)
        * and it has a ping time, then close its connection.
        */
       if (((CurrentTime - client_p->lasttime) >= (2 * ping) &&
-	   (client_p->flags & FLAGS_PINGSENT)))
+	   IsPingSent(client_p)))
       {
 	if (IsServer(client_p) || IsConnecting(client_p) ||
 	    IsHandshake(client_p))
@@ -338,15 +341,14 @@ check_pings_list(dlink_list *list)
 	(void)exit_client(client_p, client_p, &me, scratch);
 	continue;
       }
-      else if ((client_p->flags & FLAGS_PINGSENT) == 0)
+      else if (!IsPingSent(client_p))
       {
 	/*
 	 * if we havent PINGed the connection and we havent
 	 * heard from it in a while, PING it to make sure
 	 * it is still alive.
 	 */
-	client_p->flags |= FLAGS_PINGSENT;
-	/* not nice but does the job */
+	SetPingSent(client_p);
 	client_p->lasttime = CurrentTime - ping;
 	sendto_one(client_p, "PING :%s", me.name);
       }
@@ -608,6 +610,7 @@ release_client_state(struct Client* client_p)
   {
     free_user(client_p->user, client_p); /* try this here */
   }
+
   if (client_p->serv != NULL)
   {
     if (client_p->serv->user != NULL)
@@ -996,9 +999,9 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
           
       /* Clean up invitefield */
       DLINK_FOREACH_SAFE(lp, next_lp, source_p->user->invited.head)
-        {
+	{
 	  del_invite(lp->data, source_p);
-        }
+	}
 
       /* Clean up allow lists */
       del_all_accepts(source_p);
@@ -1164,7 +1167,8 @@ dead_link_on_write(struct Client *client_p, int ierrno)
 
   linebuf_donebuf(&client_p->localClient->buf_recvq);
   linebuf_donebuf(&client_p->localClient->buf_sendq);
-  if(client_p->flags & FLAGS_SENDQEX)
+
+  if (IsSendQExceeded(client_p))
     notice = "Max SendQ exceeded";
   else
     notice = "Write error: connection closed";
@@ -1196,7 +1200,7 @@ dead_link_on_read(struct Client* client_p, int error)
   char errmsg[255];
   int  current_error = get_sockerr(client_p->localClient->fd);
 
-  if(IsClosing(client_p) || IsDead(client_p))
+  if(IsDefunct(client_p))
     return;
 
   linebuf_donebuf(&client_p->localClient->buf_recvq);
@@ -1270,7 +1274,7 @@ exit_aborted_clients(void)
           continue;
         }
       dlinkDelete(ptr, &abort_list);
-      if(target_p->flags & FLAGS_SENDQEX)
+      if(IsSendQExceeded(target_p))
         notice = "Max SendQ exceeded";
       else
         notice = "Write error: connection closed";

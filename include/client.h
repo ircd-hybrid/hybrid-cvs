@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.163 2003/02/14 23:01:49 db Exp $
+ *  $Id: client.h,v 7.164 2003/02/16 22:54:35 db Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -535,9 +535,16 @@ struct LocalUser
 #define SetCallerId(x)		((x)->umodes |= FLAGS_CALLERID)
 #define IsSetCallerId(x)	((x)->umodes & FLAGS_CALLERID)
 
+#define SetSendQExceeded(x)	((x)->flags |= FLAGS_SENDQEX)
+#define IsSendQExceeded(x)	((x)->flags & FLAGS_SENDQEX)
+
 #define SetIpHash(x)            ((x)->flags |= FLAGS_IPHASH)
 #define ClearIpHash(x)          ((x)->flags &= ~FLAGS_IPHASH)
 #define IsIpHash(x)             ((x)->flags & FLAGS_IPHASH)
+
+#define SetPingSent(x)		((x)->flags |= FLAGS_PINGSENT)
+#define IsPingSent(x)		((x)->flags & FLAGS_PINGSENT)
+#define ClearPingSent(x)	((x)->flags &= ~FLAGS_PINGSENT)
 
 #define SetNeedId(x)            ((x)->flags |= FLAGS_NEEDID)
 #define IsNeedId(x)             (((x)->flags & FLAGS_NEEDID) != 0)

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.222 2003/02/14 23:01:56 db Exp $
+ *  $Id: s_user.c,v 7.223 2003/02/16 22:54:37 db Exp $
  */
 
 #include "stdinc.h"
@@ -300,14 +300,14 @@ register_local_user(struct Client *client_p, struct Client *source_p,
 
   if(ConfigFileEntry.ping_cookie)
   {
-    if(!(source_p->flags & FLAGS_PINGSENT) && 
+    if(!IsPingSent(source_p) &&
        source_p->localClient->random_ping == 0)
     {
       source_p->localClient->random_ping = (unsigned long)rand();
       sendto_one(source_p,
 		 "PING :%lu",
 		 (unsigned long)source_p->localClient->random_ping);
-      source_p->flags |= FLAGS_PINGSENT;
+      SetPingSent(source_p);
       return -1;
     } 
     if(!(source_p->flags2 & FLAGS2_PING_COOKIE))
@@ -315,7 +315,6 @@ register_local_user(struct Client *client_p, struct Client *source_p,
       return -1;
     }
   }
- 
  
   user->last = CurrentTime;
   /* Straight up the maximum rate of flooding... */
