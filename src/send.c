@@ -19,14 +19,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.270 2003/06/22 03:28:42 michael Exp $
+ *  $Id: send.c,v 7.271 2003/07/05 06:21:04 db Exp $
  */
 
 #include "stdinc.h"
 #include "tools.h"
 #include "send.h"
 #include "channel.h"
-#include "class.h"
 #include "client.h"
 #include "common.h"
 #include "dbuf.h"

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.254 2003/07/04 11:45:15 adx Exp $
+ *  $Id: s_conf.h,v 7.255 2003/07/05 06:20:55 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -31,7 +31,6 @@
 #include "fileio.h"             /* FBFILE */
 #include "ircd_defs.h"
 #include "motd.h"               /* MessageFile */
-#include "class.h"
 #include "client.h"
 
 struct Client;
@@ -71,7 +70,9 @@ typedef enum {
 
 struct ConfItem
 {
-  dlink_node node;
+  char *name;		/* Primary key */
+  dlink_node node;	/* link into known ConfItems of this type */
+  dlink_node conf_node;	/* When linked into a client */
   ConfType type;
 };
 
@@ -80,12 +81,13 @@ struct ConfItem
  */
 struct MatchItem
 {
-  char *name;
   char *user;		/* Used for ULINE only */
   char *host;		/* Used for ULINE only */
   char *reason;
   char *oper_reason;
   int  action;		/* used for xline and uline */
+  int  ref_count;	/* How many times is this matchitem in use */
+  int  illegal;		/* Should it be deleted when possible? */
 };
 
 struct AccessItem
@@ -96,7 +98,6 @@ struct AccessItem
   int              clients;  /* Number of *LOCAL* clients using this */
   struct irc_ssaddr my_ipnum; /* ip to bind to for outgoing connect */
   struct irc_ssaddr ipnum;	/* ip to connect to */
-  char *           name;     /* IRC name, nick, server name, or original u@h */
   char *           host;     /* host part of user@host */
   char *           passwd;
   char *           spasswd;  /* Password to send. */
@@ -106,8 +107,7 @@ struct AccessItem
   int              port;
   char *           fakename;   /* Mask name */
   time_t           hold;     /* Hold action until this time (calendar time) */
-  char *           class_name;  /* Name of class */
-  struct ClassItem *c_class;    /* Class of connection */
+  struct ConfItem *class_ptr;  /* Class of connection */
   struct DNSQuery* dns_query;
   int              aftype;
 #ifdef HAVE_LIBCRYPTO
@@ -116,6 +116,39 @@ struct AccessItem
   struct EncCapability *cipher_preference;
 #endif
 };
+
+struct ClassItem
+{
+  int con_freq;
+  int ping_freq;
+  int max_total;
+  int max_local;
+  int max_global;
+  int max_ident;
+  int max_perip;
+  long max_sendq;
+  int curr_user_count;
+};
+
+#define ConFreq(x)	((x)->con_freq)
+#define PingFreq(x)	((x)->ping_freq)
+#define MaxTotal(x)	((x)->max_total)
+#define MaxGlobal(x)	((x)->max_global)
+#define MaxLocal(x)	((x)->max_local)
+#define MaxIdent(x)	((x)->max_ident)
+#define MaxPerIp(x)	((x)->max_perip)
+#define MaxSendq(x)	((x)->max_sendq)
+#define CurrUserCount(x) ((x)->curr_user_count)
+
+#define ClassPtr(x)      ((x)->class_ptr)
+
+extern unsigned long get_sendq(struct Client *);
+extern int get_con_freq(struct ClassItem* );
+extern const char *get_client_class(struct Client *);
+extern int get_client_ping(struct Client *);
+extern void check_class(void);
+extern void init_class(void);
+extern struct ConfItem *find_class(const char *);
 
 #define CONF_ILLEGAL            0x80000000
 #define CONF_RESERVED           0x00000001
@@ -160,7 +193,7 @@ struct AccessItem
 #define IsConfXline(x)		((x)->status & CONF_XLINE)
 #define IsConfCluster(x)	((x)->status & CONF_CLUSTER)
 
-/* aAccessItem->flags */
+/* AccessItem->flags */
 
 /* Generic flags... */
 /* access flags... */
@@ -358,8 +391,11 @@ extern int scount;
 extern int ypass;
 extern int specific_ipv4_vhost; /* used in s_bsd.c */
 extern int specific_ipv6_vhost;
+extern dlink_list class_items;
 extern dlink_list server_items;
-extern dlink_list ConfigItemList;      /* conf list head */
+extern dlink_list hub_items;
+extern dlink_list leaf_items;
+extern dlink_list gline_items;
 extern dlink_list temporary_klines;
 extern dlink_list temporary_dlines;
 extern dlink_list temporary_ip_klines;
@@ -374,21 +410,23 @@ extern void init_ip_hash_table(void);
 extern void count_ip_hash(int *, unsigned long *);
 extern void remove_one_ip(struct irc_ssaddr *ip);
 extern struct ConfItem *make_conf_item(ConfType type);
-extern void free_conf_item(struct ConfItem *conf, ConfType type);
 
 extern void free_access_item(struct AccessItem *);
 extern void read_conf_files(int cold);
-extern int attach_conf(struct Client *, struct AccessItem *);
-extern int attach_confs(struct Client *, const char *, unsigned int);
-extern int attach_connect_block(struct Client *, const char *, const char *);
-extern int check_client(struct Client *, struct Client *, const char *);
-extern void det_confs_butmask(struct Client *, unsigned int);
-extern int detach_conf(struct Client *, struct AccessItem *);
-extern struct AccessItem *det_confs_butone(struct Client *, struct AccessItem *);
-extern struct AccessItem *find_conf_exact(const char *, const char *,
-                                          const char *, unsigned int);
-extern struct AccessItem *find_conf_name(dlink_list *, const char *,
-                                         unsigned int);
+extern int attach_conf(struct Client *, struct ConfItem *);
+extern int attach_connect_block(struct Client *client, const char *name,
+				const char *host);
+extern int check_client(struct Client *client_p, struct Client *source_p,
+			const char *);
+
+extern int detach_conf(struct Client *, ConfType );
+extern void detach_all_confs(struct Client *);
+
+extern struct ConfItem *find_conf_name(dlink_list *list, const char *name,
+				       ConfType type);
+extern struct ConfItem* 
+find_conf_exact(ConfType type, const char* name, const char* user, 
+		const char* host);
 
 extern struct AccessItem *find_kill(struct Client *);
 extern int conf_connect_allowed(struct irc_ssaddr *addr, int aftype);
@@ -400,12 +438,11 @@ extern struct ConfItem *find_matching_name_conf(ConfType type, const char *,
 extern struct ConfItem *find_exact_name_conf(ConfType type, const char *,
 					     const char *, const char *);
 extern void delete_conf_item(struct ConfItem *);
-extern struct AccessItem *find_tkline(const char *, const char *,
-                                      struct irc_ssaddr *);
-extern char *show_iline_prefix(struct Client *, struct AccessItem *, char *);
-extern void get_printable_conf(struct AccessItem *, char **, char **, char **,
-                                    char **, int *,char **);
-extern void report_configured_links(struct Client* client_p, unsigned int mask);
+extern struct ConfItem *find_tkline(const char *, const char *,
+				    struct irc_ssaddr *);
+extern void get_printable_conf(struct ConfItem *, char **, char **,
+			       char **, int *,char **);
+
 extern void report_confitem_types(struct Client *source_p, ConfType type);
 
 extern void yyerror(const char *);
@@ -424,11 +461,9 @@ extern void cleanup_tklines(void *notused);
 extern const char *get_conf_name(ConfType);
 extern int rehash(int);
 
-extern int conf_add_server(struct AccessItem *, unsigned int);
-extern void conf_add_class_to_conf(struct AccessItem *);
-extern void conf_add_me(struct AccessItem *);
+extern int conf_add_server(struct ConfItem *, unsigned int, const char *);
+extern void conf_add_class_to_conf(struct ConfItem *, const char *);
 extern void conf_add_d_conf(struct AccessItem *);
-extern void conf_add_conf(struct AccessItem *);
 
 /* XXX consider moving these into csvlib.h */
 extern void parse_csv_file(FBFILE *file, ConfType);
@@ -437,6 +472,8 @@ extern char *getfield(char *newline);
 extern char *get_oper_name(struct Client *client_p);
 /* XXX consider inlining this */
 extern void *map_to_conf(struct ConfItem *conf);
+/* XXX consider inlining this */
+struct ConfItem *unmap_conf_item(void *aconf);
 
 extern int yylex(void);
 

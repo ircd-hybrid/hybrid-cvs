@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.24 2003/07/03 03:54:31 joshk Exp $
+ *  $Id: csvlib.c,v 7.25 2003/07/05 06:21:02 db Exp $
  */
 
 #include "stdinc.h"
@@ -69,7 +69,7 @@ parse_csv_file(FBFILE *file, ConfType conf_type)
       if (user_field != NULL)
 	DupString(aconf->user, user_field);
       if (aconf->host != NULL)
-	add_conf_by_address(aconf->host, CONF_KILL, aconf->user, aconf);
+	add_conf_by_address(CONF_KILL, aconf);
       break;
 
     case DLINE_TYPE:
@@ -89,7 +89,7 @@ parse_csv_file(FBFILE *file, ConfType conf_type)
       conf = make_conf_item(XLINE_TYPE);
       match_item = (struct MatchItem *)map_to_conf(conf);
       if (name_field != NULL)
-	DupString(match_item->name, name_field);
+	DupString(conf->name, name_field);
       if (reason_field != NULL)
 	DupString(match_item->reason, reason_field);
       if (port != NULL)
@@ -232,13 +232,13 @@ write_conf_line(struct Client *source_p, struct ConfItem *conf,
     xconf = (struct MatchItem *)map_to_conf(conf);
     sendto_realops_flags(UMODE_ALL, L_ALL,
                          "%s added X-Line for [%s] [%s]",
-                         get_oper_name(source_p), xconf->name, xconf->reason);
+                         get_oper_name(source_p), conf->name, xconf->reason);
     sendto_one(source_p, ":%s NOTICE %s :Added X-Line [%s] to %s",
-               me.name, source_p->name, xconf->name, filename);
+               me.name, source_p->name, conf->name, filename);
     ilog(L_TRACE, "%s added X-Line for [%s] [%s]",
-         get_oper_name(source_p), xconf->name, xconf->reason);
+         get_oper_name(source_p), conf->name, xconf->reason);
     write_csv_line(out, "%s%s%s%d%s%s%ld",
-		   xconf->name, xconf->reason, xconf->oper_reason,
+		   conf->name, xconf->reason, xconf->oper_reason,
 		   xconf->action,
 		   current_date, get_oper_name(source_p), (long)cur_time);
     break;
@@ -248,11 +248,11 @@ write_conf_line(struct Client *source_p, struct ConfItem *conf,
     sendto_realops_flags(UMODE_ALL, L_ALL,
 			 "%s has triggered gline for [%s@%s] [%s]",
 			 get_oper_name(source_p),
-			 aconf->name, aconf->host, aconf->reason);
-    ilog(L_TRACE, "%s added G-Line for [%s] [%s]",
-         get_oper_name(source_p), aconf->name, aconf->reason);
+			 aconf->user, aconf->host, aconf->reason);
+    ilog(L_TRACE, "%s added G-Line for [%s@%s] [%s]",
+         get_oper_name(source_p), aconf->user, aconf->host, aconf->reason);
     write_csv_line(out, "%s%s%s%d%s%s%ld",
-		   aconf->name, aconf->host, aconf->reason, "", current_date,
+		   aconf->user, aconf->host, aconf->reason, "", current_date,
 		   get_oper_name(source_p), (long)aconf->hold);
     break;
 
@@ -267,7 +267,7 @@ write_conf_line(struct Client *source_p, struct ConfItem *conf,
     nresv_p = (struct MatchItem *)map_to_conf(conf);
 
     write_csv_line(out, "%s%s",
-		   nresv_p->name, nresv_p->reason);
+		   conf->name, nresv_p->reason);
     break;
 
   default:

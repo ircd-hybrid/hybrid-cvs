@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.310 2003/07/02 17:32:26 michael Exp $
+ *  $Id: ircd.c,v 7.311 2003/07/05 06:21:03 db Exp $
  */
 
 #include "stdinc.h"
@@ -29,7 +29,6 @@
 #include "ircd.h"
 #include "channel.h"
 #include "channel_mode.h"
-#include "class.h"
 #include "client.h"
 #include "common.h"
 #include "event.h"

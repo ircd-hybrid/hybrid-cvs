@@ -19,14 +19,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_classlist.c,v 1.7 2003/06/26 04:46:24 joshk Exp $
+ *  $Id: m_classlist.c,v 1.8 2003/07/05 06:20:53 db Exp $
  */
 
 #include "stdinc.h"
 #include "tools.h"
 #include "handlers.h"
 #include "channel.h"
-#include "class.h"
 #include "channel_mode.h"
 #include "client.h"
 #include "common.h"   /* bleah */
@@ -63,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&classlist_msgtab);
 }
 
-const char *_version = "$Revision: 1.7 $";
+const char *_version = "$Revision: 1.8 $";
 #endif
 
 /* mo_classlist()
@@ -92,18 +91,15 @@ mo_classlist(struct Client *client_p, struct Client *source_p,
   DLINK_FOREACH(ptr, class_items.head)
   {
     conf = ptr->data;
-    aclass = (struct ClassItem *)map_to_conf(conf);
-    
-    /* These two cases "shouldn't" happen. ;-) -Dianora */
-    if (aclass == NULL)
-      continue;
-    if (ClassName(aclass) == NULL)
+
+    if (conf == NULL)
       continue;
 
-    if (match(classname, ClassName(aclass)))
+    if (match(classname, conf->name))
     {
+      aclass = (struct ClassItem *)map_to_conf(conf);
       sendto_one(source_p, ":%s NOTICE %s :%s %d",
-		 me.name, source_p->name, ClassName(aclass),
+		 me.name, source_p->name, conf->name,
 		 CurrUserCount(aclass));
       return;
     }

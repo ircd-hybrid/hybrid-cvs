@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_resv.c,v 1.29 2003/06/16 03:07:49 db Exp $
+ *  $Id: m_resv.c,v 1.30 2003/07/05 06:20:57 db Exp $
  */
 
 #include "stdinc.h"
@@ -72,7 +72,7 @@ _moddeinit(void)
   mod_del_cmd(&unresv_msgtab);
 }
 
-const char *_version = "$Revision: 1.29 $";
+const char *_version = "$Revision: 1.30 $";
 #endif
 
 /* mo_resv()
@@ -283,12 +283,12 @@ parse_resv(struct Client *source_p, char *name,
 		 ":%s NOTICE %s :A %s RESV has been placed on nick: %s [%s]",
                  me.name, source_p->name,
                  (MyClient(source_p) ? "local" : "remote"),
-                 resv_p->name, resv_p->reason);
+                 conf->name, resv_p->reason);
     sendto_realops_flags(UMODE_ALL, L_ALL,
 			 "%s has placed a %s RESV on nick: %s [%s]",
                          get_oper_name(source_p),
                          (MyClient(source_p) ? "local" : "remote"),
-                         resv_p->name, resv_p->reason);
+                         conf->name, resv_p->reason);
     write_conf_line(source_p, conf, NULL /* not used */, 0 /* not used */);
   }
   else if (!cluster)
@@ -340,8 +340,7 @@ remove_resv(struct Client *source_p, char *name, int cluster)
   else if (clean_resv_nick(name))
   {
     struct MatchItem *resv_p;
-    conf = find_matching_name_conf(NRESV_TYPE, name,
-				   NULL, NULL, 0);
+    conf = find_matching_name_conf(NRESV_TYPE, name, NULL, NULL, 0);
 
     if (conf == NULL)
     {

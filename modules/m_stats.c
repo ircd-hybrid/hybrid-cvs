@@ -19,13 +19,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.140 2003/07/04 11:45:17 adx Exp $
+ *  $Id: m_stats.c,v 1.141 2003/07/05 06:20:57 db Exp $
  */
 
 #include "stdinc.h"
 #include "tools.h"	 /* dlink_node/dlink_list */
 #include "handlers.h"    /* m_pass prototype */
-#include "class.h"       /* report_classes */
 #include "client.h"      /* Client */
 #include "common.h"      /* TRUE/FALSE */
 #include "irc_string.h"  
@@ -79,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.140 $";
+const char *_version = "$Revision: 1.141 $";
 #endif
 
 const char *Lformat = ":%s %d %s %s %u %u %u %u %u :%u %u %s";
@@ -313,8 +312,9 @@ stats_connect(struct Client *source_p)
 static void
 stats_deny(struct Client *source_p)
 {
-  char *name, *host, *pass, *user, *classname;
+  char *host, *pass, *user, *classname;
   struct AddressRec *arec;
+  struct ConfItem *conf;
   struct AccessItem *aconf;
   int i, port;
 
@@ -330,7 +330,9 @@ stats_deny(struct Client *source_p)
         if (aconf->flags & CONF_FLAGS_TEMPORARY)
           continue;
 
-        get_printable_conf(aconf, &name, &host, &pass, &user, &port, &classname);
+	conf = unmap_conf_item(aconf);
+
+        get_printable_conf(conf, &host, &pass, &user, &port, &classname);
         sendto_one(source_p, form_str(RPL_STATSDLINE),
                    me.name, source_p->name, 'D', host, pass);
       }
@@ -347,8 +349,9 @@ stats_deny(struct Client *source_p)
 static void
 stats_tdeny(struct Client *source_p)
 {
-  char *name, *host, *pass, *user, *classname;
+  char *host, *pass, *user, *classname;
   struct AddressRec *arec;
+  struct ConfItem *conf;
   struct AccessItem *aconf;
   int i, port;
 
@@ -364,8 +367,8 @@ stats_tdeny(struct Client *source_p)
 	if ((aconf->flags & CONF_FLAGS_TEMPORARY) == 0)
 	  continue;
 
-	get_printable_conf(aconf, &name, &host, &pass, &user, &port,
-	                  &classname);
+	conf = unmap_conf_item(aconf);
+	get_printable_conf(conf, &host, &pass, &user, &port, &classname);
 	sendto_one(source_p, form_str(RPL_STATSDLINE), me.name,
 	           source_p->name, 'd', host, pass);
       }
@@ -382,8 +385,9 @@ stats_tdeny(struct Client *source_p)
 static void
 stats_exempt(struct Client *source_p)
 {
-  char *name, *host, *pass, *user, *classname;
+  char  *host, *pass, *user, *classname;
   struct AddressRec *arec;
+  struct ConfItem *conf;
   struct AccessItem *aconf;
   int i, port;
 
@@ -395,8 +399,8 @@ stats_exempt(struct Client *source_p)
       {
         aconf = arec->aconf;
 
-	get_printable_conf(aconf, &name, &host, &pass,
-	                   &user, &port, &classname);
+	conf = unmap_conf_item(aconf);
+	get_printable_conf(conf, &host, &pass, &user, &port, &classname);
         sendto_one(source_p, form_str(RPL_STATSDLINE), me.name,
                    source_p->name, 'e', host, pass);
       }
@@ -475,6 +479,7 @@ static void
 stats_glines(struct Client *source_p)
 {
   dlink_node *gline_node;
+  struct ConfItem *conf;
   struct AccessItem *kill_ptr;
 
   if (!ConfigFileEntry.glines)
@@ -484,14 +489,15 @@ stats_glines(struct Client *source_p)
     return;
   }
 
-  DLINK_FOREACH(gline_node, glines.head)
+  DLINK_FOREACH(gline_node, gline_items.head)
   {
-    kill_ptr = gline_node->data;
+    conf = gline_node->data;
+    kill_ptr = (struct AccessItem *)conf;
 
     sendto_one(source_p, form_str(RPL_STATSKLINE),
                me.name, source_p->name, 'G',
                kill_ptr->host ? kill_ptr->host : "*",
-               kill_ptr->name ? kill_ptr->name : "*",
+               kill_ptr->user ? kill_ptr->user : "*",
                kill_ptr->reason ? kill_ptr->reason : "No reason specified");
   }
 }
@@ -499,7 +505,8 @@ stats_glines(struct Client *source_p)
 static void
 stats_hubleaf(struct Client *source_p)
 {
-  report_configured_links(source_p, CONF_HUB|CONF_LEAF);
+  report_confitem_types(source_p, HUB_TYPE);
+  report_confitem_types(source_p, LEAF_TYPE);
 }
 
 static void
@@ -513,8 +520,9 @@ stats_auth(struct Client *source_p)
   /* If unopered, Only return matching auth blocks */
   else if ((ConfigFileEntry.stats_i_oper_only == 1) && !IsOper(source_p))
   {
+    struct ConfItem *conf;
     struct AccessItem *aconf;
-    char *name, *host, *pass, *user, *classname;
+    char *host, *pass, *user, *classname;
     int port;
 
     if(MyConnect(source_p))
@@ -531,14 +539,14 @@ stats_auth(struct Client *source_p)
     if (aconf == NULL)
       return;
 
-    get_printable_conf(aconf, &name, &host, &pass, &user, 
-                       &port, &classname);
+    conf = unmap_conf_item(aconf);
+    get_printable_conf(conf, &host, &pass, &user, &port, &classname);
     sendto_one(source_p, form_str(RPL_STATSILINE), me.name,
                source_p->name, (IsConfRestricted(aconf)) ? 'i' : 'I',
-	       name, show_iline_prefix(source_p, aconf, user), host,
+	       "*", show_iline_prefix(source_p, aconf, user), host,
 	       port, classname);
   }
-  /* Theyre opered, or allowed to see all auth blocks */
+  /* They are opered, or allowed to see all auth blocks */
   else
     report_auth(source_p);
 }
@@ -546,6 +554,7 @@ stats_auth(struct Client *source_p)
 static void
 stats_tklines(struct Client *source_p)
 {
+  struct ConfItem *conf;
   /* Oper only, if unopered, return ERR_NOPRIVS */
   if ((ConfigFileEntry.stats_k_oper_only == 2) && !IsOper(source_p))
     sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
@@ -555,7 +564,7 @@ stats_tklines(struct Client *source_p)
   else if((ConfigFileEntry.stats_k_oper_only == 1) && !IsOper(source_p))
   {
     struct AccessItem *aconf;
-    char *name, *host, *pass, *user, *classname;
+    char *host, *pass, *user, *classname;
     int port;
 
     if(MyConnect(source_p))
@@ -575,8 +584,9 @@ stats_tklines(struct Client *source_p)
     if((aconf->flags & CONF_FLAGS_TEMPORARY) == 0)
       return;
 
-    get_printable_conf(aconf, &name, &host, &pass, &user,
-                       &port, &classname);
+    conf = unmap_conf_item(aconf);
+
+    get_printable_conf(conf, &host, &pass, &user, &port, &classname);
 
     sendto_one(source_p, form_str(RPL_STATSKLINE), me.name,
                source_p->name, 'k', host, user, pass);
@@ -589,6 +599,8 @@ stats_tklines(struct Client *source_p)
 static void
 stats_klines(struct Client *source_p)
 {
+  struct ConfItem *conf=NULL;	/* XXX */
+
   /* Oper only, if unopered, return ERR_NOPRIVS */
   if((ConfigFileEntry.stats_k_oper_only == 2) && !IsOper(source_p))
     sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
@@ -598,7 +610,7 @@ stats_klines(struct Client *source_p)
   else if((ConfigFileEntry.stats_k_oper_only == 1) && !IsOper(source_p))
   {
     struct AccessItem *aconf;
-    char *name, *host, *pass, *user, *classname;
+    char *host, *pass, *user, *classname;
     int port;
 
     /* search for a kline */
@@ -619,8 +631,7 @@ stats_klines(struct Client *source_p)
     if(aconf->flags & CONF_FLAGS_TEMPORARY)
       return;
       
-    get_printable_conf(aconf, &name, &host, &pass, &user,
-                       &port, &classname);
+    get_printable_conf(conf, &host, &pass, &user, &port, &classname);
 
     sendto_one(source_p, form_str(RPL_STATSKLINE), me.name,
                source_p->name, 'K', host, user, pass);

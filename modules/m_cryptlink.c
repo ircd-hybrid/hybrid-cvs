@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_cryptlink.c,v 1.52 2003/06/18 01:28:06 joshk Exp $
+ *  $Id: m_cryptlink.c,v 1.53 2003/07/05 06:20:57 db Exp $
  */
 
 /*
@@ -95,7 +95,7 @@ _moddeinit(void)
   mod_del_cmd(&cryptlink_msgtab);
 }
 
-const char *_version = "$Revision: 1.52 $";
+const char *_version = "$Revision: 1.53 $";
 #endif
 
 
@@ -144,6 +144,7 @@ static void cryptlink_auth(struct Client *client_p, struct Client *source_p,
                            int parc, char *parv[])
 {
   struct EncCapability *ecap;
+  struct ConfItem *conf;
   struct AccessItem *aconf;
   int   enc_len;
   int   len;
@@ -170,7 +171,7 @@ static void cryptlink_auth(struct Client *client_p, struct Client *source_p,
     }
   }
 
-  if (!client_p->localClient->in_cipher)
+  if (client_p->localClient->in_cipher == NULL)
   {
     cryptlink_error(client_p, "AUTH", "Invalid cipher", "Invalid cipher");
     return;
@@ -224,16 +225,18 @@ static void cryptlink_auth(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  aconf = find_conf_name(&client_p->localClient->confs,
-                         client_p->name, CONF_SERVER);
+  conf = find_conf_name(&client_p->localClient->confs,
+                         client_p->name, SERVER_TYPE);
 
-  if (!aconf)
+  if (conf == NULL)
   {
     cryptlink_error(client_p, "AUTH",
                     "Lost C-line for server",
                     "Lost C-line" );
     return;
   }
+
+  aconf = (struct AccessItem *)map_to_conf(conf);
 
   if (!(client_p->localClient->out_cipher ||
       (client_p->localClient->out_cipher = check_cipher(client_p, aconf))))
@@ -268,6 +271,7 @@ static void cryptlink_serv(struct Client *client_p, struct Client *source_p,
   struct Client   *target_p;
   char *key = client_p->localClient->out_key;
   char *b64_key;
+  struct ConfItem *conf;
   struct AccessItem *aconf;
   char *encrypted;
   const char *p;
@@ -380,9 +384,9 @@ static void cryptlink_serv(struct Client *client_p, struct Client *source_p,
       }
   }
 
-  aconf = find_conf_name(&client_p->localClient->confs,
-                         name, CONF_SERVER);
-  if (!aconf)
+  conf = find_conf_name(&client_p->localClient->confs,
+			name, SERVER_TYPE);
+  if (conf == NULL)
   {
     cryptlink_error(client_p, "AUTH",
                     "Lost C-line for server",
@@ -414,6 +418,8 @@ static void cryptlink_serv(struct Client *client_p, struct Client *source_p,
 
   strlcpy(client_p->info, p, sizeof(client_p->info));
   client_p->hopcount = 0;
+
+  aconf = (struct AccessItem *)map_to_conf(conf);
 
   if (!(client_p->localClient->out_cipher ||
       (client_p->localClient->out_cipher = check_cipher(client_p, aconf))))

@@ -19,14 +19,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.207 2003/07/04 11:45:19 adx Exp $
+ *  $Id: s_bsd.c,v 7.208 2003/07/05 06:21:03 db Exp $
  */
 
 #include "stdinc.h"
 #include <netinet/tcp.h>
 #include "fdlist.h"
 #include "s_bsd.h"
-#include "class.h"
 #include "client.h"
 #include "common.h"
 #include "dbuf.h"
@@ -263,7 +262,9 @@ set_no_delay(int fd)
 void
 close_connection(struct Client *client_p)
 {
+  struct ConfItem *conf;
   struct AccessItem *aconf;
+  struct ClassItem *aclass;
 
   assert(NULL != client_p);
 
@@ -285,12 +286,17 @@ close_connection(struct Client *client_p)
       ServerStats->is_skr += (ServerStats->is_sbr >> 10);
       ServerStats->is_sbr &= 0x3ff;
     }
+    /* XXX Does this even make any sense at all anymore?
+     * scheduling a 'quick' reconnect could cause a pile of
+     * nick collides under TSora protocol... -db
+     */
     /*
      * If the connection has been up for a long amount of time, schedule
      * a 'quick' reconnect, else reset the next-connect cycle.
      */
-    if ((aconf = find_conf_exact(client_p->name, client_p->username,
-                                 client_p->host, CONF_SERVER)))
+    if ((conf = find_conf_exact(SERVER_TYPE,
+				  client_p->name, client_p->username,
+				  client_p->host)))
     {
       /*
        * Reschedule a faster reconnect, if this was a automatically
@@ -298,9 +304,11 @@ close_connection(struct Client *client_p)
        * a rehash in between, the status has been changed to
        * CONF_ILLEGAL). But only do this if it was a "good" link.
        */
+      aconf = (struct AccessItem *)map_to_conf(conf);
+      aclass = (struct ClassItem *)map_to_conf(aconf->class_ptr);
       aconf->hold = time(NULL);
       aconf->hold += (aconf->hold - client_p->since > HANGONGOODLINK) ?
-        HANGONRETRYDELAY : ConfConFreq(aconf);
+        HANGONRETRYDELAY : ConFreq(aclass);
       if (nextconnect > aconf->hold)
         nextconnect = aconf->hold;
     }
@@ -332,7 +340,8 @@ close_connection(struct Client *client_p)
     /* attempt to flush any pending dbufs. Evil, but .. -- adrian */
     /* there is still a chance that we might send data to this socket
      * even if it is marked as blocked (COMM_SELECT_READ handler is called
-     * before COMM_SELECT_WRITE). Let's try, nothing to lose.. -adx */
+     * before COMM_SELECT_WRITE). Let's try, nothing to lose.. -adx
+     */
     ClearSendqBlocked(client_p);
     send_queued_write(client_p);
     fd_close(client_p->localClient->fd);
@@ -358,7 +367,7 @@ close_connection(struct Client *client_p)
   dbuf_clear(&client_p->localClient->buf_recvq);
   
   MyFree(client_p->localClient->passwd);
-  det_confs_butmask(client_p, 0);
+  detach_all_confs(client_p);
   client_p->from = NULL; /* ...this should catch them! >:) --msa */
 }
 

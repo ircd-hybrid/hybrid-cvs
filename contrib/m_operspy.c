@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.43 2003/06/29 22:46:11 michael Exp $
+ *   $Id: m_operspy.c,v 1.44 2003/07/05 06:20:53 db Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -117,7 +117,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.43 $";
+const char *_version = "$Revision: 1.44 $";
 #endif
 
 #ifdef OPERSPY_LOG
@@ -607,6 +607,7 @@ do_who_on_channel(struct Client *source_p, struct Channel *chptr,
 static void
 operspy_log(struct Client *source_p, const char *command, const char *target)
 {
+  struct ConfItem *conf;
 #ifdef OPERSPY_LOGFILE
   FBFILE *operspy_fb;
   dlink_node *cnode;
@@ -621,8 +622,11 @@ operspy_log(struct Client *source_p, const char *command, const char *target)
   {
     DLINK_FOREACH(cnode, source_p->localClient->confs.head)
     {
-      if (IsConfOperator((struct AccessItem *)cnode->data))
-        opername = ((struct AccessItem *)cnode->data)->name;
+      conf = cnode->data;
+      if (conf->type == OPER_TYPE)
+      {
+	opername = conf->name;
+      }
     }
   }
   else if (!MyClient(source_p))

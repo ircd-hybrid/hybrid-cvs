@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.118 2003/06/24 09:39:30 michael Exp $
+ *  $Id: m_gline.c,v 1.119 2003/07/05 06:20:57 db Exp $
  */
 
 #include "stdinc.h"
@@ -95,7 +95,7 @@ _moddeinit(void)
   delete_capability("GLN");
 }
 
-const char *_version = "$Revision: 1.118 $";
+const char *_version = "$Revision: 1.119 $";
 #endif
 
 /* mo_gline()
@@ -438,19 +438,13 @@ set_local_gline(struct Client *source_p, const char *user,
   set_time();
   cur_time = CurrentTime;
   current_date = smalldate(cur_time);
-
   conf = make_conf_item(GLINE_TYPE);
   aconf = (struct AccessItem *)map_to_conf(conf);
-
   ircsprintf(buffer, "%s (%s)", reason, current_date);
-
   DupString(aconf->reason, buffer);
-  DupString(aconf->name, user);
+  DupString(aconf->user, user);
   DupString(aconf->host, host);
   aconf->hold = CurrentTime + ConfigFileEntry.gline_time;
-
-  dlinkAdd(aconf, make_dlink_node(), &glines);
-
   write_conf_line(source_p, conf, current_date, cur_time);
   check_klines();
 }

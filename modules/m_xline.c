@@ -19,13 +19,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.24 2003/06/16 07:37:03 metalrock Exp $
+ *  $Id: m_xline.c,v 1.25 2003/07/05 06:20:58 db Exp $
  */
 
 #include "stdinc.h"
 #include "tools.h"
 #include "channel.h"
-#include "class.h"
 #include "client.h"
 #include "common.h"
 #include "irc_string.h"
@@ -83,7 +82,7 @@ _moddeinit(void)
   mod_del_cmd(&unxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.24 $";
+const char *_version = "$Revision: 1.25 $";
 #endif
 
 
@@ -124,7 +123,7 @@ mo_xline(struct Client *client_p, struct Client *source_p,
 
     sendto_one(source_p, ":%s NOTICE %s :[%s] already X-Lined by [%s] - %s",
                me.name, source_p->name, parv[1],
-	       match_item->name, match_item->reason);
+	       conf->name, match_item->reason);
     return;
   }
 
@@ -261,7 +260,7 @@ ms_xline(struct Client *client_p, struct Client *source_p,
       match_item = (struct MatchItem *)map_to_conf(conf);
       sendto_one(source_p, ":%s NOTICE %s :[%s] already X-Lined by [%s] - %s",
                  me.name, source_p->name, parv[1],
-                 match_item->name, match_item->reason);
+                 conf->name, match_item->reason);
       return;
     }
 
@@ -425,7 +424,7 @@ write_xline(struct Client *source_p, char *gecos, char *reason, int type)
   match_item->action = type;
 
   collapse(gecos);
-  DupString(match_item->name, gecos);
+  DupString(conf->name, gecos);
   DupString(match_item->reason, reason);
   DupString(match_item->oper_reason, "");	/* XXX */
   set_time();

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.111 2003/07/02 17:32:24 michael Exp $
+ *  $Id: m_server.c,v 1.112 2003/07/05 06:21:00 db Exp $
  */
 
 #include "stdinc.h"
@@ -77,7 +77,7 @@ _moddeinit(void)
   mod_del_cmd(&sid_msgtab);
 }
 
-const char *_version = "$Revision: 1.111 $";
+const char *_version = "$Revision: 1.112 $";
 #endif
 
 
@@ -266,7 +266,9 @@ ms_server(struct Client *client_p, struct Client *source_p,
   char *name;
   struct Client *target_p;
   struct Client *bclient_p;
+  struct ConfItem *conf;
   struct AccessItem *aconf;
+  struct MatchItem *match_item;
   int hop;
   int hlined = 0;
   int llined = 0;
@@ -357,25 +359,28 @@ ms_server(struct Client *client_p, struct Client *source_p,
   /* See if the newly found server is behind a guaranteed
    * leaf. If so, close the link.
    */
-  DLINK_FOREACH(ptr, ConfigItemList.head)
+  DLINK_FOREACH(ptr, leaf_items.head)
   {
-    aconf = ptr->data;
+    conf = ptr->data;
 
-    if (!IsConfHubOrLeaf(aconf))
-      continue;
-
-    if (match(aconf->name, client_p->name))
+    if (match(conf->name, client_p->name))
     {
-      if (IsConfHub(aconf))
-      {
-        if (match(aconf->host, name))
-          hlined++;
-      }
-      else if (IsConfLeaf(aconf))
-      {
-        if (match(aconf->host, name))
-          llined++;
-      }
+      match_item = (struct MatchItem *)map_to_conf(conf);
+      if (match(match_item->host, name))
+	llined++;
+    }
+  }
+
+  DLINK_FOREACH(ptr, hub_items.head)
+  {
+    conf = ptr->data;
+
+    if (match(conf->name, client_p->name))
+    {
+      match_item = (struct MatchItem *)map_to_conf(conf);
+
+      if (match(match_item->host, name))
+	hlined++;
     }
   }
 
@@ -518,7 +523,9 @@ ms_sid(struct Client *client_p, struct Client *source_p,
   char info[REALLEN + 1];
   struct Client *target_p;
   struct Client *bclient_p;
+  struct ConfItem *conf;
   struct AccessItem *aconf;
+  struct MatchItem *match_item;
   int hlined = 0;
   int llined = 0;
   dlink_node *ptr;
@@ -614,25 +621,28 @@ ms_sid(struct Client *client_p, struct Client *source_p,
   /* See if the newly found server is behind a guaranteed
    * leaf. If so, close the link.
    */
-  DLINK_FOREACH(ptr, ConfigItemList.head)
+  DLINK_FOREACH(ptr, leaf_items.head)
   {
-    aconf = ptr->data;
+    conf = ptr->data;
 
-    if (!IsConfHubOrLeaf(aconf))
-      continue;
-
-    if (match(aconf->name, client_p->name))
+    if (match(conf->name, client_p->name))
     {
-      if (IsConfHub(aconf))
-      {
-        if (match(aconf->host, name))
-          hlined++;
-      }
-      else if (IsConfLeaf(aconf))
-      {
-        if (match(aconf->host, name))
-          llined++;
-      }
+      match_item = (struct MatchItem *)map_to_conf(conf);
+      if (match(match_item->host, name))
+	llined++;
+    }
+  }
+
+  DLINK_FOREACH(ptr, hub_items.head)
+  {
+    conf = ptr->data;
+
+    if (match(conf->name, client_p->name))
+    {
+      match_item = (struct MatchItem *)map_to_conf(conf);
+
+      if (match(match_item->host, name))
+	hlined++;
     }
   }
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_challenge.c,v 1.53 2003/06/30 04:49:03 metalrock Exp $
+ *  $Id: m_challenge.c,v 1.54 2003/07/05 06:20:57 db Exp $
  */
 
 #include "stdinc.h"
@@ -38,7 +38,8 @@
 #include "s_log.h"
 #include "s_user.h"
 
-static void failed_challenge_notice(struct Client *, const char *, const char *);
+static void failed_challenge_notice(struct Client *, const char *,
+				    const char *);
 static void m_challenge(struct Client *, struct Client *, int, char **);
 
 /* We have openssl support, so include /CHALLENGE */
@@ -60,7 +61,7 @@ _moddeinit(void)
   mod_del_cmd(&challenge_msgtab);
 }
 
-const char *_version = "$Revision: 1.53 $";
+const char *_version = "$Revision: 1.54 $";
 #endif
 
 /*
@@ -74,12 +75,10 @@ m_challenge(struct Client *client_p, struct Client *source_p,
             int parc, char *parv[])
 {
   char *challenge;
-  dlink_node *ptr;
-  struct ConfItem *conf;
+  struct ConfItem *conf=NULL;
   struct AccessItem *aconf=NULL;
-  struct AccessItem *oconf;
 
-  if (!(source_p->user) || !source_p->localClient)
+  if ((source_p->user == NULL) || (source_p->localClient == NULL))
     return;
 
   /* if theyre an oper, reprint oper motd and ignore */
@@ -100,7 +99,8 @@ m_challenge(struct Client *client_p, struct Client *source_p,
     {
       sendto_one(source_p, form_str(ERR_PASSWDMISMATCH), me.name,
 		 source_p->name);
-      failed_challenge_notice(source_p, source_p->user->auth_oper, "challenge failed");
+      failed_challenge_notice(source_p, source_p->user->auth_oper,
+			      "challenge failed");
       return;
     }
      
@@ -114,16 +114,11 @@ m_challenge(struct Client *client_p, struct Client *source_p,
       return;
     }
 
-    ptr   = source_p->localClient->confs.head;
-    oconf = ptr->data;
-    detach_conf(source_p,oconf);
-
-    if (attach_conf(source_p, aconf) != 0)
+    if (attach_conf(source_p, conf) != 0)
     {
       sendto_one(source_p,":%s NOTICE %s :Can't attach conf!",
 		 me.name, source_p->name);   
-      failed_challenge_notice(source_p, aconf->name, "can't attach conf!");
-      attach_conf(source_p, oconf);
+      failed_challenge_notice(source_p, conf->name, "can't attach conf!");
       log_failed_oper(source_p, source_p->user->auth_oper);
       return;
     }
@@ -147,13 +142,13 @@ m_challenge(struct Client *client_p, struct Client *source_p,
   source_p->user->response  = NULL;
   source_p->user->auth_oper = NULL;
 
-  if ((conf = find_exact_name_conf(OPER_TYPE,
-				   parv[1], source_p->username, source_p->host
-				   )) != NULL)
+  if ((conf = find_conf_exact(OPER_TYPE,
+			      parv[1], source_p->username, source_p->host
+			      )) != NULL)
   {
     aconf = (struct AccessItem *)map_to_conf(conf);
   }
-  else if ((conf = find_exact_name_conf(OPER_TYPE,
+  else if ((conf = find_conf_exact(OPER_TYPE,
 				   parv[1], source_p->username,
 				   source_p->localClient->sockhost)) != NULL)
   {
@@ -169,7 +164,7 @@ m_challenge(struct Client *client_p, struct Client *source_p,
     log_failed_oper(source_p, parv[1]);
     return;
   }
-  if (!aconf->rsa_public_key)
+  if (aconf->rsa_public_key == NULL)
   {
     sendto_one (source_p, ":%s NOTICE %s :I'm sorry, PK authentication "
 		"is not enabled for your oper{} block.", me.name,
@@ -184,7 +179,7 @@ m_challenge(struct Client *client_p, struct Client *source_p,
 		challenge);
   }
 
-  DupString(source_p->user->auth_oper, aconf->name);
+  DupString(source_p->user->auth_oper, conf->name);
   MyFree(challenge);
 }
 
@@ -197,7 +192,8 @@ m_challenge(struct Client *client_p, struct Client *source_p,
  * side effects - notices all opers of the failed oper attempt if enabled
  */
 static void
-failed_challenge_notice(struct Client *source_p, const char *name, const char *reason)
+failed_challenge_notice(struct Client *source_p, const char *name,
+			const char *reason)
 {
   if (ConfigFileEntry.failed_oper_notice)
     sendto_realops_flags(UMODE_ALL, L_ALL, "Failed CHALLENGE attempt as %s "

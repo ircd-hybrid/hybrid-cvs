@@ -19,13 +19,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_trace.c,v 1.67 2003/06/26 04:35:05 db Exp $
+ *  $Id: m_trace.c,v 1.68 2003/07/05 06:20:57 db Exp $
  */
 
 #include "stdinc.h"
 #include "handlers.h"
 #include "tools.h"
-#include "class.h"
 #include "hook.h"
 #include "client.h"
 #include "hash.h"
@@ -95,7 +94,7 @@ _moddeinit(void)
   mod_del_cmd(&trace_msgtab6);
 #endif
 }
-const char *_version = "$Revision: 1.67 $";
+const char *_version = "$Revision: 1.68 $";
 #endif
 
 static int report_this_status(struct Client *source_p, struct Client *target_p,
@@ -398,7 +397,7 @@ do_actual_trace(int ttype, const char *tname,
     cltmp = (struct ClassItem *)map_to_conf(conf);
     if (CurrUserCount(cltmp) > 0)
       sendto_one(source_p, form_str(RPL_TRACECLASS), me.name,
-		 parv[0], ClassName(cltmp), CurrUserCount(cltmp));
+		 parv[0], conf->name, CurrUserCount(cltmp));
   }
   sendto_one(source_p, form_str(RPL_ENDOFTRACE),me.name, parv[0],tname);
 }

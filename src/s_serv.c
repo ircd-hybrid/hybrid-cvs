@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.361 2003/07/04 11:45:19 adx Exp $
+ *  $Id: s_serv.c,v 7.362 2003/07/05 06:21:03 db Exp $
  */
 
 #include "stdinc.h"
@@ -31,7 +31,6 @@
 #include "s_serv.h"
 #include "channel.h"
 #include "channel_mode.h"
-#include "class.h"
 #include "client.h"
 #include "common.h"
 #include "dbuf.h"
@@ -257,7 +256,7 @@ struct EncCapability *check_cipher(struct Client *client_p,
 const char *
 my_name_for_link(struct AccessItem *aconf)
 {
-  if (aconf->fakename)
+  if (aconf->fakename != NULL)
     return(aconf->fakename);
   else
     return(me.name);
@@ -489,7 +488,7 @@ try_connections(void *unused)
         !(IsConfAllowAutoConn(aconf)))
       continue;
 
-    cltmp = ClassPtr(aconf);
+    cltmp = (struct ClassItem *)map_to_conf(aconf->class_ptr);
 
     /* Skip this entry if the use of it is still on hold until
      * future. Otherwise handle this entry (and set it on hold
@@ -508,7 +507,7 @@ try_connections(void *unused)
     /* Found a CONNECT config with port specified, scan clients
      * and see if this server is already connected?
      */
-    if (find_server(aconf->name) != NULL)
+    if (find_server(conf->name) != NULL)
       continue;
 
     if (CurrUserCount(cltmp) < MaxTotal(cltmp))
@@ -529,7 +528,7 @@ try_connections(void *unused)
        *   -- adrian
        */
       sendto_realops_flags(UMODE_ALL, L_ALL, "Connection to %s[%s] activated.",
-                           aconf->name, aconf->host);
+                           conf->name, aconf->host);
       serv_connect(aconf, 0);
       /* We connect only one at time... */
       return;
@@ -542,8 +541,9 @@ check_server(const char *name, struct Client *client_p, int cryptlink)
 {
   dlink_node *ptr;
   struct ConfItem *conf           = NULL;
-  struct AccessItem *aconf        = NULL;
+  struct ConfItem *server_conf    = NULL;
   struct AccessItem *server_aconf = NULL;
+  struct AccessItem *aconf        = NULL;
   int error = -1;
 
   assert(client_p != NULL);
@@ -563,7 +563,7 @@ check_server(const char *name, struct Client *client_p, int cryptlink)
     conf = ptr->data;
     aconf = (struct AccessItem *)map_to_conf(conf);
 
-    if (!match(name, aconf->name))
+    if (!match(name, conf->name))
       continue;
 
     error = -3;
@@ -585,37 +585,45 @@ check_server(const char *name, struct Client *client_p, int cryptlink)
       {
         if (IsConfEncrypted(aconf))
         {
-          if (strcmp(aconf->passwd, (const char *)
-                     crypt(client_p->localClient->passwd, aconf->passwd)) == 0)
-            server_aconf = aconf;
+          if (strcmp(aconf->passwd,
+              (const char *)crypt(client_p->localClient->passwd,
+				  aconf->passwd)) == 0)
+            server_conf = conf;
         }
         else
         {
           if (strcmp(aconf->passwd, client_p->localClient->passwd) == 0)
-            server_aconf = aconf;
+            server_conf = conf;
         }
       }
     }
   }
 
-  if (server_aconf == NULL)
+  if (server_conf == NULL)
     return(error);
 
-  attach_conf(client_p, server_aconf);
+  attach_conf(client_p, server_conf);
 
   /* Now find all leaf or hub config items for this server */
-  DLINK_FOREACH(ptr, ConfigItemList.head)
+  DLINK_FOREACH(ptr, hub_items.head)
   {
-    aconf = ptr->data;
+    conf = ptr->data;
 
-    if (!IsConfHubOrLeaf(aconf))
+    if (!match(name, conf->name))
       continue;
-
-    if (!match(name, aconf->name))
-      continue;
-
-    attach_conf(client_p, aconf);
+    attach_conf(client_p, conf);
   }
+
+  DLINK_FOREACH(ptr, leaf_items.head)
+  {
+    conf = ptr->data;
+
+    if (!match(name, conf->name))
+      continue;
+    attach_conf(client_p, conf);
+  }
+
+  server_aconf = (struct AccessItem *)map_to_conf(server_conf);
 
   if (!(server_aconf->flags & CONF_FLAGS_LAZY_LINK))
     ClearCap(client_p,CAP_LL);
@@ -929,7 +937,8 @@ int
 server_estab(struct Client *client_p)
 {
   struct Client *target_p;
-  struct AccessItem *aconf;
+  struct ConfItem *conf;
+  struct AccessItem *aconf=NULL;
   char *host;
   const char *inpath;
   static char inpath_ip[HOSTLEN * 2 + USERLEN + 6];
@@ -947,8 +956,9 @@ server_estab(struct Client *client_p)
   inpath = get_client_name(client_p, MASK_IP); /* "refresh" inpath with host */
   host   = client_p->name;
 
-  if (!(aconf = 
-	find_conf_name(&client_p->localClient->confs, host, CONF_SERVER)))
+  if ((conf = 
+       find_conf_name(&client_p->localClient->confs, host, SERVER_TYPE))
+      == NULL)
   {
     /* This shouldn't happen, better tell the ops... -A1kmm */
     sendto_realops_flags(UMODE_ALL, L_ALL, "Warning: Lost connect{} block "
@@ -974,6 +984,8 @@ server_estab(struct Client *client_p)
       return(exit_client(client_p, client_p, client_p, "I'm a leaf"));
     }
   }
+
+  aconf = (struct AccessItem *)map_to_conf(conf);
 
   if (IsUnknown(client_p) && !IsConfCryptLink(aconf))
   {
@@ -1036,7 +1048,8 @@ server_estab(struct Client *client_p)
   sendto_one(client_p, "SVINFO %d %d 0 :%lu",
              TS_CURRENT, TS_MIN, (unsigned long)CurrentTime);
 
-  det_confs_butmask(client_p, CONF_LEAF|CONF_HUB|CONF_SERVER);
+  /* XXX Does this ever happen? I don't think so -db */
+  detach_conf(client_p, OPER_TYPE);
 
   /* *WARNING*
   **    In the following code in place of plain server's
@@ -1863,6 +1876,7 @@ nextFreeMask(void)
 int
 serv_connect(struct AccessItem *aconf, struct Client *by)
 {
+  struct ConfItem *conf;
     struct Client *client_p;
     int fd;
     char buf[HOSTIPLEN];
@@ -1872,6 +1886,9 @@ serv_connect(struct AccessItem *aconf, struct Client *by)
     assert(aconf != NULL);
     if(aconf == NULL)
       return (0);
+
+    /* XXX should be passing struct ConfItem in the first place */
+    conf = unmap_conf_item(aconf);
 
     /* log */
     irc_getnameinfo((struct sockaddr*)&aconf->ipnum, aconf->ipnum.ss_len,
@@ -1883,17 +1900,17 @@ serv_connect(struct AccessItem *aconf, struct Client *by)
      * Make sure this server isn't already connected
      * Note: aconf should ALWAYS be a valid C: line
      */
-    if ((client_p = find_server(aconf->name)) != NULL)
+    if ((client_p = find_server(conf->name)) != NULL)
       { 
         sendto_realops_flags(UMODE_ALL, L_ADMIN,
 	      "Server %s already present from %s",
-	      aconf->name, get_client_name(client_p, SHOW_IP));
+			     conf->name, get_client_name(client_p, SHOW_IP));
         sendto_realops_flags(UMODE_ALL, L_OPER,
 			     "Server %s already present from %s",
-			     aconf->name, get_client_name(client_p, MASK_IP));
+			     conf->name, get_client_name(client_p, MASK_IP));
         if (by && IsPerson(by) && !MyClient(by))
 	  sendto_one(by, ":%s NOTICE %s :Server %s already present from %s",
-		     me.name, by->name, aconf->name,
+		     me.name, by->name, conf->name,
 		     get_client_name(client_p, MASK_IP));
         return (0);
       }
@@ -1903,18 +1920,18 @@ serv_connect(struct AccessItem *aconf, struct Client *by)
     {
       /* Eek, failure to create the socket */
       report_error(L_ALL,
-		   "opening stream socket to %s: %s", aconf->name, errno);
+		   "opening stream socket to %s: %s", conf->name, errno);
       return (0);
     }
 
     /* servernames are always guaranteed under HOSTLEN chars */
-    fd_note(fd, "Server: %s", aconf->name);
+    fd_note(fd, "Server: %s", conf->name);
 
     /* Create a local client */
     client_p = make_client(NULL);
 
     /* Copy in the server, hostname, fd */
-    strlcpy(client_p->name, aconf->name, sizeof(client_p->name));
+    strlcpy(client_p->name, conf->name, sizeof(client_p->name));
     strlcpy(client_p->host, aconf->host, sizeof(client_p->host));
     /* We already converted the ip once, so lets use it - stu */
     strlcpy(client_p->localClient->sockhost, buf, HOSTIPLEN);
@@ -1944,15 +1961,15 @@ serv_connect(struct AccessItem *aconf, struct Client *by)
      * Attach config entries to client here rather than in
      * serv_connect_callback(). This to avoid null pointer references.
      */
-    if (!attach_connect_block(client_p, aconf->name, aconf->host))
+    if (!attach_connect_block(client_p, conf->name, aconf->host))
       {
         sendto_realops_flags(UMODE_ALL, L_ALL,
 			   "Host %s is not enabled for connecting:no C/N-line",
-			     aconf->name);
+			     conf->name);
         if (by && IsPerson(by) && !MyClient(by))  
             sendto_one(by, ":%s NOTICE %s :Connect to host %s failed.",
               me.name, by->name, client_p->name);
-        det_confs_butmask(client_p, 0);
+        detach_all_confs(client_p);
         return (0);
       }
     /*
@@ -2055,7 +2072,8 @@ static void
 serv_connect_callback(int fd, int status, void *data)
 {
   struct Client *client_p = data;
-  struct AccessItem *aconf;
+  struct ConfItem *conf=NULL;
+  struct AccessItem *aconf=NULL;
 
   /* First, make sure its a real client! */
   assert(client_p != NULL);
@@ -2094,9 +2112,9 @@ serv_connect_callback(int fd, int status, void *data)
 
     /* COMM_OK, so continue the connection procedure */
     /* Get the C/N lines */
-    aconf = find_conf_name(&client_p->localClient->confs,
-			   client_p->name, CONF_SERVER); 
-    if (aconf == NULL)
+    conf = find_conf_name(&client_p->localClient->confs,
+			  client_p->name, SERVER_TYPE); 
+    if (conf == NULL)
       {
         sendto_realops_flags(UMODE_ALL, L_ADMIN,
 	             "Lost connect{} block for %s", get_client_name(client_p, HIDE_IP));
@@ -2106,6 +2124,8 @@ serv_connect_callback(int fd, int status, void *data)
         exit_client(client_p, client_p, &me, "Lost connect{} block");
         return;
       }
+
+    aconf = (struct AccessItem *)map_to_conf(conf);
     /* Next, send the initial handshake */
     SetHandshake(client_p);
 
@@ -2121,6 +2141,7 @@ serv_connect_callback(int fd, int status, void *data)
     /*
      * jdc -- Check and send spasswd, not passwd.
      */
+
     if (!EmptyString(aconf->spasswd))
     {
         sendto_one(client_p, "PASS %s :TS", aconf->spasswd);

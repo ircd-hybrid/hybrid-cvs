@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: resv.c,v 7.30 2003/07/02 17:32:26 michael Exp $
+ *  $Id: resv.c,v 7.31 2003/07/05 06:21:03 db Exp $
  */
 
 #include "stdinc.h"
@@ -103,7 +103,7 @@ create_nick_resv(char *name, char *reason, int in_conf)
   conf = make_conf_item(NRESV_TYPE);
   resv_p = (struct MatchItem *)map_to_conf(conf);
 
-  DupString(resv_p->name, name);
+  DupString(conf->name, name);
   DupString(resv_p->reason, reason);
   resv_p->action = in_conf;
 
@@ -147,13 +147,9 @@ delete_channel_resv(struct ResvChannel *resv_p)
 
   hash_del_resv(resv_p);
   dlinkDelete(&resv_p->node, &resv_channel_list);
-
-  /* XXX Isn't this just horrible? 
-   * Lets use address arithemetic !
-   */
-  conf = (struct ConfItem *)((unsigned long)resv_p -
-			     (unsigned long)sizeof(struct ConfItem));
-  MyFree(conf);
+  MyFree(resv_p->reason);
+  conf = unmap_conf_item(resv_p);
+  delete_conf_item(conf);
 
   return(1);
 }
@@ -213,7 +209,7 @@ report_resv(struct Client *source_p)
     sendto_one(source_p, form_str(RPL_STATSQLINE),
                me.name, source_p->name,
 	       resv_np->action ? 'Q' : 'q',
-	       resv_np->name, resv_np->reason);
+	       conf->name, resv_np->reason);
   }
 }
 

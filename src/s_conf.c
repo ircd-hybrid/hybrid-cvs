@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.452 2003/07/04 11:45:19 adx Exp $
+ *  $Id: s_conf.c,v 7.453 2003/07/05 06:21:03 db Exp $
  */
 
 #include "stdinc.h"
@@ -30,7 +30,6 @@
 #include "resv.h"
 #include "s_stats.h"
 #include "channel.h"
-#include "class.h"
 #include "client.h"
 #include "cluster.h"
 #include "common.h"
@@ -60,13 +59,15 @@ struct config_server_hide ConfigServerHide;
 
 /* general conf items link list root, other than k lines etc. */
 dlink_list server_items = { NULL, NULL, 0 };
+dlink_list hub_items   = { NULL, NULL, 0 };
+dlink_list leaf_items  = { NULL, NULL, 0 };
 dlink_list oconf_items = { NULL, NULL, 0 };
 dlink_list uconf_items = { NULL, NULL, 0 };
 dlink_list xconf_items = { NULL, NULL, 0 };
 dlink_list nresv_items = { NULL, NULL, 0 };
 dlink_list class_items = { NULL, NULL, 0 };
+dlink_list gline_items = { NULL, NULL, 0 };
 
-dlink_list ConfigItemList = { NULL, NULL, 0 };
 dlink_list temporary_klines = { NULL, NULL, 0 };
 dlink_list temporary_dlines = { NULL, NULL, 0 };
 dlink_list temporary_ip_klines = { NULL, NULL, 0 };
@@ -79,7 +80,7 @@ int scount = 0; /* used by yyparse(), etc */
 int ypass  = 1; /* used by yyparse()      */
 
 /* internally defined functions */
-static void lookup_confhost(struct AccessItem *aconf);
+static void lookup_confhost(struct ConfItem *aconf);
 static void set_default_conf(void);
 static void validate_conf(void);
 static void read_conf(FBFILE *);
@@ -88,19 +89,17 @@ static void flush_deleted_I_P(void);
 static void expire_tklines(dlink_list *);
 static void garbage_collect_ip_entries(void);
 static int hash_ip(struct irc_ssaddr *);
-static int is_attached(struct Client *client_p, struct AccessItem *aconf);
 static int verify_access(struct Client *client_p, const char *username);
-static int attach_iline(struct Client *, struct AccessItem *);
+static int attach_iline(struct Client *, struct ConfItem *conf);
 static struct ip_entry *find_or_add_ip(struct irc_ssaddr *);
 static void parse_conf_file(int type, int cold);
-static void clear_conf_items(void);
 static dlink_list *map_to_list(ConfType conf);
 
 FBFILE *conf_fbfile_in;
 extern char yytext[];
 
 /* address of class 0 conf */
-static struct ClassItem *class0;
+static struct ConfItem *class0;
 
 /* usually, with hash tables, you use a prime number...
  * but in this case I am dealing with ip addresses,
@@ -170,6 +169,17 @@ map_to_conf(struct ConfItem *aconf)
   return(conf);
 }
 
+/* This should be inlined, its going to be used a lot */
+struct ConfItem *
+unmap_conf_item(void *aconf)
+{
+  struct ConfItem *conf;
+
+  conf = (struct ConfItem *)((unsigned long)aconf -
+			     (unsigned long)sizeof(struct ConfItem));
+  return(conf);
+}
+
 /* make_conf_item()
  *
  * inputs	- type of item
@@ -191,8 +201,6 @@ make_conf_item(ConfType type)
   case GLINE_TYPE:
   case KLINE_TYPE:
   case CLIENT_TYPE:
-  case LEAF_TYPE:
-  case HUB_TYPE:
   case OPER_TYPE:
   case SERVER_TYPE:
     conf = (struct ConfItem *)MyMalloc(sizeof(struct ConfItem) +
@@ -220,10 +228,6 @@ make_conf_item(ConfType type)
       status = CONF_CLIENT;
       break;
 
-    case LEAF_TYPE:
-      status = CONF_LEAF;
-      break;
-
     case OPER_TYPE:
       status = CONF_OPERATOR;
       dlinkAdd(conf, &conf->node, &oconf_items);
@@ -234,14 +238,22 @@ make_conf_item(ConfType type)
       dlinkAdd(conf, &conf->node, &server_items);
       break;
 
-    case HUB_TYPE:
-      status = CONF_HUB; 
-      break;
-
     default:
       break;
     }
     aconf->status = status;
+    break;
+
+  case LEAF_TYPE:
+    conf = (struct ConfItem *)MyMalloc(sizeof(struct ConfItem) +
+					 sizeof(struct MatchItem));
+    dlinkAdd(conf, &conf->node, &leaf_items);
+    break;
+
+  case HUB_TYPE:
+    conf = (struct ConfItem *)MyMalloc(sizeof(struct ConfItem) +
+					 sizeof(struct MatchItem));
+    dlinkAdd(conf, &conf->node, &hub_items);
     break;
 
   case ULINE_TYPE:
@@ -296,18 +308,16 @@ delete_conf_item(struct ConfItem *conf)
 {
   struct MatchItem *match_item;
   struct AccessItem *aconf;
-  struct ClassItem *aclass;
   ConfType type = conf->type;
+
+  MyFree(conf->name);
 
   switch(type)
   {
   case DLINE_TYPE:
   case EXEMPTDLINE_TYPE:
-  case GLINE_TYPE:
   case KLINE_TYPE:
   case CLIENT_TYPE:
-  case LEAF_TYPE:
-  case HUB_TYPE:
   case OPER_TYPE:
   case SERVER_TYPE:
     aconf = (struct AccessItem *)map_to_conf(conf);
@@ -317,15 +327,14 @@ delete_conf_item(struct ConfItem *conf)
       memset(aconf->passwd, 0, strlen(aconf->passwd));
     if (aconf->spasswd != NULL)
       memset(aconf->spasswd, 0, strlen(aconf->spasswd));
+    aconf->class_ptr = NULL;
 
     MyFree(aconf->passwd);
     MyFree(aconf->spasswd);
     MyFree(aconf->reason);
     MyFree(aconf->oper_reason);
-    MyFree(aconf->name);
     MyFree(aconf->user);
     MyFree(aconf->host);
-    MyFree(aconf->class_name);
     MyFree(aconf->fakename);
 #ifdef HAVE_LIBCRYPTO
     if (aconf->rsa_public_key)
@@ -338,28 +347,23 @@ delete_conf_item(struct ConfItem *conf)
     {
     case EXEMPTDLINE_TYPE:
     case DLINE_TYPE:
-      break;
-
     case GLINE_TYPE:
     case KLINE_TYPE:
-      break;
-
     case CLIENT_TYPE:
-      break;
-
-    case HUB_TYPE:
-      break;
-
-    case LEAF_TYPE:
+      MyFree(conf);
       break;
 
     case OPER_TYPE:
-      dlinkDelete(&conf->node, &oconf_items);
+      aconf = (struct AccessItem *)map_to_conf(conf);
+      if (!IsConfIllegal(aconf))
+	dlinkDelete(&conf->node, &oconf_items);
       MyFree(conf);
       break;
 
     case SERVER_TYPE:
-      dlinkDelete(&conf->node, &server_items);
+      aconf = (struct AccessItem *)map_to_conf(conf);
+      if (!IsConfIllegal(aconf))
+	dlinkDelete(&conf->node, &server_items);
       MyFree(conf);
       break;
 
@@ -368,9 +372,32 @@ delete_conf_item(struct ConfItem *conf)
     }
     break;
 
+  case HUB_TYPE:
+    match_item = (struct MatchItem *)map_to_conf(conf);
+    MyFree(match_item->user);
+    MyFree(match_item->host);
+    MyFree(match_item->reason);
+    MyFree(match_item->oper_reason);
+    /* If marked illegal, its already been pulled off of the hub_items list */
+    if (!match_item->illegal)
+      dlinkDelete(&conf->node, &hub_items);
+    MyFree(conf);
+    break;
+
+  case LEAF_TYPE:
+    match_item = (struct MatchItem *)map_to_conf(conf);
+    MyFree(match_item->user);
+    MyFree(match_item->host);
+    MyFree(match_item->reason);
+    MyFree(match_item->oper_reason);
+    /* If marked illegal, its already been pulled off of the leaf_items list */
+    if (!match_item->illegal)
+      dlinkDelete(&conf->node, &leaf_items);
+    MyFree(conf);
+    break;
+
   case ULINE_TYPE:
     match_item = (struct MatchItem *)map_to_conf(conf);
-    MyFree(match_item->name);
     MyFree(match_item->user);
     MyFree(match_item->host);
     MyFree(match_item->reason);
@@ -381,7 +408,6 @@ delete_conf_item(struct ConfItem *conf)
 
   case XLINE_TYPE:
     match_item = (struct MatchItem *)map_to_conf(conf);
-    MyFree(match_item->name);
     MyFree(match_item->user);
     MyFree(match_item->host);
     MyFree(match_item->reason);
@@ -390,12 +416,8 @@ delete_conf_item(struct ConfItem *conf)
     MyFree(conf);
     break;
 
-  case CRESV_TYPE:
-    break;
-
   case NRESV_TYPE:
     match_item = (struct MatchItem *)map_to_conf(conf);
-    MyFree(match_item->name);
     MyFree(match_item->user);
     MyFree(match_item->host);
     MyFree(match_item->reason);
@@ -404,9 +426,21 @@ delete_conf_item(struct ConfItem *conf)
     MyFree(conf);
     break;
 
+  case GLINE_TYPE:
+    aconf = (struct AccessItem *)map_to_conf(conf);
+    MyFree(aconf->user);
+    MyFree(aconf->host);
+    MyFree(aconf->reason);
+    MyFree(aconf->oper_reason);
+    dlinkDelete(&conf->node, &gline_items);
+    MyFree(conf);
+    break;
+
+  case CRESV_TYPE:
+    MyFree(conf);
+    break;
+
   case CLASS_TYPE:
-    aclass = (struct ClassItem *)map_to_conf(conf);
-    MyFree(aclass->class_name);
     dlinkDelete(&conf->node, &class_items);
     MyFree(conf);
     break;
@@ -415,35 +449,6 @@ delete_conf_item(struct ConfItem *conf)
     break;
   }
 }
-
-/*
- * clear_conf_items
- *
- * inputs	- none
- * output	- none
- * side effects	-
- */
-static void
-clear_conf_items(void)
-{
-  dlink_node *ptr, *next_ptr;
-  struct ConfItem *conf;
-
-  dlink_list * free_items [] = {
-    &uconf_items, &xconf_items, &server_items, &nresv_items, NULL
-  };
-
-  dlink_list ** iterator = free_items; /* C is dumb */
-  
-  for (; *iterator != NULL; iterator++)
-  {
-    DLINK_FOREACH_SAFE(ptr, next_ptr, (*iterator)->head)
-    {
-      delete_conf_item((conf = ptr->data));
-    }
-  }
-}
-
 
 /* free_access_item()
  *
@@ -458,32 +463,8 @@ free_access_item(struct AccessItem *aconf)
 
   if (aconf == NULL)
     return;
-  conf = (struct ConfItem *)((unsigned long)aconf -
-			     (unsigned long)sizeof(struct ConfItem));
+  conf = unmap_conf_item(aconf);
   delete_conf_item(conf);
-}
-
-/* det_confs_butmask()
- *
- * remove all conf entries from the client except
- * those which match the status field mask.
- */
-void
-det_confs_butmask(struct Client *client_p, unsigned int mask)
-{
-  dlink_node *ptr;
-  dlink_node *next_ptr;
-  struct AccessItem *aconf;
-
-  DLINK_FOREACH_SAFE(ptr, next_ptr, client_p->localClient->confs.head)
-  {
-    aconf = ptr->data;
-
-    if ((aconf->status & mask) == 0)
-    {
-      detach_conf(client_p, aconf);
-    }
-  }
 }
 
 /*
@@ -498,11 +479,11 @@ void
 report_confitem_types(struct Client *source_p, ConfType type)
 {
   dlink_node *ptr;
-  struct ConfItem *conf;
+  struct ConfItem *conf=NULL;
   struct AccessItem *aconf;
   struct MatchItem *matchitem;
   struct ClassItem *classitem;
-  char *name, *host, *reason, *user, *classname;
+  char *host, *reason, *user, *classname;
   int port;
 
   switch (type)
@@ -514,7 +495,7 @@ report_confitem_types(struct Client *source_p, ConfType type)
       matchitem = (struct MatchItem *)map_to_conf(conf);
       sendto_one(source_p, form_str(RPL_STATSXLINE),
 		 me.name, source_p->name, matchitem->action,
-		 matchitem->name, matchitem->reason);
+		 conf->name, matchitem->reason);
     }
     break;
 
@@ -522,11 +503,10 @@ report_confitem_types(struct Client *source_p, ConfType type)
     DLINK_FOREACH(ptr, uconf_items.head)
     {
       conf = ptr->data;
-      break;
       matchitem = (struct MatchItem *)map_to_conf(conf);
       sendto_one(source_p, form_str(RPL_STATSULINE),
 		 me.name, source_p->name,
-		 matchitem->name, matchitem->reason);
+		 conf->name, matchitem->reason);
     }
     break;
 
@@ -535,17 +515,17 @@ report_confitem_types(struct Client *source_p, ConfType type)
     {
       conf = ptr->data;
       aconf = (struct AccessItem *)map_to_conf(conf);
-      get_printable_conf(aconf, &name, &host, &reason, &user, &port,
-			 &classname);
+      get_printable_conf(conf, &host, &reason, &user, &port, &classname);
+
       /* Don't allow non opers to see oper privs */
       if (IsOper(source_p))
 	sendto_one(source_p, form_str(RPL_STATSOLINE),
 		   me.name, source_p->name, 'O', user, host,
-		   name, oper_privs_as_string(NULL, port), classname);
+		   conf->name, oper_privs_as_string(NULL, port), classname);
       else
 	sendto_one(source_p, form_str(RPL_STATSOLINE),
 		   me.name, source_p->name, 'O', user, host,
-		   name, "0", classname);
+		   conf->name, "0", classname);
     }
     break;
 
@@ -556,7 +536,7 @@ report_confitem_types(struct Client *source_p, ConfType type)
       classitem = (struct ClassItem *)map_to_conf(conf);
       sendto_one(source_p, form_str(RPL_STATSYLINE),
 		 me.name, source_p->name, 'Y',
-		 ClassName(classitem), PingFreq(classitem),
+		 conf->name, PingFreq(classitem),
 		 ConFreq(classitem),
 		 MaxTotal(classitem), MaxSendq(classitem));
     }
@@ -574,8 +554,7 @@ report_confitem_types(struct Client *source_p, ConfType type)
 
       conf = ptr->data;
       aconf = (struct AccessItem *)map_to_conf(conf);
-      get_printable_conf(aconf, &name, &host, &reason, &user, &port,
-			 &classname);
+      get_printable_conf(conf, &host, &reason, &user, &port, &classname);
 
       buf[0] = '\0';
 
@@ -600,16 +579,33 @@ report_confitem_types(struct Client *source_p, ConfType type)
       if (!ConfigServerHide.hide_server_ips && IsAdmin(source_p))
 	sendto_one(source_p, form_str(RPL_STATSCLINE),
 		   me.name, source_p->name, 'C', host,
-		   buf, name, port, classname);
+		   buf, conf->name, port, classname);
         else
           sendto_one(source_p, form_str(RPL_STATSCLINE),
                      me.name, source_p->name, 'C',
-		     "*@127.0.0.1", buf, name, port, classname);
+		     "*@127.0.0.1", buf, conf->name, port, classname);
     }
     break;
 
   case HUB_TYPE:
+    DLINK_FOREACH(ptr, hub_items.head)
+    {
+      conf = ptr->data;
+      matchitem = (struct MatchItem *)map_to_conf(conf);
+      sendto_one(source_p, form_str(RPL_STATSHLINE), me.name,
+		 source_p->name, 'H', matchitem->host, conf->name, 0, "*");
+    }
+    break;
+
   case LEAF_TYPE:
+    DLINK_FOREACH(ptr, leaf_items.head)
+    {
+      matchitem = (struct MatchItem *)map_to_conf(conf);
+      sendto_one(source_p, form_str(RPL_STATSLLINE), me.name,
+		 source_p->name, 'L', matchitem->host, conf->name, 0, "*");
+    }
+    break;
+
   case KLINE_TYPE:
   case DLINE_TYPE:
   case EXEMPTDLINE_TYPE:
@@ -617,57 +613,6 @@ report_confitem_types(struct Client *source_p, ConfType type)
   case CRESV_TYPE:
   case NRESV_TYPE:
     break;
-  }
-}
-
-static struct LinkReport {
-  unsigned int conf_type;
-  unsigned int rpl_stats;
-  unsigned int conf_char;
-} report_array[] = {
-  { CONF_LEAF,     RPL_STATSLLINE, 'L'},
-  { CONF_HUB,      RPL_STATSHLINE, 'H'},
-  { 0, 0, '\0' }
-};
-
-/* report_configured_links()
- *
- * inputs	- pointer to client to report to
- *		- type of line to report
- * output	- NONE
- * side effects	-
- */
-void
-report_configured_links(struct Client *source_p, unsigned int mask)
-{
-  dlink_node *ptr;
-  struct AccessItem *aconf;
-  struct LinkReport *p;
-  char *host;
-  char *reason;
-  char *user;
-  char *name;
-  char *classname;
-  int port;
-
-  DLINK_FOREACH(ptr, ConfigItemList.head)
-  {
-    aconf = ptr->data;
-
-    if (aconf->status & mask)
-    {
-      for (p = &report_array[0]; p->conf_type; p++)
-        if (p->conf_type == aconf->status)
-          break;
-
-      if (p->conf_type == 0)
-        return;
-
-      get_printable_conf(aconf, &name, &host, &reason, &user, &port, &classname);
-      sendto_one(source_p, form_str(p->rpl_stats),
-		 me.name, source_p->name, p->conf_char,
-		 host, name, port, classname);
-    }
   }
 }
 
@@ -777,35 +722,38 @@ static int
 verify_access(struct Client* client_p, const char *username)
 {
   struct AccessItem *aconf;
+  struct ConfItem *conf;
   struct AccessItem *gkill_conf;
   char non_ident[USERLEN + 1];
 
   if (IsGotId(client_p))
   {
-    aconf = find_address_conf(client_p->host,client_p->username,
-                              &client_p->localClient->ip,
-                              client_p->localClient->aftype,
-                              client_p->localClient->passwd);
+    aconf = find_address_conf(client_p->host, client_p->username,
+			     &client_p->localClient->ip,
+			     client_p->localClient->aftype,
+                             client_p->localClient->passwd);
   }
   else
   {
     strlcpy(non_ident, "~", sizeof(non_ident));
     strlcat(non_ident, username, sizeof(non_ident));
     aconf = find_address_conf(client_p->host,non_ident,
-                              &client_p->localClient->ip,
-                              client_p->localClient->aftype,
-                              client_p->localClient->passwd);
+			     &client_p->localClient->ip,
+			     client_p->localClient->aftype,
+	                     client_p->localClient->passwd);
   }
-
+  
   if (aconf != NULL)
   {
     if (IsConfClient(aconf))
     {
+      conf = unmap_conf_item(aconf);
+
       if (IsConfRedir(aconf))
       {
         sendto_one(client_p, form_str(RPL_REDIR),
                    me.name, client_p->name,
-                   aconf->name ? aconf->name : "",
+                   conf->name ? conf->name : "",
                    aconf->port);
         return(NOT_AUTHORIZED);
       }
@@ -839,22 +787,24 @@ verify_access(struct Client* client_p, const char *username)
       /* Thanks for spoof idea amm */
       if (IsConfDoSpoofIp(aconf))
       {
+	conf = unmap_conf_item(aconf);
+
 #ifndef HIDE_SPOOF_IPS
         if (IsConfSpoofNotice(aconf))
           sendto_realops_flags(UMODE_ALL, L_ADMIN, "%s spoofing: %s as %s",
-                               client_p->name, client_p->host, aconf->name);
+                               client_p->name, client_p->host, conf->name);
 #endif
-        strlcpy(client_p->host, aconf->name, sizeof(client_p->host));
+        strlcpy(client_p->host, conf->name, sizeof(client_p->host));
         SetIPSpoof(client_p);
       }
 
-      return(attach_iline(client_p, aconf));
+      return(attach_iline(client_p, conf));
     }
     else if (IsConfKill(aconf))
     {
       if (ConfigFileEntry.kline_with_reason)
-        sendto_one(client_p, ":%s NOTICE %s :*** Banned %s",
-                   me.name, client_p->name, aconf->reason);
+        sendto_one(client_p, ":%s NOTICE %s :*** Banned %s", 
+                  me.name, client_p->name, aconf->reason);
       return(BANNED_CLIENT);
     }
   }
@@ -870,8 +820,10 @@ verify_access(struct Client* client_p, const char *username)
  * side effects	- do actual attach
  */
 static int
-attach_iline(struct Client *client_p, struct AccessItem *aconf)
+attach_iline(struct Client *client_p, struct ConfItem *conf)
 {
+  struct AccessItem *aconf;
+  struct ClassItem *aclass;
   struct ip_entry *ip_found;
   int a_limit_reached = 0;
   int max_limit_reached = 0;
@@ -884,9 +836,12 @@ attach_iline(struct Client *client_p, struct AccessItem *aconf)
   SetIpHash(client_p);
   ip_found->count++;
 
+  aconf = (struct AccessItem *)map_to_conf(conf);
   /* only check it if its non zero */
-  if (aconf->c_class != NULL)
+  if (aconf->class_ptr != NULL)
   {
+    aclass = (struct ClassItem *)map_to_conf(aconf->class_ptr);
+
     count_user_host(client_p->username, client_p->host,
 		    &global, &local, &ident);
 
@@ -894,17 +849,17 @@ attach_iline(struct Client *client_p, struct AccessItem *aconf)
      * setting a_limit_reached if any limit is reached.
      * - Dianora
      */
-    if ((ConfMaxTotal(aconf) != 0) &&
-	(ConfCurrUserCount(aconf) > ConfMaxTotal(aconf)))
+    if ((MaxTotal(aclass) != 0) &&
+	(CurrUserCount(aclass) > MaxTotal(aclass)))
       {
 	max_limit_reached = 1;
 	a_limit_reached = 1;
       }
-    if ((ConfMaxPerIp(aconf) != 0) && (ip_found->count > ConfMaxPerIp(aconf)))
+    if ((MaxPerIp(aclass) != 0) && (ip_found->count > MaxPerIp(aclass)))
       a_limit_reached = 1;
-    else if ((ConfMaxLocal(aconf) != 0) && (local > ConfMaxLocal(aconf)))
+    else if ((MaxLocal(aclass) != 0) && (local > MaxLocal(aclass)))
       a_limit_reached = 1;
-    else if ((ConfMaxGlobal(aconf) != 0) && (global > ConfMaxGlobal(aconf)))
+    else if ((MaxGlobal(aclass) != 0) && (global > MaxGlobal(aclass)))
       a_limit_reached = 1;
 
     /* XXX I am not sure of the logic here. This allows a client onto a server
@@ -914,8 +869,8 @@ attach_iline(struct Client *client_p, struct AccessItem *aconf)
      * - Dianora
      */
 
-    if ((ConfMaxIdent(aconf) != 0) && ((*client_p->username != '~') &&
-				       ident < ConfMaxIdent(aconf)) &&
+    if ((MaxIdent(aclass) != 0) && ((*client_p->username != '~') &&
+				    ident < MaxIdent(aclass)) &&
 	!max_limit_reached)
       a_limit_reached = 0;
 
@@ -934,7 +889,7 @@ attach_iline(struct Client *client_p, struct AccessItem *aconf)
   else
     return(NOT_AUTHORIZED);	/* If class is missing, this is best */
 
-  return(attach_conf(client_p, aconf));
+  return(attach_conf(client_p, conf));
 }
 
 /* init_ip_hash_table()
@@ -1224,44 +1179,107 @@ iphash_stats(struct Client *client_p, struct Client *source_p,
 /* detach_conf()
  *
  * inputs	- pointer to client to detach
- * 		- pointer to conf item to detach
+ *		- type of conf to detach
  * output	- 0 for success, -1 for failure
  * side effects	- Disassociate configuration from the client.
  *		  Also removes a class from the list if marked for deleting.
  */
 int
-detach_conf(struct Client *client_p, struct AccessItem *aconf)
+detach_conf(struct Client *client_p, ConfType type)
 {
   dlink_node *ptr;
-  struct ClassItem *aclass;
   struct ConfItem *conf;
-
-  if (aconf == NULL)
-    return(-1);
+  struct ClassItem *aclass;
+  struct AccessItem *aconf;
+  struct ConfItem *aclass_conf;
+  struct MatchItem *match_item;
 
   DLINK_FOREACH(ptr, client_p->localClient->confs.head)
   {
-    if (ptr->data == aconf)
+    conf = ptr->data;
+
+    if (conf->type == type)
     {
-      if ((aclass = ClassPtr(aconf)) != NULL)
+      switch (conf->type)
       {
+      case CLIENT_TYPE:
+      case OPER_TYPE:
+      case SERVER_TYPE:
+	aconf = (struct AccessItem *)map_to_conf(conf);
+
+	if ((aclass_conf = ClassPtr(aconf)) != NULL)
+	{
+	  aclass = (struct ClassItem *)map_to_conf(aclass_conf);
+	  if (CurrUserCount(aclass) > 0)
+	    aclass->curr_user_count--;
+
+	  if (MaxTotal(aclass) < 0 && CurrUserCount(aclass) <= 0)
+	  {
+	    delete_conf_item(aclass_conf);
+	  }
+	}
+
+	/* Please, no ioccc entries - Dianora */
+	if (aconf->clients > 0)
+	  --aconf->clients;
+	if (aconf->clients == 0 && IsConfIllegal(aconf))
+	  delete_conf_item(conf);
+	break;
+      case LEAF_TYPE:
+      case HUB_TYPE:
+	match_item = (struct MatchItem *)map_to_conf(conf);
+	if ((match_item->ref_count == 0) && (match_item->illegal))
+	  delete_conf_item(conf);
+	break;
+      default:
+	break;
+      }
+
+      dlinkDelete(&conf->conf_node, &client_p->localClient->confs);
+      return(0);
+    }
+  }
+  return(-1);
+}
+
+/* detach_all_confs()
+ *
+ * inputs	- pointer to client to detach
+ * output	- NONE
+ * side effects	- Disassociate all configuration from the client.
+ *		  Also removes a class from the list if marked for deleting.
+ */
+void
+detach_all_confs(struct Client *client_p)
+{
+  dlink_node *ptr;
+  dlink_node *next_ptr;
+  struct ConfItem *conf;
+  struct ClassItem *aclass;
+  struct AccessItem *aconf;
+  struct ConfItem *aclass_conf;
+  struct MatchItem *match_item;
+
+  DLINK_FOREACH_SAFE(ptr, next_ptr, client_p->localClient->confs.head)
+  {
+    conf = ptr->data;
+
+    switch(conf->type)
+    {
+    case CLIENT_TYPE:
+    case OPER_TYPE:
+    case SERVER_TYPE:
+      aconf = (struct AccessItem *)map_to_conf(conf);
+
+      if ((aclass_conf = ClassPtr(aconf)) != NULL)
+      {
+	aclass = (struct ClassItem *)map_to_conf(aclass_conf);
 	if (CurrUserCount(aclass) > 0)
 	  aclass->curr_user_count--;
 
 	if (MaxTotal(aclass) < 0 && CurrUserCount(aclass) <= 0)
 	{
-	  /* XXX 
-	   * I'm converting from ClassItem * to ConfItem * here,
-	   * then converting right back to get ClassItem * ...
-	   * This needs to be fixed, but not tonight...
-	   * XXX would it make more sense to keep ConfItem *
-	   * in the AccessItem * rather than the ClassItem ?
-	   * It means a double lookup to get sendq though...
-	   */
-	  conf = (struct ConfItem *)((unsigned long)aclass -
-				     (unsigned long)sizeof(struct ConfItem));
-	  delete_conf_item(conf);
-	  ClassPtr(aconf) = NULL;
+	  delete_conf_item(aclass_conf);
 	}
       }
 
@@ -1269,36 +1287,19 @@ detach_conf(struct Client *client_p, struct AccessItem *aconf)
       if (aconf->clients > 0)
 	--aconf->clients;
       if (aconf->clients == 0 && IsConfIllegal(aconf))
-	free_access_item(aconf);
-
-      dlinkDelete(ptr, &client_p->localClient->confs);
-      free_dlink_node(ptr);
-      return(0);
-    }
-  }
-
-  return(-1);
-}
-
-/* is_attached()
- *
- * inputs	- pointer to client to check
- * 		- pointer to conf item to check
- * output	- 1 if attached, 0 if not
- * side effects	- 
- */
-static int
-is_attached(struct Client *client_p, struct AccessItem *aconf)
-{
-  dlink_node *ptr;
-
-  DLINK_FOREACH(ptr, client_p->localClient->confs.head)
-  {
-    if (ptr->data == aconf)
+	delete_conf_item(conf);
       break;
+    case LEAF_TYPE:
+    case HUB_TYPE:
+      match_item = (struct MatchItem *)map_to_conf(conf);
+      if ((match_item->ref_count == 0) && (match_item->illegal))
+	delete_conf_item(conf);
+      break;
+    default:
+      break;
+    }
+    dlinkDelete(&conf->conf_node, &client_p->localClient->confs);
   }
-
-  return((ptr != NULL) ? 1 : 0);
 }
 
 /* attach_conf()
@@ -1312,77 +1313,58 @@ is_attached(struct Client *client_p, struct AccessItem *aconf)
  *                attachment if there was an old one...
  */
 int
-attach_conf(struct Client *client_p, struct AccessItem *aconf)
+attach_conf(struct Client *client_p, struct ConfItem *conf)
 {
-  if (is_attached(client_p, aconf))
+  struct AccessItem *aconf;
+  struct MatchItem *match_item;
+
+  if (dlinkFind(&client_p->localClient->confs, conf) != NULL)
     return(1);
 
-  if (IsConfIllegal(aconf))
-    return(NOT_AUTHORIZED);
-
-  if (!IsConfOperator(aconf))
+  if ((conf->type == CLIENT_TYPE) || (conf->type == SERVER_TYPE) ||
+      (conf->type == OPER_TYPE))
   {
-    if (IsConfClient(aconf) &&
-	ConfCurrUserCount(aconf) >= ConfMaxTotal(aconf) &&
-        ConfMaxTotal(aconf) > 0)
+    aconf = (struct AccessItem *)map_to_conf(conf);
+
+    if (IsConfIllegal(aconf))
+      return(NOT_AUTHORIZED);
+
+    if (conf->type == CLIENT_TYPE)
     {
-      if (!IsConfExemptLimits(aconf))
-        return(I_LINE_FULL); 
-      else
+      struct ClassItem *aclass;
+
+      aclass = (struct ClassItem *)map_to_conf(aconf->class_ptr);
+
+      if (MaxTotal(aclass) > 0)
       {
-        sendto_one(client_p, ":%s NOTICE %s :*** Your connection class is "
-              "full, but you have exceed_limit=yes;", me.name, client_p->name);
-        SetExemptLimits(client_p);
+	if (CurrUserCount(aclass) >= MaxTotal(aclass))
+        {
+	  if (!IsConfExemptLimits(aconf))
+	    return(I_LINE_FULL); 
+	  else
+	  {
+	    sendto_one(client_p, ":%s NOTICE %s :*** Your connection class is "
+		       "full, but you have exceed_limit=yes;",
+		       me.name, client_p->name);
+	    SetExemptLimits(client_p);
+	  }
+	}
+	CurrUserCount(aclass)++;
       }
+      else
+	return(NOT_AUTHORIZED);
     }
+    aconf->clients++;
   }
-
-  dlinkAdd(aconf, make_dlink_node(), &client_p->localClient->confs);
-
-  aconf->clients++;
-
-  if (IsConfTypeOfClient(aconf))
-    ConfCurrUserCount(aconf)++;
-  return(0);
-}
-
-/* attach_confs()
- *
- * Attach all possible CONF lines to a client
- * if the name passed matches that for the conf file (for non-C/N lines) 
- * or is an exact match (C/N lines only).  The difference in behaviour 
- * is to stop C:*::* and N:*::*.
- * returns count of conf entries attached if successful, 0 if none are found
- *
- * NOTE: this will allow C:::* and N:::* because the match mask is the
- * conf line and not the name
- */
-int
-attach_confs(struct Client *client_p, const char *name, unsigned int statmask)
-{
-  dlink_node *ptr;
-  struct AccessItem *aconf;
-  int conf_counter = 0;
-
-  DLINK_FOREACH(ptr, ConfigItemList.head)
+  else if ((conf->type == HUB_TYPE) || (conf->type == LEAF_TYPE))
   {
-    aconf = ptr->data;
-
-    if ((aconf->status & statmask) && !IsConfIllegal(aconf) &&
-        aconf->name && match(aconf->name, name))
-    {
-      if (attach_conf(client_p, aconf) > 0)
-        ++conf_counter;
-    }
-    else if ((aconf->status & statmask) && !IsConfIllegal(aconf) &&
-             aconf->name && irccmp(aconf->name, name) == 0)
-    {
-      if (attach_conf(client_p, aconf) > 0)
-        ++conf_counter;
-    }
+    match_item = (struct MatchItem *)map_to_conf(conf);
+    match_item->ref_count++;
   }
 
-  return(conf_counter);
+  dlinkAdd(conf, &conf->conf_node, &client_p->localClient->confs);
+
+  return(0);
 }
 
 /* attach_connect_block()
@@ -1412,61 +1394,73 @@ attach_connect_block(struct Client *client_p, const char *name,
     conf = ptr->data;
     aconf = (struct AccessItem *)map_to_conf(conf);
 
-    if ((match(aconf->name, name) == 0) ||
+    if ((match(conf->name, name) == 0) ||
         (match(aconf->host, host) == 0))
       continue;
 
-    attach_conf(client_p, aconf);
+    attach_conf(client_p, conf);
     return(-1);
   }
 
   return(0);
 }
 
-/* find_conf_exact
+/*
+ * find_conf_exact
  *
- * inputs	- pointer to name to find
+ * inputs	- type of ConfItem
+ *		- pointer to name to find
  *		- pointer to username to find
  *		- pointer to host to find
- *		- int mask of type of conf to find
  * output	- NULL or pointer to conf found
  * side effects	- find a conf entry which matches the hostname
  *		  and has the same name.
  */
-struct AccessItem *
-find_conf_exact(const char *name, const char *user,
-                const char *host, unsigned int statmask)
+struct ConfItem* 
+find_conf_exact(ConfType type, const char* name, const char* user, 
+		const char* host)
 {
   dlink_node *ptr;
+  dlink_list *list_p;
+  struct ConfItem *conf=NULL;
   struct AccessItem *aconf;
 
-  DLINK_FOREACH(ptr, ConfigItemList.head)
+  /* Only valid for OPER_TYPE and ...? */
+  list_p = map_to_list(type);
+
+  DLINK_FOREACH(ptr, (*list_p).head)
   {
-    aconf = ptr->data;
+    conf = ptr->data;
 
-    if (!(aconf->status & statmask) || !aconf->name || !aconf->host ||
-        irccmp(aconf->name, name))
+    if (conf->name == NULL)
+      continue;
+    aconf = (struct AccessItem *)map_to_conf(conf);
+    if (aconf->host == NULL)
+      continue;
+    if (irccmp(conf->name, name) != 0)
       continue;
 
-    /* Accept if the *real* hostname (usually sockethost)
-     * socket host) matches *either* host or name field
-     * of the configuration.
-     */
-    if (!match(aconf->host, host) || !match(aconf->user, user) ||
-        irccmp(aconf->name, name))
+    /*
+    ** Accept if the *real* hostname (usually sockethost)
+    ** socket host) matches *either* host or name field
+    ** of the configuration.
+    */
+    if (!match(aconf->host, host) || !match(aconf->user,user)
+	|| irccmp(conf->name, name) )
       continue;
-
-    if (IsConfOperator(aconf))
+    if (type == OPER_TYPE)
     {
-      if (aconf->clients < ConfMaxTotal(aconf))
-        return(aconf);
+      struct ClassItem *aclass;
+
+      aclass = (struct ClassItem *)aconf->class_ptr;
+      if (aconf->clients < MaxTotal(aclass))
+	return(conf);
       else
-        continue;
+	continue;
     }
     else
-      return(aconf);
+      return(conf);
   }
-
   return(NULL);
 }
 
@@ -1479,19 +1473,22 @@ find_conf_exact(const char *name, const char *user,
  * side effects	- find a conf entry which matches the name
  *		  and has the given mask.
  */
-struct AccessItem *
-find_conf_name(dlink_list *list, const char *name, unsigned int statmask)
+struct ConfItem *
+find_conf_name(dlink_list *list, const char *name, ConfType type)
 {
   dlink_node *ptr;
-  struct AccessItem* aconf;
+  struct ConfItem* conf;
 
   DLINK_FOREACH(ptr, list->head)
   {
-    aconf = ptr->data;
-
-    if ((aconf->status & statmask) && aconf->name && 
-        (irccmp(aconf->name, name) == 0 || match(aconf->name, name)))
-      return(aconf);
+    conf = ptr->data;
+    
+    if (conf->type == type)
+    {
+      if (conf->name && 
+	  (irccmp(conf->name, name) == 0 || match(conf->name, name)))
+      return(conf);
+    }
   }
 
   return(NULL);
@@ -1571,9 +1568,9 @@ find_matching_name_conf(ConfType type,
       conf = ptr->data;
 
       match_item = (struct MatchItem *)map_to_conf(conf);
-      if (EmptyString(match_item->name))
+      if (EmptyString(conf->name))
 	continue;
-      if ((name != NULL) && match_esc(name, match_item->name))
+      if ((name != NULL) && match_esc(name, conf->name))
       {
 	if ((user == NULL && (host == NULL)))
 	  return (conf);
@@ -1591,13 +1588,13 @@ find_matching_name_conf(ConfType type,
     DLINK_FOREACH(ptr, (*list_p).head)
     {
       conf = ptr->data;
-      aconf = (struct AccessItem *)map_to_conf(conf);
 
-      /* XXX wildcard opers?!? -joshk */
-      if ((name != NULL) && match_esc(name, aconf->name))
+      if ((name != NULL) && (irccmp(name, conf->name) == 0))
       {
 	if ((user == NULL && (host == NULL)))
 	  return (conf);
+
+	aconf = (struct AccessItem *)map_to_conf(conf);
 	if (EmptyString(aconf->user) || EmptyString(aconf->host))
 	  return (conf);
 	if (match(aconf->user, user) && match(aconf->host, host))
@@ -1612,7 +1609,7 @@ find_matching_name_conf(ConfType type,
       conf = ptr->data;
       aconf = (struct AccessItem *)map_to_conf(conf);
 
-      if ((name != NULL) && match_esc(name, aconf->name))
+      if ((name != NULL) && match_esc(name, conf->name))
         return(conf);
       else if ((host != NULL) && match_esc(host, aconf->host))
         return(conf);
@@ -1636,8 +1633,7 @@ find_matching_name_conf(ConfType type,
  */
 struct ConfItem *
 find_exact_name_conf(ConfType type, 
-		     const char *name, const char *user,
-		     const char *host)
+		     const char *name, const char *user, const char *host)
 {
   dlink_node *ptr=NULL;
   struct ConfItem *conf;
@@ -1658,10 +1654,10 @@ find_exact_name_conf(ConfType type,
     {
       conf = ptr->data;
       match_item = (struct MatchItem *)map_to_conf(conf);
-      if (EmptyString(match_item->name))
+      if (EmptyString(conf->name))
 	continue;
     
-      if (irccmp(match_item->name, name) == 0)
+      if (irccmp(conf->name, name) == 0)
       {
 	if ((user == NULL && (host == NULL)))
 	  return (conf);
@@ -1678,10 +1674,10 @@ find_exact_name_conf(ConfType type,
     {
       conf = ptr->data;
       aconf = (struct AccessItem *)map_to_conf(conf);
-      if (EmptyString(aconf->name))
+      if (EmptyString(conf->name))
 	continue;
     
-      if (irccmp(aconf->name, name) == 0)
+      if (irccmp(conf->name, name) == 0)
       {
 	if ((user == NULL && (host == NULL)))
 	  return (conf);
@@ -1698,7 +1694,7 @@ find_exact_name_conf(ConfType type,
     {
       conf = ptr->data;
       aconf = (struct AccessItem *)map_to_conf(conf);
-      if (EmptyString(aconf->name))
+      if (EmptyString(conf->name))
 	continue;
     
       if (name == NULL)
@@ -1708,7 +1704,7 @@ find_exact_name_conf(ConfType type,
 	if (irccmp(aconf->host, host) == 0)
 	  return(conf);
       }
-      else if (irccmp(aconf->name, name) == 0)
+      else if (irccmp(conf->name, name) == 0)
       {
 	  return (conf);
       }
@@ -1720,10 +1716,10 @@ find_exact_name_conf(ConfType type,
     {
       conf = ptr->data;
       aclass = (struct ClassItem *)map_to_conf(conf);
-      if (EmptyString(aclass->class_name))
+      if (EmptyString(conf->name))
 	continue;
     
-      if (irccmp(aclass->class_name, name) == 0)
+      if (irccmp(conf->name, name) == 0)
 	return (conf);
     }
     break;
@@ -1940,20 +1936,6 @@ validate_conf(void)
   GlobalSetOptions.idletime = (ConfigFileEntry.idletime * 60);
 }
 
-/* conf_add_conf()
- *
- * Inputs	- AccessItem
- * Output	- NONE
- * Side effects	- add given conf to link list
- */
-void
-conf_add_conf(struct AccessItem *aconf)
-{
-  collapse(aconf->host);
-  collapse(aconf->user);
-  dlinkAdd(aconf, &aconf->node, &ConfigItemList);
-}
-
 /* split_user_host()
  *
  * inputs	- pointer to original string of form "user@host"
@@ -1992,16 +1974,19 @@ split_user_host(char *user_host, char **user_p, char **host_p)
  * line and convert an IP addresses in a.b.c.d number for to IP#s.
  */
 static void
-lookup_confhost(struct AccessItem* aconf)
+lookup_confhost(struct ConfItem *conf)
 {
+  struct AccessItem *aconf;
   struct addrinfo hints, *res;
   int ret;
 
+  aconf = map_to_conf(conf);
+
   if (EmptyString(aconf->host) ||
-      EmptyString(aconf->name))
+      EmptyString(aconf->user))
   {
     ilog(L_ERROR, "Host/server name error: (%s) (%s)",
-         aconf->host, aconf->name);
+         aconf->host, conf->name);
     return;
   }
 
@@ -2107,7 +2092,7 @@ add_temp_kline(struct AccessItem *aconf)
 {
   dlinkAdd(aconf, make_dlink_node(), &temporary_klines);
   SetConfTemporary(aconf);
-  add_conf_by_address(aconf->host, CONF_KILL, aconf->user, aconf);
+  add_conf_by_address(CONF_KILL, aconf);
 }
 
 /* add_temp_dline()
@@ -2122,7 +2107,10 @@ add_temp_dline(struct AccessItem *aconf)
 {
   dlinkAdd(aconf, make_dlink_node(), &temporary_dlines);
   SetConfTemporary(aconf);
-  add_conf_by_address(aconf->host, CONF_DLINE, NULL, aconf);
+  /* XXX ensure user is NULL */
+  MyFree(aconf->user);
+  aconf->user = NULL;
+  add_conf_by_address(CONF_DLINE, aconf);
 }
 
 /* cleanup_tklines()
@@ -2243,6 +2231,8 @@ char *
 get_oper_name(struct Client *client_p)
 {
   dlink_node *cnode;
+  struct ConfItem *conf;
+  struct AccessItem *aconf;
 
   /* +5 for !,@,{,} and null */
   static char buffer[NICKLEN+USERLEN+HOSTLEN+HOSTLEN+5];
@@ -2251,11 +2241,14 @@ get_oper_name(struct Client *client_p)
   {
     DLINK_FOREACH(cnode, client_p->localClient->confs.head)
     {
-      if (IsConfOperator((struct AccessItem *)cnode->data))
+      conf = cnode->data;
+      aconf = (struct AccessItem *)map_to_conf(conf);
+
+      if (IsConfOperator(aconf))
       {
 	ircsprintf(buffer, "%s!%s@%s{%s}", client_p->name,
 		   client_p->username, client_p->host,
-		   ((struct AccessItem *)cnode->data)->name);
+		   conf->name);
 	return(buffer);
       }
     }
@@ -2272,31 +2265,32 @@ get_oper_name(struct Client *client_p)
 
 /* get_printable_conf()
  *
- * inputs        - struct AccessItem
+ * inputs        - struct ConfItem
  *
- * output         - name 
- *                - host
+ * output         - host
  *                - reason
  *                - user
  *                - port
  *
  * side effects        -
- * Examine the struct AccessItem *aconf, setting the values
- * of name, host, pass, user to values either
+ * Examine the struct ConfItem *conf, setting the values
+ * of host, pass, user to values either
  * in aconf, or "<NULL>" port is set to aconf->port in all cases.
  */
 void
-get_printable_conf(struct AccessItem *aconf, char **name, char **host,
+get_printable_conf(struct ConfItem *conf, char **host,
 		   char **reason, char **user, int *port, char **classname)
 {
+  struct AccessItem *aconf;
   static char null[] = "<NULL>";
   static char zero[] = "default";
 
-  *name = EmptyString(aconf->name) ? null : aconf->name;
+  aconf = (struct AccessItem *)map_to_conf(conf);
+
   *host = EmptyString(aconf->host) ? null : aconf->host;
   *reason = EmptyString(aconf->reason) ? null : aconf->reason;
   *user = EmptyString(aconf->user) ? null : aconf->user;
-  *classname = EmptyString(aconf->class_name) ? zero : aconf->class_name;
+  *classname = EmptyString(conf->name) ? zero : conf->name;
   *port = (int)aconf->port;
 }
 
@@ -2395,33 +2389,77 @@ clear_out_old_conf(void)
   struct ConfItem *conf;
   struct AccessItem *aconf;
   struct ClassItem *cltmp;
+  struct MatchItem *match_item;
+  dlink_list * free_items [] = {
+    &server_items, &oconf_items, &hub_items, &leaf_items,
+    &uconf_items, &xconf_items, &nresv_items,NULL
+  };
+  dlink_list ** iterator = free_items; /* C is dumb */
 
   /* We only need to free anything allocated by yyparse() here.
    * Resetting structs, etc, is taken care of by set_default_conf().
    */
-  DLINK_FOREACH_SAFE(ptr, next_ptr, ConfigItemList.head)
+  
+  for (; *iterator != NULL; iterator++)
   {
-    aconf = ptr->data;
-
-    if (aconf->clients != 0)
+    DLINK_FOREACH_SAFE(ptr, next_ptr, (*iterator)->head)
     {
-      /* Configuration entry is still in use by some
-       * local clients, cannot delete it--mark it so
-       * that it will be deleted when the last client
-       * exits...
-       */
-      if ((aconf->status & (CONF_CLIENT_MASK|CONF_HUB|CONF_LEAF)) == 0)
+      conf = ptr->data;
+      /* XXX This is less than pretty */
+      if (conf->type == SERVER_TYPE)
       {
-        dlinkDelete(&aconf->node, &ConfigItemList);
-        free_access_item(aconf);
+	aconf = (struct AccessItem *)map_to_conf(conf);
+	if (aconf->clients != 0)
+        {
+	  SetConfIllegal(aconf);
+	  dlinkDelete(&conf->node, &server_items);
+	}
+	else
+	{
+	  delete_conf_item(conf);
+	}
+      }
+      else if (conf->type == OPER_TYPE)
+      {
+	aconf = (struct AccessItem *)map_to_conf(conf);
+	if (aconf->clients != 0)
+        {
+	  SetConfIllegal(aconf);
+	  dlinkDelete(&conf->node, &oconf_items);
+	}
+	else
+	{
+	  delete_conf_item(conf);
+	}
+      }
+      else if (conf->type == CLIENT_TYPE)
+      {
+	aconf = (struct AccessItem *)map_to_conf(conf);
+	if (aconf->clients != 0)
+        {
+	  SetConfIllegal(aconf);
+	}
+	else
+	{
+	  delete_conf_item(conf);
+	}
       }
       else
-        SetConfIllegal(aconf);
-    }
-    else
-    {
-      dlinkDelete(&aconf->node, &ConfigItemList);
-      free_access_item(aconf);
+      {
+	if ((conf->type == LEAF_TYPE) || (conf->type == HUB_TYPE))
+	{
+	  match_item = (struct MatchItem *)map_to_conf(conf);
+	  if ((match_item->ref_count <= 0))
+	    delete_conf_item(conf);
+	  else
+	  {
+	    match_item->illegal = 1;
+	    dlinkDelete(&conf->node, &leaf_items);
+	  }
+	}
+	else
+	  delete_conf_item(conf);
+      }
     }
   }
 
@@ -2462,9 +2500,6 @@ clear_out_old_conf(void)
   ServerInfo.rsa_private_key_file = NULL;
 #endif
 
-  /* Clear struct ConfItem s out */
-  clear_conf_items();
-
   clear_clusters();
   /* clean out old resvs from the conf */
   clear_conf_resv();
@@ -2504,21 +2539,30 @@ flush_deleted_I_P(void)
 {
   dlink_node *ptr;
   dlink_node *next_ptr;
+  struct ConfItem *conf;
   struct AccessItem *aconf;
+  dlink_list * free_items [] = {
+    &server_items, &oconf_items, &hub_items, &leaf_items, NULL
+  };
+  dlink_list ** iterator = free_items; /* C is dumb */
 
   /* flush out deleted I and P lines
    * although still in use.
    */
-  DLINK_FOREACH_SAFE(ptr, next_ptr, ConfigItemList.head)
+  for (; *iterator != NULL; iterator++)
   {
-    aconf = ptr->data;
-
-    if (IsConfIllegal(aconf))
+    DLINK_FOREACH_SAFE(ptr, next_ptr, (*iterator)->head)
     {
-      dlinkDelete(ptr, &ConfigItemList);
+      conf = ptr->data;
+      aconf = (struct AccessItem *)map_to_conf(conf);
 
-      if (aconf->clients == 0)
-	free_access_item(aconf);
+      if (IsConfIllegal(aconf))
+      {
+	dlinkDelete(ptr, *iterator);
+
+	if (aconf->clients == 0)
+	  delete_conf_item(conf);
+      }
     }
   }
 }
@@ -2565,6 +2609,237 @@ get_conf_name(ConfType type)
   }
 }
 
+#define BAD_PING (-1)
+
+/* get_conf_ping()
+ *
+ * inputs       - pointer to struct AccessItem
+ * output       - ping frequency
+ * side effects - NONE
+ */
+static int
+get_conf_ping(struct ConfItem *conf)
+{
+  struct ClassItem *aclass;
+  struct AccessItem *aconf;
+
+  if (conf != NULL)
+  {
+    aconf = (struct AccessItem *)map_to_conf(conf);
+    if (aconf->class_ptr != NULL)
+    {
+      aclass = (struct ClassItem *)map_to_conf(aconf->class_ptr);
+      return(PingFreq(aclass));
+    }
+  }
+  return(BAD_PING);
+}
+
+/* get_client_class()
+ *
+ * inputs	- pointer to client struct
+ * output	- pointer to name of class
+ * side effects - NONE
+ */
+const char *
+get_client_class(struct Client *target_p)
+{
+  dlink_node *ptr;
+  struct ConfItem *conf;
+  const char *retc = "unknown";
+
+  if (target_p && !IsMe(target_p) && (target_p->localClient->confs.head))
+  {
+    DLINK_FOREACH(ptr, target_p->localClient->confs.head)
+    {
+      conf = ptr->data;
+
+      if (conf->name == NULL)
+        retc = "default";
+      else
+        retc = conf->name;
+    }
+  }
+
+  return(retc);
+}
+
+/* get_client_ping()
+ *
+ * inputs	- pointer to client struct
+ * output	- ping frequency
+ * side effects - NONE
+ */
+int
+get_client_ping(struct Client *target_p)
+{
+  int ping = 0;
+  int ping2;
+  struct ConfItem *conf;
+  dlink_node *nlink;
+
+  if (target_p->localClient->confs.head != NULL)
+  {
+    DLINK_FOREACH(nlink, target_p->localClient->confs.head)
+    {
+      conf = nlink->data;
+
+      if ((conf->type == CLIENT_TYPE) || (conf->type == SERVER_TYPE) ||
+	  (conf->type == OPER_TYPE))
+      {
+        ping2 = get_conf_ping(conf);
+        if ((ping2 != BAD_PING) && ((ping > ping2) || (ping == 0)))
+          ping = ping2;
+      }
+    }
+  }
+  else
+  {
+    ping = DEFAULT_PINGFREQUENCY;
+  }
+
+  if (ping <= 0)
+    ping = DEFAULT_PINGFREQUENCY;
+
+  return(ping);
+}
+
+/* get_con_freq()
+ *
+ * inputs	- pointer to class struct
+ * output	- connection frequency
+ * side effects - NONE
+ */
+int
+get_con_freq(struct ClassItem *clptr)
+{
+  if (clptr != NULL)
+    return(ConFreq(clptr));
+
+  return(DEFAULT_CONNECTFREQUENCY);
+}
+
+/* find_class()
+ *
+ * inputs	- string name of class
+ * output	- corresponding Class pointer
+ * side effects	- NONE
+ */
+struct ConfItem *
+find_class(const char *classname)
+{
+  struct ConfItem *conf;
+
+  if ((conf = find_exact_name_conf(CLASS_TYPE, classname, NULL, NULL)) != NULL)
+  {
+    return(conf);
+  }
+  else
+  {
+    if ((conf = find_exact_name_conf(CLASS_TYPE, "default",
+				     NULL, NULL)) != NULL)
+    {
+      return(conf);
+    }
+    else
+    {
+      conf = make_conf_item(CLASS_TYPE);
+      DupString(conf->name, "default");
+      return(conf);
+    }
+  }
+}
+
+/* check_class()
+ *
+ * inputs       - NONE
+ * output       - NONE
+ * side effects	- 
+ */
+void
+check_class(void)
+{
+  dlink_node *ptr;
+  dlink_node *next_ptr;
+  struct ConfItem *conf;
+  struct ClassItem *aclass;
+
+  DLINK_FOREACH_SAFE(ptr, next_ptr, class_items.head)
+  {
+    conf = ptr->data;
+    aclass = (struct ClassItem *)map_to_conf(conf);
+
+    if (MaxTotal(aclass) < 0)
+    {
+      dlinkDelete(&conf->node, &class_items);
+      if (CurrUserCount(aclass) <= 0)
+        delete_conf_item(conf);
+    }
+  }
+}
+
+/* init_class()
+ *
+ * inputs       - NONE
+ * output       - NONE
+ * side effects	- 
+ */
+void
+init_class(void)
+{
+  struct ConfItem *conf;
+  struct ClassItem *aclass;
+
+  conf = make_conf_item(CLASS_TYPE);
+  aclass = (struct ClassItem *)map_to_conf(conf);
+  DupString(conf->name, "default");
+  ConFreq(aclass)  = DEFAULT_CONNECTFREQUENCY;
+  PingFreq(aclass) = DEFAULT_PINGFREQUENCY;
+  MaxTotal(aclass) = ConfigFileEntry.maximum_links;
+  MaxSendq(aclass) = DEFAULT_SENDQ;
+  CurrUserCount(aclass) = 0;
+}
+
+/* get_sendq()
+ *
+ * inputs       - pointer to client
+ * output       - sendq for this client as found from its class
+ * side effects	- NONE
+ */
+unsigned long
+get_sendq(struct Client *client_p)
+{
+  unsigned long sendq = DEFAULT_SENDQ;
+  dlink_node *ptr;
+  struct ConfItem *conf;
+  struct ConfItem *class_conf;
+  struct ClassItem *aclass;
+  struct AccessItem *aconf;
+
+  if (client_p && !IsMe(client_p) && (client_p->localClient->confs.head))
+  {
+    DLINK_FOREACH(ptr, client_p->localClient->confs.head)
+    {
+      conf = ptr->data;
+      if ((conf->type == SERVER_TYPE) || (conf->type == OPER_TYPE)
+	  || (conf->type == CLIENT_TYPE))
+      {
+	aconf = (struct AccessItem *)map_to_conf(conf);
+	if ((class_conf = aconf->class_ptr) == NULL)
+	  continue;
+	aclass = (struct ClassItem *)map_to_conf(class_conf);
+	sendq = MaxSendq(aclass);
+	return(sendq);
+      }
+    }
+  }
+  /* XXX return a default?
+   * if here, then there wasn't an attached conf with a sendq
+   * that is very bad -Dianora
+   */
+  return(DEFAULT_SENDQ);
+}
+
 /* conf_add_class_to_conf()
  *
  * inputs       - pointer to config item
@@ -2572,34 +2847,31 @@ get_conf_name(ConfType type)
  * side effects - Add a class pointer to a conf 
  */
 void
-conf_add_class_to_conf(struct AccessItem *aconf)
+conf_add_class_to_conf(struct ConfItem *conf, const char *class_name)
 {
-  if (aconf->class_name == NULL)
-  {
-    DupString(aconf->class_name, "default");
-    ClassPtr(aconf) = class0;
-    return;
-  }
+  struct AccessItem *aconf;
+  struct ClassItem *aclass;
 
-  ClassPtr(aconf) = find_class(aconf->class_name);
+  aconf = (struct AccessItem *)map_to_conf(conf);
 
-  if (ClassPtr(aconf) == class0)
+  if (class_name == NULL)
+    aconf->class_ptr = find_class("default");
+  else
+    aconf->class_ptr = find_class(class_name);
+
+  if (aconf->class_ptr == class0)
   {
     sendto_realops_flags(UMODE_ALL, L_ALL,
-	   "Warning *** Defaulting to default "
-           "class for missing class \"%s\"",
-                         aconf->class_name);
-    MyFree(aconf->class_name);
-    DupString(aconf->class_name, "default");
-    return;
+	   "Warning *** Defaulting to default class for missing class \"%s\"",
+			 conf->name);
   }
-
-  if (ConfMaxTotal(aconf) < 0)
+  else
   {
-    ClassPtr(aconf) = find_class(0);
-    MyFree(aconf->class_name);
-    DupString(aconf->class_name, "default");
-    return;
+    aclass = (struct ClassItem *)map_to_conf(aconf->class_ptr);
+    if (MaxTotal(aclass) < 0)
+    {
+      aconf->class_ptr = find_class("default");
+    }
   }
 }
 
@@ -2613,11 +2885,15 @@ conf_add_class_to_conf(struct AccessItem *aconf)
  * side effects - Add a connect block
  */
 int
-conf_add_server(struct AccessItem *aconf, unsigned int lcount)
+conf_add_server(struct ConfItem *conf, unsigned int lcount, const char *class_name)
 {
-  conf_add_class_to_conf(aconf);
+  struct AccessItem *aconf;
 
-  if (lcount > MAXCONFLINKS || !aconf->host || !aconf->name)
+  aconf = map_to_conf(conf);
+
+  conf_add_class_to_conf(conf, class_name);
+
+  if (lcount > MAXCONFLINKS || !aconf->host || !conf->name)
   {
     sendto_realops_flags(UMODE_ALL, L_ALL, "Bad connect block");
     ilog(L_WARN, "Bad connect block");
@@ -2627,13 +2903,13 @@ conf_add_server(struct AccessItem *aconf, unsigned int lcount)
   if (EmptyString(aconf->passwd) && !IsConfCryptLink(aconf))
   {
     sendto_realops_flags(UMODE_ALL, L_ALL, "Bad connect block, name %s",
-                         aconf->name);
-    ilog(L_WARN, "Bad connect block, host %s",aconf->name);
+                         conf->name);
+    ilog(L_WARN, "Bad connect block, host %s", conf->name);
     return(-1);
   }
 
   split_user_host(aconf->host, &aconf->user, &aconf->host);
-  lookup_confhost(aconf);
+  lookup_confhost(conf);
 
   return(0);
 }
@@ -2662,7 +2938,10 @@ conf_add_d_conf(struct AccessItem *aconf)
   }
   else
   {
-    add_conf_by_address(aconf->host, CONF_DLINE, NULL, aconf);
+    /* XXX ensure user is NULL */
+    MyFree(aconf->user);
+    aconf->user = NULL;
+    add_conf_by_address(CONF_DLINE, aconf);
   }
 }
 

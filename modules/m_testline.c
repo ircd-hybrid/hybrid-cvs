@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_testline.c,v 1.30 2003/07/04 11:45:17 adx Exp $
+ *  $Id: m_testline.c,v 1.31 2003/07/05 06:20:57 db Exp $
  */
 
 #include "stdinc.h"
@@ -59,7 +59,7 @@ _moddeinit(void)
   mod_del_cmd(&testline_msgtab);
 }
  
-const char *_version = "$Revision: 1.30 $";
+const char *_version = "$Revision: 1.31 $";
 #endif
 /*
  * mo_testline
@@ -83,7 +83,7 @@ mo_testline(struct Client *client_p, struct Client *source_p,
   struct AccessItem *aconf;
   struct irc_ssaddr ip;
   int host_mask;
-  char *host, *pass, *user, *name, *classname, *given_host, *given_name, *p;
+  char *host, *pass, *user, *classname, *given_host, *given_name, *p;
   int port, t;
   
   if (parc < 2)
@@ -108,8 +108,11 @@ mo_testline(struct Client *client_p, struct Client *source_p,
                               );
       if (aconf != NULL)
       {
-        get_printable_conf(aconf, &name, &host, &pass, &user, &port,
-                           &classname);
+	struct ConfItem *conf;
+	conf = unmap_conf_item(aconf);
+
+        get_printable_conf(conf, &host, &pass, &user, &port, 
+			   &classname);
         if (aconf->status & CONF_EXEMPTDLINE)
           sendto_one(source_p,
                      ":%s NOTICE %s :Exempt D-line host [%s] pass [%s]",
@@ -143,8 +146,9 @@ mo_testline(struct Client *client_p, struct Client *source_p,
                  
   if (aconf != NULL)
   {
-    get_printable_conf(aconf, &name, &host, &pass, &user, &port, &classname);
-              
+    struct ConfItem *conf;
+    conf = unmap_conf_item(aconf);
+    get_printable_conf(conf, &host, &pass, &user, &port, &classname);
     if (aconf->status & CONF_KILL)
       sendto_one(source_p,
                  ":%s NOTICE %s :%c-line name [%s] host [%s] pass [%s]",
@@ -154,7 +158,7 @@ mo_testline(struct Client *client_p, struct Client *source_p,
     else if (aconf->status & CONF_CLIENT)
       sendto_one(source_p, ":%s NOTICE %s :I-line mask [%s] prefix [%s] "
                  "name [%s] host [%s] port [%d] class [%s]",
-                 me.name, parv[0], name,
+                 me.name, parv[0], "*",	/* XXX "*" -> change to mask? */
                  show_iline_prefix(source_p, aconf, user), user, host,
                  port, classname);
   }

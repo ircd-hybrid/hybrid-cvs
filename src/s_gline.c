@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_gline.c,v 1.38 2003/06/12 23:13:13 db Exp $
+ *  $Id: s_gline.c,v 1.39 2003/07/05 06:21:03 db Exp $
  */
 
 #include "stdinc.h"
@@ -46,8 +46,6 @@
 #include "list.h"
 #include "memory.h"
 
-
-dlink_list glines = { NULL, NULL, 0 };
 dlink_list pending_glines = { NULL, NULL, 0 };
 
 static void expire_glines(void);
@@ -80,22 +78,23 @@ find_gkill(struct Client *client_p, const char *username)
  * side effects -
  */
 struct AccessItem *
-find_is_glined(const char *host, const char *name)
+find_is_glined(const char *host, const char *user)
 {
   dlink_node *ptr;
+  struct ConfItem *conf;
   struct AccessItem *kill_ptr; 
 
-  DLINK_FOREACH(ptr, glines.head)
+  DLINK_FOREACH(ptr, gline_items.head)
   {
-    kill_ptr = ptr->data;
+    conf = ptr->data;
+    kill_ptr = (struct AccessItem *)conf;
 
-    if ((kill_ptr->name && (!name || match(kill_ptr->name, name))) &&
+    if ((kill_ptr->user && (!user || match(kill_ptr->user, user))) &&
         (kill_ptr->host && (!host || match(kill_ptr->host, host))))
     {
       return(kill_ptr);
     }
   }
-
   return(NULL);
 }
 
@@ -109,22 +108,21 @@ int
 remove_gline_match(const char *user, const char *host)
 {
   dlink_node *ptr;
+  struct ConfItem *conf;
   struct AccessItem *kill_ptr;
 
-  DLINK_FOREACH(ptr, glines.head)
+  DLINK_FOREACH(ptr, gline_items.head)
   {
-    kill_ptr = ptr->data;
+    conf = ptr->data;
+    kill_ptr = (struct AccessItem *)map_to_conf(conf);
 
     if (0 == irccmp(kill_ptr->host, host) &&
-        0 == irccmp(kill_ptr->name, user))
+        0 == irccmp(kill_ptr->user, user))
     {
-      free_access_item(kill_ptr);
-      dlinkDelete(ptr, &glines);
-      free_dlink_node(ptr);
+      delete_conf_item(conf);
       return(1);
     }
   }
-
   return(0);
 }
 
@@ -155,17 +153,17 @@ expire_glines(void)
 {
   dlink_node *ptr;
   dlink_node *next_ptr;
+  struct ConfItem *conf;
   struct AccessItem *kill_ptr;
 
-  DLINK_FOREACH_SAFE(ptr, next_ptr, glines.head)
+  DLINK_FOREACH_SAFE(ptr, next_ptr, gline_items.head)
   {
-    kill_ptr = ptr->data;
+    conf = ptr->data;
+    kill_ptr = (struct AccessItem *)map_to_conf(conf);
 
     if (kill_ptr->hold <= CurrentTime)
     {
-      free_access_item(kill_ptr);
-      dlinkDelete(ptr, &glines);
-      free_dlink_node(ptr);
+      delete_conf_item(conf);
     }
   }
 }

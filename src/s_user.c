@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.291 2003/07/04 11:45:20 adx Exp $
+ *  $Id: s_user.c,v 7.292 2003/07/05 06:21:04 db Exp $
  */
 
 #include "stdinc.h"
@@ -27,7 +27,6 @@
 #include "s_user.h"
 #include "channel.h"
 #include "channel_mode.h"
-#include "class.h"
 #include "client.h"
 #include "common.h"
 #include "fdlist.h"
@@ -956,6 +955,7 @@ set_user_mode(struct Client *client_p, struct Client *source_p,
             if (!IsOper(source_p))
               break;
 
+	    detach_conf(source_p, OPER_TYPE);
             ClearOper(source_p);
             source_p->umodes &= ~ConfigFileEntry.oper_only_umodes;
             Count.oper--;
@@ -1258,6 +1258,8 @@ check_x_line(struct Client *client_p, struct Client *source_p)
 void
 oper_up(struct Client *source_p)
 {
+  struct ConfItem *conf;
+  struct AccessItem *oconf;
   unsigned int old = (source_p->umodes & ALL_UMODES);
   const char *operprivs = "";
   dlink_node *ptr;
@@ -1275,8 +1277,11 @@ oper_up(struct Client *source_p)
   dlinkAdd(source_p, make_dlink_node(), &oper_list);
 
   if ((ptr = source_p->localClient->confs.head) != NULL)
-    operprivs = oper_privs_as_string(source_p,
-				     ((struct AccessItem *)ptr->data)->port);
+  {
+    conf = (struct ConfItem *)ptr->data;
+    oconf = (struct AccessItem *)map_to_conf(conf);
+    operprivs = oper_privs_as_string(source_p, oconf->port);
+  }
   else
     operprivs = "";
 

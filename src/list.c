@@ -19,13 +19,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: list.c,v 7.61 2003/06/25 09:22:56 michael Exp $
+ *  $Id: list.c,v 7.62 2003/07/05 06:21:03 db Exp $
  */
 
 #include "stdinc.h"
 #include "tools.h"
 #include "channel.h"
-#include "class.h"
 #include "client.h"
 #include "common.h"
 #include "irc_string.h"

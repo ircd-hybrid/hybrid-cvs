@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.145 2003/06/21 01:12:01 joshk Exp $
+# $Id: Makefile.in,v 7.146 2003/07/05 06:21:02 db Exp $
 #
 @SET_MAKE@
 
@@ -61,7 +61,6 @@ SSL_SRCS = rsa.c
 BASE_SRCS =	\
  channel.c \
  channel_mode.c \
- class.c \
  client.c \
  cluster.c \
  @CRYPT_C@ \

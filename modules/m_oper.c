@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_oper.c,v 1.73 2003/06/27 04:39:32 db Exp $
+ *  $Id: m_oper.c,v 1.74 2003/07/05 06:20:57 db Exp $
  */
 
 #include "stdinc.h"
@@ -43,9 +43,11 @@
 #include "modules.h"
 #include "packet.h"
 
-static struct AccessItem *find_password_aconf(const char *name, struct Client *source_p);
+static struct ConfItem *find_password_conf(const char *name,
+					      struct Client *source_p);
 static int match_oper_password(const char *password, struct AccessItem *aconf);
-static void failed_oper_notice(struct Client *source_p, const char *name, const char *reason);
+static void failed_oper_notice(struct Client *source_p, const char *name,
+			       const char *reason);
 static void m_oper(struct Client*, struct Client*, int, char**);
 static void mo_oper(struct Client*, struct Client*, int, char**);
 
@@ -68,7 +70,7 @@ _moddeinit(void)
   mod_del_cmd(&oper_msgtab);
 }
 
-const char *_version = "$Revision: 1.73 $";
+const char *_version = "$Revision: 1.74 $";
 #endif
 
 /*
@@ -81,11 +83,10 @@ static void
 m_oper(struct Client *client_p, struct Client *source_p,
        int parc, char *parv[])
 {
-  struct AccessItem *aconf;
-  struct AccessItem *oconf = NULL;
+  struct ConfItem *conf;
+  struct AccessItem *aconf=NULL;
   const char *name = parv[1];
   const char *password = parv[2];
-  dlink_node *ptr;
 
   if (EmptyString(password))
   {
@@ -98,10 +99,8 @@ m_oper(struct Client *client_p, struct Client *source_p,
   if (!IsFloodDone(source_p))
     flood_endgrace(source_p);
 
-  if ((aconf = find_password_aconf(name,source_p)) == NULL)
+  if ((conf = find_password_conf(name,source_p)) == NULL)
   {
-    struct ConfItem *conf;
-
     sendto_one(source_p, form_str(ERR_NOOPERHOST), me.name, source_p->name);
     conf = find_exact_name_conf(OPER_TYPE, name, NULL, NULL);
     failed_oper_notice(source_p, name, (conf != NULL) ?
@@ -110,30 +109,15 @@ m_oper(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if (match_oper_password(password,aconf))
-  {
-    /*
-     *  20001216:
-     *  detach old iline
-     *  -einride
-     */
-    if ((ptr = source_p->localClient->confs.head) != NULL)
-    {
-      oconf = ptr->data;
-      detach_conf(source_p,oconf);
-    }
+  aconf = (struct AccessItem *)map_to_conf(conf);
 
-    if (attach_conf(source_p, aconf) != 0)
+  if (match_oper_password(password, aconf))
+  {
+    if (attach_conf(source_p, conf) != 0)
     {
       sendto_one(source_p, ":%s NOTICE %s :Can't attach conf!",
                  me.name, source_p->name);
       failed_oper_notice(source_p, name, "can't attach conf!");
-      /* 
-       * 20001216:
-       * Reattach old iline
-       *     -einride
-       */
-      attach_conf(source_p, oconf);
       log_failed_oper(source_p, name);
       return;
     }
@@ -166,31 +150,30 @@ mo_oper(struct Client *client_p, struct Client *source_p,
   send_message_file(source_p, &ConfigFileEntry.opermotd);
 }
 
-/* find_password_aconf()
+/* find_password_conf()
  *
- * inputs       -
- * output       -
+ * inputs       - name
+ *		- pointer to source_p
+ * output       - pointer to oper conf or NULL
+ * side effects	- NONE
  */
-static struct AccessItem *
-find_password_aconf(const char *name, struct Client *source_p)
+static struct ConfItem *
+find_password_conf(const char *name, struct Client *source_p)
 {
   struct ConfItem *conf;
-  struct AccessItem *aconf;
 
   if ((conf = find_exact_name_conf(OPER_TYPE,
 				   name, source_p->username, source_p->host
 				   )) != NULL)
   {
-    aconf = (struct AccessItem *)map_to_conf(conf);
-    return(aconf);
+    return(conf);
   }
   else
   if ((conf = find_exact_name_conf(OPER_TYPE,
 				   name, source_p->username,
 				   source_p->localClient->sockhost)) != NULL)
   {
-    aconf = (struct AccessItem *)map_to_conf(conf);
-    return(aconf);
+    return(conf);
   }
 
   return(NULL);

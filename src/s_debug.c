@@ -19,14 +19,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_debug.c,v 7.94 2003/07/02 17:32:26 michael Exp $
+ *  $Id: s_debug.c,v 7.95 2003/07/05 06:21:03 db Exp $
  */
 
 #include "stdinc.h"
 #include "tools.h"
 #include "s_debug.h"
 #include "channel.h"
-#include "class.h"
 #include "client.h"
 #include "common.h"
 #include "fdlist.h"
@@ -130,7 +129,6 @@ count_memory(struct Client *source_p)
   dlink_node *gptr;
   struct Client *target_p;
   struct Channel *chptr;
-  struct AccessItem *aconf;
   struct Ban *actualBan;
   dlink_node *dlink;
 
@@ -252,6 +250,8 @@ count_memory(struct Client *source_p)
     }
   }
 
+#if 0
+  /* XXX THIS has to be fixed !!!! -db */
   /* count up all config items */
   DLINK_FOREACH(dlink, ConfigItemList.head)
   {
@@ -261,7 +261,7 @@ count_memory(struct Client *source_p)
       conf_memory += aconf->name ? strlen(aconf->name)+1 : 0;
       conf_memory += sizeof(struct AccessItem);
   }
-
+#endif
   /* count up all classes */
   class_count = dlink_list_length(&class_items);
 
@@ -279,9 +279,12 @@ count_memory(struct Client *source_p)
 	     local_client_conf_count,
 	     (unsigned long) local_client_conf_count * sizeof(dlink_node));
 
+  /* XXX  ConfigItemList fix */
+#if 0
   sendto_one(source_p, ":%s %d %s z :Conflines %lu(%d)",
              me.name, RPL_STATSDEBUG, source_p->name,
 	     dlink_list_length(&ConfigItemList), (int) conf_memory);
+#endif
 
   sendto_one(source_p, ":%s %d %s z :Resv channels %lu(%lu) nicks %lu(%lu)",
              me.name, RPL_STATSDEBUG, source_p->name,

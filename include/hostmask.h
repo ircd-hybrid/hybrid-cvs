@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.h,v 1.27 2003/07/04 11:45:15 adx Exp $
+ *  $Id: hostmask.h,v 1.28 2003/07/05 06:20:55 db Exp $
  */
 
 #ifndef INCLUDE_hostmask_h
@@ -43,8 +43,9 @@ struct HostMaskEntry
 int parse_netmask(const char *, struct irc_ssaddr *, int *);
 struct AccessItem *find_conf_by_address(const char *, struct irc_ssaddr *,
                                         int, int, const char *, char *);
-void add_conf_by_address(const char *, int, const char *, struct AccessItem *);
+void add_conf_by_address(int, struct AccessItem *);
 void delete_one_address_conf(const char *, struct AccessItem *);
+
 void clear_out_address_conf(void);
 void init_host_hash(void);
 struct AccessItem* find_address_conf(const char *, const char *,
@@ -52,6 +53,7 @@ struct AccessItem* find_address_conf(const char *, const char *,
 struct AccessItem* find_kline_conf(const char *, const char *,
                                  struct irc_ssaddr *, int);
 struct AccessItem* find_dline_conf(struct irc_ssaddr *, int);
+
 int match_ipv6(struct irc_ssaddr *, struct irc_ssaddr *, int);
 int match_ipv4(struct irc_ssaddr *, struct irc_ssaddr *, int);
 
@@ -95,6 +97,8 @@ struct AddressRec
   struct AddressRec *next;
 };
 
+extern char *
+show_iline_prefix(struct Client *sptr, struct AccessItem *aconf, char *name);
 
 #endif /* INCLUDE_hostmask_h */
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_connect.c,v 1.49 2003/06/28 03:33:53 db Exp $
+ *  $Id: m_connect.c,v 1.50 2003/07/05 06:20:57 db Exp $
  */
 
 #include "stdinc.h"
@@ -60,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&connect_msgtab);
 }
 
-const char *_version = "$Revision: 1.49 $";
+const char *_version = "$Revision: 1.50 $";
 #endif
 
 /*
@@ -130,14 +130,14 @@ mo_connect(struct Client* client_p, struct Client* source_p,
     aconf = (struct AccessItem *)map_to_conf(conf);
   }
   
-  if (aconf == NULL)
+  if (conf == NULL)
   {
     sendto_one(source_p,
 	       ":%s NOTICE %s :Connect: Host %s not listed in ircd.conf",
 	       me.name, source_p->name, parv[1]);
     return;
   }
-
+    
   /* Get port number from user, if given. If not specified,
    * use the default form configuration structure. If missing
    * from there, then use the precompiled default.
@@ -165,13 +165,13 @@ mo_connect(struct Client* client_p, struct Client* source_p,
   {
     pending_connection = ptr->data;
 
-    if (pending_connection->name[0] && aconf->name != NULL)
+    if (pending_connection->name[0] && conf->name != NULL)
     {
-      if (0 == irccmp(aconf->name, pending_connection->name))
+      if (0 == irccmp(conf->name, pending_connection->name))
       {
         sendto_one(source_p,
 	  ":%s NOTICE %s :Connect: a connection to %s is already in progress.",
-                   me.name, source_p->name, aconf->name);
+                   me.name, source_p->name, conf->name);
         return;
       }
     }
@@ -193,15 +193,15 @@ mo_connect(struct Client* client_p, struct Client* source_p,
     if (!ConfigServerHide.hide_server_ips && IsAdmin(source_p))
       sendto_one(source_p, ":%s NOTICE %s :*** Connecting to %s[%s].%d",
                  me.name, source_p->name, aconf->host,
-                 aconf->name, aconf->port);
+                 conf->name, aconf->port);
     else
       sendto_one(source_p, ":%s NOTICE %s :*** Connecting to %s.%d",
-                 me.name, source_p->name, aconf->name, aconf->port);
+                 me.name, source_p->name, conf->name, aconf->port);
   }
   else
   {
     sendto_one(source_p, ":%s NOTICE %s :*** Couldn't connect to %s.%d",
-               me.name, source_p->name, aconf->name,aconf->port);
+               me.name, source_p->name, conf->name, aconf->port);
   }
 
   /* client is either connecting with all the data it needs or has been
@@ -311,12 +311,13 @@ ms_connect(struct Client *client_p, struct Client *source_p,
   {
     pending_connection = ptr->data;
 
-    if (pending_connection->name[0] && aconf->name != NULL)
+    if (pending_connection->name[0] && conf->name != NULL)
     {
-      if (0 == irccmp(aconf->name, pending_connection->name))
+      if (0 == irccmp(conf->name, pending_connection->name))
       {
-        sendto_one(source_p, ":%s NOTICE %s :Connect: a connection to %s is already in progress.",
-                   me.name, source_p->name, aconf->name);
+        sendto_one(source_p,
+	 ":%s NOTICE %s :Connect: a connection to %s is already in progress.",
+                   me.name, source_p->name, conf->name);
         return;
       }
     }
@@ -341,10 +342,10 @@ ms_connect(struct Client *client_p, struct Client *source_p,
    */
   if (serv_connect(aconf, source_p))
     sendto_one(source_p, ":%s NOTICE %s :*** Connecting to %s.%d",
-               me.name, source_p->name, aconf->name, aconf->port);
+               me.name, source_p->name, conf->name, aconf->port);
   else
       sendto_one(source_p, ":%s NOTICE %s :*** Couldn't connect to %s.%d",
-                 me.name, source_p->name, aconf->name, aconf->port);
+                 me.name, source_p->name, conf->name, aconf->port);
   /* client is either connecting with all the data it needs or has been
    * destroyed
    */

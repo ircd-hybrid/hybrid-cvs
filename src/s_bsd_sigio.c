@@ -21,7 +21,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_sigio.c,v 7.31 2003/07/01 16:45:55 adx Exp $
+ *  $Id: s_bsd_sigio.c,v 7.32 2003/07/05 06:21:03 db Exp $
  */
 
 #ifndef _GNU_SOURCE
@@ -33,7 +33,6 @@
 
 #include "fdlist.h"
 #include "s_bsd.h"
-#include "class.h"
 #include "client.h"
 #include "common.h"
 #include "irc_string.h"

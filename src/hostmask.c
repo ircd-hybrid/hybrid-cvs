@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.c,v 7.85 2003/07/04 11:45:19 adx Exp $
+ *  $Id: hostmask.c,v 7.86 2003/07/05 06:21:02 db Exp $
  */
 
 #include "stdinc.h"
@@ -507,22 +507,22 @@ find_address_conf(const char *host, const char *user,
   struct AccessItem *iconf, *kconf;
 
   /* Find the best I-line... If none, return NULL -A1kmm */
-  if (!(iconf = find_conf_by_address(host, ip, CONF_CLIENT, aftype, user,
-                                     password)))
-    return NULL;
+  if ((iconf = find_conf_by_address(host, ip, CONF_CLIENT, aftype, user,
+				    password)) == NULL)
+    return (NULL);
 
   /* If they are exempt from K-lines, return the best I-line. -A1kmm */
   if (IsConfExemptKline(iconf))
-    return iconf;
+    return (iconf);
 
   /* Find the best K-line... -A1kmm */
   kconf = find_conf_by_address(host, ip, CONF_KILL, aftype, user, NULL);
 
   /* If they are K-lined, return the K-line. Otherwise, return the
    * I-line. -A1kmm */
-  if (kconf)
-    return kconf;
-  return iconf;
+  if (kconf != NULL)
+    return (kconf);
+  return (iconf);
 }
 
 /*
@@ -558,27 +558,31 @@ struct AccessItem *
 find_dline_conf(struct irc_ssaddr *addr, int aftype)
 {
   struct AccessItem *eline;
+
   eline = find_conf_by_address(NULL, addr, CONF_EXEMPTDLINE | 1, aftype,
                                NULL, NULL);
-  if (eline)
-    return eline;
-  return find_conf_by_address(NULL, addr, CONF_DLINE | 1, aftype, NULL, NULL);
+  if (eline != NULL)
+    return (eline);
+  return (find_conf_by_address(NULL, addr, CONF_DLINE | 1, aftype, NULL, NULL));
 }
 
-/* void add_conf_by_address(const char*, int, const char *,
- *         struct AccessItem *aconf)
+/* void add_conf_by_address(int, struct AccessItem *aconf)
  * Input: 
  * Output: None
  * Side-effects: Adds this entry to the hash table.
  */
 void
-add_conf_by_address(const char *address, int type, const char *username,
-                    struct AccessItem *aconf)
+add_conf_by_address(int type, struct AccessItem *aconf)
 {
+  const char *address;
+  const char *username;
   static unsigned long prec_value = 0xFFFFFFFF;
   int masktype, bits;
   unsigned long hv;
   struct AddressRec *arec;
+
+  address = aconf->host;
+  username = aconf->user;
 
   assert(type != 0); 
   assert(aconf != NULL);
@@ -633,6 +637,7 @@ delete_one_address_conf(const char *address, struct AccessItem *aconf)
   struct AddressRec *arec, *arecl = NULL;
   struct irc_ssaddr addr;
   masktype = parse_netmask(address, &addr, &bits);
+
 #ifdef IPV6
   if (masktype == HM_IPV6)
   {
@@ -767,8 +772,9 @@ show_iline_prefix(struct Client *sptr, struct AccessItem *aconf, char *name)
 void
 report_auth(struct Client *client_p)
 {
-  char *name, *host, *reason, *user, *classname;
+  char *host, *reason, *user, *classname;
   struct AddressRec *arec;
+  struct ConfItem *conf;
   struct AccessItem *aconf;
   int i, port;
 
@@ -781,14 +787,15 @@ report_auth(struct Client *client_p)
         if (!MyOper(client_p) && IsConfDoSpoofIp(aconf))
           continue;
 
-        get_printable_conf(aconf, &name, &host, &reason, &user, &port,
-                           &classname);
+	conf = unmap_conf_item(aconf);
+        get_printable_conf(conf, &host, &reason, &user, &port, &classname);
 
         /* We are doing a partial list, based on what matches the u@h of the
-         * sender, so prepare the strings for comparing --fl_ */
+         * sender, so prepare the strings for comparing --fl_
+	 */
 
         sendto_one(client_p, form_str(RPL_STATSILINE), me.name,
-                   client_p->name, (IsConfRestricted(aconf)) ? 'i' : 'I', name,
+                   client_p->name, (IsConfRestricted(aconf)) ? 'i' : 'I', "*",
                    show_iline_prefix(client_p, aconf, user),
 #ifdef HIDE_SPOOF_IPS
                    IsConfDoSpoofIp(aconf) ? "255.255.255.255" :
@@ -807,8 +814,9 @@ report_auth(struct Client *client_p)
 void
 report_Klines(struct Client *client_p, int tkline)
 {
-  char *name, *host, *reason, *user, *classname, c;
+  char *host, *reason, *user, *classname, c;
   struct AddressRec *arec;
+  struct ConfItem *conf=NULL;
   struct AccessItem *aconf = NULL;
   int i, port;
 
@@ -825,8 +833,8 @@ report_Klines(struct Client *client_p, int tkline)
             || (!tkline
                 && ((aconf = arec->aconf)->flags & CONF_FLAGS_TEMPORARY)))
           continue;
-        get_printable_conf(aconf, &name, &host, &reason, &user, &port,
-                           &classname);
+	conf = unmap_conf_item(aconf);
+        get_printable_conf(conf, &host, &reason, &user, &port, &classname);
         sendto_one(client_p, form_str(RPL_STATSKLINE), me.name,
                    client_p->name, c, host, user, reason);
       }

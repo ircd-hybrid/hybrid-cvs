@@ -19,13 +19,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.391 2003/07/02 17:32:26 michael Exp $
+ *  $Id: client.c,v 7.392 2003/07/05 06:21:02 db Exp $
  */
 
 #include "stdinc.h"
 #include "tools.h"
 #include "client.h"
-#include "class.h"
 #include "channel_mode.h"
 #include "common.h"
 #include "event.h"
@@ -378,17 +377,13 @@ check_klines(void)
   DLINK_FOREACH_SAFE(ptr, next_ptr, local_client_list.head)
   {
     client_p = ptr->data;
-#if 0
-    /* -me- isn't on local_client_list*/
-    if (IsMe(client_p))
-      continue;
-#endif
+
     /* If a client is already being exited
      */
     if (IsDead(client_p))
       continue;
 	
-    /* if there is a returned struct AccessItem then kill it */
+    /* if there is a returned struct ConfItem then kill it */
     if ((aconf = find_dline_conf(&client_p->localClient->ip,
 				 client_p->localClient->aftype)) != NULL)
     {

@@ -19,13 +19,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.160 2003/07/04 11:45:17 adx Exp $
+ *  $Id: m_kline.c,v 1.161 2003/07/05 06:20:57 db Exp $
  */
 
 #include "stdinc.h"
 #include "tools.h"
 #include "channel.h"
-#include "class.h"
 #include "client.h"
 #include "common.h"
 #include "irc_string.h"
@@ -81,7 +80,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.160 $";
+const char *_version = "$Revision: 1.161 $";
 #endif
 
 /* Local function prototypes */
@@ -371,7 +370,7 @@ apply_kline(struct Client *source_p, struct ConfItem *conf,
   struct AccessItem *aconf;
 
   aconf = (struct AccessItem *)map_to_conf(conf);
-  add_conf_by_address(aconf->host, CONF_KILL, aconf->user, aconf);
+  add_conf_by_address(CONF_KILL, aconf);
   write_conf_line(source_p, conf, current_date, cur_time);
   /* Now, activate kline against current online clients */
   rehashed_klines = 1;
@@ -764,7 +763,7 @@ mo_dline(struct Client *client_p, struct Client *source_p,
   else
   {
     ircsprintf(buffer, "%s (%s)", reason, current_date);
-    add_conf_by_address(aconf->host, CONF_DLINE, NULL, aconf);
+    add_conf_by_address(CONF_DLINE, aconf);
     write_conf_line(source_p, conf, current_date, cur_time);
   }
 

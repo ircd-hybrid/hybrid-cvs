@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: class.c,v 7.61 2003/06/26 04:35:07 db Exp $
+ *  $Id: class.c,v 7.62 2003/07/05 06:21:02 db Exp $
  */
 
 #include "stdinc.h"
@@ -44,11 +44,20 @@
  * side effects - NONE
  */
 static int
-get_conf_ping(struct AccessItem *aconf)
+get_conf_ping(struct ConfItem *conf)
 {
-  if (aconf != NULL && ClassPtr(aconf))
-    return(ConfPingFreq(aconf));
+  struct ClassItem *aclass;
+  struct AccessItem *aconf;
 
+  if (conf != NULL)
+  {
+    aconf = (struct AccessItem *)map_to_conf(conf);
+    if (aconf->class_ptr != NULL)
+    {
+      aclass = (struct ClassItem *)map_to_conf(aconf->class_ptr);
+      return(PingFreq(aclass));
+    }
+  }
   return(BAD_PING);
 }
 
@@ -62,19 +71,19 @@ const char *
 get_client_class(struct Client *target_p)
 {
   dlink_node *ptr;
-  struct AccessItem *aconf;
+  struct ConfItem *conf;
   const char *retc = "unknown";
 
   if (target_p && !IsMe(target_p) && (target_p->localClient->confs.head))
   {
     DLINK_FOREACH(ptr, target_p->localClient->confs.head)
     {
-      aconf = ptr->data;
+      conf = ptr->data;
 
-      if (aconf->class_name == NULL)
+      if (conf->name == NULL)
         retc = "default";
       else
-        retc = aconf->class_name;
+        retc = conf->name;
     }
   }
 
@@ -92,20 +101,20 @@ get_client_ping(struct Client *target_p)
 {
   int ping = 0;
   int ping2;
-  struct AccessItem *aconf;
+  struct ConfItem *conf;
   dlink_node *nlink;
 
   if (target_p->localClient->confs.head != NULL)
   {
     DLINK_FOREACH(nlink, target_p->localClient->confs.head)
     {
-      aconf = nlink->data;
+      conf = nlink->data;
 
-      if (aconf->status & (CONF_CLIENT|CONF_SERVER))
+      if ((conf->type == CLIENT_TYPE) || (conf->type == SERVER_TYPE) ||
+	  (conf->type == OPER_TYPE))
       {
-        ping2 = get_conf_ping(aconf);
-
-        if ((ping2 != BAD_PING) && ((ping > ping2) || !ping))
+        ping2 = get_conf_ping(conf);
+        if ((ping2 != BAD_PING) && ((ping > ping2) || (ping == 0)))
           ping = ping2;
       }
     }
@@ -142,31 +151,27 @@ get_con_freq(struct ClassItem *clptr)
  * output	- corresponding Class pointer
  * side effects	- NONE
  */
-struct ClassItem *
+struct ConfItem *
 find_class(const char *classname)
 {
   struct ConfItem *conf;
-  struct ClassItem *aclass;
 
   if ((conf = find_exact_name_conf(CLASS_TYPE, classname, NULL, NULL)) != NULL)
   {
-    aclass = (struct ClassItem *)map_to_conf(conf);
-    return(aclass);
+    return(conf);
   }
   else
   {
     if ((conf = find_exact_name_conf(CLASS_TYPE, "default",
 				     NULL, NULL)) != NULL)
     {
-      aclass = (struct ClassItem *)map_to_conf(conf);
-      return(aclass);
+      return(conf);
     }
     else
     {
       conf = make_conf_item(CLASS_TYPE);
-      aclass = (struct ClassItem *)map_to_conf(conf);
-      DupString(aclass->class_name, "default");
-      return(aclass);
+      DupString(conf->name, "default");
+      return(conf);
     }
   }
 }
@@ -193,7 +198,6 @@ check_class(void)
     if (MaxTotal(aclass) < 0)
     {
       dlinkDelete(&conf->node, &class_items);
-
       if (CurrUserCount(aclass) <= 0)
         delete_conf_item(conf);
     }
@@ -214,7 +218,7 @@ init_class(void)
 
   conf = make_conf_item(CLASS_TYPE);
   aclass = (struct ClassItem *)map_to_conf(conf);
-  DupString(aclass->class_name, "default");
+  DupString(conf->name, "default");
   ConFreq(aclass)  = DEFAULT_CONNECTFREQUENCY;
   PingFreq(aclass) = DEFAULT_PINGFREQUENCY;
   MaxTotal(aclass) = ConfigFileEntry.maximum_links;
@@ -233,6 +237,8 @@ get_sendq(struct Client *client_p)
 {
   unsigned long sendq = DEFAULT_SENDQ;
   dlink_node *ptr;
+  struct ConfItem *conf;
+  struct ConfItem *class_conf;
   struct ClassItem *aclass;
   struct AccessItem *aconf;
 
@@ -240,17 +246,22 @@ get_sendq(struct Client *client_p)
   {
     DLINK_FOREACH(ptr, client_p->localClient->confs.head)
     {
-      aconf = ptr->data;
-
-      if (aconf == NULL)
-        continue;
-
-      if ((aclass = ClassPtr(aconf)) == NULL)
-        continue;
-
-      sendq = MaxSendq(aclass);
+      conf = ptr->data;
+      if ((conf->type == SERVER_TYPE) || (conf->type == OPER_TYPE)
+	  || (conf->type == CLIENT_TYPE))
+      {
+	aconf = (struct AccessItem *)map_to_conf(conf);
+	if ((class_conf = aconf->class_ptr) == NULL)
+	  continue;
+	aclass = (struct ClassItem *)map_to_conf(class_conf);
+	sendq = MaxSendq(aclass);
+	return(sendq);
+      }
     }
   }
-
-  return(sendq);
+  /* XXX return a default?
+   * if here, then there wasn't an attached conf with a sendq
+   * that is very bad -Dianora
+   */
+  return(DEFAULT_SENDQ);
 }

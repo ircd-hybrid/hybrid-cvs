@@ -19,13 +19,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ltrace.c,v 1.12 2003/06/18 06:26:27 metalrock Exp $
+ *  $Id: m_ltrace.c,v 1.13 2003/07/05 06:20:53 db Exp $
  */
 
 #include "stdinc.h"
 #include "handlers.h"
 #include "tools.h"
-#include "class.h"
 #include "hook.h"
 #include "client.h"
 #include "common.h"
@@ -66,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&ltrace_msgtab);
 }
 
-const char *_version = "$Revision: 1.12 $";
+const char *_version = "$Revision: 1.13 $";
 #endif
 
 static int report_this_status(struct Client *source_p, struct Client *target_p,int dow,
