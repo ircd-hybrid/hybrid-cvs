@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.85 2001/05/15 07:23:57 db Exp $
+ *   $Id: m_sjoin.c,v 1.86 2001/05/15 07:32:52 jdc Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -595,7 +595,7 @@ struct mode_letter flags[] = {
   { MODE_MODERATED,  'm' },
   { MODE_NOPRIVMSGS, 'n' },
   { MODE_TOPICLIMIT, 't' },
-  { MODE_INVITEONLY, 'i' }
+  { MODE_INVITEONLY, 'i' },
   { 0, 0 }
 };
 
