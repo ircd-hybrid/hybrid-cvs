@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.418 2003/06/02 06:09:48 db Exp $
+ *  $Id: s_conf.c,v 7.419 2003/06/03 14:10:07 michael Exp $
  */
 
 #include "stdinc.h"
@@ -203,7 +203,7 @@ free_conf(struct ConfItem *aconf)
     RSA_free(aconf->rsa_public_key);
   MyFree(aconf->rsa_public_key_file);
 #endif
-  MyFree((char *)aconf);
+  MyFree(aconf);
 }
 
 /* det_confs_butmask()

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: class.c,v 7.55 2003/05/31 00:52:47 michael Exp $
+ *  $Id: class.c,v 7.56 2003/06/03 14:10:06 michael Exp $
  */
 
 #include "stdinc.h"
@@ -83,7 +83,7 @@ void
 free_class(struct Class *aclass)
 {
   MyFree(aclass->class_name);
-  MyFree((char *)aclass);
+  MyFree(aclass);
 }
 
 /* get_conf_ping()

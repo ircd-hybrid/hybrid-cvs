@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: list.c,v 7.57 2003/05/22 23:16:07 michael Exp $
+ *  $Id: list.c,v 7.58 2003/06/03 14:10:06 michael Exp $
  */
 
 #include "stdinc.h"
@@ -92,23 +92,11 @@ make_user(struct Client *client_p)
 struct Server *
 make_server(struct Client *client_p)
 {
-  struct Server* serv = client_p->serv;
+  struct Server *serv = client_p->serv;
 
   if (!serv)
   {
     serv = (struct Server *)MyMalloc(sizeof(struct Server));
-
-    /* The commented out lines here are
-     * for documentation purposes only
-     * as they are zeroed by MyMalloc above
-     */
-#if 0
-    serv->user = NULL;
-    serv->users = NULL;
-    serv->servers = NULL;
-    *serv->by = '\0'; 
-    serv->up = NULL;
-#endif
     client_p->serv = serv;
   }
 
@@ -119,17 +107,17 @@ make_server(struct Client *client_p)
  * 
  * inputs	- pointer to user struct
  *		- pointer to client struct
- * output	- none
+ * output	- NONE
  * side effects - Decrease user reference count by one and release block,
  *                if count reaches 0
  */
 void
-free_user(struct User* user, struct Client* client_p)
+free_user(struct User *user, struct Client *client_p)
 {
   if (--user->refcnt <= 0)
   {
     if (user->away)
-      MyFree((char *)user->away);
+      MyFree(user->away);
 
     /* sanity check
      */

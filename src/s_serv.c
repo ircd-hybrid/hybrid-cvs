@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.344 2003/06/03 11:06:53 michael Exp $
+ *  $Id: s_serv.c,v 7.345 2003/06/03 14:10:07 michael Exp $
  */
 
 #include "stdinc.h"
@@ -713,9 +713,9 @@ delete_capability(const char *capab_name)
       {
 	default_server_capabs &= ~(cap->cap);
 	dlinkDelete(ptr, &cap_list);
-	MyFree((char *)cap->name);
+	MyFree(cap->name);
 	cap->name = NULL;
-	MyFree((char *)cap);
+	MyFree(cap);
       }
     }
   }

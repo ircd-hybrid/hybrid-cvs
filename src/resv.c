@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: resv.c,v 7.23 2003/05/24 16:15:15 bill Exp $
+ *  $Id: resv.c,v 7.24 2003/06/03 14:10:06 michael Exp $
  */
 
 #include "stdinc.h"
@@ -157,7 +157,7 @@ delete_channel_resv(struct ResvChannel *resv_p)
 
   del_from_resv_hash_table(resv_p->name, resv_p);
   dlinkDelete(&resv_p->node, &resv_channel_list);
-  MyFree((char *)resv_p);
+  MyFree(resv_p);
 
   return(1);
 }
@@ -178,7 +178,7 @@ delete_nick_resv(struct ResvNick *resv_p)
     return(0);
 
   dlinkDelete(&resv_p->node, &resv_nick_list);
-  MyFree((char *)resv_p);
+  MyFree(resv_p);
 
   return(1);
 }

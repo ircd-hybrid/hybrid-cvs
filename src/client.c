@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.379 2003/06/02 04:38:35 db Exp $
+ *  $Id: client.c,v 7.380 2003/06/03 14:10:06 michael Exp $
  */
 
 #include "stdinc.h"
@@ -638,7 +638,7 @@ release_client_state(struct Client *client_p)
     if (client_p->serv->user != NULL)
       free_user(client_p->serv->user, client_p);
 
-    MyFree((char *)client_p->serv);
+    MyFree(client_p->serv);
   }
 }
 
