@@ -1,3 +1,17 @@
+db          2002/09/02 02:06:49 EDT	(20020902_1)
+
+  Modified files:
+    contrib              m_whois.c 
+  Log:
+  - fixed stupid bug in contrib m_whois.c
+    check entire if() for MyConnect() first, this means the glob flag
+    is useless. cleaned up.
+  
+  Revision  Changes    Path
+  1.3       +14 -7     ircd-hybrid-7/contrib/m_whois.c
+
+
+
 db          2002/09/02 01:34:23 EDT	(20020902_0)
 
   Modified files:
@@ -31633,4 +31647,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4007 2002/09/02 05:34:26 db Exp $
+$Id: ChangeLog,v 7.4008 2002/09/02 06:06:51 db Exp $
