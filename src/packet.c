@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.87 2002/07/21 17:53:15 leeh Exp $
+ *  $Id: packet.c,v 7.88 2002/07/21 21:06:19 leeh Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -187,7 +187,13 @@ flood_recalc(int fd, void *data)
   if (!lclient_p)
     return;
 
-  lclient_p->sent_parsed -= 2;
+  /* allow a bursting client their allocation per second, allow
+   * a client whos flooding an extra 2 per second
+   */
+  if(IsFloodDone(client_p))
+    lclient_p->sent_parsed -= 2;
+  else
+    lclient_p->sent_parsed = 0;
   
   if(lclient_p->sent_parsed < 0)
     lclient_p->sent_parsed = 0;
@@ -419,6 +425,9 @@ read_packet(int fd, void *data)
 
   lclient_p->actually_read += lbuf_len;
   
+  /* Attempt to parse what we have */
+  parse_client_queued(client_p);
+  
   /* Check to make sure we're not flooding */
   if (IsPerson(client_p) &&
      (linebuf_alloclen(&client_p->localClient->buf_recvq) >
@@ -430,9 +439,6 @@ read_packet(int fd, void *data)
       }
     }
 
-  /* Attempt to parse what we have */
-  parse_client_queued(client_p);
-  
   /* server fd may have changed */
   fd_r = client_p->localClient->fd;
 #ifndef HAVE_SOCKETPAIR
