@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/contrib
 #
-# $Id: Makefile.in,v 1.51 2003/06/18 07:51:42 joshk Exp $
+# $Id: Makefile.in,v 1.52 2003/06/18 09:14:34 joshk Exp $
 #
 CC		= @CC@
 RM		= @RM@
@@ -41,12 +41,10 @@ SYMLINKS=	topic accept cjoin cmode admin names links away whowas \
 SRCS = \
   m_clearchan.c \
   m_classlist.c \
-  m_ctrace.c    \
   m_flags.c     \
   m_force.c	\
   m_help.c      \
   m_jupe.c      \
-  m_ltrace.c    \
   m_map.c       \
   m_killhost.c	\
   m_mkpasswd.c  \
@@ -54,6 +52,12 @@ SRCS = \
   m_omotd.c     \
   m_operspy.c   \
   m_opme.c      \
+  example_module.c
+
+SHARED_ONLY_SRCS = \
+  m_tburst.c \
+  m_ctrace.c \
+  m_ltrace.c \
   m_whois.c     \
   spy_admin_notice.c    \
   spy_info_notice.c     \
@@ -62,10 +66,7 @@ SRCS = \
   spy_stats_notice.c    \
   spy_stats_p_notice.c  \
   spy_trace_notice.c    \
-  spy_whois_notice.c    \
-  example_module.c
-
-SHARED_ONLY_SRCS = m_tburst.c
+  spy_whois_notice.c
 
 OBJS = ${SRCS:.c=.so} ${SHARED_ONLY_SRCS:.c=.so}
 SOBJS = ${SRCS:.c=.o}
