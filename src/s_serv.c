@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.141 2001/02/09 02:51:12 db Exp $
+ *   $Id: s_serv.c,v 7.142 2001/02/13 05:22:47 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -118,25 +118,10 @@ static CNCB serv_connect_callback;
  */
 const char* my_name_for_link(const char* name, struct ConfItem* aconf)
 {
-  static char          namebuf[HOSTLEN + 1];
-  register int         count = aconf->port;
-  register const char* start = name;
-
-  if (count <= 0 || count > 5)
-    return start;
-
-  while (count-- && name)
-    {
-      name++;
-      name = strchr(name, '.');
-    }
-  if (!name)
-    return start;
-
-  namebuf[0] = '*';
-  strncpy_irc(&namebuf[1], name, HOSTLEN - 1);
-  namebuf[HOSTLEN] = '\0';
-  return namebuf;
+  if(aconf->fakename)
+  	return(aconf->fakename);
+  else
+	return(name);
 }
 
 /*

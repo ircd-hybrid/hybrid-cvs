@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.97 2001/02/12 15:02:29 jdc Exp $
+ * $Id: s_conf.h,v 7.98 2001/02/13 05:22:41 androsyn Exp $
  */
 
 #include "setup.h"
@@ -66,6 +66,7 @@ struct ConfItem
   char*            spasswd;  /* Password to send. */
   char*            user;     /* user part of user@host */
   int              port;
+  char*		   fakename;   /* Mask name */
   time_t           hold;     /* Hold action until this time (calendar time) */
   char*		   className;   /* Name of class */
   struct Class*    c_class;     /* Class of connection */

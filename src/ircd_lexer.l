@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.72 2001/02/11 06:06:23 a1kmm Exp $
+ * $Id: ircd_lexer.l,v 1.73 2001/02/13 05:22:47 androsyn Exp $
  */
 
 %option case-insensitive
@@ -113,6 +113,7 @@ dots_in_ident   { return DOTS_IN_IDENT; }
 encrypted       { return ENCRYPTED; }
 email		{ return EMAIL; }
 exceed_limit    { return EXCEED_LIMIT; }
+fakename	{ return FAKENAME; }
 fname_userlog   { return FNAME_USERLOG; }
 fname_operlog   { return FNAME_OPERLOG; }
 fname_foperlog  { return FNAME_FOPERLOG; }
