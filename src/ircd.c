@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.34 2000/10/25 23:18:10 adrian Exp $
+ * $Id: ircd.c,v 7.35 2000/10/25 23:57:57 db Exp $
  */
 #include "ircd.h"
 #include "channel.h"
@@ -567,33 +567,17 @@ static void initialize_global_set_options(void)
   GlobalSetOptions.noisy_htm = NOISY_HTM;
   GlobalSetOptions.autoconn = 1;
 
-#ifdef FLUD
   GlobalSetOptions.fludnum = FLUD_NUM;
   GlobalSetOptions.fludtime = FLUD_TIME;
   GlobalSetOptions.fludblock = FLUD_BLOCK;
-#endif
 
-#ifdef IDLE_CHECK
   GlobalSetOptions.idletime = MIN_IDLETIME;
-#endif
 
-#ifdef ANTI_SPAMBOT
   GlobalSetOptions.spam_time = MIN_JOIN_LEAVE_TIME;
   GlobalSetOptions.spam_num = MAX_JOIN_LEAVE_COUNT;
-#endif
 
-#ifdef ANTI_DRONE_FLOOD
   GlobalSetOptions.dronetime = DEFAULT_DRONE_TIME;
   GlobalSetOptions.dronecount = DEFAULT_DRONE_COUNT;
-#endif
-
-#ifdef NEED_SPLITCODE
- GlobalSetOptions.server_split_recovery_time =
-   (DEFAULT_SERVER_SPLIT_RECOVERY_TIME * 60);
- GlobalSetOptions.split_smallnet_size = SPLIT_SMALLNET_SIZE;
- GlobalSetOptions.split_smallnet_users = SPLIT_SMALLNET_USER_SIZE;
- server_split_time = CurrentTime;
-#endif
 
  /* End of global set options */
 

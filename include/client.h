@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.22 2000/10/14 14:20:01 db Exp $
+ * $Id: client.h,v 7.23 2000/10/25 23:57:53 db Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -399,9 +399,7 @@ struct Client
 #define FLAGS2_CBURST       0x10000  /* connection burst being sent */
 
 #define FLAGS2_DOINGLIST    0x20000  /* client is doing a list */
-#ifdef IDLE_CHECK
 #define FLAGS2_IDLE_LINED   0x40000
-#endif
 #define FLAGS2_ALREADY_EXITED   0x80000         /* kludge grrrr */
 #define FLAGS2_IP_SPOOFING      0x100000        /* client IP is spoofed */
 #define FLAGS2_IP_HIDDEN        0x200000        /* client IP should be hidden
@@ -517,10 +515,8 @@ struct Client
 #define SetIPHidden(x)          ((x)->flags2 |= FLAGS2_IP_HIDDEN)
 #define IsIPHidden(x)           ((x)->flags2 & FLAGS2_IP_HIDDEN)
 
-#ifdef IDLE_CHECK
 #define SetIdlelined(x)         ((x)->flags2 |= FLAGS2_IDLE_LINED)
 #define IsIdlelined(x)          ((x)->flags2 & FLAGS2_IDLE_LINED)
-#endif
 
 #define SetOperGlobalKill(x)    ((x)->flags2 |= FLAGS2_OPER_GLOBAL_KILL)
 #define IsOperGlobalKill(x)     ((x)->flags2 & FLAGS2_OPER_GLOBAL_KILL)
@@ -563,6 +559,7 @@ struct Client
 #define MASK_IP 2
 
 extern time_t         check_pings(time_t current);
+extern void           check_klines(void);
 extern const char*    get_client_name(struct Client* client, int show_ip);
 extern const char*    get_client_host(struct Client* client);
 extern void           release_client_dns_reply(struct Client* client);
