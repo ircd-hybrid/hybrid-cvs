@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: match.c,v 7.33 2003/08/03 14:22:23 michael Exp $
+ * $Id: match.c,v 7.34 2004/01/31 19:02:23 michael Exp $
  *
  */
 #include "stdinc.h"
@@ -314,7 +314,6 @@ collapse(char *pattern)
 {
   char *p = pattern, *po = pattern;
   char c;
-  int f = 0;
 
   if (p == NULL)
     return(NULL);
@@ -323,17 +322,16 @@ collapse(char *pattern)
   {
     if (c == '*')
     {
-      if (!(f & 1))
+      if (!(*p == '*'))
         *po++ = '*';
-      f |= 1;
     }
     else
     {
       *po++ = c;
-      f &= ~1;
     }
   }
-  *po++ = 0;
+
+  *po++ = '\0';
 
   return(pattern);
 }
