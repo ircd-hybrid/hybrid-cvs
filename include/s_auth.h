@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.h,v 7.2 1999/12/30 20:35:35 db Exp $
+ *   $Id: s_auth.h,v 7.3 1999/12/31 04:38:28 wnder Exp $
  */
 #ifndef INCLUDED_s_auth_h
 #define INCLUDED_s_auth_h
@@ -66,10 +66,14 @@ struct AuthRequest {
 
 extern struct AuthRequest* AuthPollList;  /* GLOBAL - auth queries pending io */
 
+extern struct AuthRequest* AuthClientList;
+
 extern void start_auth(struct Client *);
 extern void timeout_auth_queries(time_t now);
 extern void read_auth_reply(struct AuthRequest* req);
 extern void send_auth_query(struct AuthRequest* req);
+extern void remove_auth_request(struct AuthRequest *req);
+extern struct AuthRequest *FindAuthClient(long id);
 
 #endif /* INCLUDED_s_auth_h */
 

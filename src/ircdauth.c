@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: ircdauth.c,v 7.5 1999/09/12 14:59:15 wnder Exp $
+ *   $Id: ircdauth.c,v 7.6 1999/12/31 04:37:30 wnder Exp $
  */
 
 #include <stdio.h>
@@ -681,10 +681,10 @@ GreetUser(struct Client *client)
    */
 
 	if (LocalClientList)
-		LocalClientList->prev_local = client;
+		LocalClientList->previous_local_client = client;
 
-	client->prev_local = NULL;
-	client->next_local = LocalClientList;
+	client->previous_local_client = NULL;
+	client->next_local_client = LocalClientList;
 	LocalClientList = client;
 
 	sendto_serv_butone(client,
