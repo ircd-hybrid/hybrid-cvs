@@ -1,6 +1,6 @@
 /* dline_conf.h  -- lets do dlines right shall we?
  *
- * $Id: dline_conf.h,v 7.9 2001/02/16 14:36:15 db Exp $ 
+ * $Id: dline_conf.h,v 7.10 2001/03/06 02:04:56 androsyn Exp $ 
  */
 
 #ifndef INCLUDED_dline_conf_h
@@ -25,9 +25,9 @@ extern struct ConfItem *match_Dline(struct irc_inaddr *ip);
 extern struct ConfItem* match_ip_Kline(struct irc_inaddr *ip, const char* name);
 extern struct ConfItem* match_ip_Iline(struct irc_inaddr *ip, const char *name);
 
-extern void report_dlines(struct Client *sptr);
-extern void report_ip_Klines(struct Client *sptr);
-extern void report_ip_Ilines(struct Client *sptr);
+extern void report_dlines(struct Client *server_p);
+extern void report_ip_Klines(struct Client *server_p);
+extern void report_ip_Ilines(struct Client *server_p);
 
 #endif /* INCLUDED_dline_conf_h */
 

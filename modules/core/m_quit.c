@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_quit.c,v 1.14 2001/02/23 17:22:41 fl_ Exp $
+ *   $Id: m_quit.c,v 1.15 2001/03/06 02:05:21 androsyn Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -60,15 +60,15 @@ char *_version = "20001122";
 **      parv[0] = sender prefix
 **      parv[1] = comment
 */
-static void m_quit(struct Client *cptr,
-                  struct Client *sptr,
+static void m_quit(struct Client *client_p,
+                  struct Client *server_p,
                   int parc,
                   char *parv[])
 {
-  char *comment = (parc > 1 && parv[1]) ? parv[1] : cptr->name;
+  char *comment = (parc > 1 && parv[1]) ? parv[1] : client_p->name;
   char reason [TOPICLEN + 1];
 
-  sptr->flags |= FLAGS_NORMALEX;
+  server_p->flags |= FLAGS_NORMALEX;
   if (strlen(comment) > (size_t) TOPICLEN)
     comment[TOPICLEN] = '\0';
 
@@ -78,28 +78,28 @@ static void m_quit(struct Client *cptr,
       comment = reason;
     }
   
-  if( !IsServer(sptr) && MyConnect(sptr) && !IsOper(sptr) && 
-     (sptr->firsttime + ANTI_SPAM_EXIT_MESSAGE_TIME) > CurrentTime)
+  if( !IsServer(server_p) && MyConnect(server_p) && !IsOper(server_p) && 
+     (server_p->firsttime + ANTI_SPAM_EXIT_MESSAGE_TIME) > CurrentTime)
     comment = "Client Quit";
 
-  exit_client(cptr, sptr, sptr, comment);
+  exit_client(client_p, server_p, server_p, comment);
 }
 /*
 ** ms_quit
 **      parv[0] = sender prefix
 **      parv[1] = comment
 */
-static void ms_quit(struct Client *cptr,
-                   struct Client *sptr,
+static void ms_quit(struct Client *client_p,
+                   struct Client *server_p,
                    int parc,
                    char *parv[])
 {
-  char *comment = (parc > 1 && parv[1]) ? parv[1] : cptr->name;
+  char *comment = (parc > 1 && parv[1]) ? parv[1] : client_p->name;
 
-  sptr->flags |= FLAGS_NORMALEX;
+  server_p->flags |= FLAGS_NORMALEX;
   if (strlen(comment) > (size_t) TOPICLEN)
     comment[TOPICLEN] = '\0';
 
-  exit_client(cptr, sptr, sptr, comment);
+  exit_client(client_p, server_p, server_p, comment);
 }
 

@@ -6,7 +6,7 @@
  * The idea here is that we should really be maintaining pre-munged
  * buffer "lines" which we can later refcount to save needless copies.
  *
- * $Id: linebuf.c,v 7.21 2001/02/14 05:58:34 a1kmm Exp $
+ * $Id: linebuf.c,v 7.22 2001/03/06 02:05:34 androsyn Exp $
  */
 
 #include <errno.h>
@@ -172,14 +172,14 @@ linebuf_newbuf(buf_head_t *bufhead)
  * side effects - all input line bufs are flushed 
  */
 void
-client_flush_input(struct Client *cptr)
+client_flush_input(struct Client *client_p)
 {
   /* This way, it can be called for remote client as well */
 
-  if(cptr->localClient == NULL)
+  if(client_p->localClient == NULL)
     return;
 
-  linebuf_donebuf(&cptr->localClient->buf_recvq);
+  linebuf_donebuf(&client_p->localClient->buf_recvq);
 }
 
 

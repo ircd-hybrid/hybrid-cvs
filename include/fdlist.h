@@ -1,7 +1,7 @@
 /*
  * fdlist.h
  *
- * $Id: fdlist.h,v 7.17 2001/02/26 06:00:05 androsyn Exp $
+ * $Id: fdlist.h,v 7.18 2001/03/06 02:04:56 androsyn Exp $
  */
 #ifndef INCLUDED_fdlist_h
 #define INCLUDED_fdlist_h
@@ -122,7 +122,7 @@ void fdlist_init(void);
 
 extern void  fd_open(int, unsigned int, const char *);
 extern void  fd_close(int);
-extern void  fd_dump(struct Client *sptr);
+extern void  fd_dump(struct Client *server_p);
 extern void  fd_note(int fd, const char *desc);
 
 

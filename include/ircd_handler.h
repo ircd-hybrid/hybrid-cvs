@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_handler.h,v 7.2 2001/02/05 20:12:29 davidt Exp $
+ * $Id: ircd_handler.h,v 7.3 2001/03/06 02:04:57 androsyn Exp $
  */
 #ifndef INCLUDED_ircd_handler_h
 #define INCLUDED_ircd_handler_h
@@ -38,8 +38,8 @@ typedef enum HandlerType {
 /*
  * MessageHandler function
  * Params:
- * struct Client* cptr   - connection message originated from
- * struct Client* sptr   - source of message, may be different from cptr
+ * struct Client* client_p   - connection message originated from
+ * struct Client* server_p   - source of message, may be different from client_p
  * int            parc   - parameter count
  * char*          parv[] - parameter vector
  */

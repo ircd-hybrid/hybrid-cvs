@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: msg.h,v 7.36 2001/01/05 00:14:16 davidt Exp $
+ * $Id: msg.h,v 7.37 2001/03/06 02:04:58 androsyn Exp $
  */
 #ifndef INCLUDED_msg_h
 #define INCLUDED_msg_h
@@ -50,8 +50,8 @@ struct  Message
 			     */
   unsigned long bytes;  /* bytes received for this message */
   /*
-   * cptr = Connected client ptr
-   * sptr = Source client ptr
+   * client_p = Connected client ptr
+   * server_p = Source client ptr
    * parc = parameter count
    * parv = parameter variable array
    */

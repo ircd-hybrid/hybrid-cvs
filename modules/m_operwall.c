@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operwall.c,v 1.19 2001/02/05 20:12:43 davidt Exp $
+ *   $Id: m_operwall.c,v 1.20 2001/03/06 02:05:20 androsyn Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -62,21 +62,21 @@ char *_version = "20010130";
  *      parv[1] = message text
  */
 
-static void mo_operwall(struct Client *cptr, struct Client *sptr,
+static void mo_operwall(struct Client *client_p, struct Client *server_p,
                        int parc, char *parv[])
 {
   char *message = parv[1];
 
   if (EmptyString(message))
     {
-      sendto_one(sptr, form_str(ERR_NEEDMOREPARAMS),
+      sendto_one(server_p, form_str(ERR_NEEDMOREPARAMS),
                  me.name, parv[0], "OPERWALL");
       return;
     }
 
-  sendto_ll_serv_butone(NULL, sptr, 1,
+  sendto_ll_serv_butone(NULL, server_p, 1,
                         ":%s OPERWALL :%s", parv[0], message);
-  sendto_wallops_flags(FLAGS_OPERWALL, sptr, "%s", message);
+  sendto_wallops_flags(FLAGS_OPERWALL, server_p, "%s", message);
 }
 
 /*
@@ -86,22 +86,22 @@ static void mo_operwall(struct Client *cptr, struct Client *sptr,
  *      parv[1] = message text
  */
 
-static void ms_operwall(struct Client *cptr, struct Client *sptr,
+static void ms_operwall(struct Client *client_p, struct Client *server_p,
                        int parc, char *parv[])
 {
   char *message = parv[1];
 
   if (EmptyString(message))
     {
-      if (MyClient(sptr))
-        sendto_one(sptr, form_str(ERR_NEEDMOREPARAMS),
+      if (MyClient(server_p))
+        sendto_one(server_p, form_str(ERR_NEEDMOREPARAMS),
                    me.name, parv[0], "OPERWALL");
       return;
     }
 
-  sendto_ll_serv_butone(cptr, sptr, 1, ":%s OPERWALL :%s",
+  sendto_ll_serv_butone(client_p, server_p, 1, ":%s OPERWALL :%s",
                      parv[0], message);
-  sendto_wallops_flags(FLAGS_OPERWALL, sptr, "%s", message);
+  sendto_wallops_flags(FLAGS_OPERWALL, server_p, "%s", message);
 }
 
 

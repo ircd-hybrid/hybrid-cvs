@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_locops.c,v 1.19 2001/02/05 20:12:40 davidt Exp $
+ *   $Id: m_locops.c,v 1.20 2001/03/06 02:05:17 androsyn Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -62,7 +62,7 @@ char *_version = "20001122";
  *      parv[0] = sender prefix
  *      parv[1] = message text
  */
-static void m_locops(struct Client *cptr, struct Client *sptr,
+static void m_locops(struct Client *client_p, struct Client *server_p,
                     int parc, char *parv[])
 {
   char *message = NULL;
@@ -71,12 +71,12 @@ static void m_locops(struct Client *cptr, struct Client *sptr,
 
   if (EmptyString(message))
     {
-      sendto_one(sptr, form_str(ERR_NEEDMOREPARAMS),
+      sendto_one(server_p, form_str(ERR_NEEDMOREPARAMS),
                  me.name, parv[0], "LOCOPS");
       return;
     }
 
-  sendto_wallops_flags(FLAGS_LOCOPS, sptr, "LOCOPS - %s", message);
+  sendto_wallops_flags(FLAGS_LOCOPS, server_p, "LOCOPS - %s", message);
 }
 
 

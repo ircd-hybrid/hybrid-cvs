@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_capab.c,v 1.14 2001/02/05 20:12:32 davidt Exp $
+ *   $Id: m_capab.c,v 1.15 2001/03/06 02:05:08 androsyn Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -58,7 +58,7 @@ char *_version = "20001122";
  *      parv[1] = space-separated list of capabilities
  *
  */
-static void mr_capab(struct Client *cptr, struct Client *sptr,
+static void mr_capab(struct Client *client_p, struct Client *server_p,
                     int parc, char *parv[])
 {
   struct Capability *cap;
@@ -66,16 +66,16 @@ static void mr_capab(struct Client *cptr, struct Client *sptr,
   char* s;
 
   /* ummm, this shouldn't happen. Could argue this should be logged etc. */
-  if (cptr->localClient == NULL)
+  if (client_p->localClient == NULL)
     return;
 
-  if (cptr->localClient->caps)
+  if (client_p->localClient->caps)
     {
-      exit_client(cptr, cptr, cptr, "CAPAB received twice");
+      exit_client(client_p, client_p, client_p, "CAPAB received twice");
       return;
     }
   else
-    cptr->localClient->caps |= CAP_CAP;
+    client_p->localClient->caps |= CAP_CAP;
 
   for (s = strtoken(&p, parv[1], " "); s; s = strtoken(&p, NULL, " "))
     {
@@ -83,7 +83,7 @@ static void mr_capab(struct Client *cptr, struct Client *sptr,
         {
           if (0 == strcmp(cap->name, s))
             {
-              cptr->localClient->caps |= cap->cap;
+              client_p->localClient->caps |= cap->cap;
               break;
             }
          }

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_userhost.c,v 1.27 2001/02/05 20:12:49 davidt Exp $
+ *   $Id: m_userhost.c,v 1.28 2001/03/06 02:05:26 androsyn Exp $
  */
 
 #include "handlers.h"
@@ -64,12 +64,12 @@ char *_version = "20001122";
  * the need for complicated requests like WHOIS. It returns user/host
  * information only (no spurious AWAY labels or channels).
  */
-static void m_userhost(struct Client *cptr,
-                      struct Client *sptr,
+static void m_userhost(struct Client *client_p,
+                      struct Client *server_p,
                       int parc,
                       char *parv[])
 {
-  struct Client *acptr;
+  struct Client *aclient_p;
   char response[NICKLEN*2+USERLEN+HOSTLEN+30];
   char *t;
   int i, n;               /* loop counter */
@@ -84,7 +84,7 @@ static void m_userhost(struct Client *cptr,
       if (parv[i+1] == NULL)
         break;
 
-      if ((acptr = find_person(parv[i+1], NULL)))
+      if ((aclient_p = find_person(parv[i+1], NULL)))
 	{
 	  /*
 	   * Show real IP for USERHOST on yourself.
@@ -99,23 +99,23 @@ static void m_userhost(struct Client *cptr,
            * including your nick and the nick of someone not known to
            * the leaf, you'll get your spoofed IP.  tough.
            */
-	  if (MyClient(acptr) && (acptr == sptr))
+	  if (MyClient(aclient_p) && (aclient_p == server_p))
 	  {
             rl = ircsprintf(response, "%s%s=%c%s@%s ",
-			    acptr->name,
-			    IsOper(acptr) ? "*" : "",
-			    (acptr->user->away) ? '-' : '+',
-			    acptr->username,
-			    acptr->localClient->sockhost);
+			    aclient_p->name,
+			    IsOper(aclient_p) ? "*" : "",
+			    (aclient_p->user->away) ? '-' : '+',
+			    aclient_p->username,
+			    aclient_p->localClient->sockhost);
 	  }
           else
 	  {
             rl = ircsprintf(response, "%s%s=%c%s@%s ",
-			    acptr->name,
-			    IsOper(acptr) ? "*" : "",
-			    (acptr->user->away) ? '-' : '+',
-			    acptr->username,
-			    acptr->host);
+			    aclient_p->name,
+			    IsOper(aclient_p) ? "*" : "",
+			    (aclient_p->user->away) ? '-' : '+',
+			    aclient_p->username,
+			    aclient_p->host);
 	  }
 
 	  if((rl + cur_len) < (BUFSIZE-10))
@@ -146,5 +146,5 @@ static void m_userhost(struct Client *cptr,
         }
     }
 
-  sendto_one(sptr, "%s", buf);
+  sendto_one(server_p, "%s", buf);
 }

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: listener.c,v 7.42 2001/03/01 05:04:51 androsyn Exp $
+ *  $Id: listener.c,v 7.43 2001/03/06 02:05:35 androsyn Exp $
  */
 #include "config.h"
 #include "listener.h"
@@ -108,15 +108,15 @@ const char* get_listener_name(const struct Listener* listener)
  * output       - none
  * side effects - show ports
  */
-void show_ports(struct Client* sptr)
+void show_ports(struct Client* server_p)
 {
   struct Listener* listener = 0;
 
   for (listener = ListenerPollList; listener; listener = listener->next)
     {
-      sendto_one(sptr, form_str(RPL_STATSPLINE),
+      sendto_one(server_p, form_str(RPL_STATSPLINE),
                  me.name,
-                 sptr->name,
+                 server_p->name,
                  'P',
                  listener->port,
                  listener->name,

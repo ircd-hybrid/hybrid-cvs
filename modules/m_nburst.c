@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_nburst.c,v 1.6 2001/02/05 20:12:42 davidt Exp $
+ * $Id: m_nburst.c,v 1.7 2001/03/06 02:05:19 androsyn Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -74,15 +74,15 @@ char *_version = "20010104";
  * the given LL capable server.
  */
 
-static void ms_nburst(struct Client *cptr,
-                     struct Client *sptr,
+static void ms_nburst(struct Client *client_p,
+                     struct Client *server_p,
                      int parc,
                      char *parv[])
 {
   char *nick;
   char *nick_new = NULL;
   char *nick_old = NULL;
-  struct Client *acptr;
+  struct Client *aclient_p;
   char status;
 
   if( parc < 2 || *parv[1] == '\0' )
@@ -96,28 +96,28 @@ static void ms_nburst(struct Client *cptr,
   if( parc > 3 )
     nick_old = parv[3];
 
-  if (!ServerInfo.hub && IsCapable(cptr, CAP_LL))
+  if (!ServerInfo.hub && IsCapable(client_p, CAP_LL))
     return;
 
 #ifdef DEBUGLL
   sendto_realops_flags(FLAGS_ALL, "NBURST called by %s for %s %s %s",
-    cptr->name,
+    client_p->name,
     nick,
     nick_new ? nick_new : "",
     nick_old ? nick_old : "" );
 #endif
 
   status = 'N';
-  if ( (acptr = find_client(nick, NULL)) != NULL )
+  if ( (aclient_p = find_client(nick, NULL)) != NULL )
   {
     /* nick exists.  burst nick back to leaf */
     status = 'Y';
-    client_burst_if_needed(cptr, acptr);
+    client_burst_if_needed(client_p, aclient_p);
   }
 
   /* Send back LLNICK, if wanted */
   if (parc > 2)
-    sendto_one(cptr, ":%s LLNICK %c %s %s", me.name, status, nick_new,
+    sendto_one(client_p, ":%s LLNICK %c %s %s", me.name, status, nick_new,
                (nick_old ? nick_old : ""));
 
   return;

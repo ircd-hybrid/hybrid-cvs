@@ -2,7 +2,7 @@
  * event.h - defines for event.c, the event system. This has been ported
  * from squid by adrian to simplify scheduling events.
  *
- * $Id: event.h,v 1.4 2000/10/30 08:22:23 db Exp $
+ * $Id: event.h,v 1.5 2001/03/06 02:04:56 androsyn Exp $
  */
 #ifndef __EVENT_H__
 #define __EVENT_H__
@@ -25,6 +25,6 @@ extern void eventInit(void);
 extern void eventFreeMemory(void);
 extern int eventFind(EVH *, void *);
 
-extern int show_events( struct Client *sptr );
+extern int show_events( struct Client *server_p );
 
 #endif

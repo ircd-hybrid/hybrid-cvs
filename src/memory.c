@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: memory.c,v 7.8 2001/03/01 06:02:27 db Exp $
+ * $Id: memory.c,v 7.9 2001/03/06 02:05:35 androsyn Exp $
  */
 #include <stdlib.h>
 #include <string.h>
@@ -124,19 +124,19 @@ void ReportAllocated(struct Client*);
 void ReportBlockHeap(struct Client*);
 
 void
-ReportAllocated(struct Client *cptr)
+ReportAllocated(struct Client *client_p)
 {
  MemoryEntry *mme;
- sendto_one(cptr, ":%s NOTICE %s :*** -- Memory Allocation Report",
-   me.name, cptr->name);
+ sendto_one(client_p, ":%s NOTICE %s :*** -- Memory Allocation Report",
+   me.name, client_p->name);
  for (mme = first_mem_entry; mme; mme=mme->next)
-   sendto_one(cptr,
+   sendto_one(client_p,
      ":%s NOTICE %s :*** -- %u bytes allocated for %lus at %s:%d",
-     me.name, cptr->name, mme->size, CurrentTime-mme->ts, mme->file,
+     me.name, client_p->name, mme->size, CurrentTime-mme->ts, mme->file,
      mme->line);
- sendto_one(cptr, ":%s NOTICE %s :*** -- End Memory Allocation Report",
-   me.name, cptr->name);
- ReportBlockHeap(cptr);
+ sendto_one(client_p, ":%s NOTICE %s :*** -- End Memory Allocation Report",
+   me.name, client_p->name);
+ ReportBlockHeap(client_p);
 }
 #else /* MEMDEBUG */
 /*

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_restart.c,v 1.12 2001/02/05 20:12:45 davidt Exp $
+ *   $Id: m_restart.c,v 1.13 2001/03/06 02:05:22 androsyn Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -60,42 +60,42 @@ char *_version = "20001122";
  * mo_restart
  *
  */
-static void mo_restart(struct Client *cptr,
-                      struct Client *sptr,
+static void mo_restart(struct Client *client_p,
+                      struct Client *server_p,
                       int parc,
                       char *parv[])
 {
   char buf[BUFSIZE]; 
-  if (!MyClient(sptr) || !IsOper(sptr))
+  if (!MyClient(server_p) || !IsOper(server_p))
     {
-      sendto_one(sptr, form_str(ERR_NOPRIVILEGES), me.name, parv[0]);
+      sendto_one(server_p, form_str(ERR_NOPRIVILEGES), me.name, parv[0]);
       return;
     }
 
-  if ( !IsOperDie(sptr) )
+  if ( !IsOperDie(server_p) )
     {
-      sendto_one(sptr,":%s NOTICE %s :You have no D flag", me.name, parv[0]);
+      sendto_one(server_p,":%s NOTICE %s :You have no D flag", me.name, parv[0]);
       return;
     }
 
   if (parc < 2)
   {
-	  sendto_one(sptr, ":%s NOTICE %s :Need server name /restart %s",
-				 me.name, sptr->name, me.name);
+	  sendto_one(server_p, ":%s NOTICE %s :Need server name /restart %s",
+				 me.name, server_p->name, me.name);
 	  return;
   }
   else
   {
 	  if (irccmp(parv[1], me.name))
 	  {
-		  sendto_one(sptr, ":%s NOTICE %s :Mismatch on /restart %s",
-					 me.name, sptr->name, me.name);
+		  sendto_one(server_p, ":%s NOTICE %s :Mismatch on /restart %s",
+					 me.name, server_p->name, me.name);
 		  return;
 	  }
   }
   
-  log(L_WARN, "Server RESTART by %s\n", get_client_name(sptr, SHOW_IP));
-  ircsprintf(buf, "Server RESTART by %s", get_client_name(sptr, SHOW_IP));
+  log(L_WARN, "Server RESTART by %s\n", get_client_name(server_p, SHOW_IP));
+  ircsprintf(buf, "Server RESTART by %s", get_client_name(server_p, SHOW_IP));
   restart(buf);
 }
 
