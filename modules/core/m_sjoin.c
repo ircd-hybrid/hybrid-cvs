@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.173 2003/10/14 01:51:51 metalrock Exp $
+ *  $Id: m_sjoin.c,v 1.174 2003/10/16 22:06:55 bill Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.173 $";
+const char *_version = "$Revision: 1.174 $";
 #endif
 
 static char modebuf[MODEBUFLEN];
@@ -738,13 +738,15 @@ remove_ban_list(struct Channel *chptr, struct Client *source_p,
       /* remove trailing space */
       *(pbuf - 1) = '\0';
 
-      sendto_channel_local(ALL_MEMBERS, chptr, "%s%s",
+      sendto_channel_local(ALL_MEMBERS, chptr, "%s %s",
                lmodebuf, lparabuf);
       sendto_server(source_p, NULL, chptr, cap, CAP_TS6, NOFLAGS,
-		    "%s%s", lmodebuf, lparabuf);
+		    "%s %s", lmodebuf, lparabuf);
 
       cur_len = mlen;
       mbuf = lmodebuf + mlen;
+      pbuf = lparabuf;
+      *mbuf = *pbuf = '\0';
       count = 0;
     }     
 
@@ -756,10 +758,10 @@ remove_ban_list(struct Channel *chptr, struct Client *source_p,
     BlockHeapFree(ban_heap, banptr);
   }
 
-  *(pbuf - 1) = '\0';
-  sendto_channel_local(ALL_MEMBERS, chptr, "%s%s", lmodebuf, lparabuf);
+  *(pbuf - 1) = *mbuf = '\0';
+  sendto_channel_local(ALL_MEMBERS, chptr, "%s %s", lmodebuf, lparabuf);
   sendto_server(source_p, NULL, chptr, cap, CAP_TS6, NOFLAGS,
-		"%s%s", lmodebuf, lparabuf);
+		"%s %s", lmodebuf, lparabuf);
 
   list->head = list->tail = NULL;
   list->length = 0;
