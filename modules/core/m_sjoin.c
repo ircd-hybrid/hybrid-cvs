@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.171 2003/10/13 01:39:38 bill Exp $
+ *  $Id: m_sjoin.c,v 1.172 2003/10/13 07:13:05 bill Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.171 $";
+const char *_version = "$Revision: 1.172 $";
 #endif
 
 /* ms_sjoin()
@@ -417,7 +417,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
     if (fl & CHFL_CHANOP)
     {
       *mbuf++ = 'o';
-      para[pargs++] = s;
+      para[pargs++] = target_p->name;
 
       if (pargs >= MAXMODEPARAMS)
       {
@@ -435,7 +435,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
     if (fl & CHFL_VOICE)
     {
       *mbuf++ = 'v';
-      para[pargs++] = s;
+      para[pargs++] = target_p->name;
 
       if (pargs >= MAXMODEPARAMS)
       {
