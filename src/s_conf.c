@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.225 2001/06/05 01:45:39 ejb Exp $
+ *  $Id: s_conf.c,v 7.226 2001/06/05 19:24:56 toot Exp $
  */
 
 #include <sys/types.h>
@@ -1470,6 +1470,8 @@ static void set_default_conf(void)
     FLAGS_DRONE | FLAGS_LOCOPS | FLAGS_UNAUTH;
   ConfigFileEntry.vchans_oper_only = NO;
   ConfigFileEntry.disable_vchans = NO;
+  ConfigFileEntry.use_invex = NO;
+  ConfigFileEntry.use_except= YES;
   ConfigFileEntry.persist_expire = 30 * 60;
   ConfigFileEntry.min_nonwildcard = 4;
   ConfigFileEntry.default_floodcount = 8;

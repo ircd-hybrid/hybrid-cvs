@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.156 2001/06/05 18:14:28 db Exp $
+ * $Id: ircd.c,v 7.157 2001/06/05 19:24:56 toot Exp $
  */
 
 #include <sys/types.h>
@@ -360,9 +360,6 @@ static void initialize_global_set_options(void)
     GlobalSetOptions.floodcount = ConfigFileEntry.default_floodcount;
   else
     GlobalSetOptions.floodcount = 10;
-
-  /* Disable +I for now */
-  GlobalSetOptions.use_invex = 0;
 
  /* End of global set options */
 
