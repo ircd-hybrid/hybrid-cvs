@@ -4,7 +4,7 @@
  * Owner:  Wohali (Joan Touzet)
  *
  *
- * $Id: blalloc.c,v 7.15 2001/01/11 19:42:52 a1kmm Exp $
+ * $Id: blalloc.c,v 7.16 2001/01/11 19:51:14 a1kmm Exp $
  */
 #include <stdio.h>
 #include <unistd.h>
@@ -318,7 +318,7 @@ int _BlockHeapFree(BlockHeap *bh, void *ptr)
     if (mme->last)
       mme->last->next = mme->next;
     else
-      first_block_mem_entry = mme;
+      first_block_mem_entry = mme->next;
     if (mme->next)
       mme->next->last = mme->last;
    }
