@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.138 2001/03/09 10:19:23 a1kmm Exp $
+ *  $Id: s_user.c,v 7.139 2001/03/10 23:32:11 a1kmm Exp $
  */
 
 #include <sys/types.h>
@@ -95,7 +95,9 @@ static struct flag_item user_modes[] =
   {FLAGS_LOCOPS, 'l'},
   {FLAGS_NCHANGE, 'n'},
   {FLAGS_OPER, 'o'},
-  {FLAGS_PERSISTANT, 'p'},  
+#ifdef PERSISTANT_CLIENTS
+  {FLAGS_PERSISTANT, 'p'},
+#endif
   {FLAGS_REJ, 'r'},
   {FLAGS_SERVNOTICE, 's'},
   {FLAGS_UNAUTH, 'u'},
@@ -158,7 +160,11 @@ int user_modes_from_c_to_bitmask[] =
   0,            /* m */
   FLAGS_NCHANGE, /* n */
   FLAGS_OPER,   /* o */
+#ifdef PERSISTANT_CLIENTS
   FLAGS_PERSISTANT,/* p */
+#else
+  0,               /* p */
+#endif
   0,            /* q */
   FLAGS_REJ,    /* r */
   FLAGS_SERVNOTICE, /* s */
