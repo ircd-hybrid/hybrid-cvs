@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_debug.c,v 7.12 2000/01/04 04:44:35 db Exp $
+ *   $Id: s_debug.c,v 7.13 2000/01/04 15:56:14 db Exp $
  */
 #include "s_debug.h"
 #include "channel.h"
@@ -318,12 +318,10 @@ void count_memory(struct Client *cptr,char *nick)
         {
           chb++;
           chbm += (strlen(link->value.cp)+1+sizeof(struct SLink));
-        #ifdef BAN_INFO
-        	if (link->value.banptr->banstr)
-        		chbm += strlen(link->value.banptr->banstr);
-        	if (link->value.banptr->who)
-        		chbm += strlen(link->value.banptr->who);
-        #endif /* BAN_INFO */
+          if (link->value.banptr->banstr)
+            chbm += strlen(link->value.banptr->banstr);
+          if (link->value.banptr->who)
+            chbm += strlen(link->value.banptr->who);
         }
     }
 

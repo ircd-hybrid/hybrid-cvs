@@ -20,7 +20,7 @@
  * "list.h". - Headers file.
  *
  *
- * $Id: list.h,v 7.3 1999/12/30 20:35:30 db Exp $
+ * $Id: list.h,v 7.4 2000/01/04 15:56:10 db Exp $
  *
  */
 
@@ -45,9 +45,7 @@ struct SLink
     struct Client   *cptr;
     struct Channel  *chptr;
     struct ConfItem *aconf;
-#ifdef BAN_INFO
     struct Ban   *banptr;
-#endif
     char      *cp;
   } value;
   int   flags;

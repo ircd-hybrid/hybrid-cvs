@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 7.7 2000/01/02 07:44:03 db Exp $
+ *   $Id: m_sjoin.c,v 7.8 2000/01/04 15:56:13 db Exp $
  */
 #include "m_commands.h"
 #include "channel.h"
@@ -206,8 +206,16 @@ int     m_sjoin(struct Client *cptr,
 
   if (isnew)
     chptr->channelts = tstosend = newts;
+#if 0
   else if (newts == 0 || oldts == 0)
     chptr->channelts = tstosend = 0;
+#endif
+  /* if someone introduces a 0 TS, ignore it
+   * don't deop their members, but don't zap
+   * our (possibly) valid non 0 TS
+   */
+  else if (!newts)
+    chptr->channelts = tstosend = oldts;
   else if (newts == oldts)
     tstosend = oldts;
   else if (newts < oldts)

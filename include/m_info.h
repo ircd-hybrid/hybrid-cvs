@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.h,v 7.2 1999/12/30 20:35:31 db Exp $
+ * $Id: m_info.h,v 7.3 2000/01/04 15:56:10 db Exp $
  */
 #ifndef INCLUDED_m_info_h
 #define INCLUDED_m_info_h
@@ -80,12 +80,6 @@ Info MyInformation[] = {
 #else
   { "B_LINES_OPER_ONLY", "OFF", 0, "Allow only Operators to use STATS B" },
 #endif /* B_LINES_OPER_ONLY */
-
-#ifdef BAN_INFO
-  { "BAN_INFO", "ON", 0, "Displays who set a ban and when" },
-#else
-  { "BAN_INFO", "OFF", 0, "Displays who set a ban and when" },
-#endif /* BAN_INFO */
 
 #ifdef BOTCHECK
   { "BOTCHECK", "ON", 0, "Rudimentary Bot Checking" },
@@ -566,12 +560,6 @@ Info MyInformation[] = {
 #else
   { "USE_SYSLOG", "OFF", 0, "Log Errors to syslog file" },
 #endif /* USE_SYSLOG */
-
-#ifdef USE_UH
-  { "USE_UH", "ON", 0, "Include user@host for BAN_INFO" },
-#else
-  { "USE_UH", "OFF", 0, "Include user@host for BAN_INFO" },
-#endif /* USE_UH */
 
 #ifdef WALLOPS_WAIT
   { "WALLOPS_WAIT", "", WALLOPS_WAIT, "Delay between successive uses of the WALLOPS command" },

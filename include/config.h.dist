@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h.dist,v 7.7 2000/01/04 04:44:31 db Exp $
+ * $Id: config.h.dist,v 7.8 2000/01/04 15:56:09 db Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -182,15 +182,6 @@
  * attempted passwd
  */
 #undef SHOW_FAILED_OPER_PASSWD
-
-/* BAN_INFO - Shows you who and when someone did a ban
- */
-#define BAN_INFO
-
-/* USE_UH - include user@host for BAN_INFO
- * define this if you want to use n!u@h for BAN_INFO
- */
-#define USE_UH
 
 /* ANTI_NICK_FLOOD - prevents nick flooding
  * define if you want to block local clients from nickflooding
