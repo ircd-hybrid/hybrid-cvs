@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.328 2003/05/22 05:17:04 lusky Exp $
+ *  $Id: s_serv.c,v 7.329 2003/05/22 12:45:42 adx Exp $
  */
 
 #include "stdinc.h"
@@ -939,7 +939,6 @@ server_estab(struct Client *client_p)
      * currently we only need to call send_queued_write,
      * Nagle is already disabled at this point --adx
      */
-    set_no_delay(client_p->localClient->fd);
     sendto_one(client_p, "SERVER %s 1 :%s%s",
                my_name_for_link(aconf), 
                ConfigServerHide.hidden ? "(H) " : "",
@@ -2021,8 +2020,7 @@ serv_connect_callback(int fd, int status, void *data)
   assert(client_p != NULL);
   assert(client_p->localClient->fd == fd);
 
-  if (client_p == NULL)
-    return;
+  set_no_delay(fd);
 
     /* Next, for backward purposes, record the ip of the server */
     memcpy(&client_p->localClient->ip, &fd_table[fd].connect.hostaddr,
