@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kick.c,v 1.23 2001/01/07 04:46:30 db Exp $
+ *   $Id: m_kick.c,v 1.24 2001/01/21 15:06:55 toot Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -57,7 +57,7 @@ _moddeinit(void)
   mod_del_cmd(&kick_msgtab);
 }
 
-char *_version = "20001122";
+char *_version = "20010121";
 
 /*
 ** m_kick
@@ -88,7 +88,7 @@ static int m_kick(struct Client *cptr,
       return 0;
     }
 
-  comment = (BadPtr(parv[3])) ? parv[0] : parv[3];
+  comment = (BadPtr(parv[3])) ? parv[2] : parv[3];
   if (strlen(comment) > (size_t) TOPICLEN)
     comment[TOPICLEN] = '\0';
 
