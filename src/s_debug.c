@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_debug.c,v 7.84 2003/05/20 06:51:52 michael Exp $
+ *  $Id: s_debug.c,v 7.85 2003/05/22 17:53:25 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -374,7 +374,7 @@ count_memory(struct Client *source_p)
 	     (int)total_channel_memory, (int)conf_memory);
 
   count_local_client_memory(&local_client_count,
-			     (int *)&local_client_memory_used );
+			    &local_client_memory_used );
   total_memory += local_client_memory_used;
   sendto_one(source_p, ":%s %d %s z :Local client Memory in use: %d(%d)",
              me.name, RPL_STATSDEBUG, source_p->name,
@@ -383,20 +383,20 @@ count_memory(struct Client *source_p)
 
 
   count_remote_client_memory( &remote_client_count,
-			      (int *)&remote_client_memory_used);
+			      &remote_client_memory_used);
   total_memory += remote_client_memory_used;
   sendto_one(source_p, ":%s %d %s z :Remote client Memory in use: %d(%d)",
              me.name, RPL_STATSDEBUG, source_p->name,
 	     remote_client_count,
              (int)remote_client_memory_used);
 
-  count_user_memory( &user_count, (int *)&user_memory_used );
+  count_user_memory( &user_count, &user_memory_used );
   total_memory += user_memory_used;
   sendto_one(source_p, ":%s %d %s z :User Memory in use: %d(%d)",
              me.name, RPL_STATSDEBUG, source_p->name,
 	     user_count, (int)user_memory_used);
 
-  count_links_memory( &links_count, (int *)&links_memory_used );
+  count_links_memory( &links_count, &links_memory_used );
   total_memory += links_memory_used;
   sendto_one(source_p, ":%s %d %s z :Links Memory in use: %d(%d)",
              me.name, RPL_STATSDEBUG, source_p->name,

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: list.c,v 7.55 2003/05/18 23:29:26 michael Exp $
+ *  $Id: list.c,v 7.56 2003/05/22 17:53:25 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -249,7 +249,7 @@ free_slink_node(slink_node *ptr)
  * side effects	- NONE
  */
 void
-count_user_memory(int *count,int *user_memory_used)
+count_user_memory(int *count, unsigned long *user_memory_used)
 {
   *count = user_count;
   *user_memory_used = user_count * sizeof(struct User);
@@ -263,7 +263,7 @@ count_user_memory(int *count,int *user_memory_used)
  * side effects	- NONE
  */
 void
-count_links_memory(int *count,int *links_memory_used)
+count_links_memory(int *count, unsigned long *links_memory_used)
 {
   *count = links_count;
   *links_memory_used = links_count * sizeof(dlink_node);

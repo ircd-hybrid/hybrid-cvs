@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.191 2003/05/22 17:09:01 michael Exp $
+ *  $Id: client.h,v 7.192 2003/05/22 17:53:23 joshk Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -589,8 +589,8 @@ extern struct Client *make_client(struct Client *from);
 extern void free_client(struct Client *client);
 extern void remove_client_from_list(struct Client *);
 extern int exit_client(struct Client *, struct Client *, struct Client *, const char *);
-extern void count_local_client_memory(int *count, int *memory);
-extern void count_remote_client_memory(int *count, int *memory);
+extern void count_local_client_memory(int *count, unsigned long *memory);
+extern void count_remote_client_memory(int *count, unsigned long *memory);
 extern struct Client *find_chasing(struct Client *, char *, int *);
 extern struct Client *find_person(char *);
 extern int accept_message(struct Client *source, struct Client *target);

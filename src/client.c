@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.372 2003/05/22 05:01:06 metalrock Exp $
+ *  $Id: client.c,v 7.373 2003/05/22 17:53:25 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -1405,7 +1405,7 @@ exit_client(
 
 /* XXX one common Client list now */
 void
-count_local_client_memory(int *count, int *local_client_memory_used)
+count_local_client_memory(int *count, unsigned long *local_client_memory_used)
 {
   *count = local_client_count;
   *local_client_memory_used = local_client_count *
@@ -1416,7 +1416,7 @@ count_local_client_memory(int *count, int *local_client_memory_used)
  * Count up remote client memory
  */
 void
-count_remote_client_memory(int *count, int *remote_client_memory_used)
+count_remote_client_memory(int *count, unsigned long *remote_client_memory_used)
 {
   *count = remote_client_count;
   *remote_client_memory_used = remote_client_count * sizeof(struct Client);
