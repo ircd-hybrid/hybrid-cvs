@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.260 2003/04/02 11:44:58 michael Exp $
+ *  $Id: ircd.c,v 7.261 2003/04/02 14:29:23 adx Exp $
  */
 
 #include "stdinc.h"
@@ -543,19 +543,6 @@ int main(int argc, char *argv[])
   memset(&me, 0, sizeof(me));
   memset(&meLocalUser, 0, sizeof(meLocalUser));
   me.localClient = &meLocalUser;
-
-  /* Make sure all lists are zeroed */
-  memset(&dead_list, 0, sizeof(dead_list));
-  memset(&abort_list, 0, sizeof(abort_list));
-  memset(&unknown_list, 0, sizeof(unknown_list));
-  memset(&local_client_list, 0, sizeof(local_client_list));
-  memset(&serv_list, 0, sizeof(serv_list));
-  memset(&global_serv_list, 0, sizeof(global_serv_list));
-  memset(&oper_list, 0, sizeof(oper_list));
-  memset(&lazylink_channels, 0, sizeof(lazylink_channels));
-  memset(&global_client_list, 0, sizeof(global_client_list));
-  memset(&global_channel_list, 0, sizeof(global_channel_list));
-
   dlinkAdd(&me, &me.node, &global_client_list);	/* Pointer to beginning
 						   of Client list */
 

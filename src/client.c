@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.340 2003/04/02 11:19:46 michael Exp $
+ *  $Id: client.c,v 7.341 2003/04/02 14:29:23 adx Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -57,13 +57,14 @@
 
 /* Pointer to beginning of Client list */
 dlink_list global_client_list = {NULL, NULL, 0};
-/* unknown/client pointer lists */ 
-dlink_list unknown_list;        /* unknown clients ON this server only */
-dlink_list local_client_list;   /* local clients only ON this server */
-dlink_list serv_list;           /* local servers to this server ONLY */
-dlink_list global_serv_list;    /* global servers on the network */
-dlink_list oper_list;           /* our opers, duplicated in local_client_list */
-dlink_list lazylink_channels;   /* known about lazylink channels on HUB */
+/* unknown/client pointer lists */
+dlink_list dead_list = {NULL, NULL, 0};
+dlink_list abort_list = {NULL, NULL, 0};
+dlink_list unknown_list = {NULL, NULL, 0};
+dlink_list local_client_list = {NULL, NULL, 0};
+dlink_list serv_list = {NULL, NULL, 0};
+dlink_list global_serv_list = {NULL, NULL, 0};
+dlink_list oper_list = {NULL, NULL, 0};
 
 static void check_pings_list(dlink_list *list);
 static void check_unknowns_list(dlink_list *list);
@@ -75,9 +76,6 @@ static int local_client_count=0;
 
 static BlockHeap *client_heap = NULL;
 static BlockHeap *lclient_heap = NULL;
-
-dlink_list dead_list;
-dlink_list abort_list;
 
 /*
  * init_client

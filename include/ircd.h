@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.h,v 7.57 2003/04/02 11:44:54 michael Exp $
+ *  $Id: ircd.h,v 7.58 2003/04/02 14:29:21 adx Exp $
  */
 
 #ifndef INCLUDED_ircd_h
@@ -96,13 +96,13 @@ extern int split_servers;
 
 extern dlink_list dead_list;
 extern dlink_list abort_list;
-extern dlink_list unknown_list;
-extern dlink_list local_client_list;
-extern dlink_list serv_list;
-extern dlink_list global_serv_list;
-extern dlink_list oper_list;
+extern dlink_list unknown_list;       /* unknown clients ON this server only */
+extern dlink_list local_client_list;  /* local clients only ON this server */
+extern dlink_list serv_list;          /* local servers to this server ONLY */
+extern dlink_list global_serv_list;   /* global servers on the network */
+extern dlink_list oper_list;    /* our opers, duplicated in local_client_list */
 extern dlink_list closing_list;
-extern dlink_list lazylink_channels;
+extern dlink_list lazylink_channels;  /* known about lazylink channels on HUB */
 extern int callbacks_called;
 
 extern unsigned long get_maxrss(void);

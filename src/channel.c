@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.361 2003/04/02 11:44:57 michael Exp $
+ *  $Id: channel.c,v 7.362 2003/04/02 14:29:22 adx Exp $
  */
 
 #include "stdinc.h"
@@ -48,6 +48,7 @@
 
 struct config_channel_entry ConfigChannel;
 dlink_list global_channel_list = {NULL, NULL, 0};
+dlink_list lazylink_channels = {NULL, NULL, 0};
 BlockHeap *channel_heap;
 BlockHeap *ban_heap;
 BlockHeap *topic_heap;
