@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_opme.c,v 1.13 2001/06/01 01:23:36 davidt Exp $
+ *   $Id: m_opme.c,v 1.14 2001/06/05 18:05:54 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -143,7 +143,7 @@ static void mo_opme(struct Client *client_p, struct Client *source_p,
                    ":%s WALLOPS :OPME called for [%s] by %s!%s@%s",
                    me.name, parv[1], source_p->name, source_p->username,
                    source_p->host);
-     log(L_NOTICE, "OPME called for [%s] by %s!%s@%s",
+     ilog(L_NOTICE, "OPME called for [%s] by %s!%s@%s",
                    parv[1], source_p->name, source_p->username,
                    source_p->host);
     }
@@ -157,7 +157,7 @@ static void mo_opme(struct Client *client_p, struct Client *source_p,
                    ":%s WALLOPS :OPME called for [%s %s] by %s!%s@%s",
                    me.name, parv[1], parv[2], source_p->name,
                    source_p->username, source_p->host);
-     log(L_NOTICE, "OPME called for [%s %s] by %s!%s@%s",
+     ilog(L_NOTICE, "OPME called for [%s %s] by %s!%s@%s",
                    parv[1], parv[2], source_p->name, source_p->username,
                    source_p->host);
     }

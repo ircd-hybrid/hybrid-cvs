@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_jupe.c,v 1.14 2001/06/01 01:23:36 davidt Exp $
+ *   $Id: m_jupe.c,v 1.15 2001/06/05 18:05:53 leeh Exp $
  */
 
 /*
@@ -117,7 +117,7 @@ static void mo_jupe(struct Client *client_p, struct Client *source_p,
                 ":%s WALLOPS :JUPE for %s requested by %s!%s@%s: %s",
                 parv[0], parv[1], source_p->name, 
                 source_p->username, source_p->host, parv[2]);
-  log(L_NOTICE, "JUPE for %s requested by %s!%s@%s: %s",
+  ilog(L_NOTICE, "JUPE for %s requested by %s!%s@%s: %s",
                 parv[1], source_p->name, source_p->username,
                 source_p->host, parv[2]);
 

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_clearchan.c,v 1.19 2001/06/01 01:23:35 davidt Exp $
+ *   $Id: m_clearchan.c,v 1.20 2001/06/05 18:05:53 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -133,7 +133,7 @@ static void mo_clearchan(struct Client *client_p, struct Client *source_p,
                    ":%s WALLOPS :CLEARCHAN called for [%s] by %s!%s@%s",
                    me.name, parv[1], source_p->name, source_p->username,
                    source_p->host);
-     log(L_NOTICE, "CLEARCHAN called for [%s] by %s!%s@%s",
+     ilog(L_NOTICE, "CLEARCHAN called for [%s] by %s!%s@%s",
          parv[1], source_p->name, source_p->username, source_p->host);
     }
   else
@@ -146,7 +146,7 @@ static void mo_clearchan(struct Client *client_p, struct Client *source_p,
                    ":%s WALLOPS :CLEARCHAN called for [%s %s] by %s!%s@%s",
                    me.name, parv[1], parv[2], source_p->name,
                    source_p->username, source_p->host);
-     log(L_NOTICE, "CLEARCHAN called for [%s %s] by %s!%s@%s",
+     ilog(L_NOTICE, "CLEARCHAN called for [%s %s] by %s!%s@%s",
          parv[1], parv[2], source_p->name, source_p->username, source_p->host);
     }
 
