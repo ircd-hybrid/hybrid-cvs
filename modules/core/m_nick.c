@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nick.c,v 1.122 2003/06/21 20:09:24 metalrock Exp $
+ *  $Id: m_nick.c,v 1.123 2003/07/02 17:32:24 michael Exp $
  */
 
 #include "stdinc.h"
@@ -98,7 +98,7 @@ _moddeinit(void)
   mod_del_cmd(&uid_msgtab);
 }
 
-const char *_version = "$Revision: 1.122 $";
+const char *_version = "$Revision: 1.123 $";
 #endif
 
 /*
@@ -454,7 +454,7 @@ ms_uid(struct Client *client_p, struct Client *source_p,
   if (EmptyString(ID_NICK))
     return;
 
-  if ((server_p = find_id(ID_SID)) == NULL)
+  if ((server_p = hash_find_id(ID_SID)) == NULL)
   {
     exit_client(client_p, client_p, &me, "Unknown SID!");
     return;
@@ -484,7 +484,7 @@ ms_uid(struct Client *client_p, struct Client *source_p,
    * go, even if the other server refuses to do the right thing.
    */
 
-  if ((target_p = find_id(id)) != NULL)
+  if ((target_p = hash_find_id(id)) != NULL)
   {
     sendto_realops_flags(UMODE_ALL, L_ALL,
 		         "ID collision on %s(%s <- %s)(both killed)",
@@ -734,7 +734,7 @@ nick_from_server(struct Client *client_p, struct Client *source_p, int parc,
 
     /* copy the nick in place */
     strcpy(source_p->name, nick);
-    add_to_client_hash_table(nick, source_p);
+    hash_add_client(source_p);
 
     if (parc > 8)
     {
@@ -781,10 +781,10 @@ nick_from_server(struct Client *client_p, struct Client *source_p, int parc,
 
   /* set the new nick name */
   if (source_p->name[0])
-    del_from_client_hash_table(source_p->name, source_p);
+    hash_del_client(source_p);
 
   strcpy(source_p->name, nick);
-  add_to_client_hash_table(nick, source_p);
+  hash_add_client(source_p);
 
   /* remove all accepts pointing to the client */
   del_all_accepts(source_p);
@@ -815,8 +815,8 @@ client_from_server(struct Client *client_p, struct Client *source_p, int parc,
 
   /* copy the nick in place */
   strcpy(source_p->name, nick);
-  add_to_client_hash_table(nick, source_p);
-  add_to_id_hash_table(id, source_p);
+  hash_add_client(source_p);
+  hash_add_id(id, source_p);
 
   /* parse usermodes */
   m = &parv[4][1];

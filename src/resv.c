@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: resv.c,v 7.29 2003/06/16 03:07:53 db Exp $
+ *  $Id: resv.c,v 7.30 2003/07/02 17:32:26 michael Exp $
  */
 
 #include "stdinc.h"
@@ -71,7 +71,7 @@ create_channel_resv(char *name, char *reason, int in_conf)
   resv_p->conf = in_conf;
 
   dlinkAdd(resv_p, &resv_p->node, &resv_channel_list);
-  add_to_resv_hash_table(resv_p->name, resv_p);
+  hash_add_resv(resv_p);
 
   return(conf);
 }
@@ -145,7 +145,7 @@ delete_channel_resv(struct ResvChannel *resv_p)
   if (resv_p == NULL)
     return(0);
 
-  del_from_resv_hash_table(resv_p->name, resv_p);
+  hash_del_resv(resv_p);
   dlinkDelete(&resv_p->node, &resv_channel_list);
 
   /* XXX Isn't this just horrible? 

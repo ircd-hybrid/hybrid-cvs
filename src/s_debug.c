@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_debug.c,v 7.93 2003/06/26 04:35:08 db Exp $
+ *  $Id: s_debug.c,v 7.94 2003/07/02 17:32:26 michael Exp $
  */
 
 #include "stdinc.h"
@@ -330,7 +330,7 @@ count_memory(struct Client *source_p)
              (int) wwm);
 
   totww = wwu * sizeof(struct User) + wwm;
-
+/****
   client_hash_table_size  = hash_get_client_table_size();
   channel_hash_table_size = hash_get_channel_table_size();
   resv_hash_table_size    = hash_get_resv_table_size();
@@ -342,7 +342,7 @@ count_memory(struct Client *source_p)
              U_MAX, client_hash_table_size,
              CH_MAX, channel_hash_table_size , R_MAX,
              resv_hash_table_size, U_MAX, id_hash_table_size);
-
+****/
   count_ip_hash(&number_ips_stored,&mem_ips_stored);
   sendto_one(source_p, ":%s %d %s z :iphash %u(%d)",
              me.name, RPL_STATSDEBUG, source_p->name,

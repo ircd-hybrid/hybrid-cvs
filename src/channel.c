@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.399 2003/06/29 22:46:17 michael Exp $
+ *  $Id: channel.c,v 7.400 2003/07/02 17:32:25 michael Exp $
  */
 
 #include "stdinc.h"
@@ -360,7 +360,7 @@ destroy_channel(struct Channel *chptr)
   chptr->banlist.tail = chptr->exceptlist.tail = chptr->invexlist.tail = NULL;
 
   dlinkDelete(&chptr->node, &global_channel_list);
-  del_from_channel_hash_table(chptr->chname, chptr);
+  hash_del_channel(chptr);
 
   if (ServerInfo.hub == 1)
   {

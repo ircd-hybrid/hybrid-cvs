@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.179 2003/06/12 00:38:33 metalrock Exp $
+ *  $Id: parse.c,v 7.180 2003/07/02 17:32:26 michael Exp $
  */
 
 #include "stdinc.h"
@@ -222,7 +222,7 @@ parse(struct Client *client_p, char *pbuffer, char *bufend)
         from = find_server(sender);
 
         if (from == NULL)
-          from = find_id(sender);
+          from = hash_find_id(sender);
       }
 
       /* Hmm! If the client corresponding to the

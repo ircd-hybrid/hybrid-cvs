@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.78 2003/06/30 17:49:35 adx Exp $
+dnl $Id: configure.ac,v 7.79 2003/07/02 17:32:18 michael Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -8,7 +8,7 @@ dnl said functions need to be just about as complex as they already are.
 AC_PREREQ(2.57)
 
 dnl Sneaky way to get an Id tag into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.78 2003/06/30 17:49:35 adx Exp $])
+AC_COPYRIGHT([$Id: configure.ac,v 7.79 2003/07/02 17:32:18 michael Exp $])
 
 AC_INIT([ircd-hybrid],[7-CURRENT])
 
@@ -765,6 +765,7 @@ AC_HELP_STRING([--enable-small-net],[Enable small network support.]),
 [small_net=$enableval], [small_net=no])
 
 if test "$small_net" = yes; then
+	AC_DEFINE([HASHSIZE], 4096, [Max number of buckets in hash tables.])
 	AC_DEFINE([NICKNAMEHISTORYLENGTH], 1500, [Size of the WHOWAS array.])
 	AC_DEFINE([CHANNEL_HEAP_SIZE], 256, [Size of the channel heap.])
 	AC_DEFINE([BAN_HEAP_SIZE], 128, [Size of the ban heap.])
@@ -775,7 +776,8 @@ if test "$small_net" = yes; then
 	AC_DEFINE([SNODE_HEAP_SIZE], 256, [Size of the slink_node heap.])
 	AC_DEFINE([TOPIC_HEAP_SIZE], 256, [Size of the topic heap.])
 	AC_DEFINE([DBUF_HEAP_SIZE], 64, [Size of the dbuf heap.])
-else	
+else
+	AC_DEFINE([HASHSIZE], 32768, [Max number of buckets in hash tables.])
 	AC_DEFINE([NICKNAMEHISTORYLENGTH], 15000, [Size of the WHOWAS array.])
 	AC_DEFINE([CHANNEL_HEAP_SIZE], 1024, [Size of the channel heap.])
 	AC_DEFINE([BAN_HEAP_SIZE], 1024, [Size of the ban heap.])

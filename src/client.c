@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.390 2003/06/29 22:46:17 michael Exp $
+ *  $Id: client.c,v 7.391 2003/07/02 17:32:26 michael Exp $
  */
 
 #include "stdinc.h"
@@ -147,6 +147,7 @@ make_client(struct Client *from)
     ++remote_client_count;
   }
 
+  client_p->hnext  = client_p;
   client_p->status = STAT_UNKNOWN;
   strcpy(client_p->username, "unknown");
 
@@ -158,6 +159,7 @@ free_client(struct Client *client_p)
 {
   assert(client_p != NULL);
   assert(client_p != &me);
+  assert(client_p->hnext == client_p);
 
   if (MyConnect(client_p))
   {
@@ -885,13 +887,14 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
     off_history(source_p);
 
     if (HasID(source_p))
-      del_from_id_hash_table(source_p->id, source_p);
+      hash_del_id(source_p);
     /* again, this is all that is needed */
   }
 
   /* Remove source_p from the client lists
    */
-  del_from_client_hash_table(source_p->name, source_p);
+  if (source_p->name[0])
+    hash_del_client(source_p);
 
   if (IsPerson(source_p) && IsUserHostIp(source_p))
   {
@@ -1543,14 +1546,14 @@ set_initial_nick(struct Client *client_p, struct Client *source_p,
  /* This had to be copied here to avoid problems.. */
  source_p->tsinfo = CurrentTime;
  if (source_p->name[0])
-  del_from_client_hash_table(source_p->name, source_p);
+  hash_del_client(source_p);
  strcpy(source_p->name, nick);
- add_to_client_hash_table(nick, source_p);
+ hash_add_client(source_p);
  /* fd_desc is long enough */
  fd_note(client_p->localClient->fd, "Nick: %s", nick);
   
  /* They have the nick they want now.. */
- *client_p->llname = '\0';
+ client_p->llname[0] = '\0';
 
  if (source_p->user != NULL)
  {
@@ -1638,9 +1641,11 @@ change_local_nick(struct Client *client_p, struct Client *source_p, const char *
   }
 
   /* Finally, add to hash */
-  del_from_client_hash_table(source_p->name, source_p);
+  if (source_p->name[0])
+    hash_del_client(source_p);
+
   strcpy(source_p->name, nick);
-  add_to_client_hash_table(nick, source_p);
+  hash_add_client(source_p);
 
   /* Make sure everyone that has this client on its accept list
    * loses that reference. 

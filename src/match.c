@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: match.c,v 7.30 2003/06/29 18:09:37 joshk Exp $
+ * $Id: match.c,v 7.31 2003/07/02 17:32:26 michael Exp $
  *
  */
 #include "stdinc.h"
@@ -378,21 +378,20 @@ char *collapse_esc(char *pattern)
  */
 int irccmp(const char *s1, const char *s2)
 {
-  const unsigned char* str1 = (const unsigned char*) s1;
-  const unsigned char* str2 = (const unsigned char*) s2;
-  int   res;
+  const unsigned char *str1 = (const unsigned char *)s1;
+  const unsigned char *str2 = (const unsigned char *)s2;
 
   assert(s1 != NULL);
   assert(s2 != NULL);
   
-  while ((res = ToUpper(*str1) - ToUpper(*str2)) == 0)
+  while (ToUpper(*str1) == ToUpper(*str2))
   {
     if (*str1 == '\0')
-      return 0;
+      return(0);
     str1++;
     str2++;
   }
-  return (res);
+  return(1);
 }
 
 int ircncmp(const char* s1, const char *s2, size_t n)

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.309 2003/07/01 16:45:55 adx Exp $
+ *  $Id: ircd.c,v 7.310 2003/07/02 17:32:26 michael Exp $
  */
 
 #include "stdinc.h"
@@ -600,7 +600,7 @@ main(int argc, char *argv[])
   init_slink_nodes();
   initialize_message_files();
   dbuf_init();
-  init_hash_tables();
+  init_hash();
   uid_init();
   init_ip_hash_table();      /* client host ip hash table */
   init_host_hash();          /* Host-hashtable. */
@@ -667,7 +667,7 @@ main(int argc, char *argv[])
 
   strlcpy(me.serv->up, me.name, sizeof(me.serv->up));
   me.lasttime = me.since = me.firsttime = CurrentTime;
-  add_to_client_hash_table(me.name, &me);
+  hash_add_client(&me);
   
   /* add ourselves to global_serv_list */
   dlinkAdd(&me, make_dlink_node(), &global_serv_list);

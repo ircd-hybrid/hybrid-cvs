@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.138 2003/06/21 05:30:22 joshk Exp $
+ *  $Id: modules.c,v 7.139 2003/07/02 17:32:26 michael Exp $
  */
 
 #include "stdinc.h"
@@ -113,6 +113,8 @@ struct Message modrestart_msgtab = {
  {m_unregistered, m_not_oper, m_ignore, mo_modrestart}
 };
 
+
+extern struct Message hash_msgtab; /* XXX */
 extern struct Message error_msgtab;
 
 void
@@ -124,6 +126,7 @@ modules_init(void)
   mod_add_cmd(&modlist_msgtab);
   mod_add_cmd(&modrestart_msgtab);
   mod_add_cmd(&error_msgtab);
+  mod_add_cmd(&hash_msgtab);
 }
 
 /* mod_find_path()

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.289 2003/06/26 12:19:49 michael Exp $
+ *  $Id: s_user.c,v 7.290 2003/07/02 17:32:26 michael Exp $
  */
 
 #include "stdinc.h"
@@ -418,11 +418,11 @@ register_local_user(struct Client *client_p, struct Client *source_p,
 
   if (source_p->id[0] == '\0') 
   {
-    for (id = uid_get(); find_id(id); id = uid_get())
+    for (id = uid_get(); hash_find_id(id); id = uid_get())
       ;
 
     strlcpy(source_p->id, id, sizeof(source_p->id));
-    add_to_id_hash_table(id, source_p);
+    hash_add_id(source_p->id, source_p);
   }
 
   irc_getnameinfo((struct sockaddr *)&source_p->localClient->ip,

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.110 2003/06/17 20:05:10 joshk Exp $
+ *  $Id: m_server.c,v 1.111 2003/07/02 17:32:24 michael Exp $
  */
 
 #include "stdinc.h"
@@ -77,7 +77,7 @@ _moddeinit(void)
   mod_del_cmd(&sid_msgtab);
 }
 
-const char *_version = "$Revision: 1.110 $";
+const char *_version = "$Revision: 1.111 $";
 #endif
 
 
@@ -464,7 +464,7 @@ ms_server(struct Client *client_p, struct Client *source_p,
   dlinkAdd(target_p, &target_p->node, &global_client_list);
   dlinkAdd(target_p, make_dlink_node(), &global_serv_list);
 
-  add_to_client_hash_table(target_p->name, target_p);
+  hash_add_client(target_p);
   dlinkAdd(target_p, &target_p->lnode, &target_p->servptr->serv->servers);
 
   /* Old sendto_serv_but_one() call removed because we now
@@ -540,7 +540,7 @@ ms_sid(struct Client *client_p, struct Client *source_p,
 
   strlcpy(info, SID_GECOS, sizeof(info));
 
-  if ((target_p = find_id(SID_SID)) != NULL)
+  if ((target_p = hash_find_id(SID_SID)) != NULL)
   {
     /* This link is trying feed me a server that I already have
      * access through another path -- multiple paths not accepted
@@ -721,11 +721,11 @@ ms_sid(struct Client *client_p, struct Client *source_p,
   dlinkAdd(target_p, &target_p->node, &global_client_list);
   dlinkAdd(target_p, make_dlink_node(), &global_serv_list);
 
-  add_to_client_hash_table(target_p->name, target_p);
+  hash_add_client(target_p);
   dlinkAdd(target_p, &target_p->lnode, &target_p->servptr->serv->servers);
 
   strlcpy(target_p->id, sid, sizeof(target_p->id));
-  add_to_id_hash_table(sid, target_p);
+  hash_add_id(target_p->id, target_p);
 
   /* Old sendto_serv_but_one() call removed because we now
    * need to send different names to different servers

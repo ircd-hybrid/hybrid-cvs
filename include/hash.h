@@ -19,62 +19,34 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.h,v 7.26 2003/06/03 03:24:16 michael Exp $
+ *  $Id: hash.h,v 7.27 2003/07/02 17:32:22 michael Exp $
  */
 
 #ifndef INCLUDED_hash_h
 #define INCLUDED_hash_h
-
-/* 
- * Client hash table size
- *
- * used in hash.c, s_debug.c
- */
-#define U_MAX 65536
-
-/* 
- * Channel hash table size
- *
- * used in hash.c, s_debug.c
- */
-#define CH_MAX 16384
-
-/*
- * RESV hash table size
- *
- * used in hash.c
- */
-#define R_MAX 1024
 
 struct Client;
 struct Channel;
 struct ResvChannel;
 struct UserHost;
 
-struct HashEntry
-{
-  int hits;
-  int links;
-  void *list;
-};
-
 extern struct Channel *get_or_create_channel(struct Client *client_p, char *chname, int *isnew);
 
-extern size_t hash_get_client_table_size(void);
-extern size_t hash_get_channel_table_size(void);
-extern size_t hash_get_resv_table_size(void);
-extern size_t hash_get_id_table_size(void);
-extern size_t hash_get_userhost_table_size(void);
+extern void init_hash(void);
 
-extern void init_hash_tables(void);
-extern void add_to_id_hash_table(const char *, struct Client *);
-extern void add_to_client_hash_table(const char *name, struct Client *client_p);
-extern void add_to_resv_hash_table(const char *name, struct ResvChannel *resv_p);
-extern void del_from_resv_hash_table(const char *name, struct ResvChannel *resv_p);
-extern void del_from_client_hash_table(const char *name, struct Client *client_p);
-extern void del_from_id_hash_table(const char *name, struct Client *client_p);
-extern void del_from_channel_hash_table(const char *name, struct Channel *chptr);
-extern struct Client *find_id(const char *name);
+extern void hash_add_client(struct Client *);
+extern void hash_del_client(struct Client *);
+extern void hash_add_channel(struct Channel *);
+extern void hash_del_channel(struct Channel *);
+extern void hash_add_resv(struct ResvChannel *);
+extern void hash_del_resv(struct ResvChannel *);
+extern void hash_add_id(const char *, struct Client *); /* XXX */
+extern void hash_del_id(struct Client *);
+extern void hash_add_userhost(struct UserHost *);
+extern void hash_del_userhost(struct UserHost *);
+
+extern struct UserHost *hash_find_userhost(const char *host);
+extern struct Client *hash_find_id(const char *name);
 extern struct Client *find_client(const char *name);
 extern struct Client *find_server(const char *name);
 extern struct Client *hash_find_server(const char *name);
