@@ -1,3 +1,15 @@
+androsyn    2002/03/10 20:46:18 EST	(20020311_0)
+
+  Modified files:
+    src                  ircd.c 
+  Log:
+  Fix compile error with select for delay.
+  
+  Revision  Changes    Path
+  7.225     +1 -1      ircd-hybrid-7/src/ircd.c
+
+
+
 androsyn    2002/03/09 19:08:34 EST	(20020310_1)
 
   Modified files:
@@ -24149,4 +24161,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3501 2002/03/10 00:08:40 androsyn Exp $
+$Id: ChangeLog,v 7.3502 2002/03/11 01:46:24 androsyn Exp $
