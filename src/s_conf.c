@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.284 2001/12/15 02:24:49 db Exp $
+ *  $Id: s_conf.c,v 7.285 2001/12/15 22:39:10 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -2363,7 +2363,7 @@ WriteKlineOrDline( KlineType type,
     oper_reason = "";
 
   if(type==KLINE_TYPE)
-    ircsprintf(buffer, "\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",%ld\n",
+    ircsprintf(buffer, "\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",%ld\n",
                user,
 	       host,
                reason,
@@ -2372,7 +2372,7 @@ WriteKlineOrDline( KlineType type,
 	       get_oper_name(source_p),
                (long) cur_time);
   else
-    ircsprintf(buffer, "\"%s\",\"%s\",\"%s\",\"%s\",%ld\n",
+    ircsprintf(buffer, "\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",%ld\n",
                host,
                reason,
 	       oper_reason,
