@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.44 2000/11/06 16:12:03 adrian Exp $
+ * $Id: ircd.c,v 7.45 2000/11/08 23:57:39 ejb Exp $
  */
 #include "ircd.h"
 #include "channel.h"
@@ -638,6 +638,11 @@ int main(int argc, char *argv[])
   initclass();
   initwhowas();
   init_stats();
+
+  msgtab = malloc (sizeof (struct Message *));
+  msgtab[0] = malloc (sizeof (struct Message));
+  msgtab[0]->cmd = NULL;
+
   init_tree_parse(msgtab);      /* tree parse code (orabidoo) */
 
   initServerMask();

@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.17 2000/11/06 16:12:03 adrian Exp $
+ * $Id: ircd_lexer.l,v 1.18 2000/11/08 23:57:40 ejb Exp $
  */
 
 %{
@@ -177,6 +177,8 @@ stats_p_notice	        { return STATS_P_NOTICE; }
 invite_plus_i_only      { return INVITE_PLUS_I_ONLY; }
 glines                  { return GLINES; }
 topic_uh                { return TOPIC_UH; }
+modules                 { return MODULES; }
+module                  { return MODULE; }
 .		        { return yytext[0]; }
 
 %%

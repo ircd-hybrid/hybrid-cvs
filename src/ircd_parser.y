@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.27 2000/11/06 16:12:03 adrian Exp $
+ * $Id: ircd_parser.y,v 1.28 2000/11/08 23:57:40 ejb Exp $
  */
 
 %{
@@ -169,6 +169,8 @@ int   class_sendq_var;
 %token  GLINES
 %token  GLINE_FILE
 %token  TOPIC_UH
+%token  MODULE
+%token  MODULES
 
 %%
 conf:   
@@ -188,9 +190,27 @@ conf_item:        admin_entry
                 | deny_entry
 		| general_entry
                 | gecos_entry
+                | modules_entry
                 | error ';'
                 | error '}'
         ;
+
+/***************************************************************************
+ *  section modules
+ ***************************************************************************/
+
+modules_entry:          MODULES
+  '{' modules_items '}' ';'
+
+modules_items:   modules_items modules_item |
+                    modules_item
+
+modules_item:    modules_module
+
+modules_module:  MODULE '=' QSTRING
+{
+  load_module (yylval.string);
+};
 
 /***************************************************************************
  *  section serverinfo
