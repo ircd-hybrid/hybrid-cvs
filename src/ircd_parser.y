@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.180 2001/06/03 13:59:20 davidt Exp $
+ * $Id: ircd_parser.y,v 1.181 2001/06/03 23:44:34 ejb Exp $
  */
 
 %{
@@ -260,6 +260,7 @@ int   class_redirport_var;
 %token  DISABLE_VCHANS
 %token  SECONDS MINUTES HOURS DAYS WEEKS MONTHS YEARS DECADES CENTURIES MILLENNIA
 %token  BYTES KBYTES MBYTES GBYTES TBYTES
+%token  TWODOTS
 
 %left '-' '+'
 %left '*' '/'
@@ -943,10 +944,21 @@ listen_items:   listen_items listen_item |
 
 listen_item:    listen_port | listen_address | listen_host | error
 
-listen_port:    PORT '=' expr ';'
-  {
-    add_listener($3, listener_address);
-  };
+listen_port: PORT '=' port_items ';' ;
+
+port_items: port_items ',' port_item | port_item
+
+port_item: NUMBER
+{
+  add_listener($1, listener_address);
+} | NUMBER TWODOTS NUMBER
+{
+  int i;
+  for (i = $1; i <= $3; i++)
+	{
+	  add_listener(i, listener_address);
+	}
+};
 
 listen_address: IP '=' QSTRING ';'
   {

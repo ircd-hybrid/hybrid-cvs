@@ -1,12 +1,16 @@
 /*
  * motd.h
  *
- * $Id: motd.h,v 7.5 2001/01/22 04:18:17 lusky Exp $
+ * $Id: motd.h,v 7.6 2001/06/03 23:44:33 ejb Exp $
  */
 #ifndef INCLUDED_motd_h
 #define INCLUDED_motd_h
 #ifndef INCLUDED_ircd_defs_h
 #include "ircd_defs.h"    /* MAX_DATE_STRING */
+#endif
+
+#ifdef VMS
+# define _XOPEN_SOURCE /* needed for PATH_MAX from limits.h */
 #endif
 
 #include <limits.h>       /* PATH_MAX */

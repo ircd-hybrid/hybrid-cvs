@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.104 2001/06/01 11:05:47 leeh Exp $
+ * $Id: ircd_lexer.l,v 1.105 2001/06/03 23:44:34 ejb Exp $
  */
 
 %option case-insensitive
@@ -308,6 +308,7 @@ terabyte		{ return TBYTES; }
 tbytes			{ return TBYTES; }
 tbyte			{ return TBYTES; }
 tb			{ return TBYTES; }
+\.\.                    { return TWODOTS; }
 
 .		        { return yytext[0]; }
 <<EOF>>     { if (ieof()) yyterminate(); }
