@@ -1,3 +1,16 @@
+db          2002/02/17 02:29:59 EST	(20020217_15)
+
+  Modified files:
+    src                  listener.c 
+  Log:
+  - mostly cosmetic. prototypes should be on separate lines,
+  - make formatting consistent with hybrid 'standard'
+  
+  Revision  Changes    Path
+  7.64      +55 -34    ircd-hybrid-7/src/listener.c
+
+
+
 androsyn    2002/02/17 00:39:33 EST	(20020217_14)
 
   Modified files:
@@ -22811,4 +22824,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3424 2002/02/17 05:39:39 androsyn Exp $
+$Id: ChangeLog,v 7.3425 2002/02/17 07:30:06 db Exp $
