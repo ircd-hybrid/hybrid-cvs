@@ -1,9 +1,10 @@
 /*
- * $Id: adns.c,v 7.2 2001/02/05 22:00:46 androsyn Exp $
+ * $Id: adns.c,v 7.3 2001/02/11 23:37:42 db Exp $
  * adns.c  functions to enter libadns 
  *
  * Written by Aaron Sethman <androsyn@ratbox.org>
  */
+#include "fileio.h"
 #include "res.h"
 #include "s_bsd.h"
 #include "event.h"

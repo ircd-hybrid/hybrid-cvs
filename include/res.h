@@ -1,5 +1,5 @@
 /*
- * $Id: res.h,v 7.12 2001/02/05 01:05:33 androsyn Exp $ 
+ * $Id: res.h,v 7.13 2001/02/11 23:37:42 db Exp $ 
  * New res.h
  * Aaron Sethman <androsyn@ratbox.org>
  */
@@ -9,6 +9,8 @@
 
 #include "config.h"
 #include "ircd_defs.h"
+/* I hate this *blah* db */
+#include "fileio.h"
 #include "../adns/adns.h"
 
 
