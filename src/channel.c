@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.282 2001/12/03 18:38:00 androsyn Exp $
+ * $Id: channel.c,v 7.283 2001/12/10 03:52:03 jdc Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -44,10 +44,6 @@
 #include <stdlib.h>
 
 #include "s_log.h"
-
-#ifdef s_host
-# undef s_host
-#endif
 
 struct config_channel_entry ConfigChannel;
 struct Channel *GlobalChannelList = NULL;
@@ -909,17 +905,17 @@ channel_chanop_or_voice(struct Channel *chptr, struct Client *target_p)
 int
 is_banned(struct Channel *chptr, struct Client *who)
 {
-  char s_host[NICKLEN + USERLEN + HOSTLEN + 6];
-  char s_iphost[NICKLEN + USERLEN + HOSTLEN + 6];
+  char src_host[NICKLEN + USERLEN + HOSTLEN + 6];
+  char src_iphost[NICKLEN + USERLEN + HOSTLEN + 6];
 
   if (!IsPerson(who))
     return (0);
 
-  ircsprintf(s_host,"%s!%s@%s", who->name, who->username, who->host);
-  ircsprintf(s_iphost,"%s!%s@%s", who->name, who->username,
+  ircsprintf(src_host,"%s!%s@%s", who->name, who->username, who->host);
+  ircsprintf(src_iphost,"%s!%s@%s", who->name, who->username,
 	     who->localClient->sockhost);
 
-  return (check_banned(chptr, who, s_host, s_iphost));
+  return (check_banned(chptr, who, src_host, src_iphost));
 }
 
 /*
@@ -985,17 +981,17 @@ can_join(struct Client *source_p, struct Channel *chptr, char *key)
   dlink_node *lp;
   dlink_node *ptr;
   struct Ban *invex = NULL;
-  char s_host[NICKLEN + USERLEN + HOSTLEN + 6];
-  char s_iphost[NICKLEN + USERLEN + HOSTLEN + 6];
+  char src_host[NICKLEN + USERLEN + HOSTLEN + 6];
+  char src_iphost[NICKLEN + USERLEN + HOSTLEN + 6];
 
   assert(source_p->localClient != NULL);
 
-  ircsprintf(s_host,
+  ircsprintf(src_host,
 	     "%s!%s@%s", source_p->name, source_p->username, source_p->host);
-  ircsprintf(s_iphost,"%s!%s@%s", source_p->name, source_p->username,
+  ircsprintf(src_iphost,"%s!%s@%s", source_p->name, source_p->username,
 	     source_p->localClient->sockhost);
 
-  if ((check_banned(chptr, source_p, s_host, s_iphost)) == CHFL_BAN)
+  if ((check_banned(chptr, source_p, src_host, src_iphost)) == CHFL_BAN)
     return (ERR_BANNEDFROMCHAN);
 
   if (chptr->mode.mode & MODE_INVITEONLY)
@@ -1010,7 +1006,7 @@ can_join(struct Client *source_p, struct Channel *chptr, char *key)
       for (ptr = chptr->invexlist.head; ptr; ptr = ptr->next)
       {
         invex = ptr->data;
-        if (match(invex->banstr, s_host) || match(invex->banstr, s_iphost))
+        if (match(invex->banstr, src_host) || match(invex->banstr, s_iphost))
           break;
       }
       if (ptr == NULL)

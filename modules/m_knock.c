@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_knock.c,v 1.41 2001/12/02 14:11:46 leeh Exp $
+ *   $Id: m_knock.c,v 1.42 2001/12/10 03:52:00 jdc Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -426,16 +426,16 @@ static void send_knock(struct Client *client_p, struct Client *source_p,
 static int is_banned_knock(struct Channel *chptr, struct Client *who,
                            char *sockhost)
 {
-  char s_host[NICKLEN + USERLEN + HOSTLEN + 6];
-  char s_iphost[NICKLEN + USERLEN + HOSTLEN + 6];
+  char src_host[NICKLEN + USERLEN + HOSTLEN + 6];
+  char src_iphost[NICKLEN + USERLEN + HOSTLEN + 6];
 
   if(!IsPerson(who))
     return 0;
 
-  ircsprintf(s_host,"%s!%s@%s", who->name, who->username, who->host);
-  ircsprintf(s_iphost,"%s!%s@%s", who->name, who->username, sockhost);
+  ircsprintf(src_host,"%s!%s@%s", who->name, who->username, who->host);
+  ircsprintf(src_iphost,"%s!%s@%s", who->name, who->username, sockhost);
 
-  return (check_banned_knock(chptr, who, s_host, s_iphost));
+  return (check_banned_knock(chptr, who, src_host, src_iphost));
 }
 
 /* check_banned_knock()
