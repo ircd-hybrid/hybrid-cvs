@@ -1,16 +1,15 @@
-$Id: TODO,v 7.77 2003/05/07 07:34:04 metalrock Exp $
+$Id: TODO,v 7.78 2003/05/07 19:44:45 adx Exp $
 
 - add more stderr debugging (ircd -s)... one for every place we syslog()
 - ircd -s doesn't work through a restart
 - re-implement first param in m_lusers()
 - trie' channel name list
 - finish RFC'ing m_message.c
-              
+
 ----
 is-'s TODO list
 
 - umode +R for registered nick
-- TBURST
 - change nick instead of kill on nick collide
 - dynamically extensible parser for modules
 - modularize channel, network code etc (not just commands)
@@ -136,3 +135,12 @@ bleh.
 
 * Fixed the darned halfops so the channel doesn't get desynched when
 people start setting a combination of op, voice, halfop modes.
+
+-- adx's list
+
+* umode +G - prevents people who are not on any common channel
+from talking to you unless you /QUOTE ACCEPT them. This could help
+users who are getting spammed by spy+spambot tandem.
+
+* Although hybrid is designed to be used mainly on EFnet, it wouldn't hurt
+if it was a bit more services friendly..
