@@ -1,3 +1,9 @@
+*** 20001203_13 by db
+- fixed bug in m_names.c removed redundant/duplicate code in m_names.c
+  which was already in channel.c
+
+
+
 *** 20001203_12 by db
 - removed DEBUG code from dlink
 
@@ -1453,7 +1459,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.680 2000/12/04 01:18:37 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.681 2000/12/04 03:52:44 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
