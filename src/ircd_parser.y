@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.207 2001/09/04 14:25:19 leeh Exp $
+ * $Id: ircd_parser.y,v 1.208 2001/09/08 15:27:35 androsyn Exp $
  */
 
 %{
@@ -123,6 +123,7 @@ int   class_redirport_var;
 %token  DIE
 %token  DISABLE_REMOTE_COMMANDS
 %token  DISABLE_VCHANS
+%token  DOT_IN_IP6_ADDR
 %token  DOTS_IN_IDENT
 %token  EGDPOOL_PATH
 %token  EMAIL
@@ -1934,6 +1935,7 @@ general_item:       general_failed_oper_notice |
                     general_default_cipher_preference |
                     general_compression_level | general_client_flood |
                     general_throttle_time | general_havent_read_conf |
+                    general_dot_in_ip6_addr
                     error
 
 general_failed_oper_notice:   FAILED_OPER_NOTICE '=' TYES ';'
@@ -2447,6 +2449,15 @@ general_client_flood: T_CLIENT_FLOOD '=' expr ';'
   {
     ConfigFileEntry.client_flood = $3;
   };
+
+general_dot_in_ip6_addr: DOT_IN_IP6_ADDR '=' TYES ';'
+  {
+    ConfigFileEntry.dot_in_ip6_addr = 1;
+  } |
+    DOT_IN_IP6_ADDR '=' TNO ';'
+  {
+    ConfigFileEntry.dot_in_ip6_addr = 0;
+  } ;
 
 /***************************************************************************
  *  section channel

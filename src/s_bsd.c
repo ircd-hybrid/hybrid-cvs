@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.147 2001/09/06 11:34:39 leeh Exp $
+ *  $Id: s_bsd.c,v 7.148 2001/09/08 15:27:36 androsyn Exp $
  */
 #include "config.h"
 #include "fdlist.h"
@@ -398,8 +398,6 @@ void add_connection(struct Listener* listener, int fd)
 	memmove(&new_client->localClient->ip.sins.sin.s_addr,&IN_ADDR(new_client->localClient->ip)[12], sizeof(struct in_addr));
 	new_client->localClient->aftype = AF_INET;  	
   }
-  if(new_client->localClient->aftype == AF_INET6)
-  	strcat(new_client->localClient->sockhost, ".");
 #else
   new_client->localClient->aftype = AF_INET;
 #endif

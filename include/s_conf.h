@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.153 2001/09/04 14:25:18 leeh Exp $
+ * $Id: s_conf.h,v 7.154 2001/09/08 15:27:35 androsyn Exp $
  */
 
 #include "setup.h"
@@ -198,6 +198,7 @@ struct config_file_entry
 
   int           hub;
   unsigned char compression_level;
+  int		dot_in_ip6_addr;
   int           dots_in_ident;
   int           failed_oper_notice;
   int           anti_nick_flood;
