@@ -1,6 +1,6 @@
 /************************************************************************
  *   IRC - Internet Relay Chat, doc/example_module.c
- *   Copyright (C) 2002 Hybrid Development Team
+ *   Copyright (C) 2002 Bill Jonus and the Hybrid Development Team
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -16,10 +16,19 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.2 2002/09/03 14:27:25 bill Exp $
+ *   $Id: m_operspy.c,v 1.3 2002/09/03 14:44:38 bill Exp $
  */
 
-/* List of ircd includes from ../include/ */
+/***  PLEASE READ ME  ***/
+/*
+ *  This module gives an extraordinary amount of power to the opers
+ *  who have the access to use it.  It allows for users' privacy to
+ *  be pretty much obliterated.  The Hybrid Team assumes absolutely
+ *  no responsibility for this file's (mis)use.
+ *
+ *    - billy-jon
+ */
+
 #include "stdinc.h"
 #include "tools.h"
 #include "irc_string.h"
@@ -84,7 +93,7 @@ static void do_who(struct Client *source_p,
                    char *op_flags);
 
 struct Message operspy_msgtab = {
-  "OPERSPY", 0, 0, 2, 0, MFLG_SLOW, 0,
+  "OPERSPY", 0, 0, 3, 0, MFLG_SLOW, 0,
   {m_ignore, m_operspy, m_operspy, mo_operspy}
 };
 
@@ -100,7 +109,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.2 $";
+const char *_version = "$Revision: 1.3 $";
 #endif
 
 /*
