@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.c,v 7.36 2001/01/08 15:37:01 db Exp $
+ *   $Id: s_auth.c,v 7.37 2001/01/08 23:30:15 fl_ Exp $
  *
  * Changes:
  *   July 6, 1999 - Rewrote most of the code here. When a client connects
@@ -469,7 +469,7 @@ timeout_auth_queries_event(void *notused)
 
       if (auth->timeout < CurrentTime)
 	{
-	  if (-1 < auth->fd)
+	  if (0 > auth->fd)
 	    fd_close(auth->fd);
 
 	  if (IsDoingAuth(auth))
@@ -683,12 +683,26 @@ delete_identd_queries(struct Client *acptr)
 
       if(auth->client == acptr)
 	{
-	  if (-1 < auth->fd)
+	  if (0 > auth->fd)
 	    fd_close(auth->fd);
 	  dlinkDelete(ptr, &auth_poll_list);
 	  free_auth_request(auth);
 	  free_dlink_node(ptr);
-	  return;
+	}
+    }
+
+  for (ptr = auth_client_list.head; ptr; ptr = next_ptr)
+    {
+      auth = ptr->data;
+      next_ptr = ptr->next;
+
+      if(auth->client == acptr)
+	{
+	  if (0 > auth->fd)
+	    fd_close(auth->fd);
+	  dlinkDelete(ptr, &auth_client_list);
+	  free_auth_request(auth);
+	  free_dlink_node(ptr);
 	}
     }
 }
