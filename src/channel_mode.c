@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.54 2002/08/08 23:58:17 wcampbel Exp $
+ *  $Id: channel_mode.c,v 7.55 2002/08/12 16:09:42 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -51,7 +51,7 @@
 static int add_id(struct Client *, struct Channel *, char *, int);
 static int del_id(struct Channel *, char *, int);
 
-#ifdef HALFOPS
+#ifdef ANONOPS
 static void send_oplist(const char *, struct Client *, dlink_list *,
                         char *, int);
 #endif
