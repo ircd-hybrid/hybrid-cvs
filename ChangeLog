@@ -1,3 +1,17 @@
+androsyn    2002/06/15 03:30:44 EDT	(20020615_2)
+
+  Modified files:
+    include              memory.h 
+    src                  memory.c 
+  Log:
+  Added inline versions MyMalloc and friends
+  
+  Revision  Changes    Path
+  7.31      +31 -4     ircd-hybrid-7/include/memory.h
+  7.37      +2 -2      ircd-hybrid-7/src/memory.c
+
+
+
 androsyn    2002/06/15 03:24:50 EDT	(20020615_1)
 
   Modified files:
@@ -28314,4 +28328,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3772 2002/06/15 07:24:56 androsyn Exp $
+$Id: ChangeLog,v 7.3773 2002/06/15 07:30:50 androsyn Exp $
