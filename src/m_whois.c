@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 7.12 2000/10/31 22:12:52 db Exp $
+ *   $Id: m_whois.c,v 7.13 2000/10/31 22:20:11 db Exp $
  */
 
 #include "handlers.h"
@@ -191,9 +191,12 @@ int     m_whois(struct Client *cptr,
       (void)single_whois(sptr,acptr,wilds);
       sendto_one(sptr, form_str(RPL_ENDOFWHOIS),
 		 me.name, parv[0], parv[1]);
+
+      /* All done. */
+      return 0;
     }
 
-  /* wilds is true so here we go */
+  /* Oh-oh wilds is true so have to do it the hard expensive way */
 
   for (acptr = GlobalClientList; (acptr = next_client(acptr, nick));
        acptr = acptr->next)
