@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.123 2003/09/17 23:28:42 bill Exp $
+ *  $Id: m_gline.c,v 1.124 2003/09/18 00:19:15 bill Exp $
  */
 
 #include "stdinc.h"
@@ -103,7 +103,7 @@ _moddeinit(void)
   delete_capability("GLN");
 }
 
-const char *_version = "$Revision: 1.123 $";
+const char *_version = "$Revision: 1.124 $";
 #endif
 
 /* mo_gline()
@@ -346,6 +346,11 @@ ms_gline(struct Client *client_p, struct Client *source_p,
        return;
      }
 
+     sendto_realops_flags(UMODE_ALL, L_ALL,
+                          "%s!%s@%s on %s is requesting gline for [%s@%s] [%s]",
+                          oper_nick, oper_user, oper_host, oper_server,
+                          user, host, reason);
+
      /* If at least 3 opers agree this user should be G lined then do it */
      if (check_majority_gline(source_p, oper_nick, oper_user, oper_host,
                               oper_server, user, host, reason) ==
@@ -357,11 +362,6 @@ ms_gline(struct Client *client_p, struct Client *source_p,
 
      ilog(L_TRACE, "#gline for %s@%s [%s] requested by %s!%s@%s on %s",
           user, host, reason, oper_nick, oper_user, oper_host, oper_server); 
-
-      sendto_realops_flags(UMODE_ALL, L_ALL,
-			   "%s!%s@%s on %s is requesting gline for [%s@%s] [%s]",
-			   oper_nick, oper_user, oper_host, oper_server,
-			   user, host, reason);
   }
 }
 
