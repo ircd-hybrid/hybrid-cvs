@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.337 2002/10/16 20:52:38 bill Exp $
+ *  $Id: channel.c,v 7.338 2002/10/23 22:12:14 bill Exp $
  */
 
 #include "stdinc.h"
@@ -455,9 +455,14 @@ check_channel_name(const char *name)
 }
 
 /*
-**  Subtract one user from channel (and free channel
-**  block, if channel became empty).
-*/
+ * sub1_from_channel
+ *
+ * inputs	- pointer to channel to remove client from
+ * output	- did the channel get destroyed
+ * side effects	- remove one user from chptr.  if the
+ *		  channel is now empty, and it is not already
+ *		  scheduled for destruction, schedule it
+ */
 static int
 sub1_from_channel(struct Channel *chptr)
 {
@@ -487,6 +492,7 @@ sub1_from_channel(struct Channel *chptr)
       SetExpiring(chptr);
       c = make_dlink_node();
       dlinkAddTail(chptr, c, &expiring_channels);
+      return (0);
     }
   }
   return (0);
@@ -515,7 +521,24 @@ expire_channels(void *unused)
    */
   DLINK_FOREACH(ptr, expiring_channels.head)
   {
-    chptr = (struct Channel *)ptr->data;
+    /*
+     * we cannot assume the channel has not been destroyed
+     * since it's destruction has been scheduled.  if for
+     * example persist_time had been changed to 0, and the
+     * channel had been cycled again.  there are probably
+     * other ways for this to happen, as well.
+     */
+    if ((chptr = (struct Channel *)ptr->data) == NULL)
+    {
+      dlinkDelete(ptr, &expiring_channels);
+      continue;
+    }
+
+    if (!IsExpiring(chptr))
+    {
+      dlinkDelete(ptr, &expiring_channels);
+      continue;
+    }
 
 #ifdef VCHANS
     if (IsVchan(chptr) && !IsVchanTop(chptr))

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: list.c,v 7.46 2002/07/12 00:43:24 androsyn Exp $
+ *  $Id: list.c,v 7.47 2002/10/23 22:12:14 bill Exp $
  */
 
 #include "stdinc.h"
@@ -183,7 +183,7 @@ make_dlink_node(void)
 {
   dlink_node *lp;
 
-  lp = (dlink_node *)BlockHeapAlloc(dnode_heap);;
+  lp = (dlink_node *)BlockHeapAlloc(dnode_heap);
   ++links_count;
 
   lp->next = NULL;
