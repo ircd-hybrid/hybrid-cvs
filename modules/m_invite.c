@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_invite.c,v 1.49 2003/01/10 05:11:22 db Exp $
+ *  $Id: m_invite.c,v 1.50 2003/01/10 16:00:05 db Exp $
  */
 
 #include "stdinc.h"
@@ -64,7 +64,7 @@ _moddeinit(void)
   mod_del_cmd(&invite_msgtab);
 }
 
-const char *_version = "$Revision: 1.49 $";
+const char *_version = "$Revision: 1.50 $";
 #endif
 
 /*
@@ -247,7 +247,7 @@ m_invite(struct Client *client_p,
 			 target_p->name, chptr->chname);
 
     /* Send a notice to servers that don't support CAP_PARA */
-    sendto_channel_remote(source_p, client_p, ONLY_CHANOPS_HALFOPS_VOICED,
+    sendto_channel_remote(source_p, client_p, ONLY_CHANOPS_HALFOPS,
 			  NOCAPS, CAP_PARA, chptr,
 			  ":%s NOTICE %s :%s is inviting %s to %s.",
 			  source_p->name, chptr->chname, source_p->name,
@@ -351,7 +351,7 @@ ms_invite(struct Client *client_p,
 			 target_p->name, chptr->chname);
 
     /* Send a notice to servers that don't support CAP_PARA */
-    sendto_channel_remote(source_p, client_p, ONLY_CHANOPS_HALFOPS_VOICED,
+    sendto_channel_remote(source_p, client_p, ONLY_CHANOPS_HALFOPS,
 			  NOCAPS, CAP_PARA, chptr,
 			  ":%s NOTICE %s :%s is inviting %s to %s.",
 			  source_p->name, chptr->chname, source_p->name,
