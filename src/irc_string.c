@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: irc_string.c,v 7.25 2001/03/14 21:17:27 androsyn Exp $
+ *  $Id: irc_string.c,v 7.26 2001/04/20 05:45:41 androsyn Exp $
  */
 #include "config.h"
 #include "tools.h"
@@ -721,3 +721,4 @@ size_t strlcpy(char *dst, const char *src, size_t siz)
  	return(s - src - 1);	/* count does not include NUL */
 }
 #endif
+
