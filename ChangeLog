@@ -1,3 +1,23 @@
+db          2003/01/10 00:11:25 EST	(20030110_1)
+
+  Modified files:
+    .                    RELNOTES 
+    modules              m_invite.c 
+    src                  send.c 
+  Log:
+  - m_invite failed to send an invite if the channel was +p to
+    all servers that needed the invite, hence invites were blocked
+    in some cases. Always send an invite, send a NOTICE to channel
+    about the invite to servers that do NO support CAP_PARA
+    It can be finessed later. I'm tired.
+  
+  Revision  Changes    Path
+  1.52      +1 -0      ircd-hybrid-7/RELNOTES
+  1.49      +27 -25    ircd-hybrid-7/modules/m_invite.c
+  7.211     +2 -2      ircd-hybrid-7/src/send.c
+
+
+
 db          2003/01/09 22:47:36 EST	(20030110_0)
 
   Modified files:
@@ -33847,4 +33867,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4156 2003/01/10 03:47:39 db Exp $
+$Id: ChangeLog,v 7.4157 2003/01/10 05:11:27 db Exp $
