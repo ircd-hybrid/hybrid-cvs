@@ -1,3 +1,10 @@
+*** 20001202_1 by db
+- change_channel_membership was screwing up, since dlinkDelete does
+  not zero the dlink_list->head pointer in all cases. *sigh* dunno
+  what I did wrong. anyway, this hack fixes it for now.
+
+
+
 *** 20001201_8 by db
 - fixed m_who.c
 - optimized m_sjoin.c a bit
@@ -1283,7 +1290,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.655 2000/12/01 23:55:29 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.656 2000/12/02 05:03:29 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
