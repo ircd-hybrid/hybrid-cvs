@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: m_force.c,v 1.11 2002/06/03 16:04:37 leeh Exp $
+ * $Id: m_force.c,v 1.12 2002/06/07 14:22:45 leeh Exp $
  */
 
 #include "stdinc.h"
@@ -59,7 +59,7 @@ struct Message forcejoin_msgtab = {
   {m_ignore, m_not_oper, mo_forcejoin, mo_forcejoin}
 };
 struct Message forcepart_msgtab = {
-  "FORCEPART", 0, 0, 2, 0, MFLG_SLOW, 0,
+  "FORCEPART", 0, 0, 3, 0, MFLG_SLOW, 0,
   {m_ignore, m_not_oper, mo_forcepart, mo_forcepart}
 };
 
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&forcepart_msgtab);
 }
 
-char *_version = "$Revision: 1.11 $";
+char *_version = "$Revision: 1.12 $";
 #endif
 
 /*
