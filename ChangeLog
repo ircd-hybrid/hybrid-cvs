@@ -1,3 +1,9 @@
+*** 20001130_18 by db
+- removed CUSTOM_ERR define no longer needed
+- removed offsetof no longer needed
+
+
+
 *** 20001130_17 by davidt
 Removed CUSTOM_ERR, and changed it to use gettext(), which allows the
 message files to be changed at run time, currently using
@@ -1198,7 +1204,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.642 2000/11/30 22:47:58 davidt Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.643 2000/11/30 23:01:28 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
