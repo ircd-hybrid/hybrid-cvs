@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.105 2001/08/22 13:59:55 leeh Exp $
+ *   $Id: m_sjoin.c,v 1.106 2001/08/22 15:01:42 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -117,16 +117,13 @@ static void ms_sjoin(struct Client *client_p,
   int            isnew;
   register       char *s, *sh;
   static         char buf[BUFSIZE];
-  static         char sjbuf[BUFSIZE];
   static         char sjbuf_nh[BUFSIZE];
-  char           *nick_pointer;
   char    *p;
   int hide_or_not;
   int i;
   dlink_node *m;
 
   *buf = '\0';
-  *sjbuf = '\0';
   *sjbuf_nh = '\0';
 
   if (IsClient(source_p) || parc < 5)
@@ -365,7 +362,6 @@ static void ms_sjoin(struct Client *client_p,
   mbuf = modebuf;
   para[0] = para[1] = para[2] = para[3] = "";
   pargs = 0;
-  nick_pointer = sjbuf;
 
   *mbuf++ = '+';
 
@@ -495,16 +491,6 @@ static void ms_sjoin(struct Client *client_p,
 	    }
 	}
 
-      /* XXX if (server_nick_count >= MAXMODEPARAMS) ... 
-       *  if this is ever a possibility...
-       */
-      if (keep_new_modes)
-	ircsprintf(nick_pointer,"%s ", sh);
-      else
-	ircsprintf(nick_pointer,"%s ", s);
-
-      nick_pointer += strlen(nick_pointer);
-
       if (fl & MODE_CHANOP)
         {
           *mbuf++ = 'o';
@@ -601,10 +587,7 @@ nextnick:
           return;
 
       /* XXX - ids ? */
-      if (IsCapable(target_p,CAP_HOPS))
-        sendto_one(target_p, "%s %s", buf, sjbuf);
-      else
-        sendto_one(target_p, "%s %s", buf, sjbuf_nh);
+      sendto_one(target_p, "%s %s", buf, sjbuf_nh);
    }
 }
 
