@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/contrib
 #
-# $Id: Makefile.in,v 1.54 2003/06/30 04:38:04 joshk Exp $
+# $Id: Makefile.in,v 1.55 2003/07/07 05:15:08 joshk Exp $
 #
 CC		= @CC@
 RM		= @RM@
@@ -19,7 +19,10 @@ MKDEP		= @MKDEP@
 INSTALL		= @INSTALL@
 INSTALL_PROGRAM	= @INSTALL_PROGRAM@
 INSTALL_DATA	= @INSTALL_DATA@
-AUTOMODULEDIR	= @prefix@/modules
+
+prefix=		@prefix@
+
+AUTOMODULEDIR	= ${prefix}/modules
 
 SSL_LIBS	= @SSL_LIBS@
 SSL_INCLUDES	= @SSL_INCLUDES@
@@ -29,7 +32,6 @@ IRCDLIBS	= @LIBS@ $(SSL_LIBS)
 INCLUDES	= -I../include $(SSL_INCLUDES)
 CPPFLAGS	= ${INCLUDES} @CPPFLAGS@
 
-prefix=		@prefix@
 uhelpdir=	${prefix}/help/users
 ohelpdir=	${prefix}/help/opers
 
