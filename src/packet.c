@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.92 2002/12/13 03:21:13 db Exp $
+ *  $Id: packet.c,v 7.93 2002/12/15 23:50:17 db Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -60,6 +60,8 @@ parse_client_queued(struct Client *client_p)
     {
       if (IsDead(client_p))
 	return;
+      if (client_p->localClient == NULL)
+	return;
 
       /* rate unknown clients at MAX_FLOOD per loop */
       if(i >= MAX_FLOOD)
@@ -95,6 +97,9 @@ parse_client_queued(struct Client *client_p)
   {
     if(IsDead(client_p))
       return;
+    if(client_p->localClient == NULL)
+      return;
+    
     while ((dolen = linebuf_get(&client_p->localClient->buf_recvq,
                               readBuf, READBUF_SIZE, LINEBUF_COMPLETE,
                               LINEBUF_PARSED)) > 0)
@@ -153,6 +158,9 @@ parse_client_queued(struct Client *client_p)
       else if(lclient_p->sent_parsed >= (4 * lclient_p->allow_read) && checkflood != -1)
         break;
        
+      if(client_p->localClient == NULL)
+	break;
+
       dolen = linebuf_get(&client_p->localClient->buf_recvq, readBuf,
                           READBUF_SIZE, LINEBUF_COMPLETE, LINEBUF_PARSED);
 			 
