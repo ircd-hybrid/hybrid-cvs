@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.231 2001/06/08 03:49:51 db Exp $
+ *  $Id: s_conf.c,v 7.232 2001/06/08 07:37:30 db Exp $
  */
 
 #include <sys/types.h>
@@ -1993,7 +1993,7 @@ void read_conf_files(int cold)
 	}
       else
 	{
-	  KParseFile(file);
+	  parse_k_file(file);
 	  fbclose(file);
 	}
     }
@@ -2012,7 +2012,7 @@ void read_conf_files(int cold)
 	}
       else
 	{
-	  DParseFile(file);
+	  parse_d_file(file);
 	  fbclose(file);
 	}
     }

@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: kdparse.c,v 7.3 2001/06/08 05:33:47 db Exp $
+ *  $Id: kdparse.c,v 7.4 2001/06/08 07:37:29 db blalloc.c $
  */
 
 #include <sys/types.h>
@@ -36,13 +36,13 @@
 #include "memory.h"
 
 /*
- * KParseFile
+ * parse_k_file
  * Inputs       - pointer to line to parse
  * Output       - NONE
  * Side Effects - Parse one new style K line
  */
 
-void KParseFile(FBFILE *file)
+void parse_k_file(FBFILE *file)
 {
   struct ConfItem *aconf;
   char* user_field=(char *)NULL;
@@ -76,13 +76,13 @@ void KParseFile(FBFILE *file)
 }
 
 /*
- * DParseFile
+ * parse_d_file
  * Inputs       - pointer to line to parse
  * Output       - NONE
  * Side Effects - Parse one new style D line
  */
 
-void DParseFile(FBFILE *file)
+void parse_d_file(FBFILE *file)
 {
   struct ConfItem *aconf;
   char* reason_field=(char *)NULL;
