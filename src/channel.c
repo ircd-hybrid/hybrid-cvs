@@ -34,7 +34,7 @@
  *                mode * -p etc. if flag was clear
  *
  *
- * $Id: channel.c,v 7.19 2000/01/02 05:34:57 db Exp $
+ * $Id: channel.c,v 7.20 2000/01/02 06:47:33 db Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -1079,6 +1079,42 @@ int     m_cburst(struct Client *cptr,
 
   return 0;
 }
+
+/*
+** m_drop
+**      parv[0] = sender prefix
+**      parv[1] = channel
+**      parv[2] = channel password (key)
+**
+**      "drop" a channel from consideration on a lazy link
+*/
+
+int     m_drop(struct Client *cptr,
+               struct Client *sptr,
+               int parc,
+               char *parv[])
+{
+  char *name;
+  struct Channel *chptr;
+
+   if(parc < 2 || *parv[1] == '\0')
+     return 0;
+
+  name = parv[1];
+
+  sendto_realops("DROP locally called for %s nick %s", name);
+
+  if(!(chptr=hash_find_channel(name, NullChn)))
+    {
+      sendto_realops(
+        "DROP %s does not exist",
+        name );
+      return -1;
+    }
+  chptr->lazyLinkChannelExists &= ~cptr->serverMask;
+  return 0;
+}
+
 
 /* stolen from Undernet's ircd  -orabidoo
  *
