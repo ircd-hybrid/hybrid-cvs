@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.h,v 7.10 2002/06/14 17:19:55 leeh Exp $
+ *  $Id: channel_mode.h,v 7.11 2002/07/28 19:19:01 leeh Exp $
  */
 
 
@@ -121,10 +121,14 @@ extern void unset_chcap_usage_counts(struct Client *serv_p);
 
 struct ChModeChange
 {
- char letter;
- char *arg, *id;
- int caps, nocaps, mems;
- struct Client *client;
+  char letter;
+  char *arg;
+  char *id;
+  int dir;
+  int caps;
+  int nocaps;
+  int mems;
+  struct Client *client;
 };
 
 #ifdef HALFOPS
