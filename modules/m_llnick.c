@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_llnick.c,v 1.16 2001/12/28 01:10:19 a1kmm Exp $
+ * $Id: m_llnick.c,v 1.17 2001/12/28 01:21:48 a1kmm Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -59,7 +59,7 @@ _moddeinit(void)
   mod_del_cmd(&llnick_msgtab);
 }
 
-char *_version = "$Revision: 1.16 $";
+char *_version = "$Revision: 1.17 $";
 #endif
 /*
  * m_llnick
@@ -125,6 +125,10 @@ static void ms_llnick(struct Client *client_p,
     if (!target_p) /* Can't find them -- maybe they got a different nick */
       return;
   }
+
+  /* Don't try this on a remote client... */
+  if (!MyConnect(target_p))
+    return;
   
   if(find_client(nick) || exists)
   {
