@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kill.c,v 1.39 2001/04/27 02:44:11 jdc Exp $
+ *   $Id: m_kill.c,v 1.40 2001/04/27 10:59:34 fl_ Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -364,7 +364,7 @@ static void relay_kill(struct Client *one, struct Client *source_p,
       }
     else
       {
-        sendto_one(client_p, ":%s KILL %s :%s %s (%s)",
+        sendto_one(client_p, ":%s KILL %s :%s %s %s",
                    source_p->name, user, me.name,
                    inpath, reason);
       }
