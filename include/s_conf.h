@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.132 2001/06/06 03:16:12 toot Exp $
+ * $Id: s_conf.h,v 7.133 2001/06/08 03:13:48 db Exp $
  */
 
 #include "setup.h"
@@ -381,7 +381,8 @@ extern void conf_add_u_conf(struct ConfItem *);
 extern void conf_add_q_conf(struct ConfItem *);
 extern void conf_add_fields(struct ConfItem*, char*, char *, char*, char *,char *);
 extern void conf_add_conf(struct ConfItem *);
-extern void oldParseOneLine(char *line);
+extern void KParseFile(FBFILE *fb);
+extern void DParseFile(FBFILE *fb);
 extern int yylex(void);
 
 extern unsigned long cidr_to_bitmask[];
