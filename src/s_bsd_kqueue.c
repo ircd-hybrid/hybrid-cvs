@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_kqueue.c,v 1.8 2001/02/27 04:46:24 androsyn Exp $
+ *  $Id: s_bsd_kqueue.c,v 1.9 2001/04/24 07:20:00 db Exp $
  */
 #include "config.h"
 #ifdef USE_KQUEUE
@@ -111,6 +111,8 @@ kq_update_events(int fd, short filter, PF * handler)
 
         ke.ident = (u_long) fd;
         ke.filter = filter;
+	ke.fflags = NOTE_LOWAT;
+	ke.data = 1;
         ke.flags = handler ? (EV_ADD | EV_ONESHOT) : EV_DELETE;
 
         retval = kevent(kq, &ke, 1, NULL, 0, &zero_timespec);
