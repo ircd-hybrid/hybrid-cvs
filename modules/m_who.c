@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_who.c,v 1.20 2000/12/25 17:59:24 toot Exp $
+ *   $Id: m_who.c,v 1.21 2000/12/25 18:52:03 toot Exp $
  */
 #include "tools.h"
 #include "common.h"   /* bleah */
@@ -422,7 +422,7 @@ void    do_who(struct Client *sptr,
 		 IsOper(acptr) ? "*" : "", op_flags );
     }
 
-  if(ConfigFileEntry.hide_server)
+  if(GlobalSetOptions.hide_server)
     {
       sendto_one(sptr, form_str(RPL_WHOREPLY), me.name, sptr->name,
 		 chname, acptr->username,

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_time.c,v 1.10 2000/12/23 01:42:16 db Exp $
+ *   $Id: m_time.c,v 1.11 2000/12/25 18:52:03 toot Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -87,7 +87,7 @@ int ms_time(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 {
   if (hunt_server(cptr,sptr,":%s TIME :%s",1,parc,parv) == HUNTED_ISME)
     {
-      if(ConfigFileEntry.hide_server && IsOper(sptr))
+      if(!GlobalSetOptions.hide_server || IsOper(sptr))
 	sendto_one(sptr, form_str(RPL_TIME), me.name,
 		   parv[0], me.name, date(0));
     }
