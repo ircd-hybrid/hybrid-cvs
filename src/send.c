@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.197.2.1 2002/05/26 07:03:56 androsyn Exp $
+ *  $Id: send.c,v 7.197.2.2 2002/05/26 07:15:58 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -260,16 +260,8 @@ send_queued_write(int fd, void *data)
     {
       /* we have a non-fatal error, so just continue */
     }
-    else if (retlen < 0)
+    else if (retlen <= 0)
     {
-      fprintf(stderr, "%d:%s \n", errno, strerror(errno));
-      /* We have a fatal error */
-      dead_link(to);
-      return;
-    }
-    else if (retlen == 0)
-    {
-      /* 0 bytes is an EOF .. */
       dead_link(to);
       return;
     }
