@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.14 1999/09/12 14:59:15 wnder Exp $
+ *  $Id: s_user.c,v 7.15 1999/09/24 23:23:00 db Exp $
  */
 #include "s_user.h"
 #include "channel.h"
@@ -1237,6 +1237,14 @@ int nickkilldone(struct Client *cptr, struct Client *sptr, int parc,
           m = &parv[4][1];
           while (*m)
             {
+              /* Don't allow non alpha chars through to confuse
+               * the lookup table
+               */
+              if(!IsAlpha(*m))
+                {
+                  m++;
+                  continue;
+                }
               flag = user_modes_from_c_to_bitmask[(int)(*m & 0x1F)];
               if ((flag & FLAGS_INVISIBLE))
                 {
@@ -1606,7 +1614,8 @@ int user_mode(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
         case '\t' :
           break;
         default :
-          if((flag = user_modes_from_c_to_bitmask[(int)(*m & 0x1F)]))
+          if( IsAlpha(*m) &&
+            (flag = user_modes_from_c_to_bitmask[(int)(*m & 0x1F)]))
             {
               if (what == MODE_ADD)
                 sptr->umodes |= flag;
