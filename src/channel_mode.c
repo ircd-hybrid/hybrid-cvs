@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.37 2002/05/12 14:50:49 leeh Exp $
+ *  $Id: channel_mode.c,v 7.38 2002/05/13 23:34:04 leeh Exp $
  */
 
 #include "tools.h"
@@ -2511,18 +2511,17 @@ send_mode_changes(struct Client *client_p, struct Client *source_p,
 #endif
 
   /* bail out if we have nothing to do... */
-  if (!(mode_count_plus || mode_count_minus))
-    return;
-
+  if (!(mode_count_plus || mode_count_minus
 #ifdef HALFOPS
-  if(!bounce_count)
-    return;
+        || bounce_count
 #endif
+#ifdef ANONOPS
+	|| resync_count
+#endif
+     ))
+    return;
 
 #ifdef ANONOPS
-  if(!resync_count)
-    return;
-
   /* Send any resyncs that we need to send... */
   /* XXX - setting -a removes hideops, yet still needs a resync.. */
 
