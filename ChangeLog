@@ -1,3 +1,15 @@
+joant       2001/12/10 22:12:05 EST	(20011211_1)
+
+  Modified files:
+    src                  s_log.c 
+  Log:
+  Fixing SYSLOG_USERS #define error
+  
+  Revision  Changes    Path
+  7.35      +3 -3      ircd-hybrid-7/src/s_log.c
+
+
+
 db          2001/12/10 22:09:39 EST	(20011211_0)
 
   Modified files:
@@ -18307,4 +18319,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3138 2001/12/11 03:09:45 db Exp $
+$Id: ChangeLog,v 7.3139 2001/12/11 03:12:10 joant Exp $
