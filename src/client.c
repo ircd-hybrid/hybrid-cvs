@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.348 2003/04/15 13:46:01 adx Exp $
+ *  $Id: client.c,v 7.349 2003/04/15 14:05:51 adx Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -426,7 +426,7 @@ check_klines(void)
 		     me.name, client_p->name,
 		     aconf->passwd ? aconf->passwd : "D-lined");
 	else
-	  sendto_one(client_p, "ERROR :You have been D-lined.");
+	  sendto_one(client_p, "NOTICE DLINE :*** You have been D-lined");
       }
       else
       {
@@ -441,7 +441,7 @@ check_klines(void)
 	  sendto_one(client_p, form_str(ERR_YOUREBANNEDCREEP),
 		     me.name, client_p->name, reason);
 	else
-	  sendto_one(client_p, "ERROR :You have been D-lined.");
+	  sendto_one(client_p, "NOTICE DLINE :*** You have been D-lined");
       }
 	    
       (void)exit_client(client_p, client_p, &me, reason);
