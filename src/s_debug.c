@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_debug.c,v 7.45 2001/03/09 03:15:27 toot Exp $
+ *   $Id: s_debug.c,v 7.46 2001/03/28 05:50:17 db Exp $
  */
 
 #include <sys/types.h> 
@@ -39,7 +39,6 @@
 #include "tools.h"
 #include "s_debug.h"
 #include "channel.h"
-#include "blalloc.h"
 #include "class.h"
 #include "client.h"
 #include "common.h"

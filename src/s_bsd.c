@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.114 2001/03/28 04:50:26 androsyn Exp $
+ *  $Id: s_bsd.c,v 7.115 2001/03/28 05:50:16 db Exp $
  */
 #include "config.h"
 #include "fdlist.h"
@@ -685,7 +685,6 @@ comm_connect_dns_callback(void *vptr, adns_answer *reply)
         comm_connect_callback(F->fd, COMM_ERR_DNS);
 	MyFree(reply);
 	MyFree(F->dns_query);
-	F->dns_query = NULL;	
         return;
       } 
 

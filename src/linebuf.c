@@ -6,7 +6,7 @@
  * The idea here is that we should really be maintaining pre-munged
  * buffer "lines" which we can later refcount to save needless copies.
  *
- * $Id: linebuf.c,v 7.25 2001/03/12 06:37:00 a1kmm Exp $
+ * $Id: linebuf.c,v 7.26 2001/03/28 05:50:15 db Exp $
  */
 
 #include <errno.h>
@@ -19,7 +19,6 @@
 #include "tools.h"
 #include "client.h"
 #include "linebuf.h"
-#include "blalloc.h"
 #include "memory.h"
 
 #ifdef STRING_WITH_STRINGS
@@ -36,7 +35,6 @@
 #endif
 
 static int linebuf_initialised = 0;
-static BlockHeap *linebuf_bl = NULL;
 
 
 /*
@@ -48,8 +46,6 @@ void
 linebuf_init(void)
 {
     assert(!linebuf_initialised);
-
-    linebuf_bl = BlockHeapCreate(sizeof(buf_line_t), BUF_BLOCK_SIZE);
 
     linebuf_initialised = 1;
 }
@@ -66,7 +62,7 @@ linebuf_new_line(buf_head_t *bufhead)
 {
     buf_line_t *bufline;
 
-    bufline = (buf_line_t *)BlockHeapAlloc(linebuf_bl);
+    bufline = (buf_line_t *)MyMalloc(sizeof(buf_line_t));
 
     /* XXX Zero data, I'm being paranoid! -- adrian */
     memset(bufline, 0, sizeof(buf_line_t));
@@ -107,7 +103,7 @@ linebuf_done_line(buf_head_t *bufhead, buf_line_t *bufline)
     bufhead->numlines --;
 
     /* and finally, deallocate the buf */
-    BlockHeapFree(linebuf_bl, bufline);
+    MyFree(bufline);
 }
 
 

@@ -1,5 +1,5 @@
 /*
- * $Id: adns.c,v 7.16 2001/03/28 04:50:25 androsyn Exp $
+ * $Id: adns.c,v 7.17 2001/03/28 05:50:13 db Exp $
  * adns.c  functions to enter libadns 
  *
  * Written by Aaron Sethman <androsyn@ratbox.org>
@@ -13,13 +13,11 @@
 #include "client.h"
 #include "ircd_defs.h"
 #include "numeric.h"
-#include "blalloc.h"
 #include <errno.h>
 #include "../adns/internal.h"
 #define ADNS_MAXFD 2
 
 adns_state dns_state;
-BlockHeap *dns_blk;
 
 void report_adns_servers(struct Client *source_p)
 {
