@@ -1,3 +1,19 @@
+db          2003/01/28 16:04:07 EST	(20030128_1)
+
+  Modified files:
+    include              client.h 
+    src                  list.c parse.c 
+  Log:
+  - cleanup to style in list.c
+  - make sure a client marked as Killed is not parsed
+  
+  Revision  Changes    Path
+  7.158     +2 -1      ircd-hybrid-7/include/client.h
+  7.48      +38 -31    ircd-hybrid-7/src/list.c
+  7.144     +1 -2      ircd-hybrid-7/src/parse.c
+
+
+
 db          2003/01/28 00:28:47 EST	(20030128_0)
 
   Modified files:
@@ -34523,4 +34539,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4202 2003/01/28 05:28:50 db Exp $
+$Id: ChangeLog,v 7.4203 2003/01/28 21:04:10 db Exp $
