@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_trace.c,v 1.72 2003/10/08 22:03:47 metalrock Exp $
+ *  $Id: m_trace.c,v 1.73 2003/10/24 00:50:11 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -94,7 +94,7 @@ _moddeinit(void)
   mod_del_cmd(&trace_msgtab6);
 #endif
 }
-const char *_version = "$Revision: 1.72 $";
+const char *_version = "$Revision: 1.73 $";
 #endif
 
 static int report_this_status(struct Client *source_p, struct Client *target_p,
@@ -122,11 +122,10 @@ m_trace(struct Client *client_p, struct Client *source_p,
 }
 
 
-/*
-** mo_trace
-**      parv[0] = sender prefix
-**      parv[1] = servername
-*/
+/* mo_trace()
+ *      parv[0] = sender prefix
+ *      parv[1] = servername
+ */
 static void
 mo_trace(struct Client *client_p, struct Client *source_p,
          int parc, char *parv[])
@@ -156,38 +155,38 @@ mo_trace(struct Client *client_p, struct Client *source_p,
   }
 
   switch (hunt_server(client_p, source_p, ":%s TRACE :%s", 1, parc, parv))
-    {
+  {
     case HUNTED_PASS: /* note: gets here only if parv[1] exists */
-      {
-        struct Client *ac2ptr = NULL;
-        
-        if ((ac2ptr = find_client(tname)) == NULL)
-        {
-          DLINK_FOREACH(ptr, global_client_list.head)
-          {
-            ac2ptr = ptr->data;
+    {
+      struct Client *ac2ptr = NULL;
 
-            if (match(tname, ac2ptr->name) || match(ac2ptr->name, tname))
-              break;
-            else
-              ac2ptr = NULL;
-          }
-	}
- 
-	if (ac2ptr != NULL)
-          sendto_one(source_p, form_str(RPL_TRACELINK), from, to,
-                     ircd_version, tname, ac2ptr->from->name);
-        else
-          sendto_one(source_p, form_str(RPL_TRACELINK), from, to,
-                     ircd_version, tname, "ac2ptr_is_NULL!!");
-        return;
-      }
+      if ((ac2ptr = find_client(tname)) == NULL)
+      {
+        DLINK_FOREACH(ptr, global_client_list.head)
+        {
+          ac2ptr = ptr->data;
+
+          if (match(tname, ac2ptr->name) || match(ac2ptr->name, tname))
+            break;
+          else
+            ac2ptr = NULL;
+        }
+     }
+
+     if (ac2ptr != NULL)
+        sendto_one(source_p, form_str(RPL_TRACELINK), from, to,
+                   ircd_version, tname, ac2ptr->from->name);
+      else
+        sendto_one(source_p, form_str(RPL_TRACELINK), from, to,
+                   ircd_version, tname, "ac2ptr_is_NULL!!");
+      return;
+    }
     case HUNTED_ISME:
       do_actual_trace(AF_UNSPEC, tname, client_p, source_p, parc, parv);
       break;
     default:
       return;
-    }
+  }
 }
 
 #ifdef IPV6
@@ -202,7 +201,6 @@ mo_trace4(struct Client *client_p, struct Client *source_p,
   else
     tname = me.name;
 
-    
   do_actual_trace(AF_INET, tname, client_p, source_p, parc, parv);
 }
 
@@ -222,9 +220,8 @@ mo_trace6(struct Client *client_p, struct Client *source_p,
 #endif
 
 static void
-do_actual_trace(int ttype, const char *tname,
-		struct Client *client_p, struct Client *source_p,
-		int parc, char *parv[])
+do_actual_trace(int ttype, const char *tname, struct Client *client_p,
+		struct Client *source_p, int parc, char *parv[])
 {
   struct Client *target_p = NULL;
   struct ConfItem *conf;
@@ -253,47 +250,47 @@ do_actual_trace(int ttype, const char *tname,
   }
 
   set_time();
-  if(!IsOper(source_p) || !dow) /* non-oper traces must be full nicks */
+  if (!IsOper(source_p) || !dow) /* non-oper traces must be full nicks */
                               /* lets also do this for opers tracing nicks */
+  {
+    const char *name;
+    const char *class_name;
+    char ipaddr[HOSTIPLEN];
+
+    target_p = find_client(tname);
+      
+    if(target_p && IsPerson(target_p)) 
     {
-      const char* name;
-      const char* class_name;
-      char ipaddr[HOSTIPLEN];
+      name = get_client_name(target_p, HIDE_IP);
+      /* should we not use sockhost here? - stu */
+      irc_getnameinfo((struct sockaddr*)&target_p->localClient->ip,
+		      target_p->localClient->ip.ss_len, ipaddr, HOSTIPLEN, NULL, 0,
+		      NI_NUMERICHOST);
 
-      target_p = find_client(tname);
-      
-      if(target_p && IsPerson(target_p)) 
+      class_name = get_client_class(target_p);
+
+      if (IsOper(target_p))
       {
-        name = get_client_name(target_p, HIDE_IP);
-        /* should we not use sockhost here? - stu */
-        irc_getnameinfo((struct sockaddr*)&target_p->localClient->ip,
-            target_p->localClient->ip.ss_len, ipaddr, HOSTIPLEN, NULL, 0,
-            NI_NUMERICHOST);
-
-        class_name = get_client_class(target_p);
-
-        if (IsOper(target_p))
-        {
-          sendto_one(source_p, form_str(RPL_TRACEOPERATOR),
-                     from, to, class_name, name, 
-                     IsIPSpoof(target_p) ? "255.255.255.255" : ipaddr,
-                     CurrentTime - target_p->lasttime,
-                     (target_p->user) ? (CurrentTime - target_p->user->last) : 0);
-        }
-        else
-        {
-          sendto_one(source_p,form_str(RPL_TRACEUSER),
-                     from, to, class_name, name, 
-		     IsIPSpoof(target_p) ? "255.255.255.255" : ipaddr,
-                     CurrentTime - target_p->lasttime,
-                     (target_p->user)?(CurrentTime - target_p->user->last):0);
-        }
+        sendto_one(source_p, form_str(RPL_TRACEOPERATOR),
+                   from, to, class_name, name, 
+                   IsIPSpoof(target_p) ? "255.255.255.255" : ipaddr,
+                   CurrentTime - target_p->lasttime,
+                   (target_p->user) ? (CurrentTime - target_p->user->last) : 0);
       }
-      
-      sendto_one(source_p, form_str(RPL_ENDOFTRACE),
-                 from, to, tname);
-      return;
+      else
+      {
+        sendto_one(source_p,form_str(RPL_TRACEUSER),
+                   from, to, class_name, name, 
+		   IsIPSpoof(target_p) ? "255.255.255.255" : ipaddr,
+                   CurrentTime - target_p->lasttime,
+                   (target_p->user)?(CurrentTime - target_p->user->last):0);
+      }
     }
+      
+    sendto_one(source_p, form_str(RPL_ENDOFTRACE),
+               from, to, tname);
+    return;
+  }
 
   memset((void *)link_s,0,sizeof(link_s));
   memset((void *)link_u,0,sizeof(link_u));
@@ -424,8 +421,8 @@ report_this_status(struct Client *source_p, struct Client *target_p,
   const char *name;
   const char *class_name;
   const char *from, *to;
-  char  ip[HOSTIPLEN];
-  int cnt=0;
+  char ip[HOSTIPLEN];
+  int cnt = 0;
 
   if (!MyConnect(source_p) && IsCapable(source_p->from, CAP_TS6) && HasID(source_p))
   {
@@ -434,7 +431,7 @@ report_this_status(struct Client *source_p, struct Client *target_p,
   }
   else
   {
-    from = me.id;
+    from = me.name;
     to = source_p->name;
   }
 
@@ -448,7 +445,7 @@ report_this_status(struct Client *source_p, struct Client *target_p,
   set_time();
 
   switch(target_p->status)
-    {
+  {
     case STAT_CONNECTING:
       sendto_one(source_p, form_str(RPL_TRACECONNECTING),
                  from, to, class_name, 
@@ -539,7 +536,7 @@ report_this_status(struct Client *source_p, struct Client *target_p,
 		 from, to, name);
       cnt++;
       break;
-    }
+  }
 
   return(cnt);
 }
