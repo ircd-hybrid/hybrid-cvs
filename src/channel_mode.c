@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel_mode.c,v 7.5 2001/10/25 02:36:21 db Exp $
+ * $Id: channel_mode.c,v 7.6 2001/11/07 22:43:15 davidt Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -477,6 +477,7 @@ pretty_mask(char *mask)
   int old_mask_pos;
   char *nick = "*", *user = "*", *host = "*";
   char *t, *at, *ex;
+  char ne = 0, ue = 0, he = 0; /* save values at nick[NICKLEN], et all */
   mask = check_string(mask);
 
   if (BUFSIZE - mask_pos < strlen(mask) + 5)
@@ -513,23 +514,37 @@ pretty_mask(char *mask)
   else
     nick = mask;
 
-  /* chop off at NICKLEN, USERLEN and HOSTLEN */
-  if(strlen(host) > HOSTLEN)
-    host[HOSTLEN] = '\0';
-
-  if(strlen(user) > USERLEN)
-    user[USERLEN] = '\0';
-
-  if(strlen(nick) > NICKLEN)
+  /* truncate values to max lengths */
+  if (strlen(nick) > NICKLEN)
+  {
+    ne = nick[NICKLEN];
     nick[NICKLEN] = '\0';
+  }
+  if (strlen(user) > USERLEN)
+  {
+    ue = user[USERLEN];
+    user[USERLEN] = '\0';
+  }
+  if (strlen(host) > HOSTLEN)
+  {
+    he = host[HOSTLEN];
+    host[HOSTLEN] = '\0';
+  }
     
   mask_pos += ircsprintf(mask_buf + mask_pos, "%s!%s@%s", nick, user, host)
     + 1;
 
+  /* restore mask, since we may need to use it again later */
   if (at)
     *at = '@';
   if (ex)
     *ex = '!';
+  if (ne)
+    nick[NICKLEN] = ne;
+  if (ue)
+    user[USERLEN] = ue;
+  if (he)
+    host[HOSTLEN] = he;
 
   return mask_buf + old_mask_pos;
 }
