@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.192 2001/08/13 04:48:40 androsyn blalloc.c $
+ *  $Id: client.c,v 7.193 2001/08/13 05:09:05 androsyn Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -50,7 +50,7 @@
 #include "hash.h"
 #include "memory.h"
 #include "hostmask.h"
-#include "blalloc.h"
+#include "balloc.h"
 
 #include <assert.h>
 #include <fcntl.h>

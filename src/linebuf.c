@@ -6,7 +6,7 @@
  * The idea here is that we should really be maintaining pre-munged
  * buffer "lines" which we can later refcount to save needless copies.
  *
- * $Id: linebuf.c,v 7.38 2001/08/13 04:48:40 androsyn blalloc.c $
+ * $Id: linebuf.c,v 7.39 2001/08/13 05:09:05 androsyn Exp $
  */
 
 #include <errno.h>
@@ -21,7 +21,7 @@
 #include "linebuf.h"
 #include "memory.h"
 #include "event.h"
-#include "blalloc.h"
+#include "balloc.h"
 
 #ifdef STRING_WITH_STRINGS
 # include <string.h>
