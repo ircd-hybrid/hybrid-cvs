@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.248 2003/06/21 20:09:19 metalrock Exp $
+ *  $Id: s_conf.h,v 7.249 2003/06/21 20:36:14 joshk Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -256,6 +256,7 @@ struct config_file_entry
   MessageFile linksfile;
 
   unsigned char compression_level;
+  int		disable_remote;
   int		dot_in_ip6_addr;
   int           dots_in_ident;
   int           failed_oper_notice;
@@ -285,6 +286,7 @@ struct config_file_entry
   int		ignore_bogus_ts;
   int           maximum_links;
   int           oper_only_umodes;
+  int		oper_pass_resv;
   int           oper_umodes;
   int           crypt_oper_password;
   int           max_targets;
