@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: config.h,v 7.138 2002/06/26 22:01:31 androsyn Exp $
+ *  $Id: config.h,v 7.139 2002/06/27 15:16:36 leeh Exp $
  */
 
 #ifndef INCLUDED_config_h
@@ -328,12 +328,6 @@
 #define	USER_HEAP_SIZE		128
 #define	DNODE_HEAP_SIZE		256
 #define TOPIC_HEAP_SIZE		256
-#endif
-
-#ifdef EFNET
-#define PENDING_COUNT		15000
-#else
-#define PENDING_COUNT 		1000
 #endif
 
 /* DEBUGMODE is used mostly for internal development, it is likely
