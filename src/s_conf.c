@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.193 2001/02/21 13:55:31 androsyn Exp $
+ *  $Id: s_conf.c,v 7.194 2001/02/25 22:12:35 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -1554,7 +1554,7 @@ static void lookup_confhost(struct ConfItem* aconf)
   ** Do name lookup now on hostnames given and store the
   ** ip numbers in conf structure.
   */
-  if (inetpton(DEF_FAM, aconf->host, &IN_ADDR(aconf->ipnum)) == 0)
+  if (inetpton(DEF_FAM, aconf->host, &IN_ADDR(aconf->ipnum)) <= 0)
     {
       conf_dns_lookup(aconf);
     }
