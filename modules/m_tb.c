@@ -1,7 +1,7 @@
 /*  contrib/m_tburst.c
  *  Copyright (C) 2002 Hybrid Develompent Team
  *
- *  $Id: m_tb.c,v 1.1 2002/04/13 13:26:37 leeh Exp $
+ *  $Id: m_tb.c,v 1.2 2002/04/13 13:55:36 leeh Exp $
  */
 
 #include <string.h>
@@ -57,7 +57,7 @@ _moddeinit(void)
   unset_tburst_capab();
 }
 
-const char *_version = "$Revision: 1.1 $";
+const char *_version = "$Revision: 1.2 $";
 #endif
 
 /* ms_tburst()
@@ -86,7 +86,7 @@ static void ms_tburst(struct Client *client_p, struct Client *source_p,
 
     else if(chptr->channelts == newchannelts)
     {
-      if(chptr->topic_time > newtopicts)
+      if(!chptr->topic[0] || (chptr->topic_time > newtopicts))
 	set_topic(source_p, chptr, newtopicts, parv[4], parv[5]);
       else
 	return;
