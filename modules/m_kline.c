@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.97 2002/02/25 17:39:06 androsyn Exp $
+ *  $Id: m_kline.c,v 1.98 2002/02/28 14:12:31 androsyn Exp $
  */
 
 #include "tools.h"
@@ -82,7 +82,7 @@ _moddeinit(void)
   mod_del_cmd(&kline_msgtab);
   mod_del_cmd(&dline_msgtab);
 }
-char *_version = "$Revision: 1.97 $";
+char *_version = "$Revision: 1.98 $";
 #endif
 
 /* Local function prototypes */
@@ -772,14 +772,14 @@ static int find_user_host(struct Client *source_p,
       if(hostp)                                    /* I'm a little user@host */
         {
           *(hostp++) = '\0';                       /* short and squat */
-          strncpy(luser,user_host_or_nick,USERLEN); /* here is my user */
-          strncpy(lhost,hostp,HOSTLEN);             /* here is my host */
+          strlcpy(luser,user_host_or_nick,USERLEN); /* here is my user */
+          strlcpy(lhost,hostp,HOSTLEN);             /* here is my host */
         }
       else
         {
           luser[0] = '*';             /* no @ found, assume its *@somehost */
           luser[1] = '\0';	  
-          strncpy(lhost,user_host_or_nick,HOSTLEN);
+          strlcpy(lhost,user_host_or_nick,HOSTLEN);
         }
 
       return 1;
