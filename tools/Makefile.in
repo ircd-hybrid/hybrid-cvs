@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 7.22 2001/06/08 10:52:19 leeh Exp $
+# $Id: Makefile.in,v 7.23 2001/07/02 04:18:30 wcampbel Exp $
 
 CC		= @CC@
 INSTALL		= @INSTALL@
@@ -13,6 +13,7 @@ LDFLAGS   	= @LDFLAGS@
 MKDEP		= ${CC} -MM
 MV		= @MV@
 RM		= @RM@
+LN              = @LN@
 
 SSL_LIBS	= @SSL_LIBS@
 SSL_INCLUDES	= @SSL_INCLUDES@
@@ -137,5 +138,8 @@ install: install-mkdirs build
 		fi; \
 		echo $(INSTALL_BIN) $$i $(bindir); \
 		$(INSTALL_BIN) $$i $(bindir); \
-	done
+	done; \
+        $(RM) -f $(bindir)/vimotd $(bindir)/viklines; \
+        $(LN) $(bindir)/viconf $(bindir)/vimotd; \
+        $(LN) $(bindir)/viconf $(bindir)/viklines
 
