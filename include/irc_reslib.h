@@ -1,7 +1,7 @@
 /*
  * include/res.h (C)opyright 1992 Darren Reed.
  *
- * $Id: irc_reslib.h,v 7.8 2003/05/19 19:10:51 stu Exp $
+ * $Id: irc_reslib.h,v 7.9 2003/05/20 04:25:19 michael Exp $
  */
 #ifndef INCLUDED_ircdreslib_h
 #define INCLUDED_ircdreslib_h
@@ -10,7 +10,7 @@
  * Inline versions of get/put short/long.  Pointer is advanced.
  */
 #define IRC_NS_GET16(s, cp) { \
-	register unsigned char *t_cp = (unsigned char *)(cp); \
+	const unsigned char *t_cp = (const unsigned char *)(cp); \
 	(s) = ((u_int16_t)t_cp[0] << 8) \
 	    | ((u_int16_t)t_cp[1]) \
 	    ; \
@@ -18,7 +18,7 @@
 }
 
 #define IRC_NS_GET32(l, cp) { \
-	register unsigned char *t_cp = (unsigned char *)(cp); \
+	const unsigned char *t_cp = (const unsigned char *)(cp); \
 	(l) = ((u_int32_t)t_cp[0] << 24) \
 	    | ((u_int32_t)t_cp[1] << 16) \
 	    | ((u_int32_t)t_cp[2] << 8) \
@@ -28,16 +28,16 @@
 }
 
 #define IRC_NS_PUT16(s, cp) { \
-	register u_int16_t t_s = (u_int16_t)(s); \
-	register unsigned char *t_cp = (unsigned char *)(cp); \
+	u_int16_t t_s = (u_int16_t)(s); \
+	unsigned char *t_cp = (unsigned char *)(cp); \
 	*t_cp++ = t_s >> 8; \
 	*t_cp   = t_s; \
 	(cp) += NS_INT16SZ; \
 }
 
 #define IRC_NS_PUT32(l, cp) { \
-	register u_int32_t t_l = (u_int32_t)(l); \
-	register unsigned char *t_cp = (unsigned char *)(cp); \
+	u_int32_t t_l = (u_int32_t)(l); \
+	unsigned char *t_cp = (unsigned char *)(cp); \
 	*t_cp++ = t_l >> 24; \
 	*t_cp++ = t_l >> 16; \
 	*t_cp++ = t_l >> 8; \
@@ -60,7 +60,4 @@ void irc_ns_put32(unsigned long src, unsigned char *dst);
 int irc_ns_name_pton(const char *src, unsigned char *dst, size_t dstsiz);
 int irc_ns_name_pack(const unsigned char *src, unsigned char *dst, int dstsiz, const unsigned char **dnptrs, const unsigned char **lastdnptr);
 int irc_res_mkquery(const char *dname, int class, int type, unsigned char *buf, int buflen);
-
 #endif /* INCLUDED_res_h */
-
-/* $Id: irc_reslib.h,v 7.8 2003/05/19 19:10:51 stu Exp $ */

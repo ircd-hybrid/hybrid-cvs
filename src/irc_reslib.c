@@ -92,7 +92,7 @@
 #define DNS_LABELTYPE_BITSTRING		0x41
 #define MAXLINE 128
 
-/* $Id: irc_reslib.c,v 7.12 2003/05/19 19:10:53 stu Exp $ */
+/* $Id: irc_reslib.c,v 7.13 2003/05/20 04:25:20 michael Exp $ */
 
 static FBFILE *file;
 
@@ -533,29 +533,33 @@ irc_ns_name_skip(const unsigned char **ptrptr, const unsigned char *eom)
 }
 
 unsigned int
-irc_ns_get16(const unsigned char *src) {
-	unsigned int dst;
+irc_ns_get16(const unsigned char *src)
+{
+  unsigned int dst;
 
-	IRC_NS_GET16(dst, src);
-	return (dst);
+  IRC_NS_GET16(dst, src);
+  return(dst);
 }
 
-u_long
-irc_ns_get32(const unsigned char *src) {
-	unsigned long dst;
+unsigned long
+irc_ns_get32(const unsigned char *src)
+{
+  unsigned long dst;
 
-	IRC_NS_GET32(dst, src);
-	return (dst);
-}
-
-void
-irc_ns_put16(unsigned int src, unsigned char *dst) {
-	IRC_NS_PUT16(src, dst);
+  IRC_NS_GET32(dst, src);
+  return(dst);
 }
 
 void
-irc_ns_put32(unsigned long src, unsigned char *dst) {
-	IRC_NS_PUT32(src, dst);
+irc_ns_put16(unsigned int src, unsigned char *dst)
+{
+  IRC_NS_PUT16(src, dst);
+}
+
+void
+irc_ns_put32(unsigned long src, unsigned char *dst)
+{
+  IRC_NS_PUT32(src, dst);
 }
 
 /* From ns_name.c */

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.260 2003/05/19 03:11:27 metalrock Exp $
+ *  $Id: s_user.c,v 7.261 2003/05/20 04:25:20 michael Exp $
  */
 
 #include "stdinc.h"
@@ -345,7 +345,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
     {
       ServerStats->is_ref++;
       sendto_one(source_p, ":%s NOTICE %s :*** Notice -- You need to install identd "
-                 "to use this server", me.name, client_p->name);
+                 "to use this server", me.name, source_p->name);
       exit_client(client_p, source_p, &me, "Install identd");
       return(CLIENT_EXITED);
     }
@@ -725,10 +725,10 @@ valid_username(const char *username)
 
 /* report_and_set_user_flags()
  *
- * Inputs       - pointer to source_p
+ * inputs       - pointer to source_p
  *              - pointer to aconf for this user
- * Output       - NONE
- * Side effects -
+ * output       - NONE
+ * side effects -
  * Report to user any special flags they are getting, and set them.
  */
 static void

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.164 2003/05/20 02:19:54 db Exp $
+ *  $Id: parse.c,v 7.165 2003/05/20 04:25:20 michael Exp $
  */
 
 #include "stdinc.h"
@@ -124,7 +124,6 @@ parse(struct Client *client_p, char *pbuffer, char *bufend)
   struct Client *from = client_p;
   char *ch;
   char *s;
-  char *end;
   char *numeric = 0;
   int i;
   int paramcount;
