@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_cjoin.c,v 1.6 2000/12/01 22:17:55 db Exp $
+ *   $Id: m_cjoin.c,v 1.7 2000/12/02 19:55:08 toot Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -173,6 +173,14 @@ int     m_cjoin(struct Client *cptr,
       sendto_one(sptr, form_str(ERR_BADCHANNAME),me.name, parv[0], name); 
       return 0;
     }
+
+  if ((sptr->user->joined >= MAXCHANNELSPERUSER) &&
+     (!IsAnyOper(sptr) || (sptr->user->joined >= MAXCHANNELSPERUSER*3)))
+     {
+       sendto_one(sptr, form_str(ERR_TOOMANYCHANNELS),
+                  me.name, parv[0], name);
+       return 0;
+     }
 
   ircsprintf( vchan_name, "##%s_%lu", name+1, CurrentTime );
   vchan_chptr = get_channel(sptr, vchan_name, CREATE);

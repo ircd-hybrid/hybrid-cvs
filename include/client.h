@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.41 2000/12/01 22:17:49 db Exp $
+ * $Id: client.h,v 7.42 2000/12/02 19:55:04 toot Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -167,7 +167,8 @@ struct Client
  * is on.
  */
 
-  struct	    Vchan_map vchan_map[MAXCHANNELSPERUSER];
+  dlink_list      vchan_map;
+
   struct LocalUser *localClient;
 };
 
