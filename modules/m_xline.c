@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.37 2004/03/23 10:10:05 bill Exp $
+ *  $Id: m_xline.c,v 1.38 2004/03/23 18:58:34 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -82,7 +82,7 @@ _moddeinit(void)
   mod_del_cmd(&unxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.37 $";
+const char *_version = "$Revision: 1.38 $";
 #endif
 
 
@@ -157,6 +157,9 @@ mo_xline(struct Client *client_p, struct Client *source_p,
     reason = parv[2];
     type = "REJECT";
   }
+
+  if (!valid_xline(source_p, parv[1], reason, 1))
+    return;
 
   if (target_server != NULL)
   {
