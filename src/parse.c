@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.104 2001/08/06 07:36:17 db Exp $
+ *   $Id: parse.c,v 7.105 2001/08/07 02:35:04 leeh blalloc.c $
  */
 
 #include <assert.h>
@@ -182,8 +182,6 @@ void parse(struct Client *client_p, char *pbuffer, char *bufend)
           if (from == NULL)
             from = find_server(sender);
 
-          para[0] = from->name;
-          
           /* Hmm! If the client corresponding to the
            * prefix is not found--what is the correct
            * action??? Now, I will ignore the message
@@ -200,6 +198,9 @@ void parse(struct Client *client_p, char *pbuffer, char *bufend)
 
               return;
             }
+
+          para[0] = from->name;
+          
           if (from->from != client_p)
             {
               ServerStats->is_wrdi++;
