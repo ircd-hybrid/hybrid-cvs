@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.h,v 7.7 2000/03/31 02:38:27 db Exp $
+ * $Id: m_info.h,v 7.8 2000/04/02 17:42:00 db Exp $
  */
 #ifndef INCLUDED_m_info_h
 #define INCLUDED_m_info_h
@@ -449,8 +449,8 @@ Info MyInformation[] = {
 
   { "TOPIC_INFO", "ON", 0, "Show Who Set a Topic and When" },
 
-  { "TS_MAX_DELTA", "", TS_MAX_DELTA, "Maximum Allowed TS Delta from another Server" },
-  { "TS_WARN_DELTA", "", TS_WARN_DELTA, "Maximum TS Delta before Sending Warning" },
+  { "TS_MAX_DELTA_DEFAULT", "", TS_MAX_DELTA_DEFAULT, "Maximum Allowed TS Delta from another Server" },
+  { "TS_WARN_DELTA_DEFAULT", "", TS_WARN_DELTA_DEFAULT, "Maximum TS Delta before Sending Warning" },
 
 #ifdef USE_IP_I_LINE_FIRST
   { "USE_IP_I_LINE_FIRST", "ON", 0, "Search IP Ilines First" },
