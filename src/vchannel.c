@@ -19,7 +19,7 @@
  *
  *
  *
- * $Id: vchannel.c,v 7.2 2000/10/14 14:26:41 db Exp $
+ * $Id: vchannel.c,v 7.3 2000/10/14 17:15:31 toot Exp $
  */
 #include "vchannel.h"
 #include "channel.h"
@@ -29,6 +29,7 @@
 #include "irc_string.h"
 #include "ircd.h"
 #include "list.h"
+#include "send.h"
 
 #include <assert.h>
 #include <string.h>

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_names.c,v 7.5 2000/09/29 17:17:01 ejb Exp $
+ *   $Id: m_names.c,v 7.6 2000/10/14 17:15:30 toot Exp $
  */
 
 #include "handlers.h"
@@ -103,6 +103,7 @@
 ** m_names
 **      parv[0] = sender prefix
 **      parv[1] = channel
+**      parv[2] = root name
 */
 /*
  * Modified to report possible names abuse
@@ -211,8 +212,16 @@ int     m_names( struct Client *cptr,
       /* Find users on same channel (defined by chptr) */
 
       (void)strcpy(buf, "* ");
-      len = strlen(chptr->chname);
-      (void)strcpy(buf + 2, chptr->chname);
+      if (parv[2])
+        {
+          len = strlen(parv[2]);
+          (void)strcpy(buf + 2, parv[2]);
+        }
+      else
+        {
+          len = strlen(chptr->chname);
+          (void)strcpy(buf + 2, chptr->chname);
+        }
       (void)strcpy(buf + 2 + len, " :");
 
       if (PubChannel(chptr))
@@ -245,7 +254,10 @@ int     m_names( struct Client *cptr,
               sendto_one(sptr, form_str(RPL_NAMREPLY),
                          me.name, parv[0], buf);
               strncpy_irc(buf, "* ", 3);
-              strncpy_irc(buf + 2, chptr->chname, len + 1);
+              if (parv[2])
+                strncpy_irc(buf + 2, parv[2], len + 1);
+              else
+                strncpy_irc(buf + 2, chptr->chname, len + 1);
               strcat(buf, " :");
               if (PubChannel(chptr))
                 *buf = '=';
@@ -259,7 +271,14 @@ int     m_names( struct Client *cptr,
         sendto_one(sptr, form_str(RPL_NAMREPLY),
                    me.name, parv[0], buf);
     }
-  if (!BadPtr(para))
+
+  if (parv[2])
+    {
+      sendto_one(sptr, form_str(RPL_ENDOFNAMES), me.name, parv[0],
+                 parv[2]);
+      return(1);
+    }
+  else if (!BadPtr(para))
     {
       sendto_one(sptr, form_str(RPL_ENDOFNAMES), me.name, parv[0],
                  para);
