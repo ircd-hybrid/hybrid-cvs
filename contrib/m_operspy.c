@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.41 2003/06/13 00:35:49 db Exp $
+ *   $Id: m_operspy.c,v 1.42 2003/06/25 16:54:56 joshk Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -117,7 +117,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.41 $";
+const char *_version = "$Revision: 1.42 $";
 #endif
 
 #ifdef OPERSPY_LOG
@@ -245,7 +245,7 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
       if (match(parv[2], chptr_list->chname))
       {
         sendto_one(client_p, form_str(RPL_LIST), me.name, client_p->name,
-                   chptr_list->chname, chptr_list->users,
+                   chptr_list->chname, dlink_list_length(&chptr_list->members),
                    chptr_list->topic == NULL ? "" : chptr_list->topic);
       }
     }
