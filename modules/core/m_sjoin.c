@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.50 2000/12/30 08:17:49 lusky Exp $
+ *   $Id: m_sjoin.c,v 1.51 2001/01/02 00:44:03 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -381,6 +381,9 @@ int     ms_sjoin(struct Client *cptr,
         continue;
       if (acptr->from != cptr)
         continue;
+      if (!IsPerson(acptr))
+        continue;
+      
       people++;
       if (!IsMember(acptr, chptr))
         {
