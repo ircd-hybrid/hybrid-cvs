@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.185 2002/10/03 15:33:40 bill Exp $
+ *  $Id: s_conf.h,v 7.186 2002/10/19 22:32:49 androsyn Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -231,6 +231,9 @@ struct config_file_entry
   int           use_egd;
   int		ping_cookie;
   int           use_help;
+#ifdef IPV6  
+  int		fallback_to_ip6_int;
+#endif
 #ifdef HAVE_LIBCRYPTO
   struct EncCapability *default_cipher_preference;
 #endif

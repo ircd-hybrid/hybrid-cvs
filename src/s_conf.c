@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.328 2002/10/12 10:39:05 db Exp $
+ *  $Id: s_conf.c,v 7.329 2002/10/19 22:32:51 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -788,7 +788,7 @@ static int
 hash_ip(struct irc_inaddr *addr)
 {
   int hash;
-  u_int32_t *ip = (unsigned long *)&PIN_ADDR(addr);
+  u_int32_t *ip = (u_int32_t *)&PIN_ADDR(addr);
 
   if(IN6_IS_ADDR_V4MAPPED((struct in6_addr *)ip))
   {

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.h,v 7.16 2002/05/24 23:34:08 androsyn Exp $
+ *  $Id: s_auth.h,v 7.17 2002/10/19 22:32:49 androsyn Exp $
  */
 
 #ifndef INCLUDED_s_auth_h
@@ -42,6 +42,9 @@ struct AuthRequest {
   unsigned int        flags;     /* current state of request */
   int                 fd;        /* file descriptor for auth queries */
   time_t              timeout;   /* time when query expires */
+#ifdef IPV6
+  unsigned int	      ip6_int;
+#endif
 };
 
 /*

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.257 2002/10/16 02:23:23 db Exp $
+ *  $Id: ircd_parser.y,v 1.258 2002/10/19 22:32:51 androsyn Exp $
  */
 
 %{
@@ -129,6 +129,7 @@ int   class_redirport_var;
 %token  EXEMPT
 %token  FAILED_OPER_NOTICE
 %token  FAKENAME
+%token  FALLBACK_IP6_INT
 %token  FLATTEN_LINKS
 %token  FNAME_FOPERLOG
 %token  FNAME_OPERLOG
@@ -1962,6 +1963,7 @@ general_item:       general_failed_oper_notice |
                     general_compression_level | general_client_flood |
                     general_throttle_time | general_havent_read_conf |
                     general_dot_in_ip6_addr | general_ping_cookie |
+                    general_fallback_to_ip6_int | 
                     error;
 
 general_failed_oper_notice:   FAILED_OPER_NOTICE '=' TYES ';'
@@ -2333,6 +2335,15 @@ general_use_help: USE_HELP '=' TYES ';'
 general_throttle_time: THROTTLE_TIME '=' timespec ';'
 {
  ConfigFileEntry.throttle_time = yylval.number;
+} ;
+
+general_fallback_to_ip6_int: FALLBACK_IP6_INT '=' TYES ';'
+{
+ ConfigFileEntry.fallback_to_ip6_int = 1;
+} |
+  FALLBACK_IP6_INT '=' TNO ';'
+{
+ ConfigFileEntry.fallback_to_ip6_int = 0;
 } ;
 
 general_oper_umodes: OPER_UMODES

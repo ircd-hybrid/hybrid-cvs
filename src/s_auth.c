@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.101 2002/10/11 19:57:49 db Exp $
+ *  $Id: s_auth.c,v 7.102 2002/10/19 22:32:51 androsyn Exp $
  */
 
 /*
@@ -220,10 +220,21 @@ auth_dns_callback(void* vptr, adns_answer* reply)
   else
     {
 #ifdef IPV6
+	
       if(*auth->client->localClient->sockhost == ':')
       {
 	strlcat(str, "0",HOSTLEN);
       }
+      if(auth->client->localClient->aftype == AF_INET6 && ConfigFileEntry.fallback_to_ip6_int == 1 && auth->ip6_int == 0)
+      {
+        struct Client *client = auth->client;
+        auth->ip6_int = 1;
+	MyFree(reply);
+	SetDNSPending(auth);
+        adns_getaddr(&client->localClient->ip, client->localClient->aftype, client->localClient->dns_query, 1);
+        return;
+      }
+
       if(auth->client->localClient->aftype == AF_INET6 && ConfigFileEntry.dot_in_ip6_addr == 1)
       {
         strlcat(str, auth->client->localClient->sockhost,HOSTLEN+1);
@@ -231,8 +242,10 @@ auth_dns_callback(void* vptr, adns_answer* reply)
         sendheader(auth->client, REPORT_FAIL_DNS);
       } else 
 #endif
-      strlcat(str, auth->client->localClient->sockhost,HOSTLEN+1); 
-      sendheader(auth->client, REPORT_FAIL_DNS);
+      {
+        strlcat(str, auth->client->localClient->sockhost,HOSTLEN+1); 
+        sendheader(auth->client, REPORT_FAIL_DNS);
+      }
     }
 
   MyFree(reply);
@@ -426,7 +439,7 @@ void start_auth(struct Client* client)
   sendheader(client, REPORT_DO_DNS);
 
   /* No DNS cache now, remember? -- adrian */
-  adns_getaddr(&client->localClient->ip, client->localClient->aftype, client->localClient->dns_query);
+  adns_getaddr(&client->localClient->ip, client->localClient->aftype, client->localClient->dns_query, 0);
   SetDNSPending(auth);
 
   start_auth_query(auth);
