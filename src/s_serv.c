@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.6 1999/08/19 06:25:21 tomh Exp $
+ *   $Id: s_serv.c,v 7.7 1999/08/20 05:06:12 tomh Exp $
  */
 #include "s_serv.h"
 #include "channel.h"
@@ -783,7 +783,7 @@ int server_estab(struct Client *cptr)
        yet - must be different each time and !=0, so we
        alternate between 1 and 2 -orabidoo
        */
-    for (chptr = channel; chptr; chptr = chptr->nextch)
+    for (chptr = GlobalChannelList; chptr; chptr = chptr->nextch)
       {
         for (l = chptr->members; l; l = l->next)
           {

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_names.c,v 7.1 1999/08/20 04:38:24 tomh Exp $
+ *   $Id: m_names.c,v 7.2 1999/08/20 05:06:12 tomh Exp $
  */
 #include "m_commands.h"
 #include "channel.h"
@@ -191,7 +191,7 @@ int m_names(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
    * First, do all visible channels (public and the one user self is)
    */
 
-  for (chptr = channel; chptr; chptr = chptr->nextch)
+  for (chptr = GlobalChannelList; chptr; chptr = chptr->nextch)
     {
       if ((chptr != ch2ptr) && !BadPtr(para))
         continue; /* -- wanted a specific channel */

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: hash.c,v 7.1 1999/08/03 01:41:29 tomh Exp $
+ *  $Id: hash.c,v 7.2 1999/08/20 05:06:11 tomh Exp $
  */
 #include "s_conf.h"
 #include "channel.h"
@@ -613,8 +613,8 @@ int m_hash(struct Client *cptr, struct Client *sptr,int parc,char *parv[])
 
         sendto_one(sptr,"NOTICE %s :Rehashing Channel List.", parv[0]);
         clear_channel_hash_table();
-        for (acptr = channel; acptr; acptr = acptr->nextch)
-          (void)add_to_channel_hash_table(acptr->chname, acptr);
+        for (acptr = GlobalChannelList; acptr; acptr = acptr->nextch)
+          add_to_channel_hash_table(acptr->chname, acptr);
         break;
       }
     case 'H' :
