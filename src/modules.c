@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.c,v 7.64 2001/06/04 04:05:43 db Exp $
+ * $Id: modules.c,v 7.65 2001/06/04 13:22:29 db Exp $
  */
 #include "config.h"
 
@@ -149,7 +149,7 @@ mod_clear_paths(void)
   struct module_path *pathst;
   dlink_node *node, *next;
 
-  for(node = mod_paths.head; node; next)
+  for(node = mod_paths.head; node; node = next)
     {
       next = node->next;
       pathst = (struct module_path *)node->data;
