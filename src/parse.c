@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.59 2000/12/25 01:29:02 db Exp $
+ *   $Id: parse.c,v 7.60 2000/12/25 04:05:08 db Exp $
  */
 #include "parse.h"
 #include "client.h"
@@ -75,7 +75,6 @@ int parse(struct Client *cptr, char *buffer, char *bufend)
   int             i;
   int             paramcount, mpara;
   int             handle_idx = -1;	/* Handler index */
-  char           *end;
   char*           numeric = 0;
   char*           ap;
   struct Message* mptr;
@@ -240,10 +239,6 @@ int parse(struct Client *cptr, char *buffer, char *bufend)
       if (paramcount > MAXPARA)
 		  paramcount = MAXPARA;
 	  
-	  end = s;
-	  while (*end++)
-		  ;
-	  
 	  while((ap = strsep(&s, " ")) != NULL) 
 		  if(*ap != '\0') 
 		  {
@@ -255,7 +250,7 @@ int parse(struct Client *cptr, char *buffer, char *bufend)
 				  while (*tendp++)
 					  ;
 				  
-				  if ( tendp < end ) /* more tokens to follow */
+				  if ( tendp < bufend ) /* more tokens to follow */
 					  ap [ strlen (ap) ] = ' '; 
 				  
 				  if (ap[0] == ':')
