@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.122 2003/09/17 17:16:50 bill Exp $
+ *  $Id: m_gline.c,v 1.123 2003/09/17 23:28:42 bill Exp $
  */
 
 #include "stdinc.h"
@@ -103,7 +103,7 @@ _moddeinit(void)
   delete_capability("GLN");
 }
 
-const char *_version = "$Revision: 1.122 $";
+const char *_version = "$Revision: 1.123 $";
 #endif
 
 /* mo_gline()
@@ -270,9 +270,6 @@ ms_gline(struct Client *client_p, struct Client *source_p,
   /* hyb-7 style gline (post beta3) */
   if (parc == 4 && IsPerson(source_p))
   {
-    assert(source_p->user != NULL);
-    assert(source_p->user->server != NULL);
-
     oper_nick   = source_p->name;
     oper_user   = source_p->username;
     oper_host   = source_p->host;
@@ -291,10 +288,23 @@ ms_gline(struct Client *client_p, struct Client *source_p,
     user        = parv[5];
     host        = parv[6];
     reason      = parv[7];
+
+    /*
+     * if we are dealing with an old style formatted gline,
+     * the gline message is originating from the oper's server,
+     * so we update source_p to point to the oper now, so that
+     * logging works down the line.  -bill
+     */
+    if ((source_p = find_client(oper_nick)) == NULL)
+      return;
+
   }
   /* none of the above */
   else
     return;
+
+  assert(source_p->user != NULL);
+  assert(source_p->user->server != NULL);
 
   /* Its plausible that the server and/or client dont actually exist,
    * and its faked, as the oper isnt sending the gline..
@@ -346,8 +356,7 @@ ms_gline(struct Client *client_p, struct Client *source_p,
      }
 
      ilog(L_TRACE, "#gline for %s@%s [%s] requested by %s!%s@%s on %s",
-          user, host, reason, source_p->name, source_p->username,
-          source_p->host, oper_server);
+          user, host, reason, oper_nick, oper_user, oper_host, oper_server); 
 
       sendto_realops_flags(UMODE_ALL, L_ALL,
 			   "%s!%s@%s on %s is requesting gline for [%s@%s] [%s]",
