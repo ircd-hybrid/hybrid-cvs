@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.315 2003/05/07 18:45:44 adx Exp $
+ *  $Id: s_serv.c,v 7.316 2003/05/08 23:05:53 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -2112,9 +2112,15 @@ serv_connect_callback(int fd, int status, void *data)
         /* We have an error, so report it and quit */
 	/* Admins get to see any IP, mere opers don't *sigh*
 	 */
+#ifdef HIDE_SERVERS_IPS
+        sendto_realops_flags(UMODE_ALL, L_ADMIN,
+                             "Error connecting to %s: %s",
+                             client_p->name, comm_errstr(status));
+#else
         sendto_realops_flags(UMODE_ALL, L_ADMIN,
 			     "Error connecting to %s[%s]: %s", client_p->name,
 			     client_p->host, comm_errstr(status));
+#endif
 	sendto_realops_flags(UMODE_ALL, L_OPER,
 			     "Error connecting to %s: %s",
 			     client_p->name, comm_errstr(status));
