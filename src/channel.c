@@ -34,7 +34,7 @@
  *                mode * -p etc. if flag was clear
  *
  *
- * $Id: channel.c,v 7.55 2000/10/22 05:33:30 db Exp $
+ * $Id: channel.c,v 7.56 2000/10/23 06:16:10 db Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -878,11 +878,9 @@ static  char    *fix_key(char *arg)
 
   for (s = t = (u_char *)arg; (c = *s); s++)
     {
-      if (c != ':' && c > 0x20)
-      {
-	c &= 0x7f;
+      c &= 0x7f;
+      if (c != ':' && c > ' ')
         *t++ = c;
-      }
     }
   *t = '\0';
   return arg;
