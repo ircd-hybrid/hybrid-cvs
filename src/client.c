@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.302 2002/10/10 18:49:30 androsyn Exp $
+ *  $Id: client.c,v 7.303 2002/11/30 13:39:50 androsyn Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -1005,6 +1005,12 @@ static void exit_one_client(struct Client *client_p,
   /* remove from global client list */
   remove_client_from_list(source_p);
 
+  if(MyConnect(source_p))
+  {
+    linebuf_donebuf(&source_p->localClient->buf_recvq);
+    linebuf_donebuf(&source_p->localClient->buf_sendq);
+  }
+  
   /* Check to see if the client isn't already on the dead list */
   assert(dlinkFind(&dead_list, source_p) == NULL);
   /* add to dead client dlist */
@@ -1146,8 +1152,6 @@ void dead_link(struct Client *client_p)
   if(IsClosing(client_p) || IsDead(client_p))
     return;
 
-  linebuf_donebuf(&client_p->localClient->buf_recvq);
-  linebuf_donebuf(&client_p->localClient->buf_sendq);
   if(client_p->flags & FLAGS_SENDQEX)
     notice = "Max SendQ exceeded";
   else
