@@ -1,3 +1,25 @@
+a1kmm       2003/01/31 08:17:58 EST	(20030131_2)
+
+  Modified files:
+    src                  channel.c 
+    modules/core         m_part.c m_kick.c 
+    include              channel.h 
+  Log:
+  - Move part_one_client to channel.c
+  - Convert kicks of yourself to parts. This is the simplest way to stop big
+    problems if a user kicks themselves and then exits during the kick.
+    Users should be using PART anyway to leave the channel, so this has a nice
+    side-effect of sending the right message. If it is discovered that this is
+    breaking clients it may need to be redesigned.
+  
+  Revision  Changes    Path
+  7.123     +3 -0      ircd-hybrid-7/include/channel.h
+  1.48      +8 -1      ircd-hybrid-7/modules/core/m_kick.c
+  1.60      +1 -131    ircd-hybrid-7/modules/core/m_part.c
+  7.352     +126 -0    ircd-hybrid-7/src/channel.c
+
+
+
 a1kmm       2003/01/31 07:53:10 EST	(20030131_1)
 
   Modified files:
@@ -34614,4 +34636,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4207 2003/01/31 12:53:13 a1kmm Exp $
+$Id: ChangeLog,v 7.4208 2003/01/31 13:18:01 a1kmm Exp $
