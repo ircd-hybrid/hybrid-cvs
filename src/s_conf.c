@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.32 2000/01/06 04:32:10 db Exp $
+ *  $Id: s_conf.c,v 7.33 2000/01/07 02:54:40 db Exp $
  */
 #include "s_conf.h"
 #include "channel.h"
@@ -1802,7 +1802,7 @@ static char *set_conf_flags(struct ConfItem *aconf,char *tmp)
 static void initconf(FBFILE* file, int use_include)
 {
   char             line[BUFSIZE];
-  char             quotedLine[2*BUFSIZE];
+  char             quotedLine[BUFSIZE];
   char*            p;
   int              ccount = 0;
   int              ncount = 0;
@@ -1956,6 +1956,8 @@ static void ReplaceQuotes(char* quotedLine,char *inputLine)
           in++;
           if(*in == '\\')
             *out = '\\';
+          else if(*in == '#')
+            *out = '#';
 	  else
 	    *out = quotes[ (unsigned int) (*in & 0x1F) ];
 	}
