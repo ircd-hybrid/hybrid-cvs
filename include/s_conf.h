@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.209 2003/05/08 09:39:19 michael Exp $
+ *  $Id: s_conf.h,v 7.210 2003/05/09 19:39:49 metalrock Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -407,6 +407,7 @@ extern int yylex(void);
 #define TOO_MANY        (-4)
 #define BANNED_CLIENT   (-5)
 #define TOO_FAST        (-6)
+#define BANNED_EXITED	(-7)
 
 #define CLEANUP_TKLINES_TIME 60
 #endif /* INCLUDED_s_conf_h */

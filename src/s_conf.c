@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.374 2003/05/08 21:36:16 metalrock Exp $
+ *  $Id: s_conf.c,v 7.375 2003/05/09 19:39:51 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -364,6 +364,7 @@ report_configured_links(struct Client *source_p, unsigned int mask)
  * 		  I_LINE_FULL    (-3) = I-line is full
  *		  TOO_MANY       (-4) = Too many connections from hostname
  * 		  BANNED_CLIENT  (-5) = K-lined
+ *		  BANNED_EXITED  (-7) = Banned client already exited
  * side effects - Ordinary client access check.
  *		  Look for conf lines which have the same
  * 		  status as the flags passed.
@@ -438,7 +439,11 @@ check_client(struct Client *client_p, struct Client *source_p, char *username)
     }
  
    case BANNED_CLIENT:
-      exit_client(client_p,client_p, &me, "*** Banned ");
+      exit_client(client_p,client_p, &me, "You are banned from this server");
+      ServerStats->is_ref++;
+      break;
+
+    case BANNED_EXITED:
       ServerStats->is_ref++;
       break;
 
@@ -463,6 +468,7 @@ verify_access(struct Client* client_p, const char* username)
   struct ConfItem *aconf;
   struct ConfItem *gkill_conf;
   char non_ident[USERLEN + 1];
+  static char buffer[TOPICLEN + 1];
 
   if (IsGotId(client_p))
   {
@@ -508,7 +514,9 @@ verify_access(struct Client* client_p, const char* username)
 	    sendto_one(client_p, ":%s NOTICE %s :*** Banned %s",
 		       me.name, client_p->name, 
 		       gkill_conf->passwd);
-	    return(BANNED_CLIENT);
+            snprintf(buffer, TOPICLEN, "%s",gkill_conf->passwd);
+            exit_client(client_p, client_p, &me, buffer);
+            return(BANNED_EXITED);
 	  }
 	}
       }
@@ -535,12 +543,19 @@ verify_access(struct Client* client_p, const char* username)
     else if (IsConfKill(aconf))
     {
       if (ConfigFileEntry.kline_with_reason)
+      {
         sendto_one(client_p, ":%s NOTICE %s :*** Banned %s",
                    me.name, client_p->name, aconf->passwd);
-      return(BANNED_CLIENT);
+
+        snprintf(buffer, TOPICLEN, "%s", aconf->passwd);
+
+        if (strlen(buffer) > (size_t) TOPICLEN)
+          buffer[TOPICLEN] = '\0';
+        exit_client(client_p, client_p, &me, buffer);
+      }
+      return(BANNED_EXITED);
     }
   }
-
   return(NOT_AUTHORIZED);
 }
 
