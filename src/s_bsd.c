@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.139 2001/06/26 20:51:42 androsyn Exp $
+ *  $Id: s_bsd.c,v 7.140 2001/07/17 21:06:11 leeh Exp $
  */
 #include "config.h"
 #include "fdlist.h"
@@ -476,7 +476,7 @@ void error_exit_client(struct Client* client_p, int error)
   fd_close(client_p->fd);
   client_p->fd = -1;
   
-  detach_client(client_p, errmsg);
+  exit_client(client_p, client_p, &me, errmsg);
 }
 
 /*

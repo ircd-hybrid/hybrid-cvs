@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.145 2001/07/03 13:32:27 leeh Exp $
+ * $Id: s_conf.h,v 7.146 2001/07/17 21:06:00 leeh Exp $
  */
 
 #include "setup.h"
@@ -133,9 +133,8 @@ struct ConfItem
 #define CONF_FLAGS_LAZY_LINK            0x00008000
 #define CONF_FLAGS_ENCRYPTED            0x00010000
 #define CONF_FLAGS_COMPRESSED           0x00020000
-#define CONF_FLAGS_PERSISTANT           0x00040000
-#define CONF_FLAGS_TEMPORARY            0x00080000
-#define CONF_FLAGS_CRYPTLINK            0x00100000
+#define CONF_FLAGS_TEMPORARY            0x00040000
+#define CONF_FLAGS_CRYPTLINK            0x00080000
 /* Macros for struct ConfItem */
 
 #define IsLimitIp(x)            ((x)->flags & CONF_FLAGS_LIMIT_IP)
@@ -229,7 +228,6 @@ struct config_file_entry
   int           max_targets;
   int           links_delay;
   int           caller_id_wait;
-  int           persist_expire;
   int           min_nonwildcard;
   int           default_floodcount;
   int           client_flood;

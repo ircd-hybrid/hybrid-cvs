@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.157 2001/06/11 19:56:52 leeh Exp $
+ *  $Id: s_user.c,v 7.158 2001/07/17 21:06:13 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -96,9 +96,6 @@ static struct flag_item user_modes[] =
   {FLAGS_LOCOPS, 'l'},
   {FLAGS_NCHANGE, 'n'},
   {FLAGS_OPER, 'o'},
-#ifdef PERSISTANT_CLIENTS
-  {FLAGS_PERSISTANT, 'p'},
-#endif
   {FLAGS_REJ, 'r'},
   {FLAGS_SERVNOTICE, 's'},
   {FLAGS_UNAUTH, 'u'},
@@ -161,11 +158,7 @@ int user_modes_from_c_to_bitmask[] =
   0,            /* m */
   FLAGS_NCHANGE, /* n */
   FLAGS_OPER,   /* o */
-#ifdef PERSISTANT_CLIENTS
-  FLAGS_PERSISTANT,/* p */
-#else
   0,               /* p */
-#endif
   0,            /* q */
   FLAGS_REJ,    /* r */
   FLAGS_SERVNOTICE, /* s */
@@ -1119,28 +1112,6 @@ int user_mode(struct Client *client_p, struct Client *source_p, int parc, char *
                  me.name,parv[0]);
       source_p->umodes &= ~FLAGS_NCHANGE; /* only tcm's really need this */
     }
-
-#ifdef PERSISTANT_CLIENTS
-  if (MyConnect(source_p) && (source_p->umodes & ~setflags &
-      FLAGS_PERSISTANT))
-    {
-     for (ptr=source_p->localClient->confs.head; ptr; ptr=ptr->next)
-       {
-        aconf = (struct ConfItem*)ptr->data;
-        if ((aconf->status & CONF_CLIENT))
-          {
-           if (!(aconf->flags & CONF_FLAGS_PERSISTANT))
-             {
-              sendto_one(source_p,
-                ":%s NOTICE %s :Your auth block does not allow +p",
-                me.name, source_p->name);
-              source_p->umodes &= ~FLAGS_PERSISTANT;
-             }
-           break;
-          }
-       }
-    }
-#endif
 
   if (MyConnect(source_p) && (source_p->umodes & FLAGS_ADMIN) && !IsSetOperAdmin(source_p))
     {

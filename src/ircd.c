@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.166 2001/07/02 14:21:14 androsyn Exp $
+ * $Id: ircd.c,v 7.167 2001/07/17 21:06:10 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -126,7 +126,6 @@ dlink_list lclient_list;        /* local clients only ON this server */
 dlink_list serv_list;           /* local servers to this server ONLY */
 dlink_list oper_list;           /* our opers, duplicated in lclient_list */
 dlink_list dead_list;           /* clients that have exited, to be freed */
-dlink_list persist_list;        /* Persisting(i.e. no open fd) clients. */
 
 dlink_list lazylink_channels;   /* known about lazylink channels on HUB */
 dlink_list lazylink_nicks;	/* known about lazylink nicks on HUB */

@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.254 2001/07/17 19:32:01 leeh Exp $
+ *  $Id: s_conf.c,v 7.255 2001/07/17 21:06:12 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -1436,7 +1436,6 @@ static void set_default_conf(void)
   ConfigChannel.max_chans_per_user = 15;
   ConfigChannel.maxbans = 25;
 
-  ConfigFileEntry.persist_expire = 30 * 60;
   ConfigFileEntry.min_nonwildcard = 4;
   ConfigFileEntry.default_floodcount = 8;
   ConfigFileEntry.client_flood = CLIENT_FLOOD_DEFAULT;
