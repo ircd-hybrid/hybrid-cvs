@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_client.c,v 1.7 2001/01/05 06:14:57 spookey Exp $
+ *   $Id: m_client.c,v 1.8 2001/01/05 11:57:31 toot Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -49,14 +49,13 @@
 
 static int nick_from_server(struct Client *, struct Client *, int, char **,
                             time_t, char *);
-static int nick_equal_server(struct Client *cptr, struct Client *sptr,
-                             char *nick);
+
 int clean_nick_name(char* nick);
 
 static int ms_client(struct Client*, struct Client*, int, char**);
 
 struct Message client_msgtab = {
-  "CLIENT", 0, 1, 0, MFLG_SLOW, 0,
+  "CLIENT", 0, 10, 0, MFLG_SLOW, 0,
   {m_unregistered, m_ignore, ms_client, m_ignore}
 };
 
@@ -100,15 +99,6 @@ static int ms_client(struct Client *cptr, struct Client *sptr,
   char    *id;
   char    *name;
   
-  if (parc < 10)
-    {
-      sendto_realops_flags(FLAGS_ALL, "Warning: Received a CLIENT "
-        "message from %s(via %s) with too few(%d) parameters.", sptr->name,
-        cptr->name, parc);
-      sendto_one(sptr, form_str(ERR_NONICKNAMEGIVEN), me.name, parv[0]);
-      return 0;
-    }
-
   id = parv[8];
   name = parv[9];
   
