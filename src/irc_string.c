@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: irc_string.c,v 7.31 2001/05/24 17:42:11 androsyn Exp $
+ *  $Id: irc_string.c,v 7.32 2001/06/06 15:39:55 androsyn Exp $
  */
 #include "config.h"
 #include "tools.h"
@@ -398,8 +398,9 @@ inet_ntop6(const unsigned char *src, char *dst, unsigned int size)
 	    (IN6ADDRSZ / INT16SZ))
 		*tp++ = ':';
 /* XXX: This is probably broken */
-	*tp++ = '.';
 #if 0
+	*tp++ = '.';
+
 	*tp++ = 'i';
 	*tp++ = 'p';
 	*tp++ = '6';
