@@ -1,3 +1,16 @@
+db          2002/08/22 12:08:22 EDT	(20020822_1)
+
+  Modified files:
+    src                  s_user.c 
+  Log:
+  - fixed typo which had 'S' (capital S) instead of lowercase 's'
+    reported by Justin Hammond
+  
+  Revision  Changes    Path
+  7.208     +1 -1      ircd-hybrid-7/src/s_user.c
+
+
+
 lusky       2002/08/21 22:01:39 EDT	(20020822_0)
 
   Modified files:
@@ -31439,4 +31452,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3994 2002/08/22 02:01:42 lusky Exp $
+$Id: ChangeLog,v 7.3995 2002/08/22 16:08:24 db Exp $
