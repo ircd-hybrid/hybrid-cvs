@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.129 2003/05/24 07:01:03 db Exp $
+ *  $Id: s_auth.c,v 7.130 2003/05/26 18:35:18 joshk Exp $
  */
 
 /*
@@ -416,7 +416,9 @@ start_auth(struct Client* client)
   SetDNSPending(auth);
   dlinkAdd(auth, &auth->dns_node, &auth_doing_dns_list);
 
-  (void)start_auth_query(auth);
+  if(ConfigFileEntry.disable_auth == 0)
+    (void)start_auth_query(auth);
+
 
 }
 

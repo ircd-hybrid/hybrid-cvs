@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.227 2003/05/25 05:56:34 db Exp $
+ *  $Id: s_conf.h,v 7.228 2003/05/26 18:35:16 joshk Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -255,6 +255,7 @@ struct config_file_entry
   int           throttle_time;
   int           use_egd;
   int		ping_cookie;
+  int		disable_auth;
   int		fallback_to_ip6_int;
 #ifdef HAVE_LIBCRYPTO
   struct EncCapability *default_cipher_preference;

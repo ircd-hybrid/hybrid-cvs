@@ -3,7 +3,7 @@
  *
  * Written by ejb, wcampbel, db, leeh and others
  *
- * $Id: example.conf.quick,v 1.5 2003/05/24 16:15:09 bill Exp $
+ * $Id: example.conf.quick,v 1.6 2003/05/26 18:35:14 joshk Exp $
  */
 
 /* IMPORTANT NOTES:
@@ -300,6 +300,7 @@ serverhide {
 };
 
 general {
+	disable_auth = no;
 	default_floodcount = 10;
 	failed_oper_notice = yes;
 	dots_in_ident=2;

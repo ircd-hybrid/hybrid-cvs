@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.294 2003/05/26 03:06:18 joshk Exp $
+ *  $Id: ircd_parser.y,v 1.295 2003/05/26 18:35:18 joshk Exp $
  */
 
 %{
@@ -124,6 +124,7 @@ init_parser_confs(void)
 %token  DENY
 %token  DESCRIPTION
 %token  DIE
+%token  DISABLE_AUTH
 %token  DISABLE_HIDDEN
 %token  DISABLE_LOCAL_CHANNELS
 %token  DISABLE_REMOTE_COMMANDS
@@ -2198,7 +2199,7 @@ general_item:       general_failed_oper_notice |
                     general_compression_level | general_client_flood |
                     general_throttle_time | general_havent_read_conf |
                     general_dot_in_ip6_addr | general_ping_cookie |
-                    general_fallback_to_ip6_int | 
+                    general_disable_auth | general_fallback_to_ip6_int | 
                     error;
 
 general_failed_oper_notice: FAILED_OPER_NOTICE '=' TYES ';'
@@ -2603,6 +2604,15 @@ general_ping_cookie: PING_COOKIE '=' TYES ';'
   if (ypass == 2)
     ConfigFileEntry.ping_cookie = 0;
 };
+
+general_disable_auth: DISABLE_AUTH '=' TYES ';'
+{
+  ConfigFileEntry.disable_auth = 1;
+} |
+  DISABLE_AUTH '=' TNO ';'
+{
+  ConfigFileEntry.disable_auth = 0;
+} ;
 
 general_throttle_time: THROTTLE_TIME '=' timespec ';'
 {
