@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.79 2003/03/31 00:21:59 michael Exp $
+ *  $Id: channel_mode.c,v 7.80 2003/03/31 00:29:08 michael Exp $
  */
 
 #include "stdinc.h"
@@ -683,7 +683,7 @@ fix_key_old(char *arg)
 #define SM_ERR_NOTS             0x00000001      /* No TS on channel */
 #define SM_ERR_NOOPS            0x00000002      /* No chan ops */
 #define SM_ERR_UNKNOWN          0x00000004
-#define SM_ERR_RPL_B            0x00000000
+#define SM_ERR_RPL_B            0x00000008
 #define SM_ERR_RPL_E            0x00000010
 #define SM_ERR_NOTONCHANNEL     0x00000020      /* Not on channel */
 #define SM_ERR_RESTRICTED       0x00000040      /* Restricted chanop */
