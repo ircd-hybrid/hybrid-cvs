@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.124 2003/06/07 15:20:29 adx Exp $
+ *  $Id: m_message.c,v 1.125 2003/06/12 15:17:22 michael Exp $
  */
 
 #include "stdinc.h"
@@ -119,7 +119,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.124 $";
+const char *_version = "$Revision: 1.125 $";
 #endif
 
 /*
@@ -337,8 +337,10 @@ build_target_list(int p_or_n, const char *command, struct Client *client_p,
     {
       if (*nick == '@')
         type |= CHFL_CHANOP;
+      else if (*nick == '%')
+        type |= CHFL_CHANOP | CHFL_HALFOP;
       else if (*nick == '+')
-        type |= CHFL_CHANOP | CHFL_VOICE;
+        type |= CHFL_CHANOP | CHFL_HALFOP | CHFL_VOICE;
       else
         break;
       nick++;
@@ -361,7 +363,7 @@ build_target_list(int p_or_n, const char *command, struct Client *client_p,
       if ((chptr = hash_find_channel(nick)) != NULL)
       {
         if (!has_member_flags(find_channel_link(source_p, chptr),
-                              CHFL_CHANOP | CHFL_VOICE))
+                              CHFL_CHANOP|CHFL_HALFOP|CHFL_VOICE))
         {
           sendto_one(source_p, form_str(ERR_CHANOPRIVSNEEDED),
                      me.name, source_p->name, with_prefix);
@@ -498,6 +500,11 @@ msg_channel_flags(int p_or_n, const char *command, struct Client *client_p,
   {
     type = CHFL_VOICE|CHFL_CHANOP;
     c = '+';
+  }
+  else if (flags & CHFL_HALFOP)
+  {
+    type = CHFL_HALFOP|CHFL_CHANOP;
+    c = '%';
   }
   else
   {

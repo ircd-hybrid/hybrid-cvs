@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_knock.c,v 1.61 2003/05/31 18:52:50 adx Exp $
+ *  $Id: m_knock.c,v 1.62 2003/06/12 15:17:20 michael Exp $
  */
 
 #include "stdinc.h"
@@ -83,7 +83,7 @@ _moddeinit(void)
   delete_capability("KNOCK");
 }
 
-const char *_version = "$Revision: 1.61 $";
+const char *_version = "$Revision: 1.62 $";
 #endif
 
 /* m_knock
@@ -335,9 +335,9 @@ send_knock(struct Client *client_p, struct Client *source_p,
                me.name, source_p->name, name);
 
   if (source_p->user != NULL)
-    {
+  {
       if (ConfigChannel.use_knock)
-        sendto_channel_local(CHFL_CHANOP,
+        sendto_channel_local(CHFL_CHANOP|CHFL_HALFOP,
   			     chptr, form_str(RPL_KNOCK),
 			     me.name, name, name,
 			     source_p->name, source_p->username,
@@ -346,7 +346,7 @@ send_knock(struct Client *client_p, struct Client *source_p,
       sendto_server(client_p, source_p, chptr, CAP_KNOCK, NOCAPS, LL_ICLIENT,
                     ":%s KNOCK %s %s",
 		    source_p->name, name, key != NULL ? key : "");
-    }
+  }
 }
 
 /* is_banned_knock()
@@ -409,7 +409,7 @@ check_banned_knock(struct Channel *chptr, struct Client *who,
       actualExcept = except->data;
 
       if (match(actualExcept->banstr, s) || match(actualExcept->banstr, s2))
-        return CHFL_EXCEPTION;
+        return(CHFL_EXCEPTION);
     }
   }
 

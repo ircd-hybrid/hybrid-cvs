@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.113 2003/06/08 14:38:59 michael Exp $
+ *  $Id: channel_mode.c,v 7.114 2003/06/12 15:17:25 michael Exp $
  */
 
 #include "stdinc.h"
@@ -73,6 +73,11 @@ static void chm_key(struct Client *, struct Client *, struct Channel *,
 static void chm_op(struct Client *, struct Client *, struct Channel *, int,
                    int *, char **, int *, int, int, char, void *,
                    const char *chname);
+#ifdef USE_HALFOPS
+static void chm_hop(struct Client *, struct Client *, struct Channel *, int,
+                   int *, char **, int *, int, int, char, void *,
+                   const char *chname);
+#endif
 
 static void chm_voice(struct Client *, struct Client *, struct Channel *,
                       int, int *, char **, int *, int, int, char, void *,
@@ -654,16 +659,19 @@ chm_nosuch(struct Client *client_p, struct Client *source_p,
 }
 
 static void
-chm_simple(struct Client *client_p, struct Client *source_p,
-           struct Channel *chptr, int parc, int *parn,
-           char **parv, int *errors, int alev, int dir, char c, void *d,
-           const char *chname)
+chm_simple(struct Client *client_p, struct Client *source_p, struct Channel *chptr,
+           int parc, int *parn, char **parv, int *errors, int alev, int dir,
+           char c, void *d, const char *chname)
 {
   long mode_type;
 
   mode_type = (long)d;
 
-  if (alev < CHACCESS_CHANOP)
+  /* dont allow halfops to set +-p, as this controls whether they can set
+   * +-h or not.. all other simple modes are ok   
+   */ 
+  if ((alev < CHACCESS_HALFOP) ||
+      ((mode_type == MODE_PRIVATE) && (alev < CHACCESS_CHANOP)))
   {
     if (!(*errors & SM_ERR_NOOPS))
       sendto_one(source_p, form_str(alev == CHACCESS_NOTONCHAN ?
@@ -743,7 +751,7 @@ chm_ban(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if (alev < CHACCESS_CHANOP)
+  if (alev < CHACCESS_HALFOP)
   {
     if (!(*errors & SM_ERR_NOOPS))
       sendto_one(source_p, form_str(alev == CHACCESS_NOTONCHAN ?
@@ -837,7 +845,7 @@ chm_except(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if (alev < CHACCESS_CHANOP)
+  if (alev < CHACCESS_HALFOP)
   {
     if (!(*errors & SM_ERR_NOOPS))
       sendto_one(source_p, form_str(alev == CHACCESS_NOTONCHAN ?
@@ -940,7 +948,7 @@ chm_invex(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if (alev < CHACCESS_CHANOP)
+  if (alev < CHACCESS_HALFOP)
   {
     if (!(*errors & SM_ERR_NOOPS))
       sendto_one(source_p, form_str(alev == CHACCESS_NOTONCHAN ?
@@ -1131,6 +1139,140 @@ chm_op(struct Client *client_p, struct Client *source_p,
   }
 }
 
+#ifdef USE_HALFOPS
+static void
+chm_hop(struct Client *client_p, struct Client *source_p,
+       struct Channel *chptr, int parc, int *parn,
+       char **parv, int *errors, int alev, int dir, char c, void *d,
+       const char *chname)
+{
+  int i;
+  char *opnick;
+  struct Client *targ_p;
+  struct Membership *member;
+
+  /* *sigh* - dont allow halfops to set +/-h, they could fully control a
+   * channel if there were no ops - it doesnt solve anything.. MODE_PRIVATE   
+   * when used with MODE_SECRET is paranoid - cant use +p   
+   *   
+   * it needs to be optional per channel - but not via +p, that or remove   
+   * paranoid.. -- fl_   
+   *   
+   * +p means paranoid, it is useless for anything else on modern IRC, as   
+   * list isn't really usable. If you want to have a private channel these   
+   * days, you set it +s. Halfops can no longer remove simple modes when   
+   * +p is set(although they can set +p) so it is safe to use this to   
+   * control whether they can (de)halfop...   
+   */
+  if (alev <
+      ((chptr->mode.mode & MODE_PRIVATE) ?
+       CHACCESS_CHANOP : CHACCESS_HALFOP))
+  {
+    if (!(*errors & SM_ERR_NOOPS))
+      sendto_one(source_p, form_str(alev == CHACCESS_NOTONCHAN ?
+                                    ERR_NOTONCHANNEL : ERR_CHANOPRIVSNEEDED),
+                 me.name, source_p->name, chname); 
+    *errors |= SM_ERR_NOOPS;
+    return;
+  }
+#if 0
+  if (alev < CHACCESS_CHANOP)
+  {
+    if (!(*errors & SM_ERR_NOOPS))
+      sendto_one(source_p, form_str(alev == CHACCESS_NOTONCHAN ?
+                                    ERR_NOTONCHANNEL : ERR_CHANOPRIVSNEEDED),
+                 me.name, source_p->name, chname);
+    *errors |= SM_ERR_NOOPS;
+    return;
+  }
+#endif
+  if ((dir == MODE_QUERY) || (parc <= *parn))
+    return;
+
+  if (IsRestricted(source_p) && (dir == MODE_ADD))
+  {
+    if (!(*errors & SM_ERR_RESTRICTED))
+      sendto_one(source_p,
+                 ":%s NOTICE %s :*** Notice -- You are restricted and cannot "
+                 "chanop others", me.name, source_p->name);
+
+    *errors |= SM_ERR_RESTRICTED;
+    return;
+  }
+
+  opnick = parv[(*parn)++];
+
+  if ((targ_p = find_chasing(source_p, opnick, NULL)) == NULL)
+    return;
+  if (!IsClient(targ_p))
+    return;
+
+  if ((member = find_channel_link(targ_p, chptr)) == NULL)
+  {
+    if (!(*errors & SM_ERR_NOTONCHANNEL))
+      sendto_one(source_p, form_str(ERR_USERNOTINCHANNEL), me.name,
+                 source_p->name, opnick, chname);
+    *errors |= SM_ERR_NOTONCHANNEL;
+    return;
+  }
+
+  if (MyClient(source_p) && (++mode_limit > MAXMODEPARAMS))
+    return;
+
+  /* no redundant mode changes */
+  if (dir == MODE_ADD &&  has_member_flags(member, CHFL_HALFOP))
+    return;
+  if (dir == MODE_DEL && !has_member_flags(member, CHFL_HALFOP))
+    return;
+
+  if (dir == MODE_ADD)
+  {
+    for (i = 0; i < mode_count; i++)
+    {
+      if (mode_changes[i].dir == MODE_DEL && mode_changes[i].letter == 'h'
+          && mode_changes[i].client == targ_p)
+      {
+        mode_changes[i].letter = 0;
+        return;
+      }
+    }
+    mode_changes[mode_count].letter = 'h';
+    mode_changes[mode_count].dir = MODE_ADD;
+    mode_changes[mode_count].caps = 0;
+    mode_changes[mode_count].nocaps = 0;
+    mode_changes[mode_count].mems = ALL_MEMBERS;
+    mode_changes[mode_count].id = targ_p->id;
+    mode_changes[mode_count].arg = targ_p->name;
+    mode_changes[mode_count++].client = targ_p;
+
+    change_channel_membership(member, CHFL_HALFOP, CHFL_DEOPPED);
+  }
+  else
+  {
+    for (i = 0; i < mode_count; i++)
+    {
+      if (mode_changes[i].dir == MODE_ADD && mode_changes[i].letter == 'h'
+          && mode_changes[i].client == targ_p)
+      {
+        mode_changes[i].letter = 0;
+        return;
+      }
+    }
+
+    mode_changes[mode_count].letter = 'h';
+    mode_changes[mode_count].dir = MODE_DEL;
+    mode_changes[mode_count].caps = 0;
+    mode_changes[mode_count].nocaps = 0;
+    mode_changes[mode_count].mems = ALL_MEMBERS;
+    mode_changes[mode_count].id = targ_p->id;
+    mode_changes[mode_count].arg = targ_p->name;
+    mode_changes[mode_count++].client = targ_p;
+
+    change_channel_membership(member, 0, CHFL_HALFOP);
+  }
+}
+#endif
+
 static void
 chm_voice(struct Client *client_p, struct Client *source_p,
           struct Channel *chptr, int parc, int *parn,
@@ -1142,7 +1284,7 @@ chm_voice(struct Client *client_p, struct Client *source_p,
   struct Client *targ_p;
   struct Membership *member;
 
-  if (alev < CHACCESS_CHANOP)
+  if (alev < CHACCESS_HALFOP)
   {
     if (!(*errors & SM_ERR_NOOPS))
       sendto_one(source_p, form_str(alev == CHACCESS_NOTONCHAN ?
@@ -1237,7 +1379,7 @@ chm_limit(struct Client *client_p, struct Client *source_p,
   int i, limit;
   char *lstr;
 
-  if (alev < CHACCESS_CHANOP)
+  if (alev < CHACCESS_HALFOP)
   {
     if (!(*errors & SM_ERR_NOOPS))
       sendto_one(source_p, form_str(alev == CHACCESS_NOTONCHAN ?
@@ -1302,7 +1444,7 @@ chm_key(struct Client *client_p, struct Client *source_p,
   int i;
   char *key;
 
-  if (alev < CHACCESS_CHANOP)
+  if (alev < CHACCESS_HALFOP)
   {
     if (!(*errors & SM_ERR_NOOPS))
       sendto_one(source_p, form_str(alev == CHACCESS_NOTONCHAN ?
@@ -1417,7 +1559,11 @@ static struct ChannelMode ModeTable[255] =
   {chm_except, NULL},                             /* e */
   {chm_nosuch, NULL},                             /* f */
   {chm_nosuch, NULL},                             /* g */
+#ifdef USE_HALFOPS
+  {chm_hop, NULL},                                /* h */
+#else
   {chm_nosuch, NULL},				  /* h */
+#endif
   {chm_simple, (void *) MODE_INVITEONLY},         /* i */
   {chm_nosuch, NULL},                             /* j */
   {chm_key, NULL},                                /* k */
@@ -1459,6 +1605,9 @@ get_channel_access(struct Client *source_p, struct Channel *chptr)
 
   if (has_member_flags(member, CHFL_CHANOP))
     return(CHACCESS_CHANOP);
+
+  if (has_member_flags(member, CHFL_HALFOP))
+    return(CHACCESS_HALFOP);
 
   return(CHACCESS_PEON);
 }

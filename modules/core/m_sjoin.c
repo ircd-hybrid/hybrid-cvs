@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.161 2003/06/12 01:08:14 metalrock Exp $
+ *  $Id: m_sjoin.c,v 1.162 2003/06/12 15:17:22 michael Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.161 $";
+const char *_version = "$Revision: 1.162 $";
 #endif
 
 /* ms_sjoin()
@@ -101,7 +101,6 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   int            args = 0;
   int            keep_our_modes = 1;
   int            keep_new_modes = 1;
-  int            doesop = 0;
   int            fl;
   int            people = 0;
   int		 num_prefix=0;
@@ -182,7 +181,6 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
     return; /* channel name too long? */
 
   oldts   = chptr->channelts;
-  doesop  = (parv[4 + args][0] == '@' || parv[4 + args][1] == '@');
   oldmode = &chptr->mode;
 
   if (ConfigFileEntry.ignore_bogus_ts)
@@ -313,7 +311,12 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
     fl = 0;
     num_prefix = 0;
 
+    /* XXXXXXXX THIS IS JUST DUMB */
+#ifdef USE_HALFOP
+    for (i = 0; i < 3; i++)
+#else
     for (i = 0; i < 2; i++)
+#endif
     {
       if (*s == '@')
       {
@@ -325,6 +328,18 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
         }
 	s++;
       }
+#ifdef USE_HALFOPS
+      else if (*s == '%')
+      {
+        fl |= CHFL_HALFOP;
+        if (keep_new_modes)
+        {
+          *nhops++ = *s;
+          num_prefix++;
+        }
+        s++;
+      }
+#endif
       else if (*s == '+')
       {
         fl |= CHFL_VOICE;
@@ -358,7 +373,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
 
     if (!keep_new_modes)
     {
-      if (fl & CHFL_CHANOP)
+      if (fl & (CHFL_CHANOP|CHFL_HALFOP))
         fl = CHFL_DEOPPED;
       else
         fl = 0;
@@ -382,21 +397,21 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
 
         /* Ignore servers we won't tell anyway */
         if (!chptr->lazyLinkChannelExists &
-            (lclient_p->localClient->serverMask) )
+            (lclient_p->localClient->serverMask))
           continue;
 
         /* Ignore servers that already know target_p */
         if (!(target_p->lazyLinkClientExists &
-	    lclient_p->localClient->serverMask) )
+	    lclient_p->localClient->serverMask))
         {
 	  /* Tell LazyLink Leaf about client_p,
 	   * as the leaf is about to get a SJOIN */
-	  sendnick_TS( lclient_p, target_p );
+	  sendnick_TS(lclient_p, target_p);
           add_lazylinkclient(lclient_p,target_p);
         }
       }
     }
-      
+
     if (!IsMember(target_p, chptr))
     {
       add_user_to_channel(chptr, target_p, fl);
@@ -409,53 +424,63 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
     {
       *mbuf++ = 'o';
       para[pargs++] = s;
-      /* a +ov user.. bleh */
-      if (fl & CHFL_VOICE)
+
+      if (pargs >= MAXMODEPARAMS)
       {
-        /* its possible the +o has filled up MAXMODEPARAMS, if so, start
-         * a new buffer
-         */
-        if (pargs >= MAXMODEPARAMS)
-        {
-          *mbuf = '\0';
-          sendto_channel_local(ALL_MEMBERS, chptr,
-	                       ":%s MODE %s %s %s %s %s %s",
-		  	       (IsHidden(source_p) ||
-			       ConfigServerHide.hide_servers) ?
-			       me.name : source_p->name, 
-			       chptr->chname,
-			       modebuf, para[0], para[1], para[2], para[3]);
-          mbuf = modebuf;
-	  *mbuf++ = '+';
-	  para[0] = para[1] = para[2] = para[3] = "";
-	  pargs = 0;
-        }
-        *mbuf++ = 'v';
-        para[pargs++] = s;
+        *mbuf = '\0';
+        sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s %s %s %s %s %s",
+                             (IsHidden(source_p) || ConfigServerHide.hide_servers) ?
+                             me.name : source_p->name, chptr->chname,
+                             modebuf, para[0], para[1], para[2], para[3]);
+        mbuf = modebuf;
+        *mbuf++ = '+';
+
+        para[0] = para[1] = para[2] = para[3] = "";
+        pargs = 0;
       }
     }
-    else if (fl & CHFL_VOICE)
+#ifdef USE_HALFOPS
+    if (fl & CHFL_HALFOP)
+    {
+      *mbuf++ = 'h';
+      para[pargs++] = s;
+
+      if (pargs >= MAXMODEPARAMS)
+      {
+        *mbuf = '\0';
+        sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s %s %s %s %s %s",
+                             (IsHidden(source_p) || ConfigServerHide.hide_servers) ?
+                             me.name : source_p->name, chptr->chname,
+                             modebuf, para[0], para[1], para[2], para[3]);
+        mbuf = modebuf;
+        *mbuf++ = '+';
+
+        para[0] = para[1] = para[2] = para[3] = "";
+        pargs = 0;
+      }
+    }
+#endif
+    if (fl & CHFL_VOICE)
     {
       *mbuf++ = 'v';
       para[pargs++] = s;
+
+      if (pargs >= MAXMODEPARAMS)
+      {
+        *mbuf = '\0';
+        sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s %s %s %s %s %s",
+                             (IsHidden(source_p) || ConfigServerHide.hide_servers) ?
+                             me.name : source_p->name, chptr->chname,
+                             modebuf, para[0], para[1], para[2], para[3]);
+        mbuf = modebuf;
+        *mbuf++ = '+';
+
+        para[0] = para[1] = para[2] = para[3] = "";
+        pargs = 0;
+      }
     }
 
-    if (pargs >= MAXMODEPARAMS)
-    {
-      *mbuf = '\0';
-      sendto_channel_local(ALL_MEMBERS, chptr,
-                           ":%s MODE %s %s %s %s %s %s",
-                           (IsHidden(source_p) || ConfigServerHide.hide_servers) ?
-                           me.name : source_p->name,
-                           chptr->chname,
-                           modebuf, para[0],para[1],para[2],para[3]);
-      mbuf = modebuf;
-      *mbuf++ = '+';
-      para[0] = para[1] = para[2] = para[3] = "";
-      pargs = 0;
-    }
-
-    nextnick:
+nextnick:
     /* p points to the next nick */
     s = p;
 
@@ -507,7 +532,8 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
     if (!parv[4 + args][0])
       return;
 
-    sendto_one(target_p, "%s%s", buf, sjbuf_nhops);
+    sendto_one(target_p, "%s%s",
+               buf, sjbuf_nhops);
   }
 }
 
@@ -631,6 +657,9 @@ static void
 remove_our_modes(struct Channel *chptr, struct Client *source_p)
 {
   remove_a_mode(chptr, source_p, CHFL_CHANOP, 'o');
+#ifdef USE_HALFOPS
+  remove_a_mode(chptr, source_p, CHFL_HALFOP, 'h');
+#endif
   remove_a_mode(chptr, source_p, CHFL_VOICE, 'v');
 }
 

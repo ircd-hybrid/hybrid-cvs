@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_part.c,v 1.73 2003/06/07 15:20:29 adx Exp $
+ *  $Id: m_part.c,v 1.74 2003/06/12 15:17:22 michael Exp $
  */
 
 #include "stdinc.h"
@@ -42,7 +42,7 @@
 #include "s_conf.h"
 #include "packet.h"
 
-static void m_part(struct Client*, struct Client*, int, char**);
+static void m_part(struct Client *, struct Client *, int, char **);
 
 struct Message part_msgtab = {
   "PART", 0, 0, 2, 0, MFLG_SLOW, 0,
@@ -61,12 +61,12 @@ _moddeinit(void)
 {
   mod_del_cmd(&part_msgtab);
 }
-const char *_version = "$Revision: 1.73 $";
+const char *_version = "$Revision: 1.74 $";
 #endif
 
 static void part_one_client(struct Client *client_p,
-			    struct Client *source_p,
-			    char *name, char *reason);
+                            struct Client *source_p,
+                            char *name, char *reason);
 
 /*
 ** m_part
@@ -146,7 +146,7 @@ part_one_client(struct Client *client_p, struct Client *source_p,
    *  only allow /part reasons in -m chans
    */
   if (reason[0] &&
-      (has_member_flags(ms, CHFL_CHANOP) || !MyConnect(source_p) ||
+      (has_member_flags(ms, CHFL_CHANOP|CHFL_HALFOP) || !MyConnect(source_p) ||
        ((can_send(chptr, source_p) > 0 && 
          (source_p->firsttime + ConfigFileEntry.anti_spam_exit_message_time)
          < CurrentTime))))
@@ -157,13 +157,9 @@ part_one_client(struct Client *client_p, struct Client *source_p,
     sendto_server(client_p, NULL, chptr, NOCAPS, CAP_SID, NOFLAGS,
                   ":%s PART %s :%s", source_p->name, chptr->chname,
                   reason);
-    sendto_channel_local(ALL_MEMBERS,
-                         chptr, ":%s!%s@%s PART %s :%s",
-                         source_p->name,
-                         source_p->username,
-                         source_p->host,
-                         chptr->chname,
-                         reason);
+    sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s PART %s :%s",
+                         source_p->name, source_p->username,
+                         source_p->host, chptr->chname, reason);
   }
   else
   {
@@ -171,12 +167,10 @@ part_one_client(struct Client *client_p, struct Client *source_p,
                   ":%s PART %s", ID(source_p), chptr->chname);
     sendto_server(client_p, NULL, chptr, NOCAPS, CAP_SID, NOFLAGS,
                   ":%s PART %s", source_p->name, chptr->chname);
-    sendto_channel_local(ALL_MEMBERS,
-                         chptr, ":%s!%s@%s PART %s",
-                         source_p->name,
-                         source_p->username,
-                         source_p->host,
-                         chptr->chname);
+    sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s PART %s",
+                         source_p->name, source_p->username,
+                         source_p->host, chptr->chname);
   }
+
   remove_user_from_channel(chptr, source_p);
 }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_invite.c,v 1.60 2003/06/07 15:41:46 michael Exp $
+ *  $Id: m_invite.c,v 1.61 2003/06/12 15:17:20 michael Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&invite_msgtab);
 }
 
-const char *_version = "$Revision: 1.60 $";
+const char *_version = "$Revision: 1.61 $";
 #endif
 
 /*
@@ -214,13 +214,13 @@ m_invite(struct Client *client_p,
                   me.name, source_p->name, target_p->name, chptr->chname);
 
     /* XXX This possibly should be a numeric -db */
-    sendto_channel_local(CHFL_CHANOP, chptr,
+    sendto_channel_local(CHFL_CHANOP|CHFL_HALFOP, chptr,
                          ":%s NOTICE %s :%s is inviting %s to %s.",
 			 me.name, chptr->chname, source_p->name,
 			 target_p->name, chptr->chname);
 
     /* Send a notice to servers that don't support CAP_PARA */
-    sendto_channel_remote(source_p, client_p, ONLY_CHANOPS,
+    sendto_channel_remote(source_p, client_p, CHFL_CHANOP|CHFL_HALFOP,
 			  NOCAPS, CAP_PARA, chptr,
 			  ":%s NOTICE %s :%s is inviting %s to %s.",
 			  source_p->name, chptr->chname, source_p->name,
@@ -238,8 +238,8 @@ m_invite(struct Client *client_p,
  *
  */
 static void
-ms_invite(struct Client *client_p,
-	  struct Client *source_p, int parc, char *parv[])
+ms_invite(struct Client *client_p, struct Client *source_p,
+          int parc, char *parv[])
 {
   struct Client *source_client_p;
   struct Client *target_p;
@@ -339,13 +339,13 @@ ms_invite(struct Client *client_p,
 		    target_p->name, chptr->chname);
 
       /* XXX This possibly should be a numeric -db */
-      sendto_channel_local(CHFL_CHANOP, chptr,
+      sendto_channel_local(CHFL_CHANOP|CHFL_HALFOP, chptr,
 			   ":%s NOTICE %s :%s is inviting %s to %s.",
 			   me.name, chptr->chname, source_client_p->name,
 			   target_p->name, chptr->chname);
 
       /* Send a notice to servers that don't support CAP_PARA */
-      sendto_channel_remote(source_p, client_p, CHFL_CHANOP,
+      sendto_channel_remote(source_p, client_p, CHFL_CHANOP|CHFL_HALFOP,
 			    NOCAPS, CAP_PARA, chptr,
 			    ":%s NOTICE %s :%s is inviting %s to %s.",
 			    source_client_p->name, chptr->chname,

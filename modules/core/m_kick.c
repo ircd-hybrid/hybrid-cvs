@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kick.c,v 1.61 2003/06/07 15:20:29 adx Exp $
+ *  $Id: m_kick.c,v 1.62 2003/06/12 15:17:22 michael Exp $
  */
 
 #include "stdinc.h"
@@ -59,7 +59,7 @@ _moddeinit(void)
   mod_del_cmd(&kick_msgtab);
 }
 
-const char *_version = "$Revision: 1.61 $";
+const char *_version = "$Revision: 1.62 $";
 #endif
 
 /* m_kick()
@@ -80,6 +80,7 @@ m_kick(struct Client *client_p, struct Client *source_p,
   char *p = NULL;
   char *user;
   struct Membership *ms;
+  struct Membership *ms_target;
 
   if (*parv[2] == '\0')
   {
@@ -113,13 +114,15 @@ m_kick(struct Client *client_p, struct Client *source_p,
   if (!IsServer(source_p))
   {
     if ((ms = find_channel_link(source_p, chptr)) == NULL)
+    {
       if (MyConnect(source_p))
       {
         sendto_one(source_p, form_str(ERR_NOTONCHANNEL),
                    me.name, source_p->name, name);
         return;
       }
-    if (!has_member_flags(ms, CHFL_CHANOP))
+    }
+    if (!has_member_flags(ms, CHFL_CHANOP|CHFL_HALFOP))
     {
       /* was a user, not a server, and user isn't seen as a chanop here */
       if (MyConnect(source_p))
@@ -175,8 +178,21 @@ m_kick(struct Client *client_p, struct Client *source_p,
   if ((who = find_chasing(source_p, user, &chasing)) == NULL)
     return;
 
-  if (IsMember(who, chptr))
+  if ((ms_target = find_channel_link(who, chptr)) == NULL)
   {
+    /* half ops cannot kick other halfops on private channels */
+#ifdef HALFOPS
+    if (has_member_flags(ms, CHFL_HALFOP))
+    {
+      if (((chptr->mode.mode & MODE_PRIVATE) && has_member_flags(ms_target, CHFL_CHANOP|CHFL_HALFOP)) ||
+            has_member_flags(ms_target, CHFL_CHANOP))
+      {
+        sendto_one(source_p, form_str(ERR_CHANOPRIVSNEEDED),
+                   me.name, source_p->name, name);
+        return;
+      }
+    }
+#endif
    /* jdc
     * - In the case of a server kicking a user (i.e. CLEARCHAN),
     *   the kick should show up as coming from the server which did
