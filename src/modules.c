@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.c,v 7.25 2000/12/24 05:29:17 ejb Exp $
+ * $Id: modules.c,v 7.26 2000/12/26 05:14:23 spookey Exp $
  */
 
 #include <dlfcn.h>
@@ -86,7 +86,7 @@ mod_add_path(char *path)
 
 	
 static char *
-basename(char *path)
+irc_basename(char *path)
 {
   char *mod_basename = MyMalloc (strlen (path) + 1);
   char *s;
@@ -240,7 +240,7 @@ load_one_module (char *path)
   char realpath[MAXPATHLEN];
   struct module_path *pathst;
 
-  mod_basename = basename(path);
+  mod_basename = irc_basename(path);
   
   if (strchr(path, '/')) {
 	  /* absolute pathname, try it */
