@@ -1,3 +1,19 @@
+bill        2002/10/02 19:09:40 EDT	(20021002_1)
+
+  Modified files:
+    contrib              m_operspy.c 
+    src                  s_conf.c 
+  Log:
+  - redid operspy who to emmulate actual who
+  - added operspy topic
+  - fixed small oversight in oper_privs_as_string with nick_changes = no;
+  
+  Revision  Changes    Path
+  1.5       +329 -180  ircd-hybrid-7/contrib/m_operspy.c
+  7.325     +2 -0      ircd-hybrid-7/src/s_conf.c
+
+
+
 bill        2002/10/01 22:13:06 EDT	(20021002_0)
 
   Modified files:
@@ -32147,4 +32163,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4042 2002/10/02 02:13:08 bill Exp $
+$Id: ChangeLog,v 7.4043 2002/10/02 23:09:43 bill Exp $
