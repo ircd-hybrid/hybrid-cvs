@@ -8,7 +8,7 @@
  * Owner:   Wohali (Joan Touzet)
  *
  *
- * $Id: balloc.h,v 1.2 2001/08/13 16:44:42 androsyn Exp $
+ * $Id: balloc.h,v 1.3 2001/09/23 08:44:38 a1kmm Exp $
  */
 #ifndef INCLUDED_blalloc_h
 #define INCLUDED_blalloc_h
@@ -68,8 +68,12 @@ typedef struct BlockHeap BlockHeap;
 
 extern BlockHeap* BlockHeapCreate(size_t elemsize, int elemsperblock);
 extern int        BlockHeapDestroy(BlockHeap *bh);
+
+#if 0 /* These are in memory.h... */
 extern int        BlockHeapFree(BlockHeap *bh, void *ptr);
 extern void *	  BlockHeapAlloc(BlockHeap *bh);
+#endif
+
 extern int        BlockHeapGarbageCollect(BlockHeap *);
 
 extern void       BlockHeapCountMemory(BlockHeap *bh,int *, int *);

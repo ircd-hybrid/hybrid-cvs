@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: class.c,v 7.29 2001/05/31 16:30:38 davidt blalloc.c $
+ *   $Id: class.c,v 7.30 2001/09/23 08:44:39 a1kmm Exp $
  */
 #include "tools.h"
 #include "class.h"
