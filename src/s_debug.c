@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_debug.c,v 7.21 2000/10/26 07:57:51 db Exp $
+ *   $Id: s_debug.c,v 7.22 2000/11/03 05:04:34 db Exp $
  */
 #include "s_debug.h"
 #include "channel.h"
@@ -136,7 +136,7 @@ void debug(int level, char *format, ...)
     vsprintf(debugbuf, format, args);
     va_end(args);
 
-    log(L_DEBUG, debugbuf);
+    log(L_DEBUG, "%s", debugbuf);
   }
   errno = err;
 } /* debug() */
