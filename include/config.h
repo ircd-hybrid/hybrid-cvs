@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.38 2000/11/28 23:20:55 db Exp $
+ * $Id: config.h,v 7.39 2000/11/29 16:49:29 db Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -260,10 +260,6 @@
  */
 #define USE_SYSLOG
 
-#if defined(__CYGWIN__)
-#undef USE_SYSLOG
-#endif
-
 #ifdef  USE_SYSLOG
 /* SYSLOG_KILL SYSLOG_SQUIT SYSLOG_CONNECT SYSLOG_USERS SYSLOG_OPER
  * If you use syslog above, you may want to turn some (none) of the
@@ -347,24 +343,6 @@
  *
  */
 #undef LIMIT_UH
-
-/* SEND_FAKE_KILL_TO_CLIENT - make the client think it's being /KILL'ed
- * 
- * This was originally intended to prevent clients from reconnecting to the
- * server after being dropped for idleness.  It can probably be used for
- * other events too.
- *
- * This really only works if the
- * client was compiled with QUIT_ON_OPERATOR_KILL which was mandatory policy
- * on UMich.Edu hosts.
- */
-#define SEND_FAKE_KILL_TO_CLIENT
-
-/*
- * Define this to enable WintrHawk "styling"
- */
-#define WINTRHAWK
-
 
 /*
  * Define this to enable IPv6 support.  IPv6 is currently still being
