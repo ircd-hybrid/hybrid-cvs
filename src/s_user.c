@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.258 2003/05/19 00:41:13 michael Exp $
+ *  $Id: s_user.c,v 7.259 2003/05/19 01:38:22 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1277,27 +1277,10 @@ oper_up(struct Client *source_p, struct ConfItem *aconf)
 
   SetOper(source_p);
 
-  if ((int)aconf->hold)
-  {
-    source_p->umodes |= ((unsigned int)aconf->hold & ALL_UMODES); 
-
-    if (!IsOperN(source_p))
-      source_p->umodes &= ~UMODE_NCHANGE;
-
-    sendto_one(source_p, ":%s NOTICE %s :*** Oper flags set from conf",
-               me.name, source_p->name);
-  }
+  if (ConfigFileEntry.oper_umodes)
+    source_p->umodes |= ConfigFileEntry.oper_umodes & ALL_UMODES;
   else
-  {
-    if (ConfigFileEntry.oper_umodes)
-    {
-      source_p->umodes |= ConfigFileEntry.oper_umodes & ALL_UMODES;
-    }
-    else
-    {
-      source_p->umodes |= (UMODE_SERVNOTICE|UMODE_OPERWALL|UMODE_WALLOP|UMODE_LOCOPS) & ALL_UMODES;
-    }
-  }
+    source_p->umodes |= (UMODE_SERVNOTICE|UMODE_OPERWALL|UMODE_WALLOP|UMODE_LOCOPS) & ALL_UMODES;
 
   Count.oper++;
 
@@ -1310,6 +1293,8 @@ oper_up(struct Client *source_p, struct ConfItem *aconf)
 
   if (IsOperAdmin(source_p))
     source_p->umodes |= UMODE_ADMIN;
+  if (!IsOperN(source_p))
+    source_p->umodes &= ~UMODE_NCHANGE;
 
   sendto_realops_flags(UMODE_ALL, L_ALL, "%s (%s@%s) is now an operator",
                        source_p->name, source_p->username, source_p->host);
