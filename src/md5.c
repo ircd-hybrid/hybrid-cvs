@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: md5.c,v 1.13 2002/05/24 23:34:48 androsyn Exp $
+ *  $Id: md5.c,v 1.14 2002/05/25 01:35:09 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -137,8 +137,8 @@ void	id_init()
   } st;
 
   gettimeofday(&st.tv, NULL);
-  st.pid = getpid();
-  st.ppid = getppid();
+  st.pid = rand();
+  st.ppid = rand();
   id_reseed((char *)&st, sizeof(st));
 
 #ifdef RPATH
