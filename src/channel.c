@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.372 2003/05/13 02:32:18 joshk Exp $
+ *  $Id: channel.c,v 7.373 2003/05/13 05:13:07 db Exp $
  */
 
 #include "stdinc.h"
@@ -569,11 +569,10 @@ channel_member_names(struct Client *source_p, struct Channel *chptr,
   if (ShowChannel(source_p, chptr))
   {
     ptr_list[0] = chptr->chanops.head;
-    ptr_list[1] = NULL;
-    ptr_list[2] = chptr->voiced.head;
-    ptr_list[3] = chptr->peons.head;
+    ptr_list[1] = chptr->voiced.head;
+    ptr_list[2] = chptr->peons.head;
 #ifdef REQUIRE_OANDV
-    ptr_list[4] = chptr->chanops_voiced.head;
+    ptr_list[3] = chptr->chanops_voiced.head;
 #endif
 
     set_channel_mode_flags(ptr_flags, chptr, source_p);
