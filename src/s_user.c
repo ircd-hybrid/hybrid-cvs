@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.196 2002/05/31 04:44:54 androsyn Exp $
+ *  $Id: s_user.c,v 7.197 2002/06/11 00:00:09 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -297,10 +297,10 @@ int register_local_user(struct Client *client_p, struct Client *source_p,
 
   if(ConfigFileEntry.ping_cookie)
   {
-  	if(!(source_p->flags & FLAGS_PINGSENT) && source_p->random_ping == 0)
+  	if(!(source_p->flags & FLAGS_PINGSENT) && source_p->localClient->random_ping == 0)
   	{
            source_p->random_ping = (unsigned long)rand();
-           sendto_one(source_p, "PING :%lu", (unsigned long)source_p->random_ping);
+           sendto_one(source_p, "PING :%lu", (unsigned long)source_p->localClient->random_ping);
            source_p->flags |= FLAGS_PINGSENT;
 	   strlcpy(source_p->username, username, USERLEN);
   	   return -1;
