@@ -20,7 +20,7 @@
  * "parse.h". - Headers file.
  *
  *
- * $Id: parse.h,v 7.11 2000/12/18 03:59:40 db Exp $
+ * $Id: parse.h,v 7.12 2000/12/30 06:47:26 lusky Exp $
  *
  */
 #ifndef INCLUDED_parse_h_h
@@ -41,7 +41,7 @@ struct MessageHash
 extern  int     parse (struct Client *, char *, char *);
 extern  void    clear_hash_parse (void);
 extern  void    mod_add_cmd(struct Message *msg);
-extern  int     mod_del_cmd(struct Message *msg);
+extern  void    mod_del_cmd(struct Message *msg);
 extern  void    report_messages(struct Client *);
 
 #endif /* INCLUDED_parse_h_h */

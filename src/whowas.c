@@ -16,7 +16,7 @@
 *   along with this program; if not, write to the Free Software
 *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 *
-*   $Id: whowas.c,v 7.8 2000/12/21 13:39:56 db Exp $
+*   $Id: whowas.c,v 7.9 2000/12/30 06:47:29 lusky Exp $
 */
 #include "whowas.h"
 #include "client.h"
@@ -63,12 +63,6 @@ void add_history(struct Client* cptr, int online)
   struct Whowas* who = &WHOWAS[whowas_next];
 
   assert(0 != cptr);
-  /*
-   * XXX - can these be checked at compile time instead??
-   */
-  assert(sizeof(cptr->username) == sizeof(who->username));
-  assert(sizeof(cptr->host)     == sizeof(who->hostname));
-  assert(sizeof(cptr->info)     == sizeof(who->realname));
 
   if (who->hashv != -1)
     {

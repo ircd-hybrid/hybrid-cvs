@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.90 2000/12/29 05:46:11 db Exp $
+ * $Id: ircd.c,v 7.91 2000/12/30 06:47:26 lusky Exp $
  */
 #include "tools.h"
 #include "ircd.h"
@@ -71,6 +71,10 @@
 #if defined(HAVE_GETOPT_H)
 #include <getopt.h>
 #endif /* HAVE_GETOPT_H */
+
+#ifdef USE_GETTEXT
+#include <libintl.h>
+#endif
 
 #include "memdebug.h"
 
