@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.217 2003/10/07 22:37:10 bill Exp $
+ *  $Id: client.h,v 7.218 2003/10/12 23:08:59 bill Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -284,7 +284,7 @@ struct LocalUser
 
 #define HasID(x)		((x)->id[0] != '\0')
 #define ID(x)			(HasID(x) ? (x)->id : (x)->name)
-#define ID_or_name(x,client_p)	(IsCapable(client_p, CAP_TS6) ? (x)->id : (x)->name)
+#define ID_or_name(x,client_p)	((IsCapable(client_p, CAP_TS6) && HasID(x)) ? (x)->id : (x)->name)
 
 #define IsRegisteredUser(x)     ((x)->status == STAT_CLIENT)
 #define IsRegistered(x)         ((x)->status  > STAT_UNKNOWN)

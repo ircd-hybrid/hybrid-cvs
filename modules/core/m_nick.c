@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nick.c,v 1.133 2003/10/11 02:15:08 bill Exp $
+ *  $Id: m_nick.c,v 1.134 2003/10/12 23:09:01 bill Exp $
  */
 
 #include "stdinc.h"
@@ -97,7 +97,7 @@ _moddeinit(void)
   mod_del_cmd(&uid_msgtab);
 }
 
-const char *_version = "$Revision: 1.133 $";
+const char *_version = "$Revision: 1.134 $";
 #endif
 
 /*
@@ -697,8 +697,6 @@ nick_from_server(struct Client *client_p, struct Client *source_p, int parc,
 {
   if (IsServer(source_p))
   {
-    const char *servername = source_p->name;
-
     /* A server introducing a new client, change source */
     source_p = make_client(client_p);
     dlinkAdd(source_p, &source_p->node, &global_client_list);
@@ -742,7 +740,7 @@ nick_from_server(struct Client *client_p, struct Client *source_p, int parc,
       }
 
       return(register_remote_user(client_p, source_p, parv[5], parv[6],
-                                  servername, parv[8]));
+                                  parv[7], parv[8]));
     }
   }
   else if(source_p->name[0])
