@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.21 2000/11/05 06:23:55 db Exp $
+ *   $Id: parse.c,v 7.22 2000/11/05 21:23:40 toot Exp $
  */
 #include "parse.h"
 #include "client.h"
@@ -527,7 +527,7 @@ struct Message msgtab[] = {
   {MSG_KNOCK, 0, 1, MFLG_SLOW, 0,
     /* UNREG, CLIENT, SERVER, OPER */
    /* can knock be recvd from a server? i think not --is */
-    { m_unregistered, m_knock, m_ignore, m_knock }
+    { m_unregistered, m_knock, m_ignore, mo_knock }
   },
   {MSG_TOPIC, 0, 1, MFLG_SLOW, 0,
     /* UNREG, CLIENT, SERVER, OPER */

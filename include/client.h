@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.27 2000/11/05 06:23:49 db Exp $
+ * $Id: client.h,v 7.28 2000/11/05 21:23:35 toot Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -245,7 +245,6 @@ struct Client
   unsigned long     serverMask; /* Only used for Lazy Links */
   time_t            last_nick_change;
   int               number_of_nick_changes;
-  time_t            last_knock; /* don't allow knock to flood */
   /*
    * client->sockhost contains the ip address gotten from the socket as a
    * string, this field should be considered read-only once the connection
