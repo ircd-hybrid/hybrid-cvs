@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.3 2002/09/03 14:44:38 bill Exp $
+ *   $Id: m_operspy.c,v 1.4 2002/09/08 21:09:36 bill Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -64,7 +64,7 @@
 /* enable OPERSPY version of WHOIS */
 #define OPERSPY_WHOIS
 
-#define IsOperspy(x) (IsOper(x) && MyClient(x))
+#define IsOperspy(x) (IsOper(x) && MyClient(x) && IsAdmin(x))
 
 /*
  * The commands we will add
@@ -93,7 +93,7 @@ static void do_who(struct Client *source_p,
                    char *op_flags);
 
 struct Message operspy_msgtab = {
-  "OPERSPY", 0, 0, 3, 0, MFLG_SLOW, 0,
+  "OPERSPY", 0, 0, 0, 0, MFLG_SLOW, 0,
   {m_ignore, m_operspy, m_operspy, mo_operspy}
 };
 
@@ -109,7 +109,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.3 $";
+const char *_version = "$Revision: 1.4 $";
 #endif
 
 /*
@@ -120,8 +120,8 @@ const char *_version = "$Revision: 1.3 $";
 static void m_operspy(struct Client *client_p, struct Client *source_p,
                       int parc, char *parv[])
 {
-  sendto_one(client_p, ":%s %d %s %s :Unknown command",
-             me.name, ERR_UNKNOWNCOMMAND, client_p->name, parv[0]);
+  sendto_one(client_p, ":%s %d %s OPERSPY :Unknown command",
+             me.name, ERR_UNKNOWNCOMMAND, client_p->name);
 }
 
 /*
@@ -168,10 +168,17 @@ static void mo_operspy(struct Client *client_p, struct Client *source_p,
   int			reply_to_send = NO;
 #endif
 
+  if (parc != 3)
+  {
+    sendto_one(client_p, ":%s %d %s OPERSPY :Unknown command",
+               me.name, ERR_UNKNOWNCOMMAND, client_p->name);
+    return;
+  }
+
   if (!IsOperspy(client_p))
   {
-    sendto_one(client_p, ":%s %d %s %s :Unknown command",
-               me.name, ERR_UNKNOWNCOMMAND, client_p->name, parv[0]);
+    sendto_one(client_p, ":%s %d %s OPERSPY :Unknown command",
+               me.name, ERR_UNKNOWNCOMMAND, client_p->name);
     return;
   }
 
