@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.84 2002/09/05 02:48:41 db Exp $
+ *  $Id: m_gline.c,v 1.85 2002/12/28 07:02:38 bill Exp $
  */
 
 #include "stdinc.h"
@@ -109,7 +109,7 @@ _moddeinit(void)
   mod_del_cmd(&gline_msgtab);
 }
 
-const char *_version = "$Revision: 1.84 $";
+const char *_version = "$Revision: 1.85 $";
 #endif
 /*
  * mo_gline()
@@ -464,7 +464,6 @@ set_local_gline(const char *oper_nick,
           
   aconf = make_conf();
   aconf->status = CONF_KILL;
-  DupString(aconf->host, host);
 
   ircsprintf(buffer, "%s (%s)",reason,current_date);
       
