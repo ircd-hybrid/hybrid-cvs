@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_ltrace.c,v 1.4 2000/11/18 01:02:56 davidt Exp $
+ *   $Id: m_ltrace.c,v 1.5 2000/11/18 20:22:04 toot Exp $
  */
 #include "handlers.h"
 #include "class.h"
@@ -129,7 +129,7 @@ int     m_ltrace(struct Client *cptr,
       name = get_client_name(acptr, FALSE);
       ip = inetntoa((char*) &acptr->ip);
 
-      c_class = get_client_class(acptr);
+      c_class = (int)get_client_class(acptr);
 
       if (IsAnyOper(acptr))
         { 
@@ -185,7 +185,7 @@ int     m_ltrace(struct Client *cptr,
       name = get_client_name(acptr, FALSE);
       ip = inetntoa((const char*) &acptr->ip);
 
-      c_class = get_client_class(acptr);
+      c_class = (int)get_client_class(acptr);
       
       switch(acptr->status)
         {

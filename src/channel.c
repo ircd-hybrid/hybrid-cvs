@@ -34,7 +34,7 @@
  *                mode * -p etc. if flag was clear
  *
  *
- * $Id: channel.c,v 7.73 2000/11/17 18:03:01 toot Exp $
+ * $Id: channel.c,v 7.74 2000/11/18 20:22:08 toot Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -2794,6 +2794,9 @@ void channel_member_names( struct Client *sptr,
 
   if(reply_to_send)
     sendto_one(sptr, form_str(RPL_NAMREPLY), me.name, sptr->name, buf);
+
+  sendto_one(sptr, form_str(RPL_ENDOFNAMES),
+             me.name, sptr->name, name_of_channel);
 }
 
 /*
