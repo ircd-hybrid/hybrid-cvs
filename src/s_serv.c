@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.367 2003/07/21 01:58:24 michael Exp $
+ *  $Id: s_serv.c,v 7.368 2003/08/05 16:23:15 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1988,20 +1988,9 @@ serv_connect(struct AccessItem *aconf, struct Client *by)
      */
     make_server(client_p);
     if (by && IsPerson(by))
-      {
-        strlcpy(client_p->serv->by, by->name, sizeof(client_p->serv->by));
-        if (client_p->serv->user)
-            free_user(client_p->serv->user, NULL);
-        client_p->serv->user = by->user;
-        by->user->refcnt++;
-      }
+      strlcpy(client_p->serv->by, by->name, sizeof(client_p->serv->by));
     else
-      {
-        strlcpy(client_p->serv->by, "AutoConn.", sizeof(client_p->serv->by));
-        if (client_p->serv->user)
-            free_user(client_p->serv->user, NULL);
-        client_p->serv->user = NULL;
-      }
+      strlcpy(client_p->serv->by, "AutoConn.", sizeof(client_p->serv->by));
 
     strlcpy(client_p->serv->up, me.name, sizeof(client_p->serv->up));
     SetConnecting(client_p);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.301 2003/08/04 08:58:42 michael Exp $
+ *  $Id: s_user.c,v 7.302 2003/08/05 16:23:15 michael Exp $
  */
 
 #include "stdinc.h"
@@ -194,7 +194,7 @@ make_user(struct Client *client_p)
   {
     client_p->user = BlockHeapAlloc(user_heap);
     memset(client_p->user, 0, sizeof(struct User));
-    client_p->user->refcnt = 1;
+
     ++user_count;
   }
 
@@ -206,38 +206,34 @@ make_user(struct Client *client_p)
  * inputs       - pointer to user struct
  *              - pointer to client struct
  * output       - NONE
- * side effects - Decrease user reference count by one and release block,
- *                if count reaches 0
+ * side effects - free an User block
  */
+/* XXX - Client pointer is not really necessary */
 void
 free_user(struct User *user, struct Client *client_p)
 {
-  if (--user->refcnt <= 0)
+  if (user->away != NULL)
+    MyFree(user->away);
+
+  /* sanity check */
+  if (dlink_list_length(&user->channel) || user->invited.head || user->channel.head)
   {
-    if (user->away)
-      MyFree(user->away);
-
-    /* sanity check */
-    if (dlink_list_length(&user->channel) || user->refcnt < 0 ||
-        user->invited.head || user->channel.head)
-    {
-      sendto_realops_flags(UMODE_ALL, L_ALL,
-                           "* %#lx user (%s!%s@%s) %#lx %#lx %#lx %lu %d *",
-                           (unsigned long)client_p, client_p ? client_p->name : "<noname>",
-                           client_p->username, client_p->host, (unsigned long)user,
-                           (unsigned long)user->invited.head,
-                           (unsigned long)user->channel.head, dlink_list_length(&user->channel),
-                           user->refcnt);
-      assert(!user->refcnt);
-      assert(!user->invited.head);
-      assert(!user->channel.head);
-      assert(dlink_list_length(&user->channel) == 0);
-    }
-
-    BlockHeapFree(user_heap, user);
-    --user_count;
-    assert(user_count >= 0);
+    sendto_realops_flags(UMODE_ALL, L_ALL,
+                         "* %#lx user (%s!%s@%s) %#lx %#lx %#lx %lu *",
+                         (unsigned long)client_p, client_p ? client_p->name : "<noname>",
+                         client_p->username, client_p->host, (unsigned long)user,
+                         (unsigned long)user->invited.head,
+                         (unsigned long)user->channel.head,
+                         dlink_list_length(&user->channel));
+    assert(user->invited.head == NULL);
+    assert(user->channel.head == NULL);
+    assert(dlink_list_length(&user->invited) == 0);
+    assert(dlink_list_length(&user->channel) == 0);
   }
+
+  BlockHeapFree(user_heap, user);
+  --user_count;
+  assert(user_count >= 0);
 }
 
 /* count_user_memory()

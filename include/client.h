@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.211 2003/07/25 23:49:18 michael Exp $
+ *  $Id: client.h,v 7.212 2003/08/05 16:23:13 michael Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -60,7 +60,6 @@ struct User
   char*          away;      /* pointer to away message */
   time_t         last_away; /* Away since... */
   time_t         last;
-  int            refcnt;    /* Number of times this block is referenced */
   struct Client *server;    /* pointer to server */
   char*          response;  /* expected response from client */
   char*          auth_oper; /* Operator to become if they supply the response.*/
@@ -68,9 +67,8 @@ struct User
 
 struct Server
 {
-  struct User *user;      /* who activated this connection     */
   char up[HOSTLEN + 1];   /* name of uplink                    */
-  char by[NICKLEN];
+  char by[NICKLEN];       /* who activated this connection     */
   struct ConfItem *sconf; /* ConfItem connect{} pointer for this server */
   dlink_list servers;     /* Servers on this server            */
   dlink_list users;       /* Users on this server              */

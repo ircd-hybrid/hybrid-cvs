@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.402 2003/08/04 08:58:42 michael Exp $
+ *  $Id: client.c,v 7.403 2003/08/05 16:23:14 michael Exp $
  */
 
 #include "stdinc.h"
@@ -631,15 +631,11 @@ release_client_state(struct Client *client_p)
     free_user(client_p->user, client_p); /* try this here */
 
   if (client_p->serv != NULL)
-  {
-    if (client_p->serv->user != NULL)
-      free_user(client_p->serv->user, client_p);
-
     MyFree(client_p->serv);
-  }
 }
 
 /* find_person()
+ *
  * inputs	- pointer to name
  * output	- return client pointer
  * side effects - find person by (nick)name
