@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_quit.c,v 1.30 2003/04/18 02:13:50 db Exp $
+ *  $Id: m_quit.c,v 1.31 2003/06/01 09:42:07 adx Exp $
  */
 
 #include "stdinc.h"
@@ -55,7 +55,7 @@ _moddeinit(void)
   mod_del_cmd(&quit_msgtab);
 }
 
-const char *_version = "$Revision: 1.30 $";
+const char *_version = "$Revision: 1.31 $";
 #endif
 /*
 ** m_quit
@@ -74,11 +74,7 @@ m_quit(struct Client *client_p, struct Client *source_p,
 
   if (ConfigFileEntry.client_exit && comment[0])
     {
-#ifndef VMS
       snprintf(reason, TOPICLEN, "Quit: %s", comment);
-#else
-      sprintf(reason, "Quit: %s", comment);
-#endif
       comment = reason;
     }
   
