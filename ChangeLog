@@ -1,3 +1,15 @@
+*** 20001211_13 by db
+- a client being made into a server, should be removed from the unknown_list
+  this was happening in the new server establish code...
+  This left an unknown client hanging around, not removed from unknown_list
+  because it was now a server, not an unknown client.
+
+- local removal was missed in m_stats.c, this meant /stats didn't work
+  since it was never loaded. There are three other functions that have
+  to be fixed as well... m_trace.c, m_die.c, m_close.c
+
+
+
 *** 20001211_12 by db
 - tiny comment fix in check_pings
 
@@ -2355,7 +2367,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.797 2000/12/12 03:18:14 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.798 2000/12/12 04:29:04 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
