@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.116 2001/08/04 15:35:51 leeh Exp $
+ * $Id: ircd_lexer.l,v 1.117 2001/08/12 16:33:00 leeh blalloc.c $
  */
 
 %option case-insensitive
@@ -181,7 +181,6 @@ network_name    { return NETWORK_NAME; }
 nick		{ return NICK; }
 nick_changes	{ return NICK_CHANGES; }
 no		{ return TNO; }
-no_hack_ops     { return NO_HACK_OPS; }
 no_oper_flood   { return NO_OPER_FLOOD; }
 no_tilde	{ return NO_TILDE; }
 number_per_ip	{ return NUMBER_PER_IP; }

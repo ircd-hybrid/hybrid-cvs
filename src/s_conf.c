@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.259 2001/08/04 15:35:51 leeh Exp $
+ *  $Id: s_conf.c,v 7.260 2001/08/12 16:33:00 leeh blalloc.c $
  */
 
 #include <sys/types.h>
@@ -1356,7 +1356,6 @@ static void set_default_conf(void)
   ServerInfo.rsa_private_key_file = NULL;
 #endif
 
-  ServerInfo.no_hack_ops = YES;
   /* ServerInfo.name is not rehashable */
   /* ServerInfo.name = ServerInfo.name; */
   ServerInfo.description = NULL;
