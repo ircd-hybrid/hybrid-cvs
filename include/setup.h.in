@@ -33,7 +33,7 @@
 /* Define to 1 if you have the `dlfunc' function. */
 #undef HAVE_DLFUNC
 
-/* Define to 1 if you have the `dlopen' function. */
+/* Define if the dlopen function is available. */
 #undef HAVE_DLOPEN
 
 /* Define to 1 if you have the <errno.h> header file. */
@@ -84,7 +84,7 @@
 /* Define if the nanosleep function is available somewhere. */
 #undef HAVE_NANOSLEEP
 
-/* shl_load() is available */
+/* Define if the shl_load function is available. */
 #undef HAVE_SHL_LOAD
 
 /* Define to 1 if you have the `snprintf' function. */
@@ -108,10 +108,10 @@
 /* Define to 1 if you have the <string.h> header file. */
 #undef HAVE_STRING_H
 
-/* Define to 1 if you have the `strlcat' function. */
+/* Define if strlcat is available (most BSDs.) */
 #undef HAVE_STRLCAT
 
-/* Define to 1 if you have the `strlcpy' function. */
+/* Define if strlcpy is available (most BSDs.) */
 #undef HAVE_STRLCPY
 
 /* Define to 1 if the system has the type `struct addrinfo'. */
@@ -168,7 +168,7 @@
 /* Log facility to use for syslog() */
 #undef LOG_FACILITY
 
-/* Maximum no. of network connections. */
+/* Maximum number of network connections */
 #undef MAXCONN
 
 /* Define this to disable debugging support. */

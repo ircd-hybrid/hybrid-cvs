@@ -4,7 +4,7 @@
  *
  * Copyright (C) 2001 Hybrid Development Team
  *
- * $Id: resv.txt,v 7.4 2003/05/25 03:04:56 joshk Exp $
+ * $Id: resv.txt,v 7.5 2003/06/21 01:11:58 joshk Exp $
  */
 
 				RESV
@@ -109,8 +109,8 @@
   cannot just check if the nick, and the item in the list of resv'd nicks
   are string equal, we have to check if they match, so we have to search a
   full list.  With channels however, we can search a hash table to see if an
-  entry exists, if it doesn't, then the channel isnt resv'd.  We don't have to
-  search through all the channels.
+  entry exists, if it doesn't, then the channel isn't resv'd.  We don't have
+  to search through all the channels.
 
   Besides.. it's legal for a channel to be called #*warez* anyway ;)
 

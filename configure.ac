@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.64 2003/06/20 01:48:54 joshk Exp $
+dnl $Id: configure.ac,v 7.65 2003/06/21 01:11:55 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -7,8 +7,8 @@ dnl said functions need to be just about as complex as they already are.
 
 AC_PREREQ(2.57)
 
-dnl Sneaky way to get $Id: configure.ac,v 7.64 2003/06/20 01:48:54 joshk Exp $ into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.64 2003/06/20 01:48:54 joshk Exp $])
+dnl Sneaky way to get an Id tag into the configure script
+AC_COPYRIGHT([$Id: configure.ac,v 7.65 2003/06/21 01:11:55 joshk Exp $])
 
 AC_INIT([ircd-hybrid],[7-CURRENT])
 
@@ -118,6 +118,7 @@ fi
 
 dnl If we support -g, use it!
 if test "$ac_cv_prog_cc_g" = yes; then
+	dnl Tru64 needs -g3 for -O2
 	if test "$Tru" = yes; then
 		IRC_CFLAGS="$IRC_CFLAGS -g3"
 	else
@@ -195,6 +196,7 @@ AC_PATH_PROG(AR, ar)
 AC_PATH_PROG(LD, ld)
 AC_PROG_YACC
 
+dnl AC_PROG_YACC defaults to yacc unconditionally if nothing can be found
 if test "$YACC" = "yacc" -a -z "`which $YACC 2>/dev/null`"; then
 	AC_MSG_ERROR([could not locate a suitable parser generator; install bison, yacc, or byacc])
 fi
@@ -230,8 +232,6 @@ AC_SEARCH_LIBS(inet_ntop, resolv nsl, , [inet_misc=1; AC_DEFINE(NO_INET_NTOP, 1,
 if test "$inet_misc" = 1; then
 	AC_SUBST(INET_MISC, inet_misc.c)
 fi
-
-AC_CHECK_FUNCS(socketpair)
 
 AC_CHECK_TYPES([struct sockaddr_storage], , ,
 [[#include <sys/types.h>
@@ -308,9 +308,15 @@ AC_SEARCH_LIBS(crypt, [descrypt crypt],,
 [AC_MSG_ERROR([No crypt implementation found on your system!])])
 
 CRYPT_LIB=$ac_cv_search_crypt
+
 if test "$CRYPT_LIB" = "none required"; then
-	unset CRYPT_LIB;
+	unset CRYPT_LIB
+elif test "$CRYPT_LIB" = no; then
+	CRYPT_C=crypt.c
+	unset CRYPT_LIB
 fi
+
+AC_SUBST(CRYPT_C)
 AC_SUBST(CRYPT_LIB)
 
 if test "$ac_cv_header_sys_wait_h" = yes -o "$ac_cv_header_wait_h" = yes; then
@@ -376,8 +382,6 @@ AC_COMPILE_IFELSE(
 
 CFLAGS=$save_CFLAGS
 
-AC_CHECK_FUNCS([basename])
-
 AC_CHECK_TYPE([u_int32_t], [],
 [
 	AC_CHECK_TYPE([uint32_t],
@@ -385,7 +389,7 @@ AC_CHECK_TYPE([u_int32_t], [],
 		AC_DEFINE(u_int32_t, [uint32_t], [If system does not define u_int32_t, define a reasonable substitute.])
 	],
 	[
-		AC_MSG_WARN([system has no u_int32_t or uint32_t, default to unsigned int])
+		AC_MSG_WARN([system has no u_int32_t or uint32_t, default to unsigned long int])
 		AC_DEFINE(u_int32_t, [unsigned long int], [If system does not define u_int32_t, define to unsigned long int here.])
 	])
 ])
@@ -397,7 +401,7 @@ AC_CHECK_TYPE([u_int16_t], [],
 		AC_DEFINE(u_int16_t, [uint16_t], [If system does not define u_int16_t, define a usable substitute])
 	],
 	[
-		AC_MSG_WARN([system has no u_int16_t or uint16_t, default to unsigned int])
+		AC_MSG_WARN([system has no u_int16_t or uint16_t, default to unsigned short int])
 		AC_DEFINE(u_int16_t, [unsigned short int], [If system does not define u_int16_t, define a usable substitute.])
 	])
 ])
@@ -414,19 +418,14 @@ AC_CHECK_TYPE([sa_family_t], [],
 
 AC_CHECK_TYPES([uintptr_t])
 
-dnl check for snprintf
-AC_CHECK_FUNCS(snprintf, [have_snprintf=1])
-dnl check for vsnprintf
-AC_CHECK_FUNCS(vsnprintf, [have_vsnprintf=1])
-dnl Tell src/Makefile.in if we need its snprintf.c
-if test -z "$have_snprintf" -o -z "$have_vsnprintf"; then
+dnl check for various functions...
+AC_CHECK_FUNCS([socketpair basename mmap snprintf vsnprintf])
+
+if test "$ac_cv_func_snprintf" = no -o "$ac_cv_func_vsnprintf" = no; then
 	SNPRINTF_C="snprintf.c"
 fi
 
 AC_SUBST(SNPRINTF_C)
-
-dnl check for mmap
-AC_CHECK_FUNCS(mmap)
 
 AC_SEARCH_LIBS(nanosleep, [rt posix4],
 [AC_DEFINE(HAVE_NANOSLEEP, 1, [Define if the nanosleep function is available somewhere.])]
@@ -488,7 +487,7 @@ if test "$cf_enable_openssl" != "no" ; then
 		AC_MSG_RESULT($cf_openssl_basedir)
 		cf_enable_openssl="yes"
 	else
-		AC_MSG_RESULT(not found. Please check your path.)
+		AC_MSG_RESULT([not found. Specify a correct path?])
 		cf_enable_openssl="no"
 	fi
 	unset cf_openssl_basedir
@@ -610,7 +609,7 @@ AC_CHECK_FUNC([kevent],
 	AC_MSG_CHECKING(for /dev/poll)
 	if test -c "/dev/poll"; then
 		AC_MSG_RESULT(yes)
-		AC_CHECK_HEADERS(devpoll.h sys/devpoll.h)
+		AC_CHECK_HEADERS([devpoll.h sys/devpoll.h])
 		SELECT_TYPE="devpoll"
 	else
 		AC_MSG_RESULT(no)
@@ -670,17 +669,18 @@ AC_HELP_STRING([--enable-assert],[Enable assert().]),
 AC_MSG_CHECKING(if you want to do a profile build)
 AC_ARG_ENABLE(profile,
 AC_HELP_STRING([--enable-profile],[Enable profiling]),
-[
-	profile="yes"
-	if test "$ac_cv_c_compiler_gnu" = yes; then
-		IRC_CFLAGS="$IRC_CFLAGS -pg -a -static"
-	else
-		AC_MSG_WARN([profile builds only work with gcc, ignoring])
-	fi
-	
-], profile="no")
+[profile=$enableval], [profile=no])
 
-AC_MSG_RESULT($profile)
+if test "$profile" = yes; then
+	if test "$ac_cv_c_compiler_gnu" = yes; then
+		IRC_CFLAGS="$IRC_CFLAGS -pg -static"
+		AC_MSG_RESULT="yes, adding -pg -static"
+	else
+		AC_MSG_RESULT([no, profile builds only work with gcc])
+	fi
+else
+	AC_MSG_RESULT(no)
+fi
 
 dnl Check if we want to use efence
 AC_MSG_CHECKING(if you want ElectricFence)
@@ -815,8 +815,8 @@ dnl yes is okay, shut up you
 	*)
 		AC_MSG_WARN(unknown event $option)
 	;;
-	esac
-	done
+esac
+done
 	
 	if test ! -z "$syslogstuff" -o "$enableval" = yes; then
 		AC_DEFINE(USE_SYSLOG, 1, [Send vital ircd messages to syslog])
@@ -848,7 +848,7 @@ AC_HELP_STRING([--with-nicklen=LENGTH],[Set the nick length to LENGTH (default 9
 AC_ARG_WITH(topiclen,           
 AC_HELP_STRING([--with-topiclen=NUMBER],[Set the max topic length to NUMBER (default 120, max 390)]),
 [
-	if test $withval -gt 390; then
+	if test $withval -ge 390; then
 		TOPICLEN="390"
 		AC_MSG_WARN([TOPICLEN has a hard limit of 390. Setting TOPICLEN=390])
 	else
@@ -864,26 +864,6 @@ AC_HELP_STRING([--with-maxconn=NUMBER],[Maximum number of connections the ircd c
 AC_DEFINE_UNQUOTED(TOPICLEN, ${TOPICLEN}, [Maximum topic length (<=390)])
 AC_DEFINE_UNQUOTED(NICKLEN, (${NICKLEN}+1), [Nickname length])
 AC_DEFINE_UNQUOTED(MAXCONN, ${MAXCONN}, [Maximum number of network connections])
-
-dnl Shared Modules Support
-dnl ======================
-dnl Here are two helper functions to discover the
-dnl implemented way in the OS that shared module support 
-dnl has to use. -TimeMr14C
-
-AC_DEFUN(CHECK_DLOPEN_LD,
-[AC_SEARCH_LIBS(shl_load, dld,
-[
-	AC_DEFINE(HAVE_SHL_LOAD, 1, [shl_load() is available])
-        have_shl_load='yes'
-]
-[have_shl_load='no'])])
-
-AC_DEFUN(CHECK_DLOPEN_DL,
-[AC_SEARCH_LIBS(dlopen, [dl c_r], 
-[have_dlopen='yes'],[have_dlopen='no'])])
-
-dnl And now the actual meat of the checking.
 
 AC_ARG_ENABLE(shared-modules,
 AC_HELP_STRING([--disable-shared-modules],[ Disable shared modules.]),
@@ -911,34 +891,42 @@ if test "$shared_modules" = yes; then
 	fi
 fi
 
-dnl Second stage support check.
-if test "$shared_modules" = "no"; then
-	echo "Not using shared modules.."
-	MODULES_DEFINE=""
-	MOD_TARGET="libmodules.a"
-	MODULES_LIBS="../modules/libmodules.a"
-	SEDOBJ=""
-	AC_DEFINE(STATIC_MODULES, 1, [Define to 1 if dynamic modules can't be used.])
-	
-else
-	echo "Checking for shared module support"
-	MODULES_DEFINE=""
-	MODULES_LIBS=""
-	MOD_TARGET="shared_modules"
-	SEDOBJ="s/\.o/.so/g"
+dnl Second stage: check for functions and headers.
+if test "$shared_modules" = yes; then
 	DYNLINK_C=dynlink.c
-        CHECK_DLOPEN_LD
-        if test "$have_shl_load" = "no"; then
-            AC_CHECK_HEADER([mach-o/dyld.h],, [CHECK_DLOPEN_DL])
-        fi
-        if test "$have_dlopen" = "no"; then
-            AC_MSG_ERROR([shared module support could not be found - try running configure with --disable-shared-modules])
-        fi
+	AC_CHECK_HEADERS(dlfcn.h)
+	AC_SEARCH_LIBS(shl_load, dld, 
+	[
+	  AC_DEFINE(HAVE_SHL_LOAD, 1, [Define if the shl_load function is available.])
+	  MOD_TARGET=hpux_shared
+	  SEDOBJ="s/\.o/.sl/g"  
+	],
+	dnl !shl_load:
+	[
+          dnl standard dlopen
+          AC_SEARCH_LIBS(dlopen, [dl c_r],
+	  [
+	    AC_DEFINE(HAVE_DLOPEN, 1, [Define if the dlopen function is available.])
+	    MOD_TARGET=shared_modules
+	    SEDOBJ="s/\.o/.so/g"
+	    if test "$AppleGCC" = yes; then
+              AC_CHECK_HEADERS([mach-o/dyld.h])
+            fi
+	    AC_CHECK_FUNC(dlsym, ,
+	    [
+	      AC_MSG_WARN([dlsym is not available, shared modules disabled])
+	      shared_modules=no
+	    ])
+	    AC_CHECK_FUNCS(dlfunc)
+	  ],
+	  [
+	    shared_modules=no
+	  ])
+	])
+fi
 
-	AC_SEARCH_LIBS(dlsym, [dl c_r])
-	AC_CHECK_FUNCS([dlopen dlfunc])
-	AC_CHECK_HEADERS(mach-o/dyld.h dlfcn.h)
-
+dnl Third stage - wrangling the linker.
+if test "$shared_modules" = yes; then
 	# The GNU linker requires the -export-dynamic option to make
 	# all symbols visible in the dynamic symbol table.
 	hold_ldflags=$LDFLAGS
@@ -966,6 +954,7 @@ else
 		AC_MSG_RESULT(SVR4 Software Generation System interfaces: -KPIC -DPIC -G)
 		PICFLAGS="-KPIC -DPIC -G"
 	fi
+	
 	if test "$AppleGCC" = "yes"; then
 		AC_MSG_RESULT(Darwin or Mac OS X - Assuming you want to make Mach-O bundles: -fno-common -bundle -flat_namespace -undefined suppress)
 		PICFLAGS="-fno-common -bundle -flat_namespace -undefined suppress"
@@ -989,15 +978,12 @@ else
 			PICFLAGS="$PICFLAGS +ESfic"
 		fi
 
-		SEDOBJ="s/\.o/.sl/g"
-		MOD_TARGET="hpux_shared"
 		LDFLAGS="${LDFLAGS} -Wl,-E"
 	fi
 	if test "$Tru" = yes -a "$CC" != gcc; then
 		AC_MSG_RESULT([Tru64: -shared -expect_unresolved '*'])
 		PICFLAGS="-shared -expect_unresolved '*' "
 		LDFLAGS="-call_shared"
-		SEDOBJ="s/\.o/.so/g"
 	fi
 	if test -z "$PICFLAGS"; then
 		if test "$ac_cv_c_compiler_gnu" = "yes"; then
@@ -1005,25 +991,26 @@ else
 			PICFLAGS="-fPIC -DPIC -shared"
 		else
 			AC_MSG_RESULT(no)
-			echo "no, using static modules"
-			MODULES_DEFINE=""
-			MOD_TARGET="libmodules.a"
-			MODULES_LIBS="../modules/libmodules.a"
-			SEDOBJ=""
-			AC_DEFINE(STATIC_MODULES, 1, [Define to 1 if dynamic modules can't be used.])
+			shared_modules=no
 		fi
 	fi
+fi
 
-	AC_SUBST(DYNLINK_C)
-	AC_SUBST(PICFLAGS)
+if test "$shared_modules" = no; then
+	DYNLINK_C=""
+	MOD_TARGET="libmodules.a"
+	MODULES_LIBS="../modules/libmodules.a"
+	SEDOBJ=""
+	AC_DEFINE(STATIC_MODULES, 1, [Define to 1 if dynamic modules can't be used.])
+	AC_MSG_WARN([shared module support has been disabled!])
+fi
 
-	nlist_lib=""
+dnl Stage 5 - underscores in front of symbol names.
+if test "$shared_modules" = yes; then
 
 	AC_CHECK_FUNC(nlist,,
 		AC_CHECK_LIB(dl, nlist, nlist_lib="-ldl",
 			AC_CHECK_LIB(elf, nlist, nlist_lib="-lelf",)
-dnl I call this FUD
-dnl			AC_MSG_WARN(** cannot locate nlist() **)
 		)
 	)
 
@@ -1034,8 +1021,6 @@ dnl			AC_MSG_WARN(** cannot locate nlist() **)
 	AC_CHECK_HEADER(elf/nlist.h, [ nlist_h="elf/nlist.h" ], )
 	AC_CHECK_HEADER(nlist.h, [ nlist_h="nlist.h" ], )
 	if test x"$nlist_h" = "x"; then
-dnl I call this FUD
-dnl		AC_MSG_WARN([nlist.h unavailable: assuming no underscores prepend symbol names])
 		AC_DEFINE_UNQUOTED(SYMBOL_PREFIX, "", [String containing extra underscores prepended to symbols loaded from modules.])
 	else
 		AC_MSG_CHECKING(for extra underscores prepended to symbol names)
@@ -1080,7 +1065,6 @@ EOF
 	fi
 fi
 
-AC_SUBST(MODULES_DEFINE)
 AC_SUBST(MODULES_LIBS)
 AC_SUBST(MOD_TARGET)
 
@@ -1089,8 +1073,11 @@ AC_SUBST(SSL_INCLUDES)
 AC_SUBST(SSL_LIBS)
 
 AC_SUBST(LDFLAGS)
+AC_SUBST(PICFLAGS)
 AC_SUBST(IRC_CFLAGS)
 AC_SUBST(SEDOBJ)
+
+AC_SUBST(DYNLINK_C)
 
 if test "$prefix" = "NONE"; then 
 	AC_DEFINE_UNQUOTED(IRCD_PREFIX, "$ac_default_prefix", [Prefix where the ircd is installed.])
@@ -1102,6 +1089,7 @@ dnl a custom prefix with a trailing slash
 
 	prefix=`echo $prefix | sed 's/\/$//'`
 	AC_DEFINE_UNQUOTED(IRCD_PREFIX, "$prefix", [Prefix where the ircd is installed.])
+	
 fi
 
 AC_CONFIG_FILES(		\
@@ -1121,6 +1109,7 @@ dnl	iauth/source/Makefile	\
 
 AC_OUTPUT
 
+dnl Configure options probably changed
 rm -f src/.depend modules/.depend servlink/.depend contrib/.depend
 
 dnl Make it look sexay!

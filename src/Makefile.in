@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.144 2003/06/18 00:53:15 joshk Exp $
+# $Id: Makefile.in,v 7.145 2003/06/21 01:12:01 joshk Exp $
 #
 @SET_MAKE@
 
@@ -64,6 +64,7 @@ BASE_SRCS =	\
  class.c \
  client.c \
  cluster.c \
+ @CRYPT_C@ \
  dbuf.c	\
  event.c \
  fdlist.c \
