@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.409 2003/10/15 01:37:12 bill Exp $
+ *  $Id: channel.c,v 7.410 2003/10/15 02:25:07 bill Exp $
  */
 
 #include "stdinc.h"
@@ -186,7 +186,10 @@ send_members(struct Client *client_p, struct Channel *chptr,
 
     strcpy(t, get_member_status(ms, YES));
     t += strlen(t);
-    strcpy(t, ms->client_p->name);
+    if (IsCapable(client_p, CAP_TS6))
+      strcpy(t, ID(ms->client_p));
+    else
+      strcpy(t, ms->client_p->name);
     t += strlen(t);
     *t++ = ' ';
   }
@@ -250,7 +253,7 @@ send_mode_list(struct Client *client_p, struct Channel *chptr,
     return;
 
   if(IsCapable(client_p, CAP_TS6))
-      ircsprintf(buf, ":%s BMASK %lu %s :", me.id,
+      ircsprintf(buf, ":%s BMASK %lu %s ", me.id,
                  (unsigned long)chptr->channelts, chptr->chname);
   else
     ircsprintf(buf, ":%s MODE %s +", me.name, chptr->chname);
@@ -275,7 +278,7 @@ send_mode_list(struct Client *client_p, struct Channel *chptr,
       *(pp-1) = '\0'; /* get rid of trailing space on buffer */
    
       if(IsCapable(client_p, CAP_TS6))
-        sendto_one(client_p, "%s%c %s", buf, flag, pbuf);
+        sendto_one(client_p, "%s%c :%s", buf, flag, pbuf);
       else
         sendto_one(client_p, "%s%s %s", buf, mbuf, pbuf);
 
@@ -293,8 +296,10 @@ send_mode_list(struct Client *client_p, struct Channel *chptr,
     cur_len += tlen;
   }
 
+  *(pp-1) = '\0'; /* get rid of trailing space on buffer */
+
   if(IsCapable(client_p, CAP_TS6))
-    sendto_one(client_p, "%s%c %s", buf, flag, pbuf);
+    sendto_one(client_p, "%s%c :%s", buf, flag, pbuf);
   else
     sendto_one(client_p, "%s%s %s", buf, mbuf, pbuf);
 }
