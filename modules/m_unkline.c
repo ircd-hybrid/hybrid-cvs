@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_unkline.c,v 1.48 2002/09/19 04:22:55 bill Exp $
+ *  $Id: m_unkline.c,v 1.49 2002/11/13 05:30:41 db Exp $
  */
 
 #include "stdinc.h"
@@ -73,10 +73,11 @@ _moddeinit(void)
   mod_del_cmd(&msgtabs[1]);
   mod_del_cmd(&msgtabs[2]);
 }
-const char *_version = "$Revision: 1.48 $";
+const char *_version = "$Revision: 1.49 $";
 #endif
 
-static int flush_write(struct Client *, FBFILE* , char *, char *);
+static int flush_write(struct Client *, FBFILE *in, FBFILE *out,
+		       char *, char *);
 static int remove_tkline_match(char *,char *);
 
 
@@ -90,8 +91,9 @@ static int remove_tkline_match(char *,char *);
 *
 *
 */
-static void mo_unkline (struct Client *client_p,struct Client *source_p,
-                       int parc,char *parv[])
+static void
+mo_unkline (struct Client *client_p,struct Client *source_p,
+	    int parc,char *parv[])
 {
   FBFILE *in, *out;
   int pairme=0,error_on_write = NO;
@@ -178,23 +180,20 @@ static void mo_unkline (struct Client *client_p,struct Client *source_p,
 
       if ((*buff == '\0') || (*buff == '#'))
 	{
-	  if(!error_on_write)
-	    flush_write(source_p, out, buf, temppath);
-	  continue;
+	  if(flush_write(source_p, in, out, buf, temppath) < 0)
+	    return;
 	}
       
       if ((found_user = getfield(buff)) == NULL)
 	{
-	  if(!error_on_write)
-	    flush_write(source_p, out, buf, temppath);
-	  continue;
+	  if(flush_write(source_p, in, out, buf, temppath) < 0)
+	    return;
 	}
 
       if ((found_host = getfield(NULL)) == NULL)
 	{
-	  if(!error_on_write)
-	    flush_write(source_p, out, buf, temppath);
-	  continue;
+	  if(flush_write(source_p, in, out, buf, temppath) < 0)
+	    return;
 	}
 
       if ((irccmp(host,found_host) == 0) && (irccmp(user,found_user) == 0))
@@ -203,8 +202,8 @@ static void mo_unkline (struct Client *client_p,struct Client *source_p,
 	}
       else
 	{
-	  if(!error_on_write)
-	    flush_write(source_p, out, buf, temppath);
+	  if(flush_write(source_p, in, out, buf, temppath) < 0)
+	    return;
 	}
     }
   fbclose(in);
@@ -214,18 +213,9 @@ static void mo_unkline (struct Client *client_p,struct Client *source_p,
 /* If there was an error on a write above, then its been reported
  * and I am not going to trash the original kline /conf file
  */
-  if(!error_on_write)
-    {
-      (void)rename(temppath, filename);
-      rehash(0);
-    }
-  else
-    {
-      sendto_one(source_p,
-		 ":%s NOTICE %s :Couldn't write temp kline file, aborted",
-		 me.name,source_p->name);
-      return;
-    }
+
+  (void)rename(temppath, filename);
+  rehash(0);
 
   if(!pairme)
     {
@@ -249,12 +239,13 @@ static void mo_unkline (struct Client *client_p,struct Client *source_p,
  * flush_write()
  *
  * inputs       - pointer to client structure of oper requesting unkline
- *              - out is the file descriptor
+ *		- in is the input file descriptor
+ *              - out is the output file descriptor
  *              - buf is the buffer to write
  *              - ntowrite is the expected number of character to be written
  *              - temppath is the temporary file name to be written
- * output       - YES for error on write
- *              - NO for success
+ * output       - -1 for error on write
+ *              - 0 for ok
  * side effects - if successful, the buf is written to output file
  *                if a write failure happesn, and the file pointed to
  *                by temppath, if its non NULL, is removed.
@@ -265,15 +256,17 @@ static void mo_unkline (struct Client *client_p,struct Client *source_p,
  * -Dianora
  */
 
-static int flush_write(struct Client *source_p, FBFILE* out, char *buf,
-		       char *temppath)
+static int
+flush_write(struct Client *source_p, FBFILE *in, FBFILE* out, 
+	    char *buf, char *temppath)
 {
-  int error_on_write = (fbputs(buf, out) < 0) ? YES : NO;
+  int error_on_write = (fbputs(buf, out) < 0) ? (-1) : (0);
 
   if (error_on_write)
     {
-      sendto_one(source_p,":%s NOTICE %s :Unable to write to %s",
+      sendto_one(source_p,":%s NOTICE %s :Unable to write to %s aborting",
         me.name, source_p->name, temppath );
+      fbclose(in);
       fbclose(out);
       if(temppath != (char *)NULL)
         (void)unlink(temppath);
@@ -367,7 +360,7 @@ mo_undline (struct Client *client_p, struct Client *source_p,
     }
 
   oldumask = umask(0);                  /* ircd is normally too paranoid */
-  if ( (out = fbopen(temppath, "w")) == 0)
+  if ((out = fbopen(temppath, "w")) == NULL)
     {
       sendto_one(source_p, ":%s NOTICE %s :Cannot open %s",
 		 me.name,parv[0],temppath);
@@ -386,16 +379,14 @@ mo_undline (struct Client *client_p, struct Client *source_p,
 
       if ((*buff == '\0') || (*buff == '#'))
 	{
-	  if(!error_on_write)
-	    flush_write(source_p, out, buf, temppath);
-	  continue;
+	  if(flush_write(source_p, in, out, buf, temppath) < 0)
+	    return;
 	}
 
       if ((found_cidr = getfield(buff)) == NULL)
 	{
-	  if(!error_on_write)
-	    flush_write(source_p, out, buf, temppath);
-	  continue;
+	  if(flush_write(source_p, in, out, buf, temppath) < 0)
+	    return;
 	}
       
       if (irccmp(found_cidr,cidr) == 0)
@@ -404,29 +395,16 @@ mo_undline (struct Client *client_p, struct Client *source_p,
 	}
       else
 	{
-	  if(!error_on_write)
-	    flush_write(source_p, out, buf, temppath);
-	  continue;
+	  if(flush_write(source_p, in, out, buf, temppath) < 0)
+	    return;
 	}
-
     }
 
   fbclose(in);
   fbclose(out);
 
-  if (!error_on_write)
-    {
-
-      (void)rename(temppath, filename);
-      rehash(0);
-    }
-  else
-    {
-      sendto_one(source_p,
-		 ":%s NOTICE %s :Couldn't write D-line file, aborted",
-		 me.name, parv[0]);
-      return;
-    }
+  (void)rename(temppath, filename);
+  rehash(0);
 
   if (!pairme)
     {
@@ -452,8 +430,9 @@ mo_undline (struct Client *client_p, struct Client *source_p,
 **      parv[1] = gline to remove
 */
 
-static void mo_ungline(struct Client *client_p, struct Client *source_p,
-                      int parc,char *parv[])
+static void
+mo_ungline(struct Client *client_p, struct Client *source_p,
+	   int parc,char *parv[])
 {
   char  *user,*host;
 
@@ -470,11 +449,11 @@ static void mo_ungline(struct Client *client_p, struct Client *source_p,
       return;
     }
 
-  if ( (host = strchr(parv[1], '@')) || *parv[1] == '*' )
+  if ((host = strchr(parv[1], '@')) || *parv[1] == '*')
     {
       /* Explicit user@host mask given */
 
-      if(host)                  /* Found user@host */
+      if(host != NULL)                  /* Found user@host */
         {
           user = parv[1];       /* here is user part */
           *(host++) = '\0';     /* and now here is host */
