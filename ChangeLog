@@ -1,3 +1,15 @@
+androsyn    2002/04/21 13:18:23 EDT	(20020421_1)
+
+  Modified files:
+    .                    RELNOTES 
+  Log:
+  Test
+  
+  Revision  Changes    Path
+  1.22      +1 -1      ircd-hybrid-7/RELNOTES
+
+
+
 leeh        2002/04/21 08:59:40 EDT	(20020421_0)
 
   Modified files:
@@ -25303,4 +25315,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3578 2002/04/21 12:59:46 leeh Exp $
+$Id: ChangeLog,v 7.3579 2002/04/21 17:18:29 androsyn Exp $
