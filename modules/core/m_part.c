@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_part.c,v 1.61 2003/01/31 23:00:29 db Exp $
+ *  $Id: m_part.c,v 1.62 2003/02/04 04:24:04 db Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&part_msgtab);
 }
-const char *_version = "$Revision: 1.61 $";
+const char *_version = "$Revision: 1.62 $";
 #endif
 
 static void part_one_client(struct Client *client_p,
@@ -75,10 +75,9 @@ static void part_one_client(struct Client *client_p,
 **      parv[1] = channel
 **      parv[2] = reason
 */
-static void m_part(struct Client *client_p,
-                  struct Client *source_p,
-                  int parc,
-                  char *parv[])
+static void
+m_part(struct Client *client_p, struct Client *source_p,
+       int parc, char *parv[])
 {
   char  *p, *name;
   char reason[TOPICLEN+1];
@@ -191,6 +190,8 @@ part_one_client(struct Client *client_p, struct Client *source_p,
   if (IsDead(source_p))
     return;
 
+  remove_user_from_channel(chptr, source_p);
+
   /* There is no risk of a server client dying here because it is the
    * "one" that doesn't receive messages, and hence it cannot have a
    * write error.
@@ -224,6 +225,4 @@ part_one_client(struct Client *client_p, struct Client *source_p,
                          source_p->host,
                          bchan->chname);
   }
-  if (!IsDead(source_p))
-    remove_user_from_channel(chptr, source_p);
 }
