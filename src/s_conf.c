@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.431 2003/06/16 03:07:54 db Exp $
+ *  $Id: s_conf.c,v 7.432 2003/06/16 21:26:36 db Exp $
  */
 
 #include "stdinc.h"
@@ -324,11 +324,23 @@ delete_conf_item(struct ConfItem *conf)
     break;
 
   case ULINE_TYPE:
+    match_item = (struct MatchItem *)map_to_conf(conf);
+    MyFree(match_item->name);
+    MyFree(match_item->user);
+    MyFree(match_item->host);
+    MyFree(match_item->reason);
+    MyFree(match_item->oper_reason);
     dlinkDelete(&conf->node, &uconf_items);
     MyFree(conf);
     break;
 
   case XLINE_TYPE:
+    match_item = (struct MatchItem *)map_to_conf(conf);
+    MyFree(match_item->name);
+    MyFree(match_item->user);
+    MyFree(match_item->host);
+    MyFree(match_item->reason);
+    MyFree(match_item->oper_reason);
     dlinkDelete(&conf->node, &xconf_items);
     MyFree(conf);
     break;
@@ -337,6 +349,12 @@ delete_conf_item(struct ConfItem *conf)
     break;
 
   case NRESV_TYPE:
+    match_item = (struct MatchItem *)map_to_conf(conf);
+    MyFree(match_item->name);
+    MyFree(match_item->user);
+    MyFree(match_item->host);
+    MyFree(match_item->reason);
+    MyFree(match_item->oper_reason);
     dlinkDelete(&conf->node, &nresv_items);
     MyFree(conf);
     break;
@@ -360,25 +378,20 @@ clear_conf_items(void)
   dlink_node *next_ptr;
   struct ConfItem *conf;
 
+
   DLINK_FOREACH_SAFE(ptr, next_ptr, uconf_items.head)
   {
-    conf = ptr->data;
-    dlinkDelete(&conf->node, &uconf_items);
-    MyFree(conf);
+    delete_conf_item((conf = ptr->data));
   }
 
   DLINK_FOREACH_SAFE(ptr, next_ptr, xconf_items.head)
   {
-    conf = ptr->data;
-    dlinkDelete(&conf->node, &xconf_items);
-    MyFree(conf);
+    delete_conf_item((conf = ptr->data));
   }
 
   DLINK_FOREACH_SAFE(ptr, next_ptr, nresv_items.head)
   {
-    conf = ptr->data;
-    dlinkDelete(&conf->node, &nresv_items);
-    MyFree(conf);
+    delete_conf_item((conf = ptr->data));
   }
 }
 
