@@ -12,12 +12,12 @@
  *  This program is distributed in the hope that it will be useful,
  *  but WITHOUT ANY WARRANTY; without even the implied warranty of
  *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU Library General Public License for more details.
+ *  GNU General Public License for more details.
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- *  $Id: respond.c,v 1.4 2001/02/03 04:02:55 a1kmm Exp $
+ *  $Id: respond.c,v 1.5 2001/02/03 04:05:37 a1kmm Exp $
  */
 #include <openssl/rsa.h>
 #include <openssl/md5.h>
