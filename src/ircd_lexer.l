@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.33 2000/12/15 23:26:56 db Exp $
+ * $Id: ircd_lexer.l,v 1.34 2000/12/16 04:42:45 db Exp $
  */
 
 %option case-insensitive
@@ -34,6 +34,8 @@
 #include "common.h"
 #include "s_conf.h"
 #include "y.tab.h"
+
+char *ip_string;
 
 #undef YY_INPUT
 #define YY_FATAL_ERROR(msg) conf_yy_fatal_error( msg )
@@ -63,7 +65,10 @@ qstring		\"[^\"\n]*[\"\n]
 ([0-9]{1,3}\.){1,3}[0-9]{1,3}(\/[0-3][0-9])?  {
 
 	if(is_address(yytext,&yylval.ip_entry.ip,&yylval.ip_entry.ip_mask))
-	  return( IP_TYPE );
+          {
+            ip_string = yytext;
+	    return( IP_TYPE );
+          }
 	 }
 
 {qstring}	{ DupString(yylval.string,strdup(yytext+1));

@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.52 2000/12/16 01:55:40 db Exp $
+ * $Id: ircd_parser.y,v 1.53 2000/12/16 04:42:45 db Exp $
  */
 
 %{
@@ -33,6 +33,8 @@
 #include "client.h"	/* for FLAGS_ALL only */
 #include "irc_string.h"
 #include "ircdauth.h"
+
+extern char *ip_string;
 
 int yyparse();
         
@@ -680,8 +682,13 @@ auth_user:   USER '=' QSTRING ';'
              |
              IP '=' IP_TYPE ';'
   {
+    char *p;
+
     yy_aconf->ip = yylval.ip_entry.ip;
     yy_aconf->ip_mask = yylval.ip_entry.ip_mask;
+    DupString(yy_aconf->host,ip_string);
+    if((p = strchr(yy_aconf->host, ';')))
+      *p = '\0';
   };
 
 auth_passwd:  PASSWORD '=' QSTRING ';' 
@@ -1095,8 +1102,13 @@ deny_item:      deny_ip | deny_reason
 
 deny_ip:        IP '=' IP_TYPE ';'
   {
-    yy_aconf->ip=yylval.ip_entry.ip;
-    yy_aconf->ip_mask=yylval.ip_entry.ip_mask;
+    char *p;
+
+    yy_aconf->ip = yylval.ip_entry.ip;
+    yy_aconf->ip_mask = yylval.ip_entry.ip_mask;
+    DupString(yy_aconf->host,ip_string);
+    if((p = strchr(yy_aconf->host, ';')))
+      *p = '\0';
   };
 
 deny_reason:    REASON '=' QSTRING ';' 
