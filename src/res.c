@@ -4,7 +4,7 @@
  * shape or form. The author takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: res.c,v 7.32 2000/12/30 09:28:36 lusky Exp $
+ * $Id: res.c,v 7.33 2000/12/31 05:23:24 db Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -950,6 +950,15 @@ static int proc_answer(ResRQ* request, HEADER* header,
     default :
 #ifdef DEBUG
       Debug((DEBUG_INFO,"proc_answer: type:%d for:%s", type, hostbuf));
+#endif
+      /* XXX I'd rather just throw away the entire bogus thing
+       * but its possible its just a broken nameserver with still
+       * valid answers. But lets do some rudimentary logging for now...
+       */
+      current += rd_length;
+      log(L_ERROR, "res.c bogus type %d", type );
+#if 0
+      return 0;
 #endif
       break;
     }

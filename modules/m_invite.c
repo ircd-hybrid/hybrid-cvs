@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_invite.c,v 1.14 2000/12/27 18:53:42 davidt Exp $
+ *   $Id: m_invite.c,v 1.15 2000/12/31 05:23:19 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -75,6 +75,13 @@ int     m_invite(struct Client *cptr,
   struct Channel *vchan;
   char   *chname;
   int    chop;			/* Is channel op */
+
+  if (parc < 3 || *parv[1] == '\0')
+    {
+      sendto_one(sptr, form_str(ERR_NEEDMOREPARAMS),
+		 me.name, parv[0], "INVITE");
+      return -1;
+    }
 
   /* A little sanity test here */
   if(!sptr->user)
