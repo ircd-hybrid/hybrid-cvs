@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.122 2002/02/27 17:51:45 enygma Exp $
+ *  $Id: parse.c,v 7.123 2002/03/14 14:23:17 db Exp $
  */
 
 #include <assert.h>
@@ -736,6 +736,11 @@ static void do_numeric(char numeric[],
        */
       return;
     }
+
+    /* csircd will send out unknown umode flag for +a (admin), drop it here. */
+    if((numeric == ERR_UMODEUNKNOWNFLAG) && MyClient(target_p))
+      return;
+    
     /* Fake it for server hiding, if its our client */
     if(ConfigServerHide.hide_servers &&
        MyClient(target_p) && !IsOper(target_p))
