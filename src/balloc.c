@@ -25,7 +25,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: balloc.c,v 7.39 2002/11/27 22:54:12 db Exp $
+ *  $Id: balloc.c,v 7.40 2002/11/28 02:18:02 db Exp $
  */
 
 /* 
@@ -550,10 +550,7 @@ BlockHeapDestroy(BlockHeap * bh)
           free(walker);
       }
 
-    if(bh != NULL)
-      {
-	free(bh);
-      }
+    free(bh);
     return(0);
 }
 #endif
