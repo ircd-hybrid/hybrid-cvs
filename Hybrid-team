@@ -1,4 +1,4 @@
-$Id: Hybrid-team,v 7.62 2003/03/01 05:01:21 db Exp $
+$Id: Hybrid-team,v 7.63 2003/03/29 20:18:42 michael Exp $
 
 The hybrid team is a group of ircd coders who were frustrated
 with the instability and all-out "dirtiness" of the EFnet ircd's
@@ -23,6 +23,7 @@ einride, Erik S. Johansen, <einride@einride.org>
 fl, Lee Hardy <lee@leeh.co.uk>
 Hwy101, W. Campbell <wcampbel@botbay.net>
 larne, Edward Brocklesby <ejb@sdf.lonestar.org>
+Michael, Michael Wobst <michael@elite-web.de>
 isomer, Perry Lorier <perry@coders.net>
 jmallett, Juli Mallett <jmallett@FreeBSD.org>
 k9, Jeremy Chadwick <yoshi@parodius.com>
@@ -44,7 +45,6 @@ jv, Jakub Vlasek <jv@pilsedu.cz>
 kre, Dinko Korunic <kreator@fly.srk.fer.hr>
 madmax, Paul Lomax <madmax@efnet.org>
 MetalRock, Jack Low <xxjack12xx@doramail.com>
-Michael, Michael Wobst <michael@elite-web.de>
 Neph|l|m, Adel Mezibra <adel@cybercable.fr>
 Riedel, Dennis Vink, <vink@vuurwerk.nl>
 Robert Alan Byer <byer@mail.ourservers.net>
