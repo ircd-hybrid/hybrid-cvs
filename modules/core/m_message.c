@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.77 2001/11/30 09:45:29 a1kmm Exp $
+ *   $Id: m_message.c,v 1.78 2001/12/02 14:30:29 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -304,11 +304,6 @@ build_target_list(int p_or_n, char *command, struct Client *client_p,
             return (ntargets);
           continue;
         }
-      }
-      else if (IsOper(source_p))
-      {
-        handle_opers(p_or_n, command, client_p, source_p, nick, text);
-        continue;
       }
       else
       {
@@ -813,8 +808,11 @@ handle_opers(int p_or_n,
      **
      ** Armin, 8Jun90 (gruner@informatik.tu-muenchen.de)
    */
-  if ((*nick == '$' || *nick == '#'))
+  if(*nick == '$')
   {
+    if((*(nick+1) == '$' || *(nick+1) == '#'))
+      nick++;
+      
     if (!(s = (char *)strrchr(nick, '.')))
     {
       sendto_one(source_p, form_str(ERR_NOTOPLEVEL),
@@ -830,10 +828,11 @@ handle_opers(int p_or_n,
                  me.name, source_p->name, nick);
       return;
     }
+    
     sendto_match_butone(IsServer(client_p) ? client_p : NULL, source_p,
                         nick + 1,
                         (*nick == '#') ? MATCH_HOST : MATCH_SERVER,
-                        "PRIVMSG %s :%s", nick, text);
+                        "PRIVMSG $%s :%s", nick, text);
     return;
   }
 
