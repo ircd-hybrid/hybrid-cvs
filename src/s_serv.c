@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.65 2000/12/12 05:45:18 db Exp $
+ *   $Id: s_serv.c,v 7.66 2000/12/12 16:36:58 db Exp $
  */
 #include "tools.h"
 #include "s_serv.h"
@@ -1234,6 +1234,7 @@ serv_connect_callback(int fd, int status, void *data)
     struct Client *cptr = data;
     struct ConfItem *c_conf;
     struct ConfItem *n_conf;
+    dlink_node *m;
 
     /* First, make sure its a real client! */
     assert(cptr != NULL);
@@ -1296,6 +1297,13 @@ serv_connect_callback(int fd, int status, void *data)
         exit_client(cptr, cptr, &me, "Went dead during handshake");
         return;
     }
+
+    /* cptr has already been pulled off of the unknown_list
+     * now it is known its a server for sure
+     */
+
+    m = make_dlink_node();
+    dlinkAdd(cptr, m, &serv_list);
 
     /* If we get here, we're ok, so lets start reading some data */
     comm_setselect(fd, FDLIST_SERVER, COMM_SELECT_READ, read_packet, cptr, 0);

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.26 2000/12/10 20:04:04 db Exp $
+ *   $Id: m_sjoin.c,v 1.27 2000/12/12 16:36:54 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -89,9 +89,9 @@ void remove_a_mode(int hide_or_not,
 
 
 int     ms_sjoin(struct Client *cptr,
-                struct Client *sptr,
-                int parc,
-                char *parv[])
+		 struct Client *sptr,
+		 int parc,
+		 char *parv[])
 {
   struct Channel *chptr;
   struct Channel *top_chptr;	/* XXX vchans */

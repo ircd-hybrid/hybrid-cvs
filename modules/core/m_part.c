@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_part.c,v 1.15 2000/12/10 01:32:12 db Exp $
+ *   $Id: m_part.c,v 1.16 2000/12/12 16:36:54 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -117,7 +117,6 @@ int     m_part(struct Client *cptr,
 	      if( (CurrentTime - (sptr->localClient->last_join_time)) < 
 		  GlobalSetOptions.spam_time)
 		{
-		  /* oh, its a possible spambot */
 		  sptr->localClient->join_leave_count++;
 		}
 	    }
@@ -145,8 +144,8 @@ int     m_part(struct Client *cptr,
  * side effects	- remove ONE client given the channel name 
  */
 static void part_one_client(struct Client *cptr,
-			   struct Client *sptr,
-			   char *name)
+			    struct Client *sptr,
+			    char *name)
 {
   struct Channel *chptr;
   struct Channel *vchan;

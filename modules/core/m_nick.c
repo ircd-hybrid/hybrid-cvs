@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_nick.c,v 1.23 2000/12/11 22:07:31 db Exp $
+ *   $Id: m_nick.c,v 1.24 2000/12/12 16:36:53 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -770,7 +770,7 @@ set_initial_nick(struct Client *cptr, struct Client *sptr,
 /*
  * change_local_nick
  * inputs	- pointer to server
- *
+ *		- pointer to client
  * output	- 
  * side effects	- changes nick of a LOCAL user
  *
