@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.143 2003/07/16 00:35:07 michael Exp $
+ *  $Id: m_stats.c,v 1.144 2003/08/04 08:58:40 michael Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.143 $";
+const char *_version = "$Revision: 1.144 $";
 #endif
 
 const char *Lformat = ":%s %d %s %s %u %u %u %u %u :%u %u %s";
@@ -696,7 +696,7 @@ stats_operedup(struct Client *source_p)
                  me.name, RPL_STATSDEBUG, source_p->name,
                  IsAdmin(target_p) ?
 		 (IsOperHiddenAdmin(target_p) ? 'O' : 'A') : 'O',
-		 oper_privs_as_string(target_p, aconf->port),
+		 oper_privs_as_string(aconf->port),
 		 target_p->name, target_p->username, target_p->host,
 		 (int)(CurrentTime - target_p->user->last));
     }

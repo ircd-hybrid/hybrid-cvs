@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.463 2003/08/01 16:29:56 michael Exp $
+ *  $Id: s_conf.c,v 7.464 2003/08/04 08:58:42 michael Exp $
  */
 
 #include "stdinc.h"
@@ -191,7 +191,7 @@ make_conf_item(ConfType type)
   struct ConfItem *conf;
   struct AccessItem *aconf;
   struct ClassItem *aclass;
-  int status=0;
+  int status = 0;
 
   switch(type)
   {
@@ -493,7 +493,7 @@ void
 report_confitem_types(struct Client *source_p, ConfType type)
 {
   dlink_node *ptr;
-  struct ConfItem *conf=NULL;
+  struct ConfItem *conf = NULL;
   struct AccessItem *aconf;
   struct MatchItem *matchitem;
   struct ClassItem *classitem;
@@ -546,7 +546,7 @@ report_confitem_types(struct Client *source_p, ConfType type)
       if (IsOper(source_p))
 	sendto_one(source_p, form_str(RPL_STATSOLINE),
 		   me.name, source_p->name, 'O', user, host,
-		   conf->name, oper_privs_as_string(NULL, port), classname);
+		   conf->name, oper_privs_as_string(port), classname);
       else
 	sendto_one(source_p, form_str(RPL_STATSOLINE),
 		   me.name, source_p->name, 'O', user, host,
@@ -745,7 +745,7 @@ check_client(struct Client *client_p, struct Client *source_p, const char *usern
  * side effect	- find the first (best) I line to attach.
  */
 static int
-verify_access(struct Client* client_p, const char *username)
+verify_access(struct Client *client_p, const char *username)
 {
   struct AccessItem *aconf;
   struct ConfItem *conf;
@@ -932,8 +932,7 @@ init_ip_hash_table(void)
 
 /* find_or_add_ip()
  *
- * inputs       - client_p
- *              - name
+ * inputs       - pointer to struct irc_ssaddr
  * output       - pointer to a struct ip_entry
  * side effects -
  *
@@ -1011,7 +1010,7 @@ remove_one_ip(struct irc_ssaddr *ip_in)
   struct sockaddr_in6 *v6 = (struct sockaddr_in6 *)ip_in, *ptr_v6;
 #endif
 
-  for(ptr = ip_hash_table[hash_index]; ptr; ptr = ptr->next)
+  for (ptr = ip_hash_table[hash_index]; ptr; ptr = ptr->next)
   {
 #ifdef IPV6
     if (ptr->ip.ss.ss_family != ip_in->ss.ss_family)
@@ -1440,9 +1439,9 @@ attach_connect_block(struct Client *client_p, const char *name,
  * side effects	- find a conf entry which matches the hostname
  *		  and has the same name.
  */
-struct ConfItem* 
-find_conf_exact(ConfType type, const char* name, const char* user, 
-		const char* host)
+struct ConfItem *
+find_conf_exact(ConfType type, const char *name, const char *user, 
+                const char *host)
 {
   dlink_node *ptr;
   dlink_list *list_p;
@@ -1962,7 +1961,7 @@ validate_conf(void)
 
   if ((ConfigFileEntry.client_flood < CLIENT_FLOOD_MIN) ||
       (ConfigFileEntry.client_flood > CLIENT_FLOOD_MAX))
-     ConfigFileEntry.client_flood = CLIENT_FLOOD_MAX;
+    ConfigFileEntry.client_flood = CLIENT_FLOOD_MAX;
 
   GlobalSetOptions.idletime = (ConfigFileEntry.idletime * 60);
 }
@@ -2131,7 +2130,7 @@ add_temp_kline(struct AccessItem *aconf)
  * inputs        - pointer to struct AccessItem
  * output        - none
  * Side effects  - links in given struct AccessItem into 
- *                 temporary kline link list
+ *                 temporary dline link list
  */
 void
 add_temp_dline(struct AccessItem *aconf)
@@ -2148,7 +2147,7 @@ add_temp_dline(struct AccessItem *aconf)
  *
  * inputs       - NONE
  * output       - NONE
- * side effects - call function to expire tklines
+ * side effects - call function to expire temporary k/d lines
  *                This is an event started off in ircd.c
  */
 void
@@ -2204,7 +2203,6 @@ expire_tklines(dlink_list *tklist)
  * inputs        - pointer to client_p or NULL
  * output        - pointer to static string showing oper privs
  * side effects  - return as string, the oper privs as derived from port
- * 		   also set the oper privs if given source_p non NULL
  */
 static const struct oper_privs
 {
@@ -2226,7 +2224,7 @@ static const struct oper_privs
 };
 
 char *
-oper_privs_as_string(struct Client *source_p, unsigned int port)
+oper_privs_as_string(const unsigned int port)
 {
   static char privs_out[20];
   char *privs_ptr;
@@ -2234,9 +2232,6 @@ oper_privs_as_string(struct Client *source_p, unsigned int port)
 
   privs_ptr = privs_out;
   *privs_ptr = '\0';
-
-  if (source_p != NULL)
-    SetOFlag(source_p, port);
 
   for (i = 0; flag_list[i].oprivs; i++)
   {
@@ -2250,7 +2245,6 @@ oper_privs_as_string(struct Client *source_p, unsigned int port)
   *privs_ptr = '\0';
   return(privs_out);
 }
-
 
 /* const char* get_oper_name(struct Client *client_p)
  * Input: A client to find the active oper{} name for.
@@ -2377,8 +2371,7 @@ read_conf_files(int cold)
   parse_conf_file(CRESV_TYPE, cold);
 }
 
-/*
- * parse_conf_file()
+/* parse_conf_file()
  *
  * inputs	- type of conf file to parse 
  * output	- none
@@ -2598,7 +2591,6 @@ flush_deleted_I_P(void)
     }
   }
 }
-
 
 /* get_conf_name()
  *

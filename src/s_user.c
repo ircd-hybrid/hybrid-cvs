@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.300 2003/08/03 14:22:23 michael Exp $
+ *  $Id: s_user.c,v 7.301 2003/08/04 08:58:42 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1335,21 +1335,17 @@ check_x_line(struct Client *client_p, struct Client *source_p)
 /* oper_up()
  *
  * inputs	- pointer to given client to oper
- *		- pointer to AccessItem to use
  * output	- NONE
- * side effects	-
- * Blindly opers up given source_p, using aconf info
- * all checks on passwords have already been done.
- * This could also be used by rsa oper routines. 
+ * side effects	- Blindly opers up given source_p, using aconf info
+ *                all checks on passwords have already been done.
+ *                This could also be used by rsa oper routines. 
  */
 void
 oper_up(struct Client *source_p)
 {
-  struct ConfItem *conf;
-  struct AccessItem *oconf;
   unsigned int old = (source_p->umodes & ALL_UMODES);
   const char *operprivs = "";
-  dlink_node *ptr;
+  struct AccessItem *oconf;
 
   SetOper(source_p);
 
@@ -1361,16 +1357,14 @@ oper_up(struct Client *source_p)
 
   Count.oper++;
 
+  assert(dlinkFind(&oper_list, source_p) == NULL);
   dlinkAdd(source_p, make_dlink_node(), &oper_list);
 
-  if ((ptr = source_p->localClient->confs.head) != NULL)
-  {
-    conf = (struct ConfItem *)ptr->data;
-    oconf = (struct AccessItem *)map_to_conf(conf);
-    operprivs = oper_privs_as_string(source_p, oconf->port);
-  }
-  else
-    operprivs = "";
+  assert(source_p->localClient->confs.head);
+  oconf = map_to_conf((source_p->localClient->confs.head)->data);
+  operprivs = oper_privs_as_string(oconf->port);
+
+  SetOFlag(source_p, oconf->port);
 
   if (IsOperAdmin(source_p) || IsOperHiddenAdmin(source_p))
     source_p->umodes |= UMODE_ADMIN;

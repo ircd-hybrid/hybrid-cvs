@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.401 2003/08/03 14:22:22 michael Exp $
+ *  $Id: client.c,v 7.402 2003/08/04 08:58:42 michael Exp $
  */
 
 #include "stdinc.h"
@@ -227,7 +227,7 @@ check_pings(void *notused)
   check_unknowns_list();
 }
 
-/* Check_pings_list()
+/* check_pings_list()
  *
  * inputs	- pointer to list to check
  * output	- NONE
