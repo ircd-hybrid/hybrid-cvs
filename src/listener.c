@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.c,v 7.68 2002/05/31 02:21:04 androsyn Exp $
+ *  $Id: listener.c,v 7.69 2002/06/15 07:19:56 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -56,7 +56,6 @@ make_listener(int port, struct irc_inaddr *addr)
 {
   struct Listener* listener =
     (struct Listener*) MyMalloc(sizeof(struct Listener));
-  memset(listener, 0, sizeof(*listener));
   assert(0 != listener);
   
   listener->name        = me.name;

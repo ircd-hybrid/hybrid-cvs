@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.c,v 7.64 2002/05/24 23:34:46 androsyn Exp $
+ *  $Id: hostmask.c,v 7.65 2002/06/15 07:19:56 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -525,7 +525,7 @@ add_conf_by_address(const char *address, int type, const char *username,
   struct AddressRec *arec;
   if (address == NULL)
     address = "/NOMATCH!/";
-  arec = MyMalloc(sizeof(*arec));
+  arec = MyMalloc(sizeof(struct AddressRec));
   masktype = parse_netmask(address, &arec->Mask.ipa.addr, &bits);
   arec->Mask.ipa.bits = bits;
   arec->masktype = masktype;

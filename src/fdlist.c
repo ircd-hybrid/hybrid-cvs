@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fdlist.c,v 7.30 2002/05/31 01:29:03 androsyn Exp $
+ *  $Id: fdlist.c,v 7.31 2002/06/15 07:19:56 androsyn Exp $
  */
 #include "stdinc.h"
 #include "config.h"  /* option settings */
@@ -75,7 +75,6 @@ void fdlist_init(void)
     {
       /* Since we're doing this once .. */
       fd_table = MyMalloc((MAXCONNECTIONS + 1) * sizeof(fde_t));
-      memset(fd_table, 0, sizeof(fde_t) * (MAXCONNECTIONS+1));
       initialized = 1;
     }
 }

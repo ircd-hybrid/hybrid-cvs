@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.305 2002/06/12 19:29:36 db Exp $
+ *  $Id: s_conf.c,v 7.306 2002/06/15 07:19:57 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -183,7 +183,6 @@ make_conf()
   struct ConfItem* aconf;
 
   aconf = (struct ConfItem*) MyMalloc(sizeof(struct ConfItem));
-  memset(aconf, 0, sizeof(*aconf));
   aconf->status       = CONF_ILLEGAL;
   aconf->aftype       = AF_INET;
   return (aconf);
@@ -690,7 +689,7 @@ find_or_add_ip(struct irc_inaddr *ip_in)
   for(ptr = ip_hash_table[hash_index = hash_ip(ip_in)]; ptr;
       ptr = ptr->next)
   {
-   if(!memcmp(&ptr->ip, ip_in, sizeof(*ip_in)))
+   if(!memcmp(&ptr->ip, ip_in, sizeof(struct irc_inaddr)))
    {
     return(ptr);
    }
@@ -703,7 +702,7 @@ find_or_add_ip(struct irc_inaddr *ip_in)
       newptr = ip_hash_table[hash_index] = free_ip_entries;
       free_ip_entries = newptr->next;
 
-      memcpy(&newptr->ip, ip_in, sizeof(*ip_in));
+      memcpy(&newptr->ip, ip_in, sizeof(struct irc_inaddr));
       newptr->count = 0;
 #ifdef PACE_CONNECT
       newptr->last_attempt = 0;
@@ -717,7 +716,7 @@ find_or_add_ip(struct irc_inaddr *ip_in)
 
   ptr = ip_hash_table[hash_index] = free_ip_entries;
   free_ip_entries = ptr->next;
-  memcpy(&ptr->ip, ip_in, sizeof(*ip_in));
+  memcpy(&ptr->ip, ip_in, sizeof(struct irc_inaddr));
   ptr->count = 0;
   ptr->next = (IP_ENTRY *)NULL;
   return (ptr);

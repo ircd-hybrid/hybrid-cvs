@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_kqueue.c,v 1.26 2002/05/24 23:34:50 androsyn Exp $
+ *  $Id: s_bsd_kqueue.c,v 1.27 2002/06/15 07:19:57 androsyn Exp $
  */
 
 #include "config.h"
@@ -163,7 +163,7 @@ void init_netio(void)
       exit(115); /* Whee! */
     }
   kqmax = getdtablesize();
-  kqlst = MyMalloc(sizeof(*kqlst) * kqmax);
+  kqlst = MyMalloc(sizeof(struct kevent) * kqmax);
   zero_timespec.tv_sec = 0;
   zero_timespec.tv_nsec = 0;
 }
