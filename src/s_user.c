@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.306 2003/08/21 21:12:56 michael Exp $
+ *  $Id: s_user.c,v 7.307 2003/09/08 23:39:51 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -739,7 +739,7 @@ valid_hostname(const char *hostname)
   if (hostname == NULL)
     return(0);
 
-  if ('.' == *p)
+  if (('.' == *p) || (':' == *p))
     return(0);
 
   while (*p)

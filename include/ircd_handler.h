@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_handler.h,v 7.6 2003/04/18 02:13:40 db Exp $
+ *  $Id: ircd_handler.h,v 7.7 2003/09/08 23:39:47 metalrock Exp $
  */
 
 #ifndef INCLUDED_ircd_handler_h
@@ -51,4 +51,3 @@ typedef void (*MessageHandler)(struct Client*, struct Client*, int, char*[]);
 
 
 #endif /* INCLUDED_ircd_handler_h */
-

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nick.c,v 1.127 2003/09/04 04:40:12 metalrock Exp $
+ *  $Id: m_nick.c,v 1.128 2003/09/08 23:39:49 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -45,7 +45,6 @@
 #include "modules.h"
 #include "common.h"
 #include "packet.h"
-
 
 static void m_nick(struct Client *, struct Client *, int, char **);
 static void mr_nick(struct Client *, struct Client *, int, char **);
@@ -98,7 +97,7 @@ _moddeinit(void)
   mod_del_cmd(&uid_msgtab);
 }
 
-const char *_version = "$Revision: 1.127 $";
+const char *_version = "$Revision: 1.128 $";
 #endif
 
 /*
@@ -323,55 +322,59 @@ ms_nick(struct Client *client_p, struct Client *source_p,
         int parc, char *parv[])
 {
   struct Client* target_p;
-  char     nick[NICKLEN];
-  time_t   newts = 0;
-#define NICK_NICK	parv[1]
-#define NICK_HOP	parv[2]
-#define NICK_TS		parv[3]
-#define NICK_USERMODES	parv[4]
-#define NICK_USERNAME	parv[5]
-#define NICK_HOSTNAME	parv[6]
-#define NICK_SERVER	parv[7]
-#define NICK_GECOS	parv[8]
+  char nick[NICKLEN];
+  time_t newts = 0;
+  char *nnick = parv[1];
+  char *nhop = parv[2];
+  char *nts = parv[3];
+  char *nmodes = parv[4];
+  char *nusername = parv[5];
+  char *nhost = parv[6];
+  char *nserver = parv[7];
+  char ngecos[REALLEN];
 
-  if (parc < 2 || EmptyString(NICK_NICK))
+  if (parc < 2 || EmptyString(nnick))
     return;
 
   /* fix the length of the nick */
-  strlcpy(nick, NICK_NICK, sizeof(nick));
+  strlcpy(nick, nnick, sizeof(nick));
 
   if (parc == 9)
   {
     struct Client *server_p;
-    server_p = find_server(NICK_SERVER);
+    server_p = find_server(nserver);
+    strlcpy(ngecos, parv[8], sizeof(ngecos));
 
     /* XXX Test for NULL i.e. unfound server ? */
-    if (check_clean_nick(client_p, source_p, nick, NICK_NICK, server_p))
+    if (check_clean_nick(client_p, source_p, nick, nnick, server_p))
       return;
 
-    if (check_clean_user(client_p, nick, NICK_USERNAME, server_p) ||
-	check_clean_host(client_p, nick, NICK_HOSTNAME, server_p))
+    if (check_clean_user(client_p, nick, nusername, server_p) ||
+	check_clean_host(client_p, nick, nhost, server_p))
       return;
 
     /* check the length of the clients gecos */
-    if (strlen(NICK_GECOS) > REALLEN)
+    if (strlen(ngecos) > REALLEN)
     {
       sendto_realops_flags(UMODE_ALL, L_ALL,
 			   "Long realname from server %s for %s",
-			   NICK_SERVER, NICK_NICK);
-      NICK_GECOS[REALLEN] = '\0';
+			   nserver, nnick);
+      ngecos[REALLEN] = '\0';
     }
 
     if (IsServer(source_p))
-      newts = atol(NICK_TS);
+      newts = atol(nts);
   }
-  else
+  else if (parc == 3)
   {
-    if (check_clean_nick(client_p, source_p, nick, NICK_NICK,
+    if (source_p->user->server == NULL)
+      return;
+
+    if (check_clean_nick(client_p, source_p, nick, nnick,
 			 source_p->user->server))
       return;
     if (!IsServer(source_p))
-      newts = atol(NICK_HOP);	/* Yes, this is right. HOP field is the TS
+      newts = atol(nhop);	/* Yes, this is right. HOP field is the TS
 				 * field for parc = 3
 				 */
   }
