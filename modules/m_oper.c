@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_oper.c,v 1.15 2000/12/22 16:12:41 db Exp $
+ *   $Id: m_oper.c,v 1.16 2000/12/22 21:04:16 wcampbel Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -229,6 +229,11 @@ int match_oper_password(char *password, struct ConfItem *aconf)
 
 #ifdef CRYPT_OPER_PASSWORD
 	/* use first two chars of the password they send in as salt */
+        /* If the password in the conf is MD5, and ircd is linked   
+        ** to scrypt on FreeBSD, or the standard crypt library on
+        ** glibc Linux, then this code will work fine on generating
+        ** the proper encrypted hash for comparison.
+        */
 
 	/* passwd may be NULL pointer. Head it off at the pass... */
 	if (password && *aconf->passwd)
@@ -337,11 +342,4 @@ int oper_up( struct Client *sptr, struct ConfItem *aconf )
 
 	return 1;
 }
-
-
-
-
-
-
-
 
