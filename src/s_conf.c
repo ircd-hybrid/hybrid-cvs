@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.340 2003/02/16 00:22:23 db Exp $
+ *  $Id: s_conf.c,v 7.341 2003/02/16 22:06:46 bill Exp $
  */
 
 #include "stdinc.h"
@@ -730,7 +730,7 @@ remove_one_ip(struct irc_inaddr *ip_in)
       if (last_ptr != NULL)
 	last_ptr->next = ptr->next;
       else
-	ip_hash_table[hash_index] = ptr;
+	ip_hash_table[hash_index] = ptr->next;
 
       BlockHeapFree(ip_entry_heap, ptr);
       ip_entries_count--;
