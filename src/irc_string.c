@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: irc_string.c,v 7.44 2001/12/16 07:53:01 androsyn Exp $
+ *  $Id: irc_string.c,v 7.45 2001/12/16 10:07:33 androsyn Exp $
  */
 #include "config.h"
 #include "tools.h"
@@ -46,6 +46,10 @@
 
 #ifndef INADDRSZ 
 #define INADDRSZ sizeof(struct in_addr)
+#endif
+
+#ifndef IN6ADDRSZ
+#define IN6ADDRSZ sizeof(struct in6_addr)
 #endif
 /*
  * myctime - This is like standard ctime()-function, but it zaps away
