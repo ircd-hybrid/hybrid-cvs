@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_list.c,v 1.35 2001/10/24 06:19:44 db Exp $
+ *  $Id: m_list.c,v 1.36 2001/11/09 13:16:02 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -283,9 +283,10 @@ static void list_one_channel(struct Client *source_p, struct Channel *chptr)
   if(IsVchan(chptr) || HasVchans(chptr))
     {
       root_chptr = find_bchan(chptr);
+      
       if(root_chptr != NULL)
         {
-          ircsprintf(id_and_topic, "<!%s> %s", pick_vchan_id(chptr), root_chptr->topic);
+          ircsprintf(id_and_topic, "<!%s> %s", pick_vchan_id(chptr), chptr->topic);
           sendto_one(source_p, form_str(RPL_LIST), me.name, source_p->name,
                      root_chptr->chname, chptr->users, id_and_topic);
         }
