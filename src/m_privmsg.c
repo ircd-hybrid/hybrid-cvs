@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_privmsg.c,v 7.2 2000/01/09 20:17:33 db Exp $
+ *   $Id: m_privmsg.c,v 7.3 2000/01/09 22:18:07 db Exp $
  */
 #include "m_commands.h"
 #include "client.h"
@@ -262,11 +262,15 @@ int     m_privmsg(struct Client *cptr,
   ** nickname addressed?
   */
 
+  /* LazyLinks */
+#ifndef LLVER1
+
   if(!ConfigFileEntry.hub && serv_cptr_list &&
      IsCapable(serv_cptr_list,CAP_LL))
     {
 
     }
+#endif
 
   if ((acptr = find_person(nick, NULL)))
     {
