@@ -1,3 +1,15 @@
+db          2002/08/20 15:25:31 EDT	(20020820_5)
+
+  Modified files:
+    src                  channel_mode.c 
+  Log:
+  - more cleanups
+  
+  Revision  Changes    Path
+  7.58      +5 -8      ircd-hybrid-7/src/channel_mode.c
+
+
+
 androsyn    2002/08/20 14:03:33 EDT	(20020820_4)
 
   Modified files:
@@ -31391,4 +31403,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3990 2002/08/20 18:03:35 androsyn Exp $
+$Id: ChangeLog,v 7.3991 2002/08/20 19:25:33 db Exp $
