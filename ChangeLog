@@ -1,3 +1,15 @@
+androsyn    2002/07/28 20:27:30 EDT	(20020729_1)
+
+  Modified files:
+    src                  channel_mode.c 
+  Log:
+  Allow for -o+o nick nick as well as -h+h and -v+v
+  
+  Revision  Changes    Path
+  7.49      +0 -25     ircd-hybrid-7/src/channel_mode.c
+
+
+
 leeh        2002/07/28 19:43:10 EDT	(20020729_0)
 
   Modified files:
@@ -30569,4 +30581,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3932 2002/07/28 23:43:17 leeh Exp $
+$Id: ChangeLog,v 7.3933 2002/07/29 00:27:37 androsyn Exp $
