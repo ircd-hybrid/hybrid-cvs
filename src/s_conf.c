@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.150 2001/01/18 17:38:02 ejb Exp $
+ *  $Id: s_conf.c,v 7.151 2001/01/18 21:46:54 db Exp $
  */
 
 #include <sys/types.h>
@@ -2637,7 +2637,7 @@ void conf_add_d_conf(struct ConfItem *aconf)
       aconf->ip_mask = ip_mask;
 
       if(aconf->flags & CONF_FLAGS_E_LINED)
-	add_smalldline(aconf);
+	add_Eline(aconf);
       else
 	add_Dline(aconf);
     }
