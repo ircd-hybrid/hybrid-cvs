@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: convertconf.c,v 1.9 2000/01/12 03:08:35 db Exp $
+ * $Id: convertconf.c,v 1.10 2000/01/12 03:09:52 db Exp $
  */
 
 #include <stdio.h>
@@ -604,7 +604,7 @@ static void PrintOutServers(FILE* out)
 	  fprintf(out,"\t\thost=\"%s\";\n", p->host);
 	  fprintf(out,"\t\tsend_password=\"%s\";\n", p->c_passwd);
 	  fprintf(out,"\t\taccept_password=\"%s\";\n", p->n_passwd);
-	  fprintf(out,"\t\tport=\"%d\";\n", p->port );
+	  fprintf(out,"\t\tport=%d;\n", p->port );
 
 	  if(p->compressed)
 	    fprintf(out,"\t\tcompressed=yes;\n");
