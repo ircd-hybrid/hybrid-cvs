@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/modules
 #
-# $Id: Makefile.in,v 1.5 2000/11/14 06:32:31 db Exp $
+# $Id: Makefile.in,v 1.6 2000/11/16 17:52:29 davidt Exp $
 #
 CC		= @CC@
 RM		= @RM@
@@ -87,9 +87,9 @@ install: all
 .SUFFIXES: .so
 
 .c.so:
-	${CC} -DPIC -fPIC -shared ${CFLAGS} $(CPPFLAGS) -c ${.IMPSRC} -o ${.TARGET}
-	$(CC) -fPIC -shared ${.TARGET} -o ${.TARGET}.tmp
-	mv ${.TARGET}.tmp ${.TARGET}
+	${CC} -DPIC -fPIC -shared ${CFLAGS} $(CPPFLAGS) -c $< -o $@
+	$(CC) -fPIC -shared $@ -o $@.tmp
+	mv $@.tmp $@
 
 .PHONY: depend clean distclean
 depend:
