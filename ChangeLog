@@ -1,3 +1,15 @@
+androsyn    2002/05/19 20:22:45 EDT	(20020520_0)
+
+  Modified files:
+    src                  client.c 
+  Log:
+  Don't add clients with IsClosing set to the abort_list
+  
+  Revision  Changes    Path
+  7.264     +4 -0      ircd-hybrid-7/src/client.c
+
+
+
 androsyn    2002/05/18 23:42:25 EDT	(20020519_1)
 
   Modified files:
@@ -26637,4 +26649,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3668 2002/05/19 03:42:31 androsyn Exp $
+$Id: ChangeLog,v 7.3669 2002/05/20 00:22:51 androsyn Exp $
