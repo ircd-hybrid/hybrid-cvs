@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel_mode.c,v 7.15 2001/12/31 11:13:40 a1kmm Exp $
+ * $Id: channel_mode.c,v 7.16 2001/12/31 14:06:57 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -1844,7 +1844,7 @@ chm_voice(struct Client *client_p, struct Client *source_p,
     else
 #endif
       change_channel_membership(chptr, &chptr->voiced,
-                                &chptr->voiced, targ_p);
+                                &chptr->locvoiced, targ_p);
     if (was_voiced == 0)
     {
       mode_changes_plus[mode_count_plus].letter = c;
