@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.103 2000/12/04 08:30:56 db Exp $
+ * $Id: channel.c,v 7.104 2000/12/04 16:08:25 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -583,6 +583,24 @@ int is_half_op(struct Channel *chptr, struct Client *who )
 	return (1);
     }
   
+  return 0;
+}
+
+/*
+ * can_send
+ *
+ * inputs
+ * outputs	- YES if can send to channel
+ */
+int can_send(struct Channel *chptr, struct Client *sptr)
+{
+  if (chptr->mode.mode & MODE_MODERATED)
+    if(is_any_op(chptr,sptr))
+      return 1;
+
+  if (chptr->mode.mode & MODE_NOPRIVMSGS && !IsMember(sptr,chptr))
+    return (MODE_NOPRIVMSGS);
+
   return 0;
 }
 
@@ -1244,16 +1262,6 @@ void set_channel_mode(struct Client *cptr,
 
           break;
 
-          /* There is a nasty here... I'm supposed to have
-           * CAP_IE before I can send exceptions to bans to a server.
-           * But that would mean I'd have to keep two strings
-           * one for local clients, and one for remote servers,
-           * one with the 'I' strings, one without.
-           * I added another parameter buf and mode buf for "new"
-           * capabilities.
-           *
-           */
-
         case 'I':
           if (whatt == MODE_QUERY || parc-- <= 0)
             {
@@ -1332,16 +1340,6 @@ void set_channel_mode(struct Client *cptr,
           *pbufw_invex++ = ' ';
 
           break;
-
-          /* There is a nasty here... I'm supposed to have
-           * CAP_EX before I can send exceptions to bans to a server.
-           * But that would mean I'd have to keep two strings
-           * one for local clients, and one for remote servers,
-           * one with the 'e' strings, one without.
-           * I added another parameter buf and mode buf for "new"
-           * capabilities.
-           *
-           */
 
         case 'e':
           if (whatt == MODE_QUERY || parc-- <= 0)
@@ -2350,7 +2348,6 @@ static void delete_members(dlink_list *list)
  * output	- none
  * side effects	- lists all names on given channel
  */
-
 void channel_member_names( struct Client *sptr,
 			   struct Channel *chptr,
 			   char *name_of_channel)

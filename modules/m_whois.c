@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 1.13 2000/12/04 06:35:10 db Exp $
+ *   $Id: m_whois.c,v 1.14 2000/12/04 16:08:24 db Exp $
  */
 #include "tools.h"
 #include "common.h"   /* bleah */
@@ -390,7 +390,7 @@ int     ms_whois(struct Client *cptr,
    * other wise, ignore it.
    */
 
-  if( ConfigFileEntry.hub )
+  if(ConfigFileEntry.hub)
     {
       if(!IsCapable(cptr->from,CAP_LL))
 	return 0;
