@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.143 2001/08/03 13:10:31 leeh Exp $
+ *  $Id: s_bsd.c,v 7.144 2001/08/05 20:42:06 db blalloc.c $
  */
 #include "config.h"
 #include "fdlist.h"
@@ -453,12 +453,10 @@ void error_exit_client(struct Client* client_p, int error)
         }
       else
 	{
-	  report_error("Lost connection to %s: %s",
+	  report_error("Lost connection to %s: %d",
 	               get_client_name(client_p, SHOW_IP),
 		       current_error);
 
-          ilog(L_NOTICE, "Lost connection to %s: %s",
-	       get_client_name(client_p, SHOW_IP), current_error);
 	}
 
       sendto_realops_flags(FLAGS_ALL, L_ALL,
