@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.4 1999/09/10 06:47:44 tomh Exp $
+ *   $Id: parse.c,v 7.5 1999/09/10 06:51:53 tomh Exp $
  */
 #include "parse.h"
 #include "channel.h"
@@ -59,7 +59,7 @@ static struct Message *tree_parse(char *);
 static char buffer[1024];  /* ZZZ must this be so big? must it be here? */
 
 static char xx_dummy = 0;
-static void* msgTreeSentinel = &xx_dummy;
+static char* msgTreeSentinel = &xx_dummy;
 
 /*
  * parse a buffer.
