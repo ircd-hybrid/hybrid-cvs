@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.417 2003/06/01 18:45:31 db Exp $
+ *  $Id: s_conf.c,v 7.418 2003/06/02 06:09:48 db Exp $
  */
 
 #include "stdinc.h"
@@ -566,16 +566,16 @@ attach_iline(struct Client *client_p, struct ConfItem *aconf)
      * - Dianora
      */
     if ((ConfMaxTotal(aconf) != 0) &&
-	(ConfCurrUserCount(aconf) >= ConfMaxTotal(aconf)))
+	(ConfCurrUserCount(aconf) > ConfMaxTotal(aconf)))
       {
 	max_limit_reached = 1;
 	a_limit_reached = 1;
       }
-    if ((ConfMaxPerIp(aconf) != 0) && (ip_found->count >= ConfMaxPerIp(aconf)))
+    if ((ConfMaxPerIp(aconf) != 0) && (ip_found->count > ConfMaxPerIp(aconf)))
       a_limit_reached = 1;
-    else if ((ConfMaxLocal(aconf) != 0) && (local >= ConfMaxLocal(aconf)))
+    else if ((ConfMaxLocal(aconf) != 0) && (local > ConfMaxLocal(aconf)))
       a_limit_reached = 1;
-    else if ((ConfMaxGlobal(aconf) != 0) && (global >= ConfMaxGlobal(aconf)))
+    else if ((ConfMaxGlobal(aconf) != 0) && (global > ConfMaxGlobal(aconf)))
       a_limit_reached = 1;
 
     /* XXX I am not sure of the logic here. This allows a client onto a server
