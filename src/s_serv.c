@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.294 2003/04/05 05:45:41 michael Exp $
+ *  $Id: s_serv.c,v 7.295 2003/04/06 01:09:14 db Exp $
  */
 
 #include "stdinc.h"
@@ -428,7 +428,7 @@ hunt_server(struct Client *client_p, struct Client *source_p, char *command,
   /*
    * Assume it's me, if no server
    */
-  if (parc <= server || BadPtr(parv[server]) ||
+  if (parc <= server || EmptyString(parv[server]) ||
       match(me.name, parv[server]) ||
       match(parv[server], me.name))
     return (HUNTED_ISME);
