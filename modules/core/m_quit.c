@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_quit.c,v 1.18 2001/04/04 15:22:34 androsyn Exp $
+ *   $Id: m_quit.c,v 1.19 2001/05/24 04:22:06 ejb Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -75,7 +75,11 @@ static void m_quit(struct Client *client_p,
 
   if (ConfigFileEntry.client_exit && comment[0])
     {
+#ifndef VMS
       snprintf(reason, TOPICLEN, "Client Exit: %s", comment);
+#else
+      sprintf(reason, "Client Exit: %s", comment);
+#endif
       comment = reason;
     }
   

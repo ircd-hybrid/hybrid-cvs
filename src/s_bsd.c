@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.125 2001/05/02 18:35:07 androsyn Exp $
+ *  $Id: s_bsd.c,v 7.126 2001/05/24 04:22:11 ejb Exp $
  */
 #include "config.h"
 #include "fdlist.h"
@@ -92,7 +92,11 @@ void close_all_connections(void)
   int i;
   int fd;
 
+#ifndef VMS
   for (i = 0; i < MAXCONNECTIONS; ++i)
+#else
+  for (i = 3; i < MAXCONNECTIONS; ++i)
+#endif
     {
       if (fd_table[i].flags.open)
         fd_close(i);
@@ -126,7 +130,7 @@ int get_sockerr(int fd)
   int err = 0;
   socklen_t len = sizeof(err);
 
-  if (-1 < fd && !getsockopt(fd, SOL_SOCKET, SO_ERROR, (char*) &err, &len)) {
+  if (-1 < fd && !getsockopt(fd, SOL_SOCKET, SO_ERROR, (char*) &err, (unsigned int *)&len)) {
     if (err)
       errtmp = err;
   }
@@ -355,7 +359,7 @@ void add_connection(struct Listener* listener, int fd)
    * the client has already been checked out in accept_connection
    */
   new_client = make_client(NULL);
-  if (getpeername(fd, (struct sockaddr *)&SOCKADDR(irn), &len))
+  if (getpeername(fd, (struct sockaddr *)&SOCKADDR(irn), (unsigned int *)&len))
     {
       report_error("Failed in adding new connection %s :%s", 
 		   get_listener_name(listener), errno);
@@ -845,7 +849,7 @@ comm_accept(int fd, struct irc_sockaddr *pn)
    * reserved fd limit, but we can deal with that when comm_open()
    * also does it. XXX -- adrian
    */
-  newfd = accept(fd, (struct sockaddr *)&PSOCKADDR(pn), &addrlen);
+  newfd = accept(fd, (struct sockaddr *)&PSOCKADDR(pn), (unsigned int *)&addrlen);
   if (newfd < 0)
     return -1;
 

@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.167 2001/05/22 19:11:50 davidt Exp $
+ * $Id: ircd_parser.y,v 1.168 2001/05/24 04:22:09 ejb Exp $
  */
 
 %{
@@ -45,6 +45,8 @@
 #include "modules.h"
 #include "s_serv.h" /* for CAP_LL / IsCapable */
 #include "hostmask.h"
+#include "send.h"
+#include "listener.h"
 
 #ifdef HAVE_LIBCRYPTO
 #include <openssl/rsa.h>
@@ -57,7 +59,9 @@ extern char *ip_string;
 int yyparse();
 
 static struct ConfItem *yy_achead = NULL;
+#if 0
 static struct ConfItem *yy_aconf = NULL;
+#endif
 static struct ConfItem *yy_aprev = NULL;
 static int              yy_acount = 0;
 static struct ConfItem *yy_hconf;

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: irc_string.c,v 7.29 2001/04/25 02:42:58 androsyn Exp $
+ *  $Id: irc_string.c,v 7.30 2001/05/24 04:22:07 ejb Exp $
  */
 #include "config.h"
 #include "tools.h"
@@ -44,6 +44,10 @@
 #include <ctype.h>
 #include <time.h>
 #include <arpa/nameser.h>
+
+#if defined(VMS) || defined(__CYGWIN32__)
+# define INADDRSZ 4
+#endif
 
 /*
  * myctime - This is like standard ctime()-function, but it zaps away

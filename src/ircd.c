@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.143 2001/05/23 19:02:19 jdc Exp $
+ * $Id: ircd.c,v 7.144 2001/05/24 04:22:08 ejb Exp $
  */
 
 #include <sys/types.h>
@@ -270,8 +270,8 @@ struct lgetopt myopts[] = {
   {"debug", NULL, 
    ENDEBUG, "Enable debugging for a certain value"},
 #endif
-  {"help", NULL, 
-   USAGE, "Print this text"},
+  {"help", NULL, USAGE, "Print this text"},
+  {NULL, NULL, STRING, NULL},
 };
 
 void
@@ -524,6 +524,7 @@ int main(int argc, char *argv[])
  init_log(logFileName);
  init_netio();		/* This needs to be setup early ! -- adrian */
  init_resolver();	/* Needs to be setup before the io loop */
+ printf("done some startup\n"); 
  initialize_message_files();
  linebuf_init();	/* set up some linebuf stuff to control paging */
  init_hash();
@@ -542,7 +543,6 @@ int main(int argc, char *argv[])
  init_auth();			/* Initialise the auth code */
  read_conf_files(YES);         /* cold start init conf files */
  initialize_global_set_options();
-  
  if (ServerInfo.name == NULL)
  {
   fprintf(stderr, "Error: No server name specified\n");

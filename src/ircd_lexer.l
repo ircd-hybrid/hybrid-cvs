@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.95 2001/05/22 19:11:49 davidt Exp $
+ * $Id: ircd_lexer.l,v 1.96 2001/05/24 04:22:08 ejb Exp $
  */
 
 %option case-insensitive
@@ -349,7 +349,11 @@ void cinclude(void)
     FBFILE *tmp_fbfile_in;
     char filenamebuf[IRCD_BUFSIZE];
     
+#ifdef HAVE_SNPRINTF
     snprintf(filenamebuf, IRCD_BUFSIZE, "%s/%s", ETCPATH, c);
+#else
+    sprintf(filenamebuf, "%s/%s", ETCPATH, c);
+#endif
     tmp_fbfile_in = fbopen(filenamebuf, "r");
     
     if (tmp_fbfile_in == NULL)
