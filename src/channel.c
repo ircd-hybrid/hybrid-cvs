@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.324 2002/06/18 17:34:12 androsyn Exp $
+ *  $Id: channel.c,v 7.325 2002/07/12 01:24:03 joant Exp $
  */
 
 #include "stdinc.h"
@@ -1447,7 +1447,7 @@ int allocate_topic(struct Channel *chptr)
      * in the chptr 
      */
     chptr->topic = ptr;
-    chptr->topic_info = ptr + TOPICLEN+1;
+    chptr->topic_info = (char *)ptr + TOPICLEN+1;
     *chptr->topic = '\0';
     *chptr->topic_info = '\0';
     return TRUE;
