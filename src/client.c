@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.311 2003/01/11 03:52:29 db Exp $
+ *  $Id: client.c,v 7.312 2003/01/13 16:35:39 db Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -273,7 +273,7 @@ check_pings_list(dlink_list *list)
     ** Note: No need to notify opers here. It's
     ** already done when "FLAGS_DEADSOCKET" is set.
     */
-    if (client_p->flags & FLAGS_DEADSOCKET)
+    if (IsDead(client_p))
     {
       /* Ignore it, its been exited already */
       continue; 
