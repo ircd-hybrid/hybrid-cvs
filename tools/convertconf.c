@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: convertconf.c,v 1.15 2000/01/24 22:59:34 db Exp $
+ * $Id: convertconf.c,v 1.16 2000/02/02 03:44:47 db Exp $
  */
 
 #include <stdio.h>
@@ -244,10 +244,13 @@ static void oldParseOneLine(FILE *out,char* line)
   char* class_field=(char *)NULL;
   struct ConnectPair* pair;
   int sendq = 0;
+  int restricted;
 
   tmp = getfield(line);
 
   conf_letter = *tmp;
+
+  restricted = 0;
 
   for (;;) /* Fake loop, that I can use break here --msa */
     {
@@ -345,36 +348,7 @@ static void oldParseOneLine(FILE *out,char* line)
       break;
 
     case 'i': 
-      fprintf(out,"\tauth {\n");
-
-      spoof_field = (char *)NULL;
-      if(host_field)
-	{
-	  if( strcmp(host_field,"NOMATCH") && (*host_field != 'x'))
-	    {
-	      fprintf(out,"\t\tallow_host=\"%s\";\n", host_field);
-	    }
-	  else
-	    {
-	      spoof_field = host_field;
-	    }
-	}
-      if(passwd_field)
-	fprintf(out,"\t\tpasswd=\"%s\";\n", passwd_field);	
-      else
-	fprintf(out,"\t\tpasswd=\"*\";\n");	
-      if(user_field)
-	{
-	  client_allow = ClientFlags(out,spoof_field,user_field);
-	  if(client_allow)
-	    fprintf(out,"\t\tallow=\"%s\";\n", client_allow );
-	}
-      if(class_field)
-	fprintf(out,"\t\tclass=\"%s\";\n", class_field);	
-      fprintf(out,"\t\trestricted;\n");	
-
-      fprintf(out,"\t};\n\n");
-      break;
+      restricted = 1;
 
     case 'I': 
       fprintf(out,"\tauth {\n");
@@ -407,17 +381,12 @@ static void oldParseOneLine(FILE *out,char* line)
 	  client_allow = ClientFlags(out,spoof_field,user_field);
 	  if(client_allow)
 	    {
-	      p = strchr(client_allow,'@');
-	      if(p)
-		*p = '\0';
 	      fprintf(out,"\t\tuser=\"%s\";\n", client_allow );
-	      if(p)
-		{
-		  p++;
-		  fprintf(out,"\t\thost=\"%s\";\n", p );
-		}
 	    }
 	}
+
+      if(restricted)
+	fprintf(out,"\t\trestricted;\n");	
 
       if(class_field)
 	fprintf(out,"\t\tclass=\"%s\";\n", class_field);	
@@ -428,7 +397,7 @@ static void oldParseOneLine(FILE *out,char* line)
     case 'k':
       fprintf(out,"\tkill {\n");
       if(host_field)
-	fprintf(out,"\t\tname=\"%s@%s\";\n", user_field,host_field);
+	fprintf(out,"\t\tuser=\"%s@%s\";\n", user_field,host_field);
       if(passwd_field)
 	fprintf(out,"\t\treason=\"%s\";\n", passwd_field);
       fprintf(out,"\t};\n\n");
