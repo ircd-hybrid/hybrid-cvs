@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.219 2003/10/16 23:13:46 stu Exp $
+ *  $Id: client.h,v 7.220 2004/01/31 17:03:04 adx Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -65,7 +65,6 @@ struct User
 
 struct Server
 {
-  char up[HOSTLEN + 1];   /* name of uplink                    */
   char by[NICKLEN];       /* who activated this connection     */
   struct ConfItem *sconf; /* ConfItem connect{} pointer for this server */
   dlink_list servers;     /* Servers on this server            */

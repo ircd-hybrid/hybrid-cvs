@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.393 2004/01/16 01:02:17 metalrock Exp $
+ *  $Id: s_serv.c,v 7.394 2004/01/31 17:03:09 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1138,7 +1138,6 @@ server_estab(struct Client *client_p)
 
   /* doesnt duplicate client_p->serv if allocated this struct already */
   make_server(client_p);
-  strlcpy(client_p->serv->up, me.name, sizeof(client_p->serv->up));
 
   /* fixing eob timings.. -gnp */
   client_p->firsttime = CurrentTime;
@@ -1240,29 +1239,20 @@ server_estab(struct Client *client_p)
 
       if (IsCapable(client_p, CAP_TS6))
       {
-        struct Client *up;
-
-        if ((up = find_server(target_p->serv->up)) != NULL && HasID(target_p))
+        if (HasID(target_p))
           sendto_one(client_p, ":%s SID %s %d %s :%s%s",
-                     ID(up), target_p->name, target_p->hopcount+1,
+                     ID(target_p->servptr), target_p->name, target_p->hopcount+1,
                      target_p->id, IsHidden(target_p) ? "(H) " : "",
                      target_p->info);
-        else if (up != NULL) /* introducing non-ts6 server linked through ts6 server */
+        else  /* introducing non-ts6 server */
           sendto_one(client_p, ":%s SERVER %s %d :%s%s",
-                     ID(up), target_p->name, target_p->hopcount+1,
-                     IsHidden(target_p) ? "(H) " : "",
-                     target_p->info);
-        else /* introducing non-ts6 server linked through non-ts6 server */
-          sendto_one(client_p, ":%s SERVER %s %d :%s%s",
-                     target_p->serv->up, target_p->name,
-                     target_p->hopcount+1, IsHidden(target_p) ? "(H) " : "",
-                     target_p->info);
+                     ID(target_p->servptr), target_p->name, target_p->hopcount+1,
+                     IsHidden(target_p) ? "(H) " : "", target_p->info);
       }
       else
         sendto_one(client_p, ":%s SERVER %s %d :%s%s", 
-                   target_p->serv->up, target_p->name,
-                   target_p->hopcount+1, IsHidden(target_p) ? "(H) " : "",
-                   target_p->info);
+                   target_p->servptr->name, target_p->name, target_p->hopcount+1,
+		   IsHidden(target_p) ? "(H) " : "", target_p->info);
     }
   }
 
@@ -2053,7 +2043,6 @@ serv_connect(struct AccessItem *aconf, struct Client *by)
   else
     strlcpy(client_p->serv->by, "AutoConn.", sizeof(client_p->serv->by));
 
-  strlcpy(client_p->serv->up, me.name, sizeof(client_p->serv->up));
   SetConnecting(client_p);
   dlinkAdd(client_p, &client_p->node, &global_client_list);
   /* from def_fam */

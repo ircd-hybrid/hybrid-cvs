@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.120 2003/10/14 21:58:44 bill Exp $
+ *  $Id: m_server.c,v 1.121 2004/01/31 17:03:07 adx Exp $
  */
 
 #include "stdinc.h"
@@ -77,7 +77,7 @@ _moddeinit(void)
   mod_del_cmd(&sid_msgtab);
 }
 
-const char *_version = "$Revision: 1.120 $";
+const char *_version = "$Revision: 1.121 $";
 #endif
 
 
@@ -459,7 +459,6 @@ ms_server(struct Client *client_p, struct Client *source_p,
 
   set_server_gecos(target_p, info);
 
-  strlcpy(target_p->serv->up, source_p->name, sizeof(target_p->serv->up));
   target_p->servptr = source_p;
 
   SetServer(target_p);
@@ -689,7 +688,6 @@ ms_sid(struct Client *client_p, struct Client *source_p,
 
   set_server_gecos(target_p, info);
 
-  strlcpy(target_p->serv->up, source_p->name, sizeof(target_p->serv->up));
   target_p->servptr = source_p;
 
   SetServer(target_p);

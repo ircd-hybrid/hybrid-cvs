@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.420 2004/01/24 19:25:45 adx Exp $
+ *  $Id: client.c,v 7.421 2004/01/31 17:03:09 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1332,9 +1332,9 @@ exit_client(
     }
     else
     {
-      assert((source_p->serv) && (source_p->serv->up[0] != '\0'));
+      assert(source_p->serv != NULL && source_p->servptr != NULL);
       snprintf(comment1, sizeof(comment1), "%s %s",
-               source_p->serv->up, source_p->name);
+               source_p->servptr->name, source_p->name);
     }
 
     /* XXX Why does this happen */

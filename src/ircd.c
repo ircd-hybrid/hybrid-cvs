@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.325 2003/10/29 22:37:15 bill Exp $
+ *  $Id: ircd.c,v 7.326 2004/01/31 17:03:09 adx Exp $
  */
 
 #include "stdinc.h"
@@ -639,7 +639,6 @@ main(int argc, char *argv[])
   SetMe(&me);
   make_server(&me);
 
-  strlcpy(me.serv->up, me.name, sizeof(me.serv->up));
   me.lasttime = me.since = me.firsttime = CurrentTime;
   hash_add_client(&me);
   
