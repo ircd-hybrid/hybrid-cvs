@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.33 2000/10/25 22:20:27 db Exp $
+ * $Id: ircd.c,v 7.34 2000/10/25 23:18:10 adrian Exp $
  */
 #include "ircd.h"
 #include "channel.h"
@@ -529,7 +529,6 @@ static time_t io_loop(time_t delay)
 
   if (CurrentTime >= nextping) {
     nextping = check_pings(CurrentTime);
-    timeout_auth_queries(CurrentTime);
   }
 
   if (dorehash && !GlobalSetOptions.lifesux)
@@ -827,6 +826,8 @@ int main(int argc, char *argv[])
 
   init_resolver();
   init_netio();
+
+  init_auth();			/* Initialise the auth code */
 
   read_conf_files(YES);         /* cold start init conf files */
 
