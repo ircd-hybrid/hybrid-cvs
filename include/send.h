@@ -2,7 +2,7 @@
  * send.h
  * Copyright (C) 1999 Patrick Alken
  *
- * $Id: send.h,v 7.31 2001/01/05 01:11:23 ejb Exp $
+ * $Id: send.h,v 7.32 2001/01/06 03:33:38 ejb Exp $
  */
 
 #ifndef INCLUDED_send_h
@@ -76,6 +76,9 @@ extern  void sendto_channel_local(int type,
 #ifndef __GNUC__
 extern  void sendto_channel_remote(struct Channel *, struct Client *cptr, 
 				   const char *, ...);
+extern  void sendto_channel_remote_prefix(struct Channel *, struct Client *cptr,
+										  struct Client *prefix, const char *, ...);
+
 extern  void sendto_ll_channel_remote(struct Channel *, struct Client *cptr, 
 				      struct Client *sptr,
 				      const char *, ...);
@@ -106,6 +109,9 @@ extern  void sendto_anywhere(struct Client *, struct Client *,
 extern  void sendto_channel_remote(struct Channel *, struct Client *cptr, 
 				   const char *, ...)
 	    __attribute__((format (printf, 3, 4)));
+extern  void sendto_channel_remote_prefix(struct Channel *, struct Client *cptr, 
+				   struct Client *prefix, const char *, ...)
+	    __attribute__((format (printf, 4, 5)));
 				   
 extern  void sendto_ll_channel_remote(struct Channel *, struct Client *cptr, 
 				      struct Client *sptr,

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.77 2001/01/05 23:18:14 ejb Exp $
+ *   $Id: parse.c,v 7.78 2001/01/06 03:33:44 ejb Exp $
  */
 #include "parse.h"
 #include "client.h"
@@ -181,7 +181,7 @@ int parse(struct Client *cptr, char *pbuffer, char *bufend)
           if (from == NULL)
             from = find_server(sender);
 
-          para[0] = sender;
+          para[0] = from->name;
           
           /* Hmm! If the client corresponding to the
            * prefix is not found--what is the correct

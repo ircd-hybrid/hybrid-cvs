@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: hash.c,v 7.23 2001/01/06 02:19:33 ejb Exp $
+ *  $Id: hash.c,v 7.24 2001/01/06 03:33:44 ejb Exp $
  */
 #include "tools.h"
 #include "s_conf.h"
@@ -136,7 +136,6 @@ static  unsigned int
 hash_id(const char *nname)
 {
 	unsigned int h = 0;
-	char *n = nname;
 	
 	while (*nname) {
 		h = (h << 4) - (h + (unsigned char)*nname++);
