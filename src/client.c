@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.260 2002/05/18 20:53:52 androsyn Exp $
+ *  $Id: client.c,v 7.261 2002/05/18 20:58:32 androsyn Exp $
  */
 
 #include "tools.h"
@@ -63,7 +63,6 @@
 
 static void check_pings_list(dlink_list *list);
 static void check_unknowns_list(dlink_list *list);
-static void free_exited_clients(void *unused);
 
 static EVH check_pings;
 
