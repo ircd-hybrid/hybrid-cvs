@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_oper.c,v 1.56 2002/09/10 19:58:32 db Exp $
+ *  $Id: m_oper.c,v 1.57 2002/11/01 14:38:03 bill Exp $
  */
 
 #include "stdinc.h"
@@ -74,7 +74,7 @@ _moddeinit(void)
   mod_del_cmd(&oper_msgtab);
 }
 
-const char *_version = "$Revision: 1.56 $";
+const char *_version = "$Revision: 1.57 $";
 #endif
 
 /*
@@ -199,12 +199,9 @@ ms_oper(struct Client *client_p, struct Client *source_p,
 {
   /* if message arrived from server, trust it, and set to oper */
   
-  if (!IsOper(source_p))
+  if (!IsOper(source_p) && IsClient(source_p))
   {
-    if (source_p->status == STAT_CLIENT)
-      source_p->handler = OPER_HANDLER;
-      
-    source_p->umodes |= FLAGS_OPER;
+    SetOper(source_p);
     Count.oper++;
     sendto_server(client_p, source_p, NULL, NOCAPS, NOCAPS, NOFLAGS,
 		  ":%s MODE %s :+o", parv[0], parv[0]);

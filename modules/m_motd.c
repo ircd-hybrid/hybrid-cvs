@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_motd.c,v 1.31 2002/10/08 00:23:46 db Exp $
+ *  $Id: m_motd.c,v 1.32 2002/11/01 14:38:03 bill Exp $
  */
 
 #include "stdinc.h"
@@ -39,6 +39,7 @@
 
 
 static void mr_motd(struct Client *, struct Client *, int, char **);
+static void ms_motd(struct Client *, struct Client *, int, char **);
 static void m_motd(struct Client*, struct Client*, int, char**);
 static void mo_motd(struct Client*, struct Client*, int, char**);
 
@@ -46,7 +47,7 @@ static void motd_spy(struct Client *);
 
 struct Message motd_msgtab = {
   "MOTD", 0, 0, 0, 1, MFLG_SLOW, 0,
-  {mr_motd, m_motd, mo_motd, mo_motd}
+  {mr_motd, m_motd, ms_motd, mo_motd}
 };
 #ifndef STATIC_MODULES
 void
@@ -63,7 +64,7 @@ _moddeinit(void)
   mod_del_cmd(&motd_msgtab);
 }
 
-const char *_version = "$Revision: 1.31 $";
+const char *_version = "$Revision: 1.32 $";
 #endif
 
 /* mr_motd()
@@ -79,12 +80,26 @@ static void mr_motd(struct Client *client_p, struct Client *source_p,
 }
 
 /*
+** ms_motd
+**	parv[0] = sender prefisx
+**	parv[1] = servername
+**/
+static void ms_motd(struct Client *client_p, struct Client *source_p,
+                    int parc, char *parv[])
+{
+  if (IsOper(source_p))
+    mo_motd(client_p, source_p, parc, parv);
+  else
+    m_motd(client_p, source_p, parc, parv);
+}
+  
+/*
 ** m_motd
 **      parv[0] = sender prefix
 **      parv[1] = servername
 */
 static void m_motd(struct Client *client_p, struct Client *source_p,
-                  int parc, char *parv[])
+                   int parc, char *parv[])
 {
   static time_t last_used = 0;
 
@@ -115,7 +130,7 @@ static void m_motd(struct Client *client_p, struct Client *source_p,
 **      parv[1] = servername
 */
 static void mo_motd(struct Client *client_p, struct Client *source_p,
-                   int parc, char *parv[])
+                    int parc, char *parv[])
 {
   if(!IsClient(source_p))
     return;

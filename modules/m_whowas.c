@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whowas.c,v 1.28 2002/08/15 15:00:59 adx Exp $
+ *  $Id: m_whowas.c,v 1.29 2002/11/01 14:38:03 bill Exp $
  */
 
 #include "stdinc.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&whowas_msgtab);
 }
-const char *_version = "$Revision: 1.28 $";
+const char *_version = "$Revision: 1.29 $";
 #endif
 static int whowas_do(struct Client *client_p, struct Client *source_p,
                      int parc, char *parv[]);
@@ -79,7 +79,7 @@ static void m_whowas(struct Client *client_p,
 {
   static time_t last_used=0L;
 
-  if (parc < 2)
+  if (parc < 2 || parv[1][0] == '\0')
     {
       sendto_one(source_p, form_str(ERR_NONICKNAMEGIVEN),
                  me.name, parv[0]);
@@ -104,7 +104,7 @@ static void mo_whowas(struct Client *client_p,
                      int parc,
                      char *parv[])
 {
-  if (parc < 2)
+  if (parc < 2 || parv[1][0] == '\0')
     {
       sendto_one(source_p, form_str(ERR_NONICKNAMEGIVEN),
                  me.name, parv[0]);
