@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kill.c,v 7.1 1999/08/03 06:18:25 tomh Exp $
+ *   $Id: m_kill.c,v 7.2 1999/08/18 01:26:07 db Exp $
  */
 #include "m_commands.h"
 #include "client.h"
@@ -106,6 +106,7 @@ int m_kill(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   char*       user;
   char*       path;
   char*       killer;
+  char*       reason;
   int         chasing = 0;
 
   if (parc < 2 || *parv[1] == '\0')
@@ -209,12 +210,12 @@ int m_kill(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
       return 0;
     }
   if (IsAnOper(sptr)) /* send it normally */
-    sendto_ops("Received KILL message for %s. From %s Path: %s!%s",
+    sendto_realops("Received KILL message for %s. From %s Path: %s!%s",
                acptr->name, parv[0], inpath, path);
   else
-    sendto_ops_flags(FLAGS_SKILL,
-                     "Received KILL message for %s. From %s Path: %s!%s",
-                     acptr->name, parv[0], inpath, path);
+    sendto_realops_flags(FLAGS_SKILL,
+                     "Received KILL message for %s. From %s",
+                     acptr->name, parv[0]);
 
 #if defined(SYSLOG_KILL)
   if (IsOper(sptr))
@@ -243,9 +244,23 @@ int m_kill(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   ** notification chasing the above kill, it won't get far
   ** anyway (as this user don't exist there any more either)
   */
+  if(BadPtr(parv[2]))
+    {
+      reason = sptr->name;
+    }
+  else
+    {
+      reason = strchr(parv[2],' ');
+      if(reason)
+        reason++;
+      else
+        reason = parv[2];
+    }
+
   if (MyConnect(acptr))
-    sendto_prefix_one(acptr, sptr,":%s KILL %s :%s!%s",
-                      parv[0], acptr->name, inpath, path);
+    sendto_prefix_one(acptr, sptr,":%s KILL %s :%s",
+                      parv[0], acptr->name, reason);
+
   /*
   ** Set FLAGS_KILLED. This prevents exit_one_client from sending
   ** the unnecessary QUIT for this. (This flag should never be
