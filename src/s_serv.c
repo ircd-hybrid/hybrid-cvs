@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.236 2002/02/04 04:29:51 androsyn Exp $
+ *  $Id: s_serv.c,v 7.237 2002/02/04 06:07:57 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -1370,8 +1370,8 @@ int fork_server(struct Client *server)
         set_non_blocking(i);
 #ifdef USE_SIGIO /* the servlink process doesn't need O_ASYNC */
 	{
-		int flags = 0;
-		fcntl(i, F_GETFL, &flags);
+		int flags;
+		flags = fcntl(i, F_GETFL, 0);
 		flags |= ~O_ASYNC;
 		fcntl(i, F_SETFL, flags);
 	}
