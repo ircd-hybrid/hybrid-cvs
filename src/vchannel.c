@@ -19,7 +19,7 @@
  *
  *
  *
- * $Id: vchannel.c,v 7.9 2000/10/16 16:24:00 db Exp $
+ * $Id: vchannel.c,v 7.10 2000/10/16 17:02:45 toot Exp $
  */
 #include "vchannel.h"
 #include "channel.h"
@@ -106,6 +106,10 @@ struct Channel* map_vchan(struct Channel *chptr, struct Client *sptr)
   int i;
 
   assert(sptr != NULL);
+
+  /* they're in the root chan */
+  if (IsMember(sptr, chptr))
+    return chptr;
 
   for(i=0;sptr->vchan_map[i].base_chan;i++)
     {
