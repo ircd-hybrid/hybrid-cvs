@@ -3,7 +3,7 @@
  * fdlist.c   maintain lists of file descriptors
  *
  *
- * $Id: fdlist.c,v 7.17 2001/01/03 01:55:35 a1kmm Exp $
+ * $Id: fdlist.c,v 7.18 2001/01/04 08:51:31 a1kmm Exp $
  */
 #include "fdlist.h"
 #include "client.h"  /* struct Client */

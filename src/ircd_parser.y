@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.90 2001/01/03 20:43:43 db Exp $
+ * $Id: ircd_parser.y,v 1.91 2001/01/04 08:51:32 a1kmm Exp $
  */
 
 %{
@@ -27,6 +27,7 @@
 #include <stdlib.h>
 #include <sys/types.h>
 #include <string.h>
+#include "ircd.h"
 #include "tools.h"
 #include "s_conf.h"
 #include "s_log.h"
