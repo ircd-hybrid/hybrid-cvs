@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: dbuf.c,v 7.20 2003/05/04 16:26:07 adx Exp $
+ *  $Id: dbuf.c,v 7.21 2003/05/27 17:11:18 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -52,6 +52,7 @@ dbuf_put(struct dbuf_queue *qptr, void *data, size_t count)
 {
   struct dbuf_block *last;
   size_t amount;
+  char* tmpdata;
 
   assert(count > 0);
   if (qptr->blocks.tail == NULL)
@@ -73,7 +74,11 @@ dbuf_put(struct dbuf_queue *qptr, void *data, size_t count)
     count -= amount;
     last->size += amount;
     qptr->total_size += amount;
-    (char *) data += amount;
+
+    /* ISO C compliance */
+    tmpdata = (char *) data;
+    tmpdata += amount;
+
   } while (count > 0);
 }
 

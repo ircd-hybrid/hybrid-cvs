@@ -20,11 +20,19 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_devpoll.c,v 7.19 2003/05/18 23:29:27 michael Exp $
+ *  $Id: s_bsd_devpoll.c,v 7.20 2003/05/27 17:11:19 joshk Exp $
  */
 
 #include "stdinc.h"
-#include <sys/devpoll.h>
+
+/* HPUX uses devpoll.h and not sys/devpoll.h */
+#ifdef HAVE_DEVPOLL_H
+# include <devpoll.h>
+#else
+# ifdef HAVE_SYS_DEVPOLL_H
+#  include <sys/devpoll.h>
+# endif
+#endif
 
 #include "fdlist.h"
 #include "s_bsd.h"

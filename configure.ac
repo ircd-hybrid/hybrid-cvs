@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.35 2003/05/26 17:56:09 joshk Exp $
+dnl $Id: configure.ac,v 7.36 2003/05/27 17:11:13 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -567,6 +567,7 @@ AC_CHECK_FUNC([kevent],
 	AC_MSG_CHECKING(for /dev/poll)
 	if test -c "/dev/poll"; then
 		AC_MSG_RESULT(yes)
+		AC_CHECK_HEADERS(devpoll.h sys/devpoll.h)
 		SELECT_TYPE="devpoll"
 	else
 		AC_MSG_RESULT(no)

@@ -7,7 +7,7 @@
  * The authors takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: irc_res.c,v 7.24 2003/05/26 01:01:18 stu Exp $
+ * $Id: irc_res.c,v 7.25 2003/05/27 17:11:18 joshk Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -76,7 +76,7 @@ typedef enum
   REQ_AAAA, /* Looking up an AAAA */
 #endif
   REQ_CNAME, /* We got a CNAME in response, we better get a real answer next */
-  REQ_INT, /* ip6.arpa failed, falling back to ip6.int */
+  REQ_INT /* ip6.arpa failed, falling back to ip6.int */
 } request_state;
 
 struct reslist 
