@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.373 2003/05/13 05:13:07 db Exp $
+ *  $Id: channel.c,v 7.374 2003/05/20 00:06:20 wiz Exp $
  */
 
 #include "stdinc.h"
@@ -1025,18 +1025,15 @@ check_splitmode(void *unused)
   if (splitchecking && (ConfigChannel.no_join_on_split ||
       ConfigChannel.no_create_on_split))
   {
-    if ((Count.server < split_servers) && (Count.total < split_users))
+    if (!splitmode && ((Count.server < split_servers) || (Count.total < split_users)))
     {
-      if (!splitmode)
-      {
-        splitmode = 1;
+      splitmode = 1;
 
-        sendto_realops_flags(UMODE_ALL,L_ALL,
-                           "Network split, activating splitmode");
-        eventAddIsh("check_splitmode", check_splitmode, NULL, 60);
-      }
+      sendto_realops_flags(UMODE_ALL,L_ALL,
+                         "Network split, activating splitmode");
+      eventAddIsh("check_splitmode", check_splitmode, NULL, 60);
     }
-    else if (splitmode)
+    else if (splitmode && (Count.server > split_servers) && (Count.total > split_users))
     {
       splitmode = 0;
     
