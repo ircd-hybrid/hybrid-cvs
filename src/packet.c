@@ -18,7 +18,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: packet.c,v 7.54 2001/05/26 23:56:48 davidt Exp $
+ *   $Id: packet.c,v 7.55 2001/05/27 19:57:26 davidt Exp $
  */ 
 
 #include <stdio.h>
@@ -288,7 +288,7 @@ read_packet(int fd, void *data)
     return;
   }
 
-#ifdef MISSING_SOCKPAIR
+#ifndef HAVE_SOCKETPAIR
   if (HasServlink(client_p))
   {
     assert(client_p->fd_r > -1);
@@ -351,7 +351,7 @@ read_packet(int fd, void *data)
 
   /* server fd may have changed */
   fd_r = client_p->fd;
-#ifdef MISSING_SOCKPAIR
+#ifndef HAVE_SOCKETPAIR
   if (HasServlink(client_p))
   {
     assert(client_p->fd_r > -1);

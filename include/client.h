@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.114 2001/05/25 14:45:18 davidt Exp $
+ * $Id: client.h,v 7.115 2001/05/27 19:57:20 davidt Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -152,7 +152,7 @@ struct Client
   unsigned int      flags;      /* client flags */
   unsigned int      flags2;     /* ugh. overflow */
   int               fd;         /* >= 0, for local clients */
-#ifdef MISSING_SOCKPAIR
+#ifndef HAVE_SOCKETPAIR
   int               fd_r;       /* fd for reading */
 #endif
 
@@ -289,7 +289,7 @@ struct LocalUser
   int               ctrlfd;     /* For servers:
                                    control fd used for sending commands
                                    to servlink */
-#ifdef MISSING_SOCKPAIR
+#ifndef HAVE_SOCKETPAIR
   int              ctrlfd_r;    /* control fd for reading */
 #endif
 

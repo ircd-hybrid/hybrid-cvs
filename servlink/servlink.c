@@ -15,10 +15,10 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: servlink.c,v 1.19 2001/05/26 23:56:46 davidt Exp $
+ *   $Id: servlink.c,v 1.20 2001/05/27 19:57:24 davidt Exp $
  */
 
-#include "../include/setup.h"                                                   
+#include "setup.h"                                                   
 
 #include <sys/types.h>
 #include <sys/time.h>
@@ -54,7 +54,7 @@ struct fd_table          fds[NUM_FDS] =
           {      NULL, NULL }, /* stderr */
           { read_ctrl, NULL },
           {      NULL, NULL },
-#ifdef MISSING_SOCKPAIR
+#ifndef HAVE_SOCKETPAIR
           {      NULL, NULL },
           {      NULL, NULL },
 #endif
@@ -123,13 +123,13 @@ int main(int argc, char *argv[])
     {
       if (fds[i].read_cb)
         FD_SET(i, &rfds);
-#ifndef MISSING_SOCKPAIR
+#ifdef HAVE_SOCKETPAIR
       if (fds[i].write_cb)
         FD_SET(i, &wfds);
 #endif
     }
 
-#ifdef MISSING_SOCKPAIR
+#ifndef HAVE_SOCKETPAIR
     for (i = 6; i < 8; i++)
     {
       if (fds[i].write_cb)

@@ -15,13 +15,13 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: servlink.h,v 1.15 2001/05/27 01:08:47 davidt Exp $
+ *   $Id: servlink.h,v 1.16 2001/05/27 19:57:24 davidt Exp $
  */
 
 #ifndef INCLUDED_servlink_servlink_h
 #define INCLUDED_servlink_servlink_h
 
-#include "../include/setup.h"
+#include "setup.h"
 
 #ifdef HAVE_LIBCRYPTO
 #include <openssl/evp.h>
@@ -35,7 +35,7 @@
 #define LOCAL_FD_R              4
 #define REMOTE_FD_R             5
 
-#ifdef MISSING_SOCKPAIR
+#ifndef HAVE_SOCKETPAIR
 /* uni-directional pipes, so we need 2 extra fds... */
 #define CONTROL_FD_W            6
 #define LOCAL_FD_W              7

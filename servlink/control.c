@@ -15,10 +15,10 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: control.c,v 1.1 2001/05/26 23:56:45 davidt Exp $
+ *   $Id: control.c,v 1.2 2001/05/27 19:57:23 davidt Exp $
  */
 
-#include "../include/setup.h"                                                   
+#include "setup.h"                                                   
 
 #include <sys/types.h>
 
