@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_clearchan.c,v 1.25 2002/04/14 14:56:29 leeh Exp $
+ *   $Id: m_clearchan.c,v 1.26 2002/04/18 16:12:11 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -41,6 +41,7 @@
 
 #define MSG_CLEARCHAN "CLEARCHAN"
 
+extern BlockHeap *ban_heap;
 
 static void mo_clearchan(struct Client *client_p, struct Client *source_p,
                          int parc, char *parv[]);
@@ -76,7 +77,7 @@ _moddeinit(void)
   mod_del_cmd(&clearchan_msgtab);
 }
 
-char *_version = "$Revision: 1.25 $";
+char *_version = "$Revision: 1.26 $";
 
 /*
 ** mo_clearchan
@@ -351,7 +352,7 @@ static void free_channel_list(dlink_list *list)
       actualBan = ptr->data;
       MyFree(actualBan->banstr);
       MyFree(actualBan->who);
-      MyFree(actualBan);
+      BlockHeapFree(ban_heap, actualBan);
 
       free_dlink_node(ptr);
     }

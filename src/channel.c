@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.306 2002/04/11 00:07:25 db Exp $
+ *  $Id: channel.c,v 7.307 2002/04/18 16:12:13 db Exp $
  */
 
 #include "tools.h"
@@ -610,11 +610,17 @@ destroy_channel(struct Channel *chptr)
    */
 
   delete_members(chptr, &chptr->chanops);
+#ifdef REQUIRE_OANDV
+  delete_members(chptr, &chptr->chanops_voiced);
+#endif
   delete_members(chptr, &chptr->voiced);
   delete_members(chptr, &chptr->peons);
   delete_members(chptr, &chptr->halfops);
 
   delete_members(chptr, &chptr->locchanops);
+#ifdef REQUIRE_OANDV
+  delete_members(chptr, &chptr->locchanops_voiced);
+#endif
   delete_members(chptr, &chptr->locvoiced);
   delete_members(chptr, &chptr->locpeons);
   delete_members(chptr, &chptr->lochalfops);
