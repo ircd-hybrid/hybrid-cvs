@@ -1,3 +1,15 @@
+leeh        2002/07/20 06:07:43 EDT	(20020720_0)
+
+  Modified files:
+    modules              m_gline.c 
+  Log:
+  - fix to show oper or server already voted after the gline request.
+  
+  Revision  Changes    Path
+  1.79      +18 -17    ircd-hybrid-7/modules/m_gline.c
+
+
+
 androsyn    2002/07/19 11:51:36 EDT	(20020719_5)
 
   Modified files:
@@ -30213,4 +30225,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3908 2002/07/19 15:51:43 androsyn Exp $
+$Id: ChangeLog,v 7.3909 2002/07/20 10:07:50 leeh Exp $
