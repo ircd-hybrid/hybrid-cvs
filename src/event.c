@@ -38,7 +38,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: event.c,v 7.33 2003/05/11 22:27:44 joshk Exp $
+ *  $Id: event.c,v 7.34 2003/05/22 03:58:01 lusky Exp $
  */
 
 /*
@@ -95,6 +95,7 @@ eventAdd(const char *name, EVH *func, void *arg, time_t when)
     }
   }
   /* XXX if reach here, its an error */
+  ilog(L_ERROR, "Event table is full! (%d)", i);
 }
 
 /*

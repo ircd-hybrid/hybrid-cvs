@@ -7,7 +7,7 @@
  * The authors takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: irc_res.c,v 7.20 2003/05/20 02:19:54 db Exp $
+ * $Id: irc_res.c,v 7.21 2003/05/22 03:58:01 lusky Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -348,11 +348,6 @@ void
 timeout_resolver(void *notused)
 {
   timeout_query_list(CurrentTime);
-  /*
-   * This is now an event. We schedule this event once a second because
-   * I think thats good enough granularity for now.
-   */
-  eventAdd("timeout_resolver", timeout_resolver, NULL, 1);
 }
 
 /*
