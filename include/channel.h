@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.64 2001/03/06 02:22:06 androsyn Exp $
+ * $Id: channel.h,v 7.65 2001/03/15 20:03:50 db Exp $
  */
 
 #include <sys/types.h>        /* time_t */
@@ -131,10 +131,16 @@ extern char    *channel_chanop_or_voice(struct Channel *, struct Client *);
 extern void    add_invite(struct Channel *chptr, struct Client *who);
 extern void    del_invite(struct Channel *chptr, struct Client *who);
 
+
 extern void    channel_member_list(struct Client *source_p,
-                                   struct Channel *chptr,
-				   dlink_list *list,
-				   char *show_flag,
+				   struct Channel *chptr,
+				   dlink_list *list_chanops,
+				   dlink_list *list_voiced,
+				   dlink_list *list_halfops,
+				   dlink_list *list_peons,
+				   char *show_ops_flag,
+				   char *show_voiced_flag,
+				   char *show_halfop_flag,
 				   char *buf,
 				   int mlen,
 				   int *cur_len,

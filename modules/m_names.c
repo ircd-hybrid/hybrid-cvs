@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_names.c,v 1.26 2001/03/06 02:22:29 androsyn Exp $
+ *   $Id: m_names.c,v 1.27 2001/03/15 20:03:56 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -190,23 +190,12 @@ static void names_all_visible_channels(struct Client *source_p)
 	  channel_member_list(source_p,
                               chptr,
 			      &chptr->chanops,
-			      show_ops_flag,
-			      buf, mlen, &cur_len, &reply_to_send);
-
-	  channel_member_list(source_p,
-                              chptr,
 			      &chptr->voiced,
-			      show_voiced_flag,
-			      buf, mlen, &cur_len, &reply_to_send);
-
-	  channel_member_list(source_p,
-                              chptr,
 			      &chptr->halfops,
+			      &chptr->peons,
+			      show_ops_flag,
 			      show_voiced_flag,
-			      buf, mlen, &cur_len, &reply_to_send);
-
-	  channel_member_list(source_p, chptr, &chptr->peons,
-			      "",
+			      show_halfop_flag,
 			      buf, mlen, &cur_len, &reply_to_send);
 
 	  if (reply_to_send)
