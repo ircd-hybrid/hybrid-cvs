@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.305 2002/04/09 00:04:29 db Exp $
+ *  $Id: channel.c,v 7.306 2002/04/11 00:07:25 db Exp $
  */
 
 #include "tools.h"
@@ -156,8 +156,6 @@ add_user_to_channel(struct Channel *chptr, struct Client *who, int flags)
 
     if (MyClient(who))
       chptr->locusers++;
-
-    chptr->users_last = CurrentTime;
 
     ptr = make_dlink_node();
     dlinkAdd(chptr, ptr, &who->user->channel);
@@ -551,7 +549,7 @@ cleanup_channels(void *unused)
     {
       if(chptr->users == 0)
       {
-        if((chptr->channelts + ConfigChannel.persist_time) < CurrentTime)
+        if((chptr->users_last + ConfigChannel.persist_time) < CurrentTime)
 	{
 	  if(uplink && IsCapable(uplink, CAP_LL))
 	    sendto_one(uplink, ":%s DROP %s", me.name, chptr->chname);
@@ -568,11 +566,7 @@ cleanup_channels(void *unused)
             sendto_one(uplink, ":%s DROP %s", me.name, chptr->chname);
             destroy_channel(chptr);
           }
-          else
-            chptr->users_last = CurrentTime;
         }
-        else
-          chptr->users_last = CurrentTime;
       }
     }
   }

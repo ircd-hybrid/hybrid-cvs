@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_cburst.c,v 1.39 2002/03/07 06:21:44 db Exp $
+ *  $Id: m_cburst.c,v 1.40 2002/04/11 00:07:23 db Exp $
  */
 
 #include "tools.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
   mod_del_cmd(&cburst_msgtab);
 }
 
-const char *_version = "$Revision: 1.39 $";
+const char *_version = "$Revision: 1.40 $";
 #endif
 /*
 ** m_cburst
@@ -117,7 +117,6 @@ ms_cburst(struct Client *client_p,
       chptr->channelts = (time_t)(-1); /* highest possible TS so its always
 					* over-ruled
                                         */
-      chptr->users_last = CurrentTime;
     }
     else if(nick && *nick=='!')
     {
