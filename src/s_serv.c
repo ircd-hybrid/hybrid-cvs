@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.327 2003/05/20 06:51:52 michael Exp $
+ *  $Id: s_serv.c,v 7.328 2003/05/22 05:17:04 lusky Exp $
  */
 
 #include "stdinc.h"
@@ -939,6 +939,7 @@ server_estab(struct Client *client_p)
      * currently we only need to call send_queued_write,
      * Nagle is already disabled at this point --adx
      */
+    set_no_delay(client_p->localClient->fd);
     sendto_one(client_p, "SERVER %s 1 :%s%s",
                my_name_for_link(aconf), 
                ConfigServerHide.hidden ? "(H) " : "",
