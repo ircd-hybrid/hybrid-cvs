@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.383 2003/06/01 08:48:37 michael Exp $
+ *  $Id: channel.c,v 7.384 2003/06/01 10:20:21 michael Exp $
  */
 
 #include "stdinc.h"
@@ -808,17 +808,20 @@ find_channel_link(struct Client *client_p, struct Channel *chptr)
 int
 can_send(struct Channel *chptr, struct Client *source_p)
 {
+  struct Membership *ms;
+
+  if (IsServer(source_p))
+    return(CAN_SEND_OPV);
+
   if (MyClient(source_p) &&
      (find_channel_resv(chptr->chname) &&
       !(IsOper(source_p)) && ConfigChannel.oper_pass_resv))
     return(CAN_SEND_NO);
 
-  if (is_chan_op(chptr, source_p))
-    return(CAN_SEND_OPV);
-  if (is_voiced(chptr, source_p))
-    return(CAN_SEND_OPV);
-  if (IsServer(source_p))
-    return(CAN_SEND_OPV);
+  ms = find_channel_link(source_p, chptr);
+
+  if ((ms != NULL) && ms->flags & (CHFL_CHANOP|CHFL_VOICE))
+     return(CAN_SEND_OPV);
 
   if (chptr->mode.mode & MODE_MODERATED)
     return(CAN_SEND_NO);
@@ -829,7 +832,7 @@ can_send(struct Channel *chptr, struct Client *source_p)
     return(CAN_SEND_NO);
   }
 
-  if (chptr->mode.mode & MODE_NOPRIVMSGS && !IsMember(source_p, chptr))
+  if (chptr->mode.mode & MODE_NOPRIVMSGS && ms != NULL)
     return(CAN_SEND_NO);
 
   return(CAN_SEND_NONOP);
