@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_invite.c,v 1.50 2003/01/10 16:00:05 db Exp $
+ *  $Id: m_invite.c,v 1.51 2003/01/10 20:22:47 db Exp $
  */
 
 #include "stdinc.h"
@@ -64,7 +64,7 @@ _moddeinit(void)
   mod_del_cmd(&invite_msgtab);
 }
 
-const char *_version = "$Revision: 1.50 $";
+const char *_version = "$Revision: 1.51 $";
 #endif
 
 /*
@@ -223,20 +223,14 @@ m_invite(struct Client *client_p,
 	       source_p->username, source_p->host, target_p->name,
 	       chptr->chname);
   }
-  else
-  {
-    /* XXX Send to servers blindly for now. finesse this later
-     * Old code only sent the invite to servers that happened to
-     * have chanops on channel for invitee being invited to.
-     * This obviously was a tad wrong. -db
-     */
-    sendto_server(source_p->from, source_p, NULL, NOCAPS, NOCAPS, NOFLAGS,
-		  ":%s INVITE %s :%s",
-		  source_p->name, target_p->name, vchan->chname);
-  }
+  sendto_server(source_p->from, source_p, NULL, NOCAPS, NOCAPS, NOFLAGS,
+                ":%s INVITE %s :%s",
+                source_p->name, target_p->name, vchan->chname);
 
-  /* if the channel is +pi, broadcast everywhere thats CAP_PARA, send to
-   * target if target isnt CAP_PARA capable, else just send to target
+  /* if the channel is +pi, each server that is capable of CAP_PARA
+   * will send a local message to channel. If there are servers
+   * connected to us that do not understand CAP_PARA, send a NOTICE
+   * to chanops on the channel as per hybrid-6
    */
   if(ParanoidChannel(vchan))
   {
@@ -272,7 +266,6 @@ ms_invite(struct Client *client_p,
 {
   struct Client *target_p;
   struct Channel *chptr, *vchan;
-  int chop;                     /* Is channel op */
 #ifdef VCHANS
   struct Channel *vchan2;
 #endif
@@ -327,20 +320,21 @@ ms_invite(struct Client *client_p,
 
   if (MyConnect(target_p))
   {
-    if (chop)
+    if (vchan->mode.mode & MODE_INVITEONLY)
       add_invite(vchan, target_p);
     sendto_one(target_p, ":%s!%s@%s INVITE %s :%s", source_p->name,
 	       source_p->username, source_p->host, target_p->name,
 	       chptr->chname);
   }
 
-  /* if the channel is +pi, broadcast everywhere thats CAP_PARA, send to
-   * target if target isnt CAP_PARA capable, else just send to target
-   */
-  /*
-   * At this point, unless there is lag and a mode change -p
-   * in between the invite and the receipt of this, the
-   * if(ParanoidChannel(vchan)) test is redundant. -db
+  sendto_server(source_p, NULL, NULL, NOCAPS, NOCAPS, NOFLAGS,
+		":%s INVITE %s :%s",
+		source_p->name, target_p->name, vchan->chname);
+
+  /* if the channel is +pi, each server that is capable of CAP_PARA
+   * will send a local message to channel. If there are servers
+   * connected to us that do not understand CAP_PARA, send a NOTICE
+   * to chanops on the channel as per hybrid-6
    */
   if(ParanoidChannel(vchan))
   {
@@ -357,8 +351,4 @@ ms_invite(struct Client *client_p,
 			  source_p->name, chptr->chname, source_p->name,
 			  target_p->name, chptr->chname);
   }
-
-  sendto_server(source_p, NULL, NULL, NOCAPS, NOCAPS, NOFLAGS,
-		":%s INVITE %s :%s",
-		source_p->name, target_p->name, vchan->chname);
 }
