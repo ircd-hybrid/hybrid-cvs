@@ -1,8 +1,8 @@
                        Oper Challenge and Response System
 
-   $Id: challenge.txt,v 1.10 2002/10/29 20:14:36 db Exp $
+   $Id: challenge.txt,v 1.11 2005/01/01 19:09:23 michael Exp $
 
-   Copyright (c) 2001 by ircd-hybrid team
+   Copyright (c) 2001-2005 by ircd-hybrid team
 
      ----------------------------------------------------------------------
 
@@ -164,15 +164,15 @@
    gives more information.
 
    A copy of the source tar file is available on
-   http://ircd.botbay.net/pub/hybrid/rsa/rsa_respond.tar.gz.
+   http://www.wohmart.com/ircd/pub/irc_tools/rsa/rsa_respond-src-hyb7.tar.gz
 
    For Windows platforms, there are two available RSA Respond tools. One is a
    text only port of the stock tool. The binary is available from
-   http://ircd.botbay.net/pub/hybrid/rsa/rsa_respond-bin.tar.gz. The other
-   tool is a GUI enabled version[3]. The source tree[4] is available from
-   http://ircd.botbay.net/pub/hybrid/rsa/winrespond-src.tar.gz. A binary
-   distribution is available from
-   http://ircd.botbay.net/pub/hybrid/rsa/winrespond-bin.tar.gz.
+   http://www.wohmart.com/ircd/pub/irc_tools/rsa/rsa_respond-bin.tar.gz.
+   The other tool is a GUI enabled version[3]. The source tree[4] is available
+   from http://www.wohmart.com/ircd/pub/irc_tools/rsa/winrespond-src.tar.gz.
+   A binary distribution is available from
+   http://www.wohmart.com/ircd/pub/irc_tools/rsa/winrespond-bin.tar.gz.
 
    With the appropriate version of the RSA Respond tool, any operator can
    protect their privileged access to the server, with little additional
@@ -197,7 +197,7 @@
  :server 386 user :challenge-text
  :server 464 user :Password Incorrect
  :server 491 user :Only few of mere mortals may try to enter the twilight zone
-   
+
 
      Note: The text used can be changed by the server administrator.
 
@@ -213,7 +213,7 @@
 
    BEGIN challenge.irc
 
-      
+
 
       
  # challenge.irc -- authenticate to a hybrid-7 server with challenge response
@@ -224,7 +224,7 @@
  # work, but gave me a framework for execing stuff and getting the response.
 
  # For Hybrid's cvs...
- # $Id: challenge.txt,v 1.10 2002/10/29 20:14:36 db Exp $
+ # $Id: challenge.txt,v 1.11 2005/01/01 19:09:23 michael Exp $
 
  xecho ... Loading challenge.irc by xyst, feer.
 
@@ -318,8 +318,8 @@
 
  rsaconfig
 
-      
-   
+
+
 
   Notes
 
@@ -328,6 +328,6 @@
    [2] Platforms known to function include: Linux, FreeBSD, Solaris, and      
        Cygwin.                                                                
    [3] A screenshot of the program is available on                            
-       http://kabel.pp.ru/sgml/winrespond.png .                               
+       http://www.wohmart.com/ircd/pub/irc_tools/rsa/winrespond.png .                               
    [4] The winrespond source depends on a working, up to date, Cygwin         
-       installation.                                                          
+       installation.
