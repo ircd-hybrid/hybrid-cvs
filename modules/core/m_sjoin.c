@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.14 2000/12/07 05:46:14 db Exp $
+ *   $Id: m_sjoin.c,v 1.15 2000/12/07 06:02:28 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -345,7 +345,7 @@ int     ms_sjoin(struct Client *cptr,
 
 	  if( top_chptr )
 	    {
-	      add_vchan_to_client_cache(sptr,top_chptr, chptr);
+	      add_vchan_to_client_cache(acptr,top_chptr, chptr);
 	      sendto_channel_butserv(ALL_MEMBERS,chptr, acptr, ":%s JOIN :%s",
 				     s, top_chptr->chname);
 	    }
