@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.330 2003/05/22 17:09:08 michael Exp $
+ *  $Id: s_serv.c,v 7.331 2003/05/25 03:08:11 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -437,12 +437,14 @@ hunt_server(struct Client *client_p, struct Client *source_p, const char *comman
     {
       DLINK_FOREACH(ptr, global_client_list.head)
       {
-        target_p = NULL;
+        target_p = ptr->data;
 
-        if (match(parv[server], ((struct Client *)(ptr->data))->name))
+        if (match(parv[server], target_p->name))
         {
-          target_p = ptr->data;
-          break;
+          if (target_p->from == source_p->from && !MyConnect(target_p))   
+            continue; 
+          if (IsRegistered(target_p) && (target_p != client_p))   
+            break; 
         }
       }
     }
