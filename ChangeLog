@@ -1,3 +1,21 @@
+leeh        2002/06/25 19:06:55 EDT	(20020626_0)
+
+  Modified files:
+    .                    ChangeLog 
+    doc                  example.conf index.txt 
+  Removed files:
+    doc                  example.conf.efnet 
+  Log:
+  - doc updates
+  
+  Revision  Changes    Path
+  7.3804    +13 -53    ircd-hybrid-7/ChangeLog
+  7.163     +1 -1      ircd-hybrid-7/doc/example.conf
+  7.17      +0 -833    ircd-hybrid-7/doc/example.conf.efnet (dead)
+  1.17      +0 -2      ircd-hybrid-7/doc/index.txt
+
+
+
 leeh        2002/06/24 18:06:13 EDT	(20020624_3)
 
   Modified files:
@@ -28696,4 +28714,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3804 2002/06/25 23:06:45 leeh Exp $
+$Id: ChangeLog,v 7.3805 2002/06/25 23:07:02 leeh Exp $
