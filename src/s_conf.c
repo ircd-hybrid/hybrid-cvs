@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.313 2002/07/21 17:11:19 db Exp $
+ *  $Id: s_conf.c,v 7.314 2002/07/21 17:15:32 db Exp $
  */
 
 #include "stdinc.h"
@@ -56,6 +56,7 @@ struct config_server_hide ConfigServerHide;
 extern int yyparse(); /* defined in y.tab.c */
 extern int lineno;
 extern char linebuf[];
+extern char conffilebuf[IRCD_BUFSIZE];
 int scount = 0;       /* used by yyparse(), etc */
 
 #ifndef INADDR_NONE
@@ -1955,6 +1956,14 @@ read_conf_files(int cold)
 
   filename = get_conf_name(CONF_TYPE);
 
+  /* We need to know the initial filename for the yyerror() to report
+     FIXME: The full path is in conffilenamebuf first time since we
+             dont know anything else
+
+     - Gozem 2002-07-21 
+  */
+  strlcpy(conffilebuf, filename, IRCD_BUFSIZE);
+
   if ((conf_fbfile_in = fbopen(filename,"r")) == NULL)
     {
       if(cold)
@@ -2473,11 +2482,11 @@ yyerror(char *msg)
 
   strip_tabs(newlinebuf, (const unsigned char *)linebuf, strlen(linebuf));
 
-  sendto_realops_flags(FLAGS_ALL, L_ALL,"%d: %s on line: %s",
-		       lineno + 1, msg, newlinebuf);
+  sendto_realops_flags(FLAGS_ALL, L_ALL,"\"%s\", line %d: %s: %s",
+		       conffilebuf, lineno + 1, msg, newlinebuf);
 
-  ilog(L_WARN, "%d: %s on line: %s",
-      lineno + 1, msg, newlinebuf);
+  ilog(L_WARN, "\"%s\", line %d: %s: %s",
+		       conffilebuf, lineno + 1, msg, newlinebuf);
 }
 
 int 
