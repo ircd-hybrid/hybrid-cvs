@@ -1,5 +1,4 @@
-$Id: TODO,v 7.73 2002/08/17 05:04:08 lusky Exp $
-
+$Id: TODO,v 7.74 2002/08/21 05:58:03 lusky Exp $
 
 - add more stderr debugging (ircd -s)... one for every place we syslog()
 - ircd -s doesn't work through a restart
