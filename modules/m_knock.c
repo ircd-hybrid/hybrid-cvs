@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_knock.c,v 1.46 2002/01/05 09:14:47 a1kmm Exp $
+ *  $Id: m_knock.c,v 1.47 2002/03/07 06:21:45 db Exp $
  */
 
 #include "tools.h"
@@ -81,7 +81,7 @@ _moddeinit(void)
   mod_del_cmd(&knockll_msgtab);
 }
 
-char *_version = "$Revision: 1.46 $";
+const char *_version = "$Revision: 1.47 $";
 #endif
 
 /* m_knock

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.c,v 1.54 2002/02/28 11:46:39 leeh Exp $
+ *  $Id: m_info.c,v 1.55 2002/03/07 06:21:45 db Exp $
  */
 
 #include <time.h>
@@ -72,7 +72,7 @@ _moddeinit(void)
   hook_del_event("doing_info");
   mod_del_cmd(&info_msgtab);
 }
-char *_version = "$Revision: 1.54 $";
+const char *_version = "$Revision: 1.55 $";
 #endif
 
 /*

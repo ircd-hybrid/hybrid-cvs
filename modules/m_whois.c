@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.74 2002/02/28 11:46:39 leeh Exp $
+ *  $Id: m_whois.c,v 1.75 2002/03/07 06:21:48 db Exp $
  */
 
 #include <string.h>
@@ -79,7 +79,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-char *_version = "$Revision: 1.74 $";
+const char *_version = "$Revision: 1.75 $";
 #endif
 /*
 ** m_whois

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whowas.c,v 1.25 2002/02/28 11:46:39 leeh Exp $
+ *  $Id: m_whowas.c,v 1.26 2002/03/07 06:21:48 db Exp $
  */
 
 #include "whowas.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&whowas_msgtab);
 }
-char *_version = "$Revision: 1.25 $";
+const char *_version = "$Revision: 1.26 $";
 #endif
 static int whowas_do(struct Client *client_p, struct Client *source_p,
                      int parc, char *parv[]);

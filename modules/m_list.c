@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_list.c,v 1.39 2002/01/05 09:14:47 a1kmm Exp $
+ *  $Id: m_list.c,v 1.40 2002/03/07 06:21:46 db Exp $
  */
 
 #include "tools.h"
@@ -67,7 +67,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&list_msgtab);
 }
-char *_version = "$Revision: 1.39 $";
+const char *_version = "$Revision: 1.40 $";
 #endif
 static int list_all_channels(struct Client *source_p);
 static int list_named_channel(struct Client *source_p,char *name);

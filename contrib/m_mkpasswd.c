@@ -6,7 +6,7 @@
  *
  *  You can use this code in any way as long as these names remain.
  *
- *  $Id: m_mkpasswd.c,v 1.7 2002/02/25 23:05:00 wcampbel Exp $
+ *  $Id: m_mkpasswd.c,v 1.8 2002/03/07 06:21:36 db Exp $
  */
 
 /* List of ircd includes from ../include/ */
@@ -55,7 +55,7 @@ void _moddeinit(void)
   mod_del_cmd(&test_msgtab);
 }
 
-char *_version = "$Revision: 1.7 $";
+const char *_version = "$Revision: 1.8 $";
 #endif
 
 static void m_mkpasswd(struct Client *client_p, struct Client *source_p,

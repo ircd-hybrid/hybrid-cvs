@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.87 2002/01/13 15:02:20 jmallett Exp $
+ *  $Id: m_message.c,v 1.88 2002/03/07 06:22:03 db Exp $
  */
 
 #include "handlers.h"
@@ -122,7 +122,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-char *_version = "$Revision: 1.87 $";
+const char *_version = "$Revision: 1.88 $";
 #endif
 
 /*

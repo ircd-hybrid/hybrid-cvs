@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_mode.c,v 1.47 2002/01/05 09:15:04 a1kmm Exp $
+ *  $Id: m_mode.c,v 1.48 2002/03/07 06:22:03 db Exp $
  */
 
 #include "tools.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
 }
 
 
-char *_version = "$Revision: 1.47 $";
+const char *_version = "$Revision: 1.48 $";
 #endif
 /*
  * m_mode - MODE command handler

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_user.c,v 1.21 2002/01/05 09:14:49 a1kmm Exp $
+ *  $Id: m_user.c,v 1.22 2002/03/07 06:21:48 db Exp $
  */
 
 #include "handlers.h"
@@ -58,7 +58,7 @@ _moddeinit(void)
   mod_del_cmd(&user_msgtab);
 }
 
-char *_version = "$Revision: 1.21 $";
+const char *_version = "$Revision: 1.22 $";
 #endif
 /*
 ** mr_user

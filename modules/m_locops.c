@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_locops.c,v 1.25 2002/01/05 09:14:47 a1kmm Exp $
+ *  $Id: m_locops.c,v 1.26 2002/03/07 06:21:46 db Exp $
  */
 
 #include "handlers.h"
@@ -55,7 +55,7 @@ _moddeinit(void)
   mod_del_cmd(&locops_msgtab);
 }
 
-char *_version = "$Revision: 1.25 $";
+const char *_version = "$Revision: 1.26 $";
 #endif
 /*
  * m_locops - LOCOPS message handler

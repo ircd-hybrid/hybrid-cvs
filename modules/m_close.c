@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_close.c,v 1.21 2002/01/05 09:14:46 a1kmm Exp $
+ *  $Id: m_close.c,v 1.22 2002/03/07 06:21:44 db Exp $
  */
 
 #include "tools.h"
@@ -53,7 +53,7 @@ _moddeinit(void)
   mod_del_cmd(&close_msgtab);
 }
 
-char *_version = "$Revision: 1.21 $";
+const char *_version = "$Revision: 1.22 $";
 #endif
 /*
  * mo_close - CLOSE message handler

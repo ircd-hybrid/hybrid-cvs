@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.182 2002/03/04 22:45:41 androsyn Exp $
+ *  $Id: send.c,v 7.183 2002/03/07 06:22:09 db Exp $
  */
 
 #include <sys/types.h>
@@ -629,7 +629,7 @@ sendto_list_anywhere(struct Client *one, struct Client *from,
 void sendto_server(struct Client *one, struct Client *source_p,
                    struct Channel *chptr, unsigned long caps,
                    unsigned long nocaps, unsigned long llflags,
-                   char *format, ...)
+                   const char *format, ...)
 {
   va_list args;
   struct Client *client_p;
@@ -806,7 +806,7 @@ sendto_channel_local(int type,
 void
 sendto_channel_remote(struct Client *one,
 		      struct Client *from, int type, int caps,
-                      int nocaps, struct Channel *chptr, char *pattern,
+                      int nocaps, struct Channel *chptr, const char *pattern,
                       ...)
 {
   va_list args;

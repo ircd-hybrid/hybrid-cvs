@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_cjoin.c,v 1.48 2002/02/28 14:12:31 androsyn Exp $
+ *  $Id: m_cjoin.c,v 1.49 2002/03/07 06:21:44 db Exp $
  */
 
 #include "tools.h"
@@ -64,7 +64,7 @@ _moddeinit(void)
   mod_del_cmd(&cjoin_msgtab);
 }
 
-char *_version = "$Revision: 1.48 $";
+const char *_version = "$Revision: 1.49 $";
 #endif
 /*
 ** m_cjoin

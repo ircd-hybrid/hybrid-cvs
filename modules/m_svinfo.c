@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_svinfo.c,v 1.32 2002/02/21 13:47:43 androsyn Exp $
+ *  $Id: m_svinfo.c,v 1.33 2002/03/07 06:21:47 db Exp $
  */
 
 #include "handlers.h"
@@ -59,7 +59,7 @@ _moddeinit(void)
   mod_del_cmd(&svinfo_msgtab);
 }
 
-char *_version = "$Revision: 1.32 $";
+const char *_version = "$Revision: 1.33 $";
 #endif
 /*
  * ms_svinfo - SVINFO message handler

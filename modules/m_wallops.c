@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_wallops.c,v 1.26 2002/01/05 09:14:49 a1kmm Exp $
+ *  $Id: m_wallops.c,v 1.27 2002/03/07 06:21:48 db Exp $
  */
 
 #include "handlers.h"
@@ -56,7 +56,7 @@ _moddeinit(void)
   mod_del_cmd(&wallops_msgtab);
 }
  
-char *_version = "$Revision: 1.26 $";
+const char *_version = "$Revision: 1.27 $";
 #endif
 /*
  * mo_wallops (write to *all* opers currently online)

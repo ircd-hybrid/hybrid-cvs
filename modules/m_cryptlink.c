@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_cryptlink.c,v 1.30 2002/02/25 17:39:05 androsyn Exp $
+ *  $Id: m_cryptlink.c,v 1.31 2002/03/07 06:21:44 db Exp $
  */
 
 /*
@@ -71,7 +71,7 @@
 void _modinit(void) {}
 void _moddeinit(void) {}
 
-char *_version = "$Revision: 1.30 $";
+const char *_version = "$Revision: 1.31 $";
 #endif
 #else
 
@@ -117,7 +117,7 @@ _moddeinit(void)
   mod_del_cmd(&cryptlink_msgtab);
 }
 
-char *_version = "$Revision: 1.30 $";
+const char *_version = "$Revision: 1.31 $";
 #endif
 
 

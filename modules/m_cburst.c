@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_cburst.c,v 1.38 2002/01/05 09:14:45 a1kmm Exp $
+ *  $Id: m_cburst.c,v 1.39 2002/03/07 06:21:44 db Exp $
  */
 
 #include "tools.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
   mod_del_cmd(&cburst_msgtab);
 }
 
-char *_version = "$Revision: 1.38 $";
+const char *_version = "$Revision: 1.39 $";
 #endif
 /*
 ** m_cburst

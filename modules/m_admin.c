@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_admin.c,v 1.32 2002/01/05 09:14:45 a1kmm Exp $
+ *  $Id: m_admin.c,v 1.33 2002/03/07 06:21:44 db Exp $
  */
 
 #include "handlers.h"
@@ -59,7 +59,7 @@ _moddeinit(void)
   hook_del_event("doing_admin");
   mod_del_cmd(&admin_msgtab);
 }
-char *_version = "$Revision: 1.32 $";
+const char *_version = "$Revision: 1.33 $";
 #endif
 /*
  * mr_admin - ADMIN command handler

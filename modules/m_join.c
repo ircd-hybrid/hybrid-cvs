@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_join.c,v 1.81 2002/01/05 09:14:47 a1kmm Exp $
+ *  $Id: m_join.c,v 1.82 2002/03/07 06:21:45 db Exp $
  */
 
 #include "tools.h"
@@ -67,7 +67,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&join_msgtab);
 }
-char *_version = "$Revision: 1.81 $";
+const char *_version = "$Revision: 1.82 $";
 
 #endif
 static void do_join_0(struct Client *client_p, struct Client *source_p);

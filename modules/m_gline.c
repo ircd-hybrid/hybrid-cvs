@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.76 2002/02/25 17:39:05 androsyn Exp $
+ *  $Id: m_gline.c,v 1.77 2002/03/07 06:21:44 db Exp $
  */
 
 #include <assert.h>
@@ -122,7 +122,7 @@ _moddeinit(void)
   mod_del_cmd(&gline_msgtab);
 }
 
-char *_version = "$Revision: 1.76 $";
+const char *_version = "$Revision: 1.77 $";
 #endif
 /*
  * mo_gline()

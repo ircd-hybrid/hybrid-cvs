@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: spy_info_notice.c,v 1.3 2002/01/05 09:14:22 a1kmm Exp $
+ *  $Id: spy_info_notice.c,v 1.4 2002/03/07 06:21:36 db Exp $
  */
 
 #include "modules.h"
@@ -42,7 +42,7 @@ _moddeinit(void)
   hook_del_hook("doing_info", (hookfn *)show_info);
 }
 
-char *_version = "$Revision: 1.3 $";
+const char *_version = "$Revision: 1.4 $";
 
 int show_info(struct hook_spy_data *data)
 {

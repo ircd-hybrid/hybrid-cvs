@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_version.c,v 1.36 2002/01/05 09:14:49 a1kmm Exp $
+ *  $Id: m_version.c,v 1.37 2002/03/07 06:21:48 db Exp $
  */
 
 #include <string.h>
@@ -59,7 +59,7 @@ _moddeinit(void)
   mod_del_cmd(&version_msgtab);
 }
 
-char *_version = "$Revision: 1.36 $";
+const char *_version = "$Revision: 1.37 $";
 #endif
 /*
  * m_version - VERSION command handler

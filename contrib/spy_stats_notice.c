@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: spy_stats_notice.c,v 1.10 2002/01/05 09:14:22 a1kmm Exp $
+ *  $Id: spy_stats_notice.c,v 1.11 2002/03/07 06:21:36 db Exp $
  */
 
 #include "modules.h"
@@ -43,7 +43,7 @@ _moddeinit(void)
 	hook_del_hook("doing_stats", (hookfn *)show_stats);
 }
 
-char *_version = "$Revision: 1.10 $";
+const char *_version = "$Revision: 1.11 $";
 
 /* show a stats request */
 int

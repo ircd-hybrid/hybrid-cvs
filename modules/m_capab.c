@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_capab.c,v 1.26 2002/01/05 09:14:45 a1kmm Exp $
+ *  $Id: m_capab.c,v 1.27 2002/03/07 06:21:44 db Exp $
  */
 
 #include "handlers.h"
@@ -50,7 +50,7 @@ _moddeinit(void)
   mod_del_cmd(&capab_msgtab);
 }
 
-char *_version = "$Revision: 1.26 $";
+const char *_version = "$Revision: 1.27 $";
 #endif
 
 /*

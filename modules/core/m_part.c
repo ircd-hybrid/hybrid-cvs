@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_part.c,v 1.51 2002/02/25 17:39:10 androsyn Exp $
+ *  $Id: m_part.c,v 1.52 2002/03/07 06:22:04 db Exp $
  */
 
 #include "tools.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&part_msgtab);
 }
-char *_version = "$Revision: 1.51 $";
+const char *_version = "$Revision: 1.52 $";
 #endif
 
 static void part_one_client(struct Client *client_p,

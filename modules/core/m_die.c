@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_die.c,v 1.22 2002/01/05 09:15:04 a1kmm Exp $
+ *  $Id: m_die.c,v 1.23 2002/03/07 06:22:02 db Exp $
  */
 
 #include "tools.h"
@@ -56,7 +56,7 @@ _moddeinit(void)
   mod_del_cmd(&die_msgtab);
 }
 
-char *_version = "$Revision: 1.22 $";
+const char *_version = "$Revision: 1.23 $";
 #endif
 /*
  * mo_die - DIE command handler

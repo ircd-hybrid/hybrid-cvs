@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_connect.c,v 1.35 2002/01/05 09:14:46 a1kmm Exp $
+ *  $Id: m_connect.c,v 1.36 2002/03/07 06:21:44 db Exp $
  */
 
 #include "handlers.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&connect_msgtab);
 }
 
-char *_version = "$Revision: 1.35 $";
+const char *_version = "$Revision: 1.36 $";
 #endif
 /*
  * mo_connect - CONNECT command handler

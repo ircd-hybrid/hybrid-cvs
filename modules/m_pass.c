@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_pass.c,v 1.21 2002/02/25 17:39:06 androsyn Exp $
+ *  $Id: m_pass.c,v 1.22 2002/03/07 06:21:46 db Exp $
  */
 
 #include "handlers.h"  /* m_pass prototype */
@@ -52,7 +52,7 @@ _moddeinit(void)
   mod_del_cmd(&pass_msgtab);
 }
 
-char *_version = "$Revision: 1.21 $";
+const char *_version = "$Revision: 1.22 $";
 #endif
 /*
  * m_pass() - Added Sat, 4 March 1989

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_squit.c,v 1.43 2002/01/05 09:15:05 a1kmm Exp $
+ *  $Id: m_squit.c,v 1.44 2002/03/07 06:22:04 db Exp $
  */
 
 #include "handlers.h"
@@ -58,7 +58,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&squit_msgtab);
 }
-char *_version = "$Revision: 1.43 $";
+const char *_version = "$Revision: 1.44 $";
 #endif
 struct squit_parms 
 {

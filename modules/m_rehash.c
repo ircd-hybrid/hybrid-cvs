@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_rehash.c,v 1.38 2002/02/10 03:35:06 wcampbel Exp $
+ *  $Id: m_rehash.c,v 1.39 2002/03/07 06:21:47 db Exp $
  */
 
 #include "handlers.h"
@@ -59,7 +59,7 @@ _moddeinit(void)
   mod_del_cmd(&rehash_msgtab);
 }
 
-char *_version = "$Revision: 1.38 $";
+const char *_version = "$Revision: 1.39 $";
 #endif
 /*
  * mo_rehash - REHASH message handler

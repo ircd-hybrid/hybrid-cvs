@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_restart.c,v 1.21 2002/01/05 09:14:48 a1kmm Exp $
+ *  $Id: m_restart.c,v 1.22 2002/03/07 06:21:47 db Exp $
  */
 
 #include "handlers.h"
@@ -56,7 +56,7 @@ _moddeinit(void)
   mod_del_cmd(&restart_msgtab);
 }
 
-char *_version = "$Revision: 1.21 $";
+const char *_version = "$Revision: 1.22 $";
 #endif
 /*
  * mo_restart
