@@ -1,3 +1,18 @@
+db          2002/07/31 18:52:14 EDT	(20020731_4)
+
+  Modified files:
+    src                  parse.c 
+  Log:
+  - I will double review this when I get back from concert :-)
+  - Anyway, this should stop dumping over the end of an input buffer
+    I'll test later...
+  - Also even if we don't log local clients, we should log remote IMO
+  
+  Revision  Changes    Path
+  7.137     +19 -5     ircd-hybrid-7/src/parse.c
+
+
+
 leeh        2002/07/31 14:17:44 EDT	(20020731_3)
 
   Modified files:
@@ -30719,4 +30734,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3942 2002/07/31 18:17:51 leeh Exp $
+$Id: ChangeLog,v 7.3943 2002/07/31 22:52:21 db Exp $
