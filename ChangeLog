@@ -1,3 +1,15 @@
+db          2002/12/18 00:33:29 EST	(20021218_1)
+
+  Modified files:
+    contrib              m_tburst.c 
+  Log:
+  - committed metalrocks change
+  
+  Revision  Changes    Path
+  1.12      +3 -3      ircd-hybrid-7/contrib/m_tburst.c
+
+
+
 db          2002/12/17 23:44:36 EST	(20021218_0)
 
   Modified files:
@@ -33650,4 +33662,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4143 2002/12/18 04:44:38 db Exp $
+$Id: ChangeLog,v 7.4144 2002/12/18 05:33:32 db Exp $
