@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: setup.h_vms,v 7.9 2002/01/05 09:14:30 a1kmm Exp $
+ *  $Id: setup.h_vms,v 7.10 2002/05/23 16:52:18 leeh Exp $
  */
 
 /* include/setup.h.in.  Generated automatically from autoconf/configure.in by autoheader.  */
@@ -111,6 +111,12 @@ typedef unsigned long u_long;
 #define STATIC_MODULES
 #define SELECT_TYPE "select"
 #define USE_SELECT
+
+#define NICKLEN 9
+#define MAX_CLIENTS 1536
+
+#undef FD_SETSIZE
+#define FD_SETSIZE 2048
 
 #define inline
 #endif
