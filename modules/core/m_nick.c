@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nick.c,v 1.134 2003/10/12 23:09:01 bill Exp $
+ *  $Id: m_nick.c,v 1.135 2003/10/14 00:51:50 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -97,7 +97,7 @@ _moddeinit(void)
   mod_del_cmd(&uid_msgtab);
 }
 
-const char *_version = "$Revision: 1.134 $";
+const char *_version = "$Revision: 1.135 $";
 #endif
 
 /*
@@ -111,8 +111,8 @@ mr_nick(struct Client *client_p, struct Client *source_p,
         int parc, char *parv[])
 {
   struct Client *target_p, *uclient_p;
-  char     nick[NICKLEN];
-  char*    s;
+  char nick[NICKLEN];
+  char *s;
   dlink_node *ptr;
    
   if (parc < 2 || EmptyString(parv[1]))
@@ -342,7 +342,17 @@ ms_nick(struct Client *client_p, struct Client *source_p,
   if (parc == 9)
   {
     struct Client *server_p = find_server(nserver);
-    assert(server_p != NULL);
+
+    if (server_p == NULL)
+    {
+      sendto_realops_flags(UMODE_ALL, L_ALL,
+			   "Invalid server %s from %s for NICK %s",
+			   nserver, source_p->name, nick);
+
+      sendto_one(client_p, ":%s KILL %s :%s (Server doesn't exist!)",
+                 me.name, nick, me.name);
+      return;
+    }
 
     strlcpy(ngecos, parv[8], sizeof(ngecos));
 
@@ -368,8 +378,8 @@ ms_nick(struct Client *client_p, struct Client *source_p,
   else if (parc == 3)
   {
     if(IsServer(source_p))
-        /* Server's cant change nicks.. */
-        return;
+      /* Server's cant change nicks.. */
+      return;
 
     if (check_clean_nick(client_p, source_p, nick, nnick,
 			 source_p->user->server))
