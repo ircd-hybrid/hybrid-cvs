@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.229 2002/02/17 08:02:18 a1kmm Exp $
+ *  $Id: client.c,v 7.230 2002/02/17 08:34:20 a1kmm Exp $
  */
 
 #include "tools.h"
@@ -1297,6 +1297,7 @@ int exit_client(
 {
   char comment1[HOSTLEN + HOSTLEN + 2];
   dlink_node *m;
+  SetClosing(source_p);
   if (MyConnect(source_p))
     {
       /* Attempt to flush any queued data */
@@ -1372,8 +1373,6 @@ int exit_client(
 	  else
 	    uplink = NULL;
         }
-
-      SetClosing(source_p);
 
       if (IsPerson(source_p))
         sendto_realops_flags(FLAGS_CCONN, L_ALL,

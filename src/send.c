@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.178 2002/02/17 05:39:29 androsyn Exp $
+ *  $Id: send.c,v 7.179 2002/02/17 08:34:20 a1kmm Exp $
  */
 
 #include <sys/types.h>
@@ -129,7 +129,8 @@ dead_link(struct Client *to, char *notice)
   }
   Debug((DEBUG_ERROR, notice, get_client_name(to, HIDE_IP)));
   SetDead(to);
-  exit_client(to, to, &me, notice);
+  if (!IsClosing(to))
+    exit_client(to, to, &me, notice);
   return (-1);
 } /* dead_link() */
 
