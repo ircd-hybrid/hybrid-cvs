@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.156 2001/08/21 20:54:24 davidt Exp $
+ *   $Id: send.c,v 7.157 2001/08/21 22:11:17 davidt Exp $
  */
 
 #include <sys/types.h>
@@ -511,14 +511,14 @@ sendto_channel_butone(struct Client *one, struct Client *from,
   va_start(args, pattern);
 
   if(IsServer(from))
-    linebuf_putmsg(&local_linebuf, pattern, args, ":%s %s %s",
+    linebuf_putmsg(&local_linebuf, pattern, args, ":%s %s %s ",
                    from->name, command, RootChan(chptr)->chname);
   else
     linebuf_putmsg(&local_linebuf, pattern, args, ":%s!%s@%s %s %s ",
                    from->name, from->username, from->host,
                    command, RootChan(chptr)->chname);
 
-  linebuf_putmsg(&remote_linebuf, pattern, args, ":%s %s %s",
+  linebuf_putmsg(&remote_linebuf, pattern, args, ":%s %s %s ",
                  from->name, command, chptr->chname);
 
   va_end(args);

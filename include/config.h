@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.120 2001/07/20 03:51:04 wcampbel Exp $
+ * $Id: config.h,v 7.121 2001/08/21 22:11:17 davidt Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -50,7 +50,7 @@
  * systems may require kernel patches, configuration tweaks, or ulimit
  * adjustments in order to exceed certain limits (e.g. 1024, 4096 fds).
  */
-#define HARD_FDLIMIT_    256
+#define HARD_FDLIMIT_    65536
 
 /* XXX - MAX_BUFFER is mostly ignored. */
 /*
@@ -63,8 +63,8 @@
  * 10 file descriptors are reserved for logging, DNS lookups, etc.,
  * so MAX_CLIENTS + MAX_BUFFER + 10 must not exceed HARD_FDLIMIT.
  */
-#define MAX_CLIENTS     200
-#define MAX_BUFFER      60
+#define MAX_CLIENTS     65000
+#define MAX_BUFFER      500
 
 #ifdef VMS
 /* *PATH - directory locations and filenames for VMS.
