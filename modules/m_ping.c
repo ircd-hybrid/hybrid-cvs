@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ping.c,v 1.38 2004/04/01 02:53:23 bill Exp $
+ *  $Id: m_ping.c,v 1.39 2004/04/04 04:56:22 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -57,7 +57,7 @@ _moddeinit(void)
   mod_del_cmd(&ping_msgtab);
 }
 
-const char *_version = "$Revision: 1.38 $";
+const char *_version = "$Revision: 1.39 $";
 #endif
 
 /*
@@ -147,12 +147,11 @@ ms_ping(struct Client *client_p, struct Client *source_p,
     else
     {
       sendto_one(source_p, form_str(ERR_NOSUCHSERVER),
-                 ID_or_name(&me, source_p), parv[0], destination);
+                 ID_or_name(&me, client_p), parv[0], destination);
       return;
     }
   }
   else
     sendto_one(source_p,":%s PONG %s :%s",
-               ID_or_name(&me, source_p), (destination) ? destination : me.name, origin);
+               ID_or_name(&me, client_p), (destination) ? destination : me.name, origin);
 }
-
