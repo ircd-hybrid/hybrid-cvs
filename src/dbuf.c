@@ -21,7 +21,7 @@
  * see the header file (dbuf.h).
  *
  *
- * $Id: dbuf.c,v 7.8 1999/09/08 06:30:54 tomh Exp $
+ * $Id: dbuf.c,v 7.9 1999/09/10 05:14:49 tomh Exp $
  */
 #include "dbuf.h"
 #include "common.h"
@@ -149,7 +149,7 @@ int dbuf_put(struct DBuf* dyn, const char* buf, size_t length)
 {
   struct DBufBuffer** h;
   struct DBufBuffer*  db;
-  int                 chunk;
+  size_t              chunk;
 
   assert(0 != dyn);
   assert(0 != buf);
