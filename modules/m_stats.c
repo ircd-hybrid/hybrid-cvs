@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.121 2003/05/01 15:53:35 michael Exp $
+ *  $Id: m_stats.c,v 1.122 2003/05/04 20:43:13 db Exp $
  */
 
 #include "stdinc.h"
@@ -80,7 +80,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.121 $";
+const char *_version = "$Revision: 1.122 $";
 #endif
 
 const char* Lformat = ":%s %d %s %s %u %u %u %u %u :%u %u %s";
@@ -229,7 +229,7 @@ static void m_stats(struct Client *client_p, struct Client *source_p,
       /* The stats table says what privs are needed, so check --fl_ */
       if(stats_cmd_table[i].need_oper || stats_cmd_table[i].need_admin)
       {
-        sendto_one(source_p, form_str(ERR_NOPRIVILEGES),me.name,source_p->name);
+        sendto_one(source_p, form_str(ERR_NOPRIVILEGES), me.name, source_p->name);
         break;
       }
 
@@ -242,7 +242,7 @@ static void m_stats(struct Client *client_p, struct Client *source_p,
   }
 
   /* Send the end of stats notice, and the stats_spy */
-  sendto_one(source_p, form_str(RPL_ENDOFSTATS), me.name, parv[0], parv[1]);
+  sendto_one(source_p, form_str(RPL_ENDOFSTATS), me.name, source_p->name, statchar);
 
   if((statchar != 'L') && (statchar != 'l'))
     stats_spy(source_p, statchar);
@@ -280,7 +280,7 @@ static void mo_stats(struct Client *client_p, struct Client *source_p,
       if((stats_cmd_table[i].need_admin && !IsOperAdmin(source_p)) ||
          (stats_cmd_table[i].need_oper && !IsOper(source_p)))
       {
-        sendto_one(source_p, form_str(ERR_NOPRIVILEGES),me.name,source_p->name);
+        sendto_one(source_p, form_str(ERR_NOPRIVILEGES), me.name, source_p->name);
         break;
       }
 
@@ -293,7 +293,7 @@ static void mo_stats(struct Client *client_p, struct Client *source_p,
   }
 
   /* Send the end of stats notice, and the stats_spy */
-  sendto_one(source_p, form_str(RPL_ENDOFSTATS), me.name, parv[0], parv[1]);
+  sendto_one(source_p, form_str(RPL_ENDOFSTATS), me.name, source_p->name, statchar);
 
   if((statchar != 'L') && (statchar != 'l'))
     stats_spy(source_p, statchar);
