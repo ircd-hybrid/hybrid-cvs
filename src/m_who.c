@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_who.c,v 7.7 2000/10/16 14:36:44 db Exp $
+ *   $Id: m_who.c,v 7.8 2000/10/19 02:21:05 db Exp $
  */
 
 #include "handlers.h"
@@ -250,8 +250,11 @@ int     m_who(struct Client *cptr,
 	      break;
 	    }
 	}
-      lp = find_user_link(ch2ptr->members, acptr);
-      do_who(sptr, acptr, ch2ptr->chname, lp);
+      if (ch2ptr != NULL)
+	{
+	  lp = find_user_link(ch2ptr->members, acptr);
+	  do_who(sptr, acptr, ch2ptr->chname, lp);
+	}
       sendto_one(sptr, form_str(RPL_ENDOFWHO), me.name, parv[0], mask );
       return 0;
     }
