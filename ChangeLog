@@ -1,3 +1,20 @@
+bill        2002/11/11 15:43:19 EST	(20021111_0)
+
+  Modified files:
+    modules              m_motd.c m_stats.c 
+  Log:
+  Submitted by:   Lee H
+  - reverted previous fix.  treating remote requests the same as local oper requests
+    is in fact correct, at the msgtab level.  each mo_() function triggered by server
+    will have to do a sanity check looking for IsOper() before giving out any
+    sensitive data.
+  
+  Revision  Changes    Path
+  1.33      +9 -17     ircd-hybrid-7/modules/m_motd.c
+  1.114     +2 -7      ircd-hybrid-7/modules/m_stats.c
+
+
+
 bill        2002/11/10 14:53:07 EST	(20021110_0)
 
   Modified files:
@@ -33028,4 +33045,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4100 2002/11/10 19:53:10 bill Exp $
+$Id: ChangeLog,v 7.4101 2002/11/11 20:43:22 bill Exp $
