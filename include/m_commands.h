@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_commands.h,v 7.5 2000/01/02 22:11:53 db Exp $
+ * $Id: m_commands.h,v 7.6 2000/01/06 04:37:03 db Exp $
  */
 #ifndef INCLUDED_m_commands_h
 #define INCLUDED_m_commands_h
@@ -65,12 +65,9 @@ extern int m_whois(struct Client *,struct Client *,int,char **);
 extern int m_dbop(struct Client *,struct Client *,int,char **);
 #endif
 extern int m_server(struct Client *,struct Client *,int,char **);
-#ifdef HUB
 extern int m_cburst(struct Client *,struct Client *,int,char **);
 extern int m_drop(struct Client *,struct Client *,int,char **);
-#else
 extern int m_lljoin(struct Client *,struct Client *,int,char **);
-#endif
 extern int m_user(struct Client *,struct Client *,int, char **);
 extern int m_links(struct Client *,struct Client *,int,char **);
 extern int m_summon(struct Client *,struct Client *,int,char **);
