@@ -1,6 +1,10 @@
+*** 20001231_27 by toot
+fixed some formatting in m_whois
+
+
 *** 20001231_26 by toot
 it didn't :P
-char *_version = "$Revision: 7.1223 $"; looks a bit poo
+char *_version = "$Revision: 7.1224 $"; looks a bit poo
 
 
 *** 20001231_25 by toot
