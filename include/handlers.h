@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: handlers.h,v 7.36 2001/03/06 02:22:08 androsyn Exp $
+ * $Id: handlers.h,v 7.37 2001/06/05 16:41:38 leeh Exp $
  */
 #ifndef INCLUDED_handlers_h
 #define INCLUDED_handlers_h
@@ -85,7 +85,6 @@ struct Client;
 
 /* generic handlers */
 extern void ms_error(struct Client *,struct Client *,int,char **);
-extern void mr_error(struct Client *,struct Client *,int,char **);
 extern void m_error(struct Client *,struct Client *,int,char **);
 extern void m_ignore(struct Client*, struct Client*, int, char**);
 extern void m_not_oper(struct Client*, struct Client*, int, char**);

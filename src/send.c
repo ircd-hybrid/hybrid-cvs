@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.149 2001/06/05 01:45:45 ejb Exp $
+ *   $Id: send.c,v 7.150 2001/06/05 16:41:47 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -126,9 +126,12 @@ dead_link(struct Client *to, char *notice)
   linebuf_donebuf(&to->localClient->buf_recvq);
   linebuf_donebuf(&to->localClient->buf_sendq);
   if (!IsPerson(to) && !IsUnknown(to) && !(to->flags & FLAGS_CLOSING))
-    sendto_realops_flags(FLAGS_ALL,
-                         notice, get_client_name(to, HIDE_IP));
-
+    {
+      sendto_realops_flags(FLAGS_ADMIN,
+           notice, get_client_name(to, HIDE_IP));
+    sendto_realops_flags(FLAGS_NOTADMIN,
+                         notice, get_client_name(to, MASK_IP));
+    }
   Debug((DEBUG_ERROR, notice, get_client_name(to, HIDE_IP)));
   return (-1);
 } /* dead_link() */

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.100 2001/05/31 05:38:12 db Exp $
+ *   $Id: parse.c,v 7.101 2001/06/05 16:41:45 leeh Exp $
  */
 
 #include <assert.h>
@@ -558,7 +558,7 @@ static  int     cancel_clients(struct Client *client_p,
     {
       sendto_realops_flags(FLAGS_DEBUG, "Message for %s[%s] from %s",
                          source_p->name, source_p->from->name,
-                         get_client_name(client_p, SHOW_IP));
+                         get_client_name(client_p, MASK_IP));
       if (IsServer(client_p))
         {
           sendto_realops_flags(FLAGS_DEBUG,
@@ -595,7 +595,7 @@ static  int     cancel_clients(struct Client *client_p,
 		   sendto_realops_flags(FLAGS_DEBUG,
 			"Message for %s[%s@%s!%s] from %s (TS, ignored)",
 			source_p->name, source_p->username, source_p->host,
-			source_p->from->name, get_client_name(client_p, SHOW_IP));
+			source_p->from->name, get_client_name(client_p, MASK_IP));
 	   return 0;
    }
   return exit_client(client_p, client_p, &me, "Fake prefix");
@@ -646,9 +646,9 @@ static  void    remove_unknown(struct Client *client_p,
     {
       sendto_realops_flags(FLAGS_DEBUG,
                            "Unknown prefix (%s) from %s, Squitting %s",
-                           lbuffer, get_client_name(client_p, HIDE_IP), lsender);
+                           lbuffer, get_client_name(client_p, MASK_IP), lsender);
       sendto_one(client_p, ":%s SQUIT %s :(Unknown prefix (%s) from %s)",
-                 me.name, lsender, lbuffer, get_client_name(client_p, HIDE_IP));
+                 me.name, lsender, lbuffer, get_client_name(client_p, MASK_IP));
     }
 }
 
