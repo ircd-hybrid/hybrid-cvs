@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: m_tb.c,v 1.19 2003/06/18 07:51:42 joshk Exp $
+ *  $Id: m_tb.c,v 1.20 2003/08/22 23:34:35 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -80,7 +80,7 @@ _moddeinit(void)
   unset_tburst_capab();
 }
 
-const char *_version = "$Revision: 1.19 $";
+const char *_version = "$Revision: 1.20 $";
 
 /* ms_tburst()
  * 
@@ -96,25 +96,18 @@ ms_tburst(struct Client *client_p, struct Client *source_p,
           int parc, char *parv[])
 {
   struct Channel *chptr;
-  time_t newchannelts;
-  time_t newtopicts;
+  time_t newchannelts = atol(parv[1]);
+  time_t newtopicts = atol(parv[3]);
 
-  newchannelts = atol(parv[1]);
-  newtopicts   = atol(parv[3]);
-
-  if ((chptr = hash_find_channel(parv[2])))
+  if((chptr = hash_find_channel(parv[2])))
   {
-    if (chptr->channelts < newchannelts)
+    /* Don't allow newly created channels to change the topic ever,
+     * only change the topic if we are on the old channel TS with
+     * a new topic_time. -metalrock
+     */
+    if (chptr->channelts > newchannelts)
       return;
-
-    else if (chptr->channelts == newchannelts)
-    {
-      if (chptr->topic == NULL || (chptr->topic_time > newtopicts))
-	set_topic(source_p, chptr, newtopicts, parv[4], parv[5]);
-      else
-	return;
-    }
-    else
+    else if (chptr->topic == NULL || (chptr->topic_time > newtopicts))
       set_topic(source_p, chptr, newtopicts, parv[4], parv[5]);
   }
 }
