@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_nick.c,v 1.15 2000/12/03 07:41:36 db Exp $
+ *   $Id: m_nick.c,v 1.16 2000/12/03 08:15:41 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -249,15 +249,22 @@ int m_nick(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 
 /*
 ** ms_nick
+**
+** when its a server to server nick change:
 **      parv[0] = sender prefix
 **      parv[1] = nickname
-**      parv[2] = optional hopcount when new user; TS when nick change
-**      parv[3] = optional TS
-**      parv[4] = optional umode
-**      parv[5] = optional username
-**      parv[6] = optional hostname
-**      parv[7] = optional server
-**      parv[8] = optional ircname
+**      parv[2] = TS when nick change
+**
+** when its a server introucing a new nick
+**      parv[0] = sender prefix
+**      parv[1] = nickname
+**      parv[2] = hop count
+**      parv[3] = TS
+**      parv[4] = umode
+**      parv[5] = username
+**      parv[6] = hostname
+**      parv[7] = server
+**      parv[8] = ircname
 */
 int ms_nick(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 {
@@ -274,12 +281,12 @@ int ms_nick(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
     }
 
   /*
-   * parc == 4 on a normal server-to-server client nick change
+   * parc == 3 on a normal server-to-server client nick change
    *      notice
    * parc == 9 on a normal TS style server-to-server NICK
    *      introduction
    */
-  if( (parc != 4) || (parc != 9) )
+  if( (parc != 3) && (parc != 9) )
     return 0;
 
   /*
