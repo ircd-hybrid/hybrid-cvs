@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: class.c,v 7.8 2000/01/17 03:21:29 db Exp $
+ *   $Id: class.c,v 7.9 2000/01/17 22:35:10 db Exp $
  */
 #include "class.h"
 #include "client.h"
@@ -156,8 +156,9 @@ void    add_class(char *classname,
   Debug((DEBUG_DEBUG,
          "Add Class %s: p %x t %x - cf: %d pf: %d ml: %d sq: %l",
          classname, p, t, confreq, ping, maxli, sendq));
-  if(classname)
-    DupString(ClassName(p),classname);
+
+  /* classname already known to be non NULL */
+  DupString(ClassName(p),classname);
   ConFreq(p) = confreq;
   PingFreq(p) = ping;
   MaxLinks(p) = maxli;

@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.42 2000/01/17 03:21:31 db Exp $
+ *  $Id: s_conf.c,v 7.43 2000/01/17 22:35:11 db Exp $
  */
 #include "s_conf.h"
 #include "channel.h"
@@ -1833,10 +1833,7 @@ static void initconf(FBFILE* file)
 
 static void initnewconf(FBFILE* file)
 {
-#if 0
-  class0 = find_class(0);       /* which one is class 0 ? */
-#endif
-
+  yy_aconf = NULL;
   yyparse(); /* wheee! */
   fbclose(file);
 }
