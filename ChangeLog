@@ -1,3 +1,10 @@
+*** 20001116_3 by davidt
+- Figured out how to create a .so without the .tmp file..
+
+this tree seems to compile/run correctly for me on Linux, hopefully
+I didn't break anything elsewhere..
+
+
 *** 20001116_2 by davidt
 - modules/Makefile.in modified to work with gmake (like src/Makefile.in)
 - src/Makefile.in @DL_OPEN@ removed, since configure doesn't use this
@@ -562,7 +569,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.552 2000/11/16 17:52:32 davidt Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.553 2000/11/16 18:14:43 davidt Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
