@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.c,v 7.33 2000/12/30 09:28:37 lusky Exp $
+ *   $Id: s_auth.c,v 7.34 2001/01/03 22:47:18 adrian Exp $
  *
  * Changes:
  *   July 6, 1999 - Rewrote most of the code here. When a client connects
@@ -467,11 +467,11 @@ timeout_auth_queries_event(void *notused)
       auth->client->since = CurrentTime;
       release_auth_client(auth->client);
       unlink_auth_request(auth, &AuthPollList);
-  #ifdef USE_IAUTH
-  	link_auth_request(auth, &AuthClientList);
-  #else
-    free_auth_request(auth);
-  #endif
+#ifdef USE_IAUTH
+      link_auth_request(auth, &AuthClientList);
+#else
+      free_auth_request(auth);
+#endif
     }
   }
 
