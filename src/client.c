@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.55 2000/12/05 05:45:40 db Exp $
+ *  $Id: client.c,v 7.56 2000/12/05 07:27:08 db Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -1624,7 +1624,7 @@ int add_to_accept(struct Client *source, struct Client *target)
   if ( (len = dlink_list_length(&target->localClient->allow_list)) >= 
        MAX_ALLOW)
     {
-      sendto_one(":%s NOTICE %s :Max accept targets reached %d",
+      sendto_one(target,":%s NOTICE %s :Max accept targets reached %d",
 		 me.name, target->name, len);
       return 0;
     }

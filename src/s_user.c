@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.55 2000/12/04 16:08:26 db Exp $
+ *  $Id: s_user.c,v 7.56 2000/12/05 07:27:10 db Exp $
  */
 #include "tools.h"
 #include "s_user.h"
@@ -79,6 +79,7 @@ static struct flag_item user_modes[] =
   {FLAGS_CCONN, 'c'},
   {FLAGS_DEBUG, 'd'},
   {FLAGS_FULL,  'f'},
+  {FLAGS_CALLERID, 'g'},
   {FLAGS_INVISIBLE, 'i'},
   {FLAGS_SKILL, 'k'},
   {FLAGS_NCHANGE, 'n'},
@@ -86,7 +87,7 @@ static struct flag_item user_modes[] =
   {FLAGS_LOCOP, 'O'},
   {FLAGS_REJ, 'r'},
   {FLAGS_SERVNOTICE, 's'},
-  {FLAGS_CALLERID, 'u'},
+  {FLAGS_UNAUTH, 'u'},
   {FLAGS_WALLOP, 'w'},
   {FLAGS_EXTERNAL, 'x'},
   {FLAGS_SPY, 'y'},
@@ -137,7 +138,7 @@ int user_modes_from_c_to_bitmask[] =
   FLAGS_DEBUG,  /* d */
   0,            /* e */
   FLAGS_FULL,   /* f */
-  0,            /* g */
+  FLAGS_CALLERID,  /* g */
   0,            /* h */
   FLAGS_INVISIBLE, /* i */
   0,            /* j */
@@ -151,7 +152,7 @@ int user_modes_from_c_to_bitmask[] =
   FLAGS_REJ,    /* r */
   FLAGS_SERVNOTICE, /* s */
   0,            /* t */
-  FLAGS_CALLERID,  /* u */
+  FLAGS_UNAUTH, /* u */
   0,            /* v */
   FLAGS_WALLOP, /* w */
   FLAGS_EXTERNAL, /* x */
@@ -805,7 +806,6 @@ int user_mode(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 
               if (MyConnect(sptr))
                 {
-                  struct Client *prev_cptr = (struct Client *)NULL;
                   dlink_node *m;
 
 		  ptr = sptr->localClient->confs.head;

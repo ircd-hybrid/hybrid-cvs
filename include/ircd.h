@@ -19,7 +19,7 @@
  *
  * "ircd.h". - Headers file.
  *
- * $Id: ircd.h,v 7.13 2000/12/03 12:18:13 db Exp $
+ * $Id: ircd.h,v 7.14 2000/12/05 07:27:04 db Exp $
  *
  */
 #ifndef INCLUDED_ircd_h
@@ -46,8 +46,8 @@ struct SetOptions
 
   int idletime;
 
-  int dronetime;
-  int dronecount;
+  int floodtime;
+  int floodcount;
 
   int spam_num;
   int spam_time;

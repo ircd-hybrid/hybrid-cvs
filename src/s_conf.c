@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.88 2000/12/05 02:53:41 db Exp $
+ *  $Id: s_conf.c,v 7.89 2000/12/05 07:27:09 db Exp $
  */
 #include "tools.h"
 #include "s_conf.h"
@@ -408,7 +408,7 @@ int check_client(struct Client *cptr, struct Client *sptr, char *username)
       ServerStats->is_ref++;
       /* jdc - lists server name & port connections are on */
       /*       a purely cosmetical change */
-      sendto_realops_flags(FLAGS_CCONN,
+      sendto_realops_flags(FLAGS_UNAUTH,
 			   "%s from %s [%s] on [%s/%u].",
 			   "Unauthorized client connection",
 			   get_client_host(sptr),

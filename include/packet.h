@@ -19,7 +19,7 @@
  *
  * "packet.h". - Headers file.
  *
- * $Id: packet.h,v 7.6 2000/12/04 16:53:56 db Exp $
+ * $Id: packet.h,v 7.7 2000/12/05 07:27:04 db Exp $
  *
  */
 #ifndef INCLUDED_packet_h
@@ -38,7 +38,7 @@
  * the network..
  *   -- adrian
  */
-#define MAX_FLOOD_PER_SEC               5
+#define MAX_FLOOD_PER_SEC               8
 
 
 extern PF  read_packet;
