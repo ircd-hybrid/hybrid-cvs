@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kline.c,v 1.35 2000/12/23 13:29:44 toot Exp $
+ *   $Id: m_kline.c,v 1.36 2000/12/23 18:13:16 ejb Exp $
  */
 #include "tools.h"
 #include "m_kline.h"
@@ -299,9 +299,9 @@ int ms_kline(struct Client *cptr,
   if(find_u_conf(sptr->name,rcptr->username,rcptr->host))
     {
       sendto_realops_flags(FLAGS_ALL,
-			   "*** Received kline from %s!%s@%s on %s",
+			   "*** Received K-Line from %s!%s@%s on %s",
 			   rcptr->name,
-			   rcptr->user,
+			   rcptr->username,
 			   rcptr->host,
 			   sptr->name);
       aconf = make_conf();

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_gline.c,v 1.28 2000/12/23 01:42:11 db Exp $
+ *  $Id: m_gline.c,v 1.29 2000/12/23 18:13:16 ejb Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -115,7 +115,6 @@ _moddeinit(void)
 }
 
 char *_version = "20001122";
-
 /*
  * mo_gline()
  *
@@ -255,9 +254,10 @@ int mo_gline(struct Client *cptr,
       reason = parv[2];
 
       /* If at least 3 opers agree this user should be G lined then do it */
+
       check_majority_gline(sptr,
 			   sptr->name,
-			   (const char *)sptr->user,
+			   (const char *)sptr->username,
 			   sptr->host,
 			   me.name,
 			   user,
@@ -273,13 +273,15 @@ int mo_gline(struct Client *cptr,
 			     reason);
 
       sendto_realops_flags(FLAGS_ALL,
-			"%s on %s is requesting gline for [%s@%s] [%s]",
+			"%s!%s@%s on %s is requesting gline for [%s@%s] [%s]",
 			sptr->name,
+			sptr->username,
+			sptr->host,
 			me.name,
 			user,
 			host,
 			reason);
-      log_gline_request(sptr->name,(const char *)sptr->user,sptr->host,me.name,
+      log_gline_request(sptr->name,(const char *)sptr->username,sptr->host,me.name,
                         user,host,reason);
     }
   else
@@ -339,7 +341,7 @@ int     ms_gline(struct Client *cptr,
   else
     return 0;
 
-  if ((oper_user = (const char *)rcptr->user) == NULL)
+  if ((oper_user = (const char *)rcptr->username) == NULL)
     return 0;
 
   if ((oper_host = rcptr->host) == NULL)
