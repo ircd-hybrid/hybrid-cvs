@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.318 2002/06/11 01:02:30 androsyn Exp $
+ *  $Id: channel.c,v 7.319 2002/06/11 01:39:41 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -1424,13 +1424,14 @@ void check_splitmode(void *unused)
   }
 }
 
+
 /*
  * input	- Channel to allocate a new topic for
  * output	- Success or failure
  * side effects - Allocates a new topic
  */
 
-int allocate_topic(struct Channel *chptr)
+static int allocate_topic(struct Channel *chptr)
 {
   void *ptr;
   if(chptr == NULL)
@@ -1452,7 +1453,7 @@ int allocate_topic(struct Channel *chptr)
   return FALSE;
 }
 
-void free_topic(struct Channel *chptr)
+static void free_topic(struct Channel *chptr)
 {
   void *ptr;
   
@@ -1466,3 +1467,24 @@ void free_topic(struct Channel *chptr)
   chptr->topic = NULL;
   chptr->topic_info = NULL;
 }
+
+/*
+ * set_channel_topic - Sets the channel topic
+ */
+void set_channel_topic(struct Channel *chptr, const char *topic, const char *topic_info, time_t topicts)
+{
+  if(strlen(topic) > 0)
+  {
+    if(chptr->topic == NULL)
+      allocate_topic(chptr);
+    strlcpy(chptr->topic, topic, TOPICLEN);
+    strlcpy(chptr->topic_info, topic_info,  USERHOST_REPLYLEN);
+    chptr->topic_time = topicts; 
+  } else
+  {
+    if(chptr->topic != NULL)
+      free_topic(chptr);
+    chptr->topic_time = 0;
+  }
+}
+
