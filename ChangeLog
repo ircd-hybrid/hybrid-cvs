@@ -1,3 +1,16 @@
+a1kmm       2001/12/14 02:47:11 EST	(20011214_2)
+
+  Modified files:
+    src                  channel_mode.c 
+  Log:
+  - Don't add ' ' to channel parambuffers unless we just added a parameter
+    mode.
+  
+  Revision  Changes    Path
+  7.10      +30 -22    ircd-hybrid-7/src/channel_mode.c
+
+
+
 bill        2001/12/13 23:20:55 EST	(20011214_1)
 
   Modified files:
@@ -328,7 +341,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3163 2001/12/14 04:21:00 bill Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3164 2001/12/14 07:47:16 a1kmm Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -18682,4 +18695,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3163 2001/12/14 04:21:00 bill Exp $
+$Id: ChangeLog,v 7.3164 2001/12/14 07:47:16 a1kmm Exp $
