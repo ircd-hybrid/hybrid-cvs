@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.224 2001/05/28 13:45:42 jdc Exp $
+ * $Id: channel.c,v 7.225 2001/05/29 16:10:27 jdc Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -3007,7 +3007,8 @@ void add_invite(struct Channel *chptr, struct Client *who)
   /*
    * delete last link in chain if the list is max length
    */
-  if (dlink_list_length(&who->user->invited) >= MAXCHANNELSPERUSER)
+  if (dlink_list_length(&who->user->invited)  >=
+      ConfigFileEntry.max_chans_per_user)
     {
       del_invite(chptr,who);
     }

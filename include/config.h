@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.113 2001/05/29 01:39:16 toot Exp $
+ * $Id: config.h,v 7.114 2001/05/29 16:10:23 jdc Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -342,11 +342,6 @@
  * automatically to switch for the current nick of that user. (seconds)
  */
 #define KILLCHASETIMELIMIT 90   /* Recommended value: 90 */
-
-/* MAXCHANNELSPERUSER -
- * Max number of channels a user is allowed to join.
- */
-#define MAXCHANNELSPERUSER  15  /* Recommended value: 15 */
 
 /* 
  * anti spambot code

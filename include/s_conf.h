@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.121 2001/05/28 20:07:19 leeh Exp $
+ * $Id: s_conf.h,v 7.122 2001/05/29 16:10:24 jdc Exp $
  */
 
 #include "setup.h"
@@ -186,7 +186,7 @@ typedef struct config_file_entry
   char fname_operlog[MAXPATHLEN];
   char fname_userlog[MAXPATHLEN];
   char fname_foperlog[MAXPATHLEN];
-	
+
   MessageFile helpfile;
   MessageFile motd;
   MessageFile opermotd;
@@ -194,6 +194,7 @@ typedef struct config_file_entry
 
   int           hub;
   unsigned char compression_level;
+  int           max_chans_per_user;
   int           dots_in_ident;
   int           failed_oper_notice;
   int           anti_nick_flood;
@@ -216,7 +217,7 @@ typedef struct config_file_entry
   int           glines;
   int           gline_time;
   int           idletime;
-  int	        hide_server;
+  int           hide_server;
   int           client_exit;
   int           maximum_links;
   int           oper_only_umodes;

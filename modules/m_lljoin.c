@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_lljoin.c,v 1.42 2001/05/28 13:45:35 jdc Exp $
+ * $Id: m_lljoin.c,v 1.43 2001/05/29 16:10:26 jdc Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -30,6 +30,7 @@
 #include "list.h"
 #include "numeric.h"
 #include "s_serv.h"
+#include "s_conf.h"
 #include "send.h"
 #include "handlers.h"
 #include "msg.h"
@@ -211,8 +212,9 @@ static void ms_lljoin(struct Client *client_p,
     }
   }
 
-  if ((target_p->user->joined >= MAXCHANNELSPERUSER) &&
-      (!IsOper(target_p) || (target_p->user->joined >= MAXCHANNELSPERUSER*3)))
+  if ((target_p->user->joined >= ConfigFileEntry.max_chans_per_user) &&
+      (!IsOper(target_p) || (target_p->user->joined >= 
+                             ConfigFileEntry.max_chans_per_user*3)))
     {
       sendto_one(target_p, form_str(ERR_TOOMANYCHANNELS),
 		 me.name, nick, root_vchan->chname );

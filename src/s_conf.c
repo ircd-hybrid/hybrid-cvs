@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.216 2001/05/28 20:07:27 leeh Exp $
+ *  $Id: s_conf.c,v 7.217 2001/05/29 16:10:30 jdc Exp $
  */
 
 #include <sys/types.h>
@@ -1451,6 +1451,9 @@ static void read_conf(FBFILE* file)
   
   if (!ConfigFileEntry.max_accept)
      ConfigFileEntry.max_accept = 20;
+
+  if (!ConfigFileEntry.max_chans_per_user)
+     ConfigFileEntry.max_chans_per_user = 15;
 
   GlobalSetOptions.idletime = (ConfigFileEntry.idletime * 60);
 

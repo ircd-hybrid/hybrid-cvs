@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 1.62 2001/05/28 13:45:34 jdc Exp $
+ *   $Id: m_join.c,v 1.63 2001/05/29 16:10:26 jdc Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -187,8 +187,9 @@ static void m_join(struct Client *client_p,
 	    }
 	}
 
-      if ((source_p->user->joined >= MAXCHANNELSPERUSER) &&
-         (!IsOper(source_p) || (source_p->user->joined >= MAXCHANNELSPERUSER*3)))
+      if ((source_p->user->joined >= ConfigFileEntry.max_chans_per_user) &&
+         (!IsOper(source_p) || (source_p->user->joined >=
+	                        ConfigFileEntry.max_chans_per_user*3)))
 	{
 	  sendto_one(source_p, form_str(ERR_TOOMANYCHANNELS),
 		     me.name, parv[0], name);

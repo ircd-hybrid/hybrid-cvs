@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.172 2001/05/28 20:35:28 androsyn Exp $
+ * $Id: ircd_parser.y,v 1.173 2001/05/29 16:10:29 jdc Exp $
  */
 
 %{
@@ -207,6 +207,7 @@ int   class_redirport_var;
 %token  MAX_ACCEPT
 %token  MAX_NICK_TIME
 %token  MAX_NICK_CHANGES
+%token  MAX_CHANS_PER_USER
 %token  TS_MAX_DELTA
 %token  TS_WARN_DELTA
 %token  KLINE_WITH_REASON
@@ -1908,7 +1909,8 @@ general_item:       general_failed_oper_notice |
                     general_persistant_expire_time | general_min_nonwildcard |
                     general_servlink_path |
                     general_default_cipher_preference |
-                    general_compression_level | error
+                    general_compression_level |
+                    general_max_chans_per_user | error
 
 general_failed_oper_notice:   FAILED_OPER_NOTICE '=' TYES ';'
   {
@@ -2222,6 +2224,11 @@ general_compression_level: COMPRESSION_LEVEL '=' expr ';'
     }
 #endif
   }
+
+general_max_chans_per_user:  MAX_CHANS_PER_USER '=' expr ';'
+  {
+    ConfigFileEntry.max_chans_per_user = $3;
+  } ;
 
 general_oper_umodes: OPER_UMODES
   {
