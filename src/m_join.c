@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 7.24 2000/10/16 22:54:10 toot Exp $
+ *   $Id: m_join.c,v 7.25 2000/10/19 16:20:30 toot Exp $
  */
 
 #include "handlers.h"
@@ -299,13 +299,7 @@ int     m_join(struct Client *cptr,
                if (IsVchanTop(chptr))
                  {
                    if( on_sub_vchan(chptr,sptr) )
-                     {
-                       sendto_one(sptr,":%s NOTICE %s :*** You are on a sub chan of %s already",
-                                  me.name, sptr->name, name);
-                       sendto_one(sptr, form_str(ERR_BADCHANNAME),
-                               me.name, parv[0], (unsigned char*) name);
-                       return 0;
-                     }
+                     continue;
                    if (key && key[0] == '!')
                      {
                        /* found a matching vchan? let them join it */
@@ -1131,13 +1125,7 @@ int     mo_join(struct Client *cptr,
                if (IsVchanTop(chptr))
                  {
                    if( on_sub_vchan(chptr,sptr) )    
-                     {   
-                       sendto_one(sptr,":%s NOTICE %s :*** You are on a sub chan of %s already",  
-                                  me.name, sptr->name, name);  
-                       sendto_one(sptr, form_str(ERR_BADCHANNAME),  
-                               me.name, parv[0], (unsigned char*) name);  
-                       return 0;  
-                     }   
+                     continue;
                    if (key && key[0] == '!')
                      {
                        /* found a matching vchan? let them join it */
