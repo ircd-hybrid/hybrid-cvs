@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.9 1999/09/08 06:30:53 tomh Exp $
+ *  $Id: client.c,v 7.10 1999/09/10 02:15:47 tomh Exp $
  */
 #include "client.h"
 #include "class.h"
@@ -41,6 +41,7 @@
 #include "s_log.h"
 #include "s_misc.h"
 #include "s_serv.h"
+#include "s_zip.h"
 #include "send.h"
 #include "whowas.h"
 
