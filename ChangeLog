@@ -1,3 +1,16 @@
+androsyn    2002/03/25 12:01:12 EST	(20020325_1)
+
+  Modified files:
+    src                  ircd_parser.y 
+  Log:
+  Add a bunch of missing semicolons that was causing newer versions of bison
+  to cry.
+  
+  Revision  Changes    Path
+  1.241     +49 -49    ircd-hybrid-7/src/ircd_parser.y
+
+
+
 androsyn    2002/03/25 10:57:32 EST	(20020325_0)
 
   Modified files:
@@ -24303,4 +24316,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3512 2002/03/25 15:57:38 androsyn Exp $
+$Id: ChangeLog,v 7.3513 2002/03/25 17:01:18 androsyn Exp $
