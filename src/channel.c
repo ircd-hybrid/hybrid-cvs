@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.292 2002/01/06 18:12:15 leeh Exp $
+ *  $Id: channel.c,v 7.293 2002/01/12 23:06:05 a1kmm Exp $
  */
 
 #include "tools.h"
@@ -177,7 +177,7 @@ remove_user_from_channel(struct Channel *chptr, struct Client *who, int perm)
     dlinkDelete(ptr, &chptr->chanops);
 #ifdef REQUIRE_OANDV
   else if ((ptr = find_user_link(&chptr->chanops_voiced, who)))
-    dlinkDelete(ptr, &chptr->chanops);
+    dlinkDelete(ptr, &chptr->chanops_voiced);
 #endif
   else if ((ptr = find_user_link(&chptr->voiced, who)))
     dlinkDelete(ptr, &chptr->voiced);
