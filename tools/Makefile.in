@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 7.24 2001/07/04 20:42:47 wcampbel Exp $
+# $Id: Makefile.in,v 7.25 2001/07/18 03:06:01 androsyn Exp $
 
 CC		= @CC@
 INSTALL		= @INSTALL@
@@ -8,7 +8,7 @@ INSTALL_SUID	= @INSTALL_PROGRAM@ -o root -m 4755
 RM		= @RM@
 LEX		= @LEX@
 LEXLIB		= @LEXLIB@
-CFLAGS		= @CFLAGS@ -DIRCD_PREFIX=\"@prefix@\"
+CFLAGS		= @IRCD_CFLAGS@ -DIRCD_PREFIX=\"@prefix@\"
 LDFLAGS   	= @LDFLAGS@
 MKDEP		= ${CC} -MM
 MV		= @MV@
