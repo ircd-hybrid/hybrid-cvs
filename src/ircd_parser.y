@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.164 2001/04/26 12:32:44 fl_ Exp $
+ * $Id: ircd_parser.y,v 1.165 2001/05/05 01:38:18 androsyn Exp $
  */
 
 %{
@@ -1049,8 +1049,12 @@ auth_spoof_notice:   SPOOF_NOTICE '=' TNO ';'
 auth_spoof:   SPOOF '=' QSTRING ';' 
   {
     MyFree(yy_achead->name);
-    DupString(yy_achead->name, yylval.string);
-    yy_achead->flags |= CONF_FLAGS_SPOOF_IP;
+    if(strlen(yylval.string) < HOSTLEN)
+    {    
+	DupString(yy_achead->name, yylval.string);
+    	yy_achead->flags |= CONF_FLAGS_SPOOF_IP;
+    } else
+	log(L_ERROR, "Spoofs must be less than %d..ignoring it", HOSTLEN);
   };
 
 auth_exceed_limit:    EXCEED_LIMIT '=' TYES ';'
