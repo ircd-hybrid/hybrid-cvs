@@ -1,6 +1,14 @@
+-- ircd-hybrid-7.1rc1 RELNOTES
+o) Added m_etrace.c and confgen.pl to contrib/
+o) Fixed serious nick TS bug which could have lead to desyncs
+o) Various fixes and improvements to ircd's configuration scanner
+o) Fixed incorrect /INFO output
+o) Non-critical resolver bugs fixed
+
+
 -- ircd-hybrid-7.1beta1 RELNOTES
 o) TS6 support has been introduced, although it is still not to be
-   used on produce networks.
+   used on production networks.
 o) Halfops are no longer a configure option - if you prefer to use
    them, you have to patch the source against contrib/halfops.diff;
    anonops (+a) have been ripped out completely.
@@ -18,7 +26,7 @@ o) the user-channel membership handling has been entirely rewritten to
    be more CPU friendly
 o) fixed a possible /CHALLENGE memory leak
 o) removed OpenVMS support
-o) CRYP_OPER_PASSWORD is now runtime configurable via ircd.conf
+o) CRYPT_OPER_PASSWORD is now runtime configurable via ircd.conf
 
 --------------------------------------------------------------------------------
 
@@ -49,17 +57,13 @@ TESTING: This code is under active development, and a lot changes from beta
  which have changed recently, and which would benefeit from being tested
  much as possible.  The following are some things that have changed, and what
  you can do to help us test them.
-     o) Exiting Clients
-        - The way clients are exited and cleaned from memory has been largely
-          redone since the last release.  Unusual situations involving clients
-          exiting will help expose any remaining problems.
      o) Mac OS X Modules
         - Support for Darwin and Mac OS X style modules, through the
           NSModule(3) interface has been added, and is designed to work as
           loadable modules do on most UNIX systems.  Feeding it bad or
           duplicate modules to find bugs would be appriciated.
 
-				
+
 Questions/comments directed to bugs@ircd-hybrid.org
 
 Please read doc/whats-new.txt for information about what is in this release
@@ -67,4 +71,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.77 2004/07/19 00:32:48 michael Exp $
+$Id: RELNOTES,v 1.78 2005/01/14 20:48:34 michael Exp $

@@ -1,8 +1,8 @@
                             Hybrid INSTALL Document
 
-   $Id: INSTALL,v 7.40 2004/07/17 00:12:05 lusky Exp $
+   $Id: INSTALL,v 7.41 2005/01/14 20:48:34 michael Exp $
 
-   Copyright (c) 2001 by ircd-hybrid team
+   Copyright (c) 2001, 2002, 2003, 2004, 2005 by ircd-hybrid team
 
      ----------------------------------------------------------------------
 
@@ -151,8 +151,7 @@
        will group I: together under one auth {};.
 
        Once this is done, move your new config to prefix/etc/ircd.conf and
-       EDIT IT! There are still things that need changing in the config,
-       including the fact that classes MUST be above auth/connect blocks!
+       EDIT IT!
 
    7.  If you are upgrading from Hybrid 5 or Hybrid 6, the kline file has
        also changed...

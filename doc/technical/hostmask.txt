@@ -1,6 +1,6 @@
 The hostmask/netmask system.
 Copyright(C) 2001 by Andrew Miller(A1kmm)<a1kmm@mware.virtualave.net>
-$Id: hostmask.txt,v 1.2 2003/07/04 11:45:11 adx Exp $
+$Id: hostmask.txt,v 1.3 2005/01/14 20:48:36 michael Exp $
 
 Contents
 ========
@@ -103,7 +103,7 @@ Call find_address_conf() with the hostname, the username, the address,
 the address family and client-supplied password.
 To find a d-line, call find_dline() with the address and address family.
 
-Section 3.5: Deletiing entries
+Section 3.5: Deleting entries
 ------------------------------
 Call delete_one_address_conf() with the hostname and the ConfItem*.
 

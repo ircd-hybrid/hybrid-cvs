@@ -1,54 +1,36 @@
-$Id: TODO,v 7.95 2003/10/13 02:15:16 metalrock Exp $
+$Id: TODO,v 7.96 2005/01/14 20:48:34 michael Exp $
 
 - add more stderr debugging (ircd -s)... one for every place we syslog()
 - ircd -s doesn't work through a restart
-- re-implement first param in m_lusers()
-- trie' channel name list
 - finish RFC'ing m_message.c
-
-----
-is-'s TODO list
-
-- umode +R for registered nick
 - change nick instead of kill on nick collide
 - dynamically extensible parser for modules
--> this is the ratbox parser -joshk
 - modularize channel, network code etc (not just commands)
     we can use override_function() or similar for this
 - username/passwords (iauth ?)
-
------------------------------------------------------------------------------
-madmax's TODO
-
 - Make stats p just notice opers, rather than return a list, when
   server_hide is on (#13)
 - Definable server region or 'global' (open I) for /links output (#20)
------------------------------------------------------------------------------
-
-Adrian's TODO list
-
-* make the reserved FD limit run-time tunable, esp from comm_open()
+- make the reserved FD limit run-time tunable, esp from comm_open()
   This involves making fd_table[] a dynamically growing/(don't bother with
   shrinking) list.. have the max fd list configurable in the conf file..
 
-* Fix the anti-client flood code to not be so anal when people connect -
+- Fix the anti-client flood code to not be so anal when people connect -
   I've counted all lines from a client as being a flood, so if a client
   connects and issues JOIN's to a whole bunch of channels the flood
   protection stops everything coming through at once .. (not that I mind.. :)
 
-* PLEASE redo all dlink_list management with the stuff in src/tools.c
-
-* In the server outbound connection code, make the sendto_realops()
+- In the server outbound connection code, make the sendto_realops()
   logging more sane. Ie, if there's an error, also log the errno string.
 
-* look at the old Listener code in s_bsd.c before I chopped it. Notice
+- look at the old Listener code in s_bsd.c before I chopped it. Notice
   the anti-flood code in there. Make sure the same load-checking stuff
   is in listener.c
 
-* get send_message(), replace comm_setselect() with send_queued_write(), see
+- get send_message(), replace comm_setselect() with send_queued_write(), see
   if the optimization works
 
-* Add the IRCnet(?) split logic for nick collisions - on a nick collision,
+- Add the IRCnet(?) split logic for nick collisions - on a nick collision,
   change to "%d-%s", random, nick
 
 ------------------------------------------------------------------------------
@@ -58,7 +40,6 @@ Little things to be done given enough time and initiative -Hwy
 .  <Riedel> walter : have you implemented the motd= thing in the auth block ?
 .  Fix topic bursting to LL servers (broke lately for some reason)
 .  A FAQ
-   --> Dracus is working on this, I will try to put something together too
 .  More translations!
 
 
@@ -77,7 +58,6 @@ Little things to be done given enough time and initiative -Hwy
      --> Table part I know is done, what about the success status?
   *  Re-write proper startup procedure for daemon; procedure should be
      done in stages, similar to boot0/1/2 stages in FreeBSD.
-  *  Write secure cryptlink protocol with help from Sean.
 
 
 -- Diane's list
