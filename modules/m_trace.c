@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_trace.c,v 1.28 2001/07/16 20:06:06 leeh Exp $
+ *   $Id: m_trace.c,v 1.29 2001/07/18 15:39:14 androsyn Exp $
  */
 #include "handlers.h"
 #include "class.h"
@@ -103,10 +103,10 @@ static void mo_trace(struct Client *client_p, struct Client *source_p,
         ac2ptr = next_client_double(GlobalClientList, tname);
         if (ac2ptr)
           sendto_one(source_p, form_str(RPL_TRACELINK), me.name, parv[0],
-                     version, debugmode, tname, ac2ptr->from->name);
+                     ircd_version, debugmode, tname, ac2ptr->from->name);
         else
           sendto_one(source_p, form_str(RPL_TRACELINK), me.name, parv[0],
-                     version, debugmode, tname, "ac2ptr_is_NULL!!");
+                     ircd_version, debugmode, tname, "ac2ptr_is_NULL!!");
         return;
       }
     case HUNTED_ISME:

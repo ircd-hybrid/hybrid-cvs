@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.167 2001/07/17 21:06:10 leeh Exp $
+ * $Id: ircd.c,v 7.168 2001/07/18 15:39:15 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -179,7 +179,7 @@ size_t get_maxrss(void)
 static void
 print_startup(int pid)
 {
-  printf("ircd: version %s\n", version);
+  printf("ircd: version %s\n", ircd_version);
   printf("ircd: pid %d\n", pid);
   printf("ircd: running in %s mode from %s\n", !server_state.foreground ? "background"
          : "foreground", ConfigFileEntry.dpath);
@@ -541,7 +541,7 @@ int main(int argc, char *argv[])
   
  if (printVersion) 
  {
-  printf("ircd: version %s\n", version);
+  printf("ircd: version %s\n", ircd_version);
   exit(EXIT_SUCCESS);
  }
   

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_version.c,v 1.26 2001/05/15 10:06:23 toot Exp $
+ *   $Id: m_version.c,v 1.27 2001/07/18 15:39:14 androsyn Exp $
  */
 #include <string.h>
 #include "handlers.h"
@@ -70,7 +70,7 @@ static void m_version(struct Client* client_p, struct Client* source_p,
                       int parc, char* parv[])
 {
   sendto_one(source_p, form_str(RPL_VERSION), me.name,
-                parv[0], version, serno, debugmode,
+                parv[0], ircd_version, serno, debugmode,
                 me.name, confopts(source_p), serveropts);
                 
   show_isupport(source_p);
@@ -88,7 +88,7 @@ static void mo_version(struct Client* client_p, struct Client* source_p,
 		  1, parc, parv) != HUNTED_ISME)
     return;
     
-  sendto_one(source_p, form_str(RPL_VERSION), me.name, parv[0], version, 
+  sendto_one(source_p, form_str(RPL_VERSION), me.name, parv[0], ircd_version, 
   	     serno, debugmode, me.name, confopts(source_p), serveropts);
 	       
   show_isupport(source_p);
@@ -110,7 +110,7 @@ static void ms_version(struct Client* client_p, struct Client* source_p,
                        1, parc, parv) == HUNTED_ISME)
          {
            sendto_one(source_p, form_str(RPL_VERSION), me.name,
-                      parv[0], version, serno, debugmode,
+                      parv[0], ircd_version, serno, debugmode,
                       me.name, confopts(source_p), serveropts);
            show_isupport(source_p);
          }
@@ -118,7 +118,7 @@ static void ms_version(struct Client* client_p, struct Client* source_p,
    else
      {
        sendto_one(source_p, form_str(RPL_VERSION), me.name,
-                  parv[0], version, serno, debugmode,
+                  parv[0], ircd_version, serno, debugmode,
                   me.name, confopts(source_p), serveropts);
        show_isupport(source_p);
      }
