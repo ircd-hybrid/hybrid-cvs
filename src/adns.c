@@ -1,5 +1,5 @@
 /*
- * $Id: adns.c,v 7.8 2001/02/25 10:28:57 androsyn Exp $
+ * $Id: adns.c,v 7.9 2001/02/25 22:29:48 androsyn Exp $
  * adns.c  functions to enter libadns 
  *
  * Written by Aaron Sethman <androsyn@ratbox.org>
@@ -64,7 +64,6 @@ void dns_do_callbacks(void)
 	adns_forallqueries_begin(dns_state);
 	while((q = adns_forallqueries_next(dns_state, (void **)&r)) != NULL)
 	{
-		q->ads = dns_state;
 		switch(adns_check(dns_state, &q, &answer, (void **)&query))
 		{
 			case 0:
