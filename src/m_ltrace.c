@@ -20,9 +20,9 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_ltrace.c,v 7.3 2000/04/01 21:14:58 db Exp $
+ *   $Id: m_ltrace.c,v 7.4 2000/07/20 02:42:51 db Exp $
  */
-#include "m_commands.h"
+#include "handlers.h"
 #include "class.h"
 #include "client.h"
 #include "common.h"

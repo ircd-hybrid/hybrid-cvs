@@ -20,9 +20,9 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_locops.c,v 7.4 2000/01/06 03:19:37 db Exp $
+ *   $Id: m_locops.c,v 7.5 2000/07/20 02:42:51 db Exp $
  */
-#include "m_commands.h"
+#include "handlers.h"
 #include "client.h"
 #include "ircd.h"
 #include "irc_string.h"

@@ -20,9 +20,9 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_close.c,v 7.1 1999/12/30 20:35:47 db Exp $
+ *   $Id: m_close.c,v 7.2 2000/07/20 02:42:49 db Exp $
  */
-#include "m_commands.h"
+#include "handlers.h"
 #include "client.h"
 #include "ircd.h"
 #include "numeric.h"
@@ -88,10 +88,10 @@
 
 
 /*
- * m_close - CLOSE message handler
+ * mo_close - CLOSE message handler
  *  - added by Darren Reed Jul 13 1992.
  */
-int m_close(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
+int mo_close(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 {
   struct Client* acptr;
   int            i;

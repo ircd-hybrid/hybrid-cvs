@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.55 2000/04/03 03:33:29 db Exp $
+ *  $Id: s_conf.c,v 7.56 2000/07/20 02:42:53 db Exp $
  */
 #include "s_conf.h"
 #include "channel.h"
@@ -2566,7 +2566,7 @@ char    *parv, *filename;
 
 
 /*
- * m_testline
+ * mo_testline
  *
  * inputs       - pointer to physical connection request is coming from
  *              - pointer to source connection request is comming from
@@ -2580,7 +2580,7 @@ char    *parv, *filename;
  *
  */
 
-int m_testline(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
+int mo_testline(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 {
   struct ConfItem *aconf;
   unsigned long ip;

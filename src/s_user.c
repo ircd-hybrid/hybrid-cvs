@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.27 2000/04/01 21:14:59 db Exp $
+ *  $Id: s_user.c,v 7.28 2000/07/20 02:42:54 db Exp $
  */
 #include "s_user.h"
 #include "channel.h"
@@ -35,6 +35,7 @@
 #include "list.h"
 #include "listener.h"
 #include "motd.h"
+#include "ircd_handler.h"
 #include "msg.h"
 #include "numeric.h"
 #include "s_bsd.h"

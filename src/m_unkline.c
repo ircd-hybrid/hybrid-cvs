@@ -21,9 +21,9 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: m_unkline.c,v 7.5 1999/12/30 20:36:02 db Exp $
+ *   $Id: m_unkline.c,v 7.6 2000/07/20 02:42:53 db Exp $
  */
-#include "m_commands.h"
+#include "handlers.h"
 #include "channel.h"
 #include "client.h"
 #include "common.h"
@@ -49,7 +49,7 @@ static int flush_write(struct Client *, FBFILE* , char *, char *);
 static int remove_tkline_match(char *,char *);
 
 /*
-** m_unkline
+** mo_unkline
 ** Added Aug 31, 1997 
 ** common (Keith Fralick) fralick@gate.net
 **
@@ -63,7 +63,7 @@ static int remove_tkline_match(char *,char *);
 * Added comstuds SEPARATE_QUOTE_KLINES_BY_DATE
 *
 */
-int m_unkline (struct Client *cptr,struct Client *sptr,int parc,char *parv[])
+int mo_unkline (struct Client *cptr,struct Client *sptr,int parc,char *parv[])
 {
   FBFILE* in;
   FBFILE* out;

@@ -20,9 +20,9 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_ping.c,v 7.1 1999/12/30 20:35:55 db Exp $
+ *   $Id: m_ping.c,v 7.2 2000/07/20 02:42:52 db Exp $
  */
-#include "m_commands.h"
+#include "handlers.h"
 #include "client.h"
 #include "ircd.h"
 #include "numeric.h"
@@ -93,6 +93,45 @@
 **      parv[2] = destination
 */
 int     m_ping(struct Client *cptr,
+               struct Client *sptr,
+               int parc,
+               char *parv[])
+{
+  struct Client *acptr;
+  char  *origin, *destination;
+
+  if (parc < 2 || *parv[1] == '\0')
+    {
+      sendto_one(sptr, form_str(ERR_NOORIGIN), me.name, parv[0]);
+      return 0;
+    }
+  origin = parv[1];
+  destination = parv[2]; /* Will get NULL or pointer (parc >= 2!!) */
+
+  acptr = find_client(origin, NULL);
+  if (!acptr)
+    acptr = find_server(origin);
+  if (acptr && acptr != sptr)
+    origin = cptr->name;
+  if (!EmptyString(destination) && irccmp(destination, me.name) != 0)
+    {
+      if ((acptr = find_server(destination)))
+        sendto_one(acptr,":%s PING %s :%s", parv[0],
+                   origin, destination);
+      else
+        {
+          sendto_one(sptr, form_str(ERR_NOSUCHSERVER),
+                     me.name, parv[0], destination);
+          return 0;
+        }
+    }
+  else
+    sendto_one(sptr,":%s PONG %s :%s", me.name,
+               (destination) ? destination : me.name, origin);
+  return 0;
+}
+
+int     ms_ping(struct Client *cptr,
                struct Client *sptr,
                int parc,
                char *parv[])

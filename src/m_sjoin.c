@@ -20,9 +20,9 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 7.8 2000/01/04 15:56:13 db Exp $
+ *   $Id: m_sjoin.c,v 7.9 2000/07/20 02:42:52 db Exp $
  */
-#include "m_commands.h"
+#include "handlers.h"
 #include "channel.h"
 #include "client.h"
 #include "hash.h"
@@ -38,7 +38,7 @@
 #include <assert.h>
 
 /*
- * m_sjoin
+ * ms_sjoin
  * parv[0] - sender
  * parv[1] - TS
  * parv[2] - channel
@@ -53,7 +53,7 @@
 
 
 
-int     m_sjoin(struct Client *cptr,
+int     ms_sjoin(struct Client *cptr,
                 struct Client *sptr,
                 int parc,
                 char *parv[])

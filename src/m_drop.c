@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_drop.c,v 7.4 2000/01/06 03:19:36 db Exp $
+ * $Id: m_drop.c,v 7.5 2000/07/20 02:42:49 db Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -38,7 +38,7 @@
 /* Only HUB's need drop */
 
 /*
-** m_drop
+** ms_drop
 **      parv[0] = sender prefix
 **      parv[1] = channel
 **      parv[2] = channel password (key)
@@ -46,7 +46,7 @@
 **      "drop" a channel from consideration on a lazy link
 */
 
-int     m_drop(struct Client *cptr,
+int     ms_drop(struct Client *cptr,
                struct Client *sptr,
                int parc,
                char *parv[])

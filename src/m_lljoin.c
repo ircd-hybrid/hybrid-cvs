@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_lljoin.c,v 7.4 2000/01/06 03:19:37 db Exp $
+ * $Id: m_lljoin.c,v 7.5 2000/07/20 02:42:51 db Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -44,7 +44,7 @@
 * the requested client to the given channel, or ignore it
 * if there is an error.
 */
-int     m_lljoin(struct Client *cptr,
+int     ms_lljoin(struct Client *cptr,
                struct Client *sptr,
                int parc,
                char *parv[])

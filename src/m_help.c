@@ -20,12 +20,13 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_help.c,v 7.2 2000/03/31 02:38:29 db Exp $
+ *   $Id: m_help.c,v 7.3 2000/07/20 02:42:49 db Exp $
  */
-#include "m_commands.h"
+#include "handlers.h"
 #include "client.h"
 #include "ircd.h"
 #include "motd.h"
+#include "ircd_handler.h"
 #include "msg.h"
 #include "numeric.h"
 #include "send.h"

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.29 2000/05/25 21:24:22 wnder Exp $
+ *   $Id: send.c,v 7.30 2000/07/20 02:42:54 db Exp $
  */
 #include "send.h"
 #include "channel.h"
@@ -26,7 +26,7 @@
 #include "common.h"
 #include "irc_string.h"
 #include "ircd.h"
-#include "m_commands.h"
+#include "handlers.h"
 #include "numeric.h"
 #include "s_bsd.h"
 #include "s_serv.h"

@@ -20,9 +20,9 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_capab.c,v 7.2 2000/01/02 05:34:59 db Exp $
+ *   $Id: m_capab.c,v 7.3 2000/07/20 02:42:49 db Exp $
  */
-#include "m_commands.h"
+#include "handlers.h"
 #include "client.h"
 #include "irc_string.h"
 #include "s_serv.h"
@@ -88,11 +88,11 @@
  */
 
 /*
- * m_capab - CAPAB message handler
+ * ms_capab - CAPAB message handler
  *      parv[0] = sender prefix
  *      parv[1] = space-separated list of capabilities
  */
-int m_capab(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
+int ms_capab(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 {
   struct Capability *cap;
   char* p;
