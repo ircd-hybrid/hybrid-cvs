@@ -1,3 +1,8 @@
+*** 20001127_5 by db
+- fixed parse.c and modules.c
+
+
+
 *** 20001127_4 by adrian
 
 
@@ -879,7 +884,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.597 2000/11/27 19:29:28 adrian Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.598 2000/11/27 21:38:32 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
