@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.284 2003/06/16 03:07:54 db Exp $
+ *  $Id: s_user.c,v 7.285 2003/06/16 15:16:05 michael Exp $
  */
 
 #include "stdinc.h"
@@ -51,6 +51,10 @@
 #include "memory.h"
 #include "packet.h"
 #include "userhost.h"
+
+
+int MaxClientCount     = 1;
+int MaxConnectionCount = 1;
 
 static int valid_hostname(const char *hostname);
 static int valid_username(const char *username);

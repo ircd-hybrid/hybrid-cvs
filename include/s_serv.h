@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.h,v 7.84 2003/06/12 22:05:52 db Exp $
+ *  $Id: s_serv.h,v 7.85 2003/06/16 15:16:03 michael Exp $
  */
 
 #ifndef INCLUDED_serv_h
@@ -229,9 +229,6 @@ extern struct Capability captab[];
 #ifdef HAVE_LIBCRYPTO
 extern struct EncCapability CipherTable[];
 #endif
-
-extern int MaxClientCount;     /* GLOBAL - highest number of clients     */
-extern int MaxConnectionCount; /* GLOBAL - highest number of connections */
 
 /*
  * return values for hunt_server() 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.349 2003/06/14 13:58:41 michael Exp $
+ *  $Id: s_serv.c,v 7.350 2003/06/16 15:16:05 michael Exp $
  */
 
 #include "stdinc.h"
@@ -63,9 +63,6 @@
 #ifndef INADDR_NONE
 #define INADDR_NONE ((unsigned int)0xffffffff)
 #endif
-
-int MaxConnectionCount = 1;
-int MaxClientCount     = 1;
 
 struct Client *uplink  = NULL;
 

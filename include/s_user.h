@@ -19,36 +19,40 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.h,v 7.31 2003/06/12 22:05:52 db Exp $
+ *  $Id: s_user.h,v 7.32 2003/06/16 15:16:03 michael Exp $
  */
 
 #ifndef INCLUDED_s_user_h
 #define INCLUDED_s_user_h
 
-#define IRC_MAXSID          3
-#define IRC_MAXUID          6
-#define TOTALSIDUID     (IRC_MAXSID+IRC_MAXUID)
+#define IRC_MAXSID  3
+#define IRC_MAXUID  6
+#define TOTALSIDUID (IRC_MAXSID + IRC_MAXUID)
 
 struct Client;
 struct AccessItem;
 
+extern int MaxClientCount;     /* GLOBAL - highest number of clients     */
+extern int MaxConnectionCount; /* GLOBAL - highest number of connections */
+
 extern void set_user_mode(struct Client *, struct Client *, int, char **);
 extern void send_umode(struct Client *, struct Client *,
-		       unsigned int, unsigned int, char *);
+                       unsigned int, unsigned int, char *);
 extern void send_umode_out(struct Client* , struct Client* , unsigned int);
 extern void show_lusers(struct Client *source_p, char *show_mask);
 extern void show_isupport(struct Client *);
 extern void oper_up(struct Client *source_p, struct AccessItem *aconf);
 
 extern int register_local_user(struct Client *, struct Client *,
-			       const char *, const char *);
+                               const char *, const char *);
 extern int register_remote_user(struct Client *, struct Client *,
-				const char *, const char *,
+                                const char *, const char *,
                                 const char *, const char *, const char *);
 extern int do_local_user(const char *, struct Client *, struct Client *,
-			 const char *, const char *, const char *,
-			 const char *);
+                         const char *, const char *, const char *,
+                         const char *);
 extern unsigned int user_modes_from_c_to_bitmask[];
 extern void uid_init(void);
 extern char *uid_get(void);
 #endif
+

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.131 2003/06/03 16:41:52 joshk Exp $
+ *  $Id: s_auth.c,v 7.132 2003/06/16 15:16:04 michael Exp $
  */
 
 /*
@@ -94,8 +94,8 @@ typedef enum {
  * or only on one or the other.
  * - Dianora
  */
-dlink_list auth_doing_dns_list     = {NULL, NULL, 0};
-dlink_list auth_doing_ident_list   = {NULL, NULL, 0};
+static dlink_list auth_doing_dns_list   = {NULL, NULL, 0};
+static dlink_list auth_doing_ident_list = {NULL, NULL, 0};
 
 static EVH timeout_auth_queries_event;
 
