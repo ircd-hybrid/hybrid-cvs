@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.109 2003/07/18 18:10:09 bill Exp $
+ *  $Id: m_whois.c,v 1.110 2003/10/21 01:27:39 bill Exp $
  */
 
 #include "stdinc.h"
@@ -72,7 +72,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-const char *_version = "$Revision: 1.109 $";
+const char *_version = "$Revision: 1.110 $";
 #endif
 
 /*
@@ -478,8 +478,8 @@ ms_whois(struct Client *client_p, struct Client *source_p,
   {
     struct Client *target_p;
     
-    /* check if parv[1] is a client.. (most common) */
-    if ((target_p = find_client(parv[1])) == NULL)
+    /* check if parv[1] is a person.. (most common) */
+    if ((target_p = find_person(parv[1])) == NULL)
     {
       /* ok, parv[1] isnt a client, is it a server? */
       if ((target_p = find_server(parv[1])) == NULL)
@@ -552,12 +552,17 @@ ms_whois(struct Client *client_p, struct Client *source_p,
 	}
       }
 
-      /* its not a lazylink.. forward it as it is */
+      /* its not a lazylink.. forward it, but replace nicks/servernames with IDs where needed */
       else
       {
-        sendto_one(target_p->from, ":%s WHOIS %s :%s", parv[0], parv[1],
-                   parv[2]);
-       return;	       
+        if (IsCapable(target_p->from, CAP_TS6) && HasID(source_p) && HasID(target_p))
+          sendto_one(target_p->from, ":%s WHOIS %s :%s",
+                     source_p->id, target_p->id, parv[2]);
+        else
+          sendto_one(target_p->from, ":%s WHOIS %s :%s",
+                     parv[0], parv[1], parv[2]);
+
+        return;	       
       }
     }
 

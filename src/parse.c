@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.187 2003/10/13 02:15:24 metalrock Exp $
+ *  $Id: parse.c,v 7.188 2003/10/21 01:27:41 bill Exp $
  */
 
 #include "stdinc.h"
@@ -771,7 +771,8 @@ do_numeric(char numeric[], struct Client *client_p, struct Client *source_p,
     ircsprintf(t," :%s", parv[parc-1]);
   }
 
-  if ((target_p = find_person(parv[1])) != NULL)
+  if (((target_p = find_person(parv[1])) != NULL) ||
+      ((target_p = find_server(parv[1])) != NULL))
   {
     if (IsMe(target_p)) 
     {
@@ -817,8 +818,8 @@ do_numeric(char numeric[], struct Client *client_p, struct Client *source_p,
       sendto_one(target_p, ":%s %s %s%s", me.name, numeric, target_p->name, buffer);
     else if (!MyClient(target_p) && IsCapable(target_p->from, CAP_TS6) && HasID(source_p))
       sendto_one(target_p, ":%s %s %s%s", source_p->id, numeric, target_p->id, buffer);
-    else
-      sendto_one(target_p, ":%s %s %s%s", source_p->name, numeric, parv[1], buffer);
+    else /* either it is our client, or a client linked throuh a non-ts6 server. must use names! */
+      sendto_one(target_p, ":%s %s %s%s", source_p->name, numeric, target_p->name, buffer);
     return;
   }
   else if ((chptr = hash_find_channel(parv[1])) != NULL)
