@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 1.85 2001/08/26 18:09:16 davidt Exp $
+ *  $Id: m_stats.c,v 1.86 2001/08/27 00:40:37 androsyn Exp $
  */
 #include "tools.h"	 /* dlink_node/dlink_list */
 #include "handlers.h"    /* m_pass prototype */
@@ -53,7 +53,7 @@
 #include "resv.h"  /* report_resv */
 
 #include <string.h>
-
+#include <time.h>
 static void m_stats(struct Client*, struct Client*, int, char**);
 static void mo_stats(struct Client*, struct Client*, int, char**);
 static void ms_stats(struct Client*, struct Client*, int, char**);
