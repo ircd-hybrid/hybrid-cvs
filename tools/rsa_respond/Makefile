@@ -1,3 +1,5 @@
+# $Id: Makefile,v 1.2 2000/11/06 03:28:12 ryan Exp $
+
 rsa_respond: buffer.c buffer.h rsa_respond.c
 	gcc -O2 -Wall -pedantic -o rsa_respond buffer.c rsa_respond.c -lcrypto
 

@@ -1,3 +1,7 @@
+/*
+ * $Id: buffer.h,v 1.2 2000/11/06 03:28:12 ryan Exp $
+ */
+
 #include <openssl/bn.h>
 
 typedef struct

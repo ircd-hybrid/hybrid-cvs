@@ -1,3 +1,6 @@
+/*
+ * $Id: rsa_respond.c,v 1.2 2000/11/06 03:28:12 ryan Exp $
+ */
 #include "buffer.h"
 #include <openssl/md5.h>
 #include <openssl/rsa.h>

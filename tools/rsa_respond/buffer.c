@@ -1,3 +1,7 @@
+/*
+ * $Id: buffer.c,v 1.2 2000/11/06 03:28:12 ryan Exp $
+ */
+
 #include <openssl/des.h>
 #include <openssl/md5.h>
 #include <sys/types.h>
