@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.104 2001/02/13 08:08:26 db Exp $
+ *  $Id: s_bsd.c,v 7.105 2001/02/20 23:22:49 davidt Exp $
  */
 #include "config.h"
 #include "fdlist.h"
@@ -455,7 +455,7 @@ void error_exit_client(struct Client* cptr, int error)
                current_error, strerror(current_error));
   }
 
-  cptr->flags |= FLAGS_DEADSOCKET;
+  SetDead(cptr); /* mark the socket dead so it doesn't get any error msgs */
   exit_client(cptr, cptr, &me, errmsg);
 }
 

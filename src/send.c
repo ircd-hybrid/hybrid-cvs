@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.126 2001/02/07 07:14:28 db Exp $
+ *   $Id: send.c,v 7.127 2001/02/20 23:22:50 davidt Exp $
  */
 
 #include <sys/types.h>
@@ -107,7 +107,7 @@ dead_link(struct Client *to, char *notice)
 {
   /* XXX is this the =right= thing to do? or anyone have a better idea? */
 
-  to->flags |= FLAGS_DEADSOCKET;
+  SetDead(to);
 
   exit_client(to, to, &me,
               (to->flags & FLAGS_SENDQEX) ?
@@ -121,8 +121,8 @@ dead_link(struct Client *to, char *notice)
   linebuf_donebuf(&to->localClient->buf_sendq);
   if (!IsPerson(to) && !IsUnknown(to) && !(to->flags & FLAGS_CLOSING))
     sendto_realops_flags(FLAGS_ALL,
-			 notice, get_client_name(to, HIDE_IP));
-  
+                         notice, get_client_name(to, HIDE_IP));
+
   Debug((DEBUG_ERROR, notice, get_client_name(to, HIDE_IP)));
 
   return (-1);
