@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.42 2000/11/11 14:53:26 ejb Exp $
+ *   $Id: send.c,v 7.43 2000/11/16 21:50:37 davidt Exp $
  */
 #include "send.h"
 #include "channel.h"
@@ -371,10 +371,10 @@ sendto_channel_type(struct Client *one, struct Client *from, struct Channel *chp
 
   ++current_serial;
 
-  if(type&MODE_CHANOP)
-    char_type = '@';
-  else
+  if(type&MODE_VOICE)
     char_type = '+';
+  else
+    char_type = '@';
 
   for (lp = chptr->members; lp; lp = lp->next)
     {

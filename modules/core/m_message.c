@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.1 2000/11/15 05:34:01 db Exp $
+ *   $Id: m_message.c,v 1.2 2000/11/16 21:50:32 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -284,15 +284,16 @@ int build_target_list(int p_or_n,
       if(type)
 	{
 	  /* Strip if using DALnet chanop/voice prefix. */
-	  if (*(nick+1) == '@' || *(nick+1) == '+')
-	    {
-	      nick++;
-	      *nick = '@';
-	      type = MODE_CHANOP|MODE_VOICE;
-	    }
+	  if ((*(nick+1) == '@' && (type & MODE_VOICE)) ||
+              *(nick+1) == '+' && !(type & MODE_VOICE))
+            {
+              nick++;
+              *nick = '+';
+              type = MODE_CHANOP|MODE_VOICE;
+            }
 
 	  /* suggested by Mortiis */
-	  if(!*nick)        /* if its a '\0' dump it, there is no recipient */
+	  if(!*(nick+1))   /* if its a '\0' dump it, there is no recipient */
 	    {
 	      sendto_one(sptr, form_str(ERR_NORECIPIENT),
 			 me.name, sptr->name, command);
