@@ -1,3 +1,10 @@
+*** 20001129_8 by db
+- pile of cleanups mostly in comments
+- added persistent channels tentatively for now, finesse it later
+- redid s_user.c code to clean that up
+
+
+
 *** 20001129_7 by davidt
 Directory /cvsroot/ircd-hybrid-7/messages added to the repository
 
@@ -1049,7 +1056,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.622 2000/11/29 22:15:51 davidt Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.623 2000/11/29 23:35:33 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
