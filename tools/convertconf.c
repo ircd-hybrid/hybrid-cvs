@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: convertconf.c,v 1.6 2000/01/11 22:55:47 db Exp $
+ * $Id: convertconf.c,v 1.7 2000/01/12 01:31:11 db Exp $
  */
 
 #include <stdio.h>
@@ -558,19 +558,19 @@ static void oldParseOneLine(FILE *out,char* line)
 	{
 	  int ping_time;
 	  ping_time = atoi(passwd_field);
-	  fprintf(out,"\t\tping_time=\"%d\";\n", ping_time );
+	  fprintf(out,"\t\tping_time=%d;\n", ping_time );
 	}
       if(user_field)
 	{
 	  int number_per_ip;
 	  number_per_ip = atoi(user_field);
-	  fprintf(out,"\t\tnumber_per_ip=\"%d\";\n", number_per_ip );
+	  fprintf(out,"\t\tnumber_per_ip=%d;\n", number_per_ip );
 	}
       if(port_field)
 	{
 	  int max_number;
 	  max_number = atoi(port_field);
-	  fprintf(out,"\t\tmax_number=\"%d\";\n", max_number );
+	  fprintf(out,"\t\tmax_number=%d;\n", max_number );
 	}
       if(class_field)
 	sendq = atoi(class_field);
