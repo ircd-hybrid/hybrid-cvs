@@ -1,7 +1,7 @@
 /*
  * viconf.c
  *
- * $Id: viconf.c,v 7.0 1999/08/01 21:19:57 lusky Exp $
+ * $Id: viconf.c,v 7.1 2000/10/30 02:09:40 db Exp $
  */
 #include <stdio.h>
 #include <unistd.h>
@@ -37,7 +37,7 @@ static char lockpath[PATH_MAX + 1];
 
 int main(int argc, char *argv[])
 {
-  char *ed, *p, *filename = MPATH;
+  char *ed, *p, *filename = CPATH;
 
   if( chdir(DPATH) < 0 )
     {
@@ -53,6 +53,9 @@ int main(int argc, char *argv[])
   if(strcmp(p, "viklines") == 0)
     filename = KPATH;
 #endif /* KPATH */
+
+  if(strcmp(p, "vimotd") == 0)
+    filename = MPATH;
 
   if(LockedFile(filename))
     {
