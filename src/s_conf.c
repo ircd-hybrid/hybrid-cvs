@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.406 2003/05/25 04:41:10 michael Exp $
+ *  $Id: s_conf.c,v 7.407 2003/05/26 04:55:54 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -1717,17 +1717,21 @@ static const struct oper_privs
   unsigned int oflag;
   unsigned char pos;
   unsigned char neg;
-} flag_list[] = {
+}
+
+flag_list[] =
+{
+  { OPER_FLAG_ADMIN,       'A', 'a' },
+  { OPER_FLAG_DIE,         'D', 'd' },
+  { OPER_FLAG_GLINE,       'G', 'g' },
+  { OPER_FLAG_REHASH,      'H', 'h' },
+  { OPER_FLAG_K,           'K', 'k' },
+  { OPER_FLAG_N,           'N', 'n' },
   { OPER_FLAG_GLOBAL_KILL, 'O', 'o' },
   { OPER_FLAG_REMOTE,      'R', 'r' },
   { OPER_FLAG_UNKLINE,     'U', 'u' },
-  { OPER_FLAG_GLINE,       'G', 'g' },
-  { OPER_FLAG_N,           'N', 'n' },
-  { OPER_FLAG_K,           'K', 'k' },
   { OPER_FLAG_X,           'X', 'x' },
-  { OPER_FLAG_DIE,         'D', 'd' },
-  { OPER_FLAG_REHASH,      'H', 'h' },
-  { OPER_FLAG_ADMIN,       'A', 'a' }
+  { 0, '\0', '\0' }
 };
 
 char *
