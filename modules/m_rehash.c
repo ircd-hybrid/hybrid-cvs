@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_rehash.c,v 1.28 2001/08/03 13:10:28 leeh Exp $
+ *   $Id: m_rehash.c,v 1.29 2001/09/12 05:42:56 habeeb Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -81,8 +81,6 @@ static void mo_rehash(struct Client *client_p, struct Client *source_p,
     {
       if (irccmp(parv[1],"CHANNELS") == 0)
         {
-          eventDelete(cleanup_channels, NULL);
-          eventAdd("cleanup_channels", cleanup_channels, NULL, 1, 0);
           sendto_realops_flags(FLAGS_ALL, L_ALL,
                        "%s is forcing cleanup of channels",parv[0]);
           found = YES;

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_server.c,v 1.69 2001/09/04 16:53:50 leeh Exp $
+ *   $Id: m_server.c,v 1.70 2001/09/12 05:42:56 habeeb Exp $
  */
 #include "tools.h"
 #include "handlers.h"  /* m_server prototype */
@@ -506,12 +506,6 @@ static void ms_server(struct Client *client_p, struct Client *source_p,
                        "Server %s being introduced by %s",
 		       target_p->name, source_p->name);
 
-  if (!refresh_user_links)
-    {
-      refresh_user_links = 1;
-      eventAdd("write_links_file", write_links_file, NULL,
-	ConfigServerHide.links_delay, 0);
-    }
 }
 
 /* set_server_gecos()
