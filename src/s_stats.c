@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_stats.c,v 7.10 2000/12/21 13:39:53 db Exp $
+ *  $Id: s_stats.c,v 7.11 2001/01/04 20:36:53 a1kmm Exp $
  */
 #include "s_stats.h"
 #include "client.h"
@@ -130,13 +130,13 @@ void tstats(struct Client *sptr)
              me.name, RPL_STATSDEBUG, sptr->name);
   sendto_one(sptr, ":%s %d %s :connected %u %u",
              me.name, RPL_STATSDEBUG, sptr->name, sp->is_cl, sp->is_sv);
-  sendto_one(sptr, ":%s %d %s :bytes sent %u.%uK %u.%uK",
+  sendto_one(sptr, ":%s %d %s :bytes sent %lu.%uK %lu.%uK",
              me.name, RPL_STATSDEBUG, sptr->name,
              sp->is_cks, sp->is_cbs, sp->is_sks, sp->is_sbs);
-  sendto_one(sptr, ":%s %d %s :bytes recv %u.%uK %u.%uK",
+  sendto_one(sptr, ":%s %d %s :bytes recv %lu.%uK %lu.%uK",
              me.name, RPL_STATSDEBUG, sptr->name,
              sp->is_ckr, sp->is_cbr, sp->is_skr, sp->is_sbr);
-  sendto_one(sptr, ":%s %d %s :time connected %u %u",
+  sendto_one(sptr, ":%s %d %s :time connected %lu %lu",
              me.name, RPL_STATSDEBUG, sptr->name, sp->is_cti, sp->is_sti);
 }
 

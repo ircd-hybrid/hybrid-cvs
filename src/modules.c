@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.c,v 7.40 2001/01/04 16:10:29 davidt Exp $
+ * $Id: modules.c,v 7.41 2001/01/04 20:36:52 a1kmm Exp $
  */
 
 #include <dlfcn.h>
@@ -314,8 +314,8 @@ load_a_module (char *path)
 
   initfunc ();
 
-  sendto_realops_flags (FLAGS_ALL, "Module %s [version: %s] loaded at 0x%x",
-                        mod_basename, ver, tmpptr);
+  sendto_realops_flags (FLAGS_ALL, "Module %s [version: %s] loaded at 0x%lx",
+                        mod_basename, ver, (unsigned long)tmpptr);
   log (L_WARN, "Module %s [version: %s] loaded at 0x%x",
        mod_basename, ver, tmpptr);
   MyFree (mod_basename);

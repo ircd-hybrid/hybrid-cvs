@@ -3,7 +3,7 @@
  *   Copyright (C) 1990 Jarkko Oikarinen and
  *                      University of Oulu, Co Center
  *
- * $Id: m_list.c,v 1.22 2001/01/04 16:10:19 davidt Exp $ 
+ * $Id: m_list.c,v 1.23 2001/01/04 20:36:49 a1kmm Exp $ 
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -43,6 +43,8 @@
 static int m_list(struct Client*, struct Client*, int, char**);
 static int ms_list(struct Client*, struct Client*, int, char**);
 static int mo_list(struct Client*, struct Client*, int, char**);
+static int list_all_channels(struct Client *);
+static void list_one_channel(struct Client *,struct Channel *);
 
 struct Message list_msgtab = {
   MSG_LIST, 0, 0, 0, MFLG_SLOW, 0,

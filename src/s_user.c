@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.97 2001/01/04 20:03:03 db Exp $
+ *  $Id: s_user.c,v 7.98 2001/01/04 20:36:54 a1kmm Exp $
  */
 #include "tools.h"
 #include "s_user.h"
@@ -196,7 +196,7 @@ void show_opers(struct Client *cptr)
 	  ptr = cptr2->localClient->confs.head;
 	  aconf = ptr->data;
 
-          sendto_one(cptr, ":%s %d %s :[%c][%s] %s (%s@%s) Idle: %d",
+          sendto_one(cptr, ":%s %d %s :[%c][%s] %s (%s@%s) Idle: %lu",
                      me.name, RPL_STATSDEBUG, cptr->name,
                      IsOper(cptr2) ? 'O' : 'o',
 		     oper_privs_as_string(cptr2, aconf->port),
@@ -206,7 +206,7 @@ void show_opers(struct Client *cptr)
         }
       else
         {
-          sendto_one(cptr, ":%s %d %s :[%c] %s (%s@%s) Idle: %d",
+          sendto_one(cptr, ":%s %d %s :[%c] %s (%s@%s) Idle: %lu",
                      me.name, RPL_STATSDEBUG, cptr->name,
                      IsOper(cptr2) ? 'O' : 'o',
                      cptr2->name,

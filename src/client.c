@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.96 2001/01/04 12:19:14 ejb Exp $
+ *  $Id: client.c,v 7.97 2001/01/04 20:36:50 a1kmm Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -1430,7 +1430,7 @@ const char* comment         /* Reason for the exit */
       if (sptr->servptr == &me)
         {
           sendto_realops_flags(FLAGS_ALL,
-		       "%s was connected for %d seconds.  %d/%d sendK/recvK.",
+		       "%s was connected for %lu seconds.  %d/%d sendK/recvK.",
 			       sptr->name,CurrentTime - sptr->firsttime,
 			       sptr->localClient->sendK,
 			       sptr->localClient->receiveK);

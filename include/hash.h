@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: hash.h,v 7.5 2001/01/04 11:31:55 ejb Exp $
+ *   $Id: hash.h,v 7.6 2001/01/04 20:36:43 a1kmm Exp $
  */
 #ifndef INCLUDED_hash_h
 #define INCLUDED_hash_h
@@ -48,7 +48,7 @@ struct HashEntry {
   void*  list;
 };
 
-struct Client *hash_find_id(char *name, struct Client *cptr);
+struct Client *hash_find_id(const char *name, struct Client *cptr);
 extern int add_to_id_hash_table(char *, struct Client *);
 extern struct HashEntry hash_get_channel_block(int i);
 extern size_t hash_get_client_table_size(void);

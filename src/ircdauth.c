@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: ircdauth.c,v 7.28 2001/01/03 22:21:24 davidt Exp $
+ *   $Id: ircdauth.c,v 7.29 2001/01/04 20:36:51 a1kmm Exp $
  */
 
 #include <stdio.h>
@@ -579,7 +579,7 @@ GreetUser(struct Client *client)
   client->user->last = CurrentTime;
 
   sendto_realops_flags(FLAGS_CCONN,
-		       "Client connecting: %s (%s@%s) [%s] {%d}",
+		       "Client connecting: %s (%s@%s) [%s] {%s}",
 		       client->name,
 		       client->username,
 		       client->host,

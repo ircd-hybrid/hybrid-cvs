@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_gline.c,v 1.34 2001/01/04 20:02:57 db Exp $
+ *  $Id: m_gline.c,v 1.35 2001/01/04 20:36:48 a1kmm Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -495,9 +495,8 @@ log_gline_request(
              ConfigFileEntry.glinefile, small_file_date((time_t)0));
   if ( (out = fbopen(filenamebuf, "+a")) == NULL )
     {
-      sendto_realops_flags(FLAGS_ALL,"*** Problem opening %s error %s",
-			   filenamebuf,
-			   strerror(errno));
+      sendto_realops_flags(FLAGS_ALL,"*** Problem opening %s: %s",
+                     filenamebuf, strerror(errno));
       return;
     }
 

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: hash.c,v 7.15 2001/01/04 11:32:03 ejb Exp $
+ *  $Id: hash.c,v 7.16 2001/01/04 20:36:51 a1kmm Exp $
  */
 #include "tools.h"
 #include "s_conf.h"
@@ -133,7 +133,7 @@ int hash_nick_name(const char* name)
  * and they are always case sensitive.   -orabidoo
  */
 static  unsigned int 
-hash_id(char *nname)
+hash_id(const char *nname)
 {
 	unsigned int h = 0;
 	
@@ -360,7 +360,7 @@ void del_from_channel_hash_table(const char* name, struct Channel* chptr)
  * hash_find_id
  */
 struct Client *
-hash_find_id(char *name, struct Client *cptr)
+hash_find_id(const char *name, struct Client *cptr)
 {
 	struct Client *tmp;
 	unsigned int   hashv;

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.99 2001/01/03 22:21:26 davidt Exp $
+ *   $Id: send.c,v 7.100 2001/01/04 20:36:54 a1kmm Exp $
  */
 #include "tools.h"
 #include "send.h"
@@ -162,7 +162,7 @@ send_message(struct Client *to, char *msg, int len)
     {
       if (IsServer(to))
         sendto_realops_flags(FLAGS_ALL,
-			     "Max SendQ limit exceeded for %s: %d > %d",
+			     "Max SendQ limit exceeded for %s: %u > %lu",
 			     get_client_name(to, FALSE),
           linebuf_len(&to->localClient->buf_sendq), get_sendq(to));
       if (IsClient(to))
@@ -255,7 +255,7 @@ send_message_remote(struct Client *to, struct Client *from,
     {
       if (IsServer(to))
         sendto_realops_flags(FLAGS_ALL,
-			     "Max SendQ limit exceeded for %s: %d > %d",
+			     "Max SendQ limit exceeded for %s: %u > %lu",
 			     get_client_name(to, FALSE),
           linebuf_len(&to->localClient->buf_sendq), get_sendq(to));
       if (IsClient(to))

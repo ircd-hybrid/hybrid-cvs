@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu, Computing Center and Jarkko Oikarinen
  *
- * $Id: list.c,v 7.19 2000/12/22 15:51:34 db Exp $
+ * $Id: list.c,v 7.20 2001/01/04 20:36:52 a1kmm Exp $
  */
 #include "tools.h"
 #include "blalloc.h"
@@ -176,18 +176,18 @@ void _free_user(struct User* user, struct Client* cptr)
       if (user->joined || user->refcnt < 0 ||
           user->invited.head || user->channel.head)
       sendto_realops_flags(FLAGS_ALL,
-			   "* %#x user (%s!%s@%s) %#x %#x %#x %d %d *",
-			   cptr, cptr ? cptr->name : "<noname>",
-			   cptr->username, cptr->host, user,
-			   user->invited.head, user->channel.head,
-			   user->joined,
+			   "* %#lx user (%s!%s@%s) %#lx %#lx %#lx %d %d *",
+			   (unsigned long)cptr, cptr ? cptr->name : "<noname>",
+			   cptr->username, cptr->host, (unsigned long)user,
+			   (unsigned long)user->invited.head,
+			   (unsigned long)user->channel.head, user->joined,
 			   user->refcnt);
 
       if(BlockHeapFree(free_anUsers,user))
         {
           sendto_realops_flags(FLAGS_ALL,
 	       "list.c couldn't BlockHeapFree(free_anUsers,user) user = %lX",
-			       user );
+			       (unsigned long)user );
           sendto_realops_flags(FLAGS_ALL,
        "Please report to the hybrid team! ircd-hybrid@the-project.org");
 
@@ -235,7 +235,7 @@ void _free_dlink_node(dlink_node *ptr)
     {
       sendto_realops_flags(FLAGS_ALL,
 	   "list.c couldn't BlockHeapFree(free_dlink_nodes,ptr) ptr = %lX",
-			   ptr );
+			   (unsigned long)ptr );
     }
 }
 
