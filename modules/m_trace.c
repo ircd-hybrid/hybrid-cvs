@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_trace.c,v 1.27 2001/05/27 02:33:24 leeh Exp $
+ *   $Id: m_trace.c,v 1.28 2001/07/16 20:06:06 leeh Exp $
  */
 #include "handlers.h"
 #include "class.h"
@@ -309,12 +309,16 @@ static int report_this_status(struct Client *source_p, struct Client *target_p,
     {
     case STAT_CONNECTING:
       sendto_one(source_p, form_str(RPL_TRACECONNECTING), me.name,
-		 source_p->name, class_name, name);
+                 source_p->name, class_name, 
+		 IsSetOperAdmin(source_p) ? name : target_p->name);
+		   
       cnt++;
       break;
     case STAT_HANDSHAKE:
       sendto_one(source_p, form_str(RPL_TRACEHANDSHAKE), me.name,
-		 source_p->name, class_name, name);
+                 source_p->name, class_name, 
+                 IsSetOperAdmin(source_p) ? name : target_p->name);
+		   
       cnt++;
       break;
     case STAT_ME:

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: listener.c,v 7.52 2001/07/16 19:39:47 leeh Exp $
+ *  $Id: listener.c,v 7.53 2001/07/16 20:06:12 leeh Exp $
  */
 #include "config.h"
 #include "listener.h"
@@ -124,7 +124,7 @@ void show_ports(struct Client* source_p)
                  source_p->name,
                  'P',
                  listener->port,
-                 IsAdmin(source_p) ? listener->name : me.name,
+                 IsSetOperAdmin(source_p) ? listener->name : me.name,
                  listener->ref_count,
                  (listener->active)?"active":"disabled");
     }

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 1.79 2001/07/04 13:28:13 leeh Exp $
+ *  $Id: m_stats.c,v 1.80 2001/07/16 20:06:06 leeh Exp $
  */
 #include "tools.h"	 /* dlink_node/dlink_list */
 #include "handlers.h"    /* m_pass prototype */
@@ -578,7 +578,9 @@ static void stats_L_list(struct Client *source_p,char *name, int doall, int wild
       /* This basically shows ips for our opers if its not a server/admin, or
        * its one of our admins.  */
       if(MyClient(source_p) && IsOper(source_p) && 
-        (IsSetOperAdmin(source_p) || (!IsServer(target_p) && !IsAdmin(target_p))))
+        (IsSetOperAdmin(source_p) || 
+	(!IsServer(target_p) && !IsAdmin(target_p) && 
+	 !IsHandshake(target_p) && !IsConnecting(target_p))))
 	{
 	  sendto_one(source_p, Lformat, me.name,
                      RPL_STATSLINKINFO, source_p->name,
@@ -597,7 +599,8 @@ static void stats_L_list(struct Client *source_p,char *name, int doall, int wild
       else
 	{
           /* If its a hidden ip, an admin, or a server, mask the real IP */
-	  if(IsIPHidden(target_p) || IsServer(target_p) || IsAdmin(target_p))
+	  if(IsIPHidden(target_p) || IsServer(target_p) || IsAdmin(target_p)
+	     || IsHandshake(target_p) || IsConnecting(target_p))
 	    sendto_one(source_p, Lformat, me.name,
 		       RPL_STATSLINKINFO, source_p->name,
 		       get_client_name(target_p, MASK_IP),
