@@ -1,3 +1,15 @@
+db          2002/09/03 17:30:52 EDT	(20020903_5)
+
+  Modified files:
+    contrib              m_whois.c 
+  Log:
+  - As pointed out by Lee, fix server hide
+  
+  Revision  Changes    Path
+  1.4       +2 -2      ircd-hybrid-7/contrib/m_whois.c
+
+
+
 db          2002/09/03 13:15:44 EDT	(20020903_4)
 
   Modified files:
@@ -31728,4 +31740,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4014 2002/09/03 17:15:47 db Exp $
+$Id: ChangeLog,v 7.4015 2002/09/03 21:30:54 db Exp $
