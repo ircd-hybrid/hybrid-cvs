@@ -1,3 +1,19 @@
+db          2002/08/20 01:49:55 EDT	(20020820_2)
+
+  Modified files:
+    include              s_conf.h 
+    src                  client.c s_conf.c 
+  Log:
+  - ip_hash() has to know whether its IPV4 or IPV6 form of ip
+    so this has to be passed all the way down.
+  
+  Revision  Changes    Path
+  7.183     +1 -1      ircd-hybrid-7/include/s_conf.h
+  7.296     +2 -1      ircd-hybrid-7/src/client.c
+  7.319     +12 -11    ircd-hybrid-7/src/s_conf.c
+
+
+
 db          2002/08/19 21:32:19 EDT	(20020820_1)
 
   Modified files:
@@ -31340,4 +31356,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3987 2002/08/20 01:32:22 db Exp $
+$Id: ChangeLog,v 7.3988 2002/08/20 05:49:58 db Exp $
