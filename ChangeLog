@@ -1,3 +1,21 @@
+bill        2002/09/19 12:14:34 EDT	(20020919_2)
+
+  Modified files:
+    .                    INSTALL 
+    contrib              m_opme.c 
+    modules              m_connect.c 
+  Log:
+  - added fbsd note to ipv6 install notes
+  - made OPME send LOCOPS rather than WALLOPS for &channels
+  - fixed potential leak of hub IP
+  
+  Revision  Changes    Path
+  7.31      +4 -1      ircd-hybrid-7/INSTALL
+  1.28      +37 -17    ircd-hybrid-7/contrib/m_opme.c
+  1.38      +3 -1      ircd-hybrid-7/modules/m_connect.c
+
+
+
 bill        2002/09/19 00:22:57 EDT	(20020919_1)
 
   Modified files:
@@ -32090,4 +32108,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4038 2002/09/19 04:23:00 bill Exp $
+$Id: ChangeLog,v 7.4039 2002/09/19 16:14:37 bill Exp $
