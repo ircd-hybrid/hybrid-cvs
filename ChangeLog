@@ -1,3 +1,10 @@
+*** 20001201_4 by db
+- massive commit, this removes ALL SLink's ick
+  NOTE that not everything is working yet, notably server link..
+  but this doesn't core right away. ;) and appears to run.
+
+
+
 *** 20001201_3 by davidt
 fixed gettext support a bit, and added some docs
 
@@ -1255,7 +1262,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.650 2000/12/01 18:16:12 davidt Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.651 2000/12/01 22:17:54 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
