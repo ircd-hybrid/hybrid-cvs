@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kline.c,v 1.65 2001/03/11 10:21:42 fl_ Exp $
+ *   $Id: m_kline.c,v 1.66 2001/03/13 20:38:22 fl_ Exp $
  */
 #include "tools.h"
 #include "m_kline.h"
@@ -208,7 +208,7 @@ static void mo_kline(struct Client *client_p,
           ":%s NOTICE %s :Please include at least %d non-wildcard characters with the user@host",
            me.name,
            source_p->name,
-           NONWILDCHARS);
+           ConfigFileEntry.min_nonwildcard);
        return;
     }
 
@@ -929,12 +929,12 @@ static int valid_wild_card(char *luser, char *lhost)
        * If we find enough non-wild characters, we can
        * break - no point in searching further.
        */
-      if (++nonwild >= NONWILDCHARS)
+      if (++nonwild >= ConfigFileEntry.min_nonwildcard)
         break;
     }
   }
 
-  if (nonwild < NONWILDCHARS)
+  if (nonwild < ConfigFileEntry.min_nonwildcard)
   {
     /*
      * The user portion did not contain enough non-wild
@@ -944,12 +944,12 @@ static int valid_wild_card(char *luser, char *lhost)
     while ((tmpch = *p++))
     {
       if (!IsKWildChar(tmpch))
-        if (++nonwild >= NONWILDCHARS)
+        if (++nonwild >= ConfigFileEntry.min_nonwildcard)
           break;
     }
   }
 
-  if (nonwild < NONWILDCHARS)
+  if (nonwild < ConfigFileEntry.min_nonwildcard)
     return 1;
   else
     return 0;
