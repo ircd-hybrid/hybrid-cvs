@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_version.c,v 1.25 2001/05/15 09:38:06 toot Exp $
+ *   $Id: m_version.c,v 1.26 2001/05/15 10:06:23 toot Exp $
  */
 #include <string.h>
 #include "handlers.h"
@@ -108,16 +108,20 @@ static void ms_version(struct Client* client_p, struct Client* source_p,
      {
        if (hunt_server(client_p, source_p, ":%s VERSION :%s", 
                        1, parc, parv) == HUNTED_ISME)
-         sendto_one(source_p, form_str(RPL_VERSION), me.name,
-                    parv[0], version, serno, debugmode,
-                    me.name, confopts(source_p), serveropts);
+         {
+           sendto_one(source_p, form_str(RPL_VERSION), me.name,
+                      parv[0], version, serno, debugmode,
+                      me.name, confopts(source_p), serveropts);
+           show_isupport(source_p);
+         }
      }
    else
-     sendto_one(source_p, form_str(RPL_VERSION), me.name,
-                parv[0], version, serno, debugmode,
-                me.name, confopts(source_p), serveropts);
-
-  show_isupport(source_p);
+     {
+       sendto_one(source_p, form_str(RPL_VERSION), me.name,
+                  parv[0], version, serno, debugmode,
+                  me.name, confopts(source_p), serveropts);
+       show_isupport(source_p);
+     }
 
   return;
 }
