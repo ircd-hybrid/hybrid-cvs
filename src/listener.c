@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: listener.c,v 7.17 2000/12/30 06:03:41 lusky Exp $
+ *  $Id: listener.c,v 7.18 2001/01/09 00:34:03 db Exp $
  */
 #include "listener.h"
 #include "client.h"
@@ -399,9 +399,6 @@ static void accept_connection(int pfd, void *data)
      */
     if (!conf_connect_allowed(addr.sin_addr)) {
       ServerStats->is_ref++;
-#ifdef REPORT_DLINE_TO_USER
-       send(fd, "NOTICE DLINE :*** You have been D-lined\r\n", 41, 0);
-#endif
       fd_close(fd);
       break;
     }
