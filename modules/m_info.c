@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.c,v 1.33 2001/05/29 16:15:05 jdc Exp $
+ * $Id: m_info.c,v 1.34 2001/05/29 16:25:18 jdc Exp $
  */
 #include "tools.h"
 #include "m_info.h"
@@ -492,12 +492,16 @@ static void send_conf_options(struct Client *source_p)
   ** in order for it to show up properly to opers who issue INFO
   */
 
-  sendto_one(source_p,
-	     ":%s %d %s :Compiled on [%s]",
-	     me.name, 
-	     RPL_INFO,
-	     source_p->name,
-	     platform); 
+  /* jdc -- Only send compile information to admins. */
+  if (IsSetOperAdmin(source_p))
+  {
+    sendto_one(source_p,
+	":%s %d %s :Compiled on [%s]",
+	me.name, 
+	RPL_INFO,
+	source_p->name,
+	platform); 
+  }
 
   sendto_one(source_p, form_str(RPL_INFO), me.name, source_p->name, "");
 }
