@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.10 1999/09/08 06:30:54 tomh Exp $
+ *   $Id: send.c,v 7.11 1999/09/11 04:54:15 tomh Exp $
  */
 #include "send.h"
 #include "channel.h"
@@ -292,7 +292,7 @@ send_message(struct Client *to, char *msg, int len)
 int send_queued(struct Client *to)
 {
   const char* msg;
-  size_t      len;
+  int      len;
   int         rlen;
   int         more = 0;
   /*
