@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_who.c,v 1.42 2001/10/21 15:40:50 davidt Exp $
+ *   $Id: m_who.c,v 1.43 2001/10/24 06:19:44 db Exp $
  */
 #include "tools.h"
 #include "common.h"   /* bleah */
@@ -167,8 +167,8 @@ static void m_who(struct Client *client_p,
       /*
        * List all users on a given channel
        */
-      chptr = hash_find_channel(mask, NULL);
-      if (chptr)
+      chptr = hash_find_channel(mask);
+      if (chptr != NULL)
 	{
 	  if (HasVchans(chptr))
 	    {

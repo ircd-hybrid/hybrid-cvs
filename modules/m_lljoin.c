@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_lljoin.c,v 1.48 2001/10/21 15:40:50 davidt Exp $
+ * $Id: m_lljoin.c,v 1.49 2001/10/24 06:19:44 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -143,7 +143,7 @@ static void ms_lljoin(struct Client *client_p,
   if( !MyClient(target_p) )
     return;
 
-  chptr = hash_find_channel(chname, NULL);
+  chptr = hash_find_channel(chname);
 
   if (cjoin)
   {
@@ -170,7 +170,7 @@ static void ms_lljoin(struct Client *client_p,
     }
     else
     {
-      chptr = vchan_chptr = get_channel( target_p, chname, CREATE );
+      chptr = vchan_chptr = get_or_create_channel(target_p, chname, NULL);
       flags = CHFL_CHANOP;
     }
     

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_drop.c,v 1.18 2001/10/02 16:36:14 db Exp $
+ * $Id: m_drop.c,v 1.19 2001/10/24 06:19:44 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -85,7 +85,7 @@ static void ms_drop(struct Client *client_p,
   sendto_realops(FLAGS_ALL, "DROP called by %s for %s", client_p->name, name );
 #endif
 
-  if(!(chptr=hash_find_channel(name, NULL)))
+  if((chptr=hash_find_channel(name)) == NULL)
     return;
 
   if(client_p->localClient->serverMask) /* JIC */

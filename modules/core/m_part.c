@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_part.c,v 1.46 2001/09/23 02:26:03 a1kmm Exp $
+ *   $Id: m_part.c,v 1.47 2001/10/24 06:19:44 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -130,8 +130,7 @@ static void part_one_client(struct Client *client_p,
   struct Channel *chptr;
   struct Channel *bchan;
 
-  chptr = get_channel(source_p, name, 0);
-  if (!chptr)
+  if ((chptr = hash_find_channel(name)) == NULL)
     {
       sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
 		 me.name, source_p->name, name);

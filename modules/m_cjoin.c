@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_cjoin.c,v 1.42 2001/10/21 15:40:50 davidt Exp $
+ *   $Id: m_cjoin.c,v 1.43 2001/10/24 06:19:44 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -139,7 +139,7 @@ static void m_cjoin(struct Client *client_p,
 
   (void)strncpy(jbuf, name, sizeof(jbuf) - 1);
 
-  if( (chptr = hash_find_channel(name, NULL)) == NULL )
+  if ((chptr = hash_find_channel(name)) == NULL)
     {
       /* if chptr isn't found locally, it =could= exist
        * on the uplink. So ask.

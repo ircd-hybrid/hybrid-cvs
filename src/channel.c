@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.278 2001/10/21 15:40:48 davidt Exp $
+ * $Id: channel.c,v 7.279 2001/10/24 06:19:44 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -415,7 +415,7 @@ send_mode_list(struct Client *client_p,
 int
 check_channel_name(const char *name)
 {
-  assert(0 != name);
+  assert(name != NULL);
 
   for (; *name; ++name)
   {
@@ -425,67 +425,6 @@ check_channel_name(const char *name)
 
   return 1;
 }
-
-/*
- * get_channel
- * inputs       - client pointer
- *              - channel name
- *              - flag == CREATE if non existent
- * output       - returns channel block
- *
- *  Get Channel block for chname (and allocate a new channel
- *  block, if it didn't exist before).
- */
-struct Channel *
-get_channel(struct Client *client_p, char *chname, int flag)
-{
-  struct Channel *chptr;
-  int len;
-
-  if (BadPtr(chname))
-    return NULL;
-
-  len = strlen(chname);
-  if (len > CHANNELLEN)
-  {
-    if (IsServer(client_p))
-    {
-      sendto_realops_flags(FLAGS_DEBUG, L_ALL,
-                           "*** Long channel name from %s (%d > %d): %s",
-                           client_p->name,
-                           len,
-                           CHANNELLEN,
-                           chname);
-    }
-    len = CHANNELLEN;
-    *(chname + CHANNELLEN) = '\0';
-  }
-
-  if ((chptr = hash_find_channel(chname, NULL)))
-    return (chptr);
-
-  if (flag == CREATE)
-  {
-    chptr = BlockHeapAlloc(channel_heap);
-    memset(chptr, 0, sizeof(*chptr)-CHANNELLEN);
-    /*
-     * NOTE: strcpy ok here, we have allocated strlen + 1
-     */
-    strcpy(chptr->chname, chname);
-
-    if (GlobalChannelList)
-      GlobalChannelList->prevch = chptr;
-
-    chptr->prevch = NULL;
-    chptr->nextch = GlobalChannelList;
-    GlobalChannelList = chptr;
-    chptr->channelts = CurrentTime;     /* doesn't hurt to set it here */
-    add_to_channel_hash_table(chname, chptr);
-    Count.chan++;
-  }
-  return chptr;
-}
-
 
 /*
 **  Subtract one user from channel (and free channel

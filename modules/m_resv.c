@@ -2,7 +2,7 @@
  * modules/m_resv.c
  * Copyright (C) 2001 Hybrid Development Team
  *
- * $Id: m_resv.c,v 1.9 2001/08/03 13:10:28 leeh Exp $
+ * $Id: m_resv.c,v 1.10 2001/10/24 06:19:44 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -136,7 +136,7 @@ static void mo_unresv(struct Client *client_p, struct Client *source_p,
     struct ResvChannel *resv_p;
     
     if(!ResvChannelList || 
-    !(resv_p = (struct ResvChannel *)hash_find_resv(parv[1], (struct ResvChannel *)NULL)))
+       !(resv_p = (struct ResvChannel *)hash_find_resv(parv[1])))
     {
       sendto_one(source_p, 
                  ":%s NOTICE %s :A RESV does not exist for channel: %s",

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.112 2001/09/29 23:05:20 a1kmm Exp $
+ *   $Id: parse.c,v 7.113 2001/10/24 06:19:44 db Exp $
  */
 
 #include <assert.h>
@@ -701,49 +701,51 @@ static void do_numeric(char numeric[],
   ** Note: if buffer is non-empty, it will begin with SPACE.
   */
   if (parc > 1)
+  {
+    char *t = buffer; /* Current position within the buffer */
+    int i;
+    int   tl;	/* current length of presently being built string in t */
+    for (i = 2; i < (parc - 1); i++)
     {
-      char *t = buffer; /* Current position within the buffer */
-      int i;
-      int   tl;	/* current length of presently being built string in t */
-      for (i = 2; i < (parc - 1); i++)
-        {
-          tl = ircsprintf(t," %s", parv[i]);
-	  t += tl;
-        }
-      ircsprintf(t," :%s", parv[parc-1]);
+      tl = ircsprintf(t," %s", parv[i]);
+      t += tl;
     }
+    ircsprintf(t," :%s", parv[parc-1]);
+  }
+
   if ((target_p = find_client(parv[1], (struct Client *)NULL)))
+  {
+    if (IsMe(target_p)) 
     {
-      if (IsMe(target_p)) 
-        {
-          /*
-           * We shouldn't get numerics sent to us,
-           * any numerics we do get indicate a bug somewhere..
-           */
-          sendto_realops_flags(FLAGS_ALL, L_ADMIN,
-                               "*** %s(via %s) sent a %s numeric to me: %s",
-                               source_p->name, client_p->name, numeric, buffer);
-          return;
-        }
-      else if (target_p->from == client_p) 
-        {
-          /* This message changed direction (nick collision?)
-           * ignore it.
-           */
-          return;
-        }
-      /* Fake it for server hiding, if its our client */
-      if(ConfigServerHide.hide_servers && MyClient(target_p) && !IsOper(target_p))
-	sendto_one(target_p, ":%s %s %s%s", me.name, numeric, parv[1], buffer);
-      else
-        sendto_one(target_p, ":%s %s %s%s", source_p->name, numeric, parv[1], buffer);
+      /*
+       * We shouldn't get numerics sent to us,
+       * any numerics we do get indicate a bug somewhere..
+       */
+      sendto_realops_flags(FLAGS_ALL, L_ADMIN,
+			   "*** %s(via %s) sent a %s numeric to me: %s",
+			   source_p->name, client_p->name, numeric, buffer);
       return;
-      }
-      else if ((chptr = hash_find_channel(parv[1], (struct Channel *)NULL)))
-        sendto_channel_local(ALL_MEMBERS, chptr,
-                             ":%s %s %s %s",
-                              source_p->name,
-                              numeric, RootChan(chptr)->chname, buffer);
+    }
+    else if (target_p->from == client_p) 
+    {
+      /* This message changed direction (nick collision?)
+       * ignore it.
+       */
+      return;
+    }
+    /* Fake it for server hiding, if its our client */
+    if(ConfigServerHide.hide_servers &&
+       MyClient(target_p) && !IsOper(target_p))
+      sendto_one(target_p, ":%s %s %s%s", me.name, numeric, parv[1], buffer);
+    else
+      sendto_one(target_p, ":%s %s %s%s", source_p->name, numeric, parv[1], buffer);
+    return;
+  }
+  else if ((chptr = hash_find_channel(parv[1])) != NULL)
+    sendto_channel_local(ALL_MEMBERS, chptr,
+			 ":%s %s %s %s",
+			 source_p->name,
+			 numeric, RootChan(chptr)->chname, buffer);
 }
 
 

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.91 2001/10/21 15:40:50 davidt Exp $
+ * $Id: channel.h,v 7.92 2001/10/24 06:19:43 db Exp $
  */
 
 #include <sys/types.h>        /* time_t */
@@ -93,8 +93,6 @@ extern  struct  Channel *GlobalChannelList;
 void init_channels(void);
 void cleanup_channels(void *);
 
-#define CREATE 1        /* whether a channel should be
-                           created or just tested for existence */
 
 extern int     can_send (struct Channel *chptr, struct Client *who);
 extern int     is_banned (struct Channel *chptr, struct Client *who);
@@ -111,8 +109,6 @@ extern void    add_user_to_channel(struct Channel *chptr,
 				   struct Client *who, int flags);
 extern void    remove_user_from_channel(struct Channel *chptr,
 					struct Client *who, int perm);
-
-extern struct  Channel* get_channel(struct Client *,char*,int );
 
 extern int     check_channel_name(const char* name);
 

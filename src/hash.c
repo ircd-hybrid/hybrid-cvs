@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: hash.c,v 7.32 2001/10/02 16:13:24 db Exp $
+ *  $Id: hash.c,v 7.33 2001/10/24 06:19:44 db Exp $
  */
 
 #include <sys/types.h>
@@ -635,32 +635,33 @@ struct Client* hash_find_server(const char* name)
 /*
  * hash_find_channel
  * inputs	- pointer to name
- * 		- pointer to channel
  * output	- 
  * side effects	-
  */
-struct Channel* hash_find_channel(const char* name, struct Channel* chptr)
+struct Channel* 
+hash_find_channel(const char* name)
 {
-  struct Channel*    tmp;
+  struct Channel* found_chptr;
   unsigned int hashv;
   
-  assert(0 != name);
+  assert(name != NULL);
   hashv = hash_channel_name(name);
-  tmp = (struct Channel*) channelTable[hashv].list;
 
-  for ( ; tmp; tmp = tmp->hnextch)
+  found_chptr = (struct Channel*) channelTable[hashv].list;
+
+  for ( ; found_chptr; found_chptr = found_chptr->hnextch)
   
-    if (irccmp(name, tmp->chname) == 0)
+    if (irccmp(name, found_chptr->chname) == 0)
       {
 #ifdef        DEBUGMODE
         ++chhits;
 #endif
-        return tmp;
+        return(found_chptr);
       }
 #ifdef        DEBUGMODE
   ++chmiss;
 #endif
-  return chptr;
+  return(NULL);
 }
 
 /*
@@ -678,7 +679,7 @@ struct Channel *
 get_or_create_channel(struct Client *client_p, char *chname, int *isnew)
 {
   struct Channel *chptr;
-  struct Channel *tmp;
+  struct Channel *found_chptr;
   unsigned int hashv;
   int len;
 
@@ -703,23 +704,25 @@ get_or_create_channel(struct Client *client_p, char *chname, int *isnew)
 
   hashv = hash_channel_name(chname);
 
-  for ( tmp = (struct Channel*) channelTable[hashv].list;
-	tmp; tmp = tmp->hnextch)
+  for ( found_chptr = (struct Channel*) channelTable[hashv].list;
+	found_chptr; found_chptr = found_chptr->hnextch)
     {
-      if (irccmp(chname, tmp->chname) == 0)
+      if (irccmp(chname, found_chptr->chname) == 0)
 	{
 #ifdef        DEBUGMODE
 	  ++chhits;
 #endif
-	  *isnew = 0;
-	  return tmp;
+	  if(isnew != NULL)
+	    *isnew = 0;
+	  return(found_chptr);
 	}
 #ifdef        DEBUGMODE
       ++chmiss;
 #endif
     }
 
-  *isnew = 1;
+  if(isnew != NULL)
+    *isnew = 1;
 
   chptr = BlockHeapAlloc(channel_heap);
   memset(chptr, 0, sizeof(*chptr)-CHANNELLEN);
@@ -745,30 +748,31 @@ get_or_create_channel(struct Client *client_p, char *chname, int *isnew)
 /*
  * hash_find_resv()
  */
-struct ResvChannel *hash_find_resv(const char *name, struct ResvChannel *rptr)
+struct ResvChannel *
+hash_find_resv(const char *name)
 {
-  struct ResvChannel *tmp;
+  struct ResvChannel *found_chptr;
   unsigned int hashv;
 
-  assert(name != 0);
+  assert(name != NULL);
   
   hashv = hash_resv_channel(name);
 
-  tmp= (struct ResvChannel *) resvTable[hashv].list;
+  found_chptr = (struct ResvChannel *) resvTable[hashv].list;
 
-  for( ; tmp; tmp = tmp->hnext)
+  for( ; found_chptr; found_chptr = found_chptr->hnext)
   {
-    if(!irccmp(name, tmp->name))
+    if(!irccmp(name, found_chptr->name))
     {
 #ifdef DEBUGMODE
       ++rhits;
 #endif      
-      return tmp;
+      return(found_chptr);
     }
   }
 #ifdef DEBUGMODE
   ++rmiss;
 #endif
   
-  return rptr;
+  return(NULL);
 }  

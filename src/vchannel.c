@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: vchannel.c,v 7.55 2001/10/21 15:40:49 davidt Exp $
+ * $Id: vchannel.c,v 7.56 2001/10/24 06:19:44 db Exp $
  */
 
 #include "tools.h"
@@ -107,10 +107,10 @@ cjoin_channel(struct Channel *root, struct Client *source_p, char *name)
         }
 
       ircsprintf(vchan_name, "##%s_%u", name + 1, vchan_ts);
-      vchan_chptr = hash_find_channel(vchan_name, NULL);
+      vchan_chptr = hash_find_channel(vchan_name);
   } while (vchan_chptr);
 
-  vchan_chptr = get_channel(source_p, vchan_name, CREATE);
+  vchan_chptr = get_or_create_channel(source_p, vchan_name, NULL);
 
   if (vchan_chptr == NULL)
     {
