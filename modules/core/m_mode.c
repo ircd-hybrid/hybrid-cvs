@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_mode.c,v 1.30 2001/02/20 09:25:19 toot Exp $
+ *   $Id: m_mode.c,v 1.31 2001/02/20 09:43:22 toot Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -150,9 +150,9 @@ static void m_mode(struct Client *cptr, struct Client *sptr,
      n++;
     }
 
-  else if (HasVchans(chptr) || IsVchan(chptr))
+  else
     {
-      if(HasVchans(chptr))
+      if (HasVchans(chptr))
         {
           if ((vchan = map_vchan(chptr,sptr)) != NULL)
             chptr = vchan; /* root = chptr, chptr = vchan */
@@ -162,7 +162,7 @@ static void m_mode(struct Client *cptr, struct Client *sptr,
            *       channel.  MODE #vchan !nick ? (ugh)
            */
         }
-      else
+      else if (IsVchan(chptr))
         {
           vchan = find_bchan(chptr);
           root = vchan;  /* root = vchan, chptr = chptr */
