@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.218 2003/02/02 20:45:00 db Exp $
+ *  $Id: send.c,v 7.219 2003/02/03 05:08:38 db Exp $
  */
 
 #include "stdinc.h"
@@ -751,7 +751,7 @@ sendto_common_channels_local(struct Client *user, const char *pattern, ...)
     sendto_list_local(user, &chptr->locpeons, &linebuf);
   }
 
-  if (MyConnect(user) && !IsDefunct(user) && (user->serial != current_serial))
+  if (MyConnect(user) && (user->serial != current_serial))
     send_linebuf(user, &linebuf);
 
   linebuf_donebuf(&linebuf);
@@ -1157,7 +1157,7 @@ sendto_anywhere(struct Client *to, struct Client *from,
   }
   va_end(args);
 
-  if(MyClient(to) && !IsDefunct(to))
+  if(MyClient(to))
     send_linebuf(to, &linebuf);
   else
     send_linebuf_remote(to, from, &linebuf);
@@ -1208,9 +1208,7 @@ sendto_realops_flags(int flags, int level, const char *pattern, ...)
                      ":%s NOTICE %s :*** Notice -- %s", me.name,
                      client_p->name, nbuf);
 
-      if (!IsDefunct(client_p))
-	send_linebuf(client_p, &linebuf);
-
+      send_linebuf(client_p, &linebuf);
       linebuf_donebuf(&linebuf);
     }
   }
@@ -1252,7 +1250,7 @@ sendto_wallops_flags(int flags, struct Client *source_p,
   {
     client_p = ptr->data;
 
-    if(client_p->umodes & flags && !IsDefunct(client_p))
+    if(client_p->umodes & flags)
       send_linebuf(client_p, &linebuf);
   }
   linebuf_donebuf(&linebuf);
@@ -1331,8 +1329,7 @@ kill_client(struct Client *client_p,
 
   va_end(args);
 
-  if (!IsDefunct(client_p))
-    send_linebuf(client_p, &linebuf);
+  send_linebuf(client_p, &linebuf);
   linebuf_donebuf(&linebuf);
 }
 

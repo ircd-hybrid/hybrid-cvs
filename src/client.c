@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.321 2003/02/02 20:47:24 db Exp $
+ *  $Id: client.c,v 7.322 2003/02/03 05:08:38 db Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -1408,6 +1408,12 @@ exit_client(
         }
     }
 
+  if (MyConnect(source_p))
+  {
+     close_connection(source_p);
+     SetDead(source_p); /* You are dead my friend */
+  }
+
   /* The client *better* be off all of the lists */
   assert(dlinkFind(&unknown_list, source_p) == NULL);
   assert(dlinkFind(&lclient_list, source_p) == NULL);
@@ -1415,12 +1421,6 @@ exit_client(
   assert(dlinkFind(&oper_list, source_p) == NULL);
 
   exit_one_client(client_p, source_p, from, comment);
-
-  if (MyConnect(source_p))
-  {
-     close_connection(source_p);
-     SetDead(source_p); /* You are dead my friend */
-  }
   return client_p == source_p ? CLIENT_EXITED : 0;
 }
 
