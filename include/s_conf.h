@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.122 2001/05/29 16:10:24 jdc Exp $
+ * $Id: s_conf.h,v 7.123 2001/05/29 21:11:12 davidt Exp $
  */
 
 #include "setup.h"
@@ -80,7 +80,7 @@ struct ConfItem
   int              dns_pending; /* 1 if dns query pending, 0 otherwise */
 #ifdef HAVE_LIBCRYPTO
   RSA*             rsa_public_key;
-  struct EncCapability *ciphertab; /* cipher_preference storage space */
+  struct EncPreference *ciphertab; /* cipher_preference storage space */
 #endif
 };
 

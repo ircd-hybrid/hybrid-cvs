@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: s_serv.h,v 7.49 2001/05/28 17:10:53 davidt Exp $
+ * $Id: s_serv.h,v 7.50 2001/05/29 21:11:12 davidt Exp $
  *
  */
 #ifndef INCLUDED_serv_h
@@ -90,7 +90,13 @@ struct EncCapability
   unsigned int  cap;      /* mask value */
   int           keylen;   /* keylength (bytes) */
   int           cipherid; /* cipher id */
-  int           priority; /* 0=disabled, 1=highest, n=lowest */
+  int           default_priority; /* 0=disabled, 1=highest, n=lowest */
+};
+
+struct EncPreference
+{
+  struct EncCapability  *ecap;
+  int           priority;
 };
 
 /* Ciphers */

@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: servlink.h,v 1.16 2001/05/27 19:57:24 davidt Exp $
+ *   $Id: servlink.h,v 1.17 2001/05/29 21:11:19 davidt Exp $
  */
 
 #ifndef INCLUDED_servlink_servlink_h
@@ -48,7 +48,7 @@
 #define NUM_FDS                 6       /* nfds for select */
 #endif
 
-/* #define SERVLINK_DEBUG */
+#undef SERVLINK_DEBUG
 
 #define READLEN                  2048
 

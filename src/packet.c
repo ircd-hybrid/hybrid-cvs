@@ -18,7 +18,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: packet.c,v 7.55 2001/05/27 19:57:26 davidt Exp $
+ *   $Id: packet.c,v 7.56 2001/05/29 21:11:21 davidt Exp $
  */ 
 
 #include <stdio.h>
@@ -186,7 +186,7 @@ read_ctrl_packet(int fd, void *data)
 
     if (length <= 0)
     {
-      if(ignoreErrno(errno))
+      if((length == -1) && ignoreErrno(errno))
         goto nodata;
       error_exit_client(server, length);
       return;
@@ -211,7 +211,7 @@ read_ctrl_packet(int fd, void *data)
     length = read(fd, len, (2 - reply->gotdatalen));
     if (length <= 0)
     {
-      if(ignoreErrno(errno))
+      if((length == -1) && ignoreErrno(errno))
         goto nodata;
       error_exit_client(server, length);
       return;
@@ -239,7 +239,7 @@ read_ctrl_packet(int fd, void *data)
                   (reply->datalen - reply->readdata));
     if (length <= 0)
     {
-      if(ignoreErrno(errno))
+      if((length == -1) && ignoreErrno(errno))
         goto nodata;
       error_exit_client(server, length);
       return;
