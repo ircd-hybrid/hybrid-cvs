@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.177 2001/01/05 05:11:54 fl_ Exp $
+ * $Id: channel.c,v 7.178 2001/01/05 05:22:44 fl_ Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -1320,6 +1320,7 @@ void set_channel_mode(struct Client *cptr,
                            chptr->chname, who->name);
                 sendto_channel_butone(who, cptr, chptr, "MODE %s -h %s",
                                       chptr->chname, who->name);
+                sync_oplists(chptr, who, 1, chname);
                 break;
               }
 
