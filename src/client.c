@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.64 2000/12/10 20:04:07 db Exp $
+ *  $Id: client.c,v 7.65 2000/12/10 23:59:02 db Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -697,6 +697,8 @@ static void update_client_exit_stats(struct Client* cptr)
   if (IsServer(cptr))
     {
       --Count.server;
+      sendto_realops_flags(FLAGS_EXTERNAL, "Server %s split from %s",
+                           cptr->name, cptr->servptr->name);
     }
   else if (IsClient(cptr))
     {

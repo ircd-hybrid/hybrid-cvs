@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.121 2000/12/10 20:04:06 db Exp $
+ * $Id: channel.c,v 7.122 2000/12/10 23:59:01 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -2335,9 +2335,8 @@ void cleanup_channels(void *unused)
    else
      uplink = NULL;
 
-   if(!ConfigFileEntry.hub)
-     eventAdd("cleanup_channels", cleanup_channels, NULL,
-	      CLEANUP_CHANNELS_TIME, 0 );
+   eventAdd("cleanup_channels", cleanup_channels, NULL,
+	    CLEANUP_CHANNELS_TIME, 0 );
 
    for(chptr = GlobalChannelList; chptr; chptr = next_chptr)
      {

@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.42 2000/12/10 03:52:22 db Exp $
+ * $Id: ircd_parser.y,v 1.43 2000/12/10 23:59:02 db Exp $
  */
 
 %{
@@ -698,10 +698,6 @@ auth_kline_exempt:    KLINE_EXEMPT '=' TYES ';'
                       KLINE_EXEMPT '=' TNO ';'
   {
     yy_aconf->flags &= ~CONF_FLAGS_E_LINED;
-  };
-
-  {
-    yy_aconf->flags &= ~CONF_FLAGS_B_LINED;
   };
 
 auth_have_ident:      HAVE_IDENT ';'

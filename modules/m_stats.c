@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 1.13 2000/12/09 05:59:54 db Exp $
+ *  $Id: m_stats.c,v 1.14 2000/12/10 23:59:00 db Exp $
  */
 #include "handlers.h"  /* m_pass prototype */
 #include "class.h"       /* report_classes */
@@ -246,17 +246,6 @@ void do_normal_stats(struct Client *sptr,
     case 'L' : case 'l' :
       stats_L(sptr,name,doall,wilds);
       stats_L_spy(sptr,stat,name);
-      break;
-
-    case 'G': case 'g' :
-      if (ConfigFileEntry.glines)
-	{
-	  report_glines(sptr);
-	  stats_spy(sptr,stat);
-	}
-      else
-        sendto_one(sptr,":%s NOTICE %s :This server does not support G lines",
-                   me.name, sptr->name);
       break;
 
     case 'u' :
