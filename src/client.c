@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.419 2003/10/24 11:08:21 michael Exp $
+ *  $Id: client.c,v 7.420 2004/01/24 19:25:45 adx Exp $
  */
 
 #include "stdinc.h"
@@ -644,16 +644,14 @@ release_client_state(struct Client *client_p)
 struct Client *
 find_person(const char *name)
 {
-  struct Client *c2ptr = find_client(name);
+  struct Client *c2ptr;
 
   if (IsDigit(*name))
     c2ptr = hash_find_id(name);
   else
     c2ptr = find_client(name);
 
-  if (c2ptr != NULL && IsPerson(c2ptr))
-    return(c2ptr);
-  return(NULL);
+  return ((c2ptr != NULL && IsPerson(c2ptr)) ? c2ptr : NULL);
 }
 
 /*
