@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_nick.c,v 1.4 2000/11/17 18:03:00 toot Exp $
+ *   $Id: m_nick.c,v 1.5 2000/11/18 17:41:52 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -46,7 +46,7 @@
 
 int nick_from_server(struct Client *, struct Client *, int, char **, time_t, char *);
 
-int set_initial_nick(struct Client *cptr, struct Client *sptr,
+static int set_initial_nick(struct Client *cptr, struct Client *sptr,
 			    char *nick);
 int change_nick( struct Client *cptr, struct Client *sptr,
 			char *nick);
@@ -833,7 +833,7 @@ int nick_from_server(struct Client *cptr, struct Client *sptr, int parc,
  * client. 
  */
 
-int static set_initial_nick(struct Client *cptr, struct Client *sptr,
+static int set_initial_nick(struct Client *cptr, struct Client *sptr,
 			    char *nick)
 {
   char buf[USERLEN + 1];
@@ -944,6 +944,19 @@ int change_nick( struct Client *cptr, struct Client *sptr,
   del_from_client_hash_table(sptr->name, sptr);
   strcpy(sptr->name, nick);
   add_to_client_hash_table(nick, sptr);
+
+  /*
+   * .. and update the new nick in the fd note.
+   * XXX should use IsLocal() ! -- adrian
+   */
+  if (sptr->fd > -1)
+    {
+      char nickbuf[NICKLEN + 10];
+      strcpy(nickbuf, "Nick: ");
+      /* XXX nick better be the right length! -- adrian */
+      strncat(nickbuf, nick, NICKLEN);
+      fd_note(cptr->fd, nickbuf);
+    }
 
   return 1;
 }
