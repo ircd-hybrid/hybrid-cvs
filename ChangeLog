@@ -1,3 +1,17 @@
+wcampbel    2002/02/26 11:44:42 EST	(20020226_0)
+
+  Modified files:
+    doc                  example.conf 
+  Log:
+  Doc corrections to example.conf:
+  Make the encrypted = yes; and cryptlink = yes; distinction clearer
+  Document the stripping of [ ] from serverinfo fields in LINKS
+  
+  Revision  Changes    Path
+  7.152     +10 -1     ircd-hybrid-7/doc/example.conf
+
+
+
 wcampbel    2002/02/25 18:05:02 EST	(20020225_8)
 
   Modified files:
@@ -23300,4 +23314,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3457 2002/02/25 23:05:10 wcampbel Exp $
+$Id: ChangeLog,v 7.3458 2002/02/26 16:44:48 wcampbel Exp $
