@@ -1,3 +1,15 @@
+androsyn    2002/06/15 03:35:52 EDT	(20020615_3)
+
+  Modified files:
+    include              memory.h 
+  Log:
+  Oops..I'll get this right :)
+  
+  Revision  Changes    Path
+  7.32      +19 -12    ircd-hybrid-7/include/memory.h
+
+
+
 androsyn    2002/06/15 03:30:44 EDT	(20020615_2)
 
   Modified files:
@@ -28328,4 +28340,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3773 2002/06/15 07:30:50 androsyn Exp $
+$Id: ChangeLog,v 7.3774 2002/06/15 07:35:59 androsyn Exp $
