@@ -1,3 +1,34 @@
+bill        2002/10/28 16:09:26 EST	(20021028_1)
+
+  Modified files:
+    doc                  convertconf-example.conf example.conf 
+                         example.efnet.conf whats-new.txt 
+    include              channel.h channel_mode.h s_conf.h 
+    modules              m_info.c m_join.c 
+    src                  channel.c hash.c ircd.c ircd_lexer.l 
+                         ircd_parser.y s_conf.c 
+  Log:
+  - ripped persistent channels.  this should be re-thoughtout and re-implemented from scratch at a later date.
+  
+  Revision  Changes    Path
+  7.7       +1 -10     ircd-hybrid-7/doc/convertconf-example.conf
+  7.168     +1 -10     ircd-hybrid-7/doc/example.conf
+  7.8       +1 -13     ircd-hybrid-7/doc/example.efnet.conf
+  7.37      +0 -15     ircd-hybrid-7/doc/whats-new.txt
+  7.120     +0 -6      ircd-hybrid-7/include/channel.h
+  7.13      +0 -3      ircd-hybrid-7/include/channel_mode.h
+  7.187     +0 -1      ircd-hybrid-7/include/s_conf.h
+  1.61      +1 -7      ircd-hybrid-7/modules/m_info.c
+  1.93      +7 -23     ircd-hybrid-7/modules/m_join.c
+  7.341     +2 -113    ircd-hybrid-7/src/channel.c
+  7.47      +4 -1      ircd-hybrid-7/src/hash.c
+  7.242     +0 -3      ircd-hybrid-7/src/ircd.c
+  1.145     +0 -1      ircd-hybrid-7/src/ircd_lexer.l
+  1.260     +0 -7      ircd-hybrid-7/src/ircd_parser.y
+  7.331     +0 -3      ircd-hybrid-7/src/s_conf.c
+
+
+
 gregp       2002/10/27 20:08:41 EST	(20021028_0)
 
   Modified files:
@@ -32691,4 +32722,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4078 2002/10/28 01:08:43 gregp Exp $
+$Id: ChangeLog,v 7.4079 2002/10/28 21:09:28 bill Exp $
