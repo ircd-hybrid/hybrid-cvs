@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_users.c,v 1.7 2000/12/22 16:12:47 db Exp $
+ *   $Id: m_users.c,v 1.8 2001/01/02 00:25:48 fl_ Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -61,8 +61,13 @@ int m_users(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   if (hunt_server(cptr,sptr,":%s USERS :%s",1,parc,parv) == HUNTED_ISME)
     {
       /* No one uses this any more... so lets remap it..   -Taner */
-      sendto_one(sptr, form_str(RPL_LOCALUSERS), me.name, parv[0],
+      
+      if (IsOper(sptr) || !GlobalSetOptions.hide_server)
+        sendto_one(sptr, form_str(RPL_LOCALUSERS), me.name, parv[0],
                  Count.local, Count.max_loc);
+      else
+        sendto_one(sptr, form_str(RPL_LOCALUSERS), me.name, parv[0],
+                 Count.total, Count.max_tot);
       sendto_one(sptr, form_str(RPL_GLOBALUSERS), me.name, parv[0],
                  Count.total, Count.max_tot);
     }

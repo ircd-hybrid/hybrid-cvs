@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.87 2000/12/30 06:03:46 lusky Exp $
+ *  $Id: s_user.c,v 7.88 2001/01/02 00:25:54 fl_ Exp $
  */
 #include "tools.h"
 #include "s_user.h"
@@ -245,24 +245,29 @@ int show_lusers(struct Client *sptr)
     sendto_one(sptr, form_str(RPL_LUSERCHANNELS),
                me.name, sptr->name, Count.chan);
 
-  if(!(GlobalSetOptions.hide_server && !IsOper(sptr)))
-    sendto_one(sptr, form_str(RPL_LUSERME),
-               me.name, sptr->name, Count.local, Count.myserver);
+  if(!GlobalSetOptions.hide_server || IsOper(sptr))
+      sendto_one(sptr, form_str(RPL_LUSERME),
+                 me.name, sptr->name, Count.local, Count.myserver);
 
-  sendto_one(sptr, form_str(RPL_LOCALUSERS), me.name, sptr->name,
-             Count.local, Count.max_loc);
+  if(!GlobalSetOptions.hide_server || IsOper(sptr))
+    sendto_one(sptr, form_str(RPL_LOCALUSERS), me.name, sptr->name,
+                 Count.local, Count.max_loc);
+  else
+    sendto_one(sptr, form_str(RPL_LOCALUSERS), me.name, sptr->name,
+                 Count.total, Count.max_tot);
   sendto_one(sptr, form_str(RPL_GLOBALUSERS), me.name, sptr->name,
              Count.total, Count.max_tot);
-  sendto_one(sptr, form_str(RPL_STATSCONN), me.name, sptr->name,
-             MaxConnectionCount, MaxClientCount, Count.totalrestartcount);
+  if(!GlobalSetOptions.hide_server || IsOper(sptr))
+    sendto_one(sptr, form_str(RPL_STATSCONN), me.name, sptr->name,
+               MaxConnectionCount, MaxClientCount, Count.totalrestartcount);
 
   if (Count.local > MaxClientCount)
-    MaxClientCount = Count.local;
+     MaxClientCount = Count.local;
 
   if ((Count.local + Count.myserver) > MaxConnectionCount)
-    {
-      MaxConnectionCount = Count.local + Count.myserver;
-    }
+     {
+       MaxConnectionCount = Count.local + Count.myserver; 
+     }
 
   return 0;
 }
