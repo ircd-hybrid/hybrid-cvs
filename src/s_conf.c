@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.72 2000/11/15 07:51:44 db Exp $
+ *  $Id: s_conf.c,v 7.73 2000/11/24 08:27:41 db Exp $
  */
 #include "s_conf.h"
 #include "channel.h"
@@ -1646,7 +1646,6 @@ int rehash(struct Client *cptr,struct Client *sptr, int sig)
   read_conf_files(NO);
   close_listeners();
   flush_deleted_I_P();
-  rehashed = 1;
   return 0;
 }
 
