@@ -1,3 +1,11 @@
+*** 20001206_2 by db
+- reworked anti channel flooding to allow chanops/voice to flood
+  their own channel with impunity. This will allow them to at least
+  set +m if the channel really is flooded!
+- fixed parser error spotted by Walter Campbel (Hwy101)
+
+
+
 *** 20001206_1 by db
 - on_accept_list can be on a remote client, having it on the localClient
   part will lead to a core..
@@ -1707,7 +1715,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.709 2000/12/06 09:49:56 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.710 2000/12/06 17:01:16 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
