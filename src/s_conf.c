@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.361 2003/04/14 08:41:15 michael Exp $
+ *  $Id: s_conf.c,v 7.362 2003/04/15 13:46:01 adx Exp $
  */
 
 #include "stdinc.h"
@@ -184,7 +184,7 @@ make_conf(unsigned int status)
   struct ConfItem* aconf;
 
   aconf = (struct ConfItem*)MyMalloc(sizeof(struct ConfItem));
-  memset(aconf, 0, sizeof(*aconf));
+  /* memset(aconf, 0, sizeof(*aconf)); */
   aconf->status = status;
   aconf->aftype = AF_INET;
   return(aconf);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.347 2003/04/14 08:41:14 michael Exp $
+ *  $Id: client.c,v 7.348 2003/04/15 13:46:01 adx Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -86,8 +86,6 @@ static BlockHeap *lclient_heap = NULL;
 void
 init_client(void)
 {
-  remote_client_count = 0;
-  local_client_count = 0;
   /*
    * start off the check ping event ..  -- adrian
    * Every 30 seconds is plenty -- db
@@ -104,6 +102,11 @@ init_client(void)
  *
  *      from == NULL,   create local client (a client connected
  *                      to a socket).
+ *                      WARNING: This leaves the client in a dangerous
+ *                      state where fd == -1, dead flag is not set and
+ *                      the client is on the unknown_list; therefore,
+ *                      the first thing to do after calling make_client(NULL)
+ *                      is setting fd to something reasonable. -adx
  *
  *      from,   create remote client (behind a socket
  *                      associated with the client defined by
@@ -139,7 +142,6 @@ make_client(struct Client *from)
   }
   else
   { /* from is not NULL */
-    client_p->localClient = NULL;
     client_p->from = from; /* 'from' of local client is self! */
     ++remote_client_count;
   }
@@ -185,18 +187,17 @@ free_client(struct Client* client_p)
       if (0 == --client_p->localClient->listener->ref_count &&
           !client_p->localClient->listener->active) 
         free_listener(client_p->localClient->listener);
-      client_p->localClient->listener = 0;
     }
 
-      if (client_p->localClient->fd >= 0)
-	fd_close(client_p->localClient->fd);
+    if (client_p->localClient->fd >= 0)
+      fd_close(client_p->localClient->fd);
 
-      linebuf_donebuf(&client_p->localClient->buf_recvq);
-      linebuf_donebuf(&client_p->localClient->buf_sendq);
+    linebuf_donebuf(&client_p->localClient->buf_recvq);
+    linebuf_donebuf(&client_p->localClient->buf_sendq);
 
-      BlockHeapFree(lclient_heap, client_p->localClient);
-      --local_client_count;
-      assert(local_client_count >= 0);
+    BlockHeapFree(lclient_heap, client_p->localClient);
+    --local_client_count;
+    assert(local_client_count >= 0);
   }
   else
   {
@@ -284,7 +285,6 @@ check_pings_list(dlink_list *list)
 	  DupString(aconf->host, client_p->host);
 	  DupString(aconf->passwd, "idle exceeder");
 	  DupString(aconf->user, client_p->username);
-	  aconf->port = 0;
 	  aconf->hold = CurrentTime + 60;
 	  add_temp_kline(aconf);
 	  sendto_realops_flags(UMODE_ALL, L_ALL,
@@ -426,7 +426,7 @@ check_klines(void)
 		     me.name, client_p->name,
 		     aconf->passwd ? aconf->passwd : "D-lined");
 	else
-	  sendto_one(client_p, "NOTICE DLINE :*** You have been D-lined");
+	  sendto_one(client_p, "ERROR :You have been D-lined.");
       }
       else
       {
@@ -441,7 +441,7 @@ check_klines(void)
 	  sendto_one(client_p, form_str(ERR_YOUREBANNEDCREEP),
 		     me.name, client_p->name, reason);
 	else
-	  sendto_one(client_p, "NOTICE DLINE :*** You have been D-lined");
+	  sendto_one(client_p, "ERROR :You have been D-lined.");
       }
 	    
       (void)exit_client(client_p, client_p, &me, reason);
@@ -653,11 +653,11 @@ del_client_from_llist(struct Client **bucket, struct Client *client)
 struct Client *
 find_person(char *name)
 {
-  struct Client       *c2ptr;
+  struct Client *c2ptr;
 
   c2ptr = find_client(name);
 
-  if (c2ptr && IsPerson(c2ptr))
+  if (c2ptr != NULL && IsPerson(c2ptr))
     return (c2ptr);
   return (NULL);
 }
@@ -677,7 +677,7 @@ find_chasing(struct Client *source_p, char *user, int *chasing)
     *chasing = 0;
   if (who)
     return who;
-  if (!(who = get_history(user, (long)KILLCHASETIMELIMIT)))
+  if ((who = get_history(user, (long)KILLCHASETIMELIMIT)) == NULL)
     {
       sendto_one(source_p, form_str(ERR_NOSUCHNICK),
                  me.name, source_p->name, user);
@@ -713,8 +713,6 @@ get_client_name(struct Client* client, int showip)
   static char nbuf[HOSTLEN * 2 + USERLEN + 5];
 
   assert(NULL != client);
-  if(client == NULL)
-    return NULL;
     
   if (!irccmp(client->name, client->host))
     return client->name;
@@ -905,7 +903,9 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
    */
   del_from_client_hash_table(source_p->name, source_p);
 
-  /* remove from global client list */
+  /* remove from global client list
+   * NOTE: source_p->node.next cannot be NULL if the client is added
+   *       to global_client_list (there is always &me at its end) */
   if (source_p != NULL && source_p->node.next != NULL)
     dlinkDelete(&source_p->node, &global_client_list);
   update_client_exit_stats(source_p);
@@ -1019,7 +1019,8 @@ remove_dependents(struct Client* client_p,
     {
       to = ptr->data;
 
-      if (IsMe(to) ||to == source_p->from || (to == client_p && IsCapable(to,CAP_QS)))
+      if (IsMe(to) || to == source_p->from || (to == client_p &&
+                                               IsCapable(to, CAP_QS)))
         continue;
 
       /* MyConnect(source_p) is rotten at this point: if source_p
