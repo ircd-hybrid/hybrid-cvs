@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_debug.c,v 7.8 1999/09/01 05:09:12 tomh Exp $
+ *   $Id: s_debug.c,v 7.9 1999/09/03 05:05:37 tomh Exp $
  */
 #include "s_debug.h"
 #include "channel.h"
@@ -259,6 +259,8 @@ void count_memory(struct Client* cptr, char* nick)
 
   size_t dbuf_allocated          = 0;
   size_t dbuf_used               = 0;
+  size_t dbuf_alloc_count        = 0;
+  size_t dbuf_used_count         = 0;
   size_t local_client_allocated  = 0;
   size_t local_client_used       = 0;
   size_t remote_client_allocated = 0;
@@ -348,7 +350,14 @@ void count_memory(struct Client* cptr, char* nick)
   count_listener_memory(&listener_count, &listener_mem);
   count_scache(&scache_count, &scache_mem);
   count_ip_hash(&ip_hash_count, &ip_hash_mem);
+  /*
+   * need to set dbuf_count here because we use a dbuf when we send
+   * the results. since sending the results results in a dbuf being used,
+   * the count would be wrong if we just used the globals
+   */
   count_dbuf_memory(&dbuf_allocated, &dbuf_used);
+  dbuf_alloc_count = DBufCount;
+  dbuf_used_count  = DBufUsedCount;
 
   resolver_mem = cres_mem(cptr);
 
@@ -430,8 +439,8 @@ void count_memory(struct Client* cptr, char* nick)
              class_count * sizeof(struct Class));
 
   sendto_one(cptr, ":%s %d %s :DBuf: allocated %d(%d) used %d(%d)",
-             me.name, RPL_STATSDEBUG, nick, DBufCount, dbuf_allocated,
-             DBufUsedCount, dbuf_used);
+             me.name, RPL_STATSDEBUG, nick, dbuf_alloc_count, dbuf_allocated,
+             dbuf_used_count, dbuf_used);
 
   sendto_one(cptr, ":%s %d %s :SCache: %d(%d)",
              me.name, RPL_STATSDEBUG, nick, scache_count, scache_mem);
