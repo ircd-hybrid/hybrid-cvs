@@ -1,3 +1,9 @@
+-- ircd-hybrid-7.0.2 RELNOTES
+o) fixed ban desync bug caused by faulty redundant mode checking code
+o) fixed flood limit bug
+o) fixed encap propogation logic
+o) fixed xline wildcard checking logic
+
 -- ircd-hybrid-7.0.1 RELNOTES
 o) fixed ban desync bug caused by malformed ban strings
 o) fixed two adns bugs, one would cause an infinite loop, another that
@@ -68,4 +74,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.65.2.8 2004/03/18 04:22:08 lusky Exp $
+$Id: RELNOTES,v 1.65.2.9 2004/06/16 04:07:13 bill Exp $

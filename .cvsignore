@@ -1,6 +1,7 @@
 config.log
 config.cache
 config.status
+configure.lineno
 Makefile
 lint.out
 rsa_respond.tar.gz
