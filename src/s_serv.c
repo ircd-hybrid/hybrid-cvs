@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.371 2003/08/21 21:31:23 michael Exp $
+ *  $Id: s_serv.c,v 7.372 2003/09/15 02:26:18 bill Exp $
  */
 
 #include "stdinc.h"
@@ -2012,7 +2012,7 @@ serv_connect(struct AccessItem *aconf, struct Client *by)
         ipn.ss.ss_family = AF_INET;
         ipn.ss_port = 0;
         memcpy(&ipn, &aconf->my_ipnum, sizeof(struct irc_ssaddr));
-	    comm_connect_tcp(client_p->localClient->fd, aconf->host, aconf->port,
+	comm_connect_tcp(client_p->localClient->fd, aconf->host, aconf->port,
 			 (struct sockaddr *)&ipn, ipn.ss_len, 
 			 serv_connect_callback, client_p, aconf->aftype, CONNECTTIMEOUT);
       }
@@ -2024,13 +2024,13 @@ serv_connect(struct AccessItem *aconf, struct Client *by)
         ipn.ss_port = 0;
         memcpy(&ipn, &ServerInfo.ip, sizeof(struct irc_ssaddr));
         comm_connect_tcp(client_p->localClient->fd, aconf->host, aconf->port,
-            (struct sockaddr *)&ipn, ipn.ss_len,
-            serv_connect_callback, client_p, aconf->aftype, CONNECTTIMEOUT);
+                         (struct sockaddr *)&ipn, ipn.ss_len,
+                         serv_connect_callback, client_p, aconf->aftype, CONNECTTIMEOUT);
       }
       else
         comm_connect_tcp(client_p->localClient->fd, aconf->host, aconf->port, 
-            NULL, 0, serv_connect_callback, client_p, aconf->aftype, 
-            CONNECTTIMEOUT);
+                         NULL, 0, serv_connect_callback, client_p, aconf->aftype, 
+                         CONNECTTIMEOUT);
       break;
 #ifdef IPV6
     case AF_INET6:
