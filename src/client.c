@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.410 2003/09/15 22:34:08 db Exp $
+ *  $Id: client.c,v 7.411 2003/09/15 23:24:48 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -1049,12 +1049,10 @@ remove_dependents(struct Client *client_p, struct Client *source_p,
 /*
  * dead_link_on_write - report a write error if not already dead,
  *			mark it as dead then exit it
- *
  */
 void
 dead_link_on_write(struct Client *client_p, int ierrno)
 {
-  const char *notice;
   dlink_node *ptr;
 
   if (IsDefunct(client_p))
@@ -1063,32 +1061,20 @@ dead_link_on_write(struct Client *client_p, int ierrno)
   dbuf_clear(&client_p->localClient->buf_recvq);
   dbuf_clear(&client_p->localClient->buf_sendq);
 
-  if (IsSendQExceeded(client_p))
-    notice = "Max SendQ exceeded";
-  else
-    notice = "Write error: connection closed";
-
-  if (!IsPerson(client_p) && !IsUnknown(client_p) && !IsClosing(client_p))
-  {
-    sendto_realops_flags(UMODE_ALL, L_ADMIN, "Closing link to %s: %s",
-                         get_client_name(client_p, HIDE_IP), notice);
-    sendto_realops_flags(UMODE_ALL, L_OPER,  "Closing link to %s: %s",
-                         get_client_name(client_p, MASK_IP), notice);
-  }
-
   assert(dlinkFind(&abort_list, client_p) == NULL);
   ptr = make_dlink_node();
   /* don't let exit_aborted_clients() finish yet */
   dlinkAddTail(client_p, ptr, &abort_list);
+
   if (eac_next == NULL)
     eac_next = ptr;
+
   SetDead(client_p); /* You are dead my friend */
 }
 
 /*
  * dead_link_on_read -  report a read error if not already dead,
  *			mark it as dead then exit it
- *
  */
 void
 dead_link_on_read(struct Client *client_p, int error)

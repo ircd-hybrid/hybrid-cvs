@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.210 2003/08/19 17:52:08 adx Exp $
+ *  $Id: s_bsd.c,v 7.211 2003/09/15 23:24:48 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -49,7 +49,6 @@
 #include "send.h"
 #include "memory.h"
 
-
 #ifndef IN_LOOPBACKNET
 #define IN_LOOPBACKNET        0x7f
 #endif
@@ -72,7 +71,6 @@ static void comm_connect_dns_callback(void *vptr, struct DNSReply *reply);
 static PF comm_connect_tryconnect;
 
 /* close_all_connections() can be used *before* the system come up! */
-
 void
 close_all_connections(void)
 {
@@ -100,8 +98,7 @@ close_all_connections(void)
   check_can_use_v6();
 }
 
-/*
- * check_can_use_v6()
+/* check_can_use_v6()
  *  Check if the system can open AF_INET6 sockets
  */
 void
@@ -122,8 +119,7 @@ check_can_use_v6(void)
 #endif
 }
 
-/*
- * get_sockerr - get the error value from the socket or the current errno
+/* get_sockerr - get the error value from the socket or the current errno
  *
  * Get the *real* error from the socket (well try to anyway..).
  * This may only work when SO_DEBUG is enabled but its worth the
@@ -458,8 +454,6 @@ add_connection(struct Listener* listener, int fd)
   start_auth(new_client);
 }
 
-
-
 /*
  * stolen from squid - its a neat (but overused! :) routine which we
  * can use to see whether we can ignore this errno or not. It is
@@ -487,7 +481,6 @@ ignoreErrno(int ierrno)
   }
 }
 
-
 /*
  * comm_settimeout() - set the socket timeout
  *
@@ -503,7 +496,6 @@ comm_settimeout(int fd, time_t timeout, PF *callback, void *cbdata)
     fd_table[fd].timeout_handler = callback;
     fd_table[fd].timeout_data = cbdata;
 }
-
 
 /*
  * comm_setflush() - set a flush function
@@ -525,7 +517,6 @@ comm_setflush(int fd, time_t timeout, PF *callback, void *cbdata)
     fd_table[fd].flush_handler = callback;
     fd_table[fd].flush_data = cbdata;
 }
-
 
 /*
  * comm_checktimeouts() - check the socket timeouts
@@ -670,7 +661,6 @@ comm_connect_callback(int fd, int status)
  hdl(fd, status, fd_table[fd].connect.data);
 }
 
-
 /*
  * comm_connect_timeout() - this gets called when the socket connection
  * times out. This *only* can be called once connect() is initially
@@ -682,7 +672,6 @@ comm_connect_timeout(int fd, void *notused)
     /* error! */
     comm_connect_callback(fd, COMM_ERR_TIMEOUT);
 }
-
 
 /*
  * comm_connect_dns_callback() - called at the completion of the DNS request
@@ -719,7 +708,6 @@ comm_connect_dns_callback(void *vptr, struct DNSReply *reply)
     F->dns_query = NULL;
     comm_connect_tryconnect(F->fd, NULL);
 }
-
 
 /* static void comm_connect_tryconnect(int fd, void *notused)
  * Input: The fd, the handler data(unused).
@@ -763,7 +751,7 @@ comm_connect_tryconnect(int fd, void *notused)
 }
 
 /*
- * comm_error_str() - return an error string for the given error condition
+ * comm_errorstr() - return an error string for the given error condition
  */
 const char *
 comm_errstr(int error)
@@ -772,7 +760,6 @@ comm_errstr(int error)
         return "Invalid error number!";
     return comm_err_str[error];
 }
-
 
 /*
  * comm_open() - open a socket
@@ -814,7 +801,6 @@ comm_open(int family, int sock_type, int proto, const char *note)
   fd_open(fd, FD_SOCKET, note);
   return fd;
 }
-
 
 /*
  * comm_accept() - accept an incoming connection

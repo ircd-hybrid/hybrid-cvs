@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.372 2003/09/15 02:26:18 bill Exp $
+ *  $Id: s_serv.c,v 7.373 2003/09/15 23:24:48 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -56,7 +56,6 @@
 #include "channel.h" /* chcap_usage_counts stuff...*/
 #include "hook.h"
 
-
 #define MIN_CONN_FREQ 300
 
 struct Client *uplink  = NULL;
@@ -65,7 +64,6 @@ static void start_io(struct Client *server);
 static void burst_members(struct Client *client_p, struct Channel *chptr);
 static void burst_ll_members(struct Client *client_p, struct Channel *chptr);
 static void add_lazylinkchannel(struct Client *client_p, struct Channel *chptr);
-
 
 static SlinkRplHnd slink_error;
 static SlinkRplHnd slink_zipstats;
@@ -113,7 +111,6 @@ static void burst_all(struct Client *client_p);
 static void cjoin_all(struct Client *client_p);
 
 static CNCB serv_connect_callback;
-
 
 void
 slink_error(unsigned int rpl, unsigned int len, unsigned char *data,
@@ -466,6 +463,7 @@ hunt_server(struct Client *client_p, struct Client *source_p, const char *comman
 void
 try_connections(void *unused)
 {
+  struct Client *pending_connection;
   dlink_node *ptr;
   struct ConfItem *conf;
   struct AccessItem *aconf;
@@ -516,6 +514,17 @@ try_connections(void *unused)
       {
         dlinkDelete(ptr, &server_items);
         dlinkAddTail(conf, &conf->node, &server_items);
+      }
+
+      DLINK_FOREACH(ptr, unknown_list.head)
+      {
+        pending_connection = ptr->data;
+
+        if (pending_connection->name[0] && conf->name != NULL)
+        {
+          if (0 == irccmp(conf->name, pending_connection->name))
+            return;
+        }
       }
 
       /* We used to only print this if serv_connect() actually
@@ -1852,17 +1861,15 @@ nextFreeMask(void)
   return(0L); /* watch this special case ... */
 }
 
-/*
- * New server connection code
+/* New server connection code
  * Based upon the stuff floating about in s_bsd.c
  *   -- adrian
  */
 
-/*
- * serv_connect() - initiate a server connection
+/* serv_connect() - initiate a server connection
  *
  * inputs	- pointer to conf 
- *		- pointer to client doing the connet
+ *		- pointer to client doing the connect
  * output	-
  * side effects	-
  *
@@ -1879,130 +1886,132 @@ int
 serv_connect(struct AccessItem *aconf, struct Client *by)
 {
   struct ConfItem *conf;
-    struct Client *client_p;
-    int fd;
-    char buf[HOSTIPLEN];
-    /* conversion structs */
-    struct sockaddr_in *v4;
-    /* Make sure aconf is useful */
-    assert(aconf != NULL);
-    if(aconf == NULL)
-      return (0);
+  struct Client *client_p;
+  int fd;
+  char buf[HOSTIPLEN];
 
-    /* XXX should be passing struct ConfItem in the first place */
-    conf = unmap_conf_item(aconf);
+  /* conversion structs */
+  struct sockaddr_in *v4;
+  /* Make sure aconf is useful */
+  assert(aconf != NULL);
 
-    /* log */
-    irc_getnameinfo((struct sockaddr*)&aconf->ipnum, aconf->ipnum.ss_len,
-        buf, HOSTIPLEN, NULL, 0, NI_NUMERICHOST);
-    ilog(L_NOTICE, "Connect to %s[%s] @%s", aconf->user, aconf->host,
-         buf);
+  if(aconf == NULL)
+    return (0);
 
-    /* Still processing a DNS lookup? -> exit */
-    if (aconf->dns_query != NULL)
-      return (0);
+  /* XXX should be passing struct ConfItem in the first place */
+  conf = unmap_conf_item(aconf);
 
-    /*
-     * Make sure this server isn't already connected
-     * Note: aconf should ALWAYS be a valid C: line
-     */
-    if ((client_p = find_server(conf->name)) != NULL)
-      { 
-        sendto_realops_flags(UMODE_ALL, L_ADMIN,
-	      "Server %s already present from %s",
-			     conf->name, get_client_name(client_p, SHOW_IP));
-        sendto_realops_flags(UMODE_ALL, L_OPER,
-			     "Server %s already present from %s",
-			     conf->name, get_client_name(client_p, MASK_IP));
-        if (by && IsPerson(by) && !MyClient(by))
-	  sendto_one(by, ":%s NOTICE %s :Server %s already present from %s",
-		     me.name, by->name, conf->name,
-		     get_client_name(client_p, MASK_IP));
-        return (0);
-      }
+  /* log */
+  irc_getnameinfo((struct sockaddr*)&aconf->ipnum, aconf->ipnum.ss_len,
+		  buf, HOSTIPLEN, NULL, 0, NI_NUMERICHOST);
+  ilog(L_NOTICE, "Connect to %s[%s] @%s", aconf->user, aconf->host,
+       buf);
+
+  /* Still processing a DNS lookup? -> exit */
+  if (aconf->dns_query != NULL)
+  {
+    sendto_realops_flags(UMODE_ALL, L_OPER,
+                         "Error connecting to %s: Error during DNS lookup", conf->name);
+    return (0);
+  }
+
+  /* Make sure this server isn't already connected
+   * Note: aconf should ALWAYS be a valid C: line
+   */
+  if ((client_p = find_server(conf->name)) != NULL)
+  { 
+    sendto_realops_flags(UMODE_ALL, L_ADMIN,
+		         "Server %s already present from %s",
+		         conf->name, get_client_name(client_p, SHOW_IP));
+    sendto_realops_flags(UMODE_ALL, L_OPER,
+		         "Server %s already present from %s",
+		         conf->name, get_client_name(client_p, MASK_IP));
+    if (by && IsPerson(by) && !MyClient(by))
+      sendto_one(by, ":%s NOTICE %s :Server %s already present from %s",
+	         me.name, by->name, conf->name,
+	         get_client_name(client_p, MASK_IP));
+    return (0);
+  }
     
-    /* create a socket for the server connection */ 
-    if ((fd = comm_open(aconf->ipnum.ss.ss_family, SOCK_STREAM, 0, NULL)) < 0)
-    {
-      /* Eek, failure to create the socket */
-      report_error(L_ALL,
-		   "opening stream socket to %s: %s", conf->name, errno);
-      return (0);
-    }
+  /* create a socket for the server connection */ 
+  if ((fd = comm_open(aconf->ipnum.ss.ss_family, SOCK_STREAM, 0, NULL)) < 0)
+  {
+    /* Eek, failure to create the socket */
+    report_error(L_ALL,
+		 "opening stream socket to %s: %s", conf->name, errno);
+    return (0);
+  }
 
-    /* servernames are always guaranteed under HOSTLEN chars */
-    fd_note(fd, "Server: %s", conf->name);
+  /* servernames are always guaranteed under HOSTLEN chars */
+  fd_note(fd, "Server: %s", conf->name);
 
-    /* Create a local client */
-    client_p = make_client(NULL);
+  /* Create a local client */
+  client_p = make_client(NULL);
 
-    /* Copy in the server, hostname, fd */
-    strlcpy(client_p->name, conf->name, sizeof(client_p->name));
-    strlcpy(client_p->host, aconf->host, sizeof(client_p->host));
-    /* We already converted the ip once, so lets use it - stu */
-    strlcpy(client_p->localClient->sockhost, buf, HOSTIPLEN);
-    client_p->localClient->fd = fd;
+  /* Copy in the server, hostname, fd */
+  strlcpy(client_p->name, conf->name, sizeof(client_p->name));
+  strlcpy(client_p->host, aconf->host, sizeof(client_p->host));
+  /* We already converted the ip once, so lets use it - stu */
+  strlcpy(client_p->localClient->sockhost, buf, HOSTIPLEN);
+  client_p->localClient->fd = fd;
 
-    /*
-     * Set up the initial server evilness, ripped straight from
-     * connect_server(), so don't blame me for it being evil.
-     *   -- adrian
-     */
+  /* Set up the initial server evilness, ripped straight from
+   * connect_server(), so don't blame me for it being evil.
+   *   -- adrian
+   */
+  if (!set_non_blocking(client_p->localClient->fd))
+  {
+    report_error(L_ADMIN, NONB_ERROR_MSG, get_client_name(client_p, SHOW_IP), errno);
+    report_error(L_OPER, NONB_ERROR_MSG, get_client_name(client_p, MASK_IP), errno);
+  }
 
-    if (!set_non_blocking(client_p->localClient->fd))
-    {
-      report_error(L_ADMIN, NONB_ERROR_MSG, get_client_name(client_p, SHOW_IP), errno);
-      report_error(L_OPER, NONB_ERROR_MSG, get_client_name(client_p, MASK_IP), errno);
-    }
+  if (!set_sock_buffers(client_p->localClient->fd, READBUF_SIZE))
+  {
+    report_error(L_ADMIN, SETBUF_ERROR_MSG,
+		 get_client_name(client_p, SHOW_IP), errno);
+    report_error(L_OPER, SETBUF_ERROR_MSG,
+		 get_client_name(client_p, MASK_IP), errno);
+  }
 
-    if (!set_sock_buffers(client_p->localClient->fd, READBUF_SIZE))
-    {
-      report_error(L_ADMIN, SETBUF_ERROR_MSG,
-		   get_client_name(client_p, SHOW_IP), errno);
-      report_error(L_OPER, SETBUF_ERROR_MSG,
-		   get_client_name(client_p, MASK_IP), errno);
-    }
+  /* Attach config entries to client here rather than in
+   * serv_connect_callback(). This to avoid null pointer references.
+   */
+  if (!attach_connect_block(client_p, conf->name, aconf->host))
+  {
+    sendto_realops_flags(UMODE_ALL, L_ALL,
+		         "Host %s is not enabled for connecting:no C/N-line",
+			 conf->name);
+    if (by && IsPerson(by) && !MyClient(by))  
+      sendto_one(by, ":%s NOTICE %s :Connect to host %s failed.",
+	         me.name, by->name, client_p->name);
+    detach_all_confs(client_p);
+    return (0);
+  }
+  /* at this point we have a connection in progress and C/N lines
+   * attached to the client, the socket info should be saved in the
+   * client and it should either be resolved or have a valid address.
+   *
+   * The socket has been connected or connect is in progress.
+   */
+  make_server(client_p);
 
-    /*
-     * Attach config entries to client here rather than in
-     * serv_connect_callback(). This to avoid null pointer references.
-     */
-    if (!attach_connect_block(client_p, conf->name, aconf->host))
-      {
-        sendto_realops_flags(UMODE_ALL, L_ALL,
-			   "Host %s is not enabled for connecting:no C/N-line",
-			     conf->name);
-        if (by && IsPerson(by) && !MyClient(by))  
-            sendto_one(by, ":%s NOTICE %s :Connect to host %s failed.",
-              me.name, by->name, client_p->name);
-        detach_all_confs(client_p);
-        return (0);
-      }
-    /*
-     * at this point we have a connection in progress and C/N lines
-     * attached to the client, the socket info should be saved in the
-     * client and it should either be resolved or have a valid address.
-     *
-     * The socket has been connected or connect is in progress.
-     */
-    make_server(client_p);
-    if (by && IsPerson(by))
-      strlcpy(client_p->serv->by, by->name, sizeof(client_p->serv->by));
-    else
-      strlcpy(client_p->serv->by, "AutoConn.", sizeof(client_p->serv->by));
+  if (by && IsPerson(by))
+    strlcpy(client_p->serv->by, by->name, sizeof(client_p->serv->by));
+  else
+    strlcpy(client_p->serv->by, "AutoConn.", sizeof(client_p->serv->by));
 
-    strlcpy(client_p->serv->up, me.name, sizeof(client_p->serv->up));
-    SetConnecting(client_p);
-    dlinkAdd(client_p, &client_p->node, &global_client_list);
-    /* from def_fam */
-    client_p->localClient->aftype = aconf->aftype;
-    
-    /* Now, initiate the connection */
-    /* XXX assume that a non 0 type means a specific bind address 
-     * for this connect.
-     */
-    switch(aconf->aftype)
-    {
+  strlcpy(client_p->serv->up, me.name, sizeof(client_p->serv->up));
+  SetConnecting(client_p);
+  dlinkAdd(client_p, &client_p->node, &global_client_list);
+  /* from def_fam */
+  client_p->localClient->aftype = aconf->aftype;
+
+  /* Now, initiate the connection */
+  /* XXX assume that a non 0 type means a specific bind address 
+   * for this connect.
+   */
+  switch(aconf->aftype)
+  {
     case AF_INET:
       v4 = (struct sockaddr_in*)&aconf->my_ipnum;
       if(v4->sin_addr.s_addr)
@@ -2036,26 +2045,25 @@ serv_connect(struct AccessItem *aconf, struct Client *by)
     case AF_INET6:
       if(ServerInfo.specific_ipv6_vhost)
       {
-          struct irc_ssaddr ipn;
-          memset(&ipn, 0, sizeof(struct irc_ssaddr));
-          ipn.ss.ss_family = AF_INET6;
-          ipn.ss_port = 0;
-          memcpy(&ipn, &ServerInfo.ip6, sizeof(struct irc_ssaddr));
-          comm_connect_tcp(client_p->localClient->fd, aconf->host, aconf->port,
-                (struct sockaddr *)&ipn, ipn.ss_len,
-                serv_connect_callback, client_p, aconf->aftype, CONNECTTIMEOUT);
+        struct irc_ssaddr ipn;
+        memset(&ipn, 0, sizeof(struct irc_ssaddr));
+        ipn.ss.ss_family = AF_INET6;
+        ipn.ss_port = 0;
+        memcpy(&ipn, &ServerInfo.ip6, sizeof(struct irc_ssaddr));
+        comm_connect_tcp(client_p->localClient->fd, aconf->host, aconf->port,
+  		         (struct sockaddr *)&ipn, ipn.ss_len,
+        serv_connect_callback, client_p, aconf->aftype, CONNECTTIMEOUT);
       }
       else
-	    comm_connect_tcp(client_p->localClient->fd, aconf->host, aconf->port, 
-            NULL, 0, serv_connect_callback, client_p, aconf->aftype, 
-            CONNECTTIMEOUT);
+	comm_connect_tcp(client_p->localClient->fd, aconf->host, aconf->port, 
+        		 NULL, 0, serv_connect_callback, client_p, aconf->aftype, 
+            		 CONNECTTIMEOUT);
 #endif
-    }
-    return (1);
+  }
+  return (1);
 }
 
-/*
- * serv_connect_callback() - complete a server connection.
+/* serv_connect_callback() - complete a server connection.
  * 
  * This routine is called after the server connection attempt has
  * completed. If unsucessful, an error is sent to ops and the client
@@ -2076,110 +2084,100 @@ serv_connect_callback(int fd, int status, void *data)
 
   set_no_delay(fd);
 
-    /* Next, for backward purposes, record the ip of the server */
-    memcpy(&client_p->localClient->ip, &fd_table[fd].connect.hostaddr,
-        sizeof(struct irc_ssaddr));
-    /* Check the status */
-    if (status != COMM_OK)
-    {
-      /* We have an error, so report it and quit
-       * Admins get to see any IP, mere opers don't *sigh*
-       */
-       if (ConfigServerHide.hide_server_ips)
-         sendto_realops_flags(UMODE_ALL, L_ADMIN,
-                              "Error connecting to %s: %s",
-                              client_p->name, comm_errstr(status));
-       else
-         sendto_realops_flags(UMODE_ALL, L_ADMIN,
-			      "Error connecting to %s[%s]: %s", client_p->name,
-			      client_p->host, comm_errstr(status));
+  /* Next, for backward purposes, record the ip of the server */
+  memcpy(&client_p->localClient->ip, &fd_table[fd].connect.hostaddr,
+         sizeof(struct irc_ssaddr));
+  /* Check the status */
+  if (status != COMM_OK)
+  {
+    /* We have an error, so report it and quit
+     * Admins get to see any IP, mere opers don't *sigh*
+     */
+     if (ConfigServerHide.hide_server_ips)
+       sendto_realops_flags(UMODE_ALL, L_ADMIN,
+                            "Error connecting to %s: %s",
+                            client_p->name, comm_errstr(status));
+     else
+       sendto_realops_flags(UMODE_ALL, L_ADMIN,
+	      		    "Error connecting to %s[%s]: %s", client_p->name,
+			    client_p->host, comm_errstr(status));
 
-	sendto_realops_flags(UMODE_ALL, L_OPER,
-			     "Error connecting to %s: %s",
-			     client_p->name, comm_errstr(status));
+     sendto_realops_flags(UMODE_ALL, L_OPER,
+			  "Error connecting to %s: %s",
+			  client_p->name, comm_errstr(status));
 
-	/* If a fd goes bad, call dead_link() the socket is no
-	 * longer valid for reading or writing.
-	 */
-	dead_link_on_write(client_p, 0);
-        return;
-      }
+     /* If a fd goes bad, call dead_link() the socket is no
+      * longer valid for reading or writing.
+      */
+     dead_link_on_write(client_p, 0);
+     return;
+  }
 
-    /* COMM_OK, so continue the connection procedure */
-    /* Get the C/N lines */
-    conf = find_conf_name(&client_p->localClient->confs,
-			  client_p->name, SERVER_TYPE); 
-    if (conf == NULL)
-      {
-        sendto_realops_flags(UMODE_ALL, L_ADMIN,
-	             "Lost connect{} block for %s", get_client_name(client_p, HIDE_IP));
-        sendto_realops_flags(UMODE_ALL, L_OPER,
-		     "Lost connect{} block for %s", get_client_name(client_p, MASK_IP));
+  /* COMM_OK, so continue the connection procedure */
+  /* Get the C/N lines */
+  conf = find_conf_name(&client_p->localClient->confs,
+			client_p->name, SERVER_TYPE); 
+  if (conf == NULL)
+  {
+    sendto_realops_flags(UMODE_ALL, L_ADMIN,
+	                 "Lost connect{} block for %s", get_client_name(client_p, HIDE_IP));
+    sendto_realops_flags(UMODE_ALL, L_OPER,
+		         "Lost connect{} block for %s", get_client_name(client_p, MASK_IP));
 
-        exit_client(client_p, client_p, &me, "Lost connect{} block");
-        return;
-      }
+    exit_client(client_p, client_p, &me, "Lost connect{} block");
+    return;
+  }
 
-    aconf = (struct AccessItem *)map_to_conf(conf);
-    /* Next, send the initial handshake */
-    SetHandshake(client_p);
+  aconf = (struct AccessItem *)map_to_conf(conf);
+  /* Next, send the initial handshake */
+  SetHandshake(client_p);
 
 #ifdef HAVE_LIBCRYPTO
-    /* Handle all CRYPTLINK links in cryptlink_init */
-    if (IsConfCryptLink(aconf))
-    {
-      cryptlink_init(client_p, conf, fd);
-      return;
-    }
+  /* Handle all CRYPTLINK links in cryptlink_init */
+  if (IsConfCryptLink(aconf))
+  {
+    cryptlink_init(client_p, conf, fd);
+    return;
+  }
 #endif
     
-    /*
-     * jdc -- Check and send spasswd, not passwd.
-     */
-
-    if (!EmptyString(aconf->spasswd))
-    {
-        sendto_one(client_p, "PASS %s :TS", aconf->spasswd);
-    }
+  /* jdc -- Check and send spasswd, not passwd. */
+  if (!EmptyString(aconf->spasswd))
+    sendto_one(client_p, "PASS %s :TS", aconf->spasswd);
     
-    /*
-     * Pass my info to the new server
-     *
-     * If trying to negotiate LazyLinks, pass on CAP_LL
-     * If this is a HUB, pass on CAP_HUB
-     */
+  /* Pass my info to the new server
+   *
+   * If trying to negotiate LazyLinks, pass on CAP_LL
+   * If this is a HUB, pass on CAP_HUB
+   */
+  send_capabilities(client_p, aconf,
+ 		    ((aconf->flags & CONF_FLAGS_LAZY_LINK) ? CAP_LL : 0)
+		    | ((aconf->flags & CONF_FLAGS_COMPRESSED) ? CAP_ZIP_SUPPORTED : 0)
+		    , 0);
 
-    send_capabilities(client_p, aconf,
-        ((aconf->flags & CONF_FLAGS_LAZY_LINK) ? CAP_LL : 0)
-      | ((aconf->flags & CONF_FLAGS_COMPRESSED) ? CAP_ZIP_SUPPORTED : 0)
-		      , 0);
+  sendto_one(client_p, "SERVER %s 1 :%s%s",
+             my_name_for_link(conf), 
+	     ConfigServerHide.hidden ? "(H) " : "", 
+	     me.info);
 
-    sendto_one(client_p, "SERVER %s 1 :%s%s",
-               my_name_for_link(conf), 
-	       ConfigServerHide.hidden ? "(H) " : "", 
-	       me.info);
+  /* If we've been marked dead because a send failed, just exit
+   * here now and save everyone the trouble of us ever existing.
+   */
+  if (IsDead(client_p)) 
+  {
+      sendto_realops_flags(UMODE_ALL, L_ADMIN,
+			   "%s[%s] went dead during handshake",
+                           client_p->name,
+			   client_p->host);
+      sendto_realops_flags(UMODE_ALL, L_OPER,
+			   "%s went dead during handshake", client_p->name);
+      return;
+  }
 
-    /* 
-     * If we've been marked dead because a send failed, just exit
-     * here now and save everyone the trouble of us ever existing.
-     */
-    if (IsDead(client_p)) 
-    {
-        sendto_realops_flags(UMODE_ALL, L_ADMIN,
-			     "%s[%s] went dead during handshake",
-                             client_p->name,
-			     client_p->host);
-        sendto_realops_flags(UMODE_ALL, L_OPER,
-			     "%s went dead during handshake", client_p->name);
-
-        return;
-    }
-
-    /* don't move to serv_list yet -- we haven't sent a burst! */
-
-    /* If we get here, we're ok, so lets start reading some data */
-    comm_setselect(fd, FDLIST_SERVER, COMM_SELECT_READ, read_packet,
-                   client_p, 0);
+  /* don't move to serv_list yet -- we haven't sent a burst! */
+  /* If we get here, we're ok, so lets start reading some data */
+  comm_setselect(fd, FDLIST_SERVER, COMM_SELECT_READ, read_packet,
+                 client_p, 0);
 }
 
 #ifdef HAVE_LIBCRYPTO
@@ -2248,8 +2246,8 @@ cryptlink_init(struct Client *client_p, struct ConfItem *conf, int fd)
 
   send_capabilities(client_p, aconf,
 		    ((aconf->flags & CONF_FLAGS_LAZY_LINK) ? CAP_LL : 0)
-    | ((aconf->flags & CONF_FLAGS_COMPRESSED) ? CAP_ZIP_SUPPORTED : 0) ,
-         CAP_ENC_MASK);
+    		    | ((aconf->flags & CONF_FLAGS_COMPRESSED) ? CAP_ZIP_SUPPORTED : 0) ,
+         	    CAP_ENC_MASK);
 
   sendto_one(client_p, "CRYPTLINK SERV %s %s :%s%s",
              my_name_for_link(conf), key_to_send,
@@ -2294,10 +2292,10 @@ cryptlink_error(struct Client *client_p, const char *type,
     exit_client(client_p, client_p, &me, client_reason);
 }
 
-static  char base64_chars[] =
+static char base64_chars[] =
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 
-static  char base64_values[] =
+static char base64_values[] =
             {
 /* 00-15   */ -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
 /* 16-31   */ -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,

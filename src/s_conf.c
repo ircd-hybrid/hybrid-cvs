@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.474 2003/09/15 01:44:18 bill Exp $
+ *  $Id: s_conf.c,v 7.475 2003/09/15 23:24:48 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -616,14 +616,14 @@ report_confitem_types(struct Client *source_p, ConfType type)
   case SERVER_TYPE:
     DLINK_FOREACH(ptr, server_items.head)
     {
-      char buf[20];
-      char *s = buf;
+      char sbuf[20];
+      char *s = sbuf;
 
       conf = ptr->data;
       aconf = (struct AccessItem *)map_to_conf(conf);
       get_printable_conf(conf, &host, &reason, &user, &port, &classname);
 
-      buf[0] = '\0';
+      sbuf[0] = '\0';
 
       if (IsConfAllowAutoConn(aconf))
 	*s++ = 'A';
@@ -635,7 +635,7 @@ report_confitem_types(struct Client *source_p, ConfType type)
 	*s++ = 'Z';
       if (aconf->fakename)
 	*s++ = 'M';
-      if (buf[0] == '\0')
+      if (sbuf[0] == '\0')
 	*s++ = '*';
 
       *s++ = '\0';
@@ -646,11 +646,11 @@ report_confitem_types(struct Client *source_p, ConfType type)
       if (!ConfigServerHide.hide_server_ips && IsAdmin(source_p))
 	sendto_one(source_p, form_str(RPL_STATSCLINE),
 		   me.name, source_p->name, 'C', host,
-		   buf, conf->name, port, classname);
+		   sbuf, conf->name, port, classname);
         else
           sendto_one(source_p, form_str(RPL_STATSCLINE),
                      me.name, source_p->name, 'C',
-		     "*@127.0.0.1", buf, conf->name, port, classname);
+		     "*@127.0.0.1", sbuf, conf->name, port, classname);
     }
     break;
 
