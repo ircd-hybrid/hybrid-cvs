@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.203 2003/04/30 03:59:49 michael Exp $
+ *  $Id: s_conf.h,v 7.204 2003/05/01 12:21:43 michael Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -264,7 +264,7 @@ struct config_channel_entry
   int knock_delay;
   int knock_delay_channel;
   int vchans_oper_only;
-  int max_bans;
+  unsigned int max_bans;
   int max_chans_per_user;
   int no_create_on_split;
   int no_join_on_split;

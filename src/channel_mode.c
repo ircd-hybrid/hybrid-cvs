@@ -19,12 +19,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.83 2003/04/14 14:57:17 db Exp $
+ *  $Id: channel_mode.c,v 7.84 2003/05/01 12:21:45 michael Exp $
  */
 
 #include "stdinc.h"
 #include "setup.h"
-
 #include "tools.h"
 #include "channel.h"
 #include "channel_mode.h"
@@ -44,8 +43,6 @@
 #include "event.h"
 #include "memory.h"
 #include "balloc.h"
-
-
 #include "s_log.h"
 
 static int add_id(struct Client *, struct Channel *, char *, int);
@@ -205,20 +202,24 @@ add_id(struct Client *client_p, struct Channel *chptr, char *banid, int type)
   dlink_list *list;
   dlink_node *ban;
   struct Ban *actualBan;
+  unsigned int num_mask = 0;
 
-  /* dont let local clients overflow the banlist */
-  if ((!IsServer(client_p)) && (chptr->num_mask >= ConfigChannel.max_bans))
+  /* dont let local clients overflow the b/e/I lists */
+  if (MyClient(client_p))
   {
-    if (MyClient(client_p))
+    num_mask = dlink_list_length(&chptr->banlist) +
+               dlink_list_length(&chptr->exceptlist) +
+               dlink_list_length(&chptr->invexlist);
+
+    if (num_mask >= ConfigChannel.max_bans)
     {
       sendto_one(client_p, form_str(ERR_BANLISTFULL),
                  me.name, client_p->name, chptr->chname, banid);
-      return 0;
+      return(0);
     }
-  }
 
-  if (MyClient(client_p))
     collapse(banid);
+  }
 
   switch (type)
   {
@@ -265,7 +266,6 @@ add_id(struct Client *client_p, struct Channel *chptr, char *banid, int type)
 
   dlinkAdd(actualBan, make_dlink_node(), list);
 
-  chptr->num_mask++;
   return(1);
 }
 
@@ -320,12 +320,6 @@ del_id(struct Channel *chptr, char *banid, int type)
       MyFree(banptr->banstr);
       MyFree(banptr->who);
       BlockHeapFree(ban_heap, banptr);
-
-      /* num_mask should never be < 0 */
-      if (chptr->num_mask > 0)
-        chptr->num_mask--;
-      else
-        chptr->num_mask = 0;
 
       dlinkDelete(ban, list);
       free_dlink_node(ban);

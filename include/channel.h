@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.127 2003/04/06 08:38:52 michael Exp $
+ *  $Id: channel.h,v 7.128 2003/05/01 12:21:43 michael Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -95,7 +95,6 @@ struct Channel
   int             received_number_of_privmsgs;
   int             flood_noticed;
 
-  int             num_mask;              /* number of bans+exceptions+invite exceptions */
   time_t          channelts;
   char            chname[CHANNELLEN+1];
 };
