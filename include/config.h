@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.124 2001/11/11 17:07:39 ejb Exp $
+ * $Id: config.h,v 7.125 2001/12/30 22:11:40 db Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -65,6 +65,13 @@
  */
 #define MAX_CLIENTS     200
 #define MAX_BUFFER      60
+
+/* Ignore bogus timestamps from other servers. Yes this will desync
+ * the network, but it will allow chanops to resync with a valid non TS 0
+ *
+ * This should be enabled network wide, or not at all.
+ */
+#undef  IGNORE_BOGUS_TS
 
 #ifdef VMS
 /* *PATH - directory locations and filenames for VMS.

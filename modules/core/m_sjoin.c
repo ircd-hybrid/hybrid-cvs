@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.124 2001/12/30 09:11:25 a1kmm Exp $
+ *   $Id: m_sjoin.c,v 1.125 2001/12/30 22:11:43 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-char *_version = "$Revision: 1.124 $";
+char *_version = "$Revision: 1.125 $";
 #endif
 /*
  * ms_sjoin
@@ -257,6 +257,7 @@ static void ms_sjoin(struct Client *client_p,
 
   oldmode = &chptr->mode;
 
+#ifdef IGNORE_BOGUS_TS
   if (newts < 800000000)
     {
       sendto_realops_flags(FLAGS_DEBUG, L_ALL,
@@ -267,6 +268,7 @@ static void ms_sjoin(struct Client *client_p,
 
       newts = (oldts==0) ? oldts : 800000000;
     }
+#endif
 
   /*
    * XXX - this no doubt destroys vchans
