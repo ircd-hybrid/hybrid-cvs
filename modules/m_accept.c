@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_accept.c,v 1.24 2001/09/23 02:26:02 a1kmm Exp $
+ *   $Id: m_accept.c,v 1.25 2001/10/04 20:56:51 androsyn Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -85,7 +85,7 @@ static void m_accept(struct Client *client_p, struct Client *source_p,
   build_nicklist(source_p, addbuf, delbuf, parv[1]);
 
   /* parse the delete list */
-  for(nick = strtoken(&p, delbuf, ","); nick;
+  for(nick = strtoken(&p, delbuf, ","); nick != NULL;
       nick = strtoken(&p, NULL, ","))
   {
     /* shouldnt happen, but lets be paranoid */

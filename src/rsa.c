@@ -19,7 +19,7 @@
  *
  *
  *
- * $Id: rsa.c,v 7.19 2001/07/18 15:04:41 androsyn blalloc.c $
+ * $Id: rsa.c,v 7.20 2001/10/04 20:56:52 androsyn Exp $
  */
 
 #include <assert.h>
@@ -65,7 +65,7 @@ void report_crypto_errors(void)
     ilog(L_CRIT, "SSL error: %s", ERR_error_string(e, 0));
     cnt++;
   }
-};
+}
 
 /*
  * verify_private_key - reread private key and verify against inmem key
