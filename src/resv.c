@@ -2,7 +2,7 @@
  * resv.c
  * Copyright (C) 2001 Hybrid Development Team
  *
- * $Id: resv.c,v 7.6 2001/07/03 21:15:01 leeh Exp $
+ * $Id: resv.c,v 7.7 2001/07/04 10:00:01 leeh Exp $
  */
 #include "tools.h"
 #include "restart.h"
@@ -211,11 +211,13 @@ void report_resv(struct Client *source_p)
   for(resv_cp = ResvChannelList; resv_cp; resv_cp = resv_cp->next)
     sendto_one(source_p, form_str(RPL_STATSQLINE),
                me.name, source_p->name,
+	       resv_cp->conf ? 'Q' : 'q',
 	       resv_cp->name, resv_cp->reason, "*", "*");
 
   for(resv_np = ResvNickList; resv_np; resv_np = resv_np->next)
     sendto_one(source_p, form_str(RPL_STATSQLINE),
                me.name, source_p->name,
+	       resv_np->conf ? 'Q' : 'q',
 	       resv_np->name, resv_np->reason, "*", "*");
 }	       
 
