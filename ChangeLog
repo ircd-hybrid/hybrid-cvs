@@ -1,3 +1,31 @@
+bill        2002/10/03 11:33:47 EDT	(20021003_0)
+
+  Modified files:
+    doc                  convertconf-example.conf example.conf 
+                         example.efnet.conf 
+    include              s_conf.h 
+    modules              m_info.c m_join.c 
+    modules/core         m_nick.c 
+    src                  channel.c ircd_lexer.l ircd_parser.y 
+                         s_conf.c 
+  Log:
+  - added channel {} config entry 'oper_pass_resv', allows opers to pass RESVs.  suggested by DrmWEaver
+  
+  Revision  Changes    Path
+  7.6       +3 -0      ircd-hybrid-7/doc/convertconf-example.conf
+  7.167     +3 -0      ircd-hybrid-7/doc/example.conf
+  7.7       +3 -0      ircd-hybrid-7/doc/example.efnet.conf
+  7.185     +1 -0      ircd-hybrid-7/include/s_conf.h
+  1.97      +5 -3      ircd-hybrid-7/modules/core/m_nick.c
+  1.60      +7 -1      ircd-hybrid-7/modules/m_info.c
+  1.92      +3 -2      ircd-hybrid-7/modules/m_join.c
+  7.331     +3 -1      ircd-hybrid-7/src/channel.c
+  1.143     +1 -0      ircd-hybrid-7/src/ircd_lexer.l
+  1.256     +11 -0     ircd-hybrid-7/src/ircd_parser.y
+  7.326     +1 -0      ircd-hybrid-7/src/s_conf.c
+
+
+
 bill        2002/10/02 19:09:40 EDT	(20021002_1)
 
   Modified files:
@@ -32163,4 +32191,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4043 2002/10/02 23:09:43 bill Exp $
+$Id: ChangeLog,v 7.4044 2002/10/03 15:33:49 bill Exp $
