@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_lljoin.c,v 1.18 2000/12/21 02:26:49 ejb Exp $
+ * $Id: m_lljoin.c,v 1.19 2000/12/21 03:21:35 ryan Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -115,7 +115,7 @@ int     ms_lljoin(struct Client *cptr,
 
   acptr = hash_find_client(nick,(struct Client *)NULL);
 
-  if( !acptr && !acptr->user )
+  if( !acptr || !acptr->user )
     return 0;
 
   if( !MyClient(acptr) )
