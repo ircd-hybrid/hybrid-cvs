@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.380 2003/05/31 18:52:55 adx Exp $
+ *  $Id: channel.c,v 7.381 2003/06/01 02:38:27 db Exp $
  */
 
 #include "stdinc.h"
@@ -755,11 +755,11 @@ is_voiced(struct Channel *chptr, struct Client *who)
   return(0);
 }
 
-/* is_voiced()
+/* is_deopped()
  *
- * inputs       - pointer to channel to check voice on
+ * inputs       - pointer to channel to is deopped on
  *              - pointer to client struct being checked
- * output       - yes if voiced no if not
+ * output       - yes if deopped no if not
  * side effects -
  */
 int
