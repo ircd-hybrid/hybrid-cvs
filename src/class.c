@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: class.c,v 7.27 2001/03/06 15:53:36 toot Exp $
+ *   $Id: class.c,v 7.28 2001/04/17 21:21:23 toot Exp $
  */
 #include "tools.h"
 #include "class.h"
@@ -81,9 +81,9 @@ static  int     get_conf_ping(struct ConfItem *aconf)
  */
 const char*     get_client_class(struct Client *target_p)
 {
-  dlink_node    *ptr;
+  dlink_node *ptr;
   struct ConfItem *aconf;
-  const char*   retc = (const char *)NULL;
+  const char* retc = "unknown";
 
   if (target_p && !IsMe(target_p)  && (target_p->localClient->confs.head))
     for (ptr = target_p->localClient->confs.head; ptr; ptr = ptr->next)
