@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.142 2000/12/27 18:53:48 davidt Exp $
+ * $Id: channel.c,v 7.143 2000/12/28 19:22:32 bill Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -2235,7 +2235,12 @@ void set_channel_mode(struct Client *cptr,
 			     chname,
 			     modebuf_hops, parabuf_hops);
 
-      sendto_match_cap_servs(chptr, cptr, CAP_HOPS, ":%s MODE %s %s %s",
+      tmpc = modebuf_hops;
+      while (*tmpc && *tmpc != ' ') {
+       if (*tmpc == 'h') *tmpc = 'o';
+       ++tmpc;
+      }
+      sendto_match_cap_servs(chptr, cptr, ~CAP_HOPS, ":%s MODE %s %s %s",
 			     sptr->name, chptr->chname,
 			     modebuf_hops, parabuf_hops);
     }	
