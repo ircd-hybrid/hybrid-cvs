@@ -216,6 +216,9 @@
 /* This is the type of IO loop we are using */
 #undef SELECT_TYPE
 
+/* Suffix for shared libraries on this platform. */
+#undef SHARED_SUFFIX
+
 /* Size of the slink_node heap. */
 #undef SNODE_HEAP_SIZE
 

@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.65 2003/06/21 01:11:55 joshk Exp $
+dnl $Id: configure.ac,v 7.66 2003/06/21 05:30:18 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -8,7 +8,7 @@ dnl said functions need to be just about as complex as they already are.
 AC_PREREQ(2.57)
 
 dnl Sneaky way to get an Id tag into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.65 2003/06/21 01:11:55 joshk Exp $])
+AC_COPYRIGHT([$Id: configure.ac,v 7.66 2003/06/21 05:30:18 joshk Exp $])
 
 AC_INIT([ircd-hybrid],[7-CURRENT])
 
@@ -898,6 +898,7 @@ if test "$shared_modules" = yes; then
 	AC_SEARCH_LIBS(shl_load, dld, 
 	[
 	  AC_DEFINE(HAVE_SHL_LOAD, 1, [Define if the shl_load function is available.])
+	  SUFFIX=".sl"
 	  MOD_TARGET=hpux_shared
 	  SEDOBJ="s/\.o/.sl/g"  
 	],
@@ -907,6 +908,7 @@ if test "$shared_modules" = yes; then
           AC_SEARCH_LIBS(dlopen, [dl c_r],
 	  [
 	    AC_DEFINE(HAVE_DLOPEN, 1, [Define if the dlopen function is available.])
+	    SUFFIX=".so"
 	    MOD_TARGET=shared_modules
 	    SEDOBJ="s/\.o/.so/g"
 	    if test "$AppleGCC" = yes; then
@@ -924,6 +926,8 @@ if test "$shared_modules" = yes; then
 	  ])
 	])
 fi
+
+AC_DEFINE_UNQUOTED(SHARED_SUFFIX, "$SUFFIX", [Suffix for shared libraries on this platform.])
 
 dnl Third stage - wrangling the linker.
 if test "$shared_modules" = yes; then

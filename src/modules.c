@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.137 2003/06/18 09:14:37 joshk Exp $
+ *  $Id: modules.c,v 7.138 2003/06/21 05:30:22 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -61,18 +61,18 @@ static char* base_autoload = NULL;
 
 static const char *core_module_table[] =
 {
-  "m_die.s",
-  "m_join.s",
-  "m_kick.s",
-  "m_kill.s",
-  "m_message.s",
-  "m_mode.s",
-  "m_nick.s",
-  "m_part.s",
-  "m_quit.s",
-  "m_server.s",
-  "m_sjoin.s",
-  "m_squit.s",
+  "m_die",
+  "m_join",
+  "m_kick",
+  "m_kill",
+  "m_message",
+  "m_mode",
+  "m_nick",
+  "m_part",
+  "m_quit",
+  "m_server",
+  "m_sjoin",
+  "m_squit",
   NULL
 };
 
@@ -338,27 +338,22 @@ load_core_modules(int warn)
   char* module_name;
   int i;
   unsigned int m_len;
-#ifdef HAVE_SHL_LOAD
-  char suffix = 'l';
-#else
-  char suffix = 'o';
-#endif
 
   for (i = 0; core_module_table[i]; i++)
   {
-    if ((m_len = (strlen(base_path) + strlen(core_module_table[i]) + 2)) > PATH_MAX)
+    if ((m_len = (strlen(base_path) + strlen(core_module_table[i]) + strlen(SHARED_SUFFIX) + 2)) > PATH_MAX)
     {
-       ilog (L_ERROR, "Path for %s%c was truncated, the module was not loaded.",
-               core_module_table[i], suffix);
+       ilog (L_ERROR, "Path for %s%s was truncated, the module was not loaded.",
+               core_module_table[i], SHARED_SUFFIX);
     }
     else
     {
       module_name = MyMalloc (m_len + 1);
-      snprintf (module_name, m_len + 1, "%s/%s%c", base_path, core_module_table[i], suffix);
+      snprintf (module_name, m_len + 1, "%s/%s%s", base_path, core_module_table[i], SHARED_SUFFIX);
       if (load_a_module(module_name, warn, 1) == -1)
       {
-        ilog(L_CRIT, "Error loading core module %s%c: terminating ircd",
-             core_module_table[i], suffix);
+        ilog(L_CRIT, "Error loading core module %s%s: terminating ircd",
+             core_module_table[i], SHARED_SUFFIX);
         exit (EXIT_FAILURE);
       }
       MyFree (module_name);
