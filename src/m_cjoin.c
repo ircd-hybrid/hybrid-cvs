@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_cjoin.c,v 7.8 2000/10/14 17:15:29 toot Exp $
+ *   $Id: m_cjoin.c,v 7.9 2000/10/14 21:10:10 db Exp $
  */
 
 #include "handlers.h"
@@ -178,11 +178,23 @@ int     m_cjoin(struct Client *cptr,
       return 0;
     }
 
-  /* it's not a root channel, don't CJOIN */
-  if (chptr->prev_vchan)
+  /* don't cjoin a vchan, only the top is allowed */
+  if (IsVchan(chptr))
     {
+      /* could send a notice here, but on a vchan aware server
+       * they shouldn't see the sub chans anyway
+       */
       sendto_one(sptr, form_str(ERR_NOSUCHCHANNEL),
                  me.name, parv[0], name);
+      return 0;
+    }
+
+  if( on_sub_vchan(chptr,sptr) )
+    {
+      sendto_one(sptr,":%s NOTICE %s :*** You are on a sub chan of %s already",
+		 me.name, sptr->name, name);
+      sendto_one(sptr, form_str(ERR_BADCHANNAME),
+		 me.name, parv[0], (unsigned char*) name);
       return 0;
     }
 
@@ -252,7 +264,6 @@ int     m_cjoin(struct Client *cptr,
 		     me.name, vchan_chptr->chname);
 
   del_invite(sptr, vchan_chptr);
-
   parv[1] = vchan_chptr->chname;
   parv[2] = chptr->chname;
   (void)m_names(cptr, sptr, 3, parv);

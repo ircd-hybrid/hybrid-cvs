@@ -20,11 +20,12 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_names.c,v 7.7 2000/10/14 17:20:06 toot Exp $
+ *   $Id: m_names.c,v 7.8 2000/10/14 21:10:10 db Exp $
  */
 
 #include "handlers.h"
 #include "channel.h"
+#include "vchannel.h"
 #include "client.h"
 #include "common.h"   /* bleah */
 #include "hash.h"
