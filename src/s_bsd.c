@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.53 2000/11/02 19:05:13 adrian Exp $
+ *  $Id: s_bsd.c,v 7.54 2000/11/02 21:31:26 adrian Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -766,6 +766,8 @@ comm_connect_tcp(int fd, const char *host, u_short port,
         assert(reply == NULL);	/* We don't have a DNS cache now -- adrian */
     } else {
         /* We have a valid IP, so we just call tryconnect */
+        /* Make sure we actually set the timeout here .. */
+        comm_settimeout(fd, 30, comm_connect_timeout, NULL);
         comm_connect_tryconnect(fd, NULL);        
     }
 }
@@ -783,6 +785,9 @@ comm_connect_callback(int fd, int status)
     hdl = fd_table[fd].connect.callback;
     fd_table[fd].connect.callback = NULL;
     fd_table[fd].flags.called_connect = 0;
+
+    /* Clear the timeout handler */
+    comm_settimeout(fd, 0, NULL, NULL);
 
     /* Call the handler */
     hdl(fd, status, fd_table[fd].connect.data);
