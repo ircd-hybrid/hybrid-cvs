@@ -265,7 +265,7 @@
 /* Size of the topic heap. */
 #undef TOPIC_HEAP_SIZE
 
-/* If enabled, only TS5 enabled servers may link to your network. */
+/* If enabled, server links to your network must have a minimum of TS5. */
 #undef TS5_ONLY
 
 /* Size of the user heap. */

@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.87 2003/11/01 06:58:37 joshk Exp $
+dnl $Id: configure.ac,v 7.88 2003/12/05 23:33:21 metalrock Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -8,7 +8,7 @@ dnl said functions need to be just about as complex as they already are.
 AC_PREREQ(2.57)
 
 dnl Sneaky way to get an Id tag into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.87 2003/11/01 06:58:37 joshk Exp $])
+AC_COPYRIGHT([$Id: configure.ac,v 7.88 2003/12/05 23:33:21 metalrock Exp $])
 
 AC_INIT([ircd-hybrid],[7-CURRENT])
 
@@ -790,8 +790,7 @@ AC_HELP_STRING([--enable-efnet],[For IRCDs running on EFnet.]),
 
 if test "$efnet" = yes; then
 	AC_DEFINE(EFNET, 1, [Define if this ircd will be an EFnet server.])
-	AC_DEFINE(TS5_ONLY, 1, [If enabled, only TS5 enabled servers may link to your network.])
-	
+	AC_DEFINE(TS5_ONLY, 1, [If enabled, server links to your network must have a minimum of TS5.])
 	echo "Building ircd for use with EFnet"
 	EXAMPLE_CONF=example.efnet.conf
 else
