@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.37 2000/11/25 17:53:48 ryan Exp $
+ * $Id: config.h,v 7.38 2000/11/28 23:20:55 db Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -474,20 +474,6 @@
  */
 #define MAXCHANNELSPERUSER  10  /* Recommended value: 10 */
 
-/* FLUD - CTCP Flood Detection and Protection
- * 
- * This enables server CTCP flood detection and protection for local clients.
- * It works well against fludnets and flood clones.  The effect of this code
- * on server CPU and memory usage is minimal, however you may not wish to
- * take the risk, or be fundamentally opposed to checking the contents of
- * PRIVMSG's (though no privacy is breached).  This code is not useful for
- * routing only servers (ie, HUB's with little or no local client base), and
- * the hybrid team strongly recommends that you do not use FLUD with HUB.
- * The following default thresholds may be tweaked, but these seem to work
- * well.
- */
-#define FLUD
-
 /* ANTI_DRONE_FLOOD - anti flooding code for drones
  * This code adds server side ignore for a client who gets
  * messaged more than drone_count times within drone_time seconds
@@ -557,10 +543,6 @@
 #undef ANTI_SPAM_EXIT_MESSAGE
 /* 300 is five minutes, seems reasonable */
 #define ANTI_SPAM_EXIT_MESSAGE_TIME 300
-
-#define FLUD_NUM        4       /* Number of flud messages to trip alarm */
-#define FLUD_TIME       3       /* Seconds in which FLUD_NUM msgs must occur */
-#define FLUD_BLOCK      15      /* Seconds to block fluds */
 
 /* REJECT_HOLD 
  * clients that reconnect but are k-lined will have their connections
@@ -659,9 +641,6 @@ error CLIENT_FLOOD undefined.
 #endif
 
 #define REPORT_DLINE_TO_USER
-
-void    free_fluders();
-void    free_fludees();
 
 #define MIN_SPAM_NUM 5
 #define MIN_SPAM_TIME 60

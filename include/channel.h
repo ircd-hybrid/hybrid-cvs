@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.32 2000/11/13 06:08:13 db Exp $
+ * $Id: channel.h,v 7.33 2000/11/28 23:20:54 db Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -77,8 +77,6 @@ struct Channel
   time_t          channelts;
   char            locally_created;  /* used to flag a locally created channel*/
   char            keep_their_modes; /* used only on mode after sjoin */
-  time_t          fludblock;
-  struct fludbot* fluders;
   char            chname[1];
 };
 

@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.34 2000/11/27 08:47:08 db Exp $
+ * $Id: client.h,v 7.35 2000/11/28 23:20:55 db Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -63,7 +63,6 @@
 struct SLink;
 struct ConfItem;
 struct Whowas;
-struct fludbot;
 struct Zdata;
 struct DNSReply;
 struct Listener;
@@ -184,7 +183,6 @@ struct Client
    * gcos field in /etc/passwd but anything can go here.
    */
   char              info[REALLEN + 1]; /* Free form additional client info */
-  struct SLink*     fludees;
 
 /* cache table of mappings between top level chan and sub vchan client
  * is on. client cannot have any more than MAXCHANNELSPERUSER vchans
@@ -201,8 +199,6 @@ struct Client
    */
   int               count;       /* Amount of data in buffer */
   unsigned char     isbot;      /* non 0 if its a type of bot */
-  time_t            fludblock;
-  struct fludbot*   fluders;
   time_t            last_join_time;   /* when this client last 
                                          joined a channel */
   time_t            last_leave_time;  /* when this client last 

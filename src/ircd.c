@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.55 2000/11/27 08:47:14 db Exp $
+ * $Id: ircd.c,v 7.56 2000/11/28 23:21:05 db Exp $
  */
 #include "ircd.h"
 #include "channel.h"
@@ -397,10 +397,6 @@ static void initialize_global_set_options(void)
 
   GlobalSetOptions.maxclients = MAX_CLIENTS;
   GlobalSetOptions.autoconn = 1;
-
-  GlobalSetOptions.fludnum = FLUD_NUM;
-  GlobalSetOptions.fludtime = FLUD_TIME;
-  GlobalSetOptions.fludblock = FLUD_BLOCK;
 
   GlobalSetOptions.spam_time = MIN_JOIN_LEAVE_TIME;
   GlobalSetOptions.spam_num = MAX_JOIN_LEAVE_COUNT;

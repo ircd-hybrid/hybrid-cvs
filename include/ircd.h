@@ -19,7 +19,7 @@
  *
  * "ircd.h". - Headers file.
  *
- * $Id: ircd.h,v 7.10 2000/11/24 14:13:44 db Exp $
+ * $Id: ircd.h,v 7.11 2000/11/28 23:20:56 db Exp $
  *
  */
 #ifndef INCLUDED_ircd_h
@@ -40,10 +40,6 @@ struct SetOptions
   int autoconn;         /* autoconn enabled for all servers? */
 
   int idletime;
-
-  int fludnum;
-  int fludtime;
-  int fludblock;
 
   int dronetime;
   int dronecount;

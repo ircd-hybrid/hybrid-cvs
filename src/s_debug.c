@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_debug.c,v 7.24 2000/11/26 19:34:35 adrian Exp $
+ *   $Id: s_debug.c,v 7.25 2000/11/28 23:21:06 db Exp $
  */
 #include "s_debug.h"
 #include "channel.h"
@@ -260,9 +260,6 @@ void count_memory(struct Client *cptr,char *nick)
   u_long links_memory_used = 0;
   u_long links_memory_allocated = 0;
 
-  u_long flud_memory_used = 0;
-  u_long flud_memory_allocated = 0;
-
   u_long tot = 0;
 
   count_whowas_memory(&wwu, &wwm);      /* no more away memory to count */
@@ -441,15 +438,6 @@ void count_memory(struct Client *cptr,char *nick)
              me.name, RPL_STATSDEBUG, nick,
              links_memory_used,
              links_memory_allocated);
-
-  count_flud_memory( (int *)&flud_memory_used,
-                    (int *)&flud_memory_allocated);
-  sendto_one(cptr, ":%s %d %s :FLUD Memory in use: %d FLUD Memory allocated: %d",
-             me.name, RPL_STATSDEBUG, nick,
-             flud_memory_used,
-             flud_memory_allocated);
-
-  tot += flud_memory_allocated;
 
   sendto_one(cptr, 
              ":%s %d %s :TOTAL: %d Available:  Current max RSS: %u",

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.77 2000/11/26 00:42:08 db Exp $
+ * $Id: channel.c,v 7.78 2000/11/28 23:21:03 db Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -2222,8 +2222,6 @@ static  void    sub1_from_channel(struct Channel *chptr)
       /* free topic_info */
       MyFree(chptr->topic_info);            
 
-      free_fluders(NULL, chptr);
-
       /* Is this the top level channel? 
        * If so, don't remove if it has sub vchans
        * top level chan always has prev_chan == NULL
@@ -2636,8 +2634,6 @@ static void destroy_channel(struct Channel *chptr)
     chptr->nextch->prevch = chptr->prevch;
 
   MyFree(chptr->topic_info);
-
-  free_fluders(NULL, chptr);
 
   del_from_channel_hash_table(chptr->chname, chptr);
   MyFree((char*) chptr);

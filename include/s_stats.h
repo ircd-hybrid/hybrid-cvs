@@ -18,7 +18,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: s_stats.h,v 7.2 2000/11/06 08:40:47 db Exp $
+ * $Id: s_stats.h,v 7.3 2000/11/28 23:20:57 db Exp $
  */
 #ifndef INCLUDED_s_stats_h
 #define INCLUDED_s_stats_h
@@ -62,7 +62,6 @@ struct  ServerStatistics {
   unsigned int    is_abad; /* bad auth requests */
   unsigned int    is_udp; /* packets recv'd on udp port */
   unsigned int    is_loc; /* local connections made */
-  unsigned int    is_flud;        /* users/channels flood protected */
 };
 
 extern struct ServerStatistics* ServerStats;

@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.39 2000/11/26 19:34:32 adrian Exp $
+# $Id: Makefile.in,v 7.40 2000/11/28 23:21:02 db Exp $
 #
 CC		= @CC@
 RM		= @RM@
@@ -40,7 +40,6 @@ SRCS =                          \
   event.c                       \
   fdlist.c                      \
   fileio.c                      \
-  flud.c                        \
   hash.c                        \
   irc_string.c                  \
   ircd.c                        \
