@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_classlist.c,v 1.4 2003/05/23 04:46:39 metalrock Exp $
+ *  $Id: m_classlist.c,v 1.5 2003/05/24 11:43:35 db Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&classlist_msgtab);
 }
 
-const char *_version = "$Revision: 1.4 $";
+const char *_version = "$Revision: 1.5 $";
 #endif
 
 /* mo_classlist()
@@ -90,6 +90,12 @@ mo_classlist(struct Client *client_p, struct Client *source_p,
   DLINK_FOREACH(ptr, ClassList.head)
   {
     aclass = ptr->data;
+
+    /* These two cases "shouldn't" happen. ;-) -Dianora */
+    if (aclass == NULL)
+      continue;
+    if (ClassName(aclass) == NULL)
+      continue;
 
     if (match(classname, ClassName(aclass)))
     {
