@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.275 2002/06/07 23:37:37 androsyn Exp $
+ *  $Id: client.c,v 7.276 2002/06/09 00:22:28 androsyn Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -1423,7 +1423,8 @@ int exit_client(
 	  strcat(comment1, source_p->name);
 	}
 
-      remove_dependents(client_p, source_p, from, comment, comment1);
+      if(source_p->serv != NULL) /* XXX Why does this happen */
+        remove_dependents(client_p, source_p, from, comment, comment1);
 
       if (source_p->servptr == &me)
         {
