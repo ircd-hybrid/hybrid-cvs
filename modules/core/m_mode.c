@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_mode.c,v 1.71 2003/10/11 23:47:21 bill Exp $
+ *  $Id: m_mode.c,v 1.72 2003/10/15 01:37:11 bill Exp $
  */
 
 #include "stdinc.h"
@@ -76,7 +76,7 @@ _moddeinit(void)
   mod_del_cmd(&bmask_msgtab);
 }
 
-const char *_version = "$Revision: 1.71 $";
+const char *_version = "$Revision: 1.72 $";
 #endif
 
 /*
@@ -252,6 +252,7 @@ ms_bmask(struct Client *client_p, struct Client *source_p, int parc, char *parv[
 {
   static char modebuf[BUFSIZE];
   static char parabuf[BUFSIZE];
+  static char banbuf[BUFSIZE];
   struct Channel *chptr;
   char *s, *t, *mbuf, *pbuf;
   long mode_type;
@@ -293,7 +294,8 @@ ms_bmask(struct Client *client_p, struct Client *source_p, int parc, char *parv[
   }
 
   parabuf[0] = '\0';
-  s = MyMalloc(BUFSIZE);
+  s = banbuf;
+  strlcpy(s, parv[4], sizeof(banbuf));
 
   /* only need to construct one buffer, for non-ts6 servers */
   mlen = ircsprintf(modebuf, ":%s MODE %s +",
@@ -312,7 +314,7 @@ ms_bmask(struct Client *client_p, struct Client *source_p, int parc, char *parv[
     if(tlen > MODEBUFLEN)
       break;
 
-    if(add_id(source_p, chptr, s, mode_type))
+    if(tlen && add_id(source_p, chptr, s, mode_type))
     {
       /* this new one wont fit.. */
       if(mlen + MAXMODEPARAMS + plen + tlen > BUFSIZE - 4 ||

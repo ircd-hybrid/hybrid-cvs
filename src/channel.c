@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.408 2003/10/14 21:58:45 bill Exp $
+ *  $Id: channel.c,v 7.409 2003/10/15 01:37:12 bill Exp $
  */
 
 #include "stdinc.h"
@@ -58,7 +58,7 @@ static BlockHeap *topic_heap;
 static BlockHeap *member_heap;
 
 static void destroy_channel(struct Channel *);
-static void send_mode_list(struct Client *, struct Channel *, dlink_list *, char, int);
+static void send_mode_list(struct Client *, struct Channel *, dlink_list *, char);
 static int check_banned(struct Channel *, const char *, const char *);
 static const char *channel_pub_or_secret(struct Channel *);
 
@@ -215,11 +215,11 @@ send_channel_modes(struct Client *client_p, struct Channel *chptr)
   channel_modes(chptr, client_p, modebuf, parabuf);
   send_members(client_p, chptr, modebuf, parabuf);
 
-  send_mode_list(client_p, chptr, &chptr->banlist, 'b', 0);
+  send_mode_list(client_p, chptr, &chptr->banlist, 'b');
   if (IsCapable(client_p, CAP_EX))
-    send_mode_list(client_p, chptr, &chptr->exceptlist, 'e', 0);
+    send_mode_list(client_p, chptr, &chptr->exceptlist, 'e');
   if (IsCapable(client_p, CAP_IE))
-    send_mode_list(client_p, chptr, &chptr->invexlist, 'I', 0);
+    send_mode_list(client_p, chptr, &chptr->invexlist, 'I');
 }
 
 /* send_mode_list()
@@ -234,70 +234,69 @@ send_channel_modes(struct Client *client_p, struct Channel *chptr)
  *
  */
 static void
-send_mode_list(struct Client *client_p, struct Channel *chptr, dlink_list *top,
-               char flag, int clear)
+send_mode_list(struct Client *client_p, struct Channel *chptr,
+               dlink_list *top, char flag)
 {
   dlink_node *lp;
   struct Ban *banptr;
   char mbuf[MODEBUFLEN];
   char pbuf[MODEBUFLEN];
-  int tlen;
-  int mlen;
-  int cur_len;
-  char *mp;
-  char *pp;
-  int count;
+  int tlen, mlen, cur_len;
+  int count = 0;
+  char *mp = mbuf;
+  char *pp = pbuf;
 
   if (top == NULL || top->length == 0)
     return;
 
   if(IsCapable(client_p, CAP_TS6))
-      ircsprintf(buf, ":%s BMASK %lu %s ", ID(&me), (unsigned long)
-              chptr->channelts, chptr->chname);
+      ircsprintf(buf, ":%s BMASK %lu %s :", me.id,
+                 (unsigned long)chptr->channelts, chptr->chname);
   else
-    ircsprintf(buf, ":%s MODE %s ", me.name, chptr->chname);
+    ircsprintf(buf, ":%s MODE %s +", me.name, chptr->chname);
+
   cur_len = mlen = (strlen(buf) + 2);
-  count = 0;
-  mp = mbuf;
-  *mp++ = (clear ? '-' : '+');
-  *mp = '\0';
-  pp = pbuf;
+  *mp = *pp = '\0';
 
   DLINK_FOREACH(lp, top->head)
   {
     banptr = lp->data;
-    tlen = strlen(banptr->banstr);
-    tlen++;
+    tlen = strlen(banptr->banstr) + 1;
 
-    if ((count >= MAXMODEPARAMS) || ((cur_len + tlen + 2) > MODEBUFLEN))
+    assert(tlen > 1);  /* this could only be false if our banstr was empty */
+
+    /*
+     * send buffer and start over if we cannot fit another ban,
+     * or if the target is non-ts6 and we have too many modes in
+     * in this line.
+     */
+    if ((cur_len + tlen + 2) > MODEBUFLEN || (!IsCapable(client_p, CAP_TS6) && count >= MAXMODEPARAMS))
     {
+      *(pp-1) = '\0'; /* get rid of trailing space on buffer */
+   
       if(IsCapable(client_p, CAP_TS6))
         sendto_one(client_p, "%s%c %s", buf, flag, pbuf);
       else
         sendto_one(client_p, "%s%s %s", buf, mbuf, pbuf);
+
       mp = mbuf;
-      *mp++ = (clear ? '-' : '+');
-      *mp = '\0';
       pp = pbuf;
       cur_len = mlen;
       count = 0;
     }
 
+    count++;
     *mp++ = flag;
-    *mp = '\0';
+    *mp = *pp = '\0';
     ircsprintf(pp, "%s ", banptr->banstr);
     pp += tlen;
     cur_len += tlen;
-    count++;
   }
 
-  if (count != 0)
-  {
-    if(IsCapable(client_p, CAP_TS6))
-      sendto_one(client_p, "%s%c %s", buf, flag, pbuf);
-    else
-      sendto_one(client_p, "%s%s %s", buf, mbuf, pbuf);
-  }
+  if(IsCapable(client_p, CAP_TS6))
+    sendto_one(client_p, "%s%c %s", buf, flag, pbuf);
+  else
+    sendto_one(client_p, "%s%s %s", buf, mbuf, pbuf);
 }
 
 /* check_channel_name()
