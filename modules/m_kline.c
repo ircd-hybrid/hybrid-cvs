@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.110 2002/09/11 22:01:05 db Exp $
+ *  $Id: m_kline.c,v 1.111 2002/11/13 13:12:02 db Exp $
  */
 
 #include "stdinc.h"
@@ -75,7 +75,7 @@ _moddeinit(void)
   mod_del_cmd(&kline_msgtab);
   mod_del_cmd(&dline_msgtab);
 }
-const char *_version = "$Revision: 1.110 $";
+const char *_version = "$Revision: 1.111 $";
 #endif
 
 /* Local function prototypes */
@@ -611,7 +611,7 @@ mo_dline(struct Client *client_p, struct Client *source_p,
       if (!MyConnect(target_p))
         {
           sendto_one(source_p,
-                     ":%s NOTICE :%s :Can't DLINE nick on another server",
+                     ":%s NOTICE %s :Can't DLINE nick on another server",
                      me.name, parv[0]);
           return;
         }
