@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.148 2003/07/17 06:18:15 joshk Exp $
+# $Id: Makefile.in,v 7.149 2003/07/19 19:33:04 michael Exp $
 #
 @SET_MAKE@
 
@@ -157,6 +157,6 @@ clean:
 	${RM} -f *.o *.exe *~ y.tab.* lex.yy.c *core ircd
 
 distclean: clean
-	${RM} -f Makefile version.c* .depend
+	${RM} -f Makefile version.c version.c.last .depend
 
 .PHONY: clean distclean install install-mkdirs build
