@@ -1,4 +1,4 @@
-$Id: Hybrid-team,v 7.43 2002/01/10 21:54:19 jmallett Exp $
+$Id: Hybrid-team,v 7.44 2002/02/04 16:56:57 leeh Exp $
 
 The hybrid team is a group of ircd coders who were frustrated
 with the instability and all-out "dirtiness" of the EFnet ircd's
@@ -25,6 +25,7 @@ Habeeb, David Supuran <habeeb@cfl.rr.com>
 Hwy101, W. Campbell <wcampbel@botbay.net>
 is, Edward Brocklesby <ejb@leguin.org.uk>
 isomer, Perry Lorier <perry@coders.net>
+jmallett, J. Mallett <jmallett@newgold.net>
 k9, Jeremy Chadwick <yoshi@parodius.com>
 madmax, Paul Lomax <madmax@efnet.org>
 Neph|l|m, Adel Mezibra <adel@cybercable.fr>
