@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.51 2001/01/02 00:44:03 davidt Exp $
+ *   $Id: m_sjoin.c,v 1.52 2001/01/02 03:08:04 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -240,6 +240,13 @@ int     ms_sjoin(struct Client *cptr,
   doesop = (parv[4+args][0] == '@' || parv[4+args][1] == '@');
 
   oldmode = &chptr->mode;
+
+  if (newts < 800000000)
+    {
+      sendto_realops_flags(FLAGS_ALL,"*** Bogus TS %lu from %s ignored",
+			   newts, cptr->name, newts);
+      newts = oldts;
+    }
 
   if (isnew)
     chptr->channelts = tstosend = newts;
