@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: numeric.h,v 7.14 2001/01/25 06:26:02 db Exp $
+ * $Id: numeric.h,v 7.15 2001/03/01 06:46:59 androsyn Exp $
  */
 #ifndef INCLUDED_numeric_h
 #define INCLUDED_numeric_h
@@ -173,6 +173,7 @@ extern const char* form_str(int);
 
 #define RPL_STATSFLINE       224
 #define RPL_STATSDLINE       225
+#define RPL_STATSALINE	     226
 
 #define RPL_SERVLIST         234
 #define RPL_SERVLISTEND      235

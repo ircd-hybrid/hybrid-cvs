@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: messages.tab,v 7.42 2001/02/22 20:24:21 fl_ Exp $
+ *   $Id: messages.tab,v 7.43 2001/03/01 06:47:05 androsyn Exp $
  */
 
 static  char *  replies[] = {
@@ -246,7 +246,7 @@ static  char *  replies[] = {
 /* 223 */       (char *)NULL,
 /* 224 */       (char *)NULL,
 /* 225 RPL_STATSDLINE*/         ":%s 225 %s %c %s %s",
-/* 226 */       (char *)NULL,
+/* 226 RPL_STATSALINE*/         ":%s 226 %s %s",
 /* 227 */       (char *)NULL,
 /* 228 */       (char *)NULL,
 /* 229 */       (char *)NULL,
