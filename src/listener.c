@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.c,v 7.77 2003/04/13 21:34:40 stu Exp $
+ *  $Id: listener.c,v 7.78 2003/04/13 22:29:23 db Exp $
  */
 
 #include "stdinc.h"
@@ -30,10 +30,10 @@
 #include "irc_string.h"
 #include "ircd.h"
 #include "ircd_defs.h"
+#include "s_bsd.h"
 #include "irc_getnameinfo.h"
 #include "irc_getaddrinfo.h"
 #include "numeric.h"
-#include "s_bsd.h"
 #include "s_conf.h"
 #include "s_stats.h"
 #include "send.h"

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.300 2003/04/13 09:46:58 michael Exp $
+ *  $Id: s_serv.c,v 7.301 2003/04/13 22:29:24 db Exp $
  */
 
 #include "stdinc.h"
@@ -45,12 +45,12 @@
 #include "irc_string.h"
 #include "ircd.h"
 #include "ircd_defs.h"
+#include "s_bsd.h"
 #include "irc_getnameinfo.h"
 #include "list.h"
 #include "numeric.h"
 #include "packet.h"
 #include "res.h"
-#include "s_bsd.h"
 #include "s_conf.h"
 #include "s_log.h"
 #include "s_stats.h"

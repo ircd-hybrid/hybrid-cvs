@@ -55,15 +55,16 @@
 #include <errno.h>
 
 #include "setup.h"
-#include "irc_getnameinfo.h"
-#include "irc_string.h"
 
 #ifndef HAVE_SOCKLEN_T
 typedef int socklen_t;
 #endif
 
+#include "irc_getnameinfo.h"
+#include "irc_string.h"
 
-/*  $Id: irc_getnameinfo.c,v 7.3 2003/04/12 09:01:39 michael Exp $ */
+
+/*  $Id: irc_getnameinfo.c,v 7.4 2003/04/13 22:29:23 db Exp $ */
 
 static const struct afd {
   int a_af;
