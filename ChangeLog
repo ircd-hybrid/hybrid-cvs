@@ -1,3 +1,16 @@
+db          2003/02/01 15:11:46 EST	(20030201_2)
+
+  Modified files:
+    modules              m_join.c 
+  Log:
+  - Even with an abort list, its still bad practice to try and remove
+    a client thats quitting !
+  
+  Revision  Changes    Path
+  1.95      +2 -2      ircd-hybrid-7/modules/m_join.c
+
+
+
 db          2003/02/01 14:13:08 EST	(20030201_1)
 
   Modified files:
@@ -34686,4 +34699,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4211 2003/02/01 19:13:11 db Exp $
+$Id: ChangeLog,v 7.4212 2003/02/01 20:11:49 db Exp $
