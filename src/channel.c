@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.283 2001/12/10 03:52:03 jdc Exp $
+ * $Id: channel.c,v 7.284 2001/12/10 03:55:29 jdc Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -1006,7 +1006,7 @@ can_join(struct Client *source_p, struct Channel *chptr, char *key)
       for (ptr = chptr->invexlist.head; ptr; ptr = ptr->next)
       {
         invex = ptr->data;
-        if (match(invex->banstr, src_host) || match(invex->banstr, s_iphost))
+        if (match(invex->banstr, src_host) || match(invex->banstr, src_iphost))
           break;
       }
       if (ptr == NULL)
