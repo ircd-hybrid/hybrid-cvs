@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.371 2003/05/22 03:55:07 db Exp $
+ *  $Id: client.c,v 7.372 2003/05/22 05:01:06 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -590,7 +590,7 @@ check_xlines(void)
 	if (IsPerson(client_p))
 	  sendto_one(client_p, form_str(ERR_YOUREBANNEDCREEP),
 		     me.name, client_p->name,
-		     aconf->passwd ? aconf->passwd : "X-lined");
+		     aconf->reason ? aconf->reason : "X-lined");
 	else
 	  sendto_one(client_p, "NOTICE XLINE :*** You have been X-lined");
       }
@@ -598,8 +598,8 @@ check_xlines(void)
       {
 	if (ConfigFileEntry.kline_with_connection_closed)
 	  reason = "Connection closed";
-	else if (ConfigFileEntry.kline_with_reason && aconf->passwd)
-	  reason = aconf->passwd;
+	else if (ConfigFileEntry.kline_with_reason && aconf->reason)
+	  reason = aconf->reason;
 	else
 	  reason = "X-lined";
 
