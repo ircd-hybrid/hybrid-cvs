@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.54 2001/01/27 23:11:47 fl_ Exp $
+ *   $Id: m_message.c,v 1.55 2001/01/31 06:06:42 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -869,7 +869,7 @@ static void handle_opers(int p_or_n,
 	}
       sendto_match_butone(IsServer(cptr) ? cptr : NULL, sptr,
 			  nick + 1,
-                          (nick[1] == '#') ? MATCH_HOST : MATCH_SERVER,
+                          (*nick == '#') ? MATCH_HOST : MATCH_SERVER,
 			  "PRIVMSG %s :%s",
 			  nick,
 			  text);
