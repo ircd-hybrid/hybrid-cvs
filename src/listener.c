@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: listener.c,v 7.1 1999/08/03 01:41:30 tomh Exp $
+ *  $Id: listener.c,v 7.2 1999/08/12 03:59:51 lusky Exp $
  */
 #include "listener.h"
 #include "client.h"
@@ -323,8 +323,11 @@ void accept_connection(struct Listener* listener)
    * be accepted until some old is closed first.
    */
   if (-1 == (fd = accept(listener->fd, (struct sockaddr*) &addr, &addrlen))) {
-    report_error("Error accepting connection %s:%s", 
+    if((last_oper_notice + 20) <= CurrentTime) {
+      report_error("Error accepting connection %s:%s",
                  listener->name, errno);
+      last_oper_notice = CurrentTime;
+    }
     return;
   }
   /*

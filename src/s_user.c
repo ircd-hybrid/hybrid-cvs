@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.4 1999/08/06 03:17:50 db Exp $
+ *  $Id: s_user.c,v 7.5 1999/08/12 03:59:52 lusky Exp $
  */
 #include "s_user.h"
 #include "channel.h"
@@ -1890,7 +1890,7 @@ int user_mode(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
                   struct Client *cur_cptr = oper_cptr_list;
 
                   fdlist_delete(sptr->fd, FDL_OPER | FDL_BUSY);
-                  
+                  detach_conf(sptr,sptr->confs->value.aconf);
                   sptr->flags2 &= ~(FLAGS2_OPER_GLOBAL_KILL|
                                     FLAGS2_OPER_REMOTE|
                                     FLAGS2_OPER_UNKLINE|
