@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.49 2000/12/06 03:28:07 db Exp $
+ * $Id: client.h,v 7.50 2000/12/06 09:49:52 db Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -169,6 +169,13 @@ struct Client
 
   dlink_list      vchan_map;
 
+  /* caller ID allow list */
+  /* This has to be here, since a client on an on_allow_list could
+   * be a remote client. simpler to keep both here.
+   */
+  dlink_list	allow_list;	/* clients I'll allow to talk to me */
+  dlink_list	on_allow_list;	/* clients that have =me= on their allow list*/
+
   struct LocalUser *localClient;
 };
 
@@ -251,9 +258,6 @@ struct LocalUser
   int actually_read;  /* how many we've actually read in this second */
   int sent_parsed;      /* how many messages we've parsed in this second */
 
-  /* caller ID allow list */
-  dlink_list	allow_list;	/* clients I'll allow to talk to me */
-  dlink_list	on_allow_list;	/* clients that have =me= on their allow list*/
 };
 
 /*
