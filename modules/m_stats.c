@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 1.102 2001/12/27 11:39:29 leeh Exp $
+ *  $Id: m_stats.c,v 1.103 2001/12/27 21:02:51 leeh Exp $
  */
 #include "tools.h"	 /* dlink_node/dlink_list */
 #include "handlers.h"    /* m_pass prototype */
@@ -68,17 +68,19 @@ void
 _modinit(void)
 {
   hook_add_event("doing_stats");
+  hook_add_event("doing_stats_p");
   mod_add_cmd(&stats_msgtab);
 }
 
 void
 _moddeinit(void)
 {
+  hook_del_event("doing_stats_p");
   hook_del_event("doing_stats");
   mod_del_cmd(&stats_msgtab);
 }
 
-char *_version = "$Revision: 1.102 $";
+char *_version = "$Revision: 1.103 $";
 #endif
 
 const char* Lformat = ":%s %d %s %s %u %u %u %u %u :%u %u %s";
