@@ -1,3 +1,8 @@
+*** 20001113_2 by db
+- use more common functions whenever possible. grrr 
+
+
+
 *** 20001113_1 by db
 - cleaned up m_whois.c a bit more
 - moved find_user_link from list.c into channel.c thats the only place it
@@ -459,7 +464,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.535 2000/11/13 06:08:16 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.536 2000/11/13 07:27:54 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
