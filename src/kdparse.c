@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: kdparse.c,v 7.2 2001/06/08 03:49:51 db Exp $
+ *  $Id: kdparse.c,v 7.3 2001/06/08 05:33:47 db Exp $
  */
 
 #include <sys/types.h>
@@ -34,8 +34,6 @@
 #include "client.h"
 #include "irc_string.h"
 #include "memory.h"
-
-static char *getfield(char *newline);
 
 /*
  * KParseFile
@@ -58,7 +56,7 @@ void KParseFile(FBFILE *file)
       if ((p = strchr(line, '\n')))
         *p = '\0';
 
-      if (!*line || line[0] == '#')
+      if ((*line == '\0') || (*line == '#'))
         continue;
 
       if ((user_field = getfield(line)) == NULL)
@@ -97,7 +95,7 @@ void DParseFile(FBFILE *file)
       if ((p = strchr(line, '\n')))
         *p = '\0';
 
-      if (!*line || line[0] == '#')
+      if ((*line == '\0') || (line[0] == '#'))
         continue;
 
       if ((host_field = getfield(line)) == NULL)
@@ -120,7 +118,7 @@ void DParseFile(FBFILE *file)
  * output	- next field
  * side effects	- field breakup for ircd.conf file.
  */
-static char *getfield(char *newline)
+char *getfield(char *newline)
 {
   static char *line = (char *)NULL;
   char  *end, *field;
