@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.105 2003/06/03 16:57:45 joshk Exp $
+ *  $Id: channel_mode.c,v 7.106 2003/06/04 00:43:45 db Exp $
  */
 
 #include "stdinc.h"
@@ -136,6 +136,8 @@ extern BlockHeap *ban_heap;
 static char *
 check_string(char *s)
 {
+  char *str = s;
+
   if (EmptyString(s))
     return star;
 
@@ -150,7 +152,7 @@ check_string(char *s)
     }
   }
 
-  return s;
+  return str;
 }
 
 /*
