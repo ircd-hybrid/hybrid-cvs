@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.227 2001/12/20 20:23:13 leeh Exp $
+ * $Id: ircd_parser.y,v 1.228 2001/12/27 02:36:31 db Exp $
  */
 
 %{
@@ -704,7 +704,11 @@ oper_entry:     OPERATOR
         yy_next = yy_tmp->next;
         yy_tmp->next = NULL;
 
+#ifdef HAVE_LIBCRYPTO
         if(yy_tmp->name && (yy_tmp->passwd || yy_aconf->rsa_public_key) && yy_tmp->host)
+#else
+        if(yy_tmp->name && yy_tmp->passwd && yy_tmp->host)
+#endif
           {
             conf_add_class_to_conf(yy_tmp);
             conf_add_conf(yy_tmp);
