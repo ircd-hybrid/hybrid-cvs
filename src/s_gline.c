@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_gline.c,v 1.6 2000/12/25 15:59:41 toot Exp $
+ *  $Id: s_gline.c,v 1.7 2000/12/25 18:22:53 toot Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -137,8 +137,9 @@ report_glines(struct Client *sptr)
   char *name;
   char *reason;
 
-  sendto_one(sptr,":%s NOTICE %s :Pending G-lines",
-	     me.name, sptr->name);
+  if (dlink_list_length(&pending_glines) > 0)
+    sendto_one(sptr,":%s NOTICE %s :Pending G-lines",
+               me.name, sptr->name);
 
   for(pending_node = pending_glines.head; pending_node; pending_node = pending_node->next)
     {
@@ -176,8 +177,9 @@ report_glines(struct Client *sptr)
 	}
     }
 
-  sendto_one(sptr,":%s NOTICE %s :End of Pending G-lines",
-	     me.name, sptr->name);
+  if (dlink_list_length(&pending_glines) > 0)
+    sendto_one(sptr,":%s NOTICE %s :End of Pending G-lines",
+               me.name, sptr->name);
 
   for(gline_node = glines.head; gline_node; gline_node = gline_node->next)
     {
