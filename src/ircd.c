@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.42 2000/11/03 09:43:53 adrian Exp $
+ * $Id: ircd.c,v 7.43 2000/11/05 15:24:19 db Exp $
  */
 #include "ircd.h"
 #include "channel.h"
@@ -119,13 +119,6 @@ int reject_held_fds = 0;
 
 /* LazyLinks code */
 time_t lastCleanup;
-
-#ifdef NEED_SPLITCODE
-extern time_t server_split_time;
-extern int    server_was_split;
-#endif
-
-int cold_start = YES;   /* set if the server has just fired up */
 
 /* /quote set variables */
 struct SetOptions GlobalSetOptions;
@@ -509,7 +502,6 @@ int main(int argc, char *argv[])
   ServerRunning = 0;
   memset(&me, 0, sizeof(me));
   GlobalClientList = &me;       /* Pointer to beginning of Client list */
-  cold_start = YES;             /* set when server first starts up */
 
   memset(&Count, 0, sizeof(Count));
   Count.server = 1;     /* us */

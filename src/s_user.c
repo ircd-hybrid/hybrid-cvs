@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.36 2000/11/03 18:54:13 adrian Exp $
+ *  $Id: s_user.c,v 7.37 2000/11/05 15:24:20 db Exp $
  */
 #include "s_user.h"
 #include "channel.h"
@@ -807,7 +807,6 @@ int register_user(struct Client *cptr, struct Client *sptr,
       } else  
         SendMessageFile(sptr, &ConfigFileEntry.motd);
       
-#ifdef LITTLE_I_LINES
       if(sptr->confs && sptr->confs->value.aconf &&
          (sptr->confs->value.aconf->flags
           & CONF_FLAGS_LITTLE_I_LINE))
@@ -816,9 +815,6 @@ int register_user(struct Client *cptr, struct Client *sptr,
           sendto_one(sptr,"NOTICE %s :*** Notice -- You are in a restricted access mode",nick);
           sendto_one(sptr,"NOTICE %s :*** Notice -- You can not chanop others",nick);
         }
-#endif
-
-
     }
   else if (IsServer(cptr))
     {

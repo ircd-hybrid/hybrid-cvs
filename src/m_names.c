@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_names.c,v 7.15 2000/11/05 06:23:53 db Exp $
+ *   $Id: m_names.c,v 7.16 2000/11/05 15:24:20 db Exp $
  */
 
 #include "handlers.h"
@@ -404,6 +404,10 @@ static char *pub_or_secret(struct Channel *chptr)
 
 static char *chanop_or_voice(struct SLink *lp)
 {
+  /* lp should not be NULL */
+  if ( lp == NULL )
+    return ("");
+
   if (lp->flags & CHFL_CHANOP)
     return("@");
   else if (lp->flags & CHFL_VOICE)
