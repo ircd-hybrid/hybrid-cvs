@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: tools.h,v 1.16 2002/08/20 16:41:58 db Exp $
+ *  $Id: tools.h,v 1.17 2002/08/22 21:33:55 db Exp $
  */
 
 #ifndef __TOOLS_H__
@@ -123,6 +123,7 @@ dlinkAdd(void *data, dlink_node * m, dlink_list * list)
  else if (list->tail == NULL)
    list->tail = m;
  list->head = m;
+ list->length++;
 }
 
 extern inline void
@@ -137,6 +138,7 @@ dlinkAddBefore(dlink_node *b, void *data, dlink_node *m, dlink_list *list)
         m->prev = b->prev;
         b->prev = m; 
         m->next = b;
+	list->length++;
     }
 }
 
@@ -152,6 +154,7 @@ dlinkAddTail(void *data, dlink_node *m, dlink_list *list)
  else if (list->head == NULL)
    list->head = m;
  list->tail = m;
+ list->length++;
 }
 
 /* Execution profiles show that this function is called the most
@@ -171,8 +174,9 @@ dlinkDelete(dlink_node *m, dlink_list *list)
    m->prev->next = m->next;
  else
    list->head = m->next;
- /* XXX - does this ever matter? */
+ /* Set this to NULL does matter */
  m->next = m->prev = NULL;
+  list->length--;
 }
 
 /*
@@ -210,6 +214,8 @@ dlinkMoveList(dlink_list *from, dlink_list *to)
        to->head = from->head;
        to->tail = from->tail;
        from->head = from->tail = NULL;
+       to->length = from_length;
+       from->length = 0;
        return;
     }
 
@@ -220,6 +226,8 @@ dlinkMoveList(dlink_list *from, dlink_list *to)
     to->head->prev = from->tail;
     to->head = from->head;
     from->head = from->tail = NULL;
+    to->length += from->length;
+    from->length = 0;
 
   /* I think I got that right */
 }
