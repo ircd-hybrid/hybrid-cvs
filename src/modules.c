@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.112 2003/04/15 15:13:27 michael Exp $
+ *  $Id: modules.c,v 7.113 2003/05/08 03:42:54 michael Exp $
  */
 
 #include "stdinc.h"
@@ -73,7 +73,7 @@ static const char *core_module_table[] =
 int num_mods = 0;
 int max_mods = MODS_INCREMENT;
 
-static dlink_list mod_paths;
+static dlink_list mod_paths = { NULL, NULL, 0 };
 
 static void mo_modload(struct Client *, struct Client *, int, char **);
 static void mo_modlist(struct Client *, struct Client *, int, char **);
@@ -133,7 +133,7 @@ mod_find_path(const char *path)
 
   DLINK_FOREACH(pathst, mod_paths.head)
   {
-    mpath = (struct module_path *)pathst->data;
+    mpath = pathst->data;
 
     if (!strcmp(path, mpath->path))
       return(mpath);
@@ -177,7 +177,8 @@ mod_clear_paths(void)
 
   DLINK_FOREACH_SAFE(node, next, mod_paths.head)
   {
-    pathst = (struct module_path *)node->data;
+    pathst = node->data;
+
     dlinkDelete(node, &mod_paths);
     free_dlink_node(node);
     MyFree(pathst);
@@ -201,7 +202,7 @@ irc_basename(char *path)
   else
     s++;
 
-  (void)strcpy(mod_basename, s);
+  strcpy(mod_basename, s);
   return(mod_basename);
 }
 
@@ -218,7 +219,7 @@ findmodule_byname(char *name)
 
   for (i = 0; i < num_mods; i++) 
   {
-    if (!irccmp(modlist[i]->name, name))
+    if (0 == irccmp(modlist[i]->name, name))
       return(i);
   }
 
@@ -267,11 +268,11 @@ load_all_modules(int warn)
     {
       snprintf(module_fq_name, sizeof(module_fq_name), "%s/%s",
                AUTOMODPATH, ldirent->d_name);
-      (void)load_a_module (module_fq_name, warn, 0);
+      load_a_module(module_fq_name, warn, 0);
     }
   }
 
-  (void)closedir(system_module_dir);
+  closedir(system_module_dir);
 }
 
 /* load_core_modules()
@@ -297,7 +298,7 @@ load_core_modules(int warn)
 
     if (load_a_module(module_name, warn, 1) == -1)
     {
-      ilog(L_CRIT, "Error loading core module %s%c: terminating ircd", 
+      ilog(L_CRIT, "Error loading core module %s%c: terminating ircd",
            core_module_table[i], hpux ? 'l' : 'o');
       exit(0);
     }
@@ -320,7 +321,7 @@ load_one_module(char *path, int coremodule)
 
   DLINK_FOREACH(pathst, mod_paths.head)
   {
-    mpath = (struct module_path *)pathst->data;
+    mpath = pathst->data;
 
     snprintf(modpath, sizeof(modpath), "%s/%s", mpath->path, path);
 
@@ -428,7 +429,7 @@ mo_modreload(struct Client *client_p, struct Client *source_p, int parc, char *p
   if (!IsOperAdmin(source_p))
   {
     sendto_one(source_p, ":%s NOTICE %s :You need admin = yes;",
-               me.name, parv[0]);
+               me.name, source_p->name);
     return;
   }
 
@@ -454,9 +455,8 @@ mo_modreload(struct Client *client_p, struct Client *source_p, int parc, char *p
 
   if ((load_one_module(parv[1], check_core) == -1) && check_core)
   {
-    sendto_realops_flags(UMODE_ALL, L_ALL,
-                         "Error reloading core module: %s: terminating ircd",
-			 parv[1]);
+    sendto_realops_flags(UMODE_ALL, L_ALL, "Error reloading core "
+                         "module: %s: terminating ircd", parv[1]);
     ilog(L_CRIT, "Error loading core module %s: terminating ircd", parv[1]);
     exit(0);
   }
@@ -477,7 +477,7 @@ mo_modlist(struct Client *client_p, struct Client *source_p, int parc, char *par
     return;
   }
 
-  for (i = 0; i < num_mods; i++ )
+  for (i = 0; i < num_mods; i++)
   {
     if (parc > 1)
     {
@@ -523,7 +523,7 @@ mo_modrestart(struct Client *client_p, struct Client *source_p, int parc, char *
   load_all_modules(0);
   load_core_modules(0);
   rehash(0);
-  
+
   sendto_realops_flags(UMODE_ALL, L_ALL,
               "Module Restart: %d modules unloaded, %d modules loaded",
 			modnum, num_mods);

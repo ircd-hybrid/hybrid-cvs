@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.96 2003/04/18 02:13:42 db Exp $
+ *  $Id: m_gline.c,v 1.97 2003/05/08 03:42:52 michael Exp $
  */
 
 #include "stdinc.h"
@@ -109,7 +109,7 @@ _moddeinit(void)
   mod_del_cmd(&gline_msgtab);
 }
 
-const char *_version = "$Revision: 1.96 $";
+const char *_version = "$Revision: 1.97 $";
 #endif
 /*
  * mo_gline()
@@ -467,13 +467,14 @@ set_local_gline(const char *oper_nick,
   aconf = make_conf(CONF_KILL);
 
   ircsprintf(buffer, "%s (%s)",reason,current_date);
-      
+
   DupString(aconf->passwd, buffer);
   DupString(aconf->name, (const char *)user);
   DupString(aconf->host, (const char *)host);
   aconf->hold = CurrentTime + ConfigFileEntry.gline_time;
-  add_gline(aconf);
-      
+
+  dlinkAdd(aconf, make_dlink_node(), &glines);
+
   sendto_realops_flags(UMODE_ALL, L_ALL,
 		       "%s!%s@%s on %s has triggered gline for [%s@%s] [%s]",
 		       oper_nick, oper_user, oper_host, oper_server,

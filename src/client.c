@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.358 2003/05/08 01:17:54 metalrock Exp $
+ *  $Id: client.c,v 7.359 2003/05/08 03:42:54 michael Exp $
  */
 
 #include "stdinc.h"
@@ -171,8 +171,8 @@ make_client(struct Client *from)
 void
 free_client(struct Client* client_p)
 {
-  assert(NULL != client_p);
-  assert(&me != client_p);
+  assert(client_p != NULL);
+  assert(client_p != &me);
 
   if (MyConnect(client_p))
   {
@@ -669,7 +669,7 @@ get_client_name(struct Client *client, int showip)
 {
   static char nbuf[HOSTLEN * 2 + USERLEN + 5];
 
-  assert(NULL != client);
+  assert(client != NULL);
 
   if (!irccmp(client->name, client->host))
     return client->name;
@@ -1056,13 +1056,15 @@ void
 dead_link_on_read(struct Client* client_p, int error)
 {
   char errmsg[255];
-  int current_error = get_sockerr(client_p->localClient->fd);
+  int current_error;
 
   if (IsDefunct(client_p))
     return;
 
   dbuf_clear(&client_p->localClient->buf_recvq);
   dbuf_clear(&client_p->localClient->buf_sendq);
+
+  current_error = get_sockerr(client_p->localClient->fd);
 
   Debug((DEBUG_ERROR, "READ ERROR: fd = %d %d %d",
          client_p->localClient->fd, current_error, error));
@@ -1461,16 +1463,14 @@ del_all_accepts(struct Client *client_p)
   {
     target_p = ptr->data;
 
-    if (target_p != NULL)
-      del_from_accept(target_p,client_p);
+    del_from_accept(target_p, client_p);
   }
 
   DLINK_FOREACH_SAFE(ptr, next_ptr, client_p->on_allow_list.head)
   {
     target_p = ptr->data;
 
-    if (target_p != NULL)
-      del_from_accept(client_p, target_p);
+    del_from_accept(client_p, target_p);
   }
 }
 
@@ -1608,5 +1608,4 @@ change_local_nick(struct Client *client_p, struct Client *source_p, char *nick)
 
   return 1;
 }
-
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.121 2003/05/01 15:53:34 michael Exp $
+ *  $Id: m_kline.c,v 1.122 2003/05/08 03:42:52 michael Exp $
  */
 
 #include "stdinc.h"
@@ -75,7 +75,7 @@ _moddeinit(void)
   mod_del_cmd(&kline_msgtab);
   mod_del_cmd(&dline_msgtab);
 }
-const char *_version = "$Revision: 1.121 $";
+const char *_version = "$Revision: 1.122 $";
 #endif
 
 /* Local function prototypes */
@@ -86,7 +86,7 @@ static int find_user_host(struct Client *source_p,
                           char *user_host_or_nick, char *user, char *host);
 
 /* needed to remove unused definition warning */
-static int valid_comment(struct Client *source_p, char *comment);
+static int valid_comment(struct Client *source_p, const char *comment);
 static int valid_user_host(struct Client *source_p, char *user, char *host);
 static int valid_wild_card(char *user, char *host);
 static int already_placed_kline(struct Client *, const char *, const char *);
@@ -120,7 +120,7 @@ static void
 mo_kline(struct Client *client_p, struct Client *source_p,
 	 int parc, char **parv)
 {
-  char *reason = "No Reason";
+  const char *reason = "No Reason";
   char *oper_reason;
   const char* current_date;
   const char* target_server=NULL;
@@ -129,11 +129,11 @@ mo_kline(struct Client *client_p, struct Client *source_p,
   time_t cur_time;
 
   if (!IsOperK(source_p))
-    {
-      sendto_one(source_p,":%s NOTICE %s :You need kline = yes;",
-		 me.name,source_p->name);
-      return;
-    }
+  {
+    sendto_one(source_p,":%s NOTICE %s :You need kline = yes;",
+               me.name, source_p->name);
+    return;
+  }
 
   parv++;
   parc--;
@@ -141,17 +141,17 @@ mo_kline(struct Client *client_p, struct Client *source_p,
   tkline_time = valid_tkline(*parv);
 
   if (tkline_time > 0)
-    {
-      parv++;
-      parc--;
-    }
+  {
+    parv++;
+    parc--;
+  }
 
   if (parc == 0)
-    {
-      sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-		 me.name, source_p->name, "KLINE");
-      return;
-    }
+  {
+    sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
+               me.name, source_p->name, "KLINE");
+    return;
+  }
 
   if (find_user_host(source_p, *parv, user, host) == 0)
     return;
@@ -209,7 +209,7 @@ mo_kline(struct Client *client_p, struct Client *source_p,
                     ":%s KLINE %s %lu %s %s :%s",
                     source_p->name,
                     target_server,
-                    (unsigned long) tkline_time,
+                    (unsigned long)tkline_time,
                     user, host, reason);
 
       /* If we are sending it somewhere that doesnt include us, we stop
@@ -913,25 +913,25 @@ valid_wild_card(char *luser, char *lhost)
     return 1;
 }
 
-/*
- * valid_comment
+/* valid_comment()
+ *
  * inputs	- pointer to client
  *              - pointer to comment
- * output       - 0 if no valid comment, 1 if valid
+ * output       - 0 if no valid comment,
+ *              - 1 if valid
  * side effects - NONE
  */
 static int
-valid_comment(struct Client *source_p, char *comment)
+valid_comment(struct Client *source_p, const char *comment)
 {
-  if(strchr(comment, '"'))
-    {
-      sendto_one(source_p,
-		   ":%s NOTICE %s :Invalid character '\"' in comment",
-		   me.name, source_p->name);
-      return 0;
-    }
+  if (strchr(comment, '"'))
+  {
+    sendto_one(source_p, ":%s NOTICE %s :Invalid character '\"' in comment",
+               me.name, source_p->name);
+    return(0);
+  }
 
-  return 1;
+  return(1);
 }
 
 /* static int already_placed_kline(source_p, luser, lhost)
@@ -945,7 +945,7 @@ valid_comment(struct Client *source_p, char *comment)
 static int
 already_placed_kline(struct Client *source_p, const char *luser, const char *lhost)
 {
- char *reason;
+ const char *reason;
  struct irc_ssaddr iphost, *piphost;
  struct ConfItem *aconf;
  int t;

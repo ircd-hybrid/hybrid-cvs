@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_gline.h,v 7.13 2003/03/21 18:54:01 db Exp $
+ *  $Id: s_gline.h,v 7.14 2003/05/08 03:42:51 michael Exp $
  */
 
 #ifndef INCLUDED_s_gline_h
@@ -31,14 +31,12 @@
 struct Client;
 struct ConfItem;
 
-extern struct ConfItem* find_gkill(struct Client* client, char *);
-extern struct ConfItem* find_is_glined(const char* host, const char* name);
-extern int    remove_gline_match(const char *user, const char *host);
-extern void   cleanup_glines(void *unused);
-extern void   add_gline(struct ConfItem *);
+extern struct ConfItem *find_gkill(struct Client *client, char *);
+extern struct ConfItem *find_is_glined(const char *host, const char *name);
+extern int remove_gline_match(const char *user, const char *host);
+extern void cleanup_glines(void *unused);
 
-
-typedef struct gline_pending
+struct gline_pending
 {
   char oper_nick1[NICKLEN + 1];
   char oper_user1[USERLEN + 1];
@@ -57,7 +55,7 @@ typedef struct gline_pending
   time_t last_gline_time;       /* for expiring entry */
   char user[USERLEN*2 + 2];
   char host[HOSTLEN*2 + 2];
-}gline_pending_t;
+};
 
 /* how long a pending G line can be around
  * 10 minutes should be plenty
