@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_capab.c,v 1.5 2000/12/06 20:04:48 db Exp $
+ *   $Id: m_capab.c,v 1.6 2000/12/06 21:01:32 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -33,7 +33,7 @@
 
 struct Message capab_msgtab = {
   MSG_CAPAB, 0, 0, MFLG_SLOW, 0,
-  {mr_capab, m_error, m_error, m_error}
+  {mr_capab, m_error, mr_capab, m_error}
 };
 
 void
@@ -62,8 +62,10 @@ int mr_capab(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   char* p;
   char* s;
 
+#if 0
   if ((!IsUnknown(cptr) && !IsHandshake(cptr)) || parc < 2)
     return 0;
+#endif
 
   if (cptr->localClient->caps)
     return exit_client(cptr, cptr, cptr, "CAPAB received twice");
