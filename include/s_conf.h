@@ -21,9 +21,12 @@
  */
 
 /*
- * $Id: s_conf.h,v 7.22 2000/11/06 16:12:00 adrian Exp $
+ * $Id: s_conf.h,v 7.23 2000/11/15 07:51:39 db Exp $
  *
  * $Log: s_conf.h,v $
+ * Revision 7.23  2000/11/15 07:51:39  db
+ * - removed /rehash dump for one reason... and one reason only BLOAT
+ *
  * Revision 7.22  2000/11/06 16:12:00  adrian
  *
  *
@@ -562,7 +565,6 @@ extern struct ConfItem* find_kill (struct Client *);
 extern int conf_connect_allowed(struct in_addr addr);
 extern char *oper_flags_as_string(int);
 extern char *oper_privs_as_string(struct Client *, int);
-extern int rehash_dump(struct Client *);
 extern int find_q_line(char*, char*, char *);
 extern struct ConfItem* find_special_conf(char *,int );
 extern struct ConfItem* find_is_klined(const char* host, 
