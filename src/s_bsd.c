@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.24 2000/01/01 14:34:02 db Exp $
+ *  $Id: s_bsd.c,v 7.25 2000/01/02 05:35:00 db Exp $
  */
 #include "s_bsd.h"
 #include "class.h"
@@ -374,7 +374,9 @@ static int completed_connection(struct Client* cptr)
   if (!EmptyString(c_conf->passwd))
     sendto_one(cptr, "PASS %s :TS", c_conf->passwd);
   
-  send_capabilities(cptr, (c_conf->flags & CONF_FLAGS_ZIP_LINK));
+  send_capabilities(cptr, CAP_MASK|
+                   ((c_conf->flags & CONF_FLAGS_ZIP_LINK) ? CAP_ZIP : 0) |
+                   ((n_conf->flags & CONF_FLAGS_LAZY_LINK) ? CAP_LL : 0));
 
   sendto_one(cptr, "SERVER %s 1 :%s",
              my_name_for_link(me.name, n_conf), me.info);

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.17 2000/01/01 14:34:03 db Exp $
+ *   $Id: send.c,v 7.18 2000/01/02 05:35:02 db Exp $
  */
 #include "send.h"
 #include "channel.h"
@@ -811,7 +811,13 @@ sendto_match_servs(struct Channel *chptr, struct Client *from, const char *patte
     {
       if (cptr == from)
         continue;
-      
+#ifdef HUB
+      if(IsCapable(cptr,CAP_LL))
+        {
+          if( !(chptr->lazyLinkChannelExists & cptr->serverMask) )
+             continue;
+        }
+#endif      
       vsendto_one(cptr, pattern, args);
     }
 

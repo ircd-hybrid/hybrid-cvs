@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 7.5 1999/12/31 00:23:21 db Exp $
+ *   $Id: m_join.c,v 7.6 2000/01/02 05:34:59 db Exp $
  */
 
 #include "m_commands.h"
@@ -33,6 +33,7 @@
 #include "list.h"
 #include "numeric.h"
 #include "send.h"
+#include "s_serv.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -288,7 +289,17 @@ int     m_join(struct Client *cptr,
            if((chptr = hash_find_channel(name, NullChn)))
              flags = 0;
            else
-             flags = CHFL_CHANOP;
+             {
+               flags = CHFL_CHANOP;
+#ifndef HUB
+               if( serv_cptr_list && IsCapable( serv_cptr_list, CAP_LL) )
+                 {
+                   sendto_realops("This is where we ask for %s", name );
+                   sendto_one(serv_cptr_list,":%s CBURST %s :%s",
+                     me.name,name,sptr->name);
+                 }
+#endif
+             }
 
            /* if its not a local channel, or isn't an oper
             * and server has been split
@@ -495,12 +506,11 @@ int     m_join(struct Client *cptr,
             {
               sendto_one(sptr, form_str(RPL_TOPIC), me.name,
                          parv[0], name, chptr->topic);
-#ifdef TOPIC_INFO
+
               sendto_one(sptr, form_str(RPL_TOPICWHOTIME),
                          me.name, parv[0], name,
                          chptr->topic_nick,
                          chptr->topic_time);
-#endif
             }
           parv[1] = name;
           (void)m_names(cptr, sptr, 2, parv);
@@ -544,5 +554,7 @@ int     m_dbop(struct Client *cptr,
 
   sendto_one(sptr,":%s NOTICE %s :*** Notice %s chptr->opcount %d counted %d",
     me.name, sptr->name, name, chptr->opcount, counted_ops);
+
+  return 0;
 }
 #endif

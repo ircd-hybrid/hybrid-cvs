@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_topic.c,v 7.2 1999/12/30 20:36:01 db Exp $
+ *   $Id: m_topic.c,v 7.3 2000/01/02 05:34:59 db Exp $
  */
 #include "m_commands.h"
 #include "channel.h"
@@ -148,14 +148,14 @@ int     m_topic(struct Client *cptr,
                * chptr zeroed
                */
               strncpy_irc(chptr->topic, topic, TOPICLEN);
-#ifdef TOPIC_INFO
+
               /*
                * XXX - this truncates the topic_nick if
                * strlen(sptr->name) > NICKLEN
                */
               strncpy_irc(chptr->topic_nick, sptr->name, NICKLEN);
               chptr->topic_time = CurrentTime;
-#endif
+
               sendto_match_servs(chptr, cptr,":%s TOPIC %s :%s",
                                  parv[0], chptr->chname,
                                  chptr->topic);

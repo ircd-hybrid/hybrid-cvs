@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 7.4 1999/12/30 20:36:04 db Exp $
+ *   $Id: m_whois.c,v 7.5 2000/01/02 05:34:59 db Exp $
  */
 
 #include "m_commands.h"
@@ -164,7 +164,6 @@ int     m_whois(struct Client *cptr,
    * removing it totally. 
    * -Dianora 
    */
-
   /*  for (tmp = parv[1]; (nick = strtoken(&p, tmp, ",")); tmp = NULL) */
   nick = parv[1];
   p = strchr(parv[1],',');

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.16 2000/01/01 14:34:00 db Exp $
+ *  $Id: client.c,v 7.17 2000/01/02 05:34:58 db Exp $
  */
 #include "client.h"
 #include "class.h"
@@ -1447,7 +1447,9 @@ const char* comment        /* Reason for the exit */
         {
           Count.myserver--;
           fdlist_delete(sptr->fd, FDL_SERVER | FDL_BUSY);
-
+#ifdef HUB
+          restoreUnusedServerMask(cptr->serverMask);
+#endif
           /* LINKLIST */
           /* oh for in-line functions... */
           {

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.5 2000/01/01 14:33:57 db Exp $
+ * $Id: config.h,v 7.6 2000/01/02 05:34:52 db Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -191,10 +191,6 @@
  * define this if you want to use n!u@h for BAN_INFO
  */
 #define USE_UH
-
-/* TOPIC_INFO - Shows you who and when someone set the topic
- */
-#define TOPIC_INFO
 
 /* ANTI_NICK_FLOOD - prevents nick flooding
  * define if you want to block local clients from nickflooding
