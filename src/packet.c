@@ -18,7 +18,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: packet.c,v 7.37 2001/03/09 10:19:22 a1kmm Exp $
+ *   $Id: packet.c,v 7.38 2001/03/11 05:13:07 a1kmm Exp $
  */ 
 
 #include <stdio.h>
@@ -60,14 +60,18 @@ void parse_client_queued(struct Client *client_p)
 	while ((dolen = linebuf_get(&client_p->localClient->buf_recvq,
 				    readBuf, READBUF_SIZE)) > 0)
         {
-          if (IsDead(client_p))
-	    {
-	      linebuf_donebuf(&client_p->localClient->buf_recvq);
-	      linebuf_donebuf(&client_p->localClient->buf_sendq);
-	      return;
+          if (!IsDead(client_p))
+	        client_dopacket(client_p, readBuf, dolen);
+	      if (IsDead(client_p))
+    	    {
+    	     if (client_p->localClient)
+    	       {
+	            linebuf_donebuf(&client_p->localClient->buf_recvq);
+	            linebuf_donebuf(&client_p->localClient->buf_sendq);
+	           }
+	         return;
+	        }
 	    }
-	  client_dopacket(client_p, readBuf, dolen);
-	}
       }
 #if 0
     else

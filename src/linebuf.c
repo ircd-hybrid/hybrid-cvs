@@ -6,7 +6,7 @@
  * The idea here is that we should really be maintaining pre-munged
  * buffer "lines" which we can later refcount to save needless copies.
  *
- * $Id: linebuf.c,v 7.22 2001/03/06 02:05:34 androsyn Exp $
+ * $Id: linebuf.c,v 7.23 2001/03/11 05:13:06 a1kmm Exp $
  */
 
 #include <errno.h>
@@ -191,9 +191,10 @@ client_flush_input(struct Client *client_p)
 void
 linebuf_donebuf(buf_head_t *bufhead)
 {
-    while (bufhead->list.head != NULL) {
-        linebuf_done_line(bufhead, (buf_line_t *)bufhead->list.head->data);
-    }
+    while (bufhead->list.head != NULL)
+      {
+       linebuf_done_line(bufhead, (buf_line_t *)bufhead->list.head->data);
+      }
 }
 
 

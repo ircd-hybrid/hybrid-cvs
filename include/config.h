@@ -16,12 +16,14 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.97 2001/03/09 10:19:13 a1kmm Exp $
+ * $Id: config.h,v 7.98 2001/03/11 05:12:58 a1kmm Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
 
 #include "setup.h"
+
+#define PERSISTANT_CLIENTS
 
 /* PLEASE READ SECTION:
  */
