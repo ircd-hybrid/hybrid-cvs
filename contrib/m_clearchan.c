@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_clearchan.c,v 1.26 2002/04/18 16:12:11 db Exp $
+ *   $Id: m_clearchan.c,v 1.27 2002/04/25 16:25:03 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -77,7 +77,7 @@ _moddeinit(void)
   mod_del_cmd(&clearchan_msgtab);
 }
 
-char *_version = "$Revision: 1.26 $";
+char *_version = "$Revision: 1.27 $";
 
 /*
 ** mo_clearchan
@@ -167,8 +167,6 @@ static void mo_clearchan(struct Client *client_p, struct Client *source_p,
 
   add_user_to_channel(chptr, source_p, CHFL_CHANOP);
 
-  /* XXX - check this isn't too big above... */
-  source_p->user->joined++;
   /* Take the TS down by 1, so we don't see the channel taken over
    * again. */
   if (chptr->channelts)
