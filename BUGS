@@ -60,6 +60,11 @@
 
 7.  KNOCK and channel mode +p are inconsistant with Hybrid 6.
 
+8.  TCP Resolver does not function properly and is disabled.
+    The only time you are likely to hit the TCP resolver is for queries
+    over 512 bytes.
+
+
 BUG REPORTS: If you run this code and encounter problems, you must report
  the bug in one of the following ways:
   a) By EMAIL to ircd-hybrid@the-project.org.
@@ -68,4 +73,4 @@ BUG REPORTS: If you run this code and encounter problems, you must report
  with any report  (with passwords and other sensitive information masked).
 
 --------------------------------------------------------------------------------
-$Id: BUGS,v 7.29 2001/09/28 04:33:29 wcampbel Exp $
+$Id: BUGS,v 7.30 2001/10/04 17:51:57 androsyn Exp $
