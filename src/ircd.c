@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.244 2002/11/12 13:45:41 db Exp $
+ *  $Id: ircd.c,v 7.245 2003/01/16 03:28:22 db Exp $
  */
 
 #include "stdinc.h"
@@ -759,11 +759,6 @@ int main(int argc, char *argv[])
 
   eventAddIsh("cleanup_zombies", cleanup_zombies, NULL, 30); 
   
- if (ConfigFileEntry.throttle_time > 0)
-   eventAddIsh("flush_expired_ips", flush_expired_ips, NULL, ConfigFileEntry.throttle_time);
- else
-   eventAddIsh("flush_expired_ips", flush_expired_ips, NULL, 300);
-
   if(ConfigServerHide.links_delay > 0)
     eventAddIsh("write_links_file", write_links_file, NULL, ConfigServerHide.links_delay);
   else

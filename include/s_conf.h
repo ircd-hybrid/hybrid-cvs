@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.188 2002/10/30 17:44:53 wiz Exp $
+ *  $Id: s_conf.h,v 7.189 2003/01/16 03:28:20 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -400,7 +400,6 @@ extern void conf_add_x_conf(struct ConfItem *);
 extern void conf_add_u_conf(struct ConfItem *);
 extern void conf_add_fields(struct ConfItem*, char*, char *, char*, char *,char *);
 extern void conf_add_conf(struct ConfItem *);
-extern void flush_expired_ips(void *);
 
 /* XXX consider moving these into kdparse.h */
 extern void parse_k_file(FBFILE *fb);

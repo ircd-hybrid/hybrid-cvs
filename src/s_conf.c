@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.333 2003/01/09 07:48:42 db Exp $
+ *  $Id: s_conf.c,v 7.334 2003/01/16 03:28:22 db Exp $
  */
 
 #include "stdinc.h"
@@ -612,8 +612,8 @@ int attach_iline(struct Client *client_p, struct ConfItem *aconf)
   ip_found->count++;
 
   /* only check it if its non zero */
-  if ( aconf->c_class /* This should never non NULL *grin* */ &&
-       ConfConFreq(aconf) && ip_found->count > ConfConFreq(aconf))
+  if (aconf->c_class /* This should never non NULL *grin* */ &&
+      ConfConFreq(aconf) && ip_found->count > ConfConFreq(aconf))
     {
       if(!IsConfExemptLimits(aconf))
         return(TOO_MANY); /* Already at maximum allowed ip#'s */
@@ -698,9 +698,9 @@ find_or_add_ip(struct irc_inaddr *ip_in)
     return(ptr);
    }
   }
-  if ((ptr = ip_hash_table[hash_index]) != (IP_ENTRY *)NULL)
+  if ((ptr = ip_hash_table[hash_index]) != NULL)
     {
-      if( free_ip_entries == (IP_ENTRY *)NULL)
+      if (free_ip_entries == NULL)
 	outofmemory();
 
       newptr = ip_hash_table[hash_index] = free_ip_entries;
@@ -713,14 +713,14 @@ find_or_add_ip(struct irc_inaddr *ip_in)
       return(newptr);
     }
 
-  if (free_ip_entries == (IP_ENTRY *)NULL)
+  if (free_ip_entries == NULL)
     outofmemory();
 
   ptr = ip_hash_table[hash_index] = free_ip_entries;
   free_ip_entries = ptr->next;
   memcpy(&ptr->ip, ip_in, sizeof(struct irc_inaddr));
   ptr->count = 0;
-  ptr->next = (IP_ENTRY *)NULL;
+  ptr->next = NULL;
   return(ptr);
 }
 
@@ -2222,7 +2222,7 @@ WriteKlineOrDline( KlineType type,
 
   filename = get_conf_name(type);
 
-  if(type == DLINE_TYPE)
+  if (type == DLINE_TYPE)
     {
       sendto_realops_flags(FLAGS_ALL, L_ALL,
 			   "%s added D-Line for [%s] [%s]",
@@ -2240,7 +2240,7 @@ WriteKlineOrDline( KlineType type,
 		 me.name, source_p->name, user, host);
     }
 
-  if ( (out = fbopen(filename, "a")) == NULL )
+  if ((out = fbopen(filename, "a")) == NULL)
     {
       sendto_realops_flags(FLAGS_ALL, L_ALL,
 			   "*** Problem opening %s ", filename);
@@ -2513,35 +2513,4 @@ int
 conf_yy_fatal_error(char *msg)
 {
   return(0);
-}
-
-
-/* void flush_expired_ips(void *unused)
- *
- * inputs	- none.
- * output	- none.
- * side effects	- Deletes all IP address entries which should have expired.
- */
-void
-flush_expired_ips(void *unused)
-{
-  int i;
-  time_t expire_before = CurrentTime - ConfigFileEntry.throttle_time;
-  IP_ENTRY *ie, **iee;
-
-  for (i=0; i<IP_HASH_SIZE; i++)
-    {
-      for (iee=ip_hash_table+i, ie=*iee; ie; ie=*iee)
-	{
-	  if (ie->count == 0 && ie->last_attempt <= expire_before)
-	    {
-	      *iee=ie->next;
-	      ie->next = free_ip_entries;
-	      free_ip_entries = ie;
-	    }
-	  else
-	    iee = &ie->next;
-	}
-      *iee = NULL;
-    }
 }
