@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_privmsg.c,v 7.11 2000/10/16 06:44:18 db Exp $
+ *   $Id: m_privmsg.c,v 7.12 2000/10/16 16:10:13 toot Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -177,7 +177,7 @@ int     m_privmsg(struct Client *cptr,
 
       if (HasVchans(chptr))
 	{
-	  if( vchan = map_vchan(chptr,sptr) )
+	  if( (vchan = map_vchan(chptr,sptr)) )
 	    {
 	      if (can_send(sptr, vchan) == 0)
 		sendto_channel_butone(cptr, sptr, vchan,

@@ -19,7 +19,7 @@
  *
  *
  *
- * $Id: vchannel.c,v 7.7 2000/10/16 06:44:18 db Exp $
+ * $Id: vchannel.c,v 7.8 2000/10/16 16:10:13 toot Exp $
  */
 #include "vchannel.h"
 #include "channel.h"
@@ -140,16 +140,18 @@ void show_vchans(struct Client *cptr,
                   me.name, sptr->name, chtmp2->chan_id);
 }
 
-/* return matching vchan, or NULL if there isn't one */
+/* return matching vchan, from root and !key (nick)
+ * or NULL if there isn't one */
 struct Channel* find_vchan(struct Channel *chptr, char *key)
 {
   struct Channel *chtmp;
-  
+  struct Client *acptr;
+
   key++; /* go past the '!' */
 
-  for (chtmp = chptr; chtmp; chtmp = chtmp->next_vchan)
-    if (!irccmp(chtmp->chan_id, key))
+  if( (acptr = hash_find_client(key,(struct Client *)NULL)) )
+    if( (chtmp = map_vchan(chptr, acptr)) )
       return chtmp;
-  
+
   return NullChn;
 }

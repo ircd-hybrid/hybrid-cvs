@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_notice.c,v 7.10 2000/10/16 13:12:26 db Exp $
+ *   $Id: m_notice.c,v 7.11 2000/10/16 16:10:12 toot Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -177,7 +177,7 @@ int     m_notice(struct Client *cptr,
 
       if (HasVchans(chptr))
 	{
-	  if( vchan = map_vchan(chptr,sptr) )
+	  if( (vchan = map_vchan(chptr,sptr)) )
 	    {
 	      if (can_send(sptr, vchan) == 0)
 		sendto_channel_butone(cptr, sptr, vchan,
