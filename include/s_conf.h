@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.263 2003/09/18 09:14:35 bill Exp $
+ *  $Id: s_conf.h,v 7.264 2003/09/21 09:59:00 michael Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -48,7 +48,7 @@ struct ip_value
 
 extern FBFILE *conf_fbfile_in;
 extern char conf_line_in[256];
-extern struct AccessItem* yy_aconf;
+extern struct AccessItem *yy_aconf;
 
 typedef enum {  
   CONF_TYPE, 
@@ -86,9 +86,9 @@ struct MatchItem
   char *host;		/* Used for ULINE only */
   char *reason;
   char *oper_reason;
-  int  action;		/* used for xline and uline */
-  int  ref_count;	/* How many times is this matchitem in use */
-  int  illegal;		/* Should it be deleted when possible? */
+  int action;		/* used for xline and uline */
+  int ref_count;	/* How many times is this matchitem in use */
+  int illegal;		/* Should it be deleted when possible? */
 };
 
 struct AccessItem
@@ -120,6 +120,7 @@ struct AccessItem
 
 struct ClassItem
 {
+  long max_sendq;
   int con_freq;
   int ping_freq;
   int max_total;
@@ -127,7 +128,6 @@ struct ClassItem
   int max_global;
   int max_ident;
   int max_perip;
-  long max_sendq;
   int curr_user_count;
 };
 
@@ -143,13 +143,6 @@ struct ClassItem
 
 #define ClassPtr(x)      ((x)->class_ptr)
 
-extern unsigned long get_sendq(struct Client *);
-extern int get_con_freq(struct ClassItem* );
-extern const char *get_client_class(struct Client *);
-extern int get_client_ping(struct Client *);
-extern void check_class(void);
-extern void init_class(void);
-extern struct ConfItem *find_class(const char *);
 
 #define CONF_ILLEGAL            0x80000000
 #define CONF_RESERVED           0x00000001
@@ -362,23 +355,23 @@ struct config_server_hide
 
 struct server_info
 {
-  char        *name;
-  char        *description;
-  char        *network_name;
-  char        *network_desc;
+  char *name;
+  char *description;
+  char *network_name;
+  char *network_desc;
 #ifdef HAVE_LIBCRYPTO
-  char *      rsa_private_key_file;
-  RSA *       rsa_private_key;
+  char *rsa_private_key_file;
+  RSA *rsa_private_key;
 #endif
-  char	      *sid;
-  int         hub;
-  struct      irc_ssaddr ip;
-  struct      irc_ssaddr ip6;
-  int         max_clients;
-  int         specific_ipv4_vhost;
-  int         specific_ipv6_vhost;
-  struct      sockaddr_in dns_host;
-  int         can_use_v6;
+  char *sid;
+  int hub;
+  struct irc_ssaddr ip;
+  struct irc_ssaddr ip6;
+  int max_clients;
+  int specific_ipv4_vhost;
+  int specific_ipv6_vhost;
+  struct sockaddr_in dns_host;
+  int can_use_v6;
 };
 
 struct admin_info
@@ -387,6 +380,15 @@ struct admin_info
   char *description;
   char *email;
 };
+
+struct logging_entry
+{
+  unsigned int use_logging;
+  char operlog[MAXPATHLEN + 1];
+  char userlog[MAXPATHLEN + 1];
+  char failed_operlog[MAXPATHLEN + 1];
+};
+
 
 extern int scount;
 extern int ypass;
@@ -400,7 +402,7 @@ extern dlink_list leaf_items;
 extern dlink_list gline_items;
 extern dlink_list temporary_klines;
 extern dlink_list temporary_dlines;
-extern dlink_list temporary_ip_klines;
+extern struct logging_entry ConfigLoggingEntry;
 extern struct config_file_entry ConfigFileEntry;/* defined in ircd.c*/
 extern struct config_channel_entry ConfigChannel;/* defined in channel.c*/
 extern struct config_server_hide ConfigServerHide; /* defined in s_conf.c */
@@ -408,81 +410,76 @@ extern struct server_info ServerInfo;       /* defined in ircd.c */
 extern struct admin_info AdminInfo;        /* defined in ircd.c */
 /* End GLOBAL section */
 
+
+
+extern unsigned long get_sendq(struct Client *);
+extern int get_con_freq(struct ClassItem *);
+extern const char *get_client_class(struct Client *);
+extern int get_client_ping(struct Client *);
+extern void check_class(void);
+extern void init_class(void);
+extern struct ConfItem *find_class(const char *);
 extern void init_ip_hash_table(void);
 extern void count_ip_hash(int *, unsigned long *);
-extern void remove_one_ip(struct irc_ssaddr *ip);
+extern void remove_one_ip(struct irc_ssaddr *);
 extern struct ConfItem *make_conf_item(ConfType type);
-
 extern void free_access_item(struct AccessItem *);
-extern void read_conf_files(int cold);
+extern void read_conf_files(int);
 extern int attach_conf(struct Client *, struct ConfItem *);
-extern int attach_connect_block(struct Client *client, const char *name,
-				const char *host);
-extern int check_client(struct Client *client_p, struct Client *source_p,
-			const char *);
+extern int attach_connect_block(struct Client *, const char *, const char *);
+extern int check_client(struct Client *, struct Client *, const char *);
 
-extern int detach_conf(struct Client *, ConfType );
+extern int detach_conf(struct Client *, ConfType);
 extern void detach_all_confs(struct Client *);
 
-extern struct ConfItem *find_conf_name(dlink_list *list, const char *name,
-				       ConfType type);
-extern struct ConfItem* 
-find_conf_exact(ConfType type, const char* name, const char* user, 
-		const char* host);
-
+extern struct ConfItem *find_conf_name(dlink_list *, const char *, ConfType);
+extern struct ConfItem *find_conf_exact(ConfType, const char *, const char *, const char *);
 extern struct AccessItem *find_kill(struct Client *);
-extern int conf_connect_allowed(struct irc_ssaddr *addr, int aftype);
+extern int conf_connect_allowed(struct irc_ssaddr *, int);
 extern char *oper_privs_as_string(const unsigned int);
-extern void split_user_host(char *user_host, char **user_p, char **host_p);
-extern struct ConfItem *find_matching_name_conf(ConfType type, const char *,
-						const char *, const char *,
-						int );
-extern struct ConfItem *find_exact_name_conf(ConfType type, const char *,
-					     const char *, const char *);
+extern void split_user_host(char *, char **, char **);
+extern struct ConfItem *find_matching_name_conf(ConfType, const char *,
+                                                const char *, const char *, int);
+extern struct ConfItem *find_exact_name_conf(ConfType, const char *,
+                                             const char *, const char *);
 extern void delete_conf_item(struct ConfItem *);
 extern void get_printable_conf(struct ConfItem *, char **, char **,
-			       char **, int *,char **);
-
-extern void report_confitem_types(struct Client *source_p, ConfType type);
-
+                               char **, int *,char **);
+extern void report_confitem_types(struct Client *, ConfType);
 extern void yyerror(const char *);
 extern int conf_yy_fatal_error(const char *);
 extern int conf_fbgets(char *, int, FBFILE *);
-
 extern void write_conf_line(const struct Client *, struct ConfItem *,
-			    const char *, time_t);
-
+                            const char *, time_t);
 extern int remove_conf_line(ConfType, struct Client *, const char *,
-			    const char *);
+                            const char *);
 extern void add_temp_kline(struct AccessItem *);
 extern void add_temp_dline(struct AccessItem *);
-extern void cleanup_tklines(void *notused);
-
+extern void cleanup_tklines(void *);
 extern const char *get_conf_name(ConfType);
 extern int rehash(int);
-
 extern int conf_add_server(struct ConfItem *, unsigned int, const char *);
 extern void conf_add_class_to_conf(struct ConfItem *, const char *);
 extern void conf_add_d_conf(struct AccessItem *);
 
 /* XXX consider moving these into csvlib.h */
-extern void parse_csv_file(FBFILE *file, ConfType);
-extern char *getfield(char *newline);
+extern void parse_csv_file(FBFILE *, ConfType);
+extern char *getfield(char *);
 
-extern char *get_oper_name(const struct Client *client_p);
+extern char *get_oper_name(const struct Client *);
 /* XXX consider inlining this */
-extern void *map_to_conf(struct ConfItem *conf);
+extern void *map_to_conf(struct ConfItem *);
 /* XXX consider inlining this */
-struct ConfItem *unmap_conf_item(void *aconf);
+struct ConfItem *unmap_conf_item(void *);
 
 extern int yylex(void);
 
-#define NOT_AUTHORIZED  (-1)
-#define IRCD_SOCKET_ERROR    (-2)
-#define I_LINE_FULL     (-3)
-#define TOO_MANY        (-4)
-#define BANNED_CLIENT   (-5)
-#define TOO_FAST        (-6)
+#define NOT_AUTHORIZED    (-1)
+#define IRCD_SOCKET_ERROR (-2)
+#define I_LINE_FULL       (-3)
+#define TOO_MANY          (-4)
+#define BANNED_CLIENT     (-5)
+#define TOO_FAST          (-6)
 
 #define CLEANUP_TKLINES_TIME 60
 #endif /* INCLUDED_s_conf_h */

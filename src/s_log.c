@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.c,v 7.59 2003/09/10 11:37:05 michael Exp $
+ *  $Id: s_log.c,v 7.60 2003/09/21 09:59:04 michael Exp $
  */
 
 #include "stdinc.h"
@@ -51,11 +51,6 @@
 
 static FBFILE *logFile;
 static int logLevel = INIT_LOG_LEVEL;
-int use_logging = YES;
-
-char foperlog[MAXPATHLEN+1];
-char fuserlog[MAXPATHLEN+1];
-char ffailed_operlog[MAXPATHLEN+1];
 
 #ifndef SYSLOG_USERS
 static EVH user_log_resync;
@@ -125,12 +120,12 @@ write_log(const char *message)
 }
    
 void
-ilog(int priority, const char *fmt, ...)
+ilog(const int priority, const char *fmt, ...)
 {
   char buf[LOG_BUFSIZE];
   va_list args;
 
-  assert(-1 < priority);
+  assert(priority > -1);
 
   if (fmt == NULL)
     return;
@@ -146,7 +141,7 @@ ilog(int priority, const char *fmt, ...)
   if (priority <= L_DEBUG)
     syslog(sysLogLevel[priority], "%s", buf);
 #endif
-  if (use_logging)
+  if (ConfigLoggingEntry.use_logging)
     write_log(buf);
 }
   
@@ -170,7 +165,7 @@ reopen_log(const char *filename)
 }
 
 void
-set_log_level(int level)
+set_log_level(const int level)
 {
   if (L_ERROR < level && level <= L_DEBUG)
     logLevel = level;
@@ -203,10 +198,7 @@ get_log_level_as_string(int level)
 void
 log_user_exit(struct Client *source_p)
 {
-  time_t on_for;
-
-  on_for = CurrentTime - source_p->firsttime;
-
+  time_t on_for = CurrentTime - source_p->firsttime;
 #ifdef SYSLOG_USERS
   if (IsPerson(source_p))
   {
@@ -233,13 +225,14 @@ log_user_exit(struct Client *source_p)
     {
       if (user_log_fb == NULL)
       {
-	if ((fuserlog[0] != '\0') && 
-	   (user_log_fb = fbopen(fuserlog, "r")) != NULL)
+	if ((ConfigLoggingEntry.userlog[0] != '\0') && 
+	   (user_log_fb = fbopen(ConfigLoggingEntry.userlog, "r")) != NULL)
 	{
 	  fbclose(user_log_fb);
-	  user_log_fb = fbopen(fuserlog, "a");
+	  user_log_fb = fbopen(ConfigLoggingEntry.userlog, "a");
 	}
       }
+
       if (user_log_fb != NULL)
       {
 	ircsprintf(linebuf,
@@ -251,7 +244,6 @@ log_user_exit(struct Client *source_p)
 		   source_p->name, source_p->username, source_p->host,
 		   source_p->localClient->sendK,
 		   source_p->localClient->receiveK);
-	
 	fbputs(linebuf, user_log_fb);
       }
     }
@@ -288,17 +280,17 @@ user_log_resync(void *notused)
 void
 log_oper(struct Client *source_p, const char *name)
 {
-  if (foperlog[0] == '\0')
+  if (ConfigLoggingEntry.operlog[0] == '\0')
     return;
 
   if (IsPerson(source_p))
   {
     FBFILE *oper_fb;
 
-    if ((oper_fb = fbopen(foperlog, "r")) != NULL)
+    if ((oper_fb = fbopen(ConfigLoggingEntry.operlog, "r")) != NULL)
     {
       fbclose(oper_fb);
-      oper_fb = fbopen(foperlog, "a");
+      oper_fb = fbopen(ConfigLoggingEntry.operlog, "a");
     }
 
     if (oper_fb != NULL)
@@ -309,7 +301,7 @@ log_oper(struct Client *source_p, const char *name)
 		 myctime(CurrentTime), name, source_p->name,
                  source_p->username, source_p->host);
 
-      fbputs(linebuf,oper_fb);
+      fbputs(linebuf, oper_fb);
       fbclose(oper_fb);
     }
   }
@@ -325,17 +317,17 @@ log_oper(struct Client *source_p, const char *name)
 void
 log_failed_oper(struct Client *source_p, const char *name)
 {
-  if (ffailed_operlog[0] == '\0')
+  if (ConfigLoggingEntry.failed_operlog[0] == '\0')
     return;
 
   if (IsPerson(source_p))
   {
     FBFILE *oper_fb;
 
-    if ((oper_fb = fbopen(ffailed_operlog, "r")) != NULL)
+    if ((oper_fb = fbopen(ConfigLoggingEntry.failed_operlog, "r")) != NULL)
     {
       fbclose(oper_fb);
-      oper_fb = fbopen(ffailed_operlog, "a");
+      oper_fb = fbopen(ConfigLoggingEntry.failed_operlog, "a");
     }
 
     if (oper_fb != NULL)
@@ -346,7 +338,7 @@ log_failed_oper(struct Client *source_p, const char *name)
 		 myctime(CurrentTime), name, source_p->name,
                  source_p->username, source_p->host);
 
-      fbputs(linebuf,oper_fb);
+      fbputs(linebuf, oper_fb);
       fbclose(oper_fb);
     }
   }

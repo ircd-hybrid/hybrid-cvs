@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.h,v 7.17 2003/08/22 07:51:57 michael Exp $
+ *  $Id: s_log.h,v 7.18 2003/09/21 09:59:00 michael Exp $
  */
 
 #ifndef INCLUDED_s_log_h
@@ -35,23 +35,16 @@ struct Client;
 #define L_INFO   5
 #define L_DEBUG  6
 
-extern int use_logging;
-
-extern char foperlog[MAXPATHLEN+1];
-extern char fuserlog[MAXPATHLEN+1];
-extern char ffailed_operlog[MAXPATHLEN+1];
-
 extern void init_log(const char *);
 extern void reopen_log(const char *);
-extern void set_log_level(int);
+extern void set_log_level(const int);
 extern int get_log_level(void);
 #ifdef __GNUC__
-extern void ilog(int, const char *, ...) __attribute__((format(printf, 2, 3)));
+extern void ilog(const int, const char *, ...) __attribute__((format(printf, 2, 3)));
 #else
-extern void ilog(int, const char *, ...);
+extern void ilog(const int, const char *, ...);
 #endif
 extern const char *get_log_level_as_string(int);
-
 extern void log_user_exit(struct Client *);
 extern void log_oper(struct Client *, const char *);
 extern void log_failed_oper(struct Client *, const char *);

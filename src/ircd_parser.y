@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.353 2003/09/20 04:47:26 bill Exp $
+ *  $Id: ircd_parser.y,v 1.354 2003/09/21 09:59:04 michael Exp $
  */
 
 %{
@@ -780,22 +780,22 @@ logging_gline_log:	GLINE_LOG '=' QSTRING ';'
 logging_fuserlog: FUSERLOG '=' QSTRING ';'
 {
   if (ypass == 2)
-    strlcpy(fuserlog, yylval.string,
-            sizeof(fuserlog));
+    strlcpy(ConfigLoggingEntry.userlog, yylval.string,
+            sizeof(ConfigLoggingEntry.userlog));
 };
 
 logging_ffailed_operlog: FFAILED_OPERLOG '=' QSTRING ';'
 {
   if (ypass == 2)
-    strlcpy(ffailed_operlog, yylval.string,
-            sizeof(ffailed_operlog));
+    strlcpy(ConfigLoggingEntry.failed_operlog, yylval.string,
+            sizeof(ConfigLoggingEntry.failed_operlog));
 };
 
 logging_foperlog: FOPERLOG '=' QSTRING ';'
 {
   if (ypass == 2)
-    strlcpy(foperlog, yylval.string,
-            sizeof(foperlog));
+    strlcpy(ConfigLoggingEntry.operlog, yylval.string,
+            sizeof(ConfigLoggingEntry.operlog));
 };
 
 logging_log_level: LOG_LEVEL '=' T_L_CRIT ';'
@@ -831,7 +831,7 @@ logging_log_level: LOG_LEVEL '=' T_L_CRIT ';'
 logging_use_logging: USE_LOGGING '=' TBOOL ';'
 {
   if (ypass == 2)
-    use_logging = yylval.number;
+    ConfigLoggingEntry.use_logging = yylval.number;
 };
 
 /***************************************************************************

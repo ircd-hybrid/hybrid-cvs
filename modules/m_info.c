@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.c,v 1.79 2003/09/11 03:41:43 metalrock Exp $
+ *  $Id: m_info.c,v 1.80 2003/09/21 09:59:02 michael Exp $
  */
 
 #include "stdinc.h"
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&info_msgtab);
 }
 
-const char *_version = "$Revision: 1.79 $";
+const char *_version = "$Revision: 1.80 $";
 #endif
 
 /*
@@ -91,7 +91,7 @@ struct InfoStruct
 #define OUTPUT_DECIMAL    0x0004 /* Output option as decimal (%d)       */
 #define OUTPUT_BOOLEAN    0x0008 /* Output option as "ON" or "OFF"      */
 #define OUTPUT_BOOLEAN_YN 0x0010 /* Output option as "YES" or "NO"      */
-#define OUTPUT_BOOLEAN2	  0x0020 /* Output option as "YES/NO/MASKED"    */
+#define OUTPUT_BOOLEAN2   0x0020 /* Output option as "YES/NO/MASKED"    */
 
 static struct InfoStruct info_table[] =
 {
@@ -410,30 +410,27 @@ static struct InfoStruct info_table[] =
   },
   {
     "use_logging",
-    OUTPUT_BOOLEAN,
-    &use_logging,
+    OUTPUT_BOOLEAN_YN,
+    &ConfigLoggingEntry.use_logging,
     "Enable logging"
   },
   {
-    /* foperlog is a char [] */
+    "fuserlog",
+    OUTPUT_STRING_PTR,
+    &ConfigLoggingEntry.userlog,
+    "User log file"
+  },
+  {
     "foperlog",
     OUTPUT_STRING_PTR,
-    &foperlog,
+    &ConfigLoggingEntry.operlog,
     "Operator log file"
   },
   {
-    /* ffailed_operlog is a char [] */
     "ffailed_operlog",
     OUTPUT_STRING_PTR,
-    &ffailed_operlog,
+    &ConfigLoggingEntry.failed_operlog,
     "Failed operator log file"
-  },
-  {
-    /* fuserlog is a char [] */
-    "fuserlog",
-    OUTPUT_STRING_PTR,
-    &fuserlog,
-    "User log file"
   },
   {
     "disable_hidden",
@@ -487,7 +484,7 @@ static struct InfoStruct info_table[] =
 };
 
 /*
-** m_info
+** m_info()
 **  parv[0] = sender prefix
 **  parv[1] = servername
 */
@@ -495,18 +492,17 @@ static void
 m_info(struct Client *client_p, struct Client *source_p,
        int parc, char *parv[])
 {
-  static time_t last_used=0L;
+  static time_t last_used = 0;
 
   if ((last_used + ConfigFileEntry.pace_wait) > CurrentTime)
   {
     /* safe enough to give this on a local connect only */
-    sendto_one(source_p,form_str(RPL_LOAD2HI),me.name,parv[0]);
+    sendto_one(source_p, form_str(RPL_LOAD2HI),
+               me.name, source_p->name);
     return;
   }
   else
-  {
     last_used = CurrentTime;
-  }
 
   if (!ConfigFileEntry.disable_remote)
   {
@@ -522,11 +518,12 @@ m_info(struct Client *client_p, struct Client *source_p,
   send_info_text(source_p);
   send_birthdate_online_time(source_p);
 
-  sendto_one(source_p, form_str(RPL_ENDOFINFO), me.name, parv[0]);
-} /* m_info() */
+  sendto_one(source_p, form_str(RPL_ENDOFINFO),
+             me.name, source_p->name);
+}
 
 /*
-** mo_info
+** mo_info()
 **  parv[0] = sender prefix
 **  parv[1] = servername
 */
@@ -534,7 +531,7 @@ static void
 mo_info(struct Client *client_p, struct Client *source_p,
         int parc, char *parv[])
 {
-  if (hunt_server(client_p,source_p,":%s INFO :%s",1,parc,parv) == HUNTED_ISME)
+  if (hunt_server(client_p, source_p, ":%s INFO :%s", 1, parc, parv) == HUNTED_ISME)
   {
     info_spy(source_p);
   
@@ -542,12 +539,13 @@ mo_info(struct Client *client_p, struct Client *source_p,
     send_conf_options(source_p);
     send_birthdate_online_time(source_p);
 
-    sendto_one(source_p, form_str(RPL_ENDOFINFO), me.name, parv[0]);
+    sendto_one(source_p, form_str(RPL_ENDOFINFO),
+               me.name, source_p->name);
   }
-} /* mo_info() */
+}
 
 /*
-** ms_info
+** ms_info()
 **  parv[0] = sender prefix
 **  parv[1] = servername
 */
@@ -558,7 +556,7 @@ ms_info(struct Client *client_p, struct Client *source_p,
   if (!IsClient(source_p))
       return;
   
-  if (hunt_server(client_p,source_p,":%s INFO :%s",1,parc,parv) == HUNTED_ISME)
+  if (hunt_server(client_p, source_p, ":%s INFO :%s", 1, parc, parv) == HUNTED_ISME)
   {
     info_spy(source_p);
     send_info_text(source_p); 
@@ -568,14 +566,14 @@ ms_info(struct Client *client_p, struct Client *source_p,
       
     send_birthdate_online_time(source_p);
     sendto_one(source_p, form_str(RPL_ENDOFINFO),
-               me.name, parv[0]);
+               me.name, source_p->name);
   }
-} /* ms_info() */
+}
 
 /* send_info_text()
  *
  * inputs	- client pointer to send info text to
- * output	- none
+ * output	- NONE
  * side effects	- info text is sent to client
  */
 static void
@@ -596,25 +594,25 @@ send_info_text(struct Client *source_p)
 /* send_birthdate_online_time()
  *
  * inputs	- client pointer to send to
- * output	- none
+ * output	- NONE
  * side effects	- birthdate and online time are sent
  */
 static void
 send_birthdate_online_time(struct Client *source_p)
 {
   sendto_one(source_p, ":%s %d %s :Birth Date: %s, compile # %s",
-	     me.name, RPL_INFO, source_p->name,
-	     creation, generation);
+             me.name, RPL_INFO, source_p->name,
+             creation, generation);
 
   sendto_one(source_p, ":%s %d %s :On-line since %s",
-	     me.name, RPL_INFO, source_p->name,
-	     myctime(me.firsttime));
+             me.name, RPL_INFO, source_p->name,
+             myctime(me.firsttime));
 }
 
 /* send_conf_options()
  *
  * inputs	- client pointer to send to
- * output	- none
+ * output	- NONE
  * side effects	- send config options to client
  */
 static void
@@ -623,162 +621,113 @@ send_conf_options(struct Client *source_p)
   Info *infoptr;
   int i = 0;
 
-  /*
-   * Now send them a list of all our configuration options
+  /* Now send them a list of all our configuration options
    * (mostly from defaults.h and setup.h)
    */
   for (infoptr = MyInformation; infoptr->name; infoptr++)
+  {
+    if (infoptr->intvalue)
     {
-      if (infoptr->intvalue)
+      sendto_one(source_p, ":%s %d %s :%-30s %-5d [%-30s]",
+                 me.name, RPL_INFO, source_p->name, infoptr->name,
+                 infoptr->intvalue, infoptr->desc);
+    }
+    else
+    {
+      sendto_one(source_p, ":%s %d %s :%-30s %-5s [%-30s]",
+                 me.name, RPL_INFO, source_p->name, infoptr->name,
+                 infoptr->strvalue, infoptr->desc);
+    }
+  }
+
+  /*
+   * Parse the info_table[] and do the magic.
+   */
+  for (i = 0; info_table[i].name; i++)
+  {
+    switch (info_table[i].output_type)
+    {
+      /* For "char *" references */
+      case OUTPUT_STRING:
       {
-	sendto_one(source_p,
-		   ":%s %d %s :%-30s %-5d [%-30s]",
-		   me.name,
-		   RPL_INFO,
-		   source_p->name,
-		   infoptr->name,
-		   infoptr->intvalue,
-		   infoptr->desc);
+        char *option = *((char **)info_table[i].option);
+
+        sendto_one(source_p, ":%s %d %s :%-30s %-5s [%-30s]",
+                   me.name, RPL_INFO, source_p->name,
+                   info_table[i].name, option ? option : "NONE",
+                   info_table[i].desc ? info_table[i].desc : "<none>");
+        break;
       }
-      else
+
+      /* For "char foo[]" references */
+      case OUTPUT_STRING_PTR:
       {
-	sendto_one(source_p,
-		   ":%s %d %s :%-30s %-5s [%-30s]",
-		   me.name,
-		   RPL_INFO,
-		   source_p->name,
-		   infoptr->name,
-		   infoptr->strvalue,
-		   infoptr->desc);
+        char *option = (char *)info_table[i].option;
+
+        sendto_one(source_p, ":%s %d %s :%-30s %-5s [%-30s]",
+                   me.name, RPL_INFO, source_p->name,
+                   info_table[i].name, option ? option : "NONE",
+                   info_table[i].desc ? info_table[i].desc : "<none>");
+        break;
+      }
+
+      /* Output info_table[i].option as a decimal value. */
+      case OUTPUT_DECIMAL:
+      {
+        int option = *((int *)info_table[i].option);
+
+        sendto_one(source_p, ":%s %d %s :%-30s %-5d [%-30s]",
+                   me.name, RPL_INFO, source_p->name, info_table[i].name,
+                   option, info_table[i].desc ? info_table[i].desc : "<none>");
+        break;
+      }
+
+      /* Output info_table[i].option as "ON" or "OFF" */
+      case OUTPUT_BOOLEAN:
+      {
+        int option = *((int *)info_table[i].option);
+
+        sendto_one(source_p, ":%s %d %s :%-30s %-5s [%-30s]",
+                   me.name, RPL_INFO, source_p->name,
+                   info_table[i].name, option ? "ON" : "OFF",
+                   info_table[i].desc ? info_table[i].desc : "<none>");
+
+        break;
+      }
+
+      /* Output info_table[i].option as "YES" or "NO" */
+      case OUTPUT_BOOLEAN_YN:
+      {
+        int option = *((int *)info_table[i].option);
+
+        sendto_one(source_p, ":%s %d %s :%-30s %-5s [%-30s]",
+                   me.name, RPL_INFO, source_p->name,
+                   info_table[i].name, option ? "YES" : "NO",
+                   info_table[i].desc ? info_table[i].desc : "<none>");
+        break;
       }
     }
-
-   /*
-    * Parse the info_table[] and do the magic.
-    */
-   for (i = 0; info_table[i].name; i++)
-   {
-     switch (info_table[i].output_type)
-     {
-       /*
-        * For "char *" references
-        */
-       case OUTPUT_STRING:
-       {
-         char *option = *((char **) info_table[i].option);
-
-         sendto_one(source_p,
-           ":%s %d %s :%-30s %-5s [%-30s]",
-           me.name,
-           RPL_INFO,
-           source_p->name,
-           info_table[i].name,
-           option ? option : "NONE",
-           info_table[i].desc ? info_table[i].desc : "<none>");
-
-         break;
-       }
-       /*
-        * For "char foo[]" references
-        */
-       case OUTPUT_STRING_PTR:
-       {
-         char *option = (char *) info_table[i].option;
-
-         sendto_one(source_p,
-           ":%s %d %s :%-30s %-5s [%-30s]",
-           me.name,
-           RPL_INFO,
-           source_p->name,
-           info_table[i].name,
-           option ? option : "NONE",
-           info_table[i].desc ? info_table[i].desc : "<none>");
-
-         break;
-       }
-       /*
-        * Output info_table[i].option as a decimal value.
-        */
-       case OUTPUT_DECIMAL:
-       {
-         int option = *((int *) info_table[i].option);
-
-         sendto_one(source_p,
-           ":%s %d %s :%-30s %-5d [%-30s]",
-           me.name,
-           RPL_INFO,
-           source_p->name,
-           info_table[i].name,
-           option,
-           info_table[i].desc ? info_table[i].desc : "<none>");
-
-         break;
-       }
-
-       /*
-        * Output info_table[i].option as "ON" or "OFF"
-        */
-       case OUTPUT_BOOLEAN:
-       {
-         int option = *((int *) info_table[i].option);
-
-         sendto_one(source_p,
-           ":%s %d %s :%-30s %-5s [%-30s]",
-           me.name,
-           RPL_INFO,
-           source_p->name,
-           info_table[i].name,
-           option ? "ON" : "OFF",
-           info_table[i].desc ? info_table[i].desc : "<none>");
-
-         break;
-       }
-       /*
-        * Output info_table[i].option as "YES" or "NO"
-        */
-       case OUTPUT_BOOLEAN_YN:
-       {
-         int option = *((int *) info_table[i].option);
-
-         sendto_one(source_p,
-           ":%s %d %s :%-30s %-5s [%-30s]",
-           me.name,
-           RPL_INFO,
-           source_p->name,
-           info_table[i].name,
-           option ? "YES" : "NO",
-           info_table[i].desc ? info_table[i].desc : "<none>");
-
-         break;
-       }
-     } /* switch (info_table[i].output_type) */
-   } /* forloop */
-
+  }
 
   /* Don't send oper_only_umodes...it's a bit mask, we will have to decode it
-  ** in order for it to show up properly to opers who issue INFO
-  */
-
+   * in order for it to show up properly to opers who issue INFO
+   */
 #ifndef EFNET
   /* jdc -- Only send compile information to admins. */
   if (IsAdmin(source_p))
   {
-    sendto_one(source_p,
-	":%s %d %s :Compiled on [%s]",
-	me.name, 
-	RPL_INFO,
-	source_p->name,
-	platform); 
+    sendto_one(source_p, ":%s %d %s :Compiled on [%s]",
+               me.name, RPL_INFO, source_p->name, platform); 
   }
 #endif
-
-  sendto_one(source_p, form_str(RPL_INFO), me.name, source_p->name, "");
+  sendto_one(source_p, form_str(RPL_INFO),
+             me.name, source_p->name, "");
 }
 
 /* info_spy()
  * 
  * input        - pointer to client
- * output       - none
+ * output       - NONE
  * side effects - hook doing_info is called
  */
 static void

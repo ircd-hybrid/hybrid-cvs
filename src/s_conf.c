@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.476 2003/09/18 09:14:38 bill Exp $
+ *  $Id: s_conf.c,v 7.477 2003/09/21 09:59:04 michael Exp $
  */
 
 #include "stdinc.h"
@@ -71,7 +71,6 @@ dlink_list gline_items   = { NULL, NULL, 0 };
 
 dlink_list temporary_klines = { NULL, NULL, 0 };
 dlink_list temporary_dlines = { NULL, NULL, 0 };
-dlink_list temporary_ip_klines = { NULL, NULL, 0 };
 
 extern int yyparse(); /* defined in y.tab.c */
 extern int lineno;
@@ -81,7 +80,7 @@ int scount = 0; /* used by yyparse(), etc */
 int ypass  = 1; /* used by yyparse()      */
 
 /* internally defined functions */
-static void lookup_confhost(struct ConfItem *aconf);
+static void lookup_confhost(struct ConfItem *);
 static void set_default_conf(void);
 static void validate_conf(void);
 static void read_conf(FBFILE *);
@@ -90,11 +89,11 @@ static void flush_deleted_I_P(void);
 static void expire_tklines(dlink_list *);
 static void garbage_collect_ip_entries(void);
 static int hash_ip(struct irc_ssaddr *);
-static int verify_access(struct Client *client_p, const char *username);
-static int attach_iline(struct Client *, struct ConfItem *conf);
+static int verify_access(struct Client *, const char *);
+static int attach_iline(struct Client *, struct ConfItem *);
 static struct ip_entry *find_or_add_ip(struct irc_ssaddr *);
-static void parse_conf_file(int type, int cold);
-static dlink_list *map_to_list(ConfType conf);
+static void parse_conf_file(int, int);
+static dlink_list *map_to_list(ConfType);
 
 FBFILE *conf_fbfile_in;
 extern char yytext[];
@@ -1697,10 +1696,10 @@ find_matching_name_conf(ConfType type, const char *name, const char *user,
  * side effects - looks for an exact match on name field
  */
 struct ConfItem *
-find_exact_name_conf(ConfType type, 
-		     const char *name, const char *user, const char *host)
+find_exact_name_conf(ConfType type, const char *name,
+                     const char *user, const char *host)
 {
-  dlink_node *ptr=NULL;
+  dlink_node *ptr = NULL;
   struct ConfItem *conf;
   struct AccessItem *aconf;
   struct MatchItem *match_item;
@@ -1824,7 +1823,7 @@ rehash(int sig)
   rehashed_klines = 1;
   rehashed_xlines = 1;
 
-  if (use_logging)
+  if (ConfigLoggingEntry.use_logging)
     reopen_log(logFileName);
 
   return(0);
@@ -1873,10 +1872,10 @@ set_default_conf(void)
   AdminInfo.description = NULL;
 
   set_log_level(L_NOTICE);
-  use_logging = YES;
-  fuserlog[0] = '\0';
-  ffailed_operlog[0] = '\0';
-  foperlog[0] = '\0';
+  ConfigLoggingEntry.use_logging = 1;
+  ConfigLoggingEntry.operlog[0] = '\0';
+  ConfigLoggingEntry.userlog[0] = '\0';
+  ConfigLoggingEntry.failed_operlog[0] = '\0';
   
   ConfigChannel.disable_local_channels = NO;
   ConfigChannel.use_invex = YES;

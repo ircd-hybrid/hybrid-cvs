@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.317 2003/09/20 01:23:41 bill Exp $
+ *  $Id: ircd.c,v 7.318 2003/09/21 09:59:04 michael Exp $
  */
 
 #include "stdinc.h"
@@ -77,9 +77,9 @@ struct config_file_entry ConfigFileEntry;
 struct server_info ServerInfo;
 /* admin info set from ircd.conf */
 struct admin_info AdminInfo = { NULL, NULL, NULL };
-
 struct Counter Count = { 0, 0, 0, 0, 0, 0, 0, 0 };
 struct ServerState_t server_state = { 0 };
+struct logging_entry ConfigLoggingEntry = { 1, {0}, {0}, {0} };
 
 struct timeval SystemTime;
 int ServerRunning;            /* GLOBAL - server execution state */
@@ -167,7 +167,7 @@ print_startup(int pid)
 /* init_sys()
  *
  * inputs	- NONE
- * output	- none
+ * output	- NONE
  * side effects	- if boot_daemon flag is not set, don't daemonize
  */
 static void 
