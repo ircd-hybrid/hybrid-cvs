@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kill.c,v 1.45 2001/05/09 00:30:40 db Exp $
+ *   $Id: m_kill.c,v 1.46 2001/05/15 19:33:53 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -274,7 +274,7 @@ static void ms_kill(struct Client *client_p, struct Client *source_p,
     }
 
   log(L_INFO,"KILL From %s For %s Path %s (%s)",
-      parv[0], target_p->name, inpath, buf, reason);
+      parv[0], target_p->name, inpath, reason);
   /*
   ** And pass on the message to other servers. Note, that if KILL
   ** was changed, the message has to be sent to all links, also
