@@ -1,4 +1,4 @@
-$Id: Hybrid-team,v 7.72 2003/07/08 21:06:30 joshk Exp $
+$Id: Hybrid-team,v 7.73 2003/10/04 19:47:50 metalrock Exp $
 
 The hybrid team is a group of ircd coders who were frustrated
 with the instability and all-out "dirtiness" of the EFnet ircd's
@@ -23,6 +23,7 @@ David-T, David Taylor <davidt@yadt.co.uk>
 Dianora, Diane Bruce <db@db.net>
 einride, Erik S. Johansen, <einride@einride.org>
 fl, Lee Hardy <lee@leeh.co.uk>
+Garion, Joost Vunderink <garion@efnet.nl>
 Hwy101, W. Campbell <wcampbel@botbay.net>
 joshk, Joshua Kwan <joshk@triplehelix.org>
 larne, Edward Brocklesby <ejb@sdf.lonestar.org>
