@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_invite.c,v 7.6 2000/10/22 22:36:22 db Exp $
+ *   $Id: m_invite.c,v 7.7 2000/10/24 02:41:25 ryan Exp $
  */
 #include "handlers.h"
 #include "common.h"
@@ -158,8 +158,6 @@ int     m_invite(struct Client *cptr,
 
   if (HasVchans(chptr))
     {
-      if ((vchan = map_vchan(chptr,sptr)))
-	chptr = vchan;
       if (map_vchan(chptr,acptr))
 	{
 	  if (MyClient(sptr))
@@ -167,6 +165,9 @@ int     m_invite(struct Client *cptr,
 		       me.name, parv[0], parv[1], parv[2]);
 	  return 0;
 	}
+
+      if ((vchan = map_vchan(chptr,sptr)))
+	chptr = vchan;
     }
 
   if (!IsMember(sptr, chptr))
