@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.182 2001/06/24 04:55:31 a1kmm Exp $
+ *  $Id: client.c,v 7.183 2001/06/26 20:51:41 androsyn Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -104,7 +104,7 @@ struct Client* make_client(struct Client* from)
   dlink_node *m;
 
   client_p = (struct Client *)MyMalloc(sizeof(struct Client));
-      
+         
   if (from == NULL)
     {
       client_p->from  = client_p; /* 'from' of local client is self! */
@@ -134,8 +134,6 @@ struct Client* make_client(struct Client* from)
   client_p->fd_r = -1;
 #endif
   strcpy(client_p->username, "unknown");
-
-#if 0
   client_p->next    = NULL;
   client_p->prev    = NULL;
   client_p->hnext   = NULL;
@@ -145,8 +143,6 @@ struct Client* make_client(struct Client* from)
   client_p->serv    = NULL;
   client_p->servptr = NULL;
   client_p->whowas  = NULL;
-#endif
-
   return client_p;
 }
 

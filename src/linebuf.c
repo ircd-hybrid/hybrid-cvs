@@ -6,7 +6,7 @@
  * The idea here is that we should really be maintaining pre-munged
  * buffer "lines" which we can later refcount to save needless copies.
  *
- * $Id: linebuf.c,v 7.34 2001/05/26 00:25:21 davidt Exp $
+ * $Id: linebuf.c,v 7.35 2001/06/26 20:51:42 androsyn Exp $
  */
 
 #include <errno.h>
@@ -68,10 +68,7 @@ linebuf_new_line(buf_head_t *bufhead)
   ++bufline_count;
 
   node = MyMalloc(sizeof(dlink_node));
-
-  /* XXX Zero data, I'm being paranoid! -- adrian */
-  memset(bufline, 0, sizeof(buf_line_t));
-
+  
 #if 0
   bufline->len = 0;
   bufline->terminated = 0;
@@ -444,7 +441,6 @@ linebuf_attach(buf_head_t *bufhead, buf_head_t *new)
   {
     line = (buf_line_t *)node->data;
     new_node = MyMalloc(sizeof(dlink_node));
-    
     dlinkAddTail(line, new_node, &bufhead->list);
 
     /* Update the allocated size */

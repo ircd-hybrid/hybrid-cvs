@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.151 2001/06/11 19:56:53 leeh Exp $
+ *   $Id: send.c,v 7.152 2001/06/26 20:51:43 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -76,10 +76,10 @@ sendto_list_anywhere(struct Client *one, struct Client *from,
 		     dlink_list *list, buf_head_t *local_linebuf,
                      buf_head_t *remote_linebuf);
 
-static int
+static inline int
 send_format(char *lsendbuf, const char *pattern, va_list args);
 
-static int
+static inline int
 send_trim(char *lsendbuf, int len );
 
 /*
@@ -1204,7 +1204,7 @@ ts_warn(const char *pattern, ...)
  * output	- number of bytes formatted output
  * side effects	- modifies sendbuf
  */
-static int
+static inline int
 send_format(char *lsendbuf, const char *pattern, va_list args)
 {
   int len; /* used for the length of the current message */
@@ -1222,7 +1222,7 @@ send_format(char *lsendbuf, const char *pattern, va_list args)
  * output	- new length of buffer if modified otherwise original len
  * side effects	- input buffer is trimmed if needed
  */
-static int
+static inline int
 send_trim(char *lsendbuf,int len)
 {
   /*

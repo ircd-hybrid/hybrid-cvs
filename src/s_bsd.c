@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.138 2001/06/12 21:55:51 androsyn Exp $
+ *  $Id: s_bsd.c,v 7.139 2001/06/26 20:51:42 androsyn Exp $
  */
 #include "config.h"
 #include "fdlist.h"
@@ -614,9 +614,6 @@ comm_connect_tcp(int fd, const char *host, u_short port,
 {
  fd_table[fd].flags.called_connect = 1;
  assert(callback);
-#ifndef NDEBUG
- memset(&fd_table[fd].connect, 0, sizeof(fd_table[fd].connect));
-#endif
  fd_table[fd].connect.callback = callback;
  fd_table[fd].connect.data = data;
 

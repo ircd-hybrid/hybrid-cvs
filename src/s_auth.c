@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.c,v 7.69 2001/06/09 08:36:08 androsyn Exp $
+ *   $Id: s_auth.c,v 7.70 2001/06/26 20:51:42 androsyn Exp $
  *
  * Changes:
  *   July 6, 1999 - Rewrote most of the code here. When a client connects
@@ -125,8 +125,6 @@ static struct AuthRequest* make_auth_request(struct Client* client)
 {
   struct AuthRequest* request = 
     (struct AuthRequest *)MyMalloc(sizeof(struct AuthRequest));
-  assert(0 != request);
-  memset(request, 0, sizeof(struct AuthRequest));
   request->fd      = -1;
   request->client  = client;
   request->timeout = CurrentTime + CONNECTTIMEOUT;
