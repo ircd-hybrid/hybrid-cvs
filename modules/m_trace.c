@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_trace.c,v 1.76 2004/05/24 21:57:44 bill Exp $
+ *  $Id: m_trace.c,v 1.77 2004/06/14 15:25:32 bill Exp $
  */
 
 #include "stdinc.h"
@@ -46,31 +46,13 @@ static void m_trace(struct Client *, struct Client *, int, char **);
 static void ms_trace(struct Client*, struct Client*, int, char**);
 static void mo_trace(struct Client*, struct Client*, int, char**);
 
-#ifdef IPV6
-static void mo_trace4(struct Client*, struct Client*, int, char**);
-static void mo_trace6(struct Client*, struct Client*, int, char**);
-#endif
-
 static void trace_spy(struct Client *);
-static void do_actual_trace(int ttype, const char *tname,
-			    struct Client*, struct Client*, int, char**);
+static void do_actual_trace(const char *, struct Client *, struct Client *, int, char **);
 
 struct Message trace_msgtab = {
   "TRACE", 0, 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_trace, ms_trace, mo_trace, m_ignore}
 };
-
-#ifdef IPV6
-struct Message trace_msgtab4 = {
-  "TRACES", 0, 0, 0, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_trace, m_ignore, mo_trace4, m_ignore}
-};
-
-struct Message trace_msgtab6 = {
-  "TRACEF", 0, 0, 0, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_trace, m_ignore, mo_trace6, m_ignore}
-};
-#endif
 
 #ifndef STATIC_MODULES
 void
@@ -78,10 +60,6 @@ _modinit(void)
 {
   hook_add_event("doing_trace");
   mod_add_cmd(&trace_msgtab);
-#ifdef IPV6
-  mod_add_cmd(&trace_msgtab4);
-  mod_add_cmd(&trace_msgtab6);
-#endif
 }
 
 void
@@ -89,12 +67,8 @@ _moddeinit(void)
 {
   hook_del_event("doing_trace");
   mod_del_cmd(&trace_msgtab);
-#ifdef IPV6
-  mod_del_cmd(&trace_msgtab4);
-  mod_del_cmd(&trace_msgtab6);
-#endif
 }
-const char *_version = "$Revision: 1.76 $";
+const char *_version = "$Revision: 1.77 $";
 #endif
 
 static int report_this_status(struct Client *source_p, struct Client *target_p,
@@ -182,45 +156,15 @@ mo_trace(struct Client *client_p, struct Client *source_p,
       return;
     }
     case HUNTED_ISME:
-      do_actual_trace(AF_UNSPEC, tname, client_p, source_p, parc, parv);
+      do_actual_trace(tname, client_p, source_p, parc, parv);
       break;
     default:
       return;
   }
 }
 
-#ifdef IPV6
 static void
-mo_trace4(struct Client *client_p, struct Client *source_p,
-	  int parc, char *parv[])
-{
-  const char *tname;
-
-  if (parc > 1)
-    tname = parv[1];
-  else
-    tname = me.name;
-
-  do_actual_trace(AF_INET, tname, client_p, source_p, parc, parv);
-}
-
-static void
-mo_trace6(struct Client *client_p, struct Client *source_p,
-	  int parc, char *parv[])
-{
-  const char *tname;
-
-  if (parc > 1)
-    tname = parv[1];
-  else
-    tname = me.name;
-
-  do_actual_trace(AF_INET6, tname, client_p, source_p, parc, parv);
-}
-#endif
-
-static void
-do_actual_trace(int ttype, const char *tname, struct Client *client_p,
+do_actual_trace(const char *tname, struct Client *client_p,
 		struct Client *source_p, int parc, char *parv[])
 {
   struct Client *target_p = NULL;
@@ -336,13 +280,7 @@ do_actual_trace(int ttype, const char *tname, struct Client *client_p,
     if (!dow && irccmp(tname, target_p->name))
       continue;
 
-#ifdef IPV6
-    if ((ttype == AF_UNSPEC) || 
-	(target_p->localClient->ip.ss.ss_family == ttype))
-      cnt = report_this_status(source_p, target_p, dow, 0, 0);
-#else
     cnt = report_this_status(source_p, target_p, dow, 0, 0);
-#endif
   }
 
   DLINK_FOREACH(ptr, serv_list.head)
@@ -354,17 +292,9 @@ do_actual_trace(int ttype, const char *tname, struct Client *client_p,
     if (!dow && irccmp(tname, target_p->name))
       continue;
 
-#ifdef IPV6
-    if ((ttype == AF_UNSPEC) || 
-	(target_p->localClient->ip.ss.ss_family == ttype))
-      cnt = report_this_status(source_p, target_p, dow,
-			       link_u[target_p->localClient->fd],
-			       link_s[target_p->localClient->fd]);
-#else
     cnt = report_this_status(source_p, target_p, dow,
 			     link_u[target_p->localClient->fd],
 			     link_s[target_p->localClient->fd]);
-#endif
   }
 
   /* This section is to report the unknowns */
@@ -377,13 +307,7 @@ do_actual_trace(int ttype, const char *tname, struct Client *client_p,
     if (!dow && irccmp(tname, target_p->name))
       continue;
 
-#ifdef IPV6
-    if ((ttype == AF_UNSPEC) || 
-	(target_p->localClient->ip.ss.ss_family == ttype))
-      cnt = report_this_status(source_p, target_p, dow, 0, 0);
-#else
     cnt = report_this_status(source_p, target_p, dow, 0, 0);
-#endif
   }
 
   DLINK_FOREACH(ptr, class_items.head)

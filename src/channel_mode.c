@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.138 2003/10/16 23:42:09 bill Exp $
+ *  $Id: channel_mode.c,v 7.139 2004/06/14 15:25:34 bill Exp $
  */
 
 #include "stdinc.h"
@@ -205,7 +205,7 @@ add_id(struct Client *client_p, struct Channel *chptr, char *banid, int type)
   {
     actualBan = ban->data;
 
-    if (match(actualBan->banstr, banid))
+    if (!irccmp(actualBan->banstr, banid))
       return(0);
   }
 
@@ -235,14 +235,6 @@ add_id(struct Client *client_p, struct Channel *chptr, char *banid, int type)
 }
 
 /*
- *
- * "del_id - delete an id belonging to client_p
- * if banid is null, deleteall banids belonging to client_p."
- *
- * from orabidoo
- * modified 8/9/00 by is: now we handle add ban types here
- * (invex/excemp/etc)
- *
  * inputs	- pointer to channel
  *		- pointer to ban id
  *		- type of ban, i.e. ban, exception, invex
