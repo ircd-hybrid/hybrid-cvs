@@ -17,5 +17,7 @@ x86          TenDRA           FreeBSD    Joseph Mallett <jmallett@newgold.net>
 SPARC        Forte C v6,v7    Solaris    Joan Touzet <joant@ieee.org>
 SPARC        gcc              Solaris    Joan Touzet <joant@ieee.org>
 x86          Cygwin gcc       Windows    W. Campbell <wcampbel@botbay.net>
+x86          gcc              Linux      Aaron Sethman <androsyn@ratbox.org>
+SPARC        gcc              Linux      Aaron Sethman <androsyn@ratbox.org>
 
-$Id: README.PLATFORMS,v 7.4 2002/01/10 02:17:14 wcampbel Exp $
+$Id: README.PLATFORMS,v 7.5 2002/01/10 14:05:34 androsyn Exp $
