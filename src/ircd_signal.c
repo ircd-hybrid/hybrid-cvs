@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_signal.c,v 7.8 2001/12/06 17:33:41 androsyn Exp $
+ * $Id: ircd_signal.c,v 7.9 2002/03/17 18:10:34 db Exp $
  */
 
 #include <signal.h>
@@ -94,12 +94,14 @@ void setup_signals()
   sigemptyset(&act.sa_mask);
   sigaddset(&act.sa_mask, SIGPIPE);
   sigaddset(&act.sa_mask, SIGALRM);
+  sigaddset(&act.sa_mask, SIGTRAP);
 
 # ifdef SIGWINCH
   sigaddset(&act.sa_mask, SIGWINCH);
   sigaction(SIGWINCH, &act, 0);
 # endif
   sigaction(SIGPIPE, &act, 0);
+  sigaction(SIGTRAP, &act, 0);
 
   act.sa_handler = dummy_handler;
   sigaction(SIGALRM, &act, 0);
