@@ -12,7 +12,7 @@
 ** VMS support by Edward Brocklesby, crypt.c implementation
 ** phk@login.dknet.dk
 **
-** $Id: mkpasswd.c,v 7.12 2003/05/15 04:18:35 db Exp $
+** $Id: mkpasswd.c,v 7.13 2003/05/16 01:17:39 joshk Exp $
 */
 #include <stdio.h>
 #include <string.h>
@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
   int c;
   char *saltpara = NULL;
   char *salt;
-  char *username;
+  char *username = NULL;
   int flag = 0;
   int length = 0; /* Not Set */
   int rounds = 0; /* Not set, since extended DES needs 25 and blowfish needs
