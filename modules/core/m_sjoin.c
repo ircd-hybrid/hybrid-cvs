@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.101 2001/08/22 12:39:46 leeh Exp $
+ *   $Id: m_sjoin.c,v 1.102 2001/08/22 13:29:07 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -385,8 +385,7 @@ static void ms_sjoin(struct Client *client_p,
    */
   if ((p = strchr(s, ' ')) != NULL)
   {
-    *p = '\0';
-    p++;
+    *p++ = '\0';
   }
 
   while (s)
@@ -548,8 +547,7 @@ nextnick:
        */
       if (s && ((p = strchr(s, ' ')) != NULL))
 	{
-	  *p = '\0';
-	  p++;
+	  *p++ = '\0';
 	}
 	/* nah, the while will exit if theres nothing left.. and its
 	 * possible we still need to parse one final nick which doesnthave a
