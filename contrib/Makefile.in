@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/contrib
 #
-# $Id: Makefile.in,v 1.6 2001/01/09 03:02:05 wcampbel Exp $
+# $Id: Makefile.in,v 1.7 2001/01/15 13:28:16 ejb Exp $
 #
 CC		= @CC@
 RM		= @RM@
@@ -27,7 +27,8 @@ SRCS =                          \
   m_jupe.c			\
   m_hash.c			\
   m_nickinfo.c                  \
-  m_opme.c
+  m_opme.c                      \
+  whois_notice.c
 
 OBJS = ${SRCS:.c=.so}
 

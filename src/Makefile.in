@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.56 2001/01/11 09:30:25 a1kmm Exp $
+# $Id: Makefile.in,v 7.57 2001/01/15 13:28:24 ejb Exp $
 #
 CC		= @CC@
 INSTALL		= @INSTALL@
@@ -64,6 +64,7 @@ SRCS =                          \
   fdlist.c                      \
   fileio.c                      \
   hash.c                        \
+  hook.c                        \
   irc_string.c                  \
   ircd.c                        \
   ircd_signal.c                 \
