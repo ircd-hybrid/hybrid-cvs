@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.c,v 7.43 2002/06/26 03:05:45 androsyn Exp $
+ *  $Id: s_log.c,v 7.44 2002/09/06 19:37:13 db Exp $
  */
 
 #include "stdinc.h"
@@ -87,7 +87,8 @@ static int
 open_log(const char* filename)
 {
   logFile = fbopen(filename, "a");
-  if (logFile == NULL) {
+  if (logFile == NULL)
+  {
 #ifdef USE_SYSLOG
     syslog(LOG_ERR, "Unable to open log file: %s: %s",
            filename, strerror(errno));
@@ -121,7 +122,6 @@ ilog(int priority, const char* fmt, ...)
   assert(-1 < priority);
   if(fmt == NULL)
     return;
-  assert(0 != fmt);
 
   if (priority > logLevel)
     return;
@@ -212,9 +212,7 @@ log_user_exit(struct Client *source_p)
 	  (signed long) on_for / 3600,
 	  (signed long) (on_for % 3600)/60,
 	  (signed long) on_for % 60,
-	  source_p->name,
-	  source_p->username,
-	  source_p->host,
+	  source_p->name, source_p->username, source_p->host,
 	  source_p->localClient->sendK,
 	  source_p->localClient->receiveK);
     }
@@ -230,34 +228,32 @@ log_user_exit(struct Client *source_p)
      * -Taner
      */
     if (IsPerson(source_p))
+    {
+      if (user_log_fb == NULL)
       {
-	if (user_log_fb == NULL)
-	  {
-	    if( ConfigFileEntry.fname_userlog && 
-		(user_log_fb = fbopen(ConfigFileEntry.fname_userlog, "r")) != NULL )
-	      {
-		fbclose(user_log_fb);
-		user_log_fb = fbopen(ConfigFileEntry.fname_userlog, "a");
-	      }
-	  }
+	if((ConfigFileEntry.fname_userlog[0] != '\0') && 
+	   (user_log_fb = fbopen(ConfigFileEntry.fname_userlog, "r")) != NULL )
+	{
+	  fbclose(user_log_fb);
+	  user_log_fb = fbopen(ConfigFileEntry.fname_userlog, "a");
+	}
 
-	if( user_log_fb != NULL )
-	  {
-	    ircsprintf(linebuf,
-		       "%s (%3ld:%02ld:%02ld): %s!%s@%s %d/%d\n",
-		       myctime(source_p->firsttime),
-		       (signed long) on_for / 3600,
-		       (signed long) (on_for % 3600)/60,
-		       (signed long) on_for % 60,
-		       source_p->name,
-		       source_p->username,
-		       source_p->host,
-		       source_p->localClient->sendK,
-		       source_p->localClient->receiveK);
-
-	    fbputs(linebuf, user_log_fb);
-	  }
+	if (user_log_fb != NULL)
+	{
+	  ircsprintf(linebuf,
+		     "%s (%3ld:%02ld:%02ld): %s!%s@%s %d/%d\n",
+		     myctime(source_p->firsttime),
+		     (signed long) on_for / 3600,
+		     (signed long) (on_for % 3600)/60,
+		     (signed long) on_for % 60,
+		     source_p->name, source_p->username, source_p->host,
+		     source_p->localClient->sendK,
+		     source_p->localClient->receiveK);
+	  
+	  fbputs(linebuf, user_log_fb);
+	}
       }
+    }
   }
 #endif
 }
@@ -281,40 +277,78 @@ user_log_resync(void *notused)
 }
 #endif
 
+/* XXX log_oper and log_failed_oper should be combined in future */
 /*
  * log_oper
  *
- * inputs	- pointer to client
+ * inputs	- pointer to client being opered up
  * output	- none
- * side effects - FNAME_OPERLOG is written to, if its present
+ * side effects - ConfigFileEntry.fname_operlog is written to, if its present
  */
 
 void 
-log_oper( struct Client *source_p, char *name )
+log_oper(struct Client *source_p, char *name)
 {
   FBFILE *oper_fb;
   char linebuf[BUFSIZE];
 
-  if (!ConfigFileEntry.fname_operlog)
-	  return;
+  if (ConfigFileEntry.fname_operlog[0] == '\0')
+    return;
   
   if (IsPerson(source_p))
+  {
+    if((oper_fb = fbopen(ConfigFileEntry.fname_operlog, "r")) != NULL)
     {
-      if( (oper_fb = fbopen(ConfigFileEntry.fname_operlog, "r")) != NULL )
-	{
-	  fbclose(oper_fb);
-	  oper_fb = fbopen(ConfigFileEntry.fname_operlog, "a");
-	}
-
-      if(oper_fb != NULL)
-	{
-	  ircsprintf(linebuf, "%s OPER (%s) by (%s!%s@%s)\n",
-		     myctime(CurrentTime), name, 
-		     source_p->name, source_p->username,
-		     source_p->host);
-
-	  fbputs(linebuf,oper_fb);
-	  fbclose(oper_fb);
-	}
+      fbclose(oper_fb);
+      oper_fb = fbopen(ConfigFileEntry.fname_operlog, "a");
     }
+
+    if(oper_fb != NULL)
+    {
+      ircsprintf(linebuf, "%s OPER (%s) by (%s!%s@%s)\n",
+		 myctime(CurrentTime), name, 
+		 source_p->name, source_p->username,
+		 source_p->host);
+
+      fbputs(linebuf,oper_fb);
+      fbclose(oper_fb);
+    }
+  }
+}
+
+/*
+ * log_failed_oper
+ *
+ * inputs	- pointer to client that failed top oper up
+ * output	- none
+ * side effects - ConfigFileEntry.fname_foperlog is written to, if its present
+ */
+
+void 
+log_failed_oper(struct Client *source_p, char *name)
+{
+  FBFILE *oper_fb;
+  char linebuf[BUFSIZE];
+
+  if (ConfigFileEntry.fname_foperlog[0] == '\0')
+    return;
+  
+  if (IsPerson(source_p))
+  {
+    if((oper_fb = fbopen(ConfigFileEntry.fname_foperlog, "r")) != NULL)
+    {
+      fbclose(oper_fb);
+      oper_fb = fbopen(ConfigFileEntry.fname_foperlog, "a");
+    }
+
+    if(oper_fb != NULL)
+    {
+      ircsprintf(linebuf, "%s FAILED OPER (%s) by (%s!%s@%s)\n",
+		 myctime(CurrentTime), name, 
+		 source_p->name, source_p->username, source_p->host);
+      
+      fbputs(linebuf,oper_fb);
+      fbclose(oper_fb);
+    }
+  }
 }

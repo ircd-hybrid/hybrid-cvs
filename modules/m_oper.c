@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_oper.c,v 1.52 2002/08/17 07:16:33 a1kmm Exp $
+ *  $Id: m_oper.c,v 1.53 2002/09/06 19:37:12 db Exp $
  */
 
 #include "stdinc.h"
@@ -74,7 +74,7 @@ _moddeinit(void)
   mod_del_cmd(&oper_msgtab);
 }
 
-const char *_version = "$Revision: 1.52 $";
+const char *_version = "$Revision: 1.53 $";
 #endif
 
 /*
@@ -117,6 +117,7 @@ m_oper(struct Client *client_p, struct Client *source_p,
                                source_p->name, source_p->username, 
 			       source_p->host);
         }
+      log_failed_oper(source_p, name);
       return;
     }
 
@@ -147,6 +148,7 @@ m_oper(struct Client *client_p, struct Client *source_p,
              -einride
           */
           attach_conf(source_p, oconf);
+	  log_failed_oper(source_p, name);
           return;
         }
 
@@ -155,7 +157,6 @@ m_oper(struct Client *client_p, struct Client *source_p,
       ilog(L_TRACE, "OPER %s by %s!%s@%s",
 	   name, source_p->name, source_p->username, source_p->host);
       log_oper(source_p, name);
-      return;
     }
   else
     {
@@ -167,6 +168,7 @@ m_oper(struct Client *client_p, struct Client *source_p,
                                source_p->name, source_p->username,
 			       source_p->host);
         }
+      log_failed_oper(source_p, name);
     }
 }
 

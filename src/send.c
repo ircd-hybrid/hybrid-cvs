@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.205 2002/09/05 14:06:16 db Exp $
+ *  $Id: send.c,v 7.206 2002/09/06 19:37:14 db Exp $
  */
 
 #include "stdinc.h"
@@ -929,7 +929,6 @@ sendto_list_remote(struct Client *one,
 
     if (MyConnect(target_p))
       continue;
-
 
     if (target_p->from == one->from) /* must skip the origin! */
       continue;
