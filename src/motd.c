@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: motd.c,v 7.27 2003/04/03 23:48:59 michael Exp $
+ *  $Id: motd.c,v 7.28 2003/04/06 00:07:17 michael Exp $
  */
 
 #include "stdinc.h"
@@ -74,7 +74,7 @@ SendMessageFile(struct Client *source_p, MessageFile *motdToPrint)
   switch(motdType)
     {
     case USER_MOTD:
-      nick = BadPtr(source_p->name) ? "*" : source_p->name;
+      nick = EmptyString(source_p->name) ? "*" : source_p->name;
       
       if (motdToPrint->contentsOfFile == NULL)
         {

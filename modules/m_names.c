@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_names.c,v 1.47 2003/04/02 11:44:56 michael Exp $
+ *  $Id: m_names.c,v 1.48 2003/04/06 00:07:13 michael Exp $
  */
 
 #include "stdinc.h"
@@ -67,7 +67,7 @@ _moddeinit(void)
   mod_del_cmd(&names_msgtab);
 }
 
-const char *_version = "$Revision: 1.47 $";
+const char *_version = "$Revision: 1.48 $";
 #endif
 
 /************************************************************************
@@ -93,7 +93,7 @@ static void m_names(struct Client *client_p,
   char *vkey = NULL;
 #endif
 
-  if (!BadPtr(para))
+  if (!EmptyString(para))
     {
       while (*para == ',')
         para++;

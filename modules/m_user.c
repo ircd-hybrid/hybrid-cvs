@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_user.c,v 1.24 2003/02/17 16:09:29 db Exp $
+ *  $Id: m_user.c,v 1.25 2003/04/06 00:07:13 michael Exp $
  */
 
 #include "stdinc.h"
@@ -58,7 +58,7 @@ _moddeinit(void)
   mod_del_cmd(&user_msgtab);
 }
 
-const char *_version = "$Revision: 1.24 $";
+const char *_version = "$Revision: 1.25 $";
 #endif
 /*
 ** mr_user
@@ -79,7 +79,7 @@ static void mr_user(struct Client* client_p, struct Client* source_p,
   if (*parv[4] == '\0')
     {
       sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-                 me.name, BadPtr(parv[0]) ? "*" : parv[0], "USER");
+                 me.name, EmptyString(parv[0]) ? "*" : parv[0], "USER");
       return;
     }
 

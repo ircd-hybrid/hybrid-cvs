@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.149 2003/04/02 10:40:51 michael Exp $
+ *  $Id: parse.c,v 7.150 2003/04/06 00:07:17 michael Exp $
  */
 
 #include "stdinc.h"
@@ -345,7 +345,7 @@ handle_command(struct Message *mptr, struct Client *client_p,
       if (!IsServer(client_p))
 	{
 	  sendto_one(client_p, form_str(ERR_NEEDMOREPARAMS),
-		     me.name, BadPtr(hpara[0]) ? "*" : hpara[0], mptr->cmd);
+		     me.name, EmptyString(hpara[0]) ? "*" : hpara[0], mptr->cmd);
 	}
       else
 	{

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nick.c,v 1.110 2003/04/05 05:45:39 michael Exp $
+ *  $Id: m_nick.c,v 1.111 2003/04/06 00:07:15 michael Exp $
  */
 
 #include "stdinc.h"
@@ -96,7 +96,7 @@ _moddeinit(void)
   mod_del_cmd(&client_msgtab);
 }
 
-const char *_version = "$Revision: 1.110 $";
+const char *_version = "$Revision: 1.111 $";
 #endif
 
 /*
@@ -114,10 +114,10 @@ mr_nick(struct Client *client_p, struct Client *source_p,
   char*    s;
   dlink_node *ptr;
    
-  if(parc < 2 || BadPtr(parv[1]))
+  if(parc < 2 || EmptyString(parv[1]))
   {
     sendto_one(source_p, form_str(ERR_NONICKNAMEGIVEN),
-               me.name, BadPtr(parv[0]) ? "*" : parv[0]);
+               me.name, EmptyString(parv[0]) ? "*" : parv[0]);
     return;
   }
 
@@ -132,7 +132,7 @@ mr_nick(struct Client *client_p, struct Client *source_p,
   if(!clean_nick_name(nick))
   {
     sendto_one(source_p, form_str(ERR_ERRONEUSNICKNAME),
-               me.name, BadPtr(parv[0]) ? "*" : parv[0], parv[1]);
+               me.name, EmptyString(parv[0]) ? "*" : parv[0], parv[1]);
     return;
   }
 
@@ -141,7 +141,7 @@ mr_nick(struct Client *client_p, struct Client *source_p,
      !(IsOper(source_p) && ConfigChannel.oper_pass_resv))
   {
     sendto_one(source_p, form_str(ERR_UNAVAILRESOURCE),
-               me.name, BadPtr(parv[0]) ? "*" : parv[0], nick);
+               me.name, EmptyString(parv[0]) ? "*" : parv[0], nick);
     return;
   }
 
@@ -205,8 +205,7 @@ mr_nick(struct Client *client_p, struct Client *source_p,
   char     nick[NICKLEN];
   struct   Client *target_p;
 
-  /* XXX BadPtr is needed */
-  if(parc < 2 || BadPtr(parv[1]))
+  if(parc < 2 || EmptyString(parv[1]))
   {
     sendto_one(source_p, form_str(ERR_NONICKNAMEGIVEN),
                me.name, parv[0]);
@@ -324,10 +323,10 @@ ms_nick(struct Client *client_p, struct Client *source_p,
   char     nick[NICKLEN];
   time_t   newts = 0;
 
-  /* XXX BadPtr is needed */
-  if(parc < 2 || BadPtr(parv[1]))
+  if(parc < 2 || EmptyString(parv[1]))
   {
-    sendto_one(source_p, form_str(ERR_NONICKNAMEGIVEN), me.name, parv[0]);
+    sendto_one(source_p, form_str(ERR_NONICKNAMEGIVEN),
+               me.name, parv[0]);
     return;
   }
 
@@ -434,7 +433,7 @@ ms_client(struct Client *client_p, struct Client *source_p,
   name = parv[9];
 
   /* XXX can this happen ? */
-  if (BadPtr(parv[1]))
+  if (EmptyString(parv[1]))
     return;
 
   /* parse the nickname */

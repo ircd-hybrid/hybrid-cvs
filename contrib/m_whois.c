@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.15 2003/04/05 05:45:35 michael Exp $
+ *  $Id: m_whois.c,v 1.16 2003/04/06 00:07:10 michael Exp $
  */
 
 #include "stdinc.h"
@@ -194,7 +194,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-const char *_version = "$Revision: 1.15 $";
+const char *_version = "$Revision: 1.16 $";
 #endif
 /*
 ** m_whois
@@ -207,7 +207,7 @@ m_whois(struct Client *client_p, struct Client *source_p,
 {
   static time_t last_used = 0;
   
-  if (parc < 2 || BadPtr(parv[1]))
+  if (parc < 2 || EmptyString(parv[1]))
     {
       sendto_one(source_p, form_str(ERR_NONICKNAMEGIVEN),
                  me.name, parv[0]);
@@ -253,8 +253,7 @@ static void
 mo_whois(struct Client *client_p, struct Client *source_p,
          int parc, char *parv[])
 {
-  /* XXX Need BadPtr */
-  if (parc < 2 || BadPtr(parv[1]))
+  if (parc < 2 || EmptyString(parv[1]))
     {
       sendto_one(source_p, form_str(ERR_NONICKNAMEGIVEN),
                  me.name, parv[0]);
@@ -623,14 +622,16 @@ static void
 ms_whois(struct Client *client_p, struct Client *source_p,
          int parc, char *parv[])
 {
+  if (!IsClient(source_p))
+    return;
+
   /* its a misconfigured server */
-  /* XXX Need BadPtr */
-  if (parc < 2 || BadPtr(parv[1]))
-    {
-      sendto_one(source_p, form_str(ERR_NONICKNAMEGIVEN),
-                 me.name, parv[0]);
-      return;
-    }
+  if (parc < 2 || EmptyString(parv[1]))
+  {
+    sendto_one(source_p, form_str(ERR_NONICKNAMEGIVEN),
+               me.name, parv[0]);
+    return;
+  }
 
   /* its a client doing a remote whois:
    * :parv[0] WHOIS parv[1] :parv[2]

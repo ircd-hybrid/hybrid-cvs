@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_admin.c,v 1.35 2002/07/31 16:24:06 leeh Exp $
+ *  $Id: m_admin.c,v 1.36 2003/04/06 00:07:13 michael Exp $
  */
 
 #include "stdinc.h"
@@ -60,7 +60,7 @@ _moddeinit(void)
   hook_del_event("doing_admin");
   mod_del_cmd(&admin_msgtab);
 }
-const char *_version = "$Revision: 1.35 $";
+const char *_version = "$Revision: 1.36 $";
 #endif
 /*
  * mr_admin - ADMIN command handler
@@ -75,7 +75,7 @@ static void mr_admin(struct Client *client_p, struct Client *source_p,
   if((last_used + ConfigFileEntry.pace_wait) > CurrentTime)
     {
       sendto_one(source_p,form_str(RPL_LOAD2HI), me.name, 
-                 BadPtr(parv[0]) ? "*" : parv[0]);
+                 EmptyString(parv[0]) ? "*" : parv[0]);
       return;
     }
   else
@@ -135,15 +135,14 @@ static void ms_admin(struct Client *client_p, struct Client *source_p,
  * output	- none
  * side effects	- admin info is sent to client given
  */
-static void do_admin( struct Client *source_p )
+static void do_admin( struct Client *source_p)
 {
-
   char *nick;
 
   if (IsPerson(source_p))
     admin_spy(source_p);
 
-  nick = BadPtr(source_p->name) ? "*" : source_p->name;
+  nick = EmptyString(source_p->name) ? "*" : source_p->name;
 
   sendto_one(source_p, form_str(RPL_ADMINME),
 	     me.name, nick, me.name);

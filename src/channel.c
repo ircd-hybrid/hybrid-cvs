@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.362 2003/04/02 14:29:22 adx Exp $
+ *  $Id: channel.c,v 7.363 2003/04/06 00:07:17 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1109,7 +1109,7 @@ can_join(struct Client *source_p, struct Channel *chptr, char *key)
     }
   }
 
-  if (*chptr->mode.key && (BadPtr(key) || irccmp(chptr->mode.key, key)))
+  if (*chptr->mode.key && (EmptyString(key) || irccmp(chptr->mode.key, key)))
     return (ERR_BADCHANNELKEY);
 
   if (chptr->mode.limit && chptr->users >= chptr->mode.limit)

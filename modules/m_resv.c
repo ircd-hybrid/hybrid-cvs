@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_resv.c,v 1.17 2003/02/17 16:09:29 db Exp $
+ *  $Id: m_resv.c,v 1.18 2003/04/06 00:07:13 michael Exp $
  */
 
 #include "stdinc.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&unresv_msgtab);
 }
 
-const char *_version = "$Revision: 1.17 $";
+const char *_version = "$Revision: 1.18 $";
 #endif
 
 /*
@@ -77,7 +77,7 @@ const char *_version = "$Revision: 1.17 $";
 static void mo_resv(struct Client *client_p, struct Client *source_p,
                     int parc, char *parv[])
 {
-  if(BadPtr(parv[1]))
+  if(EmptyString(parv[1]))
     return;
 
   if(IsChannelName(parv[1]))

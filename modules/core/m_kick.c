@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kick.c,v 1.52 2003/04/05 01:08:27 michael Exp $
+ *  $Id: m_kick.c,v 1.53 2003/04/06 00:07:15 michael Exp $
  */
 
 #include "stdinc.h"
@@ -60,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&kick_msgtab);
 }
 
-const char *_version = "$Revision: 1.52 $";
+const char *_version = "$Revision: 1.53 $";
 #endif
 /*
 ** m_kick
@@ -94,7 +94,7 @@ m_kick(struct Client *client_p, struct Client *source_p,
   if(MyClient(source_p) && !IsFloodDone(source_p))
     flood_endgrace(source_p);
 
-  comment = (BadPtr(parv[3])) ? parv[2] : parv[3];
+  comment = (EmptyString(parv[3])) ? parv[2] : parv[3];
   if (strlen(comment) > (size_t) TOPICLEN)
     comment[TOPICLEN] = '\0';
 

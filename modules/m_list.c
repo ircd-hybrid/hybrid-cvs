@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_list.c,v 1.49 2003/04/02 11:44:56 michael Exp $
+ *  $Id: m_list.c,v 1.50 2003/04/06 00:07:13 michael Exp $
  */
 
 #include "stdinc.h"
@@ -66,7 +66,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&list_msgtab);
 }
-const char *_version = "$Revision: 1.49 $";
+const char *_version = "$Revision: 1.50 $";
 #endif
 
 
@@ -103,7 +103,7 @@ static void m_list(struct Client *client_p, struct Client *source_p,
     }
 
   /* If no arg, do all channels *whee*, else just one channel */
-  if (parc < 2 || BadPtr(parv[1]))
+  if (parc < 2 || EmptyString(parv[1]))
     {
       list_all_channels(source_p);
     }
@@ -137,7 +137,7 @@ static void mo_list(struct Client *client_p, struct Client *source_p,
     }
 
   /* If no arg, do all channels *whee*, else just one channel */
-  if (parc < 2 || BadPtr(parv[1]))
+  if (parc < 2 || EmptyString(parv[1]))
     {
       list_all_channels(source_p);
     }
@@ -164,7 +164,7 @@ static void ms_list(struct Client *client_p,
       if(!IsCapable(client_p->from, CAP_LL) && !MyConnect(source_p))
 	return;
 
-      if (parc < 2 || BadPtr(parv[1]))
+      if (parc < 2 || EmptyString(parv[1]))
 	{
 	  list_all_channels(source_p);
 	}

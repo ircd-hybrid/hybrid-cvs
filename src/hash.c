@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.51 2003/04/02 11:44:58 michael Exp $
+ *  $Id: hash.c,v 7.52 2003/04/06 00:07:17 michael Exp $
  */
 
 #include "stdinc.h"
@@ -695,7 +695,7 @@ get_or_create_channel(struct Client *client_p, char *chname, int *isnew)
   unsigned int hashv;
   int len;
 
-  if (BadPtr(chname))
+  if (EmptyString(chname))
     return NULL;
 
   len = strlen(chname);

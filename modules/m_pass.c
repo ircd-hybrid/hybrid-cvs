@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_pass.c,v 1.24 2003/03/31 15:49:22 adx Exp $
+ *  $Id: m_pass.c,v 1.25 2003/04/06 00:07:13 michael Exp $
  */
 
 #include "stdinc.h"
@@ -53,7 +53,7 @@ _moddeinit(void)
   mod_del_cmd(&pass_msgtab);
 }
 
-const char *_version = "$Revision: 1.24 $";
+const char *_version = "$Revision: 1.25 $";
 #endif
 /*
  * m_pass() - Added Sat, 4 March 1989
@@ -72,11 +72,12 @@ static void mr_pass(struct Client *client_p, struct Client *source_p,
   if (EmptyString(password))
     {
       sendto_one(client_p, form_str(ERR_NEEDMOREPARAMS),
-                 me.name, BadPtr(parv[0]) ? "*" : parv[0], "PASS");
+                 me.name, EmptyString(parv[0]) ? "*" : parv[0], "PASS");
       return;
     }
 
-  strlcpy(client_p->localClient->passwd, password, PASSWDLEN + 1);
+  strlcpy(client_p->localClient->passwd, password,
+          sizeof(client_p->localClient->passwd));
 
   if (parc > 2)
     {

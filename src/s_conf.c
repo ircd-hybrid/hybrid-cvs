@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.354 2003/04/05 01:08:30 michael Exp $
+ *  $Id: s_conf.c,v 7.355 2003/04/06 00:07:18 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1545,7 +1545,7 @@ split_user_host(struct ConfItem *aconf)
 static void 
 lookup_confhost(struct ConfItem* aconf)
 {
-  if (BadPtr(aconf->host) || BadPtr(aconf->name))
+  if (EmptyString(aconf->host) || EmptyString(aconf->name))
     {
       ilog(L_ERROR, "Host/server name error: (%s) (%s)",
           aconf->host, aconf->name);
@@ -1905,11 +1905,11 @@ get_printable_conf(struct ConfItem *aconf, char **name, char **host,
   static char null[] = "<NULL>";
   static char zero[] = "default";
 
-  *name = BadPtr(aconf->name) ? null : aconf->name;
-  *host = BadPtr(aconf->host) ? null : aconf->host;
-  *pass = BadPtr(aconf->passwd) ? null : aconf->passwd;
-  *user = BadPtr(aconf->user) ? null : aconf->user;
-  *classname = BadPtr(aconf->className) ? zero : aconf->className;
+  *name = EmptyString(aconf->name) ? null : aconf->name;
+  *host = EmptyString(aconf->host) ? null : aconf->host;
+  *pass = EmptyString(aconf->passwd) ? null : aconf->passwd;
+  *user = EmptyString(aconf->user) ? null : aconf->user;
+  *classname = EmptyString(aconf->className) ? zero : aconf->className;
   *port = (int)aconf->port;
 }
 
@@ -2334,7 +2334,7 @@ conf_add_server(struct ConfItem *aconf, int lcount)
       return(-1);
     }
 
-  if (BadPtr(aconf->passwd) && !(aconf->flags & CONF_FLAGS_CRYPTLINK))
+  if (EmptyString(aconf->passwd) && !(aconf->flags & CONF_FLAGS_CRYPTLINK))
     {
       sendto_realops_flags(UMODE_ALL, L_ALL,"Bad connect block, name %s",
 			   aconf->name);
