@@ -25,7 +25,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: balloc.c,v 7.32 2002/05/25 01:24:52 androsyn Exp $
+ *  $Id: balloc.c,v 7.33 2002/05/29 16:13:42 db Exp $
  */
 
 /* 
@@ -461,22 +461,22 @@ int BlockHeapGarbageCollect(BlockHeap * bh)
     last = NULL;
     walker = bh->base;
 
-    while (walker)
+    while (walker != NULL)
       {
-        if (walker->freeElems == bh->elemsPerBlock)
+        if ((walker->freeElems == bh->elemsPerBlock) != 0)
 	  {
             free_block(walker->elems, walker->alloc_size);
-            if (last)
+            if (last != NULL)
 	      {
                 last->next = walker->next;
-                if(free)
+                if(walker != NULL)
                  free(walker);
                 walker = last->next;
 	      }
 	    else
 	      {
                 bh->base = walker->next;
-                if(free)
+                if(walker != NULL)
                  free(walker);
                 walker = bh->base;
 	      }
