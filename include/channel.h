@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.142 2003/06/01 11:48:39 adx Exp $
+ *  $Id: channel.h,v 7.143 2003/06/01 14:38:46 adx Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -55,6 +55,7 @@ struct Channel
   time_t          last_knock;           /* don't allow knock to flood */
 
   dlink_list      members;
+  dlink_list      locmembers;  /* local members are here too */
 
   dlink_list      invites;
   dlink_list      banlist;
@@ -76,9 +77,9 @@ extern int can_send (struct Channel *chptr, struct Client *who);
 extern int is_banned (struct Channel *chptr, struct Client *who);
 extern int can_join(struct Client *source_p, struct Channel *chptr,
                     const char *key);
-extern int is_chan_op(struct Channel *chptr,struct Client *who);
-extern int is_voiced(struct Channel *chptr,struct Client *who);
-extern int is_deopped(struct Channel *chptr,struct Client *who);
+extern int is_chan_op(struct Channel *chptr, struct Client *who);
+extern int is_voiced(struct Channel *chptr, struct Client *who);
+extern int is_deopped(struct Channel *chptr, struct Client *who);
 
 extern void add_user_to_channel(struct Channel *chptr, struct Client *who,
                                 unsigned int flags);
@@ -87,7 +88,7 @@ extern int remove_user_from_channel(struct Channel *chptr, struct Client *who);
 extern int check_channel_name(const char *name);
 extern void channel_member_names(struct Client *source_p, struct Channel *chptr,
                                  int show_eon);
-extern const char *channel_chanop_or_voice(struct Channel *, struct Client *);
+extern char *get_member_status(struct Channel *, struct Client *, int);
 extern void add_invite(struct Channel *chptr, struct Client *who);
 extern void del_invite(struct Channel *chptr, struct Client *who);
 extern void send_channel_modes (struct Client *, struct Channel *);
@@ -119,8 +120,9 @@ struct Ban          /* also used for exceptions -orabidoo */
 
 struct Membership
 {
-  dlink_node channode;
-  dlink_node usernode;
+  dlink_node channode;      /* link to chptr->members */
+  dlink_node locchannode;   /* link to chptr->locmembers */
+  dlink_node usernode;      /* link to source_p->user->channel */
   struct Channel *chptr;
   struct Client *client_p;
   unsigned int flags;

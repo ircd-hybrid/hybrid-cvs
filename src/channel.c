@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.386 2003/06/01 11:48:41 adx Exp $
+ *  $Id: channel.c,v 7.387 2003/06/01 14:38:50 adx Exp $
  */
 
 #include "stdinc.h"
@@ -53,7 +53,6 @@ BlockHeap *ban_heap;
 BlockHeap *topic_heap;
 BlockHeap *member_heap;
 
-static int sub1_from_channel(struct Channel *);
 static void destroy_channel(struct Channel *);
 static void send_mode_list(struct Client *client_p, const char *chname,
                            dlink_list *top, char flag, int clear);
@@ -111,6 +110,8 @@ add_user_to_channel(struct Channel *chptr, struct Client *who,
   who->user->joined++;
 
   dlinkAdd(ms, &ms->channode, &chptr->members);
+  if (MyConnect(who))
+    dlinkAdd(ms, &ms->locchannode, &chptr->locmembers);
   dlinkAdd(ms, &ms->usernode, &who->user->channel);
 }
 
@@ -125,40 +126,27 @@ add_user_to_channel(struct Channel *chptr, struct Client *who,
 int
 remove_user_from_channel(struct Channel *chptr, struct Client *who)
 {
-  dlink_node *ptr;
   struct Membership *ms;
 
   assert(chptr != NULL);
   assert(who->user != NULL);
 
-  /* XXX -could be optimized */
+  ms = find_channel_link(who, chptr);
+  assert(ms != NULL);
 
-  DLINK_FOREACH(ptr, chptr->members.head)
+  dlinkDelete(&ms->channode, &chptr->members);
+  if (MyConnect(who))
+    dlinkDelete(&ms->locchannode, &chptr->locmembers);
+  dlinkDelete(&ms->usernode, &who->user->channel);
+
+  BlockHeapFree(member_heap, ms);
+  who->user->joined--;
+  if (--chptr->users == 0)
   {
-    ms = ptr->data;
-
-    assert(ms != NULL);
-
-    if (ms->client_p == who)
-      dlinkDelete(&ms->channode, &chptr->members);
+    destroy_channel(chptr);
+    return 1;
   }
-
-  DLINK_FOREACH(ptr, who->user->channel.head)
-  {
-    ms = ptr->data;
-
-    assert(ms != NULL);
-
-    if (ms->chptr == chptr)
-    {
-      dlinkDelete(&ms->usernode, &who->user->channel);
-      BlockHeapFree(member_heap, ms);
-      who->user->joined--;
-      break;
-    }
-  }
-
-  return (sub1_from_channel(chptr));
+  return 0;
 }
 
 /* send_members()
@@ -323,32 +311,6 @@ check_channel_name(const char *name)
   }
 
   return(1);
-}
-
-/* sub1_from_channel()
- *
- * inputs	- pointer to channel to remove client from
- * output	- did the channel get destroyed
- * side effects	- remove one user from chptr.  if the
- *		  channel is now empty, and it is not already
- *		  scheduled for destruction, schedule it
- */
-static int
-sub1_from_channel(struct Channel *chptr)
-{
-  if (--chptr->users <= 0)
-  {
-#ifdef INVARIANTS
-    assert(chptr->users == 0);
-#else
-    chptr->users = 0;           /* if chptr->users < 0, make sure it sticks at 0
-                                 * It should never happen but...
-                                 */
-#endif
-    destroy_channel(chptr);
-  }
-
-  return(0);
 }
 
 /* free_channel_list()
@@ -565,22 +527,39 @@ del_invite(struct Channel *chptr, struct Client *who)
   }
 }
 
-/* channel_chanop_or_voice()
+/* get_member_status()
  *
  * inputs       - pointer to channel
  *              - pointer to client
- * output       - string either @,+% or"" depending on whether
+ *              - YES if we can combine different flags
+ * output       - string either @, +, % or "" depending on whether
  *                chanop, voiced or user
  * side effects -
+ *
+ * NOTE: Returned pointer can be static (like in get_client_name)
  */
-const char *
-channel_chanop_or_voice(struct Channel *chptr, struct Client *target_p)
+char *
+get_member_status(struct Channel *chptr, struct Client *target_p, int combine)
 {
-  if (is_chan_op(chptr, target_p))
-    return("@");
-  else if (is_voiced(chptr, target_p))
-    return("+");
-  return("");
+  static char buffer[3];
+  char *p;
+  struct Membership *ms = find_channel_link(target_p, chptr);
+
+  if (ms == NULL)
+    return "";
+
+  p = buffer;
+  if (ms->flags & CHFL_CHANOP)
+  {
+    if (!combine)
+      return "@";
+    *p++ = '@';
+  }
+  if (ms->flags & CHFL_VOICE)
+    *p++ = '+';
+  *p = '\0';
+
+  return buffer;
 }
 
 /* is_banned()

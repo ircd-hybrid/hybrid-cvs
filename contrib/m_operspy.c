@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.29 2003/05/31 18:52:46 adx Exp $
+ *   $Id: m_operspy.c,v 1.30 2003/06/01 14:38:45 adx Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -108,7 +108,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.29 $";
+const char *_version = "$Revision: 1.30 $";
 #endif
 
 /*
@@ -426,7 +426,7 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
 
       ircsprintf(t, "%s%s%s ",
                  ShowChannel(client_p, chptr_whois) ? "" : "%",
-                 channel_chanop_or_voice(chptr_whois, target_p),
+                 get_member_status(chptr_whois, target_p, YES),
                  chptr_whois->chname);
       tlen = strlen(t);
       t += tlen;

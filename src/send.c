@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.264 2003/05/31 18:52:55 adx Exp $
+ *  $Id: send.c,v 7.265 2003/06/01 14:38:50 adx Exp $
  */
 
 #include "stdinc.h"
@@ -683,13 +683,13 @@ sendto_common_channels_local(struct Client *user, int touser,
     chptr = ((struct Membership *) cptr->data)->chptr;
     assert(chptr != NULL);
 
-    DLINK_FOREACH(uptr, chptr->members.head)
+    DLINK_FOREACH(uptr, chptr->locmembers.head)
     {
       ms = uptr->data;
       target_p = ms->client_p;
       assert(target_p != NULL);
 
-      if (target_p == user || !MyConnect(target_p) || IsDefunct(target_p) ||
+      if (target_p == user || IsDefunct(target_p) ||
           target_p->serial == current_serial)
         continue;
 
@@ -729,7 +729,7 @@ sendto_channel_local(int type, struct Channel *chptr, const char *pattern, ...)
   /* Serial number checking isn't strictly necessary, but won't hurt */
   ++current_serial;
 
-  DLINK_FOREACH(ptr, chptr->members.head)
+  DLINK_FOREACH(ptr, chptr->locmembers.head)
   {
     ms = ptr->data;
     target_p = ms->client_p;
@@ -737,8 +737,7 @@ sendto_channel_local(int type, struct Channel *chptr, const char *pattern, ...)
     if (type != 0 && (ms->flags & type) == 0)
       continue;
 
-    if (!MyConnect(target_p) || IsDefunct(target_p) ||
-        target_p->serial == current_serial)
+    if (IsDefunct(target_p) || target_p->serial == current_serial)
       continue;
 
     target_p->serial = current_serial;
@@ -775,7 +774,7 @@ sendto_channel_local_butone(struct Client *one, int type,
   /* Serial number checking isn't strictly necessary, but won't hurt */
   ++current_serial;
 
-  DLINK_FOREACH(ptr, chptr->members.head)       
+  DLINK_FOREACH(ptr, chptr->locmembers.head)       
   {   
     ms = ptr->data;
     target_p = ms->client_p;
@@ -783,7 +782,7 @@ sendto_channel_local_butone(struct Client *one, int type,
     if (type != 0 && (ms->flags & type) == 0)
       continue;
 
-    if (target_p == one || !MyConnect(target_p) || IsDefunct(target_p) ||
+    if (target_p == one || IsDefunct(target_p) ||
         target_p->serial == current_serial)
       continue;
 

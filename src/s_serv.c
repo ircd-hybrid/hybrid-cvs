@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.340 2003/05/31 18:52:55 adx Exp $
+ *  $Id: s_serv.c,v 7.341 2003/06/01 14:38:50 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1750,28 +1750,6 @@ remove_lazylink_flags(unsigned long mask)
  * output	- NONE
  * side effects	-
  */
-#if 0
-static void
-burst_members(struct Client *client_p, dlink_list *list)
-{
-  struct Client *target_p;
-  dlink_node *ptr;
-
-  DLINK_FOREACH(ptr, list->head)
-  {
-    target_p = ptr->data;
-
-    if (target_p->serial != current_serial)
-    {
-      target_p->serial = current_serial;
-
-      if (target_p->from != client_p)
-        sendnick_TS(client_p, target_p);
-    }
-  }
-}
-#endif
-
 static void
 burst_members(struct Client *client_p, struct Channel *chptr)
 {
@@ -1801,29 +1779,6 @@ burst_members(struct Client *client_p, struct Channel *chptr)
  * output	- NONE
  * side effects	- This version also has to check the bitmap for lazylink
  */
-#if 0
-static void
-burst_ll_members(struct Client *client_p, dlink_list *list)
-{
-  struct Client *target_p;
-  dlink_node *ptr;
-
-  DLINK_FOREACH(ptr, list->head)
-  {
-    target_p = ptr->data;
-
-    if ((target_p->lazyLinkClientExists & client_p->localClient->serverMask) == 0)
-    {
-      if (target_p->from != client_p)
-      {
-        add_lazylinkclient(client_p,target_p);
-        sendnick_TS(client_p, target_p);
-      }
-    }
-  }
-}
-#endif
-
 static void
 burst_ll_members(struct Client *client_p, struct Channel *chptr)
 {
