@@ -1,3 +1,9 @@
+*** 20001206_6 by db
+- m_capab.c was missing an MFLG_UNREG hence was never being called
+  in some cases. oops
+
+
+
 *** 20001206_5 by db
 - cleaned up m_server.c, removed some redundant code
 
@@ -1734,7 +1740,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.713 2000/12/06 21:54:41 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.714 2000/12/06 22:32:38 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
