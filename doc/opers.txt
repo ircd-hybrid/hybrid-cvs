@@ -1,5 +1,5 @@
 This file outlines the features that ircd-hybrid has for IRC Operators.
-$Id: opers.txt,v 7.16 2001/01/24 14:58:44 wcampbel Exp $
+$Id: opers.txt,v 7.17 2001/03/03 16:47:48 wcampbel Exp $
 
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
@@ -51,6 +51,7 @@ COMMAND         - USAGE and DESCRIPTION
                   <letter>.
                   LETTER (* = Oper only.)
                   ------ (^ = Can be configured to be oper only.)
+                  * A - Shows the ADNS DNS servers in use
                   * c - Shows C/N lines
                   * d - Shows D lines
                   * e - Shows Events
