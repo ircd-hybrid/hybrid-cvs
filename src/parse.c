@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.110 2001/08/31 12:48:33 leeh Exp $
+ *   $Id: parse.c,v 7.111 2001/09/24 18:06:53 leeh Exp $
  */
 
 #include <assert.h>
@@ -165,6 +165,9 @@ void parse(struct Client *client_p, char *pbuffer, char *bufend)
           from = find_client(sender, (struct Client *) NULL);
           if (from == NULL)
             from = find_server(sender);
+
+          if(from == NULL)
+	    from = hash_find_id(sender, (struct Client *)NULL);
 
           /* Hmm! If the client corresponding to the
            * prefix is not found--what is the correct
