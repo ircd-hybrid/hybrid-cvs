@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.146 2001/03/16 09:00:57 fl_ Exp $
+ *  $Id: s_user.c,v 7.147 2001/03/16 09:57:00 fl_ Exp $
  */
 
 #include <sys/types.h>
@@ -1386,7 +1386,7 @@ int oper_up( struct Client *source_p,
         }
       else
         {
-          source_p->umodes |= (FLAGS_SERVNOTICE & FLAGS_OPERWALL & FLAGS_WALLOP & FLAGS_LOCOPS & ALL_UMODES);
+          source_p->umodes |= FLAGS_SERVNOTICE|FLAGS_OPERWALL|FLAGS_WALLOP|FLAGS_LOCOPS & ALL_UMODES;
         }
     }
 	
