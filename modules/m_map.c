@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_map.c,v 1.12 2002/05/24 23:48:34 androsyn Exp $
+ *  $Id: m_map.c,v 1.13 2003/04/16 19:56:32 michael Exp $
  */
 
 #include "stdinc.h"
@@ -54,7 +54,7 @@ void _moddeinit(void)
   mod_del_cmd(&map_msgtab);
 }
 
-const char *_version = "$Revision: 1.12 $";
+const char *_version = "$Revision: 1.13 $";
 #endif
 
 static char buf[BUFSIZE];
@@ -95,8 +95,9 @@ static void dump_map(struct Client *client_p,struct Client *root_p, char *pbuf)
 {
   int cnt = 0, i = 0, len;
   int users = 0;
-  struct Client *server_p,*user_p;
-        
+  dlink_node *ptr;
+  struct Client *server_p;
+
   *pbuf= '\0';
        
   strncat(pbuf,root_p->name,BUFSIZE - ((size_t) pbuf - (size_t) buf));
@@ -112,8 +113,7 @@ static void dump_map(struct Client *client_p,struct Client *root_p, char *pbuf)
   }
 	
   /* FIXME: add serv->usercnt */
-  for( user_p = root_p->serv->users; user_p; user_p = user_p->lnext )
-    users++;
+  users += dlink_list_length(&root_p->serv->users);
         
   snprintf(buf + USER_COL, BUFSIZE - USER_COL,
            " | Users: %5d (%4.1f%%)", users,
@@ -121,13 +121,10 @@ static void dump_map(struct Client *client_p,struct Client *root_p, char *pbuf)
         
   sendto_one(client_p, form_str(RPL_MAP),me.name,client_p->name,buf);
         
-  if ((server_p = root_p->serv->servers))
+  if (root_p->serv->servers.head)
   {
-    for (; server_p; server_p = server_p->lnext)
-    {
-      cnt++;
-    }
-    
+    cnt += dlink_list_length(&root_p->serv->servers);
+
     if (cnt)
     {
       if (pbuf > buf + 3)
@@ -138,8 +135,13 @@ static void dump_map(struct Client *client_p,struct Client *root_p, char *pbuf)
       }
     }
   }
-  for (i = 1,server_p = root_p->serv->servers; server_p; server_p=server_p->lnext)
+
+  i = 1;
+
+  DLINK_FOREACH(ptr, root_p->serv->servers.head)
   {
+    server_p = ptr->data;
+
     *pbuf = ' ';
     if (i < cnt)
       *(pbuf + 1) = '|';

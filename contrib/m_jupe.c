@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_jupe.c,v 1.46 2003/04/14 08:41:08 michael Exp $
+ *  $Id: m_jupe.c,v 1.47 2003/04/16 19:56:32 michael Exp $
  */
 
 #include "stdinc.h"
@@ -67,7 +67,7 @@ _moddeinit(void)
   mod_del_cmd(&jupe_msgtab);
 }
 
-const char *_version = "$Revision: 1.46 $";
+const char *_version = "$Revision: 1.47 $";
 #endif
 
 /*
@@ -144,6 +144,8 @@ mo_jupe(struct Client *client_p, struct Client *source_p,
   /* make_client() adds client to unknown_list */
   m = dlinkFind(&unknown_list, ajupe);
 
+  assert(NULL != m);
+
   if (m != NULL)
     dlinkDelete(m, &unknown_list);
 
@@ -166,9 +168,9 @@ mo_jupe(struct Client *client_p, struct Client *source_p,
 
   /* Some day, all these lists will be consolidated *sigh* */
   add_to_client_hash_table(ajupe->name, ajupe);
-  add_client_to_llist(&(ajupe->servptr->serv->servers), ajupe);
-
+  dlinkAdd(ajupe, &ajupe->lnode, &ajupe->servptr->serv->servers);
   dlinkAdd(ajupe, make_dlink_node(), &global_serv_list);
+
   /* XXX is this really necessary? 
    * for now, 'cause of the way squit works
    */
@@ -181,7 +183,7 @@ mo_jupe(struct Client *client_p, struct Client *source_p,
  * output       - 1 if a bogus hostname input, 0 if its valid
  * side effects - none
  */
-int
+static int
 bogus_host(char *host)
 {
   int dots = 0;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.350 2003/04/16 13:29:52 michael Exp $
+ *  $Id: client.c,v 7.351 2003/04/16 19:56:38 michael Exp $
  */
 
 #include "stdinc.h"
@@ -606,39 +606,6 @@ release_client_state(struct Client* client_p)
   }
 }
 
-/* Functions taken from +CSr31, paranoified to check that the client
-** isn't on a llist already when adding, and is there when removing -orabidoo
-*/
-void
-add_client_to_llist(struct Client **bucket, struct Client *client)
-{
-  if (!client->lprev && !client->lnext)
-    {
-      client->lprev = NULL;
-      if ((client->lnext = *bucket) != NULL)
-        client->lnext->lprev = client;
-      *bucket = client;
-    }
-}
-
-void
-del_client_from_llist(struct Client **bucket, struct Client *client)
-{
-  if (client->lprev)
-    {
-      client->lprev->lnext = client->lnext;
-    }
-  else if (*bucket == client)
-    {
-      *bucket = client->lnext;
-    }
-  if (client->lnext)
-    {
-      client->lnext->lprev = client->lprev;
-    }
-  client->lnext = client->lprev = NULL;
-}
-
 /*
  * find_person	- find person by (nick)name.
  * inputs	- pointer to name
@@ -731,13 +698,13 @@ get_client_name(struct Client* client, int showip)
                    client->localClient->sockhost);
         break;
       }
-      case MASK_IP:
-        ircsprintf(nbuf, "%s[%s@255.255.255.255]", client->name,
-                   client->username);
-        break;
-      default:
-        ircsprintf(nbuf, "%s[%s@%s]", client->name, client->username,
-                   client->host);
+    case MASK_IP:
+      ircsprintf(nbuf, "%s[%s@255.255.255.255]", client->name,
+                 client->username);
+      break;
+    default:
+      ircsprintf(nbuf, "%s[%s@%s]", client->name, client->username,
+                 client->host);
   }
 
   return(nbuf);
@@ -775,45 +742,43 @@ free_exited_clients(void)
 */
 static void
 exit_one_client(struct Client *client_p, struct Client *source_p,
-		struct Client *from, const char *comment)
+                struct Client *from, const char *comment)
 {
-  struct Client* target_p;
+  struct Client *target_p;
   dlink_node *lp;
   dlink_node *next_lp;
   dlink_node *m;
 
   if (IsServer(source_p))
-    {
-      if (source_p->servptr && source_p->servptr->serv)
-        del_client_from_llist(&(source_p->servptr->serv->servers),
-                                    source_p);
-      else
-        ts_warn("server %s without servptr!", source_p->name);
+  {
+    if (source_p->servptr && source_p->servptr->serv)
+      dlinkDelete(&source_p->lnode, &source_p->servptr->serv->servers);
+    else
+      ts_warn("server %s without servptr!", source_p->name);
 
-      if(!IsMe(source_p))
-      {
-        if ((m = dlinkFindDelete(&global_serv_list, source_p)) != NULL)
-	  free_dlink_node(m);
-      }
-    }
-  else if (source_p->servptr && source_p->servptr->serv)
+    if (!IsMe(source_p))
     {
-      del_client_from_llist(&(source_p->servptr->serv->users), source_p);
+      if ((m = dlinkFindDelete(&global_serv_list, source_p)) != NULL)
+        free_dlink_node(m);
     }
+  }
+  else if (source_p->servptr && source_p->servptr->serv)
+  {
+    dlinkDelete(&source_p->lnode, &source_p->servptr->serv->users);
+  }
+
   /* there are clients w/o a servptr: unregistered ones */
 
-  /*
-  **  For a server or user quitting, propogate the information to
-  **  other servers (except to the one where is came from (client_p))
+  /* For a server or user quitting, propogate the information to
+  ** other servers (except to the one where is came from (client_p))
   */
   if (IsMe(source_p))
-    {
-      sendto_realops_flags(UMODE_ALL, L_ALL,
-			   "ERROR: tried to exit me! : %s", comment);
-      return;        /* ...must *never* exit self!! */
-    }
+  {
+    sendto_realops_flags(UMODE_ALL, L_ALL, "ERROR: tried to exit me! : %s", comment);
+    return; /* ...must *never* exit self!! */
+  }
   else if (IsServer(source_p))
-    {
+  {
       /*
       ** Old sendto_serv_but_one() call removed because we now
       ** need to send different names to different servers
@@ -924,37 +889,51 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
 */
 static void
 recurse_send_quits(struct Client *client_p, struct Client *source_p,
-		   struct Client *to,
-		   const char* comment,  /* for servers */
-		   const char* myname)
+		   struct Client *to, const char *comment, /* for servers */
+		   const char *myname)
 {
+  dlink_node *ptr;
+  dlink_node *next;
   struct Client *target_p;
 
   /* If this server can handle quit storm (QS) removal
    * of dependents, just send the SQUIT
    */
-
   if (IsCapable(to,CAP_QS))
+  {
+    if (match(myname, source_p->name))
     {
-      if (match(myname, source_p->name))
-        {
-          for (target_p = source_p->serv->users; target_p; target_p = target_p->lnext)
-            sendto_one(to, ":%s QUIT :%s", target_p->name, comment);
-          for (target_p = source_p->serv->servers; target_p; target_p = target_p->lnext)
-            recurse_send_quits(client_p, target_p, to, comment, myname);
-        }
-      else
-        sendto_one(to, "SQUIT %s :%s", source_p->name, me.name);
-    }
-  else
-    {
-      for (target_p = source_p->serv->users; target_p; target_p = target_p->lnext)
+      DLINK_FOREACH_SAFE(ptr, next, source_p->serv->users.head)
+      {
+        target_p = ptr->data;
         sendto_one(to, ":%s QUIT :%s", target_p->name, comment);
-      for (target_p = source_p->serv->servers; target_p; target_p = target_p->lnext)
+      }
+      DLINK_FOREACH_SAFE(ptr, next, source_p->serv->servers.head)
+      {
+        target_p = ptr->data;
         recurse_send_quits(client_p, target_p, to, comment, myname);
-      if (!match(myname, source_p->name))
-        sendto_one(to, "SQUIT %s :%s", source_p->name, me.name);
+      }
     }
+    else
+      sendto_one(to, "SQUIT %s :%s", source_p->name, me.name);
+  }
+  else
+  {
+    DLINK_FOREACH_SAFE(ptr, next, source_p->serv->users.head)
+    {
+      target_p = ptr->data;
+      sendto_one(to, ":%s QUIT :%s", target_p->name, comment);
+    }
+
+    DLINK_FOREACH_SAFE(ptr, next, source_p->serv->servers.head)
+    {
+      target_p = ptr->data;
+      recurse_send_quits(client_p, target_p, to, comment, myname);
+    }
+
+    if (!match(myname, source_p->name))
+      sendto_one(to, "SQUIT %s :%s", source_p->name, me.name);
+  }
 }
 
 /* 
@@ -967,32 +946,37 @@ recurse_send_quits(struct Client *client_p, struct Client *source_p,
  * added sanity test code.... source_p->serv might be NULL...
  */
 static void
-recurse_remove_clients(struct Client* source_p, const char* comment)
+recurse_remove_clients(struct Client *source_p, const char *comment)
 {
+  dlink_node *ptr;
+  dlink_node *next;
   struct Client *target_p;
 
   if (IsMe(source_p))
     return;
 
-  if (source_p->serv == NULL)     /* oooops. uh this is actually a major bug */
+  if (source_p->serv == NULL) /* oooops. uh this is actually a major bug */
     return;
 
-  while ((target_p = source_p->serv->users))
-    {
-      SetKilled(target_p);
-      exit_one_client(NULL, target_p, &me, comment);
-    }
+  DLINK_FOREACH_SAFE(ptr, next, source_p->serv->users.head)
+  {
+    target_p = ptr->data;
+    SetKilled(target_p);
+    exit_one_client(NULL, target_p, &me, comment);
+  }
 
-  while ((target_p = source_p->serv->servers))
-    {
-      recurse_remove_clients(target_p, comment);
-      /*
-      ** a server marked as "KILLED" won't send a SQUIT 
-      ** in exit_one_client()   -orabidoo
-      */
-      SetKilled(target_p);
-      exit_one_client(NULL, target_p, &me, me.name);
-    }
+  DLINK_FOREACH_SAFE(ptr, next, source_p->serv->servers.head)
+  {
+    target_p = ptr->data;
+
+    recurse_remove_clients(target_p, comment);
+
+    /* a server marked as "KILLED" won't send a SQUIT 
+     * in exit_one_client()   -orabidoo
+     */
+    SetKilled(target_p);
+    exit_one_client(NULL, target_p, &me, me.name);
+  }
 }
 
 /*
@@ -1001,11 +985,9 @@ recurse_remove_clients(struct Client* source_p, const char* comment)
 ** and its SQUITs have been sent except for the upstream one  -orabidoo
 */
 static void
-remove_dependents(struct Client* client_p, 
-		  struct Client* source_p,
-		  struct Client* from,
-		  const char* comment,
-		  const char* comment1)
+remove_dependents(struct Client *client_p, struct Client *source_p,
+                  struct Client *from, const char *comment,
+                  const char* comment1)
 {
   struct Client *to;
   struct ConfItem *aconf;
@@ -1013,8 +995,8 @@ remove_dependents(struct Client* client_p,
   dlink_node *ptr;
 
   DLINK_FOREACH(ptr, serv_list.head)
-    {
-      to = ptr->data;
+  {
+    to = ptr->data;
 
       if (IsMe(to) || to == source_p->from || (to == client_p &&
                                                IsCapable(to, CAP_QS)))
@@ -1032,7 +1014,7 @@ remove_dependents(struct Client* client_p,
       else
         strlcpy(myname, me.name, sizeof(myname));
       recurse_send_quits(client_p, source_p, to, comment1, myname);
-    }
+  }
 
   recurse_remove_clients(source_p, comment1);
 }

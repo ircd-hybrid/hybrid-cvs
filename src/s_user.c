@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.242 2003/04/16 09:01:52 michael Exp $
+ *  $Id: s_user.c,v 7.243 2003/04/16 19:56:38 michael Exp $
  */
 
 #include "stdinc.h"
@@ -470,7 +470,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
 
   /* XXX source_p->servptr is &me, since local client */
   source_p->servptr = find_server(user->server);
-  add_client_to_llist(&(source_p->servptr->serv->users), source_p);
+  dlinkAdd(source_p, &source_p->lnode, &source_p->servptr->serv->users);
 
   /* Increment our total user count here */
   if (++Count.total > Count.max_tot)
@@ -541,7 +541,7 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
     return(exit_client(NULL, source_p, &me, "Ghosted Client"));
   }
 
-  add_client_to_llist(&(source_p->servptr->serv->users), source_p);
+  dlinkAdd(source_p, &source_p->lnode, &source_p->servptr->serv->users);
 
   if ((target_p = find_server(user->server)) && target_p->from != source_p->from)
   {
@@ -670,7 +670,7 @@ introduce_client(struct Client *client_p, struct Client *source_p,
  * will not allow more dots than chars.
  */
 static int
-valid_hostname(const char* hostname)
+valid_hostname(const char *hostname)
 {
   const char *p = hostname;
 

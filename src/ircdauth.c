@@ -19,11 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircdauth.c,v 7.54 2003/04/02 11:19:46 michael Exp $
+ *  $Id: ircdauth.c,v 7.55 2003/04/16 19:56:38 michael Exp $
  */
 
 #include "stdinc.h"
-
 #include "class.h"
 #include "client.h"
 #include "common.h"
@@ -618,8 +617,8 @@ GreetUser(struct Client *client)
       exit_client(NULL, client, &me, "Ghost");
       return;
     }
-  
-  add_client_to_llist(&(client->servptr->serv->users), client);
+
+  dlinkAdd(client, &client->lnode, &client->servptr->serv->users);
 
   /* Increment our total user count here */
   if (++Count.total > Count.max_tot)

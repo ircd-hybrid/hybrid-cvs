@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.99 2003/04/14 08:41:12 michael Exp $
+ *  $Id: m_server.c,v 1.100 2003/04/16 19:56:36 michael Exp $
  */
 
 #include "stdinc.h"
@@ -45,10 +45,12 @@
 #include "modules.h"
 
 
-static void mr_server(struct Client*, struct Client*, int, char **);
-static void ms_server(struct Client*, struct Client*, int, char **);
+static void mr_server(struct Client *, struct Client *, int, char **);
+static void ms_server(struct Client *, struct Client *, int, char **);
 
+static int bogus_host(char *host);
 static int set_server_gecos(struct Client *, char *);
+static struct Client *server_exists(char *);
 
 struct Message server_msgtab = {
   "SERVER", 0, 0, 4, 0, MFLG_SLOW | MFLG_UNREG, 0,
@@ -67,11 +69,9 @@ _moddeinit(void)
 {
   mod_del_cmd(&server_msgtab);
 }
-const char *_version = "$Revision: 1.99 $";
+const char *_version = "$Revision: 1.100 $";
 #endif
 
-int bogus_host(char *host);
-struct Client *server_exists(char *);
 
 /*
  * mr_server - SERVER message handler
@@ -82,26 +82,25 @@ struct Client *server_exists(char *);
  */
 static void
 mr_server(struct Client *client_p, struct Client *source_p,
-	  int parc, char *parv[])
+          int parc, char *parv[])
 {
-  char             info[REALLEN + 1];
-  char             *name;
-  struct Client    *target_p;
+  char info[REALLEN + 1];
+  char *name;
+  struct Client *target_p;
   int hop;
 
   if (parc < 4)
   {
-    sendto_one(client_p,"ERROR :No servername");
+    sendto_one(client_p, "ERROR :No servername");
     exit_client(client_p, client_p, client_p, "Wrong number of args");
     return;
   }
 
   name = parv[1];
-  hop = atoi(parv[2]);
+  hop  = atoi(parv[2]);
   strlcpy(info, parv[3], sizeof(info));
 
-  /* 
-   * Reject a direct nonTS server connection if we're TS_ONLY -orabidoo
+  /* Reject a direct nonTS server connection if we're TS_ONLY -orabidoo
    */
   if (!DoesTS(client_p))
   {
@@ -461,7 +460,7 @@ ms_server(struct Client *client_p, struct Client *source_p,
       return;
     }
 
-  if(strlen(name) > HOSTLEN)
+  if (strlen(name) > HOSTLEN)
   {
     sendto_realops_flags(UMODE_ALL, L_ADMIN,
  		         "Link %s introduced server with invalid servername %s",
@@ -486,7 +485,6 @@ ms_server(struct Client *client_p, struct Client *source_p,
   target_p->servptr  = source_p;
 
   SetServer(target_p);
-
   Count.server++;
 
   dlinkAdd(target_p, &target_p->node, &global_client_list);
@@ -495,19 +493,18 @@ ms_server(struct Client *client_p, struct Client *source_p,
 #endif
   add_server_to_list(target_p);
   add_to_client_hash_table(target_p->name, target_p);
-  add_client_to_llist(&(target_p->servptr->serv->servers), target_p);
+  dlinkAdd(target_p, &target_p->lnode, &target_p->servptr->serv->servers);
 
-  /*
-   * Old sendto_serv_but_one() call removed because we now
+  /* Old sendto_serv_but_one() call removed because we now
    * need to send different names to different servers
    * (domain name matching)
    */
   DLINK_FOREACH(ptr, serv_list.head)
-    {
-      bclient_p = ptr->data;
+  {
+    bclient_p = ptr->data;
 
-      if (bclient_p == client_p)
-	continue;
+    if (bclient_p == client_p)
+      continue;
       if (!(aconf = bclient_p->serv->sconf))
 	{
 	  sendto_realops_flags(UMODE_ALL, L_ADMIN, 
@@ -531,7 +528,6 @@ ms_server(struct Client *client_p, struct Client *source_p,
   sendto_realops_flags(UMODE_EXTERNAL, L_ALL,
                        "Server %s being introduced by %s",
 		       target_p->name, source_p->name);
-
 }
 
 /* set_server_gecos()
@@ -606,44 +602,43 @@ set_server_gecos(struct Client *client_p, char *info)
   return 1;
 }
 
-/*
- * bogus_host
+/* bogus_host()
  *
  * inputs	- hostname
  * output	- 1 if a bogus hostname input, 0 if its valid
  * side effects	- none
  */
-int
+static int
 bogus_host(char *host)
 {
+  int dots = 0;
   int bogus_server = 0;
   char *s;
-  int dots = 0;
 
-  for(s = host; *s; s++)
+  for (s = host; *s; s++)
+  {
+    if (!IsServChar(*s))
     {
-      if (!IsServChar(*s))
-	{
-	  bogus_server = 1;
-	  break;
-	}
-      if ('.' == *s)
-	++dots;
+      bogus_server = 1;
+      break;
     }
 
-  if ((dots == 0) || bogus_server )
-    return (1);
+    if ('.' == *s)
+      ++dots;
+  }
 
-  return (0);
+  if ((dots == 0) || bogus_server)
+    return(1);
+
+  return(0);
 }
 
-/*
- * server_exists()
+/* server_exists()
  * 
  * inputs	- servername
  * output	- 1 if server exists, 0 if doesnt exist
  */
-struct Client *
+static struct Client *
 server_exists(char *servername)
 {
   struct Client *target_p;
@@ -653,10 +648,11 @@ server_exists(char *servername)
   {
     target_p = ptr->data;
 
-    if(match(target_p->name, servername) || 
-       match(servername, target_p->name))
-      return (target_p);
+    if (match(target_p->name, servername) || 
+        match(servername, target_p->name))
+      return(target_p);
   }
 
-  return (NULL);
+  return(NULL);
 }
+

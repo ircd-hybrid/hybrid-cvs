@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.178 2003/04/13 13:02:06 adx Exp $
+ *  $Id: client.h,v 7.179 2003/04/16 19:56:34 michael Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -79,12 +79,12 @@ struct User
 
 struct Server
 {
-  struct User*     user;        /* who activated this connection */
-  const char*      up;          /* Pointer to scache name */
-  char             by[NICKLEN];
-  struct ConfItem* sconf;       /* connect{} pointer for this server */
-  struct Client*   servers;     /* Servers on this server */
-  struct Client*   users;       /* Users on this server */
+  struct User *user;      /* who activated this connection     */
+  const char *up;         /* Pointer to scache name            */
+  char by[NICKLEN];
+  struct ConfItem *sconf; /* connect{} pointer for this server */
+  dlink_list servers;     /* Servers on this server            */
+  dlink_list users;       /* Users on this server              */
 };
 
 struct SlinkRpl
@@ -117,12 +117,11 @@ struct Vchan_map
 
 struct Client
 {
-  dlink_node	    node;
+  dlink_node node;
+  dlink_node lnode;      /* Used for Server->servers/users */
+
   struct Client*    hnext;
   struct Client*    idhnext;
-	
-  struct Client*    lnext;      /* Used for Server->servers/users */
-  struct Client*    lprev;      /* Used for Server->servers/users */
 
   struct User*      user;       /* ...defined, if this is a User */
   struct Server*    serv;       /* ...defined, if this is a server */
@@ -591,7 +590,6 @@ struct LocalUser
 #define IsOperAdmin(x)          (MyConnect(x) ? (x)->localClient->operflags & OPER_FLAG_ADMIN : 0)
 #define SetOperAdmin(x)         ((x)->localClient->operflags |= OPER_FLAG_ADMIN)
 
-
 /*
  * definitions for get_client_name
  */
@@ -599,39 +597,27 @@ struct LocalUser
 #define SHOW_IP 1
 #define MASK_IP 2
 
-extern struct Client  me;
+extern struct Client me;
 extern dlink_list global_client_list;
 
-extern void           check_klines(void);
-extern const char*    get_client_name(struct Client* client, int show_ip);
-extern void           init_client(void);
-extern struct Client* make_client(struct Client* from);
-extern void           free_client(struct Client* client);
-extern void           remove_client_from_list(struct Client *);
-extern void           add_client_to_llist(struct Client** list, 
-                                          struct Client* client);
-extern void           del_client_from_llist(struct Client** list, 
-                                            struct Client* client);
-extern int            exit_client(struct Client*, struct Client*, 
-                                  struct Client*, const char*);
-
-
-extern void     count_local_client_memory(int *count, int *memory);
-extern void     count_remote_client_memory(int *count, int *memory);
-
-extern struct Client* find_chasing (struct Client *, char *, int *);
-extern struct Client* find_person (char *);
+extern void check_klines(void);
+extern const char *get_client_name(struct Client* client, int show_ip);
+extern void init_client(void);
+extern struct Client *make_client(struct Client* from);
+extern void free_client(struct Client* client);
+extern void remove_client_from_list(struct Client *);
+extern int exit_client(struct Client *, struct Client *, struct Client *, const char *);
+extern void count_local_client_memory(int *count, int *memory);
+extern void count_remote_client_memory(int *count, int *memory);
+extern struct Client *find_chasing(struct Client *, char *, int *);
+extern struct Client *find_person(char *);
 extern int accept_message(struct Client *source, struct Client *target);
 extern void del_from_accept(struct Client *source, struct Client *target);
 extern void del_all_accepts(struct Client *client_p);
-
-extern int set_initial_nick(struct Client *client_p, struct Client *source_p,
-                            char *nick);
-extern int change_local_nick(struct Client *client_p, struct Client *source_p,
-                             char *nick);
+extern int set_initial_nick(struct Client *client_p, struct Client *source_p, char *nick);
+extern int change_local_nick(struct Client *client_p, struct Client *source_p, char *nick);
 extern void dead_link_on_write(struct Client *client_p, int ierrno);
 extern void dead_link_on_read(struct Client *client_p, int error);
 extern void exit_aborted_clients(void);
 extern void free_exited_clients(void);
-
 #endif /* INCLUDED_client_h */

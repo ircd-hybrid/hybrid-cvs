@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.303 2003/04/16 13:29:52 michael Exp $
+ *  $Id: s_serv.c,v 7.304 2003/04/16 19:56:38 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1016,10 +1016,10 @@ server_estab(struct Client *client_p)
   set_chcap_usage_counts(client_p);
 
   /* Some day, all these lists will be consolidated *sigh* */
-  add_client_to_llist(&(me.serv->servers), client_p);
+  dlinkAdd(client_p, &client_p->lnode, &me.serv->servers);
 
   m = dlinkFind(&unknown_list, client_p);
-  assert(m != NULL);
+  assert(NULL != m);
 
   if (m != NULL)
   {
