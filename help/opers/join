@@ -1,8 +1,9 @@
-JOIN <#channel> [!vchan] [key]
+JOIN <#channel1[,#channel2,#channel3...]> [!vchan] [key]
 
 The JOIN command allows you to enter a public chat area known as
 a channel. Network wide channels are proceeded by a '#', while
-a local server channel is proceeded by an '&'.
+a local server channel is proceeded by an '&'. You can join more
+than one channel at a time, separating their names with comma's (',').
 
 The second argument, if supplied, joins the specified virtual
 channel <vchan>.

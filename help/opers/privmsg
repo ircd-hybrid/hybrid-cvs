@@ -1,4 +1,4 @@
-PRIVMSG <nick|channel> :message
+PRIVMSG <nick1|channel1[,nick2|channel2...]> :message
 
 PRIVMSG will send a standard message to the
 user or channel specified.
