@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.57 2000/12/07 09:22:07 db Exp $
+ *  $Id: s_user.c,v 7.58 2000/12/07 21:44:05 db Exp $
  */
 #include "tools.h"
 #include "s_user.h"
@@ -444,6 +444,7 @@ int register_user(struct Client *cptr, struct Client *sptr,
   if (MyConnect(sptr))
     {
       user_welcome(sptr);
+      Count.total_client_count++;
     }
   else if (IsServer(cptr))
     {
