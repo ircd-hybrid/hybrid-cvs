@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_server.c,v 1.67 2001/08/31 12:48:32 leeh Exp $
+ *   $Id: m_server.c,v 1.68 2001/08/31 14:02:08 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"  /* m_server prototype */
@@ -589,7 +589,6 @@ void write_links_file(void* notused)
       
       ircsprintf(buff, "%s %s :1 %s\n", target_p->name, me.name, p);
       fbputs(buff, file);
-      sendto_realops_flags(FLAGS_ALL, L_ALL, "%s", buff);
     }
     
   fbclose(file);
