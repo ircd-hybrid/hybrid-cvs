@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: listener.c,v 7.39 2001/02/25 23:59:19 jdc Exp $
+ *  $Id: listener.c,v 7.40 2001/02/26 05:59:57 androsyn Exp $
  */
 #include "config.h"
 #include "listener.h"
@@ -228,10 +228,10 @@ static int inetport(struct Listener* listener)
 #else
   if (INADDR_ANY != listener->addr.sins.sin.s_addr) {
 #endif
-    static struct DNSQuery query;	
-    query.callback = listener_dns_callback;
-    query.ptr = listener;
-    adns_getaddr(&listener->addr, DEF_FAM, (void *)&query);
+    struct DNSQuery *query = MyMalloc(sizeof(struct DNSQuery));	
+    query->callback = listener_dns_callback;
+    query->ptr = listener;
+    adns_getaddr(&listener->addr, DEF_FAM, query);
   }
   return 1;
 }

@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.h,v 7.11 2001/02/05 01:05:33 androsyn Exp $
+ *   $Id: s_auth.h,v 7.12 2001/02/26 06:00:05 androsyn Exp $
  */
 #ifndef INCLUDED_s_auth_h
 #define INCLUDED_s_auth_h
@@ -39,7 +39,7 @@ struct Client;
 
 struct AuthRequest {
   struct Client*      client;    /* pointer to client struct for request */
-  struct DNSQuery     query;     /* DNS query */
+  struct DNSQuery     *query;     /* DNS query */
   unsigned int        flags;     /* current state of request */
   int                 fd;        /* file descriptor for auth queries */
   time_t              timeout;   /* time when query expires */

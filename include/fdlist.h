@@ -1,7 +1,7 @@
 /*
  * fdlist.h
  *
- * $Id: fdlist.h,v 7.16 2001/02/05 01:05:33 androsyn Exp $
+ * $Id: fdlist.h,v 7.17 2001/02/26 06:00:05 androsyn Exp $
  */
 #ifndef INCLUDED_fdlist_h
 #define INCLUDED_fdlist_h
@@ -94,7 +94,7 @@ struct _fde {
     PF *flush_handler;
     void *flush_data;
     time_t flush_timeout;
-    struct DNSQuery dns_query;
+    struct DNSQuery *dns_query;
     struct {
         unsigned int open:1;
         unsigned int close_request:1;

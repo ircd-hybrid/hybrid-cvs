@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.98 2001/02/13 05:22:41 androsyn Exp $
+ * $Id: s_conf.h,v 7.99 2001/02/26 06:00:05 androsyn Exp $
  */
 
 #include "setup.h"
@@ -70,7 +70,7 @@ struct ConfItem
   time_t           hold;     /* Hold action until this time (calendar time) */
   char*		   className;   /* Name of class */
   struct Class*    c_class;     /* Class of connection */
-  struct DNSQuery  dns_query;
+  struct DNSQuery  *dns_query;
   int		   aftype;
   int              dns_pending; /* 1 if dns query pending, 0 otherwise */
 };

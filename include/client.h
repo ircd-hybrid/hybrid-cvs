@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.95 2001/02/05 20:12:28 davidt Exp $
+ * $Id: client.h,v 7.96 2001/02/26 06:00:04 androsyn Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -233,7 +233,7 @@ struct LocalUser
   struct irc_inaddr ip;
   unsigned short    port;       /* and the remote port# too :-) */
   int 		    aftype;	/* Makes life easier for DNS res in IPV6 */
-  struct DNSQuery   dns_query;  /* result returned from resolver query */
+  struct DNSQuery   *dns_query;  /* result returned from resolver query */
   unsigned long     serverMask; /* Only used for Lazy Links */
   time_t            last_nick_change;
   int               number_of_nick_changes;
