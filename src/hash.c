@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.71 2003/07/03 02:57:27 db Exp $
+ *  $Id: hash.c,v 7.72 2003/07/05 01:27:10 db Exp $
  */
 
 #include "stdinc.h"
@@ -1124,9 +1124,6 @@ safe_list_channels(struct Client *source_p, struct ListTask *list_task,
 
     for (i = list_task->hash_index; i < HASHSIZE; i++)
     {
-      for (chptr = channelTable[i]; chptr; chptr = chptr->hnextch)
-        list_one_channel(source_p, chptr, list_task, remote_request);
-
       if (MyConnect(source_p))
       {
         if (exceeding_sendq(source_p))
@@ -1135,6 +1132,8 @@ safe_list_channels(struct Client *source_p, struct ListTask *list_task,
           return; /* still more to do */
         }
       }
+      for (chptr = channelTable[i]; chptr; chptr = chptr->hnextch)
+        list_one_channel(source_p, chptr, list_task, remote_request);
     }
   }
   else
