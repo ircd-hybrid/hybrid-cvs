@@ -1,3 +1,15 @@
+leeh        2002/04/25 13:55:22 EDT	(20020425_4)
+
+  Modified files:
+    doc                  convertconf-example.conf 
+  Log:
+  - add it to the example conf convertconf uses too
+  
+  Revision  Changes    Path
+  7.2       +13 -0     ircd-hybrid-7/doc/convertconf-example.conf
+
+
+
 leeh        2002/04/25 13:53:25 EDT	(20020425_3)
 
   Modified files:
@@ -25478,4 +25490,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3589 2002/04/25 17:53:31 leeh Exp $
+$Id: ChangeLog,v 7.3590 2002/04/25 17:55:28 leeh Exp $
