@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_trace.c,v 1.4 2000/11/24 00:17:26 db Exp $
+ *   $Id: m_trace.c,v 1.5 2000/11/28 03:54:13 bill Exp $
  */
 #include "handlers.h"
 #include "class.h"
@@ -48,6 +48,12 @@ void
 _modinit(void)
 {
   mod_add_cmd(MSG_TRACE, &trace_msgtab);
+}
+
+void
+_moddeinit(void)
+{
+  mod_del_cmd(MSG_TRACE);
 }
 
 int report_this_status(struct Client *sptr, struct Client *acptr,int dow,

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_knock.c,v 1.4 2000/11/23 23:17:11 db Exp $
+ *   $Id: m_knock.c,v 1.5 2000/11/28 03:53:59 bill Exp $
  */
 #include "handlers.h"
 #include "channel.h"
@@ -51,6 +51,12 @@ void
 _modinit(void)
 {
   mod_add_cmd(MSG_KNOCK, &knock_msgtab);
+}
+
+void
+_moddeinit(void)
+{
+  mod_del_cmd(MSG_KNOCK);
 }
 
 char *_version = "20001122";

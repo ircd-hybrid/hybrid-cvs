@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_userhost.c,v 1.7 2000/11/23 23:04:14 db Exp $
+ *   $Id: m_userhost.c,v 1.8 2000/11/28 03:54:14 bill Exp $
  */
 
 #include "handlers.h"
@@ -44,6 +44,12 @@ void
 _modinit(void)
 {
   mod_add_cmd(MSG_USERHOST, &userhost_msgtab);
+}
+
+void
+_moddeinit(void)
+{
+  mod_del_cmd(MSG_USERHOST);
 }
 
 char *_version = "20001122";

@@ -1,7 +1,7 @@
 /*
  * m_info.c 
  *
- * $Id: m_info.c,v 1.4 2000/11/24 08:02:11 db Exp $
+ * $Id: m_info.c,v 1.5 2000/11/28 03:53:54 bill Exp $
  */
 #define DEFINE_M_INFO_DATA
 #include "m_info.h"
@@ -31,6 +31,12 @@ void
 _modinit(void)
 {
   mod_add_cmd(MSG_INFO, &info_msgtab);
+}
+
+void
+_moddeinit(void)
+{
+  mod_del_cmd(MSG_INFO);
 }
 
 void send_info_text(struct Client *sptr);

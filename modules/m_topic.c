@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_topic.c,v 1.3 2000/11/23 23:17:14 db Exp $
+ *   $Id: m_topic.c,v 1.4 2000/11/28 03:54:13 bill Exp $
  */
 #include "handlers.h"
 #include "channel.h"
@@ -46,6 +46,12 @@ void
 _modinit(void)
 {
   mod_add_cmd(MSG_TOPIC, &topic_msgtab);
+}
+
+void
+_moddeinit(void)
+{
+  mod_del_cmd(MSG_TOPIC);
 }
 
 char *_version = "20001122";

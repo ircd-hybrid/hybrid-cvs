@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_mode.c,v 1.3 2000/11/24 08:02:11 db Exp $
+ *   $Id: m_mode.c,v 1.4 2000/11/28 03:54:02 bill Exp $
  */
 #include "handlers.h"
 #include "channel.h"
@@ -46,6 +46,13 @@ _modinit(void)
 {
   mod_add_cmd(MSG_MODE, &mode_msgtab);
 }
+
+void
+_moddeinit(void)
+{
+  mod_del_cmd(MSG_WHOIS);
+}
+
 
 char *_version = "20001122";
 

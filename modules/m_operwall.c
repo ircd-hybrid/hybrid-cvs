@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operwall.c,v 1.4 2000/11/26 18:37:07 bill Exp $
+ *   $Id: m_operwall.c,v 1.5 2000/11/28 03:54:05 bill Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -40,6 +40,12 @@ void
 _modinit(void)
 {
   mod_add_cmd(MSG_OPERWALL, &operwall_msgtab);
+}
+
+void
+_moddeinit(void)
+{
+  mod_del_cmd(MSG_OPERWALL);
 }
 
 char *_version = "20001122";

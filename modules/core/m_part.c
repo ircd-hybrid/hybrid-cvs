@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_part.c,v 1.6 2000/11/26 00:42:06 db Exp $
+ *   $Id: m_part.c,v 1.7 2000/11/28 03:54:06 bill Exp $
  */
 #include "handlers.h"
 #include "channel.h"
@@ -49,6 +49,12 @@ void
 _modinit(void)
 {
   mod_add_cmd(MSG_PART, &part_msgtab);
+}
+
+void
+_moddeinit(void)
+{
+  mod_del_cmd(MSG_PART);
 }
 
 static void part_one_client(struct Client *cptr,

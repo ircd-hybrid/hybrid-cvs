@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.5 2000/11/23 23:17:14 db Exp $
+ *   $Id: m_sjoin.c,v 1.6 2000/11/28 03:54:11 bill Exp $
  */
 #include "handlers.h"
 #include "channel.h"
@@ -48,6 +48,12 @@ void
 _modinit(void)
 {
   mod_add_cmd(MSG_SJOIN, &sjoin_msgtab);
+}
+
+void
+_moddeinit(void)
+{
+  mod_del_cmd(MSG_SJOIN);
 }
 
 char *_version = "20001122";

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_wallops.c,v 1.5 2000/11/26 18:37:07 bill Exp $
+ *   $Id: m_wallops.c,v 1.6 2000/11/28 03:54:14 bill Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -41,6 +41,12 @@ void
 _modinit(void)
 {
   mod_add_cmd(MSG_WALLOPS, &wallops_msgtab);
+}
+
+void
+_moddeinit(void)
+{
+  mod_del_cmd(MSG_WALLOPS);
 }
  
 char *_version = "20001122";

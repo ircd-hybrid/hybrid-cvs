@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.7 2000/11/26 19:34:30 adrian Exp $
+ *   $Id: m_message.c,v 1.8 2000/11/28 03:54:02 bill Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -105,6 +105,13 @@ _modinit(void)
 {
   mod_add_cmd(MSG_PRIVMSG, &privmsg_msgtab);
   mod_add_cmd(MSG_NOTICE, &notice_msgtab);
+}
+
+void
+_moddeinit(void)
+{
+  mod_del_cmd(MSG_PRIVMSG);
+  mod_del_cmd(MSG_NOTICE);
 }
 
 char *_version = "20001122";
