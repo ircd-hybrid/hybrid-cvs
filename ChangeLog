@@ -1,3 +1,15 @@
+db          2001/12/10 22:09:39 EST	(20011211_0)
+
+  Modified files:
+    src                  fileio.c 
+  Log:
+  - formatting change only.
+  
+  Revision  Changes    Path
+  7.17      +30 -24    ircd-hybrid-7/src/fileio.c
+
+
+
 leeh        2001/12/10 18:21:36 EST	(20011210_12)
 
   Modified files:
@@ -18295,4 +18307,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3137 2001/12/10 23:21:41 leeh Exp $
+$Id: ChangeLog,v 7.3138 2001/12/11 03:09:45 db Exp $
