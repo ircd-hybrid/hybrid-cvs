@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.134 2002/04/26 10:52:10 leeh Exp $
+ *  $Id: m_sjoin.c,v 1.135 2002/04/30 15:17:59 leeh Exp $
  */
 
 #include "tools.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.134 $";
+const char *_version = "$Revision: 1.135 $";
 #endif
 /*
  * ms_sjoin
@@ -469,7 +469,9 @@ static void ms_sjoin(struct Client *client_p,
       /* if the client doesnt exist, backtrack over the prefix (@%+) that we
        * just added and skip to the next nick
        */
-      if (!(target_p = find_client(s)))
+      /* also do this if its fake direction or a server */
+      if (!(target_p = find_client(s)) ||
+         (target_p->from != client_p) || !IsPerson(target_p))
       {
         sendto_one(source_p, form_str(ERR_NOSUCHNICK), me.name,
 	           source_p->name, s);
@@ -483,8 +485,6 @@ static void ms_sjoin(struct Client *client_p,
         goto nextnick;
       }
 
-      target_p = NULL;
-      
       /* copy the nick to the two buffers */
       hops += ircsprintf(hops, "%s ", s);
       nhops += ircsprintf(nhops, "%s ", s);
@@ -503,13 +503,6 @@ static void ms_sjoin(struct Client *client_p,
 	    }
 	}
 
-      if (!(target_p = find_chasing(source_p, s, NULL)))
-        goto nextnick;
-      if (target_p->from != client_p)
-        goto nextnick;
-      if (!IsPerson(target_p))
-        goto nextnick;
-      
       people++;
 
       /* LazyLinks - Introduce unknown clients before sending the sjoin */
