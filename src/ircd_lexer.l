@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.89 2001/04/10 23:43:43 kreator Exp $
+ * $Id: ircd_lexer.l,v 1.90 2001/04/11 10:20:45 kreator Exp $
  */
 
 %option case-insensitive
@@ -371,6 +371,10 @@ int ieof(void)
   if (--include_stack_ptr < 0)
   {
     /* log(L_NOTICE, "terminating lexer"); */
+    /* We will now exit the lexer - restore init values if we get /rehash
+     * later and reenter lexer -kre */
+    include_stack_ptr = 0;
+    lineno = 1;
     return 1;
   }
   /* switch buffer */
