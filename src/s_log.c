@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.c,v 7.50 2003/05/25 01:05:25 michael Exp $
+ *  $Id: s_log.c,v 7.51 2003/05/28 01:41:28 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -37,8 +37,6 @@
 #include "event.h"	/* Needed for EVH etc. */
 #include "s_conf.h"
 #include "memory.h"
-
-
 
 /* some older syslogs would overflow at 2024 */
 #define LOG_BUFSIZE 2000
@@ -106,6 +104,33 @@ open_log(const char *filename)
 }
 #endif
 
+#ifdef __vms
+void send_opcom(const char *message)
+{
+    struct {
+        struct hdr {                    /* Trust me, this is necessary */
+            unsigned char type;         /*  Read up on SYS$SNDOPR and you'll */
+            unsigned short target_0_15; /*  see why. */
+            unsigned char target_16_23;
+            unsigned long rqst_id;
+        } h;
+        char msg[200];
+    } opc_request;
+    struct dsc$descriptor opc;
+
+    opc_request.h.type = OPC$_RQ_RQST;  /* Send out the string */
+    opc_request.h.target_0_15 = OPC$M_NM_CENTRL;    /* To main operator */
+    opc_request.h.target_16_23 = 0;
+    opc_request.h.rqst_id = 0L;         /* Default it */
+
+    strcpy(opc_request.msg, message);         /* Copy the string */
+
+    opc.dsc$a_pointer = &opc_request;   /* Build a descriptor for the block */
+    opc.dsc$w_length = strlen(message) + sizeof(struct hdr);
+
+    sys$sndopr(&opc, 0);
+}
+#endif
 
 #if defined(USE_LOGFILE) 
 static void 
@@ -146,6 +171,10 @@ ilog(int priority, const char *fmt, ...)
 #endif
 #if defined(USE_LOGFILE) 
   write_log(buf);
+#endif
+
+#ifdef __vms
+  send_opcom(buf);
 #endif
 }
   
@@ -350,3 +379,21 @@ log_failed_oper(struct Client *source_p, const char *name)
     }
   }
 }
+
+#ifdef __vms
+const char *
+ircd$format_error(int status)
+{
+	static char msg[257];
+	struct dsc$descriptor msgd;
+	int msg_len;
+	char temp[512];
+
+	msg_len = 0;
+	msgd.dsc$w_length = 256;
+	msgd.dsc$a_pointer = msg;
+	sys$getmsg(status, &msg_len, &msgd, 0, &temp);
+	msg[msg_len] = '\0';
+	return msg + 1;
+}
+#endif

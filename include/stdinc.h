@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- * $Id: stdinc.h,v 1.11 2003/05/23 19:47:04 joshk Exp $
+ * $Id: stdinc.h,v 1.12 2003/05/28 01:41:22 joshk Exp $
  *
  */
 
@@ -72,7 +72,21 @@
 
 #ifdef __vms
 #define _XOPEN_SOURCE 1
+#include <sys/ioctl.h>
 #include <builtins.h>
+#include <timers.h>
+
+#include <descrip.h>
+#include <ssdef.h>
+#include <starlet.h>
+#include <syidef.h>
+#include <lnmdef.h>
+#include <opcdef.h>
+#include <rms.h>
+#include <stsdef.h>
+
+char *crypt(const char *, const char *);
+
 #endif
 
 #ifdef __vax
@@ -92,7 +106,6 @@
 #include <sys/resource.h>
 #endif
 
-
 #include <sys/stat.h>
 #include <sys/wait.h>
 
@@ -104,10 +117,6 @@
 #include <errno.h>
 #else
 extern int errno;
-#endif
-
-#ifdef __vms
-#include <sys/ioctl.h>
 #endif
 
 #include "inet_misc.h"
