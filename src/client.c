@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.264 2002/05/20 00:22:43 androsyn Exp $
+ *  $Id: client.c,v 7.265 2002/05/20 00:26:07 androsyn Exp $
  */
 
 #include "tools.h"
@@ -1228,6 +1228,7 @@ void dead_link(struct Client *client_p)
                          notice, get_client_name(client_p, MASK_IP));
   }
   Debug((DEBUG_ERROR, notice, get_client_name(to, HIDE_IP)));
+  assert(dlinkFind(&abort_list, client_p) == NULL);
   m = make_dlink_node();
   dlinkAdd(client_p, m, &abort_list);
   SetDead(client_p); /* You are dead my friend */
