@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.151 2003/09/11 04:19:54 joshk Exp $
+# $Id: Makefile.in,v 7.152 2004/01/23 00:46:43 joshk Exp $
 #
 @SET_MAKE@
 
@@ -19,11 +19,11 @@ RM		= @RM@
 SED		= @SED@
 YACC		= @YACC@
 
-prefix		= $(DESTDIR)@prefix@
-exec_prefix	= @exec_prefix@
-bindir		= @bindir@
-sysconfdir	= @sysconfdir@
-localstatedir	= @localstatedir@
+prefix		= @prefix@
+exec_prefix	= $(DESTDIR)@exec_prefix@
+bindir		= $(DESTDIR)@bindir@
+sysconfdir	= $(DESTDIR)@sysconfdir@
+localstatedir	= $(DESTDIR)@localstatedir@
 
 # must not have whitespace here
 CLOBBER=@CLOBBER@
@@ -126,7 +126,7 @@ ircd: @MODULES_LIBS@ $(OBJS) y.tab.o lex.yy.o version.o
 	cd ../modules && ${MAKE} ${MFLAGS}
 
 install-mkdirs:
-	mkdir -p $(prefix) $(exec_prefix) $(bindir) $(sysconfdir) \
+	mkdir -p $(DESTDIR)$(prefix) $(exec_prefix) $(bindir) $(sysconfdir) \
 		$(localstatedir)/logs 
 
 install: install-mkdirs build
