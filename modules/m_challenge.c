@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_challenge.c,v 1.24 2001/07/02 19:09:18 jdc Exp $
+ *   $Id: m_challenge.c,v 1.25 2001/09/29 22:59:38 davidt Exp $
  */
 #include <stdlib.h>
 #include <string.h>
@@ -128,6 +128,8 @@ static void m_challenge( struct Client *client_p, struct Client *source_p,
   
   MyFree(source_p->user->response);
   MyFree(source_p->user->auth_oper);
+  source_p->user->response = NULL;
+  source_p->user->response = NULL;
 
   /* XXX - better get the host matching working sometime... */
   if (!(aconf = find_conf_by_name (parv[1], CONF_OPERATOR))
