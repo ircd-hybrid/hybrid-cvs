@@ -1,3 +1,15 @@
+db          2003/01/19 08:25:22 EST	(20030119_1)
+
+  Modified files:
+    src                  s_serv.c 
+  Log:
+  - called dead_link_on_write() with only one parameter.
+  
+  Revision  Changes    Path
+  7.274     +1 -1      ircd-hybrid-7/src/s_serv.c
+
+
+
 db          2003/01/19 08:19:54 EST	(20030119_0)
 
   Modified files:
@@ -34245,4 +34257,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4182 2003/01/19 13:19:57 db Exp $
+$Id: ChangeLog,v 7.4183 2003/01/19 13:25:24 db Exp $
