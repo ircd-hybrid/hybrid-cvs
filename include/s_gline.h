@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_gline.h,v 7.7 2001/01/04 16:10:05 davidt Exp $
+ * $Id: s_gline.h,v 7.8 2001/08/24 13:58:19 leeh Exp $
  */
 
 #ifndef INCLUDED_s_gline_h
@@ -37,7 +37,6 @@ struct ConfItem;
 
 extern struct ConfItem* find_gkill(struct Client* client, char *);
 extern struct ConfItem* find_is_glined(const char* host, const char* name);
-extern void   report_glines(struct Client *); 
 extern int    remove_gline_match(const char *user, const char *host);
 extern void   cleanup_glines(void *notused);
 extern void   add_gline(struct ConfItem *);
@@ -72,5 +71,6 @@ typedef struct gline_pending
 #define CLEANUP_GLINES_TIME  300
 
 dlink_list pending_glines;
+extern dlink_list glines;
 
 #endif

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_gline.c,v 1.14 2001/04/17 22:36:08 fl_ blalloc.c $
+ *  $Id: s_gline.c,v 1.15 2001/08/24 13:58:20 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -112,95 +112,6 @@ find_is_glined(const char* host, const char* name)
     }
 
   return((struct ConfItem *)NULL);
-}
-
-
-/* report_glines
- *
- * inputs       - struct Client pointer
- * output       - NONE
- * side effects - 
- *
- * report pending glines, and placed glines.
- */
-void
-report_glines(struct Client *source_p)
-{
-  dlink_node *pending_node;
-  dlink_node *gline_node;
-  struct gline_pending *glp_ptr;
-  struct ConfItem *kill_ptr;
-  char timebuffer[MAX_DATE_STRING];
-  struct tm *tmptr;
-  char *host;
-  char *name;
-  char *reason;
-
-  if (dlink_list_length(&pending_glines) > 0)
-    sendto_one(source_p,":%s NOTICE %s :Pending G-lines",
-               me.name, source_p->name);
-
-  for(pending_node = pending_glines.head; pending_node; pending_node = pending_node->next)
-    {
-      glp_ptr = pending_node->data;
-      tmptr = localtime(&glp_ptr->time_request1);
-      strftime(timebuffer, MAX_DATE_STRING, "%Y/%m/%d %H:%M:%S", tmptr);
-
-      sendto_one(source_p,
-       ":%s NOTICE %s :1) %s!%s@%s on %s requested gline at %s for %s@%s [%s]",
-		 me.name,source_p->name,
-		 glp_ptr->oper_nick1,
-		 glp_ptr->oper_user1,
-		 glp_ptr->oper_host1,
-		 glp_ptr->oper_server1,
-		 timebuffer,
-		 glp_ptr->user,
-		 glp_ptr->host,
-		 glp_ptr->reason1);
-
-      if(glp_ptr->oper_nick2[0])
-	{
-	  tmptr = localtime(&glp_ptr->time_request2);
-	  strftime(timebuffer, MAX_DATE_STRING, "%Y/%m/%d %H:%M:%S", tmptr);
-	  sendto_one(source_p,
-     ":%s NOTICE %s :2) %s!%s@%s on %s requested gline at %s for %s@%s [%s]",
-		     me.name,source_p->name,
-		     glp_ptr->oper_nick2,
-		     glp_ptr->oper_user2,
-		     glp_ptr->oper_host2,
-		     glp_ptr->oper_server2,
-		     timebuffer,
-		     glp_ptr->user,
-		     glp_ptr->host,
-		     glp_ptr->reason2);
-	}
-    }
-
-  if (dlink_list_length(&pending_glines) > 0)
-    sendto_one(source_p,":%s NOTICE %s :End of Pending G-lines",
-               me.name, source_p->name);
-
-  for(gline_node = glines.head; gline_node; gline_node = gline_node->next)
-    {
-      kill_ptr = gline_node->data;
-      if(kill_ptr->host != NULL)
-	host = kill_ptr->host;
-      else
-	host = "*";
-
-      if(kill_ptr->name != NULL)
-	name = kill_ptr->name;
-      else
-	name = "*";
-
-      if(kill_ptr->passwd)
-	reason = kill_ptr->passwd;
-      else
-	reason = "No Reason";
-
-      sendto_one(source_p,form_str(RPL_STATSKLINE), me.name,
-		 source_p->name, 'G' , host, name, reason);
-    }
 }
 
 /*
