@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.152 2003/04/07 03:19:23 db Exp $
+ *  $Id: parse.c,v 7.153 2003/04/13 05:55:22 michael Exp $
  */
 
 #include "stdinc.h"
@@ -58,7 +58,7 @@ static  void    do_numeric (char [], struct Client *,
 static  void    handle_command (struct Message *, struct Client *,
 				struct Client *, int, char **);
 
-static int hash(char *p);
+static int hash(const char *p);
 static struct Message *hash_parse(char *);
 
 struct MessageHash *msg_hash_table[MAX_MSG_HASH];
@@ -365,9 +365,7 @@ handle_command(struct Message *mptr, struct Client *client_p,
     (*handler)(client_p, from, i, hpara);
 }
 
-
-/*
- * clear_hash_parse()
+/* clear_hash_parse()
  *
  * inputs       -
  * output       - NONE
@@ -381,7 +379,7 @@ clear_hash_parse(void)
   memset(msg_hash_table,0,sizeof(msg_hash_table));
 }
 
-/* mod_add_cmd
+/* mod_add_cmd()
  *
  * inputs	- command name
  *		- pointer to struct Message
@@ -471,18 +469,19 @@ mod_del_cmd(struct Message *msg)
 static struct Message *
 hash_parse(char *cmd)
 {
+  int msgindex;
   struct MessageHash *ptr;
-  int    msgindex;
 
   msgindex = hash(cmd);
 
-  for(ptr = msg_hash_table[msgindex]; ptr; ptr = ptr->next )
+  for (ptr = msg_hash_table[msgindex]; ptr; ptr = ptr->next)
+  {
+    if (strcasecmp(cmd,ptr->cmd) == 0)
     {
-      if(strcasecmp(cmd,ptr->cmd) == 0)
-	{
-	  return(ptr->msg);
-	}
+      return(ptr->msg);
     }
+  }
+
   return(NULL);
 }
 
@@ -496,21 +495,20 @@ hash_parse(char *cmd)
  * BUGS		- This a HORRIBLE hash function
  */
 static int
-hash(char *p)
+hash(const char *p)
 {
   int hash_val=0;
 
   while(*p)
-    {
-      hash_val += ((int)(*p)&0xDF);
-      p++;
-    }
+  {
+    hash_val += ((int)(*p)&0xDF);
+    p++;
+  }
 
   return(hash_val % MAX_MSG_HASH);
 }
 
-/*
- * report_messages
+/* report_messages()
  *
  * inputs	- pointer to client to report to
  * output	- NONE
@@ -523,19 +521,19 @@ report_messages(struct Client *source_p)
   struct MessageHash *ptr;
 
   for (i = 0; i < MAX_MSG_HASH; i++)
+  {
+    for (ptr = msg_hash_table[i]; ptr; ptr = ptr->next)
     {
-      for (ptr = msg_hash_table[i]; ptr; ptr = ptr->next)
-	{
-	  assert(ptr->msg != NULL);
-	  assert(ptr->cmd != NULL);
+      assert(ptr->msg != NULL);
+      assert(ptr->cmd != NULL);
 
-	  if (!((ptr->msg->flags & MFLG_HIDDEN) && !IsAdmin(source_p)))
-	    sendto_one(source_p, form_str(RPL_STATSCOMMANDS),
-		       me.name, source_p->name, ptr->cmd,
-		       ptr->msg->count, ptr->msg->bytes,
-		       ptr->msg->rcount);
-	}
+      if (!((ptr->msg->flags & MFLG_HIDDEN) && !IsAdmin(source_p)))
+        sendto_one(source_p, form_str(RPL_STATSCOMMANDS),
+                   me.name, source_p->name, ptr->cmd,
+                   ptr->msg->count, ptr->msg->bytes,
+                   ptr->msg->rcount);
     }
+  }
 }
 
 /* list_commands()
@@ -547,8 +545,8 @@ report_messages(struct Client *source_p)
 void
 list_commands(struct Client *source_p)
 {
-  struct MessageHash *ptr;
   int i;
+  struct MessageHash *ptr;
 
   for(i = 0; i < MAX_MSG_HASH; i++)
   {
@@ -561,8 +559,7 @@ list_commands(struct Client *source_p)
   }
 }
 
-/*
- * cancel_clients
+/* cancel_clients()
  *
  * inputs	- 
  * output	- 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: msg.h,v 7.44 2003/04/07 03:19:19 db Exp $
+ *  $Id: msg.h,v 7.45 2003/04/13 05:55:20 michael Exp $
  */
 
 #ifndef INCLUDED_msg_h
@@ -35,15 +35,15 @@ struct Client;
  */
 struct Message
 {
-  char  *cmd;
-  unsigned int  count;      /* number of times command used */
-  unsigned int	rcount;     /* number of times command used by server */
-  unsigned int  parameters; /* at least this many args must be passed
+  const char *cmd;
+  unsigned int count;      /* number of times command used */
+  unsigned int rcount;     /* number of times command used by server */
+  unsigned int parameters; /* at least this many args must be passed
                              * or an error will be sent to the user 
                              * before the m_func is even called 
                              */
-  unsigned int  maxpara;    /* maximum permitted parameters */
-  unsigned int  flags;      /* bit 0 set means that this command is allowed
+  unsigned int maxpara;    /* maximum permitted parameters */
+  unsigned int flags;      /* bit 0 set means that this command is allowed
 			     * to be used only on the average of once per 2
 			     * seconds -SRB
 			     */

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.h,v 7.32 2002/11/12 13:45:40 db Exp $
+ *  $Id: modules.h,v 7.33 2003/04/13 05:55:20 michael Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -50,7 +50,7 @@ struct module {
 
 struct module_path
 {
-	char path[MAXPATHLEN];
+  char path[MAXPATHLEN];
 };
 
 /* add a path */

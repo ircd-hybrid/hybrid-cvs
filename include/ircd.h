@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.h,v 7.58 2003/04/02 14:29:21 adx Exp $
+ *  $Id: ircd.h,v 7.59 2003/04/13 05:55:20 michael Exp $
  */
 
 #ifndef INCLUDED_ircd_h
@@ -34,36 +34,33 @@ struct dlink_list;
 
 struct SetOptions
 {
-  int maxclients;       /* max clients allowed */
-  int autoconn;         /* autoconn enabled for all servers? */
-
+  int maxclients;    /* max clients allowed               */
+  int autoconn;      /* autoconn enabled for all servers? */
   int idletime;
-
-  int floodcount;	/* Number of messages in 1 second */
-  int ident_timeout;     /* timeout for identd lookups */
-
+  int floodcount;    /* Number of messages in 1 second    */
+  int ident_timeout; /* timeout for identd lookups        */
   int spam_num;
   int spam_time;
 };
 
 struct Counter {
-  int     server;         /* servers */
-  int     myserver;       /* my servers */
-  int     oper;           /* Opers */
-  int     chan;           /* Channels */
-  int     local;          /* Local Clients */
-  int     total;          /* total clients */
-  int     invisi;         /* invisible clients */
-  int     unknown;        /* unknown connections */
-  int     max_loc;        /* MAX local clients */
-  int     max_tot;        /* MAX global clients */
+  int server;   /* servers             */
+  int myserver; /* my servers          */
+  int oper;     /* Opers               */
+  int chan;     /* Channels            */
+  int local;    /* Local Clients       */
+  int total;    /* total clients       */
+  int invisi;   /* invisible clients   */
+  int unknown;  /* unknown connections */
+  int max_loc;  /* MAX local clients   */
+  int max_tot;  /* MAX global clients  */
   unsigned long totalrestartcount; /* Total client count ever */
 };
 
 extern struct SetOptions GlobalSetOptions;  /* defined in ircd.c */
 
 struct ServerState_t {
-  int     foreground;
+  int foreground;
 };
 
 extern struct ServerState_t server_state;
@@ -80,7 +77,6 @@ extern char*          ircd_version;
 extern const char*    logFileName;
 extern const char*    pidFileName;
 extern const char     serveropts[];
-extern int            cold_start;
 extern int            dorehash;
 extern int            doremotd;
 extern struct Counter Count;

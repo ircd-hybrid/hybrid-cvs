@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: motd.h,v 7.10 2002/05/24 23:34:07 androsyn Exp $
+ *  $Id: motd.h,v 7.11 2003/04/13 05:55:20 michael Exp $
  */
 
 #ifndef INCLUDED_motd_h
@@ -38,8 +38,8 @@ typedef enum {
 
 struct MessageFileLine
 {
-  char                    line[MESSAGELINELEN + 1];
-  struct MessageFileLine* next;
+  char line[MESSAGELINELEN + 1];
+  struct MessageFileLine *next;
 };
 
 typedef struct MessageFileLine MessageFileLine;
@@ -56,8 +56,8 @@ typedef struct MessageFile MessageFile;
 
 struct Client;
 
-void InitMessageFile(MotdType, char *, struct MessageFile *);
-int SendMessageFile(struct Client *, struct MessageFile *);
-int ReadMessageFile(MessageFile *);
+extern void InitMessageFile(MotdType, char *, struct MessageFile *);
+extern int SendMessageFile(struct Client *, struct MessageFile *);
+extern int ReadMessageFile(MessageFile *);
 
 #endif /* INCLUDED_motd_h */

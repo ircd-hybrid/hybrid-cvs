@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: handlers.h,v 7.38 2002/01/05 09:14:28 a1kmm Exp $
+ *  $Id: handlers.h,v 7.39 2003/04/13 05:55:19 michael Exp $
  */
 
 #ifndef INCLUDED_handlers_h
@@ -93,7 +93,6 @@ extern void m_ignore(struct Client*, struct Client*, int, char**);
 extern void m_not_oper(struct Client*, struct Client*, int, char**);
 extern void m_registered(struct Client*, struct Client*, int, char**);
 extern void m_unregistered(struct Client*, struct Client*, int, char**);
-extern void m_unsupported(struct Client*, struct Client*, int, char**);
 
 #endif /* INCLUDED_handlers_h */
 

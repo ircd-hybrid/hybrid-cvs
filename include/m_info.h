@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.h,v 7.42 2003/04/09 11:19:32 stu Exp $
+ *  $Id: m_info.h,v 7.43 2003/04/13 05:55:20 michael Exp $
  */
 
 #ifndef INCLUDED_m_info_h
@@ -29,10 +29,10 @@
 
 typedef struct Information
 {
-  char* name;        /* name of item */
-  char* strvalue;    /* value of item if it's a boolean */
-  int   intvalue;    /* value of item if it's an integer */
-  char* desc;        /* short description of item */
+  const char *name;     /* name of item                     */
+  const char *strvalue; /* value of item if it's a boolean  */
+  int intvalue;         /* value of item if it's an integer */
+  const char *desc;     /* short description of item        */
 } Info;
 
 Info MyInformation[] = {
@@ -106,9 +106,6 @@ Info MyInformation[] = {
 #endif
 */
   { "MAX_CLIENTS", "", MAX_CLIENTS, "Default maximum Clients" },
-
-  { "JOIN_LEAVE_COUNT_EXPIRE_TIME", "", JOIN_LEAVE_COUNT_EXPIRE_TIME, "Anti SpamBot Parameter" },
-
   { "KILLCHASETIMELIMIT", "", KILLCHASETIMELIMIT, "Nick Change Tracker for KILL" },
 
 #ifdef KPATH
@@ -146,12 +143,6 @@ Info MyInformation[] = {
 #endif /* OPATH */
 
   { "OPER_SPAM_COUNTDOWN", "", OPER_SPAM_COUNTDOWN, "Anti SpamBot Parameter" },
-
-#ifdef PACE_CONNECT
-  { "PACE_CONNECT", "ON", 0, "Pace connections to the ircd" },
-#else
-  { "PACE_CONNECT", "OFF", 0, "Pace connections to the ircd" },
-#endif
 
 #ifdef HAVE_LIBCRYPTO
   { "HAVE_LIBCRYPTO", "ON", 0, "Enable OpenSSL CHALLENGE Support" },
@@ -196,7 +187,6 @@ Info MyInformation[] = {
    */
   { 0, 0, 0, 0 }
 };
-
 
 #endif /* INCLUDED_m_info_h */
 

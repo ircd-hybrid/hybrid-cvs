@@ -89,9 +89,9 @@
 #define EAI_MAX     14
 #define AI_MASK (AI_PASSIVE | AI_NUMERICHOST)
 
-/*  $Id: irc_getaddrinfo.c,v 7.2 2003/04/12 09:01:39 michael Exp $ */
+/*  $Id: irc_getaddrinfo.c,v 7.3 2003/04/13 05:55:22 michael Exp $ */
 
-static const char in_addrany[] = { 0, 0, 0, 0 };
+static const char in_addrany[]  = { 0, 0, 0, 0 };
 static const char in_loopback[] = { 127, 0, 0, 1 };
 static const char in6_addrany[] = {
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
@@ -413,16 +413,13 @@ irc_getaddrinfo(const char *hostname, const char *servname,
  * non-passive socket -> localhost (127.0.0.1 or ::1)
  */
 static int
-explore_null(pai, servname, res)
-	const struct addrinfo *pai;
-	const char *servname;
-	struct addrinfo **res;
+explore_null(const struct addrinfo *pai, const char *servname, struct addrinfo **res)
 {
-	int s;
-	const struct afd *afd;
-	struct addrinfo *cur;
-	struct addrinfo sentinel;
-	int error;
+  int s;
+  const struct afd *afd;
+  struct addrinfo *cur;
+  struct addrinfo sentinel;
+  int error;
 
 	*res = NULL;
 	sentinel.ai_next = NULL;
@@ -471,21 +468,18 @@ free:
  * numeric hostname
  */
 static int
-explore_numeric(pai, hostname, servname, res)
-	const struct addrinfo *pai;
-	const char *hostname;
-	const char *servname;
-	struct addrinfo **res;
+explore_numeric(const struct addrinfo *pai, const char *hostname,
+                const char *servname, struct addrinfo **res)
 {
-	const struct afd *afd;
-	struct addrinfo *cur;
-	struct addrinfo sentinel;
-	int error;
-	char pton[PTON_MAX];
+  const struct afd *afd;
+  struct addrinfo *cur;
+  struct addrinfo sentinel;
+  int error;
+  char pton[PTON_MAX];
 
-	*res = NULL;
-	sentinel.ai_next = NULL;
-	cur = &sentinel;
+  *res = NULL;
+  sentinel.ai_next = NULL;
+  cur = &sentinel;
 
 	/*
 	 * if the servname does not match socktype/protocol, ignore it.
@@ -537,13 +531,10 @@ bad:
 }
 
 static struct addrinfo *
-get_ai(pai, afd, addr)
-	const struct addrinfo *pai;
-	const struct afd *afd;
-	const char *addr;
+get_ai(const struct addrinfo *pai, const struct afd *afd, const char *addr)
 {
-	char *p;
-	struct addrinfo *ai;
+  char *p;
+  struct addrinfo *ai;
 	
     ai = (struct addrinfo *)malloc(sizeof(struct addrinfo)
 		+ (afd->a_socklen));
@@ -564,29 +555,23 @@ get_ai(pai, afd, addr)
 }
 
 static int
-get_portmatch(ai, servname)
-	const struct addrinfo *ai;
-	const char *servname;
+get_portmatch(const struct addrinfo *ai, const char *servname)
 {
-
-	/* get_port does not touch first argument. when matchonly == 1. */
-	/* LINTED const cast */
-	return get_port((struct addrinfo *)ai, servname, 1);
+  /* get_port does not touch first argument. when matchonly == 1. */
+  /* LINTED const cast */
+  return(get_port((struct addrinfo *)ai, servname, 1));
 }
 
 static int
-get_port(ai, servname, matchonly)
-	struct addrinfo *ai;
-	const char *servname;
-	int matchonly;
+get_port(struct addrinfo *ai, const char *servname, int matchonly)
 {
-	const char *proto;
-	struct servent *sp;
-	int port;
-	int allownumeric;
+  const char *proto;
+  struct servent *sp;
+  int port;
+  int allownumeric;
 
-	if (servname == NULL)
-		return 0;
+  if (servname == NULL)
+    return 0;
 	switch (ai->ai_family) {
 	case AF_INET:
 #ifdef AF_INET6
@@ -655,16 +640,18 @@ get_port(ai, servname, matchonly)
 }
 
 static const struct afd *
-find_afd(af)
-	int af;
+find_afd(int af)
 {
-	const struct afd *afd;
+  const struct afd *afd;
 
-	if (af == PF_UNSPEC)
-		return NULL;
-	for (afd = afdl; afd->a_af; afd++) {
-		if (afd->a_af == af)
-			return afd;
-	}
-	return NULL;
+  if (af == PF_UNSPEC)
+    return(NULL);
+
+  for (afd = afdl; afd->a_af; afd++)
+  {
+    if (afd->a_af == af)
+      return(afd);
+  }
+
+  return(NULL);
 }
