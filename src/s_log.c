@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_log.c,v 7.27 2001/04/15 09:44:53 toot Exp $
+ *   $Id: s_log.c,v 7.28 2001/04/21 16:57:47 fl_ Exp $
  */
 #include "client.h"	/* Needed for struct Client */
 #include "s_log.h"
@@ -83,7 +83,7 @@ static const char *logLevelToString[] =
 
 static int open_log(const char* filename)
 {
-  logFile = fbopen(filename, "an");
+  logFile = fbopen(filename, "a");
   if (logFile == NULL) {
 #ifdef USE_SYSLOG
     syslog(LOG_ERR, "Unable to open log file: %s: %s",

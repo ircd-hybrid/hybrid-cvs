@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.135 2001/04/19 22:29:42 a1kmm Exp $
+ * $Id: ircd.c,v 7.136 2001/04/21 16:57:46 fl_ Exp $
  */
 
 #include <sys/types.h>
@@ -361,7 +361,7 @@ static void write_pidfile(void)
 {
   FBFILE* fd;
   char buff[20];
-  if ((fd = fbopen(PPATH, "wt")))
+  if ((fd = fbopen(PPATH, "w")))
     {
       ircsprintf(buff,"%d\n", (int)getpid());
       if ((fbputs(buff, fd) == -1))
@@ -378,9 +378,6 @@ static void write_pidfile(void)
 int main(int argc, char *argv[])
 {
   time_t      delay = 0;
-
-  printf("ircd version %s\n", version);
-  printf("ircd: pid %d\n", (int)getpid());
 
   /*
    * save server boot time right away, so getrusage works correctly
@@ -436,7 +433,7 @@ int main(int argc, char *argv[])
 
   if (printVersion) 
     {
-      printf("\tircd_dir: %s\n", ConfigFileEntry.dpath);
+      printf("ircd: version %s\n", version);
       exit(EXIT_SUCCESS);
     }
 
@@ -446,8 +443,16 @@ int main(int argc, char *argv[])
       exit(EXIT_FAILURE);
     }
 
-  printf("ircd: running in %s mode from %s\n", !noDetach ? "background" : "foreground",
-	 ConfigFileEntry.dpath);
+  if (!noDetach)
+    {
+      daemon(1,1);
+      putchar('\n');
+    }
+
+  printf("ircd: version %s\n", version);
+  printf("ircd: pid %d\n", (int)getpid());
+  printf("ircd: running in %s mode from %s\n", !noDetach ? "background"
+         : "foreground", ConfigFileEntry.dpath);
  
   setup_signals();
 
@@ -550,9 +555,6 @@ int main(int argc, char *argv[])
   write_pidfile();
 
   log(L_NOTICE, "Server Ready");
-
-  if (!noDetach)
-    daemon(1,1);
 
   eventAdd("cleanup_channels", cleanup_channels, NULL,
 	   CLEANUP_CHANNELS_TIME, 0);
