@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.339 2002/10/24 18:16:40 bill Exp $
+ *  $Id: channel.c,v 7.340 2002/10/24 20:54:52 bill Exp $
  */
 
 #include "stdinc.h"
@@ -534,6 +534,7 @@ expire_channels(void *unused)
       continue;
     }
 
+    /* not expiring anymore? hmm, ok.  remove and continue. */
     if (!IsExpiring(chptr))
     {
       dlinkDelete(ptr, &expiring_channels);
@@ -545,6 +546,8 @@ expire_channels(void *unused)
     {
       if ((CurrentTime - chptr->users_last >= MAX_VCHAN_TIME))
       {
+        /* time to expire.  verify emptiness, and destroy. or else
+         * clear expire bit.  continue. */
 	if (chptr->users == 0)
         {
 	  if (uplink && IsCapable(uplink, CAP_LL))
@@ -554,6 +557,7 @@ expire_channels(void *unused)
 	else
           ClearExpiring(chptr);
 	dlinkDelete(ptr, &expiring_channels);
+        continue;
       }
       else
         break;
@@ -563,6 +567,8 @@ expire_channels(void *unused)
 #endif
       if((chptr->users_last + ConfigChannel.persist_time) <= CurrentTime)
       {
+        /* time to expire.  verify emptiness, and destroy. or else
+         * clear expire bit.  continue. */
 	if (chptr->users == 0)
         {
 	  if (uplink && IsCapable(uplink, CAP_LL))
@@ -572,9 +578,11 @@ expire_channels(void *unused)
 	else
           ClearExpiring(chptr);
 	dlinkDelete(ptr, &expiring_channels);
+        continue;
       }
       else
         break;
+        /* not yet time to expire.  abort now, and save cpu. */
 #ifdef VCHANS
     }
 #endif
