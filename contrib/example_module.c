@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: example_module.c,v 1.1 2001/06/06 18:21:32 leeh Exp $
+ *   $Id: example_module.c,v 1.2 2001/11/24 20:35:39 leeh Exp $
  */
 
 /* List of ircd includes from ../include/ */
@@ -76,7 +76,7 @@ struct Message test_msgtab = {
  /* This would add the command "TEST" which requires no additional
   * parameters
   */
-  "TEST", 0, 1, 0, MFLG_SLOW, 0,
+  "TEST", 0, 0, 1, 0, MFLG_SLOW, 0,
 
  /* Fields are in order:
   *-> {unregged, regged, remote, oper}
