@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_links.c,v 1.37 2002/07/31 16:24:07 leeh Exp $
+ *  $Id: m_links.c,v 1.38 2003/03/31 04:30:17 michael Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&links_msgtab);
 }
 
-const char *_version = "$Revision: 1.37 $";
+const char *_version = "$Revision: 1.38 $";
 #endif
 /*
  * m_links - LINKS message handler
@@ -135,7 +135,7 @@ static void mo_links(struct Client *client_p, struct Client *source_p,
   
   hook_call_event("doing_links", &hd);
   
-  for (ptr = global_serv_list.head; ptr; ptr = ptr->next)
+  DLINK_FOREACH(ptr, global_serv_list.head)
     {
       target_p = ptr->data;
 

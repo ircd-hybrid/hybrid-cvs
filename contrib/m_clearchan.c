@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_clearchan.c,v 1.31 2003/02/17 16:09:24 db Exp $
+ *   $Id: m_clearchan.c,v 1.32 2003/03/31 04:30:15 michael Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -77,7 +77,7 @@ _moddeinit(void)
   mod_del_cmd(&clearchan_msgtab);
 }
 
-char *_version = "$Revision: 1.31 $";
+char *_version = "$Revision: 1.32 $";
 
 /*
 ** mo_clearchan
@@ -355,10 +355,8 @@ static void free_channel_list(dlink_list *list)
   dlink_node *next_ptr;
   struct Ban *actualBan;
 
-  for (ptr = list->head; ptr; ptr = next_ptr)
+  DLINK_FOREACH_SAFE(ptr, next_ptr, list->head)
     {
-      next_ptr = ptr->next;
-
       actualBan = ptr->data;
       MyFree(actualBan->banstr);
       MyFree(actualBan->who);

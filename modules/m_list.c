@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_list.c,v 1.47 2003/03/01 01:15:39 db Exp $
+ *  $Id: m_list.c,v 1.48 2003/03/31 04:30:17 michael Exp $
  */
 
 #include "stdinc.h"
@@ -66,7 +66,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&list_msgtab);
 }
-const char *_version = "$Revision: 1.47 $";
+const char *_version = "$Revision: 1.48 $";
 #endif
 
 
@@ -75,10 +75,8 @@ const char *_version = "$Revision: 1.47 $";
 **      parv[0] = sender prefix
 **      parv[1] = channel
 */
-static void m_list(struct Client *client_p,
-                  struct Client *source_p,
-                  int parc,
-                  char *parv[])
+static void m_list(struct Client *client_p, struct Client *source_p,
+                  int parc, char *parv[])
 {
   static time_t last_used=0L;
 
@@ -121,10 +119,8 @@ static void m_list(struct Client *client_p,
 **      parv[0] = sender prefix
 **      parv[1] = channel
 */
-static void mo_list(struct Client *client_p,
-                   struct Client *source_p,
-                   int parc,
-                   char *parv[])
+static void mo_list(struct Client *client_p, struct Client *source_p,
+                    int parc, char *parv[])
 {
 
   /* If its a LazyLinks connection, let uplink handle the list
@@ -254,7 +250,7 @@ static int list_named_channel(struct Client *source_p,char *name)
   /* Deal with subvchans */
  
 #ifdef VCHANS
-  for (ptr = chptr->vchan_list.head; ptr; ptr = ptr->next)
+  DLINK_FOREACH(ptr, chptr->vchan_list.head)
     {
       tmpchptr = ptr->data;
 
@@ -310,3 +306,4 @@ static void list_one_channel(struct Client *source_p, struct Channel *chptr)
                  chptr->chname, chptr->users, chptr->topic == NULL ? "" : chptr->topic );
     }
 }
+
