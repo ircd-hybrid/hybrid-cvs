@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.185 2001/01/11 05:31:54 a1kmm Exp $
+ * $Id: channel.c,v 7.186 2001/01/17 19:28:07 fl_ Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -2956,7 +2956,10 @@ channel_member_list(struct Client *sptr,
       if (IsInvisible(who) && !IsMember(sptr, chptr))
         continue;
 
-      ircsprintf(t, "%s%s ", show_flag, who->name);
+      if(who == sptr && is_voiced(chptr, who) && chptr->mode.mode & MODE_HIDEOPS)
+        ircsprintf(t, "+%s ", who->name);
+      else
+        ircsprintf(t, "%s%s ", show_flag, who->name);
       tlen = strlen(t);
       *cur_len += tlen;
       t += tlen;
