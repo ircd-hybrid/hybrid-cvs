@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_server.c,v 1.23 2000/12/30 08:17:48 lusky Exp $
+ *   $Id: m_server.c,v 1.24 2001/01/01 23:41:43 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"  /* m_server prototype */
@@ -106,13 +106,6 @@ int mr_server(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 	sendto_realops_flags(FLAGS_ALL,"Link %s Server %s dropped, no N: line",
 			     get_client_name(cptr, TRUE), host);
       return exit_client(cptr, cptr, cptr, "NO N line");
-    }
-
-  if (GlobalSetOptions.autoconn == 0)
-    {
-      sendto_realops_flags(FLAGS_ALL,"WARNING AUTOCONN is 0, Closing %s",
-			   get_client_name(cptr, TRUE));
-      return exit_client(cptr, cptr, cptr, "AUTOCONNS off");
     }
 
   if ((acptr = find_server(host)))
