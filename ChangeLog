@@ -1,3 +1,16 @@
+leeh        2002/04/26 07:51:21 EDT	(20020426_2)
+
+  Modified files:
+    modules              m_kline.c 
+  Log:
+  - remote servers cant set klines, we need to be checking !MyClient(), not
+    IsServer().
+  
+  Revision  Changes    Path
+  1.100     +5 -4      ircd-hybrid-7/modules/m_kline.c
+
+
+
 leeh        2002/04/26 06:52:12 EDT	(20020426_1)
 
   Modified files:
@@ -25538,4 +25551,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3594 2002/04/26 10:52:18 leeh Exp $
+$Id: ChangeLog,v 7.3595 2002/04/26 11:51:27 leeh Exp $
