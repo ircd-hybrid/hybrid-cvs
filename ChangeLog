@@ -1,3 +1,8 @@
+*** 20001202_5 by toot
+. let unregistered clients use /admin, but non hunting
+. non-opers can do /time locally.
+
+
 *** 20001202_4 by toot
 fixed some compile errors/typos
 
@@ -1307,7 +1312,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.659 2000/12/02 12:45:30 toot Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.660 2000/12/02 14:33:07 toot Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
