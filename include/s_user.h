@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.h,v 7.17 2003/03/29 14:25:09 michael Exp $
+ *  $Id: s_user.h,v 7.18 2003/03/30 02:34:48 michael Exp $
  */
 
 #ifndef INCLUDED_s_user_h
@@ -28,13 +28,11 @@
 #include "config.h"
 
 struct Client;
-extern time_t LastUsedWallops;
-
 
 extern int   user_mode(struct Client* , struct Client* , int, char** );
-extern void  send_umode (struct Client* , struct Client* ,
-                         int, int, char* );
-extern void  send_umode_out(struct Client* , struct Client* , int);
+extern void  send_umode(struct Client* , struct Client* ,
+                        unsigned int, unsigned int, char* );
+extern void  send_umode_out(struct Client* , struct Client* , unsigned int);
 extern int   show_lusers(struct Client* source_p);
 extern int   register_local_user(struct Client* ,struct Client* ,
 				 char* ,char* );
@@ -46,7 +44,7 @@ extern int   do_local_user(char* ,struct Client* ,struct Client*,
 extern int   do_remote_user(struct Client* ,struct Client*,
 			    char* ,char *,char *,char *,char *);
 
-extern int   user_modes_from_c_to_bitmask[];
+extern unsigned int user_modes_from_c_to_bitmask[];
 extern void  show_isupport(struct Client *);
 
 

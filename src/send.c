@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.229 2003/03/17 03:14:48 db Exp $
+ *  $Id: send.c,v 7.230 2003/03/30 02:34:52 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1176,8 +1176,7 @@ sendto_anywhere(struct Client *to, struct Client *from,
  */
 
 void
-sendto_realops_flags(int flags, int level, const char *pattern, ...)
-
+sendto_realops_flags(unsigned int flags, int level, const char *pattern, ...)
 {
   struct Client *client_p;
   char nbuf[IRCD_BUFSIZE*2];
@@ -1225,7 +1224,7 @@ sendto_realops_flags(int flags, int level, const char *pattern, ...)
  */
 
 void
-sendto_wallops_flags(int flags, struct Client *source_p,
+sendto_wallops_flags(unsigned int flags, struct Client *source_p,
                      const char *pattern, ...)
 {
   struct Client *client_p;

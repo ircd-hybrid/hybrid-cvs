@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nick.c,v 1.107 2003/03/29 14:25:13 michael Exp $
+ *  $Id: m_nick.c,v 1.108 2003/03/30 02:34:50 michael Exp $
  */
 
 #include "stdinc.h"
@@ -97,7 +97,7 @@ _moddeinit(void)
   mod_del_cmd(&client_msgtab);
 }
 
-const char *_version = "$Revision: 1.107 $";
+const char *_version = "$Revision: 1.108 $";
 #endif
 
 /*
@@ -718,7 +718,7 @@ nick_from_server(struct Client *client_p, struct Client *source_p, int parc,
 
     if (parc > 8)
     {
-       int   flag;
+       unsigned int flag;
        char *m;
 
        /* parse usermodes */
@@ -780,13 +780,10 @@ static int
 client_from_server(struct Client *client_p, struct Client *source_p, int parc,
                    char *parv[], time_t newts,char *nick)
 {
-  char *name;
-  char *id;
-  int flag;
   char *m;
-
-  id = parv[8];
-  name = parv[9];
+  char *id = parv[8];
+  char *name = parv[9];
+  unsigned int flag;
 
   source_p = make_client(client_p);
   dlinkAdd(source_p, &source_p->node, &GlobalClientList);

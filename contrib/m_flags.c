@@ -27,7 +27,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: m_flags.c,v 1.10 2003/02/17 16:09:24 db Exp $
+ *  $Id: m_flags.c,v 1.11 2003/03/30 02:34:47 michael Exp $
  */
 
 /* List of ircd includes from ../include/ */
@@ -47,7 +47,6 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
-
 #include "s_user.h"    /* send_umode_out() */
 
 
@@ -77,7 +76,7 @@ _moddeinit(void)
   mod_del_cmd(&test_msgtab);
 }
 
-const char *_version = "$Revision: 1.10 $";
+const char *_version = "$Revision: 1.11 $";
 #endif
 
 /* FLAGS requires it's own mini parser, since the last parameter in it can
@@ -90,7 +89,7 @@ const char *_version = "$Revision: 1.10 $";
 struct FlagTable
 {
   char *name;
-  int mode;
+  unsigned int mode;
   int oper;
 };
 
@@ -152,8 +151,8 @@ static void m_flags(struct Client *client_p, struct Client *source_p,
 {
   int i,j;
   int isadd;
-  int setflags;
   int isgood;
+  unsigned int setflags;
   char *p;
   char *flag;
 
@@ -252,8 +251,8 @@ static void mo_flags(struct Client *client_p, struct Client *source_p,
 {		 
   int i,j;
   int isadd;
-  int setflags;
   int isgood;
+  unsigned int setflags;
   char *p;
   char *flag;
 

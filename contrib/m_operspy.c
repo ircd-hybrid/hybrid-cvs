@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.15 2003/02/25 23:46:40 bill Exp $
+ *   $Id: m_operspy.c,v 1.16 2003/03/30 02:34:47 michael Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -124,7 +124,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.15 $";
+const char *_version = "$Revision: 1.16 $";
 #endif
 
 /*
@@ -360,7 +360,7 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
 
     if (IsChannelName(mask))
     {
-      if ((chptr_who = (struct Channel *)hash_find_channel(mask)) != NULL)
+      if ((chptr_who = hash_find_channel(mask)) != NULL)
         do_who_on_channel(client_p, chptr_who, chptr_who->chname, server_oper);
 
       sendto_one(client_p, form_str(RPL_ENDOFWHO), me.name, parv[0], mask);
@@ -373,7 +373,6 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
         IsPerson(target_p_who))
     {
       char *chname = NULL;
-
       chptr_who = NULL;
 
       if (target_p_who->user->channel.head != NULL)

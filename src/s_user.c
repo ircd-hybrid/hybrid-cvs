@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.232 2003/03/29 14:25:15 michael Exp $
+ *  $Id: s_user.c,v 7.233 2003/03/30 02:34:52 michael Exp $
  */
 
 #include "stdinc.h"
@@ -67,7 +67,7 @@ int oper_up(struct Client *source_p, struct ConfItem *aconf);
 
 struct flag_item
 {
-  int mode;
+  unsigned int mode;
   char letter;
 };
 
@@ -96,8 +96,8 @@ static struct flag_item user_modes[] =
 
 /* memory is cheap. map 0-255 to equivalent mode */
 
-int user_modes_from_c_to_bitmask[] =
-{ 
+unsigned int user_modes_from_c_to_bitmask[] =
+{
   /* 0x00 */ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, /* 0x0F */
   /* 0x10 */ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, /* 0x1F */
   /* 0x20 */ 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, /* 0x2F */
@@ -281,7 +281,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
 			char *nick, char *username)
 {
   struct ConfItem*  aconf;
-  struct User*     user = source_p->user;
+  struct User *user;
   char        tmpstr2[IRCD_BUFSIZE];
   char	      ipaddr[HOSTIPLEN];
   int  status;
@@ -293,10 +293,10 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   assert(source_p->username != username);
   
   if(source_p == NULL)
-    return -1;
+    return(-1);
   
   if(!MyConnect(source_p))
-    return -1;
+    return(-1);
 
   if(ConfigFileEntry.ping_cookie)
   {
@@ -304,24 +304,23 @@ register_local_user(struct Client *client_p, struct Client *source_p,
        source_p->localClient->random_ping == 0)
     {
       source_p->localClient->random_ping = (unsigned long)rand();
-      sendto_one(source_p,
-		 "PING :%lu",
+      sendto_one(source_p, "PING :%lu",
 		 (unsigned long)source_p->localClient->random_ping);
       SetPingSent(source_p);
-      return -1;
+      return(-1);
     } 
     if(!HasPingCookie(source_p))
     {
-      return -1;
+      return(-1);
     }
   }
- 
+
+  user = source_p->user;
   user->last = CurrentTime;
   /* Straight up the maximum rate of flooding... */
   source_p->localClient->allow_read = MAX_FLOOD_BURST;
 
-
-  if( ( status = check_client(client_p, source_p, username )) < 0 )
+  if ((status = check_client(client_p, source_p, username)) < 0)
     return(CLIENT_EXITED);
 
   if(!valid_hostname(source_p->host))
@@ -511,15 +510,16 @@ int
 register_remote_user(struct Client *client_p, struct Client *source_p, 
 			 char *nick, char *username)
 {
-  struct User *user = source_p->user;
+  struct User *user;
   struct Client *target_p;
   
   assert(NULL != source_p);
   assert(source_p->username != username);
   
   if(source_p == NULL)
-    return -1;
+    return(-1);
 
+  user = source_p->user;
   user->last = CurrentTime;
 
   strlcpy(source_p->username, username, sizeof(source_p->username));
@@ -926,15 +926,14 @@ do_remote_user(struct Client* client_p, struct Client* source_p,
 int
 user_mode(struct Client *client_p, struct Client *source_p, int parc, char *parv[])
 {
-  int   flag;
-  int   i;
+  unsigned int i;
+  unsigned int flag;
+  unsigned int setflags;
   char  **p, *m;
   struct Client *target_p;
-  int   what, setflags;
+  int   what = MODE_ADD;
   int   badflag = NO;		/* Only send one bad flag notice */
   char  buf[BUFSIZE];
-
-  what = MODE_ADD;
 
   if (parc < 2)
     {
@@ -1107,10 +1106,10 @@ user_mode(struct Client *client_p, struct Client *source_p, int parc, char *parv
  */
 void
 send_umode(struct Client *client_p, struct Client *source_p,
-           int old, int sendmask, char *umode_buf)
+           unsigned int old, unsigned int sendmask, char *umode_buf)
 {
-  int   i;
-  int flag;
+  unsigned int i;
+  unsigned int flag;
   char  *m;
   int   what = 0;
 
@@ -1165,7 +1164,7 @@ send_umode(struct Client *client_p, struct Client *source_p,
  */
 void
 send_umode_out(struct Client *client_p,
-               struct Client *source_p, int old)
+               struct Client *source_p, unsigned int old)
 {
   struct Client *target_p;
   char buf[BUFSIZE];
@@ -1272,7 +1271,7 @@ static int
 check_X_line(struct Client *client_p, struct Client *source_p)
 {
   struct ConfItem *aconf;
-  char *reason;
+  const char *reason;
 
   if(IsOper(source_p))
     return 0;
@@ -1326,7 +1325,7 @@ check_X_line(struct Client *client_p, struct Client *source_p)
 int
 oper_up(struct Client *source_p, struct ConfItem *aconf)
 {
-  int old = (source_p->umodes & ALL_UMODES);
+  unsigned int old = (source_p->umodes & ALL_UMODES);
   char *operprivs=NULL;
   dlink_node *ptr;
   struct ConfItem *found_aconf;
@@ -1335,7 +1334,7 @@ oper_up(struct Client *source_p, struct ConfItem *aconf)
   SetOper(source_p);
   if((int)aconf->hold)
     {
-      source_p->umodes |= ((int)aconf->hold & ALL_UMODES); 
+      source_p->umodes |= ((unsigned int)aconf->hold & ALL_UMODES); 
       if (!IsOperN(source_p))
 	source_p->umodes &= ~UMODE_NCHANGE;
       
