@@ -1,5 +1,5 @@
 This file outlines the features that ircd-hybrid has for IRC Operators.
-$Id: opers.txt,v 7.8 2001/01/02 19:03:10 wcampbel Exp $
+$Id: opers.txt,v 7.9 2001/01/05 06:46:23 spookey Exp $
 
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
@@ -235,9 +235,11 @@ COMMAND         - USAGE and DESCRIPTION
                    IRCD_PREFIX (ie modules/autoload/m_users.so)
                    NOTE:  Restricted to admins only
 
-+ MODLIST        - MODLIST
++ MODLIST        - MODLIST [match string]
                    -- List the modules that are currently loaded into the
                    ircd, along with their address and version.
+                   When a match string is provided, modlist only prints
+                   modules with names matching the match string.
                    NOTE:  Restricted to admins only
 
 + MODUNLOAD      - MODUNLOAD <module.so>
