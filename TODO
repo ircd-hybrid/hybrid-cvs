@@ -1,4 +1,4 @@
-$Id: TODO,v 7.86 2003/06/13 21:17:59 joshk Exp $
+$Id: TODO,v 7.87 2003/06/17 05:22:36 joshk Exp $
 
 - add more stderr debugging (ircd -s)... one for every place we syslog()
 - ircd -s doesn't work through a restart
@@ -122,8 +122,8 @@ Little things to be done given enough time and initiative -Hwy
 -- Josh's list
 
 * Find out the status of the build with IRIX64/MIPSpro.
-* Likewise with HPUX.
-* Find a smart way to make in contrib with static modules.
+* Rework all of the shared module checking logic.
+* Find a smart way to make in contrib with static and HPUX modules.
 
 -- MeTaLRoCk's list
 

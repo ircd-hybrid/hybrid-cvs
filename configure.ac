@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.57 2003/06/17 03:58:26 joshk Exp $
+dnl $Id: configure.ac,v 7.58 2003/06/17 05:22:37 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -589,7 +589,7 @@ AC_CHECK_FUNC([kevent],
 			AC_MSG_RESULT(no)
 			AC_CHECK_FUNC(poll, [SELECT_TYPE="poll"],
 			[
-				AC_CHECK_FUNC(poll, [SELECT_TYPE="select"],
+				AC_CHECK_FUNC(select, [SELECT_TYPE="select"],
 				[AC_MSG_ERROR([Couldn't find anything to use for IO loop! Report to hybrid@the-project.org.])
 				])
 			])

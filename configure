@@ -7698,9 +7698,9 @@ if test $ac_cv_func_poll = yes; then
   SELECT_TYPE="poll"
 else
 
-				echo "$as_me:$LINENO: checking for poll" >&5
-echo $ECHO_N "checking for poll... $ECHO_C" >&6
-if test "${ac_cv_func_poll+set}" = set; then
+				echo "$as_me:$LINENO: checking for select" >&5
+echo $ECHO_N "checking for select... $ECHO_C" >&6
+if test "${ac_cv_func_select+set}" = set; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   cat >conftest.$ac_ext <<_ACEOF
@@ -7711,7 +7711,7 @@ cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
 /* System header to define __stub macros and hopefully few prototypes,
-    which can conflict with char poll (); below.
+    which can conflict with char select (); below.
     Prefer <limits.h> to <assert.h> if __STDC__ is defined, since
     <limits.h> exists even on freestanding compilers.  */
 #ifdef __STDC__
@@ -7726,14 +7726,14 @@ extern "C"
 #endif
 /* We use char because int might match the return type of a gcc2
    builtin and then its argument prototype would still apply.  */
-char poll ();
+char select ();
 /* The GNU C library defines this for functions which it implements
     to always fail with ENOSYS.  Some functions are actually named
     something starting with __ and the normal name is an alias.  */
-#if defined (__stub_poll) || defined (__stub___poll)
+#if defined (__stub_select) || defined (__stub___select)
 choke me
 #else
-char (*f) () = poll;
+char (*f) () = select;
 #endif
 #ifdef __cplusplus
 }
@@ -7742,7 +7742,7 @@ char (*f) () = poll;
 int
 main ()
 {
-return f != poll;
+return f != select;
   ;
   return 0;
 }
@@ -7759,18 +7759,18 @@ if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  ac_cv_func_poll=yes
+  ac_cv_func_select=yes
 else
   echo "$as_me: failed program was:" >&5
 sed 's/^/| /' conftest.$ac_ext >&5
 
-ac_cv_func_poll=no
+ac_cv_func_select=no
 fi
 rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
 fi
-echo "$as_me:$LINENO: result: $ac_cv_func_poll" >&5
-echo "${ECHO_T}$ac_cv_func_poll" >&6
-if test $ac_cv_func_poll = yes; then
+echo "$as_me:$LINENO: result: $ac_cv_func_select" >&5
+echo "${ECHO_T}$ac_cv_func_select" >&6
+if test $ac_cv_func_select = yes; then
   SELECT_TYPE="select"
 else
   { { echo "$as_me:$LINENO: error: Couldn't find anything to use for IO loop! Report to hybrid@the-project.org." >&5
