@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_opme.c,v 1.2 2001/01/06 15:33:12 fl_ Exp $
+ *   $Id: m_opme.c,v 1.3 2001/01/06 15:42:06 fl_ Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -82,12 +82,6 @@ int mo_opme(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   int on_vchan = 0;
   dlink_node *ptr;
   
-  if (parc < 2)
-    {
-
-      return 0;
-    }
-
   /* admins only */
   if (!IsSetOperAdmin(sptr))
     {
