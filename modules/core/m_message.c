@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.29 2000/12/10 20:04:03 db Exp $
+ *   $Id: m_message.c,v 1.30 2000/12/11 04:54:42 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -486,18 +486,25 @@ void msg_channel_flags( int p_or_n, char *command,
     {
       if(sptr->user)
 	sptr->user->last = CurrentTime;
-
-      sendto_channel_local(ONLY_CHANOPS_VOICED,
-			   chptr,
-			   ":%s!%s@%s %s @%s :%s",
-			   sptr->name,
-			   sptr->username,
-			   sptr->host,
-			   command,
-			   chname,
-			   text);
     }
-  /* XXX Will need code to remotely send... */
+
+  sendto_channel_local(ONLY_CHANOPS_VOICED,
+		       chptr,
+		       ":%s!%s@%s %s @%s :%s",
+		       sptr->name,
+		       sptr->username,
+		       sptr->host,
+		       command,
+		       chname,
+		       text);
+
+  sendto_match_cap_servs(chptr, cptr, CAP_CHW,
+			 ":%s %s %c%s :%s",
+			 sptr->name,
+			 command,
+			 '@',
+			 chname,
+			 text);
 }
 
 /*
