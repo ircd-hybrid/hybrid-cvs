@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: irc_string.c,v 7.34 2001/07/20 02:23:42 wcampbel Exp $
+ *  $Id: irc_string.c,v 7.35 2001/07/20 03:46:20 wcampbel Exp $
  */
 #include "config.h"
 #include "tools.h"
@@ -45,8 +45,10 @@
 #include <time.h>
 /* XXX - This breaks Cygwin, and APPEARS to not be needed...someone please
  * check for me though...
- * #include <arpa/nameser.h>
  */
+#ifndef __CYGWIN32__
+#include <arpa/nameser.h>
+#endif
 
 #if defined(VMS) || defined(__CYGWIN32__)
 # define INADDRSZ 4
