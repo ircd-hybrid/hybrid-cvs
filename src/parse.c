@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.87 2001/01/21 12:26:40 davidt Exp $
+ *   $Id: parse.c,v 7.88 2001/01/28 23:34:55 jdc Exp $
  */
 
 #include <assert.h>
@@ -63,7 +63,10 @@ static int handle_command(struct Message *, struct Client *, struct Client *, in
 static int hash(char *p);
 static struct Message *hash_parse(char *);
 
-struct MessageHash *msg_hash_table[MAX_MSG_HASH+10];
+/* XXX - jdc: hopefully the fd-walkover bug is gone now... */
+/* struct MessageHash *msg_hash_table[MAX_MSG_HASH+10]; */
+
+struct MessageHash *msg_hash_table[MAX_MSG_HASH];
 
 static char buffer[1024];
 
