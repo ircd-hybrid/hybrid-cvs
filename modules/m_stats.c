@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.158 2004/02/28 06:12:25 metalrock Exp $
+ *  $Id: m_stats.c,v 1.159 2004/05/16 20:19:25 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.158 $";
+const char *_version = "$Revision: 1.159 $";
 #endif
 
 static char *parse_stats_args(int, char **, int *, int *);
@@ -222,6 +222,13 @@ m_stats(struct Client *client_p, struct Client *source_p,
 
   statchar = parv[1][0];
 
+  if (statchar == '\0')
+  {
+    sendto_one(source_p, form_str(RPL_ENDOFSTATS),
+               from, to, '*');
+    return;
+  }
+
   for (i = 0; stats_cmd_table[i].handler; i++)
   {
     if (stats_cmd_table[i].letter == statchar)
@@ -239,6 +246,8 @@ m_stats(struct Client *client_p, struct Client *source_p,
         stats_cmd_table[i].handler(source_p, parc, parv);
       else
         stats_cmd_table[i].handler(source_p);
+
+      break;
     }
   }
 
@@ -282,6 +291,13 @@ mo_stats(struct Client *client_p, struct Client *source_p,
 
   statchar = parv[1][0];
 
+  if (statchar == '\0')
+  {
+    sendto_one(source_p, form_str(RPL_ENDOFSTATS),
+               from, to, '*');
+    return;
+  }
+
   for (i = 0; stats_cmd_table[i].handler; i++)
   {
     if (stats_cmd_table[i].letter == statchar)
@@ -303,6 +319,8 @@ mo_stats(struct Client *client_p, struct Client *source_p,
         stats_cmd_table[i].handler(source_p, parc, parv, statchar);
       else
         stats_cmd_table[i].handler(source_p);
+
+      break;
     }
   }
 
