@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.197 2001/07/19 07:15:40 a1kmm Exp $
+ * $Id: ircd_parser.y,v 1.198 2001/07/25 00:50:58 leeh Exp $
  */
 
 %{
@@ -141,6 +141,7 @@ int   class_redirport_var;
 %token  GLINE_TIME
 %token  GLOBAL_KILL
 %token  HAVE_IDENT
+%token	HAVENT_READ_CONF
 %token  HIDESERVER
 %token  HOST
 %token  HUB
@@ -1928,7 +1929,7 @@ general_item:       general_failed_oper_notice |
                     general_servlink_path |
                     general_default_cipher_preference |
                     general_compression_level | general_client_flood |
-                    general_throttle_time |
+                    general_throttle_time | general_havent_read_conf |
                     error
 
 general_failed_oper_notice:   FAILED_OPER_NOTICE '=' TYES ';'
@@ -1985,6 +1986,15 @@ general_links_delay:    LINKS_DELAY '=' timespec ';'
   {
     ConfigFileEntry.links_delay = $3;
   } ;
+
+general_havent_read_conf:  HAVENT_READ_CONF '=' expr ';'
+{
+  if($3 > 0)
+  {
+    ilog(L_CRIT, "You haven't read your config file properly.  There is a line to check youve been paying attention.");
+    exit(0);
+  }
+}
 general_kline_with_reason: KLINE_WITH_REASON '=' TYES ';'
   {
     ConfigFileEntry.kline_with_reason = 1;
