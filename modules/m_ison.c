@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ison.c,v 1.32 2003/05/13 02:32:13 joshk Exp $
+ *  $Id: m_ison.c,v 1.33 2003/06/20 10:29:31 michael Exp $
  */
 
 #include "stdinc.h"
@@ -59,7 +59,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&ison_msgtab);
 }
-const char *_version = "$Revision: 1.32 $";
+const char *_version = "$Revision: 1.33 $";
 #endif
 
 static char buf[BUFSIZE];
@@ -123,7 +123,7 @@ do_ison(struct Client *up, struct Client *source_p,
   len = strlen(buf);
   current_insert_point = buf + len;
 
-  /* rfc1489 is ambigious about how to handle ISON
+  /* rfc1459 is ambigious about how to handle ISON
    * this should handle both interpretations.
    */
   for (i = 1; i < parc; i++)
