@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: irc_string.h,v 7.4 2000/03/31 02:38:27 db Exp $
+ *   $Id: irc_string.h,v 7.5 2000/09/07 21:35:07 ejb Exp $
  */
 #ifndef INCLUDED_irc_string_h
 #define INCLUDED_irc_string_h
@@ -24,6 +24,8 @@
 #include <sys/types.h>
 #define INCLUDED_sys_types_h
 #endif
+
+#include <netinet/in.h>
 
 /*
  * match - compare name with mask, mask may contain * and ? as wildcards
@@ -76,6 +78,7 @@ extern void*       MyMalloc(size_t size);
 extern void*       MyRealloc(void* p, size_t size);
 /* MyFree is defined as a macro in ircd_defs.h */
 /* extern void MyFree(void* p); */
+extern char* mk6addrstr(struct in6_addr *addr);
 
 #define DupString(x,y) \
   do{ x = (char*) MyMalloc(strlen(y) + 1); strcpy(x, y); } while(0)

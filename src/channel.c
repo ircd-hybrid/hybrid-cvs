@@ -34,7 +34,7 @@
  *                mode * -p etc. if flag was clear
  *
  *
- * $Id: channel.c,v 7.38 2000/04/02 15:19:15 db Exp $
+ * $Id: channel.c,v 7.39 2000/09/07 21:35:11 ejb Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -463,8 +463,13 @@ static void del_matching_exception(struct Client *cptr,struct Channel *chptr)
     return;
 
   strcpy(s, make_nick_user_host(cptr->name, cptr->username, cptr->host));
+#ifdef IPV6
+  s2 = make_nick_user_host(cptr->name, cptr->username,
+                           mk6addrstr(&cptr->ip6));
+#else
   s2 = make_nick_user_host(cptr->name, cptr->username,
                            inetntoa((char*) &cptr->ip));
+#endif
 
   for (ex = &(chptr->exceptlist); *ex; ex = &((*ex)->next))
     {

@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.58 2000/08/13 22:35:10 ejb Exp $
+ *  $Id: s_conf.c,v 7.59 2000/09/07 21:35:12 ejb Exp $
  */
 #include "s_conf.h"
 #include "channel.h"
@@ -716,7 +716,11 @@ static int count_users_on_this_ip(IP_ENTRY *ip_list,
 #ifdef LIMIT_UH
 void remove_one_ip(struct Client *cptr)
 #else
+#ifdef IPV6
+void remove_one_ip(struct in6_addr *ip_in)
+#else
 void remove_one_ip(unsigned long ip_in)
+#endif
 #endif
 {
   int hash_index;

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.25 2000/08/13 22:35:03 ejb Exp $
+ *  $Id: client.c,v 7.26 2000/09/07 21:35:12 ejb Exp $
  */
 #include "client.h"
 #include "class.h"
@@ -309,6 +309,7 @@ time_t check_pings(time_t currenttime)
             {
               if(IsPerson(cptr))
                 {
+#ifndef IPV6 /* XXX No dlines in IPv6 yet */
                   if( (aconf = match_Dline(ntohl(cptr->ip.s_addr))) )
 
                       /* if there is a returned 
@@ -349,6 +350,7 @@ time_t check_pings(time_t currenttime)
                                  me.name, cptr->name, reason);
                       continue;         /* and go examine next fd/cptr */
                     }
+#endif
                 }
             }
           else
@@ -1373,7 +1375,11 @@ const char* comment         /* Reason for the exit */
         remove_one_ip(sptr);
 #else
       if(sptr->flags & FLAGS_IPHASH)
+#ifdef IPV6
+        remove_one_ip(sptr->ip6.s6_addr);
+#else
         remove_one_ip(sptr->ip.s_addr);
+#endif
 #endif
       if (IsAnOper(sptr))
         {
