@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.411 2003/05/28 21:11:57 bill Exp $
+ *  $Id: s_conf.c,v 7.412 2003/05/28 23:24:57 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1710,31 +1710,23 @@ expire_tklines(dlink_list *tklist)
  * side effects  - return as string, the oper privs as derived from port
  * 		   also set the oper privs if given source_p non NULL
  */
-
 static const struct oper_privs
 {
-  unsigned int oflag;
-  unsigned char pos;
-  unsigned char neg;
-}
-
-/*
-
-  { OPER_FLAG_HIDDEN_ADMIN 'Z', 'z' },
-  { OPER_FLAG_ADMIN,       'A', 'a' },
-*/
-flag_list[] =
-{
-  { OPER_FLAG_DIE,         'D', 'd' },
-  { OPER_FLAG_GLINE,       'G', 'g' },
-  { OPER_FLAG_REHASH,      'H', 'h' },
-  { OPER_FLAG_K,           'K', 'k' },
-  { OPER_FLAG_N,           'N', 'n' },
-  { OPER_FLAG_GLOBAL_KILL, 'O', 'o' },
-  { OPER_FLAG_REMOTE,      'R', 'r' },
-  { OPER_FLAG_UNKLINE,     'U', 'u' },
-  { OPER_FLAG_X,           'X', 'x' },
-  { 0, '\0', '\0' }
+  unsigned int oprivs;
+  unsigned int hidden;
+  unsigned char c;
+} flag_list[] = {
+  { OPER_FLAG_ADMIN,       OPER_FLAG_HIDDEN_ADMIN,  'A' },
+  { OPER_FLAG_DIE,         0,                       'D' },
+  { OPER_FLAG_GLINE,       0,                       'G' },
+  { OPER_FLAG_REHASH,      0,                       'H' },
+  { OPER_FLAG_K,           0,                       'K' },
+  { OPER_FLAG_N,           0,                       'N' },
+  { OPER_FLAG_GLOBAL_KILL, 0,                       'O' },
+  { OPER_FLAG_REMOTE,      0,                       'R' },
+  { OPER_FLAG_UNKLINE,     0,                       'U' },
+  { OPER_FLAG_X,           0,                       'X' },
+  { 0, '0', '\0' }
 };
 
 char *
@@ -1748,37 +1740,21 @@ oper_privs_as_string(struct Client *source_p, unsigned int port)
   *privs_ptr = '\0';
 
   if (source_p != NULL)
-  {
     SetOFlag(source_p, port);
- 
-    if (IsOperAdmin(source_p))
-    {
-      if (!IsOperHiddenAdmin(source_p))
-	*privs_ptr++ = 'A';
-      else
-	*privs_ptr++ = 'a';
-    }
-    else
-      *privs_ptr++ = 'a';
-  }
 
-  for (i = 0; flag_list[i].oflag; i++)
+  for (i = 0; flag_list[i].oprivs; i++)
   {
-    if (port & flag_list[i].oflag)
-      *privs_ptr++ = flag_list[i].pos;
+    if ((port & flag_list[i].oprivs) &&
+        (port & flag_list[i].hidden) == 0)
+      *privs_ptr++ = flag_list[i].c;
     else
-      *privs_ptr++ = flag_list[i].neg;
+      *privs_ptr++ = ToLowerTab[(unsigned char)flag_list[i].c];
   }
-
-  if (IsAdmin(source_p) && !IsOperHiddenAdmin(source_p))
-    *privs_ptr++ = 'A';
-  else
-    *privs_ptr++ = 'a';
 
   *privs_ptr = '\0';
-
   return(privs_out);
 }
+
 
 /* const char* get_oper_name(struct Client *client_p)
  * Input: A client to find the active oper{} name for.
