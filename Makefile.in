@@ -16,7 +16,7 @@
 #*   along with this program; if not, write to the Free Software
 #*   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #*
-#*   $Id: Makefile.in,v 7.28 2001/02/18 05:44:36 wcampbel Exp $
+#*   $Id: Makefile.in,v 7.29 2001/03/31 18:12:21 ejb Exp $
 #*/
 
 RM=@RM@
@@ -90,7 +90,7 @@ distclean:
 
 depend:
 	@for i in $(SUBDIRS); do \
-		echo "Making dependencies in $$i";\
+		echo "depend ==> $$i";\
 		cd $$i;\
 		${MAKE} depend; cd ..;\
 	done
