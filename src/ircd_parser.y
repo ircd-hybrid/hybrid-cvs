@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.163 2001/04/26 11:34:32 toot Exp $
+ * $Id: ircd_parser.y,v 1.164 2001/04/26 12:32:44 fl_ Exp $
  */
 
 %{
@@ -1857,7 +1857,7 @@ general_max_nick_changes:  MAX_NICK_CHANGES '=' expr ';'
     ConfigFileEntry.max_nick_changes = $3;
   } ;
 
-general_max_slow:  MAX_ACCEPT '=' expr ';'
+general_max_accept:  MAX_ACCEPT '=' expr ';'
   {
     ConfigFileEntry.max_accept = $3;
   } ;
