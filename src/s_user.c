@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.296 2003/07/21 17:18:18 adx Exp $
+ *  $Id: s_user.c,v 7.297 2003/07/22 11:14:32 adx Exp $
  */
 
 #include "stdinc.h"
@@ -323,7 +323,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   }
 
   ptr   = source_p->localClient->confs.head;
-  aconf = ptr->data;
+  aconf = map_to_conf((struct ConfItem *) ptr->data);
 
   if (!IsGotId(source_p))
   {
