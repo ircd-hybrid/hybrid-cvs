@@ -1,3 +1,16 @@
+db          2002/11/01 08:24:42 EST	(20021101_0)
+
+  Modified files:
+    contrib              m_force.c m_operspy.c 
+  Log:
+  - fixes by adx
+  
+  Revision  Changes    Path
+  1.17      +2 -2      ircd-hybrid-7/contrib/m_force.c
+  1.9       +2 -1      ircd-hybrid-7/contrib/m_operspy.c
+
+
+
 lusky       2002/10/31 00:31:38 EST	(20021031_2)
 
   Modified files:
@@ -32944,4 +32957,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4094 2002/10/31 05:31:41 lusky Exp $
+$Id: ChangeLog,v 7.4095 2002/11/01 13:24:44 db Exp $
