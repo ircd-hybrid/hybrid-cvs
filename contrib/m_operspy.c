@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.14 2003/02/23 04:16:01 db Exp $
+ *   $Id: m_operspy.c,v 1.15 2003/02/25 23:46:40 bill Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -124,7 +124,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.14 $";
+const char *_version = "$Revision: 1.15 $";
 #endif
 
 /*
@@ -445,7 +445,9 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
         t = buf + mlen;
       }
 
-      ircsprintf(t, "%s%s ", channel_chanop_or_voice(chptr_whois, target_p),
+      ircsprintf(t, "%s%s%s ",
+                 ShowChannel(client_p, chptr_whois) ? "" : "%",
+                 channel_chanop_or_voice(chptr_whois, target_p),
                  chptr_whois->chname);
       tlen = strlen(t);
       t += tlen;
@@ -485,6 +487,10 @@ static void do_who(struct Client *source_p,
                    char *op_flags)
 {
   char  status[5];
+  char  *our_chname = chname;
+
+  if (chname == NULL && target_p->user->channel.head != NULL)
+    our_chname = ((struct Channel *)target_p->user->channel.head->data)->chname;
 
   ircsprintf(status,"%c%s%s",
              target_p->user->away ? 'G' : 'H',
@@ -494,7 +500,7 @@ static void do_who(struct Client *source_p,
   if(ConfigServerHide.hide_servers)
     {
       sendto_one(source_p, form_str(RPL_WHOREPLY), me.name, source_p->name,
-                 (chname) ? (chname) : "*",
+                 (our_chname) ? (our_chname) : "*",
                  target_p->username,
                  target_p->host, IsOper(source_p) ? target_p->user->server : "*",
                  target_p->name,
@@ -504,7 +510,7 @@ static void do_who(struct Client *source_p,
 #endif
     {
       sendto_one(source_p, form_str(RPL_WHOREPLY), me.name, source_p->name,
-                 (chname) ? (chname) : "*",
+                 (our_chname) ? (our_chname) : "*",
                  target_p->username,
                  target_p->host,  target_p->user->server, target_p->name,
                  status, target_p->hopcount, target_p->info);
