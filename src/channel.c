@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.100 2000/12/04 06:35:11 db Exp $
+ * $Id: channel.c,v 7.101 2000/12/04 06:46:49 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -1106,13 +1106,6 @@ void set_channel_mode(struct Client *cptr,
           if (isdeop && (c == 'o') && whatt == MODE_ADD)
             change_channel_membership(chptr,&chptr->peons, who);
 	  
-	  if(GlobalSetOptions.hide_chanops)
-	    {
-	      if(the_mode == MODE_CHANOP && whatt == MODE_DEL)
-		sendto_one(who,":%s MODE %s -o %s",
-			   sptr->name,chptr->chname,who->name);
-	    }
-
           if (!isok)
             {
               if (MyClient(sptr) && !errsent(SM_ERR_NOOPS, &errors_sent))
@@ -1120,6 +1113,13 @@ void set_channel_mode(struct Client *cptr,
                            sptr->name, real_name);
               break;
             }
+
+	  if(GlobalSetOptions.hide_chanops)
+	    {
+	      if(the_mode == MODE_CHANOP && whatt == MODE_DEL)
+		sendto_one(who,":%s MODE %s -o %s",
+			   sptr->name,chptr->chname,who->name);
+	    }
         
           tmp = strlen(arg);
           if (len + tmp + 2 >= MODEBUFLEN)
