@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.107 2001/01/05 15:27:19 toot Exp $
+ *  $Id: s_user.c,v 7.108 2001/01/05 17:00:39 ejb Exp $
  */
 #include "tools.h"
 #include "s_user.h"
@@ -320,9 +320,7 @@ int register_local_user(struct Client *cptr, struct Client *sptr,
   int  status;
   dlink_node *ptr;
   dlink_node *m;
-#ifdef USE_IDS
   char *id;
-#endif
   assert(0 != sptr);
   assert(sptr->username != username);
 
@@ -429,17 +427,15 @@ int register_local_user(struct Client *cptr, struct Client *sptr,
 
 /* Put this in #ifdef now, and make sure that we are using openssl or
  * it breaks the build. */
-#ifdef USE_IDS
   if (sptr->user->id[0] == '\0') 
     {
       do {
-	id = id_get();
+		  id = id_get();
       } while (hash_find_id(id, NULL));
       
       strcpy(sptr->user->id, id);
       add_to_id_hash_table(sptr->user->id, sptr);
     }
-#endif
 
   sendto_realops_flags(FLAGS_CCONN,
 		       "Client connecting: %s (%s@%s) [%s] {%s}",

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: hash.c,v 7.16 2001/01/04 20:36:51 a1kmm Exp $
+ *  $Id: hash.c,v 7.17 2001/01/05 17:00:38 ejb Exp $
  */
 #include "tools.h"
 #include "s_conf.h"
@@ -180,6 +180,21 @@ static void clear_client_hash_table()
 #endif
   memset(clientTable, 0, sizeof(struct HashEntry) * U_MAX);
 }
+/*
+ * clear_client_hash_table
+ *
+ * Nullify the hashtable and its contents so it is completely empty.
+ */
+static void clear_id_hash_table()
+{
+#ifdef        DEBUGMODE
+  idhits = 0;
+  idmiss = 0;
+  if(!idTable)
+    idTable = (struct HashEntry*) MyMalloc(U_MAX * sizeof(struct HashEntry));
+#endif
+  memset(idTable, 0, sizeof(struct HashEntry) * U_MAX);
+}
 
 static void clear_channel_hash_table()
 {
@@ -197,6 +212,7 @@ void init_hash(void)
 {
   clear_client_hash_table();
   clear_channel_hash_table();
+  clear_id_hash_table();
 }
 
 /*
@@ -370,15 +386,21 @@ hash_find_id(const char *name, struct Client *cptr)
 	
 	hashv = hash_id(name);
 	tmp = (struct Client *)idTable[hashv].list;
+
+	sendto_realops_flags(FLAGS_ALL, "looking up client %d from ID hash table", hashv);
 	
 	/*
 	 * Got the bucket, now search the chain.
 	 */
-	for (; tmp; tmp = tmp->idhnext)
+	for (; tmp; tmp = tmp->idhnext) {
+		
+		sendto_realops_flags(FLAGS_ALL, "checking client %s ID %s", tmp->name, tmp->user->id);
+	
 		if (tmp->user && strcmp(name, tmp->user->id) == 0)
 		{
 			return(tmp);
 		}
+	}
 	
 	return (cptr);
 }
