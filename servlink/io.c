@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: io.c,v 1.22 2001/05/27 19:57:23 davidt Exp $
+ *   $Id: io.c,v 1.23 2001/05/28 15:10:57 davidt Exp $
  */
 
 #include "setup.h"
@@ -185,7 +185,7 @@ void process_recvq(struct ctrl_command *cmd)
 
 void send_zipstats(struct ctrl_command *unused)
 {
-#ifdef HAVE_ZLIB
+#ifdef HAVE_LIBZ
   int i = 0;
   int ret;
 
