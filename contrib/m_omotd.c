@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_omotd.c,v 1.2 2003/05/22 04:00:36 metalrock Exp $
+ *  $Id: m_omotd.c,v 1.3 2003/05/22 04:37:06 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -57,15 +57,15 @@ _moddeinit(void)
   mod_del_cmd(&omotd_msgtab);
 }
 
-const char *_version = "$Revision: 1.2 $";
+const char *_version = "$Revision: 1.3 $";
 #endif
 
-/* mo_omotd()
+/* m_omotd()
  *
  *      parv[0] = sender prefix
  */
 static void
-mo_omotd(struct Client *client_p, struct Client *source_p,
+m_omotd(struct Client *client_p, struct Client *source_p,
  int parc, char *parv[])
 {
   send_message_file(source_p, &ConfigFileEntry.opermotd);
