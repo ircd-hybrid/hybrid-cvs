@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_opme.c,v 1.47 2003/07/07 12:27:15 michael Exp $
+ *   $Id: m_opme.c,v 1.48 2003/07/07 12:43:54 michael Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -57,7 +57,7 @@ _moddeinit(void)
   mod_del_cmd(&opme_msgtab);
 }
 
-const char *_version = "$Revision: 1.47 $";
+const char *_version = "$Revision: 1.48 $";
 
 #endif
 
@@ -116,7 +116,7 @@ mo_opme(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  change_channel_membership(member, CHFL_CHANOP, 0);
+  AddMemberFlag(member, CHFL_CHANOP);
 
   if (parv[1][0] == '&')
   {

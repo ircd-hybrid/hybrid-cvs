@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.120 2003/07/04 12:09:05 adx Exp $
+ *  $Id: channel_mode.c,v 7.121 2003/07/07 12:43:58 michael Exp $
  */
 
 #include "stdinc.h"
@@ -297,20 +297,6 @@ del_id(struct Channel *chptr, const char *banid, int type)
   }
 
   return(0);
-}
-
-void
-change_channel_membership(struct Membership *member,
-                          unsigned int add_flag,
-                          unsigned int del_flag)
-{
-  assert(member != NULL);
-
-  if (member == NULL)
-    return;
-
-  member->flags |=  add_flag;
-  member->flags &= ~del_flag;
 }
 
 static const struct mode_letter
@@ -985,9 +971,9 @@ chm_invex(struct Client *client_p, struct Client *source_p,
   else
     mask = pretty_mask(raw_mask);
 
-  if(dir == MODE_ADD)
+  if (dir == MODE_ADD)
   {
-    if((add_id(source_p, chptr, mask, CHFL_INVEX) == 0))
+    if ((add_id(source_p, chptr, mask, CHFL_INVEX) == 0))
       return;
 
     mode_changes[mode_count].letter = c;
@@ -1008,7 +994,7 @@ chm_invex(struct Client *client_p, struct Client *source_p,
     if (del_id(chptr, mask, CHFL_INVEX) == 0)
     {
       /* mask isn't a valid ban, check raw_mask */
-      if((del_id(chptr, raw_mask, CHFL_INVEX) == 0) && MyClient(source_p))
+      if ((del_id(chptr, raw_mask, CHFL_INVEX) == 0) && MyClient(source_p))
       {
         /* nope */
         return;
@@ -1076,8 +1062,8 @@ chm_op(struct Client *client_p, struct Client *source_p,
   if ((member = find_channel_link(targ_p, chptr)) == NULL)
   {
     if (!(*errors & SM_ERR_NOTONCHANNEL))
-      sendto_one(source_p, form_str(ERR_USERNOTINCHANNEL), me.name,
-                 source_p->name, opnick, chname);
+      sendto_one(source_p, form_str(ERR_USERNOTINCHANNEL),
+                 me.name, source_p->name, opnick, chname);
     *errors |= SM_ERR_NOTONCHANNEL;
     return;
   }
@@ -1110,7 +1096,8 @@ chm_op(struct Client *client_p, struct Client *source_p,
     mode_changes[mode_count].arg = targ_p->name;
     mode_changes[mode_count++].client = targ_p;
 
-    change_channel_membership(member, CHFL_CHANOP, CHFL_DEOPPED);
+    AddMemberFlag(member, CHFL_CHANOP);
+    DelMemberFlag(member, CHFL_DEOPPED);
   }
   else
   {
@@ -1131,7 +1118,7 @@ chm_op(struct Client *client_p, struct Client *source_p,
     mode_changes[mode_count].arg = targ_p->name;
     mode_changes[mode_count++].client = targ_p;
 
-    change_channel_membership(member, 0, CHFL_CHANOP);
+    DelMemberFlag(member, CHFL_CHANOP);
   }
 }
 
@@ -1194,8 +1181,8 @@ chm_hop(struct Client *client_p, struct Client *source_p,
   if ((member = find_channel_link(targ_p, chptr)) == NULL)
   {
     if (!(*errors & SM_ERR_NOTONCHANNEL))
-      sendto_one(source_p, form_str(ERR_USERNOTINCHANNEL), me.name,
-                 source_p->name, opnick, chname);
+      sendto_one(source_p, form_str(ERR_USERNOTINCHANNEL),
+                 me.name, source_p->name, opnick, chname);
     *errors |= SM_ERR_NOTONCHANNEL;
     return;
   }
@@ -1228,7 +1215,8 @@ chm_hop(struct Client *client_p, struct Client *source_p,
     mode_changes[mode_count].arg = targ_p->name;
     mode_changes[mode_count++].client = targ_p;
 
-    change_channel_membership(member, CHFL_HALFOP, CHFL_DEOPPED);
+    AddMemberFlag(member, CHFL_HALFOP);
+    DelMemberFlag(member, CHFL_DEOPPED);
   }
   else
   {
@@ -1249,7 +1237,7 @@ chm_hop(struct Client *client_p, struct Client *source_p,
     mode_changes[mode_count].arg = targ_p->name;
     mode_changes[mode_count++].client = targ_p;
 
-    change_channel_membership(member, 0, CHFL_HALFOP);
+    DelMemberFlag(member, CHFL_HALFOP);
   }
 }
 #endif
@@ -1288,8 +1276,8 @@ chm_voice(struct Client *client_p, struct Client *source_p,
   if ((member = find_channel_link(targ_p, chptr)) == NULL)
   {
     if (!(*errors & SM_ERR_NOTONCHANNEL))
-      sendto_one(source_p, form_str(ERR_USERNOTINCHANNEL), me.name,
-                 source_p->name, opnick, chname);
+      sendto_one(source_p, form_str(ERR_USERNOTINCHANNEL),
+                 me.name, source_p->name, opnick, chname);
     *errors |= SM_ERR_NOTONCHANNEL;
     return;
   }
@@ -1322,7 +1310,7 @@ chm_voice(struct Client *client_p, struct Client *source_p,
     mode_changes[mode_count].arg = targ_p->name;
     mode_changes[mode_count++].client = targ_p;
 
-    change_channel_membership(member, CHFL_VOICE, 0);
+    AddMemberFlag(member, CHFL_VOICE);
   }
   else
   {
@@ -1343,7 +1331,7 @@ chm_voice(struct Client *client_p, struct Client *source_p,
     mode_changes[mode_count].arg = targ_p->name;
     mode_changes[mode_count++].client = targ_p;
 
-    change_channel_membership(member, 0, CHFL_VOICE);
+    DelMemberFlag(member, CHFL_VOICE);
   }
 }
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.h,v 7.25 2003/06/19 14:27:18 michael Exp $
+ *  $Id: channel_mode.h,v 7.26 2003/07/07 12:43:56 michael Exp $
  */
 
 
@@ -33,7 +33,6 @@
 /* Maximum mode changes allowed per client, per server is different */
 #define MAXMODEPARAMS 4
 
-extern void change_channel_membership(struct Membership *, unsigned int, unsigned int);
 extern void set_channel_mode(struct Client *, struct Client *, struct Channel *,
                              struct Membership *, int, char **, char *);
 

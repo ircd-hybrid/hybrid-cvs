@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.153 2003/06/29 22:46:13 michael Exp $
+ *  $Id: channel.h,v 7.154 2003/07/07 12:43:56 michael Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -112,6 +112,8 @@ extern void free_channel_list(dlink_list *);
 
 #define IsMember(who, chan) ((who && who->user && \
                  find_channel_link(who, chan)) ? 1 : 0)
+#define AddMemberFlag(x, y) ((x)->flags |=  (y))
+#define DelMemberFlag(x, y) ((x)->flags &= ~(y))
 
 #define IsChannelName(name) ((name) && (*(name) == '#' || *(name) == '&'))
 
