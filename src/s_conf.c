@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.327 2002/10/10 18:49:30 androsyn Exp $
+ *  $Id: s_conf.c,v 7.328 2002/10/12 10:39:05 db Exp $
  */
 
 #include "stdinc.h"
@@ -486,7 +486,7 @@ check_client(struct Client *client_p, struct Client *source_p, char *username)
 	  source_p->localClient->listener->port);
 	  
       (void)exit_client(client_p, source_p, &me,
-			"You are not authorised to use this server");
+			"You are not authorized to use this server");
       break;
     }
     case BANNED_CLIENT:
