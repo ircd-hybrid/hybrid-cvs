@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_resv.c,v 1.35 2004/02/12 06:58:27 metalrock Exp $
+ *  $Id: m_resv.c,v 1.36 2004/02/13 02:22:33 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -72,7 +72,7 @@ _moddeinit(void)
   mod_del_cmd(&unresv_msgtab);
 }
 
-const char *_version = "$Revision: 1.35 $";
+const char *_version = "$Revision: 1.36 $";
 #endif
 
 /* mo_resv()
@@ -85,26 +85,18 @@ mo_resv(struct Client *client_p, struct Client *source_p,
 {
   char *reason;
 
-  if (parc < 3)
+  /* RESV #channel ON irc.server.com :abuse
+   * RESV kiddie ON irc.server.com :abuse
+   */
+  if ((parc > 3) && (!irccmp(parv[2], "ON")))
   {
-    sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-               me.name, source_p->name, "RESV");
-    return;
-  }
-
-  /* RESV #channel ON irc.server.com :abuse */
-  /* RESV kiddie ON irc.server.com :abuse */
-  if (parc > 4)
+    if (parc < 5)
+    {
+      sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
+                 me.name, source_p->name, "RESV");
+      return;
+    }
     reason = parv[4];
-  /* RESV #channel :abuse */
-  /* RESV kiddie :abuse */
-  else
-    reason = parv[2];
-
-  /* RESV #channel ON irc.server.com :abuse */
-  /* RESV kiddie ON irc.server.com :abuse */
-  if ((parc > 4) && (irccmp(parv[2], "ON") == 0))
-  {
     sendto_match_servs(source_p, parv[3], CAP_CLUSTER,
                        "RESV %s %s :%s",
                        parv[3], parv[1], reason);
@@ -112,10 +104,13 @@ mo_resv(struct Client *client_p, struct Client *source_p,
     if (match(parv[3], me.name) == 0)
       return;
   }
-  else if (dlink_list_length(&cluster_items))
-    cluster_resv(source_p, parv[1], reason);
+  /* RESV #channel :abuse
+   * RESV kiddie :abuse
+   */
+  else if (dlink_list_length(&cluster_items))  
+    cluster_resv(source_p, parv[1], parv[2]);
 
-  parse_resv(source_p, parv[1], reason, 0);
+  parse_resv(source_p, parv[1], parv[2], 0);
 }
 
 /* ms_resv()
@@ -159,16 +154,9 @@ static void
 mo_unresv(struct Client *client_p, struct Client *source_p,
           int parc, char *parv[])
 {
-  if (parc < 2)
-  {
-    sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-               me.name, source_p->name, "UNRESV");
-    return;
-  }
-
   /* UNRESV #channel ON irc.server.com */
   /* UNRESV kiddie ON irc.server.com */
-  if ((parc > 3) && (irccmp(parv[2], "ON") == 0))
+  if ((parc > 3) && (!irccmp(parv[2], "ON")))
   {
     sendto_match_servs(source_p, parv[3], CAP_CLUSTER,
                        "UNRESV %s %s",
