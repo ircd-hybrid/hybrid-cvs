@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kline.c,v 1.18 2000/12/05 04:00:50 db Exp $
+ *   $Id: m_kline.c,v 1.19 2000/12/06 20:04:49 db Exp $
  */
 #include "tools.h"
 #include "m_kline.h"
@@ -223,9 +223,9 @@ int mo_kline(struct Client *cptr,
     }
   ClassPtr(aconf) = find_class(0);
 
-  sendto_cap_serv_butone( CAP_KLN, &me,
-			  ":%s KLINE %s %s %s %s",
-			  me.name, sptr->name, user, host, reason);
+  sendto_cap_serv_butone(CAP_KLN, &me,
+			 ":%s KLINE %s %s %s %s",
+			 me.name, sptr->name, user, host, reason);
 
   apply_kline(sptr, aconf, current_date, ip_kline, ip, ip_mask);
 

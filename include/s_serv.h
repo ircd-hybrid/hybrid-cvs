@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: s_serv.h,v 7.13 2000/12/04 16:08:19 db Exp $
+ * $Id: s_serv.h,v 7.14 2000/12/06 20:04:45 db Exp $
  *
  */
 #ifndef INCLUDED_serv_h
@@ -48,7 +48,7 @@ struct Capability
 #define CAP_IE          0x00000080      /* Can do invite exceptions */
 #define CAP_VCHAN       0x00000100      /* Can do vchans */
 #define CAP_EOB	        0x00000200      /* Can do EOB message */
-#define CAP_KLN	        0x00000200      /* Can do KLINE message */
+#define CAP_KLN	        0x00000400      /* Can do KLINE message */
 #define CAP_MASK        CAP_QS|CAP_EX|CAP_CHW|\
                         CAP_DE|CAP_IE|CAP_VCHAN|CAP_EOB|CAP_KLN
 

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.58 2000/12/06 09:49:56 db Exp $
+ *  $Id: client.c,v 7.59 2000/12/06 20:04:50 db Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -1101,6 +1101,13 @@ const char* get_client_name(struct Client* client, int showip)
   return client->name;
 }
 
+/*
+ * get_client_host
+ *
+ * inputs	- pointer to client struct
+ * output	- pointer to static char string with client hostname
+ * side effects	-
+ */
 const char* get_client_host(struct Client* client)
 {
   static char nbuf[HOSTLEN * 2 + USERLEN + 5];
@@ -1695,11 +1702,11 @@ int del_all_accepts(struct Client *dying)
   dlink_node *ptr;
   struct Client *acptr;
 
-
   for (ptr = dying->on_allow_list.head; ptr; ptr = ptr->next)
     {
       acptr = ptr->data;
-      del_from_accept(acptr, dying);
+      if(acptr != NULL)
+	del_from_accept(acptr, dying);
     }
 
   return 0;
