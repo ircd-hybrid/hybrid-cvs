@@ -1,7 +1,7 @@
 /*
  * irc2.7.2/ircd/res.h (C)opyright 1992 Darren Reed.
  *
- * $Id: res.h,v 7.0 1999/08/01 21:19:46 lusky Exp $
+ * $Id: res.h,v 7.1 1999/09/11 04:02:32 tomh Exp $
  */
 #ifndef INCLUDED_res_h
 #define INCLUDED_res_h
@@ -45,7 +45,7 @@ extern unsigned long   cres_mem(struct Client* cptr);
  * name is modified only if there is enough space in the buffer to hold
  * the suffix
  */
-extern void add_local_domain(char* name, int len);
+extern void add_local_domain(char* name, size_t len);
 
 #endif /* INCLUDED_res_h */
 
