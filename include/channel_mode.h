@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.h,v 7.16 2003/05/12 08:09:26 michael Exp $
+ *  $Id: channel_mode.h,v 7.17 2003/05/28 11:48:33 michael Exp $
  */
 
 
@@ -77,13 +77,6 @@ extern void unset_chcap_usage_counts(struct Client *serv_p);
 #define MODE_TOPICLIMIT 0x0040
 #define MODE_INVITEONLY 0x0080
 #define MODE_NOPRIVMSGS 0x0100
-#define MODE_BAN        0x0400
-#define MODE_EXCEPTION  0x0800
-#define MODE_INVEX	0x2000
-
-/*
- * mode flags which take another parameter (With PARAmeterS)
- */
 
 #define MODE_QUERY      0
 #define MODE_ADD        1
