@@ -9,7 +9,7 @@
  * Owner:  Wohali (Joan Touzet)
  *
  *
- * $Id: balloc.c,v 7.19 2001/11/17 20:41:06 androsyn Exp $
+ * $Id: balloc.c,v 7.20 2001/11/18 14:49:59 kreator Exp $
  */
 
 /* 
@@ -39,9 +39,6 @@
  *
  *
  */
- 
- */
- 
 
 #define WE_ARE_MEMORY_C
 #include "setup.h"
