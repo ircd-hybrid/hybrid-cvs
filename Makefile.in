@@ -16,7 +16,7 @@
 #*   along with this program; if not, write to the Free Software
 #*   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #*
-#*   $Id: Makefile.in,v 7.36 2001/11/11 17:37:08 ejb Exp $
+#*   $Id: Makefile.in,v 7.37 2001/11/14 13:31:24 androsyn Exp $
 #*/
 
 RM=@RM@
@@ -63,7 +63,7 @@ build:
 	@for i in $(SUBDIRS); do \
 		echo "build ==> $$i";\
 		cd $$i;\
-		${MAKE} build; cd ..;\
+		${MAKE} build || exit; cd ..;\
 	done
 
 clean:
