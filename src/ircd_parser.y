@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.5 2000/01/17 22:35:10 db Exp $
+ * $Id: ircd_parser.y,v 1.6 2000/01/17 22:41:21 db Exp $
  */
 
 %{
@@ -346,16 +346,31 @@ client_class:	CLASS '=' QSTRING ';'  { sendto_realops("client.name [%s]",yylval.
  *  section quarantine
  ***************************************************************************/
 
-quarantine_entry:	QUARANTINE '{' quarantine_items '}' ';'
+quarantine_entry:	QUARANTINE
+  {
+    if(yy_aconf)
+      {
+	free_conf(yy_aconf);
+	yy_aconf = NULL;
+      }
+    yy_aconf=make_conf();
+    yy_aconf->status = CONF_QUARANTINED_NICK;
+  };
+ '{' quarantine_items '}' ';' {
+  conf_add_q_line(yy_aconf);
+  yy_aconf = NULL;
+ };
 
 quarantine_items:	quarantine_items quarantine_item |
 		quarantine_item
 
 quarantine_item:	quarantine_name | quarantine_reason
 
-quarantine_name:	NAME '=' QSTRING ';'  { sendto_realops("quarantine.name [%s]",yylval.string); };
+quarantine_name:	NAME '=' QSTRING ';'  {
+  DupString(yy_aconf->host,yylval.string); };
 
-quarantine_reason:	REASON '=' QSTRING ';'  { sendto_realops("quarantine.reason [%s]",yylval.string); };
+quarantine_reason:	REASON '=' QSTRING ';'  {
+  DupString(yy_aconf->passwd,yylval.string); };
 
 /***************************************************************************
  *  section connect
