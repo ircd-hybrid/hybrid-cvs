@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.107 2003/05/29 05:16:53 db Exp $
+ *  $Id: m_gline.c,v 1.108 2003/05/30 04:59:38 db Exp $
  */
 
 #include "stdinc.h"
@@ -97,7 +97,7 @@ _moddeinit(void)
   delete_capability("GLN");
 }
 
-const char *_version = "$Revision: 1.107 $";
+const char *_version = "$Revision: 1.108 $";
 #endif
 
 /* mo_gline()
@@ -191,6 +191,18 @@ mo_gline(struct Client *client_p, struct Client *source_p,
 
   reason = parv[2];
 
+  /* If at least 3 opers agree this user should be G lined then do it */
+  if (check_majority_gline(source_p, source_p->name,
+                           (const char *)source_p->username,
+                           source_p->host, me.name, user, host, reason) ==
+      GLINE_ALREADY_VOTED)
+  {
+    sendto_one(source_p,
+               ":%s NOTICE %s :This server or oper has already voted",
+               me.name, source_p->name);
+    return;
+  }
+
   /* call these two functions first so the 'requesting' notice always comes
    * before the 'has triggered' notice.  -bill
    */
@@ -201,18 +213,6 @@ mo_gline(struct Client *client_p, struct Client *source_p,
   ilog(L_TRACE, "#gline for %s@%s [%s] requested by %s!%s@%s",
        user, host, reason, source_p->name, (const char *)source_p->username,
        source_p->host);
-
-  /* If at least 3 opers agree this user should be G lined then do it */
-  if (check_majority_gline(source_p, source_p->name,
-			   (const char *)source_p->username,
-			   source_p->host, me.name, user, host, reason) ==
-      GLINE_ALREADY_VOTED)
-  {
-    sendto_one(source_p,
-	       ":%s NOTICE %s :This server or oper has already voted",
-	       me.name, parv[0]);
-    return;
-  }
 
   /* 4 param version for hyb-7 servers */
   sendto_server(NULL, source_p, NULL, CAP_GLN|CAP_SID, NOCAPS,
@@ -326,13 +326,22 @@ ms_gline(struct Client *client_p, struct Client *source_p,
       */
 
      if (check_wild_gline(user, host))
-        {
-          sendto_realops_flags(UMODE_ALL, L_ALL, 
-                       "%s!%s@%s on %s is requesting a gline without %d non-wildcard characters for [%s@%s] [%s]",
-                       oper_nick, oper_user, oper_host, oper_server, ConfigFileEntry.min_nonwildcard,
-                       user, host, reason);
-          return;
-        }
+     {
+       sendto_realops_flags(UMODE_ALL, L_ALL, 
+                    "%s!%s@%s on %s is requesting a gline without %d non-wildcard characters for [%s@%s] [%s]",
+                     oper_nick, oper_user, oper_host, oper_server, ConfigFileEntry.min_nonwildcard,
+                     user, host, reason);
+       return;
+     }
+
+     /* If at least 3 opers agree this user should be G lined then do it */
+     if (check_majority_gline(source_p, oper_nick, oper_user, oper_host,
+                              oper_server, user, host, reason) ==
+         GLINE_ALREADY_VOTED)
+     {
+       sendto_realops_flags(UMODE_ALL, L_ALL, "oper or server has already voted");
+       return;
+     }
 
      ilog(L_TRACE, "#gline for %s@%s [%s] requested by %s!%s@%s on %s",
 	  user, host, reason, source_p->name, (const char *)source_p->username,
@@ -343,14 +352,6 @@ ms_gline(struct Client *client_p, struct Client *source_p,
 			   "%s!%s@%s on %s is requesting gline for [%s@%s] [%s]",
 			   oper_nick, oper_user, oper_host, oper_server,
 			   user, host, reason);
-
-      /* If at least 3 opers agree this user should be G lined then do it */
-      if (check_majority_gline(source_p, oper_nick, oper_user, oper_host,
-			       oper_server, user, host, reason) ==
-	  GLINE_ALREADY_VOTED)
-    {
-      sendto_realops_flags(UMODE_ALL, L_ALL, "oper or server has already voted");
-    }
   }
 }
 
