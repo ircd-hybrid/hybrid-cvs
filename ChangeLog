@@ -1,3 +1,8 @@
+*** 20001204_14 by db
+- don't devoice/voice if chanop
+
+
+
 *** 20001204_13 by db
 - identity of who set a ban should be hidden in channel op hide mode
 
@@ -1591,7 +1596,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.694 2000/12/04 19:52:12 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.695 2000/12/04 20:36:45 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
