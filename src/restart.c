@@ -1,7 +1,7 @@
 /*
  * restart.c
  *
- * $Id: restart.c,v 7.18 2001/12/16 07:43:27 androsyn Exp $
+ * $Id: restart.c,v 7.19 2001/12/16 07:48:33 androsyn Exp $
  */
 #include "tools.h"
 #include "restart.h"
@@ -40,7 +40,7 @@ void server_reboot(void)
   int i;
 
   sendto_realops_flags(FLAGS_ALL, L_ALL,
-                       Restarting server...");
+                       "Restarting server...");
 
   ilog(L_NOTICE, "Restarting server...");
   /*
