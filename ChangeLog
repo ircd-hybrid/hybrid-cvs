@@ -1,3 +1,16 @@
+bill        2002/12/12 15:16:19 EST	(20021212_1)
+
+  Modified files:
+    .                    Hybrid-team 
+  Log:
+  Submitted by:   vx0
+  - updated vx0's email address, per his request
+  
+  Revision  Changes    Path
+  7.54      +1 -1      ircd-hybrid-7/Hybrid-team
+
+
+
 db          2002/12/12 01:33:01 EST	(20021212_0)
 
   Modified files:
@@ -33446,4 +33459,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4129 2002/12/12 06:33:03 db Exp $
+$Id: ChangeLog,v 7.4130 2002/12/12 20:16:22 bill Exp $
