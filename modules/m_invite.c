@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_invite.c,v 1.38 2002/01/07 05:50:53 db Exp $
+ *  $Id: m_invite.c,v 1.39 2002/01/16 22:21:19 leeh Exp $
  */
 
 #include "tools.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
   mod_del_cmd(&invite_msgtab);
 }
 
-char *_version = "$Revision: 1.38 $";
+char *_version = "$Revision: 1.39 $";
 #endif
 
 /*
@@ -95,7 +95,7 @@ m_invite(struct Client *client_p,
     return;
   }
 
-  if (check_channel_name(parv[2]) == NULL)
+  if(check_channel_name(parv[2]) == 0)
   {
     sendto_one(source_p, form_str(ERR_BADCHANNAME),
                me.name, parv[0], (unsigned char *)parv[2]);
