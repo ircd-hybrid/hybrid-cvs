@@ -1,3 +1,16 @@
+androsyn    2002/08/11 10:46:24 EDT	(20020811_1)
+
+  Modified files:
+    src                  send.c 
+  Log:
+  Fixed a off by one error in send_trim().  If you are using indexes remember
+  you start counting at 0 NOT 1
+  
+  Revision  Changes    Path
+  7.203     +3 -3      ircd-hybrid-7/src/send.c
+
+
+
 db          2002/08/10 22:29:52 EDT	(20020811_0)
 
   Modified files:
@@ -31022,4 +31035,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3965 2002/08/11 02:29:59 db Exp $
+$Id: ChangeLog,v 7.3966 2002/08/11 14:46:30 androsyn Exp $
