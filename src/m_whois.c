@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 7.2 1999/08/03 01:41:32 tomh Exp $
+ *   $Id: m_whois.c,v 7.3 1999/08/10 11:26:20 db Exp $
  */
 
 #include "m_commands.h"
@@ -267,7 +267,7 @@ int     m_whois(struct Client *cptr,
             sendto_one(sptr, form_str(RPL_WHOISOPERATOR),
                        me.name, parv[0], name);
 #ifdef WHOIS_NOTICE
-          if ((MyOper(acptr)) && ((acptr)->flags & FLAGS_SPY) &&
+          if ((MyOper(acptr)) && ((acptr)->umodes & FLAGS_SPY) &&
               (MyConnect(sptr)) && (IsPerson(sptr)) && (acptr != sptr))
             sendto_one(acptr,
                        ":%s NOTICE %s :*** Notice -- %s (%s@%s) is doing a /whois on you.",
