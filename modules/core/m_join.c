@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_join.c,v 1.8 2003/09/20 06:05:37 bill Exp $
+ *  $Id: m_join.c,v 1.9 2003/09/21 07:09:32 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -43,7 +43,7 @@
 #include "modules.h"
 
 
-static struct entity
+struct entity
 {
   struct Channel *chptr;
   char *key;
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&join_msgtab);
 }
 
-const char *_version = "$Revision: 1.8 $";
+const char *_version = "$Revision: 1.9 $";
 #endif
 
 /* m_join()
