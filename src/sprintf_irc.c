@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: sprintf_irc.c,v 7.10 2001/12/10 02:59:46 db Exp $
+ *   $Id: sprintf_irc.c,v 7.11 2001/12/10 04:17:34 jdc Exp $
  */
 #include "sprintf_irc.h"
 #include "irc_string.h"
@@ -447,8 +447,7 @@ vsprintf_irc(char *str, const char *format, va_list args)
 } /* vsprintf_irc() */
 
 int
-ircsprintf(char *str, char *format, ...)
-
+ircsprintf(char *str, const char *format, ...)
 {
   va_list args;
   int bytes;

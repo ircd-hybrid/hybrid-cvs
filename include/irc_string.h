@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: irc_string.h,v 7.31 2001/10/11 02:39:24 androsyn Exp $
+ *   $Id: irc_string.h,v 7.32 2001/12/10 04:17:32 jdc Exp $
  */
 #ifndef INCLUDED_irc_string_h
 #define INCLUDED_irc_string_h
@@ -56,18 +56,6 @@ extern int ircncmp(const char *s1, const char *s2, int n);
 */  
 #ifdef NO_DUPE_MULTI_MESSAGES
 extern char* canonize(char *);
-#endif
-/*
- * ircsprintf - optimized sprintf
- */
-#ifdef __GNUC__
-int ircsprintf(char*, const char*, ...)
-           __attribute__ ((format(printf, 2, 3)));
-int ircsnprintf(char*, int, const char*,
-                       ...) __attribute__ ((format(printf, 3, 4)));
-#else
-int ircsprintf(char *str, const char *format, ...);
-int ircsnprintf(char*, int, const char*);
 #endif
 /*
  * inetntoa - optimized inet_ntoa
