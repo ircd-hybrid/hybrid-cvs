@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.1 2003/05/06 23:02:17 michael Exp $
+dnl $Id: configure.ac,v 7.2 2003/05/07 20:40:33 stu Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -417,8 +417,9 @@ AC_CACHE_CHECK([for IPv6 support], have_v6,
     AC_COMPILE_IFELSE(
 
 	[AC_LANG_PROGRAM(
+		[[#define IN_AUTOCONF]]
 		[[#include "include/stdinc.h"]],
-		[[struct sockaddr_in6 s; s.sin6_family = 0;]]
+    [[struct sockaddr_in6 s; s.sin6_family = 0;]]
 	)],
 
 	[have_v6="yes"],
