@@ -2,7 +2,7 @@
  * encspeed.c - originally written by einride
  *            - modified for ircd-hybrid-7 by davidt
  *
- * $Id: encspeed.c,v 7.1 2001/05/28 17:10:58 davidt Exp $
+ * $Id: encspeed.c,v 7.2 2001/05/29 16:20:14 jdc Exp $
  */
 
 #include "../include/setup.h"
@@ -42,11 +42,11 @@ int main(int argc, char *argv[])
 
 struct timeval tvstart, tvstop;
 
-void starttimer() {
+static void starttimer(void) {
   gettimeofday(&tvstart, 0);
 }
 
-double stoptimer() {
+static double stoptimer(void) {
   gettimeofday(&tvstop, 0);
   return (tvstop.tv_sec - tvstart.tv_sec) + ( (tvstop.tv_usec - tvstart.tv_usec) / 1000000.0);  
 }
