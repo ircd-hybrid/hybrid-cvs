@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.36 2000/12/21 04:44:59 ejb Exp $
+ *   $Id: m_sjoin.c,v 1.37 2000/12/21 06:14:09 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -299,7 +299,7 @@ int     ms_sjoin(struct Client *cptr,
   ircsprintf(buf, ":%s SJOIN %lu %s %s %s :", parv[0], tstosend, parv[2],
           modebuf, parabuf);
 
-  mbuf = modebuf;
+  mbuf = modebuf + strlen(modebuf);
   para[0] = para[1] = para[2] = para[3] = "";
   pargs = 0;
   nick_pointer = sjbuf;
