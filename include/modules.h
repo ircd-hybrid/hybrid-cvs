@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.h,v 7.24 2002/01/02 17:45:35 leeh Exp $
+ * $Id: modules.h,v 7.25 2002/01/02 21:43:28 leeh Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -37,6 +37,7 @@ struct module {
   char *name;
   char *version;
   void *address;
+  int core;
 };
 
 struct module_path
