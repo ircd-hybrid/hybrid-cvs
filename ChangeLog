@@ -1,3 +1,11 @@
+*** 20001207_10 by db
+- fixed stupid in channel.c with ban sending... used banptr forgot
+  the ->banstr oops.
+- removed totally unused variable in s_user.c LastWallopsTime...
+  wallops is no longer paced. rah rah.
+
+
+
 *** 20001207_9 by db
 - first cut at cleaning up m_gline.c its still fugly... but cleaner
 - added CAP_GLN for capable of gline servers. I didn't realize this
@@ -1836,7 +1844,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.730 2000/12/07 09:09:52 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.731 2000/12/07 09:22:10 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
