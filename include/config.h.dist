@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: config.h.dist,v 7.73 2003/05/24 03:29:54 joshk Exp $
+ *  $Id: config.h.dist,v 7.74 2003/05/28 05:01:27 metalrock Exp $
  */
 
 #ifndef INCLUDED_config_h
@@ -86,11 +86,9 @@
  * ETCPATH     = directory for configuration files,
  * LOGPATH     = directory for logfiles,
  * MODPATH     = directory for autoloaded modules (disabled in VMS),
- * MSGPATH     = directory for language files (disabled in VMS).
+ * MSGPATH     = directory for language files.
  */
 
-/* IRCD_PREFIX not needed in VMS -larne */
-/* #define IRCD_PREFIX     "IRCD$BASEDIR:" */
 #define DPATH           "IRCD$BASEDIR:"
 #define BINPATH         "IRCD$BINDIR:"
 #define ETCPATH         "IRCD$CONFDIR:"
@@ -115,7 +113,7 @@
 #define PPATH   ETCPATH "IRCD.PID"              /* pid file */
 #define OPATH   ETCPATH "OPERS.MOTD"            /* oper MOTD file */
 #define LIPATH  ETCPATH "LINKS.TXT"             /* cached LINKS file */
-#else /* VMS */
+#else /* __vms */
 /* 
  * Directory paths and filenames for UNIX systems.
  * IRCD_PREFIX is set using ./configure --prefix, see INSTALL.
@@ -160,7 +158,7 @@
 #define PPATH   ETCPATH "/ircd.pid"             /* pid file */
 #define OPATH   ETCPATH "/opers.motd"           /* oper MOTD file */
 #define LIPATH  ETCPATH "/links.txt"            /* cached links file */
-#endif /* !VMS */
+#endif /* __vms */
 
 
 /* Ignore bogus timestamps from other servers. Yes this will desync
