@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_help.c,v 1.7 2003/06/16 18:21:56 michael Exp $
+ *  $Id: m_help.c,v 1.8 2003/06/22 00:52:52 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -36,13 +36,8 @@
 #include "modules.h"
 #include "irc_string.h"
 
-#ifdef __vms
-#define HPATH  ETCPATH "OPERS.TXT" /* oper help file */
-#define UHPATH ETCPATH "USERS.TXT" /* user help file */
-#else
 #define HPATH  IRCD_PREFIX "/help/opers"
 #define UHPATH IRCD_PREFIX "/help/users"
-#endif
 #define HELPLEN 400
 
 static void m_help(struct Client*, struct Client*, int, char**);
@@ -76,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&uhelp_msgtab);
 }
 
-const char *_version = "$Revision: 1.7 $";
+const char *_version = "$Revision: 1.8 $";
 #endif
 
 /*

@@ -19,16 +19,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.306 2003/06/18 06:26:32 metalrock Exp $
+ *  $Id: ircd.c,v 7.307 2003/06/22 00:53:01 joshk Exp $
  */
 
 #include "stdinc.h"
 #include "rlimits.h"
 #include "s_user.h"
-#ifdef __vms
-# include descrip
-# include starlet
-#endif
 #include "tools.h"
 #include "ircd.h"
 #include "channel.h"
@@ -163,12 +159,9 @@ get_vm_top(void)
    * offset from 0 (NULL), so the result of sbrk is cast to a size_t and 
    * returned. We really shouldn't be using it here but...
    */
-#ifndef __vms
+
   void *vptr = sbrk(0);
   return((unsigned long)vptr);
-#else
-  return(0);
-#endif
 }
 
 /*
@@ -201,7 +194,7 @@ print_startup(int pid)
 static void 
 init_sys(void)
 {
-#if defined(RLIMIT_FD_MAX) && !defined(__vms) && defined(HAVE_SYS_RLIMIT_H)
+#if defined(RLIMIT_FD_MAX) && defined(HAVE_SYS_RLIMIT_H)
   struct rlimit limit;
 
   if (!getrlimit(RLIMIT_FD_MAX, &limit))
@@ -230,7 +223,6 @@ init_sys(void)
 static void
 make_daemon(void)
 {
-#ifndef __vms
   int pid;
 
   if ((pid = fork()) < 0)
@@ -248,13 +240,6 @@ make_daemon(void)
 /*fclose(stdin);
   fclose(stdout);
   fclose(stderr); */
-#else
-  /* if we get here, assume we've been detached.
-   * better set a process name.
-   */
-  $DESCRIPTOR(myname, "IRCD-HYBRID-7");
-  SYS$SETPRN(&myname);
-#endif
 }
 
 static int printVersion = 0;
@@ -537,7 +522,7 @@ check_pidfile(const char *filename)
 static void
 setup_corefile(void)
 {
-#if !defined(__vms) && defined(HAVE_SYS_RESOURCE_H)
+#ifdef HAVE_SYS_RESOURCE_H
   struct rlimit rlim; /* resource limits */
 
   /* Set corefilesize to maximum */

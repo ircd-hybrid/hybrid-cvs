@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.c,v 7.56 2003/06/21 20:09:26 metalrock Exp $
+ *  $Id: s_log.c,v 7.57 2003/06/22 00:53:01 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -111,34 +111,6 @@ open_log(const char *filename)
   return(1);
 }
 
-#ifdef __vms
-void send_opcom(const char *message)
-{
-    struct {
-        struct hdr {                    /* Trust me, this is necessary */
-            unsigned char type;         /*  Read up on SYS$SNDOPR and you'll */
-            unsigned short target_0_15; /*  see why. */
-            unsigned char target_16_23;
-            unsigned long rqst_id;
-        } h;
-        char msg[200];
-    } opc_request;
-    struct dsc$descriptor opc;
-
-    opc_request.h.type = OPC$_RQ_RQST;  /* Send out the string */
-    opc_request.h.target_0_15 = OPC$M_NM_CENTRL;    /* To main operator */
-    opc_request.h.target_16_23 = 0;
-    opc_request.h.rqst_id = 0L;         /* Default it */
-
-    strcpy(opc_request.msg, message);         /* Copy the string */
-
-    opc.dsc$a_pointer = &opc_request;   /* Build a descriptor for the block */
-    opc.dsc$w_length = strlen(message) + sizeof(struct hdr);
-
-    sys$sndopr(&opc, 0);
-}
-#endif
-
 static void 
 write_log(const char *message)
 {
@@ -177,9 +149,6 @@ ilog(int priority, const char *fmt, ...)
   if (use_logging)
     write_log(buf);
 
-#ifdef __vms
-  send_opcom(buf);
-#endif
 }
   
 void
@@ -379,21 +348,3 @@ log_failed_oper(struct Client *source_p, const char *name)
     }
   }
 }
-
-#ifdef __vms
-const char *
-ircd$format_error(int status)
-{
-	static char msg[257];
-	struct dsc$descriptor msgd;
-	int msg_len;
-	char temp[512];
-
-	msg_len = 0;
-	msgd.dsc$w_length = 256;
-	msgd.dsc$a_pointer = msg;
-	sys$getmsg(status, &msg_len, &msgd, 0, &temp);
-	msg[msg_len] = '\0';
-	return msg + 1;
-}
-#endif

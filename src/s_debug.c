@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_debug.c,v 7.90 2003/06/16 03:07:54 db Exp $
+ *  $Id: s_debug.c,v 7.91 2003/06/22 00:53:01 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -84,11 +84,6 @@ send_usage(struct Client *source_p)
 # endif
 #endif
 
-#ifdef __vms
-  sendto_one(source_p, ":%s NOTICE %s :getrusage not supported on this system",
-             me.name, source_p->name);
-  return;
-#else
   if (getrusage(RUSAGE_SELF, &rus) == -1)
   {
     sendto_one(source_p,":%s NOTICE %s :Getruseage error: %s.",
@@ -127,7 +122,6 @@ send_usage(struct Client *source_p)
   sendto_one(source_p, ":%s %d %s R :Signals %d Context Vol. %d Invol %d",
              me.name, RPL_STATSDEBUG, source_p->name, (int)rus.ru_nsignals,
              (int)rus.ru_nvcsw, (int)rus.ru_nivcsw);
-#endif /* __vms */
 }
 
 void

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: memory.h,v 7.38 2003/06/02 19:49:17 joshk Exp $
+ *  $Id: memory.h,v 7.39 2003/06/22 00:52:54 joshk Exp $
  */
 
 #ifndef _I_MEMORY_H
@@ -30,20 +30,16 @@
 #include "balloc.h"
 
 /* Needed to use uintptr_t for some pointer manipulation. */
-#ifdef __vms
-# include inttypes
-#else /* Not VMS */
-# ifdef HAVE_INTTYPES_H
-#  include <inttypes.h>
-# else /* No inttypes.h */
-#  ifndef HAVE_UINTPTR_T
+
+#ifdef HAVE_INTTYPES_H
+# include <inttypes.h>
+#else /* No inttypes.h */
+# ifndef HAVE_UINTPTR_T
 typedef unsigned long uintptr_t;
-#  endif
 # endif
 #endif
 
 extern void outofmemory(void);
-
 
 extern void *MyMalloc(size_t size);
 extern void *MyRealloc(void *x, size_t y);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.351 2003/06/18 00:15:12 metalrock Exp $
+ *  $Id: s_serv.c,v 7.352 2003/06/22 00:53:01 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -113,9 +113,7 @@ struct SlinkRplDef slinkrpltab[] = {
 
 static unsigned long freeMask;
 static void server_burst(struct Client *client_p);
-#ifndef __vms
 static int fork_server(struct Client *client_p);
-#endif
 static void burst_all(struct Client *client_p);
 static void cjoin_all(struct Client *client_p);
 
@@ -1018,7 +1016,6 @@ server_estab(struct Client *client_p)
     report_error(L_ALL, SETBUF_ERROR_MSG, get_client_name(client_p, SHOW_IP), errno);
 
   /* Hand the server off to servlink now */
-#ifndef __vms 
   if (IsCapable(client_p, CAP_ENC) || IsCapable(client_p, CAP_ZIP))
   {
     if (fork_server(client_p) < 0)
@@ -1036,7 +1033,7 @@ server_estab(struct Client *client_p)
     start_io(client_p);
     SetServlink(client_p);
   }
-#endif
+  
   sendto_one(client_p, "SVINFO %d %d 0 :%lu",
              TS_CURRENT, TS_MIN, (unsigned long)CurrentTime);
 
@@ -1294,7 +1291,6 @@ start_io(struct Client *server)
   send_queued_slink_write(server);
 }
 
-#ifndef __vms
 /* fork_server()
  *
  * inputs       - struct Client *server
@@ -1334,35 +1330,7 @@ fork_server(struct Client *server)
   slink_fds[1][1][1] = fd_temp[1];
   slink_fds[1][0][1] = fd_temp[0];
   slink_fds[1][1][0] = fd_temp[1];
-#else
-  /* ctrl parent -> child */
-  if (pipe(fd_temp) < 0)
-    goto fork_error;
-
-  slink_fds[0][0][0] = fd_temp[0];
-  slink_fds[0][1][1] = fd_temp[1];
-
-  /* ctrl child -> parent */
-  if (pipe(fd_temp) < 0)
-    goto fork_error;
-
-  slink_fds[0][1][0] = fd_temp[0];
-  slink_fds[0][0][1] = fd_temp[1];
-
-  /* data parent -> child */
-  if (pipe(fd_temp) < 0)
-    goto fork_error;
-
-  slink_fds[1][0][0] = fd_temp[0];
-  slink_fds[1][1][1] = fd_temp[1];
-
-  /* data child -> parent */
-  if (pipe(fd_temp) < 0)
-    goto fork_error;
-
-  slink_fds[1][1][0] = fd_temp[0];
-  slink_fds[1][0][1] = fd_temp[1];
-#endif
+  
   if ((ret = fork()) < 0)
   {
     goto fork_error;

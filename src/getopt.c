@@ -19,18 +19,14 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: getopt.c,v 7.15 2003/06/01 18:47:03 joshk Exp $
+ *  $Id: getopt.c,v 7.16 2003/06/22 00:53:01 joshk Exp $
  */
 
 #include "stdinc.h"
 
 #include "ircd_getopt.h"
 
-#ifndef __vms
-# define OPTCHAR '-'
-#else
-# define OPTCHAR '/'
-#endif
+#define OPTCHAR '-'
 
 void
 parseargs(int *argc, char ***argv, struct lgetopt *opts)

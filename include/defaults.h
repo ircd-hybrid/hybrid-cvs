@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: defaults.h,v 7.14 2003/06/18 06:26:29 metalrock Exp $
+ *  $Id: defaults.h,v 7.15 2003/06/22 00:52:54 joshk Exp $
  */
 
 #ifndef INCLUDED_defaults_h
@@ -28,40 +28,6 @@
 /* Here are some default paths. Most except DPATH are
  * configurable at runtime. */
 
-#ifdef __vms
-/* *PATH - directory locations and filenames for VMS.
- *
- * Non VMS systems see below.
- *
- * IRCD_PREFIX = prefix for all directories,
- * DPATH       = root directory of installation,
- * BINPATH     = directory for binary files,
- * ETCPATH     = directory for configuration files,
- * LOGPATH     = directory for logfiles,
- * MSGPATH     = directory for language files.
- */
-
-#define DPATH           "IRCD$BASEDIR:"
-#define BINPATH         "IRCD$BINDIR:"
-#define ETCPATH         "IRCD$CONFDIR:"
-#define LOGPATH         "IRCD$LOGDIR:"
-#define MSGPATH		"IRCD$MSGDIR:"
-
-#define SPATH   BINPATH "IRCD.EXE"              /* server executable */
-#define SLPATH  BINPATH "SERVLINK.EXE"          /* servlink executable */
-#define CPATH   ETCPATH "IRCD.CONF"             /* config file */
-#define KPATH   ETCPATH "KLINE.CONF"            /* kline file */
-#define XPATH   ETCPATH "XLINE.CONF"            /* xline file */
-#define CRESVPATH   ETCPATH "CRESV.CONF"        /* channel resvs file */
-#define NRESVPATH   ETCPATH "NRESV.CONF"        /* channel resvs file */
-#define DLPATH  ETCPATH "DLINE.CONF"            /* dline file */
-#define GPATH   ETCPATH "GLINE.CONF"             /* gline logfile */
-#define MPATH   ETCPATH "IRCD.MOTD"             /* MOTD filename */
-#define LPATH   LOGPATH "IRCD.LOG"              /* logfile */
-#define PPATH   ETCPATH "IRCD.PID"              /* pid file */
-#define OPATH   ETCPATH "OPERS.MOTD"            /* oper MOTD file */
-#define LIPATH  ETCPATH "LINKS.TXT"             /* cached LINKS file */
-#else /* __vms */
 /* 
  * Directory paths and filenames for UNIX systems.
  * IRCD_PREFIX is set using ./configure --prefix, see INSTALL.
@@ -101,7 +67,6 @@
 #define PPATH   ETCPATH "/ircd.pid"             /* pid file */
 #define OPATH   ETCPATH "/opers.motd"           /* oper MOTD file */
 #define LIPATH  ETCPATH "/links.txt"            /* cached links file */
-#endif /* !__vms */
 
 /* this file is included to supply default
  * values for things which are now configurable at runtime.

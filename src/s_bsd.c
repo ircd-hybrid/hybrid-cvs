@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.205 2003/06/18 06:26:33 metalrock Exp $
+ *  $Id: s_bsd.c,v 7.206 2003/06/22 00:53:01 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -224,7 +224,6 @@ defined(IP_OPTIONS) && defined(IPPROTO_IP) && !defined(IPV6)
 int
 set_non_blocking(int fd)
 {
-#ifndef __vms
   int nonb = 0;
   int res;
 
@@ -239,17 +238,6 @@ set_non_blocking(int fd)
 
   fd_table[fd].flags.nonblocking = 1;
   return 1;
-#else
-  int val = 1;
-  int res;
-
-  res = ioctl(fd, FIONBIO, &val);
-  if (res == -1)
-    return 0;
-
-  fd_table[fd].flags.nonblocking = 1;
-  return 1;
-#endif
 }
 
 /*
@@ -815,12 +803,9 @@ comm_open(int family, int sock_type, int proto, const char *note)
   if (!set_non_blocking(fd))
     {
       ilog(L_CRIT, "comm_open: Couldn't set FD %d non blocking: %s", fd, strerror(errno));
-    /* if VMS, we might be opening a file (ircd.conf, resolv.conf).
-       VMS doesn't let us set non-blocking on a file, so it might fail. */
-#ifndef __vms
+      
       close(fd);
       return -1;
-#endif
     }
 
   /* Next, update things in our fd tracking */

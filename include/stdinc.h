@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- * $Id: stdinc.h,v 1.14 2003/06/13 07:40:29 joshk Exp $
+ * $Id: stdinc.h,v 1.15 2003/06/22 00:52:54 joshk Exp $
  *
  */
 
@@ -74,29 +74,6 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-
-#ifdef __vms
-#define _XOPEN_SOURCE 1
-#include <sys/ioctl.h>
-#include <builtins.h>
-#include <timers.h>
-
-#include <descrip.h>
-#include <ssdef.h>
-#include <starlet.h>
-#include <syidef.h>
-#include <lnmdef.h>
-#include <opcdef.h>
-#include <rms.h>
-#include <stsdef.h>
-
-char *crypt(const char *, const char *);
-
-#endif
-
-#ifdef __vax
-#define alloca __ALLOCA
-#endif
 
 #include <limits.h>
 
