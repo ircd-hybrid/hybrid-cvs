@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.384 2003/06/01 10:20:21 michael Exp $
+ *  $Id: channel.c,v 7.385 2003/06/01 10:23:22 michael Exp $
  */
 
 #include "stdinc.h"
@@ -832,7 +832,7 @@ can_send(struct Channel *chptr, struct Client *source_p)
     return(CAN_SEND_NO);
   }
 
-  if (chptr->mode.mode & MODE_NOPRIVMSGS && ms != NULL)
+  if (chptr->mode.mode & MODE_NOPRIVMSGS && ms == NULL)
     return(CAN_SEND_NO);
 
   return(CAN_SEND_NONOP);
