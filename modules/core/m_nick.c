@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nick.c,v 1.87 2002/04/19 16:21:06 leeh Exp $
+ *  $Id: m_nick.c,v 1.88 2002/04/26 15:27:30 leeh Exp $
  */
 
 #include "handlers.h"
@@ -98,7 +98,7 @@ _moddeinit(void)
   mod_del_cmd(&client_msgtab);
 }
 
-const char *_version = "$Revision: 1.87 $";
+const char *_version = "$Revision: 1.88 $";
 #endif
 
 /*
@@ -420,7 +420,31 @@ static void ms_client(struct Client *client_p, struct Client *source_p,
   }
 
   newts = atol(parv[3]);
-  
+ 
+  /* if there is an ID collision, kill our client, and kill theirs.
+   * this may generate 401's, but it ensures that both clients always
+   * go, even if the other server refuses to do the right thing.
+   */
+  if((target_p = find_id(id)))
+  {
+    sendto_realops_flags(FLAGS_ALL, L_ALL,
+		         "ID collision on %s(%s <- %s)(both killed)",
+			 target_p->name, target_p->from->name,
+			 client_p->name);
+
+    if(ServerInfo.hub && IsCapable(client_p, CAP_LL))
+      add_lazylinkclient(client_p, source_p);
+
+    kill_client_ll_serv_butone(NULL, target_p, "%s (ID collision)",
+		               me.name);
+
+    ServerStats->is_kill++;
+	    
+    target_p->flags |= FLAGS_KILLED;
+    exit_client(client_p, target_p, &me, "ID Collision");
+    return;
+  }
+    
   if (!(target_p = find_client(nick)))
   {
     client_from_server(client_p,source_p,parc,parv,newts,nick);
