@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.36 2000/10/26 15:04:29 db Exp $
+ *  $Id: s_bsd.c,v 7.37 2000/10/26 21:07:49 adrian Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -914,6 +914,12 @@ void error_exit_client(struct Client* cptr, int error)
   exit_client(cptr, cptr, &me, errmsg);
 }
 
+/*
+ * stolen from squid - its a neat (but overused! :) routine which we
+ * can use to see whether we can ignore this errno or not. It is
+ * generally useful for non-blocking network IO related errnos.
+ *     -- adrian
+ */
 int
 ignoreErrno(int ierrno)
 {
