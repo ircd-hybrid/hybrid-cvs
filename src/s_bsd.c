@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.79 2000/12/30 09:28:38 lusky Exp $
+ *  $Id: s_bsd.c,v 7.80 2001/01/03 03:04:20 db Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -474,7 +474,14 @@ comm_settimeout(int fd, time_t timeout, PF *callback, void *cbdata)
 void
 comm_setflush(int fd, time_t timeout, PF *callback, void *cbdata)
 {
+  /* XXX sigh another one */
+#if 0
     assert(fd > -1);
+#endif
+    /* This should not happen */
+    if(fd < 0)
+      return;
+
     assert(fd_table[fd].flags.open);
 
     fd_table[fd].flush_timeout = CurrentTime + timeout;
