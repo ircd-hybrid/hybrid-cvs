@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.249 2003/04/26 21:37:07 db Exp $
+ *  $Id: send.c,v 7.250 2003/04/27 11:58:10 adx Exp $
  */
 
 #include "stdinc.h"
@@ -109,8 +109,12 @@ send_format(char *lsendbuf, int bufsize, const char *pattern, va_list args)
    * for this routine, so we never again have a possibility
    * of an overflow.
    * -wnder
+   * Exactly, vsnprintf() does the job and we don't need to check
+   * whether len > 510. We also don't need to terminate the buffer
+   * with a '\0', since the dbuf code is raw-oriented. --adx
    */
 
+#if 0
   if(len > 510)
   {
     lsendbuf[IRCD_BUFSIZE-2] = '\r';
@@ -118,11 +122,10 @@ send_format(char *lsendbuf, int bufsize, const char *pattern, va_list args)
     lsendbuf[IRCD_BUFSIZE] = '\0';
     return(IRCD_BUFSIZE);
   }
+#endif
 
   lsendbuf[len++] = '\r';
   lsendbuf[len++] = '\n';
-  lsendbuf[len] = '\0';
-
   return (len);
 }
 
