@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.91 2001/01/29 18:37:48 db Exp $
+ * $Id: client.h,v 7.92 2001/01/30 19:11:42 fl_ Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -363,6 +363,7 @@ struct LocalUser
 #define FLAGS_ADMIN        0x80000 /* Admin on server */
 
 #define FLAGS_ALL	   FLAGS_SERVNOTICE
+#define FLAGS_NOTADMIN     FLAGS_OPER
 
 /* overflow flags */
 #define FLAGS2_EXEMPTGLINE  0x0001	/* client can't be G-lined */

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_client.c,v 1.10 2001/01/28 15:59:08 davidt Exp $
+ *   $Id: m_client.c,v 1.11 2001/01/30 19:11:43 fl_ Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -256,9 +256,9 @@ static int ms_client(struct Client *cptr, struct Client *sptr,
           || (newts == acptr->tsinfo))
 	  {
           sendto_realops_flags(FLAGS_ALL,
-							   "Nick collision on %s(%s <- %s)(both killed)",
-							   acptr->name, acptr->from->name,
-							   get_client_name(cptr, HIDE_IP));
+			   "Nick collision on %s(%s <- %s)(both killed)",
+			   acptr->name, acptr->from->name,
+			   get_client_name(cptr, HIDE_IP));
 		  
 #ifndef LOCAL_NICK_COLLIDE
           /* If we got the message from a LL, ensure it gets the kill */

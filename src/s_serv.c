@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.134 2001/01/29 18:52:46 jdc Exp $
+ *   $Id: s_serv.c,v 7.135 2001/01/30 19:11:45 fl_ Exp $
  */
 
 #include <sys/types.h>
@@ -858,7 +858,7 @@ int server_estab(struct Client *cptr)
 			inpath_ip,show_capabilities(cptr));
 
   /* Now show the masked hostname/IP to opers */
-  sendto_realops_flags(FLAGS_ALL,
+  sendto_realops_flags(FLAGS_NOTADMIN,
 			"Link with %s established: (%s) link",
 			inpath,show_capabilities(cptr));
 
@@ -1602,7 +1602,7 @@ serv_connect_callback(int fd, int status, void *data)
         sendto_realops_flags(FLAGS_ADMIN,
 			     "Error connecting to %s[%s]: %s", cptr->name,
 			     cptr->host, comm_errstr(status));
-	sendto_realops_flags(FLAGS_ALL,
+	sendto_realops_flags(FLAGS_NOTADMIN,
 			     "Error connecting to %s: %s",
 			     cptr->name, comm_errstr(status));
         exit_client(cptr, cptr, &me, comm_errstr(status));
@@ -1650,7 +1650,7 @@ serv_connect_callback(int fd, int status, void *data)
         sendto_realops_flags(FLAGS_ADMIN,
 			     "%s[%s] went dead during handshake", cptr->name,
 			     cptr->host);
-        sendto_realops_flags(FLAGS_ALL,
+        sendto_realops_flags(FLAGS_ADMIN,
 			     "%s went dead during handshake", cptr->name);
         exit_client(cptr, cptr, &me, "Went dead during handshake");
         return;

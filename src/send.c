@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.122 2001/01/30 18:26:31 fl_ Exp $
+ *   $Id: send.c,v 7.123 2001/01/30 19:11:46 fl_ Exp $
  */
 
 #include <sys/types.h>
@@ -1390,6 +1390,8 @@ sendto_realops_flags(int flags, const char *pattern, ...)
     {
       cptr = ptr->data;
 
+      if((flags == FLAGS_NOTADMIN) && IsAdmin(cptr)) 
+        continue;
       if(cptr->umodes & flags)
 	{
 	  len =ircsprintf(sendbuf, ":%s NOTICE %s :*** Notice -- %s",

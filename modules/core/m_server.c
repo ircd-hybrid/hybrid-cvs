@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_server.c,v 1.49 2001/01/29 18:59:54 jdc Exp $
+ *   $Id: m_server.c,v 1.50 2001/01/30 19:11:43 fl_ Exp $
  */
 #include "tools.h"
 #include "handlers.h"  /* m_server prototype */
@@ -99,7 +99,7 @@ int mr_server(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
     {
       sendto_realops_flags(FLAGS_ADMIN,"Link %s dropped, non-TS server",
 			   get_client_name(cptr, HIDE_IP));
-      sendto_realops_flags(FLAGS_ALL,"Link %s dropped, non-TS server",
+      sendto_realops_flags(FLAGS_NOTADMIN,"Link %s dropped, non-TS server",
 			   get_client_name(cptr, MASK_IP));
       return exit_client(cptr, cptr, cptr, "Non-TS server");
     }
@@ -118,7 +118,7 @@ int mr_server(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
            "Unauthorized server connection attempt from %s: No entry for "
            "servername %s", get_client_name(cptr, HIDE_IP), name);
 
-         sendto_realops_flags(FLAGS_ALL,
+         sendto_realops_flags(FLAGS_NOTADMIN,
            "Unauthorized server connection attempt from %s: No entry for "
            "servername %s", get_client_name(cptr, MASK_IP), name);
         }
@@ -129,7 +129,7 @@ int mr_server(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
         "Unauthorized server connection attempt from %s: Bad password "
         "for server %s", get_client_name(cptr, HIDE_IP), name);
 
-      sendto_realops_flags(FLAGS_ALL,
+      sendto_realops_flags(FLAGS_NOTADMIN,
         "Unauthorized server connection attempt from %s: Bad password "
         "for server %s", get_client_name(cptr, MASK_IP), name);
 
@@ -141,7 +141,7 @@ int mr_server(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
         "Unauthorized server connection attempt from %s: Invalid host "
         "for server %s", get_client_name(cptr, HIDE_IP), name);
 
-      sendto_realops_flags(FLAGS_ALL,
+      sendto_realops_flags(FLAGS_NOTADMIN,
         "Unauthorized server connection attempt from %s: Invalid host "
         "for server %s", get_client_name(cptr, MASK_IP), name);
 
@@ -166,7 +166,7 @@ int mr_server(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
          "Attempt to re-introduce server %s from %s", name,
          get_client_name(cptr, HIDE_IP));
 
-      sendto_realops_flags(FLAGS_ALL,
+      sendto_realops_flags(FLAGS_NOTADMIN,
          "Attempt to re-introduce server %s from %s", name,
          get_client_name(cptr, MASK_IP));
 
