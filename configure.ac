@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.10 2003/05/10 08:57:06 joshk Exp $
+dnl $Id: configure.ac,v 7.11 2003/05/10 19:57:20 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -104,12 +104,10 @@ AC_MSG_CHECKING(how to generate dependency info)
 if test "$SunWorkShop" = "yes"; then
 	AC_MSG_RESULT(Sun WorkShop/Forte using $CC -xM)
 	MKDEP="$CC -xM"
-fi
-if test "$HPUX" = "yes"; then
+elif test "$HPUX" = "yes"; then
 	AC_MSG_RESULT(HP-UX C Compiler using makedepend)
 	MKDEP="makedepend"
-fi
-if test "x$MKDEP" = "x"; then
+else
 	AC_MSG_RESULT(assuming $CC -MM)
 	MKDEP="$CC -MM"	
 fi
@@ -161,23 +159,23 @@ fi
 dnl use directory structure of cached as default (hack)
 if test "$libexecdir" = '${exec_prefix}/libexec' &&
    test "$localstatedir" = '${prefix}/var'; then
-        libexecdir='${bindir}'
-        localstatedir='${prefix}'
+	libexecdir='${bindir}'
+	localstatedir='${prefix}'
 fi
 
 dnl Checks for libraries.
 AC_CHECK_LIB(socket, socket)
 
-dnl jdc -- Checks Solaris for libresolv and nsl; needed on Solaris 2.x
-dnl AC_CHECK_LIB(resolv, main)
-dnl AC_CHECK_LIB(nsl, main)
+dnl Solaris libraries. We don't want a AC_DEFINE though. Too much clutter
+AC_CHECK_LIB(resolv, inet_aton, [LIBS="$LIBS -lresolv"])
+AC_CHECK_LIB(nsl, inet_pton, [LIBS="$LIBS -lnsl"])
 
 AC_SEARCH_LIBS(crypt, [descrypt crypt],,
 [AC_MSG_ERROR([No crypt implementation found on your system!])])
 
 CRYPT_LIB=$ac_cv_search_crypt
-if test "$ac_cv_search_crypt" = "none required";
-  then unset  CRYPT_LIB;
+if test "$ac_cv_search_crypt" = "none required"; then
+	unset CRYPT_LIB;
 fi
 AC_SUBST(CRYPT_LIB)
 

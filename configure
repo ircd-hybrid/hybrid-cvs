@@ -2281,13 +2281,11 @@ if test "$SunWorkShop" = "yes"; then
 	echo "$as_me:$LINENO: result: Sun WorkShop/Forte using $CC -xM" >&5
 echo "${ECHO_T}Sun WorkShop/Forte using $CC -xM" >&6
 	MKDEP="$CC -xM"
-fi
-if test "$HPUX" = "yes"; then
+elif test "$HPUX" = "yes"; then
 	echo "$as_me:$LINENO: result: HP-UX C Compiler using makedepend" >&5
 echo "${ECHO_T}HP-UX C Compiler using makedepend" >&6
 	MKDEP="makedepend"
-fi
-if test "x$MKDEP" = "x"; then
+else
 	echo "$as_me:$LINENO: result: assuming $CC -MM" >&5
 echo "${ECHO_T}assuming $CC -MM" >&6
 	MKDEP="$CC -MM"
@@ -3570,8 +3568,8 @@ fi
 
 if test "$libexecdir" = '${exec_prefix}/libexec' &&
    test "$localstatedir" = '${prefix}/var'; then
-        libexecdir='${bindir}'
-        localstatedir='${prefix}'
+	libexecdir='${bindir}'
+	localstatedir='${prefix}'
 fi
 
 
@@ -3638,6 +3636,122 @@ _ACEOF
 
 fi
 
+
+echo "$as_me:$LINENO: checking for inet_aton in -lresolv" >&5
+echo $ECHO_N "checking for inet_aton in -lresolv... $ECHO_C" >&6
+if test "${ac_cv_lib_resolv_inet_aton+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lresolv  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+/* Override any gcc2 internal prototype to avoid an error.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+/* We use char because int might match the return type of a gcc2
+   builtin and then its argument prototype would still apply.  */
+char inet_aton ();
+int
+main ()
+{
+inet_aton ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_lib_resolv_inet_aton=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_cv_lib_resolv_inet_aton=no
+fi
+rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+echo "$as_me:$LINENO: result: $ac_cv_lib_resolv_inet_aton" >&5
+echo "${ECHO_T}$ac_cv_lib_resolv_inet_aton" >&6
+if test $ac_cv_lib_resolv_inet_aton = yes; then
+  LIBS="$LIBS -lresolv"
+fi
+
+echo "$as_me:$LINENO: checking for inet_pton in -lnsl" >&5
+echo $ECHO_N "checking for inet_pton in -lnsl... $ECHO_C" >&6
+if test "${ac_cv_lib_nsl_inet_pton+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  ac_check_lib_save_LIBS=$LIBS
+LIBS="-lnsl  $LIBS"
+cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+
+/* Override any gcc2 internal prototype to avoid an error.  */
+#ifdef __cplusplus
+extern "C"
+#endif
+/* We use char because int might match the return type of a gcc2
+   builtin and then its argument prototype would still apply.  */
+char inet_pton ();
+int
+main ()
+{
+inet_pton ();
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_lib_nsl_inet_pton=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_cv_lib_nsl_inet_pton=no
+fi
+rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+LIBS=$ac_check_lib_save_LIBS
+fi
+echo "$as_me:$LINENO: result: $ac_cv_lib_nsl_inet_pton" >&5
+echo "${ECHO_T}$ac_cv_lib_nsl_inet_pton" >&6
+if test $ac_cv_lib_nsl_inet_pton = yes; then
+  LIBS="$LIBS -lnsl"
+fi
 
 
 echo "$as_me:$LINENO: checking for library containing crypt" >&5
@@ -3752,8 +3866,8 @@ fi
 
 
 CRYPT_LIB=$ac_cv_search_crypt
-if test "$ac_cv_search_crypt" = "none required";
-  then unset  CRYPT_LIB;
+if test "$ac_cv_search_crypt" = "none required"; then
+	unset CRYPT_LIB;
 fi
 
 
