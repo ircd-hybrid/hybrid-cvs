@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.249 2001/07/02 19:03:30 jdc Exp $
+ *  $Id: s_conf.c,v 7.250 2001/07/03 11:46:19 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -1291,33 +1291,6 @@ int find_q_conf(char *nickToFind,char *user,char *host)
         }
     }
   return NO;
-}
-
-/*
- * report_qlines
- *
- * inputs       - pointer to client to report to
- * output       - none
- * side effects - all Q lines are listed to client 
- */
-
-void report_qlines(struct Client *source_p)
-{
-  struct ConfItem *aconf;
-  char *host;
-  char *user;
-  char *pass;
-  char *name;
-  char *classname;
-  int  port;
-
-  for (aconf = q_conf; aconf; aconf = aconf->next)
-    {
-      get_printable_conf(aconf, &name, &host, &pass, &user, &port,&classname);
-          
-      sendto_one(source_p, form_str(RPL_STATSQLINE),
-		 me.name, source_p->name, name, pass, "*", "*");
-    }
 }
 
 /*

@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.143 2001/07/02 19:03:16 jdc Exp $
+ * $Id: s_conf.h,v 7.144 2001/07/03 11:46:11 leeh Exp $
  */
 
 #include "setup.h"
@@ -352,7 +352,6 @@ extern void get_printable_conf(struct ConfItem *,
                                     char **, int *,char **);
 extern void report_configured_links(struct Client* client_p, int mask);
 extern void report_specials(struct Client* source_p, int flags, int numeric);
-extern void report_qlines(struct Client* client_p);
 
 extern void yyerror(char *);
 extern int conf_yy_fatal_error(char *);
