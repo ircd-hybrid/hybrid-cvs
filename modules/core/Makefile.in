@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/modules
 #
-# $Id: Makefile.in,v 1.21 2000/12/30 07:30:25 lusky Exp $
+# $Id: Makefile.in,v 1.22 2001/01/01 05:09:37 wcampbel Exp $
 #
 CC		= @CC@
 RM		= @RM@
@@ -9,7 +9,7 @@ SED             = @SED@
 LEX		= @LEX@
 LEXLIB		= @LEXLIB@
 CFLAGS		= @CFLAGS@ -DIRCD_PREFIX=\"@prefix@\"
-MKDEP		= ${CC} -MM
+MKDEP		= ${CC} ${CFLAGS} -MM
 INSTALL		= @INSTALL@
 INSTALL_PROGRAM	= @INSTALL_PROGRAM@
 INSTALL_DATA	= @INSTALL_DATA@
