@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.35 2000/10/25 23:57:57 db Exp $
+ * $Id: ircd.c,v 7.36 2000/10/26 17:36:04 adrian Exp $
  */
 #include "ircd.h"
 #include "channel.h"
@@ -852,7 +852,8 @@ int main(int argc, char *argv[])
 
 /* LazyLinks */
   if(!ConfigFileEntry.hub)
-    eventAdd("cchan",(EVH *)cleanup_channels, 0, CLEANUP_CHANNELS_TIME, 0 );
+    eventAdd("cleanup_channels", cleanup_channels, NULL,
+      CLEANUP_CHANNELS_TIME, 0 );
 
   ServerRunning = 1;
   while (ServerRunning)

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.23 2000/10/22 17:20:32 db Exp $
+ * $Id: channel.h,v 7.24 2000/10/26 17:35:59 adrian Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -91,7 +91,7 @@ typedef struct  Channel aChannel;
 
 extern  struct  Channel *GlobalChannelList;
 
-void cleanup_channels(void);
+void cleanup_channels(void *);
 
 #define CREATE 1        /* whether a channel should be
                            created or just tested for existance */

@@ -34,7 +34,7 @@
  *                mode * -p etc. if flag was clear
  *
  *
- * $Id: channel.c,v 7.59 2000/10/26 07:57:48 db Exp $
+ * $Id: channel.c,v 7.60 2000/10/26 17:36:03 adrian Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -2863,13 +2863,14 @@ int     count_channels(struct Client *sptr)
 
 /* Only leaves need to remove channels that have no local members */
 
-void cleanup_channels(void)
+void cleanup_channels(void *unused)
 {
    struct Channel *chptr;
    struct Channel *next_chptr;
  
    if(!ConfigFileEntry.hub)
-     eventAdd("cchan", (EVH *)cleanup_channels, 0, CLEANUP_CHANNELS_TIME, 0 );
+     eventAdd("cleanup_channels", cleanup_channels, NULL,
+       CLEANUP_CHANNELS_TIME, 0 );
 
    if(!serv_cptr_list)
      {
