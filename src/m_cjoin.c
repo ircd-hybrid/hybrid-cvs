@@ -20,13 +20,12 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_cjoin.c,v 7.16 2000/11/06 22:24:15 db Exp $
+ *   $Id: m_cjoin.c,v 7.17 2000/11/10 09:07:26 db Exp $
  */
 
 #include "handlers.h"
 #include "channel.h"
 #include "vchannel.h"
-#include "m_invite.h"
 #include "client.h"
 #include "common.h"   /* bleah */
 #include "hash.h"

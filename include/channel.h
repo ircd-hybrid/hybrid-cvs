@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.29 2000/11/06 08:40:46 db Exp $
+ * $Id: channel.h,v 7.30 2000/11/10 09:07:18 db Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -111,19 +111,22 @@ extern int     is_banned (struct Channel *chptr, struct Client *who);
 extern int     is_chan_op (struct Channel *chptr,struct Client *who);
 extern int     user_channel_mode (struct Channel *chptr, struct Client *who);
 
-extern int     m_names(struct Client *, struct Client *,int, char **);
-extern void    names_on_this_channel( struct Client *sptr,
-				      struct Channel *chptr,
-				      char *name_of_channel);
-
 extern void    send_channel_modes (struct Client *, struct Channel *);
 extern int     check_channel_name(const char* name);
 extern void    channel_modes(struct Channel *chptr, struct Client *who,
 			     char *, char *);
 extern void    set_channel_mode(struct Client *, struct Client *, 
                                 struct Channel *, int, char **, char *);
-extern struct Channel* get_channel(struct Client *,char*,int );
+extern struct  Channel* get_channel(struct Client *,char*,int );
 extern void    clear_bans_exceptions_denies(struct Client *,struct Channel *);
+
+extern void channel_member_names( struct Client *sptr, struct Channel *chptr,
+				  char *name_of_channel);
+extern char *channel_pub_or_secret(struct Channel *chptr);
+extern char *channel_chanop_or_voice(struct SLink *lp);
+
+extern void add_invite(struct Channel *chptr, struct Client *who);
+extern void del_invite(struct Channel *chptr, struct Client *who);
 
 /* this should eliminate a lot of ifdef's in the main code... -orabidoo */
 

@@ -20,13 +20,12 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 1.1 2000/11/08 23:57:28 ejb Exp $
+ *   $Id: m_join.c,v 1.2 2000/11/10 09:07:23 db Exp $
  */
 
 #include "handlers.h"
 #include "channel.h"
 #include "vchannel.h"
-#include "m_invite.h"
 #include "client.h"
 #include "common.h"   /* bleah */
 #include "hash.h"
@@ -323,9 +322,9 @@ int     m_join(struct Client *cptr,
 	}
 
       if (joining_vchan)
-	(void)names_on_this_channel(sptr, chptr, root_chptr->chname);
+        (void)channel_member_names(sptr, chptr, root_chptr->chname);
       else
-	(void)names_on_this_channel(sptr, chptr, name);
+        (void)channel_member_names(sptr, chptr, name);
       
       if(successful_join_count)
 	sptr->last_join_time = CurrentTime;

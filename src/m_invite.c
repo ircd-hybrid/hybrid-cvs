@@ -20,13 +20,12 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_invite.c,v 7.8 2000/11/06 06:56:49 db Exp $
+ *   $Id: m_invite.c,v 7.9 2000/11/10 09:07:26 db Exp $
  */
 #include "handlers.h"
 #include "common.h"
 #include "channel.h"
 #include "list.h"
-#include "m_invite.h"
 #include "vchannel.h"
 #include "client.h"
 #include "hash.h"
