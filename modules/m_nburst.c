@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_nburst.c,v 1.11 2001/08/03 13:10:28 leeh Exp $
+ * $Id: m_nburst.c,v 1.12 2001/10/25 02:36:21 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -109,7 +109,7 @@ static void ms_nburst(struct Client *client_p,
 #endif
 
   status = 'N';
-  if ( (target_p = find_client(nick, NULL)) != NULL )
+  if ((target_p = find_client(nick)) != NULL)
   {
     /* nick exists.  burst nick back to leaf */
     status = 'Y';

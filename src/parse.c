@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.113 2001/10/24 06:19:44 db Exp $
+ *   $Id: parse.c,v 7.114 2001/10/25 02:36:21 db Exp $
  */
 
 #include <assert.h>
@@ -164,12 +164,13 @@ void parse(struct Client *client_p, char *pbuffer, char *bufend)
 
       if (*sender && IsServer(client_p))
         {
-          from = find_client(sender, (struct Client *) NULL);
+          from = find_client(sender);
           if (from == NULL)
-            from = find_server(sender);
-
-          if(from == NULL)
-	    from = hash_find_id(sender, (struct Client *)NULL);
+          {
+	    from = find_server(sender);
+	    if(from == NULL)
+	      from = find_id(sender);
+	  }
 
           /* Hmm! If the client corresponding to the
            * prefix is not found--what is the correct
@@ -713,7 +714,7 @@ static void do_numeric(char numeric[],
     ircsprintf(t," :%s", parv[parc-1]);
   }
 
-  if ((target_p = find_client(parv[1], (struct Client *)NULL)))
+  if ((target_p = find_client(parv[1])) != NULL)
   {
     if (IsMe(target_p)) 
     {

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_ison.c,v 1.22 2001/04/04 15:22:26 androsyn Exp $
+ *   $Id: m_ison.c,v 1.23 2001/10/25 02:36:21 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -129,7 +129,7 @@ static int do_ison(struct Client *up, struct Client *source_p,
     for (nick = strtoken(&p, parv[i], " "); nick;
          nick = strtoken(&p, NULL, " "))
     {
-      if ((target_p = find_person(nick, NULL)))
+      if ((target_p = find_person(nick)))
       {
         len = strlen(target_p->name);
         if( (current_insert_point + (len + 5)) < (buf + sizeof(buf)) )

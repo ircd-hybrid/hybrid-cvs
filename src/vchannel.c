@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: vchannel.c,v 7.56 2001/10/24 06:19:44 db Exp $
+ * $Id: vchannel.c,v 7.57 2001/10/25 02:36:21 db Exp $
  */
 
 #include "tools.h"
@@ -447,8 +447,8 @@ find_vchan(struct Channel *chptr, char *key)
 
   key++;                        /* go past the '!' */
 
-  if ((target_p = find_client(key, (struct Client *)NULL)))
-    if ((chtmp = map_vchan(chptr, target_p)))
+  if ((target_p = find_client(key)) != NULL)
+    if ((chtmp = map_vchan(chptr, target_p)) != NULL)
       return chtmp;
 
   /* try and match vchan_id */

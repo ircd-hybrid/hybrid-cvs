@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel_mode.c,v 7.4 2001/10/21 20:48:28 leeh Exp $
+ * $Id: channel_mode.c,v 7.5 2001/10/25 02:36:21 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -1228,7 +1228,7 @@ chm_op(struct Client *client_p, struct Client *source_p,
 
   opnick = parv[(*parn)++];
 
-  if ((targ_p = find_client(opnick, NULL)) == NULL)
+  if ((targ_p = find_client(opnick)) == NULL)
   {
     if (!(*errors & SM_ERR_NOTONCHANNEL))
       sendto_one(source_p, form_str(ERR_NOSUCHNICK), me.name,
@@ -1455,7 +1455,7 @@ chm_halfop(struct Client *client_p, struct Client *source_p,
 
   opnick = parv[(*parn)++];
 
-  if ((targ_p = find_client(opnick, NULL)) == NULL)
+  if ((targ_p = find_client(opnick)) == NULL)
   {
     if (!(*errors & SM_ERR_NOTONCHANNEL))
       sendto_one(source_p, form_str(ERR_NOSUCHNICK), me.name,
@@ -1666,7 +1666,7 @@ chm_voice(struct Client *client_p, struct Client *source_p,
 
   opnick = parv[(*parn)++];
 
-  if ((targ_p = find_client(opnick, NULL)) == NULL)
+  if ((targ_p = find_client(opnick)) == NULL)
   {
     if (!(*errors & SM_ERR_NOTONCHANNEL))
       sendto_one(source_p, form_str(ERR_NOSUCHNICK), me.name,

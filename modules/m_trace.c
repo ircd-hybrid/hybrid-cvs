@@ -20,13 +20,13 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_trace.c,v 1.33 2001/10/17 16:07:25 leeh Exp $
+ *   $Id: m_trace.c,v 1.34 2001/10/25 02:36:21 db Exp $
  */
 #include "handlers.h"
 #include "class.h"
 #include "hook.h"
 #include "client.h"
-#include "hash.h"       /* for find_client() */
+#include "hash.h"
 #include "common.h"
 #include "hash.h"
 #include "irc_string.h"
@@ -137,7 +137,7 @@ static void mo_trace(struct Client *client_p, struct Client *source_p,
       const char* class_name;
       char ipaddr[HOSTIPLEN];
 
-      target_p = find_client(tname,(struct Client *)NULL);
+      target_p = find_client(tname);
       if(!target_p || !IsPerson(target_p)) 
         {
           /* this should only be reached if the matching

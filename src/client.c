@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.208 2001/10/24 10:36:05 db Exp $
+ *  $Id: client.c,v 7.209 2001/10/25 02:36:21 db Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -714,12 +714,17 @@ next_client(struct Client *next,     /* First client to check */
 {
   struct Client *tmp = next;
 
-  next = find_client(ch, tmp);
+  next = find_client(ch);
+
+  if (next == NULL)
+    next = tmp;
+
   if (tmp && tmp->prev == next)
-    return ((struct Client *) NULL);
+    return (NULL);
 
   if (next != tmp)
     return next;
+
   for ( ; next; next = next->next)
     {
       if (match(ch,next->name)) break;
@@ -745,7 +750,11 @@ next_client_double(struct Client *next, /* First client to check */
 {
   struct Client *tmp = next;
 
-  next = find_client(ch, tmp);
+  next = find_client(ch);
+
+  if (next == NULL)
+    next = tmp;
+
   if (tmp && tmp->prev == next)
     return NULL;
   if (next != tmp)
@@ -761,19 +770,18 @@ next_client_double(struct Client *next, /* First client to check */
 /*
  * find_person - find person by (nick)name.
  * inputs	- pointer to name
- *		- pointer to client
  * output	- return client pointer
  * side effects -
  */
-struct Client *find_person(char *name, struct Client *client_p)
+struct Client *find_person(char *name)
 {
-  struct Client       *c2ptr = client_p;
+  struct Client       *c2ptr;
 
-  c2ptr = find_client(name, c2ptr);
+  c2ptr = find_client(name);
 
-  if (c2ptr && IsClient(c2ptr) && c2ptr->user)
-    return c2ptr;
-  return client_p;
+  if (c2ptr && IsPerson(c2ptr))
+    return (c2ptr);
+  return (NULL);
 }
 
 /*
@@ -785,7 +793,7 @@ struct Client *find_person(char *name, struct Client *client_p)
 struct Client *
 find_chasing(struct Client *source_p, char *user, int *chasing)
 {
-  struct Client *who = find_client(user, NULL);
+  struct Client *who = find_client(user);
   
   if (chasing)
     *chasing = 0;

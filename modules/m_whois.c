@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 1.69 2001/10/21 15:40:50 davidt Exp $
+ *   $Id: m_whois.c,v 1.70 2001/10/25 02:36:21 db Exp $
  */
 
 #include <string.h>
@@ -30,7 +30,7 @@
 #include "common.h"   /* bleah */
 #include "handlers.h"
 #include "client.h"
-#include "hash.h"       /* for find_client() */
+#include "hash.h"
 #include "common.h"   /* bleah */
 #include "channel.h"
 #include "channel_mode.h"
@@ -194,7 +194,7 @@ static int do_whois(struct Client *client_p, struct Client *source_p,
 
   if(!wilds)
     {
-      if( (target_p = find_client(nick,(struct Client *)NULL)) )
+      if((target_p = find_client(nick)) != NULL)
 	{
 	  /* im being asked to reply to a client that isnt mine..
 	   * I cant answer authoritively, so better make it non-detailed
@@ -516,10 +516,10 @@ static void ms_whois(struct Client *client_p,
     struct Client *target_p;
     
     /* check if parv[1] is a client.. (most common) */
-    if(!(target_p = find_client(parv[1], NULL)))
+    if((target_p = find_client(parv[1])) == NULL)
     {
       /* ok, parv[1] isnt a client, is it a server? */
-      if(!(target_p = find_server(parv[1])))
+      if((target_p = find_server(parv[1])) == NULL)
       {
         /* its not a server either.. theyve sent a bad whois */
         sendto_one(source_p, form_str(ERR_NOSUCHSERVER), me.name,
@@ -551,7 +551,7 @@ static void ms_whois(struct Client *client_p,
         struct Client *whois_p;
 
         /* try to find the client */
-	whois_p = find_client(parv[2], NULL);
+	whois_p = find_client(parv[2]);
 	if (whois_p)
 	{
 	  /* check the server being asked to perform the whois, is that

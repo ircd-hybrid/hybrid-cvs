@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.216 2001/10/21 15:40:49 davidt Exp $
+ *   $Id: s_serv.c,v 7.217 2001/10/25 02:36:21 db Exp $
  */
 
 #include <sys/types.h>
@@ -461,7 +461,7 @@ int hunt_server(struct Client *client_p, struct Client *source_p, char *command,
    * message to go in the wrong direction while doing quick fast
    * non-matching lookups.
    */
-  if ((target_p = find_client(parv[server], NULL)))
+  if ((target_p = find_client(parv[server])))
     if (target_p->from == source_p->from && !MyConnect(target_p))
       target_p = NULL;
   if (!target_p && (target_p = find_server(parv[server])))

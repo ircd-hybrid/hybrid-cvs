@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.73 2001/10/24 06:19:44 db Exp $
+ *   $Id: m_message.c,v 1.74 2001/10/25 02:36:21 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -450,7 +450,7 @@ static int build_target_list(int p_or_n,
 
       /* At this point, its likely its another client */
 
-      if ( (target_p = find_person(nick, NULL)) )
+      if ((target_p = find_person(nick)) != NULL)
 	{
 	  if( !duplicate_ptr(target_p, *targets, i) )
 	    {

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.118 2001/10/24 06:19:44 db Exp $
+ *   $Id: m_sjoin.c,v 1.119 2001/10/25 02:36:21 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -452,7 +452,7 @@ static void ms_sjoin(struct Client *client_p,
       /* if the client doesnt exist, backtrack over the prefix (@%+) that we
        * just added and skip to the next nick
        */
-      if (!(target_p = find_client(s, NULL)))
+      if (!(target_p = find_client(s)))
       {
         sendto_one(source_p, form_str(ERR_NOSUCHNICK), me.name,
 	           source_p->name, s);

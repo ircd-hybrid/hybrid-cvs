@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_pong.c,v 1.18 2001/09/26 19:43:28 leeh Exp $
+ *   $Id: m_pong.c,v 1.19 2001/10/25 02:36:21 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -33,6 +33,7 @@
 #include "s_debug.h"
 #include "msg.h"
 #include "parse.h"
+#include "hash.h"
 #include "modules.h"
 
 static void mr_pong(struct Client*, struct Client*, int, char**);
@@ -84,7 +85,7 @@ static void ms_pong(struct Client *client_p,
    */
   if (!EmptyString(destination) && !match(destination, me.name))
     {
-      if ((target_p = find_client(destination, NULL)) ||
+      if ((target_p = find_client(destination)) ||
           (target_p = find_server(destination)))
         sendto_one(target_p,":%s PONG %s %s",
                    parv[0], origin, destination);

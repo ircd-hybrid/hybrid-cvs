@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kill.c,v 1.54 2001/10/17 16:07:25 leeh Exp $
+ *   $Id: m_kill.c,v 1.55 2001/10/25 02:36:21 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -97,14 +97,14 @@ static void mo_kill(struct Client *client_p, struct Client *source_p,
   else
     reason = "<No reason given>";
 
-  if (!(target_p = find_client(user, NULL)))
+  if ((target_p = find_client(user)) == NULL)
     {
       /*
       ** If the user has recently changed nick, automatically
       ** rewrite the KILL for this new nickname--this keeps
       ** servers in synch when nick change and kill collide
       */
-      if (!(target_p = get_history(user, (long)KILLCHASETIMELIMIT)))
+      if ((target_p = get_history(user, (long)KILLCHASETIMELIMIT)) == NULL)
         {
           sendto_one(source_p, form_str(ERR_NOSUCHNICK),
                      me.name, parv[0], user);
@@ -199,7 +199,7 @@ static void ms_kill(struct Client *client_p, struct Client *source_p,
     ircsprintf(buf, "%s!%s!%s!%s", source_p->user->server, source_p->host,
                source_p->username, source_p->name);
 
-  if (!(target_p = find_client(user, NULL)))
+  if ((target_p = find_client(user)) == NULL)
     {
       /*
        * If the user has recently changed nick, but only if its 

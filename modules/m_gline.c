@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_gline.c,v 1.66 2001/10/17 16:07:25 leeh Exp $
+ *  $Id: m_gline.c,v 1.67 2001/10/25 02:36:21 db Exp $
  */
 
 #include <assert.h>
@@ -344,7 +344,7 @@ static void ms_gline(struct Client *client_p,
   /* we need acptr for LL introduction anyway -davidt */
   if((acptr = find_server(oper_server)))
   {
-    if(!(acptr = find_client(oper_nick, NULL)))
+    if((acptr = find_client(oper_nick)) == NULL)
       return;
   }
   else

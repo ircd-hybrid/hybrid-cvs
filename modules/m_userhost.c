@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_userhost.c,v 1.31 2001/04/04 15:22:38 androsyn Exp $
+ *   $Id: m_userhost.c,v 1.32 2001/10/25 02:36:21 db Exp $
  */
 
 #include "handlers.h"
@@ -85,7 +85,7 @@ static void m_userhost(struct Client *client_p,
       if (parv[i+1] == NULL)
         break;
 
-      if ((target_p = find_person(parv[i+1], NULL)))
+      if ((target_p = find_person(parv[i+1])) != NULL)
 	{
 	  /*
 	   * Show real IP for USERHOST on yourself.

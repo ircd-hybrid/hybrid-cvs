@@ -20,11 +20,10 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_connect.c,v 1.31 2001/10/17 16:07:25 leeh Exp $
+ *   $Id: m_connect.c,v 1.32 2001/10/25 02:36:20 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
-#include "common.h"     /* FALSE bleah */
 #include "ircd.h"
 #include "irc_string.h"
 #include "numeric.h"
@@ -36,6 +35,7 @@
 #include "send.h"
 #include "msg.h"
 #include "parse.h"
+#include "hash.h"
 #include "modules.h"
 
 #include <assert.h>

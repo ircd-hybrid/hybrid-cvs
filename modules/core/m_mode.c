@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_mode.c,v 1.42 2001/10/24 06:19:44 db Exp $
+ *   $Id: m_mode.c,v 1.43 2001/10/25 02:36:21 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -143,7 +143,7 @@ static void m_mode(struct Client *client_p, struct Client *source_p,
   if ((parc > 2) && parv[2][0] == '!')
     {
      struct Client *target_p;
-     if (!(target_p = find_client(++parv[2], NULL)))
+     if (!(target_p = find_client(++parv[2])))
        {
         sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL), me.name,
                    parv[0], root->chname);

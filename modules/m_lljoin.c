@@ -17,14 +17,14 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_lljoin.c,v 1.49 2001/10/24 06:19:44 db Exp $
+ * $Id: m_lljoin.c,v 1.50 2001/10/25 02:36:21 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
 #include "channel_mode.h"
 #include "vchannel.h"
 #include "client.h"
-#include "hash.h"       /* for find_client() */
+#include "hash.h"
 #include "common.h"
 #include "hash.h"
 #include "irc_string.h"
@@ -135,7 +135,7 @@ static void ms_lljoin(struct Client *client_p,
 
   flags = 0;
 
-  target_p = find_client(nick,(struct Client *)NULL);
+  target_p = find_client(nick);
 
   if( !target_p || !target_p->user )
     return;
