@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: servlink.h,v 1.6 2001/05/24 21:17:07 davidt Exp $
+ *   $Id: servlink.h,v 1.7 2001/05/24 21:30:48 davidt Exp $
  */
 
 #include <stdio.h>
@@ -40,17 +40,16 @@
 #define SERVLINK_DEBUG_LOGS     0x02
 
 /* #define SERVLINK_DEBUG  SERVLINK_DEBUG_GDB|SERVLINK_DEBUG_LOGS */
-/* #undef SERVLINK_DEBUG */
-#define SERVLINK_DEBUG  SERVLINK_DEBUG_LOGS
+#undef SERVLINK_DEBUG
+/* #define SERVLINK_DEBUG  SERVLINK_DEBUG_LOGS */
 
 #if SERVLINK_DEBUG & SERVLINK_DEBUG_LOGS
-#define CIL 0
-#define DIL 1
-#define NIL 2
-#define DOL 3
-#define NOL 4
+#define BEL 0
+#define PEL 1
+#define BDL 2
+#define PDL 3
 
-extern FILE *logs[5];
+extern FILE *logs[4];
 #define LOG_IO(log, data, len)  assert(fwrite(data, 1, len, logs[log]) == len);
 #else
 #define LOG_IO(log, data, len)
