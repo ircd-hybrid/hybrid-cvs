@@ -1,3 +1,15 @@
+db          2001/12/30 00:55:12 EST	(20011230_1)
+
+  Modified files:
+    include              s_conf.h 
+  Log:
+  - removed two struct elements no longer used in struct ConfItem
+  
+  Revision  Changes    Path
+  7.171     +0 -2      ircd-hybrid-7/include/s_conf.h
+
+
+
 db          2001/12/29 23:19:51 EST	(20011230_0)
 
   Modified files:
@@ -1716,7 +1728,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3253 2001/12/30 04:19:57 db Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3254 2001/12/30 05:55:17 db Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -20070,4 +20082,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3253 2001/12/30 04:19:57 db Exp $
+$Id: ChangeLog,v 7.3254 2001/12/30 05:55:17 db Exp $
