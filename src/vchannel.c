@@ -19,7 +19,7 @@
  *
  *
  *
- * $Id: vchannel.c,v 7.31 2001/01/02 02:49:38 davidt Exp $
+ * $Id: vchannel.c,v 7.32 2001/01/02 02:54:34 davidt Exp $
  */
 #include "tools.h"
 #include "vchannel.h"
@@ -352,8 +352,8 @@ vchan_show_ids(struct Client *sptr, struct Channel *chptr)
   }
   else
   {
-    strcpy(t, "<secret>");
-    tlen = 8;
+    strcpy(t, "<secret> ");
+    tlen = 9;
     cur_len += tlen;
     t += tlen;
     reply_to_send = 1;
@@ -367,8 +367,8 @@ vchan_show_ids(struct Client *sptr, struct Channel *chptr)
        /* Obey the rules of /list */
        if(SecretChannel(chtmp))
        {
-         strcpy(t, "<secret>");
-         tlen = 8;
+         strcpy(t, "<secret> ");
+         tlen = 9;
          cur_len += tlen;
          t += tlen;
          reply_to_send = 1;
