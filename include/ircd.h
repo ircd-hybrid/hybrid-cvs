@@ -19,7 +19,7 @@
  *
  * "ircd.h". - Headers file.
  *
- * $Id: ircd.h,v 7.30 2001/05/09 08:08:16 a1kmm Exp $
+ * $Id: ircd.h,v 7.31 2001/05/10 06:30:39 a1kmm Exp $
  *
  */
 #ifndef INCLUDED_ircd_h
@@ -30,6 +30,7 @@
 
 #include "config.h"
 #include "tools.h"
+#include "memory.h"
 
 struct Client;
 struct dlink_list;

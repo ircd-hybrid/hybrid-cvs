@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: memory.c,v 7.17 2001/04/20 06:11:03 a1kmm Exp $
+ * $Id: memory.c,v 7.18 2001/05/10 06:30:45 a1kmm Exp $
  */
 #include <stdlib.h>
 #include <string.h>
@@ -127,10 +127,11 @@ void ReportAllocated(struct Client*);
 void
 ReportAllocated(struct Client *client_p)
 {
+  int i = 2000;
   MemoryEntry *mme;
   sendto_one(client_p, ":%s NOTICE %s :*** -- Memory Allocation Report",
 	     me.name, client_p->name);
-  for (mme = first_mem_entry; mme; mme=mme->next)
+  for (i=0, mme = first_mem_entry; i < 1000 && mme; mme=mme->next,i++)
     sendto_one(client_p,
 	       ":%s NOTICE %s :*** -- %u bytes allocated for %lus at %s:%d",
 	       me.name, client_p->name, mme->size, CurrentTime-mme->ts, mme->file,

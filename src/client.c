@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.166 2001/05/09 08:08:24 a1kmm Exp $
+ *  $Id: client.c,v 7.167 2001/05/10 06:30:43 a1kmm Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -955,6 +955,7 @@ free_exited_clients(void *unused)
   dlinkDelete(ptr, &dead_list);
   free_dlink_node(ptr);
  }
+ eventAdd("free_exited_clients()", &free_exited_clients, NULL, 4, 0);
 }
 
 /*

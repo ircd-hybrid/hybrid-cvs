@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.211 2001/05/04 22:24:01 fl_ Exp $
+ * $Id: channel.c,v 7.212 2001/05/10 06:30:42 a1kmm Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -445,16 +445,22 @@ void remove_user_from_channel(struct Channel *chptr,struct Client *who, int perm
     ircsprintf(chptr->vchan_id, "!%s", who->name);
 
   if( (ptr = find_user_link(&chptr->peons,who)) )
-    dlinkDelete(ptr,&chptr->peons);
+  {
+   dlinkDelete(ptr,&chptr->peons);
+  }
   else if( (ptr = find_user_link(&chptr->chanops,who)) )
     {
       chptr->opcount--;
       dlinkDelete(ptr,&chptr->chanops);
     }
   else if ((ptr = find_user_link(&chptr->voiced,who)) )
+  {
     dlinkDelete(ptr,&chptr->voiced);
+  }
   else if ((ptr = find_user_link(&chptr->halfops,who)) )
+  {
     dlinkDelete(ptr,&chptr->halfops);
+  }
   else 
     return;	/* oops */
 

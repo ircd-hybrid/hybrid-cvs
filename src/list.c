@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu, Computing Center and Jarkko Oikarinen
  *
- * $Id: list.c,v 7.30 2001/03/29 09:11:15 db Exp $
+ * $Id: list.c,v 7.31 2001/05/10 06:30:44 a1kmm Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -160,7 +160,9 @@ void _free_user(struct User* user, struct Client* client_p)
  * output	- pointer to new dlink_node
  * side effects	- NONE
  */
-dlink_node *make_dlink_node()
+#ifndef MEMDEBUG
+dlink_node*
+_make_dlink_node(void)
 {
   dlink_node *lp;
 
@@ -172,6 +174,23 @@ dlink_node *make_dlink_node()
 
   return lp;
 }
+#else
+dlink_node*
+_make_dlink_node(const char *file, int line)
+{
+ char nambuf[50];
+ dlink_node *lp;
+ #define DLINK_DBG_PREFIX "DLINK:"
+ strcpy(nambuf, DLINK_DBG_PREFIX);
+ strncpy_irc(nambuf+sizeof(DLINK_DBG_PREFIX)-1, file,
+             sizeof(nambuf)-sizeof(DLINK_DBG_PREFIX));
+ lp = _MyMalloc(sizeof(*lp), nambuf, line);
+ lp->next = NULL;
+ lp->prev = NULL;
+ ++links_count;
+ return lp;
+}
+#endif
 
 /*
  * _free_dlink_node

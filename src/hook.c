@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: hook.c,v 7.6 2001/02/11 02:52:07 a1kmm Exp $
+ * $Id: hook.c,v 7.7 2001/05/10 06:30:44 a1kmm blalloc.c $
  */
 
 /* hooks are used by modules to hook into events called by other parts of
@@ -101,19 +101,22 @@ find_hook(char *name)
 int 
 hook_del_hook(char *event, hookfn *fn)
 {
-	hook *h;
-	dlink_node *node;
-	
-	h = find_hook(event);
-	if (!h)
-		return -1;
-	
-	for (node = h->hooks.head; node; node = node->next)
-	{
-		if (fn == node->data)
-			dlinkDelete(node, &h->hooks);
-	}
-	return 0;
+ hook *h;
+ dlink_node *node, *nnode;
+ h = find_hook(event);
+ if (!h)
+  return -1;
+   
+ for (node = h->hooks.head; node; node = node->next)
+ {
+  nnode = node->next;
+  if (fn == node->data)
+  {
+   dlinkDelete(node, &h->hooks);
+   free_dlink_node(node);
+  } 
+ }
+ return 0;
 }
 
 int
