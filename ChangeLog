@@ -1,3 +1,15 @@
+androsyn    2001/12/16 02:50:13 EST	(20011216_4)
+
+  Modified files:
+    src                  irc_string.c 
+  Log:
+  Ripped out some old code..
+  
+  Revision  Changes    Path
+  7.43      +0 -8      ircd-hybrid-7/src/irc_string.c
+
+
+
 androsyn    2001/12/16 02:48:35 EST	(20011216_3)
 
   Modified files:
@@ -724,7 +736,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3189 2001/12/16 07:48:40 androsyn Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3190 2001/12/16 07:50:18 androsyn Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -19078,4 +19090,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3189 2001/12/16 07:48:40 androsyn Exp $
+$Id: ChangeLog,v 7.3190 2001/12/16 07:50:18 androsyn Exp $
