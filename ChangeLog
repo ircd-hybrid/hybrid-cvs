@@ -1,3 +1,19 @@
+db          2002/09/09 09:43:49 EDT	(20020909_2)
+
+  Modified files:
+    src                  ircd_parser.y s_conf.c s_log.c 
+  Log:
+  - having ircd_parser.y put a string into ->host, then having s_conf immediately
+    moving it from host to name,just seemed too silly for me. (conf_add_x_conf)
+    Also cleaned up some style.
+  
+  Revision  Changes    Path
+  1.255     +6 -7      ircd-hybrid-7/src/ircd_parser.y
+  7.323     +1 -5      ircd-hybrid-7/src/s_conf.c
+  7.45      +14 -15    ircd-hybrid-7/src/s_log.c
+
+
+
 db          2002/09/09 09:32:20 EDT	(20020909_1)
 
   Modified files:
@@ -31928,4 +31944,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4027 2002/09/09 13:32:22 db Exp $
+$Id: ChangeLog,v 7.4028 2002/09/09 13:43:52 db Exp $
