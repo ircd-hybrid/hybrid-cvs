@@ -1,3 +1,15 @@
+db          2001/12/26 21:36:33 EST	(20011227_0)
+
+  Modified files:
+    src                  ircd_parser.y 
+  Log:
+  - If there is no crypt, don't look for crypt variables..
+  
+  Revision  Changes    Path
+  1.228     +4 -0      ircd-hybrid-7/src/ircd_parser.y
+
+
+
 androsyn    2001/12/25 01:53:44 EST	(20011225_2)
 
   Modified files:
@@ -1449,7 +1461,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3237 2001/12/25 06:53:50 androsyn Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3238 2001/12/27 02:36:38 db Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -19803,4 +19815,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3237 2001/12/25 06:53:50 androsyn Exp $
+$Id: ChangeLog,v 7.3238 2001/12/27 02:36:38 db Exp $
