@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_quit.c,v 1.36 2003/06/21 03:55:14 michael Exp $
+ *  $Id: m_quit.c,v 1.37 2003/06/21 04:08:51 michael Exp $
  */
 
 #include "stdinc.h"
@@ -27,7 +27,6 @@
 #include "client.h"
 #include "ircd.h"
 #include "irc_string.h"
-#include "numeric.h"
 #include "s_serv.h"
 #include "send.h"
 #include "msg.h"
@@ -56,7 +55,7 @@ _moddeinit(void)
   mod_del_cmd(&quit_msgtab);
 }
 
-const char *_version = "$Revision: 1.36 $";
+const char *_version = "$Revision: 1.37 $";
 #endif
 
 /*
