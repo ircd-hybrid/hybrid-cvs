@@ -1,3 +1,30 @@
+db          2002/08/15 10:15:41 EDT	(20020815_2)
+
+  Modified files:
+    modules              m_cryptlink.c m_gline.c m_kline.c 
+                         m_pong.c 
+    src                  client.c hash.c ircdauth.c s_conf.c 
+                         s_serv.c s_user.c scache.c 
+  Log:
+  - pile of corrections to strlcpy() use. the size includes the null byte.
+    This was caught by bill. I have done a quicky one pass review while
+    applying the patch. need another review.
+  
+  Revision  Changes    Path
+  1.34      +4 -4      ircd-hybrid-7/modules/m_cryptlink.c
+  1.82      +69 -114   ircd-hybrid-7/modules/m_gline.c
+  1.109     +13 -13    ircd-hybrid-7/modules/m_kline.c
+  1.28      +12 -10    ircd-hybrid-7/modules/m_pong.c
+  7.295     +3 -3      ircd-hybrid-7/src/client.c
+  7.44      +1 -1      ircd-hybrid-7/src/hash.c
+  7.49      +2 -2      ircd-hybrid-7/src/ircdauth.c
+  7.317     +2 -2      ircd-hybrid-7/src/s_conf.c
+  7.269     +2 -2      ircd-hybrid-7/src/s_serv.c
+  7.207     +7 -7      ircd-hybrid-7/src/s_user.c
+  7.16      +1 -1      ircd-hybrid-7/src/scache.c
+
+
+
 db          2002/08/15 09:32:45 EDT	(20020815_1)
 
   Modified files:
@@ -31135,4 +31162,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3973 2002/08/15 13:32:51 db Exp $
+$Id: ChangeLog,v 7.3974 2002/08/15 14:15:47 db Exp $
