@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- * $Id: dynlink.c,v 7.11 2003/06/13 07:40:31 joshk Exp $
+ * $Id: dynlink.c,v 7.12 2003/06/17 03:58:29 joshk Exp $
  *
  */
 #include "stdinc.h"
@@ -30,7 +30,6 @@
 #include "client.h"
 #include "send.h"
 
-#ifndef STATIC_MODULES
 #ifndef RTLD_NOW
 #define RTLD_NOW RTLD_LAZY /* openbsd deficiency */
 #endif
@@ -363,5 +362,4 @@ static void increase_modlist(void)
   modlist = new_modlist;
   max_mods += MODS_INCREMENT;
 }
-#endif /* STATIC_MODULES */
 

@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.142 2003/06/01 23:46:55 joshk Exp $
+# $Id: Makefile.in,v 7.143 2003/06/17 03:58:29 joshk Exp $
 #
 @SET_MAKE@
 
@@ -65,7 +65,6 @@ BASE_SRCS =	\
  client.c \
  cluster.c \
  dbuf.c	\
- dynlink.c \
  event.c \
  fdlist.c \
  fileio.c \
@@ -109,6 +108,7 @@ BASE_SRCS =	\
  @BALLOC_C@ \
  @INET_MISC@ \
  @SSL_SRCS_ENABLE@ \
+ @DYNLINK_C@ \
  tools.c \
  whowas.c
 

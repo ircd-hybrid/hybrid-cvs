@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.56 2003/06/16 20:57:48 joshk Exp $
+dnl $Id: configure.ac,v 7.57 2003/06/17 03:58:26 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -253,7 +253,9 @@ if test -z "$Tru"; then
 
 AC_MSG_CHECKING(for broken glibc with __ss_family)
 AC_COMPILE_IFELSE(
-[AC_LANG_PROGRAM([#include <sys/socket.h>],
+[AC_LANG_PROGRAM(
+[#include <sys/types.h>
+#include <sys/socket.h>],
 [struct sockaddr_storage s; s.__ss_family = AF_INET;])],
 [
 	AC_MSG_RESULT(yes)
@@ -587,8 +589,9 @@ AC_CHECK_FUNC([kevent],
 			AC_MSG_RESULT(no)
 			AC_CHECK_FUNC(poll, [SELECT_TYPE="poll"],
 			[
-				AC_MSG_WARN([no special implementation detected, falling back to select()])
-				SELECT_TYPE="select"
+				AC_CHECK_FUNC(poll, [SELECT_TYPE="select"],
+				[AC_MSG_ERROR([Couldn't find anything to use for IO loop! Report to hybrid@the-project.org.])
+				])
 			])
 		])
 	fi
@@ -879,6 +882,7 @@ else
 	MODULES_LIBS=""
 	MOD_TARGET="shared_modules"
 	SEDOBJ="s/\.o/.so/g"
+	DYNLINK_C=dynlink.c
         CHECK_DLOPEN_LD
         if test "$have_shl_load" = "no"; then
             AC_CHECK_HEADER([mach-o/dyld.h],, [CHECK_DLOPEN_DL])
@@ -965,6 +969,8 @@ else
 			AC_DEFINE(STATIC_MODULES, 1, [Define to 1 if dynamic modules can't be used.])
 		fi
 	fi
+
+	AC_SUBST(DYNLINK_C)
 	AC_SUBST(PICFLAGS)
 
 	nlist_lib=""

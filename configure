@@ -308,7 +308,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT MKDEP MAKEDEPEND STDOUT CPP EGREP SET_MAKE INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA RM CP MV LN SED AR LD YACC RANLIB ac_ct_RANLIB LEX LEXLIB LEX_OUTPUT_ROOT INET_MISC CRYPT_LIB VICONF SNPRINTF_C ENCSPEED ZLIB_LD SELECT_TYPE CLOBBER BALLOC_C EXAMPLE_CONF PICFLAGS MODULES_DEFINE MODULES_LIBS MOD_TARGET SSL_SRCS_ENABLE SSL_INCLUDES SSL_LIBS IRC_CFLAGS SEDOBJ LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT MKDEP MAKEDEPEND STDOUT CPP EGREP SET_MAKE INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA RM CP MV LN SED AR LD YACC RANLIB ac_ct_RANLIB LEX LEXLIB LEX_OUTPUT_ROOT INET_MISC CRYPT_LIB VICONF SNPRINTF_C ENCSPEED ZLIB_LD SELECT_TYPE CLOBBER BALLOC_C EXAMPLE_CONF DYNLINK_C PICFLAGS MODULES_DEFINE MODULES_LIBS MOD_TARGET SSL_SRCS_ENABLE SSL_INCLUDES SSL_LIBS IRC_CFLAGS SEDOBJ LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -4900,6 +4900,7 @@ _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
+#include <sys/types.h>
 #include <sys/socket.h>
 int
 main ()
@@ -7697,9 +7698,87 @@ if test $ac_cv_func_poll = yes; then
   SELECT_TYPE="poll"
 else
 
-				{ echo "$as_me:$LINENO: WARNING: no special implementation detected, falling back to select()" >&5
-echo "$as_me: WARNING: no special implementation detected, falling back to select()" >&2;}
-				SELECT_TYPE="select"
+				echo "$as_me:$LINENO: checking for poll" >&5
+echo $ECHO_N "checking for poll... $ECHO_C" >&6
+if test "${ac_cv_func_poll+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+/* System header to define __stub macros and hopefully few prototypes,
+    which can conflict with char poll (); below.
+    Prefer <limits.h> to <assert.h> if __STDC__ is defined, since
+    <limits.h> exists even on freestanding compilers.  */
+#ifdef __STDC__
+# include <limits.h>
+#else
+# include <assert.h>
+#endif
+/* Override any gcc2 internal prototype to avoid an error.  */
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+/* We use char because int might match the return type of a gcc2
+   builtin and then its argument prototype would still apply.  */
+char poll ();
+/* The GNU C library defines this for functions which it implements
+    to always fail with ENOSYS.  Some functions are actually named
+    something starting with __ and the normal name is an alias.  */
+#if defined (__stub_poll) || defined (__stub___poll)
+choke me
+#else
+char (*f) () = poll;
+#endif
+#ifdef __cplusplus
+}
+#endif
+
+int
+main ()
+{
+return f != poll;
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_func_poll=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_cv_func_poll=no
+fi
+rm -f conftest.$ac_objext conftest$ac_exeext conftest.$ac_ext
+fi
+echo "$as_me:$LINENO: result: $ac_cv_func_poll" >&5
+echo "${ECHO_T}$ac_cv_func_poll" >&6
+if test $ac_cv_func_poll = yes; then
+  SELECT_TYPE="select"
+else
+  { { echo "$as_me:$LINENO: error: Couldn't find anything to use for IO loop! Report to hybrid@the-project.org." >&5
+echo "$as_me: error: Couldn't find anything to use for IO loop! Report to hybrid@the-project.org." >&2;}
+   { (exit 1); exit 1; }; }
+
+fi
+
 
 fi
 
@@ -8255,6 +8334,7 @@ else
 	MODULES_LIBS=""
 	MOD_TARGET="shared_modules"
 	SEDOBJ="s/\.o/.so/g"
+	DYNLINK_C=dynlink.c
         echo "$as_me:$LINENO: checking for library containing shl_load" >&5
 echo $ECHO_N "checking for library containing shl_load... $ECHO_C" >&6
 if test "${ac_cv_search_shl_load+set}" = set; then
@@ -9070,6 +9150,8 @@ _ACEOF
 
 		fi
 	fi
+
+
 
 
 	nlist_lib=""
@@ -10423,6 +10505,7 @@ s,@SELECT_TYPE@,$SELECT_TYPE,;t t
 s,@CLOBBER@,$CLOBBER,;t t
 s,@BALLOC_C@,$BALLOC_C,;t t
 s,@EXAMPLE_CONF@,$EXAMPLE_CONF,;t t
+s,@DYNLINK_C@,$DYNLINK_C,;t t
 s,@PICFLAGS@,$PICFLAGS,;t t
 s,@MODULES_DEFINE@,$MODULES_DEFINE,;t t
 s,@MODULES_LIBS@,$MODULES_LIBS,;t t

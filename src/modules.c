@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.133 2003/06/16 19:02:24 joshk Exp $
+ *  $Id: modules.c,v 7.134 2003/06/17 03:58:29 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -427,7 +427,7 @@ load_one_module(char *path, int coremodule)
     }
     else
     {
-      modpath = MyMalloc (m_len);
+      modpath = MyMalloc (m_len + 1);
       snprintf (modpath, m_len + 1, "%s/%s", mpath->path, path);
 
       if ((strstr(modpath, "../") == NULL) &&

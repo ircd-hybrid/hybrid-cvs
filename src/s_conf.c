@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.433 2003/06/16 22:35:26 metalrock Exp $
+ *  $Id: s_conf.c,v 7.434 2003/06/17 03:58:29 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -1616,8 +1616,10 @@ rehash(int sig)
     sendto_realops_flags(UMODE_ALL, L_ALL,
                          "Got signal SIGHUP, reloading ircd conf. file");
   
+#ifndef STATIC_MODULES
   /* Purge the list of pending modules to be loaded */
   clear_pending();
+#endif
 
   restart_resolver();
   /* don't close listeners until we know we can go ahead with the rehash */
@@ -1627,7 +1629,9 @@ rehash(int sig)
 
   read_conf_files(0);
 
+#ifndef STATIC_MODULES
   load_pending ();
+#endif
 
   if (ServerInfo.description != NULL)
     strlcpy(me.info, ServerInfo.description, sizeof(me.info));
