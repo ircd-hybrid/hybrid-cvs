@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.181 2001/06/03 23:44:34 ejb Exp $
+ * $Id: ircd_parser.y,v 1.182 2001/06/05 01:55:15 ejb Exp $
  */
 
 %{
@@ -560,7 +560,7 @@ serverinfo_vhost:  VHOST '=' QSTRING ';'
   {
     if(inetpton(DEF_FAM, yylval.string, &IN_ADDR(ServerInfo.ip)) <= 0)
     {
-     log(L_ERROR, "Invalid netmask for server vhost(%s)", yylval.string);
+     ilog(L_ERROR, "Invalid netmask for server vhost(%s)", yylval.string);
     }
     ServerInfo.specific_ipv4_vhost = 1;
   };
@@ -570,7 +570,7 @@ serverinfo_vhost6:	VHOST6 '=' QSTRING ';'
 #ifdef IPV6
     if(inetpton(DEF_FAM,yylval.string, &IN_ADDR(ServerInfo.ip6)) <= 0)
       {
-        log(L_ERROR, "Invalid netmask for server vhost(%s)", yylval.string);
+        ilog(L_ERROR, "Invalid netmask for server vhost(%s)", yylval.string);
       }
     ServerInfo.specific_ipv6_vhost = 1;
 #endif
@@ -1116,7 +1116,7 @@ auth_spoof:   SPOOF '=' QSTRING ';'
 	DupString(yy_achead->name, yylval.string);
     	yy_achead->flags |= CONF_FLAGS_SPOOF_IP;
     } else
-	log(L_ERROR, "Spoofs must be less than %d..ignoring it", HOSTLEN);
+	ilog(L_ERROR, "Spoofs must be less than %d..ignoring it", HOSTLEN);
   };
 
 auth_exceed_limit:    EXCEED_LIMIT '=' TYES ';'
@@ -1422,7 +1422,7 @@ connect_name:   NAME '=' QSTRING ';'
     if(yy_aconf->name != NULL)
       {
 	sendto_realops_flags(FLAGS_ALL,"*** Multiple connect name entry");
-	log(L_WARN, "Multiple connect name entry %s", yy_aconf->name);
+	ilog(L_WARN, "Multiple connect name entry %s", yy_aconf->name);
       }
 
     MyFree(yy_aconf->name);
