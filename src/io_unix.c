@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- * $Id: io_unix.c,v 1.1.2.1 2002/05/26 10:55:57 androsyn Exp $
+ * $Id: io_unix.c,v 1.1.2.2 2002/05/26 18:54:12 androsyn Exp $
  *
  */
 
@@ -54,17 +54,58 @@ static int IO_nonblocking(IO *io)
 
 }
 
+/*
+ * int IO_getfd(IO *io)
+ *
+ * Input: The IO handle we want to get an FD from
+ * Ouput: The file descriptor or -1 if the handle isn't associated with an FD
+ */
+
+int IO_getfd(IO *io)
+{
+	if(io->iotype == IO_FD)
+	{
+		return(io->ioh->fde);
+	}
+	return -1;
+}
+
+
+IO *IO_accept(IO *io, struct sockaddr, int len)
+{
+	if(io->iotype == IO_FD)
+	{
+		fde_t *F = io->ioh->F;
+		accept
+		
+	}
+
+}
+/*
+ * IO *IO_newfd(int fd, int fdtype)
+ *
+ * Input: File descriptor and FD type to create an IO handle for
+ * Ouput: The newly allocated IO handle
+ */
 IO *IO_newfd(int fd, int fdtype)
 {
 	io = BlockHeapAlloc(io_blockheap);
 	memset(io, 0, sizeof(IO));
 	io->iotype = IO_FD;
-	io->ioh->fde = BlockHeapAlloc(fde_blockheap);
-	memset(io->ioh->fde, 0, sizeof(fde));
-	io->ioh->fde->fd = fd;
-	io->ioh->fde->type = fdtype;
+	io->ioh->F = BlockHeapAlloc(fde_blockheap);
+	memset(io->ioh->F, 0, sizeof(fde));
+	io->ioh->F->fd = fd;
+	io->ioh->F>type = fdtype;
+	return(io);
 }
 
+/*
+ * IO *IO_open(const char *file, int flags, int mode)
+ *
+ * Input: Filename to open and any flags to go with it
+ * Ouput: IO handle pointing to the file
+ */
+ 
 IO *IO_open(const char *file, int flags, ...)
 {
 	int fd, mode;

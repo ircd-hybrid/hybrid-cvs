@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- * $Id: io_win32.c,v 1.1.2.1 2002/05/26 10:55:57 androsyn Exp $
+ * $Id: io_win32.c,v 1.1.2.2 2002/05/26 18:54:12 androsyn Exp $
  *
  */
 
@@ -32,20 +32,53 @@ void initIO(void)
 
 }
 
+/* This assumes that the IO handle is an FD!!! */ 
+#define IO_getfd(x) x->ioh->F->fd
+
+
 static int IO_nonblocking(IO *io)
 {
 	if(io->iotype == IO_FD)
 	{
 		int val = 1;
-		if(ioctlsocket(io->ioh->F->fd, FIONBIO, &val) != -1)
+		if(ioctlsocket(IO_getfd(io), FIONBIO, &val) != -1)
 		{
 			return 1;
 		} 
 	} else {
 		return 1;
 	} 
+	errno = WSAGetLastError();
 	return -1;	 
 
+}
+
+
+
+IO *IO_accept(IO *io, struct sockaddr *sock, int len)
+{
+	if(io->iotype == IO_FD)
+	{
+		int fd;
+		IO *newio;
+		fd = accept(IO_getfd(io), sock, &len);	
+		if(fd < 0)
+		{
+			errno = WSAGetLastError();
+			return NULL;
+		}
+		newio = IO_newfd(fd, FD_SOCKET);
+		if(IO_nonblocking(io) == -1)
+		{
+			ilog(L_CRIT, "IO_socket: Couldn't set FD %d non blocking: %s", fd, strerror(errno));
+			IO_close(io);
+			return NULL;
+		}
+		return(newio):		
+	}
+	errno = EINVAL;
+	return NULL;
+	
 }
 
 IO *IO_newfd(int fd, int fdtype)
@@ -57,8 +90,7 @@ IO *IO_newfd(int fd, int fdtype)
 	memset(io->ioh->fde, 0, sizeof(fde));
 	io->ioh->fde->fd = fd;
 	io->ioh->fde->type = fdtype;
-
-
+	return(io);
 }
 
 IO *IO_open(const char *file, int flags, ...)
@@ -93,7 +125,7 @@ IO *IO_socket(int family, int sock_type, int proto, const char *note)
 		comm_close(io);
 		return NULL;
 	}
-	return IO;
+	return(io);
 }
 
 int IO_write(IO *io, void *data, size_t len)

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.c,v 7.67.2.1 2002/05/26 10:55:57 androsyn Exp $
+ *  $Id: listener.c,v 7.67.2.2 2002/05/26 18:54:12 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -152,13 +152,13 @@ static int
 inetport(struct Listener* listener)
 {
   struct irc_sockaddr lsin;
-  int                fd;
+  IO *io;
   int                opt = 1;
 
   /*
    * At first, open a new socket
    */
-  fd = comm_open(DEF_FAM, SOCK_STREAM, 0, "Listener socket");
+  fd = IO_socket(DEF_FAM, SOCK_STREAM, 0, "Listener socket");
 
 #ifdef IPV6
   if (!IN6_ARE_ADDR_EQUAL((struct in6_addr *)&listener->addr, &in6addr_any))
