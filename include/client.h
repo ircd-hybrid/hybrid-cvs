@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.159 2003/01/30 07:28:57 lusky Exp $
+ *  $Id: client.h,v 7.160 2003/01/31 23:00:25 db Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -397,6 +397,7 @@ struct LocalUser
 #define FLAGS_SERVLINK     0x10000 /* servlink has servlink process */
 #define FLAGS_MARK	   0x20000 /* marked client */
 #define FLAGS_CANFLOOD	   0x40000 /* client has the ability to flood */
+#define FLAGS_EXITED	   0x80000 /* this client waiting for undertaker */
 /* umodes, settable flags */
 
 #define FLAGS_SERVNOTICE   0x0001 /* server notices such as kill */
@@ -473,6 +474,8 @@ struct LocalUser
 #define DoAccess(x)             ((x)->flags & FLAGS_CHKACCESS)
 #define IsDead(x)               ((x)->flags & FLAGS_DEADSOCKET)
 #define SetDead(x)              ((x)->flags |= FLAGS_DEADSOCKET)
+#define IsExited(x)		((x)->flags & FLAGS_EXITED)
+#define SetExited(x)		((x)->flags |= FLAGS_EXITED)
 #define SetAccess(x)            ((x)->flags |= FLAGS_CHKACCESS)
 #define IsClosing(x)		((x)->flags & FLAGS_CLOSING)
 #define SetClosing(x)		((x)->flags |= FLAGS_CLOSING)

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kick.c,v 1.48 2003/01/31 13:17:55 a1kmm Exp $
+ *  $Id: m_kick.c,v 1.49 2003/01/31 23:00:29 db Exp $
  */
 
 #include "stdinc.h"
@@ -60,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&kick_msgtab);
 }
 
-const char *_version = "$Revision: 1.48 $";
+const char *_version = "$Revision: 1.49 $";
 #endif
 /*
 ** m_kick
@@ -69,10 +69,9 @@ const char *_version = "$Revision: 1.48 $";
 **      parv[2] = client to kick
 **      parv[3] = kick comment
 */
-static void m_kick(struct Client *client_p,
-                  struct Client *source_p,
-                  int parc,
-                  char *parv[])
+static void 
+m_kick(struct Client *client_p, struct Client *source_p,
+                  int parc, char *parv[])
 {
   struct Client *who;
   struct Channel *chptr;
@@ -185,13 +184,6 @@ static void m_kick(struct Client *client_p,
       return;
     }
 
-  /* To save trouble later, convert kicking yourself into a part. */
-  if (who == source_p)
-  {
-    part_one_client(client_p, source_p, chptr->chname, comment);
-    return;
-  }
-
   if (IsMember(who, chptr))
     {
       /* half ops cannot kick other halfops on private channels */
@@ -253,17 +245,17 @@ static void m_kick(struct Client *client_p,
                     ":%s KICK %s %s :%s",
                     parv[0], chptr->chname,
                     who->name, comment);
-      remove_user_from_channel(chptr, who);
+      if (!IsDead(who))
+	remove_user_from_channel(chptr, who);
     }
   else
     sendto_one(source_p, form_str(ERR_USERNOTINCHANNEL),
                me.name, parv[0], user, name);
 }
 
-static void ms_kick(struct Client *client_p,
-                   struct Client *source_p,
-                   int parc,
-                   char *parv[])
+static void
+ms_kick(struct Client *client_p, struct Client *source_p,
+                   int parc, char *parv[])
 {
   if (*parv[2] == '\0')
     {

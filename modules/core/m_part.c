@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_part.c,v 1.60 2003/01/31 13:17:55 a1kmm Exp $
+ *  $Id: m_part.c,v 1.61 2003/01/31 23:00:29 db Exp $
  */
 
 #include "stdinc.h"
@@ -62,8 +62,12 @@ _moddeinit(void)
 {
   mod_del_cmd(&part_msgtab);
 }
-const char *_version = "$Revision: 1.60 $";
+const char *_version = "$Revision: 1.61 $";
 #endif
+
+static void part_one_client(struct Client *client_p,
+			    struct Client *source_p,
+			    char *name, char *reason);
 
 /*
 ** m_part
@@ -103,4 +107,123 @@ static void m_part(struct Client *client_p,
     name = strtoken(&p, (char *)NULL, ",");
   }
   return;
+}
+
+/*
+ * part_one_client
+ *
+ * inputs	- pointer to server
+ * 		- pointer to source client to remove
+ *		- char pointer of name of channel to remove from
+ * output	- none
+ * side effects	- remove ONE client given the channel name 
+ */
+static void
+part_one_client(struct Client *client_p, struct Client *source_p,
+                char *name, char *reason)
+{
+  struct Channel *chptr;
+  struct Channel *bchan;
+  int part_with_reason = 0, dying = 0;
+
+  if ((chptr = hash_find_channel(name)) == NULL)
+    {
+      sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
+		 me.name, source_p->name, name);
+      return;
+    }
+
+#ifdef VCHANS
+  if (IsVchan(chptr) || HasVchans(chptr))
+    {
+      if(HasVchans(chptr))
+        {
+          /* Set chptr to actual channel, bchan to the base channel */
+          bchan = chptr;
+          chptr = map_vchan(bchan,source_p);
+        }
+      else
+        {
+          /* chptr = chptr; */
+          bchan = find_bchan(chptr);
+        }
+    }
+  else
+#endif
+    bchan = chptr; /* not a vchan */
+
+  if (!chptr || !bchan || !IsMember(source_p, chptr))
+    {
+      sendto_one(source_p, form_str(ERR_NOTONCHANNEL),
+                 me.name, source_p->name, name);
+      return;
+    }
+  if (MyConnect(source_p) && !IsOper(source_p))
+   check_spambot_warning(source_p, NULL);
+
+  /*
+   *  Remove user from the old channel (if any)
+   *  only allow /part reasons in -m chans
+   */
+  if (reason[0] &&
+      (is_any_op(chptr, source_p) || !MyConnect(source_p) ||
+       ((can_send(chptr, source_p) > 0 && 
+         (source_p->firsttime + ConfigFileEntry.anti_spam_exit_message_time)
+         < CurrentTime))))
+  {
+    part_with_reason = 1;
+    if (MyConnect(source_p))
+      sendto_one(client_p,
+                 ":%s!%s@%s PART %s :%s",
+                 source_p->name, source_p->username,
+                 source_p->host, bchan->chname, reason);
+  }  
+  else if (MyConnect(source_p))
+    sendto_one(client_p,
+               ":%s!%s@%s PART %s",
+               source_p->name, source_p->username,
+               source_p->host, bchan->chname);
+  
+  /* If they just died, the channel and net has already been informed,
+   * and we don't need to propagate any state. The user has also been
+   * removed from the channel, so we have nothing to worry about.
+   */
+  if (IsDead(source_p))
+    return;
+
+  /* There is no risk of a server client dying here because it is the
+   * "one" that doesn't receive messages, and hence it cannot have a
+   * write error.
+   */
+  if (part_with_reason)
+  {
+    sendto_server(client_p, NULL, chptr, CAP_UID, NOCAPS, NOFLAGS,
+                  ":%s PART %s :%s", ID(source_p), chptr->chname,
+                  reason);
+    sendto_server(client_p, NULL, chptr, NOCAPS, CAP_UID, NOFLAGS,
+                  ":%s PART %s :%s", source_p->name, chptr->chname,
+                  reason);
+    sendto_channel_local(ALL_MEMBERS,
+                         chptr, ":%s!%s@%s PART %s :%s",
+                         source_p->name,
+                         source_p->username,
+                         source_p->host,
+                         bchan->chname,
+                         reason);
+  }
+  else
+  {
+    sendto_server(client_p, NULL, chptr, CAP_UID, NOCAPS, NOFLAGS,
+                  ":%s PART %s", ID(source_p), chptr->chname);
+    sendto_server(client_p, NULL, chptr, NOCAPS, CAP_UID, NOFLAGS,
+                  ":%s PART %s", source_p->name, chptr->chname);
+    sendto_channel_local(ALL_MEMBERS,
+                         chptr, ":%s!%s@%s PART %s",
+                         source_p->name,
+                         source_p->username,
+                         source_p->host,
+                         bchan->chname);
+  }
+  if (!IsDead(source_p))
+    remove_user_from_channel(chptr, source_p);
 }

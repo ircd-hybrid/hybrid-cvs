@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.318 2003/01/31 12:15:17 a1kmm Exp $
+ *  $Id: client.c,v 7.319 2003/01/31 23:00:31 db Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -626,7 +626,7 @@ remove_client_from_list(struct Client* client_p)
 {
   assert(client_p != NULL);
 
-  if (IsDead(client_p))
+  if (IsExited(client_p))
     return;
 
   if(client_p == NULL)
@@ -671,7 +671,7 @@ remove_client_from_list(struct Client* client_p)
 void
 add_client_to_list(struct Client *client_p)
 {
-  if (IsDead(client_p))
+  if (IsExited(client_p))
     return;
   /*
    * since we always insert new clients to the top of the list,
@@ -690,7 +690,7 @@ add_client_to_list(struct Client *client_p)
 void
 add_client_to_llist(struct Client **bucket, struct Client *client)
 {
-  if (IsDead(client))
+  if (IsExited(client))
     return;
   if (!client->lprev && !client->lnext)
     {
@@ -704,7 +704,7 @@ add_client_to_llist(struct Client **bucket, struct Client *client)
 void
 del_client_from_llist(struct Client **bucket, struct Client *client)
 {
-  if (IsDead(client))
+  if (IsExited(client))
     return;
   if (client->lprev)
     {
@@ -1021,6 +1021,9 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
   /* remove from global client list */
   remove_client_from_list(source_p);
 
+  if (IsExited(source_p))
+    return;
+  SetExited(source_p);
   /* Check to see if the client isn't already on the dead list */
   assert(dlinkFind(&dead_list, source_p) == NULL);
   /* add to dead_list */
@@ -1158,8 +1161,9 @@ dead_link_on_write(struct Client *client_p, int ierrno)
 {
   const char *notice;
 
-  if(IsDefunct(client_p) || IsClosing(client_p))
+  if(IsDefunct(client_p))
     return;
+  SetDead(client_p);
 
   if(client_p->flags & FLAGS_SENDQEX)
     notice = "Max SendQ exceeded";
@@ -1191,8 +1195,9 @@ dead_link_on_read(struct Client* client_p, int error)
   char errmsg[255];
   int  current_error = get_sockerr(client_p->localClient->fd);
 
-  if(IsClosing(client_p))
+  if(IsDead(client_p))
     return;
+  SetDead(client_p);
 
   Debug((DEBUG_ERROR, "READ ERROR: fd = %d %d %d",
          client_p->localClient->fd, current_error, error));
@@ -1283,7 +1288,8 @@ exit_client(
 
   if (IsClosing(source_p))
     return(0);
-
+  if (IsExited(source_p))
+    return(0);
   SetClosing(source_p);
 
   if (MyConnect(source_p))
