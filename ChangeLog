@@ -1,3 +1,27 @@
+db          2002/09/04 21:10:27 EDT	(20020905_0)
+
+  Modified files:
+    include              s_stats.h 
+    modules              m_stats.c m_trace.c 
+    src                  s_gline.c s_stats.c 
+  Log:
+  - removed statistics variables never ever used (udp and local client)
+    Early versions of hybrid (based on irc2.8) had udp ping port which was removed.
+    This is obviously no longer needed.
+  - re-worked m_stats to separate stats g from stats G, pending glines vs. placed glines
+    also reworked the style. Its a PITA fixing the style, but ever so much easier for editing...
+  - cleaned up style in m_trace.c also started introducing DLINK_FOREACH. It does
+    not change the code at all, its just a macro. No point doing it all at once.
+  
+  Revision  Changes    Path
+  7.8       +3 -2      ircd-hybrid-7/include/s_stats.h
+  1.112     +152 -101  ircd-hybrid-7/modules/m_stats.c
+  1.51      +14 -10    ircd-hybrid-7/modules/m_trace.c
+  1.22      +4 -6      ircd-hybrid-7/src/s_gline.c
+  7.21      +17 -16    ircd-hybrid-7/src/s_stats.c
+
+
+
 db          2002/09/03 17:30:52 EDT	(20020903_5)
 
   Modified files:
@@ -31740,4 +31764,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4015 2002/09/03 21:30:54 db Exp $
+$Id: ChangeLog,v 7.4016 2002/09/05 01:10:30 db Exp $
