@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.109 2002/04/20 17:47:48 leeh Exp $
+ *  $Id: channel.h,v 7.110 2002/05/12 12:28:16 leeh Exp $
  */
 
 #include <sys/types.h>        /* time_t */
@@ -134,21 +134,6 @@ extern char    *channel_chanop_or_voice(struct Channel *, struct Client *);
 
 extern void    add_invite(struct Channel *chptr, struct Client *who);
 extern void    del_invite(struct Channel *chptr, struct Client *who);
-
-
-extern void    channel_member_list(struct Client *source_p,
-				   struct Channel *chptr,
-				   dlink_list *list_chanops,
-				   dlink_list *list_voiced,
-				   dlink_list *list_halfops,
-				   dlink_list *list_peons,
-				   char *show_ops_flag,
-				   char *show_voiced_flag,
-				   char *show_halfop_flag,
-				   char *buf,
-				   int mlen,
-				   int *cur_len,
-				   int *reply_to_send);
 
 extern void    send_channel_modes (struct Client *, struct Channel *);
 extern void    channel_modes(struct Channel *chptr, struct Client *who,
