@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.208 2002/12/13 05:38:47 bill Exp $
+ *  $Id: send.c,v 7.209 2002/12/14 07:37:09 db Exp $
  */
 
 #include "stdinc.h"
@@ -1355,7 +1355,8 @@ kill_client(struct Client *client_p,
   
   va_start(args, pattern);
 
-  if(HasID(diedie) && IsCapable(client_p, CAP_UID))
+  /* XXX perhaps IsCapable should test for localClient itself ? -db */
+  if(HasID(diedie) && client_p->localClient && IsCapable(client_p, CAP_UID))
     linebuf_putmsg(&linebuf, pattern, &args, ":%s KILL %s :",
                    me.name, ID(diedie));
   else
@@ -1416,7 +1417,8 @@ kill_client_ll_serv_butone(struct Client *one, struct Client *source_p,
     if (one && (client_p == one->from))
       continue;
 
-    if (IsCapable(client_p,CAP_LL) && ServerInfo.hub)
+    /* XXX perhaps IsCapable should test for localClient itself ? -db */
+    if (client_p->localClient && IsCapable(client_p,CAP_LL) && ServerInfo.hub)
     {
       if((source_p->lazyLinkClientExists &
           client_p->localClient->serverMask) != 0)
@@ -1429,7 +1431,8 @@ kill_client_ll_serv_butone(struct Client *one, struct Client *source_p,
     }
     else
     {
-      if (have_uid && IsCapable(client_p, CAP_UID))
+      /* XXX perhaps IsCapable should test for localClient itself ? -db */
+      if (have_uid && client_p->localClient && IsCapable(client_p, CAP_UID))
         send_linebuf(client_p, &linebuf_uid);
       else
         send_linebuf(client_p, &linebuf_nick);
