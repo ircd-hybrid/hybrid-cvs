@@ -1,3 +1,16 @@
+db          2003/02/03 23:24:06 EST	(20030204_0)
+
+  Modified files:
+    modules/core         m_part.c 
+  Log:
+  - take user off channel before sending channel PART message, else user
+    see's PART message twice.
+  
+  Revision  Changes    Path
+  1.62      +6 -7      ircd-hybrid-7/modules/core/m_part.c
+
+
+
 bill        2003/02/03 00:25:50 EST	(20030203_2)
 
   Modified files:
@@ -34789,4 +34802,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4218 2003/02/03 05:25:53 bill Exp $
+$Id: ChangeLog,v 7.4219 2003/02/04 04:24:08 db Exp $
