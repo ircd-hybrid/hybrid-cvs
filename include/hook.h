@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hook.h,v 1.14 2002/01/16 16:02:23 jmallett Exp $
+ *  $Id: hook.h,v 1.15 2002/10/31 03:12:29 wiz Exp $
  */
 
 #ifndef __HOOK_H_INCLUDED
@@ -90,5 +90,6 @@ int hook_call_event(char *, void *);
 int hook_del_event(char *);
 int hook_del_hook(char *event, hookfn *fn);
 void init_hooks(void);
+hook *find_hook(char *);
 
 #endif
