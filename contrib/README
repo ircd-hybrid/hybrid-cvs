@@ -1,9 +1,12 @@
-$Id: README,v 1.28 2003/05/09 21:38:07 bill Exp $
+$Id: README,v 1.29 2003/05/26 18:51:18 joshk Exp $
 
 This directory contains modules and patches that have been contributed
 by other people, or aren't suitable for including into the 
 hybrid tree.  The coding team do not officially support the contrib/ 
 modules, or guarantee any of them will actually work.
+
+There is also a lone ircII script (challenge.irc) that works alongwith
+rsa_respond so you can authenticate within your client.
 
 Once again. WITH feeling. Not all of these modules have been thoroughly
 tested! Thats why some of them are in contrib not in the main tree yet!
@@ -81,24 +84,6 @@ spy_whois_notice.c   - Spy on local clients who WHOIS you.
 Note: if you have both spy_stats_notice.c and spy_stats_p_notice.c loaded
 you will get two messages.
 
-
-Patches
--------
-
-The following are the patches contained in contrib.  A short description
-of the patch is contained here, along with any notes.
-
-To apply a patch, first change to the ircd-hybrid-7 root directory, 
-the directory one level above contrib/.  If you have already compiled 
-the ircd, run 'make clean'.  Then for example to patch 
-disable_identd.diff type:
-    patch -p0 < contrib/disable_identd.diff
-
-You must then run 'make' and 'make install' again, and restart your ircd.
-The following patches are included:
-
-disable_identd.diff - This patch adds support for disabling identd queries.
-                      See README.disable_identd for more information.
 
 Help files
 ----------
