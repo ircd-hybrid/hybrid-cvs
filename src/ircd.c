@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.172 2001/07/28 10:47:25 a1kmm Exp $
+ * $Id: ircd.c,v 7.173 2001/07/29 01:51:31 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -532,8 +532,10 @@ int main(int argc, char *argv[])
  memset((void *)&ServerInfo, 0, sizeof(ServerInfo));
  memset((void *)&AdminInfo, 0, sizeof(AdminInfo));
 
+#ifdef USE_TABLE_MODE
  /* Initialise the channel capability usage counts... */
  init_chcap_usage_counts();
+#endif 
 
  ConfigFileEntry.dpath = DPATH;
  ConfigFileEntry.configfile = CPATH;   /* Server configuration file */

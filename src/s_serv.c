@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.196 2001/07/28 10:47:26 a1kmm Exp $
+ *   $Id: s_serv.c,v 7.197 2001/07/29 01:51:32 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -1116,8 +1116,11 @@ int server_estab(struct Client *client_p)
   */
   SetServer(client_p);
   client_p->servptr = &me;
-  /* Update the capability combination usage counts. -A1kmm */
+
+ /* Update the capability combination usage counts. -A1kmm */
+#ifdef USE_TABLE_MODE 
   set_chcap_usage_counts(client_p);
+#endif  
 
   /* Some day, all these lists will be consolidated *sigh* */
   add_client_to_llist(&(me.serv->servers), client_p);

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.189 2001/07/28 10:47:24 a1kmm Exp $
+ *  $Id: client.c,v 7.190 2001/07/29 01:51:30 leeh Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -1309,7 +1309,9 @@ const char* comment         /* Reason for the exit */
       if (IsServer(source_p))
         {
           Count.myserver--;
+#ifdef USE_TABLE_MODE	  
           unset_chcap_usage_counts(source_p);
+#endif	  
 	  if(ServerInfo.hub)
 	    remove_lazylink_flags(source_p->localClient->serverMask);
 	  else
