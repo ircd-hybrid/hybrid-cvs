@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.142 2003/10/04 19:31:19 metalrock Exp $
+ *  $Id: modules.c,v 7.143 2003/10/04 19:45:51 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -179,6 +179,8 @@ mod_set_base(void)
 {
   unsigned int len;
 
+  MyFree (base_autoload);
+
   len = strlen(MODPATH) + 9;
   /* whatever MODPATH + "autoload/" */
   
@@ -299,7 +301,7 @@ load_all_modules(int warn)
        else /* Guaranteed the path fits into a string of PATH_MAX now */
        {
          module_fq_name = MyMalloc(mq_len + 1);
-         snprintf (module_fq_name, mq_len + 1, "%s/%s", base_autoload, ldirent->d_name);
+         snprintf (module_fq_name, mq_len + 1, "%s%s", base_autoload, ldirent->d_name);
          load_a_module(module_fq_name, warn, 0);
          MyFree (module_fq_name);
        }
