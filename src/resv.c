@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: resv.c,v 7.12 2002/02/25 19:09:39 androsyn Exp $
+ *  $Id: resv.c,v 7.13 2002/02/25 21:01:26 leeh Exp $
  */
 
 #include "tools.h"
@@ -46,29 +46,21 @@ struct ResvNick *ResvNickList;
 struct ResvChannel *
 create_channel_resv(char *name, char *reason, int conf)
 {
-  struct ResvChannel *resv_p;
+  struct ResvChannel *resv_p = NULL;
   int len;
 
-  len = strlen(name);
-
-  if(len > CHANNELLEN)
-  {
-    len = CHANNELLEN;
-    name[CHANNELLEN] = '\0';
-  }
-
-  if(strlen(reason) > TOPICLEN)
-    reason[TOPICLEN] = '\0';
-
-  resv_p = (struct ResvChannel *)hash_find_resv(name);
-
-  if (resv_p != NULL)
+  if(find_channel_resv(name))
     return NULL;
 
-  resv_p = (struct ResvChannel *)MyMalloc(sizeof(struct ResvChannel) + len
-					  + strlen(reason) + 1);
+  if((len = strlen(reason)) > TOPICLEN)
+  {
+    reason[TOPICLEN] = '\0';
+    len = TOPICLEN;
+  }
 
-  strcpy(resv_p->name, name);
+  resv_p = (struct ResvChannel *)MyMalloc(sizeof(struct ResvChannel) + len);
+
+  strlcpy(resv_p->name, name, CHANNELLEN+1);
   DupString(resv_p->reason, reason);
   resv_p->conf = conf;
 
@@ -88,27 +80,21 @@ create_channel_resv(char *name, char *reason, int conf)
 struct ResvNick *
 create_nick_resv(char *name, char *reason, int conf)
 {
-  struct ResvNick *resv_p;
+  struct ResvNick *resv_p = NULL;
   int len;
-
-  len = strlen(name);
-
-  if(len > NICKLEN - 1)
-  {
-    len = NICKLEN - 1;
-    name[NICKLEN - 1] = '\0';
-  }
-
-  if(strlen(reason) > TOPICLEN)
-    reason[TOPICLEN] = '\0';
 
   if(find_nick_resv(name))
     return NULL;
 
-  resv_p = (struct ResvNick *)MyMalloc(sizeof(struct ResvNick) + len
-				       + strlen(reason) + 1);
+  if((len = strlen(reason)) > TOPICLEN)
+  {
+    reason[TOPICLEN] = '\0';
+    len = TOPICLEN;
+  }
 
-  strcpy(resv_p->name, name);
+  resv_p = (struct ResvNick *)MyMalloc(sizeof(struct ResvNick) + len);
+
+  strlcpy(resv_p->name, name, RESVNICKLEN);
   DupString(resv_p->reason, reason);
   resv_p->conf = conf;
 
