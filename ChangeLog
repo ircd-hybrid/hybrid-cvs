@@ -1,3 +1,24 @@
+a1kmm       2003/01/31 07:15:21 EST	(20030131_0)
+
+  Modified files:
+    src                  send.c s_bsd.c client.c channel.c 
+    modules/core         m_part.c 
+  Log:
+  - Fixed another exit_client() type bug:
+    - A client is closing after exit_client() has started.
+    - A client is dead only after exit_client() has completed.
+    - Before changing any lists, you must check if a client is dead.
+    - Only exit_client() should ever SetDead() or SetClosing().
+  
+  Revision  Changes    Path
+  1.58      +65 -33    ircd-hybrid-7/modules/core/m_part.c
+  7.350     +6 -0      ircd-hybrid-7/src/channel.c
+  7.318     +18 -11    ircd-hybrid-7/src/client.c
+  7.177     +0 -1      ircd-hybrid-7/src/s_bsd.c
+  7.215     +2 -0      ircd-hybrid-7/src/send.c
+
+
+
 a1kmm       2003/01/30 05:28:48 EST	(20030130_1)
 
   Modified files:
@@ -34570,4 +34591,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4205 2003/01/30 10:28:51 a1kmm Exp $
+$Id: ChangeLog,v 7.4206 2003/01/31 12:15:23 a1kmm Exp $
