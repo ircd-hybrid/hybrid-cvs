@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: convertconf.c,v 1.8 2000/01/12 02:34:32 db Exp $
+ * $Id: convertconf.c,v 1.9 2000/01/12 03:08:35 db Exp $
  */
 
 #include <stdio.h>
@@ -607,10 +607,10 @@ static void PrintOutServers(FILE* out)
 	  fprintf(out,"\t\tport=\"%d\";\n", p->port );
 
 	  if(p->compressed)
-	    fprintf(out,"\t\tcompressed;\n");
+	    fprintf(out,"\t\tcompressed=yes;\n");
 
 	  if(p->lazylink)
-	    fprintf(out,"\t\tlazylink;\n");
+	    fprintf(out,"\t\tlazylink=yes;\n");
 
 	  if(p->hub_mask)
 	    {
