@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.58 2003/04/18 19:28:14 michael Exp $
+ *  $Id: hash.c,v 7.59 2003/04/19 16:00:11 michael Exp $
  */
 
 #include "stdinc.h"
@@ -749,8 +749,7 @@ get_or_create_channel(struct Client *client_p, char *chname, int *isnew)
   ++channelTable[hashv].links;
   ++channelTable[hashv].hits;
 
-  Count.chan++;
-  return chptr;
+  return(chptr);
 }
 
 /*
@@ -763,8 +762,10 @@ hash_find_resv(const char *name)
   unsigned int hashv;
 
   assert(name != NULL);
-  if(name == NULL)
-    return NULL;
+
+  if (name == NULL)
+    return(NULL);
+
   hashv = hash_resv_channel(name);
 
   found_chptr = (struct ResvChannel *) resvTable[hashv].list;

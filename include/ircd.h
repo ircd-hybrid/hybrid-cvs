@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.h,v 7.60 2003/04/19 15:34:26 michael Exp $
+ *  $Id: ircd.h,v 7.61 2003/04/19 16:00:09 michael Exp $
  */
 
 #ifndef INCLUDED_ircd_h
@@ -48,7 +48,6 @@ struct Counter
   int server;   /* servers             */
   int myserver; /* my servers          */
   int oper;     /* Opers               */
-  int chan;     /* Channels            */
   int local;    /* Local Clients       */
   int total;    /* total clients       */
   int invisi;   /* invisible clients   */

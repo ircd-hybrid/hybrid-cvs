@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.364 2003/04/14 08:41:14 michael Exp $
+ *  $Id: channel.c,v 7.365 2003/04/19 16:00:11 michael Exp $
  */
 
 #include "stdinc.h"
@@ -53,11 +53,9 @@ BlockHeap *ban_heap;
 BlockHeap *topic_heap;
 
 static void free_channel_list(dlink_list * list);
-static int  sub1_from_channel(struct Channel *);
+static int sub1_from_channel(struct Channel *);
 static void destroy_channel(struct Channel *);
-
 static void delete_members(struct Channel *chptr, dlink_list * list);
-
 static void send_mode_list(struct Client *client_p, char *chname,
                            dlink_list *top, char flag, int clear);
 static int check_banned(struct Channel *chptr, char *s, char *s2);
@@ -65,8 +63,7 @@ static int check_banned(struct Channel *chptr, char *s, char *s2);
 static char buf[BUFSIZE];
 static char modebuf[MODEBUFLEN], parabuf[MODEBUFLEN];
 
-/* 
- * init_channels
+/* init_channels()
  *
  * Initializes the channel blockheap
  */
@@ -588,13 +585,13 @@ destroy_channel(struct Channel *chptr)
   free_topic(chptr);
   /* This should be redundant at this point but JIC */
   chptr->banlist.head = chptr->exceptlist.head = chptr->invexlist.head = NULL;
-
   chptr->banlist.tail = chptr->exceptlist.tail = chptr->invexlist.tail = NULL;
 
   gptr = &chptr->node;
   dlinkDelete(gptr, &global_channel_list);
 
   del_from_channel_hash_table(chptr->chname, chptr);
+
   if (ServerInfo.hub == 1)
   {
     DLINK_FOREACH(m, lazylink_channels.head)
@@ -606,12 +603,11 @@ destroy_channel(struct Channel *chptr)
       break;
     }
   }
+
   BlockHeapFree(channel_heap, chptr);
-  Count.chan--;
 }
 
-/*
- * delete_members
+/* delete_members()
  *
  * inputs       - pointer to list (on channel)
  * output       - none
@@ -635,7 +631,7 @@ delete_members(struct Channel *chptr, dlink_list * list)
     if (who->user != NULL)
     {
       /* remove reference to chptr from who */
-      DLINK_FOREACH_SAFE (ptr_ch, next_ptr_ch, who->user->channel.head)
+      DLINK_FOREACH_SAFE(ptr_ch, next_ptr_ch, who->user->channel.head)
       {
 	if (ptr_ch->data == chptr)
 	{
