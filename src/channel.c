@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.374 2003/05/20 00:06:20 wiz Exp $
+ *  $Id: channel.c,v 7.375 2003/05/24 05:01:36 db Exp $
  */
 
 #include "stdinc.h"
@@ -423,9 +423,8 @@ free_channel_list(dlink_list *list)
     actualBan = ptr->data;
     MyFree(actualBan->banstr);
     MyFree(actualBan->who);
+    dlinkDelete(&actualBan->node, list);
     BlockHeapFree(ban_heap, actualBan);
-
-    free_dlink_node(ptr);
   }
 }
 

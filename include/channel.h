@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.137 2003/05/22 17:09:00 michael Exp $
+ *  $Id: channel.h,v 7.138 2003/05/24 05:01:38 db Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -126,6 +126,7 @@ extern void check_splitmode(void *);
 
 struct Ban          /* also used for exceptions -orabidoo */
 {
+  dlink_node node;
   char *banstr;
   char *who;
   time_t when;

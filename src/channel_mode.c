@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.95 2003/05/19 19:10:53 stu Exp $
+ *  $Id: channel_mode.c,v 7.96 2003/05/24 05:01:36 db Exp $
  */
 
 #include "stdinc.h"
@@ -237,7 +237,7 @@ add_id(struct Client *client_p, struct Channel *chptr, char *banid, int type)
 
   actualBan->when = CurrentTime;
 
-  dlinkAdd(actualBan, make_dlink_node(), list);
+  dlinkAdd(actualBan, &actualBan->node, list);
 
   return(1);
 }
@@ -292,11 +292,8 @@ del_id(struct Channel *chptr, char *banid, int type)
     {
       MyFree(banptr->banstr);
       MyFree(banptr->who);
+      dlinkDelete(&banptr->node, list);
       BlockHeapFree(ban_heap, banptr);
-
-      dlinkDelete(ban, list);
-      free_dlink_node(ban);
-
       return(1);
     }
   }
