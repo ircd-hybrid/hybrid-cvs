@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_accept.c,v 1.15 2001/01/22 19:43:20 db Exp $
+ *   $Id: m_accept.c,v 1.16 2001/01/25 00:05:00 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -82,6 +82,12 @@ static int m_accept(struct Client *cptr, struct Client *sptr,
     }
 
   if ((source = find_client(nick,NULL)) == NULL)
+    {
+      sendto_one(sptr, form_str(ERR_NOSUCHNICK), me.name, parv[0], nick);
+      return 0;
+    }
+
+  if (!IsPerson(source))
     {
       sendto_one(sptr, form_str(ERR_NOSUCHNICK), me.name, parv[0], nick);
       return 0;
