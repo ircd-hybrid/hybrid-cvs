@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_cjoin.c,v 1.38 2001/09/23 02:26:02 a1kmm Exp $
+ *   $Id: m_cjoin.c,v 1.39 2001/09/23 09:35:32 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -151,9 +151,7 @@ static void m_cjoin(struct Client *client_p,
            * the uplink will have to SJOIN all of those.
            */
           sendto_one(uplink, ":%s CBURST %s !%s",
-                     me.name, parv[1],
-                     IsCapable(uplink, CAP_UID)?ID(source_p) :
-                                                source_p->name);
+                     me.name, parv[1], source_p->name);
 
           return;
         }
@@ -183,13 +181,7 @@ static void m_cjoin(struct Client *client_p,
 			source_p->host,
 			root_vchan->chname);
 
-  sendto_server(client_p, NULL, chptr, CAP_UID, NOCAPS, NOFLAGS,
-                ":%s SJOIN %lu %s + :@%s",
-                me.name,
-                (unsigned long) chptr->channelts,
-                chptr->chname,
-                ID(source_p));
-  sendto_server(client_p, NULL, chptr, CAP_UID, NOCAPS, NOFLAGS,
+  sendto_server(client_p, NULL, chptr, NOCAPS, NOCAPS, NOFLAGS,
                 ":%s SJOIN %lu %s + :@%s",
                 me.name,
                 (unsigned long) chptr->channelts,
