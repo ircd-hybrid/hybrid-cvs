@@ -1,3 +1,19 @@
+jmallett    2002/01/10 16:37:02 EST	(20020110_8)
+
+  Modified files:
+    .                    configure 
+    autoconf             configure.in 
+  Log:
+  Add proper TenDRA support to our configure script. Not only can we detect
+  if someone is trying to use TenDRA, we can also set up the necessary string
+  of IRC_CFLAGS to work on most platforms, and we can produce shared modules!
+  
+  Revision  Changes    Path
+  7.110     +26 -4     ircd-hybrid-7/autoconf/configure.in
+  7.113     +206 -183  ircd-hybrid-7/configure
+
+
+
 jmallett    2002/01/10 15:45:17 EST	(20020110_7)
 
   Modified files:
@@ -2966,7 +2982,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3320 2002/01/10 20:45:23 jmallett Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3321 2002/01/10 21:37:07 jmallett Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -21320,4 +21336,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3320 2002/01/10 20:45:23 jmallett Exp $
+$Id: ChangeLog,v 7.3321 2002/01/10 21:37:07 jmallett Exp $
