@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_server.c,v 1.61 2001/07/26 15:24:02 leeh Exp $
+ *   $Id: m_server.c,v 1.62 2001/07/26 15:52:09 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"  /* m_server prototype */
@@ -510,47 +510,47 @@ void write_links_file(void* notused)
   MessageFileptr->contentsOfFile = NULL;
   currentMessageLine = NULL;
 
-  for (target_p = GlobalClientList; target_p; target_p = target_p->next) 
+  for (target_p = GlobalServerList; target_p; target_p = target_p->servnext) 
+  {
+    if(target_p->info[0])
     {
-      if(IsServer(target_p))
-	{
-          if(target_p->info[0])
-            {
-              if( (p = strchr(target_p->info,']')) )
-                p += 2; /* skip the nasty [IP] part */
-              else
-                p = target_p->info;
-            }
-          else
-            p = "(Unknown Location)";
-
-	  newMessageLine = (MessageFileLine*) MyMalloc(sizeof(MessageFileLine));
-
-/* Attempt to format the file in such a way it follows the usual links output
- * ie  "servername uplink :hops info"
- * Mostly for aesthetic reasons - makes it look pretty in mIRC ;)
- * - madmax
-*/
-	  ircsprintf(newMessageLine->line,"%s %s :1 %s",
-		     target_p->name,me.name,p);
-	  newMessageLine->next = (MessageFileLine *)NULL;
-
-	  if (MessageFileptr->contentsOfFile)
-	    {
-	      if (currentMessageLine)
-		currentMessageLine->next = newMessageLine;
-	      currentMessageLine = newMessageLine;
-	    }
-	  else
-	    {
-	      MessageFileptr->contentsOfFile = newMessageLine;
-	      currentMessageLine = newMessageLine;
-	    }
-	  ircsprintf(buff,"%s %s :1 %s\n",
-		     target_p->name,me.name,p);
-	  fbputs(buff,file);
-	}
+      if( (p = strchr(target_p->info,']')) )
+        p += 2; /* skip the nasty [IP] part */
+      else
+        p = target_p->info;
     }
+    else
+      p = "(Unknown Location)";
+
+    newMessageLine = (MessageFileLine*) MyMalloc(sizeof(MessageFileLine));
+
+    /* Attempt to format the file in such a way it follows the usual links output
+     * ie  "servername uplink :hops info"
+     * Mostly for aesthetic reasons - makes it look pretty in mIRC ;)
+     * - madmax
+     */
+     
+    ircsprintf(newMessageLine->line,"%s %s :1 %s",
+               target_p->name,me.name,p);
+    newMessageLine->next = (MessageFileLine *)NULL;
+
+    if (MessageFileptr->contentsOfFile)
+    {
+      if (currentMessageLine)
+        currentMessageLine->next = newMessageLine;
+        currentMessageLine = newMessageLine;
+      }
+      else
+      {
+        MessageFileptr->contentsOfFile = newMessageLine;
+        currentMessageLine = newMessageLine;
+      }
+      
+      ircsprintf(buff,"%s %s :1 %s\n",
+      target_p->name,me.name,p);
+      fbputs(buff,file);
+    }
+    
   fbclose(file);
 }
 

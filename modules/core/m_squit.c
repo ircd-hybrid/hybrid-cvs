@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_squit.c,v 1.37 2001/06/24 04:55:24 a1kmm Exp $
+ *   $Id: m_squit.c,v 1.38 2001/07/26 15:52:10 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -224,7 +224,7 @@ static struct squit_parms *find_squit(struct Client *client_p,
        else
          {
            found_squit.target_p = client_p;
-           found_squit.server_name = client_p->host;
+           found_squit.server_name = client_p->name;
          }
        
     }
