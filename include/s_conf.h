@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.108 2001/03/14 18:03:40 fl_ Exp $
+ * $Id: s_conf.h,v 7.109 2001/03/14 22:37:11 fl_ Exp $
  */
 
 #include "setup.h"
@@ -209,6 +209,7 @@ typedef struct config_file_entry
   int         max_targets;
   int         links_delay;
   int         vchans_oper_only;
+  int         disable_vchans;
   int         quiet_on_ban;
   int         caller_id_wait;
   int         persist_expire;

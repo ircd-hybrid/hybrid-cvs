@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.79 2001/03/06 15:53:31 toot Exp $
+ *   $Id: m_sjoin.c,v 1.80 2001/03/14 22:37:12 fl_ Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -195,7 +195,7 @@ static void ms_sjoin(struct Client *client_p,
   /* XXX vchan cruft */
   /* vchans are encoded as "##mainchanname_timestamp" */
 
-  if(parv[2][1] == '#')
+  if(parv[2][1] == '#' && !ConfigFileEntry.disable_vchans)
     {
       char *subp;
 
