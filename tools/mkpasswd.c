@@ -5,7 +5,7 @@
  * md5 patch by Walter Campbell <wcampbel@botbay.net>
  * Modernization, getopt, etc for the Hybrid IRCD team
  *
- * $Id: mkpasswd.c,v 7.3 2001/01/15 14:17:10 wcampbel Exp $
+ * $Id: mkpasswd.c,v 7.4 2001/01/16 16:56:03 wcampbel Exp $
  */
 #include <stdio.h>
 #include <string.h>
@@ -74,15 +74,16 @@ char *argv[];
     else
       salt = make_md5_salt();
   } else {
-    if (flag & FLAG_SALT)
-      if ((strlen(saltpara) == 2))
+    if (flag & FLAG_SALT) {
+      if ((strlen(saltpara) == 2)) {
         salt = saltpara;
-      else {
+      } else {
         printf("Invalid salt, please enter 2 alphanumeric characters\n");
         exit(1);
       }
-    else
+    } else {
       salt = make_des_salt();
+    }
   }
 
   if (flag & FLAG_PASS) {
