@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.181 2002/07/11 23:40:17 leeh Exp $
+ *  $Id: s_conf.h,v 7.182 2002/07/12 00:51:05 androsyn Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -27,7 +27,6 @@
 #include "setup.h"
 
 
-#define PACE_CONNECT
 
 #ifdef HAVE_LIBCRYPTO
 #include <openssl/rsa.h>
@@ -395,9 +394,7 @@ extern void conf_add_x_conf(struct ConfItem *);
 extern void conf_add_u_conf(struct ConfItem *);
 extern void conf_add_fields(struct ConfItem*, char*, char *, char*, char *,char *);
 extern void conf_add_conf(struct ConfItem *);
-#ifdef PACE_CONNECT
 extern void flush_expired_ips(void *);
-#endif
 
 /* XXX consider moving these into kdparse.h */
 extern void parse_k_file(FBFILE *fb);

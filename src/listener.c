@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.c,v 7.69 2002/06/15 07:19:56 androsyn Exp $
+ *  $Id: listener.c,v 7.70 2002/07/12 00:51:08 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -439,11 +439,9 @@ accept_connection(int pfd, void *data)
     case BANNED_CLIENT:
      send(fd, DLINE_WARNING, sizeof(DLINE_WARNING)-1, 0);
      break;
-#ifdef PACE_CONNECT
     case TOO_FAST:
      send(fd, TOOFAST_WARNING, sizeof(TOOFAST_WARNING)-1, 0);
      break;
-#endif
    }
    fd_close(fd);
    /* Re-register a new IO request for the next accept .. */

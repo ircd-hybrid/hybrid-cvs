@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.237 2002/06/26 03:05:45 androsyn Exp $
+ *  $Id: ircd.c,v 7.238 2002/07/12 00:51:08 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -753,12 +753,10 @@ int main(int argc, char *argv[])
 
   eventAddIsh("cleanup_zombies", cleanup_zombies, NULL, 30); 
   
-#ifdef PACE_CONNECT
  if (ConfigFileEntry.throttle_time > 0)
    eventAddIsh("flush_expired_ips", flush_expired_ips, NULL, ConfigFileEntry.throttle_time);
  else
    eventAddIsh("flush_expired_ips", flush_expired_ips, NULL, 300);
-#endif
 
   if(ConfigServerHide.links_delay > 0)
     eventAddIsh("write_links_file", write_links_file, NULL, ConfigServerHide.links_delay);
