@@ -1,5 +1,5 @@
 /*
- * $Id: adns.c,v 7.28 2001/10/04 16:21:34 androsyn Exp $
+ * $Id: adns.c,v 7.29 2001/11/15 16:17:00 androsyn Exp $
  * adns.c  functions to enter libadns 
  *
  * Written by Aaron Sethman <androsyn@ratbox.org>
@@ -55,6 +55,7 @@ void restart_resolver(void)
 {
   fd_close(dns_state->udpsocket);
   adns_globalsystemfailure(dns_state);
+  eventDelete(timeout_adns, NULL);
   init_resolver();
 }
 
