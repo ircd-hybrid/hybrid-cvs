@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_away.c,v 1.13 2001/01/05 00:14:23 davidt Exp $
+ *   $Id: m_away.c,v 1.14 2001/01/26 02:31:28 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -88,14 +88,6 @@ static int m_away(struct Client *cptr,
 			   cptr->name,sptr->name);
       return 0;
     }
-  if (MyConnect(sptr) && ((CurrentTime-last_away) < 2 ||
-      (CurrentTime-sptr->user->last_away)<ConfigFileEntry.pace_wait))
-    {
-     sendto_one(sptr, form_str(RPL_LOAD2HI), me.name, parv[0]);
-     return 0;
-    }
-  last_away = CurrentTime;
-  sptr->user->last_away = CurrentTime;
   away = sptr->user->away;
 
   if (parc < 2 || !*awy2)
@@ -118,6 +110,16 @@ static int m_away(struct Client *cptr,
 
   /* Marking as away */
   
+  if (MyConnect(sptr) && ((CurrentTime-last_away) < 2 ||
+      (CurrentTime-sptr->user->last_away)<ConfigFileEntry.pace_wait))
+    {
+     sendto_one(sptr, form_str(RPL_LOAD2HI), me.name, parv[0]);
+     return 0;
+    }
+
+  last_away = CurrentTime;
+  sptr->user->last_away = CurrentTime;
+
   if (strlen(awy2) > (size_t) TOPICLEN)
     awy2[TOPICLEN] = '\0';
 

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.51 2001/01/22 22:03:34 fl_ Exp $
+ *   $Id: m_message.c,v 1.52 2001/01/26 02:31:28 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -669,11 +669,14 @@ static void msg_client(int p_or_n, char *command,
 	"NOTICE %s :*** I'm in +g mode (server side ignore).",
 			      sptr->name);
 	      /* XXX hard coded 60 ick fix -db */
-	      if((acptr->localClient->last_caller_id_time + 60) < CurrentTime)
+
+	      if((acptr->localClient->last_caller_id_time + 60)
+		 < CurrentTime)
 		{
-		  sendto_anywhere(sptr, acptr,
-	    "NOTICE %s :*** I've been informed you messaged me.",
-				  sptr->name);
+		  if(p_or_n != NOTICE)
+		    sendto_anywhere(sptr, acptr,
+		    "NOTICE %s :*** I've been informed you messaged me.",
+				    sptr->name);
 
 		  sendto_one(acptr,
       ":%s NOTICE %s :*** Client %s [%s@%s] is messaging you and you are +g",
