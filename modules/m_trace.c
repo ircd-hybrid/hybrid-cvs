@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_trace.c,v 1.22 2001/03/22 05:29:19 androsyn Exp $
+ *   $Id: m_trace.c,v 1.23 2001/03/22 05:31:40 androsyn Exp $
  */
 #include "handlers.h"
 #include "class.h"
@@ -296,7 +296,7 @@ static int report_this_status(struct Client *source_p, struct Client *target_p,
   int cnt=0;
   static time_t now;
 
-  inetntop(DEF_FAM, &IN_ADDR(target_p->localClient->ip), ip);
+  inetntop(DEF_FAM, &IN_ADDR(target_p->localClient->ip), ip, HOSTIPLEN);
   name = get_client_name(target_p, HIDE_IP);
   class_name = get_client_class(target_p);
 
