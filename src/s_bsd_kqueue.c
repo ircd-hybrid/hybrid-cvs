@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_kqueue.c,v 1.19 2001/09/24 14:31:14 jdc Exp $
+ *  $Id: s_bsd_kqueue.c,v 1.20 2001/09/24 17:43:18 leeh Exp $
  */
 #include "config.h"
 #ifdef USE_KQUEUE
@@ -136,8 +136,8 @@ kq_update_events(int fd, short filter, PF * handler)
 		/* jdc -- someone needs to do error checking... */
 		if (ret == -1)
 		{
-		  perror("kq_update_events(): kevent()")
-		  break;
+		  perror("kq_update_events(): kevent()");
+		  return;
 		}
 		kqoff = 0;
 	} else {
