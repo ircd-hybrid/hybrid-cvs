@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.191 2004/01/17 16:16:06 db Exp $
+ *  $Id: parse.c,v 7.192 2004/01/24 19:16:35 adx Exp $
  */
 
 #include "stdinc.h"
@@ -40,6 +40,7 @@
 #include "msg.h"
 #include "s_conf.h"
 #include "memory.h"
+#include "s_user.h"
 #include "s_serv.h"
 
 /*
@@ -657,22 +658,10 @@ cancel_clients(struct Client *client_p, struct Client *source_p, char *cmd)
     sendto_realops_flags(UMODE_DEBUG, L_OPER,  "Message for %s[%s] from %s",
                          source_p->name, source_p->from->name,
                          get_client_name(client_p, MASK_IP));
-
-    if (IsServer(client_p))
-    {
-      sendto_realops_flags(UMODE_DEBUG, L_ALL,
-                           "Not dropping server %s (%s) for Fake Direction",
-                           client_p->name, source_p->name);
-      return(-1);
-    }
-
-    if (IsClient(client_p))
-      sendto_realops_flags(UMODE_DEBUG, L_ALL,
-                           "Would have dropped client %s (%s@%s) [%s from %s]",
-                           client_p->name, client_p->username, client_p->host,
-                           client_p->user->server->name, client_p->from->name);
+    sendto_realops_flags(UMODE_DEBUG, L_ALL,
+                         "Not dropping server %s (%s) for Fake Direction",
+                         client_p->name, source_p->name);
     return(-1);
-
     /* return exit_client(client_p, client_p, &me, "Fake Direction");*/
   }
 
@@ -680,29 +669,21 @@ cancel_clients(struct Client *client_p, struct Client *source_p, char *cmd)
    * confused.  If we got the wrong prefix from a server, send out a
    * kill, else just exit the lame client.
    */
-  if (IsServer(client_p))
-  {
-    /* If the fake prefix is coming from a TS server, discard it
-     * silently -orabidoo
-     *
-     * all servers must be TS these days --is
-     */
-    if (source_p->user != NULL)
-    {
-      sendto_realops_flags(UMODE_DEBUG, L_ADMIN,
-                           "Message for %s[%s@%s!%s] from %s (TS, ignored)",
-                           source_p->name, source_p->username, source_p->host,
-                           source_p->from->name, get_client_name(client_p, SHOW_IP));
-      sendto_realops_flags(UMODE_DEBUG, L_OPER,
-                           "Message for %s[%s@%s!%s] from %s (TS, ignored)",
-                           source_p->name, source_p->username, source_p->host,
-                           source_p->from->name, get_client_name(client_p, MASK_IP));
-    }
+  /* If the fake prefix is coming from a TS server, discard it
+   * silently -orabidoo
+   *
+   * all servers must be TS these days --is
+   */
+  sendto_realops_flags(UMODE_DEBUG, L_ADMIN,
+                       "Message for %s[%s@%s!%s] from %s (TS, ignored)",
+                       source_p->name, source_p->username, source_p->host,
+                       source_p->from->name, get_client_name(client_p, SHOW_IP));
+  sendto_realops_flags(UMODE_DEBUG, L_OPER,
+                       "Message for %s[%s@%s!%s] from %s (TS, ignored)",
+                       source_p->name, source_p->username, source_p->host,
+                       source_p->from->name, get_client_name(client_p, MASK_IP));
 
-    return(0);
- }
-
-  return(exit_client(client_p, client_p, &me, "Fake prefix"));
+  return(0);
 }
 
 /* remove_unknown()
@@ -714,34 +695,16 @@ cancel_clients(struct Client *client_p, struct Client *source_p, char *cmd)
 static void
 remove_unknown(struct Client *client_p, char *lsender, char *lbuffer)
 {
-  if (!IsRegistered(client_p))
-    return;
-
-  if (IsClient(client_p))
-  {
-    sendto_realops_flags(UMODE_DEBUG, L_ALL,
-                         "Weirdness: Unknown client prefix (%s) from %s, Ignoring %s",
-                         lbuffer, get_client_name(client_p, HIDE_IP), lsender);
-    return;
-  }
-
-  /* Not from a server so don't need to worry about it.
-   */
-  if (!IsServer(client_p))
-    return;
-
   /* Do kill if it came from a server because it means there is a ghost
    * user on the other server which needs to be removed. -avalon
    * Tell opers about this. -Taner
    */
-  /* '.something'      is an ID      (KILL)
+  /* '[0-9]something'  is an ID      (KILL/SQUIT depending on its length)
    * 'nodots'          is a nickname (KILL)
    * 'no.dot.at.start' is a server   (SQUIT)
    */
-  if ((lsender[0] == '.') || !strchr(lsender, '.'))
-    sendto_one(client_p, ":%s KILL %s :%s (Unknown Client)",
-               me.name, lsender, me.name);
-  else
+  if ((IsDigit(*lsender) && strlen(lsender) <= IRC_MAXSID) ||
+      strchr(lsender, '.') != NULL)
   {
     sendto_realops_flags(UMODE_DEBUG, L_ADMIN,
                          "Unknown prefix (%s) from %s, Squitting %s",
@@ -752,6 +715,9 @@ remove_unknown(struct Client *client_p, char *lsender, char *lbuffer)
     sendto_one(client_p, ":%s SQUIT %s :(Unknown prefix (%s) from %s)",
                me.name, lsender, lbuffer, client_p->name);
   }
+  else
+    sendto_one(client_p, ":%s KILL %s :%s (Unknown Client)",
+               me.name, lsender, me.name);
 }
 
 /*
