@@ -15,7 +15,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- * $Id: hostmask.c,v 7.9 2001/02/10 07:17:14 a1kmm Exp $ 
+ * $Id: hostmask.c,v 7.10 2001/02/10 08:31:42 db Exp $ 
  */
 #include <unistd.h>
 #include <string.h>
@@ -184,6 +184,7 @@ void clear_conf(void)
    }
  first_mask = NULL;
  first_miscmask = NULL;
+ memset((void *)hmhash,0,sizeof(hmhash));
 }
 
 /*
