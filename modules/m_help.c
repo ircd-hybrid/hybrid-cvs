@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_help.c,v 1.7 2000/12/13 23:20:56 db Exp $
+ *   $Id: m_help.c,v 1.8 2000/12/15 19:55:47 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -58,7 +58,6 @@ char *_version = "20001122";
  */
 int m_help(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 {
-  int i;
   static time_t last_used = 0;
 
   /* HELP is always local */

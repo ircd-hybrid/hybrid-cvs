@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.73 2000/12/15 13:55:58 db Exp $
+ *   $Id: s_serv.c,v 7.74 2000/12/15 19:55:52 db Exp $
  */
 #include "tools.h"
 #include "s_serv.h"
@@ -1140,7 +1140,6 @@ serv_connect(struct ConfItem *aconf, struct Client *by)
     int fd;
     char servname[HOSTLEN + 1];
     char serv_desc[HOSTLEN + 15];
-    dlink_node *m;
 
     /* Make sure aconf is useful */
     assert(aconf != NULL);

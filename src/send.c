@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.78 2000/12/15 06:03:57 db Exp $
+ *   $Id: send.c,v 7.79 2000/12/15 19:55:52 db Exp $
  */
 #include "tools.h"
 #include "send.h"
@@ -295,7 +295,6 @@ void
 send_queued_write(int fd, void *data)
 {
   struct Client *to = data;
-  const char *msg;
   int retlen;
 
   /*

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.44 2000/12/15 04:53:05 db Exp $
+ *   $Id: parse.c,v 7.45 2000/12/15 19:55:52 db Exp $
  */
 #include "parse.h"
 #include "client.h"
@@ -697,7 +697,7 @@ static int     do_numeric(
 	    }
           else if (IsServer(acptr) && acptr->from != cptr)
 	    {
-	      sendto_anywhere(acptr, sptr,"%s %s %s",
+	      sendto_anywhere(acptr, sptr,"%s %s%s",
 			      numeric, nick, buffer);
 	    }
         }

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 1.23 2000/12/15 03:59:53 db Exp $
+ *  $Id: m_stats.c,v 1.24 2000/12/15 19:55:47 db Exp $
  */
 #include "tools.h"	 /* dlink_node/dlink_list */
 #include "handlers.h"    /* m_pass prototype */
@@ -369,10 +369,8 @@ void do_non_priv_stats(struct Client *sptr, char *name, char *target,
  */
 void do_priv_stats(struct Client *sptr, char *name, char *target,
 			    char stat, int doall, int wilds)
-{
-  struct Message* mptr;
-
-  switch (stat)
+{ 
+ switch (stat)
     {
     case 'C' : case 'c' :
       report_configured_links(sptr, CONF_CONNECT_SERVER|CONF_NOCONNECT_SERVER);
@@ -516,8 +514,6 @@ void do_priv_stats(struct Client *sptr, char *name, char *target,
  */
 void stats_L(struct Client *sptr,char *name,int doall, int wilds)
 {
-  struct Client *acptr;
-
   stats_L_list(sptr, name, doall, wilds, &unknown_list);
   stats_L_list(sptr, name, doall, wilds, &lclient_list);
   stats_L_list(sptr, name, doall, wilds, &serv_list);
