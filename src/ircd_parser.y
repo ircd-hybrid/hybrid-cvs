@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.85 2000/12/31 08:37:07 db Exp $
+ * $Id: ircd_parser.y,v 1.86 2000/12/31 14:39:16 davidt Exp $
  */
 
 %{
@@ -65,6 +65,10 @@ int   class_redirport_var;
         char *string;
         struct ip_value ip_entry;
 }
+
+%type   <ip_value> IP_TYPE
+%type   <string>   QSTRING
+%type   <number>   NUMBER
 
 %token  ACCEPT
 %token  ACCEPT_PASSWORD
@@ -198,10 +202,6 @@ int   class_redirport_var;
 %token  MAX_TARGETS
 %token  LINKS_NOTICE
 %token  LINKS_DELAY
-
-%type   <ip_value> IP_TYPE
-%type   <string>   QSTRING
-%type   <number>   NUMBER
 
 %%
 conf:   
