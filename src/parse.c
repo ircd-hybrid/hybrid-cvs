@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.69 2000/12/30 23:10:16 db Exp $
+ *   $Id: parse.c,v 7.70 2000/12/30 23:22:09 db Exp $
  */
 #include "parse.h"
 #include "client.h"
@@ -230,7 +230,7 @@ int parse(struct Client *cptr, char *pbuffer, char *bufend)
 
   /* EOB is 3 chars long but is not a numeric */
 
-  if( *(ch + 3) == ' ' ) && /* ok, lets see if its a possible numeric.. */
+  if( *(ch + 3) == ' '  && /* ok, lets see if its a possible numeric.. */
       IsDigit(*ch) && IsDigit(*(ch + 1)) && IsDigit(*(ch + 2)) )
     {
       mptr = (struct Message *)NULL;
