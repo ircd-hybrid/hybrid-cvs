@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: messages.tab,v 7.54 2001/08/13 21:44:06 leeh Exp $
+ *   $Id: messages.tab,v 7.55 2001/08/26 04:05:33 db Exp $
  */
 
 static  char *  replies[] = {
@@ -35,9 +35,9 @@ static  char *  replies[] = {
 /* 012 */       (char *)NULL,
 /* 013 */       (char *)NULL,
 /* 014 */       (char *)NULL,
-/* 015 */       (char *)NULL,
+/* 015 RPL_MAP */    ":%s 015 %s :%s",
 /* 016 */       (char *)NULL,
-/* 017 */       (char *)NULL,
+/* 017 RPL_MAPEND */ ":%s 017 %s :End of /MAP",
 /* 018 */       (char *)NULL,
 /* 019 */       (char *)NULL,
 /* 020 RPL_YOURID */  ":%s 020 %s %s %s :Your ID and key is",

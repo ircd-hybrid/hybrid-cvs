@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: numeric.h,v 7.18 2001/08/13 21:44:05 leeh Exp $
+ * $Id: numeric.h,v 7.19 2001/08/26 04:05:33 db Exp $
  */
 #ifndef INCLUDED_numeric_h
 #define INCLUDED_numeric_h
@@ -138,6 +138,9 @@ extern const char* form_str(int);
 #define RPL_MYINFO           004
 #define RPL_ISUPPORT         005
 #define RPL_REDIR            10
+#define RPL_MAP		     15		/* Undernet extension */
+#define RPL_MAPMORE	     16		/* Undernet extension */
+#define RPL_MAPEND	     17		/* Undernet extension */
 #define RPL_YOURID           20
 
 /*
