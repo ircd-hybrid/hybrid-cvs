@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kick.c,v 1.69 2003/10/25 04:43:05 metalrock Exp $
+ *  $Id: m_kick.c,v 1.70 2003/11/04 22:30:01 bill Exp $
  */
 
 #include "stdinc.h"
@@ -60,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&kick_msgtab);
 }
 
-const char *_version = "$Revision: 1.69 $";
+const char *_version = "$Revision: 1.70 $";
 #endif
 
 /* m_kick()
@@ -207,12 +207,14 @@ m_kick(struct Client *client_p, struct Client *source_p,
       sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s KICK %s %s :%s",
                            source_p->name, source_p->username,
                            source_p->host, name, who->name, comment);
+
     sendto_server(client_p, NULL, chptr, CAP_TS6, NOCAPS, NOFLAGS,
-                  ":%s KICK %s %s :%s", source_p->id, chptr->chname,
-                  who->id, comment);
+                  ":%s KICK %s %s :%s",
+                  ID(source_p), chptr->chname, ID(who), comment);
     sendto_server(client_p, NULL, chptr, NOCAPS, CAP_TS6, NOFLAGS,
                   ":%s KICK %s %s :%s", source_p->name, chptr->chname,
                   who->name, comment);
+
     remove_user_from_channel(ms_target);
   }
   else
