@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_nick.c,v 1.21 2000/12/10 03:52:15 db Exp $
+ *   $Id: m_nick.c,v 1.22 2000/12/11 04:06:02 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -679,7 +679,9 @@ nick_from_server(struct Client *cptr, struct Client *sptr, int parc,
       if (irccmp(parv[0], nick))
         sptr->tsinfo = newts ? newts : CurrentTime;
 
-          sendto_common_channels_local(sptr, ":%s NICK :%s", parv[0], nick);
+          sendto_common_channels_local(sptr, ":%s!%s@%s NICK :%s",
+				       sptr->name,sptr->username,sptr->host,
+				       nick);
           if (sptr->user)
             {
               add_history(sptr,1);
@@ -798,7 +800,9 @@ int change_local_nick(struct Client *cptr, struct Client *sptr,
 			   sptr->name, nick, sptr->username,
 			   sptr->host);
 
-      sendto_common_channels_local(sptr, ":%s NICK :%s", sptr->name, nick);
+      sendto_common_channels_local(sptr, ":%s!%s@%s NICK :%s",
+				   sptr->name, sptr->username, sptr->host,
+				   nick);
       if (sptr->user)
 	{
 	  add_history(sptr,1);
