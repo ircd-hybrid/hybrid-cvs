@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nick.c,v 1.129 2003/09/09 00:32:47 metalrock Exp $
+ *  $Id: m_nick.c,v 1.130 2003/09/19 00:44:27 bill Exp $
  */
 
 #include "stdinc.h"
@@ -97,7 +97,7 @@ _moddeinit(void)
   mod_del_cmd(&uid_msgtab);
 }
 
-const char *_version = "$Revision: 1.129 $";
+const char *_version = "$Revision: 1.130 $";
 #endif
 
 /*
@@ -340,11 +340,11 @@ ms_nick(struct Client *client_p, struct Client *source_p,
 
   if (parc == 9)
   {
-    struct Client *server_p;
-    server_p = find_server(nserver);
+    struct Client *server_p = find_server(nserver);
+    assert(server_p != NULL);
+
     strlcpy(ngecos, parv[8], sizeof(ngecos));
 
-    /* XXX Test for NULL i.e. unfound server ? */
     if (check_clean_nick(client_p, source_p, nick, nnick, server_p))
       return;
 
@@ -366,8 +366,7 @@ ms_nick(struct Client *client_p, struct Client *source_p,
   }
   else if (parc == 3)
   {
-    if (source_p->user->server == NULL)
-      return;
+    assert(source_p->user->server != NULL);
 
     if (check_clean_nick(client_p, source_p, nick, nnick,
 			 source_p->user->server))
