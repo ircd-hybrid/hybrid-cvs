@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.322 2003/10/10 19:01:02 metalrock Exp $
+ *  $Id: ircd.c,v 7.323 2003/10/16 13:47:05 stu Exp $
  */
 
 #include "stdinc.h"
@@ -659,6 +659,8 @@ main(int argc, char *argv[])
   load_core_modules(1);
   /* Go back to DPATH after checking to see if we can chdir to MODPATH */
   chdir(ConfigFileEntry.dpath);
+#else
+  load_all_modules(1);
 #endif
 
   write_pidfile(pidFileName);
