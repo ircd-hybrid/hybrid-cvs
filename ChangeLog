@@ -1,3 +1,20 @@
+bill        2002/09/03 01:43:38 EDT	(20020903_0)
+
+  Modified files:
+    contrib              Makefile.in 
+  Added files:
+    contrib              m_operspy.c 
+  Log:
+  - added a neat little toy that I made tonight.  extreme caution should be
+    exercised when using this module.
+  - modified Makefile to compile operspy automatically
+  
+  Revision  Changes    Path
+  1.35      +1 -0      ircd-hybrid-7/contrib/Makefile.in
+  1.1       +552 -0    ircd-hybrid-7/contrib/m_operspy.c (new)
+
+
+
 db          2002/09/02 02:34:29 EDT	(20020902_2)
 
   Modified files:
@@ -31659,4 +31676,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4009 2002/09/02 06:34:31 db Exp $
+$Id: ChangeLog,v 7.4010 2002/09/03 05:43:40 bill Exp $
