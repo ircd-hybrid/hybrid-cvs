@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.133 2003/11/05 05:23:31 metalrock Exp $
+ *  $Id: m_message.c,v 1.134 2004/02/12 05:01:33 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -117,7 +117,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.133 $";
+const char *_version = "$Revision: 1.134 $";
 #endif
 
 /*
@@ -293,7 +293,8 @@ build_target_list(int p_or_n, const char *command, struct Client *client_p,
           {
             sendto_one(source_p, form_str(ERR_TOOMANYTARGETS),
                        ID_or_name(&me, client_p),
-                       ID_or_name(source_p, client_p), nick);
+                       ID_or_name(source_p, client_p), nick,
+		       ConfigFileEntry.max_targets);
             return (1);
           }
           targets[ntargets].ptr = (void *)chptr;
@@ -321,7 +322,8 @@ build_target_list(int p_or_n, const char *command, struct Client *client_p,
 	  {
 	    sendto_one(source_p, form_str(ERR_TOOMANYTARGETS),
                        ID_or_name(&me, client_p),
-                       ID_or_name(source_p, client_p), nick);
+                       ID_or_name(source_p, client_p), nick,
+		       ConfigFileEntry.max_targets);
 	    return (1);
 	  }
         targets[ntargets].ptr = (void *)target_p;
@@ -381,7 +383,8 @@ build_target_list(int p_or_n, const char *command, struct Client *client_p,
           {
 	    sendto_one(source_p, form_str(ERR_TOOMANYTARGETS),
                        ID_or_name(&me, client_p),
-                       ID_or_name(source_p, client_p), nick);
+                       ID_or_name(source_p, client_p), nick,
+		       ConfigFileEntry.max_targets);
             return(1);
           }
           targets[ntargets].ptr = (void *)chptr;
@@ -859,7 +862,8 @@ handle_special(int p_or_n, const char *command, struct Client *client_p,
 	else
 	  sendto_one(source_p, form_str(ERR_TOOMANYTARGETS),
                      ID_or_name(&me, client_p),
-                     ID_or_name(source_p, client_p), nick);
+                     ID_or_name(source_p, client_p), nick,
+		     ConfigFileEntry.max_targets);
       }
     }
     else if (server && *(server+1) && (target_p == NULL))
