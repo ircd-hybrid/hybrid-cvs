@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.94 2001/01/04 12:19:15 ejb Exp $
+ *  $Id: s_user.c,v 7.95 2001/01/04 19:12:15 a1kmm Exp $
  */
 #include "tools.h"
 #include "s_user.h"
@@ -436,6 +436,9 @@ int register_user(struct Client *cptr, struct Client *sptr,
       if( (status = check_X_line(cptr,sptr)) < 0 )
 	return status;
 
+/* Put this in #ifdef now, and make sure that we are using openssl or
+ * it breaks the build. */
+#ifdef USE_IDS
 	  if (sptr->user->id[0] == '\0') 
 	  {
 		  do {
@@ -445,7 +448,8 @@ int register_user(struct Client *cptr, struct Client *sptr,
 		  strcpy(sptr->user->id, id);
 		  add_to_id_hash_table(sptr->user->id, sptr);
 	  }
-	  
+#endif
+
       sendto_realops_flags(FLAGS_CCONN,
 			   "Client connecting: %s (%s@%s) [%s] {%s}",
 			   nick, sptr->username, sptr->host,

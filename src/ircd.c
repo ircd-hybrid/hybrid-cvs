@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.96 2001/01/04 11:32:04 ejb Exp $
+ * $Id: ircd.c,v 7.97 2001/01/04 19:12:15 a1kmm Exp $
  */
 #include "tools.h"
 #include "ircd.h"
@@ -509,7 +509,9 @@ int main(int argc, char *argv[])
 
   linebuf_init();	/* set up some linebuf stuff to control paging */
   init_hash();
+#ifdef USE_IDS
   id_init();
+#endif
   
   clear_scache_hash_table();    /* server cache name table */
   clear_ip_hash_table();        /* client host ip hash table */
