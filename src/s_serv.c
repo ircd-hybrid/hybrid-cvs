@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.202 2001/08/26 18:09:16 davidt Exp $
+ *   $Id: s_serv.c,v 7.203 2001/08/30 17:38:47 davidt Exp $
  */
 
 #include <sys/types.h>
@@ -1445,8 +1445,13 @@ int fork_server(struct Client *server)
           (i == slink_fds[0][0][0]) || (i == slink_fds[1][0][1]) ||
           (i == server->fd))
         set_non_blocking(i);
-      else if (i > 2) /* don't close std*, it upsets solaris */
-        close(i);
+      else
+      {
+#ifdef VMS
+        if (i > 2) /* don't close std* */
+#endif
+          close(i);
+      }
     }
 
     sprintf(fd_str[0], "%d", slink_fds[0][0][0]); /* ctrl read */
