@@ -1,4 +1,4 @@
-/* $Id: setup.h.in,v 7.44 2002/02/04 04:29:48 androsyn Exp $ */
+/* $Id: setup.h.in,v 7.45 2002/02/12 13:45:24 jmallett Exp $ */
 /* include/setup.h.in.  Generated automatically from autoconf/configure.in by autoheader 2.13.  */
 
 /* Define as __inline if that's what the C compiler calls it.  */
@@ -141,6 +141,9 @@
 /* Define if you have the <strings.h> header file.  */
 #undef HAVE_STRINGS_H
 
+/* Define if you have the <mach-o/dyld.h> header file.  */
+#undef HAVE_MACH_O_DYLD_H
+
 /* Define if you have the <sys/param.h> header file.  */
 #undef HAVE_SYS_PARAM_H
 
@@ -158,6 +161,9 @@
 
 /* Define if you have the descrypt library (-ldescrypt).  */
 #undef HAVE_LIBDESCRYPT
+
+/* Define if you have dlopen.  */
+#undef HAVE_DLOPEN
 
 /* Define if you have the dl library (-ldl).  */
 #undef HAVE_LIBDL
