@@ -1,3 +1,26 @@
+db          2003/02/04 00:30:52 EST	(20030204_1)
+
+  Modified files:
+    include              client.h 
+    src                  client.c ircd.c ircdauth.c s_serv.c 
+                         s_user.c 
+  Log:
+  - make lclient_node part of localClient part. This is a simple
+    optimisation. I also cleaned up style
+  - Removed a trivial function that is faster to do with dlinkFindDelete()
+    it was originally kept there to be able to match up with obsolete hybrid-6
+    code, its long outlived its usefulness for that. (remove_server_from_list)
+  
+  Revision  Changes    Path
+  7.161     +3 -0      ircd-hybrid-7/include/client.h
+  7.324     +6 -5      ircd-hybrid-7/src/client.c
+  7.249     +0 -6      ircd-hybrid-7/src/ircd.c
+  7.51      +3 -9      ircd-hybrid-7/src/ircdauth.c
+  7.276     +49 -56    ircd-hybrid-7/src/s_serv.c
+  7.220     +20 -18    ircd-hybrid-7/src/s_user.c
+
+
+
 db          2003/02/03 23:24:06 EST	(20030204_0)
 
   Modified files:
@@ -34802,4 +34825,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4219 2003/02/04 04:24:08 db Exp $
+$Id: ChangeLog,v 7.4220 2003/02/04 05:30:55 db Exp $
