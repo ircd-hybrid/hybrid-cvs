@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.h,v 7.16 2002/05/24 23:34:07 androsyn Exp $
+ *  $Id: packet.h,v 7.17 2002/07/20 15:51:45 leeh Exp $
  */
 
 #ifndef INCLUDED_packet_h
@@ -44,7 +44,7 @@
  * without being so heavily penalised they excess flood.
  */
 #define MAX_FLOOD 5
-#define MAX_FLOOD_BURST MAX_FLOOD * 6
+#define MAX_FLOOD_BURST MAX_FLOOD * 8
 
 extern PF  read_ctrl_packet;
 extern PF  read_packet;

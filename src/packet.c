@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.84 2002/05/31 02:21:04 androsyn Exp $
+ *  $Id: packet.c,v 7.85 2002/07/20 15:51:53 leeh Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -153,13 +153,7 @@ flood_recalc(int fd, void *data)
   if (!lclient_p)
     return;
 
-  /* Reset the sent-per-second count, decrease opers quicker
-   * than normal users
-   */
-  if(ConfigFileEntry.no_oper_flood && IsOper(client_p))
-    lclient_p->sent_parsed -= 2;
-  else
-    lclient_p->sent_parsed--;
+  lclient_p->sent_parsed -= 2;
   
   if(lclient_p->sent_parsed < 0)
     lclient_p->sent_parsed = 0;

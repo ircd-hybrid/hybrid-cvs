@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kick.c,v 1.45 2002/07/19 10:11:42 leeh Exp $
+ *  $Id: m_kick.c,v 1.46 2002/07/20 15:51:50 leeh Exp $
  */
 
 #include "stdinc.h"
@@ -37,6 +37,7 @@
 #include "modules.h"
 #include "parse.h"
 #include "hash.h"
+#include "packet.h"
 
 
 static void m_kick(struct Client*, struct Client*, int, char**);
@@ -59,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&kick_msgtab);
 }
 
-const char *_version = "$Revision: 1.45 $";
+const char *_version = "$Revision: 1.46 $";
 #endif
 /*
 ** m_kick
@@ -91,6 +92,9 @@ static void m_kick(struct Client *client_p,
                  me.name, parv[0], "KICK");
       return;
     }
+
+  if(MyClient(source_p) && !IsFloodDone(source_p))
+    flood_endgrace(source_p);
 
   comment = (BadPtr(parv[3])) ? parv[2] : parv[3];
   if (strlen(comment) > (size_t) TOPICLEN)

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_time.c,v 1.25 2002/05/24 23:34:23 androsyn Exp $
+ *  $Id: m_time.c,v 1.26 2002/07/20 15:51:47 leeh Exp $
  */
 
 #include "stdinc.h"
@@ -34,6 +34,7 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
+#include "packet.h"
 
 static void m_time(struct Client*, struct Client*, int, char**);
 static void mo_time(struct Client*, struct Client*, int, char**);
@@ -56,7 +57,7 @@ _moddeinit(void)
   mod_del_cmd(&time_msgtab);
 }
 
-const char *_version = "$Revision: 1.25 $";
+const char *_version = "$Revision: 1.26 $";
 #endif
 /*
  * m_time
@@ -66,6 +67,10 @@ const char *_version = "$Revision: 1.25 $";
 static void m_time(struct Client *client_p, struct Client *source_p,
                   int parc, char *parv[])
 {
+  /* this is not rate limited, so end the grace period */
+  if(MyClient(source_p) && !IsFloodDone(source_p))
+    flood_endgrace(source_p);
+
   /* This is safe enough to use during non hidden server mode */
   if(!ConfigServerHide.disable_remote)
     {

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_invite.c,v 1.45 2002/05/24 23:34:20 androsyn Exp $
+ *  $Id: m_invite.c,v 1.46 2002/07/20 15:51:47 leeh Exp $
  */
 
 #include "stdinc.h"
@@ -41,6 +41,7 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
+#include "packet.h"
 
 static void m_invite(struct Client *, struct Client *, int, char **);
 
@@ -62,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&invite_msgtab);
 }
 
-const char *_version = "$Revision: 1.45 $";
+const char *_version = "$Revision: 1.46 $";
 #endif
 
 /*
@@ -92,6 +93,9 @@ m_invite(struct Client *client_p,
   /* A little sanity test here */
   if (source_p->user == NULL)
     return;
+
+  if(MyClient(source_p) && !IsFloodDone(source_p))
+    flood_endgrace(source_p);
 
   if ((target_p = find_person(parv[1])) == NULL)
   {

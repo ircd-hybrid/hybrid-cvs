@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_oper.c,v 1.46 2002/05/24 23:34:21 androsyn Exp $
+ *  $Id: m_oper.c,v 1.47 2002/07/20 15:51:47 leeh Exp $
  */
 
 #include "stdinc.h"
@@ -41,6 +41,7 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
+#include "packet.h"
 
 
 static struct ConfItem *find_password_aconf(char *name, struct Client *source_p);
@@ -73,7 +74,7 @@ _moddeinit(void)
   mod_del_cmd(&oper_msgtab);
 }
 
-const char *_version = "$Revision: 1.46 $";
+const char *_version = "$Revision: 1.47 $";
 #endif
 
 /*
@@ -100,6 +101,10 @@ static void m_oper(struct Client *client_p, struct Client *source_p,
                  me.name, source_p->name, "OPER");
       return;
     }
+
+  /* end the grace period */
+  if(!IsFloodDone(source_p))
+    flood_endgrace(source_p);
 
   if( (aconf = find_password_aconf(name,source_p)) == NULL)
     {
