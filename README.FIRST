@@ -72,6 +72,13 @@ Feature Specific Requirements:
   if you find otherwise.  It probably does not compile on AIX, IRIX
   or libc5 Linux.
 
+- TESTED PLATFORMS:  The code has been tested on the following platforms, and
+  is known to run properly.
+  FreeBSD 3.x/4.x
+  Linux glibc
+  Solaris 2.6/7
+  OpenBSD 2.8
+
 - CYGWIN USERS: Unfortunately, cygwin support has been removed
   because there is no way to support dynamic modules under cygwin.
 
@@ -80,4 +87,4 @@ Feature Specific Requirements:
 - Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: README.FIRST,v 7.12 2001/01/26 22:55:10 wcampbel Exp $
+$Id: README.FIRST,v 7.13 2001/01/29 15:09:34 wcampbel Exp $
