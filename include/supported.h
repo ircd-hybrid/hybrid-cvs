@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: supported.h,v 1.7 2001/05/02 23:07:43 toot Exp $
+ * $Id: supported.h,v 1.8 2001/05/12 14:17:19 toot Exp $
  * 
  */
 #ifndef INCLUDED_supported_h
@@ -40,7 +40,7 @@
                 " CHANMODES=%s"
                  
 #define FEATURESVALUES MAXMODEPARAMS,MAXCHANNELSPERUSER,MAXBANS, \
-        ConfigFileEntry.max_targets,NICKLEN,TOPICLEN,TOPICLEN,"#&","(ovh)@+%", \
+        ConfigFileEntry.max_targets,NICKLEN,TOPICLEN,TOPICLEN,"#&","(ohv)@%+", \
         "beI,,kl,imnpsta"
 
 /*
