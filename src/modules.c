@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.c,v 7.72 2001/08/31 12:59:07 leeh Exp $
+ * $Id: modules.c,v 7.73 2001/10/10 18:50:27 davidt Exp $
  */
 #include "config.h"
 
@@ -240,6 +240,7 @@ load_all_modules (int check)
   DIR            *system_module_dir = NULL;
   struct dirent  *ldirent = NULL;
   char            module_fq_name[PATH_MAX + 1];
+  int             len;
 
   modules_init();
   
@@ -259,9 +260,12 @@ load_all_modules (int check)
 
   while ((ldirent = readdir (system_module_dir)) != NULL)
     {
-      if (ldirent->d_name [strlen (ldirent->d_name) - 3] == '.' &&
-	  ldirent->d_name [strlen (ldirent->d_name) - 2] == 's' &&
-	  ldirent->d_name [strlen (ldirent->d_name) - 1] == 'o')
+      len = strlen(ldirent->d_name);
+      
+      if ((len > 3) && 
+          (ldirent->d_name[len-3] == '.') &&
+          (ldirent->d_name[len-2] == 's') &&
+          (ldirent->d_name[len-1] == 'o'))
 	{
 	  (void)sprintf (module_fq_name, "%s/%s",  MODPATH,
 			 ldirent->d_name);
