@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: msg.h,v 7.34 2001/01/04 11:31:55 ejb Exp $
+ * $Id: msg.h,v 7.35 2001/01/04 20:27:20 toot Exp $
  */
 #ifndef INCLUDED_msg_h
 #define INCLUDED_msg_h
@@ -60,11 +60,6 @@ struct  Message
    */
   MessageHandler handlers[LAST_HANDLER_TYPE];
 };
-
-
-#ifdef DBOP
-#define MSG_DBOP     "DBOP"
-#endif
 
 #define MSG_CLIENT   "CLIENT"   /* CLIENT */
 #define MSG_ACCEPT   "ACCEPT"   /* ACCEPT */
@@ -140,6 +135,8 @@ struct  Message
 #define MSG_MODLOAD  "MODLOAD"  /* MODLOAD */
 #define MSG_MODUNLOAD  "MODUNLOAD"  /* MODUNLOAD */
 #define MSG_DMEM     "DMEM" 
+#define MSG_TESTLINE "TESTLINE"
+
 /*
  * Constants
  */
@@ -151,8 +148,4 @@ struct  Message
                                          * unregistered clients */
 #define MAXPARA    15 
 
-#define MSG_TESTLINE "TESTLINE"
-
-
 #endif /* INCLUDED_msg_h */
-

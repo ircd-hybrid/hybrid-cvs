@@ -1,5 +1,5 @@
 /*
- * IRC - Internet Relay Chat, include/hanDlers.h
+ * IRC - Internet Relay Chat, include/handlers.h
  * Copyright (C) 1990 Jarkko Oikarinen and
  *                    University of Oulu, Computing Center
  *
@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: handlers.h,v 7.32 2001/01/04 16:10:05 davidt Exp $
+ * $Id: handlers.h,v 7.33 2001/01/04 20:27:19 toot Exp $
  */
 #ifndef INCLUDED_handlers_h
 #define INCLUDED_handlers_h

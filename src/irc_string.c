@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: irc_string.c,v 7.15 2000/12/30 21:46:46 lusky Exp $
+ *  $Id: irc_string.c,v 7.16 2001/01/04 20:27:23 toot Exp $
  */
 #include "tools.h"
 #include "irc_string.h"
@@ -201,7 +201,7 @@ char *strip_tabs(char *dest, const unsigned char *src, size_t len)
     ++src;
     --len;
   }
-  *d = '\0';   /* Null terminate, kthxbye */
+  *d = '\0';   /* Null terminate, thanks and goodbye */
   return dest;
 }
 

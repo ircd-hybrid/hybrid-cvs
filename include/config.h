@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.75 2001/01/04 11:31:54 ejb Exp $
+ * $Id: config.h,v 7.76 2001/01/04 20:27:17 toot Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -191,7 +191,7 @@
  * this option is used unless you tell the system administrator beforehand
  * and obtain their permission to send messages to the system log files.
  */
-#define USE_SYSLOG
+#undef USE_SYSLOG
 
 #ifdef  USE_SYSLOG
 /* SYSLOG_KILL SYSLOG_SQUIT SYSLOG_CONNECT SYSLOG_USERS SYSLOG_OPER
