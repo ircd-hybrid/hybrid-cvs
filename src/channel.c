@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.295 2002/01/26 20:16:59 db Exp $
+ *  $Id: channel.c,v 7.296 2002/02/04 05:17:28 androsyn Exp $
  */
 
 #include "tools.h"
@@ -82,7 +82,7 @@ static void channelheap_garbage_collect(void *unused)
 void init_channels(void)
 {
   channel_heap = BlockHeapCreate(sizeof(struct Channel), 1024);
-  ban_heap = BlockHeapCreate(sizeof(struct Ban), 2048);
+  ban_heap = BlockHeapCreate(sizeof(struct Ban), 1024);
   eventAddIsh("channelheap_garbage_collect", channelheap_garbage_collect,
               NULL, 45);
 }

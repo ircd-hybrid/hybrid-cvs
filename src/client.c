@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.223 2002/01/30 15:00:00 leeh Exp $
+ *  $Id: client.c,v 7.224 2002/02/04 05:17:29 androsyn Exp $
  */
 
 #include "tools.h"
@@ -101,7 +101,7 @@ void init_client(void)
    * start off the check ping event ..  -- adrian
    * Every 30 seconds is plenty -- db
    */
-  client_heap = BlockHeapCreate(sizeof(struct Client), 10000);
+  client_heap = BlockHeapCreate(sizeof(struct Client), 1024);
   lclient_heap = BlockHeapCreate(sizeof(struct LocalUser), 512); 
   eventAdd("check_pings", check_pings, NULL, 30);
   eventAdd("free_exited_clients", &free_exited_clients, NULL, 4);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: linebuf.c,v 7.75 2002/01/05 09:15:14 a1kmm Exp $
+ *  $Id: linebuf.c,v 7.76 2002/02/04 05:17:29 androsyn Exp $
  */
 
 #include <errno.h>
@@ -71,7 +71,7 @@ static void linebuf_garbage_collect(void *unused)
 void
 linebuf_init(void)
 {
-  linebuf_heap  = BlockHeapCreate(sizeof(buf_line_t), 2048);
+  linebuf_heap  = BlockHeapCreate(sizeof(buf_line_t), 1024);
   eventAddIsh("linebuf_garbage_collect", linebuf_garbage_collect, NULL, 30);
 }
 
