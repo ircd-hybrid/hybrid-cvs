@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fdlist.c,v 7.29 2002/05/24 23:34:46 androsyn Exp $
+ *  $Id: fdlist.c,v 7.30 2002/05/31 01:29:03 androsyn Exp $
  */
 #include "stdinc.h"
 #include "config.h"  /* option settings */
@@ -70,7 +70,6 @@ fdlist_update_biggest(int fd, int opening)
 void fdlist_init(void)
 {
   static int initialized = 0;
-  assert(0 == initialized);
 
   if (!initialized)
     {
@@ -87,7 +86,7 @@ fd_open(int fd, unsigned int type, const char *desc)
 {
   fde_t *F = &fd_table[fd];
   assert(fd >= 0);
-
+  
   if (F->flags.open)
     {
 #ifdef NOTYET
