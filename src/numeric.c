@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: numeric.c,v 7.16 2001/11/29 05:53:48 db Exp $
+ *   $Id: numeric.c,v 7.17 2001/11/29 15:57:54 db Exp $
  */
 
 #include <sys/types.h>
@@ -45,6 +45,7 @@
  */
 const char* form_str(int numeric)
 {
+  const char *num_ptr;
 
   assert(-1 < numeric);
   assert(numeric < ERR_LAST_ERR_MSG);
@@ -55,7 +56,11 @@ const char* form_str(int numeric)
   if (numeric < 0)
     numeric = ERR_LAST_ERR_MSG;
 
-  return (const char *) _(replies[numeric]);
+  num_ptr = replies[numeric];
+  if (num_ptr == NULL)
+    num_ptr = replies[ERR_LAST_ERR_MSG];
+
+  return (num_ptr);
 }
 
 
