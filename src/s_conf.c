@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.206 2001/04/17 22:36:07 fl_ Exp $
+ *  $Id: s_conf.c,v 7.207 2001/04/18 11:37:25 a1kmm Exp $
  */
 
 #include <sys/types.h>
@@ -1546,7 +1546,7 @@ int conf_connect_allowed(struct irc_inaddr *addr, int aftype)
 {
   struct ConfItem *aconf = find_dline(addr, aftype);
 
-  if (aconf && !IsConfExemptKline(aconf))
+  if (aconf && !(aconf->status & CONF_EXEMPTDLINE))
     return 0;
   return 1;
 }

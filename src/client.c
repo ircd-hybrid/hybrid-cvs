@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.161 2001/04/17 22:36:04 fl_ Exp $
+ *  $Id: client.c,v 7.162 2001/04/18 11:37:23 a1kmm Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -400,7 +400,7 @@ check_klines(void)
                               client_p->localClient->aftype)))
 	/* if there is a returned struct ConfItem then kill it */
 	{
-	  if(IsConfExemptKline(aconf))
+	  if(aconf->status & CONF_EXEMPTDLINE)
 	    {
 	      sendto_realops_flags(FLAGS_ALL,
 			   "DLINE over-ruled for %s, client is kline_exempt",
