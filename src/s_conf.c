@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.464 2003/08/04 08:58:42 michael Exp $
+ *  $Id: s_conf.c,v 7.465 2003/08/06 04:58:27 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1579,7 +1579,7 @@ find_matching_name_conf(ConfType type, const char *name, const char *user,
   struct MatchItem *match_item=NULL;
   dlink_list *list_p = map_to_list(type);
 
-  switch(type)
+  switch (type)
   {
   case XLINE_TYPE:
   case ULINE_TYPE:
@@ -1590,19 +1590,19 @@ find_matching_name_conf(ConfType type, const char *name, const char *user,
     {
       conf = ptr->data;
 
-      match_item = (struct MatchItem *)map_to_conf(conf);
+      match_item = map_to_conf(conf);
       if (EmptyString(conf->name))
 	continue;
-      if ((name != NULL) && match_esc(name, conf->name))
+      if ((name != NULL) && match_esc(conf->name, name))
       {
 	if ((user == NULL && (host == NULL)))
-	  return (conf);
+	  return(conf);
 	if ((match_item->action & action) != action)
           continue;
 	if (EmptyString(match_item->user) || EmptyString(match_item->host))
-	  return (conf);
+	  return(conf);
 	if (match(match_item->user, user) && match(match_item->host, host))
-	  return (conf);
+	  return(conf);
       }
     }
       break;
@@ -1617,7 +1617,7 @@ find_matching_name_conf(ConfType type, const char *name, const char *user,
 	if ((user == NULL && (host == NULL)))
 	  return (conf);
 
-	aconf = (struct AccessItem *)map_to_conf(conf);
+	aconf = map_to_conf(conf);
 	if (EmptyString(aconf->user) || EmptyString(aconf->host))
 	  return (conf);
 	if (match(aconf->user, user) && match(aconf->host, host))
@@ -1630,7 +1630,7 @@ find_matching_name_conf(ConfType type, const char *name, const char *user,
     DLINK_FOREACH(ptr, (*list_p).head)
     {
       conf = ptr->data;
-      aconf = (struct AccessItem *)map_to_conf(conf);
+      aconf = map_to_conf(conf);
 
       if ((name != NULL) && match_esc(name, conf->name))
         return(conf);
