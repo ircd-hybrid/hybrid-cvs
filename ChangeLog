@@ -1,3 +1,27 @@
+db          2002/11/12 08:45:43 EST	(20021112_2)
+
+  Modified files:
+    include              modules.h 
+    src                  ircd.c ircd_parser.y modules.c 
+  Log:
+  - UMODE_ALL -> FLAGS_ALL (motd rehash patch)
+  
+  It seems to be that there exist a problem with the dynamic core modules,
+  afaik it  should be  impossible to unload a  core  module, that is
+  true..... MODUNLOAD can't  unload a core module at all, BUT if you
+  MODRELOAD'ing a core module first, you're able to MODUNLOAD a core
+  module afterwards.
+  
+  michael@phat-net.de
+  
+  Revision  Changes    Path
+  7.32      +1 -1      ircd-hybrid-7/include/modules.h
+  7.244     +1 -1      ircd-hybrid-7/src/ircd.c
+  1.262     +1 -1      ircd-hybrid-7/src/ircd_parser.y
+  7.105     +9 -6      ircd-hybrid-7/src/modules.c
+
+
+
 db          2002/11/12 08:12:42 EST	(20021112_1)
 
   Modified files:
@@ -33090,4 +33114,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4104 2002/11/12 13:12:45 db Exp $
+$Id: ChangeLog,v 7.4105 2002/11/12 13:45:46 db Exp $
