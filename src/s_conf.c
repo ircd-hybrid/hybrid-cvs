@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.341.2.1 2003/10/26 02:08:24 db Exp $
+ *  $Id: s_conf.c,v 7.341.2.2 2004/10/07 19:43:05 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -1520,8 +1520,6 @@ validate_conf(void)
   /* hasnt been set, disable it by default */
   if(ConfigChannel.use_anonops == -1)
     ConfigChannel.use_anonops = 0;
-
-  GlobalSetOptions.idletime = (ConfigFileEntry.idletime * 60);
 }
 
 /*

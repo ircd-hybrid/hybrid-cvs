@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.252.2.2 2003/10/26 02:08:22 db Exp $
+ *  $Id: ircd.c,v 7.252.2.3 2004/10/07 19:43:05 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -403,7 +403,7 @@ static void initialize_global_set_options(void)
   }
 
   GlobalSetOptions.ident_timeout = IDENT_TIMEOUT;
-
+  GlobalSetOptions.idletime = ConfigFileEntry.idletime;
   /* memset( &ConfigChannel, 0, sizeof(ConfigChannel)); */
 
  /* End of global set options */
