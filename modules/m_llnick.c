@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_llnick.c,v 1.3 2001/01/04 21:55:38 davidt Exp $
+ * $Id: m_llnick.c,v 1.4 2001/01/04 22:35:10 davidt Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -126,7 +126,9 @@ static int  ms_llnick(struct Client *cptr,
   if(hash_find_client(nick,(struct Client *)NULL) || exists)
   {
     /* The nick they want is in use. complain */
-    sendto_one(acptr, form_str(ERR_NICKNAMEINUSE), me.name, nick_old, nick);
+    sendto_one(acptr, form_str(ERR_NICKNAMEINUSE), me.name,
+               new ? "*" : nick_old,
+               nick);
     return 0;
   }
 
