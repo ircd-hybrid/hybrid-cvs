@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.105 2001/01/08 00:57:20 db Exp $
+ *  $Id: client.c,v 7.106 2001/01/08 01:34:49 db Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -39,6 +39,7 @@
 #include "numeric.h"
 #include "packet.h"
 #include "res.h"
+#include "s_auth.h"
 #include "s_bsd.h"
 #include "s_conf.h"
 #include "s_log.h"
@@ -1306,6 +1307,7 @@ const char* comment         /* Reason for the exit */
 #endif
 
       delete_resolver_queries(sptr);
+      delete_identd_queries(sptr);
 
       /* This sptr could have status of one of STAT_UNKNOWN, STAT_CONNECTING
        * STAT_HANDSHAKE or STAT_UNKNOWN

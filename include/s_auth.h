@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.h,v 7.7 2000/12/30 06:03:34 lusky Exp $
+ *   $Id: s_auth.h,v 7.8 2001/01/08 01:34:43 db Exp $
  */
 #ifndef INCLUDED_s_auth_h
 #define INCLUDED_s_auth_h
@@ -82,6 +82,7 @@ extern void remove_auth_request(struct AuthRequest *req);
 extern void free_auth_request(struct AuthRequest *);
 extern struct AuthRequest *FindAuthClient(long id);
 extern void init_auth(void);
+extern void delete_identd_queries(struct Client *);
 
 #endif /* INCLUDED_s_auth_h */
 

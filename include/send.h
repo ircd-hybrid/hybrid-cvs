@@ -2,7 +2,7 @@
  * send.h
  * Copyright (C) 1999 Patrick Alken
  *
- * $Id: send.h,v 7.34 2001/01/07 03:25:18 davidt Exp $
+ * $Id: send.h,v 7.35 2001/01/08 01:34:44 db Exp $
  */
 
 #ifndef INCLUDED_send_h
@@ -102,7 +102,6 @@ extern void sendto_match_nocap_servs(struct Channel *, struct Client *,
 extern  void sendto_match_butone(struct Client *, struct Client *, 
                                  char *, int, const char *, ...);
 
-extern  void sendto_realops(const char *, ...);
 extern  void sendto_realops_flags(int, const char *, ...);
 
 extern  void sendto_ops_butone(struct Client *, struct Client *, 
@@ -139,9 +138,6 @@ extern void sendto_match_cap_servs_nocap(struct Channel *, struct Client *, int,
 extern  void sendto_match_butone(struct Client *, struct Client *, 
                                  char *, int, const char *, ...)
 	    __attribute__((format (printf, 5, 6)));
-
-extern  void sendto_realops(const char *, ...)
-	    __attribute__((format (printf, 1, 2)));
 
 extern  void sendto_realops_flags(int, const char *, ...)
 	    __attribute__((format (printf, 2, 3)));
