@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.114 2001/01/20 06:28:22 db Exp $
+ *   $Id: send.c,v 7.115 2001/01/25 17:05:01 db Exp $
  */
 
 #include <sys/types.h>
@@ -973,9 +973,9 @@ sendto_channel_remote_prefix(struct Channel *chptr,
 	    continue;
 	}
 	  if (IsCapable(cptr, CAP_UID)) 
-		  sendto_one (cptr, ibuf, ilen);
+	    send_message (cptr, ibuf, ilen);
 	  else
-		  sendto_one (cptr, lbuf, llen);
+	    send_message (cptr, lbuf, llen);
 	  
     }
 } /* sendto_channel_remote() */
