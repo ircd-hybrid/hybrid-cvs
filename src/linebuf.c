@@ -6,7 +6,7 @@
  * The idea here is that we should really be maintaining pre-munged
  * buffer "lines" which we can later refcount to save needless copies.
  *
- * $Id: linebuf.c,v 7.20 2001/02/07 08:33:56 db Exp $
+ * $Id: linebuf.c,v 7.21 2001/02/14 05:58:34 a1kmm Exp $
  */
 
 #include <errno.h>
@@ -69,7 +69,7 @@ linebuf_new_line(buf_head_t *bufhead)
     bufline = (buf_line_t *)BlockHeapAlloc(linebuf_bl);
 
     /* XXX Zero data, I'm being paranoid! -- adrian */
-    bzero(bufline, sizeof(buf_line_t));
+    memset(bufline, 0, sizeof(buf_line_t));
 
 #if 0
     bufline->len = 0;
@@ -161,7 +161,7 @@ void
 linebuf_newbuf(buf_head_t *bufhead)
 {
     /* not much to do right now :) */
-    bzero(bufhead, sizeof(buf_head_t));
+    memset(bufhead, 0, sizeof(buf_head_t));
 }
 
 /*
