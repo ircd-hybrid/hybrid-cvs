@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.27 2000/09/29 17:16:59 ejb Exp $
+ * $Id: ircd.c,v 7.28 2000/10/23 12:38:02 adrian Exp $
  */
 #include "ircd.h"
 #include "channel.h"
@@ -51,6 +51,7 @@
 #include "s_zip.h"
 #include "scache.h"
 #include "send.h"
+#include "setup.h"
 #include "whowas.h"
 
 #include <stdlib.h>
@@ -226,19 +227,6 @@ static void init_sys(int boot_daemon)
                         (long) limit.rlim_cur);
           exit(-1);
         }
-
-#ifndef USE_POLL
-      if( MAXCONNECTIONS > FD_SETSIZE )
-        {
-          fprintf(stderr, "FD_SETSIZE = %d MAXCONNECTIONS = %d\n",
-                  FD_SETSIZE, MAXCONNECTIONS);
-          fprintf(stderr,
-            "Make sure your kernel supports a larger FD_SETSIZE then " \
-            "recompile with -DFD_SETSIZE=%d\n", MAXCONNECTIONS);
-          exit(-1);
-        }
-      printf("Value of FD_SETSIZE is %d\n", FD_SETSIZE);
-#endif /* USE_POLL */
       printf("Value of NOFILE is %d\n", NOFILE);
     }
 #endif        /* RLIMIT_FD_MAX */

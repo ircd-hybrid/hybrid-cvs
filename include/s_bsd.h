@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_bsd.h,v 7.4 2000/09/29 17:16:55 ejb Exp $
+ *   $Id: s_bsd.h,v 7.5 2000/10/23 12:38:00 adrian Exp $
  *
  */
 #ifndef INCLUDED_s_bsd_h
@@ -53,6 +53,12 @@ extern int   set_non_blocking(int);
 extern int   set_sock_buffers(int, int);
 extern int   send_queued(struct Client*);
 extern int   deliver_it(struct Client*, const char*, int);
+
+extern int   completed_connection(struct Client*);
+extern int   read_packet(struct Client*);
+extern void  error_exit_client(struct Client*, int);
+extern int   get_sockerr(int);
+extern int   parse_client_queued(struct Client*);
 
 #endif /* INCLUDED_s_bsd_h */
 
