@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_oper.c,v 1.18 2000/12/23 01:42:14 db Exp $
+ *   $Id: m_oper.c,v 1.19 2000/12/23 02:42:01 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -312,7 +312,7 @@ int oper_up( struct Client *sptr, struct ConfItem *aconf )
   sendto_realops_flags(FLAGS_ALL,
 		       "%s (%s@%s) is now operator (%c)", sptr->name,
 		       sptr->username, sptr->host,
-		       IsGlobalOper(sptr) ? 'O' : 'o');
+		       IsOper(sptr) ? 'O' : 'o');
 	
   send_umode_out(sptr, sptr, old);
 
