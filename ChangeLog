@@ -1,3 +1,15 @@
+db          2002/12/16 01:30:51 EST	(20021216_1)
+
+  Modified files:
+    src                  channel.c 
+  Log:
+  - add some sanity tests to not try to use who->user if user is NULL
+  
+  Revision  Changes    Path
+  7.346     +21 -15    ircd-hybrid-7/src/channel.c
+
+
+
 db          2002/12/16 00:00:40 EST	(20021216_0)
 
   Modified files:
@@ -33555,4 +33567,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4136 2002/12/16 05:00:43 db Exp $
+$Id: ChangeLog,v 7.4137 2002/12/16 06:30:54 db Exp $
