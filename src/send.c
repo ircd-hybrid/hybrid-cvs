@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.116 2001/01/26 20:45:56 db Exp $
+ *   $Id: send.c,v 7.117 2001/01/26 23:07:54 db Exp $
  */
 
 #include <sys/types.h>
@@ -1616,16 +1616,16 @@ kill_client(struct Client *cptr,
   have_uid = 0;
   if(HasID(diedie))
     {
-      len_nick = ircsprintf(sendbuf_nick,"%s KILL %s :%s",
+      len_uid = ircsprintf(sendbuf_uid,":%s KILL %s :%s",
 			    me.name, diedie->user->id, reason);
-      len_nick = send_trim(sendbuf_nick, len_nick);
+      len_uid = send_trim(sendbuf_uid, len_uid);
       have_uid = 1;
     }		    
   else
     {
-      len_uid  = ircsprintf(sendbuf_uid,":%s KILL %s :%s",
+      len_nick  = ircsprintf(sendbuf_nick,":%s KILL %s :%s",
 			    me.name,diedie->name, reason);
-      len_uid  = send_trim(sendbuf_uid, len_uid);
+      len_nick  = send_trim(sendbuf_nick, len_nick);
     }
 
   if (have_uid && IsCapable(cptr, CAP_UID))
