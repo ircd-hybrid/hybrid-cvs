@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.258 2001/07/27 12:14:29 leeh Exp $
+ * $Id: channel.c,v 7.259 2001/07/27 16:39:04 leeh Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -2372,7 +2372,8 @@ send_cap_mode_changes(struct Client *client_p, struct Client *source_p,
   {
     target_p = ptr->data;
 
-    if(target_p == source_p)
+    if((IsServer(source_p) && (target_p == source_p)) ||
+       (IsClient(source_p) && (target_p == source_p->servptr)))
       continue;
     
     /* if its a LL, check they have the channel */
