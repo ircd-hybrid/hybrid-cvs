@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.127 2003/08/10 21:30:18 adx Exp $
+ *  $Id: channel_mode.c,v 7.128 2003/08/20 01:59:05 michael Exp $
  */
 
 #include "stdinc.h"
@@ -217,6 +217,7 @@ add_id(struct Client *client_p, struct Channel *chptr, char *banid, int type)
   }
 
   actualBan = (struct Ban *)BlockHeapAlloc(ban_heap);
+  memset(actualBan, 0, sizeof(struct Ban));
   DupString(actualBan->banstr, banid);
 
   if (IsPerson(client_p))
