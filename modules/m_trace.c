@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_trace.c,v 1.62 2003/05/24 08:02:56 michael Exp $
+ *  $Id: m_trace.c,v 1.63 2003/05/24 19:47:22 db Exp $
  */
 
 #include "stdinc.h"
@@ -45,11 +45,28 @@
 static void m_trace(struct Client *, struct Client *, int, char **);
 static void ms_trace(struct Client*, struct Client*, int, char**);
 static void mo_trace(struct Client*, struct Client*, int, char**);
+
+static void mo_trace4(struct Client*, struct Client*, int, char**);
+
+static void mo_trace6(struct Client*, struct Client*, int, char**);
+
 static void trace_spy(struct Client *);
+static void do_actual_trace(int ttype, const char *tname,
+			    struct Client*, struct Client*, int, char**);
 
 struct Message trace_msgtab = {
   "TRACE", 0, 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_trace, ms_trace, mo_trace, m_ignore}
+};
+
+struct Message trace_msgtab4 = {
+  "TRACE4", 0, 0, 0, 0, MFLG_SLOW, 0,
+  {m_unregistered, m_trace, m_ignore, mo_trace4, m_ignore}
+};
+
+struct Message trace_msgtab6 = {
+  "TRACE6", 0, 0, 0, 0, MFLG_SLOW, 0,
+  {m_unregistered, m_trace, m_ignore, mo_trace6, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -58,6 +75,10 @@ _modinit(void)
 {
   hook_add_event("doing_trace");
   mod_add_cmd(&trace_msgtab);
+#ifdef IPV6
+  mod_add_cmd(&trace_msgtab4);
+  mod_add_cmd(&trace_msgtab6);
+#endif
 }
 
 void
@@ -65,12 +86,16 @@ _moddeinit(void)
 {
   hook_del_event("doing_trace");
   mod_del_cmd(&trace_msgtab);
-}
-const char *_version = "$Revision: 1.62 $";
+#ifdef IPV6
+  mod_del_cmd(&trace_msgtab4);
+  mod_del_cmd(&trace_msgtab6);
 #endif
-static int report_this_status(struct Client *source_p, struct Client *target_p,int dow,
-                              int link_u_p, int link_u_s);
+}
+const char *_version = "$Revision: 1.63 $";
+#endif
 
+static int report_this_status(struct Client *source_p, struct Client *target_p,
+			      int dow, int link_u_p, int link_u_s);
 
 /*
  * m_trace()
@@ -103,13 +128,8 @@ static void
 mo_trace(struct Client *client_p, struct Client *source_p,
          int parc, char *parv[])
 {
-  struct Client *target_p = NULL;
-  struct Class *cltmp;
-  const char *tname;
-  int doall, link_s[MAXCONNECTIONS], link_u[MAXCONNECTIONS];
-  int cnt = 0, wilds, dow;
   dlink_node *ptr;
-  dlink_node *gcptr;	/* global_client_list ptr */
+  const char *tname;
 
   if (!IsClient(source_p))
     return;
@@ -151,10 +171,61 @@ mo_trace(struct Client *client_p, struct Client *source_p,
         return;
       }
     case HUNTED_ISME:
+      do_actual_trace(AF_UNSPEC, tname, client_p, source_p, parc, parv);
       break;
     default:
       return;
     }
+}
+
+#ifdef IPV6
+static void
+mo_trace4(struct Client *client_p, struct Client *source_p,
+	  int parc, char *parv[])
+{
+  const char *tname;
+
+  if (!IsClient(source_p))
+    return;
+
+  if (parc > 1)
+    tname = parv[1];
+  else
+    tname = me.name;
+
+    
+  do_actual_trace(AF_INET, tname, client_p, source_p, parc, parv);
+}
+
+static void
+mo_trace6(struct Client *client_p, struct Client *source_p,
+	  int parc, char *parv[])
+{
+  const char *tname;
+
+  if (!IsClient(source_p))
+    return;
+
+  if (parc > 1)
+    tname = parv[1];
+  else
+    tname = me.name;
+
+  do_actual_trace(AF_INET6, tname, client_p, source_p, parc, parv);
+}
+#endif
+
+static void
+do_actual_trace(int ttype, const char *tname,
+		struct Client *client_p, struct Client *source_p,
+		int parc, char *parv[])
+{
+  struct Client *target_p = NULL;
+  struct Class *cltmp;
+  int doall, link_s[MAXCONNECTIONS], link_u[MAXCONNECTIONS];
+  int cnt = 0, wilds, dow;
+  dlink_node *gcptr;	/* global_client_list ptr */
+  dlink_node *ptr;
 
   trace_spy(source_p);
 
@@ -214,95 +285,115 @@ mo_trace(struct Client *client_p, struct Client *source_p,
    * Count up all the servers and clients in a downlink.
    */
   if (doall)
-   {
+  {
     DLINK_FOREACH(gcptr, global_client_list.head)
-     {
+    {
       target_p = gcptr->data;
 
       if (IsPerson(target_p))
-        {
-          link_u[target_p->from->localClient->fd]++;
-        }
+      {
+	link_u[target_p->from->localClient->fd]++;
+      }
       else if (IsServer(target_p))
-	{
-	  link_s[target_p->from->localClient->fd]++;
-	}
-     }
-   }
+      {
+	link_s[target_p->from->localClient->fd]++;
+      }
+    }
+  }
    
   /* report all direct connections */
   DLINK_FOREACH(ptr, local_client_list.head)
-    {
-      target_p = ptr->data;
+  {
+    target_p = ptr->data;
 
-      if (IsInvisible(target_p) && dow &&
-          !(MyConnect(source_p) && IsOper(source_p)) &&
-          !IsOper(target_p) && (target_p != source_p))
-        continue;
-      if (!doall && wilds && !match(tname, target_p->name))
-        continue;
-      if (!dow && irccmp(tname, target_p->name))
-        continue;
+    if (IsInvisible(target_p) && dow &&
+	!(MyConnect(source_p) && IsOper(source_p)) &&
+	!IsOper(target_p) && (target_p != source_p))
+      continue;
+    if (!doall && wilds && !match(tname, target_p->name))
+      continue;
+    if (!dow && irccmp(tname, target_p->name))
+      continue;
 
-      cnt = report_this_status(source_p,target_p,dow,0,0);
-    }
+#ifdef IPV6
+    if ((ttype == AF_UNSPEC) || 
+	(target_p->localClient->ip.ss.ss_family == ttype))
+      cnt = report_this_status(source_p, target_p, dow, 0, 0);
+#else
+    cnt = report_this_status(source_p, target_p, dow, 0, 0);
+#endif
+  }
 
   DLINK_FOREACH(ptr, serv_list.head)
-    {
-      target_p = ptr->data;
+  {
+    target_p = ptr->data;
 
-      if (!doall && wilds && !match(tname, target_p->name))
-        continue;
-      if (!dow && irccmp(tname, target_p->name))
-        continue;
+    if (!doall && wilds && !match(tname, target_p->name))
+      continue;
+    if (!dow && irccmp(tname, target_p->name))
+      continue;
 
+#ifdef IPV6
+    if ((ttype == AF_UNSPEC) || 
+	(target_p->localClient->ip.ss.ss_family == ttype))
       cnt = report_this_status(source_p, target_p, dow,
-                               link_u[target_p->localClient->fd],
-                               link_s[target_p->localClient->fd]);
-    }
+			       link_u[target_p->localClient->fd],
+			       link_s[target_p->localClient->fd]);
+#else
+    cnt = report_this_status(source_p, target_p, dow,
+			     link_u[target_p->localClient->fd],
+			     link_s[target_p->localClient->fd]);
+#endif
+  }
 
   /* This section is to report the unknowns */
   DLINK_FOREACH(ptr, unknown_list.head)
-    {
-      target_p = ptr->data;
+  {
+    target_p = ptr->data;
 
-      if (!doall && wilds && !match(tname, target_p->name))
-        continue;
-      if (!dow && irccmp(tname, target_p->name))
-        continue;
+    if (!doall && wilds && !match(tname, target_p->name))
+      continue;
+    if (!dow && irccmp(tname, target_p->name))
+      continue;
 
-      cnt = report_this_status(source_p,target_p,dow,0,0);
-    }
+#ifdef IPV6
+    if ((ttype == AF_UNSPEC) || 
+	(target_p->localClient->ip.ss.ss_family == ttype))
+      cnt = report_this_status(source_p, target_p, dow, 0, 0);
+#else
+    cnt = report_this_status(source_p, target_p, dow, 0, 0);
+#endif
+  }
 
   /*
    * Add these lines to summarize the above which can get rather long
    * and messy when done remotely - Avalon
    */
   if (!SendWallops(source_p) || !cnt)
-    {
-      /* redundant given we dont allow trace from non-opers anyway.. but its
-       * left here in case that should ever change --fl
-       */
-      if(!cnt)
-	sendto_one(source_p, form_str(RPL_TRACESERVER),
-	           me.name, parv[0], 0, link_s[me.localClient->fd],
-		   link_u[me.localClient->fd], me.name, "*", "*", me.name);
+  {
+    /* redundant given we dont allow trace from non-opers anyway.. but its
+     * left here in case that should ever change --fl
+     */
+    if(cnt != 0)
+      sendto_one(source_p, form_str(RPL_TRACESERVER),
+		 me.name, parv[0], 0, link_s[me.localClient->fd],
+		 link_u[me.localClient->fd], me.name, "*", "*", me.name);
 		   
-      /* let the user have some idea that its at the end of the
-       * trace
-       */
-      sendto_one(source_p, form_str(RPL_ENDOFTRACE),me.name,
-                 parv[0],tname);
-      return;
-    }
+    /* let the user have some idea that its at the end of the
+     * trace
+     */
+    sendto_one(source_p, form_str(RPL_ENDOFTRACE),me.name,
+	       parv[0],tname);
+    return;
+  }
     
   DLINK_FOREACH(ptr, ClassList.head)
-    {
-      cltmp = ptr->data;
-      if (Links(cltmp) > 0)
-	sendto_one(source_p, form_str(RPL_TRACECLASS), me.name,
-		   parv[0], ClassName(cltmp), Links(cltmp));
-    }
+  {
+    cltmp = ptr->data;
+    if (Links(cltmp) > 0)
+      sendto_one(source_p, form_str(RPL_TRACECLASS), me.name,
+		 parv[0], ClassName(cltmp), Links(cltmp));
+  }
   sendto_one(source_p, form_str(RPL_ENDOFTRACE),me.name, parv[0],tname);
 }
 
