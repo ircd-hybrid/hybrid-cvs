@@ -1,3 +1,9 @@
+*** 20001208_8 by db
+- fixed remote join bug, it was joining the root channel instead of the
+  vchan on remote servers due to the wrong name being passed to the SJOIN
+
+
+
 *** 20001208_7 by toot
 gline_file isn't used anywhere.  and it was also the one
 making the '1 rule not reduced' error :)
@@ -1948,7 +1954,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.745 2000/12/08 17:17:31 toot Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.746 2000/12/08 17:19:14 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
