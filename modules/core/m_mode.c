@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_mode.c,v 1.72 2003/10/15 01:37:11 bill Exp $
+ *  $Id: m_mode.c,v 1.73 2004/02/18 13:51:48 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -76,7 +76,7 @@ _moddeinit(void)
   mod_del_cmd(&bmask_msgtab);
 }
 
-const char *_version = "$Revision: 1.72 $";
+const char *_version = "$Revision: 1.73 $";
 #endif
 
 /*
@@ -135,17 +135,17 @@ m_mode(struct Client *client_p, struct Client *source_p,
 	  /* Lets not for now -db */
 
 	  sendto_one(uplink, ":%s CBURST %s",
-                     me.name, parv[1]);
+                     me.name, chptr->chname);
 #endif
 	  sendto_one(uplink, ":%s MODE %s %s",
                      ID_or_name(source_p, uplink),
-		     parv[1], (parv[2] ? parv[2] : ""));
+		     chptr->chname, (parv[2] ? parv[2] : ""));
 	  return;
 	}
       else
 	{
 	  sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
-		     me.name, parv[0], parv[1]);
+		     me.name, source_p->name, parv[1]);
 	  return;
 	}
     }
@@ -155,9 +155,9 @@ m_mode(struct Client *client_p, struct Client *source_p,
   {
     channel_modes(chptr, source_p, modebuf, parabuf);
     sendto_one(source_p, form_str(RPL_CHANNELMODEIS),
-               me.name, parv[0], parv[1], modebuf, parabuf);
+               me.name, source_p->name, chptr->chname, modebuf, parabuf);
     sendto_one(source_p, form_str(RPL_CREATIONTIME),
-               me.name, parv[0], parv[1], chptr->channelts);
+               me.name, source_p->name, chptr->chname, chptr->channelts);
   }
   /* bounce all modes from people we deop on sjoin
    * servers have always gotten away with murder,

@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_opme.c,v 1.50 2003/10/13 02:38:18 bill Exp $
+ *   $Id: m_opme.c,v 1.51 2004/02/18 13:51:44 metalrock Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -57,7 +57,7 @@ _moddeinit(void)
   mod_del_cmd(&opme_msgtab);
 }
 
-const char *_version = "$Revision: 1.50 $";
+const char *_version = "$Revision: 1.51 $";
 
 #endif
 
@@ -105,14 +105,14 @@ mo_opme(struct Client *client_p, struct Client *source_p,
   if ((member = find_channel_link(source_p, chptr)) == NULL)
   {
     sendto_one(source_p, form_str(ERR_NOTONCHANNEL),
-               me.name, source_p->name, parv[1]);
+               me.name, source_p->name, chptr->chname);
     return;
   }
 
   if (chan_is_opless(chptr) == 0)
   {
     sendto_one(source_p, ":%s NOTICE %s :%s Channel is not opless",
-               me.name, source_p->name, parv[1]);
+               me.name, source_p->name, chptr->chname);
     return;
   }
 
@@ -122,38 +122,38 @@ mo_opme(struct Client *client_p, struct Client *source_p,
   {
     sendto_wallops_flags(UMODE_LOCOPS, &me,
                          "OPME called for [%s] by %s!%s@%s",
-                         parv[1], source_p->name, source_p->username,
+                         chptr->chname, source_p->name, source_p->username,
                          source_p->host);
   }
   else
   {
     sendto_wallops_flags(UMODE_WALLOP, &me,
                          "OPME called for [%s] by %s!%s@%s",
-                         parv[1], source_p->name, source_p->username,
+                         chptr->chname, source_p->name, source_p->username,
                          source_p->host);
     sendto_server(NULL, source_p, NULL, NOCAPS, NOCAPS, LL_ICLIENT,
                   ":%s WALLOPS :OPME called for [%s] by %s!%s@%s",
-                  me.name, parv[1], source_p->name, source_p->username,
+                  me.name, chptr->chname, source_p->name, source_p->username,
                   source_p->host);
   }
 
   ilog(L_NOTICE, "OPME called for [%s] by %s!%s@%s",
-       parv[1], source_p->name, source_p->username,
+       chptr->chname, source_p->name, source_p->username,
        source_p->host);
 
   sendto_server(NULL, source_p, chptr, CAP_TS6, NOCAPS, NOFLAGS,
-                 ":%s PART %s", ID(source_p), parv[1]);
+                 ":%s PART %s", ID(source_p), chptr->chname);
   sendto_server(NULL, source_p, chptr, NOCAPS, CAP_TS6, NOFLAGS,
-                ":%s PART %s", source_p->name, parv[1]);
+                ":%s PART %s", source_p->name, chptr->chname);
   sendto_server(NULL, source_p, chptr, CAP_TS6, NOCAPS, NOFLAGS,
                 ":%s SJOIN %ld %s + :@%s",
                 me.id, (unsigned long)chptr->channelts,
-                parv[1], ID(source_p));
+                chptr->chname, ID(source_p));
   sendto_server(NULL, source_p, chptr, NOCAPS, CAP_TS6, NOFLAGS,
                 ":%s SJOIN %ld %s + :@%s",
                 me.name, (unsigned long)chptr->channelts,
-                parv[1], source_p->name);
+                chptr->chname, source_p->name);
 
   sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s +o %s",
-                       me.name, parv[1], source_p->name);
+                       me.name, chptr->chname, source_p->name);
 }

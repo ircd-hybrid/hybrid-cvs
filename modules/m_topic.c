@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_topic.c,v 1.66 2003/10/07 22:37:13 bill Exp $
+ *  $Id: m_topic.c,v 1.67 2004/02/18 13:51:46 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&topic_msgtab);
 }
 
-const char *_version = "$Revision: 1.66 $";
+const char *_version = "$Revision: 1.67 $";
 #endif
 
 /* m_topic()
@@ -113,7 +113,7 @@ m_topic(struct Client *client_p, struct Client *source_p,
       if (!ServerInfo.hub && uplink && IsCapable(uplink, CAP_LL))
       {
         sendto_one(uplink, ":%s TOPIC %s %s",
-                   ID_or_name(source_p, uplink), parv[1],
+                   ID_or_name(source_p, uplink), chptr->chname,
                    ((parc > 2) ? parv[2] : ""));
         return;
       }
@@ -160,7 +160,7 @@ m_topic(struct Client *client_p, struct Client *source_p,
       }
       else
         sendto_one(source_p, form_str(ERR_CHANOPRIVSNEEDED),
-                   from, to, parv[1]);
+                   from, to, chptr->chname);
     }
     else /* only asking for topic */
     {
@@ -168,7 +168,7 @@ m_topic(struct Client *client_p, struct Client *source_p,
       {
         if (chptr->topic == NULL)
           sendto_one(source_p, form_str(RPL_NOTOPIC),
-                     from, to, parv[1]);
+                     from, to, chptr->chname);
         else
         {
           sendto_one(source_p, form_str(RPL_TOPIC),
@@ -198,7 +198,7 @@ m_topic(struct Client *client_p, struct Client *source_p,
       else
       {
         sendto_one(source_p, form_str(ERR_NOTONCHANNEL),
-                   from, to, parv[1]);
+                   from, to, chptr->chname);
         return;
       }
     }
@@ -246,8 +246,7 @@ ms_topic(struct Client *client_p, struct Client *source_p,
     {
       sendto_channel_local(ALL_MEMBERS,
                            chptr, ":%s TOPIC %s :%s",
-                           me.name,
-                           parv[1],
+                           me.name, chptr->chname,
                            chptr->topic == NULL ? "" : chptr->topic);
 
     }
@@ -256,7 +255,7 @@ ms_topic(struct Client *client_p, struct Client *source_p,
       sendto_channel_local(ALL_MEMBERS,
                            chptr, ":%s TOPIC %s :%s",
                            source_p->name,
-                           parv[1], chptr->topic == NULL ? "" : chptr->topic);
+                           chptr->chname, chptr->topic == NULL ? "" : chptr->topic);
     }
   }
 }

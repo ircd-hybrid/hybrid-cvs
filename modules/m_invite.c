@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_invite.c,v 1.65 2003/09/20 04:47:22 bill Exp $
+ *  $Id: m_invite.c,v 1.66 2004/02/18 13:51:46 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&invite_msgtab);
 }
 
-const char *_version = "$Revision: 1.65 $";
+const char *_version = "$Revision: 1.66 $";
 #endif
 
 /*
@@ -101,7 +101,7 @@ m_invite(struct Client *client_p, struct Client *source_p,
   if (check_channel_name(parv[2]) == 0)
   {
     sendto_one(source_p, form_str(ERR_BADCHANNAME),
-               me.name, parv[0], parv[2]);
+               me.name, source_p->name, parv[2]);
     return;
   }
 
@@ -109,7 +109,7 @@ m_invite(struct Client *client_p, struct Client *source_p,
   {
     if (MyClient(source_p))
       sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
-                 me.name, parv[0], parv[2]);
+                 me.name, source_p->name, parv[2]);
     return;
   }
 
@@ -125,14 +125,14 @@ m_invite(struct Client *client_p, struct Client *source_p,
   {
     if (ConfigServerHide.hide_servers == 0)
       sendto_one(source_p, form_str(ERR_USERNOTONSERV),
-                 me.name, parv[0], parv[1]);
+                 me.name, source_p->name, target_p->name);
     return;
   }
 
   if ((chptr = hash_find_channel(parv[2])) == NULL)
   {
     sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
-               me.name, parv[0], parv[2]);
+               me.name, source_p->name, parv[2]);
     return;
   }
 
@@ -140,7 +140,7 @@ m_invite(struct Client *client_p, struct Client *source_p,
   if ((ms = find_channel_link(source_p, chptr)) == NULL)
   {
     sendto_one(source_p, form_str(ERR_NOTONCHANNEL),
-               me.name, parv[0], parv[2]);
+               me.name, source_p->name, chptr->chname);
     return;
   }
 
@@ -149,7 +149,7 @@ m_invite(struct Client *client_p, struct Client *source_p,
   if (IsMember(target_p, chptr))
   {
     sendto_one(source_p, form_str(ERR_USERONCHANNEL),
-               me.name, parv[0], parv[1], parv[2]);
+               me.name, source_p->name, target_p->name, chptr->chname);
     return;
   }
 
@@ -158,7 +158,7 @@ m_invite(struct Client *client_p, struct Client *source_p,
     if (!chop)
     {
       sendto_one(source_p, form_str(ERR_CHANOPRIVSNEEDED),
-                 me.name, parv[0], parv[2]);
+                 me.name, source_p->name, chptr->chname);
       return;
     }
   }
@@ -167,11 +167,11 @@ m_invite(struct Client *client_p, struct Client *source_p,
     chop = 0;
 
   sendto_one(source_p, form_str(RPL_INVITING),
-             me.name, parv[0], target_p->name, parv[2]);
+             me.name, source_p->name, target_p->name, chptr->chname);
 
   if (target_p->user->away)
     sendto_one(source_p, form_str(RPL_AWAY),
-               me.name, parv[0], target_p->name,
+               me.name, source_p->name, target_p->name,
                target_p->user->away);
 
   if (!MyConnect(target_p) && ServerInfo.hub &&

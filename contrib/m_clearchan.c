@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_clearchan.c,v 1.46 2003/10/13 02:38:18 bill Exp $
+ *   $Id: m_clearchan.c,v 1.47 2004/02/18 13:51:44 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -67,7 +67,7 @@ _moddeinit(void)
   mod_del_cmd(&clearchan_msgtab);
 }
 
-const char *_version = "$Revision: 1.46 $";
+const char *_version = "$Revision: 1.47 $";
 #endif
 
 /*
@@ -94,25 +94,25 @@ mo_clearchan(struct Client *client_p, struct Client *source_p,
   if ((chptr = hash_find_channel(parv[1])) == NULL)
   {
     sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
-               me.name, parv[0], parv[1]);
+               me.name, source_p->name, parv[1]);
     return;
   }
 
   if (IsMember(source_p, chptr))
   {
     sendto_one(source_p, ":%s NOTICE %s :*** Please part %s before using CLEARCHAN",
-               me.name, source_p->name, parv[1]);
+               me.name, source_p->name, chptr->chname);
     return;
   }
 
   sendto_wallops_flags(UMODE_WALLOP, &me, "CLEARCHAN called for [%s] by %s!%s@%s",
-                       parv[1], source_p->name, source_p->username, source_p->host);
+                       chptr->chname, source_p->name, source_p->username, source_p->host);
   sendto_server(NULL, source_p, NULL, NOCAPS, NOCAPS, LL_ICLIENT,
                 ":%s WALLOPS :CLEARCHAN called for [%s] by %s!%s@%s",
-                me.name, parv[1], source_p->name, source_p->username,
+                me.name, chptr->chname, source_p->name, source_p->username,
                 source_p->host);
   ilog(L_NOTICE, "CLEARCHAN called for [%s] by %s!%s@%s",
-       parv[1], source_p->name, source_p->username, source_p->host);
+       chptr->chname, source_p->name, source_p->username, source_p->host);
 
   /* Kill all the modes we have about the channel..
    * making everyone a peon

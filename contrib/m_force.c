@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: m_force.c,v 1.31 2003/10/13 02:38:18 bill Exp $
+ * $Id: m_force.c,v 1.32 2004/02/18 13:51:44 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -75,7 +75,7 @@ _moddeinit(void)
   mod_del_cmd(&forcepart_msgtab);
 }
 
-const char *_version = "$Revision: 1.31 $";
+const char *_version = "$Revision: 1.32 $";
 #endif
 
 /* m_forcejoin()
@@ -114,7 +114,7 @@ mo_forcejoin(struct Client *client_p, struct Client *source_p,
   if (!MyConnect(target_p))
   {
     sendto_one(target_p, ":%s FORCEJOIN %s %s",
-               source_p->name, parv[1], parv[2]);
+               source_p->name, target_p->name, parv[2]);
     return;
   }
 
@@ -292,7 +292,7 @@ mo_forcepart(struct Client *client_p, struct Client *source_p,
   if (!MyConnect(target_p))
   {
     sendto_one(target_p, ":%s FORCEPART %s %s",
-               source_p->name, parv[1], parv[2]);
+               source_p->name, target_p->name, parv[2]);
     return;
   }
 
@@ -306,7 +306,7 @@ mo_forcepart(struct Client *client_p, struct Client *source_p,
   if ((member = find_channel_link(target_p, chptr)) == NULL)
   {
     sendto_one(source_p, form_str(ERR_USERNOTINCHANNEL),
-               me.name, source_p->name, parv[2], parv[1]);
+               me.name, source_p->name, chptr->chname, target_p->name);
     return;
   }
 
@@ -326,4 +326,3 @@ mo_forcepart(struct Client *client_p, struct Client *source_p,
 		       target_p->name);
   remove_user_from_channel(member);
 }
-

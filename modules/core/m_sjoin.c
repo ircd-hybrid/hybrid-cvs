@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.178 2004/01/26 03:35:18 metalrock Exp $
+ *  $Id: m_sjoin.c,v 1.179 2004/02/18 13:51:48 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.178 $";
+const char *_version = "$Revision: 1.179 $";
 #endif
 
 static char modebuf[MODEBUFLEN];
@@ -290,12 +290,12 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
 
   buflen = ircsprintf(nick_buf, ":%s SJOIN %lu %s %s %s:",
 		      source_p->name, (unsigned long)tstosend,
-		      parv[2], modebuf, parabuf);
+		      chptr->chname, modebuf, parabuf);
   nick_ptr = nick_buf + buflen;
 
   buflen = ircsprintf(uid_buf, ":%s SJOIN %lu %s %s %s:",
                       ID(source_p), (unsigned long)tstosend,
-                      parv[2], modebuf, parabuf);
+                      chptr->chname, modebuf, parabuf);
   uid_ptr = uid_buf + buflen;
 
   /* check we can fit a nick on the end, as well as \r\n and a prefix "
@@ -430,7 +430,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
       add_user_to_channel(chptr, target_p, fl);
       sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s JOIN :%s",
                            target_p->name, target_p->username,
-                           target_p->host, parv[2]);
+                           target_p->host, chptr->chname);
     }
 
     if (fl & CHFL_CHANOP)
