@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.64 2002/10/12 04:33:31 db Exp $
+ *  $Id: channel_mode.c,v 7.65 2002/11/20 00:18:31 db Exp $
  */
 
 #include "stdinc.h"
@@ -876,6 +876,9 @@ chm_hideops(struct Client *client_p, struct Client *source_p,
     *errors |= SM_ERR_NOOPS;
     return;
   }
+
+  if (MyClient(source_p) && (++mode_limit > MAXMODEPARAMS))
+    return;
 
   if (dir == MODE_ADD && !(chptr->mode.mode & MODE_HIDEOPS))
   {
