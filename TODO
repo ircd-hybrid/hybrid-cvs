@@ -1,4 +1,4 @@
-$Id: TODO,v 7.81 2003/05/12 08:09:18 michael Exp $
+$Id: TODO,v 7.82 2003/05/17 17:17:48 joshk Exp $
 
 - add more stderr debugging (ircd -s)... one for every place we syslog()
 - ircd -s doesn't work through a restart
@@ -120,27 +120,9 @@ Little things to be done given enough time and initiative -Hwy
 
 -- Josh's list
 
-* We have to figure something out to actually be able to build on 
-systems that don't have sockaddr_storage: 
-
-joshk@ai:~/ircd-hybrid> make
-build ==> modules
-        gcc -fPIC -DPIC -shared -I../include -I../adns   -O2 -g -DNDEBUG 
--DIRCD_PREFIX=\"/usr/local/ircd\" core/m_die.c -o core/m_die.so
-In file included from ../include/client.h:34,
-                 from core/m_die.c:28:
-../include/ircd_defs.h:78: field `ss' has incomplete type
-../include/ircd_defs.h:81: confused by earlier errors, bailing out
-*** Error code 1 (bu21)
-
-This is because ircd_defs.h uses sockaddr_storage unconditionally, when 
-it should only be used if IPV6 is defined. The problem gets a little 
-stickier because both IPv4 and IPv6 code use sockaddr_storage. ->stu.
-
-But at least SysV make seems to work, kind of. :)
-
-* Dependency system = HORRIBLY SCREWED OVER. Should we have users do 
-'make depend' every time they want to build?
+* Help out with the IRIX port.
+* Portability issues (inet_misc) iron out any last bugs.
+* dependency system; get a consensus
 
 -- MeTaLRoCk's list
 

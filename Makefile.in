@@ -16,18 +16,21 @@
 #*   along with this program; if not, write to the Free Software
 #*   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #*
-#*   $Id: Makefile.in,v 7.52 2003/05/15 07:17:15 joshk Exp $
+#*   $Id: Makefile.in,v 7.53 2003/05/17 17:17:48 joshk Exp $
 #*/
 
 RM=@RM@
-CLOBBER=@CLOBBER@
 prefix=@prefix@
 exec_prefix=@exec_prefix@
 
 # Default make flags - you may want to uncomment this on a multicpu machine
 #MFLAGS   = -j 4
-SUBDIRS   = modules src tools doc include servlink etc
-CLEANDIRS = ${SUBDIRS} contrib
+BUILD_DIRS = modules src tools servlink
+INSTALL_DIRS   = ${BUILD_DIRS} etc doc include
+DEPEND_DIRS = modules src servlink
+CLEAN_DIRS = ${BUILD_DIRS} contrib
+# Anywhere that we can make install, we obviously can rm -f Makefile
+DISTCLEAN_DIRS = ${INSTALL_DIRS} contrib messages
 
 # The make used HAS to set $(MAKE). But then, if we don't do it this
 # way, people lose the option to use a 'make' called something other 
@@ -36,50 +39,51 @@ CLEANDIRS = ${SUBDIRS} contrib
 
 @SET_MAKE@
 
-MAKE := $(MAKE) ${MFLAGS} 
-
 all:	build
 
-build: include/setup.h
-	@for i in $(SUBDIRS); do \
+build: include/setup.h depend
+	@for i in $(BUILD_DIRS); do \
 		echo "build ==> $$i";\
 		cd $$i;\
-		${MAKE} build || exit; cd ..;\
+		${MAKE} ${MFLAGS} build || exit; cd ..;\
 	done
 
 clean:
 	${RM} -f *~ core rsa_respond.tar rsa_respond.tar.gz
-	@for i in $(CLEANDIRS); do \
+	@for i in $(CLEAN_DIRS); do \
 		echo "clean ==> $$i";\
 		cd $$i;\
-		${MAKE} clean; cd ..;\
+		${MAKE} ${MFLAGS} clean || exit; cd ..;\
 	done
 	-@if [ -f include/setup.h ] ; then \
 		echo "To really restart installation, ${MAKE} distclean" ; \
 	fi
 
 distclean:
-	${RM} -f Makefile *~ *.rej *.orig core ircd.core
+	${RM} -f Makefile *~ *.rej *.orig *core .depend-stamp
 	${RM} -f config.status config.cache config.log
+	${RM} -rf autom4te.cache
 	cd include; ${RM} -f setup.h *~ *.rej *.orig ; cd ..
-	@for i in $(CLEANDIRS); do \
+	@for i in $(DISTCLEAN_DIRS); do \
 		echo "distclean ==> $$i";\
 		cd $$i;\
-		${MAKE} distclean; cd ..;\
+		${MAKE} ${MFLAGS} distclean || exit; cd ..;\
 	done
 
-depend:
-	@for i in $(SUBDIRS); do \
+depend: .depend-stamp
+.depend-stamp:
+	@for i in $(DEPEND_DIRS); do \
 		echo "depend ==> $$i";\
 		cd $$i;\
-		${MAKE} depend; cd ..;\
+		${MAKE} ${MFLAGS} depend || exit; cd ..;\
 	done
+	touch .depend-stamp
 
 install: all
-	@for i in $(SUBDIRS); do \
+	@for i in $(INSTALL_DIRS); do \
 		echo "install ==> $$i";\
 		cd $$i;\
-		${MAKE} install; \
+		${MAKE} ${MFLAGS} install || exit; \
 		cd ..; \
 	done
 

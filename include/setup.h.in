@@ -52,9 +52,6 @@
 /* Define to 1 if you have the `dl' library (-ldl). */
 #undef HAVE_LIBDL
 
-/* Define to 1 if you have the `socket' library (-lsocket). */
-#undef HAVE_LIBSOCKET
-
 /* Define to 1 if you have the `z' library (-lz). */
 #undef HAVE_LIBZ
 
@@ -100,6 +97,12 @@
 /* Define to 1 if you have the `strlcpy' function. */
 #undef HAVE_STRLCPY
 
+/* Define to 1 if the system has the type `struct addrinfo'. */
+#undef HAVE_STRUCT_ADDRINFO
+
+/* Define to 1 if the system has the type `struct sockaddr_storage'. */
+#undef HAVE_STRUCT_SOCKADDR_STORAGE
+
 /* Define to 1 if you have the <sys/param.h> header file. */
 #undef HAVE_SYS_PARAM_H
 
@@ -142,6 +145,15 @@
 /* Disable the block allocator. */
 #undef NOBALLOC
 
+/* Define if you have no native inet_aton() function. */
+#undef NO_INET_ATON
+
+/* Define if you have no native inet_ntop() function. */
+#undef NO_INET_NTOP
+
+/* Define if you have no native inet_pton() function. */
+#undef NO_INET_PTON
+
 /* Define to the address where bug reports for this package should be sent. */
 #undef PACKAGE_BUGREPORT
 
@@ -182,10 +194,6 @@
 /* Maximum topic length (<=390) */
 #undef TOPICLEN
 
-/* Define to 1 if you don't have inet_pton and inet_ntop natively or in a
-   system header. */
-#undef USE_INET_MISC
-
 /* Use kqueue() for I/O loop */
 #undef USE_KQUEUE
 
@@ -206,12 +214,25 @@
 # undef _GNU_SOURCE
 #endif
 
+/* If system does not define in_port_t, define it to what it should be. */
+#undef in_port_t
+
 /* Define as `__inline' if that's what the C compiler calls it, or to nothing
    if it is not supported. */
 #undef inline
 
+/* If system does not define sa_family_t, define it here. */
+#undef sa_family_t
+
 /* If we don't have a real socklen_t, int is good enough. */
 #undef socklen_t
+
+/* Broken glibc implementations use __ss_family instead of ss_family. Define
+   to __ss_family if true. */
+#undef ss_family
+
+/* If system does not define u_int16_t, define a usable substitute. */
+#undef u_int16_t
 
 /* If system does not define u_int32_t, define to unsigned int here. */
 #undef u_int32_t

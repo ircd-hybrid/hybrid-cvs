@@ -1,5 +1,5 @@
 /* inet_misc.c - inet_pton and inet_ntop for those who don't have it.
- * $Id: inet_misc.c,v 7.1 2003/05/13 15:03:54 joshk Exp $
+ * $Id: inet_misc.c,v 7.2 2003/05/17 17:18:01 joshk Exp $
  *
  * Copyright (c) 1983, 1990, 1993
  *		The Regents of the University of California.  All rights reserved.
@@ -33,7 +33,7 @@
  * SUCH DAMAGE.  */
 
 /*	This inet_aton() function was taken from the GNU C library and
- *	incorporated into Postgres for those systems which do not have this
+ *	incorporated into ircd-hybrid for those systems which do not have this
  *	routine in their standard C libraries.
  *
  *	The function was been extracted whole from the file inet_aton.c in
@@ -45,6 +45,7 @@
 #include "stdinc.h"
 #include "irc_res.h"
 
+#ifdef NO_INET_ATON
 /*
  * Check whether "cp" is a valid ascii representation
  * of an Internet address and convert to a binary address.
@@ -148,6 +149,9 @@ inet_aton(const char *cp, struct in_addr * addr)
 	return 1;
 }
 
+#endif /* NO_INET_ATON */
+
+#ifdef NO_INET_NTOP
 static const char *inet_ntop4(const unsigned char *src, char *dst,
 			      size_t size);
 
@@ -304,6 +308,10 @@ inet_ntop6(const unsigned char *src, char *dst, size_t size)
 	return (dst);
 }
 #endif /* IPV6 */
+
+#endif /* NO_INET_NTOP */
+
+#ifdef NO_INET_PTON
 
 static int inet_pton4(const char *src, unsigned char *dst);
 #ifdef IPV6
@@ -489,3 +497,5 @@ inet_pton6(src, dst)
 	return (1);
 }
 #endif /* IPV6 */
+
+#endif /* NO_INET_PTON */

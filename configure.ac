@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.22 2003/05/15 21:48:43 joshk Exp $
+dnl $Id: configure.ac,v 7.23 2003/05/17 17:17:49 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -33,6 +33,7 @@ case `$CC -version 2>&1` in
 	IRC_CFLAGS=""
 	CPPFLAGS="$CPPFLAGS -Ylonglong -Yansi -I/usr/include"
 	SGS=yes
+	TenDRA=yes
 ;;
 *MIPSpro*)
 	AC_MSG_RESULT([yes, MIPSpro])
@@ -102,15 +103,22 @@ case `uname -s` in
 		;;
 esac
 
+dnl We prefer BSD mkdep
+AC_PATH_PROG(MKDEP, mkdep)
+AC_PATH_PROG(MAKEDEPEND, makedepend)
+
 AC_MSG_CHECKING(how to generate dependency info)
-if test "$SunWorkShop" = "yes"; then
-	AC_MSG_RESULT(Sun WorkShop/Forte using $CC -xM)
+
+if test ! -z "$MKDEP"; then
+	AC_MSG_RESULT(BSD mkdep)
+elif test ! -z "$MAKEDEPEND" -a "$HPUX" = yes; then
+	AC_MSG_RESULT(X11 makedepend for HPUX)
+	MKDEP="$MAKEDEPEND -f-"
+elif test "$SunWorkShop" = "yes"; then
+	AC_MSG_RESULT([Sun WorkShop/Forte using $CC -xM])
 	MKDEP="$CC -xM"
-elif test "$HPUX" = "yes"; then
-	AC_MSG_RESULT(HP-UX C Compiler using makedepend)
-	MKDEP="makedepend"
 else
-	AC_MSG_RESULT(assuming $CC -MM)
+	AC_MSG_RESULT([nothing useful found, assuming $CC -MM])
 	MKDEP="$CC -MM"	
 fi
 
@@ -165,17 +173,79 @@ if test "$libexecdir" = '${exec_prefix}/libexec' &&
 	localstatedir='${prefix}'
 fi
 
-dnl Checks for libraries.
-AC_CHECK_LIB(socket, socket)
+dnl Networking Functions
+dnl ====================
 
-dnl Solaris libraries. We don't want a AC_DEFINE though. Too much clutter.
-dnl But don't use them if they're available natively.
-AC_SEARCH_LIBS(inet_aton, resolv)
-AC_SEARCH_LIBS(inet_pton, nsl, ,
-[
-	AC_DEFINE(USE_INET_MISC, 1, [Define to 1 if you don't have inet_pton and inet_ntop natively or in a system header.])
+AC_SEARCH_LIBS(socket, socket)
+
+dnl Don't use them if they're available natively... else, they're available in inet_misc
+AC_SEARCH_LIBS(inet_aton, resolv, , [inet_misc=1; AC_DEFINE(NO_INET_ATON, 1, [Define if you have no native inet_aton() function.])])
+AC_SEARCH_LIBS(inet_pton, resolv nsl, , [inet_misc=1; AC_DEFINE(NO_INET_PTON, 1, [Define if you have no native inet_pton() function.])])
+AC_SEARCH_LIBS(inet_ntop, resolv nsl, , [inet_misc=1; AC_DEFINE(NO_INET_NTOP, 1, [Define if you have no native inet_ntop() function.])])
+
+if test "$inet_misc" = 1; then
 	AC_SUBST(INET_MISC, inet_misc.c)
+fi
+
+AC_CHECK_FUNCS(socketpair)
+
+AC_CHECK_TYPES([struct sockaddr_storage], , ,
+[[#include <sys/types.h>
+#include <sys/socket.h>
+]])
+
+AC_CHECK_TYPES([struct addrinfo], , , [[#include <netdb.h>]])
+
+AC_CACHE_CHECK([for socklen_t], have_socklen_t,
+[
+	AC_COMPILE_IFELSE(
+	AC_LANG_PROGRAM(
+	[#include <sys/types.h>
+	 #include <sys/socket.h>],
+	[socklen_t len = 42; return 0;]),
+	have_socklen_t=yes,
+	have_socklen_t=no)
 ])
+
+if test "$have_socklen_t" != yes; then
+	AC_DEFINE([socklen_t], [int], [If we don't have a real socklen_t, int is good enough.])
+fi
+
+AC_MSG_CHECKING(for broken glibc with __ss_family)
+AC_COMPILE_IFELSE(
+[AC_LANG_PROGRAM([#include <sys/socket.h>],
+[struct sockaddr_storage s; s.__ss_family = AF_INET;])],
+[
+	AC_MSG_RESULT(yes)
+	AC_DEFINE(ss_family, __ss_family, [Broken glibc implementations use __ss_family instead of ss_family. Define to __ss_family if true.])
+],
+[AC_MSG_RESULT(no)])
+
+AC_CACHE_CHECK([for IPv6 support], have_v6,
+[
+    AC_COMPILE_IFELSE(
+	[AC_LANG_PROGRAM(
+		[[#define IN_AUTOCONF
+		#include "include/stdinc.h"]],
+		[[struct sockaddr_in6 s; 
+		  struct sockaddr_storage t;
+		  s.sin6_family = 0;]]
+
+	)],
+	[
+		if test "$CYGWIN" = "yes"; then
+			AC_MSG_WARN([IPv6 support is incomplete in Cygwin - not enabling])
+			have_v6="no"
+		else
+			have_v6="yes"
+		fi
+	],
+	[have_v6="no"])
+])
+
+if test "$have_v6" = "yes"; then
+	AC_DEFINE(IPV6, 1, [Define if IPv6 support is present and available.])
+fi
 
 AC_SEARCH_LIBS(crypt, [descrypt crypt],,
 [AC_MSG_ERROR([No crypt implementation found on your system!])])
@@ -205,36 +275,48 @@ if test "$gcc_cv_header_string" = "yes"; then
 	AC_DEFINE(STRING_WITH_STRINGS, 1, [Define to 1 if string.h may be included along with strings.h])
 fi
 
-dnl check for socklen_t
-
-AC_CACHE_CHECK([for socklen_t], have_socklen_t,
-[
-	AC_COMPILE_IFELSE(
-	AC_LANG_PROGRAM(
-	[#include <sys/types.h>
-	 #include <sys/socket.h>],
-	[socklen_t len = 42; return 0;]),
-	have_socklen_t=yes,
-	have_socklen_t=no)
-])
-
-if test "$have_socklen_t" != yes; then
-	AC_DEFINE([socklen_t], [int], [If we don't have a real socklen_t, int is good enough.])
-fi
-
 AC_C_BIGENDIAN
 
 dnl Check for stdarg.h - if we can't find it, halt configure
 AC_CHECK_HEADER(stdarg.h, , [AC_MSG_ERROR([** stdarg.h could not be found - ircd-hybrid will not compile without it **])])
 
 dnl Checks for the existance of strlcat
-AC_CHECK_FUNCS([strlcat strlcpy socketpair])
+AC_CHECK_FUNCS([strlcat strlcpy])
 
 AC_CHECK_TYPE([u_int32_t], [],
 [
-	AC_MSG_WARN([system does not define u_int32_t - defaulting to using unsigned int])
-	AC_DEFINE(u_int32_t, [unsigned int], [If system does not define u_int32_t, define to unsigned int here.])
+	AC_CHECK_TYPE([uint32_t],
+	[
+		AC_DEFINE(u_int32_t, [uint32_t], [If system does not define u_int32_t, define a reasonable substitute.])
+	],
+	[
+		AC_MSG_WARN([system has no u_int32_t or uint32_t, default to unsigned int])
+		AC_DEFINE(u_int32_t, [unsigned int], [If system does not define u_int32_t, define to unsigned int here.])
+	])
 ])
+
+AC_CHECK_TYPE([u_int16_t], [],
+[
+	AC_CHECK_TYPE([uint16_t],
+	[
+		AC_DEFINE(u_int16_t, [uint16_t], [If system does not define u_int16_t, define a usable substitute])
+	],
+	[
+		AC_MSG_WARN([system has no u_int16_t or uint16_t, default to unsigned int])
+		AC_DEFINE(u_int16_t, [unsigned short int], [If system does not define u_int16_t, define a usable substitute.])
+	])
+])
+
+AC_CHECK_TYPE([in_port_t], [],
+[AC_DEFINE(in_port_t, [u_int16_t], [If system does not define in_port_t, define it to what it should be.])], 
+[[#include <sys/types.h>
+#include <netinet/in.h>]])
+
+AC_CHECK_TYPE([sa_family_t], [],
+[AC_DEFINE(sa_family_t, [u_int16_t], [If system does not define sa_family_t, define it here.])],
+[[#include <sys/types.h>
+#include <sys/socket.h>]])
+
 AC_CHECK_TYPE([unsigned int], [], [AC_MSG_ERROR([unsigned int is not defined; aborting])])
 AC_CHECK_TYPES([uintptr_t])
 
@@ -423,32 +505,6 @@ AC_HELP_STRING([--disable-zlib],[Disable ziplinks support]),
 			zlib=no
 		])
 ])
-
-AC_CACHE_CHECK([for IPv6 support], have_v6,
-[
-    AC_COMPILE_IFELSE(
-	[AC_LANG_PROGRAM(
-		[[#define IN_AUTOCONF
-		#include "include/stdinc.h"]],
-		[[struct sockaddr_in6 s; 
-		  struct sockaddr_storage t;
-		  s.sin6_family = 0;]]
-
-	)],
-	[
-		if test "$CYGWIN" = "yes"; then
-			AC_MSG_WARN([IPv6 support is incomplete in Cygwin - not enabling])
-			have_v6="no"
-		else
-			have_v6="yes"
-		fi
-	],
-	[have_v6="no"])
-])
-
-if test "$have_v6" = "yes"; then
-	AC_DEFINE(IPV6, 1, [Define if IPv6 support is present and available.])
-fi
 
 dnl IO Loop Selection
 dnl =================
@@ -657,6 +713,12 @@ AC_HELP_STRING([--disable-shared-modules],[ Disable shared modules.]),
 		AC_MSG_WARN([disabling shared modules; Cygwin is at present unable to build them.])
 		shared_modules="no"
 	fi
+
+	dnl TenDRA's cc is called tcc too.
+	if test "$CC" = tcc -a "$TenDRA" = "no"; then
+		AC_MSG_WARN([disabling shared modules: Tiny C Compiler can't create PIC])
+		shared_modules="no"
+	fi
 ])
 
 if test "$shared_modules" = "no"; then
@@ -691,8 +753,15 @@ else
 	LDFLAGS="${LDFLAGS} -Wl,-export-dynamic"
 	AC_LINK_IFELSE(AC_LANG_PROGRAM([],[int i;]), found=yes, found=no)
 	LDFLAGS=$hold_ldflags
+
+	if expr "`uname -s`" : ^IRIX >/dev/null 2>&1; then
+		found="no, IRIX ld uses -B,dynamic"
+		LDFLAGS="${LDFLAGS} -Wl,-B,dynamic"
+	fi
+
 	AC_MSG_RESULT($found)
-	if test $found = yes; then
+
+	if test "$found" = yes; then
 		LDFLAGS="${LDFLAGS} -Wl,-export-dynamic"
 	fi
 

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 7.20 2003/05/15 07:17:18 joshk Exp $
+# $Id: Makefile.in,v 7.21 2003/05/17 17:17:52 joshk Exp $
 INSTALL		= @INSTALL@
 INSTALL_DATA	= @INSTALL_DATA@
 RM		= @RM@
@@ -9,8 +9,6 @@ all:
 install:
 	mkdir -p $(mandir)
 	$(INSTALL_DATA) ircd.8 $(mandir)
-
-build depend clean:
 
 distclean:
 	${RM} -f Makefile

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 7.38 2003/05/16 01:17:39 joshk Exp $
+# $Id: Makefile.in,v 7.39 2003/05/17 17:18:03 joshk Exp $
 
 CC		= @CC@
 INSTALL		= @INSTALL@
@@ -50,8 +50,6 @@ clean:
 
 distclean: clean
 	$(RM) -f Makefile
-
-depend:
 
 install: build
 	mkdir -p $(bindir)

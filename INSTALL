@@ -1,13 +1,13 @@
                             Hybrid INSTALL Document
 
-   $Id: INSTALL,v 7.32 2003/05/04 16:59:02 adx Exp $
+   $Id: INSTALL,v 7.33 2003/05/17 17:17:48 joshk Exp $
 
    Copyright (c) 2001 by ircd-hybrid team
 
      ----------------------------------------------------------------------
 
    +------------------------------------------------------------------------+
-   | Note for those who dont bother reading docs                            |
+   | Note for those who don't bother reading docs:                          |
    |                                                                        |
    | Reading INSTALL is now a must, as the old DPATH is now specified when  |
    | configure is run.                                                      |
@@ -52,71 +52,49 @@
 
        ./configure --prefix="/usr/local/ircd"
 
-         Note: There are some special optional parameters to the configure
-         script that some admins may wish to use.
+       The script will determine whichever of the following is best for 
+       your system, but you may (unsupported) force their usage with 
+       undefined results:
 
-          * 
-
-            --enable-kqueue - Use the superior kqueue(2) system call as
+          * --enable-kqueue - Use the superior kqueue(2) system call as
             opposed to the default poll(2). This is currently only available
             on FreeBSD 4.1 or higher.
 
-          * 
-
-            --enable-devpoll - Enable the superior /dev/poll support on
+          * --enable-devpoll - Enable the superior /dev/poll support on
             Solaris. Linux /dev/poll is broken and will not work with this
             option.
 
-          * 
-
-            --enable-rtsigio - Enable the superior Linux RealTime Signal I/O
+          * --enable-rtsigio - Enable the superior Linux RealTime Signal I/O
             system. This is currently only available on 2.4 Linux kernel
             versions or later.
 
-          * 
-
-            --enable-openssl - Enable the openssl dependent crypto functions.
+          * --enable-openssl - Enable the openssl dependent crypto functions.
             This will allow CHALLENGE to work and encrypted links. On systems
             where the configure script can automatically detect OpenSSL, this
             option is not necessary. If configure cannot find OpenSSL, you
             must specify a path with this option
             (--enable-openssl=/path/to/openssl)
 
-          * 
-
-            --enable-ipv6 - Enable IPv6 support.  For FreeBSD, some recent
-            distributions have changed the sysctl net.inet6.ip6.v6only
-            default to 1 instead of 0.  You must change this back to 0 for
-            ipv4 to work properly.
-
-          * 
-
-            --disable-shared-modules - Disable module support. This option is
+       These are optional and not enabled by default:
+   
+          * --disable-shared-modules - Disable module support. This option is
             more secure, but reduces a lot of the flexibility in Hybrid 7.
             This may need to be used on some systems without a working dl
             library.
 
-          * 
-
-            --disable-assert - Disable some of the debugging code. This
+          * --disable-assert - Disable some of the debugging code. This
             should be used on all production servers for maximum speed and to
             prevent cores from things that shouldn't normally happen.
 
-          * 
-
-            --enable-small-net - Tunes the server for smaller networks by
+          * --enable-small-net - Tunes the server for smaller networks by
             reducing the startup memory footprint. This should really only be
             used for *small* networks, as this tends to be a performance hit
             on larger networks.
 
-          * 
-
-            --with-nicklen - Sets the maximum NICK length. Note that this
+          * --with-nicklen - Sets the maximum NICK length. Note that this
             must be consistant across your entire network.
 
-          * 
-
-            --with-maxclients - Sets the maximum number of clients support by
+          * --with-maxclients - Sets the maximum number of clients support by
             the server. Note that this also twiddles the HARD_FDLIMIT_ define
             so it is no longer necessary to modify include/config.h for this.
             If HARD_FDLIMIT_ ends up being larger that FD_SETSIZE when using

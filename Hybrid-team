@@ -1,4 +1,4 @@
-$Id: Hybrid-team,v 7.70 2003/05/15 16:14:43 joshk Exp $
+$Id: Hybrid-team,v 7.71 2003/05/17 17:17:48 joshk Exp $
 
 The hybrid team is a group of ircd coders who were frustrated
 with the instability and all-out "dirtiness" of the EFnet ircd's
@@ -59,7 +59,7 @@ zb^3, Alfred Perlstein <alfred@freebsd.org>
  
 Others are welcome.  Always.  And if we left anyone off the above list,
 be sure to let us know that too.  Many others have contributed to
-previous versions of this ircd and it's ancestors, too many to list
+previous versions of this ircd and its ancestors, too many to list
 here.
  
 Send bug fixes/complaints/rotten tomatoes to ircd-hybrid@the-project.org.

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- * $Id: stdinc.h,v 1.8 2003/05/13 15:03:52 joshk Exp $
+ * $Id: stdinc.h,v 1.9 2003/05/17 17:17:55 joshk Exp $
  *
  */
 
@@ -46,19 +46,7 @@
 # endif 
 #endif  
 
-#ifdef CYGWIN
-/* Cygwin sucks rocks */
-#define EAI_SYSTEM -11
-#include <w32api/winsock2.h>
-#include <w32api/ws2tcpip.h>
-#endif
-
-/* The placement of this #include >MATTERS< */
 #include <sys/types.h>
-
-#ifdef CYGWIN
-typedef uint16_t in_port_t;
-#endif
 
 #ifdef HAVE_STDDEF_H
 #include <stddef.h>
@@ -77,16 +65,15 @@ typedef uint16_t in_port_t;
 #include <dirent.h>
 #include <ctype.h>
 
-#ifndef CYGWIN
 #include <netdb.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
-#endif
 
 #ifdef VMS
 #define _XOPEN_SOURCE 1
 #endif
+
 #include <limits.h>
 
 #ifdef HAVE_UNISTD_H
@@ -94,10 +81,8 @@ typedef uint16_t in_port_t;
 #endif
 
 #include <sys/time.h>
-
-
-
 #include <sys/file.h>
+
 #ifdef HAVE_SYS_RESOURCE_H
 #include <sys/resource.h>
 #endif
@@ -120,8 +105,6 @@ extern int errno;
 #include <sys/ioctl.h>
 #endif
 
-#ifdef USE_INET_MISC
 #include "inet_misc.h"
-#endif
 
 #endif

@@ -4,5 +4,6 @@ config.cache
 config.status
 Makefile
 lint.out
-.depend
+.depend-stamp
 rsa_respond.tar.gz
+

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.1 2003/05/15 07:17:22 joshk Exp $
+# $Id: Makefile.in,v 1.2 2003/05/17 17:17:53 joshk Exp $
 
 INSTALL		= @INSTALL@
 INSTALL_DATA	= @INSTALL_DATA@
@@ -13,7 +13,8 @@ sysconfdir	= @sysconfdir@
 exec_prefix	= @exec_prefix@
 exec_suffix	= @exec_suffix@
 
-DISTFILES	= example.conf example.efnet.conf example.conf.quick simple.conf ircd.motd
+DISTFILES	= example.conf example.efnet.conf example.conf.quick simple.conf
+NOMVFILES	= ircd.motd
 
 all:
 
@@ -28,14 +29,19 @@ install:
 		$(INSTALL_DATA) $$i $(sysconfdir); \
 	done
 
+	@for i in $(NOMVFILES); do \
+		if test ! -f $(sysconfdir)/$$i; then \
+			echo $(INSTALL_DATA) $$i $(sysconfdir); \
+			$(INSTALL_DATA) $$i $(sysconfdir); \
+		fi; \
+	done
+
 	@for i in d k x; do \
 		if test ! -f "$(sysconfdir)/$${i}lines.conf"; then \
 			echo touch $(sysconfdir)/$${i}lines.conf; \
 			touch $(sysconfdir)/$${i}lines.conf; \
 		fi; \
 	done
-
-build depend clean:
 
 distclean:
 	${RM} -f Makefile
