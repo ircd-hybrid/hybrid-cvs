@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: handlers.h,v 7.20 2000/11/29 07:57:51 db Exp $
+ * $Id: handlers.h,v 7.21 2000/12/02 14:33:03 toot Exp $
  */
 #ifndef INCLUDED_handlers_h
 #define INCLUDED_handlers_h
@@ -88,6 +88,7 @@ extern int mr_nick(struct Client*, struct Client*, int, char**);
 extern int mr_error(struct Client*, struct Client*, int, char**);
 extern int mr_pong(struct Client*, struct Client*, int, char**);
 extern int mr_server(struct Client*, struct Client*, int, char**);
+extern int mr_admin(struct Client*, struct Client*, int, char**);
 
 /* registered local clients */
 extern int m_users(struct Client *, struct Client *, int, char **);

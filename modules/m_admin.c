@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_admin.c,v 1.6 2000/11/27 23:38:46 db Exp $
+ *   $Id: m_admin.c,v 1.7 2000/12/02 14:33:07 toot Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -36,7 +36,7 @@ static void do_admin( struct Client *sptr );
 
 struct Message admin_msgtab = {
   MSG_ADMIN, 0, 0, MFLG_SLOW | MFLG_UNREG, 0, 
-  {m_unregistered, m_admin, ms_admin, mo_admin}
+  {mr_admin, m_admin, ms_admin, mo_admin}
 };
 
 void
@@ -51,7 +51,29 @@ _moddeinit(void)
   mod_del_cmd(MSG_ADMIN);
 }
 
-char *_version = "20001122";
+char *_version = "20001202";
+
+/*
+ * mr_admin - ADMIN command handler
+ *      parv[0] = sender prefix   
+ *      parv[1] = servername   
+ */
+int mr_admin(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
+{
+  static time_t last_used=0L;
+ 
+  if((last_used + ConfigFileEntry.pace_wait) > CurrentTime)
+    {
+      sendto_one(sptr,form_str(RPL_LOAD2HI),me.name,parv[0]);
+      return 0;
+    }
+  else
+    last_used = CurrentTime;
+
+  do_admin(sptr);
+
+  return 0;
+}
 
 /*
  * m_admin - ADMIN command handler
@@ -70,11 +92,10 @@ int m_admin(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   else
     last_used = CurrentTime;
 
-  if (IsRegisteredUser(sptr) &&
-      (hunt_server(cptr,sptr,":%s ADMIN :%s",1,parc,parv) != HUNTED_ISME))
+  if (hunt_server(cptr,sptr,":%s ADMIN :%s",1,parc,parv) != HUNTED_ISME))
     return 0;
 
-  do_admin( sptr );
+  do_admin(sptr);
 
   return 0;
 }
@@ -86,8 +107,7 @@ int m_admin(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
  */
 int mo_admin(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 {
-  if (IsRegisteredUser(sptr) &&
-      (hunt_server(cptr,sptr,":%s ADMIN :%s",1,parc,parv) != HUNTED_ISME))
+  if (hunt_server(cptr,sptr,":%s ADMIN :%s",1,parc,parv) != HUNTED_ISME))
     return 0;
 
   do_admin( sptr );
