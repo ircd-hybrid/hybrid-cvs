@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.68 2000/12/24 18:43:19 db Exp $
+ * $Id: config.h,v 7.69 2000/12/28 20:26:37 toot Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -290,11 +290,6 @@
  *       will be preallocated for the entire whowas array when ircd is started.
  */
 #define NICKNAMEHISTORYLENGTH 15000
-
-/* TIMESEC - Time interval to wait and if no messages have been received,
- * then check for PINGFREQUENCY and CONNECTFREQUENCY 
- */
-#define TIMESEC  5              /* Recommended value: 5 */
 
 /* PINGFREQUENCY - ping frequency for idle connections
  * If daemon doesn't receive anything from any of its links within

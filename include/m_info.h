@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.h,v 7.23 2000/12/28 19:12:17 toot Exp $
+ * $Id: m_info.h,v 7.24 2000/12/28 20:26:37 toot Exp $
  */
 #ifndef INCLUDED_m_info_h
 #define INCLUDED_m_info_h
@@ -175,10 +175,6 @@ Info MyInformation[] = {
 #else
   { "SPATH", "NONE", 0, "Path to Server Executable" },
 #endif /* SPATH */
-
-  { "TIMESEC", "", TIMESEC, "Time Interval to Wait Before Checking Pings" },
-
-  { "TOPIC_INFO", "ON", 0, "Show Who Set a Topic and When" },
 
   { "TS_MAX_DELTA_DEFAULT", "", TS_MAX_DELTA_DEFAULT, "Maximum Allowed TS Delta from another Server" },
   { "TS_WARN_DELTA_DEFAULT", "", TS_WARN_DELTA_DEFAULT, "Maximum TS Delta before Sending Warning" },
