@@ -1,3 +1,10 @@
+*** 20001205_8 by db
+- ok, added channel throttling tested both channel throttling and message
+  throttling, both appear to work. Removed FLOODTIME, default to always
+  one second for now. 
+
+
+
 *** 20001205_7 by db
 - redid m_set.c precalculate newval etc.
 
@@ -1676,7 +1683,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.705 2000/12/05 21:31:06 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.706 2000/12/06 02:20:26 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
