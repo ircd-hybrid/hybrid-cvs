@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.85 2001/05/30 15:06:53 davidt Exp $
+# $Id: Makefile.in,v 7.86 2001/06/05 14:58:46 kreator Exp $
 #
 CC		= @CC@
 INSTALL		= @INSTALL@
@@ -29,7 +29,7 @@ IRCD_EXE	= ircd
 
 PROGS		= $(IRCD_EXE)
 
-IRCDLIBS	= @LIBS@ @MODULES_LIBS@ -L../adns -ladns
+IRCDLIBS	= @MODULES_LIBS@ -L../adns -ladns @LIBS@
 
 INCLUDES	= -I../include
 CPPFLAGS	= ${INCLUDES} @CPPFLAGS@
