@@ -19,7 +19,7 @@
  *
  *
  *
- * $Id: vchannel.c,v 7.14 2000/11/02 15:10:03 toot Exp $
+ * $Id: vchannel.c,v 7.15 2000/11/06 18:57:43 db Exp $
  */
 #include "vchannel.h"
 #include "channel.h"
@@ -171,26 +171,32 @@ void show_vchans(struct Client *cptr,
               me.name, sptr->name, chptr->chname, no_of_vchans);
        
    for (chtmp = chptr; chtmp; chtmp = chtmp->next_vchan)
-     if (chtmp->members)
-       {
-         strcat(key_list, "!");
-         strcat(key_list, pick_vchan_id(chtmp));
-         strcat(key_list, " ");
+     {
+       /* Obey the rules of /list */
+       if(SecretChannel(chtmp))
+	 continue;
 
-         len = ( strlen(me.name) + NICKLEN + strlen(chptr->chname) 
-               + strlen(key_list) + 8 );
+       if (chtmp->members)
+	 {
+	   strcat(key_list, "!");
+	   strcat(key_list, pick_vchan_id(chtmp));
+	   strcat(key_list, " ");
 
-         if (len > (BUFSIZE - NICKLEN - 3))
-           {
-             sendto_one(sptr, form_str(RPL_VCHANLIST),
-                        me.name, sptr->name, chptr->chname, key_list);
-             key_list[0] = '\0';
+	   len = ( strlen(me.name) + NICKLEN + strlen(chptr->chname) 
+		   + strlen(key_list) + 8 );
 
-             /* last one in the list, we won't be sending any more */
-             if (!chtmp->next_vchan)
-               reply_to_send = 0;
-           }
-       }
+	   if (len > (BUFSIZE - NICKLEN - 3))
+	     {
+	       sendto_one(sptr, form_str(RPL_VCHANLIST),
+			  me.name, sptr->name, chptr->chname, key_list);
+	       key_list[0] = '\0';
+
+	       /* last one in the list, we won't be sending any more */
+	       if (!chtmp->next_vchan)
+		 reply_to_send = 0;
+	     }
+	 }
+     }
 
    if (reply_to_send)
      sendto_one(sptr, form_str(RPL_VCHANLIST),
