@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.181 2004/04/05 23:27:05 ievil Exp $
+ *  $Id: m_sjoin.c,v 1.182 2004/04/12 01:57:42 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.181 $";
+const char *_version = "$Revision: 1.182 $";
 #endif
 
 static char modebuf[MODEBUFLEN];
@@ -110,19 +110,16 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   int            buflen = 0;
   int		 slen;
   unsigned int fl;
-  char           *s, *nhops;
+  char           *s;
   char		 *sptr;
   static         char nick_buf[2*BUFSIZE]; /* buffer for modes and prefix */
   static         char uid_buf[2*BUFSIZE];  /* buffer for modes/prefixes for CAP_TS6 servers */
-  static         char sjbuf_nhops[BUFSIZE]; /* buffer with halfops as @ */
   char           *nick_ptr, *uid_ptr;      /* pointers used for making the two mode/prefix buffers */
   char           *p; /* pointer used making sjbuf */
   int            i;
   dlink_node     *m;
   const char *servername = (ConfigServerHide.hide_servers || IsHidden(source_p)) ?
 			    me.name : source_p->name;  
-
-  sjbuf_nhops[0] = '\0';
 
   if (IsClient(source_p) || parc < 5)
     return;
@@ -316,8 +313,6 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   pargs = 0;
 
   *mbuf++ = '+';
-
-  nhops = sjbuf_nhops;
 
   s = parv[args + 4];
 
