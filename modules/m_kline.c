@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kline.c,v 1.70 2001/04/19 04:29:36 a1kmm Exp $
+ *   $Id: m_kline.c,v 1.71 2001/04/30 14:03:22 ejb Exp $
  */
 #include "tools.h"
 #include "m_kline.h"
@@ -92,9 +92,7 @@ static int find_user_host(struct Client *source_p,
                           char *user_host_or_nick, char *user, char *host);
 
 /* needed to remove unused definition warning */
-#ifndef IPV6
 static int valid_comment(struct Client *source_p, char *comment);
-#endif
 static int valid_user_host(char *user, char *host);
 static int valid_wild_card(char *user, char *host);
 static int already_placed_kline(struct Client*, char*, char*);
@@ -878,7 +876,6 @@ static int valid_wild_card(char *luser, char *lhost)
  * output       - 0 if no valid comment, 1 if valid
  * side effects - NONE
  */
-#ifndef IPV6
 static int valid_comment(struct Client *source_p, char *comment)
 {
   if(strchr(comment, ':'))
@@ -900,7 +897,6 @@ static int valid_comment(struct Client *source_p, char *comment)
     }
   return 1;
 }
-#endif
 
 /* static int already_placed_kline(source_p, luser, lhost)
  * Input: user to complain to, username & host to check for.
