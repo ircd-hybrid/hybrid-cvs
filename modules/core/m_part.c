@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_part.c,v 1.31 2001/01/27 15:18:01 davidt Exp $
+ *   $Id: m_part.c,v 1.32 2001/01/28 00:51:11 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -200,7 +200,7 @@ static void part_one_client(struct Client *cptr,
    *  Remove user from the old channel (if any)
    *  only allow /part reasons in -m chans
    */
-  if (reason[0] && (can_send(chptr, cptr) > 0))
+  if (reason[0] && (can_send(chptr, sptr) > 0))
     {
       sendto_channel_remote_prefix(chptr, cptr, sptr, "PART %s :%s",
                               chptr->chname,
