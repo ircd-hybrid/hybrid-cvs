@@ -1,3 +1,15 @@
+androsyn    2002/05/24 21:24:53 EDT	(20020525_5)
+
+  Modified files:
+    src                  balloc.c 
+  Log:
+  Fix the non mmap() case of the block allocator
+  
+  Revision  Changes    Path
+  7.32      +11 -9     ircd-hybrid-7/src/balloc.c
+
+
+
 androsyn    2002/05/24 21:22:46 EDT	(20020525_4)
 
   Modified files:
@@ -27167,4 +27179,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3687 2002/05/25 01:22:52 androsyn Exp $
+$Id: ChangeLog,v 7.3688 2002/05/25 01:25:00 androsyn Exp $
