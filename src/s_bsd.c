@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.157 2002/01/09 17:38:33 jmallett Exp $
+ *  $Id: s_bsd.c,v 7.158 2002/01/10 20:30:49 jmallett Exp $
  */
 
 #include "config.h"
@@ -205,7 +205,7 @@ int set_sock_buffers(int fd, int size)
  */
 int disable_sock_options(int fd)
 {
-#if defined(IP_OPTIONS) && defined(IPPROTO_IP)
+#if defined(IP_OPTIONS) && defined(IPPROTO_IP) && !defined(IPV6)
   if (setsockopt(fd, IPPROTO_IP, IP_OPTIONS, NULL, 0))
     return 0;
 #endif
