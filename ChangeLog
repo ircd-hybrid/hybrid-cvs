@@ -1,3 +1,18 @@
+jmallett    2002/02/16 23:30:48 EST	(20020217_9)
+
+  Modified files:
+    .                    configure 
+    autoconf             configure.in 
+  Log:
+  Fix the way configure determines the kind of dl*(3) [or lack thereof] to use
+  so that it will work hopefully on the widest variety of systems.
+  
+  Revision  Changes    Path
+  7.121     +3 -2      ircd-hybrid-7/autoconf/configure.in
+  7.124     +285 -227  ircd-hybrid-7/configure
+
+
+
 jmallett    2002/02/16 23:19:21 EST	(20020217_8)
 
   Modified files:
@@ -22718,4 +22733,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3418 2002/02/17 04:19:26 jmallett Exp $
+$Id: ChangeLog,v 7.3419 2002/02/17 04:30:53 jmallett Exp $
