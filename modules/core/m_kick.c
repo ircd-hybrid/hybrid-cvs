@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kick.c,v 1.42 2002/05/14 11:41:33 leeh Exp $
+ *  $Id: m_kick.c,v 1.43 2002/05/16 19:14:45 leeh Exp $
  */
 
 #include "tools.h"
@@ -59,7 +59,7 @@ _moddeinit(void)
   mod_del_cmd(&kick_msgtab);
 }
 
-const char *_version = "$Revision: 1.42 $";
+const char *_version = "$Revision: 1.43 $";
 #endif
 /*
 ** m_kick
@@ -75,7 +75,9 @@ static void m_kick(struct Client *client_p,
 {
   struct Client *who;
   struct Channel *chptr;
+#ifdef VCHANS
   struct Channel *vchan;
+#endif
   int   chasing = 0;
   char  *comment;
   char  *name;

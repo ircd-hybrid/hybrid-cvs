@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_clearchan.c,v 1.27 2002/04/25 16:25:03 leeh Exp $
+ *   $Id: m_clearchan.c,v 1.28 2002/05/16 19:14:42 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -77,7 +77,7 @@ _moddeinit(void)
   mod_del_cmd(&clearchan_msgtab);
 }
 
-char *_version = "$Revision: 1.27 $";
+char *_version = "$Revision: 1.28 $";
 
 /*
 ** mo_clearchan
@@ -101,12 +101,15 @@ static void mo_clearchan(struct Client *client_p, struct Client *source_p,
    * yet. */
   chptr= hash_find_channel(parv[1]);
   root_chptr = chptr;
+
+#ifdef VCHANS
   if (chptr && parc > 2 && parv[2][0] == '!')
     {
       chptr = find_vchan(chptr, parv[2]);
       if (root_chptr != chptr)
         on_vchan++;
     }
+#endif
 
   if( chptr == NULL )
     {
@@ -171,8 +174,12 @@ static void mo_clearchan(struct Client *client_p, struct Client *source_p,
    * again. */
   if (chptr->channelts)
     chptr->channelts--;
+  
+#ifdef VCHANS
   if (on_vchan)
     add_vchan_to_client_cache(source_p,root_chptr,chptr);
+#endif
+
   chptr->mode.mode =
     MODE_SECRET | MODE_TOPICLIMIT | MODE_INVITEONLY | MODE_NOPRIVMSGS;
   chptr->topic_info[0] = '\0';
@@ -236,7 +243,9 @@ static void remove_our_modes( int hide_or_not,
 #ifdef REQUIRE_OANDV
   remove_a_mode(hide_or_not, chptr, top_chptr, source_p, &chptr->chanops_voiced, 'o');
 #endif
+#ifdef HALFOPS
   remove_a_mode(hide_or_not, chptr, top_chptr, source_p, &chptr->halfops, 'h');
+#endif
   remove_a_mode(hide_or_not, chptr, top_chptr, source_p, &chptr->voiced, 'v');
 #ifdef REQUIRE_OANDV
   remove_a_mode(hide_or_not, chptr, top_chptr, source_p, &chptr->chanops_voiced, 'v');
@@ -244,13 +253,17 @@ static void remove_our_modes( int hide_or_not,
 
   /* Move all voice/ops etc. to non opped list */
   dlinkMoveList(&chptr->chanops, &chptr->peons);
+#ifdef HALFOPS
   dlinkMoveList(&chptr->halfops, &chptr->peons);
+#endif
   dlinkMoveList(&chptr->voiced, &chptr->peons);
 #ifdef REQUIRE_OANDV
   dlinkMoveList(&chptr->chanops_voiced, &chptr->peons);
 #endif
   dlinkMoveList(&chptr->locchanops, &chptr->locpeons);
+#ifdef HALFOPS
   dlinkMoveList(&chptr->lochalfops, &chptr->locpeons);
+#endif
   dlinkMoveList(&chptr->locvoiced, &chptr->locpeons);
 #ifdef REQUIRE_OANDV
   dlinkMoveList(&chptr->locchanops_voiced, &chptr->locpeons);
