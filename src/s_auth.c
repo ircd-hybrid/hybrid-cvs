@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.112 2003/04/05 01:53:38 db Exp $
+ *  $Id: s_auth.c,v 7.113 2003/04/05 02:06:19 db Exp $
  */
 
 /*
@@ -206,11 +206,13 @@ auth_dns_callback(void* vptr, adns_answer* reply)
   else
     {
 #ifdef IPV6
-      if(auth->client->localClient->aftype == AF_INET6 && ConfigFileEntry.fallback_to_ip6_int == 1 && auth->ip6_int == 0)
+      if(auth->client->localClient->aftype == AF_INET6 
+	 && ConfigFileEntry.fallback_to_ip6_int == 1 && auth->ip6_int == 0)
       {
         struct Client *client = auth->client;
         auth->ip6_int = 1;
 	MyFree(reply);
+	reply = NULL;
 
 	/* Only set DNS pending if no error! -- Dianora */
 	if (adns_getaddr(&client->localClient->ip, client->localClient->aftype,
