@@ -6,7 +6,7 @@
  * The idea here is that we should really be maintaining pre-munged
  * buffer "lines" which we can later refcount to save needless copies.
  *
- * $Id: linebuf.c,v 7.10 2000/12/05 20:43:23 db Exp $
+ * $Id: linebuf.c,v 7.11 2000/12/08 04:34:32 adrian Exp $
  */
 
 #include <sys/errno.h>
@@ -67,6 +67,7 @@ linebuf_new_line(buf_head_t *bufhead)
 
     /* And finally, update the allocated size */
     bufhead->alloclen += BUF_DATA_SIZE;
+    bufhead->numlines ++;
 
     return bufline;
 }
@@ -85,6 +86,9 @@ linebuf_done_line(buf_head_t *bufhead, buf_line_t *bufline)
 
     /* Update the allocated size */
     bufhead->alloclen -= BUF_DATA_SIZE;
+    bufhead->len -= bufline->len;
+    assert(bufhead->len >= 0);
+    bufhead->numlines --;
 
     /* and finally, deallocate the buf */
     BlockHeapFree(linebuf_bl, bufline);
@@ -459,7 +463,6 @@ linebuf_flush(int fd, buf_head_t *bufhead)
        bufhead */
     if (bufhead->writeofs == bufline->len) {
        bufhead->writeofs = 0;
-       bufhead->len -= bufline->len;
        assert(bufhead->len >=0);
        linebuf_done_line(bufhead, bufline);
     }
