@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.89 2003/03/01 01:15:39 db Exp $
+ *  $Id: m_gline.c,v 1.90 2003/03/09 23:09:12 db Exp $
  */
 
 #include "stdinc.h"
@@ -85,7 +85,7 @@ static void add_new_majority_gline(const char *, const char *, const char *,
                                    const char *);
 
 static int check_wild_gline(char *, char *);
-static int invalid_gline(struct Client *, char *, char *, char *);
+static int invalid_gline(struct Client *, char *);
 		       
 static void ms_gline(struct Client*, struct Client*, int, char**);
 static void mo_gline(struct Client*, struct Client*, int, char**);
@@ -109,7 +109,7 @@ _moddeinit(void)
   mod_del_cmd(&gline_msgtab);
 }
 
-const char *_version = "$Revision: 1.89 $";
+const char *_version = "$Revision: 1.90 $";
 #endif
 /*
  * mo_gline()
@@ -184,7 +184,7 @@ mo_gline(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if(invalid_gline(source_p, user, host, parv[2]))
+  if(invalid_gline(source_p, user))
     return;
 			
   /* Not enough non-wild characters were found,
@@ -314,8 +314,8 @@ ms_gline(struct Client *client_p, struct Client *source_p,
   else
     return;
 
- if(invalid_gline(acptr, user, host, (char *)reason))
-    return;
+  if(invalid_gline(acptr, user);
+     return;
     
   /* send in hyb-7 to compatible servers */
   sendto_server(client_p, acptr, NULL, CAP_GLN, NOCAPS, LL_ICLIENT,
@@ -423,10 +423,9 @@ check_wild_gline(char *user, char *host)
  * outputs	- 1 if invalid, 0 if valid
  */
 static int
-invalid_gline(struct Client *source_p, char *luser, char *lhost,
-                       char *lreason)
+invalid_gline(struct Client *source_p, char *luser)
 {
-  if(strchr(luser, '!'))
+  if(strchr(luser, '!') != NULL)
   {
     sendto_one(source_p, ":%s NOTICE %s :Invalid character '!' in gline",
                me.name, source_p->name);
