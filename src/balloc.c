@@ -25,7 +25,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: balloc.c,v 7.37 2002/07/12 00:43:23 androsyn Exp $
+ *  $Id: balloc.c,v 7.38 2002/08/03 22:42:26 androsyn Exp $
  */
 
 /* 
@@ -370,7 +370,7 @@ BlockHeapAlloc(BlockHeap * bh)
     assert(bh != NULL);
     if (bh == NULL)
       {
-        return(NULL);
+	outofmemory();
       }
 
     if (bh->freeElems == 0)
@@ -405,7 +405,7 @@ BlockHeapAlloc(BlockHeap * bh)
 	  }
       }
     assert(0 == 1);
-    return(NULL);     /* If you get here, something bad happened ! */
+    outofmemory();
 }
 
 
