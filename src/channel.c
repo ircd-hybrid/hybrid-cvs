@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.271 2001/09/29 22:52:50 davidt Exp $
+ * $Id: channel.c,v 7.272 2001/10/01 19:18:32 davidt Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -4311,8 +4311,17 @@ get_channel(struct Client *client_p, char *chname, int flag)
     return NULL;
 
   len = strlen(chname);
-  if (MyClient(client_p) && len > CHANNELLEN)
+  if (len > CHANNELLEN)
   {
+    if (IsServer(client_p))
+    {
+      sendto_realops_flags(FLAGS_DEBUG, L_ALL,
+                           "*** Long channel name from %s (%d > %d): %s",
+                           client_p->name,
+                           len,
+                           CHANNELLEN,
+                           chname);
+    }
     len = CHANNELLEN;
     *(chname + CHANNELLEN) = '\0';
   }
