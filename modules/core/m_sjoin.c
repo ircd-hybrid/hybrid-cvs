@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.165 2003/07/25 23:16:08 michael Exp $
+ *  $Id: m_sjoin.c,v 1.166 2003/09/18 22:51:52 bill Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.165 $";
+const char *_version = "$Revision: 1.166 $";
 #endif
 
 /* ms_sjoin()
@@ -114,8 +114,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   dlink_node     *m;
   const char *servername;
 
-  *buf = '\0';
-  *sjbuf_nhops = '\0';
+  buf[0] = sjbuf_nhops[0] = '\0';
 
   if (IsClient(source_p) || parc < 5)
     return;
@@ -125,11 +124,11 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   if (!check_channel_name(parv[2]))
     return;
 
-  servername = (IsHidden(source_p) || ConfigServerHide.hide_servers) ?
+  servername = (ConfigServerHide.hide_servers || IsHidden(source_p)) ?
                 me.name : source_p->name;
 
+  modebuf[0] = '\0';
   mbuf = modebuf;
-  *mbuf = '\0';
   pargs = 0;
   newts = atol(parv[1]);
 
@@ -148,17 +147,17 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
       case 'n':
         mode.mode |= MODE_NOPRIVMSGS;
         break;
-      case 'i':
-        mode.mode |= MODE_INVITEONLY;
-        break;
-      case 'p':
-        mode.mode |= MODE_PRIVATE;
-        break;
       case 's':
         mode.mode |= MODE_SECRET;
         break;
       case 'm':
         mode.mode |= MODE_MODERATED;
+        break;
+      case 'i':
+        mode.mode |= MODE_INVITEONLY;
+        break;
+      case 'p':
+        mode.mode |= MODE_PRIVATE;
         break;
       case 'k':
         strlcpy(mode.key, parv[4 + args], sizeof(mode.key));
@@ -175,7 +174,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
     }
   }
 
-  *parabuf = '\0';
+  parabuf[0] = '\0';
 
   if ((chptr = get_or_create_channel(source_p, parv[2], &isnew)) == NULL)
     return; /* channel name too long? */
@@ -192,12 +191,12 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
 			   (unsigned long)newts, chptr->chname,
 			   client_p->name);
 
-      newts = (oldts == 0) ? oldts : 800000000;
+      newts = (oldts == 0) ? 0 : 800000000;
     }
   }
   else
   {
-    if (!isnew && !newts && oldts)
+    if (!newts && !isnew && oldts)
     {
       sendto_channel_local(ALL_MEMBERS, chptr,
  		  	   ":%s NOTICE %s :*** Notice -- TS for %s changed from %lu to 0",
@@ -207,6 +206,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
 			   source_p->name, chptr->chname, (unsigned long)oldts);
     }
   }
+
   if (isnew)
     chptr->channelts = tstosend = newts;
   else if (newts == 0 || oldts == 0)
@@ -258,7 +258,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
 	                 servername, chptr->chname, modebuf, parabuf);
   }
 
-  *modebuf = *parabuf = '\0';
+  modebuf[0] = parabuf[0] = '\0';
   if (parv[3][0] != '0' && keep_new_modes)
   {
     channel_modes(chptr, source_p, modebuf, parabuf);
@@ -327,6 +327,16 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
         }
 	s++;
       }
+      else if (*s == '+')
+      {
+        fl |= CHFL_VOICE;
+        if (keep_new_modes)
+        {
+	  *nhops++ = *s;
+          num_prefix++;
+        }
+        s++;
+      }
 #ifdef USE_HALFOPS
       else if (*s == '%')
       {
@@ -339,16 +349,6 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
         s++;
       }
 #endif
-      else if (*s == '+')
-      {
-        fl |= CHFL_VOICE;
-        if (keep_new_modes)
-        {
-	  *nhops++ = *s;
-          num_prefix++;
-        }
-        s++;
-      }
     }
     /* if the client doesnt exist, backtrack over the prefix (@%+) that we
      * just added and skip to the next nick
@@ -437,6 +437,24 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
         pargs = 0;
       }
     }
+    if (fl & CHFL_VOICE)
+    {
+      *mbuf++ = 'v';
+      para[pargs++] = s;
+
+      if (pargs >= MAXMODEPARAMS)
+      {
+        *mbuf = '\0';
+        sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s %s %s %s %s %s",
+                             servername, chptr->chname, modebuf, para[0],
+                             para[1], para[2], para[3]);
+        mbuf = modebuf;
+        *mbuf++ = '+';
+
+        para[0] = para[1] = para[2] = para[3] = "";
+        pargs = 0;
+      }
+    }
 #ifdef USE_HALFOPS
     if (fl & CHFL_HALFOP)
     {
@@ -457,24 +475,6 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
       }
     }
 #endif
-    if (fl & CHFL_VOICE)
-    {
-      *mbuf++ = 'v';
-      para[pargs++] = s;
-
-      if (pargs >= MAXMODEPARAMS)
-      {
-        *mbuf = '\0';
-        sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s %s %s %s %s %s",
-                             servername, chptr->chname, modebuf, para[0],
-                             para[1], para[2], para[3]);
-        mbuf = modebuf;
-        *mbuf++ = '+';
-
-        para[0] = para[1] = para[2] = para[3] = "";
-        pargs = 0;
-      }
-    }
 
 nextnick:
     /* p points to the next nick */
@@ -516,7 +516,7 @@ nextnick:
       continue;
 
     /* skip lazylinks that don't know about this server */
-    if (ServerInfo.hub && IsCapable(target_p,CAP_LL))
+    if (IsCapable(target_p, CAP_LL) && ServerInfo.hub)
     {
       if (!(chptr->lazyLinkChannelExists &
           target_p->localClient->serverMask))

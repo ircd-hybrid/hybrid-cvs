@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.76 2003/08/03 14:22:22 michael Exp $
+ *  $Id: hash.c,v 7.77 2003/09/18 22:51:55 bill Exp $
  */
 
 #include "stdinc.h"
@@ -680,9 +680,7 @@ get_or_create_channel(struct Client *client_p, char *chname, int *isnew)
 			   "*** Long channel name from %s (%d > %d): %s",
                            client_p->name, len, CHANNELLEN, chname);
     }
-
-    len = CHANNELLEN;
-    *(chname + CHANNELLEN) = '\0';
+    return(NULL);
   }
 
   if ((chptr = hash_find_channel(chname)) != NULL)

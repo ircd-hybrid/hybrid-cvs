@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_mode.c,v 1.65 2003/06/19 14:27:20 michael Exp $
+ *  $Id: m_mode.c,v 1.66 2003/09/18 22:51:51 bill Exp $
  */
 
 #include "stdinc.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
   mod_del_cmd(&mode_msgtab);
 }
 
-const char *_version = "$Revision: 1.65 $";
+const char *_version = "$Revision: 1.66 $";
 #endif
 
 /*
@@ -163,9 +163,7 @@ m_mode(struct Client *client_p, struct Client *source_p,
       /* Finish the flood grace period... */
       if (MyClient(source_p) && !IsFloodDone(source_p))
       {
-        if ((parc == 3) && (parv[2][0] == 'b') && (parv[2][1] == '\0'))
-          ;
-        else
+        if (!((parc == 3) && (parv[2][0] == 'b') && (parv[2][1] == '\0')))
           flood_endgrace(source_p);
       }
 
