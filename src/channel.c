@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.205 2001/04/20 02:41:06 db Exp $
+ * $Id: channel.c,v 7.206 2001/04/20 03:33:32 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -2771,6 +2771,16 @@ static void delete_members(struct Channel * chptr, dlink_list *list)
     }
 }
 
+/*
+ * set_channel_mode_flags
+ *
+ * inputs	- pointer to array of strings for chanops, voiced,
+ *		  halfops,peons
+ *		- pointer to channel
+ *		- pointer to source
+ * output	- none
+ * side effects	-
+ */
 static void
 set_channel_mode_flags( char flags_ptr[4][2],
 			struct Channel *chptr,
@@ -2788,12 +2798,11 @@ set_channel_mode_flags( char flags_ptr[4][2],
       flags_ptr[0][0] = '@';
       flags_ptr[1][0] = '%';
       flags_ptr[2][0] = '+';
-      flags_ptr[3][0] = '+';
+      flags_ptr[3][0] = '\0';
 
       flags_ptr[0][1] = '\0';
       flags_ptr[1][1] = '\0';
       flags_ptr[2][1] = '\0';
-      flags_ptr[3][1] = '\0';
     }
 }
 
