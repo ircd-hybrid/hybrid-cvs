@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 1.80 2001/07/16 20:06:06 leeh Exp $
+ *  $Id: m_stats.c,v 1.81 2001/07/24 00:56:08 leeh Exp $
  */
 #include "tools.h"	 /* dlink_node/dlink_list */
 #include "handlers.h"    /* m_pass prototype */
@@ -274,7 +274,7 @@ static void mo_stats(struct Client *client_p, struct Client *source_p,
         if (stats_cmd_table[i].letter == statchar)
           {
             /* The stats table says what privs are needed, so check --fl_ */
-            if(stats_cmd_table[i].need_admin && !IsAdmin(source_p))
+            if(stats_cmd_table[i].need_admin && !IsSetOperAdmin(source_p))
               {
                 sendto_one(source_p, form_str(ERR_NOPRIVILEGES),me.name,source_p->name);
                 break;
