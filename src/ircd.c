@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.287 2003/05/24 00:35:08 db Exp $
+ *  $Id: ircd.c,v 7.288 2003/05/24 01:56:38 michael Exp $
  */
 
 #include "stdinc.h"
@@ -661,12 +661,12 @@ main(int argc, char *argv[])
   load_core_modules(1);
 #endif
   initServerMask();
-  init_auth();                  /* Initialise the auth code */
+  init_auth();          /* Initialise the auth code */
   init_resolver();      /* Needs to be setup before the io loop */
 #ifdef HAVE_LIBCRYPTO
   bio_spare_fd=save_spare_fd("SSL private key validation");
 #endif /* HAVE_LIBCRYPTO */
-  read_conf_files(YES);         /* cold start init conf files */
+  read_conf_files(1);   /* cold start init conf files */
 #ifndef STATIC_MODULES
 
   mod_add_path(IRCD_PREFIX "/modules");

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.398 2003/05/23 02:45:31 joshk Exp $
+ *  $Id: s_conf.c,v 7.399 2003/05/24 01:56:38 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1273,7 +1273,7 @@ rehash(int sig)
   /* Check to see if we magically got(or lost) IPv6 support */
   check_can_use_v6();
 
-  read_conf_files(NO);
+  read_conf_files(0);
 
   if (ServerInfo.description != NULL)
     strlcpy(me.info, ServerInfo.description, sizeof(me.info));
@@ -1892,17 +1892,8 @@ read_conf_files(int cold)
     }
   }
 
-  if (cold)
-  {
-    /* XXX need clear() */
-    ConfigItemList.head = NULL;
-    ConfigItemList.tail = NULL;
-    ConfigItemList.length = 0;
-  }
-  else
-  {
+  if (!cold)
     clear_out_old_conf();
-  }
 
   read_conf(conf_fbfile_in);
   fbclose(conf_fbfile_in);
