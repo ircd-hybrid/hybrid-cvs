@@ -52,6 +52,12 @@
 7.  /etc/resolv.conf MUST be readable to the user that the ircd runs under.
     Currently if it is not readable, it will core on startup.
 
+8. When updating a message file, in certain unknown situations it will core
+   if the file in use is being accessed.  To prevent this from happening,
+   use '/quote SET MSGLOCALE standard' BEFORE issuing make install.  When
+   the file is installed, you can SET MSGLOCALE back to the lnaguage that
+   was just updated.
+
 For more information see http://bugs.efnow.net
 
 BUG REPORTS: If you run this code and encounter problems, you must report
@@ -64,4 +70,4 @@ BUG REPORTS: If you run this code and encounter problems, you must report
  with any report  (with passwords and other sensitive information masked).
 
 --------------------------------------------------------------------------------
-$Id: BUGS,v 7.15 2001/02/10 19:33:27 wcampbel Exp $
+$Id: BUGS,v 7.16 2001/02/23 19:02:41 wcampbel Exp $
