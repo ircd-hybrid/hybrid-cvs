@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.284 2003/05/20 06:51:52 michael Exp $
+ *  $Id: ircd.c,v 7.285 2003/05/22 05:32:58 lusky Exp $
  */
 
 #include "stdinc.h"
@@ -105,6 +105,10 @@ time_t nextconnect = 1;        /* time for next try_connections call */
  * initialize_server_capabs
  */
 int default_server_capabs = CAP_MASK;
+
+#ifdef HAVE_LIBCRYPTO
+int bio_spare_fd = -1;
+#endif
 
 int splitmode;
 int splitchecking;
@@ -626,6 +630,9 @@ main(int argc, char *argv[])
   initServerMask();
   init_auth();                  /* Initialise the auth code */
   init_resolver();      /* Needs to be setup before the io loop */
+#ifdef HAVE_LIBCRYPTO
+  bio_spare_fd=save_spare_fd("SSL private key validation");
+#endif /* HAVE_LIBCRYPTO */
   read_conf_files(YES);         /* cold start init conf files */
 #ifndef STATIC_MODULES
 

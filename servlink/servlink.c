@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: servlink.c,v 1.25 2003/05/14 18:38:25 joshk Exp $
+ *   $Id: servlink.c,v 1.26 2003/05/22 05:32:56 lusky Exp $
  */
 
 #include "stdinc.h"
@@ -82,13 +82,18 @@ int main(int argc, char *argv[])
 
   for (i = 0; i < 5; i++ )
   {
-    fds[i].fd = atoi(argv[i+1]);
+    fds[i].fd = dup(atoi(argv[i+1]));
     if (fds[i].fd < 0)
       exit(1);
     if (fds[i].fd > max_fd)
       max_fd = fds[i].fd;
   }
-  
+
+  for (i = 0; i < 5; i++ )
+  {
+    close(atoi(argv[i+1]));
+  }
+
   /* set file descriptors to nonblocking mode */
   for (i = 0; i < 5; i++)
   {

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: rsa.c,v 7.29 2003/05/16 13:29:28 michael Exp $
+ *  $Id: rsa.c,v 7.30 2003/05/22 05:32:58 lusky Exp $
  */
 
 #include "stdinc.h"
@@ -40,6 +40,7 @@
 #include "s_conf.h"
 #include "s_log.h"
 #include "client.h" /* CIPHERKEYLEN .. eww */
+#include "ircd.h" /* bio_spare_fd */
 
 #ifdef HAVE_LIBCRYPTO
 static void binary_to_hex(unsigned char *bin, char *hex, int length);
@@ -88,6 +89,9 @@ verify_private_key(void)
     return(-1);
   }
 
+  if (bio_spare_fd > -1)
+    close(bio_spare_fd);
+
   file = BIO_new_file(ServerInfo.rsa_private_key_file, "r");
 
   /*
@@ -96,6 +100,7 @@ verify_private_key(void)
    */
   if (file == NULL)
   {
+    bio_spare_fd=save_spare_fd("SSL private key validation");
     ilog(L_NOTICE, "Failed to open private key file - can't validate it");
     return(-1);
   }
@@ -122,6 +127,7 @@ verify_private_key(void)
 
   BIO_set_close(file, BIO_CLOSE);
   BIO_free(file);
+  bio_spare_fd=save_spare_fd("SSL private key validation");
 
   mkey = ServerInfo.rsa_private_key;
 
