@@ -1,3 +1,15 @@
+leeh        2002/06/25 19:08:36 EDT	(20020626_1)
+
+  Modified files:
+    .                    ChangeLog 
+  Log:
+  - more updates.
+  
+  Revision  Changes    Path
+  7.3806    +1 -4      ircd-hybrid-7/ChangeLog
+
+
+
 leeh        2002/06/25 19:06:55 EDT	(20020626_0)
 
   Modified files:
@@ -28711,4 +28723,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3806 2002/06/25 23:08:30 leeh Exp $
+$Id: ChangeLog,v 7.3807 2002/06/25 23:08:42 leeh Exp $
