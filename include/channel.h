@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.126 2003/04/02 11:44:54 michael Exp $
+ *  $Id: channel.h,v 7.127 2003/04/06 08:38:52 michael Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -151,7 +151,6 @@ extern void check_splitmode(void *);
 ** Channel Related macros follow
 */
 
-#define HoldChannel(x)          (!(x))
 /* channel visible */
 #define ShowChannel(v,c)        (PubChannel(c) || IsMember((v),(c)))
 

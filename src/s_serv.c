@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.295 2003/04/06 01:09:14 db Exp $
+ *  $Id: s_serv.c,v 7.296 2003/04/06 08:38:54 michael Exp $
  */
 
 #include "stdinc.h"
@@ -71,7 +71,6 @@ extern char *crypt();
 
 int MaxConnectionCount = 1;
 int MaxClientCount     = 1;
-int refresh_user_links = 0;
 
 struct Client *uplink=NULL;
 
@@ -333,8 +332,6 @@ write_links_file(void* notused)
   FBFILE* file;
   char buff[512];
   dlink_node *ptr;
-
-  refresh_user_links = 0;
 
   MessageFileptr = &ConfigFileEntry.linksfile;
 

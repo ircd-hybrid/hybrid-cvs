@@ -19,19 +19,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.h,v 7.67 2003/02/23 04:16:03 db Exp $
+ *  $Id: s_serv.h,v 7.68 2003/04/06 08:38:52 michael Exp $
  */
 
 #ifndef INCLUDED_serv_h
 #define INCLUDED_serv_h
 
 #include "config.h"
-
-/*
- * The number of seconds between calls to try_connections(). Fiddle with
- * this ONLY if you KNOW what you're doing!
- */
-#define TRY_CONNECTIONS_TIME	60
 
 /* collect ziplinks compression ratios/etc every minute */
 #define ZIPSTATS_TIME           60
@@ -187,8 +181,6 @@ struct EncCapability
 #define ClearCapEnc(x, cap)     ((x)->localClient->enc_caps &= ~(cap))
   
 #endif /* HAVE_LIBCRYPTO */
-  
-#define DoesCAP(x)      ((x)->caps)
 
 #define CHECK_SERVER_CRYPTLINK    1
 #define CHECK_SERVER_NOCRYPTLINK  0
@@ -224,8 +216,6 @@ struct EncCapability
 #define SLINKRPL_ERROR          1
 #define SLINKRPL_ZIPSTATS       2
 
-#define MAX_SLINKRPL            2
-
 typedef void SlinkRplHnd(unsigned int replyid, unsigned int datalen,
                          unsigned char *data, struct Client *client_p);
 struct SlinkRplDef
@@ -252,8 +242,6 @@ extern struct EncCapability CipherTable[];
 
 extern int MaxClientCount;     /* GLOBAL - highest number of clients */
 extern int MaxConnectionCount; /* GLOBAL - highest number of connections */
-
-extern int refresh_user_links;
 
 /*
  * return values for hunt_server() 
