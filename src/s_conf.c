@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.432 2003/06/16 21:26:36 db Exp $
+ *  $Id: s_conf.c,v 7.433 2003/06/16 22:35:26 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -276,6 +276,7 @@ make_conf_item(ConfType type)
 void
 delete_conf_item(struct ConfItem *conf)
 {
+  struct MatchItem *match_item;
   ConfType type = conf->type;
 
   switch(type)
