@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.270 2001/09/24 11:13:46 a1kmm Exp $
+ *  $Id: s_conf.c,v 7.271 2001/10/11 15:41:02 jdc Exp $
  */
 
 #include <sys/types.h>
@@ -1553,9 +1553,10 @@ set_default_conf(void)
   ConfigChannel.vchans_oper_only = NO;
   ConfigChannel.disable_vchans = NO;
 
-  ConfigChannel.use_invex = NO;
-  ConfigChannel.use_except= YES;
-  ConfigChannel.use_knock= YES;
+  ConfigChannel.use_except  = YES;
+  ConfigChannel.use_halfops = YES;
+  ConfigChannel.use_invex   = NO;
+  ConfigChannel.use_knock   = YES;
   ConfigChannel.knock_delay = 300;
   ConfigChannel.max_chans_per_user = 15;
   ConfigChannel.maxbans = 25;
@@ -1568,7 +1569,7 @@ set_default_conf(void)
   ConfigServerHide.disable_remote = 0;
   ConfigServerHide.links_delay = 300;
   ConfigServerHide.hidden = 0;
-  ConfigServerHide.allow_hidden = 1;  
+  ConfigServerHide.allow_hidden = 1;
 
   ConfigFileEntry.min_nonwildcard = 4;
   ConfigFileEntry.default_floodcount = 8;
