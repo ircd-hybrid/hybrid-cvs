@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- * $Id: hostmask.c,v 7.45 2001/06/24 04:55:32 a1kmm Exp $ 
+ * $Id: hostmask.c,v 7.46 2001/07/13 00:10:58 leeh blalloc.c $ 
  */
  
 #include <stdlib.h>
@@ -723,7 +723,7 @@ report_Ilines(struct Client *client_p, int mask)
     aconf = arec->aconf;
 
     if (!(MyConnect(client_p) && IsOper(client_p)) &&
-        (IsConfDoSpoofIp(aconf) && !mask))
+        IsConfDoSpoofIp(aconf))
      continue;
 
     get_printable_conf(aconf, &name, &host, &pass, &user, &port,
