@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_ojoin.c,v 1.18 2003/05/24 08:02:48 michael Exp $
+ *   $Id: m_ojoin.c,v 1.19 2003/05/28 21:11:50 bill Exp $
  */
 
 #include "stdinc.h"
@@ -57,7 +57,7 @@ _moddeinit(void)
   mod_del_cmd(&ojoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.18 $";
+const char *_version = "$Revision: 1.19 $";
 
 /*
 ** mo_ojoin
@@ -72,9 +72,9 @@ mo_ojoin(struct Client *client_p, struct Client *source_p,
   int move_me = 0;
 
   /* admins only */
-  if (!IsOperAdmin(source_p))
+  if (!IsAdmin(source_p))
   {
-    sendto_one(source_p, ":%s NOTICE %s :You need admin = yes;",
+    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
                me.name, source_p->name);
     return;
   }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ltrace.c,v 1.10 2003/05/11 22:04:38 michael Exp $
+ *  $Id: m_ltrace.c,v 1.11 2003/05/28 21:11:50 bill Exp $
  */
 
 #include "stdinc.h"
@@ -66,7 +66,7 @@ _moddeinit(void)
   mod_del_cmd(&ltrace_msgtab);
 }
 
-const char *_version = "$Revision: 1.10 $";
+const char *_version = "$Revision: 1.11 $";
 #endif
 
 static int report_this_status(struct Client *source_p, struct Client *target_p,int dow,
@@ -286,14 +286,14 @@ report_this_status(struct Client *source_p, struct Client *target_p,
     case STAT_CONNECTING:
       sendto_one(source_p, form_str(RPL_TRACECONNECTING), me.name,
                  source_p->name, class_name, 
-		 IsOperAdmin(source_p) ? name : target_p->name);
+		 IsAdmin(source_p) ? name : target_p->name);
 		   
       break;
 
     case STAT_HANDSHAKE:
       sendto_one(source_p, form_str(RPL_TRACEHANDSHAKE), me.name,
                  source_p->name, class_name, 
-                 IsOperAdmin(source_p) ? name : target_p->name);
+                 IsAdmin(source_p) ? name : target_p->name);
 		   
       break;
       
@@ -306,7 +306,7 @@ report_this_status(struct Client *source_p, struct Client *target_p,
 	sendto_one(source_p, form_str(RPL_TRACEOPERATOR),
                    me.name, source_p->name, class_name, name,
 #ifndef HIDE_SPOOF_IPS
-                   IsOperAdmin(source_p) ? ip : 
+                   IsAdmin(source_p) ? ip : 
 #endif
                    (IsIPSpoof(target_p) ? "255.255.255.255" : ip),
                    CurrentTime - target_p->lasttime,
@@ -324,7 +324,7 @@ report_this_status(struct Client *source_p, struct Client *target_p,
 
       break;
     case STAT_SERVER:
-      if(!IsOperAdmin(source_p))
+      if(!IsAdmin(source_p))
         name = get_client_name(target_p, MASK_IP);
 
       sendto_one(source_p, form_str(RPL_TRACESERVER),

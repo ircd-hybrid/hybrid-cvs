@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_unkline.c,v 1.65 2003/05/25 04:24:57 db Exp $
+ *  $Id: m_unkline.c,v 1.66 2003/05/28 21:11:52 bill Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&msgtabs[2]);
   delete_capability("UNKLN");
 }
-const char *_version = "$Revision: 1.65 $";
+const char *_version = "$Revision: 1.66 $";
 #endif
 
 static int remove_tkline_match(const char *, const char *);
@@ -102,7 +102,8 @@ mo_unkline(struct Client *client_p,struct Client *source_p,
 
   if (!IsOperUnkline(source_p))
     {
-      sendto_one(source_p,":%s NOTICE %s :You need unkline = yes;",me.name,parv[0]);
+      sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
+                 me.name, source_p->name);
       return;
     }
   if (parc < 2)
@@ -351,8 +352,8 @@ mo_undline(struct Client *client_p, struct Client *source_p,
 
   if (!IsOperUnkline(source_p))
   {
-    sendto_one(source_p,":%s NOTICE %s :You need unkline = yes;",me.name,
-	       parv[0]);
+    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
+               me.name, source_p->name);
     return;
   }
 
@@ -408,8 +409,8 @@ mo_ungline(struct Client *client_p, struct Client *source_p,
 
   if (!IsOperUnkline(source_p) || !IsOperGline(source_p))
     {
-      sendto_one(source_p,":%s NOTICE %s :You need unkline = yes;",
-                 me.name,parv[0]);
+      sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
+                 me.name, source_p->name);
       return;
     }
 

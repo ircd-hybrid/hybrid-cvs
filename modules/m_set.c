@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_set.c,v 1.51 2003/05/02 09:43:26 adx Exp $
+ *  $Id: m_set.c,v 1.52 2003/05/28 21:11:52 bill Exp $
  */
 
 /* rewritten by jdc */
@@ -64,7 +64,7 @@ _moddeinit(void)
   mod_del_cmd(&set_msgtab);
 }
 
-const char *_version = "$Revision: 1.51 $";
+const char *_version = "$Revision: 1.52 $";
 #endif
 
 /* Structure used for the SET table itself */
@@ -208,9 +208,9 @@ quote_floodcount(struct Client *source_p, int newval)
 static void
 quote_identtimeout(struct Client *source_p, int newval)
 {
-  if (!IsOperAdmin(source_p))
+  if (!IsAdmin(source_p))
   {
-    sendto_one(source_p, ":%s NOTICE %s :You need admin = yes;", 
+    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
                me.name, source_p->name);
     return;
   }

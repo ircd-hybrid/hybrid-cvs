@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.c,v 7.85 2003/05/25 01:05:24 michael Exp $
+ *  $Id: listener.c,v 7.86 2003/05/28 21:11:57 bill Exp $
  */
 
 #include "stdinc.h"
@@ -112,7 +112,7 @@ show_ports(struct Client *source_p)
     sendto_one(source_p, form_str(RPL_STATSPLINE),
                me.name, source_p->name,
                'P', listener->port,
-               IsOperAdmin(source_p) ? listener->name : me.name,
+               IsAdmin(source_p) ? listener->name : me.name,
                listener->ref_count,
                (listener->active)?"active":"disabled");
   }

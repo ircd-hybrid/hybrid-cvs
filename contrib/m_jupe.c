@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_jupe.c,v 1.53 2003/05/20 06:51:42 michael Exp $
+ *  $Id: m_jupe.c,v 1.54 2003/05/28 21:11:49 bill Exp $
  */
 
 #include "stdinc.h"
@@ -67,7 +67,7 @@ _moddeinit(void)
   mod_del_cmd(&jupe_msgtab);
 }
 
-const char *_version = "$Revision: 1.53 $";
+const char *_version = "$Revision: 1.54 $";
 #endif
 
 /*
@@ -92,7 +92,7 @@ mo_jupe(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if (!IsOperAdmin(source_p))
+  if (!IsAdmin(source_p))
   {
     sendto_one(source_p, ":%s NOTICE %s :You must be an admin to use this command",
                me.name, source_p->name);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kill.c,v 1.76 2003/05/25 04:37:57 db Exp $
+ *  $Id: m_kill.c,v 1.77 2003/05/28 21:11:55 bill Exp $
  */
 
 #include "stdinc.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&kill_msgtab);
 }
 
-const char *_version = "$Revision: 1.76 $";
+const char *_version = "$Revision: 1.77 $";
 #endif
 
 /* mo_kill()
@@ -94,7 +94,7 @@ mo_kill(struct Client *client_p, struct Client *source_p,
 
   if (!IsOperK(source_p))
   {
-    sendto_one(source_p, ":%s NOTICE %s :You need kline = yes;",
+    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
                me.name, source_p->name);
     return;
   }

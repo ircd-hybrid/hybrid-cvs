@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_opme.c,v 1.38 2003/05/25 04:37:52 db Exp $
+ *   $Id: m_opme.c,v 1.39 2003/05/28 21:11:50 bill Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -55,7 +55,7 @@ _moddeinit(void)
   mod_del_cmd(&opme_msgtab);
 }
 
-const char *_version = "$Revision: 1.38 $";
+const char *_version = "$Revision: 1.39 $";
 
 static int
 chan_is_opless(struct Channel *chptr)
@@ -86,7 +86,7 @@ mo_opme(struct Client *client_p, struct Client *source_p,
   /* admins only */
   if (!IsAdmin(source_p))
   {
-    sendto_one(source_p, ":%s NOTICE %s :You need admin = yes;",
+    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
                me.name, source_p->name);
     return;
   }

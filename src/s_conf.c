@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.410 2003/05/28 20:12:09 db Exp $
+ *  $Id: s_conf.c,v 7.411 2003/05/28 21:11:57 bill Exp $
  */
 
 #include "stdinc.h"
@@ -309,7 +309,7 @@ report_configured_links(struct Client *source_p, unsigned int mask)
 	/* Allow admins to see actual ips */
 	/* except if HIDE_SERVERS_IPS is defined */
 #ifndef HIDE_SERVERS_IPS
-        if (IsOperAdmin(source_p))
+        if (IsAdmin(source_p))
           sendto_one(source_p, form_str(p->rpl_stats),
                      me.name, source_p->name, c, host,
                      buf, name, port, classname);
@@ -1769,6 +1769,11 @@ oper_privs_as_string(struct Client *source_p, unsigned int port)
     else
       *privs_ptr++ = flag_list[i].neg;
   }
+
+  if (IsAdmin(source_p) && !IsOperHiddenAdmin(source_p))
+    *privs_ptr++ = 'A';
+  else
+    *privs_ptr++ = 'a';
 
   *privs_ptr = '\0';
 

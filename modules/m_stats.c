@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.127 2003/05/28 16:37:58 db Exp $
+ *  $Id: m_stats.c,v 1.128 2003/05/28 21:11:52 bill Exp $
  */
 
 #include "stdinc.h"
@@ -79,7 +79,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.127 $";
+const char *_version = "$Revision: 1.128 $";
 #endif
 
 const char *Lformat = ":%s %d %s %s %u %u %u %u %u :%u %u %s";
@@ -276,7 +276,7 @@ mo_stats(struct Client *client_p, struct Client *source_p,
       /* Called for remote clients and for local opers, so check need_admin
        * and need_oper
        */
-      if ((stats_cmd_table[i].need_admin && !IsOperAdmin(source_p)) ||
+      if ((stats_cmd_table[i].need_admin && !IsAdmin(source_p)) ||
           (stats_cmd_table[i].need_oper && !IsOper(source_p)))
       {
         sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
@@ -683,8 +683,8 @@ stats_operedup(struct Client *source_p)
 
       sendto_one(source_p, ":%s %d %s p :[%c][%s] %s (%s@%s) Idle: %d",
                  me.name, RPL_STATSDEBUG, source_p->name,
-                 IsOperAdmin(target_p) ? 
-		 (IsOperHiddenAdmin(target_p) ? 'A' : 'O') : 'O',
+                 IsAdmin(target_p) ?
+		 (IsOperHiddenAdmin(target_p) ? 'O' : 'A') : 'O',
 		 oper_privs_as_string(target_p, aconf->port),
 		 target_p->name, target_p->username, target_p->host,
 		 (int)(CurrentTime - target_p->user->last));
@@ -693,8 +693,8 @@ stats_operedup(struct Client *source_p)
     {
       sendto_one(source_p, ":%s %d %s p :[%c] %s (%s@%s) Idle: %d",
                  me.name, RPL_STATSDEBUG, source_p->name,
-                 IsOperAdmin(target_p) ?
-		 (IsOperHiddenAdmin(target_p) ? 'A' : 'O') : 'O',
+                 IsAdmin(target_p) ?
+		 (IsOperHiddenAdmin(target_p) ? 'O' : 'A') : 'O',
 		 target_p->name, target_p->username, target_p->host,
 		 (int)(CurrentTime - target_p->user->last));
     }
@@ -857,7 +857,7 @@ stats_servlinks(struct Client *source_p)
 
     sendto_one(source_p, Sformat, me.name, RPL_STATSLINKINFO,
                source_p->name, 
-               IsOperAdmin(source_p) ? get_client_name(target_p, SHOW_IP)
+               IsAdmin(source_p) ? get_client_name(target_p, SHOW_IP)
 	       : get_client_name(target_p, MASK_IP),
                (int)dbuf_length(&target_p->localClient->buf_sendq),
                (int)target_p->localClient->sendM,
@@ -978,7 +978,7 @@ stats_L_list(struct Client *source_p,char *name, int doall, int wilds,
       /* This basically shows ips for our opers if its not a server/admin, or
        * its one of our admins.  */
       if(MyClient(source_p) && IsOper(source_p) && 
-        (IsOperAdmin(source_p) || 
+        (IsAdmin(source_p) || 
 	(!IsServer(target_p) && !IsAdmin(target_p) && 
 	 !IsHandshake(target_p) && !IsConnecting(target_p))))
 	{

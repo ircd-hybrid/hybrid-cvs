@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ctrace.c,v 1.2 2003/05/22 04:10:10 db Exp $
+ *  $Id: m_ctrace.c,v 1.3 2003/05/28 21:11:49 bill Exp $
  */
 
 #include "stdinc.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
   hook_del_event("doing_ctrace");
   mod_del_cmd(&ctrace_msgtab);
 }
-const char *_version = "$Revision: 1.2 $";
+const char *_version = "$Revision: 1.3 $";
 #endif
 static int report_this_status(struct Client *source_p, struct Client *target_p);
 
@@ -152,7 +152,7 @@ report_this_status(struct Client *source_p, struct Client *target_p)
           if (IsAdmin(target_p))
 	    sendto_one(source_p, form_str(RPL_TRACEOPERATOR),
                        me.name, source_p->name, class_name, name,
-                       IsOperAdmin(source_p) ? ip : "255.255.255.255",
+                       IsAdmin(source_p) ? ip : "255.255.255.255",
                        CurrentTime - target_p->lasttime,
                        (target_p->user) ? (CurrentTime - target_p->user->last) : 0);
 		       
@@ -185,7 +185,7 @@ report_this_status(struct Client *source_p, struct Client *target_p)
 	}
       break;
     case STAT_SERVER:
-      if(!IsOperAdmin(source_p))
+      if(!IsAdmin(source_p))
         name = get_client_name(target_p, MASK_IP);
 
       sendto_one(source_p, form_str(RPL_TRACESERVER),

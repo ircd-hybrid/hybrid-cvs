@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_squit.c,v 1.53 2003/04/18 02:13:50 db Exp $
+ *  $Id: m_squit.c,v 1.54 2003/05/28 21:11:55 bill Exp $
  */
 
 #include "stdinc.h"
@@ -59,7 +59,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&squit_msgtab);
 }
-const char *_version = "$Revision: 1.53 $";
+const char *_version = "$Revision: 1.54 $";
 #endif
 
 /* mo_squit - SQUIT message handler
@@ -112,7 +112,7 @@ mo_squit(struct Client *client_p, struct Client *source_p,
 
   if (!MyConnect(target_p) && !IsOperRemote(source_p))
   {
-    sendto_one(source_p, ":%s NOTICE %s :You need remote = yes;",
+    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
                me.name, source_p->name);
     return;
   }

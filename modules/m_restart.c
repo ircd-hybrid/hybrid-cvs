@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_restart.c,v 1.29 2003/05/13 02:32:13 joshk Exp $
+ *  $Id: m_restart.c,v 1.30 2003/05/28 21:11:52 bill Exp $
  */
 
 #include "stdinc.h"
@@ -58,7 +58,7 @@ _moddeinit(void)
   mod_del_cmd(&restart_msgtab);
 }
 
-const char *_version = "$Revision: 1.29 $";
+const char *_version = "$Revision: 1.30 $";
 #endif
 
 /*
@@ -72,17 +72,10 @@ mo_restart(struct Client *client_p, struct Client *source_p,
   char buf[BUFSIZE]; 
   dlink_node *ptr;
   struct Client *target_p;
-#if 0
-  if (!MyClient(source_p) || !IsOper(source_p))
-  {
-    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
-               me.name, parv[0]);
-    return;
-  }
-#endif
+
   if (!IsOperDie(source_p))
   {
-    sendto_one(source_p, ":%s NOTICE %s :You need die = yes;",
+    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
                me.name, source_p->name);
     return;
   }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.120 2003/05/28 19:23:52 joshk Exp $
+ *  $Id: modules.c,v 7.121 2003/05/28 21:11:57 bill Exp $
  */
 
 #include "stdinc.h"
@@ -354,9 +354,9 @@ mo_modload(struct Client *client_p, struct Client *source_p, int parc, char *par
 {
   char *m_bn;
 
-  if (!IsOperAdmin(source_p))
+  if (!IsAdmin(source_p))
   {
-    sendto_one(source_p, ":%s NOTICE %s :You need admin = yes;",
+    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
                me.name, source_p->name);
     return;
   }
@@ -383,9 +383,9 @@ mo_modunload(struct Client *client_p, struct Client *source_p, int parc, char *p
   char *m_bn;
   int modindex;
 
-  if (!IsOperAdmin(source_p))
+  if (!IsAdmin(source_p))
   {
-    sendto_one(source_p, ":%s NOTICE %s :You need admin = yes;",
+    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
                me.name, source_p->name);
     return;
   }
@@ -426,9 +426,9 @@ mo_modreload(struct Client *client_p, struct Client *source_p, int parc, char *p
   int modindex;
   int check_core;
 
-  if (!IsOperAdmin(source_p))
+  if (!IsAdmin(source_p))
   {
-    sendto_one(source_p, ":%s NOTICE %s :You need admin = yes;",
+    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
                me.name, source_p->name);
     return;
   }
@@ -470,9 +470,9 @@ mo_modlist(struct Client *client_p, struct Client *source_p, int parc, char *par
 {
   int i;
 
-  if (!IsOperAdmin(source_p))
+  if (!IsAdmin(source_p))
   {
-    sendto_one(source_p, ":%s NOTICE %s :You need admin = yes;",
+    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
                me.name, source_p->name);
     return;
   }
@@ -505,9 +505,9 @@ mo_modrestart(struct Client *client_p, struct Client *source_p, int parc, char *
 {
   int modnum;
 
-  if (!IsOperAdmin (source_p))
+  if (!IsAdmin(source_p))
   {
-    sendto_one(source_p, ":%s NOTICE %s :You need admin = yes;",
+    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
                me.name, source_p->name);
     return;
   }

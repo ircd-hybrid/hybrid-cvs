@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.140 2003/05/28 18:10:34 bill Exp $
+ *  $Id: m_kline.c,v 1.141 2003/05/28 21:11:52 bill Exp $
  */
 
 #include "stdinc.h"
@@ -81,7 +81,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.140 $";
+const char *_version = "$Revision: 1.141 $";
 #endif
 
 /* Local function prototypes */
@@ -130,7 +130,7 @@ mo_kline(struct Client *client_p, struct Client *source_p,
 
   if (!IsOperK(source_p))
   {
-    sendto_one(source_p,":%s NOTICE %s :You need kline = yes;",
+    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
                me.name, source_p->name);
     return;
   }
@@ -596,7 +596,7 @@ mo_dline(struct Client *client_p, struct Client *source_p,
 
   if (!IsOperK(source_p))
   {
-    sendto_one(source_p,":%s NOTICE %s :You need kline = yes;",
+    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
                me.name, source_p->name);
     return;
   }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.14 2003/05/25 05:56:36 db Exp $
+ *  $Id: m_xline.c,v 1.15 2003/05/28 21:11:52 bill Exp $
  */
 
 #include "stdinc.h"
@@ -82,7 +82,7 @@ _moddeinit(void)
   mod_del_cmd(&xline_msgtab);
   mod_del_cmd(&unxline_msgtab);
 }
-const char *_version = "$Revision: 1.14 $";
+const char *_version = "$Revision: 1.15 $";
 #endif
 
 
@@ -109,7 +109,7 @@ mo_xline(struct Client *client_p, struct Client *source_p,
 
   if (!IsOperX(source_p))
   {
-    sendto_one(source_p, ":%s NOTICE %s :You need xline = yes;",
+    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
                me.name, source_p->name);
     return;
   }
@@ -276,8 +276,8 @@ mo_unxline(struct Client *client_p, struct Client *source_p,
 {
   if (!IsOperX(source_p))
   {
-    sendto_one(source_p, ":%s NOTICE %s :You need xline = yes;",
-	       me.name, source_p->name);
+    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
+               me.name, source_p->name);
     return;
   }
 

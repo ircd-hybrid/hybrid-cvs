@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.276 2003/05/28 05:02:27 joshk Exp $
+ *  $Id: s_user.c,v 7.277 2003/05/28 21:11:57 bill Exp $
  */
 
 #include "stdinc.h"
@@ -1045,7 +1045,8 @@ set_user_mode(struct Client *client_p, struct Client *source_p, int parc, char *
     source_p->umodes &= ~UMODE_NCHANGE; /* only tcm's really need this */
   }
 
-  if (MyConnect(source_p) && (source_p->umodes & UMODE_ADMIN) && !IsOperAdmin(source_p))
+  if (MyConnect(source_p) && (source_p->umodes & UMODE_ADMIN) &&
+      !IsOperAdmin(source_p) && !IsOperHiddenAdmin(source_p))
   {
     sendto_one(source_p, ":%s NOTICE %s :*** You need admin = yes;",
                me.name, source_p->name);
@@ -1301,7 +1302,7 @@ oper_up(struct Client *source_p, struct ConfItem *aconf)
   else
     operprivs = "";
 
-  if (IsOperAdmin(source_p))
+  if (IsOperAdmin(source_p) || IsOperHiddenAdmin(source_p))
     source_p->umodes |= UMODE_ADMIN;
   if (!IsOperN(source_p))
     source_p->umodes &= ~UMODE_NCHANGE;

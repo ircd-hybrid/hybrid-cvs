@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_connect.c,v 1.43 2003/05/22 17:09:03 michael Exp $
+ *  $Id: m_connect.c,v 1.44 2003/05/28 21:11:52 bill Exp $
  */
 
 #include "stdinc.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
   mod_del_cmd(&connect_msgtab);
 }
 
-const char *_version = "$Revision: 1.43 $";
+const char *_version = "$Revision: 1.44 $";
 #endif
 
 /*
@@ -90,7 +90,7 @@ mo_connect(struct Client* client_p, struct Client* source_p,
   /* always privileged with handlers */
   if (MyConnect(source_p) && !IsOperRemote(source_p) && parc > 3)
   {
-    sendto_one(source_p, ":%s NOTICE %s :You need remote = yes;",
+    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
                me.name, source_p->name);
     return;
   }
@@ -182,7 +182,7 @@ mo_connect(struct Client* client_p, struct Client* source_p,
   if (serv_connect(aconf, source_p))
   {
 #ifndef HIDE_SERVERS_IPS
-    if (IsOperAdmin(source_p))
+    if (IsAdmin(source_p))
       sendto_one(source_p, ":%s NOTICE %s :*** Connecting to %s[%s].%d",
                  me.name, source_p->name, aconf->host,
                  aconf->name, aconf->port);
