@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_devpoll.c,v 7.24 2003/07/05 06:21:03 db Exp $
+ *  $Id: s_bsd_devpoll.c,v 7.25 2003/09/19 20:23:38 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -31,6 +31,8 @@
 #else
 # ifdef HAVE_SYS_DEVPOLL_H
 #  include <sys/devpoll.h>
+# else
+#  error "No devpoll.h found! Try ./configuring and letting the script choose for you."
 # endif
 #endif
 
@@ -96,7 +98,7 @@ devpoll_update_events(int fd, short filter, PF *handler)
 {
   int update_required = 0;
   int cur_mask = fdmask[fd];
-  PF *cur_handler;
+  PF *cur_handler = NULL;
 
   fdmask[fd] = 0;         
 
