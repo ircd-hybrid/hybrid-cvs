@@ -1,3 +1,15 @@
+jmallett    2002/02/16 23:19:21 EST	(20020217_8)
+
+  Modified files:
+    src                  modules.c 
+  Log:
+  Include dlfcn.h if we have -ldl or dlopen(3), sorry A1kmm!
+  
+  Revision  Changes    Path
+  7.96      +1 -1      ircd-hybrid-7/src/modules.c
+
+
+
 jmallett    2002/02/16 23:04:35 EST	(20020217_7)
 
   Modified files:
@@ -22706,4 +22718,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3417 2002/02/17 04:04:40 jmallett Exp $
+$Id: ChangeLog,v 7.3418 2002/02/17 04:19:26 jmallett Exp $
