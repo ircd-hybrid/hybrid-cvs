@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.224 2002/03/09 23:37:57 androsyn Exp $
+ *  $Id: ircd.c,v 7.225 2002/03/11 01:46:16 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -167,7 +167,7 @@ static int irc_sleep(unsigned long useconds)
 #else
 	struct timeval t;
 	t.tv_sec = 0;
-	tv.tv_usec = useconds;
+	t.tv_usec = useconds;
 	select(0, NULL, NULL, NULL, &t);
 #endif
 }
