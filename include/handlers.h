@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: handlers.h,v 7.18 2000/11/24 08:02:05 db Exp $
+ * $Id: handlers.h,v 7.19 2000/11/27 18:50:29 db Exp $
  */
 #ifndef INCLUDED_handlers_h
 #define INCLUDED_handlers_h
@@ -156,6 +156,7 @@ extern int mo_info(struct Client*, struct Client*, int, char**);
 extern int mo_kill(struct Client*, struct Client*, int, char**);
 extern int mo_kline(struct Client*, struct Client*, int, char**);
 extern int mo_links(struct Client*, struct Client*, int, char**);
+extern int mo_modload(struct Client*, struct Client*, int, char**);
 extern int mo_notice(struct Client*, struct Client*, int, char**);
 extern int mo_oper(struct Client*, struct Client*, int, char**);
 extern int mo_operwall(struct Client*, struct Client*, int, char**);
@@ -166,6 +167,7 @@ extern int mo_set(struct Client*, struct Client*, int, char**);
 extern int mo_squit(struct Client*, struct Client*, int, char**);
 extern int mo_stats(struct Client*, struct Client*, int, char**);
 extern int mo_time(struct Client*, struct Client*, int, char**);
+extern int mo_modunload(struct Client*, struct Client*, int, char**);
 extern int mo_testline(struct Client *,struct Client *,int,char **);
 extern int mo_trace(struct Client*, struct Client*, int, char**);
 extern int mo_unkline(struct Client *,struct Client *,int,char **);

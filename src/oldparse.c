@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: oldparse.c,v 1.6 2000/11/06 16:12:04 adrian Exp $
+ *  $Id: oldparse.c,v 1.7 2000/11/27 18:50:34 db Exp $
  */
 #include "s_log.h"
 #include "s_conf.h"
@@ -368,6 +368,10 @@ static int oper_privs_from_string(int int_privs,char *privs)
         int_privs |= CONF_OPER_DIE;         /* allow die */
       else if(*privs == 'd')
         int_privs &= ~CONF_OPER_DIE;        /* disallow die */
+      else if(*privs == 'A')
+        int_privs |= CONF_OPER_ADMIN;       
+      else if(*privs == 'a')
+	int_privs &= ~CONF_OPER_ADMIN;
       privs++;
     }
   return(int_privs);
