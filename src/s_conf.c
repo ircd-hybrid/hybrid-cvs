@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.152 2001/01/20 06:28:20 db Exp $
+ *  $Id: s_conf.c,v 7.153 2001/01/20 07:25:55 db Exp $
  */
 
 #include <sys/types.h>
@@ -951,17 +951,6 @@ int attach_conf(struct Client *cptr,struct ConfItem *aconf)
   if (aconf->status & CONF_CLIENT_MASK)
     ConfLinks(aconf)++;
   return 0;
-}
-
-struct ConfItem *find_admin()
-{
-  struct ConfItem *aconf;
-
-  for (aconf = ConfigItemList; aconf; aconf = aconf->next)
-    if (aconf->status & CONF_ADMIN && aconf->user)
-      break;
-  
-  return (aconf);
 }
 
 /*

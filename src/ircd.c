@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.108 2001/01/20 06:28:18 db Exp $
+ * $Id: ircd.c,v 7.109 2001/01/20 07:25:53 db Exp $
  */
 
 #include <sys/types.h>
@@ -131,6 +131,8 @@ struct SetOptions GlobalSetOptions;
 ConfigFileEntryType ConfigFileEntry; 
 /* server info */
 struct server_info ServerInfo;
+/* admin info */
+struct admin_info AdminInfo;
 
 struct  Counter Count;
 
@@ -484,10 +486,12 @@ int main(int argc, char *argv[])
 
   GlobalClientList = &me;       /* Pointer to beginning of Client list */
 
-  memset(&Count, 0, sizeof(Count));
+  memset((void *)&Count, 0, sizeof(Count));
   Count.server = 1;     /* us */
 
-  memset(&ServerInfo, 0, sizeof(ServerInfo));
+  memset((void *)&ServerInfo, 0, sizeof(ServerInfo));
+
+  memset((void *)&AdminInfo, 0, sizeof(AdminInfo));
 
   initialize_global_set_options();
 
