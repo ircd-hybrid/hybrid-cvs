@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.438 2003/06/19 02:32:18 db Exp $
+ *  $Id: s_conf.c,v 7.439 2003/06/21 03:55:16 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1795,7 +1795,6 @@ set_default_conf(void)
   ConfigFileEntry.ts_warn_delta = TS_WARN_DELTA_DEFAULT;
   ConfigFileEntry.ts_max_delta = TS_MAX_DELTA_DEFAULT;
   ConfigFileEntry.kline_with_reason = YES;
-  ConfigFileEntry.client_exit = YES;
   ConfigFileEntry.kline_with_connection_closed = NO;
   ConfigFileEntry.warn_no_nline = YES;
   ConfigFileEntry.non_redundant_klines = YES;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.c,v 1.75 2003/06/18 00:53:11 joshk Exp $
+ *  $Id: m_info.c,v 1.76 2003/06/21 03:55:13 michael Exp $
  */
 
 #include "stdinc.h"
@@ -70,7 +70,7 @@ _moddeinit(void)
   hook_del_event("doing_info");
   mod_del_cmd(&info_msgtab);
 }
-const char *_version = "$Revision: 1.75 $";
+const char *_version = "$Revision: 1.76 $";
 #endif
 
 /*
@@ -112,12 +112,6 @@ static struct InfoStruct info_table[] =
     OUTPUT_DECIMAL,
     &ConfigFileEntry.caller_id_wait,
     "Minimum delay between notifying UMODE +g users of messages"
-  },
-  {
-    "client_exit",
-    OUTPUT_BOOLEAN,
-    &ConfigFileEntry.client_exit,
-    "Prepend 'Quit:' to user QUIT messages"
   },
   {
     "client_flood",

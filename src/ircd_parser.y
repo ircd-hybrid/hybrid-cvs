@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.320 2003/06/21 01:28:29 michael Exp $
+ *  $Id: ircd_parser.y,v 1.321 2003/06/21 03:55:16 michael Exp $
  */
 
 %{
@@ -107,7 +107,6 @@ init_parser_confs(void)
 %token  CHANNEL
 %token  CIPHER_PREFERENCE
 %token  CLASS
-%token  CLIENT_EXIT
 %token  COMPRESSED
 %token  COMPRESSION_LEVEL
 %token  CONNECT
@@ -2253,7 +2252,7 @@ general_item:       general_ignore_bogus_ts | general_failed_oper_notice |
                     general_glines | general_gline_time |
                     general_idletime |
                     general_maximum_links |
-                    general_message_locale | general_client_exit |
+                    general_message_locale |
                     general_fname_userlog | general_fname_operlog |
                     general_fname_foperlog | general_oper_only_umodes |
                     general_max_targets |
@@ -2338,12 +2337,6 @@ general_kline_with_reason: KLINE_WITH_REASON '=' TBOOL ';'
 {
   if (ypass == 2)
     ConfigFileEntry.kline_with_reason = yylval.number;
-};
-
-general_client_exit: CLIENT_EXIT '=' TBOOL ';'
-{
-  if (ypass == 2)
-    ConfigFileEntry.client_exit = yylval.number;
 };
 
 general_kline_with_connection_closed: KLINE_WITH_CONNECTION_CLOSED '=' TBOOL ';'
