@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.75 2003/03/01 01:15:44 db Exp $
+ *  $Id: channel_mode.c,v 7.76 2003/03/17 02:20:09 db Exp $
  */
 
 #include "stdinc.h"
@@ -975,7 +975,7 @@ chm_ban(struct Client *client_p, struct Client *source_p,
   /* if we're adding a NEW id */
   if (dir == MODE_ADD) 
   {
-    if((add_id(source_p, chptr, mask, CHFL_BAN) == 0) && MyClient(source_p))
+    if((add_id(source_p, chptr, mask, CHFL_BAN) == 0))
       return;
 
     mode_changes[mode_count].letter = c;
@@ -1085,7 +1085,7 @@ chm_except(struct Client *client_p, struct Client *source_p,
   /* If we're adding a NEW id */
   if (dir == MODE_ADD)
   {
-    if((add_id(source_p, chptr, mask, CHFL_EXCEPTION) == 0) && MyClient(source_p))
+    if((add_id(source_p, chptr, mask, CHFL_EXCEPTION) == 0))
       return;
 
     mode_changes[mode_count].letter = c;
