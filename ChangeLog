@@ -1,3 +1,15 @@
+bill        2002/11/05 09:49:51 EST	(20021105_0)
+
+  Modified files:
+    contrib              m_operspy.c 
+  Log:
+  - replaced 'unique case' detection fix with a slightly more robust one
+  
+  Revision  Changes    Path
+  1.10      +12 -4     ircd-hybrid-7/contrib/m_operspy.c
+
+
+
 wiz         2002/11/02 12:09:48 EST	(20021102_0)
 
   Modified files:
@@ -32987,4 +32999,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4097 2002/11/02 17:09:50 wiz Exp $
+$Id: ChangeLog,v 7.4098 2002/11/05 14:49:54 bill Exp $
