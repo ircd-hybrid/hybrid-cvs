@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_server.c,v 1.37 2001/01/06 03:35:24 a1kmm Exp $
+ *   $Id: m_server.c,v 1.38 2001/01/06 03:42:37 a1kmm Exp $
  */
 #include "tools.h"
 #include "handlers.h"  /* m_server prototype */
@@ -277,9 +277,6 @@ int ms_server(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
     {
      if (!(aconf->status == CONF_LEAF || aconf->status == CONF_HUB))
        continue;
-     sendto_realops_flags(FLAGS_ALL,
-              "Conf: status = %d, name = %s, user = %s, host = %s",
-                    aconf->status, aconf->name, aconf->user, aconf->host);
      if (!match(aconf->host, host))
        continue;
      if (aconf->status == CONF_HUB && match(aconf->name, cptr->name))
