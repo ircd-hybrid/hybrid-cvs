@@ -3,7 +3,7 @@
  * fdlist.c   maintain lists of certain important fds 
  *
  *
- * $Id: fdlist.c,v 7.8 2000/11/02 18:30:02 adrian Exp $
+ * $Id: fdlist.c,v 7.9 2000/11/02 19:18:51 adrian Exp $
  */
 #include "fdlist.h"
 #include "client.h"  /* struct Client */
@@ -14,6 +14,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+#include <unistd.h>
 
 fde_t *fd_table = NULL;
 
