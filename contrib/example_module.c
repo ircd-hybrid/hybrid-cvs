@@ -16,27 +16,34 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: example_module.c,v 1.7 2003/05/12 01:08:31 joshk Exp $
+ *   $Id: example_module.c,v 1.8 2003/06/16 19:02:21 joshk Exp $
  */
 
-/* List of ircd includes from ../include/ */
-#include "stdinc.h"
-#include "handlers.h"
-#include "client.h"
-#include "common.h"     /* FALSE bleah */
-#include "ircd.h"
-#include "irc_string.h"
-#include "numeric.h"
-#include "fdlist.h"
-#include "s_bsd.h"
-#include "s_conf.h"
-#include "s_log.h"
-#include "s_serv.h"
-#include "send.h"
-#include "msg.h"
-#include "parse.h"
-#include "modules.h"
+/* List of ircd includes from ../include/ 
+ * These ones are necessary to build THIS module... */
 
+#include "stdinc.h" /* includes setup.h, for STATIC_MODULES */
+
+#include "client.h" /* Required for IsClient, etc. */
+
+#include "send.h" /* sendto_one, most useful function of all time */
+
+#include "modules.h" /* includes msg.h; use for the msgtab */
+
+/* OTHER USEFUL INCLUDES:
+ * 
+ * #include "handlers.h" <-- include this file to be able to use default
+ * functions in place of your own 'Access Denied' kind of function
+ * 
+ * #include "numeric.h" <-- include this file to be able to use form_str,
+ * standard message formats (see messages.tab and *.lang in messages/)
+ * Examples are strewn all across the ircd code, so just grep a bit to
+ * find one!
+ *
+ * #include "irc_string.h" <-- best to include this if you use *any*
+ * string comparison or parsing functions, although they may be available
+ * natively for your OS the prototypes in irc_string.h may be required for
+ * others. */
 
 /* Declare the void's initially up here, as modules don't have an
  * include file, we will normally have client_p, source_p, parc
@@ -121,7 +128,7 @@ _moddeinit(void)
 
 /* When we last modified the file (shown in /modlist), this is usually:
  */
-const char *_version = "$Revision: 1.7 $";
+const char *_version = "$Revision: 1.8 $";
 #endif
 
 /*

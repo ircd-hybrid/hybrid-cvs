@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.132 2003/06/14 02:16:22 joshk Exp $
+ *  $Id: modules.c,v 7.133 2003/06/16 19:02:24 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -53,7 +53,8 @@
 
 struct module **modlist = NULL;
 
-static short base_valid = 0;
+static char base_valid = 0;
+
 static char* base_path = NULL;
 static char* base_autoload = NULL;
 
@@ -172,7 +173,7 @@ add_pending (char* modname)
       return;  
   }
 
-  DupString (mod, modname);
+  DupString (mod, modname); /* We're passed yylval.string. This changes! */
   dlinkAddTail ((void*)mod, make_dlink_node(), &pending);
 }
 

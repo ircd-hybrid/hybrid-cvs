@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: supported.h,v 1.32 2003/06/12 15:17:19 michael Exp $
+ *  $Id: supported.h,v 1.33 2003/06/16 19:02:23 joshk Exp $
  */
 
 #ifndef INCLUDED_supported_h
@@ -55,25 +55,19 @@
 		  " CASEMAPPING=%s"   \
 		  " CALLERID%s"
 
-/* XXX */
 #ifdef USE_HALFOPS
+# define PREFIX "(ohv)@%+"
+#else
+# define PREFIX "(ov)@+"
+#endif
+		  
 #define FEATURES2VALUES ConfigServerHide.disable_local_channels ? "#" : "#&", \
-                        "(ohv)@%+", \
+                        PREFIX, \
                         ConfigChannel.use_except ? "e" : "", \
                         ConfigChannel.use_invex ? "I" : "", \
                         "b,k,l,imnpst", \
                         ServerInfo.network_name, CASEMAP, \
 			(uplink && IsCapable(uplink, CAP_LL)) ? "" : " SAFELIST"
-#else
-#define FEATURES2VALUES ConfigServerHide.disable_local_channels ? "#" : "#&", \
-                        "(ov)@+", \
-                        ConfigChannel.use_except ? "e" : "", \
-                        ConfigChannel.use_invex ? "I" : "", \
-                        "b,k,l,imnpst", \
-                        ServerInfo.network_name, CASEMAP, \
-                        (uplink && IsCapable(uplink, CAP_LL)) ? "" : " SAFELIST"
-#endif
-
 
 /*
  * - from mirc's versions.txt
