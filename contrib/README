@@ -1,4 +1,4 @@
-$Id: README,v 1.34 2004/03/20 18:18:54 metalrock Exp $
+$Id: README,v 1.35 2005/01/11 20:17:30 db Exp $
 
 This directory contains modules and patches that have been contributed
 by other people, or aren't suitable for including into the 
@@ -131,3 +131,9 @@ Previously part of the default install, these are the help files that
 display information about every command with /quote HELP :whatever.
 
 They are installed if you make install in this directory.
+
+Other files
+___________
+
+confgen.pl	- generates hybrid-7 config files from SQL database
+
