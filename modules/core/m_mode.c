@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_mode.c,v 1.69 2003/10/11 02:15:08 bill Exp $
+ *  $Id: m_mode.c,v 1.70 2003/10/11 23:20:50 bill Exp $
  */
 
 #include "stdinc.h"
@@ -64,15 +64,19 @@ void
 _modinit(void)
 {
   mod_add_cmd(&mode_msgtab);
+  mod_add_cmd(&tmode_msgtab);
+  mod_add_cmd(&bmask_msgtab);
 }
 
 void
 _moddeinit(void)
 {
   mod_del_cmd(&mode_msgtab);
+  mod_del_cmd(&tmode_msgtab);
+  mod_del_cmd(&bmask_msgtab);
 }
 
-const char *_version = "$Revision: 1.69 $";
+const char *_version = "$Revision: 1.70 $";
 #endif
 
 /*
