@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: tools.c,v 7.29 2003/04/13 10:36:50 stu Exp $
+ *  $Id: tools.c,v 7.30 2003/05/07 16:19:04 michael Exp $
  *
  * When you update these functions make sure you update the ones in tools.h
  * as well!!!
@@ -140,16 +140,17 @@ dlinkDelete(dlink_node *m, dlink_list *list)
  * side effects	- Look for ptr in the linked listed pointed to by link.
  */
 dlink_node *
-dlinkFind(dlink_list *list, void * data )
+dlinkFind(dlink_list *list, void *data)
 {
   dlink_node *ptr;
 
   DLINK_FOREACH(ptr, list->head)
   {
     if (ptr->data == data)
-      return (ptr);
+      return(ptr);
   }
-  return (NULL);
+
+  return(NULL);
 }
 
 void
@@ -190,10 +191,33 @@ dlinkFindDelete(dlink_list *list, void *data)
 {
   dlink_node *m;
 
-  m = dlinkFind(list, data);
-  if (m)
-    dlinkDelete(m, list);
-  return(m);
+  DLINK_FOREACH(m, list->head)
+  {
+    if (m->data == data)
+    {
+      if (m->next)
+        m->next->prev = m->prev;
+      else
+      {
+        assert(list->tail == m);
+        list->tail = m->prev;
+      }
+      if (m->prev)
+        m->prev->next = m->next;
+      else
+      {
+        assert(list->head == m);
+        list->head = m->next;
+      }
+      /* Set this to NULL does matter */
+      m->next = m->prev = NULL;
+      list->length--;
+
+      return(m);
+    }
+  }
+
+  return(NULL);
 }
 
 void

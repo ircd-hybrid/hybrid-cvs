@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: tools.h,v 1.23 2003/04/16 09:46:58 michael Exp $
+ *  $Id: tools.h,v 1.24 2003/05/07 16:19:02 michael Exp $
  */
 
 #ifndef __TOOLS_H__
@@ -100,7 +100,7 @@ extern slink_node *slink_find(slink_list *list, void *data);
 #define DLINK_FOREACH_PREV(pos, head) for (pos = (head); pos != NULL; pos = pos->prev)
               		       
 #define SLINK_FOREACH(pos, head) for (pos = (head); pos != NULL; pos = pos->next)
-#define SLINK_FOREACH_SAFE(pos, n, head) for (pos = (head); n = pos ? pos->next : NULL; pos != NULL; pos = n, n = pos ? pos->next : NULL)
+#define SLINK_FOREACH_SAFE(pos, n, head) for (pos = (head), n = pos ? pos->next : NULL; pos != NULL; pos = n, n = pos ? pos->next : NULL)
 
 /* Returns the list length */
 #define dlink_list_length(list) (list)->length
@@ -200,16 +200,17 @@ dlinkDelete(dlink_node *m, dlink_list *list)
  * side effects	- Look for ptr in the linked listed pointed to by link.
  */
 extern inline dlink_node *
-dlinkFind(dlink_list *list, void * data )
+dlinkFind(dlink_list *list, void *data)
 {
   dlink_node *ptr;
 
-  for (ptr = list->head; ptr; ptr = ptr->next)
-    {
-      if (ptr->data == data)
-	return (ptr);
-    }
-  return (NULL);
+  DLINK_FOREACH(ptr, list->head)
+  {
+    if (ptr->data == data)
+      return(ptr);
+  }
+
+  return(NULL);
 }
 
 extern inline void
@@ -250,11 +251,34 @@ extern inline dlink_node *
 dlinkFindDelete(dlink_list *list, void *data)
 {
   dlink_node *m;
- 
-  m = dlinkFind(list, data);
-  if (m)
-    dlinkDelete(m, list);
-  return(m);
+
+  DLINK_FOREACH(m, list->head)
+  {
+    if (m->data == data)
+    {
+      if (m->next)
+        m->next->prev = m->prev;
+      else
+      {
+        assert(list->tail == m);
+        list->tail = m->prev;
+      }
+      if (m->prev)
+        m->prev->next = m->next;
+      else
+      {
+        assert(list->head == m);
+        list->head = m->next;
+      }
+      /* Set this to NULL does matter */
+      m->next = m->prev = NULL;
+      list->length--;
+
+      return(m);
+    }
+  }
+
+  return(NULL);
 }
 
 extern inline void
