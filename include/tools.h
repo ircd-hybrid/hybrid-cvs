@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: tools.h,v 1.15 2002/07/12 16:33:09 androsyn Exp $
+ *  $Id: tools.h,v 1.16 2002/08/20 16:41:58 db Exp $
  */
 
 #ifndef __TOOLS_H__
@@ -42,6 +42,7 @@ struct _dlink_node {
 struct _dlink_list {
     dlink_node *head;
     dlink_node *tail;
+    unsigned long length;
 };
 
 void
@@ -59,17 +60,42 @@ dlinkDelete(dlink_node *m, dlink_list *list);
 void
 dlinkMoveList(dlink_list *from, dlink_list *to);
 
-int
-dlink_list_length(dlink_list *m);
-
 dlink_node *
 dlinkFind(dlink_list *m, void *data);
+
+dlink_node *
+dlinkFindDelete(dlink_list *m, void *data);
 
 #ifndef NDEBUG
 void mem_frob(void *data, int len);
 #else
 #define mem_frob(x, y) 
 #endif
+
+/* These macros are basically swiped from the linux kernel
+ * they are simple yet effective
+ */
+
+/*
+ * Walks forward of a list.  
+ * pos is your node
+ * head is your list head
+ */
+#define DLINK_FOREACH(pos, head) for (pos = (head); pos != NULL; pos = pos->next)
+   		
+/*
+ * Walks forward of a list safely while removing nodes 
+ * pos is your node
+ * n is another list head for temporary storage
+ * head is your list head
+ */
+#define DLINK_FOREACH_SAFE(pos, n, head) for (pos = (head), n = pos ? pos->next : NULL; pos != NULL; pos = n, n = pos ? pos->next : NULL)
+	        
+#define DLINK_FOREACH_PREV(pos, head) for (pos = (head); pos != NULL; pos = pos->prev)
+              		                  	
+
+/* Returns the list length */
+#define dlink_list_length(list) (list)->length
 
 /*
  * The functions below are included for the sake of inlining
@@ -147,23 +173,6 @@ dlinkDelete(dlink_node *m, dlink_list *list)
    list->head = m->next;
  /* XXX - does this ever matter? */
  m->next = m->prev = NULL;
-}
-
-
-/* 
- * dlink_list_length
- * inputs	- pointer to a dlink_list
- * output	- return the length (>=0) of a chain of links.
- * side effects	-
- */
-extern inline int dlink_list_length(dlink_list *list)
-{
-  dlink_node *ptr;
-  int   count = 0;
-
-  for (ptr = list->head; ptr; ptr = ptr->next)
-    count++;
-  return count;
 }
 
 /*

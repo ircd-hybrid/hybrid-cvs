@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.56 2002/08/20 01:02:29 db Exp $
+ *  $Id: channel_mode.c,v 7.57 2002/08/20 16:42:00 db Exp $
  */
 
 #include "stdinc.h"
@@ -232,7 +232,7 @@ add_id(struct Client *client_p, struct Channel *chptr, char *banid, int type)
       return 0;
   }
 
-  for (ban = list->head; ban; ban = ban->next)
+  DLINK_FOREACH(ban, list->head)
   {
     actualBan = ban->data;
     if (match(actualBan->banstr, banid))
@@ -302,7 +302,7 @@ del_id(struct Channel *chptr, char *banid, int type)
       return 0;
   }
 
-  for (ban = list->head; ban; ban = ban->next)
+  DLINK_FOREACH(ban, list->head)
   {
     banptr = ban->data;
 
@@ -911,7 +911,7 @@ chm_ban(struct Client *client_p, struct Client *source_p,
 
 #ifdef ANONOPS
     if ((chptr->mode.mode & MODE_HIDEOPS) && (alev < CHACCESS_HALFOP))
-      for (ptr = chptr->banlist.head; ptr; ptr = ptr->next)
+      DLINK_FOREACH(ptr, chptr->banlist.head)
       {
         banptr = ptr->data;
         sendto_one(client_p, form_str(RPL_BANLIST),
@@ -920,7 +920,7 @@ chm_ban(struct Client *client_p, struct Client *source_p,
       }
     else
 #endif
-      for (ptr = chptr->banlist.head; ptr; ptr = ptr->next)
+      DLINK_FOREACH(ptr, chptr->banlist.head)
       {
         banptr = ptr->data;
         sendto_one(client_p, form_str(RPL_BANLIST),
@@ -1031,7 +1031,7 @@ chm_except(struct Client *client_p, struct Client *source_p,
       return;
     *errors |= SM_ERR_RPL_E;
 
-    for (ptr = chptr->exceptlist.head; ptr; ptr = ptr->next)
+    DLINK_FOREACH(ptr, chptr->exceptlist.head)
     {
       banptr = ptr->data;
       sendto_one(client_p, form_str(RPL_EXCEPTLIST),
@@ -1137,7 +1137,7 @@ chm_invex(struct Client *client_p, struct Client *source_p,
       return;
     *errors |= SM_ERR_RPL_I;
 
-    for (ptr = chptr->invexlist.head; ptr; ptr = ptr->next)
+    DLINK_FOREACH(ptr, chptr->invexlist.head)
     {
       banptr = ptr->data;
       sendto_one(client_p, form_str(RPL_INVITELIST), me.name,
@@ -1878,7 +1878,7 @@ static struct ChannelMode ModeTable[255] =
  *         MODE_PEON for peon level access.
  * Side-effects: None.
  */
-  static int
+static int
 get_channel_access(struct Client *source_p, struct Channel *chptr)
 {
   /* Let hacked servers in for now... */
@@ -2406,7 +2406,7 @@ send_oplist(const char *chname, struct Client *client_p, dlink_list * list,
   *mcbuf = *opbuf = '\0';
   t = opbuf;
 
-  for (ptr = list->head; ptr && ptr->data; ptr = ptr->next)
+  DLINK_FOREACH (ptr, list->head)
   {
     target_p = ptr->data;
     if (dir == MODE_DEL && *prefix == 'v' && target_p == client_p)
@@ -2500,7 +2500,8 @@ static void mode_get_status(struct Channel *chptr, struct Client *target_p,
   }
 }
 
-static void update_channel_info(struct Channel *chptr)
+static void
+update_channel_info(struct Channel *chptr)
 {
   int i;
 #ifdef ANONOPS
@@ -2532,7 +2533,7 @@ static void update_channel_info(struct Channel *chptr)
       }
 
 #ifdef HALFOPS
-      for(ptr = chptr->lochalfops.head; ptr != NULL; ptr = ptr->next)
+      DLINK_FOREACH(ptr, chptr->lochalfops.head)
       {
         mode_get_status(chptr, ptr->data, &t_op, &t_hop, &t_voice, 1);
         if(!t_hop && !t_op)
@@ -2541,7 +2542,7 @@ static void update_channel_info(struct Channel *chptr)
 #endif
 
 #ifdef REQUIRE_OANDV
-      for(ptr = chptr->locchanops_voiced.head; ptr != NULL; ptr = ptr->next)
+      DLINK_FOREACH(ptr, chptr->locchanops_voiced.head)
       {
         mode_get_status(chptr, ptr->data, &t_op, &t_hop, &t_voice, 1);
         if(!t_hop && !t_op)
@@ -2549,7 +2550,7 @@ static void update_channel_info(struct Channel *chptr)
       }
 #endif
 
-      for(ptr = chptr->locchanops.head; ptr != NULL; ptr = ptr->next)
+      DLINK_FOREACH(ptr, chptr->locchanops.head)
       {
         mode_get_status(chptr, ptr->data, &t_op, &t_hop, &t_voice, 1);
         if(!t_hop && !t_op)
@@ -2617,9 +2618,8 @@ static void update_channel_info(struct Channel *chptr)
       free_dlink_node(ptr);
     }
 
-    for(ptr = opped.head; ptr != NULL; ptr = ptr_next)
+    DLINK_FOREACH_SAFE(ptr, ptr_next, opped.head)
     {
-      ptr_next = ptr->next;
       sync_oplists(chptr, ptr->data, MODE_ADD, RootChan(chptr)->chname);
       free_dlink_node(ptr);
     }

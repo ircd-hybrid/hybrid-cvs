@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.325 2002/07/12 01:24:03 joant Exp $
+ *  $Id: channel.c,v 7.326 2002/08/20 16:41:59 db Exp $
  */
 
 #include "stdinc.h"
@@ -270,21 +270,6 @@ remove_user_from_channel(struct Channel *chptr, struct Client *who)
       chptr->locusers--;
   }
   return(sub1_from_channel(chptr));
-}
-
-/*
- * find_user_link
- * inputs       -
- *              - client pointer to find
- * output       - pointer to link or NULL if not found
- * side effects - Look for ptr in the linked listed pointed to by link.
- */
-dlink_node *
-find_user_link(dlink_list * list, struct Client *who)
-{
-  if (who != NULL)
-    return (dlinkFind(list, who));
-  return (NULL);
 }
 
 /*

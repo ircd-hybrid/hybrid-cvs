@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.296 2002/08/20 05:49:53 db Exp $
+ *  $Id: client.c,v 7.297 2002/08/20 16:42:00 db Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -1250,8 +1250,7 @@ int exit_client(
 
       SetClosing(source_p);
       if (source_p->flags & FLAGS_IPHASH)
-        remove_one_ip(&source_p->localClient->ip,
-			source_p->localClient->aftype);
+        remove_one_ip(&source_p->localClient->ip);
 
       delete_adns_queries(source_p->localClient->dns_query);
       delete_identd_queries(source_p);

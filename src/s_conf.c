@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.319 2002/08/20 05:49:54 db Exp $
+ *  $Id: s_conf.c,v 7.320 2002/08/20 16:42:00 db Exp $
  */
 
 #include "stdinc.h"
@@ -108,9 +108,9 @@ typedef struct ip_entry
 
 static IP_ENTRY *ip_hash_table[IP_HASH_SIZE];
 
-static int hash_ip(struct irc_inaddr *, int aftype);
+static int hash_ip(struct irc_inaddr *);
 
-static IP_ENTRY *find_or_add_ip(struct irc_inaddr*, int aftype);
+static IP_ENTRY *find_or_add_ip(struct irc_inaddr*);
 
 /* general conf items link list root */
 struct ConfItem* ConfigItemList = NULL;
@@ -515,7 +515,7 @@ verify_access(struct Client* client_p, const char* username)
 {
   struct ConfItem* aconf;
   struct ConfItem* gkill_conf;
-  char       non_ident[USERLEN + 1];
+  char non_ident[USERLEN + 1];
 
   if (IsGotId(client_p))
     {
@@ -607,8 +607,7 @@ static
 int attach_iline(struct Client *client_p, struct ConfItem *aconf)
 {
   IP_ENTRY *ip_found;
-  ip_found = find_or_add_ip(&client_p->localClient->ip,
-				client_p->localClient->aftype);
+  ip_found = find_or_add_ip(&client_p->localClient->ip);
 
   SetIpHash(client_p);
   ip_found->count++;
@@ -687,12 +686,12 @@ clear_ip_hash_table()
  */
 
 static IP_ENTRY *
-find_or_add_ip(struct irc_inaddr *ip_in, int aftype)
+find_or_add_ip(struct irc_inaddr *ip_in)
 {
   int hash_index;
   IP_ENTRY *ptr, *newptr;
 
-  for(ptr = ip_hash_table[hash_index = hash_ip(ip_in,aftype)]; ptr;
+  for(ptr = ip_hash_table[hash_index = hash_ip(ip_in)]; ptr;
       ptr = ptr->next)
   {
    if(!memcmp(&ptr->ip, ip_in, sizeof(struct irc_inaddr)))
@@ -735,14 +734,13 @@ find_or_add_ip(struct irc_inaddr *ip_in, int aftype)
  *                 and number of ip#'s for that ip decremented.
  *                 if ip # count reaches 0, the IP_ENTRY is returned
  *                 to the free_ip_enties link list.
- * XXX: Broken for IPV6
  */
 
 void 
-remove_one_ip(struct irc_inaddr *ip_in, int aftype)
+remove_one_ip(struct irc_inaddr *ip_in)
 {
   IP_ENTRY *ptr, **lptr;
-  int hash_index = hash_ip(ip_in, aftype);
+  int hash_index = hash_ip(ip_in);
   for (lptr = ip_hash_table+hash_index, ptr = *lptr;
        ptr;
        lptr=&ptr->next, ptr=*lptr)
@@ -777,7 +775,7 @@ remove_one_ip(struct irc_inaddr *ip_in, int aftype)
 
 #ifndef IPV6
 static int  
-hash_ip(struct irc_inaddr *addr, int aftype /* unused */)
+hash_ip(struct irc_inaddr *addr)
 {
   int hash;
   u_int32_t ip;
@@ -788,12 +786,12 @@ hash_ip(struct irc_inaddr *addr, int aftype /* unused */)
 }
 #else /* IPV6 */
 static int
-hash_ip(struct irc_inaddr *addr, int aftype)
+hash_ip(struct irc_inaddr *addr)
 {
   int hash;
-  unsigned long *ip = (unsigned long *)&PIN_ADDR(addr);
+  u_int32_t *ip = (unsigned long *)&PIN_ADDR(addr);
 
-  if(aftype == AF_INET)
+  if(IN6_IS_ADDR_V4MAPPED((struct in6_addr *)ip))
   {
      hash = ((ip[3] >> 12) + ip[3]) & (IP_HASH_SIZE-1);
      return(hash);
@@ -1615,7 +1613,7 @@ int
 conf_connect_allowed(struct irc_inaddr *addr, int aftype)
 {
   IP_ENTRY *ip_found;
-  struct ConfItem *aconf = find_dline(addr, aftype);
+  struct ConfItem *aconf = find_dline(addr,aftype);
  
   /* DLINE exempt also gets you out of static limits/pacing... */
   if (aconf && (aconf->status & CONF_EXEMPTDLINE))
@@ -1624,7 +1622,7 @@ conf_connect_allowed(struct irc_inaddr *addr, int aftype)
   if (aconf != NULL)
     return(BANNED_CLIENT);
 
-  ip_found = find_or_add_ip(addr, aftype);
+  ip_found = find_or_add_ip(addr);
   if ((CurrentTime - ip_found->last_attempt) <
       ConfigFileEntry.throttle_time)
     {
@@ -1653,7 +1651,7 @@ find_kill(struct Client* client_p)
     return NULL;
   aconf = find_address_conf(client_p->host, client_p->username,
 			    &client_p->localClient->ip,
-			    client_p->localClient->aftype);
+  			    client_p->localClient->aftype);
   if (aconf == NULL)
     return aconf;
   if(aconf->status & CONF_KILL)
