@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.69 2001/05/14 10:08:54 toot Exp $
+ * $Id: channel.h,v 7.70 2001/05/22 15:32:16 toot Exp $
  */
 
 #include <sys/types.h>        /* time_t */
@@ -77,7 +77,7 @@ struct Channel
   int             received_number_of_privmsgs;
   int             flood_noticed;
 
-  int             num_bed;              /* number of bans+exceptions+denies */
+  int             num_mask;              /* number of bans+exceptions+invite exceptions */
   time_t          channelts;
   char            chname[1];
 };

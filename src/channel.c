@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.217 2001/05/19 04:45:17 a1kmm Exp $
+ * $Id: channel.c,v 7.218 2001/05/22 15:32:25 toot Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -165,7 +165,7 @@ static  int     add_id(struct Client *client_p, struct Channel *chptr,
   struct Ban *actualBan;
 
   /* dont let local clients overflow the banlist */
-  if ((!IsServer(client_p)) && (chptr->num_bed >= MAXBANS))
+  if ((!IsServer(client_p)) && (chptr->num_mask >= MAXBANS))
     {
       if (MyClient(client_p))
 	{
@@ -226,7 +226,7 @@ static  int     add_id(struct Client *client_p, struct Channel *chptr,
 
   dlinkAdd(actualBan, ban, list);
 
-  chptr->num_bed++;
+  chptr->num_mask++;
   return 0;
 }
 
@@ -275,11 +275,11 @@ static int del_id(struct Channel *chptr, char *banid, int type)
           MyFree(banptr->who);
           MyFree(banptr);
 
-	  /* num_bed should never be < 0 */
-	  if(chptr->num_bed > 0)
-	    chptr->num_bed--;
+	  /* num_mask should never be < 0 */
+	  if(chptr->num_mask > 0)
+	    chptr->num_mask--;
 	  else
-	    chptr->num_bed = 0;
+	    chptr->num_mask = 0;
 
 	  dlinkDelete(ban, list);
 	  free_dlink_node(ban);
