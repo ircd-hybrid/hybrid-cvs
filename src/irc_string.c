@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: irc_string.c,v 7.2 1999/12/30 20:35:45 db Exp $
+ *  $Id: irc_string.c,v 7.3 2000/01/06 02:36:26 db Exp $
  */
 #include "irc_string.h"
 #include "list.h"
@@ -157,7 +157,6 @@ char* strtoken(char** save, char* str, char* fs)
 
 
 /* 
- * this new faster inet_ntoa was ripped from:
  * From: Thomas Helvey <tomh@inxpress.net>
  */
 static const char *IpQuadTab[] =

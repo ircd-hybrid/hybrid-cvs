@@ -34,7 +34,7 @@
  *                mode * -p etc. if flag was clear
  *
  *
- * $Id: channel.c,v 7.33 2000/01/06 02:04:08 db Exp $
+ * $Id: channel.c,v 7.34 2000/01/06 02:36:26 db Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -690,7 +690,7 @@ static  void    change_chan_flag(struct Channel *chptr,struct Client *cptr, int 
    }
 }
 
-static  void    set_deopped(struct Client *cptr, struct Channel *chptr,int flag)
+static  void   set_deopped(struct Client *cptr, struct Channel *chptr,int flag)
 {
   struct SLink  *tmp;
 
