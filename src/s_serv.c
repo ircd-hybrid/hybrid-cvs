@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.92 2000/12/25 16:35:25 db Exp $
+ *   $Id: s_serv.c,v 7.93 2000/12/26 15:56:03 db Exp $
  */
 #include "tools.h"
 #include "s_serv.h"
@@ -1061,8 +1061,12 @@ burst_channel(struct Client *cptr, struct Channel *chptr)
   burst_ll_members(cptr,&chptr->peons);
   send_channel_modes(cptr, chptr);
   add_lazylinkchannel(cptr,chptr);
+
+  /* Can't do this until there is a ms_topic handler */
+#if 0
   sendto_one(cptr, ":%s TOPIC %s :%s",
 	     me.name, chptr->chname, chptr->topic);
+#endif
 
   if(IsVchanTop(chptr))
     {
@@ -1075,8 +1079,10 @@ burst_channel(struct Client *cptr, struct Channel *chptr)
 	  burst_ll_members(cptr,&vchan->peons);
 	  send_channel_modes(cptr, vchan);
 	  add_lazylinkchannel(cptr,vchan);
+#if 0
 	  sendto_one(cptr, ":%s TOPIC %s :%s",
 		     me.name, vchan->chname, vchan->topic);
+#endif
 	}
     }
 }
