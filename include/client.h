@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.65 2000/12/27 16:15:56 db Exp $
+ * $Id: client.h,v 7.66 2001/01/01 21:11:51 a1kmm Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -77,6 +77,7 @@ struct User
   dlink_list     channel;       /* chain of channel pointer blocks */
   dlink_list     invited;       /* chain of invite pointer blocks */
   char*          away;          /* pointer to away message */
+  time_t         last_away;     /* Away since... */
   time_t         last;
   int            refcnt;        /* Number of times this block is referenced */
   int            joined;        /* number of channels joined */
