@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.29 2000/09/29 17:17:06 ejb Exp $
+ *  $Id: s_bsd.c,v 7.30 2000/10/17 06:37:10 lusky Exp $
  */
 #include "s_bsd.h"
 #include "class.h"
@@ -501,7 +501,7 @@ int connect_server(struct ConfItem* aconf,
    */
   if ((cptr = find_server(aconf->name)))
     {
-      sendto_ops("Server %s already present from %s",
+      sendto_realops("Server %s already present from %s",
                  aconf->name, get_client_name(cptr, TRUE));
       if (by && IsPerson(by) && !MyClient(by))
         sendto_one(by, ":%s NOTICE %s :Server %s already present from %s",

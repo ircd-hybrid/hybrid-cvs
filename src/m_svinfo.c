@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_svinfo.c,v 7.4 2000/07/20 02:42:52 db Exp $
+ *   $Id: m_svinfo.c,v 7.5 2000/10/17 06:37:10 lusky Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -118,7 +118,7 @@ int m_svinfo(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
        * TS_ONLY we can't fall back to the non-TS protocol so
        * we drop the link  -orabidoo
        */
-      sendto_ops("Link %s dropped, wrong TS protocol version (%s,%s)",
+      sendto_realops("Link %s dropped, wrong TS protocol version (%s,%s)",
                  get_client_name(sptr, TRUE), parv[1], parv[2]);
       return exit_client(sptr, sptr, sptr, "Incompatible TS version");
     }
@@ -132,7 +132,7 @@ int m_svinfo(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 
   if (deltat > ConfigFileEntry.ts_max_delta)
     {
-      sendto_ops(
+      sendto_realops(
        "Link %s dropped, excessive TS delta (my TS=%d, their TS=%d, delta=%d)",
                  get_client_name(sptr, TRUE), CurrentTime, theirtime,deltat);
       return exit_client(sptr, sptr, sptr, "Excessive TS delta");
