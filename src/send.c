@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.278 2003/11/10 03:45:43 joshk Exp $
+ *  $Id: send.c,v 7.279 2003/12/11 19:33:36 db Exp $
  */
 
 #include "stdinc.h"
@@ -990,7 +990,7 @@ sendto_match_servs(struct Client *source_p, const char *mask, int cap,
       if (!IsCapable(target_p->from, cap))
         continue;
 
-      sendto_anywhere(target_p, source_p, buffer);
+      sendto_anywhere(target_p, source_p, "%s", buffer);
     }
   }
 }
