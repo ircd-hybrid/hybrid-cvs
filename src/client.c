@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.327 2003/02/07 07:09:25 a1kmm Exp $
+ *  $Id: client.c,v 7.328 2003/02/08 22:50:47 db Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -569,6 +569,12 @@ check_klines(void)
     client_p = ptr->data;
       
     if (IsMe(client_p))
+      continue;
+
+    /* A client can be put on the closing list by eg: KILL
+     * let them be exited that way rather than doing it twice
+     */
+    if (IsClosing(client_p))
       continue;
 	
     /* if there is a returned struct ConfItem then kill it */
