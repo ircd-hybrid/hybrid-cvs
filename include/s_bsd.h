@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.h,v 7.34 2002/01/05 09:14:29 a1kmm Exp $
+ *  $Id: s_bsd.h,v 7.35 2002/01/13 07:02:35 jmallett Exp $
  */
 
 #ifndef INCLUDED_s_bsd_h
@@ -38,7 +38,8 @@
 typedef int socklen_t;
 #endif
 
-#define READBUF_SIZE    16384   /* used in s_bsd *AND* s_zip.c ! */
+/* Size of a read buffer */
+#define READBUF_SIZE    16384   /* used by src/packet.c and src/s_serv.c */
 
 /* Type of IO */
 #define	COMM_SELECT_READ		1
