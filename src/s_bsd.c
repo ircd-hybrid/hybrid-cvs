@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.122 2001/04/29 08:46:59 androsyn Exp $
+ *  $Id: s_bsd.c,v 7.123 2001/05/01 18:58:35 db Exp $
  */
 #include "config.h"
 #include "fdlist.h"
@@ -645,7 +645,6 @@ comm_connect_callback(int fd, int status)
   
  /* Clear the connect flag + handler */
  hdl = fd_table[fd].connect.callback;
- assert(hdl);
  fd_table[fd].connect.callback = NULL;
  fd_table[fd].flags.called_connect = 0;
   
