@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: supported.h,v 1.4 2000/12/24 04:42:10 isomer Exp $
+ * $Id: supported.h,v 1.5 2000/12/24 20:27:06 toot Exp $
  * 
  */
 #ifndef INCLUDED_supported_h
@@ -26,6 +26,7 @@
 #include "ircd_defs.h"
 
 #define FEATURES "KNOCK"\
+                " VCHANS" \
                 " MODES=%i" \
                 " MAXCHANNELS=%i" \
                 " MAXBANS=%i" \
