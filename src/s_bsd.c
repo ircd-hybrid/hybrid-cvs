@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.188 2003/04/13 21:34:40 stu Exp $
+ *  $Id: s_bsd.c,v 7.189 2003/04/15 10:26:36 stu Exp $
  */
 
 #include "stdinc.h"
@@ -402,7 +402,7 @@ add_connection(struct Listener* listener, int fd)
 
   /* XXX If we get a v4 mapped address back we need to convert it to plain v4.
    * This is a bit of a hack so if someone has a better way feel free to use
-   * it.  Only applied to older BSD installtions where v4 mapping is enabled
+   * it.  Only applies to older BSD installtions where v4 mapping is enabled
    * by default. - stu
    */
   
@@ -415,13 +415,15 @@ add_connection(struct Listener* listener, int fd)
       char v4ip[HOSTIPLEN];
       struct sockaddr_in *v4 = (struct sockaddr_in*)&irn;
       inetntop(AF_INET6, &v6->sin6_addr, v4ip, HOSTIPLEN);
-      memset(&irn, 0, sizeof(irn));
       inet_pton(AF_INET, v4ip, &v4->sin_addr);
       irn.ss.ss_family = AF_INET;
       irn.ss_len = sizeof(struct sockaddr_in);
     }
+    else irn.ss_len = len;
   }
+  else
 #endif
+    irn.ss_len = len;
   new_client = make_client(NULL);
   memset(&new_client->localClient->ip, 0, sizeof(struct irc_ssaddr));
 
@@ -431,7 +433,6 @@ add_connection(struct Listener* listener, int fd)
    */
   new_client->localClient->port = ntohs(irn.ss_port);
   memcpy(&new_client->localClient->ip, &irn, sizeof(struct irc_ssaddr));
-  new_client->localClient->ip.ss_len = len;
   
   irc_getnameinfo((struct sockaddr*)&new_client->localClient->ip,
         new_client->localClient->ip.ss_len,  new_client->localClient->sockhost, 
