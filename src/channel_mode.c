@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel_mode.c,v 7.14 2001/12/31 11:04:35 a1kmm Exp $
+ * $Id: channel_mode.c,v 7.15 2001/12/31 11:13:40 a1kmm Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -2923,7 +2923,7 @@ do_channel_integrity_check(void)
       dlink_node *ptr2; \
       cl = (struct Client*)ptr->data; \
       for (ptr2=cl->user->channel.head; ptr2; ptr2=ptr2->next) \
-        if (ptr2->data == cl) \
+        if (ptr2->data == ch) \
         { \
           assert(matched == 0); \
           matched = -1; \
