@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.78 2001/12/02 14:30:29 leeh Exp $
+ *   $Id: m_message.c,v 1.79 2001/12/07 22:53:53 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -557,7 +557,7 @@ msg_channel_flags(int p_or_n, char *command, struct Client *client_p,
   if (chptr->chname[0] == '&')
     return;
 
-  sendto_channel_remote(client_p, type, CAP_CHW, NOCAPS, vchan,
+  sendto_channel_remote(source_p, client_p, type, CAP_CHW, NOCAPS, vchan,
                 ":%s %s %c%s :%s", source_p->name, command, c,
                 vchan->chname, text);
   /* non CAP_CHW servers? */

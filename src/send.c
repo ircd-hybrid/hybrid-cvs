@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.163 2001/11/30 09:45:30 a1kmm Exp $
+ *   $Id: send.c,v 7.164 2001/12/07 22:53:55 db Exp $
  */
 
 #include <sys/types.h>
@@ -73,7 +73,8 @@ static void
 sendto_list_local(dlink_list *list, buf_head_t *linebuf);
 
 static void
-sendto_list_remote(struct Client *from, dlink_list *list, int caps,
+sendto_list_remote(struct Client *one,
+		   struct Client *from, dlink_list *list, int caps,
                    int nocaps, buf_head_t *linebuf);
 
 static void
@@ -804,7 +805,9 @@ sendto_channel_local(int type,
 /*
  * sendto_channel_remote
  *
- * inputs	- int type, i.e. ALL_MEMBERS, NON_CHANOPS,
+ * inputs	- Client not to send towards
+ *		- Client from whom message is from
+ *		- int type, i.e. ALL_MEMBERS, NON_CHANOPS,
  *                ONLY_CHANOPS_VOICED, ONLY_CHANOPS
  *              - pointer to channel to send to
  *              - var args pattern
@@ -813,7 +816,8 @@ sendto_channel_local(int type,
  *		  remote to this server.
  */
 void
-sendto_channel_remote(struct Client *from, int type, int caps,
+sendto_channel_remote(struct Client *one,
+		      struct Client *from, int type, int caps,
                       int nocaps, struct Channel *chptr, char *pattern,
                       ...)
 {
@@ -831,20 +835,20 @@ sendto_channel_remote(struct Client *from, int type, int caps,
   switch(type)
   {
     case NON_CHANOPS:
-      sendto_list_remote(from, &chptr->voiced, caps, nocaps, &linebuf);
-      sendto_list_remote(from, &chptr->peons, caps, nocaps, &linebuf);
+      sendto_list_remote(one, from, &chptr->voiced, caps, nocaps, &linebuf);
+      sendto_list_remote(one, from, &chptr->peons, caps, nocaps, &linebuf);
       break;
 
     /* Fall through to accumulate lists... */
     default:
     case ALL_MEMBERS:
-      sendto_list_remote(from, &chptr->peons, caps, nocaps, &linebuf);
+      sendto_list_remote(one, from, &chptr->peons, caps, nocaps, &linebuf);
     case ONLY_CHANOPS_HALFOPS_VOICED:
-      sendto_list_remote(from, &chptr->voiced, caps, nocaps, &linebuf);
+      sendto_list_remote(one, from, &chptr->voiced, caps, nocaps, &linebuf);
     case ONLY_CHANOPS_HALFOPS:
-      sendto_list_remote(from, &chptr->halfops, caps, nocaps, &linebuf);
+      sendto_list_remote(one, from, &chptr->halfops, caps, nocaps, &linebuf);
     case ONLY_CHANOPS:
-      sendto_list_remote(from, &chptr->chanops, caps, nocaps, &linebuf);
+      sendto_list_remote(one, from, &chptr->chanops, caps, nocaps, &linebuf);
   }
   linebuf_donebuf(&linebuf);
 } /* sendto_channel_remote() */
@@ -884,10 +888,12 @@ sendto_list_local(dlink_list *list, buf_head_t *linebuf_ptr)
 } /* sendto_list_local() */
 
 /*
- * sendto_list_remote(struct Client *from, dlink_list *list, int caps,
+ * sendto_list_remote(struct Client *one,
+ *		      struct Client *from, dlink_list *list, int caps,
  *                    int nocaps, buf_head_t *linebuf)
  *
- * Input: from => The client who sent this to us.
+ * Input: one  => Client not to send towards
+ *	  from => The client who sent this to us.
  *        list => The list of clients to check.
  *        caps => The capabilities servers we send this to must have.
  *      nocaps => The capabilities servers we send this to must lack.
@@ -897,7 +903,8 @@ sendto_list_local(dlink_list *list, buf_head_t *linebuf_ptr)
  *               the list.
  */
 static void
-sendto_list_remote(struct Client *from, dlink_list *list, int caps,
+sendto_list_remote(struct Client *one,
+		   struct Client *from, dlink_list *list, int caps,
                    int nocaps, buf_head_t *linebuf)
 {
   dlink_node *ptr;
@@ -909,6 +916,9 @@ sendto_list_remote(struct Client *from, dlink_list *list, int caps,
       continue;
 
     if (MyConnect(target_p))
+      continue;
+
+    if (target_p == one) /* must skip the origin! */
       continue;
 
     if (((target_p->from->localClient->caps & caps) != caps) ||

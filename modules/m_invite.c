@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_invite.c,v 1.33 2001/11/30 09:45:29 a1kmm Exp $
+ *   $Id: m_invite.c,v 1.34 2001/12/07 22:53:52 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -209,7 +209,8 @@ m_invite(struct Client *client_p,
                source_p->username, source_p->host, target_p->name,
                chptr->chname);
   }
-  sendto_channel_remote(source_p, ONLY_CHANOPS_HALFOPS, NOCAPS, NOCAPS,
+  sendto_channel_remote(source_p, client_p,
+			ONLY_CHANOPS_HALFOPS, NOCAPS, NOCAPS,
                         chptr, ":%s INVITE %s :%s", parv[0], 
                         target_p->name, vchan->chname);
 
