@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_log.c,v 7.21 2001/01/18 17:32:25 ejb Exp $
+ *   $Id: s_log.c,v 7.22 2001/01/19 03:15:42 db Exp $
  */
 #include "client.h"	/* Needed for struct Client */
 #include "s_log.h"
@@ -44,7 +44,8 @@
 #include <unistd.h>
 
 
-#define LOG_BUFSIZE 2048 
+/* some older syslogs would overflow at 2024 */
+#define LOG_BUFSIZE 2000
 
 #ifdef USE_LOGFILE
 static FBFILE* logFile;
