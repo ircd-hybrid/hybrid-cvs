@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.c,v 1.28 2001/03/06 02:22:23 androsyn Exp $
+ * $Id: m_info.c,v 1.29 2001/03/19 09:59:57 toot Exp $
  */
 #include "tools.h"
 #include "m_info.h"
@@ -337,6 +337,14 @@ static void send_conf_options(struct Client *source_p)
               "max_nick_changes",
               ConfigFileEntry.max_nick_changes,
               "How many nick changes to allow");
+    sendto_one(source_p,
+              ":%s %d %s :%-30s %-5d [%-30s]",
+              me.name, 
+              RPL_INFO,
+              source_p->name,
+              "anti_spam_exit_message_time",
+              ConfigFileEntry.anti_spam_exit_message_time,
+              "How long a client must be connected to have an exit message");
     sendto_one(source_p,
               ":%s %d %s :%-30s %-5d [%-30s]",
               me.name,

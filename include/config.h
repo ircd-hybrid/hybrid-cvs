@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.103 2001/03/14 18:03:39 fl_ Exp $
+ * $Id: config.h,v 7.104 2001/03/19 09:59:55 toot Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -333,16 +333,6 @@
 #define MAX_JOIN_LEAVE_COUNT  25
 #define OPER_SPAM_COUNTDOWN   5 
 #define JOIN_LEAVE_COUNT_EXPIRE_TIME 120
-
-/* Do not allow the clients exit message to be
- * sent to a channel if the client has been on for less than
- * ANTI_SPAM_EXIT_MESSAGE_TIME.
- * The idea is, some spambots exit with their spam, thus advertising
- * this way.
- * (idea due to ThaDragon, I just couldn't find =his= code)
- */
-/* 300 is five minutes, seems reasonable */
-#define ANTI_SPAM_EXIT_MESSAGE_TIME 300
 
 /*
  * Links rehash delay

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_quit.c,v 1.16 2001/03/06 02:22:31 androsyn Exp $
+ *   $Id: m_quit.c,v 1.17 2001/03/19 09:59:57 toot Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -72,18 +72,22 @@ static void m_quit(struct Client *client_p,
   if (strlen(comment) > (size_t) TOPICLEN)
     comment[TOPICLEN] = '\0';
 
-  if (ConfigFileEntry.client_exit)
+  if (ConfigFileEntry.client_exit && comment[0])
     {
       snprintf(reason, TOPICLEN, "Client Exit: %s", comment);
       comment = reason;
     }
   
   if( !IsServer(source_p) && MyConnect(source_p) && !IsOper(source_p) && 
-     (source_p->firsttime + ANTI_SPAM_EXIT_MESSAGE_TIME) > CurrentTime)
-    comment = "Client Quit";
+     (source_p->firsttime + ConfigFileEntry.anti_spam_exit_message_time)
+     > CurrentTime)
+    {
+      comment = "Client Quit";
+    }
 
   exit_client(client_p, source_p, source_p, comment);
 }
+
 /*
 ** ms_quit
 **      parv[0] = sender prefix
