@@ -1,3 +1,18 @@
+db          2002/08/19 21:32:19 EDT	(20020820_1)
+
+  Modified files:
+    contrib              m_whois.c 
+    include              numeric.h 
+  Log:
+  - included RPL_WHOISACTUALLY in numeric.h
+  - modified contrib version of m_whois.c to use RPL_WHOISACTUALLY
+  
+  Revision  Changes    Path
+  1.2       +2 -12     ircd-hybrid-7/contrib/m_whois.c
+  7.29      +1 -0      ircd-hybrid-7/include/numeric.h
+
+
+
 db          2002/08/19 21:02:30 EDT	(20020820_0)
 
   Modified files:
@@ -31325,4 +31340,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3986 2002/08/20 01:02:32 db Exp $
+$Id: ChangeLog,v 7.3987 2002/08/20 01:32:22 db Exp $
