@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_challenge.c,v 1.52 2003/06/27 04:39:32 db Exp $
+ *  $Id: m_challenge.c,v 1.53 2003/06/30 04:49:03 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -60,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&challenge_msgtab);
 }
 
-const char *_version = "$Revision: 1.52 $";
+const char *_version = "$Revision: 1.53 $";
 #endif
 
 /*
@@ -162,8 +162,6 @@ m_challenge(struct Client *client_p, struct Client *source_p,
 
   if(aconf == NULL)
   {
-    struct ConfItem *conf;
-
     sendto_one (source_p, form_str(ERR_NOOPERHOST), me.name, parv[0]);
     conf = find_exact_name_conf(OPER_TYPE, parv[1], NULL, NULL);
     failed_challenge_notice(source_p, parv[1], (conf != NULL)
