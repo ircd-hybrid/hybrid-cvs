@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.61 2000/12/10 03:52:26 db Exp $
+ *  $Id: s_user.c,v 7.62 2000/12/10 20:04:10 db Exp $
  */
 #include "tools.h"
 #include "s_user.h"
@@ -980,9 +980,6 @@ void send_umode_out(struct Client *cptr,
  */
 static void user_welcome(struct Client *sptr)
 {
-  dlink_node *ptr;
-  struct ConfItem *aconf;
-
   sendto_one(sptr, form_str(RPL_WELCOME), me.name, sptr->name, sptr->name );
   /* This is a duplicate of the NOTICE but see below...*/
   sendto_one(sptr, form_str(RPL_YOURHOST), me.name, sptr->name,

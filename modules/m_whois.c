@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 1.18 2000/12/09 05:59:57 db Exp $
+ *   $Id: m_whois.c,v 1.19 2000/12/10 20:04:05 db Exp $
  */
 #include "tools.h"
 #include "common.h"   /* bleah */
@@ -270,7 +270,6 @@ void whois_person(struct Client *sptr,struct Client *acptr)
   struct Client *a2cptr;
   struct Channel *chptr;
   struct Channel *bchan;
-  int user_flags;
   int cur_len = 0;
   int mlen;
   char *t;

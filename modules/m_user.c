@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_user.c,v 1.6 2000/12/10 03:52:18 db Exp $
+ *   $Id: m_user.c,v 1.7 2000/12/10 20:04:04 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -33,8 +33,6 @@
 #include "msg.h"
 
 #include <string.h>
-
-static int bot_check(char *host);
 
 #define UFLAGS  (FLAGS_INVISIBLE|FLAGS_WALLOP|FLAGS_SERVNOTICE)
 

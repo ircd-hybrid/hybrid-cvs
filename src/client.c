@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.63 2000/12/10 03:52:21 db Exp $
+ *  $Id: client.c,v 7.64 2000/12/10 20:04:07 db Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -1634,7 +1634,6 @@ int accept_message(struct Client *source, struct Client *target)
 int add_to_accept(struct Client *source, struct Client *target)
 {
   dlink_node *m;
-  struct Client *acptr;
   int len;
 
   /* XXX MAX_ALLOW should be in config file not hard coded */

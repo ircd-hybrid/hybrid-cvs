@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_who.c,v 1.13 2000/12/09 05:59:57 db Exp $
+ *   $Id: m_who.c,v 1.14 2000/12/10 20:04:05 db Exp $
  */
 #include "tools.h"
 #include "common.h"   /* bleah */
@@ -280,7 +280,6 @@ void who_global(struct Client *sptr,char *mask, int oper)
   int   member;
   int   isinvis;
   int   maxmatches = 500;
-  char  *op_flags;
 
   for (acptr = GlobalClientList; acptr; acptr = acptr->next)
     {

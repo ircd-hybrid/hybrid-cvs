@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_server.c,v 1.12 2000/12/10 03:52:16 db Exp $
+ *   $Id: m_server.c,v 1.13 2000/12/10 20:04:04 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"  /* m_server prototype */
@@ -72,14 +72,11 @@ char *_version = "20001122";
  */
 int mr_server(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 {
-  int              i;
   char             info[REALLEN + 1];
   char*            host;
   struct Client*   acptr;
   struct Client*   bcptr;
-  struct ConfItem* aconf;
   int              hop;
-  dlink_node       *ptr;
 
   if ( (host = parse_server_args(parv, parc, info, &hop)) == NULL )
     {
@@ -206,7 +203,6 @@ int mr_server(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
  */
 int ms_server(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 {
-  int              i;
   char             info[REALLEN + 1];
   char*            host;
   struct Client*   acptr;

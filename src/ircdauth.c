@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: ircdauth.c,v 7.19 2000/12/10 03:52:22 db Exp $
+ *   $Id: ircdauth.c,v 7.20 2000/12/10 20:04:08 db Exp $
  */
 
 #include <stdio.h>
@@ -531,8 +531,6 @@ GreetUser(struct Client *client)
 
 {
   static char ubuf[12];
-  struct ConfItem *found_aconf;
-  dlink_node *ptr;
   dlink_node *m;
 
   sendto_realops_flags(FLAGS_CCONN,

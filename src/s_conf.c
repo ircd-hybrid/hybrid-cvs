@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.95 2000/12/10 03:52:25 db Exp $
+ *  $Id: s_conf.c,v 7.96 2000/12/10 20:04:09 db Exp $
  */
 #include "tools.h"
 #include "s_conf.h"
@@ -848,7 +848,6 @@ void iphash_stats(struct Client *cptr, struct Client *sptr,
 int detach_conf(struct Client* cptr,struct ConfItem* aconf)
 {
   dlink_node *ptr;
-  struct ConfItem *found_conf;
 
   if(aconf == NULL)
     return -1;
@@ -2022,7 +2021,6 @@ show_temp_klines(struct Client *sptr, struct ConfItem *tklist)
   char *host;
   char *user;
   char *reason;
-  char *p;
 
   kill_list_ptr = last_list_ptr = tklist;
 

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_names.c,v 1.13 2000/12/09 05:59:50 db Exp $
+ *   $Id: m_names.c,v 1.14 2000/12/10 20:04:04 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -84,8 +84,6 @@ int     m_names( struct Client *cptr,
   struct Channel *ch2ptr = NULL;
   char  *s;
   char *para = parc > 1 ? parv[1] : NULL;
-  int comma_count=0;
-  int char_count=0;
 
   if (!BadPtr(para))
     {
@@ -139,7 +137,6 @@ void names_all_visible_channels(struct Client *sptr)
   int mlen;
   int cur_len;
   int reply_to_send;
-  dlink_node *lp;
   struct Channel *chptr;
   struct Channel *bchan;
   char buf[BUFSIZE];

@@ -18,7 +18,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: packet.c,v 7.23 2000/12/08 06:34:45 db Exp $
+ *   $Id: packet.c,v 7.24 2000/12/10 20:04:08 db Exp $
  */ 
 
 #include <stdio.h>
@@ -101,7 +101,6 @@ flood_recalc(int fd, void *data)
 {
     struct Client *cptr = data;
     struct LocalUser *lcptr = cptr->localClient;
-    int new_allow_parsed;
 
     assert(cptr != NULL);
     assert(lcptr != NULL);
@@ -158,7 +157,6 @@ read_packet(int fd, void *data)
   struct Client *cptr = data;
   struct LocalUser *lcptr = cptr->localClient;
   int length = 0;
-  int done;
 
   assert(lcptr != NULL);
   assert(lcptr->allow_read <= MAX_FLOOD_PER_SEC);

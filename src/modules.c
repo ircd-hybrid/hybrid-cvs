@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.c,v 7.13 2000/12/10 03:52:23 db Exp $
+ * $Id: modules.c,v 7.14 2000/12/10 20:04:08 db Exp $
  */
 
 #include <dlfcn.h>
@@ -180,7 +180,7 @@ int
 load_one_module (char *path)
 {
   void *tmpptr;
-  char *mod_basename, *s;
+  char *mod_basename;
   void (*initfunc)(void) = NULL;
   char **verp;
   char *ver;

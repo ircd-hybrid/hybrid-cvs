@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: class.c,v 7.15 2000/12/05 17:41:25 db Exp $
+ *   $Id: class.c,v 7.16 2000/12/10 20:04:07 db Exp $
  */
 #include "tools.h"
 #include "class.h"
@@ -81,7 +81,6 @@ static  int     get_conf_ping(struct ConfItem *aconf)
 const char*     get_client_class(struct Client *acptr)
 {
   dlink_node    *ptr;
-  struct Class  *cl;
   struct ConfItem *aconf;
   const char*   retc = (const char *)NULL;
 

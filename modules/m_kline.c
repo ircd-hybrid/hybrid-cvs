@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kline.c,v 1.25 2000/12/10 03:52:14 db Exp $
+ *   $Id: m_kline.c,v 1.26 2000/12/10 20:04:02 db Exp $
  */
 #include "tools.h"
 #include "m_kline.h"
@@ -119,7 +119,6 @@ int mo_kline(struct Client *cptr,
                 int parc,
                 char *parv[])
 {
-  char *p;
   char *reason = NULL;
   const char* current_date;
   int  ip_kline = NO;

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.60 2000/12/10 03:52:26 db Exp $
+ *   $Id: s_serv.c,v 7.61 2000/12/10 20:04:09 db Exp $
  */
 #include "tools.h"
 #include "s_serv.h"
@@ -831,7 +831,6 @@ int server_estab(struct Client *cptr)
 static void server_burst(struct Client *cptr)
 {
   struct Client*    acptr;
-  dlink_node *l;
   struct Channel*   chptr;
   struct Channel*   vchan; 
   dlink_node *ptr;
