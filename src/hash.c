@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: hash.c,v 7.22 2001/01/06 01:44:12 ejb Exp $
+ *  $Id: hash.c,v 7.23 2001/01/06 02:19:33 ejb Exp $
  */
 #include "tools.h"
 #include "s_conf.h"
@@ -142,8 +142,6 @@ hash_id(const char *nname)
 		h = (h << 4) - (h + (unsigned char)*nname++);
 	}
 
-	sendto_realops_flags(FLAGS_ALL, "Hashed %s to %d", n, h & (U_MAX - 1));
-	
 	return (h & (U_MAX - 1));
 }
 /*
