@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.62 2000/12/30 07:11:25 db Exp $
+ * $Id: s_conf.h,v 7.63 2000/12/31 07:44:18 db Exp $
  */
 
 #include <sys/param.h>
@@ -234,7 +234,7 @@ extern struct ConfItem *u_conf;
 /* conf xline link list root */
 extern struct ConfItem *x_conf;
 /* conf qline link list root */
-extern struct QlineItem *q_conf;
+extern struct ConfItem *q_conf;
 
 extern struct ConfItem* ConfigItemList;        /* GLOBAL - conf list head */
 extern int              specific_virtual_host; /* GLOBAL - used in s_bsd.c */
@@ -331,11 +331,11 @@ extern void conf_delist_old_conf(struct ConfItem *);
 extern void conf_add_me(struct ConfItem *);
 extern void conf_add_hub_or_leaf(struct ConfItem *);
 extern void conf_add_class(struct ConfItem *,int );
-extern void conf_add_k_line(struct ConfItem *);
-extern void conf_add_d_line(struct ConfItem *);
-extern void conf_add_x_line(struct ConfItem *);
-extern void conf_add_u_line(struct ConfItem *);
-extern void conf_add_q_line(struct ConfItem *);
+extern void conf_add_k_conf(struct ConfItem *);
+extern void conf_add_d_conf(struct ConfItem *);
+extern void conf_add_x_conf(struct ConfItem *);
+extern void conf_add_u_conf(struct ConfItem *);
+extern void conf_add_q_conf(struct ConfItem *);
 extern void conf_add_fields(struct ConfItem*, char*, char *, char*, char *,char *);
 extern void conf_add_conf(struct ConfItem *);
 extern void oldParseOneLine(char* ,struct ConfItem*,int*,int*);
