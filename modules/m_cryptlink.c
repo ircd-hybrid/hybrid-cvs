@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_cryptlink.c,v 1.14 2001/06/18 09:20:40 jdc Exp $
+ *   $Id: m_cryptlink.c,v 1.15 2001/06/23 13:02:05 leeh Exp $
  */
 
 /*
@@ -208,8 +208,10 @@ static void mr_cryptauth(struct Client *client_p, struct Client *source_p,
 
   if (!aconf)
   {
-    sendto_realops_flags(FLAGS_ALL, "Lost C-Line for %s",
+    sendto_realops_flags(FLAGS_SERVADMIN, "Lost C-Line for %s",
                          get_client_name(client_p, HIDE_IP));
+    sendto_realops_flags(FLAGS_SERVOPER, "Lost C-Line for %s",
+                         get_client_name(client_p, MASK_IP));
     exit_client(client_p, client_p, &me, "Lost C-line");
     return;
   }
@@ -368,8 +370,10 @@ static void mr_cryptserv(struct Client *client_p, struct Client *source_p,
                          name, CONF_SERVER);
   if (!aconf)
   {
-    sendto_realops_flags(FLAGS_ALL,
+    sendto_realops_flags(FLAGS_SERVADMIN,
       "Lost C-Line for %s", get_client_name(client_p, HIDE_IP));
+    sendto_realops_flags(FLAGS_SERVOPER,
+      "Lost C-Line for %s", get_client_name(client_p, MASK_IP));
     exit_client(client_p, client_p, &me, "Lost C-line");
     return;
   }

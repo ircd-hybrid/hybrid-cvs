@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_server.c,v 1.59 2001/06/11 19:56:47 leeh Exp $
+ *   $Id: m_server.c,v 1.60 2001/06/23 13:02:05 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"  /* m_server prototype */
@@ -402,7 +402,7 @@ static void ms_server(struct Client *client_p, struct Client *source_p,
 	    get_client_name(client_p, HIDE_IP), name);
       sendto_realops_flags(FLAGS_SERVOPER, 
             "link %s introduced leafed %s.",
-            get_client_name(client_p, HIDE_IP), name);
+            get_client_name(client_p, MASK_IP), name);
       /* If it is new, we are probably misconfigured, so split the
        * non-hub server introducing this. Otherwise, split the new
        * server. -A1kmm. */
