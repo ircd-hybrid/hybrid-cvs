@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_jupe.c,v 1.24 2002/01/05 09:14:22 a1kmm Exp $
+ *  $Id: m_jupe.c,v 1.25 2002/01/28 20:58:18 leeh Exp $
  */
 
 #include "tools.h"
@@ -58,6 +58,7 @@ struct Message jupe_msgtab = {
   {m_unregistered, m_not_oper, mo_jupe, mo_jupe}
 };
 
+#ifndef STATIC_MODULES
 void
 _modinit(void)
 {
@@ -70,7 +71,8 @@ _moddeinit(void)
   mod_del_cmd(&jupe_msgtab);
 }
 
-char *_version = "$Revision: 1.24 $";
+char *_version = "$Revision: 1.25 $";
+#endif
 
 /*
 ** mo_jupe

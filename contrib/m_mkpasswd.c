@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_mkpasswd.c,v 1.5 2002/01/05 09:14:22 a1kmm Exp $
+ *  $Id: m_mkpasswd.c,v 1.6 2002/01/28 20:58:18 leeh Exp $
  */
 
 /* List of ircd includes from ../include/ */
@@ -57,6 +57,7 @@ struct Message test_msgtab = {
   {m_unregistered, m_mkpasswd, m_ignore, mo_mkpasswd}
 };
 
+#ifndef STATIC_MODULES
 void _modinit(void)
 {
   mod_add_cmd(&test_msgtab);
@@ -67,7 +68,8 @@ void _moddeinit(void)
   mod_del_cmd(&test_msgtab);
 }
 
-char *_version = "$Revision: 1.5 $";
+char *_version = "$Revision: 1.6 $";
+#endif
 
 static void m_mkpasswd(struct Client *client_p, struct Client *source_p,
                    int parc, char *parv[])

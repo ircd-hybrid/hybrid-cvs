@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_flags.c,v 1.5 2002/01/05 09:14:22 a1kmm Exp $
+ *  $Id: m_flags.c,v 1.6 2002/01/28 20:58:18 leeh Exp $
  */
 
 /* List of ircd includes from ../include/ */
@@ -58,6 +58,7 @@ struct Message test_msgtab = {
   {m_unregistered, m_flags, m_ignore, mo_flags}
 };
 
+#ifndef STATIC_MODULES
 void
 _modinit(void)
 {
@@ -70,7 +71,8 @@ _moddeinit(void)
   mod_del_cmd(&test_msgtab);
 }
 
-char *_version = "$Revision: 1.5 $";
+char *_version = "$Revision: 1.6 $";
+#endif
 
 /* FLAGS requires it's own mini parser, since the last parameter in it can
 ** contain a number of FLAGS.  CS handles FLAGS mode1 mode2 OR

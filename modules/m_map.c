@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_map.c,v 1.9 2002/01/05 09:14:22 a1kmm Exp $
+ *  $Id: m_map.c,v 1.10 2002/01/28 20:58:18 leeh Exp $
  */
 
 #include <assert.h>
@@ -45,6 +45,7 @@ struct Message map_msgtab = {
   {m_unregistered, m_map, m_ignore, mo_map}
 };
 
+#ifndef STATIC_MODULES
 void _modinit(void)
 {
   mod_add_cmd(&map_msgtab);
@@ -55,7 +56,9 @@ void _moddeinit(void)
   mod_del_cmd(&map_msgtab);
 }
 
-char *_version = "$Revision: 1.9 $";
+char *_version = "$Revision: 1.10 $";
+#endif
+
 static char buf[BUFSIZE];
 
 /* m_map

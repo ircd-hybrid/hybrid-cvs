@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: example_module.c,v 1.3 2001/12/27 11:38:18 leeh Exp $
+ *   $Id: example_module.c,v 1.4 2002/01/28 20:58:18 leeh Exp $
  */
 
 /* List of ircd includes from ../include/ */
@@ -103,6 +103,7 @@ struct Message test_msgtab = {
 };
 /* Thats the msgtab finished */
 
+#ifndef STATIC_MODULES
 /* Here we tell it what to do when the module is loaded */
 void
 _modinit(void)
@@ -121,7 +122,8 @@ _moddeinit(void)
 
 /* When we last modified the file (shown in /modlist), this is usually:
  */
-char *_version = "$Revision: 1.3 $";
+char *_version = "$Revision: 1.4 $";
+#endif
 
 /*
  * mr_test
