@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ctrace.c,v 1.7 2003/10/08 22:03:45 metalrock Exp $
+ *  $Id: m_ctrace.c,v 1.8 2004/03/20 18:18:08 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -47,7 +47,7 @@ static void mo_ctrace(struct Client*, struct Client*, int, char**);
 static void ctrace_spy(struct Client *);
 
 struct Message ctrace_msgtab = {
-  "CTRACE", 0, 0, 0, 0, MFLG_SLOW, 0,
+  "CTRACE", 0, 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, m_ignore, mo_ctrace, m_ignore}
 };
 
@@ -65,7 +65,7 @@ _moddeinit(void)
   hook_del_event("doing_ctrace");
   mod_del_cmd(&ctrace_msgtab);
 }
-const char *_version = "$Revision: 1.7 $";
+const char *_version = "$Revision: 1.8 $";
 #endif
 static int report_this_status(struct Client *source_p, struct Client *target_p);
 
@@ -84,7 +84,7 @@ mo_ctrace(struct Client *client_p, struct Client *source_p,
   char *class_looking_for;
   const char* class_name;
 
-  if ((parc < 1) || (*parv[1] == '\0'))
+  if (EmptyString(parv[1]))
   {
     sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
                me.name, parv[0], "CTRACE");

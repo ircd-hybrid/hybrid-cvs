@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_classlist.c,v 1.8 2003/07/05 06:20:53 db Exp $
+ *  $Id: m_classlist.c,v 1.9 2004/03/20 18:18:08 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -45,7 +45,7 @@
 static void mo_classlist(struct Client*, struct Client*, int, char**);
 
 struct Message classlist_msgtab = {
-  "CLASSLIST", 0, 0, 0, 0, MFLG_SLOW, 0,
+  "CLASSLIST", 0, 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, m_ignore, mo_classlist, m_ignore}
 };
 #ifndef STATIC_MODULES
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&classlist_msgtab);
 }
 
-const char *_version = "$Revision: 1.8 $";
+const char *_version = "$Revision: 1.9 $";
 #endif
 
 /* mo_classlist()
@@ -79,7 +79,7 @@ mo_classlist(struct Client *client_p, struct Client *source_p,
   char *classname;
   dlink_node *ptr;
 
-  if ((parc < 1) || (*parv[1] == '\0'))
+  if (EmptyString(parv[1]))
   {
     sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
                me.name, source_p->name, "CLASSLIST");
