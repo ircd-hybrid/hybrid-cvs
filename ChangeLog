@@ -1,3 +1,15 @@
+db          2002/12/19 00:58:17 EST	(20021219_1)
+
+  Modified files:
+    .                    Hybrid-team 
+  Log:
+  - Jack Low. so there.
+  
+  Revision  Changes    Path
+  7.56      +1 -1      ircd-hybrid-7/Hybrid-team
+
+
+
 db          2002/12/18 22:51:36 EST	(20021219_0)
 
   Modified files:
@@ -33694,4 +33706,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4146 2002/12/19 03:51:38 db Exp $
+$Id: ChangeLog,v 7.4147 2002/12/19 05:58:19 db Exp $
