@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.148 2001/05/25 14:45:30 davidt Exp $
+ * $Id: ircd.c,v 7.149 2001/05/26 16:54:27 cosine Exp $
  */
 
 #include <sys/types.h>
@@ -582,10 +582,10 @@ int main(int argc, char *argv[])
  if (iAuth.socket == NOSOCK)
  {
   fprintf(stderr, "Unable to connect to IAuth server\n");
-  log(L_CRIT, "Unable to connect to IAuth server\n");
   exit (EXIT_FAILURE);
  }
 #endif
+
  me.fd = -1;
  me.from = &me;
  me.servptr = &me;
