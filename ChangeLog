@@ -1,10 +1,24 @@
+androsyn    2001/12/10 23:09:57 EST	(20011211_6)
+
+  Modified files:
+    src                  ircd.c 
+  Log:
+  Fixed our trojan-enz boner of the year bug...
+  Anybody caught doing something like char buff[sizeof(unsigned int)+1] will
+  be beaten with extreme prejudice.
+  
+  Revision  Changes    Path
+  7.202     +1 -1      ircd-hybrid-7/src/ircd.c
+
+
+
 a1kmm       2001/12/10 22:42:48 EST	(20011211_5)
 
   Modified files:
     modules              .depend Makefile.in 
     src                  .depend Makefile.in 
   Log:
-  - Fixed $Id: ChangeLog,v 7.3143 2001/12/11 03:42:54 a1kmm Exp $ tags echoed from Makefile.in into .depend
+  - Fixed $Id: ChangeLog,v 7.3144 2001/12/11 04:10:02 androsyn Exp $ tags echoed from Makefile.in into .depend
   
   Revision  Changes    Path
   1.39      +0 -0      ircd-hybrid-7/modules/.depend
@@ -52,7 +66,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3143 2001/12/11 03:42:54 a1kmm Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3144 2001/12/11 04:10:02 androsyn Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -18406,4 +18420,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3143 2001/12/11 03:42:54 a1kmm Exp $
+$Id: ChangeLog,v 7.3144 2001/12/11 04:10:02 androsyn Exp $
