@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.329 2002/10/19 22:32:51 androsyn Exp $
+ *  $Id: s_conf.c,v 7.330 2002/10/19 22:35:19 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -1363,7 +1363,7 @@ set_default_conf(void)
   AdminInfo.description = NULL;
 
   set_log_level(L_NOTICE);
-
+  
   ConfigFileEntry.failed_oper_notice = YES;
   ConfigFileEntry.anti_nick_flood = NO;
   ConfigFileEntry.max_nick_time = 20;
@@ -1399,7 +1399,6 @@ set_default_conf(void)
   ConfigFileEntry.max_targets = MAX_TARGETS_DEFAULT;
   DupString(ConfigFileEntry.servlink_path, SLPATH);
   ConfigFileEntry.egdpool_path = NULL;
-  
 #ifdef HAVE_LIBCRYPTO
   /* jdc -- This is our default value for a cipher.  According to the
    *        CRYPTLINK document (doc/cryptlink.txt), BF/128 must be supported
@@ -1450,6 +1449,10 @@ set_default_conf(void)
   ConfigFileEntry.min_nonwildcard = 4;
   ConfigFileEntry.default_floodcount = 8;
   ConfigFileEntry.client_flood = CLIENT_FLOOD_DEFAULT;
+
+#ifdef IPV6  
+  ConfigFileEntry.fallback_to_ip6_int = 1;
+#endif
 
 #ifdef EFNET
   ConfigFileEntry.use_help = 0;
