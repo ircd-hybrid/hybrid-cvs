@@ -3,7 +3,7 @@
  *  s_bsd_kqueue.c: FreeBSD kqueue compatible network routines.
  *
  *  Originally by Adrian Chadd <adrian@creative.net.au>
- *  Coypright (C) 2002 Hybrid Development Team
+ *  Copyright (C) 2002 Hybrid Development Team
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_kqueue.c,v 1.28 2002/11/27 03:46:57 jmallett Exp $
+ *  $Id: s_bsd_kqueue.c,v 1.29 2003/04/06 04:18:03 db Exp $
  */
 
 #include "config.h"
