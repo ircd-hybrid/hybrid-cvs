@@ -19,12 +19,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.94 2002/02/17 03:56:56 jmallett Exp $
+ *  $Id: modules.c,v 7.95 2002/02/17 04:04:33 jmallett Exp $
  */
 
 #include "config.h"
 
-#if !defined(STATIC_MODULES) && !defined(HAVE_MACH_O_DYLD_H) && defined(HAVE_DLOPEN)
+#if !defined(STATIC_MODULES) && defined(HAVE_DLOPEN)
 #include <dlfcn.h>
 #endif
 #include <stdlib.h>
