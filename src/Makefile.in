@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.113 2002/09/05 14:06:15 db Exp $
+# $Id: Makefile.in,v 7.114 2002/11/27 03:56:24 jmallett Exp $
 #
 CC		= @CC@
 INSTALL		= @INSTALL@
@@ -107,9 +107,8 @@ BASE_SRCS =                     \
   send.c                        \
   sprintf_irc.c                 \
   @SNPRINTF_C@			\
+  tools.c                       \
   whowas.c
-# tools.c not needed unless your compiler does not support inline
-# tools.c                       \
 #  ircdauth.c
 
 SRCS = ${BASE_SRCS}
