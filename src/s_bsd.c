@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.187 2003/04/12 09:01:39 michael Exp $
+ *  $Id: s_bsd.c,v 7.188 2003/04/13 21:34:40 stu Exp $
  */
 
 #include "stdinc.h"
@@ -647,7 +647,7 @@ comm_connect_tcp(int fd, const char *host, u_short port,
   memcpy(&fd_table[fd].connect.hostaddr, res->ai_addr, res->ai_addrlen);
   fd_table[fd].connect.hostaddr.ss_len = res->ai_addrlen;
   fd_table[fd].connect.hostaddr.ss.ss_family = res->ai_family;
-  freeaddrinfo(res);
+  irc_freeaddrinfo(res);
   comm_settimeout(fd, timeout*1000, comm_connect_timeout, NULL);
   comm_connect_tryconnect(fd, NULL);
  }

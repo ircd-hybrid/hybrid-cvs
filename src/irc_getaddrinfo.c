@@ -89,7 +89,7 @@
 #define EAI_MAX     14
 #define AI_MASK (AI_PASSIVE | AI_NUMERICHOST)
 
-/*  $Id: irc_getaddrinfo.c,v 7.3 2003/04/13 05:55:22 michael Exp $ */
+/*  $Id: irc_getaddrinfo.c,v 7.4 2003/04/13 21:34:39 stu Exp $ */
 
 static const char in_addrany[]  = { 0, 0, 0, 0 };
 static const char in_loopback[] = { 127, 0, 0, 1 };
@@ -161,6 +161,7 @@ static int get_portmatch(const struct addrinfo *, const char *);
 static int get_port(struct addrinfo *, const char *, int);
 static const struct afd *find_afd(int);
 #if 0
+/* We will need this should we ever want gai_strerror() */
 static char *ai_errlist[] = {
 	"Success",
 	"Address family for hostname not supported",	/* EAI_ADDRFAMILY */
@@ -213,6 +214,7 @@ do { \
 	((x) == (y) || (/*CONSTCOND*/(w) && ((x) == ANY || (y) == ANY)))
 
 #if 0
+/* We will need this should we ever want gai_strerror() */
 char *
 irc_gai_strerror(int ecode)
 {
@@ -220,6 +222,7 @@ irc_gai_strerror(int ecode)
 		ecode = EAI_MAX;
 	return ai_errlist[ecode];
 }
+#endif
 
 void
 irc_freeaddrinfo(struct addrinfo *ai)
@@ -235,7 +238,6 @@ irc_freeaddrinfo(struct addrinfo *ai)
 		ai = next;
 	} while (ai);
 }
-#endif
 
 static int
 str_isnumber(const char *p)
@@ -402,7 +404,7 @@ irc_getaddrinfo(const char *hostname, const char *servname,
  free:
  bad:
 	if (sentinel.ai_next)
-		freeaddrinfo(sentinel.ai_next);
+		irc_freeaddrinfo(sentinel.ai_next);
 	*res = NULL;
 	return error;
 }
@@ -460,7 +462,7 @@ explore_null(const struct addrinfo *pai, const char *servname, struct addrinfo *
 
 free:
 	if (sentinel.ai_next)
-		freeaddrinfo(sentinel.ai_next);
+		irc_freeaddrinfo(sentinel.ai_next);
 	return error;
 }
 
@@ -526,7 +528,7 @@ explore_numeric(const struct addrinfo *pai, const char *hostname,
 free:
 bad:
 	if (sentinel.ai_next)
-		freeaddrinfo(sentinel.ai_next);
+		irc_freeaddrinfo(sentinel.ai_next);
 	return error;
 }
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.c,v 7.76 2003/04/12 09:01:39 michael Exp $
+ *  $Id: listener.c,v 7.77 2003/04/13 21:34:40 stu Exp $
  */
 
 #include "stdinc.h"
@@ -298,7 +298,7 @@ add_listener(int port, const char* vhost_ip)
     memcpy((struct sockaddr*)&vaddr, res->ai_addr, res->ai_addrlen);
     vaddr.ss_port = port;
     vaddr.ss_len = res->ai_addrlen;
-    freeaddrinfo(res);
+    irc_freeaddrinfo(res);
   }
 
   if ((listener = find_listener(port, &vaddr)))

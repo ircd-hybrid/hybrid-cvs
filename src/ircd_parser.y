@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.274 2003/04/12 09:01:39 michael Exp $
+ *  $Id: ircd_parser.y,v 1.275 2003/04/13 21:34:39 stu Exp $
  */
 
 %{
@@ -551,7 +551,7 @@ serverinfo_vhost: VHOST '=' QSTRING ';'
       memcpy(&ServerInfo.ip, res->ai_addr, res->ai_addrlen);
       ServerInfo.ip.ss.ss_family = res->ai_family;
       ServerInfo.ip.ss_len = res->ai_addrlen;
-      freeaddrinfo(res);
+      irc_freeaddrinfo(res);
 
       ServerInfo.specific_ipv4_vhost = 1;
     }
@@ -579,7 +579,7 @@ serverinfo_vhost6:    VHOST6 '=' QSTRING ';'
     memcpy(&ServerInfo.ip6, res->ai_addr, res->ai_addrlen);
     ServerInfo.ip6.ss.ss_family = res->ai_family;
     ServerInfo.ip6.ss_len = res->ai_addrlen;
-    freeaddrinfo(res);
+    irc_freeaddrinfo(res);
     ServerInfo.specific_ipv6_vhost = 1;
   }
 #endif

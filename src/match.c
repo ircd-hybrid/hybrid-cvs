@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: match.c,v 7.23 2003/04/12 09:01:39 michael Exp $
+ * $Id: match.c,v 7.24 2003/04/13 21:34:40 stu Exp $
  *
  */
 #include "stdinc.h"
@@ -284,7 +284,7 @@ match_cidr(const char *s1, const char *s2)
     memcpy(&ipaddr, res->ai_addr, res->ai_addrlen);
     ipaddr.ss_len = res->ai_addrlen;
     ipaddr.ss.ss_family = res->ai_family;
-    freeaddrinfo(res);
+    irc_freeaddrinfo(res);
   }
 
   irc_getaddrinfo(ipmask, NULL, &hints, &res);
@@ -293,7 +293,7 @@ match_cidr(const char *s1, const char *s2)
     memcpy(&maskaddr, res->ai_addr, res->ai_addrlen);
     maskaddr.ss_len = res->ai_addrlen;
     maskaddr.ss.ss_family = res->ai_family;
-    freeaddrinfo(res);
+    irc_freeaddrinfo(res);
   }
   
   if(comp_with_mask(&ipaddr, &maskaddr, cidrlen) && match(mask, address))
