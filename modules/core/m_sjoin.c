@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.163 2003/06/24 02:36:22 joshk Exp $
+ *  $Id: m_sjoin.c,v 1.164 2003/06/30 16:09:44 adx Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.163 $";
+const char *_version = "$Revision: 1.164 $";
 #endif
 
 /* ms_sjoin()
@@ -692,7 +692,6 @@ void remove_a_mode(struct Channel *chptr, struct Client *source_p,
       continue;
 
     ms->flags &= ~mask;
-    ms->flags |= CHFL_DEOPPED;
 
     lpara[count++] = ms->client_p->name;
 

@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_opme.c,v 1.43 2003/06/18 07:51:42 joshk Exp $
+ *   $Id: m_opme.c,v 1.44 2003/06/30 16:09:42 adx Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -58,7 +58,7 @@ _moddeinit(void)
   mod_del_cmd(&opme_msgtab);
 }
 
-const char *_version = "$Revision: 1.43 $";
+const char *_version = "$Revision: 1.44 $";
 
 #endif
 
@@ -85,6 +85,12 @@ mo_opme(struct Client *client_p, struct Client *source_p,
 {
   struct Channel *chptr;
   struct Membership *member;
+#ifdef USE_HALFOPS
+  int dehalfop = 0;
+#endif
+  int devoice = 0;
+  char *modebuf, *parabuf;
+  char buf[NICKLEN*2 + 2];
 
   /* admins only */
   if (!IsAdmin(source_p))
@@ -117,7 +123,15 @@ mo_opme(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  change_channel_membership(member, CHFL_CHANOP, CHFL_DEOPPED);
+#ifdef USE_HALFOPS
+  if (has_member_flags(member, CHFL_HALFOP))
+    dehalfop = 1;
+#endif
+
+  if (has_member_flags(member, CHFL_VOICE))
+    devoice = 1;
+
+  change_channel_membership(member, CHFL_CHANOP, CHFL_HALFOP | CHFL_VOICE);
 
   if (parv[1][0] == '&')
   {
@@ -155,7 +169,23 @@ mo_opme(struct Client *client_p, struct Client *source_p,
                 ":%s SJOIN %ld %s + :@%s",
                 me.name, (signed long) chptr->channelts,
                 parv[1], source_p->name);
+  if (devoice)
+    modebuf = "-v+o";
+#ifdef USE_HALFOPS
+  else if (dehalfop)
+    modebuf = "-h+o";
+#endif
+  else
+    modebuf = "+o";
+
+  if (devoice || dehalfop)
+  {
+    snprintf(buf, sizeof(buf), "%s %s", source_p->name, source_p->name);
+    parabuf = buf;
+  }
+  else parabuf = source_p->name;
+
   sendto_channel_local(ALL_MEMBERS, chptr,
-                       ":%s MODE %s +o %s",
-                       me.name, parv[1], source_p->name);
+                       ":%s MODE %s %s %s",
+                       me.name, parv[1], modebuf, parabuf);
 }

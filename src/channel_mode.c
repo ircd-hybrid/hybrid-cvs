@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.118 2003/06/24 09:39:32 michael Exp $
+ *  $Id: channel_mode.c,v 7.119 2003/06/30 16:09:46 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1239,14 +1239,33 @@ chm_hop(struct Client *client_p, struct Client *source_p,
   if (dir == MODE_ADD)
   {
     for (i = 0; i < mode_count; i++)
-    {
-      if (mode_changes[i].dir == MODE_DEL && mode_changes[i].letter == 'h'
-          && mode_changes[i].client == targ_p)
+      if (mode_changes[i].client == targ_p)
       {
-        mode_changes[i].letter = 0;
-        return;
+        if (mode_changes[i].dir == MODE_DEL && mode_changes[i].letter == 'h')
+        {
+          mode_changes[i].letter = 0;
+          return;
+        }
+        /* cancel /mode +v */
+        if (mode_changes[i].dir == MODE_ADD && mode_changes[i].letter == 'v')
+        {
+          mode_changes[i].letter = 0;
+          change_channel_membership(member, 0, CHFL_VOICE);
+        }
       }
+
+    if (has_member_flags(member, CHFL_VOICE))
+    {
+      mode_changes[mode_count].letter = 'v';
+      mode_changes[mode_count].dir = MODE_DEL;
+      mode_changes[mode_count].caps = 0;
+      mode_changes[mode_count].nocaps = 0;
+      mode_changes[mode_count].mems = ALL_MEMBERS;
+      mode_changes[mode_count].id = targ_p->id;
+      mode_changes[mode_count].arg = targ_p->name;
+      mode_changes[mode_count++].client = targ_p;
     }
+
     mode_changes[mode_count].letter = 'h';
     mode_changes[mode_count].dir = MODE_ADD;
     mode_changes[mode_count].caps = 0;
@@ -1328,7 +1347,7 @@ chm_voice(struct Client *client_p, struct Client *source_p,
     return;
 
   /* no redundant mode changes */
-  if (dir == MODE_ADD &&  has_member_flags(member, CHFL_VOICE))
+  if (dir == MODE_ADD &&  has_member_flags(member, CHFL_VOICE | CHFL_HALFOP))
     return;
   if (dir == MODE_DEL && !has_member_flags(member, CHFL_VOICE))
     return;
