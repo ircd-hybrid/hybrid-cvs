@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.216 2002/12/13 05:38:47 bill Exp $
+ *  $Id: s_user.c,v 7.217 2003/01/09 06:15:54 db Exp $
  */
 
 #include "stdinc.h"
@@ -426,7 +426,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   if ((status = check_X_line(client_p,source_p)) < 0)
     return status;
 
-  if (IsDead(client_p))
+  if (IsDefunct(client_p))
     return CLIENT_EXITED;
 
   if (source_p->user->id[0] == '\0') 
@@ -452,7 +452,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
 		       get_client_class(source_p), source_p->info);
 
   /* If they have died in send_* don't do anything. */
-  if (IsDead(source_p))
+  if (IsDefunct(source_p))
     return CLIENT_EXITED;
   
   source_p->umodes |= FLAGS_INVISIBLE;
@@ -540,7 +540,7 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
       kill_client(client_p, source_p, "%s (Server doesn't exist)",
 		  me.name);
 
-      source_p->flags |= FLAGS_KILLED;
+      SetKilled(source_p);
       return exit_client(NULL, source_p, &me, "Ghosted Client");
     }
 
@@ -559,7 +559,7 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
 		  user->server,
 		  target_p->from->name);
 
-      source_p->flags |= FLAGS_KILLED;
+      SetKilled(source_p);
       return exit_client(source_p, source_p, &me,
 			 "USER server wrong direction");
       
@@ -576,7 +576,7 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
       sendto_realops_flags(FLAGS_ALL, L_ALL, "No server %s for user %s [%s@%s] from %s",
 			   user->server, source_p->name, source_p->username,
 			   source_p->host, source_p->from->name);
-      source_p->flags |= FLAGS_KILLED;
+      SetKilled(source_p);
       return exit_client(source_p, source_p, &me, "Ghosted Client");
     }
 

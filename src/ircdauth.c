@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircdauth.c,v 7.49 2002/08/15 14:15:36 db Exp $
+ *  $Id: ircdauth.c,v 7.50 2003/01/09 06:15:53 db Exp $
  */
 
 #include "stdinc.h"
@@ -613,7 +613,7 @@ GreetUser(struct Client *client)
 		 me.name,
 		 client->user->server);
 
-      client->flags |= FLAGS_KILLED;
+      SetKilled(client);
 
       exit_client(NULL, client, &me, "Ghost");
       return;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.153 2002/10/30 17:44:53 wiz Exp $
+ *  $Id: client.h,v 7.154 2003/01/09 06:15:51 db Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -476,6 +476,9 @@ struct LocalUser
 #define SetAccess(x)            ((x)->flags |= FLAGS_CHKACCESS)
 #define IsClosing(x)		((x)->flags & FLAGS_CLOSING)
 #define SetClosing(x)		((x)->flags |= FLAGS_CLOSING)
+#define ClearClosing(x)		((x)->flags &= ~FLAGS_CLOSING)
+#define IsKilled(x)		((x)->flags & FLAGS_KILLED)
+#define SetKilled(x)		((x)->flags |= FLAGS_KILLED)
 #define ClearAccess(x)          ((x)->flags &= ~FLAGS_CHKACCESS)
 #define IsCryptIn(x)            ((x)->flags &  FLAGS_CRYPTIN)
 #define SetCryptIn(x)           ((x)->flags |= FLAGS_CRYPTIN)
@@ -494,6 +497,7 @@ struct LocalUser
 #define SetCanFlood(x)		((x)->flags |= FLAGS_CANFLOOD)
 #define ClearCanFlood(x)	((x)->flags &= FLAGS_CANFLOOD)
 #define IsCanFlood(x)		((x)->flags & FLAGS_CANFLOOD)
+#define IsDefunct(x)            ((x)->flags & (FLAGS_DEADSOCKET|FLAGS_CLOSING))
 
 /* oper flags */
 #define MyOper(x)               (MyConnect(x) && IsOper(x))

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.346 2002/12/16 06:30:49 db Exp $
+ *  $Id: channel.c,v 7.347 2003/01/09 06:15:52 db Exp $
  */
 
 #include "stdinc.h"
@@ -631,10 +631,8 @@ delete_members(struct Channel *chptr, dlink_list * list)
     if (who->user != NULL)
     {
       /* remove reference to chptr from who */
-      for (ptr_ch = who->user->channel.head; ptr_ch; ptr_ch = next_ptr_ch)
+      DLINK_FOREACH_SAFE (ptr_ch, next_ptr_ch, who->user->channel.head)
       {
-	next_ptr_ch = ptr_ch->next;
-
 	if (ptr_ch->data == chptr)
 	{
 	  dlinkDelete(ptr_ch, &who->user->channel);
