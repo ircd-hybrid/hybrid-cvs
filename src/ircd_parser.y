@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.132 2001/02/19 01:54:31 wcampbel Exp $
+ * $Id: ircd_parser.y,v 1.133 2001/02/24 12:16:05 toot Exp $
  */
 
 %{
@@ -1496,7 +1496,7 @@ general_client_exit: CLIENT_EXIT '=' TYES ';'
     ConfigFileEntry.client_exit = 1;
   }
     |
-    CLIENT_EXIT '-' TNO ';'
+    CLIENT_EXIT '=' TNO ';'
   {
     ConfigFileEntry.client_exit = 0;
   };
