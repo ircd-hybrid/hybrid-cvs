@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_lljoin.c,v 1.31 2001/01/05 00:14:30 davidt Exp $
+ * $Id: m_lljoin.c,v 1.32 2001/01/27 15:12:44 davidt Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -236,6 +236,9 @@ static int ms_lljoin(struct Client *cptr,
     }
 
   add_user_to_channel(chptr, acptr, flags);
+
+  if ( chptr != root_vchan )
+    add_vchan_to_client_cache(acptr,root_vchan,chptr);
  
   sendto_channel_local(ALL_MEMBERS, chptr,
 		       ":%s!%s@%s JOIN :%s",
