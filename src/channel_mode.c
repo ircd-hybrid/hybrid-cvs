@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.129 2003/09/15 00:56:29 metalrock Exp $
+ *  $Id: channel_mode.c,v 7.130 2003/09/26 14:38:53 michael Exp $
  */
 
 #include "stdinc.h"
@@ -354,7 +354,7 @@ channel_modes(struct Channel *chptr, struct Client *client_p,
     }
   }
 
-  if (*chptr->mode.key)
+  if (chptr->mode.key[0])
   {
     *mbuf++ = 'k';
 
@@ -362,7 +362,7 @@ channel_modes(struct Channel *chptr, struct Client *client_p,
       ircsprintf(pbuf, "%s ", chptr->mode.key);
   }
 
-  *mbuf++ = '\0';
+  *mbuf = '\0';
 }
 
 /* static char *
