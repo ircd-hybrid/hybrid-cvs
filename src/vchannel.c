@@ -19,7 +19,7 @@
  *
  *
  *
- * $Id: vchannel.c,v 7.40 2001/02/08 05:36:20 toot Exp $
+ * $Id: vchannel.c,v 7.41 2001/02/08 05:50:39 toot Exp $
  */
 #include "tools.h"
 #include "vchannel.h"
@@ -476,14 +476,14 @@ struct Channel* find_vchan(struct Channel *chptr, char *key)
   if (*key == '!')
     {
       /* first the root */
-      if (chptr->vchan_id && (strcmp(chptr->vchan_id, key) == 0))
+      if (chptr->vchan_id && (irccmp(chptr->vchan_id, key) == 0))
         return chptr;
 
       /* then it's vchans */
       for (ptr = chptr->vchan_list.head; ptr; ptr = ptr->next)
         {
           chtmp = ptr->data;
-          if (chtmp->vchan_id && (strcmp(chtmp->vchan_id, key) == 0))
+          if (chtmp->vchan_id && (irccmp(chtmp->vchan_id, key) == 0))
             return chtmp;
         }
     }
