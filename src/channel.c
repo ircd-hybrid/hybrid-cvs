@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.345 2002/12/16 05:00:39 db Exp $
+ *  $Id: channel.c,v 7.346 2002/12/16 06:30:49 db Exp $
  */
 
 #include "stdinc.h"
@@ -244,14 +244,17 @@ remove_user_from_channel(struct Channel *chptr, struct Client *who)
     free_dlink_node(ptr);
   }
 
-  DLINK_FOREACH_SAFE(ptr, next_ptr, who->user->channel.head)
+  if (who->user != NULL)
   {
-    if (ptr->data == chptr)
+    DLINK_FOREACH_SAFE(ptr, next_ptr, who->user->channel.head)
     {
-      dlinkDelete(ptr, &who->user->channel);
-      free_dlink_node(ptr);
-      who->user->joined--;
-      break;
+      if (ptr->data == chptr)
+      {
+	dlinkDelete(ptr, &who->user->channel);
+	free_dlink_node(ptr);
+	who->user->joined--;
+	break;
+      }
     }
   }
 
@@ -625,17 +628,20 @@ delete_members(struct Channel *chptr, dlink_list * list)
     next_ptr = ptr->next;
     who = (struct Client *)ptr->data;
 
-    /* remove reference to chptr from who */
-    for (ptr_ch = who->user->channel.head; ptr_ch; ptr_ch = next_ptr_ch)
+    if (who->user != NULL)
     {
-      next_ptr_ch = ptr_ch->next;
-
-      if (ptr_ch->data == chptr)
+      /* remove reference to chptr from who */
+      for (ptr_ch = who->user->channel.head; ptr_ch; ptr_ch = next_ptr_ch)
       {
-        dlinkDelete(ptr_ch, &who->user->channel);
-        free_dlink_node(ptr_ch);
-	who->user->joined--;
-        break;
+	next_ptr_ch = ptr_ch->next;
+
+	if (ptr_ch->data == chptr)
+	{
+	  dlinkDelete(ptr_ch, &who->user->channel);
+	  free_dlink_node(ptr_ch);
+	  who->user->joined--;
+	  break;
+	}
       }
     }
 
