@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.17 2003/04/18 02:13:38 db Exp $
+ *  $Id: m_whois.c,v 1.18 2003/04/19 23:43:45 michael Exp $
  */
 
 #include "stdinc.h"
@@ -194,7 +194,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-const char *_version = "$Revision: 1.17 $";
+const char *_version = "$Revision: 1.18 $";
 #endif
 /*
 ** m_whois
@@ -208,11 +208,11 @@ m_whois(struct Client *client_p, struct Client *source_p,
   static time_t last_used = 0;
   
   if (parc < 2 || EmptyString(parv[1]))
-    {
-      sendto_one(source_p, form_str(ERR_NONICKNAMEGIVEN),
-                 me.name, parv[0]);
-      return;
-    }
+  {
+    sendto_one(source_p, form_str(ERR_NONICKNAMEGIVEN),
+               me.name, parv[0]);
+    return;
+  }
 
   if (parc > 2)
     {
@@ -254,11 +254,11 @@ mo_whois(struct Client *client_p, struct Client *source_p,
          int parc, char *parv[])
 {
   if (parc < 2 || EmptyString(parv[1]))
-    {
-      sendto_one(source_p, form_str(ERR_NONICKNAMEGIVEN),
-                 me.name, parv[0]);
-      return;
-    }
+  {
+    sendto_one(source_p, form_str(ERR_NONICKNAMEGIVEN),
+               me.name, parv[0]);
+    return;
+  }
 
   if(parc > 2)
     {
@@ -406,7 +406,7 @@ global_whois(struct Client *source_p, char *nick, int wilds, int glob)
       found = YES;
   }
 
-  return (found);
+  return(found);
 }
 
 /*
@@ -426,7 +426,7 @@ single_whois(struct Client *source_p,struct Client *target_p,
 {
   dlink_node *ptr;
   struct Channel *chptr;
-  char *name;
+  const char *name;
   int invis;
   int member;
   int showperson;

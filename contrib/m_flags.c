@@ -27,7 +27,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- *  $Id: m_flags.c,v 1.12 2003/04/18 02:13:37 db Exp $
+ *  $Id: m_flags.c,v 1.13 2003/04/19 23:43:45 michael Exp $
  */
 
 /* List of ircd includes from ../include/ */
@@ -53,7 +53,7 @@
 static void m_flags(struct Client *client_p, struct Client *source_p,
                     int parc, char *parv[]);
 static void mo_flags(struct Client *client_p, struct Client *source_p,
-                    int parc, char *parv[]);
+                     int parc, char *parv[]);
 
 static char *set_flags_to_string(struct Client *client_p);
 static char *unset_flags_to_string(struct Client *client_p);
@@ -76,7 +76,7 @@ _moddeinit(void)
   mod_del_cmd(&test_msgtab);
 }
 
-const char *_version = "$Revision: 1.12 $";
+const char *_version = "$Revision: 1.13 $";
 #endif
 
 /* FLAGS requires it's own mini parser, since the last parameter in it can
@@ -88,7 +88,7 @@ const char *_version = "$Revision: 1.12 $";
 
 struct FlagTable
 {
-  char *name;
+  const char *name;
   unsigned int mode;
   int oper;
 };
@@ -146,8 +146,9 @@ static struct FlagTable flag_table[] =
 **      parv[0] = sender prefix
 **      parv[1] = parameter
 */
-static void m_flags(struct Client *client_p, struct Client *source_p,
-                   int parc, char *parv[])
+static void 
+m_flags(struct Client *client_p, struct Client *source_p,
+        int parc, char *parv[])
 {
   int i,j;
   int isadd;
@@ -246,8 +247,9 @@ static void m_flags(struct Client *client_p, struct Client *source_p,
 **      parv[0] = sender prefix
 **      parv[1] = parameter
 */
-static void mo_flags(struct Client *client_p, struct Client *source_p,
-                   int parc, char *parv[])
+static void 
+mo_flags(struct Client *client_p, struct Client *source_p,
+         int parc, char *parv[])
 {		 
   int i,j;
   int isadd;
@@ -358,7 +360,8 @@ static void mo_flags(struct Client *client_p, struct Client *source_p,
   send_umode_out(client_p, source_p, setflags);
 }
 
-static char *set_flags_to_string(struct Client *client_p)
+static char *
+set_flags_to_string(struct Client *client_p)
 {
   /* XXX - list all flags that we have set on the client */
   static char setflags[BUFSIZE + 1];
@@ -393,11 +396,11 @@ static char *set_flags_to_string(struct Client *client_p)
 #if 0
   }
 #endif
-
-  return setflags;
+  return(setflags);
 }
 
-static char *unset_flags_to_string(struct Client *client_p)
+static char *
+unset_flags_to_string(struct Client *client_p)
 {
   /* Inverse of above */
   /* XXX - list all flags that we do NOT have set on the client */
@@ -424,11 +427,11 @@ static char *unset_flags_to_string(struct Client *client_p)
 
   if (IsOper(client_p) && IsOperN(client_p))
   {
-    if ( !(client_p->umodes & UMODE_NCHANGE))
+    if (!(client_p->umodes & UMODE_NCHANGE))
     {
       ircsprintf(setflags, "%s %s", setflags, "NICKCHANGES");
     }
   }
 
-  return setflags;
+  return(setflags);
 }
