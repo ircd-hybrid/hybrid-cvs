@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.139 2001/01/05 16:32:10 toot Exp $
+ *  $Id: s_conf.c,v 7.140 2001/01/05 21:52:13 a1kmm Exp $
  */
 #include "tools.h"
 #include "s_conf.h"
@@ -1617,6 +1617,8 @@ static void lookup_confhost(struct ConfItem* aconf)
       return;
     }
 
+  if (strchr(aconf->host, '*') || strchr(aconf->host, '?'))
+    return;
   /*
   ** Do name lookup now on hostnames given and store the
   ** ip numbers in conf structure.
