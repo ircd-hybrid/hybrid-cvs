@@ -1,3 +1,9 @@
+*** 20001204_2 by db
+- added half ops.. BitchX freaks with it, but epic is fine.
+  figures. anyway, we can #ifdef this out in production if we want.
+
+
+
 *** 20001204_1 by db
 - fixed m_kline.c code
 - removed all traces of restricted I line code, thats better handled
@@ -1470,7 +1476,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.682 2000/12/04 05:50:08 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.683 2000/12/04 06:35:08 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
