@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.206 2003/05/01 19:42:24 michael Exp $
+ *  $Id: s_conf.h,v 7.207 2003/05/04 15:43:22 michael Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -187,12 +187,10 @@ struct config_file_entry
   const char *configfile;
   const char *klinefile;
   const char *dlinefile;
-
-  char *glinefile;
+  const char *glinefile;
 
   char *logpath;
   char *operlog;
-  char *glinelog;
 
   char *servlink_path;
   char *egdpool_path;
@@ -392,14 +390,14 @@ extern  void    cleanup_tklines(void *notused);
 extern  const   char *get_conf_name(KlineType);
 extern  int     rehash(int);
 
-extern int  conf_add_server(struct ConfItem *,int);
+extern int  conf_add_server(struct ConfItem *, int);
 extern void conf_add_class_to_conf(struct ConfItem *);
 extern void conf_add_me(struct ConfItem *);
 extern void conf_add_class(struct ConfItem *, int);
 extern void conf_add_d_conf(struct ConfItem *);
 extern void conf_add_x_conf(struct ConfItem *);
 extern void conf_add_u_conf(struct ConfItem *);
-extern void conf_add_fields(struct ConfItem*, char*, char *, char*, char *,char *);
+extern void conf_add_fields(struct ConfItem *, const char *, const char *, const char *, const char *, const char *);
 extern void conf_add_conf(struct ConfItem *);
 
 /* XXX consider moving these into kdparse.h */

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.370 2003/05/03 08:33:55 adx Exp $
+ *  $Id: s_conf.c,v 7.371 2003/05/04 15:43:23 michael Exp $
  */
 
 #include "stdinc.h"
@@ -2317,7 +2317,7 @@ conf_add_d_conf(struct ConfItem *aconf)
    */
   if (parse_netmask(aconf->host, NULL, NULL) == HM_HOST)
   {
-    ilog(L_WARN,"Invalid Dline %s ignored", aconf->host);
+    ilog(L_WARN, "Invalid Dline %s ignored", aconf->host);
     free_conf(aconf);
   }
   else
@@ -2338,8 +2338,8 @@ conf_add_d_conf(struct ConfItem *aconf)
  * side effects - update host/pass/user/port fields of given aconf
  */
 void
-conf_add_fields(struct ConfItem *aconf, char *host_field, char *pass_field,
-                char *user_field, char *port_field, char *class_field)
+conf_add_fields(struct ConfItem *aconf, const char *host_field, const char *pass_field,
+                const char *user_field, const char *port_field, const char *class_field)
 {
   if (host_field != NULL)
     DupString(aconf->host, host_field);
@@ -2379,7 +2379,7 @@ conf_fbgets(char *lbuf, int max_size, FBFILE *fb)
 {
   char *buff;
 
-  if ((buff = fbgets(lbuf,max_size,fb)) == NULL)
+  if ((buff = fbgets(lbuf, max_size, fb)) == NULL)
     return(0);
 
   return(strlen(lbuf));
