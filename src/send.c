@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.20 2000/01/06 03:19:38 db Exp $
+ *   $Id: send.c,v 7.21 2000/01/08 04:22:24 db Exp $
  */
 #include "send.h"
 #include "channel.h"
@@ -802,8 +802,7 @@ match_it(const struct Client *one, const char *mask, int what)
 /*
  * sendto_match_servs
  *
- * send to all servers which match the mask at the end of a channel name
- * (if there is a mask present) or to all if no mask.
+ * send to all servers the channel given
  */
 
 void
@@ -820,6 +819,8 @@ sendto_match_servs(struct Channel *chptr, struct Client *from, const char *patte
       if (*chptr->chname == '&')
         return;
     }
+  else
+    return; /* an ooopsies *
 
   for(cptr = serv_cptr_list; cptr; cptr = cptr->next_server_client)
     {
