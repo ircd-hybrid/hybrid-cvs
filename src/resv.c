@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: resv.c,v 7.27 2003/06/14 18:12:02 db Exp $
+ *  $Id: resv.c,v 7.28 2003/06/15 01:16:42 db Exp $
  */
 
 #include "stdinc.h"
@@ -57,7 +57,7 @@ create_channel_resv(char *name, char *reason, int in_conf)
   if (name == NULL || reason == NULL)
     return(NULL);
 
-  if (find_channel_resv(name) != NULL)
+  if (find_channel_resv(name))
     return(NULL);
 
   if (strlen(reason) > TOPICLEN)
@@ -93,7 +93,7 @@ create_nick_resv(char *name, char *reason, int in_conf)
   if (name == NULL || reason == NULL)
     return(NULL);
 
-  if (find_nick_resv(name) != NULL)
+  if (find_nick_resv(name))
     return(NULL);
 
   if (strlen(reason) > TOPICLEN)
