@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.9 2003/05/16 13:29:28 michael Exp $
+ *  $Id: csvlib.c,v 7.10 2003/05/23 03:08:11 db Exp $
  */
 
 #include "stdinc.h"
@@ -359,14 +359,15 @@ getfield(char *newline)
 
   field = line;
 
-  /* XXX make this skip to first " if present */
+  while (IsSpace(*field))	/* skip to start */
+    field++;
+
+  /* skip over any beginning " */
   if(*field == '"')
   {
     field++;
     end = field;
   }
-  else
-    return(NULL);		/* mal-formed field */
 
   for (;;)
   {
@@ -381,6 +382,18 @@ getfield(char *newline)
       end++;
     }
     else if(*end == '"')	/* found terminating " */
+    {
+      *end++ = '\0';
+      while (IsSpace(*end))	/* skip to start of next " (or '\0') */
+	end++;
+      while (*end == ',')
+	end++;
+      while (IsSpace(*end))
+	end++;
+      line = end;
+      return(field);
+    }
+    else if(*end == ',')	/* found terminating , */
     {
       *end++ = '\0';
       while (IsSpace(*end))	/* skip to start of next " (or '\0') */
