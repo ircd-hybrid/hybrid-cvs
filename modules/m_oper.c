@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_oper.c,v 1.64 2003/04/18 02:13:43 db Exp $
+ *  $Id: m_oper.c,v 1.65 2003/04/19 16:28:39 michael Exp $
  */
 
 #include "stdinc.h"
@@ -57,7 +57,7 @@ static void mo_oper(struct Client*, struct Client*, int, char**);
 
 struct Message oper_msgtab = {
   "OPER", 0, 0, 3, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_oper, ms_oper, mo_oper, m_ignore} 
+  {m_unregistered, m_oper, m_ignore, mo_oper, m_ignore} 
 };
 
 #ifndef STATIC_MODULES
@@ -73,7 +73,7 @@ _moddeinit(void)
   mod_del_cmd(&oper_msgtab);
 }
 
-const char *_version = "$Revision: 1.64 $";
+const char *_version = "$Revision: 1.65 $";
 #endif
 
 /*
@@ -170,26 +170,6 @@ mo_oper(struct Client *client_p, struct Client *source_p,
   sendto_one(source_p, form_str(RPL_YOUREOPER), me.name, parv[0]);
   SendMessageFile(source_p, &ConfigFileEntry.opermotd);
   return;
-}
-
-/*
-** ms_oper
-**      parv[0] = sender prefix
-**      parv[1] = oper name
-**      parv[2] = oper password
-*/
-static void
-ms_oper(struct Client *client_p, struct Client *source_p, 
-        int parc, char *parv[])
-{
-  /* if message arrived from server, trust it, and set to oper */
-  if (!IsOper(source_p) && IsClient(source_p))
-  {
-    SetOper(source_p);
-    Count.oper++;
-    sendto_server(client_p, source_p, NULL, NOCAPS, NOCAPS, NOFLAGS,
-		  ":%s MODE %s :+o", parv[0], parv[0]);
-  }
 }
 
 /* find_password_aconf()
