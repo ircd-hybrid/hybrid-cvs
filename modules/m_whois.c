@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 1.23 2000/12/19 04:21:20 ejb Exp $
+ *   $Id: m_whois.c,v 1.24 2000/12/19 04:39:32 db Exp $
  */
 #include "tools.h"
 #include "common.h"   /* bleah */
@@ -96,6 +96,7 @@ int     mo_whois(struct Client *cptr,
         return 0;
       parv[1] = parv[2];
     }
+
   return(do_whois(cptr,sptr,parc,parv));
 }
 
@@ -124,6 +125,9 @@ int do_whois(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
     {
       if( (acptr = hash_find_client(nick,(struct Client *)NULL)) )
 	{
+	  if (IsServer(cptr))
+	    client_burst_if_needed(cptr,acptr);
+
 	  if(IsPerson(acptr))
 	    {
 	      (void)single_whois(sptr,acptr,wilds);

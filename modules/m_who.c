@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_who.c,v 1.15 2000/12/18 03:59:58 db Exp $
+ *   $Id: m_who.c,v 1.16 2000/12/19 04:39:32 db Exp $
  */
 #include "tools.h"
 #include "common.h"   /* bleah */
@@ -201,6 +201,9 @@ int     m_who(struct Client *cptr,
       struct Channel *bchan;
       char *chname=NULL;
       int isinvis = 0;
+
+      if(IsServer(cptr))
+	client_burst_if_needed(cptr,acptr);
 
       isinvis = IsInvisible(acptr);
       for (lp = acptr->user->channel.head; lp; lp = lp->next)

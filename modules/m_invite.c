@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_invite.c,v 1.10 2000/12/18 03:59:46 db Exp $
+ *   $Id: m_invite.c,v 1.11 2000/12/19 04:39:32 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -114,7 +114,7 @@ int     m_invite(struct Client *cptr,
       sendto_one(sptr, form_str(ERR_USERNOTONSERV),
 		 me.name, parv[0], parv[1]);
       return 0;
-  }
+    }
 	  
   if (!(chptr = hash_find_channel(parv[2], NullChn)))
     {
@@ -206,4 +206,3 @@ int     ms_invite(struct Client *cptr,
   /* NOT REACHED */
   return 0;
 }
-
