@@ -34,7 +34,7 @@
  *                mode * -p etc. if flag was clear
  *
  *
- * $Id: channel.c,v 7.43 2000/10/06 04:27:00 lusky Exp $
+ * $Id: channel.c,v 7.44 2000/10/12 03:29:39 lusky Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -2463,7 +2463,7 @@ static  void    sub1_from_channel(struct Channel *chptr)
           free_fluders(NULL, chptr);
 #endif
           /* If channel has subchannels don't delete this channel */
-          if ( chptr->vchans == NULL )	  
+          if ( chptr->vchan_flag == NULL )	  
             {
               del_from_channel_hash_table(chptr->chname, chptr);
               MyFree((char*) chptr);
