@@ -1,3 +1,11 @@
+*** 20001205_2 by db
+- cleaned up these functions, two arguments when 1 is quite enough
+  this makes them consistent with other functions that only pass
+  the struct Client *sptr. No need to also pass the nick.
+- changed wording on vchan's at toyota's suggestion.
+
+
+
 *** 20001205_1 by db
 - added rest of accept code.
   client puts themselves into +u mode, this disallows casual messages
@@ -1634,7 +1642,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.699 2000/12/05 05:45:38 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.700 2000/12/05 06:33:10 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
