@@ -1,3 +1,17 @@
+jdc         2001/12/09 23:37:54 EST	(20011210_5)
+
+  Modified files:
+    .                    configure 
+    autoconf             configure.in 
+  Log:
+  - Removal of -R for SSL when using --disable-shared-modules.
+  
+  Revision  Changes    Path
+  7.101     +1 -1      ircd-hybrid-7/autoconf/configure.in
+  7.102     +1 -1      ircd-hybrid-7/configure
+
+
+
 jdc         2001/12/09 23:17:36 EST	(20011210_4)
 
   Modified files:
@@ -18187,4 +18201,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3129 2001/12/10 04:17:41 jdc Exp $
+$Id: ChangeLog,v 7.3130 2001/12/10 04:37:59 jdc Exp $
