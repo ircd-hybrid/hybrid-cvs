@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.105 2002/04/09 00:04:21 db Exp $
+ *  $Id: channel.h,v 7.106 2002/04/17 01:02:17 leeh Exp $
  */
 
 #include <sys/types.h>        /* time_t */
@@ -47,7 +47,7 @@ struct Mode
 {
   unsigned int  mode;
   int   limit;
-  char  key[KEYLEN + 1];
+  char  key[KEYLEN];
 };
 
 /* channel structure */

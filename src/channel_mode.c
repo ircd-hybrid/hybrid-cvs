@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.28 2002/04/14 09:39:31 leeh Exp $
+ *  $Id: channel_mode.c,v 7.29 2002/04/17 01:02:20 leeh Exp $
  */
 
 #include "tools.h"
@@ -2034,7 +2034,7 @@ chm_key(struct Client *client_p, struct Client *source_p,
       fix_key_old(key);
 
     assert(key[0] != ' ');
-    strlcpy(chptr->mode.key, key, KEYLEN);;
+    strlcpy(chptr->mode.key, key, KEYLEN);
 
     for (i = 0; i < mode_count_minus; i++)
     {
@@ -2053,7 +2053,7 @@ chm_key(struct Client *client_p, struct Client *source_p,
     mode_changes_plus[mode_count_plus].nocaps = 0;
     mode_changes_plus[mode_count_plus].mems = ALL_MEMBERS;
     mode_changes_plus[mode_count_plus].id = NULL;
-    mode_changes_plus[mode_count_plus++].arg = key;
+    mode_changes_plus[mode_count_plus++].arg = chptr->mode.key;
   }
   else if (dir == MODE_DEL)
   {
