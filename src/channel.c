@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.402 2003/07/21 01:58:24 michael Exp $
+ *  $Id: channel.c,v 7.403 2003/07/25 23:49:20 michael Exp $
  */
 
 #include "stdinc.h"
@@ -50,8 +50,9 @@ dlink_list global_channel_list = { NULL, NULL, 0 };
 dlink_list lazylink_channels = { NULL, NULL, 0 };
 BlockHeap *channel_heap;
 BlockHeap *ban_heap;
-BlockHeap *topic_heap;
-BlockHeap *member_heap;
+
+static BlockHeap *topic_heap;
+static BlockHeap *member_heap;
 
 static void destroy_channel(struct Channel *);
 static void send_mode_list(struct Client *client_p, const char *chname,

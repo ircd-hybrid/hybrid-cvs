@@ -25,7 +25,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: balloc.c,v 7.47 2003/06/26 12:19:49 michael Exp $
+ *  $Id: balloc.c,v 7.48 2003/07/25 23:49:20 michael Exp $
  */
 
 /* 
@@ -219,6 +219,7 @@ initBlockHeap(void)
 }
 #endif /* HAVE_MMAP */
 
+static int BlockHeapGarbageCollect(BlockHeap *bh);
 
 static void
 heap_garbage_collection(void *arg)
@@ -475,8 +476,8 @@ BlockHeapFree(BlockHeap * bh, void *ptr)
 /* Returns:                                                                 */
 /*   0 if successful, 1 if bh == NULL                                       */
 /* ************************************************************************ */
-int
-BlockHeapGarbageCollect(BlockHeap * bh)
+static int
+BlockHeapGarbageCollect(BlockHeap *bh)
 {
     Block *walker, *last;
 

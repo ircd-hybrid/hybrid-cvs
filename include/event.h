@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: event.h,v 1.13 2002/09/20 05:31:54 db Exp $
+ *  $Id: event.h,v 1.14 2003/07/25 23:49:18 michael Exp $
  */
 
 #ifndef INCLUDED_event_h
@@ -51,9 +51,7 @@ extern void eventRun(void);
 extern time_t eventNextTime(void);
 extern void eventInit(void);
 extern void eventDelete(EVH *func, void *);
-extern int eventFind(EVH *func, void *);
 extern void set_back_events(time_t);
-
-extern void show_events( struct Client *source_p);
+extern void show_events(struct Client *source_p);
 
 #endif /* INCLUDED_event_h */

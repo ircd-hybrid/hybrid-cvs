@@ -19,14 +19,15 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: getopt.c,v 7.16 2003/06/22 00:53:01 joshk Exp $
+ *  $Id: getopt.c,v 7.17 2003/07/25 23:49:20 michael Exp $
  */
 
 #include "stdinc.h"
-
 #include "ircd_getopt.h"
 
 #define OPTCHAR '-'
+
+static void usage(const char *name);
 
 void
 parseargs(int *argc, char ***argv, struct lgetopt *opts)
@@ -109,22 +110,22 @@ parseargs(int *argc, char ***argv, struct lgetopt *opts)
     }
 }
 
-void 
-usage(char *name)
+static void 
+usage(const char *name)
 {
-  int i = 0;
+  int i;
   
   fprintf(stderr, "Usage: %s [options]\n", name);
   fprintf(stderr, "Where valid options are:\n");
   
   for (i = 0; myopts[i].opt; i++)
-    {
-      fprintf(stderr, "\t%c%-10s %-20s%s\n", OPTCHAR, myopts[i].opt, 
-	      (myopts[i].argtype == YESNO || myopts[i].argtype == USAGE) ? "" : 
-	      myopts[i].argtype == INTEGER ? "<number>" : "<string>",
-	      myopts[i].desc);
-    }
-  
+  {
+    fprintf(stderr, "\t%c%-10s %-20s%s\n", OPTCHAR, myopts[i].opt, 
+            (myopts[i].argtype == YESNO || myopts[i].argtype == USAGE) ? "" : 
+            myopts[i].argtype == INTEGER ? "<number>" : "<string>",
+            myopts[i].desc);
+  }
+
   exit(EXIT_FAILURE);
 }
 

@@ -38,7 +38,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: event.c,v 7.36 2003/06/22 00:53:01 joshk Exp $
+ *  $Id: event.c,v 7.37 2003/07/25 23:49:20 michael Exp $
  */
 
 /*
@@ -62,6 +62,7 @@
 static const char *last_event_ran = NULL;
 struct ev_entry event_table[MAX_EVENTS];
 static time_t event_time_min = -1;
+static int eventFind(EVH *func, void *arg);
 
 /*
  * void eventAdd(const char *name, EVH *func, void *arg, time_t when)
@@ -108,9 +109,7 @@ eventAdd(const char *name, EVH *func, void *arg, time_t when)
 void
 eventDelete(EVH *func, void *arg)
 {
-  int i;
-
-  i = eventFind(func, arg);
+  int i = eventFind(func, arg);
 
   if (i == -1)
     return;
@@ -205,7 +204,7 @@ void
 eventInit(void)
 {
   last_event_ran = NULL;
-  memset((void *)event_table, 0, sizeof(event_table));
+  memset(event_table, 0, sizeof(event_table));
 }
 
 /*
@@ -215,7 +214,7 @@ eventInit(void)
  * Output: Index to the slow in the event_table
  * Side Effects: None
  */
-int
+static int
 eventFind(EVH *func, void *arg)
 {
   int i;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.399 2003/07/25 23:16:10 michael Exp $
+ *  $Id: client.c,v 7.400 2003/07/25 23:49:20 michael Exp $
  */
 
 #include "stdinc.h"
@@ -153,7 +153,7 @@ make_client(struct Client *from)
   return(client_p);
 }
 
-void
+static void
 free_client(struct Client *client_p)
 {
   assert(client_p != NULL);
