@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.137 2001/04/21 19:45:17 kreator Exp $
+ * $Id: ircd.c,v 7.138 2001/04/24 06:26:49 jdc Exp $
  */
 
 #include <sys/types.h>
@@ -32,6 +32,7 @@
 #include <time.h>
 #include <pwd.h>
 #include <fcntl.h>
+#include <signal.h>
 #include <unistd.h>
 
 #include "setup.h"
