@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.c,v 7.49 2001/01/17 23:27:17 fl_ Exp $
+ * $Id: modules.c,v 7.50 2001/01/18 00:42:58 fl_ Exp $
  */
 
 #include <dlfcn.h>
@@ -294,7 +294,6 @@ load_a_module (char *path, int check)
 
   tmpptr = dlopen (path, RTLD_NOW);
 
-sendto_realops_flags(FLAGS_ALL, "%s", path);  
   if (tmpptr == NULL)
   {
       const char *err = dlerror();
