@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_log.c,v 7.14 2000/12/21 13:39:52 db Exp $
+ *   $Id: s_log.c,v 7.15 2000/12/22 15:51:35 db Exp $
  */
 #include "client.h"	/* Needed for struct Client */
 #include "s_log.h"
@@ -197,7 +197,7 @@ void log_user_exit(struct Client *sptr)
 	  on_for / 3600, (on_for % 3600)/60,
 	  on_for % 60, sptr->name,
 	  sptr->username, sptr->host,
-	  sptr->sendK, sptr->receiveK);
+	  sptr->localClient->sendK, sptr->localClient->receiveK);
     }
 
 #else

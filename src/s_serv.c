@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.86 2000/12/21 13:39:53 db Exp $
+ *   $Id: s_serv.c,v 7.87 2000/12/22 15:51:35 db Exp $
  */
 #include "tools.h"
 #include "s_serv.h"
@@ -1534,7 +1534,7 @@ serv_connect_callback(int fd, int status, void *data)
     /* COMM_OK, so continue the connection procedure */
     /* Get the C/N lines */
     c_conf = find_conf_name(&cptr->localClient->confs,
-			    cptr->name, CONF_CONNECT_SERVER);
+			    cptr->name, CONF_CONNECT_SERVER); 
     if (!c_conf)
       { 
         sendto_realops_flags(FLAGS_ALL,

@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_set.c,v 1.19 2000/12/21 03:46:23 db Exp $ */
+ *   $Id: m_set.c,v 1.20 2000/12/22 15:51:29 db Exp $ */
 
 /* rewritten by jdc */
 
@@ -385,7 +385,7 @@ int mo_set(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
        */
       for (i=0; set_cmd_table[i].handler; i++)
 	{
-	  if (!strcasecmp(set_cmd_table[i].name, parv[1]))
+	  if (!irccmp(set_cmd_table[i].name, parv[1]))
 	    {
 	      /*
 	       * Command found; now execute the code

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: class.c,v 7.19 2000/12/22 04:10:05 ejb Exp $
+ *   $Id: class.c,v 7.20 2000/12/22 15:51:33 db Exp $
  */
 #include "tools.h"
 #include "class.h"
@@ -186,7 +186,7 @@ void    add_class(char *classname,
   t = find_class(classname);
   if (t == ClassList)
     {
-      p = (struct Class *)make_class();
+      p = make_class();
       p->next = t->next;
       t->next = p;
     }
@@ -197,6 +197,7 @@ void    add_class(char *classname,
          classname, p, t, confreq, ping, maxli, sendq));
 
   /* classname already known to be non NULL */
+  MyFree(ClassName(p));
   DupString(ClassName(p),classname);
   ConFreq(p) = confreq;
   PingFreq(p) = ping;
@@ -267,7 +268,7 @@ void    check_class()
  */
 void    initclass()
 {
-  ClassList = (struct Class *)make_class();
+  ClassList = make_class();
 
   ClassType(ClassList) = 0;
   DupString(ClassName(ClassList),"default");

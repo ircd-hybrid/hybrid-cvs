@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.115 2000/12/22 08:11:25 db Exp $
+ *  $Id: s_conf.c,v 7.116 2000/12/22 15:51:34 db Exp $
  */
 #include "tools.h"
 #include "s_conf.h"
@@ -3199,6 +3199,13 @@ void conf_add_fields(struct ConfItem *aconf,
     DupString(aconf->className, class_field);
 }
 
+/*
+ * yyerror
+ *
+ * inputs	- message from parser
+ * output	- none
+ * side effects	- message to opers and log file entry is made
+ */
 void yyerror(char *msg)
 {
   char newlinebuf[BUFSIZE];
@@ -3207,6 +3214,9 @@ void yyerror(char *msg)
 
   sendto_realops_flags(FLAGS_ALL,"%d: %s on line: %s",
 		       lineno, msg, newlinebuf);
+
+  log(L_WARN, "%d: %s on line: %s",
+      lineno, msg, newlinebuf);
 }
 
 int conf_fbgets(char *buf,int max_size, FBFILE *fb)
