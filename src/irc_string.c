@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: irc_string.c,v 7.22 2001/01/25 19:03:10 androsyn Exp $
+ *  $Id: irc_string.c,v 7.23 2001/01/26 05:40:42 ejb Exp $
  */
 #include "config.h"
 #include "tools.h"
@@ -431,7 +431,7 @@ const char *inetntop(int af, const void *src, char *dst, unsigned int size)
 		if(!IN6_IS_ADDR_V4MAPPED((const struct in6_addr *)src))
 			return (inet_ntop6(src, dst, size));
 		else {
-			return(inet_ntop4((unsigned char *)&((struct in6_addr *)src)->s6_addr32[3], dst, size));
+			return(inet_ntop4((unsigned char *)&((struct in6_addr *)src)->s6_addr[12], dst, size));
 		}
 
 #endif

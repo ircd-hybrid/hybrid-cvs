@@ -4,7 +4,7 @@
  * shape or form. The author takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: res.c,v 7.45 2001/01/24 21:40:24 davidt Exp $
+ * $Id: res.c,v 7.46 2001/01/26 05:40:43 ejb Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -665,7 +665,7 @@ static void do_query_number(const struct DNSQuery* query,
   } else
   {
 	/* IPv4 in IPv6 addresses..we want to resolve them correctly too */
-	  cp = (unsigned char *)&addr->sins.sin6.s6_addr32[3];
+	  cp = (unsigned char *)&addr->sins.sin6.s6_addr[12];
 	  ircsprintf(ipbuf, "%u.%u.%u.%u.in-addr.arpa.",
         	     (unsigned int)(cp[3]), (unsigned int)(cp[2]),
 	             (unsigned int)(cp[1]), (unsigned int)(cp[0]));

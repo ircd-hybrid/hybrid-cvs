@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: ircd_defs.h,v 7.15 2001/01/24 21:40:17 davidt Exp $
+ * $Id: ircd_defs.h,v 7.16 2001/01/26 05:40:36 ejb Exp $
  *
  * ircd_defs.h - Global size definitions for record entries used
  * througout ircd. Please think 3 times before adding anything to this
@@ -108,12 +108,6 @@ struct irc_inaddr
 #endif
 	} sins;
 };
-
-#ifdef IPV6
-#ifndef s6_addr32 /* XXX - FreeBSD. should be in configure? */
-#define s6_addr32 __u6_addr.__u6_addr32
-#endif
-#endif
 
 struct irc_sockaddr
 {

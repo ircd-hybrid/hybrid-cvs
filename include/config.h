@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.82 2001/01/25 11:42:44 ejb Exp $
+ * $Id: config.h,v 7.83 2001/01/26 05:40:35 ejb Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -245,7 +245,7 @@
  * developed, and is not guaranteed to work properly..
  */
 
-#undef IPV6
+#define IPV6
 
 /*   STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP  */
 

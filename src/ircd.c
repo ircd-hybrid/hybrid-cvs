@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.113 2001/01/26 02:54:28 androsyn Exp $
+ * $Id: ircd.c,v 7.114 2001/01/26 05:40:43 ejb Exp $
  */
 
 #include <sys/types.h>
@@ -571,7 +571,7 @@ int main(int argc, char *argv[])
    * for IPv6 -- aaron
    */
 #ifdef IPV6
-  if(!IN6_IS_ADDR_UNSPECIFIED(&IN_ADDR(ServerInfo.ip)))
+  if(!IN6_IS_ADDR_UNSPECIFIED(&ServerInfo.ip.sins.sin6))
 #else
   if(IN_ADDR(ServerInfo.ip) != 0)
 #endif
