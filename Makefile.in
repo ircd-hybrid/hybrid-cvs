@@ -16,7 +16,7 @@
 #*   along with this program; if not, write to the Free Software
 #*   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #*
-#*   $Id: Makefile.in,v 7.54 2003/05/18 19:26:23 joshk Exp $
+#*   $Id: Makefile.in,v 7.55 2003/05/22 02:34:21 joshk Exp $
 #*/
 
 RM=@RM@
@@ -70,14 +70,11 @@ distclean:
 		${MAKE} ${MFLAGS} distclean || exit; cd ..;\
 	done
 
-depend: .depend-stamp
-.depend-stamp:
+depend:
 	@for i in $(DEPEND_DIRS); do \
 		echo "depend ==> $$i";\
-		cd $$i;\
-		${MAKE} ${MFLAGS} depend || exit; cd ..;\
+		cd $$i && ${MAKE} ${MFLAGS} .depend || exit; cd .. ;\
 	done
-	touch .depend-stamp
 
 install: all
 	@for i in $(INSTALL_DIRS); do \
