@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.180 2002/01/13 23:47:21 leeh Exp $
+ *  $Id: s_user.c,v 7.181 2002/01/13 23:49:58 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -645,10 +645,7 @@ introduce_client(struct Client *client_p, struct Client *source_p,
 		       source_p->info);
 	}
     }
-#if 0  
-  if (ubuf[1])
-    send_umode_out(client_p, source_p, 0);
-#endif
+  
   return 0;
 }
 
