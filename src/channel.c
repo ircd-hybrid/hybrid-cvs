@@ -34,7 +34,7 @@
  *                mode * -p etc. if flag was clear
  *
  *
- * $Id: channel.c,v 7.60 2000/10/26 17:36:03 adrian Exp $
+ * $Id: channel.c,v 7.61 2000/10/31 22:59:42 db Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -1830,7 +1830,7 @@ void set_channel_mode(struct Client *cptr,
           /* Un documented for now , I have no idea how this got here ;-) */
 #ifdef JUPE_CHANNEL
         case 'j':
-          if(MyConnect(sptr) && IsAnOper(sptr))
+          if(MyConnect(sptr) && IsAnyOper(sptr))
             {
               if (whatt == MODE_ADD)
                 {
@@ -2226,7 +2226,7 @@ int     can_join(struct Client *sptr, struct Channel *chptr, char *key, int *fla
     {
       sendto_ops_flags(FLAGS_SPY,
              "%s %s (%s@%s) is attempting to join locally juped channel %s",
-                     IsOper(sptr) ? "Oper" : "User", sptr->name,
+                     IsGlobalOper(sptr) ? "Oper" : "User", sptr->name,
                      sptr->username, sptr->host,chptr->chname);
       return (ERR_BADCHANNAME);
     }

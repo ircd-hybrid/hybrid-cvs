@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_links.c,v 7.5 2000/09/29 17:17:00 ejb Exp $
+ *   $Id: m_links.c,v 7.6 2000/10/31 22:59:47 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -122,7 +122,7 @@ int m_links(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 
   assert(0 != mask);
 
-  if(!IsAnOper(sptr))
+  if(!IsAnyOper(sptr))
     {
       /* reject non local requests */
       if(!MyClient(sptr))
@@ -180,7 +180,7 @@ int m_links(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
         continue;
       if (*mask && !match(mask, acptr->name))
         continue;
-      if(IsAnOper(sptr))
+      if(IsAnyOper(sptr))
          sendto_one(sptr, form_str(RPL_LINKS),
                     me.name, parv[0], acptr->name, acptr->serv->up,
                     acptr->hopcount, (acptr->info[0] ? acptr->info :
@@ -244,7 +244,7 @@ int ms_links(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 
   assert(0 != mask);
 
-  if(!IsAnOper(sptr))
+  if(!IsAnyOper(sptr))
     {
       /* reject non local requests */
       if(!MyClient(sptr))
@@ -303,7 +303,7 @@ int ms_links(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
         continue;
       if (*mask && !match(mask, acptr->name))
         continue;
-      if(IsAnOper(sptr))
+      if(IsAnyOper(sptr))
          sendto_one(sptr, form_str(RPL_LINKS),
                     me.name, parv[0], acptr->name, acptr->serv->up,
                     acptr->hopcount, (acptr->info[0] ? acptr->info :

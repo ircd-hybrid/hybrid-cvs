@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: hash.c,v 7.6 2000/10/24 18:47:16 adrian Exp $
+ *  $Id: hash.c,v 7.7 2000/10/31 22:59:44 db Exp $
  */
 #include "s_conf.h"
 #include "channel.h"
@@ -460,7 +460,7 @@ int m_hash(struct Client *cptr, struct Client *sptr,int parc,char *parv[])
   char  hash_log_file[256];
   char  timebuffer[MAX_DATE_STRING];
 
-  if (!MyClient(sptr) || !IsOper(sptr))
+  if (!MyClient(sptr) || !IsGlobalOper(sptr))
     {
       sendto_one(sptr, form_str(ERR_NOPRIVILEGES), me.name, parv[0]);
       return 0;

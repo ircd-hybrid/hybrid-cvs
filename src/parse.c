@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.17 2000/10/30 07:32:52 db Exp $
+ *   $Id: parse.c,v 7.18 2000/10/31 22:59:54 db Exp $
  */
 #include "parse.h"
 #include "client.h"
@@ -232,7 +232,7 @@ int parse(struct Client *cptr, char *buffer, char *bufend)
       if ((mptr->flags & 1) && !(IsServer(cptr)))
         {
 	  if (ConfigFileEntry.no_oper_flood) {
-            if (IsAnOper(cptr))
+            if (IsAnyOper(cptr))
               /* "randomly" (weighted) increase the since */
               cptr->since += (cptr->receiveM % 5) ? 1 : 0;
             else

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_die.c,v 7.5 2000/10/29 21:01:24 adrian Exp $
+ *   $Id: m_die.c,v 7.6 2000/10/31 22:59:45 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -97,7 +97,7 @@ int mo_die(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   struct Client* acptr;
   int      i;
 
-  if (!MyClient(sptr) || !IsAnOper(sptr))
+  if (!MyClient(sptr) || !IsAnyOper(sptr))
     {
       sendto_one(sptr, form_str(ERR_NOPRIVILEGES), me.name, parv[0]);
       return 0;
@@ -131,7 +131,7 @@ int mo_die(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
         continue;
       if (IsClient(acptr))
         {
-          if(IsAnOper(acptr))
+          if(IsAnyOper(acptr))
             sendto_one(acptr,
                        ":%s NOTICE %s :Server Terminating. %s",
                        me.name, acptr->name,

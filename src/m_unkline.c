@@ -21,7 +21,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: m_unkline.c,v 7.7 2000/09/29 17:17:04 ejb Exp $
+ *   $Id: m_unkline.c,v 7.8 2000/10/31 22:59:51 db Exp $
  */
 #include "handlers.h"
 #include "channel.h"
@@ -86,7 +86,7 @@ int mo_unkline (struct Client *cptr,struct Client *sptr,int parc,char *parv[])
       return -1;
     }
 
-  if (!IsAnOper(sptr))  
+  if (!IsAnyOper(sptr))  
     {
       sendto_one(sptr, form_str(ERR_NOPRIVILEGES), me.name, 
                  parv[0]);

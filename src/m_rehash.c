@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_rehash.c,v 7.5 2000/09/29 17:17:02 ejb Exp $
+ *   $Id: m_rehash.c,v 7.6 2000/10/31 22:59:50 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -100,7 +100,7 @@ int mo_rehash(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 {
   int found = NO;
 
-  if (!MyClient(sptr) || !IsAnOper(sptr))
+  if (!MyClient(sptr) || !IsAnyOper(sptr))
     {
       sendto_one(sptr, form_str(ERR_NOPRIVILEGES), me.name, parv[0]);
       return 0;

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_gline.c,v 7.9 2000/10/26 15:04:29 db Exp $
+ *  $Id: m_gline.c,v 7.10 2000/10/31 22:59:45 db Exp $
  */
 #include "m_gline.h"
 #include "channel.h"
@@ -112,7 +112,7 @@ int     mo_gline(struct Client *cptr,
     {
 		if (ConfigFileEntry.glines) {
 			/* Only globals can apply Glines */
-			if (!IsOper(sptr))
+			if (!IsGlobalOper(sptr))
 			{
 				sendto_one(sptr, form_str(ERR_NOPRIVILEGES), me.name, parv[0]);
 				return 0;
@@ -371,7 +371,7 @@ int     ms_gline(struct Client *cptr,
   {
 	  if (ConfigFileEntry.glines) {
 /* Only globals can apply Glines */
-      if (!IsOper(sptr))
+      if (!IsGlobalOper(sptr))
         {
           sendto_one(sptr, form_str(ERR_NOPRIVILEGES), me.name, parv[0]);
           return 0;

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.44 2000/10/31 22:41:35 adrian Exp $
+ *  $Id: s_bsd.c,v 7.45 2000/10/31 22:59:54 db Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -864,7 +864,7 @@ read_packet(int fd, void *data)
     }
     
     if (IsPerson(cptr) &&
-        (ConfigFileEntry.no_oper_flood && !IsAnOper(cptr)) &&
+        (ConfigFileEntry.no_oper_flood && !IsAnyOper(cptr)) &&
         DBufLength(&cptr->recvQ) > CLIENT_FLOOD) {
       exit_client(cptr, cptr, cptr, "Excess Flood");
       return;

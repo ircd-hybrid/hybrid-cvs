@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 7.31 2000/10/28 02:29:09 toot Exp $
+ *   $Id: m_join.c,v 7.32 2000/10/31 22:59:46 db Exp $
  */
 
 #include "handlers.h"
@@ -604,7 +604,7 @@ int     ms_join(struct Client *cptr,
 
 #ifdef ANTI_SPAMBOT       /* Dianora */
 
-          if( MyConnect(sptr) && !IsAnOper(sptr) )
+          if( MyConnect(sptr) && !IsAnyOper(sptr) )
             {
               if(GlobalSetOptions.spam_num &&
 		 (sptr->join_leave_count >= GlobalSetOptions.spam_num))
@@ -678,7 +678,7 @@ int     ms_join(struct Client *cptr,
              }
 
           if ((sptr->user->joined >= MAXCHANNELSPERUSER) &&
-             (!IsAnOper(sptr) || (sptr->user->joined >= MAXCHANNELSPERUSER*3)))
+             (!IsAnyOper(sptr) || (sptr->user->joined >= MAXCHANNELSPERUSER*3)))
             {
               sendto_one(sptr, form_str(ERR_TOOMANYCHANNELS),
                          me.name, parv[0], name);

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operwall.c,v 7.3 2000/07/20 02:42:51 db Exp $
+ *   $Id: m_operwall.c,v 7.4 2000/10/31 22:59:49 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -101,7 +101,7 @@ int mo_operwall(struct Client *cptr, struct Client *sptr, int parc, char *parv[]
 
   if (check_registered_user(sptr))
     return 0;
-  if (!IsAnOper(sptr) || IsServer(sptr))
+  if (!IsAnyOper(sptr) || IsServer(sptr))
     {
       if (MyClient(sptr) && !IsServer(sptr))
         sendto_one(sptr, form_str(ERR_NOPRIVILEGES),
@@ -149,7 +149,7 @@ int ms_operwall(struct Client *cptr, struct Client *sptr, int parc, char *parv[]
 
   if (check_registered_user(sptr))
     return 0;
-  if (!IsAnOper(sptr) || IsServer(sptr))
+  if (!IsAnyOper(sptr) || IsServer(sptr))
     {
       if (MyClient(sptr) && !IsServer(sptr))
         sendto_one(sptr, form_str(ERR_NOPRIVILEGES),

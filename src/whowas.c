@@ -16,7 +16,7 @@
 *   along with this program; if not, write to the Free Software
 *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 *
-*   $Id: whowas.c,v 7.3 2000/03/31 02:38:32 db Exp $
+*   $Id: whowas.c,v 7.4 2000/10/31 22:59:56 db Exp $
 */
 #include "whowas.h"
 #include "client.h"
@@ -188,7 +188,7 @@ int     m_whowas(struct Client *cptr,
     if (hunt_server(cptr,sptr,":%s WHOWAS %s %s :%s", 3,parc,parv))
       return 0;
 
-  if(!IsAnOper(sptr) && !MyConnect(sptr)) /* pace non local requests */
+  if(!IsAnyOper(sptr) && !MyConnect(sptr)) /* pace non local requests */
     {
       if((last_used + ConfigFileEntry.whois_wait) > CurrentTime)
         {

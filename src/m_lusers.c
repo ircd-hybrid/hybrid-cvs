@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_lusers.c,v 7.3 2000/07/20 02:42:51 db Exp $
+ *   $Id: m_lusers.c,v 7.4 2000/10/31 22:59:48 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -101,7 +101,7 @@ int m_lusers(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 {
   static time_t last_used = 0;
 
-  if (!IsAnOper(sptr))
+  if (!IsAnyOper(sptr))
     {
       if ((last_used + ConfigFileEntry.pace_wait) > CurrentTime)
         {
@@ -140,7 +140,7 @@ int ms_lusers(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 {
   static time_t last_used = 0;
 
-  if (!IsAnOper(sptr))
+  if (!IsAnyOper(sptr))
     {
       if ((last_used + ConfigFileEntry.pace_wait) > CurrentTime)
         {

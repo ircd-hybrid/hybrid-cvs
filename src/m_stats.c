@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 7.15 2000/10/30 23:18:21 db Exp $
+ *  $Id: m_stats.c,v 7.16 2000/10/31 22:59:51 db Exp $
  */
 #include "handlers.h"  /* m_pass prototype */
 #include "class.h"       /* report_classes */
@@ -252,7 +252,7 @@ int ms_stats(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   if (hunt_server(cptr,sptr,":%s STATS %s :%s",2,parc,parv)!=HUNTED_ISME)
     return 0;
 
-  if (IsAnOper(sptr))
+  if (IsAnyOper(sptr))
     mo_stats(cptr,sptr,parc,parv);
   else
     m_stats(cptr,sptr,parc,parv);
@@ -528,12 +528,12 @@ static void stats_L(struct Client *sptr,char *name,int doall, int wilds)
 	continue;
 
       if (IsPerson(acptr) &&
-	  !IsAnOper(acptr) && !IsAnOper(sptr) &&
+	  !IsAnyOper(acptr) && !IsAnyOper(sptr) &&
 	  (acptr != sptr))
 	continue;
       if (IsInvisible(acptr) && (doall || wilds) &&
-	  !(MyConnect(sptr) && IsOper(sptr)) &&
-	  !IsAnOper(acptr) && (acptr != sptr))
+	  !(MyConnect(sptr) && IsGlobalOper(sptr)) &&
+	  !IsAnyOper(acptr) && (acptr != sptr))
 	continue;
       if (!doall && wilds && !match(name, acptr->name))
 	continue;
@@ -549,10 +549,10 @@ static void stats_L(struct Client *sptr,char *name,int doall, int wilds)
        * - Dianora
        */
       /* trust opers not on this server */
-      /* if(IsAnOper(sptr)) */
+      /* if(IsAnyOper(sptr)) */
 
       /* Don't trust opers not on this server */
-      if(MyClient(sptr) && IsAnOper(sptr))
+      if(MyClient(sptr) && IsAnyOper(sptr))
 	{
 	  sendto_one(sptr, Lformat, me.name,
                      RPL_STATSLINKINFO, sptr->name,

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_hash.c,v 7.2 2000/07/20 02:42:49 db Exp $
+ *   $Id: m_hash.c,v 7.3 2000/10/31 22:59:45 db Exp $
  */
 #include "handlers.h"
 #include "channel.h"
@@ -120,7 +120,7 @@ int m_hash(struct Client* cptr, struct Client* sptr, int parc, char* parv[])
 {
   struct HashStats stats;
 
-  if (!MyClient(sptr) || !IsOper(sptr)) {
+  if (!MyClient(sptr) || !IsGlobalOper(sptr)) {
     sendto_one(sptr, form_str(ERR_NOPRIVILEGES), me.name, parv[0]);
     return 0;
   }

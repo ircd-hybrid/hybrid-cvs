@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kline.c,v 7.16 2000/10/26 19:37:46 db Exp $
+ *   $Id: m_kline.c,v 7.17 2000/10/31 22:59:47 db Exp $
  */
 #include "m_kline.h"
 #include "channel.h"
@@ -422,7 +422,7 @@ mo_kline(struct Client *cptr,
   else
 #endif
     {
-      if (!MyClient(sptr) || !IsAnOper(sptr))
+      if (!MyClient(sptr) || !IsAnyOper(sptr))
         {
           sendto_one(sptr, form_str(ERR_NOPRIVILEGES), me.name, parv[0]);
           return 0;
@@ -921,7 +921,7 @@ ms_kline(struct Client *cptr,
   else
 #endif
     {
-      if (!MyClient(sptr) || !IsAnOper(sptr))
+      if (!MyClient(sptr) || !IsAnyOper(sptr))
         {
           sendto_one(sptr, form_str(ERR_NOPRIVILEGES), me.name, parv[0]);
           return 0;
@@ -1515,7 +1515,7 @@ mo_dline(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   const char* current_date;
   const char *dconf;
 
-  if (!MyClient(sptr) || !IsAnOper(sptr))
+  if (!MyClient(sptr) || !IsAnyOper(sptr))
     {
       sendto_one(sptr, form_str(ERR_NOPRIVILEGES), me.name, parv[0]);
       return 0;

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_nick.c,v 7.10 2000/10/06 04:27:02 lusky Exp $
+ *   $Id: m_nick.c,v 7.11 2000/10/31 22:59:48 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -225,7 +225,7 @@ int m_nick(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
       return 0;
     }
 
-  if (MyConnect(sptr) && !IsServer(sptr) && !IsAnOper(sptr) &&
+  if (MyConnect(sptr) && !IsServer(sptr) && !IsAnyOper(sptr) &&
      find_q_line(nick, sptr->username, sptr->host)) 
     {
       sendto_realops_flags(FLAGS_REJ,

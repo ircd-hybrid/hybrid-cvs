@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.36 2000/10/30 08:44:13 adrian Exp $
+ *   $Id: send.c,v 7.37 2000/10/31 22:59:55 db Exp $
  */
 #include "send.h"
 #include "channel.h"
@@ -132,7 +132,7 @@ send_message(struct Client *to, char *msg, int len)
       if (IsDoingList(to))
         {
           /* Pop the sendq for this message */
-          /*if (!IsAnOper(to))
+          /*if (!IsAnyOper(to))
           sendto_ops("LIST blocked for %s", get_client_name(to, FALSE)); */
           SetSendqPop(to);
           return 0;
@@ -954,10 +954,10 @@ sendto_wallops_butone(struct Client *one, struct Client *from, const char *patte
         continue;
       
       if (!(IsServer(from) || IsMe(from)) &&
-          MyClient(cptr) && !IsOper(cptr))
+          MyClient(cptr) && !IsGlobalOper(cptr))
         continue;
 
-      if (MyClient(cptr) && !IsAnOper(cptr) &&
+      if (MyClient(cptr) && !IsAnyOper(cptr) &&
           !(IsServer(from) || IsMe(from)))
         continue;
 

@@ -3,7 +3,7 @@
  *   Copyright (C) 1990 Jarkko Oikarinen and
  *                      University of Oulu, Co Center
  *
- * $Id: m_list.c,v 7.10 2000/10/22 02:28:04 db Exp $ 
+ * $Id: m_list.c,v 7.11 2000/10/31 22:59:47 db Exp $ 
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -72,7 +72,7 @@ int     m_list(struct Client *cptr,
 	 }
     }
 
-  if(!IsAnOper(sptr))
+  if(!IsAnyOper(sptr))
     {
       if(((last_used + ConfigFileEntry.pace_wait) > CurrentTime) && (!IsDoingList(sptr)))
         {
