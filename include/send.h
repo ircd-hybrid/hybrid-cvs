@@ -2,7 +2,7 @@
  * send.h
  * Copyright (C) 1999 Patrick Alken
  *
- * $Id: send.h,v 7.37 2001/01/18 09:07:29 ejb Exp $
+ * $Id: send.h,v 7.38 2001/01/26 20:45:50 db Exp $
  */
 
 #ifndef INCLUDED_send_h
@@ -161,6 +161,10 @@ extern  void sendto_anywhere(struct Client *, struct Client *,
 			     const char *, ...)
 	    __attribute__((format (printf, 3, 4)));
 #endif
+
+extern void
+kill_client(struct Client *cptr, struct Client *diedie,
+	    const char *pattern, ... );
 
 /* used when sending to #mask or $mask */
 
