@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fdlist.c,v 7.37 2003/06/18 09:15:14 michael Exp $
+ *  $Id: fdlist.c,v 7.38 2003/12/09 00:29:40 metalrock Exp $
  */
 #include "stdinc.h"
 #include "fdlist.h"
@@ -134,6 +134,12 @@ fd_close(int fd)
   comm_setselect(fd, FDLIST_NONE, COMM_SELECT_WRITE|COMM_SELECT_READ,
 		 NULL, NULL, 0);
 
+  if (F->dns_query != NULL)
+  {
+    delete_resolver_queries(F->dns_query);
+    MyFree(F->dns_query);
+    F->dns_query = NULL;
+  }
   F->flags.open = 0;
   fdlist_update_biggest(fd, 0);
   number_fd--;
