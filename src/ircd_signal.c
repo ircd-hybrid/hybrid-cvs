@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_signal.c,v 7.10 2002/05/24 23:34:48 androsyn Exp $
+ * $Id: ircd_signal.c,v 7.11 2002/05/25 09:00:14 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -116,11 +116,6 @@ void setup_signals()
   act.sa_handler = sigterm_handler;
   sigaddset(&act.sa_mask, SIGTERM);
   sigaction(SIGTERM, &act, 0);
-#ifdef USE_SIGIO
-  act.sa_handler = do_sigio;
-  sigaddset(&act.sa_mask, SIGIO);
-  sigaction(SIGIO, &act, 0);
-#endif
 
 }
 
