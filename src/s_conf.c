@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.298 2002/04/22 22:16:57 leeh Exp $
+ *  $Id: s_conf.c,v 7.299 2002/04/25 17:53:22 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -1422,8 +1422,6 @@ set_default_conf(void)
   ConfigChannel.vchans_oper_only = NO;
 
   ConfigChannel.use_except  = YES;
-  /* ConfigChannel.use_halfops = YES; */ /* Don't set, as this can't
-                                            be changed at runtime */
   ConfigChannel.use_invex   = YES;
   ConfigChannel.use_knock   = YES;
   ConfigChannel.use_vchans = NO;
@@ -1499,7 +1497,11 @@ validate_conf(void)
   /* Hasn't been set yet, so set it now */
   if(ConfigChannel.use_halfops == -1)
     ConfigChannel.use_halfops = 1;
-  
+
+  /* hasnt been set, disable it by default */
+  if(ConfigChannel.use_anonops == -1)
+    ConfigChannel.use_anonops = 0;
+
   GlobalSetOptions.idletime = (ConfigFileEntry.idletime * 60);
 }
 
@@ -1968,6 +1970,7 @@ read_conf_files(int cold)
   {
     /* set to 'undefined' */
     ConfigChannel.use_halfops = -1;
+    ConfigChannel.use_anonops = -1;
   }
   else
   {

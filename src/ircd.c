@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.228 2002/04/23 14:26:29 leeh Exp $
+ *  $Id: ircd.c,v 7.229 2002/04/25 17:53:21 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -446,6 +446,10 @@ static void initialize_server_capabs(void)
   {
     default_server_capabs &= ~CAP_HOPS;
   }
+
+  if(ConfigChannel.use_anonops == 0)
+    default_server_capabs &= ~CAP_AOPS;
+  
   default_server_capabs &= ~CAP_ZIP;
 }
 

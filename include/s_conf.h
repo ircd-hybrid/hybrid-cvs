@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.178 2002/03/09 21:48:35 androsyn Exp $
+ *  $Id: s_conf.h,v 7.179 2002/04/25 17:53:18 leeh Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -242,6 +242,7 @@ struct config_file_entry
 
 struct config_channel_entry
 {
+  int	use_anonops;
   int   use_except;
   int   use_halfops;
   int   use_invex;
