@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.82 2001/04/08 16:27:27 fl_ Exp $
+ *   $Id: m_sjoin.c,v 1.83 2001/04/08 18:03:49 fl_ Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -257,7 +257,7 @@ static void ms_sjoin(struct Client *client_p,
 
   if (newts < 800000000)
     {
-      sendto_realops_flags(FLAGS_ALL,"*** Bogus TS %lu on %s ignored from %s",
+      sendto_realops_flags(FLAGS_DEBUG, "*** Bogus TS %lu on %s ignored from %s",
 			   newts, chptr->chname, client_p->name);
       newts = oldts;
     }
