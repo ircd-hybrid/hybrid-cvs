@@ -1,3 +1,17 @@
+db          2002/11/13 00:30:42 EST	(20021113_2)
+
+  Modified files:
+    modules              m_unkline.c 
+  Log:
+  As the result of a nasty core on hemmet I re-examined this code.
+  I'd truly like to know what kind of drugs I was on when I first
+  did this. really. Anyway, this makes more sense to me.
+  
+  Revision  Changes    Path
+  1.49      +41 -62    ircd-hybrid-7/modules/m_unkline.c
+
+
+
 jmallett    2002/11/12 23:33:02 EST	(20021113_1)
 
   Modified files:
@@ -33142,4 +33156,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4107 2002/11/13 04:33:04 jmallett Exp $
+$Id: ChangeLog,v 7.4108 2002/11/13 05:30:44 db Exp $
