@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 1.37 2001/01/01 21:50:32 davidt Exp $
+ *   $Id: m_join.c,v 1.38 2001/01/02 00:35:22 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -91,7 +91,7 @@ int     m_join(struct Client *cptr,
   char  *p = NULL, *p2 = NULL, *p3 = NULL;
   int   successful_join_count = 0; /* Number of channels successfully joined */
   
-  if (!(sptr->user))
+  if (!(sptr->user) || IsServer(sptr))
     {
       /* something is *fucked* - bail */
       return 0;
