@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_jupe.c,v 1.30 2002/07/04 13:13:46 androsyn Exp $
+ *  $Id: m_jupe.c,v 1.31 2002/07/04 13:32:56 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&jupe_msgtab);
 }
 
-const char *_version = "$Revision: 1.30 $";
+const char *_version = "$Revision: 1.31 $";
 #endif
 
 /*
@@ -196,7 +196,7 @@ int bogus_host(char *host)
         ++dots;
     }
      
-  if (!dots || bogus_server )
+  if (!dots || bogus_server || strlen(host) > HOSTLEN)
     return 1;
      
   return 0;
