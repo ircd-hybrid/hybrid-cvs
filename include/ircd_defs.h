@@ -19,11 +19,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_defs.h,v 7.29 2002/07/10 07:06:23 androsyn Exp $
+ *  $Id: ircd_defs.h,v 7.30 2002/07/10 08:31:14 androsyn Exp $
  */
 
 /*
- * NOTE: NICKLEN does not live here anymore. Set it with configure
+ * NOTE: NICKLEN and TOPICLEN do not live here anymore. Set it with configure
  * Otherwise there are no user servicable part here. 
  *
  */
