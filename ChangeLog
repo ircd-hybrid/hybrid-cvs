@@ -1,3 +1,10 @@
+*** 20001202_8 by db
+- add code to move a list from one to the other, this makes
+  de-opping an entire channel a simple job of moving lists over from
+  the chanop list to the peon list.
+
+
+
 *** 20001202_7 by db
 - real fix for channel.c change_channel_membrship
 - fixed missing prototypes in tools.h that would have found previous bug
@@ -1322,7 +1329,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.662 2000/12/02 15:19:33 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.663 2000/12/02 16:36:05 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
