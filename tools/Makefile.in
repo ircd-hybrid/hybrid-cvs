@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 7.10 2000/12/23 05:05:56 toot Exp $
+# $Id: Makefile.in,v 7.11 2000/12/24 04:29:35 wcampbel Exp $
 
 CC		= @CC@
 INSTALL		= @INSTALL@
@@ -70,6 +70,8 @@ clean:
 
 distclean: clean
 	$(RM) -f Makefile
+
+depend:
 
 .c.o:
 	$(CC) $(CFLAGS) $(INCLUDES) $(CPPFLAGS) -c $<
