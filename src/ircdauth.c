@@ -19,11 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircdauth.c,v 7.59 2003/07/04 11:45:19 adx Exp $
+ *  $Id: ircdauth.c,v 7.60 2003/07/07 04:59:23 joshk Exp $
  */
 
 #include "stdinc.h"
-#include "class.h"
 #include "client.h"
 #include "common.h"
 #include "fdlist.h"

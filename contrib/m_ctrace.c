@@ -19,13 +19,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ctrace.c,v 1.3 2003/05/28 21:11:49 bill Exp $
+ *  $Id: m_ctrace.c,v 1.4 2003/07/07 04:59:22 joshk Exp $
  */
 
 #include "stdinc.h"
 #include "handlers.h"
 #include "tools.h"
-#include "class.h"
 #include "hook.h"
 #include "client.h"
 #include "hash.h"
@@ -35,6 +34,7 @@
 #include "numeric.h"
 #include "fdlist.h"
 #include "s_bsd.h"
+#include "s_conf.h"
 #include "s_serv.h"
 #include "send.h"
 #include "msg.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
   hook_del_event("doing_ctrace");
   mod_del_cmd(&ctrace_msgtab);
 }
-const char *_version = "$Revision: 1.3 $";
+const char *_version = "$Revision: 1.4 $";
 #endif
 static int report_this_status(struct Client *source_p, struct Client *target_p);
 
