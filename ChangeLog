@@ -1,3 +1,16 @@
+db          2002/10/15 22:23:24 EDT	(20021016_0)
+
+  Modified files:
+    src                  ircd_parser.y 
+  Log:
+  Modifications as suggested by
+  Michael <michael@phat-net.de>
+  
+  Revision  Changes    Path
+  1.257     +5 -3      ircd-hybrid-7/src/ircd_parser.y
+
+
+
 bill        2002/10/13 21:26:09 EDT	(20021014_0)
 
   Modified files:
@@ -32456,4 +32469,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4062 2002/10/14 01:26:11 bill Exp $
+$Id: ChangeLog,v 7.4063 2002/10/16 02:23:27 db Exp $
