@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.5 1999/08/15 10:44:16 tomh Exp $
+ *  $Id: client.c,v 7.6 1999/08/15 18:16:15 tomh Exp $
  */
 #include "client.h"
 #include "class.h"
@@ -1513,7 +1513,7 @@ const char* comment        /* Reason for the exit */
                 myctime(sptr->firsttime),
                 on_for / 3600, (on_for % 3600)/60,
                 on_for % 60, sptr->name,
-                sptr->user->username, sptr->user->host,
+                sptr->username, sptr->host,
                 sptr->sendK, sptr->receiveK);
 # else
           {
