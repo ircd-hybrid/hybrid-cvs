@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: hash.c,v 7.7 2000/10/31 22:59:44 db Exp $
+ *  $Id: hash.c,v 7.8 2000/11/06 08:13:34 db Exp $
  */
 #include "s_conf.h"
 #include "channel.h"
@@ -399,7 +399,11 @@ struct Client* hash_find_server(const char* name)
 }
 
 /*
- * find_channel
+ * hash_find_channel
+ * inputs	- pointer to name
+ * 		- pointer to channel
+ * output	- 
+ * side effects	-
  */
 struct Channel* hash_find_channel(const char* name, struct Channel* chptr)
 {

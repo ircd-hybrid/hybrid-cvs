@@ -34,7 +34,7 @@
  *                mode * -p etc. if flag was clear
  *
  *
- * $Id: channel.c,v 7.64 2000/11/06 06:56:46 db Exp $
+ * $Id: channel.c,v 7.65 2000/11/06 08:13:33 db Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -634,7 +634,8 @@ int user_channel_mode(struct Channel *chptr, struct Client *who)
  * write the "simple" list of channel modes for channel chptr onto buffer mbuf
  * with the parameters in pbuf.
  */
-void channel_modes(struct Client *cptr, char *mbuf, char *pbuf, struct Channel *chptr)
+void channel_modes(struct Channel *chptr, struct Client *cptr,
+		   char *mbuf, char *pbuf)
 {
   *mbuf++ = '+';
   if (chptr->mode.mode & MODE_SECRET)
@@ -2583,16 +2584,6 @@ static void free_channel_masks(struct Channel *chptr)
   chptr->banlist = chptr->exceptlist = chptr->denylist = chptr->invexlist = 
     NULL;
   chptr->num_bed = 0;
-}
-
-int     count_channels(struct Client *sptr)
-{
-  struct Channel      *chptr;
-  int   count = 0;
-
-  for (chptr = GlobalChannelList; chptr; chptr = chptr->nextch)
-    count++;
-  return (count);
 }
 
 /* Only leaves need to remove channels that have no local members

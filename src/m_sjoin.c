@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 7.16 2000/11/06 06:56:51 db Exp $
+ *   $Id: m_sjoin.c,v 7.17 2000/11/06 08:13:34 db Exp $
  */
 #include "handlers.h"
 #include "channel.h"
@@ -409,7 +409,7 @@ sendto_realops("ZZZ Creating top_chptr for %s", (parv[2] + 1));
 
   *modebuf = *parabuf = '\0';
   if (parv[3][0] != '0' && keep_new_modes)
-    channel_modes(sptr, modebuf, parabuf, chptr);
+    channel_modes(chptr, sptr, modebuf, parabuf);
   else
     {
       modebuf[0] = '0';
