@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_hash.c,v 1.9 2001/01/05 00:14:27 davidt Exp $
+ *   $Id: m_hash.c,v 1.1 2001/01/05 03:04:48 wcampbel Exp $
  */
 #include "handlers.h"
 #include "channel.h"
