@@ -19,7 +19,7 @@
  *
  *      I kind of modernized this code a bit. -Dianora
  *
- *   $Id: messages.tab,v 7.19 2000/11/30 22:48:05 davidt Exp $
+ *   $Id: messages.tab,v 7.20 2000/12/05 06:33:18 db Exp $
  */
 
 static  char *  replies[] = {
@@ -303,7 +303,7 @@ static  char *  replies[] = {
 /* 273 */       (char *)NULL,
 /* 274 */       (char *)NULL,
 /* 275 */       (char *)NULL,
-/* 276 RPL_VCHANEXIST, */       ":%s 276 %s %s :has %d possible channels available",
+/* 276 RPL_VCHANEXIST, */       ":%s 276 %s %s :has %d possible virtual channels available",
 /* 277 RPL_VCHANLIST, */        ":%s 277 %s %s %s",
 /* 278 RPL_VCHANHELP, */        ":%s 278 %s :Type /%s %s <key> to specify the channel you want",
 /* 279 */       (char *)NULL,

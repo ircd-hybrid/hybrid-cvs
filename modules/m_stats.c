@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 1.10 2000/12/04 05:50:10 db Exp $
+ *  $Id: m_stats.c,v 1.11 2000/12/05 06:33:15 db Exp $
  */
 #include "handlers.h"  /* m_pass prototype */
 #include "class.h"       /* report_classes */
@@ -326,7 +326,7 @@ void do_non_priv_stats(struct Client *sptr, char *name, char *target,
       break;
 
     case '?':
-      serv_info(sptr, sptr->name);
+      serv_info(sptr);
       stats_spy(sptr,stat);
       break;
 
@@ -423,7 +423,7 @@ void do_priv_stats(struct Client *sptr, char *name, char *target,
       break;
 
     case 'R' : case 'r' :
-      send_usage(sptr,sptr->name);
+      send_usage(sptr);
       stats_spy(sptr,stat);
       break;
 
@@ -470,12 +470,12 @@ void do_priv_stats(struct Client *sptr, char *name, char *target,
       break;
 
     case 'Z' : case 'z' :
-      count_memory(sptr, sptr->name);
+      count_memory(sptr);
       stats_spy(sptr,stat);
       break;
 
     case '?':
-      serv_info(sptr, sptr->name);
+      serv_info(sptr);
       stats_spy(sptr,stat);
       break;
 

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_misc.c,v 7.8 2000/12/03 12:18:22 db Exp $
+ *  $Id: s_misc.c,v 7.9 2000/12/05 06:33:20 db Exp $
  */
 #include "s_misc.h"
 #include "client.h"
@@ -138,7 +138,7 @@ char* small_file_date(time_t clock)
 #define _GMKv(x)  ( (x > _1TER) ? (float)(x/_1TER) : ((x > _1GIG) ? \
                (float)(x/_1GIG) : ((x > _1MEG) ? (float)(x/_1MEG) : (float)x)))
 
-void serv_info(struct Client *cptr,char *name)
+void serv_info(struct Client *cptr)
 {
   static char Lformat[] = ":%s %d %s %s %u %u %u %u %u :%u %u %s";
   int        j;
@@ -161,7 +161,7 @@ void serv_info(struct Client *cptr,char *name)
        */
       if(IsAnyOper(cptr))
         sendto_one(cptr, Lformat, me.name, RPL_STATSLINKINFO,
-                   name, get_client_name(acptr, TRUE),
+                   cptr->name, get_client_name(acptr, TRUE),
                    (int)linebuf_len(&acptr->localClient->buf_sendq),
                    (int)acptr->localClient->sendM,
 		   (int)acptr->localClient->sendK,
@@ -173,7 +173,7 @@ void serv_info(struct Client *cptr,char *name)
       else
         {
           sendto_one(cptr, Lformat, me.name, RPL_STATSLINKINFO,
-                     name, get_client_name(acptr, HIDEME),
+                     cptr->name, get_client_name(acptr, HIDEME),
                      (int)linebuf_len(&acptr->localClient->buf_sendq),
                      (int)acptr->localClient->sendM,
 		     (int)acptr->localClient->sendK,
@@ -187,20 +187,21 @@ void serv_info(struct Client *cptr,char *name)
     }
 
   sendto_one(cptr, ":%s %d %s :%u total server%s",
-             me.name, RPL_STATSDEBUG, name, --j, (j==1)?"":"s");
+             me.name, RPL_STATSDEBUG, cptr->name, --j, (j==1)?"":"s");
 
   sendto_one(cptr, ":%s %d %s :Sent total : %7.2f %s",
-             me.name, RPL_STATSDEBUG, name, _GMKv(sendK), _GMKs(sendK));
+             me.name, RPL_STATSDEBUG, cptr->name, _GMKv(sendK), _GMKs(sendK));
   sendto_one(cptr, ":%s %d %s :Recv total : %7.2f %s",
-             me.name, RPL_STATSDEBUG, name, _GMKv(receiveK), _GMKs(receiveK));
+             me.name, RPL_STATSDEBUG, cptr->name, _GMKv(receiveK), _GMKs(receiveK));
 
   uptime = (CurrentTime - me.since);
   sendto_one(cptr, ":%s %d %s :Server send: %7.2f %s (%4.1f K/s)",
-             me.name, RPL_STATSDEBUG, name, _GMKv(me.localClient->sendK),
+             me.name, RPL_STATSDEBUG, cptr->name, _GMKv(me.localClient->sendK),
 	     _GMKs(me.localClient->sendK),
              (float)((float)me.localClient->sendK / (float)uptime));
   sendto_one(cptr, ":%s %d %s :Server recv: %7.2f %s (%4.1f K/s)",
-             me.name, RPL_STATSDEBUG, name, _GMKv(me.localClient->receiveK),
+             me.name, RPL_STATSDEBUG, cptr->name,
+	     _GMKv(me.localClient->receiveK),
 	     _GMKs(me.localClient->receiveK),
              (float)((float)me.localClient->receiveK / (float)uptime));
 }

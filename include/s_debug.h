@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_debug.h,v 7.1 1999/12/30 20:35:36 db Exp $
+ *   $Id: s_debug.h,v 7.2 2000/12/05 06:32:58 db Exp $
  */
 #ifndef INCLUDED_s_debug_h
 #define INCLUDED_s_debug_h
@@ -44,8 +44,8 @@ struct Client;
 #define DEBUG_LIST  10  /* debug list use */
 
 
-extern void send_usage(struct Client*, char *);
-extern void count_memory (struct Client *, char *);
+extern void send_usage(struct Client*);
+extern void count_memory (struct Client *);
 
 extern void debug(int, char *, ...);
 
