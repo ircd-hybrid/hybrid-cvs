@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.162 2003/05/19 03:48:27 bill Exp $
+ *  $Id: parse.c,v 7.163 2003/05/19 15:14:18 adx Exp $
  */
 
 #include "stdinc.h"
@@ -69,13 +69,13 @@ string_to_array(char *string, char *parv[MAXPARA])
 
   parv[x] = NULL;
 
-  while(*buf == ' ') /* skip leading spaces */
+  while (*buf == ' ') /* skip leading spaces */
     buf++;
 
   if (*buf == '\0') /* ignore all-space args */
     return(x);
 
-  do 
+  do
   {
     if (*buf == ':') /* Last parameter */
     {
@@ -98,12 +98,12 @@ string_to_array(char *string, char *parv[MAXPARA])
         return(x);
     }       
 
-    while(*buf == ' ')
+    while (*buf == ' ')
       buf++;
 
     if (*buf == '\0')
       return(x);
-  } while(x < MAXPARA - 1);
+  } while (x < MAXPARA - 1);
 
   if (*p == ':')
     p++;
@@ -195,7 +195,7 @@ parse(struct Client *client_p, char *pbuffer, char *bufend)
       }
     }
 
-    while(*ch == ' ')
+    while (*ch == ' ')
       ch++;
   }
 
@@ -268,12 +268,6 @@ parse(struct Client *client_p, char *pbuffer, char *bufend)
     if (mptr->flags & MFLG_HIDDEN)
       para[0] = ch;
   }
-
-  end = bufend - 1;
-  
-  /* XXX this should be done before parse() is called */
-  if (*end == '\n') *end-- = '\0';
-  if (*end == '\r') *end = '\0';
 
   if (s != NULL)
     i = string_to_array(s, para);
@@ -747,7 +741,7 @@ do_numeric(char numeric[], struct Client *client_p, struct Client *source_p,
        * will do the "right thing" and kill a nick that is colliding.
        * unfortunately, it did not work. --Dianora
        */
-      if(atoi(numeric) != ERR_NOSUCHNICK)
+      if (atoi(numeric) != ERR_NOSUCHNICK)
         sendto_realops_flags(UMODE_ALL, L_ADMIN,
 			     "*** %s(via %s) sent a %s numeric to me: %s",
 			     source_p->name, client_p->name, numeric, buffer);
@@ -762,12 +756,12 @@ do_numeric(char numeric[], struct Client *client_p, struct Client *source_p,
     }
 
     /* csircd will send out unknown umode flag for +a (admin), drop it here. */
-    if((atoi(numeric) == ERR_UMODEUNKNOWNFLAG) && MyClient(target_p))
+    if ((atoi(numeric) == ERR_UMODEUNKNOWNFLAG) && MyClient(target_p))
       return;
     
     /* Fake it for server hiding, if its our client */
-    if(ConfigServerHide.hide_servers &&
-       MyClient(target_p) && !IsOper(target_p))
+    if (ConfigServerHide.hide_servers &&
+        MyClient(target_p) && !IsOper(target_p))
       sendto_one(target_p, ":%s %s %s%s", me.name, numeric, parv[1], buffer);
     else
       sendto_one(target_p, ":%s %s %s%s", source_p->name, numeric, parv[1], buffer);

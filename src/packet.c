@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.109 2003/05/11 16:05:54 michael Exp $
+ *  $Id: packet.c,v 7.110 2003/05/19 15:14:18 adx Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -90,7 +90,7 @@ extract_one_line(struct dbuf_queue *qptr, char *buffer)
                 break;
         case 2: *buffer = '\0';
                 dbuf_delete(qptr, line_bytes + empty_bytes);
-                return line_bytes;
+                return IRCD_MIN(line_bytes, IRCD_BUFSIZE - 2);
       }
     }
   }
@@ -106,7 +106,7 @@ extract_one_line(struct dbuf_queue *qptr, char *buffer)
 
   /* Remove what is now unnecessary */
   dbuf_delete(qptr, line_bytes + empty_bytes);
-  return line_bytes;
+  return IRCD_MIN(line_bytes, IRCD_BUFSIZE - 2);
 }
 
 /*
