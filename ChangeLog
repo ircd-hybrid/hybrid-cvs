@@ -1,3 +1,19 @@
+androsyn    2002/12/09 22:10:57 EST	(20021210_0)
+
+  Modified files:
+    src                  client.c 
+  Log:
+  This is the correct fix for the linebuf leak.  Basically close_connection()
+  wasn't setting MyConnect() == FALSE as doing so would have caused a core
+  dump further down.  More the close_connection() call towards the end of the
+  function where localClient is no longer needed.  Add a free_local_client()
+  function that actually does the free and sets localClient = NULL
+  
+  Revision  Changes    Path
+  7.304     +29 -40    ircd-hybrid-7/src/client.c
+
+
+
 jmallett    2002/12/03 21:42:21 EST	(20021204_0)
 
   Modified files:
@@ -33404,4 +33420,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4126 2002/12/04 02:42:24 jmallett Exp $
+$Id: ChangeLog,v 7.4127 2002/12/10 03:11:00 androsyn Exp $
