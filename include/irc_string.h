@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: irc_string.h,v 7.25 2001/08/25 07:41:40 a1kmm Exp $
+ *   $Id: irc_string.h,v 7.26 2001/09/23 23:54:17 a1kmm Exp $
  */
 #ifndef INCLUDED_irc_string_h
 #define INCLUDED_irc_string_h
@@ -85,7 +85,8 @@ int inetpton(int af, const char *src, void *dst);
 /*
  * strncpy_irc - optimized strncpy
  */
-#ifdef __GNUC__
+/* #ifdef __GNUC__ this is broken. */
+#if 0
 /* GCC ends up providing its own optimized memcpy() with -O2 turned on..
  * which is far faster than strncpy_irc()
  */
@@ -93,7 +94,8 @@ char* strncpy_irc(char* s1, const char* s2, size_t n);
 #define strncpy_irc(x, y, z) ((char *)memcpy(x, y, z))
 #else
 #ifndef VMS
-extern inline char* strncpy_irc(char* s1, const char* s2, size_t n)
+extern inline char* strncpy_irc(char* s1, const char* s2, size_t n);
+#if 0
 {
 	register char* endp = s1 + n;
 	register char* s = s1;
@@ -101,6 +103,7 @@ extern inline char* strncpy_irc(char* s1, const char* s2, size_t n)
 		; 
 	return s1;
 }
+#endif
 #else
 char *strncpy_irc(char *s1, const char *s2, size_t n);
 #endif

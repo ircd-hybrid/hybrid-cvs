@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: memory.c,v 7.24 2001/09/23 22:35:29 a1kmm Exp $
+ * $Id: memory.c,v 7.25 2001/09/23 23:54:17 a1kmm Exp $
  */
 #include <stdlib.h>
 #include <string.h>
@@ -124,6 +124,8 @@ _MyRealloc(void *what, size_t size, char *file, int line)
     mme->next->last = mme;
   if (mme->last != NULL)
     mme->last->next = mme; 
+  else
+    first_mem_entry = mme;
   return DATA(mme);
 }
 

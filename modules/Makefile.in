@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/modules
 #
-# $Id: Makefile.in,v 1.52 2001/08/18 00:54:04 jdc Exp $
+# $Id: Makefile.in,v 1.53 2001/09/23 23:54:17 a1kmm Exp $
 #
 CC		= @CC@
 AR		= @AR@
@@ -17,6 +17,7 @@ INSTALL		= @INSTALL@
 INSTALL_PROGRAM	= @INSTALL_PROGRAM@
 INSTALL_DATA	= @INSTALL_DATA@
 INSTALL_SUID    = @INSTALL_PROGRAM@ -o root -m 4755
+SEDOBJ		= @SEDOBJ@
 SHELL		= /bin/sh
 
 SSL_LIBS	= @SSL_LIBS@
@@ -163,10 +164,10 @@ install_shared_modules: install-mkdirs
 .PHONY: depend clean distclean
 depend:
 	@${MKDEP} ${CPPFLAGS} ${SRCS} > .depend.tmp
-	@sed -e '/^# DO NOT DELETE THIS LINE/,$$d' <Makefile >Makefile.depend
+	@sed '/^# DO NOT DELETE THIS LINE/,$$d' <Makefile >Makefile.depend
 	@echo '# DO NOT DELETE THIS LINE!!!' >>Makefile.depend
 	@echo '# make depend needs it.' >>Makefile.depend
-	@cat .depend.tmp >>Makefile.depend
+	@sed ${SEDOBJ} <.depend.tmp >>Makefile.depend
 	@mv Makefile.depend Makefile
 	@rm -f .depend.tmp
 
