@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.71 2001/01/05 20:37:25 toot Exp $
+ * $Id: s_conf.h,v 7.72 2001/01/07 02:12:10 wcampbel Exp $
  */
 
 #include <sys/param.h>
@@ -201,7 +201,6 @@ typedef struct
   int         f_lines_oper_only;
   int         o_lines_oper_only;
   int         stats_notice;
-  int         whois_notice;
   int         pace_wait;
   int         whois_wait;
   int         knock_delay;
@@ -209,7 +208,6 @@ typedef struct
   int         no_oper_flood;
   int         stats_p_notice;
   int         glines;
-  int         topic_uh;
   int         gline_time;
   int         idletime;
   int	      hide_server;
