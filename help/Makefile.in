@@ -1,5 +1,5 @@
 # Generated automatically from Makefile.in by configure.
-# $Id: Makefile.in,v 1.14 2001/12/28 17:08:33 davidt Exp $
+# $Id: Makefile.in,v 1.15 2002/02/02 16:01:13 leeh Exp $
 # makefile for include/
 
 INSTALL=	@INSTALL@
@@ -16,9 +16,8 @@ SYMLINKS=	topic accept cjoin cmode admin names links away whowas \
 		time credits motd userhost users whois ison lusers \
 		user help pass error challenge knock ping pong
 
-all: build
-build: index
-
+all:
+build:
 clean:
 depend:
 lint:
