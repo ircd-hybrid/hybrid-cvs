@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_lexer.l,v 1.141 2002/07/21 17:15:32 db Exp $
+ *  $Id: ircd_lexer.l,v 1.142 2002/07/22 05:08:01 db Exp $
  */
 
 %option case-insensitive
@@ -85,12 +85,49 @@ include   \.include{ws}(\<.*\>|\".*\")
 
 {digit}+        { yylval.number = atoi(yytext); return NUMBER; }
 
-{qstring}	{ yylval.string = yytext+1;
-		  if(yylval.string[yyleng-2] != '"')
-		    ilog(L_ERROR, "Unterminated character string");
+{qstring}	{ if(yytext[yyleng-2] == '\\')
+		    {
+		      yyless(yyleng-1); /* return last quote */
+		      yymore();		/* append next string */
+		    }
 		  else
-		    yylval.string[yyleng-2] = '\0'; /* remove close quote */
-		  return QSTRING;
+		    {
+		      yylval.string = yytext+1;
+		      if(yylval.string[yyleng-2] != '"')
+			ilog(L_ERROR, "Unterminated character string");
+		      else
+			{
+			  int i,j;
+
+			  yylval.string[yyleng-2] = '\0'; /* remove close
+							   *  quote 
+							   */
+			  
+			  for (j=i=0 ;yylval.string[i] != '\0'; i++,j++)
+			    {
+			      if (yylval.string[i] != '\\')
+				{
+				  yylval.string[j] = yylval.string[i];
+				}
+			      else
+				{
+				  i++;
+				  if (yylval.string[i] == '\0') /* XXX 
+								 * should not
+								 * happen
+								 */
+				    {
+				      ilog(L_ERROR,
+					   "Unterminated character string");
+				      break;
+				    }
+				  yylval.string[j] = yylval.string[i];
+				}
+			    }
+			  yylval.string[j] = '\0';
+			  return QSTRING;
+			}
+		    }
 		}
 
 accept_password { return ACCEPT_PASSWORD; }
