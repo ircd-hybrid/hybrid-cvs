@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_help.c,v 1.37 2003/05/03 13:38:58 adx Exp $
+ *  $Id: m_help.c,v 1.1 2003/05/07 02:46:42 michael Exp $
  */
 
 #include "stdinc.h"
@@ -67,7 +67,7 @@ _moddeinit(void)
   mod_del_cmd(&uhelp_msgtab);
 }
 
-const char *_version = "$Revision: 1.37 $";
+const char *_version = "$Revision: 1.1 $";
 #endif
 /*
  * m_help - HELP message handler
@@ -79,26 +79,19 @@ m_help(struct Client *client_p, struct Client *source_p,
 {
   static time_t last_used = 0;
 
-  if(ConfigFileEntry.use_help)
+  /* HELP is always local */
+  if ((last_used + ConfigFileEntry.pace_wait_simple) > CurrentTime)
   {
-    /* HELP is always local */
-    if ((last_used + ConfigFileEntry.pace_wait_simple) > CurrentTime)
-    {
-      /* safe enough to give this on a local connect only */
-      sendto_one(source_p,form_str(RPL_LOAD2HI),me.name,parv[0]);
-        return;
-    }
-    else
-    {
-      last_used = CurrentTime;
-    }
-
-    dohelp(source_p, UHPATH, parv[1], parv[0]);
+    /* safe enough to give this on a local connect only */
+    sendto_one(source_p,form_str(RPL_LOAD2HI),me.name,parv[0]);
+      return;
   }
   else
   {
-    list_commands(source_p);
+    last_used = CurrentTime;
   }
+
+  dohelp(source_p, UHPATH, parv[1], parv[0]);
 }
 
 /*
@@ -176,7 +169,6 @@ dohelp(struct Client *source_p, char *hpath,
   }
 
   sendhelpfile(source_p, path, topic, nick);
-  return;
 }
 
 static void 
@@ -207,6 +199,5 @@ sendhelpfile(struct Client *source_p, char *path,
 
   fbclose(file);
   sendto_one(source_p, form_str(RPL_ENDOFHELP), me.name, nick, topic);
-  return;
 }
 

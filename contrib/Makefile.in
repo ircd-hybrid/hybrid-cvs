@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/contrib
 #
-# $Id: Makefile.in,v 1.35 2002/09/03 05:43:37 bill Exp $
+# $Id: Makefile.in,v 1.36 2003/05/07 02:46:42 michael Exp $
 #
 CC		= @CC@
 RM		= @RM@
@@ -26,10 +26,20 @@ IRCDLIBS	= @LIBS@ $(SSL_LIBS)
 INCLUDES	= -I../include -I../adns $(SSL_INCLUDES)
 CPPFLAGS	= ${INCLUDES} @CPPFLAGS@
 
+prefix=		@prefix@
+uhelpdir=	${prefix}/help/users
+ohelpdir=	${prefix}/help/opers
+
+SYMLINKS=	topic accept cjoin cmode admin names links away whowas \
+		version kick who invite quit join list nick oper part \
+		time credits motd userhost users whois ison lusers \
+		user help pass error challenge knock ping pong
+
 SRCS =                          \
   m_clearchan.c			\
   m_flags.c                     \
   m_force.c			\
+  m_help.c                      \
   m_jupe.c			\
   m_ltrace.c			\
   m_map.c			\
@@ -55,10 +65,36 @@ default:	build
 build: all
 all: $(OBJS)
 
-install: all
+install: all install_help
 	@echo "Installing modules into $(AUTOMODULEDIR) .."
 	@for file in $(OBJS); do \
 		$(INSTALL_DATA) $$file $(AUTOMODULEDIR); \
+	done
+
+
+install_help:
+	@echo installing help files...
+	-@if test ! -d $(prefix)/help; then \
+		echo "mkdir $(prefix)/help"; \
+		mkdir $(prefix)/help; \
+		echo "mkdir $(prefix)/help/users"; \
+		mkdir $(prefix)/help/users; \
+		echo "mkdir $(prefix)/help/opers"; \
+		mkdir $(prefix)/help/opers; \
+	fi
+	@for help in help/opers/*; do \
+	if [ -f $$help ]; then \
+		${INSTALL_DATA} $$help $(ohelpdir); \
+	fi \
+	done
+	@for help in help/users/*; do \
+	if [ -f $$help ]; then \
+		$(INSTALL_DATA) $$help $(uhelpdir); \
+	fi \
+	done
+	@for link in $(SYMLINKS); do \
+		rm -f $(uhelpdir)/$$link; \
+		ln -s $(ohelpdir)/$$link $(uhelpdir); \
 	done
 
 .SUFFIXES: .so

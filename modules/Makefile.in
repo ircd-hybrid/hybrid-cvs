@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/modules
 #
-# $Id: Makefile.in,v 1.70 2003/05/06 23:02:30 michael Exp $
+# $Id: Makefile.in,v 1.71 2003/05/07 02:46:48 michael Exp $
 #
 CC		= @CC@
 AR		= @AR@
@@ -47,7 +47,7 @@ CORE_SRCS = \
   core/m_sjoin.c \
   core/m_squit.c
 
-SRCS =                          \
+SRCS =       \
   m_accept.c \
   m_admin.c \
   m_away.c \
@@ -62,7 +62,6 @@ SRCS =                          \
   m_drop.c \
   m_eob.c \
   m_gline.c \
-  m_help.c \
   m_info.c \
   m_invite.c \
   m_ison.c \

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.282 2003/05/04 16:26:08 adx Exp $
+ *  $Id: ircd_parser.y,v 1.283 2003/05/07 02:46:49 michael Exp $
  */
 
 %{
@@ -279,7 +279,6 @@ init_parser_confs(void)
 %token  USE_EGD
 %token  USE_EXCEPT
 %token  USE_HALFOPS
-%token  USE_HELP
 %token  USE_INVEX
 %token  USE_KNOCK
 %token  USE_VCHANS
@@ -2050,7 +2049,7 @@ general_item:       general_failed_oper_notice |
                     general_oper_umodes | general_crypt_oper_password |
                     general_caller_id_wait | general_default_floodcount |
                     general_min_nonwildcard |
-                    general_servlink_path | general_use_help |
+                    general_servlink_path |
                     general_default_cipher_preference |
                     general_compression_level | general_client_flood |
                     general_throttle_time | general_havent_read_conf |
@@ -2459,16 +2458,6 @@ general_ping_cookie: PING_COOKIE '=' TYES ';'
 {
   if (ypass == 2)
     ConfigFileEntry.ping_cookie = 0;
-};
-
-general_use_help: USE_HELP '=' TYES ';'
-{
-  if (ypass == 2)
-    ConfigFileEntry.use_help = 1;
-} | USE_HELP '=' TNO ';'
-{
-  if (ypass == 2)
-    ConfigFileEntry.use_help = 0;
 };
 
 general_throttle_time: THROTTLE_TIME '=' timespec ';'

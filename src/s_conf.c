@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.371 2003/05/04 15:43:23 michael Exp $
+ *  $Id: s_conf.c,v 7.372 2003/05/07 02:46:50 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1299,11 +1299,6 @@ rehash(int sig)
  *		  configuration file.  If you want to do some validation
  *		  of values later, put them in validate_conf().
  */
-#if 0
-#define YES     1
-#define NO      0
-#define UNSET  -1
-#endif
 static void
 set_default_conf(void)
 {
@@ -1422,17 +1417,7 @@ set_default_conf(void)
   ConfigFileEntry.client_flood = CLIENT_FLOOD_DEFAULT;
 
   ConfigFileEntry.fallback_to_ip6_int = 1;
-
-#ifdef EFNET
-  ConfigFileEntry.use_help = 0;
-#else
-  ConfigFileEntry.use_help = 1;
-#endif
 }
-#if 0
-#undef YES
-#undef NO
-#endif
 
 /* read_conf() 
  *
