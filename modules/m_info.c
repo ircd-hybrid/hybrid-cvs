@@ -20,8 +20,13 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.c,v 1.36 2001/06/01 11:05:45 leeh Exp $
+ * $Id: m_info.c,v 1.37 2001/06/02 05:47:35 ejb Exp $
  */
+
+#include <time.h>
+#include <string.h>
+#include <limits.h>
+
 #include "tools.h"
 #include "m_info.h"
 #include "channel.h"
@@ -38,9 +43,6 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
-
-#include <time.h>
-#include <string.h>
 
 static void send_conf_options(struct Client *source_p);
 static void send_birthdate_online_time(struct Client *source_p);
