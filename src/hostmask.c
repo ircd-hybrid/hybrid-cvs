@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- * $Id: hostmask.c,v 7.49 2001/08/21 01:31:25 db Exp $ 
+ * $Id: hostmask.c,v 7.50 2001/08/24 12:14:57 leeh Exp $ 
  */
  
 #include <stdlib.h>
@@ -271,7 +271,7 @@ match_ipv4(struct irc_inaddr *addr, struct irc_inaddr *mask, int bits)
   return -1;
 }
 
-/* Hashtable stuff... -A1kmm */
+/* Hashtable stuff...now external as its used in m_stats.c */
 struct AddressRec *atable[ATABLE_SIZE];
 
 void
@@ -622,67 +622,19 @@ clear_out_address_conf(void)
 	    {
 	      *store_next = arec;
 	      store_next = &arec->next;
-	    } else
-	      {
-		arec->aconf->flags |= CONF_ILLEGAL;
-		if (!arec->aconf->clients)
+	    } 
+	  else
+	    {
+	      arec->aconf->flags |= CONF_ILLEGAL;
+	      if (!arec->aconf->clients)
 		  free_conf(arec->aconf);
-		MyFree(arec);
-	      }
+	      MyFree(arec);
+	    }
 	}
       *store_next = NULL;
     }
 }
 
-/* void report_dlines(struct Client *client_p)
- * Input: Client to report to.
- * Output: None
- * Side effects: Reports configured D-lines to client_p
- */
-void
-report_dlines(struct Client *client_p)
-{
-  char *name, *host, *pass, *user, *classname;
-  struct AddressRec *arec;
-  struct ConfItem *aconf;
-  int i, port;
-
-  for (i=0; i<ATABLE_SIZE; i++)
-    for (arec=atable[i]; arec; arec=arec->next)
-      if (arec->type == CONF_DLINE)
-	{
-	  aconf = arec->aconf;
-	  get_printable_conf(aconf, &name, &host, &pass, &user, &port,
-			     &classname);
-	  sendto_one(client_p, form_str(RPL_STATSDLINE), me.name,
-		     client_p->name, 'D', host, pass);
-	}
-}
-
-/* void report_exemptlines(struct Client *client_p)
- * Input: Client to report to.
- * Output: None
- * Side effects: Reports configured exemptions to client_p
- */
-void
-report_exemptlines(struct Client *client_p)
-{
-  char *name, *host, *pass, *user, *classname;
-  struct AddressRec *arec;
-  struct ConfItem *aconf;
-  int i, port;
-  
-  for (i=0; i<ATABLE_SIZE; i++)
-    for (arec=atable[i]; arec; arec=arec->next)
-      if (arec->type == CONF_EXEMPTDLINE)
-        {
-           aconf = arec->aconf;
-           get_printable_conf(aconf, &name, &host, &pass,
-                              &user, &port, &classname);
-           sendto_one(client_p, form_str(RPL_STATSDLINE), me.name,
-                      client_p->name, 'e', host, pass);
-        }
-}
  
 /*
  * show_iline_prefix()
