@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_opme.c,v 1.23 2002/05/16 19:14:42 leeh Exp $
+ *   $Id: m_opme.c,v 1.24 2002/05/16 19:38:00 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -57,7 +57,7 @@ _moddeinit(void)
   mod_del_cmd(&opme_msgtab);
 }
 
-char *_version = "$Revision: 1.23 $";
+char *_version = "$Revision: 1.24 $";
 
 static int chan_is_opless(struct Channel *chptr)
 {
@@ -137,19 +137,19 @@ static void mo_opme(struct Client *client_p, struct Client *source_p,
     }
 
   if((locptr = find_user_link(&chptr->locpeons, source_p)))
-    dlinkDelete(ptr, &chptr->locpeons);
+    dlinkDelete(locptr, &chptr->locpeons);
   else if((locptr = find_user_link(&chptr->locvoiced, source_p)))
-    dlinkDelete(ptr, &chptr->locvoiced);
+    dlinkDelete(locptr, &chptr->locvoiced);
 #ifdef HALFOPS
   else if((locptr = find_user_link(&chptr->lochalfops, source_p)))
-    dlinkDelete(ptr, &chptr->lochalfops);
+    dlinkDelete(locptr, &chptr->lochalfops);
 #endif
   else if((locptr = find_user_link(&chptr->locchanops, source_p)))
-    dlinkDelete(ptr, &chptr->locchanops);
+    dlinkDelete(locptr, &chptr->locchanops);
   
 #ifdef REQUIRE_OANDV
   else if((locptr = find_user_link(&chptr->locchanops_voiced, source_p)))
-    dlinkDelete(ptr, &chptr->locchanops_voiced);
+    dlinkDelete(locptr, &chptr->locchanops_voiced);
 #endif
 
   else
