@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.81 2001/04/04 15:22:35 androsyn Exp $
+ *   $Id: m_sjoin.c,v 1.82 2001/04/08 16:27:27 fl_ Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -572,15 +572,16 @@ static void ms_sjoin(struct Client *client_p,
           continue;
       }
 
-      if (chptr->users == 0 && !IsCapable(target_p, CAP_VCHAN))
-        continue;
+      /* Its a blank sjoin, only forward to those with CAP_VCHAN */
+      if (!parv[4+args][0] && !IsCapable(target_p, CAP_VCHAN))
+          continue;
 
       /* XXX - ids ? */
       if (IsCapable(target_p,CAP_HOPS))
         sendto_one(target_p, "%s %s", buf, sjbuf);
       else
         sendto_one(target_p, "%s %s", buf, sjbuf_nh);
-    }
+   }
 }
 
 /*
