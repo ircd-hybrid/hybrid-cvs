@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.31 2003/05/24 21:15:41 joshk Exp $
+dnl $Id: configure.ac,v 7.32 2003/05/24 21:33:25 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -395,7 +395,7 @@ if test "X$cf_enable_openssl" != "Xno" ; then
 	if test "X$cf_enable_openssl" != "Xauto" &&
 	test "X$cf_enable_openssl" != "Xyes" ; then
 		dnl Support for --enable-openssl=/some/place
-		cf_openssl_basedir="${cf_enable_openssl}"
+		cf_openssl_basedir="`echo ${cf_enable_openssl} | sed 's/\/$//'`"
 	else
 	dnl Do the auto-probe here.  Check some common directory paths.
 		for dirs in /usr/local/ssl /usr/pkg /usr/local \

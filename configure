@@ -6484,7 +6484,7 @@ if test "X$cf_enable_openssl" != "Xno" ; then
 	cf_openssl_basedir=""
 	if test "X$cf_enable_openssl" != "Xauto" &&
 	test "X$cf_enable_openssl" != "Xyes" ; then
-				cf_openssl_basedir="${cf_enable_openssl}"
+				cf_openssl_basedir="`echo ${cf_enable_openssl} | sed 's/\/$//'`"
 	else
 			for dirs in /usr/local/ssl /usr/pkg /usr/local \
 		/usr/local/openssl ; do
