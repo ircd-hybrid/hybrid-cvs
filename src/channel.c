@@ -34,7 +34,7 @@
  *                mode * -p etc. if flag was clear
  *
  *
- * $Id: channel.c,v 7.12 1999/09/10 05:04:01 tomh Exp $
+ * $Id: channel.c,v 7.13 1999/09/10 05:12:04 tomh Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -2933,7 +2933,7 @@ void send_user_joins(struct Client *cptr, struct Client *user)
         if (!match(++mask, cptr->name))
           continue;
       clen = strlen(chptr->chname);
-      if (clen > (size_t) BUFSIZE - 7 - len)
+      if (clen > BUFSIZE - 7 - len)
         {
           if (cnt)
             sendto_one(cptr, "%s", buf);
