@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_log.c,v 7.35 2001/12/11 03:12:03 joant Exp $
+ *   $Id: s_log.c,v 7.36 2001/12/11 03:17:38 joant Exp $
  */
 #include "client.h"	/* Needed for struct Client */
 #include "s_log.h"
@@ -264,6 +264,7 @@ void log_user_exit(struct Client *source_p)
 #endif
 }
 
+#ifndef SYSLOG_USERS
 /*
  * user_log_resync
  *
@@ -280,6 +281,7 @@ user_log_resync(void *notused)
       user_log_fb = NULL;
     }
 }
+#endif
 
 /*
  * log_oper
