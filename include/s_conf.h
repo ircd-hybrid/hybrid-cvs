@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.169 2001/12/15 02:24:44 db Exp $
+ * $Id: s_conf.h,v 7.170 2001/12/29 08:07:19 androsyn Exp $
  */
 
 #include "setup.h"
@@ -236,6 +236,7 @@ struct config_file_entry
   /* 0 == don't use throttle... */
   int           throttle_time;
   int           use_egd;
+  int		ping_cookie;
 #ifdef HAVE_LIBCRYPTO
   struct EncCapability *default_cipher_preference;
 #endif

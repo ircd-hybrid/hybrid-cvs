@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: numeric.h,v 7.24 2001/11/29 20:23:57 leeh Exp $
+ * $Id: numeric.h,v 7.25 2001/12/29 08:07:19 androsyn Exp $
  */
 #ifndef INCLUDED_numeric_h
 #define INCLUDED_numeric_h
@@ -281,6 +281,8 @@ extern const char* form_str(int);
 
 #define ERR_VCHANDISABLED    506
 #define ERR_ALREADYONVCHAN   507
+
+#define ERR_WRONGPONG	     513
 
 #define ERR_HELPNOTFOUND     524
 
