@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.223 2001/12/02 15:15:09 leeh Exp $
+ *   $Id: s_serv.c,v 7.224 2001/12/03 16:17:26 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -69,6 +69,7 @@
 #include "s_debug.h"
 #include "memory.h"
 #include "channel.h" /* chcap_usage_counts stuff...*/
+#include "hook.h"
 
 extern char *crypt();
 
@@ -1704,7 +1705,8 @@ burst_all(struct Client *client_p)
 {
   struct Client*    target_p;
   struct Channel*   chptr;
-  struct Channel*   vchan; 
+  struct Channel*   vchan;
+  struct hook_burst_channel hinfo; 
   dlink_node *ptr;
 
   /* serial counter borrowed from send.c */
@@ -1726,6 +1728,9 @@ burst_all(struct Client *client_p)
           burst_members(client_p,&chptr->halfops);
           burst_members(client_p,&chptr->peons);
           send_channel_modes(client_p, chptr);
+          hinfo.chptr = chptr;
+          hinfo.client = client_p;
+          hook_call_event("burst_channel", &hinfo);
         }
 
       if(IsVchanTop(chptr))
@@ -1741,6 +1746,9 @@ burst_all(struct Client *client_p)
                   burst_members(client_p,&vchan->halfops);
                   burst_members(client_p,&vchan->peons);
                   send_channel_modes(client_p, vchan);
+	          hinfo.chptr = chptr;
+        	  hinfo.client = client_p;
+          	  hook_call_event("burst_channel", &hinfo);
                 }
 	    }
 	}

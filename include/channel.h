@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.93 2001/11/30 16:59:06 androsyn Exp $
+ * $Id: channel.h,v 7.94 2001/12/03 16:17:19 androsyn Exp $
  */
 
 #include <sys/types.h>        /* time_t */
@@ -85,6 +85,7 @@ struct Channel
 
   int             num_mask;              /* number of bans+exceptions+invite exceptions */
   time_t          channelts;
+  int             ts_winner;
   char            chname[CHANNELLEN+1];
 };
 
