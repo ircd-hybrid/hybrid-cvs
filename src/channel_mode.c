@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.136 2003/10/12 00:48:12 bill Exp $
+ *  $Id: channel_mode.c,v 7.137 2003/10/16 06:55:37 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -404,7 +404,7 @@ pretty_mask(char *mask)
       *t++ = '\0';
       if (*t != '\0')
 	user = t;
-      if (*mask != '\0')
+      if (*mask != '\0' && (strchr(mask, ':') == NULL))
 	nick = mask;
     }
     else
@@ -417,7 +417,7 @@ pretty_mask(char *mask)
   {
     ex = t;
     *t++ = '\0';
-    if (*mask != '\0')
+    if (*mask != '\0' && (strchr(mask, ':') == NULL))
       nick = mask;
     if (*t != '\0')
       user = t;
@@ -429,7 +429,7 @@ pretty_mask(char *mask)
   }
   else
   {
-    if (*mask != '\0')
+    if (*mask != '\0' && (strchr(mask, ':') == NULL))
       nick = mask;
   }
 
@@ -716,13 +716,13 @@ chm_ban(struct Client *client_p, struct Client *source_p,
       return;
     *errors |= SM_ERR_RPL_B;
 
-      DLINK_FOREACH(ptr, chptr->banlist.head)
-      {
-        banptr = ptr->data;
-        sendto_one(client_p, form_str(RPL_BANLIST),
-                   me.name, client_p->name, chname,
-                   banptr->banstr, banptr->who, banptr->when);
-      }
+    DLINK_FOREACH(ptr, chptr->banlist.head)
+    {
+      banptr = ptr->data;
+      sendto_one(client_p, form_str(RPL_BANLIST),
+                 me.name, client_p->name, chname,
+                 banptr->banstr, banptr->who, banptr->when);
+    }
     sendto_one(source_p, form_str(RPL_ENDOFBANLIST), me.name,
                source_p->name, chname);
     return;
