@@ -3,13 +3,10 @@
  *
  * Written by ejb, wcampbel, db, leeh and others
  *
- * $Id: example.conf.quick,v 1.20 2003/09/11 04:00:25 metalrock Exp $
+ * $Id: example.conf.quick,v 1.21 2003/09/14 12:01:45 adx Exp $
  */
 
 /* IMPORTANT NOTES:
- *
- * class {} blocks MUST be specified before anything that uses them.  That
- * means they must be defined before auth {} and before connect {}.
  *
  * auth {} blocks MUST be specified in order of precedence.  The first one
  * that matches a user will be used.  So place spoofs first, then specials,
