@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.95 2002/01/05 09:14:47 a1kmm Exp $
+ *  $Id: m_kline.c,v 1.96 2002/02/03 18:58:06 androsyn Exp $
  */
 
 #include "tools.h"
@@ -82,7 +82,7 @@ _moddeinit(void)
   mod_del_cmd(&kline_msgtab);
   mod_del_cmd(&dline_msgtab);
 }
-char *_version = "$Revision: 1.95 $";
+char *_version = "$Revision: 1.96 $";
 #endif
 
 /* Local function prototypes */
@@ -204,8 +204,8 @@ static void mo_kline(struct Client *client_p,
 
   if(!valid_comment(source_p, reason))
     return;
-    
-  cur_time = time(NULL);
+  set_time();  
+  cur_time = CurrentTime;
   current_date = smalldate(cur_time);
   aconf = make_conf();
   aconf->status = CONF_KILL;
@@ -351,8 +351,8 @@ static void ms_kline(struct Client *client_p,
       DupString(aconf->host, khost);
       DupString(aconf->passwd, kreason);
       current_date = smalldate((time_t) 0);
-
-      cur_time = time(NULL);
+      set_time();
+      cur_time = CurrentTime;
 
       if(tkline_time)
 	apply_tkline(source_p, aconf, current_date, tkline_time);
@@ -728,7 +728,8 @@ static void mo_dline(struct Client *client_p, struct Client *source_p,
                me.name, parv[0], dlhost, aconf->host, creason);
    return;
   }
-  cur_time = time(0);
+  set_time();
+  cur_time = CurrentTime;
   current_date = smalldate(cur_time);
 
   aconf = make_conf();
