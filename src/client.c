@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.316 2003/01/19 13:19:51 db Exp $
+ *  $Id: client.c,v 7.317 2003/01/19 19:02:37 db Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -1149,7 +1149,7 @@ dead_link_on_write(struct Client *client_p, int ierrno)
 {
   const char *notice;
 
-  if(IsDead(client_p))
+  if(IsDefunct(client_p))
     return;
   SetDead(client_p);
 
@@ -1158,7 +1158,7 @@ dead_link_on_write(struct Client *client_p, int ierrno)
   else
     notice = "Write error: connection closed";
     	
-  if (!IsPerson(client_p) && !IsUnknown(client_p) && !IsClosing(client_p))
+  if (!IsPerson(client_p) && !IsUnknown(client_p))
   {
     sendto_realops_flags(FLAGS_ALL, L_ADMIN,
 		         "Closing link to %s: %s",
