@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 1.29 2000/12/23 18:53:35 madmax Exp $
+ *   $Id: m_whois.c,v 1.30 2000/12/25 06:32:17 db Exp $
  */
 #include "tools.h"
 #include "common.h"   /* bleah */
@@ -106,6 +106,7 @@ int     mo_whois(struct Client *cptr,
  *
  * inputs	- pointer to 
  * output	- 
+ * side effects -
  */
 int do_whois(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 {
