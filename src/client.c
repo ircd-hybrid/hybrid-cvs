@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.282 2002/06/26 22:01:34 androsyn Exp $
+ *  $Id: client.c,v 7.283 2002/06/27 00:01:28 androsyn Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -1491,10 +1491,10 @@ int exit_client(
         }
     }
   /* The client *better* be off all of the lists */
-  assert(dlinkFind(&unknown_list, client_p) == NULL);
-  assert(dlinkFind(&lclient_list, client_p) == NULL);
-  assert(dlinkFind(&serv_list, client_p) == NULL);
-  assert(dlinkFind(&oper_list, client_p) == NULL);
+  assert(dlinkFind(&unknown_list, source_p) == NULL);
+  assert(dlinkFind(&lclient_list, source_p) == NULL);
+  assert(dlinkFind(&serv_list, source_p) == NULL);
+  assert(dlinkFind(&oper_list, source_p) == NULL);
   
     
   exit_one_client(client_p, source_p, from, comment);
