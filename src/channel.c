@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.220 2001/05/24 09:29:09 leeh Exp $
+ * $Id: channel.c,v 7.221 2001/05/26 00:25:20 davidt Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -384,29 +384,39 @@ static int check_banned(struct Channel *chptr, struct Client *who,
 void add_user_to_channel(struct Channel *chptr, struct Client *who, int flags)
 {
   dlink_node *ptr;
+  dlink_node *lptr;
 
   if (who->user)
     {
       ptr = make_dlink_node();
-
+      if (MyClient(who))
+        lptr = make_dlink_node();
       switch(flags)
 	{
 	default:
 	case MODE_PEON:
 	  dlinkAdd(who, ptr, &chptr->peons);
+          if (MyClient(who))
+            dlinkAdd(who, lptr, &chptr->locpeons);
 	  break;
 
 	case MODE_CHANOP:
 	  chptr->opcount++;
 	  dlinkAdd(who, ptr, &chptr->chanops);
+          if (MyClient(who))
+            dlinkAdd(who, lptr, &chptr->locchanops);
 	  break;
 
 	case MODE_HALFOP:
 	  dlinkAdd(who, ptr, &chptr->halfops);
+          if (MyClient(who))
+            dlinkAdd(who, lptr, &chptr->lochalfops);
 	  break;
 
 	case MODE_VOICE:
 	  dlinkAdd(who, ptr, &chptr->voiced);
+          if (MyClient(who))
+            dlinkAdd(who, lptr, &chptr->locvoiced);
 	  break;
 	}
 
@@ -464,8 +474,33 @@ void remove_user_from_channel(struct Channel *chptr,struct Client *who, int perm
   else 
     return;	/* oops */
 
-  chptr->users_last = CurrentTime;
   free_dlink_node(ptr);
+
+  if (MyClient(who))
+  {
+    if( (ptr = find_user_link(&chptr->locpeons,who)) )
+    {
+      dlinkDelete(ptr,&chptr->locpeons);
+    }
+    else if( (ptr = find_user_link(&chptr->locchanops,who)) )
+    {
+      chptr->opcount--;
+      dlinkDelete(ptr,&chptr->locchanops);
+    }
+    else if ((ptr = find_user_link(&chptr->locvoiced,who)) )
+    {
+      dlinkDelete(ptr,&chptr->locvoiced);
+    }
+    else if ((ptr = find_user_link(&chptr->lochalfops,who)) )
+    {
+      dlinkDelete(ptr,&chptr->lochalfops);
+    }
+    else
+      return; /* XXX */
+    free_dlink_node(ptr);
+  }
+
+  chptr->users_last = CurrentTime;
 
   for (ptr = who->user->channel.head; ptr; ptr = next_ptr)
     {
@@ -2674,6 +2709,11 @@ static void destroy_channel(struct Channel *chptr)
   delete_members(chptr, &chptr->voiced);
   delete_members(chptr, &chptr->peons);
   delete_members(chptr, &chptr->halfops);
+
+  delete_members(chptr, &chptr->locchanops);
+  delete_members(chptr, &chptr->locvoiced);
+  delete_members(chptr, &chptr->locpeons);
+  delete_members(chptr, &chptr->lochalfops);
 
   while ((ptr = chptr->invites.head))
     del_invite(chptr, ptr->data);

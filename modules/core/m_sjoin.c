@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.90 2001/05/24 09:29:01 leeh Exp $
+ *   $Id: m_sjoin.c,v 1.91 2001/05/26 00:25:19 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -703,6 +703,10 @@ static void remove_our_modes( int hide_or_not,
   dlinkMoveList(&chptr->chanops, &chptr->peons);
   dlinkMoveList(&chptr->halfops, &chptr->peons);
   dlinkMoveList(&chptr->voiced, &chptr->peons);
+
+  dlinkMoveList(&chptr->locchanops, &chptr->peons);
+  dlinkMoveList(&chptr->lochalfops, &chptr->peons);
+  dlinkMoveList(&chptr->locvoiced, &chptr->peons);
 
   chptr->opcount = 0;
 }
