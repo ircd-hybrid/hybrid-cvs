@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.112 2001/01/20 14:33:40 db Exp $
+ * $Id: ircd_parser.y,v 1.113 2001/01/21 19:21:36 db Exp $
  */
 
 %{
@@ -94,6 +94,7 @@ int   class_redirport_var;
 %token  GECOS
 %token  GLINE
 %token  GLINES
+%token  GLINE_EXEMPT
 %token  GLINE_TIME
 %token  GLINE_LOG
 %token  GLOBAL_KILL
@@ -695,8 +696,8 @@ auth_items:     auth_items auth_item |
 
 auth_item:      auth_user | auth_passwd | auth_class |
                 auth_kline_exempt | auth_have_ident |
-                auth_exceed_limit | auth_no_tilde | auth_spoof |
-                auth_redir_serv | auth_redir_port | error
+                auth_exceed_limit | auth_no_tilde | auth_gline_exempt |
+                auth_spoof | auth_redir_serv | auth_redir_port | error
 
 auth_user:   USER '=' QSTRING ';'
   {
@@ -786,6 +787,17 @@ auth_no_tilde:        NO_TILDE '=' TYES ';'
   {
     yy_aconf->flags &= ~CONF_FLAGS_NO_TILDE;
   };
+
+auth_gline_exempt:  GLINE_EXEMPT '=' TYES ';' 
+  {
+    yy_aconf->flags |= CONF_FLAGS_EXEMPTGLINE;
+  }
+                    |
+                    GLINE_EXEMPT '=' TNO ';'
+  {
+    yy_aconf->flags &= ~CONF_FLAGS_EXEMPTGLINE;
+  };
+
 
 auth_redir_serv:    REDIRSERV '=' QSTRING ';'
   {

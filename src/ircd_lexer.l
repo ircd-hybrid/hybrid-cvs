@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.63 2001/01/20 14:33:39 db Exp $
+ * $Id: ircd_lexer.l,v 1.64 2001/01/21 19:21:36 db Exp $
  */
 
 %option case-insensitive
@@ -103,6 +103,7 @@ fname_foperlog  { return FNAME_FOPERLOG; }
 gecos		{ return GECOS; }
 general		{ return GENERAL; }
 gline		{ return GLINE; }
+gline_exempt    { return GLINE_EXEMPT; }
 gline_time      { return GLINE_TIME; }
 gline_log       { return GLINE_LOG; }
 global_kill	{ return GLOBAL_KILL; }

@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.82 2001/01/20 14:33:34 db Exp $
+ * $Id: s_conf.h,v 7.83 2001/01/21 19:21:30 db Exp $
  */
 
 #include "setup.h"
@@ -114,6 +114,7 @@ struct ConfItem
 #define CONF_FLAGS_ALLOW_AUTO_CONN      0x0400
 #define CONF_FLAGS_LAZY_LINK            0x0800
 #define CONF_FLAGS_REDIR                0x1000
+#define CONF_FLAGS_EXEMPTGLINE          0x2000
 
 /* Macros for aConfItem */
 
@@ -124,6 +125,7 @@ struct ConfItem
 #define IsNoMatchIp(x)          ((x)->flags & CONF_FLAGS_NOMATCH_IP)
 #define IsConfElined(x)         ((x)->flags & CONF_FLAGS_E_LINED)
 #define IsConfFlined(x)         ((x)->flags & CONF_FLAGS_F_LINED)
+#define IsConfExemptGline(x)    ((x)->flags & CONF_FLAGS_EXEMPTGLINE)
 #define IsConfIdlelined(x)      ((x)->flags & CONF_FLAGS_IDLE_LINED)
 #define IsConfDoIdentd(x)       ((x)->flags & CONF_FLAGS_DO_IDENTD)
 #define IsConfDoSpoofIp(x)      ((x)->flags & CONF_FLAGS_SPOOF_IP)

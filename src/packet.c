@@ -18,7 +18,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: packet.c,v 7.30 2001/01/11 05:32:03 a1kmm Exp $
+ *   $Id: packet.c,v 7.31 2001/01/21 19:21:38 db Exp $
  */ 
 
 #include <stdio.h>
@@ -202,7 +202,7 @@ read_packet(int fd, void *data)
     cptr->lasttime = CurrentTime;
   if (cptr->lasttime > cptr->since)
     cptr->since = CurrentTime;
-  cptr->flags &= ~(FLAGS_PINGSENT | FLAGS_NONL);
+  cptr->flags &= ~FLAGS_PINGSENT;
 
   /*
    * Before we even think of parsing what we just read, stick
