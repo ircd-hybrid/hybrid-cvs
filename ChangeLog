@@ -1,3 +1,7 @@
+*** 20001115_2 by lusky
+added missing commit comments
+
+
 *** 20001115_1 by db
 - oops. just noticed I forgot to cvs add these *sigh* sorry
 
@@ -529,7 +533,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.546 2000/11/15 07:44:24 lusky Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.547 2000/11/15 07:44:28 lusky Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
