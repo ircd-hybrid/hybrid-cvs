@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.197 2001/03/06 02:23:06 androsyn Exp $
+ *  $Id: s_conf.c,v 7.198 2001/03/06 03:42:13 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -1425,6 +1425,7 @@ static void read_conf(FBFILE* file)
   scount = lineno = 0;
 
   class0 = find_class("default");       /* which one is the default class ? */
+  ServerInfo.specific_virtual_host = 0;   /* This is a dumb place to do this got a better idea? */
   yyparse(); /* wheee! */
 
   check_class();

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.116 2001/02/05 01:05:37 androsyn Exp $
+ * $Id: ircd.c,v 7.117 2001/03/06 03:42:13 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -139,10 +139,6 @@ struct Client me;               /* That's me */
 struct LocalUser meLocalUser;	/* That's also part of me */
 
 struct Client* GlobalClientList = 0; /* Pointer to beginning of Client list */
-
-/* Virtual host */
-struct irc_inaddr  vserv;
-int                specific_virtual_host = 0;
 
 /* unknown/client pointer lists */ 
 dlink_list unknown_list;        /* unknown clients ON this server only */
@@ -566,20 +562,6 @@ int main(int argc, char *argv[])
     {
       strncpy_irc(me.info, ServerInfo.description, REALLEN);
     }
-
-  /* Do virtual host setup here */
-  /* We really should have some way of specifying an IPv4 address even if we are compiled
-   * for IPv6 -- aaron
-   */
-#ifdef IPV6
-  if(!IN6_IS_ADDR_UNSPECIFIED(&ServerInfo.ip.sins.sin6))
-#else
-  if(IN_ADDR(ServerInfo.ip) != 0)
-#endif
-    {
-	copy_s_addr(IN_ADDR(vserv), IN_ADDR(ServerInfo.ip));
-    }
-
 
 
 #ifdef USE_GETTEXT
