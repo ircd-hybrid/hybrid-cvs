@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: dbuf.c,v 7.22 2003/05/27 17:45:53 joshk Exp $
+ *  $Id: dbuf.c,v 7.23 2003/09/13 19:04:32 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -28,6 +28,7 @@
 #include "dbuf.h"
 #include "list.h"
 #include "tools.h"
+#include "memory.h"
 
 static BlockHeap *dbuf_heap;
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.315 2003/08/21 21:12:56 michael Exp $
+ *  $Id: ircd.c,v 7.316 2003/09/13 19:04:32 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -107,7 +107,7 @@ int bio_spare_fd = -1;
 int splitmode;
 int splitchecking;
 int split_users;
-int split_servers;
+unsigned int split_servers;
 
 /* Do klines the same way hybrid-6 did them, i.e. at the
  * top of the next io_loop instead of in the same loop as

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.154 2003/07/07 12:43:56 michael Exp $
+ *  $Id: channel.h,v 7.155 2003/09/13 19:04:29 metalrock Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -31,11 +31,10 @@
 struct Client;
 
 /* mode structure for channels */
-
 struct Mode
 {
   unsigned int mode;
-  int limit;
+  unsigned int limit;
   char key[KEYLEN];
 };
 

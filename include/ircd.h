@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.h,v 7.75 2003/08/21 21:12:54 michael Exp $
+ *  $Id: ircd.h,v 7.76 2003/09/13 19:04:29 metalrock Exp $
  */
 
 #ifndef INCLUDED_ircd_h
@@ -87,7 +87,7 @@ extern int bio_spare_fd;
 extern int splitmode;
 extern int splitchecking;
 extern int split_users;
-extern int split_servers;
+extern unsigned int split_servers;
 
 extern dlink_list unknown_list;       /* unknown clients ON this server only        */
 extern dlink_list local_client_list;  /* local clients only ON this server          */

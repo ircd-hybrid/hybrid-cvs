@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: io.c,v 1.33 2003/06/26 01:25:25 joshk Exp $
+ *   $Id: io.c,v 1.34 2003/09/13 19:04:31 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -168,9 +168,9 @@ process_recvq(struct ctrl_command *cmd)
 {
   int ret;
   unsigned char *buf;
-  int   blen;
+  unsigned int blen;
   unsigned char *data = cmd->data;
-  unsigned int   datalen = cmd->datalen;
+  unsigned int datalen = cmd->datalen;
 
   buf = data;
   blen = datalen;
