@@ -16,14 +16,14 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: numeric.c,v 7.14 2001/01/19 07:39:48 ejb Exp $
+ *   $Id: numeric.c,v 7.15 2001/01/20 10:57:40 toot blalloc.c $
  */
 
 #include <sys/types.h>
-
 #include <assert.h>
 
 #include "setup.h"
+#include "config.h"
 
 #ifdef USE_GETTEXT
 #include <libintl.h>

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.109 2001/01/20 07:25:53 db Exp $
+ * $Id: ircd.c,v 7.110 2001/01/20 10:57:39 toot Exp $
  */
 
 #include <sys/types.h>
@@ -35,6 +35,7 @@
 #include <unistd.h>
 
 #include "setup.h"
+#include "config.h"
 
 #if defined(HAVE_GETOPT_H)
 #include <getopt.h>
@@ -44,7 +45,6 @@
 #include <libintl.h>
 #endif
 
-#include "config.h"
 #include "tools.h"
 #include "ircd.h"
 #include "channel.h"
