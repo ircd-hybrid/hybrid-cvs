@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hook.h,v 1.12 2002/01/05 09:14:28 a1kmm Exp $
+ *  $Id: hook.h,v 1.13 2002/01/16 15:48:06 jmallett Exp $
  */
 
 #ifndef __HOOK_H_INCLUDED
@@ -83,6 +83,14 @@ struct hook_burst_channel
 	struct Channel *chptr;
 };
 
+/* Needed to use uintptr_t for hooks. */
+#ifdef HAVE_INTTYPES_H
+#include <inttypes.h>
+#else
+#ifndef HAVE_UINTPTR_T
+typedef unsigned long uintptr_t;
+#endif
+#endif
 
 int hook_add_event(char *);
 int hook_add_hook(char *, hookfn *);
