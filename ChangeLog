@@ -1,3 +1,15 @@
+bill        2002/10/17 13:06:33 EDT	(20021017_2)
+
+  Modified files:
+    contrib              m_jupe.c 
+  Log:
+  - cosmetic fix.  if we're not a hub, tell user why we fail
+  
+  Revision  Changes    Path
+  1.36      +6 -2      ircd-hybrid-7/contrib/m_jupe.c
+
+
+
 bill        2002/10/16 23:20:34 EDT	(20021017_1)
 
   Modified files:
@@ -32529,4 +32541,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4067 2002/10/17 03:20:36 bill Exp $
+$Id: ChangeLog,v 7.4068 2002/10/17 17:06:36 bill Exp $
