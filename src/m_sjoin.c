@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 7.18 2000/11/06 22:24:15 db Exp $
+ *   $Id: m_sjoin.c,v 7.19 2000/11/07 03:51:11 db Exp $
  */
 #include "handlers.h"
 #include "channel.h"
@@ -374,10 +374,8 @@ sendto_realops("ZZZ Creating top_chptr for %s", (parv[2] + 1));
 	  /* XXX ZZZ vchan stuff */
 
 	  if( top_chptr )
-	    add_vchan_to_client_cache(sptr,top_chptr, chptr);
-
-	  if( top_chptr )
 	    {
+	      add_vchan_to_client_cache(sptr,top_chptr, chptr);
 	      sendto_channel_butserv(chptr, acptr, ":%s JOIN :%s",
 				     s, top_chptr->chname);
 	    }
@@ -477,10 +475,16 @@ sendto_realops("ZZZ Creating top_chptr for %s", (parv[2] + 1));
   return 0;
 }
 
-/* ZZZ inline this eventually */
+/*
+ * set_final_mode
+ *
+ * inputs	- pointer to mode to setup
+ *		- pointer to old mode
+ * output	- NONE
+ * side effects	- 
+ */
 
-void
-set_final_mode(struct Mode *mode,struct Mode *oldmode)
+void set_final_mode(struct Mode *mode,struct Mode *oldmode)
 {
   int what = 0;
   char numeric[16];
