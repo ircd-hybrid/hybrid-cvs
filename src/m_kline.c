@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kline.c,v 7.4 1999/08/18 22:59:39 db Exp $
+ *   $Id: m_kline.c,v 7.5 1999/09/03 00:54:04 lusky Exp $
  */
 #include "m_kline.h"
 #include "channel.h"
@@ -563,6 +563,29 @@ m_kline(struct Client *cptr,
       if(*argv)
         reason = argv;
     }
+
+  /*
+   * Check for # in user@host
+   */
+
+  if(strchr(host, '#'))
+    {
+#ifdef SLAVE_SERVERS
+      if(!IsServer(sptr))
+#endif
+        sendto_one(sptr, ":%s NOTICE %s :Invalid character '#' in hostname",
+                   me.name, parv[0]);
+      return 0;
+    }
+  if(strchr(user, '#'))
+    { 
+#ifdef SLAVE_SERVERS
+      if(!IsServer(sptr))
+#endif  
+        sendto_one(sptr, ":%s NOTICE %s :Invalid character '#' in username",
+                   me.name, parv[0]);
+      return 0;
+    }   
 
   /*
    * Now we must check the user and host to make sure there
