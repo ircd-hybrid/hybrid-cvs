@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.96 2000/12/28 17:17:43 davidt Exp $
+ *   $Id: s_serv.c,v 7.97 2000/12/28 17:28:55 davidt Exp $
  */
 #include "tools.h"
 #include "s_serv.h"
@@ -1291,11 +1291,17 @@ void set_autoconn(struct Client *sptr,char *parv0,char *name,int newval)
                  ":%s NOTICE %s :AUTOCONN for %s is now set to %i",
                  me.name, parv0, name, newval);
     }
-  else
+  else if (name)
     {
       sendto_one(sptr,
                  ":%s NOTICE %s :Can't find %s",
                  me.name, parv0, name);
+    }
+  else
+    {
+      sendto_one(sptr,
+                 ":%s NOTICE %s :Please specify a server name!",
+                 me.name, parv0);
     }
 }
 

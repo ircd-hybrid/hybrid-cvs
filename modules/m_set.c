@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_set.c,v 1.23 2000/12/27 20:30:41 davidt Exp $ */
+ *   $Id: m_set.c,v 1.24 2000/12/28 17:28:49 davidt Exp $ */
 
 /* rewritten by jdc */
 
@@ -453,11 +453,12 @@ int mo_set(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
                        (set_cmd_table[i].wants_char ? "string, " : ""),
                        (set_cmd_table[i].wants_char ? "int" : "")
                       );
-          else
-          {
-            arg = NULL;
-            intarg = NULL;
-          }
+        }
+
+        if(parc <= 2)
+        {
+          arg = NULL;
+          intarg = NULL;
         }
 
         if(set_cmd_table[i].wants_int && (parc > 2))
