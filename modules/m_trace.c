@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_trace.c,v 1.69 2003/07/17 06:25:26 metalrock Exp $
+ *  $Id: m_trace.c,v 1.70 2003/07/18 22:05:59 bill Exp $
  */
 
 #include "stdinc.h"
@@ -94,7 +94,7 @@ _moddeinit(void)
   mod_del_cmd(&trace_msgtab6);
 #endif
 }
-const char *_version = "$Revision: 1.69 $";
+const char *_version = "$Revision: 1.70 $";
 #endif
 
 static int report_this_status(struct Client *source_p, struct Client *target_p,
@@ -367,28 +367,6 @@ do_actual_trace(int ttype, const char *tname,
 #endif
   }
 
-  /*
-   * Add these lines to summarize the above which can get rather long
-   * and messy when done remotely - Avalon
-   */
-  if (!SendWallops(source_p) || !cnt)
-  {
-    /* redundant given we dont allow trace from non-opers anyway.. but its
-     * left here in case that should ever change --fl
-     */
-    if(cnt != 0)
-      sendto_one(source_p, form_str(RPL_TRACESERVER),
-		 me.name, parv[0], 0, link_s[me.localClient->fd],
-		 link_u[me.localClient->fd], me.name, "*", "*", me.name);
-		   
-    /* let the user have some idea that its at the end of the
-     * trace
-     */
-    sendto_one(source_p, form_str(RPL_ENDOFTRACE),me.name,
-	       parv[0],tname);
-    return;
-  }
-    
   DLINK_FOREACH(ptr, class_items.head)
   {
     conf = ptr->data;
