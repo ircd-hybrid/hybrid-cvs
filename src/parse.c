@@ -17,8 +17,14 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.83 2001/01/11 05:32:03 a1kmm Exp $
+ *   $Id: parse.c,v 7.84 2001/01/18 09:07:41 ejb Exp $
  */
+
+#include <assert.h>
+#include <string.h>
+#include <strings.h>
+#include <stdlib.h>
+
 #include "parse.h"
 #include "client.h"
 #include "channel.h"
@@ -37,10 +43,6 @@
 #include "s_conf.h"
 #include "vchannel.h"
 #include "memory.h"
-
-#include <assert.h>
-#include <string.h>
-#include <stdlib.h>
 
 /*
  * NOTE: parse() should not be called recursively by other functions!

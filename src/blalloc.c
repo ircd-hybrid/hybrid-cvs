@@ -4,7 +4,7 @@
  * Owner:  Wohali (Joan Touzet)
  *
  *
- * $Id: blalloc.c,v 7.21 2001/01/12 07:11:13 a1kmm Exp $
+ * $Id: blalloc.c,v 7.22 2001/01/18 09:07:36 ejb Exp $
  */
 #include <stdio.h>
 #include <unistd.h>
@@ -272,7 +272,7 @@ void * _BlockHeapAlloc (BlockHeap *bh)
               strncpy_irc(mme->file, file, 50)[49] = 0;
             mme->line = line;
             assert(mme->next != mme);
-            ret += sizeof(MemoryEntry);
+            ret += (void *)sizeof(MemoryEntry);
            }
 #endif
 		   return ret;
@@ -319,7 +319,7 @@ int _BlockHeapFree(BlockHeap *bh, void *ptr)
        return 1;
      }
 #ifdef MEMDEBUG
-   ptr -= sizeof(MemoryEntry);
+   ptr -= (void *)sizeof(MemoryEntry);
    {
     MemoryEntry *mme = (MemoryEntry*)ptr;
     assert(mme->next != mme);

@@ -20,8 +20,21 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.120 2001/01/17 22:49:33 fl_ Exp $
+ *  $Id: s_user.c,v 7.121 2001/01/18 09:07:43 ejb Exp $
  */
+
+#define _XOPEN_SOURCE
+
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <fcntl.h>
+#include <assert.h>
+#include <time.h>
+#include <limits.h>
+#include <sys/stat.h>
+
 #include "tools.h"
 #include "s_user.h"
 #include "channel.h"
@@ -49,14 +62,6 @@
 #include "whowas.h"
 #include "md5.h"
 #include "memory.h"
-
-#include <string.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <assert.h>
-#include <time.h>
-#include <sys/stat.h>
 
 static int valid_hostname(const char* hostname);
 static int valid_username(const char* username);

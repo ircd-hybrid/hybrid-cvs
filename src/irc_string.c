@@ -16,12 +16,13 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: irc_string.c,v 7.17 2001/01/11 05:31:57 a1kmm Exp $
+ *  $Id: irc_string.c,v 7.18 2001/01/18 09:07:38 ejb Exp $
  */
 #include "tools.h"
 #include "irc_string.h"
 #include "list.h"
 #include "memory.h"
+#include "setup.h"
 
 #include <assert.h>
 #ifdef STRING_WITH_STRINGS

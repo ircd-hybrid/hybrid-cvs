@@ -16,14 +16,12 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.78 2001/01/09 00:33:56 db Exp $
+ * $Id: config.h,v 7.79 2001/01/18 09:07:28 ejb Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
-#ifndef INCLUDED_setup_h
+
 #include "setup.h"
-#define INCLUDED_setup_h
-#endif
 
 /* PLEASE READ SECTION:
  */
@@ -39,6 +37,9 @@
  * come up initially, then you can increase these values to fit your
  * system limits. If you know what you are doing, increase them now
  */
+
+/* VMS NOTE - VMS is basically unlimited with FDs, so just set this
+   to any suitable value.. */
 
 #define HARD_FDLIMIT_   256
 #define INIT_MAXCLIENTS 200

@@ -2,7 +2,7 @@
  * send.h
  * Copyright (C) 1999 Patrick Alken
  *
- * $Id: send.h,v 7.36 2001/01/17 22:49:26 fl_ Exp $
+ * $Id: send.h,v 7.37 2001/01/18 09:07:29 ejb Exp $
  */
 
 #ifndef INCLUDED_send_h
@@ -31,7 +31,7 @@ extern  void sendto_all_local_opers(struct Client *, char *message_type,
 extern  void sendto_one(struct Client *, const char *, ...);
 extern  void sendto_channel_butone(struct Client *one, struct Client *from,
                                    struct Channel *chptr, char *command,
-                                   const char *pattern, ...)
+                                   const char *pattern, ...);
 extern  void sendto_one_prefix(struct Client *, struct Client *,
 			       const char *, ...);
 extern  void sendto_serv_butone(struct Client *, const char *, ...);

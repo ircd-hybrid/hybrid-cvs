@@ -19,10 +19,14 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.72 2001/01/07 02:12:10 wcampbel Exp $
+ * $Id: s_conf.h,v 7.73 2001/01/18 09:07:29 ejb Exp $
  */
 
+#include "setup.h"
+
+#ifdef HAVE_SYS_PARAM_H
 #include <sys/param.h>
+#endif
 
 #ifndef INCLUDED_config_h
 #include "config.h"             /* defines */

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: hook.c,v 7.4 2001/01/17 17:23:00 ejb Exp $
+ * $Id: hook.c,v 7.5 2001/01/18 09:07:37 ejb Exp $
  */
 
 /* hooks are used by modules to hook into events called by other parts of
@@ -25,6 +25,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "tools.h"
 #include "list.h"
@@ -146,7 +147,7 @@ hook_call_event(char *event, void *data)
 
 	for (node = h->hooks.head; node; node = node->next)
 	{
-		fn = node->data;
+		fn = (hookfn)node->data;
 		
 		if (fn(data) != 0)
 			return 0;

@@ -17,9 +17,10 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: memory.c,v 7.3 2001/01/11 19:42:52 a1kmm Exp $
+ * $Id: memory.c,v 7.4 2001/01/18 09:07:40 ejb Exp $
  */
 #include <stdlib.h>
+#include <string.h>
 
 #include "ircd_defs.h"
 #include "ircd.h"

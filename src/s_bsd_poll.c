@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_poll.c,v 7.28 2001/01/11 05:32:06 a1kmm Exp $
+ *  $Id: s_bsd_poll.c,v 7.29 2001/01/18 09:07:42 ejb Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -64,7 +64,9 @@
 #include <sys/file.h>
 #include <sys/ioctl.h>
 #include <sys/resource.h>
+#ifdef HAVE_SYS_PARAM_H
 #include <sys/param.h>    /* NOFILE */
+#endif
 #include <arpa/inet.h>
 
 /*

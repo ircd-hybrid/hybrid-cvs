@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: ircdauth.c,v 7.32 2001/01/11 05:31:59 a1kmm Exp $
+ *   $Id: ircdauth.c,v 7.33 2001/01/18 09:07:39 ejb Exp $
  */
 
 #include <stdio.h>
@@ -175,7 +175,7 @@ CompleteIAuthConnection(int fd, void *notused)
 
 {
 	int errval;
-	socklen_t errlen;
+	unsigned int errlen;
 
 	ClearIAuthConnect(iAuth);
 

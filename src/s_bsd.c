@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.86 2001/01/17 19:35:47 davidt Exp $
+ *  $Id: s_bsd.c,v 7.87 2001/01/18 09:07:41 ejb Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -59,7 +59,9 @@
 #include <sys/file.h>
 #include <sys/ioctl.h>
 #include <sys/resource.h>
+#ifdef HAVE_SYS_PARAM_H
 #include <sys/param.h>    /* NOFILE */
+#endif
 #include <arpa/inet.h>
 
 #ifndef IN_LOOPBACKNET
@@ -108,7 +110,7 @@ int get_sockerr(int fd)
   int errtmp = errno;
 #ifdef SO_ERROR
   int err = 0;
-  socklen_t len = sizeof(err);
+  unsigned int len = sizeof(err);
 
   if (-1 < fd && !getsockopt(fd, SOL_SOCKET, SO_ERROR, (char*) &err, &len)) {
     if (err)
@@ -317,7 +319,7 @@ void add_connection(struct Listener* listener, int fd)
 {
   struct Client*     new_client;
   struct sockaddr_in addr;
-  socklen_t          len = sizeof(struct sockaddr_in);
+  unsigned int          len = sizeof(struct sockaddr_in);
 
   assert(0 != listener);
 

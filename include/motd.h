@@ -1,17 +1,17 @@
 /*
  * motd.h
  *
- * $Id: motd.h,v 7.3 2000/12/29 08:36:56 db Exp $
+ * $Id: motd.h,v 7.4 2001/01/18 09:07:29 ejb Exp $
  */
 #ifndef INCLUDED_motd_h
 #define INCLUDED_motd_h
 #ifndef INCLUDED_ircd_defs_h
 #include "ircd_defs.h"    /* MAX_DATE_STRING */
 #endif
-#ifndef INCLUDED_limits_h
+
+#define _XOPEN_SOURCE
+
 #include <limits.h>       /* PATH_MAX */
-#define INCLUDED_limits_h
-#endif
 
 /* XXX really, should be mallocing this on the fly but... */
 #define MESSAGELINELEN 256

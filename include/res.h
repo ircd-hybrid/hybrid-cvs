@@ -1,7 +1,7 @@
 /*
  * include/res.h (C)opyright 1992 Darren Reed.
  *
- * $Id: res.h,v 7.6 2000/11/06 13:48:14 adrian Exp $
+ * $Id: res.h,v 7.7 2001/01/18 09:07:29 ejb Exp $
  */
 #ifndef INCLUDED_res_h
 #define INCLUDED_res_h
@@ -9,6 +9,10 @@
 #ifndef INCLUDED_sys_types_h
 #include <sys/types.h>       /* time_t */
 #define INCLUDED_sys_types_h
+#endif
+
+#ifdef VMS
+#include "nameser_compat.h"
 #endif
 
 struct Client;

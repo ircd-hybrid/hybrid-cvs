@@ -16,13 +16,17 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.h,v 7.14 2001/01/14 22:32:53 fl_ Exp $
+ * $Id: modules.h,v 7.15 2001/01/18 09:07:28 ejb Exp $
  */
 
 #ifndef INCLUDED_modules_h
 #define INCLUDED_modules_h
 
+#include "setup.h"
+
+#ifdef HAVE_SYS_PARAM_H
 #include <sys/param.h>
+#endif
 
 #include "ircd_handler.h"
 #include "msg.h"

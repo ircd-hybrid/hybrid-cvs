@@ -18,7 +18,7 @@
  */
 
 /*
- * $Id: whowas.h,v 7.4 2000/11/14 08:08:06 db Exp $
+ * $Id: whowas.h,v 7.5 2001/01/18 09:07:30 ejb Exp $
  */
 #ifndef INCLUDED_whowas_h
 #define INCLUDED_whowas_h
@@ -29,6 +29,8 @@
 #include <sys/types.h>
 #define INCLUDED_sys_types_h
 #endif
+
+#include "setup.h"
 
 /*
  * Whowas hash table size
