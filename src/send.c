@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.166 2001/12/10 23:21:34 leeh Exp $
+ *   $Id: send.c,v 7.167 2001/12/14 01:30:04 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -245,8 +245,6 @@ send_linebuf_remote(struct Client *to, struct Client *from,
 
     return;
   } /* if (!MyClient(from) && IsPerson(to) && (to->from == from->from)) */
-
-  /* deprintf("send", "Sending [%s] to %s", sendbuf, to->name); */
 
   _send_linebuf(to, linebuf);
   return;
