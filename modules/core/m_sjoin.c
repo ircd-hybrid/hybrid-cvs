@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.47 2000/12/28 22:19:32 davidt Exp $
+ *   $Id: m_sjoin.c,v 1.48 2000/12/29 00:37:10 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -310,7 +310,7 @@ int     ms_sjoin(struct Client *cptr,
 
   *modebuf = *parabuf = '\0';
   if (parv[3][0] != '0' && keep_new_modes)
-    channel_modes(chptr, sptr, modebuf, parabuf, 0);
+    channel_modes(chptr, sptr, modebuf, parabuf);
   else
     {
       modebuf[0] = '0';
