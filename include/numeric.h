@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: numeric.h,v 7.21 2001/11/11 16:38:57 leeh Exp $
+ * $Id: numeric.h,v 7.22 2001/11/13 13:35:13 leeh Exp $
  */
 #ifndef INCLUDED_numeric_h
 #define INCLUDED_numeric_h
@@ -274,6 +274,13 @@ extern const char* form_str(int);
 #define ERR_GHOSTEDCLIENT    503
 
 #define ERR_USERNOTONSERV    504
+
+/* #define ERR_LAST_ERR_MSG 505 
+ * moved to 999
+ */
+
+#define ERR_VCHANDISABLED    506
+#define ERR_ALREADYONVCHAN   507
 
 #define ERR_HELPNOTFOUND     524
 
