@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.57 2000/12/25 01:04:54 toot Exp $
+ * $Id: s_conf.h,v 7.58 2000/12/28 20:56:07 ejb Exp $
  */
 
 #include <sys/param.h>
@@ -218,7 +218,7 @@ typedef struct
   int         maximum_links;
 	int       oper_only_umodes;
 	int       max_targets;
-
+	int       links_notice;
 } ConfigFileEntryType;
 
 /* bleh. have to become global. */

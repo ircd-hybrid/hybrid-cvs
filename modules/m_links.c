@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_links.c,v 1.12 2000/12/23 14:19:08 db Exp $
+ *   $Id: m_links.c,v 1.13 2000/12/28 20:56:12 ejb Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -87,7 +87,7 @@ int m_links(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   if (*mask)       /* only necessary if there is a mask */
     mask = collapse(clean_string(clean_mask, mask, 2 * HOSTLEN));
 
-  if (MyConnect(sptr))
+  if (ConfigFileEntry.links_notice && MyConnect(sptr))
     sendto_realops_flags(FLAGS_SPY,
                        "LINKS '%s' requested by %s (%s@%s) [%s]",
                        mask, sptr->name, sptr->username,

@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.75 2000/12/27 02:31:36 db Exp $
+ * $Id: ircd_parser.y,v 1.76 2000/12/28 20:56:14 ejb Exp $
  */
 
 %{
@@ -200,6 +200,7 @@ int   class_redirport_var;
 %token  OPER_ONLY_UMODES
 %token  PATH
 %token  MAX_TARGETS
+%token  LINKS_NOTICE
 
 %%
 conf:   
@@ -1271,7 +1272,7 @@ general_item:       general_failed_oper_notice | general_show_failed_oper_id |
                     general_message_locale | general_client_exit |
                     general_fname_userlog | general_fname_operlog |
                     general_fname_foperlog | general_oper_only_umodes |
-                    general_max_targets |
+                    general_max_targets | general_links_notice |
                     error
 
 
@@ -1588,3 +1589,11 @@ umode_item:	T_BOTS
 	ConfigFileEntry.oper_only_umodes |= FLAGS_CALLERID;
 } ;
 
+general_links_notice: LINKS_NOTICE '=' TYES ';'
+{
+	ConfigFileEntry.links_notice = 1;
+}
+| LINKS_NOTICE '=' TNO ';'
+{
+	ConfigFileEntry.links_notice = 0;
+};
