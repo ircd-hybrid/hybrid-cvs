@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.141 2002/02/25 17:39:02 androsyn Exp $
+ *  $Id: client.h,v 7.142 2002/03/09 23:54:10 androsyn Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -618,8 +618,6 @@ extern int            exit_client(struct Client*, struct Client*,
 
 extern void     count_local_client_memory(int *count, int *memory);
 extern void     count_remote_client_memory(int *count, int *memory);
-extern  int     check_registered (struct Client *);
-extern  int     check_registered_user (struct Client *);
 
 extern struct Client* find_chasing (struct Client *, char *, int *);
 extern struct Client* find_person (char *);
