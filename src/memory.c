@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: memory.c,v 7.13 2001/03/11 17:44:19 fl_ Exp $
+ * $Id: memory.c,v 7.14 2001/03/11 20:20:31 toot Exp $
  */
 #include <stdlib.h>
 #include <string.h>
@@ -33,6 +33,8 @@
 #include "send.h"
 #include "tools.h"
 #include "s_log.h"
+#include "restart.h"
+
 #ifdef MEMDEBUG
 /* Hopefully this debugger will work better than the existing one...
  * -A1kmm. */
