@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.320 2002/08/20 16:42:00 db Exp $
+ *  $Id: s_conf.c,v 7.321 2002/09/02 06:34:28 db Exp $
  */
 
 #include "stdinc.h"
@@ -474,14 +474,14 @@ check_client(struct Client *client_p, struct Client *source_p, char *username)
       /*       a purely cosmetical change */
       inetntop(source_p->localClient->aftype, &IN_ADDR(source_p->localClient->ip), ipaddr, HOSTIPLEN);
       sendto_realops_flags(FLAGS_UNAUTH, L_ALL,
-			   "Unauthorised client connection from %s [%s] on [%s/%u].",
+			   "Unauthorized client connection from %s [%s] on [%s/%u].",
 			   get_client_name(source_p, SHOW_IP),
 			   ipaddr,
 			   source_p->localClient->listener->name,
 			   source_p->localClient->listener->port);
 			   
       ilog(L_INFO,
-	  "Unauthorised client connection from %s on [%s/%u].",
+	  "Unauthorized client connection from %s on [%s/%u].",
 	  get_client_name(source_p, SHOW_IP),
 	  source_p->localClient->listener->name,
 	  source_p->localClient->listener->port);
