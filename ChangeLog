@@ -1,3 +1,15 @@
+androsyn    2002/10/10 14:30:32 EDT	(20021010_1)
+
+  Modified files:
+    src                  s_user.c 
+  Log:
+  Clean up a number of strlcpy()'s that have magic numbers stuck in them
+  
+  Revision  Changes    Path
+  7.210     +6 -6      ircd-hybrid-7/src/s_user.c
+
+
+
 db          2002/10/10 11:44:06 EDT	(20021010_0)
 
   Modified files:
@@ -32318,4 +32330,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4053 2002/10/10 15:44:08 db Exp $
+$Id: ChangeLog,v 7.4054 2002/10/10 18:30:34 androsyn Exp $
