@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.96 2001/02/05 07:08:01 db Exp $
+ * $Id: s_conf.h,v 7.97 2001/02/12 15:02:29 jdc Exp $
  */
 
 #include "setup.h"
@@ -133,7 +133,8 @@ struct ConfItem
 #define IsConfIdlelined(x)      ((x)->flags & CONF_FLAGS_IDLE_LINED)
 #define IsConfDoIdentd(x)       ((x)->flags & CONF_FLAGS_DO_IDENTD)
 #define IsConfDoSpoofIp(x)      ((x)->flags & CONF_FLAGS_SPOOF_IP)
-#define IsConfSpoofNotice(x)    ((x)->flags & CONF_FLAGS_SPOOF_NOTICE)
+/* jdc -- flip logic since YES/NO are reversed in the conf code */
+#define IsConfSpoofNotice(x)    (!((x)->flags & CONF_FLAGS_SPOOF_NOTICE))
 #define IsConfRestricted(x)     ((x)->flags & CONF_FLAGS_RESTRICTED)
 #define IsConfEncrypted(x)      ((x)->flags & CONF_FLAGS_ENCRYPTED)
 
