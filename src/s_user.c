@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.292 2003/07/05 06:21:04 db Exp $
+ *  $Id: s_user.c,v 7.293 2003/07/06 19:10:21 michael Exp $
  */
 
 #include "stdinc.h"
@@ -955,7 +955,6 @@ set_user_mode(struct Client *client_p, struct Client *source_p,
             if (!IsOper(source_p))
               break;
 
-	    detach_conf(source_p, OPER_TYPE);
             ClearOper(source_p);
             source_p->umodes &= ~ConfigFileEntry.oper_only_umodes;
             Count.oper--;
@@ -964,6 +963,7 @@ set_user_mode(struct Client *client_p, struct Client *source_p,
             {
               dlink_node *dm;
 
+              detach_conf(source_p, OPER_TYPE);
               ClearOperFlags(source_p);
 
               if ((dm = dlinkFindDelete(&oper_list, source_p)) != NULL)
