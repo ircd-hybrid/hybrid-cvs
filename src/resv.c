@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: resv.c,v 7.14 2002/04/15 00:05:45 leeh Exp $
+ *  $Id: resv.c,v 7.15 2002/04/28 01:29:08 leeh Exp $
  */
 
 #include "tools.h"
@@ -58,7 +58,7 @@ create_channel_resv(char *name, char *reason, int conf)
     len = TOPICLEN;
   }
 
-  resv_p = (struct ResvChannel *)MyMalloc(sizeof(struct ResvChannel) + len);
+  resv_p = (struct ResvChannel *)MyMalloc(sizeof(struct ResvChannel));
 
   strlcpy(resv_p->name, name, CHANNELLEN+1);
   DupString(resv_p->reason, reason);
@@ -92,7 +92,7 @@ create_nick_resv(char *name, char *reason, int conf)
     len = TOPICLEN;
   }
 
-  resv_p = (struct ResvNick *)MyMalloc(sizeof(struct ResvNick) + len);
+  resv_p = (struct ResvNick *)MyMalloc(sizeof(struct ResvNick));
 
   strlcpy(resv_p->name, name, RESVNICKLEN);
   DupString(resv_p->reason, reason);
