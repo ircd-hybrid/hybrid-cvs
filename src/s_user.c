@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.188 2002/02/23 17:32:43 androsyn Exp $
+ *  $Id: s_user.c,v 7.189 2002/02/24 17:23:30 db Exp $
  */
 
 #include <sys/types.h>
@@ -531,7 +531,7 @@ int register_remote_user(struct Client *client_p, struct Client *source_p,
 		  me.name);
 
       source_p->flags |= FLAGS_KILLED;
-      return exit_client(NULL, source_p, &me, "Ghost");
+      return exit_client(NULL, source_p, &me, "Ghosted Client");
     }
 
   add_client_to_llist(&(source_p->servptr->serv->users), source_p);
