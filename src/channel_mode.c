@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.96 2003/05/24 05:01:36 db Exp $
+ *  $Id: channel_mode.c,v 7.97 2003/05/25 04:37:59 db Exp $
  */
 
 #include "stdinc.h"
@@ -123,7 +123,7 @@ static int mode_count;
 static int mode_limit;		/* number of modes set other than simple */
 static int simple_modes_mask;	/* bit mask of simple modes already set */
 
-static int channel_capabs[] = { CAP_EX, CAP_IE, CAP_UID };
+static int channel_capabs[] = { CAP_EX, CAP_IE, CAP_SID };
 
 #define NCHCAPS         (sizeof(channel_capabs)/sizeof(int))
 #define NCHCAP_COMBOS   (1 << NCHCAPS)
@@ -1575,7 +1575,7 @@ send_cap_mode_changes(struct Client *client_p, struct Client *source_p,
   parabuf[0] = '\0';
   parptr = parabuf;
 
-  if ((cap & CAP_UID) && source_p->user &&
+  if ((cap & CAP_SID) && source_p->user &&
       (source_p->user->id[0] == '.'))
     mbl = ircsprintf(modebuf, ":%s MODE %s ", source_p->user->id,
                      chptr->chname);
@@ -1596,7 +1596,7 @@ send_cap_mode_changes(struct Client *client_p, struct Client *source_p,
       continue;
 
     arg = "";
-    if ((cap & CAP_UID) && mode_changes[i].id)
+    if ((cap & CAP_SID) && mode_changes[i].id)
       arg = mode_changes[i].id;
     if (*arg == '\0')
       arg = mode_changes[i].arg;
@@ -1624,7 +1624,7 @@ send_cap_mode_changes(struct Client *client_p, struct Client *source_p,
       nc = 0;
       mc = 0;
 
-      if ((cap & CAP_UID) && source_p->user &&
+      if ((cap & CAP_SID) && source_p->user &&
           (source_p->user->id[0] == '.'))
         mbl = ircsprintf(modebuf, ":%s MODE %s ", source_p->user->id,
                          chptr->chname);

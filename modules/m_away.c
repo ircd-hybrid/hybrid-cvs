@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_away.c,v 1.33 2003/04/18 02:13:42 db Exp $
+ *  $Id: m_away.c,v 1.34 2003/05/25 04:37:55 db Exp $
  */
 
 #include "stdinc.h"
@@ -58,7 +58,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&away_msgtab);
 }
-const char *_version = "$Revision: 1.33 $";
+const char *_version = "$Revision: 1.34 $";
 #endif
 
 /***********************************************************************
@@ -92,9 +92,9 @@ static void m_away(struct Client *client_p, struct Client *source_p,
     if (cur_away_msg)
     {
       /* we now send this only if they were away before --is */
-      sendto_server(client_p, source_p, NULL, CAP_UID, NOCAPS,
+      sendto_server(client_p, source_p, NULL, CAP_SID, NOCAPS,
                     NOFLAGS, ":%s AWAY", ID(source_p));
-      sendto_server(client_p, source_p, NULL, NOCAPS, CAP_UID,
+      sendto_server(client_p, source_p, NULL, NOCAPS, CAP_SID,
                     NOFLAGS, ":%s AWAY", source_p->name);
 
       MyFree(cur_away_msg);
@@ -124,9 +124,9 @@ static void m_away(struct Client *client_p, struct Client *source_p,
    * weren't away already --is */
   if (!cur_away_msg)
   {
-    sendto_server(client_p, source_p, NULL, CAP_UID, NOCAPS,
+    sendto_server(client_p, source_p, NULL, CAP_SID, NOCAPS,
                   NOFLAGS, ":%s AWAY :%s", ID(source_p), new_away_msg);
-    sendto_server(client_p, source_p, NULL, NOCAPS, CAP_UID,
+    sendto_server(client_p, source_p, NULL, NOCAPS, CAP_SID,
                   NOFLAGS, ":%s AWAY :%s", source_p->name, new_away_msg);
   }
   else
@@ -154,9 +154,9 @@ static void mo_away(struct Client *client_p, struct Client *source_p,
     if (cur_away_msg)
     {
       /* we now send this only if they were away before --is */
-      sendto_server(client_p, source_p, NULL, CAP_UID, NOCAPS,
+      sendto_server(client_p, source_p, NULL, CAP_SID, NOCAPS,
                     NOFLAGS, ":%s AWAY", ID(source_p));
-      sendto_server(client_p, source_p, NULL, NOCAPS, CAP_UID,
+      sendto_server(client_p, source_p, NULL, NOCAPS, CAP_SID,
                     NOFLAGS, ":%s AWAY", source_p->name);
 
       MyFree(cur_away_msg);
@@ -178,9 +178,9 @@ static void mo_away(struct Client *client_p, struct Client *source_p,
    * weren't away already --is */
   if (!cur_away_msg)
   {
-    sendto_server(client_p, source_p, NULL, CAP_UID, NOCAPS,
+    sendto_server(client_p, source_p, NULL, CAP_SID, NOCAPS,
                   NOFLAGS, ":%s AWAY :%s", ID(source_p), new_away_msg);
-    sendto_server(client_p, source_p, NULL, NOCAPS, CAP_UID,
+    sendto_server(client_p, source_p, NULL, NOCAPS, CAP_SID,
                   NOFLAGS, ":%s AWAY :%s", source_p->name, new_away_msg);
   }
   else
@@ -210,9 +210,9 @@ static void ms_away(struct Client *client_p, struct Client *source_p,
     if (cur_away_msg)
     {
       /* we now send this only if they were away before --is */
-      sendto_server(client_p, source_p, NULL, CAP_UID, NOCAPS,
+      sendto_server(client_p, source_p, NULL, CAP_SID, NOCAPS,
                     NOFLAGS, ":%s AWAY", ID(source_p));
-      sendto_server(client_p, source_p, NULL, NOCAPS, CAP_UID,
+      sendto_server(client_p, source_p, NULL, NOCAPS, CAP_SID,
                     NOFLAGS, ":%s AWAY", source_p->name);
 
       MyFree(cur_away_msg);
@@ -232,9 +232,9 @@ static void ms_away(struct Client *client_p, struct Client *source_p,
    * weren't away already --is */
   if (!cur_away_msg)
   {
-    sendto_server(client_p, source_p, NULL, CAP_UID, NOCAPS,
+    sendto_server(client_p, source_p, NULL, CAP_SID, NOCAPS,
                   NOFLAGS, ":%s AWAY :%s", ID(source_p), new_away_msg);
-    sendto_server(client_p, source_p, NULL, NOCAPS, CAP_UID,
+    sendto_server(client_p, source_p, NULL, NOCAPS, CAP_SID,
                   NOFLAGS, ":%s AWAY :%s", source_p->name, new_away_msg);
   }
   else

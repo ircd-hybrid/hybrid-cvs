@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kill.c,v 1.75 2003/05/20 06:51:49 michael Exp $
+ *  $Id: m_kill.c,v 1.76 2003/05/25 04:37:57 db Exp $
  */
 
 #include "stdinc.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&kill_msgtab);
 }
 
-const char *_version = "$Revision: 1.75 $";
+const char *_version = "$Revision: 1.76 $";
 #endif
 
 /* mo_kill()
@@ -352,8 +352,8 @@ relay_kill(struct Client *one, struct Client *source_p,
     /* introduce source of kill */
     client_burst_if_needed(client_p, source_p);
 
-    /* check the server supports UID */
-    if (IsCapable(client_p, CAP_UID))
+    /* check the server supports SID */
+    if (IsCapable(client_p, CAP_SID))
       user = ID(target_p);
     else
       user = target_p->name;

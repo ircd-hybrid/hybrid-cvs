@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_killhost.c,v 1.5 2003/05/23 15:38:41 joshk Exp $
+ *  $Id: m_killhost.c,v 1.6 2003/05/25 04:37:52 db Exp $
  *
  */
 
@@ -64,7 +64,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&killhost_msgtab);
 }
-const char *_version = "$Revision: 1.5 $";
+const char *_version = "$Revision: 1.6 $";
 #endif
 
 /*
@@ -195,8 +195,8 @@ static void kh_relay_kill(struct Client *one, struct Client *source_p,
     /* introduce source of kill */
     client_burst_if_needed(client_p, source_p);
 
-    /* check the server supports UID */
-    if (IsCapable(client_p, CAP_UID))
+    /* check the server supports SID */
+    if (IsCapable(client_p, CAP_SID))
       user = ID(target_p);
     else
       user = target_p->name;

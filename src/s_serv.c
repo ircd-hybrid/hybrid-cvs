@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.333 2003/05/25 04:24:59 db Exp $
+ *  $Id: s_serv.c,v 7.334 2003/05/25 04:37:59 db Exp $
  */
 
 #include "stdinc.h"
@@ -444,8 +444,8 @@ hunt_server(struct Client *client_p, struct Client *source_p, const char *comman
 
     /* This is a little kludgy but should work... */
     if (IsClient(source_p) &&
-        ((MyConnect(target_p) && IsCapable(target_p, CAP_UID)) ||
-         (!MyConnect(target_p) && IsCapable(target_p->from, CAP_UID))))
+        ((MyConnect(target_p) && IsCapable(target_p, CAP_SID)) ||
+         (!MyConnect(target_p) && IsCapable(target_p->from, CAP_SID))))
       parv[0] = ID(source_p);
 
     sendto_one(target_p, command, parv[0],
@@ -822,7 +822,7 @@ sendnick_TS(struct Client *client_p, struct Client *target_p)
     ubuf[1] = '\0';
   }
 
-  if (HasID(target_p) && IsCapable(client_p, CAP_UID))
+  if (HasID(target_p) && IsCapable(client_p, CAP_SID))
     sendto_one(client_p, "CLIENT %s %d %lu %s %s %s %s %s :%s",
 	       target_p->name, target_p->hopcount + 1,
 	       (unsigned long) target_p->tsinfo,

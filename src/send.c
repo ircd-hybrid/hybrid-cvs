@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.260 2003/05/24 19:25:31 michael Exp $
+ *  $Id: send.c,v 7.261 2003/05/25 04:38:00 db Exp $
  */
 
 #include "stdinc.h"
@@ -458,7 +458,7 @@ sendto_one_prefix(struct Client *to, struct Client *prefix,
   if (IsDead(to))
     return; /* This socket has already been marked as dead */
 
-  len = ircsprintf(buffer, ":%s ", (IsServer(to) && IsCapable(to, CAP_UID)) ?
+  len = ircsprintf(buffer, ":%s ", (IsServer(to) && IsCapable(to, CAP_SID)) ?
                                    ID(prefix) : prefix->name);
 
   va_start(args, pattern);
@@ -570,7 +570,7 @@ sendto_list_anywhere(struct Client *one, struct Client *from, dlink_list *list,
        */
       if (target_p->from->serial != current_serial)
       {
-        if (IsCapable(target_p->from, CAP_UID))
+        if (IsCapable(target_p->from, CAP_SID))
           send_message_remote(target_p->from, from, uid_buf, uid_len);
         else
           send_message_remote(target_p->from, from, remote_buf, remote_len);
@@ -1117,7 +1117,7 @@ sendto_anywhere(struct Client *to, struct Client *from,
                        from->name, from->username, from->host);
   }
   else len = ircsprintf(buffer, ":%s ",
-                        IsCapable(send_to, CAP_UID) ? ID(from) : from->name);
+                        IsCapable(send_to, CAP_SID) ? ID(from) : from->name);
 
   va_start(args, pattern);
   len += send_format(&buffer[len], IRCD_BUFSIZE - len, pattern, args);
@@ -1266,7 +1266,7 @@ kill_client(struct Client *client_p, struct Client *diedie,
     return;
 
   len = ircsprintf(buffer, ":%s KILL %s :", me.name,
-                   IsCapable(client_p, CAP_UID) ? ID(diedie) : diedie->name);
+                   IsCapable(client_p, CAP_SID) ? ID(diedie) : diedie->name);
 
   va_start(args, pattern);
   len += send_format(&buffer[len], IRCD_BUFSIZE - len, pattern, args);
@@ -1323,7 +1323,7 @@ kill_client_ll_serv_butone(struct Client *one, struct Client *source_p,
         !ServerInfo.hub ||
         (source_p->lazyLinkClientExists & client_p->localClient->serverMask))
     {
-      if (have_uid && IsCapable(client_p, CAP_UID))
+      if (have_uid && IsCapable(client_p, CAP_SID))
         send_message(client_p, buf_uid, len_uid);
       else
         send_message(client_p, buf_nick, len_nick);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.101 2003/05/25 04:24:56 db Exp $
+ *  $Id: m_gline.c,v 1.102 2003/05/25 04:37:55 db Exp $
  */
 
 #include "stdinc.h"
@@ -108,7 +108,7 @@ _moddeinit(void)
   delete_capability("GLN");
 }
 
-const char *_version = "$Revision: 1.101 $";
+const char *_version = "$Revision: 1.102 $";
 #endif
 
 /* mo_gline()
@@ -226,20 +226,20 @@ mo_gline(struct Client *client_p, struct Client *source_p,
   }
 
   /* 4 param version for hyb-7 servers */
-  sendto_server(NULL, source_p, NULL, CAP_GLN|CAP_UID, NOCAPS,
+  sendto_server(NULL, source_p, NULL, CAP_GLN|CAP_SID, NOCAPS,
 		LL_ICLIENT, ":%s GLINE %s %s :%s",
 		ID(source_p), user, host, reason);
-  sendto_server(NULL, source_p, NULL, CAP_GLN, CAP_UID,
+  sendto_server(NULL, source_p, NULL, CAP_GLN, CAP_SID,
 		LL_ICLIENT, ":%s GLINE %s %s :%s",
 		source_p->name, user, host, reason);
 
   /* 8 param for hyb-6 */
-  sendto_server(NULL, NULL, NULL, CAP_UID, CAP_GLN, NOFLAGS,
+  sendto_server(NULL, NULL, NULL, CAP_SID, CAP_GLN, NOFLAGS,
 		":%s GLINE %s %s %s %s %s %s :%s",
 		me.name, ID(source_p), source_p->username,
 		source_p->host, source_p->user->server->name, user, host,
 		reason);
-  sendto_server(NULL, NULL, NULL, NOCAPS, CAP_GLN|CAP_UID, NOFLAGS,
+  sendto_server(NULL, NULL, NULL, NOCAPS, CAP_GLN|CAP_SID, NOFLAGS,
 		":%s GLINE %s %s %s %s %s %s :%s",
 		me.name, source_p->name, source_p->username,
 		source_p->host, source_p->user->server->name, user, host,
