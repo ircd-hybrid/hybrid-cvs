@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.91 2001/01/03 22:21:25 davidt Exp $
+ *  $Id: s_user.c,v 7.92 2001/01/04 02:25:08 db Exp $
  */
 #include "tools.h"
 #include "s_user.h"
@@ -340,7 +340,7 @@ int register_user(struct Client *cptr, struct Client *sptr,
   if (MyConnect(sptr))
     {
       if( ( status = check_client(cptr, sptr, username )) < 0 )
-	return status;
+	return(CLIENT_EXITED);
 
       if(!valid_hostname(sptr->host))
         {
