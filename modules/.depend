@@ -1,4 +1,3 @@
-# $Id: .depend,v 1.7 2002/05/24 23:40:13 androsyn Exp $
 m_die.o: core/m_die.c ../include/stdinc.h ../include/config.h \
  ../include/setup.h ../include/defaults.h ../include/tools.h \
  ../include/handlers.h ../include/client.h ../include/ircd_defs.h \

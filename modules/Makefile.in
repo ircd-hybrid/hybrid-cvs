@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/modules
 #
-# $Id: Makefile.in,v 1.68 2002/06/03 12:15:06 leeh Exp $
+# $Id: Makefile.in,v 1.69 2002/06/16 16:31:25 leeh Exp $
 #
 CC		= @CC@
 AR		= @AR@
@@ -197,9 +197,7 @@ install_hpux_shared: install-mkdirs
 
 .PHONY: depend clean distclean
 depend:
-	grep "Id:" .depend > .depend.out
-	${MV} .depend.out .depend
-	${MKDEP} ${INCLUDES} ${ALL_SRCS} >> .depend
+	${MKDEP} ${INCLUDES} ${ALL_SRCS} > .depend
 
 clean:
 	${RM} -f *.so *.sl *~ *.o *.a
