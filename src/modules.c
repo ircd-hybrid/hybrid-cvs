@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.122 2003/05/29 00:59:05 db Exp $
+ *  $Id: modules.c,v 7.123 2003/05/31 06:14:57 michael Exp $
  */
 
 #include "stdinc.h"
@@ -128,12 +128,12 @@ modules_init(void)
 static struct module_path *
 mod_find_path(const char *path)
 {
-  dlink_node *pathst;
+  dlink_node *ptr;
   struct module_path *mpath;
 
-  DLINK_FOREACH(pathst, mod_paths.head)
+  DLINK_FOREACH(ptr, mod_paths.head)
   {
-    mpath = pathst->data;
+    mpath = ptr->data;
 
     if (!strcmp(path, mpath->path))
       return(mpath);
@@ -159,7 +159,7 @@ mod_add_path(const char *path)
   pathst = MyMalloc(sizeof(struct module_path));
 
   strlcpy(pathst->path, path, sizeof(pathst->path));
-  dlinkAdd(pathst, make_dlink_node(), &mod_paths);
+  dlinkAdd(pathst, &pathst->node, &mod_paths);
 }
 
 /* mod_clear_paths()
@@ -172,15 +172,14 @@ void
 mod_clear_paths(void)
 {
   struct module_path *pathst;
-  dlink_node *node;
-  dlink_node *next;
+  dlink_node *ptr;
+  dlink_node *next_ptr;
 
-  DLINK_FOREACH_SAFE(node, next, mod_paths.head)
+  DLINK_FOREACH_SAFE(ptr, next_ptr, mod_paths.head)
   {
-    pathst = node->data;
+    pathst = ptr->data;
 
-    dlinkDelete(node, &mod_paths);
-    free_dlink_node(node);
+    dlinkDelete(&pathst->node, &mod_paths);
     MyFree(pathst);
   }
 }
@@ -219,7 +218,7 @@ findmodule_byname(const char *name)
 
   for (i = 0; i < num_mods; i++) 
   {
-    if (0 == irccmp(modlist[i]->name, name))
+    if (irccmp(modlist[i]->name, name) == 0)
       return(i);
   }
 
@@ -245,7 +244,7 @@ load_all_modules(int warn)
   modlist  = (struct module **)MyMalloc(sizeof(struct module) *
                                         (MODS_INCREMENT));
   max_mods = MODS_INCREMENT;
-  system_module_dir = opendir (AUTOMODPATH);
+  system_module_dir = opendir(AUTOMODPATH);
 
   if (system_module_dir == NULL)
   {
@@ -254,7 +253,7 @@ load_all_modules(int warn)
     return;
   }
 
-  while ((ldirent = readdir (system_module_dir)) != NULL)
+  while ((ldirent = readdir(system_module_dir)) != NULL)
   {
     len = strlen(ldirent->d_name);
 
@@ -315,15 +314,16 @@ int
 load_one_module(char *path, int coremodule)
 {
   char modpath[MAXPATHLEN + 1];
-  dlink_node *pathst;
+  dlink_node *ptr;
   struct module_path *mpath;
   struct stat statbuf;
 
-  DLINK_FOREACH(pathst, mod_paths.head)
+  DLINK_FOREACH(ptr, mod_paths.head)
   {
-    mpath = pathst->data;
+    mpath = ptr->data;
 
-    snprintf(modpath, sizeof(modpath), "%s/%s", mpath->path, path);
+    snprintf(modpath, sizeof(modpath), "%s/%s",
+             mpath->path, path);
 
     if ((strstr(modpath, "../") == NULL) &&
         (strstr(modpath, "/..") == NULL)) 
@@ -496,7 +496,8 @@ mo_modlist(struct Client *client_p, struct Client *source_p, int parc, char *par
     }
   }
 
-  sendto_one(source_p, form_str(RPL_ENDOFMODLIST), me.name, parv[0]);
+  sendto_one(source_p, form_str(RPL_ENDOFMODLIST),
+             me.name, source_p->name);
 }
 
 /* unload and reload all modules */
@@ -532,7 +533,6 @@ mo_modrestart(struct Client *client_p, struct Client *source_p, int parc, char *
 }
 
 #else /* STATIC_MODULES */
-
 #include "s_serv.h"
 
 /* load_all_modules()

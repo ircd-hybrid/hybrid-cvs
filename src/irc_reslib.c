@@ -88,16 +88,16 @@
 #include "irc_string.h"
 #include "irc_getaddrinfo.h"
 
-#define NS_TYPE_ELT			0x40 /* EDNS0 extended label type */
-#define DNS_LABELTYPE_BITSTRING		0x41
+#define NS_TYPE_ELT             0x40 /* EDNS0 extended label type */
+#define DNS_LABELTYPE_BITSTRING 0x41
 #define MAXLINE 128
 
-/* $Id: irc_reslib.c,v 7.15 2003/05/23 16:09:17 joshk Exp $ */
+/* $Id: irc_reslib.c,v 7.16 2003/05/31 06:14:57 michael Exp $ */
 
 static FBFILE *file;
 
 struct irc_ssaddr irc_nsaddr_list[IRCD_MAXNS];
-int irc_nscount=0;
+int irc_nscount = 0;
 char irc_domain[HOSTLEN+1];
 
 static char input[MAXLINE];
@@ -124,7 +124,7 @@ static const char digitvalue[256] = {
 static int parse_resvconf(void);
 static void add_nameserver(char *arg);
 
-static const char	digits[] = "0123456789";
+static const char digits[] = "0123456789";
 static int labellen(const unsigned char *lp);
 static int special(int ch);
 static int printable(int ch);
@@ -137,22 +137,19 @@ static int irc_encode_bitsring(const char **, const char *, unsigned char **, un
     const char *);
 static int mklower(int ch);
   
-
 int
-irc_res_init()
+irc_res_init(void)
 {
   irc_nscount = 0;
-  return (parse_resvconf());
+  return(parse_resvconf());
 }
 
-/*
- * parse_resvconf
+/* parse_resvconf()
  *
  * inputs - NONE
  * output - -1 if failure 0 if success
  * side effects - fills in irc_nsaddr_list
  */
-
 static int
 parse_resvconf(void)
 {
@@ -206,18 +203,16 @@ parse_resvconf(void)
 
   (void)fbclose(file);
 
-  return (0);
+  return(0);
 }
 
-/*
- * add_nameserver
+/* add_nameserver()
  *
  * input  - either an IPV4 address in dotted quad
  *      or an IPV6 address in : format
  * output - NONE
  * side effects - entry in irc_nsaddr_list is filled in as needed
  */
-
 static void
 add_nameserver(char *arg)
 {
@@ -227,14 +222,14 @@ add_nameserver(char *arg)
     return;
 
   memset(&hints, 0, sizeof(hints));
-  hints.ai_family = PF_UNSPEC;
+  hints.ai_family   = PF_UNSPEC;
   hints.ai_socktype = SOCK_DGRAM;
-  hints.ai_flags = AI_PASSIVE | AI_NUMERICHOST;
+  hints.ai_flags    = AI_PASSIVE | AI_NUMERICHOST;
 
-  if(irc_getaddrinfo(arg, "domain", &hints, &res))
+  if (irc_getaddrinfo(arg, "domain", &hints, &res))
     return;
 
-  if(res == NULL)
+  if (res == NULL)
     return;
 
   memcpy(&irc_nsaddr_list[irc_nscount].ss, res->ai_addr, res->ai_addrlen);
@@ -251,14 +246,14 @@ add_nameserver(char *arg)
  * Return size of compressed name or -1 if there was an error.
  */
 int
-irc_dn_expand(const unsigned char *msg, const unsigned char *eom, const unsigned char *src,
-	  char *dst, int dstsiz)
+irc_dn_expand(const unsigned char *msg, const unsigned char *eom,
+              const unsigned char *src, char *dst, int dstsiz)
 {
-	int n = irc_ns_name_uncompress(msg, eom, src, dst, (size_t)dstsiz);
+  int n = irc_ns_name_uncompress(msg, eom, src, dst, (size_t)dstsiz);
 
-	if (n > 0 && dst[0] == '.')
-		dst[0] = '\0';
-	return (n);
+  if (n > 0 && dst[0] == '.')
+    dst[0] = '\0';
+  return(n);
 }
 
 /*
@@ -270,17 +265,17 @@ irc_dn_expand(const unsigned char *msg, const unsigned char *eom, const unsigned
  *	Root domain returns as "." not "".
  */
 int
-irc_ns_name_uncompress(const unsigned char *msg, const unsigned char *eom, const unsigned char *src,
-		   char *dst, size_t dstsiz)
+irc_ns_name_uncompress(const unsigned char *msg, const unsigned char *eom,
+                       const unsigned char *src, char *dst, size_t dstsiz)
 {
-	unsigned char tmp[NS_MAXCDNAME];
-	int n;
-	
-	if ((n = irc_ns_name_unpack(msg, eom, src, tmp, sizeof tmp)) == -1)
-		return (-1);
-	if (irc_ns_name_ntop(tmp, dst, dstsiz) == -1)
-		return (-1);
-	return (n);
+  unsigned char tmp[NS_MAXCDNAME];
+  int n;
+
+  if ((n = irc_ns_name_unpack(msg, eom, src, tmp, sizeof tmp)) == -1)
+    return(-1);
+  if (irc_ns_name_ntop(tmp, dst, dstsiz) == -1)
+    return(-1);
+  return(n);
 }
 /*
  * irc_ns_name_unpack(msg, eom, src, dst, dstsiz)
@@ -289,8 +284,9 @@ irc_ns_name_uncompress(const unsigned char *msg, const unsigned char *eom, const
  *	-1 if it fails, or consumed octets if it succeeds.
  */
 int
-irc_ns_name_unpack(const unsigned char *msg, const unsigned char *eom, const unsigned char *src,
-	       unsigned char *dst, size_t dstsiz)
+irc_ns_name_unpack(const unsigned char *msg, const unsigned char *eom,
+                   const unsigned char *src, unsigned char *dst,
+                   size_t dstsiz)
 {
 	const unsigned char *srcp, *dstlim;
 	unsigned char *dstp;
@@ -361,6 +357,7 @@ irc_ns_name_unpack(const unsigned char *msg, const unsigned char *eom, const uns
 		len = srcp - src;
 	return (len);
 }
+
 /*
  * irc_ns_name_ntop(src, dst, dstsiz)
  *	Convert an encoded domain name to printable ascii as per RFC1035.
@@ -469,11 +466,11 @@ irc_ns_name_ntop(const char *src, char *dst, size_t dstsiz)
  */
 int
 irc_dn_comp(const char *src, unsigned char *dst, int dstsiz,
-	unsigned char **dnptrs, unsigned char **lastdnptr)
+            unsigned char **dnptrs, unsigned char **lastdnptr)
 {
-	return (irc_ns_name_compress(src, dst, (size_t)dstsiz,
-				 (const unsigned char **)dnptrs,
-				 (const unsigned char **)lastdnptr));
+  return(irc_ns_name_compress(src, dst, (size_t)dstsiz,
+                              (const unsigned char **)dnptrs,
+                              (const unsigned char **)lastdnptr));
 }
 
 /*
@@ -481,11 +478,11 @@ irc_dn_comp(const char *src, unsigned char *dst, int dstsiz,
  */
 int
 irc_dn_skipname(const unsigned char *ptr, const unsigned char *eom) {
-	const unsigned char *saveptr = ptr;
+  const unsigned char *saveptr = ptr;
 
-	if (irc_ns_name_skip(&ptr, eom) == -1)
-		return (-1);
-	return (ptr - saveptr);
+  if (irc_ns_name_skip(&ptr, eom) == -1)
+    return(-1);
+  return(ptr - saveptr);
 }
 
 /*
@@ -497,39 +494,48 @@ irc_dn_skipname(const unsigned char *ptr, const unsigned char *eom) {
 int
 irc_ns_name_skip(const unsigned char **ptrptr, const unsigned char *eom)
 {
-	const unsigned char *cp;
-	unsigned int n;
-	int l;
+  const unsigned char *cp;
+  unsigned int n;
+  int l;
 
-	cp = *ptrptr;
-	while (cp < eom && (n = *cp++) != 0) {
-		/* Check for indirection. */
-		switch (n & NS_CMPRSFLGS) {
-		case 0:			/* normal case, n == len */
-			cp += n;
-			continue;
-		case NS_TYPE_ELT: /* EDNS0 extended label */
-			if ((l = labellen(cp - 1)) < 0) {
-				errno = EMSGSIZE; /* XXX */
-				return(-1);
-			}
-			cp += l;
-			continue;
-		case NS_CMPRSFLGS:	/* indirection */
-			cp++;
-			break;
-		default:		/* illegal type */
-			errno = EMSGSIZE;
-			return (-1);
-		}
-		break;
-	}
-	if (cp > eom) {
-		errno = EMSGSIZE;
-		return (-1);
-	}
-	*ptrptr = cp;
-	return (0);
+  cp = *ptrptr;
+
+  while (cp < eom && (n = *cp++) != 0)
+  {
+    /* Check for indirection. */
+    switch (n & NS_CMPRSFLGS)
+    {
+      case 0: /* normal case, n == len */
+        cp += n;
+        continue;
+      case NS_TYPE_ELT: /* EDNS0 extended label */
+        if ((l = labellen(cp - 1)) < 0)
+        {
+          errno = EMSGSIZE; /* XXX */
+          return(-1);
+        }
+
+        cp += l;
+        continue;
+      case NS_CMPRSFLGS: /* indirection */
+        cp++;
+        break;
+      default: /* illegal type */
+        errno = EMSGSIZE;
+        return(-1);
+    }
+
+    break;
+  }
+
+  if (cp > eom)
+  {
+    errno = EMSGSIZE;
+    return (-1);
+  }
+
+  *ptrptr = cp;
+  return(0);
 }
 
 unsigned int
@@ -574,43 +580,48 @@ irc_ns_put32(unsigned long src, unsigned char *dst)
 static int
 special(int ch)
 {
-        switch (ch) {
-        case 0x22: /* '"' */
-        case 0x2E: /* '.' */
-        case 0x3B: /* ';' */
-        case 0x5C: /* '\\' */
-        case 0x28: /* '(' */
-        case 0x29: /* ')' */
-        /* Special modifiers in zone files. */
-        case 0x40: /* '@' */
-        case 0x24: /* '$' */
-                return (1);
-        default:
-                return (0);
-        }
+  switch (ch)
+  {
+    case 0x22: /* '"'  */
+    case 0x2E: /* '.'  */
+    case 0x3B: /* ';'  */
+    case 0x5C: /* '\\' */
+    case 0x28: /* '('  */
+    case 0x29: /* ')'  */
+    /* Special modifiers in zone files. */
+    case 0x40: /* '@'  */
+    case 0x24: /* '$'  */
+      return(1);
+    default:
+      return(0);
+  }
 }
-
 
 static int
 labellen(const unsigned char *lp)
 {                               
-        int bitlen;
-        unsigned char l = *lp;
-                        
-        if ((l & NS_CMPRSFLGS) == NS_CMPRSFLGS) {
-                /* should be avoided by the caller */
-                return(-1);
-        }
-                         
-        if ((l & NS_CMPRSFLGS) == NS_TYPE_ELT) {
-                if (l == DNS_LABELTYPE_BITSTRING) {
-                        if ((bitlen = *(lp + 1)) == 0)
-                                bitlen = 256;
-                        return((bitlen + 7 ) / 8 + 1);
-                }
-                return(-1);     /* unknwon ELT */
-        }
-        return(l);
+  int bitlen;
+  unsigned char l = *lp;
+
+  if ((l & NS_CMPRSFLGS) == NS_CMPRSFLGS)
+  {
+    /* should be avoided by the caller */
+    return(-1);
+  }
+
+  if ((l & NS_CMPRSFLGS) == NS_TYPE_ELT)
+  {
+    if (l == DNS_LABELTYPE_BITSTRING)
+    {
+      if ((bitlen = *(lp + 1)) == 0)
+        bitlen = 256;
+      return((bitlen + 7 ) / 8 + 1);
+    }
+
+    return(-1); /* unknwon ELT */
+  }
+
+  return(l);
 }
 
 
@@ -622,8 +633,9 @@ labellen(const unsigned char *lp)
  *      boolean.
  */
 static int
-printable(int ch) {
-        return (ch > 0x20 && ch < 0x7f);
+printable(int ch)
+{
+  return(ch > 0x20 && ch < 0x7f);
 }
 
 static int
@@ -668,7 +680,6 @@ irc_decode_bitstring(const char **cpp, char *dn, const char *eom)
  * notes:
  *  Enforces label and domain length limits.
  */
-
 int
 irc_ns_name_pton(const char *src, unsigned char *dst, size_t dstsiz)
 {
@@ -789,10 +800,13 @@ irc_ns_name_pton(const char *src, unsigned char *dst, size_t dstsiz)
     }
     *bp++ = 0;
   }
-  if ((bp - dst) > NS_MAXCDNAME) { /* src too big */
+
+  if ((bp - dst) > NS_MAXCDNAME)
+  { /* src too big */
     errno = EMSGSIZE;
     return (-1);
   }
+
   return (0);
 }
 
@@ -815,7 +829,7 @@ irc_ns_name_pton(const char *src, unsigned char *dst, size_t dstsiz)
  */
 int
 irc_ns_name_pack(const unsigned char *src, unsigned char *dst, int dstsiz,
-       const unsigned char **dnptrs, const unsigned char **lastdnptr)
+                 const unsigned char **dnptrs, const unsigned char **lastdnptr)
 {
   unsigned char *dstp;
   const unsigned char **cpp, **lpp, *eob, *msg;
@@ -902,24 +916,23 @@ cleanup:
     errno = EMSGSIZE;
     return (-1);
   }
-  return (dstp - dst);
+  return(dstp - dst);
 }
-                              
 
 static int
 irc_ns_name_compress(const char *src, unsigned char *dst, size_t dstsiz,
-                 const unsigned char **dnptrs, const unsigned char **lastdnptr)
+                     const unsigned char **dnptrs, const unsigned char **lastdnptr)
 {
-        unsigned char tmp[NS_MAXCDNAME];
+  unsigned char tmp[NS_MAXCDNAME];
 
-        if (irc_ns_name_pton(src, tmp, sizeof tmp) == -1)
-                return (-1);
-        return (irc_ns_name_pack(tmp, dst, dstsiz, dnptrs, lastdnptr));
+  if (irc_ns_name_pton(src, tmp, sizeof tmp) == -1)
+    return(-1);
+  return(irc_ns_name_pack(tmp, dst, dstsiz, dnptrs, lastdnptr));
 }
 
 static int
 irc_encode_bitsring(const char **bp, const char *end, unsigned char **labelp,
-          unsigned char ** dst, const char *eom)
+                    unsigned char **dst, const char *eom)
 {
   int afterslash = 0;
   const char *cp = *bp;
@@ -1033,14 +1046,15 @@ irc_encode_bitsring(const char **bp, const char *end, unsigned char **labelp,
  */
 static int
 irc_dn_find(const unsigned char *domain, const unsigned char *msg,
-  const unsigned char * const *dnptrs,
-  const unsigned char * const *lastdnptr)
+            const unsigned char * const *dnptrs,
+            const unsigned char * const *lastdnptr)
 {
   const unsigned char *dn, *cp, *sp;
   const unsigned char * const *cpp;
   unsigned int n;
 
-  for (cpp = dnptrs; cpp < lastdnptr; cpp++) {
+  for (cpp = dnptrs; cpp < lastdnptr; cpp++)
+  {
     sp = *cpp;
     /*
      * terminate search on:
@@ -1098,8 +1112,8 @@ static int
 mklower(int ch) 
 {
   if (ch >= 0x41 && ch <= 0x5A)
-    return (ch + 0x20);
-  return (ch);
+    return(ch + 0x20);
+  return(ch);
 }
 
 /* From resolv/mkquery.c */
