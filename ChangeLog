@@ -1,3 +1,17 @@
+db          2002/08/22 17:33:57 EDT	(20020822_2)
+
+  Modified files:
+    include              tools.h 
+    src                  tools.c 
+  Log:
+  make tools.h match tools.c and correct a bug in dlinkmove
+  
+  Revision  Changes    Path
+  1.17      +9 -1      ircd-hybrid-7/include/tools.h
+  7.24      +2 -0      ircd-hybrid-7/src/tools.c
+
+
+
 db          2002/08/22 12:08:22 EDT	(20020822_1)
 
   Modified files:
@@ -31452,4 +31466,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3995 2002/08/22 16:08:24 db Exp $
+$Id: ChangeLog,v 7.3996 2002/08/22 21:34:00 db Exp $
