@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: irc_string.h,v 7.23 2001/08/06 07:03:45 ejb Exp $
+ *   $Id: irc_string.h,v 7.24 2001/08/21 03:06:53 androsyn Exp $
  */
 #ifndef INCLUDED_irc_string_h
 #define INCLUDED_irc_string_h
@@ -130,8 +130,11 @@ char *strip_tabs(char *dest, const unsigned char *src, size_t len);
 unsigned long textip_to_ul(const char *ip);
 #endif
 const char* myctime(time_t);
+#ifndef HAVE_STRTOK_R
 char*       strtoken(char** save, char* str, char* fs);
-
+#else
+#define strtoken(save, str, fs) strtok_r(str, fs, save)
+#endif
 #define EmptyString(x) (!(x) || (*(x) == '\0'))
 
 /*
