@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operwall.c,v 1.15 2001/01/05 00:14:32 davidt Exp $
+ *   $Id: m_operwall.c,v 1.16 2001/01/17 22:49:32 fl_ Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -76,7 +76,7 @@ static int mo_operwall(struct Client *cptr, struct Client *sptr,
 
   sendto_ll_serv_butone(NULL, sptr, 1,
                         ":%s OPERWALL :%s", parv[0], message);
-  sendto_all_local_opers(sptr, NULL, "OPERWALL - %s", message);
+  sendto_realops_flags_opers(FLAGS_OPERWALL, sptr, "OPERWALL - %s", message);
   return 0;
 }
 
@@ -102,7 +102,7 @@ static int ms_operwall(struct Client *cptr, struct Client *sptr,
 
   sendto_ll_serv_butone(cptr, sptr, 1, ":%s OPERWALL :%s",
                      parv[0], message);
-  sendto_all_local_opers(sptr, NULL, "OPERWALL - %s", message);
+  sendto_realops_flags_opers(FLAGS_OPERWALL, sptr, "OPERWALL - %s", message);
   return 0;
 }
 

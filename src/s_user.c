@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.119 2001/01/11 05:32:09 a1kmm Exp $
+ *  $Id: s_user.c,v 7.120 2001/01/17 22:49:33 fl_ Exp $
  */
 #include "tools.h"
 #include "s_user.h"
@@ -85,6 +85,7 @@ static struct flag_item user_modes[] =
   {FLAGS_CALLERID, 'g'},
   {FLAGS_INVISIBLE, 'i'},
   {FLAGS_SKILL, 'k'},
+  {FLAGS_LOCOPS, 'l'},
   {FLAGS_NCHANGE, 'n'},
   {FLAGS_OPER, 'o'},
   {FLAGS_REJ, 'r'},
@@ -145,7 +146,7 @@ int user_modes_from_c_to_bitmask[] =
   FLAGS_INVISIBLE, /* i */
   0,            /* j */
   FLAGS_SKILL,  /* k */
-  0,            /* l */
+  FLAGS_LOCOPS, /* l */
   0,            /* m */
   FLAGS_NCHANGE, /* n */
   FLAGS_OPER,   /* o */

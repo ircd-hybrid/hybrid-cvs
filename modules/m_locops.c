@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_locops.c,v 1.16 2001/01/05 00:14:30 davidt Exp $
+ *   $Id: m_locops.c,v 1.17 2001/01/17 22:49:32 fl_ Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -76,7 +76,7 @@ static int m_locops(struct Client *cptr, struct Client *sptr,
       return 0;
     }
 
-  sendto_all_local_opers(sptr, NULL, "LOCOPS - %s", message);
+  sendto_realops_flags_opers(FLAGS_LOCOPS, sptr, "LOCOPS - %s", message);
 
   return 0;
 }
