@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 1.49 2001/01/06 13:29:47 fl_ Exp $
+ *   $Id: m_whois.c,v 1.50 2001/01/06 13:37:56 fl_ Exp $
  */
 #include "tools.h"
 #include "common.h"   /* bleah */
@@ -98,7 +98,7 @@ static int m_whois(struct Client *cptr,
   if(parc > 2)
     {
       /* seeing as this is going across servers, we should limit it */
-      if((last_used + ConfigFileEntry.pace_wait) > CurrentTime)
+      if((last_used + ConfigFileEntry.whois_wait) > CurrentTime)
         {             
           if(MyClient(sptr))
             sendto_one(sptr,form_str(RPL_LOAD2HI),me.name,sptr->name);
