@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.124 2001/03/31 22:23:41 ejb Exp $
+ * $Id: ircd.c,v 7.125 2001/04/01 13:46:02 ejb Exp $
  */
 
 #include <sys/types.h>
@@ -245,9 +245,9 @@ daemon(int a, int b)
     exit(EXIT_SUCCESS);
 
   setsid();
-  fclose(stdin);
+  /*  fclose(stdin);
   fclose(stdout);
-  fclose(stderr);
+  fclose(stderr); */
 #endif
 }
 #endif
