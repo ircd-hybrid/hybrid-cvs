@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: linebuf.h,v 1.23 2002/05/24 23:34:07 androsyn Exp $
+ *  $Id: linebuf.h,v 1.24 2002/07/14 20:15:38 androsyn Exp $
  */
 
 #ifndef __LINEBUF_H__
@@ -75,7 +75,7 @@ extern void client_flush_input(struct Client *);
 extern void linebuf_donebuf(buf_head_t *);
 extern int linebuf_parse(buf_head_t *, char *, int, int);
 extern int linebuf_get(buf_head_t *, char *, int, int, int);
-extern void linebuf_putmsg(buf_head_t *, const char *, va_list,
+extern void linebuf_putmsg(buf_head_t *, const char *, va_list *,
                            const char *, ...);
 extern int linebuf_flush(int, buf_head_t *);
 extern void linebuf_attach(buf_head_t *, buf_head_t *);
