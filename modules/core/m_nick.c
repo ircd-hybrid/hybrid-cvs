@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_nick.c,v 1.16 2000/12/03 08:15:41 db Exp $
+ *   $Id: m_nick.c,v 1.17 2000/12/04 18:30:44 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -234,8 +234,13 @@ int m_nick(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 	      sendto_one(sptr, form_str(ERR_NICKNAMEINUSE),
 			 /* parv[0] is empty when connecting */
 			 me.name, BadPtr(parv[0]) ? "*" : parv[0], nick);
-	      return 0; /* NICK message ignored */
 	    }
+	}
+      else
+	{
+	  if (MyConnect(sptr))
+	    sendto_one(sptr, form_str(ERR_NICKNAMEINUSE), me.name,
+		       BadPtr(parv[0]) ? "*" : parv[0], nick);
 	}
     }
   else
