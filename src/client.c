@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.71 2000/12/12 05:11:31 db Exp $
+ *  $Id: client.c,v 7.72 2000/12/12 06:16:29 db Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -1715,9 +1715,6 @@ int del_all_accepts(struct Client *dying)
  * inputs	- pointer to exiting client
  * output	- 
  * side effects - list allow list
- *
- * Walk through the target's accept list, remove if source is found,
- * Then walk through the source's on_accept_list remove target if found.
  */
 int list_all_accepts(struct Client *sptr)
 {
