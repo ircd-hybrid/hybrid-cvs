@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.228 2003/03/02 05:34:20 db Exp $
+ *  $Id: send.c,v 7.229 2003/03/17 03:14:48 db Exp $
  */
 
 #include "stdinc.h"
@@ -331,7 +331,7 @@ send_queued_write(int fd, struct Client *to)
   /* Finally, if we have any more data, reschedule a write */
   if (linebuf_len(&to->localClient->buf_sendq))
     comm_setselect(fd, FDLIST_IDLECLIENT, COMM_SELECT_WRITE,
-                   send_queued_write, to, 0);
+                   (PF *)send_queued_write, (void *)to, 0);
 } /* send_queued_write() */
 
 /*
@@ -341,9 +341,8 @@ send_queued_write(int fd, struct Client *to)
  **      possible, and then if any data is left, a write is rescheduled.
  */
 void
-send_queued_slink_write(int fd, void *data)
+send_queued_slink_write(int fd, struct Client *to)
 {
-  struct Client *to = data;
   int retlen;
 
   /*
@@ -401,8 +400,8 @@ send_queued_slink_write(int fd, void *data)
   /* Finally, if we have any more data, reschedule a write */
   if (to->localClient->slinkq_len)
     comm_setselect(to->localClient->ctrlfd, FDLIST_IDLECLIENT,
-                   COMM_SELECT_WRITE, send_queued_slink_write,
-                   to, 0);
+                   COMM_SELECT_WRITE, (PF *)send_queued_slink_write,
+                   (void *)to, 0);
 } /* send_queued_slink_write() */
 
 /*
