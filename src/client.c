@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.351 2003/04/16 19:56:38 michael Exp $
+ *  $Id: client.c,v 7.352 2003/04/16 20:54:11 michael Exp $
  */
 
 #include "stdinc.h"
@@ -85,8 +85,7 @@ static BlockHeap *lclient_heap = NULL;
 void
 init_client(void)
 {
-  /*
-   * start off the check ping event ..  -- adrian
+  /* start off the check ping event ..  -- adrian
    * Every 30 seconds is plenty -- db
    * check_pings has to deal with safe lists now,
    * let's call it every 5 seconds -adx
@@ -367,9 +366,7 @@ check_unknowns_list(dlink_list *list)
      * for > 30s, close them.
      */
     if (client_p->firsttime ? ((CurrentTime - client_p->firsttime) > 30) : 0)
-    {
-      (void)exit_client(client_p, client_p, &me, "Connection timed out");
-    }
+      exit_client(client_p, client_p, &me, "Connection timed out");
   }
 }
 
@@ -553,8 +550,7 @@ check_klines(void)
 
 }
 
-/*
- * update_client_exit_stats
+/* update_client_exit_stats()
  *
  * input	- pointer to client
  * output	- NONE
@@ -583,8 +579,7 @@ update_client_exit_stats(struct Client* client_p)
     check_splitmode(NULL);
 }
 
-/*
- * release_client_state
+/* release_client_state()
  *
  * input	- pointer to client to release
  * output	- NONE
@@ -594,15 +589,14 @@ static void
 release_client_state(struct Client* client_p)
 {
   if (client_p->user != NULL)
-  {
     free_user(client_p->user, client_p); /* try this here */
-  }
 
   if (client_p->serv != NULL)
   {
     if (client_p->serv->user != NULL)
       free_user(client_p->serv->user, client_p);
-    MyFree((char*) client_p->serv);
+
+    MyFree((char *)client_p->serv);
   }
 }
 
@@ -668,14 +662,13 @@ find_chasing(struct Client *source_p, char *user, int *chasing)
  *        to internal buffer (nbuf). *NEVER* use the returned pointer
  *        to modify what it points!!!
  */
-
-const char* 
-get_client_name(struct Client* client, int showip)
+const char * 
+get_client_name(struct Client *client, int showip)
 {
   static char nbuf[HOSTLEN * 2 + USERLEN + 5];
 
   assert(NULL != client);
-    
+
   if (!irccmp(client->name, client->host))
     return client->name;
 
@@ -779,108 +772,101 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
   }
   else if (IsServer(source_p))
   {
-      /*
-      ** Old sendto_serv_but_one() call removed because we now
-      ** need to send different names to different servers
-      ** (domain name matching)
-      */
-      /*
-      ** The bulk of this is done in remove_dependents now, all
-      ** we have left to do is send the SQUIT upstream.  -orabidoo
-      */
-      if (MyConnect(source_p))
-      {
-	if(source_p->localClient->ctrlfd > -1)
-	{
-          fd_close(source_p->localClient->ctrlfd);
-	  source_p->localClient->ctrlfd = -1;
-
-#ifndef HAVE_SOCKETPAIR
-          fd_close(source_p->localClient->ctrlfd_r);
-	  fd_close(source_p->localClient->fd_r);
-	  
-	  source_p->localClient->ctrlfd_r = -1;
-	  source_p->localClient->fd_r = -1;
-#endif
-	}
-      }
-
-      target_p = source_p->from;
-      if (target_p && IsServer(target_p) && target_p != client_p &&
-          !IsMe(target_p) && !IsKilled(source_p))
-        sendto_one(target_p, ":%s SQUIT %s :%s", from->name, source_p->name,
-                   comment);
-    }
-  else if (IsPerson(source_p)) /* ...just clean all others with QUIT... */
+    /* Old sendto_serv_but_one() call removed because we now
+    ** need to send different names to different servers
+    ** (domain name matching)
+    */
+    /* The bulk of this is done in remove_dependents now, all
+    ** we have left to do is send the SQUIT upstream.  -orabidoo
+    */
+    if (MyConnect(source_p))
     {
-      /*
-      ** If this exit is generated from "m_kill", then there
-      ** is no sense in sending the QUIT--KILL's have been
-      ** sent instead.
-      */
-      if (!IsKilled(source_p))
-        {
-          sendto_server(client_p, source_p, NULL, NOCAPS, NOCAPS,
-                        NOFLAGS, ":%s QUIT :%s", source_p->name, comment);
-        }
-      /*
-      ** If a person is on a channel, send a QUIT notice
-      ** to every client (person) on the same channel (so
-      ** that the client can show the "**signoff" message).
-      ** (Note: The notice is to the local clients *only*)
-      */
-      sendto_common_channels_local(source_p, 0,
-                                   ":%s!%s@%s QUIT :%s",
-				   source_p->name, source_p->username,
-				   source_p->host, comment);
-
-      DLINK_FOREACH_SAFE(lp, next_lp, source_p->user->channel.head)
+      if (source_p->localClient->ctrlfd > -1)
       {
-	remove_user_from_channel(lp->data, source_p);
+        fd_close(source_p->localClient->ctrlfd);
+        source_p->localClient->ctrlfd   = -1;
+#ifndef HAVE_SOCKETPAIR
+        fd_close(source_p->localClient->ctrlfd_r);
+        fd_close(source_p->localClient->fd_r);
+        source_p->localClient->ctrlfd_r = -1;
+        source_p->localClient->fd_r     = -1;
+#endif
       }
-        
-      /* Should not be in any channels now */
-      assert(source_p->user->channel.head == NULL);
-          
-      /* Clean up invitefield */
-      DLINK_FOREACH_SAFE(lp, next_lp, source_p->user->invited.head)
-	{
-	  del_invite(lp->data, source_p);
-	}
-
-      /* Clean up allow lists */
-      del_all_accepts(source_p);
-
-      add_history(source_p, 0);
-      off_history(source_p);
-
-      if (HasID(source_p))
-	del_from_id_hash_table(source_p->user->id, source_p);
-  
-      /* again, this is all that is needed */
     }
-  
-  /* 
-   * Remove source_p from the client lists
+
+    target_p = source_p->from;
+
+    if (target_p && IsServer(target_p) && target_p != client_p &&
+        !IsMe(target_p) && !IsKilled(source_p))
+      sendto_one(target_p, ":%s SQUIT %s :%s", from->name, source_p->name,
+                 comment);
+  }
+  else if (IsPerson(source_p)) /* ...just clean all others with QUIT... */
+  {
+    /* If this exit is generated from "m_kill", then there
+     * is no sense in sending the QUIT--KILL's have been
+     * sent instead.
+     */
+    if (!IsKilled(source_p))
+    {
+      sendto_server(client_p, source_p, NULL, NOCAPS, NOCAPS,
+                    NOFLAGS, ":%s QUIT :%s", source_p->name, comment);
+    }
+
+    /* If a person is on a channel, send a QUIT notice
+    ** to every client (person) on the same channel (so
+    ** that the client can show the "**signoff" message).
+    ** (Note: The notice is to the local clients *only*)
+    */
+    sendto_common_channels_local(source_p, 0, ":%s!%s@%s QUIT :%s",
+                                 source_p->name, source_p->username,
+                                 source_p->host, comment);
+    DLINK_FOREACH_SAFE(lp, next_lp, source_p->user->channel.head)
+    {
+      remove_user_from_channel(lp->data, source_p);
+    }
+
+    /* Should not be in any channels now */
+    assert(source_p->user->channel.head == NULL);
+
+    /* Clean up invitefield */
+    DLINK_FOREACH_SAFE(lp, next_lp, source_p->user->invited.head)
+    {
+      del_invite(lp->data, source_p);
+    }
+
+    /* Clean up allow lists */
+    del_all_accepts(source_p);
+    add_history(source_p, 0);
+    off_history(source_p);
+
+    if (HasID(source_p))
+      del_from_id_hash_table(source_p->user->id, source_p);
+    /* again, this is all that is needed */
+  }
+
+  /* Remove source_p from the client lists
    */
   del_from_client_hash_table(source_p->name, source_p);
 
   /* remove from global client list
    * NOTE: source_p->node.next cannot be NULL if the client is added
-   *       to global_client_list (there is always &me at its end) */
+   *       to global_client_list (there is always &me at its end)
+   */
   if (source_p != NULL && source_p->node.next != NULL)
     dlinkDelete(&source_p->node, &global_client_list);
+
   update_client_exit_stats(source_p);
 
   /* Check to see if the client isn't already on the dead list */
   assert(dlinkFind(&dead_list, source_p) == NULL);
+
   /* add to dead client dlist */
   SetDead(source_p);
   dlinkAdd(source_p, make_dlink_node(), &dead_list);
 }
 
-/*
-** Recursively send QUITs and SQUITs for source_p and all its dependent clients
+/* Recursively send QUITs and SQUITs for source_p and all its dependent clients
 ** and servers to those servers that need them.  A server needs the client
 ** QUITs if it can't figure them out from the SQUIT (ie pre-TS4) or if it
 ** isn't getting the SQUIT because of @#(*&@)# hostmasking.  With TS4, once
