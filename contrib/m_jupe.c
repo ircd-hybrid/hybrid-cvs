@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_jupe.c,v 1.20 2001/12/07 10:45:37 leeh Exp $
+ *   $Id: m_jupe.c,v 1.21 2001/12/18 15:38:11 wcampbel Exp $
  */
 
 #include "tools.h"
@@ -90,7 +90,7 @@ static void mo_jupe(struct Client *client_p, struct Client *source_p,
   if(!ServerInfo.hub)
     return;
 
-  if(!IsSetOperAdmin(source_p))
+  if(!IsOperAdmin(source_p))
     {
       sendto_one(source_p, ":%s NOTICE %s :You must be an admin to use this command",
                  me.name, parv[0]);
