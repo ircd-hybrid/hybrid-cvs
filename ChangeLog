@@ -1,3 +1,10 @@
+*** 20001106_2 by db
+- removed prototype that no longer existed
+- fixed comment in hash.c
+- reworked yet another inconsistent function
+
+
+
 *** 20001106_1 by db
 - made some functions consistent in use... i.e. always start with chptr
 - removed some dead functions
@@ -12,7 +19,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.484 2000/11/06 06:56:46 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.485 2000/11/06 08:13:32 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
