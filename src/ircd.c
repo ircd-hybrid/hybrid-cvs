@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.101 2001/01/11 09:30:26 a1kmm Exp $
+ * $Id: ircd.c,v 7.102 2001/01/14 22:32:59 fl_ Exp $
  */
 #include "tools.h"
 #include "ircd.h"
@@ -521,7 +521,7 @@ int main(int argc, char *argv[])
   initwhowas();
   init_stats();
 
-  load_all_modules();
+  load_all_modules(1);
 
   initServerMask();
 
