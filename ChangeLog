@@ -1,3 +1,17 @@
+db          2002/10/12 00:33:32 EDT	(20021012_2)
+
+  Modified files:
+    src                  channel_mode.c 
+  Log:
+  - fixed another bug. When more than four modes happened locally in a mode change
+    the code was not placing a new + or - on the next line
+    so ended up with "bare" modes with no + or - in front. fixed.
+  
+  Revision  Changes    Path
+  7.64      +2 -0      ircd-hybrid-7/src/channel_mode.c
+
+
+
 db          2002/10/11 23:38:16 EDT	(20021012_1)
 
   Modified files:
@@ -32415,4 +32429,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4059 2002/10/12 03:38:18 db Exp $
+$Id: ChangeLog,v 7.4060 2002/10/12 04:33:34 db Exp $
