@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: memory.c,v 7.28 2001/09/25 20:30:25 androsyn Exp $
+ * $Id: memory.c,v 7.29 2001/09/25 20:42:19 androsyn Exp $
  */
 #include <stdlib.h>
 #include <string.h>
@@ -98,9 +98,10 @@ void *_MyMalloc(size_t size, char *file, int line)
 
 void _MyFree(void *what, char *file, int line)
 {
-    assert(what != NULL);
-    memulog(what);
-    free(what - sizeof(MemoryEntry));
+    if(what != NULL) {
+    	memulog(what);
+    	free(what - sizeof(MemoryEntry));
+    }
 }
 
 void *_MyRealloc(void *what, size_t size, char *file, int line)
@@ -189,8 +190,8 @@ void *_MyRealloc(void *x, size_t y)
 
 void _MyFree(void *x)
 {
-     assert(x != NULL);
-     free((x));
+     if(x)
+     	free((x));
 }
 
 void _DupString(char **x, const char *y)
