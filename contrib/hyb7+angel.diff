@@ -4,7 +4,7 @@ RCS file: /cvsroot/ircd-hybrid/contrib/spy_whois_notice.c,v
 retrieving revision 1.10
 diff -u -r1.10 spy_whois_notice.c
 --- ircd-hybrid/contrib/spy_whois_notice.c	24 May 2002 23:48:34 -0000	1.10
-+++ ircd-hybrid/contrib/spy_whois_notice.c	12 Jun 2003 10:53:40 -0000
++++ ircd-hybrid/contrib/spy_whois_notice.c	12 Jun 2003 11:26:33 -0000
 @@ -50,7 +50,7 @@
  int
  show_notice(struct hook_mfunc_data *data)
@@ -20,7 +20,7 @@ RCS file: /cvsroot/ircd-hybrid/include/client.h,v
 retrieving revision 7.164
 diff -u -r7.164 client.h
 --- ircd-hybrid/include/client.h	16 Feb 2003 22:54:35 -0000	7.164
-+++ ircd-hybrid/include/client.h	12 Jun 2003 10:53:40 -0000
++++ ircd-hybrid/include/client.h	12 Jun 2003 11:26:34 -0000
 @@ -121,6 +121,17 @@
    struct Channel *vchan;
  };
@@ -53,7 +53,7 @@ diff -u -r7.164 client.h
  #define FLAGS2_OPER_REHASH      0x1000  /* oper can rehash */
  #define FLAGS2_OPER_ADMIN       0x2000  /* oper can set umode +a */
 +#define FLAGS2_OPER_HIDDEN_ADMIN 0x4000 /* admin is hidden */
-+#define FLAGS2_OPER_X           0x4000  /* oper can kill/kline */
++#define FLAGS2_OPER_X           0x8000  /* oper can kill/kline */
  #define FLAGS2_OPER_FLAGS       (FLAGS2_OPER_GLOBAL_KILL | \
                                   FLAGS2_OPER_REMOTE | \
                                   FLAGS2_OPER_UNKLINE | \
@@ -89,7 +89,7 @@ RCS file: /cvsroot/ircd-hybrid/include/Attic/config.h,v
 retrieving revision 7.142
 diff -u -r7.142 config.h
 --- ircd-hybrid/include/config.h	6 Feb 2003 08:46:11 -0000	7.142
-+++ ircd-hybrid/include/config.h	12 Jun 2003 10:53:40 -0000
++++ ircd-hybrid/include/config.h	12 Jun 2003 11:26:34 -0000
 @@ -101,6 +101,9 @@
  #define SLPATH  BINPATH "SERVLINK.EXE"          /* servlink executable */
  #define CPATH   ETCPATH "IRCD.CONF"             /* config file */
@@ -116,7 +116,7 @@ RCS file: /cvsroot/ircd-hybrid/include/hash.h,v
 retrieving revision 7.18
 diff -u -r7.18 hash.h
 --- ircd-hybrid/include/hash.h	24 May 2002 23:34:07 -0000	7.18
-+++ ircd-hybrid/include/hash.h	12 Jun 2003 10:53:41 -0000
++++ ircd-hybrid/include/hash.h	12 Jun 2003 11:26:34 -0000
 @@ -86,6 +86,9 @@
                                       struct ResvChannel *resv_p);
  extern struct ResvChannel *hash_find_resv(const char *name);
@@ -133,7 +133,7 @@ RCS file: /cvsroot/ircd-hybrid/include/ircd.h,v
 retrieving revision 7.54.2.1
 diff -u -r7.54.2.1 ircd.h
 --- ircd-hybrid/include/ircd.h	29 May 2003 05:13:23 -0000	7.54.2.1
-+++ ircd-hybrid/include/ircd.h	12 Jun 2003 10:53:41 -0000
++++ ircd-hybrid/include/ircd.h	12 Jun 2003 11:26:34 -0000
 @@ -112,7 +112,9 @@
  extern dlink_list lazylink_channels;
  extern int callbacks_called;
@@ -151,7 +151,7 @@ RCS file: /cvsroot/ircd-hybrid/include/numeric.h,v
 retrieving revision 7.31
 diff -u -r7.31 numeric.h
 --- ircd-hybrid/include/numeric.h	27 Nov 2002 15:46:24 -0000	7.31
-+++ ircd-hybrid/include/numeric.h	12 Jun 2003 10:53:41 -0000
++++ ircd-hybrid/include/numeric.h	12 Jun 2003 11:26:34 -0000
 @@ -438,7 +438,7 @@
  /*	ERR_MASKTOOWIDE	     520	Undernet extension -Kev */
  /*	ERR_WHOTRUNC	     520	austnet */
@@ -167,7 +167,7 @@ RCS file: /cvsroot/ircd-hybrid/include/patchlevel.h,v
 retrieving revision 7.42.2.3
 diff -u -r7.42.2.3 patchlevel.h
 --- ircd-hybrid/include/patchlevel.h	11 Jun 2003 04:38:40 -0000	7.42.2.3
-+++ ircd-hybrid/include/patchlevel.h	12 Jun 2003 10:53:41 -0000
++++ ircd-hybrid/include/patchlevel.h	12 Jun 2003 11:26:34 -0000
 @@ -23,5 +23,5 @@
   */
  
@@ -181,7 +181,7 @@ RCS file: /cvsroot/ircd-hybrid/include/s_conf.h,v
 retrieving revision 7.190
 diff -u -r7.190 s_conf.h
 --- ircd-hybrid/include/s_conf.h	16 Feb 2003 00:22:21 -0000	7.190
-+++ ircd-hybrid/include/s_conf.h	12 Jun 2003 10:53:41 -0000
++++ ircd-hybrid/include/s_conf.h	12 Jun 2003 11:26:34 -0000
 @@ -151,6 +151,8 @@
  #define IsConfEncrypted(x)      ((x)->flags & CONF_FLAGS_ENCRYPTED)
  #define IsConfCompressed(x)     ((x)->flags & CONF_FLAGS_COMPRESSED)
@@ -264,7 +264,7 @@ RCS file: /cvsroot/ircd-hybrid/modules/Makefile.in,v
 retrieving revision 1.69
 diff -u -r1.69 Makefile.in
 --- ircd-hybrid/modules/Makefile.in	16 Jun 2002 16:31:25 -0000	1.69
-+++ ircd-hybrid/modules/Makefile.in	12 Jun 2003 10:53:41 -0000
++++ ircd-hybrid/modules/Makefile.in	12 Jun 2003 11:26:34 -0000
 @@ -103,7 +103,8 @@
    m_wallops.c \
    m_who.c \
@@ -281,7 +281,7 @@ RCS file: /cvsroot/ircd-hybrid/modules/m_kline.c,v
 retrieving revision 1.111
 diff -u -r1.111 m_kline.c
 --- ircd-hybrid/modules/m_kline.c	13 Nov 2002 13:12:02 -0000	1.111
-+++ ircd-hybrid/modules/m_kline.c	12 Jun 2003 10:53:41 -0000
++++ ircd-hybrid/modules/m_kline.c	12 Jun 2003 11:26:34 -0000
 @@ -49,6 +49,9 @@
  static void mo_kline(struct Client *,struct Client *,int,char **);
  static void ms_kline(struct Client *,struct Client *,int,char **);
@@ -705,7 +705,7 @@ RCS file: /cvsroot/ircd-hybrid/modules/m_list.c,v
 retrieving revision 1.45
 diff -u -r1.45 m_list.c
 --- ircd-hybrid/modules/m_list.c	17 Jan 2003 05:11:53 -0000	1.45
-+++ ircd-hybrid/modules/m_list.c	12 Jun 2003 10:53:41 -0000
++++ ircd-hybrid/modules/m_list.c	12 Jun 2003 11:26:34 -0000
 @@ -71,6 +71,120 @@
  static int list_named_channel(struct Client *source_p,char *name);
  
@@ -850,7 +850,7 @@ RCS file: /cvsroot/ircd-hybrid/modules/m_resv.c,v
 retrieving revision 1.16
 diff -u -r1.16 m_resv.c
 --- ircd-hybrid/modules/m_resv.c	24 May 2002 23:34:22 -0000	1.16
-+++ ircd-hybrid/modules/m_resv.c	12 Jun 2003 10:53:41 -0000
++++ ircd-hybrid/modules/m_resv.c	12 Jun 2003 11:26:34 -0000
 @@ -102,6 +102,7 @@
                           "%s has placed a local RESV on channel: %s [%s]",
               	         get_oper_name(source_p),
@@ -889,7 +889,7 @@ RCS file: /cvsroot/ircd-hybrid/modules/m_stats.c,v
 retrieving revision 1.115.2.2
 diff -u -r1.115.2.2 m_stats.c
 --- ircd-hybrid/modules/m_stats.c	6 May 2003 05:32:16 -0000	1.115.2.2
-+++ ircd-hybrid/modules/m_stats.c	12 Jun 2003 10:53:41 -0000
++++ ircd-hybrid/modules/m_stats.c	12 Jun 2003 11:26:35 -0000
 @@ -106,6 +106,7 @@
  static void stats_adns_servers(struct Client *);
  static void stats_connect(struct Client *);
@@ -985,7 +985,7 @@ RCS file: /cvsroot/ircd-hybrid/modules/m_unkline.c,v
 retrieving revision 1.51
 diff -u -r1.51 m_unkline.c
 --- ircd-hybrid/modules/m_unkline.c	18 Nov 2002 19:54:58 -0000	1.51
-+++ ircd-hybrid/modules/m_unkline.c	12 Jun 2003 10:53:42 -0000
++++ ircd-hybrid/modules/m_unkline.c	12 Jun 2003 11:26:35 -0000
 @@ -38,6 +38,7 @@
  #include "s_log.h"
  #include "s_misc.h"
@@ -1416,7 +1416,7 @@ RCS file: /cvsroot/ircd-hybrid/modules/m_whois.c,v
 retrieving revision 1.87
 diff -u -r1.87 m_whois.c
 --- ircd-hybrid/modules/m_whois.c	9 Feb 2003 00:02:28 -0000	1.87
-+++ ircd-hybrid/modules/m_whois.c	12 Jun 2003 10:53:42 -0000
++++ ircd-hybrid/modules/m_whois.c	12 Jun 2003 11:26:35 -0000
 @@ -480,8 +480,7 @@
  /* although we should fill in parc and parv, we don't ..
   *	 be careful of this when writing whois hooks
@@ -1433,7 +1433,7 @@ RCS file: /cvsroot/ircd-hybrid/modules/core/m_sjoin.c,v
 retrieving revision 1.140
 diff -u -r1.140 m_sjoin.c
 --- ircd-hybrid/modules/core/m_sjoin.c	4 Jul 2002 16:07:23 -0000	1.140
-+++ ircd-hybrid/modules/core/m_sjoin.c	12 Jun 2003 10:53:42 -0000
++++ ircd-hybrid/modules/core/m_sjoin.c	12 Jun 2003 11:26:35 -0000
 @@ -121,6 +121,7 @@
    char           *p; /* pointer used making sjbuf */
    int hide_or_not;
@@ -1538,7 +1538,7 @@ RCS file: /cvsroot/ircd-hybrid/src/Makefile.in,v
 retrieving revision 7.114.2.1
 diff -u -r7.114.2.1 Makefile.in
 --- ircd-hybrid/src/Makefile.in	29 May 2003 03:02:15 -0000	7.114.2.1
-+++ ircd-hybrid/src/Makefile.in	12 Jun 2003 10:53:42 -0000
++++ ircd-hybrid/src/Makefile.in	12 Jun 2003 11:26:35 -0000
 @@ -61,6 +61,7 @@
    vchannel.c                    \
    class.c                       \
@@ -1561,7 +1561,7 @@ RCS file: /cvsroot/ircd-hybrid/src/channel.c,v
 retrieving revision 7.355.2.1
 diff -u -r7.355.2.1 channel.c
 --- ircd-hybrid/src/channel.c	29 May 2003 04:02:36 -0000	7.355.2.1
-+++ ircd-hybrid/src/channel.c	12 Jun 2003 10:53:42 -0000
++++ ircd-hybrid/src/channel.c	12 Jun 2003 11:26:35 -0000
 @@ -1348,10 +1348,9 @@
      if (!splitmode && ((Count.server < split_servers) || (Count.total < split_users)))
      {
@@ -1580,7 +1580,7 @@ RCS file: /cvsroot/ircd-hybrid/src/channel_mode.c,v
 retrieving revision 7.71.2.2
 diff -u -r7.71.2.2 channel_mode.c
 --- ircd-hybrid/src/channel_mode.c	20 Apr 2003 02:33:41 -0000	7.71.2.2
-+++ ircd-hybrid/src/channel_mode.c	12 Jun 2003 10:53:43 -0000
++++ ircd-hybrid/src/channel_mode.c	12 Jun 2003 11:26:36 -0000
 @@ -830,7 +830,7 @@
    simple_modes_mask |= mode_type;
  
@@ -1684,7 +1684,7 @@ RCS file: /cvsroot/ircd-hybrid/src/client.c,v
 retrieving revision 7.331.2.1
 diff -u -r7.331.2.1 client.c
 --- ircd-hybrid/src/client.c	2 Mar 2003 07:30:54 -0000	7.331.2.1
-+++ ircd-hybrid/src/client.c	12 Jun 2003 10:53:43 -0000
++++ ircd-hybrid/src/client.c	12 Jun 2003 11:26:36 -0000
 @@ -354,6 +354,10 @@
        }
      }
@@ -1792,7 +1792,7 @@ RCS file: /cvsroot/ircd-hybrid/src/hash.c,v
 retrieving revision 7.47
 diff -u -r7.47 hash.c
 --- ircd-hybrid/src/hash.c	28 Oct 2002 21:09:23 -0000	7.47
-+++ ircd-hybrid/src/hash.c	12 Jun 2003 10:53:43 -0000
++++ ircd-hybrid/src/hash.c	12 Jun 2003 11:26:37 -0000
 @@ -40,6 +40,10 @@
  #include "fileio.h"
  #include "memory.h"
@@ -1975,7 +1975,7 @@ RCS file: /cvsroot/ircd-hybrid/src/ircd.c,v
 retrieving revision 7.252.2.1
 diff -u -r7.252.2.1 ircd.c
 --- ircd-hybrid/src/ircd.c	29 May 2003 05:13:26 -0000	7.252.2.1
-+++ ircd-hybrid/src/ircd.c	12 Jun 2003 10:53:44 -0000
++++ ircd-hybrid/src/ircd.c	12 Jun 2003 11:26:37 -0000
 @@ -132,6 +132,9 @@
  int split_users;
  int split_servers;
@@ -2020,7 +2020,7 @@ RCS file: /cvsroot/ircd-hybrid/src/ircd_lexer.l,v
 retrieving revision 1.146
 diff -u -r1.146 ircd_lexer.l
 --- ircd-hybrid/src/ircd_lexer.l	30 Oct 2002 17:44:56 -0000	1.146
-+++ ircd-hybrid/src/ircd_lexer.l	12 Jun 2003 10:53:44 -0000
++++ ircd-hybrid/src/ircd_lexer.l	12 Jun 2003 11:26:37 -0000
 @@ -182,6 +182,7 @@
  have_ident	{ return HAVE_IDENT; }
  havent_read_conf { return HAVENT_READ_CONF; }
@@ -2043,7 +2043,7 @@ RCS file: /cvsroot/ircd-hybrid/src/ircd_parser.y,v
 retrieving revision 1.262
 diff -u -r1.262 ircd_parser.y
 --- ircd-hybrid/src/ircd_parser.y	12 Nov 2002 13:45:42 -0000	1.262
-+++ ircd-hybrid/src/ircd_parser.y	12 Jun 2003 10:53:44 -0000
++++ ircd-hybrid/src/ircd_parser.y	12 Jun 2003 11:26:37 -0000
 @@ -146,6 +146,7 @@
  %token  HAVE_IDENT
  %token	HAVENT_READ_CONF
@@ -2103,7 +2103,7 @@ RCS file: /cvsroot/ircd-hybrid/src/messages.tab,v
 retrieving revision 7.73.2.1
 diff -u -r7.73.2.1 messages.tab
 --- ircd-hybrid/src/messages.tab	6 May 2003 05:32:17 -0000	7.73.2.1
-+++ ircd-hybrid/src/messages.tab	12 Jun 2003 10:53:44 -0000
++++ ircd-hybrid/src/messages.tab	12 Jun 2003 11:26:38 -0000
 @@ -548,7 +548,7 @@
  /* 518 */	NULL,
  /* 519 */	NULL,
@@ -2119,7 +2119,7 @@ RCS file: /cvsroot/ircd-hybrid/src/s_conf.c,v
 retrieving revision 7.341
 diff -u -r7.341 s_conf.c
 --- ircd-hybrid/src/s_conf.c	16 Feb 2003 22:06:46 -0000	7.341
-+++ ircd-hybrid/src/s_conf.c	12 Jun 2003 10:53:45 -0000
++++ ircd-hybrid/src/s_conf.c	12 Jun 2003 11:26:38 -0000
 @@ -112,9 +112,12 @@
  static int hash_ip(struct irc_inaddr *);
  static void garbage_collect_ip_entries(void);
@@ -2474,7 +2474,7 @@ RCS file: /cvsroot/ircd-hybrid/src/s_user.c,v
 retrieving revision 7.223.2.2
 diff -u -r7.223.2.2 s_user.c
 --- ircd-hybrid/src/s_user.c	29 May 2003 04:58:03 -0000	7.223.2.2
-+++ ircd-hybrid/src/s_user.c	12 Jun 2003 10:53:45 -0000
++++ ircd-hybrid/src/s_user.c	12 Jun 2003 11:26:38 -0000
 @@ -1143,6 +1143,8 @@
              *m++ = user_modes[i].letter;
            else
@@ -2484,7 +2484,7 @@ diff -u -r7.223.2.2 s_user.c
                what = MODE_ADD;
                *m++ = '+';
                *m++ = user_modes[i].letter;
---- /dev/null	Thu Jun 12 06:53:23 2003
+--- /dev/null	Thu Jun 12 07:24:12 2003
 +++ ircd-hybrid/src/csvlib.c	Thu Jun 12 06:51:47 2003
 @@ -0,0 +1,639 @@
 +/*
@@ -2495,7 +2495,7 @@ diff -u -r7.223.2.2 s_user.c
 + *  Use it anywhere you like, if you like it buy us a beer.
 + *  If it's broken, don't bother us with the lawyers.
 + *
-+ *  $Id: hyb7+angel.diff,v 1.1.2.3 2003/06/12 11:02:15 db Exp $
++ *  $Id: hyb7+angel.diff,v 1.1.2.4 2003/06/12 11:29:19 db Exp $
 + */
 +
 +#include "stdinc.h"
@@ -3126,7 +3126,7 @@ diff -u -r7.223.2.2 s_user.c
 +  }
 +  return(error_on_write);
 +}
---- /dev/null	Thu Jun 12 06:53:23 2003
+--- /dev/null	Thu Jun 12 07:24:12 2003
 +++ ircd-hybrid/modules/m_xline.c	Thu Jun 12 06:51:47 2003
 @@ -0,0 +1,352 @@
 +/*
@@ -3150,7 +3150,7 @@ diff -u -r7.223.2.2 s_user.c
 + *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 + *  USA
 + *
-+ *  $Id: hyb7+angel.diff,v 1.1.2.3 2003/06/12 11:02:15 db Exp $
++ *  $Id: hyb7+angel.diff,v 1.1.2.4 2003/06/12 11:29:19 db Exp $
 + */
 +
 +#include "stdinc.h"
@@ -3214,7 +3214,7 @@ diff -u -r7.223.2.2 s_user.c
 +  mod_del_cmd(&xline_msgtab);
 +  mod_del_cmd(&unxline_msgtab);
 +}
-+const char *_version = "$Revision: 1.1.2.3 $";
++const char *_version = "$Revision: 1.1.2.4 $";
 +#endif
 +
 +
