@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_oper.c,v 1.70 2003/06/12 22:05:55 db Exp $
+ *  $Id: m_oper.c,v 1.71 2003/06/19 02:32:16 db Exp $
  */
 
 #include "stdinc.h"
@@ -68,7 +68,7 @@ _moddeinit(void)
   mod_del_cmd(&oper_msgtab);
 }
 
-const char *_version = "$Revision: 1.70 $";
+const char *_version = "$Revision: 1.71 $";
 #endif
 
 /*
@@ -138,7 +138,7 @@ m_oper(struct Client *client_p, struct Client *source_p,
       return;
     }
 
-    oper_up(source_p, aconf);
+    oper_up(source_p);
       
     ilog(L_TRACE, "OPER %s by %s!%s@%s",
 	 name, source_p->name, source_p->username, source_p->host);
@@ -174,15 +174,25 @@ mo_oper(struct Client *client_p, struct Client *source_p,
 static struct AccessItem *
 find_password_aconf(const char *name, struct Client *source_p)
 {
+  struct ConfItem *conf;
   struct AccessItem *aconf;
 
-  if ((aconf = find_conf_exact(name, source_p->username, source_p->host,
-			       CONF_OPERATOR)) != NULL)
+  if ((conf = find_exact_name_conf(OPER_TYPE,
+				   name, source_p->username, source_p->host
+				   )) != NULL)
+  {
+    aconf = (struct AccessItem *)map_to_conf(conf);
     return(aconf);
-  else if ((aconf = find_conf_exact(name, source_p->username,
-                                    source_p->localClient->sockhost,
-                                    CONF_OPERATOR)) != NULL)
+  }
+  else
+  if ((conf = find_exact_name_conf(OPER_TYPE,
+				   name, source_p->username,
+				   source_p->localClient->sockhost)) != NULL)
+  {
+    aconf = (struct AccessItem *)map_to_conf(conf);
     return(aconf);
+  }
+
   return(NULL);
 }
 

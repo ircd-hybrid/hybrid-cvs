@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.318 2003/06/18 06:26:32 metalrock Exp $
+ *  $Id: ircd_parser.y,v 1.319 2003/06/19 02:32:18 db Exp $
  */
 
 %{
@@ -818,7 +818,6 @@ oper_entry: OPERATOR
 #endif
       {
         conf_add_class_to_conf(yy_tmp);
-        conf_add_conf(yy_tmp);
         dlinkDelete(ptr, &aconf_list);
       }
       else
@@ -827,8 +826,6 @@ oper_entry: OPERATOR
         free_access_item(yy_tmp);
       }
     }
-
-    free_access_item(yy_aconf);
     yy_aconf = NULL;
   }
 }; 
@@ -2186,7 +2183,7 @@ gecos_entry: GECOS
   if (ypass == 2)
   {
     if (yy_match_item->name == NULL)
-      free_conf_item(yy_conf, XLINE_TYPE);
+      delete_conf_item(yy_conf);
     yy_match_item = NULL;
   }
 }; 

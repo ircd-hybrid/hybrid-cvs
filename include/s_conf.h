@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.245 2003/06/18 06:26:29 metalrock Exp $
+ *  $Id: s_conf.h,v 7.246 2003/06/19 02:32:14 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -67,6 +67,12 @@ typedef enum {
   CRESV_TYPE,     
   NRESV_TYPE
 } ConfType;
+
+/* 
+ * defines for types of objects 
+ */
+#define ACCESSTYPE 0
+#define MATCHTYPE  1
   
 
 struct ConfItem
@@ -398,6 +404,8 @@ extern void split_user_host(char *user_host, char **user_p, char **host_p);
 extern struct ConfItem *find_matching_name_conf(ConfType type, const char *,
 						const char *, const char *,
 						int );
+extern struct ConfItem *find_exact_name_conf(ConfType type, const char *,
+					     const char *, const char *);
 extern void delete_conf_item(struct ConfItem *);
 extern struct AccessItem *find_tkline(const char *, const char *, struct irc_ssaddr *);
 extern char *show_iline_prefix(struct Client *, struct AccessItem *, char *);

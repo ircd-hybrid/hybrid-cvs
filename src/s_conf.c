@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.437 2003/06/18 06:26:33 metalrock Exp $
+ *  $Id: s_conf.c,v 7.438 2003/06/19 02:32:18 db Exp $
  */
 
 #include "stdinc.h"
@@ -59,9 +59,10 @@
 struct config_server_hide ConfigServerHide;
 
 /* general conf items link list root, other than k lines etc. */
+dlink_list oconf_items = { NULL, NULL, 0 };
 dlink_list uconf_items = { NULL, NULL, 0 };
 dlink_list xconf_items = { NULL, NULL, 0 };
-dlink_list nresv_items    = { NULL, NULL, 0 };
+dlink_list nresv_items = { NULL, NULL, 0 };
 
 dlink_list ConfigItemList = { NULL, NULL, 0 };
 dlink_list temporary_klines = { NULL, NULL, 0 };
@@ -91,7 +92,7 @@ static int attach_iline(struct Client *, struct AccessItem *);
 static struct ip_entry *find_or_add_ip(struct irc_ssaddr *);
 static void parse_conf_file(int type, int cold);
 static void clear_conf_items(void);
-static dlink_list *map_to_list(ConfType conf);
+static dlink_list *map_to_list(ConfType conf, int *conf_type);
 
 FBFILE *conf_fbfile_in;
 extern char yytext[];
@@ -191,7 +192,6 @@ make_conf_item(ConfType type)
   case HUB_TYPE:
   case OPER_TYPE:
   case SERVER_TYPE:
-
     conf = (struct ConfItem *)MyMalloc(sizeof(struct ConfItem) +
 					 sizeof(struct AccessItem));
     aconf = (struct AccessItem *)map_to_conf(conf);
@@ -223,6 +223,7 @@ make_conf_item(ConfType type)
 
     case OPER_TYPE:
       status = CONF_OPERATOR;
+      dlinkAdd(conf, &conf->node, &oconf_items);
       break;
 
     case SERVER_TYPE:
@@ -277,6 +278,7 @@ void
 delete_conf_item(struct ConfItem *conf)
 {
   struct MatchItem *match_item;
+  struct AccessItem *aconf;
   ConfType type = conf->type;
 
   switch(type)
@@ -311,6 +313,30 @@ delete_conf_item(struct ConfItem *conf)
       break;
 
     case OPER_TYPE:
+      aconf = (struct AccessItem *)map_to_conf(conf);
+      if (aconf->dns_query != NULL)
+	delete_resolver_queries(aconf->dns_query);
+      if (aconf->passwd != NULL)
+	memset(aconf->passwd, 0, strlen(aconf->passwd));
+      if (aconf->spasswd != NULL)
+	memset(aconf->spasswd, 0, strlen(aconf->spasswd));
+
+      MyFree(aconf->passwd);
+      MyFree(aconf->spasswd);
+      MyFree(aconf->reason);
+      MyFree(aconf->oper_reason);
+      MyFree(aconf->name);
+      MyFree(aconf->user);
+      MyFree(aconf->host);
+      MyFree(aconf->class_name);
+      MyFree(aconf->fakename);
+#ifdef HAVE_LIBCRYPTO
+      if (aconf->rsa_public_key)
+	RSA_free(aconf->rsa_public_key);
+      MyFree(aconf->rsa_public_key_file);
+#endif
+      dlinkDelete(&conf->node, &oconf_items);
+      MyFree(conf);
       break;
 
     case SERVER_TYPE:
@@ -379,7 +405,6 @@ clear_conf_items(void)
   dlink_node *next_ptr;
   struct ConfItem *conf;
 
-
   DLINK_FOREACH_SAFE(ptr, next_ptr, uconf_items.head)
   {
     delete_conf_item((conf = ptr->data));
@@ -396,36 +421,6 @@ clear_conf_items(void)
   }
 }
 
-/* free_conf_item()
- *
- * inputs	- type of item
- * output	- pointer to new conf entry
- * side effects	- none
- */
-void
-free_conf_item(struct ConfItem *conf, ConfType type)
-{
-  switch(type)
-  {
-  case DLINE_TYPE:
-  case KLINE_TYPE:
-  case CLIENT_TYPE:
-  case HUB_TYPE:
-  case LEAF_TYPE:
-  case OPER_TYPE:
-  case SERVER_TYPE:
-  case NRESV_TYPE:
-  case CRESV_TYPE:
-    break;
-
-  case ULINE_TYPE:
-  case XLINE_TYPE:
-    break;
-
-  default:
-    break;
-  }
-}
 
 /* free_access_item()
  *
@@ -1540,20 +1535,43 @@ find_conf_by_host(const char *host, unsigned int status)
  * map_to_list
  *
  * inputs	- ConfType conf
+ *		- pointer to where to stick type of object list is
  * output	- pointer to dlink_list to use
  * side effects	- none
  */
 static dlink_list *
-map_to_list(ConfType type)
+map_to_list(ConfType type, int *ct_p)
 {
-  if(type == XLINE_TYPE)
+  switch(type)
+  {
+  case XLINE_TYPE:
+    if (ct_p != NULL)
+      *ct_p = MATCHTYPE;
     return(&xconf_items);
-  else if(type == ULINE_TYPE)
+    break;
+  case ULINE_TYPE:
+    if (ct_p != NULL)
+      *ct_p = MATCHTYPE;
     return(&uconf_items);
-  else if(type == NRESV_TYPE)
+    break;
+  case NRESV_TYPE:
+    if (ct_p != NULL)
+      *ct_p = MATCHTYPE;
     return(&nresv_items);
-  /* XXX boom */
-  return(NULL);
+    break;
+  case OPER_TYPE:
+    if (ct_p != NULL)
+      *ct_p = ACCESSTYPE;
+    return(&oconf_items);
+    break;
+  case CONF_TYPE:
+  case KLINE_TYPE:
+  case DLINE_TYPE:
+  case CRESV_TYPE:
+  case GLINE_TYPE:
+  default:
+    return(NULL);
+  }
 }
 
 /* find_matching_name_conf()
@@ -1572,33 +1590,123 @@ find_matching_name_conf(ConfType type,
 			const char *host, int action)
 {
   dlink_node *ptr=NULL;
-  struct ConfItem *conf;
-  struct MatchItem *match_item;
+  struct ConfItem *conf=NULL;
+  struct AccessItem *aconf=NULL;
+  struct MatchItem *match_item=NULL;
   dlink_list *list_p;
+  int conf_type;
 
-  list_p = map_to_list(type);
+  list_p = map_to_list(type, &conf_type);
 
-  DLINK_FOREACH(ptr, (*list_p).head)
+  if (conf_type == MATCHTYPE)
   {
-    conf = ptr->data;
-
-    match_item = (struct MatchItem *)map_to_conf(conf);
-    if (EmptyString(match_item->name))
-      continue;
-    if (match_esc(match_item->name, name))
+    DLINK_FOREACH(ptr, (*list_p).head)
     {
-      if ((user == NULL && (host == NULL)))
-	return (conf);
-      if (action != 0)
-	if (match_item->action != action)
-	  continue;
-      if (EmptyString(match_item->user) || EmptyString(match_item->host))
-	return (conf);
-      if (match(match_item->user, user) && match(match_item->host, host))
-	return (conf);
+      conf = ptr->data;
+
+      match_item = (struct MatchItem *)map_to_conf(conf);
+      if (EmptyString(match_item->name))
+	continue;
+      if (match_esc(match_item->name, name))
+      {
+	if ((user == NULL && (host == NULL)))
+	  return (conf);
+	if (action != 0)
+	  if (match_item->action != action)
+	    continue;
+	if (EmptyString(match_item->user) || EmptyString(match_item->host))
+	  return (conf);
+	if (match(match_item->user, user) && match(match_item->host, host))
+	  return (conf);
+      }
+    }
+  }
+  else if(conf_type == ACCESSTYPE)
+  {
+    DLINK_FOREACH(ptr, (*list_p).head)
+    {
+      conf = ptr->data;
+      aconf = (struct AccessItem *)map_to_conf(conf);
+      if (EmptyString(match_item->name))
+	continue;
+      if (match_esc(match_item->name, name) == 0)
+      {
+	if ((user == NULL && (host == NULL)))
+	  return (conf);
+	if (EmptyString(aconf->user) || EmptyString(aconf->host))
+	  return (conf);
+	if (match(aconf->user, user) && match(aconf->host, host))
+	  return (conf);
+      }
     }
   }
 
+  return(NULL);
+}
+
+/* find_exact_name_conf()
+ *
+ * inputs       - type of link list to look in
+ *		- pointer to name string to find
+ *		- pointer to user
+ *		- pointer to host
+ * output       - NULL or pointer to found struct MatchItem
+ * side effects - looks for an exact match on name field
+ */
+struct ConfItem *
+find_exact_name_conf(ConfType type, 
+		     const char *name, const char *user,
+		     const char *host)
+{
+  dlink_node *ptr=NULL;
+  struct ConfItem *conf;
+  struct AccessItem *aconf;
+  struct MatchItem *match_item;
+  dlink_list *list_p;
+  int conf_type;
+
+  list_p = map_to_list(type, &conf_type);
+
+  if (conf_type == MATCHTYPE)
+  {
+    DLINK_FOREACH(ptr, (*list_p).head)
+    {
+      conf = ptr->data;
+      match_item = (struct MatchItem *)map_to_conf(conf);
+      if (EmptyString(match_item->name))
+	continue;
+    
+      if (irccmp(match_item->name, name) == 0)
+      {
+	if ((user == NULL && (host == NULL)))
+	  return (conf);
+	if (EmptyString(match_item->user) || EmptyString(match_item->host))
+	  return (conf);
+	if (match(match_item->user, user) && match(match_item->host, host))
+	  return (conf);
+      }
+    }
+  }
+  else if (conf_type == ACCESSTYPE)
+  {
+    DLINK_FOREACH(ptr, (*list_p).head)
+    {
+      conf = ptr->data;
+      aconf = (struct AccessItem *)map_to_conf(conf);
+      if (EmptyString(aconf->name))
+	continue;
+    
+      if (irccmp(aconf->name, name) == 0)
+      {
+	if ((user == NULL && (host == NULL)))
+	  return (conf);
+	if (EmptyString(aconf->user) || EmptyString(aconf->host))
+	  return (conf);
+	if (match(aconf->user, user) && match(aconf->host, host))
+	  return (conf);
+      }
+    }
+  }
   return(NULL);
 }
 

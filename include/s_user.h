@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.h,v 7.32 2003/06/16 15:16:03 michael Exp $
+ *  $Id: s_user.h,v 7.33 2003/06/19 02:32:14 db Exp $
  */
 
 #ifndef INCLUDED_s_user_h
@@ -41,7 +41,7 @@ extern void send_umode(struct Client *, struct Client *,
 extern void send_umode_out(struct Client* , struct Client* , unsigned int);
 extern void show_lusers(struct Client *source_p, char *show_mask);
 extern void show_isupport(struct Client *);
-extern void oper_up(struct Client *source_p, struct AccessItem *aconf);
+extern void oper_up(struct Client *source_p);
 
 extern int register_local_user(struct Client *, struct Client *,
                                const char *, const char *);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.285 2003/06/16 15:16:05 michael Exp $
+ *  $Id: s_user.c,v 7.286 2003/06/19 02:32:18 db Exp $
  */
 
 #include "stdinc.h"
@@ -1294,7 +1294,7 @@ check_x_line(struct Client *client_p, struct Client *source_p)
  * This could also be used by rsa oper routines. 
  */
 void
-oper_up(struct Client *source_p, struct AccessItem *aconf)
+oper_up(struct Client *source_p)
 {
   unsigned int old = (source_p->umodes & ALL_UMODES);
   const char *operprivs = "";

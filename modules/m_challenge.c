@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_challenge.c,v 1.47 2003/06/12 22:05:54 db Exp $
+ *  $Id: m_challenge.c,v 1.48 2003/06/19 02:32:16 db Exp $
  */
 
 #include "stdinc.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
   mod_del_cmd(&challenge_msgtab);
 }
 
-const char *_version = "$Revision: 1.47 $";
+const char *_version = "$Revision: 1.48 $";
 #endif
 /*
  * m_challenge - generate RSA challenge for wouldbe oper
@@ -123,7 +123,7 @@ m_challenge(struct Client *client_p, struct Client *source_p,
       return;
     }
      
-    oper_up(source_p, aconf);
+    oper_up(source_p);
 
     ilog(L_TRACE, "OPER %s by %s!%s@%s",
 	 source_p->user->auth_oper, source_p->name, source_p->username,
