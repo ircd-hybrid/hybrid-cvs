@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.163 2001/06/16 02:55:40 a1kmm Exp $
+ * $Id: ircd.c,v 7.164 2001/06/26 18:07:24 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -313,21 +313,17 @@ io_loop(void)
   if (delay <= CurrentTime)
    eventRun();
   
-  /* Reset the callback counter... */
-  callbacks_called = 0;
-  
   /* Check on the last activity, sleep for up to 1/2s if we are idle... */
   if (callbacks_called > 0)
    empty_cycles = 0;
-  else if (empty_cycles++ > 10)
-  {
-    if (empty_cycles - 10 > 256*500)
-   	st = 500;
-    else
-   	st = empty_cycles>>8;
-  }
-  /* Do IO events */
-  comm_select(st);
+  
+  /* Reset the callback counter... */
+  callbacks_called = 0;
+     
+  if (empty_cycles++ > 10)
+   comm_select((st=((empty_cycles-10)*10)>500 ? 500 : st));
+  else
+   comm_select(0);
   
   /*
    * Check to see whether we have to rehash the configuration ..
