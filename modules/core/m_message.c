@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.53 2001/01/27 21:35:44 fl_ Exp $
+ *   $Id: m_message.c,v 1.54 2001/01/27 23:11:47 fl_ Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -522,7 +522,8 @@ static void msg_channel( int p_or_n, char *command,
      
   if(MyClient(sptr))
     {
-      if(sptr->user)
+      /* idle time shouldnt be reset by notices --fl */
+      if ((p_or_n != NOTICE) && sptr->user)
 	sptr->user->last = CurrentTime;
     }
 
@@ -596,7 +597,8 @@ static void msg_channel_flags( int p_or_n, char *command,
       
   if(MyClient(sptr))
     {
-      if(sptr->user)
+      /* idletime shouldnt be reset by notice --fl */
+      if((p_or_n != NOTICE) && sptr->user)
 	sptr->user->last = CurrentTime;
     }
 
@@ -638,7 +640,8 @@ static void msg_client(int p_or_n, char *command,
 {
   if(MyClient(sptr))
     {
-      /* reset idle time for message only if its not to self */
+      /* reset idle time for message only if its not to self 
+       * and its not a notice */
       if((p_or_n != NOTICE) && (sptr != acptr) && sptr->user)
 	sptr->user->last = CurrentTime;
     }
