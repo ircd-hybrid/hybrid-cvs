@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.67 2000/12/30 06:47:28 lusky Exp $
+ *   $Id: parse.c,v 7.68 2000/12/30 19:47:46 lusky Exp $
  */
 #include "parse.h"
 #include "client.h"
@@ -71,6 +71,7 @@ static void
 string_to_array(char *string, int mpara, int paramcount, char *end, int *parc, char *parv[MAXPARA])
 {
   char *ap;
+  char *p=NULL;
 	
   /*
   ** Must the following loop really be so devious? On
@@ -92,7 +93,8 @@ string_to_array(char *string, int mpara, int paramcount, char *end, int *parc, c
   if (paramcount > MAXPARA)
     paramcount = MAXPARA;
 	
-  while((ap = strsep(&string, " ")) != NULL) 
+/*  while((ap = strsep(&string, " ")) != NULL)  */
+  for(ap = strtoken(&p,string," "); ap; ap = strtoken(&p, NULL, " "))
     if(*ap != '\0') 
       {
 	parv[(*parc)] = ap;
