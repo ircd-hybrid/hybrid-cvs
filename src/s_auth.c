@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.136 2003/08/19 12:15:32 stu Exp $
+ *  $Id: s_auth.c,v 7.137 2003/08/19 17:52:08 adx Exp $
  */
 
 /*
@@ -207,8 +207,6 @@ auth_dns_callback(void* vptr, struct DNSReply *reply)
   else
       sendheader(auth->client, REPORT_FAIL_DNS);
 
-  MyFree(reply->h_name);
-  MyFree(reply);
   MyFree(auth->client->localClient->dns_query);
   auth->client->localClient->dns_query = NULL;
 

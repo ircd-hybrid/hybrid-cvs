@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.369 2003/08/19 12:15:32 stu Exp $
+ *  $Id: s_serv.c,v 7.370 2003/08/19 17:52:08 adx Exp $
  */
 
 #include "stdinc.h"
@@ -533,7 +533,7 @@ try_connections(void *unused)
         sendto_realops_flags(UMODE_ALL, L_ALL, "Connection to %s[%s] activated.",
                              conf->name, aconf->host);
 
-      serv_connect(aconf, 0);
+      serv_connect(aconf, NULL);
       /* We connect only one at time... */
       return;
     }
@@ -1898,6 +1898,10 @@ serv_connect(struct AccessItem *aconf, struct Client *by)
         buf, HOSTIPLEN, NULL, 0, NI_NUMERICHOST);
     ilog(L_NOTICE, "Connect to %s[%s] @%s", aconf->user, aconf->host,
          buf);
+
+    /* Still processing a DNS lookup? -> exit */
+    if (aconf->dns_query != NULL)
+      return (0);
 
     /*
      * Make sure this server isn't already connected

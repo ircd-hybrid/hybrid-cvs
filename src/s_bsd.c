@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.209 2003/08/19 12:15:32 stu Exp $
+ *  $Id: s_bsd.c,v 7.210 2003/08/19 17:52:08 adx Exp $
  */
 
 #include "stdinc.h"
@@ -695,8 +695,10 @@ comm_connect_dns_callback(void *vptr, struct DNSReply *reply)
 {
     fde_t *F = vptr;
 
-    if(reply == NULL)
+    if (reply == NULL)
     {
+      MyFree(F->dns_query);
+      F->dns_query = NULL;
       comm_connect_callback(F->fd, COMM_ERR_DNS);
       return;
     }
@@ -713,8 +715,8 @@ comm_connect_dns_callback(void *vptr, struct DNSReply *reply)
     memcpy(&F->connect.hostaddr, &reply->addr, 
           sizeof(struct irc_ssaddr));
     /* Now, call the tryconnect() routine to try a connect() */
-    MyFree(reply->h_name);
-    MyFree(reply); 
+    MyFree(F->dns_query);
+    F->dns_query = NULL;
     comm_connect_tryconnect(F->fd, NULL);
 }
 

@@ -7,7 +7,7 @@
  * The authors takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: irc_res.c,v 7.34 2003/08/19 15:43:45 stu Exp $
+ * $Id: irc_res.c,v 7.35 2003/08/19 17:52:08 adx Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -302,7 +302,7 @@ timeout_query_list(time_t now)
     {
       if (--request->retries <= 0)
       {
-        (*request->query.callback)(request->query.ptr, 0);
+        (*request->query.callback)(request->query.ptr, NULL);
         rem_request(request);
         continue;
       }
@@ -839,7 +839,7 @@ res_readreply(int fd, void *data)
          * If a bad error was returned, we stop here and dont send
          * send any more (no retries granted).
          */
-        (*request->query.callback)(request->query.ptr, 0);
+        (*request->query.callback)(request->query.ptr, NULL);
 	rem_request(request);
       } 
     }
@@ -886,7 +886,8 @@ res_readreply(int fd, void *data)
        * got a name and address response, client resolved
        */
       reply = make_dnsreply(request);
-      (*request->query.callback)(request->query.ptr, (reply) ? reply : 0);
+      (*request->query.callback)(request->query.ptr, reply);
+      MyFree(reply);
       rem_request(request);
     }
   }
@@ -910,7 +911,7 @@ make_dnsreply(struct reslist *request)
 
   cp = (struct DNSReply *)MyMalloc(sizeof(struct DNSReply));
 
-  DupString(cp->h_name, request->name);
+  cp->h_name = request->name;
   memcpy(&cp->addr, &request->addr, sizeof(cp->addr));
   return(cp);
 }

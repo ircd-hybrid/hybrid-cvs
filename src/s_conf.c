@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.468 2003/08/19 12:15:32 stu Exp $
+ *  $Id: s_conf.c,v 7.469 2003/08/19 17:52:08 adx Exp $
  */
 
 #include "stdinc.h"
@@ -121,6 +121,25 @@ static BlockHeap *ip_entry_heap = NULL;
 static int ip_entries_count = 0;
 
 
+inline void *
+map_to_conf(struct ConfItem *aconf)
+{
+  void *conf;
+  conf = (void *)((unsigned long)aconf +
+		  (unsigned long)sizeof(struct ConfItem));
+  return(conf);
+}
+
+inline struct ConfItem *
+unmap_conf_item(void *aconf)
+{
+  struct ConfItem *conf;
+
+  conf = (struct ConfItem *)((unsigned long)aconf -
+			     (unsigned long)sizeof(struct ConfItem));
+  return(conf);
+}
+
 /* conf_dns_callback()
  *
  * inputs	- pointer to struct AccessItem
@@ -135,15 +154,22 @@ static void
 conf_dns_callback(void *vptr, struct DNSReply *reply)
 {
   struct AccessItem *aconf = (struct AccessItem *)vptr;
+  struct ConfItem *conf;
+
+  MyFree(aconf->dns_query);
+  aconf->dns_query = NULL;
 
   if (reply != NULL)
-  {
     memcpy(&aconf->ipnum, &reply->addr, sizeof(reply->addr));
-    MyFree(reply->h_name);
-    MyFree(reply);
+  else {
+    ilog(L_NOTICE, "Host not found: %s, ignoring connect{} block",
+         aconf->host);
+    conf = unmap_conf_item(aconf);
+    sendto_realops_flags(UMODE_ALL, L_ALL,
+                         "Ignoring connect{} block for %s - host not found",
+			 conf->name);
+    delete_conf_item(conf);
   }
-
-  aconf->dns_query = NULL;
 }
 
 /* conf_dns_lookup()
@@ -162,25 +188,6 @@ conf_dns_lookup(struct AccessItem *aconf)
     aconf->dns_query->callback = conf_dns_callback;
     gethost_byname(aconf->host, aconf->dns_query);
   }
-}
-
-inline void *
-map_to_conf(struct ConfItem *aconf)
-{
-  void *conf;
-  conf = (void *)((unsigned long)aconf +
-		  (unsigned long)sizeof(struct ConfItem));
-  return(conf);
-}
-
-inline struct ConfItem *
-unmap_conf_item(void *aconf)
-{
-  struct ConfItem *conf;
-
-  conf = (struct ConfItem *)((unsigned long)aconf -
-			     (unsigned long)sizeof(struct ConfItem));
-  return(conf);
 }
 
 /* make_conf_item()
@@ -335,7 +342,10 @@ delete_conf_item(struct ConfItem *conf)
   case SERVER_TYPE:
     aconf = (struct AccessItem *)map_to_conf(conf);
     if (aconf->dns_query != NULL)
+    {
       delete_resolver_queries(aconf->dns_query);
+      MyFree(aconf->dns_query);
+    }
     if (aconf->passwd != NULL)
       memset(aconf->passwd, 0, strlen(aconf->passwd));
     if (aconf->spasswd != NULL)
