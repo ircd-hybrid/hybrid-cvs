@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: io.c,v 1.20 2001/05/26 23:56:46 davidt Exp $
+ *   $Id: io.c,v 1.21 2001/05/27 16:17:27 toot Exp $
  */
 
 #include "../include/setup.h"
@@ -28,6 +28,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdarg.h>
+#include <stdio.h>
 #include <unistd.h>
 
 #ifdef HAVE_LIBCRYPTO

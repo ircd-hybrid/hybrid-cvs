@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.222 2001/05/27 01:24:04 davidt Exp $
+ * $Id: channel.c,v 7.223 2001/05/27 16:17:28 toot Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -386,7 +386,7 @@ static int check_banned(struct Channel *chptr, struct Client *who,
 void add_user_to_channel(struct Channel *chptr, struct Client *who, int flags)
 {
   dlink_node *ptr;
-  dlink_node *lptr;
+  dlink_node *lptr = NULL;
 
   if (who->user)
     {

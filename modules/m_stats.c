@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 1.73 2001/05/25 22:28:27 leeh Exp $
+ *  $Id: m_stats.c,v 1.74 2001/05/27 16:17:20 toot Exp $
  */
 #include "tools.h"	 /* dlink_node/dlink_list */
 #include "handlers.h"    /* m_pass prototype */
@@ -434,7 +434,6 @@ static void stats_ziplinks(struct Client *client_p)
   dlink_node *ptr;
   struct Client *target_p;
   int sent_data = 0;
-  char buf[256];
 
   for(ptr = serv_list.head; ptr; ptr = ptr->next)
   {
