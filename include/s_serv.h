@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: s_serv.h,v 7.16 2000/12/14 17:04:38 db Exp $
+ * $Id: s_serv.h,v 7.17 2000/12/16 17:46:42 db Exp $
  *
  */
 #ifndef INCLUDED_serv_h
@@ -32,6 +32,7 @@
 
 struct Client;
 struct ConfItem;
+struct Channel;
 
 struct Capability
 {
@@ -111,6 +112,7 @@ extern time_t      try_connections(time_t currenttime);
 extern void        initServerMask(void);
 extern void        restoreUnusedServerMask(unsigned long);
 extern void        burst_members(struct Client *cptr, dlink_list *list);
+extern void        sjoin_channel(struct Client *cptr, struct Channel *chptr);
 extern void	   sendnick_TS(struct Client*, struct Client* );
 extern int         serv_connect(struct ConfItem *, struct Client *);
 
