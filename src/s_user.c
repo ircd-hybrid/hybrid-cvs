@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.175 2001/12/30 04:19:46 db Exp $
+ *  $Id: s_user.c,v 7.176 2002/01/02 15:25:07 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -214,6 +214,13 @@ int show_lusers(struct Client *source_p)
                  me.name, source_p->name, Count.local, Count.myserver);
       sendto_one(source_p, form_str(RPL_LOCALUSERS), me.name, source_p->name,
                  Count.local, Count.max_loc);
+    }
+  else
+    {
+      sendto_one(source_p, form_str(RPL_LUSERME),
+                 me.name, source_p->name, Count.total, 0);
+      sendto_one(source_p, form_str(RPL_LOCALUSERS), 
+                 me.name, source_p->name, Count.total, Count.max_tot);
     }
 
   sendto_one(source_p, form_str(RPL_GLOBALUSERS), me.name, source_p->name,
