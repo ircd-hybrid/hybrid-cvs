@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: io.c,v 1.27 2001/09/26 04:44:13 androsyn Exp $
+ *   $Id: io.c,v 1.28 2001/10/04 21:22:10 androsyn Exp $
  */
 
 #include "setup.h"
@@ -174,7 +174,7 @@ void process_recvq(struct ctrl_command *cmd)
 {
   int ret;
   unsigned char *buf;
-  unsigned int   blen;
+  int   blen;
   unsigned char *data = cmd->data;
   unsigned int   datalen = cmd->datalen;
 
@@ -291,7 +291,7 @@ void send_zipstats(struct ctrl_command *unused)
  *     flush the control fd sendq, then (blocking) send an
  *     error message over the control fd.
  */
-void send_error(unsigned char *message, ...)
+void send_error(char *message, ...)
 {
   va_list args;
   static int sending_error = 0;
@@ -313,7 +313,7 @@ void send_error(unsigned char *message, ...)
   in_state.buf[2] = 0;
 
   va_start(args, message);
-  len = vsprintf(in_state.buf+3, message, args);
+  len = vsprintf((char *)in_state.buf+3, message, args);
   va_end(args);
 
   in_state.buf[3+len++] = '\0';

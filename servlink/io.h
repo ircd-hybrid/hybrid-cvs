@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: io.h,v 1.8 2001/06/04 14:30:55 davidt Exp $
+ *   $Id: io.h,v 1.9 2001/10/04 21:22:10 androsyn Exp $
  */
 
 #ifndef INCLUDED_servlink_io_h
@@ -39,7 +39,7 @@ extern void write_ctrl(void);
 extern void read_ctrl(void);
 extern void write_net(void);
 extern void read_net(void);
-extern void send_error(unsigned char *, ...);
+extern void send_error(char *, ...);
 extern void send_data_blocking(int fd, unsigned char *data, int datalen);
 extern cmd_handler process_recvq;
 extern cmd_handler process_sendq;
