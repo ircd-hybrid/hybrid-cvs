@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.15 2000/01/02 05:34:58 db Exp $
+ * $Id: ircd.c,v 7.16 2000/01/03 07:13:08 db Exp $
  */
 #include "ircd.h"
 #include "channel.h"
@@ -108,6 +108,11 @@
 
 #ifdef  REJECT_HOLD
 int reject_held_fds = 0;
+#endif
+
+#ifndef HUB
+/* LazyLinks code */
+time_t lastCleanup;
 #endif
 
 #ifdef NEED_SPLITCODE
@@ -377,6 +382,14 @@ static time_t io_loop(time_t delay)
         TS_MAX_DELTA);
       restart("Clock Failure");
     }
+
+#ifndef HUB
+  if(CurrentTime - lastCleanup >= CLEANUP_CHANNELS_TIME)
+    {
+      lastCLeanup = CurrentTime;
+      cleanup_channels();
+    }
+#endif
 
   /*
    * This chunk of code determines whether or not
