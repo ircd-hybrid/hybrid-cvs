@@ -1,3 +1,15 @@
+leeh        2002/04/14 19:46:48 EDT	(20020415_0)
+
+  Modified files:
+    src                  crypt.c 
+  Log:
+  - changing the licenses other people put coder under is a Bad Thing (tm)
+  
+  Revision  Changes    Path
+  7.3       +7 -17     ircd-hybrid-7/src/crypt.c
+
+
+
 androsyn    2002/04/14 18:13:49 EDT	(20020414_9)
 
   Modified files:
@@ -25024,4 +25036,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3559 2002/04/14 22:13:55 androsyn Exp $
+$Id: ChangeLog,v 7.3560 2002/04/14 23:46:54 leeh Exp $
