@@ -1,4 +1,4 @@
-$Id: Hybrid-team,v 7.59.2.5 2004/06/19 14:30:34 lusky Exp $
+$Id: Hybrid-team,v 7.59.2.6 2004/07/17 14:11:09 ievil Exp $
 
 The hybrid team is a group of ircd coders who were frustrated
 with the instability and all-out "dirtiness" of the EFnet ircd's
@@ -19,7 +19,6 @@ billy-jon, William Bierman III <bill@mu.org>
 cosine, Patrick Alken <wnder@uwns.underworld.net>
 David-T, David Taylor <davidt@yadt.co.uk>
 Dianora, Diane Bruce <db@db.net>
-ievil, Arnvid L. Karstad <ievil@isd.no>
 jmallett, Juli Mallett <jmallett@FreeBSD.org>
 kire, Erik Small <smalle@hawaii.edu>
 metalrock, Jack Low <musirc@users.sourceforge.net>
