@@ -5,7 +5,7 @@
  *
  * adrian chadd <adrian@creative.net.au>
  *
- * $Id: tools.c,v 7.3 2000/12/02 05:03:26 db Exp $
+ * $Id: tools.c,v 7.4 2000/12/02 06:54:36 db Exp $
  */
 
 #include <assert.h>
@@ -81,5 +81,5 @@ dlinkDelete(dlink_node * m, dlink_list * list)
 void
 dlinkMoveList(dlink_list *from, dlink_list *to)
 {
-    
+
 }
