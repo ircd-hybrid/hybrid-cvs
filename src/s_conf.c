@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.352 2003/03/31 15:49:26 adx Exp $
+ *  $Id: s_conf.c,v 7.353 2003/03/31 16:38:28 adx Exp $
  */
 
 #include "stdinc.h"
@@ -2417,11 +2417,11 @@ yyerror(char *msg)
 {
   char newlinebuf[BUFSIZE];
 
-  strip_tabs(newlinebuf, (const unsigned char *)linebuf, strlen(linebuf));
+  if (ypass != 1) return;
 
+  strip_tabs(newlinebuf, (const unsigned char *)linebuf, strlen(linebuf));
   sendto_realops_flags(UMODE_ALL, L_ALL,"\"%s\", line %d: %s: %s",
 		       conffilebuf, lineno + 1, msg, newlinebuf);
-
   ilog(L_WARN, "\"%s\", line %d: %s: %s",
 		       conffilebuf, lineno + 1, msg, newlinebuf);
 }
