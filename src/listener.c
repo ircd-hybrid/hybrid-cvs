@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: listener.c,v 7.33 2001/02/25 09:58:42 androsyn Exp $
+ *  $Id: listener.c,v 7.34 2001/02/25 10:28:57 androsyn Exp $
  */
 #include "config.h"
 #include "listener.h"
@@ -57,8 +57,8 @@ struct Listener* make_listener(int port, struct irc_inaddr *addr)
 
   listener->name        = me.name;
   listener->fd          = -1;
+  copy_s_addr(&IN_ADDR(listener->addr),PIN_ADDR(addr));
   listener->port        = port;
-  copy_s_addr(&IN_ADDR(listener->addr),&PIN_ADDR(addr));
 
   listener->next = NULL;
   return listener;
@@ -249,7 +249,7 @@ static int inetport(struct Listener* listener)
     struct DNSQuery query;	
     query.callback = listener_dns_callback;
     query.ptr = listener;
-    adns_getaddr(&listener->addr, DEF_FAM, &query);
+//    adns_getaddr(&listener->addr, DEF_FAM, &query);
   }
   return 1;
 }

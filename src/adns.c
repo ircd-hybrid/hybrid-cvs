@@ -1,5 +1,5 @@
 /*
- * $Id: adns.c,v 7.7 2001/02/25 08:42:50 androsyn Exp $
+ * $Id: adns.c,v 7.8 2001/02/25 10:28:57 androsyn Exp $
  * adns.c  functions to enter libadns 
  *
  * Written by Aaron Sethman <androsyn@ratbox.org>
@@ -58,11 +58,11 @@ void dns_writeable(int fd, void *ptr)
 
 void dns_do_callbacks(void)
 {
-	adns_query q;
+	adns_query q, r;
 	adns_answer *answer;
 	struct DNSQuery *query;
 	adns_forallqueries_begin(dns_state);
-	while((q = adns_forallqueries_next(dns_state, (void **)&q)) != NULL)
+	while((q = adns_forallqueries_next(dns_state, (void **)&r)) != NULL)
 	{
 		q->ads = dns_state;
 		switch(adns_check(dns_state, &q, &answer, (void **)&query))
