@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.174 2001/05/28 17:10:57 davidt Exp $
+ *   $Id: s_serv.c,v 7.175 2001/05/28 20:07:29 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -2025,7 +2025,7 @@ serv_connect(struct ConfItem *aconf, struct Client *by)
     add_client_to_list(client_p);
     client_p->localClient->aftype = DEF_FAM;
     /* Now, initiate the connection */
-    if(ServerInfo.specific_virtual_host)
+    if(ServerInfo.specific_ipv4_vhost)
       {
 	struct irc_sockaddr ipn;
 	memset(&ipn, 0, sizeof(struct irc_sockaddr));

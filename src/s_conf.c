@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.215 2001/05/22 19:11:53 davidt Exp $
+ *  $Id: s_conf.c,v 7.216 2001/05/28 20:07:27 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -1403,7 +1403,7 @@ static void read_conf(FBFILE* file)
   scount = lineno = 0;
 
   class0 = find_class("default");       /* which one is the default class ? */
-  ServerInfo.specific_virtual_host = 0;   /* This is a dumb place to do this got a better idea? */
+  ServerInfo.specific_ipv4_vhost = 0;   /* This is a dumb place to do this got a better idea? */
 
 #ifdef HAVE_LIBCRYPTO
   /* reset default cipher priority */ 

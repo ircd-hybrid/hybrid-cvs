@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.120 2001/05/28 17:10:53 davidt Exp $
+ * $Id: s_conf.h,v 7.121 2001/05/28 20:07:19 leeh Exp $
  */
 
 #include "setup.h"
@@ -243,9 +243,11 @@ struct server_info
 #endif
   int         hub;
   struct      irc_inaddr ip;
+  struct      irc_inaddr ip6;
   int         max_clients;
   int         no_hack_ops;
-  int	      specific_virtual_host;
+  int	      specific_ipv4_vhost;
+  int         specific_ipv6_vhost;
 };
 
 struct admin_info
@@ -267,7 +269,8 @@ extern struct ConfItem *x_conf;
 extern struct ConfItem *q_conf;
 
 extern struct ConfItem* ConfigItemList;        /* GLOBAL - conf list head */
-extern int              specific_virtual_host; /* GLOBAL - used in s_bsd.c */
+extern int              specific_ipv4_vhost; /* GLOBAL - used in s_bsd.c */
+extern int		specific_ipv6_vhost;
 extern struct config_file_entry ConfigFileEntry;/* GLOBAL - defined in ircd.c*/
 extern struct server_info ServerInfo;	       /* GLOBAL - defined in ircd.c */
 extern struct admin_info  AdminInfo;           /* GLOBAL - defined in ircd.c */
