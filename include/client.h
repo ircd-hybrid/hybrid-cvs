@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.45 2000/12/05 02:24:19 db Exp $
+ * $Id: client.h,v 7.46 2000/12/05 04:00:46 db Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -193,7 +193,7 @@ struct LocalUser
   int               drone_noticed;
 
 
-  /* Send and recieve linebuf queues .. */
+  /* Send and receive linebuf queues .. */
   buf_head_t        buf_sendq;
   buf_head_t        buf_recvq;
   /*
@@ -250,6 +250,9 @@ struct LocalUser
   int allow_read;	/* how many we're allowed to read in this second */
   int actually_read;  /* how many we've actually read in this second */
   int sent_parsed;      /* how many messages we've parsed in this second */
+
+  /* caller ID allow list */
+  dlink_list	allow_list;
 };
 
 /*
