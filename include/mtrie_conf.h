@@ -1,4 +1,4 @@
-/* $Id: mtrie_conf.h,v 7.2 2001/01/10 18:27:52 db Exp $ */
+/* $Id: mtrie_conf.h,v 7.3 2001/01/10 22:59:08 db Exp $ */
 #ifndef INCLUDED_mtrie_conf_h
 #define INCLUDED_mtrie_conf_h
 
@@ -62,6 +62,12 @@ typedef struct domain_level
 {
   struct domain_piece *piece_list[MAX_PIECE_LIST];
 } DOMAIN_LEVEL;
+
+#define MAXPREFIX (HOSTLEN + USERLEN + 15)
+
+extern char *show_iline_prefix(struct Client *,struct ConfItem *,char *);
+
+
 
 #endif /* INCLUDED_mtrie_conf_h */
 

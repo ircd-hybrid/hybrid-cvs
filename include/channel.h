@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.57 2001/01/05 02:19:31 davidt Exp $
+ * $Id: channel.h,v 7.58 2001/01/10 22:59:08 db Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -124,7 +124,6 @@ extern void    channel_modes(struct Channel *chptr, struct Client *who,
 extern void    set_channel_mode(struct Client *, struct Client *, 
                                 struct Channel *, int, char **, char *);
 extern struct  Channel* get_channel(struct Client *,char*,int );
-extern void    clear_bans_exceptions_denies(struct Client *,struct Channel *);
 
 extern void    channel_member_names( struct Client *sptr,
 				     struct Channel *chptr,

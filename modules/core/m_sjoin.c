@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.65 2001/01/07 03:25:25 davidt Exp $
+ *   $Id: m_sjoin.c,v 1.66 2001/01/10 22:59:14 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -259,8 +259,6 @@ static int ms_sjoin(struct Client *cptr,
     {
       if (doesop)
         keep_our_modes = NO;
-
-      clear_bans_exceptions_denies(sptr,chptr);
 
       if (chptr->opcount && !doesop)
           tstosend = oldts;
