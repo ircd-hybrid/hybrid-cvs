@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_stats.h,v 7.10 2003/06/12 03:40:29 joshk Exp $
+ *  $Id: s_stats.h,v 7.11 2004/11/10 14:32:03 michael Exp $
  */
 
 #ifndef INCLUDED_s_stats_h
@@ -30,9 +30,7 @@ struct Client;
 /*
  * statistics structures
  */
-struct  ServerStatistics {
-
-  /* These are trivially derived from dlink_list_length */
+struct ServerStatistics {
   unsigned int    is_cl;  /* number of client connections */
   unsigned int    is_sv;  /* number of server connections */
   unsigned int    is_ni;  /* connection but no idea who it was */
@@ -59,9 +57,9 @@ struct  ServerStatistics {
   unsigned int    is_abad; /* bad auth requests */
 };
 
-extern struct ServerStatistics* ServerStats;
+extern struct ServerStatistics *ServerStats;
 
 extern void init_stats(void);
-extern void tstats(struct Client* client);
+extern void tstats(struct Client *client);
 
 #endif /* INCLUDED_s_stats_h */

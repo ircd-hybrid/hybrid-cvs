@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_stats.c,v 7.27 2003/05/03 11:10:05 michael Exp $
+ *  $Id: s_stats.c,v 7.28 2004/11/10 14:32:04 michael Exp $
  */
 
 #include "stdinc.h"
@@ -45,7 +45,7 @@ init_stats(void)
 /* tstats()
  *
  * inputs	- client to report to
- * output	- NONE 
+ * output	- NONE
  * side effects	-
  */
 void
@@ -53,13 +53,18 @@ tstats(struct Client *source_p)
 {
   struct Client *target_p;
   struct ServerStatistics *sp;
-  struct ServerStatistics  tmp;
+  struct ServerStatistics tmp;
   dlink_node *ptr;
 
   sp = &tmp;
   memcpy(sp, ServerStats, sizeof(struct ServerStatistics));
 
-  sp->is_sv = dlink_list_length(&serv_list);
+  /*
+   * must use the += operator. is_sv is not the number of currently
+   * active server connections. Note the incrementation in
+   * s_bsd.c:close_connection.
+   */
+  sp->is_sv += dlink_list_length(&serv_list);
 
   DLINK_FOREACH(ptr, serv_list.head)
   {
@@ -84,7 +89,7 @@ tstats(struct Client *source_p)
     }
   }
 
-  sp->is_cl = dlink_list_length(&local_client_list);
+  sp->is_cl += dlink_list_length(&local_client_list);
 
   DLINK_FOREACH(ptr, local_client_list.head)
   {
@@ -109,7 +114,7 @@ tstats(struct Client *source_p)
     }
   }
 
-  sp->is_ni = dlink_list_length(&unknown_list);
+  sp->is_ni += dlink_list_length(&unknown_list);
 
   sendto_one(source_p, ":%s %d %s T :accepts %u refused %u",
              me.name, RPL_STATSDEBUG, source_p->name, sp->is_ac, sp->is_ref);
@@ -128,8 +133,7 @@ tstats(struct Client *source_p)
 
   sendto_one(source_p, ":%s %d %s T :connected %u %u",
              me.name, RPL_STATSDEBUG, source_p->name, 
-	     (unsigned int)dlink_list_length(&local_client_list), 
-	     (unsigned int)dlink_list_length(&serv_list));
+	     (unsigned int)sp->is_cl, (unsigned int)sp->is_cl);
   sendto_one(source_p, ":%s %d %s T :bytes sent %d.%uK %d.%uK",
              me.name, RPL_STATSDEBUG, source_p->name,
              (int)sp->is_cks, sp->is_cbs, (int)sp->is_sks, sp->is_sbs);
