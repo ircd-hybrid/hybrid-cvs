@@ -1,7 +1,7 @@
 ; ircd-hybrid-7 custom message file
 ; Copyright (C) 2000
 ; David Taylor <davidt@yadt.co.uk>, 2000.
-; $Id: ircd-german.lang,v 1.2 2003/03/26 00:58:25 db Exp $
+; $Id: ircd-german.lang,v 1.3 2003/03/28 08:22:34 michael Exp $
 
 RPL_WELCOME:             :%s 001 %s :Wilkommen im %s Internet Relay Chat Network %s
 RPL_YOURHOST:            :%s 002 %s :Ihr host ist %s, die aktuelle version is %s
@@ -19,9 +19,9 @@ RPL_ENDOFSTATS:          :%s 219 %s %s :Ende des /STATS Reportes
 RPL_STATSUPTIME:         :%s 242 %s :Dieser Server ist seit %d Tagen aktiv, %d:%02d:%02d
 RPL_STATSCONN:           :%s 250 %s :Maximum Verbindungen: %d (%d Besucher) (%d Verbindungen sind bei diesem Server eingegangen)
 RPL_LUSERCLIENT:         :%s 251 %s :Dieser Server beherbergt %d Besucher, davon sind %d als unsichtbar angemeldet. Die Besucher sind über %d Server verteilt
-RPL_LUSEROP:             :%s 252 %s %d :Irc Operator stehen zu Ihrer Verfügung
-RPL_LUSERUNKNOWN:        :%s 253 %s %d :unbekannte Verbindungen
-RPL_LUSERCHANNELS:       :%s 254 %s %d :chat Räume stehen zu Ihrer Verfügung
+RPL_LUSEROP:             :%s 252 %s %d :IRC Operatoren stehen zu Ihrer Verfügung
+RPL_LUSERUNKNOWN:        :%s 253 %s %d :Unbekannte Verbindungen
+RPL_LUSERCHANNELS:       :%s 254 %s %d :Chat Räume stehen zu Ihrer Verfügung
 RPL_LUSERME:             :%s 255 %s :Ich beherberge %d Besucher und %d Server sind mit mir verbunden
 RPL_ADMINME:             :%s 256 %s :Administrative Informationen für %s
 RPL_TRACELOG:            :%s 261 %s Datei %s %d
@@ -50,23 +50,23 @@ RPL_ENDOFWHOWAS:         :%s 369 %s %s :Ende des WHOWAS
 RPL_ENDOFINFO:           :%s 374 %s :Ende des /INFO Reportes.
 RPL_ENDOFMOTD:           :%s 376 %s :Ende des /MOTD
 RPL_YOUREOPER:           :%s 381 %s :Wilkommen in Olymp.
-RPL_REHASHING:           :%s 382 %s %s :Die Konfiguration wurde erneut geladenKonfiguration neu geladen
+RPL_REHASHING:           :%s 382 %s %s :Die Konfiguration wurde erneut geladen
 RPL_MYPORTIS:            :%s 384 %s %d :Port zum lokalen Server
 ERR_NOSUCHNICK:          :%s 401 %s %s :Diesen Raum oder Nicknamen, gibt es nicht
 ERR_NOSUCHSERVER:        :%s 402 %s %s :Diesen Server gibt es nicht
-ERR_NOSUCHCHANNEL:       :%s 403 %s %s :Diesen chat Raum gibt es nicht
-ERR_CANNOTSENDTOCHAN:    :%s 404 %s %s :Ihre Nachricht konnte nicht an den chat Raum gesendet werden. Vielleicht ist er moderiert
-ERR_TOOMANYCHANNELS:     :%s 405 %s %s :Sie sind in zu vielen chat Räumen gleichzeitig
+ERR_NOSUCHCHANNEL:       :%s 403 %s %s :Diesen Chat Raum gibt es nicht
+ERR_CANNOTSENDTOCHAN:    :%s 404 %s %s :Ihre Nachricht konnte nicht an den Chat Raum gesendet werden. Vielleicht ist er moderiert
+ERR_TOOMANYCHANNELS:     :%s 405 %s %s :Sie sind in zu vielen Chat Räumen gleichzeitig
 ERR_WASNOSUCHNICK:       :%s 406 %s %s :Diesen Nicknamen hat es nie gegeben
 ERR_TOOMANYTARGETS:      :%s 407 %s %s :Die Nachricht wurde an zu viele Personen geschickt. Nur %d wurden weitergeleitet
 ERR_NOORIGIN:            :%s 409 %s :von wem kommt diese Nachricht?
 ERR_NORECIPIENT:         :%s 411 %s :An wen soll diese Nachricht geschickt werden? (%s)
 ERR_NOTEXTTOSEND:        :%s 412 %s :Es gibt keine Nachticht zu senden
-ERR_NOTOPLEVEL:          :%s 413 %s %s :Es wurde kein toplevel domain spezifiziert
+ERR_NOTOPLEVEL:          :%s 413 %s %s :Es wurde keine toplevel domain spezifiziert
 ERR_WILDTOPLEVEL:        :%s 414 %s %s :Es wurde ein Wildcard im toplevel Domain gefunden
 ERR_UNKNOWNCOMMAND:      :%s 421 %s %s :Unbekannter Befehl
-ERR_NOMOTD:              :%s 422 %s :Es gibt kein MOTD. Die MOTD Datei ist nicht vorhanden
-ERR_NOADMININFO:         :%s 423 %s %s :Es stehen keine Administrativa zur Verfügung
+ERR_NOMOTD:              :%s 422 %s :Es gibt keine MOTD. Die MOTD Datei ist nicht vorhanden
+ERR_NOADMININFO:         :%s 423 %s %s :Es stehen keine Administrativen Informationen zur Verfügung
 ERR_NONICKNAMEGIVEN:     :%s 431 %s :Kein Nickname wurde angegeben
 ERR_ERRONEUSNICKNAME:    :%s 432 %s %s :Diesen Nicknamen können Sie nicht benutzen
 ERR_NICKNAMEINUSE:       :%s 433 %s %s :Dieser Nickname wird schon verwendet
@@ -83,7 +83,7 @@ ERR_NEEDMOREPARAMS:      :%s 461 %s %s :Es wurden nicht genügend Parameter übert
 ERR_ALREADYREGISTRED:    :%s 462 %s :Sie dürfen sich nicht nocheinmal registrieren
 ERR_NOPERMFORHOST:       :%s 463 %s :Ihr Host hat keinen Zugriff
 ERR_PASSWDMISMATCH:      :%s 464 %s :Das Passwort ist falsch.
-ERR_YOUREBANNEDCREEP:    :%s 465 %s :Sie haben kienen Zutritt zu diesem Server- %s
+ERR_YOUREBANNEDCREEP:    :%s 465 %s :Sie haben keinen Zutritt zu diesem Server- %s
 ERR_KEYSET:              :%s 467 %s %s :Es existiert schon ein Passwort für diesen Raum
 ERR_CHANNELISFULL:       :%s 471 %s %s :Sie haben keinen zutritt zu diesem Raum (+l)
 ERR_UNKNOWNMODE:         :%s 472 %s %c :Ich kenne diese mode nicht, sorry
@@ -100,7 +100,7 @@ ERR_CANTKILLSERVER:      :%s 483 %s :Ein Server reagiert nicht auf das KILL Komm
 ERR_RESTRICTED:          :%s 484 %s :Sie unterliegen Restriktionen
 ERR_BANNEDNICK:          :%s 485 %s :Sie können Ihren Namen nicht ändern während Sie gebannt sind in diesem moderierten Raum (%s)
 ERR_NOOPERHOST:          :%s 491 %s :Sie haben keinen Zugriff auf die erweiterten Funktionen dieses Servers
-ERR_UMODEUNKNOWNFLAG:    :%s 501 %s :Diese MODE ist mir nicht bekannt
+ERR_UMODEUNKNOWNFLAG:    :%s 501 %s :Dieser MODE ist mir nicht bekannt
 ERR_USERSDONTMATCH:      :%s 502 %s :Sie können die modes für einen anderen Besucher nicht ändern
 ERR_GHOSTEDCLIENT:       :%s 503 %s :Die Nachricht konnte nicht an %s geschickt werden
 ERR_USERNOTONSERV:       :%s 504 %s %s :Der Besucher ist nicht auf diesem Server
