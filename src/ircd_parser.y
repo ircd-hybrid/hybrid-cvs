@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.342 2003/07/22 10:33:33 adx Exp $
+ *  $Id: ircd_parser.y,v 1.343 2003/07/22 10:57:19 adx Exp $
  */
 
 %{
@@ -487,9 +487,7 @@ serverinfo_rsa_private_key_file: RSA_PRIVATE_KEY_FILE '=' QSTRING ';'
 
     if ((file = BIO_new_file(yylval.string, "r")) == NULL)
     {
-      sendto_realops_flags(UMODE_ALL, L_ALL,
-                           "Ignoring config file entry rsa_private_key -- file open failed"
-                           " (%s)", yylval.string);
+      yyerror("Ignoring config file entry rsa_private_key -- file open failed");
       break;
     }
 
@@ -497,23 +495,21 @@ serverinfo_rsa_private_key_file: RSA_PRIVATE_KEY_FILE '=' QSTRING ';'
 
     if (ServerInfo.rsa_private_key == NULL)
     {
-      sendto_realops_flags(UMODE_ALL, L_ALL,
-                           "Ignoring config file entry rsa_private_key -- couldn't extract key");
+      yyerror("Ignoring config file entry rsa_private_key -- "
+              "couldn't extract key");
       break;
     }
 
     if (!RSA_check_key(ServerInfo.rsa_private_key))
     {
-      sendto_realops_flags(UMODE_ALL, L_ALL,
-                           "Ignoring config file entry rsa_private_key -- invalid key");
+      yyerror("Ignoring config file entry rsa_private_key -- invalid key");
       break;
     }
 
     /* require 2048 bit (256 byte) key */
     if (RSA_size(ServerInfo.rsa_private_key) != 256)
     {
-      sendto_realops_flags(UMODE_ALL, L_ALL,
-                           "Ignoring config file entry rsa_private_key -- not 2048 bit");
+      yyerror("Ignoring config file entry rsa_private_key -- not 2048 bit");
       break;
     }
 
@@ -665,7 +661,7 @@ serverinfo_hub: HUB '=' TBOOL ';'
       if (!ServerInfo.hub && uplink && IsCapable(uplink, CAP_LL))
       {
         sendto_realops_flags(UMODE_ALL, L_ALL,
-                             "Ignoring config file line hub = yes; "
+                             "Ignoring config file line hub=yes; "
                              "due to active LazyLink (%s)", uplink->name);
       }
       else
@@ -690,7 +686,7 @@ serverinfo_hub: HUB '=' TBOOL ';'
             IsCapable((struct Client *)ptr->data, CAP_LL))
         {
           sendto_realops_flags(UMODE_ALL, L_ALL,
-                               "Ignoring config file line hub = no; "
+                               "Ignoring config file line hub=no; "
                                "due to active LazyLink (%s)",
                                ((struct Client *)ptr->data)->name);
           add_capability("HUB", CAP_HUB, 1);
@@ -1003,8 +999,7 @@ oper_rsa_public_key_file: RSA_PUBLIC_KEY_FILE '=' QSTRING ';'
 
     if (file == NULL)
     {
-      sendto_realops_flags(UMODE_ALL, L_ALL, "Ignoring rsa_public_key_file -- "
-                           "does %s exist?", yylval.string);
+      yyerror("Ignoring rsa_public_key_file -- file doesn't exist");
       break;
     }
 
@@ -1012,8 +1007,7 @@ oper_rsa_public_key_file: RSA_PUBLIC_KEY_FILE '=' QSTRING ';'
 
     if (yy_aconf->rsa_public_key == NULL)
     {
-      sendto_realops_flags(UMODE_ALL, L_ALL,
-                           "Ignoring rsa_public_key_file -- Key invalid; check key syntax.");
+      yyerror("Ignoring rsa_public_key_file -- Key invalid; check key syntax.");
       break;
     }
 
@@ -1195,9 +1189,7 @@ class_name: NAME '=' QSTRING ';'
 
     if (class != NULL && MaxTotal(class) >= 0)
     {
-      sendto_realops_flags(UMODE_ALL, L_ALL,
-                           "Multiple classes with the same name, "
-			   "using the first entry");
+      yyerror("Multiple classes with the same name, using the first entry");
       MyFree(yy_conf->name);
       yy_conf->name = NULL;
     }
@@ -1868,24 +1860,16 @@ connect_entry: CONNECT
 	  {
 #ifndef HAVE_LIBCRYPTO
 	    if (IsConfCryptLink(yy_aconf))
-	      sendto_realops_flags(UMODE_ALL, L_ALL,
-		       "Ignoring connect block for %s -- no OpenSSL support",
-				   yy_conf->name);
+	      yyerror("Ignoring connect block -- no OpenSSL support");
 #else
 	    if (IsConfCryptLink(yy_aconf) && !yy_aconf->rsa_public_key)
-	      sendto_realops_flags(UMODE_ALL, L_ALL,
-			   "Ignoring connect block for %s -- missing key",
-				   yy_conf->name);
+	      yyerror("Ignoring connect block -- missing key");
 #endif
 	    if (yy_aconf->host == NULL)
-	      sendto_realops_flags(UMODE_ALL, L_ALL,
-			       "Ignoring connect block for %s -- missing host",
-				   yy_conf->name);
+	      yyerror("Ignoring connect block -- missing host");
 	    else if (!IsConfCryptLink(yy_aconf) && 
 		    (!yy_aconf->passwd || !yy_aconf->spasswd))
-	      sendto_realops_flags(UMODE_ALL, L_ALL,
-		   "Ignoring connect block for %s -- missing password",
-				   yy_conf->name);
+              yyerror("Ignoring connect block -- missing password");
 	  }
 	  yy_aconf = NULL;
 	  yy_conf = NULL;
@@ -1972,11 +1956,7 @@ connect_name: NAME '=' QSTRING ';'
   if (ypass == 2)
   {
     if (yy_conf->name != NULL)
-    {
-      sendto_realops_flags(UMODE_ALL, L_ALL,
-                           "*** Multiple connect name entry");
-      ilog(L_WARN, "Multiple connect name entry %s", yy_conf->name);
-    }
+      yyerror("Multiple connect name entry");
 
     MyFree(yy_conf->name);
     DupString(yy_conf->name, yylval.string);
@@ -2088,9 +2068,7 @@ connect_rsa_public_key_file: RSA_PUBLIC_KEY_FILE '=' QSTRING ';'
 
     if ((file = BIO_new_file(yylval.string, "r")) == NULL)
     {
-      sendto_realops_flags(UMODE_ALL, L_ALL,
-                           "Ignoring rsa_public_key_file -- does %s exist?",
-                           yylval.string);
+      yyerror("Ignoring rsa_public_key_file -- file doesn't exist");
       break;
     }
 
@@ -2098,8 +2076,7 @@ connect_rsa_public_key_file: RSA_PUBLIC_KEY_FILE '=' QSTRING ';'
 
     if (yy_aconf->rsa_public_key == NULL)
     {
-      sendto_realops_flags(UMODE_ALL, L_ALL,
-                           "Ignoring rsa_public_key_file -- Key invalid; check key syntax.");
+      yyerror("Ignoring rsa_public_key_file -- Key invalid; check key syntax.");
       break;
     }
       
@@ -2126,8 +2103,7 @@ connect_compressed: COMPRESSED '=' TBOOL ';'
   {
     if (yylval.number)
 #ifndef HAVE_LIBZ
-      sendto_realops_flags(UMODE_ALL, L_ALL,
-                           "Ignoring compressed = yes; -- no zlib support");
+      yyerror("Ignoring compressed=yes; -- no zlib support");
 #else
       yy_aconf->flags |= CONF_FLAGS_COMPRESSED;
 #endif
@@ -2206,21 +2182,11 @@ connect_cipher_preference: CIPHER_PREFERENCE '=' QSTRING ';'
     }
 
     if (!found)
-    {
-      sendto_realops_flags(UMODE_ALL, L_ALL, "Invalid cipher '%s' for %s",
-                           cipher_name, yy_conf->name);
-      ilog(L_ERROR, "Invalid cipher '%s' for %s",
-           cipher_name, yy_conf->name);
-    }
+      yyerror("Invalid cipher");
   }
 #else
   if (ypass == 2)
-  {
-    sendto_realops_flags(UMODE_ALL, L_ALL, "Ignoring 'cipher_preference' line "
-                         "for %s -- no OpenSSL support", yy_conf->name);
-    ilog(L_ERROR, "Ignoring 'cipher_preference' line for %s -- "
-         "no OpenSSL support", yy_conf->name);
-  }
+    yyerror("Ignoring cipher_preference -- no OpenSSL support");
 #endif
 };
 
@@ -2707,21 +2673,11 @@ general_default_cipher_preference: DEFAULT_CIPHER_PREFERENCE '=' QSTRING ';'
     }
 
     if (!found)
-    {
-      sendto_realops_flags(UMODE_ALL, L_ALL,
-                           "Invalid cipher '%s'", cipher_name);
-      ilog(L_ERROR, "Invalid cipher '%s'", cipher_name);
-    }
+      yyerror("Invalid cipher");
   }
 #else
   if (ypass == 2)
-  {
-    sendto_realops_flags(UMODE_ALL, L_ALL,
-                         "Ignoring 'default_cipher_preference' "
-                         "-- no OpenSSL support");
-    ilog(L_ERROR, "Ignoring 'default_cipher_preference' "
-         "-- no OpenSSL support");
-  }
+    yyerror("Ignoring default_cipher_preference -- no OpenSSL support");
 #endif
 };
 
@@ -2731,16 +2687,12 @@ general_compression_level: COMPRESSION_LEVEL '=' NUMBER ';'
   {
     ConfigFileEntry.compression_level = $3;
 #ifndef HAVE_LIBZ
-    sendto_realops_flags(UMODE_ALL, L_ALL,
-                         "Ignoring compression_level = %d; -- no zlib support",
-                         ConfigFileEntry.compression_level);
+    yyerror("Ignoring compression_level -- no zlib support");
 #else
     if ((ConfigFileEntry.compression_level < 1) ||
         (ConfigFileEntry.compression_level > 9))
     {
-      sendto_realops_flags(UMODE_ALL, L_ALL,
-                           "Ignoring invalid compression level '%d', using default",
-                           ConfigFileEntry.compression_level);
+      yyerror("Ignoring invalid compression_level, using default");
       ConfigFileEntry.compression_level = 0;
     }
 #endif
