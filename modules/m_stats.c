@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.139 2003/06/27 04:39:32 db Exp $
+ *  $Id: m_stats.c,v 1.140 2003/07/04 11:45:17 adx Exp $
  */
 
 #include "stdinc.h"
@@ -79,7 +79,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.139 $";
+const char *_version = "$Revision: 1.140 $";
 #endif
 
 const char *Lformat = ":%s %d %s %s %u %u %u %u %u :%u %u %s";
@@ -522,10 +522,11 @@ stats_auth(struct Client *source_p)
                                    &source_p->localClient->ip,
 				   CONF_CLIENT,
 				   source_p->localClient->aftype,
-				   source_p->username);
+				   source_p->username,
+                                   source_p->localClient->passwd);
     else
       aconf = find_conf_by_address(source_p->host, NULL, CONF_CLIENT,
-                                   0, source_p->username);
+                                   0, source_p->username, NULL);
 
     if (aconf == NULL)
       return;
@@ -562,10 +563,10 @@ stats_tklines(struct Client *source_p)
                                    &source_p->localClient->ip,
 				   CONF_KILL,
 				   source_p->localClient->aftype,
-				   source_p->username);
+				   source_p->username, NULL);
     else
       aconf = find_conf_by_address(source_p->host, NULL, CONF_KILL,
-                                   0, source_p->username);
+                                   0, source_p->username, NULL);
 
     if(aconf == NULL)
       return;
@@ -606,10 +607,10 @@ stats_klines(struct Client *source_p)
                                    &source_p->localClient->ip,
 				   CONF_KILL,
 				   source_p->localClient->aftype,
-				   source_p->username);
+				   source_p->username, NULL);
     else
       aconf = find_conf_by_address(source_p->host, NULL, CONF_KILL,
-                                   0, source_p->username);
+                                   0, source_p->username, NULL);
 
     if(aconf == NULL)
       return;

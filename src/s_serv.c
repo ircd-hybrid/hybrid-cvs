@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.360 2003/07/02 17:32:26 michael Exp $
+ *  $Id: s_serv.c,v 7.361 2003/07/04 11:45:19 adx Exp $
  */
 
 #include "stdinc.h"
@@ -551,7 +551,7 @@ check_server(const char *name, struct Client *client_p, int cryptlink)
   if (client_p == NULL)
     return(error);
 
-  if (!(client_p->localClient->passwd))
+  if (client_p->localClient->passwd == NULL)
     return(-2);
 
   if (strlen(name) > HOSTLEN)
@@ -585,8 +585,8 @@ check_server(const char *name, struct Client *client_p, int cryptlink)
       {
         if (IsConfEncrypted(aconf))
         {
-          if (strcmp(aconf->passwd,
-              (const char *)crypt(client_p->localClient->passwd, aconf->passwd)) == 0)
+          if (strcmp(aconf->passwd, (const char *)
+                     crypt(client_p->localClient->passwd, aconf->passwd)) == 0)
             server_aconf = aconf;
         }
         else
@@ -956,10 +956,8 @@ server_estab(struct Client *client_p)
     return(exit_client(client_p, client_p, client_p, "Lost connect{} block!"));
   }
 
-  /* We shouldn't have to check this, it should already done before
-   * server_estab is called. -A1kmm
-   */
-  memset(client_p->localClient->passwd, 0, sizeof(client_p->localClient->passwd));
+  MyFree(client_p->localClient->passwd);
+  client_p->localClient->passwd = NULL;
 
   /* Its got identd , since its a server */
   SetGotId(client_p);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.206 2003/06/22 00:53:01 joshk Exp $
+ *  $Id: s_bsd.c,v 7.207 2003/07/04 11:45:19 adx Exp $
  */
 
 #include "stdinc.h"
@@ -264,100 +264,100 @@ void
 close_connection(struct Client *client_p)
 {
   struct AccessItem *aconf;
-  assert(NULL != client_p);
-  if(client_p == NULL)
-    return;
-  if (IsServer(client_p))
-    {
-      ServerStats->is_sv++;
-      ServerStats->is_sbs += client_p->localClient->sendB;
-      ServerStats->is_sbr += client_p->localClient->receiveB;
-      ServerStats->is_sks += client_p->localClient->sendK;
-      ServerStats->is_skr += client_p->localClient->receiveK;
-      ServerStats->is_sti += CurrentTime - client_p->firsttime;
-      if (ServerStats->is_sbs > 2047)
-        {
-          ServerStats->is_sks += (ServerStats->is_sbs >> 10);
-          ServerStats->is_sbs &= 0x3ff;
-        }
-      if (ServerStats->is_sbr > 2047)
-        {
-          ServerStats->is_skr += (ServerStats->is_sbr >> 10);
-          ServerStats->is_sbr &= 0x3ff;
-        }
-      /*
-       * If the connection has been up for a long amount of time, schedule
-       * a 'quick' reconnect, else reset the next-connect cycle.
-       */
-      if ((aconf = find_conf_exact(client_p->name, client_p->username,
-                                   client_p->host, CONF_SERVER)))
-        {
-          /*
-           * Reschedule a faster reconnect, if this was a automatically
-           * connected configuration entry. (Note that if we have had
-           * a rehash in between, the status has been changed to
-           * CONF_ILLEGAL). But only do this if it was a "good" link.
-           */
-          aconf->hold = time(NULL);
-          aconf->hold += (aconf->hold - client_p->since > HANGONGOODLINK) ?
-            HANGONRETRYDELAY : ConfConFreq(aconf);
-          if (nextconnect > aconf->hold)
-            nextconnect = aconf->hold;
-        }
 
-    }
-  else if (IsClient(client_p))
+  assert(NULL != client_p);
+
+  if (IsServer(client_p))
+  {
+    ServerStats->is_sv++;
+    ServerStats->is_sbs += client_p->localClient->sendB;
+    ServerStats->is_sbr += client_p->localClient->receiveB;
+    ServerStats->is_sks += client_p->localClient->sendK;
+    ServerStats->is_skr += client_p->localClient->receiveK;
+    ServerStats->is_sti += CurrentTime - client_p->firsttime;
+    if (ServerStats->is_sbs > 2047)
     {
-      ServerStats->is_cl++;
-      ServerStats->is_cbs += client_p->localClient->sendB;
-      ServerStats->is_cbr += client_p->localClient->receiveB;
-      ServerStats->is_cks += client_p->localClient->sendK;
-      ServerStats->is_ckr += client_p->localClient->receiveK;
-      ServerStats->is_cti += CurrentTime - client_p->firsttime;
-      if (ServerStats->is_cbs > 2047)
-        {
-          ServerStats->is_cks += (ServerStats->is_cbs >> 10);
-          ServerStats->is_cbs &= 0x3ff;
-        }
-      if (ServerStats->is_cbr > 2047)
-        {
-          ServerStats->is_ckr += (ServerStats->is_cbr >> 10);
-          ServerStats->is_cbr &= 0x3ff;
-        }
+      ServerStats->is_sks += (ServerStats->is_sbs >> 10);
+      ServerStats->is_sbs &= 0x3ff;
     }
+    if (ServerStats->is_sbr > 2047)
+    {
+      ServerStats->is_skr += (ServerStats->is_sbr >> 10);
+      ServerStats->is_sbr &= 0x3ff;
+    }
+    /*
+     * If the connection has been up for a long amount of time, schedule
+     * a 'quick' reconnect, else reset the next-connect cycle.
+     */
+    if ((aconf = find_conf_exact(client_p->name, client_p->username,
+                                 client_p->host, CONF_SERVER)))
+    {
+      /*
+       * Reschedule a faster reconnect, if this was a automatically
+       * connected configuration entry. (Note that if we have had
+       * a rehash in between, the status has been changed to
+       * CONF_ILLEGAL). But only do this if it was a "good" link.
+       */
+      aconf->hold = time(NULL);
+      aconf->hold += (aconf->hold - client_p->since > HANGONGOODLINK) ?
+        HANGONRETRYDELAY : ConfConFreq(aconf);
+      if (nextconnect > aconf->hold)
+        nextconnect = aconf->hold;
+    }
+  }
+  else if (IsClient(client_p))
+  {
+    ServerStats->is_cl++;
+    ServerStats->is_cbs += client_p->localClient->sendB;
+    ServerStats->is_cbr += client_p->localClient->receiveB;
+    ServerStats->is_cks += client_p->localClient->sendK;
+    ServerStats->is_ckr += client_p->localClient->receiveK;
+    ServerStats->is_cti += CurrentTime - client_p->firsttime;
+    if (ServerStats->is_cbs > 2047)
+    {
+      ServerStats->is_cks += (ServerStats->is_cbs >> 10);
+      ServerStats->is_cbs &= 0x3ff;
+    }
+    if (ServerStats->is_cbr > 2047)
+    {
+      ServerStats->is_ckr += (ServerStats->is_cbr >> 10);
+      ServerStats->is_cbr &= 0x3ff;
+    }
+  }
   else
     ServerStats->is_ni++;
   
   if (!IsDead(client_p))
-    {
-      /* attempt to flush any pending dbufs. Evil, but .. -- adrian */
-      /* there is still a chance that we might send data to this socket
-       * even if it is marked as blocked (COMM_SELECT_READ handler is called
-       * before COMM_SELECT_WRITE). Let's try, nothing to lose.. -adx */
-      ClearSendqBlocked(client_p);
-      send_queued_write(client_p);
-      fd_close(client_p->localClient->fd);
-      client_p->localClient->fd = -1;
-    }
+  {
+    /* attempt to flush any pending dbufs. Evil, but .. -- adrian */
+    /* there is still a chance that we might send data to this socket
+     * even if it is marked as blocked (COMM_SELECT_READ handler is called
+     * before COMM_SELECT_WRITE). Let's try, nothing to lose.. -adx */
+    ClearSendqBlocked(client_p);
+    send_queued_write(client_p);
+    fd_close(client_p->localClient->fd);
+    client_p->localClient->fd = -1;
+  }
 
-  if(HasServlink(client_p))
+  if (HasServlink(client_p))
+  {
+    if (client_p->localClient->ctrlfd > -1)
     {
-      if(client_p->localClient->ctrlfd > -1)
-      {
-        fd_close(client_p->localClient->ctrlfd);
+      fd_close(client_p->localClient->ctrlfd);
 #ifndef HAVE_SOCKETPAIR
-        fd_close(client_p->localClient->ctrlfd_r);
-        fd_close(client_p->localClient->fd_r);
-        client_p->localClient->ctrlfd_r = -1;
-        client_p->localClient->fd_r = -1;
+      fd_close(client_p->localClient->ctrlfd_r);
+      fd_close(client_p->localClient->fd_r);
+      client_p->localClient->ctrlfd_r = -1;
+      client_p->localClient->fd_r = -1;
 #endif
-        client_p->localClient->ctrlfd = -1;
-      }
+      client_p->localClient->ctrlfd = -1;
     }
+  }
   
   dbuf_clear(&client_p->localClient->buf_sendq);
   dbuf_clear(&client_p->localClient->buf_recvq);
-  memset(client_p->localClient->passwd, 0, sizeof(client_p->localClient->passwd));
+  
+  MyFree(client_p->localClient->passwd);
   det_confs_butmask(client_p, 0);
   client_p->from = NULL; /* ...this should catch them! >:) --msa */
 }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.159 2003/06/21 23:44:13 michael Exp $
+ *  $Id: m_kline.c,v 1.160 2003/07/04 11:45:17 adx Exp $
  */
 
 #include "stdinc.h"
@@ -81,7 +81,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.159 $";
+const char *_version = "$Revision: 1.160 $";
 #endif
 
 /* Local function prototypes */
@@ -1006,7 +1006,7 @@ already_placed_kline(struct Client *source_p, const char *luser, const char *lho
     piphost = NULL;
   }
 
-  if ((aconf = find_conf_by_address(lhost, piphost, CONF_KILL, t, luser)))
+  if ((aconf = find_conf_by_address(lhost, piphost, CONF_KILL, t, luser, NULL)))
   {
     reason = aconf->reason ? aconf->reason : "No Reason";
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.290 2003/07/02 17:32:26 michael Exp $
+ *  $Id: s_user.c,v 7.291 2003/07/04 11:45:20 adx Exp $
  */
 
 #include "stdinc.h"
@@ -304,9 +304,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
     }
 
     if (!HasPingCookie(source_p))
-    {
       return(-1);
-    }
   }
 
   source_p->user->last = CurrentTime;
@@ -318,21 +316,14 @@ register_local_user(struct Client *client_p, struct Client *source_p,
 
   if (valid_hostname(source_p->host) == 0)
   {
-    sendto_one(source_p, ":%s NOTICE %s :*** Notice -- You have an illegal character "
-               "in your hostname", me.name, source_p->name);
-    strlcpy(source_p->host, source_p->localClient->sockhost, sizeof(source_p->host));
+    sendto_one(source_p, ":%s NOTICE %s :*** Notice -- You have an illegal "
+               "character in your hostname", me.name, source_p->name);
+    strlcpy(source_p->host, source_p->localClient->sockhost,
+            sizeof(source_p->host));
   }
 
   ptr   = source_p->localClient->confs.head;
   aconf = ptr->data;
-#if 0
- /* verify_access() should take care of this */
-  if (aconf == NULL)
-  {
-    exit_client(client_p, source_p, &me, "*** Not Authorized");
-    return(CLIENT_EXITED);
-  }
-#endif
 
   if (!IsGotId(source_p))
   {
@@ -342,8 +333,8 @@ register_local_user(struct Client *client_p, struct Client *source_p,
     if (IsNeedIdentd(aconf))
     {
       ServerStats->is_ref++;
-      sendto_one(source_p, ":%s NOTICE %s :*** Notice -- You need to install identd "
-                 "to use this server", me.name, source_p->name);
+      sendto_one(source_p, ":%s NOTICE %s :*** Notice -- You need to install "
+                 "identd to use this server", me.name, source_p->name);
       exit_client(client_p, source_p, &me, "Install identd");
       return(CLIENT_EXITED);
     }
@@ -364,7 +355,9 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   }
 
   /* password check */
-  if (!EmptyString(aconf->passwd) && strcmp(source_p->localClient->passwd, aconf->passwd))
+  if (!EmptyString(aconf->passwd) &&
+      (source_p->localClient->passwd == NULL ||
+      strcmp(source_p->localClient->passwd, aconf->passwd)))
   {
     ServerStats->is_ref++;
     sendto_one(source_p, form_str(ERR_PASSWDMISMATCH),
@@ -373,7 +366,10 @@ register_local_user(struct Client *client_p, struct Client *source_p,
     return(CLIENT_EXITED);
   }
 
-  memset(source_p->localClient->passwd, 0, sizeof(source_p->localClient->passwd));
+  /* don't free source_p->localClient->passwd here - it can be required
+   * by masked /stats I if there are auth{} blocks with need_password = no;
+   * --adx
+   */
 
   /* report if user has &^>= etc. and set flags as needed in source_p */
   report_and_set_user_flags(source_p, aconf);
@@ -389,7 +385,8 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   if ((((Count.local + 1) >= (GlobalSetOptions.maxclients + MAX_BUFFER))) ||
       ((Count.local >= ServerInfo.max_clients) && !IsExemptLimits(source_p)))
   {
-    sendto_realops_flags(UMODE_FULL, L_ALL, "Too many clients, rejecting %s[%s].",
+    sendto_realops_flags(UMODE_FULL, L_ALL,
+                         "Too many clients, rejecting %s[%s].",
                          nick, source_p->host);
     ServerStats->is_ref++;
     exit_client(client_p, source_p, &me, "Sorry, server is full - try later");
@@ -475,7 +472,8 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   }
   else
   {
-    sendto_realops_flags(UMODE_ALL, L_ADMIN, "Tried to register %s (%s@%s) but I couldn't find it?!?", 
+    sendto_realops_flags(UMODE_ALL, L_ADMIN, "Tried to register %s (%s@%s) "
+                         "but I couldn't find it?!?", 
                          nick, source_p->username, source_p->host);
     exit_client(client_p, source_p, &me, "Client exited");
     return(CLIENT_EXITED);
@@ -534,7 +532,8 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
    */
   if (source_p->servptr == NULL)
   {
-    sendto_realops_flags(UMODE_ALL, L_ALL, "No server %s for user %s[%s@%s] from %s",
+    sendto_realops_flags(UMODE_ALL, L_ALL,
+                         "No server %s for user %s[%s@%s] from %s",
                          server, source_p->name, source_p->username,
                          source_p->host, source_p->from->name);
     kill_client(client_p, source_p, "%s (Server doesn't exist)", me.name);
@@ -1174,8 +1173,8 @@ user_welcome(struct Client *source_p)
     sendto_one(source_p, "NOTICE %s :*** Notice -- motd was last changed at %s",
                source_p->name, ConfigFileEntry.motd.lastChangedDate);
     sendto_one(source_p,
-               "NOTICE %s :*** Notice -- Please read the motd if you haven't read it",
-               source_p->name);
+               "NOTICE %s :*** Notice -- Please read the motd if you haven't "
+               "read it", source_p->name);
     sendto_one(source_p, form_str(RPL_MOTDSTART),
                me.name, source_p->name, me.name);
     sendto_one(source_p, form_str(RPL_MOTD),

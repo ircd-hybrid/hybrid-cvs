@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_testline.c,v 1.29 2003/06/12 22:05:55 db Exp $
+ *  $Id: m_testline.c,v 1.30 2003/07/04 11:45:17 adx Exp $
  */
 
 #include "stdinc.h"
@@ -59,7 +59,7 @@ _moddeinit(void)
   mod_del_cmd(&testline_msgtab);
 }
  
-const char *_version = "$Revision: 1.29 $";
+const char *_version = "$Revision: 1.30 $";
 #endif
 /*
  * mo_testline
@@ -72,7 +72,7 @@ const char *_version = "$Revision: 1.29 $";
  * output       - always 0
  * side effects - command to test I/K lines on server
  *   
- * i.e. /quote testline user@host,ip
+ * i.e. /quote testline user@host,ip [password]
  *
  */  
   
@@ -86,88 +86,77 @@ mo_testline(struct Client *client_p, struct Client *source_p,
   char *host, *pass, *user, *name, *classname, *given_host, *given_name, *p;
   int port, t;
   
-  if (parc > 1)
+  if (parc < 2)
+  {
+    sendto_one(source_p, ":%s NOTICE %s :usage: user@host|ip [password]",
+               me.name, parv[0]);
+    return;
+  }
+
+  given_name = parv[1];
+
+  if ((p = (char *) strchr(given_name, '@')) != NULL)
+  {
+    if ((t = parse_netmask(given_name, &ip, &host_mask)) != HM_HOST)
     {
-      given_name = parv[1];
-      if (!(p = (char*)strchr(given_name,'@')))
-      {
-       if ((t=parse_netmask(given_name, &ip, &host_mask))!= HM_HOST)
-       {
-        aconf = find_dline_conf(&ip, 
+      aconf = find_dline_conf(&ip, 
 #ifdef IPV6 
-                (t==HM_IPV6) ? AF_INET6 : AF_INET
+                              (t == HM_IPV6) ? AF_INET6 : AF_INET
 #else
-                AF_INET
+                              AF_INET
 #endif
-                );
-        if (aconf)
-        {
-         get_printable_conf(aconf, &name, &host, &pass, &user, &port,&classname);
-         if (aconf->status & CONF_EXEMPTDLINE)
-         {
+                              );
+      if (aconf != NULL)
+      {
+        get_printable_conf(aconf, &name, &host, &pass, &user, &port,
+                           &classname);
+        if (aconf->status & CONF_EXEMPTDLINE)
           sendto_one(source_p,
                      ":%s NOTICE %s :Exempt D-line host [%s] pass [%s]",
                      me.name, parv[0], host, pass);
-         } else {
+        else
           sendto_one(source_p,
                      ":%s NOTICE %s :D-line host [%s] pass [%s]", me.name,
                      parv[0], host, pass);
-         }
-        } else
-         sendto_one(source_p, ":%s NOTICE %s :No D-line found",
-                    me.name, parv[0]);
-       } else
-       {
-        sendto_one(source_p, ":%s NOTICE %s :usage: user@host|ip",
-                   me.name, parv[0]);
-       }
-       return;
       }
-      *p = '\0';
-      p++;
-      given_host = p;
-      if ((t=parse_netmask(given_host, &ip, &host_mask)) != HM_HOST)
-       aconf = find_address_conf(given_host, given_name, &ip, 
-#ifdef IPV6
-               (t==HM_IPV6)?AF_INET6 : AF_INET
-#else
-               AF_INET
-#endif
-               );
-      else
-       aconf = find_address_conf(given_host, given_name, NULL, 0);
-                 
-      if(aconf)
-        {
-          get_printable_conf(aconf, &name, &host, &pass, &user, &port, &classname);
-              
-          if(aconf->status & CONF_KILL)
-            {
-              sendto_one(source_p,
-                         ":%s NOTICE %s :%c-line name [%s] host [%s] pass [%s]",
-                         me.name, parv[0],
-                         (aconf->flags & CONF_FLAGS_TEMPORARY) ? 'k' : 'K',
-                         user, host,  pass);
-            }
-          else if(aconf->status & CONF_CLIENT)
-            {
-              sendto_one(source_p,
-":%s NOTICE %s :I-line mask [%s] prefix [%s] name [%s] host [%s] port [%d] class [%s]",
-                         me.name, parv[0],
-                         name,
-                         show_iline_prefix(source_p,aconf,user),
-                         user,
-                         host,
-                         port,
-                         classname);
-      
-            }
-        }
-      else
-        sendto_one(source_p, ":%s NOTICE %s :No aconf found",
-                   me.name, parv[0]);
+      else sendto_one(source_p, ":%s NOTICE %s :No D-line found",
+                      me.name, parv[0]);
     }
+    else sendto_one(source_p, ":%s NOTICE %s :usage: user@host|ip [password]",
+                    me.name, parv[0]);
+    return;
+  }
+
+  *p++ = '\0';
+  given_host = p;
+
+  if ((t = parse_netmask(given_host, &ip, &host_mask)) != HM_HOST)
+    aconf = find_address_conf(given_host, given_name, &ip, 
+#ifdef IPV6
+                              (t == HM_IPV6) ? AF_INET6 : AF_INET,
+#else
+                              AF_INET,
+#endif
+                              parv[2]);
   else
-    sendto_one(source_p, ":%s NOTICE %s :usage: user@host|ip",
-               me.name, parv[0]);
+    aconf = find_address_conf(given_host, given_name, NULL, 0, parv[2]);
+                 
+  if (aconf != NULL)
+  {
+    get_printable_conf(aconf, &name, &host, &pass, &user, &port, &classname);
+              
+    if (aconf->status & CONF_KILL)
+      sendto_one(source_p,
+                 ":%s NOTICE %s :%c-line name [%s] host [%s] pass [%s]",
+                 me.name, parv[0],
+                 (aconf->flags & CONF_FLAGS_TEMPORARY) ? 'k' : 'K',
+                 user, host,  pass);
+    else if (aconf->status & CONF_CLIENT)
+      sendto_one(source_p, ":%s NOTICE %s :I-line mask [%s] prefix [%s] "
+                 "name [%s] host [%s] port [%d] class [%s]",
+                 me.name, parv[0], name,
+                 show_iline_prefix(source_p, aconf, user), user, host,
+                 port, classname);
+  }
+  else sendto_one(source_p, ":%s NOTICE %s :No aconf found", me.name, parv[0]);
 }

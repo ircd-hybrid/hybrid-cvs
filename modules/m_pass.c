@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_pass.c,v 1.27 2003/05/08 09:39:21 michael Exp $
+ *  $Id: m_pass.c,v 1.28 2003/07/04 11:45:17 adx Exp $
  */
 
 #include "stdinc.h"
@@ -53,7 +53,7 @@ _moddeinit(void)
   mod_del_cmd(&pass_msgtab);
 }
 
-const char *_version = "$Revision: 1.27 $";
+const char *_version = "$Revision: 1.28 $";
 #endif
 
 /*
@@ -69,7 +69,7 @@ static void
 mr_pass(struct Client *client_p, struct Client *source_p,
         int parc, char *parv[])
 {
-  const char *password = parv[1];
+  char *password = parv[1];
 
   if (EmptyString(password))
   {
@@ -78,8 +78,10 @@ mr_pass(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  strlcpy(client_p->localClient->passwd, password,
-          sizeof(client_p->localClient->passwd));
+  MyFree(client_p->localClient->passwd);
+  if (strlen(password) > PASSWDLEN)
+    password[PASSWDLEN] = '\0';
+  DupString(client_p->localClient->passwd, password);
 
   if (parc > 2)
   {
@@ -90,7 +92,7 @@ mr_pass(struct Client *client_p, struct Client *source_p,
      * safely assume if there is a ":TS" then its a TS server
      * -Dianora
      */
-    if (0 == irccmp(parv[2], "TS") && client_p->tsinfo == 0)
+    if (!irccmp(parv[2], "TS") && client_p->tsinfo == 0)
       client_p->tsinfo = TS_DOESTS;
   }
 }

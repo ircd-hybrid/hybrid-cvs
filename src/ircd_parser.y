@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.329 2003/06/28 03:33:55 db Exp $
+ *  $Id: ircd_parser.y,v 1.330 2003/07/04 11:45:19 adx Exp $
  */
 
 %{
@@ -159,10 +159,10 @@ free_collect_item(struct CollectItem *item)
 %token  GLINE_TIME
 %token  GLOBAL_KILL
 %token  HAVE_IDENT
-%token	HAVENT_READ_CONF
+%token  HAVENT_READ_CONF
 %token  HIDDEN
 %token  HIDDEN_ADMIN
-%token	HIDE_SERVER_IPS
+%token  HIDE_SERVER_IPS
 %token  HIDE_SERVERS
 %token  HOST
 %token  HUB
@@ -198,13 +198,14 @@ free_collect_item(struct CollectItem *item)
 %token  MAX_TARGETS
 %token  MESSAGE_LOCALE
 %token  MIN_NONWILDCARD
-%token	MIN_NONWILDCARD_SIMPLE
+%token  MIN_NONWILDCARD_SIMPLE
 %token  MODULE
 %token  MODULES
 %token  NAME
+%token  NEED_PASSWORD
 %token  NETWORK_DESC
 %token  NETWORK_NAME
-%token	NICK
+%token  NICK
 %token  NICK_CHANGES
 %token  NO_CREATE_ON_SPLIT
 %token  NO_JOIN_ON_SPLIT
@@ -217,11 +218,11 @@ free_collect_item(struct CollectItem *item)
 %token  OPERATOR
 %token  OPER_LOG
 %token  OPER_ONLY_UMODES
-%token	OPER_PASS_RESV
+%token  OPER_PASS_RESV
 %token  OPER_UMODES
 %token  CRYPT_OPER_PASSWORD
 %token  PACE_WAIT
-%token	PACE_WAIT_SIMPLE
+%token  PACE_WAIT_SIMPLE
 %token  PASSWORD
 %token  PATH
 %token  PING_COOKIE
@@ -237,7 +238,7 @@ free_collect_item(struct CollectItem *item)
 %token  RESTRICTED
 %token  RSA_PRIVATE_KEY_FILE
 %token  RSA_PUBLIC_KEY_FILE
-%token	RESV
+%token  RESV
 %token  SECONDS MINUTES HOURS DAYS WEEKS
 %token  SENDQ
 %token  SEND_PASSWORD
@@ -246,8 +247,8 @@ free_collect_item(struct CollectItem *item)
 %token  SERVLINK_PATH
 %token  SID
 %token  T_SHARED
-%token	T_CLUSTER
-%token	TYPE
+%token  T_CLUSTER
+%token  TYPE
 %token  SHORT_MOTD
 %token  SILENT
 %token  SPOOF
@@ -262,7 +263,7 @@ free_collect_item(struct CollectItem *item)
 %token  TS_MAX_DELTA
 %token  TS_WARN_DELTA
 %token  TWODOTS
-%token	T_ALL
+%token  T_ALL
 %token  T_BOTS
 %token  T_CALLERID
 %token  T_CCONN
@@ -291,8 +292,8 @@ free_collect_item(struct CollectItem *item)
 %token  T_SKILL
 %token  T_SPY
 %token  T_UNAUTH
-%token	T_UNRESV
-%token	T_UNXLINE
+%token  T_UNRESV
+%token  T_UNXLINE
 %token  T_WALLOP
 %token  THROTTLE_TIME
 %token  TRUE_NO_OPER_FLOOD
@@ -1330,7 +1331,7 @@ auth_item:      auth_user | auth_passwd | auth_class |
                 auth_exceed_limit | auth_no_tilde | auth_gline_exempt |
                 auth_spoof | auth_spoof_notice |
                 auth_redir_serv | auth_redir_port | auth_can_flood |
-                error;
+                auth_need_password | error;
 
 auth_user: USER '=' QSTRING ';'
 {
@@ -1504,6 +1505,17 @@ auth_class: CLASS '=' QSTRING ';'
   {
     MyFree(yy_aconf->class_name);
     DupString(yy_aconf->class_name, yylval.string);
+  }
+};
+
+auth_need_password: NEED_PASSWORD '=' TBOOL ';'
+{
+  if (ypass == 2)
+  {
+    if (yylval.number)
+      yy_aconf->flags &= ~CONF_FLAGS_NEED_PASSWORD;
+    else
+      yy_aconf->flags |= CONF_FLAGS_NEED_PASSWORD;
   }
 };
 

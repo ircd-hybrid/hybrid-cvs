@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.253 2003/06/27 04:39:30 db Exp $
+ *  $Id: s_conf.h,v 7.254 2003/07/04 11:45:15 adx Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -179,6 +179,7 @@ struct AccessItem
 #define CONF_FLAGS_EXEMPTGLINE          0x00001000
 #define CONF_FLAGS_RESTRICTED           0x00002000
 #define CONF_FLAGS_CAN_FLOOD            0x00100000
+#define CONF_FLAGS_NEED_PASSWORD        0x00200000
 /* server flags */
 #define CONF_FLAGS_ALLOW_AUTO_CONN      0x00004000
 #define CONF_FLAGS_LAZY_LINK            0x00008000
@@ -191,6 +192,8 @@ struct AccessItem
 #define IsLimitIp(x)            ((x)->flags & CONF_FLAGS_LIMIT_IP)
 #define IsNoTilde(x)            ((x)->flags & CONF_FLAGS_NO_TILDE)
 #define IsConfCanFlood(x)       ((x)->flags & CONF_FLAGS_CAN_FLOOD)
+/* see below (default is 0 and need_password = yes) */
+#define IsNeedPassword(x)       (!((x)->flags & CONF_FLAGS_NEED_PASSWORD))
 #define IsNeedIdentd(x)         ((x)->flags & CONF_FLAGS_NEED_IDENTD)
 #define IsPassIdentd(x)         ((x)->flags & CONF_FLAGS_PASS_IDENTD)
 #define IsNoMatchIp(x)          ((x)->flags & CONF_FLAGS_NOMATCH_IP)
@@ -211,7 +214,7 @@ struct AccessItem
 #define SetConfAllowAutoConn(x)	((x)->flags |= CONF_FLAGS_ALLOW_AUTO_CONN)
 #define ClearConfAllowAutoConn(x) ((x)->flags &= ~CONF_FLAGS_ALLOW_AUTO_CONN)
 #define IsConfTemporary(x)      ((x)->flags & CONF_FLAGS_TEMPORARY)
-#define SetConfTemporary(x)	((x)->flags |= CONF_FLAGS_TEMPORARY)
+#define SetConfTemporary(x)     ((x)->flags |= CONF_FLAGS_TEMPORARY)
 #define IsConfRedir(x)          ((x)->flags & CONF_FLAGS_REDIR)
 
 /* shared server entry types */
@@ -376,16 +379,16 @@ extern void free_conf_item(struct ConfItem *conf, ConfType type);
 extern void free_access_item(struct AccessItem *);
 extern void read_conf_files(int cold);
 extern int attach_conf(struct Client *, struct AccessItem *);
-extern int attach_confs(struct Client *client, const char *name, unsigned int statmask);
-extern int attach_connect_block(struct Client *client, const char *name, const char *host);
-extern int check_client(struct Client *client_p, struct Client *source_p, const char *);
+extern int attach_confs(struct Client *, const char *, unsigned int);
+extern int attach_connect_block(struct Client *, const char *, const char *);
+extern int check_client(struct Client *, struct Client *, const char *);
 extern void det_confs_butmask(struct Client *, unsigned int);
 extern int detach_conf(struct Client *, struct AccessItem *);
 extern struct AccessItem *det_confs_butone(struct Client *, struct AccessItem *);
-extern struct AccessItem *find_conf_exact(const char *name, const char *user,
-				     const char *host, unsigned int statmask);
-extern struct AccessItem *find_conf_name(dlink_list *list, const char *name,
-					 unsigned int statmask);
+extern struct AccessItem *find_conf_exact(const char *, const char *,
+                                          const char *, unsigned int);
+extern struct AccessItem *find_conf_name(dlink_list *, const char *,
+                                         unsigned int);
 
 extern struct AccessItem *find_kill(struct Client *);
 extern int conf_connect_allowed(struct irc_ssaddr *addr, int aftype);
@@ -397,7 +400,8 @@ extern struct ConfItem *find_matching_name_conf(ConfType type, const char *,
 extern struct ConfItem *find_exact_name_conf(ConfType type, const char *,
 					     const char *, const char *);
 extern void delete_conf_item(struct ConfItem *);
-extern struct AccessItem *find_tkline(const char *, const char *, struct irc_ssaddr *);
+extern struct AccessItem *find_tkline(const char *, const char *,
+                                      struct irc_ssaddr *);
 extern char *show_iline_prefix(struct Client *, struct AccessItem *, char *);
 extern void get_printable_conf(struct AccessItem *, char **, char **, char **,
                                     char **, int *,char **);

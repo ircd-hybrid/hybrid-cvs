@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircdauth.c,v 7.58 2003/05/20 06:51:52 michael Exp $
+ *  $Id: ircdauth.c,v 7.59 2003/07/04 11:45:19 adx Exp $
  */
 
 #include "stdinc.h"
@@ -260,7 +260,8 @@ BeginAuthorization(struct Client *client)
 #else
 		(unsigned int) client->localClient->ip.sins.sin.s_addr,
 #endif
-		client->localClient->passwd);
+		client->localClient->passwd != NULL ?
+                client->localClient->passwd : "");
 
   send(iAuth.socket, buf, len, 0);
 } /* BeginAuthorization() */

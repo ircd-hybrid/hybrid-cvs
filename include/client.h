@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.205 2003/06/26 16:44:08 michael Exp $
+ *  $Id: client.h,v 7.206 2003/07/04 11:45:15 adx Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -235,10 +235,7 @@ struct LocalUser
    */
   char              sockhost[HOSTIPLEN + 1]; /* This is the host name from the 
                                                 socket ip address as string */
-  /* XXX - there is no reason to save this, it should be checked when it's
-   * received and not stored, this is not used after registration
-   */
-  char              passwd[PASSWDLEN + 1];
+  char              *passwd;
   int               caps;       /* capabilities bit-field */
   int               enc_caps;   /* cipher capabilities bit-field */
 
