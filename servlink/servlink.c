@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: servlink.c,v 1.2 2001/05/23 13:23:26 davidt Exp $
+ *   $Id: servlink.c,v 1.3 2001/05/23 19:46:04 davidt Exp $
  */
 
 #include "../include/setup.h"                                                   
@@ -29,7 +29,10 @@
 #include <unistd.h>
 #include <fcntl.h>
 
+
+#ifdef HAVE_LIBCRYPTO
 #include <openssl/evp.h>
+#endif
 #ifdef HAVE_LIBZ
 #include <zlib.h>
 #endif
@@ -136,21 +139,32 @@ void process_command(struct ctrl_command *cmd)
       
       switch (cipher)
       {
+#ifdef HAVE_BF_CFB64_ENCRYPT
         case CIPHER_BF:
           in_state.crypt_state.cipher = EVP_bf_cfb();
           break;
+#endif
+#ifdef HAVE_CAST_CFB64_ENCRYPT
         case CIPHER_CAST:
           in_state.crypt_state.cipher = EVP_cast5_cfb();
           break;
+#endif
+#ifdef HAVE_DES_CFB64_ENCRYPT
         case CIPHER_DES:
           in_state.crypt_state.cipher = EVP_des_cfb();
           break;
+#endif
+#ifdef HAVE_DES_EDE3_CFB64_ENCRYPT
         case CIPHER_3DES:
           in_state.crypt_state.cipher = EVP_des_ede3_cfb();
           break;
+#endif
+#ifdef HAVE_IDEA_CFB64_ENCRYPT
         case CIPHER_IDEA:
           in_state.crypt_state.cipher = EVP_idea_cfb();
           break;
+#endif
+#ifdef HAVE_RC5_32_CFB64_ENCRYPT
         case CIPHER_RC5_8:
           in_state.crypt_state.cipher = EVP_rc5_32_12_16_cfb();
           in_state.crypt_state.rounds = 8;
@@ -162,6 +176,7 @@ void process_command(struct ctrl_command *cmd)
         case CIPHER_RC5_16:
           in_state.crypt_state.cipher = EVP_rc5_32_12_16_cfb();
           in_state.crypt_state.rounds = 16;
+#endif
           break;
         default:
           exit(1); /* invalid cipher */
@@ -187,21 +202,32 @@ void process_command(struct ctrl_command *cmd)
 
       switch (cipher)
       {
+#ifdef HAVE_BF_CFB64_ENCRYPT
         case CIPHER_BF:
           out_state.crypt_state.cipher = EVP_bf_cfb();
           break;
+#endif
+#ifdef HAVE_CAST_CFB64_ENCRYPT
         case CIPHER_CAST:
           out_state.crypt_state.cipher = EVP_cast5_cfb();
           break;
+#endif
+#ifdef HAVE_DES_CFB64_ENCRYPT
         case CIPHER_DES:
           out_state.crypt_state.cipher = EVP_des_cfb();
           break;
+#endif
+#ifdef HAVE_DES_EDE3_CFB64_ENCRYPT
         case CIPHER_3DES:
           out_state.crypt_state.cipher = EVP_des_ede3_cfb();
           break;
+#endif
+#ifdef HAVE_IDEA_CFB64_ENCRYPT
         case CIPHER_IDEA:
           out_state.crypt_state.cipher = EVP_idea_cfb();
           break;
+#endif
+#ifdef HAVE_RC5_32_CFB64_ENCRYPT
         case CIPHER_RC5_8:
           out_state.crypt_state.cipher = EVP_rc5_32_12_16_cfb();
           out_state.crypt_state.rounds = 8;
@@ -213,6 +239,7 @@ void process_command(struct ctrl_command *cmd)
         case CIPHER_RC5_16:
           out_state.crypt_state.cipher = EVP_rc5_32_12_16_cfb();
           out_state.crypt_state.rounds = 16;
+#endif
           break;
         default:
           exit(1); /* invalid cipher */
