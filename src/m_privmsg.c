@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_privmsg.c,v 7.12 2000/10/16 16:10:13 toot Exp $
+ *   $Id: m_privmsg.c,v 7.13 2000/10/17 02:53:07 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -190,7 +190,7 @@ int     m_privmsg(struct Client *cptr,
 	      return 0;
 	    }
 	}
-
+#if 0
       if (can_send(sptr, chptr) == 0)
 	sendto_channel_butone(cptr, sptr, chptr,
 			      ":%s %s %s :%s",
@@ -199,6 +199,7 @@ int     m_privmsg(struct Client *cptr,
       else
 	sendto_one(sptr, form_str(ERR_CANNOTSENDTOCHAN),
 		   me.name, parv[0], nick);
+#endif
       return 0;
     }
       
