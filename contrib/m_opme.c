@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_opme.c,v 1.25 2002/05/24 23:48:34 androsyn Exp $
+ *   $Id: m_opme.c,v 1.26 2002/07/13 22:58:50 androsyn Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -57,7 +57,7 @@ _moddeinit(void)
   mod_del_cmd(&opme_msgtab);
 }
 
-char *_version = "$Revision: 1.25 $";
+char *_version = "$Revision: 1.26 $";
 
 static int chan_is_opless(struct Channel *chptr)
 {
@@ -108,14 +108,14 @@ static void mo_opme(struct Client *client_p, struct Client *source_p,
 		 me.name, parv[0], parv[1]);
       return;
     }
-
+#if 0
   if (!chan_is_opless(chptr))
   {
     sendto_one(source_p, ":%s NOTICE %s :%s Channel is not opless",
                me.name, parv[0], parv[1]);
     return;
   }
-
+#endif
   if ((ptr = find_user_link(&chptr->peons, source_p)))
 	  dlinkDelete(ptr, &chptr->peons);
   else if ((ptr = find_user_link(&chptr->voiced, source_p)))
@@ -157,7 +157,7 @@ static void mo_opme(struct Client *client_p, struct Client *source_p,
 
   dlinkAdd(source_p, ptr, &chptr->chanops);
   dlinkAdd(source_p, locptr, &chptr->locchanops);
- 
+ #if 0
   if (!on_vchan)
     {
      sendto_wallops_flags(FLAGS_WALLOP, &me,
@@ -186,7 +186,7 @@ static void mo_opme(struct Client *client_p, struct Client *source_p,
                    parv[1], parv[2], source_p->name, source_p->username,
                    source_p->host);
     }
-
+#endif
   sendto_server(NULL, source_p, chptr, CAP_UID, NOCAPS, NOFLAGS,
                  ":%s PART %s", ID(source_p), parv[1]);
   sendto_server(NULL, source_p, chptr, NOCAPS, CAP_UID, NOFLAGS,
