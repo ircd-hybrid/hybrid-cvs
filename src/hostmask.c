@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.c,v 7.77 2003/04/11 20:41:54 db Exp $
+ *  $Id: hostmask.c,v 7.78 2003/04/13 17:47:12 db Exp $
  */
 
 #include "stdinc.h"
@@ -664,31 +664,33 @@ clear_out_address_conf(void)
   int i;
   struct AddressRec *arec;
   struct AddressRec *last_arec;
+  struct AddressRec *next_arec;
 
   for (i = 0; i < ATABLE_SIZE; i++)
   {
     last_arec = NULL;
-    for (arec = atable[i]; arec; arec = arec->next)
+    for (arec = atable[i]; arec; arec = next_arec)
     {
       /* We keep the temporary K-lines and destroy the
        * permanent ones, just to be confusing :) -A1kmm 
        */
+      next_arec = arec->next;
 
       if (arec->aconf->flags & CONF_FLAGS_TEMPORARY)
       {
 	last_arec = arec;
-	arec = arec->next;
       }
       else
       {
 	/* unlink it from link list - Dianora */
 
 	if (last_arec == NULL)
+	{
 	  atable[i] = NULL;
+	}
 	else
 	{
 	  last_arec->next = arec->next;
-	  arec = arec->next;
 	}
 
         arec->aconf->status |= CONF_ILLEGAL;
