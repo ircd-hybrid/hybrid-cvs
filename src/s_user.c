@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.170 2001/11/30 09:52:23 a1kmm Exp $
+ *  $Id: s_user.c,v 7.171 2001/12/02 12:08:17 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -510,10 +510,10 @@ int register_remote_user(struct Client *client_p, struct Client *source_p,
 			   source_p->host, user->server,
 			   target_p->name, target_p->from->name);
       kill_client(client_p, source_p,
-		 ":%s (%s != %s[%s] USER from wrong direction)",
+		 ":%s (%s != %s USER from wrong direction)",
 		  me.name,
 		  user->server,
-		  target_p->from->name, target_p->from->host);
+		  target_p->from->name);
 
 #if 0
       sendto_one(client_p,
