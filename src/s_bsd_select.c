@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_select.c,v 7.22 2002/01/05 09:15:16 a1kmm Exp $
+ *  $Id: s_bsd_select.c,v 7.23 2002/04/04 13:24:18 androsyn Exp $
  */
 
 #include "config.h"
@@ -70,6 +70,9 @@
 #include <time.h>
 #include <string.h>
 
+#if HARD_FDLIMIT_ >= FD_SETSIZE
+#error HARD_FDLIMIT_ must be less than FD_SETSIZE(try using poll instead of select)
+#endif
 /*
  * Note that this is only a single list - multiple lists is kinda pointless
  * under select because the list size is a function of the highest FD :-)

@@ -58,6 +58,9 @@
     The only time you are likely to hit the TCP resolver is for queries
     over 512 bytes.
 
+8.  IAuthd is broken beyond belief.  It does not work at this time.  If this
+    bothers you, fix it for us.
+
 BUG REPORTS: If you run this code and encounter problems, you must report
  the bug in by E-MAIL to ircd-hybrid@the-project.org.
 
@@ -65,4 +68,4 @@ BUG REPORTS: If you run this code and encounter problems, you must report
  with any report  (with passwords and other sensitive information masked).
 
 --------------------------------------------------------------------------------
-$Id: BUGS,v 7.46 2002/01/13 18:54:38 wcampbel Exp $
+$Id: BUGS,v 7.47 2002/04/04 13:24:15 androsyn Exp $
