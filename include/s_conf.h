@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.155 2001/09/18 08:15:09 jdc Exp $
+ * $Id: s_conf.h,v 7.156 2001/09/18 13:02:35 db Exp $
  */
 
 #include "setup.h"
@@ -333,7 +333,6 @@ extern int              attach_confs(struct Client* client,
 extern int              attach_cn_lines(struct Client* client, 
                                         const char* name, const char* host);
 extern int              check_client(struct Client* client_p, struct Client *source_p, char *);
-extern int              attach_Iline(struct Client* client, const char* username);
 extern void             det_confs_butmask (struct Client *, int);
 extern int              detach_conf (struct Client *, struct ConfItem *);
 extern struct ConfItem* det_confs_butone (struct Client *, struct ConfItem *);
