@@ -1,3 +1,18 @@
+db          2003/01/16 13:56:31 EST	(20030116_3)
+
+  Modified files:
+    .                    RELNOTES 
+    modules/core         m_message.c 
+  Log:
+  - allow non opers to message nick@server, "opers" is reserved for opers only
+    I thought bill did this already, but my email is =still= out. sorry.
+  
+  Revision  Changes    Path
+  1.54      +1 -0      ircd-hybrid-7/RELNOTES
+  1.105     +68 -1     ircd-hybrid-7/modules/core/m_message.c
+
+
+
 db          2003/01/16 07:25:43 EST	(20030116_2)
 
   Modified files:
@@ -33972,4 +33987,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4164 2003/01/16 12:25:46 db Exp $
+$Id: ChangeLog,v 7.4165 2003/01/16 18:56:33 db Exp $
