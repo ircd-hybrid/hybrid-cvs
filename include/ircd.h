@@ -19,7 +19,7 @@
  *
  * "ircd.h". - Headers file.
  *
- * $Id: ircd.h,v 7.7 2000/10/25 06:07:00 db Exp $
+ * $Id: ircd.h,v 7.8 2000/10/28 17:27:59 adrian Exp $
  *
  */
 #ifndef INCLUDED_ircd_h
@@ -92,7 +92,6 @@ extern struct Counter Count;
 extern time_t         CurrentTime;
 extern time_t         LCF;
 extern time_t         nextconnect;
-extern time_t         nextping;
 
 
 extern struct Client* LocalClientList;

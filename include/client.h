@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.23 2000/10/25 23:57:53 db Exp $
+ * $Id: client.h,v 7.24 2000/10/28 17:27:59 adrian Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -558,7 +558,6 @@ struct Client
 #define SHOW_IP 1
 #define MASK_IP 2
 
-extern time_t         check_pings(time_t current);
 extern void           check_klines(void);
 extern const char*    get_client_name(struct Client* client, int show_ip);
 extern const char*    get_client_host(struct Client* client);
