@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kline.c,v 1.71 2001/04/30 14:03:22 ejb Exp $
+ *   $Id: m_kline.c,v 1.72 2001/05/17 19:44:55 jdc Exp $
  */
 #include "tools.h"
 #include "m_kline.h"
@@ -81,7 +81,7 @@ _moddeinit(void)
   mod_del_cmd(&kline_msgtab);
   mod_del_cmd(&dline_msgtab);
 }
-char *_version = "20001122";
+char *_version = "20010517";
 #endif
 
 /* Local function prototypes */
@@ -668,13 +668,27 @@ static void mo_dline(struct Client *client_p, struct Client *source_p,
     reason = "No reason";
 
 
-  if (bits < 24)
+  if(IsSetOperAdmin(source_p))
   {
-   sendto_one(source_p,
-              ":%s NOTICE %s :Can't use a mask less than 24 with dline.",
-              me.name, parv[0]);
-     return;
+    if (bits < 8)
+    {
+      sendto_one(source_p,
+        ":%s NOTICE %s :For safety, bitmasks less than 8 require conf access.",
+        me.name, parv[0]);
+      return;
+    }
   }
+  else
+  {
+    if (bits < 24)
+    {
+      sendto_one(source_p,
+        ":%s NOTICE %s :Dline bitmasks less than 24 are for admins only.",
+        me.name, parv[0]);
+      return;
+    }
+  }
+
 #ifdef IPV6
   if (t == HM_IPV6)
    t = AF_INET6;
