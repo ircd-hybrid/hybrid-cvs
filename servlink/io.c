@@ -15,14 +15,15 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: io.c,v 1.3 2001/05/23 14:29:24 davidt Exp $
+ *   $Id: io.c,v 1.4 2001/05/23 19:08:47 jdc Exp $
  */
 
-#include "../include/setup.h"                                                   
+#include "../include/setup.h"
 
 #include <assert.h>
 #include <errno.h>
 #include <unistd.h>
+#include <string.h>
 
 #include <openssl/evp.h>
 #ifdef HAVE_LIBZ
