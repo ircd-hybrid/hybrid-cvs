@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_userhost.c,v 1.19 2001/01/02 04:55:31 db Exp $
+ *   $Id: m_userhost.c,v 1.20 2001/01/02 05:35:12 db Exp $
  */
 
 #include "handlers.h"
@@ -73,8 +73,7 @@ int     m_userhost(struct Client *cptr,
   int cur_len;
   int rl;
 
-  ircsprintf(buf,form_str(RPL_USERHOST),me.name, parv[0], "");
-  cur_len = strlen(buf);
+  cur_len = ircsprintf(buf,form_str(RPL_USERHOST),me.name, parv[0], "");
   t = buf + cur_len;
 
   for ( i = 0; i < 5; i++)
@@ -82,21 +81,21 @@ int     m_userhost(struct Client *cptr,
       if ((acptr = find_person(parv[i+1], NULL)))
 	{
 	  if (acptr == sptr) /* show real IP for USERHOST on yourself */
-            ircsprintf(response, "%s%s=%c%s@%s ",
-		       acptr->name,
-		       IsOper(acptr) ? "*" : "",
-		       (acptr->user->away) ? '-' : '+',
-		       acptr->username,
-		       acptr->localClient->sockhost);
+            rl = ircsprintf(response, "%s%s=%c%s@%s ",
+			    acptr->name,
+			    IsOper(acptr) ? "*" : "",
+			    (acptr->user->away) ? '-' : '+',
+			    acptr->username,
+			    acptr->localClient->sockhost);
           else
-            ircsprintf(response, "%s%s=%c%s@%s ",
-		       acptr->name,
-		       IsOper(acptr) ? "*" : "",
-		       (acptr->user->away) ? '-' : '+',
-		       acptr->username,
-		       acptr->host);
+            rl = ircsprintf(response, "%s%s=%c%s@%s ",
+			    acptr->name,
+			    IsOper(acptr) ? "*" : "",
+			    (acptr->user->away) ? '-' : '+',
+			    acptr->username,
+			    acptr->host);
 
-	  if(((rl = strlen(response)) + cur_len) < (BUFSIZE-10))
+	  if((rl + cur_len) < (BUFSIZE-10))
 	    {
 	      ircsprintf(t,"%s",response);
 	      t += rl;
