@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 7.20 2000/10/14 23:07:03 toot Exp $
+ *   $Id: m_join.c,v 7.21 2000/10/15 13:42:39 toot Exp $
  */
 
 #include "handlers.h"
@@ -294,12 +294,20 @@ int     m_join(struct Client *cptr,
            
            if((chptr = hash_find_channel(name, NullChn)))
              {
-               /* there's subchans so check those 
+               /* there's subchans so check those
                 * but not if it was a subchan's realname they specified */
                if (IsVchanTop(chptr))
                  {
                    if (key && key[0] == '!')
                      {
+                       if( on_sub_vchan(chptr,sptr) )
+                        {
+                         sendto_one(sptr,":%s NOTICE %s :*** You are on a sub chan of %s already",
+                                    me.name, sptr->name, name);
+                         sendto_one(sptr, form_str(ERR_BADCHANNAME),
+                                 me.name, parv[0], (unsigned char*) name);
+                         return 0;
+                        }
                        /* found a matching vchan? let them join it */
                        if ((vchan_chptr = find_vchan(chptr, key)))
                          {
@@ -320,6 +328,11 @@ int     m_join(struct Client *cptr,
                        return 0;
                      }
                  }
+               /* we'll need to check here if they are trying to join a
+                * sub-chans 'real' name when they're already in
+                * one. or maybe we'll want to stop people
+                * joining 'real' names totally? */
+
                flags = 0;
              }
            else
@@ -555,14 +568,17 @@ int     m_join(struct Client *cptr,
                          chptr->topic_info,
                          chptr->topic_time);
             }
-          parv[1] = name;
           if (joining_vchan)
             {
+              parv[1] = chptr->chname;
               parv[2] = root_chptr->chname;
               (void)m_names(cptr, sptr, 3, parv);
             }
           else
-            (void)m_names(cptr, sptr, 2, parv);
+            {
+              parv[1] = name;
+              (void)m_names(cptr, sptr, 2, parv);
+            }
         }
     }
 
@@ -1107,6 +1123,14 @@ int     mo_join(struct Client *cptr,
                  {
                    if (key && key[0] == '!')
                      {
+                       if( on_sub_vchan(chptr,sptr) )
+                        {
+                         sendto_one(sptr,":%s NOTICE %s :*** You are on a sub chan of %s already",
+                                    me.name, sptr->name, name);
+                         sendto_one(sptr, form_str(ERR_BADCHANNAME),
+                                 me.name, parv[0], (unsigned char*) name);
+                         return 0;
+                        }
                        /* found a matching vchan? let them join it */
                        if ((vchan_chptr = find_vchan(chptr, key)))
                          {
@@ -1257,14 +1281,17 @@ int     mo_join(struct Client *cptr,
                          chptr->topic_info,
                          chptr->topic_time);
             }
-          parv[1] = name;
           if (joining_vchan)
             {
+              parv[1] = chptr->chname;
               parv[2] = root_chptr->chname;
               (void)m_names(cptr, sptr, 3, parv);
-            } 
+            }
           else
-            (void)m_names(cptr, sptr, 2, parv);
+            {
+              parv[1] = name;
+              (void)m_names(cptr, sptr, 2, parv);
+            }
         }
     }
   return 0;

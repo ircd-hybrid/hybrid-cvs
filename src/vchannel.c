@@ -19,7 +19,7 @@
  *
  *
  *
- * $Id: vchannel.c,v 7.5 2000/10/14 22:07:09 db Exp $
+ * $Id: vchannel.c,v 7.6 2000/10/15 13:42:39 toot Exp $
  */
 #include "vchannel.h"
 #include "channel.h"
@@ -83,6 +83,10 @@ int on_sub_vchan(struct Channel *chptr, struct Client *sptr)
 
   assert(sptr != NULL);
 
+  /* they are in the root chan */
+  if (IsMember(sptr, chptr))
+    return YES;
+
   for(i=0;sptr->vchan_map[i].base_chan;i++)
     {
       if( sptr->vchan_map[i].base_chan == chptr )
@@ -109,7 +113,6 @@ struct Channel* map_vchan(struct Channel *chptr, struct Client *sptr)
 }
 
 /* show info on vchans, XXXX this needs to be improved! */
-
 void show_vchans(struct Client *cptr,
                         struct Client *sptr,
                         struct Channel *chptr)
