@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_names.c,v 1.42 2002/05/24 23:34:21 androsyn Exp $
+ *  $Id: m_names.c,v 1.43 2002/07/31 16:24:07 leeh Exp $
  */
 
 #include "stdinc.h"
@@ -67,7 +67,7 @@ _moddeinit(void)
   mod_del_cmd(&names_msgtab);
 }
 
-const char *_version = "$Revision: 1.42 $";
+const char *_version = "$Revision: 1.43 $";
 #endif
 
 /************************************************************************
@@ -285,6 +285,7 @@ static void ms_names( struct Client *client_p,
         return;
     }
 
-  m_names(client_p,source_p,parc,parv);
+  if(IsClient(source_p))
+    m_names(client_p,source_p,parc,parv);
 }
 

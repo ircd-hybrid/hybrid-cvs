@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.77 2002/05/24 23:34:24 androsyn Exp $
+ *  $Id: m_whois.c,v 1.78 2002/07/31 16:24:07 leeh Exp $
  */
 
 #include "stdinc.h"
@@ -76,7 +76,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-const char *_version = "$Revision: 1.77 $";
+const char *_version = "$Revision: 1.78 $";
 #endif
 /*
 ** m_whois
@@ -503,6 +503,9 @@ static void ms_whois(struct Client *client_p,
                  me.name, parv[0]);
       return;
     }
+
+  if(!IsClient(source_p))
+    return;
 
   /* its a client doing a remote whois:
    * :parv[0] WHOIS parv[1] :parv[2]

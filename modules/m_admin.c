@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_admin.c,v 1.34 2002/05/24 23:34:19 androsyn Exp $
+ *  $Id: m_admin.c,v 1.35 2002/07/31 16:24:06 leeh Exp $
  */
 
 #include "stdinc.h"
@@ -60,7 +60,7 @@ _moddeinit(void)
   hook_del_event("doing_admin");
   mod_del_cmd(&admin_msgtab);
 }
-const char *_version = "$Revision: 1.34 $";
+const char *_version = "$Revision: 1.35 $";
 #endif
 /*
  * mr_admin - ADMIN command handler
@@ -123,7 +123,8 @@ static void ms_admin(struct Client *client_p, struct Client *source_p,
   if (hunt_server(client_p,source_p,":%s ADMIN :%s",1,parc,parv) != HUNTED_ISME)
     return;
 
-  do_admin( source_p );
+  if(IsClient(source_p))
+    do_admin(source_p);
 }
 
 

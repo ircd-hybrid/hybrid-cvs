@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_away.c,v 1.30 2002/05/24 23:34:19 androsyn Exp $
+ *  $Id: m_away.c,v 1.31 2002/07/31 16:24:06 leeh Exp $
  */
 
 #include "stdinc.h"
@@ -55,7 +55,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&away_msgtab);
 }
-const char *_version = "$Revision: 1.30 $";
+const char *_version = "$Revision: 1.31 $";
 #endif
 /***********************************************************************
  * m_away() - Added 14 Dec 1988 by jto. 
@@ -83,14 +83,9 @@ static void m_away(struct Client *client_p,
   if(MyClient(source_p) && !IsFloodDone(source_p))
     flood_endgrace(source_p);
 
-  /* make sure the user exists */
-  if (!(source_p->user))
-    {
-      sendto_realops_flags(FLAGS_DEBUG, L_ALL,
-                           "Got AWAY from nil user, from %s (%s)",
-			   client_p->name, source_p->name);
-      return;
-    }
+  if(!IsClient(source_p))
+    return;
+
   away = source_p->user->away;
 
   if (parc < 2 || !*awy2)

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_motd.c,v 1.29 2002/05/24 23:34:21 androsyn Exp $
+ *  $Id: m_motd.c,v 1.30 2002/07/31 16:24:07 leeh Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&motd_msgtab);
 }
 
-const char *_version = "$Revision: 1.29 $";
+const char *_version = "$Revision: 1.30 $";
 #endif
 
 /* mr_motd()
@@ -117,7 +117,7 @@ static void m_motd(struct Client *client_p, struct Client *source_p,
 static void mo_motd(struct Client *client_p, struct Client *source_p,
                    int parc, char *parv[])
 {
-  if(IsServer(source_p))
+  if(!IsClient(source_p))
     return;
 
   if (hunt_server(client_p, source_p, ":%s MOTD :%s", 1,parc,parv)!=HUNTED_ISME)

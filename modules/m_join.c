@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_join.c,v 1.87 2002/06/24 22:06:11 leeh Exp $
+ *  $Id: m_join.c,v 1.88 2002/07/31 16:24:07 leeh Exp $
  */
 
 #include "stdinc.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&join_msgtab);
 }
-const char *_version = "$Revision: 1.87 $";
+const char *_version = "$Revision: 1.88 $";
 
 #endif
 static void do_join_0(struct Client *client_p, struct Client *source_p);
@@ -188,7 +188,8 @@ m_join(struct Client *client_p,
       /* look for the channel */
       if((chptr = hash_find_channel(name)) != NULL)
 	{
-	  if(splitmode && (*name != '&') && ConfigChannel.no_join_on_split)
+	  if(splitmode && !IsOper(source_p) && (*name != '&') && 
+             ConfigChannel.no_join_on_split)
 	  {
 	    sendto_one(source_p, form_str(ERR_UNAVAILRESOURCE),
                        me.name, source_p->name, name);
@@ -222,7 +223,7 @@ m_join(struct Client *client_p,
 	}
       else
 	{
-	  if(splitmode && (*name != '&') && 
+	  if(splitmode && !IsOper(source_p) && (*name != '&') && 
             (ConfigChannel.no_create_on_split || ConfigChannel.no_join_on_split))
 	  {
 	    sendto_one(source_p, form_str(ERR_UNAVAILRESOURCE),
