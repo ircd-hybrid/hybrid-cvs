@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.280 2001/10/25 04:23:03 db Exp $
+ * $Id: channel.c,v 7.281 2001/10/31 00:28:00 ejb Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -44,6 +44,10 @@
 #include <stdlib.h>
 
 #include "s_log.h"
+
+#ifdef s_host
+# undef s_host
+#endif
 
 struct config_channel_entry ConfigChannel;
 struct Channel *GlobalChannelList = NULL;
