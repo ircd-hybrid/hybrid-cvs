@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.95 2001/02/24 08:06:22 a1kmm Exp $
+ * $Id: config.h,v 7.96 2001/02/27 06:18:02 androsyn Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -232,12 +232,6 @@
  * flooding it.  Values greater than 8000 make no difference to the server.
  */
 #define CLIENT_FLOOD    2560
-
-/*
- * Define this to enable IPv6 support.  IPv6 is currently still being
- * developed, and is not guaranteed to work properly..
- */
-#undef IPV6
 
 /*   STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP STOP  */
 
