@@ -1,3 +1,15 @@
+davidt      2001/12/12 18:22:49 EST	(20011212_4)
+
+  Modified files:
+    .                    ChangeLog 
+  Log:
+  - Do not use #Id# tags in commit logs, k plz thnx.
+  
+  Revision  Changes    Path
+  7.3152    +3 -3      ircd-hybrid-7/ChangeLog
+
+
+
 db          2001/12/12 13:23:48 EST	(20011212_3)
 
   Modified files:
@@ -171,7 +183,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3152 2001/12/12 23:22:45 davidt Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3153 2001/12/12 23:22:54 davidt Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -18525,4 +18537,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3152 2001/12/12 23:22:45 davidt Exp $
+$Id: ChangeLog,v 7.3153 2001/12/12 23:22:54 davidt Exp $
