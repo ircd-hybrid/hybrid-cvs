@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 1.33 2000/12/28 16:17:57 toot Exp $
+ *   $Id: m_whois.c,v 1.34 2000/12/28 17:03:06 bill Exp $
  */
 #include "tools.h"
 #include "common.h"   /* bleah */
@@ -426,7 +426,7 @@ int     ms_whois(struct Client *cptr,
    */
   if( !IsOper(sptr) && GlobalSetOptions.hide_server
       && !IsCapable(cptr->from,CAP_LL) )
-    }
+    {
 	return 0;
     }
 
