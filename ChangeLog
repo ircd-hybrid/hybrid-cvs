@@ -1,3 +1,15 @@
+androsyn    2002/10/19 18:36:25 EDT	(20021019_2)
+
+  Modified files:
+    src                  adns.c 
+  Log:
+  Make char *domain IPV6 only
+  
+  Revision  Changes    Path
+  7.47      +2 -0      ircd-hybrid-7/src/adns.c
+
+
+
 androsyn    2002/10/19 18:35:21 EDT	(20021019_1)
 
   Modified files:
@@ -32576,4 +32588,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4070 2002/10/19 22:35:23 androsyn Exp $
+$Id: ChangeLog,v 7.4071 2002/10/19 22:36:28 androsyn Exp $
