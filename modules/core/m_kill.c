@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kill.c,v 1.64 2002/05/24 23:34:38 androsyn Exp $
+ *  $Id: m_kill.c,v 1.65 2002/07/19 10:56:01 leeh Exp $
  */
 
 #include "stdinc.h"
@@ -64,7 +64,7 @@ _moddeinit(void)
   mod_del_cmd(&kill_msgtab);
 }
 
-const char *_version = "$Revision: 1.64 $";
+const char *_version = "$Revision: 1.65 $";
 #endif
 /*
 ** mo_kill
@@ -258,11 +258,15 @@ static void ms_kill(struct Client *client_p, struct Client *source_p,
 
   /* Be warned, this message must be From %s, or it confuses clients
    * so dont change it to From: or the case or anything! -- fl -- db */
+  /* path must contain at least 2 !'s, or bitchx falsely declares it
+   * local --fl
+   */
   if (IsOper(source_p)) /* send it normally */
     {
       sendto_realops_flags(FLAGS_ALL, L_ALL,
-			   "Received KILL message for %s. From %s Path: %s %s",
-			   target_p->name, parv[0], source_p->user->server, reason);
+		"Received KILL message for %s. From %s Path: %s!%s!%s!%s %s",
+		target_p->name, parv[0], source_p->user->server, 
+                source_p->host, source_p->username, source_p->name, reason);
     }
   else
     {
