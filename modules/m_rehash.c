@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_rehash.c,v 1.30 2001/09/12 06:24:49 db Exp $
+ *   $Id: m_rehash.c,v 1.31 2001/09/30 02:09:22 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -126,7 +126,7 @@ static void mo_rehash(struct Client *client_p, struct Client *source_p,
         }
       else
         {
-          sendto_one(source_p,":%s NOTICE %s :rehash one of :CHANNELS DNS GC HELP MOTD OMOTD" ,me.name,source_p->name);
+          sendto_one(source_p,":%s NOTICE %s :rehash one of :CHANNELS DNS HELP MOTD OMOTD" ,me.name,source_p->name);
           return;
         }
     }
