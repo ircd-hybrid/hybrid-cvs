@@ -1,7 +1,7 @@
 /*
  * dline_conf.c
  *
- * $Id: dline_conf.c,v 7.4 1999/09/10 05:31:00 tomh Exp $
+ * $Id: dline_conf.c,v 7.5 1999/09/10 05:32:35 tomh Exp $
  */
 #include "dline_conf.h"
 #include "class.h"
@@ -291,7 +291,7 @@ struct ip_subtree *destroy_ip_subtree(struct ip_subtree *head)
  */
 struct ConfItem* find_exception(unsigned long ip)
 {
-  struct ConfItem* scan=leftover;
+  struct ConfItem* scan;
   
   for (scan = leftover; scan; scan = scan->next) {
     if (scan->ip == (ip & scan->ip_mask))
