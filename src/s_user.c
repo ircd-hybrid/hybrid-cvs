@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.314 2003/10/24 11:59:36 michael Exp $
+ *  $Id: s_user.c,v 7.315 2003/10/30 08:29:19 bill Exp $
  */
 
 #include "stdinc.h"
@@ -1405,6 +1405,7 @@ init_uid(void)
 					     IRC_MAXSID));
     memcpy(&me.id, ServerInfo.sid, IRCD_MIN(strlen(ServerInfo.sid),
 					     IRC_MAXSID));
+    hash_add_id(&me);
   }
 
   for (i = 0; i < IRC_MAXSID; i++)
