@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_gline.c,v 1.46 2001/05/16 16:59:08 leeh Exp $
+ *  $Id: m_gline.c,v 1.47 2001/05/16 17:51:44 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -291,8 +291,9 @@ static void ms_gline(struct Client *client_p,
   if(!IsServer(source_p))
     return;
 
-  /* Always good to be paranoid about arguments */
-  if(parc < 5)
+  /* Hyb7 sends 5 parcs.. hyb6 sends 8 and will gline the wrong host,
+   * so check the param count -- fl_ */
+  if(parc != 5)
     return;
 
   oper_nick = parv[1];
