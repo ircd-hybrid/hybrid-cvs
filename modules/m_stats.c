@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.123 2003/05/08 09:39:21 michael Exp $
+ *  $Id: m_stats.c,v 1.124 2003/05/13 01:53:34 db Exp $
  */
 
 #include "stdinc.h"
@@ -80,7 +80,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.123 $";
+const char *_version = "$Revision: 1.124 $";
 #endif
 
 const char *Lformat = ":%s %d %s %s %u %u %u %u %u :%u %u %s";
@@ -102,7 +102,7 @@ struct StatsStruct
   int need_admin;
 };
 
-static void stats_adns_servers(struct Client *);
+static void stats_dns_servers(struct Client *);
 static void stats_connect(struct Client *);
 static void stats_deny(struct Client *);
 static void stats_exempt(struct Client *);
@@ -136,8 +136,8 @@ static void stats_ziplinks(struct Client *);
 static struct StatsStruct stats_cmd_table[] =
 {
   /* letter     function            need_oper need_admin */
-  { 'a',	stats_adns_servers,	1,	1,	},
-  { 'A',	stats_adns_servers,	1,	1,	},
+  { 'a',	stats_dns_servers,	1,	1,	},
+  { 'A',	stats_dns_servers,	1,	1,	},
   { 'c',	stats_connect,		1,	0,	},
   { 'C',	stats_connect,		1,	0,	},
   { 'd',	stats_deny,		1,	0,	},
@@ -301,9 +301,9 @@ mo_stats(struct Client *client_p, struct Client *source_p,
 }
 
 static void
-stats_adns_servers(struct Client *source_p)
+stats_dns_servers(struct Client *source_p)
 {
-  report_adns_servers(source_p);
+  report_dns_servers(source_p);
 }
 
 static void

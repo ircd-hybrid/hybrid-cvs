@@ -7,7 +7,7 @@
  * The authors takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: irc_res.c,v 7.4 2003/05/12 23:43:38 joshk Exp $
+ * $Id: irc_res.c,v 7.5 2003/05/13 01:53:36 db Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -56,7 +56,7 @@
 #error this code needs to be able to address individual octets 
 #endif
 
-/* $Id: irc_res.c,v 7.4 2003/05/12 23:43:38 joshk Exp $ */
+/* $Id: irc_res.c,v 7.5 2003/05/13 01:53:36 db Exp $ */
 
 static PF res_readreply;
 
@@ -941,4 +941,21 @@ make_dnsreply(struct reslist *request)
   DupString(cp->h_name, request->name);
   memcpy(&cp->addr, &request->addr, sizeof(cp->addr));
   return(cp);
+}
+
+
+void
+report_dns_servers(struct Client *source_p)
+{
+  int i;
+  char ipaddr[HOSTIPLEN];
+
+  for (i = 0; i < irc_nscount; i++)
+  {
+    irc_getnameinfo((struct sockaddr*) &(irc_nsaddr_list[i]), 
+		    irc_nsaddr_list[i].ss_len, ipaddr, HOSTIPLEN, NULL, 0,
+		    NI_NUMERICHOST);
+    sendto_one(source_p, form_str(RPL_STATSALINE),
+	       me.name, source_p->name, ipaddr); 
+  }
 }

@@ -1,7 +1,7 @@
 /*
  * include/res.h (C)opyright 1992 Darren Reed.
  *
- * $Id: res.h,v 7.25 2003/05/12 23:43:35 joshk Exp $
+ * $Id: res.h,v 7.26 2003/05/13 01:53:33 db Exp $
  */
 #ifndef INCLUDED_res_h
 #define INCLUDED_res_h
@@ -44,6 +44,8 @@ extern unsigned long   cres_mem(struct Client* cptr);
  * the suffix
  */
 extern void add_local_domain(char* name, int len);
+
+extern void report_dns_servers(struct Client *source_p);
 
 #endif /* INCLUDED_res_h */
 
