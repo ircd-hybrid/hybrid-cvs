@@ -4,7 +4,7 @@
  * shape or form. The author takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: res.c,v 7.19 2000/10/25 23:20:11 adrian Exp $
+ * $Id: res.c,v 7.20 2000/10/31 19:58:24 adrian Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -174,8 +174,6 @@ struct cache {
 
 
 static int    ResolverFileDescriptor = -1;
-
-static time_t nextDNSCheck    = 0;
 
 /*
  * Keep a spare file descriptor open. res_init calls fopen to read the
@@ -592,7 +590,6 @@ struct DNSReply* gethost_byname(const char* name,
   ++reinfo.re_na_look;
 
   do_query_name(query, name, NULL);
-  nextDNSCheck = 1;
   return NULL;
 }
 
@@ -607,7 +604,6 @@ struct DNSReply* gethost_byaddr(const char* addr,
   ++reinfo.re_nu_look;
 
   do_query_number(query, (const struct in_addr*) addr, NULL);
-  nextDNSCheck = 1;
   return NULL;
 }
 /*
