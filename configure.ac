@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.13 2003/05/11 22:27:28 joshk Exp $
+dnl $Id: configure.ac,v 7.14 2003/05/11 23:47:30 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -364,8 +364,8 @@ if test "X$cf_enable_openssl" != "Xno"; then
 		dnl Do all the HAVE_LIBCRYPTO magic -- and check for ciphers
 		save_CPPFLAGS="$CPPFLAGS"
 		CPPFLAGS="$CPPFLAGS $SSL_LIBS"
-		AC_CHECK_LIB(crypto, RSA_free,
-		[
+		AC_CHECK_LIB(crypto, RSA_free)
+		if test "X$ac_cv_lib_crypto_RSA_free" = "Xyes"; then
 			LIBS="$LIBS -lcrypto"
 			cf_openssl_ciphers=''
 			AC_CHECK_FUNCS(EVP_bf_cfb,
@@ -380,7 +380,7 @@ if test "X$cf_enable_openssl" != "Xno"; then
 			cf_openssl_ciphers="${cf_openssl_ciphers}3DES/168 ")
 			AC_CHECK_FUNCS(EVP_des_cfb,
 			cf_openssl_ciphers="${cf_openssl_ciphers}DES/56 ")
-		])
+		fi
 		CPPFLAGS="$save_CPPFLAGS"
 		SSL_LIBS="$SSL_LIBS -lcrypto"
 	else
@@ -650,12 +650,14 @@ if test "$shared_modules" = "no"; then
 	MODULES_DEFINE=""
 	MOD_TARGET="libmodules.a"
 	MODULES_LIBS="../modules/libmodules.a"
+	SEDOBJ=""
 	AC_DEFINE(STATIC_MODULES, 1, [Define to 1 if dynamic modules can't be used.])
 else
 	echo "Checking for shared module support"
 	MODULES_DEFINE=""
 	MODULES_LIBS=""
 	MOD_TARGET="shared_modules"
+	SEDOBJ="s/\.o/.so/g"
         CHECK_DLOPEN_LD
         if test "$have_shl_load" = "no"; then
             AC_CHECK_HEADER([mach-o/dyld.h],, [CHECK_DLOPEN_DL])
@@ -702,6 +704,7 @@ else
 	if test "$HPUX" = "yes"; then
 		AC_MSG_RESULT(HP-UX - Assuming HPUX C compiler cc: +z -r -q -n +ESfic)
 		PICFLAGS="+z -r -q -n +ESfic -c"
+		SEDOBJ="s/\.o/.sl/g"
 		MOD_TARGET="hpux_shared"
 		LDFLAGS="${LDFLAGS} -Wl,-E"
 	fi
@@ -790,6 +793,7 @@ AC_SUBST(SSL_LIBS)
 
 AC_SUBST(LDFLAGS)
 AC_SUBST(IRC_CFLAGS)
+AC_SUBST(SEDOBJ)
 
 if test x$prefix = xNONE; then 
 	AC_DEFINE_UNQUOTED(IRCD_PREFIX, "$ac_default_prefix", [Prefix where the ircd is installed.])

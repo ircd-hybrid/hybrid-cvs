@@ -1,4 +1,4 @@
-$Id: TODO,v 7.79 2003/05/08 20:20:20 joshk Exp $
+$Id: TODO,v 7.80 2003/05/11 23:47:29 joshk Exp $
 
 - add more stderr debugging (ircd -s)... one for every place we syslog()
 - ircd -s doesn't work through a restart
@@ -138,6 +138,9 @@ it should only be used if IPV6 is defined. The problem gets a little
 stickier because both IPv4 and IPv6 code use sockaddr_storage. ->stu.
 
 But at least SysV make seems to work, kind of. :)
+
+* Dependency system = HORRIBLY SCREWED OVER. Should we have users do 
+'make depend' every time they want to build?
 
 -- MeTaLRoCk's list
 

@@ -308,7 +308,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT MKDEP CPP EGREP SET_MAKE INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA RM CP MV LN SED AR LD YACC RANLIB ac_ct_RANLIB LEX LEXLIB LEX_OUTPUT_ROOT CRYPT_LIB SNPRINTF_C ENCSPEED SELECT_TYPE CLOBBER PICFLAGS MODULES_DEFINE MODULES_LIBS MOD_TARGET SSL_INCLUDES SSL_LIBS IRC_CFLAGS LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT MKDEP CPP EGREP SET_MAKE INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA RM CP MV LN SED AR LD YACC RANLIB ac_ct_RANLIB LEX LEXLIB LEX_OUTPUT_ROOT CRYPT_LIB SNPRINTF_C ENCSPEED SELECT_TYPE CLOBBER PICFLAGS MODULES_DEFINE MODULES_LIBS MOD_TARGET SSL_INCLUDES SSL_LIBS IRC_CFLAGS SEDOBJ LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -6698,6 +6698,7 @@ if test "$shared_modules" = "no"; then
 	MODULES_DEFINE=""
 	MOD_TARGET="libmodules.a"
 	MODULES_LIBS="../modules/libmodules.a"
+	SEDOBJ=""
 
 cat >>confdefs.h <<\_ACEOF
 #define STATIC_MODULES 1
@@ -6708,6 +6709,7 @@ else
 	MODULES_DEFINE=""
 	MODULES_LIBS=""
 	MOD_TARGET="shared_modules"
+	SEDOBJ="s/\.o/.so/g"
         echo "$as_me:$LINENO: checking for library containing shl_load" >&5
 echo $ECHO_N "checking for library containing shl_load... $ECHO_C" >&6
 if test "${ac_cv_search_shl_load+set}" = set; then
@@ -7430,6 +7432,7 @@ echo "${ECHO_T}Darwin or Mac OS X - Assuming you want to make Mach-O bundles: -f
 		echo "$as_me:$LINENO: result: HP-UX - Assuming HPUX C compiler cc: +z -r -q -n +ESfic" >&5
 echo "${ECHO_T}HP-UX - Assuming HPUX C compiler cc: +z -r -q -n +ESfic" >&6
 		PICFLAGS="+z -r -q -n +ESfic -c"
+		SEDOBJ="s/\.o/.sl/g"
 		MOD_TARGET="hpux_shared"
 		LDFLAGS="${LDFLAGS} -Wl,-E"
 	fi
@@ -8127,6 +8130,7 @@ fi
 
 
 
+
 if test x$prefix = xNONE; then
 
 cat >>confdefs.h <<_ACEOF
@@ -8809,6 +8813,7 @@ s,@MOD_TARGET@,$MOD_TARGET,;t t
 s,@SSL_INCLUDES@,$SSL_INCLUDES,;t t
 s,@SSL_LIBS@,$SSL_LIBS,;t t
 s,@IRC_CFLAGS@,$IRC_CFLAGS,;t t
+s,@SEDOBJ@,$SEDOBJ,;t t
 s,@LIBOBJS@,$LIBOBJS,;t t
 s,@LTLIBOBJS@,$LTLIBOBJS,;t t
 CEOF

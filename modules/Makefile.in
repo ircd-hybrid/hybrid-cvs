@@ -1,12 +1,14 @@
 #
 # Makefile.in for ircd/modules
 #
-# $Id: Makefile.in,v 1.73 2003/05/11 22:27:40 joshk Exp $
+# $Id: Makefile.in,v 1.74 2003/05/11 23:47:32 joshk Exp $
 #
 CC		= @CC@
 AR		= @AR@
 RANLIB		= @RANLIB@
 RM		= @RM@
+SED		= @SED@
+SEDOBJ		= @SEDOBJ@
 CFLAGS		= @IRC_CFLAGS@
 PICFLAGS	= @PICFLAGS@
 MKDEP		= @MKDEP@
@@ -177,7 +179,13 @@ install_hpux_shared: install-mkdirs
 
 .PHONY: depend clean distclean
 depend:
-	${MKDEP} ${INCLUDES} ${ALL_SRCS} > .depend
+	${MKDEP} ${INCLUDES} ${ALL_SRCS} > .depend.tmp
+	@if test ! -z "$(SEDOBJ)"; then \
+		${SED} '$(SEDOBJ)' .depend.tmp > .depend; \
+		rm -f .depend.tmp; \
+	else \
+		mv .depend.tmp .depend; \
+	fi
 
 clean:
 	${RM} -f *.so *.sl *~ *.o *.a
