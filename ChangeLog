@@ -1,3 +1,17 @@
+db          2002/12/16 17:43:30 EST	(20021216_5)
+
+  Modified files:
+    src                  packet.c 
+  Log:
+  - I have a sneaking suspicion the file descriptor is still on the
+    poll/select etc. list... this should be dug into further.. In any case
+    its better to be a bit defensive about poking at a client anyway.
+  
+  Revision  Changes    Path
+  7.95      +4 -1      ircd-hybrid-7/src/packet.c
+
+
+
 db          2002/12/16 15:53:01 EST	(20021216_4)
 
   Modified files:
@@ -33607,4 +33621,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4140 2002/12/16 20:53:04 db Exp $
+$Id: ChangeLog,v 7.4141 2002/12/16 22:43:33 db Exp $
