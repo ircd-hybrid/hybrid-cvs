@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_unkline.c,v 1.76 2003/07/07 21:18:54 michael Exp $
+ *  $Id: m_unkline.c,v 1.77 2003/07/08 04:01:48 db Exp $
  */
 
 #include "stdinc.h"
@@ -82,7 +82,7 @@ _moddeinit(void)
   delete_capability("UNKLN");
 }
 
-const char *_version = "$Revision: 1.76 $";
+const char *_version = "$Revision: 1.77 $";
 #endif
 
 /*
@@ -172,6 +172,7 @@ mo_unkline(struct Client *client_p,struct Client *source_p,
 			 get_oper_name(source_p), user, host);
     ilog(L_NOTICE, "%s removed K-Line for [%s@%s]",
 	 source_p->name, user, host);
+    rehashed_klines = 1;
   }
   else
     sendto_one(source_p, ":%s NOTICE %s :No K-Line for [%s@%s] found", 

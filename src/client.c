@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.394 2003/07/07 21:18:57 michael Exp $
+ *  $Id: client.c,v 7.395 2003/07/08 04:01:50 db Exp $
  */
 
 #include "stdinc.h"
@@ -359,7 +359,7 @@ check_unknowns_list(void)
   }
 }
 
-/* check_klines()
+/* check_conf_klines()
  *
  * inputs       - NONE
  * output       - NONE
@@ -367,7 +367,7 @@ check_unknowns_list(void)
  * 		  client, exit the client if a kline matches.
  */
 void 
-check_klines(void)
+check_conf_klines(void)
 {               
   struct Client *client_p;       /* current local client_p being examined */
   struct AccessItem *aconf = NULL;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.26 2003/07/07 21:18:54 michael Exp $
+ *  $Id: m_xline.c,v 1.27 2003/07/08 04:01:48 db Exp $
  */
 
 #include "stdinc.h"
@@ -82,7 +82,7 @@ _moddeinit(void)
   mod_del_cmd(&unxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.26 $";
+const char *_version = "$Revision: 1.27 $";
 #endif
 
 
@@ -433,6 +433,7 @@ write_xline(struct Client *source_p, char *gecos, char *reason, int type)
   cur_time = CurrentTime;
   current_date = smalldate(cur_time);
   write_conf_line(source_p, conf, current_date, cur_time);
+  rehashed_xlines = 1;
 }
 
 static void

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.119 2003/07/05 06:20:57 db Exp $
+ *  $Id: m_gline.c,v 1.120 2003/07/08 04:01:48 db Exp $
  */
 
 #include "stdinc.h"
@@ -95,7 +95,7 @@ _moddeinit(void)
   delete_capability("GLN");
 }
 
-const char *_version = "$Revision: 1.119 $";
+const char *_version = "$Revision: 1.120 $";
 #endif
 
 /* mo_gline()
@@ -446,7 +446,8 @@ set_local_gline(struct Client *source_p, const char *user,
   DupString(aconf->host, host);
   aconf->hold = CurrentTime + ConfigFileEntry.gline_time;
   write_conf_line(source_p, conf, current_date, cur_time);
-  check_klines();
+  /* Now, activate gline against current online clients */
+  rehashed_klines = 1;
 }
 
 /* add_new_majority_gline()

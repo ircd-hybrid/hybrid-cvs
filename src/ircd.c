@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.311 2003/07/05 06:21:03 db Exp $
+ *  $Id: ircd.c,v 7.312 2003/07/08 04:01:50 db Exp $
  */
 
 #include "stdinc.h"
@@ -287,7 +287,7 @@ io_loop(void)
      */
     if (rehashed_klines)
     {
-      check_klines();
+      check_conf_klines();
       rehashed_klines = 0;
     }
     else if (rehashed_xlines)
