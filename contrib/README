@@ -1,4 +1,4 @@
-$Id: README,v 1.26 2003/05/03 11:09:59 michael Exp $
+$Id: README,v 1.27 2003/05/08 01:36:42 joshk Exp $
 
 This directory contains modules and patches that have been contributed
 by other people, or aren't suitable for including into the 
@@ -99,3 +99,11 @@ The following patches are included:
 
 disable_identd.diff - This patch adds support for disabling identd queries.
                       See README.disable_identd for more information.
+
+Help files
+----------
+
+Previously part of the default install, these are the help files that 
+display information about every command with /quote HELP :whatever.
+
+They are installed if you make install in this directory.
