@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.425 2003/06/12 23:13:13 db Exp $
+ *  $Id: s_conf.c,v 7.426 2003/06/13 02:31:44 db Exp $
  */
 
 #include "stdinc.h"
@@ -197,7 +197,8 @@ make_access_item(unsigned int status)
 
   dlinkAdd(confitem, &confitem->node, &all_conf_items);
   
-  aconf = (struct AccessItem *)&confitem->conf;
+  aconf = (struct AccessItem *)((unsigned long)confitem + 
+				(unsigned long)sizeof(struct ConfItem));
 
   aconf->status = status;
   aconf->aftype = AF_INET;
@@ -244,7 +245,7 @@ free_access_item(struct AccessItem *aconf)
    * Lets use address arithemetic !
    */
   confitem = (struct ConfItem *)((unsigned long)aconf -
-				(unsigned long)sizeof(struct ConfItem));
+				 (unsigned long)sizeof(struct ConfItem));
   dlinkDelete(&confitem->node, &all_conf_items);
   MyFree(confitem);
 }
