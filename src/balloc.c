@@ -25,7 +25,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: balloc.c,v 7.50 2004/12/04 14:49:04 db Exp $
+ *  $Id: balloc.c,v 7.51 2005/03/29 19:25:47 michael Exp $
  */
 
 /* 
@@ -304,51 +304,42 @@ newblock(BlockHeap * bh)
 BlockHeap *
 BlockHeapCreate(size_t elemsize, int elemsperblock)
 {
-    BlockHeap *bh;
-    assert(elemsize > 0 && elemsperblock > 0);
+  BlockHeap *bh = NULL;
+  assert(elemsize > 0 && elemsperblock > 0);
 
     /* Catch idiotic requests up front */
-    if ((elemsize <= 0) || (elemsperblock <= 0))
-      {
-        outofmemory();          /* die.. out of memory */
-      }
+  if ((elemsize <= 0) || (elemsperblock <= 0))
+    outofmemory();    /* die.. out of memory */
 
-    /* Allocate our new BlockHeap */
-    bh = (BlockHeap *) calloc(1, sizeof(BlockHeap));
-    if (bh == NULL)
-      {
-        outofmemory();          /* die.. out of memory */
-      }
+  /* Allocate our new BlockHeap */
+  if ((bh = calloc(1, sizeof(BlockHeap))) == NULL)
+    outofmemory();    /* die.. out of memory */
 
-    if((elemsize % sizeof(void *)) != 0)
-      {
-	/* Pad to even pointer boundary */
-	elemsize += sizeof(void *);
-	elemsize &= ~(sizeof(void *) - 1);
-      }
+  if ((elemsize % sizeof(void *)) != 0)
+  {
+    /* Pad to even pointer boundary */
+    elemsize += sizeof(void *);
+    elemsize &= ~(sizeof(void *) - 1);
+  }
 
-    bh->elemSize = elemsize;
-    bh->elemsPerBlock = elemsperblock;
-    bh->blocksAllocated = 0;
-    bh->freeElems = 0;
-    bh->base = NULL;
+  bh->elemSize = elemsize;
+  bh->elemsPerBlock = elemsperblock;
 
-    /* Be sure our malloc was successful */
-    if (newblock(bh))
-      {
-        if(bh != NULL)
-          free(bh);
-        outofmemory();          /* die.. out of memory */
-      }
+  /* Be sure our malloc was successful */
+  if (newblock(bh))
+  {
+    if (bh != NULL)
+      free(bh);
 
-    if (bh == NULL)
-      {
-        outofmemory();          /* die.. out of memory */
-      }
+     outofmemory();    /* die.. out of memory */
+  }
 
-    bh->next = heap_list;
-    heap_list = bh;
-    return(bh);
+  assert(bh);
+
+  bh->next = heap_list;
+  heap_list = bh;
+
+  return(bh);
 }
 
 /* ************************************************************************ */
@@ -564,4 +555,47 @@ BlockHeapDestroy(BlockHeap * bh)
 
     free(bh);
     return(0);
+}
+
+/*
+ * block_heap_get_used()
+ *
+ * inputs       - Pointer to a BlockHeap
+ * output       - Number of bytes being used
+ * side effects - NONE
+ */
+size_t
+block_heap_get_used(const BlockHeap *const bh)
+{
+  return(((bh->blocksAllocated *
+           bh->elemsPerBlock)-bh->freeElems) *
+          (bh->elemSize + sizeof(MemBlock)));
+}
+
+/*
+ * block_heap_get_free()
+ *
+ * inputs       - Pointer to a BlockHeap
+ * output       - Number of bytes being free for further allocations
+ * side effects - NONE
+ */
+size_t
+block_heap_get_free(const BlockHeap *const bh)
+{
+  return(bh->freeElems * (bh->elemSize + sizeof(MemBlock)));
+}
+
+/*
+ * block_heap_get_size()
+ *
+ * inputs       - Pointer to a BlockHeap
+ * output       - Total number of bytes of memory belonging to a heap
+ * side effects - NONE
+ */
+size_t
+block_heap_get_size(const BlockHeap *const bh)
+{
+  return(((bh->blocksAllocated *
+           bh->elemsPerBlock)) *
+          (bh->elemSize + sizeof(MemBlock)));
 }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: balloc.h,v 1.16 2004/12/04 14:49:02 db Exp $
+ *  $Id: balloc.h,v 1.17 2005/03/29 19:25:45 michael Exp $
  */
 
 #ifndef INCLUDED_balloc_h
@@ -79,6 +79,9 @@ extern void *     BlockHeapAlloc(BlockHeap *bh);
 extern BlockHeap* BlockHeapCreate(size_t elemsize, int elemsperblock);
 extern int        BlockHeapDestroy(BlockHeap *bh);
 extern void	  initBlockHeap(void);
+extern size_t block_heap_get_used(const BlockHeap *const);
+extern size_t block_heap_get_free(const BlockHeap *const);
+extern size_t block_heap_get_size(const BlockHeap *const);
 #else /* NOBALLOC */
 
 typedef struct BlockHeap BlockHeap;

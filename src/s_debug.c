@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_debug.c,v 7.98 2003/08/20 00:02:47 michael Exp $
+ *  $Id: s_debug.c,v 7.99 2005/03/29 19:25:47 michael Exp $
  */
 
 #include "stdinc.h"
@@ -41,7 +41,10 @@
 #include "send.h"
 #include "whowas.h"
 #include "memory.h"
+#include "balloc.h"
 
+
+extern BlockHeap *channel_heap;
 
 /*
  * This is part of the STATS replies. There is no offical numeric for this
@@ -381,6 +384,12 @@ count_memory(struct Client *source_p)
   sendto_one(source_p, ":%s %d %s z :Links Memory in use: %d(%d)",
              me.name, RPL_STATSDEBUG, source_p->name, (int)links_count,
              (int)links_memory_used);
+
+  sendto_one(source_p, ":%s %d %s :Channel mempool: used %u free %u (size %u)",
+             me.name, RPL_STATSDEBUG, source_p->name,
+             block_heap_get_used(channel_heap),
+             block_heap_get_free(channel_heap),
+             block_heap_get_size(channel_heap));
 
   sendto_one(source_p, 
              ":%s %d %s z :TOTAL: %d Available:  Current max RSS: %lu",
