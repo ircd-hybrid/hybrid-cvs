@@ -1,3 +1,15 @@
+androsyn    2002/06/01 17:58:52 EDT	(20020601_5)
+
+  Modified files:
+    .                    RELNOTES 
+  Log:
+  Updated RELNOTES again
+  
+  Revision  Changes    Path
+  1.31      +1 -0      ircd-hybrid-7/RELNOTES
+
+
+
 androsyn    2002/06/01 17:56:35 EDT	(20020601_4)
 
   Modified files:
@@ -27781,4 +27793,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3733 2002/06/01 21:56:42 androsyn Exp $
+$Id: ChangeLog,v 7.3734 2002/06/01 21:58:58 androsyn Exp $
