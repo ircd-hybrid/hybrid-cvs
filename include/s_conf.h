@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.210 2003/05/09 19:39:49 metalrock Exp $
+ *  $Id: s_conf.h,v 7.211 2003/05/09 20:54:18 metalrock Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
