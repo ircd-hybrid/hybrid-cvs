@@ -1,3 +1,17 @@
+androsyn    2002/04/09 15:52:21 EDT	(20020409_2)
+
+  Modified files:
+    autoconf             configure.in 
+    .                    configure 
+  Log:
+  Fix misleading output regarding NICKLEN.
+  
+  Revision  Changes    Path
+  7.130     +4 -4      ircd-hybrid-7/autoconf/configure.in
+  7.133     +4 -4      ircd-hybrid-7/configure
+
+
+
 db          2002/04/08 22:42:37 EDT	(20020409_1)
 
   Modified files:
@@ -24661,4 +24675,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3533 2002/04/09 02:42:43 db Exp $
+$Id: ChangeLog,v 7.3534 2002/04/09 19:52:26 androsyn Exp $
