@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: adns.c,v 7.44 2002/06/03 18:54:21 androsyn Exp $
+ *  $Id: adns.c,v 7.45 2002/06/03 19:24:15 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -121,6 +121,7 @@ void dns_writeable(int fd, void *ptr)
 {
   adns_processwriteable(dns_state, fd, &SystemTime); 
   dns_select();
+  dns_do_callbacks();
 }
 
 
@@ -178,8 +179,8 @@ void dns_do_callbacks(void)
 void dns_readable(int fd, void *ptr)
 {
   adns_processreadable(dns_state, fd, &SystemTime);  
-  dns_do_callbacks();
   dns_select();
+  dns_do_callbacks();
 }
 
 /* void dns_select(void)
@@ -240,7 +241,7 @@ void adns_getaddr(struct irc_inaddr *addr, int aftype,
                   struct DNSQuery *req)
 {
   struct irc_sockaddr ipn;
-  
+  memset(&ipn, 0, sizeof(struct irc_sockaddr));
   assert(dns_state->nservers > 0);
   
 #ifdef IPV6
