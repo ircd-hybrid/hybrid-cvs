@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_server.c,v 7.0 1999/08/01 21:19:48 lusky Exp $
+ *   $Id: m_server.c,v 7.1 1999/08/03 01:41:31 tomh Exp $
  */
 #include "m_commands.h"  /* m_server prototype */
 #include "client.h"      /* client struct */
@@ -35,7 +35,6 @@
 #include "s_stats.h"     /* ServerStats */
 #include "scache.h"      /* find_or_add */
 #include "send.h"        /* sendto_one */
-#include "struct.h"      /* bleah */
 
 #include <string.h>
 #include <stdlib.h>

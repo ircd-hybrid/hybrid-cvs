@@ -43,7 +43,7 @@
  *
  * Diane Bruce -db (db@db.net)
  *
- * $Id: mtrie_conf.c,v 7.2 1999/08/02 18:16:18 db Exp $
+ * $Id: mtrie_conf.c,v 7.3 1999/08/03 01:41:32 tomh Exp $
  */
 #include "mtrie_conf.h"
 #include "class.h"
@@ -55,7 +55,6 @@
 #include "numeric.h"
 #include "s_conf.h"
 #include "send.h"
-#include "struct.h"
 
 #include <string.h>
 #include <stdlib.h>

@@ -21,12 +21,11 @@
  * see the header file (dbuf.h).
  *
  *
- * $Id: dbuf.c,v 7.0 1999/08/01 21:19:47 lusky Exp $
+ * $Id: dbuf.c,v 7.1 1999/08/03 01:41:28 tomh Exp $
  */
 #include "dbuf.h"
 #include "common.h"
 #include "irc_string.h"
-#include "struct.h"
 
 #include <stdio.h>
 #include <stdlib.h>

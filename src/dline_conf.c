@@ -1,7 +1,7 @@
 /*
  * dline_conf.c
  *
- * $Id: dline_conf.c,v 7.1 1999/08/02 11:47:00 db Exp $
+ * $Id: dline_conf.c,v 7.2 1999/08/03 01:41:28 tomh Exp $
  */
 #include "dline_conf.h"
 #include "class.h"
@@ -12,7 +12,6 @@
 #include "numeric.h"
 #include "s_conf.h"
 #include "send.h"
-#include "struct.h"
 
 #include <fcntl.h>
 #include <sys/wait.h>

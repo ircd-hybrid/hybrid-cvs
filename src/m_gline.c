@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_gline.c,v 7.1 1999/08/02 11:47:01 db Exp $
+ *  $Id: m_gline.c,v 7.2 1999/08/03 01:41:30 tomh Exp $
  */
 #include "m_gline.h"
 #include "channel.h"
@@ -37,7 +37,6 @@
 #include "s_misc.h"
 #include "scache.h"
 #include "send.h"
-#include "struct.h"
 
 #include <assert.h>
 #include <string.h>

@@ -20,14 +20,13 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 7.1 1999/08/02 11:47:03 db Exp $
+ *   $Id: m_whois.c,v 7.2 1999/08/03 01:41:32 tomh Exp $
  */
 
 #include "m_commands.h"
 #include "client.h"
 #include "channel.h"
 #include "hash.h"
-#include "struct.h"
 #include "ircd.h"
 #include "numeric.h"
 #include "s_serv.h"

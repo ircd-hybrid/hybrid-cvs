@@ -18,7 +18,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: packet.c,v 7.2 1999/08/02 11:47:04 db Exp $
+ *   $Id: packet.c,v 7.3 1999/08/03 01:41:32 tomh Exp $
  */ 
 #include "packet.h"
 #include "client.h"
@@ -27,7 +27,6 @@
 #include "list.h"
 #include "parse.h"
 #include "s_zip.h"
-#include "struct.h"
 
 
 

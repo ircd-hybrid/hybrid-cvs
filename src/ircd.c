@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.4 1999/08/02 11:47:01 db Exp $
+ * $Id: ircd.c,v 7.5 1999/08/03 01:41:29 tomh Exp $
  */
 
 
@@ -51,7 +51,6 @@
 #include "s_zip.h"
 #include "scache.h"
 #include "send.h"
-#include "struct.h"
 #include "whowas.h"
 
 #include <stdlib.h>

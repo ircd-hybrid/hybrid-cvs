@@ -1,7 +1,7 @@
 /*
  * m_info.c 
  *
- * $Id: m_info.c,v 7.1 1999/08/02 11:47:02 db Exp $
+ * $Id: m_info.c,v 7.2 1999/08/03 01:41:30 tomh Exp $
  */
 #define DEFINE_M_INFO_DATA
 #include "m_info.h"
@@ -14,7 +14,6 @@
 #include "s_serv.h"
 #include "s_user.h"
 #include "send.h"
-#include "struct.h"
 
 #include <time.h>
 #include <string.h>
