@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.99 2002/03/07 06:21:45 db Exp $
+ *  $Id: m_kline.c,v 1.100 2002/04/26 11:51:19 leeh Exp $
  */
 
 #include "tools.h"
@@ -82,7 +82,7 @@ _moddeinit(void)
   mod_del_cmd(&kline_msgtab);
   mod_del_cmd(&dline_msgtab);
 }
-const char *_version = "$Revision: 1.99 $";
+const char *_version = "$Revision: 1.100 $";
 #endif
 
 /* Local function prototypes */
@@ -930,8 +930,7 @@ static int valid_comment(struct Client *source_p, char *comment)
 {
   if(strchr(comment, '"'))
     {
-      if(!IsServer(source_p))
-	sendto_one(source_p,
+      sendto_one(source_p,
 		   ":%s NOTICE %s :Invalid character '\"' in comment",
 		   me.name, source_p->name);
       return 0;
@@ -975,10 +974,12 @@ already_placed_kline(struct Client *source_p, char *luser, char *lhost)
   if ((aconf = find_conf_by_address(lhost, piphost, CONF_KILL, t, luser)))
   {
    reason = aconf->passwd ? aconf->passwd : "<No Reason>";
+
    /* Remote servers can set klines, so if its a dupe we warn all 
     * local opers and leave it at that
     */
-   if (IsServer(source_p))
+   /* they can?  here was me thinking it was only remote clients :P */
+   if(!MyClient(source_p))
     sendto_realops_flags(FLAGS_ALL, L_ALL, 
              "*** Remote K-Line [%s@%s] already K-Lined by [%s@%s] - %s",
              luser, lhost, aconf->user, aconf->host, reason);
