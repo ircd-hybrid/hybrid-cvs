@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kill.c,v 1.66 2002/07/27 13:27:14 leeh Exp $
+ *  $Id: m_kill.c,v 1.67 2003/02/06 08:46:06 a1kmm Exp $
  */
 
 #include "stdinc.h"
@@ -64,7 +64,7 @@ _moddeinit(void)
   mod_del_cmd(&kill_msgtab);
 }
 
-const char *_version = "$Revision: 1.66 $";
+const char *_version = "$Revision: 1.67 $";
 #endif
 /*
 ** mo_kill
@@ -161,7 +161,7 @@ static void mo_kill(struct Client *client_p, struct Client *source_p,
 
   ircsprintf(buf, "Killed (%s (%s))", source_p->name, reason);
   
-  exit_client(client_p, target_p, source_p, buf);
+  enqueue_closing_client(client_p, target_p, source_p, buf);
 }
 
 /*
@@ -289,7 +289,7 @@ static void ms_kill(struct Client *client_p, struct Client *source_p,
   else
     ircsprintf(buf, "Killed (%s %s)", source_p->name, reason);
     
-  exit_client(client_p, target_p, source_p, buf);
+  enqueue_closing_client(client_p, target_p, source_p, buf);
 }
 
 static void relay_kill(struct Client *one, struct Client *source_p,

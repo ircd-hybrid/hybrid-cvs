@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.69 2003/01/11 03:52:29 db Exp $
+ *  $Id: channel_mode.c,v 7.70 2003/02/06 08:46:01 a1kmm Exp $
  */
 
 #include "stdinc.h"
@@ -1008,8 +1008,10 @@ chm_ban(struct Client *client_p, struct Client *source_p,
 /* XXX this hack allows /mode * +o-b nick ban.cookie
  * I'd like to see this hack go away in the future.
  */
-      if(del_id(chptr, raw_mask, CHFL_BAN))
-       mask = raw_mask;
+    if (del_id(chptr, raw_mask, CHFL_BAN))
+      mask = raw_mask;
+    else
+      del_id(chptr, mask, CHFL_BAN);
 #endif
 
     mode_changes[mode_count].letter = c;

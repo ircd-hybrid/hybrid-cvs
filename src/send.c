@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.220 2003/02/03 05:25:49 bill Exp $
+ *  $Id: send.c,v 7.221 2003/02/06 08:45:58 a1kmm Exp $
  */
 
 #include "stdinc.h"
@@ -173,7 +173,7 @@ _send_linebuf(struct Client *to, buf_head_t *linebuf)
                            get_sendq(to));
     if (IsClient(to))
       to->flags |= FLAGS_SENDQEX;
-    dead_link_on_write(to, 0);
+    dead_link_on_write(to, 0, 1);
     return -1;
   }
   else
@@ -190,7 +190,7 @@ _send_linebuf(struct Client *to, buf_head_t *linebuf)
   to->localClient->sendM += 1;
   me.localClient->sendM += 1;
 
-  send_queued_write(to->localClient->fd, to);	
+  send_queued_write(to->localClient->fd, to, 1);	
   return 0;
 } /* send_linebuf() */
 
@@ -243,7 +243,7 @@ send_linebuf_remote(struct Client *to, struct Client *from,
                  me.name, from->name, to->name, to->username,
                  to->host, to->from);
 
-    exit_client(NULL, to, &me, "Ghosted client");
+    enqueue_closing_client(NULL, to, &me, "Ghosted client");
 
     return;
   } 
@@ -252,6 +252,12 @@ send_linebuf_remote(struct Client *to, struct Client *from,
   return;
 } /* send_linebuf_remote() */
 
+void
+send_queued_write_cb(int fd, void *data)
+{
+  send_queued_write(fd, data, 0);
+}
+
 /*
  ** send_queued_write
  **      This is called when there is a chance the some output would
@@ -259,9 +265,8 @@ send_linebuf_remote(struct Client *to, struct Client *from,
  **      possible, and then if any data is left, a write is rescheduled.
  */
 void
-send_queued_write(int fd, void *data)
+send_queued_write(int fd, struct Client *to, int during_parse)
 {
-  struct Client *to = data;
   int retlen;
 #ifndef NDEBUG
   struct hook_io_data hdata;
@@ -324,7 +329,7 @@ send_queued_write(int fd, void *data)
     }
     else if (retlen <= 0)
     {
-      dead_link_on_write(to, errno);
+      dead_link_on_write(to, errno, during_parse);
       return;
     }
   }
@@ -332,7 +337,7 @@ send_queued_write(int fd, void *data)
   /* Finally, if we have any more data, reschedule a write */
   if (linebuf_len(&to->localClient->buf_sendq))
     comm_setselect(fd, FDLIST_IDLECLIENT, COMM_SELECT_WRITE,
-                   send_queued_write, to, 0);
+                   send_queued_write_cb, to, 0);
 } /* send_queued_write() */
 
 /*
@@ -373,14 +378,14 @@ send_queued_slink_write(int fd, void *data)
       /* If we have a fatal error */
       if (!ignoreErrno(errno))
       {
-	dead_link_on_write(to, errno);
+	dead_link_on_write(to, errno, 0 /* XXX */);
 	return;
       }
     }
     else if (retlen == 0)
     {
       /* 0 bytes is an EOF .. */
-      dead_link_on_write(to, 0);
+      dead_link_on_write(to, 0, 0 /* XXX */);
       return;
     }
     else

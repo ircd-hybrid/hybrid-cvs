@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.161 2003/02/04 05:30:48 db Exp $
+ *  $Id: client.h,v 7.162 2003/02/06 08:46:11 a1kmm Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -400,7 +400,6 @@ struct LocalUser
 #define FLAGS_SERVLINK     0x10000 /* servlink has servlink process */
 #define FLAGS_MARK	   0x20000 /* marked client */
 #define FLAGS_CANFLOOD	   0x40000 /* client has the ability to flood */
-#define FLAGS_EXITED	   0x80000 /* this client waiting for undertaker */
 /* umodes, settable flags */
 
 #define FLAGS_SERVNOTICE   0x0001 /* server notices such as kill */
@@ -477,8 +476,6 @@ struct LocalUser
 #define DoAccess(x)             ((x)->flags & FLAGS_CHKACCESS)
 #define IsDead(x)               ((x)->flags & FLAGS_DEADSOCKET)
 #define SetDead(x)              ((x)->flags |= FLAGS_DEADSOCKET)
-#define IsExited(x)		((x)->flags & FLAGS_EXITED)
-#define SetExited(x)		((x)->flags |= FLAGS_EXITED)
 #define SetAccess(x)            ((x)->flags |= FLAGS_CHKACCESS)
 #define IsClosing(x)		((x)->flags & FLAGS_CLOSING)
 #define SetClosing(x)		((x)->flags |= FLAGS_CLOSING)
@@ -625,7 +622,13 @@ extern int set_initial_nick(struct Client *client_p, struct Client *source_p,
                             char *nick);
 extern int change_local_nick(struct Client *client_p, struct Client *source_p,
                              char *nick);
-extern void dead_link_on_write(struct Client *client_p, int ierrno);
+extern void dead_link_on_write(struct Client *client_p, int ierrno,
+                               int during_parse);
 extern void dead_link_on_read(struct Client *client_p, int error);
+extern int enqueue_closing_client(struct Client *client_p,
+                                  struct Client *target_p,
+                                  struct Client *source_p,
+                                  const char *reason);
+extern void exit_closing_clients(void);
 #endif /* INCLUDED_client_h */
 

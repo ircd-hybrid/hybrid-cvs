@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_motd.c,v 1.33 2002/11/11 20:43:18 bill Exp $
+ *  $Id: m_motd.c,v 1.34 2003/02/06 08:46:08 a1kmm Exp $
  */
 
 #include "stdinc.h"
@@ -70,7 +70,7 @@ _moddeinit(void)
   mod_del_cmd(&motd_msgtab);
 }
 
-const char *_version = "$Revision: 1.33 $";
+const char *_version = "$Revision: 1.34 $";
 #endif
 
 /* mr_motd()
@@ -82,7 +82,8 @@ static void mr_motd(struct Client *client_p, struct Client *source_p,
 {
   /* allow unregistered clients to see the motd, but exit them */
   SendMessageFile(source_p,&ConfigFileEntry.motd);
-  exit_client(client_p, source_p, source_p, "Client Exit after MOTD");
+  enqueue_closing_client(client_p, source_p, source_p,
+                         "Client Exit after MOTD");
 }
 
 /*

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.100 2003/01/25 01:52:29 lusky Exp $
+ *  $Id: packet.c,v 7.101 2003/02/06 08:46:00 a1kmm Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -58,7 +58,7 @@ parse_client_queued(struct Client *client_p)
 
     for(;;)
     {
-      if (IsDead(client_p))
+      if (IsClosing(client_p))
 	return;
       if (client_p->localClient == NULL)
 	return;
@@ -73,7 +73,7 @@ parse_client_queued(struct Client *client_p)
 	if(dolen <= 0)
 	  break;
                           
-      if(!IsDead(client_p))
+      if(!IsClosing(client_p))
       {
         client_dopacket(client_p, readBuf, dolen);
         i++;
@@ -95,7 +95,7 @@ parse_client_queued(struct Client *client_p)
 
   if (IsServer(client_p) || IsConnecting(client_p) || IsHandshake(client_p))
   {
-    if(IsDead(client_p))
+    if(IsClosing(client_p))
       return;
     if(client_p->localClient == NULL)
       return;
@@ -104,7 +104,7 @@ parse_client_queued(struct Client *client_p)
                               readBuf, READBUF_SIZE, LINEBUF_COMPLETE,
                               LINEBUF_PARSED)) > 0)
     {
-      if (!IsDead(client_p))
+      if (!IsClosing(client_p))
         client_dopacket(client_p, readBuf, dolen);
       else if(MyConnect(client_p))
       {
@@ -134,7 +134,7 @@ parse_client_queued(struct Client *client_p)
      */
     for(;;)
     {
-      if (IsDead(client_p))
+      if (IsClosing(client_p))
 	break;
 
       /* This flood protection works as follows:
@@ -233,6 +233,9 @@ flood_recalc(int fd, void *data)
     /* and finally, reset the flood check */
     comm_setflush(fd, 1000, flood_recalc, client_p);
   }
+
+  /* And get rid of the closing clients... */
+  exit_closing_clients();
 }
 
 /*
@@ -258,7 +261,7 @@ read_ctrl_packet(int fd, void *data)
     
   reply = &lserver->slinkrpl;
 
-  if(IsDead(server))
+  if(IsDefunct(server))
   {
     return;
   }
@@ -275,6 +278,7 @@ read_ctrl_packet(int fd, void *data)
     {
       if((length == -1) && ignoreErrno(errno))
         goto nodata;
+      SetDead(server);
       return;
     }
     reply->command = tmp[0];
@@ -377,7 +381,7 @@ read_packet(int fd, void *data)
 #ifndef NDEBUG
   struct hook_io_data hdata;
 #endif
-  if(IsDead(client_p))
+  if(IsDefunct(client_p))
     return;
   
   assert(lclient_p != NULL);
@@ -438,11 +442,16 @@ read_packet(int fd, void *data)
   
   /* Attempt to parse what we have */
 
-  if (!IsDead(client_p))
+  if (!IsClosing(client_p))
   {
     parse_client_queued(client_p);
-    if (IsDead(client_p))
+    /* Check this before we call exit_closing_clients... */
+    if (IsClosing(client_p))
+    {
+      exit_closing_clients();
       return;
+    }
+    exit_closing_clients();
 
     /* Check to make sure we're not flooding */
     if (IsPerson(client_p) &&

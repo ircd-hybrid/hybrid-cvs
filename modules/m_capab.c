@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_capab.c,v 1.28 2002/05/24 23:34:19 androsyn Exp $
+ *  $Id: m_capab.c,v 1.29 2003/02/06 08:46:08 a1kmm Exp $
  */
 
 #include "stdinc.h"
@@ -51,7 +51,7 @@ _moddeinit(void)
   mod_del_cmd(&capab_msgtab);
 }
 
-const char *_version = "$Revision: 1.28 $";
+const char *_version = "$Revision: 1.29 $";
 #endif
 
 /*
@@ -78,7 +78,8 @@ static void mr_capab(struct Client *client_p, struct Client *source_p,
 
   if (client_p->localClient->caps)
   {
-    exit_client(client_p, client_p, client_p, "CAPAB received twice");
+    enqueue_closing_client(client_p, client_p, client_p,
+                           "CAPAB received twice");
     return;
   }
   else
@@ -114,8 +115,8 @@ static void mr_capab(struct Client *client_p, struct Client *source_p,
         else
         {
           /* cipher is still zero; we didn't find a matching entry. */
-          exit_client(client_p, client_p, client_p,
-                      "Cipher selected is not available here.");
+          enqueue_closing_client(client_p, client_p, client_p,
+                                 "Cipher selected is not available here.");
           return;
         }
       }

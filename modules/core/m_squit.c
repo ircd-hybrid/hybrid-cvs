@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_squit.c,v 1.45 2002/05/24 23:34:39 androsyn Exp $
+ *  $Id: m_squit.c,v 1.46 2003/02/06 08:46:05 a1kmm Exp $
  */
 
 #include "stdinc.h"
@@ -58,7 +58,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&squit_msgtab);
 }
-const char *_version = "$Revision: 1.45 $";
+const char *_version = "$Revision: 1.46 $";
 #endif
 struct squit_parms 
 {
@@ -108,7 +108,8 @@ static void mo_squit(struct Client *client_p, struct Client *source_p,
 	       found_squit->target_p->name, get_client_name(source_p, HIDE_IP),
 	       comment);
 	}
-      exit_client(client_p, found_squit->target_p, source_p, comment);
+      enqueue_closing_client(client_p, found_squit->target_p, source_p,
+                             comment);
       return;
     }
   else
@@ -132,7 +133,7 @@ static void ms_squit(struct Client *client_p, struct Client *source_p,
 
   if(parc < 2)
     {
-      exit_client(client_p, client_p, source_p, comment);
+      enqueue_closing_client(client_p, client_p, source_p, comment);
       return;
     }
 
@@ -157,7 +158,8 @@ static void ms_squit(struct Client *client_p, struct Client *source_p,
 	       found_squit->server_name, comment);
 
 	}
-      exit_client(client_p, found_squit->target_p, source_p, comment);
+      enqueue_closing_client(client_p, found_squit->target_p, source_p,
+                             comment);
       return;
     }
 }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.90 2003/01/10 03:47:35 db Exp $
+ *  $Id: m_server.c,v 1.91 2003/02/06 08:46:05 a1kmm Exp $
  */
 
 #include "stdinc.h"
@@ -67,7 +67,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&server_msgtab);
 }
-const char *_version = "$Revision: 1.90 $";
+const char *_version = "$Revision: 1.91 $";
 #endif
 
 int bogus_host(char *host);
@@ -91,7 +91,7 @@ static void mr_server(struct Client *client_p, struct Client *source_p,
   if (parc < 4)
     {
       sendto_one(client_p,"ERROR :No servername");
-      exit_client(client_p, client_p, client_p, "Wrong number of args");
+      enqueue_closing_client(client_p, client_p, client_p, "Wrong number of args");
       return;
     }
 
@@ -108,13 +108,13 @@ static void mr_server(struct Client *client_p, struct Client *source_p,
 			   get_client_name(client_p, HIDE_IP));
       sendto_realops_flags(FLAGS_ALL, L_OPER,"Link %s dropped, non-TS server",
 			   get_client_name(client_p, MASK_IP));
-      exit_client(client_p, client_p, client_p, "Non-TS server");
+      enqueue_closing_client(client_p, client_p, client_p, "Non-TS server");
       return;
     }
 
   if (bogus_host(name))
   {
-    exit_client(client_p, client_p, client_p, "Bogus server name");
+    enqueue_closing_client(client_p, client_p, client_p, "Bogus server name");
     return;
   }
 
@@ -134,7 +134,8 @@ static void mr_server(struct Client *client_p, struct Client *source_p,
            "servername %s", get_client_name(client_p, MASK_IP), name);
       }
       
-      exit_client(client_p, client_p, client_p, "Invalid servername.");
+      enqueue_closing_client(client_p, client_p, client_p,
+                             "Invalid servername.");
       return;
       /* NOT REACHED */
       break;
@@ -148,7 +149,8 @@ static void mr_server(struct Client *client_p, struct Client *source_p,
            "Unauthorized server connection attempt from %s: Bad password "
            "for server %s", get_client_name(client_p, MASK_IP), name);
 
-      exit_client(client_p, client_p, client_p, "Invalid password.");
+      enqueue_closing_client(client_p, client_p, client_p,
+                             "Invalid password.");
       return;
       /* NOT REACHED */
       break;
@@ -162,7 +164,7 @@ static void mr_server(struct Client *client_p, struct Client *source_p,
            "Unauthorized server connection attempt from %s: Invalid host "
            "for server %s", get_client_name(client_p, MASK_IP), name);
 
-      exit_client(client_p, client_p, client_p, "Invalid host.");
+      enqueue_closing_client(client_p, client_p, client_p, "Invalid host.");
       return;
       /* NOT REACHED */
       break;
@@ -176,7 +178,8 @@ static void mr_server(struct Client *client_p, struct Client *source_p,
 		           "Invalid servername %s from %s",
 			   name, get_client_name(client_p, MASK_IP));
 
-      exit_client(client_p, client_p, client_p, "Invalid servername.");
+      enqueue_closing_client(client_p, client_p, client_p,
+                             "Invalid servername.");
       return;
       /* NOT REACHED */
       break;
@@ -204,7 +207,8 @@ static void mr_server(struct Client *client_p, struct Client *source_p,
          get_client_name(client_p, MASK_IP));
 
       sendto_one(client_p, "ERROR :Server already exists.");
-      exit_client(client_p, client_p, client_p, "Server Exists");
+      enqueue_closing_client(client_p, client_p, client_p,
+                             "Server Exists");
       return;
     }
 
@@ -320,7 +324,7 @@ static void ms_server(struct Client *client_p, struct Client *source_p,
 	                   "Link %s cancelled, server %s already exists",
 		 	   client_p->name, name);
       
-        exit_client(client_p, client_p, &me, "Server Exists");
+        enqueue_closing_client(client_p, client_p, &me, "Server Exists");
 	return;
     }
   
@@ -342,7 +346,7 @@ static void ms_server(struct Client *client_p, struct Client *source_p,
       sendto_realops_flags(FLAGS_ALL, L_OPER,
           "Link %s cancelled: Server/nick collision on %s",
 	  get_client_name(client_p, MASK_IP), name);
-      exit_client(client_p, client_p, client_p, "Nick as Server");
+      enqueue_closing_client(client_p, client_p, client_p, "Nick as Server");
       return;
     }
 
@@ -418,7 +422,7 @@ static void ms_server(struct Client *client_p, struct Client *source_p,
           "Non-Hub link %s introduced %s.",
 	  get_client_name(client_p, MASK_IP), name);
 
-      exit_client(NULL, client_p, &me, "No matching hub_mask.");
+      enqueue_closing_client(NULL, client_p, &me, "No matching hub_mask.");
       return;
     }
 
@@ -442,7 +446,7 @@ static void ms_server(struct Client *client_p, struct Client *source_p,
 #if 0
       if ((CurrentTime - source_p->firsttime) < 20)
         {
-          exit_client(NULL, source_p, &me, "Leafed Server.");
+          enqueue_closing_client(NULL, source_p, &me, "Leafed Server.");
           return;
         }
       else
@@ -453,7 +457,7 @@ static void ms_server(struct Client *client_p, struct Client *source_p,
         }
 #endif
 
-      exit_client(NULL, client_p, &me, "Leafed Server.");
+      enqueue_closing_client(NULL, client_p, &me, "Leafed Server.");
       return;
     }
   
@@ -468,7 +472,8 @@ static void ms_server(struct Client *client_p, struct Client *source_p,
 		         "Link %s introduced server with invalid servername %s",
 			 client_p->name, name);
     
-    exit_client(NULL, client_p, &me, "Invalid servername introduced.");
+    enqueue_closing_client(NULL, client_p, &me,
+                           "Invalid servername introduced.");
     return;
   }
 
@@ -512,7 +517,7 @@ static void ms_server(struct Client *client_p, struct Client *source_p,
 	  sendto_realops_flags(FLAGS_ALL, L_OPER, 
 	        "Lost N-line for %s on %s. Closing",
 		get_client_name(client_p, MASK_IP), name);
-	  exit_client(client_p, client_p, client_p, "Lost N line");
+	  enqueue_closing_client(client_p, client_p, client_p, "Lost N line");
           return;
 	}
       if (match(my_name_for_link(me.name, aconf), target_p->name))

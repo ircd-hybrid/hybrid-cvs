@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_part.c,v 1.62 2003/02/04 04:24:04 db Exp $
+ *  $Id: m_part.c,v 1.63 2003/02/06 08:46:06 a1kmm Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&part_msgtab);
 }
-const char *_version = "$Revision: 1.62 $";
+const char *_version = "$Revision: 1.63 $";
 #endif
 
 static void part_one_client(struct Client *client_p,
@@ -123,7 +123,6 @@ part_one_client(struct Client *client_p, struct Client *source_p,
 {
   struct Channel *chptr;
   struct Channel *bchan;
-  int part_with_reason = 0, dying = 0;
 
   if ((chptr = hash_find_channel(name)) == NULL)
     {
@@ -158,8 +157,8 @@ part_one_client(struct Client *client_p, struct Client *source_p,
       return;
     }
   if (MyConnect(source_p) && !IsOper(source_p))
-   check_spambot_warning(source_p, NULL);
-
+    check_spambot_warning(source_p, NULL);
+  
   /*
    *  Remove user from the old channel (if any)
    *  only allow /part reasons in -m chans
@@ -169,34 +168,6 @@ part_one_client(struct Client *client_p, struct Client *source_p,
        ((can_send(chptr, source_p) > 0 && 
          (source_p->firsttime + ConfigFileEntry.anti_spam_exit_message_time)
          < CurrentTime))))
-  {
-    part_with_reason = 1;
-    if (MyConnect(source_p))
-      sendto_one(client_p,
-                 ":%s!%s@%s PART %s :%s",
-                 source_p->name, source_p->username,
-                 source_p->host, bchan->chname, reason);
-  }  
-  else if (MyConnect(source_p))
-    sendto_one(client_p,
-               ":%s!%s@%s PART %s",
-               source_p->name, source_p->username,
-               source_p->host, bchan->chname);
-  
-  /* If they just died, the channel and net has already been informed,
-   * and we don't need to propagate any state. The user has also been
-   * removed from the channel, so we have nothing to worry about.
-   */
-  if (IsDead(source_p))
-    return;
-
-  remove_user_from_channel(chptr, source_p);
-
-  /* There is no risk of a server client dying here because it is the
-   * "one" that doesn't receive messages, and hence it cannot have a
-   * write error.
-   */
-  if (part_with_reason)
   {
     sendto_server(client_p, NULL, chptr, CAP_UID, NOCAPS, NOFLAGS,
                   ":%s PART %s :%s", ID(source_p), chptr->chname,
@@ -225,4 +196,5 @@ part_one_client(struct Client *client_p, struct Client *source_p,
                          source_p->host,
                          bchan->chname);
   }
+  remove_user_from_channel(chptr, source_p);
 }

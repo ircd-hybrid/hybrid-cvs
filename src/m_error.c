@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_error.c,v 7.26 2002/10/24 01:16:37 bill Exp $
+ *  $Id: m_error.c,v 7.27 2003/02/06 08:46:00 a1kmm Exp $
  */
 
 #include "stdinc.h"
@@ -52,7 +52,7 @@ void m_error(struct Client *client_p, struct Client *source_p,
              int parc, char *parv[])
 {
   if (MyClient(source_p))
-    exit_client(client_p, source_p, source_p, "ERROR");
+    enqueue_closing_client(client_p, source_p, source_p, "ERROR");
 }
 
 void ms_error(struct Client *client_p, struct Client *source_p,

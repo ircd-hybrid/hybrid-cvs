@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_quit.c,v 1.26 2002/07/12 01:01:22 androsyn Exp $
+ *  $Id: m_quit.c,v 1.27 2003/02/06 08:46:05 a1kmm Exp $
  */
 
 #include "stdinc.h"
@@ -55,7 +55,7 @@ _moddeinit(void)
   mod_del_cmd(&quit_msgtab);
 }
 
-const char *_version = "$Revision: 1.26 $";
+const char *_version = "$Revision: 1.27 $";
 #endif
 /*
 ** m_quit
@@ -91,7 +91,7 @@ static void m_quit(struct Client *client_p,
       comment = "Client Quit";
     }
 
-  exit_client(client_p, source_p, source_p, comment);
+  enqueue_closing_client(client_p, source_p, source_p, comment);
 }
 
 /*
@@ -110,6 +110,6 @@ static void ms_quit(struct Client *client_p,
   if (strlen(comment) > (size_t) TOPICLEN)
     comment[TOPICLEN] = '\0';
 
-  exit_client(client_p, source_p, source_p, comment);
+  enqueue_closing_client(client_p, source_p, source_p, comment);
 }
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.177 2003/01/31 12:15:16 a1kmm Exp $
+ *  $Id: s_bsd.c,v 7.178 2003/02/06 08:45:59 a1kmm Exp $
  */
 
 #include "stdinc.h"
@@ -316,7 +316,7 @@ close_connection(struct Client *client_p)
   if (!IsDead(client_p))
     {
       /* attempt to flush any pending dbufs. Evil, but .. -- adrian */
-      send_queued_write(client_p->localClient->fd, client_p);
+      send_queued_write(client_p->localClient->fd, client_p, 0);
       fd_close(client_p->localClient->fd);
       client_p->localClient->fd = -1;
     }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: config.h,v 7.141 2003/01/17 05:21:28 db Exp $
+ *  $Id: config.h,v 7.142 2003/02/06 08:46:11 a1kmm Exp $
  */
 
 #ifndef INCLUDED_config_h
@@ -299,6 +299,12 @@
 #define VCHANS
 #define ANONOPS
 #define HALFOPS
+
+/*
+ * The maximum number of local clients that are likely to close at once. If
+ * this number is exceeded, it will still work, but it will be slower...
+ */
+#define LOCAL_CLOSE_TABLE_SIZE 16
 
 /* END OF CONFIGURABLE OPTIONS */
 

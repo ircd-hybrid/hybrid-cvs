@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_svinfo.c,v 1.34 2002/05/24 23:34:22 androsyn Exp $
+ *  $Id: m_svinfo.c,v 1.35 2003/02/06 08:46:08 a1kmm Exp $
  */
 #include "stdinc.h"
 #include "handlers.h"
@@ -56,7 +56,7 @@ _moddeinit(void)
   mod_del_cmd(&svinfo_msgtab);
 }
 
-const char *_version = "$Revision: 1.34 $";
+const char *_version = "$Revision: 1.35 $";
 #endif
 /*
  * ms_svinfo - SVINFO message handler
@@ -74,7 +74,8 @@ static void ms_svinfo(struct Client *client_p, struct Client *source_p,
 
   if (MyConnect(source_p) && IsUnknown(source_p))
   {
-    exit_client(source_p, source_p, source_p, "Need SERVER before SVINFO");
+    enqueue_closing_client(source_p, source_p, source_p,
+                           "Need SERVER before SVINFO");
     return;
   }
 
@@ -94,7 +95,8 @@ static void ms_svinfo(struct Client *client_p, struct Client *source_p,
       sendto_realops_flags(FLAGS_ALL, L_OPER,
                  "Link %s dropped, wrong TS protocol version (%s,%s)",
                  get_client_name(source_p, MASK_IP), parv[1], parv[2]);
-      exit_client(source_p, source_p, source_p, "Incompatible TS version");
+      enqueue_closing_client(source_p, source_p, source_p,
+                             "Incompatible TS version");
       return;
     }
 
@@ -125,7 +127,8 @@ static void ms_svinfo(struct Client *client_p, struct Client *source_p,
           (unsigned long) CurrentTime,
           (unsigned long) theirtime,
           (int) deltat);
-      exit_client(source_p, source_p, source_p, "Excessive TS delta");
+      enqueue_closing_client(source_p, source_p, source_p,
+                             "Excessive TS delta");
       return;
     }
 

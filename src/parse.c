@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.144 2003/01/28 21:04:06 db Exp $
+ *  $Id: parse.c,v 7.145 2003/02/06 08:46:00 a1kmm Exp $
  */
 
 #include "stdinc.h"
@@ -384,8 +384,8 @@ handle_command(struct Message *mptr, struct Client *client_p,
       ilog(L_CRIT, "Insufficient parameters (%d) for command '%s' from %s.",
            i, mptr->cmd, client_p->name);
       
-      exit_client(client_p, client_p, client_p,
-		  "Not enough arguments to server command.");
+      enqueue_closing_client(client_p, client_p, client_p,
+                             "Not enough arguments to server command.");
       return(-1);
     }
 
@@ -650,7 +650,7 @@ cancel_clients(struct Client *client_p, struct Client *source_p, char *cmd)
       return -1;
 
       /*
-        return exit_client(client_p, client_p, &me, "Fake Direction");
+        return enqueue_closing_client(client_p, client_p, &me, "Fake Direction");
         */
     }
   /*
@@ -681,7 +681,8 @@ cancel_clients(struct Client *client_p, struct Client *source_p, char *cmd)
 	   
 	   return 0;
    }
-  return exit_client(client_p, client_p, &me, "Fake prefix");
+  enqueue_closing_client(client_p, client_p, &me, "Fake prefix");
+  return CLIENT_EXITED;
 }
 
 /*
