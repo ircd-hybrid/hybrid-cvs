@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nick.c,v 1.84 2002/02/25 17:39:10 androsyn Exp $
+ *  $Id: m_nick.c,v 1.85 2002/02/25 20:22:30 leeh Exp $
  */
 
 #include "handlers.h"
@@ -98,7 +98,7 @@ _moddeinit(void)
   mod_del_cmd(&client_msgtab);
 }
 
-char *_version = "$Revision: 1.84 $";
+char *_version = "$Revision: 1.85 $";
 #endif
 
 /*
@@ -111,7 +111,7 @@ static void mr_nick(struct Client *client_p, struct Client *source_p,
                     int parc, char *parv[])
 {
   struct   Client *target_p, *uclient_p;
-  char     nick[NICKLEN + 2];
+  char     nick[NICKLEN];
   char*    s;
   dlink_node *ptr;
    
@@ -196,7 +196,7 @@ static void mr_nick(struct Client *client_p, struct Client *source_p,
  static void m_nick(struct Client *client_p, struct Client *source_p,
                    int parc, char *parv[])
 {
-  char     nick[NICKLEN + 2];
+  char     nick[NICKLEN];
   struct   Client *target_p;
 
   if(parc < 2)
@@ -308,7 +308,7 @@ static void ms_nick(struct Client *client_p, struct Client *source_p,
                     int parc, char *parv[])
 {
   struct Client* target_p;
-  char     nick[NICKLEN + 2];
+  char     nick[NICKLEN];
   time_t   newts = 0;
 
   if(parc < 2)
@@ -391,7 +391,7 @@ static void ms_client(struct Client *client_p, struct Client *source_p,
                       int parc, char *parv[])
 {
   struct Client* target_p;
-  char     nick[NICKLEN + 2];
+  char     nick[NICKLEN];
   time_t   newts = 0;
   char    *id;
   char    *name;
