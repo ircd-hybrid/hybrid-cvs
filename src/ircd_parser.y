@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.45 2000/12/13 16:09:07 db Exp $
+ * $Id: ircd_parser.y,v 1.46 2000/12/14 03:34:49 db Exp $
  */
 
 %{
@@ -483,7 +483,7 @@ oper_gline: GLINE '=' TYES ';' { yy_aconf->port |= CONF_OPER_GLINE;}
 
 oper_nick_changes: NICK_CHANGES '=' TYES ';' { yy_aconf->port |= CONF_OPER_N;}
                    |
-                   NICK_CHANGES '=' TNO ; { yy_aconf->port &= ~CONF_OPER_N;} ;
+                   NICK_CHANGES '=' TNO ';' { yy_aconf->port &= ~CONF_OPER_N;};
 
 oper_die: DIE '=' TYES ';' { yy_aconf->port |= CONF_OPER_DIE; }
           |
