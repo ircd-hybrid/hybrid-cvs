@@ -1,3 +1,31 @@
+leeh        2001/12/15 15:35:23 EST	(20011215_10)
+
+  Modified files:
+    messages             ayb.po custom.po 
+    messages/translations ircd-croatian.po ircd-danish.po 
+                          ircd-dutch.po ircd-german.po 
+                          ircd-norwegian.po ircd-spanish.po 
+                          ircd-swedish.po 
+    modules              m_knock.c 
+    src                  messages.tab 
+  Log:
+  - updates to knock numerics
+  
+  Revision  Changes    Path
+  1.13      +30 -0     ircd-hybrid-7/messages/ayb.po
+  1.32      +30 -0     ircd-hybrid-7/messages/custom.po
+  1.14      +30 -0     ircd-hybrid-7/messages/translations/ircd-croatian.po
+  1.12      +30 -0     ircd-hybrid-7/messages/translations/ircd-danish.po
+  1.13      +30 -0     ircd-hybrid-7/messages/translations/ircd-dutch.po
+  1.14      +30 -0     ircd-hybrid-7/messages/translations/ircd-german.po
+  1.13      +30 -0     ircd-hybrid-7/messages/translations/ircd-norwegian.po
+  1.12      +30 -0     ircd-hybrid-7/messages/translations/ircd-spanish.po
+  1.15      +30 -0     ircd-hybrid-7/messages/translations/ircd-swedish.po
+  1.43      +1 -0      ircd-hybrid-7/modules/m_knock.c
+  7.64      +2 -2      ircd-hybrid-7/src/messages.tab
+
+
+
 wcampbel    2001/12/15 11:32:12 EST	(20011215_9)
 
   Added files:
@@ -611,7 +639,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3182 2001/12/15 16:32:17 wcampbel Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3183 2001/12/15 20:35:28 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -18965,4 +18993,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3182 2001/12/15 16:32:17 wcampbel Exp $
+$Id: ChangeLog,v 7.3183 2001/12/15 20:35:28 leeh Exp $
