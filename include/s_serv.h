@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: s_serv.h,v 7.45 2001/05/25 14:45:19 davidt Exp $
+ * $Id: s_serv.h,v 7.46 2001/05/25 14:57:08 davidt Exp $
  *
  */
 #ifndef INCLUDED_serv_h
@@ -209,9 +209,9 @@ struct EncCapability
 #define SLINKCMD_ZIPSTATS                    17
 
 #ifdef MISSING_SOCKPAIR
-#define LAST_SLINK_FD   4
+#define LAST_SLINK_FD   7
 #else
-#define LAST_SLINK_FD   2
+#define LAST_SLINK_FD   5
 #endif
 
 #define SLINKRPL_FLAG_DATA      0x0001  /* reply has data following */
