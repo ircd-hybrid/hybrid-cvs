@@ -1,4 +1,4 @@
-Last tested version: hybrid-7beta9 20020205_1
+Last tested version: hybrid-7-CURRENT 20030523_3
 
 To compile ircd on VMS, simply execute the make.com script
 from the top-level ircd directory:
@@ -44,4 +44,4 @@ If you have problem compiling from source, or are on a slow system
 binary distributions are available on the FTP site.
 (actually, they aren't yet, but at some time in the future they should be)
 
-$Id: README.VMS,v 1.11 2002/02/05 21:33:54 ejb Exp $
+$Id: README.VMS,v 1.12 2003/05/23 19:06:50 joshk Exp $

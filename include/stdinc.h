@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- * $Id: stdinc.h,v 1.9 2003/05/17 17:17:55 joshk Exp $
+ * $Id: stdinc.h,v 1.10 2003/05/23 19:06:53 joshk Exp $
  *
  */
 
@@ -70,7 +70,7 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
-#ifdef VMS
+#ifdef __vms
 #define _XOPEN_SOURCE 1
 #endif
 
@@ -101,7 +101,7 @@
 extern int errno;
 #endif
 
-#ifdef VMS
+#ifdef __vms
 #include <sys/ioctl.h>
 #endif
 

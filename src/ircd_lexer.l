@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_lexer.l,v 1.156 2003/05/17 17:18:01 joshk Exp $
+ *  $Id: ircd_lexer.l,v 1.157 2003/05/23 19:06:55 joshk Exp $
  */
 
 %option case-insensitive
@@ -35,7 +35,13 @@
 #include "irc_string.h"
 #include "common.h"
 #include "s_conf.h"
-#include "y.tab.h"
+
+#ifdef __vms
+# include "ircd_parser_tab.h"
+#else
+# include "y.tab.h"
+#endif
+
 #include "memory.h"
 #include "hostmask.h"
 #include "s_log.h"

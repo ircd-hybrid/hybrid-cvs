@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.28 2003/05/22 19:10:32 joshk Exp $
+dnl $Id: configure.ac,v 7.29 2003/05/23 19:06:50 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -261,7 +261,18 @@ AC_SUBST(CRYPT_LIB)
 
 dnl Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS([crypt.h sys/resource.h sys/param.h errno.h sys/syslog.h stddef.h getopt.h])
+AC_CHECK_HEADERS([crypt.h sys/resource.h sys/param.h errno.h sys/syslog.h stddef.h getopt.h sys/wait.h wait.h])
+
+if test "$ac_cv_header_sys_wait_h" = yes -o "$ac_cv_header_wait_h" = yes; then
+	VICONF=viconf
+	dnl We need one of the above to build viconf. Just a sanity check,
+	dnl we don't want to stop people from building the rest of ircd
+	dnl just because they can't build viconf.
+else
+	VICONF=""
+fi
+
+AC_SUBST(VICONF)
 
 dnl See whether we can include both string.h and strings.h.
 AC_CACHE_CHECK([whether string.h and strings.h may both be included],

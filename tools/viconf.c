@@ -1,7 +1,7 @@
 /*
  * viconf.c
  *
- * $Id: viconf.c,v 7.7 2003/05/22 23:16:09 michael Exp $
+ * $Id: viconf.c,v 7.8 2003/05/23 19:06:57 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -12,10 +12,12 @@
  * -Dianora
  */
 
-#ifdef SOL20
+#ifdef HAVE_SYS_WAIT_H
 #include <wait.h>
 #else
-#include <sys/wait.h>
+# ifdef HAVE_WAIT_H
+#  include <sys/wait.h>
+# endif
 #endif
 
 static int LockedFile(const char *filename);

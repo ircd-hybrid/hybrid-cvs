@@ -19,13 +19,17 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: config.h,v 7.155 2003/05/23 17:53:18 joshk Exp $
+ *  $Id: config.h,v 7.156 2003/05/23 19:06:53 joshk Exp $
  */
 
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
-#include "setup.h"
 
+#ifdef __vms
+#include "setup_vms.h"
+#else
+#include "setup.h"
+#endif
 
 /*
  * IRCD-HYBRID-7 COMPILE TIME CONFIGURATION OPTIONS
@@ -95,7 +99,6 @@
 
 #undef MODPATH
 #undef AUTOMODPATH
-#undef MSGPATH
 
 #define SPATH   BINPATH "IRCD.EXE"              /* server executable */
 #define SLPATH  BINPATH "SERVLINK.EXE"          /* servlink executable */

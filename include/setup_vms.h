@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: setup.h_vms,v 7.12 2003/03/25 01:17:49 db Exp $
+ *  $Id: setup_vms.h,v 7.1 2003/05/23 19:06:53 joshk Exp $
  */
 
 /* include/setup.h.in.  Generated automatically from autoconf/configure.in by autoheader.  */
@@ -98,7 +98,6 @@
 /* Define if you have the socket library (-lsocket).  */
 #undef HAVE_LIBSOCKET
 
-#ifdef VMS
 typedef unsigned long time_t;
 typedef unsigned int u_int;
 typedef unsigned long u_long;
@@ -110,13 +109,15 @@ typedef unsigned long u_long;
 #define USE_SELECT
 
 #define NICKLEN 9
+#define TOPICLEN 250
 #define MAX_CLIENTS 1536
 
 #undef FD_SETSIZE
 #define FD_SETSIZE 2048
 
 #define inline
-#endif
+
+#define HAVE_MMAP 1
 
 /* PATH_DEVNULL */
 #define PATH_DEVNULL "NL:"

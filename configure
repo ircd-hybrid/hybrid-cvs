@@ -308,7 +308,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT MKDEP MAKEDEPEND STDOUT CPP EGREP SET_MAKE INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA RM CP MV LN SED AR LD YACC RANLIB ac_ct_RANLIB LEX LEXLIB LEX_OUTPUT_ROOT INET_MISC CRYPT_LIB SNPRINTF_C ENCSPEED ZLIB_LD SELECT_TYPE CLOBBER PICFLAGS MODULES_DEFINE MODULES_LIBS MOD_TARGET SSL_INCLUDES SSL_LIBS IRC_CFLAGS SEDOBJ LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT MKDEP MAKEDEPEND STDOUT CPP EGREP SET_MAKE INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA RM CP MV LN SED AR LD YACC RANLIB ac_ct_RANLIB LEX LEXLIB LEX_OUTPUT_ROOT INET_MISC CRYPT_LIB VICONF SNPRINTF_C ENCSPEED ZLIB_LD SELECT_TYPE CLOBBER PICFLAGS MODULES_DEFINE MODULES_LIBS MOD_TARGET SSL_INCLUDES SSL_LIBS IRC_CFLAGS SEDOBJ LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -4837,7 +4837,9 @@ done
 
 
 
-for ac_header in crypt.h sys/resource.h sys/param.h errno.h sys/syslog.h stddef.h getopt.h
+
+
+for ac_header in crypt.h sys/resource.h sys/param.h errno.h sys/syslog.h stddef.h getopt.h sys/wait.h wait.h
 do
 as_ac_Header=`echo "ac_cv_header_$ac_header" | $as_tr_sh`
 if eval "test \"\${$as_ac_Header+set}\" = set"; then
@@ -4977,6 +4979,14 @@ _ACEOF
 fi
 
 done
+
+
+if test "$ac_cv_header_sys_wait_h" = yes -o "$ac_cv_header_wait_h" = yes; then
+	VICONF=viconf
+			else
+	VICONF=""
+fi
+
 
 
 echo "$as_me:$LINENO: checking whether string.h and strings.h may both be included" >&5
@@ -9893,6 +9903,7 @@ s,@LEXLIB@,$LEXLIB,;t t
 s,@LEX_OUTPUT_ROOT@,$LEX_OUTPUT_ROOT,;t t
 s,@INET_MISC@,$INET_MISC,;t t
 s,@CRYPT_LIB@,$CRYPT_LIB,;t t
+s,@VICONF@,$VICONF,;t t
 s,@SNPRINTF_C@,$SNPRINTF_C,;t t
 s,@ENCSPEED@,$ENCSPEED,;t t
 s,@ZLIB_LD@,$ZLIB_LD,;t t

@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 7.40 2003/05/19 21:32:36 joshk Exp $
+# $Id: Makefile.in,v 7.41 2003/05/23 19:06:57 joshk Exp $
 
 CC		= @CC@
 INSTALL		= @INSTALL@
@@ -23,7 +23,7 @@ prefix		= @prefix@
 exec_prefix	= @exec_prefix@
 bindir		= @bindir@
 
-PROGS		= viconf mkpasswd convertconf convertilines convertklines @ENCSPEED@
+PROGS		= @VICONF@ mkpasswd convertconf convertilines convertklines @ENCSPEED@
 
 all: $(PROGS)
 
