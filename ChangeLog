@@ -1,3 +1,15 @@
+androsyn    2002/10/22 14:47:27 EDT	(20021022_0)
+
+  Modified files:
+    src                  ircd_parser.y 
+  Log:
+  Wrap the fallback stuff in #ifdef IPV6
+  
+  Revision  Changes    Path
+  1.259     +4 -0      ircd-hybrid-7/src/ircd_parser.y
+
+
+
 androsyn    2002/10/19 18:36:25 EDT	(20021019_2)
 
   Modified files:
@@ -32588,4 +32600,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4071 2002/10/19 22:36:28 androsyn Exp $
+$Id: ChangeLog,v 7.4072 2002/10/22 18:47:30 androsyn Exp $
