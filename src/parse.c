@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.155 2003/05/01 13:58:11 michael Exp $
+ *  $Id: parse.c,v 7.156 2003/05/07 08:55:43 adx Exp $
  */
 
 #include "stdinc.h"
@@ -278,10 +278,12 @@ parse(struct Client *client_p, char *pbuffer, char *bufend)
   if (*end == '\n') *end-- = '\0';
   if (*end == '\r') *end = '\0';
 
-  i = 0;
-  
   if (s != NULL)
     i = string_to_array(s, para);
+  else {
+    i = 0;
+    para[1] = NULL;
+  }
 
   if (mptr == NULL)
     do_numeric(numeric, client_p, from, i, para);
