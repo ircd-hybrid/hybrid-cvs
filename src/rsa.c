@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: rsa.c,v 7.32 2003/06/24 09:39:32 michael Exp $
+ *  $Id: rsa.c,v 7.33 2003/09/04 00:57:05 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -134,10 +134,17 @@ verify_private_key(void)
   if (mkey->pad != key->pad)
     ilog(L_CRIT, "Private key corrupted: pad %i != pad %i",
                  mkey->pad, key->pad);
-
+  
   if (mkey->version != key->version)
+  {
+#if (OPENSSL_VERSION_NUMBER & 0x00907000) == 0x00907000
+    ilog(L_CRIT, "Private key corrupted: version %li != version %li",
+                 mkey->version, key->version);
+#else
     ilog(L_CRIT, "Private key corrupted: version %i != version %i",
-                  mkey->version, key->version);
+                 mkey->version, key->version);
+#endif
+  }    
 
   if (BN_cmp(mkey->n, key->n))
     ilog(L_CRIT, "Private key corrupted: n differs");
