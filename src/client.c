@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.114 2001/01/11 09:30:25 a1kmm Exp $
+ *  $Id: client.c,v 7.115 2001/01/11 21:51:08 a1kmm Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -209,8 +209,8 @@ void _free_client(struct Client* cptr)
 	--cptr->localClient->dns_reply->ref_count;
 
       mem_frob(cptr->localClient, sizeof(struct LocalUser));
-      mem_frob(cptr, sizeof(struct Client));
       result = BlockHeapFree(localUserFreeList, cptr->localClient);
+      mem_frob(cptr, sizeof(struct Client));
       result = BlockHeapFree(ClientFreeList, cptr);
     }
   else {
