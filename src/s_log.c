@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_log.c,v 7.8 2000/11/29 18:16:30 db Exp $
+ *   $Id: s_log.c,v 7.9 2000/11/29 21:18:34 db Exp $
  */
 #include "client.h"	/* Needed for struct Client */
 #include "s_log.h"
@@ -171,14 +171,14 @@ static EVH user_log_resync;
 #endif
 
 /*
- * log_user_connect
+ * log_user_exit
  *
  * inputs	- pointer to connecting client
  * output	- NONE
- * side effects - Current connecting client is logged to
+ * side effects - Current exiting client is logged to
  *		  either SYSLOG or to file.
  */
-void log_user_connect(struct Client *sptr)
+void log_user_exit(struct Client *sptr)
 {
   time_t        on_for;
 

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.43 2000/11/29 18:16:30 db Exp $
+ *  $Id: client.c,v 7.44 2000/11/29 21:18:33 db Exp $
  */
 #include "client.h"
 #include "class.h"
@@ -1512,8 +1512,7 @@ const char* comment         /* Reason for the exit */
                                sptr->sockhost);
         }
 
-      /* Log user connect */
-      log_user_connect(sptr);
+      log_user_exit(sptr);
 
       if (sptr->fd >= 0)
 	{
