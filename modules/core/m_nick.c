@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nick.c,v 1.130 2003/09/19 00:44:27 bill Exp $
+ *  $Id: m_nick.c,v 1.131 2003/09/30 21:43:17 stu Exp $
  */
 
 #include "stdinc.h"
@@ -97,7 +97,7 @@ _moddeinit(void)
   mod_del_cmd(&uid_msgtab);
 }
 
-const char *_version = "$Revision: 1.130 $";
+const char *_version = "$Revision: 1.131 $";
 #endif
 
 /*
@@ -366,15 +366,18 @@ ms_nick(struct Client *client_p, struct Client *source_p,
   }
   else if (parc == 3)
   {
-    assert(source_p->user->server != NULL);
+    if(IsServer(source_p))
+        /* Server's cant change nicks.. */
+        return;
 
     if (check_clean_nick(client_p, source_p, nick, nnick,
 			 source_p->user->server))
       return;
-    if (!IsServer(source_p))
-      newts = atol(nhop);	/* Yes, this is right. HOP field is the TS
-				 * field for parc = 3
-				 */
+    
+    /*
+     * Yes, this is right. HOP field is the TS field for parc = 3
+     */ 
+    newts = atol(nhop);	
   }
 
   /* if the nick doesnt exist, allow it and process like normal */
