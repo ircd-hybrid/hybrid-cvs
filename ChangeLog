@@ -1,3 +1,15 @@
+androsyn    2002/09/10 14:50:30 EDT	(20020910_1)
+
+  Modified files:
+    modules/core         m_nick.c 
+  Log:
+  Fix another NULL nick bug that Lee found
+  
+  Revision  Changes    Path
+  1.95      +9 -1      ircd-hybrid-7/modules/core/m_nick.c
+
+
+
 db          2002/09/09 22:25:52 EDT	(20020910_0)
 
   Modified files:
@@ -31956,4 +31968,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4029 2002/09/10 02:25:55 db Exp $
+$Id: ChangeLog,v 7.4030 2002/09/10 18:50:33 androsyn Exp $
