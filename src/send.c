@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.233 2003/04/13 09:46:58 michael Exp $
+ *  $Id: send.c,v 7.234 2003/04/18 00:01:47 michael Exp $
  */
 
 #include "stdinc.h"
@@ -48,11 +48,8 @@
 
 #define LOG_BUFSIZE 2048
 
-static  int
-_send_linebuf(struct Client *, buf_head_t *);
-
-static void
-send_linebuf_remote(struct Client *, struct Client *, buf_head_t *);
+static void _send_linebuf(struct Client *, buf_head_t *);
+static void send_linebuf_remote(struct Client *, struct Client *, buf_head_t *);
 
 /* send the message to the link the target is attached to */
 #define send_linebuf(a,b) _send_linebuf((a->from?a->from:a),b)
@@ -74,9 +71,7 @@ sendto_list_anywhere(struct Client *one, struct Client *from,
                      dlink_list *list, buf_head_t *local_linebuf,
                      buf_head_t *remote_linebuf, buf_head_t *uid_linebuf);
 
-
-/*
- * send_trim
+/* send_trim()
  *
  * inputs	- pointer to buffer to trim
  *		- length of buffer
@@ -149,7 +144,7 @@ send_format(char *lsendbuf, const char *pattern, va_list args)
  **      Internal utility which attaches one linebuf to the sockets
  **      sendq.
  */
-static int
+static void
 _send_linebuf(struct Client *to, buf_head_t *linebuf)
 {
 #ifdef INVARIANTS
@@ -157,11 +152,11 @@ _send_linebuf(struct Client *to, buf_head_t *linebuf)
   {
     sendto_realops_flags(UMODE_ALL, L_ALL,
                          "Trying to send message to myself!");
-    return 0;
+    return;
   }
 #endif
   if (IsDead(to))
-    return 0; 
+    return; 
 
   if (linebuf_len(&to->localClient->buf_sendq) > get_sendq(to))
   {
@@ -174,7 +169,7 @@ _send_linebuf(struct Client *to, buf_head_t *linebuf)
     if (IsClient(to))
       SetSendQExceeded(to);
     dead_link_on_write(to, 0);
-    return -1;
+    return;
   }
   else
   {
@@ -191,8 +186,7 @@ _send_linebuf(struct Client *to, buf_head_t *linebuf)
   me.localClient->sendM += 1;
 
   send_queued_write(to->localClient->fd, to);
-  return 0;
-} /* send_linebuf() */
+}
 
 /*
  * send_linebuf_remote
@@ -249,7 +243,6 @@ send_linebuf_remote(struct Client *to, struct Client *from,
   } 
 
   _send_linebuf(to, linebuf);
-  return;
 } /* send_linebuf_remote() */
 
 /*
@@ -404,8 +397,7 @@ send_queued_slink_write(int fd, struct Client *to)
                    (void *)to, 0);
 } /* send_queued_slink_write() */
 
-/*
- * sendto_one
+/* sendto_one()
  *
  * inputs	- pointer to destination client
  *		- var args message
@@ -437,8 +429,7 @@ sendto_one(struct Client *to, const char *pattern, ...)
 
 } /* sendto_one() */
 
-/*
- * sendto_one_prefix
+/* sendto_one_prefix()
  *
  * inputs	- pointer to destination client
  *		- pointer to client to form prefix from
@@ -551,8 +542,7 @@ sendto_channel_butone(struct Client *one, struct Client *from,
   linebuf_donebuf(&uid_linebuf);
 } /* sendto_channel_butone() */
 
-/*
- * sendto_list_anywhere
+/* sendto_list_anywhere()
  *
  * inputs	- pointer to client NOT to send back towards
  *		- pointer to client from where message is coming from
@@ -607,8 +597,7 @@ sendto_list_anywhere(struct Client *one, struct Client *from,
   }
 }
 
-/*
- * sendto_server
+/* sendto_server()
  * 
  * inputs       - pointer to client to NOT send to
  *              - pointer to source client required by LL (if any)
@@ -648,8 +637,10 @@ sendto_server(struct Client *one, struct Client *source_p,
   buf_head_t linebuf;
 
   if (chptr != NULL)
+  {
     if (*chptr->chname != '#')
       return;
+  }
 
   linebuf_newbuf(&linebuf);
   va_start(args, format);
@@ -707,8 +698,7 @@ sendto_server(struct Client *one, struct Client *source_p,
   linebuf_donebuf(&linebuf);
 }
 
-/*
- * sendto_common_channels_local()
+/* sendto_common_channels_local()
  *
  * inputs	- pointer to client
  *		- pattern to send
@@ -756,8 +746,7 @@ sendto_common_channels_local(struct Client *user, int touser,
   linebuf_donebuf(&linebuf);
 } /* sendto_common_channels() */
 
-/*
- * sendto_channel_local
+/* sendto_channel_local()
  *
  * inputs	- int type, i.e. ALL_MEMBERS, NON_CHANOPS,
  *                ONLY_CHANOPS_VOICED, ONLY_CHANOPS
@@ -806,8 +795,7 @@ sendto_channel_local(int type, struct Channel *chptr, const char *pattern, ...)
   linebuf_donebuf(&linebuf);
 } /* sendto_channel_local() */
 
-/*
- * sendto_channel_local_butone
+/* sendto_channel_local_butone()
  *
  * inputs       - pointer to client to NOT send message to
  *              - int type, i.e. ALL_MEMBERS, NON_CHANOPS,
@@ -858,8 +846,7 @@ sendto_channel_local_butone(struct Client *one, int type,
   linebuf_donebuf(&linebuf);
 } /* sendto_channel_local_butone() */
 
-/*
- * sendto_channel_remote
+/* sendto_channel_remote()
  *
  * inputs	- Client not to send towards
  *		- Client from whom message is from
@@ -872,10 +859,8 @@ sendto_channel_local_butone(struct Client *one, int type,
  *		  remote to this server.
  */
 void
-sendto_channel_remote(struct Client *one,
-		      struct Client *from, int type, int caps,
-                      int nocaps, struct Channel *chptr, const char *pattern,
-                      ...)
+sendto_channel_remote(struct Client *one, struct Client *from, int type, int caps,
+                      int nocaps, struct Channel *chptr, const char *pattern, ...)
 {
   va_list args;
   buf_head_t linebuf;
