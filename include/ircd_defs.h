@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: ircd_defs.h,v 7.17 2001/02/05 01:05:33 androsyn Exp $
+ * $Id: ircd_defs.h,v 7.18 2001/02/05 02:24:23 ejb Exp $
  *
  * ircd_defs.h - Global size definitions for record entries used
  * througout ircd. Please think 3 times before adding anything to this
@@ -143,6 +143,7 @@ do { \
 #define IN_ADDR(x) x.sins.sin6.s6_addr
 #define IPV4_MAPPED(x) ((uint32_t *)x.sins.sin6.s6_addr)[3]
 #define PIN_ADDR(x) x->sins.sin6.s6_addr /* For Pointers */
+#define IN_ADDR2(x) x.sins.sin6
 
 #define DEF_FAM AF_INET6
 
