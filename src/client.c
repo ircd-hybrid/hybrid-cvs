@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.367 2003/05/16 06:17:30 db Exp $
+ *  $Id: client.c,v 7.368 2003/05/17 03:00:14 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -1195,7 +1195,7 @@ exit_client(
     if (IsIpHash(source_p))
       remove_one_ip(&source_p->localClient->ip);
     
-    delete_resolver_queries(source_p->localClient->dns_query->ptr);
+    delete_resolver_queries(source_p);
     delete_identd_queries(source_p);
     
     /* This source_p could have status of one of STAT_UNKNOWN, STAT_CONNECTING
