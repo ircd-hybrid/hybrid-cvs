@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 1.20 2000/12/13 23:20:56 db Exp $
+ *  $Id: m_stats.c,v 1.21 2000/12/14 20:48:55 db Exp $
  */
 #include "tools.h"	 /* dlink_node/dlink_list */
 #include "handlers.h"    /* m_pass prototype */
@@ -327,6 +327,7 @@ void do_non_priv_stats(struct Client *sptr, char *name, char *target,
       if (ConfigFileEntry.stats_p_notice)
 	{
 	  stats_p_spy(sptr);
+	  show_opers(sptr);
 	}
       else
 	{
