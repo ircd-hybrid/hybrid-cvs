@@ -1,6 +1,6 @@
 /* dline_conf.h  -- lets muse over dlines, shall we?
  *
- * $Id: dline_conf.h,v 7.7 2001/01/24 20:04:30 fl_ Exp $ 
+ * $Id: dline_conf.h,v 7.8 2001/02/05 02:08:53 androsyn Exp $ 
  */
 
 #ifndef INCLUDED_dline_conf_h
@@ -17,14 +17,17 @@ extern void clear_Dline_table();
 extern void zap_Dlines();
 extern void add_Dline(struct ConfItem *conf_ptr);
 extern void add_ip_Kline(struct ConfItem *conf_ptr);
+extern void add_ip_Iline(struct ConfItem *conf_ptr);
 
 extern void add_Eline(struct ConfItem *conf_ptr);
 
 extern struct ConfItem *match_Dline(struct irc_inaddr *ip);
 extern struct ConfItem* match_ip_Kline(struct irc_inaddr *ip, const char* name);
+extern struct ConfItem* match_ip_Iline(struct irc_inaddr *ip, const char *name);
 
 extern void report_dlines(struct Client *sptr);
 extern void report_ip_Klines(struct Client *sptr);
+extern void report_ip_Ilines(struct Client *sptr);
 
 #endif /* INCLUDED_dline_conf_h */
 
