@@ -1,7 +1,7 @@
 /*
  * viconf.c
  *
- * $Id: viconf.c,v 7.3 2001/07/02 04:18:30 wcampbel Exp $
+ * $Id: viconf.c,v 7.4 2002/02/05 02:40:22 jmallett Exp $
  */
 #include <stdio.h>
 #include <unistd.h>
@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
 
   if(LockedFile(filename))
     {
-      fprintf(stderr,"Cant' lock %s\n", filename);
+      fprintf(stderr,"Can't lock %s\n", filename);
       exit(errno);
     }
 
