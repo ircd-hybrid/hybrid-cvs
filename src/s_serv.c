@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.244 2002/02/17 09:07:32 a1kmm Exp $
+ *  $Id: s_serv.c,v 7.245 2002/02/22 15:24:13 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -1360,8 +1360,11 @@ int fork_server(struct Client *server)
   slink_fds[1][1][0] = fd_temp[0];
   slink_fds[1][0][1] = fd_temp[1];
 #endif
-
+#ifdef __CYGWIN__
+  if ((ret = vfork()) < 0)
+#else
   if ((ret = fork()) < 0)
+#endif
     goto fork_error;
   else if (ret == 0)
   {
