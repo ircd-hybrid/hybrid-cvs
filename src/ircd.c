@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.86 2000/12/24 22:39:32 adrian Exp $
+ * $Id: ircd.c,v 7.87 2000/12/24 22:40:54 adrian Exp $
  */
 #include "tools.h"
 #include "ircd.h"
@@ -351,8 +351,7 @@ static time_t io_loop(time_t delay)
   eventRun();
   delay = eventNextTime();
 
-  /* Do new-style pending events */
-  /* Once the crap has been stripped out, we can make this use delay .. */
+  /* Do IO events */
   comm_select(delay);
 
   /*
