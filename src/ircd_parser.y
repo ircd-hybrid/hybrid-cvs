@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.351 2003/09/15 01:44:18 bill Exp $
+ *  $Id: ircd_parser.y,v 1.352 2003/09/20 01:23:41 bill Exp $
  */
 
 %{
@@ -68,6 +68,10 @@ static dlink_list leaf_conf_list = { NULL, NULL, 0 };
 
 static char *resv_reason;
 static char *listener_address;
+
+#ifndef STATIC_MODULES
+extern int ServerRunning;
+#endif
 
 struct CollectItem {
   dlink_node node;
@@ -444,7 +448,20 @@ modules_base_path: BASE_PATH '=' QSTRING ';'
 {
 #ifndef STATIC_MODULES
   if (ypass == 2)
+  {
      mod_set_base(yylval.string);
+     /*
+      * a slight hack here, if we are loading the conf during
+      * the startup of the ircd, we should load the standard
+      * modules first, before the ones specified by module="";
+      * so lets load them right away.
+      */
+     if (ServerRunning != 1)
+     {
+       load_all_modules(1);
+       load_core_modules(1);
+     }
+  }
 #endif
 };
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.316 2003/09/13 19:04:32 metalrock Exp $
+ *  $Id: ircd.c,v 7.317 2003/09/20 01:23:41 bill Exp $
  */
 
 #include "stdinc.h"
@@ -611,10 +611,6 @@ main(int argc, char *argv[])
   init_stats();
   init_hooks();
   read_conf_files(1);   /* cold start init conf files */
-  load_all_modules(1);
-#ifndef STATIC_MODULES
-  load_core_modules(1);
-#endif
   initServerMask();
   init_auth();          /* Initialise the auth code */
   init_resolver();      /* Needs to be setup before the io loop */
