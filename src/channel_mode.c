@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.63 2002/10/12 03:38:14 db Exp $
+ *  $Id: channel_mode.c,v 7.64 2002/10/12 04:33:31 db Exp $
  */
 
 #include "stdinc.h"
@@ -1994,6 +1994,7 @@ send_cap_mode_changes(struct Client *client_p, struct Client *source_p,
 
       pbl = 0;
       parabuf[0] = 0;
+      dir = MODE_QUERY;
     }
 
     if(dir != mode_changes[i].dir)
@@ -2097,6 +2098,7 @@ send_mode_changes(struct Client *client_p, struct Client *source_p,
 
       pbl = 0;
       parabuf[0] = '\0';
+      dir = MODE_QUERY;
     }
 
     if(dir != mode_changes[i].dir)
