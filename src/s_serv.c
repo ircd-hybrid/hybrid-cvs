@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.277 2003/02/06 08:45:59 a1kmm Exp $
+ *  $Id: s_serv.c,v 7.278 2003/02/12 02:09:28 db Exp $
  */
 
 #include "stdinc.h"
@@ -1433,7 +1433,7 @@ fork_server(struct Client *server)
   }
   else
   {
-    fd_close( server->localClient->fd );
+    fd_close(server->localClient->fd);
 
     /* close the childs end of the pipes */
     close(slink_fds[0][0][0]);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.222 2003/02/07 07:09:25 a1kmm Exp $
+ *  $Id: send.c,v 7.223 2003/02/12 02:09:28 db Exp $
  */
 
 #include "stdinc.h"
@@ -1141,11 +1141,11 @@ sendto_anywhere(struct Client *to, struct Client *from,
   va_list args;
   buf_head_t linebuf;
 
-  linebuf_newbuf(&linebuf);
-  va_start(args, pattern);
-
   if (IsDead(to))
     return;
+
+  linebuf_newbuf(&linebuf);
+  va_start(args, pattern);
 
   if(MyClient(to))
   {
