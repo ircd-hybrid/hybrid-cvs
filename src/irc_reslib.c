@@ -92,15 +92,13 @@
 #define DNS_LABELTYPE_BITSTRING 0x41
 #define MAXLINE 128
 
-/* $Id: irc_reslib.c,v 7.17 2003/06/05 15:02:46 adx Exp $ */
+/* $Id: irc_reslib.c,v 7.18 2003/06/05 15:47:44 adx Exp $ */
 
 static FBFILE *file;
 
 struct irc_ssaddr irc_nsaddr_list[IRCD_MAXNS];
 int irc_nscount = 0;
-char irc_domain[HOSTLEN+1];
-
-static char input[MAXLINE];
+char irc_domain[HOSTLEN + 1];
 
 static const char digitvalue[256] = {
   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, /*16*/
@@ -156,12 +154,11 @@ parse_resvconf(void)
   char *p;
   char *opt;
   char *arg;
+  char input[MAXLINE];
 
   /* XXX "/etc/resolv.conf" should be from a define in setup.h perhaps
    * for cygwin support etc. this hardcodes it to unix for now -db
    */
-
-  memset(input, 0, sizeof(input));
 
   if ((file = fbopen("/etc/resolv.conf", "r")) == NULL)
     return (-1);
@@ -169,31 +166,36 @@ parse_resvconf(void)
   while (fbgets(input, MAXLINE, file) != NULL)
   {
     /* blow away any newline */
-    if ((p = strchr(input, '\n')) != NULL)
+    if ((p = strpbrk(input, "\r\n")) != NULL)
       *p = '\0';
 
     /* Ignore comment lines immediately */
     if (*input == '#')
       continue;
 
-    opt = input;
     p = input;
     /* skip until something thats not a space is seen */
     while (IsSpace(*p))
       p++;
-
     /* if at this point, have a '\0' then continue */
     if (*p == '\0')
       continue;
+
+    /* skip until a space is found */
+    opt = input;
+    while (!IsSpace(*p))
+      if (*p++ == '\0')
+        continue;  /* no arguments?.. ignore this line */
     /* blow away the space character */
     *p++ = '\0';
 
-    /* Now skip until no more space chars seen */
+    /* skip these spaces that are before the argument */
     while (IsSpace(*p))
       p++;
-
     /* Now arg should be right where p is pointing */
     arg = p;
+    if ((p = strpbrk(arg, " \t")) != NULL)
+      *p = '\0';  /* take the first word */
 
     if (strcasecmp(opt, "domain") == 0)
       strlcpy(irc_domain, arg, HOSTLEN);
