@@ -1,3 +1,15 @@
+androsyn    2002/05/25 05:05:56 EDT	(20020525_13)
+
+  Modified files:
+    src                  s_bsd_sigio.c 
+  Log:
+  Added a missing mask_our_signal()
+  
+  Revision  Changes    Path
+  7.23      +1 -0      ircd-hybrid-7/src/s_bsd_sigio.c
+
+
+
 androsyn    2002/05/25 05:00:16 EDT	(20020525_12)
 
   Modified files:
@@ -27266,4 +27278,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3695 2002/05/25 09:00:23 androsyn Exp $
+$Id: ChangeLog,v 7.3696 2002/05/25 09:06:03 androsyn Exp $
