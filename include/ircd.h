@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.h,v 7.61 2003/04/19 16:00:09 michael Exp $
+ *  $Id: ircd.h,v 7.62 2003/05/05 02:01:14 michael Exp $
  */
 
 #ifndef INCLUDED_ircd_h
@@ -68,12 +68,12 @@ extern struct ServerState_t server_state;
 extern char*          debugmode;
 extern int            debuglevel;
 extern int            debugtty;
-extern char*          creation;
-extern char*          generation;
-extern char*          platform;
-extern char*          infotext[];
-extern char*          serno;
-extern char*          ircd_version;
+extern const char *creation;
+extern const char *generation;
+extern const char *platform;
+extern const char *infotext[];
+extern const char *serno;
+extern const char *ircd_version;
 extern const char*    logFileName;
 extern const char*    pidFileName;
 extern const char     serveropts[];
@@ -96,12 +96,11 @@ extern dlink_list unknown_list;       /* unknown clients ON this server only */
 extern dlink_list local_client_list;  /* local clients only ON this server */
 extern dlink_list serv_list;          /* local servers to this server ONLY */
 extern dlink_list global_serv_list;   /* global servers on the network */
-extern dlink_list oper_list;    /* our opers, duplicated in local_client_list */
+extern dlink_list oper_list;          /* our opers, duplicated in local_client_list */
 extern dlink_list closing_list;
 extern dlink_list lazylink_channels;  /* known about lazylink channels on HUB */
 extern int callbacks_called;
 
 extern unsigned long get_maxrss(void);
 extern void set_time(void);
-
 #endif

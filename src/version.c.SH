@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# $Id: version.c.SH,v 7.20 2003/05/05 01:52:28 michael Exp $
+# $Id: version.c.SH,v 7.21 2003/05/05 02:01:16 michael Exp $
 
 spitshell=cat
 package=IRC
@@ -52,13 +52,13 @@ $spitshell >version.c <<!SUB!THIS!
 #include "patchlevel.h"
 #include "serno.h"
 
-char *generation = "$generation";
-char *creation = "$creation";
-char *platform = "$uname";
-char *ircd_version = PATCHLEVEL;
-char *serno = SERIALNUM;
+const char *generation = "$generation";
+const char *creation = "$creation";
+const char *platform = "$uname";
+const char *ircd_version = PATCHLEVEL;
+const char *serno = SERIALNUM;
 
-char *infotext[] =
+const char *infotext[] =
 {
   "$package --",
   "Based on the original code written by Jarkko Oikarinen",
@@ -78,7 +78,6 @@ for i in `grep -v '^$[I]d' ../Hybrid-team |tr -d '"'` ; do
 echo "  \"$i\"," >> version.c
 done
 $spitshell >>version.c <<!SUB!THISTOO!
-  "",
-  0,
+  "", 0
 };
 !SUB!THISTOO!
