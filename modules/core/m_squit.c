@@ -1,5 +1,5 @@
 /************************************************************************
- *   IRC - Internet Relay Chat, src/m_squit.c
+ *   IRC - Internet Relay Chat, modules/m_squit.c
  *   Copyright (C) 1990 Jarkko Oikarinen and
  *                      University of Oulu, Computing Center
  *
@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_squit.c,v 1.9 2000/11/30 04:11:32 db Exp $
+ *   $Id: m_squit.c,v 1.10 2000/12/09 05:59:54 db Exp $
  */
 #include "handlers.h"
 #include "client.h"

@@ -1,5 +1,5 @@
 /************************************************************************
-*   IRC - Internet Relay Chat, src/whowas.c
+*   IRC - Internet Relay Chat, modules/whowas.c
 *   Copyright (C) 1990 Markku Savela
 *
 *   This program is free software; you can redistribute it and/or modify
@@ -16,7 +16,7 @@
 *   along with this program; if not, write to the Free Software
 *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 *
-*   $Id: m_whowas.c,v 1.4 2000/11/28 03:54:15 bill Exp $
+*   $Id: m_whowas.c,v 1.5 2000/12/09 05:59:57 db Exp $
 */
 #include "whowas.h"
 #include "handlers.h"

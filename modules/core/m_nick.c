@@ -1,5 +1,5 @@
 /************************************************************************
- *   IRC - Internet Relay Chat, src/m_nick.c
+ *   IRC - Internet Relay Chat, modules/m_nick.c
  *   Copyright (C) 1990 Jarkko Oikarinen and
  *                      University of Oulu, Computing Center
  *
@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_nick.c,v 1.18 2000/12/08 23:03:10 db Exp $
+ *   $Id: m_nick.c,v 1.19 2000/12/09 05:59:50 db Exp $
  */
 #include "handlers.h"
 #include "client.h"

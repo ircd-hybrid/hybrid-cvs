@@ -1,9 +1,9 @@
 /************************************************************************
- *   IRC - Internet Relay Chat, src/m_list.c
+ *   IRC - Internet Relay Chat, modules/m_list.c
  *   Copyright (C) 1990 Jarkko Oikarinen and
  *                      University of Oulu, Co Center
  *
- * $Id: m_list.c,v 1.13 2000/12/04 08:17:32 db Exp $ 
+ * $Id: m_list.c,v 1.14 2000/12/09 05:59:48 db Exp $ 
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by

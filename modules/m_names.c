@@ -1,5 +1,5 @@
 /************************************************************************
- *   IRC - Internet Relay Chat, src/m_names.c
+ *   IRC - Internet Relay Chat, modules/m_names.c
  *   Copyright (C) 1990 Jarkko Oikarinen and
  *                      University of Oulu, Computing Center
  *
@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_names.c,v 1.12 2000/12/07 07:21:45 db Exp $
+ *   $Id: m_names.c,v 1.13 2000/12/09 05:59:50 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.h,v 7.16 2000/12/05 02:24:19 db Exp $
+ * $Id: m_info.h,v 7.17 2000/12/09 05:59:37 db Exp $
  */
 #ifndef INCLUDED_m_info_h
 #define INCLUDED_m_info_h
@@ -31,11 +31,6 @@ typedef struct Information
   int   intvalue;    /* value of item if it's an integer */
   char* desc;        /* short description of item */
 } Info;
-
-/*
- * only define MyInformation if we are compiling m_info.c
- */
-#ifdef DEFINE_M_INFO_DATA
 
 Info MyInformation[] = {
 
@@ -337,6 +332,5 @@ Info MyInformation[] = {
 };
 
 
-#endif /* DEFINE_M_INFO_DATA */
 #endif /* INCLUDED_m_info_h */
 

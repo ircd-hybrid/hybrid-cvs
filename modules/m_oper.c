@@ -1,5 +1,5 @@
 /************************************************************************
- *   IRC - Internet Relay Chat, src/m_oper.c
+ *   IRC - Internet Relay Chat, modules/m_oper.c
  *   Copyright (C) 1990 Jarkko Oikarinen and
  *                      University of Oulu, Computing Center
  *
@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_oper.c,v 1.9 2000/12/03 12:18:18 db Exp $
+ *   $Id: m_oper.c,v 1.10 2000/12/09 05:59:51 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"

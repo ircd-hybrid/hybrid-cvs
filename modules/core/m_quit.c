@@ -1,5 +1,5 @@
 /************************************************************************
- *   IRC - Internet Relay Chat, src/m_quit.c
+ *   IRC - Internet Relay Chat, modules/m_quit.c
  *   Copyright (C) 1990 Jarkko Oikarinen and
  *                      University of Oulu, Computing Center
  *
@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_quit.c,v 1.4 2000/11/28 03:54:08 bill Exp $
+ *   $Id: m_quit.c,v 1.5 2000/12/09 05:59:52 db Exp $
  */
 #include "handlers.h"
 #include "client.h"

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.60 2000/12/08 03:39:03 db Exp $
+ *   $Id: send.c,v 7.61 2000/12/09 05:59:59 db Exp $
  */
 #include "tools.h"
 #include "send.h"
@@ -573,16 +573,16 @@ sendto_common_channel( dlink_list *list, struct Client *user,
 }
 
 /*
- * sendto_channel_butserv
+ * sendto_channel_local
  *
  * inputs	-
  * output	- NONE
  * side effects - Send a message to all members of a channel that are
- *		  connected to this server.
+ *		  locally connected to this server.
  */
 
 void
-sendto_channel_butserv(int type,
+sendto_channel_local(int type,
 		       struct Channel *chptr, struct Client *from, 
                        const char *pattern, ...)
 
@@ -627,7 +627,7 @@ static void sendto_list(dlink_list *list, struct Client *from,
 	}
     }  
 
-} /* sendto_channel_butserv() */
+} /* sendto_channel_local() */
 
 /*
 ** send a msg to all ppl on servers/hosts that match a specified mask

@@ -1,5 +1,5 @@
 /************************************************************************
- *   IRC - Internet Relay Chat, src/m_part.c
+ *   IRC - Internet Relay Chat, modules/m_part.c
  *   Copyright (C) 1990 Jarkko Oikarinen and
  *                      University of Oulu, Computing Center
  *
@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_part.c,v 1.10 2000/12/01 22:18:01 db Exp $
+ *   $Id: m_part.c,v 1.11 2000/12/09 05:59:51 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -176,7 +176,7 @@ static void part_one_client(struct Client *cptr,
 	  
 	  sendto_match_servs(chptr, cptr, ":%s PART %s", sptr->name, name);
 	  
-	  sendto_channel_butserv(ALL_MEMBERS,
+	  sendto_channel_local(ALL_MEMBERS,
 				 chptr, sptr, ":%s PART %s", sptr->name, name);
 	  remove_user_from_channel(chptr, sptr);
 	}
@@ -194,7 +194,7 @@ static void part_one_client(struct Client *cptr,
             
 	  sendto_match_servs(chptr, cptr, ":%s PART %s", sptr->name, name);
             
-	  sendto_channel_butserv(ALL_MEMBERS,
+	  sendto_channel_local(ALL_MEMBERS,
 				 vchan, sptr, ":%s PART %s", sptr->name, name);
 	  remove_user_from_channel(vchan, sptr);
 	}
@@ -213,7 +213,7 @@ static void part_one_client(struct Client *cptr,
 
       sendto_match_servs(chptr, cptr, ":%s PART %s", sptr->name, name);
             
-      sendto_channel_butserv(ALL_MEMBERS,
+      sendto_channel_local(ALL_MEMBERS,
 			     chptr, sptr, ":%s PART %s", sptr->name, name);
       remove_user_from_channel(chptr, sptr);
     }

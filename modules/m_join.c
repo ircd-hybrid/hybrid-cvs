@@ -1,5 +1,5 @@
 /************************************************************************
- *   IRC - Internet Relay Chat, src/m_join.c
+ *   IRC - Internet Relay Chat, modules/m_join.c
  *   Copyright (C) 1990 Jarkko Oikarinen and
  *                      University of Oulu, Computing Center
  *
@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 1.16 2000/12/08 17:19:11 db Exp $
+ *   $Id: m_join.c,v 1.17 2000/12/09 05:59:46 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -311,7 +311,7 @@ int     m_join(struct Client *cptr,
       /*
       ** notify all other users on the new channel
       */
-      sendto_channel_butserv(ALL_MEMBERS,chptr, sptr, ":%s JOIN :%s",
+      sendto_channel_local(ALL_MEMBERS,chptr, sptr, ":%s JOIN :%s",
 			     parv[0], name);
       
       if( flags & CHFL_CHANOP )
@@ -319,7 +319,7 @@ int     m_join(struct Client *cptr,
 	  chptr->mode.mode |= MODE_TOPICLIMIT;
 	  chptr->mode.mode |= MODE_NOPRIVMSGS;
 
-	  sendto_channel_butserv(ONLY_CHANOPS,chptr, sptr,
+	  sendto_channel_local(ONLY_CHANOPS,chptr, sptr,
 				 ":%s MODE %s +nt",
 				 me.name, chptr->chname);
 	  
@@ -459,7 +459,7 @@ void do_join_0(struct Client *cptr, struct Client *sptr)
   while ((lp = sptr->user->channel.head))
     {
       chptr = lp->data;
-      sendto_channel_butserv(ALL_MEMBERS,chptr, sptr, ":%s PART %s",
+      sendto_channel_local(ALL_MEMBERS,chptr, sptr, ":%s PART %s",
 			     sptr->name, chptr->chname);
       remove_user_from_channel(chptr, sptr);
     }

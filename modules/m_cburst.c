@@ -1,5 +1,5 @@
 /************************************************************************
- *   IRC - Internet Relay Chat, src/c_cburst.c
+ *   IRC - Internet Relay Chat, modules/m_cburst.c
  *   Copyright (C) 1990 Jarkko Oikarinen and
  *                      University of Oulu, Co Center
  *
@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_cburst.c,v 1.7 2000/12/01 22:17:55 db Exp $
+ * $Id: m_cburst.c,v 1.8 2000/12/09 05:59:42 db Exp $
  */
 #include "tools.h"
 #include "channel.h"

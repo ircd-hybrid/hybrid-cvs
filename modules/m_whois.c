@@ -1,5 +1,5 @@
 /************************************************************************
- *   IRC - Internet Relay Chat, src/m_who.c
+ *   IRC - Internet Relay Chat, modules/m_whois.c
  *   Copyright (C) 1990 Jarkko Oikarinen and
  *                      University of Oulu, Computing Center
  *
@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 1.17 2000/12/08 19:30:35 db Exp $
+ *   $Id: m_whois.c,v 1.18 2000/12/09 05:59:57 db Exp $
  */
 #include "tools.h"
 #include "common.h"   /* bleah */
