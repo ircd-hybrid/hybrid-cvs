@@ -1,3 +1,17 @@
+db          2003/02/02 15:47:25 EST	(20030202_1)
+
+  Modified files:
+    src                  channel.c client.c 
+  Log:
+  - dlinkFindDelete() has been in tools.c a long time, I've just hesitated
+    to change working code. Oh well. It is faster.
+  
+  Revision  Changes    Path
+  7.354     +2 -3      ircd-hybrid-7/src/channel.c
+  7.321     +7 -21     ircd-hybrid-7/src/client.c
+
+
+
 db          2003/02/02 15:45:01 EST	(20030202_0)
 
   Modified files:
@@ -34724,4 +34738,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4214 2003/02/02 20:45:04 db Exp $
+$Id: ChangeLog,v 7.4215 2003/02/02 20:47:28 db Exp $
