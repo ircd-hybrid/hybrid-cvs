@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.189 2001/02/14 06:55:08 db Exp $
+ *  $Id: s_conf.c,v 7.190 2001/02/15 04:39:13 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -1389,9 +1389,7 @@ int rehash(struct Client *cptr,struct Client *sptr, int sig)
   }
 
   close_listeners();
-#if 0
   restart_resolver();
-#endif
   read_conf_files(NO);
 
   if (ServerInfo.description != NULL)
