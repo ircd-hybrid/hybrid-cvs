@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.138 2003/05/25 04:24:56 db Exp $
+ *  $Id: m_kline.c,v 1.139 2003/05/28 00:18:47 db Exp $
  */
 
 #include "stdinc.h"
@@ -81,7 +81,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.138 $";
+const char *_version = "$Revision: 1.139 $";
 #endif
 
 /* Local function prototypes */
@@ -199,9 +199,7 @@ mo_kline(struct Client *client_p, struct Client *source_p,
   {
     sendto_server(NULL, source_p, NULL, CAP_KLN, NOCAPS, LL_ICLIENT,
                   ":%s KLINE %s %lu %s %s :%s",
-                  source_p->name,
-                  target_server,
-                  (unsigned long)tkline_time,
+                  source_p->name, target_server, (unsigned long)tkline_time,
                   user, host, reason);
 
     /* If we are sending it somewhere that doesnt include us, we stop
@@ -217,6 +215,13 @@ mo_kline(struct Client *client_p, struct Client *source_p,
   if (already_placed_kline(source_p, user, host))
     return;
 
+  /* Look for an oper reason */
+  if ((oper_reason = strchr(reason, '|')) != NULL)
+  {
+    *oper_reason = '\0';
+    oper_reason++;
+  }
+
   set_time();
   cur_time = CurrentTime;
   current_date = smalldate(cur_time);
@@ -224,30 +229,6 @@ mo_kline(struct Client *client_p, struct Client *source_p,
   DupString(aconf->host, host);
   DupString(aconf->user, user);
   aconf->port = 0;
-
-  if (target_server != NULL)
-  {
-    sendto_server(NULL, source_p, NULL, CAP_KLN, NOCAPS, LL_ICLIENT,
-		  ":%s KLINE %s %lu %s %s :%s",
-		  source_p->name, target_server,
-		  (unsigned long)tkline_time, user, host, reason);
-
-    /* If we are sending it somewhere that doesnt include us, we stop
-     * else we apply it locally too
-     */
-    if (!match(target_server, me.name))
-      return;
-  }
-
-  if (already_placed_kline(source_p, user, host))
-   return;
-
-  /* Look for an oper reason */
-  if ((oper_reason = strchr(reason, '|')) != NULL)
-  {
-    *oper_reason = '\0';
-    oper_reason++;
-  }
 
   if (tkline_time)
   {
@@ -261,6 +242,7 @@ mo_kline(struct Client *client_p, struct Client *source_p,
   {
     ircsprintf(buffer, "%s (%s)", reason, current_date);
     DupString(aconf->reason, buffer);
+    DupString(aconf->oper_reason, oper_reason);
     apply_kline(source_p, aconf, current_date, cur_time);
   }
 } /* mo_kline() */
