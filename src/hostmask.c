@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- * $Id: hostmask.c,v 7.31 2001/04/09 08:29:53 a1kmm Exp $ 
+ * $Id: hostmask.c,v 7.32 2001/04/09 10:38:21 a1kmm Exp $ 
  */
  
 #include <stdlib.h>
@@ -205,7 +205,7 @@ try_parse_v4_netmask(const char *text, struct irc_inaddr *addr, int *b)
   addb[n] = 0;
  if (addr)
   addr->sins.sin.s_addr =
-    htonl(addb[3] | addb[2]<<8 | addb[1]<<16 | addb[0]<<24);
+    htonl(addb[0]<<24 | addb[1]<<16 | addb[2]<<8 | addb[3]);
  if (b)
   *b = bits;
  return HM_IPV4;
