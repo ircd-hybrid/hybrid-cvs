@@ -19,10 +19,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_killhost.c,v 1.1 2003/05/12 00:25:25 db Exp $
+ *  $Id: m_killhost.c,v 1.2 2003/05/12 00:40:32 michael Exp $
  *
  */
 
+#include "stdinc.h"
 #include "handlers.h"
 #include "client.h"
 #include "hash.h"
@@ -37,7 +38,6 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
-#include <string.h>
 
 
 static char bufhost[BUFSIZE];
@@ -63,7 +63,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&killhost_msgtab);
 }
-const char *_version = "$Revision: 1.1 $";
+const char *_version = "$Revision: 1.2 $";
 #endif
 
 /*
@@ -80,6 +80,7 @@ static void mo_killhost(struct Client *client_p,
                  int parc,
                  char *parv[])
 {
+  dlink_node *ptr;
   struct Client *target_p;
   const char* inpath = client_p->name;
   char *host, *reason;
@@ -96,10 +97,12 @@ static void mo_killhost(struct Client *client_p,
   else
     reason = "<No reason given>";
 
-  sendto_wallops_flags(FLAGS_OPERWALL, source_p, "OPERWALL - KILLHOST %s %s", host, reason);
+  sendto_wallops_flags(UMODE_OPERWALL, source_p, "OPERWALL - KILLHOST %s %s", host, reason);
 
-  for (target_p = GlobalClientList; target_p; target_p = target_p->next)
+  DLINK_FOREACH(ptr, global_client_list.head)
   {
+    target_p = ptr->data;
+
     if (!IsPerson(target_p) || IsServer(target_p) || IsMe(target_p))
       continue;
 
@@ -115,7 +118,7 @@ static void mo_killhost(struct Client *client_p,
                    source_p->name, source_p->username, source_p->host,
                    target_p->name, reason);
 
-      sendto_realops_flags(FLAGS_ALL, L_ALL,
+      sendto_realops_flags(UMODE_ALL, L_ALL,
                            "Received KILL message for %s. From %s Path: %s (%s)",
                            target_p->name, parv[0], me.name, reason);
 
@@ -125,13 +128,11 @@ static void mo_killhost(struct Client *client_p,
       if (!MyConnect(target_p))
       {
         kh_relay_kill(client_p, source_p, target_p, inpath, reason);
-        target_p->flags |= FLAGS_KILLED;
+	SetKilled(target_p);
       }
 
       ircsprintf(bufhost, "Killed (%s (%s))", source_p->name, reason);
       exit_client(client_p, target_p, source_p, bufhost);
-
-      target_p = GlobalClientList;
     }
   }
   sendto_one(source_p,":%s NOTICE %s :%d clients killed",me.name, parv[0], count);
@@ -166,11 +167,11 @@ static void kh_relay_kill(struct Client *one, struct Client *source_p,
   else
     introduce_killed_client = 1;
 
-  for( ptr = serv_list.head; ptr; ptr = ptr->next )
+  DLINK_FOREACH(ptr, serv_list.head)
   {
-    client_p = (struct Client *) ptr->data;
+    client_p = ptr->data;
     
-    if( !client_p || client_p == one )
+    if(client_p == one)
       continue;
 
     if( !introduce_killed_client )
