@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.96 2002/05/31 02:21:04 androsyn Exp $
+ *  $Id: s_auth.c,v 7.97 2002/06/11 20:29:06 leeh Exp $
  */
 
 /*
@@ -559,13 +559,17 @@ read_auth_reply(int fd, void *data)
       if( (s = GetValidIdent(buf)) )
 	{
 	  t = auth->client->username;
+
+	  while(*s == '~' || *s == '^')
+            s++;
+
 	  for (count = USERLEN; *s && count; s++)
 	    {
 	      if(*s == '@')
 		{
 		  break;
 		}
-	      if ( !IsSpace(*s) && *s != ':' )
+	      if ( !IsSpace(*s) && *s != ':' && *s != '[')
 		{
 		  *t++ = *s;
 		  count--;
