@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.123 2001/05/29 21:11:12 davidt Exp $
+ * $Id: s_conf.h,v 7.124 2001/05/30 22:03:08 leeh Exp $
  */
 
 #include "setup.h"
@@ -209,6 +209,8 @@ typedef struct config_file_entry
   int           warn_no_nline;
   int           non_redundant_klines;
   int           o_lines_oper_only;
+  int		k_lines_oper_only;
+  int		i_lines_oper_only;
   int           pace_wait;
   int           whois_wait;
   int           knock_delay;

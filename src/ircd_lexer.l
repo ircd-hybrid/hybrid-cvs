@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.100 2001/05/29 16:10:29 jdc Exp $
+ * $Id: ircd_lexer.l,v 1.101 2001/05/30 22:03:17 leeh Exp $
  */
 
 %option case-insensitive
@@ -163,6 +163,7 @@ listen		{ return LISTEN; }
 log_level	{ return LOG_LEVEL; }
 logging         { return LOGGING; }
 logpath         { return T_LOGPATH; }
+masked		{ return TMASKED; }
 max_clients     { return T_MAX_CLIENTS; }
 max_number	{ return MAX_NUMBER; }
 maximum_links   { return MAXIMUM_LINKS; }
@@ -229,6 +230,8 @@ warn_no_nline           { return WARN_NO_NLINE; }
 non_redundant_klines    { return NON_REDUNDANT_KLINES; }
 
 o_lines_oper_only       { return O_LINES_OPER_ONLY; }
+k_lines_oper_only	{ return K_LINES_OPER_ONLY; }
+i_lines_oper_only	{ return I_LINES_OPER_ONLY; }
 whois_wait              { return WHOIS_WAIT; }
 pace_wait               { return PACE_WAIT; }
 knock_delay             { return KNOCK_DELAY; }

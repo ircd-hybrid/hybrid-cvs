@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- * $Id: hostmask.c,v 7.38 2001/05/07 21:27:17 fl_ Exp $ 
+ * $Id: hostmask.c,v 7.39 2001/05/30 22:03:16 leeh Exp $ 
  */
  
 #include <stdlib.h>
@@ -699,13 +699,13 @@ show_iline_prefix(struct Client *sptr,struct ConfItem *aconf,char *name)
  return(prefix_of_host);
 }
 
-/* void report_Ilines(struct Client *client_p)
+/* void report_Ilines(struct Client *client_p, int mask)
  * Input: None
  * Output: None
  * Side effects: Reports configured auth{} blocks to client_p
  */
 void
-report_Ilines(struct Client *client_p)
+report_Ilines(struct Client *client_p, int mask)
 {
  char *name, *host, *pass, *user, *classname;
  struct AddressRec *arec;
@@ -716,15 +716,27 @@ report_Ilines(struct Client *client_p)
    if (arec->type == CONF_CLIENT)
    {
     aconf = arec->aconf;
+
     if (!(MyConnect(client_p) && IsOper(client_p)) &&
-        IsConfDoSpoofIp(aconf))
+        (IsConfDoSpoofIp(aconf) && !mask))
      continue;
+
     get_printable_conf(aconf, &name, &host, &pass, &user, &port,
                        &classname);
+    if(mask)
+      {
+        char usermask[USERLEN+HOSTLEN+10], maskmatch[USERLEN+HOSTLEN+10];
+        ircsprintf(usermask, "%s@%s", user, host);
+        ircsprintf(maskmatch, "%s@%s", client_p->username, client_p->host);
+
+        if(!match(host, maskmatch))
+          continue;
+
+      }
     sendto_one(client_p, form_str(RPL_STATSILINE), me.name,
                client_p->name, 'I', name,
-               show_iline_prefix(client_p, aconf, user), host, port,
-               classname);
+               show_iline_prefix(client_p, aconf, user), 
+	       host, port, classname);
    }
 }
 
