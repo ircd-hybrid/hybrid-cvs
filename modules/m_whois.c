@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 1.64 2001/06/22 15:24:14 leeh Exp $
+ *   $Id: m_whois.c,v 1.65 2001/06/26 09:09:01 jdc Exp $
  */
 
 #include <string.h>
@@ -548,7 +548,8 @@ static void ms_whois(struct Client *client_p,
         struct Client *whois_p;
 
         /* try to find the client */
-	if(whois_p = find_client(parv[2], NULL))
+	whois_p = find_client(parv[2], NULL);
+	if (whois_p)
 	{
 	  /* check the server being asked to perform the whois, is that
 	   * clients uplink */
