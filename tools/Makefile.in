@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 7.18 2001/05/28 17:10:58 davidt Exp $
+# $Id: Makefile.in,v 7.19 2001/05/29 21:25:32 leeh Exp $
 
 CC		= @CC@
 INSTALL		= @INSTALL@
@@ -63,7 +63,7 @@ convertconf: convertconf.o
 	$(CC) $(CFLAGS) $(LDFLAGS) -o convertconf $(convertconf_OBJECTS) $(IRCDLIBS)
 
 clean:
-	$(RM) -f $(all_OBJECTS) convertconf fixklines viconf chkconf mkpasswd *~ core *.exe
+	$(RM) -f $(all_OBJECTS) convertconf encspeed fixklines viconf chkconf mkpasswd *~ core *.exe
 
 distclean: clean
 	$(RM) -f Makefile
