@@ -16,12 +16,12 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: messages.tab,v 7.46 2001/03/12 06:37:01 a1kmm Exp $
+ *   $Id: messages.tab,v 7.47 2001/03/19 01:51:21 madmax Exp $
  */
 
 static  char *  replies[] = {
 /* 000 */       (char *)NULL,
-/* 001  RPL_WELCOME, */ ":%s 001 %s :Welcome to the Internet Relay Network %s",
+/* 001  RPL_WELCOME, */ ":%s 001 %s :Welcome to the %s Internet Relay Chat Network %s",
 /* 002  RPL_YOURHOST,*/ ":%s 002 %s :Your host is %s, running version %s",
 /* 003  RPL_CREATED, */ ":%s 003 %s :This server was created %s",
 /* 004  RPL_MYINFO, */ ":%s 004 %s %s %s oiwszcerkfydnxbaugl biklmnopstveIha bkloveIh",

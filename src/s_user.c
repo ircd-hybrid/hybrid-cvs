@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.147 2001/03/16 09:57:00 fl_ Exp $
+ *  $Id: s_user.c,v 7.148 2001/03/19 01:51:20 madmax Exp $
  */
 
 #include <sys/types.h>
@@ -1245,7 +1245,8 @@ void send_umode_out(struct Client *client_p,
  */
 void user_welcome(struct Client *source_p)
 {
-  sendto_one(source_p, form_str(RPL_WELCOME), me.name, source_p->name, source_p->name );
+  sendto_one(source_p, form_str(RPL_WELCOME), me.name, source_p->name, 
+             ServerInfo.network_name, source_p->name );
   /* This is a duplicate of the NOTICE but see below...*/
   sendto_one(source_p, form_str(RPL_YOURHOST), me.name, source_p->name,
 	     get_listener_name(source_p->localClient->listener), version);
