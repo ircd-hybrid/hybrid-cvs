@@ -1,9 +1,62 @@
-There have been quite a few changes in Hybrid 7 and this is a list of the main 
-new features:
+                           ------------------------
+			   What's new in Hybrid 7.1
+			   ------------------------
 
-The Config File has drastically changed.  It now however allows most of the
-options that were in config.h, to be changed with a /rehash.  
+===================
+supported platforms
+===================
 
+- We now support a completely new platform, Tru64 UNIX. It now configures and
+  builds right out of the box. Thanks to HP's TestDrive program for their
+  public access Tru64 boxen.
+- We have mostly revamped the Windows Cygwin port, mostly thanks to some awesome
+  sleuth and compile work from James LaPlant.
+- The IRIX port has been brought up to date. Thanks to Mark Laws for access to a
+  fine Indigo2.
+- The HPUX port has been retested and minor warnings have been fixed. Thanks
+  Yusuf for testing.
+- VMS port update is in progress thanks to ejb.
+- Other than those, the platforms we 'support' in README.FIRST are all still
+  actively supported.
+
+===================
+configure and build
+===================
+
+- The configure script has been massively revamped, and all of the Makefiles
+  have undergone serious spring cleaning.
+- Most noticeable is that we generate make dependencies on the fly now. This
+  requires you to have some sort of program that does this, which we detect;
+  currently supported are X11 makedepend, mkdep, cc -xM if using Sun Workshop
+  and falling back to cc -MM if none work. If your C compiler has options to
+  generate make-style dependency info and you have none of the other programs,
+  send a note to joshk@triplehelix.org.
+- We now support an --enable-clobber option so that binaries are not moved to
+  $NAME.old when making install if they already exist. This does not apply to 
+  modules as a running ircd could core if the loaded modules are moved and then
+  unloaded. If you forget this when configuring, use make CLOBBER=yes install;
+  depending on your variety of make, this may or may not work.
+
+====================
+internationalization
+====================
+
+- We have ditched our buggy gettext support and we now use our own .lang files
+  to provide translated numeric messages. See doc/messages.txt for the full
+  scoop. It is now very easy to write your own (and for that see README in
+  messages/.)
+
+==================
+networking support
+==================
+
+- Our IPv6 support has been fleshed out and now can coexist peacefully with
+  IPv4. It is enabled by default if available and does not rely on the system
+  having a working IPv6 interface.
+- Cryptlinks now use Nagle's TCP_NODELAY algorithm to save overhead and are
+  hence more stable. (Previously only used with ziplinks)
+  
+---8< below here = unedited -josh ----8<----
 ------------------
  Channel Changes:
 ------------------
@@ -225,5 +278,5 @@ options that were in config.h, to be changed with a /rehash.
     PARA    - Controls propogation of INVITE notices for +p (paranoid) channels
     ENC:a   - Encrypted link, where 'a' is the cipher being used
 
-# $Id: whats-new.txt,v 7.42 2003/05/25 03:04:56 joshk Exp $
+# $Id: whats-new.txt,v 7.43 2003/05/31 05:54:20 joshk Exp $
 
