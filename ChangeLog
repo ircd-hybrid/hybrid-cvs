@@ -1,3 +1,15 @@
+lusky       2003/01/25 00:00:34 EST	(20030125_3)
+
+  Modified files:
+    src                  restart.c 
+  Log:
+  - unused var in restart
+  
+  Revision  Changes    Path
+  7.23      +0 -1      ircd-hybrid-7/src/restart.c
+
+
+
 lusky       2003/01/24 22:59:59 EST	(20030125_2)
 
   Modified files:
@@ -34430,4 +34442,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4195 2003/01/25 04:00:05 lusky Exp $
+$Id: ChangeLog,v 7.4196 2003/01/25 05:00:36 lusky Exp $
