@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_mode.c,v 1.9 2000/12/04 06:35:09 db Exp $
+ *   $Id: m_mode.c,v 1.10 2000/12/08 17:29:27 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -138,8 +138,18 @@ int m_mode(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 	      channel_modes(vchan, sptr, modebuf, parabuf);
 	      sendto_one(sptr, form_str(RPL_CHANNELMODEIS), me.name, parv[0],
 			 chptr->chname, modebuf, parabuf);
-	      sendto_one(sptr, form_str(RPL_CREATIONTIME), me.name, parv[0],
-			 chptr->chname, vchan->channelts);
+
+	      /* Let opers see the "true" TS everyone else see's
+	       * the top root chan TS
+	       */
+	      if (!IsAnyOper(sptr))
+		  sendto_one(sptr, form_str(RPL_CREATIONTIME),
+			     me.name, parv[0],
+			     chptr->chname, chptr->channelts);
+	      else
+		  sendto_one(sptr, form_str(RPL_CREATIONTIME),
+			     me.name, parv[0],
+			     chptr->chname, vchan->channelts);
 	    }
 	}
       else
