@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.109 2001/06/08 22:31:37 kreator Exp $
+ * $Id: ircd_lexer.l,v 1.110 2001/06/26 09:00:21 jdc Exp $
  */
 
 %option case-insensitive
@@ -199,8 +199,8 @@ rehash		{ return REHASH; }
 reject		{ return TREJECT; }
 remote		{ return REMOTE; }
 restricted      { return RESTRICTED; }
-rsa_private_key { return RSA_PRIVATE_KEY; }
-rsa_public_key	{ return RSA_PUBLIC_KEY; }
+rsa_private_key_file		{ return RSA_PRIVATE_KEY_FILE; }
+rsa_public_key_file		{ return RSA_PUBLIC_KEY_FILE; }
 send_password	{ return SEND_PASSWORD; }
 sendq		{ return SENDQ; }
 serverinfo	{ return SERVERINFO; }

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.191 2001/06/18 07:30:26 jdc Exp $
+ *   $Id: s_serv.c,v 7.192 2001/06/26 09:00:24 jdc Exp $
  */
 
 #include <sys/types.h>
@@ -2223,12 +2223,18 @@ void cryptlink_init(struct Client *client_p,
   int enc_len;
 
   /* get key */
-  if (!ServerInfo.rsa_private_key ||
-      !RSA_check_key(ServerInfo.rsa_private_key) ||
-      !aconf->rsa_public_key)
+  if ( (!ServerInfo.rsa_private_key) ||
+       (!RSA_check_key(ServerInfo.rsa_private_key)) )
   {
     cryptlink_error(client_p,
-                    "%s[%s]: CRYPTLINK failed - invalid RSA key(s)");
+                    "%s[%s]: CRYPTLINK failed - invalid RSA private key");
+    return;
+  }
+
+  if (!aconf->rsa_public_key)
+  {
+    cryptlink_error(client_p,
+                    "%s[%s]: CRYPTLINK failed - invalid RSA public key");
     return;
   }
 

@@ -19,7 +19,7 @@
  *
  *
  *
- * $Id: rsa.c,v 7.17 2001/06/25 16:55:34 jdc Exp $
+ * $Id: rsa.c,v 7.18 2001/06/26 09:00:23 jdc Exp $
  */
 
 #include <assert.h>
@@ -78,14 +78,14 @@ int verify_private_key(void)
     return(-1);
   }
 
-  /* If rsa_private_key_filename isn't available, error out. */
-  if (ServerInfo.rsa_private_key_filename == NULL)
+  /* If rsa_private_key_file isn't available, error out. */
+  if (ServerInfo.rsa_private_key_file == NULL)
   {
-    ilog(L_NOTICE, "Internal error: rsa_private_key_filename isn't defined.");
+    ilog(L_NOTICE, "Internal error: rsa_private_key_file isn't defined.");
     return(-1);
   }
 
-  file = BIO_new_file(ServerInfo.rsa_private_key_filename, "r");
+  file = BIO_new_file(ServerInfo.rsa_private_key_file, "r");
 
   /*
    * If BIO_new_file returned NULL (according to OpenSSL docs), then
