@@ -92,7 +92,7 @@
 #define DNS_LABELTYPE_BITSTRING		0x41
 #define MAXLINE 128
 
-/* $Id: irc_reslib.c,v 7.7 2003/05/13 05:16:26 joshk Exp $ */
+/* $Id: irc_reslib.c,v 7.8 2003/05/13 14:27:00 db Exp $ */
 
 static FBFILE *file;
 
@@ -1114,9 +1114,9 @@ irc_res_mkquery(
 	     u_char *buf,		/* buffer to put query */
 	     int buflen)		/* size of buffer */
 {
-	register HEADER *hp;
-	register u_char *cp;
-	register int n;
+	HEADER *hp;
+	u_char *cp;
+	int n;
 	u_char *dnptrs[20], **dpp, **lastdnptr;
 
 	/*
@@ -1128,13 +1128,9 @@ irc_res_mkquery(
 	hp = (HEADER *) buf;
 
 	/* XXX We randomise our own id in irc_res.c */
-#if notneeded
-	hp->id = htons(++statp->id);
-#endif
+	hp->id = 0;
 	hp->opcode = op;
-#if notneeded	
-	hp->rd = (statp->options & RES_RECURSE) != 0;
-#endif
+	hp->rd = 1;		/* recurse */
 	hp->rcode = NOERROR;
 	cp = buf + HFIXEDSZ;
 	buflen -= HFIXEDSZ;
@@ -1146,61 +1142,17 @@ irc_res_mkquery(
 	 * perform opcode specific processing
 	 */
 	switch (op) {
-	case QUERY:	/*FALLTHROUGH*/
-	case NS_NOTIFY_OP:
+	case QUERY:
 		if ((buflen -= QFIXEDSZ) < 0)
 			return (-1);
-		if ((n = irc_dn_comp(dname, cp, buflen, dnptrs, lastdnptr)) < 0)
+		if ((n = dn_comp(dname, cp, buflen, dnptrs, lastdnptr)) < 0)
 			return (-1);
-		cp += n;
-		buflen -= n;
-		IRC_NS_PUT16(type, cp);
-		cp += NS_INT16SZ;
-		IRC_NS_PUT16(class, cp);
-		cp += NS_INT16SZ;
-		hp->qdcount = htons(1);
-		if (op == QUERY || data == NULL)
-			break;
-		/*
-		 * Make an additional record for completion domain.
-		 */
-		buflen -= RRFIXEDSZ;
-		n = irc_dn_comp((const char *)data, cp, buflen, dnptrs, lastdnptr);
-		if (n < 0)
-			return (-1);
-		cp += n;
-		buflen -= n;
-		IRC_NS_PUT16(T_NULL, cp);
-		cp += NS_INT16SZ;
-		IRC_NS_PUT16(class, cp);
-		cp += NS_INT16SZ;
-		IRC_NS_PUT32(0, cp);
-		cp += NS_INT32SZ;
-		IRC_NS_PUT16(0, cp);
-		cp += NS_INT16SZ;
-		hp->arcount = htons(1);
-		break;
 
-	case IQUERY:
-		/*
-		 * Initialize answer section
-		 */
-		if (buflen < 1 + RRFIXEDSZ + datalen)
-			return (-1);
-		*cp++ = '\0';	/* no domain name */
+		cp += n;
+		buflen -= n;
 		IRC_NS_PUT16(type, cp);
-		cp += NS_INT16SZ;
 		IRC_NS_PUT16(class, cp);
-		cp += NS_INT16SZ;
-		IRC_NS_PUT32(0, cp);
-		cp += NS_INT32SZ;
-		IRC_NS_PUT16(datalen, cp);
-		cp += NS_INT16SZ;
-		if (datalen) {
-			memcpy(cp, data, datalen);
-			cp += datalen;
-		}
-		hp->ancount = htons(1);
+		hp->qdcount = htons(1);
 		break;
 
 	default:
