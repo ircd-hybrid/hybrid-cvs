@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.37 2000/10/31 22:59:55 db Exp $
+ *   $Id: send.c,v 7.38 2000/11/02 19:05:13 adrian Exp $
  */
 #include "send.h"
 #include "channel.h"
@@ -54,7 +54,6 @@ static  int     send_message (struct Client *, char *, int);
 static  void vsendto_prefix_one(register struct Client *, register struct Client *, const char *, va_list);
 static  void vsendto_one(struct Client *, const char *, va_list);
 static  void vsendto_realops(const char *, va_list);
-static PF send_queued_write;
 
 static  unsigned long sentalong[MAXCONNECTIONS];
 static unsigned long current_serial=0L;
@@ -182,7 +181,7 @@ send_message(struct Client *to, char *msg, int len)
 **      be possible. This attempts to empty the send queue as far as
 **      possible, and then if any data is left, a write is rescheduled.
 */
-static void
+void
 send_queued_write(int fd, void *data)
 {
   struct Client *to = data;
