@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.104 2002/07/06 16:58:55 db Exp $
+ *  $Id: m_kline.c,v 1.105 2002/07/06 20:14:33 leeh Exp $
  */
 
 #include "stdinc.h"
@@ -75,7 +75,7 @@ _moddeinit(void)
   mod_del_cmd(&kline_msgtab);
   mod_del_cmd(&dline_msgtab);
 }
-const char *_version = "$Revision: 1.104 $";
+const char *_version = "$Revision: 1.105 $";
 #endif
 
 /* Local function prototypes */
@@ -707,7 +707,7 @@ mo_dline(struct Client *client_p, struct Client *source_p,
       char *creason;
       (void)parse_netmask(dlhost, &daddr, NULL);
 
-      if (aconf = find_dline(&daddr, t)) 
+      if((aconf = find_dline(&daddr, t)) != NULL)
 	{
 	  creason = aconf->passwd ? aconf->passwd : "<No Reason>";
 	  if (IsConfExemptKline(aconf))
