@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 1.15 2000/12/08 15:58:18 toot Exp $
+ *   $Id: m_whois.c,v 1.16 2000/12/08 17:06:38 db Exp $
  */
 #include "tools.h"
 #include "common.h"   /* bleah */
@@ -367,7 +367,7 @@ void whois_person(struct Client *sptr,struct Client *acptr)
 	       sptr->host);
   
   
-  if (MyConnect(acptr))
+  if (!GlobalSetOptions.hide_server && MyConnect(acptr))
     sendto_one(sptr, form_str(RPL_WHOISIDLE),
 	       me.name, sptr->name, acptr->name,
 	       CurrentTime - acptr->user->last,
