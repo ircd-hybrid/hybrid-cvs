@@ -5,7 +5,7 @@
  *  Copyright (C) 2002 by the past and present ircd coders, and others.
  *  Original credit lines follow:
  *
- *  File:   blalloc.c
+ *  File:   balloc.c
  *  Owner:  Wohali (Joan Touzet)
  *  
  *  Modified 2001/11/29 for mmap() support by Aaron Sethman <androsyn@ratbox.org>
@@ -25,7 +25,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: balloc.c,v 7.49 2003/10/24 11:27:23 michael Exp $
+ *  $Id: balloc.c,v 7.50 2004/12/04 14:49:04 db Exp $
  */
 
 /* 

@@ -19,11 +19,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: balloc.h,v 1.15 2003/07/25 23:49:18 michael Exp $
+ *  $Id: balloc.h,v 1.16 2004/12/04 14:49:02 db Exp $
  */
 
-#ifndef INCLUDED_blalloc_h
-#define INCLUDED_blalloc_h
+#ifndef INCLUDED_balloc_h
+#define INCLUDED_balloc_h
 
 #include "setup.h"
 
@@ -89,4 +89,4 @@ typedef struct BlockHeap BlockHeap;
 
 
 #endif /* NOBALLOC */
-#endif /* INCLUDED_blalloc_h */
+#endif /* INCLUDED_balloc_h */
