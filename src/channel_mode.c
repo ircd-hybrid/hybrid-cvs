@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.43 2002/07/12 03:30:03 joant Exp $
+ *  $Id: channel_mode.c,v 7.44 2002/07/23 01:00:59 db Exp $
  */
 
 #include "stdinc.h"
@@ -546,29 +546,43 @@ pretty_mask(char *mask)
   {
     at = t;
     *t++ = '\0';
-    host = t;
+    if (*t != '\0')
+      host = t;
 
     if ((t = strchr(mask, '!')) != NULL)
     {
       ex = t;
       *t++ = '\0';
-      user = t;
-      nick = mask;
+      if (*t != '\0')
+	user = t;
+      if (*mask != '\0')
+	nick = mask;
     }
     else
-      user = mask;
+    {
+      if (*mask != '\0')
+	user = mask;
+    }
   }
   else if ((t = strchr(mask, '!')) != NULL)
   {
     ex = t;
     *t++ = '\0';
-    nick = mask;
-    user = t;
+    if (*mask != '\0')
+      nick = mask;
+    if (*t != '\0')
+      user = t;
   }
   else if (strchr(mask, '.') != NULL && strchr(mask, ':') != NULL)
-    host = mask;
+  {
+    if (*mask != '\0')
+      host = mask;
+  }
   else
-    nick = mask;
+  {
+    if (*mask != '\0')
+      nick = mask;
+  }
 
   /* truncate values to max lengths */
   if (strlen(nick) > NICKLEN - 1)
