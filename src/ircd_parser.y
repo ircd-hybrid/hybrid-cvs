@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.121 2001/01/26 18:30:30 jdc Exp $
+ * $Id: ircd_parser.y,v 1.122 2001/01/27 08:18:22 androsyn Exp $
  */
 
 %{
@@ -330,6 +330,7 @@ serverinfo_vhost:       VHOST '=' IP_TYPE ';'
 #ifndef IPV6
 /* XXX: Broken for IPv6 */
     IN_ADDR(ServerInfo.ip) = yylval.ip_entry.ip;
+    ServerInfo.specific_virtual_host = 1;
 #endif
   };
 

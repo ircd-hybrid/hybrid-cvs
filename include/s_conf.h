@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.91 2001/01/26 17:47:32 jdc Exp $
+ * $Id: s_conf.h,v 7.92 2001/01/27 08:18:28 androsyn Exp $
  */
 
 #include "setup.h"
@@ -214,6 +214,7 @@ struct server_info
   struct      irc_inaddr ip;
   int         max_clients;
   int         no_hack_ops;
+  int	      specific_virtual_host;
 };
 
 struct admin_info
