@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.169 2003/10/07 22:37:17 bill Exp $
+ *  $Id: m_sjoin.c,v 1.170 2003/10/12 01:16:14 bill Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.169 $";
+const char *_version = "$Revision: 1.170 $";
 #endif
 
 /* ms_sjoin()
@@ -505,7 +505,7 @@ nextnick:
   }
 
   /* if the source does TS6, remove our bans, if there are any */
-  if (!keep_our_modes && IsCapable(source_p, CAP_TS6))
+  if (!keep_our_modes && HasID(source_p))
   {
     if (dlink_list_length(&chptr->banlist) > 0)
       remove_ban_list(chptr, client_p, &chptr->banlist,
