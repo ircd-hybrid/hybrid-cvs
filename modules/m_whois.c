@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 1.42 2001/01/03 20:54:10 fl_ Exp $
+ *   $Id: m_whois.c,v 1.43 2001/01/03 23:09:52 davidt Exp $
  */
 #include "tools.h"
 #include "common.h"   /* bleah */
@@ -92,9 +92,10 @@ int     m_whois(struct Client *cptr,
   if ((acptr = hash_find_client(parv[1], (struct Client*)NULL)) &&
       !MyConnect(acptr) && IsClient(acptr) && parc > 2)
     {
-     sendto_one(acptr->from, ":%s WHOIS %s :%s", parv[0], parv[1],
-                parv[1]);
-     return 0;
+      client_burst_if_needed(acptr->from, sptr);
+      sendto_one(acptr->from, ":%s WHOIS %s :%s", parv[0], parv[1],
+                 parv[1]);
+      return 0;
     }
   
 
