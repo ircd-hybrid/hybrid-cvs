@@ -1,3 +1,7 @@
+*** 20001213_6 by toot
+fixed some makefile stuff
+
+
 *** 20001213_5 by db
 - I had changed RTLD_LAZY to RTLD_NOW in modules.c thus insisting
   on all names being resolved before loading. oops. should have done this
@@ -2518,7 +2522,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.814 2000/12/13 16:09:01 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.815 2000/12/13 19:53:22 toot Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
