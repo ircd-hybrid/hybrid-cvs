@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.358 2003/07/01 04:43:29 joshk Exp $
+ *  $Id: s_serv.c,v 7.359 2003/07/01 11:19:05 michael Exp $
  */
 
 #include "stdinc.h"
@@ -973,9 +973,6 @@ server_estab(struct Client *client_p)
     {
       ServerStats->is_ref++;
       sendto_one(client_p, "ERROR :I'm a leaf not a hub");
-      sendto_realops_flags(UMODE_ALL, L_ALL,
-        "Connection to %s [%s] failed: %s is not a hub!",
-	client_p->user->server->name, client_p->host, me.name);
       return(exit_client(client_p, client_p, client_p, "I'm a leaf"));
     }
   }
