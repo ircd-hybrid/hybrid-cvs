@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_cburst.c,v 1.18 2000/12/19 04:39:32 db Exp $
+ * $Id: m_cburst.c,v 1.19 2000/12/19 06:27:02 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -129,7 +129,8 @@ int     ms_cburst(struct Client *cptr,
   else
     {
       sendto_realops_flags(FLAGS_ALL,
-		   "*** CBURST request received from non LL capable server!");
+		   "*** CBURST request received from non LL capable server! [%s]",
+			   cptr->name);
       return 0;
     }
 
