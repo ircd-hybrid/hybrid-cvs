@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.186 2001/10/05 03:46:13 db Exp $
+ * $Id: ircd.c,v 7.187 2001/10/06 02:33:16 wcampbel Exp $
  */
 
 #include <sys/types.h>
@@ -218,7 +218,6 @@ init_sys(void)
                         (long) limit.rlim_cur);
           exit(EXIT_FAILURE);
         }
-      printf("Value of NOFILE is %d\n", NOFILE);
     }
 #endif        /* RLIMIT_FD_MAX */
 }
