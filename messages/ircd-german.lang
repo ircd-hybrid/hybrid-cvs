@@ -1,13 +1,13 @@
 ; ircd-hybrid-7 custom message file
 ; Copyright (C) 2000
 ; David Taylor <davidt@yadt.co.uk>, 2000.
-; $Id: ircd-german.lang,v 1.7 2003/05/18 14:15:58 adx Exp $
+; $Id: ircd-german.lang,v 1.8 2004/03/06 22:28:46 michael Exp $
 
 RPL_WELCOME:             :%s 001 %s :Wilkommen im %s Internet Relay Chat Network %s
-RPL_YOURHOST:            :%s 002 %s :Ihr host ist %s, die aktuelle version is %s
-RPL_CREATED:             :%s 003 %s :Dieser Server is am %s kreiert worden.
+RPL_YOURHOST:            :%s 002 %s :Ihr Host ist %s, die aktuelle Version ist %s
+RPL_CREATED:             :%s 003 %s :Dieser Server ist am %s kreiert worden.
 RPL_ISUPPORT:            :%s 005 %s %s :werden von diesem Server unterstützt.
-RPL_REDIR:               :%s 010 %s %s %d :Bitte benuzten Sie diesen Server/Port anstelle des von Ihnen gewählten
+RPL_REDIR:               :%s 010 %s %s %d :Bitte benutzen Sie diesen Server/Port anstelle des von Ihnen gewählten
 RPL_TRACELINK:           :%s 200 %s verlinkt %s %s %s
 RPL_TRACECONNECTING:     :%s 201 %s Versuchen Sie. %s %s
 RPL_TRACEOPERATOR:       :%s 204 %s Operator %s %s (%s) %lu %lu
@@ -21,7 +21,7 @@ RPL_STATSCONN:           :%s 250 %s :Maximum Verbindungen: %d (%d Besucher) (%d 
 RPL_LUSERCLIENT:         :%s 251 %s :Dieser Server beherbergt %d Besucher, davon sind %d als unsichtbar angemeldet. Die Besucher sind über %d Server verteilt
 RPL_LUSEROP:             :%s 252 %s %d :IRC Operatoren stehen zu Ihrer Verfügung
 RPL_LUSERUNKNOWN:        :%s 253 %s %d :Unbekannte Verbindungen
-RPL_LUSERCHANNELS:       :%s 254 %s %d :Chat Räume stehen zu Ihrer Verfügung
+RPL_LUSERCHANNELS:       :%s 254 %s %d :Chaträume stehen zu Ihrer Verfügung
 RPL_LUSERME:             :%s 255 %s :Ich beherberge %d Besucher und %d Server sind mit mir verbunden
 RPL_ADMINME:             :%s 256 %s :Administrative Informationen für %s
 RPL_ENDOFTRACE:          :%s 262 %s %s :Ende der TRACE Nachricht
@@ -47,18 +47,18 @@ RPL_ENDOFBANLIST:        :%s 368 %s %s :Ende der ban Liste für diesen Raum
 RPL_ENDOFWHOWAS:         :%s 369 %s %s :Ende des WHOWAS
 RPL_ENDOFINFO:           :%s 374 %s :Ende des /INFO Reportes.
 RPL_ENDOFMOTD:           :%s 376 %s :Ende des /MOTD
-RPL_YOUREOPER:           :%s 381 %s :Wilkommen in Olymp.
+RPL_YOUREOPER:           :%s 381 %s :Willkommen im Olymp.
 RPL_REHASHING:           :%s 382 %s %s :Die Konfiguration wurde erneut geladen
 ERR_NOSUCHNICK:          :%s 401 %s %s :Diesen Raum oder Nicknamen, gibt es nicht
 ERR_NOSUCHSERVER:        :%s 402 %s %s :Diesen Server gibt es nicht
-ERR_NOSUCHCHANNEL:       :%s 403 %s %s :Diesen Chat Raum gibt es nicht
-ERR_CANNOTSENDTOCHAN:    :%s 404 %s %s :Ihre Nachricht konnte nicht an den Chat Raum gesendet werden. Vielleicht ist er moderiert
-ERR_TOOMANYCHANNELS:     :%s 405 %s %s :Sie sind in zu vielen Chat Räumen gleichzeitig
+ERR_NOSUCHCHANNEL:       :%s 403 %s %s :Diesen Chatraum gibt es nicht
+ERR_CANNOTSENDTOCHAN:    :%s 404 %s %s :Ihre Nachricht konnte nicht an den Chatraum gesendet werden. Vielleicht ist er moderiert
+ERR_TOOMANYCHANNELS:     :%s 405 %s %s :Sie sind in zu vielen Chaträumen gleichzeitig
 ERR_WASNOSUCHNICK:       :%s 406 %s %s :Diesen Nicknamen hat es nie gegeben
 ERR_TOOMANYTARGETS:      :%s 407 %s %s :Die Nachricht wurde an zu viele Personen geschickt. Nur %d wurden weitergeleitet
 ERR_NOORIGIN:            :%s 409 %s :von wem kommt diese Nachricht?
 ERR_NORECIPIENT:         :%s 411 %s :An wen soll diese Nachricht geschickt werden? (%s)
-ERR_NOTEXTTOSEND:        :%s 412 %s :Es gibt keine Nachticht zu senden
+ERR_NOTEXTTOSEND:        :%s 412 %s :Es gibt keine Nachricht zu senden
 ERR_NOTOPLEVEL:          :%s 413 %s %s :Es wurde keine toplevel domain spezifiziert
 ERR_WILDTOPLEVEL:        :%s 414 %s %s :Es wurde ein Wildcard im toplevel Domain gefunden
 ERR_UNKNOWNCOMMAND:      :%s 421 %s %s :Unbekannter Befehl
@@ -78,7 +78,7 @@ ERR_ALREADYREGISTRED:    :%s 462 %s :Sie dürfen sich nicht nocheinmal registrier
 ERR_PASSWDMISMATCH:      :%s 464 %s :Das Passwort ist falsch.
 ERR_YOUREBANNEDCREEP:    :%s 465 %s :Sie haben keinen Zutritt zu diesem Server- %s
 ERR_CHANNELISFULL:       :%s 471 %s %s :Sie haben keinen zutritt zu diesem Raum (+l)
-ERR_UNKNOWNMODE:         :%s 472 %s %c :Ich kenne diese mode nicht, sorry
+ERR_UNKNOWNMODE:         :%s 472 %s %c :Ich kenne diesen Modus nicht, sorry
 ERR_INVITEONLYCHAN:      :%s 473 %s %s :Sie können diesen Raum nur mit einer Einladung betreten
 ERR_BANNEDFROMCHAN:      :%s 474 %s %s :Sie haben keinen Zutritt zu diesem Raum (+b)
 ERR_BADCHANNELKEY:       :%s 475 %s %s :Sie können diesen Raum nur mit dem richtigen Passwort betreten
@@ -89,7 +89,7 @@ ERR_CHANOPRIVSNEEDED:    :%s 482 %s %s :Sie besitzen nicht die nötigen Privilegi
 ERR_CANTKILLSERVER:      :%s 483 %s :Ein Server reagiert nicht auf das KILL Kommando
 ERR_RESTRICTED:          :%s 484 %s :Sie unterliegen Restriktionen
 ERR_NOOPERHOST:          :%s 491 %s :Sie haben keinen Zugriff auf die erweiterten Funktionen dieses Servers
-ERR_UMODEUNKNOWNFLAG:    :%s 501 %s :Dieser MODE ist mir nicht bekannt
+ERR_UMODEUNKNOWNFLAG:    :%s 501 %s :Dieser MODUS ist mir nicht bekannt
 ERR_USERSDONTMATCH:      :%s 502 %s :Sie können die modes für einen anderen Besucher nicht ändern
 ERR_GHOSTEDCLIENT:       :%s 503 %s :Die Nachricht konnte nicht an %s geschickt werden
 ERR_USERNOTONSERV:       :%s 504 %s %s :Der Besucher ist nicht auf diesem Server
