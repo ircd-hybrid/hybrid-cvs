@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.h,v 7.13 2002/10/28 21:09:20 bill Exp $
+ *  $Id: channel_mode.h,v 7.14 2003/02/23 04:16:03 db Exp $
  */
 
 
@@ -118,6 +118,24 @@ extern void unset_chcap_usage_counts(struct Client *serv_p);
 #define ParanoidChannel(x)	((x) && ((x)->mode.mode &\
 			        (MODE_PRIVATE|MODE_INVITEONLY))==\
 		                (MODE_PRIVATE|MODE_INVITEONLY))
+
+#define IsHideOps(x)            ((x) && ((x)->mode.mode & MODE_HIDEOPS))
+#define IsInviteOnly(x)         ((x) && ((x)->mode.mode & MODE_INVITEONLY))
+#define IsModerated(x)          ((x) && ((x)->mode.mode & MODE_MODERATED))
+#define IsNoPrivMsgs(x)         ((x) && ((x)->mode.mode & MODE_NOPRIVMSGS))
+#define IsTopicLimited(x)       ((x) && ((x)->mode.mode & MODE_TOPICLIMIT))
+
+#define SetHideOps(x)           ((x)->mode.mode |= MODE_HIDEOPS)
+#define SetInviteOnly(x)        ((x)->mode.mode |= MODE_INVITEONLY)
+#define SetModerated(x)         ((x)->mode.mode |= MODE_MODERATED)
+#define SetNoPrivMsgs(x)        ((x)->mode.mode |= MODE_NOPRIVMSGS)
+#define SetTopicLimited(x)      ((x)->mode.mode |= MODE_TOPICLIMIT)
+
+#define ClearHideOps(x)         ((x)->mode.mode &= ~MODE_HIDEOPS)
+#define ClearInviteOnly(x)      ((x)->mode.mode &= ~MODE_INVITEONLY)
+#define ClearModerated(x)       ((x)->mode.mode &= ~MODE_MODERATED)
+#define ClearNoPrivMsgs(x)      ((x)->mode.mode &= ~MODE_NOPRIVMSGS)
+#define ClearTopicLimited       ((x)->mode.mode &= ~MODE_TOPICLIMIT)
 
 struct ChModeChange
 {

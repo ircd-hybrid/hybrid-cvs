@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.94 2003/02/18 22:26:37 db Exp $
+ *  $Id: m_server.c,v 1.95 2003/02/23 04:16:08 db Exp $
  */
 
 #include "stdinc.h"
@@ -67,7 +67,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&server_msgtab);
 }
-const char *_version = "$Revision: 1.94 $";
+const char *_version = "$Revision: 1.95 $";
 #endif
 
 int bogus_host(char *host);
@@ -80,8 +80,9 @@ struct Client *server_exists(char *);
  *      parv[2] = serverinfo/hopcount
  *      parv[3] = serverinfo
  */
-static void mr_server(struct Client *client_p, struct Client *source_p,
-                      int parc, char *parv[])
+static void
+mr_server(struct Client *client_p, struct Client *source_p,
+	  int parc, char *parv[])
 {
   char             info[REALLEN + 1];
   char             *name;
@@ -182,7 +183,7 @@ static void mr_server(struct Client *client_p, struct Client *source_p,
       break;
   }
     
-  if ((target_p = server_exists(name)))
+  if((target_p = server_exists(name)))
     {
       /*
        * This link is trying feed me a server that I already have
@@ -229,7 +230,7 @@ static void mr_server(struct Client *client_p, struct Client *source_p,
             }
         }
     }
-  else if (IsCapable(client_p, CAP_LL))
+  else if(IsCapable(client_p, CAP_LL))
     {
       if(!IsCapable(client_p, CAP_HUB))
         {
@@ -257,8 +258,9 @@ static void mr_server(struct Client *client_p, struct Client *source_p,
  *      parv[2] = serverinfo/hopcount
  *      parv[3] = serverinfo
  */
-static void ms_server(struct Client *client_p, struct Client *source_p,
-                      int parc, char *parv[])
+static void
+ms_server(struct Client *client_p, struct Client *source_p,
+	  int parc, char *parv[])
 {
   char             info[REALLEN + 1];
                    /* same size as in s_misc.c */
@@ -458,8 +460,6 @@ static void ms_server(struct Client *client_p, struct Client *source_p,
       exit_client(NULL, client_p, &me, "Leafed Server.");
       return;
     }
-  
-
 
   if(strlen(name) > HOSTLEN)
   {
@@ -489,11 +489,14 @@ static void ms_server(struct Client *client_p, struct Client *source_p,
 
   Count.server++;
 
-  add_client_to_list(target_p);
+  dlinkAdd(target_p, &target_p->node, &GlobalClientList);
+#if 0
+  ptr = make_dlink_node();
+  dlinkAdd(target_p, ptr, &global_serv_list);
+#endif
   add_server_to_list(target_p);
   add_to_client_hash_table(target_p->name, target_p);
   add_client_to_llist(&(target_p->servptr->serv->servers), target_p);
-
 
   /*
    * Old sendto_serv_but_one() call removed because we now
@@ -538,7 +541,8 @@ static void ms_server(struct Client *client_p, struct Client *source_p,
  * output	- none
  * side effects - servers gecos field is set
  */
-static int set_server_gecos(struct Client *client_p, char *info)
+static int
+set_server_gecos(struct Client *client_p, char *info)
 {
   /* check the info for [IP] */
   if(info[0])
@@ -550,11 +554,11 @@ static int set_server_gecos(struct Client *client_p, char *info)
     s = info;
     
     /* we should only check the first word for an ip */
-    if((p = strchr(s, ' ')))
+    if((p = strchr(s, ' ')) != NULL)
       *p = '\0';
       
     /* check for a ] which would symbolise an [IP] */
-    if((t = strchr(s, ']')))
+    if((t = strchr(s, ']')) != NULL)
     {
       /* set s to after the first space */
       if(p)
@@ -610,13 +614,14 @@ static int set_server_gecos(struct Client *client_p, char *info)
  * output	- 1 if a bogus hostname input, 0 if its valid
  * side effects	- none
  */
-int bogus_host(char *host)
+int
+bogus_host(char *host)
 {
   int bogus_server = 0;
   char *s;
   int dots = 0;
 
-  for( s = host; *s; s++ )
+  for(s = host; *s; s++)
     {
       if (!IsServChar(*s))
 	{
@@ -627,10 +632,10 @@ int bogus_host(char *host)
 	++dots;
     }
 
-  if (!dots || bogus_server )
-    return 1;
+  if ((dots == 0) || bogus_server )
+    return (1);
 
-  return 0;
+  return (0);
 }
 
 /*
@@ -639,19 +644,20 @@ int bogus_host(char *host)
  * inputs	- servername
  * output	- 1 if server exists, 0 if doesnt exist
  */
-struct Client *server_exists(char *servername)
+struct Client *
+server_exists(char *servername)
 {
   struct Client *target_p;
   dlink_node *ptr;
 
-  for(ptr = global_serv_list.head; ptr; ptr = ptr->next)
+  DLINK_FOREACH(ptr, global_serv_list.head)
   {
     target_p = ptr->data;
 
     if(match(target_p->name, servername) || 
-         match(servername, target_p->name))
-      return target_p;
+       match(servername, target_p->name))
+      return (target_p);
   }
 
-  return NULL;
+  return (NULL);
 }

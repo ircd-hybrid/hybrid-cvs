@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.166 2003/02/17 22:15:09 db Exp $
+ *  $Id: client.h,v 7.167 2003/02/23 04:16:03 db Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -123,8 +123,7 @@ struct Vchan_map
 
 struct Client
 {
-  struct Client*    next;
-  struct Client*    prev;
+  dlink_node	    node;
   struct Client*    hnext;
   struct Client*    idhnext;
 	
@@ -150,7 +149,6 @@ struct Client
   int		    hidden_server;
   unsigned short    status;     /* Client type */
   unsigned char     handler;    /* Handler index */
-  char              eob;	/* server eob has been received */
   unsigned long     serial;	/* used to enforce 1 send per nick */
   unsigned long     lazyLinkClientExists; /* This client exists on the
 					   * bit mapped lazylink servers 
@@ -366,8 +364,8 @@ struct LocalUser
 #define PARSE_AS_CLIENT(x)      ((x)->status & STAT_CLIENT_PARSE)
 #define PARSE_AS_SERVER(x)      ((x)->status & STAT_SERVER_PARSE)
 
-#define SetEob(x)		((x)->eob = 1)
-#define HasSentEob(x)		((x)->eob)
+#define SetEob(x)		((x)->flags2 |= FLAGS2_EOB)
+#define HasSentEob(x)		((x)->flags2 & FLAGS2_EOB)
 
 /*
  * ts stuff
@@ -451,12 +449,13 @@ struct LocalUser
                                  FLAGS2_OPER_REHASH| \
                                  FLAGS2_OPER_ADMIN)
 
-#define FLAGS2_CBURST		0x10000  /* connection burst being sent */
-#define FLAGS2_PING_COOKIE	0x20000		/* PING Cookie */
+#define FLAGS2_CBURST		0x10000       /* connection burst being sent */
+#define FLAGS2_PING_COOKIE	0x20000	      /* PING Cookie */
 #define FLAGS2_IDLE_LINED       0x40000
-#define FLAGS2_IP_SPOOFING      0x80000        /* client IP is spoofed */
+#define FLAGS2_IP_SPOOFING      0x80000       /* client IP is spoofed */
 #define FLAGS2_FLOODDONE        0x200000      /* Flood grace period has
                                                * been ended. */
+#define FLAGS2_EOB		0x400000
 
 #define SEND_UMODES  (UMODE_INVISIBLE | UMODE_OPER | UMODE_WALLOP | \
                       UMODE_ADMIN)
@@ -590,7 +589,13 @@ struct LocalUser
 
 #define IsFloodDone(x)          ((x)->flags2 & FLAGS2_FLOODDONE)
 #define SetFloodDone(x)         ((x)->flags2 |= FLAGS2_FLOODDONE)
+#define SetCBurst(x)		((x)->flags2 |= FLAGS2_CBURST)
+#define ClearCBurst(x)		((x)->flags2 &= ~FLAGS2_CBURST)
 #define CBurst(x)               ((x)->flags2 & FLAGS2_CBURST)
+#define HasPingCookie(x)	((x)->flags2 & FLAGS2_PING_COOKIE)
+#define SetPingCookie(x)	((x)->flags2 |= FLAGS2_PING_COOKIE)
+#define ClearPingCookie(x)	((x)->flags2 &= ~FLAGS2_PING_COOKIE)
+#define ClearOperFlags(x)	((x)->flags2 &= ~FLAGS2_OPER_FLAGS)
 
 /*
  * definitions for get_client_name
@@ -599,12 +604,14 @@ struct LocalUser
 #define SHOW_IP 1
 #define MASK_IP 2
 
+extern struct Client  me;
+extern dlink_list GlobalClientList;
+
 extern void           check_klines(void);
 extern const char*    get_client_name(struct Client* client, int show_ip);
 extern void           init_client(void);
 extern struct Client* make_client(struct Client* from);
 extern void           free_client(struct Client* client);
-extern void           add_client_to_list(struct Client* client);
 extern void           remove_client_from_list(struct Client *);
 extern void           add_client_to_llist(struct Client** list, 
                                           struct Client* client);
@@ -620,6 +627,7 @@ extern void     count_remote_client_memory(int *count, int *memory);
 extern struct Client* find_chasing (struct Client *, char *, int *);
 extern struct Client* find_person (char *);
 extern struct Client* next_client (struct Client *, const char *);
+extern dlink_node *next_client_ptr(dlink_node *next,const char *);
 extern int accept_message(struct Client *source, struct Client *target);
 extern void del_from_accept(struct Client *source, struct Client *target);
 extern void del_all_accepts(struct Client *client_p);

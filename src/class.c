@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: class.c,v 7.38 2003/02/18 22:26:38 db Exp $
+ *  $Id: class.c,v 7.39 2003/02/23 04:16:10 db Exp $
  */
 
 #include "stdinc.h"
@@ -73,8 +73,11 @@ make_class()
   struct Class *aclass;
 
   aclass = (struct Class *)MyMalloc(sizeof(struct Class));
+#if 0
   aclass->className = NULL;
   aclass->servname = NULL;
+#endif
+  memset((void *)aclass, 0, sizeof(*aclass));
   return (aclass);
 }
 
@@ -301,7 +304,7 @@ check_class()
 
     if (MaxLinks(aclass) < 0)
     {
-      dlinkDelete(ptr, &ClassList);
+      dlinkDelete(&aclass->class_node, &ClassList);
       if (Links(aclass) <= 0)
 	free_class(aclass);
     }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_list.c,v 1.45 2003/01/17 05:11:53 db Exp $
+ *  $Id: m_list.c,v 1.46 2003/02/23 04:16:05 db Exp $
  */
 
 #include "stdinc.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&list_msgtab);
 }
-const char *_version = "$Revision: 1.45 $";
+const char *_version = "$Revision: 1.46 $";
 #endif
 static int list_all_channels(struct Client *source_p);
 static int list_named_channel(struct Client *source_p,char *name);
@@ -186,18 +186,21 @@ static void ms_list(struct Client *client_p,
  * output	- 0/1
  * side effects	- list all channels to source_p
  */
-static int list_all_channels(struct Client *source_p)
+static int
+list_all_channels(struct Client *source_p)
 {
+  dlink_node *gptr;
   struct Channel *chptr;
 
   sendto_one(source_p, form_str(RPL_LISTSTART), me.name, source_p->name);
 
-  for ( chptr = GlobalChannelList; chptr; chptr = chptr->nextch )
+  DLINK_FOREACH(gptr, GlobalChannelList.head)
     {
-      if ( !source_p->user ||
-	   (SecretChannel(chptr) && !IsMember(source_p, chptr)))
+      chptr = gptr->data;
+      if (!source_p->user ||
+	  (SecretChannel(chptr) && !IsMember(source_p, chptr)))
 	continue;
-      list_one_channel(source_p,chptr);
+      list_one_channel(source_p, chptr);
     }
 
   sendto_one(source_p, form_str(RPL_LISTEND), me.name, source_p->name);

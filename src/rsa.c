@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: rsa.c,v 7.25 2002/05/24 23:34:49 androsyn Exp $
+ *  $Id: rsa.c,v 7.26 2003/02/23 04:16:11 db Exp $
  */
 
 #include "stdinc.h"
@@ -36,6 +36,7 @@
 
 #include "memory.h"
 #include "rsa.h"
+#include "tools.h"
 #include "s_conf.h"
 #include "s_log.h"
 #include "client.h" /* CIPHERKEYLEN .. eww */

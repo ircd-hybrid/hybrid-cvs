@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.192 2003/02/18 22:26:33 db Exp $
+ *  $Id: s_conf.h,v 7.193 2003/02/23 04:16:03 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -57,7 +57,7 @@ extern struct ConfItem* yy_aconf;
 
 struct ConfItem
 {
-  struct ConfItem* next;     /* list node pointer */
+  dlink_node node;
   unsigned int     status;   /* If CONF_ILLEGAL, delete when no clients */
   unsigned int     flags;
   int              clients;  /* Number of *LOCAL* clients using this */
@@ -88,7 +88,6 @@ struct ConfItem
 #define CONF_SERVER             0x0004
 #define CONF_OPERATOR           0x0010
 #define CONF_KILL               0x0040
-
 #define CONF_CLASS              0x0400
 #define CONF_LEAF               0x0800
 #define CONF_LISTEN_PORT        0x1000
@@ -104,18 +103,20 @@ struct ConfItem
 #define CONF_CLIENT_MASK       (CONF_CLIENT | CONF_OPERATOR | CONF_SERVER_MASK)
 
 #define IsConfIllegal(x)	((x)->status & CONF_ILLEGAL)
-#define SetConfIllegal(x)	((x)->status = CONF_ILLEGAL)
+#define SetConfIllegal(x)	((x)->status |= CONF_ILLEGAL)
+#define IsConfServer(x)		((x)->status == CONF_SERVER)
+#define SetConfServer(x)	((x)->status = CONF_SERVER)
+#define IsConfOperator(x)	((x)->status & CONF_OPERATOR)
 #define IsConfHub(x)		((x)->status == CONF_HUB)
 #define SetConfHub(x)		((x)->status = CONF_HUB)
 #define IsConfLeaf(x)		((x)->status == CONF_LEAF)
 #define SetConfLeaf(x)		((x)->status = CONF_LEAF)
 #define IsConfHubOrLeaf(x)	((x)->status & (CONF_HUB|CONF_LEAF))
 #define IsConfKill(x)		((x)->status == CONF_KILL)
-#define SetConfKill(x)		((x)->status = CONF_KILL)
-#define SetConfDline(x)		((x)->status = CONF_DLINE)
-#define SetConfXline(x)		((x)->status = CONF_XLINE)
 #define IsConfClient(x)		((x)->status & CONF_CLIENT)
-#define SetConfClient(x)	((x)->status |= CONF_CLIENT)
+#define IsConfTypeOfClient(x)	((x)->status & CONF_CLIENT_MASK)
+#define IsConfUline(x)		((x)->status & CONF_ULINE)
+#define IsConfXline(x)		((x)->status & CONF_XLINE)
 
 /* aConfItem->flags */
 
@@ -170,7 +171,6 @@ struct ConfItem
 #define IsConfTemporary(x)      ((x)->flags & CONF_FLAGS_TEMPORARY)
 #define SetConfTemporary(x)	((x)->flags | CONF_FLAGS_TEMPORARY)
 #define IsConfRedir(x)          ((x)->flags & CONF_FLAGS_REDIR)
-
 /* port definitions for Opers */
 
 #define CONF_OPER_GLOBAL_KILL   0x0001

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.109 2003/02/21 21:15:48 wiz Exp $
+ *  $Id: m_message.c,v 1.110 2003/02/23 04:16:08 db Exp $
  */
 
 #include "stdinc.h"
@@ -123,7 +123,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.109 $";
+const char *_version = "$Revision: 1.110 $";
 #endif
 
 /*
@@ -260,8 +260,7 @@ m_message(int p_or_n,
 
 static int
 build_target_list(int p_or_n, char *command, struct Client *client_p,
-                  struct Client *source_p, char *nicks_channels,
-                  char *text)
+                  struct Client *source_p, char *nicks_channels, char *text)
 {
   int type;
   char *p, *nick, *target_list, ncbuf[BUFSIZE];
@@ -947,7 +946,6 @@ handle_special(int p_or_n, char *command, struct Client *client_p,
 
     return;
   }
-
 }
 
 /*
@@ -965,12 +963,15 @@ find_userhost(char *user, char *host, int *count)
 {
   struct Client *c2ptr;
   struct Client *res = NULL;
+  dlink_node *gc2ptr;
 
   *count = 0;
   if (collapse(user) != NULL)
     {
-      for (c2ptr = GlobalClientList; c2ptr; c2ptr = c2ptr->next) 
+      DLINK_FOREACH(gc2ptr, GlobalClientList.head)
 	{
+	  c2ptr = gc2ptr->data;
+
 	  if (!MyClient(c2ptr)) /* implies mine and an user */
 	    continue;
 	  if ((!host || match(host, c2ptr->host)) &&

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_debug.c,v 7.68 2003/02/18 22:26:39 db Exp $
+ *  $Id: s_debug.c,v 7.69 2003/02/23 04:16:12 db Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,8 @@ const char serveropts[] = {
   '\0'
 };
 
-void debug(int level, char *format, ...)
+void
+debug(int level, char *format, ...)
 {
   static char debugbuf[1024];
   va_list args;
@@ -86,7 +87,8 @@ void debug(int level, char *format, ...)
  * different field names for "struct rusage".
  * -avalon
  */
-void send_usage(struct Client *source_p)
+void
+send_usage(struct Client *source_p)
 {
   struct rusage  rus;
   time_t         secs;
@@ -144,8 +146,10 @@ void send_usage(struct Client *source_p)
 #endif /* VMS */
 }
 
-void count_memory(struct Client *source_p)
+void
+count_memory(struct Client *source_p)
 {
+  dlink_node *gptr;
   struct Client *target_p;
   struct Channel *chptr;
   struct ConfItem *aconf;
@@ -207,25 +211,25 @@ void count_memory(struct Client *source_p)
 
   count_whowas_memory(&wwu, &wwm);
 
-  for (target_p = GlobalClientList; target_p; target_p = target_p->next)
+  DLINK_FOREACH(gptr, GlobalClientList.head)
     {
+      target_p = gptr->data;
+
       if (MyConnect(target_p))
         {
-          for (dlink = target_p->localClient->confs.head;
-	       dlink; dlink = dlink->next)
-            local_client_conf_count++;
+	  local_client_conf_count +=
+	    dlink_list_length(&target_p->localClient->confs);
         }
 
-      if (target_p->user)
+      if (target_p->user != NULL)
         {
           users_counted++;
-          for (dlink = target_p->user->invited.head; dlink;
-               dlink = dlink->next)
-            users_invited_count++;
-          for (dlink = target_p->user->channel.head; dlink;
-               dlink = dlink->next)
-            user_channels++;
-          if (target_p->user->away)
+	  users_invited_count += 
+	    dlink_list_length(&target_p->user->invited);
+	  user_channels +=
+	    dlink_list_length(&target_p->user->channel);
+	  user_channels++;
+          if (target_p->user->away != NULL)
             {
               aways_counted++;
               away_memory += (strlen(target_p->user->away)+1);
@@ -235,30 +239,31 @@ void count_memory(struct Client *source_p)
 
   /* Count up all channels, ban lists, except lists, Invex lists */
 
-  for (chptr = GlobalChannelList; chptr; chptr = chptr->nextch)
+  DLINK_FOREACH(gptr, GlobalChannelList.head)
     {
+      chptr = gptr->data;
       channel_count++;
       channel_memory += (strlen(chptr->chname) + sizeof(struct Channel));
 
-      for (dlink = chptr->peons.head; dlink; dlink = dlink->next)
+      DLINK_FOREACH(dlink, chptr->peons.head)
         channel_users++;
-      for (dlink = chptr->chanops.head; dlink; dlink = dlink->next)
+      DLINK_FOREACH(dlink, chptr->chanops.head)
         channel_users++;
 #ifdef REQUIRE_OANDV
-      for (dlink = chptr->chanops_voiced.head; dlink; dlink = dlink->next)
+      DLINK_FOREACH(dlink, chptr->chanops_voiced.head)
         channel_users++;
 #endif
-      for (dlink = chptr->voiced.head; dlink; dlink = dlink->next)
+      DLINK_FOREACH(dlink, chptr->voiced.head)
         channel_users++;
 #ifdef HALFOPS
-      for (dlink = chptr->halfops.head; dlink; dlink = dlink->next)
+      DLINK_FOREACH(dlink, chptr->halfops.head)
         channel_users++;
 #endif
 
-      for (dlink = chptr->invites.head; dlink; dlink = dlink->next)
+      DLINK_FOREACH(dlink, chptr->invites.head)
         channel_invites++;
 
-      for (dlink = chptr->banlist.head; dlink; dlink = dlink->next)
+      DLINK_FOREACH(dlink, chptr->banlist.head)
         {
 	  actualBan = dlink->data;
           channel_bans++;
@@ -271,7 +276,7 @@ void count_memory(struct Client *source_p)
             channel_ban_memory += strlen(actualBan->who);
         }
 
-      for (dlink = chptr->exceptlist.head; dlink; dlink = dlink->next)
+      DLINK_FOREACH(dlink, chptr->invexlist.head)
         {
 	  actualBan = dlink->data;
           channel_except++;
@@ -284,7 +289,7 @@ void count_memory(struct Client *source_p)
             channel_except_memory += strlen(actualBan->who);
         }
 
-      for (dlink = chptr->invexlist.head; dlink; dlink = dlink->next)
+      DLINK_FOREACH(dlink, chptr->invexlist.head)
         {
 	  actualBan = dlink->data;
           channel_invex++;

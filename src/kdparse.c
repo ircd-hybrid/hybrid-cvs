@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: kdparse.c,v 7.10 2003/02/18 22:26:39 db Exp $
+ *  $Id: kdparse.c,v 7.11 2003/02/23 04:16:11 db Exp $
  */
 
 #include "stdinc.h"
@@ -42,9 +42,9 @@ void
 parse_k_file(FBFILE *file)
 {
   struct ConfItem *aconf;
-  char* user_field=(char *)NULL;
-  char* reason_field=(char *)NULL;
-  char* host_field=(char *)NULL;
+  char* user_field=NULL;
+  char* reason_field=NULL;
+  char* host_field=NULL;
   char  line[BUFSIZE];
   char* p;
 
@@ -84,8 +84,8 @@ void
 parse_d_file(FBFILE *file)
 {
   struct ConfItem *aconf;
-  char* reason_field=(char *)NULL;
-  char* host_field=(char *)NULL;
+  char* reason_field=NULL;
+  char* host_field=NULL;
   char  line[BUFSIZE];
   char* p;
 

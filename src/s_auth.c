@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.104 2003/02/17 16:09:37 db Exp $
+ *  $Id: s_auth.c,v 7.105 2003/02/23 04:16:11 db Exp $
  */
 
 /*
@@ -175,7 +175,7 @@ static void release_auth_client(struct Client* client)
    */
   client->localClient->allow_read = MAX_FLOOD;
   comm_setflush(client->localClient->fd, 1000, flood_recalc, client);
-  add_client_to_list(client);
+  dlinkAdd(client, &client->node, &GlobalClientList);
   read_packet(client->localClient->fd, client);
 }
  
@@ -623,7 +623,7 @@ FindAuthClient(long id)
   dlink_node *ptr;
   struct AuthRequest *auth;
 
-  for (ptr = auth_client_list.head; ptr; ptr = ptr->next)
+  DLINK_FOREACH(ptr, auth_client_list.head)
     {
       auth = ptr->data;
       if( auth->client == (struct Client *)id)
@@ -657,10 +657,9 @@ delete_identd_queries(struct Client *target_p)
 	}
     }
 
-  for (ptr = auth_client_list.head; ptr; ptr = next_ptr)
+  DLINK_FOREACH_SAFE(ptr, next_ptr, auth_client_list.head)
     {
       auth = ptr->data;
-      next_ptr = ptr->next;
 
       if(auth->client == target_p)
 	{

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.253 2003/02/17 16:09:36 db Exp $
+ *  $Id: ircd.c,v 7.254 2003/02/23 04:16:11 db Exp $
  */
 
 #include "stdinc.h"
@@ -93,17 +93,6 @@ struct timeval SystemTime;
 int    ServerRunning;           /* GLOBAL - server execution state */
 struct Client me;               /* That's me */
 struct LocalUser meLocalUser;	/* That's also part of me */
-
-struct Client* GlobalClientList = 0; /* Pointer to beginning of Client list */
-
-
-/* unknown/client pointer lists */ 
-dlink_list unknown_list;        /* unknown clients ON this server only */
-dlink_list lclient_list;        /* local clients only ON this server */
-dlink_list serv_list;           /* local servers to this server ONLY */
-dlink_list global_serv_list;    /* global servers on the network */
-dlink_list oper_list;           /* our opers, duplicated in lclient_list */
-dlink_list lazylink_channels;   /* known about lazylink channels on HUB */
 
 int callbacks_called;          /* A measure of server load... */
 
@@ -528,6 +517,8 @@ static void setup_corefile(void)
 
 int main(int argc, char *argv[])
 {
+  dlink_node *ptr;
+
   /* Check to see if the user is running us as root, which is a nono */
   
   if(geteuid() == 0)
@@ -564,8 +555,11 @@ int main(int argc, char *argv[])
   memset(&global_serv_list, 0, sizeof(global_serv_list));
   memset(&oper_list, 0, sizeof(oper_list));
   memset(&lazylink_channels, 0, sizeof(lazylink_channels));
+  memset(&GlobalClientList, 0, sizeof(GlobalClientList));
+  memset(&GlobalChannelList, 0, sizeof(GlobalChannelList));
 
-  GlobalClientList = &me;       /* Pointer to beginning of Client list */
+  dlinkAdd(&me, &me.node, &GlobalClientList);	/* Pointer to beginning
+						   of Client list */
 
   memset((void *)&Count, 0, sizeof(Count));
   memset((void *)&server_state, 0, sizeof(server_state));
@@ -722,6 +716,11 @@ int main(int argc, char *argv[])
   add_to_client_hash_table(me.name, &me);
   
   add_server_to_list(&me); /* add ourselves to global_serv_list */
+#if 0
+  ptr = make_dlink_node();
+  dlinkAdd(&me, ptr, &global_serv_list);
+
+#endif
   
   check_class();
   write_pidfile(pidFileName);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_squit.c,v 1.48 2003/02/17 16:09:33 db Exp $
+ *  $Id: m_squit.c,v 1.49 2003/02/23 04:16:08 db Exp $
  */
 
 #include "stdinc.h"
@@ -58,7 +58,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&squit_msgtab);
 }
-const char *_version = "$Revision: 1.48 $";
+const char *_version = "$Revision: 1.49 $";
 #endif
 struct squit_parms 
 {
@@ -77,8 +77,9 @@ static struct squit_parms *find_squit(struct Client *client_p,
  *      parv[1] = server name
  *      parv[2] = comment
  */
-static void mo_squit(struct Client *client_p, struct Client *source_p,
-                    int parc, char *parv[])
+static void
+mo_squit(struct Client *client_p, struct Client *source_p,
+	 int parc, char *parv[])
 {
   struct squit_parms *found_squit;
   char  *comment = (parc > 2 && parv[2]) ? parv[2] : client_p->name;
@@ -96,7 +97,7 @@ static void mo_squit(struct Client *client_p, struct Client *source_p,
       return;
     }
 
-  if( (found_squit = find_squit(client_p,source_p,parv[1])) )
+  if((found_squit = find_squit(client_p,source_p,parv[1])))
     {
       if(MyConnect(found_squit->target_p))
 	{
@@ -124,8 +125,9 @@ static void mo_squit(struct Client *client_p, struct Client *source_p,
  *      parv[1] = server name
  *      parv[2] = comment
  */
-static void ms_squit(struct Client *client_p, struct Client *source_p,
-                    int parc, char *parv[])
+static void
+ms_squit(struct Client *client_p, struct Client *source_p,
+	 int parc, char *parv[])
 {
   struct squit_parms *found_squit;
   char  *comment = (parc > 2 && parv[2]) ? parv[2] : client_p->name;
@@ -177,6 +179,7 @@ find_squit(struct Client *client_p, struct Client *source_p, char *server)
   static struct squit_parms found_squit;
   static struct Client *target_p;
   struct ConfItem *aconf;
+  dlink_node *gcptr;
 
   found_squit.target_p = NULL;
   found_squit.server_name = NULL;
@@ -188,8 +191,7 @@ find_squit(struct Client *client_p, struct Client *source_p, char *server)
   */
   if ((*server == '*') && IsServer(client_p))
     {
-      aconf = client_p->serv->sconf;
-      if (aconf)
+      if ((aconf = client_p->serv->sconf) != NULL)
         {
 	  if (!irccmp(server, my_name_for_link(me.name, aconf)))
 	    {
@@ -203,16 +205,23 @@ find_squit(struct Client *client_p, struct Client *source_p, char *server)
   ** The following allows wild cards in SQUIT. Only useful
   ** when the command is issued by an oper.
   */
-  for (target_p = GlobalClientList; (target_p = next_client(target_p, server));
-       target_p = target_p->next)
+  for (gcptr = GlobalClientList.head; 
+       (gcptr = next_client_ptr(gcptr, server));
+       gcptr = gcptr->next)
     {
+      target_p = gcptr->data;
+
       if (IsServer(target_p) || IsMe(target_p))
 	break;
     }
 
+  if (gcptr == NULL)
+    return NULL;
+ 
   found_squit.target_p = target_p;
   found_squit.server_name = server;
 
+  /* Doesn't hurt to double check target_p isn't NULL */
   if (target_p && IsMe(target_p))
     {
        if (IsClient(client_p))
@@ -225,7 +234,6 @@ find_squit(struct Client *client_p, struct Client *source_p, char *server)
            found_squit.target_p = client_p;
            found_squit.server_name = client_p->name;
          }
-       
     }
 
   if(found_squit.target_p != NULL)

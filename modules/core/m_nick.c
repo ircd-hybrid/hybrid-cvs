@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nick.c,v 1.101 2003/02/17 16:09:33 db Exp $
+ *  $Id: m_nick.c,v 1.102 2003/02/23 04:16:08 db Exp $
  */
 
 #include "stdinc.h"
@@ -97,7 +97,7 @@ _moddeinit(void)
   mod_del_cmd(&client_msgtab);
 }
 
-const char *_version = "$Revision: 1.101 $";
+const char *_version = "$Revision: 1.102 $";
 #endif
 
 /*
@@ -695,7 +695,7 @@ nick_from_server(struct Client *client_p, struct Client *source_p, int parc,
   {
     /* A server introducing a new client, change source */
     source_p = make_client(client_p);
-    add_client_to_list(source_p);
+    dlinkAdd(source_p, &source_p->node, &GlobalClientList);
 
     /* We don't need to introduce leafs clients back to them! */
     if (ConfigFileEntry.hub && IsCapable(client_p, CAP_LL))
@@ -788,7 +788,7 @@ client_from_server(struct Client *client_p, struct Client *source_p, int parc,
   name = parv[9];
 
   source_p = make_client(client_p);
-  add_client_to_list(source_p);
+  dlinkAdd(source_p, &source_p->node, &GlobalClientList);
 
   /* We don't need to introduce leafs clients back to them! */
   if (ConfigFileEntry.hub && IsCapable(client_p, CAP_LL))

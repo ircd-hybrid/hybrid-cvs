@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.10 2003/02/16 22:06:45 bill Exp $
+ *  $Id: m_whois.c,v 1.11 2003/02/23 04:16:01 db Exp $
  */
 
 #include "stdinc.h"
@@ -194,7 +194,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-const char *_version = "$Revision: 1.10 $";
+const char *_version = "$Revision: 1.11 $";
 #endif
 /*
 ** m_whois
@@ -376,17 +376,16 @@ global_whois(struct Client *source_p, char *nick, int wilds, int glob)
 {
   struct Client *target_p;
   int found = NO;
+  dlink_node *gcptr;
 
-  for (target_p = GlobalClientList; (target_p = next_client(target_p, nick));
-       target_p = target_p->next)
+  for (gcptr = GlobalClientList.head; gcptr;
+       (gcptr = next_client_ptr(gcptr, nick)))
     {
+      target_p = gcptr->data;
+
       if (IsServer(target_p))
 	continue;
-      /*
-       * I'm always last :-) and target_p->next == NULL!!
-       */
-      if (IsMe(target_p))
-	break;
+
       /*
        * 'Rules' established for sending a WHOIS reply:
        *
@@ -399,9 +398,6 @@ global_whois(struct Client *source_p, char *nick, int wilds, int glob)
        * - only send replies about common or public channels
        *   the target user(s) are on;
        */
-
-      if(!IsRegistered(target_p))
-	continue;
 
       if(single_whois(source_p, target_p, wilds, glob))
 	found = (YES);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.h,v 7.66 2002/05/24 23:34:08 androsyn Exp $
+ *  $Id: s_serv.h,v 7.67 2003/02/23 04:16:03 db Exp $
  */
 
 #ifndef INCLUDED_serv_h
@@ -281,7 +281,6 @@ extern void        start_collect_zipstats(void);
 extern void        collect_zipstats(void *unused);
 
 extern void	   add_server_to_list(struct Client *);
-extern void	   remove_server_from_list(struct Client *);
 
 extern void        initServerMask(void);
 extern void        burst_channel(struct Client *client_p, struct Channel *chptr);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.h,v 7.54 2003/02/06 08:46:10 a1kmm Exp $
+ *  $Id: ircd.h,v 7.55 2003/02/23 04:16:03 db Exp $
  */
 
 #ifndef INCLUDED_ircd_h
@@ -83,13 +83,7 @@ extern const char     serveropts[];
 extern int            cold_start;
 extern int            dorehash;
 extern int            doremotd;
-extern struct Client  me;
-extern struct Client* GlobalClientList;
-extern struct Client* local[];
 extern struct Counter Count;
-#if 0
-extern time_t         CurrentTime;
-#endif
 extern struct timeval SystemTime;
 #define CurrentTime SystemTime.tv_sec
 extern time_t         nextconnect;

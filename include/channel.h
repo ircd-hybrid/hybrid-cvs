@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.124 2003/01/31 23:00:25 db Exp $
+ *  $Id: channel.h,v 7.125 2003/02/23 04:16:03 db Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -47,8 +47,7 @@ struct Mode
 
 struct Channel
 {
-  struct Channel* nextch;
-  struct Channel* prevch;
+  dlink_node	  node;
   struct Channel* hnextch;
   struct Mode     mode;
   char            *topic;
@@ -101,7 +100,7 @@ struct Channel
   char            chname[CHANNELLEN+1];
 };
 
-extern  struct  Channel *GlobalChannelList;
+extern dlink_list GlobalChannelList;
 
 extern void init_channels(void);
 #ifdef VCHANS

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.283 2003/02/19 10:36:47 a1kmm Exp $
+ *  $Id: s_serv.c,v 7.284 2003/02/23 04:16:12 db Exp $
  */
 
 #include "stdinc.h"
@@ -240,12 +240,13 @@ slink_zipstats(unsigned int rpl, unsigned int len, unsigned char *data,
   memcpy(&server_p->localClient->zipstats, &zipstats, sizeof (struct ZipStats));
 }
 
-void collect_zipstats(void *unused)
+void
+collect_zipstats(void *unused)
 {
   dlink_node *ptr;
   struct Client *target_p;
 
-  for(ptr = serv_list.head; ptr; ptr = ptr->next)
+  DLINK_FOREACH(ptr, serv_list.head)
     {
       target_p = ptr->data;
       if (IsCapable(target_p, CAP_ZIP))
@@ -423,6 +424,7 @@ hunt_server(struct Client *client_p, struct Client *source_p, char *command,
 	    int server, int parc, char *parv[])
 {
   struct Client *target_p;
+  dlink_node *node;
   int wilds;
 
   /*
@@ -464,10 +466,11 @@ hunt_server(struct Client *client_p, struct Client *source_p, char *command,
         }
       else
         {
-          for (target_p = GlobalClientList;
-               (target_p = next_client(target_p, parv[server]));
-               target_p = target_p->next)
+          for (node = GlobalClientList.head;
+               (node = next_client_ptr(node, parv[server]));
+               node = node->next)
             {
+	      target_p = node->data;
               if (target_p->from == source_p->from && !MyConnect(target_p))
                 continue;
               /*
@@ -629,8 +632,8 @@ check_server(const char *name, struct Client* client_p, int cryptlink)
      /* XXX: Fix me for IPv6 */
      /* XXX sockhost is the IPv4 ip as a string */
 
-     if ( match(aconf->host, client_p->host) || 
-	  match(aconf->host, client_p->localClient->sockhost) )
+     if (match(aconf->host, client_p->host) || 
+	 match(aconf->host, client_p->localClient->sockhost))
        {
 	 error = -2;
 
@@ -676,13 +679,13 @@ check_server(const char *name, struct Client* client_p, int cryptlink)
       attach_conf(client_p, aconf);
     }
 
-  if( !(server_aconf->flags & CONF_FLAGS_LAZY_LINK) )
+  if(!(server_aconf->flags & CONF_FLAGS_LAZY_LINK))
     ClearCap(client_p,CAP_LL);
-#ifdef HAVE_LIBZ /* otherwise, cleait unconditionally */
-  if( !(server_aconf->flags & CONF_FLAGS_COMPRESSED) )
+#ifdef HAVE_LIBZ /* otherwise, clear it unconditionally */
+  if(!(server_aconf->flags & CONF_FLAGS_COMPRESSED))
 #endif
     ClearCap(client_p,CAP_ZIP);
-  if( !(server_aconf->flags & CONF_FLAGS_CRYPTLINK) )
+  if(!(server_aconf->flags & CONF_FLAGS_CRYPTLINK))
     ClearCap(client_p,CAP_ENC);
 
   /*
@@ -789,26 +792,22 @@ sendnick_TS(struct Client *client_p, struct Client *target_p)
   send_umode(NULL, target_p, 0, SEND_UMODES, ubuf);
   if (!*ubuf)
   {
-	  ubuf[0] = '+';
-	  ubuf[1] = '\0';
+    ubuf[0] = '+';
+    ubuf[1] = '\0';
   }
  
   if (HasID(target_p) && IsCapable(client_p, CAP_UID))
-	  sendto_one(client_p, "CLIENT %s %d %lu %s %s %s %s %s :%s",
-				 target_p->name,
-				 target_p->hopcount + 1,
-				 (unsigned long) target_p->tsinfo,
-				 ubuf,
-				 target_p->username, target_p->host,
-				 target_p->user->server, target_p->user->id, target_p->info);
+    sendto_one(client_p, "CLIENT %s %d %lu %s %s %s %s %s :%s",
+	       target_p->name, target_p->hopcount + 1,
+	       (unsigned long) target_p->tsinfo,
+	       ubuf, target_p->username, target_p->host,
+	       target_p->user->server, target_p->user->id, target_p->info);
   else
-	  sendto_one(client_p, "NICK %s %d %lu %s %s %s %s :%s",
-				 target_p->name, 
-				 target_p->hopcount + 1,
-				 (unsigned long) target_p->tsinfo,
-				 ubuf,
-				 target_p->username, target_p->host,
-				 target_p->user->server, target_p->info);
+    sendto_one(client_p, "NICK %s %d %lu %s %s %s %s :%s",
+	       target_p->name, target_p->hopcount + 1,
+	       (unsigned long) target_p->tsinfo,
+	       ubuf, target_p->username, target_p->host,
+	       target_p->user->server, target_p->info);
 }
 
 /*
@@ -822,9 +821,12 @@ sendnick_TS(struct Client *client_p, struct Client *target_p)
 void
 client_burst_if_needed(struct Client *client_p, struct Client *target_p)
 {
-  if (!ServerInfo.hub) return;
-  if (!MyConnect(client_p)) return;
-  if (!IsCapable(client_p,CAP_LL)) return;
+  if (!ServerInfo.hub)
+    return;
+  if (!MyConnect(client_p))
+    return;
+  if (!IsCapable(client_p,CAP_LL))
+    return;
  
   if((target_p->lazyLinkClientExists & client_p->localClient->serverMask) == 0)
     {
@@ -901,8 +903,7 @@ server_estab(struct Client *client_p)
   const char*       inpath;
   static char       inpath_ip[HOSTLEN * 2 + USERLEN + 5];
   char*             host;
-  dlink_node        *m;
-  dlink_node        *ptr;
+  dlink_node        *m;  dlink_node        *ptr;
   int               opt;
 
   assert(NULL != client_p);
@@ -996,7 +997,7 @@ server_estab(struct Client *client_p)
 #ifndef VMS
   if (IsCapable(client_p, CAP_ENC) || IsCapable(client_p, CAP_ZIP))
     {
-      if (fork_server(client_p) < 0 )
+      if (fork_server(client_p) < 0)
       {
         sendto_realops_flags(UMODE_ALL, L_ADMIN,
 	      "Warning: fork failed for server %s -- check servlink_path (%s)",
@@ -1013,9 +1014,7 @@ server_estab(struct Client *client_p)
     }
 #endif
   sendto_one(client_p,"SVINFO %d %d 0 :%lu",
-			TS_CURRENT,
-			TS_MIN,
-			(unsigned long) CurrentTime);
+	     TS_CURRENT, TS_MIN, (unsigned long) CurrentTime);
 
   det_confs_butmask(client_p, CONF_LEAF|CONF_HUB|CONF_SERVER);
   /*
@@ -1061,8 +1060,12 @@ server_estab(struct Client *client_p)
 
   Count.server++;
   Count.myserver++;
-
+#if 0
+  ptr = make_dlink_node();
+  dlinkAdd(client_p, ptr, &global_serv_list);
+#endif
   add_server_to_list(client_p);
+
   add_to_client_hash_table(client_p->name, client_p);
   /* doesnt duplicate client_p->serv if allocated this struct already */
   make_server(client_p);
@@ -1086,7 +1089,7 @@ server_estab(struct Client *client_p)
       inpath_ip, show_capabilities(client_p));
 
   client_p->serv->sconf = aconf;
-  client_p->flags2 |= FLAGS2_CBURST;
+  SetCBurst(client_p);
 
   if (HasServlink(client_p))
     {
@@ -1098,22 +1101,25 @@ server_estab(struct Client *client_p)
       fd_note(client_p->localClient->ctrlfd, "slink ctrl: %s",
               client_p->name);
 #else
-      fd_note(client_p->localClient->fd, "slink data (out): %s", client_p->name);
+      fd_note(client_p->localClient->fd, "slink data (out): %s",
+	      client_p->name);
       fd_note(client_p->localClient->ctrlfd, "slink ctrl (out): %s",
               client_p->name);
-      fd_note(client_p->localClient->fd_r, "slink data  (in): %s", client_p->name);
+      fd_note(client_p->localClient->fd_r, "slink data  (in): %s",
+	      client_p->name);
       fd_note(client_p->localClient->ctrlfd_r, "slink ctrl  (in): %s",
               client_p->name);
 #endif
-    } else
-        fd_note(client_p->localClient->fd, "Server: %s", client_p->name);
+    }
+  else
+    fd_note(client_p->localClient->fd, "Server: %s", client_p->name);
 
   /*
   ** Old sendto_serv_but_one() call removed because we now
   ** need to send different names to different servers
   ** (domain name matching) Send new server to other servers.
   */
-  for(ptr=serv_list.head;ptr;ptr=ptr->next)
+  DLINK_FOREACH(ptr, serv_list.head)
     {
       target_p = ptr->data;
 
@@ -1149,8 +1155,10 @@ server_estab(struct Client *client_p)
   */
 
   aconf = client_p->serv->sconf;
-  for (target_p = &me; target_p; target_p = target_p->prev)
+  DLINK_FOREACH_PREV(ptr, GlobalClientList.tail)
     {
+      target_p = ptr->data;
+
       /* target_p->from == target_p for target_p == client_p */
       if (target_p->from == client_p)
         continue;
@@ -1160,7 +1168,7 @@ server_estab(struct Client *client_p)
             continue;
           sendto_one(client_p, ":%s SERVER %s %d :%s%s", 
 	             target_p->serv->up,
-                     target_p->name, target_p->hopcount+1, 
+		     target_p->name, target_p->hopcount+1, 
 		     target_p->hidden_server ? "(H) " : "",
 		     target_p->info);
         }
@@ -1250,7 +1258,7 @@ start_io(struct Client *server)
       break;
   }
 
-  while(1)
+  for(;;)
   {
     linecount++;
 
@@ -1507,7 +1515,7 @@ void server_burst(struct Client *client_p)
   /* On a "lazy link" hubs send nothing.
    * Leafs always have to send nicks plus channels
    */
-  if( IsCapable(client_p, CAP_LL) )
+  if(IsCapable(client_p, CAP_LL))
     {
       if(!ServerInfo.hub)
 	{
@@ -1521,7 +1529,7 @@ void server_burst(struct Client *client_p)
     {
       burst_all(client_p);
     }
-  client_p->flags2 &= ~FLAGS2_CBURST;
+  ClearCBurst(client_p);
 
   /* EOB stuff is now in burst_all */
 
@@ -1543,16 +1551,18 @@ burst_all(struct Client *client_p)
   struct Client*    target_p;
   struct Channel*   chptr;
   struct hook_burst_channel hinfo; 
+  dlink_node *gptr;
+  dlink_node *ptr;
 #ifdef VCHANS
   struct Channel*   vchan;
-  dlink_node *ptr;
 #endif
 
   /* serial counter borrowed from send.c */
   current_serial++;
 
-  for (chptr = GlobalChannelList; chptr; chptr = chptr->nextch)
+  DLINK_FOREACH(gptr, GlobalChannelList.head)
     {
+      chptr = gptr->data;
       /* Don't send vchannels twice; vchannels will be
        * sent along as subchannels of the top channel
        */
@@ -1582,8 +1592,7 @@ burst_all(struct Client *client_p)
 #ifdef VCHANS
       if(IsVchanTop(chptr))
 	{
-	  for ( ptr = chptr->vchan_list.head; ptr;
-		ptr = ptr->next)
+	  DLINK_FOREACH(ptr, chptr->vchan_list.head)
 	    {
 	      vchan = ptr->data;
               if(vchan->users != 0)
@@ -1610,8 +1619,9 @@ burst_all(struct Client *client_p)
   /*
   ** also send out those that are not on any channel
   */
-  for (target_p = &me; target_p; target_p = target_p->prev)
+  DLINK_FOREACH(ptr, GlobalClientList.head)
     {
+      target_p = ptr->data;
       if (target_p->serial != current_serial)
 	{
 	  target_p->serial = current_serial;
@@ -1639,10 +1649,12 @@ burst_all(struct Client *client_p)
 static void
 cjoin_all(struct Client *client_p)
 {
+  dlink_node *gptr;
   struct Channel *chptr;
 
-  for (chptr = GlobalChannelList; chptr; chptr = chptr->nextch)
+  DLINK_FOREACH(gptr, GlobalChannelList.head)
     {
+      client_p = gptr->data;
       sendto_one(client_p, ":%s CBURST %s",
 		 me.name, chptr->chname);
     }
@@ -1667,15 +1679,15 @@ burst_channel(struct Client *client_p, struct Channel *chptr)
   struct Channel*   vchan;
 #endif
 
-  burst_ll_members(client_p,&chptr->chanops);
+  burst_ll_members(client_p, &chptr->chanops);
 #ifdef REQUIRE_OANDV
   burst_ll_members(client_p, &chptr->chanops_voiced);
 #endif
-  burst_ll_members(client_p,&chptr->voiced);
+  burst_ll_members(client_p, &chptr->voiced);
 #ifdef HALFOPS
-  burst_ll_members(client_p,&chptr->halfops);
+  burst_ll_members(client_p, &chptr->halfops);
 #endif
-  burst_ll_members(client_p,&chptr->peons);
+  burst_ll_members(client_p, &chptr->peons);
   send_channel_modes(client_p, chptr);
   add_lazylinkchannel(client_p,chptr);
 
@@ -1803,9 +1815,8 @@ remove_lazylink_flags(unsigned long mask)
   
   freeMask |= mask;
   
-  for (ptr = lazylink_channels.head; ptr; ptr = next_ptr)
+  DLINK_FOREACH_SAFE(ptr, next_ptr, lazylink_channels.head)
   {
-   next_ptr = ptr->next;
    chptr = ptr->data;
    chptr->lazyLinkChannelExists &= clear_mask;
    if (chptr->lazyLinkChannelExists == 0)
@@ -1814,8 +1825,11 @@ remove_lazylink_flags(unsigned long mask)
     free_dlink_node(ptr);
    }
   }
-  for (target_p = GlobalClientList; target_p; target_p = target_p->next)
-   target_p->lazyLinkClientExists &= clear_mask;
+  DLINK_FOREACH(ptr, GlobalClientList.head)
+    {
+      target_p = ptr->data;
+      target_p->lazyLinkClientExists &= clear_mask;
+    }
 }
 
 /*
@@ -1832,7 +1846,7 @@ burst_members(struct Client *client_p, dlink_list *list)
   struct Client *target_p;
   dlink_node *ptr;
 
-  for (ptr = list->head; ptr; ptr = ptr->next)
+  DLINK_FOREACH(ptr, list->head)
     {
       target_p = ptr->data;
       if (target_p->serial != current_serial)
@@ -1858,7 +1872,7 @@ burst_ll_members(struct Client *client_p, dlink_list *list)
   struct Client *target_p;
   dlink_node *ptr;
 
-  for (ptr = list->head; ptr; ptr = ptr->next)
+  DLINK_FOREACH(ptr, list->head)
     {
       target_p = ptr->data;
       if ((target_p->lazyLinkClientExists & client_p->localClient->serverMask) == 0)
@@ -1888,9 +1902,9 @@ set_autoconn(struct Client *source_p,char *parv0,char *name,int newval)
   if(name && (aconf= find_conf_by_name(name, CONF_SERVER)))
     {
       if (newval)
-        aconf->flags |= CONF_FLAGS_ALLOW_AUTO_CONN;
+        SetConfAllowAutoConn(aconf);
       else
-        aconf->flags &= ~CONF_FLAGS_ALLOW_AUTO_CONN;
+        ClearConfAllowAutoConn(aconf);
 
       sendto_realops_flags(UMODE_ALL, L_ALL,
 			   "%s has changed AUTOCONN for %s to %i",
@@ -1899,7 +1913,7 @@ set_autoconn(struct Client *source_p,char *parv0,char *name,int newval)
                  ":%s NOTICE %s :AUTOCONN for %s is now set to %i",
                  me.name, parv0, name, newval);
     }
-  else if (name)
+  else if (name != NULL)
     {
       sendto_one(source_p,
                  ":%s NOTICE %s :Can't find %s",
@@ -1912,7 +1926,6 @@ set_autoconn(struct Client *source_p,char *parv0,char *name,int newval)
                  me.name, parv0);
     }
 }
-
 
 void
 initServerMask(void)
@@ -1935,9 +1948,9 @@ nextFreeMask()
 
   mask = 1;
 
-  for(i=0;i<32;i++)
+  for(i=0; i<32; i++)
     {
-      if( mask & freeMask )
+      if(mask & freeMask)
         {
           freeMask &= ~mask;
           return(mask);
@@ -1990,7 +2003,7 @@ serv_connect(struct ConfItem *aconf, struct Client *by)
      * Make sure this server isn't already connected
      * Note: aconf should ALWAYS be a valid C: line
      */
-    if ((client_p = find_server(aconf->name)))
+    if ((client_p = find_server(aconf->name)) != NULL)
       { 
         sendto_realops_flags(UMODE_ALL, L_ADMIN,
 	      "Server %s already present from %s",
@@ -2084,7 +2097,7 @@ serv_connect(struct ConfItem *aconf, struct Client *by)
       }
     client_p->serv->up = me.name;
     SetConnecting(client_p);
-    add_client_to_list(client_p);
+    dlinkAdd(client_p, &client_p->node, &GlobalClientList);
     /* from def_fam */
     client_p->localClient->aftype = aconf->aftype;
     

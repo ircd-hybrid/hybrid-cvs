@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_oper.c,v 1.59 2003/02/17 16:09:29 db Exp $
+ *  $Id: m_oper.c,v 1.60 2003/02/23 04:16:05 db Exp $
  */
 
 #include "stdinc.h"
@@ -47,7 +47,7 @@
 static struct ConfItem *find_password_aconf(char *name, struct Client *source_p);
 static int match_oper_password(char *password, struct ConfItem *aconf);
 static void failed_oper_notice(struct Client *source_p, char *name, char *reason);
-int oper_up( struct Client *source_p, struct ConfItem *aconf );
+int oper_up(struct Client *source_p, struct ConfItem *aconf);
 #ifdef CRYPT_OPER_PASSWORD
 extern        char *crypt();
 #endif /* CRYPT_OPER_PASSWORD */
@@ -75,7 +75,7 @@ _moddeinit(void)
   mod_del_cmd(&oper_msgtab);
 }
 
-const char *_version = "$Revision: 1.59 $";
+const char *_version = "$Revision: 1.60 $";
 #endif
 
 /*

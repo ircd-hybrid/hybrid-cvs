@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.13 2002/11/20 18:00:04 bill Exp $
+ *   $Id: m_operspy.c,v 1.14 2003/02/23 04:16:01 db Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -124,7 +124,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.13 $";
+const char *_version = "$Revision: 1.14 $";
 #endif
 
 /*
@@ -152,10 +152,12 @@ static void m_operspy(struct Client *client_p, struct Client *source_p,
  *	parv[1] = operspy command
  *	parv[2] = command parameter
  */
-static void mo_operspy(struct Client *client_p, struct Client *source_p,
-                       int parc, char *parv[])
+static
+void mo_operspy(struct Client *client_p, struct Client *source_p,
+		int parc, char *parv[])
 {
   char *operspy = (parc > 1) ? parv[1]-1 : NULL;
+  dlink_node *ptr;
 
 #ifdef OPERSPY_LIST
   struct Channel	*chptr_list = NULL;
@@ -226,8 +228,9 @@ static void mo_operspy(struct Client *client_p, struct Client *source_p,
   {
     sendto_one(client_p, form_str(RPL_LISTSTART), me.name, client_p->name);
 
-    for (chptr_list = GlobalChannelList; chptr_list; chptr_list = chptr_list->nextch)
+    DLINK_FOREACH(ptr, GlobalChannelList.head)
     {
+      chptr_list = ptr->data;
       if (match(parv[2], chptr_list->chname))
       {
         sendto_one(client_p, form_str(RPL_LIST), me.name, client_p->name,
@@ -432,7 +435,7 @@ static void mo_operspy(struct Client *client_p, struct Client *source_p,
     cur_len = mlen;
     t = buf + mlen;
 
-    for (lp = target_p->user->channel.head; lp; lp = lp->next)
+    DLINK_FOREACH(lp, target_p->user->channel.head)
     {
       chptr_whois = lp->data;
       if ((cur_len + strlen(chptr_whois->chname) + 2) > (BUFSIZE - 4))
@@ -572,8 +575,10 @@ who_global(struct Client *source_p,char *mask, int server_oper)
   }
 
   /* second, list all matching visible clients */
-  for (target_p = GlobalClientList; target_p; target_p = target_p->next)
+  DLINK_FOREACH(lp, GlobalClientList.head)
   {
+    target_p = lp->data;
+
     if (!IsPerson(target_p))
       continue;
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_who.c,v 1.67 2003/01/16 23:54:02 db Exp $
+ *  $Id: m_who.c,v 1.68 2003/02/23 04:16:05 db Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&who_msgtab);
 }
-const char *_version = "$Revision: 1.67 $";
+const char *_version = "$Revision: 1.68 $";
 #endif
 static void do_who_on_channel(struct Client *source_p,
 			      struct Channel *chptr, char *real_name,
@@ -348,7 +348,8 @@ who_global(struct Client *source_p,char *mask, int server_oper)
   struct Channel *chptr=NULL;
   struct Client *target_p;
   dlink_node  *lp;
-  int   maxmatches = 500;
+  dlink_node *gcptr;
+  int maxmatches = 500;
 
   /* first, list all matching INvisible clients on common channels */
   DLINK_FOREACH(lp, source_p->user->channel.head)
@@ -366,8 +367,10 @@ who_global(struct Client *source_p,char *mask, int server_oper)
   }
 
   /* second, list all matching visible clients */
-  for (target_p = GlobalClientList; target_p; target_p = target_p->next)
+  DLINK_FOREACH(gcptr, GlobalClientList.head)
   {
+    target_p = gcptr->data;
+
     if (!IsPerson(target_p))
       continue;
 

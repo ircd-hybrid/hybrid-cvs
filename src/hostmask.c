@@ -19,12 +19,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.c,v 7.73 2002/09/11 15:27:08 db Exp $
+ *  $Id: hostmask.c,v 7.74 2003/02/23 04:16:11 db Exp $
  */
 
 #include "stdinc.h"
 #include "memory.h"
 #include "ircd_defs.h"
+#include "tools.h"
 #include "s_conf.h"
 #include "hostmask.h"
 #include "numeric.h"

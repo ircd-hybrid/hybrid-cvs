@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.345 2003/02/19 13:22:03 db Exp $
+ *  $Id: s_conf.c,v 7.346 2003/02/23 04:16:11 db Exp $
  */
 
 #include "stdinc.h"
@@ -253,6 +253,8 @@ static struct LinkReport {
   { CONF_LEAF,             RPL_STATSLLINE, 'L'},
   { CONF_OPERATOR,         RPL_STATSOLINE, 'O'},
   { CONF_HUB,              RPL_STATSHLINE, 'H'},
+  { CONF_XLINE,		   RPL_STATSXLINE, 'X'},
+  { CONF_ULINE,		   RPL_STATSULINE, 'U'},
   { 0, 0, '\0' }
 };
 
@@ -336,20 +338,16 @@ report_configured_links(struct Client* source_p, int mask)
       {
 	/* Don't allow non opers to see oper privs */
 	if(IsOper(source_p))
-	  sendto_one(source_p, form_str(p->rpl_stats), me.name,
-		     source_p->name, p->conf_char, user, host, name,
-		     oper_privs_as_string((struct Client *)NULL,port),
-		     classname);
+	  sendto_one(source_p, form_str(p->rpl_stats),
+		     me.name, source_p->name, p->conf_char, user, host, name,
+		     oper_privs_as_string(NULL, port), classname);
 	else
-	  sendto_one(source_p, form_str(p->rpl_stats), me.name,
-		     source_p->name, p->conf_char, user, host, name,
+	  sendto_one(source_p, form_str(p->rpl_stats),
+		     me.name, source_p->name, p->conf_char, user, host, name,
 		     "0", classname);
       }
       else if (mask & (CONF_XLINE|CONF_ULINE))
       {
-        get_printable_conf(aconf, &name, &host, &pass,
-			   &user, &port, &classname);
-
 	if (mask & CONF_ULINE)
 	  sendto_one(source_p, form_str(RPL_STATSULINE),
 		     me.name, source_p->name, name, pass);
@@ -496,9 +494,9 @@ verify_access(struct Client* client_p, const char* username)
 
   if (aconf != NULL)
   {
-    if (aconf->status & CONF_CLIENT)
+    if (IsConfClient(aconf))
     {
-      if (aconf->flags & CONF_FLAGS_REDIR)
+      if (IsConfRedir(aconf))
       {
 	sendto_one(client_p, form_str(RPL_REDIR), me.name, client_p->name,
 		   aconf->name ? aconf->name : "", aconf->port);
@@ -544,7 +542,7 @@ verify_access(struct Client* client_p, const char* username)
       }
       return(attach_iline(client_p, aconf));
     }
-    else if (aconf->status & CONF_KILL)
+    else if (IsConfKill(aconf))
     {
       if (ConfigFileEntry.kline_with_reason)
       {
@@ -866,9 +864,10 @@ iphash_stats(struct Client *client_p, struct Client *source_p,
  *		  Also removes a class from the list if marked for deleting.
  */
 int 
-detach_conf(struct Client* client_p,struct ConfItem* aconf)
+detach_conf(struct Client* client_p, struct ConfItem* aconf)
 {
   dlink_node *ptr;
+  struct Class *aclass;
 
   if(aconf == NULL)
     return(-1);
@@ -877,21 +876,25 @@ detach_conf(struct Client* client_p,struct ConfItem* aconf)
   {
     if (ptr->data == aconf)
     {
-      if ((aconf) && (ClassPtr(aconf)))
+      if ((aclass = ClassPtr(aconf)) != NULL)
       {
-	if (aconf->status & CONF_CLIENT_MASK)
+	if (aclass->links > 0)
+	  aclass->links--;
+	
+	if (MaxLinks(aclass) < 0 && Links(aclass) <= 0)
 	{
-	  if (ConfLinks(aconf) > 0)
-	    --ConfLinks(aconf);
-	}
-	if (ConfMaxLinks(aconf) == -1 && ConfLinks(aconf) == 0)
-	{
+	  dlinkDelete(&aclass->class_node, &ClassList);
 	  free_class(ClassPtr(aconf));
 	  ClassPtr(aconf) = NULL;
 	}
       }
-      if (aconf && !--aconf->clients && IsConfIllegal(aconf))
+      /* Please, no ioccc entries - Dianora */
+
+      if (aconf->clients > 0)
+	--aconf->clients;
+      if (aconf->clients == 0 && IsConfIllegal(aconf))
 	free_conf(aconf);
+
       dlinkDelete(ptr, &client_p->localClient->confs);
       free_dlink_node(ptr);
       return(0);
@@ -933,7 +936,7 @@ is_attached(struct Client *client_p, struct ConfItem *aconf)
  *                attachment if there was an old one...
  */
 int 
-attach_conf(struct Client *client_p,struct ConfItem *aconf)
+attach_conf(struct Client *client_p, struct ConfItem *aconf)
 {
   dlink_node *lp;
 
@@ -948,7 +951,7 @@ attach_conf(struct Client *client_p,struct ConfItem *aconf)
 
   if ((aconf->status & CONF_OPERATOR) == 0)
   {
-    if ((aconf->status & CONF_CLIENT) &&
+    if (IsConfClient(aconf) &&
 	ConfLinks(aconf) >= ConfMaxLinks(aconf) && ConfMaxLinks(aconf) > 0)
     {
       if (!IsConfExemptLimits(aconf))
@@ -965,15 +968,17 @@ attach_conf(struct Client *client_p,struct ConfItem *aconf)
     }
   }
 
-  if(IsConfRestriced(aconf))
+#if 0
+  if(IsConfRestricted(aconf))
     SetRestricted(client_p);
+#endif
 
   lp = make_dlink_node();
 
   dlinkAdd(aconf, lp, &client_p->localClient->confs);
 
   aconf->clients++;
-  if (aconf->status & CONF_CLIENT_MASK)
+  if (IsConfTypeOfClient(aconf))
     ConfLinks(aconf)++;
   return(0);
 }
@@ -1002,13 +1007,13 @@ attach_confs(struct Client* client_p, const char* name, int statmask)
     if ((aconf->status & statmask) && !IsConfIllegal(aconf) &&
 	aconf->name && match(aconf->name, name))
     {
-      if (-1 < attach_conf(client_p, aconf))
+      if (attach_conf(client_p, aconf) > 0)
 	++conf_counter;
     }
     else if ((aconf->status & statmask) && !IsConfIllegal(aconf) &&
 	     aconf->name && !irccmp(aconf->name, name))
     {
-      if (-1 < attach_conf(client_p, aconf))
+      if (attach_conf(client_p, aconf) > 0)
 	++conf_counter;
     }
   }
@@ -1025,8 +1030,7 @@ attach_confs(struct Client* client_p, const char* name, int statmask)
  * side effects - find connect block and attach them to connecting client
  */
 int 
-attach_connect_block(struct Client *client_p,
-		     const char* name,
+attach_connect_block(struct Client *client_p, const char* name,
 		     const char* host)
 {
   dlink_node *ptr;
@@ -1043,7 +1047,7 @@ attach_connect_block(struct Client *client_p,
 
     if (IsConfIllegal(aconf))
       continue;
-    if (aconf->status != CONF_SERVER)
+    if (!IsConfServer(aconf))
       continue;
     if ((match(name, aconf->name) == 0) || (match(aconf->host, host) == 0))
       continue;
@@ -1069,32 +1073,32 @@ find_conf_exact(const char* name, const char* user,
 		const char* host, int statmask)
 {
   dlink_node *ptr;
-  struct ConfItem *tmp;
+  struct ConfItem *aconf;
 
   DLINK_FOREACH(ptr, ConfigItemList.head)
     {
-    tmp = ptr->data;
+      aconf = ptr->data;
 
-      if (!(tmp->status & statmask) || !tmp->name || !tmp->host ||
-          irccmp(tmp->name, name))
+      if (!(aconf->status & statmask) || !aconf->name || !aconf->host ||
+          irccmp(aconf->name, name))
         continue;
       /*
       ** Accept if the *real* hostname (usually sockethost)
       ** socket host) matches *either* host or name field
       ** of the configuration.
       */
-      if (!match(tmp->host, host) || !match(tmp->user,user)
-          || irccmp(tmp->name, name) )
+      if (!match(aconf->host, host) || !match(aconf->user,user)
+          || irccmp(aconf->name, name) )
         continue;
-      if (tmp->status & CONF_OPERATOR)
+      if (IsConfOperator(aconf))
         {
-          if (tmp->clients < ConfMaxLinks(tmp))
-            return(tmp);
+          if (aconf->clients < ConfMaxLinks(aconf))
+            return(aconf);
           else
             continue;
         }
       else
-        return(tmp);
+        return(aconf);
     }
   return(NULL);
 }
@@ -1150,9 +1154,9 @@ find_conf_by_name(const char* name, int status)
       conf = ptr->data;
       if (conf->status == status && conf->name &&
           match(name, conf->name))
-        return conf;
+        return (conf);
     }
-  return NULL;
+  return (NULL);
 }
 
 /*
@@ -1201,6 +1205,9 @@ find_x_conf(char *to_find)
   DLINK_FOREACH(ptr, ConfigItemList.head)
   {
     aconf = ptr->data;
+    if (!IsConfXline(aconf))
+      continue;
+
     if (EmptyString(aconf->name))
       continue;
 
@@ -1228,17 +1235,20 @@ find_u_conf(char *server,char *user,char *host)
   DLINK_FOREACH(ptr, ConfigItemList.head)
   {
     aconf = ptr->data;
+    
+    if (!IsConfUline(aconf))
+      continue;
 
     if (EmptyString(aconf->name))
       continue;
 
     if (match(aconf->name,server))
-    {
-      if (EmptyString(aconf->user) || EmptyString(aconf->host))
-	return(YES);
-      if (match(aconf->user,user) && match(aconf->host,host))
-	return(YES);
-    }
+      {
+	if (EmptyString(aconf->user) || EmptyString(aconf->host))
+	  return(YES);
+	if (match(aconf->user,user) && match(aconf->host,host))
+	  return(YES);
+      }
   }
   return(NO);
 }
@@ -1485,8 +1495,6 @@ validate_conf(void)
 void 
 conf_add_conf(struct ConfItem *aconf)
 {
-  dlink_node *ptr;
-
   (void)collapse(aconf->host);
   (void)collapse(aconf->user);
   Debug((DEBUG_NOTICE,
@@ -1498,8 +1506,7 @@ conf_add_conf(struct ConfItem *aconf)
 	 aconf->port,
 	 aconf->c_class ? ConfClassType(aconf): 0 ));
 
-  ptr = make_dlink_node();
-  dlinkAdd(aconf, ptr, &ConfigItemList);
+  dlinkAdd(aconf, &aconf->node, &ConfigItemList);
 }
 
 /*
@@ -1632,7 +1639,7 @@ add_temp_kline(struct ConfItem *aconf)
   dlink_node *kill_node;
   kill_node = make_dlink_node();
   dlinkAdd(aconf, kill_node, &temporary_klines);
-  aconf->flags |= CONF_FLAGS_TEMPORARY;
+  SetConfTemporary(aconf);
   add_conf_by_address(aconf->host, CONF_KILL, aconf->user, aconf);
 }
 
@@ -2026,7 +2033,7 @@ clear_out_old_conf(void)
 
   /*
    * We only need to free anything allocated by yyparse() here.
-   * Reseting structs, etc, is taken care of by set_default_conf().
+   * Resetting structs, etc, is taken care of by set_default_conf().
    */
   DLINK_FOREACH_SAFE(ptr, next_ptr, ConfigItemList.head)
   {
@@ -2039,18 +2046,18 @@ clear_out_old_conf(void)
        ** that it will be deleted when the last client
        ** exits...
        */
-      if (!IsConfClient(aconf))
+      if ((aconf->status & (CONF_CLIENT_MASK|CONF_HUB|CONF_LEAF)) == 0)
       {
+	dlinkDelete(&aconf->node, &ConfigItemList);
 	free_conf(aconf);
-	dlinkDelete(ptr, &ConfigItemList);
       }
       else
 	SetConfIllegal(aconf);
     }
     else
     {
+      dlinkDelete(&aconf->node, &ConfigItemList);
       free_conf(aconf);
-      dlinkDelete(ptr, &ConfigItemList);
     }
   }
 
@@ -2078,6 +2085,8 @@ clear_out_old_conf(void)
   ServerInfo.network_name = NULL;
   MyFree(ServerInfo.network_desc);
   ServerInfo.network_desc = NULL;
+  MyFree(ConfigFileEntry.egdpool_path);
+  ConfigFileEntry.egdpool_path = NULL;
 #ifdef HAVE_LIBCRYPTO
   if (ServerInfo.rsa_private_key != NULL)
   {

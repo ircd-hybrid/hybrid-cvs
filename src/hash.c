@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.48 2003/02/17 16:09:36 db Exp $
+ *  $Id: hash.c,v 7.49 2003/02/23 04:16:11 db Exp $
  */
 
 #include "stdinc.h"
@@ -736,13 +736,7 @@ get_or_create_channel(struct Client *client_p, char *chname, int *isnew)
   chptr = BlockHeapAlloc(channel_heap);
   memset(chptr, 0, sizeof(struct Channel));
   strlcpy(chptr->chname, chname, sizeof(chptr->chname));
-
-  if (GlobalChannelList)
-    GlobalChannelList->prevch = chptr;
-
-  chptr->prevch = NULL;
-  chptr->nextch = GlobalChannelList;
-  GlobalChannelList = chptr;
+  dlinkAdd(chptr, &chptr->node, &GlobalChannelList);
   chptr->channelts = CurrentTime;     /* doesn't hurt to set it here */
 
   chptr->hnextch = (struct Channel*) channelTable[hashv].list;

@@ -19,15 +19,15 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ltrace.c,v 1.4 2002/07/31 22:52:58 leeh Exp $
+ *  $Id: m_ltrace.c,v 1.5 2003/02/23 04:16:01 db Exp $
  */
 
 #include "stdinc.h"
 #include "handlers.h"
+#include "tools.h"
 #include "class.h"
 #include "hook.h"
 #include "client.h"
-#include "hash.h"
 #include "common.h"
 #include "hash.h"
 #include "irc_string.h"
@@ -44,7 +44,7 @@
 
 static void m_ltrace(struct Client *, struct Client *, int, char **);
 static void mo_ltrace(struct Client*, struct Client*, int, char**);
-static struct Client* next_client_double(struct Client *next, const char* ch);
+static dlink_node *next_client_double_ptr(dlink_node *next, const char* ch);
 static void ltrace_spy(struct Client *);
 
 struct Message ltrace_msgtab = {
@@ -67,7 +67,7 @@ _moddeinit(void)
   mod_del_cmd(&ltrace_msgtab);
 }
 
-const char *_version = "$Revision: 1.4 $";
+const char *_version = "$Revision: 1.5 $";
 #endif
 
 static int report_this_status(struct Client *source_p, struct Client *target_p,int dow,
@@ -79,8 +79,9 @@ static int report_this_status(struct Client *source_p, struct Client *target_p,i
  *	parv[0] = sender prefix
  *	parv[1] = target client/server to trace
  */
-static void m_ltrace(struct Client *client_p, struct Client *source_p,
-                    int parc, char *parv[])
+static void
+m_ltrace(struct Client *client_p, struct Client *source_p,
+	 int parc, char *parv[])
 {
   char *tname;
 
@@ -96,14 +97,16 @@ static void m_ltrace(struct Client *client_p, struct Client *source_p,
  *      parv[0] = sender prefix
  *      parv[1] = servername
  */
-static void mo_ltrace(struct Client *client_p, struct Client *source_p,
-                    int parc, char *parv[])
+static void
+mo_ltrace(struct Client *client_p, struct Client *source_p,
+	  int parc, char *parv[])
 {
   struct Client       *target_p = NULL;
   char  *tname;
   int   doall, link_s[MAXCONNECTIONS], link_u[MAXCONNECTIONS];
   int   wilds, dow;
   dlink_node *ptr;
+  dlink_node *gcptr;	/* GlobalClientList ptr */
   char *looking_for = parv[0];
 
   if(!IsClient(source_p))
@@ -130,8 +133,10 @@ static void mo_ltrace(struct Client *client_p, struct Client *source_p,
       {
         struct Client *ac2ptr;
         
-        ac2ptr = next_client_double(GlobalClientList, tname);
-        if (ac2ptr)
+        ptr = next_client_double_ptr(GlobalClientList.head, tname);
+	ac2ptr = ptr->data;
+
+        if (ac2ptr != NULL)
           sendto_one(source_p, form_str(RPL_TRACELINK), me.name, looking_for,
                      ircd_version, debugmode, tname, ac2ptr->from->name);
         else
@@ -193,21 +198,22 @@ static void mo_ltrace(struct Client *client_p, struct Client *source_p,
    */
   if (doall)
    {
-    for (target_p = GlobalClientList; target_p; target_p = target_p->next)
+    DLINK_FOREACH(gcptr, GlobalClientList.head)
      {
-      if (IsPerson(target_p))
-        {
-          link_u[target_p->from->localClient->fd]++;
-        }
-      else if (IsServer(target_p))
-	{
-	  link_s[target_p->from->localClient->fd]++;
-	}
+       target_p = gcptr->data;
+       if (IsPerson(target_p))
+	 {
+	   link_u[target_p->from->localClient->fd]++;
+	 }
+       else if (IsServer(target_p))
+	 {
+	   link_s[target_p->from->localClient->fd]++;
+	 }
      }
    }
    
   /* report all opers */
-  for (ptr = lclient_list.head; ptr; ptr = ptr->next)
+  DLINK_FOREACH(ptr, lclient_list.head)
     {
       target_p = ptr->data;
 
@@ -224,7 +230,7 @@ static void mo_ltrace(struct Client *client_p, struct Client *source_p,
     }
 
   /* report all servers */
-  for (ptr = serv_list.head; ptr; ptr = ptr->next)
+  DLINK_FOREACH(ptr, serv_list.head)
     {
       target_p = ptr->data;
 
@@ -242,8 +248,6 @@ static void mo_ltrace(struct Client *client_p, struct Client *source_p,
 }
 
 
-
-
 /*
  * report_this_status
  *
@@ -252,8 +256,9 @@ static void mo_ltrace(struct Client *client_p, struct Client *source_p,
  * output	- counter of number of hits
  * side effects - NONE
  */
-static int report_this_status(struct Client *source_p, struct Client *target_p,
-                              int dow, int link_u_p, int link_s_p)
+static int
+report_this_status(struct Client *source_p, struct Client *target_p,
+		   int dow, int link_u_p, int link_s_p)
 {
   const char* name;
   const char* class_name;
@@ -333,7 +338,8 @@ static int report_this_status(struct Client *source_p, struct Client *target_p,
  * output       - none
  * side effects - hook event doing_trace is called
  */
-static void ltrace_spy(struct Client *source_p)
+static void
+ltrace_spy(struct Client *source_p)
 {
   struct hook_spy_data data;
 
@@ -353,25 +359,35 @@ static void ltrace_spy(struct Client *source_p)
  *              HandleMatchingClient;
  *            
  */
-static struct Client* 
-next_client_double(struct Client *next, /* First client to check */
-                   const char* ch)      /* search string (may include wilds) */
+static dlink_node *
+next_client_double_ptr(dlink_node *next, /* First client to check */
+		       const char* ch)  /* search string (may include wilds) */
 {
-  struct Client *tmp = next;
+  dlink_node *tmp=next;
+  struct Client *next_client;
 
-  next = find_client(ch);
+  next_client = find_client(ch);
 
-  if (next == NULL)
+  if (next_client == NULL)
+  {
     next = tmp;
+  }
+  else
+  {
+    next = &next_client->node;
+  }
 
-  if (tmp && tmp->prev == next)
-    return NULL;
-  if (next != tmp)
-    return next;
-  for ( ; next; next = next->next)
-    {
-      if (match(ch,next->name) || match(next->name,ch))
-        break;
-    }
-  return next;
+  if ((tmp != NULL) && (tmp->prev != NULL) && (tmp->prev->data == next->data))
+    return (NULL);
+
+  if (next->data != tmp->data)
+    return (next);
+
+  for( ; next; next = next->next)
+  {
+    next_client = next->data;
+    if (match(ch, next_client->name) || match(next_client->name ,ch))
+      break;
+  }
+  return (next);
 }

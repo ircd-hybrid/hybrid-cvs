@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.72 2003/02/17 16:09:36 db Exp $
+ *  $Id: channel_mode.c,v 7.73 2003/02/23 04:16:10 db Exp $
  */
 
 #include "stdinc.h"
@@ -888,9 +888,9 @@ chm_hideops(struct Client *client_p, struct Client *source_p,
     return;
   simple_modes_mask |= MODE_HIDEOPS;
 
-  if (dir == MODE_ADD && !(chptr->mode.mode & MODE_HIDEOPS))
+  if (dir == MODE_ADD && !IsHideOps(chptr))
   {
-    chptr->mode.mode |= MODE_HIDEOPS;
+    SetHideOps(chptr);
 
     mode_changes[mode_count].letter = c;
     mode_changes[mode_count].dir = MODE_ADD;
@@ -900,9 +900,9 @@ chm_hideops(struct Client *client_p, struct Client *source_p,
     mode_changes[mode_count].mems = ALL_MEMBERS;
     mode_changes[mode_count++].arg = NULL;
   }
-  else if (dir == MODE_DEL && (chptr->mode.mode & MODE_HIDEOPS))
+  else if (dir == MODE_DEL && IsHideOps(chptr))
   {
-    chptr->mode.mode &= ~MODE_HIDEOPS;
+    ClearHideOps(chptr);
 
     mode_changes[mode_count].letter = c;
     mode_changes[mode_count].dir = MODE_DEL;
@@ -2797,11 +2797,15 @@ update_channel_info(struct Channel *chptr)
 void
 do_channel_integrity_check(void)
 {
+  dlink_node *ch_ptr = NULL;
+  dlink_node *cl_ptr = NULL;
   dlink_node *ptr = NULL;
   struct Client *cl;
   struct Channel *ch;
-  for (cl=GlobalClientList; cl; cl=cl->next)
+  DLINK_FOREACH(cl_ptr, GlobalClientList.head)
   {
+    cl = cl_ptr->data;
+
     if (!IsRegisteredUser(cl) || IsDead(cl))
       continue;
     DLINK_FOREACH(ptr, cl->user->channel.head)
@@ -2841,8 +2845,11 @@ do_channel_integrity_check(void)
       assert(matched_local);
     }
   }
-  for (ch=GlobalChannelList; ch; ch=NULL /*ch->nextch */)
+
+  DLINK_FOREACH(ch_ptr, GlobalClientList.head)
   {
+    ch = ch_ptr->data;
+
 #define SEARCH_LIST(listname) \
     for (ptr=ch->listname.head; ptr; ptr=ptr->next) \
     { \

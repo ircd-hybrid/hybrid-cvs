@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_jupe.c,v 1.37 2003/02/17 16:09:24 db Exp $
+ *  $Id: m_jupe.c,v 1.38 2003/02/23 04:16:01 db Exp $
  */
 
 #include "stdinc.h"
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&jupe_msgtab);
 }
 
-const char *_version = "$Revision: 1.37 $";
+const char *_version = "$Revision: 1.38 $";
 #endif
 
 /*
@@ -80,8 +80,9 @@ const char *_version = "$Revision: 1.37 $";
 **      parv[1] = server we're juping
 **      parv[2] = reason for jupe
 */
-static void mo_jupe(struct Client *client_p, struct Client *source_p,
-                    int parc, char *parv[])
+static void
+mo_jupe(struct Client *client_p, struct Client *source_p,
+	int parc, char *parv[])
 {
   struct Client *target_p;
   struct Client *ajupe;
@@ -170,7 +171,10 @@ static void mo_jupe(struct Client *client_p, struct Client *source_p,
   add_client_to_list(ajupe);
   add_to_client_hash_table(ajupe->name, ajupe);
   add_client_to_llist(&(ajupe->servptr->serv->servers), ajupe);
-  add_server_to_list(ajupe);
+  m = make_dlink_node();
+  dlinkAdd(ajupe, m, &global_serv_list);
+  /* XXX is this really necessary? */
+  dlinkAdd(ajupe, &target_p->node, &GlobalClientList);
 }
 
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_trace.c,v 1.52 2003/02/18 22:26:35 db Exp $
+ *  $Id: m_trace.c,v 1.53 2003/02/23 04:16:05 db Exp $
  */
 
 #include "stdinc.h"
@@ -30,7 +30,6 @@
 #include "client.h"
 #include "hash.h"
 #include "common.h"
-#include "hash.h"
 #include "irc_string.h"
 #include "ircd.h"
 #include "numeric.h"
@@ -46,7 +45,7 @@
 static void m_trace(struct Client *, struct Client *, int, char **);
 static void ms_trace(struct Client*, struct Client*, int, char**);
 static void mo_trace(struct Client*, struct Client*, int, char**);
-static struct Client* next_client_double(struct Client *next, const char* ch);
+static dlink_node *next_client_double_ptr(dlink_node *next, const char* ch);
 
 static void trace_spy(struct Client *);
 
@@ -69,7 +68,7 @@ _moddeinit(void)
   hook_del_event("doing_trace");
   mod_del_cmd(&trace_msgtab);
 }
-const char *_version = "$Revision: 1.52 $";
+const char *_version = "$Revision: 1.53 $";
 #endif
 static int report_this_status(struct Client *source_p, struct Client *target_p,int dow,
                               int link_u_p, int link_u_s);
@@ -109,6 +108,7 @@ mo_trace(struct Client *client_p, struct Client *source_p,
   int   doall, link_s[MAXCONNECTIONS], link_u[MAXCONNECTIONS];
   int   cnt = 0, wilds, dow;
   dlink_node *ptr;
+  dlink_node *gcptr;	/* GlobalClientList ptr */
   char *looking_for = parv[0];
 
   if(!IsClient(source_p))
@@ -129,8 +129,10 @@ mo_trace(struct Client *client_p, struct Client *source_p,
       {
         struct Client *ac2ptr;
         
-        ac2ptr = next_client_double(GlobalClientList, tname);
-        if (ac2ptr)
+	ptr = next_client_double_ptr(GlobalClientList.head, tname);
+        ac2ptr = ptr->data;
+
+        if (ac2ptr != NULL)
           sendto_one(source_p, form_str(RPL_TRACELINK), me.name, looking_for,
                      ircd_version, debugmode, tname, ac2ptr->from->name);
         else
@@ -200,8 +202,10 @@ mo_trace(struct Client *client_p, struct Client *source_p,
    */
   if (doall)
    {
-    for (target_p = GlobalClientList; target_p; target_p = target_p->next)
+    DLINK_FOREACH(gcptr, GlobalClientList.head)
      {
+      target_p = gcptr->data;
+
       if (IsPerson(target_p))
         {
           link_u[target_p->from->localClient->fd]++;
@@ -449,27 +453,38 @@ trace_spy(struct Client *source_p)
  *              HandleMatchingClient;
  *            
  */
-static struct Client* 
-next_client_double(struct Client *next, /* First client to check */
-                   const char* ch)      /* search string (may include wilds) */
+static dlink_node *
+next_client_double_ptr(dlink_node *next, /* First client to check */
+		       const char* ch)  /* search string (may include wilds) */
 {
-  struct Client *tmp = next;
+  dlink_node *tmp=next;
+  struct Client *next_client;
 
-  next = find_client(ch);
+  next_client = find_client(ch);
 
-  if (next == NULL)
+  if (next_client == NULL)
+  {
     next = tmp;
+  }
+  else
+  {
+    next = &next_client->node;
+  }
 
-  if (tmp && tmp->prev == next)
-    return NULL;
-  if (next != tmp)
-    return next;
-  for ( ; next; next = next->next)
-    {
-      if (match(ch,next->name) || match(next->name,ch))
-        break;
-    }
-  return next;
+  if ((tmp != NULL) && (tmp->prev != NULL) && (tmp->prev->data == next->data))
+    return (NULL);
+
+  if (next->data != tmp->data)
+    return (next);
+
+  for( ; next; next = next->next)
+  {
+    next_client = next->data;
+    if (match(ch, next_client->name) || match(next_client->name ,ch))
+      break;
+  }
+  return (next);
 }
+
 
 

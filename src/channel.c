@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.356 2003/02/17 16:09:35 db Exp $
+ *  $Id: channel.c,v 7.357 2003/02/23 04:16:10 db Exp $
  */
 
 #include "stdinc.h"
@@ -49,7 +49,7 @@
 #include "s_log.h"
 
 struct config_channel_entry ConfigChannel;
-struct Channel *GlobalChannelList = NULL;
+dlink_list GlobalChannelList = {NULL, NULL, 0};
 BlockHeap *channel_heap;
 BlockHeap *ban_heap;
 BlockHeap *topic_heap;
@@ -465,10 +465,12 @@ clear_channels(void *unused)
 {
   struct Channel *chptr;
   struct Channel *next_chptr;
+  dlink_node *ptr;
+  dlink_node *next_ptr;
 
-  for (chptr = GlobalChannelList; chptr; chptr = next_chptr)
+  DLINK_FOREACH_SAFE(ptr, next_ptr, GlobalChannelList.head)
   {
-    next_chptr = chptr->nextch;
+    chptr = ptr->data;
 
     if (!HasVchans(chptr))
     {
@@ -550,6 +552,7 @@ free_channel_list(dlink_list * list)
 static void
 destroy_channel(struct Channel *chptr)
 {
+  dlink_node *gptr;
   dlink_node *ptr;
   dlink_node *m;
 #ifdef VCHANS
@@ -614,13 +617,8 @@ destroy_channel(struct Channel *chptr)
 
   chptr->banlist.tail = chptr->exceptlist.tail = chptr->invexlist.tail = NULL;
 
-  if (chptr->prevch)
-    chptr->prevch->nextch = chptr->nextch;
-  else
-    GlobalChannelList = chptr->nextch;
-  if (chptr->nextch)
-    chptr->nextch->prevch = chptr->prevch;
-
+  gptr = &chptr->node;
+  dlinkDelete(gptr, &GlobalChannelList);
 
   del_from_channel_hash_table(chptr->chname, chptr);
   if (ServerInfo.hub == 1)

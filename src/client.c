@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.334 2003/02/20 23:55:01 bill Exp $
+ *  $Id: client.c,v 7.335 2003/02/23 04:16:10 db Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -54,6 +54,16 @@
 #include "hostmask.h"
 #include "balloc.h"
 #include "listener.h"
+
+/* Pointer to beginning of Client list */
+dlink_list GlobalClientList = {NULL, NULL, 0};
+/* unknown/client pointer lists */ 
+dlink_list unknown_list;        /* unknown clients ON this server only */
+dlink_list lclient_list;        /* local clients only ON this server */
+dlink_list serv_list;           /* local servers to this server ONLY */
+dlink_list global_serv_list;    /* global servers on the network */
+dlink_list oper_list;           /* our opers, duplicated in lclient_list */
+dlink_list lazylink_channels;   /* known about lazylink channels on HUB */
 
 static void check_pings_list(dlink_list *list);
 static void check_unknowns_list(dlink_list *list);
@@ -179,8 +189,6 @@ free_client(struct Client* client_p)
 {
   assert(NULL != client_p);
   assert(&me != client_p);
-  assert(NULL == client_p->prev);
-  assert(NULL == client_p->next);
 
   if (MyConnect(client_p))
   {
@@ -618,75 +626,6 @@ release_client_state(struct Client* client_p)
   }
 }
 
-/*
- * remove_client_from_list
- * inputs	- point to client to remove
- * output	- NONE
- * side effects - taken the code from ExitOneClient() for this
- *		  and placed it here. - avalon
- */
-void
-remove_client_from_list(struct Client* client_p)
-{
-  assert(client_p != NULL);
-
-  if(client_p == NULL)
-    return;
-
-/* XXX try without this as well */
-#if 1
-  /* A client made with make_client()
-   * is on the unknown_list until removed.
-   * If it =does= happen to exit before its removed from that list
-   * and its =not= on the GlobalClientList, it will core here.
-   * short circuit that case now -db
-   */
-  if (!client_p->prev && !client_p->next)
-    {
-      return;
-    }
-#endif
-
-  if (client_p->prev)
-    client_p->prev->next = client_p->next;
-  else
-    {
-      GlobalClientList = client_p->next;
-      GlobalClientList->prev = NULL;
-    }
-
-  if (client_p->next)
-    client_p->next->prev = client_p->prev;
-  client_p->next = client_p->prev = NULL;
-
-  update_client_exit_stats(client_p);
-}
-
-/*
- * add_client_to_list
- * input	- pointer to client
- * output	- NONE
- * side effects	- although only a small routine,
- *		  it appears in a number of places
- * 		  as a collection of a few lines...functions like this
- *		  should be in this file, shouldnt they ?  after all,
- *		  this is list.c, isnt it ? (no
- *		  -avalon
- */
-void
-add_client_to_list(struct Client *client_p)
-{
-  /*
-   * since we always insert new clients to the top of the list,
-   * this should mean the "me" is the bottom most item in the list.
-   */
-  client_p->next = GlobalClientList;
-  GlobalClientList = client_p;
-  if (client_p->next)
-    client_p->next->prev = client_p;
-  return;
-}
-
 /* Functions taken from +CSr31, paranoified to check that the client
 ** isn't on a llist already when adding, and is there when removing -orabidoo
 */
@@ -729,28 +668,47 @@ del_client_from_llist(struct Client **bucket, struct Client *client)
  *              HandleMatchingClient;
  *            
  */
+/* XXX I think this one can go soon */
 struct Client*
 next_client(struct Client *next,     /* First client to check */
             const char* ch)          /* search string (may include wilds) */
 {
-  struct Client *tmp = next;
+  dlink_node *next_ptr;
 
-  next = find_client(ch);
+  next_ptr = next_client_ptr(&next->node, ch);
+  return(next_ptr->data);
+}
 
-  if (next == NULL)
+dlink_node *
+next_client_ptr(dlink_node *next,     /* First client to check */
+		const char* ch)       /* search string (may include wilds) */
+{
+  dlink_node *tmp=next;
+  struct Client *next_client;
+
+  next_client = find_client(ch);
+
+  if (next_client == NULL)
+  {
     next = tmp;
+  }
+  else
+  {
+    next = &next_client->node;
+  }
 
-  if (tmp && tmp->prev == next)
+  if ((tmp != NULL) && (tmp->prev != NULL) && (tmp->prev->data == next->data))
     return (NULL);
 
-  if (next != tmp)
-    return next;
+  if (next->data != tmp->data)
+    return(next);
 
-  for ( ; next; next = next->next)
-    {
-      if (match(ch,next->name)) break;
-    }
-  return next;
+  for( ; next; next = next->next)
+  {
+    next_client = next->data;
+    if (match(ch, next_client->name)) break;
+  }
+  return (next);
 }
 
 /*
@@ -1015,7 +973,9 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
   del_from_client_hash_table(source_p->name, source_p);
 
   /* remove from global client list */
-  remove_client_from_list(source_p);
+  if (source_p != NULL)
+    dlinkDelete(&source_p->node, &GlobalClientList);
+  update_client_exit_stats(source_p);
 
   /* Check to see if the client isn't already on the dead list */
   assert(dlinkFind(&dead_list, source_p) == NULL);
@@ -1033,9 +993,11 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
 ** a link gets a SQUIT, it doesn't need any QUIT/SQUITs for clients depending
 ** on that one -orabidoo
 */
-static void recurse_send_quits(struct Client *client_p, struct Client *source_p, struct Client *to,
-                                const char* comment,  /* for servers */
-                                const char* myname)
+static void
+recurse_send_quits(struct Client *client_p, struct Client *source_p,
+		   struct Client *to,
+		   const char* comment,  /* for servers */
+		   const char* myname)
 {
   struct Client *target_p;
 

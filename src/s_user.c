@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.225 2003/02/18 22:26:39 db Exp $
+ *  $Id: s_user.c,v 7.226 2003/02/23 04:16:12 db Exp $
  */
 
 #include "stdinc.h"
@@ -310,7 +310,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
       SetPingSent(source_p);
       return -1;
     } 
-    if(!(source_p->flags2 & FLAGS2_PING_COOKIE))
+    if(!HasPingCookie(source_p))
     {
       return -1;
     }
@@ -655,9 +655,9 @@ introduce_client(struct Client *client_p, struct Client *source_p,
     }
   else
     {
-      for (server_node = serv_list.head; server_node; server_node = server_node->next)
+      DLINK_FOREACH(server_node, serv_list.head)
 	{
-	  server = (struct Client *) server_node->data;
+	  server = server_node->data;
 		  
 	  if (IsCapable(server, CAP_LL) || server == client_p)
 	    continue;
@@ -1029,7 +1029,7 @@ user_mode(struct Client *client_p, struct Client *source_p, int parc, char *parv
                 {
                   dlink_node *dm;
 
-		  source_p->flags2 &= ~FLAGS2_OPER_FLAGS;
+		  ClearOperFlags(source_p);
 		  dm = dlinkFind(&oper_list,source_p);
 		  if(dm != NULL)
 		    {
