@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_gline.h,v 7.17 2003/05/26 01:01:17 stu Exp $
+ *  $Id: s_gline.h,v 7.18 2003/06/09 18:00:51 michael Exp $
  */
 
 #ifndef INCLUDED_s_gline_h
@@ -44,14 +44,14 @@ struct gline_pending
   char oper_user1[USERLEN + 1];
   char oper_host1[HOSTLEN + 1];
   char oper_server1[HOSTLEN + 1];
-  char *reason1;
+  char reason1[REASONLEN + 1];
   time_t time_request1;
 
   char oper_nick2[NICKLEN + 1];
   char oper_user2[USERLEN + 1];
   char oper_host2[HOSTLEN + 1];
   char oper_server2[HOSTLEN + 1];
-  char *reason2;
+  char reason2[REASONLEN + 1];
   time_t time_request2;
 
   time_t last_gline_time;       /* for expiring entry */

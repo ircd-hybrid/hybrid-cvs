@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.110 2003/06/04 06:25:50 michael Exp $
+ *  $Id: m_gline.c,v 1.111 2003/06/09 18:00:52 michael Exp $
  */
 
 #include "stdinc.h"
@@ -71,7 +71,7 @@ static void add_new_majority_gline(const char *, const char *, const char *,
                                    const char *);
 
 static int check_wild_gline(char *, char *);
-static int invalid_gline(struct Client *, const char *, const char *, char *);
+static int invalid_gline(struct Client *, const char *);
 		       
 static void ms_gline(struct Client *, struct Client *, int, char **);
 static void mo_gline(struct Client *, struct Client *, int, char **);
@@ -97,7 +97,7 @@ _moddeinit(void)
   delete_capability("GLN");
 }
 
-const char *_version = "$Revision: 1.110 $";
+const char *_version = "$Revision: 1.111 $";
 #endif
 
 /* mo_gline()
@@ -172,7 +172,7 @@ mo_gline(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if (invalid_gline(source_p, user, host, parv[2]))
+  if (invalid_gline(source_p, user))
     return;
 			
   /* Not enough non-wild characters were found,
@@ -303,7 +303,7 @@ ms_gline(struct Client *client_p, struct Client *source_p,
   else
     return;
 
-  if (invalid_gline(target_p, user, host, reason))
+  if (invalid_gline(target_p, user))
      return;
     
   /* send in hyb-7 to compatible servers */
@@ -403,15 +403,12 @@ check_wild_gline(char *user, char *host)
 
 /* invalid_gline()
  *
- * inputs	- pointer to source client
- *		- pointer to ident
- *		- pointer to host
- *		- pointer to reason
- * outputs	- 1 if invalid, 0 if valid
+ * inputs       - pointer to source client
+ *              - pointer to ident
+ * output       - 1 if invalid, 0 if valid
  */
 static int
-invalid_gline(struct Client *source_p, const char *luser, const char *lhost,
-              char *lreason)
+invalid_gline(struct Client *source_p, const char *luser)
 {
   if (strchr(luser, '!') != NULL)
   {
@@ -419,9 +416,6 @@ invalid_gline(struct Client *source_p, const char *luser, const char *lhost,
                me.name, source_p->name);
     return(1);
   }
-
-  if (strlen(lreason) > REASONLEN)
-    lreason[REASONLEN-1] = '\0';
 
   return(0);
 }
@@ -483,10 +477,10 @@ set_local_gline(struct Client *source_p, const char *user,
  * for more information.
  */
 static void
-add_new_majority_gline(const char* oper_nick, const char* oper_user,
-		       const char* oper_host, const char* oper_server,
-		       const char* user, const char* host,
-		       const char* reason)
+add_new_majority_gline(const char *oper_nick, const char *oper_user,
+                       const char *oper_host, const char *oper_server,
+                       const char *user, const char *host,
+                       const char *reason)
 {
   struct gline_pending *pending = (struct gline_pending *)
     MyMalloc(sizeof(struct gline_pending));
@@ -499,9 +493,8 @@ add_new_majority_gline(const char* oper_nick, const char* oper_user,
 
   strlcpy(pending->user, user, sizeof(pending->user));
   strlcpy(pending->host, host, sizeof(pending->host));
-  DupString(pending->reason1, reason);
+  strlcpy(pending->reason1, reason, sizeof(pending->reason1));
 
-  pending->reason2         = NULL;
   pending->last_gline_time = CurrentTime;
   pending->time_request1   = CurrentTime;
 
@@ -584,8 +577,10 @@ check_majority_gline(struct Client *source_p, const char *oper_nick,
 	        sizeof(gline_pending_ptr->oper_user2));
 	strlcpy(gline_pending_ptr->oper_host2, oper_host,
 	        sizeof(gline_pending_ptr->oper_host2));
-	DupString(gline_pending_ptr->reason2, reason);
-        strlcpy(gline_pending_ptr->oper_server2, oper_server, sizeof(gline_pending_ptr->oper_server2));
+        strlcpy(gline_pending_ptr->reason2, reason,
+                sizeof(gline_pending_ptr->reason2));
+        strlcpy(gline_pending_ptr->oper_server2, oper_server,
+                sizeof(gline_pending_ptr->oper_server2));
 	gline_pending_ptr->last_gline_time = CurrentTime;
 	gline_pending_ptr->time_request2 = CurrentTime;
 	return(GLINE_NOT_PLACED);

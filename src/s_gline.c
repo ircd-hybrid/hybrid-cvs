@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_gline.c,v 1.35 2003/05/26 01:01:18 stu Exp $
+ *  $Id: s_gline.c,v 1.36 2003/06/09 18:00:54 michael Exp $
  */
 
 #include "stdinc.h"
@@ -194,8 +194,6 @@ expire_pending_glines(void)
         find_is_glined(glp_ptr->host, glp_ptr->user))
     {
       dlinkDelete(&glp_ptr->node, &pending_glines);
-      MyFree(glp_ptr->reason1);
-      MyFree(glp_ptr->reason2);
       MyFree(glp_ptr);
     }
   }
