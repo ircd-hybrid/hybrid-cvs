@@ -1,7 +1,7 @@
 #
-# Makefile.in for ircd/src
+# Makefile.in for ircd/modules
 #
-# $Id: Makefile.in,v 1.2 2000/11/09 14:21:07 ejb Exp $
+# $Id: Makefile.in,v 1.3 2000/11/10 09:14:02 db Exp $
 #
 CC		= @CC@
 RM		= @RM@
@@ -39,6 +39,7 @@ SRCS =                          \
   m_kline.c \
   m_knock.c \
   m_links.c \
+  m_list.c \
   m_lljoin.c \
   m_locops.c \
   m_ltrace.c \
