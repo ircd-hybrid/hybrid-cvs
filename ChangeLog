@@ -1,3 +1,21 @@
+db          2002/09/05 10:06:18 EDT	(20020905_4)
+
+  Modified files:
+    src                  Makefile.in channel.c class.c client.c 
+                         s_conf.c send.c 
+  Log:
+  - convert these to use DLINK_FOREACH DLINK_FOREACH_SAFE
+  
+  Revision  Changes    Path
+  7.113     +2 -1      ircd-hybrid-7/src/Makefile.in
+  7.328     +52 -55    ircd-hybrid-7/src/channel.c
+  7.37      +75 -65    ircd-hybrid-7/src/class.c
+  7.299     +306 -312  ircd-hybrid-7/src/client.c
+  7.322     +72 -72    ircd-hybrid-7/src/s_conf.c
+  7.205     +11 -22    ircd-hybrid-7/src/send.c
+
+
+
 db          2002/09/05 02:05:41 EDT	(20020905_3)
 
   Modified files:
@@ -31812,4 +31830,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4019 2002/09/05 06:05:44 db Exp $
+$Id: ChangeLog,v 7.4020 2002/09/05 14:06:20 db Exp $
