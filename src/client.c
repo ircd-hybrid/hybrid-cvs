@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.88 2000/12/23 16:37:08 madmax Exp $
+ *  $Id: client.c,v 7.89 2000/12/28 00:56:23 davidt Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -1059,7 +1059,7 @@ static void exit_one_client(struct Client *cptr, struct
       */
       if ((sptr->flags & FLAGS_KILLED) == 0)
         {
-          sendto_serv_butone(cptr,":%s QUIT :%s",
+          sendto_ll_serv_butone(cptr,sptr,":%s QUIT :%s",0,
                              sptr->name, comment);
         }
       /*
