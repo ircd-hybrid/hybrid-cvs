@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.146 2001/05/26 23:56:48 davidt Exp $
+ *   $Id: send.c,v 7.147 2001/05/27 15:51:48 davidt Exp $
  */
 
 #include <sys/types.h>
@@ -145,7 +145,7 @@ _send_linebuf(struct Client *to, buf_head_t *linebuf)
 #ifdef INVARIANTS
   if (IsMe(to))
     {
-      sendto_realops_flags(FLAGS_ALL, "Trying to send message to myself! [%s]");
+      sendto_realops_flags(FLAGS_ALL, "Trying to send message to myself!");
       return 0;
     }
 #endif
