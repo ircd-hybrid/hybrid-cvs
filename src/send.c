@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.137 2001/04/25 03:37:42 androsyn Exp $
+ *   $Id: send.c,v 7.138 2001/05/02 16:53:30 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -201,11 +201,14 @@ _send_message(struct Client *to, char *msg, int len)
      * later.
      *     -- adrian
      * So I took adrian's comments to heart..whether it works or not remains
-     * to been seen...
+     * to been seen...This seems to be a bad idea as other connections die
+     * of starvation..
      * -- Aaron
      */
-    send_queued_write(to->fd, to);	
 #if 0
+    send_queued_write(to->fd, to);	
+#endif
+#if 1
     comm_setselect(to->fd, FDLIST_IDLECLIENT, COMM_SELECT_WRITE,
       send_queued_write, to, 0);
 #endif
