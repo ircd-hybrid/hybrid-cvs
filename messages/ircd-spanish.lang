@@ -1,7 +1,7 @@
 ; SOME DESCRIPTIVE TITLE.
 ; Copyright (C) YEAR Free Software Foundation, Inc.
 ; FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-; $Id: ircd-spanish.lang,v 1.4 2003/05/11 22:04:46 michael Exp $
+; $Id: ircd-spanish.lang,v 1.5 2003/05/18 09:37:52 adx Exp $
 
 RPL_WELCOME:             :%s 001 %s :Bienvenido al %s Internet Relay Chat Network %s
 RPL_YOURHOST:            :%s 002 %s :Estas en el servidor %s, corriendo la version %s
@@ -17,7 +17,7 @@ RPL_TRACEUSER:           :%s 205 %s Usuario %s %s (%s) %lu %lu
 RPL_TRACESERVER:         :%s 206 %s Serv %s %dS %dC %s %s!%s@%s %lu
 RPL_TRACENEWTYPE:        :%s 208 %s <nuevotipo> 0 %s
 RPL_TRACECLASS:          :%s 209 %s Clase %s %d
-RPL_ENDOFSTATS:          :%s 219 %s %s :Fin del Reporte de /STATS
+RPL_ENDOFSTATS:          :%s 219 %s %c :Fin del Reporte de /STATS
 RPL_STATSUPTIME:         :%s 242 %s :Servidor Activo %d dias, %d:%02d:%02d
 RPL_STATSCONN:           :%s 250 %s :Cuenta Maxima de Conexiones: %d (%d clientes) (%d conexiones resivida)
 RPL_LUSERCLIENT:         :%s 251 %s :Hay %d usuarios y %d son invisibles en %d servidores

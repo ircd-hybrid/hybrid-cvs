@@ -1,7 +1,7 @@
 ; ircd-hybrid-7 custom message file
 ; Copyright (C) 2000
 ; David Taylor <davidt@yadt.co.uk>, 2000.
-; $Id: ircd-german.lang,v 1.5 2003/05/11 22:04:46 michael Exp $
+; $Id: ircd-german.lang,v 1.6 2003/05/18 09:37:52 adx Exp $
 
 RPL_WELCOME:             :%s 001 %s :Wilkommen im %s Internet Relay Chat Network %s
 RPL_YOURHOST:            :%s 002 %s :Ihr host ist %s, die aktuelle version is %s
@@ -15,7 +15,7 @@ RPL_TRACEUSER:           :%s 205 %s Benutzer %s %s (%s) %lu %lu
 RPL_TRACESERVER:         :%s 206 %s Server %s %dS %dC %s %s!%s@%s %lu
 RPL_TRACENEWTYPE:        :%s 208 %s <neuer Typ> 0 %s
 RPL_TRACECLASS:          :%s 209 %s Klasse %s %d
-RPL_ENDOFSTATS:          :%s 219 %s %s :Ende des /STATS Reportes
+RPL_ENDOFSTATS:          :%s 219 %s %c :Ende des /STATS Reportes
 RPL_STATSUPTIME:         :%s 242 %s :Dieser Server ist seit %d Tagen aktiv, %d:%02d:%02d
 RPL_STATSCONN:           :%s 250 %s :Maximum Verbindungen: %d (%d Besucher) (%d Verbindungen sind bei diesem Server eingegangen)
 RPL_LUSERCLIENT:         :%s 251 %s :Dieser Server beherbergt %d Besucher, davon sind %d als unsichtbar angemeldet. Die Besucher sind über %d Server verteilt

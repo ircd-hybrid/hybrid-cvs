@@ -1,6 +1,6 @@
 ; dutch language
 ; No idea who did this. (db)
-; $Id: ircd-dutch.lang,v 1.3 2003/05/11 09:25:06 adx Exp $
+; $Id: ircd-dutch.lang,v 1.4 2003/05/18 09:37:52 adx Exp $
 
 RPL_WELCOME:             :%s 001 %s :Welkom op het %s Internet Relay Netwerk %s
 RPL_YOURHOST:            :%s 002 %s :Je host is %s, werkend met versie %s
@@ -9,7 +9,7 @@ RPL_ISUPPORT:            :%s 005 %s %s :zijn ondersteund door deze server
 RPL_REDIR:               :%s 010 %s %s %d :Gebruik deze Server/Port A.U.B.
 RPL_TRACEUSER:           :%s 205 %s Gebruiker %s %s (%s) %lu %lu
 RPL_TRACECLASS:          :%s 209 %s Klasse %s %d
-RPL_ENDOFSTATS:          :%s 219 %s %s :Einde van /STATS rapportage
+RPL_ENDOFSTATS:          :%s 219 %s %c :Einde van /STATS rapportage
 RPL_STATSUPTIME:         :%s 242 %s :Server is al %d dagen up, %d:%02d:%02d
 RPL_STATSCONN:           :%s 250 %s :Hoogst aantal connecties: %d (%d clients) (%d connecties ontvangen)
 RPL_LUSERCLIENT:         :%s 251 %s :Er zijn %d zichtbare -en %d onzichtbare gebruikers op %d servers

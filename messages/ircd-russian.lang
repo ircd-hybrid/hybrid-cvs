@@ -1,7 +1,7 @@
 ; ircd-hybrid-7 custom message file
 ; Copyright (C) 2003
 ; Ilya Shtift <ishtift@tagil.svrw.ru>, 2003.
-; $Id: ircd-russian.lang,v 1.2 2003/05/09 21:38:16 bill Exp $
+; $Id: ircd-russian.lang,v 1.3 2003/05/18 09:37:52 adx Exp $
 
 RPL_WELCOME:             :%s 001 %s :Добро пожаловать в %s Internet Relay Chat Network %s
 RPL_YOURHOST:            :%s 002 %s :Ваш сервер %s, версия %s
@@ -10,7 +10,7 @@ RPL_ISUPPORT:            :%s 005 %s %s :поддерживается этим сервером
 RPL_REDIR:               :%s 010 %s %s %d :Пожалуйста используйте этот сервер/порт
 RPL_MAPEND:              :%s 017 %s :Завершение /MAP
 RPL_YOURID:              :%s 020 %s %s %s :Ваш ID и ваш ключ
-RPL_ENDOFSTATS:          :%s 219 %s %s :Завершение вывода отчета /STATS
+RPL_ENDOFSTATS:          :%s 219 %s %c :Завершение вывода отчета /STATS
 RPL_STATSUPTIME:         :%s 242 %s :Сервер работает %d дней, %d:%02d:%02d
 RPL_STATSCONN:           :%s 250 %s :Наибольшее количество соединений: %d (%d клиентов) (%d входящих соединений)
 RPL_LUSERCLIENT:         :%s 251 %s :Здесь %d пользователей и %d невидимых на %d серверах
