@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu, Computing Center and Jarkko Oikarinen
  *
- * $Id: list.c,v 7.26 2001/03/06 02:05:34 androsyn Exp $
+ * $Id: list.c,v 7.27 2001/03/08 17:09:57 androsyn Exp $
  */
 #include "tools.h"
 #include "blalloc.h"
@@ -67,31 +67,6 @@ void initlists()
                                  USERS_PREALLOCATE + MAXCONNECTIONS);
 }
 
-/*
- * outofmemory()
- *
- * input        - NONE
- * output       - NONE
- * side effects - simply try to report there is a problem
- *                I free all the memory in the kline lists
- *                hoping to free enough memory so that a proper
- *                report can be made. If I was already here (was_here)
- *                then I got called twice, and more drastic measures
- *                are in order. I'll try to just abort() at least.
- */
-void outofmemory()
-{
-  static int was_here = 0;
-
-  if (was_here)
-    abort();
-
-  was_here = YES;
-  /* clear_mtrie_conf_links(); */
-
-  log(L_CRIT, "Out of memory: restarting server...");
-  restart("Out of Memory");
-}
 
         
 /*

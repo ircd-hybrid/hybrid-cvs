@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: memory.c,v 7.9 2001/03/06 02:05:35 androsyn Exp $
+ * $Id: memory.c,v 7.10 2001/03/08 17:09:58 androsyn Exp $
  */
 #include <stdlib.h>
 #include <string.h>
@@ -32,7 +32,7 @@
 #include "client.h"
 #include "send.h"
 #include "tools.h"
-
+#include "s_log.h"
 #ifdef MEMDEBUG
 /* Hopefully this debugger will work better than the existing one...
  * -A1kmm. */
@@ -179,4 +179,26 @@ _DupString(char **x, const char *y) {
   strcpy((*x), y);
 }
 
+
 #endif /* !MEMDEBUG */
+
+/*
+ * outofmemory()
+ *
+ * input        - NONE
+ * output       - NONE
+ * side effects - simply try to report there is a problem. Abort if it was called more than once
+ */
+void outofmemory()
+{
+  static int was_here = 0;
+
+  if (was_here)
+    abort();
+
+  was_here = 1;
+
+  log(L_CRIT, "Out of memory: restarting server...");
+  restart("Out of Memory");
+}
+

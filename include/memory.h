@@ -1,4 +1,4 @@
-/* $Id: memory.h,v 7.9 2001/02/24 05:32:24 a1kmm Exp $ */
+/* $Id: memory.h,v 7.10 2001/03/08 17:09:51 androsyn Exp $ */
 
 #ifndef _I_MEMORY_H
 #define _I_MEMORY_H
@@ -9,6 +9,8 @@
 #include "blalloc.h"
 #include <stdlib.h>
 #include <string.h>
+
+extern void outofmemory();
 
 #ifndef WE_ARE_MEMORY_C
 #undef strdup

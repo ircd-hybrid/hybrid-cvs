@@ -4,7 +4,7 @@
  * Owner:  Wohali (Joan Touzet)
  *
  *
- * $Id: blalloc.c,v 7.26 2001/03/06 02:05:29 androsyn Exp $
+ * $Id: blalloc.c,v 7.27 2001/03/08 17:09:57 androsyn Exp $
  */
 #include <stdio.h>
 #include <unistd.h>
@@ -13,7 +13,7 @@
 #include "ircd.h"
 #include "memory.h"
 #include "blalloc.h"
-#include "irc_string.h"     /* MyMalloc */
+#include "irc_string.h"
 #include "tools.h"
 #include "s_log.h"
 #include "client.h"
@@ -42,8 +42,6 @@ MemoryEntry *first_block_mem_entry = NULL;
 #endif
 
 static int newblock(BlockHeap *bh);
-
-extern void outofmemory();      /* defined in list.c */
 
 /* ************************************************************************ */
 /* FUNCTION DOCUMENTATION:                                                  */
