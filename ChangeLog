@@ -1,3 +1,15 @@
+leeh        2002/05/23 20:31:53 EDT	(20020524_1)
+
+  Modified files:
+    modules              m_cjoin.c 
+  Log:
+  - better fix
+  
+  Revision  Changes    Path
+  1.53      +5 -4      ircd-hybrid-7/modules/m_cjoin.c
+
+
+
 androsyn    2002/05/23 20:28:27 EDT	(20020524_0)
 
   Modified files:
@@ -26806,4 +26818,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3679 2002/05/24 00:28:34 androsyn Exp $
+$Id: ChangeLog,v 7.3680 2002/05/24 00:32:00 leeh Exp $
