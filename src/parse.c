@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.58 2000/12/24 18:43:26 db Exp $
+ *   $Id: parse.c,v 7.59 2000/12/25 01:29:02 db Exp $
  */
 #include "parse.h"
 #include "client.h"
@@ -110,21 +110,10 @@ int parse(struct Client *cptr, char *buffer, char *bufend)
 
       i = 0;
 
-      /*
-      ** Actually, only messages coming from servers can have
-      ** the prefix--prefix silently ignored, if coming from
-      ** a user client...
-      **
-      ** ...sigh, the current release "v2.2PL1" generates also
-      ** null prefixes, at least to NOTIFY messages (e.g. it
-      ** puts "sptr->nickname" as prefix from server structures
-      ** where it's null--the following will handle this case
-      ** as "no prefix" at all --msa  (": NOTICE nick ...")
-      */
       if (*sender && IsServer(cptr))
         {
           from = find_client(sender, (struct Client *) NULL);
-          if (!from || !match(from->name, sender))
+          if (from == NULL)
             from = find_server(sender);
 
           para[0] = sender;
