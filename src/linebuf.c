@@ -6,7 +6,7 @@
  * The idea here is that we should really be maintaining pre-munged
  * buffer "lines" which we can later refcount to save needless copies.
  *
- * $Id: linebuf.c,v 7.66 2001/09/30 02:07:39 a1kmm Exp $
+ * $Id: linebuf.c,v 7.67 2001/10/02 05:34:10 a1kmm Exp $
  */
 
 #include <errno.h>

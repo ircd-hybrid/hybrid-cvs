@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.87 2001/08/31 12:48:31 leeh Exp $
+ * $Id: channel.h,v 7.88 2001/10/02 05:34:09 a1kmm Exp $
  */
 
 #include <sys/types.h>        /* time_t */
@@ -34,6 +34,8 @@
 
 /* XXX until debugged and verified thoroughly */
 #undef USE_TABLE_MODE
+
+#define USE_TABLE_MODE
 
 struct Client;
 
