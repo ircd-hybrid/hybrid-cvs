@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.170 2001/01/01 21:50:33 davidt Exp $
+ * $Id: channel.c,v 7.171 2001/01/02 01:33:07 davidt Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -848,7 +848,7 @@ static void send_mode_list(struct Client *cptr,
       tlen = strlen(banptr->banstr);
       tlen++;
 
-      if ((count >= MAXMODEPARAMS) || ((cur_len + tlen + 2) > BUFSIZE))
+      if ((count >= MAXMODEPARAMS) || ((cur_len + tlen + 2) > MODEBUFLEN))
         {
           sendto_one(cptr, "%s%s %s", buf, mbuf, pbuf);
           mp = mbuf;
