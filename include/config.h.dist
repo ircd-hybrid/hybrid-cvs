@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h.dist,v 7.6 2000/01/02 05:34:52 db Exp $
+ * $Id: config.h.dist,v 7.7 2000/01/04 04:44:31 db Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -740,15 +740,6 @@
  * Max number of channels a user is allowed to join.
  */
 #define MAXCHANNELSPERUSER  10  /* Recommended value: 10 */
-
-/* SENDQ_ALWAYS - should always be defined.
- * SendQ-Always causes the server to put all outbound data into the sendq and
- * flushing the sendq at the end of input processing. This should cause more
- * efficient write's to be made to the network.
- * There *shouldn't* be any problems with this method.
- * -avalon
- */
-#define SENDQ_ALWAYS
 
 /* FLUD - CTCP Flood Detection and Protection
  * 

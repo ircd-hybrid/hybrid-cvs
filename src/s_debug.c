@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_debug.c,v 7.11 1999/12/30 20:52:33 db Exp $
+ *   $Id: s_debug.c,v 7.12 2000/01/04 04:44:35 db Exp $
  */
 #include "s_debug.h"
 #include "channel.h"
@@ -345,7 +345,7 @@ void count_memory(struct Client *cptr,char *nick)
    * the count would be wrong if we just used the globals
    */
   count_dbuf_memory(&dbuf_allocated, &dbuf_used);
-  dbuf_alloc_count = DBufCount;
+  dbuf_alloc_count = INITIAL_DBUFS + DBufAllocCount;
   dbuf_used_count  = DBufUsedCount;
 
   sendto_one(cptr, ":%s %d %s :Client Local %d(%d) Remote %d(%d)",
