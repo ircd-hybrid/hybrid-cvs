@@ -25,7 +25,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: balloc.c,v 7.31 2002/05/24 23:34:44 androsyn Exp $
+ *  $Id: balloc.c,v 7.32 2002/05/25 01:24:52 androsyn Exp $
  */
 
 /* 
@@ -62,6 +62,16 @@
 #include "setup.h"
 #ifndef NOBALLOC
 
+#include "ircd_defs.h"          /* DEBUG_BLOCK_ALLOCATOR */
+#include "ircd.h"
+#include "memory.h"
+#include "balloc.h"
+#include "irc_string.h"
+#include "tools.h"
+#include "s_log.h"
+#include "client.h"
+#include "fdlist.h"
+
 #ifdef HAVE_MMAP /* We've got mmap() that is good */
 #include <sys/mman.h>
 
@@ -73,15 +83,6 @@
 #endif
 
 
-#include "ircd_defs.h"          /* DEBUG_BLOCK_ALLOCATOR */
-#include "ircd.h"
-#include "memory.h"
-#include "balloc.h"
-#include "irc_string.h"
-#include "tools.h"
-#include "s_log.h"
-#include "client.h"
-#include "fdlist.h"
 
 static int newblock(BlockHeap * bh);
 
@@ -210,6 +211,7 @@ static inline void free_block(void *ptr, size_t unused)
 void initBlockHeap()
 {
   return;
+
 }
 #endif /* HAVE_MMAP */
 
