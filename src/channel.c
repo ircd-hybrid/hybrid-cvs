@@ -34,7 +34,7 @@
  *                mode * -p etc. if flag was clear
  *
  *
- * $Id: channel.c,v 7.17 1999/12/31 00:23:21 db Exp $
+ * $Id: channel.c,v 7.18 1999/12/31 03:50:20 db Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -705,7 +705,6 @@ static  void    change_chan_flag(struct Channel *chptr,struct Client *cptr, int 
    {
     if (flag & MODE_ADD)
       {
-        tmp->flags |= flag & MODE_FLAGS;
         if (flag & MODE_CHANOP)
           {
             tmp->flags &= ~MODE_DEOPPED;
@@ -714,6 +713,7 @@ static  void    change_chan_flag(struct Channel *chptr,struct Client *cptr, int 
                 chptr->opcount++;
               }
           }
+        tmp->flags |= flag & MODE_FLAGS;
       }
     else
       {
