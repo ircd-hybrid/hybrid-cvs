@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.209 2001/04/21 12:39:46 fl_ Exp $
+ * $Id: channel.c,v 7.210 2001/04/27 21:12:03 habeeb Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -2988,10 +2988,10 @@ char *channel_chanop_or_voice(struct Channel *chptr, struct Client *target_p)
 {
   if(find_user_link(&chptr->chanops,target_p))
     return("@");
-  else if(find_user_link(&chptr->voiced,target_p))
-    return("+");
   else if(find_user_link(&chptr->halfops,target_p))
     return("%");
+  else if(find_user_link(&chptr->voiced,target_p))
+    return("+");
   return("");
 }
 
