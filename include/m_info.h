@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.h,v 7.13 2000/11/25 17:40:56 toot Exp $
+ * $Id: m_info.h,v 7.14 2000/11/28 23:30:22 db Exp $
  */
 #ifndef INCLUDED_m_info_h
 #define INCLUDED_m_info_h
@@ -133,14 +133,6 @@ Info MyInformation[] = {
 #else
   { "DLPATH", "NONE", 0, "Path to D-line File" },
 #endif /* DLPATH */
-
-  { "FLUD", "ON", 0, "CTCP Flood Detection and Protection" },
-
-  { "FLUD_NUM", "", FLUD_NUM, "Number of Messages to Trip Alarm" },
-
-  { "FLUD_TIME", "", FLUD_TIME, "Time Window in which a Flud occurs" },
-
-  { "FLUD_BLOCK", "", FLUD_BLOCK, "Seconds to Block Fluds" },
 
 #ifdef GLINE_TIME
   { "GLINE_TIME", "", GLINE_TIME, "Expire Time for Glines" },
