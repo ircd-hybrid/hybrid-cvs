@@ -1,4 +1,4 @@
-$Id: .depend,v 7.1 2001/12/15 05:34:25 a1kmm Exp $
+# $Id: .depend,v 7.2 2001/12/15 22:20:07 leeh Exp $
 adns.o: adns.c ../include/fileio.h ../include/res.h \
  ../include/config.h ../include/setup.h ../include/defaults.h \
  ../include/ircd_defs.h ../include/../adns/adns.h ../include/ircd.h \

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.211 2001/12/14 15:16:23 leeh Exp $
+ *  $Id: client.c,v 7.212 2001/12/15 22:20:07 leeh Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -578,6 +578,10 @@ static void update_client_exit_stats(struct Client* client_p)
       if (IsInvisible(client_p)) 
 	--Count.invisi;
     }
+
+  if(!splitmode &&
+    (ConfigChannel.no_join_on_split || ConfigChannel.no_create_on_split))
+    check_splitmode();
 }
 
 /*
