@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_server.c,v 1.39 2001/01/06 15:33:16 fl_ Exp $
+ *   $Id: m_server.c,v 1.40 2001/01/06 17:46:24 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"  /* m_server prototype */
@@ -153,19 +153,34 @@ int mr_server(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
       return exit_client(cptr, cptr, cptr, "Server Exists");
     }
 
-  if (ConfigFileEntry.hub)
+  if(ConfigFileEntry.hub && IsCapable(cptr, CAP_LL))
     {
-      if (IsCapable(cptr, CAP_LL) && IsCapable(cptr,CAP_HUB))
-        ClearCap(cptr,CAP_LL);
+      if(IsCapable(cptr, CAP_HUB))
+        {
+          ClearCap(cptr,CAP_LL);
+          sendto_realops_flags(FLAGS_ALL,
+               "*** LazyLinks to a hub from a hub, thats a no-no.");
+        }
       else
         {
-         cptr->localClient->serverMask = nextFreeMask();
-          if (!cptr->localClient->serverMask)
+          cptr->localClient->serverMask = nextFreeMask();
+
+          if(!cptr->localClient->serverMask)
             {
-             sendto_realops_flags(FLAGS_ALL, "serverMask is full!");
-             /* try and negotiate a non LL connect */
-             ClearCap(cptr,CAP_LL);
+              sendto_realops_flags(FLAGS_ALL,
+                                   "serverMask is full!");
+              /* try and negotiate a non LL connect */
+              ClearCap(cptr,CAP_LL);
             }
+        }
+    }
+  else if (IsCapable(cptr, CAP_LL))
+    {
+      if(!IsCapable(cptr, CAP_HUB))
+        {
+          ClearCap(cptr,CAP_LL);
+          sendto_realops_flags(FLAGS_ALL,
+               "*** LazyLinks to a leaf from a leaf, thats a no-no.");
         }
     }
 
