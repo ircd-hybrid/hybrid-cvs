@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: irc_string.c,v 7.6 2000/09/29 17:16:58 ejb Exp $
+ *  $Id: irc_string.c,v 7.7 2000/11/30 08:52:09 adrian Exp $
  */
 #include "irc_string.h"
 #include "list.h"
@@ -73,6 +73,8 @@ void* MyMalloc(size_t x)
 
   if (!ret)
     outofmemory();
+  else
+    bzero(ret, x); 
   return ret;
 }
 
