@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.125 2003/05/16 06:17:30 db Exp $
+ *  $Id: s_auth.c,v 7.126 2003/05/19 16:19:16 db Exp $
  */
 
 /*
@@ -436,7 +436,7 @@ start_auth(struct Client* client)
   auth = make_auth_request(client);
 
   client->localClient->dns_query = MyMalloc(sizeof(struct DNSQuery));
-  client->localClient->dns_query->ptr = auth;
+  client->localClient->dns_query->ptr = client;
   client->localClient->dns_query->callback = auth_dns_callback;
 
   sendheader(client, REPORT_DO_DNS);
