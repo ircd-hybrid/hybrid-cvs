@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.c,v 7.74 2003/02/23 04:16:11 db Exp $
+ *  $Id: hostmask.c,v 7.75 2003/03/30 14:03:03 adx Exp $
  */
 
 #include "stdinc.h"
@@ -301,8 +301,12 @@ init_host_hash(void)
 static unsigned long
 hash_ipv4(struct irc_inaddr *addr, int bits)
 {
-  unsigned long av = ntohl(addr->sins.sin.s_addr) & ~((1 << (32 - bits)) - 1);
-  return (av ^ (av >> 12) ^ (av >> 24)) & (ATABLE_SIZE - 1);
+  if (bits != 0)
+  {
+    unsigned long av = ntohl(addr->sins.sin.s_addr) & ~((1 << (32 - bits)) - 1);
+    return (av ^ (av >> 12) ^ (av >> 24)) & (ATABLE_SIZE - 1);
+  }
+  else return 0;
 }
 
 /* unsigned long hash_ipv6(struct irc_inaddr*)
