@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_help.c,v 1.5 2003/05/23 17:53:11 joshk Exp $
+ *  $Id: m_help.c,v 1.6 2003/06/07 05:26:18 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -47,7 +47,7 @@
 static void m_help(struct Client*, struct Client*, int, char**);
 static void mo_help(struct Client*, struct Client*, int, char**);
 static void mo_uhelp(struct Client*, struct Client*, int, char**);
-static void dohelp(struct Client *, char *, char *);
+static void dohelp(struct Client *, const char *, char *);
 static void sendhelpfile(struct Client *, char *, char *);
 
 struct Message help_msgtab = {
@@ -75,7 +75,7 @@ _moddeinit(void)
   mod_del_cmd(&uhelp_msgtab);
 }
 
-const char *_version = "$Revision: 1.5 $";
+const char *_version = "$Revision: 1.6 $";
 #endif
 
 /*
@@ -126,7 +126,7 @@ mo_uhelp(struct Client *client_p, struct Client *source_p,
 }
 
 static void
-dohelp(struct Client *source_p, char *hpath, char *topic)
+dohelp(struct Client *source_p, const char *hpath, char *topic)
 {
   char path[MAXPATHLEN + 1];
   struct stat sb;

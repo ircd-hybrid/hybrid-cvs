@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.32 2003/06/06 23:19:32 bill Exp $
+ *   $Id: m_operspy.c,v 1.33 2003/06/07 05:26:18 joshk Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -86,7 +86,7 @@ static void mo_operspy(struct Client *client_p, struct Client *source_p,
 /* extensions for OPERSPY WHO */
 #ifdef OPERSPY_WHO
 static void do_who(struct Client *source_p, struct Client *target_p,
-                   char *chname, char *op_flags);
+                   char *chname, const char *op_flags);
 
 static void who_global(struct Client *source_p, char *mask, int server_oper);
 
@@ -112,7 +112,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.32 $";
+const char *_version = "$Revision: 1.33 $";
 #endif
 
 #ifdef LOG_OPERSPY
@@ -371,8 +371,8 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
     {
       if (target_p_who->user->channel.head != NULL)
       {
-        struct Channel *chptr_who = ((struct Membership *)
-          target_p_who->user->channel.head->data)->chptr;
+        chptr_who =
+          ((struct Membership *) target_p_who->user->channel.head->data)->chptr;
 
         if (is_chan_op(chptr_who, target_p))
 	  do_who(client_p, target_p_who, chptr_who->chname, "@");
@@ -481,7 +481,7 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
 #ifdef OPERSPY_WHO
 static void
 do_who(struct Client *source_p, struct Client *target_p,
-       char *chname, char *op_flags)
+       char *chname, const char *op_flags)
 {
   char status[5];
 
@@ -539,7 +539,7 @@ do_who_on_channel(struct Client *source_p, struct Channel *chptr,
   DLINK_FOREACH(ptr, chptr->members.head)
   {
     ms = ptr->data;
-    do_who(source_p, ms->client_p, chname, (char *)get_member_status(ms, NO));
+    do_who(source_p, ms->client_p, chname, get_member_status(ms, NO));
   }
 }
 #endif /* OPERSPY_WHO */
