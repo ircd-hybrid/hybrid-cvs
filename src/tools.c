@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: tools.c,v 7.25 2002/08/22 23:08:40 db Exp $
+ *  $Id: tools.c,v 7.26 2003/02/03 04:33:44 db Exp $
  *
  * When you update these functions make sure you update the ones in tools.h
  * as well!!!
@@ -186,19 +186,8 @@ dlinkFindDelete(dlink_list *list, void *data)
 {
   dlink_node *m;
 
-  DLINK_FOREACH(m, list->head)
-  {
-    if(m->data != data)
-      continue;
-
-    if (m->next != NULL)
-      m->next->prev = m->prev;
-    else
-      list->tail = m->prev;
-
-    m->next = m->prev = NULL;
-    list->length--;
-    return m;
-  }
-  return(NULL);
+  m = dlinkFind(list, data);
+  if (m)
+    dlinkDelete(m, list);
+  return(m);
 }
