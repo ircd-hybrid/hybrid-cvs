@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.333 2003/07/08 03:59:23 db Exp $
+ *  $Id: ircd_parser.y,v 1.334 2003/07/09 03:15:26 db Exp $
  */
 
 %{
@@ -1644,11 +1644,6 @@ shared_name: NAME '=' QSTRING ';'
   {
     MyFree(yy_conf->name);
     DupString(yy_conf->name, yylval.string);
-  }
-  else
-  {
-    yy_conf = make_conf_item(ULINE_TYPE);
-    yy_match_item = (struct MatchItem *)map_to_conf(yy_conf);
   }
 };
 
