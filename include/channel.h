@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.94 2001/12/03 16:17:19 androsyn Exp $
+ * $Id: channel.h,v 7.95 2001/12/13 20:09:56 leeh Exp $
  */
 
 #include <sys/types.h>        /* time_t */
@@ -144,6 +144,8 @@ extern void    channel_modes(struct Channel *chptr, struct Client *who,
 
 extern void    check_spambot_warning(struct Client *source_p, const
                                      char *name);
+
+extern void check_splitmode();
 
 /*
 ** Channel Related macros follow

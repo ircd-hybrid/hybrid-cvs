@@ -19,12 +19,13 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_set.c,v 1.37 2001/12/13 19:27:18 leeh Exp $ */
+ *   $Id: m_set.c,v 1.38 2001/12/13 20:09:59 leeh Exp $ */
 
 /* rewritten by jdc */
 
 #include "handlers.h"
 #include "client.h"
+#include "event.h"
 #include "irc_string.h"
 #include "ircd.h"
 #include "numeric.h"
@@ -33,7 +34,7 @@
 #include "s_serv.h"
 #include "send.h"
 #include "common.h"   /* for NO */
-#include "channel.h"  /* for server_was_split */
+#include "channel.h"
 #include "s_log.h"
 #include "s_conf.h"
 #include "msg.h"
@@ -387,7 +388,7 @@ static void quote_splitmode(struct Client *source_p, int newval)
       sendto_realops_flags(FLAGS_ALL, L_ALL, 
                            "%s is manually activating splitmode",
                            get_oper_name(source_p));
-      sendto_one(source_p, ":%s NOTICE %s :splitmode has been activated",
+      sendto_one(source_p, ":%s NOTICE %s :SPLITMODE has been activated",
                  me.name, source_p->name);
       splitmode = 1;
     }
@@ -396,9 +397,13 @@ static void quote_splitmode(struct Client *source_p, int newval)
       sendto_realops_flags(FLAGS_ALL, L_ALL,
                            "%s is manually deactivating splitmode",
 			   get_oper_name(source_p));
-      sendto_one(source_p, ":%s NOTICE %s :splitmode has been deactivated",
+      sendto_one(source_p, ":%s NOTICE %s :SPLITMODE has been deactivated",
                  me.name, source_p->name);
+		 
       splitmode = 0;
+
+      /* we might be deactivating an automatic splitmode, so pull the event */
+      eventDelete(check_splitmode, NULL);
     }
   }
   else

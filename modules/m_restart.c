@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_restart.c,v 1.17 2001/11/13 11:45:48 leeh Exp $
+ *   $Id: m_restart.c,v 1.18 2001/12/13 20:09:59 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -28,6 +28,7 @@
 #include "irc_string.h"
 #include "ircd.h"
 #include "numeric.h"
+#include "s_conf.h"
 #include "restart.h"
 #include "s_log.h"
 #include "send.h"
@@ -67,6 +68,9 @@ static void mo_restart(struct Client *client_p,
                       char *parv[])
 {
   char buf[BUFSIZE]; 
+  dlink_node *ptr;
+  struct Client *target_p;
+  
   if (!MyClient(source_p) || !IsOper(source_p))
     {
       sendto_one(source_p, form_str(ERR_NOPRIVILEGES), me.name, parv[0]);
@@ -81,18 +85,36 @@ static void mo_restart(struct Client *client_p,
 
   if (parc < 2)
   {
-	  sendto_one(source_p, ":%s NOTICE %s :Need server name /restart %s",
-				 me.name, source_p->name, me.name);
-	  return;
+    sendto_one(source_p, ":%s NOTICE %s :Need server name /restart %s",
+ 	       me.name, source_p->name, me.name);
+    return;
   }
   else
   {
-	  if (irccmp(parv[1], me.name))
-	  {
-		  sendto_one(source_p, ":%s NOTICE %s :Mismatch on /restart %s",
-					 me.name, source_p->name, me.name);
-		  return;
-	  }
+    if (irccmp(parv[1], me.name))
+    {
+      sendto_one(source_p, ":%s NOTICE %s :Mismatch on /restart %s",
+		 me.name, source_p->name, me.name);
+      return;
+    }
+  }
+  
+  for(ptr = lclient_list.head; ptr; ptr = ptr->next)
+  {
+    target_p = ptr->data;
+
+    sendto_one(target_p,
+               ":%s NOTICE %s :Server Restarting. %s",
+	       me.name, target_p->name,
+	       get_client_name(source_p, HIDE_IP));
+  }
+
+  for(ptr = serv_list.head; ptr; ptr = ptr->next)
+  {
+    target_p = ptr->data;
+
+    sendto_one(target_p, ":%s ERROR :Restart by %s",
+               me.name, get_client_name(source_p, HIDE_IP));
   }
   
   ilog(L_WARN, "Server RESTART by %s\n", get_client_name(source_p, SHOW_IP));

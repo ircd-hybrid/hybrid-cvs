@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.204 2001/12/13 19:27:21 leeh Exp $
+ * $Id: ircd.c,v 7.205 2001/12/13 20:10:02 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -761,6 +761,9 @@ int main(int argc, char *argv[])
     eventAdd("write_links_file", write_links_file, NULL, ConfigServerHide.links_delay);
   else
     ConfigServerHide.links_disabled = 1;
+
+  if(splitmode)
+    eventAdd("check_splitmode", check_splitmode, NULL, 60);
 
   ServerRunning = 1;
   io_loop();

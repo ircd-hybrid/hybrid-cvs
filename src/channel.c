@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.285 2001/12/13 19:27:21 leeh Exp $
+ * $Id: channel.c,v 7.286 2001/12/13 20:10:01 leeh Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -1210,4 +1210,31 @@ check_spambot_warning(struct Client *source_p, const char *name)
  * side effects - compares usercount and servercount against their split
  *                values and adjusts splitmode accordingly
  */
+void check_splitmode()
+{
+  if(splitmode)
+  {
+    if((Count.server >= split_servers) &&
+       (Count.total >= split_users))
+    {
+      splitmode = 0;
+      
+      sendto_realops_flags(FLAGS_ALL, L_ALL,
+                           "Network rejoined, deactivating splitmode");
+      eventDelete(check_splitmode, NULL);
+    }
+  }
+  else
+  {
+    if((Count.server < split_servers) &&
+       (Count.total < split_users))
+    {
+      splitmode = 1;
+
+      sendto_realops_flags(FLAGS_ALL,L_ALL,
+                           "Network split, activating splitmode");
+      eventAdd("check_splitmode", check_splitmode, NULL, 60);
+    }
+  }
+}
 
