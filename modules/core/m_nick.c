@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nick.c,v 1.104 2003/03/06 18:09:13 db Exp $
+ *  $Id: m_nick.c,v 1.105 2003/03/21 17:52:23 db Exp $
  */
 
 #include "stdinc.h"
@@ -60,7 +60,7 @@ static int client_from_server(struct Client *, struct Client *, int, char **,
                               time_t, char *);
 
 static int check_clean_nick(struct Client *, struct Client *, 
-                            char *, char *, char *);
+                            char *, char *, const char *);
 static int check_clean_user(struct Client *, char *, char *, char *);
 static int check_clean_host(struct Client *, char *, char *, char *);
 
@@ -97,7 +97,7 @@ _moddeinit(void)
   mod_del_cmd(&client_msgtab);
 }
 
-const char *_version = "$Revision: 1.104 $";
+const char *_version = "$Revision: 1.105 $";
 #endif
 
 /*
@@ -513,7 +513,7 @@ ms_client(struct Client *client_p, struct Client *source_p,
  */
 static int
 check_clean_nick(struct Client *client_p, struct Client *source_p, 
-		 char *nick, char *newnick, char *server)
+		 char *nick, char *newnick, const char *server)
 {
   /* the old code did some wacky stuff here, if the nick is invalid, kill it
    * and dont bother messing at all

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ltrace.c,v 1.5 2003/02/23 04:16:01 db Exp $
+ *  $Id: m_ltrace.c,v 1.6 2003/03/21 17:52:18 db Exp $
  */
 
 #include "stdinc.h"
@@ -44,7 +44,6 @@
 
 static void m_ltrace(struct Client *, struct Client *, int, char **);
 static void mo_ltrace(struct Client*, struct Client*, int, char**);
-static dlink_node *next_client_double_ptr(dlink_node *next, const char* ch);
 static void ltrace_spy(struct Client *);
 
 struct Message ltrace_msgtab = {
@@ -67,7 +66,7 @@ _moddeinit(void)
   mod_del_cmd(&ltrace_msgtab);
 }
 
-const char *_version = "$Revision: 1.5 $";
+const char *_version = "$Revision: 1.6 $";
 #endif
 
 static int report_this_status(struct Client *source_p, struct Client *target_p,int dow,
@@ -109,9 +108,6 @@ mo_ltrace(struct Client *client_p, struct Client *source_p,
   dlink_node *gcptr;	/* GlobalClientList ptr */
   char *looking_for = parv[0];
 
-  if(!IsClient(source_p))
-    return;
-
   if (parc > 1)
     tname = parv[1];
   else
@@ -131,12 +127,22 @@ mo_ltrace(struct Client *client_p, struct Client *source_p,
     {
     case HUNTED_PASS: /* note: gets here only if parv[1] exists */
       {
-        struct Client *ac2ptr;
-        
-        ptr = next_client_double_ptr(GlobalClientList.head, tname);
-	ac2ptr = ptr->data;
+        struct Client *ac2ptr = NULL;
 
-        if (ac2ptr != NULL)
+        if ((ac2ptr = find_client(tname)) == NULL)
+        {
+          DLINK_FOREACH(ptr, GlobalClientList.head)
+          {
+            ac2ptr = (struct Client *)ptr->data;
+
+            if (match(tname, ac2ptr->name) || match(ac2ptr->name, tname))
+              break;
+            else
+              ac2ptr = NULL;
+          }
+        }
+
+	if (ac2ptr != NULL)
           sendto_one(source_p, form_str(RPL_TRACELINK), me.name, looking_for,
                      ircd_version, debugmode, tname, ac2ptr->from->name);
         else
@@ -348,46 +354,3 @@ ltrace_spy(struct Client *source_p)
   hook_call_event("doing_ltrace", &data);
 }
 
-/* 
- * this slow version needs to be used for hostmasks *sigh
- *
- * next_client_double - find the next matching client. 
- * The search can be continued from the specified client entry. 
- * Normal usage loop is:
- *
- *      for (x = client; x = next_client_double(x,mask); x = x->next)
- *              HandleMatchingClient;
- *            
- */
-static dlink_node *
-next_client_double_ptr(dlink_node *next, /* First client to check */
-		       const char* ch)  /* search string (may include wilds) */
-{
-  dlink_node *tmp=next;
-  struct Client *next_client;
-
-  next_client = find_client(ch);
-
-  if (next_client == NULL)
-  {
-    next = tmp;
-  }
-  else
-  {
-    next = &next_client->node;
-  }
-
-  if ((tmp != NULL) && (tmp->prev != NULL) && (tmp->prev->data == next->data))
-    return (NULL);
-
-  if (next->data != tmp->data)
-    return (next);
-
-  for( ; next; next = next->next)
-  {
-    next_client = next->data;
-    if (match(ch, next_client->name) || match(next_client->name ,ch))
-      break;
-  }
-  return (next);
-}

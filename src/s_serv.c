@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.285 2003/03/01 01:15:45 db Exp $
+ *  $Id: s_serv.c,v 7.286 2003/03/21 17:52:25 db Exp $
  */
 
 #include "stdinc.h"
@@ -423,8 +423,8 @@ int
 hunt_server(struct Client *client_p, struct Client *source_p, char *command,
 	    int server, int parc, char *parv[])
 {
-  struct Client *target_p;
-  dlink_node *node;
+  struct Client *target_p = NULL;
+  dlink_node *ptr;
   int wilds;
 
   /*
@@ -466,22 +466,17 @@ hunt_server(struct Client *client_p, struct Client *source_p, char *command,
         }
       else
         {
-          for (node = GlobalClientList.head;
-               (node = next_client_ptr(node, parv[server]));
-               node = node->next)
+          DLINK_FOREACH(ptr, GlobalClientList.head)
+          {
+            target_p = NULL;
+
+	    if (match(parv[server], ((struct Client *)(ptr->data))->name))
             {
-	      target_p = node->data;
-              if (target_p->from == source_p->from && !MyConnect(target_p))
-                continue;
-              /*
-               * Fix to prevent looping in case the parameter for
-               * some reason happens to match someone from the from
-               * link --jto
-               */
-              if (IsRegistered(target_p) && (target_p != client_p))
-                break;
+              target_p = (struct Client *)ptr->data;
+	      break;
             }
-        }
+          }
+	}
     }
 
   if (target_p)
@@ -649,7 +644,8 @@ check_server(const char *name, struct Client* client_p, int cryptlink)
              if (IsConfEncrypted(aconf))
                {
                  if (strcmp(aconf->passwd, 
-                      crypt(client_p->localClient->passwd, aconf->passwd)) == 0)
+                      (char *)crypt(client_p->localClient->passwd, 
+                      aconf->passwd)) == 0)
                    server_aconf = aconf;
                }
              else

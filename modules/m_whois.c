@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.88 2003/02/23 04:16:05 db Exp $
+ *  $Id: m_whois.c,v 1.89 2003/03/21 17:52:21 db Exp $
  */
 
 #include "stdinc.h"
@@ -76,7 +76,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-const char *_version = "$Revision: 1.88 $";
+const char *_version = "$Revision: 1.89 $";
 #endif
 /*
 ** m_whois
@@ -259,7 +259,7 @@ do_whois(struct Client *client_p, struct Client *source_p,
 static int
 global_whois(struct Client *source_p, char *nick, int wilds, int glob)
 {
-  struct Client *target_p;
+  struct Client *target_p = NULL;
   int found = NO;
   dlink_node *gcptr;
 
@@ -270,6 +270,11 @@ global_whois(struct Client *source_p, char *nick, int wilds, int glob)
     if (IsServer(target_p))
       continue;
 
+    if (IsMe(target_p))
+      break;
+
+    if (!match(nick, target_p->name))
+      continue;
     /*
      * 'Rules' established for sending a WHOIS reply:
      *
@@ -284,7 +289,7 @@ global_whois(struct Client *source_p, char *nick, int wilds, int glob)
      */
 
     if(single_whois(source_p, target_p, wilds, glob))
-      found = (YES);
+      found = YES;
   }
 
   return (found);

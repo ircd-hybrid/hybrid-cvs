@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_squit.c,v 1.49 2003/02/23 04:16:08 db Exp $
+ *  $Id: m_squit.c,v 1.50 2003/03/21 17:52:23 db Exp $
  */
 
 #include "stdinc.h"
@@ -58,7 +58,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&squit_msgtab);
 }
-const char *_version = "$Revision: 1.49 $";
+const char *_version = "$Revision: 1.50 $";
 #endif
 struct squit_parms 
 {
@@ -177,9 +177,10 @@ static struct squit_parms *
 find_squit(struct Client *client_p, struct Client *source_p, char *server)
 {
   static struct squit_parms found_squit;
-  static struct Client *target_p;
+  struct Client *target_p = NULL;
+  struct Client *p;
   struct ConfItem *aconf;
-  dlink_node *gcptr;
+  dlink_node *ptr;
 
   found_squit.target_p = NULL;
   found_squit.server_name = NULL;
@@ -205,18 +206,22 @@ find_squit(struct Client *client_p, struct Client *source_p, char *server)
   ** The following allows wild cards in SQUIT. Only useful
   ** when the command is issued by an oper.
   */
-  for (gcptr = GlobalClientList.head; 
-       (gcptr = next_client_ptr(gcptr, server));
-       gcptr = gcptr->next)
+  DLINK_FOREACH(ptr, global_serv_list.head)
+  {
+    p = ptr->data;
+
+    if (IsServer(p) || IsMe(p))
     {
-      target_p = gcptr->data;
-
-      if (IsServer(target_p) || IsMe(target_p))
+      if (match(server, p->name))
+      {
+        target_p = p;
 	break;
+      }
     }
+  }
 
-  if (gcptr == NULL)
-    return NULL;
+  if (target_p == NULL)
+    return(NULL);
  
   found_squit.target_p = target_p;
   found_squit.server_name = server;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.337 2003/03/09 23:15:48 db Exp $
+ *  $Id: client.c,v 7.338 2003/03/21 17:52:25 db Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -642,58 +642,6 @@ del_client_from_llist(struct Client **bucket, struct Client *client)
       client->lnext->lprev = client->lprev;
     }
   client->lnext = client->lprev = NULL;
-}
-
-/*
- * next_client - find the next matching client. 
- * The search can be continued from the specified client entry. 
- * Normal usage loop is:
- *
- *      for (x = client; x = next_client(x,mask); x = x->next)
- *              HandleMatchingClient;
- *            
- */
-/* XXX I think this one can go soon */
-struct Client*
-next_client(struct Client *next,     /* First client to check */
-            const char* ch)          /* search string (may include wilds) */
-{
-  dlink_node *next_ptr;
-
-  next_ptr = next_client_ptr(&next->node, ch);
-  return(next_ptr->data);
-}
-
-dlink_node *
-next_client_ptr(dlink_node *next,     /* First client to check */
-		const char* ch)       /* search string (may include wilds) */
-{
-  dlink_node *tmp=next;
-  struct Client *next_client;
-
-  next_client = find_client(ch);
-
-  if (next_client == NULL)
-  {
-    next = tmp;
-  }
-  else
-  {
-    next = &next_client->node;
-  }
-
-  if ((tmp != NULL) && (tmp->prev != NULL) && (tmp->prev->data == next->data))
-    return (NULL);
-
-  if (next->data != tmp->data)
-    return(next);
-
-  for( ; next; next = next->next)
-  {
-    next_client = next->data;
-    if (match(ch, next_client->name)) break;
-  }
-  return (next);
 }
 
 /*

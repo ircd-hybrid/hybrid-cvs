@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.168 2003/03/01 01:15:37 db Exp $
+ *  $Id: client.h,v 7.169 2003/03/21 17:52:20 db Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -624,8 +624,6 @@ extern void     count_remote_client_memory(int *count, int *memory);
 
 extern struct Client* find_chasing (struct Client *, char *, int *);
 extern struct Client* find_person (char *);
-extern struct Client* next_client (struct Client *, const char *);
-extern dlink_node *next_client_ptr(dlink_node *next,const char *);
 extern int accept_message(struct Client *source, struct Client *target);
 extern void del_from_accept(struct Client *source, struct Client *target);
 extern void del_all_accepts(struct Client *client_p);
