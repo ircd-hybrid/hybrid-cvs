@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_trace.c,v 1.73 2003/10/24 00:50:11 metalrock Exp $
+ *  $Id: m_trace.c,v 1.74 2004/03/12 22:15:29 db Exp $
  */
 
 #include "stdinc.h"
@@ -62,12 +62,12 @@ struct Message trace_msgtab = {
 
 #ifdef IPV6
 struct Message trace_msgtab4 = {
-  "TRACE4", 0, 0, 0, 0, MFLG_SLOW, 0,
+  "TRACES", 0, 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_trace, m_ignore, mo_trace4, m_ignore}
 };
 
 struct Message trace_msgtab6 = {
-  "TRACE6", 0, 0, 0, 0, MFLG_SLOW, 0,
+  "TRACEF", 0, 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_trace, m_ignore, mo_trace6, m_ignore}
 };
 #endif
@@ -94,7 +94,7 @@ _moddeinit(void)
   mod_del_cmd(&trace_msgtab6);
 #endif
 }
-const char *_version = "$Revision: 1.73 $";
+const char *_version = "$Revision: 1.74 $";
 #endif
 
 static int report_this_status(struct Client *source_p, struct Client *target_p,
