@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.105 2001/12/14 15:48:19 androsyn Exp $
+# $Id: Makefile.in,v 7.106 2001/12/15 05:34:26 a1kmm Exp $
 #
 CC		= @CC@
 INSTALL		= @INSTALL@
@@ -165,7 +165,9 @@ version.c: version.c.SH
 
 .PHONY: depend clean distclean
 depend:
-	echo "# \${DOLLAR}Id: ${DOLLAR}" > .depend
+	grep "Id:" .depend >.depend.out
+	${RM} -f .depend
+	${MV} .depend.out .depend
 	${MKDEP} ${CPPFLAGS} ${BASE_SRCS} ${EXTRA_SRCS} >> .depend
 
 clean:
