@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: motd.c,v 7.11 2001/01/11 05:32:02 a1kmm Exp $
+ *   $Id: motd.c,v 7.12 2001/01/11 09:30:27 a1kmm Exp $
  */
 #include "tools.h"
 #include "motd.h"
@@ -183,7 +183,7 @@ int ReadMessageFile(MessageFile *MessageFileptr)
 
   if (local_tm)
     ircsprintf(MessageFileptr->lastChangedDate,
-               "%d/%d/%d %t:%t",
+               "%d/%d/%d %d:%d",
                local_tm->tm_mday,
                local_tm->tm_mon + 1,
                1900 + local_tm->tm_year,

@@ -1,5 +1,5 @@
 /*
- * $Id: sprintf_irc.h,v 7.3 2000/10/06 04:26:59 lusky Exp $ 
+ * $Id: sprintf_irc.h,v 7.4 2001/01/11 09:30:18 a1kmm Exp $ 
  */
 
 #ifndef SPRINTF_IRC
@@ -12,6 +12,8 @@
  */
 
 extern int vsprintf_irc(register char *str, register const char *format,
+    register va_list);
+extern int vsnprintf_irc(register char *, int, register const char*,
     register va_list);
 extern int ircsprintf(register char *str, register const char *format, ...);
 

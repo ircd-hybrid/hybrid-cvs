@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: memory.c,v 7.1 2001/01/11 05:32:01 a1kmm Exp $
+ * $Id: memory.c,v 7.2 2001/01/11 09:30:27 a1kmm Exp $
  */
 #include <stdlib.h>
 
@@ -104,6 +104,9 @@ _DupString(char **x, const char *y, char *file, int line)
  strcpy(*x, y);
 }
 
+void ReportAllocated(struct Client*);
+
+
 void
 ReportAllocated(struct Client *cptr)
 {
@@ -112,7 +115,7 @@ ReportAllocated(struct Client *cptr)
    me.name, cptr->name);
  for (mme = first_mem_entry; mme; mme=mme->next)
    sendto_one(cptr,
-     ":%s NOTICE %s :*** -- %u bytes allocated for %us at %s:%d",
+     ":%s NOTICE %s :*** -- %u bytes allocated for %lus at %s:%d",
      me.name, cptr->name, mme->size, CurrentTime-mme->ts, mme->file,
      mme->line);
  sendto_one(cptr, ":%s NOTICE %s :*** -- End Memory Allocation Report",

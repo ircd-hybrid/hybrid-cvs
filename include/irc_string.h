@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: irc_string.h,v 7.11 2001/01/11 05:31:42 a1kmm Exp $
+ *   $Id: irc_string.h,v 7.12 2001/01/11 09:30:18 a1kmm Exp $
  */
 #ifndef INCLUDED_irc_string_h
 #define INCLUDED_irc_string_h
@@ -59,7 +59,16 @@ extern char* canonize(char *);
 /*
  * ircsprintf - optimized sprintf
  */
+#ifdef __GNUC__
+extern int ircsprintf(register char*, register const char*, ...)
+           __attribute__ ((format(printf, 2, 3)));
+extern int ircsnprintf(register char*, register int, register const char*,
+                       ...) __attribute__ ((format(printf, 3, 4)));
+#else
 extern int ircsprintf(register char *str, register const char *format, ...);
+extern int ircsnprintf(register char*, register int,
+                       register const char*);
+#endif
 /*
  * inetntoa - optimized inet_ntoa
  */

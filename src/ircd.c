@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.100 2001/01/11 05:31:57 a1kmm Exp $
+ * $Id: ircd.c,v 7.101 2001/01/11 09:30:26 a1kmm Exp $
  */
 #include "tools.h"
 #include "ircd.h"
@@ -336,7 +336,7 @@ static time_t io_loop(time_t delay)
 
   if (CurrentTime < lasttimeofday)
     {
-      ircsprintf(to_send, "System clock is running backwards - (%d < %d)",
+      ircsprintf(to_send, "System clock is running backwards - (%lu < %lu)",
                  CurrentTime, lasttimeofday);
       report_error(to_send, me.name, 0);
     }

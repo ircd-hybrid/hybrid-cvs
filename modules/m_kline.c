@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kline.c,v 1.50 2001/01/05 00:14:29 davidt Exp $
+ *   $Id: m_kline.c,v 1.51 2001/01/11 09:30:24 a1kmm Exp $
  */
 #include "tools.h"
 #include "m_kline.h"
@@ -235,7 +235,7 @@ static int mo_kline(struct Client *cptr,
   if(tkline_time)
     {
       ircsprintf(buffer,
-		 "Temporary K-line %d min. - %s (%s)",
+		 "Temporary K-line %lu min. - %s (%s)",
 		 tkline_time/60,
 		 reason,
 		 current_date);

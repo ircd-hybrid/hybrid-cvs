@@ -19,7 +19,7 @@
  *
  *
  *
- * $Id: rsa.c,v 7.5 2001/01/11 05:32:05 a1kmm Exp $
+ * $Id: rsa.c,v 7.6 2001/01/11 09:30:28 a1kmm Exp $
  */
 
 #include <string.h>
@@ -103,6 +103,7 @@ static RSA * str_to_RSApublic( char * key )
   return rsa;
 }
 
+int generate_challenge( char **, char **, char*);
 int generate_challenge( char ** r_challenge, char ** r_response, char * key )
 {
   unsigned char secret[32], session[16], response[16], *tmp;

@@ -19,7 +19,7 @@
  *
  *
  *
- * $Id: vchannel.c,v 7.34 2001/01/11 05:32:11 a1kmm Exp $
+ * $Id: vchannel.c,v 7.35 2001/01/11 09:30:29 a1kmm Exp $
  */
 #include "tools.h"
 #include "vchannel.h"
@@ -93,7 +93,7 @@ struct Channel* cjoin_channel(struct Channel *root,
   /* Find an unused vchan name (##<chan>_<ts> format) */
   i = CurrentTime;
   do {
-    ircsprintf( vchan_name, "##%s_%lu", name+1, i );
+    ircsprintf( vchan_name, "##%s_%u", name+1, i );
     vchan_chptr = hash_find_channel(vchan_name, NULL);
     i++;
 
