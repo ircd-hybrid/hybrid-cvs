@@ -1,3 +1,9 @@
+*** 20001203_3 by db
+- oopsie in m_nick.c wrong order of things... gah this code is 
+  still a mess ;-(
+
+
+
 *** 20001203_2 by db
 - cleaned up m_nick.c some more... removed obsolete checks
   moved some tests where they make more sense for the new world order
@@ -1386,7 +1392,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.670 2000/12/03 07:34:23 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.671 2000/12/03 07:41:38 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
