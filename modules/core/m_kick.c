@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kick.c,v 1.58 2003/05/12 08:09:31 michael Exp $
+ *  $Id: m_kick.c,v 1.59 2003/06/01 11:28:23 michael Exp $
  */
 
 #include "stdinc.h"
@@ -60,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&kick_msgtab);
 }
 
-const char *_version = "$Revision: 1.58 $";
+const char *_version = "$Revision: 1.59 $";
 #endif
 
 /* m_kick()
@@ -98,7 +98,7 @@ m_kick(struct Client *client_p, struct Client *source_p,
   name = parv[1];
   while (*name == ',')
     name++;
-  if((p = strchr(name,',')) != NULL)
+  if ((p = strchr(name,',')) != NULL)
     *p = '\0';
   if (!*name)
     return;
@@ -175,14 +175,12 @@ m_kick(struct Client *client_p, struct Client *source_p,
     *   be sent anyways.  Just waiting for some oper to abuse it...
     */
     if (IsServer(source_p))
-    {
       sendto_channel_local(ALL_MEMBERS, chptr, ":%s KICK %s %s :%s",
-        source_p->name, name, who->name, comment);
-    }
-      sendto_channel_local(ALL_MEMBERS, chptr,
-			   ":%s!%s@%s KICK %s %s :%s",
-			   source_p->name, source_p->username,
-			   source_p->host, name, who->name, comment);
+                           source_p->name, name, who->name, comment);
+    else
+      sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s KICK %s %s :%s",
+                           source_p->name, source_p->username,
+                           source_p->host, name, who->name, comment);
     sendto_server(client_p, NULL, chptr, NOCAPS, NOCAPS, NOFLAGS,
                   ":%s KICK %s %s :%s", parv[0], chptr->chname,
                   who->name, comment);
