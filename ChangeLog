@@ -1,3 +1,16 @@
+leeh        2002/07/02 06:22:27 EDT	(20020702_0)
+
+  Modified files:
+    contrib              README.LMH lmh.diff 
+  Log:
+  - updated lmh.diff with andros USE_ASCII_CASEMAP
+  
+  Revision  Changes    Path
+  1.3       +14 -0     ircd-hybrid-7/contrib/README.LMH
+  1.5       +182 -87   ircd-hybrid-7/contrib/lmh.diff
+
+
+
 db          2002/06/29 00:34:53 EDT	(20020629_0)
 
   Modified files:
@@ -28911,4 +28924,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3820 2002/06/29 04:34:59 db Exp $
+$Id: ChangeLog,v 7.3821 2002/07/02 10:22:34 leeh Exp $
