@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.209 2001/04/20 07:15:46 a1kmm Exp $
+ *  $Id: s_conf.c,v 7.210 2001/04/20 08:35:41 a1kmm Exp $
  */
 
 #include <sys/types.h>
@@ -1566,23 +1566,10 @@ struct ConfItem *find_kill(struct Client* client_p)
  aconf = find_address_conf(client_p->host, client_p->username,
                            &client_p->localClient->ip,
                            client_p->localClient->aftype);
- if (aconf->status == CONF_KILL)
+ if (aconf->status & CONF_KILL)
   return aconf;
  return NULL;
 }
-
-/*
- * find_is_klined()
- *
- * inputs        - hostname
- *               - username
- *               - ip of possible "victim"
- * output        - matching struct ConfItem or NULL
- * side effects        -
- *
- * WARNING, no sanity checking on length of name,host etc.
- * thats expected to be done by caller.... 
- */
 
 /* add_temp_kline
  *
