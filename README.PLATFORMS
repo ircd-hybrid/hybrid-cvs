@@ -2,7 +2,7 @@ IRCD-Hybrid Platforms Information
 
 Sometimes problems and inconsistencies in the Hybrid code may only occur 
 on a specific platform (architecture and/or operating system and/or 
-compiler).  In these cases you may want to directly contact a person who 
+compiler).  In these cases you may want to directly contact a person whO 
 is interested in maintaining Hybrid on that platform.  Below is a list of 
 people who have jumped up and taken responsibility for Hybrid, including 
 making sure it compiles, runs, and doesn't crash.
@@ -14,9 +14,12 @@ ARCHITECTURE COMPILER         SYSTEM	    MAINTAINER
 ============ ================ ============= ===================================
 MIPS         gcc              IRIX          Juli Mallett <jmallett@FreeBSD.org>
 MIPS         MIPSPro          IRIX          Juli Mallett <jmallett@FreeBSD.org>
+MIPS         gcc              NetBSD        Juli Mallett <jmallett@FreeBSD.org>
 PowerPC      gcc              OpenBSD       Juli Mallett <jmallett@FreeBSD.org>
+SPARC        gcc              OpenBSD       Juli Mallett <jmallett@FreeBSD.org>
 x86          gcc              FreeBSD       Juli Mallett <jmallett@FreeBSD.org>
 x86          TenDRA           FreeBSD       Juli Mallett <jmallett@FreeBSD.org>
+c86          gcc              NetBSD        Juli Mallett <jmallett@FreeBSD.org>
 SPARC        Forte C v6,v7    Solaris       Joan Touzet <joant@ieee.org>
 SPARC        gcc              Solaris       Joan Touzet <joant@ieee.org>
 x86          Cygwin gcc       Windows       W. Campbell <wcampbel@botbay.net>
@@ -27,4 +30,4 @@ Alpha        DEC C V6.0       OpenVMS 7.2   Edward Brocklesby
 PA-RISC 2.0  cc		      HP-UX B.11    Yusuf Iskenderoglu 
 						<uhc0@stud.uni-karlsruhe.de>
 
-$Id: README.PLATFORMS,v 7.15 2002/11/13 04:33:01 jmallett Exp $
+$Id: README.PLATFORMS,v 7.16 2003/05/11 02:44:32 jmallett Exp $
