@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_topic.c,v 1.23 2000/12/27 18:53:43 davidt Exp $
+ *   $Id: m_topic.c,v 1.24 2000/12/28 15:00:37 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -243,8 +243,11 @@ int     ms_topic(struct Client *cptr,
                 int parc,
                 char *parv[])
 {
-  struct Channel *chptr = NullChn;
+  struct Channel *chptr = NULL;
   
+  if (!IsServer(sptr))
+    return m_topic(cptr, sptr, parc, parv);
+
   if( parc < 5 )
     return 0;
 
