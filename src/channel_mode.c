@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.62 2002/10/10 18:49:30 androsyn Exp $
+ *  $Id: channel_mode.c,v 7.63 2002/10/12 03:38:14 db Exp $
  */
 
 #include "stdinc.h"
@@ -237,7 +237,7 @@ add_id(struct Client *client_p, struct Channel *chptr, char *banid, int type)
   {
     actualBan = ban->data;
     if (match(actualBan->banstr, banid))
-      return 0;
+      return(0);
   }
 
   ban = make_dlink_node();
@@ -264,7 +264,7 @@ add_id(struct Client *client_p, struct Channel *chptr, char *banid, int type)
   dlinkAdd(actualBan, ban, list);
 
   chptr->num_mask++;
-  return 1;
+  return(1);
 }
 
 /*
@@ -458,7 +458,7 @@ change_channel_membership(struct Channel *chptr,
     free_dlink_node(ptr);
   }
 
-  return ok;
+  return (ok);
 }
 
 /*
