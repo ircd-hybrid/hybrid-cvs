@@ -1,3 +1,15 @@
+db          2003/01/10 11:00:06 EST	(20030110_2)
+
+  Modified files:
+    modules              m_invite.c 
+  Log:
+  - be consistent!
+  
+  Revision  Changes    Path
+  1.50      +3 -3      ircd-hybrid-7/modules/m_invite.c
+
+
+
 db          2003/01/10 00:11:25 EST	(20030110_1)
 
   Modified files:
@@ -33867,4 +33879,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4157 2003/01/10 05:11:27 db Exp $
+$Id: ChangeLog,v 7.4158 2003/01/10 16:00:08 db Exp $
