@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.43 2000/12/06 17:01:12 db Exp $
+ * $Id: channel.h,v 7.44 2000/12/09 08:20:17 db Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -88,7 +88,7 @@ extern  struct  Channel *GlobalChannelList;
 void cleanup_channels(void *);
 
 #define CREATE 1        /* whether a channel should be
-                           created or just tested for existance */
+                           created or just tested for existence */
 
 #define MODEBUFLEN      200
 

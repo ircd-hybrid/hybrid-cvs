@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.51 2000/12/09 08:15:40 db Exp $
+ * $Id: client.h,v 7.52 2000/12/09 08:20:17 db Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -377,7 +377,7 @@ struct LocalUser
 
 #define FLAGS2_CBURST       0x10000  /* connection burst being sent */
 
-#define FLAGS2_IDLE_LINED   0x40000
+#define FLAGS2_IDLE_LINED       0x40000
 #define FLAGS2_ALREADY_EXITED   0x80000         /* kludge grrrr */
 #define FLAGS2_IP_SPOOFING      0x100000        /* client IP is spoofed */
 #define FLAGS2_IP_HIDDEN        0x200000        /* client IP should be hidden
