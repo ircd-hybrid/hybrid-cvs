@@ -3,7 +3,7 @@
  *
  * Written by ejb, wcampbel, db, leeh and others
  *
- * $Id: example.conf.quick,v 1.21 2003/09/14 12:01:45 adx Exp $
+ * $Id: example.conf.quick,v 1.22 2003/09/25 21:16:58 bill Exp $
  */
 
 /* IMPORTANT NOTES:
@@ -340,8 +340,6 @@ general {
 	no_oper_flood = yes;
 	true_no_oper_flood = yes;
 	oper_pass_resv = yes;
-	glines = yes;
-	gline_time = 1 day;
 	idletime = 0;
 	maximum_links = 1;
 	/* REMOVE ME.  The following line checks you've been reading. */
@@ -363,6 +361,19 @@ general {
 	#egdpool_path = "/var/run/egd-pool";
 	#compression_level = 6;
 	throttle_time = 10;
+};
+
+glines {
+        enable = yes;
+        duration = 1 day;
+
+        user = "god@I.still.hate.packets";
+        name = "hades.arpa";      
+        action = reject, block;
+
+        user = "god@*"; 
+        name = "*";
+        action = allow, block;
 };
 
 modules {

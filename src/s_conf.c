@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.477 2003/09/21 09:59:04 michael Exp $
+ *  $Id: s_conf.c,v 7.478 2003/09/25 21:17:04 bill Exp $
  */
 
 #include "stdinc.h"
@@ -68,6 +68,7 @@ dlink_list xconf_items   = { NULL, NULL, 0 };
 dlink_list nresv_items   = { NULL, NULL, 0 };
 dlink_list class_items   = { NULL, NULL, 0 };
 dlink_list gline_items   = { NULL, NULL, 0 };
+dlink_list gdeny_items	 = { NULL, NULL, 0 };
 
 dlink_list temporary_klines = { NULL, NULL, 0 };
 dlink_list temporary_dlines = { NULL, NULL, 0 };
@@ -231,6 +232,11 @@ make_conf_item(ConfType type)
     case GLINE_TYPE:
       status = CONF_KILL;
       dlinkAdd(conf, &conf->node, &gline_items);
+      break;
+
+    case GDENY_TYPE:
+      status = CONF_GDENY;
+      dlinkAdd(conf, &conf->node, &gdeny_items);
       break;
 
     case KLINE_TYPE:
@@ -520,6 +526,35 @@ report_confitem_types(struct Client *source_p, ConfType type)
 
   switch (type)
   {
+  case GDENY_TYPE:
+    DLINK_FOREACH(ptr, gdeny_items.head)
+    {
+      conf = ptr->data;
+      aconf = (struct AccessItem *)map_to_conf(conf);
+
+      if (aconf->flags & GDENY_ALLOW)
+        *p++ = 'A';
+      else
+        *p++ = 'a';
+
+      if (aconf->flags & GDENY_BLOCK)
+        *p++ = 'B';
+      else
+        *p++ = 'b';
+
+      if (aconf->flags & GDENY_REJECT)
+        *p++ = 'R';
+      else
+        *p++ = 'r';
+
+     *p++ = '\0';
+
+      sendto_one(source_p, ":%s %d %s %s@%s %s %s",
+                 me.name, RPL_STATSDEBUG, source_p->name, 
+                 aconf->user, aconf->host, conf->name, buf);
+    }
+    break;
+
   case XLINE_TYPE:
     DLINK_FOREACH(ptr, xconf_items.head)
     {

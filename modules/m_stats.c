@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.147 2003/08/13 21:10:11 michael Exp $
+ *  $Id: m_stats.c,v 1.148 2003/09/25 21:17:02 bill Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.147 $";
+const char *_version = "$Revision: 1.148 $";
 #endif
 
 static char *parse_stats_args(int, char **, int *, int *);
@@ -96,6 +96,7 @@ static void stats_exempt(struct Client *);
 static void stats_events(struct Client *);
 static void stats_pending_glines(struct Client *);
 static void stats_glines(struct Client *);
+static void stats_gdeny(struct Client *);
 static void stats_hubleaf(struct Client *);
 static void stats_auth(struct Client *);
 static void stats_tklines(struct Client *);
@@ -166,7 +167,7 @@ static const struct StatsStruct
   { 'u',	stats_uptime,		0,	0,	},
   { 'U',	stats_shared,		1,	0,	},
   { 'v',	stats_servers,		1,	0,	},
-  { 'V',	stats_servers,		1,	0,	},
+  { 'V',	stats_gdeny,		1,	0,	},
   { 'x',	stats_gecos,		1,	0,	},
   { 'X',	stats_gecos,		1,	0,	},
   { 'y',	stats_class,		1,	0,	},
@@ -505,6 +506,25 @@ stats_glines(struct Client *source_p)
                kill_ptr->user ? kill_ptr->user : "*",
                kill_ptr->reason ? kill_ptr->reason : "No reason specified");
   }
+}
+
+/* stats_gdeny()
+ *
+ * input	- client pointer
+ * outputs	- none
+ * side effects	- client is shown gline ACL
+ */
+static void
+stats_gdeny(struct Client *source_p)
+{
+  if (!ConfigFileEntry.glines)
+  {
+    sendto_one(source_p, ":%s NOTICE %s :This server does not support G-Lines",
+               me.name, source_p->name);
+    return;
+  }
+
+  report_confitem_types(source_p, GDENY_TYPE);
 }
 
 static void

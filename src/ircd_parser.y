@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.354 2003/09/21 09:59:04 michael Exp $
+ *  $Id: ircd_parser.y,v 1.355 2003/09/25 21:17:04 bill Exp $
  */
 
 %{
@@ -135,11 +135,13 @@ unhook_hub_leaf_confs(void)
 %token  ACTION
 %token  ADMIN
 %token  AFTYPE
+%token	T_ALLOW
 %token  ANTI_NICK_FLOOD
 %token  ANTI_SPAM_EXIT_MESSAGE_TIME
 %token  IRCD_AUTH
 %token  AUTOCONN
 %token  BASE_PATH
+%token	T_BLOCK
 %token  BYTES KBYTES MBYTES GBYTES TBYTES
 %token  CALLER_ID_WAIT
 %token  CAN_FLOOD
@@ -164,8 +166,10 @@ unhook_hub_leaf_confs(void)
 %token  DISABLE_REMOTE_COMMANDS
 %token  DOT_IN_IP6_ADDR
 %token  DOTS_IN_IDENT
+%token	DURATION
 %token  EGDPOOL_PATH
 %token  EMAIL
+%token	ENABLE
 %token  ENCRYPTED
 %token  EXCEED_LIMIT
 %token  EXEMPT
@@ -286,7 +290,7 @@ unhook_hub_leaf_confs(void)
 %token  STATS_P_OPER_ONLY
 %token  TBOOL
 %token  TMASKED
-%token  TREJECT
+%token  T_REJECT
 %token  TS_MAX_DELTA
 %token  TS_WARN_DELTA
 %token  TWODOTS
@@ -835,7 +839,7 @@ logging_use_logging: USE_LOGGING '=' TBOOL ';'
 };
 
 /***************************************************************************
- * oper section
+ * section oper
  ***************************************************************************/
 oper_entry: OPERATOR 
 {
@@ -2383,7 +2387,7 @@ gecos_action: ACTION '=' WARN ';'
 {
   if (ypass == 2)
     yy_match_item->action = 0;
-} | ACTION '=' TREJECT ';'
+} | ACTION '=' T_REJECT ';'
 {
   if (ypass == 2)
     yy_match_item->action = 1;
@@ -2414,7 +2418,6 @@ general_item:       general_hide_spoof_ips | general_ignore_bogus_ts |
                     general_short_motd | general_no_oper_flood |
                     general_true_no_oper_flood | general_oper_pass_resv |
                     general_iauth_server | general_iauth_port |
-                    general_glines | general_gline_time |
                     general_idletime | general_maximum_links |
                     general_message_locale |
                     general_oper_only_umodes | general_max_targets |
@@ -2621,12 +2624,6 @@ general_iauth_port: IAUTH_PORT '=' NUMBER ';'
 #endif
 };
 
-general_glines: GLINES '=' TBOOL ';'
-{
-  if (ypass == 2)
-    ConfigFileEntry.glines = yylval.number;
-};
-
 general_message_locale: MESSAGE_LOCALE '=' QSTRING ';'
 {
   if (ypass == 2)
@@ -2636,12 +2633,6 @@ general_message_locale: MESSAGE_LOCALE '=' QSTRING ';'
 
     set_locale(yylval.string);
   }
-};
-
-general_gline_time: GLINE_TIME '=' timespec ';'
-{
-  if (ypass == 2)
-    ConfigFileEntry.gline_time = $3;
 };
 
 general_idletime: IDLETIME '=' timespec ';'
@@ -2939,6 +2930,129 @@ general_dot_in_ip6_addr: DOT_IN_IP6_ADDR '=' TBOOL ';'
 {
   if (ypass == 2)
     ConfigFileEntry.dot_in_ip6_addr = yylval.number;
+};
+
+/*************************************************************************** 
+ *  section glines
+ ***************************************************************************/
+gline_entry: GLINES
+{
+  if (ypass == 2)
+  {
+    yy_conf = make_conf_item(GDENY_TYPE);
+    yy_aconf = (struct AccessItem *)map_to_conf(yy_conf);
+    yy_aconf->flags = 0;
+  }
+} '{' gline_items '}' ';'; 
+
+gline_items:        gline_items gline_item | gline_item;
+gline_item:         gline_enable | 
+                    gline_duration |
+                    gline_user |
+                    gline_server | 
+                    gline_action |
+                    error;
+
+gline_enable: ENABLE '=' TBOOL ';'
+{
+  if (ypass == 2)
+    ConfigFileEntry.glines = yylval.number;
+};
+
+gline_duration: DURATION '=' timespec ';';
+{
+  if (ypass == 2)
+    ConfigFileEntry.gline_time = $3;
+};
+
+gline_user: USER '=' QSTRING ';';
+{
+  if (ypass == 2)
+  {
+    struct CollectItem *yy_tmp;
+
+    if (yy_aconf->user == NULL)
+    {
+      DupString(yy_aconf->host, yylval.string);
+      split_user_host(yy_aconf->host, &yy_aconf->user, &yy_aconf->host);
+    }
+    else
+    {
+      yy_tmp = (struct CollectItem *)MyMalloc(sizeof(struct CollectItem));
+
+      DupString(yy_tmp->host, yylval.string);
+      split_user_host(yy_tmp->host, &yy_tmp->user, &yy_tmp->host);
+
+      dlinkAdd(yy_tmp, &yy_tmp->node, &col_conf_list);
+    }
+  }
+};
+
+gline_server: NAME '=' QSTRING ';';
+{
+  if (ypass == 2)  
+  {
+    MyFree(yy_conf->name);
+    DupString(yy_conf->name, yylval.string);
+  }
+};
+
+gline_action: ACTION
+{
+  if (ypass == 2)
+    yy_aconf->flags = 0;
+} '=' gdeny_types ';'
+{
+  struct CollectItem *yy_tmp;
+  dlink_node *ptr, *next_ptr;
+
+  /* some idiot said to allow and reject it, default to reject */
+  if (yy_aconf->flags & (GDENY_REJECT|GDENY_ALLOW))
+    yy_aconf->flags &= ~GDENY_ALLOW; 
+
+  DLINK_FOREACH_SAFE(ptr, next_ptr, col_conf_list.head)
+  {
+    struct AccessItem *new_aconf;
+    struct ConfItem *new_conf;
+
+    yy_tmp = ptr->data;
+    new_conf = make_conf_item(GDENY_TYPE);
+    new_aconf = (struct AccessItem *)map_to_conf(new_conf);
+
+    new_aconf->flags = yy_aconf->flags;
+
+    if (yy_conf->name != NULL)
+      DupString(new_conf->name, yy_conf->name);
+    else
+      DupString(new_aconf->user, "*");
+    if (yy_aconf->user != NULL)
+      DupString(new_aconf->user, yy_tmp->user);
+    else   
+      DupString(new_aconf->user, "*");
+    if (yy_aconf->host != NULL)
+      DupString(new_aconf->host, yy_tmp->host);
+    else
+      DupString(new_aconf->host, "*");
+
+    dlinkDelete(&yy_tmp->node, &col_conf_list);
+  }
+  yy_conf = NULL;
+  yy_aconf = NULL;
+};
+
+gdeny_types: gdeny_types ',' gdeny_type_item | gdeny_type_item;
+gdeny_type_item: T_ALLOW
+{
+  if (ypass == 2)
+    yy_aconf->flags |= GDENY_ALLOW;
+} | T_REJECT
+{
+  if (ypass == 2)
+    yy_aconf->flags |= GDENY_REJECT;
+} | T_BLOCK
+{
+  if (ypass == 2)
+    yy_aconf->flags |= GDENY_BLOCK;
 };
 
 /***************************************************************************

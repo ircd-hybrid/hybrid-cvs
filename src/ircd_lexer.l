@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_lexer.l,v 1.177 2003/09/11 03:41:47 metalrock Exp $
+ *  $Id: ircd_lexer.l,v 1.178 2003/09/25 21:17:04 bill Exp $
  */
 
 %option case-insensitive
@@ -132,8 +132,10 @@ admin		{ return ADMIN; }
 administrator	{ return ADMIN; }
 aftype		{ return AFTYPE; }
 all		{ return T_ALL; }
+allow		{ return T_ALLOW; }
 auth		{ return IRCD_AUTH; }
 autoconn	{ return AUTOCONN; }
+block		{ return T_BLOCK; }
 can_flood	{ return CAN_FLOOD; }
 caller_id_wait	{ return CALLER_ID_WAIT; }
 channel		{ return CHANNEL; }
@@ -159,8 +161,10 @@ disable_local_channels { return DISABLE_LOCAL_CHANNELS; }
 disable_remote_commands	{ return DISABLE_REMOTE_COMMANDS; }
 dot_in_ip6_addr { return DOT_IN_IP6_ADDR; }
 dots_in_ident   { return DOTS_IN_IDENT; }
+duration	{ return DURATION; }
 egdpool_path        { return EGDPOOL_PATH; }
 email		{ return EMAIL; }
+enable		{ return ENABLE; }
 encrypted       { return ENCRYPTED; }
 exceed_limit    { return EXCEED_LIMIT; }
 exempt		{ return EXEMPT; }
@@ -172,9 +176,8 @@ fuserlog   	{ return FUSERLOG; }
 gecos		{ return GECOS; }
 general		{ return GENERAL; }
 gline		{ return GLINE; }
+glines		{ return GLINES; }
 gline_exempt    { return GLINE_EXEMPT; }
-gline_log       { return GLINE_LOG; }
-gline_time      { return GLINE_TIME; }
 global_kill	{ return GLOBAL_KILL; }
 have_ident	{ return HAVE_IDENT; }
 havent_read_conf { return HAVENT_READ_CONF; }
@@ -245,7 +248,7 @@ reason		{ return REASON; }
 redirport       { return REDIRPORT; }
 redirserv       { return REDIRSERV; }
 rehash		{ return REHASH; }
-reject		{ return TREJECT; }
+reject		{ return T_REJECT; }
 remote		{ return REMOTE; }
 restricted      { return RESTRICTED; }
 resv		{ return RESV; }
@@ -302,7 +305,6 @@ knock_delay             { return KNOCK_DELAY; }
 knock_delay_channel	{ return KNOCK_DELAY_CHANNEL; }
 iauth_server            { return IAUTH_SERVER; }
 iauth_port		{ return IAUTH_PORT; }
-glines                  { return GLINES; }
 max_bans                { return MAX_BANS; }
 modules                 { return MODULES; }
 module                  { return MODULE; }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.264 2003/09/21 09:59:00 michael Exp $
+ *  $Id: s_conf.h,v 7.265 2003/09/25 21:17:00 bill Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -66,7 +66,8 @@ typedef enum {
   ULINE_TYPE,
   GLINE_TYPE,
   CRESV_TYPE,     
-  NRESV_TYPE
+  NRESV_TYPE,
+  GDENY_TYPE
 } ConfType;
 
 struct ConfItem
@@ -162,6 +163,7 @@ struct ClassItem
 #define CONF_ULINE              0x00002000
 #define CONF_EXEMPTDLINE        0x00004000
 #define CONF_CLUSTER		0x00008000
+#define CONF_GDENY		0x00010000
 
 #define CONF_SERVER_MASK       CONF_SERVER
 #define CONF_CLIENT_MASK       (CONF_CLIENT | CONF_OPERATOR | CONF_SERVER_MASK)
@@ -252,6 +254,11 @@ struct ClassItem
 #define SHARED_UNRESV		0x0020
 #define SHARED_ALL		(SHARED_KLINE | SHARED_UNKLINE | SHARED_XLINE |\
 				 SHARED_UNXLINE | SHARED_RESV | SHARED_UNRESV)
+
+/* gline acl entry actions */
+#define GDENY_ALLOW		0x1
+#define GDENY_BLOCK		0x2
+#define GDENY_REJECT		0x4
 
 struct config_file_entry
 {
