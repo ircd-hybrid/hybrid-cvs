@@ -1,6 +1,6 @@
+$Id: README.TSora,v 7.1 2003/10/13 02:15:20 metalrock Exp $
                        Protocol changes for +TSora
                        ---------------------------
-
 
 Note: 
 
@@ -10,8 +10,6 @@ implemented by Run <carlo@runaway.xs4all.nl>. The protocols used here
 are not exactly the same as the ones used on Undernet; the nick-kill 
 handling is very similar and must be credited to Run, while the 
 "TimeStamped channel description" protocol is quite different.
-
-
 
 TSora servers keep track of which version of the TS protocol (if any) 
 their neighboring servers are using, and take it into account when 
@@ -23,7 +21,6 @@ TS protocol it can interact with; currently both of these are set to 1:
 
 #define TS_CURRENT 1		/* the highest TS ver we can do */
 #define TS_MIN 1		/* the lowest TS ver we can do  */
-
 
 Timings and TS versions:
 ========================
@@ -49,7 +46,6 @@ Timings and TS versions:
   z==0, and to (t-<OUR_UTC>)/2 if z!=0. The SVINFO data is kept around
   until the server has effectively registered with SERVER, and used
   *after* sending our own SVINFO to that server.
-
 
 Explanations:
 
@@ -88,7 +84,6 @@ Explanations:
   Note that Undernet's 2.8.x servers have no time synchronization at 
   all, and have had no problems because of it - all of this is more to 
   catch the occasional server with a way-off clock than anything.
-
 
 NICK handling patches (anti-nick-collide + shorter connect burst):
 ==================================================================
@@ -167,7 +162,6 @@ Explanations:
   This part of the TS protocol is almost exactly the same as the 
   Undernet's .anc (anti-nick-collide) patches, except that Undernet 
   servers don't add usermodes to the NICK line.
-
 
 TimeStamped channel descriptions (avoiding hacked ops and desynchs):
 ====================================================================
@@ -269,7 +263,6 @@ TimeStamped channel descriptions (avoiding hacked ops and desynchs):
     + if we don't have ops: set our TS to the received one, propagate
       with the flags.
 
-
 Explanations:
 
   This part of the protocol is the one that is most different (and 
@@ -326,5 +319,3 @@ Explanations:
   state will be the same, independently of the exact order in which each 
   server received the SJOINs, and will be the same across all the 
   servers in the same zone.
-
-

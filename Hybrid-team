@@ -1,12 +1,12 @@
-$Id: Hybrid-team,v 7.73 2003/10/04 19:47:50 metalrock Exp $
+$Id: Hybrid-team,v 7.74 2003/10/13 02:15:15 metalrock Exp $
 
 The hybrid team is a group of ircd coders who were frustrated
 with the instability and all-out "dirtiness" of the EFnet ircd's
 available. "hybrid" is the name for the collective efforts of a group
 of people, all of us.
  
-Anyone is welcome to contribute to this effort.  You are encouraged
-to participate in the Hybrid mailing list.  To subscribe to the
+Anyone is welcome to contribute to this effort. You are encouraged
+to participate in the Hybrid mailing list. To subscribe to the
 mailing list, send email to listmanager@the-project.org with the
 subject "subscribe hybrid".
  
@@ -58,11 +58,9 @@ vx0, Mark Miller <mark@oc768.net>
 Wombling_, James LaPlant <slowking50@aol.com>
 zb^3, Alfred Perlstein <alfred@freebsd.org>
  
-Others are welcome.  Always.  And if we left anyone off the above list,
-be sure to let us know that too.  Many others have contributed to
+Others are welcome. Always. And if we left anyone off the above list,
+be sure to let us know that too. Many others have contributed to
 previous versions of this ircd and its ancestors, too many to list
 here.
  
 Send bug fixes/complaints/rotten tomatoes to ircd-hybrid@the-project.org.
-
-

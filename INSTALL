@@ -1,6 +1,6 @@
                             Hybrid INSTALL Document
 
-   $Id: INSTALL,v 7.38 2003/06/18 06:26:24 metalrock Exp $
+   $Id: INSTALL,v 7.39 2003/10/13 02:15:16 metalrock Exp $
 
    Copyright (c) 2001 by ircd-hybrid team
 
@@ -40,8 +40,8 @@
        this version. Other good reads are doc/whats-new.txt, BUGS,
        etc/example.conf, and README.FIRST.
 
-       An example.conf for EFnet is in etc/ with the values "approved" on 12
-       December 2001.
+       An example.conf for EFnet is in etc/ with the values "approved" as of
+       October 12th, 2003 called example.efnet.conf.
 
    2.  Run the configure script. It will create include/setup.h and the
        Makefiles to match your system. In hybrid-7, the paths are now handled
@@ -69,6 +69,8 @@
 	  * --enable-poll - Use POSIX poll(2).
 
 	  * --enable-select - Use POSIX select(2).
+
+          * --enable-clobber - Don't preserve the old binaries on make install
 
 	  Incidentally, the order of listing above is the order of auto-
 	  detection in configure. So if you do have kqueue but wish to
@@ -117,6 +119,8 @@
 	    (and tell you to use poll instead). Take this error's advice and
 	    use --enable-poll or something a bit more efficient. You'll be
 	    happier at the end of the day for it.
+
+	  * --disable-zlib - Build the ircd without ziplinks support.
 
    3.  make should build ircd.
 
@@ -193,7 +197,7 @@
 
  $ gdb bin/ircd ircd.core
 
-   3.  At the "(gdb)" prompt, enter the command "bt"
+   3.  At the "(gdb)" prompt, enter the command "bt full"
 
    4.  Save the output of the backtrace command and send it to
        ircd-hybrid@the-project.org.

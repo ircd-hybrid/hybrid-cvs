@@ -1,6 +1,6 @@
                              Server Hide Reference
 
-   $Id: serverhide.txt,v 7.6 2003/06/21 20:09:15 metalrock Exp $
+   $Id: serverhide.txt,v 7.7 2003/10/13 02:15:18 metalrock Exp $
 
    Copyright (c) 2001 by ircd-hybrid team
 
@@ -138,9 +138,3 @@ Using Non-QS Compliant Hubs
    currently running daemons that support QS. Hybrid 5 and 2.8.21+CSr servers
    do not support QS, and will leak server names (and therefore routing
    information) on splits.
-
-     ----------------------------------------------------------------------
-
-                                     Index
-
-   XXX - Fill me in with other questions and possible issues

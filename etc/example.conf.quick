@@ -3,7 +3,7 @@
  *
  * Written by ejb, wcampbel, db, leeh and others
  *
- * $Id: example.conf.quick,v 1.24 2003/10/04 19:31:15 metalrock Exp $
+ * $Id: example.conf.quick,v 1.25 2003/10/13 02:15:22 metalrock Exp $
  */
 
 /* IMPORTANT NOTES:
@@ -38,6 +38,7 @@
  
 serverinfo {
 	name = "hades.arpa";
+	sid = "0AB";
 	description = "hybrid-7 test server";
 	network_name = "MyNet";
 	network_desc = "This is My Network";

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.186 2003/10/13 01:39:40 bill Exp $
+ *  $Id: parse.c,v 7.187 2003/10/13 02:15:24 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -379,7 +379,7 @@ handle_command(struct Message *mptr, struct Client *client_p,
     else
     {
       sendto_realops_flags(UMODE_ALL, L_ALL, 
-                           "Dropping server %s due to (invalid) command '%s'"
+                           "Dropping server %s due to (invalid) command '%s' "
                            "with only %d arguments (expecting %d).",
                            client_p->name, mptr->cmd, i, mptr->parameters);
       ilog(L_CRIT, "Insufficient parameters (%d) for command '%s' from %s.",

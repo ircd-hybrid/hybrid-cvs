@@ -2,12 +2,12 @@ IRCD-Hybrid Platforms Information
 
 Sometimes problems and inconsistencies in the Hybrid code may only occur
 on a specific platform (architecture and/or operating system and/or
-compiler).  In these cases you may want to directly contact a person who
-is interested in maintaining Hybrid on that platform.  Below is a list of
+compiler). In these cases you may want to directly contact a person who
+is interested in maintaining Hybrid on that platform. Below is a list of
 people who have jumped up and taken responsibility for Hybrid, including
 making sure it compiles, runs, and doesn't crash.
 
-Platforms marked with a '*' are known to be broken.  In general,
+Platforms marked with a '*' are known to be broken. In general,
 README.FIRST will include specific notes on broken platforms.
 
 ARCHITECTURE COMPILER         SYSTEM	    MAINTAINER
@@ -32,4 +32,4 @@ Alpha        cc               Tru64 5.2b    Joshua Kwan <joshk@triplehelix.org>
 PA-RISC 2.0  cc		      HP-UX B.11    Yusuf Iskenderoglu 
 						<uhc0@stud.uni-karlsruhe.de>
 
-$Id: README.PLATFORMS,v 7.23 2003/06/18 17:33:38 joshk Exp $
+$Id: README.PLATFORMS,v 7.24 2003/10/13 02:15:16 metalrock Exp $

@@ -1,8 +1,7 @@
 Overview of the event subsystem
 Adrian Chadd <adrian@creative.net.au>
 
-$Id: event.txt,v 1.2 2001/01/24 14:58:41 wcampbel Exp $
-
+$Id: event.txt,v 1.3 2003/10/13 02:15:20 metalrock Exp $
 
 One of the things that immediately struck me whilst first looking at the
 code was that the ircd periodically scheduled things in io_loop() but
@@ -81,4 +80,3 @@ Notes:
   best interest to use string constants.
 
 * /stats E for an oper shows pending events. Thanks Diane!
-

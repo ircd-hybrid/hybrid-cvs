@@ -1,8 +1,7 @@
 Overview of the file management subsystem
 Adrian Chadd <adrian@creative.net.au>
 
-$Id: file-management.txt,v 1.1 2000/11/08 19:57:54 adrian Exp $
-
+$Id: file-management.txt,v 1.2 2003/10/13 02:15:20 metalrock Exp $
 
 File operations
 ---------------
@@ -34,4 +33,3 @@ fbclose(FBFILE *fb)
 
 These are the 'buffered disk IO' routines. You can read the code yourself.
 Note that these routines use file_open() and file_close().
-

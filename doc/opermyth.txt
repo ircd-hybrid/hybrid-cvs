@@ -1,3 +1,4 @@
+$Id: opermyth.txt,v 7.2 2003/10/13 02:15:18 metalrock Exp $
 
 Date: Thu, 30 Jul 1998 16:21:40-0700 (MST)
 To: operlist@the-project.org
@@ -134,4 +135,3 @@ Hoping this is of value to SOMEONE....
 
 Ray Powers
 Monkster/MimePunk/PrimeMonk/PacMonk/MtgMonk/Ihavefartoomanynickstonickjupe
-
