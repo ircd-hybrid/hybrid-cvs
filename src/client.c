@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.243 2002/03/09 23:54:12 androsyn Exp $
+ *  $Id: client.c,v 7.244 2002/03/10 00:03:10 androsyn Exp $
  */
 
 #include "tools.h"
@@ -876,49 +876,6 @@ find_chasing(struct Client *source_p, char *user, int *chasing)
   if (chasing)
     *chasing = 1;
   return who;
-}
-
-
-
-/*
- * check_registered_user - is used to cancel message, if the
- * originator is a server or not registered yet. In other
- * words, passing this test, *MUST* guarantee that the
- * source_p->user exists (not checked after this--let there
- * be coredumps to catch bugs... this is intentional --msa ;)
- *
- * There is this nagging feeling... should this NOT_REGISTERED
- * error really be sent to remote users? This happening means
- * that remote servers have this user registered, although this
- * one has it not... Not really users fault... Perhaps this
- * error message should be restricted to local clients and some
- * other thing generated for remotes...
- */
-static int
-check_registered_user(struct Client* client)
-{
-  if (!IsRegisteredUser(client))
-    {
-      sendto_one(client, form_str(ERR_NOTREGISTERED), me.name, "*");
-      return -1;
-    }
-  return 0;
-}
-
-/*
- * check_registered user cancels message, if 'x' is not
- * registered (e.g. we don't know yet whether a server
- * or user)
- */
-static int
-check_registered(struct Client* client)
-{
-  if (!IsRegistered(client))
-    {
-      sendto_one(client, form_str(ERR_NOTREGISTERED), me.name, "*");
-      return -1;
-    }
-  return 0;
 }
 
 /*

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.72 2002/02/25 22:52:15 leeh Exp $
+ *  $Id: packet.c,v 7.73 2002/03/10 00:03:11 androsyn Exp $
  */
 
 #include <stdio.h>
@@ -42,6 +42,7 @@
 #include "hook.h"
 
 static char               readBuf[READBUF_SIZE];
+static void client_dopacket(struct Client *client_p, char *buffer, size_t length);
 
 
 /*

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.h,v 7.12 2002/01/05 09:14:29 a1kmm Exp $
+ *  $Id: packet.h,v 7.13 2002/03/10 00:03:08 androsyn Exp $
  */
 
 #ifndef INCLUDED_packet_h
@@ -47,7 +47,6 @@ extern PF  read_ctrl_packet;
 extern PF  read_packet;
 extern PF  flood_recalc;
 
-extern void client_dopacket(struct Client *, char *, size_t);
 
 #endif /* INCLUDED_packet_h */
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.249 2002/03/09 23:14:11 androsyn Exp $
+ *  $Id: s_serv.c,v 7.250 2002/03/10 00:03:11 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -88,6 +88,7 @@ struct Client *uplink=NULL;
 static void        start_io(struct Client *server);
 static void        burst_members(struct Client *client_p, dlink_list *list);
 static void        burst_ll_members(struct Client *client_p, dlink_list *list);
+static void	   add_lazylinkchannel(struct Client *client_p, struct Channel *chptr);
  
 static SlinkRplHnd slink_error;
 static SlinkRplHnd slink_zipstats;
@@ -1727,7 +1728,7 @@ burst_channel(struct Client *client_p, struct Channel *chptr)
  *		  of channels to examine after this newly introduced
  *		  server is squit off.
  */
-void
+static void
 add_lazylinkchannel(struct Client *client_p, struct Channel *chptr)
 {
   dlink_node *m;
@@ -1753,7 +1754,7 @@ add_lazylinkchannel(struct Client *client_p, struct Channel *chptr)
  *                of clients to examine after this newly introduced
  *                server is squit off.
  */
-static void
+void
 add_lazylinkclient(struct Client *client_p, struct Client *source_p)
 {
  assert(client_p->localClient != NULL);
