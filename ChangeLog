@@ -1,3 +1,15 @@
+leeh        2001/12/16 13:09:43 EST	(20011216_18)
+
+  Modified files:
+    modules              m_message.c 
+  Log:
+  - PRIVMSG -> "%s", command
+  
+  Revision  Changes    Path
+  1.82      +1 -1      ircd-hybrid-7/modules/m_message.c
+
+
+
 leeh        2001/12/16 08:05:54 EST	(20011216_17)
 
   Modified files:
@@ -912,7 +924,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3203 2001/12/16 13:05:59 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3204 2001/12/16 18:09:48 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -19266,4 +19278,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3203 2001/12/16 13:05:59 leeh Exp $
+$Id: ChangeLog,v 7.3204 2001/12/16 18:09:48 leeh Exp $
