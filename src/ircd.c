@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.71 2000/12/13 16:09:06 db Exp $
+ * $Id: ircd.c,v 7.72 2000/12/13 22:26:13 db Exp $
  */
 #include "tools.h"
 #include "ircd.h"
@@ -614,11 +614,12 @@ int main(int argc, char *argv[])
   clear_scache_hash_table();    /* server cache name table */
   clear_ip_hash_table();        /* client host ip hash table */
   clear_Dline_table();          /* d line tree */
+  clear_hash_parse();
+
   initlists();
   initclass();
   initwhowas();
   init_stats();
-  init_tree_parse(msgtab);      /* tree parse code (orabidoo) */
 
   load_all_modules();
 
