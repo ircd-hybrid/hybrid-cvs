@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_clearchan.c,v 1.16 2001/05/14 10:08:47 toot Exp $
+ *   $Id: m_clearchan.c,v 1.17 2001/05/28 14:08:14 jdc Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -153,8 +153,11 @@ static void mo_clearchan(struct Client *client_p, struct Client *source_p,
   /* SJOIN the user to give them ops, and lock the channel */
 
   sendto_ll_channel_remote(chptr, client_p, source_p,
-      ":%s SJOIN %lu %s +ntsi :@%s", me.name, (chptr->channelts - 1),
-      chptr->chname, source_p->name);
+      ":%s SJOIN %lu %s +ntsi :@%s",
+      me.name,
+      (unsigned long) (chptr->channelts - 1),
+      chptr->chname,
+      source_p->name);
   sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s JOIN %s",
                        source_p->name,
                        source_p->username,
