@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.286 2001/12/19 17:45:52 leeh Exp $
+ *  $Id: s_conf.c,v 7.287 2001/12/30 04:19:45 db Exp $
  */
 
 #include <sys/types.h>
@@ -1269,9 +1269,6 @@ find_conf_by_name(const char* name, int status)
     {
       if (conf->status == status && conf->name &&
           match(name, conf->name))
-#if 0
-          (match(name, conf->name) || match(conf->name, name)))
-#endif
         return conf;
     }
   return NULL;
@@ -1297,9 +1294,6 @@ find_conf_by_host(const char* host, int status)
     {
       if (conf->status == status && conf->host &&
           match(host, conf->host))
-#if 0
-          (match(host, conf->host) || match(conf->host, host)))
-#endif
         return conf;
     }
   return NULL;
@@ -2685,10 +2679,6 @@ conf_fbgets(char *lbuf,int max_size, FBFILE *fb)
 int 
 conf_yy_fatal_error(char *msg)
 {
-#if 0
-  sendto_realops_flags(FLAGS_ALL, L_ALL,
-		       "lexer barfed. lets leave it at that for now");
-#endif
   return 0;
 }
 

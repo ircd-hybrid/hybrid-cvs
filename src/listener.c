@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: listener.c,v 7.59 2001/10/17 16:07:25 leeh Exp $
+ *  $Id: listener.c,v 7.60 2001/12/30 04:19:44 db Exp $
  */
 #include "config.h"
 #include "listener.h"
@@ -381,10 +381,6 @@ static void accept_connection(int pfd, void *data)
 
   if (fd < 0)
     {
-#if 0
-      if (EAGAIN == errno)
-	return;
-#endif
       /*
        * slow down the whining to opers bit
        */

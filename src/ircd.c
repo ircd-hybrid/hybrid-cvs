@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.208 2001/12/29 17:24:45 davidt Exp $
+ * $Id: ircd.c,v 7.209 2001/12/30 04:19:44 db Exp $
  */
 
 #include <sys/types.h>
@@ -112,9 +112,6 @@ struct admin_info AdminInfo;
 struct  Counter Count;
 struct  ServerState_t server_state;
 
-#if 0
-time_t  CurrentTime;            /* GLOBAL - current system timestamp */
-#endif 
 struct timeval SystemTime;
 int     ServerRunning;          /* GLOBAL - server execution state */
 struct Client me;               /* That's me */
@@ -733,11 +730,6 @@ int main(int argc, char *argv[])
   
   ilog(L_NOTICE, "Server Ready");
   
-#if 0 && defined(HAVE_LIBCRYPTO)
-  eventAdd("cryptlink_regen_key", cryptlink_regen_key, NULL,
-	   CRYPTLINK_REGEN_TIME);
-#endif
-
   eventAdd("cleanup_channels", cleanup_channels, NULL, CLEANUP_CHANNELS_TIME);
 
   eventAdd("cleanup_glines", cleanup_glines, NULL, CLEANUP_GLINES_TIME);

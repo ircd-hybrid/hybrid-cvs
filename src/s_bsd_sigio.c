@@ -25,7 +25,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_sigio.c,v 7.13 2001/12/19 09:59:28 a1kmm Exp $
+ *  $Id: s_bsd_sigio.c,v 7.14 2001/12/30 04:19:45 db Exp $
  */
 #ifndef _GNU_SOURCE
 #define _GNU_SOURCE 1           /* Needed for F_SETSIG */
@@ -278,11 +278,6 @@ comm_setselect(int fd, fdlist_t list, unsigned int type, PF * handler,
     fde_t *F = &fd_table[fd];
     assert(fd >= 0);
     assert(F->flags.open);
-#if 0
-    fprintf(stderr, "fd[%d]: type: %s %s handler: %p\n", fd,
-            type & COMM_SELECT_READ ? "COMM_SELECT_READ" : "",
-            type & COMM_SELECT_WRITE ? "COMM_SELECT_WRITE" : "", handler);
-#endif
     if (type & COMM_SELECT_READ)
     {
         new_hdl = (F->read_handler == NULL);
@@ -351,9 +346,6 @@ int comm_select(unsigned long delay)
                 if (revents & (POLLRDNORM | POLLIN | POLLHUP | POLLERR))
                 {
                     callbacks_called++;
-#if 0
-                    fprintf(stderr, "fd[%d]: SIGIO READ handler: %p\n", fd, F->read_handler);
-#endif
                     hdl = F->read_handler;
                     F->read_handler = NULL;
                     poll_update_pollfds(fd, POLLIN, NULL);
@@ -363,9 +355,6 @@ int comm_select(unsigned long delay)
                 if (revents & (POLLWRNORM | POLLOUT | POLLHUP | POLLERR))
                 {
                     callbacks_called++;
-#if 0
-                    fprintf(stderr, "fd[%d]: SIGIO WRITE handler: %p\n", fd, F->write_handler);
-#endif
                     hdl = F->write_handler;
                     F->write_handler = NULL;
                     poll_update_pollfds(fd, POLLOUT, NULL);

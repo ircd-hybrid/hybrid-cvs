@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.116 2001/11/28 17:48:51 db Exp $
+ *   $Id: parse.c,v 7.117 2001/12/30 04:19:45 db Exp $
  */
 
 #include <assert.h>
@@ -295,17 +295,6 @@ void parse(struct Client *client_p, char *pbuffer, char *bufend)
     }
 
   handle_command(mptr, client_p, from, i, para);
-  /* handle_command may have called exit_client, which sets the socket
-   * as dead. We _CANNOT_ call exit_client twice! We should never set
-   * a socket as dead without calling exit_client, so this check is
-   * silly. -A1kmm */
-#if 0 
-  if(IsDead(from))
-    exit_client(from, from, &me,
-		(from->flags & FLAGS_SENDQEX) ?
-		"SendQ exceeded" : "Dead socket");
-#endif
-
 }
 
 static void 

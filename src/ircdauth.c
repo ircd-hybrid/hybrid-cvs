@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: ircdauth.c,v 7.43 2001/12/10 02:59:46 db Exp $
+ *   $Id: ircdauth.c,v 7.44 2001/12/30 04:19:44 db Exp $
  */
 
 #include <stdio.h>
@@ -323,9 +323,6 @@ ParseIAuth(int fd, void *notused)
 
 	if ((length == (-1)) && ((errno == EWOULDBLOCK) || (errno == EAGAIN)))
     return; /* no error - there's just nothing to read */
-  #if 0
-    return 2; /* no error - there's just nothing to read */
-  #endif
 
 	if (length <= 0)
 	{

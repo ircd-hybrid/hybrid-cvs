@@ -22,7 +22,7 @@
  * Cleanup of collapse and match
  * Moved static calls variable to match
  * Added asserts for null pointers
- * $Id: match.c,v 7.14 2001/09/06 22:46:36 leeh Exp $
+ * $Id: match.c,v 7.15 2001/12/30 04:19:45 db Exp $
  *
  */
 #include "irc_string.h"
@@ -187,50 +187,6 @@ collapse(char *pattern)
  *po++ = 0;
  return pattern;
 }
-
-#if 0
-/*
-** collapse a pattern string into minimal components.
-** This particular version is "in place", so that it changes the pattern
-** which is to be reduced to a "minimal" size.
-*/
-/* collapse - behavior modification (Thomas Helvey <tomh@inxpress.net>)
- * Removed mask escapes, we don't escape wildcards or call match
- * on a mask. This change is somewhat subtle, the old version converted
- * \\*** to \\**, the new version blindly converts it to \\*.
- * Removed code that did a lot of work but achieved nothing, testing
- * showed that the code in test for '?' produced exactly the same results
- * as code that ignored '?'. The only thing you can do with a mask is to
- * remove adjacent '*' characters, attempting anything else breaks the re.
- *
- * collapse - convert adjacent *'s to a single *
- */
-char* collapse(char *pattern)
-{
-  char* s = pattern;
-  char* s1;
-  char* t;
-
-  /*
-   * XXX - null pointers ok?
-   */
-  if (s) {
-    for (; *s; s++) {
-      if ('*' == *s) {
-        t = s1 = s + 1;
-        while ('*' == *t)
-          ++t;
-        if (s1 != t) {
-          while ((*s1++ = *t++))
-            ;
-        }
-      }
-    }
-  }
-  return pattern;
-}
-#endif
-
 
 /*
  * irccmp - case insensitive comparison of two 0 terminated strings.

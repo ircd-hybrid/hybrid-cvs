@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_error.c,v 7.20 2001/11/13 12:55:48 leeh Exp $
+ *   $Id: m_error.c,v 7.21 2001/12/30 04:19:45 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -39,19 +39,6 @@ struct Message error_msgtab = {
   {m_error, m_ignore, ms_error, m_ignore}
 };
 
-#if 0
-void
-_modinit(void)
-{
-  mod_add_cmd(&error_msgtab);
-}
-
-void
-_moddeinit(void)
-{
-  mod_del_cmd(&error_msgtab);
-}
-#endif
 
 /*
  * Note: At least at protocol level ERROR has only one parameter,

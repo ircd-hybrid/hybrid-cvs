@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_debug.c,v 7.61 2001/09/29 14:37:52 wcampbel Exp $
+ *   $Id: s_debug.c,v 7.62 2001/12/30 04:19:45 db Exp $
  */
 
 #include <sys/types.h> 
@@ -443,14 +443,6 @@ void count_memory(struct Client *source_p)
     sendto_realops_flags(FLAGS_ALL, L_ALL, "*** WARNING: Users counted: %d != User count: %d",
                            users_counted, user_count);
   
-
-#if 0
-  total_memory += user_memory_used;
-  sendto_one(source_p, ":%s %d %s :struct User Memory in use: %d(%d)",
-             me.name, RPL_STATSDEBUG, source_p->name,
-	     user_count,
-             (int)user_memory_used);
-#endif
 
   count_links_memory( &links_count, (int *)&links_memory_used );
   total_memory += links_memory_used;

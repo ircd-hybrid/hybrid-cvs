@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_kqueue.c,v 1.22 2001/12/11 03:22:42 a1kmm Exp $
+ *  $Id: s_bsd_kqueue.c,v 1.23 2001/12/30 04:19:45 db Exp $
  */
 #include "config.h"
 #include "fdlist.h"
@@ -104,10 +104,6 @@ kq_update_events(int fd, short filter, PF * handler)
   PF *cur_handler;
   int kep_flags;
 
-#if 0
-  int retval;
-#endif
-
   switch (filter)
     {
     case EVFILT_READ:
@@ -161,14 +157,6 @@ kq_update_events(int fd, short filter, PF * handler)
 	{
 	  kqoff++;
 	}
-#if 0
-      if (retval < 0)
-	/* Error! */
-	if (ke.flags & EV_ERROR)
-	  {
-	    errno = ke.data;
-	  }
-#endif
     }
 }
 

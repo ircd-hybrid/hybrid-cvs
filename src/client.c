@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.214 2001/12/19 09:59:28 a1kmm Exp $
+ *  $Id: client.c,v 7.215 2001/12/30 04:19:44 db Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -256,9 +256,6 @@ check_pings_list(dlink_list *list)
   char         scratch[32];	/* way too generous but... */
   struct Client *client_p;          /* current local client_p being examined */
   int           ping = 0;       /* ping time value from client */
-#if 0
-  time_t        timeout;        /* found necessary ping time */
-#endif
   dlink_node    *ptr, *next_ptr;
 
   for (ptr = list->head; ptr; ptr = next_ptr)
@@ -357,12 +354,6 @@ check_pings_list(dlink_list *list)
         }
       /* ping_timeout: */
 
-      /* bloat for now */
-#if 0
-      timeout = client_p->lasttime + ping;
-      while (timeout <= CurrentTime)
-        timeout += ping;
-#endif
     }
 }
 

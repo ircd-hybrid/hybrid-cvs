@@ -2,7 +2,7 @@
  * Ungraciously stolen from mutt, by Aaron Sethman, for the very sad machine that 
  * does not have vsnprintf or snprintf 
  *
- * $Id: snprintf.c,v 1.1 2001/10/11 02:39:24 androsyn Exp $
+ * $Id: snprintf.c,v 1.2 2001/12/30 04:19:46 db Exp $
  */ 
 
 
@@ -562,10 +562,6 @@ static void fmtfp (char *buffer, size_t *currlen, size_t maxlen,
     else
       if (flags & DP_F_SPACE)
 	signvalue = ' ';
-
-#if 0
-  if (flags & DP_F_UP) caps = 1; /* Should characters be upper case? */
-#endif
 
   intpart = ufvalue;
 
