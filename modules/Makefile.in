@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/modules
 #
-# $Id: Makefile.in,v 1.95 2003/07/09 03:32:21 joshk Exp $
+# $Id: Makefile.in,v 1.96 2003/08/18 23:31:28 joshk Exp $
 #
 CC		= @CC@
 AR		= @AR@
@@ -24,7 +24,7 @@ IRCDLIBS        = @LIBS@ $(SSL_LIBS)
 prefix          = @prefix@
 # Change this later! -- adrian
 moduledir       = ${prefix}/modules
-automoduledir   = ${prefix}/modules/autoload
+automoduledir   = ${moduledir}/autoload
 
 INCLUDES	= -I../include $(SSL_INCLUDES)
 CPPFLAGS	= ${INCLUDES} @CPPFLAGS@

@@ -1,15 +1,15 @@
-# $Id: Makefile.in,v 7.23 2003/07/08 21:06:33 joshk Exp $
+# $Id: Makefile.in,v 7.24 2003/08/18 23:31:25 joshk Exp $
 INSTALL		= @INSTALL@
 INSTALL_DATA	= @INSTALL_DATA@
 RM		= @RM@
 prefix		= @prefix@
-mandir          = ${prefix}/man8
+mandir          = @mandir@
 
 all:
 
 install:
-	mkdir -p $(mandir)
-	$(INSTALL_DATA) ircd.8 $(mandir)
+	mkdir -p $(mandir)/man8
+	$(INSTALL_DATA) ircd.8 $(mandir)/man8/
 
 distclean:
 	${RM} -f Makefile
