@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_select.c,v 7.32 2003/06/07 17:28:02 michael Exp $
+ *  $Id: s_bsd_select.c,v 7.33 2003/06/18 06:26:33 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -47,8 +47,8 @@
 #include "memory.h"
 
 
-#if HARD_FDLIMIT_ >= FD_SETSIZE
-#error HARD_FDLIMIT_ must be less than FD_SETSIZE(try using poll instead of select)
+#if HARD_FDLIMIT >= FD_SETSIZE
+#error HARD_FDLIMIT must be less than FD_SETSIZE(try using poll instead of select)
 #endif
 /*
  * Note that this is only a single list - multiple lists is kinda pointless

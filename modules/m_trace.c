@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_trace.c,v 1.65 2003/05/29 00:59:02 db Exp $
+ *  $Id: m_trace.c,v 1.66 2003/06/18 06:26:31 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -94,7 +94,7 @@ _moddeinit(void)
   mod_del_cmd(&trace_msgtab6);
 #endif
 }
-const char *_version = "$Revision: 1.65 $";
+const char *_version = "$Revision: 1.66 $";
 #endif
 
 static int report_this_status(struct Client *source_p, struct Client *target_p,
@@ -225,7 +225,7 @@ do_actual_trace(int ttype, const char *tname,
 {
   struct Client *target_p = NULL;
   struct Class *cltmp;
-  int doall, link_s[MAXCONNECTIONS], link_u[MAXCONNECTIONS];
+  int doall, link_s[HARD_FDLIMIT], link_u[HARD_FDLIMIT];
   int cnt = 0, wilds, dow;
   dlink_node *gcptr;	/* global_client_list ptr */
   dlink_node *ptr;

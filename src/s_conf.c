@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.436 2003/06/18 00:15:12 metalrock Exp $
+ *  $Id: s_conf.c,v 7.437 2003/06/18 06:26:33 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -926,7 +926,7 @@ attach_iline(struct Client *client_p, struct AccessItem *aconf)
 void
 init_ip_hash_table(void)
 {
-  ip_entry_heap = BlockHeapCreate(sizeof(struct ip_entry), 2*MAXCONNECTIONS);
+  ip_entry_heap = BlockHeapCreate(sizeof(struct ip_entry), 2*HARD_FDLIMIT);
   memset((void *)ip_hash_table, 0, sizeof(ip_hash_table));
 }
 
@@ -973,7 +973,7 @@ find_or_add_ip(struct irc_ssaddr *ip_in)
     }
   }
 
-  if (ip_entries_count >= (2*MAXCONNECTIONS))
+  if (ip_entries_count >= (2*HARD_FDLIMIT))
     garbage_collect_ip_entries();
 
   newptr = BlockHeapAlloc(ip_entry_heap);
@@ -1665,8 +1665,7 @@ set_default_conf(void)
   memset(&ServerInfo.ip6, 0, sizeof(ServerInfo.ip6));
   ServerInfo.specific_ipv6_vhost = 0;
 
-  ServerInfo.max_clients = MAX_CLIENTS;  /* XXX - these don't seem to */
-  ServerInfo.max_buffer = MAX_BUFFER;    /*       actually do anything! */
+  ServerInfo.max_clients = MAXCONN;
   /* Don't reset hub, as that will break lazylinks */
   /* ServerInfo.hub = NO; */
   ServerInfo.dns_host.sin_addr.s_addr = 0;

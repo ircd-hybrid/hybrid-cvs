@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.244 2003/06/18 00:15:08 metalrock Exp $
+ *  $Id: s_conf.h,v 7.245 2003/06/18 06:26:29 metalrock Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -344,7 +344,6 @@ struct server_info
   struct      irc_ssaddr ip;
   struct      irc_ssaddr ip6;
   int         max_clients;
-  int         max_buffer;
   int         specific_ipv4_vhost;
   int         specific_ipv6_vhost;
   struct      sockaddr_in dns_host;

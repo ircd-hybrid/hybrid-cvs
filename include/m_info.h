@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.h,v 7.47 2003/06/12 03:40:29 joshk Exp $
+ *  $Id: m_info.h,v 7.48 2003/06/18 06:26:29 metalrock Exp $
  */
 
 #ifndef INCLUDED_m_info_h
@@ -62,7 +62,7 @@ Info MyInformation[] = {
   { "DLPATH", "NONE", 0, "Path to D-line File" },
 #endif /* DLPATH */
 
-  { "HARD_FDLIMIT_", "", HARD_FDLIMIT_, "Maximum Number of File Descriptors Available" },
+  { "HARD_FDLIMIT", "", HARD_FDLIMIT, "Maximum Number of File Descriptors Available" },
 
 #ifdef SOMAXCONN
   { "HYBRID_SOMAXCONN", "", SOMAXCONN, "Maximum Queue Length of Pending Connections" },
@@ -76,7 +76,6 @@ Info MyInformation[] = {
   { "IPV6", "OFF", 0, "IPv6 Support" },
 #endif
 */
-  { "MAX_CLIENTS", "", MAX_CLIENTS, "Default maximum Clients" },
   { "KILLCHASETIMELIMIT", "", KILLCHASETIMELIMIT, "Nick Change Tracker for KILL" },
 
 #ifdef KPATH
@@ -92,6 +91,8 @@ Info MyInformation[] = {
 #endif /* LPATH */
 
   { "MAX_BUFFER", "", MAX_BUFFER, "Maximum Buffer Connections Allowed" },
+
+  { "MAX_CONNECTIONS", "", MAXCONN, "Maximum Number of Network Connections Allowed" },
 
   { "MAX_JOIN_LEAVE_COUNT", "", MAX_JOIN_LEAVE_COUNT, "Anti SpamBot Parameter" },
 

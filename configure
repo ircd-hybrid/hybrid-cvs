@@ -874,11 +874,9 @@ Optional Packages:
                           Define the log facility to use with ircd's syslog
                           output (default LOG_LOCAL4)
   --with-nicklen=LENGTH   Set the nick length to LENGTH (default 9)
-  --with-maxclients=NUMBER
-                          Set the maximum number of clients to NUMBER (default
-                          200)
   --with-topiclen=NUMBER  Set the max topic length to NUMBER (default 120, max
                           390)
+  --with-maxconn=NUMBER   Maximum number of connections the ircd can handle
 
 Some influential environment variables:
   CC          C compiler command
@@ -2087,7 +2085,8 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
   for ac_declaration in \
-   '' \
+   ''\
+   '#include <stdlib.h>' \
    'extern "C" void std::exit (int) throw (); using std::exit;' \
    'extern "C" void std::exit (int); using std::exit;' \
    'extern "C" void exit (int) throw ();' \
@@ -2101,8 +2100,8 @@ _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
-$ac_declaration
 #include <stdlib.h>
+$ac_declaration
 int
 main ()
 {
@@ -8386,15 +8385,6 @@ else
 fi;
 
 
-# Check whether --with-maxclients or --without-maxclients was given.
-if test "${with_maxclients+set}" = set; then
-  withval="$with_maxclients"
-  MAXCLIENTS="$withval"
-else
-  MAXCLIENTS="200"
-fi;
-
-
 # Check whether --with-topiclen or --without-topiclen was given.
 if test "${with_topiclen+set}" = set; then
   withval="$with_topiclen"
@@ -8412,6 +8402,15 @@ else
 fi;
 
 
+# Check whether --with-maxconn or --without-maxconn was given.
+if test "${with_maxconn+set}" = set; then
+  withval="$with_maxconn"
+  MAXCONN="$withval"
+else
+  MAXCONN=`ulimit -Hn`
+fi;
+
+
 cat >>confdefs.h <<_ACEOF
 #define TOPICLEN ${TOPICLEN}
 _ACEOF
@@ -8423,7 +8422,7 @@ _ACEOF
 
 
 cat >>confdefs.h <<_ACEOF
-#define MAX_CLIENTS ${MAXCLIENTS}
+#define MAXCONN ${MAXCONN}
 _ACEOF
 
 
@@ -11164,5 +11163,5 @@ echo
 echo "Configured limits:"
 echo "NICKLEN ................. $NICKLEN"
 echo "TOPICLEN ................ $TOPICLEN"
-echo "MAXCLIENTS .............. $MAXCLIENTS"
+echo "MAXCONN ................. $MAXCONN"
 echo

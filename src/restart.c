@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: restart.c,v 7.26 2003/06/06 04:31:50 michael Exp $
+ *  $Id: restart.c,v 7.27 2003/06/18 06:26:33 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -60,7 +60,7 @@ server_reboot(void)
   ilog(L_NOTICE, "Restarting server... (%s)", SPATH);
   send_queued_all();
 
-  for (i = 3; i < MAXCONNECTIONS; ++i)
+  for (i = 3; i < HARD_FDLIMIT; ++i)
     close(i);
 
   unlink(pidFileName);

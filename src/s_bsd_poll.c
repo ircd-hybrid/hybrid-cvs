@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_poll.c,v 7.60 2003/06/07 17:28:01 michael Exp $
+ *  $Id: s_bsd_poll.c,v 7.61 2003/06/18 06:26:33 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -56,7 +56,7 @@
 #endif
 
 struct _pollfd_list {
-    struct pollfd pollfds[MAXCONNECTIONS];
+    struct pollfd pollfds[HARD_FDLIMIT];
     int maxindex; /* highest FD number */
 };
 
@@ -76,7 +76,7 @@ static inline int
 poll_findslot(void)
 {
     int i;
-    for (i = 0; i < MAXCONNECTIONS; i++)
+    for (i = 0; i < HARD_FDLIMIT; i++)
     {
         if (pollfd_list.pollfds[i].fd == -1)
         {
@@ -150,7 +150,7 @@ void init_netio(void)
 {
     int fd;
 
-    for (fd = 0; fd < MAXCONNECTIONS; fd++)
+    for (fd = 0; fd < HARD_FDLIMIT; fd++)
     {
        pollfd_list.pollfds[fd].fd = -1;
     }

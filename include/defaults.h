@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: defaults.h,v 7.13 2003/06/16 00:38:36 metalrock Exp $
+ *  $Id: defaults.h,v 7.14 2003/06/18 06:26:29 metalrock Exp $
  */
 
 #ifndef INCLUDED_defaults_h
@@ -113,9 +113,7 @@
 #define HANGONGOODLINK 3600     /* Recommended value: 30-60 minutes */
 
 /* 10 FDs reserved for logging and name resolution */
-#define HARD_FDLIMIT_   MAX_CLIENTS + 60 + 20
-#define HARD_FDLIMIT    HARD_FDLIMIT_ - 10
-#define MAXCONNECTIONS  HARD_FDLIMIT
+#define HARD_FDLIMIT    MAXCONN + MAX_BUFFER + 10
 
 #define KILLCHASETIMELIMIT 90   /* Recommended value: 90 */
 #define MASTER_MAX      (HARD_FDLIMIT - MAX_BUFFER)

@@ -1,6 +1,6 @@
                             Hybrid INSTALL Document
 
-   $Id: INSTALL,v 7.37 2003/06/18 00:52:54 joshk Exp $
+   $Id: INSTALL,v 7.38 2003/06/18 06:26:24 metalrock Exp $
 
    Copyright (c) 2001 by ircd-hybrid team
 
@@ -98,25 +98,25 @@
             on larger networks.
 
 	  * --enable-syslog=kill/squit/connect/users/oper, separated by
-	  spaces, in quotes - Enables syslog logging, with events you specify
-	  (none is okay too, and logs the most essential messages only.)
+	    spaces, in quotes - Enables syslog logging, with events you specify
+	    (none is okay too, and logs the most essential messages only.)
 
 	  * --enable-syslog-facility=FACILITY - Check with your sysadmin to see
-	  what this should be; by default it is LOG_LOCAL4. If you get it wrong
-	  initially, no problem; just edit the value in include/setup.h.
+	    what this should be; by default it is LOG_LOCAL4. If you get it wrong
+	    initially, no problem; just edit the value in include/setup.h.
 
           * --with-nicklen,
 	    --with-topiclen - Respectively, sets the maximum NICK length and
 	    maximum TOPIC length. Note that this must be consistent across your
 	    entire network. Defaults are 9 and 120, respectively.
 
-          * --with-maxclients - Sets the maximum number of clients support by
-            the server. Note that this also twiddles the HARD_FDLIMIT_.
-            If HARD_FDLIMIT_ ends up being larger that FD_SETSIZE when using
-            select() for your I/O loop, s_bsd_select.c will refuse to compile
-            (and tell you to use poll instead). Take this error's advice and
-            use --enable-poll or something a bit more efficient. You'll be
-            happier at the end of the day for it.
+	  * --with-maxconn - Sets the maximum number of connections the ircd
+	    can support. Note that this also twiddles the HARD_FDLIMIT.
+	    If HARD_FDLIMIT ends up being larger that FD_SETSIZE when using
+	    select() for your I/O loop, s_bsd_select.c will refuse to compile
+	    (and tell you to use poll instead). Take this error's advice and
+	    use --enable-poll or something a bit more efficient. You'll be
+	    happier at the end of the day for it.
 
    3.  make should build ircd.
 

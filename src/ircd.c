@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.305 2003/06/14 13:58:41 michael Exp $
+ *  $Id: ircd.c,v 7.306 2003/06/18 06:26:32 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -206,12 +206,12 @@ init_sys(void)
 
   if (!getrlimit(RLIMIT_FD_MAX, &limit))
   {
-    if (limit.rlim_max < MAXCONNECTIONS)
+    if (limit.rlim_max < HARD_FDLIMIT)
     {
       fprintf(stderr, "ircd fd table too big\n");
       fprintf(stderr, "Hard Limit: %ld IRC max: %d\n",
-              (long)limit.rlim_max, MAXCONNECTIONS);
-      fprintf(stderr, "Fix MAXCONNECTIONS\n");
+              (long)limit.rlim_max, HARD_FDLIMIT);
+      fprintf(stderr, "Fix HARD_FDLIMIT\n");
       exit(-1);
     }
 
@@ -389,7 +389,7 @@ initialize_global_set_options(void)
 {
   memset(&GlobalSetOptions, 0, sizeof(GlobalSetOptions));
 
-  GlobalSetOptions.maxclients = MAX_CLIENTS;
+  GlobalSetOptions.maxclients = MAXCONN;
   GlobalSetOptions.autoconn   = 1;
 
   GlobalSetOptions.spam_time = MIN_JOIN_LEAVE_TIME;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fdlist.c,v 7.35 2003/05/13 04:18:45 joshk Exp $
+ *  $Id: fdlist.c,v 7.36 2003/06/18 06:26:32 metalrock Exp $
  */
 #include "stdinc.h"
 #include "fdlist.h"
@@ -44,7 +44,7 @@ fdlist_update_biggest(int fd, int opening)
 { 
   if (fd < highest_fd)
     return;
-  assert(fd < MAXCONNECTIONS);
+  assert(fd < HARD_FDLIMIT);
 
   if (fd > highest_fd)
     {
@@ -75,7 +75,7 @@ fdlist_init(void)
   if (!initialized)
     {
       /* Since we're doing this once .. */
-      fd_table = MyMalloc((MAXCONNECTIONS + 1) * sizeof(fde_t));
+      fd_table = MyMalloc((HARD_FDLIMIT + 1) * sizeof(fde_t));
       initialized = 1;
     }
 }

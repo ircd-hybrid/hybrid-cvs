@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.317 2003/06/18 00:15:12 metalrock Exp $
+ *  $Id: ircd_parser.y,v 1.318 2003/06/18 06:26:32 metalrock Exp $
  */
 
 %{
@@ -272,7 +272,6 @@ init_parser_confs(void)
 %token  T_L_NOTICE
 %token  T_L_TRACE
 %token  T_L_WARN
-%token  T_MAX_BUFFER
 %token  T_MAX_CLIENTS
 %token  T_NCHANGE
 %token  T_OPERWALL
@@ -427,7 +426,7 @@ serverinfo_item:        serverinfo_name | serverinfo_vhost |
                         serverinfo_network_name | serverinfo_network_desc |
                         serverinfo_max_clients | 
                         serverinfo_rsa_private_key_file | serverinfo_vhost6 |
-                        serverinfo_max_buffer | serverinfo_sid |
+                        serverinfo_sid |
 			error;
 
 serverinfo_rsa_private_key_file: RSA_PRIVATE_KEY_FILE '=' QSTRING ';'
@@ -609,22 +608,16 @@ serverinfo_max_clients: T_MAX_CLIENTS '=' NUMBER ';'
 {
   if (ypass == 2)
   {
-    if (MAX_CLIENTS >= $3)
+    if (MAXCONN >= $3)
     {
       ServerInfo.max_clients = $3;
     }
     else
     {
-      ilog(L_ERROR, "Setting serverinfo_max_clients to MAX_CLIENTS");
-      ServerInfo.max_clients = MAX_CLIENTS;
+      ilog(L_ERROR, "Setting serverinfo_max_clients to MAXCONN");
+      ServerInfo.max_clients = MAXCONN;
     }
   }
-};
-
-serverinfo_max_buffer: T_MAX_BUFFER '=' NUMBER ';'
-{
-  if (ypass == 2)
-    ServerInfo.max_buffer = $3;
 };
 
 serverinfo_hub: HUB '=' TBOOL ';' 

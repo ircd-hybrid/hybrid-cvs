@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.c,v 7.86 2003/05/28 21:11:57 bill Exp $
+ *  $Id: listener.c,v 7.87 2003/06/18 06:26:33 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -410,7 +410,7 @@ accept_connection(int pfd, void *data)
   /*
    * check for connection limit
    */
-  if ((MAXCONNECTIONS - 10) < fd)
+  if ((HARD_FDLIMIT - 10) < fd)
   {
     ++ServerStats->is_ref;
       /*

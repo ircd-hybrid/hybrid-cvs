@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.204 2003/06/12 22:06:00 db Exp $
+ *  $Id: s_bsd.c,v 7.205 2003/06/18 06:26:33 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -80,7 +80,7 @@ close_all_connections(void)
   int i;
   int fd;
 
-  for (i = 0; i < MAXCONNECTIONS; ++i)
+  for (i = 0; i < HARD_FDLIMIT; ++i)
   {
     if (fd_table[i].flags.open)
       fd_close(i);
