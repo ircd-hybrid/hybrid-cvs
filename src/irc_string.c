@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: irc_string.c,v 7.43 2001/12/16 07:50:11 androsyn Exp $
+ *  $Id: irc_string.c,v 7.44 2001/12/16 07:53:01 androsyn Exp $
  */
 #include "config.h"
 #include "tools.h"
@@ -43,17 +43,10 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <time.h>
-/* XXX - This breaks Cygwin, and APPEARS to not be needed...someone please
- * check for me though...
- */
-#ifndef __CYGWIN32__
-#include <arpa/nameser.h>
-#endif
 
-#if defined(VMS) || defined(__CYGWIN32__)
-# define INADDRSZ 4
+#ifndef INADDRSZ 
+#define INADDRSZ sizeof(struct in_addr)
 #endif
-
 /*
  * myctime - This is like standard ctime()-function, but it zaps away
  *   the newline from the end of that string. Also, it takes
