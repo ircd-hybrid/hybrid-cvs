@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: numeric.h,v 7.16 2001/03/12 06:36:54 a1kmm Exp $
+ * $Id: numeric.h,v 7.17 2001/07/02 02:52:35 db Exp $
  */
 #ifndef INCLUDED_numeric_h
 #define INCLUDED_numeric_h
@@ -319,6 +319,7 @@ extern const char* form_str(int);
 #define ERR_NICKNAMEINUSE    433
 #define ERR_NICKCOLLISION    436
 #define ERR_UNAVAILRESOURCE  437
+#define ERR_NICKTOOFAST	     438	/* We did it first Undernet! ;) db */
 
 #define ERR_USERNOTINCHANNEL 441
 #define ERR_NOTONCHANNEL     442
