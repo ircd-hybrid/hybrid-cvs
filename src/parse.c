@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.166 2003/05/20 06:51:52 michael Exp $
+ *  $Id: parse.c,v 7.167 2003/06/02 08:03:44 db Exp $
  */
 
 #include "stdinc.h"
@@ -44,6 +44,25 @@
 #include "s_serv.h"
 
 /*
+ * for the trie parser
+ * 
+ * - Dianora
+ */
+#define MAXPTRLEN	32	/* Must be a power of 2, and
+				 * larger than 26 [a-z]|[A-Z]
+				 */
+#define MAXPREFIXLEN	64	/* Must be longer than every command name */
+#define UPPERCASE_MASK	0xdf	/* mask to turn ASCII into wine er upper case*/
+
+struct MessageTree {
+  int final;
+  struct Message *msg;
+  struct MessageTree *pointers[MAXPTRLEN];
+};
+
+static struct MessageTree msg_tree;
+
+/*
  * NOTE: parse() should not be called recursively by other functions!
  */
 static char *sender;
@@ -54,10 +73,9 @@ static int cancel_clients(struct Client *, struct Client *, char *);
 static void remove_unknown(struct Client *, char *, char *);
 static void do_numeric(char [], struct Client *, struct Client *, int, char **);
 static void handle_command(struct Message *, struct Client *, struct Client *, int, char **);
-static int hash(const char *p);
 static struct Message *find_command(char *);
-
-struct MessageHash *msg_hash_table[MAX_MSG_HASH];
+static void recurse_report_messages(struct Client *source_p,
+				    struct MessageTree *mtree);
 
 /* turn a string into a parc/parv pair */
 static inline int
@@ -351,7 +369,80 @@ handle_command(struct Message *mptr, struct Client *client_p,
 void
 clear_hash_parse(void)
 {
-  memset(msg_hash_table, 0, sizeof(msg_hash_table));
+  memset(&msg_tree, 0, sizeof(msg_tree));
+}
+
+/*
+ * add_msg_element
+ *
+ * inputs	- 
+ *		-
+ *		-
+ * output	- NONE
+ * side effects	- recursively build the Message Tree ;-)
+ */
+void
+add_msg_element(struct MessageTree *mtree_p, struct Message *msg_p, char *cmd)
+{
+  struct MessageTree *ntree_p;
+
+  if (*cmd == '\0')
+  {
+    mtree_p->final = 1;
+    mtree_p->msg = msg_p;
+    return;
+  }
+
+  if ((ntree_p = mtree_p->pointers[*cmd & (MAXPTRLEN-1)]) != NULL)
+  {
+    add_msg_element(ntree_p, msg_p, ++cmd);
+  }
+  else
+  {
+    ntree_p = (struct MessageTree *)MyMalloc(sizeof(struct MessageTree));
+    mtree_p->pointers[*cmd & (MAXPTRLEN-1)] = ntree_p;
+    add_msg_element(ntree_p, msg_p, ++cmd);
+  }
+}
+
+/*
+ * del_msg_element
+ *
+ * inputs	- 
+ *		-
+ *		-
+ * output	- NONE
+ * side effects	- recursively deletes a token from the Message Tree ;-)
+ */
+void
+del_msg_element(struct MessageTree *mtree_p, char *cmd)
+{
+  struct MessageTree *ntree_p;
+
+  if (*cmd == '\0')
+    return;
+
+  if ((ntree_p = mtree_p->pointers[*cmd & (MAXPTRLEN-1)]) != NULL)
+  {
+    del_msg_element(ntree_p, cmd+1);
+    if (ntree_p != &msg_tree)	/* this would be bad if it happened */
+      MyFree(ntree_p);
+    mtree_p->pointers[*cmd & (MAXPTRLEN-1)] = NULL;
+  }
+}
+
+static struct Message *
+msg_tree_parse(char *cmd, struct MessageTree *root)
+{
+  struct MessageTree *mtree;
+  for (mtree = root->pointers[(*cmd++) & (MAXPTRLEN-1)];
+           mtree != NULL;
+               mtree = mtree->pointers[(*cmd++) & (MAXPTRLEN-1)])
+  {
+    if (mtree->final && (*cmd == '\0'))
+      return mtree->msg;
+  }
+  return NULL;
 }
 
 /* mod_add_cmd()
@@ -366,39 +457,19 @@ clear_hash_parse(void)
 void
 mod_add_cmd(struct Message *msg)
 {
-  int msgindex;
-  struct MessageHash *ptr;
-  struct MessageHash *last_ptr = NULL;
-  struct MessageHash *new_ptr;
-
-  assert(NULL != msg);
+  struct Message *found_msg;
 
   if (msg == NULL)
     return;
 
-  msgindex = hash(msg->cmd);
+  if ((found_msg = msg_tree_parse((char *)msg->cmd, &msg_tree)) != NULL)
+    return;	/* Its already added */
 
-  for (ptr = msg_hash_table[msgindex]; ptr; ptr = ptr->next)
-  {
-    if (irccmp(msg->cmd,ptr->cmd) == 0)
-      return; /* Its already added */
-
-    last_ptr = ptr;
-  }
-
-  new_ptr = (struct MessageHash *)MyMalloc(sizeof(struct MessageHash));
-  new_ptr->next = NULL;
-  DupString(new_ptr->cmd, msg->cmd);
-  new_ptr->msg  = msg;
-
+  add_msg_element(&msg_tree, msg, (char *)msg->cmd);
   msg->count  = 0;
   msg->rcount = 0;
   msg->bytes  = 0;
 
-  if (last_ptr == NULL)
-    msg_hash_table[msgindex] = new_ptr;
-  else
-    last_ptr->next = new_ptr;
 }
 
 /* mod_del_cmd()
@@ -410,34 +481,12 @@ mod_add_cmd(struct Message *msg)
 void
 mod_del_cmd(struct Message *msg)
 {
-  int msgindex;
-  struct MessageHash *ptr;
-  struct MessageHash *last_ptr = NULL;
-
   assert(NULL != msg);
 
   if (msg == NULL)
     return;
 
-  msgindex = hash(msg->cmd);
-
-  for (ptr = msg_hash_table[msgindex]; ptr; ptr = ptr->next)
-  {
-    if (irccmp(msg->cmd, ptr->cmd) == 0)
-    {
-      MyFree(ptr->cmd);
-
-      if (last_ptr != NULL)
-        last_ptr->next = ptr->next;
-      else
-        msg_hash_table[msgindex] = ptr->next;
-
-      MyFree(ptr);
-      return;
-    }
-
-    last_ptr = ptr;
-  }
+  del_msg_element(&msg_tree, (char *)msg->cmd);
 }
 
 /* find_command()
@@ -449,39 +498,7 @@ mod_del_cmd(struct Message *msg)
 static struct Message *
 find_command(char *cmd)
 {
-  struct MessageHash *ptr;
-
-  for (ptr = msg_hash_table[hash(cmd)]; ptr; ptr = ptr->next)
-  {
-    if (irccmp(cmd, ptr->cmd) == 0)
-    {
-      return(ptr->msg);
-    }
-  }
-
-  return(NULL);
-}
-
-/* hash()
- *
- * inputs	- char string
- * output	- hash index
- * side effects - NONE
- *
- * BUGS		- This a HORRIBLE hash function
- */
-static int
-hash(const char *p)
-{
-  int hash_val = 0;
-
-  while(*p)
-  {
-    hash_val += ((int)(*p)&0xDF);
-    p++;
-  }
-
-  return(hash_val % MAX_MSG_HASH);
+  return(msg_tree_parse(cmd, &msg_tree));
 }
 
 /* report_messages()
@@ -493,45 +510,37 @@ hash(const char *p)
 void
 report_messages(struct Client *source_p)
 {
+  struct MessageTree *mtree;
   int i;
-  struct MessageHash *ptr;
 
-  for (i = 0; i < MAX_MSG_HASH; i++)
+  mtree = &msg_tree;
+
+  for (i = 0; i < MAXPTRLEN; i++)
   {
-    for (ptr = msg_hash_table[i]; ptr; ptr = ptr->next)
-    {
-      assert(NULL != ptr->msg);
-      assert(NULL != ptr->cmd);
-
-      if (!((ptr->msg->flags & MFLG_HIDDEN) && !IsAdmin(source_p)))
-        sendto_one(source_p, form_str(RPL_STATSCOMMANDS),
-                   me.name, source_p->name, ptr->cmd,
-                   ptr->msg->count, ptr->msg->bytes,
-                   ptr->msg->rcount);
-    }
+    if (mtree->pointers[i] != NULL)
+      recurse_report_messages(source_p, mtree->pointers[i]);
   }
 }
 
-/* list_commands()
- *
- * inputs       - pointer to client to report to
- * outputs      -
- * side effects - client is shown list of commands
- */
-void
-list_commands(struct Client *source_p)
+static void
+recurse_report_messages(struct Client *source_p, struct MessageTree *mtree)
 {
   int i;
-  struct MessageHash *ptr;
-
-  for (i = 0; i < MAX_MSG_HASH; i++)
+  
+  if (mtree->final)
   {
-    for (ptr = msg_hash_table[i]; ptr; ptr = ptr->next)
-    {
-      if (!((ptr->msg->flags & MFLG_HIDDEN) && !IsAdmin(source_p)))
-        sendto_one(source_p, ":%s NOTICE %s :%s",
-                   me.name, source_p->name, ptr->cmd);
-    }
+    if (!((mtree->msg->flags & MFLG_HIDDEN) && !IsAdmin(source_p)))
+      sendto_one(source_p, form_str(RPL_STATSCOMMANDS),
+		 me.name, source_p->name, mtree->msg->cmd,
+		 mtree->msg->count, mtree->msg->bytes,
+		 mtree->msg->rcount);
+    return;
+  }
+
+  for (i = 0; i < MAXPTRLEN; i++)
+  {
+    if (mtree->pointers[i] != NULL)
+      recurse_report_messages(source_p, mtree->pointers[i]);
   }
 }
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.125 2003/05/31 18:52:55 adx Exp $
+ *  $Id: modules.c,v 7.126 2003/06/02 08:03:43 db Exp $
  */
 
 #include "stdinc.h"
@@ -467,7 +467,8 @@ mo_modreload(struct Client *client_p, struct Client *source_p, int parc, char *p
 
 /* list modules .. */
 static void
-mo_modlist(struct Client *client_p, struct Client *source_p, int parc, char *parv[])
+mo_modlist(struct Client *client_p, struct Client *source_p,
+	   int parc, char *parv[])
 {
   int i;
 
