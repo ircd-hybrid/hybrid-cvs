@@ -1,3 +1,15 @@
+db          2002/11/13 08:15:07 EST	(20021113_4)
+
+  Modified files:
+    modules              m_unkline.c 
+  Log:
+  - These variables now not needed. (error_on_write)
+  
+  Revision  Changes    Path
+  1.50      +3 -3      ircd-hybrid-7/modules/m_unkline.c
+
+
+
 db          2002/11/13 08:12:03 EST	(20021113_3)
 
   Modified files:
@@ -33169,4 +33181,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4109 2002/11/13 13:12:05 db Exp $
+$Id: ChangeLog,v 7.4110 2002/11/13 13:15:10 db Exp $
