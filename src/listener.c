@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: listener.c,v 7.19 2001/01/09 00:54:08 toot Exp $
+ *  $Id: listener.c,v 7.20 2001/01/10 01:00:27 toot Exp $
  */
 #include "listener.h"
 #include "client.h"
@@ -60,10 +60,7 @@ struct Listener* make_listener(int port, struct in_addr addr)
   listener->port        = port;
   listener->addr.s_addr = addr.s_addr;
 
-#ifdef NULL_POINTER_NOT_ZERO
   listener->next = NULL;
-  listener->conf = NULL;
-#endif
   return listener;
 }
 

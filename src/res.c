@@ -4,7 +4,7 @@
  * shape or form. The author takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: res.c,v 7.36 2001/01/08 22:34:49 db Exp $
+ * $Id: res.c,v 7.37 2001/01/10 01:00:28 toot Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -422,12 +422,10 @@ static ResRQ* make_request(const struct DNSQuery* query)
   request->query.vptr       = query->vptr;
   request->query.callback   = query->callback;
 
-#if defined(NULL_POINTER_NOT_ZERO)
   request->he.buf           = NULL;
   request->he.h.h_name      = NULL;
   request->he.h.h_aliases   = NULL;
   request->he.h.h_addr_list = NULL;
-#endif
   add_request(request);
   return request;
 }
