@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_log.c,v 7.12 2000/12/18 05:42:58 bill Exp $
+ *   $Id: s_log.c,v 7.13 2000/12/21 02:33:44 ryan Exp $
  */
 #include "client.h"	/* Needed for struct Client */
 #include "s_log.h"
@@ -104,7 +104,11 @@ void close_log(void)
 static void write_log(const char* message)
 {
   char buf[LOG_BUFSIZE];
-  sprintf(buf, "[%s] %s\n", smalldate(CurrentTime), message);
+
+  if( !logFile )
+    return;
+
+  snprintf(buf, LOG_BUFSIZE, "[%s] %s\n", smalldate(CurrentTime), message);
   fbputs(buf, logFile);
 }
 #endif
