@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.c,v 7.52 2001/02/05 02:58:32 androsyn Exp $
+ *   $Id: s_auth.c,v 7.53 2001/02/05 03:34:35 androsyn Exp $
  *
  * Changes:
  *   July 6, 1999 - Rewrote most of the code here. When a client connects
@@ -211,16 +211,15 @@ static void auth_dns_callback(void* vptr, adns_answer* reply)
 	  
 	struct AuthRequest* auth = (struct AuthRequest*) vptr;
 	ClearDNSPending(auth);
-	if(reply && reply->status == adns_s_ok)
+	if(reply && (reply->status == adns_s_ok))
 	{
-		assert(reply != 0);
-		if(reply->rrs.str <= HOSTLEN)
+		if(strlen(*reply->rrs.str) < HOSTLEN)
 		{
 			strncpy_irc(auth->client->host, *reply->rrs.str, HOSTLEN);
 			sendheader(auth->client, REPORT_FIN_DNS);
-		} else
+		} else {
 			strcpy(auth->client->host, auth->client->localClient->sockhost);
-			sendheader(auth->client, REPORT_HOST_TOOLONG);	
+			sendheader(auth->client, REPORT_HOST_TOOLONG);
 		}
 	} else {
 		strcpy(auth->client->host, auth->client->localClient->sockhost);
