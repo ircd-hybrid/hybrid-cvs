@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.66 2000/12/15 05:09:30 toot Exp $
+ *  $Id: s_user.c,v 7.67 2000/12/16 05:23:15 toot Exp $
  */
 #include "tools.h"
 #include "s_user.h"
@@ -225,9 +225,10 @@ void show_opers(struct Client *cptr)
  */
 int show_lusers(struct Client *sptr) 
 {
-  if (GlobalSetOptions.hide_server)
-    sendto_one(sptr, ":%s %d %s :There are %d users",
-               me.name, RPL_LUSERCLIENT, sptr->name, Count.total);
+  if (GlobalSetOptions.hide_server && !IsAnyOper(sptr))
+    sendto_one(sptr, ":%s %d %s :There are %d users and %d invisible",
+               me.name, RPL_LUSERCLIENT, sptr->name,
+               (Count.total-Count.invisi), Count.invisi);
   else
     sendto_one(sptr, form_str(RPL_LUSERCLIENT), me.name, sptr->name,
                (Count.total-Count.invisi), Count.invisi, Count.server);
@@ -244,7 +245,7 @@ int show_lusers(struct Client *sptr)
     sendto_one(sptr, form_str(RPL_LUSERCHANNELS),
                me.name, sptr->name, Count.chan);
 
-  if(!GlobalSetOptions.hide_server)
+  if(!GlobalSetOptions.hide_server && !IsAnyOper(sptr))
     sendto_one(sptr, form_str(RPL_LUSERME),
                me.name, sptr->name, Count.local, Count.myserver);
 

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.c,v 7.17 2000/12/15 02:28:36 db Exp $
+ * $Id: modules.c,v 7.18 2000/12/16 05:23:14 toot Exp $
  */
 
 #include <dlfcn.h>
@@ -110,12 +110,12 @@ int unload_one_module (char *name)
 }
 
 struct Message modload_msgtab = {
-  MSG_MODLOAD, 0, 0, MFLG_SLOW, 0,
+  MSG_MODLOAD, 0, 2, MFLG_SLOW, 0,
   {m_unregistered, m_ignore, m_ignore, mo_modload}
 };
 
 struct Message modunload_msgtab = {
-  MSG_MODUNLOAD, 0, 0, MFLG_SLOW, 0,
+  MSG_MODUNLOAD, 0, 2, MFLG_SLOW, 0,
   {m_unregistered, m_ignore, m_ignore, mo_modunload}
 };
 
@@ -272,13 +272,6 @@ mo_modload (struct Client *cptr, struct Client *sptr, int parc, char **parv)
 {
   char *m_bn;
 
-  if( parc < 2 )
-    {
-      sendto_one(sptr, form_str(ERR_NEEDMOREPARAMS),
-		 me.name, sptr->name, "MODLOAD");
-      return 0;
-    }
-
   if (!IsSetOperAdmin(sptr))
     {
       sendto_one(sptr, ":%s NOTICE %s :You have no A flag", me.name, parv[0]);
@@ -304,13 +297,6 @@ int
 mo_modunload (struct Client *cptr, struct Client *sptr, int parc, char **parv)
 {
   char *m_bn;
-
-  if( parc < 2 )
-    {
-      sendto_one(sptr, form_str(ERR_NEEDMOREPARAMS),
-		 me.name, sptr->name, "MODUNLOAD");
-      return 0;
-    }
 
   if (!IsSetOperAdmin (sptr))
     {

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_gline.c,v 1.16 2000/12/14 19:59:16 db Exp $
+ *  $Id: m_gline.c,v 1.17 2000/12/16 05:23:09 toot Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -95,7 +95,7 @@ int majority_gline(struct Client *sptr,
 
 
 struct Message gline_msgtab = {
-    MSG_GLINE, 0, 1, MFLG_SLOW, 0,
+    MSG_GLINE, 0, 3, MFLG_SLOW, 0,
       {m_unregistered, m_not_oper, ms_gline, mo_gline}
 };
 
@@ -158,13 +158,6 @@ int mo_gline(struct Client *cptr,
       if (!IsSetOperGline(sptr))
 	{
 	  sendto_one(sptr,":%s NOTICE %s :You have no G flag",me.name,parv[0]);
-	  return 0;
-	}
-			
-      if ( parc < 3 )
-	{
-	  sendto_one(sptr, form_str(ERR_NEEDMOREPARAMS),
-		     me.name, parv[0], "GLINE");
 	  return 0;
 	}
 			

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_accept.c,v 1.5 2000/12/09 05:59:42 db Exp $
+ *   $Id: m_accept.c,v 1.6 2000/12/16 05:23:08 toot Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -33,7 +33,7 @@
 #include "msg.h"
 
 struct Message accept_msgtab = {
-  MSG_ACCEPT, 0, 0, MFLG_SLOW | MFLG_UNREG, 0, 
+  MSG_ACCEPT, 0, 2, MFLG_SLOW | MFLG_UNREG, 0, 
   {m_unregistered, m_accept, m_ignore, m_accept}
 };
 
@@ -61,13 +61,6 @@ int m_accept(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   char *nick;
   int  add=1;
   struct Client *source;
-
-  if (parc < 2)
-    {
-      sendto_one(sptr, form_str(ERR_NEEDMOREPARAMS),
-		 me.name, parv[0], "ACCEPT");
-      return 0;
-    }
 
   nick = parv[1];
 

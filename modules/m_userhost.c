@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_userhost.c,v 1.11 2000/12/09 05:59:56 db Exp $
+ *   $Id: m_userhost.c,v 1.12 2000/12/16 05:23:10 toot Exp $
  */
 
 #include "handlers.h"
@@ -36,7 +36,7 @@
 static char buf[BUFSIZE];
 
 struct Message userhost_msgtab = {
-  MSG_USERHOST, 0, 1, MFLG_SLOW, 0,
+  MSG_USERHOST, 0, 2, MFLG_SLOW, 0,
   {m_unregistered, m_userhost, m_ignore, m_userhost}
 };
 
@@ -69,13 +69,6 @@ int     m_userhost(struct Client *cptr,
   struct Client *acptr;
   char response[5][NICKLEN*2+USERLEN+HOSTLEN+30];
   int i;               /* loop counter */
-
-  if (parc < 2)
-    {
-      sendto_one(sptr, form_str(ERR_NEEDMOREPARAMS),
-                 me.name, parv[0], "USERHOST");
-      return 0;
-    }
 
   response[0][0] = response[1][0] = response[2][0] = 
     response[3][0] = response[4][0] = '\0';

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_ison.c,v 1.7 2000/12/12 02:32:14 db Exp $
+ *   $Id: m_ison.c,v 1.8 2000/12/16 05:23:09 toot Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -33,7 +33,7 @@
 #include <string.h>
 
 struct Message ison_msgtab = {
-  MSG_ISON, 0, 1, MFLG_SLOW, 0,
+  MSG_ISON, 0, 2, MFLG_SLOW, 0,
   {m_unregistered, m_ison, m_ignore, m_ison}
 };
 
@@ -71,13 +71,6 @@ int m_ison(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   int len;
   int i;
   int done = 0;
-
-  if (parc < 2)
-    {
-      sendto_one(sptr, form_str(ERR_NEEDMOREPARAMS),
-                 me.name, parv[0], "ISON");
-      return 0;
-    }
 
   ircsprintf(buf, form_str(RPL_ISON), me.name, parv[0]);
   len = strlen(buf);
