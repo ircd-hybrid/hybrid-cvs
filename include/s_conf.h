@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.146 2001/07/17 21:06:00 leeh Exp $
+ * $Id: s_conf.h,v 7.147 2001/07/19 01:13:12 bill Exp $
  */
 
 #include "setup.h"
@@ -29,11 +29,11 @@
 #include <sys/param.h>
 #endif
 
+#undef PACE_CONNECT
+
 #ifdef HAVE_LIBCRYPTO
 #include <openssl/rsa.h>
 #endif
-
-#define PACE_CONNECT
 
 #include "config.h"             /* defines */
 #include "fileio.h"             /* FBFILE */
