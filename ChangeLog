@@ -1,3 +1,15 @@
+db          2002/01/09 12:30:35 EST	(20020109_7)
+
+  Modified files:
+    src                  match.c 
+  Log:
+  - 0 != ptr is just _WRONG_
+  
+  Revision  Changes    Path
+  7.17      +7 -6      ircd-hybrid-7/src/match.c
+
+
+
 leeh        2002/01/09 12:17:50 EST	(20020109_6)
 
   Modified files:
@@ -2787,7 +2799,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3308 2002/01/09 17:17:55 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3309 2002/01/09 17:30:40 db Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -21141,4 +21153,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3308 2002/01/09 17:17:55 leeh Exp $
+$Id: ChangeLog,v 7.3309 2002/01/09 17:30:40 db Exp $
