@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: m_force.c,v 1.8 2002/06/01 02:32:16 androsyn Exp $
+ * $Id: m_force.c,v 1.9 2002/06/02 14:08:08 leeh Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&forcepart_msgtab);
 }
 
-char *_version = "$Revision: 1.8 $";
+char *_version = "$Revision: 1.9 $";
 #endif
 
 /*
@@ -111,7 +111,7 @@ static void mo_forcejoin(struct Client *client_p, struct Client *source_p,
    */
   if (!MyClient(target_p))
   {
-    if ((hunt_server(client_p, source_p, ":%s FORCEJOIN %s %s", 1, parc, parv)) != NULL)
+    if ((hunt_server(client_p, source_p, ":%s FORCEJOIN %s %s", 1, parc, parv)) != HUNTED_ISME)
     return;
   }
 
@@ -292,7 +292,7 @@ static void mo_forcepart(struct Client *client_p, struct Client *source_p,
    */
   if (!MyClient(target_p))
   {
-    if ((hunt_server(client_p, source_p, ":%s FORCEPART %s %s", 1, parc, parv)) != NULL)
+    if ((hunt_server(client_p, source_p, ":%s FORCEPART %s %s", 1, parc, parv)) != HUNTED_ISME)
     return;
   }
 
