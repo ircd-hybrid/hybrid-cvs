@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: convertilines.c,v 7.2 2002/04/30 12:45:01 leeh Exp $
+ * $Id: convertilines.c,v 7.3 2002/07/16 22:30:21 db Exp $
  */
 
 #include <stdio.h>
@@ -432,7 +432,7 @@ static void write_specific(FILE *out, struct AuthBlock *ptr)
 	fprintf(out, "\trestricted = yes;\n");
 
     fprintf(out, "\tclass = \"%d\";\n", ptr->class);
-    fprintf(out, "}\n");
+    fprintf(out, "};\n");
 }
 
 /*
