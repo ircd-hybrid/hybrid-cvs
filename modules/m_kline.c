@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kline.c,v 1.46 2000/12/30 15:12:58 fl_ Exp $
+ *   $Id: m_kline.c,v 1.47 2000/12/31 16:10:20 toot Exp $
  */
 #include "tools.h"
 #include "m_kline.h"
@@ -154,7 +154,7 @@ int mo_kline(struct Client *cptr,
       parc--;
     }
 
-  if(0 == parc)
+  if(parc == 0)
     {
       sendto_one(sptr, form_str(ERR_NEEDMOREPARAMS),
 		 me.name, sptr->name, "KLINE");
@@ -172,7 +172,7 @@ int mo_kline(struct Client *cptr,
 	{
 	  parc--;
 	  parv++;
-	  if(0 == parc)
+	  if(parc == 0)
 	    {
 	      sendto_one(sptr, form_str(ERR_NEEDMOREPARAMS),
 			 me.name, sptr->name, "KLINE");

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_part.c,v 1.18 2000/12/22 16:12:42 db Exp $
+ *   $Id: m_part.c,v 1.19 2000/12/31 16:10:22 toot Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -44,7 +44,7 @@
 #include <assert.h>
 
 struct Message part_msgtab = {
-  MSG_PART, 1, 1, 0, MFLG_SLOW, 0,
+  MSG_PART, 1, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_part, ms_part, mo_part}
 };
 
@@ -80,7 +80,7 @@ int     m_part(struct Client *cptr,
   int decrement_count;
   char  *p, *name;
 
-  if (parc < 2 || parv[1][0] == '\0')
+  if (*parv[1] == '\0')
     {
       sendto_one(sptr, form_str(ERR_NEEDMOREPARAMS),
                  me.name, parv[0], "PART");
@@ -276,7 +276,7 @@ int     mo_part(struct Client *cptr,
 {
   char  *p, *name;
 
-  if (parc < 2 || parv[1][0] == '\0')
+  if (*parv[1] == '\0')
     {
       sendto_one(sptr, form_str(ERR_NEEDMOREPARAMS),
                  me.name, parv[0], "PART");

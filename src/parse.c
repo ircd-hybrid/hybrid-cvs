@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.70 2000/12/30 23:22:09 db Exp $
+ *   $Id: parse.c,v 7.71 2000/12/31 16:10:28 toot Exp $
  */
 #include "parse.h"
 #include "client.h"
@@ -68,7 +68,8 @@ static char buffer[1024];
  */
 
 static void
-string_to_array(char *string, int mpara, int paramcount, char *end, int *parc, char *parv[MAXPARA])
+string_to_array(char *string, int mpara, int paramcount,
+                char *end, int *parc, char *parv[MAXPARA])
 {
   char *ap;
   char *p=NULL;
@@ -323,14 +324,15 @@ handle_command(struct Message *mptr, struct Client *cptr, struct Client *from, i
 	
   handler = mptr->handlers[cptr->handler];
 	
-/* check right amount of params is passed... --is */
-	
+  /* check right amount of params is passed... --is */
   if (i < mptr->parameters)
     {
       sendto_one(cptr, form_str(ERR_NEEDMOREPARAMS),
-		 me.name, hpara[0], mptr->cmd);
+                 me.name, BadPtr(hpara[0]) ? "*" : hpara[0],
+                 mptr->cmd);
       return 0;
     }
+
   return (*handler)(cptr, from, i, hpara);
 }
 

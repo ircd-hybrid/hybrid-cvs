@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_connect.c,v 1.12 2000/12/27 20:30:12 wcampbel Exp $
+ *   $Id: m_connect.c,v 1.13 2000/12/31 16:10:19 toot Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -42,7 +42,7 @@
 #include <stdlib.h>     /* atoi */
 
 struct Message connect_msgtab = {
-  MSG_CONNECT, 0, 1, 0, MFLG_SLOW, 0,
+  MSG_CONNECT, 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, ms_connect, mo_connect}
 };
 
@@ -88,9 +88,11 @@ int mo_connect(struct Client* cptr, struct Client* sptr, int parc, char* parv[])
 
   if (hunt_server(cptr, sptr,
                   ":%s CONNECT %s %s :%s", 3, parc, parv) != HUNTED_ISME)
-    return 0;
+    {
+      return 0;
+    }
 
-  if (parc < 2 || *parv[1] == '\0')
+  if (*parv[1] == '\0')
     {
       sendto_one(sptr, form_str(ERR_NEEDMOREPARAMS),
                  me.name, parv[0], "CONNECT");
@@ -194,17 +196,13 @@ int ms_connect(struct Client* cptr, struct Client* sptr, int parc, char* parv[])
   struct ConfItem* aconf;
   struct Client*   acptr;
 
-  if (!IsPrivileged(sptr))
-    {
-      sendto_one(sptr, form_str(ERR_NOPRIVILEGES), me.name, parv[0]);
-      return -1;
-    }
-
   if (hunt_server(cptr, sptr,
                   ":%s CONNECT %s %s :%s", 3, parc, parv) != HUNTED_ISME)
-    return 0;
+    {
+      return 0;
+    }
 
-  if (parc < 2 || *parv[1] == '\0')
+  if (*parv[1] == '\0')
     {
       sendto_one(sptr, form_str(ERR_NEEDMOREPARAMS),
                  me.name, parv[0], "CONNECT");

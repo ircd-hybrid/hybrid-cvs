@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_locops.c,v 1.13 2000/12/23 22:11:19 madmax Exp $
+ *   $Id: m_locops.c,v 1.14 2000/12/31 16:10:21 toot Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -36,7 +36,7 @@
 #include "modules.h"
 
 struct Message locops_msgtab = {
-  MSG_LOCOPS, 0, 1, 0, MFLG_SLOW, 0,
+  MSG_LOCOPS, 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, m_ignore, m_locops}
 };
 
@@ -64,7 +64,7 @@ int m_locops(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 {
   char *message = NULL;
 
-  message = parc > 1 ? parv[1] : NULL;
+  message = parv[1];
 
   if (EmptyString(message))
     {
@@ -73,17 +73,9 @@ int m_locops(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
       return 0;
     }
 
-  if(MyConnect(sptr) && IsOper(sptr))
-    {
-      sendto_all_local_opers(sptr, NULL, "LOCOPS - %s", message);
-    }
-  else
-    {
-      sendto_one(sptr, form_str(ERR_NOPRIVILEGES), me.name, parv[0]);
-      return(0);
-    }
+  sendto_all_local_opers(sptr, NULL, "LOCOPS - %s", message);
 
-  return(0);
+  return 0;
 }
 
 

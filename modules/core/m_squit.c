@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_squit.c,v 1.18 2000/12/27 20:30:12 wcampbel Exp $
+ *   $Id: m_squit.c,v 1.19 2000/12/31 16:10:22 toot Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -118,12 +118,6 @@ int ms_squit(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 {
   struct squit_parms *found_squit;
   char  *comment = (parc > 2 && parv[2]) ? parv[2] : cptr->name;
-
-  if (!IsPrivileged(sptr))
-    {
-      sendto_one(sptr, form_str(ERR_NOPRIVILEGES), me.name, parv[0]);
-      return 0;
-    }
 
   if(parc < 2)
     {

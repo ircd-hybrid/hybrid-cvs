@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_oper.c,v 1.20 2000/12/23 05:05:52 toot Exp $
+ *   $Id: m_oper.c,v 1.21 2000/12/31 16:10:21 toot Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -52,8 +52,8 @@ extern        char *crypt();
 #endif /* CRYPT_OPER_PASSWORD */
 
 struct Message oper_msgtab = {
-	MSG_OPER, 0, 2, 0, MFLG_SLOW, 0,
-	{m_unregistered, m_oper, ms_oper, mo_oper} 
+  MSG_OPER, 0, 3, 0, MFLG_SLOW, 0,
+  {m_unregistered, m_oper, ms_oper, mo_oper} 
 };
 
 void
@@ -83,10 +83,10 @@ int m_oper(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   char  *password;
   dlink_node *ptr;
 
-  name = parc > 1 ? parv[1] : (char *)NULL;
-  password = parc > 2 ? parv[2] : (char *)NULL;
+  name = parv[1];
+  password = parv[2];
 
-  if ((EmptyString(name) || EmptyString(password)))
+  if (EmptyString(password))
     {
       sendto_one(sptr, form_str(ERR_NEEDMOREPARAMS),
 		 me.name, sptr->name, "OPER");

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_invite.c,v 1.15 2000/12/31 05:23:19 db Exp $
+ *   $Id: m_invite.c,v 1.16 2000/12/31 16:10:19 toot Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -41,7 +41,7 @@
 #include "modules.h"
 
 struct Message invite_msgtab = {
-  MSG_INVITE, 0, 2, 0, MFLG_SLOW, 0,
+  MSG_INVITE, 0, 3, 0, MFLG_SLOW, 0,
   {m_unregistered, m_invite, ms_invite, m_invite}
 };
 
@@ -76,10 +76,10 @@ int     m_invite(struct Client *cptr,
   char   *chname;
   int    chop;			/* Is channel op */
 
-  if (parc < 3 || *parv[1] == '\0')
+  if (*parv[2] == '\0')
     {
       sendto_one(sptr, form_str(ERR_NEEDMOREPARAMS),
-		 me.name, parv[0], "INVITE");
+                 me.name, parv[0], "INVITE");
       return -1;
     }
 

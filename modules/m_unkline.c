@@ -21,7 +21,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: m_unkline.c,v 1.20 2000/12/30 08:17:50 lusky Exp $
+ *   $Id: m_unkline.c,v 1.21 2000/12/31 16:10:23 toot Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -109,11 +109,6 @@ int mo_unkline (struct Client *cptr,struct Client *sptr,int parc,char *parv[])
 
   ircsprintf(temppath, "%s.tmp", ConfigFileEntry.klinefile);
   
-  if (check_registered(sptr))
-    {
-      return -1;
-    }
-
   if (!IsSetOperUnkline(sptr))
     {
       sendto_one(sptr,":%s NOTICE %s :You have no U flag",me.name,parv[0]);

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operwall.c,v 1.11 2000/12/27 19:27:55 db Exp $
+ *   $Id: m_operwall.c,v 1.12 2000/12/31 16:10:22 toot Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -34,7 +34,7 @@
 #include "modules.h"
 
 struct Message operwall_msgtab = {
-  MSG_OPERWALL, 0, 1, 0, MFLG_SLOW, 0,
+  MSG_OPERWALL, 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, ms_operwall, mo_operwall}
 };
 
@@ -61,16 +61,12 @@ char *_version = "20001122";
 
 int mo_operwall(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 {
-  char *message = parc > 1 ? parv[1] : NULL;
-
-  if (check_registered_user(sptr))
-    return 0;
+  char *message = parv[1];
 
   if (EmptyString(message))
     {
-      if (MyClient(sptr))
-        sendto_one(sptr, form_str(ERR_NEEDMOREPARAMS),
-                   me.name, parv[0], "OPERWALL");
+      sendto_one(sptr, form_str(ERR_NEEDMOREPARAMS),
+                 me.name, parv[0], "OPERWALL");
       return 0;
     }
 
@@ -88,18 +84,7 @@ int mo_operwall(struct Client *cptr, struct Client *sptr, int parc, char *parv[]
 
 int ms_operwall(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 {
-  char *message = parc > 1 ? parv[1] : NULL;
-
-  if (check_registered_user(sptr))
-    return 0;
-
-  if (!IsOper(sptr) || IsServer(sptr))
-    {
-      if (MyClient(sptr) && !IsServer(sptr))
-        sendto_one(sptr, form_str(ERR_NOPRIVILEGES),
-                   me.name, parv[0]);
-      return 0;
-    }
+  char *message = parv[1];
 
   if (EmptyString(message))
     {

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_cjoin.c,v 1.18 2000/12/23 01:42:11 db Exp $
+ *   $Id: m_cjoin.c,v 1.19 2000/12/31 16:10:19 toot Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -45,7 +45,7 @@
 #include <assert.h>
 
 struct Message cjoin_msgtab = {
-  MSG_CJOIN, 0, 1, 0, MFLG_SLOW, 0,
+  MSG_CJOIN, 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_cjoin, m_error, m_cjoin}
 };
 
@@ -88,18 +88,13 @@ int     m_cjoin(struct Client *cptr,
       return 0;
     }
 
-  /* Silently ignore non local cjoin requests */
-  if (!MyClient(sptr))
-    {
-      return 0;
-    }
-
-  if (parc < 2 || *parv[1] == '\0')
+  if (*parv[1] == '\0')
     {
       sendto_one(sptr, form_str(ERR_NEEDMOREPARAMS),
                  me.name, parv[0], "CJOIN");
       return 0;
     }
+
 
   /* Ok, only allowed to CJOIN already existing channels
    * so first part simply verifies the "root" channel exists first

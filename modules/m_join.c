@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 1.34 2000/12/30 07:30:26 lusky Exp $
+ *   $Id: m_join.c,v 1.35 2000/12/31 16:10:19 toot Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -45,7 +45,7 @@
 #include <assert.h>
 
 struct Message join_msgtab = {
-  MSG_JOIN, 0, 1, 0, MFLG_SLOW, 0,
+  MSG_JOIN, 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_join, ms_join, m_join}
 };
 
@@ -95,7 +95,7 @@ int     m_join(struct Client *cptr,
       return 0;
     }
 
-  if (parc < 2 || *parv[1] == '\0')
+  if (*parv[1] == '\0')
     {
       sendto_one(sptr, form_str(ERR_NEEDMOREPARAMS),
                  me.name, parv[0], "JOIN");

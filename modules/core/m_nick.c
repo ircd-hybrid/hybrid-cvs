@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_nick.c,v 1.35 2000/12/26 23:54:15 db Exp $
+ *   $Id: m_nick.c,v 1.36 2000/12/31 16:10:21 toot Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -87,7 +87,7 @@ int mr_nick(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   if (parc < 2)
     {
       sendto_one(sptr, form_str(ERR_NONICKNAMEGIVEN),
-                 me.name, parv[0]);
+                 me.name, BadPtr(parv[0]) ? "*" : parv[0]);
       return 0;
     }
 
@@ -134,6 +134,7 @@ int mr_nick(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   else
     sendto_one(sptr, form_str(ERR_NICKNAMEINUSE), me.name,
 	       BadPtr(parv[0]) ? "*" : parv[0], nick);
+
   return 0; /* NICK message ignored */
 }
 
