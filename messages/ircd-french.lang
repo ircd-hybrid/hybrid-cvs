@@ -1,7 +1,7 @@
 ; ircd-hybrid-7 custom message file
 ; Copyright (C) 2003
 ; Joshua Kwan <joshk@triplehelix.org>
-; $Id: ircd-french.lang,v 1.6 2003/06/28 23:58:26 joshk Exp $
+; $Id: ircd-french.lang,v 1.7 2003/09/28 01:17:45 joshk Exp $
 
 RPL_LUSEROP:             :%s 252 %s %d :opérateurs IRC en ligne
 RPL_LOAD2HI:             :%s 263 %s :Veuillez patienter, le serveur est trop occupé
@@ -22,7 +22,7 @@ RPL_TRACECONNECTING:	 :%s 201 %s Essai. %s %s
 RPL_TRACEOPERATOR:	 :%s 204 %s Opér %s %s (%s) %lu %lu
 RPL_TRACEUSER:		 :%s 205 %s Client %s %s (%s) %lu %lu
 RPL_TRACESERVER:	 :%s 206 %s Serv. %s %dS %dC %s %s!%s@%s %lu
-RPL_TRACENEWTYPE:	 :%s 208 %s <newtype> 0 %s
+RPL_TRACENEWTYPE:	 :%s 208 %s <nouvelletype> 0 %s
 RPL_TRACECLASS:		 :%s 209 %s Classe %s %d
 RPL_ENDOFSTATS:		 :%s 219 %s %c :Fin de reportage /STATS
 RPL_STATSUPTIME:	 :%s 242 %s :Le serveur fonctionne depuis %d jours, %dh %dm %ds
@@ -60,7 +60,7 @@ ERR_PASSWDMISMATCH:      :%s 464 %s :Faux mot de passe
 ERR_NOPRIVILEGES:        :%s 481 %s :Vous n'avez pas ce droit puisque vous n'êtes pas un opérateur
 ERR_CHANOPRIVSNEEDED:    :%s 482 %s %s :Vous n'avez pas assez de pouvoir dans cette chaîne IRC pour faire ça
 ERR_CANTKILLSERVER:      :%s 483 %s :Impossible de /KILLer un serveur!
-ERR_NOOPERHOST:          :%s 491 %s :Vous manquez la bonne addresse ou le bon mot de passe pour devenir opérateur IRC
+ERR_NOOPERHOST:          :%s 491 %s :Vous manquez la bonne addresse ou le bon mot de passe pour devenir un opérateur IRC
 ERR_NOSUCHNICK:		 :%s 401 %s %s :Aucun(e) client/chaîne.
 ERR_NOSUCHSERVER:	 :%s 402 %s %s :Aucun serveur
 ERR_NOSUCHCHANNEL:	 :%s 403 %s %s :Aucune chaîne
@@ -98,14 +98,14 @@ ERR_BANNEDFROMCHAN:	 :%s 474 %s %s :Impossible de joindre (+b)
 ERR_BADCHANNELKEY:	 :%s 475 %s %s :Impossible de joindre (+k)
 ERR_BANLISTFULL:	 :%s 478 %s %s %s :Liste d'interdits est plein
 ERR_BADCHANNAME:	 :%s 479 %s %s :Nom de chaîne illégale
-ERR_RESTRICTED:		 :%s 484 %s :Vous êtes restraints
+ERR_RESTRICTED:		 :%s 484 %s :Vous êtes restraint
 ERR_UMODEUNKNOWNFLAG:	 :%s 501 %s :MODE client inconnue
 ERR_USERSDONTMATCH:	 :%s 502 %s :Impossible de modifier la mode des autres clients
 ERR_GHOSTEDCLIENT:	 :%s 503 %s :Le message n'est pas parvenu à %s
 ERR_USERNOTONSERV:	 :%s 504 %s %s :Client n'est pas sur ce serveur
 ERR_WRONGPONG:		 :%s 513 %s :Pour connecter tapez /QUOTE PONG %lu
 ERR_LISTSYNTAX:		 :%s 521 %s :Mauvaise syntaxe /LIST
-ERR_HELPNOTFOUND:	 :%s 524 %s %s :Renseignement n'existe pas
+ERR_HELPNOTFOUND:	 :%s 524 %s %s :Ce renseignement n'existe pas
 RPL_ENDOFMODLIST:	 :%s 703 %s :Fin de /MODLIST.
 RPL_ENDOFHELP:		 :%s 706 %s %s :Fin de /HELP.
 RPL_KNOCK:		 :%s 710 %s %s %s!%s@%s :a demandé d'être invité
