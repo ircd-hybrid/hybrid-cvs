@@ -1,6 +1,6 @@
  Known Bugs worthy of a mention:
 --------------------------------------------------------------------------------
-
+ 
 1.  Issues with server hostmasking.
     - If for example the new servername is blah.blah.blah.nl, the following
       servernames will be checked, in this order: *.blah.blah.nl, *.blah.nl,
@@ -69,4 +69,4 @@ BUG REPORTS: If you run this code and encounter problems, you must report
  with any report  (with passwords and other sensitive information masked).
 
 --------------------------------------------------------------------------------
-$Id: BUGS,v 7.42 2001/11/19 05:39:36 lusky Exp $
+$Id: BUGS,v 7.43 2001/11/21 08:49:12 androsyn Exp $
