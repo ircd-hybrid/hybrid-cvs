@@ -4,8 +4,8 @@ This document is an overview of what new features are included
 AWAY is now propogated.  
 
 The conf file format has been vastly improved.  The old conf format is 
-still supported, but is deprecated.  Many options that were defined at
-compile time are now set in the config file.
+no longer supported.  Many options that were defined at compile time are
+now set in the config file.
 
 Unauthorized connection notices have been moved to the +u user mode.
 
@@ -136,4 +136,4 @@ original normal local klines
 
 # complete me
 
-# $Id: whats-new.txt,v 7.4 2000/12/23 17:20:52 wcampbel Exp $
+# $Id: whats-new.txt,v 7.5 2000/12/23 18:55:02 ejb Exp $
