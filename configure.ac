@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.41 2003/05/29 04:06:38 joshk Exp $
+dnl $Id: configure.ac,v 7.42 2003/05/29 06:10:10 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -462,7 +462,6 @@ if test "X$cf_enable_openssl" != "Xno"; then
 		AC_SUBST(ENCSPEED, encspeed)
 		
 		dnl Do all the HAVE_LIBCRYPTO magic -- and check for ciphers
-		save_CPPFLAGS="$CPPFLAGS"
 		CPPFLAGS="$CPPFLAGS $SSL_LIBS"
 		AC_CHECK_LIB(crypto, RSA_free)
 		if test "X$ac_cv_lib_crypto_RSA_free" = "Xyes"; then
@@ -481,7 +480,6 @@ if test "X$cf_enable_openssl" != "Xno"; then
 			AC_CHECK_FUNCS(EVP_des_cfb,
 			cf_openssl_ciphers="${cf_openssl_ciphers}DES/56 ")
 		fi
-		CPPFLAGS="$save_CPPFLAGS"
 		SSL_LIBS="$SSL_LIBS -lcrypto"
 	else
 	        AC_MSG_RESULT(no - OpenSSL support disabled)

@@ -6525,8 +6525,7 @@ echo "${ECHO_T}found" >&6
 				ENCSPEED=encspeed
 
 
-				save_CPPFLAGS="$CPPFLAGS"
-		CPPFLAGS="$CPPFLAGS $SSL_LIBS"
+				CPPFLAGS="$CPPFLAGS $SSL_LIBS"
 
 echo "$as_me:$LINENO: checking for RSA_free in -lcrypto" >&5
 echo $ECHO_N "checking for RSA_free in -lcrypto... $ECHO_C" >&6
@@ -7099,7 +7098,6 @@ fi
 done
 
 		fi
-		CPPFLAGS="$save_CPPFLAGS"
 		SSL_LIBS="$SSL_LIBS -lcrypto"
 	else
 	        echo "$as_me:$LINENO: result: no - OpenSSL support disabled" >&5
