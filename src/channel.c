@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.123 2000/12/11 02:50:49 db Exp $
+ * $Id: channel.c,v 7.124 2000/12/13 07:57:49 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -757,7 +757,11 @@ void send_channel_modes(struct Client *cptr, struct Channel *chptr)
   channel_modes(chptr, cptr, modebuf, parabuf);
 
   send_members(cptr,modebuf,parabuf,chptr,&chptr->chanops,"@");
+#if 0
   send_members(cptr,modebuf,parabuf,chptr,&chptr->halfops,"%");
+#endif
+  /* Ok, halfops can still generate a kick, they'll just looked unopped */
+  send_members(cptr,modebuf,parabuf,chptr,&chptr->halfops,"");
   send_members(cptr,modebuf,parabuf,chptr,&chptr->voiced,"+");
   send_members(cptr,modebuf,parabuf,chptr,&chptr->peons,"");
 

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.67 2000/12/13 01:31:40 db Exp $
+ *   $Id: s_serv.c,v 7.68 2000/12/13 07:57:50 db Exp $
  */
 #include "tools.h"
 #include "s_serv.h"
@@ -511,6 +511,14 @@ void send_capabilities(struct Client* cptr, int can_send)
 }
 
 
+/*
+ * sendnick_TS
+ * 
+ * inputs	- client (server) to send nick towards
+ * 		- client to send nick for
+ * output	- NONE
+ * side effects	- NICK message is sent towards given cptr
+ */
 void sendnick_TS(struct Client *cptr, struct Client *acptr)
 {
   static char ubuf[12];

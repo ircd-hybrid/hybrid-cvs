@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.27 2000/12/12 16:36:54 db Exp $
+ *   $Id: m_sjoin.c,v 1.28 2000/12/13 07:57:43 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -323,6 +323,16 @@ int     ms_sjoin(struct Client *cptr,
       else if (*s == '@')
 	{
 	  fl |= MODE_CHANOP;
+	  s++;
+	}
+      
+      /* Lets think about this one for a bit... 
+       * if seen it should be respected.. but not necessarily
+       * ever sent!
+       */
+      if (*s == '%')
+	{
+	  fl |= MODE_HALFOP;
 	  s++;
 	}
 
