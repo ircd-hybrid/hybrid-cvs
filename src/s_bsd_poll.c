@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_poll.c,v 7.35 2001/04/29 19:10:23 androsyn Exp $
+ *  $Id: s_bsd_poll.c,v 7.36 2001/04/29 19:31:10 androsyn Exp $
  */
 #include "config.h"
 #ifdef USE_POLL
@@ -228,7 +228,11 @@ comm_setselect(int fd, fdlist_t list, unsigned int type, PF * handler,
     fde_t *F = &fd_table[fd];
     assert(fd >= 0);
     assert(F->flags.open);
-    assert(handler != NULL);
+#ifndef NDEBUG
+    if(list != FDLIST_NONE)
+    	assert(handler != NULL);
+#endif
+
 #ifdef NOTYET
     debug(5, 5) ("commSetSelect: FD %d type %d, %s\n", fd, type, handler ? "SET"
  : "CLEAR");
