@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_who.c,v 1.50 2002/02/10 21:24:34 db Exp $
+ *  $Id: m_who.c,v 1.51 2002/02/10 23:47:06 db Exp $
  */
 
 #include "tools.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&who_msgtab);
 }
-char *_version = "$Revision: 1.50 $";
+char *_version = "$Revision: 1.51 $";
 #endif
 static void do_who_on_channel(struct Client *source_p,
 			      struct Channel *chptr, char *real_name,
@@ -107,7 +107,7 @@ static void m_who(struct Client *client_p,
 
   /* See if mask is there, collapse it or return if not there */
 
-  if (mask != (char *)NULL)
+  if (mask != NULL)
     {
       (void)collapse(mask);
 
@@ -250,13 +250,10 @@ static void m_who(struct Client *client_p,
     }
   /* '/who 0' */
   if ((*(mask + 1) == '\0') && (*mask == '0'))
-  {
-    mask = NULL;
-  }
-  /* Wasn't a nick, wasn't a channel, wasn't a '*' so ... */
-  who_global(source_p, mask, server_oper);
-  if(mask == NULL)
-    mask = "*";
+    who_global(source_p, NULL, server_oper);
+  else
+    who_global(source_p, mask, server_oper);
+ /* Wasn't a nick, wasn't a channel, wasn't a '*' so ... */
   sendto_one(source_p, form_str(RPL_ENDOFWHO), me.name, parv[0], mask);
 }
 
