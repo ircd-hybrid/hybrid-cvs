@@ -52,10 +52,6 @@
     the file is installed, you can SET MSGLOCALE back to the language that
     was just updated.
 
-6.  While on a LL server, doing a /TOPIC or /MODE against a channel which
-    doesn't exist results in the channel being shown as existing, and
-    with a timestamp of 'Mon Jan 18 19:14:07 2038'.
-
 For more information see http://bugs.efnow.net
 
 BUG REPORTS: If you run this code and encounter problems, you must report
@@ -68,4 +64,4 @@ BUG REPORTS: If you run this code and encounter problems, you must report
  with any report  (with passwords and other sensitive information masked).
 
 --------------------------------------------------------------------------------
-$Id: BUGS,v 7.23 2001/04/24 21:45:22 androsyn Exp $
+$Id: BUGS,v 7.24 2001/05/15 07:20:36 toot Exp $
