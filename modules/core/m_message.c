@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.85 2002/01/12 20:08:07 leeh Exp $
+ *  $Id: m_message.c,v 1.86 2002/01/13 14:58:26 jmallett Exp $
  */
 
 #include "handlers.h"
@@ -122,7 +122,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-char *_version = "$Revision: 1.85 $";
+char *_version = "$Revision: 1.86 $";
 #endif
 
 /*
@@ -215,8 +215,6 @@ m_message(int p_or_n,
     switch (targets[i].type)
     {
       case ENTITY_CHANNEL:
-        if (!IsPerson(source_p))
-          continue;
         msg_channel(p_or_n, command, client_p, source_p,
                     (struct Channel *)targets[i].ptr, parv[2]);
         break;
