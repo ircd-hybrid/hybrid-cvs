@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.359 2003/09/27 23:19:42 bill Exp $
+ *  $Id: ircd_parser.y,v 1.360 2003/09/27 23:34:25 bill Exp $
  */
 
 %{
@@ -3049,10 +3049,6 @@ gline_action: ACTION
   {
     struct CollectItem *yy_tmp;
     dlink_node *ptr, *next_ptr;
-
-    /* some idiot said to allow and reject it, default to reject */
-   if ((yy_aconf->flags & GDENY_REJECT) && (yy_aconf->flags & GDENY_ALLOW))
-      yy_aconf->flags &= ~GDENY_ALLOW; 
 
     DLINK_FOREACH_SAFE(ptr, next_ptr, col_conf_list.head)
     {

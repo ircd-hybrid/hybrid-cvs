@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.266 2003/09/26 03:35:12 bill Exp $
+ *  $Id: s_conf.h,v 7.267 2003/09/27 23:34:24 bill Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -255,9 +255,8 @@ struct ClassItem
 				 SHARED_UNXLINE | SHARED_RESV | SHARED_UNRESV)
 
 /* gline acl entry actions */
-#define GDENY_ALLOW		0x1
-#define GDENY_BLOCK		0x2
-#define GDENY_REJECT		0x4
+#define GDENY_BLOCK		0x1
+#define GDENY_REJECT		0x2
 
 struct config_file_entry
 {
