@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.228 2003/03/03 04:10:37 db Exp $
+ *  $Id: s_user.c,v 7.229 2003/03/09 23:06:18 db Exp $
  */
 
 #include "stdinc.h"
@@ -1289,10 +1289,11 @@ check_X_line(struct Client *client_p, struct Client *source_p)
 	  if (aconf->port == 1)
 	    {
 	      sendto_realops_flags(UMODE_REJ, L_ALL,
-				   "X-line Rejecting [%s] [%s], user %s",
+				   "X-line Rejecting [%s] [%s], user %s [%s]",
 				   source_p->info,
 				   reason,
-				   get_client_name(client_p, HIDE_IP));
+				   get_client_name(client_p, HIDE_IP),
+				   source_p->localClient->sockhost);
 	    }
 	  ServerStats->is_ref++;      
 	  exit_client(client_p, source_p, &me, "Bad user info");
@@ -1300,10 +1301,11 @@ check_X_line(struct Client *client_p, struct Client *source_p)
 	}
       else
 	sendto_realops_flags(UMODE_REJ, L_ALL,
-			     "X-line Warning [%s] [%s], user %s",
+			     "X-line Warning [%s] [%s], user %s [%s]",
 			     source_p->info,
 			     reason,
-			     get_client_name(client_p, HIDE_IP));
+			     get_client_name(client_p, HIDE_IP),
+			     source_p->localClient->sockhost);
     }
 
   return (0);
