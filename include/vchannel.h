@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: vchannel.h,v 7.9 2000/10/28 02:29:06 toot Exp $
+ * $Id: vchannel.h,v 7.10 2000/11/02 15:09:58 toot Exp $
  */
 
 #ifndef INCLUDED_vchannel_h
@@ -54,6 +54,9 @@ extern void	show_vchans(struct Client *cptr,
 			    struct Client *sptr,
 			    struct Channel *chptr,
                             char *command);
+
+/* pick a nickname from the channel, to show as an ID */
+extern char* pick_vchan_id(struct Channel *chptr);
 
 /* find a matching vchan with a !key (nick) */ 
 extern struct Channel* find_vchan(struct Channel *, char *);
