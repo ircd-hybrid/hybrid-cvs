@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: adns.c,v 7.41 2002/05/24 23:34:44 androsyn Exp $
+ *  $Id: adns.c,v 7.42 2002/05/31 00:25:42 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -145,8 +145,11 @@ void dns_do_callbacks(void)
       case 0:
         /* Looks like we got a winner */            
         assert(query->callback != NULL);
-        query->query = NULL;
-        query->callback(query->ptr, answer);
+        if(query->callback != NULL)
+        {
+          query->query = NULL;
+          query->callback(query->ptr, answer);
+        }
         break;
 	
       case EAGAIN:
@@ -155,9 +158,12 @@ void dns_do_callbacks(void)
 	
       default:
         assert(query->callback != NULL);
-        /* Awww we failed, what a shame */
-        query->query = NULL;
-        query->callback(query->ptr, NULL);      
+        if(query->callback != NULL)
+        {
+          /* Awww we failed, what a shame */
+          query->query = NULL;
+          query->callback(query->ptr, NULL);      
+        }
         break;
     } 
   }
