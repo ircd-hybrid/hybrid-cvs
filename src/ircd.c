@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.133 2001/04/15 09:44:52 toot Exp $
+ * $Id: ircd.c,v 7.134 2001/04/18 08:08:46 jdc Exp $
  */
 
 #include <sys/types.h>
@@ -375,6 +375,7 @@ int main(int argc, char *argv[])
   time_t      delay = 0;
 
   printf("ircd version %s\n", version);
+  printf("ircd: pid %d\n", (int)getpid());
 
   /*
    * save server boot time right away, so getrusage works correctly
