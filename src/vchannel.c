@@ -19,7 +19,7 @@
  *
  *
  *
- * $Id: vchannel.c,v 7.1 2000/10/14 14:20:05 db Exp $
+ * $Id: vchannel.c,v 7.2 2000/10/14 14:26:41 db Exp $
  */
 #include "vchannel.h"
 #include "channel.h"
@@ -50,4 +50,44 @@ void    add_vchan_to_client_cache(struct Client *sptr,
 
   sptr->vchan_map[i].base_chan = base_chan;
   sptr->vchan_map[i].vchan = vchan;
+}
+
+
+/* show info on vchans, XXXX this needs to be improved! */
+
+void show_vchans(struct Client *cptr,
+                        struct Client *sptr,
+                        struct Channel *chptr)
+{
+   int no_of_vchans = 0;
+   struct Channel *chtmp1, *chtmp2;
+
+   for (chtmp1 = chptr; chtmp1; chtmp1 = chtmp1->next_vchan)
+     no_of_vchans++;
+
+   sendto_one(sptr,
+              ":%s NOTICE %s *** %d channels are available for %s",
+              me.name, sptr->name, no_of_vchans, chptr->chname);
+   sendto_one(sptr,
+              ":%s NOTICE %s *** Type /join %s <key> to join the one you wish to join",
+               me.name, sptr->name, chptr->chname);
+
+   for (chtmp2 = chptr; chtmp2; chtmp2 = chtmp2->next_vchan)
+      sendto_one(sptr,
+                 ":%s NOTICE %s *** !%s",
+                  me.name, sptr->name, chtmp2->chan_id);
+}
+
+/* return matching vchan, or NULL if there isn't one */
+struct Channel* find_vchan(struct Channel *chptr, char *key)
+{
+  struct Channel *chtmp;
+  
+  key++; /* go past the '!' */
+
+  for (chtmp = chptr; chtmp; chtmp = chtmp->next_vchan)
+    if (!irccmp(chtmp->chan_id, key))
+      return chtmp;
+  
+  return NullChn;
 }
