@@ -10,8 +10,6 @@ If you don't read this first, we won't help you.
   * - The old config format WILL NOT WORK.  Please see doc/example.conf ! *
   * - The old kline format WILL NOT WORK.  Please use convertklines which *
   *   will be installed with your ircd!					  *
-  * - If you get errors compiling custom.mo, check if you are using the   *
-  *   most recent version of gettext.  Tested with GNU gettext 0.10.35.   *
   *************************************************************************
 
   ALSO, IF YOU ARE UPGRADING YOUR CURRENT SOURCE TREE, AND YOU TRY TO BUILD
@@ -45,8 +43,6 @@ Feature Specific Requirements:
 
 - For the SSL Challenge controlled OPER feature and encrypted server links,
   a working OpenSSL library
-
-- For dynamic message locale support, a working gettext (intl) library
 
 - For encrypted oper and (optional) server passwords, a working DES and/or
   MD5 library
@@ -112,4 +108,4 @@ Feature Specific Requirements:
 - Other files recommended for reading: BUGS, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: README.FIRST,v 7.33 2002/04/28 00:26:01 leeh Exp $
+$Id: README.FIRST,v 7.34 2003/03/29 17:26:38 michael Exp $

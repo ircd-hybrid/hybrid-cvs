@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.256 2003/03/02 06:46:42 db Exp $
+ *  $Id: ircd.c,v 7.257 2003/03/29 17:26:41 michael Exp $
  */
 
 #include "stdinc.h"
@@ -418,7 +418,6 @@ static void initialize_server_capabs(void)
   default_server_capabs &= ~CAP_ZIP;
 }
 
-
 /*
  * write_pidfile
  *
@@ -675,23 +674,6 @@ int main(int argc, char *argv[])
   }
   strncpy(me.info, ServerInfo.description, REALLEN);
 
-#ifdef USE_GETTEXT
-  /*
-   * For 'locale' try (in this order):
-   *    Config entry "msglocale" (yyparse() will overwrite LANGUAGE)
-   *    Env variable "LANGUAGE"
-   *    Default of "" (so don't overwrite LANGUAGE here)
-   */
-
-  if (!getenv("LANGUAGE"))
-  {
-    putenv("LANGUAGE=");
-  }
-
-  textdomain("ircd-hybrid");
-  bindtextdomain("ircd-hybrid" , MSGPATH);
-#endif
-
 #ifdef USE_IAUTH
   iAuth.flags = 0;
 
@@ -752,6 +734,4 @@ int main(int argc, char *argv[])
   io_loop();
   return(0);
 }
-
-
 

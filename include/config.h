@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: config.h,v 7.143 2003/03/25 01:17:49 db Exp $
+ *  $Id: config.h,v 7.144 2003/03/29 17:26:40 michael Exp $
  */
 
 #ifndef INCLUDED_config_h
@@ -83,7 +83,7 @@
  * ETCPATH     = directory for configuration files,
  * LOGPATH     = directory for logfiles,
  * MODPATH     = directory for autoloaded modules (disabled in VMS),
- * MSGPATH     = directory for gettext message files (disabled in VMS).
+ * MSGPATH     = directory for language files (disabled in VMS).
  */
 
 /* IRCD_PREFIX not needed in VMS -larne */
@@ -128,7 +128,7 @@
  * LOGPATH     = directory for logfiles,
  * MODPATH     = directory for modules,
  * AUTOMODPATH = directory for autoloaded modules
- * MSGPATH     = directory for gettext message files.
+ * MSGPATH     = directory for language files.
  */
 
 /* dirs */

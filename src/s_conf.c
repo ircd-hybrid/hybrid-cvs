@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.349 2003/03/29 14:25:15 michael Exp $
+ *  $Id: s_conf.c,v 7.350 2003/03/29 17:26:41 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1353,7 +1353,6 @@ set_default_conf(void)
   ConfigFileEntry.fname_operlog[0] = '\0';
   ConfigFileEntry.glines = NO;
   ConfigFileEntry.use_egd = NO;
-  /* don't reset msglocale setting -- we'd overwrite then env string */
   ConfigFileEntry.gline_time = 12 * 3600;
   ConfigFileEntry.idletime = 0;
   ConfigFileEntry.dots_in_ident = 0;
