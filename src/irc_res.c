@@ -7,7 +7,7 @@
  * The authors takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: irc_res.c,v 7.23 2003/05/24 07:01:03 db Exp $
+ * $Id: irc_res.c,v 7.24 2003/05/26 01:01:18 stu Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -122,8 +122,8 @@ extern char irc_domain[HOSTLEN];
 
 /*
  * int
- * res_ourserver(ina)
- *      looks up "ina" in irc_nsaddr_list[]
+ * res_ourserver(inp)
+ *      looks up "inp" in irc_nsaddr_list[]
  * returns:
  *      0  : not found
  *      >0 : found
@@ -134,7 +134,6 @@ extern char irc_domain[HOSTLEN];
 static int
 res_ourserver(const struct irc_ssaddr *inp) 
 {
-  struct irc_ssaddr ina;
 #ifdef IPV6
   struct sockaddr_in6 *v6;
   struct sockaddr_in6 *v6in = (struct sockaddr_in6 *)inp;
@@ -143,7 +142,6 @@ res_ourserver(const struct irc_ssaddr *inp)
   struct sockaddr_in *v4in = (struct sockaddr_in *)inp; 
   int ns;
 
-  ina = *inp;
   for (ns = 0;  ns < irc_nscount;  ns++)
   {
     const struct irc_ssaddr *srv = &irc_nsaddr_list[ns];
@@ -161,7 +159,7 @@ res_ourserver(const struct irc_ssaddr *inp)
     {
 #ifdef IPV6
       case AF_INET6:
-        if (srv->ss.ss_family == ina.ss.ss_family)
+        if (srv->ss.ss_family == inp->ss.ss_family)
           if (v6->sin6_port == v6in->sin6_port)
             if ((memcmp(&v6->sin6_addr.s6_addr, &v6in->sin6_addr.s6_addr, 
                     sizeof(struct in6_addr)) == 0) || 
@@ -171,7 +169,7 @@ res_ourserver(const struct irc_ssaddr *inp)
         break;
 #endif
       case AF_INET:
-        if (srv->ss.ss_family == ina.ss.ss_family)
+        if (srv->ss.ss_family == inp->ss.ss_family)
           if (v4->sin_port == v4in->sin_port)
             if ((v4->sin_addr.s_addr == INADDR_ANY) || 
                 (v4->sin_addr.s_addr == v4in->sin_addr.s_addr))

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_gline.h,v 7.16 2003/05/24 09:25:39 michael Exp $
+ *  $Id: s_gline.h,v 7.17 2003/05/26 01:01:17 stu Exp $
  */
 
 #ifndef INCLUDED_s_gline_h
@@ -65,6 +65,6 @@ struct gline_pending
 #define GLINE_PENDING_EXPIRE 600
 #define CLEANUP_GLINES_TIME  300
 
-dlink_list pending_glines;
+extern dlink_list pending_glines;
 extern dlink_list glines;
 #endif

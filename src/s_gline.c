@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_gline.c,v 1.34 2003/05/24 09:25:44 michael Exp $
+ *  $Id: s_gline.c,v 1.35 2003/05/26 01:01:18 stu Exp $
  */
 
 #include "stdinc.h"
@@ -48,6 +48,7 @@
 
 
 dlink_list glines = { NULL, NULL, 0 };
+dlink_list pending_glines = { NULL, NULL, 0 };
 
 static void expire_glines(void);
 static void expire_pending_glines(void);
