@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.377 2003/05/31 18:52:55 adx Exp $
+ *  $Id: client.c,v 7.378 2003/06/01 18:45:31 db Exp $
  */
 
 #include "stdinc.h"
@@ -54,6 +54,7 @@
 #include "balloc.h"
 #include "listener.h"
 #include "irc_res.h"
+#include "userhost.h"
 
 /* Pointer to beginning of Client list */
 dlink_list global_client_list = {NULL, NULL, 0};
@@ -1299,7 +1300,8 @@ exit_client(
     }
 
     if (IsPerson(source_p))
-      sendto_realops_flags(UMODE_CCONN, L_ALL, "Client exiting: %s (%s@%s) [%s] [%s]",
+      sendto_realops_flags(UMODE_CCONN, L_ALL,
+			   "Client exiting: %s (%s@%s) [%s] [%s]",
                            source_p->name, source_p->username, source_p->host,
                            comment,
 #ifdef HIDE_SPOOF_IPS
@@ -1369,6 +1371,18 @@ exit_client(
       ilog(L_NOTICE, "%s was connected for %d seconds.  %d/%d sendK/recvK.",
            source_p->name, CurrentTime - source_p->firsttime, 
            source_p->localClient->sendK, source_p->localClient->receiveK);
+    }
+  }
+
+  if (IsPerson(source_p) && IsUserHostIp(source_p))
+  {
+    if (MyConnect(source_p))
+    {
+      delete_user_host(source_p->username, source_p->host, 0);
+    }
+    else
+    {
+      delete_user_host(source_p->username, source_p->host, 1);
     }
   }
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.h,v 7.24 2003/05/22 17:09:01 michael Exp $
+ *  $Id: hash.h,v 7.25 2003/06/01 18:45:29 db Exp $
  */
 
 #ifndef INCLUDED_hash_h
@@ -49,6 +49,7 @@
 struct Client;
 struct Channel;
 struct ResvChannel;
+struct UserHost;
 
 struct HashEntry
 {

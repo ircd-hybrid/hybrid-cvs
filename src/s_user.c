@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.278 2003/05/29 07:42:05 metalrock Exp $
+ *  $Id: s_user.c,v 7.279 2003/06/01 18:45:32 db Exp $
  */
 
 #include "stdinc.h"
@@ -50,6 +50,7 @@
 #include "whowas.h"
 #include "memory.h"
 #include "packet.h"
+#include "userhost.h"
 
 static int valid_hostname(const char *hostname);
 static int valid_username(const char *username);
@@ -513,6 +514,8 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   }
 
   user_welcome(source_p);
+  add_user_host(source_p->username, source_p->host, 0);
+  SetUserHost(source_p);
   return(introduce_client(client_p, source_p));
 }
 
@@ -589,6 +592,8 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
     return(exit_client(source_p, source_p, &me, "USER server wrong direction"));
   }
 
+  add_user_host(source_p->username, source_p->host, 1);
+  SetUserHost(source_p);
   return(introduce_client(client_p, source_p));
 }
 
@@ -638,11 +643,12 @@ introduce_client(struct Client *client_p, struct Client *source_p)
   {
     if (IsCapable(uplink, CAP_SID) && HasID(source_p))
     {
-      sendto_one(uplink, "UID %s %d %lu %s %s %s %s %s :%s",
+      sendto_one(uplink, "SID %s %d %lu %s %s %s %s %s :%s",
                  source_p->name, source_p->hopcount+1,
 		 (unsigned long)source_p->tsinfo,
                  ubuf, source_p->username, source_p->host,
-		 source_p->user->server->name,
+		 "0", /* XXX IP */
+		 source_p->user->server->id,
                  source_p->id, source_p->info);
     }
     else
@@ -665,11 +671,12 @@ introduce_client(struct Client *client_p, struct Client *source_p)
         continue;
 
       if (IsCapable(server, CAP_SID) && HasID(source_p))
-        sendto_one(server, "UID %s %d %lu %s %s %s %s %s :%s",
+        sendto_one(server, "UID %s %d %lu %s %s %s %s %s %s :%s",
                    source_p->name, source_p->hopcount+1,
 		   (unsigned long)source_p->tsinfo,
                    ubuf, source_p->username, source_p->host,
-		   source_p->user->server->name,
+		   "0", /* XXX IP */
+		   source_p->user->server->id,
                    source_p->id, source_p->info);
       else
         sendto_one(server, "NICK %s %d %lu %s %s %s %s :%s",
@@ -838,7 +845,8 @@ report_and_set_user_flags(struct Client *source_p, struct ConfItem *aconf)
  * side effects -
  */
 int
-do_local_user(const char *nick, struct Client *client_p, struct Client *source_p,
+do_local_user(const char *nick, struct Client *client_p,
+	      struct Client *source_p,
               const char *username, const char *host, const char *server,
               const char *realname)
 {
@@ -888,7 +896,8 @@ do_local_user(const char *nick, struct Client *client_p, struct Client *source_p
  * parv[2] - modes to change
  */
 void
-set_user_mode(struct Client *client_p, struct Client *source_p, int parc, char *parv[])
+set_user_mode(struct Client *client_p, struct Client *source_p,
+	      int parc, char *parv[])
 {
   unsigned int i;
   unsigned int flag;
@@ -1342,7 +1351,12 @@ uid_init(void)
   memset(new_uid, 0, sizeof(new_uid));
 
   if (ServerInfo.sid != NULL)
-    memcpy(new_uid, ServerInfo.sid, IRCD_MIN(strlen(ServerInfo.sid), IRC_MAXSID));
+  {
+    memcpy(new_uid, ServerInfo.sid, IRCD_MIN(strlen(ServerInfo.sid),
+					     IRC_MAXSID));
+    memcpy(&me.id, ServerInfo.sid, IRCD_MIN(strlen(ServerInfo.sid),
+					     IRC_MAXSID));
+  }
 
   for (i = 0; i < IRC_MAXSID; i++)
     if (new_uid[i] == '\0') 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.300 2003/05/30 08:05:40 michael Exp $
+ *  $Id: ircd_parser.y,v 1.301 2003/06/01 18:45:31 db Exp $
  */
 
 %{
@@ -1091,7 +1091,7 @@ class_ping_time: PING_TIME '=' timespec ';'
 class_number_per_ip: NUMBER_PER_IP '=' NUMBER ';'
 {
   if (ypass == 1)
-    MaxTotal(yy_class) = $3;
+    MaxPerIp(yy_class) = $3;
 };
 
 class_connectfreq: CONNECTFREQ '=' timespec ';'

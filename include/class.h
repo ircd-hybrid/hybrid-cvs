@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: class.h,v 7.19 2003/05/29 00:58:59 db Exp $
+ *  $Id: class.h,v 7.20 2003/06/01 18:45:29 db Exp $
  */
 
 #ifndef INCLUDED_class_h
@@ -39,6 +39,7 @@ struct Class
   int max_local;
   int max_global;
   int max_ident;
+  int max_perip;
   long max_sendq;
   int curr_user_count;
 };
@@ -50,6 +51,7 @@ struct Class
 #define MaxGlobal(x)	((x)->max_global)
 #define MaxLocal(x)	((x)->max_local)
 #define MaxIdent(x)	((x)->max_ident)
+#define MaxPerIp(x)	((x)->max_perip)
 #define MaxSendq(x)	((x)->max_sendq)
 #define CurrUserCount(x) ((x)->curr_user_count)
 
@@ -59,6 +61,7 @@ struct Class
 #define ConfMaxGlobal(x) (ClassPtr(x)->max_global)
 #define ConfMaxLocal(x)	 (ClassPtr(x)->max_local)
 #define ConfMaxIdent(x)	 (ClassPtr(x)->max_ident)
+#define ConfMaxPerIp(x)	 (ClassPtr(x)->max_perip)
 #define ConfClassName(x) (ClassPtr(x)->class_name)
 #define ConfConFreq(x)   (ClassPtr(x)->con_freq)
 #define ConfPingFreq(x)  (ClassPtr(x)->ping_freq)

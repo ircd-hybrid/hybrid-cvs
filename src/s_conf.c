@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.416 2003/05/30 08:05:40 michael Exp $
+ *  $Id: s_conf.c,v 7.417 2003/06/01 18:45:31 db Exp $
  */
 
 #include "stdinc.h"
@@ -55,6 +55,7 @@
 #include "fileio.h"
 #include "memory.h"
 #include "irc_res.h"
+#include "userhost.h"
 
 struct config_server_hide ConfigServerHide;
 
@@ -543,23 +544,62 @@ static int
 attach_iline(struct Client *client_p, struct ConfItem *aconf)
 {
   struct ip_entry *ip_found;
+  int a_limit_reached = 0;
+  int max_limit_reached = 0;
+  int local;
+  int global;
+  int ident;
+
   ip_found = find_or_add_ip(&client_p->localClient->ip);
 
   SetIpHash(client_p);
   ip_found->count++;
 
   /* only check it if its non zero */
-  if (aconf->c_class /* This should never non NULL *grin* */ &&
-      ConfConFreq(aconf) && ip_found->count > ConfConFreq(aconf))
+  if (aconf->c_class != NULL)
   {
-    if (!IsConfExemptLimits(aconf))
-      return(TOO_MANY); /* Already at maximum allowed ip#'s */
+    count_user_host(client_p->username, client_p->host,
+		    &global, &local, &ident);
+
+    /* XXX blah. go down checking the various silly limits
+     * setting a_limit_reached if any limit is reached.
+     * - Dianora
+     */
+    if ((ConfMaxTotal(aconf) != 0) &&
+	(ConfCurrUserCount(aconf) >= ConfMaxTotal(aconf)))
+      {
+	max_limit_reached = 1;
+	a_limit_reached = 1;
+      }
+    if ((ConfMaxPerIp(aconf) != 0) && (ip_found->count >= ConfMaxPerIp(aconf)))
+      a_limit_reached = 1;
+    else if ((ConfMaxLocal(aconf) != 0) && (local >= ConfMaxLocal(aconf)))
+      a_limit_reached = 1;
+    else if ((ConfMaxGlobal(aconf) != 0) && (global >= ConfMaxGlobal(aconf)))
+      a_limit_reached = 1;
+
+    /* XXX I am not sure of the logic here. This allows a client onto a server
+     * if it is idented, but has not exceed the max ident limit for 
+     * this class. But deny if it has exceed the max possible limit
+     * for this class. Is this what is wanted? *sigh*
+     * - Dianora
+     */
+
+    if ((ConfMaxIdent(aconf) != 0) && ((*client_p->username != '~') &&
+				       ident < ConfMaxIdent(aconf)) &&
+	!max_limit_reached)
+      a_limit_reached = 0;
+
+    if (!IsConfExemptLimits(aconf) && a_limit_reached)
+      return(TOO_MANY); /* Already at maximum allowed */
     else
     {
       sendto_one(client_p, ":%s NOTICE %s :*** Your connection class is full, "
                  "but you have exceed_limit=yes;", me.name, client_p->name);
     }
   }
+  else
+    return(NOT_AUTHORIZED);	/* If class is missing, this is best */
 
   return(attach_conf(client_p, aconf));
 }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.197 2003/05/28 16:37:56 db Exp $
+ *  $Id: client.h,v 7.198 2003/06/01 18:45:29 db Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -116,8 +116,8 @@ struct Client
   dlink_node node;
   dlink_node lnode;      /* Used for Server->servers/users */
 
-  struct Client *hnext;
-  struct Client *idhnext;
+  struct Client *hnext;		/* For client hash table lookups by name */
+  struct Client *idhnext;	/* For SID hash table lookups by sid */
 
   struct User*      user;       /* ...defined, if this is a User */
   struct Server*    serv;       /* ...defined, if this is a server */
@@ -385,7 +385,7 @@ struct LocalUser
 #define FLAGS_HIDDEN      0x01000000
 #define FLAGS_BLOCKED     0x02000000 /* must wait for COMM_SELECT_WRITE          */
 #define FLAGS_SBLOCKED    0x04000000 /* slinkq is blocked                        */
-/*                        0x08000000  */
+#define FLAGS_USERHOST    0x08000000 /* client is in userhost hash               */
 /*                        0x10000000  */
 /*                        0x20000000  */
 /*                        0x40000000  */
@@ -510,6 +510,10 @@ struct LocalUser
 #define SetIpHash(x)            ((x)->flags |= FLAGS_IPHASH)
 #define ClearIpHash(x)          ((x)->flags &= ~FLAGS_IPHASH)
 #define IsIpHash(x)             ((x)->flags & FLAGS_IPHASH)
+
+#define SetUserHost(x)          ((x)->flags |= FLAGS_USERHOST)
+#define ClearUserHost(x)        ((x)->flags &= ~FLAGS_USERHOST)
+#define IsUserHostIp(x)         ((x)->flags & FLAGS_USERHOST)
 
 #define SetPingSent(x)		((x)->flags |= FLAGS_PINGSENT)
 #define IsPingSent(x)		((x)->flags & FLAGS_PINGSENT)
