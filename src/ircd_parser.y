@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.29 2000/11/17 18:03:02 toot Exp $
+ * $Id: ircd_parser.y,v 1.30 2000/11/25 17:41:04 toot Exp $
  */
 
 %{
@@ -87,6 +87,7 @@ int   class_sendq_var;
 %token  HOST
 %token  HUB
 %token  HUB_MASK
+%token  IDLETIME
 %token  INCLUDE
 %token  IP
 %token  IP_TYPE
@@ -1172,7 +1173,7 @@ general_item:       general_quiet_on_ban | general_moderate_nickchange |
                     general_knock_delay | general_pace_wallops | general_wallops_wait |
                     general_short_motd | general_no_oper_flood | general_iauth_server |
                     general_iauth_port | general_stats_p_notice | general_invite_plus_i_only |
-                    general_glines | general_topic_uh | general_gline_time 
+                    general_glines | general_topic_uh | general_gline_time | general_idletime 
 
 general_quiet_on_ban:   QUIET_ON_BAN '=' TYES ';'
   {
@@ -1447,4 +1448,9 @@ general_gline_file: GLINE_FILE '=' QSTRING ';'
 general_gline_time: GLINE_TIME '=' NUMBER ';'
 {
 	ConfigFileEntry.gline_time = yylval.number;
+} ;
+
+general_idletime: IDLETIME '=' NUMBER ';'
+{
+        ConfigFileEntry.idletime = yylval.number;
 } ;

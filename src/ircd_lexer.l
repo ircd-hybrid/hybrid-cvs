@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.19 2000/11/17 18:03:02 toot Exp $
+ * $Id: ircd_lexer.l,v 1.20 2000/11/25 17:41:04 toot Exp $
  */
 
 %{
@@ -98,6 +98,7 @@ have_ident	{ return HAVE_IDENT; }
 host		{ return HOST; }
 hub		{ return HUB; }
 hub_mask	{ return HUB_MASK; }
+idletime        { return IDLETIME; }
 include		{ return INCLUDE; }
 ip		{ return IP; }
 kill		{ return KILL; }

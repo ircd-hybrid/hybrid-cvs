@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.37 2000/11/11 14:52:56 ejb Exp $
+ *  $Id: client.c,v 7.38 2000/11/25 17:41:02 toot Exp $
  */
 #include "client.h"
 #include "class.h"
@@ -324,9 +324,7 @@ check_pings(void *notused)
         {
           if( !IsElined(cptr) &&
               GlobalSetOptions.idletime && 
-#ifdef OPER_IDLE
               !IsAnyOper(cptr) &&
-#endif /* OPER_IDLE */
               !IsIdlelined(cptr) && 
               ((CurrentTime - cptr->user->last) > GlobalSetOptions.idletime))
             {
@@ -654,9 +652,7 @@ void check_klines(void)
         {
           if( !IsElined(cptr) &&
               GlobalSetOptions.idletime && 
-#ifdef OPER_IDLE
               !IsAnyOper(cptr) &&
-#endif /* OPER_IDLE */
               !IsIdlelined(cptr) && 
               ((CurrentTime - cptr->user->last) > GlobalSetOptions.idletime))
             {

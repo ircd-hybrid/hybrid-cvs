@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.h,v 7.12 2000/11/06 16:12:00 adrian Exp $
+ * $Id: m_info.h,v 7.13 2000/11/25 17:40:56 toot Exp $
  */
 #ifndef INCLUDED_m_info_h
 #define INCLUDED_m_info_h
@@ -168,9 +168,6 @@ Info MyInformation[] = {
   { "HYBRID_SOMAXCONN", "", HYBRID_SOMAXCONN, "Maximum Queue Length of Pending Connections" },
 #endif /* SOMAXCONN */
 
-  { "IDLE_CHECK", "ON", 0, "Check Clients for Excessive Idleness" },
-  { "IDLE_TIME", "", IDLE_TIME, "Delay (in minutes) before a client is considered idle" },
-
 #ifdef IDLE_FROM_MSG
   { "IDLE_FROM_MSG", "ON", 0, "Reset idle time after a PRIVMSG" },
 #else
@@ -256,12 +253,6 @@ Info MyInformation[] = {
 #else
   { "OPATH", "NONE", 0, "Path to Operator MOTD File" },
 #endif /* OPATH */
-
-#ifdef OPER_IDLE
-  { "OPER_IDLE", "ON", 0, "Allow Operators to remain idle" },
-#else
-  { "OPER_IDLE", "OFF", 0, "Allow Operators to remain idle" },
-#endif /* OPER_IDLE */
 
   { "OPER_SPAM_COUNTDOWN", "", OPER_SPAM_COUNTDOWN, "Anti SpamBot Parameter" },
 
