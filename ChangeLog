@@ -1,3 +1,15 @@
+db          2002/07/15 04:14:34 EDT	(20020715_3)
+
+  Modified files:
+    src                  linebuf.c 
+  Log:
+  - one more time. somehow the wrong code got committed.
+  
+  Revision  Changes    Path
+  7.87      +21 -16    ircd-hybrid-7/src/linebuf.c
+
+
+
 androsyn    2002/07/15 03:26:11 EDT	(20020715_2)
 
   Modified files:
@@ -29914,4 +29926,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3885 2002/07/15 07:26:18 androsyn Exp $
+$Id: ChangeLog,v 7.3886 2002/07/15 08:14:42 db Exp $
