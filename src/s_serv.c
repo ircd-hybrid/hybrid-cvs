@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.33 2000/11/02 18:23:03 adrian Exp $
+ *   $Id: s_serv.c,v 7.34 2000/11/02 21:37:56 adrian Exp $
  */
 #include "s_serv.h"
 #include "channel.h"
@@ -1233,6 +1233,8 @@ serv_connect_callback(int fd, int status, void *data)
     /* Check the status */
     if (status != COMM_OK) {
         /* We have an error, so report it and quit */
+        sendto_realops("Error connecting to %s[%s]: %s\n", cptr->name,
+          cptr->host, comm_errstr(status));
         exit_client(cptr, cptr, &me, comm_errstr(status));
         return;
     }
