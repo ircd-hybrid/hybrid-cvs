@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_jupe.c,v 1.25 2002/01/28 20:58:18 leeh Exp $
+ *  $Id: m_jupe.c,v 1.26 2002/03/02 00:14:26 leeh Exp $
  */
 
 #include "tools.h"
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&jupe_msgtab);
 }
 
-char *_version = "$Revision: 1.25 $";
+char *_version = "$Revision: 1.26 $";
 #endif
 
 /*
@@ -141,14 +141,14 @@ static void mo_jupe(struct Client *client_p, struct Client *source_p,
   make_server(ajupe);
 
   ajupe->hopcount = 1;
-  strncpy_irc(ajupe->name,parv[1],HOSTLEN);
+  strlcpy(ajupe->name,parv[1],HOSTLEN);
 
   /* we need to give 7 chars to prepend "JUPED: " */
   if(strlen(parv[2]) > (REALLEN-7))
     parv[2][REALLEN-7] = '\0';
   ircsprintf(reason, "%s %s", "JUPED:", parv[2]);
   
-  strncpy_irc(ajupe->info,reason,REALLEN);
+  strlcpy(ajupe->info,reason,REALLEN);
   ajupe->serv->up = me.name;
   ajupe->servptr = &me;
   SetServer(ajupe);
