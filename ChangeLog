@@ -1,3 +1,15 @@
+a1kmm       2002/08/17 03:16:34 EDT	(20020817_1)
+
+  Modified files:
+    modules              m_oper.c 
+  Log:
+  - Re-add the code to look for oper confs by IP as opposed to by host.
+  
+  Revision  Changes    Path
+  1.52      +7 -4      ircd-hybrid-7/modules/m_oper.c
+
+
+
 lusky       2002/08/17 01:04:08 EDT	(20020817_0)
 
   Modified files:
@@ -31243,4 +31255,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3980 2002/08/17 05:04:11 lusky Exp $
+$Id: ChangeLog,v 7.3981 2002/08/17 07:16:37 a1kmm Exp $
