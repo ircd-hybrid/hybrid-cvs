@@ -2,7 +2,7 @@
  * resv.c
  * Copyright (C) 2001 Hybrid Development Team
  *
- * $Id: resv.c,v 7.8 2001/07/04 13:05:12 leeh Exp $
+ * $Id: resv.c,v 7.9 2001/07/13 19:02:34 leeh blalloc.c $
  */
 #include "tools.h"
 #include "restart.h"
@@ -212,13 +212,13 @@ void report_resv(struct Client *source_p)
     sendto_one(source_p, form_str(RPL_STATSQLINE),
                me.name, source_p->name,
 	       resv_cp->conf ? 'Q' : 'q',
-	       resv_cp->name, resv_cp->reason, "*", "*");
+	       resv_cp->name, resv_cp->reason);
 
   for(resv_np = ResvNickList; resv_np; resv_np = resv_np->next)
     sendto_one(source_p, form_str(RPL_STATSQLINE),
                me.name, source_p->name,
 	       resv_np->conf ? 'Q' : 'q',
-	       resv_np->name, resv_np->reason, "*", "*");
+	       resv_np->name, resv_np->reason);
 }	       
 
 int clean_resv_nick(char *nick)
