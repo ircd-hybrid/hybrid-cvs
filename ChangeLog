@@ -1,3 +1,17 @@
+androsyn    2002/07/14 16:19:45 EDT	(20020714_3)
+
+  Modified files:
+    src                  linebuf.c send.c 
+  Log:
+  Okay..lets try that again.  Changes for the goofy issue with va_list on
+  Linux/Alpha and put a test inside #ifndef NDEBUG
+  
+  Revision  Changes    Path
+  7.83      +5 -4      ircd-hybrid-7/src/linebuf.c
+  7.202     +23 -23    ircd-hybrid-7/src/send.c
+
+
+
 androsyn    2002/07/14 00:10:35 EDT	(20020714_2)
 
   Modified files:
@@ -29839,4 +29853,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3879 2002/07/14 04:10:43 androsyn Exp $
+$Id: ChangeLog,v 7.3880 2002/07/14 20:19:52 androsyn Exp $
