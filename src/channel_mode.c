@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.23 2002/02/25 19:12:05 androsyn Exp $
+ *  $Id: channel_mode.c,v 7.24 2002/03/09 20:57:36 androsyn Exp $
  */
 
 #include "tools.h"
@@ -2080,7 +2080,7 @@ struct ChannelMode
   void *d;
 }
 /* *INDENT-OFF* */
-ModeTable[255] =
+static ModeTable[255] =
 {
   {chm_nosuch, NULL},
   {chm_nosuch, NULL},                             /* A */
