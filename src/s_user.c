@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.130 2001/01/29 18:52:46 jdc Exp $
+ *  $Id: s_user.c,v 7.131 2001/02/02 08:36:40 a1kmm Exp $
  */
 
 #include <sys/types.h>
@@ -70,6 +70,8 @@ static int check_X_line(struct Client *cptr, struct Client *sptr);
 static void user_welcome(struct Client *sptr);
 static int introduce_client(struct Client *cptr, struct Client *sptr,
 			    struct User *user, char *nick);
+int oper_up( struct Client *sptr, struct ConfItem *aconf );
+
 
 /* table of ascii char letters to corresponding bitmask */
 
@@ -1309,4 +1311,76 @@ static int check_X_line(struct Client *cptr, struct Client *sptr)
     }
 
   return 0;
+}
+
+/*
+ * oper_up
+ *
+ * inputs	- pointer to given client to oper
+ *		- pointer to ConfItem to use
+ * output	- none
+ * side effects	-
+ * Blindly opers up given sptr, using aconf info
+ * all checks on passwords have already been done.
+ * This could also be used by rsa oper routines. 
+ */
+
+int oper_up( struct Client *sptr,
+                    struct ConfItem *aconf )
+{
+  int old = (sptr->umodes & ALL_UMODES);
+  char *operprivs=NULL;
+  dlink_node *ptr;
+  struct ConfItem *found_aconf;
+  dlink_node *m;
+
+  SetOper(sptr);
+  if((int)aconf->hold)
+    {
+      sptr->umodes |= ((int)aconf->hold & ALL_UMODES); 
+      if( !IsSetOperN(sptr) )
+	sptr->umodes &= ~FLAGS_NCHANGE;
+      
+      sendto_one(sptr, ":%s NOTICE %s :*** Oper flags set from conf",
+		 me.name,sptr->name);
+    }
+  else
+    {
+      sptr->umodes |= (OPER_UMODES);
+    }
+	
+  SetIPHidden(sptr);
+  Count.oper++;
+
+  SetElined(sptr);
+      
+  m = make_dlink_node();
+  dlinkAdd(sptr,m,&oper_list);
+
+  if(sptr->localClient->confs.head)
+    {
+      ptr = sptr->localClient->confs.head;
+      if(ptr)
+	{
+	  found_aconf = ptr->data;
+	  if(found_aconf)
+	    operprivs = oper_privs_as_string(sptr,found_aconf->port);
+	}
+    }
+  else
+    operprivs = "";
+
+  if (IsSetOperAdmin(sptr))
+    sptr->umodes |= FLAGS_ADMIN;
+
+  sendto_realops_flags(FLAGS_ALL,
+		       "%s (%s@%s) is now an operator", sptr->name,
+		       sptr->username, sptr->host);
+  send_umode_out(sptr, sptr, old);
+  sendto_one(sptr, form_str(RPL_YOUREOPER), me.name, sptr->name);
+  sendto_one(sptr, ":%s NOTICE %s :*** Oper privs are %s", me.name,
+             sptr->name, operprivs);
+  SendMessageFile(sptr, &ConfigFileEntry.opermotd);
+  
+  return 1;
 }

@@ -1,7 +1,14 @@
-# $Id: Makefile,v 1.2 2000/11/06 03:28:12 ryan Exp $
+# $Id: Makefile,v 1.3 2001/02/02 08:36:41 a1kmm Exp $
 
+all: rsa_respond genkey respond
 rsa_respond: buffer.c buffer.h rsa_respond.c
-	gcc -O2 -Wall -pedantic -o rsa_respond buffer.c rsa_respond.c -lcrypto
+	gcc -O2 -Wall -pedantic -o rsa_respond buffer.c rsa_respond.c -lcrypto -ggdb
+
+genkey: genkey.c
+	gcc -O2 -Wall -pedantic -o genkey genkey.c -lcrypto
+
+respond: respond.c
+	gcc -O3 -Wall -pedantic -o respond respond.c -lcrypto -ggdb
 
 clean:
 	rm -f rsa_respond *.core *~

@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.92 2001/01/30 19:11:42 fl_ Exp $
+ * $Id: client.h,v 7.93 2001/02/02 08:36:32 a1kmm Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -80,7 +80,8 @@ struct User
   int            refcnt;        /* Number of times this block is referenced */
   int            joined;        /* number of channels joined */
   const char*    server;        /* pointer to scached server name */
-  char*          RSA_response;  /* expected response from client */
+  char*          response;  /* expected response from client */
+  char*          auth_oper; /* Operator to become if they supply the response.*/
 	/* client ID, unique ID per client */
 	char id[IDLEN + 1];
 };

@@ -1,5 +1,5 @@
 /*
- * $Id: rsa_respond.c,v 1.2 2000/11/06 03:28:12 ryan Exp $
+ * $Id: rsa_respond.c,v 1.3 2001/02/02 08:36:42 a1kmm Exp $
  */
 #include "buffer.h"
 #include <openssl/md5.h>
@@ -41,10 +41,10 @@ int open_socket( void )
 
   s.sun_family = AF_UNIX;
   strcpy( s.sun_path, name );
-  s.sun_len = SUN_LEN( &s ) + 1;
+  /* s.sun_len = SUN_LEN( &s ) + 1; */
 
   fd = socket( AF_UNIX, SOCK_STREAM, 0 );
-  if( connect( fd, (struct sockaddr *) &s, s.sun_len ) < 0 )
+  if( connect( fd, (struct sockaddr *) &s, SUN_LEN(&s)+1 ) < 0 )
   {
     close( fd );
     return -1;

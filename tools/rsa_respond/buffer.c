@@ -1,5 +1,5 @@
 /*
- * $Id: buffer.c,v 1.2 2000/11/06 03:28:12 ryan Exp $
+ * $Id: buffer.c,v 1.3 2001/02/02 08:36:41 a1kmm Exp $
  */
 
 #include <openssl/des.h>
@@ -10,6 +10,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <netinet/in.h> /* Guarantees we get htons etc... */
 
 #include "buffer.h"
 
