@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_ping.c,v 1.20 2001/05/26 19:33:33 leeh Exp $
+ *   $Id: m_ping.c,v 1.21 2001/07/17 00:01:36 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -96,7 +96,7 @@ static void m_ping(struct Client *client_p,
     origin = client_p->name;
 #endif
 
-  if (!EmptyString(destination) && irccmp(destination, me.name) != 0)
+  if (!EmptyString(destination) && !match(destination, me.name))
     {
       /* We're sending it across servers.. origin == client_p->name --fl_ */
       origin = client_p->name;
@@ -144,7 +144,7 @@ static void ms_ping(struct Client *client_p,
     origin = client_p->name;
 #endif
 
-  if (!EmptyString(destination) && irccmp(destination, me.name) != 0)
+  if (!EmptyString(destination) && !match(destination, me.name))
     {
       if ((target_p = find_server(destination)))
         sendto_one(target_p,":%s PING %s :%s", parv[0],
