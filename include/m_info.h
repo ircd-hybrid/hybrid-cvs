@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.h,v 7.32 2001/05/30 13:30:35 jdc Exp $
+ * $Id: m_info.h,v 7.33 2001/05/30 13:37:12 jdc Exp $
  */
 #ifndef INCLUDED_m_info_h
 #define INCLUDED_m_info_h
@@ -57,14 +57,6 @@ Info MyInformation[] = {
 #else
   { "CRYPT_OPER_PASSWORD", "OFF", 0, "Encrypt Operator Passwords" },
 #endif /* CRYPT_OPER_PASSWORD */
-
-#if 0
-#ifdef CRYPT_LINK_PASSWORD
-  { "CRYPT_LINK_PASSWORD", "ON", 0, "Encrypt Server Passwords" },
-#else
-  { "CRYPT_LINK_PASSWORD", "OFF", 0, "Encrypt Server Passwords" },
-#endif /* CRYPT_LINK_PASSWORD */
-#endif /* #if 0 */
 
 #ifdef DEBUGMODE
   { "DEBUGMODE", "ON", 0, "Support for debugging mode" },
@@ -146,6 +138,12 @@ Info MyInformation[] = {
 #else
   { "HAVE_LIBCRYPTO", "OFF", 0, "Enable OpenSSL CHALLENGE Support" },
 #endif /* HAVE_LIBCRYPTO */
+
+#ifdef HAVE_LIBZ
+  { "HAVE_LIBZ", "YES", 0, "zlib (ziplinks) support" },
+#else
+  { "HAVE_LIBZ", "NO", 0, "zlib (ziplinks)  support" },
+#endif /* HAVE_LIBZ */
 
 #ifdef PPATH
   { "PPATH", PPATH, 0, "Path to Pid File" },
