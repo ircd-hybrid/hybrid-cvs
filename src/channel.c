@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.313 2002/05/16 05:53:12 androsyn Exp $
+ *  $Id: channel.c,v 7.314 2002/05/16 10:15:45 androsyn Exp $
  */
 
 #include "tools.h"
@@ -210,7 +210,6 @@ remove_user_from_channel(struct Channel *chptr, struct Client *who)
   else {
     assert(0 == 1); /* This ain't supposed to happen */
   }
-#endif
 
   free_dlink_node(ptr);
 
