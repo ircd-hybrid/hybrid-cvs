@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.132 2001/02/05 01:05:36 androsyn Exp $
+ *  $Id: client.c,v 7.133 2001/02/05 20:12:51 davidt Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -1154,6 +1154,7 @@ static void exit_one_client(struct Client *cptr, struct
   /* remove from global client list */
   remove_client_from_list(sptr);
 
+  SetDead(sptr);
   /* add to dead client dlist */
   lp = make_dlink_node();
   dlinkAdd(sptr, lp, &dead_list);

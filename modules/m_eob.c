@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_eob.c,v 1.15 2001/01/22 10:36:55 toot Exp $
+ *   $Id: m_eob.c,v 1.16 2001/02/05 20:12:35 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -34,7 +34,7 @@
 #include "modules.h"
 #include <stdlib.h>
 
-static int ms_eob(struct Client*, struct Client*, int, char**);
+static void ms_eob(struct Client*, struct Client*, int, char**);
 
 struct Message eob_msgtab = {
   "EOB", 0, 0, 0, MFLG_SLOW | MFLG_UNREG, 0, 
@@ -60,7 +60,7 @@ char *_version = "20001202";
  *      parv[0] = sender prefix   
  *      parv[1] = servername   
  */
-static int ms_eob(struct Client *cptr, struct Client *sptr,
+static void ms_eob(struct Client *cptr, struct Client *sptr,
                   int parc, char *parv[])
 {
   if (parc > 1)
@@ -73,5 +73,4 @@ static int ms_eob(struct Client *cptr, struct Client *sptr,
 			 sptr->name);
 
   SetEob(cptr);
-  return 0;
 }

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_die.c,v 1.11 2001/01/05 00:14:25 davidt Exp $
+ *   $Id: m_die.c,v 1.12 2001/02/05 20:12:34 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -36,7 +36,7 @@
 #include "parse.h"
 #include "modules.h"
 
-static int mo_die(struct Client*, struct Client*, int, char**);
+static void mo_die(struct Client*, struct Client*, int, char**);
 
 struct Message die_msgtab = {
   "DIE", 0, 1, 0, MFLG_SLOW, 0,
@@ -60,7 +60,7 @@ char *_version = "20001122";
 /*
  * mo_die - DIE command handler
  */
-static int mo_die(struct Client *cptr, struct Client *sptr,
+static void mo_die(struct Client *cptr, struct Client *sptr,
                   int parc, char *parv[])
 {
   struct Client* acptr;
@@ -69,14 +69,14 @@ static int mo_die(struct Client *cptr, struct Client *sptr,
   if (!IsOperDie(sptr))
     {
       sendto_one(sptr,":%s NOTICE %s :You have no D flag", me.name, parv[0]);
-      return 0;
+      return;
     }
 
   if (parc < 2)
     {
       sendto_one(sptr,":%s NOTICE %s :Need server name /die %s",
                  me.name,sptr->name,me.name);
-      return 0;
+      return;
     }
   else
     {
@@ -84,7 +84,7 @@ static int mo_die(struct Client *cptr, struct Client *sptr,
         {
           sendto_one(sptr,":%s NOTICE %s :Mismatch on /die %s",
                      me.name,sptr->name,me.name);
-          return 0;
+          return;
         }
     }
 
@@ -127,6 +127,5 @@ static int mo_die(struct Client *cptr, struct Client *sptr,
    */
   exit(0);
   /* NOT REACHED */
-  return 0;
 }
 

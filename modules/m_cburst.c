@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_cburst.c,v 1.27 2001/01/05 00:14:23 davidt Exp $
+ * $Id: m_cburst.c,v 1.28 2001/02/05 20:12:32 davidt Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -39,7 +39,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-static int ms_cburst(struct Client*, struct Client*, int, char**);
+static void ms_cburst(struct Client*, struct Client*, int, char**);
 
 struct Message cburst_msgtab = {
   "CBURST", 0, 1, 0, MFLG_SLOW | MFLG_UNREG, 0L,
@@ -72,7 +72,7 @@ char *_version = "20001122";
  * the given LL capable server.
  */
 
-static int ms_cburst(struct Client *cptr,
+static void ms_cburst(struct Client *cptr,
                      struct Client *sptr,
                      int parc,
                      char *parv[])
@@ -83,7 +83,7 @@ static int ms_cburst(struct Client *cptr,
   struct Channel *chptr;
 
   if( parc < 2 || *parv[1] == '\0' )
-     return 0;
+     return;
 
   name = parv[1];
 
@@ -118,7 +118,7 @@ static int ms_cburst(struct Client *cptr,
     {
       sendto_one(sptr, form_str(ERR_NOSUCHCHANNEL),
                  me.name, nick+1, name);
-      return 0;
+      return;
     }
   }
 
@@ -136,6 +136,4 @@ static int ms_cburst(struct Client *cptr,
 		   "*** CBURST request received from non LL capable server! [%s]",
 			   cptr->name);
     }
-
-  return 0;
 }

@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_handler.h,v 7.1 2000/08/13 22:34:58 ejb Exp $
+ * $Id: ircd_handler.h,v 7.2 2001/02/05 20:12:29 davidt Exp $
  */
 #ifndef INCLUDED_ircd_handler_h
 #define INCLUDED_ircd_handler_h
@@ -43,7 +43,7 @@ typedef enum HandlerType {
  * int            parc   - parameter count
  * char*          parv[] - parameter vector
  */
-typedef int (*MessageHandler)(struct Client*, struct Client*, int, char*[]);
+typedef void (*MessageHandler)(struct Client*, struct Client*, int, char*[]);
 
 
 #endif /* INCLUDED_ircd_handler_h */

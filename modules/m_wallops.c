@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_wallops.c,v 1.18 2001/01/30 18:26:29 fl_ Exp $
+ *   $Id: m_wallops.c,v 1.19 2001/02/05 20:12:49 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -35,8 +35,8 @@
 #include "modules.h"
 #include "client.h"
 
-static int ms_wallops(struct Client*, struct Client*, int, char**);
-static int mo_wallops(struct Client*, struct Client*, int, char**);
+static void ms_wallops(struct Client*, struct Client*, int, char**);
+static void mo_wallops(struct Client*, struct Client*, int, char**);
 
 struct Message wallops_msgtab = {
   "WALLOPS", 0, 2, 0, MFLG_SLOW, 0,
@@ -62,7 +62,7 @@ char *_version = "20001122";
  *      parv[0] = sender prefix
  *      parv[1] = message text
  */
-static int mo_wallops(struct Client *cptr, struct Client *sptr,
+static void mo_wallops(struct Client *cptr, struct Client *sptr,
                       int parc, char *parv[])
 { 
   char* message;
@@ -73,14 +73,12 @@ static int mo_wallops(struct Client *cptr, struct Client *sptr,
     {
       sendto_one(sptr, form_str(ERR_NEEDMOREPARAMS),
                  me.name, parv[0], "WALLOPS");
-      return 0;
+      return;
     }
 
   sendto_wallops_flags(FLAGS_OPERWALL, sptr, "%s", message);
   sendto_ll_serv_butone(NULL, sptr, 1,
                         ":%s WALLOPS :%s", parv[0], message);
-
-  return 0;
 }
 
 /*
@@ -88,7 +86,7 @@ static int mo_wallops(struct Client *cptr, struct Client *sptr,
  *      parv[0] = sender prefix
  *      parv[1] = message text
  */
-static int ms_wallops(struct Client *cptr, struct Client *sptr,
+static void ms_wallops(struct Client *cptr, struct Client *sptr,
                       int parc, char *parv[])
 { 
   char* message;
@@ -99,7 +97,7 @@ static int ms_wallops(struct Client *cptr, struct Client *sptr,
     {
       sendto_one(sptr, form_str(ERR_NEEDMOREPARAMS),
                  me.name, parv[0], "WALLOPS");
-      return 0;
+      return;
     }
 
   if(IsClient(sptr))
@@ -109,7 +107,5 @@ static int ms_wallops(struct Client *cptr, struct Client *sptr,
 
   sendto_ll_serv_butone(cptr, sptr, 1,
                         ":%s WALLOPS :%s", parv[0], message);
-
-  return 0;
 }
 

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_drop.c,v 1.13 2001/01/05 00:14:26 davidt Exp $
+ * $Id: m_drop.c,v 1.14 2001/02/05 20:12:35 davidt Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -39,7 +39,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-static int ms_drop(struct Client *,struct Client *,int,char **);
+static void ms_drop(struct Client *,struct Client *,int,char **);
 
 struct Message drop_msgtab = {
   "DROP", 0, 2, 0, MFLG_SLOW | MFLG_UNREG, 0L,
@@ -68,7 +68,7 @@ char *_version = "20001122";
 **
 **      "drop" a channel from consideration on a lazy link
 */
-static int ms_drop(struct Client *cptr,
+static void ms_drop(struct Client *cptr,
                    struct Client *sptr,
                   int parc,
                   char *parv[])
@@ -77,7 +77,7 @@ static int ms_drop(struct Client *cptr,
   struct Channel *chptr;
 
   if(parc < 2 || *parv[1] == '\0')
-    return 0;
+    return;
 
   name = parv[1];
 
@@ -86,9 +86,9 @@ static int ms_drop(struct Client *cptr,
 #endif
 
   if(!(chptr=hash_find_channel(name, NullChn)))
-    return -1;
+    return;
 
   if(cptr->localClient->serverMask) /* JIC */
     chptr->lazyLinkChannelExists &= ~cptr->localClient->serverMask;
-  return 0;
+  return;
 }

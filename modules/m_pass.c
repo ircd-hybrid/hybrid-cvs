@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_pass.c,v 1.12 2001/01/05 06:09:54 spookey Exp $
+ *  $Id: m_pass.c,v 1.13 2001/02/05 20:12:44 davidt Exp $
  */
 #include "handlers.h"  /* m_pass prototype */
 #include "client.h"      /* client struct */
@@ -32,7 +32,7 @@
 #include "parse.h"
 #include "modules.h"
 
-static int mr_pass(struct Client*, struct Client*, int, char**);
+static void mr_pass(struct Client*, struct Client*, int, char**);
 
 struct Message pass_msgtab = {
   "PASS", 0, 2, 0, MFLG_SLOW | MFLG_UNREG, 0,
@@ -62,7 +62,7 @@ char *_version = "20001122";
  *      parv[1] = password
  *      parv[2] = optional extra version information
  */
-static int mr_pass(struct Client *cptr, struct Client *sptr,
+static void mr_pass(struct Client *cptr, struct Client *sptr,
                    int parc, char *parv[])
 {
   const char *password = parv[1];
@@ -71,7 +71,7 @@ static int mr_pass(struct Client *cptr, struct Client *sptr,
     {
       sendto_one(cptr, form_str(ERR_NEEDMOREPARAMS),
                  me.name, BadPtr(parv[0]) ? "*" : parv[0], "PASS");
-      return 0;
+      return;
     }
 
   strncpy_irc(cptr->localClient->passwd, password, PASSWDLEN);
@@ -89,6 +89,5 @@ static int mr_pass(struct Client *cptr, struct Client *sptr,
       if (0 == irccmp(parv[2], "TS"))
         cptr->tsinfo = TS_DOESTS;
     }
-  return 0;
 }
 

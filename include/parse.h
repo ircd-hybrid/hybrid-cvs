@@ -20,7 +20,7 @@
  * "parse.h". - Headers file.
  *
  *
- * $Id: parse.h,v 7.12 2000/12/30 06:47:26 lusky Exp $
+ * $Id: parse.h,v 7.13 2001/02/05 20:12:30 davidt Exp $
  *
  */
 #ifndef INCLUDED_parse_h_h
@@ -38,7 +38,7 @@ struct MessageHash
 
 #define MAX_MSG_HASH  387
 
-extern  int     parse (struct Client *, char *, char *);
+extern  void    parse (struct Client *, char *, char *);
 extern  void    clear_hash_parse (void);
 extern  void    mod_add_cmd(struct Message *msg);
 extern  void    mod_del_cmd(struct Message *msg);

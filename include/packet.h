@@ -19,7 +19,7 @@
  *
  * "packet.h". - Headers file.
  *
- * $Id: packet.h,v 7.8 2000/12/30 06:03:34 lusky Exp $
+ * $Id: packet.h,v 7.9 2001/02/05 20:12:29 davidt Exp $
  *
  */
 #ifndef INCLUDED_packet_h
@@ -44,7 +44,7 @@
 extern PF  read_packet;
 extern PF  flood_recalc;
 
-extern int client_dopacket(struct Client *, char *, size_t);
+extern void client_dopacket(struct Client *, char *, size_t);
 
 #endif /* INCLUDED_packet_h */
 

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_nburst.c,v 1.5 2001/01/20 06:28:14 db Exp $
+ * $Id: m_nburst.c,v 1.6 2001/02/05 20:12:42 davidt Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -41,7 +41,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-static int ms_nburst(struct Client*, struct Client*, int, char**);
+static void ms_nburst(struct Client*, struct Client*, int, char**);
 
 struct Message nburst_msgtab = {
   "NBURST", 0, 1, 0, MFLG_SLOW | MFLG_UNREG, 0L,
@@ -74,7 +74,7 @@ char *_version = "20010104";
  * the given LL capable server.
  */
 
-static int ms_nburst(struct Client *cptr,
+static void ms_nburst(struct Client *cptr,
                      struct Client *sptr,
                      int parc,
                      char *parv[])
@@ -86,7 +86,7 @@ static int ms_nburst(struct Client *cptr,
   char status;
 
   if( parc < 2 || *parv[1] == '\0' )
-     return 0;
+     return;
 
   nick = parv[1];
 
@@ -97,7 +97,7 @@ static int ms_nburst(struct Client *cptr,
     nick_old = parv[3];
 
   if (!ServerInfo.hub && IsCapable(cptr, CAP_LL))
-    return 0;
+    return;
 
 #ifdef DEBUGLL
   sendto_realops_flags(FLAGS_ALL, "NBURST called by %s for %s %s %s",
@@ -120,5 +120,5 @@ static int ms_nburst(struct Client *cptr,
     sendto_one(cptr, ":%s LLNICK %c %s %s", me.name, status, nick_new,
                (nick_old ? nick_old : ""));
 
-  return 0;
+  return;
 }

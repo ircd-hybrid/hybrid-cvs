@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_knock.c,v 1.23 2001/01/07 03:25:25 davidt Exp $
+ *   $Id: m_knock.c,v 1.24 2001/02/05 20:12:39 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -40,7 +40,7 @@
 #include <string.h>
 
 /* XXX LazyLinks */
-static int m_knock(struct Client*, struct Client*, int, char**);
+static void m_knock(struct Client*, struct Client*, int, char**);
 
 static struct Channel *parse_knock_args(struct Client *,
                                         struct Client *,
@@ -85,7 +85,7 @@ char *_version = "20010105";
 ** KNOCK -Dianora
 **/
 
-static int m_knock(struct Client *cptr,
+static void m_knock(struct Client *cptr,
                    struct Client *sptr,
                    int parc,
                    char *parv[])
@@ -95,7 +95,7 @@ static int m_knock(struct Client *cptr,
   chptr = parse_knock_args(cptr, sptr, parc, parv);
   
   if (!chptr)
-    return 0;
+    return;
 
   /* 
    * Flood control redone to allow one KNOCK per knock_delay seconds on each
@@ -115,12 +115,10 @@ static int m_knock(struct Client *cptr,
                  me.name, sptr->name,
                  (int)(ConfigFileEntry.knock_delay - (CurrentTime - chptr->last_knock)),
                  parv[1]);
-      return 0;
+      return;
     }
 
   send_knock(cptr, sptr, chptr, parv[1]);
-
-  return 0;
 }
 
 /*

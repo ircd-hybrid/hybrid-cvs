@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_jupe.c,v 1.9 2001/01/30 18:26:21 fl_ Exp $
+ *   $Id: m_jupe.c,v 1.10 2001/02/05 20:12:21 davidt Exp $
  */
 
 /*
@@ -54,9 +54,9 @@
 #include <string.h>
 
 
-int mo_jupe(struct Client *cptr, struct Client *sptr,
+static void mo_jupe(struct Client *cptr, struct Client *sptr,
 		 int parc, char *parv[]);
-int bogus_host(char *host);
+static int bogus_host(char *host);
 
 struct Message jupe_msgtab = {
   "JUPE", 0, 3, 0, MFLG_SLOW, 0,
@@ -83,7 +83,8 @@ char *_version = "20010104";
 **      parv[1] = server we're juping
 **      parv[2] = reason for jupe
 */
-int mo_jupe(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
+static void mo_jupe(struct Client *cptr, struct Client *sptr,
+                    int parc, char *parv[])
 {
   struct Client *acptr;
   struct Client *ajupe;
@@ -91,20 +92,20 @@ int mo_jupe(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   char reason[REALLEN];
 
   if(!ServerInfo.hub)
-    return 0;
+    return;
 
   if(!IsSetOperAdmin(sptr))
     {
       sendto_one(sptr, ":%s NOTICE %s :You must be an admin to use this command",
                  me.name, parv[0]);
-      return 0;
+      return;
     }
 
   if (bogus_host(parv[1]))
     {
       sendto_one(sptr, ":%s NOTICE %s :Invalid servername: %s",
                  me.name, parv[0], parv[1]);
-      return 0;
+      return;
     }
     
   sendto_wallops_flags(FLAGS_WALLOP, &me, "JUPE for %s requested by %s!%s@%s: %s",
@@ -161,8 +162,6 @@ int mo_jupe(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   add_client_to_list(ajupe);
   add_to_client_hash_table(ajupe->name, ajupe);
   add_client_to_llist(&(ajupe->servptr->serv->servers), ajupe);
-
-  return 0;
 }
 
 

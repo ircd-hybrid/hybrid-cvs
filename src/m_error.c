@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_error.c,v 7.10 2001/01/29 18:52:44 jdc Exp $
+ *   $Id: m_error.c,v 7.11 2001/02/05 20:12:53 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -59,7 +59,8 @@ _moddeinit(void)
  *      parv[0] = sender prefix
  *      parv[*] = parameters
  */
-int m_error(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
+void m_error(struct Client *cptr, struct Client *sptr,
+             int parc, char *parv[])
 {
   char* para;
 
@@ -74,17 +75,17 @@ int m_error(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
    * the local operator...
    */
   if (IsPerson(cptr) || IsUnknown(cptr))
-    return 0;
+    return;
   if (cptr == sptr)
     sendto_realops_flags(FLAGS_ALL,"ERROR :from %s -- %s",
 			 get_client_name(cptr, HIDE_IP), para);
   else
     sendto_realops_flags(FLAGS_ALL,"ERROR :from %s via %s -- %s", sptr->name,
 			 get_client_name(cptr, HIDE_IP), para);
-  return 0;
 }
 
-int mr_error(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
+void mr_error(struct Client *cptr, struct Client *sptr,
+              int parc, char *parv[])
 {
   char* para;
 
@@ -99,17 +100,17 @@ int mr_error(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
    * the local operator...
    */
   if (IsPerson(cptr) || IsUnknown(cptr))
-    return 0;
+    return;
   if (cptr == sptr)
     sendto_realops_flags(FLAGS_ALL,"ERROR :from %s -- %s",
 			 get_client_name(cptr, HIDE_IP), para);
   else
     sendto_realops_flags(FLAGS_ALL,"ERROR :from %s via %s -- %s", sptr->name,
 			 get_client_name(cptr, HIDE_IP), para);
-  return 0;
 }
 
-int ms_error(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
+void ms_error(struct Client *cptr, struct Client *sptr,
+              int parc, char *parv[])
 {
   char* para;
 
@@ -124,14 +125,11 @@ int ms_error(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
    * the local operator...
    */
   if (IsPerson(cptr) || IsUnknown(cptr))
-    return 0;
+    return;
   if (cptr == sptr)
     sendto_realops_flags(FLAGS_ALL,"ERROR :from %s -- %s",
 			 get_client_name(cptr, HIDE_IP), para);
   else
     sendto_realops_flags(FLAGS_ALL,"ERROR :from %s via %s -- %s", sptr->name,
 			 get_client_name(cptr, HIDE_IP), para);
-  return 0;
 }
-
-
