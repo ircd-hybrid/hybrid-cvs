@@ -19,11 +19,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_trace.c,v 1.51 2002/09/05 01:10:24 db Exp $
+ *  $Id: m_trace.c,v 1.52 2003/02/18 22:26:35 db Exp $
  */
 
 #include "stdinc.h"
 #include "handlers.h"
+#include "tools.h"
 #include "class.h"
 #include "hook.h"
 #include "client.h"
@@ -68,7 +69,7 @@ _moddeinit(void)
   hook_del_event("doing_trace");
   mod_del_cmd(&trace_msgtab);
 }
-const char *_version = "$Revision: 1.51 $";
+const char *_version = "$Revision: 1.52 $";
 #endif
 static int report_this_status(struct Client *source_p, struct Client *target_p,int dow,
                               int link_u_p, int link_u_s);
@@ -278,11 +279,13 @@ mo_trace(struct Client *client_p, struct Client *source_p,
       return;
     }
     
-  for (cltmp = ClassList; doall && cltmp; cltmp = cltmp->next)
-    if (Links(cltmp) > 0)
-      sendto_one(source_p, form_str(RPL_TRACECLASS), me.name,
-                 parv[0], ClassName(cltmp), Links(cltmp));
-		 
+  DLINK_FOREACH(ptr, ClassList.head)
+    {
+      cltmp = ptr->data;
+      if (Links(cltmp) > 0)
+	sendto_one(source_p, form_str(RPL_TRACECLASS), me.name,
+		   parv[0], ClassName(cltmp), Links(cltmp));
+    }
   sendto_one(source_p, form_str(RPL_ENDOFTRACE),me.name, parv[0],tname);
 }
 

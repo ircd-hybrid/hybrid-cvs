@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.224 2003/02/17 16:09:38 db Exp $
+ *  $Id: s_user.c,v 7.225 2003/02/18 22:26:39 db Exp $
  */
 
 #include "stdinc.h"
@@ -60,7 +60,7 @@ static int check_X_line(struct Client *client_p, struct Client *source_p);
 void user_welcome(struct Client *source_p);
 static int introduce_client(struct Client *client_p, struct Client *source_p,
 			    struct User *user, char *nick);
-int oper_up( struct Client *source_p, struct ConfItem *aconf );
+int oper_up(struct Client *source_p, struct ConfItem *aconf);
 
 
 /* table of ascii char letters to corresponding bitmask */
@@ -1326,7 +1326,7 @@ check_X_line(struct Client *client_p, struct Client *source_p)
  */
 
 int
-oper_up( struct Client *source_p, struct ConfItem *aconf )
+oper_up(struct Client *source_p, struct ConfItem *aconf)
 {
   int old = (source_p->umodes & ALL_UMODES);
   char *operprivs=NULL;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: kdparse.c,v 7.9 2002/12/16 07:18:49 db Exp $
+ *  $Id: kdparse.c,v 7.10 2003/02/18 22:26:39 db Exp $
  */
 
 #include "stdinc.h"
@@ -65,8 +65,7 @@ parse_k_file(FBFILE *file)
       if ((reason_field = getfield(NULL)) == NULL)
 	continue;
 	  
-      aconf = make_conf();
-      aconf->status = CONF_KILL;
+      aconf = make_conf(CONF_KILL);
       conf_add_fields(aconf,host_field,reason_field,user_field,0,NULL);
 
       if (aconf->host != NULL)
@@ -104,8 +103,7 @@ parse_d_file(FBFILE *file)
       if ((reason_field = getfield(NULL)) == NULL)
 	continue;
 	  
-      aconf = make_conf();
-      aconf->status = CONF_DLINE;
+      aconf = make_conf(CONF_DLINE);
       conf_add_fields(aconf,host_field,reason_field,"",0,NULL);
       conf_add_d_conf(aconf);
     }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.281 2003/02/17 16:09:37 db Exp $
+ *  $Id: s_serv.c,v 7.282 2003/02/18 22:26:39 db Exp $
  */
 
 #include "stdinc.h"
@@ -525,6 +525,8 @@ hunt_server(struct Client *client_p, struct Client *source_p, char *command,
 void
 try_connections(void *unused)
 {
+  dlink_node	     *ptr;
+  dlink_node	     *con_ptr;
   struct ConfItem*   aconf;
   struct Client*     client_p;
   int                connecting = FALSE;
@@ -536,13 +538,14 @@ try_connections(void *unused)
 
   Debug((DEBUG_NOTICE,"Connection check at: %s", myctime(CurrentTime)));
 
-  for (aconf = ConfigItemList; aconf; aconf = aconf->next )
+  DLINK_FOREACH(ptr, ConfigItemList.head)
     {
+      aconf = ptr->data;
       /*
        * Also when already connecting! (update holdtimes) --SRB 
        */
       if (!(aconf->status & CONF_SERVER) || aconf->port <= 0 ||
-          !(aconf->flags & CONF_FLAGS_ALLOW_AUTO_CONN))
+          !(IsConfAllowAutoConn(aconf)))
         continue;
       cltmp = ClassPtr(aconf);
       /*
@@ -586,23 +589,19 @@ try_connections(void *unused)
     if(GlobalSetOptions.autoconn==0)
       return;
      
+    if (con_ptr == NULL)
+      return;
+
     if (connecting)
     {
-      if (con_conf->next)  /* are we already last? */
+      if (con_ptr->next != NULL)  /* if not already last */
       {
-        struct ConfItem**  pconf;
-        for (pconf = &ConfigItemList; (aconf = *pconf);
-          pconf = &(aconf->next))
-        /* 
-         * put the current one at the end and
-         * make sure we try all connections
-         */
-        if (aconf == con_conf)
-          *pconf = aconf->next;
-        (*pconf = con_conf)->next = 0;
+	dlinkDelete(con_ptr, &ConfigItemList);
+	dlinkAddTail(con_conf, con_ptr, &ConfigItemList);
+      }
     }
 
-    if (con_conf->flags & CONF_FLAGS_ALLOW_AUTO_CONN)
+    if (IsConfAllowAutoConn(con_conf))
     {
       /*
        * We used to only print this if serv_connect() actually
@@ -618,13 +617,14 @@ try_connections(void *unused)
 	      	con_conf->name, con_conf->host);
       serv_connect(con_conf, 0);
     }
-  }
+
   Debug((DEBUG_NOTICE,"Next connection check : %s", myctime(next)));
 }
 
 int
 check_server(const char *name, struct Client* client_p, int cryptlink)
 {
+  dlink_node *ptr;
   struct ConfItem *aconf=NULL;
   struct ConfItem *server_aconf=NULL;
   int error = -1;
@@ -641,10 +641,11 @@ check_server(const char *name, struct Client* client_p, int cryptlink)
     return -4;
 
   /* loop through looking for all possible connect items that might work */
-  for (aconf = ConfigItemList; aconf; aconf = aconf->next)
-    {
-      if ((aconf->status & CONF_SERVER) == 0)
-	continue;
+  DLINK_FOREACH(ptr, ConfigItemList.head)
+  {
+    aconf = ptr->data;
+    if ((aconf->status & CONF_SERVER) == 0)
+      continue;
 
      if (!match(name, aconf->name))
        continue;
@@ -689,9 +690,10 @@ check_server(const char *name, struct Client* client_p, int cryptlink)
   attach_conf(client_p, server_aconf);
 
   /* Now find all leaf or hub config items for this server */
-  for (aconf = ConfigItemList; aconf; aconf = aconf->next)
+  DLINK_FOREACH(ptr, ConfigItemList.head)
     {
-      if ((aconf->status & (CONF_HUB|CONF_LEAF)) == 0)
+      aconf = ptr->data;
+      if (!IsConfHubOrLeaf(aconf))
 	continue;
 
       if (!match(name, aconf->name))

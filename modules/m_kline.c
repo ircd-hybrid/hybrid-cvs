@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.112 2003/02/17 16:09:29 db Exp $
+ *  $Id: m_kline.c,v 1.113 2003/02/18 22:26:35 db Exp $
  */
 
 #include "stdinc.h"
@@ -75,7 +75,7 @@ _moddeinit(void)
   mod_del_cmd(&kline_msgtab);
   mod_del_cmd(&dline_msgtab);
 }
-const char *_version = "$Revision: 1.112 $";
+const char *_version = "$Revision: 1.113 $";
 #endif
 
 /* Local function prototypes */
@@ -199,10 +199,8 @@ mo_kline(struct Client *client_p, struct Client *source_p,
   set_time();  
   cur_time = CurrentTime;
   current_date = smalldate(cur_time);
-  aconf = make_conf();
-  aconf->status = CONF_KILL;
-  DupString(aconf->host, host);
-  DupString(aconf->user, user);
+  aconf = make_conf(CONF_KILL);
+  conf_add_fields(aconf, host, NULL, user, NULL, NULL);
   aconf->port = 0;
 
   if (target_server != NULL)
@@ -329,12 +327,9 @@ ms_kline(struct Client *client_p, struct Client *source_p,
       if (already_placed_kline(source_p, kuser, khost))
         return;
 
-      aconf = make_conf();
+      aconf = make_conf(CONF_KILL);
+      conf_add_fields(aconf, khost, kreason, kuser, NULL, NULL);
 
-      aconf->status = CONF_KILL;
-      DupString(aconf->user, kuser);
-      DupString(aconf->host, khost);
-      DupString(aconf->passwd, kreason);
       current_date = smalldate((time_t) 0);
       set_time();
       cur_time = CurrentTime;
@@ -726,7 +721,7 @@ mo_dline(struct Client *client_p, struct Client *source_p,
   cur_time = CurrentTime;
   current_date = smalldate(cur_time);
 
-  aconf = make_conf();
+  aconf = make_conf(CONF_DLINE);
 
   /* Look for an oper reason */
   if ((oper_reason = strchr(reason, '|')) != NULL)
@@ -736,8 +731,6 @@ mo_dline(struct Client *client_p, struct Client *source_p,
     }
 
   ircsprintf(dlbuffer, "%s (%s)",reason, current_date);
-
-  aconf->status = CONF_DLINE;
   DupString(aconf->host, dlhost);
   DupString(aconf->passwd, dlbuffer);
 

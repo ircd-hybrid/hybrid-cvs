@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: class.h,v 7.10 2002/03/09 21:48:35 androsyn Exp $
+ *  $Id: class.h,v 7.11 2003/02/18 22:26:33 db Exp $
  */
 
 #ifndef INCLUDED_class_h
@@ -29,7 +29,7 @@ struct ConfItem;
 struct Client;
 
 struct Class {
-  struct Class* next;     /* list node pointer */
+  dlink_node	class_node;
   char*		className;
   int           type;
   int           conFreq;
@@ -59,11 +59,11 @@ struct Class {
 #define ConfPingFreq(x)  (ClassPtr(x)->pingFreq)
 #define ConfSendq(x)     (ClassPtr(x)->maxSendq)
 
-extern struct Class* ClassList;  /* GLOBAL - class list */
+extern dlink_list ClassList;  /* GLOBAL - class list */
 
 extern  long    get_sendq(struct Client *);
 extern  int     get_con_freq(struct Class* );
-extern  struct Class  *find_class(char* );
+extern  struct  Class *find_class(char* );
 extern  const   char* get_client_class (struct Client *);
 extern  int     get_client_ping (struct Client *);
 extern  void    check_class(void);

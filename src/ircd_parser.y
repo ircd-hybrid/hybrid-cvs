@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.263 2003/02/17 16:09:36 db Exp $
+ *  $Id: ircd_parser.y,v 1.264 2003/02/18 22:26:39 db Exp $
  */
 
 %{
@@ -33,6 +33,7 @@
 #include "config.h"
 #include "ircd.h"
 #include "tools.h"
+#include "list.h"
 #include "s_conf.h"
 #include "event.h"
 #include "s_log.h"
@@ -53,35 +54,43 @@
 #include <openssl/pem.h>
 #endif
 
-extern char *ip_string;
+
 
 int yyparse();
 
-static struct ConfItem *yy_achead = NULL;
 static struct ConfItem *yy_aconf = NULL;
-static struct ConfItem *yy_aprev = NULL;
-static int              yy_acount = 0;
-static struct ConfItem *yy_hconf;
-static struct ConfItem *yy_lconf;
 
-static struct ConfItem *hub_confs;
-static struct ConfItem *leaf_confs;
-static struct ConfItem *yy_aconf_next;
+static dlink_list aconf_list = {NULL, NULL, 0};
+static dlink_list hub_confs_list = {NULL, NULL, 0};
+static dlink_list leaf_confs_list = {NULL, NULL, 0};
 
-static dlink_node *node;
-
-char  *class_name_var;
-int   class_ping_time_var;
-int   class_number_per_ip_var;
-int   class_max_number_var;
-int   class_sendq_var;
+static char  *class_name_var;
+static int   class_ping_time_var;
+static int   class_number_per_ip_var;
+static int   class_max_number_var;
+static int   class_sendq_var;
 
 static char  *listener_address;
 
-char *resv_reason;
+static char *resv_reason;
+static char  *class_redirserv_var;
+static int   class_redirport_var;
+extern int   pass;
 
-char  *class_redirserv_var;
-int   class_redirport_var;
+static void
+init_parser_confs()
+{
+  struct ConfItem *yy_tmp;
+  dlink_node *ptr;
+  dlink_node *next_ptr;
+
+  DLINK_FOREACH_SAFE(ptr, next_ptr, aconf_list.head)
+  {
+    yy_tmp = ptr->data;
+    dlinkDelete(ptr, &aconf_list);
+    free_conf(yy_tmp);
+  }
+}
 
 %}
 
@@ -287,7 +296,7 @@ int   class_redirport_var;
 %type   <string>   QSTRING
 %type   <number>   NUMBER
 %type   <number>   timespec
-%type	<number>   timespec_
+%type   <number>   timespec_
 %type   <number>   sizespec
 %type   <number>   sizespec_
 
@@ -370,26 +379,29 @@ modules_item:    modules_module | modules_path |
 modules_module:  MODULE '=' QSTRING ';'
 {
 #ifndef STATIC_MODULES /* NOOP in the static case */
-  char *m_bn;
+  if(pass == 2)
+  {
+    char *m_bn;
 
-  m_bn = irc_basename(yylval.string);
+    m_bn = irc_basename(yylval.string);
 
-  /* I suppose we should just ignore it if it is already loaded(since
-   * otherwise we would flood the opers on rehash) -A1kmm. */
-  if (findmodule_byname(m_bn) != -1)
-    break;
+    /* I suppose we should just ignore it if it is already loaded(since
+     * otherwise we would flood the opers on rehash) -A1kmm.
+     */
+    if(findmodule_byname(m_bn) != -1)
+      /* XXX - should we unload this module on /rehash, if it isn't listed? */
+      load_one_module (yylval.string, 0);
 
-  /* XXX - should we unload this module on /rehash, if it isn't listed? */
-  load_one_module (yylval.string, 0);
-
-  MyFree(m_bn);
+    MyFree(m_bn);
+  }
 #endif
 };
 
 modules_path: PATH '=' QSTRING ';'
 {
 #ifndef STATIC_MODULES
-  mod_add_path(yylval.string);
+  if(pass == 2)
+    mod_add_path(yylval.string);
 #endif
 };
 
@@ -415,169 +427,200 @@ serverinfo_item:        serverinfo_name | serverinfo_vhost |
 serverinfo_rsa_private_key_file: RSA_PRIVATE_KEY_FILE '=' QSTRING ';'
   {
 #ifdef HAVE_LIBCRYPTO
-  BIO *file;
+    if(pass == 2)
+    {
+      BIO *file;
 
-  if (ServerInfo.rsa_private_key)
-  {
-    RSA_free(ServerInfo.rsa_private_key);
-    ServerInfo.rsa_private_key = NULL;
-  }
+      if(ServerInfo.rsa_private_key)
+      {
+	RSA_free(ServerInfo.rsa_private_key);
+	ServerInfo.rsa_private_key = NULL;
+      }
 
-  if (ServerInfo.rsa_private_key_file)
-  {
-    MyFree(ServerInfo.rsa_private_key_file);
-    ServerInfo.rsa_private_key_file = NULL;
-  }
+      if(ServerInfo.rsa_private_key_file)
+      {
+	MyFree(ServerInfo.rsa_private_key_file);
+	ServerInfo.rsa_private_key_file = NULL;
+      }
 
-  DupString(ServerInfo.rsa_private_key_file, yylval.string);
+      DupString(ServerInfo.rsa_private_key_file, yylval.string);
 
-  file = BIO_new_file( yylval.string, "r" );
+      if((file = BIO_new_file( yylval.string, "r" )) == NULL)
+      {
+	sendto_realops_flags(UMODE_ALL, L_ALL,
+	     "Ignoring config file entry rsa_private_key -- file open failed"
+			     " (%s)", yylval.string);
+	break;
+      }
 
-  if (file == NULL)
-  {
-    sendto_realops_flags(UMODE_ALL, L_ALL,
-      "Ignoring config file entry rsa_private_key -- file open failed"
-      " (%s)", yylval.string);
-    break;
-  }
+      ServerInfo.rsa_private_key = (RSA *) PEM_read_bio_RSAPrivateKey(file,
+							    NULL, 0, NULL);
+      if(ServerInfo.rsa_private_key == NULL)
+      {
+	sendto_realops_flags(UMODE_ALL, L_ALL,
+   "Ignoring config file entry rsa_private_key -- couldn't extract key");
+	break;
+      }
 
-  ServerInfo.rsa_private_key = (RSA *) PEM_read_bio_RSAPrivateKey(file,
-                                                            NULL, 0, NULL);
-  if (ServerInfo.rsa_private_key == NULL)
-  {
-    sendto_realops_flags(UMODE_ALL, L_ALL,
-      "Ignoring config file entry rsa_private_key -- couldn't extract key");
-    break;
-  }
+      if(!RSA_check_key(ServerInfo.rsa_private_key))
+      {
+	sendto_realops_flags(UMODE_ALL, L_ALL,
+     "Ignoring config file entry rsa_private_key -- invalid key");
+	break;
+      }
 
-  if (!RSA_check_key( ServerInfo.rsa_private_key ))
-  {
-    sendto_realops_flags(UMODE_ALL, L_ALL,
-      "Ignoring config file entry rsa_private_key -- invalid key");
-    break;
-  }
+      /* require 2048 bit (256 byte) key */
+      if(RSA_size(ServerInfo.rsa_private_key) != 256)
+      {
+	sendto_realops_flags(UMODE_ALL, L_ALL,
+		   " config file entry rsa_private_key -- not 2048 bit");
+	break;
+      }
 
-  /* require 2048 bit (256 byte) key */
-  if ( RSA_size(ServerInfo.rsa_private_key) != 256 )
-  {
-    sendto_realops_flags(UMODE_ALL, L_ALL,
-      "Ignoring config file entry rsa_private_key -- not 2048 bit");
-    break;
-  }
-
-  BIO_set_close(file, BIO_CLOSE);
-  BIO_free(file);
+      BIO_set_close(file, BIO_CLOSE);
+      BIO_free(file);
+    }
 #endif
   };
 
 serverinfo_name:        NAME '=' QSTRING ';' 
   {
     /* this isn't rehashable */
-    if(ServerInfo.name == NULL)
+    if(pass == 2)
     {
-      /* the ircd will exit() in main() if we dont set one */
-      if(strlen(yylval.string) <= HOSTLEN)
-        DupString(ServerInfo.name,yylval.string);
+      if(ServerInfo.name == NULL)
+      {
+	/* the ircd will exit() in main() if we dont set one */
+	if(strlen(yylval.string) <= HOSTLEN)
+	  DupString(ServerInfo.name,yylval.string);
+      }
     }
   };
 
 serverinfo_description: DESCRIPTION '=' QSTRING ';'
   {
-    MyFree(ServerInfo.description);
-    DupString(ServerInfo.description,yylval.string);
+    if(pass == 2)
+    {
+      MyFree(ServerInfo.description);
+      DupString(ServerInfo.description,yylval.string);
+    }
   };
 
 serverinfo_network_name: NETWORK_NAME '=' QSTRING ';'
   {
-    char *p;
+    if(pass == 2)
+    {
+      char *p;
 
-    if((p = strchr(yylval.string, ' ')))
-      p = '\0';
+      if((p = strchr(yylval.string, ' ')) != NULL)
+	p = '\0';
 
-    MyFree(ServerInfo.network_name);
-    DupString(ServerInfo.network_name,yylval.string);
+      MyFree(ServerInfo.network_name);
+      DupString(ServerInfo.network_name,yylval.string);
+    }
   };
 
 serverinfo_network_desc: NETWORK_DESC '=' QSTRING ';'
   {
-    MyFree(ServerInfo.network_desc);
-    DupString(ServerInfo.network_desc,yylval.string);
+    if(pass == 2)
+    {
+      MyFree(ServerInfo.network_desc);
+      DupString(ServerInfo.network_desc,yylval.string);
+    }
   };
 
 serverinfo_vhost:  VHOST '=' QSTRING ';'
   {
-    if(inetpton(DEF_FAM, yylval.string, &IN_ADDR(ServerInfo.ip)) <= 0)
+    if(pass == 2)
     {
-     ilog(L_ERROR, "Invalid netmask for server vhost(%s)", yylval.string);
+      if(inetpton(DEF_FAM, yylval.string, &IN_ADDR(ServerInfo.ip)) <= 0)
+      {
+	ilog(L_ERROR, "Invalid netmask for server vhost(%s)", yylval.string);
+      }
+      ServerInfo.specific_ipv4_vhost = 1;
     }
-    ServerInfo.specific_ipv4_vhost = 1;
   };
 
 serverinfo_vhost6:	VHOST6 '=' QSTRING ';'
   {
 #ifdef IPV6
-    if(inetpton(DEF_FAM,yylval.string, &IN_ADDR(ServerInfo.ip6)) <= 0)
+    if(pass == 2)
+    {
+      if(inetpton(DEF_FAM,yylval.string, &IN_ADDR(ServerInfo.ip6)) <= 0)
       {
-        ilog(L_ERROR, "Invalid netmask for server vhost(%s)", yylval.string);
+	ilog(L_ERROR, "Invalid netmask for server vhost(%s)", yylval.string);
       }
-    ServerInfo.specific_ipv6_vhost = 1;
+      ServerInfo.specific_ipv6_vhost = 1;
+    }
 #endif
   };
    
 serverinfo_max_clients: T_MAX_CLIENTS '=' NUMBER ';'
   {
-    if (MAX_CLIENTS >= $3)
+    if(pass == 2)
     {
-      ServerInfo.max_clients = $3;
-    }
-    else
-    {
-      ilog(L_ERROR, "Setting serverinfo_max_clients to MAX_CLIENTS");
-      ServerInfo.max_clients = MAX_CLIENTS;
+      if(MAX_CLIENTS >= $3)
+      {
+	ServerInfo.max_clients = $3;
+      }
+      else
+      {
+	ilog(L_ERROR, "Setting serverinfo_max_clients to MAX_CLIENTS");
+	ServerInfo.max_clients = MAX_CLIENTS;
+      }
     }
   };
 
 serverinfo_max_buffer: T_MAX_BUFFER '=' NUMBER ';'
   {
-    ServerInfo.max_buffer = $3;
+    if(pass == 2)
+      ServerInfo.max_buffer = $3;
   };
 
 serverinfo_hub:         HUB '=' TYES ';' 
   {
-    /* Don't become a hub if we have a lazylink active. */
-    if (!ServerInfo.hub && uplink && IsCapable(uplink, CAP_LL))
+    if(pass == 2)
     {
-      sendto_realops_flags(UMODE_ALL, L_ALL,
-        "Ignoring config file line hub = yes; due to active LazyLink (%s)",
-        uplink->name);
-    }
-    else
-    {
-      ServerInfo.hub = 1;
-      uplink = NULL;
+      /* Don't become a hub if we have a lazylink active. */
+      if(!ServerInfo.hub && uplink && IsCapable(uplink, CAP_LL))
+      {
+	sendto_realops_flags(UMODE_ALL, L_ALL,
+	    "Ignoring config file line hub = yes; due to active LazyLink (%s)",
+			     uplink->name);
+      }
+      else
+      {
+	ServerInfo.hub = 1;
+	uplink = NULL;
+      }
     }
   }
                         |
                         HUB '=' TNO ';'
   {
-    /* Don't become a leaf if we have a lazylink active. */
-    if (ServerInfo.hub)
+    if(pass == 2)
     {
-      ServerInfo.hub = 0;
-      for(node = serv_list.head; node; node = node->next)
+      dlink_node *ptr;
+
+      /* Don't become a leaf if we have a lazylink active. */
+      if(ServerInfo.hub)
       {
-        if(MyConnect((struct Client *)node->data) &&
-           IsCapable((struct Client *)node->data,CAP_LL))
-        {
-          sendto_realops_flags(UMODE_ALL, L_ALL,
+	ServerInfo.hub = 0;
+	DLINK_FOREACH(ptr, serv_list.head)
+	{
+	  if(MyConnect((struct Client *)ptr->data) &&
+	     IsCapable((struct Client *)ptr->data,CAP_LL))
+	  {
+	    sendto_realops_flags(UMODE_ALL, L_ALL,
             "Ignoring config file line hub = no; due to active LazyLink (%s)",
-            ((struct Client *)node->data)->name);
-          ServerInfo.hub = 1;
-        }
+				 ((struct Client *)ptr->data)->name);
+	    ServerInfo.hub = 1;
+	  }
+	}
       }
+      else
+	ServerInfo.hub = 0;
     }
-    else
-      ServerInfo.hub = 0;
   } ;
 
 
@@ -601,14 +644,20 @@ admin_name:     NAME '=' QSTRING ';'
 
 admin_email:    EMAIL '=' QSTRING ';'
   {
-    MyFree(AdminInfo.email);
-    DupString(AdminInfo.email, yylval.string);
+    if(pass == 2)
+    {
+      MyFree(AdminInfo.email);
+      DupString(AdminInfo.email, yylval.string);
+    }
   };
 
 admin_description:      DESCRIPTION '=' QSTRING ';'
   {
-    MyFree(AdminInfo.description);
-    DupString(AdminInfo.description, yylval.string);
+    if(pass == 2)
+    {
+      MyFree(AdminInfo.description);
+      DupString(AdminInfo.description, yylval.string);
+    }
   };
 
 /***************************************************************************
@@ -663,77 +712,75 @@ logging_log_level:     LOG_LEVEL '=' T_L_CRIT ';'
 
 oper_entry:     OPERATOR 
   {
-    struct ConfItem *yy_tmp;
-
-    yy_tmp = yy_achead;
-    while(yy_tmp)
-      {
-        yy_aconf = yy_tmp;
-        yy_tmp = yy_tmp->next;
-        yy_aconf->next = NULL;
-        free_conf(yy_aconf);
-      }
-    yy_acount = 0;
-
-    yy_achead = yy_aconf = make_conf();
-    yy_aconf->status = CONF_OPERATOR;
+    if(pass == 2)
+    {
+      init_parser_confs();
+      yy_aconf = make_conf(CONF_OPERATOR);
+    }
   }
  '{' oper_items '}' ';'
   {
-    struct ConfItem *yy_tmp;
-    struct ConfItem *yy_next;
-
-    /* copy over settings from first struct */
-    for( yy_tmp = yy_achead->next; yy_tmp; yy_tmp = yy_tmp->next )
+    if(pass == 2)
     {
-      if (yy_achead->className)
-        DupString(yy_tmp->className, yy_achead->className);
-      if (yy_achead->name)
-       DupString(yy_tmp->name, yy_achead->name);
-      if (yy_achead->passwd)
-        DupString(yy_tmp->passwd, yy_achead->passwd);
-      yy_tmp->port = yy_achead->port;
+      struct ConfItem *yy_tmp;
+      dlink_node *ptr;
+      dlink_node *next_ptr;
+
+      /* Fill in oper block */
+      DLINK_FOREACH_SAFE(ptr, next_ptr, aconf_list.head)
+      {
+	yy_tmp = ptr->data;
+
+	if(yy_aconf->className != NULL)
+	  DupString(yy_tmp->className, yy_aconf->className);
+	if(yy_aconf->name != NULL)
+	  DupString(yy_tmp->name, yy_aconf->name);
+	if(yy_aconf->passwd != NULL)
+	  DupString(yy_tmp->passwd, yy_aconf->passwd);
+	yy_tmp->port = yy_aconf->port;
 
 #ifdef HAVE_LIBCRYPTO
-      if(yy_achead->rsa_public_key_file)
-        DupString(yy_tmp->rsa_public_key_file, yy_achead->rsa_public_key_file);
+	if(yy_aconf->rsa_public_key_file != NULL)
+	  DupString(yy_tmp->rsa_public_key_file,
+		    yy_aconf->rsa_public_key_file);
 
-      if(yy_achead->rsa_public_key)
-      {
-        BIO *file;
+	if(yy_aconf->rsa_public_key != NULL)
+	{
+	  BIO *file;
 
-	file = BIO_new_file(yy_achead->rsa_public_key_file, "r");
-	yy_tmp->rsa_public_key = (RSA *)PEM_read_bio_RSA_PUBKEY(file,
-	                                           NULL, 0, NULL);
-        BIO_set_close(file, BIO_CLOSE);
-	BIO_free(file);
-      }
+	  file = BIO_new_file(yy_aconf->rsa_public_key_file, "r");
+	  yy_tmp->rsa_public_key = (RSA *)PEM_read_bio_RSA_PUBKEY(file,
+							      NULL, 0, NULL);
+	  BIO_set_close(file, BIO_CLOSE);
+	  BIO_free(file);
+	}
 #endif
-    }
+      }
 
-    for( yy_tmp = yy_achead; yy_tmp; yy_tmp = yy_next )
+      DLINK_FOREACH_SAFE(ptr, next_ptr, aconf_list.head)
       {
-        yy_next = yy_tmp->next;
-        yy_tmp->next = NULL;
+	yy_tmp = ptr->data;
 
 #ifdef HAVE_LIBCRYPTO
-        if(yy_tmp->name && (yy_tmp->passwd || yy_aconf->rsa_public_key) && yy_tmp->host)
+	if(yy_tmp->name && (yy_tmp->passwd ||
+			    yy_aconf->rsa_public_key) && yy_tmp->host)
 #else
-        if(yy_tmp->name && yy_tmp->passwd && yy_tmp->host)
+	  if(yy_tmp->name && yy_tmp->passwd && yy_tmp->host)
 #endif
-          {
-            conf_add_class_to_conf(yy_tmp);
-            conf_add_conf(yy_tmp);
-          }
-        else
-          {
-            free_conf(yy_tmp);
-          }
+	  {
+	    conf_add_class_to_conf(yy_tmp);
+	    conf_add_conf(yy_tmp);
+	    dlinkDelete(ptr, &aconf_list);
+	  }
+	  else
+	  {
+	    dlinkDelete(ptr, &aconf_list);
+	    free_conf(yy_tmp);
+	  }
       }
-    yy_achead = NULL;
-    yy_aconf = NULL;
-    yy_aprev = NULL;
-    yy_acount = 0;
+      free_conf(yy_aconf);
+      yy_aconf = NULL;
+    }
   }; 
 
 oper_items:     oper_items oper_item |
@@ -746,144 +793,206 @@ oper_item:      oper_name  | oper_user | oper_password |
 
 oper_name:      NAME '=' QSTRING ';'
   {
-   int oname_len;
-   MyFree(yy_achead->name);
-   if ((oname_len = strlen(yylval.string)) > OPERNICKLEN)
-    yylval.string[OPERNICKLEN] = 0;
-   DupString(yy_achead->name, yylval.string);
+    if(pass == 2)
+    {
+      int oname_len;
+      MyFree(yy_aconf->name);
+      if((oname_len = strlen(yylval.string)) > OPERNICKLEN)
+	yylval.string[OPERNICKLEN] = '\0';
+      DupString(yy_aconf->name, yylval.string);
+    }
   };
 
 oper_user:      USER '='  QSTRING ';'
   {
-    char *p;
-    char *new_user;
-    char *new_host;
-
-    /* The first user= line doesn't allocate a new conf */
-    if ( yy_acount++ )
+    if(pass == 2)
     {
-      yy_aconf = (yy_aconf->next = make_conf());
-      yy_aconf->status = CONF_OPERATOR;
-    }
+      struct ConfItem *yy_tmp;
+      dlink_node *ptr;
 
-    if((p = strchr(yylval.string,'@')))
-      {
-	*p = '\0';
-	DupString(new_user,yylval.string);
-	MyFree(yy_aconf->user);
-	yy_aconf->user = new_user;
-	p++;
-	DupString(new_host,p);
-	MyFree(yy_aconf->host);
-	yy_aconf->host = new_host;
-      }
-    else
-      {
-	MyFree(yy_aconf->host);
-   	DupString(yy_aconf->host, yylval.string);
-   	DupString(yy_aconf->user,"*");
-      }
+      yy_tmp = make_conf(CONF_OPERATOR);
+
+      DupString(yy_tmp->host, yylval.string);
+      split_user_host(yy_tmp);
+
+      ptr = make_dlink_node();
+      dlinkAdd(yy_tmp, ptr, &aconf_list);
+    }
   };
 
 oper_password:  PASSWORD '=' QSTRING ';'
   {
-    if (yy_achead->passwd)
-      memset(yy_achead->passwd, 0, strlen(yy_achead->passwd));
-    MyFree(yy_achead->passwd);
-    DupString(yy_achead->passwd, yylval.string);
+    if(pass == 2)
+    {
+      if(yy_aconf->passwd != NULL)
+	memset(yy_aconf->passwd, 0, strlen(yy_aconf->passwd));
+      MyFree(yy_aconf->passwd);
+      DupString(yy_aconf->passwd, yylval.string);
+    }
   };
 
 oper_rsa_public_key_file: RSA_PUBLIC_KEY_FILE '=' QSTRING ';'
   {
 #ifdef HAVE_LIBCRYPTO
-    BIO *file;
-
-    if (yy_achead->rsa_public_key)
+    if(pass == 2)
     {
-      RSA_free(yy_achead->rsa_public_key);
-      yy_achead->rsa_public_key = NULL;
+      BIO *file;
+
+      if(yy_aconf->rsa_public_key != NULL)
+      {
+	RSA_free(yy_aconf->rsa_public_key);
+	yy_aconf->rsa_public_key = NULL;
+      }
+
+      if(yy_aconf->rsa_public_key_file != NULL)
+      {
+	MyFree(yy_aconf->rsa_public_key_file);
+	yy_aconf->rsa_public_key_file = NULL;
+      }
+
+      DupString(yy_aconf->rsa_public_key_file, yylval.string);
+
+      file = BIO_new_file(yylval.string, "r");
+
+      if(file == NULL)
+      {
+	sendto_realops_flags(UMODE_ALL, L_ALL,
+	     "Ignoring rsa_public_key_file -- does %s exist?", yylval.string);
+	break;
+      }
+
+      yy_aconf->rsa_public_key = (RSA *) PEM_read_bio_RSA_PUBKEY(file,
+							     NULL, 0, NULL);
+
+      if(yy_aconf->rsa_public_key == NULL)
+      {
+	sendto_realops_flags(UMODE_ALL, L_ALL,
+	     "Ignoring rsa_public_key_file -- Key invalid; check key syntax.");
+	break;
+      }
+
+      BIO_set_close(file, BIO_CLOSE);
+      BIO_free(file);
     }
-
-    if (yy_achead->rsa_public_key_file)
-    {
-      MyFree(yy_achead->rsa_public_key_file);
-      yy_achead->rsa_public_key_file = NULL;
-    }
-
-    DupString(yy_achead->rsa_public_key_file, yylval.string);
-
-    file = BIO_new_file(yylval.string, "r");
-
-    if (file == NULL)
-    {
-      sendto_realops_flags(UMODE_ALL, L_ALL,
-        "Ignoring rsa_public_key_file -- does %s exist?", yylval.string);
-      break;
-    }
-
-    yy_achead->rsa_public_key = (RSA *) PEM_read_bio_RSA_PUBKEY(file,
-                                                    NULL, 0, NULL );
-
-    if (yy_achead->rsa_public_key == NULL)
-    {
-      sendto_realops_flags(UMODE_ALL, L_ALL,
-        "Ignoring rsa_public_key_file -- Key invalid; check key syntax.");
-      break;
-    }
-
-    BIO_set_close(file, BIO_CLOSE);
-    BIO_free(file);
 
 #endif /* HAVE_LIBCRYPTO */
   };
 
 oper_class:     CLASS '=' QSTRING ';'
   {
-    MyFree(yy_achead->className);
-    DupString(yy_achead->className, yylval.string);
+    if(pass == 2)
+    {
+      MyFree(yy_aconf->className);
+      DupString(yy_aconf->className, yylval.string);
+    }
   };
 
 oper_global_kill: GLOBAL_KILL '=' TYES ';'
   {
-    yy_achead->port |= CONF_OPER_GLOBAL_KILL;
+    if(pass == 2)
+      yy_aconf->port |= CONF_OPER_GLOBAL_KILL;
   }
                   |
                   GLOBAL_KILL '=' TNO ';'
   {
-    yy_achead->port &= ~CONF_OPER_GLOBAL_KILL;
+    if(pass == 2)
+      yy_aconf->port &= ~CONF_OPER_GLOBAL_KILL;
   };
 
-oper_remote: REMOTE '=' TYES ';' { yy_achead->port |= CONF_OPER_REMOTE;}
+oper_remote: REMOTE '=' TYES ';'
+  {
+    if(pass == 2)
+      yy_aconf->port |= CONF_OPER_REMOTE;
+  }
              |
-             REMOTE '=' TNO ';' { yy_achead->port &= ~CONF_OPER_REMOTE; } ;
+             REMOTE '=' TNO ';'
+  {
+    if(pass == 2)
+      yy_aconf->port &= ~CONF_OPER_REMOTE; 
+  } ;
 
-oper_kline: KLINE '=' TYES ';' { yy_achead->port |= CONF_OPER_K;}
+oper_kline: KLINE '=' TYES ';'
+  {
+    if(pass == 2)
+      yy_aconf->port |= CONF_OPER_K;
+  }
             |
-            KLINE '=' TNO ';' { yy_achead->port &= ~CONF_OPER_K; } ;
+            KLINE '=' TNO ';'
+  {
+    if(pass == 2)
+      yy_aconf->port &= ~CONF_OPER_K;
+  } ;
 
-oper_unkline: UNKLINE '=' TYES ';' { yy_achead->port |= CONF_OPER_UNKLINE;}
+oper_unkline: UNKLINE '=' TYES ';'
+  {
+    if(pass == 2)
+      yy_aconf->port |= CONF_OPER_UNKLINE;
+  }
               |
-              UNKLINE '=' TNO ';' { yy_achead->port &= ~CONF_OPER_UNKLINE; } ;
+              UNKLINE '=' TNO ';'
+  {
+    if(pass == 2)
+      yy_aconf->port &= ~CONF_OPER_UNKLINE; 
+  } ;
 
-oper_gline: GLINE '=' TYES ';' { yy_achead->port |= CONF_OPER_GLINE;}
+oper_gline: GLINE '=' TYES ';'
+  {
+    if(pass == 2)
+      yy_aconf->port |= CONF_OPER_GLINE;
+  }
             |
-            GLINE '=' TNO ';' { yy_achead->port &= ~CONF_OPER_GLINE; };
+            GLINE '=' TNO ';'
+  {
+    if(pass == 2)
+      yy_aconf->port &= ~CONF_OPER_GLINE;
+  };
 
-oper_nick_changes: NICK_CHANGES '=' TYES ';' { yy_achead->port |= CONF_OPER_N;}
+oper_nick_changes: NICK_CHANGES '=' TYES ';'
+  {
+    if(pass == 2)
+      yy_aconf->port |= CONF_OPER_N;
+  }
                    |
-                   NICK_CHANGES '=' TNO ';' { yy_achead->port &= ~CONF_OPER_N;};
+                   NICK_CHANGES '=' TNO ';'
+  {
+    if(pass == 2)
+      yy_aconf->port &= ~CONF_OPER_N;};
 
-oper_die: DIE '=' TYES ';' { yy_achead->port |= CONF_OPER_DIE; }
+oper_die: DIE '=' TYES ';'
+  {
+    if(pass == 2)
+      yy_aconf->port |= CONF_OPER_DIE;
+  }
           |
-          DIE '=' TNO ';' { yy_achead->port &= ~CONF_OPER_DIE; } ;
+          DIE '=' TNO ';'
+  {
+    if(pass == 2)
+      yy_aconf->port &= ~CONF_OPER_DIE;
+  } ;
 
-oper_rehash: REHASH '=' TYES ';' { yy_achead->port |= CONF_OPER_REHASH;}
+oper_rehash: REHASH '=' TYES ';'
+  {
+    if(pass == 2)
+      yy_aconf->port |= CONF_OPER_REHASH;
+  }
              |
-             REHASH '=' TNO ';' { yy_achead->port &= ~CONF_OPER_REHASH; } ;
+             REHASH '=' TNO ';'
+  {
+    if(pass == 2)
+      yy_aconf->port &= ~CONF_OPER_REHASH;
+  } ;
 
-oper_admin: ADMIN '=' TYES ';' { yy_achead->port |= CONF_OPER_ADMIN;}
+oper_admin: ADMIN '=' TYES ';'
+  {
+    if(pass == 2)
+      yy_aconf->port |= CONF_OPER_ADMIN;
+  }
             |
-            ADMIN '=' TNO ';' { yy_achead->port &= ~CONF_OPER_ADMIN;} ;
+            ADMIN '=' TNO ';'
+  {
+    if(pass == 2)
+      yy_aconf->port &= ~CONF_OPER_ADMIN;
+  } ;
 
 /***************************************************************************
  *  section class
@@ -891,22 +1000,27 @@ oper_admin: ADMIN '=' TYES ';' { yy_achead->port |= CONF_OPER_ADMIN;}
 
 class_entry:    CLASS 
   {
-    MyFree(class_name_var);
-    class_name_var = NULL;
-    class_ping_time_var = 0;
-    class_number_per_ip_var = 0;
-    class_max_number_var = 0;
-    class_sendq_var = 0;
+    if(pass == 1)
+    {
+      MyFree(class_name_var);
+      class_name_var = NULL;
+      class_ping_time_var = 0;
+      class_number_per_ip_var = 0;
+      class_max_number_var = 0;
+      class_sendq_var = 0;
+    }
   }
   '{' class_items '}' ';'
   {
+    if(pass == 1)
+    {
+      add_class(class_name_var,class_ping_time_var,
+		class_number_per_ip_var, class_max_number_var,
+		class_sendq_var );
 
-    add_class(class_name_var,class_ping_time_var,
-              class_number_per_ip_var, class_max_number_var,
-              class_sendq_var );
-
-    MyFree(class_name_var);
-    class_name_var = NULL;
+      MyFree(class_name_var);
+      class_name_var = NULL;
+    }
   };
 
 class_items:    class_items class_item |
@@ -922,33 +1036,41 @@ class_item:     class_name |
 
 class_name:     NAME '=' QSTRING ';' 
   {
-    MyFree(class_name_var);
-    DupString(class_name_var, yylval.string);
+    if(pass == 1)
+    {
+      MyFree(class_name_var);
+      DupString(class_name_var, yylval.string);
+    }
   };
 
 class_ping_time:        PING_TIME '=' timespec ';'
   {
-    class_ping_time_var = $3;
+    if(pass == 1)
+      class_ping_time_var = $3;
   };
 
 class_number_per_ip:    NUMBER_PER_IP '=' NUMBER ';'
   {
-    class_number_per_ip_var = $3;
+    if(pass == 1)
+      class_number_per_ip_var = $3;
   };
 
 class_connectfreq:     CONNECTFREQ '=' timespec ';'
   {
-    class_number_per_ip_var = $3;
+    if(pass == 1)
+      class_number_per_ip_var = $3;
   };
 
 class_max_number:       MAX_NUMBER '=' NUMBER ';'
   {
-    class_max_number_var = $3;
+    if(pass == 1)
+      class_max_number_var = $3;
   };
 
 class_sendq:    SENDQ '=' sizespec ';'
   {
-    class_sendq_var = $3;
+    if(pass == 1)
+      class_sendq_var = $3;
   };
 
 
@@ -958,12 +1080,16 @@ class_sendq:    SENDQ '=' sizespec ';'
 
 listen_entry:   LISTEN
   {
-    listener_address = NULL;
+    if(pass == 2)
+      listener_address = NULL;
   }
   '{' listen_items '}' ';'
   {
-    MyFree(listener_address);
-    listener_address = NULL;
+    if(pass == 2)
+    {
+      MyFree(listener_address);
+      listener_address = NULL;
+    }
   };
 
 listen_items:   listen_items listen_item |
@@ -976,27 +1102,38 @@ listen_port: PORT '=' port_items ';' ;
 port_items: port_items ',' port_item | port_item;
 
 port_item: NUMBER
-{
-  add_listener($1, listener_address);
-} | NUMBER TWODOTS NUMBER
-{
-  int i;
-  for (i = $1; i <= $3; i++)
+  {
+    if(pass == 2)
+      add_listener($1, listener_address);
+  }
+  | NUMBER TWODOTS NUMBER
+  {
+    if(pass == 2)
+      {
+	int i;
+	for (i = $1; i <= $3; i++)
 	{
 	  add_listener(i, listener_address);
 	}
-};
+      }
+  };
 
 listen_address: IP '=' QSTRING ';'
   {
-    MyFree(listener_address);
-    DupString(listener_address, yylval.string);
+    if(pass == 2)
+    {
+      MyFree(listener_address);
+      DupString(listener_address, yylval.string);
+    }
   };
 
 listen_host:	HOST '=' QSTRING ';'
   {
-    MyFree(listener_address);
-    DupString(listener_address, yylval.string);
+    if(pass == 2)
+    {
+      MyFree(listener_address);
+      DupString(listener_address, yylval.string);
+    }
   };
 
 /***************************************************************************
@@ -1005,68 +1142,61 @@ listen_host:	HOST '=' QSTRING ';'
 
 auth_entry:   AUTH
   {
-    struct ConfItem *yy_tmp;
-
-    yy_tmp = yy_achead;
-    while(yy_tmp)
-      {
-        yy_aconf = yy_tmp;
-        yy_tmp = yy_tmp->next;
-        yy_aconf->next = NULL;
-        free_conf(yy_aconf);
-      }
-    yy_achead = NULL;
-    yy_aconf = NULL;
-    yy_aprev = NULL;
-
-    yy_achead = yy_aprev = yy_aconf = make_conf();
-    yy_aconf->status = CONF_CLIENT;
+    if(pass == 2)
+    {
+      init_parser_confs();
+      yy_aconf = make_conf(CONF_CLIENT);
+    }
   }
  '{' auth_items '}' ';' 
   {
-    struct ConfItem *yy_tmp;
-    struct ConfItem *yy_next;
-
-    /* copy over settings from first struct */
-    for( yy_tmp = yy_achead->next; yy_tmp; yy_tmp = yy_tmp->next )
+    if(pass == 2)
     {
-      if(yy_achead->passwd)
-        DupString(yy_tmp->passwd, yy_achead->passwd);
-      if(yy_achead->name)
-        DupString(yy_tmp->name, yy_achead->name);
-      if(yy_achead->className)
-        DupString(yy_tmp->className, yy_achead->className);
+      dlink_node *ptr;
+      dlink_node *next_ptr;
+      struct ConfItem *yy_tmp;
 
-      yy_tmp->flags = yy_achead->flags;
-      yy_tmp->port  = yy_achead->port;
+      /* copy over settings from first struct */
+      DLINK_FOREACH(ptr, aconf_list.head)
+      {
+	yy_tmp = ptr->data;
+	if(yy_aconf->passwd != NULL)
+	  DupString(yy_tmp->passwd, yy_aconf->passwd);
+	if(yy_aconf->name != NULL)
+	  DupString(yy_tmp->name, yy_aconf->name);
+	if(yy_aconf->className != NULL)
+	  DupString(yy_tmp->className, yy_aconf->className);
+	yy_tmp->flags = yy_aconf->flags;
+	yy_tmp->port  = yy_aconf->port;
+      }
+      
+      DLINK_FOREACH_SAFE(ptr, next_ptr, aconf_list.head)
+      {
+	yy_tmp = ptr->data;
+
+	if(yy_tmp->name == NULL)
+	  DupString(yy_tmp->name,"NOMATCH");
+	conf_add_class_to_conf(yy_tmp);
+
+	if(yy_tmp->user == NULL)
+	  DupString(yy_tmp->user,"*");
+	else
+	  (void)collapse(yy_tmp->user);
+
+	if(yy_tmp->host != NULL)
+	{
+	  (void)collapse(yy_tmp->host);
+	  add_conf_by_address(yy_tmp->host, CONF_CLIENT, yy_tmp->user, yy_tmp);
+	}
+	else
+	{
+	  free_conf(yy_tmp);
+	}
+	dlinkDelete(ptr, &aconf_list);
+      }
+      free_conf(yy_aconf);
+      yy_aconf = NULL;
     }
-
-    for( yy_tmp = yy_achead; yy_tmp; yy_tmp = yy_next )
-    {
-      yy_next = yy_tmp->next; /* yy_tmp->next is used by conf_add_conf */
-      yy_tmp->next = NULL;
-
-      if (yy_tmp->name == NULL)
-       DupString(yy_tmp->name,"NOMATCH");
-
-      conf_add_class_to_conf(yy_tmp);
-
-      if (yy_tmp->user == NULL)
-       DupString(yy_tmp->user,"*");
-      else
-       (void)collapse(yy_tmp->user);
-
-      if (yy_tmp->host == NULL)
-       continue;
-      else
-        (void)collapse(yy_tmp->host);
-
-      add_conf_by_address(yy_tmp->host, CONF_CLIENT, yy_tmp->user, yy_tmp);
-    }
-    yy_achead = NULL;
-    yy_aconf = NULL;
-    yy_aprev = NULL;
-    yy_acount = 0;
   }; 
 
 auth_items:     auth_items auth_item |
@@ -1081,157 +1211,173 @@ auth_item:      auth_user | auth_passwd | auth_class |
 
 auth_user:   USER '=' QSTRING ';'
   {
-    char *p;
-    char *new_user;
-    char *new_host;
-
-    /* The first user= line doesn't allocate a new conf */
-    if ( yy_acount++ )
+    if(pass == 2)
     {
-      yy_aprev = yy_aconf;
-      yy_aconf = (yy_aconf->next = make_conf());
-      yy_aconf->status = CONF_CLIENT;
-    }
+      struct ConfItem *yy_tmp;
+      dlink_node *ptr;
 
-    if((p = strchr(yylval.string,'@')))
-      {
-	*p = '\0';
-	DupString(new_user, yylval.string);
-	MyFree(yy_aconf->user);
-	yy_aconf->user = new_user;
-	p++;
-	MyFree(yy_aconf->host);
-	DupString(new_host,p);
-	yy_aconf->host = new_host;
-      }
-    else
-      {
-	MyFree(yy_aconf->host);
-	DupString(yy_aconf->host, yylval.string);
-	DupString(yy_aconf->user,"*");
-      }
+      yy_tmp = make_conf(CONF_CLIENT);
+      
+      DupString(yy_tmp->host, yylval.string);
+      split_user_host(yy_tmp);
+
+      ptr = make_dlink_node();
+      dlinkAdd(yy_tmp, ptr, &aconf_list);
+    }
   };
 /* XXX - IP/IPV6 tags don't exist anymore - put IP/IPV6 into user. */
 
 auth_passwd:  PASSWORD '=' QSTRING ';' 
   {
-    /* be paranoid */
-    if (yy_achead->passwd)
-      memset(yy_achead->passwd, 0, strlen(yy_achead->passwd));
-    MyFree(yy_achead->passwd);
-    DupString(yy_achead->passwd,yylval.string);
+    if(pass == 2)
+    {
+      /* be paranoid */
+      if(yy_aconf->passwd != NULL)
+	memset(yy_aconf->passwd, 0, strlen(yy_aconf->passwd));
+      MyFree(yy_aconf->passwd);
+      DupString(yy_aconf->passwd,yylval.string);
+    }
   };
 
 /* TYES/TNO are flipped to change the default value to YES */
 auth_spoof_notice:   SPOOF_NOTICE '=' TNO ';'
   {
-    yy_achead->flags |= CONF_FLAGS_SPOOF_NOTICE;
+    if(pass == 2)
+      yy_aconf->flags |= CONF_FLAGS_SPOOF_NOTICE;
   }
     |
     SPOOF_NOTICE '=' TYES ';'
   {
-    yy_achead->flags &= ~CONF_FLAGS_SPOOF_NOTICE;
+    if(pass == 2)
+      yy_aconf->flags &= ~CONF_FLAGS_SPOOF_NOTICE;
   };
 
 auth_spoof:   SPOOF '=' QSTRING ';' 
   {
-    MyFree(yy_achead->name);
-    if(strlen(yylval.string) < HOSTLEN)
-    {    
-	DupString(yy_achead->name, yylval.string);
-    	yy_achead->flags |= CONF_FLAGS_SPOOF_IP;
-    } else
+    if(pass == 2)
+    {
+      MyFree(yy_aconf->name);
+      if(strlen(yylval.string) < HOSTLEN)
+      {    
+	DupString(yy_aconf->name, yylval.string);
+    	yy_aconf->flags |= CONF_FLAGS_SPOOF_IP;
+      }
+      else
 	ilog(L_ERROR, "Spoofs must be less than %d..ignoring it", HOSTLEN);
+    }
   };
 
 auth_exceed_limit:    EXCEED_LIMIT '=' TYES ';'
   {
-    yy_achead->flags |= CONF_FLAGS_NOLIMIT;
+    if(pass == 2)
+      yy_aconf->flags |= CONF_FLAGS_NOLIMIT;
   }
                       |
                       EXCEED_LIMIT '=' TNO ';'
   {
-    yy_achead->flags &= ~CONF_FLAGS_NOLIMIT;
+    if(pass == 2)
+      yy_aconf->flags &= ~CONF_FLAGS_NOLIMIT;
   };
 
 auth_is_restricted:    RESTRICTED '=' TYES ';'
   {
-    yy_achead->flags |= CONF_FLAGS_RESTRICTED;
+    if(pass == 2)
+      yy_aconf->flags |= CONF_FLAGS_RESTRICTED;
   }
                       |
                       RESTRICTED '=' TNO ';'
   {
-    yy_achead->flags &= ~CONF_FLAGS_RESTRICTED;
+    if(pass == 2)
+      yy_aconf->flags &= ~CONF_FLAGS_RESTRICTED;
   };
 
 auth_kline_exempt:    KLINE_EXEMPT '=' TYES ';'
   {
-    yy_achead->flags |= CONF_FLAGS_EXEMPTKLINE;
+    if(pass == 2)
+      yy_aconf->flags |= CONF_FLAGS_EXEMPTKLINE;
   }
                       |
                       KLINE_EXEMPT '=' TNO ';'
   {
-    yy_achead->flags &= ~CONF_FLAGS_EXEMPTKLINE;
+    if(pass == 2)
+      yy_aconf->flags &= ~CONF_FLAGS_EXEMPTKLINE;
   };
 
 auth_have_ident:      HAVE_IDENT '=' TYES ';'
   {
-    yy_achead->flags |= CONF_FLAGS_NEED_IDENTD;
+    if(pass == 2)
+      yy_aconf->flags |= CONF_FLAGS_NEED_IDENTD;
   }
                       |
                       HAVE_IDENT '=' TNO ';'
   {
-    yy_achead->flags &= ~CONF_FLAGS_NEED_IDENTD;
+    if(pass == 2)
+      yy_aconf->flags &= ~CONF_FLAGS_NEED_IDENTD;
   };
 
 auth_can_flood:      CAN_FLOOD '=' TYES ';'
   {
-    yy_achead->flags |= CONF_FLAGS_CAN_FLOOD;
+    if(pass == 2)
+      yy_aconf->flags |= CONF_FLAGS_CAN_FLOOD;
   }
                       |
                       CAN_FLOOD '=' TNO ';'
   {
-    yy_achead->flags &= ~CONF_FLAGS_CAN_FLOOD;
+    if(pass == 2)
+      yy_aconf->flags &= ~CONF_FLAGS_CAN_FLOOD;
   };
 
 auth_no_tilde:        NO_TILDE '=' TYES ';' 
   {
-    yy_achead->flags |= CONF_FLAGS_NO_TILDE;
+    if(pass == 2)
+      yy_aconf->flags |= CONF_FLAGS_NO_TILDE;
   }
                       |
                       NO_TILDE '=' TNO ';'
   {
-    yy_achead->flags &= ~CONF_FLAGS_NO_TILDE;
+    if(pass == 2)
+      yy_aconf->flags &= ~CONF_FLAGS_NO_TILDE;
   };
 
 auth_gline_exempt:  GLINE_EXEMPT '=' TYES ';' 
   {
-    yy_achead->flags |= CONF_FLAGS_EXEMPTGLINE;
+    if(pass == 2)
+      yy_aconf->flags |= CONF_FLAGS_EXEMPTGLINE;
   }
                     |
                     GLINE_EXEMPT '=' TNO ';'
   {
-    yy_achead->flags &= ~CONF_FLAGS_EXEMPTGLINE;
+    if(pass == 2)
+      yy_aconf->flags &= ~CONF_FLAGS_EXEMPTGLINE;
   };
 
 
 auth_redir_serv:    REDIRSERV '=' QSTRING ';'
   {
-    yy_achead->flags |= CONF_FLAGS_REDIR;
-    MyFree(yy_achead->name);
-    DupString(yy_achead->name, yylval.string);
+    if(pass == 2)
+    {
+      yy_aconf->flags |= CONF_FLAGS_REDIR;
+      MyFree(yy_aconf->name);
+      DupString(yy_aconf->name, yylval.string);
+    }
   };
 
 auth_redir_port:    REDIRPORT '=' NUMBER ';'
   {
-    yy_achead->flags |= CONF_FLAGS_REDIR;
-    yy_achead->port = $3;
+    if(pass == 2)
+    {
+      yy_aconf->flags |= CONF_FLAGS_REDIR;
+      yy_aconf->port = $3;
+    }
   };
 
 auth_class:   CLASS '=' QSTRING ';'
   {
-    MyFree(yy_achead->className);
-    DupString(yy_achead->className, yylval.string);
+    if(pass == 2)
+    {
+      MyFree(yy_aconf->className);
+      DupString(yy_aconf->className, yylval.string);
+    }
   };
 
 
@@ -1241,12 +1387,16 @@ auth_class:   CLASS '=' QSTRING ';'
 
 resv_entry:	RESV
   {
-    resv_reason = NULL;
+    if(pass == 2)
+      resv_reason = NULL;
   }
   '{' resv_items '}' ';'
   {
-    MyFree(resv_reason);
-    resv_reason = NULL;
+    if(pass == 2)
+    {
+      MyFree(resv_reason);
+      resv_reason = NULL;
+    }
   };
 
 resv_items:	resv_items resv_item |
@@ -1256,18 +1406,24 @@ resv_item:	resv_creason | resv_channel | resv_nick | error;
 
 resv_creason:	REASON '=' QSTRING ';'
 {
-  MyFree(resv_reason);
-  DupString(resv_reason, yylval.string);
+  if(pass == 2)
+  {
+    MyFree(resv_reason);
+    DupString(resv_reason, yylval.string);
+  }
 };
 
 resv_channel:	CHANNEL '=' QSTRING ';'
 {
-  if(IsChannelName(yylval.string))
+  if(pass == 2)
   {
-    if(resv_reason)
-      create_channel_resv(yylval.string, resv_reason, 1);
-    else
-      create_channel_resv(yylval.string, "No Reason", 1);
+    if(IsChannelName(yylval.string))
+    {
+      if(resv_reason)
+	create_channel_resv(yylval.string, resv_reason, 1);
+      else
+	create_channel_resv(yylval.string, "No Reason", 1);
+    }
   }
   /* ignore it for now.. but we really should make a warning if
    * its an erroneous name --fl_ */
@@ -1275,12 +1431,15 @@ resv_channel:	CHANNEL '=' QSTRING ';'
 
 resv_nick:	NICK '=' QSTRING ';'
 {
-  if(clean_resv_nick(yylval.string))
+  if(pass == 2)
   {
-    if(resv_reason)
-      create_nick_resv(yylval.string, resv_reason, 1);
-    else
-      create_nick_resv(yylval.string, "No Reason", 1);
+    if(clean_resv_nick(yylval.string))
+    {
+      if(resv_reason)
+	create_nick_resv(yylval.string, resv_reason, 1);
+      else
+	create_nick_resv(yylval.string, "No Reason", 1);
+    }
   }
 
   /* otherwise its erroneous, but ignore it for now */
@@ -1293,21 +1452,19 @@ resv_nick:	NICK '=' QSTRING ';'
 
 shared_entry:		T_SHARED
   {
-    if(yy_aconf != NULL)
-      {
-        free_conf(yy_aconf);
-        yy_aconf = NULL;
-      }
-    yy_aconf=make_conf();
-    yy_aconf->status = CONF_ULINE;
-    yy_aconf->name = NULL;
-    yy_aconf->user = NULL;
-    yy_aconf->host = NULL;
+    if(pass == 2)
+    {
+      free_conf(yy_aconf);
+      yy_aconf = make_conf(CONF_ULINE);
+    }
   }
   '{' shared_items '}' ';'
   {
-    conf_add_u_conf(yy_aconf);
-    yy_aconf = (struct ConfItem *)NULL;
+    if(pass == 2)
+    {
+      conf_add_conf(yy_aconf);
+      yy_aconf = NULL;
+    }
   };
 
 shared_items:		shared_items shared_item |
@@ -1317,27 +1474,19 @@ shared_item:		shared_name | shared_user | error;
 
 shared_name:		NAME '=' QSTRING ';'
   {
-    MyFree(yy_aconf->name);
-    DupString(yy_aconf->name, yylval.string);
+    if(pass == 2)
+    {
+      MyFree(yy_aconf->name);
+      DupString(yy_aconf->name, yylval.string);
+    }
   };
 
 shared_user:		USER '=' QSTRING ';'
   {
-    char *p;
-    char *new_user;
-    char *new_host;
-
-    if((p = strchr(yylval.string,'@')))
+    if(pass == 2)
     {
-      *p = '\0';
-      DupString(new_user, yylval.string);
-      MyFree(yy_aconf->user);
-      yy_aconf->user = new_user;
-
-      p++;
-      DupString(new_host, p);
-      MyFree(yy_aconf->host);
-      yy_aconf->host = new_host;
+      DupString(yy_aconf->host, yylval.string);
+      split_user_host(yy_aconf);
     }
   };
 
@@ -1347,130 +1496,118 @@ shared_user:		USER '=' QSTRING ';'
 
 connect_entry:  CONNECT   
   {
-    hub_confs = (struct ConfItem *)NULL;
-
-    if(yy_aconf)
-      {
-        free_conf(yy_aconf);
-        yy_aconf = (struct ConfItem *)NULL;
-      }
-
-    if(yy_hconf)
-      {
-        free_conf(yy_hconf);
-        yy_hconf = (struct ConfItem *)NULL;
-      }
-
-    if(yy_lconf)
-      {
-	free_conf(yy_lconf);
-	yy_lconf = (struct ConfItem *)NULL;
-      }
-
-    yy_aconf=make_conf();
-    yy_aconf->passwd = NULL;
-    /* Finally we can do this -A1kmm. */
-    yy_aconf->status = CONF_SERVER;
-
-    /* defaults */
-    yy_aconf->port = PORTNUM;
+    if(pass == 2)
+    {
+      free_conf(yy_aconf);
+      yy_aconf=make_conf(CONF_SERVER);
+      yy_aconf->passwd = NULL;
+      /* defaults */
+      yy_aconf->port = PORTNUM;
+    }
   }
   '{' connect_items '}' ';'
   {
+    if(pass == 2)
+    {
+      struct ConfItem *yy_hconf;
+      struct ConfItem *yy_lconf;
+      dlink_node *ptr;
+      dlink_node *next_ptr;
+
 #ifdef HAVE_LIBCRYPTO
-    if(yy_aconf->host &&
-       ((yy_aconf->passwd && yy_aconf->spasswd) ||
-        (yy_aconf->rsa_public_key && IsConfCryptLink(yy_aconf))))
+      if(yy_aconf->host &&
+	 ((yy_aconf->passwd && yy_aconf->spasswd) ||
+	  (yy_aconf->rsa_public_key && IsConfCryptLink(yy_aconf))))
 #else /* !HAVE_LIBCRYPTO */
-    if(yy_aconf->host && !IsConfCryptLink(yy_aconf) && 
-       yy_aconf->passwd && yy_aconf->spasswd)
+	if(yy_aconf->host && !IsConfCryptLink(yy_aconf) && 
+	   yy_aconf->passwd && yy_aconf->spasswd)
 #endif /* !HAVE_LIBCRYPTO */
-      {
-        if( conf_add_server(yy_aconf, scount) >= 0 )
+	{
+	  if(conf_add_server(yy_aconf, scount) >= 0)
 	  {
 	    conf_add_conf(yy_aconf);
 	    ++scount;
 	  }
-	else
+	  else
 	  {
 	    free_conf(yy_aconf);
 	    yy_aconf = NULL;
 	  }
-      }
-    else
-      {
-        if(yy_aconf->name)
+	}
+	else
 	{
+	  if(yy_aconf->name != NULL)
+	  {
 #ifndef HAVE_LIBCRYPTO
-          if (IsConfCryptLink(yy_aconf))
-            sendto_realops_flags(UMODE_ALL, L_ALL,
-                       "Ignoring connect block for %s -- no OpenSSL support",
-                       yy_aconf->name);
+	    if(IsConfCryptLink(yy_aconf))
+	      sendto_realops_flags(UMODE_ALL, L_ALL,
+		       "Ignoring connect block for %s -- no OpenSSL support",
+				   yy_aconf->name);
 #else
-          if(IsConfCryptLink(yy_aconf) && !yy_aconf->rsa_public_key)
-	    sendto_realops_flags(UMODE_ALL, L_ALL,
-	                     "Ignoring connect block for %s -- missing key",
-			     yy_aconf->name);
+	    if(IsConfCryptLink(yy_aconf) && !yy_aconf->rsa_public_key)
+	      sendto_realops_flags(UMODE_ALL, L_ALL,
+			   "Ignoring connect block for %s -- missing key",
+				   yy_aconf->name);
 #endif
-          if(!yy_aconf->host)
-	    sendto_realops_flags(UMODE_ALL, L_ALL,
-	                     "Ignoring connect block for %s -- missing host",
-	                     yy_aconf->name);
-          else if(!IsConfCryptLink(yy_aconf) && 
-	         (!yy_aconf->passwd || !yy_aconf->spasswd))
-            sendto_realops_flags(UMODE_ALL, L_ALL,
-	                   "Ignoring connect block for %s -- missing password",
-			   yy_aconf->name);
-        }
+	    if(yy_aconf->host == NULL)
+	      sendto_realops_flags(UMODE_ALL, L_ALL,
+			       "Ignoring connect block for %s -- missing host",
+				   yy_aconf->name);
+	    else if(!IsConfCryptLink(yy_aconf) && 
+		    (!yy_aconf->passwd || !yy_aconf->spasswd))
+	      sendto_realops_flags(UMODE_ALL, L_ALL,
+		   "Ignoring connect block for %s -- missing password",
+				   yy_aconf->name);
+	  }
 
-        free_conf(yy_aconf);
-        yy_aconf = NULL;
-      }
+	  free_conf(yy_aconf);
+	  yy_aconf = NULL;
+	}
 
-    /*
-     * yy_aconf is still pointing at the server that is having
-     * a connect block built for it. This means, y_aconf->name 
-     * points to the actual irc name this server will be known as.
-     * Now this new server has a set or even just one hub_mask (or leaf_mask)
-     * given in the link list at yy_hconf. Fill in the HUB confs
-     * from this link list now.
-     */        
-    for (yy_hconf = hub_confs; yy_hconf; yy_hconf = yy_aconf_next)
+      /*
+       * yy_aconf is still pointing at the server that is having
+       * a connect block built for it. This means, y_aconf->name 
+       * points to the actual irc name this server will be known as.
+       * Now this new server has a set or even just one hub_mask (or leaf_mask)
+       * given in the link list at yy_hconf. Fill in the HUB confs
+       * from this link list now.
+       */        
+      DLINK_FOREACH_SAFE(ptr, next_ptr, hub_confs_list.head)
       {
-	yy_aconf_next = yy_hconf->next;
+	yy_hconf = ptr->data;
 	MyFree(yy_hconf->name);
 	yy_hconf->name = NULL;
 
 	/* yy_aconf == NULL is a fatal error for this connect block! */
-	if (yy_aconf != NULL)
-	  {
+	if(yy_aconf != NULL)
+	{
+	  if(yy_aconf->name != NULL)
 	    DupString(yy_hconf->name, yy_aconf->name);
-	    conf_add_conf(yy_hconf);
-	  }
+	  conf_add_conf(yy_hconf);
+	}
 	else
 	  free_conf(yy_hconf);
+	dlinkDelete(ptr, &hub_confs_list);
       }
 
-    /* Ditto for the LEAF confs */
+      /* Ditto for the LEAF confs */
 
-    for (yy_lconf = leaf_confs; yy_lconf; yy_lconf = yy_aconf_next)
+      DLINK_FOREACH_SAFE(ptr, next_ptr, leaf_confs_list.head)
       {
-	yy_aconf_next = yy_lconf->next;
-	if (yy_aconf != NULL)
-	  {
+	yy_lconf = ptr->data;
+	if(yy_aconf != NULL)
+	{
+	  if(yy_aconf->name != NULL)
 	    DupString(yy_lconf->name, yy_aconf->name);
-	    conf_add_conf(yy_lconf);
-	  }
+	  conf_add_conf(yy_lconf);
+	}
 	else
 	  free_conf(yy_lconf);
+	dlinkDelete(ptr, &leaf_confs_list);
       }
 
-    hub_confs = NULL;
-    leaf_confs = NULL;
-
-    yy_aconf = NULL;
-    yy_hconf = NULL;
-    yy_lconf = NULL;
+      yy_aconf = NULL;
+    }
   };
 
 connect_items:  connect_items connect_item |
@@ -1486,237 +1623,275 @@ connect_item:   connect_name | connect_host | connect_send_password |
 
 connect_name:   NAME '=' QSTRING ';'
   {
-    if(yy_aconf->name != NULL)
+    if(pass == 2)
+    {
+      if(yy_aconf->name != NULL)
       {
-	sendto_realops_flags(UMODE_ALL, L_ALL,"*** Multiple connect name entry");
+	sendto_realops_flags(UMODE_ALL, L_ALL,
+			     "*** Multiple connect name entry");
 	ilog(L_WARN, "Multiple connect name entry %s", yy_aconf->name);
       }
 
-    MyFree(yy_aconf->name);
-    DupString(yy_aconf->name, yylval.string);
+      MyFree(yy_aconf->name);
+      DupString(yy_aconf->name, yylval.string);
+    }
   };
 
 connect_host:   HOST '=' QSTRING ';' 
   {
-    MyFree(yy_aconf->host);
-    DupString(yy_aconf->host, yylval.string);
+    if(pass == 2)
+    {
+      MyFree(yy_aconf->host);
+      DupString(yy_aconf->host, yylval.string);
+    }
   };
  
 connect_send_password:  SEND_PASSWORD '=' QSTRING ';'
   {
-    if (yy_aconf->spasswd)
-      memset(yy_aconf->spasswd, 0, strlen(yy_aconf->spasswd));
-    MyFree(yy_aconf->spasswd);
-    DupString(yy_aconf->spasswd, yylval.string);
+    if(pass == 2)
+    {
+      if(yy_aconf->spasswd != NULL)
+      {
+	memset(yy_aconf->spasswd, 0, strlen(yy_aconf->spasswd));
+      }
+      MyFree(yy_aconf->spasswd);
+      DupString(yy_aconf->spasswd, yylval.string);
+    }
   };
 
 connect_accept_password: ACCEPT_PASSWORD '=' QSTRING ';'
   {
-    if (yy_aconf->passwd)
-      memset(yy_aconf->passwd, 0, strlen(yy_aconf->passwd));
-    MyFree(yy_aconf->passwd);
-    DupString(yy_aconf->passwd, yylval.string);
+    if(pass == 2)
+    {
+      if(yy_aconf->passwd != NULL)
+      {
+	memset(yy_aconf->passwd, 0, strlen(yy_aconf->passwd));
+      }
+      MyFree(yy_aconf->passwd);
+      DupString(yy_aconf->passwd, yylval.string);
+    }
   };
 
-connect_port:   PORT '=' NUMBER ';' { yy_aconf->port = $3; };
+connect_port:   PORT '=' NUMBER ';'
+  {
+    if(pass == 2)
+      yy_aconf->port = $3;
+  };
 
 
 connect_aftype: 	AFTYPE '=' T_IPV4 ';'
   {
-    yy_aconf->aftype = AF_INET;
+    if(pass == 2)
+      yy_aconf->aftype = AF_INET;
   }
 			|
 			AFTYPE '=' T_IPV6 ';'
   {
 #ifdef IPV6
+    if(pass == 2)
     yy_aconf->aftype = AF_INET6;
 #endif
   };
 
 connect_fakename: FAKENAME '=' QSTRING ';'
  {
-    MyFree(yy_aconf->fakename);
-    DupString(yy_aconf->fakename, yylval.string);
+   if(pass == 2)
+   {
+     MyFree(yy_aconf->fakename);
+     DupString(yy_aconf->fakename, yylval.string);
+   }
  };
 
 connect_lazylink:       LAZYLINK '=' TYES ';'
   {
-    yy_aconf->flags |= CONF_FLAGS_LAZY_LINK;
+    if(pass == 2)
+      yy_aconf->flags |= CONF_FLAGS_LAZY_LINK;
   }
                         |
                         LAZYLINK '=' TNO ';'
   {
-    yy_aconf->flags &= ~CONF_FLAGS_LAZY_LINK;
+    if(pass == 2)
+      yy_aconf->flags &= ~CONF_FLAGS_LAZY_LINK;
   };
 
 connect_encrypted:       ENCRYPTED '=' TYES ';'
   {
-    yy_aconf->flags |= CONF_FLAGS_ENCRYPTED;
+    if(pass == 2)
+      yy_aconf->flags |= CONF_FLAGS_ENCRYPTED;
   }
                         |
                         ENCRYPTED '=' TNO ';'
   {
-    yy_aconf->flags &= ~CONF_FLAGS_ENCRYPTED;
+    if(pass == 2)
+      yy_aconf->flags &= ~CONF_FLAGS_ENCRYPTED;
   };
 
 connect_rsa_public_key_file: RSA_PUBLIC_KEY_FILE '=' QSTRING ';'
   {
 #ifdef HAVE_LIBCRYPTO
-    BIO *file;
-
-    if (yy_aconf->rsa_public_key)
+    if(pass == 2)
     {
-      RSA_free(yy_aconf->rsa_public_key);
-      yy_aconf->rsa_public_key = NULL;
+      BIO *file;
+
+      if(yy_aconf->rsa_public_key != NULL)
+      {
+	RSA_free(yy_aconf->rsa_public_key);
+	yy_aconf->rsa_public_key = NULL;
+      }
+
+      if(yy_aconf->rsa_public_key_file != NULL)
+      {
+	MyFree(yy_aconf->rsa_public_key_file);
+	yy_aconf->rsa_public_key_file = NULL;
+      }
+
+      DupString(yy_aconf->rsa_public_key_file, yylval.string);
+
+      if((file = BIO_new_file(yylval.string, "r")) == NULL)
+      {
+	sendto_realops_flags(UMODE_ALL, L_ALL,
+			     "Ignoring rsa_public_key_file -- does %s exist?",
+			     yylval.string);
+	break;
+      }
+
+      yy_aconf->rsa_public_key = (RSA *) PEM_read_bio_RSA_PUBKEY(file,
+							     NULL, 0, NULL );
+
+      if(yy_aconf->rsa_public_key == NULL)
+      {
+	sendto_realops_flags(UMODE_ALL, L_ALL,
+	   "Ignoring rsa_public_key_file -- Key invalid; check key syntax.");
+	break;
+      }
+      
+      BIO_set_close(file, BIO_CLOSE);
+      BIO_free(file);
     }
-
-    if (yy_aconf->rsa_public_key_file)
-    {
-      MyFree(yy_aconf->rsa_public_key_file);
-      yy_aconf->rsa_public_key_file = NULL;
-    }
-
-    DupString(yy_aconf->rsa_public_key_file, yylval.string);
-
-    file = BIO_new_file(yylval.string, "r");
-
-    if (file == NULL)
-    {
-      sendto_realops_flags(UMODE_ALL, L_ALL,
-        "Ignoring rsa_public_key_file -- does %s exist?", yylval.string);
-      break;
-    }
-
-    yy_aconf->rsa_public_key = (RSA *) PEM_read_bio_RSA_PUBKEY(file,
-                                                    NULL, 0, NULL );
-
-    if (yy_aconf->rsa_public_key == NULL)
-    {
-      sendto_realops_flags(UMODE_ALL, L_ALL,
-        "Ignoring rsa_public_key_file -- Key invalid; check key syntax.");
-      break;
-    }
-
-    BIO_set_close(file, BIO_CLOSE);
-    BIO_free(file);
 #endif /* HAVE_LIBCRYPTO */
   };
 
 connect_cryptlink:	CRYPTLINK '=' TYES ';'
   {
-    yy_aconf->flags |= CONF_FLAGS_CRYPTLINK;
+    if(pass == 2)
+      yy_aconf->flags |= CONF_FLAGS_CRYPTLINK;
   }
 			|
 			CRYPTLINK '=' TNO ';'
   {
-    yy_aconf->flags &= ~CONF_FLAGS_CRYPTLINK;
+    if(pass == 2)
+      yy_aconf->flags &= ~CONF_FLAGS_CRYPTLINK;
   };
 
 connect_compressed:       COMPRESSED '=' TYES ';'
   {
 #ifndef HAVE_LIBZ
+    if(pass == 2)
     sendto_realops_flags(UMODE_ALL, L_ALL,
       "Ignoring compressed = yes; -- no zlib support");
 #else
-    yy_aconf->flags |= CONF_FLAGS_COMPRESSED;
+    if(pass == 2)
+      yy_aconf->flags |= CONF_FLAGS_COMPRESSED;
 #endif
   }
                         |
                         COMPRESSED '=' TNO ';'
   {
-    yy_aconf->flags &= ~CONF_FLAGS_COMPRESSED;
+    if(pass == 2)
+      yy_aconf->flags &= ~CONF_FLAGS_COMPRESSED;
   };
 
 connect_auto:           AUTOCONN '=' TYES ';'
   {
-    yy_aconf->flags |= CONF_FLAGS_ALLOW_AUTO_CONN;
+    if(pass == 2)
+      yy_aconf->flags |= CONF_FLAGS_ALLOW_AUTO_CONN;
   }
                         |
                         AUTOCONN '=' TNO ';'
   {
-    yy_aconf->flags &= ~CONF_FLAGS_ALLOW_AUTO_CONN;
+    if(pass == 2)
+      yy_aconf->flags &= ~CONF_FLAGS_ALLOW_AUTO_CONN;
   };
 
 connect_hub_mask:       HUB_MASK '=' QSTRING ';' 
   {
-    if(hub_confs == NULL)
-      {
-	hub_confs = make_conf();
-	hub_confs->status = CONF_HUB;
-	DupString(hub_confs->host, yylval.string);
-	DupString(hub_confs->user, "*");
-      }
-    else
-      {
-	yy_hconf = make_conf();
-	yy_hconf->status = CONF_HUB;
-	DupString(yy_hconf->host, yylval.string);
-	DupString(yy_hconf->user, "*");
-	yy_hconf->next = hub_confs;
-	hub_confs = yy_hconf;
-      }
+    if(pass == 2)
+    {
+      struct ConfItem *hub_conf;
+      dlink_node *ptr;
+
+      hub_conf = make_conf(CONF_HUB);
+      DupString(hub_conf->host, yylval.string);
+      DupString(hub_conf->user, "*");
+      ptr = make_dlink_node();
+      dlinkAdd(hub_conf, ptr, &hub_confs_list);
+    }
   };
 
 connect_leaf_mask:       LEAF_MASK '=' QSTRING ';' 
   {
-    if(leaf_confs == NULL)
-      {
-	leaf_confs = make_conf();
-	leaf_confs->status = CONF_LEAF;
-	DupString(leaf_confs->host, yylval.string);
-	DupString(leaf_confs->user, "*");
-      }
-    else
-      {
-	yy_lconf = make_conf();
-	yy_lconf->status = CONF_LEAF;
-	DupString(yy_lconf->host, yylval.string);
-	DupString(yy_lconf->user, "*");
-	yy_lconf->next = leaf_confs;
-	leaf_confs = yy_lconf;
-      }
+    if(pass == 2)
+    {
+      struct ConfItem *leaf_conf;
+      dlink_node *ptr;
+
+      leaf_conf = make_conf(CONF_LEAF);
+      DupString(leaf_conf->host, yylval.string);
+      DupString(leaf_conf->user, "*");
+      ptr = make_dlink_node();
+      dlinkAdd(leaf_conf, ptr, &leaf_confs_list);
+    }
   };
 
 connect_class:  CLASS '=' QSTRING ';'
   {
-    MyFree(yy_aconf->className);
-    DupString(yy_aconf->className, yylval.string);
+    if(pass == 2)
+    {
+      MyFree(yy_aconf->className);
+      DupString(yy_aconf->className, yylval.string);
+    }
   };
 
 connect_cipher_preference: CIPHER_PREFERENCE '=' QSTRING ';'
   {
 #ifdef HAVE_LIBCRYPTO
-    struct EncCapability *ecap;
-    char *cipher_name;
-    int found = 0;
-
-    yy_aconf->cipher_preference = NULL;
-
-    cipher_name = yylval.string;
-
-    for (ecap = CipherTable; ecap->name; ecap++)
+    if(pass == 2)
     {
-      if ( (!irccmp(ecap->name, cipher_name)) &&
-           (ecap->cap & CAP_ENC_MASK))
+      struct EncCapability *ecap;
+      char *cipher_name;
+      int found = 0;
+
+      yy_aconf->cipher_preference = NULL;
+
+      cipher_name = yylval.string;
+
+      for (ecap = CipherTable; ecap->name; ecap++)
       {
-        yy_aconf->cipher_preference = ecap;
-        found = 1;
+	if((!irccmp(ecap->name, cipher_name)) &&
+	   (ecap->cap & CAP_ENC_MASK))
+	{
+	  yy_aconf->cipher_preference = ecap;
+	  found = 1;
+	}
+      }
+
+      if(!found)
+      {
+	sendto_realops_flags(UMODE_ALL, L_ALL, "Invalid cipher '%s' for %s",
+			     cipher_name, yy_aconf->name);
+	ilog(L_ERROR, "Invalid cipher '%s' for %s",
+	     cipher_name, yy_aconf->name);
       }
     }
-
-    if (!found)
-    {
-      sendto_realops_flags(UMODE_ALL, L_ALL, "Invalid cipher '%s' for %s",
-                           cipher_name, yy_aconf->name);
-      ilog(L_ERROR, "Invalid cipher '%s' for %s",
-                    cipher_name, yy_aconf->name);
-    }
 #else
+    if(pass == 2)
+    {
       sendto_realops_flags(UMODE_ALL, L_ALL,
         "Ignoring 'cipher_preference' line for %s -- no OpenSSL support",
          yy_aconf->name);
       ilog(L_ERROR, "Ignoring 'cipher_preference' line for %s -- "
                     "no OpenSSL support", yy_aconf->name);
+    }
 #endif
   };
 
@@ -1726,27 +1901,26 @@ connect_cipher_preference: CIPHER_PREFERENCE '=' QSTRING ';'
 
 kill_entry:     KILL
   {
-    if(yy_aconf)
-      {
-        free_conf(yy_aconf);
-        yy_aconf = NULL;
-      }
-    yy_aconf=make_conf();
-    yy_aconf->status = CONF_KILL;
+    if(pass == 2)
+    {
+      free_conf(yy_aconf);
+      yy_aconf = make_conf(CONF_KILL);
+    }
   }
  '{' kill_items '}' ';'
   {
-    if(yy_aconf->user && yy_aconf->passwd && yy_aconf->host)
+    if(pass == 2)
+    {
+      if(yy_aconf->user && yy_aconf->passwd && yy_aconf->host)
       {
-        if (yy_aconf->host != NULL)
+        if(yy_aconf->host != NULL)
 	  add_conf_by_address(yy_aconf->host, CONF_KILL,
 			      yy_aconf->user, yy_aconf);
       }
-    else
-      {
-        free_conf(yy_aconf);
-      }
-    yy_aconf = NULL;
+      else
+	free_conf(yy_aconf);
+      yy_aconf = NULL;
+    }
   }; 
 
 kill_items:     kill_items kill_item |
@@ -1757,33 +1931,20 @@ kill_item:      kill_user | kill_reason | error;
 
 kill_user:      USER '=' QSTRING ';'
   {
-    char *p;
-    char *new_user;
-    char *new_host;
-
-    if((p = strchr(yylval.string,'@')))
-      {
-	*p = '\0';
-	DupString(new_user,yylval.string);
-	yy_aconf->user = new_user;
-	p++;
-	DupString(new_host,p);
-	MyFree(yy_aconf->host);
-	yy_aconf->host = new_host;
-      }
-    else
-      {
-	MyFree(yy_aconf->host);
-	DupString(yy_aconf->host, yylval.string);
-	MyFree(yy_aconf->user);
-	DupString(yy_aconf->user,"*");
-      }
+    if(pass == 2)
+    {
+      DupString(yy_aconf->host, yylval.string);
+      split_user_host(yy_aconf);
+    }
   };
 
 kill_reason:    REASON '=' QSTRING ';' 
   {
-    MyFree(yy_aconf->passwd);
-    DupString(yy_aconf->passwd, yylval.string);
+    if(pass == 2)
+    {
+      MyFree(yy_aconf->passwd);
+      DupString(yy_aconf->passwd, yylval.string);
+    }
   };
 
 /***************************************************************************
@@ -1792,28 +1953,25 @@ kill_reason:    REASON '=' QSTRING ';'
 
 deny_entry:     DENY 
   {
-    if(yy_aconf)
-      {
-        free_conf(yy_aconf);
-        yy_aconf = (struct ConfItem *)NULL;
-      }
-    yy_aconf=make_conf();
-    yy_aconf->status = CONF_DLINE;
-    /* default reason */
-    DupString(yy_aconf->passwd,"NO REASON");
+    if(pass == 2)
+    {
+      free_conf(yy_aconf);
+      yy_aconf = make_conf(CONF_DLINE);
+      /* default reason */
+      DupString(yy_aconf->passwd,"NO REASON");
+    }
   }
 '{' deny_items '}' ';'
   {
-    if (yy_aconf->host &&
-        parse_netmask(yy_aconf->host, NULL, NULL) != HM_HOST)
+    if(pass == 2)
     {
-      add_conf_by_address(yy_aconf->host, CONF_DLINE, NULL, yy_aconf);
+      if(yy_aconf->host &&
+	 parse_netmask(yy_aconf->host, NULL, NULL) != HM_HOST)
+	add_conf_by_address(yy_aconf->host, CONF_DLINE, NULL, yy_aconf);
+      else
+	free_conf(yy_aconf);
+      yy_aconf = NULL;
     }
-    else
-    {
-      free_conf(yy_aconf);
-    }
-    yy_aconf = (struct ConfItem *)NULL;
   }; 
 
 deny_items:     deny_items deny_item |
@@ -1824,14 +1982,20 @@ deny_item:      deny_ip | deny_reason | error;
 
 deny_ip:        IP '=' QSTRING ';'
   {
-    MyFree(yy_aconf->host);
-    DupString(yy_aconf->host, yylval.string);
+    if(pass == 2)
+    {
+      MyFree(yy_aconf->host);
+      DupString(yy_aconf->host, yylval.string);
+    }
   };
 
 deny_reason:    REASON '=' QSTRING ';' 
   {
-    MyFree(yy_aconf->passwd);
-    DupString(yy_aconf->passwd, yylval.string);
+    if(pass == 2)
+    {
+      MyFree(yy_aconf->passwd);
+      DupString(yy_aconf->passwd, yylval.string);
+    }
   };
 
 /***************************************************************************
@@ -1840,26 +2004,24 @@ deny_reason:    REASON '=' QSTRING ';'
 
 exempt_entry:     EXEMPT
   {
-    if(yy_aconf)
-      {
-        free_conf(yy_aconf);
-        yy_aconf = (struct ConfItem *)NULL;
-      }
-    yy_aconf=make_conf();
-    DupString(yy_aconf->passwd, "*");
-    yy_aconf->status = CONF_EXEMPTDLINE;
+    if(pass == 2)
+    {
+      free_conf(yy_aconf);
+      yy_aconf=make_conf(CONF_EXEMPTDLINE);
+      DupString(yy_aconf->passwd, "*");
+    }
   }
 '{' exempt_items '}' ';'
-  {
-   if (yy_aconf->host &&
-      parse_netmask(yy_aconf->host, NULL, NULL) != HM_HOST)
    {
-    add_conf_by_address(yy_aconf->host, CONF_EXEMPTDLINE, NULL, yy_aconf);
-   } else
-   {
-    free_conf(yy_aconf);
-   }
-   yy_aconf = (struct ConfItem *)NULL;
+     if(pass == 2)
+     {
+       if(yy_aconf->host &&
+	  parse_netmask(yy_aconf->host, NULL, NULL) != HM_HOST)
+	 add_conf_by_address(yy_aconf->host, CONF_EXEMPTDLINE, NULL, yy_aconf);
+       else
+	 free_conf(yy_aconf);
+       yy_aconf = NULL;
+     }
   };
 
 exempt_items:     exempt_items exempt_item |
@@ -1869,8 +2031,11 @@ exempt_item:      exempt_ip | error;
 
 exempt_ip:        IP '=' QSTRING ';'
   {
-    MyFree(yy_aconf->host);
-    DupString(yy_aconf->host, yylval.string);
+    if(pass == 2)
+    {
+      MyFree(yy_aconf->host);
+      DupString(yy_aconf->host, yylval.string);
+    }
   };
 
 
@@ -1880,23 +2045,24 @@ exempt_ip:        IP '=' QSTRING ';'
 
 gecos_entry:     GECOS
   {
-    if(yy_aconf != NULL)
-      {
-        free_conf(yy_aconf);
-        yy_aconf = NULL;
-      }
-    yy_aconf=make_conf();
-    yy_aconf->status = CONF_XLINE;
-    /* default reason */
-    DupString(yy_aconf->passwd,"Something about your name");
+    if(pass == 2)
+    {
+      free_conf(yy_aconf);
+      yy_aconf = make_conf(CONF_XLINE);
+      /* default reason */
+      DupString(yy_aconf->passwd,"Something about your name");
+    }
   }
  '{' gecos_items '}' ';'
   {
-    if(yy_aconf->name != NULL)
-      conf_add_x_conf(yy_aconf);
-    else
-      free_conf(yy_aconf);
-    yy_aconf = NULL;
+    if(pass == 2)
+    {
+      if(yy_aconf->name != NULL)
+	conf_add_conf(yy_aconf);
+      else
+	free_conf(yy_aconf);
+      yy_aconf = NULL;
+    }
   }; 
 
 gecos_items:     gecos_items gecos_item |
@@ -1907,29 +2073,38 @@ gecos_item:      gecos_name | gecos_reason | gecos_action | error;
 
 gecos_name:    NAME '=' QSTRING ';' 
   {
-    DupString(yy_aconf->name, yylval.string);
-    collapse(yy_aconf->name);
+    if(pass == 2)
+    {
+      DupString(yy_aconf->name, yylval.string);
+      collapse(yy_aconf->name);
+    }
   };
 
 gecos_reason:    REASON '=' QSTRING ';' 
   {
-    MyFree(yy_aconf->passwd);
-    DupString(yy_aconf->passwd, yylval.string);
+    if(pass == 2)
+    {
+      MyFree(yy_aconf->passwd);
+      DupString(yy_aconf->passwd, yylval.string);
+    }
   };
 
 gecos_action:    ACTION '=' WARN ';'
   {
-    yy_aconf->port = 0;
+    if(pass == 2)
+      yy_aconf->port = 0;
   }
                  |
                  ACTION '=' TREJECT ';'
   {
-    yy_aconf->port = 1;
+    if(pass == 2)
+      yy_aconf->port = 1;
   }
                  |
                  ACTION '=' SILENT ';'
   {
-    yy_aconf->port = 2;
+    if(pass == 2)
+      yy_aconf->port = 2;
   };
 
 
@@ -1980,56 +2155,67 @@ general_item:       general_failed_oper_notice |
 
 general_failed_oper_notice:   FAILED_OPER_NOTICE '=' TYES ';'
   {
-    ConfigFileEntry.failed_oper_notice = 1;
+    if(pass == 2)
+      ConfigFileEntry.failed_oper_notice = 1;
   }
                         |
                         FAILED_OPER_NOTICE '=' TNO ';'
   {
-    ConfigFileEntry.failed_oper_notice = 0;
+    if(pass == 2)
+      ConfigFileEntry.failed_oper_notice = 0;
   } ;
 
 general_anti_nick_flood:   ANTI_NICK_FLOOD '=' TYES ';'
   {
-    ConfigFileEntry.anti_nick_flood = 1;
+    if(pass == 2)
+      ConfigFileEntry.anti_nick_flood = 1;
   }
                         |
                         ANTI_NICK_FLOOD '=' TNO ';'
   {
-    ConfigFileEntry.anti_nick_flood = 0;
+    if(pass == 2)
+      ConfigFileEntry.anti_nick_flood = 0;
   } ;
 
 general_max_nick_time:    MAX_NICK_TIME '=' timespec ';'
   {
-    ConfigFileEntry.max_nick_time = $3; 
+    if(pass == 2)
+      ConfigFileEntry.max_nick_time = $3; 
   } ;
 
 general_max_nick_changes:  MAX_NICK_CHANGES '=' NUMBER ';'
   {
-    ConfigFileEntry.max_nick_changes = $3;
+    if(pass == 2)
+      ConfigFileEntry.max_nick_changes = $3;
   } ;
 
 general_max_accept:  MAX_ACCEPT '=' NUMBER ';'
   {
-    ConfigFileEntry.max_accept = $3;
+    if(pass == 2)
+      ConfigFileEntry.max_accept = $3;
   } ;
 
 general_anti_spam_exit_message_time:  ANTI_SPAM_EXIT_MESSAGE_TIME '=' timespec ';'
   {
-    ConfigFileEntry.anti_spam_exit_message_time = $3;
+    if(pass == 2)
+      ConfigFileEntry.anti_spam_exit_message_time = $3;
   } ;
 
 general_ts_warn_delta: TS_WARN_DELTA '=' timespec ';'
   {
-    ConfigFileEntry.ts_warn_delta = $3;
+    if(pass == 2)
+      ConfigFileEntry.ts_warn_delta = $3;
   } ;
 
 general_ts_max_delta: TS_MAX_DELTA '=' timespec ';'
   {
-    ConfigFileEntry.ts_max_delta = $3;
+    if(pass == 2)
+      ConfigFileEntry.ts_max_delta = $3;
   } ;
 
 general_havent_read_conf:  HAVENT_READ_CONF '=' NUMBER ';'
 {
+  /* XXX harmless to whine on both passes! */
   if($3 > 0)
   {
     ilog(L_CRIT, "You haven't read your config file properly.");
@@ -2040,152 +2226,182 @@ general_havent_read_conf:  HAVENT_READ_CONF '=' NUMBER ';'
 };
 general_kline_with_reason: KLINE_WITH_REASON '=' TYES ';'
   {
-    ConfigFileEntry.kline_with_reason = 1;
+    if(pass == 2)
+      ConfigFileEntry.kline_with_reason = 1;
   }
     |
     KLINE_WITH_REASON '=' TNO ';'
   {
-    ConfigFileEntry.kline_with_reason = 0;
+    if(pass == 2)
+      ConfigFileEntry.kline_with_reason = 0;
   } ;
 
 general_client_exit: CLIENT_EXIT '=' TYES ';'
   {
-    ConfigFileEntry.client_exit = 1;
+    if(pass == 2)
+      ConfigFileEntry.client_exit = 1;
   }
     |
     CLIENT_EXIT '=' TNO ';'
   {
-    ConfigFileEntry.client_exit = 0;
+    if(pass == 2)
+      ConfigFileEntry.client_exit = 0;
   };
 
 general_kline_with_connection_closed: KLINE_WITH_CONNECTION_CLOSED '=' TYES ';'
   {
-    ConfigFileEntry.kline_with_connection_closed = 1;
+    if(pass == 2)
+      ConfigFileEntry.kline_with_connection_closed = 1;
   }
     |
     KLINE_WITH_CONNECTION_CLOSED '=' TNO ';'
   {
-    ConfigFileEntry.kline_with_connection_closed = 0;
+    if(pass == 2)
+      ConfigFileEntry.kline_with_connection_closed = 0;
   } ;
 
 general_warn_no_nline: WARN_NO_NLINE '=' TYES ';'
   {
-    ConfigFileEntry.warn_no_nline = 1;
+    if(pass == 2)
+      ConfigFileEntry.warn_no_nline = 1;
   }
     |
     WARN_NO_NLINE '=' TNO ';'
   {
-    ConfigFileEntry.warn_no_nline = 0;
+    if(pass == 2)
+      ConfigFileEntry.warn_no_nline = 0;
   } ;
 
 general_non_redundant_klines: NON_REDUNDANT_KLINES '=' TYES ';'
   {
-    ConfigFileEntry.non_redundant_klines = 1;
+    if(pass == 2)
+      ConfigFileEntry.non_redundant_klines = 1;
   }
     |
     NON_REDUNDANT_KLINES '=' TNO ';'
   {
-    ConfigFileEntry.non_redundant_klines = 0;
+    if(pass == 2)
+      ConfigFileEntry.non_redundant_klines = 0;
   } ;
 
 general_stats_o_oper_only: STATS_O_OPER_ONLY '=' TYES ';'
   {
-    ConfigFileEntry.stats_o_oper_only = 1;
+    if(pass == 2)
+      ConfigFileEntry.stats_o_oper_only = 1;
   }
     |
     STATS_O_OPER_ONLY '=' TNO ';'
   {
-    ConfigFileEntry.stats_o_oper_only = 0;
+    if(pass == 2)
+      ConfigFileEntry.stats_o_oper_only = 0;
   } ;
 
 general_stats_P_oper_only: STATS_P_OPER_ONLY '=' TYES ';'
   {
-    ConfigFileEntry.stats_P_oper_only = 1;
+    if(pass == 2)
+      ConfigFileEntry.stats_P_oper_only = 1;
   }
     |
     STATS_P_OPER_ONLY '=' TNO ';'
   {
-    ConfigFileEntry.stats_P_oper_only = 0;
+    if(pass == 2)
+      ConfigFileEntry.stats_P_oper_only = 0;
   } ;
   
 general_stats_k_oper_only: STATS_K_OPER_ONLY '=' TYES ';'
   {
-    ConfigFileEntry.stats_k_oper_only = 2;
+    if(pass == 2)
+      ConfigFileEntry.stats_k_oper_only = 2;
   }
     |
     STATS_K_OPER_ONLY '=' TMASKED ';'
   {
-    ConfigFileEntry.stats_k_oper_only = 1;
+    if(pass == 2)
+      ConfigFileEntry.stats_k_oper_only = 1;
   }
     |
     STATS_K_OPER_ONLY '=' TNO ';'
   {
-    ConfigFileEntry.stats_k_oper_only = 0;
+    if(pass == 2)
+      ConfigFileEntry.stats_k_oper_only = 0;
   } ;
 
 general_stats_i_oper_only: STATS_I_OPER_ONLY '=' TYES ';'
   {
-    ConfigFileEntry.stats_i_oper_only = 2;
+    if(pass == 2)
+      ConfigFileEntry.stats_i_oper_only = 2;
   }
     |
     STATS_I_OPER_ONLY '=' TMASKED ';'
   {
-    ConfigFileEntry.stats_i_oper_only = 1;
+    if(pass == 2)
+      ConfigFileEntry.stats_i_oper_only = 1;
   }
     |
     STATS_I_OPER_ONLY '=' TNO ';'
   {
-    ConfigFileEntry.stats_i_oper_only = 0;
+    if(pass == 2)
+      ConfigFileEntry.stats_i_oper_only = 0;
   } ;
 
 general_pace_wait: PACE_WAIT '=' timespec ';'
   {
-    ConfigFileEntry.pace_wait = $3;
+    if(pass == 2)
+      ConfigFileEntry.pace_wait = $3;
   } ;
 
 general_caller_id_wait: CALLER_ID_WAIT '=' timespec ';'
   {
-    ConfigFileEntry.caller_id_wait = $3;
+    if(pass == 2)
+      ConfigFileEntry.caller_id_wait = $3;
   } ;
 
 general_pace_wait_simple: PACE_WAIT_SIMPLE '=' timespec ';'
   {
-    ConfigFileEntry.pace_wait_simple = $3;
+    if(pass == 2)
+      ConfigFileEntry.pace_wait_simple = $3;
   } ;
 
 general_short_motd: SHORT_MOTD '=' TYES ';'
   {
-    ConfigFileEntry.short_motd = 1;
+    if(pass == 2)
+      ConfigFileEntry.short_motd = 1;
   }
     |
     SHORT_MOTD '=' TNO ';'
   {
-    ConfigFileEntry.short_motd = 0;
+    if(pass == 2)
+      ConfigFileEntry.short_motd = 0;
   } ;
   
 general_no_oper_flood: NO_OPER_FLOOD '=' TYES ';'
   {
-    ConfigFileEntry.no_oper_flood = 1;
+    if(pass == 2)
+      ConfigFileEntry.no_oper_flood = 1;
   }
     | 
     NO_OPER_FLOOD '=' TNO ';'
   {
-    ConfigFileEntry.no_oper_flood = 0;
+    if(pass == 2)
+      ConfigFileEntry.no_oper_flood = 0;
   };
 
 general_true_no_oper_flood: TRUE_NO_OPER_FLOOD '=' TYES ';'
   {
-    ConfigFileEntry.true_no_oper_flood = 1;
+    if(pass == 2)
+      ConfigFileEntry.true_no_oper_flood = 1;
   }
     |
     TRUE_NO_OPER_FLOOD '=' TNO ';'
   {
-    ConfigFileEntry.true_no_oper_flood = 0;
+    if(pass == 2)
+      ConfigFileEntry.true_no_oper_flood = 0;
   };
 
 general_iauth_server: IAUTH_SERVER '=' QSTRING ';'
 {
 #if 0
+  if(pass == 2)
     strncpy(iAuth.hostname, yylval.string, HOSTLEN)[HOSTLEN] = 0;
 #endif
 } ;
@@ -2193,171 +2409,209 @@ general_iauth_server: IAUTH_SERVER '=' QSTRING ';'
 general_iauth_port: IAUTH_PORT '=' NUMBER ';'
 {
 #if 0
-    iAuth.port = $3;
+    if(pass == 2)
+      iAuth.port = $3;
 #endif
 } ;
 
 general_fname_userlog: FNAME_USERLOG '=' QSTRING ';'
 {
-  strlcpy(ConfigFileEntry.fname_userlog, yylval.string,
-	      MAXPATHLEN);
+  if(pass == 2)
+    strlcpy(ConfigFileEntry.fname_userlog, yylval.string,
+	    MAXPATHLEN);
 } ;
 
 general_fname_foperlog: FNAME_FOPERLOG '=' QSTRING ';'
 {
-  strlcpy(ConfigFileEntry.fname_foperlog, yylval.string,
-	      MAXPATHLEN);
+  if(pass == 2)
+    strlcpy(ConfigFileEntry.fname_foperlog, yylval.string,
+	    MAXPATHLEN);
 };
 
 general_fname_operlog: FNAME_OPERLOG '=' QSTRING ';'
 {
-  strlcpy(ConfigFileEntry.fname_operlog, yylval.string,
-	      MAXPATHLEN);
+  if(pass == 2)
+    strlcpy(ConfigFileEntry.fname_operlog, yylval.string,
+	    MAXPATHLEN);
 };
 
 general_glines: GLINES '=' TYES ';'
   {
-    ConfigFileEntry.glines = 1;
+    if(pass == 2)
+      ConfigFileEntry.glines = 1;
   } 
     |
     GLINES '=' TNO ';'
   {
-    ConfigFileEntry.glines = 0;
+    if(pass == 2)
+      ConfigFileEntry.glines = 0;
   } ;
 
 general_message_locale: MESSAGE_LOCALE '=' QSTRING ';'
   {
-    char langenv[BUFSIZE];
-    if (strlen(yylval.string) > BUFSIZE-10)
-      yylval.string[BUFSIZE-9] = 0;
-    ircsprintf(langenv, "LANGUAGE=%s", yylval.string);
-    putenv(langenv);
+    if(pass == 2)
+    {
+      char langenv[BUFSIZE];
+      if(strlen(yylval.string) > BUFSIZE-10)
+	yylval.string[BUFSIZE-9] = 0;
+      ircsprintf(langenv, "LANGUAGE=%s", yylval.string);
+      putenv(langenv);
+    }
   } ;
 
 general_gline_time: GLINE_TIME '=' timespec ';'
   {
-    ConfigFileEntry.gline_time = $3;
+    if(pass == 2)
+      ConfigFileEntry.gline_time = $3;
   } ;
 
 general_idletime: IDLETIME '=' timespec ';'
   {
-    ConfigFileEntry.idletime = $3;
+    if(pass == 2)
+      ConfigFileEntry.idletime = $3;
   } ;
 
 general_dots_in_ident: DOTS_IN_IDENT '=' NUMBER ';'
   {
-    ConfigFileEntry.dots_in_ident = $3;
+    if(pass == 2)
+      ConfigFileEntry.dots_in_ident = $3;
   } ;
 
 general_maximum_links: MAXIMUM_LINKS '=' NUMBER ';'
   {
-    ConfigFileEntry.maximum_links = $3;
+    if(pass == 2)
+      ConfigFileEntry.maximum_links = $3;
   } ;
 
 general_max_targets: MAX_TARGETS '=' NUMBER ';'
   {
-    ConfigFileEntry.max_targets = $3;
+    if(pass == 2)
+      ConfigFileEntry.max_targets = $3;
   } ;
 
 general_servlink_path: SERVLINK_PATH '=' QSTRING ';'
   {
-    MyFree(ConfigFileEntry.servlink_path);
-    DupString(ConfigFileEntry.servlink_path, yylval.string);
+    if(pass == 2)
+    {
+      MyFree(ConfigFileEntry.servlink_path);
+      DupString(ConfigFileEntry.servlink_path, yylval.string);
+    }
   } ;
 
 general_default_cipher_preference: DEFAULT_CIPHER_PREFERENCE '=' QSTRING ';'
   {
 #ifdef HAVE_LIBCRYPTO
-    struct EncCapability *ecap;
-    char *cipher_name;
-    int found = 0;
-
-    ConfigFileEntry.default_cipher_preference = NULL;
-
-    cipher_name = yylval.string;
-
-    for (ecap = CipherTable; ecap->name; ecap++)
-    {
-      if ( (!irccmp(ecap->name, cipher_name)) &&
-           (ecap->cap & CAP_ENC_MASK))
+    if(pass == 2)
       {
-        ConfigFileEntry.default_cipher_preference = ecap;
-        found = 1;
-        break;
-      }
-    }
+	struct EncCapability *ecap;
+	char *cipher_name;
+	int found = 0;
 
-    if (!found)
-    {
-      sendto_realops_flags(UMODE_ALL, L_ALL, "Invalid cipher '%s'", cipher_name);
-      ilog(L_ERROR, "Invalid cipher '%s'", cipher_name);
-    }
+	ConfigFileEntry.default_cipher_preference = NULL;
+
+	cipher_name = yylval.string;
+
+	for (ecap = CipherTable; ecap->name; ecap++)
+	{
+	  if((!irccmp(ecap->name, cipher_name)) &&
+	     (ecap->cap & CAP_ENC_MASK))
+	  {
+	    ConfigFileEntry.default_cipher_preference = ecap;
+	    found = 1;
+	    break;
+	  }
+	}
+
+	if(!found)
+        {
+	  sendto_realops_flags(UMODE_ALL, L_ALL,
+			       "Invalid cipher '%s'", cipher_name);
+	  ilog(L_ERROR, "Invalid cipher '%s'", cipher_name);
+	}
+      }
 #else
-    sendto_realops_flags(UMODE_ALL, L_ALL, "Ignoring 'default_cipher_preference' "
-                                    "-- no OpenSSL support");
-    ilog(L_ERROR, "Ignoring 'default_cipher_preference' "
-                  "-- no OpenSSL support");
+    if(pass == 2)
+    {
+      sendto_realops_flags(UMODE_ALL, L_ALL,
+			   "Ignoring 'default_cipher_preference' "
+			   "-- no OpenSSL support");
+      ilog(L_ERROR, "Ignoring 'default_cipher_preference' "
+	   "-- no OpenSSL support");
+    }
 #endif
   } ;
 
 general_compression_level: COMPRESSION_LEVEL '=' NUMBER ';'
   {
-    ConfigFileEntry.compression_level = $3;
-#ifndef HAVE_LIBZ
-    sendto_realops_flags(UMODE_ALL, L_ALL,
-      "Ignoring compression_level = %d; -- no zlib support",
-       ConfigFileEntry.compression_level);
-#else
-    if ((ConfigFileEntry.compression_level < 1) ||
-        (ConfigFileEntry.compression_level > 9))
+    if(pass == 2)
     {
+      ConfigFileEntry.compression_level = $3;
+#ifndef HAVE_LIBZ
       sendto_realops_flags(UMODE_ALL, L_ALL,
-        "Ignoring invalid compression level '%d', using default",
-        ConfigFileEntry.compression_level);
-      ConfigFileEntry.compression_level = 0;
+		   "Ignoring compression_level = %d; -- no zlib support",
+			   ConfigFileEntry.compression_level);
+#else
+      if((ConfigFileEntry.compression_level < 1) ||
+	 (ConfigFileEntry.compression_level > 9))
+      {
+	sendto_realops_flags(UMODE_ALL, L_ALL,
+		    "Ignoring invalid compression level '%d', using default",
+			     ConfigFileEntry.compression_level);
+	ConfigFileEntry.compression_level = 0;
+      }
     }
 #endif
   };
 
 general_use_egd: USE_EGD '=' TYES ';'
   {
-    ConfigFileEntry.use_egd = 1;
+    if(pass == 2)
+      ConfigFileEntry.use_egd = 1;
   }
     |
     USE_EGD '=' TNO ';'
   {
-    ConfigFileEntry.use_egd = 0;
+    if(pass == 2)
+      ConfigFileEntry.use_egd = 0;
   } ;
 
 general_egdpool_path: EGDPOOL_PATH '=' QSTRING ';'
   {
-    MyFree(ConfigFileEntry.egdpool_path);
-    DupString(ConfigFileEntry.egdpool_path, yylval.string);
+    if(pass == 2)
+    {
+      MyFree(ConfigFileEntry.egdpool_path);
+      DupString(ConfigFileEntry.egdpool_path, yylval.string);
+    }
   } ;
 
 general_ping_cookie: PING_COOKIE '=' TYES ';'
   {
-    ConfigFileEntry.ping_cookie = 1;
+    if(pass == 2)
+      ConfigFileEntry.ping_cookie = 1;
   } |
     PING_COOKIE '=' TNO ';'
   {
-    ConfigFileEntry.ping_cookie = 0;
+    if(pass == 2)
+      ConfigFileEntry.ping_cookie = 0;
   } ;
 
 general_use_help: USE_HELP '=' TYES ';'
   {
-    ConfigFileEntry.use_help = 1;
+    if(pass == 2)
+      ConfigFileEntry.use_help = 1;
   }
     |
     USE_HELP '=' TNO ';'
   {
-    ConfigFileEntry.use_help = 0;
+    if(pass == 2)
+      ConfigFileEntry.use_help = 0;
   } ;
 
 general_throttle_time: THROTTLE_TIME '=' timespec ';'
-{
- ConfigFileEntry.throttle_time = yylval.number;
-} ;
+  {
+    if(pass == 2)
+      ConfigFileEntry.throttle_time = yylval.number;
+  } ;
 
 general_fallback_to_ip6_int: FALLBACK_IP6_INT '=' TYES ';'
 {
@@ -2374,7 +2628,8 @@ general_fallback_to_ip6_int: FALLBACK_IP6_INT '=' TYES ';'
 
 general_oper_umodes: OPER_UMODES
   {
-    ConfigFileEntry.oper_umodes = 0;
+    if(pass == 2)
+      ConfigFileEntry.oper_umodes = 0;
   }
   '='  umode_oitems ';' ;
 
@@ -2383,72 +2638,89 @@ umode_oitems:    umode_oitems ',' umode_oitem |
 
 umode_oitem:     T_BOTS
   {
-    ConfigFileEntry.oper_umodes |= UMODE_BOTS;
+    if(pass == 2)
+      ConfigFileEntry.oper_umodes |= UMODE_BOTS;
   }
               | T_CCONN
   {
-    ConfigFileEntry.oper_umodes |= UMODE_CCONN;
+    if(pass == 2)
+      ConfigFileEntry.oper_umodes |= UMODE_CCONN;
   }
               | T_DEBUG
   {
-    ConfigFileEntry.oper_umodes |= UMODE_DEBUG;
+    if(pass == 2)
+      ConfigFileEntry.oper_umodes |= UMODE_DEBUG;
   }
               | T_FULL
   {
-    ConfigFileEntry.oper_umodes |= UMODE_FULL;
+    if(pass == 2)
+      ConfigFileEntry.oper_umodes |= UMODE_FULL;
   }
               | T_SKILL
   {
-    ConfigFileEntry.oper_umodes |= UMODE_SKILL;
+    if(pass == 2)
+      ConfigFileEntry.oper_umodes |= UMODE_SKILL;
   }
               | T_NCHANGE
   {
-    ConfigFileEntry.oper_umodes |= UMODE_NCHANGE;
+    if(pass == 2)
+      ConfigFileEntry.oper_umodes |= UMODE_NCHANGE;
   }
               | T_REJ
   {
-    ConfigFileEntry.oper_umodes |= UMODE_REJ;
+    if(pass == 2)
+      ConfigFileEntry.oper_umodes |= UMODE_REJ;
   }
               | T_UNAUTH
   {
-    ConfigFileEntry.oper_umodes |= UMODE_UNAUTH;
+    if(pass == 2)
+      ConfigFileEntry.oper_umodes |= UMODE_UNAUTH;
   }
               | T_SPY
   {
-    ConfigFileEntry.oper_umodes |= UMODE_SPY;
+    if(pass == 2)
+      ConfigFileEntry.oper_umodes |= UMODE_SPY;
   }
               | T_EXTERNAL
   {
-    ConfigFileEntry.oper_umodes |= UMODE_EXTERNAL;
+    if(pass == 2)
+      ConfigFileEntry.oper_umodes |= UMODE_EXTERNAL;
   }
               | T_OPERWALL
   {
-    ConfigFileEntry.oper_umodes |= UMODE_OPERWALL;
+    if(pass == 2)
+      ConfigFileEntry.oper_umodes |= UMODE_OPERWALL;
   }
               | T_SERVNOTICE
   {
-    ConfigFileEntry.oper_umodes |= UMODE_SERVNOTICE;
+    if(pass == 2)
+      ConfigFileEntry.oper_umodes |= UMODE_SERVNOTICE;
   }
               | T_INVISIBLE
   {
-    ConfigFileEntry.oper_umodes |= UMODE_INVISIBLE;
+    if(pass == 2)
+      ConfigFileEntry.oper_umodes |= UMODE_INVISIBLE;
   }
               | T_WALLOP
   {
-    ConfigFileEntry.oper_umodes |= UMODE_WALLOP;
+    if(pass == 2)
+      ConfigFileEntry.oper_umodes |= UMODE_WALLOP;
   }
               | T_CALLERID
   {
-    ConfigFileEntry.oper_umodes |= UMODE_CALLERID;
+    if(pass == 2)
+      ConfigFileEntry.oper_umodes |= UMODE_CALLERID;
   }
               | T_LOCOPS
   {
-    ConfigFileEntry.oper_umodes |= UMODE_LOCOPS;
+    if(pass == 2)
+      ConfigFileEntry.oper_umodes |= UMODE_LOCOPS;
   };
 
 general_oper_only_umodes: OPER_ONLY_UMODES 
   {
-    ConfigFileEntry.oper_only_umodes = 0;
+    if(pass == 2)
+      ConfigFileEntry.oper_only_umodes = 0;
   }
   '='  umode_items ';' ;
 
@@ -2457,90 +2729,111 @@ umode_items:	umode_items ',' umode_item |
 
 umode_item:	T_BOTS 
   {
-    ConfigFileEntry.oper_only_umodes |= UMODE_BOTS;
+    if(pass == 2)
+      ConfigFileEntry.oper_only_umodes |= UMODE_BOTS;
   } 
               | T_CCONN
   {
-    ConfigFileEntry.oper_only_umodes |= UMODE_CCONN;
+    if(pass == 2)
+      ConfigFileEntry.oper_only_umodes |= UMODE_CCONN;
   }
               | T_DEBUG
   {
-    ConfigFileEntry.oper_only_umodes |= UMODE_DEBUG;
+    if(pass == 2)
+      ConfigFileEntry.oper_only_umodes |= UMODE_DEBUG;
   }
               | T_FULL
   { 
-    ConfigFileEntry.oper_only_umodes |= UMODE_FULL;
+    if(pass == 2)
+      ConfigFileEntry.oper_only_umodes |= UMODE_FULL;
   }
               | T_SKILL
   {
-    ConfigFileEntry.oper_only_umodes |= UMODE_SKILL;
+    if(pass == 2)
+      ConfigFileEntry.oper_only_umodes |= UMODE_SKILL;
   }
               | T_NCHANGE
   {
-    ConfigFileEntry.oper_only_umodes |= UMODE_NCHANGE;
+    if(pass == 2)
+      ConfigFileEntry.oper_only_umodes |= UMODE_NCHANGE;
   }
               | T_REJ
   {
-    ConfigFileEntry.oper_only_umodes |= UMODE_REJ;
+    if(pass == 2)
+      ConfigFileEntry.oper_only_umodes |= UMODE_REJ;
   }
               | T_UNAUTH
   {
-    ConfigFileEntry.oper_only_umodes |= UMODE_UNAUTH;
+    if(pass == 2)
+      ConfigFileEntry.oper_only_umodes |= UMODE_UNAUTH;
   }
               | T_SPY
   {
-    ConfigFileEntry.oper_only_umodes |= UMODE_SPY;
+    if(pass == 2)
+      ConfigFileEntry.oper_only_umodes |= UMODE_SPY;
   }
               | T_EXTERNAL
   {
-    ConfigFileEntry.oper_only_umodes |= UMODE_EXTERNAL;
+    if(pass == 2)
+      ConfigFileEntry.oper_only_umodes |= UMODE_EXTERNAL;
   }
               | T_OPERWALL
   {
-    ConfigFileEntry.oper_only_umodes |= UMODE_OPERWALL;
+    if(pass == 2)
+      ConfigFileEntry.oper_only_umodes |= UMODE_OPERWALL;
   } 
               | T_SERVNOTICE
   {
-    ConfigFileEntry.oper_only_umodes |= UMODE_SERVNOTICE;
+    if(pass == 2)
+      ConfigFileEntry.oper_only_umodes |= UMODE_SERVNOTICE;
   }
               | T_INVISIBLE
   {
-    ConfigFileEntry.oper_only_umodes |= UMODE_INVISIBLE;
+    if(pass == 2)
+      ConfigFileEntry.oper_only_umodes |= UMODE_INVISIBLE;
   }
               | T_WALLOP
   {
-    ConfigFileEntry.oper_only_umodes |= UMODE_WALLOP;
+    if(pass == 2)
+      ConfigFileEntry.oper_only_umodes |= UMODE_WALLOP;
   }
               | T_CALLERID
   {
-    ConfigFileEntry.oper_only_umodes |= UMODE_CALLERID;
+    if(pass == 2)
+      ConfigFileEntry.oper_only_umodes |= UMODE_CALLERID;
   }
               | T_LOCOPS
   {
-    ConfigFileEntry.oper_only_umodes |= UMODE_LOCOPS;
+    if(pass == 2)
+      ConfigFileEntry.oper_only_umodes |= UMODE_LOCOPS;
   };
 
 general_min_nonwildcard:    MIN_NONWILDCARD '=' NUMBER ';'
   {
-    ConfigFileEntry.min_nonwildcard = $3;
+    if(pass == 2)
+      ConfigFileEntry.min_nonwildcard = $3;
   };
 general_default_floodcount:    DEFAULT_FLOODCOUNT '=' NUMBER ';'
   {
-    ConfigFileEntry.default_floodcount = $3;
+    if(pass == 2)
+      ConfigFileEntry.default_floodcount = $3;
   };
 
 general_client_flood: T_CLIENT_FLOOD '=' NUMBER ';'
   {
-    ConfigFileEntry.client_flood = $3;
+    if(pass == 2)
+      ConfigFileEntry.client_flood = $3;
   };
 
 general_dot_in_ip6_addr: DOT_IN_IP6_ADDR '=' TYES ';'
   {
-    ConfigFileEntry.dot_in_ip6_addr = 1;
+    if(pass == 2)
+      ConfigFileEntry.dot_in_ip6_addr = 1;
   } |
     DOT_IN_IP6_ADDR '=' TNO ';'
   {
-    ConfigFileEntry.dot_in_ip6_addr = 0;
+    if(pass == 2)
+      ConfigFileEntry.dot_in_ip6_addr = 0;
   } ;
 
 /***************************************************************************
@@ -2574,179 +2867,222 @@ channel_item:       channel_use_except |
 
 channel_use_except:   USE_EXCEPT '=' TYES ';'
   {
-    ConfigChannel.use_except = 1;
+    if(pass == 2)
+      ConfigChannel.use_except = 1;
   }
                         |
                       USE_EXCEPT '=' TNO ';'
   {
-    ConfigChannel.use_except = 0;
+    if(pass == 2)
+      ConfigChannel.use_except = 0;
   } ;
 
 
 channel_use_halfops:   USE_HALFOPS '=' TYES ';'
   {
 #ifdef HALFOPS
-    /* Set to -1 on boot */
-    if (ConfigChannel.use_halfops == 0)
+    if(pass == 2)
     {
-      ilog(L_ERROR, "Ignoring config file entry 'use_halfops = yes' "
-                    "-- can only be changed on boot");
-      break;
+      /* Set to -1 on boot */
+      if(ConfigChannel.use_halfops == 0)
+      {
+	ilog(L_ERROR, "Ignoring config file entry 'use_halfops = yes' "
+	     "-- can only be changed on boot");
+	break;
+      }
+      else
+	ConfigChannel.use_halfops = 1;
     }
-    else
-      ConfigChannel.use_halfops = 1;
 #endif
   }
   |
     USE_HALFOPS '=' TNO ';'
   {
-    /* Set to -1 on boot */
-    if (ConfigChannel.use_halfops == 1)
+    if(pass == 2)
     {
-      ilog(L_ERROR, "Ignoring config file entry 'use_halfops = no' "
-                    "-- can only be changed on boot");
-      break;
+      /* Set to -1 on boot */
+      if(ConfigChannel.use_halfops == 1)
+      {
+	ilog(L_ERROR, "Ignoring config file entry 'use_halfops = no' "
+	     "-- can only be changed on boot");
+	break;
+      }
+      else
+	ConfigChannel.use_halfops = 0;
     }
-    else
-      ConfigChannel.use_halfops = 0;
   };
 
 
 channel_use_anonops: USE_ANONOPS '=' TYES ';'
   {
 #ifdef ANONOPS
-    if(ConfigChannel.use_anonops == 0)
+    if(pass == 2)
     {
-      ilog(L_ERROR, "Ignoring config file entry 'use_anonops = yes' "
-                    "-- can only be changed on boot");
-      break;
+      if(ConfigChannel.use_anonops == 0)
+      {
+	ilog(L_ERROR, "Ignoring config file entry 'use_anonops = yes' "
+	     "-- can only be changed on boot");
+	break;
+      }
+      else
+	ConfigChannel.use_anonops = 1;
     }
-    else
-      ConfigChannel.use_anonops = 1;
 #endif
   }
     |
     USE_ANONOPS '=' TNO ';'
   {
-    if(ConfigChannel.use_anonops == 1)
+    if(pass == 2)
     {
-      ilog(L_ERROR, "Ignoring config file entry 'use_anonops = no' "
-                    "-- can only be changed on boot");
-      break;
+      if(ConfigChannel.use_anonops == 1)
+      {
+	ilog(L_ERROR, "Ignoring config file entry 'use_anonops = no' "
+	     "-- can only be changed on boot");
+	break;
+      }
+      else
+	ConfigChannel.use_anonops = 0;
     }
-    else
-      ConfigChannel.use_anonops = 0;
   } ;
 
 
 channel_use_invex:   USE_INVEX '=' TYES ';'
   {
-    ConfigChannel.use_invex = 1;
+    if(pass == 2)
+      ConfigChannel.use_invex = 1;
   }
                         |
                      USE_INVEX '=' TNO ';'
   {
-    ConfigChannel.use_invex = 0;
+    if(pass == 2)
+      ConfigChannel.use_invex = 0;
   } ;
 
 
 channel_use_knock:   USE_KNOCK '=' TYES ';'
   {
-    ConfigChannel.use_knock = 1;
+    if(pass == 2)
+      ConfigChannel.use_knock = 1;
   }
                      |
                      USE_KNOCK '=' TNO ';'
   {
-    ConfigChannel.use_knock = 0;
+    if(pass == 2)
+      ConfigChannel.use_knock = 0;
   } ;
 
 
 channel_use_vchans: USE_VCHANS '=' TYES ';'
   { 
 #ifdef VCHANS
-    ConfigChannel.use_vchans = 1;
+    if(pass == 2)
+      ConfigChannel.use_vchans = 1;
 #endif
   }
     |
     USE_VCHANS '=' TNO ';'
-  { ConfigChannel.use_vchans = 0; };
+  {
+    if(pass == 2)
+      ConfigChannel.use_vchans = 0;
+  };
 
 
 channel_vchans_oper_only: VCHANS_OPER_ONLY '=' TYES ';'
-  { ConfigChannel.vchans_oper_only = 1; }
+  { 
+    if(pass == 2)
+      ConfigChannel.vchans_oper_only = 1;
+  }
     |
     VCHANS_OPER_ONLY '=' TNO ';'
-  { ConfigChannel.vchans_oper_only = 0; };
+  {
+    if(pass == 2)
+      ConfigChannel.vchans_oper_only = 0;
+  };
 
 
 channel_knock_delay: KNOCK_DELAY '=' timespec ';'
    {
-     ConfigChannel.knock_delay = $3;
+     if(pass == 2)
+       ConfigChannel.knock_delay = $3;
    } ;
 
 channel_knock_delay_channel: KNOCK_DELAY_CHANNEL '=' timespec ';'
    {
-     ConfigChannel.knock_delay_channel = $3;
+     if(pass == 2)
+       ConfigChannel.knock_delay_channel = $3;
    } ;
 
 channel_max_chans_per_user:  MAX_CHANS_PER_USER '=' NUMBER ';'
    {
-     ConfigChannel.max_chans_per_user = $3;
+     if(pass == 2)
+       ConfigChannel.max_chans_per_user = $3;
    } ;
 
 channel_quiet_on_ban : QUIET_ON_BAN '=' TYES ';'
    {
-     ConfigChannel.quiet_on_ban = 1;
+     if(pass == 2)
+       ConfigChannel.quiet_on_ban = 1;
    }
      |
      QUIET_ON_BAN '=' TNO ';'
    {
-     ConfigChannel.quiet_on_ban = 0;
+     if(pass == 2)
+       ConfigChannel.quiet_on_ban = 0;
    } ;
 
 channel_max_bans: MAX_BANS '=' NUMBER ';'
    {
-      ConfigChannel.max_bans = $3;
+     if(pass == 2)
+       ConfigChannel.max_bans = $3;
    } ;
 
 channel_default_split_user_count: DEFAULT_SPLIT_USER_COUNT '=' NUMBER ';'
   {
-    ConfigChannel.default_split_user_count = $3;
+    if(pass == 2)
+      ConfigChannel.default_split_user_count = $3;
   } ;
 
 channel_default_split_server_count: DEFAULT_SPLIT_SERVER_COUNT '=' NUMBER ';'
   {
-    ConfigChannel.default_split_server_count = $3;
+    if(pass == 2)
+      ConfigChannel.default_split_server_count = $3;
   } ;
 
 channel_no_create_on_split: NO_CREATE_ON_SPLIT '=' TYES ';'
   {
-    ConfigChannel.no_create_on_split = 1;
+    if(pass == 2)
+      ConfigChannel.no_create_on_split = 1;
   }
     |
     NO_CREATE_ON_SPLIT '=' TNO ';'
   {
-    ConfigChannel.no_create_on_split = 0;
+    if(pass == 2)
+      ConfigChannel.no_create_on_split = 0;
   } ;
 
 channel_no_join_on_split: NO_JOIN_ON_SPLIT '=' TYES ';'
   {
-    ConfigChannel.no_join_on_split = 1;
+    if(pass == 2)
+      ConfigChannel.no_join_on_split = 1;
   }
     |
     NO_JOIN_ON_SPLIT '=' TNO ';'
   {
-    ConfigChannel.no_join_on_split = 0;
+    if(pass == 2)
+      ConfigChannel.no_join_on_split = 0;
   } ;
   
+
 channel_oper_pass_resv: OPER_PASS_RESV '=' TYES ';'
   {
-    ConfigChannel.oper_pass_resv = 1;
+    if(pass == 2)
+      ConfigChannel.oper_pass_resv = 1;
   }
     |
     OPER_PASS_RESV '=' TNO ';'
   {
-    ConfigChannel.oper_pass_resv = 0;
+    if(pass == 2)
+      ConfigChannel.oper_pass_resv = 0;
   } ;
 
 /***************************************************************************
@@ -2770,74 +3106,88 @@ serverhide_item:    serverhide_flatten_links |
 
 serverhide_flatten_links: FLATTEN_LINKS '=' TYES ';'
   {
-    ConfigServerHide.flatten_links = 1;
+    if(pass == 2)
+      ConfigServerHide.flatten_links = 1;
   }
     |
     FLATTEN_LINKS '=' TNO ';'
   {
-    ConfigServerHide.flatten_links = 0;
+    if(pass == 2)
+      ConfigServerHide.flatten_links = 0;
   } ;
 
 serverhide_hide_servers: HIDE_SERVERS '=' TYES ';'
   {
-    ConfigServerHide.hide_servers = 1;
+    if(pass == 2)
+      ConfigServerHide.hide_servers = 1;
   }
     |
     HIDE_SERVERS '=' TNO ';'
   {
-    ConfigServerHide.hide_servers = 0;
+    if(pass == 2)
+      ConfigServerHide.hide_servers = 0;
   } ;
 
 serverhide_disable_remote_commands: DISABLE_REMOTE_COMMANDS '=' TYES ';'
   {
-    ConfigServerHide.disable_remote = 1;
+    if(pass == 2)
+      ConfigServerHide.disable_remote = 1;
   }
     |
     DISABLE_REMOTE_COMMANDS '=' TNO ';'
   {
-    ConfigServerHide.disable_remote = 0;
+    if(pass == 2)
+      ConfigServerHide.disable_remote = 0;
   } ;
 
 serverhide_disable_local_channels: DISABLE_LOCAL_CHANNELS '=' TYES ';'
   {
-    ConfigServerHide.disable_local_channels = 1;
+    if(pass == 2)
+      ConfigServerHide.disable_local_channels = 1;
   }
     |
     DISABLE_LOCAL_CHANNELS '=' TNO ';'
   {
-    ConfigServerHide.disable_local_channels = 0;
+    if(pass == 2)
+      ConfigServerHide.disable_local_channels = 0;
   } ;
 
 serverhide_links_delay: LINKS_DELAY '=' timespec ';'
   {
-    if(($3 > 0) && ConfigServerHide.links_disabled == 1)
+    if(pass == 2)
     {
-      eventAddIsh("write_links_file", write_links_file, NULL, $3);
-      ConfigServerHide.links_disabled = 0;
-    }
+      if(($3 > 0) && ConfigServerHide.links_disabled == 1)
+      {
+	eventAddIsh("write_links_file", write_links_file, NULL, $3);
+	ConfigServerHide.links_disabled = 0;
+      }
 	
-    ConfigServerHide.links_delay = $3;
-
+      ConfigServerHide.links_delay = $3;
+    }
   };
 
 serverhide_hidden: HIDDEN '=' TYES ';'
   {
-    ConfigServerHide.hidden = 1;
+    if(pass == 2)
+      ConfigServerHide.hidden = 1;
   }
     |
     HIDDEN '=' TNO ';'
   {
-    ConfigServerHide.hidden = 0;
+    if(pass == 2)
+      ConfigServerHide.hidden = 0;
   };
 
 serverhide_disable_hidden: DISABLE_HIDDEN '=' TYES ';'
   {
-    ConfigServerHide.disable_hidden = 1;
+    if(pass == 2)
+      ConfigServerHide.disable_hidden = 1;
   }
     |
     DISABLE_HIDDEN '=' TNO ';'
   {
-    ConfigServerHide.disable_hidden = 0;
+    if(pass == 2)
+      ConfigServerHide.disable_hidden = 0;
   };
   
   

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: class.c,v 7.37 2002/09/05 14:06:16 db Exp $
+ *  $Id: class.c,v 7.38 2003/02/18 22:26:38 db Exp $
  */
 
 #include "stdinc.h"
@@ -43,24 +43,46 @@
 #define BAD_PING                -2
 #define BAD_CLIENT_CLASS        -3
 
-struct Class* ClassList;
+dlink_list ClassList;
+
+/*
+ * find_class_ptr
+ *
+ * inputs	- string name of class
+ * output	- corresponding class pointer
+ * side effects	- NONE
+ */
+static dlink_node *
+find_class_ptr(char* classname)
+{
+  dlink_node *ptr;
+  struct Class *aclass;
+
+  DLINK_FOREACH(ptr, ClassList.head)
+  {
+    aclass = ptr->data;
+    if (!strcmp(ClassName(aclass),classname))
+      return (ptr);
+  }
+  return (NULL);
+}
 
 static struct Class *
 make_class()
 {
-  struct Class *tmp;
+  struct Class *aclass;
 
-  tmp = (struct Class *)MyMalloc(sizeof(struct Class));
-  tmp->className = NULL;
-  tmp->servname = NULL;
-  return (tmp);
+  aclass = (struct Class *)MyMalloc(sizeof(struct Class));
+  aclass->className = NULL;
+  aclass->servname = NULL;
+  return (aclass);
 }
 
 void
-free_class(struct Class *tmp)
+free_class(struct Class *aclass)
 {
-  MyFree(tmp->className);
-  MyFree((char *)tmp);
+  MyFree(aclass->className);
+  MyFree((char *)aclass);
 }
 
 /*
@@ -99,13 +121,13 @@ get_client_class(struct Client *target_p)
   if (target_p && !IsMe(target_p)  && (target_p->localClient->confs.head))
   {
     DLINK_FOREACH(ptr, target_p->localClient->confs.head)
-      {
-	aconf = ptr->data;
-	if(aconf->className == NULL)
-	  retc = "default";
-	else
-	  retc= aconf->className;
-      }
+    {
+      aconf = ptr->data;
+      if (aconf->className == NULL)
+	retc = "default";
+      else
+	retc= aconf->className;
+    }
   }
   Debug((DEBUG_DEBUG,"Returning Class %s For %s",retc,target_p->name));
 
@@ -127,7 +149,7 @@ get_client_ping(struct Client *target_p)
   struct ConfItem       *aconf;
   dlink_node		*nlink;
 
-  if(target_p->localClient->confs.head != NULL)
+  if (target_p->localClient->confs.head != NULL)
   {
     DLINK_FOREACH(nlink, target_p->localClient->confs.head)
     {
@@ -186,56 +208,69 @@ get_con_freq(struct Class *clptr)
 void
 add_class(char *classname, int ping, int confreq, int maxli, long sendq)
 {
-  struct Class *t, *p;
+  dlink_node *ptr;
+  struct Class *aclass;
 
-  if(classname == NULL)
+  if (classname == NULL)
     return;
 
-  t = find_class(classname);
-  if (t == ClassList)
-    {
-      p = make_class();
-      p->next = t->next;
-      t->next = p;
-    }
+  if ((ptr = find_class_ptr(classname)) == NULL)
+  {
+    aclass = make_class();
+    dlinkAdd(aclass, &aclass->class_node, &ClassList);
+    Links(aclass) = 0;
+  }
   else
-    p = t;
-  Debug((DEBUG_DEBUG,
-         "Add Class %s: p %x t %x - cf: %d pf: %d ml: %d sq: %l",
-         classname, p, t, confreq, ping, maxli, sendq));
+    aclass = ptr->data;
 
-  /* classname already known to be non NULL */
-  MyFree(ClassName(p));
-  DupString(ClassName(p),classname);
-  ConFreq(p) = confreq;
-  PingFreq(p) = ping;
-  MaxLinks(p) = maxli;
-  MaxSendq(p) = (sendq > 0) ? sendq : DEFAULT_SENDQ;
-  if (p != t)
-    Links(p) = 0;
+  Debug((DEBUG_DEBUG,
+         "Add Class %s: - cf: %d pf: %d ml: %d sq: %l",
+         classname, confreq, ping, maxli, sendq));
+
+  MyFree(ClassName(aclass));
+  DupString(ClassName(aclass),classname);
+  ConFreq(aclass) = confreq;
+  PingFreq(aclass) = ping;
+  MaxLinks(aclass) = maxli;
+  MaxSendq(aclass) = (sendq > 0) ? sendq : DEFAULT_SENDQ;
 }
 
 /*
  * find_class
  *
  * inputs	- string name of class
- * output	- corresponding class pointer
+ * output	- corresponding Class pointer
  * side effects	- NONE
  */
 struct Class *
 find_class(char* classname)
 {
-  struct Class *cltmp;
+  dlink_node *ptr;
+  struct Class *aclass;
 
-  if(classname == NULL)
+  if ((ptr = find_class_ptr(classname)) != NULL)
   {
-    return(ClassList);	/* return class 0 */
+    return(ptr->data);
   }
-
-  for (cltmp = ClassList; cltmp; cltmp = cltmp->next)
-    if (!strcmp(ClassName(cltmp),classname))
-      return (cltmp);
-  return (ClassList);
+  else
+  {
+    if ((ptr = find_class_ptr("default")) != NULL)
+    {
+      return(ptr->data);
+    }
+    else
+    {
+      aclass = make_class();
+      DupString(ClassName(aclass),"default");
+      ConFreq(aclass) = DEFAULT_CONNECTFREQUENCY;
+      PingFreq(aclass) = DEFAULT_PINGFREQUENCY;
+      MaxLinks(aclass) = ConfigFileEntry.maximum_links;
+      MaxSendq(aclass) = DEFAULT_SENDQ;
+      Links(aclass) = 0;
+      dlinkAdd(aclass, &aclass->class_node, &ClassList);
+      return(aclass);
+    }
+  }
 }
 
 /*
@@ -248,24 +283,28 @@ find_class(char* classname)
 void
 check_class()
 {
-  struct Class *cltmp, *cltmp2;
+  dlink_node *ptr;
+  dlink_node *next_ptr;
+  struct Class *aclass;
 
   Debug((DEBUG_DEBUG, "Class check:"));
 
-  for (cltmp2 = cltmp = ClassList; cltmp; cltmp = cltmp2->next)
+  DLINK_FOREACH_SAFE(ptr, next_ptr, ClassList.head)
   {
+    aclass = ptr->data;
+
     Debug((DEBUG_DEBUG,
 	   "ClassName %s Class %d : CF: %d PF: %d ML: %d LI: %d SQ: %ld",
-	   ClassName(cltmp),ClassType(cltmp), ConFreq(cltmp), PingFreq(cltmp),
-	   MaxLinks(cltmp), Links(cltmp), MaxSendq(cltmp)));
-    if (MaxLinks(cltmp) < 0)
+	   ClassName(aclass),ClassType(aclass), ConFreq(aclass),
+	   PingFreq(aclass), MaxLinks(aclass), Links(aclass),
+	   MaxSendq(aclass)));
+
+    if (MaxLinks(aclass) < 0)
     {
-      cltmp2->next = cltmp->next;
-      if (Links(cltmp) <= 0)
-	free_class(cltmp);
+      dlinkDelete(ptr, &ClassList);
+      if (Links(aclass) <= 0)
+	free_class(aclass);
     }
-    else
-      cltmp2 = cltmp;
   }
 }
 
@@ -279,16 +318,22 @@ check_class()
 void
 initclass()
 {
-  ClassList = make_class();
+  struct Class *aclass;
 
-  ClassType(ClassList) = 0;
-  DupString(ClassName(ClassList),"default");
-  ConFreq(ClassList) = DEFAULT_CONNECTFREQUENCY;
-  PingFreq(ClassList) = DEFAULT_PINGFREQUENCY;
-  MaxLinks(ClassList) = ConfigFileEntry.maximum_links;
-  MaxSendq(ClassList) = DEFAULT_SENDQ;
-  Links(ClassList) = 0;
-  ClassList->next = NULL;
+  ClassList.head = NULL;
+  ClassList.tail = NULL;
+  ClassList.length = 0;
+
+  aclass = make_class();
+
+  ClassType(aclass) = 0;
+  DupString(ClassName(aclass),"default");
+  ConFreq(aclass) = DEFAULT_CONNECTFREQUENCY;
+  PingFreq(aclass) = DEFAULT_PINGFREQUENCY;
+  MaxLinks(aclass) = ConfigFileEntry.maximum_links;
+  MaxSendq(aclass) = DEFAULT_SENDQ;
+  Links(aclass) = 0;
+  dlinkAdd(aclass, &aclass->class_node, &ClassList);
 }
 
 /*
@@ -301,12 +346,16 @@ initclass()
 void
 report_classes(struct Client *source_p)
 {
-  struct Class *cltmp;
+  dlink_node *ptr;
+  struct Class *aclass;
 
-  for (cltmp = ClassList; cltmp; cltmp = cltmp->next)
+  DLINK_FOREACH(ptr, ClassList.head)
+  {
+    aclass = ptr->data;
     sendto_one(source_p, form_str(RPL_STATSYLINE), me.name, source_p->name,
-               'Y', ClassName(cltmp), PingFreq(cltmp), ConFreq(cltmp),
-               MaxLinks(cltmp), MaxSendq(cltmp));
+               'Y', ClassName(aclass), PingFreq(aclass), ConFreq(aclass),
+               MaxLinks(aclass), MaxSendq(aclass));
+  }
 }
 
 /*
@@ -329,10 +378,10 @@ get_sendq(struct Client *client_p)
     DLINK_FOREACH(ptr, client_p->localClient->confs.head)
     {
       aconf = ptr->data;
-      if(aconf == NULL)
+      if (aconf == NULL)
 	continue;
 
-      if ((cl = aconf->c_class) == NULL)
+      if ((cl = ClassPtr(aconf)) == NULL)
 	continue;
 
       if (ClassType(cl) > retc)

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_debug.c,v 7.67 2002/05/24 23:34:51 androsyn Exp $
+ *  $Id: s_debug.c,v 7.68 2003/02/18 22:26:39 db Exp $
  */
 
 #include "stdinc.h"
@@ -300,8 +300,9 @@ void count_memory(struct Client *source_p)
 
   /* count up all config items */
 
-  for (aconf = ConfigItemList; aconf; aconf = aconf->next)
+  DLINK_FOREACH(dlink, ConfigItemList.head)
     {
+      aconf = dlink->data;
       conf_count++;
       conf_memory += aconf->host ? strlen(aconf->host)+1 : 0;
       conf_memory += aconf->passwd ? strlen(aconf->passwd)+1 : 0;
@@ -310,9 +311,7 @@ void count_memory(struct Client *source_p)
     }
 
   /* count up all classes */
-
-  for (cltmp = ClassList; cltmp; cltmp = cltmp->next)
-    class_count++;
+  class_count = dlink_list_length(&ClassList);
 
   count_linebuf_memory(&linebuf_count, &linebuf_memory_used);
 

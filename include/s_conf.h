@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.191 2003/02/17 16:09:27 db Exp $
+ *  $Id: s_conf.h,v 7.192 2003/02/18 22:26:33 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -103,7 +103,19 @@ struct ConfItem
 #define CONF_SERVER_MASK       CONF_SERVER
 #define CONF_CLIENT_MASK       (CONF_CLIENT | CONF_OPERATOR | CONF_SERVER_MASK)
 
-#define IsIllegal(x)    ((x)->status & CONF_ILLEGAL)
+#define IsConfIllegal(x)	((x)->status & CONF_ILLEGAL)
+#define SetConfIllegal(x)	((x)->status = CONF_ILLEGAL)
+#define IsConfHub(x)		((x)->status == CONF_HUB)
+#define SetConfHub(x)		((x)->status = CONF_HUB)
+#define IsConfLeaf(x)		((x)->status == CONF_LEAF)
+#define SetConfLeaf(x)		((x)->status = CONF_LEAF)
+#define IsConfHubOrLeaf(x)	((x)->status & (CONF_HUB|CONF_LEAF))
+#define IsConfKill(x)		((x)->status == CONF_KILL)
+#define SetConfKill(x)		((x)->status = CONF_KILL)
+#define SetConfDline(x)		((x)->status = CONF_DLINE)
+#define SetConfXline(x)		((x)->status = CONF_XLINE)
+#define IsConfClient(x)		((x)->status & CONF_CLIENT)
+#define SetConfClient(x)	((x)->status |= CONF_CLIENT)
 
 /* aConfItem->flags */
 
@@ -151,6 +163,13 @@ struct ConfItem
 #define IsConfEncrypted(x)      ((x)->flags & CONF_FLAGS_ENCRYPTED)
 #define IsConfCompressed(x)     ((x)->flags & CONF_FLAGS_COMPRESSED)
 #define IsConfCryptLink(x)      ((x)->flags & CONF_FLAGS_CRYPTLINK)
+#define IsConfLazyLink(x)       ((x)->flags & CONF_FLAGS_LAZY_LINK)
+#define IsConfAllowAutoConn(x)  ((x)->flags & CONF_FLAGS_ALLOW_AUTO_CONN)
+#define SetConfAllowAutoConn(x)	((x)->flags |= CONF_FLAGS_ALLOW_AUTO_CONN)
+#define ClearConfAllowAutoConn(x) ((x)->flags &= ~CONF_FLAGS_ALLOW_AUTO_CONN)
+#define IsConfTemporary(x)      ((x)->flags & CONF_FLAGS_TEMPORARY)
+#define SetConfTemporary(x)	((x)->flags | CONF_FLAGS_TEMPORARY)
+#define IsConfRedir(x)          ((x)->flags & CONF_FLAGS_REDIR)
 
 /* port definitions for Opers */
 
@@ -303,19 +322,10 @@ struct admin_info
   char        *email;
 };
 
-/* bleh. have to become global. */
 extern int scount;
-
-/* struct ConfItems */
-/* conf uline link list root */
-extern struct ConfItem *u_conf;
-/* conf xline link list root */
-extern struct ConfItem *x_conf;
-
-/* All variables are GLOBAL */
-extern struct ConfItem* ConfigItemList;      /* conf list head */
 extern int              specific_ipv4_vhost; /* used in s_bsd.c */
 extern int              specific_ipv6_vhost;
+extern dlink_list	ConfigItemList;      /* conf list head */
 extern struct config_file_entry ConfigFileEntry;/* defined in ircd.c*/
 extern struct config_channel_entry ConfigChannel;/* defined in channel.c*/
 extern struct config_server_hide ConfigServerHide; /* defined in s_conf.c */
@@ -323,8 +333,9 @@ extern struct server_info ServerInfo;       /* defined in ircd.c */
 extern struct admin_info  AdminInfo;        /* defined in ircd.c */
 /* End GLOBAL section */
 
-dlink_list temporary_klines;
-dlink_list temporary_ip_klines;
+extern dlink_list temporary_klines;
+extern dlink_list temporary_dlines;
+extern dlink_list temporary_ip_klines;
 
 extern void init_ip_hash_table(void);
 extern void iphash_stats(struct Client *,struct Client *,int,char **,FBFILE*);
@@ -332,7 +343,7 @@ extern void count_ip_hash(int *, u_long *);
 
 void remove_one_ip(struct irc_inaddr *ip);
 
-extern struct ConfItem* make_conf(void);
+extern struct ConfItem* make_conf(int status);
 extern void             free_conf(struct ConfItem*);
 
 extern void             read_conf_files(int cold);
@@ -356,6 +367,7 @@ extern struct ConfItem* find_conf_by_host(const char* host, int status);
 extern struct ConfItem* find_kill (struct Client *);
 extern int conf_connect_allowed(struct irc_inaddr *addr, int aftype);
 extern char *oper_privs_as_string(struct Client *, int);
+extern void split_user_host(struct ConfItem *aconf);
 
 extern int find_u_conf(char*, char*, char *);
 extern struct ConfItem *find_x_conf(char*);

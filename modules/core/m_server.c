@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.93 2003/02/17 16:09:33 db Exp $
+ *  $Id: m_server.c,v 1.94 2003/02/18 22:26:37 db Exp $
  */
 
 #include "stdinc.h"
@@ -67,7 +67,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&server_msgtab);
 }
-const char *_version = "$Revision: 1.93 $";
+const char *_version = "$Revision: 1.94 $";
 #endif
 
 int bogus_host(char *host);
@@ -364,8 +364,10 @@ static void ms_server(struct Client *client_p, struct Client *source_p,
    *
    */
 
-  for (aconf = ConfigItemList; aconf; aconf=aconf->next)
-    {
+  DLINK_FOREACH(ptr, ConfigItemList.head)
+  {
+    aconf = ptr->data;
+
      if ((aconf->status & (CONF_LEAF|CONF_HUB)) == 0)
        continue;
 
@@ -498,7 +500,7 @@ static void ms_server(struct Client *client_p, struct Client *source_p,
    * need to send different names to different servers
    * (domain name matching)
    */
-  for (ptr = serv_list.head; ptr; ptr = ptr->next)
+  DLINK_FOREACH(ptr, serv_list.head)
     {
       bclient_p = ptr->data;
 

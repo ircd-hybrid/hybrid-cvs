@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.115 2003/01/17 13:00:50 db Exp $
+ *  $Id: m_stats.c,v 1.116 2003/02/18 22:26:35 db Exp $
  */
 
 #include "stdinc.h"
@@ -80,7 +80,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.115 $";
+const char *_version = "$Revision: 1.116 $";
 #endif
 
 const char* Lformat = ":%s %d %s %s %u %u %u %u %u :%u %u %s";
@@ -650,7 +650,7 @@ stats_operedup(struct Client *source_p)
   dlink_node *ptr;
   int j=0;
 
-  for(oper_ptr = oper_list.head; oper_ptr; oper_ptr = oper_ptr->next)
+  DLINK_FOREACH(oper_ptr, oper_list.head)
   {
     target_p = oper_ptr->data;
 
@@ -727,7 +727,7 @@ stats_uptime(struct Client *source_p)
 static void
 stats_shared(struct Client *source_p)
 {
-  report_specials(source_p, CONF_ULINE, RPL_STATSULINE);
+  report_configured_links(source_p, CONF_ULINE);
 }
 
 
@@ -764,7 +764,7 @@ stats_servers(struct Client *source_p)
 static void
 stats_gecos(struct Client *source_p)
 {
-  report_specials(source_p, CONF_XLINE, RPL_STATSXLINE);
+  report_configured_links(source_p, CONF_XLINE);
 }
 
 static void
