@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.101 2001/01/08 14:58:13 toot Exp $
+ * $Id: ircd_parser.y,v 1.102 2001/01/08 15:46:00 wcampbel Exp $
  */
 
 %{
@@ -154,6 +154,7 @@ int   class_redirport_var;
 %token  USER
 %token  VHOST
 %token  WARN
+%token  SILENT
 %token  GENERAL
 %token  FAILED_OPER_NOTICE
 %token  SHOW_FAILED_OPER_ID
@@ -1358,6 +1359,11 @@ gecos_action:    ACTION '=' TREJECT ';'
                  ACTION '=' WARN ';'
   {
     yy_aconf->port = 0;
+  }
+                 |
+                 ACTION '=' SILENT ';'
+  {
+    yy_aconf->port = 2;
   };
 
 

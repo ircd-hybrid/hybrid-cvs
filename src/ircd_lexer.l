@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.56 2001/01/06 18:13:38 db Exp $
+ * $Id: ircd_lexer.l,v 1.57 2001/01/08 15:46:00 wcampbel Exp $
  */
 
 %option case-insensitive
@@ -160,7 +160,8 @@ remote		{ return REMOTE; }
 send_password	{ return SEND_PASSWORD; }
 sendq		{ return SENDQ; }
 serverinfo	{ return SERVERINFO; }
-server_mask   { return SERVER_MASK; }
+server_mask     { return SERVER_MASK; }
+silent          { return SILENT; }
 shared          { return SHARED; }
 short_motd      { return SHORT_MOTD; }
 spoof		{ return SPOOF; }
