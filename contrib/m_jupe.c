@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_jupe.c,v 1.40 2003/02/24 22:50:31 db Exp $
+ *  $Id: m_jupe.c,v 1.41 2003/03/31 03:26:51 michael Exp $
  */
 
 #include "stdinc.h"
@@ -42,15 +42,12 @@
 #include "class.h"
 #include "common.h"
 #include "event.h"
-
 #include "fdlist.h"
 #include "list.h"
 #include "s_conf.h"
 #include "scache.h"
 
-
-static void mo_jupe(struct Client *client_p, struct Client *source_p,
-		 int parc, char *parv[]);
+static void mo_jupe(struct Client *client_p, struct Client *source_p, int parc, char *parv[]);
 static int bogus_host(char *host);
 
 struct Message jupe_msgtab = {
@@ -71,7 +68,7 @@ _moddeinit(void)
   mod_del_cmd(&jupe_msgtab);
 }
 
-const char *_version = "$Revision: 1.40 $";
+const char *_version = "$Revision: 1.41 $";
 #endif
 
 /*
@@ -82,40 +79,44 @@ const char *_version = "$Revision: 1.40 $";
 */
 static void
 mo_jupe(struct Client *client_p, struct Client *source_p,
-	int parc, char *parv[])
+        int parc, char *parv[])
 {
   struct Client *target_p;
   struct Client *ajupe;
   dlink_node *m;
-  char reason[REALLEN+2];
+  char reason[REALLEN + 2];
 
-  if(!ServerInfo.hub)
-    {
-      sendto_one(source_p, ":%s NOTICE %s :Must be used from a hub server",
-                 me.name, parv[0]);
-      return;
-    }
+  if (!ServerInfo.hub)
+  {
+    sendto_one(source_p, ":%s NOTICE %s :Must be used from a hub server",
+               me.name, parv[0]);
+    return;
+  }
 
-  if(!IsOperAdmin(source_p))
-    {
-      sendto_one(source_p, ":%s NOTICE %s :You must be an admin to use this command",
-                 me.name, parv[0]);
-      return;
-    }
+  if (!IsOperAdmin(source_p))
+  {
+    sendto_one(source_p, ":%s NOTICE %s :You must be an admin to use this command",
+               me.name, parv[0]);
+    return;
+  }
 
   if (bogus_host(parv[1]))
-    {
-      sendto_one(source_p, ":%s NOTICE %s :Invalid servername: %s",
-                 me.name, parv[0], parv[1]);
-      return;
-    }
+  {
+    sendto_one(source_p, ":%s NOTICE %s :Invalid servername: %s",
+               me.name, parv[0], parv[1]);
+    return;
+  }
 
-  if(match(parv[1], me.name))
+  if (match(parv[1], me.name))
   {
     sendto_one(source_p, ":%s NOTICE %s :I cant jupe myself!",
 	       me.name, source_p->name);
     return;
   }
+
+  /* we need to give 7 chars to prepend "JUPED: " */
+  if (strlen(parv[2]) > (REALLEN - 7))
+    parv[2][REALLEN - 7] = '\0';
 
   sendto_wallops_flags(UMODE_WALLOP, &me,
                        "JUPE for %s requested by %s: %s",
@@ -128,9 +129,7 @@ mo_jupe(struct Client *client_p, struct Client *source_p,
   ilog(L_NOTICE, "JUPE for %s requested by %s: %s",
                 parv[1], get_oper_name(source_p), parv[2]);
 
-  target_p= find_server(parv[1]);
-
-  if(target_p)
+  if (!(target_p = find_server(parv[1])))
     exit_client(client_p, target_p, &me, parv[2]);
 
   sendto_server(NULL, NULL, NULL, NOCAPS, NOCAPS, NOFLAGS,
@@ -145,31 +144,31 @@ mo_jupe(struct Client *client_p, struct Client *source_p,
 
   /* make_client() adds client to unknown_list */
   m = dlinkFind(&unknown_list, ajupe);
-  if(m != NULL)
+
+  if (m != NULL)
     dlinkDelete(m, &unknown_list);
+
   free_dlink_node(m);
-
   make_server(ajupe);
-  ajupe->hopcount = 1;
-  strlcpy(ajupe->name,parv[1],HOSTLEN);
 
-  /* we need to give 7 chars to prepend "JUPED: " */
-  if(strlen(parv[2]) > (REALLEN-7))
-    parv[2][REALLEN-7] = '\0';
+  strlcpy(ajupe->name,parv[1], sizeof(ajupe->name));
   ircsprintf(reason, "%s %s", "JUPED:", parv[2]);
-  
-  strlcpy(ajupe->info,reason,REALLEN);
+  strlcpy(ajupe->info, reason, REALLEN + 1);
+
   ajupe->serv->up = me.name;
-  ajupe->servptr = &me;
+  ajupe->servptr  = &me;
+  ajupe->hopcount = 1;
+
   SetServer(ajupe);
   SetDead(ajupe);
-  
+
   Count.server++;
   Count.myserver++;
 
   /* Some day, all these lists will be consolidated *sigh* */
   add_to_client_hash_table(ajupe->name, ajupe);
   add_client_to_llist(&(ajupe->servptr->serv->servers), ajupe);
+
   m = make_dlink_node();
   dlinkAdd(ajupe, m, &global_serv_list);
   /* XXX is this really necessary? 
@@ -178,8 +177,7 @@ mo_jupe(struct Client *client_p, struct Client *source_p,
   dlinkAdd(ajupe, &ajupe->node, &GlobalClientList);
 }
 
-
-/*  
+/*
  * bogus_host
  *   
  * inputs       - hostname
@@ -189,23 +187,24 @@ mo_jupe(struct Client *client_p, struct Client *source_p,
 int
 bogus_host(char *host)
 {
+  int dots = 0;
   int bogus_server = 0;
   char *s;
-  int dots = 0;
  
-  for(s = host; *s; s++)
+  for (s = host; *s; s++)
+  {
+    if (!IsServChar(*s))  
     {
-      if (!IsServChar(*s))  
-        {
-          bogus_server = 1;
-          break;
-        }
-      if ('.' == *s)
-        ++dots;
+      bogus_server = 1;
+      break;
     }
-     
+
+    if ('.' == *s)
+      ++dots;
+  }
+
   if (!dots || bogus_server || strlen(host) > HOSTLEN)
-    return 1;
-     
-  return 0;
+    return(1);
+
+  return(0);
 }
