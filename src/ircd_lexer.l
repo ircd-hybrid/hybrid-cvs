@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.26 2000/12/08 15:58:20 toot Exp $
+ * $Id: ircd_lexer.l,v 1.27 2000/12/08 17:17:32 toot Exp $
  */
 
 %{
@@ -89,7 +89,6 @@ exceed_limit    { return EXCEED_LIMIT; }
 gecos		{ return GECOS; }
 general		{ return GENERAL; }
 gline		{ return GLINE; }
-gline_file      { return GLINE_FILE; }
 gline_time      { return GLINE_TIME; }
 gline_log       { return GLINE_LOG; }
 global		{ return GLOBAL; }

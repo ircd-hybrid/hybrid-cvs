@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.40 2000/12/08 15:58:20 toot Exp $
+ * $Id: ircd_parser.y,v 1.41 2000/12/08 17:17:32 toot Exp $
  */
 
 %{
@@ -169,7 +169,6 @@ int   class_sendq_var;
 %token  ADMIN
 %token  INVITE_PLUS_I_ONLY
 %token  GLINES
-%token  GLINE_FILE
 %token  TOPIC_UH
 %token  MODULE
 %token  MODULES
@@ -1429,12 +1428,6 @@ general_topic_uh: TOPIC_UH '=' TYES ';'
 } | TOPIC_UH '=' TNO ';'
 {
 	ConfigFileEntry.topic_uh = 0;
-} ;
-
-general_gline_file: GLINE_FILE '=' QSTRING ';'
-{
-	ConfigFileEntry.glinefile = MyMalloc(strlen(yylval.string) + 1);
-	strcpy(ConfigFileEntry.glinefile, yylval.string);
 } ;
 
 general_gline_time: GLINE_TIME '=' NUMBER ';'
