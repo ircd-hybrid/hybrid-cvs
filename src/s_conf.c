@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.288 2001/12/30 06:32:16 db Exp $
+ *  $Id: s_conf.c,v 7.289 2001/12/30 07:45:14 db Exp $
  */
 
 #include <sys/types.h>
@@ -174,7 +174,8 @@ conf_dns_callback(void* vptr, adns_answer *reply)
  * if the conf entry is currently doing a ns lookup do nothing, otherwise
  * allocate a dns_query and start ns lookup.
  */
-void conf_dns_lookup(struct ConfItem* aconf)
+void
+conf_dns_lookup(struct ConfItem* aconf)
 {
   if (aconf->dns_query == NULL)
     {
@@ -338,7 +339,7 @@ report_configured_links(struct Client* source_p, int mask)
 	    char buf[20];
 	    char *s = buf;
 	    
-	    buf[0] = 0;
+	    buf[0] = '\0';
             c = p->conf_char;
 	    
 	    if (tmp->flags & CONF_FLAGS_ALLOW_AUTO_CONN)
@@ -355,7 +356,7 @@ report_configured_links(struct Client* source_p, int mask)
 	    if (!buf[0])
               *s++ = '*';
 	      
-	    *s++ = 0;
+	    *s++ = '\0';
             /* Allow admins to see actual ips */
             if(IsOperAdmin(source_p))
               sendto_one(source_p, form_str(p->rpl_stats), me.name,

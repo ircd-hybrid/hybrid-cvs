@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.228 2001/12/30 04:19:46 db Exp $
+ *   $Id: s_serv.c,v 7.229 2001/12/30 07:45:15 db Exp $
  */
 
 #include <sys/types.h>
@@ -2056,7 +2056,23 @@ serv_connect(struct ConfItem *aconf, struct Client *by)
     client_p->localClient->aftype = aconf->aftype;
     
     /* Now, initiate the connection */
-    if((aconf->aftype == AF_INET) && ServerInfo.specific_ipv4_vhost)
+    /* XXX assume that a non 0 type means a specific bind address 
+     * for this connect.
+     */
+    if((aconf->aftype == AF_INET) && aconf->my_ipnum.sins.sin.s_addr)
+      {
+	struct irc_sockaddr ipn;
+	memset(&ipn, 0, sizeof(struct irc_sockaddr));
+	S_FAM(ipn) = DEF_FAM;
+	S_PORT(ipn) = 0;
+
+	copy_s_addr(S_ADDR(ipn), IN_ADDR(aconf->my_ipnum));
+
+	comm_connect_tcp(client_p->fd, aconf->host, aconf->port,
+			 (struct sockaddr *)&SOCKADDR(ipn), sizeof(struct irc_sockaddr), 
+			 serv_connect_callback, client_p, aconf->aftype, 30);
+      }
+    else if((aconf->aftype == AF_INET) && ServerInfo.specific_ipv4_vhost)
       {
 	struct irc_sockaddr ipn;
 	memset(&ipn, 0, sizeof(struct irc_sockaddr));

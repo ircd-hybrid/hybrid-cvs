@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.229 2001/12/29 08:07:22 androsyn Exp $
+ * $Id: ircd_parser.y,v 1.230 2001/12/30 07:45:14 db Exp $
  */
 
 %{
@@ -1444,6 +1444,7 @@ connect_item:   connect_name | connect_host | connect_send_password |
 		connect_leaf_mask | connect_class | connect_auto | 
 		connect_encrypted | connect_compressed | connect_cryptlink |
 		connect_rsa_public_key_file | connect_cipher_preference |
+		connect_bind_address |
                 error
 
 connect_name:   NAME '=' QSTRING ';'
@@ -1519,6 +1520,11 @@ connect_encrypted:       ENCRYPTED '=' TYES ';'
                         ENCRYPTED '=' TNO ';'
   {
     yy_aconf->flags &= ~CONF_FLAGS_ENCRYPTED;
+  };
+
+connect_bind_address: BIND_ADDRESS '=' QSTRING ';'
+  {
+    yy_aconf->aftype = parse_netmask(yylval.string, &yy_aconf->my_ipnum, NULL);
   };
 
 connect_rsa_public_key_file: RSA_PUBLIC_KEY_FILE '=' QSTRING ';'

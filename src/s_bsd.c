@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.153 2001/12/18 08:42:17 a1kmm Exp $
+ *  $Id: s_bsd.c,v 7.154 2001/12/30 07:45:14 db Exp $
  */
 #include "config.h"
 #include "fdlist.h"
@@ -658,7 +658,8 @@ comm_connect_tcp(int fd, const char *host, u_short port,
   fd_table[fd].dns_query->ptr = &fd_table[fd];
   fd_table[fd].dns_query->callback = comm_connect_dns_callback;
   adns_gethost(host, aftype, fd_table[fd].dns_query);
- } else
+ }
+ else
  {
   /* We have a valid IP, so we just call tryconnect */
   /* Make sure we actually set the timeout here .. */
