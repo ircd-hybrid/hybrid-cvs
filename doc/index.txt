@@ -1,5 +1,5 @@
 
-# $Id: index.txt,v 1.9 2001/05/18 02:53:39 lusky Exp $
+# $Id: index.txt,v 1.10 2001/05/18 14:46:20 db Exp $
 Here is the overview of the documents in the doc/ directory.
 
 CIDR.txt		- Description of CIDR in IPv4
@@ -35,8 +35,6 @@ message-customisation.txt
 modeg.txt               - An in depth description of the server side silence
                           user mode (+g)
 modes.txt               - A list of all user and channel modes
-mtrie.txt               - Brief outline of the mtrie data structure used
-                          for auth and kill blocks
 network.txt		- Outline of the network traffic subsystem
 operguide.txt           - EFnet operator's guide
 opermyth.txt            - Oper myth's, describes what opers can and cannot do
