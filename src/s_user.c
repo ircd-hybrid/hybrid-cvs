@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.83 2000/12/25 01:16:59 toot Exp $
+ *  $Id: s_user.c,v 7.84 2000/12/27 16:16:01 db Exp $
  */
 #include "tools.h"
 #include "s_user.h"
@@ -837,8 +837,8 @@ int user_mode(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
               if(!IsOper(sptr))
                 break;
 
-              sptr->umodes &= ~(FLAGS_OPER|FLAGS_ADMIN);
-			  sptr->umodes &= ~ConfigFileEntry.oper_only_umodes;
+              ClearOper(sptr);
+	      sptr->umodes &= ~ConfigFileEntry.oper_only_umodes;
 			  
               Count.oper--;
 

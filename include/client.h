@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.64 2000/12/23 01:42:06 db Exp $
+ * $Id: client.h,v 7.65 2000/12/27 16:15:56 db Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -421,7 +421,7 @@ struct LocalUser
 #define SetOper(x)              {(x)->umodes |= FLAGS_OPER; \
 				 if (!IsServer((x))) (x)->handler = OPER_HANDLER;}
 
-#define ClearOper(x)            {(x)->umodes &= ~FLAGS_OPER; \
+#define ClearOper(x)            {(x)->umodes &= ~(FLAGS_OPER|FLAGS_ADMIN); \
 				 if (!IsOper((x)) && !IsServer((x))) \
 				  (x)->handler = CLIENT_HANDLER; }
 
