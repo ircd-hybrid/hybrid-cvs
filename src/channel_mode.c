@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.76 2003/03/17 02:20:09 db Exp $
+ *  $Id: channel_mode.c,v 7.77 2003/03/17 02:30:04 db Exp $
  */
 
 #include "stdinc.h"
@@ -1186,7 +1186,7 @@ chm_invex(struct Client *client_p, struct Client *source_p,
 
   if(dir == MODE_ADD)
   {
-    if((add_id(source_p, chptr, mask, CHFL_INVEX) == 0) && MyClient(source_p))
+    if((add_id(source_p, chptr, mask, CHFL_INVEX) == 0))
       return;
 
     mode_changes[mode_count].letter = c;
