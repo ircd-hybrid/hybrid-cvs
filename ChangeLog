@@ -1,3 +1,16 @@
+androsyn    2002/03/12 23:21:44 EST	(20020313_2)
+
+  Modified files:
+    src                  send.c 
+  Log:
+  Wohali's patch for that double free bug.  She's certainly got more patience
+  than I do :P
+  
+  Revision  Changes    Path
+  7.186     +12 -1     ircd-hybrid-7/src/send.c
+
+
+
 androsyn    2002/03/12 23:16:13 EST	(20020313_1)
 
   Modified files:
@@ -24198,4 +24211,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3505 2002/03/13 04:16:19 androsyn Exp $
+$Id: ChangeLog,v 7.3506 2002/03/13 04:21:50 androsyn Exp $
