@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.h,v 7.25 2000/12/28 22:19:28 davidt Exp $
+ * $Id: m_info.h,v 7.26 2000/12/29 04:19:35 wcampbel Exp $
  */
 #ifndef INCLUDED_m_info_h
 #define INCLUDED_m_info_h
@@ -96,6 +96,12 @@ Info MyInformation[] = {
 
   { "HARD_FDLIMIT_", "", HARD_FDLIMIT_, "Maximum Number of File Descriptors Available" },
 
+#ifdef HAVE_GETTEXT
+  { "HAVE_GETTEXT", "ON", 0, "Gettext Message Support" },
+#else
+  { "HAVE_GETTEXT", "OFF", 0, "Gettext Message Support" },
+#endif /* HAVE_GETTEXT */
+
 #ifdef HPATH
   { "HPATH", HPATH, 0, "Path to Operator Help File" },
 #else
@@ -169,6 +175,8 @@ Info MyInformation[] = {
 #else
   { "REPORT_DLINE_TO_USER", "OFF", 0, "Inform Clients They are D-lined" },
 #endif /* REPORT_DLINE_TO_USER */
+
+  { "SELECT_TYPE", SELECT_TYPE, 0, "Method of Multiplexed I/O" },
 
 #ifdef SPATH
   { "SPATH", SPATH, 0, "Path to Server Executable" },
