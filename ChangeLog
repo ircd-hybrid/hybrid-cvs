@@ -1,3 +1,22 @@
+androsyn    2002/10/29 21:56:20 EST	(20021030_0)
+
+  Modified files:
+    adns                 adns.h internal.h query.c types.c 
+    src                  adns.c s_auth.c s_bsd.c 
+  Log:
+  Fix the NULL ipv6 hostname bug..
+  
+  Revision  Changes    Path
+  1.8       +2 -1      ircd-hybrid-7/adns/adns.h
+  1.11      +2 -1      ircd-hybrid-7/adns/internal.h
+  1.14      +5 -2      ircd-hybrid-7/adns/query.c
+  1.7       +82 -0     ircd-hybrid-7/adns/types.c
+  7.48      +11 -8     ircd-hybrid-7/src/adns.c
+  7.103     +2 -34     ircd-hybrid-7/src/s_auth.c
+  7.173     +13 -2     ircd-hybrid-7/src/s_bsd.c
+
+
+
 wiz         2002/10/29 17:53:10 EST	(20021029_2)
 
   Modified files:
@@ -32758,4 +32777,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4082 2002/10/29 22:53:13 wiz Exp $
+$Id: ChangeLog,v 7.4083 2002/10/30 02:56:22 androsyn Exp $
