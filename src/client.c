@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.70 2000/12/12 04:29:05 db Exp $
+ *  $Id: client.c,v 7.71 2000/12/12 05:11:31 db Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -1432,8 +1432,11 @@ const char* comment         /* Reason for the exit */
 	    restoreUnusedServerMask(sptr->localClient->serverMask);
           {
 	    m = dlinkFind(&serv_list,sptr);
-	    dlinkDelete(m,&serv_list);
-	    free_dlink_node(m);
+	    if( m != NULL )
+	      {
+		dlinkDelete(m,&serv_list);
+		free_dlink_node(m);
+	      }
           }
         }
       sptr->flags |= FLAGS_CLOSING;
