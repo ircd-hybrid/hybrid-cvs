@@ -1,3 +1,21 @@
+jmallett    2002/01/12 13:45:42 EST	(20020112_1)
+
+  Modified files:
+    .                    configure 
+    autoconf             configure.in 
+  Log:
+  Portability fixing
+  - if the autoconf check for working '-g' failed, don't shove '-g' down the
+    IRC_CFLAGS of an unknown compiler, if it does work, add it by default.
+    Checks for specific compilers ala TenDRA should be done if it is known
+    to produce bad code :)
+  
+  Revision  Changes    Path
+  7.112     +5 -1      ircd-hybrid-7/autoconf/configure.in
+  7.115     +184 -180  ircd-hybrid-7/configure
+
+
+
 jmallett    2002/01/12 13:38:45 EST	(20020112_0)
 
   Modified files:
@@ -3040,7 +3058,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3324 2002/01/12 18:38:50 jmallett Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3325 2002/01/12 18:45:48 jmallett Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -21394,4 +21412,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3324 2002/01/12 18:38:50 jmallett Exp $
+$Id: ChangeLog,v 7.3325 2002/01/12 18:45:48 jmallett Exp $
