@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_connect.c,v 1.17 2001/01/05 07:47:24 a1kmm Exp $
+ *   $Id: m_connect.c,v 1.18 2001/01/05 14:52:41 toot Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -160,7 +160,7 @@ static int mo_connect(struct Client* cptr, struct Client* sptr,
    */
   if (serv_connect(aconf, sptr))
     {
-      if (IsAdmin(sptr))
+      if (IsSetOperAdmin(sptr))
 	sendto_one(sptr, ":%s NOTICE %s :*** Connecting to %s[%s].%d",
 		   me.name, parv[0], aconf->host, aconf->name, aconf->port);
       else

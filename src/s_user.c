@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.105 2001/01/05 12:40:58 toot Exp $
+ *  $Id: s_user.c,v 7.106 2001/01/05 14:52:44 toot Exp $
  */
 #include "tools.h"
 #include "s_user.h"
@@ -1003,23 +1003,23 @@ int user_mode(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
         case '\r' :
         case '\t' :
           break;
-			case 'a':
-				if (MyConnect(sptr)) {
-					badflag = 1;
-					break;
-				}
+
         default :
           if( (flag = user_modes_from_c_to_bitmask[(unsigned char)*m]))
             {
-				if (MyConnect(sptr) && !IsOper(sptr) && (ConfigFileEntry.oper_only_umodes & flag)) {
-					badflag = YES;
-				} else {
-					if (what == MODE_ADD)
-						sptr->umodes |= flag;
-					else
-						sptr->umodes &= ~flag;  
-				}
-			}
+              if (MyConnect(sptr) && !IsOper(sptr) &&
+                 (ConfigFileEntry.oper_only_umodes & flag))
+                {
+                  badflag = YES;
+                }
+              else
+                {
+                  if (what == MODE_ADD)
+                    sptr->umodes |= flag;
+                  else
+                    sptr->umodes &= ~flag;  
+                }
+            }
           else
             {
               if (MyConnect(sptr))
@@ -1037,6 +1037,14 @@ int user_mode(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
                  me.name,parv[0]);
       sptr->umodes &= ~FLAGS_NCHANGE; /* only tcm's really need this */
     }
+
+  if (MyConnect(sptr) && (sptr->umodes & FLAGS_ADMIN) && !IsSetOperAdmin(sptr))
+    {
+      sendto_one(sptr,":%s NOTICE %s :*** You need oper and A flag for +a",
+                 me.name, parv[0]);
+      sptr->umodes &= ~FLAGS_ADMIN;
+    }
+
 
   if (!(setflags & FLAGS_INVISIBLE) && IsInvisible(sptr))
     ++Count.invisi;

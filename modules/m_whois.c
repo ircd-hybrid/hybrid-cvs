@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 1.45 2001/01/05 00:14:39 davidt Exp $
+ *   $Id: m_whois.c,v 1.46 2001/01/05 14:52:42 toot Exp $
  */
 #include "tools.h"
 #include "common.h"   /* bleah */
@@ -73,7 +73,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-char *_version = "20010101";
+char *_version = "20010105";
 
 /*
 ** m_whois
@@ -422,19 +422,24 @@ static void whois_person(struct Client *sptr,struct Client *acptr, int glob)
 	       sptr->name, acptr->name, acptr->user->away);
 
   if (IsOper(acptr))
+    {
       sendto_one(sptr, form_str(RPL_WHOISOPERATOR),
 		 me.name, sptr->name, acptr->name);
 
-  if (IsAdmin(acptr) && glob == 1)
+      if (IsAdmin(acptr))
 	sendto_one(sptr, form_str(RPL_WHOISADMIN),
 		   me.name, sptr->name, acptr->name);
+    }
 
-
-  if(glob == 1)
-    sendto_one(sptr, form_str(RPL_WHOISIDLE),
-	       me.name, sptr->name, acptr->name,
-	       CurrentTime - acptr->user->last,
-	       acptr->firsttime);
+  if ( (glob == 1) ||
+       (MyConnect(acptr) && (IsOper(sptr) || !GlobalSetOptions.hide_server)) ||
+       (acptr == sptr) )
+    {
+      sendto_one(sptr, form_str(RPL_WHOISIDLE),
+                 me.name, sptr->name, acptr->name,
+                 CurrentTime - acptr->user->last,
+                 acptr->firsttime);
+    }
 
   return;
 }
