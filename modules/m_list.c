@@ -1,6 +1,6 @@
 /*
  *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
- *  m_links.c: Shows what servers are currently connected.
+ *  m_list.c: Shows what servers are currently connected.
  *
  *  Copyright (C) 2002 by the past and present ircd coders, and others.
  *
@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_list.c,v 1.50 2003/04/06 00:07:13 michael Exp $
+ *  $Id: m_list.c,v 1.51 2003/04/06 18:24:45 db Exp $
  */
 
 #include "stdinc.h"
@@ -40,7 +40,6 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
-
 
 static void m_list(struct Client*, struct Client*, int, char**);
 static void ms_list(struct Client*, struct Client*, int, char**);
@@ -66,7 +65,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&list_msgtab);
 }
-const char *_version = "$Revision: 1.50 $";
+const char *_version = "$Revision: 1.51 $";
 #endif
 
 
@@ -75,8 +74,9 @@ const char *_version = "$Revision: 1.50 $";
 **      parv[0] = sender prefix
 **      parv[1] = channel
 */
-static void m_list(struct Client *client_p, struct Client *source_p,
-                  int parc, char *parv[])
+static void
+m_list(struct Client *client_p, struct Client *source_p, 
+       int parc, char *parv[])
 {
   static time_t last_used=0L;
 
@@ -105,7 +105,9 @@ static void m_list(struct Client *client_p, struct Client *source_p,
   /* If no arg, do all channels *whee*, else just one channel */
   if (parc < 2 || EmptyString(parv[1]))
     {
-      list_all_channels(source_p);
+      sendto_one(source_p, form_str(RPL_LISTSTART),
+		 me.name, source_p->name);
+      safe_list_all_channels(source_p);
     }
   else
     {
@@ -119,10 +121,10 @@ static void m_list(struct Client *client_p, struct Client *source_p,
 **      parv[0] = sender prefix
 **      parv[1] = channel
 */
-static void mo_list(struct Client *client_p, struct Client *source_p,
-                    int parc, char *parv[])
+static void
+mo_list(struct Client *client_p, struct Client *source_p,
+	int parc, char *parv[])
 {
-
   /* If its a LazyLinks connection, let uplink handle the list
    * even for opers!
    */
@@ -139,7 +141,9 @@ static void mo_list(struct Client *client_p, struct Client *source_p,
   /* If no arg, do all channels *whee*, else just one channel */
   if (parc < 2 || EmptyString(parv[1]))
     {
-      list_all_channels(source_p);
+      sendto_one(source_p, form_str(RPL_LISTSTART),
+		 me.name, source_p->name);
+      safe_list_all_channels(source_p);
     }
   else
     {
@@ -152,10 +156,9 @@ static void mo_list(struct Client *client_p, struct Client *source_p,
 **      parv[0] = sender prefix
 **      parv[1] = channel
 */
-static void ms_list(struct Client *client_p,
-                   struct Client *source_p,
-                   int parc,
-                   char *parv[])
+static void
+ms_list(struct Client *client_p, struct Client *source_p,
+	int parc, char *parv[])
 {
   /* Only allow remote list if LazyLink request */
 
@@ -201,14 +204,15 @@ list_all_channels(struct Client *source_p)
   sendto_one(source_p, form_str(RPL_LISTEND), me.name, source_p->name);
   return(0);
 }   
-          
+
 /*
  * list_named_channel
  * inputs       - pointer to client requesting list
  * output       - 0/1
  * side effects	- list all channels to source_p
  */
-static int list_named_channel(struct Client *source_p,char *name)
+static int
+list_named_channel(struct Client *source_p,char *name)
 {
   struct Channel *chptr;
   char id_and_topic[TOPICLEN+NICKLEN+6]; /* <!!>, space and null */
@@ -231,14 +235,16 @@ static int list_named_channel(struct Client *source_p,char *name)
   chptr = hash_find_channel(name);
   if (chptr == NULL)
     {
-      sendto_one(source_p, form_str(ERR_NOSUCHNICK),me.name, source_p->name, name);
+      sendto_one(source_p, form_str(ERR_NOSUCHNICK),me.name,
+		 source_p->name, name);
       sendto_one(source_p, form_str(RPL_LISTEND), me.name, source_p->name);
       return 0;
     }
 
 #ifdef VCHANS
   if (HasVchans(chptr))
-    ircsprintf(id_and_topic, "<!%s> %s", pick_vchan_id(chptr), chptr->topic == NULL ? "" : chptr->topic );
+    ircsprintf(id_and_topic, "<!%s> %s", pick_vchan_id(chptr),
+	       chptr->topic == NULL ? "" : chptr->topic );
   else
 #endif
     ircsprintf(id_and_topic, "%s", chptr->topic == NULL ? "" : chptr->topic);
@@ -257,7 +263,8 @@ static int list_named_channel(struct Client *source_p,char *name)
       if (ShowChannel(source_p, tmpchptr))
 	{
           root_chptr = find_bchan(tmpchptr);
-          ircsprintf(id_and_topic, "<!%s> %s", pick_vchan_id(tmpchptr), tmpchptr->topic == NULL ? "" : chptr->topic);
+          ircsprintf(id_and_topic, "<!%s> %s", pick_vchan_id(tmpchptr),
+		     tmpchptr->topic == NULL ? "" : chptr->topic);
           sendto_one(source_p, form_str(RPL_LIST), me.name, source_p->name,
                      root_chptr->chname, tmpchptr->users, id_and_topic);
         }
@@ -276,7 +283,8 @@ static int list_named_channel(struct Client *source_p,char *name)
  * ouput	- none
  * side effects -
  */
-static void list_one_channel(struct Client *source_p, struct Channel *chptr)
+static void
+list_one_channel(struct Client *source_p, struct Channel *chptr)
 {
 #ifdef VCHANS
   struct Channel *root_chptr;
@@ -288,13 +296,15 @@ static void list_one_channel(struct Client *source_p, struct Channel *chptr)
       
       if(root_chptr != NULL)
         {
-          ircsprintf(id_and_topic, "<!%s> %s", pick_vchan_id(chptr), chptr->topic == NULL ? "" : chptr->topic );
+          ircsprintf(id_and_topic, "<!%s> %s", pick_vchan_id(chptr), 
+		     chptr->topic == NULL ? "" : chptr->topic );
           sendto_one(source_p, form_str(RPL_LIST), me.name, source_p->name,
                      root_chptr->chname, chptr->users, id_and_topic);
         }
       else
         {
-          ircsprintf(id_and_topic, "<!%s> %s", pick_vchan_id(chptr), chptr->topic == NULL ? "" : chptr->topic );
+          ircsprintf(id_and_topic, "<!%s> %s", pick_vchan_id(chptr),
+		     chptr->topic == NULL ? "" : chptr->topic );
           sendto_one(source_p, form_str(RPL_LIST), me.name, source_p->name,
                      chptr->chname, chptr->users, id_and_topic);     
         }
@@ -303,7 +313,8 @@ static void list_one_channel(struct Client *source_p, struct Channel *chptr)
 #endif
     {
       sendto_one(source_p, form_str(RPL_LIST), me.name, source_p->name,
-                 chptr->chname, chptr->users, chptr->topic == NULL ? "" : chptr->topic );
+                 chptr->chname, chptr->users,
+		 chptr->topic == NULL ? "" : chptr->topic );
     }
 }
 

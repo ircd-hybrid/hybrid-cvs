@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.175 2003/04/05 08:45:11 adx Exp $
+ *  $Id: client.h,v 7.176 2003/04/06 18:24:43 db Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -222,6 +222,7 @@ struct LocalUser
 
   unsigned int      operflags; /* oper priv flags */
 
+  int		    hash_index;
   /* Send and receive linebuf queues .. */
   buf_head_t        buf_sendq;
   buf_head_t        buf_recvq;

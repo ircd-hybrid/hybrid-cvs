@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.342 2003/04/05 05:45:41 michael Exp $
+ *  $Id: client.c,v 7.343 2003/04/06 18:24:47 db Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -240,6 +240,8 @@ check_pings(void *notused)
   check_unknowns_list(&unknown_list);
 }
 
+extern int safe_list_all_channels(struct Client *source_p);
+
 /*
  * Check_pings_list()
  *
@@ -291,7 +293,6 @@ check_pings_list(dlink_list *list)
 		       "Idle time limit exceeded for %s - temp k-lining",
 			       get_client_name(client_p, HIDE_IP));
 
-
 	  (void)exit_client(client_p, client_p, &me, aconf->passwd);
 	  continue;
 	}
@@ -341,9 +342,12 @@ check_pings_list(dlink_list *list)
 	client_p->lasttime = CurrentTime - ping;
 	sendto_one(client_p, "PING :%s", me.name);
       }
+
     }
     /* ping_timeout: */
-
+    /* Safe list */
+    if (client_p->localClient->hash_index != 0)
+      safe_list_all_channels(client_p);
   }
 }
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.52 2003/04/06 00:07:17 michael Exp $
+ *  $Id: hash.c,v 7.53 2003/04/06 18:24:47 db Exp $
  */
 
 #include "stdinc.h"
@@ -39,6 +39,11 @@
 #include "fdlist.h"
 #include "fileio.h"
 #include "memory.h"
+
+/* XXX ZZZ for "safe_list" *ugh* */
+#include "channel.h"
+#include "channel_mode.h"
+#include "vchannel.h"
 
 /* New hash code */
 /*
@@ -61,6 +66,7 @@ static int rmiss;
 #else
 
 static struct HashEntry clientTable[U_MAX];
+static int exceeding_sendq(struct Client *);
 static struct HashEntry channelTable[CH_MAX];
 static struct HashEntry idTable[U_MAX];
 static struct HashEntry resvTable[R_MAX];
@@ -201,7 +207,8 @@ int hash_resv_channel(const char *name)
  *
  * Nullify the hashtable and its contents so it is completely empty.
  */
-static void clear_client_hash_table(void)
+static void
+clear_client_hash_table(void)
 {
 #ifdef DEBUGMODE
   clhits = 0;
@@ -217,7 +224,8 @@ static void clear_client_hash_table(void)
  *
  * Nullify the hashtable and its contents so it is completely empty.
  */
-static void clear_id_hash_table(void)
+static void
+clear_id_hash_table(void)
 {
 #ifdef DEBUGMODE
   /* XXX -
@@ -361,8 +369,10 @@ del_from_id_hash_table(const char* id, struct Client* client_p)
       prev = found_client;
     }
   Debug((DEBUG_ERROR, "%#x !in tab %s[%s] %#x %#x %#x %d %d %#x",
-         client_p, client_p->name, client_p->from ? client_p->from->host : "??host",
-         client_p->from, client_p->next, client_p->prev, client_p->localClient->fd, 
+         client_p, client_p->name,
+	 client_p->from ? client_p->from->host : "??host",
+         client_p->from, client_p->next, client_p->prev,
+	 client_p->localClient->fd, 
          client_p->status, client_p->user));
 }
 
@@ -403,8 +413,10 @@ del_from_client_hash_table(const char* name, struct Client* client_p)
       prev = found_client;
     }
   Debug((DEBUG_ERROR, "%#x !in tab %s[%s] %#x %#x %#x %d %d %#x",
-         client_p, client_p->name, client_p->from ? client_p->from->host : "??host",
-         client_p->from, client_p->next, client_p->prev, client_p->localClient->fd, 
+         client_p, client_p->name,
+	 client_p->from ? client_p->from->host : "??host",
+         client_p->from, client_p->next, client_p->prev,
+	 client_p->localClient->fd, 
          client_p->status, client_p->user));
 }
 
@@ -784,3 +796,141 @@ hash_find_resv(const char *name)
   return(NULL);
 }
 
+/*
+ * Safe list code.
+ *
+ * The idea is really quite simple. As the link lists pointed to in
+ * each "bucket" of the channel hash table are traversed atomically
+ * there is no locking needed. Overall, yes, inconsistent reported
+ * state can still happen, but normally this isn't a big deal.
+ * I don't like sticking the code into hash.c but oh well. Moreover,
+ * if a hash isn't used in future, oops.
+ *
+ * - Dianora
+ */
+
+/*
+ * exceeding_sendq
+ *
+ * inputs       - pointer to client to check
+ * ouput	- 1 if client is in danger of blowing its sendq
+ *		  0 if it is not.
+ * side effects -
+ *
+ * Sendq limit is fairly conservative at 1/2 (In original anyway)
+ */
+static int
+exceeding_sendq(struct Client *to)
+{
+  if (linebuf_len(&to->localClient->buf_sendq) > (get_sendq(to) / 2))
+    return(1);
+  else
+    return(0);
+}
+
+/*
+ * list_one_channel
+ *
+ * inputs       - client pointer to return result to
+ *              - pointer to channel to list
+ * ouput	- none
+ * side effects -
+ */
+static void
+list_one_channel(struct Client *source_p, struct Channel *chptr)
+{
+#ifdef VCHANS
+  struct Channel *root_chptr;
+  char  id_and_topic[TOPICLEN+NICKLEN+6]; /* <!!>, plus space and null */
+
+  if (IsVchan(chptr) || HasVchans(chptr))
+    {
+      root_chptr = find_bchan(chptr);
+      
+      if (root_chptr != NULL)
+        {
+          ircsprintf(id_and_topic, "<!%s> %s", pick_vchan_id(chptr),
+		     chptr->topic == NULL ? "" : chptr->topic );
+          sendto_one(source_p, form_str(RPL_LIST), me.name, source_p->name,
+                     root_chptr->chname, chptr->users, id_and_topic);
+        }
+      else
+        {
+          ircsprintf(id_and_topic, "<!%s> %s", pick_vchan_id(chptr),
+		     chptr->topic == NULL ? "" : chptr->topic );
+          sendto_one(source_p, form_str(RPL_LIST), me.name, source_p->name,
+                     chptr->chname, chptr->users, id_and_topic);     
+        }
+    }
+  else
+#endif
+    {
+      sendto_one(source_p, form_str(RPL_LIST), me.name, source_p->name,
+                 chptr->chname, chptr->users,
+		 chptr->topic == NULL ? "" : chptr->topic );
+    }
+}
+
+
+/*
+ * safe_list_all_channels
+ * inputs	- pointer to client requesting list
+ * output	- 0/1
+ * side effects	- safely list all channels to source_p
+ *
+ * Walk the channel buckets, ensure all pointers in a bucket are
+ * traversed before blocking on a sendq. This means, no locking is needed.
+ *
+ * - Dianora
+ */
+int
+safe_list_all_channels(struct Client *source_p)
+{
+  struct Channel *chptr;
+  int i;
+  int hash_index;
+
+  if (MyConnect(source_p))
+    hash_index = source_p->localClient->hash_index;
+  else
+    hash_index = 0;
+
+  for (i = hash_index; i < CH_MAX; i++)
+  {
+    for (chptr = channelTable[i].list; chptr; chptr = chptr->hnextch)
+    {
+      if (!source_p->user ||
+	  (SecretChannel(chptr) && !IsMember(source_p, chptr)))
+	continue;
+      list_one_channel(source_p, chptr);
+      if (MyConnect(source_p))
+      {  
+	source_p->localClient->hash_index = i;
+	if (exceeding_sendq(source_p))
+	  return;		/* still more to do */
+      }
+    }
+  }
+
+  sendto_one(source_p, form_str(RPL_LISTEND), me.name, source_p->name);
+  if (MyConnect(source_p))
+    source_p->localClient->hash_index = 0;
+
+
+  return(0);
+}   
+
+/*
+ * finish_safe_list_all_channels
+ * inputs	- pointer to client requesting list
+ * output	- none
+ * side effects	- Simply RPL_LISTEND
+ *
+ * - Dianora
+ */
+
+void
+finish_safe_list_all_channels(struct Client *source_p)
+{
+  sendto_one(source_p, form_str(RPL_LISTEND), me.name, source_p->name);
+}

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: msg.h,v 7.42 2002/10/24 03:35:56 bill Exp $
+ *  $Id: msg.h,v 7.43 2003/04/06 18:24:43 db Exp $
  */
 
 #ifndef INCLUDED_msg_h
@@ -63,14 +63,21 @@ struct Message
 /*
  * Constants
  */
-#define   MFLG_SLOW              0x01   /* Command can be executed roughly    *
-                                         * once per 2 seconds.                */
-#define   MFLG_UNREG             0x02   /* Command available to unregistered  *
-                                         * clients.                           */
+#define   MFLG_SLOW              0x01   /* Command can be executed roughly
+                                         * once per 2 seconds.                
+					 */
+#define   MFLG_UNREG             0x02   /* Command available to unregistered
+                                         * clients.                          
+					 */
 #define   MFLG_IGNORE            0x04   /* silently ignore command from
-                                         * unregistered clients */
-#define   MFLG_HIDDEN		 0x08   /* Command is hidden from everyone    *
-					 * but opers			      */
+                                         * unregistered clients 
+					 */
+#define   MFLG_HIDDEN		 0x08   /* Command is hidden from everyone
+					 * but opers			      
+					 */
+#define	  MFLG_NO_ABORT_SAFE_LIST  0x10	/* Command does not cause abort
+					 * of a safe_list /list
+					 */
 #define MAXPARA    15 
 
 #endif /* INCLUDED_msg_h */
