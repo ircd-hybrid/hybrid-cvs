@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.459 2003/07/17 06:25:28 metalrock Exp $
+ *  $Id: s_conf.c,v 7.460 2003/07/21 18:27:33 db Exp $
  */
 
 #include "stdinc.h"
@@ -99,8 +99,8 @@ static dlink_list *map_to_list(ConfType conf);
 FBFILE *conf_fbfile_in;
 extern char yytext[];
 
-/* address of class 0 conf */
-static struct ConfItem *class0;
+/* address of default class conf */
+static struct ConfItem *class_default;
 
 /* usually, with hash tables, you use a prime number...
  * but in this case I am dealing with ip addresses,
@@ -1800,7 +1800,15 @@ rehash(int sig)
 static void
 set_default_conf(void)
 {
-  class0 = find_class("default");       /* which one is the default class ? */
+  /* verify init_class() ran, this should be an unnecessary check
+   * but its not much work.
+   */
+
+  class_default = find_class("default"); /* which one is the default class ? */
+  if (class_default == NULL)
+  {
+    abort();
+  }
 
 #ifdef HAVE_LIBCRYPTO
   ServerInfo.rsa_private_key = NULL;
@@ -2769,9 +2777,7 @@ find_class(const char *classname)
     }
     else
     {
-      conf = make_conf_item(CLASS_TYPE);
-      DupString(conf->name, "default");
-      return(conf);
+      return(NULL);	/* This should never ever happen */
     }
   }
 }
@@ -2813,12 +2819,11 @@ check_class(void)
 void
 init_class(void)
 {
-  struct ConfItem *conf;
   struct ClassItem *aclass;
 
-  conf = make_conf_item(CLASS_TYPE);
-  aclass = (struct ClassItem *)map_to_conf(conf);
-  DupString(conf->name, "default");
+  class_default = make_conf_item(CLASS_TYPE);
+  aclass = (struct ClassItem *)map_to_conf(class_default);
+  DupString(class_default->name, "default");
   ConFreq(aclass)  = DEFAULT_CONNECTFREQUENCY;
   PingFreq(aclass) = DEFAULT_PINGFREQUENCY;
   MaxTotal(aclass) = ConfigFileEntry.maximum_links;
@@ -2880,23 +2885,41 @@ conf_add_class_to_conf(struct ConfItem *conf, const char *class_name)
 
   aconf = (struct AccessItem *)map_to_conf(conf);
 
-  if (class_name == NULL)
-    aconf->class_ptr = find_class("default");
-  else
-    aconf->class_ptr = find_class(class_name);
-
-  if (aconf->class_ptr == class0)
+  if (class_name == NULL) 
   {
-    sendto_realops_flags(UMODE_ALL, L_ALL,
-	   "Warning *** Defaulting to default class for missing class \"%s\"",
-			 conf->name);
+    aconf->class_ptr = class_default;
+    if (conf->type == CLIENT_TYPE)
+      sendto_realops_flags(UMODE_ALL, L_ALL,
+			   "Warning *** Defaulting to default class for %s@%s",
+			   aconf->user, aconf->host);
+    else
+      sendto_realops_flags(UMODE_ALL, L_ALL,
+			   "Warning *** Defaulting to default class for %s",
+			   conf->name);
+  }
+  else
+  {
+    aconf->class_ptr = find_class(class_name);
+  }
+
+  if (aconf->class_ptr == NULL)
+  {
+    if (conf->type == CLIENT_TYPE)
+      sendto_realops_flags(UMODE_ALL, L_ALL,
+			   "Warning *** Defaulting to default class for %s@%s",
+			   aconf->user, aconf->host);
+    else
+      sendto_realops_flags(UMODE_ALL, L_ALL,
+			   "Warning *** Defaulting to default class for %s",
+			   conf->name);
+    aconf->class_ptr = class_default;
   }
   else
   {
     aclass = (struct ClassItem *)map_to_conf(aconf->class_ptr);
     if (MaxTotal(aclass) < 0)
     {
-      aconf->class_ptr = find_class("default");
+      aconf->class_ptr = class_default;
     }
   }
 }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.340 2003/07/21 17:18:18 adx Exp $
+ *  $Id: ircd_parser.y,v 1.341 2003/07/21 18:27:33 db Exp $
  */
 
 %{
@@ -1338,8 +1338,6 @@ auth_entry: IRCD_AUTH
       if (yy_aconf->passwd != NULL)
 	DupString(new_aconf->passwd, yy_aconf->passwd);
 
-      conf_add_class_to_conf(new_conf, class_name);
-
       yy_aconf->flags = yy_aconf->flags;
       yy_aconf->port  = yy_aconf->port;
 
@@ -1359,6 +1357,7 @@ auth_entry: IRCD_AUTH
       else
 	DupString(new_aconf->host, "*");
 
+      conf_add_class_to_conf(new_conf, class_name);
       add_conf_by_address(CONF_CLIENT, new_aconf);
       dlinkDelete(&yy_tmp->node, &col_conf_list);
       free_collect_item(yy_tmp);
