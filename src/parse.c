@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.51 2000/12/23 21:55:17 ejb Exp $
+ *   $Id: parse.c,v 7.52 2000/12/23 22:12:38 ejb Exp $
  */
 #include "parse.h"
 #include "client.h"
@@ -340,8 +340,8 @@ int parse(struct Client *cptr, char *buffer, char *bufend)
 
   handler = mptr->handlers[handle_idx];
   /* check right amount of params is passed... --is */
-  
-  if (i < mptr->parameters) {
+
+  if (i - 1 < mptr->parameters) {
 	  sendto_one(cptr, form_str(ERR_NEEDMOREPARAMS),
                  me.name, para[0], mptr->cmd);
 	  return 0;
