@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_cburst.c,v 1.14 2000/12/17 02:56:51 db Exp $
+ * $Id: m_cburst.c,v 1.15 2000/12/17 14:10:45 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -107,18 +107,24 @@ int     ms_cburst(struct Client *cptr,
     key ? key : "" );
 #endif
 
-  if((chptr=hash_find_channel(name, NullChn)) == NULL)
+  if( (chptr = hash_find_channel(name, NullChn)) == NULL)
     {
-     /* I don't know about this channel here, let leaf deal with it */
-     if(nick)
-       sendto_one(cptr,":%s LLJOIN %s %s %s", me.name, name, nick, key);
+      chptr = get_channel(sptr, name, CREATE);
+      chptr->channelts = (time_t)(-1); /* ! highest possible TS so its always
+					* over-ruled
+					*/
+      chptr->users_last = CurrentTime;
+
+      chptr->lazyLinkChannelExists |= cptr->localClient->serverMask;
+
+      if(nick)
+	sendto_one(cptr,":%s LLJOIN %s %s %s", me.name, name, nick, key);
       return 0;
     }
 
   if(IsCapable(cptr,CAP_LL))
     {
       sjoin_channel(cptr,chptr);
-
 
       if(nick)
 	sendto_one(cptr,":%s LLJOIN %s %s %s", me.name, name, nick, key);

@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.101 2000/12/17 00:15:00 db Exp $
+ *  $Id: s_conf.c,v 7.102 2000/12/17 14:10:47 db Exp $
  */
 #include "tools.h"
 #include "s_conf.h"
@@ -55,8 +55,6 @@
 #include <netdb.h>
 #include <fcntl.h>
 #include <assert.h>
-
-struct ConfItem *glines = NULL;
 
 extern int yyparse(); /* defined in yy.tab.c */
 extern ConfigFileEntryType ConfigFileEntry; /* defined in ircd.c */

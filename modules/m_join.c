@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 1.24 2000/12/17 02:56:51 db Exp $
+ *   $Id: m_join.c,v 1.25 2000/12/17 14:10:45 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -289,14 +289,6 @@ int     m_join(struct Client *cptr,
       if (joining_vchan)
 	{
 	  add_vchan_to_client_cache(sptr,root_chptr,chptr);
-
-	  if(IsCapable(cptr,CAP_LL))
-	    root_chptr->lazyLinkChannelExists |= cptr->localClient->serverMask;
-	}
-      else
-	{
-	  if(IsCapable(cptr,CAP_LL))
-	    chptr->lazyLinkChannelExists |= cptr->localClient->serverMask;
 	}
 
       /*
