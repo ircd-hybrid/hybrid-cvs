@@ -1,3 +1,18 @@
+leeh        2002/02/25 16:01:27 EST	(20020225_6)
+
+  Modified files:
+    include              resv.h 
+    src                  resv.c 
+  Log:
+  - made resv use strlcpy()
+  - bumped RESVNICKLEN to NICKLEN*2
+  
+  Revision  Changes    Path
+  1.6       +6 -2      ircd-hybrid-7/include/resv.h
+  7.13      +16 -30    ircd-hybrid-7/src/resv.c
+
+
+
 leeh        2002/02/25 15:22:32 EST	(20020225_5)
 
   Modified files:
@@ -23260,4 +23275,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3454 2002/02/25 20:22:38 leeh Exp $
+$Id: ChangeLog,v 7.3455 2002/02/25 21:01:33 leeh Exp $
