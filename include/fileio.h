@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fileio.h,v 7.14 2003/05/22 23:16:03 michael Exp $
+ *  $Id: fileio.h,v 7.15 2003/10/24 11:08:17 michael Exp $
  */
 
 #ifndef INCLUDED_fileio_h
@@ -38,8 +38,6 @@ struct FileBuf {
   char  pbuf[BUFSIZ+1]; /* push back buffer */
 };
 
-/* XXX This shouldn't be here */
-struct Client;
 
 /*
  * FileBuf is a mirror of the ANSI FILE struct, but it works for any
@@ -85,7 +83,7 @@ extern void    fbungetc(char c, FBFILE* fb);
 /*
  * write a null terminated string to a file, see fputs(3)
  */
-extern int     fbputs(const char* str, FBFILE* fb);
+extern int     fbputs(const char *, FBFILE *, size_t);
 /*
  * return the status of the file associated with fb, see fstat(3)
  */

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.323 2003/10/16 13:47:05 stu Exp $
+ *  $Id: ircd.c,v 7.324 2003/10/24 11:08:21 michael Exp $
  */
 
 #include "stdinc.h"
@@ -391,7 +391,7 @@ initialize_server_capabs(void)
   add_capability("CLUSTER", CAP_CLUSTER, 1);
 }
 
-/* write_pidfile
+/* write_pidfile()
  *
  * inputs       - filename+path of pid file
  * output       - NONE
@@ -401,15 +401,14 @@ static void
 write_pidfile(const char *filename)
 {
   FBFILE *fb;
-  char buff[32];
 
   if ((fb = fbopen(filename, "w")))
   {
+    char buff[32];
     unsigned int pid = (unsigned int)getpid();
+    size_t nbytes = ircsprintf(buff, "%u\n", pid);
 
-    ircsprintf(buff, "%u\n", pid);
-
-    if ((fbputs(buff, fb) == -1))
+    if ((fbputs(buff, fb, nbytes) == -1))
       ilog(L_ERROR, "Error writing %u to pid file %s (%s)",
            pid, filename, strerror(errno));
 

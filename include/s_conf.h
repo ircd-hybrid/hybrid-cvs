@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.267 2003/09/27 23:34:24 bill Exp $
+ *  $Id: s_conf.h,v 7.268 2003/10/24 11:08:17 michael Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -470,7 +470,6 @@ extern void conf_add_d_conf(struct AccessItem *);
 
 /* XXX consider moving these into csvlib.h */
 extern void parse_csv_file(FBFILE *, ConfType);
-extern char *getfield(char *);
 
 extern char *get_oper_name(const struct Client *);
 /* XXX consider inlining this */

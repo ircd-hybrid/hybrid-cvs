@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_away.c,v 1.36 2003/10/07 22:37:12 bill Exp $
+ *  $Id: m_away.c,v 1.37 2003/10/24 11:08:19 michael Exp $
  */
 
 #include "stdinc.h"
@@ -58,7 +58,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&away_msgtab);
 }
-const char *_version = "$Revision: 1.36 $";
+const char *_version = "$Revision: 1.37 $";
 #endif
 
 /***********************************************************************
@@ -83,6 +83,7 @@ m_away(struct Client *client_p, struct Client *source_p,
 {
   char *cur_away_msg = source_p->user->away;
   char *new_away_msg;
+  size_t nbytes = 0;
 
   if (!IsFloodDone(source_p))
     flood_endgrace(source_p);
@@ -118,8 +119,11 @@ m_away(struct Client *client_p, struct Client *source_p,
   source_p->user->last_away = CurrentTime;
   new_away_msg              = parv[1];
 
-  if (strlen(new_away_msg) > (size_t)TOPICLEN)
+  nbytes = strlen(new_away_msg);
+  if (nbytes > (size_t)TOPICLEN) {
     new_away_msg[TOPICLEN] = '\0';
+    nbytes = TOPICLEN;
+  }
 
   /* we now send this only if they
    * weren't away already --is */
@@ -133,7 +137,7 @@ m_away(struct Client *client_p, struct Client *source_p,
   else
     MyFree(cur_away_msg);
 
-  cur_away_msg = (char *)MyMalloc(strlen(new_away_msg) + 1);
+  cur_away_msg = MyMalloc(nbytes + 1);
   strcpy(cur_away_msg, new_away_msg);
   source_p->user->away = cur_away_msg;
 
@@ -146,6 +150,7 @@ mo_away(struct Client *client_p, struct Client *source_p,
 {
   char *cur_away_msg = source_p->user->away;
   char *new_away_msg;
+  size_t nbytes = 0;
 
   if (!IsFloodDone(source_p))
     flood_endgrace(source_p);
@@ -173,8 +178,11 @@ mo_away(struct Client *client_p, struct Client *source_p,
   source_p->user->last_away = CurrentTime;
   new_away_msg              = parv[1];
 
-  if (strlen(new_away_msg) > (size_t)TOPICLEN)
+  nbytes = strlen(new_away_msg);
+  if (nbytes > (size_t)TOPICLEN) {
     new_away_msg[TOPICLEN] = '\0';
+    nbytes = TOPICLEN;
+  }
 
   /* we now send this only if they
    * weren't away already --is */
@@ -188,7 +196,7 @@ mo_away(struct Client *client_p, struct Client *source_p,
   else
     MyFree(cur_away_msg);
 
-  cur_away_msg = (char *)MyMalloc(strlen(new_away_msg) + 1);
+  cur_away_msg = MyMalloc(nbytes + 1);
   strcpy(cur_away_msg, new_away_msg);
   source_p->user->away = cur_away_msg;
 
@@ -201,6 +209,7 @@ ms_away(struct Client *client_p, struct Client *source_p,
 {
   char *cur_away_msg;
   char *new_away_msg;
+  size_t nbytes = 0;
 
   if (!IsClient(source_p))
     return;
@@ -228,8 +237,11 @@ ms_away(struct Client *client_p, struct Client *source_p,
   source_p->user->last_away = CurrentTime;
   new_away_msg              = parv[1];
 
-  if (strlen(new_away_msg) > (size_t)TOPICLEN)
+  nbytes = strlen(new_away_msg);
+  if (nbytes > (size_t)TOPICLEN) {
     new_away_msg[TOPICLEN] = '\0';
+    nbytes = TOPICLEN;
+  }
 
   /* we now send this only if they
    * weren't away already --is */
@@ -243,7 +255,7 @@ ms_away(struct Client *client_p, struct Client *source_p,
   else
     MyFree(cur_away_msg);
 
-  cur_away_msg = (char *)MyMalloc(strlen(new_away_msg) + 1);
+  cur_away_msg = MyMalloc(nbytes + 1);
   strcpy(cur_away_msg, new_away_msg);
   source_p->user->away = cur_away_msg;
 }

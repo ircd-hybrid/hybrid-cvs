@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_cryptlink.c,v 1.58 2003/10/16 23:13:48 stu Exp $
+ *  $Id: m_cryptlink.c,v 1.59 2003/10/24 11:08:19 michael Exp $
  */
 
 /*
@@ -95,7 +95,7 @@ _moddeinit(void)
   mod_del_cmd(&cryptlink_msgtab);
 }
 
-const char *_version = "$Revision: 1.58 $";
+const char *_version = "$Revision: 1.59 $";
 #endif
 
 
@@ -491,7 +491,7 @@ parse_cryptserv_args(struct Client *client_p, char *parv[],
 
   /* parv[2] contains encrypted auth data */
   if (!(decoded_len = unbase64_block(&tmp, parv[3],
-                                      strlen(parv[3]))))
+                                     strlen(parv[3]))))
   {
     cryptlink_error(client_p, "SERV",
                     "Couldn't base64 decode data",
@@ -553,17 +553,20 @@ parse_cryptserv_args(struct Client *client_p, char *parv[],
 static int
 bogus_host(char *host)
 {
-  unsigned int dots = 0;
-  char *s;
+  unsigned int length = 0;
+  unsigned int dots   = 0;
+  char *s = host;
 
-  for (s = host; *s; s++)
+  for (; *s; s++)
   {
     if (!IsServChar(*s))
       return(1);
+
+    ++length;
 
     if ('.' == *s)
       ++dots;
   }
 
-  return(!dots || strlen(host) > HOSTLEN);
+  return(!dots || length > HOSTLEN);
 }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.418 2003/10/21 01:39:50 bill Exp $
+ *  $Id: client.c,v 7.419 2003/10/24 11:08:21 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1334,13 +1334,9 @@ exit_client(
     }
     else
     {
-      if ((source_p->serv) && (source_p->serv->up[0] != '\0'))
-        strcpy(comment1, source_p->serv->up);
-      else
-        strcpy(comment1, "<Unknown>");
-
-      strcat(comment1, " ");
-      strcat(comment1, source_p->name);
+      assert((source_p->serv) && (source_p->serv->up[0] != '\0'));
+      snprintf(comment1, sizeof(comment1), "%s %s",
+               source_p->serv->up, source_p->name);
     }
 
     /* XXX Why does this happen */

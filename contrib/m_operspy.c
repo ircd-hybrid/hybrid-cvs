@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.49 2003/09/28 00:58:42 metalrock Exp $
+ *   $Id: m_operspy.c,v 1.50 2003/10/24 11:08:15 michael Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -115,7 +115,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.49 $";
+const char *_version = "$Revision: 1.50 $";
 #endif
 
 #ifdef OPERSPY_LOG
@@ -596,6 +596,7 @@ operspy_log(struct Client *source_p, const char *command, const char *target)
 {
   struct ConfItem *conf;
 #ifdef OPERSPY_LOGFILE
+  size_t nbytes = 0;
   FBFILE *operspy_fb;
   dlink_node *cnode;
   const char *opername = source_p->name;
@@ -623,11 +624,11 @@ operspy_log(struct Client *source_p, const char *command, const char *target)
   if ((operspy_fb = fbopen(logfile, "a")) == NULL)
     return;
 
-  ircsprintf(linebuf, "[%s] OPERSPY %s %s %s\n",
-             smalldate(CurrentTime),
-             get_oper_name(source_p),
-             command, target);
-  fbputs(linebuf, operspy_fb);
+  nbytes = ircsprintf(linebuf, "[%s] OPERSPY %s %s %s\n",
+                      smalldate(CurrentTime),
+                      get_oper_name(source_p),
+                      command, target);
+  fbputs(linebuf, operspy_fb, nbytes);
   fbclose(operspy_fb);
 #endif
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: motd.c,v 7.36 2003/10/07 22:37:20 bill Exp $
+ *  $Id: motd.c,v 7.37 2003/10/24 11:08:21 michael Exp $
  */
 
 #include "stdinc.h"
@@ -164,7 +164,7 @@ read_message_file(MessageFile *MessageFileptr)
 {
   struct stat sb;
   struct tm *local_tm;
-  
+
   /* used to clear out old MessageFile entries */
   MessageFileLine *mptr = 0;
   MessageFileLine *next_mptr = 0;
@@ -199,10 +199,10 @@ read_message_file(MessageFile *MessageFileptr)
                local_tm->tm_hour,
                local_tm->tm_min);
 
-  if ((file = fbopen(MessageFileptr->fileName, "r")) == 0)
+  if ((file = fbopen(MessageFileptr->fileName, "r")) == NULL)
     return(-1);
 
-  while (fbgets(buffer, MESSAGELINELEN, file))
+  while (fbgets(buffer, sizeof(buffer), file))
   {
     if ((p = strchr(buffer, '\n')) != NULL)
       *p = '\0';

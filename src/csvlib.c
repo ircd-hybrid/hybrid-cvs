@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.30 2003/10/07 22:37:20 bill Exp $
+ *  $Id: csvlib.c,v 7.31 2003/10/24 11:08:21 michael Exp $
  */
 
 #include "stdinc.h"
@@ -26,6 +26,7 @@ static void parse_csv_line(char *line, ...);
 static int write_csv_line(FBFILE *out, const char *format, ...);
 static int flush_write(struct Client *source_p, FBFILE *in, FBFILE* out, 
                        const char *buf, const char *temppath);
+static char *getfield(char *);
 
 /* parse_csv_file()
  *
@@ -326,7 +327,7 @@ write_csv_line(FBFILE *out, const char *format, ...)
 	if (p1 == NULL)
 	  p1 = null_string;
 	*str++ = '\"';
-	bytes += 2;
+	++bytes;
 	while (*p1 != '\0')
 	{
 	  *str++ = *p1++;
@@ -371,7 +372,7 @@ write_csv_line(FBFILE *out, const char *format, ...)
 	}
 
 	*str++ = ',';
-	bytes++;
+	++bytes;
 	continue;
       }
       if (c != '%')
@@ -392,7 +393,7 @@ write_csv_line(FBFILE *out, const char *format, ...)
     ++bytes;
   }
 
-  if(*(str-1) == ',')
+  if (*(str-1) == ',')
   {
     *(str-1) = '\n';
     *str = '\0';
@@ -400,13 +401,15 @@ write_csv_line(FBFILE *out, const char *format, ...)
   else
   {
     *str++ = '\n';
+    ++bytes;
     *str = '\0';
   }
 
   va_end(args);
   str = tmp;
-  fbputs(str, out);
-  return bytes;
+  fbputs(str, out, bytes);
+
+  return(bytes);
 }
 
 /*
@@ -416,7 +419,7 @@ write_csv_line(FBFILE *out, const char *format, ...)
  * output	- next field
  * side effects	- field breakup for ircd.conf file.
  */
-char *
+static char *
 getfield(char *newline)
 {
   static char *line = NULL;
@@ -636,12 +639,12 @@ static int
 flush_write(struct Client *source_p, FBFILE *in, FBFILE* out, 
             const char *buf, const char *temppath)
 {
-  int error_on_write = (fbputs(buf, out) < 0) ? (-1) : (0);
+  int error_on_write = (fbputs(buf, out, strlen(buf)) < 0) ? (-1) : (0);
 
   if (error_on_write)
   {
     sendto_one(source_p,":%s NOTICE %s :Unable to write to %s aborting",
-	       me.name, source_p->name, temppath );
+	       me.name, source_p->name, temppath);
     if(temppath != NULL)
       (void)unlink(temppath);
     fbclose(in);

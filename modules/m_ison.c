@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ison.c,v 1.35 2003/10/07 22:37:12 bill Exp $
+ *  $Id: m_ison.c,v 1.36 2003/10/24 11:08:19 michael Exp $
  */
 
 #include "stdinc.h"
@@ -37,7 +37,7 @@
 #include "s_serv.h" /* uplink/IsCapable */
 
 static void do_ison(struct Client *up, struct Client *source_p,
-                   int parc, char *parv[]);
+                    int parc, char *parv[]);
 
 static void m_ison(struct Client*, struct Client*, int, char**);
 static void ms_ison(struct Client*, struct Client*, int, char**);
@@ -59,7 +59,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&ison_msgtab);
 }
-const char *_version = "$Revision: 1.35 $";
+const char *_version = "$Revision: 1.36 $";
 #endif
 
 
@@ -119,8 +119,7 @@ do_ison(struct Client *up, struct Client *source_p,
   current_insert_point2 = buf2;
   *buf2 = '\0';
 
-  ircsprintf(buf, form_str(RPL_ISON), me.name, parv[0]);
-  len = strlen(buf);
+  len = ircsprintf(buf, form_str(RPL_ISON), me.name, parv[0]);
   current_insert_point = buf + len;
 
   /* rfc1459 is ambigious about how to handle ISON

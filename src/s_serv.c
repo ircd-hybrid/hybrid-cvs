@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.390 2003/10/16 23:13:50 stu Exp $
+ *  $Id: s_serv.c,v 7.391 2003/10/24 11:08:21 michael Exp $
  */
 
 #include "stdinc.h"
@@ -60,16 +60,25 @@
 #define MIN_CONN_FREQ 300
 
 struct Client *uplink  = NULL;
+dlink_list cap_list = { NULL, NULL, 0 };
 
-static void start_io(struct Client *server);
-static void burst_members(struct Client *client_p, struct Channel *chptr);
-static void burst_ll_members(struct Client *client_p, struct Channel *chptr);
-static void add_lazylinkchannel(struct Client *client_p, struct Channel *chptr);
+
+static unsigned long freeMask;
+static void server_burst(struct Client *);
+static int fork_server(struct Client *);
+static void burst_all(struct Client *);
+static void cjoin_all(struct Client *);
+
+static CNCB serv_connect_callback;
+
+static void start_io(struct Client *);
+static void burst_members(struct Client *, struct Channel *);
+static void burst_ll_members(struct Client *, struct Channel *);
+static void add_lazylinkchannel(struct Client *, struct Channel *);
 
 static SlinkRplHnd slink_error;
 static SlinkRplHnd slink_zipstats;
 
-dlink_list cap_list = { NULL, NULL, 0 };
 
 #ifdef HAVE_LIBCRYPTO
 struct EncCapability CipherTable[] =
@@ -105,13 +114,6 @@ struct SlinkRplDef slinkrpltab[] = {
   { 0,                 0,              0 },
 };
 
-static unsigned long freeMask;
-static void server_burst(struct Client *client_p);
-static int fork_server(struct Client *client_p);
-static void burst_all(struct Client *client_p);
-static void cjoin_all(struct Client *client_p);
-
-static CNCB serv_connect_callback;
 
 void
 slink_error(unsigned int rpl, unsigned int len, unsigned char *data,
@@ -270,15 +272,14 @@ write_links_file(void* notused)
   MessageFileLine *currentMessageLine = 0;
   MessageFileLine *newMessageLine = 0;
   MessageFile *MessageFileptr;
-  struct Client *target_p;
   const char *p;
-  FBFILE* file;
+  FBFILE *file;
   char buff[512];
   dlink_node *ptr;
 
   MessageFileptr = &ConfigFileEntry.linksfile;
 
-  if ((file = fbopen(MessageFileptr->fileName, "w")) == 0)
+  if ((file = fbopen(MessageFileptr->fileName, "w")) == NULL)
     return;
 
   for (mptr = MessageFileptr->contentsOfFile; mptr; mptr = next_mptr)
@@ -292,7 +293,8 @@ write_links_file(void* notused)
 
   DLINK_FOREACH(ptr, global_serv_list.head)
   {
-    target_p = ptr->data;
+    size_t nbytes = 0;
+    struct Client *target_p = ptr->data;
 
     /* skip ourselves, we send ourselves in /links */
     if (IsMe(target_p))
@@ -307,7 +309,7 @@ write_links_file(void* notused)
     else
       p = "(Unknown Location)";
 
-    newMessageLine = (MessageFileLine *) MyMalloc(sizeof(MessageFileLine));
+    newMessageLine = MyMalloc(sizeof(MessageFileLine));
 
     /* Attempt to format the file in such a way it follows the usual links output
      * ie  "servername uplink :hops info"
@@ -323,7 +325,7 @@ write_links_file(void* notused)
      */
     assert(strlen(target_p->name) + strlen(me.name) + 6 + strlen(p) <= 
             MESSAGELINELEN);
-    ircsprintf(newMessageLine->line,"%s %s :1 %s",
+    ircsprintf(newMessageLine->line, "%s %s :1 %s",
                target_p->name, me.name, p);
     newMessageLine->next = NULL;
 
@@ -339,8 +341,8 @@ write_links_file(void* notused)
       currentMessageLine = newMessageLine;
     }
 
-    ircsprintf(buff, "%s %s :1 %s\n", target_p->name, me.name, p);
-    fbputs(buff, file);
+    nbytes = ircsprintf(buff, "%s %s :1 %s\n", target_p->name, me.name, p);
+    fbputs(buff, file, nbytes);
   }
 
   fbclose(file);

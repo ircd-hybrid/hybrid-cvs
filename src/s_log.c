@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.c,v 7.60 2003/09/21 09:59:04 michael Exp $
+ *  $Id: s_log.c,v 7.61 2003/10/24 11:08:21 michael Exp $
  */
 
 #include "stdinc.h"
@@ -110,13 +110,14 @@ static void
 write_log(const char *message)
 {
   char buf[LOG_BUFSIZE];
+  size_t nbytes = 0;
 
   if (logFile == NULL)
     return;
 
-  snprintf(buf, sizeof(buf), "[%s] %s\n",
-           smalldate(CurrentTime), message);
-  fbputs(buf, logFile);
+  nbytes = snprintf(buf, sizeof(buf), "[%s] %s\n",
+                    smalldate(CurrentTime), message);
+  fbputs(buf, logFile, nbytes);
 }
    
 void
@@ -235,7 +236,7 @@ log_user_exit(struct Client *source_p)
 
       if (user_log_fb != NULL)
       {
-	ircsprintf(linebuf,
+        size_t nbytes = ircsprintf(linebuf,
 		   "%s (%3ld:%02ld:%02ld): %s!%s@%s %d/%d\n",
 		   myctime(source_p->firsttime),
 		   (signed long) on_for / 3600,
@@ -244,7 +245,7 @@ log_user_exit(struct Client *source_p)
 		   source_p->name, source_p->username, source_p->host,
 		   source_p->localClient->sendK,
 		   source_p->localClient->receiveK);
-	fbputs(linebuf, user_log_fb);
+	fbputs(linebuf, user_log_fb, nbytes);
       }
     }
   }
@@ -296,12 +297,11 @@ log_oper(struct Client *source_p, const char *name)
     if (oper_fb != NULL)
     {
       char linebuf[BUFSIZE];
-
-      ircsprintf(linebuf, "%s OPER (%s) by (%s!%s@%s)\n",
-		 myctime(CurrentTime), name, source_p->name,
-                 source_p->username, source_p->host);
-
-      fbputs(linebuf, oper_fb);
+      size_t nbytes = ircsprintf(linebuf,
+                                 "%s OPER (%s) by (%s!%s@%s)\n",
+                                 myctime(CurrentTime), name, source_p->name,
+                                 source_p->username, source_p->host);
+      fbputs(linebuf, oper_fb, nbytes);
       fbclose(oper_fb);
     }
   }
@@ -333,12 +333,11 @@ log_failed_oper(struct Client *source_p, const char *name)
     if (oper_fb != NULL)
     {
       char linebuf[BUFSIZE];
-
-      ircsprintf(linebuf, "%s FAILED OPER (%s) by (%s!%s@%s)\n",
-		 myctime(CurrentTime), name, source_p->name,
-                 source_p->username, source_p->host);
-
-      fbputs(linebuf, oper_fb);
+      size_t nbytes = ircsprintf(linebuf,
+                                 "%s FAILED OPER (%s) by (%s!%s@%s)\n",
+                                 myctime(CurrentTime), name, source_p->name,
+                                 source_p->username, source_p->host);
+      fbputs(linebuf, oper_fb, nbytes);
       fbclose(oper_fb);
     }
   }

@@ -19,13 +19,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fileio.c,v 7.32 2003/05/22 23:16:07 michael Exp $
+ *  $Id: fileio.c,v 7.33 2003/10/24 11:08:21 michael Exp $
  */
+
 #include "stdinc.h"
 #include "fileio.h"
 #include "irc_string.h"
-#include "client.h"	/* for FLAGS_ALL */
-#include "send.h"	/* sendto_realops_flags */
 #include "memory.h"
 #include "s_log.h"
 
@@ -42,18 +41,18 @@
 int
 file_open(const char *filename, int mode, int fmode)
 {
-    int fd;
-    fd = open(filename, mode, fmode);
-    if (fd == MASTER_MAX)
-    {
-        close(fd); /* Too many FDs! */
-        errno = ENFILE;
-        fd = -1;
-    }
-    else if (fd >= 0)
-        fd_open(fd, FD_FILE, filename);
-    
-    return(fd);
+  int fd = open(filename, mode, fmode);
+
+  if (fd == MASTER_MAX)
+  {
+    close(fd); /* Too many FDs! */
+    errno = ENFILE;
+    fd = -1;
+  }
+  else if (fd >= 0)
+    fd_open(fd, FD_FILE, filename);
+
+  return(fd);
 }
 
 void
@@ -70,21 +69,22 @@ file_close(int fd)
     fd_close(fd);
 }
 
-FBFILE*
-fbopen(const char* filename, const char* mode)
+FBFILE *
+fbopen(const char *filename, const char *mode)
 {
+  int fd;
   int openmode = 0;
   int pmode = 0;
-  FBFILE* fb = NULL;
-  int fd;
+  FBFILE *fb = NULL;
   assert(filename);
   assert(mode);
-  
-  if(filename == NULL || mode == NULL)
+
+  if (filename == NULL || mode == NULL)
   {
      errno = EINVAL;
      return NULL;
   }
+
   while (*mode)
   {
     switch (*mode)
@@ -111,30 +111,29 @@ fbopen(const char* filename, const char* mode)
   }
 
   if ((fd = file_open(filename, openmode, pmode)) == -1)
-  {
-    return fb;
-  }
+    return(fb);
 
   if (NULL == (fb = fdbopen(fd, NULL)))
     file_close(fd);
-  return fb;
+
+  return(fb);
 }
 
-FBFILE* fdbopen(int fd, const char* mode)
+FBFILE *
+fdbopen(int fd, const char *mode)
 {
   /*
    * ignore mode, if file descriptor hasn't been opened with the
    * correct mode, the first use will fail
    */
-  FBFILE* fb = (FBFILE*) MyMalloc(sizeof(FBFILE));
-  if (NULL != fb)
-  {
-    fb->ptr = fb->endp = fb->buf;
-    fb->fd = fd;
-    fb->flags = 0;
-    fb->pbptr = NULL;
-  }
-  return fb;
+  FBFILE *fb = MyMalloc(sizeof(FBFILE));
+
+  fb->ptr = fb->endp = fb->buf;
+  fb->fd = fd;
+  fb->flags = 0;
+  fb->pbptr = NULL;
+
+  return(fb);
 }
 
 /*
@@ -144,7 +143,7 @@ fbrewind(FBFILE *fb)
 {
   if (fb != NULL)
   {
-    fb->ptr = fb->endp = fb->buf;
+    fb->ptr   = fb->endp = fb->buf;
     fb->flags = 0;
     fb->pbptr = NULL;
   }
@@ -157,30 +156,34 @@ void
 fbclose(FBFILE* fb)
 {
   assert(fb);
-  if(fb != NULL)
+
+  if (fb != NULL)
   {
     file_close(fb->fd);
     MyFree(fb);
   }
   else
     errno = EINVAL;
-   
 }
 
 static int
-fbfill(FBFILE* fb)
+fbfill(FBFILE *fb)
 {
   int n;
   assert(fb);
-  if(fb == NULL)
+
+  if (fb == NULL)
   {
     errno = EINVAL;
-    return -1;
-  }  
+    return(-1);
+  }
+
   if (fb->flags)
-    return -1;
+    return(-1);
+
   n = read(fb->fd, fb->buf, BUFSIZ);
-  if (0 < n)
+
+  if (n > 0)
   {
     fb->ptr  = fb->buf;
     fb->endp = fb->buf + n;
@@ -189,64 +192,71 @@ fbfill(FBFILE* fb)
     fb->flags |= FB_FAIL;
   else
     fb->flags |= FB_EOF;
-  return n;
+
+  return(n);
 }
 
 int
-fbgetc(FBFILE* fb)
+fbgetc(FBFILE *fb)
 {
   assert(fb);
-  if(fb == NULL)
+
+  if (fb == NULL)
   {
     errno = EINVAL;
-    return -1;
+    return(-1);
   }
-  if(fb->pbptr != NULL)
+
+  if (fb->pbptr != NULL)
   {
-    if((fb->pbptr == (fb->pbuf+BUFSIZ)) ||
-       (!*fb->pbptr) )
+    if ((fb->pbptr == (fb->pbuf + BUFSIZ)) ||
+        (!*fb->pbptr))
       fb->pbptr = NULL;
   }
 
   if (fb->ptr < fb->endp || fbfill(fb) > 0)
-    return *fb->ptr++;
-  return EOF;
+    return(*fb->ptr++);
+
+  return(EOF);
 }
 
 void
-fbungetc(char c, FBFILE* fb)
+fbungetc(char c, FBFILE *fb)
 {
   assert(fb);
-  if(fb == NULL)
+
+  if (fb == NULL)
   {
     errno = EINVAL;
     return;
   }
-  if(!fb->pbptr)
+
+  if (!fb->pbptr)
   {
     fb->pbptr = fb->pbuf+BUFSIZ;
   }
 
-  if(fb->pbptr != fb->pbuf)
+  if (fb->pbptr != fb->pbuf)
   {
     fb->pbptr--;
     *fb->pbptr = c;
   }
 }
 
-char*
-fbgets(char* buf, size_t len, FBFILE* fb)
+char *
+fbgets(char *buf, size_t len, FBFILE *fb)
 {
-  char* p = buf;
+  char *p = buf;
   assert(buf);
   assert(fb);
   assert(0 < len);
-  
-  if(fb == NULL || buf == NULL)
+
+  if (fb == NULL || buf == NULL)
   {
     errno = EINVAL;
-    return NULL;
+    return(NULL);
   }
+
   if(fb->pbptr != NULL)
   {
     strlcpy(buf,fb->pbptr,len);
@@ -255,19 +265,21 @@ fbgets(char* buf, size_t len, FBFILE* fb)
   }
 
   if (fb->ptr == fb->endp && fbfill(fb) < 1)
-    return 0;
-  --len; 
+    return(NULL);
+
+  --len;
+
   while (len--)
   {
     *p = *fb->ptr++;
+
     if ('\n' == *p)
     {
       ++p;
       break;
     }
-    /*
-     * deal with CR's
-     */
+
+    /* deal with CR's */
     else if ('\r' == *p)
     {
       if (fb->ptr < fb->endp || fbfill(fb) > 0)
@@ -275,56 +287,65 @@ fbgets(char* buf, size_t len, FBFILE* fb)
         if ('\n' == *fb->ptr)
           ++fb->ptr;
       }
+
       *p++ = '\n';
       break;
     }
+
     ++p;
+
     if (fb->ptr == fb->endp && fbfill(fb) < 1)
       break;
   }
+
   *p = '\0';
-  return buf;
+  return(buf);
 }
  
 int
-fbputs(const char* str, FBFILE* fb)
+fbputs(const char *str, FBFILE *fb, size_t nbytes)
 {
   int n = -1;
   assert(str);
   assert(fb);
   
-  if(str == NULL || fb == NULL)
+  if (str == NULL || fb == NULL)
   {
     errno = EINVAL;
-    return -1;
-  } 
+    return(-1);
+  }
+
   if (0 == fb->flags)
   {
-    n = write(fb->fd, str, strlen(str));
-    if (-1 == n)
+    assert(strlen(str) == nbytes);
+    n = write(fb->fd, str, nbytes);
+    if (n == -1)
       fb->flags |= FB_FAIL;
   }
-  return n;
+
+  return(n);
 }
 
 int
-fbstat(struct stat* sb, FBFILE* fb)
+fbstat(struct stat *sb, FBFILE *fb)
 {
   assert(sb);
   assert(fb);
-  if(sb == NULL || fb == NULL)
+
+  if (sb == NULL || fb == NULL)
   {
     errno = EINVAL;
-    return -1;
+    return(-1);
   }
-  return fstat(fb->fd, sb);
+
+  return(fstat(fb->fd, sb));
 }
 
-int save_spare_fd(const char *spare_purpose)
+int
+save_spare_fd(const char *spare_purpose)
 {
-  int spare_fd;
+  int spare_fd = open(PATH_DEVNULL, O_RDONLY, 0);
 
-  spare_fd = open(PATH_DEVNULL,O_RDONLY,0);
   if (spare_fd < 0)
   {
     ilog(L_NOTICE, "Failed to reserve low fd for %s - open failed", spare_purpose);
@@ -336,6 +357,7 @@ int save_spare_fd(const char *spare_purpose)
     close(spare_fd);
     return(-1);
   }
+
   return(spare_fd);
 }
 

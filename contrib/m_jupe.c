@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_jupe.c,v 1.57 2003/07/21 01:58:19 michael Exp $
+ *  $Id: m_jupe.c,v 1.58 2003/10/24 11:08:15 michael Exp $
  */
 
 #include "stdinc.h"
@@ -66,7 +66,7 @@ _moddeinit(void)
   mod_del_cmd(&jupe_msgtab);
 }
 
-const char *_version = "$Revision: 1.57 $";
+const char *_version = "$Revision: 1.58 $";
 #endif
 
 /*
@@ -118,14 +118,14 @@ mo_jupe(struct Client *client_p, struct Client *source_p,
 
   sendto_wallops_flags(UMODE_WALLOP, &me,
                        "JUPE for %s requested by %s: %s",
-			 parv[1], get_oper_name(source_p), parv[2]);
+                       parv[1], get_oper_name(source_p), parv[2]);
 
   sendto_server(NULL, source_p, NULL, NOCAPS, NOCAPS, LL_ICLIENT,
                 ":%s WALLOPS :JUPE for %s requested by %s!%s@%s: %s",
                 me.name, parv[1], source_p->name, 
                 source_p->username, source_p->host, parv[2]);
   ilog(L_NOTICE, "JUPE for %s requested by %s: %s",
-                parv[1], get_oper_name(source_p), parv[2]);
+       parv[1], get_oper_name(source_p), parv[2]);
 
   if ((target_p = find_server(parv[1])) != NULL)
     exit_client(client_p, target_p, &me, parv[2]);
@@ -159,7 +159,6 @@ mo_jupe(struct Client *client_p, struct Client *source_p,
 
   Count.myserver++;
 
-  /* Some day, all these lists will be consolidated *sigh* */
   hash_add_client(ajupe);
   dlinkAdd(ajupe, &ajupe->lnode, &ajupe->servptr->serv->servers);
   dlinkAdd(ajupe, make_dlink_node(), &global_serv_list);
@@ -180,17 +179,20 @@ mo_jupe(struct Client *client_p, struct Client *source_p,
 static int
 bogus_host(char *host)
 {
-  unsigned int dots = 0;
-  char *s;
+  unsigned int length = 0;
+  unsigned int dots   = 0;
+  char *s = host;
 
-  for (s = host; *s; s++)
+  for (; *s; s++)
   {
     if (!IsServChar(*s))  
       return(1);
+
+    ++length;
 
     if ('.' == *s)
       ++dots;
   }
 
-  return(!dots || strlen(host) > HOSTLEN);
+  return(!dots || length > HOSTLEN);
 }
