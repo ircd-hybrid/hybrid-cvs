@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.314 2003/05/04 16:26:08 adx Exp $
+ *  $Id: s_serv.c,v 7.315 2003/05/07 18:45:44 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1140,100 +1140,93 @@ server_estab(struct Client *client_p)
 static void
 start_io(struct Client *server)
 {
-  unsigned char *buf;
-  int c = 0;
-  int linecount = 0;
-  int linelen;
+  struct LocalUser *lserver = server->localClient;
+  int alloclen = 1;
+  char *buf;
+  dlink_node *ptr;
+  struct dbuf_block *block;
 
-  buf = MyMalloc(256);
+  /* calculate how many bytes to allocate */
+  if (IsCapable(server, CAP_ZIP))
+    alloclen += 6;
+#ifdef HAVE_LIBCRYPTO
+  if (IsCapable(server, CAP_ENC))
+    alloclen += 16 + lserver->in_cipher->keylen + lserver->out_cipher->keylen;
+#endif
+  alloclen += dbuf_length(&lserver->buf_recvq);
+  alloclen += dlink_list_length(&lserver->buf_recvq.blocks) * 3;
+  alloclen += dbuf_length(&lserver->buf_sendq);
+  alloclen += dlink_list_length(&lserver->buf_sendq.blocks) * 3;
+
+  /* initialize servlink control sendq */
+  lserver->slinkq = buf = MyMalloc(alloclen);
+  lserver->slinkq_ofs = 0;
+  lserver->slinkq_len = alloclen;
 
   if (IsCapable(server, CAP_ZIP))
   {
     /* ziplink */
-    buf[c++] = SLINKCMD_SET_ZIP_OUT_LEVEL;
-    buf[c++] = 0; /* |          */
-    buf[c++] = 1; /* \ len is 1 */
-    buf[c++] = ConfigFileEntry.compression_level;
-    buf[c++] = SLINKCMD_START_ZIP_IN;
-    buf[c++] = SLINKCMD_START_ZIP_OUT;
+    *buf++ = SLINKCMD_SET_ZIP_OUT_LEVEL;
+    *buf++ = 0; /* |          */
+    *buf++ = 1; /* \ len is 1 */
+    *buf++ = ConfigFileEntry.compression_level;
+    *buf++ = SLINKCMD_START_ZIP_IN;
+    *buf++ = SLINKCMD_START_ZIP_OUT;
   }
 #ifdef HAVE_LIBCRYPTO
   if (IsCapable(server, CAP_ENC))
   {
     /* Decryption settings */
-    buf[c++] = SLINKCMD_SET_CRYPT_IN_CIPHER;
-    buf[c++] = 0; /* /                     (upper 8-bits of len) */
-    buf[c++] = 1; /* \ cipher id is 1 byte (lower 8-bits of len) */
-    buf[c++] = server->localClient->in_cipher->cipherid;
-    buf[c++] = SLINKCMD_SET_CRYPT_IN_KEY;
-    buf[c++] = 0; /* keylen < 256 */
-    buf[c++] = server->localClient->in_cipher->keylen;
-    memcpy((buf + c), server->localClient->in_key,
-              server->localClient->in_cipher->keylen);
-    c += server->localClient->in_cipher->keylen;
+    *buf++ = SLINKCMD_SET_CRYPT_IN_CIPHER;
+    *buf++ = 0; /* /                     (upper 8-bits of len) */
+    *buf++ = 1; /* \ cipher id is 1 byte (lower 8-bits of len) */
+    *buf++ = lserver->in_cipher->cipherid;
+    *buf++ = SLINKCMD_SET_CRYPT_IN_KEY;
+    *buf++ = 0; /* keylen < 256 */
+    *buf++ = lserver->in_cipher->keylen;
+    memcpy(buf, lserver->in_key, lserver->in_cipher->keylen);
+    buf += lserver->in_cipher->keylen;
     /* Encryption settings */
-    buf[c++] = SLINKCMD_SET_CRYPT_OUT_CIPHER;
-    buf[c++] = 0; /* /                     (upper 8-bits of len) */
-    buf[c++] = 1; /* \ cipher id is 1 byte (lower 8-bits of len) */
-    buf[c++] = server->localClient->out_cipher->cipherid;
-    buf[c++] = SLINKCMD_SET_CRYPT_OUT_KEY;
-    buf[c++] = 0; /* keylen < 256 */
-    buf[c++] = server->localClient->out_cipher->keylen;
-    memcpy((buf + c), server->localClient->out_key,
-              server->localClient->out_cipher->keylen);
-    c += server->localClient->out_cipher->keylen;
-    buf[c++] = SLINKCMD_START_CRYPT_IN;
-    buf[c++] = SLINKCMD_START_CRYPT_OUT;
+    *buf++ = SLINKCMD_SET_CRYPT_OUT_CIPHER;
+    *buf++ = 0; /* /                     (upper 8-bits of len) */
+    *buf++ = 1; /* \ cipher id is 1 byte (lower 8-bits of len) */
+    *buf++ = lserver->out_cipher->cipherid;
+    *buf++ = SLINKCMD_SET_CRYPT_OUT_KEY;
+    *buf++ = 0; /* keylen < 256 */
+    *buf++ = lserver->out_cipher->keylen;
+    memcpy(buf, lserver->out_key, lserver->out_cipher->keylen);
+    buf += lserver->out_cipher->keylen;
+    *buf++ = SLINKCMD_START_CRYPT_IN;
+    *buf++ = SLINKCMD_START_CRYPT_OUT;
   }
 #endif
 
-  for(;;)
+  /* pass the whole recvq to servlink */
+  DLINK_FOREACH (ptr, lserver->buf_recvq.blocks.head)
   {
-    linecount++;
-
-    buf = MyRealloc(buf, (c + DBUF_BLOCK_SIZE + 64));
-
-    /* store data in c+3 to allow for SLINKCMD_INJECT_RECVQ and len u16 */
-    if (dbuf_length(&server->localClient->buf_recvq))
-      linelen = ((struct dbuf_block *)
-                 server->localClient->buf_recvq.blocks.head->data)->size;
-    else
-      break;
-    buf[c++] = SLINKCMD_INJECT_RECVQ;
-    buf[c++] = (linelen >> 8);
-    buf[c++] = (linelen & 0xff);
-    memcpy((void *) &buf[c], (void *) &((struct dbuf_block *)
-           server->localClient->buf_recvq.blocks.head->data)->data, linelen);
-    c += linelen;
+    block = ptr->data;
+    *buf++ = SLINKCMD_INJECT_RECVQ;
+    *buf++ = (block->size >> 8);
+    *buf++ = (block->size & 0xff);
+    memcpy(buf, &block->data[0], block->size);
+    buf += block->size;
   }
+  dbuf_clear(&lserver->buf_recvq);
 
-  for(;;)
+  /* pass the whole sendq to servlink */
+  DLINK_FOREACH (ptr, lserver->buf_sendq.blocks.head)
   {
-    linecount++;
-
-    buf = MyRealloc(buf, (c + DBUF_BLOCK_SIZE + 64));
-
-    /* store data in c+3 to allow for SLINKCMD_INJECT_SENDQ and len u16 */
-    if (dbuf_length(&server->localClient->buf_sendq))
-      linelen = ((struct dbuf_block *)
-                 server->localClient->buf_sendq.blocks.head->data)->size;
-    else
-      break;
-    buf[c++] = SLINKCMD_INJECT_SENDQ;
-    buf[c++] = (linelen >> 8);
-    buf[c++] = (linelen & 0xff);
-    memcpy((void *) &buf[c], (void *) &((struct dbuf_block *)
-           server->localClient->buf_sendq.blocks.head->data)->data, linelen);
-    dbuf_delete(&server->localClient->buf_sendq, linelen);
-    c += linelen;
+    block = ptr->data;
+    *buf++ = SLINKCMD_INJECT_SENDQ;
+    *buf++ = (block->size >> 8);
+    *buf++ = (block->size & 0xff);
+    memcpy(buf, &block->data[0], block->size);
+    buf += block->size;
   }
+  dbuf_clear(&lserver->buf_sendq);
 
   /* start io */
-  buf[c++] = SLINKCMD_INIT;
-
-  server->localClient->slinkq = buf;
-  server->localClient->slinkq_ofs = 0;
-  server->localClient->slinkq_len = c;
+  *buf++ = SLINKCMD_INIT;
 
   /* schedule a write */ 
   send_queued_slink_write(server);
