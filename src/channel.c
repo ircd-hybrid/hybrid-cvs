@@ -34,7 +34,7 @@
  *                mode * -p etc. if flag was clear
  *
  *
- * $Id: channel.c,v 7.54 2000/10/22 01:47:08 toot Exp $
+ * $Id: channel.c,v 7.55 2000/10/22 05:33:30 db Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -2505,7 +2505,7 @@ static  void    sub1_from_channel(struct Channel *chptr)
               MyFree((char*) chptr);
               Count.chan--; /* is this line needed for subchans? yes -db */
 
-              if (!HasVchans(root_chptr))
+              if (!HasVchans(root_chptr) && (root_chptr->users == 0))
                 {
                   chptr = root_chptr;
                   if (chptr->prevch)
