@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.74 2001/03/02 16:20:56 davidt Exp $
+ *   $Id: m_sjoin.c,v 1.75 2001/03/02 17:16:14 fl_ Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -548,6 +548,9 @@ static void ms_sjoin(struct Client *cptr,
               acptr->localClient->serverMask) )
           continue;
       }
+
+      if (chptr->users == 0 && !IsCapable(acptr, CAP_VCHAN))
+        continue;
 
       /* XXX - ids ? */
       if (IsCapable(acptr,CAP_HOPS))
