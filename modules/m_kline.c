@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.171 2003/10/02 23:27:43 stu Exp $
+ *  $Id: m_kline.c,v 1.172 2003/10/03 01:19:02 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -106,14 +106,14 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.171 $";
+const char *_version = "$Revision: 1.172 $";
 #endif
 
 #define TK_SECONDS 0
 #define TK_MINUTES 1
 
 /* Local function prototypes */
-static time_t valid_tkline(char *string);
+static time_t valid_tkline(char *, int);
 static char *cluster(char *);
 static int find_user_host(struct Client *source_p,
                           char *user_host_or_nick, char *user, char *host);
