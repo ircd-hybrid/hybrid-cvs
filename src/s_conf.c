@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.252 2001/07/03 13:32:34 leeh Exp $
+ *  $Id: s_conf.c,v 7.253 2001/07/04 13:05:12 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -41,6 +41,7 @@
 #include "tools.h"
 #include "s_conf.h"
 #include "s_serv.h"
+#include "resv.h"
 #include "s_stats.h"
 #include "channel.h"
 #include "class.h"
