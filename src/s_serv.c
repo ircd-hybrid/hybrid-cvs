@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.102 2001/01/02 03:09:43 davidt Exp $
+ *   $Id: s_serv.c,v 7.103 2001/01/02 03:17:13 ejb Exp $
  */
 #include "tools.h"
 #include "s_serv.h"
@@ -1317,6 +1317,7 @@ void set_autoconn(struct Client *sptr,char *parv0,char *name,int newval)
 void show_servers(struct Client *cptr)
 {
   struct Client *cptr2;
+  dlink_node *ptr;
   int j=0;                /* used to count servers */
 
   for(ptr = serv_list.head; ptr; ptr = ptr->next)
