@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.7 1999/08/21 02:52:17 tomh Exp $
+ *  $Id: s_user.c,v 7.8 1999/08/31 02:20:58 lusky Exp $
  */
 #include "s_user.h"
 #include "channel.h"
@@ -1858,7 +1858,7 @@ int user_mode(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
           what = MODE_DEL;
           break;        
 
-        case 'o':
+        case 'O': case 'o':
           if(what == MODE_ADD)
             {
               if(IsServer(cptr) && !IsOper(sptr))
