@@ -1,6 +1,6 @@
 /*
 fixklines - scan an ircd.conf or kline.conf file
-$Id: fixklines.c,v 7.1 1999/08/10 23:13:14 lusky Exp $
+$Id: fixklines.c,v 7.2 1999/10/14 00:35:26 db Exp $
   D lines of form
   D:192.168.0.* are converted to D:192.168.0.0/24
   K-lines of form
@@ -115,6 +115,20 @@ void read_write_klines(char *filein,char *fileout)
 	  *p = '\0';
 	  p++;
 	  name = p;
+
+/* look for '#' in name field */
+         if((p = strchr(name,'#')))
+         {
+           fprintf(stderr,"oooo # in name too!\n");
+           *p = '_';
+         } 
+/* look for '#' in host field */
+         if((p = strchr(host,'#')))
+         { 
+            fprintf(stderr,"oooo # in host name \n");
+            *p = '_';
+         }
+/* look for '#' in comment field */
           p = strchr(comment,'#');
           while(p)
             {
