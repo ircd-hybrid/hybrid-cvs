@@ -1,3 +1,16 @@
+db          2002/06/01 14:47:27 EDT	(20020601_2)
+
+  Modified files:
+    contrib              m_ojoin.c 
+  Log:
+  - fixed minor bug in m_ojoin.c
+    patch by adx
+  
+  Revision  Changes    Path
+  1.9       +4 -4      ircd-hybrid-7/contrib/m_ojoin.c
+
+
+
 androsyn    2002/06/01 01:28:07 EDT	(20020601_1)
 
   Modified files:
@@ -27742,4 +27755,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3730 2002/06/01 05:28:13 androsyn Exp $
+$Id: ChangeLog,v 7.3731 2002/06/01 18:47:34 db Exp $
