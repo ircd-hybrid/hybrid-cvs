@@ -1,7 +1,7 @@
 diff -ur ircd-hybrid/include/s_conf.h new/include/s_conf.h
---- ircd-hybrid/include/s_conf.h	Tue May  6 19:46:46 2003
-+++ new/include/s_conf.h	Wed May  7 00:01:04 2003
-@@ -244,6 +244,7 @@
+--- ircd-hybrid/include/s_conf.h	Sun May 18 17:41:11 2003
++++ new/include/s_conf.h	Sun May 18 20:21:52 2003
+@@ -248,6 +248,7 @@
    int           throttle_time;
    int           use_egd;
    int		ping_cookie;
@@ -10,9 +10,9 @@ diff -ur ircd-hybrid/include/s_conf.h new/include/s_conf.h
  #ifdef HAVE_LIBCRYPTO
    struct EncCapability *default_cipher_preference;
 diff -ur ircd-hybrid/src/ircd_lexer.l new/src/ircd_lexer.l
---- ircd-hybrid/src/ircd_lexer.l	Tue May  6 19:46:49 2003
-+++ new/src/ircd_lexer.l	Wed May  7 00:01:20 2003
-@@ -156,6 +156,7 @@
+--- ircd-hybrid/src/ircd_lexer.l	Sat May 17 10:18:01 2003
++++ new/src/ircd_lexer.l	Sun May 18 20:21:52 2003
+@@ -150,6 +150,7 @@
  deny		{ return DENY; }
  description	{ return DESCRIPTION; }
  die		{ return DIE; }
@@ -21,9 +21,9 @@ diff -ur ircd-hybrid/src/ircd_lexer.l new/src/ircd_lexer.l
  disable_local_channels { return DISABLE_LOCAL_CHANNELS; }
  disable_remote_commands	{ return DISABLE_REMOTE_COMMANDS; }
 diff -ur ircd-hybrid/src/ircd_parser.y new/src/ircd_parser.y
---- ircd-hybrid/src/ircd_parser.y	Tue May  6 19:46:49 2003
-+++ new/src/ircd_parser.y	Wed May  7 00:02:21 2003
-@@ -122,6 +122,7 @@
+--- ircd-hybrid/src/ircd_parser.y	Wed May 14 19:54:16 2003
++++ new/src/ircd_parser.y	Sun May 18 20:21:52 2003
+@@ -121,6 +121,7 @@
  %token  DENY
  %token  DESCRIPTION
  %token  DIE
@@ -31,7 +31,7 @@ diff -ur ircd-hybrid/src/ircd_parser.y new/src/ircd_parser.y
  %token  DISABLE_HIDDEN
  %token  DISABLE_LOCAL_CHANNELS
  %token  DISABLE_REMOTE_COMMANDS
-@@ -2054,7 +2055,7 @@
+@@ -2062,7 +2063,7 @@
                      general_compression_level | general_client_flood |
                      general_throttle_time | general_havent_read_conf |
                      general_dot_in_ip6_addr | general_ping_cookie |
@@ -40,7 +40,7 @@ diff -ur ircd-hybrid/src/ircd_parser.y new/src/ircd_parser.y
                      error;
  
  general_failed_oper_notice: FAILED_OPER_NOTICE '=' TYES ';'
-@@ -2459,6 +2460,15 @@
+@@ -2467,6 +2468,15 @@
    if (ypass == 2)
      ConfigFileEntry.ping_cookie = 0;
  };
@@ -57,11 +57,11 @@ diff -ur ircd-hybrid/src/ircd_parser.y new/src/ircd_parser.y
  general_throttle_time: THROTTLE_TIME '=' timespec ';'
  {
 diff -ur ircd-hybrid/src/s_auth.c new/src/s_auth.c
---- ircd-hybrid/src/s_auth.c	Wed Apr 23 10:40:09 2003
-+++ new/src/s_auth.c	Wed May  7 00:02:59 2003
-@@ -425,7 +425,9 @@
- 		   client->localClient->dns_query, 0) == 0)
-     SetDNSPending(auth);
+--- ircd-hybrid/src/s_auth.c	Thu May 15 23:17:30 2003
++++ new/src/s_auth.c	Sun May 18 20:21:52 2003
+@@ -445,7 +445,9 @@
+   gethost_byaddr(&client->localClient->ip, client->localClient->dns_query);
+   SetDNSPending(auth);
  
 -  (void)start_auth_query(auth);
 +  if(ConfigFileEntry.disable_auth == 0)
