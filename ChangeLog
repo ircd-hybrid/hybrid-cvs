@@ -1,3 +1,15 @@
+db          2003/02/01 15:12:25 EST	(20030201_3)
+
+  Modified files:
+    modules/core         m_kick.c 
+  Log:
+  - same as m_join.c its bad practice to remove a client quitting
+  
+  Revision  Changes    Path
+  1.50      +2 -2      ircd-hybrid-7/modules/core/m_kick.c
+
+
+
 db          2003/02/01 15:11:46 EST	(20030201_2)
 
   Modified files:
@@ -34699,4 +34711,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4212 2003/02/01 20:11:49 db Exp $
+$Id: ChangeLog,v 7.4213 2003/02/01 20:12:27 db Exp $
