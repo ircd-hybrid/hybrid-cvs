@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.491 2004/03/26 20:25:41 metalrock Exp $
+ *  $Id: s_conf.c,v 7.492 2004/10/03 07:54:44 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -2119,8 +2119,6 @@ validate_conf(void)
   if ((ConfigFileEntry.client_flood < CLIENT_FLOOD_MIN) ||
       (ConfigFileEntry.client_flood > CLIENT_FLOOD_MAX))
     ConfigFileEntry.client_flood = CLIENT_FLOOD_MAX;
-
-  GlobalSetOptions.idletime = (ConfigFileEntry.idletime * 60);
 }
 
 /* split_user_host()
