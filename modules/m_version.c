@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_version.c,v 1.41 2003/04/18 02:13:43 db Exp $
+ *  $Id: m_version.c,v 1.42 2003/04/30 03:59:51 michael Exp $
  */
 
 #include <stdinc.h>
@@ -59,7 +59,7 @@ _moddeinit(void)
   mod_del_cmd(&version_msgtab);
 }
 
-const char *_version = "$Revision: 1.41 $";
+const char *_version = "$Revision: 1.42 $";
 #endif
 /*
  * m_version - VERSION command handler
@@ -142,7 +142,7 @@ static void ms_version(struct Client* client_p, struct Client* source_p,
  * output - ircd.conf option string
  * side effects - none
  */
-static char* confopts(struct Client *source_p)
+static char *confopts(struct Client *source_p)
 {
   static char result[15];
   char *p;
@@ -176,10 +176,8 @@ static char* confopts(struct Client *source_p)
     
   *p++ = 'M';
 
-#ifdef CRYPT_OPER_PASSWORD
-  *p++ = 'p';
-#endif
-
+  if (ConfigFileEntry.crypt_oper_password)
+    *p++ = 'p';
 #ifdef IGNORE_BOGUS_TS
   *p++ = 'T';
 #endif
@@ -196,5 +194,5 @@ static char* confopts(struct Client *source_p)
   
   *p = '\0';
 
-  return result;
+  return(result);
 }

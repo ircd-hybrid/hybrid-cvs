@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.365 2003/04/17 21:45:04 db Exp $
+ *  $Id: s_conf.c,v 7.366 2003/04/30 03:59:53 michael Exp $
  */
 
 #include "stdinc.h"
@@ -65,13 +65,8 @@ extern char conffilebuf[IRCD_BUFSIZE];
 int scount = 0; /* used by yyparse(), etc */
 int ypass  = 1; /* used by yyparse()      */
 
-#ifndef INADDR_NONE
-#define INADDR_NONE ((unsigned int) 0xffffffff)
-#endif
-
 
 /* internally defined functions */
-
 static void lookup_confhost(struct ConfItem* aconf);
 
 static void     set_default_conf(void);
@@ -1370,6 +1365,7 @@ set_default_conf(void)
   ConfigFileEntry.oper_umodes = UMODE_LOCOPS | UMODE_SERVNOTICE |
     UMODE_OPERWALL | UMODE_WALLOP;
   ConfigFileEntry.oper_only_umodes = UMODE_DEBUG;
+  ConfigFileEntry.crypt_oper_password = YES;
   ConfigFileEntry.throttle_time = 10;
 
   ConfigChannel.vchans_oper_only = NO;

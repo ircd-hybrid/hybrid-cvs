@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.h,v 7.43 2003/04/13 05:55:20 michael Exp $
+ *  $Id: m_info.h,v 7.44 2003/04/30 03:59:49 michael Exp $
  */
 
 #ifndef INCLUDED_m_info_h
@@ -54,12 +54,6 @@ Info MyInformation[] = {
 #else
   { "CPATH", "NONE", 0, "Path to Main Configuration File" },
 #endif /* CPATH */
-
-#ifdef CRYPT_OPER_PASSWORD
-  { "CRYPT_OPER_PASSWORD", "ON", 0, "Encrypt Operator Passwords" },
-#else
-  { "CRYPT_OPER_PASSWORD", "OFF", 0, "Encrypt Operator Passwords" },
-#endif /* CRYPT_OPER_PASSWORD */
 
 #ifdef DEBUGMODE
   { "DEBUGMODE", "ON", 0, "Support for debugging mode" },
@@ -179,8 +173,7 @@ Info MyInformation[] = {
   { "USE_SYSLOG", "OFF", 0, "Log Errors to syslog file" },
 #endif /* USE_SYSLOG */
 
-  /*
-   * since we don't want to include the world here, NULL probably
+  /* since we don't want to include the world here, NULL probably
    * isn't defined by the time we read this, just use plain 0 instead
    * 0 is guaranteed by the language to be assignable to ALL built
    * in types with the correct results.

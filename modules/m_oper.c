@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_oper.c,v 1.66 2003/04/19 16:39:44 michael Exp $
+ *  $Id: m_oper.c,v 1.67 2003/04/30 03:59:51 michael Exp $
  */
 
 #include "stdinc.h"
@@ -46,9 +46,7 @@
 static struct ConfItem *find_password_aconf(const char *name, struct Client *source_p);
 static int match_oper_password(const char *password, struct ConfItem *aconf);
 static void failed_oper_notice(struct Client *source_p, const char *name, const char *reason);
-#ifdef CRYPT_OPER_PASSWORD
-extern        char *crypt();
-#endif /* CRYPT_OPER_PASSWORD */
+extern char *crypt();
 
 static void m_oper(struct Client*, struct Client*, int, char**);
 static void mo_oper(struct Client*, struct Client*, int, char**);
@@ -72,7 +70,7 @@ _moddeinit(void)
   mod_del_cmd(&oper_msgtab);
 }
 
-const char *_version = "$Revision: 1.66 $";
+const char *_version = "$Revision: 1.67 $";
 #endif
 
 /*
@@ -168,7 +166,6 @@ mo_oper(struct Client *client_p, struct Client *source_p,
 {
   sendto_one(source_p, form_str(RPL_YOUREOPER), me.name, parv[0]);
   SendMessageFile(source_p, &ConfigFileEntry.opermotd);
-  return;
 }
 
 /* find_password_aconf()
@@ -203,34 +200,33 @@ match_oper_password(const char *password, struct ConfItem *aconf)
 {
   const char *encr = NULL;
 
-  if (!aconf->status & CONF_OPERATOR)
+  if (!IsConfOperator(aconf))
     return(NO);
 
-  /* XXX another #ifdef that should go */
-#ifdef CRYPT_OPER_PASSWORD
-  /* use first two chars of the password they send in as salt */
-  /* If the password in the conf is MD5, and ircd is linked   
-  ** to scrypt on FreeBSD, or the standard crypt library on
-  ** glibc Linux, then this code will work fine on generating
-  ** the proper encrypted hash for comparison.
-  */
+  if (ConfigFileEntry.crypt_oper_password)
+  {
+    /* use first two chars of the password they send in as salt */
+    /* If the password in the conf is MD5, and ircd is linked   
+     * to scrypt on FreeBSD, or the standard crypt library on
+     * glibc Linux, then this code will work fine on generating
+     * the proper encrypted hash for comparison.
+     */
+    /* passwd may be NULL pointer. Head it off at the pass... */
+    if (aconf->passwd == NULL)
+      return(NO);
 
-  /* passwd may be NULL pointer. Head it off at the pass... */
-  if (aconf->passwd == NULL)
-    return (NO);
-
-  if (password && *aconf->passwd)
-    encr = crypt(password, aconf->passwd);
+    if (password && *aconf->passwd)
+      encr = crypt(password, aconf->passwd);
+    else
+      encr = "";
+  }
   else
-    encr = "";
-#else
-  encr = password;
-#endif  /* CRYPT_OPER_PASSWORD */
+    encr = password;
 
   if (strcmp(encr, aconf->passwd) == 0)
-    return (YES);
+    return(YES);
   else
-    return (NO);
+    return(NO);
 }
 
 /* failed_oper_notice()

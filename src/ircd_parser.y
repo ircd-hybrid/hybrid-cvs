@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.279 2003/04/18 21:26:39 michael Exp $
+ *  $Id: ircd_parser.y,v 1.280 2003/04/30 03:59:53 michael Exp $
  */
 
 %{
@@ -200,6 +200,7 @@ init_parser_confs(void)
 %token  OPER_ONLY_UMODES
 %token	OPER_PASS_RESV
 %token  OPER_UMODES
+%token  CRYPT_OPER_PASSWORD
 %token  PACE_WAIT
 %token	PACE_WAIT_SIMPLE
 %token  PASSWORD
@@ -2062,7 +2063,7 @@ general_item:       general_failed_oper_notice |
                     general_fname_foperlog | general_oper_only_umodes |
                     general_max_targets |
                     general_use_egd | general_egdpool_path |
-                    general_oper_umodes |
+                    general_oper_umodes | general_crypt_oper_password |
                     general_caller_id_wait | general_default_floodcount |
                     general_min_nonwildcard |
                     general_servlink_path | general_use_help |
@@ -2645,6 +2646,16 @@ umode_item:	T_BOTS
 {
   if (ypass == 2)
     ConfigFileEntry.oper_only_umodes |= UMODE_LOCOPS;
+};
+
+general_crypt_oper_password: CRYPT_OPER_PASSWORD '=' TYES ';'
+{
+  if (ypass == 2)
+    ConfigFileEntry.crypt_oper_password = 1;
+} | CRYPT_OPER_PASSWORD '=' TNO ';'
+{
+  if (ypass == 2)
+    ConfigFileEntry.crypt_oper_password = 0;
 };
 
 general_min_nonwildcard: MIN_NONWILDCARD '=' NUMBER ';'
