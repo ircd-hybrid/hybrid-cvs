@@ -19,7 +19,7 @@
  *
  *
  *
- * $Id: vchannel.c,v 7.26 2000/12/23 18:07:02 toot Exp $
+ * $Id: vchannel.c,v 7.27 2000/12/30 12:34:06 toot Exp $
  */
 #include "tools.h"
 #include "vchannel.h"
@@ -264,21 +264,21 @@ char* pick_vchan_id(struct Channel *chptr)
     if (!lp->next)
       { 
 	acptr = lp->data;
-	return acptr->name;;
+	return acptr->name;
       }
 
   for (lp = chptr->halfops.head; lp; lp = lp->next)
     if (!lp->next)
       { 
 	acptr = lp->data;
-	return acptr->name;;
+	return acptr->name;
       }
 
   for (lp = chptr->voiced.head; lp; lp = lp->next)
     if (!lp->next)
       { 
 	acptr = lp->data;
-	return acptr->name;;
+	return acptr->name;
       }
 
   for (lp = chptr->peons.head; lp; lp = lp->next)
@@ -290,7 +290,11 @@ char* pick_vchan_id(struct Channel *chptr)
 
   /* all else failed, must be an empty channel, 
    * so we use the vchan_id */
-  ircsprintf(vchan_id, "%s", chptr->vchan_id);
+  if (chptr->vchan_id)
+    ircsprintf(vchan_id, "%s", chptr->vchan_id);
+  else
+    ircsprintf(vchan_id, "-ERROR-");
+
   return(vchan_id);
 }
 
