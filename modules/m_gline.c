@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_gline.c,v 1.51 2001/05/17 19:15:18 leeh Exp $
+ *  $Id: m_gline.c,v 1.52 2001/05/17 20:05:16 toot Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -307,28 +307,12 @@ static void ms_gline(struct Client *client_p,
       reason = parv[3];
     }
   /* or it's a hyb-6 style */
-  else if(parc == 8)
+  else if(parc == 8 && IsServer(source_p))
     {
-      struct Client *rclient_p;
-
       oper_nick = parv[1];
-
-      if ((rclient_p = hash_find_client(oper_nick,(struct Client *)NULL)))
-        {
-          if(!IsPerson(rclient_p))
-            return;
-        }
-      else
-        return;
-      if ((oper_user = (const char *)rclient_p->username) == NULL)
-        return;
-      if ((oper_host = rclient_p->host) == NULL)
-        return;
-      if (rclient_p->user && rclient_p->user->server)
-        oper_server = rclient_p->user->server;
-      else
-        return;
-
+      oper_user = parv[2];
+      oper_host = parv[3];
+      oper_server = parv[4];
       user = parv[5];
       host = parv[6];
       reason = parv[7];      
