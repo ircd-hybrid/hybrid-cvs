@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.23 2000/04/01 21:14:57 db Exp $
+ *  $Id: client.c,v 7.24 2000/04/05 22:12:35 db Exp $
  */
 #include "client.h"
 #include "class.h"
@@ -67,8 +67,8 @@
 /* 
  * for Wohali's block allocator 
  */
-static BlockHeap*        localClientFreeList;
-static BlockHeap*        remoteClientFreeList;
+BlockHeap*        localClientFreeList;
+BlockHeap*        remoteClientFreeList;
 static const char* const BH_FREE_ERROR_MESSAGE = \
         "client.c BlockHeapFree failed for cptr = %p";
 

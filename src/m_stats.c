@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 7.3 2000/03/31 02:38:30 db Exp $
+ *  $Id: m_stats.c,v 7.4 2000/04/05 22:12:35 db Exp $
  */
 #include "m_commands.h"  /* m_pass prototype */
 #include "class.h"       /* report_classes */
@@ -419,6 +419,16 @@ int m_stats(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
     case '?':
       serv_info(sptr, parv[0]);
       valid_stats++;
+      break;
+
+    case '$':
+      if(IsOper(sptr))
+	 {
+	   sendto_one(sptr,":%s NOTICE %s :dump_addresses",
+		      me.name, parv[0]);
+	   dump_addresses();
+	   valid_stats++;
+	 }
       break;
 
     default :
