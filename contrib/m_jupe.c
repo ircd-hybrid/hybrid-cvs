@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_jupe.c,v 1.35 2002/10/02 02:13:05 bill Exp $
+ *  $Id: m_jupe.c,v 1.36 2002/10/17 17:06:32 bill Exp $
  */
 
 #include "stdinc.h"
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&jupe_msgtab);
 }
 
-const char *_version = "$Revision: 1.35 $";
+const char *_version = "$Revision: 1.36 $";
 #endif
 
 /*
@@ -89,7 +89,11 @@ static void mo_jupe(struct Client *client_p, struct Client *source_p,
   char reason[REALLEN+2];
 
   if(!ServerInfo.hub)
-    return;
+    {
+      sendto_one(source_p, ":%s NOTICE %s :Must be used from a hub server",
+                 me.name, parv[0]);
+      return;
+    }
 
   if(!IsOperAdmin(source_p))
     {
