@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_nick.c,v 1.52 2001/01/27 03:53:28 db Exp $
+ *   $Id: m_nick.c,v 1.53 2001/01/27 06:38:12 lusky Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -158,9 +158,13 @@ static int mr_nick(struct Client *cptr, struct Client *sptr, int parc,
       return 0;
     }
     else
-      return(set_initial_nick(cptr, sptr, nick));
+      {
+        return(set_initial_nick(cptr, sptr, nick));
+      }
   else
-    sendto_one(sptr, form_str(ERR_NICKNAMEINUSE), me.name, "*", nick);
+   {
+     sendto_one(sptr, form_str(ERR_NICKNAMEINUSE), me.name, "*", nick);
+   }
 
   return 0; /* NICK message ignored */
 }

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: listener.c,v 7.26 2001/01/24 21:40:24 davidt Exp $
+ *  $Id: listener.c,v 7.27 2001/01/27 06:38:15 lusky Exp $
  */
 #include "listener.h"
 #include "client.h"
@@ -356,7 +356,7 @@ static void accept_connection(int pfd, void *data)
   static time_t      last_oper_notice = 0;
 
   struct irc_inaddr addr;
-  unsigned int		addrlen = sizeof(struct irc_inaddr);
+  socklen_t addrlen = sizeof(struct irc_inaddr);
   int                fd;
   struct Listener *  listener = data;
 

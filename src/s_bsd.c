@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.94 2001/01/26 19:56:39 androsyn Exp $
+ *  $Id: s_bsd.c,v 7.95 2001/01/27 06:38:15 lusky Exp $
  */
 #include "config.h"
 #include "fdlist.h"
@@ -110,7 +110,7 @@ int get_sockerr(int fd)
   int errtmp = errno;
 #ifdef SO_ERROR
   int err = 0;
-  unsigned int len = sizeof(err);
+  socklen_t len = sizeof(err);
 
   if (-1 < fd && !getsockopt(fd, SOL_SOCKET, SO_ERROR, (char*) &err, &len)) {
     if (err)
@@ -318,7 +318,7 @@ void add_connection(struct Listener* listener, int fd)
 {
   struct Client*     new_client;
 
-  unsigned int		len = sizeof(struct irc_sockaddr);
+  socklen_t len = sizeof(struct irc_sockaddr);
   struct irc_sockaddr   irn;
   assert(0 != listener);
 
@@ -750,7 +750,7 @@ comm_open(int family, int sock_type, int proto, const char *note)
  * comm_open() does.
  */
 int
-comm_accept(int fd, struct sockaddr *pn, unsigned int *addrlen)
+comm_accept(int fd, struct sockaddr *pn, socklen_t *addrlen)
 {
     int newfd;
 
