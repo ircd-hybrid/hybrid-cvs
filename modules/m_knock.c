@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_knock.c,v 1.20 2001/01/05 15:27:13 toot Exp $
+ *   $Id: m_knock.c,v 1.21 2001/01/05 16:32:05 toot Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -66,7 +66,7 @@ _moddeinit(void)
   mod_del_cmd(&knock_msgtab);
 }
 
-char *_version = "20001122";
+char *_version = "20010105";
 
 /* m_knock
 **    parv[0] = sender prefix
@@ -113,7 +113,7 @@ static int m_knock(struct Client *cptr,
     {
       sendto_one(sptr, ":%s NOTICE %s :*** Notice -- Wait %d seconds before another knock to %s",
                  me.name, sptr->name,
-                 (int)(ConfigFileEntry.knock_delay - CurrentTime - chptr->last_knock),
+                 (int)(ConfigFileEntry.knock_delay - (CurrentTime - chptr->last_knock)),
                  parv[1]);
       return 0;
     }

@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.138 2001/01/05 15:42:15 db Exp $
+ *  $Id: s_conf.c,v 7.139 2001/01/05 16:32:10 toot Exp $
  */
 #include "tools.h"
 #include "s_conf.h"
@@ -1421,7 +1421,10 @@ static void read_conf(FBFILE* file)
     ConfigFileEntry.maximum_links = MAXIMUM_LINKS_DEFAULT;
 
   if (!ConfigFileEntry.max_targets)
-	  ConfigFileEntry.max_targets = MAX_TARGETS_DEFAULT;
+    ConfigFileEntry.max_targets = MAX_TARGETS_DEFAULT;
+
+  if (!ConfigFileEntry.knock_delay)
+    ConfigFileEntry.knock_delay = 300;
   
   GlobalSetOptions.idletime = (ConfigFileEntry.idletime * 60);
   if (!ConfigFileEntry.links_delay)
