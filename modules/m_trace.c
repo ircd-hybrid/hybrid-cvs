@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_trace.c,v 1.37 2001/11/13 11:45:48 leeh Exp $
+ *   $Id: m_trace.c,v 1.38 2001/12/15 04:24:16 db Exp $
  */
 #include "handlers.h"
 #include "class.h"
@@ -83,8 +83,13 @@ static int report_this_status(struct Client *source_p, struct Client *target_p,i
 static void m_trace(struct Client *client_p, struct Client *source_p,
                     int parc, char *parv[])
 {
-  sendto_one(source_p, form_str(RPL_ENDOFTRACE), me.name,
-             parv[0], parv[1]);
+  char *tname;
+
+  if (parc > 1)
+    tname = parv[1];
+  else
+    tname = me.name;
+  sendto_one(source_p, form_str(RPL_ENDOFTRACE), me.name, parv[0], tname);
 }
 
 
@@ -111,9 +116,7 @@ static void mo_trace(struct Client *client_p, struct Client *source_p,
   if (parc > 1)
     tname = parv[1];
   else
-    {
-      tname = me.name;
-    }
+    tname = me.name;
 
   switch (hunt_server(client_p, source_p, ":%s TRACE :%s", 1, parc, parv))
     {
