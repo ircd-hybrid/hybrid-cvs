@@ -1,3 +1,9 @@
+*** 20001114_3 by db
+- seriously, why was this struct sitting around not doing anything useful?
+  was it to entertain me?
+
+
+
 *** 20001114_2 by db
 - m_whowas.c was missing from modules, 'cause it was hiding like a bad
   little boy inside src/whowas.c... unfortuantely, m_whowas.c has a 
@@ -502,7 +508,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.541 2000/11/14 07:40:45 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.542 2000/11/14 08:08:08 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
