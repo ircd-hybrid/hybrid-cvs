@@ -1,3 +1,8 @@
+*** 20001206_4 by db
+- "CAP_KLN" string was missing in s_serv.c
+
+
+
 *** 20001206_3 by db
 - added mr_capab to handlers.h 
 - changed m_capab to use mr_capab, remember capabilities are sent
@@ -1724,7 +1729,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.711 2000/12/06 20:04:48 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.712 2000/12/06 21:01:35 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
