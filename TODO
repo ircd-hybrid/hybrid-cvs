@@ -1,3 +1,5 @@
+$Id: TODO,v 7.59 2001/12/06 22:52:58 davidt Exp $
+
 - add more stderr debugging (ircd -s)... one for every place we syslog()
 - ircd -s doesn't work through a restart
 - re-implement first param in m_lusers()
