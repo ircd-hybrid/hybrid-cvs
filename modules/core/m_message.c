@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.104 2002/10/30 17:44:55 wiz Exp $
+ *  $Id: m_message.c,v 1.105 2003/01/16 18:56:30 db Exp $
  */
 
 #include "stdinc.h"
@@ -97,6 +97,11 @@ static void handle_opers(int p_or_n, char *command,
                          struct Client *client_p,
                          struct Client *source_p, char *nick, char *text);
 
+
+static int handle_nick_server(int p_or_n, char *command,
+			      struct Client *client_p,
+			      struct Client *source_p, char *nick, char *text);
+
 struct Message privmsg_msgtab = {
   "PRIVMSG", 0, 0, 1, 0, MFLG_SLOW | MFLG_UNREG, 0L,
   {m_unregistered, m_privmsg, m_privmsg, m_privmsg}
@@ -123,7 +128,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.104 $";
+const char *_version = "$Revision: 1.105 $";
 #endif
 
 /*
@@ -396,6 +401,12 @@ build_target_list(int p_or_n, char *command, struct Client *client_p,
 		       source_p->name, nick);
 	}
       continue;
+    }
+
+    if (strchr(nick, '@') != NULL)
+    {
+      if(handle_nick_server(p_or_n, command, client_p, source_p, nick, text))
+	continue;
     }
 
     if(IsOper(source_p) && ((*nick == '$') || strchr(nick, '@')))
@@ -919,6 +930,62 @@ handle_opers(int p_or_n, char *command, struct Client *client_p,
   else if (server && (target_p == NULL))
     sendto_one(source_p, form_str(ERR_NOSUCHNICK), me.name,
                source_p->name, nick);
+}
+
+/*
+ * handle_nick_server
+ *
+ * inputs	- server pointer
+ *		- client pointer
+ *		- nick stuff to grok
+ *		- text to send if grok
+ * output	- 1 if handled here, 0 if not
+ * side effects	- nick@server is handled here
+ */
+static int
+handle_nick_server(int p_or_n, char *command, struct Client *client_p,
+		   struct Client *source_p, char *nick, char *text)
+{
+  struct Client *target_p;
+  struct Client *server_p;
+  char *server;
+  int result;
+
+  result = 0;
+
+  if ((server = strchr(nick, '@')) && (server_p = find_server(server + 1)))
+  {
+    if (strchr(nick, '%') != NULL)
+      return(0);
+
+    if (strncasecmp(nick, "opers", 5) == 0)
+      return(0);
+
+    *server = '\0';
+
+    if ((target_p = find_person(nick)) != NULL)
+    {
+      *server = '@';
+
+      if (server_p == &me)
+      {
+        sendto_one(target_p, ":%s %s %s :%s",
+		   source_p->name, command, nick, text);
+      }
+      else
+      {
+        sendto_anywhere(target_p, source_p, "%s %s :%s", command,
+                        nick, text);
+      }
+      if ((p_or_n != NOTICE) && source_p->user)
+	source_p->user->last = CurrentTime;
+      result = 1;
+    }
+    else
+      sendto_one(source_p, form_str(ERR_NOSUCHNICK),
+		 me.name, source_p->name, nick);
+  }
+  return(result);
 }
 
 /*

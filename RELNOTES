@@ -5,6 +5,7 @@ o) fixed throttling code
 o) squit uplink in non HUB server cases 
 o) fixed m_invite code to send invite in +p mode
 o) fixed ip limit code (related to throttling)
+o) allow non opers to privmsg nick@server. "opers" is reserved.
 
 -- ircd-hybrid-7rc6 RELNOTES
 o) fixed a nasty ban overflow which causes desyncs
@@ -132,4 +133,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.53 2003/01/16 12:25:42 db Exp $
+$Id: RELNOTES,v 1.54 2003/01/16 18:56:28 db Exp $
