@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.90 2002/10/30 17:44:56 wiz Exp $
+ *  $Id: packet.c,v 7.91 2002/12/12 06:33:00 db Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -105,7 +105,7 @@ parse_client_queued(struct Client *client_p)
       }
     }
   } 
-  else if(IsClient(client_p)) 
+  else if(IsClient(client_p))
   {
 
     if (ConfigFileEntry.no_oper_flood && (IsOper(client_p) || IsCanFlood(client_p)))
@@ -121,6 +121,9 @@ parse_client_queued(struct Client *client_p)
      */
     for (;;)
     {
+      if (IsDead(client_p))
+	break;
+
       /* This flood protection works as follows:
        *
        * A client is given allow_read lines to send to the server.  Every
@@ -432,39 +435,42 @@ read_packet(int fd, void *data)
   
   /* Attempt to parse what we have */
   parse_client_queued(client_p);
-  
-  /* Check to make sure we're not flooding */
-  if (IsPerson(client_p) &&
-     (linebuf_alloclen(&client_p->localClient->buf_recvq) >
-      ConfigFileEntry.client_flood))
+
+  if (!IsDead(client_p))
   {
+    /* Check to make sure we're not flooding */
+    if (IsPerson(client_p) &&
+	(linebuf_alloclen(&client_p->localClient->buf_recvq) >
+	 ConfigFileEntry.client_flood))
+    {
       if (!(ConfigFileEntry.no_oper_flood && IsOper(client_p)))
       {
-       exit_client(client_p, client_p, client_p, "Excess Flood");
-       return;
+	exit_client(client_p, client_p, client_p, "Excess Flood");
+	return;
       }
-  }
+    }
 
-  /* server fd may have changed */
-  fd_r = client_p->localClient->fd;
+    /* server fd may have changed */
+    fd_r = client_p->localClient->fd;
 #ifndef HAVE_SOCKETPAIR
-  if (HasServlink(client_p))
-  {
-    assert(client_p->localClient->fd_r > -1);
-    fd_r = client_p->localClient->fd_r;
-  }
+    if (HasServlink(client_p))
+    {
+      assert(client_p->localClient->fd_r > -1);
+      fd_r = client_p->localClient->fd_r;
+    }
 #endif
 
   
-  if (!IsDead(client_p))
-  {
     /* If we get here, we need to register for another COMM_SELECT_READ */
-    if (PARSE_AS_SERVER(client_p)) {
+    if (PARSE_AS_SERVER(client_p))
+    {
       comm_setselect(fd_r, FDLIST_SERVER, COMM_SELECT_READ,
-        read_packet, client_p, 0);
-    } else {
+		     read_packet, client_p, 0);
+    }
+    else
+    {
       comm_setselect(fd_r, FDLIST_IDLECLIENT, COMM_SELECT_READ,
-        read_packet, client_p, 0);
+		     read_packet, client_p, 0);
     }
   }
   /* This is about the only place useful to put it */
