@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_trace.c,v 1.49 2002/06/29 04:34:45 db Exp $
+ *  $Id: m_trace.c,v 1.50 2002/07/07 05:45:08 db Exp $
  */
 
 #include "stdinc.h"
@@ -45,8 +45,7 @@
 static void m_trace(struct Client *, struct Client *, int, char **);
 static void ms_trace(struct Client*, struct Client*, int, char**);
 static void mo_trace(struct Client*, struct Client*, int, char**);
-static struct Client* next_client_double(struct Client *next,
-					 const char* ch);
+static struct Client* next_client_double(struct Client *next, const char* ch);
 
 static void trace_spy(struct Client *);
 
@@ -69,7 +68,7 @@ _moddeinit(void)
   hook_del_event("doing_trace");
   mod_del_cmd(&trace_msgtab);
 }
-const char *_version = "$Revision: 1.49 $";
+const char *_version = "$Revision: 1.50 $";
 #endif
 static int report_this_status(struct Client *source_p, struct Client *target_p,int dow,
                               int link_u_p, int link_u_s);
