@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hook.h,v 1.16 2003/04/13 05:55:20 michael Exp $
+ *  $Id: hook.h,v 1.17 2003/04/14 06:42:49 michael Exp $
  */
 
 #ifndef __HOOK_H_INCLUDED
@@ -34,12 +34,14 @@ typedef struct
   dlink_list hooks;
 } hook;
 
-/* we don't define the arguments to hookfn, because they can
-   vary between different hooks */
+/* we don't define the arguments to hookfn, because
+ * they can vary between different hooks
+ */
 typedef int (*hookfn)(void *data);
 
 /* this is used when a hook is called by an m_function
-   stand data you'd need in that situation */
+ * stand data you'd need in that situation
+ */
 struct hook_mfunc_data 
 {
   struct Client *client_p;
@@ -61,8 +63,8 @@ struct hook_links_data
   struct Client *source_p;
   int parc;
   char **parv;
-  char statchar;
-  char *mask;
+  const char statchar;
+  const char *mask;
 };
 
 struct hook_spy_data
