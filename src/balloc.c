@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: balloc.c,v 7.25 2002/02/27 17:28:17 androsyn Exp $
+ *  $Id: balloc.c,v 7.26 2002/03/18 20:06:55 androsyn Exp $
  */
 
 /* 
@@ -416,7 +416,9 @@ int _BlockHeapFree(BlockHeap * bh, void *ptr)
 
     memblock = (void *)((size_t)ptr - sizeof(MemBlock));
     assert(memblock->block != NULL);
-    /* XXX: Should check that the block is really our block */
+    /* Is this block really on the used list? */
+    assert(dlinkFind(&memblock->block->used_list, memblock) == NULL); 
+
     block = memblock->block;
     bh->freeElems++;
     block->freeElems++;
