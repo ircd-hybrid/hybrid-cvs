@@ -1,3 +1,15 @@
+leeh        2002/07/26 10:03:30 EDT	(20020726_0)
+
+  Modified files:
+    src                  channel_mode.c 
+  Log:
+  - commited by +eI anti-desync fixes.
+  
+  Revision  Changes    Path
+  7.45      +12 -13    ircd-hybrid-7/src/channel_mode.c
+
+
+
 db          2002/07/22 21:01:01 EDT	(20020723_0)
 
   Modified files:
@@ -30472,4 +30484,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3925 2002/07/23 01:01:07 db Exp $
+$Id: ChangeLog,v 7.3926 2002/07/26 14:03:37 leeh Exp $
