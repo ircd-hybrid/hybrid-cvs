@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 7.17 2000/10/14 17:15:30 toot Exp $
+ *   $Id: m_join.c,v 7.18 2000/10/14 22:07:07 db Exp $
  */
 
 #include "handlers.h"
@@ -300,7 +300,10 @@ int     m_join(struct Client *cptr,
                      {
                        /* found a matching vchan? let them join it */
                        if ((vchan_chptr = find_vchan(chptr, key)))
-                         chptr = vchan_chptr;
+			 {
+			   add_vchan_to_client_cache(sptr, chptr, vchan_chptr);
+			   chptr = vchan_chptr;
+			 }
                        else
                          {
                            sendto_one(sptr, form_str(ERR_NOSUCHCHANNEL),
