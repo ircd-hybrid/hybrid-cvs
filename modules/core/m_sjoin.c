@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.59 2001/01/02 22:40:38 davidt Exp $
+ *   $Id: m_sjoin.c,v 1.60 2001/01/02 22:57:50 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -403,7 +403,7 @@ int     ms_sjoin(struct Client *cptr,
           lcptr = m->data;
 
           /* Hopefully, the server knows about it's own clients. */
-          if (acptr == cptr->from)
+          if (cptr == lcptr)
             continue;
 
           /* Ignore non lazylinks */
@@ -416,7 +416,7 @@ int     ms_sjoin(struct Client *cptr,
             continue;
 
           /* Ignore servers that already know acptr */
-          if( !(cptr->lazyLinkClientExists &
+          if( !(acptr->lazyLinkClientExists &
                 lcptr->localClient->serverMask) )
           {
             /* Tell LazyLink Leaf about cptr,
