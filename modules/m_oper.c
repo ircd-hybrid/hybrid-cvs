@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_oper.c,v 1.35 2001/06/13 04:57:16 androsyn Exp $
+ *   $Id: m_oper.c,v 1.36 2001/06/14 00:14:19 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -210,7 +210,7 @@ struct ConfItem *find_password_aconf(char *name, struct Client *source_p)
   if (!(aconf = find_conf_exact(name, source_p->username, source_p->host,
                                 CONF_OPERATOR)) &&
       !(aconf = find_conf_exact(name, source_p->username,
-                                source_p->localClient->sockhost),
+                                source_p->localClient->sockhost,
                                 CONF_OPERATOR)))
     {
       return 0;
