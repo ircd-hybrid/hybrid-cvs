@@ -19,10 +19,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.123 2003/05/31 06:14:57 michael Exp $
+ *  $Id: modules.c,v 7.124 2003/05/31 09:34:13 metalrock Exp $
  */
 
 #include "stdinc.h"
+#include "tools.h"
 #include "modules.h"
 #include "s_log.h"
 #include "ircd.h"
@@ -35,7 +36,6 @@
 #include "ircd_defs.h"
 #include "irc_string.h"
 #include "memory.h"
-#include "tools.h"
 #include "list.h"
 
 /* -TimeMr14C:
