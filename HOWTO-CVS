@@ -1,6 +1,6 @@
 -*- How to use ircd-hybrid's CVS system.
 -*- By Juli Mallett <jmallett@FreeBSD.org>.
--*- $Id: HOWTO-CVS,v 1.3 2003/02/18 05:45:46 jmallett Exp $
+-*- $Id: HOWTO-CVS,v 1.4 2003/02/19 06:14:37 lusky Exp $
 
 --- Open branches:
 --- HEAD version: 7.1 (CURRENT)
