@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.140 2001/03/11 07:07:20 a1kmm Exp $
+ *  $Id: s_user.c,v 7.141 2001/03/11 08:10:04 a1kmm Exp $
  */
 
 #include <sys/types.h>
@@ -1105,6 +1105,28 @@ int user_mode(struct Client *client_p, struct Client *source_p, int parc, char *
                  me.name,parv[0]);
       source_p->umodes &= ~FLAGS_NCHANGE; /* only tcm's really need this */
     }
+
+#ifdef PERSISTANT_CLIENTS
+  if (MyConnect(source_p) && (source_p->umodes & ~setflags &
+      FLAGS_PERSISTANT))
+    {
+     for (ptr=source_p->localClient->confs.head; ptr; ptr=ptr->next)
+       {
+        aconf = (struct ConfItem*)ptr->data;
+        if ((aconf->status & CONF_CLIENT))
+          {
+           if (!(aconf->flags & CONF_FLAGS_PERSISTANT))
+             {
+              sendto_one(source_p,
+                ":%s NOTICE %s :Your auth block does not allow +p",
+                me.name, source_p->name);
+              source_p->umodes &= ~FLAGS_PERSISTANT;
+             }
+           break;
+          }
+       }
+    }
+#endif
 
   if (MyConnect(source_p) && (source_p->umodes & FLAGS_ADMIN) && !IsSetOperAdmin(source_p))
     {
