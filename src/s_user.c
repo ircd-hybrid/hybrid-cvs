@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.68 2000/12/17 00:15:01 db Exp $
+ *  $Id: s_user.c,v 7.69 2000/12/19 04:21:22 ejb Exp $
  */
 #include "tools.h"
 #include "s_user.h"
@@ -859,6 +859,11 @@ int user_mode(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
         case '\r' :
         case '\t' :
           break;
+	case 'a':
+	  if (MyConnect(sptr)) {
+	    badflag = 1;
+	    break;
+	  }
         default :
           if( (flag = user_modes_from_c_to_bitmask[(unsigned char)*m]))
             {
@@ -885,13 +890,6 @@ int user_mode(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
       sptr->umodes &= ~FLAGS_NCHANGE; /* only tcm's really need this */
     }
 
-  if ((sptr->umodes & FLAGS_ADMIN) && !IsSetOperAdmin(sptr))
-    {
-      sendto_one(sptr, ":%s NOTICE %s :*** You need oper and A flag for +a",
-		 me.name, parv[0]);
-      sptr->umodes &= ~FLAGS_ADMIN;  /* shouldn't let normal opers set this */
-    }
-  
   if (!(setflags & FLAGS_INVISIBLE) && IsInvisible(sptr))
     ++Count.invisi;
   if ((setflags & FLAGS_INVISIBLE) && !IsInvisible(sptr))

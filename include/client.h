@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.62 2000/12/18 22:55:36 db Exp $
+ * $Id: client.h,v 7.63 2000/12/19 04:21:15 ejb Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -279,7 +279,7 @@ struct LocalUser
 #define IsAnyOper(x)		((x)->umodes & (FLAGS_OPER | FLAGS_LOCOP))
 #define IsGlobalOper(x)		((x)->umodes & FLAGS_OPER)
 #define IsLocalOper(x)		((x)->umodes & FLAGS_LOCOP)
-#define IsAdmin(x)		((x)->umodes & FLAGS_ADMIN)
+#define IsAdmin(x)		(IsSetOperAdmin(x))
 
 #define SetConnecting(x)        {(x)->status = STAT_CONNECTING; \
 				 (x)->handler = UNREGISTERED_HANDLER; }
