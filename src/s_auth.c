@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.133 2003/06/18 06:26:33 metalrock Exp $
+ *  $Id: s_auth.c,v 7.134 2003/07/03 14:54:10 michael Exp $
  */
 
 /*
@@ -58,10 +58,10 @@
  * a bit different approach
  * this replaces the original sendheader macros
  */
-static struct {
+static const struct {
   const char *message;
-  size_t length;
-} HeaderMessages [] = {
+  const size_t length;
+} HeaderMessages[] = {
   /* 123456789012345678901234567890123456789012345678901234567890 */
   { "NOTICE AUTH :*** Looking up your hostname...\r\n",    46 },
   { "NOTICE AUTH :*** Found your hostname\r\n",            38 },
@@ -74,7 +74,7 @@ static struct {
   { "NOTICE AUTH :*** Your hostname is too long, ignoring hostname\r\n", 63 }
 };
 
-typedef enum {
+enum {
   REPORT_DO_DNS,
   REPORT_FIN_DNS,
   REPORT_FAIL_DNS,
@@ -83,7 +83,7 @@ typedef enum {
   REPORT_FAIL_ID,
   REPORT_IP_MISMATCH,
   REPORT_HOST_TOOLONG
-} ReportType;
+};
 
 #define sendheader(c, r) \
    send((c)->localClient->fd, HeaderMessages[(r)].message, HeaderMessages[(r)].length, 0)
@@ -94,8 +94,8 @@ typedef enum {
  * or only on one or the other.
  * - Dianora
  */
-static dlink_list auth_doing_dns_list   = {NULL, NULL, 0};
-static dlink_list auth_doing_ident_list = {NULL, NULL, 0};
+static dlink_list auth_doing_dns_list   = { NULL, NULL, 0 };
+static dlink_list auth_doing_ident_list = { NULL, NULL, 0 };
 
 static EVH timeout_auth_queries_event;
 
@@ -115,15 +115,15 @@ init_auth(void)
 /*
  * make_auth_request - allocate a new auth request
  */
-static struct AuthRequest*
-make_auth_request(struct Client* client)
+static struct AuthRequest *
+make_auth_request(struct Client *client)
 {
   struct AuthRequest *request = 
     (struct AuthRequest *)MyMalloc(sizeof(struct AuthRequest));
   request->fd      = -1;
   request->client  = client;
   request->timeout = CurrentTime + CONNECTTIMEOUT;
-  return request;
+  return(request);
 }
 
 /*
@@ -159,7 +159,7 @@ release_auth_client(struct Client *client)
 static void
 auth_dns_callback(void* vptr, struct DNSReply *reply)
 {
-  struct AuthRequest* auth = (struct AuthRequest*) vptr;
+  struct AuthRequest *auth = (struct AuthRequest *)vptr;
 
   if (IsDNSPending(auth))
     dlinkDelete(&auth->dns_node, &auth_doing_dns_list);
@@ -274,6 +274,7 @@ start_auth_query(struct AuthRequest* auth)
     ++ServerStats->is_abad;
     return 0;
   }
+
   if ((HARD_FDLIMIT - 10) < fd)
   {
     sendto_realops_flags(UMODE_ALL, L_ALL,"Can't allocate fd for auth on %s",
@@ -394,13 +395,13 @@ GetValidIdent(char *buf)
  * start_auth - starts auth (identd) and dns queries for a client
  */
 void
-start_auth(struct Client* client)
+start_auth(struct Client *client)
 {
-  struct AuthRequest *auth = 0;
+  struct AuthRequest *auth = NULL;
 
-  assert(client != 0);
+  assert(client != NULL);
 
-  if(client == NULL)
+  if (client == NULL)
     return;
 
   auth = make_auth_request(client);
@@ -418,8 +419,6 @@ start_auth(struct Client* client)
 
   if(ConfigFileEntry.disable_auth == 0)
     (void)start_auth_query(auth);
-
-
 }
 
 /*
