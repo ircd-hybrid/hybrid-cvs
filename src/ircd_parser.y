@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.152 2001/03/23 07:58:13 ejb Exp $
+ * $Id: ircd_parser.y,v 1.153 2001/03/23 08:29:22 ejb Exp $
  */
 
 %{
@@ -312,6 +312,11 @@ timespec:	expr
 		= {
 			/* a year has 365 days, *not* 12 months */
 			$$ = $1 * 60 * 60 * 24 * 365;
+		}
+		| timespec timespec
+		= {
+			/* 2 years 3 days */
+			$$ = $1 + $2;
 		}
 		;
 
