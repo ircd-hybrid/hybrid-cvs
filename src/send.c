@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.279 2003/12/11 19:33:36 db Exp $
+ *  $Id: send.c,v 7.280 2004/02/24 03:36:20 michael Exp $
  */
 
 #include "stdinc.h"
@@ -525,7 +525,7 @@ sendto_channel_butone(struct Client *one, struct Client *from,
     if (IsDefunct(target_p) || target_p->from == one)
       continue;
 
-    if (MyConnect(target_p) && IsRegisteredUser(target_p))
+    if (MyClient(target_p))
     {
       if (target_p->serial != current_serial)
       {
