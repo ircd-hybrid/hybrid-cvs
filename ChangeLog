@@ -1,3 +1,16 @@
+db          2002/07/18 11:28:29 EDT	(20020718_5)
+
+  Modified files:
+    tools                convertconf.c 
+  Log:
+  - converted Q line was incorrectly using name= instead of nick= for
+    nick jupes. Added code to convert channel jupes into channel=
+  
+  Revision  Changes    Path
+  1.36      +3 -2      ircd-hybrid-7/tools/convertconf.c
+
+
+
 leeh        2002/07/18 05:49:07 EDT	(20020718_4)
 
   Modified files:
@@ -30091,4 +30104,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3899 2002/07/18 09:49:14 leeh Exp $
+$Id: ChangeLog,v 7.3900 2002/07/18 15:28:36 db Exp $
