@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.111 2003/06/07 15:20:31 adx Exp $
+ *  $Id: channel_mode.c,v 7.112 2003/06/08 12:33:46 michael Exp $
  */
 
 #include "stdinc.h"
@@ -302,10 +302,24 @@ change_channel_membership(struct Channel *chptr, struct Client *client_p,
 
   if ((ms = find_channel_link(client_p, chptr)) != NULL)
   {
-    ms->flags |= add_flag;
+    ms->flags |=  add_flag;
     ms->flags &= ~del_flag;
   }
 }
+
+static const struct mode_letter
+{
+  unsigned int mode;
+  unsigned char letter;
+} flags[] = {
+  { MODE_INVITEONLY, 'i' },
+  { MODE_MODERATED,  'm' },
+  { MODE_NOPRIVMSGS, 'n' },
+  { MODE_PRIVATE,    'p' },
+  { MODE_SECRET,     's' },
+  { MODE_TOPICLIMIT, 't' },
+  { 0, '\0' }
+};
 
 /* channel_modes()
  *
@@ -321,26 +335,25 @@ void
 channel_modes(struct Channel *chptr, struct Client *client_p,
               char *mbuf, char *pbuf)
 {
+  int i;
   int len;
+
   *mbuf++ = '+';
   *pbuf = '\0';
 
-  if (chptr->mode.mode & MODE_SECRET)
-    *mbuf++ = 's';
-  if (chptr->mode.mode & MODE_PRIVATE)
-    *mbuf++ = 'p';
-  if (chptr->mode.mode & MODE_MODERATED)
-    *mbuf++ = 'm';
-  if (chptr->mode.mode & MODE_TOPICLIMIT)
-    *mbuf++ = 't';
-  if (chptr->mode.mode & MODE_INVITEONLY)
-    *mbuf++ = 'i';
-  if (chptr->mode.mode & MODE_NOPRIVMSGS)
-    *mbuf++ = 'n';
+  for (i = 0; flags[i].mode; i++)
+  {
+    if (chptr->mode.mode & flags[i].mode)
+      *mbuf++ = flags[i].letter;
+  }
 
+  /* XXX - two find_channel_link()  calls are obviously
+   *       too much if we have both +l and +k. -Michael
+   */
   if (chptr->mode.limit)
   {
     *mbuf++ = 'l';
+
     if (IsMember(client_p, chptr) || IsServer(client_p))
     {
       len = ircsprintf(pbuf, "%d ", chptr->mode.limit);
@@ -351,6 +364,7 @@ channel_modes(struct Channel *chptr, struct Client *client_p,
   if (*chptr->mode.key)
   {
     *mbuf++ = 'k';
+
     if (IsMember(client_p, chptr) || IsServer(client_p))
       ircsprintf(pbuf, "%s ", chptr->mode.key);
   }
