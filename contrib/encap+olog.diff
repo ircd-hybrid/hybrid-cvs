@@ -1,18 +1,13 @@
-diff -uNr ircd-hybrid/contrib/m_operspy.c ircd-hybrid+encap+olog/contrib/m_operspy.c
---- ircd-hybrid/contrib/m_operspy.c	Mon Jun  9 20:37:12 2003
-+++ ircd-hybrid+encap+olog/contrib/m_operspy.c	Mon Jun  9 20:42:14 2003
-@@ -16,7 +16,7 @@
-  *   along with this program; if not, write to the Free Software
-  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-  *
-- *   $Id: encap+olog.diff,v 1.2.2.1 2003/06/10 04:02:23 db Exp $
-+ *   $Id: encap+olog.diff,v 1.2.2.1 2003/06/10 04:02:23 db Exp $
-  */
- 
- /***  PLEASE READ ME  ***/
-@@ -49,6 +49,12 @@
- #include "parse.h"
- #include "modules.h"
+Index: ircd-hybrid/contrib/m_operspy.c
+===================================================================
+RCS file: /cvsroot/ircd-hybrid/contrib/m_operspy.c,v
+retrieving revision 1.13.2.1
+diff -u -r1.13.2.1 m_operspy.c
+--- ircd-hybrid/contrib/m_operspy.c	10 Jun 2003 01:26:06 -0000	1.13.2.1
++++ ircd-hybrid/contrib/m_operspy.c	10 Jun 2003 04:25:49 -0000
+@@ -55,6 +55,12 @@
+ /* enable this to send incoming operspy usage to active +y (FLAGS_SPY) opers */
+ #define OPERSPY_NOTICE
  
 +/* enable per-oper logging of OPERSPY functions */
 +#define OPERSPY_LOG
@@ -23,43 +18,17 @@ diff -uNr ircd-hybrid/contrib/m_operspy.c ircd-hybrid+encap+olog/contrib/m_opers
  /* enable OPERSPY version of LIST */
  #define OPERSPY_LIST
  
-@@ -74,6 +80,8 @@
-  */
- static void m_operspy(struct Client *client_p, struct Client *source_p,
+@@ -82,6 +88,8 @@
+                        int parc, char *parv[]);
+ static void ms_operspy(struct Client *client_p, struct Client *source_p,
                         int parc, char *parv[]);
 +static void ms_operspy(struct Client *client_p, struct Client *source_p,
 +                       int parc, char *parv[]);
  static void mo_operspy(struct Client *client_p, struct Client *source_p,
                         int parc, char *parv[]);
  
-@@ -107,9 +115,11 @@
- 
+@@ -190,6 +198,37 @@
  #endif
- 
-+static void sendto_match_servs(struct Client *, const char *, int, const char *, ...);
-+
- struct Message operspy_msgtab = {
-   "OPERSPY", 0, 0, 0, 0, MFLG_SLOW|MFLG_HIDDEN, 0,
--  {m_ignore, m_operspy, m_operspy, mo_operspy}
-+  {m_ignore, m_operspy, ms_operspy, mo_operspy}
- };
- 
- #ifndef STATIC_MODULES
-@@ -124,7 +134,11 @@
- {
-   mod_del_cmd(&operspy_msgtab);
- }
--const char *_version = "$Revision: 1.2.2.1 $";
-+const char *_version = "$Revision: 1.2.2.1 $";
-+#endif
-+
-+#ifdef OPERSPY_LOG
-+static void operspy_log(struct Client *, const char *, const char *);
- #endif
- 
- /*
-@@ -147,6 +161,37 @@
-              operspy);
  }
  
 +static void
@@ -96,105 +65,7 @@ diff -uNr ircd-hybrid/contrib/m_operspy.c ircd-hybrid+encap+olog/contrib/m_opers
  /*
   * mo_operspy
   *	parv[1] = operspy command
-@@ -236,6 +281,10 @@
-     }
- 
-     sendto_one(client_p, form_str(RPL_LISTEND), me.name, client_p->name);
-+
-+#ifdef OPERSPY_LOG
-+    operspy_log(client_p, "LIST", parv[2]);
-+#endif
-     return;
-   }
- #endif
-@@ -273,6 +322,10 @@
-                me.name, parv[0], parv[2], modebuf, parabuf);
-     sendto_one(client_p, form_str(RPL_CREATIONTIME),
-                me.name, parv[0], parv[2], chptr_mode->channelts);
-+
-+#ifdef OPERSPY_LOG
-+    operspy_log(client_p, "MODE", parv[2]);
-+#endif
-     return;
-   }
- #endif
-@@ -305,6 +358,10 @@
-     add_user_to_channel(chptr_names, client_p, MODE_CHANOP);
-     channel_member_names(client_p, chptr_names, parv[2], 1);
-     remove_user_from_channel(chptr_names, client_p);
-+
-+#ifdef OPERSPY_LOG
-+    operspy_log(client_p, "NAMES", parv[2]);
-+#endif
-     return;
-   }
- #endif
-@@ -330,6 +387,10 @@
-                  parv[0], chptr_topic->chname, chptr_topic->topic_info,
-                  chptr_topic->topic_time);
-     }
-+
-+#ifdef OPERSPY_LOG
-+    operspy_log(client_p, "TOPIC", parv[2]);
-+#endif
-     return;
-   }
- #endif
-@@ -350,6 +411,10 @@
-     {
-       who_global(client_p, NULL, server_oper);
-       sendto_one(client_p, form_str(RPL_ENDOFWHO), me.name, parv[0], "*");
-+
-+#ifdef OPERSPY_LOG
-+      log_operspy(client_p, "WHO", parv[2]);
-+#endif
-       return;
-     }
- 
-@@ -361,6 +426,10 @@
-         do_who_on_channel(client_p, chptr_who, chptr_who->chname, server_oper);
- 
-       sendto_one(client_p, form_str(RPL_ENDOFWHO), me.name, parv[0], mask);
-+
-+#ifdef OPERSPY_LOG
-+      log_operspy(client_p, "WHO", parv[2]);
-+#endif
-       return;
-     }
- 
-@@ -388,6 +457,10 @@
-         do_who(client_p, target_p_who, NULL, "");
- 
-       sendto_one(client_p, form_str(RPL_ENDOFWHO), me.name, parv[0], mask);
-+
-+#ifdef OPERSPY_LOG
-+      log_operspy(client_p, "WHO", parv[2]);
-+#endif
-       return;
-     }
- 
-@@ -401,6 +474,9 @@
-     /* nothing else? end of /who. */
-     sendto_one(client_p, form_str(RPL_ENDOFWHO), me.name, parv[0], mask);
- 
-+#ifdef OPERSPY_LOG
-+    log_operspy(client_p, "WHO", parv[2]);
-+#endif
-     return;
-   }
- #endif
-@@ -466,6 +542,10 @@
-                  client_p->name, target_p->name, CurrentTime - target_p->user->last,
-                  target_p->firsttime);
-     sendto_one(client_p, form_str(RPL_ENDOFWHOIS), me.name, parv[0], parv[2]);
-+
-+#ifdef OPERSPY_LOG
-+    operspy_log(client_p, "WHOIS", parv[2]);
-+#endif
-     return;
-   }
- #endif
-@@ -730,3 +810,87 @@
+@@ -808,6 +847,90 @@
  #endif /* ANONOPS */
  }
  #endif /* OPERSPY_WHO */
@@ -282,9 +153,16 @@ diff -uNr ircd-hybrid/contrib/m_operspy.c ircd-hybrid+encap+olog/contrib/m_opers
 +    sendto_one(source_p, form_str(ERR_NOSUCHSERVER),
 +               me.name, source_p->name, mask);
 +}
-diff -uNr ircd-hybrid/include/parse.h ircd-hybrid+encap+olog/include/parse.h
---- ircd-hybrid/include/parse.h	Mon Jun  9 20:38:03 2003
-+++ ircd-hybrid+encap+olog/include/parse.h	Mon Jun  9 20:35:10 2003
+ 
+ #ifdef OPERSPY_LOG
+ static void
+Index: ircd-hybrid/include/parse.h
+===================================================================
+RCS file: /cvsroot/ircd-hybrid/include/parse.h,v
+retrieving revision 7.15.2.2
+diff -u -r7.15.2.2 parse.h
+--- ircd-hybrid/include/parse.h	10 Jun 2003 02:16:52 -0000	7.15.2.2
++++ ircd-hybrid/include/parse.h	10 Jun 2003 04:25:50 -0000
 @@ -38,6 +38,7 @@
  #define MAX_MSG_HASH  387
  
@@ -293,9 +171,13 @@ diff -uNr ircd-hybrid/include/parse.h ircd-hybrid+encap+olog/include/parse.h
  extern  void           clear_hash_parse (void);
  extern  void           mod_add_cmd(struct Message *msg);
  extern  void           mod_del_cmd(struct Message *msg);
-diff -uNr ircd-hybrid/include/s_serv.h ircd-hybrid+encap+olog/include/s_serv.h
---- ircd-hybrid/include/s_serv.h	Mon Jun  9 20:38:12 2003
-+++ ircd-hybrid+encap+olog/include/s_serv.h	Mon Jun  9 20:39:37 2003
+Index: ircd-hybrid/include/s_serv.h
+===================================================================
+RCS file: /cvsroot/ircd-hybrid/include/s_serv.h,v
+retrieving revision 7.66.4.3
+diff -u -r7.66.4.3 s_serv.h
+--- ircd-hybrid/include/s_serv.h	10 Jun 2003 02:16:52 -0000	7.66.4.3
++++ ircd-hybrid/include/s_serv.h	10 Jun 2003 04:25:50 -0000
 @@ -74,12 +74,13 @@
  
  #define CAP_TBURST	0x00040000   /* supports TBURST */
@@ -311,9 +193,13 @@ diff -uNr ircd-hybrid/include/s_serv.h ircd-hybrid+encap+olog/include/s_serv.h
  
  #ifdef HAVE_LIBZ
  #define CAP_ZIP_SUPPORTED       CAP_ZIP
-diff -uNr ircd-hybrid/modules/Makefile.in ircd-hybrid+encap+olog/modules/Makefile.in
---- ircd-hybrid/modules/Makefile.in	Sun Jun 16 11:31:25 2002
-+++ ircd-hybrid+encap+olog/modules/Makefile.in	Mon Jun  9 20:39:05 2003
+Index: ircd-hybrid/modules/Makefile.in
+===================================================================
+RCS file: /cvsroot/ircd-hybrid/modules/Makefile.in,v
+retrieving revision 1.69
+diff -u -r1.69 Makefile.in
+--- ircd-hybrid/modules/Makefile.in	16 Jun 2002 16:31:25 -0000	1.69
++++ ircd-hybrid/modules/Makefile.in	10 Jun 2003 04:25:50 -0000
 @@ -61,6 +61,7 @@
    m_cryptlink.c \
    m_dmem.c \
@@ -322,9 +208,48 @@ diff -uNr ircd-hybrid/modules/Makefile.in ircd-hybrid+encap+olog/modules/Makefil
    m_eob.c \
    m_gline.c \
    m_help.c \
-diff -uNr ircd-hybrid/modules/m_encap.c ircd-hybrid+encap+olog/modules/m_encap.c
---- ircd-hybrid/modules/m_encap.c	Wed Dec 31 18:00:00 1969
-+++ ircd-hybrid+encap+olog/modules/m_encap.c	Mon Jun  9 20:35:12 2003
+Index: ircd-hybrid/src/parse.c
+===================================================================
+RCS file: /cvsroot/ircd-hybrid/src/parse.c,v
+retrieving revision 7.146.2.2
+diff -u -r7.146.2.2 parse.c
+--- ircd-hybrid/src/parse.c	10 Jun 2003 02:16:54 -0000	7.146.2.2
++++ ircd-hybrid/src/parse.c	10 Jun 2003 04:25:50 -0000
+@@ -60,7 +60,7 @@
+ 
+ static int hash(char *p);
+ 
+-static struct Message *hash_parse(char *);
++struct Message *hash_parse(char *);
+ 
+ struct MessageHash *msg_hash_table[MAX_MSG_HASH];
+ 
+@@ -498,7 +498,7 @@
+  * output	- pointer to struct Message
+  * side effects - 
+  */
+-static struct Message *
++struct Message *
+ hash_parse(char *cmd)
+ {
+   struct MessageHash *ptr;
+Index: ircd-hybrid/src/s_serv.c
+===================================================================
+RCS file: /cvsroot/ircd-hybrid/src/s_serv.c,v
+retrieving revision 7.280.2.3
+diff -u -r7.280.2.3 s_serv.c
+--- ircd-hybrid/src/s_serv.c	31 May 2003 07:30:34 -0000	7.280.2.3
++++ ircd-hybrid/src/s_serv.c	10 Jun 2003 04:25:51 -0000
+@@ -104,6 +104,7 @@
+   { "ZIP",   CAP_ZIP },
+   { "TBURST", CAP_TBURST },
+   { "PARA",  CAP_PARA },
++  { "ENCAP", CAP_ENCAP },
+   { 0,           0 }
+ };
+ 
+--- /dev/null	Tue Jun 10 00:18:25 2003
++++ ircd-hybrid/modules/m_encap.c	Tue Jun 10 00:24:20 2003
 @@ -0,0 +1,185 @@
 +/*
 + *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
@@ -347,7 +272,7 @@ diff -uNr ircd-hybrid/modules/m_encap.c ircd-hybrid+encap+olog/modules/m_encap.c
 + *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
 + *  USA
 + *
-+ *  $Id: encap+olog.diff,v 1.2.2.1 2003/06/10 04:02:23 db Exp $
++ *  $Id: encap+olog.diff,v 1.2.2.2 2003/06/10 04:29:58 db Exp $
 + */
 +
 +#include "stdinc.h"
@@ -386,7 +311,7 @@ diff -uNr ircd-hybrid/modules/m_encap.c ircd-hybrid+encap+olog/modules/m_encap.c
 +  mod_del_cmd(&encap_msgtab);
 +  delete_capability("ENCAP");
 +}
-+const char *_version = "$Revision: 1.2.2.1 $";
++const char *_version = "$Revision: 1.2.2.2 $";
 +#endif
 +
 +/*
@@ -511,35 +436,3 @@ diff -uNr ircd-hybrid/modules/m_encap.c ircd-hybrid+encap+olog/modules/m_encap.c
 +    sendto_one(source_p, form_str(ERR_NOSUCHSERVER),
 +               me.name, source_p->name, mask);
 +}
-diff -uNr ircd-hybrid/src/parse.c ircd-hybrid+encap+olog/src/parse.c
---- ircd-hybrid/src/parse.c	Mon Jun  9 20:38:29 2003
-+++ ircd-hybrid+encap+olog/src/parse.c	Mon Jun  9 20:40:22 2003
-@@ -60,7 +60,7 @@
- 
- static int hash(char *p);
- 
--static struct Message *hash_parse(char *);
-+struct Message *hash_parse(char *);
- 
- struct MessageHash *msg_hash_table[MAX_MSG_HASH];
- 
-@@ -498,7 +498,7 @@
-  * output	- pointer to struct Message
-  * side effects - 
-  */
--static struct Message *
-+struct Message *
- hash_parse(char *cmd)
- {
-   struct MessageHash *ptr;
-diff -uNr ircd-hybrid/src/s_serv.c ircd-hybrid+encap+olog/src/s_serv.c
---- ircd-hybrid/src/s_serv.c	Mon Jun  9 19:38:43 2003
-+++ ircd-hybrid+encap+olog/src/s_serv.c	Mon Jun  9 21:12:33 2003
-@@ -104,6 +104,7 @@
-   { "ZIP",   CAP_ZIP },
-   { "TBURST", CAP_TBURST },
-   { "PARA",  CAP_PARA },
-+  { "ENCAP", CAP_ENCAP },
-   { 0,           0 }
- };
- 
