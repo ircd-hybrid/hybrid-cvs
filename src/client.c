@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.423 2004/02/28 06:12:27 metalrock Exp $
+ *  $Id: client.c,v 7.424 2004/03/17 18:34:21 db Exp $
  */
 
 #include "stdinc.h"
@@ -670,6 +670,13 @@ find_chasing(struct Client *source_p, const char *user, int *chasing)
 
   if (who)
     return(who);
+
+  if (IsDigit(*user))
+  {
+    sendto_one(source_p, form_str(ERR_NOTARGET),
+               me.name, source_p->name);
+    return(NULL);
+  }
 
   if ((who = get_history(user,
 			(time_t)ConfigFileEntry.kill_chase_time_limit))
