@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.151 2001/11/14 13:33:17 androsyn Exp $
+ *  $Id: s_bsd.c,v 7.152 2001/12/06 17:33:41 androsyn Exp $
  */
 #include "config.h"
 #include "fdlist.h"
@@ -222,8 +222,12 @@ int set_non_blocking(int fd)
 #ifndef VMS
   int nonb = 0;
   int res;
-  nonb |= O_NONBLOCK;
 
+#ifdef USE_SIGIO
+  setup_sigio_fd(fd);
+#endif
+
+  nonb |= O_NONBLOCK;
   res = fcntl(fd, F_GETFL, 0);
   if (-1 == res || fcntl(fd, F_SETFL, res | nonb) == -1)
     return 0;

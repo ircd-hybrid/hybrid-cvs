@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_bsd.h,v 7.32 2001/11/14 13:33:17 androsyn Exp $
+ *   $Id: s_bsd.h,v 7.33 2001/12/06 17:33:35 androsyn Exp $
  *
  */
 #ifndef INCLUDED_s_bsd_h
@@ -83,6 +83,10 @@ extern int   read_message (time_t, unsigned char);
 extern int   comm_select(unsigned long);
 extern int   disable_sock_options(int);
 
+#ifdef USE_SIGIO
+void do_sigio(int);
+void setup_sigio_fd(int);
+#endif
 
 #endif /* INCLUDED_s_bsd_h */
 

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_signal.c,v 7.7 2001/06/05 01:45:33 ejb blalloc.c $
+ * $Id: ircd_signal.c,v 7.8 2001/12/06 17:33:41 androsyn Exp $
  */
 
 #include <signal.h>
@@ -28,7 +28,7 @@
 #include "restart.h"      /* server_reboot */
 #include "s_log.h"
 #include "memory.h"
-
+#include "s_bsd.h"
 /*
  * dummy_handler - don't know if this is really needed but if alarm is still
  * being used we probably will
@@ -116,6 +116,12 @@ void setup_signals()
   act.sa_handler = sigterm_handler;
   sigaddset(&act.sa_mask, SIGTERM);
   sigaction(SIGTERM, &act, 0);
+#ifdef USE_SIGIO
+  act.sa_handler = do_sigio;
+  sigaddset(&act.sa_mask, SIGIO);
+  sigaction(SIGIO, &act, 0);
+#endif
+
 }
 
 
