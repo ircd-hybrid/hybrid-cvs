@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.168 2003/08/15 20:24:09 metalrock Exp $
+ *  $Id: m_kline.c,v 1.169 2003/09/29 03:08:00 bill Exp $
  */
 
 #include "stdinc.h"
@@ -106,7 +106,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.168 $";
+const char *_version = "$Revision: 1.169 $";
 #endif
 
 /* Local function prototypes */
@@ -115,10 +115,10 @@ static char *cluster(char *);
 static int find_user_host(struct Client *source_p,
                           char *user_host_or_nick, char *user, char *host);
 
-static int valid_comment(struct Client *source_p, char *comment);
-static int valid_user_host(struct Client *source_p, char *user, char *host);
-static int valid_wild_card(char *user, char *host);
-static int already_placed_kline(struct Client *, const char *, const char *);
+static int valid_comment(struct Client *source_p, char *comment, int warn);
+static int valid_user_host(struct Client *source_p, char *user, char *host, int warn);
+static int valid_wild_card(struct Client *source_p, char *user, char *host, int warn);
+static int already_placed_kline(struct Client *, const char *, const char *, int);
 static void apply_kline(struct Client *source_p, struct ConfItem *conf,
 			const char *, time_t);
 static void apply_tkline(struct Client *source_p, struct ConfItem *conf,
@@ -203,18 +203,13 @@ mo_kline(struct Client *client_p, struct Client *source_p,
   if (parc != 0)
     reason = *parv;
 
-  if (!valid_user_host(source_p, user,host))
+  if (!valid_user_host(source_p, user, host, YES))
     return;
 
-  if (!valid_wild_card(user,host))
-  {
-    sendto_one(source_p, 
-	   ":%s NOTICE %s :Please include at least %d non-wildcard characters with the user@host",
-	       me.name, source_p->name, ConfigFileEntry.min_nonwildcard);
+  if (!valid_wild_card(source_p, user, host, YES))
     return;
-  }
 
-  if (!valid_comment(source_p, reason))
+  if (!valid_comment(source_p, reason, YES))
     return;
 
   if (target_server != NULL)
@@ -234,7 +229,7 @@ mo_kline(struct Client *client_p, struct Client *source_p,
   else if (dlink_list_length(&cluster_items))
     cluster_kline(source_p, tkline_time, user, host, reason);
 
-  if (already_placed_kline(source_p, user, host))
+  if (already_placed_kline(source_p, user, host, YES))
     return;
 
   /* Look for an oper reason */
@@ -291,36 +286,36 @@ ms_kline(struct Client *client_p, struct Client *source_p,
 
   /* parv[0]  parv[1]        parv[2]      parv[3]  parv[4]  parv[5] */
   /* oper     target_server  tkline_time  user     host     reason */
-  sendto_server(client_p, source_p, NULL, CAP_KLN, NOCAPS, LL_ICLIENT,
-                ":%s KLINE %s %s %s %s :%s",
-                parv[0], parv[1], parv[2], parv[3], parv[4], parv[5]);
+  sendto_match_servs(source_p, parv[1], CAP_KLN,
+                     "KLINE %s %s %s %s :%s",
+                     parv[1], parv[2], parv[3], parv[4], parv[5]);
 
-  tkline_time = atoi(parv[2]);
+  if (!match(parv[1], me.name))
+    return;
+
+  tkline_time = valid_tkline(parv[2]);
   kuser   = parv[3];
   khost   = parv[4];
   kreason = parv[5];
-
-  if (!valid_user_host(source_p, kuser, khost) || !valid_comment(source_p, kreason) ||
-      !match(parv[1], me.name) || !IsPerson(source_p) || 
-      already_placed_kline(source_p, kuser, khost))
-    return;
 
   set_time();
   cur_time = CurrentTime;
   current_date = smalldate(cur_time);
 
-  conf = make_conf_item(KLINE_TYPE);
-  aconf = (struct AccessItem *)map_to_conf(conf);
-  DupString(aconf->host, khost);
-  DupString(aconf->user, kuser);
-
   if (find_matching_name_conf(CLUSTER_TYPE, source_p->user->server->name,
                               NULL, NULL, CLUSTER_KLINE))
   {
-    if (!valid_wild_card(kuser, khost))
+    if (!valid_wild_card(source_p, kuser, khost, NO) ||
+        !valid_user_host(source_p, kuser, khost, NO) ||
+        !valid_comment(source_p, kreason, NO) ||
+        !IsPerson(source_p) ||
+        already_placed_kline(source_p, kuser, khost, NO))
       return;
 
-    tkline_time = atoi(parv[2]);
+    conf = make_conf_item(KLINE_TYPE);
+    aconf = (struct AccessItem *)map_to_conf(conf);
+    DupString(aconf->host, khost);
+    DupString(aconf->user, kuser);
 
     if (tkline_time != 0)
     {
@@ -342,12 +337,17 @@ ms_kline(struct Client *client_p, struct Client *source_p,
 				  source_p->username, source_p->host,
 				  SHARED_KLINE))
   {
-    if (!valid_wild_card(kuser, khost))
-    {
-      sendto_one(source_p, ":%s NOTICE %s :Please include at least %d non-wildcard characters with the user@host",
-                 me.name, source_p->name, ConfigFileEntry.min_nonwildcard);
+    if (!valid_wild_card(source_p, kuser, khost, YES) ||
+        !valid_user_host(source_p, kuser, khost, YES) ||
+        !valid_comment(source_p, kreason, YES) ||
+        !IsPerson(source_p) ||
+        already_placed_kline(source_p, kuser, khost, YES))
       return;
-    }
+
+    conf = make_conf_item(KLINE_TYPE);
+    aconf = (struct AccessItem *)map_to_conf(conf);
+    DupString(aconf->host, khost);
+    DupString(aconf->user, kuser);
 
     if (tkline_time != 0)
     {
@@ -698,7 +698,7 @@ mo_dline(struct Client *client_p, struct Client *source_p,
 
   if (parc != 0) /* host :reason */
   {
-    if (valid_comment(source_p, *parv) == 0)
+    if (valid_comment(source_p, *parv, YES) == 0)
       return;
 
     if (*parv[0] != '\0')
@@ -752,7 +752,7 @@ mo_dline(struct Client *client_p, struct Client *source_p,
     oper_reason++;
   }
 
-  if (!valid_comment(source_p, reason))
+  if (!valid_comment(source_p, reason, YES))
     return;
 
   conf = make_conf_item(DLINE_TYPE);
@@ -868,23 +868,25 @@ find_user_host(struct Client *source_p, char *user_host_or_nick,
  * side effects -
  */
 static int
-valid_user_host(struct Client *source_p, char *luser, char *lhost)
+valid_user_host(struct Client *source_p, char *luser, char *lhost, int warn)
 {
   /*
    * Check for # in user@host
    */
   if (strchr(lhost, '#') || strchr(luser, '#'))
   {
-    sendto_one(source_p, ":%s NOTICE %s :Invalid character '#' in kline",
-               me.name, source_p->name);		    
+    if (warn)
+      sendto_one(source_p, ":%s NOTICE %s :Invalid character '#' in kline",
+                 me.name, source_p->name);		    
     return(0);
   }
 
   /* Dont let people kline *!ident@host, as the ! is invalid.. */
   if (strchr(luser, '!'))
   {
-    sendto_one(source_p, ":%s NOTICE %s :Invalid character '!' in kline",
-               me.name, source_p->name);
+    if (warn)
+      sendto_one(source_p, ":%s NOTICE %s :Invalid character '!' in kline",
+                 me.name, source_p->name);
     return(0);
   }
 
@@ -900,7 +902,7 @@ valid_user_host(struct Client *source_p, char *luser, char *lhost)
  * side effects -
  */
 static int
-valid_wild_card(char *luser, char *lhost)
+valid_wild_card(struct Client *source_p, char *luser, char *lhost, int warn)
 {
   char *p;
   char tmpch;
@@ -949,7 +951,12 @@ valid_wild_card(char *luser, char *lhost)
   }
 
   if (nonwild < ConfigFileEntry.min_nonwildcard)
+  {
+    if (warn)
+      sendto_one(source_p, ":%s NOTICE %s :Please include at least %d non-wildcard characters with the user@host",
+                 me.name, source_p->name, ConfigFileEntry.min_nonwildcard);
     return(0);
+  }
   else
     return(1);
 }
@@ -963,12 +970,13 @@ valid_wild_card(char *luser, char *lhost)
  * side effects - truncates reason where necessary
  */
 static int
-valid_comment(struct Client *source_p, char *comment)
+valid_comment(struct Client *source_p, char *comment, int warn)
 {
   if (strchr(comment, '"'))
   {
-    sendto_one(source_p, ":%s NOTICE %s :Invalid character '\"' in comment",
-               me.name, source_p->name);
+    if (warn)
+      sendto_one(source_p, ":%s NOTICE %s :Invalid character '\"' in comment",
+                 me.name, source_p->name);
     return(0);
   }
 
@@ -989,7 +997,7 @@ valid_comment(struct Client *source_p, char *comment)
  *       have to walk the hash and check every existing K-line. -A1kmm.
  */
 static int
-already_placed_kline(struct Client *source_p, const char *luser, const char *lhost)
+already_placed_kline(struct Client *source_p, const char *luser, const char *lhost, int warn)
 {
   const char *reason;
   struct irc_ssaddr iphost, *piphost;
@@ -1014,12 +1022,14 @@ already_placed_kline(struct Client *source_p, const char *luser, const char *lho
 
   if ((aconf = find_conf_by_address(lhost, piphost, CONF_KILL, t, luser, NULL)))
   {
-    reason = aconf->reason ? aconf->reason : "No Reason";
-
-    sendto_one(source_p,
-               ":%s NOTICE %s :[%s@%s] already K-Lined by [%s@%s] - %s",
-               me.name, source_p->name, luser, lhost, aconf->user,
-               aconf->host, reason);
+    if (warn)
+    {
+      reason = aconf->reason ? aconf->reason : "No Reason";
+      sendto_one(source_p,
+                 ":%s NOTICE %s :[%s@%s] already K-Lined by [%s@%s] - %s",
+                 me.name, source_p->name, luser, lhost, aconf->user,
+                 aconf->host, reason);
+    }
     return(1);
   }
 
