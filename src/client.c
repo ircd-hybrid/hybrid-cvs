@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.274 2002/05/31 02:21:03 androsyn Exp $
+ *  $Id: client.c,v 7.275 2002/06/07 23:37:37 androsyn Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -1206,7 +1206,7 @@ void dead_link(struct Client *client_p)
 {
   dlink_node *m;
   const char *notice;
-  if(IsClosing(client_p))
+  if(IsClosing(client_p) || IsDead(client_p))
     return;
 
   linebuf_donebuf(&client_p->localClient->buf_recvq);
