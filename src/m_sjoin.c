@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 7.11 2000/10/23 18:44:58 db Exp $
+ *   $Id: m_sjoin.c,v 7.12 2000/10/28 20:54:10 db Exp $
  */
 #include "handlers.h"
 #include "channel.h"
@@ -49,9 +49,10 @@
  * incoming modes or undo the existing ones or merge them, and JOIN
  * all the specified users while sending JOIN/MODEs to non-TS servers
  * and to clients
+ *
+ * This function is a festering pile of doggie doo-doo left in the
+ * hot sun for 2 weeks, coated with flies. -db
  */
-
-
 
 int     ms_sjoin(struct Client *cptr,
                 struct Client *sptr,
@@ -133,6 +134,41 @@ int     ms_sjoin(struct Client *cptr,
 
   isnew = ChannelExists(parv[2]) ? 0 : 1;
   chptr = get_channel(sptr, parv[2], CREATE);
+
+  /* ZZZ vchan cruft */
+  /* vchans are encoded as "##mainchanname_timestamp" */
+
+  if(parv[2][1] == '#')
+    {
+      char *p;
+      struct Channel *top_chptr;
+
+      /* possible sub vchan being sent along ? */
+      if((p = strchr(parv[2],'_')))
+	{
+	  /* quite possibly now. To confirm I could
+	   * check the encoded timestamp to see if it matches
+	   * the given timestamp for this channel. Maybe do 
+	   * that later. - db
+	   */
+
+	  *p = '\0';	/* fugly hack for now ... */
+
+	  if((top_chptr = hash_find_channel(parv[2], NULL)))
+	    {
+	      if (top_chptr->next_vchan)
+		{
+		  chptr->next_vchan = top_chptr->next_vchan;
+		  top_chptr->next_vchan->prev_vchan = chptr;
+		}
+
+	      top_chptr->next_vchan = chptr;
+	      chptr->prev_vchan = top_chptr;
+	    }
+
+	  *p = '_';	/* fugly hack, restore '_' */
+	}
+    }
 
   /*
    * bogus ban removal code.
