@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.132 2001/12/30 07:45:13 db Exp $
+ * $Id: ircd_lexer.l,v 1.133 2002/01/01 15:53:45 leeh Exp $
  */
 
 %option case-insensitive
@@ -113,7 +113,6 @@ aftype		{ return AFTYPE; }
 allow_hidden	{ return ALLOW_HIDDEN; }
 auth		{ return AUTH; }
 autoconn	{ return AUTOCONN; }
-bind_address    { return BIND_ADDRESS; }
 caller_id_wait	{ return CALLER_ID_WAIT; }
 channel		{ return CHANNEL; }
 cipher_preference { return CIPHER_PREFERENCE; }
