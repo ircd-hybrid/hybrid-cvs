@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_sigio.c,v 7.16 2002/02/04 06:07:57 androsyn Exp $
+ *  $Id: s_bsd_sigio.c,v 7.17 2002/02/04 06:11:59 androsyn Exp $
  */
 
 #ifndef _GNU_SOURCE
@@ -267,27 +267,20 @@ void
 comm_setselect(int fd, fdlist_t list, unsigned int type, PF * handler,
                void *client_data, time_t timeout)
 {
-    int new_hdl;
     fde_t *F = &fd_table[fd];
     assert(fd >= 0);
     assert(F->flags.open);
     if (type & COMM_SELECT_READ)
     {
-        new_hdl = (F->read_handler == NULL);
         F->read_handler = handler;
         F->read_data = client_data;
         poll_update_pollfds(fd, POLLIN, handler);
-        if (new_hdl && handler != NULL)
-            handler(fd, client_data);
     }
     if (type & COMM_SELECT_WRITE)
     {
-        new_hdl = (F->write_handler == NULL);
         F->write_handler = handler;
         F->write_data = client_data;
         poll_update_pollfds(fd, POLLOUT, handler);
-        if (new_hdl && handler != NULL)
-            handler(fd, client_data);
     }
     if (timeout)
         F->timeout = CurrentTime + (timeout / 1000);
