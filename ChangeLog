@@ -1,3 +1,19 @@
+db          2002/12/16 02:18:50 EST	(20021216_3)
+
+  Modified files:
+    .                    RELNOTES 
+    src                  kdparse.c 
+  Log:
+  - cleaned up getfield() field code. I obviously did it in a hurry last time.
+    this fixes bug with , in a reason field.
+  - updated RELNOTES again
+  
+  Revision  Changes    Path
+  1.46      +4 -1      ircd-hybrid-7/RELNOTES
+  7.9       +35 -23    ircd-hybrid-7/src/kdparse.c
+
+
+
 db          2002/12/16 01:44:46 EST	(20021216_2)
 
   Modified files:
@@ -33579,4 +33595,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4138 2002/12/16 06:44:49 db Exp $
+$Id: ChangeLog,v 7.4139 2002/12/16 07:18:52 db Exp $
