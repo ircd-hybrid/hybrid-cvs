@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.31 2000/12/14 21:55:36 toot Exp $
+ * $Id: ircd_lexer.l,v 1.32 2000/12/15 03:32:17 toot Exp $
  */
 
 %option case-insensitive
@@ -86,6 +86,7 @@ connect		{ return CONNECT; }
 deny		{ return DENY; }
 description	{ return DESCRIPTION; }
 die		{ return DIE; }
+dots_in_ident   { return DOTS_IN_IDENT; }
 email		{ return EMAIL; }
 exceed_limit    { return EXCEED_LIMIT; }
 gecos		{ return GECOS; }

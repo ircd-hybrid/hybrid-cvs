@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.64 2000/12/11 23:20:27 db Exp $
+ *  $Id: s_user.c,v 7.65 2000/12/15 03:32:19 toot Exp $
  */
 #include "tools.h"
 #include "s_user.h"
@@ -560,32 +560,32 @@ static int valid_hostname(const char* hostname)
  * 
  * Absolutely always reject any '*' '!' '?' '@' in an user name
  * reject any odd control characters names.
- * Allow ONE '.' in username to allow for "first.last"
+ * Allow '.' in username to allow for "first.last"
  * style of username
  */
 static int valid_username(const char* username)
 {
   int dots = 0;
   const char *p = username;
+
   assert(0 != p);
 
   if ('~' == *p)
     ++p;
-  /* 
-   * reject usernames that don't start with an alphanum
+
+  /* reject usernames that don't start with an alphanum
    * i.e. reject jokers who have '-@somehost' or '.@somehost'
    * or "-hi-@somehost", "h-----@somehost" would still be accepted.
-   *
    */
   if (!IsAlNum(*p))
     return NO;
 
   while (*++p)
     {
-      if(*p == '.')
+      if((*p == '.') && ConfigFileEntry.dots_in_ident)
         {
           dots++;
-          if(dots > 1)
+          if(dots > ConfigFileEntry.dots_in_ident)
             return NO;
           if(!IsUserChar(p[1]))
             return NO;

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.55 2000/12/15 00:12:03 toot Exp $
+ * $Id: config.h,v 7.56 2000/12/15 03:32:15 toot Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -144,12 +144,6 @@
  * undef'ing it will allow hostnames with _ or / to connect
  */
 #define RFC1035_ANAL
-
-/* ALLOW_DOT_IN_IDENT
- * Defining this will allow periods in ident replies.  Use of this is
- * strongly discouraged on public networks
- */
-#undef ALLOW_DOT_IN_IDENT
 
 /*
  * OPER_UMODES LOCOP_UMODES - set these to be the initial umodes when OPER'ing
