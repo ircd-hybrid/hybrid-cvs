@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.h,v 7.31 2002/05/25 01:38:09 androsyn Exp $
+ *  $Id: modules.h,v 7.32 2002/11/12 13:45:40 db Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -70,7 +70,7 @@ extern void _modinit(void);
 extern void _moddeinit(void);
 
 extern int unload_one_module (char *, int);
-extern int load_one_module (char *);
+extern int load_one_module (char *, int);
 extern int load_a_module (char *, int, int);
 extern int findmodule_byname (char *);
 extern char* irc_basename(char *);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.243 2002/11/11 23:25:16 db Exp $
+ *  $Id: ircd.c,v 7.244 2002/11/12 13:45:41 db Exp $
  */
 
 #include "stdinc.h"
@@ -342,7 +342,7 @@ io_loop(void)
       if (doremotd)
         {
           ReadMessageFile( &ConfigFileEntry.motd );
-          sendto_realops_flags(UMODE_ALL, L_ALL,
+          sendto_realops_flags(FLAGS_ALL, L_ALL,
                                "Got signal SIGUSR1, reloading ircd motd file");
           doremotd = 0;
         }

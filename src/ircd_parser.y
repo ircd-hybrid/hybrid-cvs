@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.261 2002/10/30 17:44:56 wiz Exp $
+ *  $Id: ircd_parser.y,v 1.262 2002/11/12 13:45:42 db Exp $
  */
 
 %{
@@ -380,7 +380,7 @@ modules_module:  MODULE '=' QSTRING ';'
     break;
 
   /* XXX - should we unload this module on /rehash, if it isn't listed? */
-  load_one_module (yylval.string);
+  load_one_module (yylval.string, 0);
 
   MyFree(m_bn);
 #endif
