@@ -1,3 +1,18 @@
+db          2002/09/10 15:58:34 EDT	(20020910_2)
+
+  Modified files:
+    modules              m_oper.c 
+    modules/core         m_nick.c 
+  Log:
+  - This is the better fix for the ~ nick bug. Look at clean_nick_name() in hybrid-6
+    this fix duplicates the behaviour of hybrid-6 clean_nick_name better.
+  
+  Revision  Changes    Path
+  1.96      +5 -11     ircd-hybrid-7/modules/core/m_nick.c
+  1.56      +69 -69    ircd-hybrid-7/modules/m_oper.c
+
+
+
 androsyn    2002/09/10 14:50:30 EDT	(20020910_1)
 
   Modified files:
@@ -31968,4 +31983,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4030 2002/09/10 18:50:33 androsyn Exp $
+$Id: ChangeLog,v 7.4031 2002/09/10 19:58:36 db Exp $
