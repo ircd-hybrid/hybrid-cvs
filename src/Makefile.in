@@ -1,8 +1,10 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.138 2003/05/25 05:56:38 db Exp $
+# $Id: Makefile.in,v 7.139 2003/05/25 23:41:40 joshk Exp $
 #
+@SET_MAKE@
+
 CC		= @CC@
 INSTALL		= @INSTALL@
 INSTALL_BIN	= @INSTALL_PROGRAM@
@@ -113,9 +115,12 @@ all: ircd
 
 build: all
 
-ircd: $(OBJS) y.tab.o lex.yy.o version.o
+ircd: @MODULES_LIBS@ $(OBJS) y.tab.o lex.yy.o version.o
 	${CC} ${CFLAGS} ${LDFLAGS} -o $@ ${OBJS} lex.yy.o y.tab.o version.o ${IRCDLIBS}
 	${MV} -f version.c version.c.last
+
+../modules/libmodules.a:
+	cd ../modules && ${MAKE} ${MFLAGS}
 
 install-mkdirs:
 	mkdir -p $(prefix) $(exec_prefix) $(bindir) $(sysconfdir) \

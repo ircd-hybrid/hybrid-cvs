@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.118 2003/05/25 06:06:06 db Exp $
+ *  $Id: modules.c,v 7.119 2003/05/25 23:41:40 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -532,6 +532,8 @@ mo_modrestart(struct Client *client_p, struct Client *source_p, int parc, char *
 }
 
 #else /* STATIC_MODULES */
+
+#include "s_serv.h"
 
 /* load_all_modules()
  *
