@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.137 2003/10/16 06:55:37 metalrock Exp $
+ *  $Id: channel_mode.c,v 7.138 2003/10/16 23:42:09 bill Exp $
  */
 
 #include "stdinc.h"
@@ -404,7 +404,7 @@ pretty_mask(char *mask)
       *t++ = '\0';
       if (*t != '\0')
 	user = t;
-      if (*mask != '\0' && (strchr(mask, ':') == NULL))
+      if (*mask != '\0' && *mask != ':')
 	nick = mask;
     }
     else
@@ -417,7 +417,7 @@ pretty_mask(char *mask)
   {
     ex = t;
     *t++ = '\0';
-    if (*mask != '\0' && (strchr(mask, ':') == NULL))
+    if (*mask != '\0' && *mask != ':')
       nick = mask;
     if (*t != '\0')
       user = t;
@@ -429,7 +429,7 @@ pretty_mask(char *mask)
   }
   else
   {
-    if (*mask != '\0' && (strchr(mask, ':') == NULL))
+    if (*mask != '\0' && *mask != ':')
       nick = mask;
   }
 
