@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kill.c,v 1.41 2001/04/28 14:28:56 fl_ Exp $
+ *   $Id: m_kill.c,v 1.42 2001/04/28 14:40:51 fl_ Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -138,6 +138,8 @@ static void mo_kill(struct Client *client_p, struct Client *source_p,
   if(MyOper(target_p))
       sendto_one(target_p, ":%s KILL %s :%s", parv[0], target_p->name, reason);
 
+  /* Do NOT change the format of this message at ALL.  Doing so will break
+   * epics precious formatting rules that it complains about like hell --fl */
   sendto_realops_flags(FLAGS_ALL,
 		       "Received KILL message for %s. From %s Path: %s (%s)", 
 		       target_p->name, parv[0], me.name, reason);
@@ -256,10 +258,12 @@ static void ms_kill(struct Client *client_p, struct Client *source_p,
   if(MyOper(target_p))
       sendto_one(target_p, ":%s KILL %s :%s", parv[0], target_p->name, reason);
 
+  /* Be warned, if this message isnt anything but From %s, epic will moan
+   * like hell.. so dont change it to From: or the case or anything! -- fl */
   if (IsOper(source_p)) /* send it normally */
     {
       sendto_realops_flags(FLAGS_ALL,
-			   "Received KILL message for %s. From: %s Path: %s %s",
+			   "Received KILL message for %s. From %s Path: %s %s",
 			   target_p->name, parv[0], source_p->user->server, reason);
     }
   else
