@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 1.5 2003/05/23 01:04:57 joshk Exp $
+# $Id: Makefile.in,v 1.6 2003/05/24 01:40:17 joshk Exp $
 
 INSTALL		= @INSTALL@
 INSTALL_DATA	= @INSTALL_DATA@
@@ -11,7 +11,6 @@ CLOBBER=@CLOBBER@
 prefix		= @prefix@
 sysconfdir	= @sysconfdir@
 exec_prefix	= @exec_prefix@
-exec_suffix	= @exec_suffix@
 
 DISTFILES	= example.conf example.efnet.conf example.conf.quick simple.conf
 NOMVFILES	= ircd.motd
@@ -40,6 +39,13 @@ install:
 		if test ! -f "$(sysconfdir)/$${i}line.conf"; then \
 			echo touch $(sysconfdir)/$${i}line.conf; \
 			touch $(sysconfdir)/$${i}line.conf; \
+		fi; \
+	done
+
+	@for i in n c; do \
+		if test ! -f "$(sysconfdir)/$${i}resv.conf"; then \
+			echo touch $(sysconfdir)/$${i}resv.conf; \
+			touch $(sysconfdir)/$${i}resv.conf; \
 		fi; \
 	done
 
