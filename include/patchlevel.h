@@ -19,9 +19,9 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: patchlevel.h,v 7.38 2002/09/18 03:23:00 lusky Exp $
+ *  $Id: patchlevel.h,v 7.39 2002/10/31 05:31:37 lusky Exp $
  */
 
 #ifndef PATCHLEVEL
-#define PATCHLEVEL   "hybrid-7rc4"
+#define PATCHLEVEL   "hybrid-7rc5"
 #endif
