@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.130 2003/05/30 08:05:38 michael Exp $
+ *  $Id: m_stats.c,v 1.131 2003/05/31 05:10:09 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -79,7 +79,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.130 $";
+const char *_version = "$Revision: 1.131 $";
 #endif
 
 const char *Lformat = ":%s %d %s %s %u %u %u %u %u :%u %u %s";
@@ -1099,7 +1099,7 @@ stats_L_spy(struct Client *source_p, char statchar, char *name)
 static char *
 parse_stats_args(int parc, char *parv[], int *doall, int *wilds)
 {
-  const char *name;
+  char *name;
 
   if (parc > 2)
   {
