@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.338 2003/07/17 06:25:28 metalrock Exp $
+ *  $Id: ircd_parser.y,v 1.339 2003/07/17 07:00:12 joshk Exp $
  */
 
 %{
@@ -2406,7 +2406,7 @@ general_hide_spoof_ips: HIDE_SPOOF_IPS '=' TBOOL ';'
 {
   if (ypass == 2)
     ConfigFileEntry.hide_spoof_ips = yylval.number;
-}
+};
 
 general_ignore_bogus_ts: IGNORE_BOGUS_TS '=' TBOOL ';'
 {
