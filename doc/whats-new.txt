@@ -99,7 +99,7 @@ GLN     - Support G-lines
 HOPS    - Support half-ops
 HUB     - Is a hub server (used to prevent two LL hubs from linking in that 
           state)
-ANONOPS - Supports anonymous channel ops (channel mode +a)
+AOPS    - Supports anonymous channel ops (channel mode +a)
 
 K-lines can now be sent to and accepted from other servers.  The shared {}
 block in the conf file is used to specify which servers are trusted.
@@ -162,4 +162,4 @@ PREFIX=%s      - The allowed PRIVMSG/NOTICE channel prefixes (server based
 
 # complete me
 
-# $Id: whats-new.txt,v 7.11 2000/12/31 19:16:20 wcampbel Exp $
+# $Id: whats-new.txt,v 7.12 2000/12/31 23:37:51 wcampbel Exp $
