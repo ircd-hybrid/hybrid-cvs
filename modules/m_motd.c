@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_motd.c,v 1.30 2002/07/31 16:24:07 leeh Exp $
+ *  $Id: m_motd.c,v 1.31 2002/10/08 00:23:46 db Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&motd_msgtab);
 }
 
-const char *_version = "$Revision: 1.30 $";
+const char *_version = "$Revision: 1.31 $";
 #endif
 
 /* mr_motd()
@@ -98,7 +98,7 @@ static void m_motd(struct Client *client_p, struct Client *source_p,
     last_used = CurrentTime;
 
   /* This is safe enough to use during non hidden server mode */
-  if(!ConfigServerHide.disable_remote)
+  if(!ConfigServerHide.disable_remote && !ConfigServerHide.hide_servers)
     {
       if (hunt_server(client_p, source_p, ":%s MOTD :%s", 1,parc,parv)!=HUNTED_ISME)
 	return;
