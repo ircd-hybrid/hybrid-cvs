@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.118 2003/04/09 11:19:34 stu Exp $
+ *  $Id: m_kline.c,v 1.119 2003/04/10 14:23:52 stu Exp $
  */
 
 #include "stdinc.h"
@@ -75,7 +75,7 @@ _moddeinit(void)
   mod_del_cmd(&kline_msgtab);
   mod_del_cmd(&dline_msgtab);
 }
-const char *_version = "$Revision: 1.118 $";
+const char *_version = "$Revision: 1.119 $";
 #endif
 
 /* Local function prototypes */
@@ -576,7 +576,7 @@ mo_dline(struct Client *client_p, struct Client *source_p,
 
   if ((t=parse_netmask(dlhost, NULL, &bits)) == HM_HOST)
   {
-#if 1 /* was IPV6 */
+#ifdef IPV6 
    sendto_one(source_p, ":%s NOTICE %s :Sorry, please supply an address.",
               me.name, parv[0]);
    return;
