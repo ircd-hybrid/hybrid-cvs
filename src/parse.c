@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.124 2002/03/14 17:44:13 db Exp $
+ *  $Id: parse.c,v 7.125 2002/04/10 03:01:34 androsyn Exp $
  */
 
 #include <assert.h>
@@ -689,7 +689,7 @@ static void do_numeric(char numeric[],
   struct Client *target_p;
   struct Channel *chptr;
 
-  if (parc < 1 || !IsServer(source_p))
+  if (parc < 2 || !IsServer(source_p))
     return;
 
   /* Remap low number numerics. */
