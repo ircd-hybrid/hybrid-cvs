@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_oper.c,v 1.65 2003/04/19 16:28:39 michael Exp $
+ *  $Id: m_oper.c,v 1.66 2003/04/19 16:39:44 michael Exp $
  */
 
 #include "stdinc.h"
@@ -51,7 +51,6 @@ extern        char *crypt();
 #endif /* CRYPT_OPER_PASSWORD */
 
 static void m_oper(struct Client*, struct Client*, int, char**);
-static void ms_oper(struct Client*, struct Client*, int, char**);
 static void mo_oper(struct Client*, struct Client*, int, char**);
 
 
@@ -73,7 +72,7 @@ _moddeinit(void)
   mod_del_cmd(&oper_msgtab);
 }
 
-const char *_version = "$Revision: 1.65 $";
+const char *_version = "$Revision: 1.66 $";
 #endif
 
 /*
