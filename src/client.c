@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.193 2001/08/13 05:09:05 androsyn Exp $
+ *  $Id: client.c,v 7.194 2001/08/13 14:20:18 androsyn Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -125,19 +125,12 @@ struct Client* make_client(struct Client* from)
   struct LocalUser *localClient;
   dlink_node *m;
 
-#if 1
-  client_p = (struct Client *)MyMalloc(sizeof(struct Client));
-#endif 
   client_p = BlockHeapAlloc(client_heap);
-         
   if (from == NULL)
     {
       client_p->from  = client_p; /* 'from' of local client is self! */
       client_p->since = client_p->lasttime = client_p->firsttime = CurrentTime;
 
-#if 0
-      localClient = (struct LocalUser *)MyMalloc(sizeof(struct LocalUser));
-#endif
       localClient = (struct LocalUser *)BlockHeapAlloc(lclient_heap);
       client_p->localClient = localClient;
 

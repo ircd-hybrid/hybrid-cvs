@@ -6,7 +6,7 @@
  * The idea here is that we should really be maintaining pre-munged
  * buffer "lines" which we can later refcount to save needless copies.
  *
- * $Id: linebuf.c,v 7.39 2001/08/13 05:09:05 androsyn Exp $
+ * $Id: linebuf.c,v 7.40 2001/08/13 14:20:18 androsyn Exp $
  */
 
 #include <errno.h>
@@ -37,8 +37,6 @@
 #endif
 
 static BlockHeap *linebuf_heap;
-/* jdc -- linebuf_initialised seems to be unused */
-/* static int linebuf_initialised = 0; */
 
 static int bufline_count = 0;
 
@@ -68,7 +66,6 @@ linebuf_allocate(void)
 {
   buf_line_t *t;
   t = BlockHeapAlloc(linebuf_heap);
-  memset(t, 0, sizeof(buf_line_t));
   assert(t != NULL);
   return(t);
 }
