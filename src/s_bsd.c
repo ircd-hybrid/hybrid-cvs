@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.93 2001/01/26 17:10:48 androsyn Exp $
+ *  $Id: s_bsd.c,v 7.94 2001/01/26 19:56:39 androsyn Exp $
  */
 #include "config.h"
 #include "fdlist.h"
@@ -646,7 +646,7 @@ comm_connect_dns_callback(void *vptr, struct DNSReply *reply)
      * the DNS record around, and the DNS cache is gone anyway.. 
      *     -- adrian
      */
-    memcpy(&F->connect.hostaddr, reply->hp->h_addr, sizeof(struct in_addr));
+    memcpy(&S_ADDR(F->connect.hostaddr), reply->hp->h_addr, sizeof(struct irc_inaddr));
 
     /* Now, call the tryconnect() routine to try a connect() */
     comm_connect_tryconnect(F->fd, NULL);
