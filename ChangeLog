@@ -1,3 +1,7 @@
+*** 20001213_13 by spookey
+
+  --disable-openssl enabled openssl... that didn't seem right..
+
 *** 20001213_12 by db
 - tiny update to send.txt, sendto_common_channels 
 
@@ -2569,7 +2573,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.821 2000/12/14 03:05:37 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.822 2000/12/14 03:27:56 spookey Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
