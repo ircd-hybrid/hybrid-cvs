@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.106 2003/06/03 03:24:18 michael Exp $
+ *  $Id: m_whois.c,v 1.107 2003/06/06 23:19:33 bill Exp $
  */
 
 #include "stdinc.h"
@@ -72,7 +72,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-const char *_version = "$Revision: 1.106 $";
+const char *_version = "$Revision: 1.107 $";
 #endif
 
 /*
@@ -455,6 +455,8 @@ static void
 ms_whois(struct Client *client_p, struct Client *source_p,
          int parc, char *parv[])
 {
+  char *wild_ptr;
+
   if (!IsClient(source_p))
     return;
 
@@ -497,10 +499,13 @@ ms_whois(struct Client *client_p, struct Client *source_p,
     else
       target_p = target_p->servptr;
 
-    /* if parv[1] isnt my client, or me, someone else is supposed
-     * to be handling the request.. so send it to them 
+    /*
+     * at this point, we know target_p is a server, so client
+     * specific checks are a waste of time.  if target_p isnt me,
+     * someone else is supposed to be handling the request.. so
+     * send it to them
      */
-    if (!MyClient(target_p) && !IsMe(target_p))
+    if (!IsMe(target_p))
     {
 
       /* we're being asked to forward a whois request to a LL to answer,
@@ -551,20 +556,34 @@ ms_whois(struct Client *client_p, struct Client *source_p,
       /* its not a lazylink.. forward it as it is */
       else
       {
-        /* client_burst_if_needed(target_p->from, source_p); 
-	 * the target isnt a LL.. why would I need to burst? */
         sendto_one(target_p->from, ":%s WHOIS %s :%s", parv[0], parv[1],
                    parv[2]);
        return;	       
       }
     }
 
-  /* ok, the target is either us, or a client on our server, so perform the whois
+  /*
+   * ok, the target is either us, or a client on our server, so perform the whois
    * but first, parv[1] == server to perform the whois on, parv[2] == person
    * to whois, so make parv[1] = parv[2] so do_whois is ok -- fl_
    */
     parv[1] = parv[2];
-    do_whois(client_p,source_p,parc,parv);
+
+    /*
+     * do not allow remote users to generate requests with wildcards,
+     * too much potential for abuse.  -bill 05/03
+     */
+    for (wild_ptr = parv[2]; *wild_ptr; ++wild_ptr)
+    {
+      if (*wild_ptr == '?' || *wild_ptr == '*')
+      {
+        sendto_one(source_p, form_str(ERR_NOSUCHNICK),
+                   me.name, source_p->name, parv[2]);
+        return;
+      }
+    }
+
+    do_whois(client_p, source_p, parc, parv);
     return;
   }
 

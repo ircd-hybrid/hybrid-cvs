@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.31 2003/06/01 15:05:49 adx Exp $
+ *   $Id: m_operspy.c,v 1.32 2003/06/06 23:19:32 bill Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -45,11 +45,15 @@
 #include "s_conf.h"
 #include "s_log.h"
 #include "s_serv.h"
+#include "s_misc.h"
 #include "send.h"
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
 #include "hash.h"
+
+/* enable per-oper logging of OPERSPY functions */
+#define LOG_OPERSPY
 
 /* enable OPERSPY version of LIST */
 #define OPERSPY_LIST
@@ -108,7 +112,11 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.31 $";
+const char *_version = "$Revision: 1.32 $";
+#endif
+
+#ifdef LOG_OPERSPY
+static void log_operspy(struct Client *, const char *);
 #endif
 
 /*
@@ -144,6 +152,10 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
 {
   char *operspy = parv[0];
   dlink_node *ptr;
+
+#ifdef LOG_OPERSPY
+  char log_buf[BUFSIZE];
+#endif
 
 #ifdef OPERSPY_LIST
   struct Channel *chptr_list = NULL;
@@ -201,6 +213,13 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
                operspy);
     return;
   }
+
+#ifdef LOG_OPERSPY
+  ircsprintf(log_buf, "%s!%s@%s -- OPERSPY %s %s",
+             client_p->name, client_p->username, client_p->host,
+             parv[1], parv[2]);
+  log_operspy(client_p, log_buf);
+#endif
 
 #ifdef OPERSPY_LIST
   if (irccmp(parv[1], "LIST") == 0)
@@ -520,7 +539,37 @@ do_who_on_channel(struct Client *source_p, struct Channel *chptr,
   DLINK_FOREACH(ptr, chptr->members.head)
   {
     ms = ptr->data;
-    do_who(source_p, ms->client_p, chname, get_member_status(ms, NO));
+    do_who(source_p, ms->client_p, chname, (char *)get_member_status(ms, NO));
   }
 }
 #endif /* OPERSPY_WHO */
+
+#ifdef LOG_OPERSPY
+static void
+log_operspy(struct Client *source_p, const char *buf)
+{
+  FBFILE *operspy_fb;
+  dlink_node *cnode;
+  const char *opername = source_p->name;
+  char linebuf[BUFSIZE], logfile[BUFSIZE];
+
+  assert(source_p != NULL);
+
+  if (IsOper(source_p))
+  {
+    DLINK_FOREACH(cnode, source_p->localClient->confs.head)
+    {
+      if (IsConfOperator((struct ConfItem *)cnode->data))
+        opername = ((struct ConfItem *)cnode->data)->name;
+    }
+  }
+
+  ircsprintf(logfile, "%s/operspy.%s.log", LOGPATH, opername);
+  if ((operspy_fb = fbopen(logfile, "a")) == NULL)
+    return;
+
+  ircsprintf(linebuf, "[%s] %s\n", smalldate(CurrentTime), buf);
+  fbputs(linebuf, operspy_fb);
+  fbclose(operspy_fb);
+}
+#endif /* LOG_OPERSPY */
