@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.68 2000/12/01 15:01:49 adrian Exp $
+ *  $Id: s_bsd.c,v 7.69 2000/12/01 15:03:27 adrian Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -528,9 +528,9 @@ comm_checktimeouts(void *notused)
             fd_table[fd].timeout > 0 && fd_table[fd].timeout < CurrentTime) {
             /* Call timeout handler */
             hdl = fd_table[fd].timeout_handler;
-            hdl(fd, fd_table[fd].timeout_data);           
-            /* .. and clear .. */
+            data = fd_table[fd].timeout_data;
             comm_settimeout(fd, 0, NULL, NULL);
+            hdl(fd, fd_table[fd].timeout_data);           
         }
     }
     /* .. next .. */
