@@ -1,3 +1,10 @@
+*** 20001211_14 by db
+- not sure if I am closing all the fd's that should be closed here..
+  the original code refers to connecting servers as well as unknown_clients
+  perhaps connecting server fd's should be also closed?
+
+
+
 *** 20001211_13 by db
 - a client being made into a server, should be removed from the unknown_list
   this was happening in the new server establish code...
@@ -2367,7 +2374,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.798 2000/12/12 04:29:04 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.799 2000/12/12 04:34:50 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
