@@ -1,7 +1,7 @@
 #
 # Makefile.in for servlink/src
 #
-# $Id: Makefile.in,v 1.11 2001/10/06 17:35:31 androsyn Exp $
+# $Id: Makefile.in,v 1.12 2001/12/11 04:33:03 androsyn Exp $
 #
 
 CC              = @CC@
@@ -14,7 +14,7 @@ LEX             = @LEX@
 LEXLIB          = @LEXLIB@
 CFLAGS          = @IRC_CFLAGS@ -DIRCD_PREFIX=\"@prefix@\"
 LDFLAGS         = @LDFLAGS@
-MKDEP           = ${CC} -MM -DIRCD_PREFIX=\"@prefix@\"
+MKDEP           = @MKDEP@ -DIRCD_PREFIX=\"@prefix@\"
 MV              = @MV@
 RM              = @RM@
 prefix          = @prefix@
