@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_names.c,v 1.19 2000/12/31 23:56:51 toot Exp $
+ *   $Id: m_names.c,v 1.20 2001/01/03 02:44:58 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -181,7 +181,7 @@ void names_all_visible_channels(struct Client *sptr)
 	  ircsprintf(buf,form_str(RPL_NAMREPLY),
 		     me.name, sptr->name,channel_pub_or_secret(chptr));
 	  mlen = strlen(buf);
-	  ircsprintf(buf + mlen," %s : ", chname);
+	  ircsprintf(buf + mlen," %s :", chname);
 	  mlen = strlen(buf);
 	  cur_len = mlen;
 
