@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.150 2003/06/16 09:18:55 michael Exp $
+ *  $Id: channel.h,v 7.151 2003/06/21 12:26:26 michael Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -83,6 +83,7 @@ extern dlink_list global_channel_list;
 
 extern void init_channels(void);
 extern int can_send (struct Channel *chptr, struct Client *who);
+extern int can_send_part(struct Membership *, struct Channel *, struct Client *);
 extern int is_banned (struct Channel *chptr, struct Client *who);
 extern int can_join(struct Client *source_p, struct Channel *chptr,
                     const char *key);

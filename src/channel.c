@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.395 2003/06/14 16:47:47 adx Exp $
+ *  $Id: channel.c,v 7.396 2003/06/21 12:26:29 michael Exp $
  */
 
 #include "stdinc.h"
@@ -775,6 +775,25 @@ can_send(struct Channel *chptr, struct Client *source_p)
 
   if (chptr->mode.mode & MODE_NOPRIVMSGS && ms == NULL)
     return(CAN_SEND_NO);
+
+  return(CAN_SEND_NONOP);
+}
+
+int
+can_send_part(struct Membership *member, struct Channel *chptr,
+              struct Client *source_p)
+{
+  if (has_member_flags(member, CHFL_CHANOP|CHFL_HALFOP))
+    return(CAN_SEND_OPV);
+
+  if (chptr->mode.mode & MODE_MODERATED)
+    return(CAN_SEND_NO);
+
+  if (ConfigChannel.quiet_on_ban && MyClient(source_p) &&
+      (is_banned(chptr, source_p) == CHFL_BAN))
+  {
+    return(CAN_SEND_NO);
+  }
 
   return(CAN_SEND_NONOP);
 }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_part.c,v 1.74 2003/06/12 15:17:22 michael Exp $
+ *  $Id: m_part.c,v 1.75 2003/06/21 12:26:28 michael Exp $
  */
 
 #include "stdinc.h"
@@ -61,7 +61,8 @@ _moddeinit(void)
 {
   mod_del_cmd(&part_msgtab);
 }
-const char *_version = "$Revision: 1.74 $";
+
+const char *_version = "$Revision: 1.75 $";
 #endif
 
 static void part_one_client(struct Client *client_p,
@@ -140,16 +141,15 @@ part_one_client(struct Client *client_p, struct Client *source_p,
 
   if (MyConnect(source_p) && !IsOper(source_p))
     check_spambot_warning(source_p, NULL);
-  
+
   /*
    *  Remove user from the old channel (if any)
    *  only allow /part reasons in -m chans
    */
-  if (reason[0] &&
-      (has_member_flags(ms, CHFL_CHANOP|CHFL_HALFOP) || !MyConnect(source_p) ||
-       ((can_send(chptr, source_p) > 0 && 
-         (source_p->firsttime + ConfigFileEntry.anti_spam_exit_message_time)
-         < CurrentTime))))
+  if (reason[0] && (!MyConnect(source_p) ||
+      ((can_send_part(ms, chptr, source_p) > 0 &&
+       (source_p->firsttime + ConfigFileEntry.anti_spam_exit_message_time)
+        < CurrentTime))))
   {
     sendto_server(client_p, NULL, chptr, CAP_SID, NOCAPS, NOFLAGS,
                   ":%s PART %s :%s", ID(source_p), chptr->chname,
