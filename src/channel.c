@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.411 2004/03/02 17:02:59 db Exp $
+ *  $Id: channel.c,v 7.412 2004/03/02 22:19:53 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -49,6 +49,8 @@ dlink_list global_channel_list = { NULL, NULL, 0 };
 dlink_list lazylink_channels = { NULL, NULL, 0 };
 BlockHeap *channel_heap;
 BlockHeap *ban_heap;
+BlockHeap *topic_heap;
+BlockHeap *member_heap;
 
 static char buf[BUFSIZE];
 static char modebuf[MODEBUFLEN];
