@@ -4,7 +4,7 @@
  * shape or form. The author takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: irc_res.c,v 7.1 2003/05/12 21:56:59 stu Exp $
+ * $Id: irc_res.c,v 7.2 2003/05/12 23:01:57 stu Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -53,7 +53,7 @@
 #error this code needs to be able to address individual octets 
 #endif
 
-/* $Id: irc_res.c,v 7.1 2003/05/12 21:56:59 stu Exp $ */
+/* $Id: irc_res.c,v 7.2 2003/05/12 23:01:57 stu Exp $ */
 
 static PF res_readreply;
 
@@ -79,7 +79,9 @@ typedef enum
   REQ_IDLE, /* We're doing not much at all */
   REQ_PTR, /* Looking up a PTR */
   REQ_A, /* Looking up an A, possibly because AAAA failed */
+#ifdef IPV6
   REQ_AAAA, /* Looking up an AAAA */
+#endif
   REQ_CNAME, /* We got a CNAME in response, we better get a real answer next */
   REQ_INT, /* ip6.arpa failed, falling back to ip6.int */
 } request_state;
@@ -465,8 +467,7 @@ gethost_byname(const char* name, const struct DNSQuery* query)
  * gethost_byaddr - get host name from address
  */
 void
-gethost_byaddr(const struct irc_ssaddr* addr, int aftype, 
-    const struct DNSQuery* query)
+gethost_byaddr(const struct irc_ssaddr* addr, const struct DNSQuery* query)
 {
   do_query_number(query, addr, NULL);
 }
@@ -489,10 +490,14 @@ do_query_name(const struct DNSQuery* query, const char* name,
     request->name = (char *) MyMalloc(strlen(host_name) + 1);
     request->type = type;
     strcpy(request->name, host_name);
+#ifdef IPV6
     if(type == T_A)
       request->state = REQ_A;
     else
       request->state = REQ_AAAA;
+#else
+    request->state = REQ_A;
+#endif
   }
   request->type = type;
   query_name(host_name, C_IN, type, request);
@@ -618,10 +623,12 @@ resend_query(struct reslist *request)
     case T_A:
       do_query_name(NULL, request->name, request, request->type);
       break;
+#ifdef IPV6
     case T_AAAA:
       /* didnt work, try A */
       if(request->state == REQ_AAAA)
         do_query_name(NULL, request->name, request, T_A);
+#endif
     default:
       break;
   }
@@ -716,6 +723,7 @@ proc_answer(struct reslist *request, HEADER* header, char* buf, char* eob)
         memcpy(&v4->sin_addr, current, sizeof(struct in_addr));
         return(1);
         break;
+#ifdef IPV6
       case T_AAAA:
         if (request->type != T_AAAA)
           return(0);
@@ -725,6 +733,7 @@ proc_answer(struct reslist *request, HEADER* header, char* buf, char* eob)
         memcpy(&v6->sin6_addr, current, sizeof(struct in6_addr));
         return (1);
         break;
+#endif
       case T_PTR:
         if (request->type != T_PTR)
           return (0);
@@ -831,6 +840,7 @@ res_readreply(int fd, void *data)
        * now
        */
 
+#ifdef IPV6
       if(request->state == REQ_AAAA && request->type == T_AAAA)
       {
         request->timeout += 4;
@@ -840,9 +850,11 @@ res_readreply(int fd, void *data)
           request->addr.ss.ss_family == AF_INET6)
       {
         request->state = REQ_INT;
+        request->timeout += 4;
         resend_query(request);
       }
       else
+#endif
       {
         /*
          * If a bad error was returned, we stop here and dont send
