@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_killhost.c,v 1.6 2003/05/25 04:37:52 db Exp $
+ *  $Id: m_killhost.c,v 1.7 2003/06/09 06:22:23 michael Exp $
  *
  */
 
@@ -64,7 +64,8 @@ _moddeinit(void)
 {
   mod_del_cmd(&killhost_msgtab);
 }
-const char *_version = "$Revision: 1.6 $";
+
+const char *_version = "$Revision: 1.7 $";
 #endif
 
 /*
@@ -82,6 +83,7 @@ static void mo_killhost(struct Client *client_p,
                  char *parv[])
 {
   dlink_node *ptr;
+  dlink_node *ptr_next;
   struct Client *target_p;
   const char* inpath = client_p->name;
   char *host, *reason;
@@ -100,7 +102,7 @@ static void mo_killhost(struct Client *client_p,
 
   sendto_wallops_flags(UMODE_OPERWALL, source_p, "OPERWALL - KILLHOST %s %s", host, reason);
 
-  DLINK_FOREACH(ptr, global_client_list.head)
+  DLINK_FOREACH_SAFE(ptr, ptr_next, global_client_list.head)
   {
     target_p = ptr->data;
 
