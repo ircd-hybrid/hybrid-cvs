@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: servlink.h,v 1.4 2001/05/24 19:38:38 davidt Exp $
+ *   $Id: servlink.h,v 1.5 2001/05/24 20:02:50 davidt Exp $
  */
 
 #define CONTROL_FD_R            0
@@ -38,7 +38,8 @@
 #define SERVLINK_DEBUG_LOGS     0x02
 
 /* #define SERVLINK_DEBUG  SERVLINK_DEBUG_GDB|SERVLINK_DEBUG_LOGS */
-#undef SERVLINK_DEBUG 
+/* #undef SERVLINK_DEBUG */
+#define SERVLINK_DEBUG  SERVLINK_DEBUG_LOGS
 
 #if SERVLINK_DEBUG & SERVLINK_DEBUG_LOGS
 #define CIL 0
