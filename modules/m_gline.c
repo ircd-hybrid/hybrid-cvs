@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_gline.c,v 1.60 2001/06/22 07:03:57 jdc Exp $
+ *  $Id: m_gline.c,v 1.61 2001/06/26 20:55:58 androsyn Exp $
  */
 
 #include <assert.h>
@@ -723,10 +723,6 @@ add_new_majority_gline(const char* oper_nick,
 
   struct gline_pending *pending = (struct gline_pending*)
     MyMalloc(sizeof(struct gline_pending));
-
-  assert(0 != pending);
-
-  memset(pending, 0, sizeof(struct gline_pending));
 
   strncpy_irc(pending->oper_nick1, oper_nick, NICKLEN);
   strncpy_irc(pending->oper_user1, oper_user, USERLEN);
