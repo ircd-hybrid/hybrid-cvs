@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.288 2001/12/30 07:49:46 a1kmm Exp $
+ * $Id: channel.c,v 7.289 2002/01/03 23:46:15 leeh Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -38,6 +38,7 @@
 #include "event.h"
 #include "memory.h"
 #include "balloc.h"
+#include "resv.h"
 
 #include <assert.h>
 #include <string.h>
@@ -1136,6 +1137,9 @@ is_voiced(struct Channel *chptr, struct Client *who)
 int
 can_send(struct Channel *chptr, struct Client *source_p)
 {
+  if(MyClient(source_p) && find_channel_resv(chptr->chname))
+    return CAN_SEND_NO;
+    
   if (is_any_op(chptr, source_p))
     return CAN_SEND_OPV;
   if (is_voiced(chptr, source_p))
