@@ -1,3 +1,15 @@
+db          2002/01/01 13:50:31 EST	(20020101_5)
+
+  Modified files:
+    modules              m_mode.c 
+  Log:
+  - cosmetic cleanup of m_mode.c
+  
+  Revision  Changes    Path
+  1.46      +6 -6      ircd-hybrid-7/modules/m_mode.c
+
+
+
 leeh        2002/01/01 11:28:02 EST	(20020101_4)
 
   Modified files:
@@ -1959,7 +1971,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3269 2002/01/01 16:28:07 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3270 2002/01/01 18:50:37 db Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -20313,4 +20325,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3269 2002/01/01 16:28:07 leeh Exp $
+$Id: ChangeLog,v 7.3270 2002/01/01 18:50:37 db Exp $
