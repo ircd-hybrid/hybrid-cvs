@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.c,v 7.47 2001/01/14 22:32:59 fl_ Exp $
+ * $Id: modules.c,v 7.48 2001/01/15 14:51:25 ejb Exp $
  */
 
 #include <dlfcn.h>
@@ -517,7 +517,7 @@ static int
 mo_modrestart (struct Client *cptr, struct Client *sptr, int parc, char **parv)
 
 {
-  int i, modnum;
+  int modnum;
 
   if (!IsSetOperAdmin (sptr))
   {
@@ -530,10 +530,8 @@ mo_modrestart (struct Client *cptr, struct Client *sptr, int parc, char **parv)
              me.name, parv[0]);
 
   modnum = num_mods;
-  for(i = 0; i < num_mods; )
-  {
-     unload_one_module(modlist[i]->name, 0);
-  }
+  while (num_mods)
+     unload_one_module(modlist[0]->name, 0);
 
   load_all_modules(0);
 
