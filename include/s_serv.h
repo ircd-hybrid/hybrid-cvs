@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.h,v 7.85 2003/06/16 15:16:03 michael Exp $
+ *  $Id: s_serv.h,v 7.86 2003/07/05 04:41:48 joshk Exp $
  */
 
 #ifndef INCLUDED_serv_h
@@ -250,7 +250,6 @@ extern int server_estab(struct Client *client_p);
 extern void set_autoconn(struct Client *, const char *, int);
 extern const char *show_capabilities(struct Client* client);
 extern void try_connections(void *unused);
-extern void start_collect_zipstats(void);
 extern void collect_zipstats(void *unused);
 extern void initServerMask(void);
 extern void burst_channel(struct Client *client_p, struct Channel *chptr);
