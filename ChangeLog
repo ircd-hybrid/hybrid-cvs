@@ -1,3 +1,10 @@
+*** 20001209_6 by db
+- removed redundant flag in client struct, if localClient is non NULL
+  then its a local Client. simple. no need for an extra local_client int flag.
+- removed bloat from client struct, no longer being used pointers removed.
+
+
+
 *** 20001209_5 by db
 - renamed yet another poorly named function...
   sendto_channel_remote makes more sense than sendto_match_serv 
@@ -2041,7 +2048,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.760 2000/12/09 08:01:43 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.761 2000/12/09 08:15:43 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
