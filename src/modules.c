@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.99 2002/03/02 00:23:57 enygma Exp $
+ *  $Id: modules.c,v 7.100 2002/05/23 22:20:15 leeh Exp $
  */
 
 #include "config.h"
@@ -560,7 +560,9 @@ load_all_modules(int warn)
 	mod_add_cmd(&away_msgtab);
 	mod_add_cmd(&capab_msgtab);
 	mod_add_cmd(&cburst_msgtab);
+#ifdef VCHANS
 	mod_add_cmd(&cjoin_msgtab);
+#endif
 	mod_add_cmd(&client_msgtab);
 	mod_add_cmd(&close_msgtab);
 	mod_add_cmd(&connect_msgtab);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_cjoin.c,v 1.50 2002/05/14 11:41:28 leeh Exp $
+ *  $Id: m_cjoin.c,v 1.51 2002/05/23 22:20:12 leeh Exp $
  */
 
 #include "tools.h"
@@ -53,20 +53,26 @@ struct Message cjoin_msgtab = {
   {m_unregistered, m_cjoin, m_ignore, m_cjoin}
 };
 
+#endif
+
 #ifndef STATIC_MODULES
 void
 _modinit(void)
 {
+#ifdef VCHANS
   mod_add_cmd(&cjoin_msgtab);
+#endif
 }
 
 void
 _moddeinit(void)
 {
+#ifdef VCHANS
   mod_del_cmd(&cjoin_msgtab);
+#endif
 }
 
-const char *_version = "$Revision: 1.50 $";
+const char *_version = "$Revision: 1.51 $";
 #endif
 /*
 ** m_cjoin

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.h,v 7.14 2002/04/27 17:59:25 leeh Exp $
+ *  $Id: packet.h,v 7.15 2002/05/23 22:20:09 leeh Exp $
  */
 
 #ifndef INCLUDED_packet_h
@@ -46,8 +46,8 @@
  * just connected.  this allows clients to rejoin multiple channels
  * without being so heavily penalised they excess flood.
  */
-#define MAX_FLOOD 4
-#define MAX_FLOOD_BURST 24
+#define MAX_FLOOD 5
+#define MAX_FLOOD_BURST MAX_FLOOD * 6
 
 extern PF  read_ctrl_packet;
 extern PF  read_packet;

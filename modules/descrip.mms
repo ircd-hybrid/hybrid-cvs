@@ -1,6 +1,6 @@
 # MMS/MMK Makefile for OpenVMS
 # Copyright (c) 2001 Edward Brocklesby
-# $Id: descrip.mms,v 1.5 2002/02/04 21:07:48 ejb Exp $
+# $Id: descrip.mms,v 1.6 2002/05/23 22:20:12 leeh Exp $
 
 CC=	CC
 CFLAGS=	/INCLUDE_DIRECTORY=([-.INCLUDE],[-.ADNS])/STANDARD=ISOC94
@@ -18,7 +18,12 @@ OBJECTS=	M_ACCEPT,M_ADMIN,M_AWAY,M_CAPAB,M_CBURST,M_CJOIN,-
 		M_GLINE,M_RESV
 
 
-ALL : MODULES.OLB($(OBJECTS))
+ALL : MODULES.OLB($(OBJECTS)) CORE.OLB
+
+CORE.OLB :
+	SET DEF [.CORE]
+	MMK
+	SET DEF [-]
 
 CLEAN : 
 	DELETE *.OLB;*

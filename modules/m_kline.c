@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.100 2002/04/26 11:51:19 leeh Exp $
+ *  $Id: m_kline.c,v 1.101 2002/05/23 22:20:12 leeh Exp $
  */
 
 #include "tools.h"
@@ -82,7 +82,7 @@ _moddeinit(void)
   mod_del_cmd(&kline_msgtab);
   mod_del_cmd(&dline_msgtab);
 }
-const char *_version = "$Revision: 1.100 $";
+const char *_version = "$Revision: 1.101 $";
 #endif
 
 /* Local function prototypes */
@@ -148,9 +148,7 @@ static void mo_kline(struct Client *client_p,
 
   tkline_time = valid_tkline(source_p,*parv);
 
-  if (tkline_time == -1)
-   return;
-  else if( tkline_time > 0 )
+  if( tkline_time > 0 )
     {
       parv++;
       parc--;
