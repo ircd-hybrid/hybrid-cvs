@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.136 2001/03/07 19:03:20 androsyn Exp $
+ * $Id: ircd_parser.y,v 1.137 2001/03/09 14:22:12 davidt Exp $
  */
 
 %{
@@ -64,7 +64,6 @@ int   class_number_per_ip_var;
 int   class_max_number_var;
 int   class_sendq_var;
 
-static int   listener_port;
 static char  *listener_address;
 
 char  *class_redirserv_var;
@@ -663,12 +662,10 @@ class_sendq:    SENDQ '=' NUMBER ';'
 listen_entry:   LISTEN
   {
     listener_address = NULL;
-    listener_port = 0;
   }
   '{' listen_items '}' ';'
   {
-    add_listener (listener_port, listener_address);     
-    MyFree (listener_address);
+    MyFree(listener_address);
     listener_address = NULL;
   };
 
@@ -679,16 +676,18 @@ listen_item:    listen_port | listen_address | listen_host | error
 
 listen_port:    PORT '=' NUMBER ';'
   {
-    listener_port = yylval.number;
+    add_listener(yylval.number, listener_address);
   };
 
 listen_address: IP '=' QSTRING ';'
   {
+    MyFree(listener_address);
     DupString(listener_address, yylval.string);
   };
 
 listen_host:	HOST '=' QSTRING ';'
   {
+    MyFree(listener_address);
     DupString(listener_address, yylval.string);
   };
 
