@@ -1,3 +1,24 @@
+lusky       2003/01/24 02:02:03 EST	(20030124_0)
+
+  Modified files:
+    include              ircd.h 
+    modules/core         m_die.c 
+    src                  ircd.c restart.c 
+  Log:
+  - fixed a race condition with /restart and check_pidfile.  We now
+    unlink the pidfile on /die and /restart, and don't complain if the
+    file doesn't exist when starting.
+  
+  Submitted by:   lusky
+  
+  Revision  Changes    Path
+  7.53      +1 -0      ircd-hybrid-7/include/ircd.h
+  1.25      +2 -1      ircd-hybrid-7/modules/core/m_die.c
+  7.248     +2 -2      ircd-hybrid-7/src/ircd.c
+  7.22      +5 -4      ircd-hybrid-7/src/restart.c
+
+
+
 db          2003/01/22 23:24:07 EST	(20030123_0)
 
   Modified files:
@@ -34362,4 +34383,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4191 2003/01/23 04:24:10 db Exp $
+$Id: ChangeLog,v 7.4192 2003/01/24 07:02:05 lusky Exp $
