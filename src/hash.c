@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: hash.c,v 7.18 2001/01/05 17:19:24 ejb Exp $
+ *  $Id: hash.c,v 7.19 2001/01/05 18:30:15 cosine Exp $
  */
 #include "tools.h"
 #include "s_conf.h"
@@ -188,8 +188,11 @@ static void clear_client_hash_table()
 static void clear_id_hash_table()
 {
 #ifdef        DEBUGMODE
-  idhits = 0;
-  idmiss = 0;
+  /* XXX -
+   * idhits = 0;
+   * idmiss = 0;
+   * -cosine
+   */
   if(!idTable)
     idTable = (struct HashEntry*) MyMalloc(U_MAX * sizeof(struct HashEntry));
 #endif
