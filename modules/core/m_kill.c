@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kill.c,v 1.85 2003/10/29 22:37:13 bill Exp $
+ *  $Id: m_kill.c,v 1.86 2004/03/17 01:34:28 db Exp $
  */
 
 #include "stdinc.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&kill_msgtab);
 }
 
-const char *_version = "$Revision: 1.85 $";
+const char *_version = "$Revision: 1.86 $";
 #endif
 
 /* mo_kill()
@@ -230,7 +230,7 @@ ms_kill(struct Client *client_p, struct Client *source_p,
        * not an uid, automatically rewrite the KILL for this new nickname.
        * --this keeps servers in synch when nick change and kill collide
        */
-      if (*user == '.' ||
+      if (IsDigit(*user) ||
 	  (target_p = get_history(user,
                                 (time_t)ConfigFileEntry.kill_chase_time_limit))
                                 == NULL)
