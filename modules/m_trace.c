@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_trace.c,v 1.24 2001/04/04 15:22:37 androsyn Exp $
+ *   $Id: m_trace.c,v 1.25 2001/05/14 13:35:31 toot Exp $
  */
 #include "handlers.h"
 #include "class.h"
@@ -125,6 +125,8 @@ static void mo_trace(struct Client *client_p, struct Client *source_p,
   wilds = !parv[1] || strchr(tname, '*') || strchr(tname, '?');
   dow = wilds || doall;
   
+  now = time(NULL);
+
   if(!IsOper(source_p) || !dow) /* non-oper traces must be full nicks */
                               /* lets also do this for opers tracing nicks */
     {
