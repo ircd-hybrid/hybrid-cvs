@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.47 2003/06/04 02:10:56 joshk Exp $
+dnl $Id: configure.ac,v 7.48 2003/06/09 07:38:05 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -22,6 +22,12 @@ AC_LANG(C)
 
 dnl Make sure autoconf doesn't interfere with cflags -jmallett
 CFLAGS="$OLD_CFLAGS"
+
+dnl Set some defaults...
+if test -z "$libdir"; then 
+	echo setting libdir
+	libdir='${prefix}/modules'
+fi
 
 dnl Check for various compilers. -jmallett
 
@@ -169,7 +175,7 @@ AC_PATH_PROG(LD, ld)
 AC_PROG_YACC
 AC_PROG_RANLIB
 
-if test "$YACC" = ":"; then
+if test "$YACC" = "yacc" -a -z "`which $YACC >/dev/null 2>&1`"; then
 	AC_MSG_ERROR([could not locate a suitable parser generator; install bison, yacc, or byacc])
 fi
 
@@ -657,6 +663,10 @@ AC_HELP_STRING([--enable-warnings],[Enable all sorts of warnings for debugging.]
 
 dnl Server Tweaks
 dnl =============
+
+AC_ARG_ENABLE(halfops,
+AC_HELP_STRING([--enable-halfops],[Enable the use of halfops (user mode %)]),
+[AC_DEFINE(USE_HALFOPS, 1, [Define to 1 if you want to be able to use halfops on your ircd.])],)
 
 AC_ARG_ENABLE(small-net,
 AC_HELP_STRING([--enable-small-net],[Enable small network support.]),

@@ -199,6 +199,9 @@
 /* Maximum topic length (<=390) */
 #undef TOPICLEN
 
+/* Define to 1 if you want to be able to use halfops on your ircd. */
+#undef USE_HALFOPS
+
 /* Use kqueue() for I/O loop */
 #undef USE_KQUEUE
 

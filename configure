@@ -856,6 +856,7 @@ Optional Features:
   --disable-block-alloc   Disable the block allocator (Only useful with
                           ElectricFence)
   --enable-warnings       Enable all sorts of warnings for debugging.
+  --enable-halfops        Enable the use of halfops (user mode %)
   --enable-small-net      Enable small network support.
   --enable-efnet          For IRCDs running on EFnet.
   --disable-shared-modules
@@ -2077,13 +2078,12 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
   for ac_declaration in \
-   ''\
+   '' \
    'extern "C" void std::exit (int) throw (); using std::exit;' \
    'extern "C" void std::exit (int); using std::exit;' \
    'extern "C" void exit (int) throw ();' \
    'extern "C" void exit (int);' \
-   'void exit (int);' \
-   '#include <stdlib.h>'
+   'void exit (int);'
 do
   cat >conftest.$ac_ext <<_ACEOF
 #line $LINENO "configure"
@@ -2092,8 +2092,8 @@ _ACEOF
 cat confdefs.h >>conftest.$ac_ext
 cat >>conftest.$ac_ext <<_ACEOF
 /* end confdefs.h.  */
-#include <stdlib.h>
 $ac_declaration
+#include <stdlib.h>
 int
 main ()
 {
@@ -2185,6 +2185,11 @@ ac_compiler_gnu=$ac_cv_c_compiler_gnu
 
 
 CFLAGS="$OLD_CFLAGS"
+
+if test -z "$libdir"; then
+	echo setting libdir
+	libdir='${prefix}/modules'
+fi
 
 
 SGS=no
@@ -3404,7 +3409,7 @@ else
 fi
 
 
-if test "$YACC" = ":"; then
+if test "$YACC" = "yacc" -a -z "`which $YACC >/dev/null 2>&1`"; then
 	{ { echo "$as_me:$LINENO: error: could not locate a suitable parser generator; install bison, yacc, or byacc" >&5
 echo "$as_me: error: could not locate a suitable parser generator; install bison, yacc, or byacc" >&2;}
    { (exit 1); exit 1; }; }
@@ -7894,6 +7899,16 @@ if test "${enable_warnings+set}" = set; then
 fi;
 
 
+
+# Check whether --enable-halfops or --disable-halfops was given.
+if test "${enable_halfops+set}" = set; then
+  enableval="$enable_halfops"
+
+cat >>confdefs.h <<\_ACEOF
+#define USE_HALFOPS 1
+_ACEOF
+
+fi;
 
 # Check whether --enable-small-net or --disable-small-net was given.
 if test "${enable_small_net+set}" = set; then
