@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.31 2000/01/06 03:31:33 db Exp $
+ *  $Id: s_conf.c,v 7.32 2000/01/06 04:32:10 db Exp $
  */
 #include "s_conf.h"
 #include "channel.h"
@@ -1580,7 +1580,8 @@ static void makeQlineEntry(aQlineItem *qp, struct ConfItem *aconf, char *uath)
                   
   bconf = make_conf();
   DupString(bconf->name, aconf->name);
-  DupString(bconf->passwd,aconf->passwd);
+  if(aconf->passwd)
+    DupString(bconf->passwd,aconf->passwd);
   bconf->user = comu;
   bconf->host = comh;
   bconf->next = qp->confList;

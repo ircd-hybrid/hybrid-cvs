@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.17 2000/01/06 03:19:38 db Exp $
+ *   $Id: s_serv.c,v 7.18 2000/01/06 04:32:11 db Exp $
  */
 #include "s_serv.h"
 #include "channel.h"
@@ -433,21 +433,23 @@ int check_server(struct Client* cptr)
             {
               /* n line with an H line, must be a typo */
               ClearCap(cptr,CAP_LL);
-              sendto_realops("s_serv.c: Clearing CAP_LL" );
+              sendto_realops("n line with H oops lets not do LazyLink" );
             }
-        }
+          else
+            {
+              /* its full folks, 32 leaves? wow. I never thought I'd
+               * see the day. Now this will have to be recoded! -Dianora
+               */
+              cptr->serverMask = nextFreeMask();
 
-      cptr->serverMask = nextFreeMask();
-      /* its full folks, 32 leaves? wow. I never thought I'd
-       * see the day. Now this will have to be recoded! -Dianora
-       */
-      if(!cptr->serverMask)
-	{
-	  sendto_realops("serverMask is full!");
-	  
-	  /* try and negotiate a non LL connect */
-	  ClearCap(cptr,CAP_LL);
-	}
+              if(!cptr->serverMask)
+                {
+                  sendto_realops("serverMask is full!");
+                  /* try and negotiate a non LL connect */
+                  ClearCap(cptr,CAP_LL);
+                }
+            }
+       }
     }
 
 
