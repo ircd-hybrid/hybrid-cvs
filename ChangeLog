@@ -1,3 +1,15 @@
+androsyn    2001/12/18 10:36:52 EST	(20011218_3)
+
+  Modified files:
+    src                  s_bsd_sigio.c 
+  Log:
+  Move the #ifdef for USE_SIGIO a bit further up in the code..
+  
+  Revision  Changes    Path
+  7.12      +3 -1      ircd-hybrid-7/src/s_bsd_sigio.c
+
+
+
 androsyn    2001/12/18 10:33:55 EST	(20011218_2)
 
   Modified files:
@@ -1024,7 +1036,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3211 2001/12/18 15:34:01 androsyn Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3212 2001/12/18 15:36:57 androsyn Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -19378,4 +19390,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3211 2001/12/18 15:34:01 androsyn Exp $
+$Id: ChangeLog,v 7.3212 2001/12/18 15:36:57 androsyn Exp $
