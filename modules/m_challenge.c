@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_challenge.c,v 1.11 2000/12/30 07:30:25 lusky Exp $
+ *   $Id: m_challenge.c,v 1.12 2001/01/02 04:06:39 davidt Exp $
  */
 #include <stdlib.h>
 #include "handlers.h"
@@ -32,7 +32,7 @@
 #include "s_conf.h"
 #include "rsa.h"
 #include "msg.h"
-
+#include "parse.h"
 
 #ifndef OPENSSL
 
