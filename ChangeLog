@@ -1,3 +1,15 @@
+androsyn    2002/05/31 00:16:22 EDT	(20020531_12)
+
+  Modified files:
+    contrib              m_ojoin.c 
+  Log:
+  Fix from scuzzy to make ojoin send the topic to the joining user.
+  
+  Revision  Changes    Path
+  1.8       +10 -1     ircd-hybrid-7/contrib/m_ojoin.c
+
+
+
 androsyn    2002/05/30 22:59:26 EDT	(20020531_11)
 
   Modified files:
@@ -27678,4 +27690,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3725 2002/05/31 02:59:32 androsyn Exp $
+$Id: ChangeLog,v 7.3726 2002/05/31 04:16:28 androsyn Exp $
