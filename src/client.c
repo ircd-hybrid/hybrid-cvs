@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.103 2001/01/05 23:53:34 davidt Exp $
+ *  $Id: client.c,v 7.104 2001/01/07 23:03:07 db Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -425,9 +425,11 @@ check_klines(void)
   struct ConfItem     *aconf = (struct ConfItem *)NULL;
   char          *reason;                /* pointer to reason string */
   dlink_node    *ptr;
+  dlink_node    *next_ptr;
 
-  for (ptr = lclient_list.head; ptr; ptr = ptr->next)
+  for (ptr = lclient_list.head; ptr; ptr = next_ptr)
     {
+      next_ptr = ptr->next;
       cptr = ptr->data;
 
       if(IsMe(cptr))
