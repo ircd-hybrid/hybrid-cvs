@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_kline.h,v 7.1 1999/12/30 20:35:32 db Exp $
+ * $Id: m_kline.h,v 7.2 2000/12/09 17:31:18 bill Exp $
  */
 #ifndef INCLUDED_m_kline_h
 #define INCLUDED_m_kline_h
@@ -44,6 +44,6 @@ typedef struct PKDlines aPendingLine;
  * characters for the kline routine.
  */
 
-#define NONWILDCHARS 4
+#define NONWILDCHARS 2
 
 #endif /* INCLUDED_m_kline_h */
