@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.21 2003/05/15 07:17:16 joshk Exp $
+dnl $Id: configure.ac,v 7.22 2003/05/15 21:48:43 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -218,7 +218,7 @@ AC_CACHE_CHECK([for socklen_t], have_socklen_t,
 	have_socklen_t=no)
 ])
 
-if test $have_socklen_t != yes; then
+if test "$have_socklen_t" != yes; then
 	AC_DEFINE([socklen_t], [int], [If we don't have a real socklen_t, int is good enough.])
 fi
 
@@ -809,7 +809,7 @@ AC_SUBST(LDFLAGS)
 AC_SUBST(IRC_CFLAGS)
 AC_SUBST(SEDOBJ)
 
-if test x$prefix = xNONE; then 
+if test "$prefix" = "NONE"; then 
 	AC_DEFINE_UNQUOTED(IRCD_PREFIX, "$ac_default_prefix", [Prefix where the ircd is installed.])
 
 else

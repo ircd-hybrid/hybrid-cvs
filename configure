@@ -4448,7 +4448,7 @@ fi
 echo "$as_me:$LINENO: result: $have_socklen_t" >&5
 echo "${ECHO_T}$have_socklen_t" >&6
 
-if test $have_socklen_t != yes; then
+if test "$have_socklen_t" != yes; then
 
 cat >>confdefs.h <<\_ACEOF
 #define socklen_t int
@@ -8362,7 +8362,7 @@ fi
 
 
 
-if test x$prefix = xNONE; then
+if test "$prefix" = "NONE"; then
 
 cat >>confdefs.h <<_ACEOF
 #define IRCD_PREFIX "$ac_default_prefix"
