@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_admin.c,v 1.25 2001/05/14 10:08:55 toot Exp $
+ *   $Id: m_admin.c,v 1.26 2001/07/16 18:48:52 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -68,7 +68,8 @@ static void mr_admin(struct Client *client_p, struct Client *source_p,
  
   if((last_used + ConfigFileEntry.pace_wait) > CurrentTime)
     {
-      sendto_one(source_p,form_str(RPL_LOAD2HI),me.name,parv[0]);
+      sendto_one(source_p,form_str(RPL_LOAD2HI), me.name, 
+                 BadPtr(parv[0]) ? "*" : parv[0]);
       return;
     }
   else
