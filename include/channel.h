@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.65 2001/03/15 20:03:50 db Exp $
+ * $Id: channel.h,v 7.66 2001/04/20 04:59:20 db Exp $
  */
 
 #include <sys/types.h>        /* time_t */
@@ -148,6 +148,9 @@ extern void    channel_member_list(struct Client *source_p,
 
 extern void sync_channel_oplists(struct Channel *, int);
 extern void sync_oplists(struct Channel *, struct Client *, int, char *);
+extern void set_channel_mode_flags( char flags_ptr[4][2],
+				    struct Channel *chptr,
+				    struct Client *source_p);
 
 /*
 ** Channel Related macros follow
@@ -237,6 +240,7 @@ typedef struct Ban      /* also used for exceptions -orabidoo */
 
 #define CLEANUP_CHANNELS_TIME (30*60)
 #define MAX_VCHAN_TIME (60*60)
-
+/* Number of chanops, peon, voiced, halfops sublists */
+#define MAX_SUBLISTS 4
 #endif  /* INCLUDED_channel_h */
 
