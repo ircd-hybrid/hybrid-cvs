@@ -1,3 +1,18 @@
+db          2002/11/11 18:25:17 EST	(20021111_1)
+
+  Modified files:
+    include              ircd.h 
+    src                  ircd.c ircd_signal.c 
+  Log:
+  patch contributed by wcampbel@botbay.net
+  
+  Revision  Changes    Path
+  7.52      +1 -0      ircd-hybrid-7/include/ircd.h
+  7.243     +8 -0      ircd-hybrid-7/src/ircd.c
+  7.13      +13 -0     ircd-hybrid-7/src/ircd_signal.c
+
+
+
 bill        2002/11/11 15:43:19 EST	(20021111_0)
 
   Modified files:
@@ -33045,4 +33060,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4101 2002/11/11 20:43:22 bill Exp $
+$Id: ChangeLog,v 7.4102 2002/11/11 23:25:20 db Exp $
