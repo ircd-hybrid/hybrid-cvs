@@ -1,3 +1,8 @@
+*** 20001212_6 by db
+- folded in Walter Campbell's IPV6 patches
+
+
+
 *** 20001212_5 by db
 - verified the generated prefixes on a number of files
 - umm the big bug was in serv_connect_callback() the newly connected =to=
@@ -2411,7 +2416,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.805 2000/12/12 16:36:58 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.806 2000/12/12 17:25:32 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
