@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.c,v 7.74 2001/10/17 16:07:25 leeh Exp $
+ * $Id: modules.c,v 7.75 2001/11/08 16:38:58 bill Exp $
  */
 #include "config.h"
 
@@ -524,7 +524,10 @@ mo_modlist (struct Client *client_p, struct Client *source_p, int parc, char **p
   {
     if(parc>1)
     {
-      if(strstr(modlist[i]->name,parv[1]))
+#if 0
+      if(strstr(modlist[i]->name,parv[1]))  /* why was this non-wildcard matching? */
+#endif
+      if(match(parv[1],modlist[i]->name))
       {
         sendto_one(source_p, form_str(RPL_MODLIST), me.name, parv[0],
                    modlist[i]->name, modlist[i]->address,
