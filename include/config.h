@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.106 2001/05/02 07:16:57 a1kmm Exp $
+ * $Id: config.h,v 7.107 2001/05/05 13:37:32 fl_ Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -87,6 +87,12 @@
  *
  */
 
+/*
+ * Do NOT change these paths!  They wont actually affect where ircd
+ * is installed, and itll just error when you try to run it.  -- fl_
+ * 
+ * Use: ./configure --prefix="/home/dir"
+ */
 #define DPATH   IRCD_PREFIX
 #define MODPATH IRCD_PREFIX "/modules/autoload/"
 #define MSGPATH IRCD_PREFIX "/messages/"
