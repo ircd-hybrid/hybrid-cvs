@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_squit.c,v 1.32 2001/04/04 15:22:36 androsyn Exp $
+ *   $Id: m_squit.c,v 1.33 2001/06/01 00:55:59 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -140,10 +140,10 @@ static void ms_squit(struct Client *client_p, struct Client *source_p,
 				 found_squit->server_name,
 				 get_client_name(source_p, HIDE_IP), comment);
 
-          sendto_serv_butone(&me,
-			     ":%s WALLOPS :Remote SQUIT %s from %s (%s)",
-			     me.name, found_squit->server_name,
-			     get_client_name(source_p, HIDE_IP),comment);
+          sendto_server(NULL, NULL, NULL, NOCAPS, NOCAPS, NOFLAGS,
+                        ":%s WALLOPS :Remote SQUIT %s from %s (%s)",
+                        me.name, found_squit->server_name,
+                        get_client_name(source_p, HIDE_IP),comment);
 
 	  log(L_TRACE, "SQUIT From %s : %s (%s)", parv[0],
 	      found_squit->server_name, comment);

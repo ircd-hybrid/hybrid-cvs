@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_cjoin.c,v 1.34 2001/05/28 13:45:34 jdc Exp $
+ *   $Id: m_cjoin.c,v 1.35 2001/06/01 00:55:55 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -181,12 +181,12 @@ static void m_cjoin(struct Client *client_p,
 			source_p->host,
 			root_vchan->chname);
 
-  sendto_channel_remote(chptr, client_p,
-			":%s SJOIN %lu %s + :@%s",
-			me.name,
-			(unsigned long) chptr->channelts,
-			chptr->chname,
-			source_p->name);
+  sendto_server(client_p, NULL, chptr, NOCAPS, NOCAPS, NOFLAGS,
+                ":%s SJOIN %lu %s + :@%s",
+                me.name,
+                (unsigned long) chptr->channelts,
+                chptr->chname,
+                source_p->name);
 
   vchan_chptr->mode.mode |= MODE_TOPICLIMIT;
   vchan_chptr->mode.mode |= MODE_NOPRIVMSGS;
@@ -196,10 +196,10 @@ static void m_cjoin(struct Client *client_p,
 			me.name,
 			root_vchan->chname);
 
-  sendto_channel_remote(vchan_chptr, source_p, 
-			":%s MODE %s +nt",
-			me.name,
-			vchan_chptr->chname);
+  sendto_server(source_p, NULL, vchan_chptr, NOCAPS, NOCAPS, NOFLAGS,
+                ":%s MODE %s +nt",
+                me.name,
+                vchan_chptr->chname);
 
   del_invite(vchan_chptr, source_p);
   channel_member_names(source_p, vchan_chptr, root_vchan->chname, 1);

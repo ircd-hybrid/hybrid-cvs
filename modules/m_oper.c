@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_oper.c,v 1.32 2001/05/07 15:50:30 toot Exp $
+ *   $Id: m_oper.c,v 1.33 2001/06/01 00:55:58 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -191,8 +191,8 @@ static void ms_oper(struct Client *client_p, struct Client *source_p,
       
       source_p->flags |= FLAGS_OPER;
       Count.oper++;
-      sendto_ll_serv_butone(client_p,  source_p, 0,
-                            ":%s MODE %s :+o", parv[0], parv[0]);
+      sendto_server(client_p, source_p, NULL, NOCAPS, NOCAPS, NOFLAGS,
+                    ":%s MODE %s :+o", parv[0], parv[0]);
     }
 }
 

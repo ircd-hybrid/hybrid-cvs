@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_topic.c,v 1.35 2001/05/02 06:27:05 db Exp $
+ *   $Id: m_topic.c,v 1.36 2001/06/01 00:55:59 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -163,9 +163,10 @@ static void m_topic(struct Client *client_p,
 
 	      chptr->topic_time = CurrentTime;
 	      
-	      sendto_channel_remote(chptr, client_p,":%s TOPIC %s :%s",
-				 parv[0], chptr->chname,
-				 chptr->topic);
+	      sendto_server(client_p, NULL, chptr, NOCAPS, NOCAPS, NOFLAGS,
+                            ":%s TOPIC %s :%s",
+                            parv[0], chptr->chname,
+                            chptr->topic);
 	      if(chptr->mode.mode & MODE_HIDEOPS)
 		{
 		  sendto_channel_local(ONLY_CHANOPS_HALFOPS,

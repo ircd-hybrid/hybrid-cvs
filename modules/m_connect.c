@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_connect.c,v 1.25 2001/04/04 15:22:24 androsyn Exp $
+ *   $Id: m_connect.c,v 1.26 2001/06/01 00:55:55 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -262,10 +262,10 @@ static void ms_connect(struct Client* client_p, struct Client* source_p,
 			  "Remote CONNECT %s %s from %s",
 			  parv[1], parv[2] ? parv[2] : "",
 			  get_client_name(source_p, MASK_IP));
-  sendto_serv_butone(&me,
-		     ":%s WALLOPS :Remote CONNECT %s %s from %s",
-		     me.name, parv[1], parv[2] ? parv[2] : "",
-		     get_client_name(source_p, MASK_IP));
+  sendto_server(NULL, NULL, NULL, NOCAPS, NOCAPS, NOFLAGS,
+                ":%s WALLOPS :Remote CONNECT %s %s from %s",
+                me.name, parv[1], parv[2] ? parv[2] : "",
+                get_client_name(source_p, MASK_IP));
 
 
   log(L_TRACE, "CONNECT From %s : %s %s", 

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_part.c,v 1.44 2001/05/04 22:24:00 fl_ Exp $
+ *   $Id: m_part.c,v 1.45 2001/06/01 00:55:59 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -173,9 +173,12 @@ static void part_one_client(struct Client *client_p,
       (source_p->firsttime + ConfigFileEntry.anti_spam_exit_message_time)
       < CurrentTime))))
     {
-      sendto_channel_remote_prefix(chptr, client_p, source_p, "PART %s :%s",
-                              chptr->chname,
-                              reason);
+      sendto_server(client_p, NULL, chptr, CAP_UID, NOCAPS, NOFLAGS,
+                    ":%s PART %s :%s", ID(source_p), chptr->chname,
+                    reason);
+      sendto_server(client_p, NULL, chptr, NOCAPS, CAP_UID, NOFLAGS,
+                    "%s PART %s  :%s", source_p->name, chptr->chname,
+                    reason);
       sendto_channel_local(ALL_MEMBERS,
                            chptr, ":%s!%s@%s PART %s :%s",
                            source_p->name,
@@ -186,8 +189,10 @@ static void part_one_client(struct Client *client_p,
     }
   else
     {
-      sendto_channel_remote_prefix(chptr, client_p, source_p, "PART %s",
-                                   chptr->chname);
+      sendto_server(client_p, NULL, chptr, CAP_UID, NOCAPS, NOFLAGS,
+                    ":%s PART %s", ID(source_p), chptr->chname);
+      sendto_server(client_p, NULL, chptr, NOCAPS, CAP_UID, NOFLAGS,
+                    ":%s PART %s", source_p->name, chptr->chname);
       sendto_channel_local(ALL_MEMBERS,
                            chptr, ":%s!%s@%s PART %s",
                            source_p->name,

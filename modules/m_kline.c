@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kline.c,v 1.78 2001/05/28 13:45:34 jdc Exp $
+ *   $Id: m_kline.c,v 1.79 2001/06/01 00:55:57 davidt Exp $
  */
 #include "tools.h"
 #include "m_kline.h"
@@ -212,12 +212,12 @@ static void mo_kline(struct Client *client_p,
 
   if(target_server != NULL)
     {
-      sendto_cap_serv_butone(CAP_KLN, &me,
-			   ":%s KLINE %s %lu %s %s :%s",
-			   source_p->name,
-			   target_server,
-			   (unsigned long) tkline_time,
-			   user, host, reason);
+      sendto_server(NULL, source_p, NULL, CAP_KLN, NOCAPS, LL_ICLIENT,
+                    ":%s KLINE %s %lu %s %s :%s",
+                    source_p->name,
+                    target_server,
+                    (unsigned long) tkline_time,
+                    user, host, reason);
 
       /* If we are sending it somewhere that doesnt include us, we stop
        * else we apply it locally too
@@ -272,10 +272,11 @@ static void ms_kline(struct Client *client_p,
 
   /* parv[0]  parv[1]        parv[2]      parv[3]  parv[4]  parv[5] */
   /* oper     target_server  tkline_time  user     host     reason */
-  sendto_cap_serv_butone (CAP_KLN, client_p, ":%s KLINE %s %s %s %s :%s",
-			  parv[0], parv[1],
-			  parv[2], parv[3],
-			  parv[4], parv[5]);
+  sendto_server(client_p, source_p, NULL, CAP_KLN, NOCAPS, LL_ICLIENT,
+                ":%s KLINE %s %s %s %s :%s",
+                parv[0], parv[1],
+                parv[2], parv[3],
+                parv[4], parv[5]);
 
 
   kuser = parv[3];

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.67 2001/05/22 19:11:43 davidt Exp $
+ *   $Id: m_message.c,v 1.68 2001/06/01 00:55:57 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -627,13 +627,14 @@ static void msg_channel_flags( int p_or_n, char *command,
 		       chname,
 		       text);
 
-  sendto_match_cap_servs(chptr, client_p, CAP_CHW,
-			 ":%s %s %c%s :%s",
-			 source_p->name,
-			 command,
-			 c,
-			 chptr->chname,
-			 text);
+  sendto_server(client_p, NULL, chptr, CAP_CHW, NOCAPS, NOFLAGS,
+                ":%s %s %c%s :%s",
+                source_p->name,
+                command,
+                c,
+                chptr->chname,
+                text);
+  /* non CAP_CHW servers? */
 }
 
 /*
@@ -686,7 +687,6 @@ static void msg_client(int p_or_n, char *command,
                 sendto_anywhere(source_p, target_p,
                   "NOTICE %s :*** I'm in +g mode (server side ignore).",
                   source_p->name);
-	      /* XXX hard coded 60 ick fix -db */
 
 	      if((target_p->localClient->last_caller_id_time +
                   ConfigFileEntry.caller_id_wait) < CurrentTime)
@@ -711,17 +711,22 @@ static void msg_client(int p_or_n, char *command,
 	}
       else
 	{
-          /* If the client is remote, we dont perform a special check for flooding.. as we wouldnt
-           * block their message anyway.. this means we dont give warnings.. we then check if theyre opered 
-           * (to avoid flood warnings), lastly if theyre our client and flooding    -- fl */
-          if(!MyClient(source_p) || IsOper(source_p) || (MyClient(source_p) && !flood_attack_client(p_or_n,source_p,target_p)))
+          /* If the client is remote, we dont perform a special check for
+           * flooding.. as we wouldnt block their message anyway.. this means
+           * we dont give warnings.. we then check if theyre opered 
+           * (to avoid flood warnings), lastly if theyre our client
+           * and flooding    -- fl */
+          if(!MyClient(source_p) || IsOper(source_p) ||
+             (MyClient(source_p) &&
+              !flood_attack_client(p_or_n,source_p,target_p)))
 	    sendto_anywhere(target_p, source_p, "%s %s :%s",
 			    command, target_p->name, text);
 	}
     }
   else
     /* The target is a remote user.. same things apply  -- fl */
-    if(!MyClient(source_p) || IsOper(source_p) || (MyClient(source_p) && !flood_attack_client(p_or_n,source_p,target_p)))
+    if(!MyClient(source_p) || IsOper(source_p) ||
+       (MyClient(source_p) && !flood_attack_client(p_or_n,source_p,target_p)))
       sendto_anywhere(target_p, source_p, "%s %s :%s",
 		      command, target_p->name, text);
   return;

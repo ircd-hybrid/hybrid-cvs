@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kick.c,v 1.31 2001/05/04 22:24:00 fl_ Exp $
+ *   $Id: m_kick.c,v 1.32 2001/06/01 00:55:56 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -218,10 +218,10 @@ static void m_kick(struct Client *client_p,
 			       name, who->name, comment);
 	}
 
-      sendto_channel_remote(chptr, client_p,
-			    ":%s KICK %s %s :%s",
-			    parv[0], chptr->chname,
-			    who->name, comment);
+      sendto_server(client_p, NULL, chptr, NOCAPS, NOCAPS, NOFLAGS,
+                    ":%s KICK %s %s :%s",
+                    parv[0], chptr->chname,
+                    who->name, comment);
       remove_user_from_channel(chptr, who, 0);
     }
   else
