@@ -2,7 +2,7 @@
  * send.h
  * Copyright (C) 1999 Patrick Alken
  *
- * $Id: send.h,v 7.28 2000/12/29 23:59:46 fl_ Exp $
+ * $Id: send.h,v 7.29 2001/01/02 18:51:12 fl_ Exp $
  */
 
 #ifndef INCLUDED_send_h
@@ -34,6 +34,7 @@ extern  void sendto_serv_butone(struct Client *, const char *, ...);
 extern  void sendto_ll_serv_butone(struct Client *, struct Client *sptr, int,
 				   const char *, ...);
 extern  void sendto_cap_serv_butone(int, struct Client *, const char *, ...);
+extern  void sendto_nocap_serv_butone(int, struct Client *, const char *, ...);
 extern  void sendto_common_channels_local(struct Client *, const char *, ...);
 extern  void sendto_channel_local(int type,
 				  struct Channel *,
@@ -42,7 +43,6 @@ extern  void sendto_channel_local(int type,
 #define NON_CHANOPS  1
 #define ONLY_CHANOPS_VOICED 2
 #define ONLY_CHANOPS 3
-#define NON_HALFOPS 4
 
 extern  void sendto_channel_remote(struct Channel *, struct Client *cptr, 
 				   const char *, ...);

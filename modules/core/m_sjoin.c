@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.53 2001/01/02 17:02:48 davidt Exp $
+ *   $Id: m_sjoin.c,v 1.54 2001/01/02 18:51:17 fl_ Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -186,6 +186,7 @@ int     ms_sjoin(struct Client *cptr,
   *parabuf = '\0';
 
   if(mode.mode & MODE_HIDEOPS)
+
     hide_or_not = ONLY_CHANOPS;
   else
     hide_or_not = ALL_MEMBERS;
@@ -306,12 +307,12 @@ int     ms_sjoin(struct Client *cptr,
   if(*mbuf != '\0')
     {
       if(top_chptr != NULL)
-	sendto_channel_local(ALL_MEMBERS,
+	sendto_channel_local(hide_or_not,
 			     chptr, ":%s MODE %s %s %s",
 			     me.name,
 			     top_chptr->chname, modebuf, parabuf);
       else
-	sendto_channel_local(ALL_MEMBERS,
+	sendto_channel_local(hide_or_not,
 			     chptr, ":%s MODE %s %s %s",
 			     me.name,
 			     chptr->chname, modebuf, parabuf);
