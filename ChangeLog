@@ -1,3 +1,20 @@
+bill        2002/10/10 18:17:22 EDT	(20021010_3)
+
+  Modified files:
+    include              channel.h channel_mode.h tools.h 
+    src                  channel.c ircd.c 
+  Log:
+  - redid persistent channels
+  
+  Revision  Changes    Path
+  7.119     +5 -0      ircd-hybrid-7/include/channel.h
+  7.12      +3 -0      ircd-hybrid-7/include/channel_mode.h
+  1.19      +22 -0     ircd-hybrid-7/include/tools.h
+  7.334     +70 -4     ircd-hybrid-7/src/channel.c
+  7.240     +3 -0      ircd-hybrid-7/src/ircd.c
+
+
+
 androsyn    2002/10/10 14:49:33 EDT	(20021010_2)
 
   Modified files:
@@ -32353,4 +32370,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4055 2002/10/10 18:49:35 androsyn Exp $
+$Id: ChangeLog,v 7.4056 2002/10/10 22:17:25 bill Exp $
