@@ -1,3 +1,10 @@
+*** 20001204_12 by db
+- empty vchans shown on list have no clients to key off of,
+  return a timestamp for now. You can't join them still since 
+  the join code doesnt' know anything about joining on a ts key.
+
+
+
 *** 20001204_11 by db
 - class.c get_client_class returns a string class name now
   It was trying to use a struct ConfItem as a class pointer. oops.
@@ -1579,7 +1586,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.692 2000/12/04 19:07:11 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.693 2000/12/04 19:32:15 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
