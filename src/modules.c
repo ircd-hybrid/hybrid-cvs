@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.c,v 7.66 2001/06/05 01:45:35 ejb Exp $
+ * $Id: modules.c,v 7.67 2001/07/02 04:35:23 db Exp $
  */
 #include "config.h"
 
@@ -98,6 +98,8 @@ struct Message modrestart_msgtab = {
  {m_unregistered, m_not_oper, m_ignore, mo_modrestart}
 };
 
+extern struct Message error_msgtab;
+
 void
 modules_init(void)
 {
@@ -106,6 +108,7 @@ modules_init(void)
         mod_add_cmd(&modreload_msgtab);
 	mod_add_cmd(&modlist_msgtab);
 	mod_add_cmd(&modrestart_msgtab);
+	mod_add_cmd(&error_msgtab);
 }
 
 static struct module_path *
@@ -565,6 +568,7 @@ mo_modrestart (struct Client *client_p, struct Client *source_p, int parc, char 
 void
 load_all_modules(int check)
 {
+	mod_add_cmd(&error_msgtab);
 	mod_add_cmd(&accept_msgtab);
 	mod_add_cmd(&admin_msgtab);
 	mod_add_cmd(&away_msgtab);
