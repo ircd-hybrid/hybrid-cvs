@@ -1,3 +1,17 @@
+jdc         2001/12/08 13:27:58 EST	(20011208_0)
+
+  Modified files:
+    .                    configure 
+    autoconf             configure.in 
+  Log:
+  - zlib version checking during configure.
+  
+  Revision  Changes    Path
+  7.99      +3 -1      ircd-hybrid-7/autoconf/configure.in
+  7.100     +291 -184  ircd-hybrid-7/configure
+
+
+
 db          2001/12/07 17:53:57 EST	(20011207_1)
 
   Modified files:
@@ -18083,4 +18097,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3122 2001/12/07 22:54:02 db Exp $
+$Id: ChangeLog,v 7.3123 2001/12/08 18:28:03 jdc Exp $
