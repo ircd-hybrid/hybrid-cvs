@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_opme.c,v 1.29 2003/02/17 16:09:24 db Exp $
+ *   $Id: m_opme.c,v 1.30 2003/03/29 15:30:54 db Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -57,11 +57,15 @@ _moddeinit(void)
   mod_del_cmd(&opme_msgtab);
 }
 
-char *_version = "$Revision: 1.29 $";
+char *_version = "$Revision: 1.30 $";
 
 static int chan_is_opless(struct Channel *chptr)
 {
-  if (chptr->chanops.head)
+#ifdef REQUIRE_OANDV
+  if (chptr->chanops.head != NULL || chptr->chanops_voiced.head != NULL)
+#else
+  if (chptr->chanops.head != NULL)
+#endif
 	  return 0;
   else
 	  return 1;
