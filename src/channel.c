@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.111 2000/12/07 09:22:07 db Exp $
+ * $Id: channel.c,v 7.112 2000/12/08 04:01:29 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -1607,7 +1607,21 @@ void set_channel_mode(struct Client *cptr,
         case 'l':
           if (whatt == MODE_QUERY)
             break;
-          if (!isok_c || limitset++)
+	  /* allow ops and halfops to set limits */
+          if (!isok_c)
+            {
+              if (!errsent(SM_ERR_NOOPS, &errors_sent) && MyClient(sptr))
+                sendto_one(sptr, form_str(ERR_CHANOPRIVSNEEDED),
+                           me.name, sptr->name, 
+                           real_name);
+
+              if (whatt == MODE_ADD && parc-- > 0)
+                parv++;
+
+              break;
+            }
+
+          if (limitset++)
             {
               if (whatt == MODE_ADD && parc-- > 0)
                 parv++;
