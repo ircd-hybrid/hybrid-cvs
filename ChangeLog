@@ -1,3 +1,17 @@
+db          2003/02/11 21:09:29 EST	(20030212_0)
+
+  Modified files:
+    src                  s_serv.c send.c 
+  Log:
+  - style fix in s_serv.c
+  - fix potential linebuf leak in send.c
+  
+  Revision  Changes    Path
+  7.278     +1 -1      ircd-hybrid-7/src/s_serv.c
+  7.223     +3 -3      ircd-hybrid-7/src/send.c
+
+
+
 db          2003/02/10 19:15:04 EST	(20030211_0)
 
   Modified files:
@@ -34981,4 +34995,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4229 2003/02/11 00:15:07 db Exp $
+$Id: ChangeLog,v 7.4230 2003/02/12 02:09:32 db Exp $
