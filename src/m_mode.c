@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_mode.c,v 7.4 2000/08/13 22:35:06 ejb Exp $
+ *   $Id: m_mode.c,v 7.5 2000/10/13 15:07:07 bill Exp $
  */
 #include "handlers.h"
 #include "channel.h"
@@ -120,7 +120,11 @@ int m_mode(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 	  if(!chptr)
 	  {
 	      /* LazyLinks */
-	      if ( !ConfigFileEntry.hub && IsCapable( serv_cptr_list, CAP_LL) )
+	      if (serv_cptr_list != NULL) {
+		/* this was segfaulting if we had no servers linked.
+	         *  -pro
+		 */
+	       if ( !ConfigFileEntry.hub && IsCapable( serv_cptr_list, CAP_LL) )
 		  {
 			  /* cache the channel if it exists on uplink */
 			  /* nasty possibility of a DoS here... ?
@@ -136,12 +140,13 @@ int m_mode(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 						  sptr->name, parv[1] );
 			  return 0;
 		  }
-	      else
+	       else
 		  {
 			  sendto_one(sptr, form_str(ERR_BADCHANNAME),
 						 me.name, parv[0], (unsigned char *)parv[1]);
 			  return 0;
 		  }
+	      }
 	  }
   }
   else
