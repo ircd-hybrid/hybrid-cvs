@@ -1,3 +1,11 @@
+*** 20001106_17 by db
+- rewrote m_privmsg.c more or less completely.
+  Still TODO re-add the additional privileged things opers get
+  copy this code in m_notice.c
+  TEST TEST TEST I think it works...
+
+
+
 *** 20001106_16 by db
 - split m_sjoin.c up a bit more, added vchan support for remote clients
   I want to revisit this code. The problem is, remote servers can have
@@ -163,7 +171,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.499 2000/11/06 22:24:14 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.500 2000/11/07 03:51:10 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
