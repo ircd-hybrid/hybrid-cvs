@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.c,v 7.21 2000/11/06 13:48:19 adrian Exp $
+ *   $Id: s_auth.c,v 7.22 2000/11/06 21:51:05 adrian Exp $
  *
  * Changes:
  *   July 6, 1999 - Rewrote most of the code here. When a client connects
@@ -228,7 +228,9 @@ static void auth_dns_callback(void* vptr, struct DNSReply* reply)
   if (!IsDoingAuth(auth)) {
     release_auth_client(auth->client);
     unlink_auth_request(auth, &AuthPollList);
+#ifdef USE_IAUTH
     link_auth_request(auth, &AuthClientList);
+#endif
     /*free_auth_request(auth);*/
   }
 }
@@ -423,19 +425,8 @@ void start_auth(struct Client* client)
   /* No DNS cache now, remember? -- adrian */
   gethost_byaddr((const char*) &client->ip, &query);
   SetDNSPending(auth);
-
-  if (start_auth_query(auth) || IsDNSPending(auth))
-  {
-    link_auth_request(auth, &AuthPollList);
-  }
-  else {
-  #ifdef USE_IAUTH
-  	link_auth_request(auth, &AuthClientList);
-  #else
-    free_auth_request(auth);
-  #endif
-    release_auth_client(client);
-  }
+  start_auth_query(auth);
+  link_auth_request(auth, &AuthPollList);
 }
 
 /*
