@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.55 2001/01/06 03:35:37 a1kmm Exp $
+ * $Id: ircd_lexer.l,v 1.56 2001/01/06 18:13:38 db Exp $
  */
 
 %option case-insensitive
@@ -125,7 +125,6 @@ l_notice 	{ return T_L_NOTICE; }
 l_trace		{ return T_L_TRACE; }
 l_warn		{ return T_L_WARN; }
 lazylink	{ return LAZYLINK; }
-leaf		{ return LEAF; }
 leaf_mask	{ return LEAF_MASK; }
 listen		{ return LISTEN; }
 links_notice    { return LINKS_NOTICE; }
