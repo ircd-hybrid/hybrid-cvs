@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: config.h,v 7.135 2002/06/15 23:07:51 leeh Exp $
+ *  $Id: config.h,v 7.136 2002/06/19 20:17:44 leeh Exp $
  */
 
 #ifndef INCLUDED_config_h
@@ -182,6 +182,13 @@
  */
 #undef  HIDE_SERVERS_IPS
 
+/* HIDE_SPOOF_IPS
+ *
+ * If this is undefined, admins will be allowed to see a spoofed users IP
+ * in /trace etc.  If this is defined, they will be shown a masked IP.
+ */
+#undef HIDE_SPOOF_IPS
+
 /* USE_LOGFILE - log errors and such to LPATH
  * If you wish to have the server send 'vital' messages about server
  * to a logfile, define USE_LOGFILE.
@@ -294,6 +301,9 @@
 #undef HALFOPS
 #ifndef HIDE_SERVERS_IPS
 #define HIDE_SERVERS_IPS
+#endif
+#ifndef HIDE_SPOOF_IPS
+#define HIDE_SPOOF_IPS
 #endif
 #endif
 
