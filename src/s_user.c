@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.65 2000/12/15 03:32:19 toot Exp $
+ *  $Id: s_user.c,v 7.66 2000/12/15 05:09:30 toot Exp $
  */
 #include "tools.h"
 #include "s_user.h"
@@ -225,24 +225,28 @@ void show_opers(struct Client *cptr)
  */
 int show_lusers(struct Client *sptr) 
 {
-  if(GlobalSetOptions.hide_server)
-    {
-      sendto_one(sptr,
-		 ":%s %d %s :There are %d users",
-		 me.name, RPL_LUSERCLIENT, sptr->name, Count.total);
-      sendto_one(sptr, form_str(RPL_LUSERCHANNELS),
-		 me.name, sptr->name, Count.chan);
-    }
+  if (GlobalSetOptions.hide_server)
+    sendto_one(sptr, ":%s %d %s :There are %d users",
+               me.name, RPL_LUSERCLIENT, sptr->name, Count.total);
   else
-    {
-      sendto_one(sptr,
-		 ":%s %d %s :There are %d users on %d servers", me.name,
-		 RPL_LUSERCLIENT, sptr->name, Count.total, Count.server);
-      sendto_one(sptr, form_str(RPL_LUSERCHANNELS),
-		 me.name, sptr->name, Count.chan);
-      sendto_one(sptr, form_str(RPL_LUSERME),
-		 me.name, sptr->name, Count.local, Count.myserver);
-    }
+    sendto_one(sptr, form_str(RPL_LUSERCLIENT), me.name, sptr->name,
+               (Count.total-Count.invisi), Count.invisi, Count.server);
+
+  if (Count.oper > 0)
+    sendto_one(sptr, form_str(RPL_LUSEROP), me.name, sptr->name,
+               Count.oper);
+
+  if (Count.unknown > 0)
+    sendto_one(sptr, form_str(RPL_LUSERUNKNOWN), me.name, sptr->name,
+               Count.unknown);
+
+  if (Count.chan > 0)
+    sendto_one(sptr, form_str(RPL_LUSERCHANNELS),
+               me.name, sptr->name, Count.chan);
+
+  if(!GlobalSetOptions.hide_server)
+    sendto_one(sptr, form_str(RPL_LUSERME),
+               me.name, sptr->name, Count.local, Count.myserver);
 
   sendto_one(sptr, form_str(RPL_LOCALUSERS), me.name, sptr->name,
              Count.local, Count.max_loc);
