@@ -1,3 +1,15 @@
+bill        2002/11/20 13:00:05 EST	(20021120_2)
+
+  Modified files:
+    contrib              m_operspy.c 
+  Log:
+  - duplicate previous fix in m_operspy() .. just in case.
+  
+  Revision  Changes    Path
+  1.13      +6 -3      ircd-hybrid-7/contrib/m_operspy.c
+
+
+
 bill        2002/11/20 00:55:13 EST	(20021120_1)
 
   Modified files:
@@ -33219,4 +33231,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4113 2002/11/20 05:55:16 bill Exp $
+$Id: ChangeLog,v 7.4114 2002/11/20 18:00:07 bill Exp $
