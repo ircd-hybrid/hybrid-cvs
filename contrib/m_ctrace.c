@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ctrace.c,v 1.6 2003/09/23 03:53:22 db Exp $
+ *  $Id: m_ctrace.c,v 1.7 2003/10/08 22:03:45 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
   hook_del_event("doing_ctrace");
   mod_del_cmd(&ctrace_msgtab);
 }
-const char *_version = "$Revision: 1.6 $";
+const char *_version = "$Revision: 1.7 $";
 #endif
 static int report_this_status(struct Client *source_p, struct Client *target_p);
 
@@ -83,9 +83,6 @@ mo_ctrace(struct Client *client_p, struct Client *source_p,
   dlink_node *ptr;
   char *class_looking_for;
   const char* class_name;
-
-  if(!IsClient(source_p))
-    return;
 
   if ((parc < 1) || (*parv[1] == '\0'))
   {

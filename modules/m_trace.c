@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_trace.c,v 1.71 2003/10/07 22:37:13 bill Exp $
+ *  $Id: m_trace.c,v 1.72 2003/10/08 22:03:47 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -94,7 +94,7 @@ _moddeinit(void)
   mod_del_cmd(&trace_msgtab6);
 #endif
 }
-const char *_version = "$Revision: 1.71 $";
+const char *_version = "$Revision: 1.72 $";
 #endif
 
 static int report_this_status(struct Client *source_p, struct Client *target_p,
@@ -135,9 +135,6 @@ mo_trace(struct Client *client_p, struct Client *source_p,
   const char *tname;
   const char *from, *to;
 
-  if (!IsClient(source_p))
-    return;
-    
   if (parc > 2)
     if (hunt_server(client_p, source_p, ":%s TRACE %s :%s", 2, parc, parv))
       return;
@@ -200,9 +197,6 @@ mo_trace4(struct Client *client_p, struct Client *source_p,
 {
   const char *tname;
 
-  if (!IsClient(source_p))
-    return;
-
   if (parc > 1)
     tname = parv[1];
   else
@@ -217,9 +211,6 @@ mo_trace6(struct Client *client_p, struct Client *source_p,
 	  int parc, char *parv[])
 {
   const char *tname;
-
-  if (!IsClient(source_p))
-    return;
 
   if (parc > 1)
     tname = parv[1];
