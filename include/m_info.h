@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.h,v 7.50 2004/10/07 19:35:45 metalrock Exp $
+ *  $Id: m_info.h,v 7.51 2004/10/08 03:01:46 metalrock Exp $
  */
 
 #ifndef INCLUDED_m_info_h
@@ -87,8 +87,6 @@ Info MyInformation[] = {
   { "MAX_CONNECTIONS", "", MAXCONN, "Maximum Number of Network Connections Allowed" },
 
   { "MAX_JOIN_LEAVE_COUNT", "", MAX_JOIN_LEAVE_COUNT, "Anti SpamBot Parameter" },
-
-  { "MAXIMUM_LINKS_DEFAULT", "", MAXIMUM_LINKS_DEFAULT, "Default Maximum Links for Class 0" },
 
   { "MIN_JOIN_LEAVE_TIME", "", MIN_JOIN_LEAVE_TIME, "Anti SpamBot Parameter" },
 
