@@ -1,3 +1,22 @@
+db          2003/01/16 21:58:26 EST	(20030117_2)
+
+  Modified files:
+    .                    RELNOTES 
+    modules/core         m_message.c 
+  Added files:
+    doc                  example.conf.quick 
+  Log:
+  - oopsies. old traditional behaviour was to allow non-opers to
+    send userhost@server privmsgs. dalnet used nick... probably
+    should add an ifdef if we want to change it
+  
+  Revision  Changes    Path
+  1.57      +1 -1      ircd-hybrid-7/RELNOTES
+  1.1       +343 -0    ircd-hybrid-7/doc/example.conf.quick (new)
+  1.106     +102 -142  ircd-hybrid-7/modules/core/m_message.c
+
+
+
 db          2003/01/16 20:10:00 EST	(20030117_1)
 
   Modified files:
@@ -34055,4 +34074,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4170 2003/01/17 01:10:02 db Exp $
+$Id: ChangeLog,v 7.4171 2003/01/17 02:58:28 db Exp $
