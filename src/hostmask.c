@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.c,v 7.70 2002/08/19 06:06:52 db Exp $
+ *  $Id: hostmask.c,v 7.71 2002/08/20 18:03:32 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -70,7 +70,7 @@ try_parse_v6_netmask(const char *text, struct irc_inaddr *addr, int *b)
   int dp = 0;
   int nyble = 4;
   int finsert = -1;
-  int bits = 0;
+  int bits = 128;
   int deficit = 0;
   short dc[8];
 
