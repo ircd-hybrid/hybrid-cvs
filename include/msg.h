@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: msg.h,v 7.16 2000/09/29 17:16:54 ejb Exp $
+ * $Id: msg.h,v 7.17 2000/10/03 18:14:47 db Exp $
  */
 #ifndef INCLUDED_msg_h
 #define INCLUDED_msg_h
@@ -107,6 +107,7 @@ typedef struct MessageTree MESSAGE_TREE;
 #define MSG_LTRACE   "LTRACE"   /* LTRA */
 #define MSG_NOTICE   "NOTICE"   /* NOTI */
 #define MSG_JOIN     "JOIN"     /* JOIN */
+#define MSG_CJOIN    "CJOIN"    /* CJOIN */
 #define MSG_PART     "PART"     /* PART */
 #define MSG_LUSERS   "LUSERS"   /* LUSE */
 #define MSG_MOTD     "MOTD"     /* MOTD */

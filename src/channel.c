@@ -34,7 +34,7 @@
  *                mode * -p etc. if flag was clear
  *
  *
- * $Id: channel.c,v 7.41 2000/09/29 17:16:57 ejb Exp $
+ * $Id: channel.c,v 7.42 2000/10/03 18:14:50 db Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -2457,9 +2457,13 @@ static  void    sub1_from_channel(struct Channel *chptr)
 #ifdef FLUD
           free_fluders(NULL, chptr);
 #endif
-          del_from_channel_hash_table(chptr->chname, chptr);
-          MyFree((char*) chptr);
-          Count.chan--;
+          /* If channel has subchannels don't delete this channel */
+          if ( chptr->vchans == NULL )	  
+            {
+              del_from_channel_hash_table(chptr->chname, chptr);
+              MyFree((char*) chptr);
+              Count.chan--;
+            }
         }
     }
 }

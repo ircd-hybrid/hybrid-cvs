@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.13 2000/09/29 17:17:05 ejb Exp $
+ *   $Id: parse.c,v 7.14 2000/10/03 18:14:52 db Exp $
  */
 #include "parse.h"
 #include "client.h"
@@ -507,6 +507,10 @@ struct Message msgtab[] = {
   {MSG_JOIN, 0, 1, MFLG_SLOW, 0,
     /* UNREG, CLIENT, SERVER, OPER */
     { m_unregistered, m_join, ms_join, m_join }
+  },
+  {MSG_CJOIN, 0, 1, MFLG_SLOW, 0,
+    /* UNREG, CLIENT, SERVER, OPER */
+    { m_unregistered, m_cjoin, m_error, m_error }
   },
   {MSG_MODE, 0, 1, MFLG_SLOW, 0,
     /* UNREG, CLIENT, SERVER, OPER */

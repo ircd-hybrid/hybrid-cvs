@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: handlers.h,v 7.2 2000/08/13 22:34:58 ejb Exp $
+ * $Id: handlers.h,v 7.3 2000/10/03 18:14:47 db Exp $
  */
 #ifndef INCLUDED_handlers_h
 #define INCLUDED_handlers_h
@@ -96,6 +96,7 @@ extern int m_info(struct Client*, struct Client*, int, char**);
 extern int m_invite(struct Client*, struct Client*, int, char**);
 extern int m_ison(struct Client*, struct Client*, int, char**);
 extern int m_join(struct Client*, struct Client*, int, char**);
+extern int m_cjoin(struct Client*, struct Client*, int, char**);
 extern int m_kick(struct Client*, struct Client*, int, char**);
 extern int m_knock(struct Client*, struct Client*, int, char**);
 extern int m_kline(struct Client *,struct Client *,int,char **);
