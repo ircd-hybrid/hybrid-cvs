@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_challenge.c,v 1.34 2002/05/07 12:26:27 db Exp $
+ *  $Id: m_challenge.c,v 1.35 2002/05/07 12:50:47 leeh Exp $
  */
 
 #include <stdlib.h>
@@ -56,7 +56,7 @@ _moddeinit(void)
   return;
 }
 
-const char *_version = "$Revision: 1.34 $";
+const char *_version = "$Revision: 1.35 $";
 #endif
 #else
 
@@ -81,7 +81,7 @@ _moddeinit(void)
   mod_del_cmd(&challenge_msgtab);
 }
 
-const char *_version = "$Revision: 1.34 $";
+const char *_version = "$Revision: 1.35 $";
 #endif
 /*
  * m_challenge - generate RSA challenge for wouldbe oper
@@ -98,6 +98,14 @@ static void m_challenge( struct Client *client_p, struct Client *source_p,
   if(!(source_p->user) || !source_p->localClient)
     return;
   
+  /* if theyre an oper, reprint oper motd and ignore */
+  if(IsOper(source_p))
+  {
+    sendto_one(source_p, form_str(RPL_YOUREOPER), me.name, parv[0]);
+    SendMessageFile(source_p, &ConfigFileEntry.opermotd);
+    return;
+  }
+
   if (*parv[1] == '+')
     {
      /* Ignore it if we aren't expecting this... -A1kmm */
@@ -132,15 +140,13 @@ static void m_challenge( struct Client *client_p, struct Client *source_p,
 	return;
       }
      
-     /* If not already an oper, make them an oper and tell the realops... */
-     if(!IsOper(source_p))
-       {
-          oper_up(source_p, aconf);
-          ilog(L_TRACE, "OPER %s by %s!%s@%s",
-             source_p->user->auth_oper, source_p->name, source_p->username,
-                 source_p->host);
-          log_oper(source_p, source_p->user->auth_oper);
-       }
+    oper_up(source_p, aconf);
+
+    ilog(L_TRACE, "OPER %s by %s!%s@%s",
+         source_p->user->auth_oper, source_p->name, source_p->username,
+         source_p->host);
+    log_oper(source_p, source_p->user->auth_oper);
+
      MyFree(source_p->user->response);
      MyFree(source_p->user->auth_oper);
      source_p->user->response = NULL;
