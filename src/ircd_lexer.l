@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.65 2001/01/24 03:10:32 db Exp $
+ * $Id: ircd_lexer.l,v 1.66 2001/01/24 14:10:09 db Exp $
  */
 
 %option case-insensitive
@@ -95,6 +95,7 @@ deny		{ return DENY; }
 description	{ return DESCRIPTION; }
 die		{ return DIE; }
 dots_in_ident   { return DOTS_IN_IDENT; }
+encrypted       { return ENCRYPTED; }
 email		{ return EMAIL; }
 exceed_limit    { return EXCEED_LIMIT; }
 fname_userlog   { return FNAME_USERLOG; }
@@ -159,6 +160,7 @@ redirserv       { return REDIRSERV; }
 redirport       { return REDIRPORT; }
 reject		{ return TREJECT; }
 remote		{ return REMOTE; }
+restricted      { return RESTRICTED; }
 send_password	{ return SEND_PASSWORD; }
 sendq		{ return SENDQ; }
 serverinfo	{ return SERVERINFO; }

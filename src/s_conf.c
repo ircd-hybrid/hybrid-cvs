@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.158 2001/01/23 04:49:00 wcampbel Exp $
+ *  $Id: s_conf.c,v 7.159 2001/01/24 14:10:11 db Exp $
  */
 
 #include <sys/types.h>
@@ -528,6 +528,9 @@ int attach_Iline(struct Client* cptr, const char* username)
 
 	  if(IsConfDoIdentd(aconf))
 	    SetNeedId(cptr);
+
+	  if(IsConfRestricted(aconf))
+	    SetRestricted(cptr);
 
 	  /* Thanks for spoof idea amm */
 	  if(IsConfDoSpoofIp(aconf))

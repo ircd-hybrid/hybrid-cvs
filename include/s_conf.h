@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.85 2001/01/24 03:10:25 db Exp $
+ * $Id: s_conf.h,v 7.86 2001/01/24 14:10:03 db Exp $
  */
 
 #include "setup.h"
@@ -113,13 +113,15 @@ struct ConfItem
 #define CONF_FLAGS_F_LINED              0x0080
 #define CONF_FLAGS_IDLE_LINED           0x0100
 #define CONF_FLAGS_SPOOF_IP             0x0200
+#define CONF_FLAGS_REDIR                0x0400
+#define CONF_FLAGS_EXEMPTGLINE          0x0800
+#define CONF_FLAGS_RESTRICTED           0x1000
 /* server flags */
-#define CONF_FLAGS_ALLOW_AUTO_CONN      0x0400
-#define CONF_FLAGS_LAZY_LINK            0x0800
-#define CONF_FLAGS_REDIR                0x1000
-#define CONF_FLAGS_EXEMPTGLINE          0x2000
+#define CONF_FLAGS_ALLOW_AUTO_CONN      0x2000
+#define CONF_FLAGS_LAZY_LINK            0x4000
+#define CONF_FLAGS_ENCRYPTED            0x8000
 
-/* Macros for aConfItem */
+/* Macros for struct ConfItem */
 
 #define IsLimitIp(x)            ((x)->flags & CONF_FLAGS_LIMIT_IP)
 #define IsNoTilde(x)            ((x)->flags & CONF_FLAGS_NO_TILDE)
@@ -132,6 +134,8 @@ struct ConfItem
 #define IsConfIdlelined(x)      ((x)->flags & CONF_FLAGS_IDLE_LINED)
 #define IsConfDoIdentd(x)       ((x)->flags & CONF_FLAGS_DO_IDENTD)
 #define IsConfDoSpoofIp(x)      ((x)->flags & CONF_FLAGS_SPOOF_IP)
+#define IsConfRestricted(x)     ((x)->flags & CONF_FLAGS_RESTRICTED)
+#define IsConfEncrypted(x)      ((x)->flags & CONF_FLAGS_ENCRYPTED)
 
 /* port definitions for Opers */
 

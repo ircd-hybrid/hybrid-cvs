@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.124 2001/01/24 08:16:45 db Exp $
+ *   $Id: s_serv.c,v 7.125 2001/01/24 14:10:11 db Exp $
  */
 
 #include <sys/types.h>
@@ -61,6 +61,7 @@
 #include "s_debug.h"
 #include "memory.h"
 
+extern char *crypt();
 
 #define MIN_CONN_FREQ 300
 
@@ -380,9 +381,20 @@ int check_server(const char *name, struct Client* cptr)
        {
 	 error = -2;
 	   
-	 if (strcmp(aconf->passwd, cptr->localClient->passwd) == 0)
+	 if (IsConfEncrypted(aconf))
 	   {
-	     server_aconf = aconf;
+	     if (strcmp(aconf->passwd, 
+			crypt(cptr->localClient->passwd, aconf->passwd)) == 0)
+	       {
+		 server_aconf = aconf;
+	       }
+	   }
+	 else
+	   {
+	     if (strcmp(aconf->passwd, cptr->localClient->passwd) == 0)
+	       {
+		 server_aconf = aconf;
+	       }
 	   }
        }
     }

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_oper.c,v 1.25 2001/01/20 06:48:18 db Exp $
+ *   $Id: m_oper.c,v 1.26 2001/01/24 14:10:08 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -237,6 +237,7 @@ static int match_oper_password(char *password,
   if (!aconf->status & CONF_OPERATOR)
     return NO;
 
+  /* XXX another #ifdef that should go */
 #ifdef CRYPT_OPER_PASSWORD
   /* use first two chars of the password they send in as salt */
   /* If the password in the conf is MD5, and ircd is linked   
