@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.119 2001/08/31 12:48:32 leeh Exp $
+ * $Id: ircd_lexer.l,v 1.120 2001/09/04 14:25:19 leeh Exp $
  */
 
 %option case-insensitive
@@ -106,6 +106,7 @@ action		{ return ACTION; }
 admin		{ return ADMIN; }
 administrator	{ return ADMIN; }
 aftype		{ return AFTYPE; }
+allow_hidden	{ return ALLOW_HIDDEN; }
 auth		{ return AUTH; }
 autoconn	{ return AUTOCONN; }
 caller_id_wait	{ return CALLER_ID_WAIT; }
@@ -146,6 +147,7 @@ gline_time      { return GLINE_TIME; }
 global_kill	{ return GLOBAL_KILL; }
 have_ident	{ return HAVE_IDENT; }
 havent_read_conf { return HAVENT_READ_CONF; }
+hidden		{ return HIDDEN; }
 hide_servers	{ return HIDE_SERVERS; }
 host		{ return HOST; }
 hub		{ return HUB; }
