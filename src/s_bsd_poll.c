@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_poll.c,v 7.36 2001/04/29 19:31:10 androsyn Exp $
+ *  $Id: s_bsd_poll.c,v 7.37 2001/04/29 21:39:29 androsyn Exp $
  */
 #include "config.h"
 #ifdef USE_POLL
@@ -309,7 +309,7 @@ comm_select_fdlist(fdlist_t fdlist, time_t delay)
    hdl = F->read_handler;
    poll_update_pollfds(fd, fdlist, POLLRDNORM, NULL);
    /* This shouldn't happen... */
-   assert(hdl);
+   /* assert(hdl); */
    if (hdl)
     hdl(fd, F->read_data);
   }
@@ -318,7 +318,7 @@ comm_select_fdlist(fdlist_t fdlist, time_t delay)
    hdl = F->write_handler;
    poll_update_pollfds(fd, fdlist, POLLWRNORM, NULL);
    /* This shouldn't happen... */
-   assert(hdl);
+/*   assert(hdl); */
    if (hdl)
     hdl(fd, F->write_data);
   }
