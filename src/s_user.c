@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.251 2003/05/03 11:10:05 michael Exp $
+ *  $Id: s_user.c,v 7.252 2003/05/08 09:39:25 michael Exp $
  */
 
 #include "stdinc.h"
@@ -340,7 +340,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
 
   if (!IsGotId(source_p))
   {
-    char *p;
+    const char *p;
     int i = 0;
 
     if (IsNeedIdentd(aconf))
@@ -357,7 +357,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
     if (!IsNoTilde(aconf))
       source_p->username[i++] = '~';
 
-    while(*p && i < USERLEN)
+    while (*p && i < USERLEN)
     {
       if (*p != '[')
         source_p->username[i++] = *p;

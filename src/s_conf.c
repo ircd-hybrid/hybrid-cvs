@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.372 2003/05/07 02:46:50 michael Exp $
+ *  $Id: s_conf.c,v 7.373 2003/05/08 09:39:25 michael Exp $
  */
 
 #include "stdinc.h"
@@ -124,10 +124,10 @@ struct ConfItem *u_conf = NULL;
  * a non-null pointer, otherwise hp will be null.
  * if successful save hp in the conf item it was called with
  */
-static void 
+static void
 conf_dns_callback(void* vptr, adns_answer *reply)
 {
-  struct ConfItem *aconf = (struct ConfItem *) vptr;
+  struct ConfItem *aconf = (struct ConfItem *)vptr;
 
   if (reply && reply->status == adns_s_ok)
   {
@@ -154,7 +154,7 @@ conf_dns_callback(void* vptr, adns_answer *reply)
  * allocate a dns_query and start ns lookup.
  */
 static void
-conf_dns_lookup(struct ConfItem* aconf)
+conf_dns_lookup(struct ConfItem *aconf)
 {
   if (aconf->dns_query == NULL)
   {
@@ -223,15 +223,15 @@ free_conf(struct ConfItem *aconf)
  * those which match the status field mask.
  */
 void
-det_confs_butmask(struct Client *client_p, int mask)
+det_confs_butmask(struct Client *client_p, unsigned int mask)
 {
-  dlink_node *dlink;
-  dlink_node *link_next;
+  dlink_node *ptr;
+  dlink_node *next_ptr;
   struct ConfItem *aconf;
 
-  DLINK_FOREACH_SAFE(dlink, link_next, client_p->localClient->confs.head)
+  DLINK_FOREACH_SAFE(ptr, next_ptr, client_p->localClient->confs.head)
   {
-    aconf = dlink->data;
+    aconf = ptr->data;
 
     if ((aconf->status & mask) == 0)
     {
@@ -261,7 +261,7 @@ static struct LinkReport {
  * output	- NONE
  * side effects	-
  */
-void 
+void
 report_configured_links(struct Client *source_p, unsigned int mask)
 {
   dlink_node *ptr;
@@ -326,7 +326,7 @@ report_configured_links(struct Client *source_p, unsigned int mask)
                      me.name, source_p->name, c,
 		     "*@127.0.0.1", buf, name, port, classname);
       }
-      else if(mask & (CONF_OPERATOR))
+      else if (mask & CONF_OPERATOR)
       {
         /* Don't allow non opers to see oper privs */
         if (IsOper(source_p))
@@ -512,6 +512,7 @@ verify_access(struct Client* client_p, const char* username)
 	  }
 	}
       }
+
       if (IsConfDoIdentd(aconf))
 	SetNeedId(client_p);
       if (IsConfRestricted(aconf))
@@ -593,7 +594,6 @@ init_ip_hash_table(void)
  *
  * inputs       - client_p
  *              - name
- *
  * output       - pointer to a struct ip_entry
  * side effects -
  *
@@ -605,9 +605,9 @@ find_or_add_ip(struct irc_ssaddr *ip_in)
 {
   struct ip_entry *ptr, *newptr;
   int hash_index = hash_ip(ip_in), res;
-  struct sockaddr_in *v4 = (struct sockaddr_in *) ip_in, *ptr_v4;
+  struct sockaddr_in *v4 = (struct sockaddr_in *)ip_in, *ptr_v4;
 #ifdef IPV6
-  struct sockaddr_in6 *v6 = (struct sockaddr_in6 *) ip_in, *ptr_v6;
+  struct sockaddr_in6 *v6 = (struct sockaddr_in6 *)ip_in, *ptr_v6;
 #endif
 
   for (ptr = ip_hash_table[hash_index]; ptr; ptr = ptr->next)
@@ -617,13 +617,13 @@ find_or_add_ip(struct irc_ssaddr *ip_in)
       continue;
     if (ip_in->ss.ss_family == AF_INET6)
     {
-      ptr_v6 = (struct sockaddr_in6 *) &ptr->ip;
+      ptr_v6 = (struct sockaddr_in6 *)&ptr->ip;
       res = memcmp(&v6->sin6_addr, &ptr_v6->sin6_addr, sizeof(struct in6_addr));
     }
     else
 #endif
     {
-      ptr_v4 = (struct sockaddr_in *) &ptr->ip;
+      ptr_v4 = (struct sockaddr_in *)&ptr->ip;
       res = memcmp(&v4->sin_addr, &ptr_v4->sin_addr, sizeof(struct in_addr));
     }
     if (res == 0)
@@ -660,15 +660,15 @@ find_or_add_ip(struct irc_ssaddr *ip_in)
  *                 If ip # count reaches 0 and has expired,
  *		   the struct ip_entry is returned to the ip_entry_heap
  */
-void 
+void
 remove_one_ip(struct irc_ssaddr *ip_in)
 {
   struct ip_entry *ptr;
   struct ip_entry *last_ptr = NULL;
   int hash_index = hash_ip(ip_in), res;
-  struct sockaddr_in *v4 = (struct sockaddr_in *) ip_in, *ptr_v4;
+  struct sockaddr_in *v4 = (struct sockaddr_in *)ip_in, *ptr_v4;
 #ifdef IPV6
-  struct sockaddr_in6 *v6 = (struct sockaddr_in6 *) ip_in, *ptr_v6;
+  struct sockaddr_in6 *v6 = (struct sockaddr_in6 *)ip_in, *ptr_v6;
 #endif
 
   for(ptr = ip_hash_table[hash_index]; ptr; ptr = ptr->next)
@@ -678,13 +678,13 @@ remove_one_ip(struct irc_ssaddr *ip_in)
       continue;
     if (ip_in->ss.ss_family == AF_INET6)
     {
-      ptr_v6 = (struct sockaddr_in6 *) &ptr->ip;
+      ptr_v6 = (struct sockaddr_in6 *)&ptr->ip;
       res = memcmp(&v6->sin6_addr, &ptr_v6->sin6_addr, sizeof(struct in6_addr));
     }
     else
 #endif
     {
-      ptr_v4 = (struct sockaddr_in *) &ptr->ip;
+      ptr_v4 = (struct sockaddr_in *)&ptr->ip;
       res = memcmp(&v4->sin_addr, &ptr_v4->sin_addr, sizeof(struct in_addr));
     }
     if (res)
@@ -708,12 +708,12 @@ remove_one_ip(struct irc_ssaddr *ip_in)
 }
 
 /* hash_ip()
- * 
+ *
  * input        - pointer to an irc_inaddr
  * output       - integer value used as index into hash table
  * side effects - hopefully, none
  */
-static int  
+static int
 hash_ip(struct irc_ssaddr *addr)
 {
   if (addr->ss.ss_family == AF_INET)
@@ -722,7 +722,7 @@ hash_ip(struct irc_ssaddr *addr)
     int hash;
     u_int32_t ip;
 
-    ip = ntohl(v4->sin_addr.s_addr);
+    ip   = ntohl(v4->sin_addr.s_addr);
     hash = ((ip >> 12) + ip) & (IP_HASH_SIZE-1);
     return(hash);
   }
@@ -733,10 +733,10 @@ hash_ip(struct irc_ssaddr *addr)
     struct sockaddr_in6 *v6 = (struct sockaddr_in6 *)addr;
     u_int32_t *ip = (u_int32_t *)&v6->sin6_addr.s6_addr;
 
-    hash = ip[0] ^ ip[3];
+    hash  = ip[0] ^ ip[3];
     hash ^= hash >> 16;  
     hash ^= hash >> 8;   
-    hash = hash & (IP_HASH_SIZE - 1);
+    hash  = hash & (IP_HASH_SIZE - 1);
     return(hash);
   }
 #endif
@@ -753,16 +753,16 @@ hash_ip(struct irc_ssaddr *addr)
  * number of hashed ip #'s is counted up, plus the amount of memory
  * used in the hash.
  */
-void 
+void
 count_ip_hash(int *number_ips_stored,u_long *mem_ips_stored)
 {
   struct ip_entry *ptr;
   int i;
 
   *number_ips_stored = 0;
-  *mem_ips_stored = 0;
+  *mem_ips_stored    = 0;
 
-  for (i = 0; i < IP_HASH_SIZE ;i++)
+  for (i = 0; i < IP_HASH_SIZE; i++)
   {
     for (ptr = ip_hash_table[i]; ptr; ptr = ptr->next)
     {
@@ -884,7 +884,7 @@ detach_conf(struct Client* client_p, struct ConfItem* aconf)
       {
 	if (aclass->links > 0)
 	  aclass->links--;
-	
+
 	if (MaxLinks(aclass) < 0 && Links(aclass) <= 0)
 	{
 	  dlinkDelete(&aclass->class_node, &ClassList);
@@ -915,7 +915,7 @@ detach_conf(struct Client* client_p, struct ConfItem* aconf)
  * output	- 1 if attached, 0 if not
  * side effects	- 
  */
-static int 
+static int
 is_attached(struct Client *client_p, struct ConfItem *aconf)
 {
   dlink_node *ptr;
@@ -939,7 +939,7 @@ is_attached(struct Client *client_p, struct ConfItem *aconf)
  *                connection). Note, that this automatically changes the
  *                attachment if there was an old one...
  */
-int 
+int
 attach_conf(struct Client *client_p, struct ConfItem *aconf)
 {
   if (is_attached(client_p, aconf))
@@ -989,7 +989,7 @@ attach_conf(struct Client *client_p, struct ConfItem *aconf)
  * NOTE: this will allow C:::* and N:::* because the match mask is the
  * conf line and not the name
  */
-int 
+int
 attach_confs(struct Client *client_p, const char *name, unsigned int statmask)
 {
   dlink_node *ptr;
@@ -1025,7 +1025,7 @@ attach_confs(struct Client *client_p, const char *name, unsigned int statmask)
  * output	- true (1) if both are found, otherwise return false (0)
  * side effects - find connect block and attach them to connecting client
  */
-int 
+int
 attach_connect_block(struct Client *client_p, const char *name,
                      const char *host)
 {
@@ -1143,7 +1143,7 @@ struct ConfItem *
 find_conf_by_name(const char *name, unsigned int status)
 {
   dlink_node *ptr;
-  struct ConfItem* conf;
+  struct ConfItem *conf;
 
   assert(name != NULL);
 
@@ -1277,7 +1277,7 @@ rehash(int sig)
 
   /* Check to see if we magically got(or lost) IPv6 support */
   check_can_use_v6();
-  
+
   read_conf_files(NO);
 
   if (ServerInfo.description != NULL)
@@ -1421,12 +1421,11 @@ set_default_conf(void)
 
 /* read_conf() 
  *
- *
  * inputs       - file descriptor pointing to config file to use
  * output       - None
  * side effects	- Read configuration file.
  */
-static void 
+static void
 read_conf(FBFILE *file)
 {
   scount = lineno = 0;
@@ -1442,22 +1441,22 @@ read_conf(FBFILE *file)
   check_class();      /* Make sure classes are valid */
 }
 
-static void 
+static void
 validate_conf(void)
 {
-  if(ConfigFileEntry.ts_warn_delta < TS_WARN_DELTA_MIN)
+  if (ConfigFileEntry.ts_warn_delta < TS_WARN_DELTA_MIN)
     ConfigFileEntry.ts_warn_delta = TS_WARN_DELTA_DEFAULT;
 
-  if(ConfigFileEntry.ts_max_delta < TS_MAX_DELTA_MIN)
+  if (ConfigFileEntry.ts_max_delta < TS_MAX_DELTA_MIN)
     ConfigFileEntry.ts_max_delta = TS_MAX_DELTA_DEFAULT;
 
-  if(ConfigFileEntry.servlink_path == NULL)
+  if (ConfigFileEntry.servlink_path == NULL)
     DupString(ConfigFileEntry.servlink_path, SLPATH);
 
-  if(ServerInfo.network_name == NULL)
+  if (ServerInfo.network_name == NULL)
     DupString(ServerInfo.network_name,NETWORK_NAME_DEFAULT);
 
-  if(ServerInfo.network_desc == NULL)
+  if (ServerInfo.network_desc == NULL)
     DupString(ServerInfo.network_desc,NETWORK_DESC_DEFAULT);
 
   if ((ConfigFileEntry.client_flood < CLIENT_FLOOD_MIN) ||
@@ -1465,7 +1464,7 @@ validate_conf(void)
      ConfigFileEntry.client_flood = CLIENT_FLOOD_MAX;
 
   /* Hasn't been set yet, so set it now */
-  if(ConfigChannel.use_halfops == -1)
+  if (ConfigChannel.use_halfops == -1)
 #ifdef HALFOPS
     ConfigChannel.use_halfops = 1;
 #else
@@ -1473,7 +1472,7 @@ validate_conf(void)
 #endif
 
   /* hasnt been set, disable it by default */
-  if(ConfigChannel.use_anonops == -1)
+  if (ConfigChannel.use_anonops == -1)
     ConfigChannel.use_anonops = 0;
 
   GlobalSetOptions.idletime = (ConfigFileEntry.idletime * 60);
@@ -1546,14 +1545,16 @@ lookup_confhost(struct ConfItem* aconf)
   struct addrinfo hints, *res;
   int ret;
 
-  if (EmptyString(aconf->host) || EmptyString(aconf->name))
+  if (EmptyString(aconf->host) ||
+      EmptyString(aconf->name))
   {
     ilog(L_ERROR, "Host/server name error: (%s) (%s)",
          aconf->host, aconf->name);
     return;
   }
 
-  if (strchr(aconf->host, '*') || strchr(aconf->host, '?'))
+  if (strchr(aconf->host, '*') ||
+      strchr(aconf->host, '?'))
     return;
 
   /* Do name lookup now on hostnames given and store the
@@ -1574,7 +1575,7 @@ lookup_confhost(struct ConfItem* aconf)
   }
 
   assert(res != NULL);
-  
+
   memcpy(&aconf->ipnum, res->ai_addr, res->ai_addrlen);
   aconf->ipnum.ss_len = res->ai_addrlen;
   aconf->ipnum.ss.ss_family = res->ai_family;
@@ -1588,16 +1589,16 @@ lookup_confhost(struct ConfItem* aconf)
  * output	- BANNED or accepted
  * side effects	- none
  */
-int 
+int
 conf_connect_allowed(struct irc_ssaddr *addr, int aftype)
 {
   struct ip_entry *ip_found;
-  struct ConfItem *aconf = find_dline_conf(addr,aftype);
- 
+  struct ConfItem *aconf = find_dline_conf(addr, aftype);
+
   /* DLINE exempt also gets you out of static limits/pacing... */
   if (aconf && (aconf->status & CONF_EXEMPTDLINE))
     return(0);
- 
+
   if (aconf != NULL)
     return(BANNED_CLIENT);
 
@@ -1635,7 +1636,7 @@ find_kill(struct Client *client_p)
 			  &client_p->localClient->ip,
 			  client_p->localClient->aftype);
   if (aconf == NULL)
-    return(aconf);
+    return(NULL);
   if (aconf->status & CONF_KILL)
     return(aconf);
 
@@ -1711,7 +1712,7 @@ expire_tklines(dlink_list *tklist)
  * also, set the oper privs if given client_p non NULL
  */
 char *
-oper_privs_as_string(struct Client *client_p,int port)
+oper_privs_as_string(struct Client *client_p, int port)
 {
   static char privs_out[16];
   char *privs_ptr;
@@ -1878,7 +1879,7 @@ get_printable_conf(struct ConfItem *aconf, char **name, char **host,
  * output       - none
  * side effects - read all conf files needed, ircd.conf kline.conf etc.
  */
-void 
+void
 read_conf_files(int cold)
 {
   FBFILE *file;
@@ -1898,9 +1899,9 @@ read_conf_files(int cold)
   */
   strlcpy(conffilebuf, filename, sizeof(conffilebuf));
 
-  if ((conf_fbfile_in = fbopen(filename,"r")) == NULL)
+  if ((conf_fbfile_in = fbopen(filename, "r")) == NULL)
   {
-    if(cold)
+    if (cold)
     {
       ilog(L_CRIT, "Failed in reading configuration file %s", filename);
       exit(-1);
@@ -2045,11 +2046,9 @@ clear_out_old_conf(void)
     RSA_free(ServerInfo.rsa_private_key);
     ServerInfo.rsa_private_key = NULL;
   }
-  if (ServerInfo.rsa_private_key_file != NULL)
-  {
-    MyFree(ServerInfo.rsa_private_key_file);
-    ServerInfo.rsa_private_key_file = NULL;
-  }
+
+  MyFree(ServerInfo.rsa_private_key_file);
+  ServerInfo.rsa_private_key_file = NULL;
 #endif
 
   /* clean out old resvs from the conf */
@@ -2077,8 +2076,6 @@ clear_out_old_conf(void)
 #ifdef HAVE_LIBCRYPTO
   ConfigFileEntry.default_cipher_preference = NULL;
 #endif /* HAVE_LIBCRYPTO */
-
-  /* OK, that should be everything... */
 }
 
 /* flush_deleted_I_P()
@@ -2221,7 +2218,7 @@ conf_add_class_to_conf(struct ConfItem *aconf)
 {
   if (aconf->className == NULL)
   {
-    DupString(aconf->className,"default");
+    DupString(aconf->className, "default");
     ClassPtr(aconf) = class0;
     return;
   }
@@ -2235,7 +2232,7 @@ conf_add_class_to_conf(struct ConfItem *aconf)
            "class for missing class \"%s\"",
                          aconf->className);
     MyFree(aconf->className);
-    DupString(aconf->className,"default");
+    DupString(aconf->className, "default");
     return;
   }
 
@@ -2243,7 +2240,7 @@ conf_add_class_to_conf(struct ConfItem *aconf)
   {
     ClassPtr(aconf) = find_class(0);
     MyFree(aconf->className);
-    DupString(aconf->className,"default");
+    DupString(aconf->className, "default");
     return;
   }
 }
@@ -2344,7 +2341,7 @@ conf_add_fields(struct ConfItem *aconf, const char *host_field, const char *pass
  * output	- none
  * side effects	- message to opers and log file entry is made
  */
-void 
+void
 yyerror(const char *msg)
 {
   char newlinebuf[BUFSIZE];
@@ -2359,7 +2356,7 @@ yyerror(const char *msg)
        conffilebuf, lineno + 1, msg, newlinebuf);
 }
 
-int 
+int
 conf_fbgets(char *lbuf, int max_size, FBFILE *fb)
 {
   char *buff;
@@ -2370,7 +2367,7 @@ conf_fbgets(char *lbuf, int max_size, FBFILE *fb)
   return(strlen(lbuf));
 }
 
-int 
+int
 conf_yy_fatal_error(const char *msg)
 {
   return(0);

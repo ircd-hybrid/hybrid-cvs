@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_capab.c,v 1.32 2003/04/18 02:13:42 db Exp $
+ *  $Id: m_capab.c,v 1.33 2003/05/08 09:39:21 michael Exp $
  */
 
 #include "stdinc.h"
@@ -38,6 +38,7 @@ struct Message capab_msgtab = {
   "CAPAB", 0, 0, 0, 0, MFLG_SLOW | MFLG_UNREG, 0,
   {mr_capab, m_ignore, m_ignore, m_ignore, m_ignore}
 };
+
 #ifndef STATIC_MODULES
 void
 _modinit(void)
@@ -51,7 +52,7 @@ _moddeinit(void)
   mod_del_cmd(&capab_msgtab);
 }
 
-const char *_version = "$Revision: 1.32 $";
+const char *_version = "$Revision: 1.33 $";
 #endif
 
 /*
@@ -62,12 +63,12 @@ const char *_version = "$Revision: 1.32 $";
  */
 static void
 mr_capab(struct Client *client_p, struct Client *source_p,
-	 int parc, char *parv[])
+         int parc, char *parv[])
 {
   struct Capability *cap;
   int i;
-  char* p;
-  char* s;
+  char *p;
+  char *s;
 #ifdef HAVE_LIBCRYPTO
   struct EncCapability *ecap;
   unsigned int cipher = 0;
@@ -85,12 +86,12 @@ mr_capab(struct Client *client_p, struct Client *source_p,
   else
     client_p->localClient->caps |= CAP_CAP;
 
-  for (i=1; i<parc; i++)
+  for (i = 1; i < parc; i++)
   {
     for (s = strtoken(&p, parv[i], " "); s; s = strtoken(&p, NULL, " "))
     {
 #ifdef HAVE_LIBCRYPTO
-      if ( (strncmp(s, "ENC:", 4) == 0) )
+      if ((strncmp(s, "ENC:", 4) == 0))
       {
         /* Skip the "ENC:" portion */
         s += 4;
@@ -100,7 +101,7 @@ mr_capab(struct Client *client_p, struct Client *source_p,
          */
         for (ecap = CipherTable; ecap->name; ecap++)
         {
-          if ( (!irccmp(ecap->name, s)) && (ecap->cap & CAP_ENC_MASK))
+          if ((!irccmp(ecap->name, s)) && (ecap->cap & CAP_ENC_MASK))
           {
             cipher = ecap->cap;
             break;
@@ -130,7 +131,6 @@ mr_capab(struct Client *client_p, struct Client *source_p,
             break;
           }
         }
-    } /* for */
-  } /* for */
+    }
+  }
 }
-

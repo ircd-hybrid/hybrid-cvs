@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.359 2003/05/08 03:42:54 michael Exp $
+ *  $Id: client.c,v 7.360 2003/05/08 09:39:25 michael Exp $
  */
 
 #include "stdinc.h"
@@ -290,7 +290,7 @@ check_pings_list(dlink_list *list)
 		       "Idle time limit exceeded for %s - temp k-lining",
 			       get_client_name(client_p, HIDE_IP));
 
-	  (void)exit_client(client_p, client_p, &me, aconf->passwd);
+	  exit_client(client_p, client_p, &me, aconf->passwd);
 	  continue;
 	}
     }
@@ -321,11 +321,11 @@ check_pings_list(dlink_list *list)
 	    ilog(L_NOTICE, "No response from %s, closing link",
 		 get_client_name(client_p, HIDE_IP));
 	  }
-	(void)ircsprintf(scratch,
+	ircsprintf(scratch,
 			 "Ping timeout: %d seconds",
 			 (int)(CurrentTime - client_p->lasttime));
 	      
-	(void)exit_client(client_p, client_p, &me, scratch);
+	exit_client(client_p, client_p, &me, scratch);
 	continue;
       }
       else if (!IsPingSent(client_p))
@@ -415,7 +415,7 @@ check_klines(void)
       {
 	reason = "Connection closed";
 
-	if(IsPerson(client_p))
+	if (IsPerson(client_p))
 	  sendto_one(client_p, form_str(ERR_YOUREBANNEDCREEP),
 		     me.name, client_p->name,
 		     aconf->passwd ? aconf->passwd : "D-lined");
@@ -424,9 +424,9 @@ check_klines(void)
       }
       else
       {
-	if(ConfigFileEntry.kline_with_connection_closed)
+	if (ConfigFileEntry.kline_with_connection_closed)
 	  reason = "Connection closed";
-	else if(ConfigFileEntry.kline_with_reason && aconf->passwd)
+	else if (ConfigFileEntry.kline_with_reason && aconf->passwd)
 	  reason = aconf->passwd;
 	else
 	  reason = "D-lined";
@@ -437,8 +437,8 @@ check_klines(void)
 	else
 	  sendto_one(client_p, "NOTICE DLINE :*** You have been D-lined");
       }
-	    
-      (void)exit_client(client_p, client_p, &me, reason);
+
+      exit_client(client_p, client_p, &me, reason);
       continue; /* and go examine next fd/client_p */
     }
 
@@ -466,7 +466,7 @@ check_klines(void)
 	sendto_realops_flags(UMODE_ALL, L_ALL, "GLINE active for %s",
 			     get_client_name(client_p, HIDE_IP));
 			    
-	if(ConfigFileEntry.kline_with_connection_closed &&
+	if (ConfigFileEntry.kline_with_connection_closed &&
 	   ConfigFileEntry.kline_with_reason)
 	{
 	  reason = "Connection closed";
@@ -477,9 +477,9 @@ check_klines(void)
 	} 
 	else 
 	{
-	  if(ConfigFileEntry.kline_with_connection_closed)
+	  if (ConfigFileEntry.kline_with_connection_closed)
 	    reason = "Connection closed";
-	  else if(ConfigFileEntry.kline_with_reason && aconf->passwd)
+	  else if (ConfigFileEntry.kline_with_reason && aconf->passwd)
 	    reason = aconf->passwd;
 	  else
 	    reason = "G-lined";
@@ -487,12 +487,12 @@ check_klines(void)
 	  sendto_one(client_p, form_str(ERR_YOUREBANNEDCREEP),
 		     me.name, client_p->name, reason);
 	}
-	
-	(void)exit_client(client_p, client_p, &me, reason);
+
+	exit_client(client_p, client_p, &me, reason);
 	/* and go examine next fd/client_p */    
 	continue;
       } 
-      else if((aconf = find_kill(client_p)) != NULL) 
+      else if ((aconf = find_kill(client_p)) != NULL) 
       {
 	/* if there is a returned struct ConfItem.. then kill it */
 	if (IsExemptKline(client_p))
@@ -505,8 +505,8 @@ check_klines(void)
 
 	sendto_realops_flags(UMODE_ALL, L_ALL, "KLINE active for %s",
 			     get_client_name(client_p, HIDE_IP));
-	
-	if(ConfigFileEntry.kline_with_connection_closed &&
+
+	if (ConfigFileEntry.kline_with_connection_closed &&
 	   ConfigFileEntry.kline_with_reason)
 	{
 	  reason = "Connection closed";
@@ -517,9 +517,9 @@ check_klines(void)
 	}
 	else
 	{
-	  if(ConfigFileEntry.kline_with_connection_closed)
+	  if (ConfigFileEntry.kline_with_connection_closed)
 	    reason = "Connection closed";
-	  else if(ConfigFileEntry.kline_with_reason && aconf->passwd)
+	  else if (ConfigFileEntry.kline_with_reason && aconf->passwd)
 	    reason = aconf->passwd;
 	  else
 	    reason = "K-lined";
@@ -528,19 +528,19 @@ check_klines(void)
 		     me.name, client_p->name, reason);
 	}
 	      
-	(void)exit_client(client_p, client_p, &me, reason);
+	exit_client(client_p, client_p, &me, reason);
 	continue; 
       }
     }
   }
- 
+
   /* also check the unknowns list for new dlines */
   DLINK_FOREACH_SAFE(ptr, next_ptr, unknown_list.head)
   {
     client_p = ptr->data;
 
-    if((aconf = find_dline_conf(&client_p->localClient->ip,
-				client_p->localClient->aftype)))
+    if ((aconf = find_dline_conf(&client_p->localClient->ip,
+                                 client_p->localClient->aftype)))
     {
       if(aconf->status & CONF_EXEMPTDLINE)
         continue;
@@ -549,7 +549,6 @@ check_klines(void)
       exit_client(client_p, client_p, &me, "D-lined");
     }
   }
-
 }
 
 /* update_client_exit_stats()
@@ -559,7 +558,7 @@ check_klines(void)
  * side effects	- 
  */
 static void
-update_client_exit_stats(struct Client* client_p)
+update_client_exit_stats(struct Client *client_p)
 {
   if (IsServer(client_p))
   {
@@ -573,11 +572,11 @@ update_client_exit_stats(struct Client* client_p)
     --Count.total;
     if (IsOper(client_p))
       --Count.oper;
-    if (IsInvisible(client_p)) 
+    if (IsInvisible(client_p))
       --Count.invisi;
   }
 
-  if(splitchecking && !splitmode)
+  if (splitchecking && !splitmode)
     check_splitmode(NULL);
 }
 
@@ -602,11 +601,10 @@ release_client_state(struct Client* client_p)
   }
 }
 
-/*
- * find_person	- find person by (nick)name.
+/* find_person()
  * inputs	- pointer to name
  * output	- return client pointer
- * side effects -
+ * side effects - find person by (nick)name
  */
 struct Client *
 find_person(char *name)
@@ -664,7 +662,7 @@ find_chasing(struct Client *source_p, char *user, int *chasing)
  *        to internal buffer (nbuf). *NEVER* use the returned pointer
  *        to modify what it points!!!
  */
-const char * 
+const char *
 get_client_name(struct Client *client, int showip)
 {
   static char nbuf[HOSTLEN * 2 + USERLEN + 5];
@@ -887,7 +885,7 @@ recurse_send_quits(struct Client *client_p, struct Client *source_p,
   /* If this server can handle quit storm (QS) removal
    * of dependents, just send the SQUIT
    */
-  if (IsCapable(to,CAP_QS))
+  if (IsCapable(to, CAP_QS))
   {
     if (match(myname, source_p->name))
     {
@@ -949,6 +947,7 @@ recurse_remove_clients(struct Client *source_p, const char *comment)
   DLINK_FOREACH_SAFE(ptr, next, source_p->serv->users.head)
   {
     target_p = ptr->data;
+
     SetKilled(target_p);
     exit_one_client(NULL, target_p, &me, comment);
   }
@@ -1190,7 +1189,7 @@ exit_client(
     /* DO NOT REMOVE. exit_client can be called twice after a failed
      * read/write.
      */
-    if(IsClosing(source_p))
+    if (IsClosing(source_p))
       return 0;
 
     SetClosing(source_p);
@@ -1246,7 +1245,7 @@ exit_client(
     if (IsServer(source_p))
     {
       Count.myserver--;
-      if(ServerInfo.hub)
+      if (ServerInfo.hub)
         remove_lazylink_flags(source_p->localClient->serverMask);
       else
         uplink = NULL;
@@ -1261,9 +1260,9 @@ exit_client(
                            IsIPSpoof(source_p) ? "255.255.255.255" :
 #endif
                            source_p->localClient->sockhost);
-    
+
     log_user_exit(source_p);
-  
+
     if (!IsDead(source_p))
     {
       if (client_p != NULL && source_p != client_p)
@@ -1292,7 +1291,7 @@ exit_client(
 
   if (IsServer(source_p))
   {
-    if(ConfigServerHide.hide_servers)
+    if (ConfigServerHide.hide_servers)
     {
       /* set netsplit message to "*.net *.split" to still show 
        * that its a split, but hide the servers splitting
@@ -1301,12 +1300,12 @@ exit_client(
     }
     else
     {
-      if((source_p->serv) && (source_p->serv->up))
+      if ((source_p->serv) && (source_p->serv->up))
         strcpy(comment1, source_p->serv->up);
       else
         strcpy(comment1, "<Unknown>");
       
-      strcat(comment1," ");
+      strcat(comment1, " ");
       strcat(comment1, source_p->name);
     }
 

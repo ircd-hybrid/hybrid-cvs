@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_pass.c,v 1.26 2003/04/18 02:13:43 db Exp $
+ *  $Id: m_pass.c,v 1.27 2003/05/08 09:39:21 michael Exp $
  */
 
 #include "stdinc.h"
@@ -33,7 +33,7 @@
 #include "parse.h"
 #include "modules.h"
 
-static void mr_pass(struct Client*, struct Client*, int, char**);
+static void mr_pass(struct Client *, struct Client *, int, char **);
 
 struct Message pass_msgtab = {
   "PASS", 0, 0, 2, 0, MFLG_SLOW | MFLG_UNREG, 0,
@@ -53,8 +53,9 @@ _moddeinit(void)
   mod_del_cmd(&pass_msgtab);
 }
 
-const char *_version = "$Revision: 1.26 $";
+const char *_version = "$Revision: 1.27 $";
 #endif
+
 /*
  * m_pass() - Added Sat, 4 March 1989
  *
@@ -66,32 +67,31 @@ const char *_version = "$Revision: 1.26 $";
  */
 static void
 mr_pass(struct Client *client_p, struct Client *source_p,
-	int parc, char *parv[])
+        int parc, char *parv[])
 {
   const char *password = parv[1];
 
   if (EmptyString(password))
-    {
-      sendto_one(client_p, form_str(ERR_NEEDMOREPARAMS),
-                 me.name, EmptyString(parv[0]) ? "*" : parv[0], "PASS");
-      return;
-    }
+  {
+    sendto_one(client_p, form_str(ERR_NEEDMOREPARAMS),
+               me.name, EmptyString(parv[0]) ? "*" : parv[0], "PASS");
+    return;
+  }
 
   strlcpy(client_p->localClient->passwd, password,
           sizeof(client_p->localClient->passwd));
 
   if (parc > 2)
-    {
-      /* 
-       * It looks to me as if orabidoo wanted to have more
-       * than one set of option strings possible here...
-       * i.e. ":AABBTS" as long as TS was the last two chars
-       * however, as we are now using CAPAB, I think we can
-       * safely assume if there is a ":TS" then its a TS server
-       * -Dianora
-       */
-      if (0 == irccmp(parv[2], "TS") && client_p->tsinfo == 0)
-        client_p->tsinfo = TS_DOESTS;
-    }
+  {
+    /* It looks to me as if orabidoo wanted to have more
+     * than one set of option strings possible here...
+     * i.e. ":AABBTS" as long as TS was the last two chars
+     * however, as we are now using CAPAB, I think we can
+     * safely assume if there is a ":TS" then its a TS server
+     * -Dianora
+     */
+    if (0 == irccmp(parv[2], "TS") && client_p->tsinfo == 0)
+      client_p->tsinfo = TS_DOESTS;
+  }
 }
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_die.c,v 1.28 2003/04/18 02:13:50 db Exp $
+ *  $Id: m_die.c,v 1.29 2003/05/08 09:39:23 michael Exp $
  */
 
 #include "stdinc.h"
@@ -38,12 +38,13 @@
 #include "parse.h"
 #include "modules.h"
 
-static void mo_die(struct Client*, struct Client*, int, char**);
+static void mo_die(struct Client *, struct Client *, int, char **);
 
 struct Message die_msgtab = {
   "DIE", 0, 0, 1, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, m_ignore, mo_die, m_ignore}
 };
+
 #ifndef STATIC_MODULES
 void
 _modinit(void)
@@ -57,8 +58,9 @@ _moddeinit(void)
   mod_del_cmd(&die_msgtab);
 }
 
-const char *_version = "$Revision: 1.28 $";
+const char *_version = "$Revision: 1.29 $";
 #endif
+
 /*
  * mo_die - DIE command handler
  */
@@ -66,47 +68,46 @@ static void
 mo_die(struct Client *client_p, struct Client *source_p,
        int parc, char *parv[])
 {
-  struct Client* target_p;
+  struct Client *target_p;
   dlink_node *ptr;
 
   if (!IsOperDie(source_p))
-    {
-      sendto_one(source_p,":%s NOTICE %s :You need die = yes;", me.name, parv[0]);
-      return;
-    }
+  {
+    sendto_one(source_p,":%s NOTICE %s :You need die = yes;",
+               me.name, source_p->name);
+    return;
+  }
 
   if (parc < 2)
+  {
+    sendto_one(source_p,":%s NOTICE %s :Need server name /die %s",
+               me.name, source_p->name, me.name);
+    return;
+  }
+  else
+  {
+    if (irccmp(parv[1], me.name))
     {
-      sendto_one(source_p,":%s NOTICE %s :Need server name /die %s",
-                 me.name,source_p->name,me.name);
+      sendto_one(source_p,":%s NOTICE %s :Mismatch on /die %s",
+                 me.name,source_p->name, me.name);
       return;
     }
-  else
-    {
-      if (irccmp(parv[1], me.name))
-        {
-          sendto_one(source_p,":%s NOTICE %s :Mismatch on /die %s",
-                     me.name,source_p->name,me.name);
-          return;
-        }
-    }
+  }
 
   DLINK_FOREACH(ptr, local_client_list.head)
   {
-      target_p = ptr->data;
+    target_p = ptr->data;
 
-      sendto_one(target_p,
-		 ":%s NOTICE %s :Server Terminating. %s",
-		 me.name, target_p->name,
-		 get_client_name(source_p, HIDE_IP));
+    sendto_one(target_p, ":%s NOTICE %s :Server Terminating. %s",
+               me.name, target_p->name, get_client_name(source_p, HIDE_IP));
   }
 
   DLINK_FOREACH(ptr, serv_list.head)
   {
-      target_p = ptr->data;
+    target_p = ptr->data;
 
-      sendto_one(target_p, ":%s ERROR :Terminated by %s",
-		 me.name, get_client_name(source_p, HIDE_IP));
+    sendto_one(target_p, ":%s ERROR :Terminated by %s",
+               me.name, get_client_name(source_p, HIDE_IP));
   }
 
   /*

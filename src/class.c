@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: class.c,v 7.46 2003/05/03 11:10:05 michael Exp $
+ *  $Id: class.c,v 7.47 2003/05/08 09:39:25 michael Exp $
  */
 
 #include "stdinc.h"
@@ -96,7 +96,7 @@ static int
 get_conf_ping(struct ConfItem *aconf)
 {
   if ((aconf) && ClassPtr(aconf))
-    return (ConfPingFreq(aconf));
+    return(ConfPingFreq(aconf));
 
   Debug((DEBUG_DEBUG,"No Ping For %s",
          (aconf) ? aconf->name : "*No Conf*"));
@@ -391,4 +391,3 @@ get_sendq(struct Client *client_p)
 
   return(sendq);
 }
-

@@ -19,37 +19,36 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.208 2003/05/07 02:46:46 michael Exp $
+ *  $Id: s_conf.h,v 7.209 2003/05/08 09:39:19 michael Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
 #define INCLUDED_s_conf_h
 #include "setup.h"
-
 #ifdef HAVE_LIBCRYPTO
 #include <openssl/rsa.h>
 #endif
-
 #include "config.h"             /* defines */
 #include "fileio.h"             /* FBFILE */
 #include "ircd_defs.h"
 #include "motd.h"               /* MessageFile */
 #include "class.h"
 #include "client.h"
+
 struct Client;
 struct DNSReply;
 struct hostent;
 
 /* used by new parser */
 /* yacc/lex love globals!!! */
-
-struct ip_value {
+struct ip_value
+{
   struct irc_ssaddr ip;
   int ip_mask;
   int type;
 };
 
-extern FBFILE* conf_fbfile_in;
+extern FBFILE *conf_fbfile_in;
 extern char conf_line_in[256];
 extern struct ConfItem* yy_aconf;
 
@@ -142,8 +141,8 @@ struct ConfItem
 #define CONF_FLAGS_COMPRESSED           0x00020000
 #define CONF_FLAGS_TEMPORARY            0x00040000
 #define CONF_FLAGS_CRYPTLINK            0x00080000
-/* Macros for struct ConfItem */
 
+/* Macros for struct ConfItem */
 #define IsLimitIp(x)            ((x)->flags & CONF_FLAGS_LIMIT_IP)
 #define IsNoTilde(x)            ((x)->flags & CONF_FLAGS_NO_TILDE)
 #define IsConfCanFlood(x)       ((x)->flags & CONF_FLAGS_CAN_FLOOD)
@@ -312,47 +311,41 @@ struct admin_info
 };
 
 extern int scount;
-extern int              specific_ipv4_vhost; /* used in s_bsd.c */
-extern int              specific_ipv6_vhost;
-extern dlink_list	ConfigItemList;      /* conf list head */
+extern int specific_ipv4_vhost; /* used in s_bsd.c */
+extern int specific_ipv6_vhost;
+extern dlink_list ConfigItemList;      /* conf list head */
+extern dlink_list temporary_klines;
+extern dlink_list temporary_dlines;
+extern dlink_list temporary_ip_klines;
 extern struct config_file_entry ConfigFileEntry;/* defined in ircd.c*/
 extern struct config_channel_entry ConfigChannel;/* defined in channel.c*/
 extern struct config_server_hide ConfigServerHide; /* defined in s_conf.c */
 extern struct server_info ServerInfo;       /* defined in ircd.c */
-extern struct admin_info  AdminInfo;        /* defined in ircd.c */
+extern struct admin_info AdminInfo;        /* defined in ircd.c */
 /* End GLOBAL section */
-
-extern dlink_list temporary_klines;
-extern dlink_list temporary_dlines;
-extern dlink_list temporary_ip_klines;
 
 extern void init_ip_hash_table(void);
 #if 0
 extern void iphash_stats(struct Client *,struct Client *,int,char **,FBFILE*);
 #endif
 extern void count_ip_hash(int *, u_long *);
-
 extern void remove_one_ip(struct irc_ssaddr *ip);
 
-extern struct ConfItem* make_conf(unsigned int status);
-extern void             free_conf(struct ConfItem*);
-
-extern void             read_conf_files(int cold);
-
-extern int              attach_conf(struct Client*, struct ConfItem *);
-extern int              attach_confs(struct Client* client, 
-                                     const char* name, unsigned int statmask);
-extern int              attach_connect_block(struct Client* client, const char* name,
-					     const char* host);
-extern int              check_client(struct Client* client_p, struct Client *source_p, char *);
-extern void             det_confs_butmask (struct Client *, int);
-extern int              detach_conf (struct Client *, struct ConfItem *);
-extern struct ConfItem* det_confs_butone (struct Client *, struct ConfItem *);
-extern struct ConfItem* find_conf_exact(const char* name, const char* user, const char* host, unsigned int statmask);
-extern struct ConfItem* find_conf_name(dlink_list *list, const char* name, unsigned int statmask);
-extern struct ConfItem* find_conf_by_name(const char* name, unsigned int status);
-extern struct ConfItem* find_conf_by_host(const char* host, unsigned int status);
-extern struct ConfItem* find_kill (struct Client *);
+extern struct ConfItem *make_conf(unsigned int status);
+extern void free_conf(struct ConfItem *);
+extern void read_conf_files(int cold);
+extern int attach_conf(struct Client *, struct ConfItem *);
+extern int attach_confs(struct Client *client, const char *name, unsigned int statmask);
+extern int attach_connect_block(struct Client *client, const char *name, const char *host);
+extern int check_client(struct Client *client_p, struct Client *source_p, char *);
+extern void det_confs_butmask(struct Client *, unsigned int);
+extern int detach_conf(struct Client *, struct ConfItem *);
+extern struct ConfItem *det_confs_butone(struct Client *, struct ConfItem *);
+extern struct ConfItem *find_conf_exact(const char *name, const char *user, const char *host, unsigned int statmask);
+extern struct ConfItem *find_conf_name(dlink_list *list, const char *name, unsigned int statmask);
+extern struct ConfItem *find_conf_by_name(const char *name, unsigned int status);
+extern struct ConfItem *find_conf_by_host(const char *host, unsigned int status);
+extern struct ConfItem *find_kill(struct Client *);
 extern int conf_connect_allowed(struct irc_ssaddr *addr, int aftype);
 extern char *oper_privs_as_string(struct Client *, int);
 extern void split_user_host(struct ConfItem *aconf);
@@ -360,8 +353,8 @@ extern void split_user_host(struct ConfItem *aconf);
 extern int find_u_conf(const char *, const char *, const char *);
 extern struct ConfItem *find_x_conf(const char *);
 
-extern struct ConfItem* find_tkline(const char*, const char*, struct irc_ssaddr *);
-extern char* show_iline_prefix(struct Client *,struct ConfItem *,char *);
+extern struct ConfItem *find_tkline(const char *, const char *, struct irc_ssaddr *);
+extern char *show_iline_prefix(struct Client *, struct ConfItem *, char *);
 extern void get_printable_conf(struct ConfItem *, char **, char **, char **,
                                     char **, int *,char **);
 extern void report_configured_links(struct Client* client_p, unsigned int mask);
@@ -381,15 +374,15 @@ extern void WriteKlineOrDline(KlineType, struct Client *,
 			      char *user, char *host, const char *reason,
 			      const char *oper_reason,
 			      const char *current_date, time_t cur_time);
-extern  void    add_temp_kline(struct ConfItem *);
-extern  void    report_temp_klines(struct Client *);
-extern  void    show_temp_klines(struct Client *, dlink_list *);
-extern  void    cleanup_tklines(void *notused);
+extern void add_temp_kline(struct ConfItem *);
+extern void report_temp_klines(struct Client *);
+extern void show_temp_klines(struct Client *, dlink_list *);
+extern void cleanup_tklines(void *notused);
 
-extern  const   char *get_conf_name(KlineType);
-extern  int     rehash(int);
+extern const char *get_conf_name(KlineType);
+extern int rehash(int);
 
-extern int  conf_add_server(struct ConfItem *, int);
+extern int conf_add_server(struct ConfItem *, int);
 extern void conf_add_class_to_conf(struct ConfItem *);
 extern void conf_add_me(struct ConfItem *);
 extern void conf_add_class(struct ConfItem *, int);

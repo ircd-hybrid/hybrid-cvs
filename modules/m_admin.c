@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_admin.c,v 1.38 2003/04/18 02:13:42 db Exp $
+ *  $Id: m_admin.c,v 1.39 2003/05/08 09:39:21 michael Exp $
  */
 
 #include "stdinc.h"
@@ -39,13 +39,13 @@ static void m_admin(struct Client *, struct Client *, int, char **);
 static void mr_admin(struct Client *, struct Client *, int, char **);
 static void ms_admin(struct Client *, struct Client *, int, char **);
 static void do_admin(struct Client *source_p);
-
 static void admin_spy(struct Client *);
 
 struct Message admin_msgtab = {
   "ADMIN", 0, 0, 0, 0, MFLG_SLOW | MFLG_UNREG, 0, 
   {mr_admin, m_admin, ms_admin, ms_admin, m_ignore}
 };
+
 #ifndef STATIC_MODULES
 void
 _modinit(void)
@@ -60,7 +60,7 @@ _moddeinit(void)
   hook_del_event("doing_admin");
   mod_del_cmd(&admin_msgtab);
 }
-const char *_version = "$Revision: 1.38 $";
+const char *_version = "$Revision: 1.39 $";
 #endif
 
 /*
@@ -68,8 +68,9 @@ const char *_version = "$Revision: 1.38 $";
  *      parv[0] = sender prefix   
  *      parv[1] = servername   
  */
-static void mr_admin(struct Client *client_p, struct Client *source_p,
-                    int parc, char *parv[])
+static void
+mr_admin(struct Client *client_p, struct Client *source_p,
+         int parc, char *parv[])
 {
   static time_t last_used = 0;
  
@@ -90,15 +91,16 @@ static void mr_admin(struct Client *client_p, struct Client *source_p,
  *      parv[0] = sender prefix
  *      parv[1] = servername
  */
-static void m_admin(struct Client *client_p, struct Client *source_p,
-                    int parc, char *parv[])
+static void
+m_admin(struct Client *client_p, struct Client *source_p,
+        int parc, char *parv[])
 {
   static time_t last_used = 0;
 
   if ((last_used + ConfigFileEntry.pace_wait) > CurrentTime)
   {
     sendto_one(source_p,form_str(RPL_LOAD2HI),
-               me.name, parv[0]);
+               me.name, source_p->name);
     return;
   }
   else
@@ -118,8 +120,9 @@ static void m_admin(struct Client *client_p, struct Client *source_p,
  *      parv[0] = sender prefix
  *      parv[1] = servername
  */
-static void ms_admin(struct Client *client_p, struct Client *source_p,
-                     int parc, char *parv[])
+static void
+ms_admin(struct Client *client_p, struct Client *source_p,
+         int parc, char *parv[])
 {
   if (hunt_server(client_p, source_p, ":%s ADMIN :%s", 1, parc, parv) != HUNTED_ISME)
     return;
@@ -134,7 +137,8 @@ static void ms_admin(struct Client *client_p, struct Client *source_p,
  * output	- none
  * side effects	- admin info is sent to client given
  */
-static void do_admin( struct Client *source_p)
+static void
+do_admin(struct Client *source_p)
 {
   const char *nick;
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_restart.c,v 1.27 2003/04/18 02:13:43 db Exp $
+ *  $Id: m_restart.c,v 1.28 2003/05/08 09:39:21 michael Exp $
  */
 
 #include "stdinc.h"
@@ -57,15 +57,16 @@ _moddeinit(void)
   mod_del_cmd(&restart_msgtab);
 }
 
-const char *_version = "$Revision: 1.27 $";
+const char *_version = "$Revision: 1.28 $";
 #endif
 
 /*
  * mo_restart
  *
  */
-static void mo_restart(struct Client *client_p, struct Client *source_p,
-                       int parc, char *parv[])
+static void
+mo_restart(struct Client *client_p, struct Client *source_p,
+           int parc, char *parv[])
 {
   char buf[BUFSIZE]; 
   dlink_node *ptr;
@@ -116,8 +117,9 @@ static void mo_restart(struct Client *client_p, struct Client *source_p,
     sendto_one(target_p, ":%s ERROR :Restart by %s",
                me.name, get_client_name(source_p, HIDE_IP));
   }
-  
-  ircsprintf(buf, "Server RESTART by %s", get_client_name(source_p, HIDE_IP));
+
+  ircsprintf(buf, "Server RESTART by %s",
+             get_client_name(source_p, HIDE_IP));
   restart(buf);
 }
 

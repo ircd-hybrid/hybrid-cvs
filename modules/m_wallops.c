@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_wallops.c,v 1.33 2003/05/01 15:53:35 michael Exp $
+ *  $Id: m_wallops.c,v 1.34 2003/05/08 09:39:21 michael Exp $
  */
 
 #include "stdinc.h"
@@ -56,7 +56,7 @@ _moddeinit(void)
   mod_del_cmd(&wallops_msgtab);
 }
  
-const char *_version = "$Revision: 1.33 $";
+const char *_version = "$Revision: 1.34 $";
 #endif
 
 /*
@@ -73,13 +73,13 @@ mo_wallops(struct Client *client_p, struct Client *source_p,
   if (EmptyString(message))
   {
     sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-               me.name, parv[0], "WALLOPS");
+               me.name, source_p->name, "WALLOPS");
     return;
   }
 
   sendto_wallops_flags(UMODE_OPERWALL, source_p, "OPERWALL - %s", message);
   sendto_server(NULL, source_p, NULL, NOCAPS, NOCAPS, LL_ICLIENT,
-                ":%s WALLOPS :%s", parv[0], message);
+                ":%s WALLOPS :%s", source_p->name, message);
 }
 
 /*
@@ -102,6 +102,6 @@ ms_wallops(struct Client *client_p, struct Client *source_p,
     sendto_wallops_flags(UMODE_WALLOP, source_p, "%s", message); 
 
   sendto_server(client_p, source_p, NULL, NOCAPS, NOCAPS, LL_ICLIENT,
-                ":%s WALLOPS :%s", parv[0], message);
+                ":%s WALLOPS :%s", source_p->name, message);
 }
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_locops.c,v 1.30 2003/05/01 15:53:35 michael Exp $
+ *  $Id: m_locops.c,v 1.31 2003/05/08 09:39:21 michael Exp $
  */
 
 #include "stdinc.h"
@@ -55,7 +55,7 @@ _moddeinit(void)
   mod_del_cmd(&locops_msgtab);
 }
 
-const char *_version = "$Revision: 1.30 $";
+const char *_version = "$Revision: 1.31 $";
 #endif
 
 /*
@@ -73,7 +73,7 @@ m_locops(struct Client *client_p, struct Client *source_p,
   if (EmptyString(message))
   {
     sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-               me.name, parv[0], "LOCOPS");
+               me.name, source_p->name, "LOCOPS");
     return;
   }
 
