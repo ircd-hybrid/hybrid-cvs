@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.88 2000/12/24 22:44:05 db Exp $
+ * $Id: ircd.c,v 7.89 2000/12/24 22:45:49 db Exp $
  */
 #include "tools.h"
 #include "ircd.h"
@@ -334,14 +334,6 @@ static time_t io_loop(time_t delay)
       ircsprintf(to_send, "System clock is running backwards - (%d < %d)",
                  CurrentTime, lasttimeofday);
       report_error(to_send, me.name, 0);
-    }
-  else if ((lasttimeofday + MAX_SETBACK_TIME) < CurrentTime)
-    {
-      log(L_ERROR, "Clock Failure (%d)", errno);
-      sendto_realops_flags(FLAGS_ALL,
-		   "Clock set back more than %d seconds, TS can be corrupted",
-			   ConfigFileEntry.ts_max_delta);
-      restart("Clock Failure");
     }
 
   /* Run pending events, then get the number of seconds to the next event */
