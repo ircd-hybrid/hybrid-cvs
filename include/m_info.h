@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.h,v 7.19 2000/12/15 00:12:04 toot Exp $
+ * $Id: m_info.h,v 7.20 2000/12/15 06:03:53 db Exp $
  */
 #ifndef INCLUDED_m_info_h
 #define INCLUDED_m_info_h
@@ -45,8 +45,6 @@ Info MyInformation[] = {
 #else
   { "ANTI_SPAM_EXIT_MESSAGE_TIME", "NONE", 0, "Delay before Allowing Spam Bot Exit Messages" },
 #endif /* ANTI_SPAM_EXIT_MESSAGE_TIME */
-
-  { "BUFFERPOOL", "", BUFFERPOOL, "Maximum size of all SendQs" },
 
 #ifdef CHROOTDIR
   { "CHROOTDIR", "ON", 0, "chroot() before reading Configuration File" },

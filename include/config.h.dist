@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h.dist,v 7.31 2000/12/15 03:32:15 toot Exp $
+ * $Id: config.h.dist,v 7.32 2000/12/15 06:03:53 db Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -248,11 +248,6 @@
  * Max amount of internal send buffering when socket is stuck (bytes)
  */
 #define MAXSENDQLENGTH 7050000    /* Recommended value: 7050000 for efnet */
-
-/*  BUFFERPOOL - the maximum size of the total of all sendq's.
- *  Recommended value is 4 times MAXSENDQLENGTH.
- */
-#define BUFFERPOOL (MAXSENDQLENGTH * 4)
 
 /* IRC_UID IRC_GID - user and group id ircd should switch to if run as root
  * If you start the server as root but wish to have it run as another user,

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.77 2000/12/13 23:41:38 db Exp $
+ *   $Id: send.c,v 7.78 2000/12/15 06:03:57 db Exp $
  */
 #include "tools.h"
 #include "send.h"
@@ -110,7 +110,7 @@ dead_link(struct Client *to, char *notice)
   to->flags |= FLAGS_DEADSOCKET;
 
   /*
-   * If because of BUFFERPOOL problem then clean dbuf's now so that
+   * If because of buffer problem then clean linebuf's now so that
    * notices don't hurt operators below.
    */
   linebuf_donebuf(&to->localClient->buf_recvq);
