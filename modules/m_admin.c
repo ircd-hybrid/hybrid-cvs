@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_admin.c,v 1.1 2000/11/08 23:57:23 ejb Exp $
+ *   $Id: m_admin.c,v 1.2 2000/11/11 13:05:21 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -65,7 +65,8 @@ int m_admin(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   else
     last_used = CurrentTime;
 
-  if (hunt_server(cptr,sptr,":%s ADMIN :%s",1,parc,parv) != HUNTED_ISME)
+  if (IsRegisteredUser(sptr) &&
+      (hunt_server(cptr,sptr,":%s ADMIN :%s",1,parc,parv) != HUNTED_ISME))
     return 0;
 
   do_admin( sptr );

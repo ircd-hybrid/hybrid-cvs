@@ -1,8 +1,8 @@
 # Generated automatically from Makefile.in by configure.
 #
-# Makefile.in for ircd/src
+# Makefile.in for ircd/modules
 #
-# $Id: Makefile,v 1.4 2000/11/09 23:18:45 ejb Exp $
+# $Id: Makefile,v 1.5 2000/11/11 13:05:21 db Exp $
 #
 CC		= gcc
 RM		= /bin/rm
@@ -40,6 +40,7 @@ SRCS =                          \
   m_kline.c \
   m_knock.c \
   m_links.c \
+  m_list.c \
   m_lljoin.c \
   m_locops.c \
   m_ltrace.c \

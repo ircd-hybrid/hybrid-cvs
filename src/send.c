@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.40 2000/11/08 09:34:22 adrian Exp $
+ *   $Id: send.c,v 7.41 2000/11/11 13:05:23 db Exp $
  */
 #include "send.h"
 #include "channel.h"
@@ -208,13 +208,8 @@ send_queued_write(int fd, void *data)
      * sendq is now empty.. if there a blocked list?
      */
     if (IsSendqPopped(to) && (DBufLength(&to->sendQ) == 0)) {
-      char* parv[2];
-      char  param[HOSTLEN + 1];
       ClearSendqPop(to);
-      parv[0] = param;
-      parv[1] = 0;
-      strcpy(param, to->name);
-      m_list(to, to, 1, parv);
+      list_continue(to);
     }
     if (rlen < len) {    
       /* ..or should I continue until rlen==0? */
