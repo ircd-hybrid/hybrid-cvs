@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_oper.c,v 7.5 1999/09/10 05:48:27 tomh Exp $
+ *   $Id: m_oper.c,v 7.6 1999/09/10 06:08:55 tomh Exp $
  */
 
 #include "m_commands.h"
@@ -36,6 +36,7 @@
 #include "list.h"
 
 #include <fcntl.h>
+#define _XOPEN_SOURCE
 #include <unistd.h>
 
 
