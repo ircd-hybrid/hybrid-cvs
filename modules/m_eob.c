@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_eob.c,v 1.5 2000/12/10 23:58:59 db Exp $
+ *   $Id: m_eob.c,v 1.6 2000/12/11 05:40:13 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -60,9 +60,9 @@ char *_version = "20001202";
  */
 int ms_eob(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 {
-  if (parc > 2)
-    sendto_realops_flags(FLAGS_ALL,"*** End of burst from %s (%s seconds)",
-			 sptr->name, parv[2]);
+  if (parc > 1)
+    sendto_realops_flags(FLAGS_ALL,"*** End of burst from %s (%d seconds)",
+			 sptr->name, atoi(parv[1]));
   else
     sendto_realops_flags(FLAGS_ALL,"*** End of burst from %s",
 			 sptr->name);

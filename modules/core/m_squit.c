@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_squit.c,v 1.12 2000/12/11 02:50:48 db Exp $
+ *   $Id: m_squit.c,v 1.13 2000/12/11 05:40:13 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -76,9 +76,15 @@ int mo_squit(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   struct squit_parms *found_squit;
   char  *comment = (parc > 2 && parv[2]) ? parv[2] : cptr->name;
 
-  if (!IsPrivileged(sptr))
+  if (IsLocalOper(sptr))
     {
       sendto_one(sptr, form_str(ERR_NOPRIVILEGES), me.name, parv[0]);
+      return 0;
+    }
+
+  if (!IsOperRemote(sptr))
+    {
+      sendto_one(sptr,":%s NOTICE %s :You have no R flag",me.name,parv[0]);
       return 0;
     }
 
@@ -97,20 +103,6 @@ int mo_squit(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 			       "Received SQUIT %s from %s (%s)",
 			       found_squit->acptr->name,
 			       get_client_name(sptr,FALSE), comment);
-	}
-      else
-	{
-	  if (IsLocalOper(sptr))
-	    {
-	      sendto_one(sptr, form_str(ERR_NOPRIVILEGES), me.name, parv[0]);
-	      return 0;
-	    }
-
-	  if (!IsOperRemote(sptr))
-	    {
-	      sendto_one(sptr,":%s NOTICE %s :You have no R flag",me.name,parv[0]);
-	      return 0;
-	    }
 	}
       return exit_client(cptr, found_squit->acptr, sptr, comment);
     }
@@ -146,19 +138,20 @@ int ms_squit(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
       */
       if (MyConnect(found_squit->acptr))
 	{
-	  sendto_all_local_opers( &me, NULL,
-				  "Received SQUIT %s from %s (%s)",
-				  found_squit->server_name,
-				  get_client_name(sptr,FALSE), comment);
+	  sendto_all_local_opers(&me, NULL,
+				 "Received SQUIT %s from %s (%s)",
+				 found_squit->server_name,
+				 get_client_name(sptr,FALSE), comment);
+
+          sendto_serv_butone(cptr,
+			     "Received SQUIT %s from %s (%s)",
+			     found_squit->server_name,
+			     get_client_name(sptr,FALSE),comment);
+
 	  log(L_TRACE, "SQUIT From %s : %s (%s)", parv[0],
 	      found_squit->server_name, comment);
+
 	}
-      else if (MyConnect(found_squit->acptr))
-	sendto_realops_flags(FLAGS_ALL,
-			     "Received SQUIT %s from %s (%s)",
-			     found_squit->acptr->name,
-			     get_client_name(sptr,FALSE), comment);
-  
       return exit_client(cptr, found_squit->acptr, sptr, comment);
     }
   return 0;
