@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_server.c,v 1.45 2001/01/20 17:35:01 fl_ Exp $
+ *   $Id: m_server.c,v 1.46 2001/01/24 03:25:07 wcampbel Exp $
  */
 #include "tools.h"
 #include "handlers.h"  /* m_server prototype */
@@ -115,22 +115,22 @@ int mr_server(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
       if (ConfigFileEntry.warn_no_nline)
         {
          sendto_realops_flags(FLAGS_ADMIN,
-           "Unauthorised server connection attempt from %s: No entry for "
+           "Unauthorized server connection attempt from %s: No entry for "
            "servername %s.", get_client_name(cptr, TRUE), host);
 
          sendto_realops_flags(FLAGS_ALL,
-           "Unauthorised server connection attempt from %s: No entry for "
+           "Unauthorized server connection attempt from %s: No entry for "
            "servername %s.", get_client_name(cptr, FALSE), host);
         }
       return exit_client(cptr, cptr, cptr,
                 "Invalid servername.");
      case -2:
       sendto_realops_flags(FLAGS_ADMIN,
-        "Unauthorised server connection attempt from %s: Bad password "
+        "Unauthorized server connection attempt from %s: Bad password "
         "for server %s.", get_client_name(cptr, TRUE), host);
 
       sendto_realops_flags(FLAGS_ALL,
-        "Unauthorised server connection attempt from %s: Bad password "
+        "Unauthorized server connection attempt from %s: Bad password "
         "for server %s.", get_client_name(cptr, FALSE), host);
 
       return exit_client(cptr, cptr, cptr,
@@ -138,11 +138,11 @@ int mr_server(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
       break;
      case -3:
       sendto_realops_flags(FLAGS_ADMIN,
-        "Unauthorised server connection attempt from %s: Invalid host "
+        "Unauthorized server connection attempt from %s: Invalid host "
         "for server %s.", get_client_name(cptr, TRUE), host);
 
       sendto_realops_flags(FLAGS_ALL,
-        "Unauthorised server connection attempt from %s: Invalid host "
+        "Unauthorized server connection attempt from %s: Invalid host "
         "for server %s.", get_client_name(cptr, FALSE), host);
 
       return exit_client(cptr, cptr, cptr,
