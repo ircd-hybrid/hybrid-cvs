@@ -2202,7 +2202,6 @@ echo "${ECHO_T}yes, TenDRA" >&6
 *MIPSpro*)
 	echo "$as_me:$LINENO: result: yes, MIPSpro" >&5
 echo "${ECHO_T}yes, MIPSpro" >&6
-	IRC_CFLAGS="-g"
 	MIPSpro=yes
 	SGS=yes
 ;;
@@ -2214,13 +2213,13 @@ echo "${ECHO_T}no" >&6
 ;;
 esac
 
-echo "$as_me:$LINENO: checking $CC -V for Sun Workshop" >&5
-echo $ECHO_N "checking $CC -V for Sun Workshop... $ECHO_C" >&6
+echo "$as_me:$LINENO: checking $CC -V for Sun Workshop, Forte or Tru64 cc" >&5
+echo $ECHO_N "checking $CC -V for Sun Workshop, Forte or Tru64 cc... $ECHO_C" >&6
 case `$CC -V 2>&1` in
 *Sun*WorkShop* | *Forte*Developer*)
 	echo "$as_me:$LINENO: result: Sun Workshop/Forte" >&5
 echo "${ECHO_T}Sun Workshop/Forte" >&6
-	IRC_CFLAGS="-fast -g -xinline=dlinkAdd,dlinkAddBefore,dlinkAddTail,dlinkDelete,dlink_list_length,dlink_node,dlinkMoveList,_MyMalloc,_MyRealloc,_MyFree,_DupString"
+	IRC_CFLAGS="-fast -xinline=dlinkAdd,dlinkAddBefore,dlinkAddTail,dlinkDelete,dlink_list_length,dlink_node,dlinkMoveList,_MyMalloc,_MyRealloc,_MyFree,_DupString"
 	SGS=yes
 ;;
 *Tru64*)
@@ -2246,10 +2245,11 @@ fi
 echo "$as_me:$LINENO: result: $AppleGCC" >&5
 echo "${ECHO_T}$AppleGCC" >&6
 
-
 if test "x$GCC" = "xyes"; then
-	IRC_CFLAGS="$IRC_CFLAGS -O2 -g -Wall"
-elif test "x$ac_cv_prog_cc_g" = "xyes"; then
+	IRC_CFLAGS="$IRC_CFLAGS -O2 -Wall"
+fi
+
+if test "x$ac_cv_prog_cc_g" = "xyes"; then
 	IRC_CFLAGS="$IRC_CFLAGS -g"
 fi
 
@@ -2270,9 +2270,6 @@ case `uname -s` in
 echo "${ECHO_T}HP-UX found - Assuming HPUX C compiler cc" >&6
 		IRC_CFLAGS="$IRC_CFLAGS +e"
 		HPUX=yes
-		;;
-	OSF*)
-		OSF=yes
 		;;
 	CYGWIN*)
 		CYGWIN=yes
@@ -8851,18 +8848,17 @@ echo "${ECHO_T}HP-UX - Assuming HPUX C compiler cc: +z -r -q -n +ESfic" >&6
 		MOD_TARGET="hpux_shared"
 		LDFLAGS="${LDFLAGS} -Wl,-E"
 	fi
-	if test "$Tru64" = yes; then
+	if test "$Tru" = yes; then
+		echo "$as_me:$LINENO: result: Tru64: -shared" >&5
+echo "${ECHO_T}Tru64: -shared" >&6
 		PICFLAGS="-shared "
+		SEDOBJ="s/\.o/.so/g"
 	fi
 	if test -z "$PICFLAGS"; then
 		if test "$ac_cv_c_compiler_gnu" = "yes"; then
 			echo "$as_me:$LINENO: result: gcc: -fPIC -DPIC -shared" >&5
 echo "${ECHO_T}gcc: -fPIC -DPIC -shared" >&6
 			PICFLAGS="-fPIC -DPIC -shared"
-			if test "$OSF" = "yes"; then
-				echo "OSF Discovered: Adding -Wl,-expect_unresolved -Wl,* to compiler flags"
-				PICFLAGS="$PICFLAGS -Wl,-expect_unresolved -Wl,*"
-			fi
 		else
 			echo "$as_me:$LINENO: result: no" >&5
 echo "${ECHO_T}no" >&6

@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.39 2003/05/28 19:23:48 joshk Exp $
+dnl $Id: configure.ac,v 7.40 2003/05/29 00:23:47 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -37,7 +37,6 @@ case `$CC -version 2>&1` in
 ;;
 *MIPSpro*)
 	AC_MSG_RESULT([yes, MIPSpro])
-	IRC_CFLAGS="-g"
 	MIPSpro=yes
 	SGS=yes
 ;;
@@ -48,11 +47,11 @@ case `$CC -version 2>&1` in
 ;;
 esac
 
-AC_MSG_CHECKING($CC -V for Sun Workshop, Forte or Tru64 cc)
+AC_MSG_CHECKING([$CC -V for Sun Workshop, Forte or Tru64 cc])
 case `$CC -V 2>&1` in
 *Sun*WorkShop* | *Forte*Developer*)
 	AC_MSG_RESULT(Sun Workshop/Forte)
-	IRC_CFLAGS="-fast -g -xinline=dlinkAdd,dlinkAddBefore,dlinkAddTail,dlinkDelete,dlink_list_length,dlink_node,dlinkMoveList,_MyMalloc,_MyRealloc,_MyFree,_DupString"
+	IRC_CFLAGS="-fast -xinline=dlinkAdd,dlinkAddBefore,dlinkAddTail,dlinkDelete,dlink_list_length,dlink_node,dlinkMoveList,_MyMalloc,_MyRealloc,_MyFree,_DupString"
 	SGS=yes
 ;;
 *Tru64*)
@@ -74,11 +73,12 @@ fi
 
 AC_MSG_RESULT($AppleGCC)
 
-dnl If we support -g, use it!
-
 if test "x$GCC" = "xyes"; then
-	IRC_CFLAGS="$IRC_CFLAGS -O2 -g -Wall"
-elif test "x$ac_cv_prog_cc_g" = "xyes"; then
+	IRC_CFLAGS="$IRC_CFLAGS -O2 -Wall"
+fi
+
+dnl If we support -g, use it!
+if test "x$ac_cv_prog_cc_g" = "xyes"; then
 	IRC_CFLAGS="$IRC_CFLAGS -g"
 fi
 
@@ -99,9 +99,6 @@ case `uname -s` in
                 AC_MSG_RESULT(HP-UX found - Assuming HPUX C compiler cc)  
 		IRC_CFLAGS="$IRC_CFLAGS +e"
 		HPUX=yes
-		;;
-	OSF*)
-		OSF=yes
 		;;
 	CYGWIN*)
 		CYGWIN=yes
@@ -823,17 +820,15 @@ else
 		MOD_TARGET="hpux_shared"
 		LDFLAGS="${LDFLAGS} -Wl,-E"
 	fi
-	if test "$Tru64" = yes; then
+	if test "$Tru" = yes; then
+		AC_MSG_RESULT(Tru64: -shared)
 		PICFLAGS="-shared "
+		SEDOBJ="s/\.o/.so/g"
 	fi
 	if test -z "$PICFLAGS"; then
 		if test "$ac_cv_c_compiler_gnu" = "yes"; then
 			AC_MSG_RESULT(gcc: -fPIC -DPIC -shared)
 			PICFLAGS="-fPIC -DPIC -shared"
-			if test "$OSF" = "yes"; then
-				echo "OSF Discovered: Adding -Wl,-expect_unresolved -Wl,* to compiler flags"
-				PICFLAGS="$PICFLAGS -Wl,-expect_unresolved -Wl,*"
-			fi
 		else
 			AC_MSG_RESULT(no)
 			echo "no, using static modules"
@@ -924,7 +919,7 @@ if test "$prefix" = "NONE"; then
 else
 
 dnl Don't get bitten by Cygwin's stupidity if the user specified
-dnl a custom path with a trailing slash
+dnl a custom prefix with a trailing slash
 
 	prefix=`echo $prefix | sed 's/\/$//'`
 	AC_DEFINE_UNQUOTED(IRCD_PREFIX, "$prefix", [Prefix where the ircd is installed.])
