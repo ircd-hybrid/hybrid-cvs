@@ -1,3 +1,16 @@
+leeh        2002/04/14 07:06:48 EDT	(20020414_4)
+
+  Modified files:
+    modules/core         m_kill.c 
+  Log:
+  - fixed a bug with only sending :nick KILL instead of :nick!user@host KILL
+    to target, reported by jv.
+  
+  Revision  Changes    Path
+  1.63      +17 -8     ircd-hybrid-7/modules/core/m_kill.c
+
+
+
 leeh        2002/04/14 05:50:02 EDT	(20020414_3)
 
   Modified files:
@@ -24943,4 +24956,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3553 2002/04/14 09:50:08 leeh Exp $
+$Id: ChangeLog,v 7.3554 2002/04/14 11:06:55 leeh Exp $
