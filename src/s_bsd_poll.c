@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_poll.c,v 7.24 2000/12/30 23:10:16 db Exp $
+ *  $Id: s_bsd_poll.c,v 7.25 2001/01/03 22:51:49 adrian Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -229,15 +229,10 @@ comm_setselect(int fd, fdlist_t list, unsigned int type, PF * handler,
     void *client_data, time_t timeout)
 {  
     fde_t *F = &fd_table[fd];
-    /* XXX NOT the right "solution" */
-#if 0
     assert(fd >= 0);
-#endif
-    if(fd < 0)
-      return;
+    assert(F->flags.open);
 
 #ifdef NOTYET
-    assert(F->flags.open);
     debug(5, 5) ("commSetSelect: FD %d type %d, %s\n", fd, type, handler ? "SET"
  : "CLEAR");
 #endif
