@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.226 2002/03/11 01:51:47 androsyn Exp $
+ *  $Id: ircd.c,v 7.227 2002/04/13 14:46:00 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -150,7 +150,7 @@ time_t  nextconnect = 1;        /* time for next try_connections call */
 /* Set to zero because it should be initialized later using
  * initialize_server_capabs
  */
-int     default_server_capabs = 0x00000000;
+int     default_server_capabs = CAP_MASK;
 
 int splitmode;
 int splitchecking;
@@ -439,9 +439,6 @@ static void initialize_message_files(void)
  */
 static void initialize_server_capabs(void)
 {
-  /* Default server CAPAB, as defined by CAP_MASK in s_serv.h */
-  default_server_capabs = CAP_MASK;
-
   /* If halfops support is disabled, remove the capab from the list. */
   if (ConfigChannel.use_halfops == 0)
   {
