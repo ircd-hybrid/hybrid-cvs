@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.48 2000/11/21 05:03:16 db Exp $
+ * $Id: ircd.c,v 7.49 2000/11/21 21:31:04 adrian Exp $
  */
 #include "ircd.h"
 #include "channel.h"
@@ -634,6 +634,7 @@ int main(int argc, char *argv[])
   initialize_message_files();
 
   dbuf_init();  /* set up some dbuf stuff to control paging */
+  linebuf_init();
   init_hash();
 
   clear_scache_hash_table();    /* server cache name table */
