@@ -1,7 +1,7 @@
 /*
  * scache.c
  *
- * $Id: scache.c,v 7.10 2001/03/06 02:23:10 androsyn blalloc.c $
+ * $Id: scache.c,v 7.11 2001/12/25 06:51:44 androsyn Exp $
  */
 
 #include "client.h"

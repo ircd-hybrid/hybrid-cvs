@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_stats.c,v 7.17 2001/04/21 21:59:10 toot blalloc.c $
+ *  $Id: s_stats.c,v 7.18 2001/12/25 06:51:44 androsyn Exp $
  */
 
 #include <sys/types.h>
