@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: tools.c,v 7.24 2002/08/22 21:33:56 db Exp $
+ *  $Id: tools.c,v 7.25 2002/08/22 23:08:40 db Exp $
  *
  * When you update these functions make sure you update the ones in tools.h
  * as well!!!
@@ -164,7 +164,7 @@ dlinkMoveList(dlink_list *from, dlink_list *to)
       to->head = from->head;
       to->tail = from->tail;
       from->head = from->tail = NULL;
-      to->length = from_length;
+      to->length = from->length;
       from->length = 0;
       return;
     }
