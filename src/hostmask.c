@@ -15,7 +15,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- * $Id: hostmask.c,v 7.6 2001/02/05 08:43:22 a1kmm Exp $ 
+ * $Id: hostmask.c,v 7.7 2001/02/07 23:07:51 wcampbel Exp $ 
  */
 #include <unistd.h>
 #include <string.h>
@@ -43,7 +43,7 @@ hash_text(const char* start, const char *end, unsigned long *iv)
     {
       h = (h << 4) - (h + (unsigned char)ToLower(*end--));
     }
-  //*iv = h;
+/*  *iv = h; */
   return(h & (TH_MAX - 1));
 }
 

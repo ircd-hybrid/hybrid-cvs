@@ -1,5 +1,5 @@
 /*
- * $Id: patricia.h,v 7.5 2001/01/27 07:05:53 lusky Exp $
+ * $Id: patricia.h,v 7.6 2001/02/07 23:07:46 wcampbel Exp $
  * Dave Plonka <plonka@doit.wisc.edu>
  *
  * This product includes software developed by the University of Michigan,
@@ -74,7 +74,9 @@ typedef struct _patricia_node_t {
    struct _patricia_node_t *l, *r;	/* left and right children */
    struct _patricia_node_t *parent;/* may be used */
    struct ConfItem *data;			/* pointer to data */
+#if 0
 //   void	*user1;			/* pointer to usr data (ex. route flap info) */
+#endif
 } patricia_node_t;
 
 typedef struct _patricia_tree_t {
