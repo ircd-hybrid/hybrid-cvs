@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: getopt.c,v 7.12 2002/03/09 23:37:57 androsyn Exp $
+ *  $Id: getopt.c,v 7.13 2002/05/08 02:54:02 androsyn Exp $
  */
 
 #include <stdio.h>
@@ -100,25 +100,6 @@ parseargs(int *argc, char ***argv, struct lgetopt *opts)
 		case USAGE:
 		  usage(progname);
 		  /*NOTREACHED*/
-
-#ifdef DEBUGMODE
-		case ENDEBUG:
-		  if (*argc < 2)
-		    {
-		      fprintf(stderr, "error: option '%c%s' requires an argument\n",
-			      OPTCHAR, opts[i].opt);
-		      usage(progname);
-		    }
-
-		  if (enable_debug((*argv)[1]) == -1)
-		    {
-		      fprintf(stderr, "error: '%s' unknown for debugging\n",
-			      (*argv)[1]);
-		      fprintf(stderr, "ircd: exiting on error.\n");
-		      exit(EXIT_FAILURE);
-		    }
-		  break;
-#endif
 
 		default:
 		  fprintf(stderr, "Error: internal error in parseargs() at %s:%d\n",

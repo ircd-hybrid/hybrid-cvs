@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.229 2002/04/25 17:53:21 leeh Exp $
+ *  $Id: ircd.c,v 7.230 2002/05/08 02:54:02 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -298,10 +298,6 @@ struct lgetopt myopts[] = {
    YESNO, "Run in foreground (don't detach)"},
   {"version",    &printVersion, 
    YESNO, "Print version and exit"},
-#ifdef DEBUGMODE
-  {"debug", NULL, 
-   ENDEBUG, "Enable debugging for a certain value"},
-#endif
   {"help", NULL, USAGE, "Print this text"},
   {NULL, NULL, STRING, NULL},
 };
