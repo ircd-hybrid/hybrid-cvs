@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_jupe.c,v 1.18 2001/08/04 11:26:00 leeh Exp $
+ *   $Id: m_jupe.c,v 1.19 2001/09/20 20:10:33 jdc Exp $
  */
 
 #include "tools.h"
@@ -122,7 +122,7 @@ static void mo_jupe(struct Client *client_p, struct Client *source_p,
     exit_client(client_p, target_p, &me, parv[2]);
 
   sendto_server(NULL, NULL, NULL, NOCAPS, NOCAPS, NOFLAGS,
-                ":%s SERVER %s 1 :Juped: %s",
+                ":%s SERVER %s 1 :JUPED: %s",
                 me.name, parv[1], parv[2]);
 
   sendto_realops_flags(FLAGS_ALL, L_ALL,
@@ -143,10 +143,10 @@ static void mo_jupe(struct Client *client_p, struct Client *source_p,
   ajupe->hopcount = 1;
   strncpy_irc(ajupe->name,parv[1],HOSTLEN);
 
-  /* we need to give 7 chars to prepend "Juped: " */
+  /* we need to give 7 chars to prepend "JUPED: " */
   if(strlen(parv[2]) > (REALLEN-7))
     parv[2][REALLEN-7] = '\0';
-  ircsprintf(reason, "%s %s", "Juped:", parv[2]);
+  ircsprintf(reason, "%s %s", "JUPED:", parv[2]);
   
   strncpy_irc(ajupe->info,reason,REALLEN);
   ajupe->serv->up = me.name;
