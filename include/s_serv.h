@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: s_serv.h,v 7.7 2000/09/30 15:41:25 db Exp $
+ * $Id: s_serv.h,v 7.8 2000/11/02 18:22:58 adrian Exp $
  *
  */
 #ifndef INCLUDED_serv_h
@@ -108,6 +108,7 @@ extern time_t      try_connections(time_t currenttime);
 extern void        initServerMask(void);
 extern void        restoreUnusedServerMask(unsigned long);
 extern void	   sendnick_TS(struct Client*, struct Client* );
+extern int         serv_connect(struct ConfItem *, struct Client *);
 
 #define CLEANUP_CHANNELS_TIME (15*60)
 

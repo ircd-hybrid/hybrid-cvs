@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.40 2000/10/31 14:21:52 adrian Exp $
+ * $Id: ircd.c,v 7.41 2000/11/02 18:23:01 adrian Exp $
  */
 #include "ircd.h"
 #include "channel.h"
@@ -401,15 +401,6 @@ static time_t io_loop(time_t delay)
     delay = 1;
   else
     delay = IRCD_MIN(delay, TIMESEC);
-  /*
-   * We want to read servers on every io_loop, as well
-   * as "busy" clients (which again, includes servers.
-   * If "lifesux", then we read servers AGAIN, and then
-   * flush any data to servers.
-   *    -Taner
-   */
-
-  read_message(0, FDL_ALL); /*  check everything! */
 
   if (dorehash && !GlobalSetOptions.lifesux)
     {
