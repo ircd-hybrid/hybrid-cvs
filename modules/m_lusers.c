@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_lusers.c,v 1.24 2003/04/18 02:13:43 db Exp $
+ *  $Id: m_lusers.c,v 1.25 2003/05/24 12:26:34 db Exp $
  */
 
 #include "stdinc.h"
@@ -58,7 +58,7 @@ _moddeinit(void)
   mod_del_cmd(&lusers_msgtab);
 }
 
-const char *_version = "$Revision: 1.24 $";
+const char *_version = "$Revision: 1.25 $";
 #endif
 /*
  * m_lusers - LUSERS message handler
@@ -68,6 +68,8 @@ const char *_version = "$Revision: 1.24 $";
  * 
  * 199970918 JRL hacked to ignore parv[1] completely and require parc > 3
  * to cause a force
+ *
+ * 2003 hacked parv[1] back in, by request of efnet admins/opers -Dianora
  */
 static void
 m_lusers(struct Client *client_p, struct Client *source_p,
@@ -91,7 +93,10 @@ m_lusers(struct Client *client_p, struct Client *source_p,
          return;
     }
 
-  show_lusers(source_p);
+  if (parc > 1)
+    show_lusers(source_p, parv[1]);
+  else
+    show_lusers(source_p, NULL);
 }
 
 /*
@@ -117,6 +122,11 @@ ms_lusers(struct Client *client_p, struct Client *source_p,
     }
 
   if(IsClient(source_p))
-    show_lusers(source_p);
+  {
+    if (parc > 1)
+      show_lusers(source_p, parv[1]);
+    else
+      show_lusers(source_p, NULL);
+  }
 }
 
