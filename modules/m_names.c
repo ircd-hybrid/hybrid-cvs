@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_names.c,v 1.11 2000/12/04 06:35:09 db Exp $
+ *   $Id: m_names.c,v 1.12 2000/12/07 07:21:45 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -254,10 +254,6 @@ void names_non_public_non_secret(struct Client *sptr)
       for( lp = c2ptr->user->channel.head; lp; lp = lp->next )
         {
           ch3ptr = lp->data;
-
-sendto_realops("PubChannel(ch3ptr) %d", PubChannel(ch3ptr));
-sendto_realops("SecretChannel(ch3ptr) %d", SecretChannel(ch3ptr));
-sendto_realops("IsMember(sptr,ch3ptr) %d", IsMember(sptr,ch3ptr));
 
           if ( (!PubChannel(ch3ptr) || IsMember(sptr, ch3ptr)) ||
 	       (SecretChannel(ch3ptr)))
