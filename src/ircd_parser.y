@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.226 2001/12/20 19:31:50 androsyn Exp $
+ * $Id: ircd_parser.y,v 1.227 2001/12/20 20:23:13 leeh Exp $
  */
 
 %{
@@ -1287,7 +1287,7 @@ shared_entry:		T_SHARED
 shared_items:		shared_items shared_item |
 			shared_item
 
-shared_item:		shared_name | shared_user | shared_host | error
+shared_item:		shared_name | shared_user | error
 
 shared_name:		NAME '=' QSTRING ';'
   {
@@ -1297,14 +1297,22 @@ shared_name:		NAME '=' QSTRING ';'
 
 shared_user:		USER '=' QSTRING ';'
   {
-    MyFree(yy_aconf->user);
-    DupString(yy_aconf->user, yylval.string);
-  };
+    char *p;
+    char *new_user;
+    char *new_host;
 
-shared_host:		HOST '=' QSTRING ';'
-  {
-    MyFree(yy_aconf->host);
-    DupString(yy_aconf->host, yylval.string);
+    if((p = strchr(yylval.string,'@')))
+    {
+      *p = '\0';
+      DupString(new_user, yylval.string);
+      MyFree(yy_aconf->user);
+      yy_aconf->user = new_user;
+
+      p++;
+      DupString(new_host, p);
+      MyFree(yy_aconf->host);
+      yy_aconf->host = new_host;
+    }
   };
 
 /***************************************************************************
