@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_ping.c,v 1.10 2001/01/05 00:14:33 davidt Exp $
+ *   $Id: m_ping.c,v 1.11 2001/01/09 14:47:14 wcampbel Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -79,7 +79,7 @@ static int m_ping(struct Client *cptr,
   acptr = find_client(origin, NULL);
   if (!acptr)
     acptr = find_server(origin);
-  if (acptr != sptr)
+  if (acptr && acptr != sptr)
     origin = cptr->name;
   if (!EmptyString(destination) && irccmp(destination, me.name) != 0)
     {
