@@ -1,3 +1,22 @@
+db          2002/08/15 03:32:15 EDT	(20020815_0)
+
+  Modified files:
+    src                  s_serv.c 
+  Log:
+  Came across some code that has hard coded timeouts instead of the
+  CONNECTTIMEOUT, so I thought I'd let you know and include a .diff for
+  your convenience :)
+  
+  ...
+  
+  Stuart Walsh - stu@ipng.org.uk
+  IPng UK      - info@ipng.org.uk - http://ipng.org.uk
+  
+  Revision  Changes    Path
+  7.268     +4 -4      ircd-hybrid-7/src/s_serv.c
+
+
+
 db          2002/08/13 15:35:10 EDT	(20020813_1)
 
   Modified files:
@@ -31104,4 +31123,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3971 2002/08/13 19:35:18 db Exp $
+$Id: ChangeLog,v 7.3972 2002/08/15 07:32:21 db Exp $
