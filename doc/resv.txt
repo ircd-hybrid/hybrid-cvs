@@ -4,7 +4,7 @@
  *
  * Copyright (C) 2001 Hybrid Development Team
  *
- * $Id: resv.txt,v 7.2 2001/08/18 12:55:36 leeh Exp $
+ * $Id: resv.txt,v 7.3 2003/05/15 22:16:43 joshk Exp $
  */
 
 				RESV
@@ -15,7 +15,7 @@
   Resv is a method of 'juping' or 'reserving' nicks and channels, to prevent
   local clients using them.  It is commonly used to block channels which
   are home to abusers, and which attract DoS.  It can also be used to stop
-  people pretending to be services, on a network that doesnt support them.
+  people pretending to be services, on a network that doesn't support them.
 
   It was coded to replace the method in hybrid-6 of blocking channels and
   nicks, and was implemented in a much cleaner way to make it faster.
@@ -100,7 +100,7 @@
 - Can an oper see when someone tries to use a resv'd nick/channel?
 
   No.  When there is a valid reason for this, then possibly, but I honestly
-  dont see why anyone needs it.
+  don't see why anyone needs it.
 
 
 - Can I resv a local channel?
@@ -115,7 +115,7 @@
   cannot just check if the nick, and the item in the list of resv'd nicks
   are string equal, we have to check if they match, so we have to search a
   full list.  With channels however, we can search a hash table to see if an
-  entry exists, if it doesnt, then the channel isnt resv'd.  We dont have to
+  entry exists, if it doesn't, then the channel isnt resv'd.  We don't have to
   search through all the channels.
 
   Besides.. its legal for a channel to be called #*warez* anyway ;)

@@ -136,7 +136,7 @@ options that were in config.h, to be changed with a /rehash.
   See serverhide.txt for more information.
 
 - LazyLinks are now included.  These enable a leaf server to only need
-  information about channels that it's local users are on, and nicks that have
+  information about channels that its local users are on, and nicks that have
   been used (in a channel, in a private message, or in a WHO or WHOIS by a user
   or channel on the leaf).  Read the LazyLinks.as.implemented.txt document for
   more information.
@@ -225,5 +225,5 @@ options that were in config.h, to be changed with a /rehash.
     PARA    - Controls propogation of INVITE notices for +p (paranoid) channels
     ENC:a   - Encrypted link, where 'a' is the cipher being used
 
-# $Id: whats-new.txt,v 7.40 2003/05/12 08:09:22 michael Exp $
+# $Id: whats-new.txt,v 7.41 2003/05/15 22:16:43 joshk Exp $
 
