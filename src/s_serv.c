@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.288 2003/03/29 14:25:15 michael Exp $
+ *  $Id: s_serv.c,v 7.289 2003/04/02 02:12:08 michael Exp $
  */
 
 #include "stdinc.h"
@@ -452,7 +452,7 @@ hunt_server(struct Client *client_p, struct Client *source_p, char *command,
    * Again, if there are no wild cards involved in the server
    * name, use the hash lookup
    */
-  if (!target_p)
+  if (target_p == NULL)
     {
       if (!wilds)
         {
@@ -478,7 +478,7 @@ hunt_server(struct Client *client_p, struct Client *source_p, char *command,
 	}
     }
 
-  if (target_p)
+  if (target_p != NULL)
     {
       if(!IsRegistered(target_p))
       {

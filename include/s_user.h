@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.h,v 7.18 2003/03/30 02:34:48 michael Exp $
+ *  $Id: s_user.h,v 7.19 2003/04/02 02:12:06 michael Exp $
  */
 
 #ifndef INCLUDED_s_user_h
@@ -46,6 +46,6 @@ extern int   do_remote_user(struct Client* ,struct Client*,
 
 extern unsigned int user_modes_from_c_to_bitmask[];
 extern void  show_isupport(struct Client *);
-
+extern int oper_up(struct Client *source_p, struct ConfItem *aconf);
 
 #endif

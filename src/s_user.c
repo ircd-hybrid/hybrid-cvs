@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.233 2003/03/30 02:34:52 michael Exp $
+ *  $Id: s_user.c,v 7.234 2003/04/02 02:12:08 michael Exp $
  */
 
 #include "stdinc.h"
@@ -57,11 +57,9 @@ static int valid_hostname(const char* hostname);
 static int valid_username(const char* username);
 static void report_and_set_user_flags( struct Client *, struct ConfItem * );
 static int check_X_line(struct Client *client_p, struct Client *source_p);
-void user_welcome(struct Client *source_p);
+static void user_welcome(struct Client *source_p);
 static int introduce_client(struct Client *client_p, struct Client *source_p,
 			    struct User *user, char *nick);
-int oper_up(struct Client *source_p, struct ConfItem *aconf);
-
 
 /* table of ascii char letters to corresponding bitmask */
 
@@ -327,7 +325,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
     {
       sendto_one(source_p,":%s NOTICE %s :*** Notice -- You have an illegal character in your hostname", 
 		 me.name, source_p->name );
-      strncpy(source_p->host,source_p->localClient->sockhost,HOSTIPLEN+1);
+      strlcpy(source_p->host,source_p->localClient->sockhost,sizeof(source_p->host));
     }
 
   ptr = source_p->localClient->confs.head;
@@ -370,7 +368,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
     }
 
   /* password check */
-  if (!BadPtr(aconf->passwd) &&
+  if (!EmptyString(aconf->passwd) &&
       strcmp(source_p->localClient->passwd, aconf->passwd))
   {
     ServerStats->is_ref++;
@@ -569,7 +567,7 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
    * If we can't find the server the user is supposed to be on,
    * then simply blow the user away.        -Taner
    */
-  if (!target_p)
+  if (target_p == NULL)
     {
       kill_client(client_p, source_p, "%s GHOST (no server found)",
                   me.name);
@@ -1197,7 +1195,7 @@ send_umode_out(struct Client *client_p,
  * output	- NONE
  * side effects	-
  */
-void
+static void
 user_welcome(struct Client *source_p)
 {
   sendto_one(source_p, form_str(RPL_WELCOME), me.name, source_p->name, 
@@ -1272,9 +1270,11 @@ check_X_line(struct Client *client_p, struct Client *source_p)
 {
   struct ConfItem *aconf;
   const char *reason;
-
+#if 0
+  /* we can't be an oper if we reach here */
   if(IsOper(source_p))
     return 0;
+#endif
 
   if ((aconf = find_x_conf(source_p->info)))
     {

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.198 2003/03/30 04:16:08 michael Exp $
+ *  $Id: s_conf.h,v 7.199 2003/04/02 02:12:06 michael Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -197,9 +197,9 @@ struct config_file_entry
   char *servlink_path;
   char *egdpool_path;
 
-  char fname_operlog[MAXPATHLEN];
-  char fname_userlog[MAXPATHLEN];
-  char fname_foperlog[MAXPATHLEN];
+  char fname_operlog[MAXPATHLEN+1];
+  char fname_userlog[MAXPATHLEN+1];
+  char fname_foperlog[MAXPATHLEN+1];
 
   MessageFile motd;
   MessageFile opermotd;
@@ -333,7 +333,7 @@ extern void init_ip_hash_table(void);
 extern void iphash_stats(struct Client *,struct Client *,int,char **,FBFILE*);
 extern void count_ip_hash(int *, u_long *);
 
-void remove_one_ip(struct irc_inaddr *ip);
+extern void remove_one_ip(struct irc_inaddr *ip);
 
 extern struct ConfItem* make_conf(int status);
 extern void             free_conf(struct ConfItem*);

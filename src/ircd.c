@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.257 2003/03/29 17:26:41 michael Exp $
+ *  $Id: ircd.c,v 7.258 2003/04/02 02:12:08 michael Exp $
  */
 
 #include "stdinc.h"
@@ -660,8 +660,8 @@ int main(int argc, char *argv[])
       "No server name specified in serverinfo block.");
     exit(EXIT_FAILURE);
   }
-  /* Can't use strncpy_irc here because we didn't malloc enough... -A1kmm */
-  strncpy(me.name, ServerInfo.name, HOSTLEN);
+
+  strlcpy(me.name, ServerInfo.name, sizeof(me.name));
 
   /* serverinfo{} description must exist.  If not, error out.*/
   if (ServerInfo.description == NULL)
@@ -672,7 +672,7 @@ int main(int argc, char *argv[])
       "ERROR: No server description specified in serverinfo block.");
     exit(EXIT_FAILURE);
   }
-  strncpy(me.info, ServerInfo.description, REALLEN);
+  strlcpy(me.info, ServerInfo.description, sizeof(me.info));
 
 #ifdef USE_IAUTH
   iAuth.flags = 0;

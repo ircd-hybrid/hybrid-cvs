@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- * $Id: dynlink.c,v 7.5 2003/02/17 16:09:36 db Exp $
+ * $Id: dynlink.c,v 7.6 2003/04/02 02:12:08 michael Exp $
  *
  */
 #include "stdinc.h"
@@ -56,7 +56,7 @@ static char unknown_ver[] = "<unknown>";
  */
 typedef void (*__function_p)(void);
 
-__function_p
+static __function_p
 dlfunc(void *myHandle, const char *functionName)
 {
 	/* XXX This is not guaranteed to work, but with

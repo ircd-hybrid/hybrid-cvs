@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fdlist.c,v 7.32 2003/03/01 06:25:40 db Exp $
+ *  $Id: fdlist.c,v 7.33 2003/04/02 02:12:08 michael Exp $
  */
 #include "stdinc.h"
 #include "config.h"  /* option settings */
@@ -110,7 +110,7 @@ fd_open(int fd, unsigned int type, const char *desc)
   F->comm_index = -1;
   F->list = FDLIST_NONE;
   if (desc)
-    strncpy(F->desc, desc, FD_DESC_SZ);
+    strlcpy(F->desc, desc, sizeof(F->desc));
   number_fd++;
 }
 
@@ -184,6 +184,4 @@ fd_note(int fd, const char *format, ...)
   else
     fd_table[fd].desc[0] = '\0';
 }
-
-
 

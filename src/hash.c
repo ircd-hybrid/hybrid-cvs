@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.49 2003/02/23 04:16:11 db Exp $
+ *  $Id: hash.c,v 7.50 2003/04/02 02:12:08 michael Exp $
  */
 
 #include "stdinc.h"
@@ -201,7 +201,7 @@ int hash_resv_channel(const char *name)
  *
  * Nullify the hashtable and its contents so it is completely empty.
  */
-static void clear_client_hash_table()
+static void clear_client_hash_table(void)
 {
 #ifdef DEBUGMODE
   clhits = 0;
@@ -217,7 +217,7 @@ static void clear_client_hash_table()
  *
  * Nullify the hashtable and its contents so it is completely empty.
  */
-static void clear_id_hash_table()
+static void clear_id_hash_table(void)
 {
 #ifdef DEBUGMODE
   /* XXX -
@@ -232,7 +232,7 @@ static void clear_id_hash_table()
 }
 
 static void
-clear_channel_hash_table()
+clear_channel_hash_table(void)
 {
 #ifdef DEBUGMODE
   chmiss = 0;
@@ -245,7 +245,7 @@ clear_channel_hash_table()
 }
 
 static void
-clear_resv_hash_table()
+clear_resv_hash_table(void)
 {
 #ifdef DEBUGMODE
   rmiss = 0;
@@ -418,14 +418,12 @@ del_from_channel_hash_table(const char* name, struct Channel* chptr)
   struct Channel* prev = NULL;
   unsigned int    hashv;
 
-#ifdef INVARIANTS
   assert(name != NULL);
   assert(chptr != NULL);
-#else
+
   if(name == NULL || chptr == NULL)
     return;
-#endif
-    
+
   hashv = hash_channel_name(name);
   found_chptr = (struct Channel*) channelTable[hashv].list;
 
@@ -495,6 +493,8 @@ find_id(const char *name)
 {
   struct Client *found_client;
   unsigned int hashv;
+
+  assert(NULL != name);
 	
   if (name == NULL)
     return NULL;
@@ -531,6 +531,7 @@ find_client(const char* name)
   unsigned int   hashv;
 
   assert(name != NULL);
+
   if(name == NULL)
     return NULL;
 
@@ -609,6 +610,8 @@ find_server(const char* name)
 {
   struct Client* found_server;
   unsigned int   hashv;
+
+  assert(NULL != name);
 
   if (name == NULL)
     return(NULL);
@@ -779,10 +782,5 @@ hash_find_resv(const char *name)
 #endif
   
   return(NULL);
-}  
-
-
-
-
-
+}
 

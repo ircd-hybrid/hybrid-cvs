@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.108 2003/03/01 01:15:44 db Exp $
+ *  $Id: modules.c,v 7.109 2003/04/02 02:12:08 michael Exp $
  */
 
 #include "stdinc.h"
@@ -55,7 +55,7 @@
 
 struct module **modlist = NULL;
 
-static char *core_module_table[] =
+static const char *core_module_table[] =
 {
   "m_die.s",
   "m_kick.s",
@@ -269,8 +269,8 @@ load_all_modules (int warn)
           (ldirent->d_name[len-2] == 's') &&
           ((ldirent->d_name[len-1] == 'o') || (ldirent->d_name[len-1] == 'l')))
 	{
-	  (void)sprintf(module_fq_name, "%s/%s",  AUTOMODPATH,
-			 ldirent->d_name);
+	  snprintf(module_fq_name, sizeof(module_fq_name), "%s/%s",
+                   AUTOMODPATH, ldirent->d_name);
 	  (void)load_a_module (module_fq_name, warn, 0);
 	}
     }
@@ -287,7 +287,7 @@ load_all_modules (int warn)
 void
 load_core_modules(int warn)
 {
-  char module_name[MAXPATHLEN];
+  char module_name[MAXPATHLEN+1];
   int i, hpux = 0;
 
 #ifdef HAVE_SHL_LOAD
@@ -296,7 +296,7 @@ load_core_modules(int warn)
 
   for(i = 0; core_module_table[i]; i++)
   {
-    sprintf(module_name, "%s/%s%c",
+    snprintf(module_name, sizeof(module_name), "%s/%s%c",
             MODPATH, core_module_table[i], hpux ? 'l' : 'o');
 	    
     if(load_a_module(module_name, warn, 1) == -1)
@@ -317,7 +317,7 @@ load_core_modules(int warn)
 int
 load_one_module (char *path, int coremodule)
 {
-  char modpath[MAXPATHLEN];
+  char modpath[MAXPATHLEN+1];
   dlink_node *pathst;
   struct module_path *mpath;
   struct stat statbuf;
@@ -326,7 +326,7 @@ load_one_module (char *path, int coremodule)
     {
       mpath = (struct module_path *)pathst->data;
       
-      sprintf(modpath, "%s/%s", mpath->path, path);
+      snprintf(modpath, sizeof(modpath), "%s/%s", mpath->path, path);
       if((strstr(modpath, "../") == NULL) && (strstr(modpath, "/..") == NULL)) 
 	 {
 	    if (stat(modpath, &statbuf) == 0)
@@ -353,13 +353,14 @@ load_one_module (char *path, int coremodule)
 
 /* load a module .. */
 static void
-mo_modload(struct Client *client_p, struct Client *source_p, int parc, char **parv)
+mo_modload(struct Client *client_p, struct Client *source_p, int parc, char *parv[])
 {
   char *m_bn;
 
   if (!IsOperAdmin(source_p))
   {
-    sendto_one(source_p, ":%s NOTICE %s :You have no A flag", me.name, parv[0]);
+    sendto_one(source_p, ":%s NOTICE %s :You need admin = yes;",
+               me.name, parv[0]);
     return;
   }
 
@@ -381,14 +382,14 @@ mo_modload(struct Client *client_p, struct Client *source_p, int parc, char **pa
 
 /* unload a module .. */
 static void
-mo_modunload(struct Client *client_p, struct Client *source_p, int parc, char **parv)
+mo_modunload(struct Client *client_p, struct Client *source_p, int parc, char *parv[])
 {
   char *m_bn;
   int modindex;
 
   if (!IsOperAdmin(source_p))
   {
-    sendto_one(source_p, ":%s NOTICE %s :You have no A flag",
+    sendto_one(source_p, ":%s NOTICE %s :You need admin = yes;",
                 me.name, parv[0]);
     return;
   }
@@ -422,7 +423,7 @@ mo_modunload(struct Client *client_p, struct Client *source_p, int parc, char **
 
 /* unload and load in one! */
 static void
-mo_modreload(struct Client *client_p, struct Client *source_p, int parc, char **parv)
+mo_modreload(struct Client *client_p, struct Client *source_p, int parc, char *parv[])
 {
   char *m_bn;
   int modindex;
@@ -430,7 +431,7 @@ mo_modreload(struct Client *client_p, struct Client *source_p, int parc, char **
 
   if (!IsOperAdmin(source_p))
     {
-      sendto_one(source_p, ":%s NOTICE %s :You have no A flag",
+      sendto_one(source_p, ":%s NOTICE %s :You need admin = yes;",
                   me.name, parv[0]);
       return;
     }
@@ -469,13 +470,13 @@ mo_modreload(struct Client *client_p, struct Client *source_p, int parc, char **
 
 /* list modules .. */
 static void
-mo_modlist (struct Client *client_p, struct Client *source_p, int parc, char **parv)
+mo_modlist (struct Client *client_p, struct Client *source_p, int parc, char *parv[])
 {
   int i;
 
   if (!IsOperAdmin(source_p))
   {
-    sendto_one(source_p, ":%s NOTICE %s :You have no A flag",
+    sendto_one(source_p, ":%s NOTICE %s :You need admin = yes;",
                 me.name, parv[0]);
     return;
   }
@@ -504,14 +505,13 @@ mo_modlist (struct Client *client_p, struct Client *source_p, int parc, char **p
 
 /* unload and reload all modules */
 static void
-mo_modrestart (struct Client *client_p, struct Client *source_p, int parc, char **parv)
-
+mo_modrestart (struct Client *client_p, struct Client *source_p, int parc, char *parv[])
 {
   int modnum;
 
   if (!IsOperAdmin (source_p))
   {
-    sendto_one(source_p, ":%s NOTICE %s :You have no A flag",
+    sendto_one(source_p, ":%s NOTICE %s :You need admin = yes;",
                 me.name, parv[0]);
     return;
   }

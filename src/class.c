@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: class.c,v 7.39 2003/02/23 04:16:10 db Exp $
+ *  $Id: class.c,v 7.40 2003/04/02 02:12:08 michael Exp $
  */
 
 #include "stdinc.h"
@@ -68,7 +68,7 @@ find_class_ptr(char* classname)
 }
 
 static struct Class *
-make_class()
+make_class(void)
 {
   struct Class *aclass;
 
@@ -284,7 +284,7 @@ find_class(char* classname)
  * side effects	- 
  */
 void
-check_class()
+check_class(void)
 {
   dlink_node *ptr;
   dlink_node *next_ptr;
@@ -319,7 +319,7 @@ check_class()
  * side effects	- 
  */
 void
-initclass()
+initclass(void)
 {
   struct Class *aclass;
 

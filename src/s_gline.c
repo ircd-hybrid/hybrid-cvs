@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_gline.c,v 1.24 2003/03/01 01:15:45 db Exp $
+ *  $Id: s_gline.c,v 1.25 2003/04/02 02:12:08 michael Exp $
  */
 
 #include "stdinc.h"
@@ -163,7 +163,7 @@ cleanup_glines(void *unused)
  * Go through the gline list, expire any needed.
  */
 static void
-expire_glines()
+expire_glines(void)
 {
   dlink_node *gline_node;
   dlink_node *next_node;
