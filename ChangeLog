@@ -1,3 +1,11 @@
+*** 20001106_14 by adrian
+
+
+use autoconf'ed CFLAGS, rather than enforcing inheriting it from the
+top level Makefile. This allows 'make' in src/ work *properly*.
+
+
+
 *** 20001106_13 by adrian
 
 
@@ -132,7 +140,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.496 2000/11/06 22:02:42 adrian Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.497 2000/11/06 22:15:17 adrian Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
