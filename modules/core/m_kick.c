@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kick.c,v 1.67 2003/09/28 02:16:04 metalrock Exp $
+ *  $Id: m_kick.c,v 1.68 2003/10/10 22:41:43 bill Exp $
  */
 
 #include "stdinc.h"
@@ -37,6 +37,7 @@
 #include "parse.h"
 #include "hash.h"
 #include "packet.h"
+#include "s_serv.h"
 
 
 static void m_kick(struct Client *, struct Client *, int, char **);
@@ -59,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&kick_msgtab);
 }
 
-const char *_version = "$Revision: 1.67 $";
+const char *_version = "$Revision: 1.68 $";
 #endif
 
 /* m_kick()
@@ -79,13 +80,25 @@ m_kick(struct Client *client_p, struct Client *source_p,
   char *name;
   char *p = NULL;
   char *user;
+  const char *from, *to;
   struct Membership *ms = NULL;
   struct Membership *ms_target;
+
+  if (!MyConnect(source_p) && IsCapable(source_p->from, CAP_TS6) && HasID(source_p))
+  {
+    from = me.id;
+    to = source_p->id;
+  }
+  else
+  {
+    from = me.name;
+    to = source_p->name;
+  }
 
   if (*parv[2] == '\0')
   {
     sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-               me.name, source_p->name, "KICK");
+               from, to, "KICK");
     return;
   }
 
@@ -107,7 +120,7 @@ m_kick(struct Client *client_p, struct Client *source_p,
   if ((chptr = hash_find_channel(name)) == NULL)
   {
     sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
-               me.name, source_p->name, name);
+               from, to, name);
     return;
   }
 
@@ -137,7 +150,7 @@ m_kick(struct Client *client_p, struct Client *source_p,
       {
         /* If its a TS 0 channel, do it the old way */         
         sendto_one(source_p, form_str(ERR_CHANOPRIVSNEEDED),
-                   me.name, source_p->name, name);
+                   from, to, name);
         return;
       }
 
@@ -194,12 +207,15 @@ m_kick(struct Client *client_p, struct Client *source_p,
       sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s KICK %s %s :%s",
                            source_p->name, source_p->username,
                            source_p->host, name, who->name, comment);
-    sendto_server(client_p, NULL, chptr, NOCAPS, NOCAPS, NOFLAGS,
+    sendto_server(client_p, NULL, chptr, CAP_TS6, NOCAPS, NOFLAGS,
+                  ":%s KICK %s %s :%s", source_p->id, chptr->chname,
+                  who->id, comment);
+    sendto_server(client_p, NULL, chptr, NOCAPS, CAP_TS6, NOFLAGS,
                   ":%s KICK %s %s :%s", parv[0], chptr->chname,
                   who->name, comment);
     remove_user_from_channel(ms_target);
   }
   else
     sendto_one(source_p, form_str(ERR_USERNOTINCHANNEL),
-               me.name, source_p->name, user, name);
+               from, to, user, name);
 }

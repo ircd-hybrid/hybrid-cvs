@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_join.c,v 1.11 2003/10/08 02:59:50 metalrock Exp $
+ *  $Id: m_join.c,v 1.12 2003/10/10 22:41:43 bill Exp $
  */
 
 #include "stdinc.h"
@@ -87,7 +87,7 @@ _moddeinit(void)
   mod_del_cmd(&join_msgtab);
 }
 
-const char *_version = "$Revision: 1.11 $";
+const char *_version = "$Revision: 1.12 $";
 #endif
 
 /* m_join()
@@ -151,7 +151,11 @@ m_join(struct Client *client_p, struct Client *source_p,
       chptr->mode.mode |= MODE_TOPICLIMIT;
       chptr->mode.mode |= MODE_NOPRIVMSGS;
 
-      sendto_server(client_p, source_p, chptr, NOCAPS, NOCAPS, LL_ICLIENT,
+      sendto_server(client_p, source_p, chptr, CAP_TS6, NOCAPS, LL_ICLIENT,
+                    ":%s SJOIN %lu %s +nt :@%s",
+                    me.id, (unsigned long)chptr->channelts,
+                    chptr->chname, source_p->id);
+      sendto_server(client_p, source_p, chptr, NOCAPS, CAP_TS6, LL_ICLIENT,
                     ":%s SJOIN %lu %s +nt :@%s",
                     me.name, (unsigned long)chptr->channelts,
                     chptr->chname, parv[0]);
@@ -171,7 +175,11 @@ m_join(struct Client *client_p, struct Client *source_p,
     }
     else
     {
-      sendto_server(client_p, source_p, chptr, NOCAPS, NOCAPS, LL_ICLIENT,
+      sendto_server(client_p, source_p, chptr, CAP_TS6, NOCAPS, LL_ICLIENT,
+                    ":%s JOIN %lu %s +",
+                    me.id, (unsigned long)chptr->channelts,
+                    chptr->chname, source_p->id);
+      sendto_server(client_p, source_p, chptr, NOCAPS, CAP_TS6, LL_ICLIENT,
                     ":%s SJOIN %lu %s + :%s",
                     me.name, (unsigned long)chptr->channelts,
                     chptr->chname, source_p->name);
