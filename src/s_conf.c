@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.123 2000/12/24 03:07:00 ejb Exp $
+ *  $Id: s_conf.c,v 7.124 2000/12/24 04:31:58 ejb Exp $
  */
 #include "tools.h"
 #include "s_conf.h"
@@ -1619,7 +1619,7 @@ int              ncount = 0;
 static void read_conf(FBFILE* file)
 {
   struct ConfItem* aconf;
-  ccount = ncount = 0;
+  ccount = ncount = lineno = 0;
 
   class0 = find_class("default");       /* which one is the default class ? */
   yyparse(); /* wheee! */

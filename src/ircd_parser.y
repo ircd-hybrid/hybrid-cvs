@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.70 2000/12/24 03:01:27 ejb Exp $
+ * $Id: ircd_parser.y,v 1.71 2000/12/24 04:31:58 ejb Exp $
  */
 
 %{
@@ -1523,11 +1523,9 @@ general_oper_only_umodes: OPER_ONLY_UMODES
     ConfigFileEntry.oper_only_umodes = 0;
   }
   '='  umode_items ';'
-			  umode_item
 
 umode_items:	umode_items ',' umode_item |
   umode_item 
-
 
 umode_item:	T_BOTS 
   {
@@ -1552,10 +1550,6 @@ umode_item:	T_BOTS
               | T_NCHANGE
   {
     ConfigFileEntry.oper_only_umodes |= FLAGS_NCHANGE;
-  }
-              | OPERATOR
-  {
-    ConfigFileEntry.oper_only_umodes |= FLAGS_OPER;
   }
               | T_REJ
   {
