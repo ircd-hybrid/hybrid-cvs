@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.121 2003/05/12 21:56:59 stu Exp $
+ *  $Id: s_auth.c,v 7.122 2003/05/12 23:43:38 joshk Exp $
  */
 
 /*
@@ -444,8 +444,7 @@ start_auth(struct Client* client)
 
   /* No DNS cache now, remember? -- adrian */
   /* Only set DNS pending if no error! -- Dianora */
-  gethost_byaddr(&client->localClient->ip, client->localClient->aftype,
-		  client->localClient->dns_query);
+  gethost_byaddr(&client->localClient->ip, client->localClient->dns_query);
   SetDNSPending(auth);
 
   (void)start_auth_query(auth);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.384 2003/05/12 21:57:00 stu Exp $
+ *  $Id: s_conf.c,v 7.385 2003/05/12 23:43:38 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -124,6 +124,7 @@ struct ConfItem *u_conf = NULL;
  * a non-null pointer, otherwise hp will be null.
  * if successful save hp in the conf item it was called with
  */
+void
 conf_dns_callback(void* vptr, struct DNSReply *reply)
 {
   struct ConfItem *aconf = (struct ConfItem *)vptr;

@@ -7,7 +7,7 @@
  * The authors takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: irc_res.c,v 7.3 2003/05/12 23:12:04 db Exp $
+ * $Id: irc_res.c,v 7.4 2003/05/12 23:43:38 joshk Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -56,7 +56,7 @@
 #error this code needs to be able to address individual octets 
 #endif
 
-/* $Id: irc_res.c,v 7.3 2003/05/12 23:12:04 db Exp $ */
+/* $Id: irc_res.c,v 7.4 2003/05/12 23:43:38 joshk Exp $ */
 
 static PF res_readreply;
 
@@ -914,7 +914,7 @@ res_readreply(int fd, void *data)
       rem_request(request);
     }
   }
-  else if (request->sent == NULL)
+  else if (!request->sent)
   {
 
     /*

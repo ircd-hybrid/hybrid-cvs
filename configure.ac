@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.14 2003/05/11 23:47:30 joshk Exp $
+dnl $Id: configure.ac,v 7.15 2003/05/12 23:43:31 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -814,7 +814,6 @@ AC_CONFIG_FILES(		\
 	servlink/Makefile	\
 	contrib/Makefile	\
 	src/Makefile		\
-	adns/Makefile		\
 	include/Makefile	\
 	messages/Makefile	\
 	modules/Makefile	\

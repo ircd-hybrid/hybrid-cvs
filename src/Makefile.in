@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.125 2003/05/12 21:56:59 stu Exp $
+# $Id: Makefile.in,v 7.126 2003/05/12 23:43:38 joshk Exp $
 #
 CC		= @CC@
 INSTALL		= @INSTALL@
@@ -62,14 +62,14 @@ BASE_SRCS =                     \
   hash.c                        \
   hook.c                        \
   hostmask.c                    \
-  irc_getaddrinfo.c		          \
+  irc_getaddrinfo.c		\
   irc_getnameinfo.c             \
   irc_res.c                     \
   irc_reslib.c                  \
   irc_string.c                  \
   ircd.c                        \
   ircd_signal.c                 \
-  kdparse.c			                \
+  kdparse.c			\
   list.c                        \
   listener.c                    \
   m_error.c                     \
@@ -83,10 +83,9 @@ BASE_SRCS =                     \
   parse.c                       \
   rsa.c                         \
   restart.c                     \
-  resv.c			                  \
+  resv.c			\
   s_auth.c                      \
   s_bsd.c                       \
-  $(NETIO_SRC)			            \
   s_conf.c                      \
   s_debug.c                     \
   s_gline.c                     \
@@ -102,7 +101,11 @@ BASE_SRCS =                     \
   tools.c                       \
   whowas.c
 
-SRCS = ${BASE_SRCS}
+ALL_NETIO_SRCS= s_bsd_kqueue.c s_bsd_sigio.c \
+		s_bsd_devpoll.c s_bsd_poll.c \
+		s_bsd_select.c
+
+SRCS = ${BASE_SRCS} $(NETIO_SRC)
 OBJS = ${SRCS:.c=.o}
 
 all: ircd
@@ -136,7 +139,7 @@ version.c: version.c.SH
 
 .PHONY: depend clean distclean
 depend:
-	${MKDEP} ${CPPFLAGS} ${BASE_SRCS} ${EXTRA_SRCS} > .depend
+	${MKDEP} ${CPPFLAGS} ${BASE_SRCS} ${ALL_NETIO_SRCS} snprintf.c > .depend
 
 clean:
 	${RM} -f *.o *.exe *~ y.tab.* lex.yy.c *core ircd 
