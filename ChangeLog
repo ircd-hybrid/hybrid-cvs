@@ -1,3 +1,16 @@
+androsyn    2002/07/11 21:01:23 EDT	(20020712_6)
+
+  Modified files:
+    modules/core         m_quit.c 
+  Log:
+  Instead of saying Client Exit: say Quit:, to be a little more consistant
+  with other networks
+  
+  Revision  Changes    Path
+  1.26      +3 -3      ircd-hybrid-7/modules/core/m_quit.c
+
+
+
 androsyn    2002/07/11 20:55:16 EDT	(20020712_5)
 
   Modified files:
@@ -29629,4 +29642,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3864 2002/07/12 00:55:23 androsyn Exp $
+$Id: ChangeLog,v 7.3865 2002/07/12 01:01:30 androsyn Exp $
