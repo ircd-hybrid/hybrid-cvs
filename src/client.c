@@ -19,11 +19,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.349 2003/04/15 14:05:51 adx Exp $
+ *  $Id: client.c,v 7.350 2003/04/16 13:29:52 michael Exp $
  */
+
 #include "stdinc.h"
 #include "config.h"
-
 #include "tools.h"
 #include "client.h"
 #include "class.h"
@@ -70,14 +70,13 @@ static void check_unknowns_list(dlink_list *list);
 
 static EVH check_pings;
 
-static int remote_client_count=0;
-static int local_client_count=0;
+static int remote_client_count = 0;
+static int local_client_count  = 0;
 
-static BlockHeap *client_heap = NULL;
+static BlockHeap *client_heap  = NULL;
 static BlockHeap *lclient_heap = NULL;
 
-/*
- * init_client
+/* init_client()
  *
  * inputs	- NONE
  * output	- NONE
@@ -92,7 +91,7 @@ init_client(void)
    * check_pings has to deal with safe lists now,
    * let's call it every 5 seconds -adx
    */
-  client_heap = BlockHeapCreate(sizeof(struct Client), CLIENT_HEAP_SIZE);
+  client_heap  = BlockHeapCreate(sizeof(struct Client), CLIENT_HEAP_SIZE);
   lclient_heap = BlockHeapCreate(sizeof(struct LocalUser), LCLIENT_HEAP_SIZE);
   eventAdd("check_pings", check_pings, NULL, 5);
 }
@@ -241,8 +240,7 @@ check_pings(void *notused)
   check_unknowns_list(&unknown_list);
 }
 
-/*
- * Check_pings_list()
+/* Check_pings_list()
  *
  * inputs	- pointer to list to check
  * output	- NONE
@@ -349,8 +347,7 @@ check_pings_list(dlink_list *list)
   }
 }
 
-/*
- * check_unknowns_list
+/* check_unknowns_list()
  *
  * inputs	- pointer to list of unknown clients
  * output	- NONE
@@ -366,11 +363,9 @@ check_unknowns_list(dlink_list *list)
   {
     client_p = ptr->data;
 
-    /*
-     * Check UNKNOWN connections - if they have been in this state
+    /* Check UNKNOWN connections - if they have been in this state
      * for > 30s, close them.
      */
-
     if (client_p->firsttime ? ((CurrentTime - client_p->firsttime) > 30) : 0)
     {
       (void)exit_client(client_p, client_p, &me, "Connection timed out");
@@ -658,8 +653,8 @@ find_person(char *name)
   c2ptr = find_client(name);
 
   if (c2ptr != NULL && IsPerson(c2ptr))
-    return (c2ptr);
-  return (NULL);
+    return(c2ptr);
+  return(NULL);
 }
 
 /*
@@ -728,14 +723,14 @@ get_client_name(struct Client* client, int showip)
 
   /* And finally, let's get the host information, ip or name */
   switch (showip)
-    {
-      case SHOW_IP:
-        if (MyConnect(client))
-        {
-          ircsprintf(nbuf, "%s[%s@%s]", client->name, client->username,
-                     client->localClient->sockhost);
-          break;
-        }
+  {
+    case SHOW_IP:
+      if (MyConnect(client))
+      {
+        ircsprintf(nbuf, "%s[%s@%s]", client->name, client->username,
+                   client->localClient->sockhost);
+        break;
+      }
       case MASK_IP:
         ircsprintf(nbuf, "%s[%s@255.255.255.255]", client->name,
                    client->username);
@@ -743,8 +738,9 @@ get_client_name(struct Client* client, int showip)
       default:
         ircsprintf(nbuf, "%s[%s@%s]", client->name, client->username,
                    client->host);
-    }
-  return nbuf;
+  }
+
+  return(nbuf);
 }
 
 void
@@ -754,22 +750,23 @@ free_exited_clients(void)
   struct Client *target_p;
   
   DLINK_FOREACH_SAFE(ptr, next, dead_list.head)
-    {
-      target_p = ptr->data;
+  {
+    target_p = ptr->data;
 
-      if (ptr->data == NULL)
-        {
-          sendto_realops_flags(UMODE_ALL, L_ALL,
-                        "Warning: null client on dead_list!");
-          dlinkDelete(ptr, &dead_list);
-          free_dlink_node(ptr);
-          continue;
-        }
-      release_client_state(target_p);
-      free_client(target_p);
+    if (ptr->data == NULL)
+    {
+      sendto_realops_flags(UMODE_ALL, L_ALL,
+                           "Warning: null client on dead_list!");
       dlinkDelete(ptr, &dead_list);
       free_dlink_node(ptr);
+      continue;
     }
+
+    release_client_state(target_p);
+    free_client(target_p);
+    dlinkDelete(ptr, &dead_list);
+    free_dlink_node(ptr);
+  }
 }
 
 /*
@@ -1084,9 +1081,9 @@ void
 dead_link_on_read(struct Client* client_p, int error)
 {
   char errmsg[255];
-  int  current_error = get_sockerr(client_p->localClient->fd);
+  int current_error = get_sockerr(client_p->localClient->fd);
 
-  if(IsDefunct(client_p))
+  if (IsDefunct(client_p))
     return;
 
   linebuf_donebuf(&client_p->localClient->buf_recvq);
@@ -1148,25 +1145,28 @@ exit_aborted_clients(void)
   const char *notice;
 
   DLINK_FOREACH_SAFE(ptr, next, abort_list.head)
+  {
+    target_p = ptr->data;
+
+    if (ptr->data == NULL)
     {
-      target_p = ptr->data;
-      if (ptr->data == NULL)
-        {
-          sendto_realops_flags(UMODE_ALL, L_ALL,
-                        "Warning: null client on abort_list!");
-          dlinkDelete(ptr, &abort_list);
-          free_dlink_node(ptr);
-          continue;
-        }
+      sendto_realops_flags(UMODE_ALL, L_ALL,
+                           "Warning: null client on abort_list!");
       dlinkDelete(ptr, &abort_list);
-      if(IsSendQExceeded(target_p))
-        notice = "Max SendQ exceeded";
-      else
-        notice = "Write error: connection closed";
-      
-      exit_client(target_p, target_p, &me, notice);  
       free_dlink_node(ptr);
+      continue;
     }
+
+    dlinkDelete(ptr, &abort_list);
+
+    if (IsSendQExceeded(target_p))
+      notice = "Max SendQ exceeded";
+    else
+      notice = "Write error: connection closed";
+
+    exit_client(target_p, target_p, &me, notice);  
+    free_dlink_node(ptr);
+  }
 }
 
 /*
@@ -1402,8 +1402,7 @@ count_remote_client_memory(int *count, int *remote_client_memory_used)
  * from any client having an accept on them. 
  */
 
-/*
- * accept_message
+/* accept_message()
  *
  * inputs	- pointer to source client
  * 		- pointer to target client
@@ -1419,15 +1418,15 @@ accept_message(struct Client *source, struct Client *target)
   DLINK_FOREACH(ptr, target->allow_list.head)
   {
     target_p = ptr->data;
-    if(source == target_p)
-    return 1;
+
+    if (source == target_p)
+      return(1);
   }
-  return 0;
+
+  return(0);
 }
 
-
-/*
- * del_from_accept
+/* del_from_accept()
  *
  * inputs	- pointer to source client
  * 		- pointer to target client
@@ -1447,28 +1446,29 @@ del_from_accept(struct Client *source, struct Client *target)
   struct Client *target_p;
 
   DLINK_FOREACH_SAFE(ptr, next_ptr, target->allow_list.head)
-    {
-      target_p = ptr->data;
-      if(source == target_p)
-	{
-	  dlinkDelete(ptr, &target->allow_list);
-	  free_dlink_node(ptr);
+  {
+    target_p = ptr->data;
 
-	  DLINK_FOREACH_SAFE(ptr2, next_ptr2, source->on_allow_list.head)
-	    {
-	      target_p = ptr2->data;
-	      if (target == target_p)
-		{
-		  dlinkDelete(ptr2, &source->on_allow_list);
-		  free_dlink_node(ptr2);
-		}
-	    }
-	}
+    if (source == target_p)
+    {
+      dlinkDelete(ptr, &target->allow_list);
+      free_dlink_node(ptr);
+
+      DLINK_FOREACH_SAFE(ptr2, next_ptr2, source->on_allow_list.head)
+      {
+        target_p = ptr2->data;
+
+        if (target == target_p)
+        {
+          dlinkDelete(ptr2, &source->on_allow_list);
+          free_dlink_node(ptr2);
+        }
+      }
     }
+  }
 }
 
-/*
- * del_all_accepts
+/* del_all_accepts()
  *
  * inputs	- pointer to exiting client
  * output	- NONE
@@ -1483,18 +1483,20 @@ del_all_accepts(struct Client *client_p)
   struct Client *target_p;
 
   DLINK_FOREACH_SAFE(ptr, next_ptr, client_p->allow_list.head)
-    {
-      target_p = ptr->data;
-      if(target_p != NULL)
-        del_from_accept(target_p,client_p);
-    }
+  {
+    target_p = ptr->data;
+
+    if (target_p != NULL)
+      del_from_accept(target_p,client_p);
+  }
 
   DLINK_FOREACH_SAFE(ptr, next_ptr, client_p->on_allow_list.head)
-    {
-      target_p = ptr->data;
-      if(target_p != NULL)
-	del_from_accept(client_p, target_p);
-    }
+  {
+    target_p = ptr->data;
+
+    if (target_p != NULL)
+      del_from_accept(client_p, target_p);
+  }
 }
 
 /*
