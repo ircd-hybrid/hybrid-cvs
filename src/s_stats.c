@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_stats.c,v 7.24 2003/02/26 22:40:58 bill Exp $
+ *  $Id: s_stats.c,v 7.25 2003/03/30 04:16:10 michael Exp $
  */
 
 #include "stdinc.h"
@@ -40,7 +40,7 @@ static struct ServerStatistics  ircst;
 struct ServerStatistics* ServerStats = &ircst;
 
 void
-init_stats()
+init_stats(void)
 {
   memset(&ircst, 0, sizeof(ircst));
 }
@@ -139,5 +139,3 @@ tstats(struct Client *source_p)
              me.name, RPL_STATSDEBUG, source_p->name, (int)sp->is_cti,
 	     (int)sp->is_sti);
 }
-
-

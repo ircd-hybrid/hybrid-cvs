@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.197 2003/03/29 14:25:09 michael Exp $
+ *  $Id: s_conf.h,v 7.198 2003/03/30 04:16:08 michael Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -81,21 +81,21 @@ struct ConfItem
 };
 
 #define CONF_ILLEGAL            0x80000000
-#define CONF_QUARANTINED_NICK   0x0001
-#define CONF_CLIENT             0x0002
-#define CONF_SERVER             0x0004
-#define CONF_OPERATOR           0x0010
-#define CONF_KILL               0x0040
-#define CONF_CLASS              0x0400
-#define CONF_LEAF               0x0800
-#define CONF_LISTEN_PORT        0x1000
-#define CONF_HUB                0x2000
-#define CONF_EXEMPTKLINE        0x4000
-#define CONF_NOLIMIT            0x8000
-#define CONF_DLINE             0x20000
-#define CONF_XLINE             0x40000
-#define CONF_ULINE             0x80000
-#define CONF_EXEMPTDLINE      0x100000
+#define CONF_QUARANTINED_NICK   0x00000001
+#define CONF_CLIENT             0x00000002
+#define CONF_SERVER             0x00000004
+#define CONF_OPERATOR           0x00000010
+#define CONF_KILL               0x00000040
+#define CONF_CLASS              0x00000400
+#define CONF_LEAF               0x00000800
+#define CONF_LISTEN_PORT        0x00001000
+#define CONF_HUB                0x00002000
+#define CONF_EXEMPTKLINE        0x00004000
+#define CONF_NOLIMIT            0x00008000
+#define CONF_DLINE              0x00020000
+#define CONF_XLINE              0x00040000
+#define CONF_ULINE              0x00080000
+#define CONF_EXEMPTDLINE        0x00100000
 
 #define CONF_SERVER_MASK       CONF_SERVER
 #define CONF_CLIENT_MASK       (CONF_CLIENT | CONF_OPERATOR | CONF_SERVER_MASK)
@@ -302,7 +302,6 @@ struct server_info
   struct      irc_inaddr ip6;
   int         max_clients;
   int         max_buffer;
-  int         no_hack_ops;
   int         specific_ipv4_vhost;
   int         specific_ipv6_vhost;
   struct      sockaddr_in dns_host;
@@ -343,20 +342,17 @@ extern void             read_conf_files(int cold);
 
 extern int              attach_conf(struct Client*, struct ConfItem *);
 extern int              attach_confs(struct Client* client, 
-                                     const char* name, int statmask);
-extern int              attach_connect_block(struct Client* client, 
-					     const char* name,
+                                     const char* name, unsigned int statmask);
+extern int              attach_connect_block(struct Client* client, const char* name,
 					     const char* host);
 extern int              check_client(struct Client* client_p, struct Client *source_p, char *);
 extern void             det_confs_butmask (struct Client *, int);
 extern int              detach_conf (struct Client *, struct ConfItem *);
 extern struct ConfItem* det_confs_butone (struct Client *, struct ConfItem *);
-extern struct ConfItem* find_conf_exact(const char* name, const char* user, const char* host, int statmask);
-extern struct ConfItem* find_conf_name(dlink_list *list, const char* name, int statmask);
-extern struct ConfItem* find_conf_host(dlink_list *list, const char* host, int statmask);
-extern struct ConfItem* find_conf_ip(dlink_list *list, char* ip, char* name, int);
-extern struct ConfItem* find_conf_by_name(const char* name, int status);
-extern struct ConfItem* find_conf_by_host(const char* host, int status);
+extern struct ConfItem* find_conf_exact(const char* name, const char* user, const char* host, unsigned int statmask);
+extern struct ConfItem* find_conf_name(dlink_list *list, const char* name, unsigned int statmask);
+extern struct ConfItem* find_conf_by_name(const char* name, unsigned int status);
+extern struct ConfItem* find_conf_by_host(const char* host, unsigned int status);
 extern struct ConfItem* find_kill (struct Client *);
 extern int conf_connect_allowed(struct irc_inaddr *addr, int aftype);
 extern char *oper_privs_as_string(struct Client *, int);
@@ -367,10 +363,9 @@ extern struct ConfItem *find_x_conf(const char *);
 
 extern struct ConfItem* find_tkline(const char*, const char*, struct irc_inaddr *);
 extern char* show_iline_prefix(struct Client *,struct ConfItem *,char *);
-extern void get_printable_conf(struct ConfItem *,
-                                    char **, char **, char **,
+extern void get_printable_conf(struct ConfItem *, char **, char **, char **,
                                     char **, int *,char **);
-extern void report_configured_links(struct Client* client_p, int mask);
+extern void report_configured_links(struct Client* client_p, unsigned int mask);
 extern void report_specials(struct Client* source_p, int flags, int numeric);
 
 extern void yyerror(char *);
@@ -414,8 +409,6 @@ extern char *get_oper_name(struct Client *client_p);
 
 extern int yylex(void);
 
-extern unsigned long cidr_to_bitmask[];
-
 #define NOT_AUTHORIZED  (-1)
 #define SOCKET_ERROR    (-2)
 #define I_LINE_FULL     (-3)
@@ -426,4 +419,3 @@ extern unsigned long cidr_to_bitmask[];
 #define CLEANUP_TKLINES_TIME 60
 
 #endif /* INCLUDED_s_conf_h */
-

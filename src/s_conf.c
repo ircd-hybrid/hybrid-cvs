@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.350 2003/03/29 17:26:41 michael Exp $
+ *  $Id: s_conf.c,v 7.351 2003/03/30 04:16:10 michael Exp $
  */
 
 #include "stdinc.h"
@@ -268,7 +268,7 @@ static struct LinkReport {
  * side effects	-
  */
 void 
-report_configured_links(struct Client* source_p, int mask)
+report_configured_links(struct Client* source_p, unsigned int mask)
 {
   dlink_node 	     *ptr;
   struct ConfItem    *aconf;
@@ -991,7 +991,7 @@ attach_conf(struct Client *client_p, struct ConfItem *aconf)
  * conf line and not the name
  */
 int 
-attach_confs(struct Client* client_p, const char* name, int statmask)
+attach_confs(struct Client* client_p, const char* name, unsigned int statmask)
 {
   dlink_node *ptr;
   struct ConfItem *aconf;
@@ -1067,7 +1067,7 @@ attach_connect_block(struct Client *client_p, const char* name,
  */
 struct ConfItem* 
 find_conf_exact(const char* name, const char* user, 
-		const char* host, int statmask)
+		const char* host, unsigned int statmask)
 {
   dlink_node *ptr;
   struct ConfItem *aconf;
@@ -1111,7 +1111,7 @@ find_conf_exact(const char* name, const char* user,
  *		  and has the given mask.
  */
 struct ConfItem* 
-find_conf_name(dlink_list *list, const char* name, int statmask)
+find_conf_name(dlink_list *list, const char* name, unsigned int statmask)
 {
   dlink_node *ptr;
   struct ConfItem* aconf;
@@ -1138,7 +1138,7 @@ find_conf_name(dlink_list *list, const char* name, int statmask)
  *
  */
 struct ConfItem* 
-find_conf_by_name(const char* name, int status)
+find_conf_by_name(const char* name, unsigned int status)
 {
   dlink_node *ptr;
   struct ConfItem* conf;
@@ -1167,7 +1167,7 @@ find_conf_by_name(const char* name, int status)
  *
  */
 struct ConfItem* 
-find_conf_by_host(const char* host, int status)
+find_conf_by_host(const char* host, unsigned int status)
 {
   dlink_node *ptr;
   struct ConfItem* conf;
