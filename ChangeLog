@@ -1,3 +1,6 @@
+*** 20001211_4 by davidt
+oops, didn't cvs add create_po..
+
 *** 20001211_3 by davidt
 attempted to tidy up config.h slightly
 
@@ -2254,7 +2257,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.788 2000/12/11 21:00:47 davidt Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.789 2000/12/11 21:02:14 davidt Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
