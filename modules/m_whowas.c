@@ -16,7 +16,7 @@
 *   along with this program; if not, write to the Free Software
 *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 *
-*   $Id: m_whowas.c,v 1.14 2001/01/11 05:31:51 a1kmm Exp $
+*   $Id: m_whowas.c,v 1.15 2001/01/24 07:49:28 db Exp $
 */
 #include "whowas.h"
 #include "handlers.h"
@@ -151,7 +151,7 @@ static int whowas_do(struct Client *cptr, struct Client *sptr,
           if (GlobalSetOptions.hide_server && !IsOper(sptr))
             sendto_one(sptr, form_str(RPL_WHOISSERVER),
                        me.name, parv[0], temp->name,
-                       ConfigFileEntry.network_name, myctime(temp->logoff));
+                       ServerInfo.network_name, myctime(temp->logoff));
           else
 	    sendto_one(sptr, form_str(RPL_WHOISSERVER),
                        me.name, parv[0], temp->name,
