@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.216 2003/05/12 08:09:26 michael Exp $
+ *  $Id: s_conf.h,v 7.217 2003/05/14 18:15:17 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -98,6 +98,7 @@ struct ConfItem
 
 #define CONF_SERVER_MASK       CONF_SERVER
 #define CONF_CLIENT_MASK       (CONF_CLIENT | CONF_OPERATOR | CONF_SERVER_MASK)
+#define CONF_TYPE CONF_CLIENT_MASK
 
 #define IsConfIllegal(x)	((x)->status & CONF_ILLEGAL)
 #define SetConfIllegal(x)	((x)->status |= CONF_ILLEGAL)
@@ -360,22 +361,17 @@ extern void yyerror(const char *);
 extern int conf_yy_fatal_error(const char *);
 extern int conf_fbgets(char *, int, FBFILE *);
 
-typedef enum {
-  CONF_TYPE,
-  KLINE_TYPE,
-  DLINE_TYPE
-} KlineType;
-
-extern void WriteKlineOrDline(KlineType, struct Client *,
-			      char *user, char *host, const char *reason,
-			      const char *oper_reason,
-			      const char *current_date, time_t cur_time);
+extern void write_conf_line(int, struct Client *,
+			    char *user, char *host, const char *reason,
+			    const char *oper_reason,
+			    const char *current_date, time_t cur_time);
+extern int  remove_conf_line(int, struct Client *, char *, char *);
 extern void add_temp_kline(struct ConfItem *);
 extern void report_temp_klines(struct Client *);
 extern void show_temp_klines(struct Client *, dlink_list *);
 extern void cleanup_tklines(void *notused);
 
-extern const char *get_conf_name(KlineType);
+extern const char *get_conf_name(int);
 extern int rehash(int);
 
 extern int conf_add_server(struct ConfItem *, int);
@@ -388,9 +384,8 @@ extern void conf_add_u_conf(struct ConfItem *);
 extern void conf_add_fields(struct ConfItem *, const char *, const char *, const char *, const char *, const char *);
 extern void conf_add_conf(struct ConfItem *);
 
-/* XXX consider moving these into kdparse.h */
-extern void parse_k_file(FBFILE *fb);
-extern void parse_d_file(FBFILE *fb);
+/* XXX consider moving these into csvlib.h */
+void parse_csv_file(FBFILE *file, int conf_type);
 extern char *getfield(char *newline);
 
 extern char *get_oper_name(struct Client *client_p);

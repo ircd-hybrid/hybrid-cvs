@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.124 2003/05/13 02:32:13 joshk Exp $
+ *  $Id: m_kline.c,v 1.125 2003/05/14 18:15:19 db Exp $
  */
 
 #include "stdinc.h"
@@ -76,7 +76,7 @@ _moddeinit(void)
   mod_del_cmd(&kline_msgtab);
   mod_del_cmd(&dline_msgtab);
 }
-const char *_version = "$Revision: 1.124 $";
+const char *_version = "$Revision: 1.125 $";
 #endif
 
 /* Local function prototypes */
@@ -352,8 +352,8 @@ apply_kline(struct Client *source_p, struct ConfItem *aconf,
 	    const char *current_date, time_t cur_time)
 {
   add_conf_by_address(aconf->host, CONF_KILL, aconf->user, aconf);
-  WriteKlineOrDline(KLINE_TYPE, source_p, aconf->user, aconf->host,
-		    reason, oper_reason, current_date, cur_time);
+  write_conf_line(CONF_KILL, source_p, aconf->user, aconf->host,
+		  reason, oper_reason, current_date, cur_time);
   /* Now, activate kline against current online clients */
   check_klines();
 }
@@ -733,8 +733,8 @@ mo_dline(struct Client *client_p, struct Client *source_p,
   /*
    * Write dline to configuration file
    */
-  WriteKlineOrDline(DLINE_TYPE, source_p, NULL, dlhost, reason,
-		    oper_reason, current_date, cur_time);
+  write_conf_line(CONF_DLINE, source_p, NULL, dlhost, reason,
+		  oper_reason, current_date, cur_time);
   check_klines();
 } /* m_dline() */
 

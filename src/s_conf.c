@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.386 2003/05/13 02:32:19 joshk Exp $
+ *  $Id: s_conf.c,v 7.387 2003/05/14 18:15:20 db Exp $
  */
 
 #include "stdinc.h"
@@ -1901,7 +1901,7 @@ read_conf_files(int cold)
   read_conf(conf_fbfile_in);
   fbclose(conf_fbfile_in);
 
-  kfilename = get_conf_name(KLINE_TYPE);
+  kfilename = get_conf_name(CONF_KILL);
 
   if (irccmp(filename, kfilename))
   {
@@ -1915,12 +1915,12 @@ read_conf_files(int cold)
     }
     else
     {
-      parse_k_file(file);
+      parse_csv_file(file, CONF_KILL);
       fbclose(file);
     }
   }
 
-  dfilename = get_conf_name(DLINE_TYPE);
+  dfilename = get_conf_name(CONF_DLINE);
 
   if (irccmp(filename, dfilename) && irccmp(kfilename, dfilename))
   {
@@ -1934,7 +1934,7 @@ read_conf_files(int cold)
     }
     else
     {
-      parse_d_file(file);
+      parse_csv_file(file, CONF_DLINE);
       fbclose(file);
     }
   }
@@ -2076,87 +2076,6 @@ flush_deleted_I_P(void)
   }
 }
 
-/* WriteKlineOrDline()
- *
- * inputs       - kline or dline type flag
- *              - client pointer to report to
- *              - user name of target
- *              - host name of target
- *              - reason for target
- *              - time_t cur_time
- * output       - NONE
- * side effects - This function takes care of
- *                finding right kline or dline conf file, writing
- *                the right lines to this file, 
- *                notifying the oper that their kline/dline is in place
- *                notifying the opers on the server about the k/d line
- *                forwarding the kline onto the next U lined server
- *                
- */
-void 
-WriteKlineOrDline(KlineType type, struct Client *source_p, char *user, char *host,
-                  const char *reason, const char *oper_reason,
-                  const char *current_date, time_t cur_time)
-{
-  char buffer[1024];
-  FBFILE *out;
-  const char *filename; /* filename to use for kline */
-
-  filename = get_conf_name(type);
-
-  if (type == DLINE_TYPE)
-  {
-    sendto_realops_flags(UMODE_ALL, L_ALL,
-                         "%s added D-Line for [%s] [%s]",
-                         get_oper_name(source_p), host, reason);
-    sendto_one(source_p, ":%s NOTICE %s :Added D-Line [%s] to %s",
-               me.name, source_p->name, host, filename);
-  }
-  else
-  {
-    sendto_realops_flags(UMODE_ALL, L_ALL,
-                         "%s added K-Line for [%s@%s] [%s]",
-                         get_oper_name(source_p), user, host, reason);
-    sendto_one(source_p, ":%s NOTICE %s :Added K-Line [%s@%s]",
-               me.name, source_p->name, user, host);
-  }
-
-  if ((out = fbopen(filename, "a")) == NULL)
-  {
-    sendto_realops_flags(UMODE_ALL, L_ALL,
-                         "*** Problem opening %s ", filename);
-    return;
-  }
-
-  if (oper_reason == NULL)
-    oper_reason = "";
-
-  if (type == KLINE_TYPE)
-    ircsprintf(buffer, "\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",%ld\n",
-               user, host, reason, oper_reason, current_date,
-	       get_oper_name(source_p), (long)cur_time);
-  else
-    ircsprintf(buffer, "\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",%ld\n",
-               host, reason, oper_reason, current_date,
-	       get_oper_name(source_p), (long)cur_time);
-
-  if (fbputs(buffer, out) == -1)
-  {
-    sendto_realops_flags(UMODE_ALL, L_ALL,
-                         "*** Problem writing to %s",filename);
-    fbclose(out);
-    return;
-  }
-
-  fbclose(out);
-
-  if (type == KLINE_TYPE)
-    ilog(L_TRACE, "%s added K-Line for [%s@%s] [%s]",
-         source_p->name, user, host, reason);
-  else
-    ilog(L_TRACE, "%s added D-Line for [%s] [%s]",
-         get_oper_name(source_p), host, reason);
-}
 
 /* get_conf_name()
  *
@@ -2165,14 +2084,22 @@ WriteKlineOrDline(KlineType type, struct Client *source_p, char *user, char *hos
  * side effects - none
  */
 const char *
-get_conf_name(KlineType type)
+get_conf_name(int type)
 {
-  if (type == CONF_TYPE)
+  switch (type)
+  {
+  case CONF_TYPE:
     return(ConfigFileEntry.configfile);
-  else if (type == KLINE_TYPE)
+    break;
+  case CONF_KILL:
     return(ConfigFileEntry.klinefile);
-
-  return(ConfigFileEntry.dlinefile);
+    break;
+  case CONF_DLINE:
+    return(ConfigFileEntry.dlinefile);
+    break;
+  default:
+    break;
+  }
 }
 
 /* conf_add_class_to_conf()
