@@ -1,3 +1,15 @@
+leeh        2002/05/11 17:53:34 EDT	(20020511_3)
+
+  Modified files:
+    .                    configure 
+  Log:
+  - rebuilt configure, cheers hwy
+  
+  Revision  Changes    Path
+  7.137     +244 -223  ircd-hybrid-7/configure
+
+
+
 leeh        2002/05/11 17:07:28 EDT	(20020511_2)
 
   Modified files:
@@ -26199,4 +26211,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3639 2002/05/11 21:07:34 leeh Exp $
+$Id: ChangeLog,v 7.3640 2002/05/11 21:53:40 leeh Exp $
