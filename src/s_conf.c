@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.183 2001/02/13 03:00:22 db Exp $
+ *  $Id: s_conf.c,v 7.184 2001/02/13 03:13:04 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -144,10 +144,7 @@ static void conf_dns_callback(void* vptr, adns_answer *reply)
   if(reply->status == adns_s_ok)
   {
 #ifdef IPV6
-	copy_s_addr(IN_ADDR(aconf->ipnum), reply->rrs.in6addr->s6_addr);
-#else
-#if 0
-	copy_s_addr(IN_ADDR(aconf->ipnum), reply->rrs.inaddr->s_addr);
+	copy_s_addr(IN_ADDR(aconf->ipnum), reply->rrs.addr->addr.inet6.sin6_addr.s6_addr);
 #endif
 	copy_s_addr(IN_ADDR(aconf->ipnum), reply->rrs.addr->addr.inet.sin_addr.s_addr);
 #endif
