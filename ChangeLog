@@ -1,3 +1,8 @@
+*** 20001211_2 by db
+- removed unused variable
+
+
+
 *** 20001211_1 by db
 - m_eob.c was not reporting length of burst like it should have been
 - m_squit.c I forgot to send out WALLOPS when squit matched local link
@@ -2246,7 +2251,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.786 2000/12/11 05:40:16 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.787 2000/12/11 06:00:24 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
