@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.133 2001/02/24 12:16:05 toot Exp $
+ * $Id: ircd_parser.y,v 1.134 2001/02/24 13:36:59 toot Exp $
  */
 
 %{
@@ -270,10 +270,18 @@ modules_item:    modules_module | modules_path |
 
 modules_module:  MODULE '=' QSTRING ';'
 {
+  char *m_bn;
+
+  m_bn = irc_basename(yylval.string);
+
   /* I suppose we should just ignore it if it is already loaded(since
    * otherwise we would flood the opers on rehash) -A1kmm. */
-  if (!findmodule_byname(yylval.string))
-    load_one_module (yylval.string);
+  if (findmodule_byname(m_bn) != -1)
+    return;
+
+  load_one_module (yylval.string);
+
+  MyFree(m_bn);
 };
 
 modules_path: PATH '=' QSTRING ';'

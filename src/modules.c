@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.c,v 7.55 2001/02/11 02:52:07 a1kmm Exp $
+ * $Id: modules.c,v 7.56 2001/02/24 13:37:00 toot Exp $
  */
 
 #include <dlfcn.h>
@@ -138,7 +138,7 @@ mod_add_path(char *path)
 }
 
 
-static char *
+char *
 irc_basename(char *path)
 {
   char *mod_basename = MyMalloc (strlen (path) + 1);

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules-dld.c,v 1.1 2001/02/23 16:27:50 androsyn Exp $
+ * $Id: modules-dld.c,v 1.2 2001/02/24 13:37:00 toot Exp $
  *
  * This is based on modules.c, but for OSes like HP-UX which use shl_open
  * instead of dlopen
@@ -145,7 +145,7 @@ mod_add_path(char *path)
 }
 
 
-static char *
+char *
 irc_basename(char *path)
 {
   char *mod_basename = MyMalloc (strlen (path) + 1);

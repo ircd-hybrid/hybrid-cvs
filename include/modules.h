@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.h,v 7.15 2001/01/18 09:07:28 ejb Exp $
+ * $Id: modules.h,v 7.16 2001/02/24 13:36:54 toot Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -58,7 +58,8 @@ extern void _moddeinit(void);
 extern int unload_one_module (char *, int);
 extern int load_one_module (char *);
 extern int load_a_module (char *, int);
-extern int  findmodule_byname (char *);
+extern int findmodule_byname (char *);
+extern char* irc_basename(char *);
 extern void modules_init(void);
 
 #endif
