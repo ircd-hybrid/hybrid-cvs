@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.466 2003/08/10 12:30:08 michael Exp $
+ *  $Id: s_conf.c,v 7.467 2003/08/13 09:57:13 michael Exp $
  */
 
 #include "stdinc.h"
@@ -193,7 +193,7 @@ make_conf_item(ConfType type)
   struct ClassItem *aclass;
   int status = 0;
 
-  switch(type)
+  switch (type)
   {
   case DLINE_TYPE:
   case EXEMPTDLINE_TYPE:
@@ -208,7 +208,7 @@ make_conf_item(ConfType type)
     aconf->aftype = AF_INET;
 
     /* Yes, sigh. switch on type again */
-    switch(type)
+    switch (type)
     {
     case EXEMPTDLINE_TYPE:
       status = CONF_EXEMPTDLINE;
@@ -219,6 +219,10 @@ make_conf_item(ConfType type)
       break;
 
     case GLINE_TYPE:
+      status = CONF_KILL;
+      dlinkAdd(conf, &conf->node, &gline_items);
+      break;
+
     case KLINE_TYPE:
       status = CONF_KILL;
       break;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.145 2003/08/13 09:52:29 michael Exp $
+ *  $Id: m_stats.c,v 1.146 2003/08/13 09:57:11 michael Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.145 $";
+const char *_version = "$Revision: 1.146 $";
 #endif
 
 static char *parse_stats_args(int, char **, int *, int *);
@@ -486,7 +486,6 @@ static void
 stats_glines(struct Client *source_p)
 {
   dlink_node *gline_node;
-  struct ConfItem *conf;
   struct AccessItem *kill_ptr;
 
   if (!ConfigFileEntry.glines)
@@ -498,8 +497,7 @@ stats_glines(struct Client *source_p)
 
   DLINK_FOREACH(gline_node, gline_items.head)
   {
-    conf = gline_node->data;
-    kill_ptr = (struct AccessItem *)conf;
+    kill_ptr = map_to_conf(ptr->data);
 
     sendto_one(source_p, form_str(RPL_STATSKLINE),
                me.name, source_p->name, 'G',
