@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: messages.tab,v 7.73 2003/01/16 23:10:56 db Exp $
+ *   $Id: messages.tab,v 7.73.2.1 2003/05/06 05:32:17 lusky Exp $
  */
 
 static  char *  replies[] = {
@@ -239,7 +239,7 @@ static  char *  replies[] = {
 /* 216 RPL_STATSKLINE, */       ":%s 216 %s %c %s * %s :%s",
 /* 217 RPL_STATSQLINE, */       ":%s 217 %s %c %s :%s",
 /* 218 RPL_STATSYLINE, */       ":%s 218 %s %c %s %d %d %d %lu",
-/* 219 RPL_ENDOFSTATS, */       ":%s 219 %s %s :End of /STATS report",
+/* 219 RPL_ENDOFSTATS, */       ":%s 219 %s %c :End of /STATS report",
 /* 220 RPL_STATSPLINE, */       ":%s 220 %s %c %d %s %d :%s",
 /* 221 RPL_UMODEIS, */          ":%s 221 %s %s",
 /* 222 */	NULL,
