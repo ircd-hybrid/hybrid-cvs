@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.191 2002/05/20 16:41:12 androsyn Exp $
+ *  $Id: send.c,v 7.192 2002/05/20 17:11:22 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -701,7 +701,7 @@ sendto_remove_channels_local(struct Client *user, const char *pattern, ...)
 
   if (user->user != NULL)
   {
-    for (ptr = user->user->channel.head; ptr; ptr = ptr_next)
+    for (ptr = user->user->channel.head; ptr && user->user->channel.head != NULL; ptr = ptr_next)
     {
       ptr_next = ptr->next;
       chptr = ptr->data;
