@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.c,v 7.61 2002/01/05 09:15:12 a1kmm Exp $
+ *  $Id: hostmask.c,v 7.62 2002/01/09 16:19:17 leeh Exp $
  */
 
 #include <stdlib.h>
@@ -732,7 +732,7 @@ report_auth(struct Client *client_p)
  * Side effects: Reports configured K(or k)-lines to client_p.
  */
 void
-report_Klines(struct Client *client_p, int tkline, int mask)
+report_Klines(struct Client *client_p, int tkline)
 {
   char *name, *host, *pass, *user, *classname, c;
   struct AddressRec *arec;
@@ -743,19 +743,6 @@ report_Klines(struct Client *client_p, int tkline, int mask)
     c = 'k';
   else
     c = 'K';
-
-  if (mask)
-  {
-     aconf = find_address_conf(client_p->host, client_p->username,
-                               NULL, 0);
-     if (!aconf || (aconf->status & CONF_KILL) == 0)
-       return;
-     get_printable_conf(aconf, &name, &host, &pass, &user, &port,
-                        &classname);
-     sendto_one(client_p, form_str(RPL_STATSKLINE), me.name,
-                client_p->name, c, host, user, pass);
-     return;
-  }
 
   for (i = 0; i < ATABLE_SIZE; i++)
     for (arec = atable[i]; arec; arec = arec->next)

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.h,v 1.18 2002/01/05 09:14:28 a1kmm Exp $
+ *  $Id: hostmask.h,v 1.19 2002/01/09 16:19:12 leeh Exp $
  */
 
 enum
@@ -53,7 +53,7 @@ struct ConfItem* find_address_conf(const char*, const char*,
                                    struct irc_inaddr*, int);
 struct ConfItem* find_dline(struct irc_inaddr *, int);
 
-void report_Klines(struct Client*, int temp, int mask);
+void report_Klines(struct Client*, int temp);
 void report_auth(struct Client*);
 #ifdef IPV6
 int match_ipv6(struct irc_inaddr*, struct irc_inaddr*, int);

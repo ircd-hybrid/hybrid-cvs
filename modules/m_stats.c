@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.104 2002/01/05 09:14:48 a1kmm Exp $
+ *  $Id: m_stats.c,v 1.105 2002/01/09 16:19:14 leeh Exp $
  */
 
 #include "tools.h"	 /* dlink_node/dlink_list */
@@ -80,7 +80,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-char *_version = "$Revision: 1.104 $";
+char *_version = "$Revision: 1.105 $";
 #endif
 
 const char* Lformat = ":%s %d %s %s %u %u %u %u %u :%u %u %s";
@@ -518,11 +518,37 @@ static void stats_tklines(struct Client *source_p)
 
   /* If unopered, Only return matching klines */
   else if((ConfigFileEntry.stats_k_oper_only == 1) && !IsOper(source_p))
-    report_Klines(source_p, 1, 1);
+  {
+    struct ConfItem *aconf;
+    char *name, *host, *pass, *user, *classname;
+    int port;
 
+    if(MyConnect(source_p))
+      aconf = find_conf_by_address(source_p->host,
+                                   &source_p->localClient->ip,
+				   CONF_KILL,
+				   source_p->localClient->aftype,
+				   source_p->username);
+    else
+      aconf = find_conf_by_address(source_p->host, NULL, CONF_KILL,
+                                   0, source_p->username);
+
+    if(aconf == NULL)
+      return;
+
+    /* dont report a permanent kline as a tkline */
+    if((aconf->flags & CONF_FLAGS_TEMPORARY) == 0)
+      return;
+
+    get_printable_conf(aconf, &name, &host, &pass, &user,
+                       &port, &classname);
+
+    sendto_one(source_p, form_str(RPL_STATSKLINE), me.name,
+               source_p->name, 'k', host, user, pass);
+  }
   /* Theyre opered, or allowed to see all klines */
   else
-    report_Klines(source_p, 1, 0);
+    report_Klines(source_p, 1);
 }
 
 
@@ -535,11 +561,38 @@ static void stats_klines(struct Client *source_p)
 
   /* If unopered, Only return matching klines */
   else if((ConfigFileEntry.stats_k_oper_only == 1) && !IsOper(source_p))
-    report_Klines(source_p, 0, 1);
+  {
+    struct ConfItem *aconf;
+    char *name, *host, *pass, *user, *classname;
+    int port;
 
+    /* search for a kline */
+    if(MyConnect(source_p))
+      aconf = find_conf_by_address(source_p->host,
+                                   &source_p->localClient->ip,
+				   CONF_KILL,
+				   source_p->localClient->aftype,
+				   source_p->username);
+    else
+      aconf = find_conf_by_address(source_p->host, NULL, CONF_KILL,
+                                   0, source_p->username);
+
+    if(aconf == NULL)
+      return;
+
+    /* dont report a tkline as a kline */
+    if(aconf->flags & CONF_FLAGS_TEMPORARY)
+      return;
+      
+    get_printable_conf(aconf, &name, &host, &pass, &user,
+                       &port, &classname);
+
+    sendto_one(source_p, form_str(RPL_STATSKLINE), me.name,
+               source_p->name, 'K', host, user, pass);
+  }
   /* Theyre opered, or allowed to see all klines */
   else
-    report_Klines(source_p, 0, 0);
+    report_Klines(source_p, 0);
 }
 
 static void stats_messages(struct Client *source_p)
