@@ -1,3 +1,8 @@
+*** 20001206_7 by db
+- transposed user/host in m_kline.c
+
+
+
 *** 20001206_6 by db
 - m_capab.c was missing an MFLG_UNREG hence was never being called
   in some cases. oops
@@ -1740,7 +1745,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.714 2000/12/06 22:32:38 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.715 2000/12/06 22:40:12 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
