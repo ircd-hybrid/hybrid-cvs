@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.266 2003/06/03 03:24:20 michael Exp $
+ *  $Id: send.c,v 7.267 2003/06/03 23:41:26 bill Exp $
  */
 
 #include "stdinc.h"
@@ -951,7 +951,8 @@ sendto_match_butone(struct Client *one, struct Client *from, char *mask,
  * side effects	- data sent to servers matching with capab
  */
 void
-sendto_match_servs(struct Client *source_p, const char *mask, int cap, const char *pattern, ...)
+sendto_match_servs(struct Client *source_p, const char *mask, int cap,
+                   const char *pattern, ...)
 {
   va_list args;
   struct Client *target_p;
@@ -988,7 +989,7 @@ sendto_match_servs(struct Client *source_p, const char *mask, int cap, const cha
       if (!IsCapable(target_p->from, cap))
         continue;
 
-      send_message_remote(target_p, source_p, buffer, len);
+      send_message(target_p, buffer, len);
     }
   }
 
