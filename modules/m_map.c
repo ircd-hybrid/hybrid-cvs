@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_map.c,v 1.17 2003/08/19 23:45:33 metalrock Exp $
+ *  $Id: m_map.c,v 1.18 2003/10/15 03:23:44 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -53,21 +53,21 @@ void _moddeinit(void)
   mod_del_cmd(&map_msgtab);
 }
 
-const char *_version = "$Revision: 1.17 $";
+const char *_version = "$Revision: 1.18 $";
 #endif
 
 static char buf[BUFSIZE];
 
-/* m_map
-**	parv[0] = sender prefix
-*/
+/* m_map()
+ *	parv[0] = sender prefix
+ */
 static void
 m_map(struct Client *client_p, struct Client *source_p,
       int parc, char *parv[])
 {
   if (!ConfigServerHide.flatten_links)
   {
-    dump_map(client_p,&me,buf);
+    dump_map(client_p, &me, buf);
     sendto_one(client_p, form_str(RPL_MAPEND), me.name, client_p->name);
     return;
   }
@@ -76,10 +76,9 @@ m_map(struct Client *client_p, struct Client *source_p,
   return;
 }
 
-/*
-** mo_map
-**      parv[0] = sender prefix
-*/
+/* mo_map()
+ *      parv[0] = sender prefix
+ */
 static void
 mo_map(struct Client *client_p, struct Client *source_p,
                     int parc, char *parv[])
@@ -88,10 +87,9 @@ mo_map(struct Client *client_p, struct Client *source_p,
   sendto_one(client_p, form_str(RPL_MAPEND), me.name, client_p->name);
 }
 
-/*
-** dump_map
-**   dumps server map, called recursively.
-*/
+/* dump_map()
+ *   dumps server map, called recursively.
+ */
 static void
 dump_map(struct Client *client_p,struct Client *root_p, char *pbuf)
 {
@@ -102,16 +100,16 @@ dump_map(struct Client *client_p,struct Client *root_p, char *pbuf)
 
   *pbuf= '\0';
        
-  strncat(pbuf,root_p->name,BUFSIZE - ((size_t) pbuf - (size_t) buf));
+  strncat(pbuf, root_p->name, BUFSIZE - ((size_t)pbuf - (size_t)buf));
   len = strlen(buf);
   buf[len] = ' ';
 	
   users = dlink_list_length(&root_p->serv->users);
 
-  snprintf(buf + len, BUFSIZE, " [Users: %d (%1.1f%%)]", users,
+  snprintf(buf + len, BUFSIZE - len, " [Users: %d (%1.1f%%)]", users,
            100 * (float)users / (float)Count.total);
 
-  sendto_one(client_p, form_str(RPL_MAP),me.name,client_p->name,buf);
+  sendto_one(client_p, form_str(RPL_MAP), me.name, client_p->name, buf);
         
   if (root_p->serv->servers.head)
   {
@@ -142,7 +140,7 @@ dump_map(struct Client *client_p,struct Client *root_p, char *pbuf)
       
     *(pbuf + 2) = '-';
     *(pbuf + 3) = ' ';
-    dump_map(client_p,server_p,pbuf+4);
+    dump_map(client_p, server_p, pbuf+4);
  
     i++;
    }
