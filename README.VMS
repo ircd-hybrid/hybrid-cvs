@@ -14,6 +14,9 @@ the IRCD_PREFIX string - adding one will break it.
 You might also want to change some of the paths on [.INCLUDE]CONFIG.H.
 Make sure to change the second set (the first is for Unix systems).
 
+Edit [.CONTRIB]VMS_VERSION.C before compiling if you want the /info
+command to have correct information.
+
 After IRCD.EXE is built, you'll have to install it by hand.  Put it
 in a BIN subdirectory of the IRCD_PREFIX directory. IRCD.CONF
 goes into the ETC subdir.  You should also create LOGS, if you're
@@ -36,4 +39,4 @@ So far, IRCD is known to work on OpenVMS 7.2/Alpha systems.
 If anyone gets ircd working on VMS (or has problems with it), please mail me
 (ejb@leguin.org.uk) with any comments you have.
 
-$Id: README.VMS,v 1.4 2001/05/25 01:44:14 ejb Exp $
+$Id: README.VMS,v 1.5 2001/05/25 01:46:45 ejb Exp $
