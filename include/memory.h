@@ -1,4 +1,4 @@
-/* $Id: memory.h,v 7.25 2001/09/25 20:23:34 androsyn Exp $ */
+/* $Id: memory.h,v 7.26 2001/10/04 20:37:42 androsyn Exp $ */
 
 #ifndef _I_MEMORY_H
 #define _I_MEMORY_H
@@ -64,8 +64,8 @@ extern MemoryEntry *first_mem_entry;
 
 extern void * _MyMalloc(size_t size);
 extern void* _MyRealloc(void* x, size_t y);
-extern inline void _MyFree(void *x);
-extern inline void _DupString(char **x, const char *y);
+extern void _MyFree(void *x);
+extern void _DupString(char **x, const char *y);
 extern int         _BlockHeapFree(BlockHeap *bh, void *ptr);
 extern void *	  _BlockHeapAlloc(BlockHeap *bh);
 
