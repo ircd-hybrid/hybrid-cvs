@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: hash.h,v 7.1 1999/08/22 06:30:29 tomh Exp $
+ *   $Id: hash.h,v 7.2 1999/08/22 06:33:56 tomh Exp $
  */
 #ifndef INCLUDED_hash_h
 #define INCLUDED_hash_h
@@ -43,7 +43,6 @@ struct Client;
 struct Channel;
 
 struct HashEntry {
-  int    hits;
   int    links;
   void*  list;
 };
