@@ -22,7 +22,7 @@
  * Cleanup of collapse and match
  * Moved static calls variable to match
  * Added asserts for null pointers
- * $Id: match.c,v 7.9 2001/01/01 04:47:19 wcampbel Exp $
+ * $Id: match.c,v 7.10 2001/01/01 16:29:50 davidt Exp $
  *
  */
 #include "irc_string.h"
@@ -162,6 +162,10 @@ collapse(char *pattern)
  char *p = pattern, *po = pattern;
  char c;
  int f = 0;
+
+ if (!p)
+   return NULL;
+ 
  while ((c = *p++))
    {
     if (!(f & 2) && c == '*')
