@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.268 2003/04/19 17:45:29 adx Exp $
+ *  $Id: ircd.c,v 7.269 2003/04/23 15:04:41 adx Exp $
  */
 
 #include "stdinc.h"
@@ -322,6 +322,7 @@ io_loop(void)
     comm_select(0);
     exit_aborted_clients();
     free_exited_clients();
+    send_queued_all();
 
     /* Check to see whether we have to rehash the configuration ..
      */

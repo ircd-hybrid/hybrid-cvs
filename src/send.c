@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.240 2003/04/23 14:25:19 adx Exp $
+ *  $Id: send.c,v 7.241 2003/04/23 15:04:41 adx Exp $
  */
 
 #include "stdinc.h"
@@ -142,7 +142,9 @@ send_message(struct Client *to, char *buf, int len)
   to->localClient->sendM += 1;
   me.localClient->sendM += 1;
 
-  send_queued_write(to);
+  if (dbuf_length(&to->localClient->buf_sendq) >
+      (IsServer(to) ? 1024 : 4096))
+    send_queued_write(to);
 }
 
 /*
@@ -207,7 +209,7 @@ static void
 sendq_unblocked(int fd, struct Client *client_p)
 {
   ClearSendqBlocked(client_p);
-  send_queued_write(client_p);
+  /* let send_queued_write be executed by send_queued_all */
 }
 
 /*
@@ -240,20 +242,8 @@ send_queued_write(struct Client *to)
    ** Once socket is marked dead, we cannot start writing to it,
    ** even if the error is removed...
    */
-#ifdef INVARIANTS
-  if (IsDead(to))
-  {
-    /*
-     * Actually, we should *NEVER* get here--something is
-     * not working correct if send_queued is called for a
-     * dead socket... --msa
-     */
-    return;
-  } /* if (IsDead(to)) */
-#endif
-
-  if (IsSendqBlocked(to))
-    return;  /* no use in calling send() now */
+  if (IsDead(to) || IsSendqBlocked(to))
+    return;  /* no use calling send() now */
 
   /* Next, lets try to write some data */
   
@@ -321,19 +311,8 @@ send_queued_slink_write(struct Client *to)
    ** Once socket is marked dead, we cannot start writing to it,
    ** even if the error is removed...
    */
-#ifdef INVARIANTS
-  if (IsDead(to)) {
-    /*
-     * Actually, we should *NEVER* get here--something is
-     * not working correct if send_queued is called for a
-     * dead socket... --msa
-     */
-    return;
-  } /* if (IsDead(to)) */
-#endif
-
-  if (IsSlinkqBlocked(to))
-    return;
+  if (IsDead(to) || IsSlinkqBlocked(to))
+    return;  /* no use calling send() now */
 
   /* Next, lets try to write some data */
   if (to->localClient->slinkq != NULL)
@@ -380,6 +359,42 @@ send_queued_slink_write(struct Client *to)
                      (void *)to, 0);
     }
   }
+}
+
+/* send_queued_all()
+ *
+ * input        - NONE
+ * output       - NONE
+ * side effects - try to flush sendq of each client
+ */
+void
+send_queued_all(void)
+{
+  dlink_node *ptr;
+  struct Client *client_p;
+
+  /* Servers are processed first, mainly because this can generate
+   * a notice to opers, which is to be delivered by this function.
+   */
+  DLINK_FOREACH(ptr, serv_list.head)
+  {
+    client_p = ptr->data;
+    send_queued_write(client_p);
+  }
+
+  DLINK_FOREACH(ptr, local_client_list.head)
+  {
+    client_p = ptr->data;
+    if (!IsServer(client_p))
+      send_queued_write(client_p);
+  }
+
+  /* NOTE: This can still put clients on aborted_list; unfortunately,
+   * exit_aborted_clients takes precedence over send_queued_all,
+   * because exiting clients can generate server/oper traffic.
+   * The easiest approach is dealing with aborted clients in the next I/O lap.
+   * -adx
+   */
 }
 
 /* sendto_one()

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.h,v 7.66 2003/04/19 12:03:54 adx Exp $
+ *  $Id: send.h,v 7.67 2003/04/23 15:04:40 adx Exp $
  */
 
 #ifndef INCLUDED_send_h
@@ -51,6 +51,8 @@ extern unsigned long current_serial;
 extern void send_queued_write(struct Client *to);
 
 extern void send_queued_slink_write(struct Client *to);
+
+extern void send_queued_all(void);
 
 extern void sendto_one(struct Client *, const char *, ...) AFP(2, 3);
 
