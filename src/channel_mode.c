@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.49 2002/07/29 00:27:28 androsyn Exp $
+ *  $Id: channel_mode.c,v 7.50 2002/07/29 01:08:15 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -1363,7 +1363,7 @@ chm_op(struct Client *client_p, struct Client *source_p,
         mode_changes[mode_count].caps = CAP_HOPS;
         mode_changes[mode_count].nocaps = 0;
         mode_changes[mode_count].mems = ONLY_CHANOPS_HALFOPS;
-        mode_changes[mode_count].id = NULL;
+        mode_changes[mode_count].id = targ_p->user->id;
         mode_changes[mode_count].arg = targ_p->name;
 	mode_changes[mode_count++].client = targ_p;
 
@@ -1373,7 +1373,7 @@ chm_op(struct Client *client_p, struct Client *source_p,
         mode_changes[mode_count].caps = 0;
         mode_changes[mode_count].nocaps = CAP_HOPS;
         mode_changes[mode_count].mems = ONLY_SERVERS;
-        mode_changes[mode_count].id = NULL;
+        mode_changes[mode_count].id = targ_p->user->id;
         mode_changes[mode_count].arg = targ_p->name;
 	mode_changes[mode_count++].client = targ_p;
 #endif
@@ -1387,7 +1387,7 @@ chm_op(struct Client *client_p, struct Client *source_p,
       mode_changes[mode_count].caps = 0;
       mode_changes[mode_count].nocaps = 0;
       mode_changes[mode_count].mems = ONLY_CHANOPS_HALFOPS;
-      mode_changes[mode_count].id = NULL;
+      mode_changes[mode_count].id = targ_p->user->id;
       mode_changes[mode_count].arg = targ_p->name;
       mode_changes[mode_count++].client = targ_p;
     }
