@@ -1,3 +1,16 @@
+leeh        2002/04/18 09:15:53 EDT	(20020418_0)
+
+  Modified files:
+    modules/core         m_mode.c 
+  Log:
+  - only call SetFloodDone() when a client sets a mode in a channel, not
+    when they set a usermode/query a channels mode
+  
+  Revision  Changes    Path
+  1.50      +7 -3      ircd-hybrid-7/modules/core/m_mode.c
+
+
+
 leeh        2002/04/16 22:25:47 EDT	(20020417_2)
 
   Modified files:
@@ -25192,4 +25205,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3570 2002/04/17 02:25:53 leeh Exp $
+$Id: ChangeLog,v 7.3571 2002/04/18 13:15:59 leeh Exp $
