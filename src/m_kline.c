@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kline.c,v 7.2 1999/08/03 01:41:31 tomh Exp $
+ *   $Id: m_kline.c,v 7.3 1999/08/09 22:15:10 db Exp $
  */
 #include "m_kline.h"
 #include "channel.h"
@@ -36,6 +36,7 @@
 #include "s_log.h"
 #include "s_misc.h"
 #include "send.h"
+#include "hash.h"
 
 #include <stdlib.h>
 #include <unistd.h>
