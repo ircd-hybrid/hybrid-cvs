@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.64 2001/04/04 15:22:30 androsyn Exp $
+ *   $Id: m_message.c,v 1.65 2001/04/19 07:38:13 a1kmm Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -40,6 +40,7 @@
 #include "hash.h"
 #include "class.h"
 #include "msg.h"
+#include "packet.h"
 
 #include <string.h>
 
@@ -209,7 +210,7 @@ static void m_message(int p_or_n,
 
   if (!IsPerson(source_p) && p_or_n != NOTICE)
     return;
-      
+
   if (parc < 2 || *parv[1] == '\0')
     {
       if(p_or_n != NOTICE)
@@ -224,6 +225,17 @@ static void m_message(int p_or_n,
 	sendto_one(source_p, form_str(ERR_NOTEXTTOSEND), me.name, source_p->name);
       return;
     }
+
+  /* Just a kludge to discourage abuse of the 3s flood time you get at
+   * on registering... */
+  if (!IsPrivileged(source_p) && source_p->tsinfo &&
+      ((CurrentTime-client_p->tsinfo) < 4))
+  {
+   client_p->localClient->allow_read -=
+     MAX_FLOOD_PER_SEC_I-MAX_FLOOD_PER_SEC;
+   if (client_p->localClient->allow_read < 1)
+    client_p->localClient->allow_read = 1;;
+  }
 
   ntargets = build_target_list(p_or_n,command,
 			       client_p,source_p,parv[1],&target_table,parv[2]);

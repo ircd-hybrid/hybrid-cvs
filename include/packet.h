@@ -19,7 +19,7 @@
  *
  * "packet.h". - Headers file.
  *
- * $Id: packet.h,v 7.9 2001/02/05 20:12:29 davidt Exp $
+ * $Id: packet.h,v 7.10 2001/04/19 07:38:07 a1kmm Exp $
  *
  */
 #ifndef INCLUDED_packet_h
@@ -28,6 +28,7 @@
 #include <sys/types.h>
 #define INCLUDED_sys_types_h
 #endif
+#include "fdlist.h"
 
 /*
  * this hides in here rather than a config.h because it really shouldn't
@@ -39,7 +40,8 @@
  *   -- adrian
  */
 #define MAX_FLOOD_PER_SEC               8
-
+/* And the initial rate of flooding after registration... -A1kmm. */
+#define MAX_FLOOD_PER_SEC_I            24
 
 extern PF  read_packet;
 extern PF  flood_recalc;

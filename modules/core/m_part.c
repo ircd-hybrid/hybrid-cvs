@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_part.c,v 1.38 2001/04/19 05:42:10 a1kmm Exp $
+ *   $Id: m_part.c,v 1.39 2001/04/19 07:38:13 a1kmm Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -39,6 +39,7 @@
 #include "parse.h"
 #include "modules.h"
 #include "s_conf.h"
+#include "packet.h"
 
 #include <stdlib.h>
 #include <string.h>
@@ -100,6 +101,14 @@ static void m_part(struct Client *client_p,
 
   name = strtoken( &p, parv[1], ",");
 
+  if (!IsPrivileged(source_p) && source_p->tsinfo &&
+      ((CurrentTime-client_p->tsinfo) < 4))
+  {
+   client_p->localClient->allow_read -=
+     MAX_FLOOD_PER_SEC_I-MAX_FLOOD_PER_SEC;
+   if (client_p->localClient->allow_read < 1)
+    client_p->localClient->allow_read = 1;;
+  }
   /* if its my client, and isn't an oper */
 
   while(name)
