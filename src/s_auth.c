@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.c,v 7.30 2000/12/21 13:39:49 db Exp $
+ *   $Id: s_auth.c,v 7.31 2000/12/21 16:00:01 db Exp $
  *
  * Changes:
  *   July 6, 1999 - Rewrote most of the code here. When a client connects
@@ -122,7 +122,7 @@ init_auth(void)
  */
 static struct AuthRequest* make_auth_request(struct Client* client)
 {
-  struct AuthRequest* request = BlockHeapAlloc(auth_bl);
+  struct AuthRequest* request = (struct AuthRequest *)BlockHeapAlloc(auth_bl);
   assert(0 != request);
   memset(request, 0, sizeof(struct AuthRequest));
   request->fd      = -1;

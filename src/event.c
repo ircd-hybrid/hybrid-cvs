@@ -4,7 +4,7 @@
  *
  * This code was borrowed from the squid web cache by Adrian Chadd.
  *
- * $Id: event.c,v 7.7 2000/12/21 13:39:40 db Exp $
+ * $Id: event.c,v 7.8 2000/12/21 16:00:01 db Exp $
  *
  * Original header follows:
  *
@@ -80,7 +80,7 @@ static BlockHeap *event_bl = NULL;
 void
 eventAdd(const char *name, EVH * func, void *arg, time_t when, int weight)
 {
-    struct ev_entry *event = BlockHeapAlloc(event_bl);
+    struct ev_entry *event = (struct ev_entry *)BlockHeapAlloc(event_bl);
     struct ev_entry **E;
     event->func = func;
     event->arg = arg;
