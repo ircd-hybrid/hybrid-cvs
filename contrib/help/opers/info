@@ -1,5 +1,7 @@
 INFO
 
 INFO displays the copyright, list of authors and contributors
-to ircd, and the server configuration (as defined in config.h
-and ircd.conf).
+to ircd, and the server configuration (as defined in setup.h,
+defaults.h, and ircd.conf).
+
+# $Id: info,v 1.2 2003/06/18 00:53:02 joshk Exp $

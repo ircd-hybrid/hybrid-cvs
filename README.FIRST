@@ -65,10 +65,11 @@ Feature Specific Requirements:
   files will have to be converted to the Hybrid 7 format.  A convertconf
   utility is provided and installed into bin/.
 
-- If you are wondering why config.h is practically empty, its because many 
+- If you are wondering why config.h no longer exists, it's because most
   things that were once in config.h are now specified in the 'general'
   block of ircd.conf.  Look at example.conf for more information about
-  these options.
+  these options. Many, notably syslog support and EFnet tweaks, are now
+  configure options (see ./configure --help for details.)
 
 - /etc/resolv.conf is at present required to exist for our resolver to start
   properly.
@@ -99,7 +100,7 @@ Feature Specific Requirements:
   FreeBSD 3.x/4.x (gcc only)
   Linux glibc 2.2/2.3
   Solaris 2.6/7/8
-  Cygwin 1.3.22
+  Cygwin 1.3.22 (no shared modules)
   OpenBSD 2.8-3.2
   HPUX 11.00-11.22
   IRIX64 6.5.19 (gcc only)
@@ -113,4 +114,4 @@ Feature Specific Requirements:
 - Other files recommended for reading: BUGS, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: README.FIRST,v 7.39 2003/05/29 04:06:38 joshk Exp $
+$Id: README.FIRST,v 7.40 2003/06/18 00:52:54 joshk Exp $

@@ -1,6 +1,6 @@
                          Message Customization Overview
 
-   $Id: messages.txt,v 1.6 2003/05/25 04:07:19 joshk Exp $
+   $Id: messages.txt,v 1.7 2003/06/18 00:53:05 joshk Exp $
 
    Copyright (c) 2001, 2003 by ircd-hybrid team
 
@@ -21,7 +21,7 @@
 
    These files are NOT installed by default; run `make install' within the
    messages directory to install them and they will automatically be used
-   unless the paths in config.h were not adhered to.
+   unless the paths in defaults.h were not adhered to.
 
    These message files can be used in ircd once they are installed. Try the
    installed message file with /quote SET MSGLOCALE <locale> first. The

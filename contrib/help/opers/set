@@ -8,7 +8,7 @@ SET <option> <value>
                 to ircd.log and syslog.
   MAX         - Sets the number of max connections
                 to <value>.  (This number cannot exceed
-                HARD_FDLIMIT in config.h)
+                HARD_FDLIMIT in defaults.h)
   IDLETIME    - The number of seconds a client can be idle
                 before disconnecting them
   FLOODCOUNT  - The number of lines allowed before
@@ -31,3 +31,5 @@ SET <option> <value>
                 deactivate automatic splitmode.
   SPLITNUM    - Sets the minimum amount of servers needed to
                 deactivate automatic splitmode.
+
+# $Id: set,v 1.4 2003/06/18 00:53:02 joshk Exp $

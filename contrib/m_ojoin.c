@@ -15,11 +15,11 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_ojoin.c,v 1.23 2003/06/11 00:07:27 joshk Exp $
+ *   $Id: m_ojoin.c,v 1.24 2003/06/18 00:52:58 joshk Exp $
  */
 
 /* Remove this if you do not wish /OJOIN to support multiple channels
- * at once. Or add an #undef for it in config.h, since it is subsequently
+ * at once. Or add an #undef for it in setup.h, since it is subsequently
  * #included. */
 
 #define OJOIN_MULTIJOIN
@@ -58,7 +58,7 @@ _moddeinit(void)
   mod_del_cmd(&ojoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.23 $";
+const char *_version = "$Revision: 1.24 $";
 
 /*
 ** mo_ojoin

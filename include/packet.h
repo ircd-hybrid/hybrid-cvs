@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.h,v 7.17 2002/07/20 15:51:45 leeh Exp $
+ *  $Id: packet.h,v 7.18 2003/06/18 00:53:08 joshk Exp $
  */
 
 #ifndef INCLUDED_packet_h
@@ -28,7 +28,7 @@
 #include "fdlist.h"
 
 /*
- * this hides in here rather than a config.h because it really shouldn't
+ * this hides in here rather than in defaults.h because it really shouldn't
  * be tweaked unless you *REALLY REALLY* know what you're doing!
  * Remember, messages are only anti-flooded on incoming from the client, not on
  * incoming from a server for a given client, so if you tweak this you risk

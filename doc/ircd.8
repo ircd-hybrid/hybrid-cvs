@@ -1,5 +1,5 @@
 .\" @(#)ircd.8 7b10 25 Oct 2001
-.\" $Id: ircd.8,v 1.8 2003/05/24 05:48:47 joshk Exp $
+.\" $Id: ircd.8,v 1.9 2003/06/18 00:53:05 joshk Exp $
 .TH IRCD 8 "14 May 2003" "ircd-hybrid-7"
 .SH NAME
 ircd \- The IRCD-Hybrid Internet Relay Chat server
@@ -34,7 +34,7 @@ Specifies the K-line file to be used.  This file is used for both reading
 K-lines at startup, and writing to while \fIircd\fP is running.
 .TP
 .B \-logfile filename
-Specifies an alternative logfile to be used than that specified in config.h
+Specifies an alternative logfile to be used than that specified in defaults.h
 .TP
 .B \-pidfile filename
 Specifies the ircd.pid used. The option is used to override the default
@@ -76,8 +76,8 @@ Starts \fBircd\fP with the config file /usr/share/ircd/ircd.conf and
 with a log file /var/log/ircd.log. It implicitly forks back to the 
 console -- to prevent this use -foreground.
 
-Many of the above settings are hardcoded at compile time in the 
-\fBinclude/config.h\fP file, so it may be convenient to edit these to 
+Many of the above paths are hardcoded at compile time in the 
+\fBinclude/defaults.h\fP file, so it may be convenient to edit these to 
 suit your needs before you compile the ircd.
 .SH COPYRIGHT
 (c) 1988,1989 University of Oulu, Computing Center, Finland,
