@@ -18,7 +18,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: packet.c,v 7.62 2001/09/10 16:28:33 davidt Exp $
+ *   $Id: packet.c,v 7.63 2001/09/29 23:05:20 a1kmm Exp $
  */ 
 
 #include <stdio.h>
@@ -414,6 +414,7 @@ void client_dopacket(struct Client *client_p, char *buffer, size_t length)
 {
   assert(client_p != NULL);
   assert(buffer != NULL);
+  buffer[length] = 0;
 
   /* 
    * Update messages received

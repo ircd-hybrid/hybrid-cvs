@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: memory.c,v 7.29 2001/09/25 20:42:19 androsyn Exp $
+ * $Id: memory.c,v 7.30 2001/09/29 23:05:20 a1kmm Exp $
  */
 #include <stdlib.h>
 #include <string.h>
@@ -90,7 +90,7 @@ MemoryEntry *first_mem_entry = NULL;
 
 void *_MyMalloc(size_t size, char *file, int line)
 {
-    void *what = calloc(size + sizeof(MemoryEntry));
+    void *what = malloc(size + sizeof(MemoryEntry));
     if (what == NULL)
 	outofmemory();
     return memlog(what, size, file, line);

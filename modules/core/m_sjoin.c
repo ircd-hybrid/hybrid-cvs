@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.108 2001/09/25 16:16:45 leeh Exp $
+ *   $Id: m_sjoin.c,v 1.109 2001/09/29 23:05:19 a1kmm Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -131,6 +131,7 @@ static void ms_sjoin(struct Client *client_p,
 
   if (IsClient(source_p) || parc < 5)
     return;
+  
   if (!IsChannelName(parv[2]))
     return;
   if (!check_channel_name(parv[2]))
@@ -455,6 +456,8 @@ static void ms_sjoin(struct Client *client_p,
       /* copy the nick to the two buffers */
       hops += ircsprintf(hops, "%s ", s);
       nhops += ircsprintf(nhops, "%s ", s);
+      assert((hops-sjbuf_hops) < sizeof(sjbuf_hops) &&
+             (nhops-sjbuf_nhops) < sizeof(sjbuf_nhops));
 
       if (!keep_new_modes)
 	{
