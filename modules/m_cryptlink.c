@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_cryptlink.c,v 1.48 2003/05/25 07:11:46 metalrock Exp $
+ *  $Id: m_cryptlink.c,v 1.49 2003/05/31 07:01:44 lusky Exp $
  */
 
 /*
@@ -61,7 +61,7 @@
 void _modinit(void) {}
 void _moddeinit(void) {}
 
-const char *_version = "$Revision: 1.48 $";
+const char *_version = "$Revision: 1.49 $";
 #endif
 #else
 
@@ -107,7 +107,7 @@ _moddeinit(void)
   mod_del_cmd(&cryptlink_msgtab);
 }
 
-const char *_version = "$Revision: 1.48 $";
+const char *_version = "$Revision: 1.49 $";
 #endif
 
 
@@ -124,7 +124,7 @@ const char *_version = "$Revision: 1.48 $";
  *                   AUTH - parc must be >= 4
  *                          parv[0] == CRYPTLINK
  *                          parv[1] == AUTH
- *                          parv[2] == cipher (eg. BF/256)
+ *                          parv[2] == cipher (eg. BF/168)
  *                          parv[3] == keyphrase
  */
 static void mr_cryptlink(struct Client *client_p,

@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.42 2003/05/29 06:10:10 joshk Exp $
+dnl $Id: configure.ac,v 7.43 2003/05/31 07:01:37 lusky Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -468,7 +468,7 @@ if test "X$cf_enable_openssl" != "Xno"; then
 			LIBS="$LIBS -lcrypto"
 			cf_openssl_ciphers=''
 			AC_CHECK_FUNCS(EVP_bf_cfb,
-			cf_openssl_ciphers="${cf_openssl_ciphers}BF/256 BF/128 ")
+			cf_openssl_ciphers="${cf_openssl_ciphers}BF/168 BF/128 ")
 			AC_CHECK_FUNCS(EVP_cast5_cfb,
 			cf_openssl_ciphers="${cf_openssl_ciphers}CAST/128 ")
 			AC_CHECK_FUNCS(EVP_idea_cfb,

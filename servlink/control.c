@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: control.c,v 1.6 2003/05/26 00:55:49 joshk Exp $
+ *   $Id: control.c,v 1.7 2003/05/31 07:01:46 lusky Exp $
  */
 
 #include "stdinc.h"
@@ -214,17 +214,6 @@ void cmd_start_crypt_in(struct ctrl_command *cmd)
     send_error("can't start decryption - DecryptInit (1) failed: %s!",
                ERR_error_string(ERR_get_error(), NULL));
 
-  /*
-   * XXX - ugly hack to work around OpenSSL bug
-   *       if/when OpenSSL fix it, or give proper workaround
-   *       use that, and force minimum OpenSSL version
-   *
-   * Without this hack, BF/256 will fail.
-   */
-  /* cast to avoid warning */
-  *(unsigned int *)( &in_state.crypt_state.ctx.cipher->flags)
-    |= EVP_CIPH_VARIABLE_LENGTH;
-
   if (!EVP_CIPHER_CTX_set_key_length(&in_state.crypt_state.ctx,
                                      in_state.crypt_state.keylen))
     send_error("can't start decryption - set_key_length failed: %s!",
@@ -347,17 +336,6 @@ void cmd_start_crypt_out(struct ctrl_command *cmd)
                        out_state.crypt_state.cipher, NULL, NULL))
     send_error("can't start encryption - EncryptInit (1) failed: %s!",
                ERR_error_string(ERR_get_error(), NULL));
-
-  /*
-   * XXX - ugly hack to work around OpenSSL bug
-   *       if/when OpenSSL fix it, or give proper workaround
-   *       use that, and force minimum OpenSSL version
-   *
-   * Without this hack, BF/256 will fail.
-   */
-  /* cast to avoid warning */
-  *(unsigned int *)(&out_state.crypt_state.ctx.cipher->flags)
-    |= EVP_CIPH_VARIABLE_LENGTH;
 
   if (!EVP_CIPHER_CTX_set_key_length(&out_state.crypt_state.ctx,
                                      out_state.crypt_state.keylen))

@@ -3,7 +3,7 @@
  *
  * Written by ejb, wcampbel, db, leeh and others
  *
- * $Id: example.conf.quick,v 1.7 2003/05/30 08:05:36 michael Exp $
+ * $Id: example.conf.quick,v 1.8 2003/05/31 07:01:41 lusky Exp $
  */
 
 /* IMPORTANT NOTES:
@@ -181,7 +181,7 @@ connect {
 
 	cryptlink = yes;
 	rsa_public_key_file = "etc/remote.server.keyfile";
-	#cipher_preference = "BF/256";
+	#cipher_preference = "BF/168";
 };
 
 connect {
@@ -356,7 +356,7 @@ general {
         crypt_oper_password = yes;
 
 	#servlink_path = "/usr/local/ircd/bin/servlink";
-	#default_cipher_preference = "BF/256";
+	#default_cipher_preference = "BF/168";
 	#use_egd = yes;
 	#egdpool_path = "/var/run/egd-pool";
 	#compression_level = 6;

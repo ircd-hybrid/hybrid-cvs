@@ -1,6 +1,6 @@
 Getting OpenSSL to work with hybrid-7
 =====================================
-$Id: README.openssl,v 1.8 2003/05/15 07:01:43 joshk Exp $
+$Id: README.openssl,v 1.9 2003/05/31 07:01:39 lusky Exp $
 
 PREFACE
 =======
@@ -171,7 +171,7 @@ CIPHERS
 
     Name           Cipher type        Cipher information
     ----------------------------------------------------
-    BF/256         Blowfish           256-bit
+    BF/168         Blowfish           168-bit
     BF/128         Blowfish           128-bit
     CAST/128       CAST               128-bit
     IDEA/128       IDEA               128-bit
