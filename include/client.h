@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.165 2003/02/17 16:09:26 db Exp $
+ *  $Id: client.h,v 7.166 2003/02/17 22:15:09 db Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -497,7 +497,7 @@ struct LocalUser
 #define ClearMark(x)		((x)->flags &= ~FLAGS_MARK)
 #define IsMarked(x)		((x)->flags & FLAGS_MARK)
 #define SetCanFlood(x)		((x)->flags |= FLAGS_CANFLOOD)
-#define ClearCanFlood(x)	((x)->flags &= FLAGS_CANFLOOD)
+#define ClearCanFlood(x)	((x)->flags &= ~FLAGS_CANFLOOD)
 #define IsCanFlood(x)		((x)->flags & FLAGS_CANFLOOD)
 #define IsDefunct(x)            ((x)->flags & (FLAGS_DEADSOCKET|FLAGS_CLOSING| \
 					       FLAGS_KILLED))
