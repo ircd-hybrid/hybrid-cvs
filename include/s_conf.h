@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.171 2001/12/30 05:55:10 db Exp $
+ * $Id: s_conf.h,v 7.172 2001/12/30 06:32:13 db Exp $
  */
 
 #include "setup.h"
@@ -77,7 +77,6 @@ struct ConfItem
   struct Class *   c_class;     /* Class of connection */
   struct DNSQuery* dns_query;
   int              aftype;
-  int              dns_pending; /* 1 if dns query pending, 0 otherwise */
 #ifdef HAVE_LIBCRYPTO
   char *           rsa_public_key_file;
   RSA *            rsa_public_key;
