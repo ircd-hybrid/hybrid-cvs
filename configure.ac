@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.81 2003/07/03 07:06:47 joshk Exp $
+dnl $Id: configure.ac,v 7.82 2003/07/18 00:41:40 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -8,7 +8,7 @@ dnl said functions need to be just about as complex as they already are.
 AC_PREREQ(2.57)
 
 dnl Sneaky way to get an Id tag into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.81 2003/07/03 07:06:47 joshk Exp $])
+AC_COPYRIGHT([$Id: configure.ac,v 7.82 2003/07/18 00:41:40 joshk Exp $])
 
 AC_INIT([ircd-hybrid],[7-CURRENT])
 
@@ -166,8 +166,8 @@ elif test ! -z "$MAKEDEPEND"; then
 	AC_MSG_RESULT(makedepend)
 	MKDEP="$MAKEDEPEND -f-"
 else
-	AC_MSG_RESULT([beats me, assuming $CC -MM])
-	MKDEP="$CC -MM"
+	AC_MSG_RESULT([nothing suitable.. forget it!])
+	MKDEP=":"
 fi
 
 AC_SUBST(MKDEP)

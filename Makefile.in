@@ -16,7 +16,7 @@
 #*   along with this program; if not, write to the Free Software
 #*   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #*
-#*   $Id: Makefile.in,v 7.62 2003/07/08 21:06:30 joshk Exp $
+#*   $Id: Makefile.in,v 7.63 2003/07/18 00:41:39 joshk Exp $
 #*/
 
 RM          = @RM@
@@ -42,16 +42,14 @@ all:	build
 build: include/setup.h depend
 	@for i in $(BUILD_DIRS); do \
 		echo "build ==> $$i";\
-		cd $$i;\
-		${MAKE} ${MFLAGS} build || exit; cd ..;\
+		cd $$i && ${MAKE} ${MFLAGS} build || exit; cd ..;\
 	done
 
 clean:
 	${RM} -f *~ core rsa_respond.tar rsa_respond.tar.gz
 	@for i in $(CLEAN_DIRS); do \
 		echo "clean ==> $$i";\
-		cd $$i;\
-		${MAKE} ${MFLAGS} clean || exit; cd ..;\
+		cd $$i && ${MAKE} ${MFLAGS} clean || exit; cd ..;\
 	done
 	-@if [ -f include/setup.h ] ; then \
 		echo "To really restart installation, ${MAKE} distclean" ; \
@@ -64,22 +62,19 @@ distclean:
 	cd include; ${RM} -f setup.h *~ *.rej *.orig ; cd ..
 	@for i in $(DISTCLEAN_DIRS); do \
 		echo "distclean ==> $$i";\
-		cd $$i;\
-		${MAKE} ${MFLAGS} distclean || exit; cd ..;\
+		cd $$i && ${MAKE} ${MFLAGS} distclean || exit; cd ..; \
 	done
 
 depend:
 	@for i in $(DEPEND_DIRS); do \
 		echo "depend ==> $$i";\
-		cd $$i && ${MAKE} ${MFLAGS} .depend || exit; cd .. ;\
+		cd $$i && ${MAKE} ${MFLAGS} .depend || exit; cd .. ; \
 	done
 
 install: all
 	@for i in $(INSTALL_DIRS); do \
 		echo "install ==> $$i";\
-		cd $$i;\
-		${MAKE} ${MFLAGS} install || exit; \
-		cd ..; \
+		cd $$i && ${MAKE} ${MFLAGS} install || exit; cd ..; \
 	done
 
 include/setup.h:
