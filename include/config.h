@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: config.h,v 7.156 2003/05/23 19:06:53 joshk Exp $
+ *  $Id: config.h,v 7.157 2003/05/24 03:25:28 db Exp $
  */
 
 #ifndef INCLUDED_config_h
@@ -105,6 +105,8 @@
 #define CPATH   ETCPATH "IRCD.CONF"             /* config file */
 #define KPATH   ETCPATH "KLINE.CONF"            /* kline file */
 #define XPATH   ETCPATH "XLINE.CONF"            /* xline file */
+#define CRESVPATH   ETCPATH "CRESV.CONF"        /* channel resvs file */
+#define NRESVPATH   ETCPATH "NRESV.CONF"        /* channel resvs file */
 #define DLPATH  ETCPATH "DLINE.CONF"            /* dline file */
 #define GPATH   LOGPATH "GLINE.LOG"             /* gline logfile */
 #define RPATH   ETCPATH "IRCD.RSA"              /* RSA private key file */
@@ -148,6 +150,8 @@
 #define CPATH   ETCPATH "/ircd.conf"            /* ircd.conf file */
 #define KPATH   ETCPATH "/kline.conf"           /* kline file */
 #define XPATH   ETCPATH "/xline.conf"           /* xline file */
+#define CRESVPATH   ETCPATH "/cresv.conf"       /* channel resvs file */
+#define NRESVPATH   ETCPATH "/nresv.conf"       /* nick resvs file */
 #define DLPATH  ETCPATH "/dline.conf"           /* dline file */
 #define GPATH   LOGPATH "/gline.log"            /* gline logfile */
 #define RPATH   ETCPATH "/ircd.rsa"             /* ircd rsa private keyfile */

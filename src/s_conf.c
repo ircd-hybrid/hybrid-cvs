@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.399 2003/05/24 01:56:38 michael Exp $
+ *  $Id: s_conf.c,v 7.400 2003/05/24 03:25:32 db Exp $
  */
 
 #include "stdinc.h"
@@ -1901,6 +1901,8 @@ read_conf_files(int cold)
   parse_conf_file(CONF_KILL, cold);
   parse_conf_file(CONF_DLINE, cold);
   parse_conf_file(CONF_XLINE, cold);
+  parse_conf_file(CONF_NRESV, cold);
+  parse_conf_file(CONF_CRESV, cold);
 }
 
 /*
@@ -2092,6 +2094,13 @@ get_conf_name(int type)
   case CONF_XLINE:
     return(ConfigFileEntry.xlinefile);
     break;
+  case CONF_CRESV:
+    return(ConfigFileEntry.cresvfile);
+    break;
+  case CONF_NRESV:
+    return(ConfigFileEntry.nresvfile);
+    break;
+
   default:
     return NULL; /* This should NEVER HAPPEN since we call this function
 		    only with the above values, this will cause us to core

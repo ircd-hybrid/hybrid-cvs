@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.220 2003/05/19 19:10:51 stu Exp $
+ *  $Id: s_conf.h,v 7.221 2003/05/24 03:25:28 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -82,25 +82,29 @@ struct ConfItem
 };
 
 #define CONF_ILLEGAL            0x80000000
-#define CONF_QUARANTINED_NICK   0x00000001
+#define CONF_RESERVED           0x00000001
 #define CONF_CLIENT             0x00000002
 #define CONF_SERVER             0x00000004
-#define CONF_OPERATOR           0x00000010
-#define CONF_KILL               0x00000040
-#define CONF_CLASS              0x00000400
-#define CONF_LEAF               0x00000800
-#define CONF_LISTEN_PORT        0x00001000
-#define CONF_HUB                0x00002000
-#define CONF_EXEMPTKLINE        0x00004000
-#define CONF_NOLIMIT            0x00008000
-#define CONF_DLINE              0x00020000
-#define CONF_XLINE              0x00040000
-#define CONF_ULINE              0x00080000
-#define CONF_EXEMPTDLINE        0x00100000
+#define CONF_OPERATOR           0x00000008
+#define CONF_KILL               0x00000010
+#define CONF_CLASS              0x00000020
+#define CONF_LEAF               0x00000040
+#define CONF_LISTEN_PORT        0x00000080
+#define CONF_HUB                0x00000100
+#define CONF_EXEMPTKLINE        0x00000200
+#define CONF_NOLIMIT            0x00000400
+#define CONF_DLINE              0x00000800
+#define CONF_XLINE              0x00001000
+#define CONF_ULINE              0x00002000
+#define CONF_EXEMPTDLINE        0x00004000
 
 #define CONF_SERVER_MASK       CONF_SERVER
 #define CONF_CLIENT_MASK       (CONF_CLIENT | CONF_OPERATOR | CONF_SERVER_MASK)
 #define CONF_TYPE CONF_CLIENT_MASK
+
+/* XXX temporary hack */
+#define CONF_CRESV	        0x80000001
+#define CONF_NRESV	        0x80000002
 
 #define IsConfIllegal(x)	((x)->status & CONF_ILLEGAL)
 #define SetConfIllegal(x)	((x)->status |= CONF_ILLEGAL)
@@ -192,6 +196,8 @@ struct config_file_entry
   const char *xlinefile;
   const char *dlinefile;
   const char *glinefile;
+  const char *cresvfile;
+  const char *nresvfile;
 
   char *logpath;
   char *operlog;
@@ -367,6 +373,8 @@ extern int conf_fbgets(char *, int, FBFILE *);
 
 extern void write_conf_line(struct Client *, struct ConfItem *,
 			    const char *, time_t);
+extern void write_resv_line(struct Client *, int type, void *);
+
 extern int remove_conf_line(int, struct Client *, char *, char *);
 extern void add_temp_kline(struct ConfItem *);
 extern void report_temp_klines(struct Client *);

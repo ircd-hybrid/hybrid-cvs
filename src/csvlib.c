@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.11 2003/05/23 05:52:55 joshk Exp $
+ *  $Id: csvlib.c,v 7.12 2003/05/24 03:25:32 db Exp $
  */
 
 #include "stdinc.h"
@@ -19,6 +19,7 @@
 #include "sprintf_irc.h"
 #include "memory.h"
 #include "send.h"
+#include "resv.h"
 
 static void parse_csv_line(char *line, ...);
 static int write_csv_line(FBFILE *out, const char *format, ...);
@@ -94,6 +95,17 @@ parse_csv_file(FBFILE *file, int conf_type)
 	aconf->port = atoi(port);
       conf_add_conf(aconf);
       break;
+
+    case CONF_CRESV:
+      parse_csv_line(line, &name_field, &reason_field, NULL);
+      (void)create_channel_resv(name_field, reason_field, 0);
+      break;
+
+    case CONF_NRESV:
+      parse_csv_line(line, &name_field, &reason_field, NULL);
+      (void)create_nick_resv(name_field, reason_field, 0);
+      break;
+
     }
   }
 }
@@ -140,11 +152,8 @@ parse_csv_line(char *line, ...)
 
 /* write_conf_line()
  *
- * inputs       - type of conf i.e. kline, dline etc. as needed
- *              - client pointer to report to
- *              - user name of target
- *              - host name of target
- *              - reason for target
+ * inputs       - pointer to struct ConfItem
+ *		- string current_date (small date)
  *              - time_t cur_time
  * output       - NONE
  * side effects - This function takes care of
@@ -153,6 +162,7 @@ parse_csv_line(char *line, ...)
  *                notifying the oper that their kline/dline etc. is in place
  *                notifying the opers on the server about the k/d etc. line
  *                
+ * - Dianora
  */
 void 
 write_conf_line(struct Client *source_p, struct ConfItem *aconf,
@@ -218,12 +228,61 @@ write_conf_line(struct Client *source_p, struct ConfItem *aconf,
     return;
   }
 
-  /* XXX could add this to write_csv_line */
-#if 0
-    sendto_realops_flags(UMODE_ALL, L_ALL,
-                         "*** Problem writing to %s",filename);
-#endif
+  fbclose(out);
+}
 
+/* write_resv_line()
+ *
+ * blah. special form of write_conf_line() above for resvs only.
+ *
+ * inputs       - pointer to void * resv_p either struct * ResvChannel
+ *		  or struct * ResvNick
+ *              - time_t cur_time
+ * output       - NONE
+ * side effects - This function takes care of
+ *                finding right conf file, writing
+ *                the right lines to this file, 
+ *                notifying the oper that their kline/dline etc. is in place
+ *                notifying the opers on the server about the k/d etc. line
+ *
+ * - Dianora
+ */
+void 
+write_resv_line(struct Client *source_p /*unused*/ , int type, void *resv_p)
+{
+  FBFILE *out;
+  const char *filename;
+  struct ResvChannel *cresv_p=NULL;
+  struct ResvNick *nresv_p=NULL;
+  
+  filename = get_conf_name(type);
+  if ((out = fbopen(filename, "a")) == NULL)
+  {
+    sendto_realops_flags(UMODE_ALL, L_ALL,
+                         "*** Problem opening %s ", filename);
+    return;
+  }
+
+  switch(type)
+  {
+  case CONF_CRESV:
+    cresv_p = (struct ResvChannel *)resv_p;
+
+    write_csv_line(out, "%s%s",
+		   cresv_p->name, cresv_p->reason);
+    break;
+
+  case CONF_NRESV:
+    nresv_p = (struct ResvNick *)resv_p;
+
+    write_csv_line(out, "%s%s",
+		   nresv_p->name, nresv_p->reason);
+    break;
+
+  default:
+    fbclose(out);
+    return;
+  }
   fbclose(out);
 }
 

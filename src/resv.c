@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: resv.c,v 7.21 2003/05/12 21:56:59 stu Exp $
+ *  $Id: resv.c,v 7.22 2003/05/24 03:25:32 db Exp $
  */
 
 #include "stdinc.h"
@@ -40,8 +40,17 @@
 dlink_list resv_channel_list = { NULL, NULL, 0 };
 dlink_list resv_nick_list    = { NULL, NULL, 0 };
 
+/*
+ * create_channel_resv
+ *
+ * inputs	- name of channel to create resv for
+ *		- reason for resv
+ *		- flag, 1 for from ircd.conf 0 from elsehwere
+ * output	- pointer to struct ResvChannel
+ * side effects	-
+ */
 struct ResvChannel *
-create_channel_resv(char *name, char *reason, unsigned char conf)
+create_channel_resv(char *name, char *reason, int conf)
 {
   struct ResvChannel *resv_p;
 
@@ -66,8 +75,17 @@ create_channel_resv(char *name, char *reason, unsigned char conf)
   return(resv_p);
 }
 
+/*
+ * create_nick_resv
+ *
+ * inputs	- name of nick to create resv for
+ *		- reason for resv
+ *		- 1 if from ircd.conf, 0 if from elsewhere
+ * output	- pointer to struct ResvNick
+ * side effects	-
+ */
 struct ResvNick *
-create_nick_resv(char *name, char *reason, unsigned char conf)
+create_nick_resv(char *name, char *reason, int conf)
 {
   struct ResvNick *resv_p;
 
@@ -91,6 +109,13 @@ create_nick_resv(char *name, char *reason, unsigned char conf)
   return(resv_p);
 }
 
+/*
+ * clear_conf_resv
+ *
+ * inputs	- none
+ * output	- none
+ * side effects	- All resvs are cleared out
+ */
 void
 clear_conf_resv(void)
 {
@@ -102,20 +127,25 @@ clear_conf_resv(void)
   DLINK_FOREACH_SAFE(ptr, next_ptr, resv_channel_list.head)
   {
     resv_cp = ptr->data;
-
-    if (resv_cp->conf)
+    if (resv_cp->conf == 0)
       delete_channel_resv(resv_cp);
   }
 
   DLINK_FOREACH_SAFE(ptr, next_ptr, resv_nick_list.head)
   {
     resv_np = ptr->data;
-
-    if (resv_np->conf)
+    if (resv_np->conf == 0)
       delete_nick_resv(resv_np);
   }
 }
 
+/*
+ * delete_channel_resv
+ *
+ * inputs	- pointer to channel resv to delete
+ * output	- none
+ * side effects	- given struct ResvChannel * is removed
+ */
 int
 delete_channel_resv(struct ResvChannel *resv_p)
 {
@@ -131,6 +161,13 @@ delete_channel_resv(struct ResvChannel *resv_p)
   return(1);
 }
 
+/*
+ * delete_nick_resv
+ *
+ * inputs	- pointer to nick resv to delete
+ * output	- none
+ * side effects	- given struct ResvNick * is removed
+ */
 int
 delete_nick_resv(struct ResvNick *resv_p)
 {

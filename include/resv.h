@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: resv.h,v 1.13 2003/05/22 17:09:01 michael Exp $
+ *  $Id: resv.h,v 1.14 2003/05/24 03:25:28 db Exp $
  */
 
 #ifndef INCLUDED_resv_h
@@ -33,7 +33,7 @@ struct ResvChannel
   /* +1 for \0 */
   char name[CHANNELLEN + 1];
   char *reason;
-  unsigned char conf;
+  int	conf;		/* 1 if set from ircd.conf, 0 if from elsewhere */
 };
 
 struct ResvNick
@@ -42,14 +42,14 @@ struct ResvNick
   /* *nicknick* etc */
   char name[NICKLEN * 2];
   char *reason;
-  unsigned char conf;
+  int	conf;		/* 1 if set from ircd.conf, 0 if from elsewhere */
 };
 
 extern dlink_list resv_channel_list;
 extern dlink_list resv_nick_list;
 
-extern struct ResvChannel *create_channel_resv(char *, char *, unsigned char);
-extern struct ResvNick *create_nick_resv(char *, char *, unsigned char);
+extern struct ResvChannel *create_channel_resv(char *, char *, int);
+extern struct ResvNick *create_nick_resv(char *, char *, int);
 extern struct ResvNick *return_nick_resv(const char *);
 
 extern int find_channel_resv(const char *);

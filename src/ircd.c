@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.288 2003/05/24 01:56:38 michael Exp $
+ *  $Id: ircd.c,v 7.289 2003/05/24 03:25:32 db Exp $
  */
 
 #include "stdinc.h"
@@ -591,6 +591,8 @@ main(int argc, char *argv[])
   ConfigFileEntry.xlinefile  = XPATH;  /* Server xline file         */
   ConfigFileEntry.dlinefile  = DLPATH; /* dline file                */
   ConfigFileEntry.glinefile  = GPATH;  /* gline log file            */
+  ConfigFileEntry.cresvfile  = CRESVPATH; /* channel resv file      */
+  ConfigFileEntry.nresvfile  = NRESVPATH; /* nick resv file         */
 
   myargv = argv;
   umask(077);                /* better safe than sorry --SRB */

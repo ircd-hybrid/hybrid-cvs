@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_resv.c,v 1.20 2003/05/13 02:32:13 joshk Exp $
+ *  $Id: m_resv.c,v 1.21 2003/05/24 03:25:30 db Exp $
  */
 
 #include "stdinc.h"
@@ -43,12 +43,12 @@ static void mo_unresv(struct Client *, struct Client *, int, char **);
 
 struct Message resv_msgtab = {
   "RESV", 0, 0, 3, 0, MFLG_SLOW | MFLG_UNREG, 0,
-  {m_ignore, m_not_oper, m_ignore, mo_resv}
+  {m_ignore, m_not_oper, m_ignore, mo_resv, m_ignore}
 };
 
 struct Message unresv_msgtab = {
   "UNRESV", 0, 0, 2, 0, MFLG_SLOW | MFLG_UNREG, 0,
-  {m_ignore, m_not_oper, m_ignore, mo_unresv}
+  {m_ignore, m_not_oper, m_ignore, mo_unresv, m_ignore}
 };
 
 #ifndef STATIC_MODULES
@@ -66,15 +66,16 @@ _moddeinit(void)
   mod_del_cmd(&unresv_msgtab);
 }
 
-const char *_version = "$Revision: 1.20 $";
+const char *_version = "$Revision: 1.21 $";
 #endif
 
 /* mo_resv()
  *   parv[0] = sender prefix
  *   parv[1] = channel/nick to forbid
  */
-static void mo_resv(struct Client *client_p, struct Client *source_p,
-                    int parc, char *parv[])
+static void
+mo_resv(struct Client *client_p, struct Client *source_p,
+	int parc, char *parv[])
 {
   if (EmptyString(parv[1]))
     return;
@@ -90,13 +91,15 @@ static void mo_resv(struct Client *client_p, struct Client *source_p,
       return;
     }
 
-    sendto_one(source_p, ":%s NOTICE %s :A local RESV has been placed on "
+    sendto_one(source_p, ":%s NOTICE %s :A RESV has been placed on "
                "channel: %s [%s]", me.name, source_p->name, resv_p->name,
                resv_p->reason);
 
-    sendto_realops_flags(UMODE_ALL, L_ALL, "%s has placed a local RESV on "
+    sendto_realops_flags(UMODE_ALL, L_ALL, "%s has placed a RESV on "
                          "channel: %s [%s]", get_oper_name(source_p),
                          resv_p->name, resv_p->reason);
+
+    write_resv_line(source_p, CONF_CRESV, resv_p);
   }
   else if (clean_resv_nick(parv[1]))
   {
@@ -116,12 +119,14 @@ static void mo_resv(struct Client *client_p, struct Client *source_p,
       return;
     }
 
-    sendto_one(source_p, ":%s NOTICE %s :A local RESV has been placed on "
+    sendto_one(source_p, ":%s NOTICE %s :A RESV has been placed on "
                "nick: %s [%s]", me.name, source_p->name,
                resv_p->name, resv_p->reason);
-    sendto_realops_flags(UMODE_ALL, L_ALL, "%s has placed a local RESV on "
+    sendto_realops_flags(UMODE_ALL, L_ALL, "%s has placed a RESV on "
                          "nick: %s [%s]", get_oper_name(source_p),
                          resv_p->name, resv_p->reason);
+
+    write_resv_line(source_p, CONF_NRESV, resv_p);
   }
   else
     sendto_one(source_p, ":%s NOTICE %s :You have specified an invalid "
@@ -132,24 +137,27 @@ static void mo_resv(struct Client *client_p, struct Client *source_p,
  *   parv[0] = sender prefix
  *   parv[1] = channel/nick to unforbid
  */
-static void mo_unresv(struct Client *client_p, struct Client *source_p,
-                      int parc, char *parv[])
+static void
+mo_unresv(struct Client *client_p, struct Client *source_p,
+	  int parc, char *parv[])
 {
   if (IsChannelName(parv[1]))
   {
     struct ResvChannel *resv_p;
 
-    if (resv_channel_list.head == NULL ||
-       !(resv_p = hash_find_resv(parv[1])))
+    resv_p = hash_find_resv(parv[1]);
+
+    if ((resv_channel_list.head == NULL) || (resv_p == NULL))
     {
       sendto_one(source_p, ":%s NOTICE %s :A RESV does not exist for "
                  "channel: %s", me.name, source_p->name, parv[1]);
       return;
     }
-    else if (resv_p->conf)
+
+    if (resv_p->conf)
     {
-      sendto_one(source_p, ":%s NOTICE %s :The RESV for channel: %s is "
-                 "in the config file and must be removed by hand.",
+      sendto_one(source_p,
+         ":%s NOTICE %s :The RESV for channel: %s is in ircd.conf and must be removed by hand.",
                  me.name, source_p->name, parv[1]);
       return;	       
     }
@@ -157,10 +165,11 @@ static void mo_unresv(struct Client *client_p, struct Client *source_p,
     else
     {
       delete_channel_resv(resv_p);
+      (void)remove_conf_line(CONF_CRESV, source_p, parv[1], NULL);
 
-      sendto_one(source_p, ":%s NOTICE %s :The local RESV has been removed "
+      sendto_one(source_p, ":%s NOTICE %s :The RESV has been removed "
                  "on channel: %s", me.name, source_p->name, parv[1]);
-      sendto_realops_flags(UMODE_ALL, L_ALL, "%s has removed the local RESV "
+      sendto_realops_flags(UMODE_ALL, L_ALL, "%s has removed the RESV "
                            "for channel: %s", get_oper_name(source_p), parv[1]);
     }
   }
@@ -168,27 +177,30 @@ static void mo_unresv(struct Client *client_p, struct Client *source_p,
   {
     struct ResvNick *resv_p;
 
-    if (resv_nick_list.head == NULL ||
-        !(resv_p = return_nick_resv(parv[1])))
+    resv_p = return_nick_resv(parv[1]);
+
+    if (resv_nick_list.head == NULL || (resv_p == NULL))
     {
       sendto_one(source_p, ":%s NOTICE %s :A RESV does not exist for nick: %s",
                  me.name, source_p->name, parv[1]);
       return;
     }
-    else if (resv_p->conf)
+
+    if (resv_p->conf)
     {
-      sendto_one(source_p, ":%s NOTICE %s :The RESV for nick: %s is in the "
-                 "config file and must be removed by hand.",
+      sendto_one(source_p,
+         ":%s NOTICE %s :The RESV for nick: %s is in ircd.conf and must be removed by hand.",
                  me.name, source_p->name, parv[1]);
-      return;
+      return;	       
     }
     else
     {
       delete_nick_resv(resv_p);
+      (void)remove_conf_line(CONF_NRESV, source_p, parv[1], NULL);
 
-      sendto_one(source_p, ":%s NOTICE %s :The local RESV has been removed "
+      sendto_one(source_p, ":%s NOTICE %s :The RESV has been removed "
                  "on nick: %s", me.name, source_p->name, parv[1]);
-      sendto_realops_flags(UMODE_ALL, L_ALL, "%s has removed the local RESV "
+      sendto_realops_flags(UMODE_ALL, L_ALL, "%s has removed the RESV "
                            "for nick: %s", get_oper_name(source_p), parv[1]);
     }
   }
