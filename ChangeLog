@@ -1,3 +1,23 @@
+lusky       2003/01/24 22:41:47 EST	(20030125_1)
+
+  Modified files:
+    contrib              README m_whois.c 
+    modules              m_whois.c 
+  Log:
+  - fix for contrib/m_whois core
+  - fix for modules/m_whois bogusly showing idle time for non-local clients
+  - reiterate in contrib/README that contrib modules may crash
+  
+  Submitted by:   db
+  Reviewed by:    jrl
+  
+  Revision  Changes    Path
+  1.25      +5 -1      ircd-hybrid-7/contrib/README
+  1.7       +9 -6      ircd-hybrid-7/contrib/m_whois.c
+  1.85      +6 -3      ircd-hybrid-7/modules/m_whois.c
+
+
+
 lusky       2003/01/24 20:52:31 EST	(20030125_0)
 
   Modified files:
@@ -34398,4 +34418,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4193 2003/01/25 01:52:33 lusky Exp $
+$Id: ChangeLog,v 7.4194 2003/01/25 03:41:50 lusky Exp $
