@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_pass.c,v 1.29 2003/10/07 22:37:13 bill Exp $
+ *  $Id: m_pass.c,v 1.30 2003/10/29 22:37:12 bill Exp $
  */
 
 #include "stdinc.h"
@@ -54,7 +54,7 @@ _moddeinit(void)
   mod_del_cmd(&pass_msgtab);
 }
 
-const char *_version = "$Revision: 1.29 $";
+const char *_version = "$Revision: 1.30 $";
 #endif
 
 /*
@@ -96,12 +96,14 @@ mr_pass(struct Client *client_p, struct Client *source_p,
     if (!irccmp(parv[2], "TS") && client_p->tsinfo == 0)
       client_p->tsinfo = TS_DOESTS;
   }
-  if (parc > 4)
+
+  /* only do this stuff if we are doing ts6 */
+  if (parc > 4 && me.id[0])
   {
     if (atoi(parv[3]) >= 6)
     {
       strlcpy(client_p->id, parv[4], sizeof(client_p->id));
-      client_p->localClient->caps |= CAP_TS6;
+      SetCapable(client_p, CAP_TS6);
     }
   }
 }

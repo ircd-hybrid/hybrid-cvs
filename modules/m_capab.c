@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_capab.c,v 1.36 2003/10/07 22:37:12 bill Exp $
+ *  $Id: m_capab.c,v 1.37 2003/10/29 22:37:12 bill Exp $
  */
 
 #include "stdinc.h"
@@ -52,7 +52,7 @@ _moddeinit(void)
   mod_del_cmd(&capab_msgtab);
 }
 
-const char *_version = "$Revision: 1.36 $";
+const char *_version = "$Revision: 1.37 $";
 #endif
 
 /*
@@ -78,13 +78,13 @@ mr_capab(struct Client *client_p, struct Client *source_p,
   if (client_p->localClient == NULL)
     return;
 
-  if (client_p->localClient->caps && !(client_p->localClient->caps & CAP_TS6))
+  if (client_p->localClient->caps && !(IsCapable(client_p, CAP_TS6)))
   {
     exit_client(client_p, client_p, client_p, "CAPAB received twice");
     return;
   }
   else
-    client_p->localClient->caps |= CAP_CAP;
+    SetCapable(client_p, CAP_CAP);
 
   for (i = 1; i < parc; i++)
   {
@@ -124,7 +124,7 @@ mr_capab(struct Client *client_p, struct Client *source_p,
       else /* normal capab */
 #endif
         if ((cap = find_capability(s)) != 0)
-	  client_p->localClient->caps |= cap;
+          SetCapable(client_p, cap);
     }
   }
 }

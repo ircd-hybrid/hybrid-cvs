@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.324 2003/10/24 11:08:21 michael Exp $
+ *  $Id: ircd.c,v 7.325 2003/10/29 22:37:15 bill Exp $
  */
 
 #include "stdinc.h"
@@ -385,7 +385,8 @@ initialize_server_capabs(void)
   add_capability("QS", CAP_QS, 1);
   add_capability("LL", CAP_LL, 1);
   add_capability("EOB", CAP_EOB, 1);
-  add_capability("TS6", CAP_TS6, 0);
+  if (ServerInfo.sid != NULL)	/* only enable TS6 if we have an SID */
+    add_capability("TS6", CAP_TS6, 0);
   add_capability("ZIP", CAP_ZIP, 0);
   add_capability("PARA", CAP_PARA, 1);
   add_capability("CLUSTER", CAP_CLUSTER, 1);
@@ -607,7 +608,6 @@ main(int argc, char *argv[])
     ilog(L_CRIT, "No server name specified in serverinfo block.");
     exit(EXIT_FAILURE);
   }
-
   strlcpy(me.name, ServerInfo.name, sizeof(me.name));
 
   /* serverinfo{} description must exist.  If not, error out.*/
@@ -619,8 +619,8 @@ main(int argc, char *argv[])
       "ERROR: No server description specified in serverinfo block.");
     exit(EXIT_FAILURE);
   }
-
   strlcpy(me.info, ServerInfo.description, sizeof(me.info));
+
 #ifdef USE_IAUTH
   iAuth.flags = 0;
 
@@ -632,6 +632,7 @@ main(int argc, char *argv[])
     exit(EXIT_FAILURE);
   }
 #endif
+
   me.from    = &me;
   me.servptr = &me;
 

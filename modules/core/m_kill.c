@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kill.c,v 1.84 2003/10/13 01:35:33 bill Exp $
+ *  $Id: m_kill.c,v 1.85 2003/10/29 22:37:13 bill Exp $
  */
 
 #include "stdinc.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&kill_msgtab);
 }
 
-const char *_version = "$Revision: 1.84 $";
+const char *_version = "$Revision: 1.85 $";
 #endif
 
 /* mo_kill()
@@ -93,7 +93,7 @@ mo_kill(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if (!IsOperK(source_p))
+  if (!IsOperK(source_p) && !IsOperGlobalKill(source_p))
   {
     sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
                me.name, source_p->name);

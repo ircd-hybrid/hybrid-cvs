@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.391 2003/10/24 11:08:21 michael Exp $
+ *  $Id: s_serv.c,v 7.392 2003/10/29 22:37:15 bill Exp $
  */
 
 #include "stdinc.h"
@@ -1019,8 +1019,13 @@ server_estab(struct Client *client_p)
      */
     if (!EmptyString(aconf->spasswd))
     {
-      sendto_one(client_p, "PASS %s TS %d %s",
-                 aconf->spasswd, TS_CURRENT, me.id);
+      /* only send ts6 format PASS if we have ts6 enabled */
+      if (me.id[0])
+        sendto_one(client_p, "PASS %s TS %d %s",
+                   aconf->spasswd, TS_CURRENT, me.id);
+      else
+        sendto_one(client_p, "PASS %s TS 5",
+                   aconf->spasswd);
     }
 
     /* Pass my info to the new server
@@ -1072,9 +1077,11 @@ server_estab(struct Client *client_p)
     start_io(client_p);
     SetServlink(client_p);
   }
-  
+
+  /* only send ts6 format SVINFO if we have ts6 enabled */ 
   sendto_one(client_p, "SVINFO %d %d 0 :%lu",
-             TS_CURRENT, TS_MIN, (unsigned long)CurrentTime);
+             (me.id[0] ? TS_CURRENT : 5), TS_MIN,
+             (unsigned long)CurrentTime);
 
   /* assumption here is if they passed the correct TS version, they also passed an SID */
   if (IsCapable(client_p, CAP_TS6))
