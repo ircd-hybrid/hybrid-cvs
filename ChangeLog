@@ -1,3 +1,39 @@
+db          2003/01/09 01:15:56 EST	(20030109_0)
+
+  Modified files:
+    .                    RELNOTES 
+    include              client.h 
+    src                  channel.c channel_mode.c client.c 
+                         ircdauth.c packet.c parse.c s_bsd.c 
+                         s_serv.c s_user.c send.c 
+  Log:
+  - rationalised the exit_client code.
+    IsClosing() is used to keep clients from being added to the abort_list twice
+    IsDead() is now used to keep clients from being added to the dead_list twice
+    IsDefunct() is used to check whether a client is dying ie.
+    IsClosing() || IsDead()
+    exit_client() is no longer called in some cases if a client/server
+    is already IsDefunct().
+    This removes the possibility of a double free of a client and removes
+    the possibility of accessing memory after it has been freed.
+  - Also removed a "bare" access to FLAGS_IPHASH
+  
+  Revision  Changes    Path
+  1.49      +4 -0      ircd-hybrid-7/RELNOTES
+  7.154     +4 -0      ircd-hybrid-7/include/client.h
+  7.347     +1 -3      ircd-hybrid-7/src/channel.c
+  7.68      +5 -1      ircd-hybrid-7/src/channel_mode.c
+  7.309     +60 -24    ircd-hybrid-7/src/client.c
+  7.50      +1 -1      ircd-hybrid-7/src/ircdauth.c
+  7.96      +11 -11    ircd-hybrid-7/src/packet.c
+  7.142     +2 -2      ircd-hybrid-7/src/parse.c
+  7.174     +1 -1      ircd-hybrid-7/src/s_bsd.c
+  7.271     +30 -14    ircd-hybrid-7/src/s_serv.c
+  7.217     +5 -5      ircd-hybrid-7/src/s_user.c
+  7.210     +12 -12    ircd-hybrid-7/src/send.c
+
+
+
 gregp       2002/12/29 16:42:48 EST	(20021229_1)
 
   Added files:
@@ -33756,4 +33792,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4151 2002/12/29 21:42:50 gregp Exp $
+$Id: ChangeLog,v 7.4152 2003/01/09 06:15:59 db Exp $
