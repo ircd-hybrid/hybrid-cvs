@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.173 2001/02/05 01:19:59 androsyn Exp $
+ *  $Id: s_conf.c,v 7.174 2001/02/05 02:29:11 db Exp $
  */
 
 #include <sys/types.h>
@@ -2230,7 +2230,6 @@ static void clear_out_old_conf(void)
     for (cltmp = ClassList->next; cltmp; cltmp = cltmp->next)
       MaxLinks(cltmp) = -1;
 
-    /*clear_mtrie_conf_links();*/
     clear_conf();
     
     zap_Dlines();
