@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.67 2000/12/06 03:28:08 db Exp $
+ * $Id: ircd.c,v 7.68 2000/12/08 15:58:19 toot Exp $
  */
 #include "tools.h"
 #include "ircd.h"
@@ -553,14 +553,6 @@ int main(int argc, char *argv[])
       exit(-1);
     }
 #endif
-
-  /* XXX add to lexer/yacc later */
-  ConfigFileEntry.hide_server = 1;
-  GlobalSetOptions.hide_server = 1;
-
-  /* XXX add to lexer/yacc later */
-  ConfigFileEntry.hide_chanops = 1;
-  GlobalSetOptions.hide_chanops = 1;
 
 #if !defined(CHROOTDIR) || (defined(IRC_UID) && defined(IRC_GID))
 

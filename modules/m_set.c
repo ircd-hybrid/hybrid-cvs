@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_set.c,v 1.12 2000/12/06 02:20:28 db Exp $
+ *   $Id: m_set.c,v 1.13 2000/12/08 15:58:18 toot Exp $
  */
 
 /* rewritten by jdc */
@@ -193,7 +193,7 @@ int quote_idletime( struct Client *sptr, int newval )
     {
       if (newval == 0)
 	{
-	  sendto_realops("%s has disabled IDLE_CHECK", sptr->name);
+	  sendto_realops("%s has disabled idletime checking", sptr->name);
 	  GlobalSetOptions.idletime = 0;
 	}
       else 

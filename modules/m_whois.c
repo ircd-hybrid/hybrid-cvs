@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 1.14 2000/12/04 16:08:24 db Exp $
+ *   $Id: m_whois.c,v 1.15 2000/12/08 15:58:18 toot Exp $
  */
 #include "tools.h"
 #include "common.h"   /* bleah */
@@ -336,12 +336,13 @@ void whois_person(struct Client *sptr,struct Client *acptr)
           
   if (!GlobalSetOptions.hide_server || acptr == sptr)
     sendto_one(sptr, form_str(RPL_WHOISSERVER),
-	     me.name, sptr->name, acptr->name, server_name,
-	     a2cptr?a2cptr->info:"*Not On This Net*");
+	       me.name, sptr->name, acptr->name, server_name,
+	       a2cptr?a2cptr->info:"*Not On This Net*");
   else
     sendto_one(sptr, form_str(RPL_WHOISSERVER),
-	     me.name, sptr->name, acptr->name, NETWORK_NAME,
-	     NETWORK_DESC);
+	       me.name, sptr->name, acptr->name,
+               ConfigFileEntry.network_name,
+	       ConfigFileEntry.network_desc);
 
   if (acptr->user->away)
     sendto_one(sptr, form_str(RPL_AWAY), me.name,

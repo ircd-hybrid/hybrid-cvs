@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.93 2000/12/07 04:37:15 db Exp $
+ *  $Id: s_conf.c,v 7.94 2000/12/08 15:58:21 toot Exp $
  */
 #include "tools.h"
 #include "s_conf.h"
@@ -1640,15 +1640,21 @@ static void initconf(FBFILE* file)
 
   check_class();
 
-  if( ConfigFileEntry.ts_warn_delta < TS_WARN_DELTA_MIN )
-    {
-      ConfigFileEntry.ts_warn_delta = TS_WARN_DELTA_DEFAULT;
-    }
+  if(ConfigFileEntry.ts_warn_delta < TS_WARN_DELTA_MIN)
+    ConfigFileEntry.ts_warn_delta = TS_WARN_DELTA_DEFAULT;
 
-  if( ConfigFileEntry.ts_max_delta < TS_MAX_DELTA_MIN )
-    {
-      ConfigFileEntry.ts_max_delta = TS_MAX_DELTA_DEFAULT;
-    }
+  if(ConfigFileEntry.ts_max_delta < TS_MAX_DELTA_MIN)
+    ConfigFileEntry.ts_max_delta = TS_MAX_DELTA_DEFAULT;
+
+  if(!ConfigFileEntry.network_name)
+    ConfigFileEntry.network_name = NETWORK_NAME_DEFAULT;
+
+  if(!ConfigFileEntry.network_desc)
+    ConfigFileEntry.network_desc = NETWORK_DESC_DEFAULT;
+
+  GlobalSetOptions.idletime = (ConfigFileEntry.idletime * 60);
+  GlobalSetOptions.hide_server = ConfigFileEntry.hide_server;
+  GlobalSetOptions.hide_chanops = ConfigFileEntry.hide_chanops;
 
   if(me.name[0] == '\0')
     {

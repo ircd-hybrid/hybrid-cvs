@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.25 2000/12/01 22:18:06 db Exp $
+ * $Id: ircd_lexer.l,v 1.26 2000/12/08 15:58:20 toot Exp $
  */
 
 %{
@@ -123,6 +123,8 @@ logpath         { return LOGPATH; }
 max_number	{ return MAX_NUMBER; }
 message_locale	{ return MESSAGE_LOCALE; }
 name		{ return NAME; }
+network_name    { return NETWORK_NAME; }
+network_desc    { return NETWORK_DESC; }
 nick_changes	{ return NICK_CHANGES; }
 no		{ return TNO; }
 no_tilde	{ return NO_TILDE; }

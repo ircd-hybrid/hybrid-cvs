@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.47 2000/12/05 07:27:04 db Exp $
+ * $Id: config.h,v 7.48 2000/12/08 15:58:12 toot Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -133,8 +133,11 @@
 #define FNAME_USERLOG "/usr/local/ircd/users" /* */
 #define FNAME_OPERLOG "/usr/local/ircd/opers" /* */
 
-#define NETWORK_NAME "EFnet"
-#define NETWORK_DESC "Eris Free Network"
+/* NETWORK_NAME_DEFAULT and NETWORK_DESC_DEFAULT - these are used
+ * instead of a servers name/description if you enable server hiding.
+ */
+#define NETWORK_NAME_DEFAULT "EFnet"
+#define NETWORK_DESC_DEFAULT "Eris Free Network"
 
 /* RFC1035_ANAL
  * Defining this causes ircd to reject hostnames with non-compliant chars.
