@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 1.41 2001/01/04 20:51:58 a1kmm Exp $
+ *  $Id: m_stats.c,v 1.42 2001/01/05 00:14:36 davidt Exp $
  */
 #include "tools.h"	 /* dlink_node/dlink_list */
 #include "handlers.h"    /* m_pass prototype */
@@ -58,7 +58,7 @@ static int mo_stats(struct Client*, struct Client*, int, char**);
 
 
 struct Message stats_msgtab = {
-  MSG_STATS, 0, 1, 0, MFLG_SLOW, 0,
+  "STATS", 0, 1, 0, MFLG_SLOW, 0,
   {m_unregistered, m_stats, ms_stats, mo_stats}
 };
 

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_restart.c,v 1.10 2001/01/04 16:10:23 davidt Exp $
+ *   $Id: m_restart.c,v 1.11 2001/01/05 00:14:34 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -38,7 +38,7 @@
 static int mo_restart(struct Client *, struct Client *, int, char **);
 
 struct Message restart_msgtab = {
-  MSG_RESTART, 0, 0, 0, MFLG_SLOW, 0,
+  "RESTART", 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, m_ignore, mo_restart}
 };
 

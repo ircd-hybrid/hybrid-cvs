@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_trace.c,v 1.12 2001/01/04 16:10:26 davidt Exp $
+ *   $Id: m_trace.c,v 1.13 2001/01/05 00:14:37 davidt Exp $
  */
 #include "handlers.h"
 #include "class.h"
@@ -45,7 +45,7 @@ static int ms_trace(struct Client*, struct Client*, int, char**);
 static int mo_trace(struct Client*, struct Client*, int, char**);
 
 struct Message trace_msgtab = {
-  MSG_TRACE, 0, 0, 0, MFLG_SLOW, 0,
+  "TRACE", 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_ignore, ms_trace, mo_trace}
 };
 

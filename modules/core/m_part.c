@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_part.c,v 1.26 2001/01/04 20:27:21 toot Exp $
+ *   $Id: m_part.c,v 1.27 2001/01/05 00:14:33 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -48,7 +48,7 @@ static int ms_part(struct Client*, struct Client*, int, char**);
 static int mo_part(struct Client *, struct Client *, int, char **);
 
 struct Message part_msgtab = {
-  MSG_PART, 1, 2, 0, MFLG_SLOW, 0,
+  "PART", 1, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_part, ms_part, mo_part}
 };
 

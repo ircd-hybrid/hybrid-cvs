@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_client.c,v 1.4 2001/01/04 21:11:56 davidt Exp $
+ *   $Id: m_client.c,v 1.5 2001/01/05 00:14:24 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -56,7 +56,7 @@ static int clean_nick_name(char* nick);
 static int ms_client(struct Client*, struct Client*, int, char**);
 
 struct Message client_msgtab = {
-  MSG_CLIENT, 0, 1, 0, MFLG_SLOW, 0,
+  "CLIENT", 0, 1, 0, MFLG_SLOW, 0,
   {m_unregistered, m_ignore, ms_client, m_ignore}
 };
 

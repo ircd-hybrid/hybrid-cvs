@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_hash.c,v 1.8 2001/01/04 16:10:16 davidt Exp $
+ *   $Id: m_hash.c,v 1.9 2001/01/05 00:14:27 davidt Exp $
  */
 #include "handlers.h"
 #include "channel.h"
@@ -39,20 +39,20 @@ static void report_hash_stats(struct Client *, const char *,
 static int mo_hash(struct Client *, struct Client *, int, char **);
 
 struct Message hash_msgtab = {
-  MSG_HASH, 0, 2, 0, MFLG_SLOW, 0,
+  "HASH", 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, mo_hash, mo_hash}
 };
 
 void
 _modinit(void)
 {
-  mod_add_cmd(MSG_HASH, &hash_msgtab);
+  mod_add_cmd(&hash_msgtab);
 }
 
 void
 _moddeinit(void)
 {
-  mod_del_cmd(MSG_HASH);
+  mod_del_cmd(&hash_msgtab);
 }
 
 char *_version = "20001122";

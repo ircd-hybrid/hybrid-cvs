@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_motd.c,v 1.11 2001/01/04 16:10:20 davidt Exp $
+ *   $Id: m_motd.c,v 1.12 2001/01/05 00:14:31 davidt Exp $
  */
 #include "tools.h"
 #include "motd.h"
@@ -43,7 +43,7 @@ static int m_motd(struct Client*, struct Client*, int, char**);
 static int mo_motd(struct Client*, struct Client*, int, char**);
 
 struct Message motd_msgtab = {
-  MSG_MOTD, 0, 0, 1, MFLG_SLOW, 0,
+  "MOTD", 0, 0, 1, MFLG_SLOW, 0,
   {m_unregistered, m_motd, mo_motd, mo_motd}
 };
 

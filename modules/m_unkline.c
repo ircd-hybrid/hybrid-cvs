@@ -21,7 +21,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: m_unkline.c,v 1.22 2001/01/04 16:10:26 davidt Exp $
+ *   $Id: m_unkline.c,v 1.23 2001/01/05 00:14:37 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -54,11 +54,11 @@ static int mo_undline(struct Client*, struct Client*, int, char**);
 static int mo_ungline(struct Client*, struct Client*, int, char**);
 
 struct Message msgtabs[] = {
-  {MSG_UNKLINE, 0, 2, 0, MFLG_SLOW, 0,
+  {"UNKLINE", 0, 2, 0, MFLG_SLOW, 0,
    {m_unregistered, m_not_oper, m_error, mo_unkline}},
-  {MSG_UNDLINE, 0, 2, 0, MFLG_SLOW, 0,
+  {"UNDLINE", 0, 2, 0, MFLG_SLOW, 0,
    {m_unregistered, m_not_oper, m_error, mo_undline}}, 
-  {MSG_UNGLINE, 0, 2, 0, MFLG_SLOW, 0,
+  {"UNGLINE", 0, 2, 0, MFLG_SLOW, 0,
    {m_unregistered, m_not_oper, m_error, mo_ungline}}
 };
 

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_nick.c,v 1.47 2001/01/04 21:55:39 davidt Exp $
+ *   $Id: m_nick.c,v 1.48 2001/01/05 00:14:32 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -54,7 +54,7 @@ static int nick_from_server(struct Client *, struct Client *, int, char **,
                             time_t, char *);
 
 struct Message nick_msgtab = {
-  MSG_NICK, 0, 1, 0, MFLG_SLOW, 0,
+  "NICK", 0, 1, 0, MFLG_SLOW, 0,
   {mr_nick, m_nick, ms_nick, m_nick}
 };
 

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_svinfo.c,v 1.12 2001/01/04 20:51:58 a1kmm Exp $
+ *   $Id: m_svinfo.c,v 1.13 2001/01/05 00:14:36 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -42,7 +42,7 @@
 static int ms_svinfo(struct Client*, struct Client*, int, char**);
 
 struct Message svinfo_msgtab = {
-  MSG_SVINFO, 0, 4, 0, MFLG_SLOW, 0,
+  "SVINFO", 0, 4, 0, MFLG_SLOW, 0,
   {m_unregistered, m_ignore, ms_svinfo, m_ignore}
 };
 

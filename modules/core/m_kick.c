@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kick.c,v 1.20 2001/01/04 18:52:15 a1kmm Exp $
+ *   $Id: m_kick.c,v 1.21 2001/01/05 00:14:28 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -41,7 +41,7 @@ static int m_kick(struct Client*, struct Client*, int, char**);
 static int ms_kick(struct Client*, struct Client*, int, char**);
 
 struct Message kick_msgtab = {
-  MSG_KICK, 0, 3, 0, MFLG_SLOW, 0,
+  "KICK", 0, 3, 0, MFLG_SLOW, 0,
   {m_unregistered, m_kick, ms_kick, m_kick}
 };
 

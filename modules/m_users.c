@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_users.c,v 1.9 2001/01/04 16:10:27 davidt Exp $
+ *   $Id: m_users.c,v 1.10 2001/01/05 00:14:38 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -35,7 +35,7 @@
 static int m_users(struct Client*, struct Client*, int, char**);
 
 struct Message users_msgtab = {
-  MSG_USERS, 0, 0, 0, MFLG_SLOW, 0,
+  "USERS", 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_users, m_users, m_users}
 };
 

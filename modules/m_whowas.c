@@ -16,7 +16,7 @@
 *   along with this program; if not, write to the Free Software
 *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 *
-*   $Id: m_whowas.c,v 1.12 2001/01/04 16:10:28 davidt Exp $
+*   $Id: m_whowas.c,v 1.13 2001/01/05 00:14:39 davidt Exp $
 */
 #include "whowas.h"
 #include "handlers.h"
@@ -44,7 +44,7 @@ static int m_whowas(struct Client*, struct Client*, int, char**);
 static int mo_whowas(struct Client*, struct Client*, int, char**);
 
 struct Message whowas_msgtab = {
-  MSG_WHOWAS, 0, 0, 0, MFLG_SLOW, 0L,
+  "WHOWAS", 0, 0, 0, MFLG_SLOW, 0L,
   {m_unregistered, m_whowas, m_error, mo_whowas}
 };
 

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_drop.c,v 1.12 2001/01/04 16:10:15 davidt Exp $
+ * $Id: m_drop.c,v 1.13 2001/01/05 00:14:26 davidt Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -42,7 +42,7 @@
 static int ms_drop(struct Client *,struct Client *,int,char **);
 
 struct Message drop_msgtab = {
-  MSG_DROP, 0, 2, 0, MFLG_SLOW | MFLG_UNREG, 0L,
+  "DROP", 0, 2, 0, MFLG_SLOW | MFLG_UNREG, 0L,
   {m_unregistered, m_ignore, ms_drop, m_ignore}
 };
 

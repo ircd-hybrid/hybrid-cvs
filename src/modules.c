@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.c,v 7.42 2001/01/04 21:11:58 davidt Exp $
+ * $Id: modules.c,v 7.43 2001/01/05 00:14:40 davidt Exp $
  */
 
 #include <dlfcn.h>
@@ -65,17 +65,17 @@ static int mo_modlist(struct Client*, struct Client*, int, char**);
 static int mo_modunload(struct Client*, struct Client*, int, char**);
 
 struct Message modload_msgtab = {
-  MSG_MODLOAD, 0, 2, 0, MFLG_SLOW, 0,
+ "MODLOAD", 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, m_ignore, mo_modload}
 };
 
 struct Message modunload_msgtab = {
-  MSG_MODUNLOAD, 0, 2, 0, MFLG_SLOW, 0,
+ "MODUNLOAD", 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, m_ignore, mo_modunload}
 };
 
 struct Message modlist_msgtab = {
-  MSG_MODLIST, 0, 1, 0, MFLG_SLOW, 0,
+ "MODLIST", 0, 1, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, m_ignore, mo_modlist}
 };
 

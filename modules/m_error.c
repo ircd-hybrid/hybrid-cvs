@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_error.c,v 1.9 2000/12/22 16:12:33 db Exp $
+ *   $Id: m_error.c,v 1.10 2001/01/05 00:14:26 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -34,7 +34,7 @@
 #include "modules.h"
 
 struct Message error_msgtab = {
-  MSG_ERROR, 0, 0, 0, MFLG_SLOW | MFLG_UNREG, 0,
+  "ERROR", 0, 0, 0, MFLG_SLOW | MFLG_UNREG, 0,
   {mr_error, m_ignore, ms_error, m_ignore}
 };
 

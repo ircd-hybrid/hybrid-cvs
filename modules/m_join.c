@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 1.46 2001/01/04 16:10:17 davidt Exp $
+ *   $Id: m_join.c,v 1.47 2001/01/05 00:14:28 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -48,7 +48,7 @@ static int m_join(struct Client*, struct Client*, int, char**);
 static int ms_join(struct Client*, struct Client*, int, char**);
 
 struct Message join_msgtab = {
-  MSG_JOIN, 0, 2, 0, MFLG_SLOW, 0,
+  "JOIN", 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_join, ms_join, m_join}
 };
 

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kill.c,v 1.16 2001/01/04 16:10:18 davidt Exp $
+ *   $Id: m_kill.c,v 1.17 2001/01/05 00:14:29 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -43,7 +43,7 @@ static int ms_kill(struct Client*, struct Client*, int, char**);
 static int mo_kill(struct Client*, struct Client*, int, char**);
 
 struct Message kill_msgtab = {
-  MSG_KILL, 0, 2, 0, MFLG_SLOW, 0,
+  "KILL", 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, ms_kill, mo_kill}
 };
 

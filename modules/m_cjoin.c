@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_cjoin.c,v 1.23 2001/01/04 16:10:13 davidt Exp $
+ *   $Id: m_cjoin.c,v 1.24 2001/01/05 00:14:24 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -46,7 +46,7 @@
 static int m_cjoin(struct Client*, struct Client*, int, char**);
 
 struct Message cjoin_msgtab = {
-  MSG_CJOIN, 0, 2, 0, MFLG_SLOW, 0,
+  "CJOIN", 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_cjoin, m_error, m_cjoin}
 };
 

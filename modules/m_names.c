@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_names.c,v 1.21 2001/01/04 16:10:21 davidt Exp $
+ *   $Id: m_names.c,v 1.22 2001/01/05 00:14:32 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -51,7 +51,7 @@ static int m_names(struct Client*, struct Client*, int, char**);
 static int ms_names(struct Client*, struct Client*, int, char**);
 
 struct Message names_msgtab = {
-  MSG_NAMES, 0, 0, 0, MFLG_SLOW, 0,
+  "NAMES", 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_names, ms_names, m_names}
 };
 

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.c,v 1.16 2001/01/04 16:10:16 davidt Exp $
+ * $Id: m_info.c,v 1.17 2001/01/05 00:14:27 davidt Exp $
  */
 #include "tools.h"
 #include "m_info.h"
@@ -51,7 +51,7 @@ static int ms_info(struct Client*, struct Client*, int, char**);
 static int mo_info(struct Client*, struct Client*, int, char**);
 
 struct Message info_msgtab = {
-  MSG_INFO, 0, 0, 0, MFLG_SLOW, 0,
+  "INFO", 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_info, ms_info, mo_info}
 };
 

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_invite.c,v 1.17 2001/01/04 16:10:17 davidt Exp $
+ *   $Id: m_invite.c,v 1.18 2001/01/05 00:14:27 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -44,7 +44,7 @@ static int m_invite(struct Client*, struct Client*, int, char**);
 static int ms_invite(struct Client*, struct Client*, int, char**);
 
 struct Message invite_msgtab = {
-  MSG_INVITE, 0, 3, 0, MFLG_SLOW, 0,
+  "INVITE", 0, 3, 0, MFLG_SLOW, 0,
   {m_unregistered, m_invite, ms_invite, m_invite}
 };
 

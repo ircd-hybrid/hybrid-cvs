@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.62 2001/01/04 20:51:58 a1kmm Exp $
+ *   $Id: m_sjoin.c,v 1.63 2001/01/05 00:14:35 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -47,7 +47,7 @@
 static int ms_sjoin(struct Client*, struct Client*, int, char**);
 
 struct Message sjoin_msgtab = {
-  MSG_SJOIN, 0, 0, 0, MFLG_SLOW, 0,
+  "SJOIN", 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_ignore, ms_sjoin, m_ignore}
 };
 

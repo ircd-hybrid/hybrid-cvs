@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_who.c,v 1.24 2001/01/04 16:10:28 davidt Exp $
+ *   $Id: m_who.c,v 1.25 2001/01/05 00:14:39 davidt Exp $
  */
 #include "tools.h"
 #include "common.h"   /* bleah */
@@ -45,7 +45,7 @@ static int m_who(struct Client*, struct Client*, int, char**);
 static int ms_who(struct Client*, struct Client*, int, char**);
 
 struct Message who_msgtab = {
-  MSG_WHO, 0, 2, 0, MFLG_SLOW, 0,
+  "WHO", 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_who, ms_who, m_who}
 };
 

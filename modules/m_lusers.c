@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_lusers.c,v 1.9 2001/01/04 16:10:19 davidt Exp $
+ *   $Id: m_lusers.c,v 1.10 2001/01/05 00:14:30 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -40,7 +40,7 @@ static int m_lusers(struct Client*, struct Client*, int, char**);
 static int ms_lusers(struct Client*, struct Client*, int, char**);
 
 struct Message lusers_msgtab = {
-  MSG_LUSERS, 0, 0, 0, MFLG_SLOW, 0,
+  "LUSERS", 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_lusers, ms_lusers, m_lusers}
 };
 

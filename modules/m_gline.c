@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_gline.c,v 1.35 2001/01/04 20:36:48 a1kmm Exp $
+ *  $Id: m_gline.c,v 1.36 2001/01/05 00:14:26 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -101,7 +101,7 @@ static int ms_gline(struct Client*, struct Client*, int, char**);
 static int mo_gline(struct Client*, struct Client*, int, char**);
 
 struct Message gline_msgtab = {
-    MSG_GLINE, 0, 3, 0, MFLG_SLOW, 0,
+    "GLINE", 0, 3, 0, MFLG_SLOW, 0,
       {m_unregistered, m_not_oper, ms_gline, mo_gline}
 };
 

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.43 2001/01/04 16:10:20 davidt Exp $
+ *   $Id: m_message.c,v 1.44 2001/01/05 00:14:31 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -42,6 +42,9 @@
 #include "msg.h"
 
 #include <string.h>
+
+/* XXX Lazylinks */
+/* XXX vchans */
 
 struct entity {
   void *ptr;
@@ -100,12 +103,12 @@ static void handle_opers(int p_or_n, char *command,
 static void free_target_table(void);
 
 struct Message privmsg_msgtab = {
-  MSG_PRIVMSG, 0, 1, 0, MFLG_SLOW | MFLG_UNREG, 0L,
+  "PRIVMSG", 0, 1, 0, MFLG_SLOW | MFLG_UNREG, 0L,
   {m_unregistered, m_privmsg, m_privmsg, m_privmsg}
 };
 
 struct Message notice_msgtab = {
-  MSG_NOTICE, 0, 1, 0, MFLG_SLOW | MFLG_UNREG, 0L,
+  "NOTICE", 0, 1, 0, MFLG_SLOW | MFLG_UNREG, 0L,
   {m_unregistered, m_notice, m_notice, m_notice}
 };
 

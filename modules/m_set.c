@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_set.c,v 1.27 2001/01/04 16:10:24 davidt Exp $ */
+ *   $Id: m_set.c,v 1.28 2001/01/05 00:14:35 davidt Exp $ */
 
 /* rewritten by jdc */
 
@@ -44,7 +44,7 @@
 static int mo_set(struct Client*, struct Client*, int, char**);
 
 struct Message set_msgtab = {
-  MSG_SET, 0, 0, 0, MFLG_SLOW, 0,
+  "SET", 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, m_error, mo_set}
 };
 
