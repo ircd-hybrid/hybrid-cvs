@@ -1,5 +1,5 @@
 This file outlines the features that ircd-hybrid has for IRC Operators.
-$Id: opers.txt,v 7.12 2001/01/07 01:58:48 wcampbel Exp $
+$Id: opers.txt,v 7.13 2001/01/14 22:42:43 fl_ Exp $
 
 =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
@@ -246,4 +246,10 @@ COMMAND         - USAGE and DESCRIPTION
 + MODRELOAD      - MODRELOAD <[path/]module.so>
                    -- Reload a module into the ircd
                    path is optional
+                   NOTE:  Restricted to admins only
+
++ MODRESTART     - MODRESTART
+                   -- Reload all modules into the ircd
+                   All modules are unloaded, then those in modules/autoload 
+                   are loaded
                    NOTE:  Restricted to admins only
