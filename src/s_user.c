@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.307 2003/09/08 23:39:51 metalrock Exp $
+ *  $Id: s_user.c,v 7.308 2003/09/10 11:29:27 michael Exp $
  */
 
 #include "stdinc.h"
@@ -387,7 +387,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   }
 
   ptr   = source_p->localClient->confs.head;
-  aconf = map_to_conf((struct ConfItem *) ptr->data);
+  aconf = map_to_conf((struct ConfItem *)ptr->data);
 
   if (!IsGotId(source_p))
   {
@@ -1113,14 +1113,11 @@ send_umode(struct Client *client_p, struct Client *source_p,
   int what = 0;
   unsigned int i;
   unsigned int flag;
-  char *m;
+  char *m = umode_buf;
 
   /* build a string in umode_buf to represent the change in the user's
    * mode between the new (source_p->umodes) and 'old'.
    */
-  m = umode_buf;
-  *m = '\0';
-
   for (i = 0; user_modes[i].letter; i++)
   {
     flag = user_modes[i].mode;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.470 2003/08/21 21:31:23 michael Exp $
+ *  $Id: s_conf.c,v 7.471 2003/09/10 11:29:27 michael Exp $
  */
 
 #include "stdinc.h"
@@ -2244,12 +2244,9 @@ static const struct oper_privs
 char *
 oper_privs_as_string(const unsigned int port)
 {
-  static char privs_out[20];
-  char *privs_ptr;
+  static char privs_out[12];
+  char *privs_ptr = privs_out;
   unsigned int i;
-
-  privs_ptr = privs_out;
-  *privs_ptr = '\0';
 
   for (i = 0; flag_list[i].oprivs; i++)
   {
@@ -2257,10 +2254,11 @@ oper_privs_as_string(const unsigned int port)
         (port & flag_list[i].hidden) == 0)
       *privs_ptr++ = flag_list[i].c;
     else
-      *privs_ptr++ = ToLowerTab[(unsigned char)flag_list[i].c];
+      *privs_ptr++ = ToLowerTab[flag_list[i].c];
   }
 
   *privs_ptr = '\0';
+
   return(privs_out);
 }
 
