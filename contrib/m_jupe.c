@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_jupe.c,v 1.17 2001/08/03 13:10:24 leeh Exp $
+ *   $Id: m_jupe.c,v 1.18 2001/08/04 11:26:00 leeh Exp $
  */
 
 #include "tools.h"
@@ -160,6 +160,7 @@ static void mo_jupe(struct Client *client_p, struct Client *source_p,
   add_client_to_list(ajupe);
   add_to_client_hash_table(ajupe->name, ajupe);
   add_client_to_llist(&(ajupe->servptr->serv->servers), ajupe);
+  add_server_to_list(ajupe);
 }
 
 
