@@ -1,6 +1,7 @@
-/* copyright (c) 2000 Edward Brocklesby, Hybrid Development Team */
-/*
- * $Id: spy_stats_notice.c,v 1.8 2001/09/05 12:14:44 leeh Exp $
+/* contrib/spy_stats_notice.c
+ * Copyright (c) 2000,2001 Edward Brocklesby, Hybrid Development Team
+ *
+ * $Id: spy_stats_notice.c,v 1.9 2001/12/27 11:38:18 leeh Exp $
  */
 
 #include "modules.h"
@@ -24,7 +25,7 @@ _moddeinit(void)
 	hook_del_hook("doing_stats", (hookfn *)show_stats);
 }
 
-char *_version = "1.0";
+char *_version = "$Revision: 1.9 $";
 
 /* show a stats request */
 int

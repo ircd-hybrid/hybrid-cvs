@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_mkpasswd.c,v 1.3 2001/11/27 00:49:57 davidt Exp $
+ *   $Id: m_mkpasswd.c,v 1.4 2001/12/27 11:38:18 leeh Exp $
  */
 
 /* List of ircd includes from ../include/ */
@@ -64,7 +64,7 @@ void _moddeinit(void)
   mod_del_cmd(&test_msgtab);
 }
 
-char *_version = "20010825";
+char *_version = "$Revision: 1.4 $";
 
 static void m_mkpasswd(struct Client *client_p, struct Client *source_p,
                    int parc, char *parv[])

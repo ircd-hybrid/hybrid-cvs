@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_jupe.c,v 1.22 2001/12/18 22:35:59 leeh Exp $
+ *   $Id: m_jupe.c,v 1.23 2001/12/27 11:38:18 leeh Exp $
  */
 
 #include "tools.h"
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&jupe_msgtab);
 }
 
-char *_version = "20010104";
+char *_version = "$Revision: 1.23 $";
 
 /*
 ** mo_jupe

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_map.c,v 1.7 2001/11/27 00:49:57 davidt Exp $
+ *   $Id: m_map.c,v 1.8 2001/12/27 11:38:18 leeh Exp $
  */
 
 #include <assert.h>
@@ -56,7 +56,7 @@ void _moddeinit(void)
   mod_del_cmd(&map_msgtab);
 }
 
-char *_version = "20010913";
+char *_version = "$Revision: 1.8 $";
 static char buf[BUFSIZE];
 
 /* m_map
