@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 1.64 2001/04/29 14:23:43 fl_ Exp $
+ *  $Id: m_stats.c,v 1.65 2001/04/29 17:05:08 fl_ Exp $
  */
 #include "tools.h"	 /* dlink_node/dlink_list */
 #include "handlers.h"    /* m_pass prototype */
@@ -169,7 +169,6 @@ static struct StatsStructLetter stats_let_table[] =
   { 'P',		stats_ports,		1,	0,	},
   { 'q',		stats_quarantine,	1,	0,	},
   { 'Q',		stats_quarantine,	1,	0,	},
-  { 'q',		stats_quarantine,	1,	0,	},
   { 'R',		stats_usage,		1,	0,	},
   { 'r',		stats_usage,		1,	0,	},
   { 's',		stats_scache,		1,	1,	},
@@ -357,7 +356,7 @@ static void stats_messages(struct Client *client_p)
 
 static void stats_oper(struct Client *client_p)
 {
-  if (ConfigFileEntry.o_lines_oper_only)
+  if (!IsOper(client_p) && ConfigFileEntry.o_lines_oper_only)
     sendto_one(client_p, form_str(ERR_NOPRIVILEGES),me.name,client_p->name);
   else
     report_configured_links(client_p, CONF_OPERATOR);
