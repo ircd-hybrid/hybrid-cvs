@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_motd.c,v 1.20 2001/08/03 13:10:28 leeh Exp $
+ *   $Id: m_motd.c,v 1.21 2001/08/30 10:45:36 leeh Exp $
  */
 #include "client.h"
 #include "tools.h"
@@ -39,12 +39,13 @@
 #include <stdlib.h>
 #include <time.h>
 
+static void mr_motd(struct Client *, struct Client *, int, char **);
 static void m_motd(struct Client*, struct Client*, int, char**);
 static void mo_motd(struct Client*, struct Client*, int, char**);
 
 struct Message motd_msgtab = {
   "MOTD", 0, 0, 1, MFLG_SLOW, 0,
-  {m_unregistered, m_motd, mo_motd, mo_motd}
+  {mr_motd, m_motd, mo_motd, mo_motd}
 };
 #ifndef STATIC_MODULES
 void
@@ -61,6 +62,19 @@ _moddeinit(void)
 
 char *_version = "20001122";
 #endif
+
+/* mr_motd()
+ *
+ * parv[0] = sender prefix
+ */
+static void mr_motd(struct Client *client_p, struct Client *source_p,
+                    int parc, char *parv[])
+{
+  /* allow unregistered clients to see the motd, but exit them */
+  SendMessageFile(source_p,&ConfigFileEntry.motd);
+  exit_client(client_p, source_p, source_p, "Client Exit after MOTD");
+}
+
 /*
 ** m_motd
 **      parv[0] = sender prefix
