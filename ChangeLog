@@ -1,3 +1,19 @@
+db          2002/09/04 22:48:43 EDT	(20020905_2)
+
+  Modified files:
+    modules              m_gline.c 
+    src                  s_gline.c 
+  Log:
+  - If a local oper votes twice on a gline, don't
+    do the send-realops, don't send it off of the server, just notice the oper
+    and continue.
+  
+  Revision  Changes    Path
+  1.84      +185 -224  ircd-hybrid-7/modules/m_gline.c
+  1.23      +35 -35    ircd-hybrid-7/src/s_gline.c
+
+
+
 db          2002/09/04 21:30:10 EDT	(20020905_1)
 
   Modified files:
@@ -31778,4 +31794,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4017 2002/09/05 01:30:12 db Exp $
+$Id: ChangeLog,v 7.4018 2002/09/05 02:48:46 db Exp $
