@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: msg.h,v 7.42.2.1 2004/06/16 04:55:49 erik Exp $
+ *  $Id: msg.h,v 7.42.2.2 2004/07/08 03:44:01 erik Exp $
  */
 
 #ifndef INCLUDED_msg_h
@@ -27,6 +27,11 @@
 
 #include "config.h"
 #include "ircd_handler.h"
+
+/*
+ * ENCAP_HANDLERS definition states that the ircd understands ENCAP
+ */
+#define ENCAP_HANDLERS
 
 struct Client;
 
