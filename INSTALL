@@ -1,6 +1,6 @@
                             Hybrid INSTALL Document
 
-   $Id: INSTALL,v 7.31 2002/09/19 16:14:30 bill Exp $
+   $Id: INSTALL,v 7.32 2003/05/04 16:59:02 adx Exp $
 
    Copyright (c) 2001 by ircd-hybrid team
 
@@ -257,7 +257,7 @@
  gcc -g -O2 -DIRCD_PREFIX=\"/home/wcampbel/ircd\" -Wl,-export-dynamic
  -L/usr/local/lib -o ircd blalloc.o channel.o vchannel.o class.o client.o
  dline_conf.o event.o fdlist.o fileio.o hash.o irc_string.o ircd.o ircdauth.o
- ircd_signal.o linebuf.o list.o listener.o m_error.o match.o memdebug.o
+ ircd_signal.o dbuf.o list.o listener.o m_error.o match.o memdebug.o
  modules.o motd.o mtrie_conf.o oldparse.o numeric.o packet.o parse.o res.o rsa.o
  restart.o s_auth.o s_bsd.o s_bsd_kqueue.o s_conf.o s_debug.o s_gline.o s_log.o
  s_misc.o s_serv.o s_stats.o s_user.o scache.o send.o sprintf_irc.o tools.o
