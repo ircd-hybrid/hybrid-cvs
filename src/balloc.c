@@ -8,7 +8,7 @@
  * Owner:  Wohali (Joan Touzet)
  *
  *
- * $Id: balloc.c,v 7.3 2001/08/13 14:20:18 androsyn Exp $
+ * $Id: balloc.c,v 7.4 2001/08/13 15:27:27 androsyn Exp $
  */
 
 #define WE_ARE_MEMORY_C
@@ -18,7 +18,7 @@
 #include "ircd_defs.h"		/* DEBUG_BLOCK_ALLOCATOR */
 #include "ircd.h"
 #include "memory.h"
-#include "blalloc.h"
+#include "balloc.h"
 #include "irc_string.h"
 #include "tools.h"
 #include "s_log.h"
