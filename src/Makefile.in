@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.86 2001/06/05 14:58:46 kreator Exp $
+# $Id: Makefile.in,v 7.87 2001/06/06 18:13:48 jdc Exp $
 #
 CC		= @CC@
 INSTALL		= @INSTALL@
@@ -29,9 +29,11 @@ IRCD_EXE	= ircd
 
 PROGS		= $(IRCD_EXE)
 
-IRCDLIBS	= @MODULES_LIBS@ -L../adns -ladns @LIBS@
+SSL_LIBS=	= @SSL_LIBS@
+IRCDLIBS	= @MODULES_LIBS@ -L../adns -ladns @LIBS@ @SSL_LIBS@
 
-INCLUDES	= -I../include
+SSL_INCLUDES=	= @SSL_INCLUDES@
+INCLUDES	= -I../include @SSL_INCLUDES@
 CPPFLAGS	= ${INCLUDES} @CPPFLAGS@
  
 default:	all
