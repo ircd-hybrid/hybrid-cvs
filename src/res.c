@@ -4,7 +4,7 @@
  * shape or form. The author takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: res.c,v 7.18 2000/10/25 00:04:18 adrian Exp $
+ * $Id: res.c,v 7.19 2000/10/25 23:20:11 adrian Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -173,7 +173,7 @@ struct cache {
 };
 
 
-int    ResolverFileDescriptor = -1;   /* GLOBAL - used in s_bsd.c */
+static int    ResolverFileDescriptor = -1;
 
 static time_t nextDNSCheck    = 0;
 

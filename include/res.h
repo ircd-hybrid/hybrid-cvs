@@ -1,7 +1,7 @@
 /*
  * include/res.h (C)opyright 1992 Darren Reed.
  *
- * $Id: res.h,v 7.4 2000/10/25 00:04:14 adrian Exp $
+ * $Id: res.h,v 7.5 2000/10/25 23:20:08 adrian Exp $
  */
 #ifndef INCLUDED_res_h
 #define INCLUDED_res_h
@@ -23,8 +23,6 @@ struct DNSQuery {
   void* vptr;               /* pointer used by callback to identify request */
   void (*callback)(void* vptr, struct DNSReply* reply); /* callback to call */
 };
-
-extern int ResolverFileDescriptor;  /* GLOBAL - file descriptor (s_bsd.c) */
 
 extern void get_res(void);
 extern struct DNSReply* gethost_byname(const char* name, 
