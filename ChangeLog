@@ -1,3 +1,15 @@
+db          2003/01/20 07:44:01 EST	(20030120_0)
+
+  Modified files:
+    include              client.h 
+  Log:
+  - fix prototype, no code change.
+  
+  Revision  Changes    Path
+  7.157     +2 -2      ircd-hybrid-7/include/client.h
+
+
+
 db          2003/01/19 18:38:55 EST	(20030119_3)
 
   Modified files:
@@ -34282,4 +34294,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4185 2003/01/19 23:39:02 db Exp $
+$Id: ChangeLog,v 7.4186 2003/01/20 12:44:04 db Exp $
