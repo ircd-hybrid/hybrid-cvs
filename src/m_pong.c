@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_pong.c,v 7.1 1999/12/30 20:35:55 db Exp $
+ *   $Id: m_pong.c,v 7.2 2000/01/01 14:34:01 db Exp $
  */
 #include "m_commands.h"
 #include "client.h"
@@ -29,6 +29,7 @@
 #include "send.h"
 #include "channel.h"
 #include "irc_string.h"
+#include "s_debug.h"
 
 /*
  * m_functions execute protocol messages on this server:

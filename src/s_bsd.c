@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.23 1999/12/31 04:47:31 wnder Exp $
+ *  $Id: s_bsd.c,v 7.24 2000/01/01 14:34:02 db Exp $
  */
 #include "s_bsd.h"
 #include "class.h"
@@ -41,6 +41,7 @@
 #include "s_stats.h"
 #include "s_zip.h"
 #include "send.h"
+#include "s_debug.h"
 
 #include <assert.h>
 #include <stdio.h>

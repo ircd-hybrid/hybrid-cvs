@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: hash.c,v 7.4 1999/12/30 20:35:45 db Exp $
+ *  $Id: hash.c,v 7.5 2000/01/01 14:34:01 db Exp $
  */
 #include "s_conf.h"
 #include "channel.h"
@@ -27,6 +27,7 @@
 #include "ircd.h"
 #include "numeric.h"
 #include "send.h"
+#include "s_debug.h"
 
 #include <assert.h>
 #include <fcntl.h>     /* O_RDWR ... */

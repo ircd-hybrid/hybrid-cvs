@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.6 1999/12/30 20:36:06 db Exp $
+ *   $Id: parse.c,v 7.7 2000/01/01 14:34:01 db Exp $
  */
 #include "parse.h"
 #include "channel.h"
@@ -30,6 +30,7 @@
 #include "s_log.h"
 #include "s_stats.h"
 #include "send.h"
+#include "s_debug.h"
 
 #define MSGTAB
 #include "msg.h"

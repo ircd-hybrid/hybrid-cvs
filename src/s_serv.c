@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.8 1999/12/30 20:36:09 db Exp $
+ *   $Id: s_serv.c,v 7.9 2000/01/01 14:34:03 db Exp $
  */
 #include "s_serv.h"
 #include "channel.h"
@@ -41,6 +41,7 @@
 #include "s_zip.h"
 #include "scache.h"
 #include "send.h"
+#include "s_debug.h"
 
 #include <assert.h>
 #include <string.h>
@@ -403,8 +404,8 @@ int check_server(struct Client* cptr)
    */
   if (!c_conf || !n_conf)
     {
-      Debug((DEBUG_DNS, "sv_cl: access denied: %s[%s@%s] c %x n %x",
-             name, cptr->name, cptr->host, c_conf, n_conf));
+      Debug((DEBUG_DNS, "sv_cl: access denied: [%s@%s] c %x n %x",
+             cptr->name, cptr->host, c_conf, n_conf));
       return 0;
     }
   /*
@@ -420,7 +421,7 @@ int check_server(struct Client* cptr)
   if (INADDR_NONE == c_conf->ipnum.s_addr)
     c_conf->ipnum.s_addr = cptr->ip.s_addr;
 
-  Debug((DEBUG_DNS,"sv_cl: access ok: %s[%s]", name, cptr->host));
+  Debug((DEBUG_DNS,"sv_cl: access ok: [%s]", cptr->host));
 
   return 1;
 }

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: class.c,v 7.5 1999/12/30 20:35:43 db Exp $
+ *   $Id: class.c,v 7.6 2000/01/01 14:34:00 db Exp $
  */
 #include "class.h"
 #include "client.h"
@@ -26,6 +26,7 @@
 #include "numeric.h"
 #include "s_conf.h"
 #include "send.h"
+#include "s_debug.h"
 
 #define BAD_CONF_CLASS          -1
 #define BAD_PING                -2
@@ -174,7 +175,7 @@ void    check_class()
     {
       Debug((DEBUG_DEBUG,
              "Class %d : CF: %d PF: %d ML: %d LI: %d SQ: %ld",
-             Class(cltmp), ConFreq(cltmp), PingFreq(cltmp),
+             ClassType(cltmp), ConFreq(cltmp), PingFreq(cltmp),
              MaxLinks(cltmp), Links(cltmp), MaxSendq(cltmp)));
       if (MaxLinks(cltmp) < 0)
         {

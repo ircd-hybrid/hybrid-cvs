@@ -4,7 +4,7 @@
  * shape or form. The author takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: res.c,v 7.11 1999/12/30 22:32:25 db Exp $
+ * $Id: res.c,v 7.12 2000/01/01 14:34:02 db Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -20,6 +20,7 @@
 #include "s_bsd.h"
 #include "s_log.h"
 #include "send.h"
+#include "s_debug.h"
 
 #include <assert.h>
 #include <errno.h>
