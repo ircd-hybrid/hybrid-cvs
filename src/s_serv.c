@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.259 2002/05/31 04:49:23 androsyn Exp $
+ *  $Id: s_serv.c,v 7.260 2002/06/07 23:38:34 leeh Exp $
  */
 
 #include "stdinc.h"
@@ -1078,6 +1078,16 @@ int server_estab(struct Client *client_p)
   Count.server++;
   Count.myserver++;
 
+  add_server_to_list(client_p);
+  add_to_client_hash_table(client_p->name, client_p);
+  /* doesnt duplicate client_p->serv if allocated this struct already */
+  make_server(client_p);
+  client_p->serv->up = me.name;
+  /* add it to scache */
+  find_or_add(client_p->name);
+  client_p->firsttime = CurrentTime;
+  /* fixing eob timings.. -gnp */
+
   /* Show the real host/IP to admins */
   sendto_realops_flags(FLAGS_ALL, L_ADMIN,
 			"Link with %s established: (%s) link",
@@ -1090,16 +1100,6 @@ int server_estab(struct Client *client_p)
 
   ilog(L_NOTICE, "Link with %s established: (%s) link",
       inpath_ip, show_capabilities(client_p));
-
-  add_server_to_list(client_p);
-  add_to_client_hash_table(client_p->name, client_p);
-  /* doesnt duplicate client_p->serv if allocated this struct already */
-  make_server(client_p);
-  client_p->serv->up = me.name;
-  /* add it to scache */
-  find_or_add(client_p->name);
-  client_p->firsttime = CurrentTime;
-  /* fixing eob timings.. -gnp */
 
   client_p->serv->sconf = aconf;
   client_p->flags2 |= FLAGS2_CBURST;
