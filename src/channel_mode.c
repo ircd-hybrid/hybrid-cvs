@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.41 2002/06/14 17:19:58 leeh Exp $
+ *  $Id: channel_mode.c,v 7.42 2002/06/18 17:34:13 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -504,7 +504,7 @@ channel_modes(struct Channel *chptr, struct Client *client_p,
   {
     *mbuf++ = 'k';
     if (IsMember(client_p, chptr) || IsServer(client_p))
-      ircsprintf(pbuf, "%s", chptr->mode.key);
+      ircsprintf(pbuf, "%s ", chptr->mode.key);
   }
 
   *mbuf++ = '\0';
