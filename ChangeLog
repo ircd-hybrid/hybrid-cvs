@@ -1,3 +1,19 @@
+db          2002/12/12 22:21:14 EST	(20021213_0)
+
+  Modified files:
+    src                  packet.c 
+  Log:
+  - *sigh* a client can be set dead (IsDead()) in a number of places
+    while parsing. In all cases, if exit_client() is called,
+    and the client is local (which it is here) then localClient goes *poof*
+    and its set dead. You can't read data from something that aint there scotty!
+    SHE'S GONNA BLOW CAPTAIN!
+  
+  Revision  Changes    Path
+  7.92      +12 -8     ircd-hybrid-7/src/packet.c
+
+
+
 bill        2002/12/12 15:16:19 EST	(20021212_1)
 
   Modified files:
@@ -33459,4 +33475,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4130 2002/12/12 20:16:22 bill Exp $
+$Id: ChangeLog,v 7.4131 2002/12/13 03:21:17 db Exp $
