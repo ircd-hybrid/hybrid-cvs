@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.223 2001/06/01 11:05:48 leeh Exp $
+ *  $Id: s_conf.c,v 7.224 2001/06/02 12:15:47 davidt Exp $
  */
 
 #include <sys/types.h>
@@ -2087,7 +2087,9 @@ static void clear_out_old_conf(void)
   clear_special_conf(&q_conf);
 
   /* clean out module paths */
+#ifndef STATIC_MODULES
   mod_clear_paths();
+#endif
 
   /* clean out ServerInfo */
 #ifdef HAVE_LIBCRYPTO
