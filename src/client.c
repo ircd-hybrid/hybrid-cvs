@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.297 2002/08/20 16:42:00 db Exp $
+ *  $Id: client.c,v 7.298 2002/08/25 04:19:51 lusky Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -1326,10 +1326,9 @@ int exit_client(
                              source_p->name, source_p->username, source_p->host,
                              comment, 
 #ifdef HIDE_SPOOF_IPS
-                             "255.255.255.255");
-#else
-                             source_p->localClient->sockhost);
+                             IsIPSpoof(source_p) ? "255.255.255.255" :
 #endif
+                             source_p->localClient->sockhost);
 
       log_user_exit(source_p);
 
