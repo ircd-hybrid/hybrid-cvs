@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.364 2003/07/07 00:50:59 db Exp $
+ *  $Id: s_serv.c,v 7.365 2003/07/07 06:53:08 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -554,9 +554,6 @@ check_server(const char *name, struct Client *client_p, int cryptlink)
   if (client_p == NULL)
     return(error);
 
-  if (client_p->localClient->passwd == NULL)
-    return(-2);
-
   if (strlen(name) > HOSTLEN)
     return(-4);
 
@@ -586,6 +583,10 @@ check_server(const char *name, struct Client *client_p, int cryptlink)
       else if (!(cryptlink || IsConfCryptLink(aconf)))
 #endif /* HAVE_LIBCRYPTO */
       {
+        /* A NULL password is as good as a bad one */
+        if (EmptyString(client_p->localClient->passwd))
+          return(-2);
+		
         if (IsConfEncrypted(aconf))
         {
           if (strcmp(aconf->passwd,
