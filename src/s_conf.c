@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.308 2002/06/26 03:05:45 androsyn Exp $
+ *  $Id: s_conf.c,v 7.309 2002/07/11 23:40:23 leeh Exp $
  */
 
 #include "stdinc.h"
@@ -1444,6 +1444,12 @@ set_default_conf(void)
   ConfigFileEntry.min_nonwildcard = 4;
   ConfigFileEntry.default_floodcount = 8;
   ConfigFileEntry.client_flood = CLIENT_FLOOD_DEFAULT;
+
+#ifdef EFNET
+  ConfigFileEntry.use_help = 0;
+#else
+  ConfigFileEntry.use_help = 1;
+#endif
 }
 #undef YES
 #undef NO
