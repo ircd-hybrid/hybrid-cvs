@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.100 2001/01/04 20:36:54 a1kmm Exp $
+ *   $Id: send.c,v 7.101 2001/01/05 01:11:31 ejb Exp $
  */
 #include "tools.h"
 #include "send.h"
@@ -939,6 +939,98 @@ sendto_match_cap_servs(struct Channel *chptr, struct Client *from, int cap,
         continue;
       
       if(!IsCapable(cptr, cap))
+        continue;
+
+      if (ConfigFileEntry.hub && IsCapable(cptr,CAP_LL))
+        {
+          if( !(RootChan(chptr)->lazyLinkChannelExists &
+                cptr->localClient->serverMask) )
+            continue;
+        }
+      
+      send_message (cptr, (char *)sendbuf, len);
+    }
+} /* sendto_match_cap_servs() */
+/*
+ * sendto_match_cap_servs
+ *
+ * inputs	- channel pointer
+ * 		- client to not send back towards (often a server)
+ *		- integer capability
+ *		- var args message
+ * output	- NONE
+ * side effects - send to all servers but 'from',
+ *                to the given channel only if
+ *                they match the capability, the given message.
+ */
+
+void
+sendto_match_cap_servs_nocap(struct Channel *chptr, struct Client *from, int cap, int nocap,
+                       const char *pattern, ...)
+{
+  int len;
+  va_list args;
+  struct Client *cptr;
+  dlink_node *ptr;
+
+  if (chptr)
+    {
+      if (*chptr->chname == '&')
+        return;
+    }
+
+  va_start(args, pattern);
+  len = send_format(sendbuf,pattern,args);
+  va_end(args);
+
+  for(ptr = serv_list.head; ptr; ptr = ptr->next)
+    {
+      cptr = ptr->data;
+
+      if (cptr == from)
+        continue;
+      
+      if(!IsCapable(cptr, cap) || IsCapable(cptr, nocap))
+        continue;
+
+      if (ConfigFileEntry.hub && IsCapable(cptr,CAP_LL))
+        {
+          if( !(RootChan(chptr)->lazyLinkChannelExists &
+                cptr->localClient->serverMask) )
+            continue;
+        }
+      
+      send_message (cptr, (char *)sendbuf, len);
+    }
+} /* sendto_match_cap_servs() */
+
+void
+sendto_match_nocap_servs(struct Channel *chptr, struct Client *from, int cap,
+                       const char *pattern, ...)
+{
+  int len;
+  va_list args;
+  struct Client *cptr;
+  dlink_node *ptr;
+
+  if (chptr)
+    {
+      if (*chptr->chname == '&')
+        return;
+    }
+
+  va_start(args, pattern);
+  len = send_format(sendbuf,pattern,args);
+  va_end(args);
+
+  for(ptr = serv_list.head; ptr; ptr = ptr->next)
+    {
+      cptr = ptr->data;
+
+      if (cptr == from)
+        continue;
+      
+      if(IsCapable(cptr, cap))
         continue;
 
       if (ConfigFileEntry.hub && IsCapable(cptr,CAP_LL))
