@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.101 2001/03/12 06:36:53 a1kmm Exp $
+ * $Id: config.h,v 7.102 2001/03/13 20:42:48 fl_ Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -325,16 +325,6 @@
  * Max number of channels a user is allowed to join.
  */
 #define MAXCHANNELSPERUSER  15  /* Recommended value: 15 */
-
-/*
- * anti flood code
- * The defaults =should= be fine for the initial timers/counters etc.
- * they are all changeable at run time anyway
- *
- * 8 messages in 1 second on a target is a possible flood 
- */
-#define DEFAULT_FLOOD_TIME 1
-#define DEFAULT_FLOOD_COUNT 8
 
 /* 
  * anti spambot code
