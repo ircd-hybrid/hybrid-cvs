@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.128 2003/05/28 21:11:52 bill Exp $
+ *  $Id: m_stats.c,v 1.129 2003/05/29 05:19:22 db Exp $
  */
 
 #include "stdinc.h"
@@ -34,7 +34,7 @@
 #include "s_gline.h"
 #include "ircd_handler.h"
 #include "msg.h"         /* Message */
-#include "hostmask.h"  /* report_mtrie_conf_links */
+#include "hostmask.h"
 #include "numeric.h"     /* ERR_xxx */
 #include "send.h"        /* sendto_one */
 #include "fdlist.h"      /* PF and friends */
@@ -79,7 +79,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.128 $";
+const char *_version = "$Revision: 1.129 $";
 #endif
 
 const char *Lformat = ":%s %d %s %s %u %u %u %u %u :%u %u %s";
@@ -502,7 +502,7 @@ stats_glines(struct Client *source_p)
                me.name, source_p->name, 'G',
                kill_ptr->host ? kill_ptr->host : "*",
                kill_ptr->name ? kill_ptr->name : "*",
-               kill_ptr->passwd ? kill_ptr->passwd : "No reason specified");
+               kill_ptr->reason ? kill_ptr->reason : "No reason specified");
   }
 }
 
