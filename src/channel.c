@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.147 2000/12/29 00:37:11 davidt Exp $
+ * $Id: channel.c,v 7.148 2000/12/29 00:47:42 davidt Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -787,7 +787,7 @@ static void send_mode_list(struct Client *cptr,
   cur_len = mlen = (strlen(buf) + 2);
   count = 0;
   mp = mbuf;
-  *mp++ = '+';
+  *mp++ = (clear ? '-' : '+');
   *mp   = '\0';
   pp = pbuf;
 
