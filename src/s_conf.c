@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.422 2003/06/12 00:38:33 metalrock Exp $
+ *  $Id: s_conf.c,v 7.423 2003/06/12 01:08:15 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -1371,6 +1371,7 @@ set_default_conf(void)
 
   set_log_level(L_NOTICE);
   
+  ConfigFileEntry.ignore_bogus_ts = NO;
   ConfigFileEntry.failed_oper_notice = YES;
   ConfigFileEntry.anti_nick_flood = NO;
   ConfigFileEntry.max_nick_time = 20;

@@ -3,7 +3,7 @@
  *
  * Written by ejb, wcampbel, db, leeh and others
  *
- * $Id: example.conf.quick,v 1.9 2003/06/12 00:38:27 metalrock Exp $
+ * $Id: example.conf.quick,v 1.10 2003/06/12 01:08:08 metalrock Exp $
  */
 
 /* IMPORTANT NOTES:
@@ -301,6 +301,8 @@ serverhide {
 };
 
 general {
+        ignore_bogus_ts = no;
+
 	disable_auth = no;
 	default_floodcount = 10;
 	failed_oper_notice = yes;

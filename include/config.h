@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: config.h,v 7.162 2003/05/31 21:43:27 db Exp $
+ *  $Id: config.h,v 7.163 2003/06/12 01:08:10 metalrock Exp $
  */
 
 #ifndef INCLUDED_config_h
@@ -160,13 +160,6 @@
 #define LIPATH  ETCPATH "/links.txt"            /* cached links file */
 #endif /* !__vms */
 
-
-/* Ignore bogus timestamps from other servers. Yes this will desync
- * the network, but it will allow chanops to resync with a valid non TS 0
- *
- * This should be enabled network wide, or not at all.
- */
-#undef IGNORE_BOGUS_TS
 
 /* HIDE_SERVERS_IPS
  *

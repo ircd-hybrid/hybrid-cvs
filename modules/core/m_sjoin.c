@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.160 2003/06/07 09:56:50 michael Exp $
+ *  $Id: m_sjoin.c,v 1.161 2003/06/12 01:08:14 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.160 $";
+const char *_version = "$Revision: 1.161 $";
 #endif
 
 /* ms_sjoin()
@@ -185,28 +185,30 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   doesop  = (parv[4 + args][0] == '@' || parv[4 + args][1] == '@');
   oldmode = &chptr->mode;
 
-#ifdef IGNORE_BOGUS_TS
-  if (newts < 800000000)
+  if (ConfigFileEntry.ignore_bogus_ts)
   {
-    sendto_realops_flags(UMODE_DEBUG, L_ALL,
-			 "*** Bogus TS %lu on %s ignored from %s",
-			 (unsigned long)newts, chptr->chname,
-			 client_p->name);
+    if (newts < 800000000)
+    {
+      sendto_realops_flags(UMODE_DEBUG, L_ALL,
+			   "*** Bogus TS %lu on %s ignored from %s",
+			   (unsigned long)newts, chptr->chname,
+			   client_p->name);
 
-    newts = (oldts == 0) ? oldts : 800000000;
+      newts = (oldts == 0) ? oldts : 800000000;
+    }
   }
-#else
-  if (!isnew && !newts && oldts)
+  else
   {
-    sendto_channel_local(ALL_MEMBERS, chptr,
- 		":%s NOTICE %s :*** Notice -- TS for %s changed from %lu to 0",
-		me.name, chptr->chname, chptr->chname, (unsigned long)oldts);
-    sendto_realops_flags(UMODE_ALL, L_ALL,
-		         "Server %s changing TS on %s from %lu to 0",
-			 source_p->name, chptr->chname, (unsigned long)oldts);
+    if (!isnew && !newts && oldts)
+    {
+      sendto_channel_local(ALL_MEMBERS, chptr,
+ 		  	   ":%s NOTICE %s :*** Notice -- TS for %s changed from %lu to 0",
+		  	   me.name, chptr->chname, chptr->chname, (unsigned long)oldts);
+      sendto_realops_flags(UMODE_ALL, L_ALL,
+		           "Server %s changing TS on %s from %lu to 0",
+			   source_p->name, chptr->chname, (unsigned long)oldts);
+    }
   }
-#endif
-
   if (isnew)
     chptr->channelts = tstosend = newts;
   else if (newts == 0 || oldts == 0)
