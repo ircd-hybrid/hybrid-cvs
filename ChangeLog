@@ -1,3 +1,17 @@
+androsyn    2002/11/30 08:39:51 EST	(20021130_0)
+
+  Modified files:
+    src                  client.c 
+  Log:
+    Fixed the leaking linebuf issue.  Basically what would happen is that upon
+    exit_one_client() we never called linebuf_donebuf for the clients sendq and
+    recvq..oops.
+  
+  Revision  Changes    Path
+  7.303     +6 -2      ircd-hybrid-7/src/client.c
+
+
+
 db          2002/11/28 12:36:59 EST	(20021128_1)
 
   Modified files:
@@ -33371,4 +33385,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4124 2002/11/28 17:37:02 db Exp $
+$Id: ChangeLog,v 7.4125 2002/11/30 13:39:54 androsyn Exp $
