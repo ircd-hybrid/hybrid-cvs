@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.282 2003/06/14 03:39:26 db Exp $
+ *  $Id: s_user.c,v 7.283 2003/06/15 10:56:19 michael Exp $
  */
 
 #include "stdinc.h"
@@ -643,7 +643,7 @@ introduce_client(struct Client *client_p, struct Client *source_p)
   {
     if (IsCapable(uplink, CAP_SID) && HasID(source_p))
     {
-      sendto_one(uplink, "SID %s %d %lu %s %s %s %s %s %s :%s",
+      sendto_one(uplink, "UID %s %d %lu %s %s %s %s %s %s :%s",
                  source_p->name, source_p->hopcount+1,
 		 (unsigned long)source_p->tsinfo,
                  ubuf, source_p->username, source_p->host,
