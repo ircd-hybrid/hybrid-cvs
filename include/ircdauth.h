@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircdauth.h,v 1.1 1999/09/02 01:23:51 wnder Exp $
+ * $Id: ircdauth.h,v 7.1 1999/09/03 02:13:34 wnder Exp $
  */
 
 #ifndef INCLUDED_ircdauth_h
@@ -27,7 +27,7 @@ struct Client;
 /* ircdauth.c prototypes */
 
 int ConnectToIAuth();
-int GenerateClientID(const struct Client *cptr);
+void IAuthQuery(struct Client *client);
 int ParseIAuth();
 
 typedef struct IrcdAuthentication IrcdAuth;
@@ -41,5 +41,9 @@ struct IrcdAuthentication
 	int port; /* port for connection */
 	int socket; /* socket descriptor for IAuth connection */
 };
+
+/* external declarations */
+
+extern struct IrcdAuthentication iAuth;
 
 #endif /* INCLUDED_ircdauth_h */
