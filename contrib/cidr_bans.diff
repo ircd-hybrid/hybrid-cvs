@@ -1,15 +1,11 @@
-? buf.txt
-? contrib/cidr_bans.diff
 ? modules/core/m_killprotect.c
-? src/linebuf.c.diff
-? src/log
 Index: include/irc_string.h
 ===================================================================
 RCS file: /cvsroot/ircd-hybrid-7/include/irc_string.h,v
 retrieving revision 7.36
 diff -u -r7.36 irc_string.h
 --- include/irc_string.h	24 May 2002 23:34:07 -0000	7.36
-+++ include/irc_string.h	7 Aug 2002 00:43:11 -0000
++++ include/irc_string.h	19 Aug 2002 05:22:43 -0000
 @@ -30,9 +30,11 @@
   * match - returns 1 on successful match, 0 otherwise
   *
@@ -28,7 +24,7 @@ RCS file: /cvsroot/ircd-hybrid-7/src/channel.c,v
 retrieving revision 7.325
 diff -u -r7.325 channel.c
 --- src/channel.c	12 Jul 2002 01:24:03 -0000	7.325
-+++ src/channel.c	7 Aug 2002 00:43:11 -0000
++++ src/channel.c	19 Aug 2002 05:22:45 -0000
 @@ -1114,7 +1114,9 @@
    for (ban = chptr->banlist.head; ban; ban = ban->next)
    {
@@ -67,8 +63,8 @@ RCS file: /cvsroot/ircd-hybrid-7/src/match.c,v
 retrieving revision 7.20
 diff -u -r7.20 match.c
 --- src/match.c	31 May 2002 02:21:04 -0000	7.20
-+++ src/match.c	7 Aug 2002 00:43:11 -0000
-@@ -207,6 +207,73 @@
++++ src/match.c	19 Aug 2002 05:22:45 -0000
+@@ -207,6 +207,75 @@
    return 0;
  }
  
@@ -103,12 +99,14 @@ diff -u -r7.20 match.c
 +  strcpy(address, s2);
 +  
 +  ipmask = strrchr(mask, '@');
-+  if(mask == NULL)
++  if(ipmask == NULL)
 +    return 0;
 +  
 +  *ipmask++ = '\0';
 +  
 +  ip = strrchr(address, '@');
++  if(ip == NULL)
++    return 0;
 +  *ip++ = '\0';
 +  
 +  len = strrchr(ipmask, '/');
