@@ -1,6 +1,6 @@
                        Oper Challenge and Response System
 
-   $Id: challenge.txt,v 1.9 2002/07/17 23:31:11 leeh Exp $
+   $Id: challenge.txt,v 1.10 2002/10/29 20:14:36 db Exp $
 
    Copyright (c) 2001 by ircd-hybrid team
 
@@ -224,7 +224,7 @@
  # work, but gave me a framework for execing stuff and getting the response.
 
  # For Hybrid's cvs...
- # $Id: challenge.txt,v 1.9 2002/07/17 23:31:11 leeh Exp $
+ # $Id: challenge.txt,v 1.10 2002/10/29 20:14:36 db Exp $
 
  xecho ... Loading challenge.irc by xyst, feer.
 
