@@ -1,6 +1,6 @@
 diff -ur nohalfops/contrib/m_clearchan.c halfops/contrib/m_clearchan.c
---- nohalfops/contrib/m_clearchan.c	Sun Apr 11 19:07:01 2004
-+++ halfops/contrib/m_clearchan.c	Sun Apr 11 19:07:11 2004
+--- nohalfops/contrib/m_clearchan.c	Mon Apr 26 21:53:38 2004
++++ halfops/contrib/m_clearchan.c	Mon Apr 26 21:55:39 2004
 @@ -197,6 +197,7 @@
  remove_our_modes(struct Channel *chptr, struct Client *source_p)
  {
@@ -10,8 +10,8 @@ diff -ur nohalfops/contrib/m_clearchan.c halfops/contrib/m_clearchan.c
  
    /* Clear all +beI modes */
 diff -ur nohalfops/contrib/m_force.c halfops/contrib/m_force.c
---- nohalfops/contrib/m_force.c	Sun Apr 11 19:07:01 2004
-+++ halfops/contrib/m_force.c	Sun Apr 11 19:07:11 2004
+--- nohalfops/contrib/m_force.c	Mon Apr 26 21:53:38 2004
++++ halfops/contrib/m_force.c	Mon Apr 26 21:55:39 2004
 @@ -133,6 +133,12 @@
        sjmode = '+';
        parv[2]++;
@@ -26,8 +26,8 @@ diff -ur nohalfops/contrib/m_force.c halfops/contrib/m_force.c
        type = 0;
        mode = sjmode = '\0'; /* make sure sjmode is 0. sjoin depends on it */
 diff -ur nohalfops/contrib/m_ojoin.c halfops/contrib/m_ojoin.c
---- nohalfops/contrib/m_ojoin.c	Sun Apr 11 19:07:01 2004
-+++ halfops/contrib/m_ojoin.c	Sun Apr 11 19:07:11 2004
+--- nohalfops/contrib/m_ojoin.c	Mon Apr 26 21:53:38 2004
++++ halfops/contrib/m_ojoin.c	Mon Apr 26 21:55:39 2004
 @@ -103,6 +103,8 @@
                  modeletter = 'o'; name++; break;
        case '+': tmp_flags = CHFL_VOICE;
@@ -38,8 +38,8 @@ diff -ur nohalfops/contrib/m_ojoin.c halfops/contrib/m_ojoin.c
        case '&':
          tmp_flags = 0;
 diff -ur nohalfops/include/channel_mode.h halfops/include/channel_mode.h
---- nohalfops/include/channel_mode.h	Sun Apr 11 19:07:01 2004
-+++ halfops/include/channel_mode.h	Sun Apr 11 19:07:11 2004
+--- nohalfops/include/channel_mode.h	Mon Apr 26 21:53:38 2004
++++ halfops/include/channel_mode.h	Mon Apr 26 21:55:39 2004
 @@ -53,11 +53,12 @@
  
  /* Channel related flags */
@@ -67,8 +67,8 @@ diff -ur nohalfops/include/channel_mode.h halfops/include/channel_mode.h
 +#define CHACCESS_CHANOP     2
  #endif /* INCLUDED_channel_mode_h */
 diff -ur nohalfops/include/supported.h halfops/include/supported.h
---- nohalfops/include/supported.h	Sun Apr 11 19:07:01 2004
-+++ halfops/include/supported.h	Sun Apr 11 19:07:11 2004
+--- nohalfops/include/supported.h	Mon Apr 26 21:53:38 2004
++++ halfops/include/supported.h	Mon Apr 26 21:55:39 2004
 @@ -56,7 +56,7 @@
  		  " CALLERID%s"
  
@@ -79,8 +79,8 @@ diff -ur nohalfops/include/supported.h halfops/include/supported.h
                          ConfigChannel.use_invex ? "I" : "", \
                          "b,k,l,imnpst", \
 diff -ur nohalfops/modules/core/m_join.c halfops/modules/core/m_join.c
---- nohalfops/modules/core/m_join.c	Sun Apr 11 19:07:01 2004
-+++ halfops/modules/core/m_join.c	Sun Apr 11 19:07:11 2004
+--- nohalfops/modules/core/m_join.c	Mon Apr 26 21:53:38 2004
++++ halfops/modules/core/m_join.c	Mon Apr 26 21:55:39 2004
 @@ -716,6 +716,7 @@
  remove_our_modes(struct Channel *chptr, struct Client *source_p)
  {
@@ -90,8 +90,8 @@ diff -ur nohalfops/modules/core/m_join.c halfops/modules/core/m_join.c
  }
  
 diff -ur nohalfops/modules/core/m_kick.c halfops/modules/core/m_kick.c
---- nohalfops/modules/core/m_kick.c	Sun Apr 11 19:07:01 2004
-+++ halfops/modules/core/m_kick.c	Sun Apr 11 19:07:11 2004
+--- nohalfops/modules/core/m_kick.c	Mon Apr 26 21:53:38 2004
++++ halfops/modules/core/m_kick.c	Mon Apr 26 21:55:39 2004
 @@ -135,7 +135,7 @@
          return;
        }
@@ -120,8 +120,8 @@ diff -ur nohalfops/modules/core/m_kick.c halfops/modules/core/m_kick.c
      * - In the case of a server kicking a user (i.e. CLEARCHAN),
      *   the kick should show up as coming from the server which did
 diff -ur nohalfops/modules/core/m_message.c halfops/modules/core/m_message.c
---- nohalfops/modules/core/m_message.c	Sun Apr 11 19:07:01 2004
-+++ halfops/modules/core/m_message.c	Sun Apr 11 19:07:11 2004
+--- nohalfops/modules/core/m_message.c	Mon Apr 26 21:53:38 2004
++++ halfops/modules/core/m_message.c	Mon Apr 26 21:55:39 2004
 @@ -342,8 +342,10 @@
      {
        if (*nick == '@')
@@ -156,9 +156,9 @@ diff -ur nohalfops/modules/core/m_message.c halfops/modules/core/m_message.c
    else
    {
 diff -ur nohalfops/modules/core/m_sjoin.c halfops/modules/core/m_sjoin.c
---- nohalfops/modules/core/m_sjoin.c	Sun Apr 11 19:07:01 2004
-+++ halfops/modules/core/m_sjoin.c	Sun Apr 11 19:09:00 2004
-@@ -332,7 +332,7 @@
+--- nohalfops/modules/core/m_sjoin.c	Mon Apr 26 21:53:38 2004
++++ halfops/modules/core/m_sjoin.c	Mon Apr 26 21:55:40 2004
+@@ -317,7 +317,7 @@
      fl = 0;
      num_prefix = 0;
  
@@ -167,7 +167,7 @@ diff -ur nohalfops/modules/core/m_sjoin.c halfops/modules/core/m_sjoin.c
      {
        if (*s == '@')
        {
-@@ -344,6 +344,11 @@
+@@ -329,6 +329,11 @@
          fl |= CHFL_VOICE;
          s++;
        }
@@ -179,7 +179,7 @@ diff -ur nohalfops/modules/core/m_sjoin.c halfops/modules/core/m_sjoin.c
      }
  
      target_p = find_person(s);
-@@ -368,6 +373,11 @@
+@@ -353,6 +358,11 @@
          *nick_ptr++ = '@';
          *uid_ptr++  = '@';
        }
@@ -191,7 +191,7 @@ diff -ur nohalfops/modules/core/m_sjoin.c halfops/modules/core/m_sjoin.c
        if (fl & CHFL_VOICE)
        {
          *nick_ptr++ = '+';
-@@ -381,7 +391,7 @@
+@@ -366,7 +376,7 @@
  
      if (!keep_new_modes)
      {
@@ -200,7 +200,7 @@ diff -ur nohalfops/modules/core/m_sjoin.c halfops/modules/core/m_sjoin.c
          fl = CHFL_DEOPPED;
        else
          fl = 0;
-@@ -484,6 +494,30 @@
+@@ -469,6 +479,30 @@
          pargs = 0;
        }
      }
@@ -240,8 +240,8 @@ diff -ur nohalfops/modules/core/m_sjoin.c halfops/modules/core/m_sjoin.c
  }
  
 diff -ur nohalfops/modules/m_invite.c halfops/modules/m_invite.c
---- nohalfops/modules/m_invite.c	Sun Apr 11 19:07:01 2004
-+++ halfops/modules/m_invite.c	Sun Apr 11 19:07:11 2004
+--- nohalfops/modules/m_invite.c	Mon Apr 26 21:53:38 2004
++++ halfops/modules/m_invite.c	Mon Apr 26 21:55:40 2004
 @@ -208,13 +208,13 @@
                    me.name, source_p->name, target_p->name, chptr->chname);
  
@@ -275,8 +275,8 @@ diff -ur nohalfops/modules/m_invite.c halfops/modules/m_invite.c
  			    ":%s NOTICE %s :%s is inviting %s to %s.",
  			    source_client_p->name, chptr->chname,
 diff -ur nohalfops/modules/m_knock.c halfops/modules/m_knock.c
---- nohalfops/modules/m_knock.c	Sun Apr 11 19:07:01 2004
-+++ halfops/modules/m_knock.c	Sun Apr 11 19:07:11 2004
+--- nohalfops/modules/m_knock.c	Mon Apr 26 21:53:38 2004
++++ halfops/modules/m_knock.c	Mon Apr 26 21:55:40 2004
 @@ -337,7 +337,7 @@
    if (source_p->user != NULL)
    {
@@ -287,8 +287,8 @@ diff -ur nohalfops/modules/m_knock.c halfops/modules/m_knock.c
  			     me.name, name, name,
  			     source_p->name, source_p->username,
 diff -ur nohalfops/modules/m_topic.c halfops/modules/m_topic.c
---- nohalfops/modules/m_topic.c	Sun Apr 11 19:07:01 2004
-+++ halfops/modules/m_topic.c	Sun Apr 11 19:07:11 2004
+--- nohalfops/modules/m_topic.c	Mon Apr 26 21:53:38 2004
++++ halfops/modules/m_topic.c	Mon Apr 26 21:55:40 2004
 @@ -135,7 +135,7 @@
          return;
        }
@@ -299,8 +299,8 @@ diff -ur nohalfops/modules/m_topic.c halfops/modules/m_topic.c
          char topic_info[USERHOST_REPLYLEN]; 
          ircsprintf(topic_info, "%s!%s@%s",
 diff -ur nohalfops/src/channel.c halfops/src/channel.c
---- nohalfops/src/channel.c	Sun Apr 11 19:07:01 2004
-+++ halfops/src/channel.c	Sun Apr 11 19:07:11 2004
+--- nohalfops/src/channel.c	Mon Apr 26 21:53:38 2004
++++ halfops/src/channel.c	Mon Apr 26 21:55:40 2004
 @@ -170,6 +170,8 @@
      tlen = strlen(ms->client_p->name) + 1;  /* nick + space */
      if (ms->flags & CHFL_CHANOP)
@@ -352,8 +352,8 @@ diff -ur nohalfops/src/channel.c halfops/src/channel.c
  
    if (chptr->mode.mode & MODE_MODERATED)
 diff -ur nohalfops/src/channel_mode.c halfops/src/channel_mode.c
---- nohalfops/src/channel_mode.c	Sun Apr 11 19:07:01 2004
-+++ halfops/src/channel_mode.c	Sun Apr 11 19:07:11 2004
+--- nohalfops/src/channel_mode.c	Mon Apr 26 21:53:38 2004
++++ halfops/src/channel_mode.c	Mon Apr 26 21:55:40 2004
 @@ -72,6 +72,10 @@
  static void chm_op(struct Client *, struct Client *, struct Channel *, int,
                     int *, char **, int *, int, int, char, void *,
