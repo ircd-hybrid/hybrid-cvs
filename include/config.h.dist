@@ -19,16 +19,16 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: config.h.dist,v 7.72 2003/05/23 19:06:53 joshk Exp $
+ *  $Id: config.h.dist,v 7.73 2003/05/24 03:29:54 joshk Exp $
  */
 
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
 
 #ifdef __vms
-# include "setup_vms.h"
+#include "setup_vms.h"
 #else
-# include "setup.h"
+#include "setup.h"
 #endif
 
 /*
@@ -90,12 +90,12 @@
  */
 
 /* IRCD_PREFIX not needed in VMS -larne */
-/*#define IRCD_PREFIX     "IRCD$BASEDIR:"*/
+/* #define IRCD_PREFIX     "IRCD$BASEDIR:" */
 #define DPATH           "IRCD$BASEDIR:"
 #define BINPATH         "IRCD$BINDIR:"
 #define ETCPATH         "IRCD$CONFDIR:"
 #define LOGPATH         "IRCD$LOGDIR:"
-#define MSGPATH         "IRCD$MSGDIR:"
+#define MSGPATH		"IRCD$MSGDIR:"
 
 #undef MODPATH
 #undef AUTOMODPATH
@@ -105,6 +105,8 @@
 #define CPATH   ETCPATH "IRCD.CONF"             /* config file */
 #define KPATH   ETCPATH "KLINE.CONF"            /* kline file */
 #define XPATH   ETCPATH "XLINE.CONF"            /* xline file */
+#define CRESVPATH   ETCPATH "CRESV.CONF"        /* channel resvs file */
+#define NRESVPATH   ETCPATH "NRESV.CONF"        /* channel resvs file */
 #define DLPATH  ETCPATH "DLINE.CONF"            /* dline file */
 #define GPATH   LOGPATH "GLINE.LOG"             /* gline logfile */
 #define RPATH   ETCPATH "IRCD.RSA"              /* RSA private key file */
@@ -148,6 +150,8 @@
 #define CPATH   ETCPATH "/ircd.conf"            /* ircd.conf file */
 #define KPATH   ETCPATH "/kline.conf"           /* kline file */
 #define XPATH   ETCPATH "/xline.conf"           /* xline file */
+#define CRESVPATH   ETCPATH "/cresv.conf"       /* channel resvs file */
+#define NRESVPATH   ETCPATH "/nresv.conf"       /* nick resvs file */
 #define DLPATH  ETCPATH "/dline.conf"           /* dline file */
 #define GPATH   LOGPATH "/gline.log"            /* gline logfile */
 #define RPATH   ETCPATH "/ircd.rsa"             /* ircd rsa private keyfile */
