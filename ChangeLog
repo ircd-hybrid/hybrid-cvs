@@ -1,3 +1,19 @@
+db          2003/01/15 22:28:23 EST	(20030116_0)
+
+  Modified files:
+    include              s_conf.h 
+    src                  ircd.c s_conf.c 
+  Log:
+  - remove the expiration code. Having this destroys the code checking
+    for too many clients on one IP.
+  
+  Revision  Changes    Path
+  7.189     +0 -1      ircd-hybrid-7/include/s_conf.h
+  7.245     +0 -5      ircd-hybrid-7/src/ircd.c
+  7.334     +8 -39     ircd-hybrid-7/src/s_conf.c
+
+
+
 db          2003/01/13 11:35:40 EST	(20030113_0)
 
   Modified files:
@@ -33928,4 +33944,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4161 2003/01/13 16:35:43 db Exp $
+$Id: ChangeLog,v 7.4162 2003/01/16 03:28:26 db Exp $
