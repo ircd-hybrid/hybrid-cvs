@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.4 2002/09/03 21:30:51 db Exp $
+ *  $Id: m_whois.c,v 1.5 2002/10/30 03:33:20 bill Exp $
  */
 
 #include "stdinc.h"
@@ -193,7 +193,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-const char *_version = "$Revision: 1.4 $";
+const char *_version = "$Revision: 1.5 $";
 #endif
 /*
 ** m_whois
@@ -572,14 +572,8 @@ static void whois_person(struct Client *source_p,struct Client *target_p,
 	       source_p->name, target_p->name, target_p->user->away);
 
   if (IsOper(target_p))
-    {
-      sendto_one(source_p, form_str(RPL_WHOISOPERATOR),
-		 me.name, source_p->name, target_p->name);
-
-      if (IsAdmin(target_p))
-	sendto_one(source_p, form_str(RPL_WHOISADMIN),
-		   me.name, source_p->name, target_p->name);
-    }
+    sendto_one(source_p, form_str(RPL_WHOISOPERATOR),
+               me.name, source_p->name, target_p->name);
 
   /* Don't show remote whois info if server is under
    * serverhide. Lusers can figure out if the client is local or not

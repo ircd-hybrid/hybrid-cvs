@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.7 2002/10/24 03:35:54 bill Exp $
+ *   $Id: m_operspy.c,v 1.8 2002/10/30 03:33:20 bill Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -124,7 +124,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.7 $";
+const char *_version = "$Revision: 1.8 $";
 #endif
 
 /*
@@ -444,13 +444,8 @@ static void mo_operspy(struct Client *client_p, struct Client *source_p,
                a2client_p ? a2client_p->info : "*Not On This Net*");
 
     if (IsOper(target_p))
-    {
       sendto_one(client_p, form_str(RPL_WHOISOPERATOR), me.name,
                  client_p->name, target_p->name);
-      if (IsAdmin(target_p))
-        sendto_one(client_p, form_str(RPL_WHOISADMIN), me.name,
-                   client_p->name, target_p->name);
-    }
 
     if (MyConnect(target_p))
       sendto_one(client_p, form_str(RPL_WHOISIDLE), me.name,

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: numeric.h,v 7.29 2002/08/20 01:32:19 db Exp $
+ *  $Id: numeric.h,v 7.30 2002/10/30 03:33:22 bill Exp $
  */
 
 #ifndef INCLUDED_numeric_h
@@ -214,8 +214,6 @@ extern const char* form_str(int);
 /*      RPL_WHOISSVCMSG      310         Dalnet */
 /*	RPL_WHOISHELPOP	     310	unreal */
 /*	RPL_WHOISSERVICE     310	austnet */
-
-#define RPL_WHOISADMIN       308
 
 #define RPL_WHOISUSER        311
 #define RPL_WHOISSERVER      312
