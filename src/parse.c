@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.53 2000/12/24 01:57:35 ejb Exp $
+ *   $Id: parse.c,v 7.54 2000/12/24 02:00:23 ejb Exp $
  */
 #include "parse.h"
 #include "client.h"
@@ -237,6 +237,8 @@ int parse(struct Client *cptr, char *buffer, char *bufend)
   ** changed how this works - now paramcount is simply the
   ** required number of arguments for a command.  imo the
   ** previous behavior isn't needed --is
+  ** ok, now we do support it, for ISON brokenness among
+  ** other things. --is
   */
 
   /* Note initially true: s==NULL || *(s-1) == '\0' !! */
