@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.13 2000/03/31 02:38:27 db Exp $
+ * $Id: config.h,v 7.14 2000/04/02 15:46:36 db Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -866,6 +866,6 @@ void    free_fludees();
 
 #define LLVER1
 
-#define CONFIG_H_LEVEL_6
+#define CONFIG_H_LEVEL_7
 
 #endif /* INCLUDED_config_h */
