@@ -1,3 +1,19 @@
+db          2002/01/04 21:15:43 EST	(20020105_0)
+
+  Modified files:
+    servlink             servlink.h 
+    src                  channel.c 
+  Log:
+  - Two tiny portability changes suggested by Joseph Mallett
+    missing void * in channel.c check_splitmode()
+    moved order of externs in serverlink.h
+  
+  Revision  Changes    Path
+  1.20      +6 -4      ircd-hybrid-7/servlink/servlink.h
+  7.290     +1 -1      ircd-hybrid-7/src/channel.c
+
+
+
 leeh        2002/01/04 10:01:58 EST	(20020104_4)
 
   Modified files:
@@ -2213,7 +2229,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3288 2002/01/04 15:02:04 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3289 2002/01/05 02:15:49 db Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -20567,4 +20583,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3288 2002/01/04 15:02:04 leeh Exp $
+$Id: ChangeLog,v 7.3289 2002/01/05 02:15:49 db Exp $
