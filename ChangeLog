@@ -1,3 +1,18 @@
+db          2003/02/02 23:33:45 EST	(20030203_0)
+
+  Modified files:
+    include              tools.h 
+    src                  tools.c 
+  Log:
+  - fix dlinkFindDelete() for now
+    easier to do it this way, then look at the code. code re-use!
+  
+  Revision  Changes    Path
+  1.20      +6 -16     ircd-hybrid-7/include/tools.h
+  7.26      +4 -15     ircd-hybrid-7/src/tools.c
+
+
+
 db          2003/02/02 15:47:25 EST	(20030202_1)
 
   Modified files:
@@ -34738,4 +34753,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4215 2003/02/02 20:47:28 db Exp $
+$Id: ChangeLog,v 7.4216 2003/02/03 04:33:47 db Exp $
