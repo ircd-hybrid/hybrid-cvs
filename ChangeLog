@@ -1,3 +1,15 @@
+db          2002/11/27 10:46:25 EST	(20021127_2)
+
+  Modified files:
+    include              numeric.h 
+  Log:
+  - grrrr KNOCKDISABLED needs to use 715 (thank you Michael)
+  
+  Revision  Changes    Path
+  7.31      +1 -1      ircd-hybrid-7/include/numeric.h
+
+
+
 jmallett    2002/11/26 22:56:25 EST	(20021127_1)
 
   Modified files:
@@ -33322,4 +33334,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4120 2002/11/27 03:56:28 jmallett Exp $
+$Id: ChangeLog,v 7.4121 2002/11/27 15:46:28 db Exp $
