@@ -1,3 +1,15 @@
+androsyn    2002/10/09 12:59:50 EDT	(20021009_1)
+
+  Modified files:
+    modules/core         m_server.c 
+  Log:
+  Move this allocation down a bit.
+  
+  Revision  Changes    Path
+  1.89      +5 -6      ircd-hybrid-7/modules/core/m_server.c
+
+
+
 db          2002/10/09 11:08:33 EDT	(20021009_0)
 
   Modified files:
@@ -32294,4 +32306,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4051 2002/10/09 15:08:36 db Exp $
+$Id: ChangeLog,v 7.4052 2002/10/09 16:59:52 androsyn Exp $
