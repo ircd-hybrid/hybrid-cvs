@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu, Computing Center and Jarkko Oikarinen
  *
- * $Id: list.c,v 7.20 2001/01/04 20:36:52 a1kmm Exp $
+ * $Id: list.c,v 7.21 2001/01/06 05:28:35 ejb Exp $
  */
 #include "tools.h"
 #include "blalloc.h"
@@ -119,8 +119,9 @@ struct User* make_user(struct Client *cptr)
       user->channel.tail = NULL;
       user->invited.head = NULL;
       user->invited.tail = NULL;
+	  user->id[0] = '\0';
       cptr->user = user;
-    }
+	}
   return user;
 }
 

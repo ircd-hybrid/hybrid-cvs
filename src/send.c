@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.102 2001/01/06 03:33:45 ejb Exp $
+ *   $Id: send.c,v 7.103 2001/01/06 05:28:35 ejb Exp $
  */
 #include "tools.h"
 #include "send.h"
@@ -384,6 +384,58 @@ sendto_one(struct Client *to, const char *pattern, ...)
   va_end(args);
 
   (void)send_message(to, (char *)sendbuf, len);
+  Debug((DEBUG_SEND,"Sending [%s] to %s",sendbuf,to->name));
+} /* sendto_one() */
+
+/*
+ * sendto_one
+ *
+ * inputs	- pointer to destination client
+ *		- var args message
+ * output	- NONE
+ * side effects	- send message to single client
+ */
+void
+sendto_one_prefix(struct Client *to, struct Client *prefix, const char *pattern, ...)
+
+{
+  int ilen, llen;
+  va_list args;
+  char ibuf[IRCD_BUFSIZE + 1];
+  char lbuf[IRCD_BUFSIZE + 1];
+  struct Client *sendto;
+  
+  /* send remote if to->from non NULL */
+  if (to->from)
+    sendto = to->from;
+  else
+	  sendto = to;
+  
+  if (to->fd < 0)
+    {
+      Debug((DEBUG_ERROR,
+             "Local socket %s with negative fd... AARGH!",
+             to->name));
+    }
+  else if (IsMe(to))
+    {
+      sendto_realops_flags(FLAGS_ALL,
+			   "Trying to send [%s] to myself!", sendbuf);
+      return;
+    }
+
+  va_start(args, pattern);
+  send_format(sendbuf, pattern, args);
+  va_end(args);
+
+  ilen = ircsprintf(ibuf, ":%s %s", ID(prefix), sendbuf);
+  llen = ircsprintf(lbuf, ":%s %s", prefix->name, sendbuf);
+  
+  if (IsServer(sendto) && IsCapable(to->from, CAP_UID))
+	  send_message(sendto, ibuf, ilen);
+  else
+	  send_message(sendto, lbuf, llen);
+  
   Debug((DEBUG_SEND,"Sending [%s] to %s",sendbuf,to->name));
 } /* sendto_one() */
 
