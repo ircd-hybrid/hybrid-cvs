@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: m_force.c,v 1.29 2003/07/21 10:45:59 michael Exp $
+ * $Id: m_force.c,v 1.30 2003/09/20 04:47:19 bill Exp $
  */
 
 #include "stdinc.h"
@@ -75,7 +75,7 @@ _moddeinit(void)
   mod_del_cmd(&forcepart_msgtab);
 }
 
-const char *_version = "$Revision: 1.29 $";
+const char *_version = "$Revision: 1.30 $";
 #endif
 
 /* m_forcejoin()
@@ -195,7 +195,7 @@ mo_forcejoin(struct Client *client_p, struct Client *source_p,
     }
 
     /* channel name must begin with & or # */
-    if (!IsChannelName(newch))
+    if (!IsChanPrefix(*newch))
     {
       sendto_one(source_p, form_str(ERR_BADCHANNAME),
                  me.name, source_p->name, newch);

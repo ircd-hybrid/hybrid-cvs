@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.352 2003/09/20 01:23:41 bill Exp $
+ *  $Id: ircd_parser.y,v 1.353 2003/09/20 04:47:26 bill Exp $
  */
 
 %{
@@ -1647,7 +1647,7 @@ resv_channel: CHANNEL '=' QSTRING ';'
 {
   if (ypass == 2)
   {
-    if (IsChannelName(yylval.string))
+    if (IsChanPrefix(*yylval.string))
     {
       char def_reason[] = "No reason specified";
 

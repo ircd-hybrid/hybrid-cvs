@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_knock.c,v 1.63 2003/06/25 08:46:56 michael Exp $
+ *  $Id: m_knock.c,v 1.64 2003/09/20 04:47:22 bill Exp $
  */
 
 #include "stdinc.h"
@@ -83,7 +83,7 @@ _moddeinit(void)
   delete_capability("KNOCK");
 }
 
-const char *_version = "$Revision: 1.63 $";
+const char *_version = "$Revision: 1.64 $";
 #endif
 
 /* m_knock
@@ -190,7 +190,7 @@ parse_knock_local(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if (!IsChannelName(name))
+  if (!IsChanPrefix(*name))
   {
     sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
                me.name, source_p->name, name);
@@ -293,7 +293,7 @@ parse_knock_remote(struct Client *client_p, struct Client *source_p,
   if ((p = strchr(name, ',')) != NULL)
     *p = '\0';
 
-  if (!IsChannelName(name) || (chptr = hash_find_channel(name)) == NULL)
+  if (!IsChanPrefix(*name) || (chptr = hash_find_channel(name)) == NULL)
     return;
 
   if (IsMember(source_p, chptr))

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_topic.c,v 1.64 2003/06/22 17:47:39 michael Exp $
+ *  $Id: m_topic.c,v 1.65 2003/09/20 04:47:23 bill Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&topic_msgtab);
 }
 
-const char *_version = "$Revision: 1.64 $";
+const char *_version = "$Revision: 1.65 $";
 #endif
 
 /* m_topic()
@@ -91,7 +91,7 @@ m_topic(struct Client *client_p, struct Client *source_p,
   if (MyClient(source_p) && !IsFloodDone(source_p))
     flood_endgrace(source_p);
 
-  if (IsChannelName(parv[1]))
+  if (IsChanPrefix(*parv[1]))
   {
     if ((chptr = hash_find_channel(parv[1])) == NULL)
     {
@@ -219,7 +219,7 @@ ms_topic(struct Client *client_p, struct Client *source_p,
   if (parc < 5)
     return;
 
-  if (parv[1] && IsChannelName(parv[1]))
+  if (parv[1] && IsChanPrefix(*parv[1]))
   {
     if ((chptr = hash_find_channel(parv[1])) == NULL)
       return;

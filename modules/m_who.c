@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_who.c,v 1.88 2003/07/11 09:20:53 michael Exp $
+ *  $Id: m_who.c,v 1.89 2003/09/20 04:47:23 bill Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&who_msgtab);
 }
 
-const char *_version = "$Revision: 1.88 $";
+const char *_version = "$Revision: 1.89 $";
 #endif
 
 static void who_global(struct Client *source_p, char *mask, int server_oper);
@@ -130,7 +130,7 @@ m_who(struct Client *client_p, struct Client *source_p,
   }
 
   /* '/who #some_channel' */
-  if (IsChannelName(mask))
+  if (IsChanPrefix(*mask))
   {
     /* List all users on a given channel */
     if ((chptr = hash_find_channel(mask)) != NULL)

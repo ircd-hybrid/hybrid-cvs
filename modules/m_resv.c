@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_resv.c,v 1.32 2003/08/16 03:33:23 metalrock Exp $
+ *  $Id: m_resv.c,v 1.33 2003/09/20 04:47:23 bill Exp $
  */
 
 #include "stdinc.h"
@@ -72,7 +72,7 @@ _moddeinit(void)
   mod_del_cmd(&unresv_msgtab);
 }
 
-const char *_version = "$Revision: 1.32 $";
+const char *_version = "$Revision: 1.33 $";
 #endif
 
 /* mo_resv()
@@ -229,7 +229,7 @@ parse_resv(struct Client *source_p, char *name,
 {
   struct ConfItem *conf;
 
-  if (IsChannelName(name))
+  if (IsChanPrefix(*name))
   {
     struct ResvChannel *resv_p;
 
@@ -304,7 +304,7 @@ remove_resv(struct Client *source_p, char *name, int cluster)
 {
   struct ConfItem *conf;
 
-  if (IsChannelName(name))
+  if (IsChanPrefix(*name))
   {
     struct ResvChannel *resv_p;
 

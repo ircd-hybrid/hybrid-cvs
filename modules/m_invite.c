@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_invite.c,v 1.64 2003/07/08 20:54:55 michael Exp $
+ *  $Id: m_invite.c,v 1.65 2003/09/20 04:47:22 bill Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&invite_msgtab);
 }
 
-const char *_version = "$Revision: 1.64 $";
+const char *_version = "$Revision: 1.65 $";
 #endif
 
 /*
@@ -105,7 +105,7 @@ m_invite(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if (!IsChannelName(parv[2]))
+  if (!IsChanPrefix(*parv[2]))
   {
     if (MyClient(source_p))
       sendto_one(source_p, form_str(ERR_NOSUCHCHANNEL),
@@ -255,7 +255,7 @@ ms_invite(struct Client *client_p, struct Client *source_p,
     if(check_channel_name(parv[2]) == 0)
       return;
 
-    if (!IsChannelName(parv[2]))
+    if (!IsChanPrefix(*parv[2]))
       return;
 
     if ((chptr = hash_find_channel(parv[2])) == NULL)
@@ -280,7 +280,7 @@ ms_invite(struct Client *client_p, struct Client *source_p,
     if(check_channel_name(parv[3]) == 0)
       return;
 
-    if (!IsChannelName(parv[3]))
+    if (!IsChanPrefix(*parv[3]))
       return;
 
     if ((chptr = hash_find_channel(parv[3])) == NULL)

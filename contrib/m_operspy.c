@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.46 2003/08/02 11:23:31 adx Exp $
+ *   $Id: m_operspy.c,v 1.47 2003/09/20 04:47:19 bill Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -117,7 +117,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.46 $";
+const char *_version = "$Revision: 1.47 $";
 #endif
 
 #ifdef OPERSPY_LOG
@@ -382,7 +382,7 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
     }
 
     /* /who #channel */
-    if (IsChannelName(mask))
+    if (IsChanPrefix(*mask))
     {
       if ((chptr_who = hash_find_channel(mask)) != NULL)
       {

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.155 2003/09/13 19:04:29 metalrock Exp $
+ *  $Id: channel.h,v 7.156 2003/09/20 04:47:21 bill Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -113,8 +113,6 @@ extern void free_channel_list(dlink_list *);
                  find_channel_link(who, chan)) ? 1 : 0)
 #define AddMemberFlag(x, y) ((x)->flags |=  (y))
 #define DelMemberFlag(x, y) ((x)->flags &= ~(y))
-
-#define IsChannelName(name) ((name) && (*(name) == '#' || *(name) == '&'))
 
 struct Ban          /* also used for exceptions -orabidoo */
 {
