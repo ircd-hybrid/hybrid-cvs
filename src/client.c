@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.280 2002/06/26 21:16:13 androsyn Exp $
+ *  $Id: client.c,v 7.281 2002/06/26 21:35:27 leeh Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -1140,8 +1140,13 @@ exit_remote_pending(void *unused)
   struct remote_exited *rexit;
   dlink_node *ptr, *next;
   int count = 0;
+
   /* XXX: 1500 is an arbitrary number of exits to do at once.. */
+#ifdef EFNET
+  for(ptr = remote_exit_pending.head; ptr != NULL && count <= 15000; ptr = next)
+#else
   for(ptr = remote_exit_pending.head; ptr != NULL && count <= 1500; ptr = next)
+#endif
   {
     rexit = ptr->data;
     next = ptr->next;
