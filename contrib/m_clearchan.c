@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_clearchan.c,v 1.43 2003/06/18 07:51:42 joshk Exp $
+ *   $Id: m_clearchan.c,v 1.44 2003/06/29 22:46:11 michael Exp $
  */
 
 #include "stdinc.h"
@@ -68,7 +68,7 @@ _moddeinit(void)
   mod_del_cmd(&clearchan_msgtab);
 }
 
-const char *_version = "$Revision: 1.43 $";
+const char *_version = "$Revision: 1.44 $";
 
 #endif
 
@@ -174,7 +174,7 @@ static void kick_list(struct Client *client_p, struct Client *source_p,
   {
     ms = m->data;
     if (ms->client_p != source_p)
-      remove_user_from_channel(chptr, ms->client_p);
+      remove_user_from_channel(ms);
   }
 
   sendto_one(source_p, ":%s!%s@%s JOIN %s",

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.398 2003/06/25 08:46:59 michael Exp $
+ *  $Id: channel.c,v 7.399 2003/06/29 22:46:17 michael Exp $
  */
 
 #include "stdinc.h"
@@ -85,7 +85,7 @@ init_channels(void)
 }
 
 /* add_user_to_channel()
- * 
+ *
  * inputs       - pointer to channel to add client to
  *              - pointer to client (who) to add
  *              - flags for chanops etc
@@ -115,41 +115,32 @@ add_user_to_channel(struct Channel *chptr, struct Client *who,
 }
 
 /* remove_user_from_channel()
- * 
- * inputs       - pointer to channel to remove client from
- *              - pointer to client (who) to remove
- * output       - did the channel get destroyed
+ *
+ * inputs       - pointer to membership
+ * output       - NONE
  * side effects - deletes an user from a channel by removing a link in the
  *                channels member chain.
  */
-int
-remove_user_from_channel(struct Channel *chptr, struct Client *who)
+void
+remove_user_from_channel(struct Membership *member)
 {
-  struct Membership *ms;
+  struct Client *client_p = member->client_p;
+  struct Channel *chptr   = member->chptr;
 
-  assert(chptr != NULL);
-  assert(who->user != NULL);
+  dlinkDelete(&member->channode, &chptr->members);
 
-  ms = find_channel_link(who, chptr);
-  assert(ms != NULL);
+  if (MyConnect(client_p))
+    dlinkDelete(&member->locchannode, &chptr->locmembers);
 
-  dlinkDelete(&ms->channode, &chptr->members);
+  dlinkDelete(&member->usernode, &client_p->user->channel);
 
-  if (MyConnect(who))
-    dlinkDelete(&ms->locchannode, &chptr->locmembers);
-
-  dlinkDelete(&ms->usernode, &who->user->channel);
-
-  BlockHeapFree(member_heap, ms);
+  BlockHeapFree(member_heap, member);
 
   if (dlink_list_length(&chptr->members) == 0)
   {
     assert(dlink_list_length(&chptr->locmembers) == 0);
     destroy_channel(chptr);
-    return(1);
   }
-
-  return(0);
 }
 
 /* send_members()

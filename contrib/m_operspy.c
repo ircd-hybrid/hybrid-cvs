@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.42 2003/06/25 16:54:56 joshk Exp $
+ *   $Id: m_operspy.c,v 1.43 2003/06/29 22:46:11 michael Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -117,7 +117,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.42 $";
+const char *_version = "$Revision: 1.43 $";
 #endif
 
 #ifdef OPERSPY_LOG
@@ -328,7 +328,7 @@ void mo_operspy(struct Client *client_p, struct Client *source_p,
      */ 
     add_user_to_channel(chptr_names, client_p, CHFL_CHANOP);
     channel_member_names(client_p, chptr_names, 1);
-    remove_user_from_channel(chptr_names, client_p);
+    remove_user_from_channel(find_channel_link(client_p, chptr_names));
 
     return;
   }

@@ -25,7 +25,7 @@
  *  IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *
- * $Id: m_force.c,v 1.27 2003/06/21 20:09:13 metalrock Exp $
+ * $Id: m_force.c,v 1.28 2003/06/29 22:46:11 michael Exp $
  */
 
 #include "stdinc.h"
@@ -75,7 +75,7 @@ _moddeinit(void)
   mod_del_cmd(&forcepart_msgtab);
 }
 
-const char *_version = "$Revision: 1.27 $";
+const char *_version = "$Revision: 1.28 $";
 #endif
 
 /* m_forcejoin()
@@ -261,6 +261,7 @@ mo_forcepart(struct Client *client_p, struct Client *source_p,
 {
   struct Client *target_p;
   struct Channel *chptr;
+  struct Membership *member;
 
   if (!IsAdmin(source_p))
   {
@@ -291,7 +292,7 @@ mo_forcepart(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if (!IsMember(target_p, chptr))
+  if ((member = find_channel_link(target_p, chptr)) == NULL)
   {
     sendto_one(source_p, form_str(ERR_USERNOTINCHANNEL),
                me.name, source_p->name, parv[2], parv[1]);
@@ -307,6 +308,6 @@ mo_forcepart(struct Client *client_p, struct Client *source_p,
                        target_p->name, target_p->username,
  	               target_p->host,chptr->chname,
 		       target_p->name);
-  remove_user_from_channel(chptr, target_p);
+  remove_user_from_channel(member);
 }
 

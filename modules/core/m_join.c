@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_join.c,v 1.4 2003/06/25 08:46:58 michael Exp $
+ *  $Id: m_join.c,v 1.5 2003/06/29 22:46:15 michael Exp $
  */
 
 #include "stdinc.h"
@@ -66,7 +66,7 @@ _moddeinit(void)
   mod_del_cmd(&join_msgtab);
 }
 
-const char *_version = "$Revision: 1.4 $";
+const char *_version = "$Revision: 1.5 $";
 #endif
 
 /*
@@ -381,10 +381,10 @@ do_join_0(struct Client *client_p, struct Client *source_p)
   {
     chptr = ((struct Membership *)ptr->data)->chptr;
 
-    sendto_channel_local(ALL_MEMBERS,chptr, ":%s!%s@%s PART %s",
+    sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s PART %s",
                          source_p->name, source_p->username,
                          source_p->host, chptr->chname);
-    remove_user_from_channel(chptr, source_p);
+    remove_user_from_channel(ptr->data);
   }
 
   assert(dlink_list_length(&source_p->user->channel) == 0);
