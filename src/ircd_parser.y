@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.336 2003/07/11 04:48:43 metalrock Exp $
+ *  $Id: ircd_parser.y,v 1.337 2003/07/11 17:55:12 db Exp $
  */
 
 %{
@@ -827,10 +827,13 @@ oper_entry: OPERATOR
 {
   if (ypass == 2)
   {
-    MyFree(class_name);
-    class_name = NULL;
     yy_conf = make_conf_item(OPER_TYPE);
     yy_aconf = (struct AccessItem *)map_to_conf(yy_conf);
+  }
+  else
+  {
+    MyFree(class_name);
+    class_name = NULL;
   }
 } '{' oper_items '}' ';'
 {
@@ -1294,10 +1297,13 @@ auth_entry: IRCD_AUTH
 {
   if (ypass == 2)
   {
-    MyFree(class_name);
-    class_name = NULL;
     yy_conf = make_conf_item(CLIENT_TYPE);
     yy_aconf = (struct AccessItem *)map_to_conf(yy_conf);
+  }
+  else
+  {
+    MyFree(class_name);
+    class_name = NULL;
   }
 } '{' auth_items '}' ';' 
 {
@@ -1348,13 +1354,13 @@ auth_entry: IRCD_AUTH
       {
 	DupString(new_aconf->host, yy_tmp->host);
         collapse(new_aconf->host);
-        add_conf_by_address(CONF_CLIENT, new_aconf);
       }
       else
 	DupString(new_aconf->host, "*");
 
-      free_collect_item(yy_tmp);
+      add_conf_by_address(CONF_CLIENT, new_aconf);
       dlinkDelete(&yy_tmp->node, &col_conf_list);
+      free_collect_item(yy_tmp);
     }
 
     MyFree(class_name);
@@ -1777,6 +1783,11 @@ connect_entry: CONNECT
     /* defaults */
     yy_aconf->port = PORTNUM;
   }
+  else
+  {
+    MyFree(class_name);
+    class_name = NULL;
+  }
 } '{' connect_items '}' ';'
 {
   if (ypass == 2)
@@ -1869,8 +1880,8 @@ connect_entry: CONNECT
 	  else
 	    DupString(match_item->host, "*");
 	}
-	free_collect_item(yy_hconf);
 	dlinkDelete(&yy_hconf->node, &hub_conf_list);
+	free_collect_item(yy_hconf);
       }
 
       /* Ditto for the LEAF confs */
@@ -1896,8 +1907,8 @@ connect_entry: CONNECT
 	  else
 	    DupString(match_item->host, "*");
 	}
-	free_collect_item(yy_lconf);
 	dlinkDelete(&yy_lconf->node, &leaf_conf_list);
+	free_collect_item(yy_lconf);
       }
       MyFree(class_name);
       class_name = NULL;
