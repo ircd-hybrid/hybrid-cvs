@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_server.c,v 1.35 2001/01/05 15:42:14 db Exp $
+ *   $Id: m_server.c,v 1.36 2001/01/05 19:29:08 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"  /* m_server prototype */
@@ -323,19 +323,18 @@ int ms_server(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
      if (!(aconf->status == CONF_LEAF || aconf->status == CONF_HUB))
        continue;
 
-     if (match(aconf->name,
-	       (aconf->status == CONF_LEAF) ? parv[0] : cptr->name))
-       continue;
-
-     if (match(aconf->host, host))
+     if (match(aconf->name, cptr->name))
        {
         if (aconf->status == CONF_HUB)
-          hlined++;
-       }
-     else
-       {
-        if (acptr->status == CONF_LEAF)
-          llined++;
+	  {
+	    if(match(aconf->host, host))
+	      hlined++;
+	  }
+        else if (acptr->status == CONF_LEAF)
+	  {
+	    if(match(aconf->host, host))
+	      llined++;
+	  }
        }
     }
   if (llined)
