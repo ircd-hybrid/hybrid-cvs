@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.174 2001/05/29 21:11:20 davidt Exp $
+ * $Id: ircd_parser.y,v 1.175 2001/05/30 04:05:32 ejb Exp $
  */
 
 %{
@@ -392,10 +392,11 @@ expr:		NUMBER
 		= { 
 			$$ = $1 / $3;
 		}
+/* leave this out until we find why it makes BSD yacc dump core -larne
 		| '-' expr  %prec NEG
 		= {
 			$$ = -$2;
-		}
+		} */
 		| '(' expr ')'
 		= {
 			$$ = $2;
