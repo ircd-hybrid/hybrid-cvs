@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.229 2003/03/09 23:06:18 db Exp $
+ *  $Id: s_user.c,v 7.230 2003/03/28 11:14:38 michael Exp $
  */
 
 #include "stdinc.h"
@@ -849,14 +849,15 @@ do_local_user(char* nick, struct Client* client_p, struct Client* source_p,
   if(source_p == NULL)
     return 0;
 
+  if(!IsUnknown(source_p))
+  {
+    sendto_one(source_p, form_str(ERR_ALREADYREGISTRED),
+               me.name, nick);
+    return(0);
+  }
+    
   user = make_user(source_p);
 
-  if (!IsUnknown(source_p))
-    {
-      sendto_one(source_p, form_str(ERR_ALREADYREGISTRED), me.name, nick);
-      return 0;
-    }
-    
   /*
    * don't take the clients word for it, ever
    */
