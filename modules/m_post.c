@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_post.c,v 1.9 2002/04/15 00:05:42 leeh Exp $
+ *  $Id: m_post.c,v 1.10 2002/05/24 02:39:13 androsyn Exp $
  */
 
 #include "handlers.h"
@@ -33,12 +33,23 @@
 #include "modules.h"
 #include "s_conf.h"
 
-static void mr_post(struct Client*, struct Client*, int, char**);
+static void mr_dumb_proxy(struct Client*, struct Client*, int, char**);
 
 struct Message post_msgtab = {
   "POST", 0, 0, 0, 0, MFLG_SLOW | MFLG_UNREG, 0,
-  {mr_post, m_ignore, m_ignore, m_ignore}
+  {mr_dumb_proxy, m_ignore, m_ignore, m_ignore}
 };
+
+struct Message get_msgtab = {
+  "GET", 0, 0, 0, 0, MFLG_SLOW | MFLG_UNREG, 0,
+  {mr_dumb_proxy, m_ignore, m_ignore, m_ignore}
+};
+
+struct Message put_msgtab = {
+  "PUT", 0, 0, 0, 0, MFLG_SLOW | MFLG_UNREG, 0,
+  {mr_dumb_proxy, m_ignore, m_ignore, m_ignore}
+};
+
 
 #ifndef STATIC_MODULES
 void
@@ -53,20 +64,22 @@ _moddeinit(void)
   mod_del_cmd(&post_msgtab);
 }
 
-const char *_version = "$Revision: 1.9 $";
+const char *_version = "$Revision: 1.10 $";
 #endif
 /*
-** mr_post
+** mr_dumb_proxy
 **      parv[0] = sender prefix
 **      parv[1] = comment
 */
-static void mr_post(struct Client *client_p,
+static void mr_dumb_proxy(struct Client *client_p,
                   struct Client *source_p,
                   int parc,
                   char *parv[])
 {
   sendto_realops_flags(FLAGS_REJ, L_ALL,
-                       "Client rejected for POST command: [%s@%s]",
+                       "HTTP Proxy disconnected: [%s@%s]",
                        client_p->username, client_p->host);
   exit_client(client_p, source_p, source_p, "Client Exit");
 }
+
+

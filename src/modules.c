@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.100 2002/05/23 22:20:15 leeh Exp $
+ *  $Id: modules.c,v 7.101 2002/05/24 02:39:16 androsyn Exp $
  */
 
 #include "config.h"
@@ -606,6 +606,8 @@ load_all_modules(int warn)
 	mod_add_cmd(&ping_msgtab);
 	mod_add_cmd(&pong_msgtab);
 	mod_add_cmd(&post_msgtab);
+	mod_add_cmd(&get_msgtab);
+        mod_add_cmd(&put_msgtab);
 	mod_add_cmd(&quit_msgtab);
 	mod_add_cmd(&rehash_msgtab);
 	mod_add_cmd(&restart_msgtab);
