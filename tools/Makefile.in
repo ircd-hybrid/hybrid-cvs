@@ -1,4 +1,4 @@
-# $Id: Makefile.in,v 7.42 2003/05/25 03:05:05 joshk Exp $
+# $Id: Makefile.in,v 7.43 2003/05/26 00:14:16 joshk Exp $
 
 CC		= @CC@
 INSTALL		= @INSTALL@
@@ -37,8 +37,9 @@ mkpasswd: ../include/setup.h mkpasswd.c
 	$(CC) $(CFLAGS) $(INCLUDES) $(LDFLAGS) -o mkpasswd mkpasswd.c $(CRYPT_LIB)
 
 # Default rule for everything
-.c: ../include/setup.h $<
-	$(CC) $(CFLAGS) $(INCLUDES) $(CPPFLAGS) -o $(<:.c=) $< 
+
+viconf convertconf convertklines convertilines: ../include/setup.h
+	$(CC) $(CFLAGS) $(INCLUDES) $(CPPFLAGS) $@.c -o $@
 
 clean:
 	$(RM) -f *.o *~ core *.exe $(PROGS)
@@ -55,8 +56,8 @@ install: build
 		fi; \
 		echo $(INSTALL_BIN) $$i $(bindir); \
 		$(INSTALL_BIN) $$i $(bindir); \
-	done; \
-        $(RM) -f $(bindir)/vimotd $(bindir)/viklines; \
-        $(LN) -s $(bindir)/viconf $(bindir)/vimotd; \
-        $(LN) -s $(bindir)/viconf $(bindir)/viklines
+	done
+	$(RM) -f $(bindir)/vimotd $(bindir)/viklines
+	cd $(bindir) && $(LN) -s viconf vimotd; \
+	$(LN) -s viconf viklines
 
