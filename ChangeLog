@@ -1,3 +1,17 @@
+wcampbel    2001/12/20 23:57:46 EST	(20011221_1)
+
+  Modified files:
+    doc                  challenge.txt 
+  Log:
+  Update to the CHALLENGE/Response Docs
+  
+  Approved by:    me.
+  
+  Revision  Changes    Path
+  1.7       +10 -0     ircd-hybrid-7/doc/challenge.txt
+
+
+
 db          2001/12/20 23:11:09 EST	(20011221_0)
 
   Modified files:
@@ -1255,7 +1269,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3227 2001/12/21 04:11:15 db Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3228 2001/12/21 04:57:52 wcampbel Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -19609,4 +19623,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3227 2001/12/21 04:11:15 db Exp $
+$Id: ChangeLog,v 7.3228 2001/12/21 04:57:52 wcampbel Exp $
