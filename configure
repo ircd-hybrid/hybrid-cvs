@@ -847,8 +847,7 @@ Optional Features:
   --disable-profile            Disable profiling(default).
   --enable-efence              Enable ElectricFence(memory debugger).
   --disable-efence             Disable ElectricFence(default).
-  --enable-block-alloc         Enable the block allocator(default)
-  --disable-block-alloc        Disable the block allocator(Only useful
+ --disable-block-alloc        Disable the block allocator(Only useful
                                with ElectricFence).
   --enable-poll                Enable poll() support.
   --disable-poll               Disable poll() support.
@@ -2800,6 +2799,13 @@ fi
 done
 test -n "$YACC" || YACC="yacc"
 
+
+if test "$YACC" = ":"; then
+	{ { echo "$as_me:$LINENO: error: could not locate a suitable parser generator; install bison, yacc, or byacc" >&5
+echo "$as_me: error: could not locate a suitable parser generator; install bison, yacc, or byacc" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
 # Find a good install program.  We prefer a C program (faster),
 # so one script is as good as another.  But avoid the broken or
 # incompatible versions:
@@ -3120,6 +3126,13 @@ _ACEOF
 fi
 
 fi
+
+if test "$LEX" = ":"; then
+	{ { echo "$as_me:$LINENO: error: could not locate a suitable lexical generator, install flex or lex." >&5
+echo "$as_me: error: could not locate a suitable lexical generator, install flex or lex." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+
 if test -n "$ac_tool_prefix"; then
   # Extract the first word of "${ac_tool_prefix}ranlib", so it can be a program name with args.
 set dummy ${ac_tool_prefix}ranlib; ac_word=$2
@@ -6118,27 +6131,20 @@ fi
     ;;
 esac
 
-
 echo "$as_me:$LINENO: checking if you want to do a profile build" >&5
 echo $ECHO_N "checking if you want to do a profile build... $ECHO_C" >&6
 # Check whether --enable-profile or --disable-profile was given.
 if test "${enable_profile+set}" = set; then
   enableval="$enable_profile"
-
-  case "$enableval" in
-  yes)
-    ac_cv_profile="yes"
-    IRC_CFLAGS="$IRC_CFLAGS -pg -a -static"
-    ;;
-  no)
-    ac_cv_profile="no"
-    ;;
-  esac
-
+  ac_cv_profile="yes"; IRC_CFLAGS="$IRC_CFLAGS -pg -a -static"
+else
+  ac_cv_profile="no"
 fi;
+
 echo "$as_me:$LINENO: result: $ac_cv_profile" >&5
 echo "${ECHO_T}$ac_cv_profile" >&6
 
+ac_cv_efence="no"
 
 echo "$as_me:$LINENO: checking if you want ElectricFence" >&5
 echo $ECHO_N "checking if you want ElectricFence... $ECHO_C" >&6
@@ -6163,113 +6169,60 @@ fi;
 echo "$as_me:$LINENO: result: $ac_cv_efence" >&5
 echo "${ECHO_T}$ac_cv_efence" >&6
 
-
 echo "$as_me:$LINENO: checking if you want the block allocator" >&5
 echo $ECHO_N "checking if you want the block allocator... $ECHO_C" >&6
 # Check whether --enable-block-alloc or --disable-block-alloc was given.
 if test "${enable_block_alloc+set}" = set; then
   enableval="$enable_block_alloc"
-
-  case "$enableval" in
-  yes)
-    ac_cv_balloc="yes"
-    ;;
-  no)
-    ac_cv_balloc="no"
-    cat >>confdefs.h <<\_ACEOF
+  ac_cv_balloc="no"; cat >>confdefs.h <<\_ACEOF
 #define NOBALLOC 1
 _ACEOF
 
-    ;;
-  esac
-
+else
+  ac_cv_balloc="yes"
 fi;
+
 echo "$as_me:$LINENO: result: $ac_cv_balloc" >&5
 echo "${ECHO_T}$ac_cv_balloc" >&6
-
 
 # Check whether --enable-poll or --disable-poll was given.
 if test "${enable_poll+set}" = set; then
   enableval="$enable_poll"
-
-  case "$enableval" in
-  yes)
-    echo "Forcing poll() to be enabled"
-    ac_cv_func_poll="yes"
-    ;;
-  no)
-    echo "Forcing poll() to be disabled"
-    ac_cv_func_poll="no"
-    ;;
-  esac
-
+  ac_cv_func_poll="yes"; echo "Forcing poll() to be enabled"
+else
+  ac_cv_func_poll="no"; echo "Forcing poll() to be disabled"
 fi;
 
 # Check whether --enable-select or --disable-select was given.
 if test "${enable_select+set}" = set; then
   enableval="$enable_select"
-
-  case "$enableval" in
-  yes)
-    echo "Forcing select() to be enabled"
-    ac_cv_func_select="yes"
-    ;;
-  no)
-    echo "Forcing select() to be disabled"
-    ac_cv_func_select="no"
-    ;;
-  esac
-
+  ac_cv_func_select="yes"; echo "Forcing select() to be enabled"
+else
+  ac_cv_func_select="no"; echo "Forcing select() to be disabled"
 fi;
 
 # Check whether --enable-kqueue or --disable-kqueue was given.
 if test "${enable_kqueue+set}" = set; then
   enableval="$enable_kqueue"
-
-  case "$enableval" in
-  yes)
-    echo "Forcing kqueue() to be enabled"
-    ac_cv_func_kqueue="yes"
-    ;;
-  no)
-    echo "Forcing kqueue() to be disabled"
-    ac_cv_func_kqueue="no"
-  ;;
-esac
-
+  ac_cv_func_kqueue="yes"; echo "Forcing kqueue() to be enabled"
+else
+  ac_cv_func_kqueue="no"; echo "Forcing kqueue() to be disabled"
 fi;
 
 # Check whether --enable-devpoll or --disable-devpoll was given.
 if test "${enable_devpoll+set}" = set; then
   enableval="$enable_devpoll"
-
-  case "$enableval" in
-  yes)
-    echo "Forcing /dev/poll to be enabled"
-    ac_cv_func_devpoll="yes"
-    ;;
-  no)
-    echo "Forcing /dev/poll to be disabled"
-    ac_cv_func_devpoll="no"
-  ;;
-esac
-
+  ac_cv_func_devpoll="yes"; echo "Forcing /dev/poll to be enabled"
+else
+  ac_cv_func_devpoll="no"; echo "Forcing /dev/poll to be disabled"
 fi;
 
 # Check whether --enable-rtsigio or --disable-rtsigio was given.
 if test "${enable_rtsigio+set}" = set; then
   enableval="$enable_rtsigio"
-
-  case "$enableval" in
-  yes)
-    echo "Forcing Linux RT Sigio to be enabled"
-    ac_cv_func_rtsigio="yes"
-    ;;
-  no)
-    ac_cv_func_rtsigio="no"
-  ;;
-esac
-
+  ac_cv_func_rtsigio="yes"; echo "Forcing Linux RT Sigio to be enabled"
+else
+  ac_cv_func_rtsigio="no"
 fi;
 
 if test $ac_cv_c_compiler_gnu = yes; then
@@ -6325,7 +6278,6 @@ echo "${ECHO_T}$ac_cv_prog_gcc_traditional" >&6
 fi
 
 
-
 echo "$as_me:$LINENO: checking for u_int32_t" >&5
 echo $ECHO_N "checking for u_int32_t... $ECHO_C" >&6
 if test "${ac_cv_type_u_int32_t+set}" = set; then
@@ -6374,13 +6326,75 @@ fi
 echo "$as_me:$LINENO: result: $ac_cv_type_u_int32_t" >&5
 echo "${ECHO_T}$ac_cv_type_u_int32_t" >&6
 if test $ac_cv_type_u_int32_t = yes; then
-  :
-else
 
 cat >>confdefs.h <<_ACEOF
-#define u_int32_t unsigned int
+#define HAVE_U_INT32_T 1
 _ACEOF
 
+
+else
+  { { echo "$as_me:$LINENO: error: u_int32_t is not defined, aborting" >&5
+echo "$as_me: error: u_int32_t is not defined, aborting" >&2;}
+   { (exit 1); exit 1; }; }
+fi
+echo "$as_me:$LINENO: checking for unsigned int" >&5
+echo $ECHO_N "checking for unsigned int... $ECHO_C" >&6
+if test "${ac_cv_type_unsigned_int+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+/* confdefs.h.  */
+_ACEOF
+cat confdefs.h >>conftest.$ac_ext
+cat >>conftest.$ac_ext <<_ACEOF
+/* end confdefs.h.  */
+$ac_includes_default
+int
+main ()
+{
+if ((unsigned int *) 0)
+  return 0;
+if (sizeof (unsigned int))
+  return 0;
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  (eval $ac_compile) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest.$ac_objext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_type_unsigned_int=yes
+else
+  echo "$as_me: failed program was:" >&5
+sed 's/^/| /' conftest.$ac_ext >&5
+
+ac_cv_type_unsigned_int=no
+fi
+rm -f conftest.$ac_objext conftest.$ac_ext
+fi
+echo "$as_me:$LINENO: result: $ac_cv_type_unsigned_int" >&5
+echo "${ECHO_T}$ac_cv_type_unsigned_int" >&6
+if test $ac_cv_type_unsigned_int = yes; then
+
+cat >>confdefs.h <<_ACEOF
+#define HAVE_UNSIGNED_INT 1
+_ACEOF
+
+
+else
+  { { echo "$as_me:$LINENO: error: u_int32_t is not defined, aborting" >&5
+echo "$as_me: error: u_int32_t is not defined, aborting" >&2;}
+   { (exit 1); exit 1; }; }
 fi
 
 
@@ -6431,6 +6445,12 @@ rm -f conftest.$ac_objext conftest.$ac_ext
 fi
 echo "$as_me:$LINENO: result: $ac_cv_type_uintptr_t" >&5
 echo "${ECHO_T}$ac_cv_type_uintptr_t" >&6
+if test $ac_cv_type_uintptr_t = yes; then
+  cat >>confdefs.h <<\_ACEOF
+#define HAVE_UINTPTR_T 1
+_ACEOF
+
+fi
 
 
 rm -f conftest conftest.f
@@ -6729,21 +6749,13 @@ fi
 
 ac_cv_assert="-DNDEBUG"
 
+
 # Check whether --enable-assert or --disable-assert was given.
 if test "${enable_assert+set}" = set; then
   enableval="$enable_assert"
-
-  case "$enableval" in
-  yes)
-    echo "Enabling assert() code."
-    ac_cv_assert=""
-    ;;
-  no)
-    echo "Disabling assert() code."
-    ac_cv_assert="-DNDEBUG"
-    ;;
-  esac
-
+  ac_cv_assert=""; echo "Enabling assert() code."
+else
+  ac_cv_assert="-DNDEBUG"; echo "Disabling assert() code."
 fi;
 
 IRC_CFLAGS="$IRC_CFLAGS $ac_cv_assert"
@@ -6756,18 +6768,9 @@ IRC_CFLAGS="$IRC_CFLAGS $ac_cv_assert"
 # Check whether --enable-small-net or --disable-small-net was given.
 if test "${enable_small_net+set}" = set; then
   enableval="$enable_small_net"
-
-  case "$enableval" in
-  yes)
-    echo "Enabling small net code."
-    IRC_CFLAGS="$IRC_CFLAGS -DSMALL_NET=1"
-    ;;
-  no)
-    echo "Disabling small net code."
-    IRC_CFLAGS="$IRC_CFLAGS"
-    ;;
-  esac
-
+  IRC_CFLAGS="$IRC_CFLAGS -DSMALL_NET=1"; echo "Enabling small net code."
+else
+  echo "Disabling small net code."
 fi;
 
 ac_cv_nicklen="9"
@@ -6778,14 +6781,11 @@ ac_cv_topiclen="120"
 # Check whether --with-nicklen or --without-nicklen was given.
 if test "${with_nicklen+set}" = set; then
   withval="$with_nicklen"
-
-  if test "$withval" = "no"; then
-	ac_cv_nicklen="9"
-  else
-	ac_cv_nicklen="$withval"
-  fi
-
+  ac_cv_nicklen="$withval"
+else
+  ac_cv_nicklen="9"
 fi;
+
 cat >>confdefs.h <<_ACEOF
 #define NICKLEN (${ac_cv_nicklen}+1)
 _ACEOF
@@ -6795,14 +6795,11 @@ _ACEOF
 # Check whether --with-maxclients or --without-maxclients was given.
 if test "${with_maxclients+set}" = set; then
   withval="$with_maxclients"
-
-  if test "$withval" = "no"; then
-	ac_cv_maxclients="200"
-  else
-	ac_cv_maxclients="$withval"
-  fi
-
+  ac_cv_maxclients="$withval"
+else
+  ac_cv_maxclients="200"
 fi;
+
 cat >>confdefs.h <<_ACEOF
 #define MAX_CLIENTS ${ac_cv_maxclients}
 _ACEOF
@@ -6813,13 +6810,18 @@ _ACEOF
 if test "${with_topiclen+set}" = set; then
   withval="$with_topiclen"
 
-  if test "$withval" = "no"; then
-	ac_cv_topiclen="120"
-  else
-	ac_cv_topiclen="$withval"
-  fi
+	if test $withval > 390; then
+		ac_cv_topiclen="390"
+		{ echo "$as_me:$LINENO: WARNING: TOPICLEN has a hard limit of 390. Setting TOPICLEN=390" >&5
+echo "$as_me: WARNING: TOPICLEN has a hard limit of 390. Setting TOPICLEN=390" >&2;}
+	else
+		ac_cv_topiclen="$withval"
+	fi
 
+else
+  ac_cv_topiclen="120"
 fi;
+
 cat >>confdefs.h <<_ACEOF
 #define TOPICLEN ${ac_cv_topiclen}
 _ACEOF
