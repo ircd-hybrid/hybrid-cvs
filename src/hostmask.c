@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.c,v 7.68 2002/07/19 13:22:03 ejb Exp $
+ *  $Id: hostmask.c,v 7.69 2002/07/31 17:30:57 leeh Exp $
  */
 
 #include "stdinc.h"
@@ -678,11 +678,11 @@ show_iline_prefix(struct Client *sptr, struct ConfItem *aconf, char *name)
     *prefix_ptr++ = '%';
   if (IsConfDoSpoofIp(aconf))
     *prefix_ptr++ = '=';
-  if (IsOper(sptr) && IsConfExemptKline(aconf))
+  if (MyOper(sptr) && IsConfExemptKline(aconf))
     *prefix_ptr++ = '^';
-  if (IsOper(sptr) && IsConfExemptLimits(aconf))
+  if (MyOper(sptr) && IsConfExemptLimits(aconf))
     *prefix_ptr++ = '>';
-  if (IsOper(sptr) && IsConfIdlelined(aconf))
+  if (MyOper(sptr) && IsConfIdlelined(aconf))
     *prefix_ptr++ = '<';
   *prefix_ptr = '\0';
   strncpy(prefix_ptr, name, USERLEN);
@@ -709,11 +709,7 @@ report_auth(struct Client *client_p)
       {
         aconf = arec->aconf;
 
-#ifndef HIDE_SPOOF_IPS
-        if (!IsOperAdmin(client_p) && IsConfDoSpoofIp(aconf))
-#else
-        if(IsConfDoSpoofIp(aconf))
-#endif
+        if (!MyOper(client_p) && IsConfDoSpoofIp(aconf))
           continue;
 
         get_printable_conf(aconf, &name, &host, &pass, &user, &port,
@@ -725,6 +721,9 @@ report_auth(struct Client *client_p)
         sendto_one(client_p, form_str(RPL_STATSILINE), me.name,
                    client_p->name, (IsConfRestricted(aconf)) ? 'i' : 'I', name,
                    show_iline_prefix(client_p, aconf, user),
+#ifdef HIDE_SPOOF_IPS
+                   IsConfDoSpoofIp(aconf) ? "255.255.255.255" :
+#endif
                    host, port, classname);
       }
 }
