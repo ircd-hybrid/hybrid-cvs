@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.5 2003/05/14 22:35:02 db Exp $
+ *  $Id: csvlib.c,v 7.6 2003/05/14 22:38:03 db Exp $
  */
 
 #include "stdinc.h"
@@ -90,7 +90,8 @@ parse_csv_file(FBFILE *file, int conf_type)
 	DupString(aconf->reason, reason_field);
       if (user_field != NULL)
 	DupString(aconf->user, user_field);
-      aconf->port = atoi(port);
+      if (port != NULL)
+	aconf->port = atoi(port);
       conf_add_d_conf(aconf);
       break;
     }
