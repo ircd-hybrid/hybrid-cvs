@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.252.2.1 2003/05/29 05:13:26 lusky Exp $
+ *  $Id: ircd.c,v 7.252.2.2 2003/10/26 02:08:22 db Exp $
  */
 
 #include "stdinc.h"
@@ -131,6 +131,9 @@ int splitmode;
 int splitchecking;
 int split_users;
 int split_servers;
+
+int rehashed_klines = 0;
+int rehashed_xlines = 0;
 
 static int irc_sleep(unsigned long useconds)
 {
@@ -311,6 +314,17 @@ io_loop(void)
   unsigned long empty_cycles=0, st=0, delay;
   while (ServerRunning)
     {
+      if (rehashed_klines)
+	{
+	  check_klines();
+	  rehashed_klines = 0;
+	}
+      else if (rehashed_xlines)
+	{
+	  check_xlines();
+	  rehashed_xlines = 0;
+	}
+
       /* Run pending events, then get the number of seconds to the next
        * event
        */
@@ -586,6 +600,9 @@ int main(int argc, char *argv[])
   ConfigFileEntry.klinefile = KPATH;    /* Server kline file */
   ConfigFileEntry.dlinefile = DLPATH;   /* dline file */
   ConfigFileEntry.glinefile = GPATH;    /* gline log file */
+  ConfigFileEntry.xlinefile = XPATH;    /* xline file */
+  ConfigFileEntry.cresvfile = CRESVPATH;    /* cresv file */
+  ConfigFileEntry.nresvfile = NRESVPATH;    /* nresv file */
 
   myargv = argv;
   umask(077);                /* better safe than sorry --SRB */

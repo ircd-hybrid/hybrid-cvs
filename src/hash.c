@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.47 2002/10/28 21:09:23 bill Exp $
+ *  $Id: hash.c,v 7.47.2.1 2003/10/26 02:08:22 db Exp $
  */
 
 #include "stdinc.h"
@@ -39,6 +39,10 @@
 #include "fdlist.h"
 #include "fileio.h"
 #include "memory.h"
+
+/* +angel for "safe_list" */
+#include "channel.h"
+#include "channel_mode.h"
 
 /* New hash code */
 /*
@@ -786,6 +790,163 @@ hash_find_resv(const char *name)
   
   return(NULL);
 }  
+
+/* +angel */
+/*
+ * Safe list code.
+ *
+ * The idea is really quite simple. As the link lists pointed to in
+ * each "bucket" of the channel hash table are traversed atomically
+ * there is no locking needed. Overall, yes, inconsistent reported
+ * state can still happen, but normally this isn't a big deal.
+ * I don't like sticking the code into hash.c but oh well. Moreover,
+ * if a hash isn't used in future, oops.
+ *
+ * - Dianora
+ */
+
+/* exceeding_sendq()
+ *
+ * inputs       - pointer to client to check
+ * ouput	- 1 if client is in danger of blowing its sendq
+ *		  0 if it is not.
+ * side effects -
+ *
+ * Sendq limit is fairly conservative at 1/2 (In original anyway)
+ */
+static int
+exceeding_sendq(struct Client *to)
+{
+  if (linebuf_len(&to->localClient->buf_sendq) > (get_sendq(to) / 2))
+    return(1);
+  else
+    return(0);
+}
+
+void free_list_task(struct ListTask *lt, struct Client *source_p)
+{
+  dlink_node *dl, *dln;
+
+  DLINK_FOREACH_SAFE(dl, dln, lt->show_mask.head)
+  {
+    MyFree(dl->data);
+    free_dlink_node(dl);
+  }
+  DLINK_FOREACH_SAFE(dl, dln, lt->hide_mask.head)
+  {
+    MyFree(dl->data);
+    free_dlink_node(dl);
+  }
+
+  MyFree(lt);
+
+  if (MyConnect(source_p))
+    source_p->localClient->list_task = NULL;
+}
+
+/* list_allow_channel()
+ *
+ * inputs       - channel name
+ *              - pointer to a list task
+ * output       - 1 if the channel is to be displayed
+ *                0 otherwise
+ * side effects -
+ */
+static int list_allow_channel(char *chname, struct ListTask *lt)
+{
+  dlink_node *dl;
+
+  DLINK_FOREACH(dl, lt->show_mask.head)
+    if (!match((char *)dl->data, chname))
+      return(0);
+  DLINK_FOREACH(dl, lt->hide_mask.head)
+    if (match((char *)dl->data, chname))
+      return(0);
+  return(1);
+}
+
+/* list_one_channel()
+ *
+ * inputs       - client pointer to return result to
+ *              - pointer to channel to list
+ *              - pointer to ListTask structure
+ * ouput	- none
+ * side effects -
+ */
+static void
+list_one_channel(struct Client *source_p, struct Channel *chptr,
+                 struct ListTask *list_task, int remote_request)
+{
+  if ((remote_request && chptr->chname[0] == '&') ||
+      (SecretChannel(chptr) && !IsMember(source_p, chptr)))
+    return;
+  if ((unsigned int) chptr->users < list_task->users_min ||
+      (unsigned int) chptr->users > list_task->users_max ||
+      (chptr->channelts != 0 &&
+       ((unsigned int) chptr->channelts < list_task->created_min ||
+        (unsigned int) chptr->channelts > list_task->created_max)) ||
+      (unsigned int) chptr->topic_time < list_task->topicts_min ||
+      (chptr->topic_time ? (unsigned int) chptr->topic_time : UINT_MAX) >
+      list_task->topicts_max)
+    return;
+
+  if (!list_allow_channel(chptr->chname, list_task))
+    return;
+  sendto_one(source_p, form_str(RPL_LIST), me.name, source_p->name,
+             chptr->chname, chptr->users,
+             chptr->topic == NULL ? "" : chptr->topic );
+}
+
+/* safe_list_channels()
+ *
+ * inputs	- pointer to client requesting list
+ * output	- 0/1
+ * side effects	- safely list all channels to source_p
+ *
+ * Walk the channel buckets, ensure all pointers in a bucket are
+ * traversed before blocking on a sendq. This means, no locking is needed.
+ *
+ * N.B. This code is "remote" safe, but is not currently used for
+ * remote clients.
+ *
+ * - Dianora
+ */
+void
+safe_list_channels(struct Client *source_p, struct ListTask *list_task,
+                   int only_unmasked_channels, int remote_request)
+{
+  struct Channel *chptr;
+
+  if (!only_unmasked_channels)
+  {
+    int i;
+
+    for (i = list_task->hash_index; i < CH_MAX; i++)
+    {
+      if (MyConnect(source_p))
+      {
+        if (exceeding_sendq(source_p))
+        {
+          list_task->hash_index = i;
+          return; /* still more to do */
+        }
+      }
+      for (chptr = channelTable[i].list; chptr; chptr = chptr->hnextch)
+        list_one_channel(source_p, chptr, list_task, remote_request);
+    }
+  }
+  else
+  {
+    dlink_node *dl;
+
+    DLINK_FOREACH(dl, list_task->show_mask.head)
+      if ((chptr = hash_find_channel((const char *)dl->data)) != NULL)
+        list_one_channel(source_p, chptr, list_task, remote_request);
+  }
+
+  free_list_task(list_task, source_p);
+  sendto_one(source_p, form_str(RPL_LISTEND), me.name, source_p->name);
+}
 
 
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.h,v 7.18 2002/05/24 23:34:07 androsyn Exp $
+ *  $Id: hash.h,v 7.18.4.1 2003/10/26 02:08:12 db Exp $
  */
 
 #ifndef INCLUDED_hash_h
@@ -86,6 +86,9 @@ extern void del_from_resv_hash_table(const char *name,
                                      struct ResvChannel *resv_p);
 extern struct ResvChannel *hash_find_resv(const char *name);
 
+/* +angel */
+extern void free_list_task(struct ListTask *, struct Client *);
+extern void safe_list_channels(struct Client *source_p, struct ListTask *, int, int);
 #endif  /* INCLUDED_hash_h */
 
 

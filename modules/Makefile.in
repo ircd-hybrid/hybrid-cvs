@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/modules
 #
-# $Id: Makefile.in,v 1.69 2002/06/16 16:31:25 leeh Exp $
+# $Id: Makefile.in,v 1.69.2.1 2003/10/26 02:08:15 db Exp $
 #
 CC		= @CC@
 AR		= @AR@
@@ -103,7 +103,8 @@ SRCS =                          \
   m_wallops.c \
   m_who.c \
   m_whois.c \
-  m_whowas.c 
+  m_whowas.c \
+  m_xline.c 
 
 ALL_SRCS = $(CORE_SRCS) \
            $(SRCS)

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.341 2003/02/16 22:06:46 bill Exp $
+ *  $Id: s_conf.c,v 7.341.2.1 2003/10/26 02:08:24 db Exp $
  */
 
 #include "stdinc.h"
@@ -112,9 +112,12 @@ static int ip_entries_count = 0;
 static int hash_ip(struct irc_inaddr *);
 static void garbage_collect_ip_entries(void);
 static struct ip_entry *find_or_add_ip(struct irc_inaddr*);
+static void parse_conf_file(int type, int cold);
 
 /* general conf items link list root */
 struct ConfItem* ConfigItemList = NULL;
+dlink_list temporary_klines = { NULL, NULL, 0 };
+dlink_list temporary_dlines = { NULL, NULL, 0 };
 
 /* conf xline link list root */
 struct ConfItem        *x_conf = ((struct ConfItem *)NULL);
@@ -1680,6 +1683,21 @@ add_temp_kline(struct ConfItem *aconf)
   add_conf_by_address(aconf->host, CONF_KILL, aconf->user, aconf);
 }
 
+/* add_temp_dline()
+ *
+ * inputs        - pointer to struct ConfItem
+ * output        - none
+ * Side effects  - links in given struct ConfItem into 
+ *                 temporary kline link list
+ */
+void
+add_temp_dline(struct ConfItem *aconf)
+{
+  dlinkAdd(aconf, make_dlink_node(), &temporary_dlines);
+  SetConfTemporary(aconf);
+  add_conf_by_address(aconf->host, CONF_DLINE, NULL, aconf);
+}
+
 /*
  * cleanup_tklines
  *
@@ -1692,6 +1710,7 @@ void
 cleanup_tklines(void *notused)
 {
   expire_tklines(&temporary_klines);
+  expire_tklines(&temporary_dlines);
 }
 
 /*
@@ -1714,18 +1733,30 @@ expire_tklines(dlink_list *tklist)
       if (kill_ptr->hold <= CurrentTime)
 	{
           /* Alert opers that a TKline expired - Hwy */
-          sendto_realops_flags(FLAGS_ALL, L_ALL,
-			       "Temporary K-line for [%s@%s] expired",
-			       (kill_ptr->user) ? kill_ptr->user : "*",
-			       (kill_ptr->host) ? kill_ptr->host : "*");
+	  if (kill_ptr->status & CONF_KILL)
+	    {
+	      sendto_realops_flags(FLAGS_ALL, L_ALL,
+				   "Temporary K-line for [%s@%s] expired",
+				   (kill_ptr->user) ? kill_ptr->user : "*",
+				   (kill_ptr->host) ? kill_ptr->host : "*");
 
-	  delete_one_address_conf(kill_ptr->host, kill_ptr);
-	  dlinkDelete(kill_node, tklist);
-	  free_dlink_node(kill_node);
+	      delete_one_address_conf(kill_ptr->host, kill_ptr);
+	      dlinkDelete(kill_node, tklist);
+	      free_dlink_node(kill_node);
+	    }
+	  else
+	    {
+	      sendto_realops_flags(FLAGS_ALL, L_ALL,
+				   "Temporary D-line for [%s] expired",
+				   (kill_ptr->host) ? kill_ptr->host : "*");
+
+	      delete_one_address_conf(kill_ptr->host, kill_ptr);
+	      dlinkDelete(kill_node, tklist);
+	      free_dlink_node(kill_node);
+	    }
 	}
     }
 }
-
 /*
  * oper_privs_as_string
  *
@@ -1762,6 +1793,15 @@ oper_privs_as_string(struct Client *client_p,int port)
     }
   else
     *privs_ptr++ = 'k';
+
+  if(port & CONF_OPER_X)
+    {
+      if(client_p)
+        SetOperX(client_p);
+      *privs_ptr++ = 'X';
+    }
+  else
+    *privs_ptr++ = 'x';
 
   if(port & CONF_OPER_N)
     {
@@ -1821,11 +1861,17 @@ oper_privs_as_string(struct Client *client_p,int port)
     {
       if (client_p)
 	SetOperAdmin(client_p);
-      *privs_ptr++ = 'A';
+      if (port & CONF_OPER_FLAG_HIDDEN_ADMIN)	/* "lie" if hidden */
+	  *privs_ptr++ = 'a';
+	else
+	  *privs_ptr++ = 'A';
     }
   else
     *privs_ptr++ = 'a';
   
+  if ((client_p != NULL)  && (port & CONF_OPER_FLAG_HIDDEN_ADMIN))
+    SetOperHiddenAdmin(client_p);
+
   *privs_ptr = '\0';
 
   return(privs_out);
@@ -1965,8 +2011,7 @@ get_printable_conf(struct ConfItem *aconf, char **name, char **host,
 void 
 read_conf_files(int cold)
 {
-  FBFILE *file;
-  const char *filename, *kfilename, *dfilename; /* kline or conf filename */
+  const char *filename;
 
   conf_fbfile_in = NULL;
 
@@ -2010,43 +2055,40 @@ read_conf_files(int cold)
   read_conf(conf_fbfile_in);
   fbclose(conf_fbfile_in);
 
-  kfilename = get_conf_name(KLINE_TYPE);
-  if (irccmp(filename, kfilename))
-    {
-      if((file = fbopen(kfilename,"r")) == NULL)
-        {
-	  if (cold)
-	    ilog(L_ERROR, "Failed reading kline file %s", filename);
-	  else
-	    sendto_realops_flags(FLAGS_ALL, L_ALL,
-				 "Can't open %s file klines could be missing!",
-				 kfilename);
-	}
-      else
-	{
-	  parse_k_file(file);
-	  fbclose(file);
-	}
-    }
+  parse_conf_file(KLINE_TYPE, cold);
+  parse_conf_file(DLINE_TYPE, cold);
+  parse_conf_file(XLINE_TYPE, cold);
+  parse_conf_file(NRESV_TYPE, cold);
+  parse_conf_file(CRESV_TYPE, cold);
+}
 
-  dfilename = get_conf_name(DLINE_TYPE);
-  if (irccmp(filename, dfilename) && irccmp(kfilename, dfilename))
-    {
-      if ((file = fbopen(dfilename,"r")) == NULL)
-	{
-	  if(cold)
-	    ilog(L_ERROR, "Failed reading dline file %s", dfilename);
-	  else
-	    sendto_realops_flags(FLAGS_ALL, L_ALL,
-				 "Can't open %s file dlines could be missing!",
-				 dfilename);
-	}
-      else
-	{
-	  parse_d_file(file);
-	  fbclose(file);
-	}
-    }
+/*
+ * parse_conf_file()
+ *
+ * inputs	- type of conf file to parse 
+ * output	- none
+ * side effects	- conf file for givenconf type is opened and read then parsed
+ */
+static void
+parse_conf_file(int type, int cold)
+{
+  const char *filename;
+  FBFILE *file;
+
+  filename = get_conf_name(type);
+
+  if ((file = fbopen(filename, "r")) == NULL)
+  {
+    if (cold)
+      ilog(L_ERROR, "Failed reading file %s", filename);
+    else
+      sendto_realops_flags(FLAGS_ALL, L_ALL, "Can't open %s file ", filename);
+  }
+  else
+  {
+    parse_csv_file(file, type);
+    fbclose(file);
+  }
 }
 
 /*
@@ -2191,104 +2233,6 @@ flush_deleted_I_P(void)
     }
 }
 
-/*
- * WriteKlineOrDline
- *
- * inputs       - kline or dline type flag
- *              - client pointer to report to
- *              - user name of target
- *              - host name of target
- *              - reason for target
- *              - time_t cur_time
- * output       - NONE
- * side effects - This function takes care of
- *                finding right kline or dline conf file, writing
- *                the right lines to this file, 
- *                notifying the oper that their kline/dline is in place
- *                notifying the opers on the server about the k/d line
- *                forwarding the kline onto the next U lined server
- *                
- */
-void 
-WriteKlineOrDline( KlineType type,
-		   struct Client *source_p,
-		   char *user,
-		   char *host,
-		   const char *reason,
-		   const char *oper_reason,
-		   const char *current_date,
-		   time_t cur_time)
-{
-  char buffer[1024];
-  FBFILE *out;
-  const char *filename;         /* filename to use for kline */
-
-  filename = get_conf_name(type);
-
-  if (type == DLINE_TYPE)
-    {
-      sendto_realops_flags(FLAGS_ALL, L_ALL,
-			   "%s added D-Line for [%s] [%s]",
-			   get_oper_name(source_p), host, reason);
-      sendto_one(source_p, ":%s NOTICE %s :Added D-Line [%s] to %s",
-		 me.name, source_p->name, host, filename);
-
-    }
-  else
-    {
-      sendto_realops_flags(FLAGS_ALL, L_ALL,
-			   "%s added K-Line for [%s@%s] [%s]",
-			   get_oper_name(source_p), user, host, reason);
-      sendto_one(source_p, ":%s NOTICE %s :Added K-Line [%s@%s]",
-		 me.name, source_p->name, user, host);
-    }
-
-  if ((out = fbopen(filename, "a")) == NULL)
-    {
-      sendto_realops_flags(FLAGS_ALL, L_ALL,
-			   "*** Problem opening %s ", filename);
-      return;
-    }
-
-  if (oper_reason == NULL)
-    oper_reason = "";
-
-  if(type==KLINE_TYPE)
-    ircsprintf(buffer, "\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",%ld\n",
-               user,
-	       host,
-               reason,
-	       oper_reason,
-	       current_date,
-	       get_oper_name(source_p),
-               (long) cur_time);
-  else
-    ircsprintf(buffer, "\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",%ld\n",
-               host,
-               reason,
-	       oper_reason,
-	       current_date,
-	       get_oper_name(source_p),
-               (long) cur_time);
-
-
-  if (fbputs(buffer,out) == -1)
-    {
-      sendto_realops_flags(FLAGS_ALL, L_ALL,
-			   "*** Problem writing to %s",filename);
-      fbclose(out);
-      return;
-    }
-      
-  fbclose(out);
-
-  if(type==KLINE_TYPE)
-    ilog(L_TRACE, "%s added K-Line for [%s@%s] [%s]",
-        source_p->name, user, host, reason);
-  else
-    ilog(L_TRACE, "%s added D-Line for [%s] [%s]",
-           get_oper_name(source_p), host, reason);
-}
 
 /* get_conf_name
  *
@@ -2297,17 +2241,31 @@ WriteKlineOrDline( KlineType type,
  * side effects - none
  */
 const char *
-get_conf_name(KlineType type)
+get_conf_name(ConfType type)
 {
-  if(type == CONF_TYPE)
+  switch(type)
     {
+    case CONF_TYPE:
       return(ConfigFileEntry.configfile);
-    }
-  else if(type == KLINE_TYPE)
-    {
+      break;
+    case KLINE_TYPE:
       return(ConfigFileEntry.klinefile);
+      break;
+    case DLINE_TYPE:
+      return(ConfigFileEntry.dlinefile);
+      break;
+    case XLINE_TYPE:
+      return(ConfigFileEntry.xlinefile);
+      break;
+    case NRESV_TYPE:
+      return(ConfigFileEntry.nresvfile);
+      break;
+    case CRESV_TYPE:
+      return(ConfigFileEntry.cresvfile);
+      break;
+    default:
+      break;
     }
-
   return(ConfigFileEntry.dlinefile);
 }
 

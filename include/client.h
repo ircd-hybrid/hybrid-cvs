@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.164 2003/02/16 22:54:35 db Exp $
+ *  $Id: client.h,v 7.164.2.1 2003/10/26 02:08:12 db Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -119,6 +119,17 @@ struct Vchan_map
 {
   struct Channel *base_chan;
   struct Channel *vchan;
+};
+
+
+struct ListTask
+{
+  int hash_index;       /* the bucket we are currently in */
+  dlink_list show_mask; /* show these channels..          */
+  dlink_list hide_mask; /* ..and hide these ones          */
+  unsigned int users_min, users_max;
+  unsigned int created_min, created_max;
+  unsigned int topicts_min, topicts_max;
 };
 
 struct Client
@@ -226,6 +237,8 @@ struct LocalUser
   int               flood_noticed;
 
   dlink_node        lclient_node;
+
+  struct ListTask   *list_task;
 
   /* Send and receive linebuf queues .. */
   buf_head_t        buf_sendq;
@@ -442,12 +455,15 @@ struct LocalUser
 #define FLAGS2_OPER_DIE         0x0800  /* oper can die */
 #define FLAGS2_OPER_REHASH      0x1000  /* oper can rehash */
 #define FLAGS2_OPER_ADMIN       0x2000  /* oper can set umode +a */
+#define FLAGS2_OPER_HIDDEN_ADMIN 0x4000 /* admin is hidden */
+#define FLAGS2_OPER_X           0x8000  /* oper can kill/kline */
 #define FLAGS2_OPER_FLAGS       (FLAGS2_OPER_GLOBAL_KILL | \
                                  FLAGS2_OPER_REMOTE | \
                                  FLAGS2_OPER_UNKLINE | \
                                  FLAGS2_OPER_GLINE | \
                                  FLAGS2_OPER_N | \
                                  FLAGS2_OPER_K | \
+				 FLAGS2_OPER_X | \
                                  FLAGS2_OPER_DIE | \
                                  FLAGS2_OPER_REHASH| \
                                  FLAGS2_OPER_ADMIN)
@@ -588,6 +604,10 @@ struct LocalUser
 #define SetOperRehash(x)        ((x)->flags2 |= FLAGS2_OPER_REHASH)
 #define IsOperAdmin(x)          ((x)->flags2 & FLAGS2_OPER_ADMIN)
 #define SetOperAdmin(x)         ((x)->flags2 |= FLAGS2_OPER_ADMIN)
+#define IsOperHiddenAdmin(x)	((x)->flags2 & FLAGS2_OPER_HIDDEN_ADMIN)
+#define SetOperHiddenAdmin(x)	((x)->flags2 |= FLAGS2_OPER_HIDDEN_ADMIN)
+#define IsOperX(x)              ((x)->flags2 & FLAGS2_OPER_X)
+#define SetOperX(x)             ((x)->flags2 |= FLAGS2_OPER_X)
 
 #define IsFloodDone(x)          ((x)->flags2 & FLAGS2_FLOODDONE)
 #define SetFloodDone(x)         ((x)->flags2 |= FLAGS2_FLOODDONE)
@@ -601,6 +621,7 @@ struct LocalUser
 #define MASK_IP 2
 
 extern void           check_klines(void);
+extern void           check_xlines(void);
 extern const char*    get_client_name(struct Client* client, int show_ip);
 extern void           init_client(void);
 extern struct Client* make_client(struct Client* from);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.71.2.2 2003/04/20 02:33:41 lusky Exp $
+ *  $Id: channel_mode.c,v 7.71.2.3 2003/10/26 02:08:21 db Exp $
  */
 
 #include "stdinc.h"
@@ -568,7 +568,7 @@ pretty_mask(char *mask)
     }
     else
     {
-      if (*mask != '\0')
+      if (*mask != '\0' && *mask != ':')
 	user = mask;
     }
   }
@@ -576,7 +576,7 @@ pretty_mask(char *mask)
   {
     ex = t;
     *t++ = '\0';
-    if (*mask != '\0')
+    if (*mask != '\0' && *mask != ':')
       nick = mask;
     if (*t != '\0')
       user = t;
@@ -588,7 +588,7 @@ pretty_mask(char *mask)
   }
   else
   {
-    if (*mask != '\0')
+    if (*mask != '\0' && *mask != ':')
       nick = mask;
   }
 
@@ -830,7 +830,7 @@ chm_simple(struct Client *client_p, struct Client *source_p,
   simple_modes_mask |= mode_type;
 
   /* setting + */
-  if ((dir == MODE_ADD) && !(chptr->mode.mode & mode_type))
+  if (dir == MODE_ADD)
   {
     chptr->mode.mode |= mode_type;
 
@@ -842,7 +842,7 @@ chm_simple(struct Client *client_p, struct Client *source_p,
     mode_changes[mode_count].mems = ALL_MEMBERS;
     mode_changes[mode_count++].arg = NULL;
   }
-  else if ((dir == MODE_DEL) && (chptr->mode.mode & mode_type))
+  else if (dir == MODE_DEL)
   {
     /* setting - */
 
@@ -1299,6 +1299,7 @@ chm_op(struct Client *client_p, struct Client *source_p,
 
   mode_get_status(chptr, targ_p, &t_op, &t_hop, &t_voice, 1);
 
+/*
   if (((dir == MODE_ADD) && t_op) ||
       ((dir == MODE_DEL) && !t_op
 #ifdef HALFOPS
@@ -1306,12 +1307,13 @@ chm_op(struct Client *client_p, struct Client *source_p,
 #endif
     ))
     return;
+*/
 
   if (MyClient(source_p) && (++mode_limit > MAXMODEPARAMS))
     return;
 
   /* Cancel mode changes... */
-
+/*
   for (i = 0; i < mode_count; i++)
     if (mode_changes[i].dir == MODE_ADD && 
         (mode_changes[i].letter == 'o'
@@ -1337,7 +1339,7 @@ chm_op(struct Client *client_p, struct Client *source_p,
         wasnt_voiced = 1;
       mode_changes[i].letter = 0;
     }
-
+*/
   if (dir == MODE_ADD)
   {
 
@@ -1639,7 +1641,7 @@ chm_voice(struct Client *client_p, struct Client *source_p,
 
   if (MyClient(source_p) && (++mode_limit > MAXMODEPARAMS))
     return;
-
+/*
   if (
 #ifndef REQUIRE_OANDV
       t_op ||
@@ -1650,7 +1652,7 @@ chm_voice(struct Client *client_p, struct Client *source_p,
       (dir == MODE_ADD && t_voice) ||
       (dir == MODE_DEL && !t_voice))
     return;
-
+*/
   if (dir == MODE_ADD)
   {
     mode_changes[mode_count].letter = c;
@@ -1664,6 +1666,7 @@ chm_voice(struct Client *client_p, struct Client *source_p,
   }
   else
   {
+/*
     for (i = 0; i < mode_count; i++)
     {
       if (mode_changes[i].dir == MODE_ADD && mode_changes[i].letter == 'v'
@@ -1673,7 +1676,7 @@ chm_voice(struct Client *client_p, struct Client *source_p,
         return;
       }
     }
-
+*/
     mode_changes[mode_count].letter = 'v';
     mode_changes[mode_count].dir = MODE_DEL;
     mode_changes[mode_count].caps = 0;
@@ -1734,9 +1737,10 @@ chm_limit(struct Client *client_p, struct Client *source_p,
   }
   else if (dir == MODE_DEL)
   {
+/*
     if (!chptr->mode.limit)
       return;
-
+*/
     chptr->mode.limit = 0;
 
     mode_changes[mode_count].letter = c;

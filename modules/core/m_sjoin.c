@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.140 2002/07/04 16:07:23 androsyn Exp $
+ *  $Id: m_sjoin.c,v 1.140.2.1 2003/10/26 02:08:18 db Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.140 $";
+const char *_version = "$Revision: 1.140.2.1 $";
 #endif
 /*
  * ms_sjoin
@@ -121,6 +121,7 @@ static void ms_sjoin(struct Client *client_p,
   char           *p; /* pointer used making sjbuf */
   int hide_or_not;
   int i;
+  int hidden = ConfigServerHide.hidden;
   dlink_node *m;
 #ifdef HALFOPS
   static         char sjbuf_hops[BUFSIZE]; /* buffer with halfops as % */
@@ -283,8 +284,9 @@ static void ms_sjoin(struct Client *client_p,
   if(!isnew && !newts && oldts)
   {
     sendto_channel_local(ALL_MEMBERS, chptr,
- 		":%s NOTICE %s :*** Notice -- TS for %s changed from %lu to 0",
-		me.name, chptr->chname, chptr->chname, oldts);
+	 ":%s NOTICE %s :*** Notice -- TS for %s changed from %lu to 0",
+       hidden?me.name:source_p->name, chptr->chname, chptr->chname, oldts);
+
     sendto_realops_flags(FLAGS_ALL, L_ALL,
 		         "Server %s changing TS on %s from %lu to 0",
 			 source_p->name, chptr->chname, oldts);
@@ -362,7 +364,7 @@ static void ms_sjoin(struct Client *client_p,
       remove_our_modes(hide_or_not, chptr, top_chptr, source_p);
       sendto_channel_local(ALL_MEMBERS, chptr,
 	    ":%s NOTICE %s :*** Notice -- TS for %s changed from %lu to %lu",
-	    me.name, chptr->chname, chptr->chname, oldts, newts);
+	    hidden?me.name:source_p->name, chptr->chname, chptr->chname, oldts, newts);
     }
      
   if (*modebuf != '\0')
@@ -372,12 +374,12 @@ static void ms_sjoin(struct Client *client_p,
       if (top_chptr != NULL)
 	sendto_channel_local(ALL_MEMBERS,
 			     chptr, ":%s MODE %s %s %s",
-			     me.name,
+			     hidden?me.name:source_p->name,
 			     top_chptr->chname, modebuf, parabuf);
       else
 	sendto_channel_local(ALL_MEMBERS,
 			     chptr, ":%s MODE %s %s %s",
-			     me.name,
+			     hidden?me.name:source_p->name,
 			     chptr->chname, modebuf, parabuf);
     }
 
@@ -610,7 +612,8 @@ static void ms_sjoin(struct Client *client_p,
 	        *mbuf = '\0';
 		sendto_channel_local(hide_or_not, chptr,
 		                     ":%s MODE %s %s %s %s %s %s",
-				     me.name, RootChan(chptr)->chname,
+				     hidden?me.name:source_p->name,
+				     RootChan(chptr)->chname,
 				     modebuf,
 				     para[0], para[1], para[2], para[3]);
                 mbuf = modebuf;
@@ -642,7 +645,7 @@ static void ms_sjoin(struct Client *client_p,
           *mbuf = '\0';
           sendto_channel_local(hide_or_not, chptr,
                                ":%s MODE %s %s %s %s %s %s",
-                               me.name,
+                               hidden?me.name:source_p->name,
                                RootChan(chptr)->chname,
                                modebuf,
                                para[0],para[1],para[2],para[3]);
@@ -678,7 +681,7 @@ nextnick:
     {
       sendto_channel_local(hide_or_not, chptr,
                            ":%s MODE %s %s %s %s %s %s",
-                           me.name,
+                           hidden?me.name:source_p->name,
                            RootChan(chptr)->chname,
                            modebuf,
                            para[0], para[1], para[2], para[3]);
@@ -882,6 +885,7 @@ static void remove_a_mode( int hide_or_not,
   char *lpara[MAXMODEPARAMS];
   char *chname;
   int count = 0;
+  int hidden = ConfigServerHide.hidden;
 
   mbuf = lmodebuf;
   *mbuf++ = '-';
@@ -909,7 +913,7 @@ static void remove_a_mode( int hide_or_not,
 	  *mbuf   = '\0';
 	  sendto_channel_local(hide_or_not, chptr,
 			       ":%s MODE %s %s %s %s %s %s",
-			       me.name,
+			       hidden?me.name:source_p->name,
 			       chname,
 			       lmodebuf,
 			       lpara[0], lpara[1], lpara[2], lpara[3] );
@@ -926,7 +930,7 @@ static void remove_a_mode( int hide_or_not,
       *mbuf   = '\0';
       sendto_channel_local(hide_or_not, chptr,
 			   ":%s MODE %s %s %s %s %s %s",
-			   me.name,
+			   hidden?me.name:source_p->name,
 			   chname,
 			   lmodebuf,
 			   lpara[0], lpara[1], lpara[2], lpara[3] );

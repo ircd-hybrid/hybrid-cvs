@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_list.c,v 1.45 2003/01/17 05:11:53 db Exp $
+ *  $Id: m_list.c,v 1.45.2.1 2003/10/26 02:08:15 db Exp $
  */
 
 #include "stdinc.h"
@@ -65,11 +65,125 @@ _moddeinit(void)
 {
   mod_del_cmd(&list_msgtab);
 }
-const char *_version = "$Revision: 1.45 $";
+const char *_version = "$Revision: 1.45.2.1 $";
 #endif
 static int list_all_channels(struct Client *source_p);
 static int list_named_channel(struct Client *source_p,char *name);
 
+
+static void
+do_list(struct Client *source_p, int parc, char *parv[])
+{
+  struct ListTask *lt;
+  int no_masked_channels;
+
+  if (MyConnect(source_p))
+  {
+    if (source_p->localClient->list_task != NULL)
+    {
+      free_list_task(source_p->localClient->list_task, source_p);
+      sendto_one(source_p, form_str(RPL_LISTEND), me.name, source_p->name);
+      return;
+    }
+  }
+
+  lt = (struct ListTask *) MyMalloc(sizeof(struct ListTask));
+  lt->users_max = UINT_MAX;
+  lt->created_max = UINT_MAX;
+  lt->topicts_max = UINT_MAX;
+  if (MyConnect(source_p))
+    source_p->localClient->list_task = lt;
+  no_masked_channels = 1;
+
+  if (parc > 1)
+  {
+    char *opt, *save;
+    dlink_list *list;
+    int i, errors = 0;
+
+    for (opt = strtoken(&save, parv[1], ","); opt != NULL;
+         opt = strtoken(&save, NULL, ","))
+      switch (*opt)
+      {
+        case '<': if ((i = atoi(opt + 1)) > 0)
+		    lt->users_max = (unsigned int) i - 1;
+                  else
+		    errors = 1;
+		  break;
+        case '>': if ((i = atoi(opt + 1)) >= 0)
+		    lt->users_min = (unsigned int) i + 1;
+		  else
+		    errors = 1;
+		  break;
+        case '-': break;
+        case 'C':
+	case 'c': switch (*++opt)
+	          {
+		    case '<': if ((i = atoi(opt + 1)) >= 0)
+		                lt->created_max = (unsigned int) (CurrentTime
+				                  - 60 * i);
+			      else
+			        errors = 1;
+			      break;
+		    case '>': if ((i = atoi(opt + 1)) >= 0)
+		                lt->created_min = (unsigned int) (CurrentTime
+				                  - 60 * i);
+			      else
+			        errors = 1;
+			      break;
+		    default: errors = 1;
+		  }
+		  break;
+	case 'T':
+	case 't': switch (*++opt)
+	          {
+		    case '<': if ((i = atoi(opt + 1)) >= 0)
+		                lt->topicts_min = (unsigned int) (CurrentTime
+				                  - 60 * i);
+			      else
+			        errors = 1;
+			      break;
+		    case '>': if ((i = atoi(opt + 1)) >= 0)
+		                lt->topicts_max = (unsigned int) (CurrentTime
+				                  - 60 * i);
+			      else
+			        errors = 1;
+			      break;
+		    default: errors = 1;
+		  }
+		  break;
+        default: if (*opt == '!')
+	         {
+		   list = &lt->hide_mask;
+		   opt++;
+		 }
+		 else list = &lt->show_mask;
+		 if (strpbrk(opt, "?*") != NULL)
+		 {
+		   if (list == &lt->show_mask)
+		     no_masked_channels = 0;
+		 }
+		 else if (!IsChannelName(opt))
+		   errors = 1;
+		 if (!errors)
+		 {
+                   char *s;
+		   DupString(s, opt);
+		   dlinkAdd(s, make_dlink_node(), list);
+		 }
+      }
+    if (errors)
+    {
+      free_list_task(lt, source_p);
+      sendto_one(source_p, form_str(ERR_LISTSYNTAX), me.name, source_p->name);
+      return;
+    }
+  }
+
+  sendto_one(source_p, form_str(RPL_LISTSTART), me.name, source_p->name);
+  safe_list_channels(source_p, lt, no_masked_channels &&
+                     lt->show_mask.head != NULL, !MyConnect(source_p));
+}
 
 /*
 ** m_list
@@ -106,14 +220,8 @@ static void m_list(struct Client *client_p,
     }
 
   /* If no arg, do all channels *whee*, else just one channel */
-  if (parc < 2 || BadPtr(parv[1]))
-    {
-      list_all_channels(source_p);
-    }
-  else
-    {
-      list_named_channel(source_p,parv[1]);
-    }
+  do_list(source_p, parc, parv);
+
 }
 
 

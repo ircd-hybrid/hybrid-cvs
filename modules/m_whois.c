@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.87.2.1 2003/06/12 11:44:03 db Exp $
+ *  $Id: m_whois.c,v 1.87.2.2 2003/10/26 02:08:16 db Exp $
  */
 
 #include "stdinc.h"
@@ -76,7 +76,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-const char *_version = "$Revision: 1.87.2.1 $";
+const char *_version = "$Revision: 1.87.2.2 $";
 #endif
 /*
 ** m_whois
@@ -480,8 +480,7 @@ whois_person(struct Client *source_p,struct Client *target_p, int glob)
 /* although we should fill in parc and parv, we don't ..
  *	 be careful of this when writing whois hooks
  */
-  if(MyClient(source_p)) 
-    hook_call_event("doing_whois", &hd);
+  hook_call_event("doing_whois", &hd);
   
   return;
 }

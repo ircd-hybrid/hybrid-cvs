@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.262 2002/11/12 13:45:42 db Exp $
+ *  $Id: ircd_parser.y,v 1.262.2.1 2003/10/26 02:08:23 db Exp $
  */
 
 %{
@@ -146,6 +146,7 @@ int   class_redirport_var;
 %token  HAVE_IDENT
 %token	HAVENT_READ_CONF
 %token  HIDDEN
+%token  HIDDEN_ADMIN
 %token  HIDE_SERVERS
 %token  HOST
 %token  HUB
@@ -281,6 +282,7 @@ int   class_redirport_var;
 %token  VCHANS_OPER_ONLY
 %token  VHOST
 %token  VHOST6
+%token  XLINE
 %token  WARN
 %token  WARN_NO_NLINE
 
@@ -739,8 +741,8 @@ oper_entry:     OPERATOR
 oper_items:     oper_items oper_item |
                 oper_item;
 
-oper_item:      oper_name  | oper_user | oper_password |
-                oper_class | oper_global_kill | oper_remote |
+oper_item:      oper_name  | oper_user | oper_password | oper_hidden_admin |
+                oper_class | oper_global_kill | oper_remote | oper_xline |
                 oper_kline | oper_unkline | oper_gline | oper_nick_changes |
                 oper_die | oper_rehash | oper_admin | oper_rsa_public_key_file | error;
 
@@ -792,6 +794,14 @@ oper_password:  PASSWORD '=' QSTRING ';'
     MyFree(yy_achead->passwd);
     DupString(yy_achead->passwd, yylval.string);
   };
+
+oper_hidden_admin: HIDDEN_ADMIN '=' TYES ';'
+{
+  yy_achead->port |= CONF_OPER_FLAG_HIDDEN_ADMIN;
+}   | HIDDEN_ADMIN '=' TNO ';'
+{
+  yy_achead->port &= ~CONF_OPER_FLAG_HIDDEN_ADMIN;
+};
 
 oper_rsa_public_key_file: RSA_PUBLIC_KEY_FILE '=' QSTRING ';'
   {
@@ -860,6 +870,10 @@ oper_remote: REMOTE '=' TYES ';' { yy_achead->port |= CONF_OPER_REMOTE;}
 oper_kline: KLINE '=' TYES ';' { yy_achead->port |= CONF_OPER_K;}
             |
             KLINE '=' TNO ';' { yy_achead->port &= ~CONF_OPER_K; } ;
+
+oper_xline: XLINE '=' TYES ';' { yy_achead->port |= CONF_OPER_X;}
+            |
+            XLINE '=' TNO ';' { yy_achead->port &= ~CONF_OPER_X; } ;
 
 oper_unkline: UNKLINE '=' TYES ';' { yy_achead->port |= CONF_OPER_UNKLINE;}
               |

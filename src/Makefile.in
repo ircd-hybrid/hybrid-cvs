@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.114.2.1 2003/05/29 03:02:15 lusky Exp $
+# $Id: Makefile.in,v 7.114.2.2 2003/10/26 02:08:20 db Exp $
 #
 CC		= @CC@
 INSTALL		= @INSTALL@
@@ -61,6 +61,7 @@ BASE_SRCS =                     \
   vchannel.c                    \
   class.c                       \
   client.c                      \
+  csvlib.c			\
   dynlink.c			\
   event.c                       \
   fdlist.c                      \
@@ -72,7 +73,6 @@ BASE_SRCS =                     \
   irc_string.c                  \
   ircd.c                        \
   ircd_signal.c                 \
-  kdparse.c			\
   linebuf.c                     \
   list.c                        \
   listener.c                    \

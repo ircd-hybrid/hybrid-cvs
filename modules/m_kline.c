@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.111 2002/11/13 13:12:02 db Exp $
+ *  $Id: m_kline.c,v 1.111.2.1 2003/10/26 02:08:15 db Exp $
  */
 
 #include "stdinc.h"
@@ -49,6 +49,9 @@
 static void mo_kline(struct Client *,struct Client *,int,char **);
 static void ms_kline(struct Client *,struct Client *,int,char **);
 static void mo_dline(struct Client *,struct Client *,int,char **);
+#ifndef IPV6
+static char *make_cidr(char *dlhost, struct Client *);
+#endif
 
 struct Message kline_msgtab = {
   "KLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
@@ -75,12 +78,12 @@ _moddeinit(void)
   mod_del_cmd(&kline_msgtab);
   mod_del_cmd(&dline_msgtab);
 }
-const char *_version = "$Revision: 1.111 $";
+const char *_version = "$Revision: 1.111.2.1 $";
 #endif
 
 /* Local function prototypes */
 
-static time_t  valid_tkline(struct Client *source_p, char *string);
+static time_t  valid_tkline(char *string);
 static char *cluster(char *);
 static int find_user_host(struct Client *source_p,
                           char *user_host_or_nick, char *user, char *host);
@@ -91,7 +94,6 @@ static int valid_user_host(struct Client *source_p, char *user, char *host);
 static int valid_wild_card(char *user, char *host);
 static int already_placed_kline(struct Client*, char*, char*);
 static void apply_kline(struct Client *source_p, struct ConfItem *aconf,
-                        const char *reason, const char *oper_reason,
 			const char *current_date, time_t cur_time);
 
 static void apply_tkline(struct Client *source_p, struct ConfItem *aconf,
@@ -138,7 +140,7 @@ mo_kline(struct Client *client_p, struct Client *source_p,
   parv++;
   parc--;
 
-  tkline_time = valid_tkline(source_p,*parv);
+  tkline_time = valid_tkline(*parv);
 
   if (tkline_time > 0)
     {
@@ -248,7 +250,7 @@ mo_kline(struct Client *client_p, struct Client *source_p,
 		 reason,
 		 current_date);
       DupString(aconf->passwd, buffer);
-      apply_kline(source_p, aconf, reason, oper_reason,
+      apply_kline(source_p, aconf,
 		  current_date, cur_time);
     }
 } /* mo_kline() */
@@ -312,7 +314,17 @@ ms_kline(struct Client *client_p, struct Client *source_p,
   if(!valid_comment(source_p, kreason))
     return;
 
+  /* We check if the kline already exists after we've announced its 
+   * arrived, to avoid confusing opers - fl
+   */
+  if (already_placed_kline(source_p, kuser, khost))
+    return;
+
   tkline_time = atoi(parv[2]);
+
+  set_time();
+  cur_time = CurrentTime;
+  current_date = smalldate(cur_time);
 
   if (find_u_conf((char *)source_p->user->server,
 		  source_p->username, source_p->host))
@@ -323,27 +335,17 @@ ms_kline(struct Client *client_p, struct Client *source_p,
 			   source_p->name, source_p->username,
 			   source_p->host, source_p->user->server);
 
-      /* We check if the kline already exists after we've announced its 
-       * arrived, to avoid confusing opers - fl
-       */
-      if (already_placed_kline(source_p, kuser, khost))
-        return;
-
       aconf = make_conf();
 
       aconf->status = CONF_KILL;
       DupString(aconf->user, kuser);
       DupString(aconf->host, khost);
       DupString(aconf->passwd, kreason);
-      current_date = smalldate((time_t) 0);
-      set_time();
-      cur_time = CurrentTime;
 
-      if (tkline_time)
+      if (tkline_time != 0)
 	apply_tkline(source_p, aconf, current_date, tkline_time);
       else
-	apply_kline(source_p, aconf, aconf->passwd, NULL,
-		    current_date, cur_time);
+	apply_kline(source_p, aconf, current_date, cur_time);
 
       }
 } /* ms_kline() */
@@ -358,14 +360,12 @@ ms_kline(struct Client *client_p, struct Client *source_p,
  */
 static void 
 apply_kline(struct Client *source_p, struct ConfItem *aconf,
-	    const char *reason, const char *oper_reason,
 	    const char *current_date, time_t cur_time)
 {
   add_conf_by_address(aconf->host, CONF_KILL, aconf->user, aconf);
-  WriteKlineOrDline(KLINE_TYPE, source_p, aconf->user, aconf->host,
-		    reason, oper_reason, current_date, cur_time);
+  write_conf_line(KLINE_TYPE, source_p, aconf, current_date, cur_time);
   /* Now, activate kline against current online clients */
-  check_klines();
+  rehashed_klines = 1;
 }
 
 /*
@@ -392,21 +392,45 @@ apply_tkline(struct Client *source_p, struct ConfItem *aconf,
   ilog(L_TRACE, "%s added temporary %d min. K-Line for [%s@%s] [%s]",
        source_p->name, tkline_time/60,
        aconf->user, aconf->host, aconf->passwd);
-  check_klines();
+  rehashed_klines = 1;
+}
+
+/*
+ * apply_tdline
+ *
+ * inputs	-
+ * output	- NONE
+ * side effects	- tkline as given is placed
+ */
+static void
+apply_tdline(struct Client *source_p, struct ConfItem *aconf,
+	     const char *current_date, int tkline_time)
+{
+  aconf->hold = CurrentTime + tkline_time;
+
+  add_temp_dline(aconf);
+  sendto_realops_flags(FLAGS_ALL, L_ALL,
+		       "%s added temporary %d min. D-Line for [%s] [%s]",
+		       get_oper_name(source_p), tkline_time/60,
+		       aconf->host, aconf->passwd);
+
+  sendto_one(source_p, ":%s NOTICE %s :Added temporary %d min. D-Line [%s]",
+	     me.name, source_p->name, tkline_time/60, aconf->host);
+  ilog(L_TRACE, "%s added temporary %d min. D-Line for [%s] [%s]",
+       source_p->name, tkline_time/60, aconf->host, aconf->passwd);
+  rehashed_klines = 1;
 }
 
 /*
  * valid_tkline()
  * 
- * inputs       - pointer to client requesting kline
- *              - argument count
- *              - pointer to ascii string in
+ * inputs       - pointer to ascii string in
  * output       - -1 not enough parameters
  *              - 0 if not an integer number, else the number
  * side effects - none
  */
 static time_t
-valid_tkline(struct Client *source_p, char *p)
+valid_tkline(char *p)
 {
   time_t result = 0;
 
@@ -429,8 +453,8 @@ valid_tkline(struct Client *source_p, char *p)
   if(result == 0)
     result = 1;
 
-  if(result > (24*60))
-    result = (24*60); /* Max it at 24 hours */
+  if(result > (24*60*10))
+    result = (24*60*10); /* Max it at 10 days */
 
   result = (time_t)result * (time_t)60;  /* turn it into seconds */
 
@@ -570,9 +594,10 @@ mo_dline(struct Client *client_p, struct Client *source_p,
 #endif
   struct irc_inaddr daddr;
   char cidr_form_host[HOSTLEN + 1];
-  struct ConfItem *aconf;
+  struct ConfItem *aconf=NULL;
+  time_t tkline_time=0;
   int bits, t;
-  char dlbuffer[1024];
+  char dlbuffer[512];
   const char* current_date;
   time_t cur_time;
 
@@ -583,18 +608,34 @@ mo_dline(struct Client *client_p, struct Client *source_p,
       return;
     }
 
-  dlhost = parv[1];
-  strlcpy(cidr_form_host, dlhost, HOSTLEN + 1);
-  cidr_form_host[HOSTLEN] = '\0';
+  parv++;
+  parc--;
+
+  tkline_time = valid_tkline(*parv);
+
+  if (tkline_time > 0)
+  {
+    parv++;
+    parc--;
+  }
+
+  if (parc == 0)
+  {
+    sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
+	       me.name, source_p->name, "DLINE");
+    return;
+  }
+
+  dlhost = *parv;
 
   if ((t=parse_netmask(dlhost, NULL, &bits)) == HM_HOST)
   {
 #ifdef IPV6
    sendto_one(source_p, ":%s NOTICE %s :Sorry, please supply an address.",
-              me.name, parv[0]);
+              me.name, source_p->name);
    return;
 #else
-      if (!(target_p = find_chasing(source_p, parv[1], NULL)))
+      if (!(target_p = find_chasing(source_p, dlhost, NULL)))
         return;
 
       if(!target_p->user)
@@ -604,7 +645,7 @@ mo_dline(struct Client *client_p, struct Client *source_p,
         {
           sendto_one(source_p,
                      ":%s NOTICE %s :Can't DLINE a server silly",
-                     me.name, parv[0]);
+                     me.name, source_p->name);
           return;
         }
               
@@ -612,7 +653,7 @@ mo_dline(struct Client *client_p, struct Client *source_p,
         {
           sendto_one(source_p,
                      ":%s NOTICE %s :Can't DLINE nick on another server",
-                     me.name, parv[0]);
+                     me.name, source_p->name);
           return;
         }
 
@@ -624,50 +665,24 @@ mo_dline(struct Client *client_p, struct Client *source_p,
           return;
         }
 
-      /*
-       * XXX - this is always a fixed length output, we can get away
-       * with strcpy here
-       *
-       * strncpy_irc(cidr_form_host, inetntoa((char *)&target_p->ip), 32);
-       * cidr_form_host[32] = '\0';
-       */
-       strcpy(cidr_form_host, inetntoa((char*) &target_p->localClient->ip));
-      
-       if ((p = strchr(cidr_form_host,'.')) == NULL)
-        return;
-      /* 192. <- p */
-
-      p++;
-      if ((p = strchr(p,'.')) == NULL)
-        return;
-      /* 192.168. <- p */
-
-      p++;
-      if ((p = strchr(p,'.')) == NULL)
-        return;
-      /* 192.168.0. <- p */
-
-      p++;
-      *p++ = '0';
-      *p++ = '/';
-      *p++ = '2';
-      *p++ = '4';
-      *p++ = '\0';
-      dlhost = cidr_form_host;
+      if ((dlhost = make_cidr(dlhost, target_p)) == NULL)
+	return;
 
       bits = 0xFFFFFF00UL;
-/* XXX: Fix me for IPV6 */
 #endif
     }
 
+  parc--;
+  parv++;
 
-  if (parc > 2) /* host :reason */
+
+  if (parc != 0) /* host :reason */
     {
-      if (valid_comment(source_p,parv[2]) == 0)
+      if (valid_comment(source_p, *parv) == 0)
 	return;
 
-      if(*parv[2])
-        reason = parv[2];
+      if(*parv[0] != '\0')
+        reason = *parv;
       else
         reason = "No reason";
     }
@@ -681,7 +696,7 @@ mo_dline(struct Client *client_p, struct Client *source_p,
 	{
 	  sendto_one(source_p,
 	":%s NOTICE %s :For safety, bitmasks less than 8 require conf access.",
-		     me.name, parv[0]);
+		     me.name, source_p->name);
 	  return;
 	}
     }
@@ -691,7 +706,7 @@ mo_dline(struct Client *client_p, struct Client *source_p,
 	{
 	  sendto_one(source_p,
 	     ":%s NOTICE %s :Dline bitmasks less than 24 are for admins only.",
-		     me.name, parv[0]);
+		     me.name, source_p->name);
 	  return;
 	}
     }
@@ -713,11 +728,11 @@ mo_dline(struct Client *client_p, struct Client *source_p,
 	  if (IsConfExemptKline(aconf))
 	    sendto_one(source_p,
 		       ":%s NOTICE %s :[%s] is (E)d-lined by [%s] - %s",
-		       me.name, parv[0], dlhost, aconf->host, creason);
+		       me.name, source_p->name, dlhost, aconf->host, creason);
 	  else
 	    sendto_one(source_p,
 		       ":%s NOTICE %s :[%s] already D-lined by [%s] - %s",
-		       me.name, parv[0], dlhost, aconf->host, creason);
+		       me.name, source_p->name, dlhost, aconf->host, creason);
 	  return;
 	}
     }
@@ -725,7 +740,6 @@ mo_dline(struct Client *client_p, struct Client *source_p,
   set_time();
   cur_time = CurrentTime;
   current_date = smalldate(cur_time);
-
   aconf = make_conf();
 
   /* Look for an oper reason */
@@ -741,14 +755,21 @@ mo_dline(struct Client *client_p, struct Client *source_p,
   DupString(aconf->host, dlhost);
   DupString(aconf->passwd, dlbuffer);
 
-  add_conf_by_address(aconf->host, CONF_DLINE, NULL, aconf);
-  /*
-   * Write dline to configuration file
-   */
-  WriteKlineOrDline(DLINE_TYPE, source_p, NULL, dlhost, reason,
-		    oper_reason, current_date, cur_time);
-  check_klines();
-} /* m_dline() */
+  if (tkline_time)
+  {
+    ircsprintf(buffer, "Temporary D-line %d min. - %s (%s)",
+	       (int)(tkline_time/60), reason, current_date);
+    apply_tdline(source_p, aconf, current_date, tkline_time);
+  }
+  else
+  {
+    ircsprintf(buffer, "%s (%s)", reason, current_date);
+    add_conf_by_address(aconf->host, CONF_DLINE, NULL, aconf);
+    write_conf_line(DLINE_TYPE, source_p, aconf, current_date, cur_time);
+  }
+
+  rehashed_klines = 1;
+} /* mo_dline() */
 
 /*
  * find_user_host
@@ -1003,3 +1024,42 @@ already_placed_kline(struct Client *source_p, char *luser, char *lhost)
  }
  return 0;
 }
+
+#ifndef IPV6 
+static char *
+make_cidr(char *dlhost, struct Client *target_p)
+{
+  static char cidr_form_host[HOSTLEN + 2];
+  char *p;
+
+  /*
+   * XXX - this is always a fixed length output, we can get away
+   * with strcpy here
+   *
+   */
+  strcpy(cidr_form_host, inetntoa((char*) &target_p->localClient->ip));
+      
+  if ((p = strchr(cidr_form_host,'.')) == NULL)
+    return(NULL);
+  /* 192. <- p */
+
+   p++;
+   if ((p = strchr(p,'.')) == NULL)
+     return(NULL);
+   /* 192.168. <- p */
+
+   p++;
+   if ((p = strchr(p,'.')) == NULL)
+     return(NULL);
+   /* 192.168.0. <- p */
+
+   p++;
+   *p++ = '0';
+   *p++ = '/';
+   *p++ = '2';
+   *p++ = '4';
+   *p++ = '\0';
+
+   return(cidr_form_host);
+}
+#endif

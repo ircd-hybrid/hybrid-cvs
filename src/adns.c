@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: adns.c,v 7.48.2.1 2003/04/05 01:20:03 lusky Exp $
+ *  $Id: adns.c,v 7.48.2.2 2003/10/26 02:08:20 db Exp $
  */
 
 #include "stdinc.h"
@@ -231,6 +231,7 @@ adns_gethost(const char *name, int aftype, struct DNSQuery *req)
 #endif
     result = adns_submit(dns_state, name, adns_r_addr, adns_qf_owner, req,
 			 &req->query);
+  dns_select();
   return(result);
 }
 
@@ -303,5 +304,6 @@ adns_getaddr(struct irc_inaddr *addr, int aftype,
 			       adns_qf_quoteok_anshost, 
 			       req, &req->query);
 #endif
+  dns_select();
   return(result);
 }

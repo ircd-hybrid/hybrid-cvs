@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: spy_whois_notice.c,v 1.10 2002/05/24 23:48:34 androsyn Exp $
+ *  $Id: spy_whois_notice.c,v 1.10.4.1 2003/10/26 02:08:10 db Exp $
  */
 #include "stdinc.h"
 #include "modules.h"
@@ -43,14 +43,14 @@ _moddeinit(void)
   hook_del_hook("doing_whois", (hookfn *)show_notice);
 }
 
-const char *_version = "$Revision: 1.10 $";
+const char *_version = "$Revision: 1.10.4.1 $";
 
 /* show a whois notice
    source_p does a /whois on client_p */
 int
 show_notice(struct hook_mfunc_data *data)
 {
-  if (MyConnect(data->source_p) && MyConnect(data->client_p) &&
+  if (MyConnect(data->client_p) &&
       IsOper(data->client_p) && (data->client_p != data->source_p) 
       && data->client_p->umodes & FLAGS_SPY) 
     {

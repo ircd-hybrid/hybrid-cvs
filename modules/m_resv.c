@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_resv.c,v 1.16 2002/05/24 23:34:22 androsyn Exp $
+ *  $Id: m_resv.c,v 1.16.4.1 2003/10/26 02:08:15 db Exp $
  */
 
 #include "stdinc.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&unresv_msgtab);
 }
 
-const char *_version = "$Revision: 1.16 $";
+const char *_version = "$Revision: 1.16.4.1 $";
 #endif
 
 /*
@@ -102,6 +102,7 @@ static void mo_resv(struct Client *client_p, struct Client *source_p,
                          "%s has placed a local RESV on channel: %s [%s]",
              	         get_oper_name(source_p),
 		         resv_p->name, resv_p->reason);
+    write_resv_line(CRESV_TYPE, source_p, resv_p);
   }
   else if(clean_resv_nick(parv[1]))
   {
@@ -134,6 +135,7 @@ static void mo_resv(struct Client *client_p, struct Client *source_p,
                          "%s has placed a local RESV on nick: %s [%s]",
 			 get_oper_name(source_p),
 			 resv_p->name, resv_p->reason);
+    write_resv_line(NRESV_TYPE, source_p, resv_p);
   }			 
   else
     sendto_one(source_p, 
@@ -174,6 +176,7 @@ static void mo_unresv(struct Client *client_p, struct Client *source_p,
     else
     {
       delete_channel_resv(resv_p);
+      (void)remove_conf_line(CRESV_TYPE, source_p, parv[1], NULL);
 
       sendto_one(source_p,
                  ":%s NOTICE %s :The local RESV has been removed on channel: %s",
@@ -208,6 +211,7 @@ static void mo_unresv(struct Client *client_p, struct Client *source_p,
     else
     {
       delete_nick_resv(resv_p);
+      (void)remove_conf_line(NRESV_TYPE, source_p, parv[1], NULL);
 
       sendto_one(source_p,
                  ":%s NOTICE %s :The local RESV has been removed on nick: %s",

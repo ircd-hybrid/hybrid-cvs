@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.190.2.1 2003/07/05 08:46:03 db Exp $
+ *  $Id: s_conf.h,v 7.190.2.2 2003/10/26 02:08:13 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -151,6 +151,8 @@ struct ConfItem
 #define IsConfEncrypted(x)      ((x)->flags & CONF_FLAGS_ENCRYPTED)
 #define IsConfCompressed(x)     ((x)->flags & CONF_FLAGS_COMPRESSED)
 #define IsConfCryptLink(x)      ((x)->flags & CONF_FLAGS_CRYPTLINK)
+#define IsConfTemporary(x)      ((x)->flags & CONF_FLAGS_TEMPORARY)
+#define SetConfTemporary(x)     ((x)->flags |= CONF_FLAGS_TEMPORARY)
 #define IsConfOperator(x)       ((x)->flags & CONF_OPERATOR)
 
 /* port definitions for Opers */
@@ -164,6 +166,8 @@ struct ConfItem
 #define CONF_OPER_REHASH        0x0040
 #define CONF_OPER_DIE           0x0080
 #define CONF_OPER_ADMIN         0x0100
+#define CONF_OPER_X             0x0200
+#define CONF_OPER_FLAG_HIDDEN_ADMIN 0x0400
 
 struct config_file_entry
 {
@@ -171,6 +175,9 @@ struct config_file_entry
   char *configfile;
   char *klinefile;
   char *dlinefile;
+  char *xlinefile;
+  char *cresvfile;
+  char *nresvfile;
 
   char *glinefile;
 
@@ -325,6 +332,7 @@ extern struct admin_info  AdminInfo;        /* defined in ircd.c */
 /* End GLOBAL section */
 
 dlink_list temporary_klines;
+dlink_list temporary_dlines;
 dlink_list temporary_ip_klines;
 
 extern void init_ip_hash_table(void);
@@ -377,19 +385,16 @@ extern int conf_fbgets(char *, int, FBFILE *);
 typedef enum {
   CONF_TYPE,
   KLINE_TYPE,
-  DLINE_TYPE
-} KlineType;
+  DLINE_TYPE,
+  XLINE_TYPE,
+  CRESV_TYPE,
+  NRESV_TYPE
+} ConfType;
 
-extern void WriteKlineOrDline( KlineType, struct Client *,
-			       char *user, char *host, const char *reason,
-			       const char *oper_reason,
-			       const char *current_date, time_t cur_time );
 extern  void    add_temp_kline(struct ConfItem *);
-extern  void    report_temp_klines(struct Client *);
-extern  void    show_temp_klines(struct Client *, dlink_list *);
 extern  void    cleanup_tklines(void *notused);
 
-extern  const   char *get_conf_name(KlineType);
+extern  const   char *get_conf_name(ConfType);
 extern  int     rehash (int);
 
 extern int  conf_add_server(struct ConfItem *,int);
@@ -402,9 +407,10 @@ extern void conf_add_u_conf(struct ConfItem *);
 extern void conf_add_fields(struct ConfItem*, char*, char *, char*, char *,char *);
 extern void conf_add_conf(struct ConfItem *);
 
-/* XXX consider moving these into kdparse.h */
-extern void parse_k_file(FBFILE *fb);
-extern void parse_d_file(FBFILE *fb);
+/* XXX consider moving these into csvlib.h */
+extern void parse_csv_file(FBFILE *file, ConfType conf_type);
+extern int remove_conf_line(ConfType type, struct Client *source_p,
+			    const char *pat1, const char *pat2);
 extern char *getfield(char *newline);
 
 extern char *get_oper_name(struct Client *client_p);

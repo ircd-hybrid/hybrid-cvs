@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.223.2.2 2003/05/29 04:58:03 lusky Exp $
+ *  $Id: s_user.c,v 7.223.2.3 2003/10/26 02:08:25 db Exp $
  */
 
 #include "stdinc.h"
@@ -1143,6 +1143,8 @@ send_umode(struct Client *client_p, struct Client *source_p, int old,
             *m++ = user_modes[i].letter;
           else
             {
+	      if (IsOperHiddenAdmin(source_p) && (flag & FLAGS_ADMIN))
+		continue;
               what = MODE_ADD;
               *m++ = '+';
               *m++ = user_modes[i].letter;

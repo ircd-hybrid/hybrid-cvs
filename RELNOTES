@@ -1,3 +1,24 @@
+-- ircd-hybrid-7.0.1 RELNOTES
+o) fixed ban desync bug caused by malformed ban strings
+o) fixed two adns bugs, one would cause an infinite loop, another that
+   would cause the resolver to simply stop working
+o) fixed example.conf line that was missing a ; at the end
+o) updated hyb7+angel.diff to fix various buglets
+o) fixed whois bug that would allow remote requests to include wildcards
+o) kline checking is reverted to hybrid-6 behaviour, this should alleviate
+  the complaints about "sluggish" server klines. The behaviour in hybrid-6
+  was to wait one io_loop() before checking clients for placed klines.
+o) We've added remote unkline
+o) A true "safelist", with borrowed constructs from undernet i.e.
+  /list <10 list all channels with less than 10 members
+o) The redundant mode code removed
+o) tdline support
+o) quote /xline support, these are saved/restored from xline.conf
+o) quote resv are saved/restored from nresv.conf and cresv.conf
+o) you wanted them, here they are... remote whois notices
+o) hidden admin support
+o) sjoins are shown as in old behaviour if server is not hidden
+
 -- ircd-hybrid-7.0 RELNOTES
 o) BF/256 encryption replaced by BF168
 o) many intermittant cryptlink bugs fixed
@@ -169,4 +190,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.65.2.4 2003/06/12 13:04:18 lusky Exp $
+$Id: RELNOTES,v 1.65.2.5 2003/10/26 02:08:08 db Exp $

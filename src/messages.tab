@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: messages.tab,v 7.73.2.1 2003/05/06 05:32:17 lusky Exp $
+ *   $Id: messages.tab,v 7.73.2.2 2003/10/26 02:08:24 db Exp $
  */
 
 static  char *  replies[] = {
@@ -548,7 +548,7 @@ static  char *  replies[] = {
 /* 518 */	NULL,
 /* 519 */	NULL,
 /* 520 */	NULL,
-/* 521 */	NULL,
+/* 521 */ 	":%s 521 %s :Bad list syntax, type /QUOTE HELP LIST",
 /* 522 */	NULL,
 /* 523 */	NULL,
 /* 524 ERR_HELPNOTFOUND, */	":%s 524 %s %s :Help not found",
