@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kline.c,v 1.59 2001/02/05 20:12:38 davidt Exp $
+ *   $Id: m_kline.c,v 1.60 2001/02/16 04:27:59 db Exp $
  */
 #include "tools.h"
 #include "m_kline.h"
@@ -602,12 +602,20 @@ static void mo_dline(struct Client *cptr, struct Client *sptr,
 
   if((p = strchr(cidr_form_host,'*')))
     {
-      *p++ = '0';
-      *p++ = '/';
-      *p++ = '2';
-      *p++ = '4';
-      *p++ = '\0';
-      dlhost = cidr_form_host;
+      /* Toss if its not the last '*' */
+      if(p[1] == '\0')
+	{
+	  *p++ = '0';
+	  *p++ = '/';
+	  *p++ = '2';
+	  *p++ = '4';
+	  *p++ = '\0';
+	  dlhost = cidr_form_host;
+	}
+      else
+	{
+	  return;
+	}
     }
 
   if(!is_address(dlhost,&ip_host,&ip_mask))
