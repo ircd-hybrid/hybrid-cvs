@@ -20,11 +20,12 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_invite.c,v 7.5 2000/08/13 22:35:05 ejb Exp $
+ *   $Id: m_invite.c,v 7.6 2000/10/22 22:36:22 db Exp $
  */
 #include "handlers.h"
 #include "common.h"
 #include "channel.h"
+#include "vchannel.h"
 #include "client.h"
 #include "hash.h"
 #include "irc_string.h"
@@ -104,6 +105,7 @@ int     m_invite(struct Client *cptr,
 {
   struct Client *acptr;
   struct Channel *chptr;
+  struct Channel *vchan;
   int need_invite=NO;
 
   /* A little sanity test here */
@@ -153,6 +155,19 @@ int     m_invite(struct Client *cptr,
     }
 
   /* By this point, chptr is non NULL */  
+
+  if (HasVchans(chptr))
+    {
+      if ((vchan = map_vchan(chptr,sptr)))
+	chptr = vchan;
+      if (map_vchan(chptr,acptr))
+	{
+	  if (MyClient(sptr))
+	    sendto_one(sptr, form_str(ERR_USERONCHANNEL),
+		       me.name, parv[0], parv[1], parv[2]);
+	  return 0;
+	}
+    }
 
   if (!IsMember(sptr, chptr))
     {
@@ -259,6 +274,7 @@ int     ms_invite(struct Client *cptr,
 {
   struct Client *acptr;
   struct Channel *chptr;
+  struct Channel *vchan;
   int need_invite=NO;
 
   if (parc < 3 || *parv[1] == '\0')
@@ -310,6 +326,19 @@ int     ms_invite(struct Client *cptr,
     }
 
   /* By this point, chptr is non NULL */  
+
+  if (HasVchans(chptr))
+    {
+      if ((vchan = map_vchan(chptr,sptr)))
+	chptr = vchan;
+      if (map_vchan(chptr,acptr))
+	{
+	  if (MyClient(sptr))
+	    sendto_one(sptr, form_str(ERR_USERONCHANNEL),
+		       me.name, parv[0], parv[1], parv[2]);
+	  return 0;
+	}
+    }
 
   if (!IsMember(sptr, chptr))
     {

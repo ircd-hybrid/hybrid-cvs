@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# $Id: version.c.SH,v 7.8 2000/10/21 07:15:26 lusky Exp $ 
+# $Id: version.c.SH,v 7.9 2000/10/22 22:36:23 db Exp $ 
 
 spitshell=cat
 package=IRC
@@ -77,6 +77,7 @@ char *infotext[] =
   "Neph|l|m            Adel Mezibra        adel@cybercable.fr",
   "pro                 Bill Jonus          proggy@earthling.net",
   "Rodder              Jon Lusky           lusky@blown.net",
+  "toot                Toby Verral         to7@antipope.fsnet.co.uk",
   "Wohali              Joan Touzet         jolo@cadence.com",
   "",
   "The following people have contributed to this release of hybrid",
@@ -85,6 +86,7 @@ char *infotext[] =
   "Bleep               Thomas Helvey       tomh@inxpress.net",
   "CBongo              Chris Bongaarts     cab@tc.umn.edu",
   "comstud             Chris Behrens       cbehrens@concentric.net",
+  "desrt               Ryan Lortie         desertangel@mindless.com",
   "echo                Adam J. Durana      adam@caca.com",
   "FlashMan            Craig A. Huegen     chuegen@quadrunner.com",
   "jailbird            Dustin Marquess     jailbird@alcatraz.fdf.net",
