@@ -1,3 +1,15 @@
+leeh        2002/04/20 13:47:17 EDT	(20020420_1)
+
+  Modified files:
+    src                  channel.c 
+  Log:
+  - add @+users to chptr->chanops when #ifndef REQUIRE_OANDV
+  
+  Revision  Changes    Path
+  7.308     +6 -0      ircd-hybrid-7/src/channel.c
+
+
+
 leeh        2002/04/20 13:34:00 EDT	(20020420_0)
 
   Modified files:
@@ -25267,4 +25279,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3575 2002/04/20 17:34:06 leeh Exp $
+$Id: ChangeLog,v 7.3576 2002/04/20 17:47:23 leeh Exp $
