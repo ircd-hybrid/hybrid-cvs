@@ -1,5 +1,5 @@
 /************************************************************************
- *   IRC - Internet Relay Chat, modules/m_hash.c
+ *   IRC - Internet Relay Chat, contrib/m_hash.c
  *   Copyright (C) 1990 Jarkko Oikarinen and
  *                      University of Oulu, Computing Center
  *
@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_hash.c,v 1.4 2001/03/06 02:24:28 androsyn Exp $
+ *   $Id: m_hash.c,v 1.5 2001/05/16 08:50:56 toot Exp $
  */
 #include "tools.h"
 #include "handlers.h"

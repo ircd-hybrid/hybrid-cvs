@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: supported.h,v 1.9 2001/05/15 09:38:00 toot Exp $
+ * $Id: supported.h,v 1.10 2001/05/16 08:51:03 toot Exp $
  * 
  */
 #ifndef INCLUDED_supported_h
@@ -42,7 +42,7 @@
 #define FEATURESVALUES ConfigFileEntry.disable_vchans ? "" : " VCHANS", \
         MAXMODEPARAMS,MAXCHANNELSPERUSER,MAXBANS, \
         ConfigFileEntry.max_targets,NICKLEN,TOPICLEN,TOPICLEN,"#&","(ohv)@%+", \
-        "beI,,kl,imnpsta"
+        "beI,k,l,imnpsta"
 
 /*
  * - from mirc's versions.txt
