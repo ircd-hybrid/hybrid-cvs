@@ -3,7 +3,7 @@
  *
  * Written by ejb, wcampbel, db, leeh and others
  *
- * $Id: example.conf.quick,v 1.10 2003/06/12 01:08:08 metalrock Exp $
+ * $Id: example.conf.quick,v 1.11 2003/06/14 01:23:15 joshk Exp $
  */
 
 /* IMPORTANT NOTES:
@@ -367,6 +367,7 @@ general {
 };
 
 modules {
+	base_path = "/usr/local/ircd/modules";
 	path = "/usr/local/ircd/modules";
 	path = "/usr/local/ircd/modules/autoload";
 	#module = "some_module.so";

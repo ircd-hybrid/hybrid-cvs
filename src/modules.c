@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.129 2003/06/13 21:32:02 joshk Exp $
+ *  $Id: modules.c,v 7.130 2003/06/14 01:23:19 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -53,6 +53,10 @@
 
 struct module **modlist = NULL;
 
+static short base_valid = 0;
+static char* base_path = NULL;
+static char* base_autoload = NULL;
+
 static const char *core_module_table[] =
 {
   "m_die.s",
@@ -74,6 +78,7 @@ static const char *core_module_table[] =
 int num_mods = 0;
 int max_mods = MODS_INCREMENT;
 
+static dlink_list pending = { NULL, NULL, 0 }; 
 static dlink_list mod_paths = { NULL, NULL, 0 };
 
 static void mo_modload(struct Client *, struct Client *, int, char **);
@@ -141,6 +146,83 @@ mod_find_path(const char *path)
   }
 
   return(NULL);
+}
+
+/* add_pending()
+ *
+ * Adds a module name to the list of pending modules to be loaded.
+ *
+ * input - module name (without path)
+ * output - none
+ * side effects - pending has a new item.
+ */
+
+void
+add_pending (char* modname)
+{
+  if (findmodule_byname (modname) != -1)
+    return;
+  
+  char* mod;
+  dlink_node *ptr;
+
+  DLINK_FOREACH (ptr, pending.head)
+  {
+    if (strcmp ((char*)ptr->data, modname) == 0)
+      return;  
+  }
+
+  DupString (mod, modname);
+  dlinkAddTail ((void*)mod, make_dlink_node(), &pending);
+}
+
+void
+clear_pending (void)
+{
+  dlink_node *ptr, *next_ptr;
+  DLINK_FOREACH_SAFE (ptr, next_ptr, pending.head)
+  {
+    MyFree (ptr->data);
+    dlinkDelete (ptr, &pending);
+    free_dlink_node (ptr);
+  }
+}
+
+void
+load_pending (void)
+{
+  dlink_node *ptr;
+  
+  DLINK_FOREACH (ptr, pending.head)
+  {
+    load_one_module ((char*)ptr->data, 0);
+  }
+}
+/* mod_set_base()
+ * Defines the base path to find the official hybrid modules.
+ * I.E., all core/ modules MUST be in this directory. Specified in ircd.conf.
+ * 
+ * input - path
+ * output - none
+ * side effects - sets the base path to path
+ */
+
+void
+mod_set_base (char* path)
+{
+  base_valid = 1;
+
+  MyFree (base_path);
+  MyFree (base_autoload);
+
+  unsigned int len;
+  DupString (base_path, path);
+  
+  len = strlen(path) + 10;
+  /* whatever path + "/autoload/" */
+  
+  base_autoload = MyMalloc (len + 1);
+  snprintf (base_autoload, len, "%s/autoload/", base_path);
 }
 
 /* mod_add_path()
@@ -217,6 +299,13 @@ findmodule_byname(const char *name)
 void
 load_all_modules(int warn)
 {
+  /* At this point, base_path MUST be specified */
+  if (base_valid == 0)
+  {
+    ilog (L_CRIT, "You must specify a base_path in ircd.conf. See the examples. Terminating!");
+    exit (EXIT_FAILURE);
+  }
+
   DIR *system_module_dir = NULL;
   struct dirent *ldirent = NULL;
   char* module_fq_name;
@@ -228,12 +317,12 @@ load_all_modules(int warn)
   modlist  = (struct module **)MyMalloc(sizeof(struct module) *
                                         (MODS_INCREMENT));
   max_mods = MODS_INCREMENT;
-  system_module_dir = opendir(AUTOMODPATH);
+  system_module_dir = opendir(base_autoload);
 
   if (system_module_dir == NULL)
   {
     ilog(L_WARN, "Could not load modules from %s: %s",
-         AUTOMODPATH, strerror (errno));
+         base_autoload, strerror (errno));
     return;
   }
 
@@ -249,7 +338,7 @@ load_all_modules(int warn)
         ((ldirent->d_name[len-1] == 'o') ||
         (ldirent->d_name[len-1] == 'l')))
     {
-       if ((mq_len = strlen(AUTOMODPATH "/") + len) > PATH_MAX)
+       if ((mq_len = strlen(base_autoload) + len + 1) > PATH_MAX)
        {
           ilog (L_ERROR, "Module path for %s truncated, module not loaded!",
                   ldirent->d_name);
@@ -257,13 +346,16 @@ load_all_modules(int warn)
        else /* Guaranteed the path fits into a string of PATH_MAX now */
        {
          module_fq_name = MyMalloc(mq_len + 1);
-         snprintf (module_fq_name, mq_len + 1, "%s/%s", AUTOMODPATH, ldirent->d_name);
+         snprintf (module_fq_name, mq_len + 1, "%s/%s", base_autoload, ldirent->d_name);
          load_a_module(module_fq_name, warn, 0);
          MyFree (module_fq_name);
        }
     }
   }
 
+  /* Now we load the pending stuff we read from ircd.conf */
+  load_pending ();
+  
   closedir(system_module_dir);
 }
 
@@ -287,7 +379,7 @@ load_core_modules(int warn)
 
   for (i = 0; core_module_table[i]; i++)
   {
-    if ((m_len = (strlen(MODPATH) + strlen(core_module_table[i]) + 2)) > PATH_MAX)
+    if ((m_len = (strlen(base_path) + strlen(core_module_table[i]) + 2)) > PATH_MAX)
     {
        ilog (L_ERROR, "Path for %s%c was truncated, the module was not loaded.",
                core_module_table[i], suffix);
@@ -295,7 +387,7 @@ load_core_modules(int warn)
     else
     {
       module_name = MyMalloc (m_len + 1);
-      snprintf (module_name, m_len + 1, "%s/%s%c", MODPATH, core_module_table[i], suffix);
+      snprintf (module_name, m_len + 1, "%s/%s%c", base_path, core_module_table[i], suffix);
       if (load_a_module(module_name, warn, 1) == -1)
       {
         ilog(L_CRIT, "Error loading core module %s%c: terminating ircd",

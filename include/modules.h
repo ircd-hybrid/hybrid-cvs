@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.h,v 7.44 2003/06/13 21:18:01 joshk Exp $
+ *  $Id: modules.h,v 7.45 2003/06/14 01:23:17 joshk Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -53,6 +53,18 @@ struct module_path
   dlink_node node;
   char* path;
 };
+
+/* add to pending queue */
+extern void add_pending (char *modname);
+
+/* this must be run on exit and rehash */
+extern void clear_pending (void);
+
+/* load pending modules */
+extern void load_pending (void);
+
+/* set base path */
+extern void mod_set_base (char *path);
 
 /* add a path */
 extern void mod_add_path(const char *path);

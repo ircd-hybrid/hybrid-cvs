@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: defaults.h,v 7.11 2003/06/12 03:40:29 joshk Exp $
+ *  $Id: defaults.h,v 7.12 2003/06/14 01:23:17 joshk Exp $
  */
 
 #ifndef INCLUDED_defaults_h
@@ -47,9 +47,6 @@
 #define ETCPATH         "IRCD$CONFDIR:"
 #define LOGPATH         "IRCD$LOGDIR:"
 #define MSGPATH		"IRCD$MSGDIR:"
-
-#undef MODPATH
-#undef AUTOMODPATH
 
 #define SPATH   BINPATH "IRCD.EXE"              /* server executable */
 #define SLPATH  BINPATH "SERVLINK.EXE"          /* servlink executable */
@@ -88,8 +85,6 @@
 /* dirs */
 #define DPATH   IRCD_PREFIX                                                     
 #define BINPATH IRCD_PREFIX "/bin/"
-#define MODPATH IRCD_PREFIX "/modules/"
-#define AUTOMODPATH MODPATH "/autoload/"
 #define MSGPATH IRCD_PREFIX "/messages/"
 #define ETCPATH IRCD_PREFIX "/etc"
 #define LOGPATH IRCD_PREFIX "/logs"

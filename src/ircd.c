@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.303 2003/06/12 00:38:32 metalrock Exp $
+ *  $Id: ircd.c,v 7.304 2003/06/14 01:23:19 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -668,6 +668,7 @@ main(int argc, char *argv[])
   init_whowas();
   init_stats();
   init_hooks();
+  read_conf_files(1);   /* cold start init conf files */
   load_all_modules(1);
 #ifndef STATIC_MODULES
   load_core_modules(1);
@@ -676,14 +677,8 @@ main(int argc, char *argv[])
   init_auth();          /* Initialise the auth code */
   init_resolver();      /* Needs to be setup before the io loop */
 #ifdef HAVE_LIBCRYPTO
-  bio_spare_fd=save_spare_fd("SSL private key validation");
+  bio_spare_fd = save_spare_fd("SSL private key validation");
 #endif /* HAVE_LIBCRYPTO */
-  read_conf_files(1);   /* cold start init conf files */
-#ifndef STATIC_MODULES
-
-  mod_add_path(IRCD_PREFIX "/modules");
-  mod_add_path(IRCD_PREFIX "/modules/autoload");
-#endif
    
   initialize_server_capabs();   /* Set up default_server_capabs */
   initialize_global_set_options();

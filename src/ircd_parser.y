@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.310 2003/06/13 07:40:31 joshk Exp $
+ *  $Id: ircd_parser.y,v 1.311 2003/06/14 01:23:19 joshk Exp $
  */
 
 %{
@@ -98,6 +98,7 @@ init_parser_confs(void)
 %token  ANTI_SPAM_EXIT_MESSAGE_TIME
 %token  IRCD_AUTH
 %token  AUTOCONN
+%token  BASE_PATH
 %token  BYTES KBYTES MBYTES GBYTES TBYTES
 %token  CALLER_ID_WAIT
 %token  CAN_FLOOD
@@ -374,7 +375,7 @@ modules_entry: MODULES
   '{' modules_items '}' ';';
 
 modules_items:  modules_items modules_item | modules_item;
-modules_item:   modules_module | modules_path | error;
+modules_item:   modules_module | modules_base_path | modules_path | error;
 
 modules_module: MODULE '=' QSTRING ';'
 {
@@ -390,7 +391,7 @@ modules_module: MODULE '=' QSTRING ';'
      */
     if (findmodule_byname(m_bn) == -1)
       /* XXX - should we unload this module on /rehash, if it isn't listed? */
-      load_one_module(yylval.string, 0);
+      add_pending(yylval.string);
   }
 #endif
 };
@@ -402,6 +403,14 @@ modules_path: PATH '=' QSTRING ';'
     mod_add_path(yylval.string);
 #endif
 };
+
+modules_base_path: BASE_PATH '=' QSTRING ';'
+{
+#ifndef STATIC_MODULES
+  if (ypass == 2)
+     mod_set_base(yylval.string);
+#endif
+}
 
 /***************************************************************************
  *  section serverinfo
