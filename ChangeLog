@@ -1,3 +1,16 @@
+wcampbel    2001/12/16 00:10:18 EST	(20011216_1)
+
+  Modified files:
+    doc                  example.conf 
+  Log:
+  Document Jeremy's issue with mismatched forward/reverse in connect {}'s
+  host entry.
+  
+  Revision  Changes    Path
+  7.145     +4 -0      ircd-hybrid-7/doc/example.conf
+
+
+
 wcampbel    2001/12/15 23:53:29 EST	(20011216_0)
 
   Modified files:
@@ -687,7 +700,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3186 2001/12/16 04:53:34 wcampbel Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3187 2001/12/16 05:10:23 wcampbel Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -19041,4 +19054,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3186 2001/12/16 04:53:34 wcampbel Exp $
+$Id: ChangeLog,v 7.3187 2001/12/16 05:10:23 wcampbel Exp $
