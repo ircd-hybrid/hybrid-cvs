@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_notice.c,v 7.16 2000/11/07 05:30:50 db Exp $
+ *   $Id: m_notice.c,v 7.17 2000/11/07 08:56:26 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -157,7 +157,7 @@ int     m_notice(struct Client *cptr,
       return -1;
     }
 
-  ntargets = build_target_list(sptr,parv[1],target_table);
+  ntargets = build_target_list(cptr,sptr,parv[1],target_table,parv[2]);
 
   for(i = 0; i < ntargets ; i++)
     {
