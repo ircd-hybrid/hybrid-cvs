@@ -1,3 +1,11 @@
+*** 20001130_1 by db
+- squished bug in m_names.c which caused the module to suddenly
+  throw up when names without a paramter was given. I forgot
+  the case where a client had no channels it was on, trying to 
+  indirect through a NULL struct Link is bad for the modules health.
+
+
+
 *** 20001129_10 by db
 - fixed m_squit.c
 - account for LazyLink's in channel.c destroy_channel()
@@ -1071,7 +1079,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.625 2000/11/30 04:11:30 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.626 2000/11/30 05:29:34 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
