@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_oper.c,v 1.71 2003/06/19 02:32:16 db Exp $
+ *  $Id: m_oper.c,v 1.72 2003/06/24 14:23:54 michael Exp $
  */
 
 #include "stdinc.h"
@@ -68,7 +68,7 @@ _moddeinit(void)
   mod_del_cmd(&oper_msgtab);
 }
 
-const char *_version = "$Revision: 1.71 $";
+const char *_version = "$Revision: 1.72 $";
 #endif
 
 /*
@@ -83,12 +83,9 @@ m_oper(struct Client *client_p, struct Client *source_p,
 {
   struct AccessItem *aconf;
   struct AccessItem *oconf = NULL;
-  const char *name;
-  const char *password;
+  const char *name = parv[1];
+  const char *password = parv[2];
   dlink_node *ptr;
-
-  name     = parv[1];
-  password = parv[2];
 
   if (EmptyString(password))
   {
@@ -98,10 +95,10 @@ m_oper(struct Client *client_p, struct Client *source_p,
   }
 
   /* end the grace period */
-  if(!IsFloodDone(source_p))
+  if (!IsFloodDone(source_p))
     flood_endgrace(source_p);
 
-  if((aconf = find_password_aconf(name,source_p)) == NULL)
+  if ((aconf = find_password_aconf(name,source_p)) == NULL)
   {
     sendto_one(source_p, form_str(ERR_NOOPERHOST), me.name, source_p->name);
     failed_oper_notice(source_p, name, find_conf_by_name(name, CONF_OPERATOR) ?
@@ -123,10 +120,10 @@ m_oper(struct Client *client_p, struct Client *source_p,
       detach_conf(source_p,oconf);
     }
 
-    if(attach_conf(source_p, aconf) != 0)
+    if (attach_conf(source_p, aconf) != 0)
     {
-      sendto_one(source_p,":%s NOTICE %s :Can't attach conf!",
-		 me.name, source_p->name);
+      sendto_one(source_p, ":%s NOTICE %s :Can't attach conf!",
+                 me.name, source_p->name);
       failed_oper_notice(source_p, name, "can't attach conf!");
       /* 
        * 20001216:
@@ -146,7 +143,7 @@ m_oper(struct Client *client_p, struct Client *source_p,
   }
   else
   {
-    sendto_one(source_p,form_str(ERR_PASSWDMISMATCH),me.name, parv[0]);
+    sendto_one(source_p, form_str(ERR_PASSWDMISMATCH), me.name, parv[0]);
     failed_oper_notice(source_p, name, "password mismatch");
   }
   log_failed_oper(source_p, name);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.125 2003/06/12 15:17:22 michael Exp $
+ *  $Id: m_message.c,v 1.126 2003/06/24 14:23:56 michael Exp $
  */
 
 #include "stdinc.h"
@@ -96,7 +96,7 @@ static void handle_special(int p_or_n, const char *command,
 
 struct Message privmsg_msgtab = {
   "PRIVMSG", 0, 0, 1, 0, MFLG_SLOW | MFLG_UNREG, 0L,
-  {m_unregistered, m_privmsg, m_privmsg, m_privmsg}
+  {m_unregistered, m_privmsg, m_privmsg, m_privmsg, m_ignore}
 };
 
 struct Message notice_msgtab = {
@@ -119,7 +119,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.125 $";
+const char *_version = "$Revision: 1.126 $";
 #endif
 
 /*
