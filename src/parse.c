@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.148 2003/04/02 05:10:55 michael Exp $
+ *  $Id: parse.c,v 7.149 2003/04/02 10:40:51 michael Exp $
  */
 
 #include "stdinc.h"
@@ -156,7 +156,7 @@ parse(struct Client *client_p, char *pbuffer, char *bufend)
 
       sender = ch;
 
-      if((s = strchr(ch, ' ')))
+      if((s = strchr(ch, ' ')) != NULL)
 	{
 	  *s = '\0';
 	  s++;
@@ -229,7 +229,7 @@ parse(struct Client *client_p, char *pbuffer, char *bufend)
   if( *(ch + 3) == ' '  && /* ok, lets see if its a possible numeric.. */
       IsDigit(*ch) && IsDigit(*(ch + 1)) && IsDigit(*(ch + 2)) )
     {
-      mptr = (struct Message *)NULL;
+      mptr = NULL;
       numeric = ch;
       paramcount = MAXPARA;
       ServerStats->is_num++;
@@ -290,7 +290,7 @@ parse(struct Client *client_p, char *pbuffer, char *bufend)
   if (s != NULL)
     i = string_to_array(s, para);
 
-  if (mptr == (struct Message *)NULL)
+  if (mptr == NULL)
     do_numeric(numeric, client_p, from, i, para);
   else
     handle_command(mptr, client_p, from, i, para);
@@ -483,7 +483,7 @@ hash_parse(char *cmd)
 	  return(ptr->msg);
 	}
     }
-  return NULL;
+  return(NULL);
 }
 
 /*
@@ -654,7 +654,6 @@ cancel_clients(struct Client *client_p, struct Client *source_p, char *cmd)
 	   return 0;
    }
   return exit_client(client_p, client_p, &me, "Fake prefix");
-  return CLIENT_EXITED;
 }
 
 /*
