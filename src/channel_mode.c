@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.122 2003/07/07 14:08:02 michael Exp $
+ *  $Id: channel_mode.c,v 7.123 2003/07/08 00:33:28 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1550,18 +1550,23 @@ static struct ChannelMode ModeTable[255] =
 };
 /* *INDENT-ON* */
 
-/* int get_channel_access(struct Client *source_p, struct Channel *chptr)
- * Input: The client, the channel
- * Output: CHACCESS_CHANOP if we should let them have chanop level access,
- *         0 for peon level access.
- * Side-effects: None.
+/* get_channel_access()
+ *
+ * inputs       - pointer to Client struct
+ *              - pointer to Membership struct
+ * output       - CHACCESS_CHANOP if we should let them have
+ *                chanop level access, 0 for peon level access.
+ * side effects - NONE
  */
 static int
-get_channel_access(struct Client *source_p, struct Channel *chptr, struct Membership *member)
+get_channel_access(struct Client *source_p, struct Membership *member)
 {
   /* Let hacked servers in for now... */
   if (!MyClient(source_p))
     return(CHACCESS_CHANOP);
+
+  /* just to be sure.. */
+  assert(source_p == member->client_p);
 
   if (member == NULL)
     return(CHACCESS_NOTONCHAN);
@@ -1844,7 +1849,7 @@ set_channel_mode(struct Client *client_p, struct Client *source_p, struct Channe
   mode_limit = 0;
   simple_modes_mask = 0;
 
-  alevel = get_channel_access(source_p, chptr, member);
+  alevel = get_channel_access(source_p, member);
 
   for (; (c = *ml) != '\0'; ml++) 
   {
