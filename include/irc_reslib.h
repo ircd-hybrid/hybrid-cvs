@@ -1,7 +1,7 @@
 /*
  * include/irc_reslib.h (C)opyright 1992 Darren Reed.
  *
- * $Id: irc_reslib.h,v 7.10 2003/05/20 04:45:32 metalrock Exp $
+ * $Id: irc_reslib.h,v 7.11 2003/05/23 04:24:56 joshk Exp $
  */
 #ifndef INCLUDED_ircdreslib_h
 #define INCLUDED_ircdreslib_h
@@ -49,7 +49,7 @@ int irc_res_init(void);
 int irc_dn_expand(const unsigned char *msg, const unsigned char *eom, const unsigned char *src, char *dst, int dstsiz);
 int irc_ns_name_uncompress(const unsigned char *msg, const unsigned char *eom, const unsigned char *src, char *dst, size_t dstsiz);
 int irc_ns_name_unpack(const unsigned char *msg, const unsigned char *eom, const unsigned char *src, unsigned char *dst, size_t dstsiz);
-int irc_ns_name_ntop(const unsigned char *src, char *dst, size_t dstsiz);
+int irc_ns_name_ntop(const char *src, char *dst, size_t dstsiz);
 int irc_dn_comp(const char *src, unsigned char *dst, int dstsiz, unsigned char **dnptrs, unsigned char **lastdnptr);
 int irc_dn_skipname(const unsigned char *ptr, const unsigned char *eom);
 int irc_ns_name_skip(const unsigned char **ptrptr, const unsigned char *eom);
