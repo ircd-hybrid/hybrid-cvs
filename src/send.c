@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.262 2003/05/27 17:45:53 joshk Exp $
+ *  $Id: send.c,v 7.263 2003/05/27 20:48:43 db Exp $
  */
 
 #include "stdinc.h"
@@ -168,12 +168,28 @@ send_message(struct Client *to, char *buf, int len)
 
 /*
  * send_message_remote
+ *
+ * inputs	- pointer to client from message is being sent
+ * 		- pointer to client to send to
+ *		- pointer to preformatted buffer
+ *		- length of input buffer
+ * output	- none
+ * side effects	- Despite the function name, this only sends to directly
+ *		  connected clients.
  * 
  */
 static void
 send_message_remote(struct Client *to, struct Client *from,
                     char *buf, int len)
 {
+  if (!MyConnect(to))
+  {
+    sendto_realops_flags(UMODE_ALL, L_ALL,
+			 "server send message to %s [%s] dropped from %s(Not local server)",
+			 to->name, to->from->name, from->name);
+    return;
+  }
+
   if (ServerInfo.hub && IsCapable(to, CAP_LL))
   {
     if (((from->lazyLinkClientExists &
