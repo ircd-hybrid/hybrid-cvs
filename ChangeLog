@@ -1,3 +1,16 @@
+leeh        2002/06/20 17:39:58 EDT	(20020620_1)
+
+  Modified files:
+    contrib              README.LMH lmh.diff 
+  Log:
+  - added true no oper flood to my diff.
+  
+  Revision  Changes    Path
+  1.2       +22 -3     ircd-hybrid-7/contrib/README.LMH
+  1.4       +170 -92   ircd-hybrid-7/contrib/lmh.diff
+
+
+
 leeh        2002/06/20 14:00:42 EDT	(20020620_0)
 
   Modified files:
@@ -28612,4 +28625,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3793 2002/06/20 18:00:49 leeh Exp $
+$Id: ChangeLog,v 7.3794 2002/06/20 21:40:05 leeh Exp $
