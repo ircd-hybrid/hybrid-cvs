@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.168 2001/05/24 04:22:09 ejb Exp $
+ * $Id: ircd_parser.y,v 1.169 2001/05/26 22:59:25 leeh Exp $
  */
 
 %{
@@ -539,14 +539,11 @@ serverinfo_network_desc: NETWORK_DESC '=' QSTRING ';'
 
 serverinfo_vhost:       VHOST '=' QSTRING ';'
   {
-#ifndef IPV6
-/* XXX: Broken for IPv6 */
-    if (parse_netmask(yylval.string, &ServerInfo.ip, NULL) == HM_HOST)
+    if(inetpton(DEF_FAM, yylval.string, &IN_ADDR(ServerInfo.ip)) <= 0)
     {
      log(L_ERROR, "Invalid netmask for server vhost(%s)", yylval.string);
     }
     ServerInfo.specific_virtual_host = 1;
-#endif
   };
 
 serverinfo_max_clients: T_MAX_CLIENTS '=' expr ';'
