@@ -1,13 +1,12 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.129 2003/05/15 07:04:58 joshk Exp $
+# $Id: Makefile.in,v 7.130 2003/05/15 16:14:40 joshk Exp $
 #
 CC		= @CC@
 INSTALL		= @INSTALL@
 INSTALL_BIN	= @INSTALL_PROGRAM@
 INSTALL_DATA	= @INSTALL_DATA@
-INSTALL_SUID	= @INSTALL_PROGRAM@ -o root -m 4755
 LEX		= @LEX@
 LEXLIB		= @LEXLIB@
 CFLAGS		= @IRC_CFLAGS@

@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/contrib
 #
-# $Id: Makefile.in,v 1.39 2003/05/12 23:43:33 joshk Exp $
+# $Id: Makefile.in,v 1.40 2003/05/15 16:14:42 joshk Exp $
 #
 CC		= @CC@
 RM		= @RM@
@@ -16,7 +16,6 @@ MKDEP		= @MKDEP@
 INSTALL		= @INSTALL@
 INSTALL_PROGRAM	= @INSTALL_PROGRAM@
 INSTALL_DATA	= @INSTALL_DATA@
-INSTALL_SUID    = @INSTALL_PROGRAM@ -o root -m 4755
 AUTOMODULEDIR	= @prefix@/modules
 
 SSL_LIBS	= @SSL_LIBS@
@@ -75,7 +74,7 @@ install: all install_help
 
 
 install_help:
-	@echo installing help files...
+	@echo Installing help files...
 	mkdir -p $(ohelpdir) $(uhelpdir)
 	@for help in help/opers/*; do \
 	if [ -f $$help ]; then \
@@ -89,7 +88,7 @@ install_help:
 	done
 	@for link in $(SYMLINKS); do \
 		${RM} -f $(uhelpdir)/$$link; \
-		${LN} -s $(ohelpdir)/$$link $(uhelpdir); \
+		${LN} -s ../opers/$$link $(uhelpdir); \
 	done
 
 .SUFFIXES: .so
