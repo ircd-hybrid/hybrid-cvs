@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_quit.c,v 1.33 2003/06/04 02:11:00 joshk Exp $
+ *  $Id: m_quit.c,v 1.34 2003/06/04 04:28:36 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -55,53 +55,38 @@ _moddeinit(void)
   mod_del_cmd(&quit_msgtab);
 }
 
-const char *_version = "$Revision: 1.33 $";
+const char *_version = "$Revision: 1.34 $";
 #endif
 /*
 ** m_quit
 **      parv[0] = sender prefix
 **      parv[1] = comment
-**
-** Must handle these cases:
-** - QUIT :something
-**    + If ConfigFileEntry.client_exit:
-**      o Works if you are an oper, always
-**      o Works if you are past the anti-spam exit message time
-** - Otherwise, quit with Client Quit (implicitly covers QUIT)
 */
 static void
 m_quit(struct Client *client_p, struct Client *source_p,
        int parc, char *parv[])
 {
-	char reason[TOPICLEN + 1];
-	char *comment;
-	
-	if (ConfigFileEntry.client_exit &&
-		/* Operator can do it whenever */
-		(IsOper(source_p) ||
-			 
-		/* Normal clients need to be past anti-spam time */
-		((source_p->firsttime +
-		 ConfigFileEntry.anti_spam_exit_message_time) <= CurrentTime)))
-	{
-		if (parv[1]) {
-			comment = parv[1];
-		
-			/* Fix a lousy overflow */
-			if (strlen(comment) > (size_t)TOPICLEN)
-				comment[TOPICLEN] = '\0';
-		}
-		else
-			comment = nothing;
-				
-		snprintf(reason, TOPICLEN, "Quit: %s", comment);
-		exit_client (client_p, source_p, source_p, reason);
-	}
-	
-	else {
-		exit_client (client_p, source_p, source_p, "Client Quit");
-	}
-}  
+  char *comment = (parc > 1 && parv[1]) ? parv[1] : client_p->name;
+  char reason[TOPICLEN + 1];
+
+  if (strlen(comment) > (size_t)TOPICLEN)
+    comment[TOPICLEN] = '\0';
+
+  if (ConfigFileEntry.client_exit && comment[0])
+    {
+      snprintf(reason, TOPICLEN, "Quit: %s", comment);
+      comment = reason;
+    }
+  
+  if(!IsOper(source_p) && 
+     (source_p->firsttime + ConfigFileEntry.anti_spam_exit_message_time)
+     > CurrentTime)
+    {
+      comment = "Client Quit";
+    }
+
+  exit_client(client_p, source_p, source_p, comment);
+}
 
 /*
 ** ms_quit
