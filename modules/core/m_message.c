@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.35 2000/12/24 03:01:26 ejb Exp $
+ *   $Id: m_message.c,v 1.36 2000/12/27 21:19:34 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -190,9 +190,14 @@ int     m_message(int p_or_n,
   int i;
   int ntargets;
 
+#if 0  /* Allow servers to send notices to individual people */
   if (!IsPerson(sptr))
     return 0;
+#endif
 
+  if (!IsPerson(sptr) && p_or_n != NOTICE)
+    return 0;
+       
   if (parc < 2 || *parv[1] == '\0')
     {
       if(p_or_n != NOTICE)
@@ -217,6 +222,8 @@ int     m_message(int p_or_n,
       switch (target_table[i]->type)
 	{
 	case ENTITY_CHANNEL:
+          if(!IsPerson(sptr))
+            continue;
 	  msg_channel(p_or_n,command,
 		      cptr,sptr,
 		      (struct Channel *)target_table[i]->ptr,
