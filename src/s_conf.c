@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.250 2001/07/03 11:46:19 leeh Exp $
+ *  $Id: s_conf.c,v 7.251 2001/07/03 13:26:08 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -2076,6 +2076,9 @@ static void clear_out_old_conf(void)
   }
 #endif
 
+  /* clean out old resvs from the conf */
+  clear_conf_resv();
+  
   /* clean out AdminInfo */
   MyFree(AdminInfo.name);
   AdminInfo.name = NULL;
