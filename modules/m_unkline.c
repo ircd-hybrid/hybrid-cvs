@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_unkline.c,v 1.45 2002/05/24 23:34:23 androsyn Exp $
+ *  $Id: m_unkline.c,v 1.46 2002/06/26 12:16:21 leeh Exp $
  */
 
 #include "stdinc.h"
@@ -73,7 +73,7 @@ _moddeinit(void)
   mod_del_cmd(&msgtabs[1]);
   mod_del_cmd(&msgtabs[2]);
 }
-const char *_version = "$Revision: 1.45 $";
+const char *_version = "$Revision: 1.46 $";
 #endif
 
 static int flush_write(struct Client *, FBFILE* , char *, char *);
@@ -142,7 +142,7 @@ static void mo_unkline (struct Client *client_p,struct Client *source_p,
 		 me.name, parv[0],user, host);
       sendto_realops_flags(FLAGS_ALL, L_ALL,
 			   "%s has removed the temporary K-Line for: [%s@%s]",
-			   get_oper_name(source_p), user, host);
+			   source_p->name, user, host);
       ilog(L_NOTICE, "%s removed temporary K-Line for [%s@%s]", parv[0], user,
 	   host);
       return;
@@ -238,7 +238,7 @@ static void mo_unkline (struct Client *client_p,struct Client *source_p,
              me.name, source_p->name, user,host);
   sendto_realops_flags(FLAGS_ALL, L_ALL,
 		       "%s has removed the K-Line for: [%s@%s]",
-		       get_oper_name(source_p), user, host);
+		       source_p->name, user, host);
 
   ilog(L_NOTICE, "%s removed K-Line for [%s@%s]",
        source_p->name, user, host);
