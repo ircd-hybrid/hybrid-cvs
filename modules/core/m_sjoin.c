@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.175 2004/01/15 22:27:55 metalrock Exp $
+ *  $Id: m_sjoin.c,v 1.176 2004/01/17 17:41:31 db Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.175 $";
+const char *_version = "$Revision: 1.176 $";
 #endif
 
 static char modebuf[MODEBUFLEN];
@@ -108,7 +108,9 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   int            num_prefix = 0;
   int            isnew;
   int            buflen = 0;
+  int		 slen;
   char           *s, *nhops;
+  char		 *sptr;
   static         char nick_buf[2*BUFSIZE]; /* buffer for modes and prefix */
   static         char uid_buf[2*BUFSIZE];  /* buffer for modes/prefixes for CAP_TS6 servers */
   static         char sjbuf_nhops[BUFSIZE]; /* buffer with halfops as @ */
@@ -437,15 +439,21 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
 
       if (pargs >= MAXMODEPARAMS)
       {
+	/*
+	 * Ok, the code is now going to "walk" through
+	 * sendbuf, filling in para strings. So, I will use sptr
+	 * to point into the sendbuf.
+	 * Notice, that ircsprintf() returns the number of chars
+	 * successfully inserted into string.
+	 * - Dianora
+	 */
+
+	sptr = sendbuf;
         *mbuf = '\0';
         for(lcount = 0; lcount < MAXMODEPARAMS; lcount++)
         {
-          if (*para[lcount] == '\0')
-            break;
-
-          strlcat(sendbuf, " ", sizeof(sendbuf));
-          strlcat(sendbuf, para[lcount], sizeof(sendbuf));
-          para[lcount] = "";
+          slen = ircsprintf(sptr, " %s", para[lcount]);	/* see? */
+	  sptr += slen;					/* ready for next */
         }
         sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s %s%s",
                             servername, chptr->chname, modebuf, sendbuf);
@@ -464,14 +472,12 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
       if (pargs >= MAXMODEPARAMS)
       {
         *mbuf = '\0';
+	sptr = sendbuf;
+        *mbuf = '\0';
         for(lcount = 0; lcount < MAXMODEPARAMS; lcount++)
         {
-          if (*para[lcount] == '\0')
-            break;
-
-          strlcat(sendbuf, " ", sizeof(sendbuf));
-          strlcat(sendbuf, para[lcount], sizeof(sendbuf));
-          para[lcount] = "";
+          slen = ircsprintf(sptr, " %s", para[lcount]);
+	  sptr += slen;
         }
         sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s %s%s",
                              servername, chptr->chname, modebuf, sendbuf);
@@ -507,15 +513,21 @@ nextnick:
   *(nick_ptr - 1) = '\0';
   *(uid_ptr - 1) = '\0';
 
+  /*
+   * checking for lcount < MAXMODEPARAMS at this time is wrong
+   * since the code has already verified above that pargs < MAXMODEPARAMS
+   * checking for para[lcount] != '\0' is also wrong, since
+   * there is no place where para[lcount] is set!
+   * - Dianora
+   */
+
   if (pargs != 0)
   {
-    for(lcount = 0; lcount < MAXMODEPARAMS; lcount++)
+    sptr = sendbuf;
+    for(lcount = 0; lcount < pargs; lcount++)
     {
-      if (*para[lcount] == '\0')
-        break;
-
-      strlcat(sendbuf, " ", sizeof(sendbuf));
-      strlcat(sendbuf, para[lcount], sizeof(sendbuf));
+      slen = ircsprintf(sptr, " %s", para[lcount]);
+      sptr += slen;
     }
     sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s %s%s",
                         servername, chptr->chname, modebuf, sendbuf);
