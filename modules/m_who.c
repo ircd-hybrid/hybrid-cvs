@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_who.c,v 1.66 2002/10/16 20:52:34 bill Exp $
+ *  $Id: m_who.c,v 1.67 2003/01/16 23:54:02 db Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&who_msgtab);
 }
-const char *_version = "$Revision: 1.66 $";
+const char *_version = "$Revision: 1.67 $";
 #endif
 static void do_who_on_channel(struct Client *source_p,
 			      struct Channel *chptr, char *real_name,
@@ -567,7 +567,6 @@ do_who(struct Client *source_p, struct Client *target_p,
   ircsprintf(status,"%c%s%s", target_p->user->away ? 'G' : 'H',
 	     IsOper(target_p) ? "*" : "", op_flags );
 
-#ifdef ANONOPS
   if(ConfigServerHide.hide_servers)
   {
     sendto_one(source_p, form_str(RPL_WHOREPLY), me.name, source_p->name,
@@ -578,7 +577,6 @@ do_who(struct Client *source_p, struct Client *target_p,
 	       status, 0, target_p->info);
   }
   else
-#endif
   {
     sendto_one(source_p, form_str(RPL_WHOREPLY), me.name, source_p->name,
 	       (chname) ? (chname) : "*",
