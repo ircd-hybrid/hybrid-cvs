@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_ojoin.c,v 1.27 2003/10/13 02:38:18 bill Exp $
+ *   $Id: m_ojoin.c,v 1.28 2003/10/22 09:08:46 metalrock Exp $
  */
 
 /* Remove this if you do not wish /OJOIN to support multiple channels
@@ -35,6 +35,7 @@
 #include "irc_string.h"
 #include "hash.h"
 #include "msg.h"
+#include "s_serv.h"
 #include "modules.h"
 #include "list.h"
 #include "channel_mode.h"
@@ -60,15 +61,14 @@ _moddeinit(void)
   mod_del_cmd(&ojoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.27 $";
+const char *_version = "$Revision: 1.28 $";
 
 #endif
 
-/*
-** mo_ojoin
-**      parv[0] = sender prefix
-**      parv[1] = channels separated by commas (#ifdef OJOIN_MULTIJOIN)
-*/
+/* mo_ojoin()
+ *      parv[0] = sender prefix
+ *      parv[1] = channels separated by commas (#ifdef OJOIN_MULTIJOIN)
+ */
 static void
 mo_ojoin(struct Client *client_p, struct Client *source_p,
          int parc, char *parv[])
@@ -145,12 +145,12 @@ mo_ojoin(struct Client *client_p, struct Client *source_p,
   
       if (chptr->chname[0] == '#')
       {
-        sendto_server(client_p, source_p, chptr, NOCAPS, NOCAPS, LL_ICLIENT,
+        sendto_server(client_p, source_p, chptr, CAP_TS6, NOCAPS, LL_ICLIENT,
                       ":%s SJOIN %lu %s + :%c%s",
                       me.id, (unsigned long)chptr->channelts, chptr->chname,
                       (modeletter != '\0') ? *name : ' ',
                       source_p->id);
-        sendto_server(client_p, source_p, chptr, NOCAPS, NOCAPS, LL_ICLIENT, 
+        sendto_server(client_p, source_p, chptr, NOCAPS, CAP_TS6, LL_ICLIENT, 
                      ":%s SJOIN %lu %s + :%c%s", me.name,
                      (unsigned long)chptr->channelts,
                      chptr->chname, (modeletter != '\0') ? *name : ' ',
