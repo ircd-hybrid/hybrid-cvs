@@ -1,3 +1,18 @@
+lusky       2003/01/25 18:43:22 EST	(20030125_5)
+
+  Modified files:
+    .                    RELNOTES 
+    src                  s_serv.c 
+  Log:
+  - set TCPNODELAY before sending SERVER during handshake to make sure
+    zipped data doesn't get slammed into the same packet
+  
+  Revision  Changes    Path
+  1.63      +1 -0      ircd-hybrid-7/RELNOTES
+  7.275     +16 -1     ircd-hybrid-7/src/s_serv.c
+
+
+
 lusky       2003/01/25 17:42:21 EST	(20030125_4)
 
   Modified files:
@@ -34458,4 +34473,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4197 2003/01/25 22:42:24 lusky Exp $
+$Id: ChangeLog,v 7.4198 2003/01/25 23:43:24 lusky Exp $
