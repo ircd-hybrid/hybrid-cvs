@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.74 2001/06/18 08:40:14 db Exp $
+ * $Id: channel.h,v 7.75 2001/06/19 07:54:37 a1kmm Exp $
  */
 
 #include <sys/types.h>        /* time_t */
@@ -33,7 +33,7 @@
 #endif
 
 /* XXX until debugged and verified thoroughly */
-#undef USE_TABLE_MODE
+#define USE_TABLE_MODE
 
 struct Client;
 
@@ -156,7 +156,8 @@ extern void    channel_member_list(struct Client *source_p,
 				   int *reply_to_send);
 
 extern void sync_channel_oplists(struct Channel *, int);
-extern void sync_oplists(struct Channel *, struct Client *, int, char *);
+extern void sync_oplists(struct Channel *, struct Client *, int,
+                         const char *);
 extern void set_channel_mode_flags( char flags_ptr[4][2],
 				    struct Channel *chptr,
 				    struct Client *source_p);
