@@ -1,3 +1,17 @@
+a1kmm       2002/01/06 01:26:30 EST	(20020106_1)
+
+  Modified files:
+    modules              m_gline.c 
+  Log:
+  Cast localtime argument to (const time_t*) first, apparently fixes some
+  compile warnings on OpenBSD/sparc/gcc.
+  Submitted by: flata(Joseph Mallett).
+  
+  Revision  Changes    Path
+  1.73      +3 -3      ircd-hybrid-7/modules/m_gline.c
+
+
+
 a1kmm       2002/01/05 23:46:02 EST	(20020106_0)
 
   Modified files:
@@ -2527,7 +2541,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3292 2002/01/06 04:46:08 a1kmm Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3293 2002/01/06 06:26:35 a1kmm Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -20881,4 +20895,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3292 2002/01/06 04:46:08 a1kmm Exp $
+$Id: ChangeLog,v 7.3293 2002/01/06 06:26:35 a1kmm Exp $
