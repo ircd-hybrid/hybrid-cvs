@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.419 2003/06/03 14:10:07 michael Exp $
+ *  $Id: s_conf.c,v 7.420 2003/06/03 14:39:02 db Exp $
  */
 
 #include "stdinc.h"
@@ -590,12 +590,16 @@ attach_iline(struct Client *client_p, struct ConfItem *aconf)
 	!max_limit_reached)
       a_limit_reached = 0;
 
-    if (!IsConfExemptLimits(aconf) && a_limit_reached)
-      return(TOO_MANY); /* Already at maximum allowed */
-    else
+    if (a_limit_reached)
     {
-      sendto_one(client_p, ":%s NOTICE %s :*** Your connection class is full, "
-                 "but you have exceed_limit=yes;", me.name, client_p->name);
+      if (!IsConfExemptLimits(aconf))
+	return(TOO_MANY); /* Already at maximum allowed */
+      else
+      {
+	sendto_one(client_p,
+		   ":%s NOTICE %s :*** Your connection class is full, "
+		   "but you have exceed_limit=yes;", me.name, client_p->name);
+      }
     }
   }
   else
