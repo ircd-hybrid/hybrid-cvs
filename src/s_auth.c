@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.123 2003/05/13 02:32:19 joshk Exp $
+ *  $Id: s_auth.c,v 7.124 2003/05/14 22:29:42 db Exp $
  */
 
 /*
@@ -188,6 +188,13 @@ auth_dns_callback(void* vptr, struct DNSReply *reply)
   struct AuthRequest* auth = (struct AuthRequest*) vptr;
   ClearDNSPending(auth);
 
+  /* If either of the following happen, there is no reason to continue */
+  if ((auth->client == NULL) || (auth->client->localClient == NULL))
+  {
+    MyFree(reply);
+    return;
+  }
+
   if (reply != NULL)
   {
     struct sockaddr_in *v4, *v4dns;
@@ -195,7 +202,7 @@ auth_dns_callback(void* vptr, struct DNSReply *reply)
     struct sockaddr_in6 *v6, *v6dns;
 #endif
     int good = 1;
-    
+
 #ifdef IPV6
     if(auth->client->localClient->ip.ss.ss_family == AF_INET6)
     {

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.287 2003/05/12 08:09:33 michael Exp $
+ *  $Id: ircd_parser.y,v 1.288 2003/05/14 22:29:42 db Exp $
  */
 
 %{
@@ -280,6 +280,7 @@ init_parser_confs(void)
 %token  USE_KNOCK
 %token  VHOST
 %token  VHOST6
+%token  XLINE
 %token  WARN
 %token  WARN_NO_NLINE
 
@@ -804,8 +805,10 @@ oper_entry: OPERATOR
 oper_items:     oper_items oper_item | oper_item;
 oper_item:      oper_name  | oper_user | oper_password |
                 oper_class | oper_global_kill | oper_remote |
-                oper_kline | oper_unkline | oper_gline | oper_nick_changes |
-                oper_die | oper_rehash | oper_admin | oper_rsa_public_key_file | error;
+                oper_kline | oper_xline | oper_unkline |
+		oper_gline | oper_nick_changes |
+                oper_die | oper_rehash | oper_admin |
+		oper_rsa_public_key_file | error;
 
 oper_name: NAME '=' QSTRING ';'
 {
@@ -927,6 +930,16 @@ oper_kline: KLINE '=' TYES ';'
 {
   if (ypass == 2)
     yy_aconf->port &= ~CONF_OPER_K;
+};
+
+oper_xline: XLINE '=' TYES ';'
+{
+  if (ypass == 2)
+    yy_aconf->port |= CONF_OPER_X;
+} | XLINE '=' TNO ';'
+{
+  if (ypass == 2)
+    yy_aconf->port &= ~CONF_OPER_X;
 };
 
 oper_unkline: UNKLINE '=' TYES ';'
@@ -1839,7 +1852,7 @@ kill_entry: KILL
 {
   if (ypass == 2)
   {
-    if (yy_aconf->user && yy_aconf->passwd && yy_aconf->host)
+    if (yy_aconf->user && yy_aconf->reason && yy_aconf->host)
     {
       if (yy_aconf->host != NULL)
         add_conf_by_address(yy_aconf->host, CONF_KILL, yy_aconf->user, yy_aconf);
@@ -1866,8 +1879,8 @@ kill_reason: REASON '=' QSTRING ';'
 {
   if (ypass == 2)
   {
-    MyFree(yy_aconf->passwd);
-    DupString(yy_aconf->passwd, yylval.string);
+    MyFree(yy_aconf->reason);
+    DupString(yy_aconf->reason, yylval.string);
   }
 };
 
@@ -1881,7 +1894,7 @@ deny_entry: DENY
     free_conf(yy_aconf);
     yy_aconf = make_conf(CONF_DLINE);
     /* default reason */
-    DupString(yy_aconf->passwd, "NO REASON");
+    DupString(yy_aconf->reason, "NO REASON");
   }
 } '{' deny_items '}' ';'
 {
@@ -1911,8 +1924,8 @@ deny_reason: REASON '=' QSTRING ';'
 {
   if (ypass == 2)
   {
-    MyFree(yy_aconf->passwd);
-    DupString(yy_aconf->passwd, yylval.string);
+    MyFree(yy_aconf->reason);
+    DupString(yy_aconf->reason, yylval.string);
   }
 };
 

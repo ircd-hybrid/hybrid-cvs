@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.388 2003/05/14 18:38:27 joshk Exp $
+ *  $Id: s_conf.c,v 7.389 2003/05/14 22:29:42 db Exp $
  */
 
 #include "stdinc.h"
@@ -197,6 +197,8 @@ free_conf(struct ConfItem *aconf)
   if (aconf->spasswd)
     memset(aconf->spasswd, 0, strlen(aconf->spasswd));
   MyFree(aconf->spasswd);
+  MyFree(aconf->reason);
+  MyFree(aconf->oper_reason);
   MyFree(aconf->name);
   MyFree(aconf->className);
   MyFree(aconf->user);
@@ -260,7 +262,7 @@ report_configured_links(struct Client *source_p, unsigned int mask)
   struct ConfItem *aconf;
   struct LinkReport *p;
   char *host;
-  char *pass;
+  char *reason;
   char *user;
   char *name;
   char *classname;
@@ -279,7 +281,7 @@ report_configured_links(struct Client *source_p, unsigned int mask)
       if (p->conf_type == 0)
         return;
 
-      get_printable_conf(aconf, &name, &host, &pass, &user, &port, &classname);
+      get_printable_conf(aconf, &name, &host, &reason, &user, &port, &classname);
 
       if (mask & CONF_SERVER)
       {
@@ -334,10 +336,10 @@ report_configured_links(struct Client *source_p, unsigned int mask)
       {
         if (mask & CONF_ULINE)
           sendto_one(source_p, form_str(RPL_STATSULINE),
-                     me.name, source_p->name, name, pass);
+                     me.name, source_p->name, name, reason);
         else
           sendto_one(source_p, form_str(RPL_STATSXLINE),
-                     me.name, source_p->name, name, pass);
+                     me.name, source_p->name, name, reason);
       }
       else
         sendto_one(source_p, form_str(p->rpl_stats),
@@ -1709,6 +1711,15 @@ oper_privs_as_string(struct Client *client_p, int port)
   else
     *privs_ptr++ = 'k';
 
+  if (port & CONF_OPER_X)
+    {
+      if(client_p)
+        SetOperX(client_p);
+      *privs_ptr++ = 'X';
+    }
+  else
+    *privs_ptr++ = 'x';
+
   if(port & CONF_OPER_N)
     {
       if(client_p)
@@ -1820,7 +1831,7 @@ get_oper_name(struct Client *client_p)
  *
  * output         - name 
  *                - host
- *                - pass
+ *                - reason
  *                - user
  *                - port
  *
@@ -1831,14 +1842,14 @@ get_oper_name(struct Client *client_p)
  */
 void 
 get_printable_conf(struct ConfItem *aconf, char **name, char **host,
-                   char **pass, char **user,int *port,char **classname)
+                   char **reason, char **user,int *port,char **classname)
 {
   static char null[] = "<NULL>";
   static char zero[] = "default";
 
   *name = EmptyString(aconf->name) ? null : aconf->name;
   *host = EmptyString(aconf->host) ? null : aconf->host;
-  *pass = EmptyString(aconf->passwd) ? null : aconf->passwd;
+  *reason = EmptyString(aconf->reason) ? null : aconf->reason;
   *user = EmptyString(aconf->user) ? null : aconf->user;
   *classname = EmptyString(aconf->className) ? zero : aconf->className;
   *port = (int)aconf->port;
@@ -1856,7 +1867,8 @@ read_conf_files(int cold)
   FBFILE *file;
   const char *filename;
   const char *kfilename;
-  const char *dfilename; /* kline or conf filename */
+  const char *xfilename;
+  const char *dfilename;
 
   conf_fbfile_in = NULL;
 
@@ -1903,40 +1915,47 @@ read_conf_files(int cold)
 
   kfilename = get_conf_name(CONF_KILL);
 
-  if (irccmp(filename, kfilename))
+  if ((file = fbopen(kfilename, "r")) == NULL)
   {
-    if ((file = fbopen(kfilename, "r")) == NULL)
-    {
-      if (cold)
-        ilog(L_ERROR, "Failed reading kline file %s", filename);
-      else
-        sendto_realops_flags(UMODE_ALL, L_ALL, "Can't open %s file "
-                             "klines could be missing!", kfilename);
-    }
+    if (cold)
+      ilog(L_ERROR, "Failed reading kline file %s", filename);
     else
-    {
-      parse_csv_file(file, CONF_KILL);
-      fbclose(file);
-    }
+      sendto_realops_flags(UMODE_ALL, L_ALL, "Can't open %s file "
+			   "klines could be missing!", kfilename);
+  }
+  else
+  {
+    parse_csv_file(file, CONF_KILL);
+    fbclose(file);
   }
 
   dfilename = get_conf_name(CONF_DLINE);
 
-  if (irccmp(filename, dfilename) && irccmp(kfilename, dfilename))
+  if ((file = fbopen(dfilename, "r")) == NULL)
   {
-    if ((file = fbopen(dfilename, "r")) == NULL)
-    {
-      if (cold)
-        ilog(L_ERROR, "Failed reading dline file %s", dfilename);
-      else
-       sendto_realops_flags(UMODE_ALL, L_ALL, "Can't open %s file "
-                            "dlines could be missing!", dfilename);
-    }
+    if (cold)
+      ilog(L_ERROR, "Failed reading dline file %s", dfilename);
     else
-    {
-      parse_csv_file(file, CONF_DLINE);
-      fbclose(file);
-    }
+      sendto_realops_flags(UMODE_ALL, L_ALL, "Can't open %s file "
+			   "dlines could be missing!", dfilename);
+  }
+  else
+  {
+    parse_csv_file(file, CONF_DLINE);
+    fbclose(file);
+  }
+
+  xfilename = get_conf_name(CONF_XLINE);
+
+  if ((file = fbopen(xfilename, "r")) == NULL)
+  {
+    sendto_realops_flags(UMODE_ALL, L_ALL, "Can't open %s file "
+			 "xlines could be missing!", xfilename);
+  }
+  else
+  {
+    parse_csv_file(file, CONF_XLINE);
+    fbclose(file);
   }
 }
 
@@ -2097,6 +2116,9 @@ get_conf_name(int type)
   case CONF_DLINE:
     return(ConfigFileEntry.dlinefile);
     break;
+  case CONF_XLINE:
+    return(ConfigFileEntry.xlinefile);
+    break;
   default:
     return NULL; /* This should NEVER HAPPEN since we call this function
 		    only with the above values, this will cause us to core
@@ -2204,33 +2226,6 @@ conf_add_d_conf(struct ConfItem *aconf)
   {
     add_conf_by_address(aconf->host, CONF_DLINE, NULL, aconf);
   }
-}
-
-/* conf_add_fields()
- *
- * inputs       - pointer to config item
- *              - pointer to host_field
- *		- pointer to pass_field
- *              - pointer to user_field
- *              - pointer to port_field
- *		- pointer to class_field
- * output       - NONE
- * side effects - update host/pass/user/port fields of given aconf
- */
-void
-conf_add_fields(struct ConfItem *aconf, const char *host_field, const char *pass_field,
-                const char *user_field, const char *port_field, const char *class_field)
-{
-  if (host_field != NULL)
-    DupString(aconf->host, host_field);
-  if (pass_field != NULL)
-    DupString(aconf->passwd, pass_field);
-  if (user_field != NULL)
-    DupString(aconf->user, user_field);
-  if (port_field != NULL)
-    aconf->port = atoi(port_field);
-  if (class_field != NULL)
-    DupString(aconf->className, class_field);
 }
 
 /* yyerror()

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.217 2003/05/14 18:15:17 db Exp $
+ *  $Id: s_conf.h,v 7.218 2003/05/14 22:29:38 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -62,8 +62,10 @@ struct ConfItem
   struct irc_ssaddr ipnum;	/* ip to connect to */
   char *           name;     /* IRC name, nick, server name, or original u@h */
   char *           host;     /* host part of user@host */
-  char *           passwd;   /* doubles as kline reason *ugh* */
+  char *           passwd;
   char *           spasswd;  /* Password to send. */
+  char *	   reason;
+  char *	   oper_reason;
   char *           user;     /* user part of user@host */
   int              port;
   char *           fakename;   /* Mask name */
@@ -177,15 +179,17 @@ struct ConfItem
 #define CONF_OPER_GLINE         0x0008
 #define CONF_OPER_N             0x0010
 #define CONF_OPER_K             0x0020
-#define CONF_OPER_REHASH        0x0040
-#define CONF_OPER_DIE           0x0080
-#define CONF_OPER_ADMIN         0x0100
+#define CONF_OPER_X             0x0040
+#define CONF_OPER_REHASH        0x0080
+#define CONF_OPER_DIE           0x0100
+#define CONF_OPER_ADMIN         0x0200
 
 struct config_file_entry
 {
   const char *dpath;          /* DPATH if set from command line */
   const char *configfile;
   const char *klinefile;
+  const char *xlinefile;
   const char *dlinefile;
   const char *glinefile;
 
@@ -361,10 +365,8 @@ extern void yyerror(const char *);
 extern int conf_yy_fatal_error(const char *);
 extern int conf_fbgets(char *, int, FBFILE *);
 
-extern void write_conf_line(int, struct Client *,
-			    char *user, char *host, const char *reason,
-			    const char *oper_reason,
-			    const char *current_date, time_t cur_time);
+extern void write_conf_line(struct Client *, struct ConfItem *,
+			    const char *, time_t);
 extern int  remove_conf_line(int, struct Client *, char *, char *);
 extern void add_temp_kline(struct ConfItem *);
 extern void report_temp_klines(struct Client *);
@@ -381,7 +383,6 @@ extern void conf_add_class(struct ConfItem *, int);
 extern void conf_add_d_conf(struct ConfItem *);
 extern void conf_add_x_conf(struct ConfItem *);
 extern void conf_add_u_conf(struct ConfItem *);
-extern void conf_add_fields(struct ConfItem *, const char *, const char *, const char *, const char *, const char *);
 extern void conf_add_conf(struct ConfItem *);
 
 /* XXX consider moving these into csvlib.h */

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.c,v 7.81 2003/05/02 19:56:12 bill Exp $
+ *  $Id: hostmask.c,v 7.82 2003/05/14 22:29:41 db Exp $
  */
 
 #include "stdinc.h"
@@ -754,7 +754,7 @@ show_iline_prefix(struct Client *sptr, struct ConfItem *aconf, char *name)
 void
 report_auth(struct Client *client_p)
 {
-  char *name, *host, *pass, *user, *classname;
+  char *name, *host, *reason, *user, *classname;
   struct AddressRec *arec;
   struct ConfItem *aconf;
   int i, port;
@@ -768,7 +768,7 @@ report_auth(struct Client *client_p)
         if (!MyOper(client_p) && IsConfDoSpoofIp(aconf))
           continue;
 
-        get_printable_conf(aconf, &name, &host, &pass, &user, &port,
+        get_printable_conf(aconf, &name, &host, &reason, &user, &port,
                            &classname);
 
         /* We are doing a partial list, based on what matches the u@h of the
@@ -794,7 +794,7 @@ report_auth(struct Client *client_p)
 void
 report_Klines(struct Client *client_p, int tkline)
 {
-  char *name, *host, *pass, *user, *classname, c;
+  char *name, *host, *reason, *user, *classname, c;
   struct AddressRec *arec;
   struct ConfItem *aconf = NULL;
   int i, port;
@@ -812,9 +812,9 @@ report_Klines(struct Client *client_p, int tkline)
             || (!tkline
                 && ((aconf = arec->aconf)->flags & CONF_FLAGS_TEMPORARY)))
           continue;
-        get_printable_conf(aconf, &name, &host, &pass, &user, &port,
+        get_printable_conf(aconf, &name, &host, &reason, &user, &port,
                            &classname);
         sendto_one(client_p, form_str(RPL_STATSKLINE), me.name,
-                   client_p->name, c, host, user, pass);
+                   client_p->name, c, host, user, reason);
       }
 }

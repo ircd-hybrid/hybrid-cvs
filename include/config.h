@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: config.h,v 7.152 2003/05/12 08:09:26 michael Exp $
+ *  $Id: config.h,v 7.153 2003/05/14 22:29:38 db Exp $
  */
 
 #ifndef INCLUDED_config_h
@@ -100,6 +100,7 @@
 #define SLPATH  BINPATH "SERVLINK.EXE"          /* servlink executable */
 #define CPATH   ETCPATH "IRCD.CONF"             /* config file */
 #define KPATH   ETCPATH "KLINE.CONF"            /* kline file */
+#define XPATH   ETCPATH "XLINE.CONF"            /* xline file */
 #define DLPATH  ETCPATH "DLINE.CONF"            /* dline file */
 #define GPATH   LOGPATH "GLINE.LOG"             /* gline logfile */
 #define RPATH   ETCPATH "IRCD.RSA"              /* RSA private key file */
@@ -146,6 +147,7 @@
 #define SLPATH  BINPATH "/servlink"             /* servlink executable */
 #define CPATH   ETCPATH "/ircd.conf"            /* ircd.conf file */
 #define KPATH   ETCPATH "/kline.conf"           /* kline file */
+#define XPATH   ETCPATH "/xline.conf"           /* xline file */
 #define DLPATH  ETCPATH "/dline.conf"           /* dline file */
 #define GPATH   LOGPATH "/gline.log"            /* gline logfile */
 #define RPATH   ETCPATH "/ircd.rsa"             /* ircd rsa private keyfile */

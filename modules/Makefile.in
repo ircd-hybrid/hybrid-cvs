@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/modules
 #
-# $Id: Makefile.in,v 1.75 2003/05/12 23:43:36 joshk Exp $
+# $Id: Makefile.in,v 1.76 2003/05/14 22:29:40 db Exp $
 #
 CC		= @CC@
 AR		= @AR@
@@ -61,6 +61,7 @@ SRCS =       \
   m_ison.c \
   m_join.c \
   m_kline.c \
+  m_xline.c \
   m_knock.c \
   m_links.c \
   m_list.c \

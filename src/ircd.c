@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.278 2003/05/13 02:32:19 joshk Exp $
+ *  $Id: ircd.c,v 7.279 2003/05/14 22:29:42 db Exp $
  */
 
 #include "stdinc.h"
@@ -252,6 +252,8 @@ struct lgetopt myopts[] = {
    STRING, "File to use for ircd.conf"},
   {"klinefile",  &ConfigFileEntry.klinefile, 
    STRING, "File to use for klines.conf"},
+  {"xlinefile",  &ConfigFileEntry.xlinefile, 
+   STRING, "File to use for xlines.conf"},
   {"logfile",    &logFileName, 
    STRING, "File to use for ircd.log"},
   {"pidfile",    &pidFileName,
@@ -553,6 +555,7 @@ main(int argc, char *argv[])
   ConfigFileEntry.dpath      = DPATH;
   ConfigFileEntry.configfile = CPATH;  /* Server configuration file */
   ConfigFileEntry.klinefile  = KPATH;  /* Server kline file         */
+  ConfigFileEntry.xlinefile  = XPATH;  /* Server xline file         */
   ConfigFileEntry.dlinefile  = DLPATH; /* dline file                */
   ConfigFileEntry.glinefile  = GPATH;  /* gline log file            */
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.186 2003/05/11 16:05:48 michael Exp $
+ *  $Id: client.h,v 7.187 2003/05/14 22:29:37 db Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -441,9 +441,10 @@ struct LocalUser
 #define OPER_FLAG_GLINE       0x00000008 /* oper can use gline          */
 #define OPER_FLAG_N           0x00000010 /* oper can umode n            */
 #define OPER_FLAG_K           0x00000020 /* oper can kill/kline         */
-#define OPER_FLAG_DIE         0x00000040 /* oper can die                */
-#define OPER_FLAG_REHASH      0x00000080 /* oper can rehash             */
-#define OPER_FLAG_ADMIN       0x00000100 /* oper can set umode +a       */
+#define OPER_FLAG_X           0x00000040 /* oper can xline              */
+#define OPER_FLAG_DIE         0x00000080 /* oper can die                */
+#define OPER_FLAG_REHASH      0x00000100 /* oper can rehash             */
+#define OPER_FLAG_ADMIN       0x00000200 /* oper can set umode +a       */
 
 #define FLAGS_ID     (FLAGS_NEEDID | FLAGS_GOTID)
 
@@ -578,6 +579,8 @@ struct LocalUser
 #define SetOperRehash(x)        ((x)->localClient->operflags |= OPER_FLAG_REHASH)
 #define IsOperAdmin(x)          (MyConnect(x) ? (x)->localClient->operflags & OPER_FLAG_ADMIN : 0)
 #define SetOperAdmin(x)         ((x)->localClient->operflags |= OPER_FLAG_ADMIN)
+#define IsOperX(x)              (MyConnect(x) ? (x)->localClient->operflags & OPER_FLAG_X : 0)
+#define SetOperX(x)             ((x)->localClient->operflags |= OPER_FLAG_X)
 
 /*
  * definitions for get_client_name

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.125 2003/05/14 18:15:19 db Exp $
+ *  $Id: m_kline.c,v 1.126 2003/05/14 22:29:40 db Exp $
  */
 
 #include "stdinc.h"
@@ -76,7 +76,7 @@ _moddeinit(void)
   mod_del_cmd(&kline_msgtab);
   mod_del_cmd(&dline_msgtab);
 }
-const char *_version = "$Revision: 1.125 $";
+const char *_version = "$Revision: 1.126 $";
 #endif
 
 /* Local function prototypes */
@@ -92,9 +92,7 @@ static int valid_user_host(struct Client *source_p, char *user, char *host);
 static int valid_wild_card(char *user, char *host);
 static int already_placed_kline(struct Client *, const char *, const char *);
 static void apply_kline(struct Client *source_p, struct ConfItem *aconf,
-                        const char *reason, const char *oper_reason,
-			const char *current_date, time_t cur_time);
-
+			const char *, time_t);
 static void apply_tkline(struct Client *source_p, struct ConfItem *aconf,
                          int temporary_kline_time);
 
@@ -201,7 +199,8 @@ mo_kline(struct Client *client_p, struct Client *source_p,
   cur_time = CurrentTime;
   current_date = smalldate(cur_time);
   aconf = make_conf(CONF_KILL);
-  conf_add_fields(aconf, host, NULL, user, NULL, NULL);
+  DupString(aconf->host, host);
+  DupString(aconf->user, user);
   aconf->port = 0;
 
   if (target_server != NULL)
@@ -238,17 +237,14 @@ mo_kline(struct Client *client_p, struct Client *source_p,
 		 (int)(tkline_time/60),
 		 reason,
 		 current_date);
-      DupString(aconf->passwd, buffer);
+      DupString(aconf->reason, buffer);
       apply_tkline(source_p, aconf, tkline_time);
     }
   else
     {
-      ircsprintf(buffer, "%s (%s)",
-		 reason,
-		 current_date);
-      DupString(aconf->passwd, buffer);
-      apply_kline(source_p, aconf, reason, oper_reason,
-		  current_date, cur_time);
+      ircsprintf(buffer, "%s (%s)", reason, current_date);
+      DupString(aconf->reason, buffer);
+      apply_kline(source_p, aconf, current_date, cur_time);
     }
 } /* mo_kline() */
 
@@ -261,11 +257,10 @@ static void
 ms_kline(struct Client *client_p, struct Client *source_p,
 	 int parc, char *parv[])
 {
-  const char *current_date;
   struct ConfItem *aconf=NULL;
   int    tkline_time;
+  const char* current_date;
   time_t cur_time;
-
   char *kuser;
   char *khost;
   char *kreason;
@@ -313,6 +308,10 @@ ms_kline(struct Client *client_p, struct Client *source_p,
 
   tkline_time = atoi(parv[2]);
 
+  set_time();
+  cur_time = CurrentTime;
+  current_date = smalldate(cur_time);
+
   if (find_u_conf(source_p->user->server,
 		  source_p->username, source_p->host))
     {
@@ -323,17 +322,14 @@ ms_kline(struct Client *client_p, struct Client *source_p,
         return;
 
       aconf = make_conf(CONF_KILL);
-      conf_add_fields(aconf, khost, kreason, kuser, NULL, NULL);
-
-      current_date = smalldate((time_t) 0);
-      set_time();
-      cur_time = CurrentTime;
+      DupString(aconf->host, khost);
+      DupString(aconf->reason, kreason);
+      DupString(aconf->user, kuser);
 
       if (tkline_time)
 	apply_tkline(source_p, aconf, tkline_time);
       else
-	apply_kline(source_p, aconf, aconf->passwd, NULL,
-		    current_date, cur_time);
+	apply_kline(source_p, aconf, current_date, cur_time);
 
       }
 } /* ms_kline() */
@@ -348,12 +344,10 @@ ms_kline(struct Client *client_p, struct Client *source_p,
  */
 static void 
 apply_kline(struct Client *source_p, struct ConfItem *aconf,
-	    const char *reason, const char *oper_reason,
 	    const char *current_date, time_t cur_time)
 {
   add_conf_by_address(aconf->host, CONF_KILL, aconf->user, aconf);
-  write_conf_line(CONF_KILL, source_p, aconf->user, aconf->host,
-		  reason, oper_reason, current_date, cur_time);
+  write_conf_line(source_p, aconf, current_date, cur_time);
   /* Now, activate kline against current online clients */
   check_klines();
 }
@@ -712,10 +706,6 @@ mo_dline(struct Client *client_p, struct Client *source_p,
 	}
     }
 
-  set_time();
-  cur_time = CurrentTime;
-  current_date = smalldate(cur_time);
-
   aconf = make_conf(CONF_DLINE);
 
   /* Look for an oper reason */
@@ -725,6 +715,10 @@ mo_dline(struct Client *client_p, struct Client *source_p,
       oper_reason++;
     }
 
+  set_time();
+  cur_time = CurrentTime;
+  current_date = smalldate(cur_time);
+
   ircsprintf(dlbuffer, "%s (%s)",reason, current_date);
   DupString(aconf->host, dlhost);
   DupString(aconf->passwd, dlbuffer);
@@ -733,8 +727,7 @@ mo_dline(struct Client *client_p, struct Client *source_p,
   /*
    * Write dline to configuration file
    */
-  write_conf_line(CONF_DLINE, source_p, NULL, dlhost, reason,
-		  oper_reason, current_date, cur_time);
+  write_conf_line(source_p, aconf, current_date, cur_time);
   check_klines();
 } /* m_dline() */
 

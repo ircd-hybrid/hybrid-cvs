@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.3 2003/05/14 18:38:27 joshk Exp $
+ *  $Id: csvlib.c,v 7.4 2003/05/14 22:29:41 db Exp $
  */
 
 #include "stdinc.h"
@@ -38,11 +38,14 @@ void
 parse_csv_file(FBFILE *file, int conf_type)
 {
   struct ConfItem *aconf;
-  char* user_field=NULL;
-  char* reason_field=NULL;
-  char* host_field=NULL;
+  char  *name_field=NULL;
+  char  *user_field=NULL;
+  char  *reason_field=NULL;
+  char  *oper_reason=NULL;
+  char  *host_field=NULL;
+  char  *port=0;
   char  line[BUFSIZE];
-  char* p;
+  char  *p;
 
   while (fbgets(line, sizeof(line), file) != NULL)
   {
@@ -57,7 +60,12 @@ parse_csv_file(FBFILE *file, int conf_type)
     case CONF_KILL:
       parse_csv_line(line, &user_field, &host_field, &reason_field, NULL);
       aconf = make_conf(conf_type);
-      conf_add_fields(aconf, host_field, reason_field, user_field, NULL, NULL);
+      if (host_field != NULL)
+	DupString(aconf->host, host_field);
+      if (reason_field != NULL)
+	DupString(aconf->reason, reason_field);
+      if (user_field != NULL)
+	DupString(aconf->user, user_field);
       if (aconf->host != NULL)
 	add_conf_by_address(aconf->host, CONF_KILL, aconf->user, aconf);
       break;
@@ -65,7 +73,24 @@ parse_csv_file(FBFILE *file, int conf_type)
     case CONF_DLINE:
       parse_csv_line(line, &host_field, &reason_field, NULL);
       aconf = make_conf(CONF_DLINE);
-      conf_add_fields(aconf, host_field, reason_field, NULL, NULL, NULL);
+      if (host_field != NULL)
+	DupString(aconf->host, host_field);
+      if (reason_field != NULL)
+	DupString(aconf->reason, reason_field);
+      conf_add_d_conf(aconf);
+      break;
+
+    case CONF_XLINE:
+      parse_csv_line(line, &name_field, &reason_field, &oper_reason, port,
+		     NULL);
+      aconf = make_conf(CONF_XLINE);
+      if (name_field != NULL)
+	DupString(aconf->name, name_field);
+      if (reason_field != NULL)
+	DupString(aconf->reason, reason_field);
+      if (user_field != NULL)
+	DupString(aconf->user, user_field);
+      aconf->port = port;
       conf_add_d_conf(aconf);
       break;
     }
@@ -129,14 +154,13 @@ parse_csv_line(char *line, ...)
  *                
  */
 void 
-write_conf_line(int type, struct Client *source_p, char *user, char *host,
-		const char *reason, const char *oper_reason,
+write_conf_line(struct Client *source_p, struct ConfItem *aconf,
 		const char *current_date, time_t cur_time)
 {
   FBFILE *out;
   const char *filename;
 
-  filename = get_conf_name(type);
+  filename = get_conf_name(aconf->status);
   if ((out = fbopen(filename, "a")) == NULL)
   {
     sendto_realops_flags(UMODE_ALL, L_ALL,
@@ -144,32 +168,48 @@ write_conf_line(int type, struct Client *source_p, char *user, char *host,
     return;
   }
 
-  switch(type)
+  switch(aconf->status)
   {
   case CONF_KILL:
     sendto_realops_flags(UMODE_ALL, L_ALL,
                          "%s added K-Line for [%s@%s] [%s]",
-                         get_oper_name(source_p), user, host, reason);
+                         get_oper_name(source_p),
+			 aconf->user, aconf->host, aconf->reason);
     sendto_one(source_p, ":%s NOTICE %s :Added K-Line [%s@%s]",
-               me.name, source_p->name, user, host);
+               me.name, source_p->name, aconf->user, aconf->host);
     ilog(L_TRACE, "%s added K-Line for [%s@%s] [%s]",
-         source_p->name, user, host, reason);
+         source_p->name, aconf->user, aconf->host, aconf->reason);
     write_csv_line(out, "%s%s%s%s%s%s%ld",
-		   user, host, reason, oper_reason, current_date,
+		   aconf->user, aconf->host,
+		   aconf->reason, aconf->oper_reason, current_date,
 		   get_oper_name(source_p), (long)cur_time);
     break;
 
   case CONF_DLINE:
     sendto_realops_flags(UMODE_ALL, L_ALL,
                          "%s added D-Line for [%s] [%s]",
-                         get_oper_name(source_p), host, reason);
+                         get_oper_name(source_p), aconf->host, aconf->reason);
     sendto_one(source_p, ":%s NOTICE %s :Added D-Line [%s] to %s",
-               me.name, source_p->name, host, filename);
+               me.name, source_p->name, aconf->host, filename);
     ilog(L_TRACE, "%s added D-Line for [%s] [%s]",
-         get_oper_name(source_p), host, reason);
+         get_oper_name(source_p), aconf->host, aconf->reason);
     write_csv_line(out, "%s%s%s%s%s%ld",
-		   host, reason, oper_reason, current_date,
+		   aconf->host, aconf->reason, aconf->oper_reason, 
+		   current_date,
 		   get_oper_name(source_p), (long)cur_time);
+    break;
+
+  case CONF_XLINE:
+    sendto_realops_flags(UMODE_ALL, L_ALL,
+                         "%s added X-Line for [%s] [%s]",
+                         get_oper_name(source_p), aconf->name, aconf->reason);
+    sendto_one(source_p, ":%s NOTICE %s :Added X-Line [%s] to %s",
+               me.name, source_p->name, aconf->name, filename);
+    ilog(L_TRACE, "%s added X-Line for [%s] [%s]",
+         get_oper_name(source_p), aconf->name, aconf->reason);
+    write_csv_line(out, "%s%s%s%d%s%s%ld",
+		   aconf->name, aconf->reason, aconf->oper_reason, aconf->port,
+		   current_date, get_oper_name(source_p), (long)cur_time);
     break;
 
   default:
@@ -243,8 +283,9 @@ write_csv_line(FBFILE *out, const char *format, ...)
 	++bytes;
 	*str++ = '\"';
 	*str++ = ',';
-	++bytes;
-	++bytes;
+	*str++ = '\0';
+
+	bytes += 3;
 	continue;
       }
       if (c != '%')
@@ -255,7 +296,10 @@ write_csv_line(FBFILE *out, const char *format, ...)
 	ret = vsprintf(str, format, args);
 	str += ret;
 	bytes += ret;
-	
+	*str++ = ',';
+	*str++ = '\0';
+
+	bytes += 2;
 	break;
       }
     }
