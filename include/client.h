@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.52 2000/12/09 08:20:17 db Exp $
+ * $Id: client.h,v 7.53 2000/12/09 17:55:07 db Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -129,7 +129,7 @@ struct Client
   int               hopcount;   /* number of servers to this 0 = local */
   unsigned short    status;     /* Client type */
   unsigned char     handler;    /* Handler index */
-  char              nicksent;
+  unsigned long     serial;	/* used to enforce 1 send per nick */
 
   /*
    * client->name is the unique name for a client nick or host

@@ -2,7 +2,7 @@
  * send.h
  * Copyright (C) 1999 Patrick Alken
  *
- * $Id: send.h,v 7.17 2000/12/09 08:01:40 db Exp $
+ * $Id: send.h,v 7.18 2000/12/09 17:55:07 db Exp $
  */
 
 #ifndef INCLUDED_send_h
@@ -17,6 +17,9 @@
 struct Client;
 struct Channel;
 struct dlink_list;
+
+/* The nasty global also used in s_serv.c for server bursts */
+unsigned long current_serial;
 
 /* send.c prototypes */
 
