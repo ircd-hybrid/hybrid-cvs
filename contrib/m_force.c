@@ -1,7 +1,7 @@
 /* developers/m_force.c
  * Copyright (C) 2002 Hybrid Development Team
  *
- * $Id: m_force.c,v 1.2 2002/04/05 12:24:31 leeh Exp $
+ * $Id: m_force.c,v 1.3 2002/04/14 09:50:01 leeh Exp $
  */
 
 #include "handlers.h"
@@ -54,7 +54,7 @@ _moddeinit(void)
   mod_del_cmd(&forcepart_msgtab);
 }
 
-char *_version = "$Revision: 1.2 $";
+char *_version = "$Revision: 1.3 $";
 #endif
 
 /*
@@ -151,7 +151,7 @@ static void mo_forcepart(struct Client *client_p, struct Client *source_p,
                            target_p->name, target_p->username,
 	  	           target_p->host,chptr->chname,
 		           target_p->name);
-      remove_user_from_channel(chptr, target_p, 0);
+      remove_user_from_channel(chptr, target_p);
     }
   }
 }
