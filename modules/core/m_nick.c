@@ -2,7 +2,7 @@
  * modules/m_nick.c
  * Copyright (C) 2001 Hybrid Development Team
  *
- * $Id: m_nick.c,v 1.76 2001/09/13 15:32:24 habeeb Exp $
+ * $Id: m_nick.c,v 1.77 2001/09/21 17:53:53 leeh Exp $
  */
 
 #include "handlers.h"
@@ -495,7 +495,7 @@ static int check_clean_user(struct Client *client_p, struct Client *source_p,
 
   if(!clean_user_name(user))
     sendto_realops_flags(FLAGS_DEBUG, L_ALL,
-                         "Bad sername: %s Nickname: %s From: %s %s",
+                         "Bad Username: %s Nickname: %s From: %s %s",
 			 user, nick, source_p->name, client_p->name);
 			 
   return 0;
