@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.56 2000/07/20 02:42:53 db Exp $
+ *  $Id: s_conf.c,v 7.57 2000/07/25 00:04:57 db Exp $
  */
 #include "s_conf.h"
 #include "channel.h"
@@ -3563,6 +3563,7 @@ int conf_fbgets(char *buf,int max_size, FBFILE *fb)
   char* buff;
 
   buff = fbgets(buf,max_size,fb);
+
   if(!buff)
     return 0;
   else

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_nick.c,v 7.7 2000/07/20 02:42:51 db Exp $
+ *   $Id: m_nick.c,v 7.8 2000/07/25 00:04:56 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -36,6 +36,7 @@
 #include "send.h"
 #include "list.h"
 #include "channel.h"
+#include "s_log.h"
 
 #include <stdlib.h>
 #include <string.h>

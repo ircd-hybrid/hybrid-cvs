@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.16 2000/04/02 15:46:36 db Exp $
+ * $Id: client.h,v 7.17 2000/07/25 00:04:55 db Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -270,6 +270,9 @@ struct Client
 #define IsUnknown(x)            ((x)->status == STAT_UNKNOWN)
 #define IsServer(x)             ((x)->status == STAT_SERVER)
 #define IsClient(x)             ((x)->status == STAT_CLIENT)
+#define IsAnyOper(x)		((x)->umodes & (FLAGS_OPER | FLAGS_LOCOP))
+#define IsGlobalOper(x)		((x)->umodes & FLAGS_OPER)
+#define IsLocalOper(x)		((x)->umodes & FLAGS_LOCOP)
 
 #define SetConnecting(x)        ((x)->status = STAT_CONNECTING)
 #define SetHandshake(x)         ((x)->status = STAT_HANDSHAKE)

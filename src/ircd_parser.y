@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.23 2000/04/05 01:02:28 db Exp $
+ * $Id: ircd_parser.y,v 1.24 2000/07/25 00:04:56 db Exp $
  */
 
 %{
@@ -196,6 +196,7 @@ serverinfo_entry:       SERVERINFO
       }
     yy_aconf=make_conf();
     yy_aconf->status = CONF_ME;
+log(L_NOTICE,">> Got SERVERINFO");
   }
   '{' serverinfo_items '}' ';'
   {
@@ -220,15 +221,18 @@ serverinfo_name:        NAME '=' QSTRING ';'
   {
     yy_aconf->host = yylval.string;
     yylval.string = (char *)NULL;
+log(L_NOTICE,">> NAME = %s",yylval.string);
   };
 
 serverinfo_description: DESCRIPTION '=' QSTRING ';'
   {
     yy_aconf->user = yylval.string;
+log(L_NOTICE,">> DESCRIPTION = %s",yylval.string);
   };
 
 serverinfo_vhost:       VHOST '=' IP_TYPE ';'
   {
+log(L_NOTICE,">> VHOST = ...");
     yy_aconf->ip = yylval.ip_entry.ip;
   };
 
