@@ -1,3 +1,9 @@
+*** 20001107_5 by ejb
+we now propagate /away if the state is changing - ie if they were
+away before and are marking unaway, or vise verse.
+
+
+
 *** 20001107_4 by db
 - this should add back the lameo weird oper privmsg masks
   but it doesn't work. No matter, debug tomorrow ;) it still compiles
@@ -204,7 +210,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.505 2000/11/07 08:56:25 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.506 2000/11/07 15:32:28 ejb Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
