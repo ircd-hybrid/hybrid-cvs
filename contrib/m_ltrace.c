@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_ltrace.c,v 1.13 2003/07/05 06:20:53 db Exp $
+ *  $Id: m_ltrace.c,v 1.14 2003/07/05 19:08:20 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -35,6 +35,7 @@
 #include "fdlist.h"
 #include "s_bsd.h"
 #include "s_serv.h"
+#include "s_conf.h"
 #include "send.h"
 #include "msg.h"
 #include "parse.h"
@@ -65,7 +66,7 @@ _moddeinit(void)
   mod_del_cmd(&ltrace_msgtab);
 }
 
-const char *_version = "$Revision: 1.13 $";
+const char *_version = "$Revision: 1.14 $";
 #endif
 
 static int report_this_status(struct Client *source_p, struct Client *target_p,int dow,
