@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: tools.c,v 7.27 2003/02/06 08:45:58 a1kmm Exp $
+ *  $Id: tools.c,v 7.28 2003/04/06 17:51:53 adx Exp $
  *
  * When you update these functions make sure you update the ones in tools.h
  * as well!!!
@@ -115,12 +115,16 @@ dlinkDelete(dlink_node *m, dlink_list *list)
   */
   if (m->next)
     m->next->prev = m->prev;
-  else
+  else {
+    assert(list->tail == m);
     list->tail = m->prev;
+  }
   if (m->prev)
     m->prev->next = m->next;
-  else
+  else {
+    assert(list->head == m);
     list->head = m->next;
+  }
 
   /* Set this to NULL does matter */
   m->next = m->prev = NULL;
