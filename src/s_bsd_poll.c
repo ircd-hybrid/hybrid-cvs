@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_poll.c,v 7.9 2000/10/30 22:32:32 adrian Exp $
+ *  $Id: s_bsd_poll.c,v 7.10 2000/10/30 22:43:25 adrian Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -86,7 +86,6 @@ extern struct sockaddr_in vserv;               /* defined in s_conf.c */
 
 struct Client* local[MAXCONNECTIONS];
 static struct pollfd pollfds[MAXCONNECTIONS];
-static unsigned int npollfds = 0;
 
 static void poll_update_pollfds(int, short, PF *);
 
@@ -102,17 +101,12 @@ poll_update_pollfds(int fd, short event, PF * handler)
     if (handler) {
         pollfds[fd].events |= event;
         pollfds[fd].fd = fd;
-        if ((fd+1) > npollfds)
-            npollfds = fd + 1;
     } else {
         pollfds[fd].events &= ~event;
         if (pollfds[fd].events == 0) {
             pollfds[fd].fd = -1;
             pollfds[fd].revents = 0;
         }
-        while (pollfds[npollfds].fd == -1 && npollfds > 0)
-            npollfds--;
-        npollfds++; /* array start at 0, not 1, remember? */
     }
 }
 
@@ -395,7 +389,7 @@ comm_select(time_t delay)
     }   
 
     for (;;) {
-        num = poll(pollfds, npollfds, delay * 1000);
+        num = poll(pollfds, highest_fd + 1, delay * 1000);
         if (num >= 0)
             break;
         if (ignoreErrno(errno))
@@ -415,7 +409,7 @@ comm_select(time_t delay)
         return 0;
 
     /* XXX we *could* optimise by falling out after doing num fds ... */
-    for (fd = 0; fd < npollfds; fd++) {
+    for (fd = 0; fd < highest_fd + 1; fd++) {
         fde_t *F;
 	int revents;
 	if (((revents = pollfds[fd].revents) == 0) ||
