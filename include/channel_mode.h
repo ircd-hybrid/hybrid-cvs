@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.h,v 7.9 2002/05/24 23:34:06 androsyn Exp $
+ *  $Id: channel_mode.h,v 7.10 2002/06/14 17:19:55 leeh Exp $
  */
 
 
@@ -51,8 +51,6 @@ extern void    set_channel_mode(struct Client *, struct Client *,
 
 #ifdef ANONOPS
 extern void sync_channel_oplists(struct Channel *, int);
-extern void sync_oplists(struct Channel *, struct Client *, int,
-                         const char *);
 #endif
 
 extern void set_channel_mode_flags( char flags_ptr[4][2],
@@ -126,6 +124,7 @@ struct ChModeChange
  char letter;
  char *arg, *id;
  int caps, nocaps, mems;
+ struct Client *client;
 };
 
 #ifdef HALFOPS
@@ -134,15 +133,6 @@ struct ChModeBounce
   char letter;
   char *arg, *id;
   int dir;
-};
-#endif
-
-#ifdef ANONOPS
-struct ChResyncOp
-{
- struct Client *client_p;
- int whole_chan, dir, sync, send;
- char c;
 };
 #endif
 
