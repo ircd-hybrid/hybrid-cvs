@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.11 2002/11/10 19:53:06 bill Exp $
+ *   $Id: m_operspy.c,v 1.12 2002/11/20 05:55:12 bill Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -124,7 +124,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.11 $";
+const char *_version = "$Revision: 1.12 $";
 #endif
 
 /*
@@ -152,7 +152,7 @@ static void m_operspy(struct Client *client_p, struct Client *source_p,
 static void mo_operspy(struct Client *client_p, struct Client *source_p,
                        int parc, char *parv[])
 {
-  char *operspy = parv[1]-1;
+  char *operspy = (parc > 1) ? parv[1]-1 : NULL;
 
 #ifdef OPERSPY_LIST
   struct Channel	*chptr_list = NULL;
@@ -197,7 +197,10 @@ static void mo_operspy(struct Client *client_p, struct Client *source_p,
   int			reply_to_send = NO;
 #endif
 
-  while (*operspy != 'o' && *operspy != 'O') --operspy;
+  if (operspy != NULL)
+    while (*operspy != 'o' && *operspy != 'O') --operspy;
+  else
+    operspy = "OPERSPY";
 
   if (parc != 3)
   {
