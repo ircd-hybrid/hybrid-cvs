@@ -92,7 +92,7 @@
 #define DNS_LABELTYPE_BITSTRING 0x41
 #define MAXLINE 128
 
-/* $Id: irc_reslib.c,v 7.23 2003/10/16 23:13:50 stu Exp $ */
+/* $Id: irc_reslib.c,v 7.24 2004/11/09 03:59:57 db Exp $ */
 
 struct irc_ssaddr irc_nsaddr_list[IRCD_MAXNS];
 int irc_nscount = 0;
@@ -224,7 +224,7 @@ add_nameserver(char *arg)
 {
   struct addrinfo hints, *res;
   /* Done max number of nameservers? */
-  if ((irc_nscount + 1) >= IRCD_MAXNS)
+  if ((irc_nscount) >= IRCD_MAXNS)
     return;
 
   memset(&hints, 0, sizeof(hints));
