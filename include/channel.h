@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.103 2002/02/13 18:41:12 jmallett Exp $
+ *  $Id: channel.h,v 7.104 2002/04/06 05:04:40 androsyn Exp $
  */
 
 #include <sys/types.h>        /* time_t */
@@ -75,6 +75,7 @@ struct Channel
   dlink_list      halfops;
   dlink_list      voiced;
   dlink_list      peons;                /* non ops, just members */
+  dlink_list	  deopped;              /* users deopped on sjoin */
 
   dlink_list      locchanops;           /* local versions of the above */
 #ifdef REQUIRE_OANDV

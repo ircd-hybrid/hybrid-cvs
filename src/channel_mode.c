@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.24 2002/03/09 20:57:36 androsyn Exp $
+ *  $Id: channel_mode.c,v 7.25 2002/04/06 05:04:46 androsyn Exp $
  */
 
 #include "tools.h"
@@ -422,6 +422,12 @@ change_channel_membership(struct Channel *chptr,
 #endif
   else
     ok = 0;
+
+  if((ptr = find_user_link(&chptr->deopped, who)))
+  {
+    dlinkDelete(ptr, &chptr->deopped);
+    free_dlink_node(ptr);
+  }
 
   return ok;
 }

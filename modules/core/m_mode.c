@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_mode.c,v 1.48 2002/03/07 06:22:03 db Exp $
+ *  $Id: m_mode.c,v 1.49 2002/04/06 05:04:43 androsyn Exp $
  */
 
 #include "tools.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
 }
 
 
-const char *_version = "$Revision: 1.48 $";
+const char *_version = "$Revision: 1.49 $";
 #endif
 /*
  * m_mode - MODE command handler
@@ -77,8 +77,9 @@ static void m_mode(struct Client *client_p, struct Client *source_p,
   struct Channel* root;
   static char     modebuf[MODEBUFLEN];
   static char     parabuf[MODEBUFLEN];
+  dlink_node	*ptr;
   int n = 2;
-  
+
   /* Now, try to find the channel in question */
   if (!IsChanPrefix(parv[1][0]))
     {
@@ -201,7 +202,8 @@ static void m_mode(struct Client *client_p, struct Client *source_p,
 		   me.name, parv[0],
 		   parv[1], chptr->channelts);
     }
-  else
+  /* bounce all modes from people we deop on sjoin */
+  else if((ptr = find_user_link(&chptr->deopped, source_p)) == NULL)
     set_channel_mode(client_p, source_p, chptr, parc - n, parv + n, 
                      root->chname);
 }

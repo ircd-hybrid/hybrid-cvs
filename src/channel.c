@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.303 2002/04/04 19:29:44 db Exp $
+ *  $Id: channel.c,v 7.304 2002/04/06 05:04:45 androsyn Exp $
  */
 
 #include "tools.h"
@@ -144,6 +144,14 @@ add_user_to_channel(struct Channel *chptr, struct Client *who, int flags)
 #endif
     }
 
+    if(flags & MODE_DEOPPED)
+    {
+      dlink_node *dptr;
+      
+      dptr = make_dlink_node();
+      dlinkAdd(who, dptr, &chptr->deopped);
+    }
+
     chptr->users++;
 
     if (MyClient(who))
@@ -195,6 +203,12 @@ remove_user_from_channel(struct Channel *chptr, struct Client *who, int perm)
     return;                     /* oops */
 
   free_dlink_node(ptr);
+
+  if((ptr = find_user_link(&chptr->deopped, who)))
+  {
+    dlinkDelete(ptr, &chptr->deopped);
+    free_dlink_node(ptr);
+  }
 
   if (MyClient(who))
   {

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.129 2002/03/07 06:22:04 db Exp $
+ *  $Id: m_sjoin.c,v 1.130 2002/04/06 05:04:43 androsyn Exp $
  */
 
 #include "tools.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.129 $";
+const char *_version = "$Revision: 1.130 $";
 #endif
 /*
  * ms_sjoin
@@ -482,7 +482,7 @@ static void ms_sjoin(struct Client *client_p,
 
       if (!keep_new_modes)
 	{
-	  if (fl & MODE_CHANOP)
+	  if ((fl & MODE_CHANOP) || (fl & MODE_HALFOP))
 	    {
 	      fl = MODE_DEOPPED;
 	    }
