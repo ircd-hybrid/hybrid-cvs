@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: example_module.c,v 1.9 2004/07/08 00:27:16 erik Exp $
+ *   $Id: example_module.c,v 1.10 2004/10/08 17:41:20 db Exp $
  */
 
 /* List of ircd includes from ../include/ 
@@ -93,7 +93,7 @@ struct Message test_msgtab = {
   * remote == function to call for servers/remote users
   * encap == function to call for encap'd server/remote commands
   * oper == function to call for operators
-  * dummy == 
+  * dummy == function called when client is quarantined
   *
   * There are also some pre-coded functions for use:
   * m_unregistered: prevent the client using this if unregistered
@@ -130,7 +130,7 @@ _moddeinit(void)
 
 /* When we last modified the file (shown in /modlist), this is usually:
  */
-const char *_version = "$Revision: 1.9 $";
+const char *_version = "$Revision: 1.10 $";
 #endif
 
 /*
