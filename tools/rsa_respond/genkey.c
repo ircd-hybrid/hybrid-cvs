@@ -17,7 +17,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- *  $Id: genkey.c,v 1.1 2001/02/02 08:36:42 a1kmm Exp $
+ *  $Id: genkey.c,v 1.2 2001/02/03 02:42:13 wcampbel Exp $
  */
 
 
@@ -34,7 +34,7 @@ main(int argc, char **argv)
  int a=0, l;
  FILE *kfile;
  /* genkey publicfile privatefile */
- if (argc < 2)
+ if (argc < 3)
    {
     puts("Usage: genkey publicfile privatefile");
     return -1;
