@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_stats.c,v 7.21 2002/09/05 01:10:26 db Exp $
+ *  $Id: s_stats.c,v 7.22 2002/09/05 01:30:09 db Exp $
  */
 
 #include "stdinc.h"
@@ -118,8 +118,8 @@ tstats(struct Client *source_p)
              me.name, RPL_STATSDEBUG, source_p->name, sp->is_kill, sp->is_ni);
   sendto_one(source_p, ":%s %d %s :wrong direction %u empty %u",
              me.name, RPL_STATSDEBUG, source_p->name, sp->is_wrdi, sp->is_empt);
-  sendto_one(source_p, ":%s %d %s :numerics seen %u mode fakes %u",
-             me.name, RPL_STATSDEBUG, source_p->name, sp->is_num, sp->is_fake);
+  sendto_one(source_p, ":%s %d %s :numerics seen %u",
+             me.name, RPL_STATSDEBUG, source_p->name, sp->is_num);
   sendto_one(source_p, ":%s %d %s :auth successes %u fails %u",
              me.name, RPL_STATSDEBUG, source_p->name, sp->is_asuc, sp->is_abad);
   sendto_one(source_p, ":%s %d %s :Client Server",

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_stats.h,v 7.8 2002/09/05 01:10:23 db Exp $
+ *  $Id: s_stats.h,v 7.9 2002/09/05 01:30:07 db Exp $
  */
 
 #ifndef INCLUDED_s_stats_h
@@ -57,7 +57,6 @@ struct  ServerStatistics {
   unsigned int    is_empt; /* empty message */
   unsigned int    is_num; /* numeric message */
   unsigned int    is_kill; /* number of kills generated on collisions */
-  unsigned int    is_fake; /* MODE 'fakes' */
   unsigned int    is_asuc; /* successful auth requests */
   unsigned int    is_abad; /* bad auth requests */
 };
