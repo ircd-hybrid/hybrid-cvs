@@ -181,6 +181,9 @@
 /* This is the type of IO loop we are using */
 #undef SELECT_TYPE
 
+/* Define to 1 if sockaddr_in has a 'sin_len' member. */
+#undef SOCKADDR_IN_HAS_LEN
+
 /* Define to 1 if dynamic modules can't be used. */
 #undef STATIC_MODULES
 

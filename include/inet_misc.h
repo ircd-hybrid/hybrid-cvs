@@ -2,7 +2,7 @@
  *	and definitions required to build ircd on some		*
  *	exotic platforms.					*
  *								*
- *	$Id: inet_misc.h,v 7.3 2003/05/19 19:10:51 stu Exp $							*
+ *	$Id: inet_misc.h,v 7.4 2003/05/24 21:15:43 joshk Exp $							*
  *
  * Copyright (c) 1980, 1983, 1988, 1993
  *      The Regents of the University of California.  All rights reserved.
@@ -107,6 +107,8 @@
 #endif /* NI_DGRAM */
 
 #ifndef HAVE_STRUCT_SOCKADDR_STORAGE
+#ifdef SOCKADDR_IN_HAS_LEN /* BSD style sockaddr_storage for BSD style
+			      sockaddr_in */
 struct sockaddr_storage {
 	unsigned char ss_len;
 	sa_family_t ss_family;
@@ -117,6 +119,14 @@ struct sockaddr_storage {
 			((sizeof(int64_t)) - sizeof(unsigned char) -
 			 sizeof(sa_family_t)) - (sizeof(int64_t)))];
 };
+#else /* Linux style for everything else (for now) */
+struct sockaddr_storage
+{
+	sa_family_t ss_family;
+	u_int32_t __ss_align;
+	char __ss_padding[(128 - (2 * sizeof (u_int32_t)))];
+};
+#endif /* SOCKADDR_IN_HAS_LEN */
 #endif /* HAVE_STRUCT_SOCKADDR_STORAGE */
 
 #ifndef HAVE_STRUCT_ADDRINFO

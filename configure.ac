@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.30 2003/05/24 05:48:45 joshk Exp $
+dnl $Id: configure.ac,v 7.31 2003/05/24 21:15:41 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -176,6 +176,11 @@ if test "$libexecdir" = '${exec_prefix}/libexec' &&
 	localstatedir='${prefix}'
 fi
 
+dnl Checks for header files.
+AC_HEADER_STDC
+
+AC_CHECK_HEADERS([crypt.h sys/resource.h sys/param.h errno.h sys/syslog.h stddef.h getopt.h sys/wait.h wait.h])
+
 dnl Networking Functions
 dnl ====================
 
@@ -196,6 +201,11 @@ AC_CHECK_TYPES([struct sockaddr_storage], , ,
 [[#include <sys/types.h>
 #include <sys/socket.h>
 ]])
+
+if test "$ac_cv_type_struct_sockaddr_storage" = no; then
+	AC_CHECK_MEMBER([struct sockaddr_in.sin_len],
+	[AC_DEFINE(SOCKADDR_IN_HAS_LEN, 1, [Define to 1 if sockaddr_in has a 'sin_len' member.])])
+fi
 
 AC_CHECK_TYPES([struct addrinfo], , , [[#include <netdb.h>]])
 
@@ -258,10 +268,6 @@ if test "$CRYPT_LIB" = "none required"; then
 	unset CRYPT_LIB;
 fi
 AC_SUBST(CRYPT_LIB)
-
-dnl Checks for header files.
-AC_HEADER_STDC
-AC_CHECK_HEADERS([crypt.h sys/resource.h sys/param.h errno.h sys/syslog.h stddef.h getopt.h sys/wait.h wait.h])
 
 if test "$ac_cv_header_sys_wait_h" = yes -o "$ac_cv_header_wait_h" = yes; then
 	VICONF=viconf
