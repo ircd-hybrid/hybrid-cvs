@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.129 2001/05/27 03:17:26 a1kmm Exp $
+ *  $Id: s_bsd.c,v 7.130 2001/05/30 05:05:11 db Exp $
  */
 #include "config.h"
 #include "fdlist.h"
@@ -838,7 +838,6 @@ comm_open(int family, int sock_type, int proto, const char *note)
 
   /* Next, update things in our fd tracking */
   fd_open(fd, FD_SOCKET, note);
-  log(L_CRIT, "Made it to the end of comm_open!");
   return fd;
 }
 
