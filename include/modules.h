@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.h,v 7.43 2003/06/13 07:40:29 joshk Exp $
+ *  $Id: modules.h,v 7.44 2003/06/13 21:18:01 joshk Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -51,7 +51,7 @@ struct module
 struct module_path
 {
   dlink_node node;
-  char path[MAXPATHLEN + 1];
+  char* path;
 };
 
 /* add a path */

@@ -1,4 +1,4 @@
-$Id: TODO,v 7.85 2003/05/25 23:41:37 joshk Exp $
+$Id: TODO,v 7.86 2003/06/13 21:17:59 joshk Exp $
 
 - add more stderr debugging (ircd -s)... one for every place we syslog()
 - ircd -s doesn't work through a restart
@@ -12,6 +12,7 @@ is-'s TODO list
 - umode +R for registered nick
 - change nick instead of kill on nick collide
 - dynamically extensible parser for modules
+-> this is the ratbox parser -joshk
 - modularize channel, network code etc (not just commands)
     we can use override_function() or similar for this
 - username/passwords (iauth ?)

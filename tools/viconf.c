@@ -1,7 +1,7 @@
 /*
  * viconf.c
  *
- * $Id: viconf.c,v 7.10 2003/05/24 01:17:03 stu Exp $
+ * $Id: viconf.c,v 7.11 2003/06/13 21:18:04 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
     case 0:		/* Child */
       if ((ed = getenv("EDITOR")) == NULL)
 	ed = "vi";
-      execlp(ed, ed, filename, NULL);
+      execlp(ed, ed, filename, (char *)NULL);
       fprintf(stderr, "error running editor, %d\n", errno);
       exit(errno);
     default:

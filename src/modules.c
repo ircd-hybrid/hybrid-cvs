@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.127 2003/06/13 07:40:32 joshk Exp $
+ *  $Id: modules.c,v 7.128 2003/06/13 21:18:02 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -152,14 +152,16 @@ mod_find_path(const char *path)
 void
 mod_add_path(const char *path)
 {
+  unsigned int len = strlen (path);
   struct module_path *pathst;
 
   if (mod_find_path(path))
     return;
 
   pathst = MyMalloc(sizeof(struct module_path));
-
-  strlcpy(pathst->path, path, sizeof(pathst->path));
+  pathst->path = MyMalloc (len + 1);
+  
+  strlcpy(pathst->path, path, len + 1);
   dlinkAdd(pathst, &pathst->node, &mod_paths);
 }
 
@@ -181,6 +183,7 @@ mod_clear_paths(void)
     pathst = ptr->data;
 
     dlinkDelete(&pathst->node, &mod_paths);
+    MyFree(pathst->path);
     MyFree(pathst);
   }
 }
@@ -216,8 +219,9 @@ load_all_modules(int warn)
 {
   DIR *system_module_dir = NULL;
   struct dirent *ldirent = NULL;
-  char module_fq_name[PATH_MAX + 1];
+  char* module_fq_name;
   int len;
+  unsigned int mq_len;
 
   modules_init();
 
@@ -245,10 +249,18 @@ load_all_modules(int warn)
         ((ldirent->d_name[len-1] == 'o') ||
         (ldirent->d_name[len-1] == 'l')))
     {
-      if ( (snprintf(module_fq_name, sizeof(module_fq_name), "%s/%s",
-               AUTOMODPATH, ldirent->d_name)) == -1)
-	      printf ("Warning, snprintf got cut off\n");
-      load_a_module(module_fq_name, warn, 0);
+       if ((mq_len = strlen(AUTOMODPATH "/") + len) > PATH_MAX)
+       {
+          ilog (L_ERROR, "Module path for %s truncated, module not loaded!",
+                  ldirent->d_name);
+       }
+       else /* Guaranteed the path fits into a string of PATH_MAX now */
+       {
+         module_fq_name = MyMalloc(mq_len + 1);
+         snprintf (module_fq_name, mq_len + 1, "%s/%s", AUTOMODPATH, ldirent->d_name);
+         load_a_module(module_fq_name, warn, 0);
+         MyFree (module_fq_name);
+       }
     }
   }
 
@@ -264,23 +276,33 @@ load_all_modules(int warn)
 void
 load_core_modules(int warn)
 {
-  char module_name[MAXPATHLEN + 1];
+  char* module_name;
   int i;
-  int hpux = 0;
+  unsigned int m_len;
 #ifdef HAVE_SHL_LOAD
-  hpux = 1;
+  char suffix = 'l';
+#else
+  char suffix = 'o';
 #endif
 
   for (i = 0; core_module_table[i]; i++)
   {
-    snprintf(module_name, sizeof(module_name), "%s/%s%c",
-             MODPATH, core_module_table[i], hpux ? 'l' : 'o');
-
-    if (load_a_module(module_name, warn, 1) == -1)
+    if ((m_len = (strlen(MODPATH) + strlen(core_module_table[i]) + 2)) > PATH_MAX)
     {
-      ilog(L_CRIT, "Error loading core module %s%c: terminating ircd",
-           core_module_table[i], hpux ? 'l' : 'o');
-      exit(0);
+       ilog (L_ERROR, "Path for %s%c was truncated, the module was not loaded.",
+               core_module_table[i], suffix);
+    }
+    else
+    {
+      module_name = MyMalloc (m_len + 1);
+      snprintf (module_name, m_len + 1, "%s/%s%c", MODPATH, core_module_table[i], suffix);
+      if (load_a_module(module_name, warn, 1) == -1)
+      {
+        ilog(L_CRIT, "Error loading core module %s%c: terminating ircd",
+             core_module_table[i], suffix);
+        exit (EXIT_FAILURE);
+      }
+      MyFree (module_name);
     }
   }
 }
@@ -294,30 +316,39 @@ load_core_modules(int warn)
 int
 load_one_module(char *path, int coremodule)
 {
-  char modpath[MAXPATHLEN + 1];
+  char* modpath;
   dlink_node *ptr;
   struct module_path *mpath;
   struct stat statbuf;
+  unsigned int m_len;
 
   DLINK_FOREACH(ptr, mod_paths.head)
   {
     mpath = ptr->data;
 
-    snprintf(modpath, sizeof(modpath), "%s/%s",
-             mpath->path, path);
-
-    if ((strstr(modpath, "../") == NULL) &&
-        (strstr(modpath, "/..") == NULL)) 
+    if ((m_len = strlen(mpath->path) + strlen(path) + 1) > PATH_MAX)
     {
-      if (stat(modpath, &statbuf) == 0)
+      ilog (L_ERROR, "Path for %s/%s was truncated, not loading module from there");
+      continue;
+    }
+    else
+    {
+      modpath = MyMalloc (m_len);
+      snprintf (modpath, m_len + 1, "%s/%s", mpath->path, path);
+
+      if ((strstr(modpath, "../") == NULL) &&
+           (strstr(modpath, "/..") == NULL)) 
       {
-        if (S_ISREG(statbuf.st_mode))
+        if (stat(modpath, &statbuf) == 0)
         {
-          /* Regular files only please */
-          if (coremodule)
-            return(load_a_module(modpath, 1, 1));
-          else
-            return(load_a_module(modpath, 1, 0));
+          if (S_ISREG(statbuf.st_mode))
+          {
+            /* Regular files only please */
+            if (coremodule)
+              return(load_a_module(modpath, 1, 1));
+            else
+              return(load_a_module(modpath, 1, 0));
+          }
         }
       }
     }
