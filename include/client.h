@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.37 2000/11/30 00:04:54 db Exp $
+ * $Id: client.h,v 7.38 2000/11/30 10:28:49 adrian Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -197,7 +197,7 @@ struct Client
    * to which the allocation is tied to! *Never* refer to
    * these fields, if (from != self).
    */
-  int               count;       /* Amount of data in buffer */
+  int               count;       /* Amount of data in buffer, not used! */
   time_t            last_join_time;   /* when this client last 
                                          joined a channel */
   time_t            last_leave_time;  /* when this client last 
@@ -210,7 +210,6 @@ struct Client
   time_t            first_received_message_time;
   int               received_number_of_privmsgs;
   int               drone_noticed;
-  char  buffer[CLIENT_BUFSIZE]; /* Incoming message buffer */
   short             lastsq;     /* # of 2k blocks when sendqueued called last*/
 
   /* Send and recieve linebuf queues .. */
