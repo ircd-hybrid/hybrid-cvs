@@ -3,7 +3,7 @@
  *
  * Written by ejb, wcampbel, db, leeh and others
  *
- * $Id: example.conf.quick,v 1.1 2003/05/15 07:17:23 joshk Exp $
+ * $Id: example.conf.quick,v 1.2 2003/05/15 10:14:03 metalrock Exp $
  */
 
 /* IMPORTANT NOTES:
@@ -149,6 +149,7 @@ operator {
 	kline = yes;
 	unkline = yes;
 	gline = yes;
+	xline = yes;
 	die = yes;
 	rehash = yes;
 	nick_changes = yes;
