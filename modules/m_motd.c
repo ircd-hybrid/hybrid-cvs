@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_motd.c,v 1.1 2000/11/19 15:43:46 davidt Exp $
+ *   $Id: m_motd.c,v 1.2 2000/11/24 00:17:23 db Exp $
  */
 #include "motd.h"
 #include "ircd.h"
@@ -46,6 +46,8 @@ _modinit(void)
 {
   mod_add_cmd(MSG_MOTD, &motd_msgtab);
 }
+
+char *_version = "20001122";
 
 /*
 ** m_motd

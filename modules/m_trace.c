@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_trace.c,v 1.3 2000/11/21 05:03:13 db Exp $
+ *   $Id: m_trace.c,v 1.4 2000/11/24 00:17:26 db Exp $
  */
 #include "handlers.h"
 #include "class.h"
@@ -52,6 +52,8 @@ _modinit(void)
 
 int report_this_status(struct Client *sptr, struct Client *acptr,int dow,
 		       int link_u_p, int link_u_s);
+
+char *_version = "20001122";
 
 /*
 ** mo_trace

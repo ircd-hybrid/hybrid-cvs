@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_mode.c,v 1.1 2000/11/08 23:57:31 ejb Exp $
+ *   $Id: m_mode.c,v 1.2 2000/11/24 00:17:23 db Exp $
  */
 #include "handlers.h"
 #include "channel.h"
@@ -46,6 +46,8 @@ _modinit(void)
 {
   mod_add_cmd(MSG_MODE, &mode_msgtab);
 }
+
+char *_version = "20001122";
 
 /*
  * m_mode - MODE command handler

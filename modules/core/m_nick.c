@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_nick.c,v 1.5 2000/11/18 17:41:52 davidt Exp $
+ *   $Id: m_nick.c,v 1.6 2000/11/24 00:17:23 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -63,6 +63,8 @@ _modinit(void)
 {
   mod_add_cmd(MSG_NICK, &nick_msgtab);
 }
+
+char *_version = "20001122";
 
 /*
 ** mr_nick

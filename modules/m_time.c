@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_time.c,v 1.3 2000/11/21 05:03:13 db Exp $
+ *   $Id: m_time.c,v 1.4 2000/11/24 00:17:26 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -42,6 +42,8 @@ _modinit(void)
 {
   mod_add_cmd(MSG_TIME, &time_msgtab);
 }
+
+char *_version = "20001122";
 
 /*
  * m_time

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kline.c,v 1.6 2000/11/11 21:59:42 db Exp $
+ *   $Id: m_kline.c,v 1.7 2000/11/24 00:17:22 db Exp $
  */
 #include "m_kline.h"
 #include "channel.h"
@@ -94,6 +94,8 @@ void WriteKline(const char *, struct Client *, struct Client *,
 void WriteDline(const char *, struct Client *,
                 const char *, const char *, const char *);
 
+
+char *_version = "20001122";
 
 /*
  * mo_kline()

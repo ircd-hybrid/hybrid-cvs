@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 1.2 2000/11/10 09:07:23 db Exp $
+ *   $Id: m_join.c,v 1.3 2000/11/24 00:17:22 db Exp $
  */
 
 #include "handlers.h"
@@ -58,6 +58,8 @@ void build_list_of_channels( struct Client *sptr,
 void do_join_0(struct Client *cptr, struct Client *sptr);
 void check_spambot_warning( struct Client *sptr, char *name );
 int can_join (struct Client *, struct Channel *, char *,int *);
+
+char *_version = "20001122";
 
 /*
 ** m_join

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_squit.c,v 1.2 2000/11/09 08:26:15 ejb Exp $
+ *   $Id: m_squit.c,v 1.3 2000/11/24 00:17:25 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -46,6 +46,8 @@ _modinit(void)
 {
   mod_add_cmd(MSG_SQUIT, &squit_msgtab);
 }
+
+char *_version = "20001122";
 
 /*
  * ms_squit - SQUIT message handler

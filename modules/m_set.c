@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_set.c,v 1.3 2000/11/21 05:03:12 db Exp $
+ *   $Id: m_set.c,v 1.4 2000/11/24 00:17:25 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -48,6 +48,8 @@ _modinit(void)
 {
   mod_add_cmd(MSG_SET, &set_msgtab);
 }
+
+char *_version = "20001122";
 
 /*
  * set_parser - find the correct int. to return 
