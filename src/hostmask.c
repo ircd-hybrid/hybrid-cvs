@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.c,v 7.62 2002/01/09 16:19:17 leeh Exp $
+ *  $Id: hostmask.c,v 7.63 2002/01/13 07:19:26 jmallett Exp $
  */
 
 #include <stdlib.h>
@@ -49,7 +49,7 @@ static unsigned long hash_ipv4(struct irc_inaddr *, int);
 /* The mask parser/type determination code... */
 
 /* int try_parse_v6_netmask(const char *, struct irc_inaddr *, int *);
- * Input: An possible IPV6 address as a string.
+ * Input: A possible IPV6 address as a string.
  * Output: An integer describing whether it is an IPV6 or hostmask,
  *         an address(if it is IPV6), a bitlength(if it is IPV6).
  * Side effects: None
@@ -153,7 +153,7 @@ try_parse_v6_netmask(const char *text, struct irc_inaddr *addr, int *b)
 #endif
 
 /* int try_parse_v4_netmask(const char *, struct irc_inaddr *, int *);
- * Input: An possible IPV4 address as a string.
+ * Input: A possible IPV4 address as a string.
  * Output: An integer describing whether it is an IPV4 or hostmask,
  *         an address(if it is IPV4), a bitlength(if it is IPV4).
  * Side effects: None
