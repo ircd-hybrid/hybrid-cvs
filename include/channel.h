@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.18 2000/10/06 04:26:56 lusky Exp $
+ * $Id: channel.h,v 7.19 2000/10/06 17:29:42 db Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -64,7 +64,9 @@ struct Channel
   /* Only needed for lazy links and leafs */
   int             locusers;
   time_t          locusers_last;
-  struct Channel* vchans;           /* Link list of sub channels */
+  int		  vchan_flag;		/* waste of a good int for now */
+  struct Channel* next_vchan;           /* Link list of sub channels */
+  struct Channel* prev_vchan;           /* Link list of sub channels */
   struct SLink*   members;
   struct SLink*   invites;
   struct SLink*   banlist;
