@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.239 2003/04/22 08:05:50 adx Exp $
+ *  $Id: send.c,v 7.240 2003/04/23 14:25:19 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1091,8 +1091,11 @@ sendto_realops_flags(unsigned int flags, int level, const char *pattern, ...)
     /* If we're sending it to opers and theyre an admin, skip.
      * If we're sending it to admins, and theyre not, skip.
      */
-    if ((level == L_ADMIN) == IsAdmin(client_p) &&
-        client_p->umodes & flags)
+    if (((level == L_ADMIN) && !IsAdmin(client_p)) ||
+	((level == L_OPER) && IsAdmin(client_p)))
+      continue;
+
+    if (client_p->umodes & flags)
       sendto_one(client_p, ":%s NOTICE %s :*** Notice -- %s",
                  me.name, client_p->name, nbuf);
   }
