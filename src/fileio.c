@@ -4,7 +4,7 @@
  * Copyright (C) 1990 Jarkko Oikarinen and
  *                    University of Oulu, Co Center
  *
- * $Id: fileio.c,v 7.7 2000/12/03 23:11:45 db Exp $
+ * $Id: fileio.c,v 7.8 2000/12/10 03:52:21 db Exp $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@
  */
 #include "fileio.h"
 #include "irc_string.h"
+#include "client.h"	/* for FLAGS_ALL */
 
 /* The following are to get the fd manipulation routines. eww. */
 #include "fdlist.h"
@@ -281,7 +282,7 @@ int safe_write(struct Client *sptr, const char *filename,
 
   if (fbputs(buffer, out) <= 0)
     {
-      sendto_realops("*** Problem writing to %s",filename);
+      sendto_realops_flags(FLAGS_ALL,"*** Problem writing to %s",filename);
       return -1;
     }
   return 0;

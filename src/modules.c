@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.c,v 7.12 2000/11/30 10:02:14 db Exp $
+ * $Id: modules.c,v 7.13 2000/12/10 03:52:23 db Exp $
  */
 
 #include <dlfcn.h>
@@ -105,7 +105,7 @@ int unload_one_module (char *name)
     num_mods--;
 
   log (L_INFO, "Module %s unloaded", name);
-  sendto_realops ("Module %s unloaded", name);
+  sendto_realops_flags(FLAGS_ALL,"Module %s unloaded", name);
   return 0;
 }
 
@@ -194,7 +194,8 @@ load_one_module (char *path)
     {
       const char *err = dlerror();
 
-      sendto_realops ("Error loading module %s: %s", mod_basename, err);
+      sendto_realops_flags (FLAGS_ALL,
+			    "Error loading module %s: %s", mod_basename, err);
       log (L_WARN, "Error loading module %s: %s", mod_basename, err);
       free (mod_basename);
       return -1;
@@ -203,7 +204,8 @@ load_one_module (char *path)
   initfunc = (void (*)(void))dlsym (tmpptr, "_modinit");
   if (!initfunc)
     {
-      sendto_realops ("Module %s has no _modinit() function", mod_basename);
+      sendto_realops_flags (FLAGS_ALL,
+		    "Module %s has no _modinit() function", mod_basename);
       log (L_WARN, "Module %s has no _modinit() function", mod_basename);
       (void)dlclose (tmpptr);
       free (mod_basename);
@@ -225,8 +227,8 @@ load_one_module (char *path)
 
   initfunc ();
 
-  sendto_realops ("Module %s [version: %s] loaded at 0x%x",
-		  mod_basename, ver, tmpptr);
+  sendto_realops_flags (FLAGS_ALL, "Module %s [version: %s] loaded at 0x%x",
+			mod_basename, ver, tmpptr);
   log (L_WARN, "Module %s [version: %s] loaded at 0x%x",
        mod_basename, ver, tmpptr);
   free (mod_basename);

@@ -21,7 +21,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: m_unkline.c,v 1.10 2000/12/09 18:36:13 db Exp $
+ *   $Id: m_unkline.c,v 1.11 2000/12/10 03:52:18 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -157,8 +157,9 @@ int mo_unkline (struct Client *cptr,struct Client *sptr,int parc,char *parv[])
     {
       sendto_one(sptr, ":%s NOTICE %s :Un-klined [%s@%s] from temporary k-lines",
                  me.name, parv[0],user, host);
-      sendto_realops("%s has removed the temporary K-Line for: [%s@%s]",
-		     parv[0], user, host );
+      sendto_realops_flags(FLAGS_ALL,
+			   "%s has removed the temporary K-Line for: [%s@%s]",
+			   parv[0], user, host );
 
       log(L_NOTICE, "%s removed temporary K-Line for [%s@%s]",
           parv[0], user, host);
@@ -344,8 +345,9 @@ Then just ignore the line
     }
   sendto_one(sptr, ":%s NOTICE %s :K-Line for [%s@%s] is removed", 
              me.name, parv[0], user,host);
-  sendto_realops("%s has removed the K-Line for: [%s@%s]",
-		 parv[0], user, host);
+  sendto_realops_flags(FLAGS_ALL,
+		       "%s has removed the K-Line for: [%s@%s]",
+		       parv[0], user, host);
 
   log(L_NOTICE, "%s removed K-Line for [%s@%s]", parv[0], user, host);
   return 0; 
@@ -616,8 +618,9 @@ Then just ignore the line
 
   sendto_one(sptr, ":%s NOTICE %s :D-Line for [%s] is removed",
              me.name, parv[0], cidr);
-  sendto_realops("%s has removed the D-Line for: [%s]",
-		 parv[0], cidr);
+  sendto_realops_flags(FLAGS_ALL,
+		       "%s has removed the D-Line for: [%s]",
+		       parv[0], cidr);
 
   log(L_NOTICE, "%s removed D-Line for [%s]", parv[0], cidr);
   return 0;
@@ -675,8 +678,9 @@ int mo_ungline (struct Client *cptr, struct Client *sptr,int parc,char *parv[])
     {
       sendto_one(sptr, ":%s NOTICE %s :Un-glined [%s@%s]",
                  me.name, parv[0],user, host);
-      sendto_realops("%s has removed the G-Line for: [%s@%s]",
-		     parv[0], user, host );
+      sendto_realops_flags(FLAGS_ALL,
+			   "%s has removed the G-Line for: [%s@%s]",
+			   parv[0], user, host );
       log(L_NOTICE, "%s removed G-Line for [%s@%s]",
           parv[0], user, host);
       return 0;

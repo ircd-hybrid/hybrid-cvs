@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kline.c,v 1.24 2000/12/09 05:59:47 db Exp $
+ *   $Id: m_kline.c,v 1.25 2000/12/10 03:52:14 db Exp $
  */
 #include "tools.h"
 #include "m_kline.h"
@@ -207,7 +207,8 @@ int mo_kline(struct Client *cptr,
 	  aconf->ip_mask = ip_mask;
 	}
       add_temp_kline(aconf);
-      sendto_realops("%s added temporary %d min. K-Line for [%s@%s] [%s]",
+      sendto_realops_flags(FLAGS_ALL,
+		   "%s added temporary %d min. K-Line for [%s@%s] [%s]",
         parv[0],
         temporary_kline_time/60,
         user,
@@ -267,7 +268,8 @@ int ms_kline(struct Client *cptr,
 
   if(!find_special_conf(sptr->name,CONF_ULINE))
     {
-      sendto_realops("*** Received Unauthorized kline from %s",sptr->name);
+      sendto_realops_flags(FLAGS_ALL,
+		   "*** Received Unauthorized kline from %s",sptr->name);
     }
   else
     {
@@ -277,11 +279,12 @@ int ms_kline(struct Client *cptr,
       if( rcptr->host == NULL )
 	return 0;
 
-      sendto_realops("*** Received kline from %s!%s@%s on %s",
-		     slave_oper,
-		     rcptr->user,
-		     rcptr->host,
-		     sptr->name);
+      sendto_realops_flags(FLAGS_ALL,
+			   "*** Received kline from %s!%s@%s on %s",
+			   slave_oper,
+			   rcptr->user,
+			   rcptr->host,
+			   sptr->name);
       aconf = make_conf();
 
       aconf->status = CONF_KILL;

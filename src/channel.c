@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.119 2000/12/10 01:32:14 db Exp $
+ * $Id: channel.c,v 7.120 2000/12/10 03:52:20 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -175,7 +175,8 @@ static  int     add_id(struct Client *cptr, struct Channel *chptr,
       list = &chptr->invexlist;
       break;
     default:
-      sendto_realops("add_id() called with unknown ban type %d!", type);
+      sendto_realops_flags(FLAGS_ALL,
+			   "add_id() called with unknown ban type %d!", type);
       return -1;
     }
 
@@ -246,7 +247,8 @@ static int del_id(struct Channel *chptr, char *banid, int type)
       list = &chptr->invexlist;
       break;
     default:
-      sendto_realops("del_id() called with unknown ban type %d!", type);
+      sendto_realops_flags(FLAGS_ALL,
+			   "del_id() called with unknown ban type %d!", type);
       return -1;
     }
 

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_lljoin.c,v 1.11 2000/12/10 01:32:12 db Exp $
+ * $Id: m_lljoin.c,v 1.12 2000/12/10 03:52:15 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -201,7 +201,8 @@ int     ms_lljoin(struct Client *cptr,
     }
   else
     {
-      sendto_realops("*** LLJOIN request received from non LL capable server!");
+      sendto_realops_flags(FLAGS_ALL,
+		   "*** LLJOIN request received from non LL capable server!");
     }
   return 0;
 }

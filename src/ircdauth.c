@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: ircdauth.c,v 7.18 2000/12/04 05:50:12 db Exp $
+ *   $Id: ircdauth.c,v 7.19 2000/12/10 03:52:22 db Exp $
  */
 
 #include <stdio.h>
@@ -547,8 +547,8 @@ GreetUser(struct Client *client)
     {
       Count.max_loc = Count.local;
       if (!(Count.max_loc % 10))
-	sendto_realops("New Max Local Clients: %d",
-		       Count.max_loc);
+	sendto_realops_flags(FLAGS_ALL,"New Max Local Clients: %d",
+			     Count.max_loc);
     }
 
   SetClient(client);
@@ -556,9 +556,9 @@ GreetUser(struct Client *client)
   client->servptr = find_server(client->user->server);
   if (!client->servptr)
     {
-      sendto_realops("Ghost killed: %s on invalid server %s",
-		     client->name,
-		     client->user->server);
+      sendto_realops_flags(FLAGS_ALL,"Ghost killed: %s on invalid server %s",
+			   client->name,
+			   client->user->server);
 
       sendto_one(client, ":%s KILL %s: %s (Ghosted, %s doesn't exist)",
 		 me.name,

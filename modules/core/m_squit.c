@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_squit.c,v 1.10 2000/12/09 05:59:54 db Exp $
+ *   $Id: m_squit.c,v 1.11 2000/12/10 03:52:17 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -93,9 +93,10 @@ int mo_squit(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
     {
       if(MyConnect(found_squit->acptr))
 	{
-	  sendto_realops("Received SQUIT %s from %s (%s)",
-			 found_squit->acptr->name,
-			 get_client_name(sptr,FALSE), comment);
+	  sendto_realops_flags(FLAGS_ALL,
+			       "Received SQUIT %s from %s (%s)",
+			       found_squit->acptr->name,
+			       get_client_name(sptr,FALSE), comment);
 	}
       else
 	{
@@ -153,9 +154,10 @@ int ms_squit(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 	      found_squit->server_name, comment);
 	}
       else if (MyConnect(found_squit->acptr))
-	sendto_realops("Received SQUIT %s from %s (%s)",
-		       found_squit->acptr->name,
-		       get_client_name(sptr,FALSE), comment);
+	sendto_realops_flags(FLAGS_ALL,
+			     "Received SQUIT %s from %s (%s)",
+			     found_squit->acptr->name,
+			     get_client_name(sptr,FALSE), comment);
   
       return exit_client(cptr, found_squit->acptr, sptr, comment);
     }

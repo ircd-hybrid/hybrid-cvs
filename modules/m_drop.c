@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_drop.c,v 1.8 2000/12/09 05:59:44 db Exp $
+ * $Id: m_drop.c,v 1.9 2000/12/10 03:52:13 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -79,7 +79,7 @@ int     ms_drop(struct Client *cptr,
   name = parv[1];
 
 #ifdef DEBUGLL
-  sendto_realops("DROP called by %s for %s", cptr->name, name );
+  sendto_realops(FLAGS_ALL, "DROP called by %s for %s", cptr->name, name );
 #endif
 
   if(!(chptr=hash_find_channel(name, NullChn)))

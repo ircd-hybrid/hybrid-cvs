@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_cburst.c,v 1.8 2000/12/09 05:59:42 db Exp $
+ * $Id: m_cburst.c,v 1.9 2000/12/10 03:52:13 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -99,7 +99,7 @@ int     ms_cburst(struct Client *cptr,
     key = parv[3];
 
 #ifdef DEBUGLL
-  sendto_realops("CBURST called by %s for %s %s %s",
+  sendto_realops_flags(FLAGS_ALL, "CBURST called by %s for %s %s %s",
     cptr->name,
     name,
     nick ? nick : "",
@@ -136,7 +136,8 @@ int     ms_cburst(struct Client *cptr,
     }
   else
     {
-      sendto_realops("*** CBURST request received from non LL capable server!");
+      sendto_realops(FLAGS_ALL,
+	     "*** CBURST request received from non LL capable server!");
       return 0;
     }
 

@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.53 2000/12/09 17:55:07 db Exp $
+ * $Id: client.h,v 7.54 2000/12/10 03:52:08 db Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -326,6 +326,10 @@ struct LocalUser
 #define FLAGS_IPHASH       0x1000 /* iphashed this client */
 
 /* umodes, settable flags */
+#define FLAGS_ALL		0 /* special case, always send this one
+				   * used in sendto_realops_flags only.
+				   */
+
 #define FLAGS_SERVNOTICE   0x0001 /* server notices such as kill */
 #define FLAGS_CCONN        0x0002 /* Client Connections */
 #define FLAGS_REJ          0x0004 /* Bot Rejections */
@@ -346,7 +350,7 @@ struct LocalUser
 /* user information flags, only settable by remote mode or local oper */
 #define FLAGS_OPER         0x10000 /* Operator */
 #define FLAGS_LOCOP        0x20000 /* Local operator -- SRB */
-#define FLAGS_ADMIN        0x40000 /* block unless caller id's */
+#define FLAGS_ADMIN        0x40000 /* Admin on server */
 
 
 /* *sigh* overflow flags */

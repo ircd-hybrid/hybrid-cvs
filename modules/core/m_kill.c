@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kill.c,v 1.6 2000/12/09 05:59:47 db Exp $
+ *   $Id: m_kill.c,v 1.7 2000/12/10 03:52:14 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -190,22 +190,14 @@ int mo_kill(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 
   if (IsAnyOper(sptr)) /* send it normally */
     {
-      sendto_realops("Received KILL message for %s. From %s Path: %s!%s", 
-               acptr->name, parv[0], inpath, path);
-      /*
-       * dilema here: we don't want non opers to see pathes which
-       * contain real IP addresses.  But we do want opers to see them.
-       * The choices are currently to do two sends, or just not show kills
-       * to non opers.  I'm chosing the latter for now.  --Rodder
-         sendto_realops("Received KILL message for %s. From %s!%s@%s Path:supressed.!%s",
-                    acptr->name, sptr->name, sptr->username, sptr->host,
-                    reason);
-       */
+      sendto_realops_flags(FLAGS_ALL,
+		   "Received KILL message for %s. From %s Path: %s!%s", 
+		   acptr->name, parv[0], inpath, path);
     }
   else
     sendto_realops_flags(FLAGS_SKILL,
-                     "Received KILL message for %s. From %s",
-                     acptr->name, parv[0]);
+			 "Received KILL message for %s. From %s",
+			 acptr->name, parv[0]);
 
 #if defined(USE_SYSLOG) && defined(SYSLOG_KILL)
   if (IsGlobalOper(sptr))
@@ -411,23 +403,14 @@ int ms_kill(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 
   if (IsAnyOper(sptr)) /* send it normally */
     {
-      sendto_realops("Received KILL message for %s. From %s Path: %s!%s", 
-		     acptr->name, parv[0], inpath, path);
-      /*
-       * XXX 
-       * dilemna here: we don't want non opers to see paths which
-       * contain real IP addresses.  But we do want opers to see them.
-       * The choices are currently to do two sends, or just not show kills
-       * to non opers.  I'm chosing the latter for now.  --Rodder
-         sendto_realops("Received KILL message for %s. From %s!%s@%s Path:supressed.!%s",
-	 acptr->name, sptr->name, sptr->username, sptr->host,
-	 reason);
-       */
+      sendto_realops_flags(FLAGS_ALL,
+		   "Received KILL message for %s. From %s Path: %s!%s", 
+		   acptr->name, parv[0], inpath, path);
     }
   else
     sendto_realops_flags(FLAGS_SKILL,
-                     "Received KILL message for %s. From %s",
-                     acptr->name, parv[0]);
+			 "Received KILL message for %s. From %s",
+			 acptr->name, parv[0]);
 
 #if defined(USE_SYSLOG) && defined(SYSLOG_KILL)
   if (IsGlobalOper(sptr))

@@ -1,7 +1,7 @@
 /*
  * restart.c
  *
- * $Id: restart.c,v 7.6 2000/12/01 22:18:08 db Exp $
+ * $Id: restart.c,v 7.7 2000/12/10 03:52:24 db Exp $
  */
 #include "tools.h"
 #include "restart.h"
@@ -11,6 +11,7 @@
 #include "send.h"
 #include "s_debug.h"
 #include "s_log.h"
+#include "client.h"	/* for FLAGS_ALL */
 
 #include <unistd.h>
 
@@ -35,7 +36,9 @@ void server_reboot(void)
 {
   int i;
   
-  sendto_realops("Aieeeee!!!  Restarting server... memory: %d", get_maxrss());
+  sendto_realops_flags(FLAGS_ALL,
+		       "Aieeeee!!!  Restarting server... memory: %d",
+		       get_maxrss());
 
   log(L_NOTICE, "Restarting server...");
   /*

@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.41 2000/12/08 17:17:32 toot Exp $
+ * $Id: ircd_parser.y,v 1.42 2000/12/10 03:52:22 db Exp $
  */
 
 %{
@@ -30,6 +30,7 @@
 #include "tools.h"
 #include "s_conf.h"
 #include "s_log.h"
+#include "client.h"	/* for FLAGS_ALL only */
 #include "irc_string.h"
 #include "ircdauth.h"
 
@@ -873,7 +874,7 @@ connect_name:   NAME '=' QSTRING ';'
   {
     if(yy_cconf->user)
       {
-	sendto_realops("*** Multiple connect entry");
+	sendto_realops_flags(FLAGS_ALL,"*** Multiple connect entry");
       }
     else
       {
@@ -882,7 +883,7 @@ connect_name:   NAME '=' QSTRING ';'
 
     if(yy_nconf->user)
       {
-	sendto_realops("*** Multiple connect accept entry");
+	sendto_realops_flags(FLAGS_ALL,"*** Multiple connect accept entry");
       }
     else
       {

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: listener.c,v 7.14 2000/11/30 08:59:30 db Exp $
+ *  $Id: listener.c,v 7.15 2000/12/10 03:52:23 db Exp $
  */
 #include "listener.h"
 #include "client.h"
@@ -376,8 +376,8 @@ static void accept_connection(int pfd, void *data)
        * slow down the whining to opers bit 
        */
       if((last_oper_notice + 20) <= CurrentTime) {
-        sendto_realops("All connections in use. (%s)", 
-                       get_listener_name(listener));
+        sendto_realops_flags(FLAGS_ALL,"All connections in use. (%s)", 
+			     get_listener_name(listener));
         last_oper_notice = CurrentTime;
       }
       send(fd, "ERROR :All connections in use\r\n", 32, 0);

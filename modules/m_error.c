@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_error.c,v 1.5 2000/12/09 05:59:44 db Exp $
+ *   $Id: m_error.c,v 1.6 2000/12/10 03:52:13 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -75,11 +75,11 @@ int m_error(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   if (IsPerson(cptr) || IsUnknown(cptr))
     return 0;
   if (cptr == sptr)
-    sendto_realops("ERROR :from %s -- %s",
-		   get_client_name(cptr, FALSE), para);
+    sendto_realops_flags(FLAGS_ALL,"ERROR :from %s -- %s",
+			 get_client_name(cptr, FALSE), para);
   else
-    sendto_realops("ERROR :from %s via %s -- %s", sptr->name,
-		   get_client_name(cptr,FALSE), para);
+    sendto_realops_flags(FLAGS_ALL,"ERROR :from %s via %s -- %s", sptr->name,
+			 get_client_name(cptr,FALSE), para);
   return 0;
 }
 
@@ -100,11 +100,11 @@ int mr_error(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   if (IsPerson(cptr) || IsUnknown(cptr))
     return 0;
   if (cptr == sptr)
-    sendto_realops("ERROR :from %s -- %s",
-		   get_client_name(cptr, FALSE), para);
+    sendto_realops_flags(FLAGS_ALL,"ERROR :from %s -- %s",
+			 get_client_name(cptr, FALSE), para);
   else
-    sendto_realops("ERROR :from %s via %s -- %s", sptr->name,
-		   get_client_name(cptr,FALSE), para);
+    sendto_realops_flags(FLAGS_ALL,"ERROR :from %s via %s -- %s", sptr->name,
+			 get_client_name(cptr,FALSE), para);
   return 0;
 }
 
@@ -125,11 +125,11 @@ int ms_error(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   if (IsPerson(cptr) || IsUnknown(cptr))
     return 0;
   if (cptr == sptr)
-    sendto_realops("ERROR :from %s -- %s",
-		   get_client_name(cptr, FALSE), para);
+    sendto_realops_flags(FLAGS_ALL,"ERROR :from %s -- %s",
+			 get_cnlient_name(cptr, FALSE), para);
   else
-    sendto_realops("ERROR :from %s via %s -- %s", sptr->name,
-		   get_client_name(cptr,FALSE), para);
+    sendto_realops_flags(FLAGS_ALL,"ERROR :from %s via %s -- %s", sptr->name,
+			 get_client_name(cptr,FALSE), para);
   return 0;
 }
 

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.c,v 7.27 2000/12/04 16:54:02 db Exp $
+ *   $Id: s_auth.c,v 7.28 2000/12/10 03:52:25 db Exp $
  *
  * Changes:
  *   July 6, 1999 - Rewrote most of the code here. When a client connects
@@ -290,8 +290,8 @@ static int start_auth_query(struct AuthRequest* auth)
     return 0;
   }
   if ((MAXCONNECTIONS - 10) < fd) {
-    sendto_realops("Can't allocate fd for auth on %s",
-                get_client_name(auth->client, TRUE));
+    sendto_realops_flags(FLAGS_ALL,"Can't allocate fd for auth on %s",
+			 get_client_name(auth->client, TRUE));
 
     fd_close(fd);
     return 0;

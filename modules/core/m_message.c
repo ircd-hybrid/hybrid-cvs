@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.25 2000/12/10 02:09:12 db Exp $
+ *   $Id: m_message.c,v 1.26 2000/12/10 03:52:15 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -775,13 +775,6 @@ void handle_opers(int p_or_n,
 	}
 
       *server = '\0';
-
-      /* special case opers@server */
-      if(!irccmp(nick,"opers"))
-	{
-	  sendto_realops("To opers: From %s: %s",sptr->name,sptr->name);
-	  return;
-	}
         
       if ((host = (char *)strchr(nick, '%')))
 	*host++ = '\0';
