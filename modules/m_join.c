@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 1.15 2000/12/08 03:38:59 db Exp $
+ *   $Id: m_join.c,v 1.16 2000/12/08 17:19:11 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -297,7 +297,7 @@ int     m_join(struct Client *cptr,
 	  chptr->channelts = CurrentTime;
 	  sendto_match_servs(chptr, cptr,
 			     ":%s SJOIN %lu %s + :@%s", me.name,
-			     chptr->channelts, name, parv[0]);
+			     chptr->channelts, chptr->chname, parv[0]);
 	}
       else 
 	{
@@ -305,7 +305,7 @@ int     m_join(struct Client *cptr,
 	    add_vchan_to_client_cache(sptr,root_chptr,chptr);
 	  sendto_match_servs(chptr, cptr,
 			     ":%s SJOIN %lu %s + :%s", me.name,
-			     chptr->channelts, name, parv[0]);
+			     chptr->channelts, chptr->chname, parv[0]);
 	}
 
       /*
