@@ -16,17 +16,19 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.1 2002/09/03 05:43:37 bill Exp $
+ *   $Id: m_operspy.c,v 1.2 2002/09/03 14:27:25 bill Exp $
  */
 
 /* List of ircd includes from ../include/ */
 #include "stdinc.h"
+#include "tools.h"
+#include "irc_string.h"
 #include "handlers.h"
+#include "channel.h"
 #include "channel_mode.h"
 #include "client.h"
 #include "common.h"     /* FALSE bleah */
 #include "ircd.h"
-#include "irc_string.h"
 #include "numeric.h"
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -98,7 +100,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.1 $";
+const char *_version = "$Revision: 1.2 $";
 #endif
 
 /*
@@ -193,7 +195,7 @@ static void mo_operspy(struct Client *client_p, struct Client *source_p,
       return;
     }
 
-    if ((chptr_mode = hash_find_channel(parv[2])) == NULL)
+    if ((chptr_mode = (struct Channel *)hash_find_channel(parv[2])) == NULL)
     {
       /*
        * according to m_mode.c, the channel *could* exist on the uplink still,
@@ -230,7 +232,7 @@ static void mo_operspy(struct Client *client_p, struct Client *source_p,
       return;
     }
 
-    if ((chptr_names = hash_find_channel(parv[2])) == NULL)
+    if ((chptr_names = (struct Channel *)hash_find_channel(parv[2])) == NULL)
     {
       sendto_one(client_p, form_str(ERR_NOSUCHCHANNEL),
                  me.name, parv[0], parv[2]);
@@ -262,7 +264,7 @@ static void mo_operspy(struct Client *client_p, struct Client *source_p,
       return;
     }
 
-    if ((chptr_who = hash_find_channel(parv[2])) == NULL)
+    if ((chptr_who = (struct Channel *)hash_find_channel(parv[2])) == NULL)
     {
       sendto_one(client_p, form_str(ERR_NOSUCHCHANNEL),
                  me.name, parv[0], parv[2]);
@@ -302,13 +304,13 @@ static void mo_operspy(struct Client *client_p, struct Client *source_p,
       return;
     }
 
-    if ((target_p = find_client(parv[2])) == NULL)
+    if ((target_p = (struct Client *)find_client(parv[2])) == NULL)
     {
       sendto_one(client_p, form_str(ERR_NOSUCHNICK), me.name, parv[0], parv[2]);
       return;
     }
 
-    a2client_p = find_server(target_p->user->server);
+    a2client_p = (struct Client *)find_server(target_p->user->server);
 
     sendto_one(client_p, form_str(RPL_WHOISUSER), me.name,
                client_p->name, target_p->name, target_p->username,
