@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.267 2003/05/24 12:26:35 db Exp $
+ *  $Id: s_user.c,v 7.268 2003/05/24 12:28:29 db Exp $
  */
 
 #include "stdinc.h"
@@ -168,6 +168,7 @@ unsigned int user_modes_from_c_to_bitmask[] =
 /* show_lusers()
  *
  * inputs       - pointer to client
+ *		- pointer to mask of domain to show
  * output       - NONE
  * side effects - display to client user counts etc.
  */
