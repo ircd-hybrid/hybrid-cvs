@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_cjoin.c,v 7.12 2000/10/22 16:36:43 toot Exp $
+ *   $Id: m_cjoin.c,v 7.13 2000/10/22 17:20:35 db Exp $
  */
 
 #include "handlers.h"
@@ -243,11 +243,9 @@ int     m_cjoin(struct Client *cptr,
 
   /*
   **  Set timestamp
-  **  XXXXX and chan_id..
   */
   
   vchan_chptr->channelts = CurrentTime;
-  strncpy_irc(vchan_chptr->chan_id, parv[0], NICKLEN);
   sendto_match_servs(vchan_chptr, cptr,
 		     ":%s SJOIN %lu %s + :@%s", me.name,
 		     vchan_chptr->channelts, vchan_chptr->chname, parv[0]);

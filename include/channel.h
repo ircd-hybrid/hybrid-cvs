@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.22 2000/10/15 20:59:36 db Exp $
+ * $Id: channel.h,v 7.23 2000/10/22 17:20:32 db Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -66,8 +66,6 @@ struct Channel
   time_t          locusers_last;
   struct Channel* next_vchan;           /* Link list of sub channels */
   struct Channel* prev_vchan;           /* Link list of sub channels */
-  char            chan_id[NICKLEN];     /* ID for subchans, first
-                                           members nicname for now*/
   struct SLink*   members;
   struct SLink*   invites;
   struct SLink*   banlist;
