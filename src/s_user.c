@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.116 2001/01/06 12:38:19 toot Exp $
+ *  $Id: s_user.c,v 7.117 2001/01/06 16:58:42 fl_ Exp $
  */
 #include "tools.h"
 #include "s_user.h"
@@ -374,7 +374,7 @@ int register_local_user(struct Client *cptr, struct Client *sptr,
 
   /* password check */
   if (!BadPtr(aconf->passwd) &&
-      !strcmp(sptr->localClient->passwd, aconf->passwd))
+      strcmp(sptr->localClient->passwd, aconf->passwd))
     {
       ServerStats->is_ref++;
       sendto_one(sptr, form_str(ERR_PASSWDMISMATCH),
