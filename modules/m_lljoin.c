@@ -17,10 +17,11 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_lljoin.c,v 1.13 2000/12/16 22:48:31 db Exp $
+ * $Id: m_lljoin.c,v 1.14 2000/12/17 00:14:58 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
+#include "vchannel.h"
 #include "client.h"
 #include "common.h"
 #include "hash.h"
@@ -99,7 +100,7 @@ int     ms_lljoin(struct Client *cptr,
       return 0;
     }
 
-  if( parc < 4 )
+  if( parc < 3 )
     return 0;
 
   chname = parv[1];
@@ -110,9 +111,9 @@ int     ms_lljoin(struct Client *cptr,
   if(nick == NULL)
     return 0;
 
-  key = parv[3];
-  if(key == NULL)
-    return 0;
+  key = NULL;
+  if(parc > 3 )
+    key = parv[3];
 
   flags = 0;
 

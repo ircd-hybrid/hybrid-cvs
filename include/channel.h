@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.44 2000/12/09 08:20:17 db Exp $
+ * $Id: channel.h,v 7.45 2000/12/17 00:14:54 db Exp $
  */
 
 #ifndef INCLUDED_channel_h
@@ -108,6 +108,7 @@ extern void    remove_user_from_channel(struct Channel *chptr,
 extern int     can_send (struct Channel *chptr, struct Client *who);
 extern int     is_banned (struct Channel *chptr, struct Client *who);
 
+extern int     can_join(struct Client *sptr, struct Channel *chptr, char *key);
 extern int     is_chan_op (struct Channel *chptr,struct Client *who);
 extern int     is_any_op (struct Channel *chptr,struct Client *who);
 extern int     is_half_op (struct Channel *chptr,struct Client *who);
