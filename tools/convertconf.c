@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: convertconf.c,v 1.38 2003/05/18 01:08:00 michael Exp $
+ * $Id: convertconf.c,v 1.39 2003/05/23 01:23:46 metalrock Exp $
  */
 
 #include <stdio.h>
@@ -24,7 +24,7 @@
 #include <string.h>
 #include "config.h"
 
-#define CONFPATH ETCPATH "/.convertconf-example.conf"
+#define CONFPATH ETCPATH
 #define BUFSIZE 512
 
 #define IS_LEAF 0
