@@ -1,3 +1,27 @@
+bill        2002/10/16 16:52:39 EDT	(20021016_2)
+
+  Modified files:
+    modules              m_who.c 
+    modules/core         m_message.c 
+    src                  channel.c 
+  Log:
+  - reverted un-needed previous m_who.c commit
+  - notices to user@server were being changed to PRIVMSG.  fixed.
+  - reset idle times following a succesful msg to user@server
+  - redid initilization of expiring_channels to be consistent with
+    lazylinks_channels
+  - redid expire_channels() to walk the linked list forwards, and
+    have channels be added to the list with dlinkAddTail() rather
+    than dlinkAdd().  functionality should be the same, this is
+    just cleaner.
+  
+  Revision  Changes    Path
+  1.102     +19 -3     ircd-hybrid-7/modules/core/m_message.c
+  1.66      +3 -1      ircd-hybrid-7/modules/m_who.c
+  7.337     +16 -16    ircd-hybrid-7/src/channel.c
+
+
+
 db          2002/10/16 00:18:01 EDT	(20021016_1)
 
   Modified files:
@@ -32481,4 +32505,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4064 2002/10/16 04:18:04 db Exp $
+$Id: ChangeLog,v 7.4065 2002/10/16 20:52:41 bill Exp $
