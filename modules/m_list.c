@@ -3,7 +3,7 @@
  *   Copyright (C) 1990 Jarkko Oikarinen and
  *                      University of Oulu, Co Center
  *
- * $Id: m_list.c,v 1.24 2001/01/05 00:14:30 davidt Exp $ 
+ * $Id: m_list.c,v 1.25 2001/01/20 06:28:12 db Exp $ 
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -165,7 +165,7 @@ static int ms_list(struct Client *cptr,
 {
   /* Only allow remote list if LazyLink request */
 
-  if( ConfigFileEntry.hub )
+  if( ServerInfo.hub )
     {
       if(!IsCapable(cptr->from,CAP_LL) && !MyConnect(sptr))
 	return 0;

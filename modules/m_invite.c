@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_invite.c,v 1.18 2001/01/05 00:14:27 davidt Exp $
+ *   $Id: m_invite.c,v 1.19 2001/01/20 06:28:11 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -195,7 +195,7 @@ static int m_invite(struct Client *cptr,
     add_invite(chptr, acptr);
 
   
-  if(!MyConnect(acptr) && ConfigFileEntry.hub &&
+  if(!MyConnect(acptr) && ServerInfo.hub &&
      IsCapable(acptr->from, CAP_LL))
   {
     /* acptr is connected to a LL leaf, connected to us */

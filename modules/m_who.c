@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_who.c,v 1.25 2001/01/05 00:14:39 davidt Exp $
+ *   $Id: m_who.c,v 1.26 2001/01/20 06:28:16 db Exp $
  */
 #include "tools.h"
 #include "common.h"   /* bleah */
@@ -458,7 +458,7 @@ static int ms_who(struct Client *cptr,
    * other wise, ignore it.
    */
 
-  if( ConfigFileEntry.hub )
+  if( ServerInfo.hub )
     {
       if(!IsCapable(cptr->from,CAP_LL))
 	return 0;

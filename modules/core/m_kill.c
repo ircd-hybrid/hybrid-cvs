@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kill.c,v 1.23 2001/01/19 17:36:34 db Exp $
+ *   $Id: m_kill.c,v 1.24 2001/01/20 06:28:12 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -131,7 +131,7 @@ int mo_kill(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   **        ...!operhost!oper (comment)
   */
   ircsprintf(buf, "%s!%s (%s)",
-	     cptr->username, cptr->name, reason);
+	     inpath, cptr->username, reason);
 
   sendto_realops_flags(FLAGS_ALL,
 		       "Received KILL message for %s. From %s (%s)", 
@@ -147,7 +147,7 @@ int mo_kill(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   */
   if (!MyConnect(acptr))
     {
-      relay_kill(cptr, sptr, acptr, cptr->username, cptr->name);
+      relay_kill(cptr, sptr, acptr, inpath, cptr->username );
       /*
       ** Set FLAGS_KILLED. This prevents exit_one_client from sending
       ** the unnecessary QUIT for this. (This flag should never be
@@ -320,7 +320,7 @@ static void relay_kill(struct Client *one, struct Client *sptr,
 
     if( !introduce_killed_client )
     {
-      if( ConfigFileEntry.hub && IsCapable(cptr, CAP_LL) )
+      if( ServerInfo.hub && IsCapable(cptr, CAP_LL) )
       {
         if(((cptr->localClient->serverMask &
              acptr->lazyLinkClientExists) == 0))

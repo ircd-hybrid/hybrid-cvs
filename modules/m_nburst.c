@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_nburst.c,v 1.4 2001/01/04 21:11:57 davidt Exp $
+ * $Id: m_nburst.c,v 1.5 2001/01/20 06:28:14 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -96,7 +96,7 @@ static int ms_nburst(struct Client *cptr,
   if( parc > 3 )
     nick_old = parv[3];
 
-  if (!ConfigFileEntry.hub && IsCapable(cptr, CAP_LL))
+  if (!ServerInfo.hub && IsCapable(cptr, CAP_LL))
     return 0;
 
 #ifdef DEBUGLL

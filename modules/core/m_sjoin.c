@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.67 2001/01/13 00:19:02 davidt Exp $
+ *   $Id: m_sjoin.c,v 1.68 2001/01/20 06:28:15 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -403,7 +403,7 @@ static int ms_sjoin(struct Client *cptr,
       /* XXX LazyLinks
        * I think we have to do this, but if we didn't it'd be nice
        */
-      if (ConfigFileEntry.hub)
+      if (ServerInfo.hub)
       {
         for(m = serv_list.head; m; m = m->next)
         {
@@ -562,7 +562,7 @@ static int ms_sjoin(struct Client *cptr,
       if (acptr == cptr->from)
         continue;
 
-      if (ConfigFileEntry.hub && IsCapable(acptr,CAP_LL))
+      if (ServerInfo.hub && IsCapable(acptr,CAP_LL))
       {
         if( !(RootChan(chptr)->lazyLinkChannelExists &
               acptr->localClient->serverMask) )

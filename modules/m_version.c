@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_version.c,v 1.19 2001/01/05 00:14:38 davidt Exp $
+ *   $Id: m_version.c,v 1.20 2001/01/20 06:28:16 db Exp $
  */
 #include <string.h>
 #include "handlers.h"
@@ -136,7 +136,7 @@ static char* confopts(struct Client *sptr)
     strcat(result, "G");
 
   /* might wanna hide this :P */
-  if (ConfigFileEntry.hub && 
+  if (ServerInfo.hub && 
       (!GlobalSetOptions.hide_server || IsOper(sptr)) )
     {
       strcat(result, "H");

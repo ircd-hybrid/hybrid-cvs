@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_cjoin.c,v 1.24 2001/01/05 00:14:24 davidt Exp $
+ *   $Id: m_cjoin.c,v 1.25 2001/01/20 06:28:10 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -142,7 +142,7 @@ static int m_cjoin(struct Client *cptr,
       /* if chptr isn't found locally, it =could= exist
        * on the uplink. So ask.
        */
-      if ( !ConfigFileEntry.hub && uplink &&
+      if ( !ServerInfo.hub && uplink &&
            IsCapable(uplink, CAP_LL))
         {
           /* cache the channel if it exists on uplink

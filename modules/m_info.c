@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.c,v 1.22 2001/01/19 00:30:39 db Exp $
+ * $Id: m_info.c,v 1.23 2001/01/20 06:28:11 db Exp $
  */
 #include "tools.h"
 #include "m_info.h"
@@ -292,7 +292,7 @@ static void send_conf_options(struct Client *sptr)
               RPL_INFO,
               sptr->name,
               "hub",
-              ConfigFileEntry.hub ? "ON" : "OFF",
+              ServerInfo.hub ? "ON" : "OFF",
               "Server can connect to more than one server");
    sendto_one(sptr,
               ":%s %d %s :%-30s %-5s [%-30s]",

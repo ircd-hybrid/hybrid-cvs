@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.122 2001/01/18 17:32:19 ejb Exp $
+ *  $Id: client.c,v 7.123 2001/01/20 06:28:18 db Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -1376,7 +1376,7 @@ const char* comment         /* Reason for the exit */
         {
           Count.myserver--;
 
-	  if(ConfigFileEntry.hub)
+	  if(ServerInfo.hub)
 	    remove_lazylink_flags(sptr->localClient->serverMask);
 	  else
 	    uplink = NULL;

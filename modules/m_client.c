@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_client.c,v 1.8 2001/01/05 11:57:31 toot Exp $
+ *   $Id: m_client.c,v 1.9 2001/01/20 06:28:10 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -200,7 +200,7 @@ static int ms_client(struct Client *cptr, struct Client *sptr,
 
 #ifndef LOCAL_NICK_COLLIDE
             /* If we got the message from a LL, ensure it gets the kill */
-            if (ConfigFileEntry.hub && IsCapable(cptr,CAP_LL))
+            if (ServerInfo.hub && IsCapable(cptr,CAP_LL))
               add_lazylinkclient(cptr, acptr);
             
 	    sendto_ll_serv_butone(NULL, acptr, 0, /* all servers */
@@ -262,7 +262,7 @@ static int ms_client(struct Client *cptr, struct Client *sptr,
 		  
 #ifndef LOCAL_NICK_COLLIDE
           /* If we got the message from a LL, ensure it gets the kill */
-          if (ConfigFileEntry.hub && IsCapable(cptr,CAP_LL))
+          if (ServerInfo.hub && IsCapable(cptr,CAP_LL))
 			  add_lazylinkclient(cptr, acptr);
 
           sendto_ll_serv_butone(NULL, acptr, 0,/* all servers */
@@ -357,7 +357,7 @@ static int ms_client(struct Client *cptr, struct Client *sptr,
 
 #ifndef LOCAL_NICK_COLLIDE
       /* If we got the message from a LL, ensure it gets the kill */
-      if (ConfigFileEntry.hub && IsCapable(cptr,CAP_LL))
+      if (ServerInfo.hub && IsCapable(cptr,CAP_LL))
         add_lazylinkclient(cptr, acptr);
 
       sendto_ll_serv_butone(NULL, acptr, 0, /* Kill new from incoming link */

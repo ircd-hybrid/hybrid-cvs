@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_ison.c,v 1.16 2001/01/05 00:14:28 davidt Exp $
+ *   $Id: m_ison.c,v 1.17 2001/01/20 06:28:11 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -78,7 +78,7 @@ static int m_ison(struct Client *cptr, struct Client *sptr,
 {
   struct Client *up = NULL;
 
-  if (!ConfigFileEntry.hub && uplink && IsCapable(uplink, CAP_LL))
+  if (!ServerInfo.hub && uplink && IsCapable(uplink, CAP_LL))
     up = uplink;
 
   return(do_ison(up, sptr, parc, parv));
@@ -95,7 +95,7 @@ static int m_ison(struct Client *cptr, struct Client *sptr,
 static int ms_ison(struct Client *cptr, struct Client *sptr,
                    int parc, char *parv[])
 {
-  if (ConfigFileEntry.hub && IsCapable(cptr, CAP_LL))
+  if (ServerInfo.hub && IsCapable(cptr, CAP_LL))
     return(do_ison(NULL, sptr, parc, parv));
 
   /* XXX - bad, this server isn't a lazylink, it shouldn't send

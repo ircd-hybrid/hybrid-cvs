@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_topic.c,v 1.28 2001/01/07 03:25:25 davidt Exp $
+ *   $Id: m_topic.c,v 1.29 2001/01/20 06:28:16 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -95,7 +95,7 @@ static int m_topic(struct Client *cptr,
         /* this was segfaulting if we had no servers linked.
          *  -pro
          */
-        if ( !ConfigFileEntry.hub && uplink &&
+        if ( !ServerInfo.hub && uplink &&
            IsCapable(uplink, CAP_LL) )
         {
           /* cache the channel if it exists on uplink

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.122 2001/01/18 17:32:26 ejb Exp $
+ *  $Id: s_user.c,v 7.123 2001/01/20 06:28:21 db Exp $
  */
 
 #include <sys/types.h>
@@ -615,7 +615,7 @@ introduce_client(struct Client *cptr, struct Client *sptr,
    * rewritten to cope with UIDs .. eww eww eww --is
    */
   
-  if (!ConfigFileEntry.hub && uplink && IsCapable(uplink,CAP_LL)
+  if (!ServerInfo.hub && uplink && IsCapable(uplink,CAP_LL)
       && cptr != uplink) 
     {
       if (IsCapable(uplink, CAP_UID) && HasID(sptr))
@@ -1172,7 +1172,7 @@ void send_umode_out(struct Client *cptr,
 
       if((acptr != cptr) && (acptr != sptr) && (*buf))
         {
-          if((!(ConfigFileEntry.hub && IsCapable(acptr, CAP_LL)))
+          if((!(ServerInfo.hub && IsCapable(acptr, CAP_LL)))
              || (acptr->localClient->serverMask &
                  sptr->lazyLinkClientExists))
             sendto_one(acptr, ":%s MODE %s :%s",

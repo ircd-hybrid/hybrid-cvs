@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.49 2001/01/19 06:37:44 db Exp $
+ *   $Id: m_message.c,v 1.50 2001/01/20 06:28:13 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -300,7 +300,7 @@ static int build_target_list(int p_or_n,
   char *target_list;
 
   /* Sigh, we can't mutilate parv[1] incase we need it to send to a hub */
-  if(!ConfigFileEntry.hub && uplink && IsCapable(uplink, CAP_LL))
+  if(!ServerInfo.hub && uplink && IsCapable(uplink, CAP_LL))
   {
     strncpy(ncbuf, nicks_channels, BUFSIZE);
     target_list = ncbuf;
@@ -336,7 +336,7 @@ static int build_target_list(int p_or_n,
 	    }
 	  else
 	    {
-              if(!ConfigFileEntry.hub && uplink && IsCapable(uplink, CAP_LL))
+              if(!ServerInfo.hub && uplink && IsCapable(uplink, CAP_LL))
               {
                 target_table_size = i;
                 free_target_table();
@@ -405,7 +405,7 @@ static int build_target_list(int p_or_n,
 	    }
 	  else
 	    {
-              if(!ConfigFileEntry.hub && uplink && IsCapable(uplink, CAP_LL))
+              if(!ServerInfo.hub && uplink && IsCapable(uplink, CAP_LL))
               {
                 target_table_size = i;
                 free_target_table();
@@ -444,7 +444,7 @@ static int build_target_list(int p_or_n,
 	}
       else
 	{
-          if(!ConfigFileEntry.hub && uplink && IsCapable(uplink, CAP_LL))
+          if(!ServerInfo.hub && uplink && IsCapable(uplink, CAP_LL))
             return -1;
           else if(p_or_n != NOTICE)
 	    sendto_one(sptr, form_str(ERR_NOSUCHNICK), me.name,

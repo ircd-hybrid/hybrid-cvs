@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_names.c,v 1.22 2001/01/05 00:14:32 davidt Exp $
+ *   $Id: m_names.c,v 1.23 2001/01/20 06:28:14 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -308,7 +308,7 @@ static int ms_names( struct Client *cptr,
    * other wise, ignore it.
    */
 
-  if( ConfigFileEntry.hub )
+  if( ServerInfo.hub )
     {
       if(!IsCapable(cptr->from,CAP_LL))
 	return 0;

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: ircdauth.c,v 7.33 2001/01/18 09:07:39 ejb Exp $
+ *   $Id: ircdauth.c,v 7.34 2001/01/20 06:28:20 db Exp $
  */
 
 #include <stdio.h>
@@ -720,7 +720,7 @@ GreetUser(struct Client *client)
 		     client->info);
 #endif
 
-  if (!ConfigFileEntry.hub && uplink && IsCapable(uplink,CAP_LL))
+  if (!ServerInfo.hub && uplink && IsCapable(uplink,CAP_LL))
     sendto_one(uplink, "NICK %s %d %lu %s %s %s %s :%s",
                client->name, client->hopcount+1, client->tsinfo,
                ubuf, client->username, client->host, client->user->server,

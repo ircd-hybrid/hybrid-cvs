@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 1.48 2001/01/07 03:25:24 davidt Exp $
+ *   $Id: m_join.c,v 1.49 2001/01/20 06:28:12 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -172,7 +172,7 @@ static int m_join(struct Client *cptr,
       else
 	{
 	  flags = CHFL_CHANOP;
-	  if(!ConfigFileEntry.hub)
+	  if(!ServerInfo.hub)
 	    {
 	      /* LazyLinks */
 	      if( (*name != '&') && uplink

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_server.c,v 1.43 2001/01/08 19:40:05 db Exp $
+ *   $Id: m_server.c,v 1.44 2001/01/20 06:28:15 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"  /* m_server prototype */
@@ -174,7 +174,7 @@ int mr_server(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
       return exit_client(cptr, cptr, cptr, "Server Exists");
     }
 
-  if(ConfigFileEntry.hub && IsCapable(cptr, CAP_LL))
+  if(ServerInfo.hub && IsCapable(cptr, CAP_LL))
     {
       if(IsCapable(cptr, CAP_HUB))
         {
