@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.176 2001/02/05 07:28:40 androsyn Exp $
+ *  $Id: s_conf.c,v 7.177 2001/02/06 00:14:29 db Exp $
  */
 
 #include <sys/types.h>
@@ -203,7 +203,8 @@ void free_conf(struct ConfItem* aconf)
 {
   assert(0 != aconf);
 
-  if (aconf->dns_pending)
+  /* XXX Andro, fix this better ok? -db */
+  if (aconf->dns_pending && (aconf->dns_query.query != NULL))
     adns_cancel(aconf->dns_query.query);
   MyFree(aconf->host);
   if (aconf->passwd)
