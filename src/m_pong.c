@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_pong.c,v 7.3 2000/07/20 02:42:52 db Exp $
+ *   $Id: m_pong.c,v 7.4 2000/10/26 07:57:50 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -113,13 +113,6 @@ int     m_pong(struct Client *cptr,
   cptr->flags &= ~FLAGS_PINGSENT;
   sptr->flags &= ~FLAGS_PINGSENT;
 
-#ifdef NEED_SPLITCODE
-#ifdef SPLIT_PONG
-  if (IsServer(cptr))
-    got_server_pong = 1;
-#endif
-#endif
-
   /* Now attempt to route the PONG, comstud pointed out routable PING
    * is used for SPING.  routable PING should also probably be left in
    *        -Dianora
@@ -168,13 +161,6 @@ int     ms_pong(struct Client *cptr,
   cptr->flags &= ~FLAGS_PINGSENT;
   sptr->flags &= ~FLAGS_PINGSENT;
 
-#ifdef NEED_SPLITCODE
-#ifdef SPLIT_PONG
-  if (IsServer(cptr))
-    got_server_pong = 1;
-#endif
-#endif
-
   /* Now attempt to route the PONG, comstud pointed out routable PING
    * is used for SPING.  routable PING should also probably be left in
    *        -Dianora
@@ -222,13 +208,6 @@ int     mr_pong(struct Client *cptr,
   destination = parv[2];
   cptr->flags &= ~FLAGS_PINGSENT;
   sptr->flags &= ~FLAGS_PINGSENT;
-
-#ifdef NEED_SPLITCODE
-#ifdef SPLIT_PONG
-  if (IsServer(cptr))
-    got_server_pong = 1;
-#endif
-#endif
 
   /* Now attempt to route the PONG, comstud pointed out routable PING
    * is used for SPING.  routable PING should also probably be left in

@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu, Computing Center and Jarkko Oikarinen
  *
- * $Id: list.c,v 7.7 2000/01/16 22:49:45 db Exp $
+ * $Id: list.c,v 7.8 2000/10/26 07:57:49 db Exp $
  */
 #include "blalloc.h"
 #include "channel.h"
@@ -70,9 +70,7 @@ void    outofmemory();
 /* for Wohali's block allocator */
 BlockHeap *free_Links;
 BlockHeap *free_anUsers;
-#ifdef FLUD
 BlockHeap *free_fludbots;
-#endif /* FLUD */
 
 void initlists()
 {
@@ -85,10 +83,8 @@ void initlists()
   free_anUsers = BlockHeapCreate(sizeof(struct User),
                                  USERS_PREALLOCATE + MAXCONNECTIONS);
 
-#ifdef FLUD
   /* fludbot structs are used to track CTCP Flooders */
   free_fludbots = BlockHeapCreate(sizeof(struct fludbot), MAXCONNECTIONS);
-#endif /* FLUD */
 }
 
 /*
@@ -266,9 +262,7 @@ void block_garbage_collect()
   BlockHeapGarbageCollect(free_Links);
   BlockHeapGarbageCollect(free_anUsers);
   clean_client_heap();
-#ifdef FLUD
   BlockHeapGarbageCollect(free_fludbots);
-#endif /* FLUD */
 }
 
 /*
@@ -291,7 +285,6 @@ void count_links_memory(int *links_memory_used,
                         links_memory_allocated);
 }
 
-#ifdef FLUD
 /*
  */
 void count_flud_memory(int *flud_memory_used,
@@ -301,5 +294,7 @@ void count_flud_memory(int *flud_memory_used,
                         flud_memory_used,
                         flud_memory_allocated);
 }
-#endif
+
+
+
 

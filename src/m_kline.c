@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kline.c,v 7.14 2000/10/25 23:57:57 db Exp $
+ *   $Id: m_kline.c,v 7.15 2000/10/26 07:57:50 db Exp $
  */
 #include "m_kline.h"
 #include "channel.h"
@@ -1232,6 +1232,7 @@ ms_kline(struct Client *cptr,
         user,
         host,
         reason ? reason : "No reason");
+      check_klines();
       return 0;
     }
   else
@@ -1298,6 +1299,7 @@ ms_kline(struct Client *cptr,
       user,
       host);
 
+    check_klines();
     return 0;
   }
   else if (PendingLines)

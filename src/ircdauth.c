@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: ircdauth.c,v 7.8 2000/10/24 18:47:16 adrian Exp $
+ *   $Id: ircdauth.c,v 7.9 2000/10/26 07:57:49 db Exp $
  */
 
 #include <stdio.h>
@@ -649,14 +649,6 @@ GreetUser(struct Client *client)
 		sendto_one(client,"NOTICE %s :*** Notice -- You can not chanop others",
 			client->name);
 	}
-#endif
-
-#ifdef NEED_SPLITCODE
-	if (server_was_split)
-		sendto_one(client,"NOTICE %s :*** Notice -- server is currently in split-mode",
-			client->name);
-
-	nextping = CurrentTime;
 #endif
 
 	send_umode(NULL, client, 0, SEND_UMODES, ubuf);

@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.61 2000/10/24 18:47:23 adrian Exp $
+ *  $Id: s_conf.c,v 7.62 2000/10/26 07:57:50 db Exp $
  */
 #include "s_conf.h"
 #include "channel.h"
@@ -2046,25 +2046,7 @@ int conf_connect_allowed(struct in_addr addr)
 struct ConfItem *find_kill(struct Client* cptr)
 {
   assert(0 != cptr);
-#if 0
-  /*
-   * this can't possibly ever happen, this this whole thing is a 
-   * waste of cpu, if either of these tests are true it's too late,
-   * we're already screwed
-   * --Bleep
-   */
-  char* host;
-  char* name;
-  
-  if (!cptr->user)
-    return 0;
 
-  host = cptr->host;
-  name = cptr->username;
-  if (strlen(host)  > (size_t) HOSTLEN ||
-      (name ? strlen(name) : 0) > (size_t) HOSTLEN)
-    return (0);
-#endif
   /* If client is e-lined, then its not k-linable */
   /* opers get that flag automatically, normal users do not */
   return (IsElined(cptr)) ? 0 : find_is_klined(cptr->host, 
