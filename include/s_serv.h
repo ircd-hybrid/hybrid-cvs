@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.h,v 7.72 2003/05/11 16:05:48 michael Exp $
+ *  $Id: s_serv.h,v 7.73 2003/05/12 05:33:12 joshk Exp $
  */
 
 #ifndef INCLUDED_serv_h
@@ -118,7 +118,7 @@ struct EncCapability
 #ifdef HAVE_EVP_BF_CFB
 #define USE_CIPHER_BF       1
 /* Check for bug handling variable length blowfish keys */
-#if OPENSSL_VERSION_NUMBER >= 0x00000000L
+#if defined(OPENSSL_VERSION_NUMBER) && OPENSSL_VERSION_NUMBER >= 0x00000000L
 #define USE_CIPHER_BF_V     1
 #else
 #define USE_CIPHER_BF_V     0
