@@ -1,5 +1,5 @@
 /* include/setup.h.in.  Generated automatically from autoconf/configure.in by autoheader 2.13.  */
-/* $Id: setup.h.in,v 7.50 2002/04/03 04:02:29 androsyn Exp $ */
+/* $Id: setup.h.in,v 7.51 2002/04/03 13:10:30 androsyn Exp $ */
 /* Define as __inline if that's what the C compiler calls it.  */
 #undef inline
 
@@ -85,6 +85,12 @@
 
 /* nanosleep */
 #undef HAVE_NANOSLEEP
+
+/* nicklen */
+#undef NICKLEN
+
+/* max_clients */
+#undef MAX_CLIENTS
 
 /* Define if you have the EVP_bf_cfb function.  */
 #undef HAVE_EVP_BF_CFB
