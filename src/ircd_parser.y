@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.357 2003/09/26 03:35:15 bill Exp $
+ *  $Id: ircd_parser.y,v 1.358 2003/09/26 10:35:51 bill Exp $
  */
 
 %{
@@ -2956,7 +2956,7 @@ gline_entry: GLINES
      */
     if (yy_conf->name == NULL)
     {
-      dlinkDelete(gdeny_items.head, &gdeny_items);
+      dlinkDelete(gdeny_items.tail, &gdeny_items);
       MyFree(yy_conf);
       MyFree(yy_aconf);
       yy_conf = NULL;
@@ -3061,9 +3061,9 @@ gline_action: ACTION
       new_aconf->flags = yy_aconf->flags;
 
       if (yy_conf->name != NULL)
-        DupString(new_aconf->user, yy_tmp->user);
+        DupString(new_conf->name, yy_conf->name);
       else
-        DupString(new_aconf->user, "*");
+        DupString(new_conf->name, "*");
       if (yy_aconf->user != NULL)
          DupString(new_aconf->user, yy_tmp->user);
       else   

@@ -3,7 +3,7 @@
  *
  * Written by ejb, wcampbel, db, leeh and others
  *
- * $Id: example.conf.quick,v 1.22 2003/09/25 21:16:58 bill Exp $
+ * $Id: example.conf.quick,v 1.23 2003/09/26 10:35:47 bill Exp $
  */
 
 /* IMPORTANT NOTES:
@@ -366,6 +366,7 @@ general {
 glines {
         enable = yes;
         duration = 1 day;
+	logging = reject;
 
         user = "god@I.still.hate.packets";
         name = "hades.arpa";      
@@ -373,7 +374,7 @@ glines {
 
         user = "god@*"; 
         name = "*";
-        action = allow, block;
+        action = block;
 };
 
 modules {

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.480 2003/09/26 03:35:15 bill Exp $
+ *  $Id: s_conf.c,v 7.481 2003/09/26 10:35:51 bill Exp $
  */
 
 #include "stdinc.h"
@@ -279,7 +279,7 @@ make_conf_item(ConfType type)
   case GDENY_TYPE:
     conf = (struct ConfItem *)MyMalloc(sizeof(struct ConfItem) +
                                        sizeof(struct AccessItem));
-    dlinkAdd(conf, &conf->node, &gdeny_items);
+    dlinkAddTail(conf, &conf->node, &gdeny_items);
     break;
 
   case XLINE_TYPE:
@@ -536,7 +536,7 @@ report_confitem_types(struct Client *source_p, ConfType type)
   switch (type)
   {
   case GDENY_TYPE:
-    DLINK_FOREACH_PREV(ptr, gdeny_items.tail)
+    DLINK_FOREACH(ptr, gdeny_items.head)
     {
       conf = ptr->data;
       aconf = (struct AccessItem *)map_to_conf(conf);

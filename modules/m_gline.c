@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.126 2003/09/26 03:35:13 bill Exp $
+ *  $Id: m_gline.c,v 1.127 2003/09/26 10:35:49 bill Exp $
  */
 
 #include "stdinc.h"
@@ -99,7 +99,7 @@ _moddeinit(void)
   delete_capability("GLN");
 }
 
-const char *_version = "$Revision: 1.126 $";
+const char *_version = "$Revision: 1.127 $";
 #endif
 
 /* mo_gline()
@@ -301,7 +301,7 @@ ms_gline(struct Client *client_p, struct Client *source_p,
   if (invalid_gline(source_p, user))
      return;
    
-  DLINK_FOREACH_PREV(ptr, gdeny_items.tail)
+  DLINK_FOREACH(ptr, gdeny_items.head)
   {
     conf = ptr->data;
     aconf = (struct AccessItem *)map_to_conf(conf);
