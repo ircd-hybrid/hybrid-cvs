@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_gline.c,v 1.24 2000/12/18 21:43:08 bill Exp $
+ *  $Id: m_gline.c,v 1.25 2000/12/21 00:59:01 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -278,6 +278,15 @@ int mo_gline(struct Client *cptr,
 			     user,
 			     host,
 			     reason);
+      sendto_realops_flags(FLAGS_ALL,
+			"%s on %s is requesting gline for [%s@%s] [%s]",
+			sptr->name,
+			me.name,
+			user,
+			host,
+			reason);
+      log_gline_request(sptr->name,(const char *)sptr->user,sptr->host,me.name,
+                        user,host,reason);
     }
   else
     {

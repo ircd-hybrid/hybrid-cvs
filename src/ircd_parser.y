@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.58 2000/12/20 22:00:46 db Exp $
+ * $Id: ircd_parser.y,v 1.59 2000/12/21 00:59:05 db Exp $
  */
 
 %{
@@ -707,7 +707,7 @@ auth_spoof:   SPOOF '=' QSTRING ';'
 auth_exceed_limit:    EXCEED_LIMIT '=' TYES ';'
   {
     yy_aconf->flags |= CONF_FLAGS_F_LINED;
-  };
+  }
                       |
                       EXCEED_LIMIT '=' TNO ';'
   {
@@ -717,21 +717,31 @@ auth_exceed_limit:    EXCEED_LIMIT '=' TYES ';'
 auth_kline_exempt:    KLINE_EXEMPT '=' TYES ';'
   {
     yy_aconf->flags |= CONF_FLAGS_E_LINED;
-  };
+  }
                       |
                       KLINE_EXEMPT '=' TNO ';'
   {
     yy_aconf->flags &= ~CONF_FLAGS_E_LINED;
   };
 
-auth_have_ident:      HAVE_IDENT ';'
+auth_have_ident:      HAVE_IDENT '=' TYES ';'
   {
     yy_aconf->flags |= CONF_FLAGS_NEED_IDENTD;
+  }
+                      |
+                      HAVE_IDENT '=' TNO ';'
+  {
+    yy_aconf->flags &= ~CONF_FLAGS_NEED_IDENTD;
   };
 
-auth_no_tilde:        NO_TILDE ';' 
+auth_no_tilde:        NO_TILDE '=' TYES ';' 
   {
     yy_aconf->flags |= CONF_FLAGS_NO_TILDE;
+  }
+                      |
+                      NO_TILDE '=' TNO ';'
+  {
+    yy_aconf->flags &= ~CONF_FLAGS_NO_TILDE;
   };
 
 auth_class:   CLASS '=' QSTRING ';'
