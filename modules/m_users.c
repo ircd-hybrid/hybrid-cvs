@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_users.c,v 1.12 2001/01/06 12:06:57 fl_ Exp $
+ *   $Id: m_users.c,v 1.13 2001/01/06 12:38:14 toot Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -68,9 +68,6 @@ static int m_users(struct Client *cptr, struct Client *sptr,
       if (!GlobalSetOptions.hide_server || IsOper(sptr))
         sendto_one(sptr, form_str(RPL_LOCALUSERS), me.name, parv[0],
                    Count.local, Count.max_loc);
-      else
-        sendto_one(sptr, form_str(RPL_LOCALUSERS), me.name, parv[0],
-                   Count.total, Count.max_tot);
 
       sendto_one(sptr, form_str(RPL_GLOBALUSERS), me.name, parv[0],
                  Count.total, Count.max_tot);
