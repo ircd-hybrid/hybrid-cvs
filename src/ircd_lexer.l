@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.58 2001/01/11 05:31:58 a1kmm Exp $
+ * $Id: ircd_lexer.l,v 1.59 2001/01/11 07:48:27 a1kmm Exp $
  */
 
 %option case-insensitive
@@ -72,7 +72,7 @@ qstring		\"[^\"\n]*[\"\n]
           }
 	 }
 
-{qstring}	{ DupString(yylval.string,yytext+1);
+{qstring}	{ yylval.string = yytext+1;
 		  if(yylval.string[yyleng-2] != '"')
 		    fprintf(stderr,"Unterminated character string\n");
 		  else
