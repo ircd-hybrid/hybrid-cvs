@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.193 2001/01/29 17:58:11 db Exp $
+ * $Id: channel.c,v 7.194 2001/01/31 20:15:13 davidt Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -899,7 +899,7 @@ static void send_members(struct Client *cptr,
   int  data_to_send=0;
   char *t;		/* temp char pointer */
 
-  ircsprintf(buf, ":%s SJOIN %lu %s %s %s:", me.name,
+  ircsprintf(buf, ":%s SJOIN %lu %s %s %s :", me.name,
 	     chptr->channelts, chptr->chname, lmodebuf, lparabuf);
 
   cur_len = mlen = strlen(buf);

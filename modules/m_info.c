@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.c,v 1.24 2001/01/23 05:01:25 db Exp $
+ * $Id: m_info.c,v 1.25 2001/01/31 20:15:12 davidt Exp $
  */
 #include "tools.h"
 #include "m_info.h"
@@ -469,6 +469,11 @@ static void send_conf_options(struct Client *sptr)
               me.name, RPL_INFO, sptr->name, "pace_wait",
               ConfigFileEntry.pace_wait,
               "Minimum Delay between uses of certain commands");
+  sendto_one(sptr,
+              ":%s %d %s :%-30s %-5d [%-30s]",
+              me.name, RPL_INFO, sptr->name, "caller_id_wait",
+              ConfigFileEntry.caller_id_wait,
+              "Minimum Delay between notifying +g users of messages");
   sendto_one(sptr,
               ":%s %d %s :%-30s %-5d [%-30s]",
               me.name, RPL_INFO, sptr->name, "whois_wait",

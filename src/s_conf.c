@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.167 2001/01/26 17:47:39 jdc Exp $
+ *  $Id: s_conf.c,v 7.168 2001/01/31 20:15:16 davidt Exp $
  */
 
 #include <sys/types.h>
@@ -1438,6 +1438,9 @@ static void read_conf(FBFILE* file)
 
   if (!ConfigFileEntry.knock_delay)
     ConfigFileEntry.knock_delay = 300;
+
+  if (!ConfigFileEntry.caller_id_wait)
+    ConfigFileEntry.caller_id_wait = 60;
   
   GlobalSetOptions.idletime = (ConfigFileEntry.idletime * 60);
 

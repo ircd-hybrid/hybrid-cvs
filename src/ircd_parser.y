@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.122 2001/01/27 08:18:22 androsyn Exp $
+ * $Id: ircd_parser.y,v 1.123 2001/01/31 20:15:15 davidt Exp $
  */
 
 %{
@@ -183,6 +183,7 @@ int   class_redirport_var;
 %token  STATS_NOTICE
 %token  WHOIS_WAIT
 %token  PACE_WAIT
+%token  CALLER_ID_WAIT
 %token  KNOCK_DELAY
 %token  SHORT_MOTD
 %token  NO_OPER_FLOOD
@@ -1378,6 +1379,7 @@ general_item:       general_failed_oper_notice | general_show_failed_oper_id |
                     general_max_targets |
                     general_links_delay |
                     general_vchans_oper_only |
+                    general_caller_id_wait |
                     error
 
 general_failed_oper_notice:   FAILED_OPER_NOTICE '=' TYES ';'
@@ -1507,6 +1509,11 @@ general_o_lines_oper_only: O_LINES_OPER_ONLY '=' TYES ';'
 general_pace_wait: PACE_WAIT '=' NUMBER ';'
   {
     ConfigFileEntry.pace_wait = yylval.number;
+  } ;
+
+general_pace_wait: CALLER_ID_WAIT '=' NUMBER ';'
+  {
+    ConfigFileEntry.caller_id_wait = yylval.number;
   } ;
 
 general_whois_wait: WHOIS_WAIT '=' NUMBER ';'
