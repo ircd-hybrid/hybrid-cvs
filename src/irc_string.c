@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: irc_string.c,v 7.28 2001/04/25 02:17:04 androsyn Exp $
+ *  $Id: irc_string.c,v 7.29 2001/04/25 02:42:58 androsyn Exp $
  */
 #include "config.h"
 #include "tools.h"
@@ -428,12 +428,17 @@ const char *inetntop(int af, const void *src, char *dst, unsigned int size)
 		return (inet_ntop4(src, dst, size));
 #ifdef IPV6
 	case AF_INET6:
-		if(!IN6_IS_ADDR_V4MAPPED((const struct in6_addr *)src) || 
-			!IN6_IS_ADDR_V4COMPAT((const struct in6_addr *)src))
-			return (inet_ntop6(src, dst, size));
-		else {
+		if(ntohl(((u_int32_t *)src)[3]) == 1)
+		{
+			memcpy(dst,"127.0.0.1", 10);
+			return(dst);
+		} else
+		if(IN6_IS_ADDR_V4MAPPED((const struct in6_addr *)src) ||
+			IN6_IS_ADDR_V4COMPAT((const struct in6_addr *)src))
 			return(inet_ntop4((unsigned char *)&((struct in6_addr *)src)->s6_addr[12], dst, size));
-		}
+		else 
+			return (inet_ntop6(src, dst, size));
+		
 
 #endif
 	default:
