@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.9 1999/09/03 05:05:38 tomh Exp $
+ *   $Id: send.c,v 7.10 1999/09/08 06:30:54 tomh Exp $
  */
 #include "send.h"
 #include "channel.h"
@@ -143,7 +143,7 @@ send_message(struct Client *to, char *msg, int len)
                 return 0;
         }
 
-        if (IsDead(to))
+        if (to->fd < 0)
                 return 0; /* This socket has already been marked as dead */
 
         if (DBufLength(&to->sendQ) > get_sendq(to))

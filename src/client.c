@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.8 1999/08/21 02:52:15 tomh Exp $
+ *  $Id: client.c,v 7.9 1999/09/08 06:30:53 tomh Exp $
  */
 #include "client.h"
 #include "class.h"
@@ -197,6 +197,13 @@ void _free_client(struct Client* cptr)
 
     if (cptr->dns_reply)
       --cptr->dns_reply->ref_count;
+
+    zip_free(cptr);
+
+    DBufClear(&cptr->sendQ);
+    DBufClear(&cptr->recvQ);
+
+    memset(cptr->passwd, 0, sizeof(cptr->passwd));
 
     result = BlockHeapFree(localClientFreeList, cptr);
   }

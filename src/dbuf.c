@@ -21,7 +21,7 @@
  * see the header file (dbuf.h).
  *
  *
- * $Id: dbuf.c,v 7.7 1999/09/07 06:20:32 tomh Exp $
+ * $Id: dbuf.c,v 7.8 1999/09/08 06:30:54 tomh Exp $
  */
 #include "dbuf.h"
 #include "common.h"
@@ -168,7 +168,7 @@ int dbuf_put(struct DBuf* dyn, const char* buf, size_t length)
    */
   dyn->length += length;
 
-  for ( ; length > 0; h = &(d->next)) {
+  for ( ; length > 0; h = &(db->next)) {
     if (0 == (db = *h)) {
       if (0 == (db = dbuf_alloc()))
         return dbuf_malloc_error(dyn);
