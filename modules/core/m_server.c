@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.83 2002/05/24 23:34:39 androsyn Exp $
+ *  $Id: m_server.c,v 1.84 2002/06/24 18:12:20 leeh Exp $
  */
 
 #include "stdinc.h"
@@ -67,7 +67,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&server_msgtab);
 }
-const char *_version = "$Revision: 1.83 $";
+const char *_version = "$Revision: 1.84 $";
 #endif
 
 int bogus_host(char *host);
@@ -307,37 +307,18 @@ static void ms_server(struct Client *client_p, struct Client *source_p,
       if (irccmp(target_p->name, name) && target_p->from==client_p)
         return;
 
-#if 0
-      if(client_p->firsttime > target_p->from->firsttime)
-      {
-        sendto_one(client_p, "ERROR :Server %s already exists", name);
+      sendto_one(client_p, "ERROR :Server %s already exists", name);
 	
-        sendto_realops_flags(FLAGS_ALL, L_ADMIN,
-	                  "Link %s cancelled, server %s already exists",
-			  get_client_name(client_p, SHOW_IP), name);
-        sendto_realops_flags(FLAGS_ALL, L_OPER,
-	                  "Link %s cancelled, server %s already exists",
-			  client_p->name, name);
+      sendto_realops_flags(FLAGS_ALL, L_ADMIN,
+	                   "Link %s cancelled, server %s already exists",
+		 	   get_client_name(client_p, SHOW_IP), name);
+      sendto_realops_flags(FLAGS_ALL, L_OPER,
+	                   "Link %s cancelled, server %s already exists",
+		 	   client_p->name, name);
       
         exit_client(client_p, client_p, &me, "Server Exists");
 	return;
-      }
-      else
-#endif
-      {
-        sendto_one(target_p->from, "ERROR :Server %s already exists", name);
-        sendto_realops_flags(FLAGS_ALL, L_ADMIN,
-	            "Link %s cancelled, server %s reintroduced by %s",
-		    get_client_name(target_p->from, SHOW_IP),
-		    name, client_p->name);
-        sendto_realops_flags(FLAGS_ALL, L_ADMIN,
-	            "Link %s cancelled, server %s reintroduced by %s",
-		    target_p->from->name, name, client_p->name);
-
-        exit_client(target_p->from, target_p->from, &me, "Server Exists");
-	return;
-      }
-  }
+    }
   
   /* 
    * User nicks never have '.' in them and server names
