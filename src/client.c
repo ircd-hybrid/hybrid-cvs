@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.369 2003/05/20 02:19:54 db Exp $
+ *  $Id: client.c,v 7.370 2003/05/22 02:28:30 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -419,7 +419,7 @@ check_klines(void)
 	if (IsPerson(client_p))
 	  sendto_one(client_p, form_str(ERR_YOUREBANNEDCREEP),
 		     me.name, client_p->name,
-		     aconf->passwd ? aconf->passwd : "D-lined");
+		     aconf->reason ? aconf->reason : "D-lined");
 	else
 	  sendto_one(client_p, "NOTICE DLINE :*** You have been D-lined");
       }
@@ -427,8 +427,8 @@ check_klines(void)
       {
 	if (ConfigFileEntry.kline_with_connection_closed)
 	  reason = "Connection closed";
-	else if (ConfigFileEntry.kline_with_reason && aconf->passwd)
-	  reason = aconf->passwd;
+	else if (ConfigFileEntry.kline_with_reason && aconf->reason)
+	  reason = aconf->reason;
 	else
 	  reason = "D-lined";
 
@@ -514,14 +514,14 @@ check_klines(void)
 
 	  sendto_one(client_p, form_str(ERR_YOUREBANNEDCREEP),
 		     me.name, client_p->name, 
-		     aconf->passwd ? aconf->passwd : "K-lined");
+		     aconf->reason ? aconf->reason : "K-lined");
 	}
 	else
 	{
 	  if (ConfigFileEntry.kline_with_connection_closed)
 	    reason = "Connection closed";
-	  else if (ConfigFileEntry.kline_with_reason && aconf->passwd)
-	    reason = aconf->passwd;
+	  else if (ConfigFileEntry.kline_with_reason && aconf->reason)
+	    reason = aconf->reason;
 	  else
 	    reason = "K-lined";
 

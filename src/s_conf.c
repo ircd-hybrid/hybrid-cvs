@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.395 2003/05/19 19:39:44 stu Exp $
+ *  $Id: s_conf.c,v 7.396 2003/05/22 02:28:30 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -527,7 +527,7 @@ verify_access(struct Client* client_p, const char* username)
     {
       if (ConfigFileEntry.kline_with_reason)
         sendto_one(client_p, ":%s NOTICE %s :*** Banned %s",
-                   me.name, client_p->name, aconf->passwd);
+                   me.name, client_p->name, aconf->reason);
       return(BANNED_CLIENT);
     }
   }
