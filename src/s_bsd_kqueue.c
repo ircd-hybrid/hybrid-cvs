@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_kqueue.c,v 1.10 2001/04/25 01:51:29 db Exp $
+ *  $Id: s_bsd_kqueue.c,v 1.11 2001/04/25 04:11:54 androsyn Exp $
  */
 #include "config.h"
 #ifdef USE_KQUEUE
@@ -117,7 +117,9 @@ kq_update_events(int fd, short filter, PF * handler)
 
         kep->ident = (u_long) fd;
         kep->filter = filter;
+#ifdef NOTE_LOWAT
 	kep->fflags = NOTE_LOWAT;
+#endif
 	kep->data = 1;
         kep->flags = handler ? (EV_ADD | EV_ONESHOT) : EV_DELETE;
 	if (kqoff == kqmax) {
