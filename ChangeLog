@@ -1,3 +1,7 @@
+*** 20001118_3 by toot
+removed all those OLD_* defines in set_mode()
+
+
 *** 20001118_2 by toot
 End of /NAMES list was missing in one place.
 fixed compile warning in ltrace
@@ -617,7 +621,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.561 2000/11/18 20:22:07 toot Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.562 2000/11/18 22:15:59 toot Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
