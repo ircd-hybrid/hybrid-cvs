@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_map.c,v 1.16 2003/05/13 04:48:48 metalrock Exp $
+ *  $Id: m_map.c,v 1.17 2003/08/19 23:45:33 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -31,12 +31,10 @@
 #include "s_conf.h"
 #include "ircd.h"
 
-#define USER_COL       50 /* display | Users: %d at col 50 */
-
 static void m_map(struct Client *client_p, struct Client *source_p,
-                    int parc, char *parv[]);
+                  int parc, char *parv[]);
 static void mo_map(struct Client *client_p, struct Client *source_p,
-                    int parc, char *parv[]);
+                   int parc, char *parv[]);
 static void dump_map(struct Client *client_p,struct Client *root, char *pbuf);
 
 struct Message map_msgtab = {
@@ -55,7 +53,7 @@ void _moddeinit(void)
   mod_del_cmd(&map_msgtab);
 }
 
-const char *_version = "$Revision: 1.16 $";
+const char *_version = "$Revision: 1.17 $";
 #endif
 
 static char buf[BUFSIZE];
@@ -108,21 +106,11 @@ dump_map(struct Client *client_p,struct Client *root_p, char *pbuf)
   len = strlen(buf);
   buf[len] = ' ';
 	
-  if (len < USER_COL)
-  {
-     for (i = len+1; i < USER_COL; i++)
-     {
-       buf[i] = '-';
-     }
-  }
-	
-  /* FIXME: add serv->usercnt */
   users = dlink_list_length(&root_p->serv->users);
-        
-  snprintf(buf + USER_COL, BUFSIZE - USER_COL,
-           " | Users: %5d (%4.1f%%)", users,
-           100 * (float) users / (float) Count.total);
-        
+
+  snprintf(buf + len, BUFSIZE, " [Users: %d (%1.1f%%)]", users,
+           100 * (float)users / (float)Count.total);
+
   sendto_one(client_p, form_str(RPL_MAP),me.name,client_p->name,buf);
         
   if (root_p->serv->servers.head)
@@ -159,4 +147,3 @@ dump_map(struct Client *client_p,struct Client *root_p, char *pbuf)
     i++;
    }
 }
-
