@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.168 2003/06/02 18:18:59 db Exp $
+ *  $Id: parse.c,v 7.169 2003/06/02 22:26:51 db Exp $
  */
 
 #include "stdinc.h"
@@ -77,6 +77,7 @@
 				 */
 
 struct MessageTree {
+  int links;		/* Count of nodes =under= this node */
   struct Message *msg;
   struct MessageTree *pointers[MAXPTRLEN];
 };
@@ -415,12 +416,14 @@ add_msg_element(struct MessageTree *mtree_p, struct Message *msg_p, char *cmd)
 
   if ((ntree_p = mtree_p->pointers[*cmd & (MAXPTRLEN-1)]) != NULL)
   {
+    mtree_p->links++;
     add_msg_element(ntree_p, msg_p, ++cmd);
   }
   else
   {
     ntree_p = (struct MessageTree *)MyMalloc(sizeof(struct MessageTree));
     mtree_p->pointers[*cmd & (MAXPTRLEN-1)] = ntree_p;
+    mtree_p->links++;
     add_msg_element(ntree_p, msg_p, ++cmd);
   }
 }
@@ -444,9 +447,15 @@ del_msg_element(struct MessageTree *mtree_p, char *cmd)
   if ((ntree_p = mtree_p->pointers[*cmd & (MAXPTRLEN-1)]) != NULL)
   {
     del_msg_element(ntree_p, cmd+1);
+    ntree_p->links--;
     if (ntree_p != &msg_tree)	/* this would be bad if it happened */
-      MyFree(ntree_p);
-    mtree_p->pointers[*cmd & (MAXPTRLEN-1)] = NULL;
+    {
+      if (ntree_p->links == 0)
+      {
+	MyFree(ntree_p);
+	mtree_p->pointers[*cmd & (MAXPTRLEN-1)] = NULL;
+      }
+    }
   }
 }
 
