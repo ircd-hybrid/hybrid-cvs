@@ -1,7 +1,7 @@
 /*
  * include/irc_res.h for referencing functions in src/irc_res.c
  *
- * $Id: irc_res.h,v 7.4 2003/05/13 17:46:35 joshk Exp $
+ * $Id: irc_res.h,v 7.5 2003/05/13 18:59:26 joshk Exp $
  */
 
 #ifndef INCLUDED_irc_res_h
@@ -16,7 +16,7 @@
 #define NS_IN6ADDRSZ    16
 #define NS_INADDRSZ	 4
 #define NS_INT32SZ 4
-#define NS_CMPRSFLGS    0xc
+#define NS_CMPRSFLGS    0xc0
 #define NS_MAXCDNAME 255
 #define QUERY 0
 #define IQUERY 1
