@@ -20,7 +20,7 @@
  * "list.h". - Headers file.
  *
  *
- * $Id: list.h,v 7.11 2001/05/10 06:30:39 a1kmm Exp $
+ * $Id: list.h,v 7.12 2001/08/13 17:45:15 androsyn Exp $
  *
  */
 
@@ -36,7 +36,7 @@ struct Channel;
 struct ConfItem;
 struct Ban;
 
-
+extern void initUser(void);
 extern void count_user_memory(int *count,int *user_memory_used);
 extern void count_links_memory(int *count,int *links_memory_used);
 extern void outofmemory(void);
