@@ -7,7 +7,7 @@
  * The authors takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: irc_res.c,v 7.33 2003/08/11 12:32:18 stu Exp $
+ * $Id: irc_res.c,v 7.34 2003/08/19 15:43:45 stu Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -416,12 +416,16 @@ gethost_byname_type(const char *name, const struct DNSQuery *query, int type)
 }
 
 /*
- * gethost_byname - wrapper for _type - send T_AAAA first
+ * gethost_byname - wrapper for _type - send T_AAAA first if IPV6 supported
  */
 void
 gethost_byname(const char *name, const struct DNSQuery *query)
 {
+#ifdef IPV6
   gethost_byname_type(name, query, T_AAAA);
+#else
+  gethost_byname_type(name, query, T_A);
+#endif
 }
 
 /*
