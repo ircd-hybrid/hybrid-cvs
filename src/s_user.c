@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.152 2001/05/02 07:17:06 a1kmm Exp $
+ *  $Id: s_user.c,v 7.153 2001/05/15 09:38:07 toot Exp $
  */
 
 #include <sys/types.h>
@@ -294,15 +294,14 @@ int show_lusers(struct Client *source_p)
  * output	- 
  * side effects	- display to client what we support (for them)
  */
-int show_isupport(struct Client *source_p) 
+void show_isupport(struct Client *source_p) 
 {
   char isupportbuffer[512];
-  
+
   ircsprintf(isupportbuffer,FEATURES,FEATURESVALUES);
   sendto_one(source_p, form_str(RPL_ISUPPORT), me.name, source_p->name, 
   	     isupportbuffer);
-  	     
-  return 0;	     
+  return;
 }
 
 

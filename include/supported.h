@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: supported.h,v 1.8 2001/05/12 14:17:19 toot Exp $
+ * $Id: supported.h,v 1.9 2001/05/15 09:38:00 toot Exp $
  * 
  */
 #ifndef INCLUDED_supported_h
@@ -26,7 +26,7 @@
 #include "ircd_defs.h"
 
 #define FEATURES "KNOCK"\
-                " VCHANS" \
+                "%s" \
                 " WALLCHOPS" \
                 " MODES=%i" \
                 " MAXCHANNELS=%i" \
@@ -39,7 +39,8 @@
                 " PREFIX=%s" \
                 " CHANMODES=%s"
                  
-#define FEATURESVALUES MAXMODEPARAMS,MAXCHANNELSPERUSER,MAXBANS, \
+#define FEATURESVALUES ConfigFileEntry.disable_vchans ? "" : " VCHANS", \
+        MAXMODEPARAMS,MAXCHANNELSPERUSER,MAXBANS, \
         ConfigFileEntry.max_targets,NICKLEN,TOPICLEN,TOPICLEN,"#&","(ohv)@%+", \
         "beI,,kl,imnpsta"
 

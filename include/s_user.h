@@ -19,7 +19,7 @@
  *
  * "s_user.h". - Headers file.
  *
- * $Id: s_user.h,v 7.12 2001/03/06 02:22:11 androsyn Exp $
+ * $Id: s_user.h,v 7.13 2001/05/15 09:37:59 toot Exp $
  *
  */
 #ifndef INCLUDED_s_user_h
@@ -53,7 +53,7 @@ extern int   do_remote_user(char* ,struct Client* ,struct Client*,
 			    char* ,char *,char *,char *,char *);
 
 extern int   user_modes_from_c_to_bitmask[];
-extern int   show_isupport(struct Client *);
+extern void  show_isupport(struct Client *);
 
 
 #endif
