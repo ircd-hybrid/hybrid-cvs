@@ -1,3 +1,19 @@
+jmallett    2002/01/07 12:48:30 EST	(20020107_3)
+
+  Modified files:
+    .                    configure 
+    autoconf             configure.in 
+  Log:
+  Bring in my slightly redone PIC checks. Fixes GCC on SunOS problems with
+  the previous version of my changes here. Also include some notes about
+  what is being done for PIC checks.
+  
+  Revision  Changes    Path
+  7.107     +14 -5     ircd-hybrid-7/autoconf/configure.in
+  7.110     +210 -197  ircd-hybrid-7/configure
+
+
+
 db          2002/01/07 01:26:14 EST	(20020107_2)
 
   Modified files:
@@ -2638,7 +2654,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3299 2002/01/07 06:26:20 db Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3300 2002/01/07 17:48:35 jmallett Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -20992,4 +21008,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3299 2002/01/07 06:26:20 db Exp $
+$Id: ChangeLog,v 7.3300 2002/01/07 17:48:35 jmallett Exp $
