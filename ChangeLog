@@ -1,3 +1,15 @@
+androsyn    2002/01/12 19:41:46 EST	(20020113_0)
+
+  Modified files:
+    src                  adns.c 
+  Log:
+  Fixed yet another wacky and weird /rehash dns bug..
+  
+  Revision  Changes    Path
+  7.35      +12 -6     ircd-hybrid-7/src/adns.c
+
+
+
 a1kmm       2002/01/12 18:06:07 EST	(20020112_3)
 
   Modified files:
@@ -3083,7 +3095,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3327 2002/01/12 23:06:14 a1kmm Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3328 2002/01/13 00:41:51 androsyn Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -21437,4 +21449,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3327 2002/01/12 23:06:14 a1kmm Exp $
+$Id: ChangeLog,v 7.3328 2002/01/13 00:41:51 androsyn Exp $
