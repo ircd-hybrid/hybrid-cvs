@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.29 2000/01/06 01:21:17 db Exp $
+ *  $Id: s_conf.c,v 7.30 2000/01/06 01:31:12 db Exp $
  */
 #include "s_conf.h"
 #include "channel.h"
@@ -38,6 +38,7 @@
 #include "s_bsd.h"
 #include "s_log.h"
 #include "send.h"
+#include "m_gline.h"
 #include "s_debug.h"
 
 #include <stdio.h>
@@ -110,13 +111,6 @@ struct ConfItem *temporary_klines = NULL;
 static  char *set_conf_flags(struct ConfItem *,char *);
 static  int  oper_privs_from_string(int,char *);
 static  int  oper_flags_from_string(char *);
-
-/* externally defined functions */
-extern  void    outofmemory(void);        /* defined in list.c */
-
-#ifdef GLINES
-extern  struct ConfItem *find_gkill(struct Client *); /* defined in m_gline.c */
-#endif
 
 /* usually, with hash tables, you use a prime number...
  * but in this case I am dealing with ip addresses, not ascii strings.
