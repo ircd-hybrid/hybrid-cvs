@@ -1,3 +1,16 @@
+a1kmm       2003/02/06 05:12:40 EST	(20030206_2)
+
+  Modified files:
+    src                  channel_mode.c 
+  Log:
+  - Fixed a desync bug with chm_key when removing keys, thanks to MetalRock for
+    reporting this bug.
+  
+  Revision  Changes    Path
+  7.71      +3 -0      ircd-hybrid-7/src/channel_mode.c
+
+
+
 a1kmm       2003/02/06 04:57:07 EST	(20030206_1)
 
   Modified files:
@@ -34886,4 +34899,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4222 2003/02/06 09:57:10 a1kmm Exp $
+$Id: ChangeLog,v 7.4223 2003/02/06 10:12:43 a1kmm Exp $
