@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kline.c,v 1.82 2001/06/08 07:30:58 db Exp $
+ *   $Id: m_kline.c,v 1.83 2001/06/08 07:41:11 db Exp $
  */
 #include "tools.h"
 #include "m_kline.h"
@@ -904,7 +904,7 @@ static int valid_comment(struct Client *source_p, char *comment)
     {
       if(!IsServer(source_p))
 	sendto_one(source_p,
-		   ":%s NOTICE %s :Invalid character '"' in comment",
+		   ":%s NOTICE %s :Invalid character '\"' in comment",
 		   me.name, source_p->name);
       return 0;
     }
