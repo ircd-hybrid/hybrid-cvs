@@ -20,9 +20,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_devpoll.c,v 7.13 2002/04/15 00:05:45 leeh Exp $
+ *  $Id: s_bsd_devpoll.c,v 7.14 2002/05/24 23:34:50 androsyn Exp $
  */
 
+#include "config.h"
+
+#ifdef USE_DEVPOLL
+#include "stdinc.h"
 #include "config.h"
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -47,26 +51,7 @@
 #include "s_debug.h"
 #include "s_bsd.h"
 #include "memory.h"
-#ifdef USE_DEVPOLL
 
-#include <assert.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <netdb.h>
-#include <unistd.h>
-#include <time.h>
-#include <sys/types.h>
-#include <sys/devpoll.h>
-#include <sys/stat.h>
-#include <sys/socket.h>
-#include <sys/file.h>
-#include <sys/ioctl.h>
-#include <sys/resource.h>
-#include <sys/param.h>    /* NOFILE */
-#include <arpa/inet.h>
 #define POLL_LENGTH	HARD_FDLIMIT
 
 

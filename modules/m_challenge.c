@@ -19,11 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_challenge.c,v 1.35 2002/05/07 12:50:47 leeh Exp $
+ *  $Id: m_challenge.c,v 1.36 2002/05/24 23:34:19 androsyn Exp $
  */
 
-#include <stdlib.h>
-#include <string.h>
+#include "stdinc.h"
 #include "handlers.h"
 #include "client.h"
 #include "ircd.h"
@@ -56,7 +55,7 @@ _moddeinit(void)
   return;
 }
 
-const char *_version = "$Revision: 1.35 $";
+const char *_version = "$Revision: 1.36 $";
 #endif
 #else
 
@@ -81,7 +80,7 @@ _moddeinit(void)
   mod_del_cmd(&challenge_msgtab);
 }
 
-const char *_version = "$Revision: 1.35 $";
+const char *_version = "$Revision: 1.36 $";
 #endif
 /*
  * m_challenge - generate RSA challenge for wouldbe oper

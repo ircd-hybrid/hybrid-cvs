@@ -20,8 +20,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: adns.c,v 7.40 2002/04/14 22:10:40 androsyn Exp $
+ *  $Id: adns.c,v 7.41 2002/05/24 23:34:44 androsyn Exp $
  */
+
+#include "stdinc.h"
+#include "setup.h"
 
 #include "fileio.h"
 #include "res.h"
@@ -33,7 +36,6 @@
 #include "client.h"
 #include "ircd_defs.h"
 #include "numeric.h"
-#include <errno.h>
 #include "../adns/internal.h"
 #define ADNS_MAXFD 2
 

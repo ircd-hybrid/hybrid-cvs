@@ -19,22 +19,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fileio.h,v 7.10 2002/04/13 13:18:33 leeh Exp $
+ *  $Id: fileio.h,v 7.11 2002/05/24 23:34:07 androsyn Exp $
  */
 
 #ifndef INCLUDED_fileio_h
 #define INCLUDED_fileio_h
-
-#ifndef INCLUDED_sys_types_h
-#include <sys/types.h>     /* size_t */
-#define INCLUDED_sys_types_h
-#endif
-#ifndef INCLUDED_sys_stat_h
-#include <sys/stat.h>      /* struct stat */
-#define INCLUDED_sys_stat_h
-#endif
-
-#include <stdio.h>    /* BUFSIZ */
 
 #define FB_EOF  0x01
 #define FB_FAIL 0x02

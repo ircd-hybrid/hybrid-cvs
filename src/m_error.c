@@ -19,9 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_error.c,v 7.24 2002/04/26 12:30:36 leeh Exp $
+ *  $Id: m_error.c,v 7.25 2002/05/24 23:34:48 androsyn Exp $
  */
 
+#include "stdinc.h"
 #include "handlers.h"
 #include "client.h"
 #include "common.h"   /* FALSE */

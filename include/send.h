@@ -19,14 +19,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.h,v 7.56 2002/05/20 23:07:36 androsyn Exp $
+ *  $Id: send.h,v 7.57 2002/05/24 23:34:08 androsyn Exp $
  */
 
 #ifndef INCLUDED_send_h
 #define INCLUDED_send_h
-#ifndef INCLUDED_config_h
+
 #include "config.h"       /* HAVE_STDARG_H */
-#endif
 
 /* For those unfamiliar with GNU format attributes, a is the 1 based
  * argument number of the format string, and b is the 1 based argument

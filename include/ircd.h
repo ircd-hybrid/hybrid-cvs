@@ -19,14 +19,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.h,v 7.49 2002/05/20 23:07:36 androsyn Exp $
+ *  $Id: ircd.h,v 7.50 2002/05/24 23:34:07 androsyn Exp $
  */
 
 #ifndef INCLUDED_ircd_h
 #define INCLUDED_ircd_h
-
-#include <sys/types.h>
-#include <sys/time.h>
 
 #include "config.h"
 #include "tools.h"

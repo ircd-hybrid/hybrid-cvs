@@ -19,9 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_squit.c,v 1.44 2002/03/07 06:22:04 db Exp $
+ *  $Id: m_squit.c,v 1.45 2002/05/24 23:34:39 androsyn Exp $
  */
 
+#include "stdinc.h"
 #include "handlers.h"
 #include "client.h"
 #include "common.h"      /* FALSE bleah */
@@ -36,7 +37,6 @@
 #include "parse.h"
 #include "modules.h"
 
-#include <assert.h>
 
 static void ms_squit(struct Client*, struct Client*, int, char**);
 static void mo_squit(struct Client*, struct Client*, int, char**);
@@ -58,7 +58,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&squit_msgtab);
 }
-const char *_version = "$Revision: 1.44 $";
+const char *_version = "$Revision: 1.45 $";
 #endif
 struct squit_parms 
 {

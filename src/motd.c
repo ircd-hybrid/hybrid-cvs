@@ -19,13 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: motd.c,v 7.23 2002/04/09 02:42:36 db Exp $
+ *  $Id: motd.c,v 7.24 2002/05/24 23:34:49 androsyn Exp $
  */
 
-#include <sys/types.h>
-#include <string.h>
-#include <stdlib.h>
-#include <time.h>
+#include "stdinc.h"
 
 #include "tools.h"
 #include "motd.h"

@@ -19,20 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.195 2002/05/20 23:07:39 androsyn Exp $
+ *  $Id: send.c,v 7.196 2002/05/24 23:34:52 androsyn Exp $
  */
 
-#include <sys/types.h>
-
-#include <stdarg.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdarg.h>
-#include <time.h>
-#include <assert.h>
-#include <errno.h>
-
+#include "stdinc.h"
 #include "tools.h"
 #include "send.h"
 #include "channel.h"

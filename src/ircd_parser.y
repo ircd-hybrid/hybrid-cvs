@@ -19,22 +19,17 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.249 2002/05/14 11:41:37 leeh Exp $
+ *  $Id: ircd_parser.y,v 1.250 2002/05/24 23:34:47 androsyn Exp $
  */
 
 %{
 
-#include <assert.h>
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <string.h>
 
 /* XXX */
 #define  WE_ARE_MEMORY_C
 
 #define YY_NO_UNPUT
+#include "stdinc.h"
 #include "config.h"
 #include "ircd.h"
 #include "tools.h"

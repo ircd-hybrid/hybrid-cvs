@@ -19,9 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_motd.c,v 1.28 2002/03/07 06:21:46 db Exp $
+ *  $Id: m_motd.c,v 1.29 2002/05/24 23:34:21 androsyn Exp $
  */
 
+#include "stdinc.h"
 #include "client.h"
 #include "tools.h"
 #include "motd.h"
@@ -36,9 +37,6 @@
 #include "modules.h"
 #include "s_conf.h"
 
-#include <string.h>
-#include <stdlib.h>
-#include <time.h>
 
 static void mr_motd(struct Client *, struct Client *, int, char **);
 static void m_motd(struct Client*, struct Client*, int, char**);
@@ -65,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&motd_msgtab);
 }
 
-const char *_version = "$Revision: 1.28 $";
+const char *_version = "$Revision: 1.29 $";
 #endif
 
 /* mr_motd()

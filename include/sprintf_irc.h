@@ -19,13 +19,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: sprintf_irc.h,v 7.7 2002/01/05 09:14:30 a1kmm Exp $
+ *  $Id: sprintf_irc.h,v 7.8 2002/05/24 23:34:08 androsyn Exp $
  */
 
 #ifndef SPRINTF_IRC
 #define SPRINTF_IRC
 
-#include <stdarg.h>
 
 /*=============================================================================
  * Proto types

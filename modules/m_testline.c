@@ -19,9 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_testline.c,v 1.24 2002/03/07 06:21:47 db Exp $
+ *  $Id: m_testline.c,v 1.25 2002/05/24 23:34:22 androsyn Exp $
  */
 
+#include "stdinc.h"
 #include "handlers.h"
 #include "client.h"
 #include "common.h"
@@ -37,7 +38,6 @@
 #include "parse.h"
 #include "modules.h"
 
-#include <string.h>
 
 static void mo_testline(struct Client*, struct Client*, int, char**);
 
@@ -59,7 +59,7 @@ _moddeinit(void)
   mod_del_cmd(&testline_msgtab);
 }
  
-const char *_version = "$Revision: 1.24 $";
+const char *_version = "$Revision: 1.25 $";
 #endif
 /*
  * mo_testline

@@ -19,14 +19,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: memory.c,v 7.34 2002/01/09 12:27:12 jmallett Exp $
+ *  $Id: memory.c,v 7.35 2002/05/24 23:34:48 androsyn Exp $
  */
 
-#include <stdlib.h>
-#include <string.h>
 
 #define WE_ARE_MEMORY_C
 
+#include "stdinc.h"
 #include "ircd_defs.h"
 #include "ircd.h"
 #include "irc_string.h"
@@ -37,13 +36,6 @@
 #include "tools.h"
 #include "s_log.h"
 #include "restart.h"
-#include <assert.h>
-#ifdef MEMDEBUG
-#include <fcntl.h>
-#include <unistd.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#endif
 
 
 #ifdef MEMDEBUG

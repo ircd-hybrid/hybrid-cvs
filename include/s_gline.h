@@ -19,21 +19,14 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_gline.h,v 7.10 2002/01/05 09:14:29 a1kmm Exp $
+ *  $Id: s_gline.h,v 7.11 2002/05/24 23:34:08 androsyn Exp $
  */
 
 #ifndef INCLUDED_s_gline_h
 #define INCLUDED_s_gline_h
-#ifndef INCLUDED_config_h
+
 #include "config.h"
-#endif
-#ifndef INCLUDED_ircd_defs_h
 #include "ircd_defs.h"
-#endif
-#ifndef INCLUDED_sys_types_h
-#include <sys/types.h>
-#define INCLUDED_sys_types_h
-#endif
 
 struct Client;
 struct ConfItem;

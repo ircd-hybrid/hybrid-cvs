@@ -19,20 +19,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.113 2002/05/20 17:53:49 androsyn Exp $
+ *  $Id: channel.h,v 7.114 2002/05/24 23:34:06 androsyn Exp $
  */
-
-#include <sys/types.h>        /* time_t */
-#include <sys/time.h>
 
 #ifndef INCLUDED_channel_h
 #define INCLUDED_channel_h
-#ifndef INCLUDED_config_h
 #include "config.h"           /* config settings */
-#endif
-#ifndef INCLUDED_ircd_defs_h
 #include "ircd_defs.h"        /* buffer sizes */
-#endif
 
 /* Efnet wanted this... Maybe we should do this from configure? */
 #define REQUIRE_OANDV

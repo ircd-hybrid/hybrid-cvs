@@ -19,15 +19,16 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_part.c,v 1.55 2002/05/14 11:41:33 leeh Exp $
+ *  $Id: m_part.c,v 1.56 2002/05/24 23:34:39 androsyn Exp $
  */
 
+#include "stdinc.h"
 #include "tools.h"
 #include "handlers.h"
 #include "channel.h"
 #include "vchannel.h"
 #include "client.h"
-#include "common.h"   /* bleah */
+#include "common.h"  
 #include "hash.h"
 #include "irc_string.h"
 #include "ircd.h"
@@ -40,10 +41,6 @@
 #include "modules.h"
 #include "s_conf.h"
 #include "packet.h"
-
-#include <stdlib.h>
-#include <string.h>
-#include <assert.h>
 
 static void m_part(struct Client*, struct Client*, int, char**);
 void check_spambot_warning(struct Client *source_p, const char *name);
@@ -65,7 +62,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&part_msgtab);
 }
-const char *_version = "$Revision: 1.55 $";
+const char *_version = "$Revision: 1.56 $";
 #endif
 
 static void part_one_client(struct Client *client_p,

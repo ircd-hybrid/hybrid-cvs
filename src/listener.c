@@ -19,9 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.c,v 7.66 2002/05/18 05:42:20 androsyn Exp $
+ *  $Id: listener.c,v 7.67 2002/05/24 23:34:48 androsyn Exp $
  */
 
+#include "stdinc.h"
 #include "config.h"
 #include "listener.h"
 #include "client.h"
@@ -41,14 +42,6 @@
 #include <openssl/bio.h>
 #endif
 
-#include <assert.h>
-#include <string.h>
-#include <errno.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <netdb.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
 
 #ifndef INADDR_NONE
 #define INADDR_NONE ((unsigned int) 0xffffffff)

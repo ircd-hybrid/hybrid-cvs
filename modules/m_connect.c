@@ -19,9 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_connect.c,v 1.36 2002/03/07 06:21:44 db Exp $
+ *  $Id: m_connect.c,v 1.37 2002/05/24 23:34:19 androsyn Exp $
  */
 
+#include "stdinc.h"
 #include "handlers.h"
 #include "client.h"
 #include "ircd.h"
@@ -38,8 +39,6 @@
 #include "hash.h"
 #include "modules.h"
 
-#include <assert.h>
-#include <stdlib.h>     /* atoi */
 
 static void mo_connect(struct Client*, struct Client*, int, char**);
 static void ms_connect(struct Client*, struct Client*, int, char**);
@@ -62,7 +61,7 @@ _moddeinit(void)
   mod_del_cmd(&connect_msgtab);
 }
 
-const char *_version = "$Revision: 1.36 $";
+const char *_version = "$Revision: 1.37 $";
 #endif
 /*
  * mo_connect - CONNECT command handler

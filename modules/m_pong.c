@@ -19,9 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_pong.c,v 1.25 2002/03/07 06:21:46 db Exp $
+ *  $Id: m_pong.c,v 1.26 2002/05/24 23:34:22 androsyn Exp $
  */
 
+#include "stdinc.h"
 #include "ircd.h"
 #include "handlers.h"
 #include "s_user.h"
@@ -59,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&pong_msgtab);
 }
 
-const char *_version = "$Revision: 1.25 $";
+const char *_version = "$Revision: 1.26 $";
 #endif
 static void ms_pong(struct Client *client_p,
                    struct Client *source_p,

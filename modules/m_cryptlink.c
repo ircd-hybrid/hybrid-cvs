@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_cryptlink.c,v 1.31 2002/03/07 06:21:44 db Exp $
+ *  $Id: m_cryptlink.c,v 1.32 2002/05/24 23:34:19 androsyn Exp $
  */
 
 /*
@@ -29,10 +29,7 @@
  *
  */
 
-#include <string.h>
-#include <stdlib.h>
-#include <assert.h>
-
+#include "stdinc.h"
 #include "handlers.h"
 #include "client.h"      /* client struct */
 #include "ircd.h"        /* me */
@@ -71,7 +68,7 @@
 void _modinit(void) {}
 void _moddeinit(void) {}
 
-const char *_version = "$Revision: 1.31 $";
+const char *_version = "$Revision: 1.32 $";
 #endif
 #else
 
@@ -117,7 +114,7 @@ _moddeinit(void)
   mod_del_cmd(&cryptlink_msgtab);
 }
 
-const char *_version = "$Revision: 1.31 $";
+const char *_version = "$Revision: 1.32 $";
 #endif
 
 

@@ -19,18 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.77 2002/03/07 06:21:44 db Exp $
+ *  $Id: m_gline.c,v 1.78 2002/05/24 23:34:19 androsyn Exp $
  */
 
-#include <assert.h>
-#include <string.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <time.h>
-#include <fcntl.h>
-#include <errno.h>
-#include <limits.h>
-
+#include "stdinc.h"
 #include "tools.h"
 #include "handlers.h"
 #include "s_gline.h"
@@ -122,7 +114,7 @@ _moddeinit(void)
   mod_del_cmd(&gline_msgtab);
 }
 
-const char *_version = "$Revision: 1.77 $";
+const char *_version = "$Revision: 1.78 $";
 #endif
 /*
  * mo_gline()

@@ -19,18 +19,15 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.76 2002/05/14 11:41:29 leeh Exp $
+ *  $Id: m_whois.c,v 1.77 2002/05/24 23:34:24 androsyn Exp $
  */
 
-#include <string.h>
-#include <time.h>
-
+#include "stdinc.h"
 #include "tools.h"
-#include "common.h"   /* bleah */
+#include "common.h"  
 #include "handlers.h"
 #include "client.h"
 #include "hash.h"
-#include "common.h"   /* bleah */
 #include "channel.h"
 #include "channel_mode.h"
 #include "vchannel.h"
@@ -79,7 +76,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-const char *_version = "$Revision: 1.76 $";
+const char *_version = "$Revision: 1.77 $";
 #endif
 /*
 ** m_whois

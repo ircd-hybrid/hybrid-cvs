@@ -19,9 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_misc.c,v 7.28 2002/01/05 09:15:17 a1kmm Exp $
+ *  $Id: s_misc.c,v 7.29 2002/05/24 23:34:51 androsyn Exp $
  */
 
+#include "stdinc.h"
 #include "s_misc.h"
 #include "client.h"
 #include "common.h"
@@ -36,15 +37,6 @@
 #include "send.h"
 #include "memory.h"
 
-#include <string.h>
-#include <fcntl.h>
-#include <netdb.h>
-#include <sys/stat.h>
-#ifdef HAVE_SYS_PARAM_H
-#include <sys/param.h>
-#endif
-#include <time.h>
-#include <unistd.h>
 
 
 static char* months[] = {

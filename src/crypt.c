@@ -9,12 +9,10 @@
  *  this stuff is worth it, you can buy me a beer in return.  Poul-Henning Kamp
  *  ----------------------------------------------------------------------------
  *  
- *  $Id: crypt.c,v 7.3 2002/04/14 23:46:47 leeh Exp $
+ *  $Id: crypt.c,v 7.4 2002/05/24 23:34:46 androsyn Exp $
  */
 
-#include <unistd.h>
-#include <stdio.h>
-#include <string.h>
+#include "stdinc.h"
 
 #define MD5_SIZE 16
 

@@ -19,15 +19,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.h,v 7.17 2002/03/09 21:48:35 androsyn Exp $
+ *  $Id: hash.h,v 7.18 2002/05/24 23:34:07 androsyn Exp $
  */
 
 #ifndef INCLUDED_hash_h
 #define INCLUDED_hash_h
-#ifndef INCLUDED_sys_types_h
-#include <sys/types.h>
-#define INCLUDED_sys_types_h
-#endif
 
 /* 
  * Client hash table size

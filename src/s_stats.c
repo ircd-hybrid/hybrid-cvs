@@ -19,13 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_stats.c,v 7.19 2002/01/05 09:15:18 a1kmm Exp $
+ *  $Id: s_stats.c,v 7.20 2002/05/24 23:34:52 androsyn Exp $
  */
 
-#include <sys/types.h>
-
-#include <string.h>
-
+#include "stdinc.h"
 #include "s_stats.h"
 #include "client.h"
 #include "irc_string.h"

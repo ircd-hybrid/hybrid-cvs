@@ -19,9 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.101 2002/05/23 22:20:12 leeh Exp $
+ *  $Id: m_kline.c,v 1.102 2002/05/24 23:34:20 androsyn Exp $
  */
 
+#include "stdinc.h"
 #include "tools.h"
 #include "m_kline.h"
 #include "channel.h"
@@ -44,14 +45,6 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
-
-#include <stdlib.h>
-#include <unistd.h>
-#include <signal.h>
-#include <fcntl.h>
-#include <string.h>
-#include <errno.h>
-#include <time.h>
 
 static void mo_kline(struct Client *,struct Client *,int,char **);
 static void ms_kline(struct Client *,struct Client *,int,char **);
@@ -82,7 +75,7 @@ _moddeinit(void)
   mod_del_cmd(&kline_msgtab);
   mod_del_cmd(&dline_msgtab);
 }
-const char *_version = "$Revision: 1.101 $";
+const char *_version = "$Revision: 1.102 $";
 #endif
 
 /* Local function prototypes */

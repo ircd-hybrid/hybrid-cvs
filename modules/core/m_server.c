@@ -19,9 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.82 2002/05/10 19:24:51 leeh Exp $
+ *  $Id: m_server.c,v 1.83 2002/05/24 23:34:39 androsyn Exp $
  */
 
+#include "stdinc.h"
 #include "tools.h"
 #include "handlers.h"  /* m_server prototype */
 #include "client.h"      /* client struct */
@@ -43,8 +44,6 @@
 #include "parse.h"
 #include "modules.h"
 
-#include <string.h>
-#include <stdlib.h>
 
 static void mr_server(struct Client*, struct Client*, int, char **);
 static void ms_server(struct Client*, struct Client*, int, char **);
@@ -68,7 +67,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&server_msgtab);
 }
-const char *_version = "$Revision: 1.82 $";
+const char *_version = "$Revision: 1.83 $";
 #endif
 
 int bogus_host(char *host);

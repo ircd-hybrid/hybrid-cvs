@@ -19,9 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_llnick.c,v 1.19 2002/03/07 06:21:46 db Exp $
+ *  $Id: m_llnick.c,v 1.20 2002/05/24 23:34:21 androsyn Exp $
  */
 
+#include "stdinc.h"
 #include "tools.h"
 #include "client.h"
 #include "hash.h"
@@ -38,9 +39,6 @@
 #include "parse.h"
 #include "modules.h"
 
-#include <assert.h>
-#include <string.h>
-#include <stdlib.h>
 
 static void ms_llnick(struct Client*, struct Client*, int, char**);
 
@@ -62,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&llnick_msgtab);
 }
 
-const char *_version = "$Revision: 1.19 $";
+const char *_version = "$Revision: 1.20 $";
 #endif
 /*
  * m_llnick

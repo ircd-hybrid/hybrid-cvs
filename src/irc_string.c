@@ -19,34 +19,16 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: irc_string.c,v 7.52 2002/02/25 17:39:15 androsyn Exp $
+ *  $Id: irc_string.c,v 7.53 2002/05/24 23:34:47 androsyn Exp $
  */
 
-#include "config.h"
+#include "stdinc.h"
 #include "tools.h"
 #include "irc_string.h"
 #include "client.h"
 #include "list.h"
 #include "memory.h"
 #include "setup.h"
-#include <errno.h>
-#include <stdio.h>
-#include <assert.h>
-#ifdef STRING_WITH_STRINGS
-# include <string.h>
-# include <strings.h>
-#else
-# ifdef HAVE_STRING_H
-#  include <string.h>
-# else
-#  ifdef HAVE_STRINGS_H
-#   include <strings.h>
-#  endif
-# endif
-#endif
-#include <stdlib.h>
-#include <ctype.h>
-#include <time.h>
 
 #ifndef INADDRSZ 
 #define INADDRSZ 4

@@ -19,21 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.254 2002/05/14 11:41:38 leeh Exp $
+ *  $Id: s_serv.c,v 7.255 2002/05/24 23:34:51 androsyn Exp $
  */
 
-#include <sys/types.h>
-#include <sys/socket.h>
-
-#include <assert.h>
-#include <string.h>
-#include <stdlib.h>
-#include <errno.h>
-#include <time.h>
-#include <netdb.h>
-#include <fcntl.h> 
-
-#include "config.h"
+#include "stdinc.h"
 
 #ifdef HAVE_LIBCRYPTO
 #include <openssl/rsa.h>

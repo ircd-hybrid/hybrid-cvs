@@ -16,16 +16,13 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: match.c,v 7.18 2002/04/17 00:05:10 leeh Exp $
+ * $Id: match.c,v 7.19 2002/05/24 23:34:48 androsyn Exp $
  *
  */
+#include "stdinc.h"
 #include "irc_string.h"
-#include "config.h"      /* RFC1035_ANAL */
+#include "config.h"     
 #include "client.h"
-#include <assert.h>
-#include <string.h> /* strrchr */
-#include <ctype.h>
-#include <stdlib.h>
 #include "ircd.h"
 
 /* match()

@@ -19,9 +19,9 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_svinfo.c,v 1.33 2002/03/07 06:21:47 db Exp $
+ *  $Id: m_svinfo.c,v 1.34 2002/05/24 23:34:22 androsyn Exp $
  */
-
+#include "stdinc.h"
 #include "handlers.h"
 #include "client.h"
 #include "common.h"     /* TRUE bleah */
@@ -35,9 +35,6 @@
 #include "parse.h"
 #include "modules.h"
 
-#include <assert.h>
-#include <time.h>
-#include <stdlib.h>
 
 static void ms_svinfo(struct Client*, struct Client*, int, char**);
 
@@ -59,7 +56,7 @@ _moddeinit(void)
   mod_del_cmd(&svinfo_msgtab);
 }
 
-const char *_version = "$Revision: 1.33 $";
+const char *_version = "$Revision: 1.34 $";
 #endif
 /*
  * ms_svinfo - SVINFO message handler

@@ -19,9 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fileio.c,v 7.21 2002/04/13 13:18:31 leeh Exp $
+ *  $Id: fileio.c,v 7.22 2002/05/24 23:34:46 androsyn Exp $
  */
-
+#include "stdinc.h"
+#include "config.h"
 #include "fileio.h"
 #include "irc_string.h"
 #include "client.h"	/* for FLAGS_ALL */
@@ -31,13 +32,6 @@
 /* The following are to get the fd manipulation routines. eww. */
 #include "fdlist.h"
 
-#include <stdio.h>  /* BUFSIZ, EOF */
-#include <stdlib.h> /* malloc, free */
-#include <fcntl.h>  /* O_RDONLY, O_WRONLY, ... */
-#include <unistd.h> /* read, write, open, close */
-#include <assert.h> /* assert */
-#include <errno.h>
-#include <string.h>
 
 /*
  * Wrappers around open() / close() for fileio, since a whole bunch of

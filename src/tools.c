@@ -19,13 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: tools.c,v 7.19 2002/01/05 09:15:19 a1kmm Exp $
+ *  $Id: tools.c,v 7.20 2002/05/24 23:34:53 androsyn Exp $
  */
 
-#include <assert.h>
-#include <stdio.h>
-#include <stdlib.h>
-
+#include "stdinc.h"
 #include "tools.h"
 
 

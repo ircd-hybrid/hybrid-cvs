@@ -19,9 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_names.c,v 1.41 2002/05/14 11:41:28 leeh Exp $
+ *  $Id: m_names.c,v 1.42 2002/05/24 23:34:21 androsyn Exp $
  */
 
+#include "stdinc.h"
 #include "tools.h"
 #include "handlers.h"
 #include "channel.h"
@@ -41,9 +42,6 @@
 #include "parse.h"
 #include "modules.h"
 
-#include <stdlib.h>
-#include <string.h>
-#include <assert.h>
 
 static void names_all_visible_channels(struct Client *source_p);
 static void names_non_public_non_secret(struct Client *source_p);
@@ -69,7 +67,7 @@ _moddeinit(void)
   mod_del_cmd(&names_msgtab);
 }
 
-const char *_version = "$Revision: 1.41 $";
+const char *_version = "$Revision: 1.42 $";
 #endif
 
 /************************************************************************

@@ -19,26 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_debug.c,v 7.66 2002/05/23 16:52:20 leeh Exp $
+ *  $Id: s_debug.c,v 7.67 2002/05/24 23:34:51 androsyn Exp $
  */
 
-#include <sys/types.h> 
-#include <sys/time.h>
-#include <sys/resource.h>
-#include <sys/file.h>
-
-#ifdef HAVE_SYS_PARAM_H
-#include <sys/param.h>
-#endif
-
-#include <time.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdarg.h>
-#include <unistd.h>
-#include <errno.h>
-#include <assert.h>
-
+#include "stdinc.h"
 #include "tools.h"
 #include "s_debug.h"
 #include "channel.h"

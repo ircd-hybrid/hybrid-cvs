@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.h,v 7.29 2002/03/30 17:04:26 db Exp $
+ *  $Id: modules.h,v 7.30 2002/05/24 23:34:07 androsyn Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -27,9 +27,7 @@
 #include "config.h"
 #include "setup.h"
 #include "parse.h"
-#ifdef HAVE_SYS_PARAM_H
-#include <sys/param.h>
-#endif
+
 
 #if defined(HAVE_SHL_LOAD)
 #include <dl.h>

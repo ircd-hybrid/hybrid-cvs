@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: memory.h,v 7.29 2002/01/20 06:26:44 jmallett Exp $
+ *  $Id: memory.h,v 7.30 2002/05/24 23:34:07 androsyn Exp $
  */
 
 #ifndef _I_MEMORY_H
@@ -28,8 +28,6 @@
 #include "ircd_defs.h"
 #include "setup.h"
 #include "balloc.h"
-#include <stdlib.h>
-#include <string.h>
 
 /* Needed to use uintptr_t for some pointer manipulation. */
 #ifdef __VMS

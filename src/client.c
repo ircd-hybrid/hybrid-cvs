@@ -19,8 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.269 2002/05/24 11:23:43 db Exp $
+ *  $Id: client.c,v 7.270 2002/05/24 23:34:45 androsyn Exp $
  */
+#include "stdinc.h"
+#include "config.h"
 
 #include "tools.h"
 #include "client.h"
@@ -52,14 +54,6 @@
 #include "hostmask.h"
 #include "balloc.h"
 #include "listener.h"
-
-#include <assert.h>
-#include <fcntl.h>
-#include <netdb.h>
-#include <string.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <sys/stat.h>
 
 static void check_pings_list(dlink_list *list);
 static void check_unknowns_list(dlink_list *list);

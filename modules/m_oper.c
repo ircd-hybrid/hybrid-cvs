@@ -19,9 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_oper.c,v 1.45 2002/03/07 06:21:46 db Exp $
+ *  $Id: m_oper.c,v 1.46 2002/05/24 23:34:21 androsyn Exp $
  */
 
+#include "stdinc.h"
 #include "tools.h"
 #include "handlers.h"
 #include "client.h"
@@ -40,8 +41,6 @@
 #include "msg.h"
 #include "parse.h"
 #include "modules.h"
-#include <fcntl.h>
-#include <unistd.h>
 
 
 static struct ConfItem *find_password_aconf(char *name, struct Client *source_p);
@@ -74,7 +73,7 @@ _moddeinit(void)
   mod_del_cmd(&oper_msgtab);
 }
 
-const char *_version = "$Revision: 1.45 $";
+const char *_version = "$Revision: 1.46 $";
 #endif
 
 /*

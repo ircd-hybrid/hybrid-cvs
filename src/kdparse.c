@@ -19,15 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: kdparse.c,v 7.6 2002/01/05 09:15:14 a1kmm Exp $
+ *  $Id: kdparse.c,v 7.7 2002/05/24 23:34:48 androsyn Exp $
  */
 
-#include <sys/types.h>
-
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-
+#include "stdinc.h"
 #include "tools.h"
 #include "s_log.h"
 #include "s_conf.h"

@@ -19,13 +19,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: sprintf_irc.c,v 7.13 2002/03/09 21:48:42 androsyn Exp $
+ *  $Id: sprintf_irc.c,v 7.14 2002/05/24 23:34:53 androsyn Exp $
  */
 
+#include "stdinc.h"
 #include "sprintf_irc.h"
 #include "irc_string.h"
 
-#include <stdio.h>
 
 static const char atoi_tab[4000] = {
     '0','0','0',0, '0','0','1',0, '0','0','2',0, '0','0','3',0, '0','0','4',0,

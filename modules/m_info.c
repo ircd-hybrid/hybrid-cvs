@@ -19,13 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.c,v 1.56 2002/04/25 17:57:41 leeh Exp $
+ *  $Id: m_info.c,v 1.57 2002/05/24 23:34:20 androsyn Exp $
  */
 
-#include <time.h>
-#include <string.h>
-#include <limits.h>
-
+#include "stdinc.h"
 #include "tools.h"
 #include "m_info.h"
 #include "channel.h"
@@ -72,7 +69,7 @@ _moddeinit(void)
   hook_del_event("doing_info");
   mod_del_cmd(&info_msgtab);
 }
-const char *_version = "$Revision: 1.56 $";
+const char *_version = "$Revision: 1.57 $";
 #endif
 
 /*

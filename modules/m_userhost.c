@@ -19,9 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_userhost.c,v 1.36 2002/03/07 06:21:48 db Exp $
+ *  $Id: m_userhost.c,v 1.37 2002/05/24 23:34:23 androsyn Exp $
  */
 
+#include "stdinc.h"
 #include "handlers.h"
 #include "client.h"
 #include "ircd.h"
@@ -33,7 +34,6 @@
 #include "parse.h"
 #include "modules.h"
 #include "s_conf.h"
-#include <string.h>
 
 static char buf[BUFSIZE];
 
@@ -57,7 +57,7 @@ _moddeinit(void)
   mod_del_cmd(&userhost_msgtab);
 }
 
-const char *_version = "$Revision: 1.36 $";
+const char *_version = "$Revision: 1.37 $";
 #endif
 /*
  * m_userhost added by Darren Reed 13/8/91 to aid clients and reduce

@@ -19,9 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_cburst.c,v 1.40 2002/04/11 00:07:23 db Exp $
+ *  $Id: m_cburst.c,v 1.41 2002/05/24 23:34:19 androsyn Exp $
  */
 
+#include "stdinc.h"
 #include "tools.h"
 #include "channel.h"
 #include "client.h"
@@ -39,8 +40,6 @@
 #include "parse.h"
 #include "modules.h"
 
-#include <string.h>
-#include <stdlib.h>
 
 static void ms_cburst(struct Client*, struct Client*, int, char**);
 
@@ -61,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&cburst_msgtab);
 }
 
-const char *_version = "$Revision: 1.40 $";
+const char *_version = "$Revision: 1.41 $";
 #endif
 /*
 ** m_cburst

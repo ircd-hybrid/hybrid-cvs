@@ -19,18 +19,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.h,v 7.65 2002/03/13 03:28:08 androsyn Exp $
+ *  $Id: s_serv.h,v 7.66 2002/05/24 23:34:08 androsyn Exp $
  */
 
 #ifndef INCLUDED_serv_h
 #define INCLUDED_serv_h
-#ifndef INCLUDED_config_h
+
 #include "config.h"
-#endif
-#ifndef INCLUDED_sys_types_h
-#include <sys/types.h>
-#define INCLUDED_sys_types_h
-#endif
 
 /*
  * The number of seconds between calls to try_connections(). Fiddle with

@@ -20,16 +20,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: linebuf.c,v 7.79 2002/04/15 00:05:45 leeh Exp $
+ *  $Id: linebuf.c,v 7.80 2002/05/24 23:34:48 androsyn Exp $
  */
 
-#include <errno.h>
-#include <assert.h>
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <string.h>
-
+#include "stdinc.h"
 #include "tools.h"
 #include "client.h"
 #include "linebuf.h"

@@ -19,8 +19,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: class.c,v 7.35 2002/03/09 21:48:40 androsyn Exp $
+ *  $Id: class.c,v 7.36 2002/05/24 23:34:45 androsyn Exp $
  */
+
+#include "stdinc.h"
+#include "config.h"
 
 #include "tools.h"
 #include "class.h"
@@ -35,8 +38,6 @@
 #include "s_debug.h"
 #include "memory.h"
 
-#include <string.h>
-#include <stdlib.h>
 
 #define BAD_CONF_CLASS          -1
 #define BAD_PING                -2

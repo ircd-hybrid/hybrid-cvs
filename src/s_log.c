@@ -19,8 +19,14 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.c,v 7.40 2002/03/09 21:48:41 androsyn Exp $
+ *  $Id: s_log.c,v 7.41 2002/05/24 23:34:51 androsyn Exp $
  */
+
+#include "stdinc.h"
+#ifdef USE_SYSLOG
+/* XXX #ifdef HAVE_SYSLOG_H */
+#include <syslog.h>
+#endif
 
 #include "client.h"	/* Needed for struct Client */
 #include "s_log.h"
@@ -32,17 +38,6 @@
 #include "s_conf.h"
 #include "memory.h"
 
-#include <assert.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <stdarg.h>
-#include <stdio.h>
-#include <string.h>
-#ifdef USE_SYSLOG
-/* XXX #ifdef HAVE_SYSLOG_H */
-#include <syslog.h>
-#endif
-#include <unistd.h>
 
 
 /* some older syslogs would overflow at 2024 */

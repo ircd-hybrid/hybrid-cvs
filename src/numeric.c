@@ -19,18 +19,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: numeric.c,v 7.19 2002/04/14 21:50:15 leeh Exp $
+ *  $Id: numeric.c,v 7.20 2002/05/24 23:34:49 androsyn Exp $
  */
 
-#include <sys/types.h>
-#include <assert.h>
-
+#include "stdinc.h"
 #include "setup.h"
 #include "config.h"
-
-#ifdef USE_GETTEXT
-#include <libintl.h>
-#endif
 
 #include "numeric.h"
 #include "irc_string.h"

@@ -19,9 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_list.c,v 1.41 2002/05/14 11:41:28 leeh Exp $
+ *  $Id: m_list.c,v 1.42 2002/05/24 23:34:21 androsyn Exp $
  */
 
+#include "stdinc.h"
 #include "tools.h"
 #include "handlers.h"
 #include "channel.h"
@@ -40,9 +41,6 @@
 #include "parse.h"
 #include "modules.h"
 
-#include <assert.h>
-#include <string.h>
-#include <stdlib.h>
 
 static void m_list(struct Client*, struct Client*, int, char**);
 static void ms_list(struct Client*, struct Client*, int, char**);
@@ -67,7 +65,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&list_msgtab);
 }
-const char *_version = "$Revision: 1.41 $";
+const char *_version = "$Revision: 1.42 $";
 #endif
 static int list_all_channels(struct Client *source_p);
 static int list_named_channel(struct Client *source_p,char *name);

@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/modules
 #
-# $Id: Makefile.in,v 1.66 2002/02/27 17:51:38 enygma Exp $
+# $Id: Makefile.in,v 1.67 2002/05/24 23:34:19 androsyn Exp $
 #
 CC		= @CC@
 AR		= @AR@
@@ -32,7 +32,7 @@ prefix          = @prefix@
 moduledir       = @prefix@/modules
 automoduledir   = @prefix@/modules/autoload
 
-INCLUDES	= -I../include $(SSL_INCLUDES)
+INCLUDES	= -I../include -I../adns $(SSL_INCLUDES)
 CPPFLAGS	= ${INCLUDES} @CPPFLAGS@
 
 CORE_SRCS = \

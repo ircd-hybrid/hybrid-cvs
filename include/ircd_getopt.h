@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_getopt.h,v 1.2 2002/01/05 09:14:28 a1kmm Exp $
+ *  $Id: ircd_getopt.h,v 1.3 2002/05/24 23:34:07 androsyn Exp $
  */
 
 #ifndef __GETOPT_H_INCLUDED__
@@ -37,4 +37,4 @@ extern struct lgetopt myopts[];
 void usage(char *);
 void parseargs(int *, char ***, struct lgetopt *);
 
-#endif
+#endif /* __GETOPT_H_INCLUDED__ */

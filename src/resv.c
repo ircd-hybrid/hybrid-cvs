@@ -19,9 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: resv.c,v 7.15 2002/04/28 01:29:08 leeh Exp $
+ *  $Id: resv.c,v 7.16 2002/05/24 23:34:49 androsyn Exp $
  */
 
+#include "stdinc.h"
 #include "tools.h"
 #include "restart.h"
 #include "common.h"
@@ -36,9 +37,6 @@
 #include "resv.h"
 #include "hash.h"
 #include "ircd_defs.h"
-
-#include <unistd.h>
-#include <stdlib.h>
 
 struct ResvChannel *ResvChannelList;
 struct ResvNick *ResvNickList;

@@ -19,24 +19,14 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: vchannel.h,v 7.19 2002/05/14 11:41:25 leeh Exp $
+ *  $Id: vchannel.h,v 7.20 2002/05/24 23:34:08 androsyn Exp $
  */
 
 #ifndef INCLUDED_vchannel_h
 #define INCLUDED_vchannel_h
 
-#ifndef INCLUDED_channel_h
 #include "channel.h"
-#endif
-
-#ifndef INCLUDED_ircd_defs_h
-#include "ircd_defs.h"        /* buffer sizes */
-#endif
-
-#ifndef INCLUDED_sys_types_h
-#include <sys/types.h>        /* time_t */
-#define INCLUDED_sys_types_h
-#endif
+#include "ircd_defs.h"      
 
 struct Client;
 struct Channel;

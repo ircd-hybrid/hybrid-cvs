@@ -19,9 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_away.c,v 1.29 2002/04/27 17:59:28 leeh Exp $
+ *  $Id: m_away.c,v 1.30 2002/05/24 23:34:19 androsyn Exp $
  */
 
+#include "stdinc.h"
 #include "handlers.h"
 #include "client.h"
 #include "irc_string.h"
@@ -35,7 +36,6 @@
 #include "s_serv.h"
 #include "packet.h"
 
-#include <stdlib.h>
 
 static void m_away(struct Client*, struct Client*, int, char**);
 
@@ -55,7 +55,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&away_msgtab);
 }
-const char *_version = "$Revision: 1.29 $";
+const char *_version = "$Revision: 1.30 $";
 #endif
 /***********************************************************************
  * m_away() - Added 14 Dec 1988 by jto. 

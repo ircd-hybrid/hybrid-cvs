@@ -19,11 +19,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: event.h,v 1.11 2002/01/05 09:14:28 a1kmm Exp $
+ *  $Id: event.h,v 1.12 2002/05/24 23:34:06 androsyn Exp $
  */
 
-#ifndef __EVENT_H__
-#define __EVENT_H__
+#ifndef INCLUDED_event_h
+#define INCLUDED_event_h
 
 /*
  * How many event entries we need to allocate at a time in the block
@@ -57,4 +57,4 @@ extern void set_back_events(time_t);
 
 extern void show_events( struct Client *source_p);
 
-#endif
+#endif /* INCLUDED_event_h */

@@ -19,20 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.40 2002/03/09 21:48:40 androsyn Exp $
+ *  $Id: hash.c,v 7.41 2002/05/24 23:34:46 androsyn Exp $
  */
 
-#include <sys/types.h>
-#include <sys/stat.h>
-
-#include <errno.h>
-#include <assert.h>
-#include <fcntl.h>     /* O_RDWR ... */
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <time.h>
+#include "stdinc.h"
 
 #include "tools.h"
 #include "s_conf.h"

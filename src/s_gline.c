@@ -19,9 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_gline.c,v 1.19 2002/01/09 17:38:34 jmallett Exp $
+ *  $Id: s_gline.c,v 1.20 2002/05/24 23:34:51 androsyn Exp $
  */
 
+#include "stdinc.h"
 #include "tools.h"
 #include "handlers.h"
 #include "channel.h"
@@ -48,12 +49,6 @@
 #include "list.h"
 #include "memory.h"
 
-#include <assert.h>
-#include <string.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <time.h>
-#include <fcntl.h>
 
 dlink_list glines;
 

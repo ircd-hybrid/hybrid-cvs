@@ -19,21 +19,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.146 2002/05/20 23:07:35 androsyn Exp $
+ *  $Id: client.h,v 7.147 2002/05/24 23:34:06 androsyn Exp $
  */
 
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
-
-#include <sys/types.h>       /* time_t */
-#include <netinet/in.h>      /* in_addr */
-
-#if defined(HAVE_STDDEF_H)
-# ifndef INCLUDED_stddef_h
-#  include <stddef.h>        /* offsetof */
-#  define INCLUDED_stddef_h
-# endif
-#endif
 
 #include "config.h"
 

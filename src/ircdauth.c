@@ -19,22 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircdauth.c,v 7.47 2002/02/25 17:39:15 androsyn Exp $
+ *  $Id: ircdauth.c,v 7.48 2002/05/24 23:34:48 androsyn Exp $
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <stdarg.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <errno.h>
-#include <sys/time.h>
-#include <netdb.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <string.h>
-#include <assert.h>
+#include "stdinc.h"
 
 #include "class.h"
 #include "client.h"

@@ -19,15 +19,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: resv.h,v 1.6 2002/02/25 21:01:23 leeh Exp $
+ *  $Id: resv.h,v 1.7 2002/05/24 23:34:08 androsyn Exp $
  */
 
 #ifndef INCLUDED_resv_h
 #define INCLUDED_resv_h
-#ifndef INCLUDED_sys_types_h
-#include <sys/types.h>
-#define INCLUDED_sys_types_h
-#endif
 
 /* allows resv *nicknick* etc */
 #define RESVNICKLEN NICKLEN*2

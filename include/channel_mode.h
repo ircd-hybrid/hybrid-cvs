@@ -19,20 +19,14 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.h,v 7.8 2002/05/12 14:50:40 leeh Exp $
+ *  $Id: channel_mode.h,v 7.9 2002/05/24 23:34:06 androsyn Exp $
  */
 
-#include <sys/types.h>        /* time_t */
-#include <sys/time.h>
 
 #ifndef INCLUDED_channel_mode_h
 #define INCLUDED_channel_mode_h
-#ifndef INCLUDED_config_h
 #include "config.h"           /* config settings */
-#endif
-#ifndef INCLUDED_ircd_defs_h
 #include "ircd_defs.h"        /* buffer sizes */
-#endif
 
 /* If the below define is enabled, we will bounce halfops as follows:
  * If we receive a halfop for a user, we will check their ->from supports

@@ -17,12 +17,10 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_signal.c,v 7.9 2002/03/17 18:10:34 db Exp $
+ * $Id: ircd_signal.c,v 7.10 2002/05/24 23:34:48 androsyn Exp $
  */
 
-#include <signal.h>
-#include <stdlib.h>
-
+#include "stdinc.h"
 #include "ircd_signal.h"
 #include "ircd.h"         /* dorehash */
 #include "restart.h"      /* server_reboot */

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_defs.h,v 7.27 2002/04/17 01:02:17 leeh Exp $
+ *  $Id: ircd_defs.h,v 7.28 2002/05/24 23:34:07 androsyn Exp $
  */
 
 /*
@@ -33,9 +33,9 @@
  */
 #ifndef INCLUDED_ircd_defs_h
 #define INCLUDED_ircd_defs_h
-#ifndef INCLUDED_config_h
+
 #include "config.h"
-#endif
+
 #if !defined(CONFIG_H_LEVEL_7)
 #  error Incorrect config.h for this revision of ircd.
 #endif
@@ -80,9 +80,6 @@
 #define free_dlink_node(x) _free_dlink_node((x))
 
 
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
 
 
 struct irc_inaddr

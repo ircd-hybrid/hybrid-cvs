@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.94 2002/05/18 23:12:24 androsyn Exp $
+ *  $Id: s_auth.c,v 7.95 2002/05/24 23:34:49 androsyn Exp $
  */
 
 /*
@@ -32,6 +32,7 @@
  *     any messages from it.
  *     --Bleep  Thomas Helvey <tomh@inxpress.net>
  */
+#include "stdinc.h"
 #include "tools.h"
 #include "list.h"
 #include "s_auth.h"
@@ -52,17 +53,6 @@
 #include "send.h"
 #include "memory.h"
 #include "config.h"
-
-#include <netdb.h>               /* struct hostent */
-#include <string.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <assert.h>
-#include <sys/socket.h>
-#include <sys/file.h>
-#include <sys/ioctl.h>
 
 /*
  * a bit different approach

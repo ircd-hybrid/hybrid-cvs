@@ -19,9 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_cjoin.c,v 1.53 2002/05/24 00:31:52 leeh Exp $
+ *  $Id: m_cjoin.c,v 1.54 2002/05/24 23:34:19 androsyn Exp $
  */
 
+#include "stdinc.h"
 #include "tools.h"
 #include "handlers.h"
 #include "channel.h"
@@ -41,8 +42,6 @@
 #include "parse.h"
 #include "modules.h"
 
-#include <stdlib.h>
-#include <string.h>
 
 #ifdef VCHANS
 static void m_cjoin(struct Client*, struct Client*, int, char**);
@@ -70,7 +69,7 @@ _moddeinit(void)
 #endif
 }
 
-const char *_version = "$Revision: 1.53 $";
+const char *_version = "$Revision: 1.54 $";
 #endif /* STATIC_MODULES */
 
 #ifdef VCHANS

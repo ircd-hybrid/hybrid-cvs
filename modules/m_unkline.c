@@ -19,9 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_unkline.c,v 1.44 2002/03/07 06:21:48 db Exp $
+ *  $Id: m_unkline.c,v 1.45 2002/05/24 23:34:23 androsyn Exp $
  */
 
+#include "stdinc.h"
 #include "tools.h"
 #include "handlers.h"
 #include "channel.h"
@@ -42,10 +43,6 @@
 #include "parse.h"
 #include "modules.h"
 
-#include <stdio.h>
-#include <time.h>
-#include <string.h>
-#include <unistd.h>
 
 static void mo_unkline(struct Client*, struct Client*, int, char**);
 static void mo_undline(struct Client*, struct Client*, int, char**);
@@ -76,7 +73,7 @@ _moddeinit(void)
   mod_del_cmd(&msgtabs[1]);
   mod_del_cmd(&msgtabs[2]);
 }
-const char *_version = "$Revision: 1.44 $";
+const char *_version = "$Revision: 1.45 $";
 #endif
 
 static int flush_write(struct Client *, FBFILE* , char *, char *);

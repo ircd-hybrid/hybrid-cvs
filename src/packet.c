@@ -19,13 +19,9 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.80 2002/05/20 23:07:39 androsyn Exp $
+ *  $Id: packet.c,v 7.81 2002/05/24 23:34:49 androsyn Exp $
  */
-
-#include <stdio.h>
-#include <string.h>
-#include <assert.h>
-#include <errno.h>
+#include "stdinc.h"
 #include "tools.h"
 #include "s_bsd.h"
 #include "s_conf.h"

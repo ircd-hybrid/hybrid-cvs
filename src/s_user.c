@@ -19,21 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.192 2002/04/27 17:59:35 leeh Exp $
+ *  $Id: s_user.c,v 7.193 2002/05/24 23:34:52 androsyn Exp $
  */
 
-#include <sys/types.h>
-#include <sys/stat.h>
-
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <assert.h>
-#include <time.h>
-#include <limits.h>
-
+#include "stdinc.h"
 #include "tools.h"
 #include "s_user.h"
 #include "channel.h"

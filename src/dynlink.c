@@ -19,26 +19,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- * $Id: dynlink.c,v 7.2 2002/02/28 03:02:16 jmallett Exp $
+ * $Id: dynlink.c,v 7.3 2002/05/24 23:34:46 androsyn Exp $
  *
  */
-
+#include "stdinc.h"
 #include "config.h"
-
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <errno.h>
-#include <dirent.h>
-
-#ifdef VMS
-# define _XOPEN_SOURCE
-#endif
-
-#include <limits.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 
 #include "modules.h"
 #include "s_log.h"

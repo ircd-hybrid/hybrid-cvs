@@ -38,7 +38,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: event.c,v 7.26 2002/04/15 00:05:45 leeh Exp $
+ *  $Id: event.c,v 7.27 2002/05/24 23:34:46 androsyn Exp $
  */
 
 /*
@@ -49,7 +49,8 @@
  * to execute it.
  */
 
-#include <stdlib.h>
+#include "stdinc.h"
+#include "config.h"
 
 #include "ircd.h"
 #include "event.h"

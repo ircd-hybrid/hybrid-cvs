@@ -19,15 +19,14 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: whowas.h,v 7.7 2002/01/05 09:14:30 a1kmm Exp $
+ *  $Id: whowas.h,v 7.8 2002/05/24 23:34:08 androsyn Exp $
  */
 
 /*
- * $Id: whowas.h,v 7.7 2002/01/05 09:14:30 a1kmm Exp $
+ * $Id: whowas.h,v 7.8 2002/05/24 23:34:08 androsyn Exp $
  */
 #ifndef INCLUDED_whowas_h
 #define INCLUDED_whowas_h
-#include <sys/types.h>
 
 #include "ircd_defs.h"
 #include "client.h"

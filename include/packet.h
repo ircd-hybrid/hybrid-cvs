@@ -19,15 +19,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.h,v 7.15 2002/05/23 22:20:09 leeh Exp $
+ *  $Id: packet.h,v 7.16 2002/05/24 23:34:07 androsyn Exp $
  */
 
 #ifndef INCLUDED_packet_h
 #define INCLUDED_packet_h
-#ifndef INCLUDED_sys_types_h
-#include <sys/types.h>
-#define INCLUDED_sys_types_h
-#endif
+
 #include "fdlist.h"
 
 /*

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_lexer.l,v 1.137 2002/04/25 17:53:21 leeh Exp $
+ *  $Id: ircd_lexer.l,v 1.138 2002/05/24 23:34:47 androsyn Exp $
  */
 
 %option case-insensitive
@@ -30,6 +30,7 @@
 /* XXX - No we aren't but lex calls malloc :(. It is even worse that it
    doesn't call free! */
 #define WE_ARE_MEMORY_C
+#include "stdinc.h"
 #include "tools.h"
 #include "irc_string.h"
 #include "common.h"
@@ -44,23 +45,6 @@
 #include "setup.h"
 #include "config.h"
 #include "s_log.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <string.h>
-#ifdef STRING_WITH_STRINGS
-# include <string.h>
-# include <strings.h>
-#else
-# ifdef HAVE_STRING_H
-#  include <string.h>
-# else
-#  ifdef HAVE_STRINGS_H
-#   include <strings.h>
-#  endif
-# endif
-#endif
-#include <ctype.h>
 
 #undef YY_INPUT
 #define YY_FATAL_ERROR(msg) conf_yy_fatal_error(msg)

@@ -19,14 +19,11 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_stats.h,v 7.6 2002/01/05 09:14:30 a1kmm Exp $
+ *  $Id: s_stats.h,v 7.7 2002/05/24 23:34:08 androsyn Exp $
  */
 
 #ifndef INCLUDED_s_stats_h
 #define INCLUDED_s_stats_h
-
-#include <sys/types.h>
-#include <sys/time.h>
 
 #include "config.h"
 

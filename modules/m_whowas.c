@@ -19,9 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whowas.c,v 1.26 2002/03/07 06:21:48 db Exp $
+ *  $Id: m_whowas.c,v 1.27 2002/05/24 23:34:24 androsyn Exp $
  */
 
+#include "stdinc.h"
 #include "whowas.h"
 #include "handlers.h"
 #include "client.h"
@@ -39,9 +40,6 @@
 #include "parse.h"
 #include "modules.h"
 
-#include <assert.h>
-#include <string.h>
-#include <stdlib.h>
 
 static void m_whowas(struct Client*, struct Client*, int, char**);
 static void mo_whowas(struct Client*, struct Client*, int, char**);
@@ -63,7 +61,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&whowas_msgtab);
 }
-const char *_version = "$Revision: 1.26 $";
+const char *_version = "$Revision: 1.27 $";
 #endif
 static int whowas_do(struct Client *client_p, struct Client *source_p,
                      int parc, char *parv[]);

@@ -19,8 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.315 2002/05/20 17:53:51 androsyn Exp $
+ *  $Id: channel.c,v 7.316 2002/05/24 23:34:44 androsyn Exp $
  */
+
+#include "stdinc.h"
 
 #include "tools.h"
 #include "channel.h"
@@ -43,9 +45,6 @@
 #include "balloc.h"
 #include "resv.h"
 
-#include <assert.h>
-#include <string.h>
-#include <stdlib.h>
 
 #include "s_log.h"
 

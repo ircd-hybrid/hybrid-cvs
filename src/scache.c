@@ -19,9 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: scache.c,v 7.14 2002/03/09 21:48:41 androsyn Exp $
+ *  $Id: scache.c,v 7.15 2002/05/24 23:34:52 androsyn Exp $
  */
 
+#include "stdinc.h"
 #include "client.h"
 #include "common.h"
 #include "irc_string.h"
@@ -31,8 +32,6 @@
 #include "scache.h"
 #include "memory.h"
 
-#include <assert.h>
-#include <string.h>
 
 /*
  * ircd used to store full servernames in anUser as well as in the 

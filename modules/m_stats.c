@@ -19,9 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.108 2002/04/28 00:26:04 leeh Exp $
+ *  $Id: m_stats.c,v 1.109 2002/05/24 23:34:22 androsyn Exp $
  */
 
+#include "stdinc.h"
 #include "tools.h"	 /* dlink_node/dlink_list */
 #include "handlers.h"    /* m_pass prototype */
 #include "class.h"       /* report_classes */
@@ -52,8 +53,7 @@
 #include "hook.h"
 #include "resv.h"  /* report_resv */
 
-#include <string.h>
-#include <time.h>
+
 static void m_stats(struct Client*, struct Client*, int, char**);
 static void mo_stats(struct Client*, struct Client*, int, char**);
 static void ms_stats(struct Client*, struct Client*, int, char**);
@@ -80,7 +80,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.108 $";
+const char *_version = "$Revision: 1.109 $";
 #endif
 
 const char* Lformat = ":%s %d %s %s %u %u %u %u %u :%u %u %s";

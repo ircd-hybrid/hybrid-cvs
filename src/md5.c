@@ -19,15 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: md5.c,v 1.12 2002/03/09 21:48:41 androsyn Exp $
+ *  $Id: md5.c,v 1.13 2002/05/24 23:34:48 androsyn Exp $
  */
 
-#include <sys/types.h>
-#include <sys/time.h>
-#include <sys/stat.h>
-
-#include <fcntl.h>
-#include <unistd.h>
+#include "stdinc.h"
 
 #include "memory.h"
 #include "s_log.h"

@@ -19,21 +19,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fdlist.h,v 7.24 2002/01/05 09:14:28 a1kmm Exp $
+ *  $Id: fdlist.h,v 7.25 2002/05/24 23:34:07 androsyn Exp $
  */
 
 #ifndef INCLUDED_fdlist_h
 #define INCLUDED_fdlist_h
-#ifndef INCLUDED_sys_types_h
-#include <sys/types.h>         /* time_t */
-#define INCLUDED_sys_types_h
-#endif
-#ifndef INCLUDED_sys_socket_h
-#define INCLUDED_sys_socket_h
-#include <sys/socket.h>		/* Socket structs */
-#endif
 
-#include <netinet/in.h>
 #include "config.h"
 #include "ircd_defs.h"
 #include "res.h"

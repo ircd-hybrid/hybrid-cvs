@@ -19,9 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nick.c,v 1.89 2002/04/27 17:59:31 leeh Exp $
+ *  $Id: m_nick.c,v 1.90 2002/05/24 23:34:38 androsyn Exp $
  */
 
+#include "stdinc.h"
 #include "handlers.h"
 #include "client.h"
 #include "hash.h"
@@ -46,9 +47,6 @@
 #include "common.h"
 #include "packet.h"
 
-#include <stdlib.h>
-#include <string.h>
-#include <assert.h>
 
 static void mr_nick(struct Client *, struct Client *, int, char**);
 static void m_nick(struct Client *, struct Client *, int, char**);
@@ -99,7 +97,7 @@ _moddeinit(void)
   mod_del_cmd(&client_msgtab);
 }
 
-const char *_version = "$Revision: 1.89 $";
+const char *_version = "$Revision: 1.90 $";
 #endif
 
 /*

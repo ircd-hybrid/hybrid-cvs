@@ -19,9 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_links.c,v 1.35 2002/03/07 06:21:46 db Exp $
+ *  $Id: m_links.c,v 1.36 2002/05/24 23:34:21 androsyn Exp $
  */
 
+#include "stdinc.h"
 #include "handlers.h"
 #include "client.h"
 #include "irc_string.h"
@@ -36,8 +37,6 @@
 #include "modules.h"
 #include "hook.h"
 
-#include <assert.h>
-#include <string.h>
 
 static void m_links(struct Client*, struct Client*, int, char**);
 static void mo_links(struct Client*, struct Client*, int, char**);
@@ -63,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&links_msgtab);
 }
 
-const char *_version = "$Revision: 1.35 $";
+const char *_version = "$Revision: 1.36 $";
 #endif
 /*
  * m_links - LINKS message handler

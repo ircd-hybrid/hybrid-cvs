@@ -19,11 +19,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_set.c,v 1.44 2002/04/23 14:26:26 leeh Exp $
+ *  $Id: m_set.c,v 1.45 2002/05/24 23:34:22 androsyn Exp $
  */
 
 /* rewritten by jdc */
 
+#include "stdinc.h"
 #include "handlers.h"
 #include "client.h"
 #include "event.h"
@@ -42,7 +43,6 @@
 #include "parse.h"
 #include "modules.h"
 
-#include <stdlib.h>  /* atoi */
 
 static void mo_set(struct Client*, struct Client*, int, char**);
 
@@ -64,7 +64,7 @@ _moddeinit(void)
   mod_del_cmd(&set_msgtab);
 }
 
-const char *_version = "$Revision: 1.44 $";
+const char *_version = "$Revision: 1.45 $";
 #endif
 /* Structure used for the SET table itself */
 struct SetStruct

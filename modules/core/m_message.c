@@ -19,9 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.91 2002/05/14 11:41:33 leeh Exp $
+ *  $Id: m_message.c,v 1.92 2002/05/24 23:34:38 androsyn Exp $
  */
 
+#include "stdinc.h"
 #include "handlers.h"
 #include "client.h"
 #include "ircd.h"
@@ -43,7 +44,6 @@
 #include "msg.h"
 #include "packet.h"
 
-#include <string.h>
 
 struct entity
 {
@@ -122,7 +122,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.91 $";
+const char *_version = "$Revision: 1.92 $";
 #endif
 
 /*

@@ -19,14 +19,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: linebuf.h,v 1.22 2002/03/09 21:48:35 androsyn Exp $
+ *  $Id: linebuf.h,v 1.23 2002/05/24 23:34:07 androsyn Exp $
  */
 
 #ifndef __LINEBUF_H__
 #define __LINEBUF_H__
 
-/* as much as I hate includes in header files .. */
-#include <stdarg.h>
 #include "tools.h"
 
 /* How big we want a buffer - 510 data bytes, plus space for a '\0' */

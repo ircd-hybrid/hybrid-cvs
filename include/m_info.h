@@ -19,14 +19,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.h,v 7.39 2002/02/10 03:35:03 wcampbel Exp $
+ *  $Id: m_info.h,v 7.40 2002/05/24 23:34:07 androsyn Exp $
  */
 
 #ifndef INCLUDED_m_info_h
 #define INCLUDED_m_info_h
-#ifndef INCLUDED_config_h
+
 #include "config.h"
-#endif
 
 typedef struct Information
 {

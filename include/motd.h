@@ -19,20 +19,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: motd.h,v 7.9 2002/02/10 03:35:03 wcampbel Exp $
+ *  $Id: motd.h,v 7.10 2002/05/24 23:34:07 androsyn Exp $
  */
 
 #ifndef INCLUDED_motd_h
 #define INCLUDED_motd_h
-#ifndef INCLUDED_ircd_defs_h
-#include "ircd_defs.h"    /* MAX_DATE_STRING */
-#endif
+#include "ircd_defs.h"   
 
-#ifdef VMS
-# define _XOPEN_SOURCE /* needed for PATH_MAX from limits.h */
-#endif
-
-#include <limits.h>       /* PATH_MAX */
 
 /* XXX really, should be mallocing this on the fly but... */
 #define MESSAGELINELEN 256

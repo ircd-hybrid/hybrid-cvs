@@ -19,39 +19,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.233 2002/05/19 03:42:23 androsyn Exp $
+ *  $Id: ircd.c,v 7.234 2002/05/24 23:34:47 androsyn Exp $
  */
 
-#include <sys/types.h>
-#include <sys/file.h>
-#include <sys/stat.h>
-#include <sys/socket.h>
-#include <sys/wait.h>
-
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include <errno.h>
-#include <time.h>
-#include <pwd.h>
-#include <fcntl.h>
-#include <signal.h>
-#include <unistd.h>
-
+#include "stdinc.h"
 #include "setup.h"
 #include "config.h"
-
-#ifdef RLIMIT_FD_MAX
-#include <sys/time.h>
-#endif
-
-#ifdef HAVE_SYS_RESOURCE_H
-#include <sys/resource.h>
-#endif
-
-#ifdef USE_GETTEXT
-#include <libintl.h>
-#endif
 
 #ifdef VMS
 # include descrip

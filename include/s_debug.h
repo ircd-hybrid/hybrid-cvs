@@ -19,16 +19,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_debug.h,v 7.3 2002/01/05 09:14:29 a1kmm Exp $
+ *  $Id: s_debug.h,v 7.4 2002/05/24 23:34:08 androsyn Exp $
  */
 
 #ifndef INCLUDED_s_debug_h
 #define INCLUDED_s_debug_h
 
-#ifndef INCLUDED_sys_types_h
-#include <sys/types.h>       /* size_t */
-#define INCLUDED_sys_types_h
-#endif
 
 struct Client;
 

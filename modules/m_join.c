@@ -19,9 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_join.c,v 1.84 2002/05/14 11:41:28 leeh Exp $
+ *  $Id: m_join.c,v 1.85 2002/05/24 23:34:20 androsyn Exp $
  */
 
+#include "stdinc.h"
 #include "tools.h"
 #include "handlers.h"
 #include "channel.h"
@@ -42,9 +43,6 @@
 #include "parse.h"
 #include "modules.h"
 
-#include <stdlib.h>
-#include <string.h>
-#include <assert.h>
 
 static void m_join(struct Client*, struct Client*, int, char**);
 static void ms_join(struct Client*, struct Client*, int, char**);
@@ -67,7 +65,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&join_msgtab);
 }
-const char *_version = "$Revision: 1.84 $";
+const char *_version = "$Revision: 1.85 $";
 
 #endif
 static void do_join_0(struct Client *client_p, struct Client *source_p);

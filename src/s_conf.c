@@ -19,24 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.302 2002/05/12 12:15:19 leeh Exp $
+ *  $Id: s_conf.c,v 7.303 2002/05/24 23:34:50 androsyn Exp $
  */
 
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <netdb.h>
-
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <time.h>
-#include <fcntl.h>
-#include <assert.h>
-
-#include "config.h"
+#include "stdinc.h"
 #include "ircd_defs.h"
 #include "tools.h"
 #include "s_conf.h"

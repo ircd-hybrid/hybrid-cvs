@@ -19,9 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_topic.c,v 1.51 2002/05/14 11:41:28 leeh Exp $
+ *  $Id: m_topic.c,v 1.52 2002/05/24 23:34:23 androsyn Exp $
  */
 
+#include "stdinc.h"
 #include "tools.h"
 #include "handlers.h"
 #include "channel.h"
@@ -39,9 +40,6 @@
 #include "parse.h"
 #include "modules.h"
 #include "packet.h"
-
-#include <string.h>
-#include <stdlib.h>
 
 static void m_topic(struct Client*, struct Client*, int, char**);
 static void ms_topic(struct Client*, struct Client*, int, char**);
@@ -64,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&topic_msgtab);
 }
 
-const char *_version = "$Revision: 1.51 $";
+const char *_version = "$Revision: 1.52 $";
 #endif
 /*
  * m_topic

@@ -19,9 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_post.c,v 1.10 2002/05/24 02:39:13 androsyn Exp $
+ *  $Id: m_post.c,v 1.11 2002/05/24 23:34:22 androsyn Exp $
  */
 
+#include "stdinc.h"
 #include "handlers.h"
 #include "client.h"
 #include "ircd.h"
@@ -64,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&post_msgtab);
 }
 
-const char *_version = "$Revision: 1.10 $";
+const char *_version = "$Revision: 1.11 $";
 #endif
 /*
 ** mr_dumb_proxy

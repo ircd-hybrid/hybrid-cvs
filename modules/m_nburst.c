@@ -19,9 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_nburst.c,v 1.16 2002/03/07 06:21:46 db Exp $
+ *  $Id: m_nburst.c,v 1.17 2002/05/24 23:34:21 androsyn Exp $
  */
 
+#include "stdinc.h"
 #include "tools.h"
 #include "channel.h"
 #include "client.h"
@@ -40,9 +41,6 @@
 #include "modules.h"
 #include "s_conf.h"
 
-#include <assert.h>
-#include <string.h>
-#include <stdlib.h>
 
 static void ms_nburst(struct Client*, struct Client*, int, char**);
 
@@ -64,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&nburst_msgtab);
 }
 
-const char *_version = "$Revision: 1.16 $";
+const char *_version = "$Revision: 1.17 $";
 #endif
 /*
 ** m_nburst

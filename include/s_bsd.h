@@ -19,19 +19,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.h,v 7.35 2002/01/13 07:02:35 jmallett Exp $
+ *  $Id: s_bsd.h,v 7.36 2002/05/24 23:34:08 androsyn Exp $
  */
 
 #ifndef INCLUDED_s_bsd_h
 #define INCLUDED_s_bsd_h
-#ifndef INCLUDED_sys_types_h
-#include <sys/types.h>
-#define INCLUDED_sys_types_h
-#endif
-#ifndef INCLUDED_config_h
-#include "config.h"       /* HAVE_SOCKLEN_T */
-#endif
 
+#include "config.h"       
 #include "fdlist.h"
 
 #ifndef HAVE_SOCKLEN_T

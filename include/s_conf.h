@@ -19,17 +19,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.179 2002/04/25 17:53:18 leeh Exp $
+ *  $Id: s_conf.h,v 7.180 2002/05/24 23:34:08 androsyn Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
 #define INCLUDED_s_conf_h
 #include "setup.h"
 
-#include <sys/socket.h>
-#ifdef HAVE_SYS_PARAM_H
-#include <sys/param.h>
-#endif
 
 #define PACE_CONNECT
 

@@ -19,14 +19,13 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: numeric.h,v 7.26 2002/01/05 09:14:29 a1kmm Exp $
+ *  $Id: numeric.h,v 7.27 2002/05/24 23:34:07 androsyn Exp $
  */
 
 #ifndef INCLUDED_numeric_h
 #define INCLUDED_numeric_h
-#ifndef INCLUDED_config_h
+
 #include "config.h"
-#endif
 
 /*
  * form_str - return a format string for a message number

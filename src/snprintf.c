@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: snprintf.c,v 1.5 2002/01/10 16:00:01 jmallett Exp $
+ *  $Id: snprintf.c,v 1.6 2002/05/24 23:34:52 androsyn Exp $
  */
 
 /**************************************************************
@@ -64,14 +64,9 @@
  *
  **************************************************************/
 
-#include "config.h"
-
+#include "stdinc.h"
 #if !defined(HAVE_SNPRINTF) || !defined(HAVE_VSNPRINTF)
 
-
-#include <string.h>
-# include <ctype.h>
-#include <sys/types.h>
 
 #include "irc_string.h"
 

@@ -19,14 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.126 2002/04/26 15:27:33 leeh Exp $
+ *  $Id: parse.c,v 7.127 2002/05/24 23:34:49 androsyn Exp $
  */
 
-#include <assert.h>
-#include <string.h>
-#include <strings.h>
-#include <stdlib.h>
-
+#include "stdinc.h"
 #include "parse.h"
 #include "client.h"
 #include "channel.h"

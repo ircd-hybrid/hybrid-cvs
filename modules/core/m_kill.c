@@ -19,9 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kill.c,v 1.63 2002/04/14 11:06:47 leeh Exp $
+ *  $Id: m_kill.c,v 1.64 2002/05/24 23:34:38 androsyn Exp $
  */
 
+#include "stdinc.h"
 #include "handlers.h"
 #include "client.h"
 #include "hash.h"       /* for find_client() */
@@ -37,7 +38,6 @@
 #include "parse.h"
 #include "modules.h"
 
-#include <string.h>
 
 static char buf[BUFSIZE];
 
@@ -64,7 +64,7 @@ _moddeinit(void)
   mod_del_cmd(&kill_msgtab);
 }
 
-const char *_version = "$Revision: 1.63 $";
+const char *_version = "$Revision: 1.64 $";
 #endif
 /*
 ** mo_kill

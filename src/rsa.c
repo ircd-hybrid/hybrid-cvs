@@ -19,10 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: rsa.c,v 7.24 2002/01/05 09:15:15 a1kmm Exp $
+ *  $Id: rsa.c,v 7.25 2002/05/24 23:34:49 androsyn Exp $
  */
 
-#include "config.h"
+#include "stdinc.h"
 
 #ifdef HAVE_LIBCRYPTO
 #include <openssl/pem.h>
@@ -32,8 +32,6 @@
 #include <openssl/bn.h>
 #include <openssl/evp.h>
 #include <openssl/err.h>
-#include <assert.h>
-#include <string.h>
 #endif
 
 #include "memory.h"

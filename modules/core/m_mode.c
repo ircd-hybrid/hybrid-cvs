@@ -19,9 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_mode.c,v 1.52 2002/05/14 11:41:33 leeh Exp $
+ *  $Id: m_mode.c,v 1.53 2002/05/24 23:34:38 androsyn Exp $
  */
 
+#include "stdinc.h"
 #include "tools.h"
 #include "handlers.h"
 #include "channel.h"
@@ -62,7 +63,7 @@ _moddeinit(void)
 }
 
 
-const char *_version = "$Revision: 1.52 $";
+const char *_version = "$Revision: 1.53 $";
 #endif
 /*
  * m_mode - MODE command handler

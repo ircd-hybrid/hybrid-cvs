@@ -19,15 +19,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: getopt.c,v 7.13 2002/05/08 02:54:02 androsyn Exp $
+ *  $Id: getopt.c,v 7.14 2002/05/24 23:34:46 androsyn Exp $
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "stdinc.h"
 
 #include "ircd_getopt.h"
-#include "config.h"
 
 #ifndef VMS
 # define OPTCHAR '-'

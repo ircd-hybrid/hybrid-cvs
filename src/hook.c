@@ -19,16 +19,14 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hook.c,v 7.14 2002/04/15 00:05:45 leeh Exp $
+ *  $Id: hook.c,v 7.15 2002/05/24 23:34:46 androsyn Exp $
  */
 
 /* hooks are used by modules to hook into events called by other parts of
    the code.  modules can also register their own events, and call them
    as appropriate. */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+#include "stdinc.h"
 
 #include "tools.h"
 #include "list.h"

@@ -19,9 +19,10 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.138 2002/05/14 11:41:33 leeh Exp $
+ *  $Id: m_sjoin.c,v 1.139 2002/05/24 23:34:39 androsyn Exp $
  */
 
+#include "stdinc.h"
 #include "tools.h"
 #include "handlers.h"
 #include "channel.h"
@@ -41,9 +42,6 @@
 #include "s_serv.h"
 #include "s_conf.h"
 
-#include <stdlib.h>
-#include <string.h>
-#include <assert.h>
 
 static void ms_sjoin(struct Client*, struct Client*, int, char**);
 
@@ -65,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.138 $";
+const char *_version = "$Revision: 1.139 $";
 #endif
 /*
  * ms_sjoin
