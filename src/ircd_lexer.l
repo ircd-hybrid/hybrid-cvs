@@ -18,12 +18,15 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.71 2001/02/11 02:52:07 a1kmm Exp $
+ * $Id: ircd_lexer.l,v 1.72 2001/02/11 06:06:23 a1kmm Exp $
  */
 
 %option case-insensitive
 
 %{
+/* XXX - No we aren't but lex calls malloc :(. It is even worse that it
+   doesn't call free! */
+#define WE_ARE_MEMORY_C
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/types.h>

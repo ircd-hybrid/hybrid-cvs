@@ -17,10 +17,12 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: memory.c,v 7.4 2001/01/18 09:07:40 ejb Exp $
+ * $Id: memory.c,v 7.5 2001/02/11 06:06:23 a1kmm Exp $
  */
 #include <stdlib.h>
 #include <string.h>
+
+#define WE_ARE_MEMORY_C
 
 #include "ircd_defs.h"
 #include "ircd.h"
@@ -29,6 +31,7 @@
 #include "list.h"
 #include "client.h"
 #include "send.h"
+#include "tools.h"
 
 #ifdef MEMDEBUG
 /* Hopefully this debugger will work better than the existing one...
@@ -83,6 +86,7 @@ _MyFree(void *what, char *file, int line)
    first_mem_entry = mme->next;
  if (mme->next)
    mme->next->last = mme->last;
+ mem_frob(mme, mme->size+sizeof(MemoryEntry));
  free(mme);
 }
 
@@ -100,6 +104,8 @@ _MyRealloc(void *what, size_t size, char *file, int line)
  mme = (MemoryEntry*)(what - sizeof(MemoryEntry));
  mme = realloc(mme, size+sizeof(MemoryEntry));
  mme->size = size;
+ mme->next->last = mme;
+ mme->last->next = mme; 
  return DATA(mme);
 }
 
