@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: memory.c,v 7.16 2001/03/28 19:56:18 db Exp $
+ * $Id: memory.c,v 7.17 2001/04/20 06:11:03 a1kmm Exp $
  */
 #include <stdlib.h>
 #include <string.h>
@@ -123,7 +123,6 @@ _DupString(char **x, const char *y, char *file, int line)
 }
 
 void ReportAllocated(struct Client*);
-void ReportBlockHeap(struct Client*);
 
 void
 ReportAllocated(struct Client *client_p)
@@ -138,7 +137,6 @@ ReportAllocated(struct Client *client_p)
 	       mme->line);
   sendto_one(client_p, ":%s NOTICE %s :*** -- End Memory Allocation Report",
 	     me.name, client_p->name);
-  ReportBlockHeap(client_p);
 }
 #else /* MEMDEBUG */
 /*
