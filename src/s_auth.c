@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.c,v 7.40 2001/01/12 07:11:15 a1kmm Exp $
+ *   $Id: s_auth.c,v 7.41 2001/01/15 17:05:44 db Exp $
  *
  * Changes:
  *   July 6, 1999 - Rewrote most of the code here. When a client connects
@@ -303,7 +303,6 @@ static int start_auth_query(struct AuthRequest* auth)
     {
       sendto_realops_flags(FLAGS_ALL,"Can't allocate fd for auth on %s",
 			   get_client_name(auth->client, TRUE));
-      
       fd_close(fd);
       return 0;
     }
@@ -319,7 +318,7 @@ static int start_auth_query(struct AuthRequest* auth)
   /* 
    * get the local address of the client and bind to that to
    * make the auth request.  This used to be done only for
-   * ifdef VIRTTUAL_HOST, but needs to be done for all clients
+   * ifdef VIRTUAL_HOST, but needs to be done for all clients
    * since the ident request must originate from that same address--
    * and machines with multiple IP addresses are common now
    */

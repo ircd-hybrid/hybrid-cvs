@@ -4,7 +4,7 @@
  * shape or form. The author takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: res.c,v 7.42 2001/01/12 07:11:14 a1kmm Exp $
+ * $Id: res.c,v 7.43 2001/01/15 17:05:44 db Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -495,7 +495,6 @@ timeout_resolver(void *notused)
    */
   eventAdd("timeout_resolver", timeout_resolver, NULL, 1, 0);
 }
-
 
 /*
  * delete_resolver_queries - cleanup outstanding queries 
@@ -1123,8 +1122,9 @@ res_readreply(int fd, void *data)
 
 #if 0
       (*request->query.callback)(request->query.vptr, 0);
-      rem_request(request);
 #endif
+      /* XXX don't leak it */
+      rem_request(request);
     }
 }
 
@@ -1198,6 +1198,7 @@ static void dup_hostent(aHostent* new_hp, struct hostent* hp)
   *ap = 0;
 }
 
+/* There actually is no cache, the function name is a misnomer */
 static struct cache* make_cache(ResRQ* request)
 {
   struct cache* cp;
@@ -1211,8 +1212,8 @@ static struct cache* make_cache(ResRQ* request)
   if (!hp->h_name || !hp->h_addr_list[0])
     return NULL;
 
-  /*
-   */ 
+  /* XXX */
+
   cp = (struct cache*) MyMalloc(sizeof(struct cache));
   dup_hostent(&cp->he, hp);
   cp->reply.hp = &cp->he.h;

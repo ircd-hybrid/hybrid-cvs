@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.117 2001/01/12 07:11:14 a1kmm Exp $
+ *  $Id: client.c,v 7.118 2001/01/15 17:05:43 db Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -476,7 +476,6 @@ check_klines(void)
           else
             sendto_one(cptr, "NOTICE DLINE :*** You have been D-lined");
 
-          cptr->flags2 |= FLAGS2_ALREADY_EXITED;
 	  (void)exit_client(cptr, cptr, &me, reason );
 
 	  continue; /* and go examine next fd/cptr */
