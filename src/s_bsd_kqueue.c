@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_kqueue.c,v 1.1 2000/11/02 22:07:14 adrian Exp $
+ *  $Id: s_bsd_kqueue.c,v 1.2 2000/11/03 18:20:04 adrian Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -73,8 +73,6 @@
 #define KE_LENGTH	16
 
 extern struct sockaddr_in vserv;               /* defined in s_conf.c */
-
-struct Client* local[MAXCONNECTIONS];
 
 static void kq_update_events(int, short, PF *);
 static int kq;

@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_poll.c,v 7.14 2000/11/02 18:23:03 adrian Exp $
+ *  $Id: s_bsd_poll.c,v 7.15 2000/11/03 18:20:04 adrian Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -84,7 +84,6 @@
 
 extern struct sockaddr_in vserv;               /* defined in s_conf.c */
 
-struct Client* local[MAXCONNECTIONS];
 static struct pollfd pollfds[MAXCONNECTIONS];
 
 static void poll_update_pollfds(int, short, PF *);
