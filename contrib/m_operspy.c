@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.13.2.4 2004/03/18 02:56:18 bill Exp $
+ *   $Id: m_operspy.c,v 1.13.2.5 2004/03/18 04:14:30 bill Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -135,7 +135,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.13.2.4 $";
+const char *_version = "$Revision: 1.13.2.5 $";
 #endif
 
 #ifdef OPERSPY_LOG
@@ -816,13 +816,16 @@ do_who_list(struct Client *source_p, struct Channel *chptr,
 static void
 operspy_log(struct Client *source_p, const char *command, const char *target)
 {
+#ifdef OPERSPY_LOGFILE
   FBFILE *operspy_fb;
   dlink_node *cnode;
   const char *opername = source_p->name;
   char linebuf[BUFSIZE], logfile[BUFSIZE];
+#endif
 
   assert(source_p != NULL);
 
+#ifdef OPERSPY_LOGFILE
   if (IsOper(source_p) && MyClient(source_p))
   {
     DLINK_FOREACH(cnode, source_p->localClient->confs.head)
@@ -842,9 +845,10 @@ operspy_log(struct Client *source_p, const char *command, const char *target)
              command, target);
   fbputs(linebuf, operspy_fb);
   fbclose(operspy_fb);
+#endif
 
 #ifdef OPERSPY_NOTICE
-  sendto_realops_flags(UMODE_SPY, L_ALL, "OPERSPY %s %s %s",
+  sendto_realops_flags(FLAGS_SPY, L_ALL, "OPERSPY %s %s %s",
                        get_oper_name(source_p), command, target);
 #endif
   sendto_match_servs(source_p, "*", CAP_ENCAP, "ENCAP * OPERSPY %s :%s",
