@@ -4,7 +4,7 @@
  * shape or form. The author takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: res.c,v 7.6 1999/08/17 05:46:41 tomh Exp $
+ * $Id: res.c,v 7.7 1999/08/19 06:25:20 tomh Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -1540,7 +1540,10 @@ static struct CacheEntry* make_cache(struct ResRequest* request)
   memset(cp, 0, sizeof(struct CacheEntry));
   dup_hostent(&cp->he, hp);
   cp->reply.hp = &cp->he.h;
-
+  /*
+   * hmmm... we could time out the cache after 10 minutes regardless
+   * would that be reasonable since we don't save the reply?
+   */ 
   if (request->ttl < AR_TTL) {
     ++reinfo.re_shortttl;
     cp->ttl = AR_TTL;
