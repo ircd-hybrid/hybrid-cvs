@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.108 2001/02/26 06:53:54 androsyn Exp $
+ *  $Id: s_bsd.c,v 7.109 2001/02/26 18:04:29 androsyn Exp $
  */
 #include "config.h"
 #include "fdlist.h"
@@ -484,7 +484,7 @@ ignoreErrno(int ierrno)
         return 0;
     }
     /* NOTREACHED */
-  return 0;
+       return 0;
 }
 
 

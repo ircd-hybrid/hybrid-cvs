@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: oldparse.c,v 1.23 2001/01/25 06:26:10 db Exp $
+ *  $Id: oldparse.c,v 1.24 2001/02/26 18:04:29 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -91,8 +91,8 @@ void oldParseOneLine(char* line)
       /* class field */
       if ((class_field = getfield(NULL)) == NULL)
 	break;
-      
-      break;
+
+         break;
       /* NOTREACHED */
     }
 

@@ -15,7 +15,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- * $Id: hostmask.c,v 7.20 2001/02/23 23:36:10 a1kmm Exp $ 
+ * $Id: hostmask.c,v 7.21 2001/02/26 18:04:28 androsyn Exp $ 
  */
 #include <unistd.h>
 #include <string.h>
@@ -163,9 +163,6 @@ match_hostmask(const char *uhost, int type)
    if (hme->type == type && match(hme->hostmask, uhost) &&
        hme->precedence > prec)
      {
-       ((hme->type == HOST_CONFITEM) &&
-        ((struct ConfItem*)hme->data)->status & CONF_KILL)
-       ? hmk : hmc = hme;
        prec = hme->precedence;
      }
  for (pos = uhost; pos; pos = strcchr(pos, "@!."))
@@ -175,9 +172,10 @@ match_hostmask(const char *uhost, int type)
      if (hme->type == type && match(hme->hostmask, uhost) &&
          hme->precedence > prec)
        {
-        ((hme->type == HOST_CONFITEM) &&
-         ((struct ConfItem*)hme->data)->status & CONF_KILL)
-        ? hmk : hmc = hme;
+	if((hme->type == HOST_CONFITEM) && ((struct ConfItem*)hme->data)->status & CONF_KILL)
+		hmk = hme;	
+	else
+		hmc = hme;
         prec = hme->precedence;
        }
   }
@@ -259,7 +257,10 @@ void clear_conf(void)
     conf = ((struct ConfItem*)hme->data);
     if (conf->clients == 0)
       {
-       hmel ? hmel->next : deferred_masks = hmen->next;
+       if(hmel)
+       	 hmel->next = hmen->next;
+       else
+        deferred_masks = hmen->next;
        conf->clients--;
        free_conf(conf);
        MyFree(hme->hostmask);
