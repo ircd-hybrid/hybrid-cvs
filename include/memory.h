@@ -1,9 +1,9 @@
-/* $Id: memory.h,v 7.21 2001/09/23 22:33:35 a1kmm Exp $ */
+/* $Id: memory.h,v 7.22 2001/09/23 22:35:28 a1kmm Exp $ */
 
 #ifndef _I_MEMORY_H
 #define _I_MEMORY_H
 
-#define MEMDEBUG
+#undef MEMDEBUG
 
 #include "ircd_defs.h"
 #include "balloc.h"

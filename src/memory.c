@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: memory.c,v 7.23 2001/09/23 22:33:36 a1kmm Exp $
+ * $Id: memory.c,v 7.24 2001/09/23 22:35:29 a1kmm Exp $
  */
 #include <stdlib.h>
 #include <string.h>
@@ -42,7 +42,7 @@
 #endif
 
 
-#undef MEMDEBUG
+#ifdef MEMDEBUG
 /* Hopefully this debugger will work better than the existing one...
  * -A1kmm. */
 
