@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.387 2003/06/18 00:15:12 metalrock Exp $
+ *  $Id: client.c,v 7.388 2003/06/18 01:10:05 db Exp $
  */
 
 #include "stdinc.h"
@@ -893,6 +893,18 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
    */
   del_from_client_hash_table(source_p->name, source_p);
 
+  if (IsPerson(source_p) && IsUserHostIp(source_p))
+  {
+    if (MyConnect(source_p))
+    {
+      delete_user_host(source_p->username, source_p->host, 0);
+    }
+    else
+    {
+      delete_user_host(source_p->username, source_p->host, 1);
+    }
+  }
+
   /* remove from global client list
    * NOTE: source_p->node.next cannot be NULL if the client is added
    *       to global_client_list (there is always &me at its end)
@@ -1368,18 +1380,6 @@ exit_client(
       ilog(L_NOTICE, "%s was connected for %d seconds.  %d/%d sendK/recvK.",
            source_p->name, CurrentTime - source_p->firsttime, 
            source_p->localClient->sendK, source_p->localClient->receiveK);
-    }
-  }
-
-  if (IsPerson(source_p) && IsUserHostIp(source_p))
-  {
-    if (MyConnect(source_p))
-    {
-      delete_user_host(source_p->username, source_p->host, 0);
-    }
-    else
-    {
-      delete_user_host(source_p->username, source_p->host, 1);
     }
   }
 
