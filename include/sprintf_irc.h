@@ -1,3 +1,7 @@
+/*
+ * $Id: sprintf_irc.h,v 7.1 1999/08/26 03:36:27 lusky Exp $
+ */
+
 #ifndef SPRINTF_IRC
 #define SPRINTF_IRC
 

@@ -1,4 +1,5 @@
 #! /bin/sh
+# $Id: configure,v 7.2 1999/08/26 03:36:15 lusky Exp $
 
 # Guess values for system-dependent variables and create Makefiles.
 # Generated automatically using autoconf version 2.13 

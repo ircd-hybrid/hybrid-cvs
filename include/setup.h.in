@@ -1,4 +1,6 @@
-/* ../include/setup.h.in.  Generated automatically from configure.in by autoheader.  */
+/* ../include/setup.h.in.  Generated automatically from configure.in by autoheader. 
+ * $Id: setup.h.in,v 7.1 1999/08/26 03:36:27 lusky Exp $
+ */
 
 /* Define if on AIX 3.
    System headers sometimes define this.

@@ -46,3 +46,6 @@ bit maps.
    - reduce INITIAL_DBUFS from 1000 to 300
 
   - Dianora
+
+--
+$Id: README.small_nets,v 7.1 1999/08/26 03:36:15 lusky Exp $

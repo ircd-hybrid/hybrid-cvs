@@ -1,3 +1,8 @@
+/*
+ * $Id: defs.h,v 7.1 1999/08/26 03:36:25 lusky Exp $
+ */
+
+
 #ifndef INCLUDED_defs_h
 #define INCLUDED_defs_h
 

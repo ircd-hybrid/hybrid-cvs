@@ -1,4 +1,6 @@
-/* dline_conf.h  -- lets muse over dlines, shall we? */
+/* dline_conf.h  -- lets muse over dlines, shall we?
+ * $Id: dline_conf.h,v 7.1 1999/08/26 03:36:26 lusky Exp $
+ */
 #ifndef INCLUDED_dline_conf_h
 #define INCLUDED_dline_conf_h
 

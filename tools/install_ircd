@@ -1,5 +1,5 @@
 #!/bin/sh
-#
+# $Id: install_ircd,v 7.1 1999/08/26 03:36:31 lusky Exp $
 # IRCD INSTALL SCRIPT
 #
 # Completely re-written by FlashMan <chuegen@quadrunner.com> 981231

@@ -14,6 +14,8 @@
  *   You should have received a copy of the GNU General Public License
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *
+ * $Id: patchlevel.h,v 7.5 1999/08/26 03:36:26 lusky Exp $
  */
 
 #ifndef PATCHLEVEL
