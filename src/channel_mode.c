@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.114 2003/06/12 15:17:25 michael Exp $
+ *  $Id: channel_mode.c,v 7.115 2003/06/14 14:11:46 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1094,14 +1094,36 @@ chm_op(struct Client *client_p, struct Client *source_p,
   if (dir == MODE_ADD)
   {
     for (i = 0; i < mode_count; i++)
-    {
-      if (mode_changes[i].dir == MODE_DEL && mode_changes[i].letter == 'o'
-          && mode_changes[i].client == targ_p)
+      if (mode_changes[i].client == targ_p)
       {
-        mode_changes[i].letter = 0;
-	return;
+        if (mode_changes[i].dir == MODE_DEL && mode_changes[i].letter == 'o')
+        {
+          mode_changes[i].letter = 0;
+          return;
+        }
+#ifdef USE_HALFOPS
+        /* cancel /mode +h */
+        if (mode_changes[i].dir == MODE_ADD && mode_changes[i].letter == 'h')
+        {
+          mode_changes[i].letter = 0;
+          change_channel_membership(member, 0, CHFL_HALFOP);
+        }
+#endif
       }
+
+#ifdef USE_HALFOPS
+    if (has_member_flags(member, CHFL_HALFOP))
+    {
+      mode_changes[mode_count].letter = 'h';
+      mode_changes[mode_count].dir = MODE_DEL;
+      mode_changes[mode_count].caps = 0;
+      mode_changes[mode_count].nocaps = 0;
+      mode_changes[mode_count].mems = ALL_MEMBERS;
+      mode_changes[mode_count].id = targ_p->id;
+      mode_changes[mode_count].arg = targ_p->name;
+      mode_changes[mode_count++].client = targ_p;
     }
+#endif
 
     mode_changes[mode_count].letter = 'o';
     mode_changes[mode_count].dir = MODE_ADD;
@@ -1112,7 +1134,7 @@ chm_op(struct Client *client_p, struct Client *source_p,
     mode_changes[mode_count].arg = targ_p->name;
     mode_changes[mode_count++].client = targ_p;
 
-    change_channel_membership(member, CHFL_CHANOP, CHFL_DEOPPED);
+    change_channel_membership(member, CHFL_CHANOP, CHFL_DEOPPED | CHFL_HALFOP);
   }
   else
   {
@@ -1175,17 +1197,6 @@ chm_hop(struct Client *client_p, struct Client *source_p,
     *errors |= SM_ERR_NOOPS;
     return;
   }
-#if 0
-  if (alev < CHACCESS_CHANOP)
-  {
-    if (!(*errors & SM_ERR_NOOPS))
-      sendto_one(source_p, form_str(alev == CHACCESS_NOTONCHAN ?
-                                    ERR_NOTONCHANNEL : ERR_CHANOPRIVSNEEDED),
-                 me.name, source_p->name, chname);
-    *errors |= SM_ERR_NOOPS;
-    return;
-  }
-#endif
   if ((dir == MODE_QUERY) || (parc <= *parn))
     return;
 
@@ -1220,7 +1231,7 @@ chm_hop(struct Client *client_p, struct Client *source_p,
     return;
 
   /* no redundant mode changes */
-  if (dir == MODE_ADD &&  has_member_flags(member, CHFL_HALFOP))
+  if (dir == MODE_ADD &&  has_member_flags(member, CHFL_HALFOP | CHFL_CHANOP))
     return;
   if (dir == MODE_DEL && !has_member_flags(member, CHFL_HALFOP))
     return;
