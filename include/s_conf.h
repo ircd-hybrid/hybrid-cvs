@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.101 2001/03/06 02:22:10 androsyn Exp $
+ * $Id: s_conf.h,v 7.102 2001/03/07 19:03:13 androsyn Exp $
  */
 
 #include "setup.h"
@@ -120,6 +120,7 @@ struct ConfItem
 #define CONF_FLAGS_ALLOW_AUTO_CONN      0x04000
 #define CONF_FLAGS_LAZY_LINK            0x08000
 #define CONF_FLAGS_ENCRYPTED            0x10000
+#define CONF_FLAGS_COMPRESSED		0x20000
 
 /* Macros for struct ConfItem */
 
@@ -138,6 +139,7 @@ struct ConfItem
 #define IsConfSpoofNotice(x)    (!((x)->flags & CONF_FLAGS_SPOOF_NOTICE))
 #define IsConfRestricted(x)     ((x)->flags & CONF_FLAGS_RESTRICTED)
 #define IsConfEncrypted(x)      ((x)->flags & CONF_FLAGS_ENCRYPTED)
+#define IsConfCompressed(x)	((x)->flags & CONF_FLAGS_COMPRESSED)
 
 /* port definitions for Opers */
 

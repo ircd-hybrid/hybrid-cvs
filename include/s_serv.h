@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: s_serv.h,v 7.38 2001/03/06 15:53:22 toot Exp $
+ * $Id: s_serv.h,v 7.39 2001/03/07 19:03:14 androsyn Exp $
  *
  */
 #ifndef INCLUDED_serv_h
@@ -55,6 +55,7 @@ struct Capability
 
 #define CAP_CAP         0x00000001      /* received a CAP to begin with */
 #define CAP_QS          0x00000002      /* Can handle quit storm removal */
+#define CAP_ZIP		0x00000004	/* Can do zip links */	
 #define CAP_EX          0x00000008      /* Can do channel +e exemptions */
 #define CAP_CHW         0x00000010      /* Can do channel wall @# */
 #define CAP_LL          0x00000020      /* Can do lazy links */

@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.74 2001/02/26 13:51:16 ejb Exp $
+ * $Id: ircd_lexer.l,v 1.75 2001/03/07 19:03:20 androsyn Exp $
  */
 
 %option case-insensitive
@@ -103,6 +103,7 @@ autoconn	{ return AUTOCONN; }
 caller_id_wait	{ return CALLER_ID_WAIT; }
 class		{ return CLASS; }
 client_exit     { return CLIENT_EXIT; }
+compressed	{ return COMPRESSED; }
 connect		{ return CONNECT; }
 connectfreq     { return CONNECTFREQ; }
 deny		{ return DENY; }
