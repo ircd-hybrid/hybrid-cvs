@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.127 2001/04/01 20:20:52 ejb Exp $
+ * $Id: ircd.c,v 7.128 2001/04/01 23:14:45 toot Exp $
  */
 
 #include <sys/types.h>
@@ -249,25 +249,9 @@ daemon(int a, int b)
   fclose(stdout);
   fclose(stderr); */
 #endif
+  return 0;
 }
 #endif
-
-void
-cmd_enable_debug(char *what)
-{
-#ifdef DEBUGMODE
-  if(enable_debug(what) == -1)
-    {
-      fprintf(stderr, "ircd: '%s' is not a valid debug option\n", optarg);
-      exit(EXIT_FAILURE);
-    }
-  break;
-#else
-  fprintf(stderr, "ircd: not compiled in debug mode.\n");
-  fprintf(stderr, "ircd: exiting on error.\n");
-  exit(EXIT_FAILURE);
-#endif
-}
 
 static int printVersion = 0;
 
