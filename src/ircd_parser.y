@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.18 2000/03/31 02:38:29 db Exp $
+ * $Id: ircd_parser.y,v 1.19 2000/04/02 17:20:31 db Exp $
  */
 
 %{
@@ -131,7 +131,6 @@ int   class_sendq_var;
 %token  WARN
 %token  GENERAL
 %token  QUIET_ON_BAN
-%token  BAN_CIDR
 %token  FAILED_OPER_NOTICE
 %token  SHOW_FAILED_OPER_ID
 %token  SHOW_FAILED_OPER_PASSWD
@@ -1084,16 +1083,6 @@ general_quiet_on_ban:   QUIET_ON_BAN '=' TYES ';'
                         QUIET_ON_BAN '=' TNO ';'
   {
     ConfigFileEntry.quiet_on_ban = 0;
-  } ;
-
-general_ban_cidr:   BAN_CIDR '=' TYES ';'
-  {
-    ConfigFileEntry.ban_cidr = 1;
-  }
-                        |
-                        BAN_CIDR '=' TNO ';'
-  {
-    ConfigFileEntry.ban_cidr = 0;
   } ;
 
 general_failed_oper_notice:   FAILED_OPER_NOTICE '=' TYES ';'
