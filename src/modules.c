@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.106 2003/01/21 14:26:51 db Exp $
+ *  $Id: modules.c,v 7.106.2.1 2004/06/29 20:28:02 bill Exp $
  */
 
 #include "stdinc.h"
@@ -85,27 +85,27 @@ static void mo_modrestart(struct Client*, struct Client*, int, char**);
 
 struct Message modload_msgtab = {
  "MODLOAD", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, m_ignore, mo_modload}
+  {m_unregistered, m_not_oper, m_ignore, m_ignore, mo_modload}
 };
 
 struct Message modunload_msgtab = {
  "MODUNLOAD", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, m_ignore, mo_modunload}
+  {m_unregistered, m_not_oper, m_ignore, m_ignore, mo_modunload}
 };
 
 struct Message modreload_msgtab = {
   "MODRELOAD", 0, 0, 2, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, m_ignore, mo_modreload}
+  {m_unregistered, m_not_oper, m_ignore, m_ignore, mo_modreload}
 };
 
 struct Message modlist_msgtab = {
  "MODLIST", 0, 0, 0, 0, MFLG_SLOW, 0,
-  {m_unregistered, m_not_oper, m_ignore, mo_modlist}
+  {m_unregistered, m_not_oper, m_ignore, m_ignore, mo_modlist}
 };
 
 struct Message modrestart_msgtab = {
  "MODRESTART", 0, 0, 0, 0, MFLG_SLOW, 0,
- {m_unregistered, m_not_oper, m_ignore, mo_modrestart}
+ {m_unregistered, m_not_oper, m_ignore, m_ignore, mo_modrestart}
 };
 
 extern struct Message error_msgtab;
