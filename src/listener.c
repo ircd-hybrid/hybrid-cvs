@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: listener.c,v 7.2 1999/08/12 03:59:51 lusky Exp $
+ *  $Id: listener.c,v 7.3 1999/08/16 01:33:33 tomh Exp $
  */
 #include "listener.h"
 #include "client.h"
@@ -85,6 +85,21 @@ const char* get_listener_name(const struct Listener* listener)
   return buf;
 }
 
+/*
+ * count_listener_memory - count memory and listeners
+ */
+void count_listener_memory(int* count_out, size_t* size_out)
+{
+  struct Listener* l;
+  int              count = 0;
+  assert(0 != count_out);
+  assert(0 != size_out);
+  for (l = ListenerPollList; l; l = l->next)
+    ++count;
+  *count_out = count;
+  *size_out  = count * sizeof(struct Listener);
+}
+  
 /*
  * show_ports - send port listing to a client
  * inputs       - pointer to client to show ports to

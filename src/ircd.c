@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.5 1999/08/03 01:41:29 tomh Exp $
+ * $Id: ircd.c,v 7.6 1999/08/16 01:33:32 tomh Exp $
  */
 
 
@@ -812,13 +812,16 @@ int main(int argc, char *argv[])
     strncpy_irc(me.name, aconf->host, HOSTLEN);
   strncpy_irc(me.host, aconf->host, HOSTLEN);
 
-  me.fd = -1;
-  me.from = &me;
-  me.servptr = &me;
   SetMe(&me);
   make_server(&me);
-  me.serv->up = me.name;
-  me.lasttime = me.since = me.firsttime = CurrentTime;
+
+  me.fd         = -1;
+  me.local_flag = 1;
+  me.from       = &me;
+  me.servptr    = &me;
+  me.serv->up   = me.name;
+  me.lasttime   = me.since = me.firsttime = CurrentTime;
+
   add_to_client_hash_table(me.name, &me);
 
   check_class();
