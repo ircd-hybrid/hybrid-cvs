@@ -20,8 +20,6 @@ Necessary Requirements:
 
 - A working dynamic load library
 
-- A working resolver library
-
 - A working getopt() function
 
 - A working lex.  Solaris /usr/ccs/bin/lex
@@ -91,4 +89,4 @@ Feature Specific Requirements:
 - Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: README.FIRST,v 7.14 2001/02/26 13:51:09 ejb Exp $
+$Id: README.FIRST,v 7.15 2001/03/04 06:34:17 androsyn Exp $
