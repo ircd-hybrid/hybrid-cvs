@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.159 2000/12/30 22:25:36 davidt Exp $
+ * $Id: channel.c,v 7.160 2000/12/30 23:07:50 davidt Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -2020,17 +2020,19 @@ void set_channel_mode(struct Client *cptr,
 	    {
               if (len + 2 >= MODEBUFLEN)
 		break;
+              if (!(chptr->mode.mode & MODE_HIDEOPS))
+                sync_channel_oplists(chptr, 1);
               chptr->mode.mode |= MODE_HIDEOPS;
               *mbufw_aops++ = '+';
               *mbufw_aops++ = 'a';
               len += 2;
-              sync_channel_oplists(chptr, 1);
 	    }
 	  else
 	    {
 	      if (len + 2 >= MODEBUFLEN)
 		break;
-	      
+	      if (chptr->mode.mode & MODE_HIDEOPS)
+                sync_channel_oplists(chptr, 0);
 	      chptr->mode.mode &= ~MODE_HIDEOPS;
 	      *mbufw_aops++ = '-';
 	      *mbufw_aops++ = 'a';
