@@ -1,3 +1,12 @@
+*** 20001130_17 by davidt
+Removed CUSTOM_ERR, and changed it to use gettext(), which allows the
+message files to be changed at run time, currently using
+/quote set MSGLOCALE ... ('custom' for the custom messages, or anything else
+to use the standard ircd messages).
+Also, added general_message_locale to the new config file.
+If gettext() isn't available, it should just use the standard ircd messages.
+
+
 *** 20001130_16 by db
 - fixed core bug in m_names.c
   
@@ -1189,7 +1198,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.641 2000/11/30 20:51:11 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.642 2000/11/30 22:47:58 davidt Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
