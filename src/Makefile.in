@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.36 2000/11/16 17:52:32 davidt Exp $
+# $Id: Makefile.in,v 7.37 2000/11/21 18:42:16 adrian Exp $
 #
 CC		= @CC@
 RM		= @RM@
@@ -75,6 +75,7 @@ SRCS =                          \
   scache.c                      \
   send.c                        \
   sprintf_irc.c                 \
+  tools.c                       \
   whowas.c
 
 OBJS = ${SRCS:.c=.o}
