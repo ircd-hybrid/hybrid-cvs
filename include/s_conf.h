@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.144 2001/07/03 11:46:11 leeh Exp $
+ * $Id: s_conf.h,v 7.145 2001/07/03 13:32:27 leeh Exp $
  */
 
 #include "setup.h"
@@ -287,8 +287,6 @@ extern int scount;
 extern struct ConfItem *u_conf;
 /* conf xline link list root */
 extern struct ConfItem *x_conf;
-/* conf qline link list root */
-extern struct ConfItem *q_conf;
 
 extern struct ConfItem* ConfigItemList;        /* GLOBAL - conf list head */
 extern int              specific_ipv4_vhost; /* GLOBAL - used in s_bsd.c */
@@ -341,7 +339,6 @@ extern int conf_connect_allowed(struct irc_inaddr *addr, int aftype);
 extern char *oper_flags_as_string(int);
 extern char *oper_privs_as_string(struct Client *, int);
 
-extern int find_q_conf(char*, char*, char *);
 extern int find_u_conf(char*, char*, char *);
 extern struct ConfItem *find_x_conf(char*);
 
@@ -383,7 +380,6 @@ extern void conf_add_k_conf(struct ConfItem *);
 extern void conf_add_d_conf(struct ConfItem *);
 extern void conf_add_x_conf(struct ConfItem *);
 extern void conf_add_u_conf(struct ConfItem *);
-extern void conf_add_q_conf(struct ConfItem *);
 extern void conf_add_fields(struct ConfItem*, char*, char *, char*, char *,char *);
 extern void conf_add_conf(struct ConfItem *);
 #ifdef PACE_CONNECT
