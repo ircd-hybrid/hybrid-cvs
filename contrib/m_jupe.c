@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_jupe.c,v 1.50 2003/05/03 11:09:59 michael Exp $
+ *  $Id: m_jupe.c,v 1.51 2003/05/12 01:08:31 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -67,7 +67,7 @@ _moddeinit(void)
   mod_del_cmd(&jupe_msgtab);
 }
 
-const char *_version = "$Revision: 1.50 $";
+const char *_version = "$Revision: 1.51 $";
 #endif
 
 /*
@@ -108,7 +108,7 @@ mo_jupe(struct Client *client_p, struct Client *source_p,
 
   if (match(parv[1], me.name))
   {
-    sendto_one(source_p, ":%s NOTICE %s :I cant jupe myself!",
+    sendto_one(source_p, ":%s NOTICE %s :I can't jupe myself!",
 	       me.name, source_p->name);
     return;
   }
