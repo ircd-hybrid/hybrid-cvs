@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.h,v 7.27 2000/12/30 00:52:36 lusky Exp $
+ * $Id: m_info.h,v 7.28 2001/01/09 00:54:02 toot Exp $
  */
 #ifndef INCLUDED_m_info_h
 #define INCLUDED_m_info_h
@@ -163,12 +163,6 @@ Info MyInformation[] = {
 #else
   { "PPATH", "NONE", 0, "Path to Pid File" },
 #endif /* PPATH */
-
-#ifdef REPORT_DLINE_TO_USER
-  { "REPORT_DLINE_TO_USER", "ON", 0, "Inform Clients They are D-lined" },
-#else
-  { "REPORT_DLINE_TO_USER", "OFF", 0, "Inform Clients They are D-lined" },
-#endif /* REPORT_DLINE_TO_USER */
 
   { "SELECT_TYPE", SELECT_TYPE, 0, "Method of Multiplexed I/O" },
 

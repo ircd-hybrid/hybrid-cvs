@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: listener.c,v 7.18 2001/01/09 00:34:03 db Exp $
+ *  $Id: listener.c,v 7.19 2001/01/09 00:54:08 toot Exp $
  */
 #include "listener.h"
 #include "client.h"
@@ -399,6 +399,7 @@ static void accept_connection(int pfd, void *data)
      */
     if (!conf_connect_allowed(addr.sin_addr)) {
       ServerStats->is_ref++;
+      send(fd, "NOTICE DLINE :*** You have been D-lined\r\n", 41, 0);
       fd_close(fd);
       break;
     }

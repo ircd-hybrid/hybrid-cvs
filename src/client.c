@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.109 2001/01/09 00:34:02 db Exp $
+ *  $Id: client.c,v 7.110 2001/01/09 00:54:07 toot Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -459,10 +459,12 @@ check_klines(void)
 	      else
 		reason = "D-lined";
 	    }
+
 	  if (IsPerson(cptr)) 
             sendto_one(cptr, form_str(ERR_YOUREBANNEDCREEP),
                        me.name, cptr->name, reason);
-
+          else
+            sendto_one(cptr, "NOTICE DLINE :*** You have been D-lined");
 
           cptr->flags2 |= FLAGS2_ALREADY_EXITED;
 	  (void)exit_client(cptr, cptr, &me, reason );
