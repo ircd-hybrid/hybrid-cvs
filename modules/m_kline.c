@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.107 2002/08/01 13:55:08 leeh Exp $
+ *  $Id: m_kline.c,v 1.108 2002/08/07 16:53:00 bill Exp $
  */
 
 #include "stdinc.h"
@@ -75,7 +75,7 @@ _moddeinit(void)
   mod_del_cmd(&kline_msgtab);
   mod_del_cmd(&dline_msgtab);
 }
-const char *_version = "$Revision: 1.107 $";
+const char *_version = "$Revision: 1.108 $";
 #endif
 
 /* Local function prototypes */
@@ -386,7 +386,7 @@ apply_tkline(struct Client *source_p, struct ConfItem *aconf,
 		       get_oper_name(source_p), tkline_time/60,
 		       aconf->user, aconf->host,
 		       aconf->passwd);
-  sendto_one(source_p, ":%s NOTICE %s :Added temporary %d min. K-Line for [%s@%s]",
+  sendto_one(source_p, ":%s NOTICE %s :Added temporary %d min. K-Line [%s@%s]",
 	     me.name, source_p->name, tkline_time/60,
 	     aconf->user, aconf->host);
   ilog(L_TRACE, "%s added temporary %d min. K-Line for [%s@%s] [%s]",
