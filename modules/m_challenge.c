@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_challenge.c,v 1.49 2003/06/21 23:44:13 michael Exp $
+ *  $Id: m_challenge.c,v 1.50 2003/06/26 11:36:41 db Exp $
  */
 
 #include "stdinc.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
   mod_del_cmd(&challenge_msgtab);
 }
 
-const char *_version = "$Revision: 1.49 $";
+const char *_version = "$Revision: 1.50 $";
 #endif
 
 /*
@@ -76,7 +76,9 @@ m_challenge(struct Client *client_p, struct Client *source_p,
 {
   char *challenge;
   dlink_node *ptr;
-  struct AccessItem *aconf, *oconf;
+  struct ConfItem *conf;
+  struct AccessItem *aconf=NULL;
+  struct AccessItem *oconf;
 
   if (!(source_p->user) || !source_p->localClient)
     return;
@@ -103,7 +105,10 @@ m_challenge(struct Client *client_p, struct Client *source_p,
       return;
     }
      
-    if (!(aconf = find_conf_by_name(source_p->user->auth_oper, CONF_OPERATOR)))
+    if ((conf = find_exact_name_conf(OPER_TYPE,
+				     source_p->user->auth_oper,
+				     source_p->username, source_p->host
+				   )) == NULL)
     {
       sendto_one (source_p, form_str(ERR_NOOPERHOST), me.name, parv[0]);
       log_failed_oper(source_p, source_p->user->auth_oper);
@@ -143,11 +148,20 @@ m_challenge(struct Client *client_p, struct Client *source_p,
   source_p->user->response  = NULL;
   source_p->user->auth_oper = NULL;
 
-  if (!(aconf = find_conf_exact(parv[1], source_p->username, source_p->host,
-	             		CONF_OPERATOR)) &&
-      !(aconf = find_conf_exact(parv[1], source_p->username,
-                                source_p->localClient->sockhost,
-                                CONF_OPERATOR)))
+  if ((conf = find_exact_name_conf(OPER_TYPE,
+				   parv[1], source_p->username, source_p->host
+				   )) != NULL)
+  {
+    aconf = (struct AccessItem *)map_to_conf(conf);
+  }
+  else if ((conf = find_exact_name_conf(OPER_TYPE,
+				   parv[1], source_p->username,
+				   source_p->localClient->sockhost)) != NULL)
+  {
+    aconf = (struct AccessItem *)map_to_conf(conf);
+  }
+
+  if(aconf == NULL)
   {
     sendto_one (source_p, form_str(ERR_NOOPERHOST), me.name, parv[0]);
     failed_challenge_notice(source_p, parv[1], find_conf_by_name(parv[1], CONF_OPERATOR)
