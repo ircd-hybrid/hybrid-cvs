@@ -4,7 +4,7 @@
  * shape or form. The author takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: res.c,v 7.35 2001/01/08 00:57:20 db Exp $
+ * $Id: res.c,v 7.36 2001/01/08 22:34:49 db Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -398,7 +398,6 @@ static void rem_request(ResRQ* request)
 	  MyFree(request->name);
 	  MyFree(request);
 	  free_dlink_node(ptr);
-	  return;
 	}
     }
 }
@@ -517,8 +516,13 @@ void delete_resolver_queries(const void* vptr)
       if( (request = ptr->data) != NULL )
 	{
 	  if (vptr == request->query.vptr)
-	    rem_request(request);
-	  return;
+	    {
+	      dlinkDelete(ptr, &request_list);
+	      MyFree(request->he.buf);
+	      MyFree(request->name);
+	      MyFree(request);
+	      free_dlink_node(ptr);
+	    }
 	}
     }
 }
