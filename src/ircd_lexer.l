@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.3 2000/01/16 22:16:48 db Exp $
+ * $Id: ircd_lexer.l,v 1.4 2000/01/16 22:24:06 db Exp $
  */
 
 %{
@@ -84,6 +84,7 @@ kill		{ return KILL; }
 deny		{ return DENY; }
 global_kill	{ return GLOBAL_KILL; }
 remote		{ return REMOTE; }
+kline		{ return KLINE; }
 unkline		{ return UNKLINE; }
 gline		{ return GLINE; }
 nick_changes	{ return NICK_CHANGES; }
