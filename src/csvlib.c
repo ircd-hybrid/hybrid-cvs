@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.23 2003/06/26 04:49:51 joshk Exp $
+ *  $Id: csvlib.c,v 7.24 2003/07/03 03:54:31 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -156,8 +156,6 @@ parse_csv_line(char *line, ...)
     }
     *dest = field;
   }
-  /* NOT REACHED */
-  va_end(args);
 }
 
 

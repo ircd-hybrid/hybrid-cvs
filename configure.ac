@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.79 2003/07/02 17:32:18 michael Exp $
+dnl $Id: configure.ac,v 7.80 2003/07/03 03:54:27 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -8,7 +8,7 @@ dnl said functions need to be just about as complex as they already are.
 AC_PREREQ(2.57)
 
 dnl Sneaky way to get an Id tag into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.79 2003/07/02 17:32:18 michael Exp $])
+AC_COPYRIGHT([$Id: configure.ac,v 7.80 2003/07/03 03:54:27 joshk Exp $])
 
 AC_INIT([ircd-hybrid],[7-CURRENT])
 
@@ -77,15 +77,9 @@ case `$CC -V 2>&1` in
 ;;
 esac
 
-AC_MSG_CHECKING([uname -s for old HP-UX])
-
-else
-
-dnl Cygwin only has gcc :)
-AC_MSG_CHECKING([uname -s for Cygwin])
-
 fi
 
+AC_MSG_CHECKING([uname -s for Cygwin, Solaris or HPUX])
 case `uname -s` in
         HP-UX*)
 	dnl only do this if we haven't already detected the newer one
@@ -103,6 +97,9 @@ case `uname -s` in
 		AC_MSG_RESULT(Cygwin)
 		CYGWIN=yes
 	;;
+	SunOS*)
+		AC_MSG_RESULT(SunOS or Solaris)
+		AC_DEFINE(__EXTENSIONS__, 1, [This is needed to use strtok_r on Solaris.])
 	*)
 		AC_MSG_RESULT(no)
 	;;

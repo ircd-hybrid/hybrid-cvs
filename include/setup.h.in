@@ -297,6 +297,9 @@
 # undef _GNU_SOURCE
 #endif
 
+/* This is needed to use strtok_r on Solaris. */
+#undef __EXTENSIONS__
+
 /* If system does not define in_port_t, define it to what it should be. */
 #undef in_port_t
 
