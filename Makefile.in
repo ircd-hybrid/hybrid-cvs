@@ -16,7 +16,7 @@
 #*   along with this program; if not, write to the Free Software
 #*   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #*
-#*   $Id: Makefile.in,v 7.15 2000/12/18 03:59:34 db Exp $
+#*   $Id: Makefile.in,v 7.16 2000/12/21 00:16:23 ejb Exp $
 #*/
 
 RM=@RM@
@@ -83,7 +83,7 @@ CFLAGS		= @CFLAGS@
 
 SHELL=/bin/sh
 #SUBDIRS=src tools modules messages
-SUBDIRS=src tools modules doc
+SUBDIRS=src tools modules doc gnats
 # XXX removed `iauth' from the build since it doesn't compile currently
 # SUBDIRS=src tools iauth
 # XXX removed 'messages' from the build until thats fixed
