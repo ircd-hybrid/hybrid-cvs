@@ -1,3 +1,15 @@
+wcampbel    2002/08/08 19:58:19 EDT	(20020809_1)
+
+  Modified files:
+    src                  channel_mode.c 
+  Log:
+  Missed a change from before
+  
+  Revision  Changes    Path
+  7.54      +1 -1      ircd-hybrid-7/src/channel_mode.c
+
+
+
 wcampbel    2002/08/08 19:52:10 EDT	(20020809_0)
 
   Modified files:
@@ -30982,4 +30994,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3962 2002/08/08 23:52:17 wcampbel Exp $
+$Id: ChangeLog,v 7.3963 2002/08/08 23:58:26 wcampbel Exp $
