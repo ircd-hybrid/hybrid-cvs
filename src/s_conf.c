@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.351 2003/03/30 04:16:10 michael Exp $
+ *  $Id: s_conf.c,v 7.352 2003/03/31 15:49:26 adx Exp $
  */
 
 #include "stdinc.h"
@@ -487,7 +487,7 @@ verify_access(struct Client* client_p, const char* username)
   else
     {
       strlcpy(non_ident, "~", sizeof(non_ident));
-      strlcat(non_ident, username, USERLEN + 1);
+      strlcat(non_ident, username, sizeof(non_ident));
       aconf = find_address_conf(client_p->host,non_ident,
 				&client_p->localClient->ip,
 				client_p->localClient->aftype);

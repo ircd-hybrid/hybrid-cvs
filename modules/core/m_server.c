@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.96 2003/03/29 00:23:40 michael Exp $
+ *  $Id: m_server.c,v 1.97 2003/03/31 15:49:24 adx Exp $
  */
 
 #include "stdinc.h"
@@ -67,7 +67,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&server_msgtab);
 }
-const char *_version = "$Revision: 1.96 $";
+const char *_version = "$Revision: 1.97 $";
 #endif
 
 int bogus_host(char *host);
@@ -98,7 +98,7 @@ mr_server(struct Client *client_p, struct Client *source_p,
 
   name = parv[1];
   hop = atoi(parv[2]);
-  strlcpy(info, parv[3], REALLEN);
+  strlcpy(info, parv[3], sizeof(info));
 
   /* 
    * Reject a direct nonTS server connection if we're TS_ONLY -orabidoo
@@ -245,7 +245,7 @@ mr_server(struct Client *client_p, struct Client *source_p,
    * C:line in client_p->name
    */
 
-  strlcpy(client_p->name, name, HOSTLEN+1);
+  strlcpy(client_p->name, name, sizeof(client_p->name));
   set_server_gecos(client_p, info);
   client_p->hopcount = hop;
   server_estab(client_p);
@@ -285,7 +285,7 @@ ms_server(struct Client *client_p, struct Client *source_p,
 
   name = parv[1];
   hop = atoi(parv[2]);
-  strlcpy(info, parv[3], REALLEN);
+  strlcpy(info, parv[3], sizeof(info));
 
   if ((target_p = server_exists(name)))
     {
@@ -478,7 +478,7 @@ ms_server(struct Client *client_p, struct Client *source_p,
   make_server(target_p);
   target_p->hopcount = hop;
 
-  strlcpy(target_p->name, name, HOSTLEN+1);
+  strlcpy(target_p->name, name, sizeof(target_p->name));
   
   set_server_gecos(target_p, info);
 
@@ -594,15 +594,15 @@ set_server_gecos(struct Client *client_p, char *info)
       
       /* if there was a trailing space, s could point to \0, so check */
       if(s && (*s != '\0'))
-        strlcpy(client_p->info, s, REALLEN);
+        strlcpy(client_p->info, s, sizeof(client_p->info));
       else
-        strlcpy(client_p->info, "(Unknown Location)", REALLEN);
+        strlcpy(client_p->info, "(Unknown Location)", sizeof(client_p->info));
     }
     else
-      strlcpy(client_p->info, "(Unknown Location)", REALLEN);
+      strlcpy(client_p->info, "(Unknown Location)", sizeof(client_p->info));
   }
   else
-    strlcpy(client_p->info, "(Unknown Location)", REALLEN);
+    strlcpy(client_p->info, "(Unknown Location)", sizeof(client_p->info));
 
   return 1;
 }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: numeric.c,v 7.22 2003/03/25 14:38:23 db Exp $
+ *  $Id: numeric.c,v 7.23 2003/03/31 15:49:26 adx Exp $
  */
 
 #include "stdinc.h"
@@ -143,7 +143,7 @@ set_locale(const char *locale)
 
   if (strchr(locale, '/') != NULL)
   {
-    strlcpy(used_locale, "standard", LOCALE_LENGTH);  /* XXX paranoid */
+    strlcpy(used_locale, "standard", sizeof(used_locale));  /* XXX paranoid */
     return;
   }
 
@@ -154,7 +154,7 @@ set_locale(const char *locale)
   snprintf(buffer, BUFSIZE + 1, "%s/%s.lang", MSGPATH, locale);
   if ((f = fbopen(buffer, "r")) == NULL)
   {
-    strlcpy(used_locale, "standard", LOCALE_LENGTH);  /* XXX */
+    strlcpy(used_locale, "standard", sizeof(used_locale));  /* XXX */
     return;
   }
 
@@ -217,7 +217,7 @@ set_locale(const char *locale)
   }
   fbclose(f);
 
-  strlcpy(used_locale, locale, LOCALE_LENGTH);
+  strlcpy(used_locale, locale, sizeof(used_locale));
   if (!res)
     sendto_realops_flags(UMODE_ALL, L_ADMIN, "Language file [%s] contains "
                          "errors, check server log file for more details",

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.115 2003/03/29 14:25:11 michael Exp $
+ *  $Id: m_kline.c,v 1.116 2003/03/31 15:49:22 adx Exp $
  */
 
 #include "stdinc.h"
@@ -75,7 +75,7 @@ _moddeinit(void)
   mod_del_cmd(&kline_msgtab);
   mod_del_cmd(&dline_msgtab);
 }
-const char *_version = "$Revision: 1.115 $";
+const char *_version = "$Revision: 1.116 $";
 #endif
 
 /* Local function prototypes */
@@ -458,11 +458,11 @@ cluster(char *hostname)
 
   if(strchr(hostname,'@'))      
     {
-      strlcpy(result, hostname, HOSTLEN + 1);
+      strlcpy(result, hostname, sizeof(result));
       return(result);
     }
 
-  strlcpy(temphost, hostname, HOSTLEN + 1);
+  strlcpy(temphost, hostname, sizeof(temphost));
 
   is_ip_number = YES;   /* assume its an IP# */
   ipp = temphost;
@@ -491,7 +491,7 @@ cluster(char *hostname)
       zap_point++;
       *zap_point++ = '*';               /* turn 111.222.333.444 into */
       *zap_point = '\0';                /*      111.222.333.*        */
-      strlcpy(result, temphost, HOSTLEN + 1);
+      strlcpy(result, temphost, sizeof(result));
       return(result);
     }
   else
@@ -519,17 +519,17 @@ cluster(char *hostname)
               if(number_of_dots == 0)
                 {
                   result[0] = '*';
-                  strlcpy(result + 1, host_mask, HOSTLEN + 1);
+                  strlcpy(result + 1, host_mask, sizeof(result) - 1);
                   return(result);
                 }
               host_mask--;
             }
           result[0] = '*';                      /* foo.com => *foo.com */
-          strlcpy(result + 1, temphost, HOSTLEN + 1);
+          strlcpy(result + 1, temphost, sizeof(result) - 1);
         }
       else      /* no tld found oops. just return it as is */
         {
-          strlcpy(result, temphost, HOSTLEN + 1);
+          strlcpy(result, temphost, sizeof(result));
           return(result);
         }
     }
@@ -573,7 +573,7 @@ mo_dline(struct Client *client_p, struct Client *source_p,
     }
 
   dlhost = parv[1];
-  strlcpy(cidr_form_host, dlhost, HOSTLEN + 1);
+  strlcpy(cidr_form_host, dlhost, sizeof(cidr_form_host));
   cidr_form_host[HOSTLEN] = '\0';
 
   if ((t=parse_netmask(dlhost, NULL, &bits)) == HM_HOST)

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_jupe.c,v 1.42 2003/03/31 03:34:54 michael Exp $
+ *  $Id: m_jupe.c,v 1.43 2003/03/31 15:49:21 adx Exp $
  */
 
 #include "stdinc.h"
@@ -68,7 +68,7 @@ _moddeinit(void)
   mod_del_cmd(&jupe_msgtab);
 }
 
-const char *_version = "$Revision: 1.42 $";
+const char *_version = "$Revision: 1.43 $";
 #endif
 
 /*
@@ -153,7 +153,7 @@ mo_jupe(struct Client *client_p, struct Client *source_p,
 
   strlcpy(ajupe->name,parv[1], sizeof(ajupe->name));
   ircsprintf(reason, "%s %s", "JUPED:", parv[2]);
-  strlcpy(ajupe->info, reason, REALLEN + 1);
+  strlcpy(ajupe->info, reason, sizeof(ajupe->info));
 
   ajupe->serv->up = me.name;
   ajupe->servptr  = &me;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_part.c,v 1.64 2003/03/01 01:15:41 db Exp $
+ *  $Id: m_part.c,v 1.65 2003/03/31 15:49:24 adx Exp $
  */
 
 #include "stdinc.h"
@@ -61,7 +61,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&part_msgtab);
 }
-const char *_version = "$Revision: 1.64 $";
+const char *_version = "$Revision: 1.65 $";
 #endif
 
 static void part_one_client(struct Client *client_p,
@@ -91,7 +91,7 @@ m_part(struct Client *client_p, struct Client *source_p,
   reason[0] = '\0';
 
   if (parc > 2)
-    strlcpy(reason, parv[2], TOPICLEN);
+    strlcpy(reason, parv[2], sizeof(reason));
 
   name = strtoken( &p, parv[1], ",");
 
