@@ -1,4 +1,4 @@
-$Id: Hybrid-team,v 7.20 2001/01/01 21:00:15 bysin Exp $
+$Id: Hybrid-team,v 7.21 2001/01/01 21:22:40 vx0 Exp $
  
   The hybrid team is a group of ircd coders who were frustrated
 with the instability and all-out "dirtiness" of the efnet ircd's
@@ -39,6 +39,7 @@ orabidoo, Roger Espel LLima <espel@unix.bigots.org>
 Riedel, Dennis Vink, <vink@vuurwerk.nl>
 Seaner, Sean McVeigh <sdlmcvei@uwaterloo.ca>
 spookey, David Colburn <spookey@spookey.org>
+vx0, Mark Miller <mark@vx0.net>
 WintrHawk, Jake Khuon <khuon@GCtr.Net>
  
 Others are welcome. Always.  And if we left anyone off the above list,
