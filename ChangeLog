@@ -1,3 +1,15 @@
+db          2002/08/15 09:32:45 EDT	(20020815_1)
+
+  Modified files:
+    src                  ircd_parser.y 
+  Log:
+  - patch submitted by adx to get rid of some compile warnings
+  
+  Revision  Changes    Path
+  1.254     +30 -45    ircd-hybrid-7/src/ircd_parser.y
+
+
+
 db          2002/08/15 03:32:15 EDT	(20020815_0)
 
   Modified files:
@@ -31123,4 +31135,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3972 2002/08/15 07:32:21 db Exp $
+$Id: ChangeLog,v 7.3973 2002/08/15 13:32:51 db Exp $
