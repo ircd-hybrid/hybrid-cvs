@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.208 2001/04/19 02:53:24 a1kmm Exp $
+ *  $Id: s_conf.c,v 7.209 2001/04/20 07:15:46 a1kmm Exp $
  */
 
 #include <sys/types.h>
@@ -2035,8 +2035,6 @@ void WriteKlineOrDline( KlineType type,
       sendto_one(source_p, ":%s NOTICE %s :Added D-Line [%s] to %s",
 		 me.name, source_p->name, host, filename);
 
-      log(L_TRACE, "%s added D-Line for [%s] [%s]", 
-	  source_p->name, host, reason);
     }
   else
     {
@@ -2045,8 +2043,6 @@ void WriteKlineOrDline( KlineType type,
 			   source_p->name, user, host, reason);
       sendto_one(source_p, ":%s NOTICE %s :Added K-Line [%s@%s]",
 		 me.name, source_p->name, user, host);
-      log(L_TRACE, "%s added K-Line for [%s] [%s@%s]", 
-	  source_p->name, user, host, reason);
     }
 
   if ( (out = fbopen(filename, "a")) == NULL )
