@@ -1,6 +1,10 @@
-diff -r -u ircd-hybrid/contrib/spy_whois_notice.c ../../ANGEL/ircd-hybrid/contrib/spy_whois_notice.c
---- ircd-hybrid/contrib/spy_whois_notice.c	Fri May 24 19:48:34 2002
-+++ ../../ANGEL/ircd-hybrid/contrib/spy_whois_notice.c	Tue May 27 20:32:24 2003
+Index: ircd-hybrid/contrib/spy_whois_notice.c
+===================================================================
+RCS file: /cvsroot/ircd-hybrid/contrib/spy_whois_notice.c,v
+retrieving revision 1.10
+diff -u -r1.10 spy_whois_notice.c
+--- ircd-hybrid/contrib/spy_whois_notice.c	24 May 2002 23:48:34 -0000	1.10
++++ ircd-hybrid/contrib/spy_whois_notice.c	10 Jun 2003 04:10:57 -0000
 @@ -50,7 +50,7 @@
  int
  show_notice(struct hook_mfunc_data *data)
@@ -10,9 +14,13 @@ diff -r -u ircd-hybrid/contrib/spy_whois_notice.c ../../ANGEL/ircd-hybrid/contri
        IsOper(data->client_p) && (data->client_p != data->source_p) 
        && data->client_p->umodes & FLAGS_SPY) 
      {
-diff -r -u ircd-hybrid/include/client.h ../../ANGEL/ircd-hybrid/include/client.h
---- ircd-hybrid/include/client.h	Sun Feb 16 17:54:35 2003
-+++ ../../ANGEL/ircd-hybrid/include/client.h	Wed May 28 10:57:58 2003
+Index: ircd-hybrid/include/client.h
+===================================================================
+RCS file: /cvsroot/ircd-hybrid/include/client.h,v
+retrieving revision 7.164
+diff -u -r7.164 client.h
+--- ircd-hybrid/include/client.h	16 Feb 2003 22:54:35 -0000	7.164
++++ ircd-hybrid/include/client.h	10 Jun 2003 04:10:57 -0000
 @@ -121,6 +121,17 @@
    struct Channel *vchan;
  };
@@ -75,9 +83,13 @@ diff -r -u ircd-hybrid/include/client.h ../../ANGEL/ircd-hybrid/include/client.h
  extern const char*    get_client_name(struct Client* client, int show_ip);
  extern void           init_client(void);
  extern struct Client* make_client(struct Client* from);
-diff -r -u ircd-hybrid/include/config.h ../../ANGEL/ircd-hybrid/include/config.h
---- ircd-hybrid/include/config.h	Thu Feb  6 03:46:11 2003
-+++ ../../ANGEL/ircd-hybrid/include/config.h	Wed May 28 01:28:45 2003
+Index: ircd-hybrid/include/config.h
+===================================================================
+RCS file: /cvsroot/ircd-hybrid/include/config.h,v
+retrieving revision 7.142
+diff -u -r7.142 config.h
+--- ircd-hybrid/include/config.h	6 Feb 2003 08:46:11 -0000	7.142
++++ ircd-hybrid/include/config.h	10 Jun 2003 04:10:57 -0000
 @@ -101,6 +101,9 @@
  #define SLPATH  BINPATH "SERVLINK.EXE"          /* servlink executable */
  #define CPATH   ETCPATH "IRCD.CONF"             /* config file */
@@ -98,9 +110,13 @@ diff -r -u ircd-hybrid/include/config.h ../../ANGEL/ircd-hybrid/include/config.h
  #define DLPATH  ETCPATH "/dline.conf"           /* dline file */
  #define GPATH   LOGPATH "/gline.log"            /* gline logfile */
  #define RPATH   ETCPATH "/ircd.rsa"             /* ircd rsa private keyfile */
-diff -r -u ircd-hybrid/include/hash.h ../../db/ANGEL/ircd-hybrid/include/hash.h
---- ircd-hybrid/include/hash.h	Fri May 24 19:34:07 2002
-+++ ../../db/ANGEL/ircd-hybrid/include/hash.h	Tue May 27 20:40:33 2003
+Index: ircd-hybrid/include/hash.h
+===================================================================
+RCS file: /cvsroot/ircd-hybrid/include/hash.h,v
+retrieving revision 7.18
+diff -u -r7.18 hash.h
+--- ircd-hybrid/include/hash.h	24 May 2002 23:34:07 -0000	7.18
++++ ircd-hybrid/include/hash.h	10 Jun 2003 04:10:57 -0000
 @@ -86,6 +86,9 @@
                                       struct ResvChannel *resv_p);
  extern struct ResvChannel *hash_find_resv(const char *name);
@@ -111,18 +127,13 @@ diff -r -u ircd-hybrid/include/hash.h ../../db/ANGEL/ircd-hybrid/include/hash.h
  #endif  /* INCLUDED_hash_h */
  
  
-diff -r -u ircd-hybrid/include/ircd.h ../../ANGEL/ircd-hybrid/include/ircd.h
---- ircd-hybrid/include/ircd.h	Fri May 30 00:25:16 2003
-+++ ../../ANGEL/ircd-hybrid/include/ircd.h	Thu Jun  5 23:51:27 2003
-@@ -19,7 +19,7 @@
-  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
-  *  USA
-  *
-- *  $Id: hyb7+angel.diff,v 1.1.2.1 2003/06/10 01:11:45 db Exp $
-+ *  $Id: hyb7+angel.diff,v 1.1.2.1 2003/06/10 01:11:45 db Exp $
-  */
- 
- #ifndef INCLUDED_ircd_h
+Index: ircd-hybrid/include/ircd.h
+===================================================================
+RCS file: /cvsroot/ircd-hybrid/include/ircd.h,v
+retrieving revision 7.54.2.1
+diff -u -r7.54.2.1 ircd.h
+--- ircd-hybrid/include/ircd.h	29 May 2003 05:13:23 -0000	7.54.2.1
++++ ircd-hybrid/include/ircd.h	10 Jun 2003 04:10:57 -0000
 @@ -112,7 +112,9 @@
  extern dlink_list lazylink_channels;
  extern int callbacks_called;
@@ -134,9 +145,13 @@ diff -r -u ircd-hybrid/include/ircd.h ../../ANGEL/ircd-hybrid/include/ircd.h
  extern void set_time(void);
 -
  #endif
-diff -r -u ircd-hybrid/include/numeric.h ../../ANGEL/ircd-hybrid/include/numeric.h
---- ircd-hybrid/include/numeric.h	Wed Nov 27 10:46:24 2002
-+++ ../../ANGEL/ircd-hybrid/include/numeric.h	Tue May 27 21:53:53 2003
+Index: ircd-hybrid/include/numeric.h
+===================================================================
+RCS file: /cvsroot/ircd-hybrid/include/numeric.h,v
+retrieving revision 7.31
+diff -u -r7.31 numeric.h
+--- ircd-hybrid/include/numeric.h	27 Nov 2002 15:46:24 -0000	7.31
++++ ircd-hybrid/include/numeric.h	10 Jun 2003 04:10:58 -0000
 @@ -438,7 +438,7 @@
  /*	ERR_MASKTOOWIDE	     520	Undernet extension -Kev */
  /*	ERR_WHOTRUNC	     520	austnet */
@@ -146,19 +161,27 @@ diff -r -u ircd-hybrid/include/numeric.h ../../ANGEL/ircd-hybrid/include/numeric
  /*	ERR_WHOSYNTAX	     522        dalnet */
  /*	ERR_WHOLIMEXCEED     523	dalnet */
  
-diff -r -u ircd-hybrid/include/patchlevel.h ../../ANGEL/ircd-hybrid/include/patchlevel.h
---- ircd-hybrid/include/patchlevel.h	Wed May  7 09:22:08 2003
-+++ ../../ANGEL/ircd-hybrid/include/patchlevel.h	Tue May 27 22:37:39 2003
+Index: ircd-hybrid/include/patchlevel.h
+===================================================================
+RCS file: /cvsroot/ircd-hybrid/include/patchlevel.h,v
+retrieving revision 7.42.2.2
+diff -u -r7.42.2.2 patchlevel.h
+--- ircd-hybrid/include/patchlevel.h	7 May 2003 01:20:12 -0000	7.42.2.2
++++ ircd-hybrid/include/patchlevel.h	10 Jun 2003 04:10:58 -0000
 @@ -23,5 +23,5 @@
   */
  
  #ifndef PATCHLEVEL
--#define PATCHLEVEL   "hybrid-7.0"
+-#define PATCHLEVEL   "hybrid-7.0rc10"
 +#define PATCHLEVEL   "hybrid-7.0+angel"
  #endif
-diff -r -u ircd-hybrid/include/s_conf.h ../../ANGEL/ircd-hybrid/include/s_conf.h
---- ircd-hybrid/include/s_conf.h	Sat Feb 15 19:22:21 2003
-+++ ../../ANGEL/ircd-hybrid/include/s_conf.h	Thu May 29 11:51:28 2003
+Index: ircd-hybrid/include/s_conf.h
+===================================================================
+RCS file: /cvsroot/ircd-hybrid/include/s_conf.h,v
+retrieving revision 7.190
+diff -u -r7.190 s_conf.h
+--- ircd-hybrid/include/s_conf.h	16 Feb 2003 00:22:21 -0000	7.190
++++ ircd-hybrid/include/s_conf.h	10 Jun 2003 04:10:58 -0000
 @@ -151,6 +151,8 @@
  #define IsConfEncrypted(x)      ((x)->flags & CONF_FLAGS_ENCRYPTED)
  #define IsConfCompressed(x)     ((x)->flags & CONF_FLAGS_COMPRESSED)
@@ -235,9 +258,13 @@ diff -r -u ircd-hybrid/include/s_conf.h ../../ANGEL/ircd-hybrid/include/s_conf.h
  extern char *getfield(char *newline);
  
  extern char *get_oper_name(struct Client *client_p);
-diff -r -u ircd-hybrid/modules/Makefile.in ../../ANGEL/ircd-hybrid/modules/Makefile.in
---- ircd-hybrid/modules/Makefile.in	Sun Jun 16 12:31:25 2002
-+++ ../../ANGEL/ircd-hybrid/modules/Makefile.in	Tue May 27 22:26:17 2003
+Index: ircd-hybrid/modules/Makefile.in
+===================================================================
+RCS file: /cvsroot/ircd-hybrid/modules/Makefile.in,v
+retrieving revision 1.69
+diff -u -r1.69 Makefile.in
+--- ircd-hybrid/modules/Makefile.in	16 Jun 2002 16:31:25 -0000	1.69
++++ ircd-hybrid/modules/Makefile.in	10 Jun 2003 04:10:58 -0000
 @@ -103,7 +103,8 @@
    m_wallops.c \
    m_who.c \
@@ -248,110 +275,13 @@ diff -r -u ircd-hybrid/modules/Makefile.in ../../ANGEL/ircd-hybrid/modules/Makef
  
  ALL_SRCS = $(CORE_SRCS) \
             $(SRCS)
-diff -r -u ircd-hybrid/modules/core/m_sjoin.c ../../ANGEL/ircd-hybrid/modules/core/m_sjoin.c
---- ircd-hybrid/modules/core/m_sjoin.c	Thu Jul  4 12:07:23 2002
-+++ ../../ANGEL/ircd-hybrid/modules/core/m_sjoin.c	Wed May 28 02:02:01 2003
-@@ -121,6 +121,7 @@
-   char           *p; /* pointer used making sjbuf */
-   int hide_or_not;
-   int i;
-+  int hidden = ConfigServerHide.hidden;
-   dlink_node *m;
- #ifdef HALFOPS
-   static         char sjbuf_hops[BUFSIZE]; /* buffer with halfops as % */
-@@ -283,8 +284,9 @@
-   if(!isnew && !newts && oldts)
-   {
-     sendto_channel_local(ALL_MEMBERS, chptr,
-- 		":%s NOTICE %s :*** Notice -- TS for %s changed from %lu to 0",
--		me.name, chptr->chname, chptr->chname, oldts);
-+	 ":%s NOTICE %s :*** Notice -- TS for %s changed from %lu to 0",
-+       hidden?me.name:source_p->name, chptr->chname, chptr->chname, oldts);
-+
-     sendto_realops_flags(FLAGS_ALL, L_ALL,
- 		         "Server %s changing TS on %s from %lu to 0",
- 			 source_p->name, chptr->chname, oldts);
-@@ -362,7 +364,7 @@
-       remove_our_modes(hide_or_not, chptr, top_chptr, source_p);
-       sendto_channel_local(ALL_MEMBERS, chptr,
- 	    ":%s NOTICE %s :*** Notice -- TS for %s changed from %lu to %lu",
--	    me.name, chptr->chname, chptr->chname, oldts, newts);
-+	    hidden?me.name:source_p->name, chptr->chname, chptr->chname, oldts, newts);
-     }
-      
-   if (*modebuf != '\0')
-@@ -372,12 +374,12 @@
-       if (top_chptr != NULL)
- 	sendto_channel_local(ALL_MEMBERS,
- 			     chptr, ":%s MODE %s %s %s",
--			     me.name,
-+			     hidden?me.name:source_p->name,
- 			     top_chptr->chname, modebuf, parabuf);
-       else
- 	sendto_channel_local(ALL_MEMBERS,
- 			     chptr, ":%s MODE %s %s %s",
--			     me.name,
-+			     hidden?me.name:source_p->name,
- 			     chptr->chname, modebuf, parabuf);
-     }
- 
-@@ -610,7 +612,8 @@
- 	        *mbuf = '\0';
- 		sendto_channel_local(hide_or_not, chptr,
- 		                     ":%s MODE %s %s %s %s %s %s",
--				     me.name, RootChan(chptr)->chname,
-+				     hidden?me.name:source_p->name,
-+				     RootChan(chptr)->chname,
- 				     modebuf,
- 				     para[0], para[1], para[2], para[3]);
-                 mbuf = modebuf;
-@@ -642,7 +645,7 @@
-           *mbuf = '\0';
-           sendto_channel_local(hide_or_not, chptr,
-                                ":%s MODE %s %s %s %s %s %s",
--                               me.name,
-+                               hidden?me.name:source_p->name,
-                                RootChan(chptr)->chname,
-                                modebuf,
-                                para[0],para[1],para[2],para[3]);
-@@ -678,7 +681,7 @@
-     {
-       sendto_channel_local(hide_or_not, chptr,
-                            ":%s MODE %s %s %s %s %s %s",
--                           me.name,
-+                           hidden?me.name:source_p->name,
-                            RootChan(chptr)->chname,
-                            modebuf,
-                            para[0], para[1], para[2], para[3]);
-@@ -882,6 +885,7 @@
-   char *lpara[MAXMODEPARAMS];
-   char *chname;
-   int count = 0;
-+  int hidden = ConfigServerHide.hidden;
- 
-   mbuf = lmodebuf;
-   *mbuf++ = '-';
-@@ -909,7 +913,7 @@
- 	  *mbuf   = '\0';
- 	  sendto_channel_local(hide_or_not, chptr,
- 			       ":%s MODE %s %s %s %s %s %s",
--			       me.name,
-+			       hidden?me.name:source_p->name,
- 			       chname,
- 			       lmodebuf,
- 			       lpara[0], lpara[1], lpara[2], lpara[3] );
-@@ -926,7 +930,7 @@
-       *mbuf   = '\0';
-       sendto_channel_local(hide_or_not, chptr,
- 			   ":%s MODE %s %s %s %s %s %s",
--			   me.name,
-+			   hidden?me.name:source_p->name,
- 			   chname,
- 			   lmodebuf,
- 			   lpara[0], lpara[1], lpara[2], lpara[3] );
-diff -r -u ircd-hybrid/modules/m_kline.c ../../ANGEL/ircd-hybrid/modules/m_kline.c
---- ircd-hybrid/modules/m_kline.c	Wed Nov 13 08:12:02 2002
-+++ ../../ircd-hybrid/modules/m_kline.c	Fri May 30 01:40:14 2003
+Index: ircd-hybrid/modules/m_kline.c
+===================================================================
+RCS file: /cvsroot/ircd-hybrid/modules/m_kline.c,v
+retrieving revision 1.111
+diff -u -r1.111 m_kline.c
+--- ircd-hybrid/modules/m_kline.c	13 Nov 2002 13:12:02 -0000	1.111
++++ ircd-hybrid/modules/m_kline.c	10 Jun 2003 04:10:58 -0000
 @@ -49,6 +49,9 @@
  static void mo_kline(struct Client *,struct Client *,int,char **);
  static void ms_kline(struct Client *,struct Client *,int,char **);
@@ -756,9 +686,13 @@ diff -r -u ircd-hybrid/modules/m_kline.c ../../ANGEL/ircd-hybrid/modules/m_kline
 +   return(cidr_form_host);
 +}
 +#endif
-diff -r -u ircd-hybrid/modules/m_list.c ../../ANGEL/ircd-hybrid/modules/m_list.c
---- ircd-hybrid/modules/m_list.c	Fri Jan 17 00:11:53 2003
-+++ ../../ANGEL/ircd-hybrid/modules/m_list.c	Tue May 27 20:35:55 2003
+Index: ircd-hybrid/modules/m_list.c
+===================================================================
+RCS file: /cvsroot/ircd-hybrid/modules/m_list.c,v
+retrieving revision 1.45
+diff -u -r1.45 m_list.c
+--- ircd-hybrid/modules/m_list.c	17 Jan 2003 05:11:53 -0000	1.45
++++ ircd-hybrid/modules/m_list.c	10 Jun 2003 04:10:58 -0000
 @@ -71,6 +71,120 @@
  static int list_named_channel(struct Client *source_p,char *name);
  
@@ -897,9 +831,13 @@ diff -r -u ircd-hybrid/modules/m_list.c ../../ANGEL/ircd-hybrid/modules/m_list.c
  }
  
  
-diff -r -u ircd-hybrid/modules/m_resv.c ../../ANGEL/ircd-hybrid/modules/m_resv.c
---- ircd-hybrid/modules/m_resv.c	Fri May 24 19:34:22 2002
-+++ ../../ANGEL/ircd-hybrid/modules/m_resv.c	Thu May 29 11:52:03 2003
+Index: ircd-hybrid/modules/m_resv.c
+===================================================================
+RCS file: /cvsroot/ircd-hybrid/modules/m_resv.c,v
+retrieving revision 1.16
+diff -u -r1.16 m_resv.c
+--- ircd-hybrid/modules/m_resv.c	24 May 2002 23:34:22 -0000	1.16
++++ ircd-hybrid/modules/m_resv.c	10 Jun 2003 04:10:58 -0000
 @@ -102,6 +102,7 @@
                           "%s has placed a local RESV on channel: %s [%s]",
               	         get_oper_name(source_p),
@@ -932,9 +870,13 @@ diff -r -u ircd-hybrid/modules/m_resv.c ../../ANGEL/ircd-hybrid/modules/m_resv.c
  
        sendto_one(source_p,
                   ":%s NOTICE %s :The local RESV has been removed on nick: %s",
-diff -r -u ircd-hybrid/modules/m_stats.c ../../ANGEL/ircd-hybrid/modules/m_stats.c
---- ircd-hybrid/modules/m_stats.c	Tue May  6 01:47:39 2003
-+++ ../../ANGEL/ircd-hybrid/modules/m_stats.c	Wed May 28 00:15:32 2003
+Index: ircd-hybrid/modules/m_stats.c
+===================================================================
+RCS file: /cvsroot/ircd-hybrid/modules/m_stats.c,v
+retrieving revision 1.115.2.2
+diff -u -r1.115.2.2 m_stats.c
+--- ircd-hybrid/modules/m_stats.c	6 May 2003 05:32:16 -0000	1.115.2.2
++++ ircd-hybrid/modules/m_stats.c	10 Jun 2003 04:10:58 -0000
 @@ -106,6 +106,7 @@
  static void stats_adns_servers(struct Client *);
  static void stats_connect(struct Client *);
@@ -1024,9 +966,13 @@ diff -r -u ircd-hybrid/modules/m_stats.c ../../ANGEL/ircd-hybrid/modules/m_stats
  		 target_p->name, target_p->username, target_p->host,
  		 (int)(CurrentTime - target_p->user->last));
      }
-diff -r -u ircd-hybrid/modules/m_unkline.c ../../ANGEL/ircd-hybrid/modules/m_unkline.c
---- ircd-hybrid/modules/m_unkline.c	Mon Nov 18 14:54:58 2002
-+++ ../../ANGEL/ircd-hybrid/modules/m_unkline.c	Thu May 29 11:52:54 2003
+Index: ircd-hybrid/modules/m_unkline.c
+===================================================================
+RCS file: /cvsroot/ircd-hybrid/modules/m_unkline.c,v
+retrieving revision 1.51
+diff -u -r1.51 m_unkline.c
+--- ircd-hybrid/modules/m_unkline.c	18 Nov 2002 19:54:58 -0000	1.51
++++ ircd-hybrid/modules/m_unkline.c	10 Jun 2003 04:10:59 -0000
 @@ -38,6 +38,7 @@
  #include "s_log.h"
  #include "s_misc.h"
@@ -1451,9 +1397,13 @@ diff -r -u ircd-hybrid/modules/m_unkline.c ../../ANGEL/ircd-hybrid/modules/m_unk
  }
  
  /*
-diff -r -u ircd-hybrid/modules/m_whois.c ../../ANGEL/ircd-hybrid/modules/m_whois.c
---- ircd-hybrid/modules/m_whois.c	Sat Feb  8 19:02:28 2003
-+++ ../../ANGEL/ircd-hybrid/modules/m_whois.c	Tue May 27 20:31:58 2003
+Index: ircd-hybrid/modules/m_whois.c
+===================================================================
+RCS file: /cvsroot/ircd-hybrid/modules/m_whois.c,v
+retrieving revision 1.87
+diff -u -r1.87 m_whois.c
+--- ircd-hybrid/modules/m_whois.c	9 Feb 2003 00:02:28 -0000	1.87
++++ ircd-hybrid/modules/m_whois.c	10 Jun 2003 04:10:59 -0000
 @@ -480,8 +480,7 @@
  /* although we should fill in parc and parv, we don't ..
   *	 be careful of this when writing whois hooks
@@ -1464,18 +1414,118 @@ diff -r -u ircd-hybrid/modules/m_whois.c ../../ANGEL/ircd-hybrid/modules/m_whois
    
    return;
  }
-diff -r -u ircd-hybrid/src/Makefile.in ../../ANGEL/ircd-hybrid/src/Makefile.in
---- ircd-hybrid/src/Makefile.in	Thu May 29 00:27:17 2003
-+++ ../../ANGEL/ircd-hybrid/src/Makefile.in	Fri Jun  6 00:10:07 2003
-@@ -1,7 +1,7 @@
- #
- # Makefile.in for ircd/src
- #
--# $Id: hyb7+angel.diff,v 1.1.2.1 2003/06/10 01:11:45 db Exp $
-+# $Id: hyb7+angel.diff,v 1.1.2.1 2003/06/10 01:11:45 db Exp $
- #
- CC		= @CC@
- INSTALL		= @INSTALL@
+Index: ircd-hybrid/modules/core/m_sjoin.c
+===================================================================
+RCS file: /cvsroot/ircd-hybrid/modules/core/m_sjoin.c,v
+retrieving revision 1.140
+diff -u -r1.140 m_sjoin.c
+--- ircd-hybrid/modules/core/m_sjoin.c	4 Jul 2002 16:07:23 -0000	1.140
++++ ircd-hybrid/modules/core/m_sjoin.c	10 Jun 2003 04:10:59 -0000
+@@ -121,6 +121,7 @@
+   char           *p; /* pointer used making sjbuf */
+   int hide_or_not;
+   int i;
++  int hidden = ConfigServerHide.hidden;
+   dlink_node *m;
+ #ifdef HALFOPS
+   static         char sjbuf_hops[BUFSIZE]; /* buffer with halfops as % */
+@@ -283,8 +284,9 @@
+   if(!isnew && !newts && oldts)
+   {
+     sendto_channel_local(ALL_MEMBERS, chptr,
+- 		":%s NOTICE %s :*** Notice -- TS for %s changed from %lu to 0",
+-		me.name, chptr->chname, chptr->chname, oldts);
++	 ":%s NOTICE %s :*** Notice -- TS for %s changed from %lu to 0",
++       hidden?me.name:source_p->name, chptr->chname, chptr->chname, oldts);
++
+     sendto_realops_flags(FLAGS_ALL, L_ALL,
+ 		         "Server %s changing TS on %s from %lu to 0",
+ 			 source_p->name, chptr->chname, oldts);
+@@ -362,7 +364,7 @@
+       remove_our_modes(hide_or_not, chptr, top_chptr, source_p);
+       sendto_channel_local(ALL_MEMBERS, chptr,
+ 	    ":%s NOTICE %s :*** Notice -- TS for %s changed from %lu to %lu",
+-	    me.name, chptr->chname, chptr->chname, oldts, newts);
++	    hidden?me.name:source_p->name, chptr->chname, chptr->chname, oldts, newts);
+     }
+      
+   if (*modebuf != '\0')
+@@ -372,12 +374,12 @@
+       if (top_chptr != NULL)
+ 	sendto_channel_local(ALL_MEMBERS,
+ 			     chptr, ":%s MODE %s %s %s",
+-			     me.name,
++			     hidden?me.name:source_p->name,
+ 			     top_chptr->chname, modebuf, parabuf);
+       else
+ 	sendto_channel_local(ALL_MEMBERS,
+ 			     chptr, ":%s MODE %s %s %s",
+-			     me.name,
++			     hidden?me.name:source_p->name,
+ 			     chptr->chname, modebuf, parabuf);
+     }
+ 
+@@ -610,7 +612,8 @@
+ 	        *mbuf = '\0';
+ 		sendto_channel_local(hide_or_not, chptr,
+ 		                     ":%s MODE %s %s %s %s %s %s",
+-				     me.name, RootChan(chptr)->chname,
++				     hidden?me.name:source_p->name,
++				     RootChan(chptr)->chname,
+ 				     modebuf,
+ 				     para[0], para[1], para[2], para[3]);
+                 mbuf = modebuf;
+@@ -642,7 +645,7 @@
+           *mbuf = '\0';
+           sendto_channel_local(hide_or_not, chptr,
+                                ":%s MODE %s %s %s %s %s %s",
+-                               me.name,
++                               hidden?me.name:source_p->name,
+                                RootChan(chptr)->chname,
+                                modebuf,
+                                para[0],para[1],para[2],para[3]);
+@@ -678,7 +681,7 @@
+     {
+       sendto_channel_local(hide_or_not, chptr,
+                            ":%s MODE %s %s %s %s %s %s",
+-                           me.name,
++                           hidden?me.name:source_p->name,
+                            RootChan(chptr)->chname,
+                            modebuf,
+                            para[0], para[1], para[2], para[3]);
+@@ -882,6 +885,7 @@
+   char *lpara[MAXMODEPARAMS];
+   char *chname;
+   int count = 0;
++  int hidden = ConfigServerHide.hidden;
+ 
+   mbuf = lmodebuf;
+   *mbuf++ = '-';
+@@ -909,7 +913,7 @@
+ 	  *mbuf   = '\0';
+ 	  sendto_channel_local(hide_or_not, chptr,
+ 			       ":%s MODE %s %s %s %s %s %s",
+-			       me.name,
++			       hidden?me.name:source_p->name,
+ 			       chname,
+ 			       lmodebuf,
+ 			       lpara[0], lpara[1], lpara[2], lpara[3] );
+@@ -926,7 +930,7 @@
+       *mbuf   = '\0';
+       sendto_channel_local(hide_or_not, chptr,
+ 			   ":%s MODE %s %s %s %s %s %s",
+-			   me.name,
++			   hidden?me.name:source_p->name,
+ 			   chname,
+ 			   lmodebuf,
+ 			   lpara[0], lpara[1], lpara[2], lpara[3] );
+Index: ircd-hybrid/src/Makefile.in
+===================================================================
+RCS file: /cvsroot/ircd-hybrid/src/Makefile.in,v
+retrieving revision 7.114.2.1
+diff -u -r7.114.2.1 Makefile.in
+--- ircd-hybrid/src/Makefile.in	29 May 2003 03:02:15 -0000	7.114.2.1
++++ ircd-hybrid/src/Makefile.in	10 Jun 2003 04:10:59 -0000
 @@ -61,6 +61,7 @@
    vchannel.c                    \
    class.c                       \
@@ -1492,18 +1542,13 @@ diff -r -u ircd-hybrid/src/Makefile.in ../../ANGEL/ircd-hybrid/src/Makefile.in
    linebuf.c                     \
    list.c                        \
    listener.c                    \
-diff -r -u ircd-hybrid/src/channel.c ../../ANGEL/ircd-hybrid/src/channel.c
---- ircd-hybrid/src/channel.c	Thu May 29 00:27:17 2003
-+++ ../../ANGEL/ircd-hybrid/src/channel.c	Fri Jun  6 00:09:30 2003
-@@ -19,7 +19,7 @@
-  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
-  *  USA
-  *
-- *  $Id: hyb7+angel.diff,v 1.1.2.1 2003/06/10 01:11:45 db Exp $
-+ *  $Id: hyb7+angel.diff,v 1.1.2.1 2003/06/10 01:11:45 db Exp $
-  */
- 
- #include "stdinc.h"
+Index: ircd-hybrid/src/channel.c
+===================================================================
+RCS file: /cvsroot/ircd-hybrid/src/channel.c,v
+retrieving revision 7.355.2.1
+diff -u -r7.355.2.1 channel.c
+--- ircd-hybrid/src/channel.c	29 May 2003 04:02:36 -0000	7.355.2.1
++++ ircd-hybrid/src/channel.c	10 Jun 2003 04:10:59 -0000
 @@ -1348,10 +1348,9 @@
      if (!splitmode && ((Count.server < split_servers) || (Count.total < split_users)))
      {
@@ -1516,9 +1561,13 @@ diff -r -u ircd-hybrid/src/channel.c ../../ANGEL/ircd-hybrid/src/channel.c
      }
      else if (splitmode && (Count.server > split_servers) && (Count.total > split_users))
      {
-diff -r -u ircd-hybrid/src/channel_mode.c ../../ANGEL/ircd-hybrid/src/channel_mode.c
---- ircd-hybrid/src/channel_mode.c	Sun Apr 20 08:42:51 2003
-+++ ../../ANGEL/ircd-hybrid/src/channel_mode.c	Fri Jun  6 01:09:18 2003
+Index: ircd-hybrid/src/channel_mode.c
+===================================================================
+RCS file: /cvsroot/ircd-hybrid/src/channel_mode.c,v
+retrieving revision 7.71.2.2
+diff -u -r7.71.2.2 channel_mode.c
+--- ircd-hybrid/src/channel_mode.c	20 Apr 2003 02:33:41 -0000	7.71.2.2
++++ ircd-hybrid/src/channel_mode.c	10 Jun 2003 04:11:00 -0000
 @@ -830,7 +830,7 @@
    simple_modes_mask |= mode_type;
  
@@ -1616,9 +1665,13 @@ diff -r -u ircd-hybrid/src/channel_mode.c ../../ANGEL/ircd-hybrid/src/channel_mo
      chptr->mode.limit = 0;
  
      mode_changes[mode_count].letter = c;
-diff -r -u ircd-hybrid/src/client.c ../../ANGEL/ircd-hybrid/src/client.c
---- ircd-hybrid/src/client.c	Tue Mar 11 20:35:08 2003
-+++ ../../ANGEL/ircd-hybrid/src/client.c	Mon Jun  2 00:39:00 2003
+Index: ircd-hybrid/src/client.c
+===================================================================
+RCS file: /cvsroot/ircd-hybrid/src/client.c,v
+retrieving revision 7.331.2.1
+diff -u -r7.331.2.1 client.c
+--- ircd-hybrid/src/client.c	2 Mar 2003 07:30:54 -0000	7.331.2.1
++++ ircd-hybrid/src/client.c	10 Jun 2003 04:11:00 -0000
 @@ -354,6 +354,10 @@
        }
      }
@@ -1720,9 +1773,13 @@ diff -r -u ircd-hybrid/src/client.c ../../ANGEL/ircd-hybrid/src/client.c
  }
  
  /*
-diff -r -u ircd-hybrid/src/hash.c ../../ANGEL/ircd-hybrid/src/hash.c
---- ircd-hybrid/src/hash.c	Mon Oct 28 16:09:23 2002
-+++ ../../ANGEL/ircd-hybrid/src/hash.c	Tue May 27 22:19:26 2003
+Index: ircd-hybrid/src/hash.c
+===================================================================
+RCS file: /cvsroot/ircd-hybrid/src/hash.c,v
+retrieving revision 7.47
+diff -u -r7.47 hash.c
+--- ircd-hybrid/src/hash.c	28 Oct 2002 21:09:23 -0000	7.47
++++ ircd-hybrid/src/hash.c	10 Jun 2003 04:11:00 -0000
 @@ -40,6 +40,10 @@
  #include "fileio.h"
  #include "memory.h"
@@ -1899,18 +1956,13 @@ diff -r -u ircd-hybrid/src/hash.c ../../ANGEL/ircd-hybrid/src/hash.c
  
  
  
-diff -r -u ircd-hybrid/src/ircd.c ../../ANGEL/ircd-hybrid/src/ircd.c
---- ircd-hybrid/src/ircd.c	Fri May 30 00:25:17 2003
-+++ ../../ANGEL/ircd-hybrid/src/ircd.c	Thu Jun  5 23:52:51 2003
-@@ -19,7 +19,7 @@
-  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
-  *  USA
-  *
-- *  $Id: hyb7+angel.diff,v 1.1.2.1 2003/06/10 01:11:45 db Exp $
-+ *  $Id: hyb7+angel.diff,v 1.1.2.1 2003/06/10 01:11:45 db Exp $
-  */
- 
- #include "stdinc.h"
+Index: ircd-hybrid/src/ircd.c
+===================================================================
+RCS file: /cvsroot/ircd-hybrid/src/ircd.c,v
+retrieving revision 7.252.2.1
+diff -u -r7.252.2.1 ircd.c
+--- ircd-hybrid/src/ircd.c	29 May 2003 05:13:26 -0000	7.252.2.1
++++ ircd-hybrid/src/ircd.c	10 Jun 2003 04:11:00 -0000
 @@ -132,6 +132,9 @@
  int split_users;
  int split_servers;
@@ -1949,9 +2001,13 @@ diff -r -u ircd-hybrid/src/ircd.c ../../ANGEL/ircd-hybrid/src/ircd.c
  
    myargv = argv;
    umask(077);                /* better safe than sorry --SRB */
-diff -r -u ircd-hybrid/src/ircd_lexer.l ../../ANGEL/ircd-hybrid/src/ircd_lexer.l
---- ircd-hybrid/src/ircd_lexer.l	Wed Oct 30 12:44:56 2002
-+++ ../../ANGEL/ircd-hybrid/src/ircd_lexer.l	Wed May 28 12:22:10 2003
+Index: ircd-hybrid/src/ircd_lexer.l
+===================================================================
+RCS file: /cvsroot/ircd-hybrid/src/ircd_lexer.l,v
+retrieving revision 1.146
+diff -u -r1.146 ircd_lexer.l
+--- ircd-hybrid/src/ircd_lexer.l	30 Oct 2002 17:44:56 -0000	1.146
++++ ircd-hybrid/src/ircd_lexer.l	10 Jun 2003 04:11:01 -0000
 @@ -182,6 +182,7 @@
  have_ident	{ return HAVE_IDENT; }
  havent_read_conf { return HAVENT_READ_CONF; }
@@ -1968,9 +2024,13 @@ diff -r -u ircd-hybrid/src/ircd_lexer.l ../../ANGEL/ircd-hybrid/src/ircd_lexer.l
  yes		{ return TYES; }
  
  failed_oper_notice      { return FAILED_OPER_NOTICE; }
-diff -r -u ircd-hybrid/src/ircd_parser.y ../../ANGEL/ircd-hybrid/src/ircd_parser.y
---- ircd-hybrid/src/ircd_parser.y	Sun Mar  2 08:50:48 2003
-+++ ../../ANGEL/ircd-hybrid/src/ircd_parser.y	Wed May 28 10:56:25 2003
+Index: ircd-hybrid/src/ircd_parser.y
+===================================================================
+RCS file: /cvsroot/ircd-hybrid/src/ircd_parser.y,v
+retrieving revision 1.262
+diff -u -r1.262 ircd_parser.y
+--- ircd-hybrid/src/ircd_parser.y	12 Nov 2002 13:45:42 -0000	1.262
++++ ircd-hybrid/src/ircd_parser.y	10 Jun 2003 04:11:01 -0000
 @@ -146,6 +146,7 @@
  %token  HAVE_IDENT
  %token	HAVENT_READ_CONF
@@ -2024,9 +2084,13 @@ diff -r -u ircd-hybrid/src/ircd_parser.y ../../ANGEL/ircd-hybrid/src/ircd_parser
  
  oper_unkline: UNKLINE '=' TYES ';' { yy_achead->port |= CONF_OPER_UNKLINE;}
                |
-diff -r -u ircd-hybrid/src/messages.tab ../../ANGEL/ircd-hybrid/src/messages.tab
---- ircd-hybrid/src/messages.tab	Tue May  6 01:47:40 2003
-+++ ../../ANGEL/ircd-hybrid/src/messages.tab	Wed May 28 00:45:09 2003
+Index: ircd-hybrid/src/messages.tab
+===================================================================
+RCS file: /cvsroot/ircd-hybrid/src/messages.tab,v
+retrieving revision 7.73.2.1
+diff -u -r7.73.2.1 messages.tab
+--- ircd-hybrid/src/messages.tab	6 May 2003 05:32:17 -0000	7.73.2.1
++++ ircd-hybrid/src/messages.tab	10 Jun 2003 04:11:01 -0000
 @@ -548,7 +548,7 @@
  /* 518 */	NULL,
  /* 519 */	NULL,
@@ -2036,9 +2100,13 @@ diff -r -u ircd-hybrid/src/messages.tab ../../ANGEL/ircd-hybrid/src/messages.tab
  /* 522 */	NULL,
  /* 523 */	NULL,
  /* 524 ERR_HELPNOTFOUND, */	":%s 524 %s %s :Help not found",
-diff -r -u ircd-hybrid/src/s_conf.c ../../ANGEL/ircd-hybrid/src/s_conf.c
---- ircd-hybrid/src/s_conf.c	Sun Feb 16 17:06:46 2003
-+++ ../../ANGEL/ircd-hybrid/src/s_conf.c	Thu May 29 11:59:39 2003
+Index: ircd-hybrid/src/s_conf.c
+===================================================================
+RCS file: /cvsroot/ircd-hybrid/src/s_conf.c,v
+retrieving revision 7.341
+diff -u -r7.341 s_conf.c
+--- ircd-hybrid/src/s_conf.c	16 Feb 2003 22:06:46 -0000	7.341
++++ ircd-hybrid/src/s_conf.c	10 Jun 2003 04:11:02 -0000
 @@ -112,9 +112,12 @@
  static int hash_ip(struct irc_inaddr *);
  static void garbage_collect_ip_entries(void);
@@ -2387,9 +2455,13 @@ diff -r -u ircd-hybrid/src/s_conf.c ../../ANGEL/ircd-hybrid/src/s_conf.c
    return(ConfigFileEntry.dlinefile);
  }
  
-diff -r -u ircd-hybrid/src/s_user.c ../../ANGEL/ircd-hybrid/src/s_user.c
---- ircd-hybrid/src/s_user.c	Fri May 30 00:25:18 2003
-+++ ../../ANGEL/ircd-hybrid/src/s_user.c	Fri Jun  6 00:47:51 2003
+Index: ircd-hybrid/src/s_user.c
+===================================================================
+RCS file: /cvsroot/ircd-hybrid/src/s_user.c,v
+retrieving revision 7.223.2.2
+diff -u -r7.223.2.2 s_user.c
+--- ircd-hybrid/src/s_user.c	29 May 2003 04:58:03 -0000	7.223.2.2
++++ ircd-hybrid/src/s_user.c	10 Jun 2003 04:11:02 -0000
 @@ -1143,6 +1143,8 @@
              *m++ = user_modes[i].letter;
            else
@@ -2399,364 +2471,9 @@ diff -r -u ircd-hybrid/src/s_user.c ../../ANGEL/ircd-hybrid/src/s_user.c
                what = MODE_ADD;
                *m++ = '+';
                *m++ = user_modes[i].letter;
- D
---- /dev/null	Fri Jun  6 01:11:37 2003
-+++ ircd-hybrid/modules/m_xline.c	Fri Jun  6 00:59:58 2003
-@@ -0,0 +1,352 @@
-+/*
-+ *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
-+ *  m_xline.c: xlines an user.
-+ *
-+ *  Copyright (C) 2002 by the past and present ircd coders, and others.
-+ *
-+ *  This program is free software; you can redistribute it and/or modify
-+ *  it under the terms of the GNU General Public License as published by
-+ *  the Free Software Foundation; either version 2 of the License, or
-+ *  (at your option) any later version.
-+ *
-+ *  This program is distributed in the hope that it will be useful,
-+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ *  GNU General Public License for more details.
-+ *
-+ *  You should have received a copy of the GNU General Public License
-+ *  along with this program; if not, write to the Free Software
-+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
-+ *  USA
-+ *
-+ *  $Id: hyb7+angel.diff,v 1.1.2.1 2003/06/10 01:11:45 db Exp $
-+ */
-+
-+#include "stdinc.h"
-+#include "tools.h"
-+#include "channel.h"
-+#include "class.h"
-+#include "client.h"
-+#include "common.h"
-+#include "irc_string.h"
-+#include "ircd.h"
-+#include "hostmask.h"
-+#include "numeric.h"
-+#include "fdlist.h"
-+#include "s_bsd.h"
-+#include "s_conf.h"
-+#include "s_log.h"
-+#include "s_misc.h"
-+#include "send.h"
-+#include "hash.h"
-+#include "handlers.h"
-+#include "s_serv.h"
-+#include "msg.h"
-+#include "parse.h"
-+#include "modules.h"
-+#include "resv.h"
-+
-+static void mo_xline(struct Client *, struct Client *, int, char **);
-+static void ms_xline(struct Client *, struct Client *, int, char **);
-+
-+static void mo_unxline(struct Client *, struct Client *, int, char **);
-+static void ms_unxline(struct Client *, struct Client *, int, char **);
-+
-+static int valid_xline(struct Client *, char *, char *, int);
-+static void write_xline(struct Client *, char *, char *, int);
-+static void remove_xline(struct Client *, char *, int);
-+
-+static int valid_wild_card(char *gecos);
-+
-+struct Message xline_msgtab = {
-+  "XLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
-+  {m_unregistered, m_not_oper, ms_xline, mo_xline}
-+};
-+
-+struct Message unxline_msgtab = {
-+  "UNXLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
-+  {m_unregistered, m_not_oper, ms_unxline, mo_unxline}
-+};
-+
-+
-+#ifndef STATIC_MODULES
-+void
-+_modinit(void)
-+{
-+  mod_add_cmd(&xline_msgtab);
-+  mod_add_cmd(&unxline_msgtab);
-+}
-+
-+void
-+_moddeinit(void)
-+{
-+  mod_del_cmd(&xline_msgtab);
-+  mod_del_cmd(&unxline_msgtab);
-+}
-+const char *_version = "$Revision: 1.1.2.1 $";
-+#endif
-+
-+
-+/*
-+ * mo_xline
-+ *
-+ * inputs	- pointer to server
-+ *		- pointer to client
-+ *		- parameter count
-+ *		- parameter list
-+ * output	-
-+ * side effects - x line is added
-+ *
-+ */
-+static void
-+mo_xline(struct Client *client_p, struct Client *source_p,
-+         int parc, char *parv[])
-+{
-+  struct ConfItem *aconf;
-+  char *type, *reason, *pattern;
-+  int type_i = 1;
-+
-+  type = reason = pattern = NULL;
-+
-+  if (!IsOperX(source_p))
-+  {
-+    sendto_one(source_p, ":%s NOTICE %s :You need xline = yes;",
-+               me.name, source_p->name);
-+    return;
-+  }
-+
-+  if ((aconf = find_x_conf(parv[1])) != NULL)
-+  {
-+    sendto_one(source_p, ":%s NOTICE %s :[%s] already X-Lined by [%s] - %s",
-+               me.name, source_p->name, parv[1], aconf->name, aconf->passwd);
-+    return;
-+  }
-+
-+  /* XLINE <gecos> <type> :<reason> */
-+  if (parc == 4)
-+  {
-+    reason = parv[3];
-+    type = parv[2];
-+  }
-+  /* XLINE <gecos> :<reason> */
-+  else if (parc == 3)
-+  {
-+    reason = parv[2];
-+    type = "REJECT";
-+  }
-+  else
-+  {
-+    sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-+               me.name, source_p->name, "XLINE");
-+    return;
-+  }
-+
-+  if (irccmp(type,"WARN") == 0)
-+    type_i = 0;
-+  else if (irccmp(type,"REJECT") == 0)
-+    type_i = 1;
-+  else if (irccmp(type,"SILENT") == 0)
-+    type_i = 2;
-+  else
-+    type_i = atoi(type);
-+
-+  if (EmptyString(reason))
-+    reason = "No Reason";
-+
-+  write_xline(source_p, parv[1], reason, type_i);
-+  rehashed_xlines = 1;
-+} /* mo_xline() */
-+
-+/*
-+ * ms_xline()
-+ *
-+ * inputs	- oper, target server, xline, type, reason
-+ * outputs	- none
-+ * side effects	- propogates xline, applies it if we are a target
-+ */
-+static void
-+ms_xline(struct Client *client_p, struct Client *source_p,
-+	 int parc, char *parv[])
-+{
-+}
-+
-+/*
-+ * mo_unxline
-+ *
-+ * inputs	- pointer to server
-+ *		- pointer to client
-+ *		- parameter count
-+ *		- parameter list
-+ * output	-
-+ * side effects - x line is added
-+ *
-+ */
-+static void
-+mo_unxline(struct Client *client_p, struct Client *source_p,
-+           int parc, char *parv[])
-+{
-+  if (!IsOperX(source_p))
-+  {
-+    sendto_one(source_p, ":%s NOTICE %s :You need xline = yes;",
-+	       me.name, source_p->name);
-+    return;
-+  }
-+
-+  if (EmptyString(parv[1]))
-+  {
-+    sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-+               me.name, source_p->name, "UNXLINE");
-+    return;
-+  }
-+
-+  if (parc > 1)
-+  {
-+    remove_xline(source_p, parv[1], 0);
-+  }
-+  else
-+    sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-+               me.name, source_p->name, "UNXLINE");
-+
-+} /* mo_unxline() */
-+
-+/*
-+ * ms_unxline()
-+ *
-+ * inputs	- oper, target server, gecos
-+ * outputs	- none
-+ * side effects	- propogates unxline, applies it if we are a target
-+ */
-+static void
-+ms_unxline(struct Client *client_p, struct Client *source_p,
-+	   int parc, char *parv[])
-+{
-+}
-+
-+/* valid_xline()
-+ *
-+ * inputs	- client to complain to, gecos, reason, whether to complain
-+ * outputs	- 1 for valid, else 0
-+ * side effects	- complains to client, when warn != 0
-+ */
-+static int
-+valid_xline(struct Client *source_p, char *gecos, char *reason, int warn)
-+{
-+  if (EmptyString(reason))
-+  {
-+    if (warn)
-+      sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-+                 me.name, source_p->name, "XLINE");
-+    return 0;
-+  }
-+
-+  if (strchr(reason, ':') != NULL)
-+  {
-+    if (warn)
-+      sendto_one(source_p, ":%s NOTICE %s :Invalid character ':' in comment",
-+                 me.name, source_p->name);
-+    return 0;
-+  }
-+
-+  if (!valid_wild_card(gecos))
-+  {
-+    if (warn)
-+      sendto_one(source_p, ":%s NOTICE %s :Please include at least %d non-wildcard characters with the xline",
-+                 me.name, source_p->name, ConfigFileEntry.min_nonwildcard);
-+
-+    return 0;
-+  }
-+
-+  return 1;
-+}
-+
-+/* write_xline()
-+ *
-+ * inputs	- client taking credit for xline, gecos, reason, xline type
-+ * outputs	- none
-+ * side effects	- when succesful, adds an xline to the conf
-+ */
-+static void
-+write_xline(struct Client *source_p, char *gecos, char *reason, int type)
-+{
-+  struct ConfItem *aconf;
-+  const char *current_date;
-+  time_t cur_time;
-+
-+  aconf = make_conf();
-+  aconf->status = CONF_XLINE;
-+  aconf->port = type;
-+
-+  collapse(gecos);
-+  DupString(aconf->name, gecos);
-+  DupString(aconf->passwd, reason);
-+  set_time();
-+  cur_time = CurrentTime;
-+  current_date = smalldate(cur_time);
-+  write_conf_line(XLINE_TYPE, source_p, aconf, current_date, cur_time);
-+  conf_add_conf(aconf);
-+}
-+
-+static void
-+remove_xline(struct Client *source_p, char *gecos, int cluster)
-+{
-+  if (remove_conf_line(XLINE_TYPE, source_p, gecos, NULL) > 0)
-+  {
-+    if (!cluster)
-+      sendto_one(source_p, ":%s NOTICE %s :X-Line for [%s] is removed",
-+                 me.name, source_p->name, gecos);
-+    sendto_realops_flags(FLAGS_ALL, L_ALL,
-+                         "%s has removed the X-Line for: [%s]",
-+                         get_oper_name(source_p), gecos);
-+    ilog(L_NOTICE, "%s removed X-Line for [%s]", get_oper_name(source_p),
-+         gecos);
-+  }
-+  else if (!cluster)
-+    sendto_one(source_p, ":%s NOTICE %s :No X-Line for %s",
-+               me.name, source_p->name, gecos);
-+}
-+
-+/*
-+ * valid_wild_card
-+ * input        - pointer to string to check
-+ * output       - 0 if not valid, 1 if valid
-+ * side effects -
-+ */
-+static int
-+valid_wild_card(char *gecos)
-+{
-+  char *p;
-+  char tmpch;
-+  int nonwild;
-+
-+  /*
-+   * Now we must check the user and host to make sure there
-+   * are at least NONWILDCHARS non-wildcard characters in
-+   * them, otherwise assume they are attempting to kline
-+   * *@* or some variant of that. This code will also catch
-+   * people attempting to kline *@*.tld, as long as NONWILDCHARS
-+   * is greater than 3. In that case, there are only 3 non-wild
-+   * characters (tld), so if NONWILDCHARS is 4, the kline will
-+   * be disallowed.
-+   * -wnder
-+   */
-+
-+  nonwild = 0;
-+  p = gecos;
-+  while ((tmpch = *p++))
-+  {
-+    if (!IsKWildChar(tmpch))
-+    {
-+      /*
-+       * If we find enough non-wild characters, we can
-+       * break - no point in searching further.
-+       */
-+      if (++nonwild >= ConfigFileEntry.min_nonwildcard)
-+        break;
-+    }
-+  }
-+
-+  if (nonwild < ConfigFileEntry.min_nonwildcard)
-+    return 1;
-+  else
-+    return 0;
-+}
---- /dev/null	Fri Jun  6 01:11:37 2003
-+++ ircd-hybrid/src/csvlib.c	Thu May 29 11:59:11 2003
+
+--- /dev/null	Tue Jun 10 00:03:23 2003
++++ ircd-hybrid/src/csvlib.c	Tue Jun 10 00:09:38 2003
 @@ -0,0 +1,639 @@
 +/*
 + *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
@@ -2766,7 +2483,7 @@ diff -r -u ircd-hybrid/src/s_user.c ../../ANGEL/ircd-hybrid/src/s_user.c
 + *  Use it anywhere you like, if you like it buy us a beer.
 + *  If it's broken, don't bother us with the lawyers.
 + *
-+ *  $Id: hyb7+angel.diff,v 1.1.2.1 2003/06/10 01:11:45 db Exp $
++ *  $Id: hyb7+angel.diff,v 1.1.2.2 2003/06/10 04:12:59 db Exp $
 + */
 +
 +#include "stdinc.h"
@@ -3396,4 +3113,359 @@ diff -r -u ircd-hybrid/src/s_user.c ../../ANGEL/ircd-hybrid/src/s_user.c
 +    fbclose(out);
 +  }
 +  return(error_on_write);
++}
+--- /dev/null	Tue Jun 10 00:03:23 2003
++++ ircd-hybrid/modules/m_xline.c	Tue Jun 10 00:09:38 2003
+@@ -0,0 +1,352 @@
++/*
++ *  ircd-hybrid: an advanced Internet Relay Chat Daemon(ircd).
++ *  m_xline.c: xlines an user.
++ *
++ *  Copyright (C) 2002 by the past and present ircd coders, and others.
++ *
++ *  This program is free software; you can redistribute it and/or modify
++ *  it under the terms of the GNU General Public License as published by
++ *  the Free Software Foundation; either version 2 of the License, or
++ *  (at your option) any later version.
++ *
++ *  This program is distributed in the hope that it will be useful,
++ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *  GNU General Public License for more details.
++ *
++ *  You should have received a copy of the GNU General Public License
++ *  along with this program; if not, write to the Free Software
++ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
++ *  USA
++ *
++ *  $Id: hyb7+angel.diff,v 1.1.2.2 2003/06/10 04:12:59 db Exp $
++ */
++
++#include "stdinc.h"
++#include "tools.h"
++#include "channel.h"
++#include "class.h"
++#include "client.h"
++#include "common.h"
++#include "irc_string.h"
++#include "ircd.h"
++#include "hostmask.h"
++#include "numeric.h"
++#include "fdlist.h"
++#include "s_bsd.h"
++#include "s_conf.h"
++#include "s_log.h"
++#include "s_misc.h"
++#include "send.h"
++#include "hash.h"
++#include "handlers.h"
++#include "s_serv.h"
++#include "msg.h"
++#include "parse.h"
++#include "modules.h"
++#include "resv.h"
++
++static void mo_xline(struct Client *, struct Client *, int, char **);
++static void ms_xline(struct Client *, struct Client *, int, char **);
++
++static void mo_unxline(struct Client *, struct Client *, int, char **);
++static void ms_unxline(struct Client *, struct Client *, int, char **);
++
++static int valid_xline(struct Client *, char *, char *, int);
++static void write_xline(struct Client *, char *, char *, int);
++static void remove_xline(struct Client *, char *, int);
++
++static int valid_wild_card(char *gecos);
++
++struct Message xline_msgtab = {
++  "XLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
++  {m_unregistered, m_not_oper, ms_xline, mo_xline}
++};
++
++struct Message unxline_msgtab = {
++  "UNXLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
++  {m_unregistered, m_not_oper, ms_unxline, mo_unxline}
++};
++
++
++#ifndef STATIC_MODULES
++void
++_modinit(void)
++{
++  mod_add_cmd(&xline_msgtab);
++  mod_add_cmd(&unxline_msgtab);
++}
++
++void
++_moddeinit(void)
++{
++  mod_del_cmd(&xline_msgtab);
++  mod_del_cmd(&unxline_msgtab);
++}
++const char *_version = "$Revision: 1.1.2.2 $";
++#endif
++
++
++/*
++ * mo_xline
++ *
++ * inputs	- pointer to server
++ *		- pointer to client
++ *		- parameter count
++ *		- parameter list
++ * output	-
++ * side effects - x line is added
++ *
++ */
++static void
++mo_xline(struct Client *client_p, struct Client *source_p,
++         int parc, char *parv[])
++{
++  struct ConfItem *aconf;
++  char *type, *reason, *pattern;
++  int type_i = 1;
++
++  type = reason = pattern = NULL;
++
++  if (!IsOperX(source_p))
++  {
++    sendto_one(source_p, ":%s NOTICE %s :You need xline = yes;",
++               me.name, source_p->name);
++    return;
++  }
++
++  if ((aconf = find_x_conf(parv[1])) != NULL)
++  {
++    sendto_one(source_p, ":%s NOTICE %s :[%s] already X-Lined by [%s] - %s",
++               me.name, source_p->name, parv[1], aconf->name, aconf->passwd);
++    return;
++  }
++
++  /* XLINE <gecos> <type> :<reason> */
++  if (parc == 4)
++  {
++    reason = parv[3];
++    type = parv[2];
++  }
++  /* XLINE <gecos> :<reason> */
++  else if (parc == 3)
++  {
++    reason = parv[2];
++    type = "REJECT";
++  }
++  else
++  {
++    sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
++               me.name, source_p->name, "XLINE");
++    return;
++  }
++
++  if (irccmp(type,"WARN") == 0)
++    type_i = 0;
++  else if (irccmp(type,"REJECT") == 0)
++    type_i = 1;
++  else if (irccmp(type,"SILENT") == 0)
++    type_i = 2;
++  else
++    type_i = atoi(type);
++
++  if (EmptyString(reason))
++    reason = "No Reason";
++
++  write_xline(source_p, parv[1], reason, type_i);
++  rehashed_xlines = 1;
++} /* mo_xline() */
++
++/*
++ * ms_xline()
++ *
++ * inputs	- oper, target server, xline, type, reason
++ * outputs	- none
++ * side effects	- propogates xline, applies it if we are a target
++ */
++static void
++ms_xline(struct Client *client_p, struct Client *source_p,
++	 int parc, char *parv[])
++{
++}
++
++/*
++ * mo_unxline
++ *
++ * inputs	- pointer to server
++ *		- pointer to client
++ *		- parameter count
++ *		- parameter list
++ * output	-
++ * side effects - x line is added
++ *
++ */
++static void
++mo_unxline(struct Client *client_p, struct Client *source_p,
++           int parc, char *parv[])
++{
++  if (!IsOperX(source_p))
++  {
++    sendto_one(source_p, ":%s NOTICE %s :You need xline = yes;",
++	       me.name, source_p->name);
++    return;
++  }
++
++  if (EmptyString(parv[1]))
++  {
++    sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
++               me.name, source_p->name, "UNXLINE");
++    return;
++  }
++
++  if (parc > 1)
++  {
++    remove_xline(source_p, parv[1], 0);
++  }
++  else
++    sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
++               me.name, source_p->name, "UNXLINE");
++
++} /* mo_unxline() */
++
++/*
++ * ms_unxline()
++ *
++ * inputs	- oper, target server, gecos
++ * outputs	- none
++ * side effects	- propogates unxline, applies it if we are a target
++ */
++static void
++ms_unxline(struct Client *client_p, struct Client *source_p,
++	   int parc, char *parv[])
++{
++}
++
++/* valid_xline()
++ *
++ * inputs	- client to complain to, gecos, reason, whether to complain
++ * outputs	- 1 for valid, else 0
++ * side effects	- complains to client, when warn != 0
++ */
++static int
++valid_xline(struct Client *source_p, char *gecos, char *reason, int warn)
++{
++  if (EmptyString(reason))
++  {
++    if (warn)
++      sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
++                 me.name, source_p->name, "XLINE");
++    return 0;
++  }
++
++  if (strchr(reason, ':') != NULL)
++  {
++    if (warn)
++      sendto_one(source_p, ":%s NOTICE %s :Invalid character ':' in comment",
++                 me.name, source_p->name);
++    return 0;
++  }
++
++  if (!valid_wild_card(gecos))
++  {
++    if (warn)
++      sendto_one(source_p, ":%s NOTICE %s :Please include at least %d non-wildcard characters with the xline",
++                 me.name, source_p->name, ConfigFileEntry.min_nonwildcard);
++
++    return 0;
++  }
++
++  return 1;
++}
++
++/* write_xline()
++ *
++ * inputs	- client taking credit for xline, gecos, reason, xline type
++ * outputs	- none
++ * side effects	- when succesful, adds an xline to the conf
++ */
++static void
++write_xline(struct Client *source_p, char *gecos, char *reason, int type)
++{
++  struct ConfItem *aconf;
++  const char *current_date;
++  time_t cur_time;
++
++  aconf = make_conf();
++  aconf->status = CONF_XLINE;
++  aconf->port = type;
++
++  collapse(gecos);
++  DupString(aconf->name, gecos);
++  DupString(aconf->passwd, reason);
++  set_time();
++  cur_time = CurrentTime;
++  current_date = smalldate(cur_time);
++  write_conf_line(XLINE_TYPE, source_p, aconf, current_date, cur_time);
++  conf_add_conf(aconf);
++}
++
++static void
++remove_xline(struct Client *source_p, char *gecos, int cluster)
++{
++  if (remove_conf_line(XLINE_TYPE, source_p, gecos, NULL) > 0)
++  {
++    if (!cluster)
++      sendto_one(source_p, ":%s NOTICE %s :X-Line for [%s] is removed",
++                 me.name, source_p->name, gecos);
++    sendto_realops_flags(FLAGS_ALL, L_ALL,
++                         "%s has removed the X-Line for: [%s]",
++                         get_oper_name(source_p), gecos);
++    ilog(L_NOTICE, "%s removed X-Line for [%s]", get_oper_name(source_p),
++         gecos);
++  }
++  else if (!cluster)
++    sendto_one(source_p, ":%s NOTICE %s :No X-Line for %s",
++               me.name, source_p->name, gecos);
++}
++
++/*
++ * valid_wild_card
++ * input        - pointer to string to check
++ * output       - 0 if not valid, 1 if valid
++ * side effects -
++ */
++static int
++valid_wild_card(char *gecos)
++{
++  char *p;
++  char tmpch;
++  int nonwild;
++
++  /*
++   * Now we must check the user and host to make sure there
++   * are at least NONWILDCHARS non-wildcard characters in
++   * them, otherwise assume they are attempting to kline
++   * *@* or some variant of that. This code will also catch
++   * people attempting to kline *@*.tld, as long as NONWILDCHARS
++   * is greater than 3. In that case, there are only 3 non-wild
++   * characters (tld), so if NONWILDCHARS is 4, the kline will
++   * be disallowed.
++   * -wnder
++   */
++
++  nonwild = 0;
++  p = gecos;
++  while ((tmpch = *p++))
++  {
++    if (!IsKWildChar(tmpch))
++    {
++      /*
++       * If we find enough non-wild characters, we can
++       * break - no point in searching further.
++       */
++      if (++nonwild >= ConfigFileEntry.min_nonwildcard)
++        break;
++    }
++  }
++
++  if (nonwild < ConfigFileEntry.min_nonwildcard)
++    return 1;
++  else
++    return 0;
 +}
