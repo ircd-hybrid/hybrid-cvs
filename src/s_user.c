@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.264 2003/05/22 17:09:08 michael Exp $
+ *  $Id: s_user.c,v 7.265 2003/05/22 23:16:07 michael Exp $
  */
 
 #include "stdinc.h"
@@ -59,7 +59,7 @@ static int valid_username(const char *username);
 static void user_welcome(struct Client *source_p);
 static void report_and_set_user_flags(struct Client *, struct ConfItem *);
 static int check_X_line(struct Client *client_p, struct Client *source_p);
-static int introduce_client(struct Client *client_p, struct Client *source_p, char *nick);
+static int introduce_client(struct Client *client_p, struct Client *source_p);
 
 /* table of ascii char letters
  * to corresponding bitmask
@@ -482,7 +482,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
   }
 
   user_welcome(source_p);
-  return(introduce_client(client_p, source_p, nick));
+  return(introduce_client(client_p, source_p));
 }
 
 /* register_remote_user()
@@ -493,8 +493,8 @@ register_local_user(struct Client *client_p, struct Client *source_p,
  *		  is introduced by a server.
  */
 int
-register_remote_user(struct Client *client_p, struct Client *source_p, 
-                     char *nick, char *username)
+register_remote_user(struct Client *client_p, struct Client *source_p, const char *username,
+                     const char *host, const char *server, const char *id, const char *realname)
 {
   struct Client *target_p;
 
@@ -504,9 +504,17 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
   if (source_p == NULL)
     return(-1);
 
-  source_p->user->last = CurrentTime;
+  source_p->user = make_user(source_p);
 
+  /* coming from another server, take the servers word for it
+   */
+  source_p->user->server = find_server(server);
+  strlcpy(source_p->host, host, sizeof(source_p->host)); 
+  strlcpy(source_p->info, realname, sizeof(source_p->info));
   strlcpy(source_p->username, username, sizeof(source_p->username));
+
+  if (id != NULL)
+    strlcpy(source_p->user->id, id, sizeof(source_p->user->id));
 
   SetClient(source_p);
 
@@ -514,7 +522,8 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
   if (++Count.total > Count.max_tot)
     Count.max_tot = Count.total;
 
-  source_p->servptr = find_server(source_p->user->server->name);
+  source_p->user->last = CurrentTime;
+  source_p->servptr    = source_p->user->server;
 
   /* Super GhostDetect:
    * If we can't find the server the user is supposed to be on,
@@ -523,7 +532,7 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
   if (source_p->servptr == NULL)
   {
     sendto_realops_flags(UMODE_ALL, L_ALL, "No server %s for user %s[%s@%s] from %s",
-                         source_p->user->server->name, source_p->name, source_p->username,
+                         server, source_p->name, source_p->username,
                          source_p->host, source_p->from->name);
     kill_client(client_p, source_p, "%s (Server doesn't exist)", me.name);
 
@@ -538,7 +547,7 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
   {
     sendto_realops_flags(UMODE_DEBUG, L_ALL,
                          "Bad User [%s] :%s USER %s@%s %s, != %s[%s]",
-                         client_p->name, nick, source_p->username,
+                         client_p->name, source_p->name, source_p->username,
                          source_p->host, source_p->user->server->name,
                          target_p->name, target_p->from->name);
     kill_client(client_p, source_p,
@@ -548,7 +557,7 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
     return(exit_client(source_p, source_p, &me, "USER server wrong direction"));
   }
 
-  return(introduce_client(client_p, source_p, nick));
+  return(introduce_client(client_p, source_p));
 }
 
 /* introduce_client()
@@ -560,7 +569,7 @@ register_remote_user(struct Client *client_p, struct Client *source_p,
  *		  from a remote connect.
  */
 static int
-introduce_client(struct Client *client_p, struct Client *source_p, char *nick)
+introduce_client(struct Client *client_p, struct Client *source_p)
 {
   dlink_node *server_node;
   struct Client *server;
@@ -598,14 +607,14 @@ introduce_client(struct Client *client_p, struct Client *source_p, char *nick)
     if (IsCapable(uplink, CAP_UID) && HasID(source_p))
     {
       sendto_one(uplink, "CLIENT %s %d %lu %s %s %s %s %s :%s",
-                 nick, source_p->hopcount+1, (unsigned long)source_p->tsinfo,
+                 source_p->name, source_p->hopcount+1, (unsigned long)source_p->tsinfo,
                  ubuf, source_p->username, source_p->host, source_p->user->server->name,
                  source_p->user->id, source_p->info);
     }
     else
     {
       sendto_one(uplink, "NICK %s %d %lu %s %s %s %s :%s",
-                 nick, source_p->hopcount+1, (unsigned long)source_p->tsinfo,
+                 source_p->name, source_p->hopcount+1, (unsigned long)source_p->tsinfo,
                  ubuf, source_p->username, source_p->host, source_p->user->server->name,
                  source_p->info);
     }
@@ -621,12 +630,12 @@ introduce_client(struct Client *client_p, struct Client *source_p, char *nick)
 
       if (IsCapable(server, CAP_UID) && HasID(source_p))
         sendto_one(server, "CLIENT %s %d %lu %s %s %s %s %s :%s",
-                   nick, source_p->hopcount+1, (unsigned long)source_p->tsinfo,
+                   source_p->name, source_p->hopcount+1, (unsigned long)source_p->tsinfo,
                    ubuf, source_p->username, source_p->host, source_p->user->server->name,
                    source_p->user->id, source_p->info);
       else
         sendto_one(server, "NICK %s %d %lu %s %s %s %s :%s",
-                   nick, source_p->hopcount+1, (unsigned long)source_p->tsinfo,
+                   source_p->name, source_p->hopcount+1, (unsigned long)source_p->tsinfo,
                    ubuf, source_p->username, source_p->host, source_p->user->server->name,
                    source_p->info);
     }
@@ -792,8 +801,6 @@ int
 do_local_user(char *nick, struct Client *client_p, struct Client *source_p,
               char *username, char *host, char *server, char *realname)
 {
-  struct User *user;
-
   assert(source_p != NULL);
   assert(source_p->username != username);
 
@@ -807,11 +814,11 @@ do_local_user(char *nick, struct Client *client_p, struct Client *source_p,
     return(0);
   }
 
-  user = make_user(source_p);
+  source_p->user = make_user(source_p);
 
   /* don't take the clients word for it, ever
    */
-  user->server = &me;
+  source_p->user->server = &me;
 
   strlcpy(source_p->info, realname, sizeof(source_p->info));
 
@@ -832,43 +839,10 @@ do_local_user(char *nick, struct Client *client_p, struct Client *source_p,
   return(0);
 }
 
-/* do_remote_user()
- *
- * inputs	-
- * output	-
- * side effects -
- */
-int
-do_remote_user(struct Client *client_p, struct Client *source_p,
-               char *username, char *host, char *server,
-               char *realname, char *id)
-{
-  struct User *user;
-
-  assert(source_p != NULL);
-  assert(source_p->username != username);
-
-  if (source_p == NULL)
-    return(0);
-
-  user = make_user(source_p);
-
-  /* coming from another server, take the servers word for it
-   */
-  user->server = find_server(server);
-  strlcpy(source_p->host, host, sizeof(source_p->host)); 
-  strlcpy(source_p->info, realname, sizeof(source_p->info));
-
-  if (id != NULL)
-    strlcpy(source_p->user->id, id, sizeof(source_p->user->id));
-
-  return(register_remote_user(client_p, source_p, source_p->name, username));
-}
-
 /*
  * user_mode - set get current users mode
  *
- * m_umode() added 15/10/91 By Darren Reed.
+ * added 15/10/91 By Darren Reed.
  * parv[0] - sender
  * parv[1] - username to change mode for
  * parv[2] - modes to change

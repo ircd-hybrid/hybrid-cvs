@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: list.c,v 7.56 2003/05/22 17:53:25 joshk Exp $
+ *  $Id: list.c,v 7.57 2003/05/22 23:16:07 michael Exp $
  */
 
 #include "stdinc.h"
@@ -70,19 +70,16 @@ initUser(void)
 struct User *
 make_user(struct Client *client_p)
 {
-  struct User *user = client_p->user;
-
-  if (!user)
+  if (client_p->user == NULL)
   {
-    user = (struct User *)BlockHeapAlloc(user_heap);
+    client_p->user = (struct User *)BlockHeapAlloc(user_heap);
     ++user_count;
 
-    memset(user, 0, sizeof(struct User));
-    user->refcnt = 1;
-    client_p->user = user;
+    memset(client_p->user, 0, sizeof(struct User));
+    client_p->user->refcnt = 1;
   }
 
-  return(user);
+  return(client_p->user);
 }
 
 /* make_server()

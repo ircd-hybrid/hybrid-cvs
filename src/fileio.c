@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: fileio.c,v 7.31 2003/05/22 17:09:08 michael Exp $
+ *  $Id: fileio.c,v 7.32 2003/05/22 23:16:07 michael Exp $
  */
 #include "stdinc.h"
 #include "fileio.h"
@@ -320,9 +320,9 @@ fbstat(struct stat* sb, FBFILE* fb)
   return fstat(fb->fd, sb);
 }
 
-int save_spare_fd(char *spare_purpose)
+int save_spare_fd(const char *spare_purpose)
 {
-  int  spare_fd;
+  int spare_fd;
 
   spare_fd = open(PATH_DEVNULL,O_RDONLY,0);
   if (spare_fd < 0)
