@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.312 2003/05/01 23:28:40 michael Exp $
+ *  $Id: s_serv.c,v 7.313 2003/05/02 09:27:44 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1046,7 +1046,6 @@ server_estab(struct Client *client_p)
        inpath_ip, show_capabilities(client_p));
 
   client_p->serv->sconf = aconf;
-  SetCBurst(client_p);
 
   if (HasServlink(client_p))
   {
@@ -1487,8 +1486,6 @@ void server_burst(struct Client *client_p)
   {
     burst_all(client_p);
   }
-
-  ClearCBurst(client_p);
 
   /* EOB stuff is now in burst_all */
   /* Always send a PING after connect burst is done */

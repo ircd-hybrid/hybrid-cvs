@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.181 2003/04/20 15:14:01 adx Exp $
+ *  $Id: client.h,v 7.182 2003/05/02 09:27:42 michael Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -402,15 +402,15 @@ struct LocalUser
 #define FLAGS_EXEMPTKLINE 0x00010000 /* client is exempt from kline              */
 #define FLAGS_NOLIMIT     0x00020000 /* client is exempt from limits             */
 #define FLAGS_RESTRICTED  0x00040000 /* client cannot op others                  */
-#define FLAGS_CBURST      0x00080000 /* connection burst being sent              */
-#define FLAGS_PING_COOKIE 0x00100000 /* PING Cookie                              */
-#define FLAGS_IDLE_LINED  0x00200000
-#define FLAGS_IP_SPOOFING 0x00400000 /* client IP is spoofed                     */
-#define FLAGS_FLOODDONE   0x00800000 /* Flood grace period has been ended.       */
-#define FLAGS_EOB         0x01000000 /* server has received EOB                  */
-#define FLAGS_HIDDEN      0x02000000
-#define FLAGS_BLOCKED     0x04000000 /* must wait for COMM_SELECT_WRITE */
-#define FLAGS_SBLOCKED    0x08000000 /* slinkq is blocked */
+#define FLAGS_PING_COOKIE 0x00080000 /* PING Cookie                              */
+#define FLAGS_IDLE_LINED  0x00100000
+#define FLAGS_IP_SPOOFING 0x00200000 /* client IP is spoofed                     */
+#define FLAGS_FLOODDONE   0x00400000 /* Flood grace period has been ended.       */
+#define FLAGS_EOB         0x00800000 /* server has received EOB                  */
+#define FLAGS_HIDDEN      0x01000000
+#define FLAGS_BLOCKED     0x02000000 /* must wait for COMM_SELECT_WRITE          */
+#define FLAGS_SBLOCKED    0x04000000 /* slinkq is blocked                        */
+/*                        0x08000000  */
 /*                        0x10000000  */
 /*                        0x20000000  */
 /*                        0x40000000  */
@@ -560,9 +560,6 @@ struct LocalUser
 
 #define IsFloodDone(x)          ((x)->flags &  FLAGS_FLOODDONE)
 #define SetFloodDone(x)         ((x)->flags |= FLAGS_FLOODDONE)
-#define SetCBurst(x)            ((x)->flags |=  FLAGS_CBURST)
-#define ClearCBurst(x)          ((x)->flags &= ~FLAGS_CBURST)
-#define CBurst(x)               ((x)->flags & FLAGS_CBURST)
 #define HasPingCookie(x)        ((x)->flags & FLAGS_PING_COOKIE)
 #define SetPingCookie(x)        ((x)->flags |= FLAGS_PING_COOKIE)
 #define ClearPingCookie(x)      ((x)->flags &= ~FLAGS_PING_COOKIE)
