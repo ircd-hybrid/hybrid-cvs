@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.10 2000/01/02 05:35:01 db Exp $
+ *   $Id: s_serv.c,v 7.11 2000/01/02 07:42:49 db Exp $
  */
 #include "s_serv.h"
 #include "channel.h"
@@ -973,6 +973,10 @@ void restoreUnusedServerMask(unsigned long mask)
   struct Channel*   chptr;
   unsigned long clear_mask;
 
+#ifdef DEBUGLL
+  sendto_realops("restoreUnusedServerMask: Returning mask %X", mask);
+#endif
+
   freeMask |= mask;
 
   clear_mask = ~mask;
@@ -995,6 +999,9 @@ static unsigned long nextFreeMask()
       if( mask & freeMask )
         {
           freeMask &= ~mask;
+#ifdef DEBUGLL
+          sendto_realops("nextFreeMask: Returning mask %X", mask);
+#endif
           return(mask);
         }
       mask <<= 1;
