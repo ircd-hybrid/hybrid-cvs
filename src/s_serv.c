@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.377 2003/10/04 21:14:18 stu Exp $
+ *  $Id: s_serv.c,v 7.378 2003/10/04 21:43:40 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -322,7 +322,7 @@ write_links_file(void* notused)
      * know if this is a cause of a bug - cryogen
      */
     assert(strlen(target_p->name) + strlen(me.name) + 6 + strlen(p) <= 
-            MESSAGELINELEN)
+            MESSAGELINELEN);
     ircsprintf(newMessageLine->line,"%s %s :1 %s",
                target_p->name, me.name, p);
     newMessageLine->next = NULL;
