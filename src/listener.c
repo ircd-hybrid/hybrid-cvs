@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: listener.c,v 7.27 2001/01/27 06:38:15 lusky Exp $
+ *  $Id: listener.c,v 7.28 2001/02/08 07:30:46 db Exp $
  */
 #include "listener.h"
 #include "client.h"
@@ -374,51 +374,57 @@ static void accept_connection(int pfd, void *data)
    * point, just assume that connections cannot
    * be accepted until some old is closed first.
    */
-  do {
-    fd = comm_accept(listener->fd, (struct sockaddr *)&addr, &addrlen);
-    if (fd < 0) {
+
+  fd = comm_accept(listener->fd, (struct sockaddr *)&addr, &addrlen);
+  if (fd < 0)
+    {
+#if 0
       if (EAGAIN == errno)
-         break;
+	return;
+#endif
       /*
        * slow down the whining to opers bit
        */
-      if((last_oper_notice + 20) <= CurrentTime) {
-        report_error("Error accepting connection %s:%s", 
-                   listener->name, errno);
-        last_oper_notice = CurrentTime;
-      }
-      break;
+      if((last_oper_notice + 20) <= CurrentTime)
+	{
+	  report_error("Error accepting connection %s:%s", 
+		       listener->name, errno);
+	  last_oper_notice = CurrentTime;
+	}
+      return;
     }
-    /*
-     * check for connection limit
-     */
-    if ((MAXCONNECTIONS - 10) < fd) {
+  /*
+   * check for connection limit
+   */
+  if ((MAXCONNECTIONS - 10) < fd)
+    {
       ++ServerStats->is_ref;
       /* 
        * slow down the whining to opers bit 
        */
-      if((last_oper_notice + 20) <= CurrentTime) {
-        sendto_realops_flags(FLAGS_ALL,"All connections in use. (%s)", 
-			     get_listener_name(listener));
-        last_oper_notice = CurrentTime;
-      }
+      if((last_oper_notice + 20) <= CurrentTime)
+	{
+	  sendto_realops_flags(FLAGS_ALL,"All connections in use. (%s)", 
+			       get_listener_name(listener));
+	  last_oper_notice = CurrentTime;
+	}
       send(fd, "ERROR :All connections in use\r\n", 32, 0);
       fd_close(fd);
-      break;
+      return;
     }
-    /*
-     * check conf for ip address access
-     */
-    if (!conf_connect_allowed(&addr)) {
+  /*
+   * check conf for ip address access
+   */
+  if (!conf_connect_allowed(&addr))
+    {
       ServerStats->is_ref++;
       send(fd, "NOTICE DLINE :*** You have been D-lined\r\n", 41, 0);
       fd_close(fd);
-      break;
+      return;
     }
-    ServerStats->is_ac++;
+  ServerStats->is_ac++;
 
-    add_connection(listener, fd);
-  } while (0);
+  add_connection(listener, fd);
 
   /* Re-register a new IO request for the next accept .. */
   comm_setselect(listener->fd, FDLIST_SERVICE, COMM_SELECT_READ,
