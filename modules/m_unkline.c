@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_unkline.c,v 1.63 2003/05/24 19:25:29 michael Exp $
+ *  $Id: m_unkline.c,v 1.64 2003/05/25 03:03:21 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -76,11 +76,11 @@ _moddeinit(void)
   mod_del_cmd(&msgtabs[1]);
   mod_del_cmd(&msgtabs[2]);
 }
-const char *_version = "$Revision: 1.63 $";
+const char *_version = "$Revision: 1.64 $";
 #endif
 
 static int remove_tkline_match(const char *, const char *);
-
+static int remove_tdline_match(const char *);
 
 /*
 ** mo_unkline
@@ -259,7 +259,7 @@ ms_unkline(struct Client *client_p, struct Client *source_p, int parc, char *par
   }
 }
 
-/* static int remove_tkline_match(char *host, char *user)
+/* static int remove_tkline_match(const char *host, const char *user)
  * Input: A hostname, a username to unkline.
  * Output: returns YES on success, NO if no tkline removed.
  * Side effects: Any matching tklines are removed.
@@ -295,6 +295,43 @@ remove_tkline_match(const char *host, const char *user)
   return NO;
 }
 
+/* static int remove_tdline_match(const char *host, const char *user)
+ * Input: An ip to undline.
+ * Output: returns YES on success, NO if no tdline removed.
+ * Side effects: Any matching tdlines are removed.
+ */
+static int remove_tdline_match(const char *cidr)
+{
+  struct ConfItem *td_conf;
+  dlink_node *td_node;
+  struct irc_ssaddr addr, caddr;
+  int nm_t, cnm_t, bits, cbits;
+  nm_t = parse_netmask(cidr, &addr, &bits);
+
+  for(td_node = temporary_dlines.head; td_node; td_node = td_node->next)
+  {
+    td_conf = (struct ConfItem *)td_node->data;
+    cnm_t = parse_netmask(td_conf->host, &caddr, &cbits);
+
+    if(cnm_t != nm_t)
+      continue;
+
+    if((nm_t==HM_HOST && !irccmp(td_conf->host, cidr)) ||
+       (nm_t==HM_IPV4 && bits==cbits && match_ipv4(&addr, &caddr, bits))
+#ifdef IPV6
+       || (nm_t==HM_IPV6 && bits==cbits && match_ipv6(&addr, &caddr, bits))
+#endif
+      )
+    {
+      dlinkDelete(td_node, &temporary_dlines);
+      free_dlink_node(td_node);
+      delete_one_address_conf(td_conf->host, td_conf);
+      return YES;
+    }
+  }
+  return NO;
+}
+
 /*
 ** m_undline
 ** added May 28th 2000 by Toby Verrall <toot@melnet.co.uk>
@@ -318,6 +355,18 @@ mo_undline(struct Client *client_p, struct Client *source_p,
   }
 
   cidr = parv[1];
+
+  if(remove_tdline_match(cidr))
+  {
+    sendto_one(source_p,
+              ":%s NOTICE %s :Un-Dlined [%s] from temporary D-Lines",
+              me.name, source_p->name, cidr);
+    sendto_realops_flags(UMODE_ALL, L_ALL,
+                         "%s has removed the temporary D-Line for: [%s]",
+                         get_oper_name(source_p), cidr);
+    ilog(L_NOTICE, "%s removed temporary D-Line for [%s]", source_p->name, cidr);
+    return;
+  }
 
   if (remove_conf_line(CONF_DLINE, source_p, cidr, NULL) > 0)
   {
