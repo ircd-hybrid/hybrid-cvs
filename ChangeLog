@@ -1,3 +1,15 @@
+db          2002/04/15 02:13:30 EDT	(20020415_3)
+
+  Modified files:
+    contrib              m_tburst.c 
+  Log:
+  speeeeeeeeeelllllliiiinnnnnggggggggg
+  
+  Revision  Changes    Path
+  1.5       +2 -2      ircd-hybrid-7/contrib/m_tburst.c
+
+
+
 leeh        2002/04/14 21:14:43 EDT	(20020415_2)
 
   Modified files:
@@ -25076,4 +25088,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3562 2002/04/15 01:14:49 leeh Exp $
+$Id: ChangeLog,v 7.3563 2002/04/15 06:13:36 db Exp $
