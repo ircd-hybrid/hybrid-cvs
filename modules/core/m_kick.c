@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kick.c,v 1.19 2001/01/04 16:10:17 davidt Exp $
+ *   $Id: m_kick.c,v 1.20 2001/01/04 18:52:15 a1kmm Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -181,8 +181,12 @@ static int m_kick(struct Client *cptr,
                      me.name, parv[0], name);
 	  return 0;
 	}
-
-      if(chptr->mode.mode & MODE_HIDEOPS)
+      if (IsServer(sptr))
+    {
+      sendto_channel_local(ALL_MEMBERS, chptr, ":%s KICK %s %s :%s",
+        who->name, name, who->name, comment);
+    }
+      else if(chptr->mode.mode & MODE_HIDEOPS)
 	{
 	  sendto_channel_local(NON_CHANOPS, chptr,
 			       ":%s KICK %s %s :%s", 
