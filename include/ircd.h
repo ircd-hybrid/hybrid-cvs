@@ -19,7 +19,7 @@
  *
  * "ircd.h". - Headers file.
  *
- * $Id: ircd.h,v 7.39 2001/08/31 12:48:31 leeh Exp $
+ * $Id: ircd.h,v 7.40 2001/10/11 17:18:28 jdc Exp $
  *
  */
 #ifndef INCLUDED_ircd_h
@@ -88,6 +88,7 @@ extern struct Client* local[];
 extern struct Counter Count;
 extern time_t         CurrentTime;
 extern time_t         nextconnect;
+extern int            default_server_capabs;
 
 extern dlink_list unknown_list;
 extern dlink_list lclient_list;

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.187 2001/10/06 02:33:16 wcampbel Exp $
+ * $Id: ircd.c,v 7.188 2001/10/11 17:18:30 jdc Exp $
  */
 
 #include <sys/types.h>
@@ -142,6 +142,12 @@ int     dorehash   = 0;
 int     debuglevel = -1;        /* Server debug level */
 char*   debugmode  = "";        /*  -"-    -"-   -"-  */
 time_t  nextconnect = 1;        /* time for next try_connections call */
+
+/* Set to zero because it should be initialized later using
+ * initialize_server_capabs
+ */
+int     default_server_capabs = 0x00000000;
+
 
 /*
  * get_vm_top - get the operating systems notion of the resident set size
@@ -388,6 +394,25 @@ static void initialize_message_files(void)
 }
 
 /*
+ * initialize_server_capabs
+ *
+ * inputs       - none
+ * output       - none
+ */
+static void initialize_server_capabs(void)
+{
+  /* Default server CAPAB, as defined by CAP_MASK in s_serv.h */
+  default_server_capabs = CAP_MASK;
+
+  /* If halfops support is disabled, remove the capab from the list. */
+  if (ConfigChannel.use_halfops == 0)
+  {
+    default_server_capabs &= ~CAP_HOPS;
+  }
+}
+
+
+/*
  * write_pidfile
  *
  * inputs       - filename+path of pid file
@@ -607,6 +632,7 @@ int main(int argc, char *argv[])
   initServerMask();
   init_auth();                  /* Initialise the auth code */
   read_conf_files(YES);         /* cold start init conf files */
+  initialize_server_capabs();   /* Set up default_server_capabs */
   initialize_global_set_options();
 
   if (ServerInfo.name == NULL)

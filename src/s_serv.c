@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.213 2001/10/04 20:56:52 androsyn Exp $
+ *   $Id: s_serv.c,v 7.214 2001/10/11 17:18:30 jdc Exp $
  */
 
 #include <sys/types.h>
@@ -1160,7 +1160,7 @@ int server_estab(struct Client *client_p)
        * If this is a HUB, pass on CAP_HUB
        */
 
-      send_capabilities(client_p, aconf, CAP_MASK
+      send_capabilities(client_p, aconf, default_server_capabs
              | ((aconf->flags & CONF_FLAGS_LAZY_LINK) ? CAP_LL : 0)
              | (ServerInfo.hub ? CAP_HUB : 0)
              | ((aconf->flags & CONF_FLAGS_COMPRESSED) ? CAP_ZIP_SUPPORTED : 0),
@@ -2325,7 +2325,7 @@ serv_connect_callback(int fd, int status, void *data)
      * If this is a HUB, pass on CAP_HUB
      */
 
-    send_capabilities(client_p, aconf, CAP_MASK
+    send_capabilities(client_p, aconf, default_server_capabs
              | ((aconf->flags & CONF_FLAGS_LAZY_LINK) ? CAP_LL : 0)
              | ((aconf->flags & CONF_FLAGS_COMPRESSED) ? CAP_ZIP_SUPPORTED : 0)
              | (ServerInfo.hub ? CAP_HUB : 0),
@@ -2423,7 +2423,7 @@ void cryptlink_init(struct Client *client_p,
   }
 
 
-  send_capabilities(client_p, aconf, CAP_MASK
+  send_capabilities(client_p, aconf, default_server_capabs
          | ((aconf->flags & CONF_FLAGS_LAZY_LINK) ? CAP_LL : 0)
          | ((aconf->flags & CONF_FLAGS_COMPRESSED) ? CAP_ZIP_SUPPORTED : 0)
          | (ServerInfo.hub ? CAP_HUB : 0),
