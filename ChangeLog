@@ -1,3 +1,20 @@
+leeh        2001/12/20 15:23:14 EST	(20011220_5)
+
+  Modified files:
+    doc                  example.conf example.conf.efnet 
+    src                  ircd_parser.y 
+  Log:
+  - ripped host=""; from shared {}; and made it use user="user@host"; like the
+    rest of the config does..
+  - this MAY cause issues with older confs
+  
+  Revision  Changes    Path
+  7.146     +1 -2      ircd-hybrid-7/doc/example.conf
+  7.2       +1 -2      ircd-hybrid-7/doc/example.conf.efnet
+  1.227     +16 -8     ircd-hybrid-7/src/ircd_parser.y
+
+
+
 androsyn    2001/12/20 14:31:52 EST	(20011220_4)
 
   Modified files:
@@ -1212,7 +1229,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3224 2001/12/20 19:31:58 androsyn Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3225 2001/12/20 20:23:20 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -19566,4 +19583,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3224 2001/12/20 19:31:58 androsyn Exp $
+$Id: ChangeLog,v 7.3225 2001/12/20 20:23:20 leeh Exp $
