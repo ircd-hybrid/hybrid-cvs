@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.40 2000/12/31 21:53:41 spookey Exp $
+ *   $Id: m_message.c,v 1.41 2000/12/31 23:06:35 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -515,8 +515,14 @@ void msg_channel_flags( int p_or_n, char *command,
 {
   struct Channel *vchan;
   char *chname=NULL;
+  int type;
 
   chname = chptr->chname;
+
+  if (flags & MODE_VOICE)
+    type = ONLY_CHANOPS_VOICED;
+  else
+    type = ONLY_CHANOPS;
 
   if (HasVchans(chptr) && (vchan = map_vchan(chptr,sptr)))
     {
@@ -529,13 +535,14 @@ void msg_channel_flags( int p_or_n, char *command,
 	sptr->user->last = CurrentTime;
     }
 
-  sendto_channel_local(ONLY_CHANOPS_VOICED,
+  sendto_channel_local(type,
 		       chptr,
-		       ":%s!%s@%s %s @%s :%s",
+		       ":%s!%s@%s %s %c%s :%s",
 		       sptr->name,
 		       sptr->username,
 		       sptr->host,
 		       command,
+                       ((type == ONLY_CHANOPS) ? '@' : '+'),
 		       chname,
 		       text);
 
@@ -543,7 +550,7 @@ void msg_channel_flags( int p_or_n, char *command,
 			 ":%s %s %c%s :%s",
 			 sptr->name,
 			 command,
-			 '@',
+			 ((type == ONLY_CHANOPS) ? '@' : '+'),
 			 chname,
 			 text);
 }

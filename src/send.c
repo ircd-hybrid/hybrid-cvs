@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.95 2000/12/30 22:25:37 davidt Exp $
+ *   $Id: send.c,v 7.96 2000/12/31 23:06:40 davidt Exp $
  */
 #include "tools.h"
 #include "send.h"
@@ -904,6 +904,13 @@ sendto_match_cap_servs(struct Channel *chptr, struct Client *from, int cap,
       
       if(!IsCapable(cptr, cap))
         continue;
+
+      if (ConfigFileEntry.hub && IsCapable(cptr,CAP_LL))
+        {
+          if( !(chptr->lazyLinkChannelExists &
+                cptr->localClient->serverMask) )
+            continue;
+        }
       
       send_message (cptr, (char *)sendbuf, len);
     }
