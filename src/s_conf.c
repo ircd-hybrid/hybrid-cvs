@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.112 2000/12/21 20:05:44 db Exp $
+ *  $Id: s_conf.c,v 7.113 2000/12/22 02:19:50 db Exp $
  */
 #include "tools.h"
 #include "s_conf.h"
@@ -240,7 +240,7 @@ static struct LinkReport {
   { CONF_LEAF,             RPL_STATSLLINE, 'L'},
   { CONF_OPERATOR,         RPL_STATSOLINE, 'O'},
   { CONF_HUB,              RPL_STATSHLINE, 'H'},
-  { CONF_LOCOP,            RPL_STATSOLINE, 'o'},
+  { CONF_OPERATOR,            RPL_STATSOLINE, 'o'},
   { 0, 0, '\0' }
 };
 

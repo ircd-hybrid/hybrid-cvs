@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: oldparse.c,v 1.15 2000/12/21 13:39:47 db Exp $
+ *  $Id: oldparse.c,v 1.16 2000/12/22 02:19:50 db Exp $
  */
 #include "tools.h"
 #include "s_log.h"
@@ -224,9 +224,9 @@ void oldParseOneLine(char* line,struct ConfItem* aconf,
       conf_add_conf(aconf);
       break;
 
-      /* Local Operator, (limited privs --SRB) */
+      /* Local Operator */
     case 'o':
-      aconf->status = CONF_LOCOP;
+      aconf->status = CONF_OPERATOR;
       conf_add_fields(aconf,host_field,pass_field,user_field,
 		      port_field,class_field);
       aconf->port = CONF_OPER_UNKLINE|CONF_OPER_K;

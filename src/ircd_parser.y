@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.62 2000/12/21 20:05:43 db Exp $
+ * $Id: ircd_parser.y,v 1.63 2000/12/22 02:19:49 db Exp $
  */
 
 %{
@@ -90,7 +90,6 @@ int   class_redirport_var;
 %token  GLINES
 %token  GLINE_TIME
 %token  GLINE_LOG
-%token  GLOBAL
 %token  GLOBAL_KILL
 %token  HAVE_IDENT
 %token  HOST
@@ -388,7 +387,7 @@ oper_entry:     OPERATOR
         yy_aconf = (struct ConfItem *)NULL;
       }
     yy_aconf=make_conf();
-    yy_aconf->status = CONF_LOCOP;
+    yy_aconf->status = CONF_OPERATOR;
   };
  '{' oper_items '}' ';'
   {
@@ -408,7 +407,7 @@ oper_items:     oper_items oper_item |
                 oper_item
 
 oper_item:      oper_name  | oper_user | oper_password |
-                oper_class | oper_global | oper_global_kill | oper_remote |
+                oper_class | oper_global_kill | oper_remote |
                 oper_kline | oper_unkline | oper_gline | oper_nick_changes |
                 oper_die | oper_rehash | oper_admin
 
@@ -444,9 +443,6 @@ oper_class:     CLASS '=' QSTRING ';'
   {
     yy_aconf->className = yylval.string;
   };
-
-oper_global:    GLOBAL '=' TYES ';' {yy_aconf->status = CONF_OPERATOR;} |
-                GLOBAL '=' TNO ';' {yy_aconf->status = CONF_LOCOP;} ;
 
 oper_global_kill: GLOBAL_KILL '=' TYES ';'
   {
