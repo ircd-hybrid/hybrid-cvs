@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_knock.c,v 1.39 2001/11/30 15:06:53 davidt Exp $
+ *   $Id: m_knock.c,v 1.40 2001/11/30 15:18:37 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -342,7 +342,7 @@ static void send_knock(struct Client *client_p, struct Client *source_p,
 			     source_p->username,
 			     source_p->host);
       
-      sendto_server(NULL, client_p, chptr, CAP_KNOCK, NOCAPS, NOFLAGS,
+      sendto_server(NULL, client_p, chptr, CAP_KNOCK, NOCAPS, LL_ICLIENT,
                     ":%s KNOCK %s %s",
 		    source_p->name, name, key ? key : "");
     }
