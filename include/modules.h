@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.h,v 7.22 2001/07/09 02:00:02 androsyn Exp $
+ * $Id: modules.h,v 7.23 2001/12/06 20:46:36 leeh Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -95,6 +95,7 @@ extern struct Message kill_msgtab;
 extern struct Message kline_msgtab;
 extern struct Message dline_msgtab;
 extern struct Message knock_msgtab;
+extern struct Message knockll_msgtab;
 extern struct Message links_msgtab;
 extern struct Message list_msgtab;
 extern struct Message lljoin_msgtab;
