@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.302 2003/06/03 16:57:46 joshk Exp $
+ *  $Id: ircd_parser.y,v 1.303 2003/06/04 06:25:54 michael Exp $
  */
 
 %{
@@ -1447,10 +1447,9 @@ resv_channel: CHANNEL '=' QSTRING ';'
   {
     if (IsChannelName(yylval.string))
     {
-      if (!resv_reason)
-        resv_reason = no_reason;
+      char def_reason[] = "No reason specified";
 
-      create_channel_resv(yylval.string, resv_reason, 1);
+      create_channel_resv(yylval.string, resv_reason != NULL ? resv_reason : def_reason, 1);
     }
   }
   /* ignore it for now.. but we really should make a warning if
@@ -1463,10 +1462,9 @@ resv_nick: NICK '=' QSTRING ';'
   {
     if (clean_resv_nick(yylval.string))
     {
-      if (!resv_reason)
-        resv_reason = no_reason;
+      char def_reason[] = "No reason specified";
 
-      create_nick_resv(yylval.string, resv_reason, 1);
+      create_nick_resv(yylval.string, resv_reason != NULL ? resv_reason : def_reason, 1);
     }
   }
 

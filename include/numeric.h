@@ -19,27 +19,26 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: numeric.h,v 7.37 2003/05/18 14:15:56 adx Exp $
+ *  $Id: numeric.h,v 7.38 2003/06/04 06:25:48 michael Exp $
  */
 
 #ifndef INCLUDED_numeric_h
 #define INCLUDED_numeric_h
-
 #include "config.h"
 
 #define LOCALE_LENGTH 64  /* maximum length of locale name + 1 */
 
-struct NumericInfo {
-  char *name;        /* common name of the numeric */
-  char *standard;    /* standard numeric text */
-  char *translated;  /* translated numeric text */
+struct NumericInfo
+{
+  const char *name;     /* common name of the numeric */
+  const char *standard; /* standard numeric text      */
+  char *translated;     /* translated numeric text    */
 };
 
-/*
- * form_str - return a format string for a message number
+/* form_str - return a format string for a message number
  * messages are defined below
  */
-extern const char* form_str(int);
+extern const char *form_str(int);
 extern void set_locale(const char *);
 extern const char *get_locale(void);
 

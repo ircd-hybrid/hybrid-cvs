@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_squit.c,v 1.55 2003/06/03 16:41:54 joshk Exp $
+ *  $Id: m_squit.c,v 1.56 2003/06/04 06:25:52 michael Exp $
  */
 
 #include "stdinc.h"
@@ -59,7 +59,8 @@ _moddeinit(void)
 {
   mod_del_cmd(&squit_msgtab);
 }
-const char *_version = "$Revision: 1.55 $";
+
+const char *_version = "$Revision: 1.56 $";
 #endif
 
 /* mo_squit - SQUIT message handler
@@ -76,6 +77,7 @@ mo_squit(struct Client *client_p, struct Client *source_p,
   dlink_node *ptr;
   char *comment;
   const char *server;
+  char def_reason[] = "No reason specified";
 
   if (parc < 2 || EmptyString(parv[1]))
   {
@@ -117,7 +119,7 @@ mo_squit(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  comment = (parc > 2 && parv[2]) ? parv[2] : no_reason;
+  comment = (parc > 2 && parv[2]) ? parv[2] : def_reason;
 
   if (strlen(comment) > (size_t)TOPICLEN)
     comment[TOPICLEN] = '\0';
@@ -149,6 +151,7 @@ ms_squit(struct Client *client_p, struct Client *source_p,
   struct Client *target_p = NULL;
   char *comment;
   const char *server;
+  char def_reason[] = "No reason specified";
 
 #if 0
   /* XXX - How can this happen? -Michael */
@@ -169,7 +172,7 @@ ms_squit(struct Client *client_p, struct Client *source_p,
   if (!IsServer(target_p) || IsMe(target_p))
     return;
 
-  comment = (parc > 2 && parv[2]) ? parv[2] : no_reason;
+  comment = (parc > 2 && parv[2]) ? parv[2] : def_reason;
 
   if (strlen(comment) > (size_t)TOPICLEN)
     comment[TOPICLEN] = '\0';

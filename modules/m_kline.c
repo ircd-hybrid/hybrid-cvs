@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.149 2003/06/03 16:41:48 joshk Exp $
+ *  $Id: m_kline.c,v 1.150 2003/06/04 06:25:50 michael Exp $
  */
 
 #include "stdinc.h"
@@ -81,7 +81,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.149 $";
+const char *_version = "$Revision: 1.150 $";
 #endif
 
 /* Local function prototypes */
@@ -120,12 +120,13 @@ static void
 mo_kline(struct Client *client_p, struct Client *source_p,
 	 int parc, char **parv)
 {
-  char *reason = no_reason;
+  char def_reason[] = "No Reason";
+  char *reason = def_reason;
   char *oper_reason;
-  const char* current_date;
-  const char* target_server=NULL;
+  const char *current_date;
+  const char *target_server=NULL;
   struct ConfItem *aconf;
-  time_t tkline_time=0;
+  time_t tkline_time = 0;
   time_t cur_time;
 
   if (!IsOperK(source_p))
@@ -580,8 +581,9 @@ cluster(char *hostname)
  */
 static void
 mo_dline(struct Client *client_p, struct Client *source_p,
-	 int parc, char *parv[])
+         int parc, char *parv[])
 {
+  char def_reason[] = "No Reason";
   char *dlhost, *oper_reason, *reason;
 #ifndef IPV6
   struct Client *target_p;
@@ -615,7 +617,7 @@ mo_dline(struct Client *client_p, struct Client *source_p,
   if (parc == 0)
   {
     sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-	       me.name, source_p->name, "DLINE");
+               me.name, source_p->name, "DLINE");
     return;
   }
 
@@ -676,10 +678,10 @@ mo_dline(struct Client *client_p, struct Client *source_p,
     if (*parv[0] != '\0')
       reason = *parv;
     else
-      reason = no_reason;
+      reason = def_reason;
   }
   else
-    reason = no_reason;
+    reason = def_reason;
 
 
   if (bits < 8)
@@ -705,7 +707,7 @@ mo_dline(struct Client *client_p, struct Client *source_p,
 
     if ((aconf = find_dline_conf(&daddr, t)) != NULL)
     {
-      creason = aconf->reason ? aconf->reason : no_reason;
+      creason = aconf->reason ? aconf->reason : def_reason;
       if (IsConfExemptKline(aconf))
 	sendto_one(source_p,
 		   ":%s NOTICE %s :[%s] is (E)d-lined by [%s] - %s",
@@ -753,8 +755,8 @@ mo_dline(struct Client *client_p, struct Client *source_p,
   rehashed_klines = 1;
 } /* mo_dline() */
 
-/*
- * find_user_host
+/* find_user_host()
+ *
  * inputs	- pointer to client placing kline
  *              - pointer to user_host_or_nick
  *              - pointer to user buffer
@@ -763,8 +765,8 @@ mo_dline(struct Client *client_p, struct Client *source_p,
  * side effects -
  */
 static int
-find_user_host(struct Client *source_p,
-	       char *user_host_or_nick, char *luser, char *lhost)
+find_user_host(struct Client *source_p, char *user_host_or_nick,
+               char *luser, char *lhost)
 {
   struct Client *target_p;
   char *hostp;
@@ -801,7 +803,7 @@ find_user_host(struct Client *source_p,
     if (!(target_p = find_chasing(source_p, user_host_or_nick, NULL)))
       return(0);
 
-    if(target_p->user == NULL)
+    if (target_p->user == NULL)
       return(0);
 
     if (IsServer(target_p))
@@ -835,8 +837,8 @@ find_user_host(struct Client *source_p,
   return(1);
 }
 
-/*
- * valid_user_host
+/* valid_user_host()
+ *
  * inputs       - pointer to source
  *              - pointer to user buffer
  *              - pointer to host buffer
@@ -849,8 +851,7 @@ valid_user_host(struct Client *source_p, char *luser, char *lhost)
   /*
    * Check for # in user@host
    */
-
-  if(strchr(lhost, '#') || strchr(luser, '#'))
+  if (strchr(lhost, '#') || strchr(luser, '#'))
   {
     sendto_one(source_p, ":%s NOTICE %s :Invalid character '#' in kline",
                me.name, source_p->name);		    
@@ -858,7 +859,7 @@ valid_user_host(struct Client *source_p, char *luser, char *lhost)
   }
 
   /* Dont let people kline *!ident@host, as the ! is invalid.. */
-  if(strchr(luser, '!'))
+  if (strchr(luser, '!'))
   {
     sendto_one(source_p, ":%s NOTICE %s :Invalid character '!' in kline",
                me.name, source_p->name);
@@ -868,8 +869,8 @@ valid_user_host(struct Client *source_p, char *luser, char *lhost)
   return(1);
 }
 
-/*
- * valid_wild_card
+/* valid_wild_card()
+ *
  * input        - pointer to client
  *              - pointer to user to check
  *              - pointer to host to check
@@ -993,7 +994,7 @@ already_placed_kline(struct Client *source_p, const char *luser, const char *lho
 
     if ((aconf = find_conf_by_address(lhost, piphost, CONF_KILL, t, luser)))
     {
-      reason = aconf->reason ? aconf->reason : no_reason;
+      reason = aconf->reason ? aconf->reason : "No Reason";
 
       sendto_one(source_p,
                  ":%s NOTICE %s :[%s@%s] already K-Lined by [%s@%s] - %s",

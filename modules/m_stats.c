@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.132 2003/06/03 16:41:48 joshk Exp $
+ *  $Id: m_stats.c,v 1.133 2003/06/04 06:25:50 michael Exp $
  */
 
 #include "stdinc.h"
@@ -79,7 +79,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.132 $";
+const char *_version = "$Revision: 1.133 $";
 #endif
 
 const char *Lformat = ":%s %d %s %s %u %u %u %u %u :%u %u %s";
@@ -466,7 +466,7 @@ stats_pending_glines(struct Client *source_p)
   }
 
   sendto_one(source_p, ":%s NOTICE %s :End of Pending G-lines",
-	     me.name, source_p->name);
+             me.name, source_p->name);
 }
 
 /* stats_glines()
@@ -496,7 +496,7 @@ stats_glines(struct Client *source_p)
                me.name, source_p->name, 'G',
                kill_ptr->host ? kill_ptr->host : "*",
                kill_ptr->name ? kill_ptr->name : "*",
-               kill_ptr->reason ? kill_ptr->reason : no_reason);
+               kill_ptr->reason ? kill_ptr->reason : "No reason specified");
   }
 }
 

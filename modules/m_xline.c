@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.17 2003/06/03 16:41:48 joshk Exp $
+ *  $Id: m_xline.c,v 1.18 2003/06/04 06:25:50 michael Exp $
  */
 
 #include "stdinc.h"
@@ -82,12 +82,12 @@ _moddeinit(void)
   mod_del_cmd(&xline_msgtab);
   mod_del_cmd(&unxline_msgtab);
 }
-const char *_version = "$Revision: 1.17 $";
+
+const char *_version = "$Revision: 1.18 $";
 #endif
 
 
-/*
- * mo_xline
+/* mo_xline()
  *
  * inputs	- pointer to server
  *		- pointer to client
@@ -102,8 +102,10 @@ mo_xline(struct Client *client_p, struct Client *source_p,
          int parc, char *parv[])
 {
   struct ConfItem *aconf;
-  char *type, *reason, *pattern, *target_server;
+  char *reason, *pattern, *target_server;
+  const char *type;
   int type_i = 1;
+  char def_reason[] = "No Reason";
 
   type = reason = pattern = target_server = NULL;
 
@@ -132,8 +134,7 @@ mo_xline(struct Client *client_p, struct Client *source_p,
     }
     else
     {
-      /*
-       * perhaps we should show usage here?  also,
+      /* perhaps we should show usage here?  also,
        * this may be a bit nitpicky, but we are being
        * painfully inconsistent by sending 'XLINE'
        * rather than duplicating the case with which
@@ -199,13 +200,12 @@ mo_xline(struct Client *client_p, struct Client *source_p,
     cluster_xline(source_p, parv[1], type_i, reason);
 
   if (EmptyString(reason))
-    reason = no_reason;
+    reason = def_reason;
 
   write_xline(source_p, parv[1], reason, type_i);
 } /* mo_xline() */
 
-/*
- * ms_xline()
+/* ms_xline()
  *
  * inputs	- oper, target server, xline, type, reason
  * outputs	- none
@@ -213,7 +213,7 @@ mo_xline(struct Client *client_p, struct Client *source_p,
  */
 static void
 ms_xline(struct Client *client_p, struct Client *source_p,
-	 int parc, char *parv[])
+         int parc, char *parv[])
 {
   struct ConfItem *aconf;
 
@@ -259,16 +259,14 @@ ms_xline(struct Client *client_p, struct Client *source_p,
   }
 }
 
-/*
- * mo_unxline
+/* mo_unxline()
  *
  * inputs	- pointer to server
  *		- pointer to client
  *		- parameter count
  *		- parameter list
  * output	-
- * side effects - x line is added
- *
+ * side effects - removes a xline
  */
 static void
 mo_unxline(struct Client *client_p, struct Client *source_p,
@@ -312,8 +310,7 @@ mo_unxline(struct Client *client_p, struct Client *source_p,
 
 } /* mo_unxline() */
 
-/*
- * ms_unxline()
+/* ms_unxline()
  *
  * inputs	- oper, target server, gecos
  * outputs	- none
@@ -321,7 +318,7 @@ mo_unxline(struct Client *client_p, struct Client *source_p,
  */
 static void
 ms_unxline(struct Client *client_p, struct Client *source_p,
-	   int parc, char *parv[])
+           int parc, char *parv[])
 {
   if (parc != 3)
     return;
@@ -357,7 +354,7 @@ ms_unxline(struct Client *client_p, struct Client *source_p,
     }
     else
       sendto_one(source_p, ":%s NOTICE %s :No X-Line for %s",
-                 me.name, parv[0], parv[2]);
+                 me.name, source_p->name, parv[2]);
   }
 }
 
@@ -375,7 +372,7 @@ valid_xline(struct Client *source_p, char *gecos, char *reason, int warn)
     if (warn)
       sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
                  me.name, source_p->name, "XLINE");
-    return 0;
+    return(0);
   }
 
   if (strchr(reason, ':') != NULL)
@@ -383,7 +380,7 @@ valid_xline(struct Client *source_p, char *gecos, char *reason, int warn)
     if (warn)
       sendto_one(source_p, ":%s NOTICE %s :Invalid character ':' in comment",
                  me.name, source_p->name);
-    return 0;
+    return(0);
   }
 
   if (!valid_wild_card_simple(gecos))
@@ -392,10 +389,10 @@ valid_xline(struct Client *source_p, char *gecos, char *reason, int warn)
       sendto_one(source_p, ":%s NOTICE %s :Please include at least %d non-wildcard characters with the xline",
                  me.name, source_p->name, ConfigFileEntry.min_nonwildcard_simple);
 
-    return 0;
+    return(0);
   }
 
-  return 1;
+  return(1);
 }
 
 /* write_xline()
@@ -435,8 +432,8 @@ remove_xline(struct Client *source_p, char *gecos, int cluster)
     sendto_realops_flags(UMODE_ALL, L_ALL,
                          "%s has removed the X-Line for: [%s]",
                          get_oper_name(source_p), gecos);
-    ilog(L_NOTICE, "%s removed X-Line for [%s]", get_oper_name(source_p),
-         gecos);
+    ilog(L_NOTICE, "%s removed X-Line for [%s]",
+         get_oper_name(source_p), gecos);
   }
   else if (!cluster)
     sendto_one(source_p, ":%s NOTICE %s :No X-Line for %s",

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kill.c,v 1.78 2003/06/04 00:49:22 joshk Exp $
+ *  $Id: m_kill.c,v 1.79 2003/06/04 06:25:52 michael Exp $
  */
 
 #include "stdinc.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&kill_msgtab);
 }
 
-const char *_version = "$Revision: 1.78 $";
+const char *_version = "$Revision: 1.79 $";
 #endif
 
 /* mo_kill()
@@ -81,6 +81,7 @@ mo_kill(struct Client *client_p, struct Client *source_p,
   const char *inpath = client_p->name;
   char *user;
   char *reason;
+  char def_reason[] = "No reason specified";
 
   user   = parv[1];
   reason = parv[2]; /* Either defined or NULL (parc >= 2!!) */
@@ -105,7 +106,7 @@ mo_kill(struct Client *client_p, struct Client *source_p,
       reason[KILLLEN] = '\0';
   }
   else
-    reason = no_reason;
+    reason = def_reason;
 
   if ((target_p = find_client(user)) == NULL)
   {
@@ -185,7 +186,8 @@ ms_kill(struct Client *client_p, struct Client *source_p,
   struct Client *target_p;
   char *user;
   char *reason;
-  char *path;
+  const char *path;
+  char def_reason[] = "No reason specified";
 
   *buf = '\0';
 
@@ -200,7 +202,7 @@ ms_kill(struct Client *client_p, struct Client *source_p,
 
   if (EmptyString(parv[2]))
   {
-    reason = no_reason;
+    reason = def_reason;
 
     /* hyb6 takes the nick of the killer from the path *sigh* --fl_ */
     path = source_p->name;
@@ -215,20 +217,19 @@ ms_kill(struct Client *client_p, struct Client *source_p,
       reason++;
     }
     else
-      reason = no_reason;
+      reason = def_reason;
 
     path = parv[2];
   }
 
   if ((target_p = find_client(user)) == NULL)
   {
-      /*
-       * If the user has recently changed nick, but only if its 
+      /* If the user has recently changed nick, but only if its 
        * not an uid, automatically rewrite the KILL for this new nickname.
        * --this keeps servers in synch when nick change and kill collide
        */
       if (*user == '.' ||
-	  (target_p = get_history(user, (long)KILLCHASETIMELIMIT)) == NULL)
+	  (target_p = get_history(user, (time_t)KILLCHASETIMELIMIT)) == NULL)
         {
           sendto_one(source_p, form_str(ERR_NOSUCHNICK),
                      me.name, source_p->name, user);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_quit.c,v 1.34 2003/06/04 04:28:36 metalrock Exp $
+ *  $Id: m_quit.c,v 1.35 2003/06/04 06:25:52 michael Exp $
  */
 
 #include "stdinc.h"
@@ -34,8 +34,8 @@
 #include "modules.h"
 #include "s_conf.h"
 
-static void m_quit(struct Client*, struct Client*, int, char**);
-static void ms_quit(struct Client*, struct Client*, int, char**);
+static void m_quit(struct Client *, struct Client *, int, char **);
+static void ms_quit(struct Client *, struct Client *, int, char **);
 
 struct Message quit_msgtab = {
   "QUIT", 0, 0, 0, 0, MFLG_SLOW | MFLG_UNREG, 0,
@@ -55,8 +55,9 @@ _moddeinit(void)
   mod_del_cmd(&quit_msgtab);
 }
 
-const char *_version = "$Revision: 1.34 $";
+const char *_version = "$Revision: 1.35 $";
 #endif
+
 /*
 ** m_quit
 **      parv[0] = sender prefix
@@ -73,17 +74,17 @@ m_quit(struct Client *client_p, struct Client *source_p,
     comment[TOPICLEN] = '\0';
 
   if (ConfigFileEntry.client_exit && comment[0])
-    {
-      snprintf(reason, TOPICLEN, "Quit: %s", comment);
-      comment = reason;
-    }
-  
-  if(!IsOper(source_p) && 
+  {
+    snprintf(reason, TOPICLEN, "Quit: %s", comment);
+    comment = reason;
+  }
+
+  if (!IsOper(source_p) && 
      (source_p->firsttime + ConfigFileEntry.anti_spam_exit_message_time)
      > CurrentTime)
-    {
-      comment = "Client Quit";
-    }
+  {
+    comment = "Client Quit";
+  }
 
   exit_client(client_p, source_p, source_p, comment);
 }
@@ -95,7 +96,7 @@ m_quit(struct Client *client_p, struct Client *source_p,
 */
 static void
 ms_quit(struct Client *client_p, struct Client *source_p,
-	int parc, char *parv[])
+        int parc, char *parv[])
 {
   char *comment = (parc > 1 && parv[1]) ? parv[1] : client_p->name;
 

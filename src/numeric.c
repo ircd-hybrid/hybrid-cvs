@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: numeric.c,v 7.25 2003/05/30 08:05:40 michael Exp $
+ *  $Id: numeric.c,v 7.26 2003/06/04 06:25:54 michael Exp $
  */
 
 #include "stdinc.h"
@@ -28,12 +28,10 @@
 #include "irc_string.h"
 #include "common.h"     /* NULL cripes */
 #include "memory.h"
-
 #include "s_log.h"
 #include "fileio.h"
 #include "send.h"
 #include "client.h"
-
 #include "messages.tab"
 
 static char used_locale[LOCALE_LENGTH] = "standard";
@@ -68,9 +66,11 @@ static int
 change_reply(const char *locale, int linecnt, int reply, char *new_reply)
 {
   int found;
-  char *new = new_reply, *old = replies[reply].standard;
+  char *new = new_reply;
+  const char *old = replies[reply].standard;
 
   for (; *new; new++)
+  {
     if (*new == '%')
     {
       if (!*++new) break;
@@ -82,6 +82,7 @@ change_reply(const char *locale, int linecnt, int reply, char *new_reply)
         for (; *new >= '0' && *new <= '9'; new++); /* skip size prefix */
         found = 0;
         for (; *old; old++)
+        {
           if (*old == '%')
 	  {
 	    if (!*++old) break;  /* shouldn't happen */
@@ -98,6 +99,7 @@ change_reply(const char *locale, int linecnt, int reply, char *new_reply)
               break;
             }
 	  }
+        }
         if (!found)
         {
           ilog(L_ERROR, "Too many format symbols (%s.lang, %d)", locale, linecnt);
@@ -105,8 +107,10 @@ change_reply(const char *locale, int linecnt, int reply, char *new_reply)
         }
       }
     }
+  }
 
   for (; *old; old++)
+  {
     if (*old == '%')
     {
       if (!*++old) break;  /* shouldn't happen */
@@ -116,6 +120,7 @@ change_reply(const char *locale, int linecnt, int reply, char *new_reply)
         return(0);
       }
     }
+  }
 
   MyFree(replies[reply].translated);
   DupString(replies[reply].translated, new_reply);
@@ -133,11 +138,13 @@ set_locale(const char *locale)
 
   /* Restore standard replies */
   for (i = 0; i <= ERR_LAST_ERR_MSG; i++)   /* 0 isn't a magic number! ;> */
+  {
     if (replies[i].translated != NULL)
     {
       MyFree(replies[i].translated);
       replies[i].translated = NULL;
     }
+  }
 
   if (strchr(locale, '/') != NULL)
   {
@@ -227,7 +234,7 @@ set_locale(const char *locale)
 }
 
 /* Returns the name of current locale. */
-const char*
+const char *
 get_locale(void)
 {
   return used_locale;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_unkline.c,v 1.72 2003/06/03 23:41:24 bill Exp $
+ *  $Id: m_unkline.c,v 1.73 2003/06/04 06:25:50 michael Exp $
  */
 
 #include "stdinc.h"
@@ -51,6 +51,9 @@ static void ms_unkline(struct Client *, struct Client *, int, char **);
 static void mo_undline(struct Client *, struct Client *, int, char **);
 static void mo_ungline(struct Client *, struct Client *, int, char **);
 
+static int remove_tkline_match(const char *, const char *);
+static int remove_tdline_match(const char *);
+
 struct Message msgtabs[] = {
   {"UNKLINE", 0, 0, 2, 0, MFLG_SLOW, 0,
    {m_unregistered, m_not_oper, ms_unkline, mo_unkline, m_ignore}},
@@ -78,11 +81,9 @@ _moddeinit(void)
   mod_del_cmd(&msgtabs[2]);
   delete_capability("UNKLN");
 }
-const char *_version = "$Revision: 1.72 $";
-#endif
 
-static int remove_tkline_match(const char *, const char *);
-static int remove_tdline_match(const char *);
+const char *_version = "$Revision: 1.73 $";
+#endif
 
 /*
 ** mo_unkline
@@ -96,44 +97,45 @@ static int remove_tdline_match(const char *);
 */
 static void
 mo_unkline(struct Client *client_p,struct Client *source_p,
-           int parc,char *parv[])
+           int parc, char *parv[])
 {
+  char star[] = "*";
   char *user, *host;
 
   if (!IsOperUnkline(source_p))
-    {
-      sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
-                 me.name, source_p->name);
-      return;
-    }
+  {
+    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
+               me.name, source_p->name);
+    return;
+  }
+
   if (parc < 2)
-    {
-      sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
-                 me.name, source_p->name, "UNKLINE");
-      return;
-    }
+  {
+    sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
+               me.name, source_p->name, "UNKLINE");
+    return;
+  }
 
   if ((host = strchr(parv[1], '@')) || *parv[1] == '*')
+  {
+    /* Explicit user@host mask given */
+    if (host)                  /* Found user@host */
     {
-      /* Explicit user@host mask given */
-
-      if(host)                  /* Found user@host */
-        {
           user = parv[1];       /* here is user part */
           *(host++) = '\0';     /* and now here is host */
-        }
-      else
-        {
-          user = star;           /* no @ found, assume its *@somehost */
-          host = parv[1];
-        }
     }
-  else
+    else
     {
-      sendto_one(source_p, ":%s NOTICE %s :Invalid parameters",
-                 me.name, source_p->name);
-      return;
+      user = star;           /* no @ found, assume its *@somehost */
+      host = parv[1];
     }
+  }
+  else
+  {
+    sendto_one(source_p, ":%s NOTICE %s :Invalid parameters",
+               me.name, source_p->name);
+    return;
+  }
 
   /* UNKLINE bill@mu.org ON irc.mu.org */
   if ((parc > 3) && (irccmp(parv[2], "ON") == 0))
@@ -149,17 +151,17 @@ mo_unkline(struct Client *client_p,struct Client *source_p,
     cluster_unkline(source_p, user, host);
 
   if (remove_tkline_match(host, user))
-    {
-      sendto_one(source_p,
-		 ":%s NOTICE %s :Un-klined [%s@%s] from temporary K-Lines",
-		 me.name, parv[0],user, host);
-      sendto_realops_flags(UMODE_ALL, L_ALL,
-			   "%s has removed the temporary K-Line for: [%s@%s]",
-			   get_oper_name(source_p), user, host);
-      ilog(L_NOTICE, "%s removed temporary K-Line for [%s@%s]", parv[0], user,
-	   host);
-      return;
-    }
+  {
+    sendto_one(source_p,
+               ":%s NOTICE %s :Un-klined [%s@%s] from temporary K-Lines",
+               me.name, source_p->name, user, host);
+    sendto_realops_flags(UMODE_ALL, L_ALL,
+                         "%s has removed the temporary K-Line for: [%s@%s]",
+                         get_oper_name(source_p), user, host);
+    ilog(L_NOTICE, "%s removed temporary K-Line for [%s@%s]",
+         source_p->name, user, host);
+    return;
+  }
 
   if (remove_conf_line(KLINE_TYPE, source_p, user, host) > 0)
   {
@@ -168,7 +170,6 @@ mo_unkline(struct Client *client_p,struct Client *source_p,
     sendto_realops_flags(UMODE_ALL, L_ALL,
 			 "%s has removed the K-Line for: [%s@%s]",
 			 get_oper_name(source_p), user, host);
-
     ilog(L_NOTICE, "%s removed K-Line for [%s@%s]",
 	 source_p->name, user, host);
   }
@@ -238,12 +239,12 @@ ms_unkline(struct Client *client_p, struct Client *source_p,
     {
       sendto_one(source_p,
                  ":%s NOTICE %s :Un-klined [%s@%s] from temporary K-Lines",
-                 me.name, parv[0], kuser, khost);
+                 me.name, source_p->name, kuser, khost);
       sendto_realops_flags(UMODE_ALL, L_ALL,  
                            "%s has removed the temporary K-Line for: [%s@%s]",
                            get_oper_name(source_p), kuser, khost);
       ilog(L_NOTICE, "%s removed temporary K-Line for [%s@%s]",
-           parv[0], kuser, khost);
+           source_p->name, kuser, khost);
       return;
     }
 
@@ -294,10 +295,11 @@ remove_tkline_match(const char *host, const char *user)
 	  dlinkDelete(tk_n, &temporary_klines);
 	  free_dlink_node(tk_n);
 	  delete_one_address_conf(tk_c->host, tk_c);
-	  return YES;
+	  return(YES);
 	}
-    }
-  return NO;
+  }
+
+  return(NO);
 }
 
 /* static int remove_tdline_match(const char *host, const char *user)
@@ -313,12 +315,12 @@ static int remove_tdline_match(const char *cidr)
   int nm_t, cnm_t, bits, cbits;
   nm_t = parse_netmask(cidr, &addr, &bits);
 
-  for(td_node = temporary_dlines.head; td_node; td_node = td_node->next)
+  for (td_node = temporary_dlines.head; td_node; td_node = td_node->next)
   {
     td_conf = (struct ConfItem *)td_node->data;
-    cnm_t = parse_netmask(td_conf->host, &caddr, &cbits);
+    cnm_t   = parse_netmask(td_conf->host, &caddr, &cbits);
 
-    if(cnm_t != nm_t)
+    if (cnm_t != nm_t)
       continue;
 
     if((nm_t==HM_HOST && !irccmp(td_conf->host, cidr)) ||
@@ -331,10 +333,11 @@ static int remove_tdline_match(const char *cidr)
       dlinkDelete(td_node, &temporary_dlines);
       free_dlink_node(td_node);
       delete_one_address_conf(td_conf->host, td_conf);
-      return YES;
+      return(YES);
     }
   }
-  return NO;
+
+  return(NO);
 }
 
 /*
@@ -361,7 +364,7 @@ mo_undline(struct Client *client_p, struct Client *source_p,
 
   cidr = parv[1];
 
-  if(remove_tdline_match(cidr))
+  if (remove_tdline_match(cidr))
   {
     sendto_one(source_p,
               ":%s NOTICE %s :Un-Dlined [%s] from temporary D-Lines",
@@ -376,16 +379,16 @@ mo_undline(struct Client *client_p, struct Client *source_p,
   if (remove_conf_line(DLINE_TYPE, source_p, cidr, NULL) > 0)
   {
     sendto_one(source_p, ":%s NOTICE %s :D-Line for [%s] is removed",
-	       me.name, parv[0], cidr);
+               me.name, source_p->name, cidr);
     sendto_realops_flags(UMODE_ALL, L_ALL,
 			 "%s has removed the D-Line for: [%s]",
 			 get_oper_name(source_p), cidr);
-    ilog(L_NOTICE, "%s removed D-Line for [%s]", get_oper_name(source_p),
-	 cidr);
+    ilog(L_NOTICE, "%s removed D-Line for [%s]",
+         get_oper_name(source_p), cidr);
   }
   else
     sendto_one(source_p, ":%s NOTICE %s :No D-Line for [%s] found",
-	       me.name, parv[0], cidr);
+               me.name, source_p->name, cidr);
 }
 
 /*
@@ -396,65 +399,64 @@ mo_undline(struct Client *client_p, struct Client *source_p,
 **      parv[0] = sender nick
 **      parv[1] = gline to remove
 */
-
 static void
 mo_ungline(struct Client *client_p, struct Client *source_p,
-	   int parc,char *parv[])
+           int parc, char *parv[])
 {
-  char  *user,*host;
+  char star[] = "*";
+  char *user, *host;
 
   if (!ConfigFileEntry.glines)
-    {
-      sendto_one(source_p,":%s NOTICE %s :UNGLINE disabled",me.name,parv[0]);
-      return;
-    }
+  {
+    sendto_one(source_p, ":%s NOTICE %s :UNGLINE disabled",
+               me.name, source_p->name);
+    return;
+  }
 
   if (!IsOperUnkline(source_p) || !IsOperGline(source_p))
-    {
-      sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
-                 me.name, source_p->name);
-      return;
-    }
+  {
+    sendto_one(source_p, form_str(ERR_NOPRIVILEGES),
+               me.name, source_p->name);
+    return;
+  }
 
   if ((host = strchr(parv[1], '@')) || *parv[1] == '*')
+  {
+    /* Explicit user@host mask given */
+    if (host != NULL)   /* Found user@host */
     {
-      /* Explicit user@host mask given */
-
-      if(host != NULL)                  /* Found user@host */
-        {
-          user = parv[1];       /* here is user part */
-          *(host++) = '\0';     /* and now here is host */
-        }
-      else
-        {
-          user = star;           /* no @ found, assume its *@somehost */
-          host = parv[1];
-        }
+      user = parv[1];   /* here is user part */
+      *(host++) = '\0'; /* and now here is host */
     }
+    else
+    {
+      user = star;      /* no @ found, assume its *@somehost */
+      host = parv[1];
+    }
+  }
   else
-    {
-      sendto_one(source_p, ":%s NOTICE %s :Invalid parameters",
-                 me.name, parv[0]);
-      return;
-    }
+  {
+    sendto_one(source_p, ":%s NOTICE %s :Invalid parameters",
+               me.name, source_p->name);
+    return;
+  }
 
-  if(remove_gline_match(user, host))
-    {
-      sendto_one(source_p, ":%s NOTICE %s :G-Line for [%s@%s] is removed",
-                 me.name, parv[0], user, host);
-      sendto_realops_flags(UMODE_ALL, L_ALL,
-			   "%s has removed the G-Line for: [%s@%s]",
-			   get_oper_name(source_p), user, host );
-      ilog(L_NOTICE, "%s removed G-Line for [%s@%s]",
-          get_oper_name(source_p), user, host);
-      return;
-    }
+  if (remove_gline_match(user, host))
+  {
+    sendto_one(source_p, ":%s NOTICE %s :G-Line for [%s@%s] is removed",
+               me.name, source_p->name, user, host);
+    sendto_realops_flags(UMODE_ALL, L_ALL,
+                         "%s has removed the G-Line for: [%s@%s]",
+                         get_oper_name(source_p), user, host);
+    ilog(L_NOTICE, "%s removed G-Line for [%s@%s]",
+         get_oper_name(source_p), user, host);
+    return;
+  }
   else
-    {
-      sendto_one(source_p, ":%s NOTICE %s :No G-Line for %s@%s",
-                 me.name, parv[0],user,host);
-      return;
-    }
+  {
+    sendto_one(source_p, ":%s NOTICE %s :No G-Line for %s@%s",
+               me.name, source_p->name, user, host);
+    return;
+  }
 }
-
 

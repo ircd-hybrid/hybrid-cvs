@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.158 2003/06/04 02:11:00 joshk Exp $
+ *  $Id: m_sjoin.c,v 1.159 2003/06/04 06:25:52 michael Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.158 $";
+const char *_version = "$Revision: 1.159 $";
 #endif
 
 /* ms_sjoin()
@@ -162,13 +162,13 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
         mode.mode |= MODE_TOPICLIMIT;
         break;
       case 'k':
-        strlcpy(mode.key, parv[4 + args], KEYLEN);
+        strlcpy(mode.key, parv[4 + args], sizeof(mode.key));
         args++;
         if (parc < 5+args)
           return;
         break;
       case 'l':
-        mode.limit = atoi(parv[4+args]);
+        mode.limit = atoi(parv[4 + args]);
         args++;
         if (parc < 5+args)
           return;
@@ -286,7 +286,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
   }
 
   mbuf = modebuf;
-  para[0] = para[1] = para[2] = para[3] = nothing;
+  para[0] = para[1] = para[2] = para[3] = "";
   pargs = 0;
 
   *mbuf++ = '+';
@@ -425,7 +425,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
 			       modebuf, para[0], para[1], para[2], para[3]);
           mbuf = modebuf;
 	  *mbuf++ = '+';
-	  para[0] = para[1] = para[2] = para[3] = nothing;
+	  para[0] = para[1] = para[2] = para[3] = "";
 	  pargs = 0;
         }
         *mbuf++ = 'v';
@@ -449,7 +449,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
                            modebuf, para[0],para[1],para[2],para[3]);
       mbuf = modebuf;
       *mbuf++ = '+';
-      para[0] = para[1] = para[2] = para[3] = nothing;
+      para[0] = para[1] = para[2] = para[3] = "";
       pargs = 0;
     }
 
@@ -479,7 +479,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
     sendto_channel_local(ALL_MEMBERS, chptr, ":%s MODE %s %s %s %s %s %s",
                          (IsHidden(source_p) || ConfigServerHide.hide_servers) ?
                          me.name : source_p->name, chptr->chname, modebuf,
-                         para[0],para[1], para[2], para[3]);
+                         para[0], para[1], para[2], para[3]);
   }
 
   if (people == 0)
@@ -516,14 +516,11 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
  * output	- NONE
  * side effects	- 
  */
-struct mode_letter
+static const struct mode_letter
 {
   unsigned int mode;
   unsigned char letter;
-};
-
-struct mode_letter flags[] =
-{
+} flags[] = {
   { MODE_NOPRIVMSGS, 'n' },
   { MODE_TOPICLIMIT, 't' },
   { MODE_SECRET,     's' },
@@ -536,8 +533,8 @@ struct mode_letter flags[] =
 static void
 set_final_mode(struct Mode *mode, struct Mode *oldmode)
 {
-  int what   = 0;
   char *pbuf = parabuf;
+  int what   = 0;
   int len;
   int i;
 
@@ -654,11 +651,12 @@ void remove_a_mode(struct Channel *chptr, struct Client *source_p,
   mbuf = lmodebuf;
   *mbuf++ = '-';
 
-  lpara[0] = lpara[1] = lpara[2] = lpara[3] = nothing;
+  lpara[0] = lpara[1] = lpara[2] = lpara[3] = "";
 
   DLINK_FOREACH(ptr, chptr->members.head)
   {
     ms = ptr->data;
+
     if ((ms->flags & mask) == 0)
       continue;
 
@@ -683,7 +681,7 @@ void remove_a_mode(struct Channel *chptr, struct Client *source_p,
       mbuf = lmodebuf;
       *mbuf++ = '-';
       count = 0;
-      lpara[0] = lpara[1] = lpara[2] = lpara[3] = nothing;
+      lpara[0] = lpara[1] = lpara[2] = lpara[3] = "";
     }
   }
 

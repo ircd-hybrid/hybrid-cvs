@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.300 2003/06/03 16:41:52 joshk Exp $
+ *  $Id: ircd.c,v 7.301 2003/06/04 06:25:54 michael Exp $
  */
 
 #include "stdinc.h"
@@ -69,9 +69,6 @@
 #include "ircd_getopt.h"
 #include "balloc.h"
 
-char no_reason [] = "No Reason";
-char nothing [] = "";
-char star [] = "*";
 
 /* Try and find the correct name to use with getrlimit() for setting the max.
  * number of files allowed to be open by this process.
@@ -91,11 +88,11 @@ struct Counter Count;
 struct ServerState_t server_state;
 
 struct timeval SystemTime;
-int ServerRunning;           /* GLOBAL - server execution state */
-struct Client me;               /* That's me */
-struct LocalUser meLocalUser;	/* That's also part of me */
+int ServerRunning;            /* GLOBAL - server execution state */
+struct Client me;             /* That's me */
+struct LocalUser meLocalUser; /* That's also part of me */
 
-int callbacks_called;          /* A measure of server load... */
+int callbacks_called;         /* A measure of server load... */
 
 static unsigned long initialVMTop = 0;   /* top of virtual memory at init */
 const char *logFileName = LPATH;
@@ -104,7 +101,7 @@ const char *pidFileName = PPATH;
 char **myargv;
 int dorehash = 0;
 int doremotd = 0;
-time_t nextconnect = 1;        /* time for next try_connections call */
+time_t nextconnect = 1;       /* time for next try_connections call */
 
 /* Set to zero because it should be initialized later using
  * initialize_server_capabs

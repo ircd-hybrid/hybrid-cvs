@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.109 2003/06/03 16:41:48 joshk Exp $
+ *  $Id: m_gline.c,v 1.110 2003/06/04 06:25:50 michael Exp $
  */
 
 #include "stdinc.h"
@@ -97,7 +97,7 @@ _moddeinit(void)
   delete_capability("GLN");
 }
 
-const char *_version = "$Revision: 1.109 $";
+const char *_version = "$Revision: 1.110 $";
 #endif
 
 /* mo_gline()
@@ -121,8 +121,9 @@ mo_gline(struct Client *client_p, struct Client *source_p,
   char *user = NULL;
   char *host = NULL;	     /* user and host of GLINE "victim" */
   char *reason = NULL;	     /* reason for "victims" demise     */
-  char tempuser[USERLEN*2 + 2];
-  char temphost[HOSTLEN*2 + 2];
+  char star[] = "*";
+  char tempuser[USERLEN * 2 + 2];
+  char temphost[HOSTLEN * 2 + 2];
 
   if (!ConfigFileEntry.glines)
   {
@@ -141,7 +142,6 @@ mo_gline(struct Client *client_p, struct Client *source_p,
   if ((host = strchr(parv[1], '@')) || *parv[1] == '*')
   {
     /* Explicit user@host mask given */
-    
     if (host != NULL)	/* Found user@host */
     {
       user = parv[1];   /* here is user part */
@@ -153,23 +153,22 @@ mo_gline(struct Client *client_p, struct Client *source_p,
     }
     else
     {
-      user = star;               /* no @ found, assume its *@somehost */
+      user = star; /* no @ found, assume its *@somehost */
       host = parv[1];
     }
 	      
-    if (*host == '\0')	/* duh. no host found, assume its '*' host */
+    if (*host == '\0') /* duh. no host found, assume its '*' host */
       host = star;
 
-    strlcpy(tempuser, collapse(user), sizeof(tempuser));   /* allow for '*' */
+    strlcpy(tempuser, collapse(user), sizeof(tempuser)); /* allow for '*' */
     strlcpy(temphost, collapse(host), sizeof(temphost));
     user = tempuser;
     host = temphost;
   }
   else
   {
-    sendto_one(source_p,
-	       ":%s NOTICE %s :Can't G-Line a nick use user@host",
-	       me.name, parv[0]);
+    sendto_one(source_p, ":%s NOTICE %s :Can't G-Line a nick use user@host",
+	       me.name, source_p->name);
     return;
   }
 
@@ -192,8 +191,7 @@ mo_gline(struct Client *client_p, struct Client *source_p,
   reason = parv[2];
 
   /* If at least 3 opers agree this user should be G lined then do it */
-  if (check_majority_gline(source_p, source_p->name,
-                           (const char *)source_p->username,
+  if (check_majority_gline(source_p, source_p->name, source_p->username,
                            source_p->host, me.name, user, host, reason) ==
       GLINE_ALREADY_VOTED)
   {
@@ -438,8 +436,8 @@ invalid_gline(struct Client *source_p, const char *luser, const char *lhost,
  * side effects	-
  */
 static void
-set_local_gline(struct Client *source_p,
-		const char *user, const char *host, const char *reason)
+set_local_gline(struct Client *source_p, const char *user,
+                const char *host, const char *reason)
 {
   char buffer[IRCD_BUFSIZE];
   struct ConfItem *aconf;
@@ -460,14 +458,13 @@ set_local_gline(struct Client *source_p,
   aconf->hold = CurrentTime + ConfigFileEntry.gline_time;
 
   dlinkAdd(aconf, make_dlink_node(), &glines);
-  
+
   write_conf_line(GLINE_TYPE, source_p, aconf, current_date, cur_time);
   check_klines();
 }
 
 
-/*
- * add_new_majority_gline
+/* add_new_majority_gline()
  * 
  * inputs       - name of operator requesting gline
  * 		- username of operator requesting gline

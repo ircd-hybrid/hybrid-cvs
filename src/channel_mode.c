@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.106 2003/06/04 00:43:45 db Exp $
+ *  $Id: channel_mode.c,v 7.107 2003/06/04 06:25:54 michael Exp $
  */
 
 #include "stdinc.h"
@@ -137,9 +137,10 @@ static char *
 check_string(char *s)
 {
   char *str = s;
+  static char star[] = "*";
 
   if (EmptyString(s))
-    return star;
+    return(star);
 
   else {
     for (; *s; ++s)
@@ -152,7 +153,7 @@ check_string(char *s)
     }
   }
 
-  return str;
+  return(str);
 }
 
 /*
@@ -379,6 +380,7 @@ static char *
 pretty_mask(char *mask)
 {
   int old_mask_pos;
+  char star[]= "*";
   char *nick = star, *user = star, *host = star;
 
   char *t, *at, *ex;
@@ -1335,7 +1337,7 @@ chm_key(struct Client *client_p, struct Client *source_p,
     mode_changes[mode_count].nocaps = 0;
     mode_changes[mode_count].mems = ALL_MEMBERS;
     mode_changes[mode_count].id = NULL;
-    mode_changes[mode_count++].arg = star;
+    mode_changes[mode_count++].arg = "*";
   }
 }
 
@@ -1489,7 +1491,8 @@ send_cap_mode_changes(struct Client *client_p, struct Client *source_p,
         || ((nocap & mode_changes[i].nocaps) != mode_changes[i].nocaps))
       continue;
 
-    arg = nothing;
+    arg = "";
+
     if ((cap & CAP_SID) && mode_changes[i].id)
       arg = mode_changes[i].id;
     if (*arg == '\0')

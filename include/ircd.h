@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.h,v 7.68 2003/06/03 16:41:51 joshk Exp $
+ *  $Id: ircd.h,v 7.69 2003/06/04 06:25:48 michael Exp $
  */
 
 #ifndef INCLUDED_ircd_h
@@ -28,8 +28,6 @@
 #include "config.h"
 #include "tools.h"
 #include "memory.h"
-
-extern char no_reason [], star [], nothing [];
 
 struct Client;
 struct dlink_list;
@@ -81,10 +79,10 @@ extern int doremotd;
 extern struct Counter Count;
 extern struct timeval SystemTime;
 #define CurrentTime SystemTime.tv_sec
-extern time_t         nextconnect;
-extern int            default_server_capabs;
+extern time_t nextconnect;
+extern int default_server_capabs;
 #ifdef HAVE_LIBCRYPTO
-extern int            bio_spare_fd;
+extern int bio_spare_fd;
 #endif /* HAVE_LIBCRYPTO */
 
 extern int splitmode;
