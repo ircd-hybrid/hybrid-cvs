@@ -2,7 +2,7 @@
  * modules/m_nick.c
  * Copyright (C) 2001 Hybrid Development Team
  *
- * $Id: m_nick.c,v 1.77 2001/09/21 17:53:53 leeh Exp $
+ * $Id: m_nick.c,v 1.78 2001/09/29 22:52:49 davidt Exp $
  */
 
 #include "handlers.h"
@@ -636,9 +636,9 @@ nick_from_server(struct Client *client_p, struct Client *source_p, int parc,
        while (*m)
        {
          flag = user_modes_from_c_to_bitmask[(unsigned char)*m];
-	 if(flag & FLAGS_INVISIBLE)
+	 if(!(source_p->umodes & FLAGS_INVISIBLE) && (flag & FLAGS_INVISIBLE))
 	   Count.invisi++;
-	 if(flag & FLAGS_OPER)
+	 if(!(source_p->umodes & FLAGS_OPER) && (flag & FLAGS_OPER))
 	   Count.oper++;
 
 	 source_p->umodes |= flag & SEND_UMODES;

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.270 2001/09/24 11:13:45 a1kmm Exp $
+ * $Id: channel.c,v 7.271 2001/09/29 22:52:50 davidt Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -4384,7 +4384,7 @@ free_channel_list(dlink_list * list)
     actualBan = ptr->data;
     MyFree(actualBan->banstr);
     MyFree(actualBan->who);
-    MyFree(actualBan);
+    BlockHeapFree(ban_heap, actualBan);
 
     free_dlink_node(ptr);
   }

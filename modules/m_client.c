@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_client.c,v 1.26 2001/08/03 13:10:27 leeh Exp $
+ *   $Id: m_client.c,v 1.27 2001/09/29 22:52:50 davidt Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -497,11 +497,11 @@ nick_from_server(struct Client *client_p, struct Client *source_p, int parc,
   while (*m)
     {
       flag = user_modes_from_c_to_bitmask[(unsigned char)*m];
-      if( flag & FLAGS_INVISIBLE )
+      if(!(source_p->umodes & FLAGS_INVISIBLE) && (flag & FLAGS_INVISIBLE))
 	{
 	  Count.invisi++;
 	}
-      if( flag & FLAGS_OPER )
+      if(!(source_p->umodes & FLAGS_OPER) && (flag & FLAGS_OPER))
 	{
 	  Count.oper++;
 	}
