@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.453 2003/07/05 06:21:03 db Exp $
+ *  $Id: s_conf.c,v 7.454 2003/07/07 02:12:57 db Exp $
  */
 
 #include "stdinc.h"
@@ -2454,7 +2454,7 @@ clear_out_old_conf(void)
 	  else
 	  {
 	    match_item->illegal = 1;
-	    dlinkDelete(&conf->node, &leaf_items);
+	    dlinkDelete(&conf->node, *iterator);
 	  }
 	}
 	else
