@@ -3,7 +3,7 @@
  *
  * Written by ejb, wcampbel, db, leeh and others
  *
- * $Id: example.conf.quick,v 1.11 2003/06/14 01:23:15 joshk Exp $
+ * $Id: example.conf.quick,v 1.12 2003/06/14 22:00:40 michael Exp $
  */
 
 /* IMPORTANT NOTES:
@@ -60,6 +60,7 @@ admin {
 
 /* logging {}: contains information about logfiles. */
 logging {
+        use_logging = yes;
 	log_level = L_INFO;
 };
 
@@ -343,7 +344,6 @@ general {
 	maximum_links = 1;
 	/* REMOVE ME.  The following line checks you've been reading. */
 	havent_read_conf = 1;
-        use_logging = yes;
 	fname_userlog = "logs/userlog";
 	fname_operlog = "logs/operlog";
 	fname_foperlog = "logs/foperlog";
