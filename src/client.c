@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.141 2001/02/26 06:53:53 androsyn Exp $
+ *  $Id: client.c,v 7.142 2001/02/26 13:21:11 db Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -209,16 +209,22 @@ void _free_client(struct Client* cptr)
 /*      if (cptr->localClient->dns_reply)
 	--cptr->localClient->dns_reply->ref_count; */
 
+#ifndef NDEBUG
       mem_frob(cptr->localClient, sizeof(struct LocalUser));
+#endif
       if(BlockHeapFree(localUserFreeList, cptr->localClient))
         result = 1;
 
+#ifndef NDEBUG
       mem_frob(cptr, sizeof(struct Client));
+#endif
       if(BlockHeapFree(ClientFreeList, cptr))
         result = 1;
     }
   else {
+#ifndef NDEBUG
     mem_frob(cptr, sizeof(struct Client));
+#endif
     if(BlockHeapFree(ClientFreeList, cptr))
       result = 1;
   }

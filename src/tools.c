@@ -5,7 +5,7 @@
  *
  * adrian chadd <adrian@creative.net.au>
  *
- * $Id: tools.c,v 7.16 2001/01/15 17:05:45 db Exp $
+ * $Id: tools.c,v 7.17 2001/02/26 13:21:11 db blalloc.c $
  */
 
 #include <assert.h>
@@ -15,6 +15,7 @@
 #include "tools.h"
 
 
+#ifndef NDEBUG
 /*
  * frob some memory. debugging time.
  * -- adrian
@@ -31,6 +32,7 @@ mem_frob(void *data, int len)
         cdata++;
     }
 }
+#endif
 
 /* 
  * dlink_ routines are stolen from squid, except for dlinkAddBefore,
