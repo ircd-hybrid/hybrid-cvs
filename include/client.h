@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.8 1999/09/01 03:47:28 tomh Exp $
+ * $Id: client.h,v 7.9 1999/09/01 05:09:09 tomh Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -196,8 +196,8 @@ struct Client
   unsigned short    port;       /* and the remote port# too :-) */
 
   short             lastsq;     /* # of 2k blocks when sendqueued called last*/
-  dbuf              sendQ;      /* Outgoing message queue--if socket full */
-  dbuf              recvQ;      /* Hold for data incoming yet to be parsed */
+  struct DBuf       sendQ;      /* Outgoing message queue--if socket full */
+  struct DBuf       recvQ;      /* Hold for data incoming yet to be parsed */
   /*
    * we want to use unsigned int here so the sizes have a better chance of
    * staying the same on 64 bit machines. The current trend is to use
