@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: servlink.h,v 1.12 2001/05/25 14:57:15 davidt Exp $
+ *   $Id: servlink.h,v 1.13 2001/05/25 16:50:36 davidt Exp $
  */
 
 #include <stdio.h>
@@ -52,7 +52,7 @@ extern char *fd_name[NUM_FDS];
 #define READLEN                  2048
 
 #ifdef HAVE_LIBZ
-#define BUFLEN                   READLEN * 8 /* allow for decompression */
+#define BUFLEN                   READLEN * 6 /* allow for decompression */
 #else
 #define BUFLEN                   READLEN
 #endif
