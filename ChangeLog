@@ -1,3 +1,8 @@
+*** 20001203_5 by db
+- simplified dlinkMoveList code 
+
+
+
 *** 20001203_4 by db
 - cleaned up m_nick.c again. HEY! the docs in the comments are wrong.
   surprise surprise.
@@ -1398,7 +1403,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.672 2000/12/03 08:15:43 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.673 2000/12/03 08:27:00 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
