@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.217 2002/01/06 18:12:16 leeh Exp $
+ *  $Id: client.c,v 7.218 2002/01/08 16:23:25 jmallett Exp $
  */
 
 #include "tools.h"
@@ -1053,6 +1053,8 @@ static void exit_one_client(struct Client *client_p, struct
 	      next_lp = lp->next;
 	      remove_user_from_channel(lp->data,source_p, 1);
 	    }
+          /* Should not be in any channels now */
+          assert(source_p->user->channel.head == NULL);
           
           /* Clean up invitefield */
           for (lp = source_p->user->invited.head; lp; lp = next_lp)
