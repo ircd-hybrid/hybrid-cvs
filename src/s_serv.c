@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.355 2003/06/26 12:19:49 michael Exp $
+ *  $Id: s_serv.c,v 7.356 2003/06/27 04:39:34 db Exp $
  */
 
 #include "stdinc.h"
@@ -469,6 +469,7 @@ void
 try_connections(void *unused)
 {
   dlink_node *ptr;
+  struct ConfItem *conf;
   struct AccessItem *aconf;
   struct ClassItem *cltmp;
   int confrq;
@@ -477,9 +478,10 @@ try_connections(void *unused)
   if (GlobalSetOptions.autoconn == 0)
     return;
 
-  DLINK_FOREACH(ptr, ConfigItemList.head)
+  DLINK_FOREACH(ptr, server_items.head)
   {
-    aconf = ptr->data;
+    conf = ptr->data;
+    aconf = (struct AccessItem *)map_to_conf(conf);
 
     /* Also when already connecting! (update holdtimes) --SRB 
      */
@@ -514,12 +516,12 @@ try_connections(void *unused)
       /* Go to the end of the list, if not already last */
       if (ptr->next != NULL)
       {
-        dlinkDelete(ptr, &ConfigItemList);
-        dlinkAddTail(aconf, ptr, &ConfigItemList);
+        dlinkDelete(ptr, &server_items);
+        dlinkAddTail(conf, &conf->node, &server_items);
       }
 
       /* We used to only print this if serv_connect() actually
-       * suceeded, but since comm_tcp_connect() can call the callback
+       * succeeded, but since comm_tcp_connect() can call the callback
        * immediately if there is an error, we were getting error messages
        * in the wrong order. SO, we just print out the activated line,
        * and let serv_connect() / serv_connect_callback() print an
@@ -539,6 +541,7 @@ int
 check_server(const char *name, struct Client *client_p, int cryptlink)
 {
   dlink_node *ptr;
+  struct ConfItem *conf           = NULL;
   struct AccessItem *aconf        = NULL;
   struct AccessItem *server_aconf = NULL;
   int error = -1;
@@ -555,12 +558,10 @@ check_server(const char *name, struct Client *client_p, int cryptlink)
     return(-4);
 
   /* loop through looking for all possible connect items that might work */
-  DLINK_FOREACH(ptr, ConfigItemList.head)
+  DLINK_FOREACH(ptr, server_items.head)
   {
-    aconf = ptr->data;
-
-    if ((aconf->status & CONF_SERVER) == 0)
-      continue;
+    conf = ptr->data;
+    aconf = (struct AccessItem *)map_to_conf(conf);
 
     if (!match(name, aconf->name))
       continue;
@@ -1772,26 +1773,32 @@ burst_ll_members(struct Client *client_p, struct Channel *chptr)
 void
 set_autoconn(struct Client *source_p, const char *name, int newval)
 {
+  struct ConfItem *conf;
   struct AccessItem *aconf;
 
-  if (name && (aconf = find_conf_by_name(name, CONF_SERVER)))
+  if (name != NULL)
   {
-    if (newval)
-      SetConfAllowAutoConn(aconf);
-    else
-      ClearConfAllowAutoConn(aconf);
+    conf = find_exact_name_conf(SERVER_TYPE, name, NULL, NULL);
+    if (conf != NULL)
+    {
+      aconf = (struct AccessItem *)map_to_conf(conf);
+      if (newval)
+	SetConfAllowAutoConn(aconf);
+      else
+	ClearConfAllowAutoConn(aconf);
 
-    sendto_realops_flags(UMODE_ALL, L_ALL,
-                         "%s has changed AUTOCONN for %s to %i",
-                         source_p->name, name, newval);
-    sendto_one(source_p,
-               ":%s NOTICE %s :AUTOCONN for %s is now set to %i",
-               me.name, source_p->name, name, newval);
-  }
-  else if (name != NULL)
-  {
-    sendto_one(source_p, ":%s NOTICE %s :Can't find %s",
-               me.name, source_p->name, name);
+      sendto_realops_flags(UMODE_ALL, L_ALL,
+			   "%s has changed AUTOCONN for %s to %i",
+			   source_p->name, name, newval);
+      sendto_one(source_p,
+		 ":%s NOTICE %s :AUTOCONN for %s is now set to %i",
+		 me.name, source_p->name, name, newval);
+    }
+    else
+    {
+      sendto_one(source_p, ":%s NOTICE %s :Can't find %s",
+		 me.name, source_p->name, name);
+    }
   }
   else
   {
@@ -2087,7 +2094,7 @@ serv_connect_callback(int fd, int status, void *data)
     /* COMM_OK, so continue the connection procedure */
     /* Get the C/N lines */
     aconf = find_conf_name(&client_p->localClient->confs,
-			    client_p->name, CONF_SERVER); 
+			   client_p->name, CONF_SERVER); 
     if (aconf == NULL)
       {
         sendto_realops_flags(UMODE_ALL, L_ADMIN,

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.327 2003/06/26 04:35:07 db Exp $
+ *  $Id: ircd_parser.y,v 1.328 2003/06/27 04:39:34 db Exp $
  */
 
 %{
@@ -1728,7 +1728,6 @@ connect_entry: CONNECT
 {
   if (ypass == 2)
   {
-    free_access_item(yy_aconf);
     yy_conf = make_conf_item(SERVER_TYPE);
     yy_aconf = (struct AccessItem *)map_to_conf(yy_conf);
     yy_aconf->passwd = NULL;
@@ -1754,7 +1753,6 @@ connect_entry: CONNECT
 	{
 	  if (conf_add_server(yy_aconf, scount) >= 0)
 	  {
-	    conf_add_conf(yy_aconf);
 	    ++scount;
 	  }
 	  else
@@ -1788,9 +1786,8 @@ connect_entry: CONNECT
 		   "Ignoring connect block for %s -- missing password",
 				   yy_aconf->name);
 	  }
-
-	  free_access_item(yy_aconf);
 	  yy_aconf = NULL;
+	  yy_conf = NULL;
 	}
 
       /*
@@ -1834,7 +1831,7 @@ connect_entry: CONNECT
 	  free_access_item(yy_lconf);
 	dlinkDelete(ptr, &leaf_aconfs_list);
       }
-
+      yy_conf = NULL;
       yy_aconf = NULL;
   }
 };

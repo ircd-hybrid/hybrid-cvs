@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_oper.c,v 1.72 2003/06/24 14:23:54 michael Exp $
+ *  $Id: m_oper.c,v 1.73 2003/06/27 04:39:32 db Exp $
  */
 
 #include "stdinc.h"
@@ -68,7 +68,7 @@ _moddeinit(void)
   mod_del_cmd(&oper_msgtab);
 }
 
-const char *_version = "$Revision: 1.72 $";
+const char *_version = "$Revision: 1.73 $";
 #endif
 
 /*
@@ -100,8 +100,11 @@ m_oper(struct Client *client_p, struct Client *source_p,
 
   if ((aconf = find_password_aconf(name,source_p)) == NULL)
   {
+    struct ConfItem *conf;
+
     sendto_one(source_p, form_str(ERR_NOOPERHOST), me.name, source_p->name);
-    failed_oper_notice(source_p, name, find_conf_by_name(name, CONF_OPERATOR) ?
+    conf = find_exact_name_conf(OPER_TYPE, name, NULL, NULL);
+    failed_oper_notice(source_p, name, (conf != NULL) ?
                        "host mismatch" : "no oper {} block");
     log_failed_oper(source_p, name);
     return;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_connect.c,v 1.47 2003/06/24 10:37:51 michael Exp $
+ *  $Id: m_connect.c,v 1.48 2003/06/27 04:39:32 db Exp $
  */
 
 #include "stdinc.h"
@@ -38,7 +38,6 @@
 #include "parse.h"
 #include "hash.h"
 #include "modules.h"
-
 
 static void mo_connect(struct Client *, struct Client *, int, char **);
 static void ms_connect(struct Client *, struct Client *, int, char **);
@@ -61,7 +60,7 @@ _moddeinit(void)
   mod_del_cmd(&connect_msgtab);
 }
 
-const char *_version = "$Revision: 1.47 $";
+const char *_version = "$Revision: 1.48 $";
 #endif
 
 /*
@@ -81,7 +80,8 @@ mo_connect(struct Client* client_p, struct Client* source_p,
 {
   int port;
   int tmpport;
-  struct AccessItem* aconf;
+  struct ConfItem *conf=NULL;
+  struct AccessItem* aconf=NULL;
   struct Client *target_p;
   dlink_node *ptr;
   dlink_node *next_ptr;
@@ -110,7 +110,8 @@ mo_connect(struct Client* client_p, struct Client* source_p,
 
   if ((target_p = find_server(parv[1])))
   {
-    sendto_one(source_p, ":%s NOTICE %s :Connect: Server %s already exists from %s.",
+    sendto_one(source_p,
+	       ":%s NOTICE %s :Connect: Server %s already exists from %s.",
                me.name, source_p->name, parv[1], target_p->from->name);
     return;
   }
@@ -118,17 +119,24 @@ mo_connect(struct Client* client_p, struct Client* source_p,
   /*
    * try to find the name, then host, if both fail notify ops and bail
    */
-  if (!(aconf = find_conf_by_name(parv[1], CONF_SERVER)))
+  if ((conf = find_exact_name_conf(SERVER_TYPE,
+				   parv[1], NULL, NULL)) != NULL)
   {
-    if (!(aconf = find_conf_by_host(parv[1], CONF_SERVER)))
-    {
-      sendto_one(source_p, ":%s NOTICE %s :Connect: Host %s not listed in ircd.conf",
-                 me.name, source_p->name, parv[1]);
-      return;
-    }
+    aconf = (struct AccessItem *)map_to_conf(conf);
   }
-
-  assert(aconf != NULL);
+  else if ((conf = find_exact_name_conf(SERVER_TYPE,
+					NULL, NULL, parv[1])) != NULL)
+  {
+    aconf = (struct AccessItem *)map_to_conf(conf);
+  }
+  
+  if (aconf == NULL)
+  {
+    sendto_one(source_p,
+	       ":%s NOTICE %s :Connect: Host %s not listed in ircd.conf",
+	       me.name, source_p->name, parv[1]);
+    return;
+  }
 
   /* Get port number from user, if given. If not specified,
    * use the default form configuration structure. If missing
@@ -161,7 +169,8 @@ mo_connect(struct Client* client_p, struct Client* source_p,
     {
       if (0 == irccmp(aconf->name, pending_connection->name))
       {
-        sendto_one(source_p, ":%s NOTICE %s :Connect: a connection to %s is already in progress.",
+        sendto_one(source_p,
+	  ":%s NOTICE %s :Connect: a connection to %s is already in progress.",
                    me.name, source_p->name, aconf->name);
         return;
       }
@@ -218,7 +227,8 @@ ms_connect(struct Client *client_p, struct Client *source_p,
 {
   int port;
   int tmpport;
-  struct AccessItem *aconf;
+  struct ConfItem *conf=NULL;
+  struct AccessItem *aconf=NULL;
   struct Client *target_p;
   dlink_node *ptr;
   dlink_node *next_ptr;
@@ -239,7 +249,8 @@ ms_connect(struct Client *client_p, struct Client *source_p,
 
   if ((target_p = find_server(parv[1])))
   {
-    sendto_one(source_p, ":%s NOTICE %s :Connect: Server %s already exists from %s.",
+    sendto_one(source_p,
+	       ":%s NOTICE %s :Connect: Server %s already exists from %s.",
                me.name, source_p->name, parv[1], target_p->from->name);
     return;
   }
@@ -247,15 +258,23 @@ ms_connect(struct Client *client_p, struct Client *source_p,
   /*
    * try to find the name, then host, if both fail notify ops and bail
    */
-  if (!(aconf = find_conf_by_name(parv[1], CONF_SERVER)))
+  if ((conf = find_exact_name_conf(SERVER_TYPE,
+				   parv[1], NULL, NULL)) != NULL)
   {
-    if (!(aconf = find_conf_by_host(parv[1], CONF_SERVER)))
-    {
-      sendto_one(source_p,
-                 ":%s NOTICE %s :Connect: Host %s not listed in ircd.conf",
-                 me.name, source_p->name, parv[1]);
-      return;
-    }
+    aconf = (struct AccessItem *)map_to_conf(conf);
+  }
+  else if ((conf = find_exact_name_conf(SERVER_TYPE,
+					NULL, NULL, parv[1])) != NULL)
+  {
+    aconf = (struct AccessItem *)map_to_conf(conf);
+  }
+
+  if (aconf == NULL)
+  {
+    sendto_one(source_p,
+	       ":%s NOTICE %s :Connect: Host %s not listed in ircd.conf",
+	       me.name, source_p->name, parv[1]);
+    return;
   }
 
   assert(aconf != NULL);

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.444 2003/06/26 04:46:25 joshk Exp $
+ *  $Id: s_conf.c,v 7.445 2003/06/27 04:39:34 db Exp $
  */
 
 #include "stdinc.h"
@@ -59,6 +59,7 @@
 struct config_server_hide ConfigServerHide;
 
 /* general conf items link list root, other than k lines etc. */
+dlink_list server_items = { NULL, NULL, 0 };
 dlink_list oconf_items = { NULL, NULL, 0 };
 dlink_list uconf_items = { NULL, NULL, 0 };
 dlink_list xconf_items = { NULL, NULL, 0 };
@@ -230,6 +231,7 @@ make_conf_item(ConfType type)
 
     case SERVER_TYPE:
       status = CONF_SERVER;
+      dlinkAdd(conf, &conf->node, &server_items);
       break;
 
     case HUB_TYPE:
@@ -308,13 +310,33 @@ delete_conf_item(struct ConfItem *conf)
   case HUB_TYPE:
   case OPER_TYPE:
   case SERVER_TYPE:
+    aconf = (struct AccessItem *)map_to_conf(conf);
+    if (aconf->dns_query != NULL)
+      delete_resolver_queries(aconf->dns_query);
+    if (aconf->passwd != NULL)
+      memset(aconf->passwd, 0, strlen(aconf->passwd));
+    if (aconf->spasswd != NULL)
+      memset(aconf->spasswd, 0, strlen(aconf->spasswd));
+
+    MyFree(aconf->passwd);
+    MyFree(aconf->spasswd);
+    MyFree(aconf->reason);
+    MyFree(aconf->oper_reason);
+    MyFree(aconf->name);
+    MyFree(aconf->user);
+    MyFree(aconf->host);
+    MyFree(aconf->class_name);
+    MyFree(aconf->fakename);
+#ifdef HAVE_LIBCRYPTO
+    if (aconf->rsa_public_key)
+      RSA_free(aconf->rsa_public_key);
+    MyFree(aconf->rsa_public_key_file);
+#endif
 
     /* Yes, sigh. switch on type again */
     switch(type)
     {
     case EXEMPTDLINE_TYPE:
-      break;
-
     case DLINE_TYPE:
       break;
 
@@ -325,40 +347,20 @@ delete_conf_item(struct ConfItem *conf)
     case CLIENT_TYPE:
       break;
 
+    case HUB_TYPE:
+      break;
+
     case LEAF_TYPE:
       break;
 
     case OPER_TYPE:
-      aconf = (struct AccessItem *)map_to_conf(conf);
-      if (aconf->dns_query != NULL)
-	delete_resolver_queries(aconf->dns_query);
-      if (aconf->passwd != NULL)
-	memset(aconf->passwd, 0, strlen(aconf->passwd));
-      if (aconf->spasswd != NULL)
-	memset(aconf->spasswd, 0, strlen(aconf->spasswd));
-
-      MyFree(aconf->passwd);
-      MyFree(aconf->spasswd);
-      MyFree(aconf->reason);
-      MyFree(aconf->oper_reason);
-      MyFree(aconf->name);
-      MyFree(aconf->user);
-      MyFree(aconf->host);
-      MyFree(aconf->class_name);
-      MyFree(aconf->fakename);
-#ifdef HAVE_LIBCRYPTO
-      if (aconf->rsa_public_key)
-	RSA_free(aconf->rsa_public_key);
-      MyFree(aconf->rsa_public_key_file);
-#endif
       dlinkDelete(&conf->node, &oconf_items);
       MyFree(conf);
       break;
 
     case SERVER_TYPE:
-      break;
-
-    case HUB_TYPE:
+      dlinkDelete(&conf->node, &server_items);
+      MyFree(conf);
       break;
 
     default:
@@ -458,35 +460,9 @@ free_access_item(struct AccessItem *aconf)
 
   if (aconf == NULL)
     return;
-
-  if (aconf->dns_query != NULL)
-    delete_resolver_queries(aconf->dns_query);
-  if (aconf->passwd != NULL)
-    memset(aconf->passwd, 0, strlen(aconf->passwd));
-  if (aconf->spasswd != NULL)
-    memset(aconf->spasswd, 0, strlen(aconf->spasswd));
-
-  MyFree(aconf->passwd);
-  MyFree(aconf->spasswd);
-  MyFree(aconf->reason);
-  MyFree(aconf->oper_reason);
-  MyFree(aconf->name);
-  MyFree(aconf->user);
-  MyFree(aconf->host);
-  MyFree(aconf->class_name);
-  MyFree(aconf->fakename);
-#ifdef HAVE_LIBCRYPTO
-  if (aconf->rsa_public_key)
-    RSA_free(aconf->rsa_public_key);
-  MyFree(aconf->rsa_public_key_file);
-#endif
-
-  /* XXX Isn't this just horrible? 
-   * Lets use address arithemetic !
-   */
   conf = (struct ConfItem *)((unsigned long)aconf -
 			     (unsigned long)sizeof(struct ConfItem));
-  MyFree(conf);
+  delete_conf_item(conf);
 }
 
 /* det_confs_butmask()
@@ -590,7 +566,50 @@ report_confitem_types(struct Client *source_p, ConfType type)
 
   case CONF_TYPE:
   case CLIENT_TYPE:
+    break;
+
   case SERVER_TYPE:
+    DLINK_FOREACH(ptr, server_items.head)
+    {
+      char buf[20];
+      char *s = buf;
+
+      conf = ptr->data;
+      aconf = (struct AccessItem *)map_to_conf(conf);
+      get_printable_conf(aconf, &name, &host, &reason, &user, &port,
+			 &classname);
+
+      buf[0] = '\0';
+
+      if (IsConfAllowAutoConn(aconf))
+	*s++ = 'A';
+      if (IsConfCryptLink(aconf))
+	*s++ = 'C';
+      if (IsConfLazyLink(aconf))
+	*s++ = 'L';
+      if (IsConfCompressed(aconf))
+	*s++ = 'Z';
+      if (aconf->fakename)
+	*s++ = 'M';
+      if (buf[0] == '\0')
+	*s++ = '*';
+
+      *s++ = '\0';
+
+      /* Allow admins to see actual ips
+       * unless hide_server_ips is enabled
+       */
+      if (!ConfigServerHide.hide_server_ips && IsAdmin(source_p))
+	sendto_one(source_p, form_str(RPL_STATSCLINE),
+		   me.name, source_p->name, 'C', host,
+		   buf, name, port, classname);
+        else
+          sendto_one(source_p, form_str(RPL_STATSCLINE),
+                     me.name, source_p->name, 'C',
+		     "*@127.0.0.1", buf, name, port, classname);
+    }
+    break;
+
   case HUB_TYPE:
   case LEAF_TYPE:
   case KLINE_TYPE:
@@ -608,7 +627,6 @@ static struct LinkReport {
   unsigned int rpl_stats;
   unsigned int conf_char;
 } report_array[] = {
-  { CONF_SERVER,   RPL_STATSCLINE, 'C'},
   { CONF_LEAF,     RPL_STATSLLINE, 'L'},
   { CONF_HUB,      RPL_STATSHLINE, 'H'},
   { 0, 0, '\0' }
@@ -648,47 +666,9 @@ report_configured_links(struct Client *source_p, unsigned int mask)
         return;
 
       get_printable_conf(aconf, &name, &host, &reason, &user, &port, &classname);
-
-      if (mask & CONF_SERVER)
-      {
-        char c;
-        char buf[20];
-        char *s = buf;
-
-        buf[0] = '\0';
-        c = p->conf_char;
-
-        if (IsConfAllowAutoConn(aconf))
-          *s++ = 'A';
-        if (IsConfCryptLink(aconf))
-          *s++ = 'C';
-        if (IsConfLazyLink(aconf))
-          *s++ = 'L';
-        if (IsConfCompressed(aconf))
-          *s++ = 'Z';
-        if (aconf->fakename)
-          *s++ = 'M';
-        if (buf[0] == '\0')
-          *s++ = '*';
-
-        *s++ = '\0';
-
-	/* Allow admins to see actual ips
-	 * unless hide_server_ips is enabled
-         */
-        if (!ConfigServerHide.hide_server_ips && IsAdmin(source_p))
-          sendto_one(source_p, form_str(p->rpl_stats),
-                     me.name, source_p->name, c, host,
-                     buf, name, port, classname);
-        else
-          sendto_one(source_p, form_str(p->rpl_stats),
-                     me.name, source_p->name, c,
-		     "*@127.0.0.1", buf, name, port, classname);
-      }
-      else
-        sendto_one(source_p, form_str(p->rpl_stats),
-                   me.name, source_p->name, p->conf_char,
-                   host, name, port, classname);
+      sendto_one(source_p, form_str(p->rpl_stats),
+		 me.name, source_p->name, p->conf_char,
+		 host, name, port, classname);
     }
   }
 }
@@ -1357,11 +1337,6 @@ attach_conf(struct Client *client_p, struct AccessItem *aconf)
     }
   }
 
-#if 0
-  if (IsConfRestricted(aconf))
-    SetRestricted(client_p);
-#endif
-
   dlinkAdd(aconf, make_dlink_node(), &client_p->localClient->confs);
 
   aconf->clients++;
@@ -1524,70 +1499,6 @@ find_conf_name(dlink_list *list, const char *name, unsigned int statmask)
   return(NULL);
 }
 
-/* find_conf_by_name()
- *
- * inputs	- pointer to name to match on
- *		- int mask of type of conf to find
- * output	- NULL or pointer to conf found
- * side effects	- find a conf entry which matches the name
- *		  and has the given mask.
- *
- */
-struct AccessItem *
-find_conf_by_name(const char *name, unsigned int status)
-{
-  dlink_node *ptr;
-  struct AccessItem *conf;
-
-  assert(name != NULL);
-
-  if (name == NULL)
-    return(NULL);
-
-  DLINK_FOREACH(ptr, ConfigItemList.head)
-  {
-    conf = ptr->data;
-
-    if (conf->status == status && conf->name &&
-        match(name, conf->name))
-      return(conf);
-  }
-
-  return(NULL);
-}
-
-/* find_conf_by_host()
- *
- * inputs	- pointer to hostname to match on
- *		- int mask of type of conf to find
- * output	- NULL or pointer to conf found
- * side effects	- find a conf entry which matches the host
- *		  and has the given mask.
- *
- */
-struct AccessItem *
-find_conf_by_host(const char *host, unsigned int status)
-{
-  dlink_node *ptr;
-  struct AccessItem *conf;
-
-  assert(host != NULL);
-
-  if (host == NULL)
-    return(NULL);
-
-  DLINK_FOREACH(ptr, ConfigItemList.head)
-  {
-    conf = ptr->data;
-
-    if (conf->status == status && conf->host &&
-        match(host, conf->host))
-      return(conf);
-  }
-
-  return(NULL);
-}
-
 /*
  * map_to_list
  *
@@ -1614,6 +1525,9 @@ map_to_list(ConfType type)
     break;
   case CLASS_TYPE:
     return(&class_items);
+    break;
+  case SERVER_TYPE:
+    return(&server_items);
     break;
   case CONF_TYPE:
   case KLINE_TYPE:
@@ -1762,6 +1676,28 @@ find_exact_name_conf(ConfType type,
 	if (EmptyString(aconf->user) || EmptyString(aconf->host))
 	  return (conf);
 	if (match(aconf->user, user) && match(aconf->host, host))
+	  return (conf);
+      }
+    }
+    break;
+
+  case SERVER_TYPE:
+    DLINK_FOREACH(ptr, (*list_p).head)
+    {
+      conf = ptr->data;
+      aconf = (struct AccessItem *)map_to_conf(conf);
+      if (EmptyString(aconf->name))
+	continue;
+    
+      if (name == NULL)
+      {
+	if (EmptyString(aconf->host))
+	  continue;
+	if (irccmp(aconf->host, name) == 0)
+	  return(conf);
+      }
+      else if (irccmp(aconf->name, name) == 0)
+      {
 	  return (conf);
       }
     }

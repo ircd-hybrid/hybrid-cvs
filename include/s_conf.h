@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.252 2003/06/26 12:19:45 michael Exp $
+ *  $Id: s_conf.h,v 7.253 2003/06/27 04:39:30 db Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -355,6 +355,7 @@ extern int scount;
 extern int ypass;
 extern int specific_ipv4_vhost; /* used in s_bsd.c */
 extern int specific_ipv6_vhost;
+extern dlink_list server_items;
 extern dlink_list ConfigItemList;      /* conf list head */
 extern dlink_list temporary_klines;
 extern dlink_list temporary_dlines;
@@ -381,10 +382,11 @@ extern int check_client(struct Client *client_p, struct Client *source_p, const 
 extern void det_confs_butmask(struct Client *, unsigned int);
 extern int detach_conf(struct Client *, struct AccessItem *);
 extern struct AccessItem *det_confs_butone(struct Client *, struct AccessItem *);
-extern struct AccessItem *find_conf_exact(const char *name, const char *user, const char *host, unsigned int statmask);
-extern struct AccessItem *find_conf_name(dlink_list *list, const char *name, unsigned int statmask);
-extern struct AccessItem *find_conf_by_name(const char *name, unsigned int status);
-extern struct AccessItem *find_conf_by_host(const char *host, unsigned int status);
+extern struct AccessItem *find_conf_exact(const char *name, const char *user,
+				     const char *host, unsigned int statmask);
+extern struct AccessItem *find_conf_name(dlink_list *list, const char *name,
+					 unsigned int statmask);
+
 extern struct AccessItem *find_kill(struct Client *);
 extern int conf_connect_allowed(struct irc_ssaddr *addr, int aftype);
 extern char *oper_privs_as_string(struct Client *, unsigned int);
