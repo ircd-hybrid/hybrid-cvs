@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.94 2000/12/30 09:52:17 lusky Exp $
+ *   $Id: send.c,v 7.95 2000/12/30 22:25:37 davidt Exp $
  */
 #include "tools.h"
 #include "send.h"
@@ -693,6 +693,7 @@ sendto_channel_local(int type,
       break;
 
     case NON_CHANOPS:
+      sendto_list_local(&chptr->voiced,   sendbuf, len);
       sendto_list_local(&chptr->peons,   sendbuf, len);
       break;
 
