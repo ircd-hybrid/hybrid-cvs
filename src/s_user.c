@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.205 2002/08/08 17:45:03 bill Exp $
+ *  $Id: s_user.c,v 7.206 2002/08/09 15:56:35 bill Exp $
  */
 
 #include "stdinc.h"
@@ -446,7 +446,7 @@ register_local_user(struct Client *client_p, struct Client *source_p,
 		       "Client connecting: %s (%s@%s) [%s] {%s} [%s]",
 		       nick, source_p->username, source_p->host,
 #ifdef HIDE_SPOOF_IPS
-                       "255.255.255.255",
+                       IsIPSpoof(client_p) ? "255.255.255.255" : ipaddr,
 #else
 		       ipaddr,
 #endif
