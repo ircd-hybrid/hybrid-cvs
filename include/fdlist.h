@@ -1,7 +1,7 @@
 /*
  * fdlist.h
  *
- * $Id: fdlist.h,v 7.4 2000/10/31 22:41:31 adrian Exp $
+ * $Id: fdlist.h,v 7.5 2000/11/01 15:19:25 adrian Exp $
  */
 #ifndef INCLUDED_fdlist_h
 #define INCLUDED_fdlist_h
@@ -39,8 +39,10 @@ enum {
 
 enum {
     COMM_OK,
+    COMM_ERR_BIND,
     COMM_ERR_DNS,
     COMM_ERR_TIMEOUT,
+    COMM_ERR_CONNECT,
     COMM_ERROR
 };
 
@@ -84,8 +86,8 @@ struct _fde {
     } flags;
     struct {
         /* We don't need the host here ? */
-        struct sockaddr_in S;
-        struct in_addr in_addr;
+        struct sockaddr_in S;		/* What we're bound to */
+        struct in_addr hostaddr;	/* Where we are connecting to */
         u_short port;
         CNCB *callback;
         void *data;
