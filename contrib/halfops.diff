@@ -1,6 +1,6 @@
 diff -ur nohalfops/contrib/m_clearchan.c halfops/contrib/m_clearchan.c
---- nohalfops/contrib/m_clearchan.c	Mon May 17 17:10:52 2004
-+++ halfops/contrib/m_clearchan.c	Mon May 17 17:11:21 2004
+--- nohalfops/contrib/m_clearchan.c	Sun Aug  1 22:38:55 2004
++++ halfops/contrib/m_clearchan.c	Sun Aug  1 22:39:01 2004
 @@ -197,6 +197,7 @@
  remove_our_modes(struct Channel *chptr, struct Client *source_p)
  {
@@ -10,8 +10,8 @@ diff -ur nohalfops/contrib/m_clearchan.c halfops/contrib/m_clearchan.c
  
    /* Clear all +beI modes */
 diff -ur nohalfops/contrib/m_force.c halfops/contrib/m_force.c
---- nohalfops/contrib/m_force.c	Mon May 17 17:10:52 2004
-+++ halfops/contrib/m_force.c	Mon May 17 17:11:21 2004
+--- nohalfops/contrib/m_force.c	Sun Aug  1 22:38:55 2004
++++ halfops/contrib/m_force.c	Sun Aug  1 22:39:01 2004
 @@ -133,6 +133,12 @@
        sjmode = '+';
        parv[2]++;
@@ -26,8 +26,8 @@ diff -ur nohalfops/contrib/m_force.c halfops/contrib/m_force.c
        type = 0;
        mode = sjmode = '\0'; /* make sure sjmode is 0. sjoin depends on it */
 diff -ur nohalfops/contrib/m_ojoin.c halfops/contrib/m_ojoin.c
---- nohalfops/contrib/m_ojoin.c	Mon May 17 17:10:52 2004
-+++ halfops/contrib/m_ojoin.c	Mon May 17 17:11:21 2004
+--- nohalfops/contrib/m_ojoin.c	Sun Aug  1 22:38:55 2004
++++ halfops/contrib/m_ojoin.c	Sun Aug  1 22:39:01 2004
 @@ -103,6 +103,8 @@
                  modeletter = 'o'; name++; break;
        case '+': tmp_flags = CHFL_VOICE;
@@ -38,8 +38,8 @@ diff -ur nohalfops/contrib/m_ojoin.c halfops/contrib/m_ojoin.c
        case '&':
          tmp_flags = 0;
 diff -ur nohalfops/include/channel_mode.h halfops/include/channel_mode.h
---- nohalfops/include/channel_mode.h	Mon May 17 17:10:51 2004
-+++ halfops/include/channel_mode.h	Mon May 17 17:11:21 2004
+--- nohalfops/include/channel_mode.h	Sun Aug  1 22:38:53 2004
++++ halfops/include/channel_mode.h	Sun Aug  1 22:39:01 2004
 @@ -53,11 +53,12 @@
  
  /* Channel related flags */
@@ -67,8 +67,8 @@ diff -ur nohalfops/include/channel_mode.h halfops/include/channel_mode.h
 +#define CHACCESS_CHANOP     2
  #endif /* INCLUDED_channel_mode_h */
 diff -ur nohalfops/include/supported.h halfops/include/supported.h
---- nohalfops/include/supported.h	Mon May 17 17:10:51 2004
-+++ halfops/include/supported.h	Mon May 17 17:11:21 2004
+--- nohalfops/include/supported.h	Sun Aug  1 22:38:53 2004
++++ halfops/include/supported.h	Sun Aug  1 22:39:01 2004
 @@ -56,7 +56,7 @@
  		  " CALLERID%s"
  
@@ -79,8 +79,8 @@ diff -ur nohalfops/include/supported.h halfops/include/supported.h
                          ConfigChannel.use_invex ? "I" : "", \
                          "b,k,l,imnpst", \
 diff -ur nohalfops/modules/core/m_join.c halfops/modules/core/m_join.c
---- nohalfops/modules/core/m_join.c	Mon May 17 17:10:51 2004
-+++ halfops/modules/core/m_join.c	Mon May 17 17:11:21 2004
+--- nohalfops/modules/core/m_join.c	Sun Aug  1 22:38:53 2004
++++ halfops/modules/core/m_join.c	Sun Aug  1 22:39:02 2004
 @@ -716,6 +716,7 @@
  remove_our_modes(struct Channel *chptr, struct Client *source_p)
  {
@@ -90,8 +90,8 @@ diff -ur nohalfops/modules/core/m_join.c halfops/modules/core/m_join.c
  }
  
 diff -ur nohalfops/modules/core/m_kick.c halfops/modules/core/m_kick.c
---- nohalfops/modules/core/m_kick.c	Mon May 17 17:10:51 2004
-+++ halfops/modules/core/m_kick.c	Mon May 17 17:11:21 2004
+--- nohalfops/modules/core/m_kick.c	Sun Aug  1 22:38:53 2004
++++ halfops/modules/core/m_kick.c	Sun Aug  1 22:39:02 2004
 @@ -135,7 +135,7 @@
          return;
        }
@@ -120,8 +120,8 @@ diff -ur nohalfops/modules/core/m_kick.c halfops/modules/core/m_kick.c
      * - In the case of a server kicking a user (i.e. CLEARCHAN),
      *   the kick should show up as coming from the server which did
 diff -ur nohalfops/modules/core/m_message.c halfops/modules/core/m_message.c
---- nohalfops/modules/core/m_message.c	Mon May 17 17:10:51 2004
-+++ halfops/modules/core/m_message.c	Mon May 17 17:11:22 2004
+--- nohalfops/modules/core/m_message.c	Sun Aug  1 22:38:53 2004
++++ halfops/modules/core/m_message.c	Sun Aug  1 22:39:02 2004
 @@ -342,8 +342,10 @@
      {
        if (*nick == '@')
@@ -156,8 +156,8 @@ diff -ur nohalfops/modules/core/m_message.c halfops/modules/core/m_message.c
    else
    {
 diff -ur nohalfops/modules/core/m_sjoin.c halfops/modules/core/m_sjoin.c
---- nohalfops/modules/core/m_sjoin.c	Mon May 17 17:10:51 2004
-+++ halfops/modules/core/m_sjoin.c	Mon May 17 17:11:22 2004
+--- nohalfops/modules/core/m_sjoin.c	Sun Aug  1 22:38:53 2004
++++ halfops/modules/core/m_sjoin.c	Sun Aug  1 22:39:02 2004
 @@ -317,7 +317,7 @@
      fl = 0;
      num_prefix = 0;
@@ -240,8 +240,8 @@ diff -ur nohalfops/modules/core/m_sjoin.c halfops/modules/core/m_sjoin.c
  }
  
 diff -ur nohalfops/modules/m_invite.c halfops/modules/m_invite.c
---- nohalfops/modules/m_invite.c	Mon May 17 17:10:51 2004
-+++ halfops/modules/m_invite.c	Mon May 17 17:11:22 2004
+--- nohalfops/modules/m_invite.c	Sun Aug  1 22:38:53 2004
++++ halfops/modules/m_invite.c	Sun Aug  1 22:39:02 2004
 @@ -208,13 +208,13 @@
                    me.name, source_p->name, target_p->name, chptr->chname);
  
@@ -275,9 +275,9 @@ diff -ur nohalfops/modules/m_invite.c halfops/modules/m_invite.c
  			    ":%s NOTICE %s :%s is inviting %s to %s.",
  			    source_client_p->name, chptr->chname,
 diff -ur nohalfops/modules/m_knock.c halfops/modules/m_knock.c
---- nohalfops/modules/m_knock.c	Mon May 17 17:10:51 2004
-+++ halfops/modules/m_knock.c	Mon May 17 17:11:22 2004
-@@ -337,7 +337,7 @@
+--- nohalfops/modules/m_knock.c	Sun Aug  1 22:38:53 2004
++++ halfops/modules/m_knock.c	Sun Aug  1 22:39:02 2004
+@@ -353,7 +353,7 @@
    if (source_p->user != NULL)
    {
        if (ConfigChannel.use_knock)
@@ -287,8 +287,8 @@ diff -ur nohalfops/modules/m_knock.c halfops/modules/m_knock.c
  			     me.name, name, name,
  			     source_p->name, source_p->username,
 diff -ur nohalfops/modules/m_topic.c halfops/modules/m_topic.c
---- nohalfops/modules/m_topic.c	Mon May 17 17:10:51 2004
-+++ halfops/modules/m_topic.c	Mon May 17 17:11:22 2004
+--- nohalfops/modules/m_topic.c	Sun Aug  1 22:38:53 2004
++++ halfops/modules/m_topic.c	Sun Aug  1 22:39:02 2004
 @@ -135,7 +135,7 @@
          return;
        }
@@ -299,8 +299,8 @@ diff -ur nohalfops/modules/m_topic.c halfops/modules/m_topic.c
          char topic_info[USERHOST_REPLYLEN]; 
          ircsprintf(topic_info, "%s!%s@%s",
 diff -ur nohalfops/src/channel.c halfops/src/channel.c
---- nohalfops/src/channel.c	Mon May 17 17:10:50 2004
-+++ halfops/src/channel.c	Mon May 17 17:11:22 2004
+--- nohalfops/src/channel.c	Sun Aug  1 22:38:53 2004
++++ halfops/src/channel.c	Sun Aug  1 22:39:02 2004
 @@ -170,6 +170,8 @@
      tlen = strlen(ms->client_p->name) + 1;  /* nick + space */
      if (ms->flags & CHFL_CHANOP)
@@ -352,8 +352,8 @@ diff -ur nohalfops/src/channel.c halfops/src/channel.c
  
    if (chptr->mode.mode & MODE_MODERATED)
 diff -ur nohalfops/src/channel_mode.c halfops/src/channel_mode.c
---- nohalfops/src/channel_mode.c	Mon May 17 17:10:50 2004
-+++ halfops/src/channel_mode.c	Mon May 17 17:11:22 2004
+--- nohalfops/src/channel_mode.c	Sun Aug  1 22:38:53 2004
++++ halfops/src/channel_mode.c	Sun Aug  1 22:39:02 2004
 @@ -72,6 +72,10 @@
  static void chm_op(struct Client *, struct Client *, struct Channel *, int,
                     int *, char **, int *, int, int, char, void *,
@@ -365,7 +365,7 @@ diff -ur nohalfops/src/channel_mode.c halfops/src/channel_mode.c
  static void chm_voice(struct Client *, struct Client *, struct Channel *,
                        int, int *, char **, int *, int, int, char, void *,
                        const char *chname);
-@@ -647,7 +651,11 @@
+@@ -639,7 +643,11 @@
  
    mode_type = (long)d;
  
@@ -378,7 +378,7 @@ diff -ur nohalfops/src/channel_mode.c halfops/src/channel_mode.c
    {
      if (!(*errors & SM_ERR_NOOPS))
        sendto_one(source_p, form_str(alev == CHACCESS_NOTONCHAN ?
-@@ -728,7 +736,7 @@
+@@ -720,7 +728,7 @@
      return;
    }
  
@@ -387,7 +387,7 @@ diff -ur nohalfops/src/channel_mode.c halfops/src/channel_mode.c
    {
      if (!(*errors & SM_ERR_NOOPS))
        sendto_one(source_p, form_str(alev == CHACCESS_NOTONCHAN ?
-@@ -822,7 +830,7 @@
+@@ -814,7 +822,7 @@
      return;
    }
  
@@ -396,7 +396,7 @@ diff -ur nohalfops/src/channel_mode.c halfops/src/channel_mode.c
    {
      if (!(*errors & SM_ERR_NOOPS))
        sendto_one(source_p, form_str(alev == CHACCESS_NOTONCHAN ?
-@@ -925,7 +933,7 @@
+@@ -917,7 +925,7 @@
      return;
    }
  
@@ -405,7 +405,7 @@ diff -ur nohalfops/src/channel_mode.c halfops/src/channel_mode.c
    {
      if (!(*errors & SM_ERR_NOOPS))
        sendto_one(source_p, form_str(alev == CHACCESS_NOTONCHAN ?
-@@ -1086,6 +1094,95 @@
+@@ -1078,6 +1086,95 @@
  }
  
  static void
@@ -501,7 +501,7 @@ diff -ur nohalfops/src/channel_mode.c halfops/src/channel_mode.c
  chm_voice(struct Client *client_p, struct Client *source_p,
            struct Channel *chptr, int parc, int *parn,
            char **parv, int *errors, int alev, int dir, char c, void *d,
-@@ -1095,7 +1192,7 @@
+@@ -1087,7 +1184,7 @@
    struct Client *targ_p;
    struct Membership *member;
  
@@ -510,7 +510,7 @@ diff -ur nohalfops/src/channel_mode.c halfops/src/channel_mode.c
    {
      if (!(*errors & SM_ERR_NOOPS))
        sendto_one(source_p, form_str(alev == CHACCESS_NOTONCHAN ?
-@@ -1157,7 +1254,7 @@
+@@ -1149,7 +1246,7 @@
    int i, limit;
    char *lstr;
  
@@ -519,7 +519,7 @@ diff -ur nohalfops/src/channel_mode.c halfops/src/channel_mode.c
    {
      if (!(*errors & SM_ERR_NOOPS))
        sendto_one(source_p, form_str(alev == CHACCESS_NOTONCHAN ?
-@@ -1222,7 +1319,7 @@
+@@ -1214,7 +1311,7 @@
    int i;
    char *key;
  
@@ -528,7 +528,7 @@ diff -ur nohalfops/src/channel_mode.c halfops/src/channel_mode.c
    {
      if (!(*errors & SM_ERR_NOOPS))
        sendto_one(source_p, form_str(alev == CHACCESS_NOTONCHAN ?
-@@ -1337,7 +1434,7 @@
+@@ -1329,7 +1426,7 @@
    {chm_except, NULL},                             /* e */
    {chm_nosuch, NULL},                             /* f */
    {chm_nosuch, NULL},                             /* g */
@@ -537,7 +537,7 @@ diff -ur nohalfops/src/channel_mode.c halfops/src/channel_mode.c
    {chm_simple, (void *) MODE_INVITEONLY},         /* i */
    {chm_nosuch, NULL},                             /* j */
    {chm_key, NULL},                                /* k */
-@@ -1382,6 +1479,9 @@
+@@ -1374,6 +1471,9 @@
  
    if (has_member_flags(member, CHFL_CHANOP))
      return(CHACCESS_CHANOP);
@@ -548,8 +548,8 @@ diff -ur nohalfops/src/channel_mode.c halfops/src/channel_mode.c
    return(CHACCESS_PEON);
  }
 diff -ur nohalfops/src/messages.tab halfops/src/messages.tab
---- nohalfops/src/messages.tab	Mon May 17 17:10:50 2004
-+++ halfops/src/messages.tab	Mon May 17 17:13:09 2004
+--- nohalfops/src/messages.tab	Sun Aug  1 22:38:53 2004
++++ halfops/src/messages.tab	Sun Aug  1 22:39:02 2004
 @@ -24,7 +24,7 @@
  /* 001 */  {"RPL_WELCOME", ":%s 001 %s :Welcome to the %s Internet Relay Chat Network %s", NULL},
  /* 002 */  {"RPL_YOURHOST", ":%s 002 %s :Your host is %s, running version %s", NULL},
