@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 1.26 2000/12/22 02:38:16 db Exp $
+ *  $Id: m_stats.c,v 1.27 2000/12/22 03:02:44 db Exp $
  */
 #include "tools.h"	 /* dlink_node/dlink_list */
 #include "handlers.h"    /* m_pass prototype */
@@ -291,18 +291,8 @@ void do_non_priv_stats(struct Client *sptr, char *name, char *target,
       stats_spy(sptr,stat);
       break;
 
-/* ZZZ opers only flag */
-    case 'H' : case 'h' :
-      report_configured_links(sptr, CONF_HUB|CONF_LEAF);
-      stats_spy(sptr,stat);
-      break;
-
     case 'I' : case 'i' :
-#ifdef I_LINES_OPER_ONLY
       sendto_one(sptr, form_str(ERR_NOPRIVILEGES), me.name, sptr->name);
-#else
-      report_mtrie_conf_links(sptr, CONF_CLIENT);
-#endif
       stats_spy(sptr,stat);
       break;
 
@@ -338,13 +328,10 @@ void do_non_priv_stats(struct Client *sptr, char *name, char *target,
       break;
 
     case 'v' : case 'V' :
-      show_servers(sptr);
-      stats_spy(sptr,stat);
       break;
 
     case '?':
       break;
-
 
     case 'D' : case 'd' :
     case 'S' : case 's' :
