@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_topic.c,v 1.16 2000/12/20 18:35:53 db Exp $
+ *   $Id: m_topic.c,v 1.17 2000/12/21 02:26:50 ejb Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -129,7 +129,7 @@ int     m_topic(struct Client *cptr,
 	      sendto_channel_remote(chptr, cptr,":%s TOPIC %s :%s",
 				 parv[0], name,
 				 chptr->topic);
-	      if(GlobalSetOptions.hide_chanops)
+	      if(chptr->mode.mode & MODE_HIDEOPS)
 		{
 		  sendto_channel_local(ONLY_CHANOPS,
 				       chptr, ":%s!%s@%s TOPIC %s :%s",
@@ -170,7 +170,7 @@ int     m_topic(struct Client *cptr,
               sendto_one(sptr, form_str(RPL_TOPIC),
                          me.name, parv[0],
                          name, chptr->topic);
-              if (!GlobalSetOptions.hide_chanops)
+              if (!chptr->mode.mode & MODE_HIDEOPS)
                 {
                   sendto_one(sptr, form_str(RPL_TOPICWHOTIME),
                              me.name, parv[0], name,

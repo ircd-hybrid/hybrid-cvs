@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_lljoin.c,v 1.17 2000/12/18 03:59:49 db Exp $
+ * $Id: m_lljoin.c,v 1.18 2000/12/21 02:26:49 ejb Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -183,7 +183,7 @@ int     ms_lljoin(struct Client *cptr,
       chptr->mode.mode |= MODE_TOPICLIMIT;
       chptr->mode.mode |= MODE_NOPRIVMSGS;
       
-      if(GlobalSetOptions.hide_chanops)
+      if(chptr->mode.mode & MODE_HIDEOPS)
 	{
 	  sendto_channel_local(ONLY_CHANOPS,chptr,
 			       ":%s MODE %s +nt",

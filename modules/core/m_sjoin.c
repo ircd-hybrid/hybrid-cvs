@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.32 2000/12/19 19:47:24 db Exp $
+ *   $Id: m_sjoin.c,v 1.33 2000/12/21 02:26:50 ejb Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -113,7 +113,7 @@ int     ms_sjoin(struct Client *cptr,
   int hide_or_not;
   dlink_node *m;
 
-  if(GlobalSetOptions.hide_chanops)
+  if(chptr->mode.mode & MODE_HIDEOPS)
     hide_or_not = ONLY_CHANOPS;
   else
     hide_or_not = ALL_MEMBERS;

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kick.c,v 1.14 2000/12/18 03:59:47 db Exp $
+ *   $Id: m_kick.c,v 1.15 2000/12/21 02:26:49 ejb Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -176,7 +176,7 @@ int     m_kick(struct Client *cptr,
 	  return 0;
 	}
 
-      if(GlobalSetOptions.hide_chanops)
+      if(chptr->mode.mode & MODE_HIDEOPS)
 	{
 	  sendto_channel_local(NON_CHANOPS, chptr,
 			       ":%s KICK %s %s :%s", 

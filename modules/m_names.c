@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_names.c,v 1.15 2000/12/18 03:59:51 db Exp $
+ *   $Id: m_names.c,v 1.16 2000/12/21 02:26:49 ejb Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -165,7 +165,7 @@ void names_all_visible_channels(struct Client *sptr)
 	  else
 	    chname = chptr->chname;
 
-	  if(GlobalSetOptions.hide_chanops && !is_any_op(chptr,sptr))
+	  if(chptr->mode.mode & MODE_HIDEOPS && !is_any_op(chptr,sptr))
 	    {
 	      show_ops_flag = "";
 	      show_voiced_flag = "";
@@ -267,7 +267,7 @@ void names_non_public_non_secret(struct Client *sptr)
       if(lp == NULL)	/* Nothing to do. yay */
 	continue;
 
-      if(GlobalSetOptions.hide_chanops)
+      if(ch3ptr->mode.mode & MODE_HIDEOPS)
 	ircsprintf(t," %s ", c2ptr->name);
       else
 	ircsprintf(t,"%s%s ", channel_chanop_or_voice(ch3ptr, c2ptr),
