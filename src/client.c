@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.216 2002/01/05 09:15:11 a1kmm Exp $
+ *  $Id: client.c,v 7.217 2002/01/06 18:12:16 leeh Exp $
  */
 
 #include "tools.h"
@@ -570,8 +570,7 @@ static void update_client_exit_stats(struct Client* client_p)
 	--Count.invisi;
     }
 
-  if(!splitmode &&
-    (ConfigChannel.no_join_on_split || ConfigChannel.no_create_on_split))
+  if(splitchecking && !splitmode)
     check_splitmode();
 }
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.291 2002/01/05 09:15:10 a1kmm Exp $
+ *  $Id: channel.c,v 7.292 2002/01/06 18:12:15 leeh Exp $
  */
 
 #include "tools.h"
@@ -1235,28 +1235,28 @@ check_spambot_warning(struct Client *source_p, const char *name)
  */
 void check_splitmode(void *unused)
 {
-  if(splitmode)
-  {
-    if((Count.server >= split_servers) &&
-       (Count.total >= split_users))
-    {
-      splitmode = 0;
-      
-      sendto_realops_flags(FLAGS_ALL, L_ALL,
-                           "Network rejoined, deactivating splitmode");
-      eventDelete(check_splitmode, NULL);
-    }
-  }
-  else
+  if(splitchecking && (ConfigChannel.no_join_on_split ||
+     ConfigChannel.no_create_on_split))
   {
     if((Count.server < split_servers) &&
        (Count.total < split_users))
     {
-      splitmode = 1;
+      if(!splitmode)
+      {
+        splitmode = 1;
 
-      sendto_realops_flags(FLAGS_ALL,L_ALL,
+        sendto_realops_flags(FLAGS_ALL,L_ALL,
                            "Network split, activating splitmode");
-      eventAdd("check_splitmode", check_splitmode, NULL, 60);
+        eventAdd("check_splitmode", check_splitmode, NULL, 60);
+      }
+    }
+    else if(splitmode)
+    {
+      splitmode = 0;
+    
+      sendto_realops_flags(FLAGS_ALL, L_ALL,
+                           "Network rejoined, deactivating splitmode");
+      eventDelete(check_splitmode, NULL);
     }
   }
 }
