@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_who.c,v 7.5 2000/10/16 03:05:41 db Exp $
+ *   $Id: m_who.c,v 7.6 2000/10/16 13:53:40 db Exp $
  */
 
 #include "handlers.h"
@@ -210,7 +210,12 @@ int     m_who(struct Client *cptr,
 	      if ( vchan != 0 )
 		do_who_on_channel(sptr,vchan,chptr->chname,NO,YES);
 	      else
-		do_who_on_channel(sptr,chptr,chptr->chname,NO,NO);
+		{
+		  if ( IsMember(sptr, chptr) )
+		    do_who_on_channel(sptr,chptr,chptr->chname,NO,YES);
+		  else if(!SecretChannel(chptr))
+		    do_who_on_channel(sptr,chptr,chptr->chname,NO,NO);
+		}
 	    }
 	  else
 	    {
