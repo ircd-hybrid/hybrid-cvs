@@ -1,3 +1,15 @@
+joant       2002/07/11 21:24:05 EDT	(20020712_7)
+
+  Modified files:
+    src                  channel.c 
+  Log:
+  casting pointer arithmetic, better living through pointers
+  
+  Revision  Changes    Path
+  7.325     +1 -1      ircd-hybrid-7/src/channel.c
+
+
+
 androsyn    2002/07/11 21:01:23 EDT	(20020712_6)
 
   Modified files:
@@ -29642,4 +29654,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3865 2002/07/12 01:01:30 androsyn Exp $
+$Id: ChangeLog,v 7.3866 2002/07/12 01:24:12 joant Exp $
