@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.281 2001/10/31 00:28:00 ejb Exp $
+ * $Id: channel.c,v 7.282 2001/12/03 18:38:00 androsyn Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -623,7 +623,6 @@ destroy_channel(struct Channel *chptr)
   if (chptr->nextch)
     chptr->nextch->prevch = chptr->prevch;
 
-  MyFree(chptr->topic_info);
 
   del_from_channel_hash_table(chptr->chname, chptr);
   if (ServerInfo.hub == 1)
