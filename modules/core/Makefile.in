@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/modules
 #
-# $Id: Makefile.in,v 1.59 2001/12/31 15:22:52 db Exp $
+# $Id: Makefile.in,v 1.60 2002/01/01 16:27:58 leeh Exp $
 #
 CC		= @CC@
 AR		= @AR@
@@ -162,7 +162,7 @@ install_shared_modules: install-mkdirs
 	${CC} ${CPPFLAGS} ${CFLAGS} -c $< -o $@
 
 .c.so:
-	${CC} ${PICFLAGS} ${CPPFLAGS} ${CFLAGS} -c $< -o $@
+	${CC} ${PICFLAGS} ${CPPFLAGS} ${CFLAGS} $< -o $@
 
 .PHONY: depend clean distclean
 depend:

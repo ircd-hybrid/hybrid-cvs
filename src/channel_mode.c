@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel_mode.c,v 7.16 2001/12/31 14:06:57 db Exp $
+ * $Id: channel_mode.c,v 7.17 2002/01/01 16:28:00 leeh Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -752,9 +752,13 @@ chm_simple(struct Client *client_p, struct Client *source_p,
   long mode_type;
   int i;
 
-  if (alev <
-       ((chptr->mode.mode & MODE_PRIVATE) ?
-         CHACCESS_CHANOP : CHACCESS_HALFOP))
+  mode_type = (long)d;
+ 
+  /* dont allow halfops to set +-p, as this controls whether they can set
+   * +-h or not.. all other simple modes are ok
+   */
+  if((alev < CHACCESS_HALFOP) ||
+    ((mode_type == MODE_PRIVATE) && (alev < CHACCESS_CHANOP)))
   {
     if (!(*errors & SM_ERR_NOOPS))
       sendto_one(source_p, form_str(ERR_CHANOPRIVSNEEDED), me.name,
@@ -762,8 +766,6 @@ chm_simple(struct Client *client_p, struct Client *source_p,
     *errors |= SM_ERR_NOOPS;
     return;
   }
-
-  mode_type = (long)d;
 
   /* setting + */
   if ((dir == MODE_ADD) && !(chptr->mode.mode & mode_type))
