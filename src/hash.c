@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: hash.c,v 7.21 2001/01/05 23:13:35 ejb Exp $
+ *  $Id: hash.c,v 7.22 2001/01/06 01:44:12 ejb Exp $
  */
 #include "tools.h"
 #include "s_conf.h"
@@ -136,11 +136,14 @@ static  unsigned int
 hash_id(const char *nname)
 {
 	unsigned int h = 0;
+	char *n = nname;
 	
 	while (*nname) {
 		h = (h << 4) - (h + (unsigned char)*nname++);
 	}
 
+	sendto_realops_flags(FLAGS_ALL, "Hashed %s to %d", n, h & (U_MAX - 1));
+	
 	return (h & (U_MAX - 1));
 }
 /*
@@ -180,6 +183,7 @@ static void clear_client_hash_table()
 #endif
   memset(clientTable, 0, sizeof(struct HashEntry) * U_MAX);
 }
+
 /*
  * clear_client_hash_table
  *
