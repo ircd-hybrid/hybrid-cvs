@@ -43,7 +43,7 @@
  *
  * Diane Bruce -db (db@db.net)
  *
- * $Id: mtrie_conf.c,v 7.24 2001/01/18 17:32:21 ejb Exp $
+ * $Id: mtrie_conf.c,v 7.25 2001/01/19 00:30:41 db Exp $
  */
 #include "mtrie_conf.h"
 #include "class.h"
@@ -1160,15 +1160,15 @@ char *show_iline_prefix(struct Client *sptr,struct ConfItem *aconf,char *name)
   if (IsConfDoSpoofIp(aconf))
     *prefix_ptr++ = '=';
 
-  if((ConfigFileEntry.e_lines_oper_only && IsOper(sptr)) || !ConfigFileEntry.e_lines_oper_only)
+  if(IsOper(sptr))
     if (IsConfElined(aconf))
       *prefix_ptr++ = '^';
 
-  if((ConfigFileEntry.f_lines_oper_only && IsOper(sptr)) || !ConfigFileEntry.f_lines_oper_only)
+  if(IsOper(sptr))
     if (IsConfFlined(aconf))
       *prefix_ptr++ = '>';
 
-  if((ConfigFileEntry.e_lines_oper_only && IsOper(sptr)) || !ConfigFileEntry.e_lines_oper_only)
+  if(IsOper(sptr)) 
     if (IsConfIdlelined(aconf))
       *prefix_ptr++ = '<';
 

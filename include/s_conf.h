@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.76 2001/01/18 20:53:58 db Exp $
+ * $Id: s_conf.h,v 7.77 2001/01/19 00:30:33 db Exp $
  */
 
 #include "setup.h"
@@ -192,8 +192,6 @@ typedef struct
   int         kline_with_connection_closed;
   int         warn_no_nline;
   int         non_redundant_klines;
-  int         e_lines_oper_only;
-  int         f_lines_oper_only;
   int         o_lines_oper_only;
   int         pace_wait;
   int         whois_wait;

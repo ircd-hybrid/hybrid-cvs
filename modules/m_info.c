@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.c,v 1.21 2001/01/18 20:54:03 db Exp $
+ * $Id: m_info.c,v 1.22 2001/01/19 00:30:39 db Exp $
  */
 #include "tools.h"
 #include "m_info.h"
@@ -404,16 +404,6 @@ static void send_conf_options(struct Client *sptr)
               me.name, RPL_INFO, sptr->name, "warn_no_nline",
               ConfigFileEntry.warn_no_nline ? "YES" : "NO",
               "Show Notices of Servers Connecting Without an N: line");
-  sendto_one(sptr,
-              ":%s %d %s :%-30s %-5s [%-30s]",
-              me.name, RPL_INFO, sptr->name, "e_lines_oper_only",
-              ConfigFileEntry.e_lines_oper_only ? "YES" : "NO",
-              "Only Allow Operators to see the kline_exempt flag in STATS i");
-  sendto_one(sptr,
-              ":%s %d %s :%-30s %-5s [%-30s]",
-              me.name, RPL_INFO, sptr->name, "f_lines_oper_only",
-              ConfigFileEntry.f_lines_oper_only ? "YES" : "NO",
-              "Only Allow Operators to see the exceed_limit flag in STATS i");
   sendto_one(sptr,
               ":%s %d %s :%-30s %-5s [%-30s]",
               me.name, RPL_INFO, sptr->name, "o_lines_oper_only",

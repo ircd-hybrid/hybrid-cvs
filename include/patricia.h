@@ -1,5 +1,5 @@
 /*
- * $Id: patricia.h,v 7.1 2001/01/18 21:46:48 db Exp $
+ * $Id: patricia.h,v 7.2 2001/01/19 00:30:33 db Exp $
  * Dave Plonka <plonka@doit.wisc.edu>
  *
  * This product includes software developed by the University of Michigan,
@@ -16,8 +16,9 @@
 #define _PATRICIA_H
 #include <stdlib.h>
 #include <string.h>
-#include <arpa/inet.h>
+#include <sys/types.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #include <assert.h>
 #include "dline_conf.h"
 #include "class.h"
