@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.242 2001/06/16 08:11:02 a1kmm Exp $
+ *  $Id: s_conf.c,v 7.243 2001/06/16 08:12:28 a1kmm Exp $
  */
 
 #include <sys/types.h>
@@ -728,7 +728,7 @@ void remove_one_ip(struct irc_inaddr *ip_in)
    continue;
 #else
   if (ptr->count != 0 ||
-      (CurrentTime-ptr->last_attempt)>RECONNECT_TIME)
+      (CurrentTime-ptr->last_attempt)<=RECONNECT_TIME)
    continue;
 #endif
   *lptr = ptr->next;
