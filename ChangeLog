@@ -1,3 +1,12 @@
+*** 20001130_12 by adrian
+
+
+* added an Id tag
+* we needed to keep those bzero()'s. Hrm, I wonder why ...
+  What happened was that we'd have get a line in, and then immediately flush
+  some previously printed garbage. Weird.
+
+
 *** 20001130_11 by db
 - similar bug to parse.c in modules.c when increasing moduletable
 
@@ -1141,7 +1150,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.636 2000/11/30 10:02:18 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.637 2000/11/30 10:20:45 adrian Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
