@@ -1,6 +1,6 @@
 /* copyright (c) 2000 Edward Brocklesby, Hybrid Development Team
  *
- * $Id:
+ * $Id: spy_whois_notice.c,v 1.4 2001/05/22 15:04:11 toot Exp $
  */
 
 #include "modules.h"
