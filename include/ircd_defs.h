@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: ircd_defs.h,v 7.21 2001/06/08 10:24:46 a1kmm Exp $
+ * $Id: ircd_defs.h,v 7.22 2001/11/11 17:05:46 ejb Exp $
  *
  * ircd_defs.h - Global size definitions for record entries used
  * througout ircd. Please think 3 times before adding anything to this
@@ -55,6 +55,8 @@
 
 #define USERHOST_REPLYLEN       (NICKLEN+HOSTLEN+USERLEN+5)
 #define MAX_DATE_STRING 32      /* maximum string length for a date string */
+
+#define HELPLEN         400
 
 /* 
  * message return values 

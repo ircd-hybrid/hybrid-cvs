@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.122 2001/08/21 22:56:10 leeh Exp $
+ * $Id: config.h,v 7.123 2001/11/11 17:05:46 ejb Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -128,6 +128,8 @@
 #define MSGPATH IRCD_PREFIX "/messages/"
 #define ETCPATH IRCD_PREFIX "/etc"
 #define LOGPATH IRCD_PREFIX "/logs"
+#define HPATH   IRCD_PREFIX "/help/users"
+#define UHPATH  IRCD_PREFIX "/help/opers"
 
 /* files */
 #define SPATH   BINPATH "/ircd"                 /* ircd executable */
@@ -140,8 +142,6 @@
 #define MPATH   ETCPATH "/ircd.motd"            /* MOTD file */
 #define LPATH   LOGPATH "/ircd.log"             /* ircd logfile */
 #define PPATH   ETCPATH "/ircd.pid"             /* pid file */
-#define HPATH   ETCPATH "/opers.txt"            /* oper help file */
-#define UHPATH  ETCPATH "/users.txt"            /* user help file */
 #define OPATH   ETCPATH "/opers.motd"           /* oper MOTD file */
 #define LIPATH  ETCPATH "/links.txt"            /* cached links file */
 #endif /* !VMS */
