@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.24 2000/10/21 17:27:01 bill Exp $
+ * $Id: config.h,v 7.25 2000/10/22 02:28:00 db Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -618,7 +618,7 @@
  * CONNECTTIMEOUT - 10 seconds for its host to respond to an ident lookup
  * query and for a DNS answer to be retrieved.
  */
-#define CONNECTTIMEOUT  30      /* Recommended value: 30 */
+#define CONNECTTIMEOUT  15      /* Recommended value: 30 */
 
 /* KILLCHASETIMELIMIT -
  * Max time from the nickname change that still causes KILL

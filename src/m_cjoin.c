@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_cjoin.c,v 7.10 2000/10/15 17:51:27 db Exp $
+ *   $Id: m_cjoin.c,v 7.11 2000/10/22 02:28:04 db Exp $
  */
 
 #include "handlers.h"
@@ -208,6 +208,10 @@ int     m_cjoin(struct Client *cptr,
    * - Dianora
    */
 
+	if (strlen(name+1) > CHANNELLEN-14) {
+		sendto_one(sptr, form_str(ERR_BADCHANNAME),me.name, parv[0], (unsigned char*) name);
+		return 0;
+	}
   ircsprintf( vchan_name, "#%s_%lu", name+1, CurrentTime );
   vchan_chptr = get_channel(sptr, vchan_name, CREATE);
 

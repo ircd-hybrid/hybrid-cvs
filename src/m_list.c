@@ -3,7 +3,7 @@
  *   Copyright (C) 1990 Jarkko Oikarinen and
  *                      University of Oulu, Co Center
  *
- * $Id: m_list.c,v 7.9 2000/10/19 20:09:54 toot Exp $ 
+ * $Id: m_list.c,v 7.10 2000/10/22 02:28:04 db Exp $ 
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -50,7 +50,7 @@ int     m_list(struct Client *cptr,
   struct Channel *root_chptr;
   struct Channel *tmpchptr;
   char  *name, *p = NULL;
-  char  vname[CHANNELLEN+NICKLEN+3];
+  char  vname[CHANNELLEN+NICKLEN+4];
   static time_t last_used=0L;
   int i,j;
 
