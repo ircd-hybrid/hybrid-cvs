@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: servlink.h,v 1.9 2001/05/24 22:48:13 davidt Exp $
+ *   $Id: servlink.h,v 1.10 2001/05/24 23:09:32 davidt Exp $
  */
 
 #include <stdio.h>
@@ -38,7 +38,7 @@
 #endif
 
 
-/* #define SERVLINK_DEBUG */
+//#define SERVLINK_DEBUG
 
 #define READLEN                  2048
 
