@@ -6,7 +6,7 @@
  * The idea here is that we should really be maintaining pre-munged
  * buffer "lines" which we can later refcount to save needless copies.
  *
- * $Id: linebuf.c,v 7.32 2001/05/22 19:11:51 davidt Exp $
+ * $Id: linebuf.c,v 7.33 2001/05/23 15:26:08 davidt Exp $
  */
 
 #include <errno.h>
@@ -258,12 +258,14 @@ linebuf_copy_line(buf_head_t *bufhead, buf_line_t *bufline,
 	   * ok, we CR/LF/NUL terminate, set overflow, and loop until the
 	   * next CRLF. We then skip that, and return.
 	   */
-	  bufline->overflow = 1;
-	  cpylen += linebuf_skip_crlf(ch, len);
-	  linebuf_terminate_crlf(bufhead, bufline);
+          if (!binary)
+          {
+            bufline->overflow = 1;
+            cpylen += linebuf_skip_crlf(ch, len);
+            linebuf_terminate_crlf(bufhead, bufline);
+          }
 	  /* NOTE: We're finishing, so ignore updating len */
 	  bufline->terminated = 1;
-          assert(!binary); /* XXX - what do we do here!? */
 	  break;
 	}
 
