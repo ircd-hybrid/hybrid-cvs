@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.101 2002/09/19 04:22:56 bill Exp $
+ *  $Id: m_message.c,v 1.102 2002/10/16 20:52:36 bill Exp $
  */
 
 #include "stdinc.h"
@@ -123,7 +123,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.101 $";
+const char *_version = "$Revision: 1.102 $";
 #endif
 
 /*
@@ -848,6 +848,10 @@ handle_opers(int p_or_n, char *command, struct Client *client_p,
                         nick + 1,
                         (*nick == '#') ? MATCH_HOST : MATCH_SERVER,
                         "%s $%s :%s", command, nick, text);
+
+    if ((p_or_n != NOTICE) && source_p->user)
+      source_p->user->last = CurrentTime;
+
     return;
   }
 
@@ -865,7 +869,9 @@ handle_opers(int p_or_n, char *command, struct Client *client_p,
     if (!IsMe(target_p))
     {
       sendto_one(target_p, ":%s %s %s :%s", source_p->name,
-                 "PRIVMSG", nick, text);
+                 command, nick, text);
+      if ((p_or_n != NOTICE) && source_p->user)
+        source_p->user->last = CurrentTime;
       return;
     }
 
@@ -897,13 +903,23 @@ handle_opers(int p_or_n, char *command, struct Client *client_p,
 	*--host = '%';
 
       if (count == 1)
-        sendto_anywhere(target_p, source_p, "%s %s :%s", "PRIVMSG",
+      {
+        sendto_anywhere(target_p, source_p, "%s %s :%s", command,
 			nick, text);
+        if ((p_or_n != NOTICE) && source_p->user)
+          source_p->user->last = CurrentTime;
+      }
       else
         sendto_one(source_p, form_str(ERR_TOOMANYTARGETS),
                    me.name, source_p->name, nick);
     }
   }
+  else if (server && *(server+1) && (target_p == NULL))
+    sendto_one(source_p, form_str(ERR_NOSUCHSERVER), me.name,
+               source_p->name, server+1);
+  else if (server && (target_p == NULL))
+    sendto_one(source_p, form_str(ERR_NOSUCHNICK), me.name,
+               source_p->name, nick);
 }
 
 /*

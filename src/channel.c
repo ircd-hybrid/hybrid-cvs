@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.336 2002/10/14 01:26:08 bill Exp $
+ *  $Id: channel.c,v 7.337 2002/10/16 20:52:38 bill Exp $
  */
 
 #include "stdinc.h"
@@ -86,9 +86,7 @@ void init_channels(void)
   channel_heap = BlockHeapCreate(sizeof(struct Channel), CHANNEL_HEAP_SIZE);
   ban_heap = BlockHeapCreate(sizeof(struct Ban), BAN_HEAP_SIZE);
   topic_heap = BlockHeapCreate(TOPICLEN+1 + USERHOST_REPLYLEN, TOPIC_HEAP_SIZE);
-  expiring_channels.head = NULL;
-  expiring_channels.tail = NULL;
-  expiring_channels.length = 0;
+  memset(&expiring_channels, 0, sizeof(expiring_channels));
 
   eventAddIsh("channelheap_garbage_collect", channelheap_garbage_collect,
               NULL, 45);
@@ -488,7 +486,7 @@ sub1_from_channel(struct Channel *chptr)
     {
       SetExpiring(chptr);
       c = make_dlink_node();
-      dlinkAdd(chptr, c, &expiring_channels);
+      dlinkAddTail(chptr, c, &expiring_channels);
     }
   }
   return (0);
@@ -508,18 +506,14 @@ expire_channels(void *unused)
   struct Channel *chptr;
 
   /*
-   * walk the list backwards because the items that were first
-   * added will be at the end of the list.  if they have not yet
-   * expired, then assume the more recently added channels also
-   * have yet to expire. this can save some calculations.
-   * also check to be sure the channel is still empty. 
-   * note: this will leave some channels on the linked list, even
-   * though they are no longer empty.  its not a problem, though, as
-   * one of two things can happen: either the channel reaches its
-   * expiration time, in which case if it is empty it will be deleted,
-   * or if its not, it will simply be removed from the list.
+   * slight trick here, we stop walking the list if we reach the
+   * end (obviously), but also if we find a channel that has yet to
+   * expire.  this is because channels will be added in chronological
+   * order of when they are to expire, meaning if the head of the list
+   * is not yet due to expire, we can safely assume that the rest of
+   * the list is the same way.
    */
-  DLINK_FOREACH_PREV(ptr, expiring_channels.tail)
+  DLINK_FOREACH(ptr, expiring_channels.head)
   {
     chptr = (struct Channel *)ptr->data;
 
@@ -538,10 +532,12 @@ expire_channels(void *unused)
           ClearExpiring(chptr);
 	dlinkDelete(ptr, &expiring_channels);
       }
+      else
+        break;
     }
     else
-#endif
     {
+#endif
       if((chptr->users_last + ConfigChannel.persist_time) <= CurrentTime)
       {
 	if (chptr->users == 0)
@@ -554,7 +550,11 @@ expire_channels(void *unused)
           ClearExpiring(chptr);
 	dlinkDelete(ptr, &expiring_channels);
       }
+      else
+        break;
+#ifdef VCHANS
     }
+#endif
   }
 }
 
