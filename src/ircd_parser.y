@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.100 2001/01/07 04:05:46 db Exp $
+ * $Id: ircd_parser.y,v 1.101 2001/01/08 14:58:13 toot Exp $
  */
 
 %{
@@ -253,11 +253,13 @@ modules_module:  MODULE '=' QSTRING ';'
    * otherwise we would flood the opers on rehash) -A1kmm. */
   if (!findmodule_byname(yylval.string))
     load_one_module (yylval.string);
+  MyFree(yylval.string);
 };
 
 modules_path: PATH '=' QSTRING ';'
 {
   mod_add_path(yylval.string);
+  MyFree(yylval.string);
 };
 
 
