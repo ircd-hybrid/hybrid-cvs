@@ -1,4 +1,4 @@
-$Id: README,v 1.33 2004/02/27 08:25:52 metalrock Exp $
+$Id: README,v 1.34 2004/03/20 18:18:54 metalrock Exp $
 
 This directory contains modules and patches that have been contributed
 by other people, or aren't suitable for including into the 
@@ -19,27 +19,46 @@ OWN RISK.
 Modules
 -------
 
-m_clearchan.c  - CLEARCHAN - clears all users out of a channel and joins person
+m_capture.c    - CAPTURE - Makes <nick> captive (unable to
+			   issue commands to the server).
+		 Syntax: CAPTURE <nick>
+		 Example: CAPTURE kiddie
+
+m_classlist.c  - CLASSLIST - Shows the number of clients in the specified
+			     class.
+		 Syntax: CLASSLIST <class>
+		 Example: CLASSLIST users
+
+m_clearchan.c  - CLEARCHAN - Clears all users out of a channel and joins person
                              issuing command
                  Syntax: CLEARCHAN <channel>
 		 Example: CLEARCHAN #channel
+
+m_ctrace.c     - CTRACE - Performs a trace on a certain class
+		 Syntax: CTRACE <class>
+		 Example: CTRACE users
 
 m_flags.c      - FLAGS - csircd like support of changing usermodes
                  Syntax: FLAGS :+OWALLOPS -SWALLOPS
 			 FLAGS
 
-m_force.c      - FORCE - forces a user to either part or join a channel with
+m_force.c      - FORCE - Forces a user to either part or join a channel with
                          an optional status (@%+)
                  Syntax: FORCEJOIN <nick> [status]<channel>
                          FORCEPART <nick> <channel>
 		 Example: FORCEJOIN nick @#channel
 			  FORCEPART nick #channel
 
-m_help.c       - HELP - provide help for IRC commands. See bottom of document.
+m_help.c       - HELP - Provide help for IRC commands. See bottom of document.
                  Syntax: HELP :command
 
 m_jupe.c       - JUPE - Server juping command
-                 Syntax: JUPE juped.server.name :Reason
+                 Syntax: JUPE <server> :[reason]
+		 Example: JUPE irc.server.com :juped
+
+m_killhost.c   - KILLHOST - Kills users based on [hostmask]
+		 Syntax: KILLHOST <hostmask> [reason]
+		 Example: KILLHOST *@clones.com clones
 
 m_ltrace.c     - LTRACE - Limited trace.  Similar to TRACE except only reports
                           current opers and servers.
@@ -58,6 +77,9 @@ m_ojoin.c      - OJOIN - Join a channel through any modes or limits with
                          an optional status (@%+)
                  Syntax: OJOIN [status]<channel>
 		 Example: OJOIN @#channel
+
+m_omotd.c      - OMOTD - Displays the operator message of the day
+		 Syntax: OMOTD [server]
 
 m_operspy.c    - OPERSPY - Allows operators with access to spy on users
                  Syntax: OPERSPY <LIST/WHO/MODE/WHOIS/NAMES> <paramter>
