@@ -1,3 +1,25 @@
+androsyn    2002/08/28 13:00:15 EDT	(20020828_0)
+
+  Modified files:
+    include              irc_string.h 
+    src                  channel.c match.c 
+  Added files:
+    doc                  README.cidr_bans 
+  Removed files:
+    contrib              README.cidr_bans cidr_bans.diff 
+  Log:
+  Add CIDR bans.  This does both ipv4 and ipv6 cidr bans
+  
+  Revision  Changes    Path
+  1.2       +0 -17     ircd-hybrid-7/contrib/README.cidr_bans (dead)
+  1.4       +0 -142    ircd-hybrid-7/contrib/cidr_bans.diff (dead)
+  1.1       +17 -0     ircd-hybrid-7/doc/README.cidr_bans (new)
+  7.37      +2 -0      ircd-hybrid-7/include/irc_string.h
+  7.327     +8 -3      ircd-hybrid-7/src/channel.c
+  7.21      +69 -0     ircd-hybrid-7/src/match.c
+
+
+
 androsyn    2002/08/26 19:27:27 EDT	(20020826_0)
 
   Removed files:
@@ -31573,4 +31595,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4004 2002/08/26 23:27:29 androsyn Exp $
+$Id: ChangeLog,v 7.4005 2002/08/28 17:00:17 androsyn Exp $
