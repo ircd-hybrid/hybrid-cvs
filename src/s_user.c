@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.102 2001/01/05 05:43:58 db Exp $
+ *  $Id: s_user.c,v 7.103 2001/01/05 05:52:20 db Exp $
  */
 #include "tools.h"
 #include "s_user.h"
@@ -80,7 +80,7 @@ static struct flag_item user_modes[] =
   {FLAGS_BOTS,  'b'},
   {FLAGS_CCONN, 'c'},
   {FLAGS_DEBUG, 'd'},
-  {FLAGS_DRONE, 'e'}
+  {FLAGS_DRONE, 'e'},
   {FLAGS_FULL,  'f'},
   {FLAGS_CALLERID, 'g'},
   {FLAGS_INVISIBLE, 'i'},
