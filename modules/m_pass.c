@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_pass.c,v 1.11 2001/01/05 00:14:33 davidt Exp $
+ *  $Id: m_pass.c,v 1.12 2001/01/05 06:09:54 spookey Exp $
  */
 #include "handlers.h"  /* m_pass prototype */
 #include "client.h"      /* client struct */
@@ -65,7 +65,7 @@ char *_version = "20001122";
 static int mr_pass(struct Client *cptr, struct Client *sptr,
                    int parc, char *parv[])
 {
-  char* password = parv[1];
+  const char *password = parv[1];
 
   if (EmptyString(password))
     {
