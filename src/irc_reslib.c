@@ -92,7 +92,7 @@
 #define DNS_LABELTYPE_BITSTRING		0x41
 #define MAXLINE 128
 
-/* $Id: irc_reslib.c,v 7.13 2003/05/20 04:25:20 michael Exp $ */
+/* $Id: irc_reslib.c,v 7.14 2003/05/23 03:04:03 joshk Exp $ */
 
 static FBFILE *file;
 
@@ -371,9 +371,9 @@ irc_ns_name_unpack(const unsigned char *msg, const unsigned char *eom, const uns
  *	All other domains are returned in non absolute form
  */
 int
-irc_ns_name_ntop(const unsigned char *src, char *dst, size_t dstsiz)
+irc_ns_name_ntop(const char *src, char *dst, size_t dstsiz)
 {
-	const unsigned char *cp;
+	const char *cp;
 	char *dn, *eom;
 	unsigned char c;
 	unsigned int n;
@@ -412,7 +412,7 @@ irc_ns_name_ntop(const unsigned char *src, char *dst, size_t dstsiz)
 				errno = EINVAL;
 				return(-1);
 			}
-			if ((m = irc_decode_bitstring((const char **)&cp, dn, eom)) < 0)
+			if ((m = irc_decode_bitstring(&cp, dn, eom)) < 0)
 			{
 				errno = EMSGSIZE;
 				return(-1);
