@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.178 2002/01/09 17:38:34 jmallett Exp $
+ *  $Id: s_user.c,v 7.179 2002/01/13 23:22:01 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -791,14 +791,14 @@ int do_local_user(char* nick, struct Client* client_p, struct Client* source_p,
 
   user = make_user(source_p);
 
-  oflags = source_p->flags;
+  oflags = source_p->umodes;
 
   if (!IsUnknown(source_p))
     {
       sendto_one(source_p, form_str(ERR_ALREADYREGISTRED), me.name, nick);
       return 0;
     }
-  source_p->flags |= FLAGS_INVISIBLE;
+  source_p->umodes |= FLAGS_INVISIBLE;
 
   if (!(oflags & FLAGS_INVISIBLE) && IsInvisible(source_p))
     Count.invisi++;
