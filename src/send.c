@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.269 2003/06/09 20:48:32 bill Exp $
+ *  $Id: send.c,v 7.270 2003/06/22 03:28:42 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1061,6 +1061,7 @@ sendto_realops_flags(unsigned int flags, int level, const char *pattern, ...)
   DLINK_FOREACH(ptr, oper_list.head)
   {
     client_p = ptr->data;
+    assert(client_p->umodes & UMODE_OPER);
 
     /* If we're sending it to opers and theyre an admin, skip.
      * If we're sending it to admins, and theyre not, skip.
@@ -1106,6 +1107,7 @@ sendto_wallops_flags(unsigned int flags, struct Client *source_p,
   DLINK_FOREACH(ptr, oper_list.head)
   {
     client_p = ptr->data;
+    assert(client_p->umodes & UMODE_OPER);
 
     if ((client_p->umodes & flags) && !IsDefunct(client_p))
       send_message(client_p, buffer, len);
