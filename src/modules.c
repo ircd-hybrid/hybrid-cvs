@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.c,v 7.35 2001/01/03 04:31:50 db Exp $
+ * $Id: modules.c,v 7.36 2001/01/03 05:18:02 vx0 Exp $
  */
 
 #include <dlfcn.h>
@@ -276,7 +276,7 @@ load_one_module (char *path)
 
       if (tmpptr == NULL)
       {
-        char *err;
+        const char *err;
 
         if (errno == ENOENT) /* module not found, try next path */
           continue;
