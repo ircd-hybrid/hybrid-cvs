@@ -92,7 +92,7 @@
 #define DNS_LABELTYPE_BITSTRING		0x41
 #define MAXLINE 128
 
-/* $Id: irc_reslib.c,v 7.14 2003/05/23 03:04:03 joshk Exp $ */
+/* $Id: irc_reslib.c,v 7.15 2003/05/23 16:09:17 joshk Exp $ */
 
 static FBFILE *file;
 
@@ -133,7 +133,7 @@ static int irc_ns_name_compress(const char *src, unsigned char *dst, size_t dsts
     const unsigned char **dnptrs, const unsigned char **lastdnptr);
 static int irc_dn_find(const unsigned char *, const unsigned char *, const unsigned char * const *,
     const unsigned char * const *);
-static int irc_encode_bitsring(const char **, const char *, char **, char **, 
+static int irc_encode_bitsring(const char **, const char *, unsigned char **, unsigned char **, 
     const char *);
 static int mklower(int ch);
   
@@ -673,8 +673,8 @@ int
 irc_ns_name_pton(const char *src, unsigned char *dst, size_t dstsiz)
 {
   unsigned char *label, *bp, *eom;
-  int c, n, escaped, e = 0;
   char *cp;
+  int c, n, escaped, e = 0;
 
   escaped = 0;
   bp = dst;
@@ -691,8 +691,8 @@ irc_ns_name_pton(const char *src, unsigned char *dst, size_t dstsiz)
         }
         if ((e = irc_encode_bitsring(&src,
                cp + 2,
-               (char **)&label,
-               (char **)&bp,
+               &label,
+               &bp,
                (const char *)eom))
             != 0) {
           errno = e;
@@ -918,8 +918,8 @@ irc_ns_name_compress(const char *src, unsigned char *dst, size_t dstsiz,
 }
 
 static int
-irc_encode_bitsring(const char **bp, const char *end, char **labelp,
-          char ** dst, const char *eom)
+irc_encode_bitsring(const char **bp, const char *end, unsigned char **labelp,
+          unsigned char ** dst, const char *eom)
 {
   int afterslash = 0;
   const char *cp = *bp;
