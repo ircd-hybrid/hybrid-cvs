@@ -1,3 +1,15 @@
+bill        2002/10/07 13:03:13 EDT	(20021007_0)
+
+  Modified files:
+    modules              m_ping.c 
+  Log:
+  - repeat of previous fix
+  
+  Revision  Changes    Path
+  1.31      +2 -2      ircd-hybrid-7/modules/m_ping.c
+
+
+
 bill        2002/10/06 11:02:16 EDT	(20021006_1)
 
   Modified files:
@@ -32228,4 +32240,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4047 2002/10/06 15:02:18 bill Exp $
+$Id: ChangeLog,v 7.4048 2002/10/07 17:03:15 bill Exp $
