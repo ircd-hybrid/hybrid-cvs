@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: match.c,v 7.31 2003/07/02 17:32:26 michael Exp $
+ * $Id: match.c,v 7.32 2003/07/08 00:37:25 michael Exp $
  *
  */
 #include "stdinc.h"
@@ -373,8 +373,7 @@ char *collapse_esc(char *pattern)
  * irccmp - case insensitive comparison of two 0 terminated strings.
  *
  *      returns  0, if s1 equal to s2
- *              <0, if s1 lexicographically less than s2
- *              >0, if s1 lexicographically greater than s2
+ *               1, if not
  */
 int irccmp(const char *s1, const char *s2)
 {
