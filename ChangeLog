@@ -1,3 +1,15 @@
+db          2001/12/11 23:58:36 EST	(20011212_1)
+
+  Modified files:
+    src                  s_conf.c 
+  Log:
+  - "forward" ported hwy101's tkline expire notify from 6 to 7
+  
+  Revision  Changes    Path
+  7.279     +7 -1      ircd-hybrid-7/src/s_conf.c
+
+
+
 androsyn    2001/12/11 23:13:49 EST	(20011212_0)
 
   Removed files:
@@ -84,7 +96,7 @@ a1kmm       2001/12/10 22:42:48 EST	(20011211_5)
     modules              .depend Makefile.in 
     src                  .depend Makefile.in 
   Log:
-  - Fixed $Id: ChangeLog,v 7.3148 2001/12/12 04:13:54 androsyn Exp $ tags echoed from Makefile.in into .depend
+  - Fixed $Id: ChangeLog,v 7.3149 2001/12/12 04:58:42 db Exp $ tags echoed from Makefile.in into .depend
   
   Revision  Changes    Path
   1.39      +0 -0      ircd-hybrid-7/modules/.depend
@@ -132,7 +144,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3148 2001/12/12 04:13:54 androsyn Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3149 2001/12/12 04:58:42 db Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -18486,4 +18498,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3148 2001/12/12 04:13:54 androsyn Exp $
+$Id: ChangeLog,v 7.3149 2001/12/12 04:58:42 db Exp $
