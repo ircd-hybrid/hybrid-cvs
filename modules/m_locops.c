@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_locops.c,v 1.33 2003/05/24 19:25:29 michael Exp $
+ *  $Id: m_locops.c,v 1.34 2003/07/07 21:18:54 michael Exp $
  */
 
 #include "stdinc.h"
@@ -29,6 +29,7 @@
 #include "irc_string.h"
 #include "numeric.h"
 #include "send.h"
+#include "s_conf.h"
 #include "s_user.h"
 #include "s_serv.h"
 #include "hash.h"
@@ -44,8 +45,8 @@ struct Message locops_msgtab = {
   "LOCOPS", 0, 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, ms_locops, m_locops, m_ignore}
 };
-#ifndef STATIC_MODULES
 
+#ifndef STATIC_MODULES
 void
 _modinit(void)
 {
@@ -58,7 +59,7 @@ _moddeinit(void)
   mod_del_cmd(&locops_msgtab);
 }
 
-const char *_version = "$Revision: 1.33 $";
+const char *_version = "$Revision: 1.34 $";
 #endif
 
 /*
@@ -80,14 +81,16 @@ m_locops(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  sendto_wallops_flags(UMODE_LOCOPS, source_p, "LOCOPS - %s", message);
+  sendto_wallops_flags(UMODE_LOCOPS, source_p, "LOCOPS - %s",
+                       message);
 
-  if (cluster_servers())
+  if (dlink_list_length(&cluster_items))
     cluster_locops(source_p, parv[1]);
 }
 
 static void
-ms_locops(struct Client *client_p, struct Client *source_p, int parc, char *parv[])
+ms_locops(struct Client *client_p, struct Client *source_p,
+          int parc, char *parv[])
 {
   if (parc != 3 || EmptyString(parv[2]))
     return;
@@ -101,6 +104,7 @@ ms_locops(struct Client *client_p, struct Client *source_p, int parc, char *parv
   if (!IsPerson(source_p))
     return;
 
-  if (find_cluster(source_p->user->server->name, CLUSTER_LOCOPS))
+  if (find_matching_name_conf(CLUSTER_TYPE, source_p->user->server->name,
+                              NULL, NULL, CLUSTER_LOCOPS))
     sendto_wallops_flags(UMODE_LOCOPS, source_p, "SLOCOPS - %s", parv[2]);
 }

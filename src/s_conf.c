@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.454 2003/07/07 02:12:57 db Exp $
+ *  $Id: s_conf.c,v 7.455 2003/07/07 21:18:57 michael Exp $
  */
 
 #include "stdinc.h"
@@ -58,15 +58,16 @@
 struct config_server_hide ConfigServerHide;
 
 /* general conf items link list root, other than k lines etc. */
-dlink_list server_items = { NULL, NULL, 0 };
-dlink_list hub_items   = { NULL, NULL, 0 };
-dlink_list leaf_items  = { NULL, NULL, 0 };
-dlink_list oconf_items = { NULL, NULL, 0 };
-dlink_list uconf_items = { NULL, NULL, 0 };
-dlink_list xconf_items = { NULL, NULL, 0 };
-dlink_list nresv_items = { NULL, NULL, 0 };
-dlink_list class_items = { NULL, NULL, 0 };
-dlink_list gline_items = { NULL, NULL, 0 };
+dlink_list server_items  = { NULL, NULL, 0 };
+dlink_list cluster_items = { NULL, NULL, 0 };
+dlink_list hub_items     = { NULL, NULL, 0 };
+dlink_list leaf_items    = { NULL, NULL, 0 };
+dlink_list oconf_items   = { NULL, NULL, 0 };
+dlink_list uconf_items   = { NULL, NULL, 0 };
+dlink_list xconf_items   = { NULL, NULL, 0 };
+dlink_list nresv_items   = { NULL, NULL, 0 };
+dlink_list class_items   = { NULL, NULL, 0 };
+dlink_list gline_items   = { NULL, NULL, 0 };
 
 dlink_list temporary_klines = { NULL, NULL, 0 };
 dlink_list temporary_dlines = { NULL, NULL, 0 };
@@ -204,7 +205,7 @@ make_conf_item(ConfType type)
   case OPER_TYPE:
   case SERVER_TYPE:
     conf = (struct ConfItem *)MyMalloc(sizeof(struct ConfItem) +
-					 sizeof(struct AccessItem));
+                                       sizeof(struct AccessItem));
     aconf = (struct AccessItem *)map_to_conf(conf);
     aconf->aftype = AF_INET;
 
@@ -246,42 +247,48 @@ make_conf_item(ConfType type)
 
   case LEAF_TYPE:
     conf = (struct ConfItem *)MyMalloc(sizeof(struct ConfItem) +
-					 sizeof(struct MatchItem));
+                                       sizeof(struct MatchItem));
     dlinkAdd(conf, &conf->node, &leaf_items);
     break;
 
   case HUB_TYPE:
     conf = (struct ConfItem *)MyMalloc(sizeof(struct ConfItem) +
-					 sizeof(struct MatchItem));
+                                       sizeof(struct MatchItem));
     dlinkAdd(conf, &conf->node, &hub_items);
     break;
 
   case ULINE_TYPE:
     conf = (struct ConfItem *)MyMalloc(sizeof(struct ConfItem) +
-					 sizeof(struct MatchItem));
+                                       sizeof(struct MatchItem));
     dlinkAdd(conf, &conf->node, &uconf_items);
     break;
 
   case XLINE_TYPE:
     conf = (struct ConfItem *)MyMalloc(sizeof(struct ConfItem) +
-					 sizeof(struct MatchItem));
+                                       sizeof(struct MatchItem));
     dlinkAdd(conf, &conf->node, &xconf_items);
+    break;
+
+  case CLUSTER_TYPE:
+    conf = (struct ConfItem *)MyMalloc(sizeof(struct ConfItem) +
+                                       sizeof(struct MatchItem));
+    dlinkAdd(conf, &conf->node, &cluster_items);
     break;
 
   case CRESV_TYPE:
     conf = (struct ConfItem *)MyMalloc(sizeof(struct ConfItem) +
-					 sizeof(struct ResvChannel));
+                                       sizeof(struct ResvChannel));
     break;
 
   case NRESV_TYPE:
     conf = (struct ConfItem *)MyMalloc(sizeof(struct ConfItem) +
-					 sizeof(struct MatchItem));
+                                       sizeof(struct MatchItem));
     dlinkAdd(conf, &conf->node, &nresv_items);
     break;
 
   case CLASS_TYPE:
     conf = (struct ConfItem *)MyMalloc(sizeof(struct ConfItem) +
-					 sizeof(struct ClassItem));
+                                       sizeof(struct ClassItem));
     dlinkAdd(conf, &conf->node, &class_items);
     aclass = (struct ClassItem *)map_to_conf(conf);
     ConFreq(aclass)  = DEFAULT_CONNECTFREQUENCY;
@@ -426,6 +433,16 @@ delete_conf_item(struct ConfItem *conf)
     MyFree(conf);
     break;
 
+  case CLUSTER_TYPE:
+    match_item = (struct MatchItem *)map_to_conf(conf);
+    MyFree(match_item->user);
+    MyFree(match_item->host);
+    MyFree(match_item->reason);
+    MyFree(match_item->oper_reason);
+    dlinkDelete(&conf->node, &cluster_items);
+    MyFree(conf);
+    break;
+
   case GLINE_TYPE:
     aconf = (struct AccessItem *)map_to_conf(conf);
     MyFree(aconf->user);
@@ -467,8 +484,7 @@ free_access_item(struct AccessItem *aconf)
   delete_conf_item(conf);
 }
 
-/*
- * report_confitem_types
+/* report_confitem_types()
  *
  * inputs	- pointer to client requesting confitem report
  *		- ConfType to report
@@ -506,7 +522,18 @@ report_confitem_types(struct Client *source_p, ConfType type)
       matchitem = (struct MatchItem *)map_to_conf(conf);
       sendto_one(source_p, form_str(RPL_STATSULINE),
 		 me.name, source_p->name,
-		 conf->name, matchitem->reason);
+		 conf->name, matchitem->reason); /* matchitem->reason ? */
+    }
+    break;
+
+  case CLUSTER_TYPE:
+    DLINK_FOREACH(ptr, cluster_items.head)
+    {
+      conf = ptr->data;
+      matchitem = (struct MatchItem *)map_to_conf(conf);
+      sendto_one(source_p, form_str(RPL_STATSULINE),
+                 me.name, source_p->name,
+                 conf->name, "*"); /* XXX cluster type */
     }
     break;
 
@@ -699,7 +726,7 @@ check_client(struct Client *client_p, struct Client *source_p, const char *usern
     }
  
    case BANNED_CLIENT:
-      exit_client(client_p,client_p, &me, "*** Banned ");
+      exit_client(client_p, source_p, &me, "*** Banned ");
       ServerStats->is_ref++;
       break;
 
@@ -1321,7 +1348,8 @@ attach_conf(struct Client *client_p, struct ConfItem *conf)
   if (dlinkFind(&client_p->localClient->confs, conf) != NULL)
     return(1);
 
-  if ((conf->type == CLIENT_TYPE) || (conf->type == SERVER_TYPE) ||
+  if ((conf->type == CLIENT_TYPE) ||
+      (conf->type == SERVER_TYPE) ||
       (conf->type == OPER_TYPE))
   {
     aconf = (struct AccessItem *)map_to_conf(conf);
@@ -1405,8 +1433,7 @@ attach_connect_block(struct Client *client_p, const char *name,
   return(0);
 }
 
-/*
- * find_conf_exact
+/* find_conf_exact()
  *
  * inputs	- type of ConfItem
  *		- pointer to name to find
@@ -1485,8 +1512,8 @@ find_conf_name(dlink_list *list, const char *name, ConfType type)
     
     if (conf->type == type)
     {
-      if (conf->name && 
-	  (irccmp(conf->name, name) == 0 || match(conf->name, name)))
+      if (conf->name && (irccmp(conf->name, name) == 0 ||
+          match(conf->name, name)))
       return(conf);
     }
   }
@@ -1494,8 +1521,7 @@ find_conf_name(dlink_list *list, const char *name, ConfType type)
   return(NULL);
 }
 
-/*
- * map_to_list
+/* map_to_list()
  *
  * inputs	- ConfType conf
  * output	- pointer to dlink_list to use
@@ -1524,6 +1550,9 @@ map_to_list(ConfType type)
   case SERVER_TYPE:
     return(&server_items);
     break;
+  case CLUSTER_TYPE:
+    return(&cluster_items);
+    break;
   case CONF_TYPE:
   case KLINE_TYPE:
   case DLINE_TYPE:
@@ -1545,23 +1574,21 @@ map_to_list(ConfType type)
  * side effects - looks for a match on name field
  */
 struct ConfItem *
-find_matching_name_conf(ConfType type, 
-			const char *name, const char *user,
-			const char *host, int action)
+find_matching_name_conf(ConfType type, const char *name, const char *user,
+                        const char *host, int action)
 {
   dlink_node *ptr=NULL;
   struct ConfItem *conf=NULL;
   struct AccessItem *aconf=NULL;
   struct MatchItem *match_item=NULL;
-  dlink_list *list_p;
-
-  list_p = map_to_list(type);
+  dlink_list *list_p = map_to_list(type);
 
   switch(type)
   {
   case XLINE_TYPE:
   case ULINE_TYPE:
   case NRESV_TYPE:
+  case CLUSTER_TYPE:
 
     DLINK_FOREACH(ptr, (*list_p).head)
     {
@@ -2391,9 +2418,10 @@ clear_out_old_conf(void)
   struct ClassItem *cltmp;
   struct MatchItem *match_item;
   dlink_list * free_items [] = {
-    &server_items, &oconf_items, &hub_items, &leaf_items,
-    &uconf_items, &xconf_items, &nresv_items,NULL
+    &server_items, &oconf_items, &hub_items, &leaf_items, &uconf_items,
+    &xconf_items, &nresv_items, &cluster_items, NULL
   };
+
   dlink_list ** iterator = free_items; /* C is dumb */
 
   /* We only need to free anything allocated by yyparse() here.
@@ -2500,7 +2528,6 @@ clear_out_old_conf(void)
   ServerInfo.rsa_private_key_file = NULL;
 #endif
 
-  clear_clusters();
   /* clean out old resvs from the conf */
   clear_conf_resv();
 

@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.25 2003/07/05 06:21:02 db Exp $
+ *  $Id: csvlib.c,v 7.26 2003/07/07 21:18:57 michael Exp $
  */
 
 #include "stdinc.h"
@@ -111,6 +111,7 @@ parse_csv_file(FBFILE *file, ConfType conf_type)
     case OPER_TYPE:
     case CLIENT_TYPE:
     case SERVER_TYPE:
+    case CLUSTER_TYPE:
     case HUB_TYPE:
     case LEAF_TYPE:
     case ULINE_TYPE:

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.25 2003/07/05 06:20:58 db Exp $
+ *  $Id: m_xline.c,v 1.26 2003/07/07 21:18:54 michael Exp $
  */
 
 #include "stdinc.h"
@@ -82,7 +82,7 @@ _moddeinit(void)
   mod_del_cmd(&unxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.25 $";
+const char *_version = "$Revision: 1.26 $";
 #endif
 
 
@@ -200,7 +200,7 @@ mo_xline(struct Client *client_p, struct Client *source_p,
     if (!match(target_server, me.name))
       return;
   }
-  else if (cluster_servers())
+  else if (dlink_list_length(&cluster_items))
     cluster_xline(source_p, parv[1], type_i, reason);
 
   if (EmptyString(reason))
@@ -235,7 +235,8 @@ ms_xline(struct Client *client_p, struct Client *source_p,
   if (!match(parv[1], me.name))
     return;
 
-  if (find_cluster(source_p->user->server->name, CLUSTER_XLINE))
+  if (find_matching_name_conf(CLUSTER_TYPE, source_p->user->server->name,
+                              NULL, NULL, CLUSTER_XLINE))
   {
     if (!valid_xline(source_p, parv[2], parv[4], 0))
       return;
@@ -309,7 +310,7 @@ mo_unxline(struct Client *client_p, struct Client *source_p,
   /* UNXLINE bill */
   else if (parc == 2)
   {
-    if (cluster_servers())
+    if (dlink_list_length(&cluster_items))
       cluster_unxline(source_p, parv[1]);
     remove_xline(source_p, parv[1], 0);
   }
@@ -345,9 +346,10 @@ ms_unxline(struct Client *client_p, struct Client *source_p,
   if (!IsPerson(source_p))
     return;
 
-  if (find_cluster(source_p->user->server->name, CLUSTER_UNXLINE))
+  if (find_matching_name_conf(CLUSTER_TYPE, source_p->user->server->name,
+                              NULL, NULL, CLUSTER_UNXLINE))
     remove_xline(source_p, parv[2], 1);
-    else if (find_matching_name_conf(ULINE_TYPE,
+  else if (find_matching_name_conf(ULINE_TYPE,
 		       source_p->user->server->name,
                        source_p->username, source_p->host,
                        SHARED_UNXLINE))

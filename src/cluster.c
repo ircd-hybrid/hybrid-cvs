@@ -19,11 +19,12 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: cluster.c,v 7.2 2003/05/24 19:25:31 michael Exp $
+ *  $Id: cluster.c,v 7.3 2003/07/07 21:18:57 michael Exp $
  */
 
 #include "cluster.h"
 #include "tools.h"
+#include "s_conf.h"
 #include "s_serv.h"
 #include "memory.h"
 #include "irc_string.h"
@@ -31,94 +32,42 @@
 #include "list.h"
 
 
-static dlink_list cluster_list = { NULL, NULL, 0 };
-
-struct cluster *
-make_cluster(void)
-{
-  struct cluster *cptr;
-
-  cptr = (struct cluster *)MyMalloc(sizeof(struct cluster));
-  return(cptr);
-}
-
-void
-add_cluster(struct cluster *cptr)
-{
-  dlinkAdd(cptr, &cptr->node, &cluster_list);
-}
-
-void
-clear_clusters(void)
-{
-  dlink_node *ptr;
-  dlink_node *next_ptr;
-  struct cluster *cptr;
-
-  DLINK_FOREACH_SAFE(ptr, next_ptr, cluster_list.head)
-  {
-    cptr = ptr->data;
-
-    dlinkDelete(&cptr->node, &cluster_list);
-    MyFree(cptr);
-  }
-}
-
-int
-find_cluster(const char *name, int type)
-{
-  struct cluster *cptr;
-  dlink_node *ptr;
-
-  DLINK_FOREACH(ptr, cluster_list.head)
-  {
-    cptr = ptr->data;
-
-    if (cptr->type & type && match(cptr->name, name))
-      return 1;
-  }
-
-  return 0;
-}
-
-unsigned int
-cluster_servers(void)
-{
-  return (unsigned int)dlink_list_length(&cluster_list);
-}
-
 void
 cluster_kline(struct Client *source_p, int tkline_time, const char *user,
               const char *host, const char *reason)
 {
-  struct cluster *cptr;
+  struct ConfItem *conf;
+  struct MatchItem *cptr;
   dlink_node *ptr;
 
-  DLINK_FOREACH(ptr, cluster_list.head)
+  DLINK_FOREACH(ptr, cluster_items.head)
   {
-    cptr = ptr->data;
+    conf = ptr->data;
+    cptr = (struct MatchItem *)map_to_conf(conf);
 
     if (IsClusterKline(cptr))
-      sendto_match_servs(source_p, cptr->name, CAP_KLN,
+      sendto_match_servs(source_p, conf->name, CAP_KLN,
                          "KLINE %s %d %s %s :%s",
-                         cptr->name, tkline_time, user, host, reason);
+                         conf->name, tkline_time, user, host, reason);
   }
 }
 
 void
 cluster_unkline(struct Client *source_p, const char *user, const char *host)
 {
-  struct cluster *cptr;
+  struct ConfItem *conf;
+  struct MatchItem *cptr;
   dlink_node *ptr;
 
-  DLINK_FOREACH(ptr, cluster_list.head)
+  DLINK_FOREACH(ptr, cluster_items.head)
   {
-    cptr = ptr->data;
+    conf = ptr->data;
+    cptr = (struct MatchItem *)map_to_conf(conf);
 
     if (IsClusterUnkline(cptr))
-      sendto_match_servs(source_p, cptr->name, CAP_UNKLN,
+      sendto_match_servs(source_p, conf->name, CAP_UNKLN,
                          "UNKLINE %s %s %s",
-                         cptr->name, user, host);
+                         conf->name, user, host);
   }
 }
 
@@ -126,83 +75,92 @@ void
 cluster_xline(struct Client *source_p, const char *gecos,
               int xtype, const char *reason)
 {
-  struct cluster *cptr;
+  struct ConfItem *conf;
+  struct MatchItem *cptr;
   dlink_node *ptr;
 
-  DLINK_FOREACH(ptr, cluster_list.head)
+  DLINK_FOREACH(ptr, cluster_items.head)
   {
-    cptr = ptr->data;
+    conf = ptr->data;
+    cptr = (struct MatchItem *)map_to_conf(conf);
 
     if (IsClusterXline(cptr))
-      sendto_match_servs(source_p, cptr->name, CAP_CLUSTER,
+      sendto_match_servs(source_p, conf->name, CAP_CLUSTER,
                          "XLINE %s %s %d :%s",
-                         cptr->name, gecos, xtype, reason);
+                         conf->name, gecos, xtype, reason);
   }
 }
 
 void
 cluster_unxline(struct Client *source_p, const char *gecos)
 {
-  struct cluster *cptr;
+  struct ConfItem *conf;
+  struct MatchItem *cptr;
   dlink_node *ptr;
 
-  DLINK_FOREACH(ptr, cluster_list.head)
+  DLINK_FOREACH(ptr, cluster_items.head)
   {
-    cptr = ptr->data;
+    conf = ptr->data;
+    cptr = (struct MatchItem *)map_to_conf(conf);
 
     if (IsClusterUnxline(cptr))
-      sendto_match_servs(source_p, cptr->name, CAP_CLUSTER,
+      sendto_match_servs(source_p, conf->name, CAP_CLUSTER,
                          "UNXLINE %s %s",
-                         cptr->name, gecos);
+                         conf->name, gecos);
   }
 }
 
 void
 cluster_resv(struct Client *source_p, const char *name, const char *reason)
 {
-  struct cluster *cptr;
+  struct ConfItem *conf;
+  struct MatchItem *cptr;
   dlink_node *ptr;
 
-  DLINK_FOREACH(ptr, cluster_list.head)
+  DLINK_FOREACH(ptr, cluster_items.head)
   {
-    cptr = ptr->data;
+    conf = ptr->data;
+    cptr = (struct MatchItem *)map_to_conf(conf);
 
     if (IsClusterResv(cptr))
-      sendto_match_servs(source_p, cptr->name, CAP_CLUSTER,
+      sendto_match_servs(source_p, conf->name, CAP_CLUSTER,
                          "RESV %s %s :%s",
-                         cptr->name, name, reason);
+                         conf->name, name, reason);
   }
 }
 
 void
 cluster_unresv(struct Client *source_p, const char *name)
 {
-  struct cluster *cptr;
+  struct ConfItem *conf;
+  struct MatchItem *cptr;
   dlink_node *ptr;
 
-  DLINK_FOREACH(ptr, cluster_list.head)
+  DLINK_FOREACH(ptr, cluster_items.head)
   {
-    cptr = ptr->data;
+    conf = ptr->data;
+    cptr = (struct MatchItem *)map_to_conf(conf);
 
     if (IsClusterUnresv(cptr))
-      sendto_match_servs(source_p, cptr->name, CAP_CLUSTER,
-                         "UNRESV %s %s",
-                         cptr->name, name);
+      sendto_match_servs(source_p, conf->name, CAP_CLUSTER,
+                         "UNRESV %s %s", conf->name, name);
   }
 }
 
 void
 cluster_locops(struct Client *source_p, const char *message)
 {
-  struct cluster *cptr;
+  struct ConfItem *conf;
+  struct MatchItem *cptr;
   dlink_node *ptr;
 
-  DLINK_FOREACH(ptr, cluster_list.head)
+  DLINK_FOREACH(ptr, cluster_items.head)
   {
-    cptr = ptr->data;
+    conf = ptr->data;
+    cptr = (struct MatchItem *)map_to_conf(conf);
 
     if (IsClusterLocops(cptr))
-      sendto_match_servs(source_p, cptr->name, CAP_CLUSTER,
-                         "LOCOPS %s :%s", cptr->name, message);
+      sendto_match_servs(source_p, conf->name, CAP_CLUSTER,
+                         "LOCOPS %s :%s", conf->name, message);
   }
 }

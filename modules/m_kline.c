@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.161 2003/07/05 06:20:57 db Exp $
+ *  $Id: m_kline.c,v 1.162 2003/07/07 21:18:54 michael Exp $
  */
 
 #include "stdinc.h"
@@ -80,7 +80,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.161 $";
+const char *_version = "$Revision: 1.162 $";
 #endif
 
 /* Local function prototypes */
@@ -209,7 +209,7 @@ mo_kline(struct Client *client_p, struct Client *source_p,
       return;
   }
   /* only send the kline to cluster servers if the target was not specified */
-  else if (cluster_servers())
+  else if (dlink_list_length(&cluster_items))
     cluster_kline(source_p, tkline_time, user, host, reason);
 
   if (already_placed_kline(source_p, user, host))
@@ -289,7 +289,8 @@ ms_kline(struct Client *client_p, struct Client *source_p,
   if (!IsPerson(source_p))
     return;
 
-  if (find_cluster(source_p->user->server->name, CLUSTER_KLINE))
+  if (find_matching_name_conf(CLUSTER_TYPE, source_p->user->server->name,
+                              NULL, NULL, CLUSTER_KLINE))
   {
     if (!valid_user_host(source_p, kuser, khost) || !valid_wild_card(kuser, khost) ||
         !valid_comment(source_p, kreason) || already_placed_kline(source_p, kuser, khost))

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.141 2003/07/05 06:20:57 db Exp $
+ *  $Id: m_stats.c,v 1.142 2003/07/07 21:18:54 michael Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.141 $";
+const char *_version = "$Revision: 1.142 $";
 #endif
 
 const char *Lformat = ":%s %d %s %s %u %u %u %u %u :%u %u %s";
@@ -102,6 +102,7 @@ static void stats_hubleaf(struct Client *);
 static void stats_auth(struct Client *);
 static void stats_tklines(struct Client *);
 static void stats_klines(struct Client *);
+static void stats_cluster(struct Client *);
 static void stats_messages(struct Client *);
 static void stats_oper(struct Client *);
 static void stats_operedup(struct Client *);
@@ -160,6 +161,8 @@ static const struct StatsStruct
   { 'Q',	stats_resv,		1,	0,	},
   { 'r',	stats_usage,		1,	0,	},
   { 'R',	stats_usage,		1,	0,	},
+  { 's',        stats_cluster,          1,      0,      },
+  { 'S',        stats_cluster,          1,      0,      },
   { 't',	stats_tstats,		1,	0,	},
   { 'T',	stats_tstats,		1,	0,	},
   { 'u',	stats_uptime,		0,	0,	},
@@ -173,7 +176,7 @@ static const struct StatsStruct
   { 'z',	stats_memory,		1,	0,	},
   { 'Z',	stats_ziplinks,		1,	0,	},
   { '?',	stats_servlinks,	0,	0,	},
-  { (char)0, 	(void(*)())0,		0,	0,	}
+  { '\0',       (void(*)())0,           0,	0,	}
 };
 
 /*
@@ -301,6 +304,12 @@ static void
 stats_connect(struct Client *source_p)
 {
   report_confitem_types(source_p, SERVER_TYPE);
+}
+
+static void
+stats_cluster(struct Client *source_p)
+{
+  report_confitem_types(source_p, CLUSTER_TYPE);
 }
 
 /* stats_deny()

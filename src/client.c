@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.393 2003/07/06 23:38:49 db Exp $
+ *  $Id: client.c,v 7.394 2003/07/07 21:18:57 michael Exp $
  */
 
 #include "stdinc.h"
@@ -115,7 +115,7 @@ init_client(void)
 struct Client *
 make_client(struct Client *from)
 {
-  struct Client *client_p = NULL;
+  struct Client *client_p;
   struct LocalUser *localClient;
 
   client_p = BlockHeapAlloc(client_heap);
@@ -126,7 +126,7 @@ make_client(struct Client *from)
     client_p->from  = client_p; /* 'from' of local client is self! */
     client_p->since = client_p->lasttime = client_p->firsttime = CurrentTime;
 
-    localClient = (struct LocalUser *)BlockHeapAlloc(lclient_heap);
+    localClient = BlockHeapAlloc(lclient_heap);
     memset(localClient, 0, sizeof(struct LocalUser));
 
     client_p->localClient = localClient;

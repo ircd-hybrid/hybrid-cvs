@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_unkline.c,v 1.75 2003/06/16 03:07:50 db Exp $
+ *  $Id: m_unkline.c,v 1.76 2003/07/07 21:18:54 michael Exp $
  */
 
 #include "stdinc.h"
@@ -82,7 +82,7 @@ _moddeinit(void)
   delete_capability("UNKLN");
 }
 
-const char *_version = "$Revision: 1.75 $";
+const char *_version = "$Revision: 1.76 $";
 #endif
 
 /*
@@ -147,7 +147,7 @@ mo_unkline(struct Client *client_p,struct Client *source_p,
     if (!match(parv[3], me.name))
       return;
   }
-  else if (cluster_servers())
+  else if (dlink_list_length(&cluster_items))
     cluster_unkline(source_p, user, host);
 
   if (remove_tkline_match(host, user))
@@ -208,8 +208,8 @@ ms_unkline(struct Client *client_p, struct Client *source_p,
 
   if (!IsPerson(source_p))
     return;
-
-  if (find_cluster(source_p->user->server->name, CLUSTER_UNKLINE))
+  if (find_matching_name_conf(CLUSTER_TYPE, source_p->user->server->name,
+                              NULL, NULL, CLUSTER_UNKLINE))
   {
     if (remove_tkline_match(khost, kuser))
     {

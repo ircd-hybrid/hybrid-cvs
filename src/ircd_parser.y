@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.331 2003/07/05 06:21:03 db Exp $
+ *  $Id: ircd_parser.y,v 1.332 2003/07/07 21:18:57 michael Exp $
  */
 
 %{
@@ -60,12 +60,11 @@ static char *class_name;
 static struct ConfItem *yy_conf = NULL;
 static struct AccessItem *yy_aconf = NULL;
 static struct MatchItem *yy_match_item = NULL;
-static struct cluster *cptr = NULL;
 static struct ClassItem *yy_class = NULL;
 
-static dlink_list col_conf_list    = { NULL, NULL, 0 };
-static dlink_list hub_conf_list    = { NULL, NULL, 0 };
-static dlink_list leaf_conf_list    = { NULL, NULL, 0 };
+static dlink_list col_conf_list  = { NULL, NULL, 0 };
+static dlink_list hub_conf_list  = { NULL, NULL, 0 };
+static dlink_list leaf_conf_list = { NULL, NULL, 0 };
 
 static char *resv_reason;
 static char *listener_address;
@@ -1708,17 +1707,15 @@ cluster_entry: T_CLUSTER
 {
   if (ypass == 2)
   {
-    cptr = make_cluster();
-    /* defaults */
-    cptr->type = CLUSTER_ALL;
-    cptr->name[0] = '\0';
+    yy_conf = make_conf_item(CLUSTER_TYPE);
+    yy_match_item = (struct MatchItem *)map_to_conf(yy_conf);
+    yy_match_item->action = CLUSTER_ALL;
   }
 } '{' cluster_items '}' ';'
 {
   if (ypass == 2)
   {
-    add_cluster(cptr);
-    cptr = NULL;
+    yy_conf = NULL;
   }
 };
 
@@ -1728,48 +1725,48 @@ cluster_item:	cluster_name | cluster_type | error;
 cluster_name: NAME '=' QSTRING ';'
 {
   if (ypass == 2)
-    strlcpy((char *)&cptr->name, yylval.string, sizeof(cptr->name));
+    Dupstring(yy_conf->name, yylval.string);
 };
 
 cluster_type: TYPE
 {
   if (ypass == 2)
-    cptr->type = 0;
+    yy_match_item->action = 0;
 } '=' cluster_types ';' ;
 
 cluster_types:	cluster_types ',' cluster_type_item | cluster_type_item;
 cluster_type_item: KLINE
 {
   if (ypass == 2)
-    cptr->type |= CLUSTER_KLINE;
+    yy_match_item->action |= CLUSTER_KLINE;
 } | UNKLINE
 {
   if (ypass == 2)
-    cptr->type |= CLUSTER_UNKLINE;
+    yy_match_item->action |= CLUSTER_UNKLINE;
 } | XLINE
 {
   if (ypass == 2)
-    cptr->type |= CLUSTER_XLINE;
+    yy_match_item->action |= CLUSTER_XLINE;
 } | T_UNXLINE
 {
   if (ypass == 2)
-    cptr->type |= CLUSTER_UNXLINE;
+    yy_match_item->action |= CLUSTER_UNXLINE;
 } | RESV
 {
   if (ypass == 2)
-    cptr->type |= CLUSTER_RESV;
+    yy_match_item->action |= CLUSTER_RESV;
 } | T_UNRESV
 {
   if (ypass == 2)
-    cptr->type |= CLUSTER_UNRESV;
+    yy_match_item->action |= CLUSTER_UNRESV;
 } | T_LOCOPS
 {
   if (ypass == 2)
-    cptr->type |= CLUSTER_LOCOPS;
+    yy_match_item->action |= CLUSTER_LOCOPS;
 } | T_ALL
 {
   if (ypass == 2)
-    cptr->type = CLUSTER_ALL;
+    yy_match_item->action = CLUSTER_ALL;
 };
 
 /***************************************************************************

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_resv.c,v 1.30 2003/07/05 06:20:57 db Exp $
+ *  $Id: m_resv.c,v 1.31 2003/07/07 21:18:54 michael Exp $
  */
 
 #include "stdinc.h"
@@ -72,7 +72,7 @@ _moddeinit(void)
   mod_del_cmd(&unresv_msgtab);
 }
 
-const char *_version = "$Revision: 1.30 $";
+const char *_version = "$Revision: 1.31 $";
 #endif
 
 /* mo_resv()
@@ -112,7 +112,7 @@ mo_resv(struct Client *client_p, struct Client *source_p,
     if (match(parv[3], me.name) == 0)
       return;
   }
-  else if (cluster_servers())
+  else if (dlink_list_length(&cluster_items))
     cluster_resv(source_p, parv[1], reason);
 
   parse_resv(source_p, parv[1], reason, 0);
@@ -141,7 +141,8 @@ ms_resv(struct Client *client_p, struct Client *source_p,
   if (!IsPerson(source_p))
     return;
 
-  if (find_cluster(source_p->user->server->name, CLUSTER_RESV))
+  if (find_matching_name_conf(CLUSTER_TYPE, source_p->user->server->name,
+                              NULL, NULL, CLUSTER_RESV))
     parse_resv(source_p, parv[2], parv[3], 1);
   else if (find_matching_name_conf(ULINE_TYPE,
 				   source_p->user->server->name,
@@ -176,7 +177,7 @@ mo_unresv(struct Client *client_p, struct Client *source_p,
     if (!match(parv[3], me.name))
       return;
   }
-  else if (cluster_servers())
+  else if (dlink_list_length(&cluster_items))
     cluster_unresv(source_p, parv[1]);
 
   remove_resv(source_p, parv[1], 0);
@@ -204,7 +205,8 @@ ms_unresv(struct Client *client_p, struct Client *source_p,
   if (!IsPerson(source_p))
     return;
 
-  if (find_cluster(source_p->user->server->name, CLUSTER_UNRESV))
+  if (find_matching_name_conf(CLUSTER_TYPE, source_p->user->server->name,
+                              NULL, NULL, CLUSTER_UNRESV))
     remove_resv(source_p, parv[2], 1);
   else if (find_matching_name_conf(ULINE_TYPE,
 				   source_p->user->server->name,

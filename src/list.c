@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: list.c,v 7.62 2003/07/05 06:21:03 db Exp $
+ *  $Id: list.c,v 7.63 2003/07/07 21:18:57 michael Exp $
  */
 
 #include "stdinc.h"
@@ -69,7 +69,7 @@ make_user(struct Client *client_p)
 {
   if (client_p->user == NULL)
   {
-    client_p->user = (struct User *)BlockHeapAlloc(user_heap);
+    client_p->user = BlockHeapAlloc(user_heap);
     ++user_count;
 
     memset(client_p->user, 0, sizeof(struct User));
@@ -93,7 +93,7 @@ make_server(struct Client *client_p)
 
   if (!serv)
   {
-    serv = (struct Server *)MyMalloc(sizeof(struct Server));
+    serv = MyMalloc(sizeof(struct Server));
     client_p->serv = serv;
   }
 
@@ -160,7 +160,7 @@ make_dlink_node(void)
 {
   dlink_node *lp;
 
-  lp = (dlink_node *)BlockHeapAlloc(dnode_heap);
+  lp = BlockHeapAlloc(dnode_heap);
   ++links_count;
 
   lp->next = NULL;
@@ -202,7 +202,7 @@ make_slink_node(void)
 {
   slink_node *lp;
 
-  lp = (slink_node *)BlockHeapAlloc(snode_heap);
+  lp = BlockHeapAlloc(snode_heap);
   ++slinks_count;
 
   lp->next = NULL;

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: cluster.h,v 7.2 2003/05/24 19:25:27 michael Exp $
+ *  $Id: cluster.h,v 7.3 2003/07/07 21:18:52 michael Exp $
  */
 
 #ifndef __CLUSTER_H_
@@ -29,13 +29,6 @@
 #include "tools.h"
 
 struct Client;
-
-struct cluster
-{
-  dlink_node node;
-  char name[HOSTLEN + 1];
-  int type;
-};
 
 #define CLUSTER_KLINE	0x0001
 #define CLUSTER_UNKLINE	0x0002
@@ -49,20 +42,14 @@ struct cluster
 			 CLUSTER_UNXLINE | CLUSTER_RESV | CLUSTER_UNRESV |\
 			 CLUSTER_LOCOPS)
 
-#define IsClusterKline(x)	((x)->type & CLUSTER_KLINE)
-#define IsClusterXline(x)	((x)->type & CLUSTER_XLINE)
-#define IsClusterUnkline(x)	((x)->type & CLUSTER_UNKLINE)
-#define IsClusterUnxline(x)	((x)->type & CLUSTER_UNXLINE)
-#define IsClusterResv(x)	((x)->type & CLUSTER_RESV)
-#define IsClusterUnresv(x)	((x)->type & CLUSTER_UNRESV)
-#define IsClusterLocops(x)	((x)->type & CLUSTER_LOCOPS)
+#define IsClusterKline(x)	((x)->action & CLUSTER_KLINE)
+#define IsClusterXline(x)	((x)->action & CLUSTER_XLINE)
+#define IsClusterUnkline(x)	((x)->action & CLUSTER_UNKLINE)
+#define IsClusterUnxline(x)	((x)->action & CLUSTER_UNXLINE)
+#define IsClusterResv(x)	((x)->action & CLUSTER_RESV)
+#define IsClusterUnresv(x)	((x)->action & CLUSTER_UNRESV)
+#define IsClusterLocops(x)	((x)->action & CLUSTER_LOCOPS)
 
-extern struct cluster *make_cluster(void);
-extern void add_cluster(struct cluster *);
-extern int find_cluster(const char *, int);
-extern unsigned int cluster_servers(void);
-
-extern void clear_clusters(void);
 extern void cluster_kline(struct Client *, int, const char *, const char *, const char *);
 extern void cluster_unkline(struct Client *, const char *, const char *);
 extern void cluster_xline(struct Client *, const char *, int, const char *);

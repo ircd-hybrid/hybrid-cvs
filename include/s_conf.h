@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.256 2003/07/07 16:56:41 joshk Exp $
+ *  $Id: s_conf.h,v 7.257 2003/07/07 21:18:52 michael Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -61,6 +61,7 @@ typedef enum {
   KLINE_TYPE,
   DLINE_TYPE,
   EXEMPTDLINE_TYPE,
+  CLUSTER_TYPE,
   XLINE_TYPE,    
   ULINE_TYPE,
   GLINE_TYPE,
@@ -393,6 +394,7 @@ extern int specific_ipv4_vhost; /* used in s_bsd.c */
 extern int specific_ipv6_vhost;
 extern dlink_list class_items;
 extern dlink_list server_items;
+extern dlink_list cluster_items;
 extern dlink_list hub_items;
 extern dlink_list leaf_items;
 extern dlink_list gline_items;
