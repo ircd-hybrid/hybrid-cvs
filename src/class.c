@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: class.c,v 7.40 2003/04/02 02:12:08 michael Exp $
+ *  $Id: class.c,v 7.41 2003/04/13 09:46:58 michael Exp $
  */
 
 #include "stdinc.h"
@@ -238,15 +238,14 @@ add_class(char *classname, int ping, int confreq, int maxli, long sendq)
   MaxSendq(aclass) = (sendq > 0) ? sendq : DEFAULT_SENDQ;
 }
 
-/*
- * find_class
+/* find_class()
  *
  * inputs	- string name of class
  * output	- corresponding Class pointer
  * side effects	- NONE
  */
 struct Class *
-find_class(char* classname)
+find_class(const char *classname)
 {
   dlink_node *ptr;
   struct Class *aclass;
@@ -276,8 +275,7 @@ find_class(char* classname)
   }
 }
 
-/*
- * check_class
+/* check_class()
  *
  * inputs	- NONE
  * output	- NONE

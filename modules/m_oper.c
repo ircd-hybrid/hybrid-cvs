@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_oper.c,v 1.62 2003/04/02 02:36:50 michael Exp $
+ *  $Id: m_oper.c,v 1.63 2003/04/13 09:46:54 michael Exp $
  */
 
 #include "stdinc.h"
@@ -43,10 +43,9 @@
 #include "modules.h"
 #include "packet.h"
 
-
-static struct ConfItem *find_password_aconf(char *name, struct Client *source_p);
-static int match_oper_password(char *password, struct ConfItem *aconf);
-static void failed_oper_notice(struct Client *source_p, char *name, char *reason);
+static struct ConfItem *find_password_aconf(const char *name, struct Client *source_p);
+static int match_oper_password(const char *password, struct ConfItem *aconf);
+static void failed_oper_notice(struct Client *source_p, const char *name, const char *reason);
 #ifdef CRYPT_OPER_PASSWORD
 extern        char *crypt();
 #endif /* CRYPT_OPER_PASSWORD */
@@ -74,7 +73,7 @@ _moddeinit(void)
   mod_del_cmd(&oper_msgtab);
 }
 
-const char *_version = "$Revision: 1.62 $";
+const char *_version = "$Revision: 1.63 $";
 #endif
 
 /*
@@ -89,11 +88,11 @@ m_oper(struct Client *client_p, struct Client *source_p,
 {
   struct ConfItem *aconf;
   struct ConfItem *oconf = NULL;
-  char  *name;
-  char  *password;
+  const char *name;
+  const char *password;
   dlink_node *ptr;
 
-  name = parv[1];
+  name     = parv[1];
   password = parv[2];
 
   if (EmptyString(password))
@@ -166,7 +165,7 @@ m_oper(struct Client *client_p, struct Client *source_p,
 */
 static void
 mo_oper(struct Client *client_p, struct Client *source_p,
-	int parc, char *parv[])
+        int parc, char *parv[])
 {
   sendto_one(source_p, form_str(RPL_YOUREOPER), me.name, parv[0]);
   SendMessageFile(source_p, &ConfigFileEntry.opermotd);
@@ -181,10 +180,9 @@ mo_oper(struct Client *client_p, struct Client *source_p,
 */
 static void
 ms_oper(struct Client *client_p, struct Client *source_p, 
-	int parc, char *parv[])
+        int parc, char *parv[])
 {
   /* if message arrived from server, trust it, and set to oper */
-  
   if (!IsOper(source_p) && IsClient(source_p))
   {
     SetOper(source_p);
@@ -194,44 +192,40 @@ ms_oper(struct Client *client_p, struct Client *source_p,
   }
 }
 
-/*
- * find_password_aconf
+/* find_password_aconf()
  *
  * inputs       -
  * output       -
  */
-
 static struct ConfItem *
-find_password_aconf(char *name, struct Client *source_p)
+find_password_aconf(const char *name, struct Client *source_p)
 {
   struct ConfItem *aconf;
 
   if ((aconf = find_conf_exact(name, source_p->username, source_p->host,
 			       CONF_OPERATOR)) != NULL)
-    return (aconf);
+    return(aconf);
   else if ((aconf = find_conf_exact(name, source_p->username,
                                     source_p->localClient->sockhost,
                                     CONF_OPERATOR)) != NULL)
-    return (aconf);
-  return (NULL);
+    return(aconf);
+  return(NULL);
 }
 
-/*
- * match_oper_password
+/* match_oper_password()
  *
  * inputs       - pointer to given password
  *              - pointer to Conf 
  * output       - YES or NO if match
  * side effects - none
  */
-
 static int
-match_oper_password(char *password, struct ConfItem *aconf)
+match_oper_password(const char *password, struct ConfItem *aconf)
 {
   const char *encr = NULL;
 
   if (!aconf->status & CONF_OPERATOR)
-    return (NO);
+    return(NO);
 
   /* XXX another #ifdef that should go */
 #ifdef CRYPT_OPER_PASSWORD
@@ -260,9 +254,7 @@ match_oper_password(char *password, struct ConfItem *aconf)
     return (NO);
 }
 
-
-/*
- * failed_oper_notice
+/* failed_oper_notice()
  *
  * inputs       - pointer to client doing /oper ...
  *              - pointer to nick they tried to oper as
@@ -270,12 +262,11 @@ match_oper_password(char *password, struct ConfItem *aconf)
  * output       - nothing
  * side effects - notices all opers of the failed oper attempt if enabled
  */
-
 static void
-failed_oper_notice(struct Client *source_p, char *name, char *reason)
+failed_oper_notice(struct Client *source_p, const char *name, const char *reason)
 {
-    if (ConfigFileEntry.failed_oper_notice)
-      sendto_realops_flags(UMODE_ALL, L_ALL, "Failed OPER attempt as %s "
-                           "by %s (%s@%s) - %s", name, source_p->name,
-                           source_p->username, source_p->host, reason);
+  if (ConfigFileEntry.failed_oper_notice)
+    sendto_realops_flags(UMODE_ALL, L_ALL, "Failed OPER attempt as %s "
+                         "by %s (%s@%s) - %s", name, source_p->name,
+                         source_p->username, source_p->host, reason);
 }

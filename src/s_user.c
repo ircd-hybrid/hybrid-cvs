@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.237 2003/04/12 09:01:40 michael Exp $
+ *  $Id: s_user.c,v 7.238 2003/04/13 09:46:58 michael Exp $
  */
 
 #include "stdinc.h"
@@ -227,8 +227,7 @@ show_lusers(struct Client *source_p)
   return 0;
 }
 
-/*
- * show_isupport
+/* show_isupport()
  *
  * inputs	- pointer to client
  * output	- 
@@ -246,10 +245,7 @@ show_isupport(struct Client *source_p)
   ircsprintf(isupportbuffer, FEATURES2, FEATURES2VALUES);
   sendto_one(source_p, form_str(RPL_ISUPPORT), me.name, source_p->name,
              isupportbuffer);
-
-  return;
 }
-
 
 /*
 ** register_local_user
@@ -277,7 +273,7 @@ show_isupport(struct Client *source_p)
 
 int
 register_local_user(struct Client *client_p, struct Client *source_p, 
-			char *nick, char *username)
+                    char *nick, char *username)
 {
   struct ConfItem*  aconf;
   struct User *user;
@@ -1328,32 +1324,34 @@ int
 oper_up(struct Client *source_p, struct ConfItem *aconf)
 {
   unsigned int old = (source_p->umodes & ALL_UMODES);
-  char *operprivs=NULL;
+  const char *operprivs = "";
   dlink_node *ptr;
   struct ConfItem *found_aconf;
   dlink_node *m;
 
   SetOper(source_p);
-  if((int)aconf->hold)
-    {
-      source_p->umodes |= ((unsigned int)aconf->hold & ALL_UMODES); 
-      if (!IsOperN(source_p))
-	source_p->umodes &= ~UMODE_NCHANGE;
-      
-      sendto_one(source_p, ":%s NOTICE %s :*** Oper flags set from conf",
-		 me.name,source_p->name);
-    }
+
+  if ((int)aconf->hold)
+  {
+    source_p->umodes |= ((unsigned int)aconf->hold & ALL_UMODES); 
+
+    if (!IsOperN(source_p))
+      source_p->umodes &= ~UMODE_NCHANGE;
+
+    sendto_one(source_p, ":%s NOTICE %s :*** Oper flags set from conf",
+               me.name,source_p->name);
+  }
   else
+  {
+    if (ConfigFileEntry.oper_umodes)
     {
-      if(ConfigFileEntry.oper_umodes)
-        {
-          source_p->umodes |= ConfigFileEntry.oper_umodes & ALL_UMODES;
-        }
-      else
-        {
-          source_p->umodes |= (UMODE_SERVNOTICE|UMODE_OPERWALL|UMODE_WALLOP|UMODE_LOCOPS) & ALL_UMODES;
-        }
+      source_p->umodes |= ConfigFileEntry.oper_umodes & ALL_UMODES;
     }
+    else
+    {
+      source_p->umodes |= (UMODE_SERVNOTICE|UMODE_OPERWALL|UMODE_WALLOP|UMODE_LOCOPS) & ALL_UMODES;
+    }
+  }
 	
   Count.oper++;
 
@@ -1362,16 +1360,18 @@ oper_up(struct Client *source_p, struct ConfItem *aconf)
   m = make_dlink_node();
   dlinkAdd(source_p,m,&oper_list);
 
-  if(source_p->localClient->confs.head)
+  if (source_p->localClient->confs.head)
+  {
+    ptr = source_p->localClient->confs.head;
+
+    if (ptr)
     {
-      ptr = source_p->localClient->confs.head;
-      if(ptr)
-	{
-	  found_aconf = ptr->data;
-	  if(found_aconf)
-	    operprivs = oper_privs_as_string(source_p,found_aconf->port);
-	}
+      found_aconf = ptr->data;
+
+      if (found_aconf)
+        operprivs = oper_privs_as_string(source_p,found_aconf->port);
     }
+  }
   else
     operprivs = "";
 

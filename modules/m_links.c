@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_links.c,v 1.38 2003/03/31 04:30:17 michael Exp $
+ *  $Id: m_links.c,v 1.39 2003/04/13 09:46:54 michael Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&links_msgtab);
 }
 
-const char *_version = "$Revision: 1.38 $";
+const char *_version = "$Revision: 1.39 $";
 #endif
 /*
  * m_links - LINKS message handler
@@ -75,13 +75,13 @@ const char *_version = "$Revision: 1.38 $";
  */
 
 static void m_links(struct Client *client_p, struct Client *source_p,
-                   int parc, char *parv[])
+                    int parc, char *parv[])
 {
   if (!ConfigServerHide.flatten_links)
-    {
-      mo_links(client_p, source_p, parc, parv);
-      return;
-    }
+  {
+    mo_links(client_p, source_p, parc, parv);
+    return;
+  }
 
   SendMessageFile(source_p, &ConfigFileEntry.linksfile);
     
@@ -98,27 +98,26 @@ static void m_links(struct Client *client_p, struct Client *source_p,
 }
 
 static void mo_links(struct Client *client_p, struct Client *source_p,
-                    int parc, char *parv[])
+                     int parc, char *parv[])
 {
-  char*    mask = "";
-  struct Client* target_p;
-  char           clean_mask[2 * HOSTLEN + 4];
-  char*          p;
+  const char *mask = "";
+  struct Client *target_p;
+  char clean_mask[2 * HOSTLEN + 4];
+  const char *p;
   struct hook_links_data hd;
-  
   dlink_node *ptr;
 
   if (parc > 2) 
+  {
+    if (!ConfigServerHide.disable_remote || IsOper(source_p))
     {
-      if(!ConfigServerHide.disable_remote || IsOper(source_p))
-      {
         if (hunt_server(client_p, source_p, ":%s LINKS %s :%s", 1, parc, parv)
             != HUNTED_ISME)
         return;
-      }
-
-      mask = parv[2];
     }
+
+    mask = parv[2];
+  }
   else if (parc == 2)
     mask = parv[1];
 
@@ -174,13 +173,13 @@ static void mo_links(struct Client *client_p, struct Client *source_p,
  *      parv[2] = servername mask
  */
 static void ms_links(struct Client *client_p, struct Client *source_p,
-                    int parc, char *parv[])
+                     int parc, char *parv[])
 {
   if (hunt_server(client_p, source_p, ":%s LINKS %s :%s", 1, parc, parv)
       != HUNTED_ISME)
     return;
 
-  if(IsClient(source_p))
+  if (IsClient(source_p))
     m_links(client_p,source_p,parc,parv);
 }
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.232 2003/04/06 00:37:02 michael Exp $
+ *  $Id: send.c,v 7.233 2003/04/13 09:46:58 michael Exp $
  */
 
 #include "stdinc.h"
@@ -485,8 +485,7 @@ sendto_one_prefix(struct Client *to, struct Client *prefix,
   linebuf_donebuf(&linebuf);
 } /* sendto_one() */
 
-/*
- * sendto_channel_butone
+/* sendto_channel_butone()
  *
  * inputs	- pointer to client(server) to NOT send message to
  *		- pointer to client that is sending this message
@@ -497,7 +496,7 @@ sendto_one_prefix(struct Client *to, struct Client *prefix,
  */
 void
 sendto_channel_butone(struct Client *one, struct Client *from,
-                      struct Channel *chptr, char *command,
+                      struct Channel *chptr, const char *command,
                       const char *pattern, ...)
 {
   va_list    args;

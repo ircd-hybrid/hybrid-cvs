@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_set.c,v 1.47 2003/03/02 06:46:39 db Exp $
+ *  $Id: m_set.c,v 1.48 2003/04/13 09:46:54 michael Exp $
  */
 
 /* rewritten by jdc */
@@ -52,32 +52,31 @@ struct Message set_msgtab = {
 };
 
 #ifndef STATIC_MODULES
-  void
+void
 _modinit(void)
 {
   mod_add_cmd(&set_msgtab);
 }
 
-  void
+void
 _moddeinit(void)
 {
   mod_del_cmd(&set_msgtab);
 }
 
-const char *_version = "$Revision: 1.47 $";
+const char *_version = "$Revision: 1.48 $";
 #endif
+
 /* Structure used for the SET table itself */
 struct SetStruct
 {
-  char  *name;
-  void  (*handler)();
-  int   wants_char; /* 1 if it expects (char *, [int]) */
-  int   wants_int;  /* 1 if it expects ([char *], int) */
-
+  const char *name;
+  void (*handler)();
+  int wants_char; /* 1 if it expects (char *, [int]) */
+  int wants_int;  /* 1 if it expects ([char *], int) */
   /* eg:  0, 1 == only an int arg
    * eg:  1, 1 == char and int args */
 };
-
 
 static void quote_autoconn(struct Client *, char *, int);
 static void quote_autoconnall(struct Client *, int);
@@ -124,7 +123,6 @@ static struct SetStruct set_cmd_table[] =
   { (char *) 0,		(void (*)()) 0,		0,	0 }
 };
 
-
 /*
  * list_quote_commands() sends the client all the available commands.
  * Four to a line for now.
@@ -132,8 +130,8 @@ static struct SetStruct set_cmd_table[] =
 static void list_quote_commands(struct Client *source_p)
 {
   int i;
-  int j=0;
-  char *names[4];
+  int j = 0;
+  const char *names[4];
 
   sendto_one(source_p, ":%s NOTICE %s :Available QUOTE SET commands:",
              me.name, source_p->name);
@@ -394,7 +392,7 @@ static void quote_spamtime( struct Client *source_p, int newval )
 }
 
 /* this table is what splitmode may be set to */
-static char *splitmode_values[] =
+static const char *splitmode_values[] =
 {
   "OFF",
   "ON",
@@ -403,7 +401,7 @@ static char *splitmode_values[] =
 };
 
 /* this table is what splitmode may be */
-static char *splitmode_status[] =
+static const char *splitmode_status[] =
 {
   "OFF",
   "AUTO (OFF)",
@@ -512,12 +510,13 @@ static void quote_splitusers(struct Client *source_p, int newval)
  * set options while running
  */
 static void mo_set(struct Client *client_p, struct Client *source_p,
-                  int parc, char *parv[])
+                   int parc, char *parv[])
 {
+  int i;
+  int n;
   int newval;
-  int i, n;
-  char *arg=NULL;
-  char *intarg=NULL;
+  const char *arg    = NULL;
+  const char *intarg = NULL;
 
   if (parc > 1)
   {

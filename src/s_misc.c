@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_misc.c,v 7.29 2002/05/24 23:34:51 androsyn Exp $
+ *  $Id: s_misc.c,v 7.30 2003/04/13 09:46:58 michael Exp $
  */
 
 #include "stdinc.h"
@@ -38,19 +38,18 @@
 #include "memory.h"
 
 
-
-static char* months[] = {
+static const char *months[] = {
   "January",   "February", "March",   "April",
   "May",       "June",     "July",    "August",
   "September", "October",  "November","December"
 };
 
-static char* weekdays[] = {
+static const char *weekdays[] = {
   "Sunday",   "Monday", "Tuesday", "Wednesday",
   "Thursday", "Friday", "Saturday"
 };
 
-char* date(time_t lclock) 
+char *date(time_t lclock) 
 {
   static        char        buf[80], plus;
   struct        tm *lt, *gm;
@@ -84,7 +83,7 @@ char* date(time_t lclock)
   return buf;
 }
 
-const char* smalldate(time_t lclock)
+const char *smalldate(time_t lclock)
 {
   static  char    buf[MAX_DATE_STRING];
   struct  tm *lt, *gm;
@@ -103,7 +102,6 @@ const char* smalldate(time_t lclock)
   
   return buf;
 }
-
 
 /*
  * small_file_date

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.109 2003/04/02 02:12:08 michael Exp $
+ *  $Id: modules.c,v 7.110 2003/04/13 09:46:58 michael Exp $
  */
 
 #include "stdinc.h"
@@ -128,7 +128,7 @@ modules_init(void)
  * side effects - returns a module path from path
  */
 static struct module_path *
-mod_find_path(char *path)
+mod_find_path(const char *path)
 {
   dlink_node *pathst;
   struct module_path *mpath;
@@ -151,7 +151,7 @@ mod_find_path(char *path)
  * side effects - adds path to list
  */
 void
-mod_add_path(char *path)
+mod_add_path(const char *path)
 {
   struct module_path *pathst;
   dlink_node *node;
@@ -215,15 +215,16 @@ irc_basename(char *path)
  * side effects -
  */
 int 
-findmodule_byname (char *name)
+findmodule_byname(char *name)
 {
   int i;
 
   for (i = 0; i < num_mods; i++) 
-    {
-      if (!irccmp(modlist[i]->name, name))
-	return(i);
-    }
+  {
+    if (!irccmp(modlist[i]->name, name))
+      return(i);
+  }
+
   return(-1);
 }
 
@@ -234,7 +235,7 @@ findmodule_byname (char *name)
  * side effects -
  */
 void
-load_all_modules (int warn)
+load_all_modules(int warn)
 {
   DIR            *system_module_dir = NULL;
   struct dirent  *ldirent = NULL;
@@ -288,18 +289,18 @@ void
 load_core_modules(int warn)
 {
   char module_name[MAXPATHLEN+1];
-  int i, hpux = 0;
-
+  int i;
+  int hpux = 0;
 #ifdef HAVE_SHL_LOAD
   hpux = 1;
 #endif
 
-  for(i = 0; core_module_table[i]; i++)
+  for (i = 0; core_module_table[i]; i++)
   {
     snprintf(module_name, sizeof(module_name), "%s/%s%c",
             MODPATH, core_module_table[i], hpux ? 'l' : 'o');
 	    
-    if(load_a_module(module_name, warn, 1) == -1)
+    if (load_a_module(module_name, warn, 1) == -1)
     {
       ilog(L_CRIT, "Error loading core module %s%c: terminating ircd", 
            core_module_table[i], hpux ? 'l' : 'o');
@@ -323,33 +324,32 @@ load_one_module (char *path, int coremodule)
   struct stat statbuf;
 
   DLINK_FOREACH(pathst, mod_paths.head)
-    {
-      mpath = (struct module_path *)pathst->data;
+  {
+    mpath = (struct module_path *)pathst->data;
       
-      snprintf(modpath, sizeof(modpath), "%s/%s", mpath->path, path);
-      if((strstr(modpath, "../") == NULL) && (strstr(modpath, "/..") == NULL)) 
-	 {
-	    if (stat(modpath, &statbuf) == 0)
-	      {
-		 if(S_ISREG(statbuf.st_mode))
-		    {
-		       /* Regular files only please */
-		       if (coremodule)
-		         return(load_a_module(modpath, 1, 1));
-		       else
-		         return(load_a_module(modpath, 1, 0));
-		    }
-	      }
-	    
-	 }
+    snprintf(modpath, sizeof(modpath), "%s/%s", mpath->path, path);
+
+    if ((strstr(modpath, "../") == NULL) && (strstr(modpath, "/..") == NULL)) 
+    {
+      if (stat(modpath, &statbuf) == 0)
+      {
+        if (S_ISREG(statbuf.st_mode))
+        {
+          /* Regular files only please */
+          if (coremodule)
+            return(load_a_module(modpath, 1, 1));
+          else
+            return(load_a_module(modpath, 1, 0));
+        }
+      }
     }
-   
+  }
+
   sendto_realops_flags(UMODE_ALL, L_ALL,
                        "Cannot locate module %s", path);
   ilog(L_WARN, "Cannot locate module %s", path);
   return(-1);
 }
-		
 
 /* load a module .. */
 static void
@@ -360,7 +360,7 @@ mo_modload(struct Client *client_p, struct Client *source_p, int parc, char *par
   if (!IsOperAdmin(source_p))
   {
     sendto_one(source_p, ":%s NOTICE %s :You need admin = yes;",
-               me.name, parv[0]);
+               me.name, source_p->name);
     return;
   }
 
@@ -369,13 +369,12 @@ mo_modload(struct Client *client_p, struct Client *source_p, int parc, char *par
   if (findmodule_byname(m_bn) != -1)
   {
     sendto_one(source_p, ":%s NOTICE %s :Module %s is already loaded",
-                me.name, source_p->name, m_bn);
+               me.name, source_p->name, m_bn);
     MyFree(m_bn);
     return;
   }
 
   load_one_module(parv[1], 0);
-
   MyFree(m_bn);
 }
 
@@ -390,34 +389,35 @@ mo_modunload(struct Client *client_p, struct Client *source_p, int parc, char *p
   if (!IsOperAdmin(source_p))
   {
     sendto_one(source_p, ":%s NOTICE %s :You need admin = yes;",
-                me.name, parv[0]);
+               me.name, source_p->name);
     return;
   }
 
-  m_bn = irc_basename (parv[1]);
+  m_bn = irc_basename(parv[1]);
 
-  if((modindex = findmodule_byname (m_bn)) == -1)
+  if ((modindex = findmodule_byname(m_bn)) == -1)
   {
     sendto_one(source_p, ":%s NOTICE %s :Module %s is not loaded",
-                me.name, source_p->name, m_bn);
+               me.name, source_p->name, m_bn);
     MyFree(m_bn);
     return;
   }
 
-  if(modlist[modindex]->core == 1)
+  if (modlist[modindex]->core == 1)
   {
-    sendto_one(source_p, 
+    sendto_one(source_p,
                ":%s NOTICE %s :Module %s is a core module and may not be unloaded",
 	       me.name, source_p->name, m_bn);
     MyFree(m_bn);
     return;
   }
 
-  if(unload_one_module (m_bn, 1) == -1)
+  if (unload_one_module(m_bn, 1) == -1)
   {
     sendto_one(source_p, ":%s NOTICE %s :Module %s is not loaded",
-                me.name, source_p->name, m_bn);
+               me.name, source_p->name, m_bn);
   }
+
   MyFree(m_bn);
 }
 
@@ -430,33 +430,33 @@ mo_modreload(struct Client *client_p, struct Client *source_p, int parc, char *p
   int check_core;
 
   if (!IsOperAdmin(source_p))
-    {
-      sendto_one(source_p, ":%s NOTICE %s :You need admin = yes;",
-                  me.name, parv[0]);
-      return;
-    }
+  {
+    sendto_one(source_p, ":%s NOTICE %s :You need admin = yes;",
+               me.name, parv[0]);
+    return;
+  }
 
-  m_bn = irc_basename (parv[1]);
+  m_bn = irc_basename(parv[1]);
 
-  if((modindex = findmodule_byname(m_bn)) == -1)
-    {
-      sendto_one(source_p, ":%s NOTICE %s :Module %s is not loaded",
-                  me.name, source_p->name, m_bn);
-      MyFree(m_bn);
-      return;
-    }
+  if ((modindex = findmodule_byname(m_bn)) == -1)
+  {
+    sendto_one(source_p, ":%s NOTICE %s :Module %s is not loaded",
+               me.name, source_p->name, m_bn);
+    MyFree(m_bn);
+    return;
+  }
 
   check_core = modlist[modindex]->core;
 
-  if(unload_one_module(m_bn, 1) == -1)
-    {
-      sendto_one (source_p, ":%s NOTICE %s :Module %s is not loaded",
-                  me.name, source_p->name, m_bn);
-      MyFree (m_bn);
-      return;
-    }
+  if (unload_one_module(m_bn, 1) == -1)
+  {
+    sendto_one(source_p, ":%s NOTICE %s :Module %s is not loaded",
+               me.name, source_p->name, m_bn);
+    MyFree(m_bn);
+    return;
+  }
 
-  if((load_one_module(parv[1], check_core) == -1) && check_core)
+  if ((load_one_module(parv[1], check_core) == -1) && check_core)
   {
     sendto_realops_flags(UMODE_ALL, L_ALL,
                          "Error reloading core module: %s: terminating ircd",
@@ -470,22 +470,22 @@ mo_modreload(struct Client *client_p, struct Client *source_p, int parc, char *p
 
 /* list modules .. */
 static void
-mo_modlist (struct Client *client_p, struct Client *source_p, int parc, char *parv[])
+mo_modlist(struct Client *client_p, struct Client *source_p, int parc, char *parv[])
 {
   int i;
 
   if (!IsOperAdmin(source_p))
   {
     sendto_one(source_p, ":%s NOTICE %s :You need admin = yes;",
-                me.name, parv[0]);
+               me.name, parv[0]);
     return;
   }
 
-  for(i = 0; i < num_mods; i++ )
+  for (i = 0; i < num_mods; i++ )
   {
-    if(parc>1)
+    if (parc > 1)
     {
-      if(match(parv[1],modlist[i]->name))
+      if (match(parv[1], modlist[i]->name))
       {
         sendto_one(source_p, form_str(RPL_MODLIST), me.name, parv[0],
                    modlist[i]->name, modlist[i]->address,
@@ -499,20 +499,20 @@ mo_modlist (struct Client *client_p, struct Client *source_p, int parc, char *pa
                  modlist[i]->version, modlist[i]->core?"(core)":"");
     }
   }
-  
+
   sendto_one(source_p, form_str(RPL_ENDOFMODLIST), me.name, parv[0]);
 }
 
 /* unload and reload all modules */
 static void
-mo_modrestart (struct Client *client_p, struct Client *source_p, int parc, char *parv[])
+mo_modrestart(struct Client *client_p, struct Client *source_p, int parc, char *parv[])
 {
   int modnum;
 
   if (!IsOperAdmin (source_p))
   {
     sendto_one(source_p, ":%s NOTICE %s :You need admin = yes;",
-                me.name, parv[0]);
+               me.name, parv[0]);
     return;
   }
 
@@ -520,6 +520,7 @@ mo_modrestart (struct Client *client_p, struct Client *source_p, int parc, char 
              me.name, parv[0]);
 
   modnum = num_mods;
+
   while (num_mods)
      unload_one_module(modlist[0]->name, 0);
 
@@ -545,86 +546,87 @@ mo_modrestart (struct Client *client_p, struct Client *source_p, int parc, char 
 void
 load_all_modules(int warn)
 {
-	mod_add_cmd(&error_msgtab);
-	mod_add_cmd(&accept_msgtab);
-	mod_add_cmd(&admin_msgtab);
-	mod_add_cmd(&away_msgtab);
-	mod_add_cmd(&capab_msgtab);
-	mod_add_cmd(&cburst_msgtab);
+  mod_add_cmd(&error_msgtab);
+  mod_add_cmd(&accept_msgtab);
+  mod_add_cmd(&admin_msgtab);
+  mod_add_cmd(&away_msgtab);
+  mod_add_cmd(&capab_msgtab);
+  mod_add_cmd(&cburst_msgtab);
 #ifdef VCHANS
-	mod_add_cmd(&cjoin_msgtab);
+  mod_add_cmd(&cjoin_msgtab);
 #endif
-	mod_add_cmd(&client_msgtab);
-	mod_add_cmd(&close_msgtab);
-	mod_add_cmd(&connect_msgtab);
+  mod_add_cmd(&client_msgtab);
+  mod_add_cmd(&close_msgtab);
+  mod_add_cmd(&connect_msgtab);
 #ifdef HAVE_LIBCRYPTO
-	mod_add_cmd(&challenge_msgtab);
-        mod_add_cmd(&cryptlink_msgtab);
+  mod_add_cmd(&challenge_msgtab);
+  mod_add_cmd(&cryptlink_msgtab);
 #endif
-        mod_add_cmd(&die_msgtab);
-	mod_add_cmd(&dmem_msgtab);
-	mod_add_cmd(&drop_msgtab);
-	mod_add_cmd(&eob_msgtab);
-	mod_add_cmd(&gline_msgtab);
-	mod_add_cmd(&help_msgtab);
-	mod_add_cmd(&info_msgtab);
-	mod_add_cmd(&invite_msgtab);
-	mod_add_cmd(&ison_msgtab);
-	mod_add_cmd(&join_msgtab);
-	mod_add_cmd(&kick_msgtab);
-	mod_add_cmd(&kill_msgtab);
-	mod_add_cmd(&kline_msgtab);
-	mod_add_cmd(&dline_msgtab);
-	mod_add_cmd(&knock_msgtab);
-	mod_add_cmd(&knockll_msgtab);
-	mod_add_cmd(&links_msgtab);
-	mod_add_cmd(&list_msgtab);
-	mod_add_cmd(&lljoin_msgtab);
-	mod_add_cmd(&llnick_msgtab);
-	mod_add_cmd(&locops_msgtab);
-	mod_add_cmd(&lusers_msgtab);
-	mod_add_cmd(&privmsg_msgtab);
-	mod_add_cmd(&notice_msgtab);
-	mod_add_cmd(&mode_msgtab);
-	mod_add_cmd(&motd_msgtab);
-	mod_add_cmd(&names_msgtab);
-	mod_add_cmd(&nburst_msgtab);
-	mod_add_cmd(&nick_msgtab);
-	mod_add_cmd(&oper_msgtab);
-	mod_add_cmd(&operwall_msgtab);
-	mod_add_cmd(&part_msgtab);
-	mod_add_cmd(&pass_msgtab);
-	mod_add_cmd(&ping_msgtab);
-	mod_add_cmd(&pong_msgtab);
-	mod_add_cmd(&post_msgtab);
-	mod_add_cmd(&get_msgtab);
-        mod_add_cmd(&put_msgtab);
-	mod_add_cmd(&quit_msgtab);
-	mod_add_cmd(&rehash_msgtab);
-	mod_add_cmd(&restart_msgtab);
-	mod_add_cmd(&resv_msgtab);  
-	mod_add_cmd(&server_msgtab);
-	mod_add_cmd(&set_msgtab);
-	mod_add_cmd(&sjoin_msgtab);
-	mod_add_cmd(&squit_msgtab);
-	mod_add_cmd(&stats_msgtab);
-	mod_add_cmd(&svinfo_msgtab);
-	mod_add_cmd(&testline_msgtab);
-	mod_add_cmd(&time_msgtab);
-	mod_add_cmd(&topic_msgtab);
-	mod_add_cmd(&trace_msgtab);
-	mod_add_cmd(&msgtabs[0]);
-	mod_add_cmd(&msgtabs[1]);
-	mod_add_cmd(&msgtabs[2]);
-	mod_add_cmd(&unresv_msgtab);
-	mod_add_cmd(&user_msgtab);
-	mod_add_cmd(&userhost_msgtab);
-	mod_add_cmd(&users_msgtab);
-	mod_add_cmd(&version_msgtab);
-	mod_add_cmd(&wallops_msgtab);
-	mod_add_cmd(&who_msgtab);
-	mod_add_cmd(&whois_msgtab);
-	mod_add_cmd(&whowas_msgtab);
+  mod_add_cmd(&die_msgtab);
+  mod_add_cmd(&dmem_msgtab);
+  mod_add_cmd(&drop_msgtab);
+  mod_add_cmd(&eob_msgtab);
+  mod_add_cmd(&gline_msgtab);
+  mod_add_cmd(&help_msgtab);
+  mod_add_cmd(&info_msgtab);
+  mod_add_cmd(&invite_msgtab);
+  mod_add_cmd(&ison_msgtab);
+  mod_add_cmd(&join_msgtab);
+  mod_add_cmd(&kick_msgtab);
+  mod_add_cmd(&kill_msgtab);
+  mod_add_cmd(&kline_msgtab);
+  mod_add_cmd(&dline_msgtab);
+  mod_add_cmd(&knock_msgtab);
+  mod_add_cmd(&knockll_msgtab);
+  mod_add_cmd(&links_msgtab);
+  mod_add_cmd(&list_msgtab);
+  mod_add_cmd(&lljoin_msgtab);
+  mod_add_cmd(&llnick_msgtab);
+  mod_add_cmd(&locops_msgtab);
+  mod_add_cmd(&lusers_msgtab);
+  mod_add_cmd(&privmsg_msgtab);
+  mod_add_cmd(&notice_msgtab);
+  mod_add_cmd(&mode_msgtab);
+  mod_add_cmd(&motd_msgtab);
+  mod_add_cmd(&names_msgtab);
+  mod_add_cmd(&nburst_msgtab);
+  mod_add_cmd(&nick_msgtab);
+  mod_add_cmd(&oper_msgtab);
+  mod_add_cmd(&operwall_msgtab);
+  mod_add_cmd(&part_msgtab);
+  mod_add_cmd(&pass_msgtab);
+  mod_add_cmd(&ping_msgtab);
+  mod_add_cmd(&pong_msgtab);
+  mod_add_cmd(&post_msgtab);
+  mod_add_cmd(&get_msgtab);
+  mod_add_cmd(&put_msgtab);
+  mod_add_cmd(&quit_msgtab);
+  mod_add_cmd(&rehash_msgtab);
+  mod_add_cmd(&restart_msgtab);
+  mod_add_cmd(&resv_msgtab);  
+  mod_add_cmd(&server_msgtab);
+  mod_add_cmd(&set_msgtab);
+  mod_add_cmd(&sjoin_msgtab);
+  mod_add_cmd(&squit_msgtab);
+  mod_add_cmd(&stats_msgtab);
+  mod_add_cmd(&svinfo_msgtab);
+  mod_add_cmd(&testline_msgtab);
+  mod_add_cmd(&time_msgtab);
+  mod_add_cmd(&topic_msgtab);
+  mod_add_cmd(&trace_msgtab);
+  mod_add_cmd(&msgtabs[0]);
+  mod_add_cmd(&msgtabs[1]);
+  mod_add_cmd(&msgtabs[2]);
+  mod_add_cmd(&unresv_msgtab);
+  mod_add_cmd(&user_msgtab);
+  mod_add_cmd(&userhost_msgtab);
+  mod_add_cmd(&users_msgtab);
+  mod_add_cmd(&version_msgtab);
+  mod_add_cmd(&wallops_msgtab);
+  mod_add_cmd(&who_msgtab);
+  mod_add_cmd(&whois_msgtab);
+  mod_add_cmd(&whowas_msgtab);
 }
 
 #endif /* STATIC_MODULES */
+

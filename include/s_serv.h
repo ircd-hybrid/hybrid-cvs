@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.h,v 7.68 2003/04/06 08:38:52 michael Exp $
+ *  $Id: s_serv.h,v 7.69 2003/04/13 09:46:52 michael Exp $
  */
 
 #ifndef INCLUDED_serv_h
@@ -44,50 +44,46 @@ struct Channel;
 /* Capabilities */
 struct Capability
 {
-  char*        name;      /* name of capability */
-  unsigned int cap;       /* mask value */
+  const char *name; /* name of capability */
+  unsigned int cap; /* mask value         */
 };
 
-#define CAP_CAP         0x00000001   /* received a CAP to begin with */
-#define CAP_QS          0x00000002   /* Can handle quit storm removal */
-#define CAP_EX          0x00000008   /* Can do channel +e exemptions */
-#define CAP_CHW         0x00000010   /* Can do channel wall @# */
-#define CAP_LL          0x00000020   /* Can do lazy links */
-#define CAP_IE          0x00000040   /* Can do invite exceptions */
-#define CAP_EOB	        0x00000100   /* Can do EOB message */
-#define CAP_KLN	        0x00000200   /* Can do KLINE message */
-#define CAP_GLN	        0x00000400   /* Can do GLINE message */
-#define CAP_HOPS        0x00000800   /* can do half ops (+h) */
-#define CAP_HUB         0x00001000   /* This server is a HUB */
-#define CAP_AOPS        0x00002000   /* Can do anon ops (+a) */
-#define CAP_UID         0x00004000   /* Can do UIDs */
-#define CAP_ZIP         0x00008000   /* Can do ZIPlinks */
-#define CAP_ENC         0x00010000   /* Can do ENCrypted links */
+#define CAP_CAP    0x00000001 /* received a CAP to begin with        */
+#define CAP_QS     0x00000002 /* Can handle quit storm removal       */
+#define CAP_EX     0x00000004 /* Can do channel +e exemptions        */
+#define CAP_CHW    0x00000008 /* Can do channel wall @#              */
+#define CAP_LL     0x00000010 /* Can do lazy links                   */
+#define CAP_IE     0x00000020 /* Can do invite exceptions            */
+#define CAP_EOB	   0x00000040 /* Can do EOB message                  */
+#define CAP_KLN	   0x00000080 /* Can do KLINE message                */
+#define CAP_GLN	   0x00000100 /* Can do GLINE message                */
+#define CAP_HOPS   0x00000200 /* can do half ops (+h)                */
+#define CAP_HUB    0x00000400 /* This server is a HUB                */
+#define CAP_AOPS   0x00000800 /* Can do anon ops (+a)                */
+#define CAP_UID    0x00001000 /* Can do UIDs                         */
+#define CAP_ZIP    0x00002000 /* Can do ZIPlinks                     */
+#define CAP_ENC    0x00004000 /* Can do ENCrypted links              */
+#define CAP_KNOCK  0x00008000 /* supports KNOCK                      */
+#define CAP_TBURST 0x00010000 /* supports TBURST                     */
+#define CAP_PARA   0x00020000 /* supports invite broadcasting for +p */
 
-#define CAP_KNOCK	0x00020000   /* supports KNOCK */
-
-#define CAP_TBURST	0x00040000   /* supports TBURST */
-#define CAP_PARA	0x00080000   /* supports invite broadcasting for +p */
-
-#define CAP_MASK        (CAP_QS  | CAP_EX   | CAP_CHW  | \
-                         CAP_IE  | CAP_EOB  | CAP_KLN  | \
-                         CAP_GLN | CAP_HOPS | CAP_AOPS | \
-                         CAP_UID | CAP_ZIP  | CAP_ENC | \
-                         CAP_KNOCK  | CAP_PARA)
+#define CAP_MASK   (CAP_QS | CAP_EX | CAP_CHW | CAP_IE | CAP_EOB |\
+                    CAP_KLN | CAP_GLN | CAP_HOPS | CAP_AOPS |\
+                    CAP_UID | CAP_ZIP | CAP_ENC | CAP_KNOCK | CAP_PARA)
 
 #ifdef HAVE_LIBZ
-#define CAP_ZIP_SUPPORTED       CAP_ZIP
+#define CAP_ZIP_SUPPORTED CAP_ZIP
 #else
-#define CAP_ZIP_SUPPORTED       0
+#define CAP_ZIP_SUPPORTED 0
 #endif
 
 #ifdef HAVE_LIBCRYPTO
 struct EncCapability
 {
-  char *        name;     /* name of capability (cipher name) */
-  unsigned int  cap;      /* mask value */
-  int           keylen;   /* keylength (bytes) */
-  int           cipherid; /* ID number of cipher type (BF, IDEA, etc.) */
+  const char *name; /* name of capability (cipher name)          */
+  unsigned int cap; /* mask value                                */
+  int keylen;       /* keylength (bytes)                         */
+  int cipherid;     /* ID number of cipher type (BF, IDEA, etc.) */
 };
 
 /*
@@ -115,7 +111,6 @@ struct EncCapability
 #define CAP_ENC_RC5_8_128       0x00000040
 #define CAP_ENC_RC5_12_128      0x00000080
 #define CAP_ENC_RC5_16_128      0x00000100
-
 #define CAP_ENC_ALL             0xFFFFFFFF
 
 
@@ -179,7 +174,6 @@ struct EncCapability
 #define IsCapableEnc(x, cap)    ((x)->localClient->enc_caps &   (cap))
 #define SetCapableEnc(x, cap)   ((x)->localClient->enc_caps |=  (cap))
 #define ClearCapEnc(x, cap)     ((x)->localClient->enc_caps &= ~(cap))
-  
 #endif /* HAVE_LIBCRYPTO */
 
 #define CHECK_SERVER_CRYPTLINK    1
@@ -220,9 +214,9 @@ typedef void SlinkRplHnd(unsigned int replyid, unsigned int datalen,
                          unsigned char *data, struct Client *client_p);
 struct SlinkRplDef
 {
-  unsigned int  replyid;
-  SlinkRplHnd   *handler;
-  unsigned int  flags;
+  unsigned int replyid;
+  SlinkRplHnd *handler;
+  unsigned int flags;
 };
 
 extern struct SlinkRplDef slinkrpltab[];
@@ -240,7 +234,7 @@ extern struct Capability captab[];
 extern struct EncCapability CipherTable[];
 #endif
 
-extern int MaxClientCount;     /* GLOBAL - highest number of clients */
+extern int MaxClientCount;     /* GLOBAL - highest number of clients     */
 extern int MaxConnectionCount; /* GLOBAL - highest number of connections */
 
 /*
@@ -253,10 +247,10 @@ extern int MaxConnectionCount; /* GLOBAL - highest number of connections */
 
 extern int         check_server(const char* name, struct Client* server,
                                 int cryptlink);
-extern int         hunt_server(struct Client* client_pt,
-                               struct Client* source_pt,
-                               char* command, int server, 
-                               int parc, char** parv);
+extern int         hunt_server(struct Client *client_pt,
+                               struct Client *source_pt,
+                               const char *command, int server, 
+                               int parc, char **parv);
 extern const char* my_name_for_link(const char* name, struct ConfItem* conf);
 extern void        send_capabilities(struct Client*, struct ConfItem* conf,
                                      int, int);
@@ -278,8 +272,8 @@ extern unsigned long nextFreeMask(void);
 extern void        cryptlink_init(struct Client *client_p,
                                   struct ConfItem *aconf, int fd);
 extern void cryptlink_regen_key(void *);
-extern void cryptlink_error(struct Client *client_p, char *type,
-                            char *reason, char *client_reason);
+extern void cryptlink_error(struct Client *client_p, const char *type,
+                            const char *reason, const char *client_reason);
 
 extern struct Client *uplink; /* NON NULL if leaf and is this servers uplink */
 
@@ -290,6 +284,4 @@ struct EncCapability *check_cipher(struct Client *client_p,
 void        add_lazylinkclient(struct Client *client_p, struct Client *source_p);
 
 #endif /* INCLUDED_s_serv_h */
-
-
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: class.h,v 7.13 2003/03/01 01:15:37 db Exp $
+ *  $Id: class.h,v 7.14 2003/04/13 09:46:52 michael Exp $
  */
 
 #ifndef INCLUDED_class_h
@@ -30,16 +30,15 @@ struct ConfItem;
 struct Client;
 
 struct Class {
-  dlink_node	class_node;
-  char*		className;
-  int           type;
-  int           conFreq;
-  int           pingFreq;
-  int           maxLinks;
-  long          maxSendq;
-  int           links;
+  dlink_node class_node;
+  char *className;
+  int type;
+  int conFreq;
+  int pingFreq;
+  int maxLinks;
+  long maxSendq;
+  int links;
 };
-
 
 #define ClassName(x)	((x)->className)
 #define ClassType(x)    ((x)->type)
@@ -60,16 +59,16 @@ struct Class {
 
 extern dlink_list ClassList;  /* GLOBAL - class list */
 
-extern  long    get_sendq(struct Client *);
-extern  int     get_con_freq(struct Class* );
-extern  struct  Class *find_class(char* );
-extern  const   char* get_client_class(struct Client *);
-extern  int     get_client_ping(struct Client *);
-extern  void    check_class(void);
-extern  void    initclass(void);
-extern  void    free_class(struct Class* );
-extern  void    add_class(char *, int, int, int, long);
-extern  void    fix_class(struct ConfItem *, struct ConfItem *);
-extern  void    report_classes (struct Client *);
+extern long   get_sendq(struct Client *);
+extern int    get_con_freq(struct Class* );
+extern struct Class *find_class(const char* );
+extern const  char *get_client_class(struct Client *);
+extern int    get_client_ping(struct Client *);
+extern void   check_class(void);
+extern void   initclass(void);
+extern void   free_class(struct Class *);
+extern void   add_class(char *, int, int, int, long);
+extern void   fix_class(struct ConfItem *, struct ConfItem *);
+extern void   report_classes(struct Client *);
 
 #endif /* INCLUDED_class_h */

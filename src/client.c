@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.344 2003/04/06 23:27:57 db Exp $
+ *  $Id: client.c,v 7.345 2003/04/13 09:46:58 michael Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -378,8 +378,8 @@ check_unknowns_list(dlink_list *list)
   }
 }
 
-/*
- * check_klines
+/* check_klines()
+ *
  * inputs	- NONE
  * output	- NONE
  * side effects - Check all connections for a pending kline against the
@@ -388,18 +388,19 @@ check_unknowns_list(dlink_list *list)
 void 
 check_klines(void)
 {               
-  struct Client *client_p;          /* current local client_p being examined */
+  struct Client *client_p;       /* current local client_p being examined */
   struct ConfItem *aconf = NULL;
-  char *reason;                /* pointer to reason string */
+  const char *reason;            /* pointer to reason string */
   dlink_node *ptr, *next_ptr;
  
   DLINK_FOREACH_SAFE(ptr, next_ptr, local_client_list.head)
   {
     client_p = ptr->data;
-      
+#if 0
+    /* -me- isn't on local_client_list*/
     if (IsMe(client_p))
       continue;
-
+#endif
     /* If a client is already being exited
      */
     if (IsDead(client_p))

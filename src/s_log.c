@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_log.c,v 7.46 2003/02/15 16:32:46 lusky Exp $
+ *  $Id: s_log.c,v 7.47 2003/04/13 09:46:58 michael Exp $
  */
 
 #include "stdinc.h"
@@ -68,7 +68,8 @@ static int sysLogLevel[] = {
 #endif
 
 static const char *logLevelToString[] =
-{ "L_CRIT",
+{
+  "L_CRIT",
   "L_ERROR",
   "L_WARN",
   "L_NOTICE",
@@ -110,10 +111,11 @@ write_log(const char* message)
 {
   char buf[LOG_BUFSIZE];
 
-  if(logFile == NULL)
+  if (logFile == NULL)
     return;
 
-  snprintf(buf, LOG_BUFSIZE, "[%s] %s\n", smalldate(CurrentTime), message);
+  snprintf(buf, LOG_BUFSIZE, "[%s] %s\n",
+           smalldate(CurrentTime), message);
   fbputs(buf, logFile);
 }
 #endif
@@ -176,7 +178,7 @@ set_log_level(int level)
 int 
 get_log_level(void)
 {
-  return( logLevel );
+  return(logLevel);
 }
 
 const char *
@@ -190,9 +192,7 @@ get_log_level_as_string(int level)
   return(logLevelToString[level]);
 }
 
-
-/*
- * log_user_exit
+/* log_user_exit()
  *
  * inputs	- pointer to connecting client
  * output	- NONE
@@ -202,12 +202,11 @@ get_log_level_as_string(int level)
 void 
 log_user_exit(struct Client *source_p)
 {
-  time_t        on_for;
+  time_t on_for;
 
   on_for = CurrentTime - source_p->firsttime;
 
 #ifdef SYSLOG_USERS
-
   if (IsPerson(source_p))
     {
 
@@ -220,10 +219,9 @@ log_user_exit(struct Client *source_p)
 	  source_p->localClient->sendK,
 	  source_p->localClient->receiveK);
     }
-
 #else
   {
-    char        linebuf[BUFSIZ];
+    char linebuf[BUFSIZ];
 
     /*
      * This conditional makes the logfile active only after
@@ -262,8 +260,7 @@ log_user_exit(struct Client *source_p)
 }
 
 #ifndef SYSLOG_USERS
-/*
- * user_log_resync
+/* user_log_resync()
  *
  * inputs	- NONE
  * output	- NONE
@@ -273,24 +270,22 @@ static void
 user_log_resync(void *notused)
 {
   if (user_log_fb != NULL)
-    {
-      fbclose(user_log_fb);
-      user_log_fb = NULL;
-    }
+  {
+    fbclose(user_log_fb);
+    user_log_fb = NULL;
+  }
 }
 #endif
 
 /* XXX log_oper and log_failed_oper should be combined in future */
-/*
- * log_oper
+/* log_oper()
  *
  * inputs	- pointer to client being opered up
  * output	- none
  * side effects - ConfigFileEntry.fname_operlog is written to, if its present
  */
-
-void 
-log_oper(struct Client *source_p, char *name)
+void
+log_oper(struct Client *source_p, const char *name)
 {
   FBFILE *oper_fb;
   char linebuf[BUFSIZE];
@@ -300,13 +295,13 @@ log_oper(struct Client *source_p, char *name)
   
   if (IsPerson(source_p))
   {
-    if((oper_fb = fbopen(ConfigFileEntry.fname_operlog, "r")) != NULL)
+    if ((oper_fb = fbopen(ConfigFileEntry.fname_operlog, "r")) != NULL)
     {
       fbclose(oper_fb);
       oper_fb = fbopen(ConfigFileEntry.fname_operlog, "a");
     }
 
-    if(oper_fb != NULL)
+    if (oper_fb != NULL)
     {
       ircsprintf(linebuf, "%s OPER (%s) by (%s!%s@%s)\n",
 		 myctime(CurrentTime), name, 
@@ -319,16 +314,14 @@ log_oper(struct Client *source_p, char *name)
   }
 }
 
-/*
- * log_failed_oper
+/* log_failed_oper()
  *
  * inputs	- pointer to client that failed top oper up
  * output	- none
  * side effects - ConfigFileEntry.fname_foperlog is written to, if its present
  */
-
-void 
-log_failed_oper(struct Client *source_p, char *name)
+void
+log_failed_oper(struct Client *source_p, const char *name)
 {
   FBFILE *oper_fb;
   char linebuf[BUFSIZE];

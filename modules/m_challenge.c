@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_challenge.c,v 1.42 2003/04/02 02:36:50 michael Exp $
+ *  $Id: m_challenge.c,v 1.43 2003/04/13 09:46:54 michael Exp $
  */
 
 #include "stdinc.h"
@@ -54,19 +54,20 @@ _moddeinit(void)
   return;
 }
 
-const char *_version = "$Revision: 1.42 $";
+const char *_version = "$Revision: 1.43 $";
 #endif
 #else
 
-static void failed_challenge_notice(struct Client *, char *, char *);
-static void m_challenge(struct Client*, struct Client*, int, char**);
-void binary_to_hex( unsigned char * bin, char * hex, int length );
+static void failed_challenge_notice(struct Client *, const char *, const char *);
+static void m_challenge(struct Client *, struct Client *, int, char **);
+void binary_to_hex(unsigned char * bin, char * hex, int length);
 
 /* We have openssl support, so include /CHALLENGE */
 struct Message challenge_msgtab = {
   "CHALLENGE", 0, 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_challenge, m_ignore, m_challenge}
 };
+
 #ifndef STATIC_MODULES
 void
 _modinit(void)
@@ -80,7 +81,7 @@ _moddeinit(void)
   mod_del_cmd(&challenge_msgtab);
 }
 
-const char *_version = "$Revision: 1.42 $";
+const char *_version = "$Revision: 1.43 $";
 #endif
 /*
  * m_challenge - generate RSA challenge for wouldbe oper
@@ -88,17 +89,18 @@ const char *_version = "$Revision: 1.42 $";
  * parv[1] = operator to challenge for, or +response
  *
  */
-static void m_challenge( struct Client *client_p, struct Client *source_p,
-                        int parc, char *parv[] )
+static void m_challenge(struct Client *client_p, struct Client *source_p,
+                        int parc, char *parv[])
 {
   char * challenge;
   dlink_node *ptr;
   struct ConfItem *aconf, *oconf;
-  if(!(source_p->user) || !source_p->localClient)
+
+  if (!(source_p->user) || !source_p->localClient)
     return;
   
   /* if theyre an oper, reprint oper motd and ignore */
-  if(IsOper(source_p))
+  if (IsOper(source_p))
   {
     sendto_one(source_p, form_str(RPL_YOUREOPER), me.name, parv[0]);
     SendMessageFile(source_p, &ConfigFileEntry.opermotd);
@@ -126,7 +128,7 @@ static void m_challenge( struct Client *client_p, struct Client *source_p,
       return;
     }
 
-    ptr = source_p->localClient->confs.head;
+    ptr   = source_p->localClient->confs.head;
     oconf = ptr->data;
     detach_conf(source_p,oconf);
 
@@ -149,14 +151,14 @@ static void m_challenge( struct Client *client_p, struct Client *source_p,
 
     MyFree(source_p->user->response);
     MyFree(source_p->user->auth_oper);
-    source_p->user->response = NULL;
+    source_p->user->response  = NULL;
     source_p->user->auth_oper = NULL;
     return;
   }
-  
+
   MyFree(source_p->user->response);
   MyFree(source_p->user->auth_oper);
-  source_p->user->response = NULL;
+  source_p->user->response  = NULL;
   source_p->user->auth_oper = NULL;
 
   if (!(aconf = find_conf_exact(parv[1], source_p->username, source_p->host,
@@ -190,8 +192,7 @@ static void m_challenge( struct Client *client_p, struct Client *source_p,
   return;
 }
 
-/*
- * failed_challenge_notice
+/* failed_challenge_notice()
  *
  * inputs       - pointer to client doing /oper ...
  *              - pointer to nick they tried to oper as
@@ -199,14 +200,13 @@ static void m_challenge( struct Client *client_p, struct Client *source_p,
  * output       - nothing
  * side effects - notices all opers of the failed oper attempt if enabled
  */
-
 static void
-failed_challenge_notice(struct Client *source_p, char *name, char *reason)
+failed_challenge_notice(struct Client *source_p, const char *name, const char *reason)
 {
-    if (ConfigFileEntry.failed_oper_notice)
-      sendto_realops_flags(UMODE_ALL, L_ALL, "Failed CHALLENGE attempt as %s "
-                           "by %s (%s@%s) - %s", name, source_p->name,
-                           source_p->username, source_p->host, reason);
+  if (ConfigFileEntry.failed_oper_notice)
+    sendto_realops_flags(UMODE_ALL, L_ALL, "Failed CHALLENGE attempt as %s "
+                         "by %s (%s@%s) - %s", name, source_p->name,
+                         source_p->username, source_p->host, reason);
 }
-
 #endif /* HAVE_LIBCRYPTO */
+

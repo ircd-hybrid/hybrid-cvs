@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.c,v 1.61 2002/10/28 21:09:21 bill Exp $
+ *  $Id: m_info.c,v 1.62 2003/04/13 09:46:54 michael Exp $
  */
 
 #include "stdinc.h"
@@ -69,7 +69,7 @@ _moddeinit(void)
   hook_del_event("doing_info");
   mod_del_cmd(&info_msgtab);
 }
-const char *_version = "$Revision: 1.61 $";
+const char *_version = "$Revision: 1.62 $";
 #endif
 
 /*
@@ -77,18 +77,19 @@ const char *_version = "$Revision: 1.61 $";
  */
 struct InfoStruct
 {
-  char *         name;              /* Displayed variable name */
-  unsigned int   output_type;       /* See below #defines */
-  void *         option;            /* Pointer reference to the value */
-  char *         desc;              /* ASCII description of the variable */
+  const char *name;         /* Displayed variable name           */
+  unsigned int output_type; /* See below #defines                */
+  void *option;             /* Pointer reference to the value    */
+  const char *desc;         /* ASCII description of the variable */
 };
+
 /* Types for output_type in InfoStruct */
-#define OUTPUT_STRING      0x0001   /* Output option as %s w/ dereference */
-#define OUTPUT_STRING_PTR  0x0002   /* Output option as %s w/out deference */
-#define OUTPUT_DECIMAL     0x0004   /* Output option as decimal (%d) */
-#define OUTPUT_BOOLEAN     0x0008   /* Output option as "ON" or "OFF" */
-#define OUTPUT_BOOLEAN_YN  0x0010   /* Output option as "YES" or "NO" */
-#define OUTPUT_BOOLEAN2	   0x0020   /* Output option as "YES/NO/MASKED" */
+#define OUTPUT_STRING     0x0001 /* Output option as %s w/ dereference  */
+#define OUTPUT_STRING_PTR 0x0002 /* Output option as %s w/out deference */
+#define OUTPUT_DECIMAL    0x0004 /* Output option as decimal (%d)       */
+#define OUTPUT_BOOLEAN    0x0008 /* Output option as "ON" or "OFF"      */
+#define OUTPUT_BOOLEAN_YN 0x0010 /* Output option as "YES" or "NO"      */
+#define OUTPUT_BOOLEAN2	  0x0020 /* Output option as "YES/NO/MASKED"    */
 
 static struct InfoStruct info_table[] =
 {
@@ -490,14 +491,10 @@ static struct InfoStruct info_table[] =
 };
 
 /*
-*/
-
-/*
 ** m_info
 **  parv[0] = sender prefix
 **  parv[1] = servername
 */
-
 static void m_info(struct Client *client_p, struct Client *source_p,
                   int parc, char *parv[])
 {
@@ -539,7 +536,6 @@ static void m_info(struct Client *client_p, struct Client *source_p,
 */
 static void mo_info(struct Client *client_p, struct Client *source_p,
                    int parc, char *parv[])
-
 {
   if (hunt_server(client_p,source_p,":%s INFO :%s",1,parc,parv) == HUNTED_ISME)
   {
@@ -560,9 +556,8 @@ static void mo_info(struct Client *client_p, struct Client *source_p,
 */
 static void ms_info(struct Client *client_p, struct Client *source_p,
                    int parc, char *parv[])
-
 {
-  if(!IsClient(source_p))
+  if (!IsClient(source_p))
       return;
   
   if (hunt_server(client_p,source_p,":%s INFO :%s",1,parc,parv) == HUNTED_ISME)
@@ -579,9 +574,7 @@ static void ms_info(struct Client *client_p, struct Client *source_p,
   }
 } /* ms_info() */
 
-
-/*
- * send_info_text
+/* send_info_text()
  *
  * inputs	- client pointer to send info text to
  * output	- none
@@ -589,18 +582,18 @@ static void ms_info(struct Client *client_p, struct Client *source_p,
  */
 static void send_info_text(struct Client *source_p)
 {
-  char **text = infotext;
+  const char **text = infotext;
 
   while (*text)
   {
-    sendto_one(source_p, form_str(RPL_INFO), me.name, source_p->name, *text++);
+    sendto_one(source_p, form_str(RPL_INFO),
+               me.name, source_p->name, *text++);
   }
 
   sendto_one(source_p, form_str(RPL_INFO), me.name, source_p->name, "");
 }
 
-/*
- * send_birthdate_online_time
+/* send_birthdate_online_time()
  *
  * inputs	- client pointer to send to
  * output	- none
@@ -608,24 +601,16 @@ static void send_info_text(struct Client *source_p)
  */
 static void send_birthdate_online_time(struct Client *source_p)
 {
-  sendto_one(source_p,
-	     ":%s %d %s :Birth Date: %s, compile # %s",
-	     me.name,
-	     RPL_INFO,
-	     source_p->name,
-	     creation,
-	     generation);
+  sendto_one(source_p, ":%s %d %s :Birth Date: %s, compile # %s",
+	     me.name, RPL_INFO, source_p->name,
+	     creation, generation);
 
-  sendto_one(source_p,
-	     ":%s %d %s :On-line since %s",
-	     me.name,
-	     RPL_INFO,
-	     source_p->name,
+  sendto_one(source_p, ":%s %d %s :On-line since %s",
+	     me.name, RPL_INFO, source_p->name,
 	     myctime(me.firsttime));
 }
 
-/*
- * send_conf_options
+/* send_conf_options()
  *
  * inputs	- client pointer to send to
  * output	- none

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.h,v 7.33 2003/04/13 05:55:20 michael Exp $
+ *  $Id: modules.h,v 7.34 2003/04/13 09:46:52 michael Exp $
  */
 
 #ifndef INCLUDED_modules_h
@@ -27,7 +27,6 @@
 #include "config.h"
 #include "setup.h"
 #include "parse.h"
-
 
 #if defined(HAVE_SHL_LOAD)
 #include <dl.h>
@@ -54,8 +53,8 @@ struct module_path
 };
 
 /* add a path */
-void mod_add_path(char *path);
-void mod_clear_paths(void);
+extern void mod_add_path(const char *path);
+extern void mod_clear_paths(void);
 
 /* load a module */
 extern void load_module(char *path);
@@ -69,11 +68,11 @@ extern void load_core_modules(int);
 extern void _modinit(void);
 extern void _moddeinit(void);
 
-extern int unload_one_module (char *, int);
-extern int load_one_module (char *, int);
-extern int load_a_module (char *, int, int);
-extern int findmodule_byname (char *);
-extern char* irc_basename(char *);
+extern int unload_one_module(char *, int);
+extern int load_one_module(char *, int);
+extern int load_a_module(char *, int, int);
+extern int findmodule_byname(char *);
+extern char *irc_basename(char *);
 extern void modules_init(void);
 
 #else /* STATIC_MODULES */

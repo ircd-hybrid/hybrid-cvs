@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.299 2003/04/12 09:01:40 michael Exp $
+ *  $Id: s_serv.c,v 7.300 2003/04/13 09:46:58 michael Exp $
  */
 
 #include "stdinc.h"
@@ -67,7 +67,7 @@ extern char *crypt();
 #define MIN_CONN_FREQ 300
 
 #ifndef INADDR_NONE
-#define INADDR_NONE ((unsigned int) 0xffffffff)
+#define INADDR_NONE ((unsigned int)0xffffffff)
 #endif
 
 int MaxConnectionCount = 1;
@@ -329,7 +329,7 @@ write_links_file(void* notused)
   MessageFileLine *newMessageLine = 0;
   MessageFile *MessageFileptr;
   struct Client *target_p;
-  char *p;
+  const char *p;
   FBFILE* file;
   char buff[512];
   dlink_node *ptr;
@@ -340,12 +340,13 @@ write_links_file(void* notused)
     return;
 
   for (mptr = MessageFileptr->contentsOfFile; mptr; mptr = next_mptr)
-    {
-      next_mptr = mptr->next;
-      MyFree(mptr);
-    }
+  {
+    next_mptr = mptr->next;
+    MyFree(mptr);
+  }
+
   MessageFileptr->contentsOfFile = NULL;
-  currentMessageLine = NULL;
+  currentMessageLine             = NULL;
 
   DLINK_FOREACH(ptr, global_serv_list.head)
   {
@@ -415,7 +416,7 @@ write_links_file(void* notused)
  *      returns: (see #defines)
  */
 int
-hunt_server(struct Client *client_p, struct Client *source_p, char *command,
+hunt_server(struct Client *client_p, struct Client *source_p, const char *command,
             int server, int parc, char *parv[])
 {
   struct Client *target_p = NULL;
@@ -428,7 +429,7 @@ hunt_server(struct Client *client_p, struct Client *source_p, char *command,
   if (parc <= server || EmptyString(parv[server]) ||
       match(me.name, parv[server]) ||
       match(parv[server], me.name))
-    return (HUNTED_ISME);
+    return(HUNTED_ISME);
   /*
    * These are to pickup matches that would cause the following
    * message to go in the wrong direction while doing quick fast
@@ -2384,23 +2385,22 @@ cryptlink_init(struct Client *client_p, struct ConfItem *aconf, int fd)
 }
 
 void
-cryptlink_error(struct Client *client_p, char *type,
-		char *reason, char *client_reason)
+cryptlink_error(struct Client *client_p, const char *type,
+                const char *reason, const char *client_reason)
 {
   sendto_realops_flags(UMODE_ALL, L_ADMIN, "%s: CRYPTLINK %s error - %s",
                        get_client_name(client_p, SHOW_IP), type, reason);
-  sendto_realops_flags(UMODE_ALL, L_OPER, "%s: CRYPTLINK %s error - %s",
+  sendto_realops_flags(UMODE_ALL, L_OPER,  "%s: CRYPTLINK %s error - %s",
                        get_client_name(client_p, MASK_IP), type, reason);
   ilog(L_ERROR, "%s: CRYPTLINK %s error - %s",
-                get_client_name(client_p, SHOW_IP), type, reason);
+       get_client_name(client_p, SHOW_IP), type, reason);
   /*
    * If client_reason isn't NULL, then exit the client with the message
    * defined in the call.
    */
   if ((client_reason != NULL) && (!IsDead(client_p)))
-  {
     exit_client(client_p, client_p, &me, client_reason);
-  }
+
   return;
 }
 
