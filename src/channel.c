@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.c,v 7.392 2003/06/07 15:20:31 adx Exp $
+ *  $Id: channel.c,v 7.393 2003/06/11 05:43:56 db Exp $
  */
 
 #include "stdinc.h"
@@ -854,7 +854,7 @@ check_splitmode(void *unused)
 
       sendto_realops_flags(UMODE_ALL,L_ALL,
                          "Network split, activating splitmode");
-      eventAddIsh("check_splitmode", check_splitmode, NULL, 60);
+      eventAddIsh("check_splitmode", check_splitmode, NULL, 10);
     }
     else if (splitmode && (Count.server > split_servers) && (Count.total > split_users))
     {
