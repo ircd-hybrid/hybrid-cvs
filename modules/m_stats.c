@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 1.47 2001/01/15 14:43:23 ejb Exp $
+ *  $Id: m_stats.c,v 1.48 2001/01/19 04:06:33 db Exp $
  */
 #include "tools.h"	 /* dlink_node/dlink_list */
 #include "handlers.h"    /* m_pass prototype */
@@ -528,10 +528,6 @@ static void stats_L_list(struct Client *sptr,char *name, int doall, int wilds,
     {
       acptr = ptr->data;
 
-      if (IsPerson(acptr) &&
-	  !IsOper(acptr) &&
-	  (acptr != sptr))
-	continue;
       if (IsInvisible(acptr) && (doall || wilds) &&
 	  !(MyConnect(sptr) && IsOper(sptr)) &&
 	  !IsOper(acptr) && (acptr != sptr))
