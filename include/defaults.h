@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: defaults.h,v 7.12 2003/06/14 01:23:17 joshk Exp $
+ *  $Id: defaults.h,v 7.13 2003/06/16 00:38:36 metalrock Exp $
  */
 
 #ifndef INCLUDED_defaults_h
@@ -38,7 +38,6 @@
  * BINPATH     = directory for binary files,
  * ETCPATH     = directory for configuration files,
  * LOGPATH     = directory for logfiles,
- * MODPATH     = directory for autoloaded modules (disabled in VMS),
  * MSGPATH     = directory for language files.
  */
 
@@ -77,8 +76,6 @@
  * BINPATH     = directory for binary files,
  * ETCPATH     = directory for configuration files,
  * LOGPATH     = directory for logfiles,
- * MODPATH     = directory for modules,
- * AUTOMODPATH = directory for autoloaded modules
  * MSGPATH     = directory for language files.
  */
 
