@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd.c,v 7.245 2003/01/16 03:28:22 db Exp $
+ *  $Id: ircd.c,v 7.246 2003/01/16 04:08:01 db Exp $
  */
 
 #include "stdinc.h"
@@ -524,19 +524,6 @@ static void setup_corefile(void)
 #endif
 }
 
-/*
- * cleanup_zombies
- * inputs	- nothing
- * output	- nothing
- * side effects - Reaps zombies periodically
- * -AndroSyn
- */
-static void cleanup_zombies(void *unused)
-{
-  int status;
-  waitpid(-1, &status, WNOHANG);
-}
-
 int main(int argc, char *argv[])
 {
   /* Check to see if the user is running us as root, which is a nono */
@@ -757,8 +744,6 @@ int main(int argc, char *argv[])
   /* Setup the timeout check. I'll shift it later :)  -- adrian */
   eventAddIsh("comm_checktimeouts", comm_checktimeouts, NULL, 1);
 
-  eventAddIsh("cleanup_zombies", cleanup_zombies, NULL, 30); 
-  
   if(ConfigServerHide.links_delay > 0)
     eventAddIsh("write_links_file", write_links_file, NULL, ConfigServerHide.links_delay);
   else

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_signal.c,v 7.13 2002/11/11 23:25:16 db Exp $
+ * $Id: ircd_signal.c,v 7.14 2003/01/16 04:08:01 db Exp $
  */
 
 #include "stdinc.h"
@@ -67,6 +67,20 @@ static void
 sigusr1_handler(int sig)
 {
   doremotd = 1;
+}
+
+/*
+ * 
+ * inputs	- nothing
+ * output	- nothing
+ * side effects - Reaps zombies periodically
+ * -AndroSyn
+ */
+static void
+sigchld_handler(int sig)
+{
+  int status;
+  waitpid(-1, &status, WNOHANG);
 }
 
 /*
@@ -135,6 +149,9 @@ setup_signals()
   sigaddset(&act.sa_mask, SIGUSR1);
   sigaction(SIGUSR1, &act, 0);
 
+  act.sa_handler = sigchld_handler;
+  sigaddset(&act.sa_mask, SIGCHLD);
+  sigaction(SIGCHLD, &act, 0);
 }
 
 
