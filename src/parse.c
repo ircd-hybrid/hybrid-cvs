@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.35 2000/11/29 23:35:40 db Exp $
+ *   $Id: parse.c,v 7.36 2000/11/30 09:53:48 db Exp $
  */
 #include "parse.h"
 #include "client.h"
@@ -571,7 +571,7 @@ static void increase_msgtab()
 {
   struct Message *new_msgtab;
 
-  if( num_msgs < max_msgs )
+  if( (num_msgs + 1) < max_msgs )
     return;
 
   new_msgtab = (struct Message *)MyMalloc(

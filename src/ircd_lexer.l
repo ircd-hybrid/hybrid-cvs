@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.22 2000/11/29 07:57:58 db Exp $
+ * $Id: ircd_lexer.l,v 1.23 2000/11/30 09:53:47 db Exp $
  */
 
 %{
@@ -94,6 +94,8 @@ gline_log       { return GLINE_LOG; }
 global		{ return GLOBAL; }
 global_kill	{ return GLOBAL_KILL; }
 have_ident	{ return HAVE_IDENT; }
+hide_chanops	{ return HIDECHANOPS; }
+hide_server	{ return HIDESERVER; }
 host		{ return HOST; }
 hub		{ return HUB; }
 hub_mask	{ return HUB_MASK; }
