@@ -1,3 +1,15 @@
+lusky       2002/08/20 22:01:48 EDT	(20020821_0)
+
+  Modified files:
+    .                    RELNOTES 
+  Log:
+  - Updated RELNOTES for rc3
+  
+  Revision  Changes    Path
+  1.41      +9 -0      ircd-hybrid-7/RELNOTES
+
+
+
 db          2002/08/20 15:25:31 EDT	(20020820_5)
 
   Modified files:
@@ -31403,4 +31415,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3991 2002/08/20 19:25:33 db Exp $
+$Id: ChangeLog,v 7.3992 2002/08/21 02:01:50 lusky Exp $
