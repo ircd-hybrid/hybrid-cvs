@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.165 2001/06/26 19:48:53 leeh Exp $
+ * $Id: ircd.c,v 7.166 2001/07/02 14:21:14 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -178,10 +178,10 @@ size_t get_maxrss(void)
  * print_startup - print startup information
  */
 static void
-print_startup(void)
+print_startup(int pid)
 {
   printf("ircd: version %s\n", version);
-  printf("ircd: pid %d\n", (int)getpid());
+  printf("ircd: pid %d\n", pid);
   printf("ircd: running in %s mode from %s\n", !server_state.foreground ? "background"
          : "foreground", ConfigFileEntry.dpath);
 }
@@ -236,7 +236,7 @@ make_daemon(void)
     }
   else if (pid > 0)
     {
-      print_startup();
+      print_startup(pid);
       exit(EXIT_SUCCESS);
     }
 
@@ -555,7 +555,7 @@ int main(int argc, char *argv[])
  if (!server_state.foreground)
    make_daemon();
  else
-   print_startup();
+   print_startup(getpid());
  setup_signals();
  /* We need this to initialise the fd array before anything else */
  fdlist_init();
