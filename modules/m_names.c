@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_names.c,v 1.36 2001/11/13 11:45:48 leeh Exp $
+ *   $Id: m_names.c,v 1.37 2001/11/13 12:55:47 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -116,7 +116,7 @@ static void m_names(struct Client *client_p,
 
               if ((vkey && !vkey[1]) || (!vchan && !vkey))
                 {
-                  show_vchans(client_p, source_p, ch2ptr, "names");
+                  show_vchans(source_p, ch2ptr, "names");
                   return;
                 }
               else if (vkey && vkey[1])

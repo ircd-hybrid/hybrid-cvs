@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules-dld.c,v 1.9 2001/11/11 16:15:08 leeh Exp $
+ * $Id: modules-dld.c,v 1.10 2001/11/13 12:55:48 leeh Exp $
  *
  * This is based on modules.c, but for OSes like HP-UX which use shl_open
  * instead of dlopen
@@ -75,27 +75,27 @@ static void mo_modunload(struct Client*, struct Client*, int, char**);
 static void mo_modrestart(struct Client*, struct Client*, int, char**);
 
 struct Message modload_msgtab = {
- "MODLOAD", 0, 2, 0, MFLG_SLOW, 0,
+ "MODLOAD", 0, 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, m_ignore, mo_modload}
 };
 
 struct Message modunload_msgtab = {
- "MODUNLOAD", 0, 2, 0, MFLG_SLOW, 0,
+ "MODUNLOAD", 0, 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, m_ignore, mo_modunload}
 };
 
 struct Message modreload_msgtab = {
-  "MODRELOAD", 0, 2, 0, MFLG_SLOW, 0,
+  "MODRELOAD", 0, 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, m_ignore, mo_modreload}
 };
 
 struct Message modlist_msgtab = {
- "MODLIST", 0, 0, 0, MFLG_SLOW, 0,
+ "MODLIST", 0, 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, m_ignore, mo_modlist}
 };
 
 struct Message modrestart_msgtab = {
- "MODRESTART", 0, 0, 0, MFLG_SLOW, 0,
+ "MODRESTART", 0, 0, 0, 0, MFLG_SLOW, 0,
  {m_unregistered, m_not_oper, m_ignore, mo_modrestart}
 };
 

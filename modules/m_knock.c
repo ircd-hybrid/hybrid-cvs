@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_knock.c,v 1.33 2001/11/13 11:45:48 leeh Exp $
+ *   $Id: m_knock.c,v 1.34 2001/11/13 12:55:47 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -182,7 +182,7 @@ static struct Channel *parse_knock_args(struct Client *client_p,
           /* Make "KNOCK #channel !" work like JOIN */
           if (!key[1])
             {
-              show_vchans(client_p, source_p, chptr, "knock");
+              show_vchans(source_p, chptr, "knock");
               return NULL;
             }
 
@@ -201,7 +201,7 @@ static struct Channel *parse_knock_args(struct Client *client_p,
       else
         {
           /* No key specified */
-          show_vchans(client_p, source_p, chptr, "knock");
+          show_vchans(source_p, chptr, "knock");
           return NULL;
         }
     }

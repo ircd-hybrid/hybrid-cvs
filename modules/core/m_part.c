@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_part.c,v 1.47 2001/10/24 06:19:44 db Exp $
+ *   $Id: m_part.c,v 1.48 2001/11/13 12:55:47 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -49,7 +49,7 @@ static void m_part(struct Client*, struct Client*, int, char**);
 void check_spambot_warning(struct Client *source_p, const char *name);
 
 struct Message part_msgtab = {
-  "PART", 1, 2, 0, MFLG_SLOW, 0,
+  "PART", 0, 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_part, m_part, m_part}
 };
 

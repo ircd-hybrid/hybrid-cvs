@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_help.c,v 1.21 2001/11/13 11:45:47 leeh Exp $
+ *   $Id: m_help.c,v 1.22 2001/11/13 12:55:47 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -41,7 +41,7 @@ static void dohelp(struct Client *, char *, char *, char *);
 static void sendhelpfile(struct Client *, char *, char *, char *);
 
 struct Message help_msgtab = {
-  "HELP", 1, 0, 0, MFLG_SLOW, 0,
+  "HELP", 0, 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_help, m_ignore, mo_help}
 };
 
