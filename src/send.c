@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.183 2002/03/07 06:22:09 db Exp $
+ *  $Id: send.c,v 7.184 2002/03/09 21:57:08 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -435,7 +435,6 @@ sendto_one(struct Client *to, const char *pattern, ...)
 
   linebuf_donebuf(&linebuf);
 
-  deprintf("send", "Sending to %s", to->name);
 } /* sendto_one() */
 
 /*
