@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: irc_string.h,v 7.24 2001/08/21 03:06:53 androsyn Exp $
+ *   $Id: irc_string.h,v 7.25 2001/08/25 07:41:40 a1kmm Exp $
  */
 #ifndef INCLUDED_irc_string_h
 #define INCLUDED_irc_string_h
@@ -183,8 +183,8 @@ extern const unsigned int CharAttrs[];
 #define IsLower(c)      (IsAlpha((c)) && ((unsigned char)(c) > 0x5f))
 #define IsUpper(c)      (IsAlpha((c)) && ((unsigned char)(c) < 0x60))
 #define IsDigit(c)      (CharAttrs[(unsigned char)(c)] & DIGIT_C)
-#define IsXDigit(c) (IsDigit(c) || 'a' <= (c) && (c) <= 'f' || \
-        'A' <= (c) && (c) <= 'F')
+#define IsXDigit(c) (IsDigit(c) || ('a' <= (c) && (c) <= 'f') || \
+        ('A' <= (c) && (c) <= 'F'))
 #define IsAlNum(c) (CharAttrs[(unsigned char)(c)] & (DIGIT_C | ALPHA_C))
 #define IsPrint(c) (CharAttrs[(unsigned char)(c)] & PRINT_C)
 #define IsAscii(c) ((unsigned char)(c) < 0x80)
