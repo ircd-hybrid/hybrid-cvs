@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_gline.c,v 1.21 2002/05/31 02:21:05 androsyn Exp $
+ *  $Id: s_gline.c,v 1.22 2002/09/05 01:10:26 db Exp $
  */
 
 #include "stdinc.h"
@@ -97,7 +97,7 @@ find_is_glined(const char* host, const char* name)
   dlink_node *gline_node;
   struct ConfItem *kill_ptr; 
 
-  for(gline_node = glines.head; gline_node; gline_node = gline_node->next)
+  DLINK_FOREACH(gline_node, glines.head)
     {
       kill_ptr = gline_node->data;
       if( (kill_ptr->name && (!name || match(kill_ptr->name,name)))
@@ -124,7 +124,7 @@ remove_gline_match(const char* user, const char* host)
   dlink_node *gline_node;
   struct ConfItem *kill_ptr;
 
-  for(gline_node = glines.head; gline_node; gline_node = gline_node->next)
+  DLINK_FOREACH(gline_node, glines.head)
     {
       kill_ptr = gline_node->data;
       if(!irccmp(kill_ptr->host,host) && !irccmp(kill_ptr->name,user))
@@ -169,10 +169,9 @@ expire_glines()
   dlink_node *next_node;
   struct ConfItem *kill_ptr;
 
-  for(gline_node = glines.head; gline_node; gline_node = next_node)
+  DLINK_FOREACH_SAFE(gline_node, next_node, glines.head)
     {
       kill_ptr = gline_node->data;
-      next_node = gline_node->next;
 
       if(kill_ptr->hold <= CurrentTime)
 	{
@@ -200,10 +199,9 @@ expire_pending_glines()
   dlink_node *next_node;
   struct gline_pending *glp_ptr;
 
-  for(pending_node = pending_glines.head; pending_node; pending_node = next_node)
+  DLINK_FOREACH_SAFE(pending_node, next_node, pending_glines.head)
     {
       glp_ptr = pending_node->data;
-      next_node = pending_node->next;
 
       if(((glp_ptr->last_gline_time + GLINE_PENDING_EXPIRE) <= CurrentTime)
         || find_is_glined(glp_ptr->host, glp_ptr->user))

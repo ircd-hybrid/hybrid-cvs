@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_trace.c,v 1.50 2002/07/07 05:45:08 db Exp $
+ *  $Id: m_trace.c,v 1.51 2002/09/05 01:10:24 db Exp $
  */
 
 #include "stdinc.h"
@@ -68,7 +68,7 @@ _moddeinit(void)
   hook_del_event("doing_trace");
   mod_del_cmd(&trace_msgtab);
 }
-const char *_version = "$Revision: 1.50 $";
+const char *_version = "$Revision: 1.51 $";
 #endif
 static int report_this_status(struct Client *source_p, struct Client *target_p,int dow,
                               int link_u_p, int link_u_s);
@@ -98,7 +98,8 @@ static void m_trace(struct Client *client_p, struct Client *source_p,
 **      parv[0] = sender prefix
 **      parv[1] = servername
 */
-static void mo_trace(struct Client *client_p, struct Client *source_p,
+static void
+mo_trace(struct Client *client_p, struct Client *source_p,
                     int parc, char *parv[])
 {
   struct Client       *target_p = NULL;
@@ -212,7 +213,7 @@ static void mo_trace(struct Client *client_p, struct Client *source_p,
    }
    
   /* report all direct connections */
-  for (ptr = lclient_list.head; ptr; ptr = ptr->next)
+  DLINK_FOREACH(ptr, lclient_list.head)
     {
       target_p = ptr->data;
 
@@ -228,7 +229,7 @@ static void mo_trace(struct Client *client_p, struct Client *source_p,
       cnt = report_this_status(source_p,target_p,dow,0,0);
     }
 
-  for (ptr = serv_list.head; ptr; ptr = ptr->next)
+  DLINK_FOREACH(ptr, serv_list.head)
     {
       target_p = ptr->data;
 
@@ -243,7 +244,7 @@ static void mo_trace(struct Client *client_p, struct Client *source_p,
     }
 
   /* This section is to report the unknowns */
-  for (ptr = unknown_list.head; ptr; ptr = ptr->next)
+  DLINK_FOREACH(ptr, unknown_list.head)
     {
       target_p = ptr->data;
 
@@ -291,8 +292,9 @@ static void mo_trace(struct Client *client_p, struct Client *source_p,
 **      parv[0] = sender prefix
 **      parv[1] = servername
 */
-static void ms_trace(struct Client *client_p, struct Client *source_p,
-                    int parc, char *parv[])
+static void
+ms_trace(struct Client *client_p, struct Client *source_p,
+	 int parc, char *parv[])
 {
   if (hunt_server(client_p, source_p, ":%s TRACE %s :%s", 2, parc, parv))
     return;
@@ -311,8 +313,9 @@ static void ms_trace(struct Client *client_p, struct Client *source_p,
  * output	- counter of number of hits
  * side effects - NONE
  */
-static int report_this_status(struct Client *source_p, struct Client *target_p,
-                              int dow, int link_u_p, int link_s_p)
+static int
+report_this_status(struct Client *source_p, struct Client *target_p,
+		   int dow, int link_u_p, int link_s_p)
 {
   const char* name;
   const char* class_name;
@@ -422,7 +425,8 @@ static int report_this_status(struct Client *source_p, struct Client *target_p,
  * output       - none
  * side effects - hook event doing_trace is called
  */
-static void trace_spy(struct Client *source_p)
+static void
+trace_spy(struct Client *source_p)
 {
   struct hook_spy_data data;
 

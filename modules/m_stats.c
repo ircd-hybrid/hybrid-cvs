@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_stats.c,v 1.111 2002/07/31 16:24:07 leeh Exp $
+ *  $Id: m_stats.c,v 1.112 2002/09/05 01:10:24 db Exp $
  */
 
 #include "stdinc.h"
@@ -80,7 +80,7 @@ _moddeinit(void)
   mod_del_cmd(&stats_msgtab);
 }
 
-const char *_version = "$Revision: 1.111 $";
+const char *_version = "$Revision: 1.112 $";
 #endif
 
 const char* Lformat = ":%s %d %s %s %u %u %u %u %u :%u %u %s";
@@ -108,6 +108,7 @@ static void stats_connect(struct Client *);
 static void stats_deny(struct Client *);
 static void stats_exempt(struct Client *);
 static void stats_events(struct Client *);
+static void stats_pending_glines(struct Client *);
 static void stats_glines(struct Client *);
 static void stats_hubleaf(struct Client *);
 static void stats_auth(struct Client *);
@@ -146,7 +147,7 @@ static struct StatsStruct stats_cmd_table[] =
   { 'E',	stats_events,		1,	1,	},
   { 'f',	fd_dump,		1,	1,	},
   { 'F',	fd_dump,		1,	1,	},
-  { 'g',	stats_glines,		1,	0,	},
+  { 'g',	stats_pending_glines,	1,	0,	},
   { 'G',	stats_glines,		1,	0,	},
   { 'h',	stats_hubleaf,		1,	0,	},
   { 'H',	stats_hubleaf,		1,	0,	},
@@ -371,9 +372,70 @@ static void stats_exempt(struct Client *source_p)
 }
 
 
-static void stats_events(struct Client *source_p)
+static void
+stats_events(struct Client *source_p)
 {
   show_events(source_p);
+}
+
+/* stats_pending_glines()
+ *
+ * input	- client pointer
+ * output	- none
+ * side effects - client is shown list of pending glines
+ */
+static void
+stats_pending_glines(struct Client *source_p)
+{
+  dlink_node *pending_node;
+  struct gline_pending *glp_ptr;
+  struct ConfItem *kill_ptr;
+  char timebuffer[MAX_DATE_STRING];
+  struct tm *tmptr;
+  char *host;
+  char *name;
+  char *reason;
+
+  if(!ConfigFileEntry.glines)
+  {
+    sendto_one(source_p, ":%s NOTICE %s :This server does not support G-Lines",
+               me.name, source_p->name); 
+    return;
+  }
+
+  if (dlink_list_length(&pending_glines) > 0)
+    sendto_one(source_p, ":%s NOTICE %s :Pending G-lines",
+	       me.name, source_p->name);
+
+  DLINK_FOREACH(pending_node, pending_glines.head)
+  {
+    glp_ptr = pending_node->data;
+      
+    tmptr = localtime(&glp_ptr->time_request1);
+    strftime(timebuffer, MAX_DATE_STRING, "%Y/%m/%d %H:%M:%S", tmptr);
+
+    sendto_one(source_p,
+	       ":%s NOTICE %s :1) %s!%s@%s on %s requested gline at %s for %s@%s [%s]",
+	       me.name, source_p->name, glp_ptr->oper_nick1,
+	       glp_ptr->oper_user1, glp_ptr->oper_host1,
+	       glp_ptr->oper_server1, timebuffer,
+	       glp_ptr->user, glp_ptr->host, glp_ptr->reason1);
+
+    if(glp_ptr->oper_nick2[0] != '\0')
+    {
+      tmptr = localtime(&glp_ptr->time_request2);
+      strftime(timebuffer, MAX_DATE_STRING, "%Y/%m/%d %H:%M:%S", tmptr);
+      sendto_one(source_p,
+      ":%s NOTICE %s :2) %s!%s@%s on %s requested gline at %s for %s@%s [%s]",
+		 me.name, source_p->name, glp_ptr->oper_nick2,
+		 glp_ptr->oper_user2, glp_ptr->oper_host2,
+		 glp_ptr->oper_server2, timebuffer,
+		 glp_ptr->user, glp_ptr->host, glp_ptr->reason2);
+    }
+  }
+
+  sendto_one(source_p, ":%s NOTICE %s :End of Pending G-lines",
+	     me.name, source_p->name);
 }
 
 /* stats_glines()
@@ -382,92 +444,58 @@ static void stats_events(struct Client *source_p)
  * output	- none
  * side effects - client is shown list of glines
  */
-static void stats_glines(struct Client *source_p)
+static void
+stats_glines(struct Client *source_p)
 {
-  if(ConfigFileEntry.glines)
+  dlink_node *gline_node;
+  struct ConfItem *kill_ptr;
+  char timebuffer[MAX_DATE_STRING];
+  struct tm *tmptr;
+  char *host;
+  char *name;
+  char *reason;
+
+  if(!ConfigFileEntry.glines)
   {
-    dlink_node *pending_node;
-    dlink_node *gline_node;
-    struct gline_pending *glp_ptr;
-    struct ConfItem *kill_ptr;
-    char timebuffer[MAX_DATE_STRING];
-    struct tm *tmptr;
-    char *host;
-    char *name;
-    char *reason;
-
-    if (dlink_list_length(&pending_glines) > 0)
-      sendto_one(source_p, ":%s NOTICE %s :Pending G-lines",
-                 me.name, source_p->name);
-
-    for(pending_node = pending_glines.head; pending_node; 
-        pending_node = pending_node->next)
-    {
-      glp_ptr = pending_node->data;
-      
-      tmptr = localtime(&glp_ptr->time_request1);
-      strftime(timebuffer, MAX_DATE_STRING, "%Y/%m/%d %H:%M:%S", tmptr);
-
-      sendto_one(source_p,
-         ":%s NOTICE %s :1) %s!%s@%s on %s requested gline at %s for %s@%s [%s]",
-	         me.name, source_p->name, glp_ptr->oper_nick1,
-		 glp_ptr->oper_user1, glp_ptr->oper_host1,
-		 glp_ptr->oper_server1, timebuffer,
-		 glp_ptr->user, glp_ptr->host, glp_ptr->reason1);
-
-      if(glp_ptr->oper_nick2[0])
-      {
-        tmptr = localtime(&glp_ptr->time_request2);
-	strftime(timebuffer, MAX_DATE_STRING, "%Y/%m/%d %H:%M:%S", tmptr);
-	sendto_one(source_p,
-	    ":%s NOTICE %s :2) %s!%s@%s on %s requested gline at %s for %s@%s [%s]",
-	           me.name, source_p->name, glp_ptr->oper_nick2,
-		   glp_ptr->oper_user2, glp_ptr->oper_host2,
-		   glp_ptr->oper_server2, timebuffer,
-		   glp_ptr->user, glp_ptr->host, glp_ptr->reason2);
-      }
-    }
-
-    if (dlink_list_length(&pending_glines) > 0)
-      sendto_one(source_p, ":%s NOTICE %s :End of Pending G-lines",
-                 me.name, source_p->name);
-
-    for(gline_node = glines.head; gline_node; gline_node = gline_node->next)
-    {
-      kill_ptr = gline_node->data;
-
-      if(kill_ptr->host)
-        host = kill_ptr->host;
-      else
-        host = "*";
-
-      if(kill_ptr->name)
-        name = kill_ptr->name;
-      else
-        name = "*";
-
-      if(kill_ptr->passwd)
-        reason = kill_ptr->passwd;
-      else
-        reason = "No Reason";
-
-      sendto_one(source_p, form_str(RPL_STATSKLINE), me.name,
-                 source_p->name, 'G', host, name, reason);
-    }
-  }
-  else
     sendto_one(source_p, ":%s NOTICE %s :This server does not support G-Lines",
                me.name, source_p->name); 
+    return;
+  }
+
+  DLINK_FOREACH(gline_node, glines.head)
+  {
+    kill_ptr = gline_node->data;
+
+    if(kill_ptr->host)
+      host = kill_ptr->host;
+    else
+      host = "*";
+
+    if(kill_ptr->name)
+      name = kill_ptr->name;
+    else
+      name = "*";
+
+    if(kill_ptr->passwd)
+      reason = kill_ptr->passwd;
+    else
+      reason = "No Reason";
+    
+    sendto_one(source_p, form_str(RPL_STATSKLINE), me.name,
+	       source_p->name, 'G', host, name, reason);
+  }
 }
 
 
-static void stats_hubleaf(struct Client *source_p)
+static void
+stats_hubleaf(struct Client *source_p)
 {
   report_configured_links(source_p, CONF_HUB|CONF_LEAF);
 }
 
 
-static void stats_auth(struct Client *source_p)
+static void
+stats_auth(struct Client *source_p)
 {
   /* Oper only, if unopered, return ERR_NOPRIVS */
   if((ConfigFileEntry.stats_i_oper_only == 2) && !IsOper(source_p))
@@ -509,7 +537,8 @@ static void stats_auth(struct Client *source_p)
 }
 
 
-static void stats_tklines(struct Client *source_p)
+static void
+stats_tklines(struct Client *source_p)
 {
   /* Oper only, if unopered, return ERR_NOPRIVS */
   if((ConfigFileEntry.stats_k_oper_only == 2) && !IsOper(source_p))
@@ -552,7 +581,8 @@ static void stats_tklines(struct Client *source_p)
 }
 
 
-static void stats_klines(struct Client *source_p)
+static void
+stats_klines(struct Client *source_p)
 {
   /* Oper only, if unopered, return ERR_NOPRIVS */
   if((ConfigFileEntry.stats_k_oper_only == 2) && !IsOper(source_p))
@@ -595,12 +625,14 @@ static void stats_klines(struct Client *source_p)
     report_Klines(source_p, 0);
 }
 
-static void stats_messages(struct Client *source_p)
+static void
+stats_messages(struct Client *source_p)
 {
   report_messages(source_p);
 }
 
-static void stats_oper(struct Client *source_p)
+static void
+stats_oper(struct Client *source_p)
 {
   if (!IsOper(source_p) && ConfigFileEntry.stats_o_oper_only)
     sendto_one(source_p, form_str(ERR_NOPRIVILEGES),me.name,source_p->name);
@@ -615,7 +647,8 @@ static void stats_oper(struct Client *source_p)
  * output	- none
  * side effects - client is shown a list of active opers
  */
-static void stats_operedup(struct Client *source_p)
+static void
+stats_operedup(struct Client *source_p)
 {
   struct Client *target_p;
   struct ConfItem *aconf;
@@ -657,7 +690,8 @@ static void stats_operedup(struct Client *source_p)
   stats_p_spy(source_p);
 }
 
-static void stats_ports(struct Client *source_p)
+static void
+stats_ports(struct Client *source_p)
 {
   if (!IsOper(source_p) && ConfigFileEntry.stats_P_oper_only)
     sendto_one(source_p, form_str(ERR_NOPRIVILEGES),me.name,source_p->name);
@@ -665,22 +699,26 @@ static void stats_ports(struct Client *source_p)
     show_ports(source_p);
 }
 
-static void stats_resv(struct Client *source_p)
+static void
+stats_resv(struct Client *source_p)
 {
   report_resv(source_p);
 }
 
-static void stats_usage(struct Client *source_p)
+static void
+stats_usage(struct Client *source_p)
 {
   send_usage(source_p);
 }
 
-static void stats_tstats(struct Client *source_p)
+static void
+stats_tstats(struct Client *source_p)
 {
   tstats(source_p);
 }
 
-static void stats_uptime(struct Client *source_p)
+static void
+stats_uptime(struct Client *source_p)
 {
   time_t now;
 
@@ -692,7 +730,8 @@ static void stats_uptime(struct Client *source_p)
                  MaxConnectionCount, MaxClientCount, Count.totalrestartcount);
 }
 
-static void stats_shared(struct Client *source_p)
+static void
+stats_shared(struct Client *source_p)
 {
   report_specials(source_p, CONF_ULINE, RPL_STATSULINE);
 }
@@ -704,13 +743,14 @@ static void stats_shared(struct Client *source_p)
  * output	- none
  * side effects - client is shown lists of who connected servers
  */
-static void stats_servers(struct Client *source_p)
+static void
+stats_servers(struct Client *source_p)
 {
   struct Client *target_p;
   dlink_node *ptr;
   int j=0;
   
-  for(ptr = serv_list.head; ptr; ptr = ptr->next)
+  DLINK_FOREACH(ptr, serv_list.head)
   {
     target_p = ptr->data;
 
@@ -727,28 +767,32 @@ static void stats_servers(struct Client *source_p)
              source_p->name, j);
 }
 
-static void stats_gecos(struct Client *source_p)
+static void
+stats_gecos(struct Client *source_p)
 {
   report_specials(source_p, CONF_XLINE, RPL_STATSXLINE);
 }
 
-static void stats_class(struct Client *source_p)
+static void
+stats_class(struct Client *source_p)
 {
   report_classes(source_p);
 }
 
-static void stats_memory(struct Client *source_p)
+static void
+stats_memory(struct Client *source_p)
 {
   count_memory(source_p);
 }
 
-static void stats_ziplinks(struct Client *source_p)
+static void
+stats_ziplinks(struct Client *source_p)
 {
   dlink_node *ptr;
   struct Client *target_p;
   int sent_data = 0;
 
-  for(ptr = serv_list.head; ptr; ptr = ptr->next)
+  DLINK_FOREACH(ptr, serv_list.head)
   {
     target_p = ptr->data;
     if (IsCapable(target_p, CAP_ZIP))
@@ -770,7 +814,8 @@ static void stats_ziplinks(struct Client *source_p)
              me.name, RPL_STATSDEBUG, source_p->name, sent_data);
 }
 
-static void stats_servlinks(struct Client *source_p)
+static void
+stats_servlinks(struct Client *source_p)
 {
   static char Sformat[] = ":%s %d %s %s %u %u %u %u %u :%u %u %s";
   long uptime, sendK, receiveK;
@@ -786,7 +831,7 @@ static void stats_servlinks(struct Client *source_p)
 
   sendK = receiveK = 0;
 
-  for(ptr = serv_list.head; ptr; ptr = ptr->next)
+  DLINK_FOREACH(ptr, serv_list.head)
   {
     target_p = ptr->data;
 
@@ -831,16 +876,15 @@ static void stats_servlinks(struct Client *source_p)
 	     (float)((float)me.localClient->receiveK / (float)uptime));
 }
 
-static void stats_ltrace(struct Client *source_p, int parc, char *parv[])
+static void
+stats_ltrace(struct Client *source_p, int parc, char *parv[])
 {
   int             doall = 0;
   int             wilds = 0;
   char            *name=NULL;
   char            statchar;
   
-  name = parse_stats_args(parc,parv,&doall,&wilds);
-
-  if(name)
+  if ((name = parse_stats_args(parc,parv,&doall,&wilds)) != NULL)
   {
     statchar=parv[1][0];
 
@@ -861,7 +905,8 @@ static void stats_ltrace(struct Client *source_p, int parc, char *parv[])
  *      parv[2] = server name (current server defaulted, if omitted)
  */
 
-static void ms_stats(struct Client *client_p, struct Client *source_p,
+static void
+ms_stats(struct Client *client_p, struct Client *source_p,
                     int parc, char *parv[])
 {
   if (hunt_server(client_p,source_p,":%s STATS %s :%s",2,parc,parv)!=HUNTED_ISME)
@@ -881,7 +926,8 @@ static void ms_stats(struct Client *client_p, struct Client *source_p,
  * output	- NONE
  * side effects	-
  */
-static void stats_L(struct Client *source_p,char *name,int doall,
+static void
+stats_L(struct Client *source_p,char *name,int doall,
                     int wilds,char statchar)
 {
   stats_L_list(source_p, name, doall, wilds, &unknown_list, statchar);
@@ -889,7 +935,8 @@ static void stats_L(struct Client *source_p,char *name,int doall,
   stats_L_list(source_p, name, doall, wilds, &serv_list, statchar);
 }
 
-static void stats_L_list(struct Client *source_p,char *name, int doall, int wilds,
+static void
+stats_L_list(struct Client *source_p,char *name, int doall, int wilds,
                          dlink_list *list,char statchar)
 {
   dlink_node *ptr;
@@ -901,7 +948,7 @@ static void stats_L_list(struct Client *source_p,char *name, int doall, int wild
    * are invisible not being visible to 'foreigners' who use
    * a wild card based search to list it.
    */
-  for(ptr = list->head;ptr;ptr = ptr->next)
+  DLINK_FOREACH(ptr, list->head)
     {
       target_p = ptr->data;
 
@@ -982,7 +1029,8 @@ static void stats_L_list(struct Client *source_p,char *name, int doall, int wild
  * any damage with stats requests now anyway. So, why show them?
  * -Dianora
  */
-static void stats_spy(struct Client *source_p, char statchar)
+static void
+stats_spy(struct Client *source_p, char statchar)
 {
   struct hook_stats_data data;
 
@@ -999,7 +1047,8 @@ static void stats_spy(struct Client *source_p, char statchar)
  * ouput	-
  * side effects - call hook doing_stats_p
  */
-static void stats_p_spy(struct Client *source_p)
+static void
+stats_p_spy(struct Client *source_p)
 {
   struct hook_stats_data data;
 
@@ -1020,7 +1069,8 @@ static void stats_p_spy(struct Client *source_p)
  * side effects	- a notice is sent to opers, IF spy mode is configured
  * 		  in the conf file.
  */
-static void stats_L_spy(struct Client *source_p, char statchar, char *name)
+static void
+stats_L_spy(struct Client *source_p, char statchar, char *name)
 {
   struct hook_stats_data data;
 
@@ -1043,7 +1093,8 @@ static void stats_L_spy(struct Client *source_p, char statchar, char *name)
  * common parse routine for m_stats args
  * 
  */
-static char *parse_stats_args(int parc,char *parv[],int *doall,int *wilds)
+static char *
+parse_stats_args(int parc,char *parv[],int *doall,int *wilds)
 {
   char *name;
 

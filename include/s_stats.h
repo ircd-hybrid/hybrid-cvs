@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_stats.h,v 7.7 2002/05/24 23:34:08 androsyn Exp $
+ *  $Id: s_stats.h,v 7.8 2002/09/05 01:10:23 db Exp $
  */
 
 #ifndef INCLUDED_s_stats_h
@@ -33,9 +33,12 @@ struct Client;
  * statistics structures
  */
 struct  ServerStatistics {
+
+  /* These are trivially derived from dlink_list_length */
   unsigned int    is_cl;  /* number of client connections */
   unsigned int    is_sv;  /* number of server connections */
   unsigned int    is_ni;  /* connection but no idea who it was */
+
   unsigned short  is_cbs; /* bytes sent to clients */
   unsigned short  is_cbr; /* bytes received to clients */
   unsigned short  is_sbs; /* bytes sent to servers */
@@ -57,8 +60,6 @@ struct  ServerStatistics {
   unsigned int    is_fake; /* MODE 'fakes' */
   unsigned int    is_asuc; /* successful auth requests */
   unsigned int    is_abad; /* bad auth requests */
-  unsigned int    is_udp; /* packets recv'd on udp port */
-  unsigned int    is_loc; /* local connections made */
 };
 
 extern struct ServerStatistics* ServerStats;
