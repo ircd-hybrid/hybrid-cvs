@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: memory.h,v 7.37 2003/05/25 01:44:15 joshk Exp $
+ *  $Id: memory.h,v 7.38 2003/06/02 19:49:17 joshk Exp $
  */
 
 #ifndef _I_MEMORY_H
@@ -31,15 +31,15 @@
 
 /* Needed to use uintptr_t for some pointer manipulation. */
 #ifdef __vms
-#include inttypes
+# include inttypes
 #else /* Not VMS */
-#ifdef HAVE_INTTYPES_H
-#include <inttypes.h>
-#else /* No inttypes.h */
-#ifndef HAVE_UINTPTR_T
+# ifdef HAVE_INTTYPES_H
+#  include <inttypes.h>
+# else /* No inttypes.h */
+#  ifndef HAVE_UINTPTR_T
 typedef unsigned long uintptr_t;
-#endif
-#endif
+#  endif
+# endif
 #endif
 
 extern void outofmemory(void);
@@ -50,8 +50,8 @@ extern void *MyRealloc(void *x, size_t y);
 extern void MyFree(void *x);
 extern void _DupString(char **x, const char *y);
 
-/* forte (and maybe others) dont like double declarations, 
- * so we dont declare the inlines unless GNUC
+/* forte (and maybe others) don't like double declarations, 
+ * so we don't declare the inlines unless GNUC
  */
 #ifdef __GNUC__
 extern inline void * MyMalloc(size_t size)
