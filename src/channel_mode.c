@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.121 2003/07/07 12:43:58 michael Exp $
+ *  $Id: channel_mode.c,v 7.122 2003/07/07 14:08:02 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1200,7 +1200,7 @@ chm_hop(struct Client *client_p, struct Client *source_p,
   {
     for (i = 0; i < mode_count; i++)
       if (mode_changes[i].dir == MODE_DEL && mode_changes[i].letter == 'h' &&
-          mode_changes[i].client_p == targ_p)
+          mode_changes[i].client == targ_p)
       {
         mode_changes[i].letter = 0;
         return;
