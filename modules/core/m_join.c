@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_join.c,v 1.7 2003/09/20 04:47:25 bill Exp $
+ *  $Id: m_join.c,v 1.8 2003/09/20 06:05:37 bill Exp $
  */
 
 #include "stdinc.h"
@@ -53,7 +53,7 @@ static struct entity targets[512];
 static int ntargets, join_0;
 
 static int build_target_list(struct Client *, struct Client *, char *, char *);
-static int duplicate_ptr(struct Channel *);
+static int is_target(struct Channel *);
 
 static void m_join(struct Client *, struct Client *, int, char **);
 static void ms_join(struct Client *, struct Client *, int, char **);
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&join_msgtab);
 }
 
-const char *_version = "$Revision: 1.7 $";
+const char *_version = "$Revision: 1.8 $";
 #endif
 
 /* m_join()
@@ -104,7 +104,7 @@ m_join(struct Client *client_p, struct Client *source_p,
 
   build_target_list(client_p, source_p, parv[1], ((parc > 2) ? parv[2] : NULL));
 
-  if ((a = (join_0 >= 0) ? join_0 + 1 : 0))
+  if ((a = (join_0 >= 0) ? join_0 : 0))
     do_join_0(client_p, source_p);
 
   for ( ;a<ntargets;++a)                       
@@ -112,6 +112,9 @@ m_join(struct Client *client_p, struct Client *source_p,
     chptr = targets[a].chptr;
     key = targets[a].key;
     flags = targets[a].flags;
+
+    if (IsMember(source_p, chptr))
+      continue;
 
     if (!IsOper(source_p))
       check_spambot_warning(source_p, chptr->chname);
@@ -216,9 +219,7 @@ ms_join(struct Client *client_p, struct Client *source_p,
    * is faster than a strcmp.
    */
   if ((name[0] == '0') && (name[1] == '\0'))
-  {
     do_join_0(client_p, source_p);
-  }
   else
   {
     if (parc > 2)
@@ -244,9 +245,6 @@ do_join_0(struct Client *client_p, struct Client *source_p)
   struct Channel *chptr = NULL;
   dlink_node *ptr, *ptr_next;
 
-  sendto_server(client_p, source_p, NULL, NOCAPS, NOCAPS, NOFLAGS,
-                ":%s JOIN 0", source_p->name);
-
   if (source_p->user->channel.head != NULL &&
       MyConnect(source_p) && !IsOper(source_p))
     check_spambot_warning(source_p, NULL);
@@ -255,13 +253,19 @@ do_join_0(struct Client *client_p, struct Client *source_p)
   {
     chptr = ((struct Membership *)ptr->data)->chptr;
 
-    sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s PART %s",
-                         source_p->name, source_p->username,
-                         source_p->host, chptr->chname);
-    remove_user_from_channel(ptr->data);
+    /* if the last occurance of this chan is before a 0, leave */
+    if (is_target(chptr) < join_0)
+    {
+      sendto_server(client_p, NULL, chptr, CAP_SID, NOCAPS, NOFLAGS,
+                    ":%s PART %s", ID(source_p), chptr->chname);
+      sendto_server(client_p, NULL, chptr, NOCAPS, CAP_SID, NOFLAGS,
+                    ":%s PART %s", source_p->name, chptr->chname);
+      sendto_channel_local(ALL_MEMBERS, chptr, ":%s!%s@%s PART %s",
+                           source_p->name, source_p->username,
+                           source_p->host, chptr->chname);
+      remove_user_from_channel(ptr->data);
+    }
   }
-
-  assert(dlink_list_length(&source_p->user->channel) == 0);
 }
 
 /* build_target_list()
@@ -351,9 +355,6 @@ build_target_list(struct Client *client_p, struct Client *source_p,
 
     if ((chptr = hash_find_channel(chan)) != NULL)
     {
-      if (IsMember(source_p, chptr))
-        continue;
-
       if (splitmode && !IsOper(source_p) && (*chan != '&') &&
           ConfigChannel.no_join_on_split)
       {
@@ -395,17 +396,18 @@ build_target_list(struct Client *client_p, struct Client *source_p,
       }
     }
 
-    if (duplicate_ptr(chptr))
+    if (is_target(chptr))
       continue;
 
     targets[ntargets].chptr = chptr;
-    targets[ntargets++].key = key;
+    targets[ntargets].key = key;
+    targets[ntargets++].flags = flags;
   }
 
   return ((ntargets) ? 1 : 0);
 }
 
-/* duplicate_ptr()
+/* is_target()
  *
  * inputs	- channel to check
  * output       - YES if duplicate pointer in table, NO if not.
@@ -413,14 +415,19 @@ build_target_list(struct Client *client_p, struct Client *source_p,
  * side effects - NONE
  */
 static int
-duplicate_ptr(struct Channel *chptr)
+is_target(struct Channel *chptr)
 {
   int i;
 
-  for (i = 0; i < ntargets; i++)
+  /*
+   * we step through this backwards for do_join_0()s sake.
+   * if the returned value is > join_0 (the highest 0 in the targets)
+   * we know they are supposed to stay in that channel.
+   */
+  for (i = ntargets-1; i >=0; i--)
   {
     if (targets[i].chptr == chptr)
-      return 1;
+      return i;
   }
 
   return 0;

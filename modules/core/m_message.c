@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.128 2003/09/20 01:05:10 db Exp $
+ *  $Id: m_message.c,v 1.129 2003/09/20 06:05:37 bill Exp $
  */
 
 #include "stdinc.h"
@@ -41,7 +41,7 @@
 #include "packet.h"
 
 
-struct entity
+static struct entity
 {
   void *ptr;
   int type;
@@ -118,7 +118,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.128 $";
+const char *_version = "$Revision: 1.129 $";
 #endif
 
 /*
