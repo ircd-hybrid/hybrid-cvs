@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_poll.c,v 7.48 2001/11/14 13:33:17 androsyn Exp $
+ *  $Id: s_bsd_poll.c,v 7.49 2001/11/17 20:16:42 androsyn Exp $
  */
 #include "config.h"
 #ifdef USE_POLL
@@ -207,8 +207,8 @@ comm_setselect(int fd, fdlist_t list, unsigned int type, PF * handler,
         F->timeout = CurrentTime + (timeout / 1000);
 }
  
-/* int comm_select_fdlist(fdlist_t fdlist, unsigned long delay)
- * Input: The list to select, the maximum time to delay on this list.
+/* int comm_select_fdlist(unsigned long delay)
+ * Input: The maximum time to delay.
  * Output: Returns -1 on error, 0 on success.
  * Side-effects: Deregisters future interest in IO and calls the handlers
  *               if an event occurs for an FD.
