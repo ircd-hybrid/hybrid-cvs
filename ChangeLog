@@ -1,3 +1,9 @@
+*** 20001129_3 by db
+- cleaned up user and oper file logging. use fbopen etc.
+  use eventAdd to close user log for resync
+
+
+
 *** 20001129_2 by db
 - removed more #define's
 - cleaned up client.c/client.h some more
@@ -1008,7 +1014,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.617 2000/11/29 16:49:33 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.618 2000/11/29 18:16:28 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
