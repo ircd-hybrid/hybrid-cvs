@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: vchannel.c,v 7.50 2001/05/29 16:10:30 jdc Exp $
+ * $Id: vchannel.c,v 7.51 2001/06/06 03:16:18 toot Exp $
  */
 
 #include "tools.h"
@@ -78,9 +78,9 @@ struct Channel* cjoin_channel(struct Channel *root,
     return NULL;
   }
 
-  if ((source_p->user->joined >= ConfigFileEntry.max_chans_per_user) &&
+  if ((source_p->user->joined >= ConfigChannel.max_chans_per_user) &&
       (!IsOper(source_p) || (source_p->user->joined >=
-                             ConfigFileEntry.max_chans_per_user*3)))
+                             ConfigChannel.max_chans_per_user*3)))
   {
     sendto_one(source_p, form_str(ERR_TOOMANYCHANNELS),
                me.name, source_p->name, name);

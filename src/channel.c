@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.229 2001/06/05 21:33:32 db Exp $
+ * $Id: channel.c,v 7.230 2001/06/06 03:16:15 toot Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -169,7 +169,7 @@ static  int     add_id(struct Client *client_p, struct Channel *chptr,
   struct Ban *actualBan;
 
   /* dont let local clients overflow the banlist */
-  if ((!IsServer(client_p)) && (chptr->num_mask >= MAXBANS))
+  if ((!IsServer(client_p)) && (chptr->num_mask >= ConfigChannel.maxbans))
     {
       if (MyClient(client_p))
         {
@@ -792,7 +792,7 @@ int can_send(struct Channel *chptr, struct Client *source_p)
   if (chptr->mode.mode & MODE_MODERATED)
     return CAN_SEND_NO;
   
-  if (ConfigFileEntry.quiet_on_ban && MyClient(source_p) &&
+  if (ConfigChannel.quiet_on_ban && MyClient(source_p) &&
      (is_banned(chptr, source_p) == CHFL_BAN))
     {
       return (CAN_SEND_NO);
@@ -3018,7 +3018,7 @@ void add_invite(struct Channel *chptr, struct Client *who)
    * delete last link in chain if the list is max length
    */
   if (dlink_list_length(&who->user->invited)  >=
-      ConfigFileEntry.max_chans_per_user)
+      ConfigChannel.max_chans_per_user)
     {
       del_invite(chptr,who);
     }

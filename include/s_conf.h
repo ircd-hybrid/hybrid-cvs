@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.131 2001/06/05 21:33:28 db Exp $
+ * $Id: s_conf.h,v 7.132 2001/06/06 03:16:12 toot Exp $
  */
 
 #include "setup.h"
@@ -194,7 +194,6 @@ struct config_file_entry
 
   int           hub;
   unsigned char compression_level;
-  int           max_chans_per_user;
   int           dots_in_ident;
   int           failed_oper_notice;
   int           anti_nick_flood;
@@ -213,7 +212,6 @@ struct config_file_entry
   int		stats_i_oper_only;
   int           pace_wait;
   int           whois_wait;
-  int           knock_delay;
   int           short_motd;
   int           no_oper_flood;
   int           glines;
@@ -226,7 +224,6 @@ struct config_file_entry
   int           oper_umodes;
   int           max_targets;
   int           links_delay;
-  int           quiet_on_ban;
   int           caller_id_wait;
   int           persist_expire;
   int           min_nonwildcard;
@@ -242,8 +239,12 @@ struct config_channel_entry
   int		use_invex;
   int           use_except;
   int           use_knock;
+  int           knock_delay;
   int           vchans_oper_only;
   int           disable_vchans;
+  int           maxbans;
+  int           max_chans_per_user;
+  int           quiet_on_ban;
 };
 
 struct server_info

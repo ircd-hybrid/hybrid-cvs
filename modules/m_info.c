@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.c,v 1.38 2001/06/05 21:33:30 db Exp $
+ * $Id: m_info.c,v 1.39 2001/06/06 03:16:13 toot Exp $
  */
 
 #include <time.h>
@@ -200,7 +200,7 @@ static struct InfoStruct info_table[] =
   {
     "knock_delay",
     OUTPUT_DECIMAL,
-    &ConfigFileEntry.knock_delay,
+    &ConfigChannel.knock_delay,
     "Delay between KNOCK attempts"
   },
   {
@@ -212,7 +212,7 @@ static struct InfoStruct info_table[] =
   {
     "max_chans_per_user",
     OUTPUT_DECIMAL,
-    &ConfigFileEntry.max_chans_per_user,
+    &ConfigChannel.max_chans_per_user,
     "Maximum number of channels a user can join"
   },
   {
@@ -232,6 +232,12 @@ static struct InfoStruct info_table[] =
     OUTPUT_DECIMAL,
     &ConfigFileEntry.max_targets,
     "The maximum number of PRIVMSG/NOTICE targets"
+  },
+  {
+    "maxbans",
+    OUTPUT_DECIMAL,
+    &ConfigChannel.maxbans,
+    "Total +b/e/I modes allowed in a channel",
   },
   {
     "maximum_links",
@@ -278,7 +284,7 @@ static struct InfoStruct info_table[] =
   {
     "quiet_on_ban",
     OUTPUT_BOOLEAN_YN,
-    &ConfigFileEntry.quiet_on_ban,
+    &ConfigChannel.quiet_on_ban,
     "Banned users may not send text to a channel"
   },
   {
