@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.c,v 7.72 2003/02/17 16:09:37 db Exp $
+ *  $Id: listener.c,v 7.73 2003/03/12 04:46:40 db Exp $
  */
 
 #include "stdinc.h"
@@ -37,6 +37,7 @@
 #include "send.h"
 #include "memory.h"
 #include "setup.h"
+#include "tools.h"
 
 #ifdef HAVE_LIBCRYPTO
 #include <openssl/bio.h>
@@ -49,7 +50,7 @@
 
 static PF accept_connection;
 
-static struct Listener* ListenerPollList = NULL;
+static dlink_list ListenerPollList;
 
 static struct Listener* 
 make_listener(int port, struct irc_inaddr *addr)
@@ -64,7 +65,6 @@ make_listener(int port, struct irc_inaddr *addr)
 
   listener->port        = port;
 
-  listener->next = NULL;
   return listener;
 }
 
@@ -74,24 +74,8 @@ free_listener(struct Listener* listener)
   assert(NULL != listener);
   if(listener == NULL)
     return;
-  /*
-   * remove from listener list
-   */
-  if (listener == ListenerPollList)
-    ListenerPollList = listener->next;
-  else
-  {
-    struct Listener* prev = ListenerPollList;
-    for ( ; prev; prev = prev->next)
-    {
-      if (listener == prev->next)
-      {
-        prev->next = listener->next;
-        break;
-      }
-    }
-  }
 
+dlinkDelete(&listener->listener_node, &ListenerPollList);
   /* free */
   MyFree(listener);
 }
@@ -123,15 +107,15 @@ get_listener_name(const struct Listener* listener)
 void 
 show_ports(struct Client* source_p)
 {
-  struct Listener* listener = 0;
+  dlink_node *ptr;
+  struct Listener* listener;
 
-  for (listener = ListenerPollList; listener; listener = listener->next)
+  DLINK_FOREACH(ptr, ListenerPollList.head)
   {
+    listener = ptr->data;
     sendto_one(source_p, form_str(RPL_STATSPLINE),
-               me.name,
-               source_p->name,
-               'P',
-               listener->port,
+               me.name, source_p->name,
+               'P', listener->port,
                IsOperAdmin(source_p) ? listener->name : me.name,
                listener->ref_count,
                (listener->active)?"active":"disabled");
@@ -242,12 +226,13 @@ inetport(struct Listener* listener)
 static struct Listener* 
 find_listener(int port, struct irc_inaddr *addr)
 {
+  dlink_node *ptr;
   struct Listener* listener = NULL;
   struct Listener* last_closed = NULL;
 
-  for (listener = ListenerPollList; listener; listener = listener->next)
+  DLINK_FOREACH(ptr, ListenerPollList.head)
   {
-
+    listener = ptr->data;
     if ( (port == listener->port) &&
          (!memcmp(&PIN_ADDR(addr),
                  &IN_ADDR(listener->addr),
@@ -302,8 +287,7 @@ add_listener(int port, const char* vhost_ip)
   else
   {
     listener = make_listener(port, &vaddr);
-    listener->next = ListenerPollList;
-    ListenerPollList = listener;
+    dlinkAdd(listener, &listener->listener_node, &ListenerPollList);
   }
 
   listener->fd = -1;
@@ -340,16 +324,17 @@ void close_listener(struct Listener* listener)
  * close_listeners - close and free all listeners that are not being used
  */
 void 
-close_listeners()
+close_listeners(void)
 {
+  dlink_node *ptr;
+  dlink_node *next_ptr;
   struct Listener* listener;
-  struct Listener* listener_next = 0;
   /*
    * close all 'extra' listening ports we have
    */
-  for (listener = ListenerPollList; listener; listener = listener_next)
+  DLINK_FOREACH_SAFE(ptr, next_ptr, ListenerPollList.head)
   {
-    listener_next = listener->next;
+    listener = ptr->data;
     close_listener(listener);
   }
 }

@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd_poll.c,v 7.55 2002/11/27 03:46:57 jmallett Exp $
+ *  $Id: s_bsd_poll.c,v 7.56 2003/03/12 04:46:40 db Exp $
  */
 
 #include "config.h"
@@ -81,8 +81,10 @@ static inline int
 poll_findslot(void)
 {
     int i;
-    for (i = 0; i < MAXCONNECTIONS; i++) {
-        if (pollfd_list.pollfds[i].fd == -1) {
+    for (i = 0; i < MAXCONNECTIONS; i++)
+    {
+        if (pollfd_list.pollfds[i].fd == -1)
+        {
             /* MATCH!!#$*&$ */
             return i;
         }
@@ -153,7 +155,8 @@ void init_netio(void)
 {
     int fd;
 
-    for (fd = 0; fd < MAXCONNECTIONS; fd++) {
+    for (fd = 0; fd < MAXCONNECTIONS; fd++)
+    {
        pollfd_list.pollfds[fd].fd = -1;
     }
     pollfd_list.maxindex = 0;
@@ -173,12 +176,14 @@ comm_setselect(int fd, fdlist_t list, unsigned int type, PF * handler,
     assert(fd >= 0);
     assert(F->flags.open);
 
-    if (type & COMM_SELECT_READ) {
+    if (type & COMM_SELECT_READ)
+    {
         F->read_handler = handler;
         F->read_data = client_data;
         poll_update_pollfds(fd, POLLRDNORM, handler);
     }
-    if (type & COMM_SELECT_WRITE) {
+    if (type & COMM_SELECT_WRITE)
+    {
         F->write_handler = handler;
         F->write_data = client_data;
         poll_update_pollfds(fd, POLLWRNORM, handler);
@@ -203,59 +208,59 @@ comm_setselect(int fd, fdlist_t list, unsigned int type, PF * handler,
 int
 comm_select(unsigned long delay)
 {
- int num;
- int fd;
- int ci;
- PF *hdl;
+  int num;
+  int fd;
+  int ci;
+  PF *hdl;
   
- for (;;)
- {
-  /* XXX kill that +1 later ! -- adrian */
-  num = poll(pollfd_list.pollfds, pollfd_list.maxindex + 1, delay);
-  if (num >= 0)
-   break;
-  if (ignoreErrno(errno))
-   continue;
-  /* error! */
+  for (;;)
+  {
+    /* XXX kill that +1 later ! -- adrian */
+    num = poll(pollfd_list.pollfds, pollfd_list.maxindex + 1, delay);
+    if (num >= 0)
+      break;
+    if (ignoreErrno(errno))
+      continue;
+    /* error! */
+    set_time();
+    return -1;
+    /* NOTREACHED */
+  }
+  
+  /* update current time again, eww.. */
   set_time();
-  return -1;
-  /* NOTREACHED */
- }
-  
- /* update current time again, eww.. */
- set_time();
- callbacks_called += num;
+  callbacks_called += num;
  
- if (num == 0)
-  return 0;
- /* XXX we *could* optimise by falling out after doing num fds ... */
- for (ci = 0; ci < pollfd_list.maxindex + 1; ci++)
- {
-  fde_t *F;
-  int revents;
-  if (((revents = pollfd_list.pollfds[ci].revents) == 0) ||
+  if (num == 0)
+    return 0;
+  /* XXX we *could* optimise by falling out after doing num fds ... */
+  for (ci = 0; ci < pollfd_list.maxindex + 1; ci++)
+  {
+    fde_t *F;
+    int revents;
+    if (((revents = pollfd_list.pollfds[ci].revents) == 0) ||
       (pollfd_list.pollfds[ci].fd) == -1)
-   continue;
-  fd = pollfd_list.pollfds[ci].fd;
-  F = &fd_table[fd];
-  if (revents & (POLLRDNORM | POLLIN | POLLHUP | POLLERR))
-  {
-   hdl = F->read_handler;
-   F->read_handler = NULL;
-   poll_update_pollfds(fd, POLLRDNORM, NULL);
-   if (hdl)
-    hdl(fd, F->read_data);
+      continue;
+    fd = pollfd_list.pollfds[ci].fd;
+    F = &fd_table[fd];
+    if (revents & (POLLRDNORM | POLLIN | POLLHUP | POLLERR))
+    {
+      hdl = F->read_handler;
+      F->read_handler = NULL;
+      poll_update_pollfds(fd, POLLRDNORM, NULL);
+      if (hdl)
+       hdl(fd, F->read_data);
+    }
+    if (revents & (POLLWRNORM | POLLOUT | POLLHUP | POLLERR))
+    {
+      hdl = F->write_handler;
+      F->write_handler = NULL;
+      poll_update_pollfds(fd, POLLWRNORM, NULL);
+      if (hdl)
+        hdl(fd, F->write_data);
+    }
   }
-  if (revents & (POLLWRNORM | POLLOUT | POLLHUP | POLLERR))
-  {
-   hdl = F->write_handler;
-   F->write_handler = NULL;
-   poll_update_pollfds(fd, POLLWRNORM, NULL);
-   if (hdl)
-    hdl(fd, F->write_data);
-  }
- }
- return 0;
+  return 0;
 }
 #else
 /**

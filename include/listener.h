@@ -19,18 +19,18 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: listener.h,v 7.10 2002/05/24 23:34:07 androsyn Exp $
+ *  $Id: listener.h,v 7.11 2003/03/12 04:46:38 db Exp $
  */
 
 #ifndef INCLUDED_listener_h
 #define INCLUDED_listener_h
 
 #include "ircd_defs.h"  
-
+#include "tools.h"
 struct Client;
 
 struct Listener {
-  struct Listener* next;               /* list node pointer */
+  dlink_node	   listener_node;      /* list node pointer */
   const char*      name;               /* listener name */
   int              fd;                 /* file descriptor */
   int              port;               /* listener IP port */
