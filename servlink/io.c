@@ -15,11 +15,12 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: io.c,v 1.14 2001/05/25 01:02:52 ejb Exp $
+ *   $Id: io.c,v 1.15 2001/05/25 05:58:30 ejb Exp $
  */
 
 #include "../include/setup.h"
 
+#include <sys/types.h>
 #include <sys/socket.h>
 
 #include <assert.h>
