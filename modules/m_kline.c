@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.169 2003/09/29 03:08:00 bill Exp $
+ *  $Id: m_kline.c,v 1.170 2003/10/02 23:22:50 stu Exp $
  */
 
 #include "stdinc.h"
@@ -106,8 +106,11 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.169 $";
+const char *_version = "$Revision: 1.170 $";
 #endif
+
+#define TK_SECONDS 0
+#define TK_MINUTES 1
 
 /* Local function prototypes */
 static time_t valid_tkline(char *string);
@@ -161,7 +164,7 @@ mo_kline(struct Client *client_p, struct Client *source_p,
   parv++;
   parc--;
 
-  tkline_time = valid_tkline(*parv);
+  tkline_time = valid_tkline(*parv, TK_MINUTES);
 
   if (tkline_time != 0)
   {
@@ -293,7 +296,7 @@ ms_kline(struct Client *client_p, struct Client *source_p,
   if (!match(parv[1], me.name))
     return;
 
-  tkline_time = valid_tkline(parv[2]);
+  tkline_time = valid_tkline(parv[2], TK_SECONDS);
   kuser   = parv[3];
   khost   = parv[4];
   kreason = parv[5];
@@ -447,12 +450,13 @@ apply_tdline(struct Client *source_p, struct ConfItem *conf,
  * valid_tkline()
  * 
  * inputs       - pointer to ascii string to check
+ *              - whether the specified time is in seconds or minutes
  * output       - -1 not enough parameters
  *              - 0 if not an integer number, else the number
  * side effects - none
  */
 static time_t
-valid_tkline(char *p)
+valid_tkline(char *p, int minutes)
 {
   time_t result = 0;
 
@@ -478,7 +482,8 @@ valid_tkline(char *p)
   if(result > MAX_TDKLINE_TIME)
     result = MAX_TDKLINE_TIME;
 
-  result = (time_t)result * (time_t)60;  /* turn it into seconds */
+  if(minutes)
+      result = (time_t)result * (time_t)60;  /* turn it into seconds */
 
   return(result);
 }
@@ -632,7 +637,7 @@ mo_dline(struct Client *client_p, struct Client *source_p,
   parv++;
   parc--;
 
-  tkline_time = valid_tkline(*parv);
+  tkline_time = valid_tkline(*parv, TK_MINUTES);
 
   if (tkline_time > 0)
   {
