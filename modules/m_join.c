@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 1.64 2001/06/01 00:55:56 davidt Exp $
+ *   $Id: m_join.c,v 1.65 2001/06/03 13:59:13 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -292,29 +292,6 @@ static void m_join(struct Client *client_p,
                         chptr->chname,
                         parv[0]);
 	}
-#if 0
-      /*
-       * XXX
-       * This is broken.  We check if source_p has CAP_HOPS, instead
-       * of the server.  Plus, if the server doesn't support
-       * HOPS we should send halfops as ops -- we are the users server,
-       * so we will do the correct permision checks.
-       * There is no way flags can include CHFL_HALFOP anyway,
-       * so this code isn't needed anyway
-       *
-       * -davidt
-       */
-      else if ((flags & CHFL_HALFOP) && (IsCapable(source_p,CAP_HOPS)))
-	{
-	  chptr->channelts = CurrentTime;
-	  sendto_ll_channel_remote(chptr, client_p, source_p,
-				   ":%s SJOIN %lu %s + :%%%s",
-				   me.name,
-				   (unsigned long) chptr->channelts,
-				   chptr->chname,
-				   parv[0]);
-	}
-#endif
       else
 	{
 	  sendto_server(client_p, source_p, chptr, NOCAPS, NOCAPS,

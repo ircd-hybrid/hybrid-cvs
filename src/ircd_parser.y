@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.179 2001/06/01 11:05:48 leeh Exp $
+ * $Id: ircd_parser.y,v 1.180 2001/06/03 13:59:20 davidt Exp $
  */
 
 %{
@@ -1425,8 +1425,8 @@ connect_host:   HOST '=' QSTRING ';'
  
 connect_send_password:  SEND_PASSWORD '=' QSTRING ';'
   {
-    if (yy_aconf->passwd)
-      memset(yy_aconf->passwd, 0, strlen(yy_aconf->passwd));
+    if (yy_aconf->spasswd)
+      memset(yy_aconf->spasswd, 0, strlen(yy_aconf->spasswd));
     MyFree(yy_aconf->spasswd);
     DupString(yy_aconf->spasswd, yylval.string);
   };
