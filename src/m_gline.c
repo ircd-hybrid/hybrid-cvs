@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_gline.c,v 7.8 2000/10/24 18:47:18 adrian Exp $
+ *  $Id: m_gline.c,v 7.9 2000/10/26 15:04:29 db Exp $
  */
 #include "m_gline.h"
 #include "channel.h"
@@ -326,10 +326,7 @@ int     mo_gline(struct Client *cptr,
                      host,
                      reason);
       
-      rehashed = YES;
-      dline_in_progress = NO;
-      nextping = CurrentTime;
-
+      check_klines();
       return 0;
     }
   }
@@ -588,9 +585,7 @@ int     ms_gline(struct Client *cptr,
                      host,
                      reason);
       
-      rehashed = YES;
-      dline_in_progress = NO;
-      nextping = CurrentTime;
+      check_klines();
 
       return 0;
     }

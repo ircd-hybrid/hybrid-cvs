@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.29 2000/10/26 07:57:51 db Exp $
+ *   $Id: s_serv.c,v 7.30 2000/10/26 15:04:30 db Exp $
  */
 #include "s_serv.h"
 #include "channel.h"
@@ -701,7 +701,6 @@ int server_estab(struct Client *cptr)
   
   fdlist_add(cptr->fd, FDL_SERVER | FDL_BUSY);
 
-  nextping = CurrentTime;
   /* ircd-hybrid-6 can do TS links, and  zipped links*/
   sendto_ops("Link with %s established: (%s) link",
              inpath,show_capabilities(cptr));

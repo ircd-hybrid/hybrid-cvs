@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.35 2000/10/25 21:04:46 adrian Exp $
+ *  $Id: s_bsd.c,v 7.36 2000/10/26 15:04:29 db Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -581,7 +581,6 @@ int connect_server(struct ConfItem* aconf,
 
   add_client_to_list(cptr);
   fdlist_add(cptr->fd, FDL_DEFAULT);
-  nextping = CurrentTime;
 
   return 1;
 }

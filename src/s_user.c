@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.33 2000/10/21 07:15:26 lusky Exp $
+ *  $Id: s_user.c,v 7.34 2000/10/26 15:04:31 db Exp $
  */
 #include "s_user.h"
 #include "channel.h"
@@ -816,15 +816,6 @@ int register_user(struct Client *cptr, struct Client *sptr,
           sendto_one(sptr,"NOTICE %s :*** Notice -- You are in a restricted access mode",nick);
           sendto_one(sptr,"NOTICE %s :*** Notice -- You can not chanop others",nick);
         }
-#endif
-
-#ifdef NEED_SPLITCODE
-      if (server_was_split)
-        {
-          sendto_one(sptr,"NOTICE %s :*** Notice -- server is currently in split-mode",nick);
-        }
-
-      nextping = CurrentTime;
 #endif
 
 

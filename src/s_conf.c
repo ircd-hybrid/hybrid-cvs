@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.62 2000/10/26 07:57:50 db Exp $
+ *  $Id: s_conf.c,v 7.63 2000/10/26 15:04:30 db Exp $
  */
 #include "s_conf.h"
 #include "channel.h"
@@ -1847,7 +1847,6 @@ static void initconf(FBFILE* file)
 
   fbclose(file);
   check_class();
-  nextping = nextconnect = time(NULL);
 
   if( ConfigFileEntry.ts_warn_delta < TS_WARN_DELTA_MIN )
     {

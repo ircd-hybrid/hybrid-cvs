@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: listener.c,v 7.8 2000/10/25 10:00:04 adrian Exp $
+ *  $Id: listener.c,v 7.9 2000/10/26 15:04:29 db Exp $
  */
 #include "listener.h"
 #include "client.h"
@@ -407,7 +407,6 @@ static void accept_connection(int pfd, void *data)
       break;
     }
     ServerStats->is_ac++;
-    nextping = CurrentTime;
 
     add_connection(listener, fd);
   } while (0);
