@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_squit.c,v 1.17 2000/12/23 13:29:45 toot Exp $
+ *   $Id: m_squit.c,v 1.18 2000/12/27 20:30:12 wcampbel Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -142,7 +142,7 @@ int ms_squit(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 				 found_squit->server_name,
 				 get_client_name(sptr,FALSE), comment);
 
-          sendto_serv_butone(cptr,
+          sendto_serv_butone(NULL,
 			     "Received SQUIT %s from %s (%s)",
 			     found_squit->server_name,
 			     get_client_name(sptr,FALSE),comment);
