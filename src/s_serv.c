@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.218 2001/10/30 23:39:15 bill Exp $
+ *   $Id: s_serv.c,v 7.219 2001/11/14 13:33:17 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -2220,7 +2220,7 @@ serv_connect(struct ConfItem *aconf, struct Client *by)
 
 	comm_connect_tcp(client_p->fd, aconf->host, aconf->port,
 			 (struct sockaddr *)&SOCKADDR(ipn), sizeof(struct irc_sockaddr), 
-			 serv_connect_callback, client_p, aconf->aftype);
+			 serv_connect_callback, client_p, aconf->aftype, 30);
       }
 #ifdef IPV6
     else if((aconf->aftype == AF_INET6) && ServerInfo.specific_ipv6_vhost)
@@ -2234,13 +2234,13 @@ serv_connect(struct ConfItem *aconf, struct Client *by)
 
 	comm_connect_tcp(client_p->fd, aconf->host, aconf->port,
 			 (struct sockaddr *)&SOCKADDR(ipn), sizeof(struct irc_sockaddr),
-			 serv_connect_callback, client_p, aconf->aftype);
+			 serv_connect_callback, client_p, aconf->aftype, 30);
       }
 #endif
     else
       {
 	comm_connect_tcp(client_p->fd, aconf->host, aconf->port, NULL, 0, 
-			 serv_connect_callback, client_p, aconf->aftype);
+			 serv_connect_callback, client_p, aconf->aftype, 30);
       }
 
     return 1;

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.150 2001/09/25 05:22:32 db Exp $
+ *  $Id: s_bsd.c,v 7.151 2001/11/14 13:33:17 androsyn Exp $
  */
 #include "config.h"
 #include "fdlist.h"
@@ -607,7 +607,7 @@ comm_checktimeouts(void *notused)
 /*
  * void comm_connect_tcp(int fd, const char *host, u_short port,
  *                       struct sockaddr *clocal, int socklen,
- *                       CNCB *callback, void *data, int aftype)
+ *                       CNCB *callback, void *data, int aftype, int timeout)
  * Input: An fd to connect with, a host and port to connect to,
  *        a local sockaddr to connect from + length(or NULL to use the
  *        default), a callback, the data to pass into the callback, the
@@ -620,7 +620,7 @@ comm_checktimeouts(void *notused)
 void
 comm_connect_tcp(int fd, const char *host, u_short port,
                  struct sockaddr *clocal, int socklen, CNCB *callback,
-                 void *data, int aftype)
+                 void *data, int aftype, int timeout)
 {
  fd_table[fd].flags.called_connect = 1;
  assert(callback);
@@ -658,7 +658,7 @@ comm_connect_tcp(int fd, const char *host, u_short port,
  {
   /* We have a valid IP, so we just call tryconnect */
   /* Make sure we actually set the timeout here .. */
-  comm_settimeout(fd, 30*1000, comm_connect_timeout, NULL);
+  comm_settimeout(fd, timeout*1000, comm_connect_timeout, NULL);
   comm_connect_tryconnect(fd, NULL);
  }
 }

@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.c,v 7.76 2001/09/19 18:08:42 androsyn Exp $
+ *   $Id: s_auth.c,v 7.77 2001/11/14 13:33:17 androsyn Exp $
  *
  * Changes:
  *   July 6, 1999 - Rewrote most of the code here. When a client connects
@@ -350,7 +350,7 @@ static int start_auth_query(struct AuthRequest* auth)
   SetAuthConnect(auth);
   
   comm_connect_tcp(fd, auth->client->localClient->sockhost, 113, 
-    (struct sockaddr *)&SOCKADDR(localaddr), locallen, auth_connect_callback, auth, DEF_FAM);
+    (struct sockaddr *)&SOCKADDR(localaddr), locallen, auth_connect_callback, auth, DEF_FAM, 10);
   return 1; /* We suceed here for now */
 }
 
