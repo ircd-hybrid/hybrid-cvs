@@ -18,7 +18,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: packet.c,v 7.28 2000/12/30 06:03:43 lusky Exp $
+ *   $Id: packet.c,v 7.29 2001/01/04 00:30:27 adrian Exp $
  */ 
 
 #include <stdio.h>
@@ -226,7 +226,7 @@ read_packet(int fd, void *data)
     }
 
   /* Attempt to parse what we have */
-  if (parse_client_queued(cptr) == CLIENT_OK) {
+  if (parse_client_queued(cptr) != CLIENT_EXITED) {
     /* If we get here, we need to register for another COMM_SELECT_READ */
     if (PARSE_AS_SERVER(cptr)) {
       comm_setselect(cptr->fd, FDLIST_SERVER, COMM_SELECT_READ,
