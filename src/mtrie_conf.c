@@ -43,7 +43,7 @@
  *
  * Diane Bruce -db (db@db.net)
  *
- * $Id: mtrie_conf.c,v 7.11 2000/10/31 22:59:53 db Exp $
+ * $Id: mtrie_conf.c,v 7.12 2000/11/05 07:51:55 db Exp $
  */
 #include "mtrie_conf.h"
 #include "class.h"
@@ -1284,10 +1284,8 @@ void report_mtrie_conf_links(struct Client *sptr, int flags)
           get_printable_conf(found_conf, &name, &host, &pass, &user, &port, &classname);
 
           c = 'I';
-#ifdef LITTLE_I_LINES
           if(IsConfLittleI(found_conf))
             c = 'i';
-#endif
           sendto_one(sptr, form_str(RPL_STATSILINE), me.name,
                      sptr->name,
                      c,
@@ -1304,10 +1302,8 @@ void report_mtrie_conf_links(struct Client *sptr, int flags)
           get_printable_conf(found_conf, &name, &host, &pass, &user, &port, &classname);
 
           c = 'I';
-#ifdef LITTLE_I_LINES
           if(IsConfLittleI(found_conf))
             c = 'i';
-#endif
           sendto_one(sptr, form_str(RPL_STATSILINE), me.name,
                      sptr->name,
                      c,
@@ -1327,10 +1323,8 @@ void report_mtrie_conf_links(struct Client *sptr, int flags)
             continue;
 
           c = 'I';
-#ifdef LITTLE_I_LINES
           if(IsConfLittleI(found_conf))
             c = 'i';
-#endif
           sendto_one(sptr, form_str(RPL_STATSILINE), me.name,
                      sptr->name,
                      c,
@@ -1411,11 +1405,10 @@ char *show_iline_prefix(struct Client *sptr,struct ConfItem *aconf,char *name)
     if (IsConfFlined(aconf))
       *prefix_ptr++ = '>';
 
-#ifdef IDLE_CHECK  
   if((ConfigFileEntry.e_lines_oper_only && IsAnyOper(sptr)) || !ConfigFileEntry.e_lines_oper_only)
     if (IsConfIdlelined(aconf))
       *prefix_ptr++ = '<';
-#endif
+
   *prefix_ptr = '\0';
 
   strncat(prefix_of_host,name,MAXPREFIX);
@@ -1489,10 +1482,8 @@ static void report_sub_mtrie(struct Client *sptr, int flags, DOMAIN_LEVEL *dl_pt
                         continue;
 
                       c = 'I';
-#ifdef LITTLE_I_LINES
                       if(IsConfLittleI(aconf))
                         c = 'i';
-#endif
                       sendto_one(sptr, form_str(RPL_STATSILINE),
                                  me.name,
                                  sptr->name,
@@ -1543,10 +1534,8 @@ static void report_sub_mtrie(struct Client *sptr, int flags, DOMAIN_LEVEL *dl_pt
                          && IsConfDoSpoofIp(aconf))
                         continue;
                       c = 'I';
-#ifdef LITTLE_I_LINES
                       if(IsConfLittleI(aconf))
                         c = 'i';
-#endif
                       sendto_one(sptr, form_str(RPL_STATSILINE),
                                  me.name,
                                  sptr->name,
