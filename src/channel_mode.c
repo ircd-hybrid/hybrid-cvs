@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.71.2.3 2003/10/26 02:08:21 db Exp $
+ *  $Id: channel_mode.c,v 7.71.2.4 2004/03/18 03:57:26 bill Exp $
  */
 
 #include "stdinc.h"
@@ -1238,8 +1238,6 @@ chm_op(struct Client *client_p, struct Client *source_p,
        char **parv, int *errors, int alev, int dir, char c, void *d,
        const char *chname)
 {
-  int i;
-
   /* Note on was_opped etc...
    * The was_opped variable is set to 1 if they were set -o in this mode,
    * was implies that previously they were +o, so we should not send a
@@ -1251,11 +1249,14 @@ chm_op(struct Client *client_p, struct Client *source_p,
    * -A1kmm.
    */
 
-  int wasnt_voiced = 0, t_op, t_hop, t_voice;
+  int t_op, t_hop, t_voice;
   char *opnick;
   struct Client *targ_p;
 #ifdef HALFOPS
   int wasnt_hopped = 0;
+#endif
+#ifndef REQUIRE_OANDV
+  int wasnt_voiced = 0;
 #endif
 
   if (alev < CHACCESS_CHANOP)
@@ -1605,7 +1606,7 @@ chm_voice(struct Client *client_p, struct Client *source_p,
           char **parv, int *errors, int alev, int dir, char c, void *d,
           const char *chname)
 {
-  int i, t_op, t_hop, t_voice;
+  int t_op, t_hop, t_voice;
   char *opnick;
   struct Client *targ_p;
 

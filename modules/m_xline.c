@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.29.2.1 2003/10/26 02:08:16 db Exp $
+ *  $Id: m_xline.c,v 1.29.2.2 2004/03/18 03:57:24 bill Exp $
  */
 
 #include "stdinc.h"
@@ -83,7 +83,7 @@ _moddeinit(void)
   mod_del_cmd(&xline_msgtab);
   mod_del_cmd(&unxline_msgtab);
 }
-const char *_version = "$Revision: 1.29.2.1 $";
+const char *_version = "$Revision: 1.29.2.2 $";
 #endif
 
 
@@ -152,6 +152,9 @@ mo_xline(struct Client *client_p, struct Client *source_p,
 
   if (EmptyString(reason))
     reason = "No Reason";
+
+  if (!valid_xline(source_p, parv[1], reason, 1))
+    return;
 
   write_xline(source_p, parv[1], reason, type_i);
   rehashed_xlines = 1;

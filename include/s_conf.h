@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.190.2.2 2003/10/26 02:08:13 db Exp $
+ *  $Id: s_conf.h,v 7.190.2.3 2004/03/18 03:57:21 bill Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -392,6 +392,7 @@ typedef enum {
 } ConfType;
 
 extern  void    add_temp_kline(struct ConfItem *);
+extern	void	add_temp_dline(struct ConfItem *);
 extern  void    cleanup_tklines(void *notused);
 
 extern  const   char *get_conf_name(ConfType);
@@ -411,6 +412,10 @@ extern void conf_add_conf(struct ConfItem *);
 extern void parse_csv_file(FBFILE *file, ConfType conf_type);
 extern int remove_conf_line(ConfType type, struct Client *source_p,
 			    const char *pat1, const char *pat2);
+extern void write_conf_line(ConfType type, struct Client *source_p, struct ConfItem *aconf,
+                            const char *current_date, time_t cur_time);
+extern void write_resv_line(ConfType type, struct Client *source_p,
+                            void *resv_p);
 extern char *getfield(char *newline);
 
 extern char *get_oper_name(struct Client *client_p);

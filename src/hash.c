@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.47.2.1 2003/10/26 02:08:22 db Exp $
+ *  $Id: hash.c,v 7.47.2.2 2004/03/18 03:57:27 bill Exp $
  */
 
 #include "stdinc.h"
@@ -39,6 +39,7 @@
 #include "fdlist.h"
 #include "fileio.h"
 #include "memory.h"
+#include "list.h"
 
 /* +angel for "safe_list" */
 #include "channel.h"

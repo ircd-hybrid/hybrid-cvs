@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.h,v 7.37 2003/01/19 13:19:50 db Exp $
+ *  $Id: s_bsd.h,v 7.37.2.1 2004/03/18 03:57:21 bill Exp $
  */
 
 #ifndef INCLUDED_s_bsd_h
@@ -50,6 +50,7 @@ extern const char* const NONB_ERROR_MSG;
 extern const char* const SETBUF_ERROR_MSG;
 
 extern void  add_connection(struct Listener*, int);
+extern void  set_no_delay(int fd);
 extern void  close_connection(struct Client*);
 extern void  close_all_connections(void);
 extern int   connect_server(struct ConfItem*, struct Client*, 

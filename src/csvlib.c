@@ -6,7 +6,7 @@
  *  Use it anywhere you like, if you like it buy us a beer.
  *  If it's broken, don't bother us with the lawyers.
  *
- *  $Id: csvlib.c,v 7.31.2.1 2003/10/26 02:08:22 db Exp $
+ *  $Id: csvlib.c,v 7.31.2.2 2004/03/18 03:57:27 bill Exp $
  */
 
 #include "stdinc.h"
@@ -106,6 +106,9 @@ parse_csv_file(FBFILE *file, ConfType conf_type)
     case NRESV_TYPE:
       parse_csv_line(line, &name_field, &reason_field, NULL);
       (void)create_nick_resv(name_field, reason_field, 0);
+      break;
+
+    case CONF_TYPE:
       break;
     }
   }

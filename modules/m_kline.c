@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.111.2.2 2003/10/26 20:01:25 db Exp $
+ *  $Id: m_kline.c,v 1.111.2.3 2004/03/18 03:57:24 bill Exp $
  */
 
 #include "stdinc.h"
@@ -78,7 +78,7 @@ _moddeinit(void)
   mod_del_cmd(&kline_msgtab);
   mod_del_cmd(&dline_msgtab);
 }
-const char *_version = "$Revision: 1.111.2.2 $";
+const char *_version = "$Revision: 1.111.2.3 $";
 #endif
 
 /* Local function prototypes */
@@ -591,11 +591,9 @@ mo_dline(struct Client *client_p, struct Client *source_p,
 {
   char *dlhost, *reason, *oper_reason;
 #ifndef IPV6
-  char *p;
   struct Client *target_p;
 #endif
   struct irc_inaddr daddr;
-  char cidr_form_host[HOSTLEN + 1];
   struct ConfItem *aconf=NULL;
   time_t tkline_time=0;
   int bits, t;
