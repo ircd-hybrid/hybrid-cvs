@@ -21,7 +21,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: m_unkline.c,v 1.8 2000/12/09 05:59:55 db Exp $
+ *   $Id: m_unkline.c,v 1.9 2000/12/09 06:10:17 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -85,11 +85,6 @@ char *_version = "20001122";
 **      parv[0] = sender
 **      parv[1] = address to remove
 *
-*
-* re-worked and cleanedup for use in hybrid-5 
-* -Dianora
-*
-* Added comstuds SEPARATE_QUOTE_KLINES_BY_DATE
 *
 */
 int mo_unkline (struct Client *cptr,struct Client *sptr,int parc,char *parv[])

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_debug.c,v 7.28 2000/12/05 06:33:19 db Exp $
+ *   $Id: s_debug.c,v 7.29 2000/12/09 06:10:18 db Exp $
  */
 #include "tools.h"
 #include "s_debug.h"
@@ -55,16 +55,13 @@ extern  void    count_ip_hash(int *,u_long *);    /* defined in s_conf.c */
  * Option string.  Must be before #ifdef DEBUGMODE.
  */
 const char serveropts[] = {
-#ifdef  SENDQ_ALWAYS
-  'A',
-#endif
 #ifdef  CHROOTDIR
   'c',
 #endif
 #ifdef  CMDLINE_CONFIG
   'C',
 #endif
-#ifdef        DO_ID
+#ifdef  DO_ID
   'd',
 #endif
 #ifdef  DEBUGMODE
@@ -80,11 +77,7 @@ const char serveropts[] = {
   'i',
 #endif
 #ifdef  OPER_KILL
-# ifdef  LOCAL_KILL_ONLY
-  'k',
-# else
   'K',
-# endif
 #endif
 #ifdef  IDLE_FROM_MSG
   'M',
@@ -103,9 +96,6 @@ const char serveropts[] = {
 #endif
 #ifdef  OPER_REMOTE
   't',
-#endif
-#ifdef  VALLOC
-  'V',
 #endif
 #ifdef  USE_SYSLOG
   'Y',
