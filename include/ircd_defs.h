@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_defs.h,v 7.35 2003/05/17 18:00:45 bill Exp $
+ *  $Id: ircd_defs.h,v 7.36 2003/05/28 18:10:32 bill Exp $
  */
 
 /*
@@ -49,6 +49,8 @@
 #define REALLEN         50
 #define KILLLEN         90      
 #define CHANNELLEN      200
+
+#define REASONLEN	120
 
 /* 23+1 for \0 */
 #define KEYLEN          24

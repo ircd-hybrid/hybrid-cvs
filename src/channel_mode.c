@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.99 2003/05/28 16:56:26 db Exp $
+ *  $Id: channel_mode.c,v 7.100 2003/05/28 18:10:36 bill Exp $
  */
 
 #include "stdinc.h"
@@ -45,7 +45,7 @@
 #include "s_log.h"
 
 static int add_id(struct Client *, struct Channel *, char *, int);
-static int del_id(struct Channel *, char *, int);
+static int del_id(struct Channel *, const char *, int);
 static int change_channel_membership(struct Channel *chptr,
                                      dlink_list *to_list,
                                      dlink_list *loc_to_list,
@@ -258,7 +258,7 @@ add_id(struct Client *client_p, struct Channel *chptr, char *banid, int type)
  * side effects	-
  */
 static int
-del_id(struct Channel *chptr, char *banid, int type)
+del_id(struct Channel *chptr, const char *banid, int type)
 {
   dlink_list *list;
   dlink_node *ban;

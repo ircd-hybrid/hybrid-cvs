@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_gline.c,v 1.103 2003/05/27 23:43:21 db Exp $
+ *  $Id: m_gline.c,v 1.104 2003/05/28 18:10:34 bill Exp $
  */
 
 #include "stdinc.h"
@@ -82,7 +82,7 @@ static void add_new_majority_gline(const char *, const char *, const char *,
                                    const char *);
 
 static int check_wild_gline(char *, char *);
-static int invalid_gline(struct Client *, const char *);
+static int invalid_gline(struct Client *, const char *, const char *, char *);
 		       
 static void ms_gline(struct Client *, struct Client *, int, char **);
 static void mo_gline(struct Client *, struct Client *, int, char **);
@@ -108,7 +108,7 @@ _moddeinit(void)
   delete_capability("GLN");
 }
 
-const char *_version = "$Revision: 1.103 $";
+const char *_version = "$Revision: 1.104 $";
 #endif
 
 /* mo_gline()
@@ -131,7 +131,7 @@ mo_gline(struct Client *client_p, struct Client *source_p,
 {
   char *user = NULL;
   char *host = NULL;	     /* user and host of GLINE "victim" */
-  const char *reason = NULL; /* reason for "victims" demise     */
+  char *reason = NULL;	     /* reason for "victims" demise     */
   char tempuser[USERLEN*2 + 2];
   char temphost[HOSTLEN*2 + 2];
 
@@ -184,7 +184,7 @@ mo_gline(struct Client *client_p, struct Client *source_p,
     return;
   }
 
-  if (invalid_gline(source_p, user))
+  if (invalid_gline(source_p, user, host, parv[2]))
     return;
 			
   /* Not enough non-wild characters were found,
@@ -199,7 +199,7 @@ mo_gline(struct Client *client_p, struct Client *source_p,
 		 me.name, parv[0], ConfigFileEntry.min_nonwildcard);
     return;
   }
-			
+
   reason = parv[2];
 
   /* call these two functions first so the 'requesting' notice always comes
@@ -270,7 +270,7 @@ ms_gline(struct Client *client_p, struct Client *source_p,
   const char *oper_user = NULL;   /* username of oper requesting GLINE */
   const char *oper_host = NULL;   /* hostname of oper requesting GLINE */
   const char *oper_server = NULL; /* server of oper requesting GLINE   */
-  const char *reason = NULL;      /* reason for "victims" demise       */
+  char *reason = NULL;            /* reason for "victims" demise       */
   char *user = NULL;
   char *host = NULL;              /* user and host of GLINE "victim"   */
   struct Client *target_p;
@@ -298,7 +298,7 @@ ms_gline(struct Client *client_p, struct Client *source_p,
     oper_server = parv[4];
     user        = parv[5];
     host        = parv[6];
-    reason      = parv[7];      
+    reason      = parv[7];
   }
   /* none of the above */
   else
@@ -316,7 +316,7 @@ ms_gline(struct Client *client_p, struct Client *source_p,
   else
     return;
 
-  if (invalid_gline(target_p, user))
+  if (invalid_gline(target_p, user, host, reason))
      return;
     
   /* send in hyb-7 to compatible servers */
@@ -420,7 +420,8 @@ check_wild_gline(char *user, char *host)
  * outputs	- 1 if invalid, 0 if valid
  */
 static int
-invalid_gline(struct Client *source_p, const char *luser)
+invalid_gline(struct Client *source_p, const char *luser, const char *lhost,
+              char *lreason)
 {
   if (strchr(luser, '!') != NULL)
   {
@@ -428,6 +429,9 @@ invalid_gline(struct Client *source_p, const char *luser)
                me.name, source_p->name);
     return(1);
   }
+
+  if (strlen(lreason) > REASONLEN)
+    lreason[REASONLEN-1] = '\0';
 
   return(0);
 }

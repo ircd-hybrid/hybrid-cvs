@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.139 2003/05/28 00:18:47 db Exp $
+ *  $Id: m_kline.c,v 1.140 2003/05/28 18:10:34 bill Exp $
  */
 
 #include "stdinc.h"
@@ -81,7 +81,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.139 $";
+const char *_version = "$Revision: 1.140 $";
 #endif
 
 /* Local function prototypes */
@@ -91,8 +91,7 @@ static char *cluster(char *);
 static int find_user_host(struct Client *source_p,
                           char *user_host_or_nick, char *user, char *host);
 
-/* needed to remove unused definition warning */
-static int valid_comment(struct Client *source_p, const char *comment);
+static int valid_comment(struct Client *source_p, char *comment);
 static int valid_user_host(struct Client *source_p, char *user, char *host);
 static int valid_wild_card(char *user, char *host);
 static int already_placed_kline(struct Client *, const char *, const char *);
@@ -583,8 +582,7 @@ static void
 mo_dline(struct Client *client_p, struct Client *source_p,
 	 int parc, char *parv[])
 {
-  char *dlhost, *oper_reason;
-  const char *reason;
+  char *dlhost, *oper_reason, *reason;
 #ifndef IPV6
   struct Client *target_p;
 #endif
@@ -592,7 +590,7 @@ mo_dline(struct Client *client_p, struct Client *source_p,
   struct ConfItem *aconf=NULL;
   time_t tkline_time=0;
   int bits, t;
-  char dlbuffer[512];		/* XXX FIX this ! */
+  char dlbuffer[IRCD_BUFSIZE];		/* XXX FIX this ! */
   const char* current_date;
   time_t cur_time;
 
@@ -730,6 +728,9 @@ mo_dline(struct Client *client_p, struct Client *source_p,
     *oper_reason = '\0';
     oper_reason++;
   }
+
+  if (!valid_comment(source_p, reason))
+    return;
 
   ircsprintf(dlbuffer, "%s (%s)",reason, current_date);
   aconf = make_conf(CONF_DLINE);
@@ -936,10 +937,10 @@ valid_wild_card(char *luser, char *lhost)
  *              - pointer to comment
  * output       - 0 if no valid comment,
  *              - 1 if valid
- * side effects - NONE
+ * side effects - truncates reason where necessary
  */
 static int
-valid_comment(struct Client *source_p, const char *comment)
+valid_comment(struct Client *source_p, char *comment)
 {
   if (strchr(comment, '"'))
   {
@@ -947,6 +948,9 @@ valid_comment(struct Client *source_p, const char *comment)
                me.name, source_p->name);
     return(0);
   }
+
+  if (strlen(comment) > REASONLEN)
+    comment[REASONLEN-1] = '\0';
 
   return(1);
 }
