@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/contrib
 #
-# $Id: Makefile.in,v 1.35.2.1 2003/05/21 23:01:13 db Exp $
+# $Id: Makefile.in,v 1.35.2.2 2003/05/21 23:33:41 db Exp $
 #
 CC		= @CC@
 RM		= @RM@
@@ -29,6 +29,7 @@ CPPFLAGS	= ${INCLUDES} @CPPFLAGS@
 SRCS =                          \
   m_clearchan.c			\
   m_classlist.c			\
+  m_ctrace.c			\
   m_flags.c                     \
   m_force.c			\
   m_jupe.c			\
