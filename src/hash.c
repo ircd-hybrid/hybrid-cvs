@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.78 2003/10/03 18:28:52 garion Exp $
+ *  $Id: hash.c,v 7.79 2003/10/03 18:32:05 garion Exp $
  */
 
 #include "stdinc.h"
@@ -602,7 +602,7 @@ hash_get_chptr(unsigned int hashv)
 {
   struct Channel *chptr;
 
-  if (hashv > HASHSIZE)
+  if (hashv >= HASHSIZE)
       return NULL;
 
   return channelTable[hashv];
