@@ -3,7 +3,7 @@
  *   Copyright (C) 1990 Jarkko Oikarinen and
  *                      University of Oulu, Co Center
  *
- * $Id: m_list.c,v 1.28 2001/03/06 02:22:26 androsyn Exp $ 
+ * $Id: m_list.c,v 1.29 2001/03/07 23:01:10 db Exp $ 
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -187,6 +187,8 @@ static int list_all_channels(struct Client *source_p)
 {
   struct Channel *chptr;
 
+  sendto_one(source_p, form_str(RPL_LISTSTART), me.name, source_p->name);
+
   for ( chptr = GlobalChannelList; chptr; chptr = chptr->nextch )
     {
       if ( !source_p->user ||
@@ -214,11 +216,17 @@ static int list_named_channel(struct Client *source_p,char *name)
   struct Channel *tmpchptr;
   char *p;
 
+  sendto_one(source_p, form_str(RPL_LISTSTART), me.name, source_p->name);
+
   if((p = strchr(name,',')))
     *p = '\0';
-  
+      
   if(*name == '\0')
-    return 0;
+    {
+      sendto_one(source_p,form_str(ERR_NOSUCHNICK),me.name, source_p->name, name);
+      sendto_one(source_p, form_str(RPL_LISTEND), me.name, source_p->name);
+      return 0;
+    }
 
   chptr = hash_find_channel(name, NullChn);
 
