@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.271 2004/01/26 03:35:16 metalrock Exp $
+ *  $Id: s_conf.h,v 7.272 2004/01/31 04:57:17 metalrock Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -48,7 +48,6 @@ struct ip_value
 
 extern FBFILE *conf_fbfile_in;
 extern char conf_line_in[256];
-extern struct AccessItem *yy_aconf;
 
 typedef enum {  
   CONF_TYPE, 
