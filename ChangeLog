@@ -1,3 +1,19 @@
+db          2003/02/03 00:08:40 EST	(20030203_1)
+
+  Modified files:
+    src                  client.c send.c 
+  Log:
+  - oops. the move of the SetDead() in client.c exit_client()
+    was the real culprit of the double send of ERROR followed by the QUIT
+    old code (from hybrid-6 as well btw) set client dead before sending
+    message to channel about QUIT, hence client never saw the double message.
+  
+  Revision  Changes    Path
+  7.322     +6 -6      ircd-hybrid-7/src/client.c
+  7.219     +5 -8      ircd-hybrid-7/src/send.c
+
+
+
 db          2003/02/02 23:33:45 EST	(20030203_0)
 
   Modified files:
@@ -34753,4 +34769,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4216 2003/02/03 04:33:47 db Exp $
+$Id: ChangeLog,v 7.4217 2003/02/03 05:08:42 db Exp $
