@@ -308,7 +308,7 @@ ac_includes_default="\
 # include <unistd.h>
 #endif"
 
-ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT MKDEP CPP EGREP SET_MAKE INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA RM CP MV LN SED AR LD YACC RANLIB ac_ct_RANLIB LEX LEXLIB LEX_OUTPUT_ROOT CRYPT_LIB SNPRINTF_C ENCSPEED SELECT_TYPE PICFLAGS MODULES_DEFINE MODULES_LIBS MOD_TARGET SSL_INCLUDES SSL_LIBS IRC_CFLAGS SEDOBJ LIBOBJS LTLIBOBJS'
+ac_subst_vars='SHELL PATH_SEPARATOR PACKAGE_NAME PACKAGE_TARNAME PACKAGE_VERSION PACKAGE_STRING PACKAGE_BUGREPORT exec_prefix prefix program_transform_name bindir sbindir libexecdir datadir sysconfdir sharedstatedir localstatedir libdir includedir oldincludedir infodir mandir build_alias host_alias target_alias DEFS ECHO_C ECHO_N ECHO_T LIBS CC CFLAGS LDFLAGS CPPFLAGS ac_ct_CC EXEEXT OBJEXT MKDEP CPP EGREP SET_MAKE INSTALL_PROGRAM INSTALL_SCRIPT INSTALL_DATA RM CP MV LN SED AR LD YACC RANLIB ac_ct_RANLIB LEX LEXLIB LEX_OUTPUT_ROOT CRYPT_LIB SNPRINTF_C ENCSPEED SELECT_TYPE CLOBBER PICFLAGS MODULES_DEFINE MODULES_LIBS MOD_TARGET SSL_INCLUDES SSL_LIBS IRC_CFLAGS SEDOBJ LIBOBJS LTLIBOBJS'
 ac_subst_files=''
 
 # Initialize some variables set by options.
@@ -849,6 +849,7 @@ Optional Features:
   --enable-kqueue         Force kqueue() usage.
   --enable-devpoll        Force usage of /dev/poll.
   --enable-rtsigio        Enable SIGIO with RT Signals (Linux only)
+  --enable-clobber        Don't preserve old binaries on make install
   --enable-assert         Enable assert().
   --enable-profile        Enable profiling
   --enable-efence         Enable ElectricFence (memory debugger).
@@ -2283,7 +2284,7 @@ fi
 if test "x$MKDEP" = "x"; then
 	echo "$as_me:$LINENO: result: assuming $CC -MM" >&5
 echo "${ECHO_T}assuming $CC -MM" >&6
-	KDEP="$CC -MM"
+	MKDEP="$CC -MM"
 fi
 
 
@@ -6211,6 +6212,15 @@ fi
 
 fi
 
+
+if test "$SELECT_TYPE" = sigio; then
+
+cat >>confdefs.h <<\_ACEOF
+#define USE_SIGIO 1
+_ACEOF
+
+fi
+
 echo "Using $SELECT_TYPE for select loop."
 
 
@@ -6221,6 +6231,13 @@ _ACEOF
 
 
 
+
+# Check whether --enable-clobber or --disable-clobber was given.
+if test "${enable_clobber+set}" = set; then
+  enableval="$enable_clobber"
+  CLOBBER=yes
+
+fi;
 
 # Check whether --enable-assert or --disable-assert was given.
 if test "${enable_assert+set}" = set; then
@@ -8541,6 +8558,7 @@ s,@CRYPT_LIB@,$CRYPT_LIB,;t t
 s,@SNPRINTF_C@,$SNPRINTF_C,;t t
 s,@ENCSPEED@,$ENCSPEED,;t t
 s,@SELECT_TYPE@,$SELECT_TYPE,;t t
+s,@CLOBBER@,$CLOBBER,;t t
 s,@PICFLAGS@,$PICFLAGS,;t t
 s,@MODULES_DEFINE@,$MODULES_DEFINE,;t t
 s,@MODULES_LIBS@,$MODULES_LIBS,;t t
@@ -9058,3 +9076,4 @@ echo "Configured limits:"
 echo "NICKLEN ................. $ac_cv_nicklen"
 echo "TOPICLEN ................ $ac_cv_topiclen"
 echo "MAXCLIENTS .............. $ac_cv_maxclients"
+echo

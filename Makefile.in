@@ -16,10 +16,13 @@
 #*   along with this program; if not, write to the Free Software
 #*   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #*
-#*   $Id: Makefile.in,v 7.45 2003/05/07 02:46:40 michael Exp $
+#*   $Id: Makefile.in,v 7.46 2003/05/08 01:12:08 joshk Exp $
 #*/
 
 RM=@RM@
+CLOBBER=@CLOBBER@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
 
 # Default make flags - you may want to uncomment this on a multicpu machine
 #MFLAGS   = -j 4
@@ -83,4 +86,9 @@ install: all
 		${MAKE} install; \
 		cd ..; \
 	done
+
+	@if [ "$(CLOBBER)" = "yes" ]; then \
+		echo Clobbering old binaries... ;\
+		find @bindir@ -name '*.old' | xargs ${RM} -f;\
+	fi
 

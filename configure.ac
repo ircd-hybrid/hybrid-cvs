@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.3 2003/05/07 23:19:01 joshk Exp $
+dnl $Id: configure.ac,v 7.4 2003/05/08 01:12:08 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -109,7 +109,7 @@ if test "$HPUX" = "yes"; then
 fi
 if test "x$MKDEP" = "x"; then
 	AC_MSG_RESULT(assuming $CC -MM)
-	KDEP="$CC -MM"	
+	MKDEP="$CC -MM"	
 fi
 
 AC_SUBST(MKDEP)
@@ -495,6 +495,13 @@ AC_CHECK_FUNC([kevent],
 
 fi
 
+dnl Sigio kind of invades the code, so this legacy define has to be 
+dnl resurrected.
+
+if test "$SELECT_TYPE" = sigio; then
+	AC_DEFINE(USE_SIGIO, 1, [Using sigio futzes around with the ircd - if you want sigio to work, this has to be 1.])
+fi
+
 echo "Using $SELECT_TYPE for select loop."
 
 AC_DEFINE_UNQUOTED(SELECT_TYPE, "$SELECT_TYPE", [This is the type of IO loop we are using])
@@ -503,6 +510,10 @@ AC_SUBST(SELECT_TYPE)
 
 dnl Debug-related options
 dnl =====================
+
+AC_ARG_ENABLE(clobber,
+AC_HELP_STRING([--enable-clobber], [Don't preserve old binaries on make install]),
+[AC_SUBST(CLOBBER, yes)])
 
 AC_ARG_ENABLE(assert,
 AC_HELP_STRING([--enable-assert],[Enable assert().]),
@@ -841,3 +852,4 @@ echo "Configured limits:"
 echo "NICKLEN ................. $ac_cv_nicklen"
 echo "TOPICLEN ................ $ac_cv_topiclen"
 echo "MAXCLIENTS .............. $ac_cv_maxclients"
+echo
