@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircdauth.h,v 7.1 1999/09/03 02:13:34 wnder Exp $
+ * $Id: ircdauth.h,v 7.2 1999/10/14 04:00:37 wnder Exp $
  */
 
 #ifndef INCLUDED_ircdauth_h
@@ -24,25 +24,34 @@
 
 struct Client;
 
-/* ircdauth.c prototypes */
+#define NOSOCK        (-1)
+#define MAXPARAMS     15
+
+#define IA_CONNECT    (1 >> 0)
+
+#define IsIAuthConnect(x)    ((x).flags &  IA_CONNECT)
+#define SetIAuthConnect(x)   ((x).flags |= IA_CONNECT)
+#define ClearIAuthConnect(x) ((x).flags &= ~IA_CONNECT)
+
+struct IrcdAuthentication
+{
+	char hostname[HOSTLEN + 1]; /* hostname of IAuth server */
+	int port;                   /* port for connection */
+	int socket;                 /* socket fd for IAuth connection */
+	unsigned int flags;         /* IA_* */
+};
+
+/*
+ * Prototypes
+ */
 
 int ConnectToIAuth();
 void IAuthQuery(struct Client *client);
 int ParseIAuth();
 
-typedef struct IrcdAuthentication IrcdAuth;
-
-#define  NOSOCK        (-1)
-#define  MAXPARAMS     15
-
-struct IrcdAuthentication
-{
-	char hostname[HOSTLEN + 1]; /* hostname of IAuth server */
-	int port; /* port for connection */
-	int socket; /* socket descriptor for IAuth connection */
-};
-
-/* external declarations */
+/*
+ * External declarations
+ */
 
 extern struct IrcdAuthentication iAuth;
 
