@@ -1,7 +1,7 @@
 ; ircd-hybrid-7 custom message file
 ; Copyright (C) 2000
 ; David Taylor <davidt@yadt.co.uk>, 2000.
-: $Id: ircd-german.lang,v 1.1 2003/03/25 01:17:51 db Exp $
+; $Id: ircd-german.lang,v 1.2 2003/03/26 00:58:25 db Exp $
 
 RPL_WELCOME:             :%s 001 %s :Wilkommen im %s Internet Relay Chat Network %s
 RPL_YOURHOST:            :%s 002 %s :Ihr host ist %s, die aktuelle version is %s
@@ -23,7 +23,7 @@ RPL_LUSEROP:             :%s 252 %s %d :Irc Operator stehen zu Ihrer Verfügung
 RPL_LUSERUNKNOWN:        :%s 253 %s %d :unbekannte Verbindungen
 RPL_LUSERCHANNELS:       :%s 254 %s %d :chat Räume stehen zu Ihrer Verfügung
 RPL_LUSERME:             :%s 255 %s :Ich beherberge %d Besucher und %d Server sind mit mir verbunden
-RPL_ADMINME:             :%s 256 %s :Administrativa für %s
+RPL_ADMINME:             :%s 256 %s :Administrative Informationen für %s
 RPL_TRACELOG:            :%s 261 %s Datei %s %d
 RPL_ENDOFTRACE:          :%s 262 %s %s :Ende der TRACE Nachricht
 RPL_LOAD2HI:             :%s 263 %s :Zur Zeit kann Ihre Anfrage nicht bearbeitet werden. Der Server ist zu beschäftigt.
@@ -42,7 +42,7 @@ RPL_NOTOPIC:             :%s 331 %s %s :Es ist kein Thema für diesen Raum erhätl
 RPL_ENDOFINVEXLIST:      :%s 347 %s %s :Ende der Liste von Einladungen für diesen Raum
 RPL_ENDOFEXCEPTLIST:     :%s 349 %s %s :Ende der Liste aller Ausnahmen für diesen Raum
 RPL_CLOSING:             :%s 362 %s %s :Geschlossen. Status = %d
-RPL_CLOSEEND:            :%s 363 %s %d: Verbindung getrennt
+RPL_CLOSEEND:            :%s 363 %s %d :Verbindung getrennt
 RPL_ENDOFLINKS:          :%s 365 %s %s :Ende des /LINKS Reportes.
 RPL_ENDOFNAMES:          :%s 366 %s %s :Ende des /NAMES Reportes.
 RPL_ENDOFBANLIST:        :%s 368 %s %s :Ende der ban Liste für diesen Raum
@@ -56,7 +56,7 @@ ERR_NOSUCHNICK:          :%s 401 %s %s :Diesen Raum oder Nicknamen, gibt es nich
 ERR_NOSUCHSERVER:        :%s 402 %s %s :Diesen Server gibt es nicht
 ERR_NOSUCHCHANNEL:       :%s 403 %s %s :Diesen chat Raum gibt es nicht
 ERR_CANNOTSENDTOCHAN:    :%s 404 %s %s :Ihre Nachricht konnte nicht an den chat Raum gesendet werden. Vielleicht ist er moderiert
-ERR_TOOMANYCHANNELS:     :%s 405 %s %s :Sie sind in zu veilen chat Räumen gleichzeitig
+ERR_TOOMANYCHANNELS:     :%s 405 %s %s :Sie sind in zu vielen chat Räumen gleichzeitig
 ERR_WASNOSUCHNICK:       :%s 406 %s %s :Diesen Nicknamen hat es nie gegeben
 ERR_TOOMANYTARGETS:      :%s 407 %s %s :Die Nachricht wurde an zu viele Personen geschickt. Nur %d wurden weitergeleitet
 ERR_NOORIGIN:            :%s 409 %s :von wem kommt diese Nachricht?
@@ -68,7 +68,7 @@ ERR_UNKNOWNCOMMAND:      :%s 421 %s %s :Unbekannter Befehl
 ERR_NOMOTD:              :%s 422 %s :Es gibt kein MOTD. Die MOTD Datei ist nicht vorhanden
 ERR_NOADMININFO:         :%s 423 %s %s :Es stehen keine Administrativa zur Verfügung
 ERR_NONICKNAMEGIVEN:     :%s 431 %s :Kein Nickname wurde angegeben
-ERR_ERRONEUSNICKNAME:    :%s 432 %s %s :Diesen Nicknamen können Sie nucht benutzen
+ERR_ERRONEUSNICKNAME:    :%s 432 %s %s :Diesen Nicknamen können Sie nicht benutzen
 ERR_NICKNAMEINUSE:       :%s 433 %s %s :Dieser Nickname wird schon verwendet
 ERR_NICKCOLLISION:       :%s 436 %s %s :Nicknamen Kollision deswegen KILL
 ERR_ERR_UNAVAILRESOURCE: :%s 437 %s %s :Der Nickname oder Raum steht vorübergehend nicht zur Verfügung
