@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.300 2002/04/28 08:14:26 androsyn Exp $
+ *  $Id: s_conf.c,v 7.301 2002/05/01 17:24:03 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -1010,6 +1010,9 @@ attach_conf(struct Client *client_p,struct ConfItem *aconf)
 
         }
     }
+
+  if(aconf->status & FLAGS2_RESTRICTED)
+    SetRestricted(client_p);
 
   lp = make_dlink_node();
 

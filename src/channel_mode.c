@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.34 2002/04/30 17:43:19 leeh Exp $
+ *  $Id: channel_mode.c,v 7.35 2002/05/01 17:24:02 leeh Exp $
  */
 
 #include "tools.h"
@@ -1319,6 +1319,17 @@ chm_op(struct Client *client_p, struct Client *source_p,
 
   if ((dir == MODE_QUERY) || (parc <= *parn))
     return;
+
+  if(IsRestricted(source_p) && (dir == MODE_ADD))
+  {
+    if(!(*errors & SM_ERR_RESTRICTED))
+      sendto_one(source_p, 
+                ":%s NOTICE %s :*** Notice -- You are restricted and cannot chanop others",
+		me.name, source_p->name);
+    
+    *errors |= SM_ERR_RESTRICTED;
+    return;
+  }
 
   opnick = parv[(*parn)++];
 
