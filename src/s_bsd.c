@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.26 2000/01/24 22:22:30 db Exp $
+ *  $Id: s_bsd.c,v 7.27 2000/02/02 02:57:17 tomh Exp $
  */
 #include "s_bsd.h"
 #include "class.h"
@@ -1224,6 +1224,7 @@ int read_message(time_t delay, unsigned char mask)        /* mika */
 #define CHECK_PFD(thisfd)                     \
         if (pfd->fd != thisfd) {              \
                 pfd = &poll_fdarray[nbr_pfds++];\
+                poll_fdarray[nbr_pfds].fd = -1; \
                 pfd->fd     = thisfd;           \
                 pfd->events = 0;                \
         }
