@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: numeric.h,v 7.30 2002/10/30 03:33:22 bill Exp $
+ *  $Id: numeric.h,v 7.31 2002/11/27 15:46:24 db Exp $
  */
 
 #ifndef INCLUDED_numeric_h
@@ -480,7 +480,7 @@ extern const char* form_str(int);
 #define ERR_TOOMANYKNOCK     712
 #define ERR_CHANOPEN         713
 #define ERR_KNOCKONCHAN      714
-#define ERR_KNOCKDISABLED    714
+#define ERR_KNOCKDISABLED    715
 
 #define ERR_LAST_ERR_MSG     999
 
