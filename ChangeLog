@@ -1,3 +1,18 @@
+jmallett    2002/02/27 21:13:18 EST	(20020228_0)
+
+  Modified files:
+    .                    RELNOTES 
+  Log:
+  Add a list of things which have changed since the last beta and which need
+  testing to the Release Notes, as suggested by Wohali.
+  
+  Reviewed by:    wcampbell, on IRC
+  
+  Revision  Changes    Path
+  1.13      +24 -1     ircd-hybrid-7/RELNOTES
+
+
+
 androsyn    2002/02/27 14:41:40 EST	(20020227_3)
 
   Modified files:
@@ -23398,4 +23413,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3462 2002/02/27 19:41:46 androsyn Exp $
+$Id: ChangeLog,v 7.3463 2002/02/28 02:13:24 jmallett Exp $
