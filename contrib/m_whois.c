@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.1 2002/08/19 05:23:14 db Exp $
+ *  $Id: m_whois.c,v 1.2 2002/08/20 01:32:17 db Exp $
  */
 
 #include "stdinc.h"
@@ -49,14 +49,6 @@
    remote (or local) WHOIS.
    Added 2002-07-15 by Gozem
 */
-
-#define form_str_RPL_WHOISACTUALLY ":%s 338 %s :%s is actually %s@%s [%s]"
-
-
-
-
-
-
 
 
 static int do_whois(struct Client *client_p, struct Client *source_p,
@@ -201,7 +193,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-const char *_version = "$Revision: 1.1 $";
+const char *_version = "$Revision: 1.2 $";
 #endif
 /*
 ** m_whois
@@ -593,9 +585,7 @@ static void whois_person(struct Client *source_p,struct Client *target_p, int gl
   if ( (glob == 1) || (MyConnect(target_p) && (IsOper(source_p) ||
        !ConfigServerHide.hide_servers)) || (target_p == source_p) )
     {
-      /* A little hack here since RPL_WHOISACTUALLY doesn't exist in
-         form_str() -Gozem */
-      sendto_one(source_p, form_str_RPL_WHOISACTUALLY, 
+      sendto_one(source_p, form_str(RPL_WHOISACTUALLY), 
 		 me.name, source_p->name, target_p->name,
 		 target_p->username, target_p->host, 
 		 show_ip(source_p, target_p) ? 
