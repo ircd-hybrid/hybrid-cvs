@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.96 2001/08/03 13:10:29 leeh Exp $
+ *   $Id: m_sjoin.c,v 1.97 2001/08/05 10:42:04 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -288,31 +288,13 @@ static void ms_sjoin(struct Client *client_p,
     tstosend = oldts;
   else if (newts < oldts)
     {
-      if (ServerInfo.no_hack_ops)
-	{
-	  keep_our_modes = NO;
-	  chptr->channelts = tstosend = newts;
-	}
-      else
-	{
-	  if (doesop)
-	    keep_our_modes = NO;
-	  if (chptr->opcount && !doesop)
-	    tstosend = oldts;
-	  else
-	    chptr->channelts = tstosend = newts;
-	}
+      keep_our_modes = NO;
+      chptr->channelts = tstosend = newts;
     }
   else
     {
-      if (chptr->opcount)
-        keep_new_modes = NO;
-      if (doesop && !chptr->opcount)
-        {
-          chptr->channelts = tstosend = newts;
-        }
-      else
-        tstosend = oldts;
+      keep_new_modes = NO;
+      tstosend = oldts;
     }
 
   if (!keep_new_modes)

@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.122 2001/08/03 13:10:26 leeh Exp $
+ * $Id: client.h,v 7.123 2001/08/05 10:42:03 leeh Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -372,8 +372,8 @@ struct LocalUser
 /*
  * ts stuff
  */
-#define TS_CURRENT      3       /* current TS protocol version */
-#define TS_MIN          1       /* minimum supported TS protocol version */
+#define TS_CURRENT      5       /* current TS protocol version */
+#define TS_MIN          3       /* minimum supported TS protocol version */
 #define TS_DOESTS       0x20000000
 #define DoesTS(x)       ((x)->tsinfo == TS_DOESTS)
 
