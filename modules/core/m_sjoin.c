@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.102 2001/08/22 13:29:07 leeh Exp $
+ *   $Id: m_sjoin.c,v 1.103 2001/08/22 13:41:44 leeh Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -125,11 +125,10 @@ static void ms_sjoin(struct Client *client_p,
   int i;
   dlink_node *m;
 
-  /* changed from \0 to NULL.. */
-  *buf = NULL;
-  *sjbuf = NULL;
-  *sjbuf_nh = NULL;
-  
+  *buf = '\0';
+  *sjbuf = '\0';
+  *sjbuf_nh = '\0';
+
   if (IsClient(source_p) || parc < 5)
     return;
   if (!IsChannelName(parv[2]))
