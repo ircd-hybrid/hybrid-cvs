@@ -34,7 +34,7 @@
  *                mode * -p etc. if flag was clear
  *
  *
- * $Id: channel.c,v 7.27 2000/01/04 00:37:13 db Exp $
+ * $Id: channel.c,v 7.28 2000/01/04 01:02:40 db Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -3399,6 +3399,7 @@ static void destroy_channel(struct Channel *chptr)
 
           if( tmpCurrentClient->value.chptr == chptr)
             {
+              sptr->user->joined--;
               *currentClient = tmpCurrentClient->next;
               free_link(tmpCurrentClient);
             }
