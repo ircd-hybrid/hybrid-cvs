@@ -1,3 +1,16 @@
+androsyn    2002/02/04 07:51:37 EST	(20020204_6)
+
+  Modified files:
+    src                  listener.c 
+  Log:
+  Check errno, before we whine to the oper about being able to accept the
+  connection or not.
+  
+  Revision  Changes    Path
+  7.63      +3 -0      ircd-hybrid-7/src/listener.c
+
+
+
 androsyn    2002/02/04 02:03:54 EST	(20020204_5)
 
   Modified files:
@@ -22036,4 +22049,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3371 2002/02/04 07:04:00 androsyn Exp $
+$Id: ChangeLog,v 7.3372 2002/02/04 12:51:43 androsyn Exp $
