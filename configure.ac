@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.71 2003/06/26 01:25:23 joshk Exp $
+dnl $Id: configure.ac,v 7.72 2003/06/26 01:41:55 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -8,7 +8,7 @@ dnl said functions need to be just about as complex as they already are.
 AC_PREREQ(2.57)
 
 dnl Sneaky way to get an Id tag into the configure script
-AC_COPYRIGHT([$Id: configure.ac,v 7.71 2003/06/26 01:25:23 joshk Exp $])
+AC_COPYRIGHT([$Id: configure.ac,v 7.72 2003/06/26 01:41:55 joshk Exp $])
 
 AC_INIT([ircd-hybrid],[7-CURRENT])
 
@@ -155,6 +155,7 @@ if test ! -z "$MKDEP"; then
 elif test "$SunWorkShop" = yes; then
 	AC_MSG_RESULT([Sun WorkShop/Forte using $CC -xM])
 	MKDEP="$CC -xM"
+	STDOUT="> .depend 2> /dev/null"
 elif test ! -z "$MAKEDEPEND"; then
 	AC_MSG_RESULT(X11 makedepend)
 	MKDEP="$MAKEDEPEND -f-"
@@ -992,12 +993,12 @@ if test "$shared_modules" = yes; then
 	dnl then for odd compilers, then if no PICFLAGS were set up,
 	dnl check for GCC and set defaults, or else error. -jmallett
 	if test "$SGS" = "yes"; then
-		AC_MSG_RESULT(SVR4 Software Generation System interfaces: -KPIC -DPIC -G)
+		AC_MSG_RESULT([SVR4 SGS interfaces: -KPIC -DPIC -G])
 		PICFLAGS="-KPIC -DPIC -G"
 	fi
 	
 	if test "$AppleGCC" = "yes"; then
-		AC_MSG_RESULT(Darwin or Mac OS X - Assuming you want to make Mach-O bundles: -fno-common -bundle -flat_namespace -undefined suppress)
+		AC_MSG_RESULT([Darwin Mach-O bundles: -fno-common -bundle -flat_namespace -undefined suppress])
 		PICFLAGS="-fno-common -bundle -flat_namespace -undefined suppress"
 	fi
 	dnl Please note, that on HPUX two different stages of module compilation occurs, since
@@ -1010,7 +1011,7 @@ if test "$shared_modules" = yes; then
 	if test "$HPUX" = "yes" -a "$CC" != gcc; then
 		AC_MSG_RESULT(HP-UX cc: +z -r -q -n)
 		PICFLAGS="+z -r -q -n -c"
-		AC_MSG_CHECKING(if +ESfic is required on this platform)
+		AC_MSG_CHECKING([if +ESfic is required on this platform])
 		
 		if expr "`$CC +ESfic 2>&1`" : ".*neither supported.*" >/dev/null; then 
 			AC_MSG_RESULT(no)
