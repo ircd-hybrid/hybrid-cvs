@@ -5,12 +5,11 @@
  *
  * Adrian Chadd <adrian@creative.net.au>
  *
- * $Id: tools.h,v 1.5 2000/12/03 12:18:13 db Exp $
+ * $Id: tools.h,v 1.6 2000/12/04 01:18:34 db Exp $
  */
 #ifndef __TOOLS_H__
 #define __TOOLS_H__
 
-#undef DEBUG_DLINK
 
 /*
  * double-linked-list stuff
@@ -23,10 +22,6 @@ struct _dlink_node {
     dlink_node *prev;
     dlink_node *next;
 
-/* XXX Temporary ! relax adrian */
-#ifdef DEBUG_DLINK
-int ref_count;
-#endif
 };
   
 struct _dlink_list {
