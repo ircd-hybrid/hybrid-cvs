@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.113 2001/03/12 06:37:01 a1kmm Exp $
+ *  $Id: s_bsd.c,v 7.114 2001/03/28 04:50:26 androsyn Exp $
  */
 #include "config.h"
 #include "fdlist.h"
@@ -613,7 +613,7 @@ comm_connect_tcp(int fd, const char *host, u_short port,
     if(inetpton(DEF_FAM, host, S_ADDR(&fd_table[fd].connect.hostaddr)) <=0)
     {
         /* Send the DNS request, for the next level */
-        fd_table[fd].dns_query = BlockHeapAlloc(dns_blk);
+        fd_table[fd].dns_query = MyMalloc(sizeof(struct DNSQuery));
         fd_table[fd].dns_query->ptr = &fd_table[fd];
         fd_table[fd].dns_query->callback = comm_connect_dns_callback;
 	adns_gethost(host, aftype, fd_table[fd].dns_query);
@@ -684,10 +684,10 @@ comm_connect_dns_callback(void *vptr, adns_answer *reply)
         /* Yes, callback + return */
         comm_connect_callback(F->fd, COMM_ERR_DNS);
 	MyFree(reply);
-	BlockHeapFree(dns_blk, F->dns_query);
+	MyFree(F->dns_query);
 	F->dns_query = NULL;	
         return;
-      }
+      } 
 
     /* No error, set a 10 second timeout */
     comm_settimeout(F->fd, 30, comm_connect_timeout, NULL);

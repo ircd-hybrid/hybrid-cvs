@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.c,v 7.61 2001/03/06 15:53:37 toot Exp $
+ *   $Id: s_auth.c,v 7.62 2001/03/28 04:50:25 androsyn Exp $
  *
  * Changes:
  *   July 6, 1999 - Rewrote most of the code here. When a client connects
@@ -425,7 +425,7 @@ void start_auth(struct Client* client)
 	/* IAuthQuery(client); */
 #endif /* 0 */
 
-  client->localClient->dns_query = BlockHeapAlloc(dns_blk);
+  client->localClient->dns_query = MyMalloc(sizeof(struct DNSQuery));
   client->localClient->dns_query->ptr = auth;
   client->localClient->dns_query->callback = auth_dns_callback;
   sendheader(client, REPORT_DO_DNS);

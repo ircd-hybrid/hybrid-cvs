@@ -1,5 +1,5 @@
 /*
- * $Id: adns.c,v 7.15 2001/03/06 02:22:49 androsyn Exp $
+ * $Id: adns.c,v 7.16 2001/03/28 04:50:25 androsyn Exp $
  * adns.c  functions to enter libadns 
  *
  * Written by Aaron Sethman <androsyn@ratbox.org>
@@ -50,7 +50,6 @@ void restart_resolver(void)
 void init_resolver(void)
 {
 
-	dns_blk = BlockHeapCreate(sizeof(struct DNSQuery), DNS_BLOCK_SIZE);
 	adns_init(&dns_state, adns_if_noautosys, 0);	
 	eventAdd("timeout_adns", timeout_adns, NULL, 1, 0);
 	dns_select();
