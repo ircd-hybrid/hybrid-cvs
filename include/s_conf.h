@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.54 2000/12/24 01:43:54 ejb Exp $
+ * $Id: s_conf.h,v 7.55 2000/12/24 03:01:21 ejb Exp $
  */
 
 #include <sys/param.h>
@@ -217,7 +217,8 @@ typedef struct
   int         client_exit;
   int         maximum_links;
 	int       oper_only_umodes;
-	
+	int       max_targets;
+
 } ConfigFileEntryType;
 
 /* bleh. have to become global. */

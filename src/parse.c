@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.54 2000/12/24 02:00:23 ejb Exp $
+ *   $Id: parse.c,v 7.55 2000/12/24 03:01:28 ejb Exp $
  */
 #include "parse.h"
 #include "client.h"
@@ -267,7 +267,7 @@ int parse(struct Client *cptr, char *buffer, char *bufend)
 				  if (ap[0] == ':' || (mpara && (i >= mpara))) {
 					  if ( ap < end ) /* more tokens to follow */
 						  ap [ strlen (ap) ] = ' '; 
-					  longarg = ap;
+					  longarg = ap + 1;
 					  break;
 				  }
 				  
