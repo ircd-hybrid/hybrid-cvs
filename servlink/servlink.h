@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: servlink.h,v 1.18 2001/06/03 17:39:27 davidt Exp $
+ *   $Id: servlink.h,v 1.19 2001/06/04 14:30:56 davidt Exp $
  */
 
 #ifndef INCLUDED_servlink_servlink_h
@@ -38,9 +38,9 @@
 #define REMOTE_R                fds[4]
 #define REMOTE_W                REMOTE_R
 
-#undef SERVLINK_DEBUG
+#undef  SERVLINK_DEBUG
 
-#define READLEN                  2048
+#define READLEN                  16384
 
 #ifdef HAVE_LIBZ
 #define BUFLEN                   READLEN * 6 /* allow for decompression */

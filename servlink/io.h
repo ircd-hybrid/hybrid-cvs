@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: io.h,v 1.7 2001/06/03 17:39:27 davidt Exp $
+ *   $Id: io.h,v 1.8 2001/06/04 14:30:55 davidt Exp $
  */
 
 #ifndef INCLUDED_servlink_io_h
@@ -32,6 +32,7 @@
 
 #define FD_NAME(fd)     (fd_name(fd))
 
+extern void io_loop(int nfds);
 extern void write_data(void);
 extern void read_data(void);
 extern void write_ctrl(void);

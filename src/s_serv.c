@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.183 2001/06/03 17:39:19 davidt Exp $
+ *   $Id: s_serv.c,v 7.184 2001/06/04 14:30:48 davidt Exp $
  */
 
 #include <sys/types.h>
@@ -116,15 +116,15 @@ struct Capability captab[] = {
 
 #ifdef HAVE_LIBCRYPTO
 struct EncCapability enccaptab[NUM_CAP_ENC+1] = {
-  {     "BF/128",     CAP_ENC_BF_128, 16,     CIPHER_BF },
   {     "BF/256",     CAP_ENC_BF_256, 32,     CIPHER_BF },
+  {     "BF/128",     CAP_ENC_BF_128, 16,     CIPHER_BF },
   {   "CAST/128",   CAP_ENC_CAST_128, 16,   CIPHER_CAST },
-  {     "DES/56",     CAP_ENC_DES_56,  8,    CIPHER_DES },
-  {   "3DES/168",   CAP_ENC_3DES_168, 24,   CIPHER_3DES },
   {   "IDEA/128",   CAP_ENC_IDEA_128, 16,   CIPHER_IDEA },
-  {  "RC5.8/128",  CAP_ENC_RC5_8_128, 16,  CIPHER_RC5_8 },
-  { "RC5.12/128", CAP_ENC_RC5_12_128, 16, CIPHER_RC5_12 },
   { "RC5.16/128", CAP_ENC_RC5_16_128, 16, CIPHER_RC5_16 },
+  { "RC5.12/128", CAP_ENC_RC5_12_128, 16, CIPHER_RC5_12 },
+  {  "RC5.8/128",  CAP_ENC_RC5_8_128, 16,  CIPHER_RC5_8 },
+  {   "3DES/168",   CAP_ENC_3DES_168, 24,   CIPHER_3DES },
+  {     "DES/56",     CAP_ENC_DES_56,  8,    CIPHER_DES },
 
   {            0,                  0,  0,             0 }
 };
