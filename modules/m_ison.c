@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_ison.c,v 1.1 2000/11/08 23:57:28 ejb Exp $
+ *   $Id: m_ison.c,v 1.2 2000/11/23 23:04:13 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -45,6 +45,8 @@ _modinit(void)
 
 static char buf[BUFSIZE];
 
+char *_version = "20001122";
+
 /*
  * m_ison added by Darren Reed 13/8/91 to act as an efficent user indicator
  * with respect to cpu/bandwidth used. Implemented for NOTIFY feature in
@@ -54,13 +56,6 @@ static char buf[BUFSIZE];
  * format:
  * ISON :nicklist
  */
-/*
- * Take care of potential nasty buffer overflow problem 
- * -Dianora
- *
- */
-
-
 int m_ison(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 {
   struct Client *acptr;

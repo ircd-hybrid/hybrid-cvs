@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_capab.c,v 1.1 2000/11/08 23:57:24 ejb Exp $
+ *   $Id: m_capab.c,v 1.2 2000/11/23 23:04:12 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -41,6 +41,8 @@ _modinit(void)
 {
   mod_add_cmd(MSG_CAPAB, &capab_msgtab);
 }
+
+char *_version = "20001122";
 
 /*
  * ms_capab - CAPAB message handler

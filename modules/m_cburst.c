@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_cburst.c,v 1.2 2000/11/13 22:16:27 db Exp $
+ * $Id: m_cburst.c,v 1.3 2000/11/23 23:04:12 db Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -47,6 +47,8 @@ _modinit(void)
 {
   mod_add_cmd(MSG_CBURST, &cburst_msgtab);
 }
+
+char *_version = "20001122";
 
 /*
 ** m_cburst

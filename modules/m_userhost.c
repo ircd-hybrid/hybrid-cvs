@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_userhost.c,v 1.6 2000/11/23 22:59:27 db Exp $
+ *   $Id: m_userhost.c,v 1.7 2000/11/23 23:04:14 db Exp $
  */
 
 #include "handlers.h"
@@ -53,8 +53,6 @@ char *_version = "20001122";
  * the need for complicated requests like WHOIS. It returns user/host
  * information only (no spurious AWAY labels or channels).
  */
-/* rewritten Diane Bruce 1999 */
-
 int     m_userhost(struct Client *cptr,
                    struct Client *sptr,
                    int parc,

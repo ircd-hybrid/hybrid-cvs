@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_die.c,v 1.2 2000/11/09 09:46:57 ejb Exp $
+ *   $Id: m_die.c,v 1.3 2000/11/23 23:04:13 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -43,6 +43,8 @@ _modinit(void)
 {
   mod_add_cmd(MSG_DIE, &die_msgtab);
 }
+
+char *_version = "20001122";
 
 /*
  * mo_die - DIE command handler
