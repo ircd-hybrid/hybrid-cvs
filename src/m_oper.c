@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_oper.c,v 7.2 1999/08/22 06:30:33 tomh Exp $
+ *   $Id: m_oper.c,v 7.3 1999/09/01 03:47:32 tomh Exp $
  */
 
 #include "m_commands.h"
@@ -189,13 +189,16 @@ int m_oper(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
             {
               sptr->umodes |= (LOCOP_UMODES);
             }
-
-          /* A local oper can't global kill ever, or do remote re-routes
+#if 0
+          /*
+           * XXX - BUG this trashes the clients port
+           *
+           * A local oper can't global kill ever, or do remote re-routes
            * or glines. Make sure thats enforced here.
            */
-
           sptr->port &= 
-            ~(CONF_OPER_GLOBAL_KILL|CONF_OPER_REMOTE|CONF_OPER_GLINE);
+            ~(CONF_OPER_GLOBAL_KILL | CONF_OPER_REMOTE | CONF_OPER_GLINE);
+#endif
         }
       else
         {

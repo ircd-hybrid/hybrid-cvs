@@ -19,7 +19,7 @@
  *
  * "s_user.h". - Headers file.
  *
- * $Id: s_user.h,v 7.0 1999/08/01 21:19:46 lusky Exp $
+ * $Id: s_user.h,v 7.1 1999/09/01 03:47:29 tomh Exp $
  *
  */
 #ifndef INCLUDED_s_user_h
@@ -38,6 +38,10 @@ extern time_t LastUsedWallops;
 #endif
 
 
+#ifdef BOTCHECK
+extern int bot_check(const char* host);
+#endif
+
 extern int   user_mode(struct Client *, struct Client *, int, char **);
 extern void  send_umode (struct Client *, struct Client *,
                          int, int, char *);
@@ -45,5 +49,7 @@ extern void  send_umode_out (struct Client*, struct Client *, int);
 extern int   show_lusers(struct Client *, struct Client *, int, char **);
 extern void  show_opers(struct Client* client);
 
+extern int do_user(char* nick, struct Client* cptr, struct Client* sptr,
+                   char* username, char *host, char *server, char *realname);
 
 #endif

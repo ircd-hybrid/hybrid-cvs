@@ -17,10 +17,8 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.7 1999/08/21 02:52:16 tomh Exp $
+ * $Id: ircd.c,v 7.8 1999/09/01 03:47:32 tomh Exp $
  */
-
-
 #include "ircd.h"
 #include "channel.h"
 #include "class.h"
@@ -67,7 +65,6 @@
 
 #ifdef SETUID_ROOT
 #include <sys/lock.h>
-#include <unistd.h>
 #endif /* SETUID_ROOT */
 
 /*
