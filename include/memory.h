@@ -1,9 +1,9 @@
-/* $Id: memory.h,v 7.14 2001/04/20 06:10:55 a1kmm Exp $ */
+/* $Id: memory.h,v 7.15 2001/04/21 16:01:40 toot Exp $ */
 
 #ifndef _I_MEMORY_H
 #define _I_MEMORY_H
 
-#define MEMDEBUG
+#undef MEMDEBUG
 
 #include "ircd_defs.h"
 #include <stdlib.h>
@@ -33,7 +33,7 @@ extern void        _DupString(char**, const char*, char*, int);
 #define MyRealloc(x,y) _MyRealloc(x, y, __FILE__, __LINE__)
 #define MyFree(x) _MyFree(x, __FILE__, __LINE__)
 #define DupString(x,y) _DupString(&x, y, __FILE__, __LINE__)
-#else /* DEBUGMEM */
+#else /* MEMDEBUG */
 extern void*       _MyMalloc(size_t size);
 extern void*       _MyRealloc(void* p, size_t size);
 extern void        _MyFree(void* p);
@@ -42,5 +42,5 @@ extern void        _DupString(char**, const char *);
 #define MyRealloc(x,y) _MyRealloc(x, y)
 #define MyFree(x) _MyFree(x)
 #define DupString(x,y) _DupString(&x, y)
-#endif /* !DEBUGMEM */
+#endif /* !MEMDEBUG */
 #endif /* _I_MEMORY_H */
