@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_devpoll.c,v 7.9 2001/06/11 19:20:06 androsyn Exp $
+ *  $Id: s_bsd_devpoll.c,v 7.10 2001/06/12 21:23:18 androsyn blalloc.c $
  */
 #include "config.h"
 #ifdef USE_DEVPOLL
@@ -199,7 +199,7 @@ void init_netio(void)
  */
 void
 comm_setselect(int fd, fdlist_t list, unsigned int type, PF * handler,
-    void *client_data, unsigned long timeout)
+    void *client_data, time_t timeout)
 {  
 	fde_t *F = &fd_table[fd];
 	assert(fd >= 0);
