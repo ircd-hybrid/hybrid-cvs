@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.235 2001/06/10 06:46:24 db Exp $
+ * $Id: channel.c,v 7.236 2001/06/10 13:13:43 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -4044,13 +4044,14 @@ void cleanup_channels(void *unused)
 
    if (uplink != NULL)
      {
+       /* XXX The assert disapears when NDEBUG is set */
        assert (MyConnect(uplink) == 1);
-     }
 
-   if (!MyConnect(uplink))
-     {
-       ilog(L_ERROR, "non-local uplink [%s]", uplink->name);
-       uplink = NULL;
+       if (!MyConnect(uplink))
+	 {
+	   ilog(L_ERROR, "non-local uplink [%s]", uplink->name);
+	   uplink = NULL;
+	 }
      }
 
    for(chptr = GlobalChannelList; chptr; chptr = next_chptr)
