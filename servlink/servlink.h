@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: servlink.h,v 1.20 2002/01/05 02:15:38 db Exp $
+ *   $Id: servlink.h,v 1.21 2002/11/24 08:27:14 jmallett Exp $
  */
 
 #ifndef INCLUDED_servlink_servlink_h
@@ -62,7 +62,7 @@
 struct crypt_state
 {
   EVP_CIPHER_CTX       ctx;
-  EVP_CIPHER           *cipher;
+  const EVP_CIPHER     *cipher;
   unsigned int          keylen;         /* bytes */
   unsigned char        *key;
   unsigned int          ivlen;          /* bytes */
