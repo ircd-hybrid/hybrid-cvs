@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.6 1999/08/19 00:19:10 db Exp $
+ *   $Id: send.c,v 7.7 1999/08/21 02:52:17 tomh Exp $
  */
 #include "send.h"
 #include "channel.h"
@@ -841,7 +841,7 @@ sendto_match_butone(struct Client *one, struct Client *from, char *mask,
   va_start(args, pattern);
 
   /* scan the local clients */
-  for(cptr = local_cptr_list; cptr; cptr = cptr->next_local_client)
+  for(cptr = LocalClientList; cptr; cptr = cptr->next_local)
     {
       if (cptr == one)  /* must skip the origin !! */
         continue;
@@ -905,18 +905,18 @@ sendto_ops_flags(int flags, const char *pattern, ...)
 
   if( flags & FLAGS_SKILL)
     {
-      for(cptr = local_cptr_list; cptr; cptr = cptr->next_local_client)
+      for(cptr = LocalClientList; cptr; cptr = cptr->next_local)
         {
           if(cptr->umodes & FLAGS_SKILL)
             {
-              (void)ircsprintf(nbuf, ":%s NOTICE %s :*** Notice -- ",
+              ircsprintf(nbuf, ":%s NOTICE %s :*** Notice -- ",
                                me.name, cptr->name);
       
-              (void)strncat(nbuf, pattern, sizeof(nbuf) - strlen(nbuf));
+              strncat(nbuf, pattern, sizeof(nbuf) - strlen(nbuf));
       
               vsendto_one(cptr, nbuf, args);
             }
-        } /* for(cptr = local_cptr_list; cptr; cptr = cptr->next_local_client) */
+        } /* for(cptr = LocalClientList; cptr; cptr = cptr->next_local) */
     }
 
 
@@ -956,13 +956,13 @@ sendto_ops(const char *pattern, ...)
 
   va_start(args, pattern);
   
-  for (cptr = local_cptr_list; cptr; cptr = cptr->next_local_client)
+  for (cptr = LocalClientList; cptr; cptr = cptr->next_local)
     {
       if (SendServNotice(cptr))
         {
-          (void)ircsprintf(nbuf, ":%s NOTICE %s :*** Notice -- ",
+          ircsprintf(nbuf, ":%s NOTICE %s :*** Notice -- ",
                            me.name, cptr->name);
-          (void)strncat(nbuf, pattern, sizeof(nbuf) - strlen(nbuf));
+          strncat(nbuf, pattern, sizeof(nbuf) - strlen(nbuf));
           
           vsendto_one(cptr, nbuf, args);
         }

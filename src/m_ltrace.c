@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_ltrace.c,v 7.0 1999/08/01 21:19:47 lusky Exp $
+ *   $Id: m_ltrace.c,v 7.1 1999/08/21 02:52:16 tomh Exp $
  */
 #include "m_commands.h"
 #include "class.h"
@@ -34,6 +34,7 @@
 #include "s_serv.h"
 #include "send.h"
 
+#include <assert.h>
 #include <string.h>
 #include <time.h>
 
@@ -210,7 +211,10 @@ int     m_ltrace(struct Client *cptr,
         case STAT_ME:
           break;
         case STAT_CLIENT:
-          /* Well, most servers don't have a LOT of OPERs... let's show them too */
+          /*
+           *  Well, most servers don't have a LOT of OPERs... 
+           * let's show them too
+           */
           if ((IsAnOper(sptr) &&
               (MyClient(sptr) || !(dow && IsInvisible(acptr))))
               || !dow || IsAnOper(acptr))

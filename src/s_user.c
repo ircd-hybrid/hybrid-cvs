@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.6 1999/08/17 03:51:13 lusky Exp $
+ *  $Id: s_user.c,v 7.7 1999/08/21 02:52:17 tomh Exp $
  */
 #include "s_user.h"
 #include "channel.h"
@@ -883,11 +883,11 @@ static int register_user(struct Client *cptr, struct Client *sptr,
 
   if (MyConnect(sptr))
     {
-      if(local_cptr_list)
-        local_cptr_list->previous_local_client = sptr;
-      sptr->previous_local_client = (struct Client *)NULL;
-      sptr->next_local_client = local_cptr_list;
-      local_cptr_list = sptr;
+      if (LocalClientList)
+        LocalClientList->prev_local = sptr;
+      sptr->prev_local = NULL;
+      sptr->next_local = LocalClientList;
+      LocalClientList = sptr;
     }
   
   sendto_serv_butone(cptr, "NICK %s %d %lu %s %s %s %s :%s",

@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.6 1999/08/16 01:33:32 tomh Exp $
+ * $Id: ircd.c,v 7.7 1999/08/21 02:52:16 tomh Exp $
  */
 
 
@@ -132,7 +132,6 @@ struct Client me;                     /* That's me */
 
 struct Client* GlobalClientList = 0; /* Pointer to beginning of Client list */
 /* client pointer lists -Dianora */ 
-struct Client *local_cptr_list = NULL;
 struct Client *oper_cptr_list  = NULL;
 struct Client *serv_cptr_list  = NULL;
 
