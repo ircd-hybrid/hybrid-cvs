@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.277 2003/04/17 11:25:40 michael Exp $
+ *  $Id: ircd_parser.y,v 1.278 2003/04/18 21:03:38 michael Exp $
  */
 
 %{
@@ -536,16 +536,19 @@ serverinfo_vhost: VHOST '=' QSTRING ';'
     {
       if (irc_getaddrinfo(yylval.string, NULL, &hints, &res))
         ilog(L_ERROR, "Invalid netmask for server vhost(%s)", yylval.string);
+      else
+      {
+        ServerInfo.specific_ipv4_vhost = 1;
 
-      ServerInfo.specific_ipv4_vhost = 1;
+        assert(res != NULL);
 
-      assert(NULL != res);
-      memcpy(&ServerInfo.ip, res->ai_addr, res->ai_addrlen);
-      ServerInfo.ip.ss.ss_family = res->ai_family;
-      ServerInfo.ip.ss_len = res->ai_addrlen;
-      irc_freeaddrinfo(res);
+        memcpy(&ServerInfo.ip, res->ai_addr, res->ai_addrlen);
+        ServerInfo.ip.ss.ss_family = res->ai_family;
+        ServerInfo.ip.ss_len = res->ai_addrlen;
+        irc_freeaddrinfo(res);
 
-      ServerInfo.specific_ipv4_vhost = 1;
+        ServerInfo.specific_ipv4_vhost = 1;
+      }
     }
   }
 };
@@ -553,25 +556,29 @@ serverinfo_vhost: VHOST '=' QSTRING ';'
 serverinfo_vhost6: VHOST6 '=' QSTRING ';'
 {
 #ifdef IPV6
-  struct addrinfo hints, *res;
-
-  memset(&hints, 0, sizeof(hints));
-
-  hints.ai_family   = AF_UNSPEC;
-  hints.ai_socktype = SOCK_STREAM;
-  hints.ai_flags    = AI_PASSIVE | AI_NUMERICHOST;
-
   if (ypass == 2)
   {
+    struct addrinfo hints, *res;
+
+    memset(&hints, 0, sizeof(hints));
+
+    hints.ai_family   = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_flags    = AI_PASSIVE | AI_NUMERICHOST;
+
     if (irc_getaddrinfo(yylval.string, NULL, &hints, &res))
       ilog(L_ERROR, "Invalid netmask for server vhost(%s)", yylval.string);
+    else
+    {
+      assert(res != NULL);
 
-    assert(NULL != res);
-    memcpy(&ServerInfo.ip6, res->ai_addr, res->ai_addrlen);
-    ServerInfo.ip6.ss.ss_family = res->ai_family;
-    ServerInfo.ip6.ss_len = res->ai_addrlen;
-    irc_freeaddrinfo(res);
-    ServerInfo.specific_ipv6_vhost = 1;
+      memcpy(&ServerInfo.ip6, res->ai_addr, res->ai_addrlen);
+      ServerInfo.ip6.ss.ss_family = res->ai_family;
+      ServerInfo.ip6.ss_len = res->ai_addrlen;
+      irc_freeaddrinfo(res);
+
+      ServerInfo.specific_ipv6_vhost = 1;
+    }
   }
 #endif
 };
