@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.203 2001/08/22 21:44:37 leeh Exp $
+ * $Id: ircd_parser.y,v 1.204 2001/08/26 22:24:31 kreator Exp $
  */
 
 %{
@@ -580,7 +580,15 @@ serverinfo_vhost6:	VHOST6 '=' QSTRING ';'
    
 serverinfo_max_clients: T_MAX_CLIENTS '=' expr ';'
   {
-    ServerInfo.max_clients = $3;
+    if (MAX_CLIENTS >= $3)
+    {
+      ServerInfo.max_clients = $3;
+    }
+    else
+    {
+      ilog(L_ERROR, "Setting serverinfo_max_clients to MAX_CLIENTS");
+      ServerInfo.max_clients = MAX_CLIENTS;
+    }
   };
 
 serverinfo_max_buffer: T_MAX_BUFFER '=' expr ';'
