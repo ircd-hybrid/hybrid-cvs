@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_join.c,v 1.82 2002/03/07 06:21:45 db Exp $
+ *  $Id: m_join.c,v 1.83 2002/04/09 00:04:24 db Exp $
  */
 
 #include "tools.h"
@@ -67,7 +67,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&join_msgtab);
 }
-const char *_version = "$Revision: 1.82 $";
+const char *_version = "$Revision: 1.83 $";
 
 #endif
 static void do_join_0(struct Client *client_p, struct Client *source_p);
@@ -485,6 +485,6 @@ static void do_join_0(struct Client *client_p, struct Client *source_p)
 			   source_p->username,
 			   source_p->host,
 			   RootChan(chptr)->chname);
-      remove_user_from_channel(chptr, source_p, 0);
+      remove_user_from_channel(chptr, source_p);
     }
 }

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel.h,v 7.104 2002/04/06 05:04:40 androsyn Exp $
+ *  $Id: channel.h,v 7.105 2002/04/09 00:04:21 db Exp $
  */
 
 #include <sys/types.h>        /* time_t */
@@ -120,7 +120,7 @@ extern dlink_node *find_user_link (dlink_list *, struct Client *);
 extern void    add_user_to_channel(struct Channel *chptr,
 				   struct Client *who, int flags);
 extern void    remove_user_from_channel(struct Channel *chptr,
-					struct Client *who, int perm);
+					struct Client *who);
 
 extern int     check_channel_name(const char* name);
 

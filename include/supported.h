@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: supported.h,v 1.19 2002/02/25 17:39:02 androsyn Exp $
+ *  $Id: supported.h,v 1.20 2002/04/09 00:04:21 db Exp $
  */
 
 #ifndef INCLUDED_supported_h
@@ -50,7 +50,8 @@
 #define FEATURES2 "CHANTYPES=%s" \
                   " PREFIX=%s" \
 		  " CHANMODES=%s" \
-		  " NETWORK=%s"
+		  " NETWORK=%s" \
+		  " CHARSET=rfc1459"
 
 #define FEATURES2VALUES ConfigServerHide.disable_local_channels ? "#" : "#&", \
                         "(ohv)@%+", "beI,k,l,imnpsta", \
