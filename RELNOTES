@@ -42,7 +42,7 @@ TESTING: This code is under active development, and a lot changes from beta
           loadable modules do on most UNIX systems.  Feeding it bad or
           duplicate modules to find bugs would be appriciated.
 
-
+				
 Questions/comments directed to ircd-hybrid@the-project.org
 
 Please read doc/whats-new.txt for information about what is in this release
@@ -50,4 +50,4 @@ Please read doc/whats-new.txt for information about what is in this release
 Other files recommended for reading: BUGS, README.FIRST, INSTALL
 
 --------------------------------------------------------------------------------
-$Id: RELNOTES,v 1.21 2002/04/15 22:51:41 leeh Exp $
+$Id: RELNOTES,v 1.22 2002/04/21 17:18:22 androsyn Exp $
