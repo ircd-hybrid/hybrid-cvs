@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.130 2001/01/27 08:18:22 androsyn Exp $
+ *   $Id: s_serv.c,v 7.131 2001/01/28 03:06:29 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -1545,8 +1545,9 @@ serv_connect(struct ConfItem *aconf, struct Client *by)
     if(ServerInfo.specific_virtual_host)
       {
 	struct irc_sockaddr ipn;
-	S_FAM(ipn) = DEF_FAM;
-	S_PORT(ipn) = 0;
+	memset(&ipn, 0, sizeof(struct irc_sockaddr));
+	S_FAM(s_ipn) = DEF_FAM;
+	S_PORT(s_ipn) = 0;
 #ifdef IPV6
 	copy_s_addr(S_ADDR(ipn), IN_ADDR(vserv));
 #else
