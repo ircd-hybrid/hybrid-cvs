@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: modules.c,v 7.130 2003/06/14 01:23:19 joshk Exp $
+ *  $Id: modules.c,v 7.131 2003/06/14 02:08:57 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -160,12 +160,12 @@ mod_find_path(const char *path)
 void
 add_pending (char* modname)
 {
-  if (findmodule_byname (modname) != -1)
-    return;
-  
   char* mod;
   dlink_node *ptr;
 
+  if (findmodule_byname (modname) != -1)
+    return;
+  
   DLINK_FOREACH (ptr, pending.head)
   {
     if (strcmp ((char*)ptr->data, modname) == 0)
@@ -299,18 +299,18 @@ findmodule_byname(const char *name)
 void
 load_all_modules(int warn)
 {
+  DIR *system_module_dir = NULL;
+  struct dirent *ldirent = NULL;
+  char* module_fq_name;
+  int len;
+  unsigned int mq_len;
+  
   /* At this point, base_path MUST be specified */
   if (base_valid == 0)
   {
     ilog (L_CRIT, "You must specify a base_path in ircd.conf. See the examples. Terminating!");
     exit (EXIT_FAILURE);
   }
-
-  DIR *system_module_dir = NULL;
-  struct dirent *ldirent = NULL;
-  char* module_fq_name;
-  int len;
-  unsigned int mq_len;
 
   modules_init();
 

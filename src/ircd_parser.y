@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.311 2003/06/14 01:23:19 joshk Exp $
+ *  $Id: ircd_parser.y,v 1.312 2003/06/14 02:08:57 joshk Exp $
  */
 
 %{
@@ -410,7 +410,7 @@ modules_base_path: BASE_PATH '=' QSTRING ';'
   if (ypass == 2)
      mod_set_base(yylval.string);
 #endif
-}
+};
 
 /***************************************************************************
  *  section serverinfo
