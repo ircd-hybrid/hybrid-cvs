@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_list.c,v 1.54 2003/04/18 02:13:42 db Exp $
+ *  $Id: m_list.c,v 1.55 2003/04/18 21:48:36 adx Exp $
  */
 
 #include "stdinc.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&list_msgtab);
 }
-const char *_version = "$Revision: 1.54 $";
+const char *_version = "$Revision: 1.55 $";
 #endif
 
 
@@ -84,7 +84,6 @@ do_list(struct Client *source_p, int parc, char *parv[])
     }
 
   lt = (struct ListTask *) MyMalloc(sizeof(struct ListTask));
-  memset((void *) lt, 0, sizeof(*lt));
   lt->users_max = UINT_MAX;
   lt->created_max = UINT_MAX;
   lt->topicts_max = UINT_MAX;

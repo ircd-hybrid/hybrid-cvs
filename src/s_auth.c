@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_auth.c,v 7.115 2003/04/14 08:41:15 michael Exp $
+ *  $Id: s_auth.c,v 7.116 2003/04/18 21:48:38 adx Exp $
  */
 
 /*
@@ -90,8 +90,8 @@ typedef enum {
 
 /*
  */
-dlink_list auth_client_list;
-dlink_list auth_poll_list;
+dlink_list auth_client_list = {NULL, NULL, 0};
+dlink_list auth_poll_list = {NULL, NULL, 0};
 
 static EVH timeout_auth_queries_event;
 
@@ -106,8 +106,6 @@ static CNCB auth_connect_callback;
 void
 init_auth(void)
 {
-  memset(&auth_client_list, 0, sizeof(auth_client_list));
-  memset(&auth_poll_list, 0, sizeof(auth_poll_list));
   eventAddIsh("timeout_auth_queries_event", timeout_auth_queries_event, NULL, 1);
 }
 

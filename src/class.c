@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: class.c,v 7.43 2003/04/15 15:13:27 michael Exp $
+ *  $Id: class.c,v 7.44 2003/04/18 21:48:38 adx Exp $
  */
 
 #include "stdinc.h"
@@ -76,7 +76,6 @@ make_class(void)
   aclass->className = NULL;
   aclass->servname = NULL;
 #endif
-  memset((void *)aclass, 0, sizeof(*aclass));
   return(aclass);
 }
 

@@ -38,7 +38,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: event.c,v 7.31 2003/04/13 05:55:22 michael Exp $
+ *  $Id: event.c,v 7.32 2003/04/18 21:48:38 adx Exp $
  */
 
 /*
@@ -248,7 +248,7 @@ show_events(struct Client *source_p)
                me.name, RPL_STATSDEBUG, source_p->name, last_event_ran);
 
   sendto_one(source_p,
-     ":%s %d %s E :Operation            Next Execution",
+     ":%s %d %s E :Operation                    Next Execution",
      me.name, RPL_STATSDEBUG, source_p->name);
 
   for (i = 0; i < MAX_EVENTS; i++)

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hook.c,v 7.21 2003/04/14 08:41:14 michael Exp $
+ *  $Id: hook.c,v 7.22 2003/04/18 21:48:38 adx Exp $
  */
 
 /* hooks are used by modules to hook into events called by other parts of
@@ -33,13 +33,12 @@
 #include "hook.h"
 #include "memory.h"
 
-dlink_list hooks;
+dlink_list hooks = {NULL, NULL, 0};
 static hook *find_hook(const char *name);
 
 void
 init_hooks(void)
 {
-  memset(&hooks, 0, sizeof(hooks));
 #ifndef NDEBUG
   hook_add_event("iosend");
   hook_add_event("iorecv");
