@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.349 2003/09/11 03:41:47 metalrock Exp $
+ *  $Id: ircd_parser.y,v 1.350 2003/09/14 21:22:03 bill Exp $
  */
 
 %{
@@ -1369,8 +1369,8 @@ auth_entry: IRCD_AUTH
       if (yy_aconf->passwd != NULL)
 	DupString(new_aconf->passwd, yy_aconf->passwd);
 
-      yy_aconf->flags = yy_aconf->flags;
-      yy_aconf->port  = yy_aconf->port;
+      new_aconf->flags = yy_aconf->flags;
+      new_aconf->port  = yy_aconf->port;
 
       if (yy_tmp->user != NULL)
       {
