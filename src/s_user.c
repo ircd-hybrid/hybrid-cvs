@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.286 2003/06/19 02:32:18 db Exp $
+ *  $Id: s_user.c,v 7.287 2003/06/24 00:55:30 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -177,91 +177,57 @@ unsigned int user_modes_from_c_to_bitmask[] =
  * side effects - display to client user counts etc.
  */
 void
-show_lusers(struct Client *source_p, char *show_mask) 
+show_lusers(struct Client *source_p) 
 {
-  if (show_mask != NULL)
+  if (!ConfigServerHide.hide_servers || IsOper(source_p))
+    sendto_one(source_p, form_str(RPL_LUSERCLIENT), me.name, source_p->name,
+	      (Count.total-Count.invisi), Count.invisi, Count.server);
+  else
+    sendto_one(source_p, form_str(RPL_LUSERCLIENT), me.name, source_p->name,
+	      (Count.total-Count.invisi), Count.invisi, 1);
+
+  if (Count.oper > 0)
+    sendto_one(source_p, form_str(RPL_LUSEROP),
+	       me.name, source_p->name, Count.oper);
+
+  if (dlink_list_length(&unknown_list) > 0)
+    sendto_one(source_p, form_str(RPL_LUSERUNKNOWN),
+	       me.name, source_p->name, dlink_list_length(&unknown_list));
+
+  if (dlink_list_length(&global_channel_list) > 0)
+    sendto_one(source_p, form_str(RPL_LUSERCHANNELS),
+	       me.name, source_p->name,
+	       dlink_list_length(&global_channel_list));
+
+  if (!ConfigServerHide.hide_servers || IsOper(source_p))
   {
-    dlink_node *ptr;
-    struct Client *target_p;
-    unsigned int total_global_count = 0;
-    unsigned int total_local_count  = 0;
-
-    (void)collapse(show_mask);
-
-    DLINK_FOREACH(ptr, local_client_list.head)
-    {
-      target_p = ptr->data;
-      if (match(show_mask, target_p->host))
-	++total_local_count;
-    }
-
-    sendto_one(source_p, form_str(RPL_LOCALUSERS), 
-	       me.name, source_p->name, total_local_count,
-               Count.max_tot);
-
-    DLINK_FOREACH(ptr, global_client_list.head)
-    {
-      target_p = ptr->data;
-      if (match(show_mask, target_p->host))
-	++total_global_count;
-    }
-
-    sendto_one(source_p, form_str(RPL_GLOBALUSERS),
-	       me.name, source_p->name, total_global_count,
-               Count.max_tot);
+    sendto_one(source_p, form_str(RPL_LUSERME),
+	       me.name, source_p->name,
+	       Count.local, Count.myserver);
+    sendto_one(source_p, form_str(RPL_LOCALUSERS),
+	       me.name, source_p->name,
+	       Count.local, Count.max_loc);
   }
   else
   {
-    if (!ConfigServerHide.hide_servers || IsOper(source_p))
-      sendto_one(source_p, form_str(RPL_LUSERCLIENT), me.name, source_p->name,
-		 (Count.total-Count.invisi), Count.invisi, Count.server);
-    else
-      sendto_one(source_p, form_str(RPL_LUSERCLIENT), me.name, source_p->name,
-		 (Count.total-Count.invisi), Count.invisi, 1);
-
-    if (Count.oper > 0)
-      sendto_one(source_p, form_str(RPL_LUSEROP),
-		 me.name, source_p->name, Count.oper);
-
-    if (dlink_list_length(&unknown_list) > 0)
-      sendto_one(source_p, form_str(RPL_LUSERUNKNOWN),
-		 me.name, source_p->name, dlink_list_length(&unknown_list));
-
-    if (dlink_list_length(&global_channel_list) > 0)
-      sendto_one(source_p, form_str(RPL_LUSERCHANNELS),
-		 me.name, source_p->name,
-		 dlink_list_length(&global_channel_list));
-
-    if (!ConfigServerHide.hide_servers || IsOper(source_p))
-    {
-      sendto_one(source_p, form_str(RPL_LUSERME),
-		 me.name, source_p->name,
-		 Count.local, Count.myserver);
-      sendto_one(source_p, form_str(RPL_LOCALUSERS),
-		 me.name, source_p->name,
-		 Count.local, Count.max_loc);
-    }
-    else
-    {
-      sendto_one(source_p, form_str(RPL_LUSERME),
-		 me.name, source_p->name, Count.total, 0);
-      sendto_one(source_p, form_str(RPL_LOCALUSERS), 
-		 me.name, source_p->name, Count.total, Count.max_tot);
-    }
-
-    sendto_one(source_p, form_str(RPL_GLOBALUSERS),
+    sendto_one(source_p, form_str(RPL_LUSERME),
+	       me.name, source_p->name, Count.total, 0);
+    sendto_one(source_p, form_str(RPL_LOCALUSERS), 
 	       me.name, source_p->name, Count.total, Count.max_tot);
-
-    if (!ConfigServerHide.hide_servers || IsOper(source_p))
-      sendto_one(source_p, form_str(RPL_STATSCONN), me.name, source_p->name,
-		 MaxConnectionCount, MaxClientCount, Count.totalrestartcount);
-
-    if (Count.local > MaxClientCount)
-      MaxClientCount = Count.local;
-
-    if ((Count.local + Count.myserver) > MaxConnectionCount)
-      MaxConnectionCount = Count.local + Count.myserver; 
   }
+
+  sendto_one(source_p, form_str(RPL_GLOBALUSERS),
+             me.name, source_p->name, Count.total, Count.max_tot);
+
+  if (!ConfigServerHide.hide_servers || IsOper(source_p))
+    sendto_one(source_p, form_str(RPL_STATSCONN), me.name, source_p->name,
+	       MaxConnectionCount, MaxClientCount, Count.totalrestartcount);
+
+  if (Count.local > MaxClientCount)
+    MaxClientCount = Count.local;
+
+  if ((Count.local + Count.myserver) > MaxConnectionCount)
+    MaxConnectionCount = Count.local + Count.myserver; 
 }
 
 /* show_isupport()
@@ -1204,7 +1170,7 @@ user_welcome(struct Client *source_p)
              me.name, source_p->name, me.name, ircd_version);
 
   show_isupport(source_p);
-  show_lusers(source_p, NULL);
+  show_lusers(source_p);
 
   if (ConfigFileEntry.short_motd)
   {

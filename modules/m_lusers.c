@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_lusers.c,v 1.26 2003/06/21 20:09:21 metalrock Exp $
+ *  $Id: m_lusers.c,v 1.27 2003/06/24 00:55:28 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -58,10 +58,9 @@ _moddeinit(void)
   mod_del_cmd(&lusers_msgtab);
 }
 
-const char *_version = "$Revision: 1.26 $";
+const char *_version = "$Revision: 1.27 $";
 #endif
-/*
- * m_lusers - LUSERS message handler
+/* m_lusers - LUSERS message handler
  * parv[0] = sender
  * parv[1] = host/server mask.
  * parv[2] = server to query
@@ -78,55 +77,40 @@ m_lusers(struct Client *client_p, struct Client *source_p,
   static time_t last_used = 0;
 
   if ((last_used + ConfigFileEntry.pace_wait) > CurrentTime)
-    {
-      /* safe enough to give this on a local connect only */
-      if (MyClient(source_p))
-        sendto_one(source_p, form_str(RPL_LOAD2HI), me.name, parv[0]);
-      return;
-    }
+  {
+    /* safe enough to give this on a local connect only */
+    if (MyClient(source_p))
+      sendto_one(source_p, form_str(RPL_LOAD2HI), me.name, parv[0]);
+    return;
+  }
   else
     last_used = CurrentTime;
 
   if (parc > 2 && !ConfigFileEntry.disable_remote)
-    {   
-       if (hunt_server(client_p, source_p, ":%s LUSERS %s :%s", 2, parc, parv) != HUNTED_ISME)
-         return;
-    }
+  {   
+    if (hunt_server(client_p, source_p, ":%s LUSERS %s :%s", 2, parc, parv) != HUNTED_ISME)
+      return;
+  }
 
-  if (parc > 1)
-    show_lusers(source_p, parv[1]);
-  else
-    show_lusers(source_p, NULL);
+  show_lusers(source_p);
 }
 
-/*
- * ms_lusers - LUSERS message handler for servers and opers
+/* ms_lusers - LUSERS message handler for servers and opers
  * parv[0] = sender
  * parv[1] = host/server mask.
  * parv[2] = server to query
- * 
- * 199970918 JRL hacked to ignore parv[1] completely and require parc > 3
- * to cause a force
  */
 static void
 ms_lusers(struct Client *client_p, struct Client *source_p,
 	  int parc, char *parv[])
 {
   if (parc > 2)
-    {
-      if(hunt_server(client_p, source_p, ":%s LUSERS %s :%s", 2, parc, parv)
-       != HUNTED_ISME)
-        {
-          return;
-        }
-    }
+  {
+    if(hunt_server(client_p, source_p, ":%s LUSERS %s :%s", 2, parc, parv)
+     != HUNTED_ISME)
+        return;
+  }
 
   if(IsClient(source_p))
-  {
-    if (parc > 1)
-      show_lusers(source_p, parv[1]);
-    else
-      show_lusers(source_p, NULL);
-  }
+    show_lusers(source_p);
 }
-
