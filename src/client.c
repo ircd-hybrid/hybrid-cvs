@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.228 2002/02/17 05:39:26 androsyn Exp $
+ *  $Id: client.c,v 7.229 2002/02/17 08:02:18 a1kmm Exp $
  */
 
 #include "tools.h"
@@ -51,6 +51,7 @@
 #include "memory.h"
 #include "hostmask.h"
 #include "balloc.h"
+#include "listener.h"
 
 #include <assert.h>
 #include <fcntl.h>
@@ -180,6 +181,18 @@ void _free_client(struct Client* client_p)
   assert(&me != client_p);
   assert(NULL == client_p->prev);
   assert(NULL == client_p->next);
+
+  /*
+   * clean up extra sockets from P-lines which have been discarded.
+   */
+  if (client_p->localClient->listener)
+  {
+    assert(0 < client_p->localClient->listener->ref_count);
+    if (0 == --client_p->localClient->listener->ref_count &&
+        !client_p->localClient->listener->active) 
+      free_listener(client_p->localClient->listener);
+    client_p->localClient->listener = 0;
+  }
 
   if (MyConnect(client_p))
     {

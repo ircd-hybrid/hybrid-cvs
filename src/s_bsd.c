@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.162 2002/02/17 05:39:28 androsyn Exp $
+ *  $Id: s_bsd.c,v 7.163 2002/02/17 08:02:18 a1kmm Exp $
  */
 
 #include "config.h"
@@ -346,18 +346,6 @@ void close_connection(struct Client *client_p)
   linebuf_donebuf(&client_p->localClient->buf_sendq);
   linebuf_donebuf(&client_p->localClient->buf_recvq);
   memset(client_p->localClient->passwd, 0, sizeof(client_p->localClient->passwd));
-  /*
-   * clean up extra sockets from P-lines which have been discarded.
-   */
-  if (client_p->localClient->listener)
-    {
-      assert(0 < client_p->localClient->listener->ref_count);
-      if (0 == --client_p->localClient->listener->ref_count &&
-	  !client_p->localClient->listener->active) 
-	free_listener(client_p->localClient->listener);
-      client_p->localClient->listener = 0;
-    }
-
   det_confs_butmask(client_p, 0);
   client_p->from = NULL; /* ...this should catch them! >:) --msa */
 }
