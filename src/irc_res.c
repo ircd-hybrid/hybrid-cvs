@@ -7,7 +7,7 @@
  * The authors takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: irc_res.c,v 7.8 2003/05/13 03:06:29 joshk Exp $
+ * $Id: irc_res.c,v 7.9 2003/05/13 04:21:38 joshk Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -40,7 +40,6 @@
 #include "handlers.h"
 #include "memory.h"
 
-#include <resolv.h>
 #include <arpa/nameser.h>
 #include "irc_reslib.h"
 #include "irc_getnameinfo.h"
@@ -50,7 +49,7 @@
 #error this code needs to be able to address individual octets 
 #endif
 
-/* $Id: irc_res.c,v 7.8 2003/05/13 03:06:29 joshk Exp $ */
+/* $Id: irc_res.c,v 7.9 2003/05/13 04:21:38 joshk Exp $ */
 
 static PF res_readreply;
 

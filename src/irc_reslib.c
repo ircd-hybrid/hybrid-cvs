@@ -80,19 +80,10 @@
  * - Dianora
  */
 
-#include <errno.h>
-#include <sys/types.h>
-#include <sys/param.h>
-#include <netinet/in.h>
 #include <arpa/nameser.h>
-#include <ctype.h>
-#include <resolv.h>
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
 
-#include "irc_reslib.h"	
 #include "stdinc.h"
+#include "irc_reslib.h"	
 #include "ircd_defs.h"
 #include "fileio.h"
 #include "irc_string.h"
@@ -102,7 +93,7 @@
 #define DNS_LABELTYPE_BITSTRING		0x41
 #define MAXLINE 128
 
-/* $Id: irc_reslib.c,v 7.5 2003/05/13 04:18:46 joshk Exp $ */
+/* $Id: irc_reslib.c,v 7.6 2003/05/13 04:21:38 joshk Exp $ */
 
 static FBFILE *file;
 
