@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.114 2001/10/08 03:05:40 db Exp $
+ *   $Id: m_sjoin.c,v 1.115 2001/10/09 03:37:22 lusky Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -671,7 +671,6 @@ struct mode_letter flags[] = {
 static void set_final_mode(struct Mode *mode,struct Mode *oldmode)
 {
   int what = 0;
-  char *s;
   char *pbuf=parabuf;
   int  len;
   int  i;
