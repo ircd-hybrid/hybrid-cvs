@@ -1,3 +1,16 @@
+leeh        2002/04/29 19:57:26 EDT	(20020430_1)
+
+  Modified files:
+    doc                  example.conf example.conf.efnet 
+  Log:
+  - we dont negotiate ciphers anymore.
+  
+  Revision  Changes    Path
+  7.156     +3 -2      ircd-hybrid-7/doc/example.conf
+  7.9       +3 -2      ircd-hybrid-7/doc/example.conf.efnet
+
+
+
 leeh        2002/04/29 19:05:08 EDT	(20020430_0)
 
   Modified files:
@@ -25875,4 +25888,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3616 2002/04/29 23:05:14 leeh Exp $
+$Id: ChangeLog,v 7.3617 2002/04/29 23:57:32 leeh Exp $
