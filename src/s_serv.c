@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.375 2003/09/19 22:13:13 bill Exp $
+ *  $Id: s_serv.c,v 7.376 2003/09/30 02:24:55 db Exp $
  */
 
 #include "stdinc.h"
@@ -855,7 +855,7 @@ sendnick_TS(struct Client *client_p, struct Client *target_p)
 	       target_p->name, target_p->hopcount + 1,
 	       (unsigned long) target_p->tsinfo,
 	       ubuf, target_p->username, target_p->host,
-	       "0", /* XXX IP */
+	       (MyClient(target_p)?target_p->localClient->sockhost:""),
 	       target_p->user->server->id,
 	       target_p->id, target_p->info);
   else

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.115 2003/07/25 23:16:08 michael Exp $
+ *  $Id: m_server.c,v 1.116 2003/09/30 02:24:53 db Exp $
  */
 
 #include "stdinc.h"
@@ -77,7 +77,7 @@ _moddeinit(void)
   mod_del_cmd(&sid_msgtab);
 }
 
-const char *_version = "$Revision: 1.115 $";
+const char *_version = "$Revision: 1.116 $";
 #endif
 
 
@@ -759,10 +759,16 @@ ms_sid(struct Client *client_p, struct Client *source_p,
     if (match(my_name_for_link(conf), target_p->name))
       continue;
 
-    sendto_one(bclient_p, ":%s SID %s %d %s:%s%s",
-               parv[0], target_p->name, hop + 1,
-	       SID_SID, IsHidden(target_p) ? "(H) " : "",
-               target_p->info);
+    if (IsCapable(bclient_p, CAP_SID))
+      sendto_one(bclient_p, ":%s SID %s %d %s:%s%s",
+		 parv[0], target_p->name, hop + 1,
+		 SID_SID, IsHidden(target_p) ? "(H) " : "",
+		 target_p->info);
+    else
+      sendto_one(bclient_p, ":%s SERVER %s %d :%s%s",
+		 parv[0], target_p->name, hop + 1,
+		 IsHidden(target_p) ? "(H) " : "",
+		 target_p->info);
   }
 
   sendto_realops_flags(UMODE_EXTERNAL, L_ALL, 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.308 2003/09/10 11:29:27 michael Exp $
+ *  $Id: s_user.c,v 7.309 2003/09/30 02:24:55 db Exp $
  */
 
 #include "stdinc.h"
@@ -676,7 +676,7 @@ introduce_client(struct Client *client_p, struct Client *source_p)
                  source_p->name, source_p->hopcount+1,
 		 (unsigned long)source_p->tsinfo,
                  ubuf, source_p->username, source_p->host,
-		 "0", /* XXX IP */
+		 (MyClient(target_p)?target_p->localClient->sockhost:"0"),
 		 source_p->user->server->id,
                  source_p->id, source_p->info);
     }
@@ -704,7 +704,7 @@ introduce_client(struct Client *client_p, struct Client *source_p)
                    source_p->name, source_p->hopcount+1,
 		   (unsigned long)source_p->tsinfo,
                    ubuf, source_p->username, source_p->host,
-		   "0", /* XXX IP */
+		   (MyClient(source_p)?source_p->localClient->sockhost:"0"),
 		   source_p->user->server->id,
                    source_p->id, source_p->info);
       else
