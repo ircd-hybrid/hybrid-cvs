@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_debug.c,v 7.31 2000/12/21 13:39:52 db Exp $
+ *   $Id: s_debug.c,v 7.32 2000/12/28 19:12:21 toot Exp $
  */
 #include "tools.h"
 #include "s_debug.h"
@@ -56,9 +56,6 @@ extern  void    count_ip_hash(int *,u_long *);    /* defined in s_conf.c */
  * Option string.  Must be before #ifdef DEBUGMODE.
  */
 const char serveropts[] = {
-#ifdef  CHROOTDIR
-  'c',
-#endif
 #ifdef  CMDLINE_CONFIG
   'C',
 #endif

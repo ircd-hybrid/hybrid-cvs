@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.h,v 7.22 2000/12/28 04:54:18 wcampbel Exp $
+ * $Id: m_info.h,v 7.23 2000/12/28 19:12:17 toot Exp $
  */
 #ifndef INCLUDED_m_info_h
 #define INCLUDED_m_info_h
@@ -45,12 +45,6 @@ Info MyInformation[] = {
 #else
   { "ANTI_SPAM_EXIT_MESSAGE_TIME", "NONE", 0, "Delay before Allowing Spam Bot Exit Messages" },
 #endif /* ANTI_SPAM_EXIT_MESSAGE_TIME */
-
-#ifdef CHROOTDIR
-  { "CHROOTDIR", "ON", 0, "chroot() before reading Configuration File" },
-#else
-  { "CHROOTDIR", "OFF", 0, "chroot() before reading Configuration File" },
-#endif
 
 #ifdef CLIENT_FLOOD
   { "CLIENT_FLOOD", "", CLIENT_FLOOD, "Client Excess Flood Threshold" },

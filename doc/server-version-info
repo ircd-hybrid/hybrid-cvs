@@ -1,4 +1,4 @@
-$Id: server-version-info,v 7.3 2000/12/15 00:11:59 toot Exp $
+$Id: server-version-info,v 7.4 2000/12/28 19:12:13 toot Exp $
 Updated for Hybrid 6 (2000/11/26)
 
 When you type /version you will often see something like this:
@@ -8,7 +8,6 @@ Ever wondered what those funny chars mean after the version number? Well
 here they are:
 
 'A'	SENDQ_ALWAYS
-'c'	CHROOTDIR
 'C'	CMDLINE_CONFIG
 'D'	DEBUGMODE
 'G'	GLINES
