@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 1.43 2001/01/05 07:47:24 a1kmm Exp $
+ *  $Id: m_stats.c,v 1.44 2001/01/06 02:09:01 toot Exp $
  */
 #include "tools.h"	 /* dlink_node/dlink_list */
 #include "handlers.h"    /* m_pass prototype */
@@ -261,8 +261,9 @@ static void do_normal_stats(struct Client *sptr,
         now = CurrentTime - me.since;
         sendto_one(sptr, form_str(RPL_STATSUPTIME), me.name, sptr->name,
                    now/86400, (now/3600)%24, (now/60)%60, now%60);
-        sendto_one(sptr, form_str(RPL_STATSCONN), me.name, sptr->name,
-                   MaxConnectionCount, MaxClientCount, Count.totalrestartcount);
+        if(!GlobalSetOptions.hide_server || IsOper(sptr))
+          sendto_one(sptr, form_str(RPL_STATSCONN), me.name, sptr->name,
+                     MaxConnectionCount, MaxClientCount, Count.totalrestartcount);
 	stats_spy(sptr,statchar);
         break;
       }
