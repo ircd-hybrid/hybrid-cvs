@@ -1,3 +1,15 @@
+androsyn    2002/04/10 16:17:40 EDT	(20020410_2)
+
+  Modified files:
+    tools                .cvsignore 
+  Log:
+  Added convertinlines to cvsignore at Hwy's request.
+  
+  Revision  Changes    Path
+  1.2       +1 -0      ircd-hybrid-7/tools/.cvsignore
+
+
+
 db          2002/04/10 08:33:09 EDT	(20020410_1)
 
   Modified files:
@@ -24707,4 +24719,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3536 2002/04/10 12:33:15 db Exp $
+$Id: ChangeLog,v 7.3537 2002/04/10 20:17:46 androsyn Exp $
