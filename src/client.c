@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.87 2000/12/23 13:29:46 toot Exp $
+ *  $Id: client.c,v 7.88 2000/12/23 16:37:08 madmax Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -1370,7 +1370,13 @@ const char* comment         /* Reason for the exit */
     {        
       if( GlobalSetOptions.hide_server )
 	{
-	  strcpy(comment1, "<server split>");
+          /* 
+          ** Replaces the name of the splitting server with net.split
+          ** when a client exits from a split, in an attempt to 
+          ** hide topology without breaking too many clients..
+          */
+          strcpy(comment1, me.name);         
+          strcat(comment1, " net.split");
 	}
       else
 	{
