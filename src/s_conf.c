@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.177 2001/02/06 00:14:29 db Exp $
+ *  $Id: s_conf.c,v 7.178 2001/02/06 06:10:06 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -202,8 +202,6 @@ static void delist_conf(struct ConfItem* aconf)
 void free_conf(struct ConfItem* aconf)
 {
   assert(0 != aconf);
-
-  /* XXX Andro, fix this better ok? -db */
   if (aconf->dns_pending && (aconf->dns_query.query != NULL))
     adns_cancel(aconf->dns_query.query);
   MyFree(aconf->host);
