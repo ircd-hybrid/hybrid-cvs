@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_poll.c,v 7.38 2001/05/03 00:18:55 androsyn Exp $
+ *  $Id: s_bsd_poll.c,v 7.39 2001/05/06 03:11:43 androsyn Exp $
  */
 #include "config.h"
 #ifdef USE_POLL
@@ -339,7 +339,7 @@ comm_select(time_t delay)
     comm_select_fdlist(FDLIST_SERVICE, 0);
     comm_select_fdlist(FDLIST_SERVER, 0);
     /* comm_select_fdlist(FDLIST_BUSYCLIENT, 0); */
-    comm_select_fdlist(FDLIST_IDLECLIENT, delay);
+    comm_select_fdlist(FDLIST_IDLECLIENT, 0);
     return 0;
 }
 #endif
