@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_restart.c,v 1.18 2001/12/13 20:09:59 leeh Exp $
+ *   $Id: m_restart.c,v 1.19 2001/12/20 18:34:04 leeh Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -117,8 +117,7 @@ static void mo_restart(struct Client *client_p,
                me.name, get_client_name(source_p, HIDE_IP));
   }
   
-  ilog(L_WARN, "Server RESTART by %s\n", get_client_name(source_p, SHOW_IP));
-  ircsprintf(buf, "Server RESTART by %s", get_client_name(source_p, SHOW_IP));
+  ircsprintf(buf, "Server RESTART by %s", get_client_name(source_p, HIDE_IP));
   restart(buf);
 }
 
