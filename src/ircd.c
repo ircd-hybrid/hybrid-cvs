@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.201 2001/12/11 03:35:15 db Exp $
+ * $Id: ircd.c,v 7.202 2001/12/11 04:09:55 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -432,7 +432,7 @@ static void initialize_server_capabs(void)
 static void write_pidfile(const char *filename)
 {
   FBFILE* fb;
-  char buff[sizeof(unsigned int)+1];
+  char buff[32];
   if ((fb = fbopen(filename, "w")))
   {
       unsigned int pid = (unsigned int) getpid();
