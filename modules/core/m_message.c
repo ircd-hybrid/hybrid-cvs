@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.33 2000/12/23 01:42:13 db Exp $
+ *   $Id: m_message.c,v 1.34 2000/12/23 07:28:17 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -521,7 +521,7 @@ void msg_channel_flags( int p_or_n, char *command,
  * output	- NONE
  * side effects	- message given channel either chanop or voice
  */
-void msg_client(int n_or_p, char *command,
+void msg_client(int p_or_n, char *command,
 		struct Client *sptr, struct Client *acptr,
 		char *text)
 {
@@ -532,11 +532,11 @@ void msg_client(int n_or_p, char *command,
 	sptr->user->last = CurrentTime;
     }
 
-  if (MyConnect(sptr) &&
+  if (MyConnect(sptr) && (p_or_n != NOTICE) &&
       acptr->user && acptr->user->away)
     sendto_one(sptr, form_str(RPL_AWAY), me.name,
-	       sptr->name, acptr->name,
-	       acptr->user->away);
+               sptr->name, acptr->name,
+               acptr->user->away);
 
   if(MyClient(acptr))
     {
