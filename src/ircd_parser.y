@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.334 2003/07/09 03:15:26 db Exp $
+ *  $Id: ircd_parser.y,v 1.335 2003/07/09 04:17:31 db Exp $
  */
 
 %{
@@ -1860,8 +1860,14 @@ connect_entry: CONNECT
 	  new_hub_conf = make_conf_item(HUB_TYPE);
 	  match_item = (struct MatchItem *)map_to_conf(new_hub_conf);
 	  DupString(new_hub_conf->name, yy_conf->name);
-	  DupString(match_item->user, yy_hconf->user);
-	  DupString(match_item->host, yy_hconf->host);
+	  if (yy_hconf->user != NULL)
+	    DupString(match_item->user, yy_hconf->user);
+	  else
+	    DupString(match_item->user, "*");
+	  if (yy_hconf->host != NULL)
+	    DupString(match_item->host, yy_hconf->host);
+	  else
+	    DupString(match_item->host, "*");
 	}
 	free_collect_item(yy_hconf);
 	dlinkDelete(&yy_hconf->node, &hub_conf_list);
@@ -1881,8 +1887,14 @@ connect_entry: CONNECT
 	  new_leaf_conf = make_conf_item(LEAF_TYPE);
 	  match_item = (struct MatchItem *)map_to_conf(new_leaf_conf);
 	  DupString(new_leaf_conf->name, yy_conf->name);
-	  DupString(match_item->user, yy_hconf->user);
-	  DupString(match_item->host, yy_hconf->host);
+	  if (yy_lconf->user != NULL)
+	    DupString(match_item->user, yy_lconf->user);
+	  else
+	    DupString(match_item->user, "*");
+	  if (yy_lconf->host != NULL)
+	    DupString(match_item->host, yy_lconf->host);
+	  else
+	    DupString(match_item->host, "*");
 	}
 	free_collect_item(yy_lconf);
 	dlinkDelete(&yy_lconf->node, &leaf_conf_list);
