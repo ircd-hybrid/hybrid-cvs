@@ -1,3 +1,15 @@
+androsyn    2001/12/18 22:21:55 EST	(20011219_1)
+
+  Modified files:
+    adns                 setup.c 
+  Log:
+  Make our #define of INADDR_LOOPBACK host byte order...
+  
+  Revision  Changes    Path
+  1.24      +2 -2      ircd-hybrid-7/adns/setup.c
+
+
+
 androsyn    2001/12/18 22:09:42 EST	(20011219_0)
 
   Modified files:
@@ -1075,7 +1087,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3215 2001/12/19 03:09:47 androsyn Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3216 2001/12/19 03:22:00 androsyn Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -19429,4 +19441,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3215 2001/12/19 03:09:47 androsyn Exp $
+$Id: ChangeLog,v 7.3216 2001/12/19 03:22:00 androsyn Exp $
