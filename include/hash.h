@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.h,v 7.29 2003/10/03 18:39:25 garion Exp $
+ *  $Id: hash.h,v 7.30 2004/02/11 09:49:31 db Exp $
  */
 
 #ifndef INCLUDED_hash_h
@@ -49,7 +49,6 @@ extern struct UserHost *hash_find_userhost(const char *host);
 extern struct Client *hash_find_id(const char *name);
 extern struct Client *find_client(const char *name);
 extern struct Client *find_server(const char *name);
-extern struct Client *hash_find_server(const char *name);
 extern struct Channel *hash_find_channel(const char *name);
 extern struct Channel *hash_get_chptr(unsigned int hashv);
 extern struct ResvChannel *hash_find_resv(const char *name);
