@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.396 2003/07/17 06:25:27 metalrock Exp $
+ *  $Id: client.c,v 7.397 2003/07/19 05:23:44 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -716,12 +716,13 @@ get_client_name(struct Client *client, int showip)
   if (irccmp(client->name, client->host) == 0)
     return(client->name);
 
-  if (ConfigServerHide.hide_server_ips || IsServer(client) ||
-      IsConnecting(client) || IsHandshake(client))
-    showip = MASK_IP;
+  if (ConfigServerHide.hide_server_ips)
+    if (IsServer(client) || IsConnecting(client) || IsHandshake(client))
+      showip = MASK_IP;
 
-  if (ConfigFileEntry.hide_spoof_ips && (showip == SHOW_IP && IsIPSpoof(client)))
-    showip = MASK_IP;
+  if (ConfigFileEntry.hide_spoof_ips)
+    if (showip == SHOW_IP && IsIPSpoof(client))
+      showip = MASK_IP;
 
   /* And finally, let's get the host information, ip or name */
   switch (showip)
