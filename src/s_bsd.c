@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.152 2001/12/06 17:33:41 androsyn Exp $
+ *  $Id: s_bsd.c,v 7.153 2001/12/18 08:42:17 a1kmm Exp $
  */
 #include "config.h"
 #include "fdlist.h"
@@ -772,7 +772,9 @@ static void
 comm_connect_tryconnect(int fd, void *notused)
 {
  int retval;
- assert(fd_table[fd].connect.callback); 
+ /* This check is needed or re-entrant s_bsd_* like sigio break it. */
+ if (fd_table[fd].connect.callback == NULL)
+   return;
  /* Try the connect() */
  retval = connect(fd, (struct sockaddr *) &SOCKADDR(fd_table[fd].connect.hostaddr), sizeof(struct irc_sockaddr));
  /* Error? */

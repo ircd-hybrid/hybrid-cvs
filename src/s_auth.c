@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.c,v 7.77 2001/11/14 13:33:17 androsyn Exp $
+ *   $Id: s_auth.c,v 7.78 2001/12/18 08:42:17 a1kmm Exp $
  *
  * Changes:
  *   July 6, 1999 - Rewrote most of the code here. When a client connects
@@ -558,6 +558,13 @@ read_auth_reply(int fd, void *data)
 
   len = recv(auth->fd, buf, AUTH_BUFSIZ, 0);
   
+  if (len < 0 && ignoreErrno(errno))
+  {
+    comm_setselect(fd, FDLIST_IDLECLIENT, COMM_SELECT_READ,
+                   read_auth_reply, auth, 0);
+    return;
+  }
+
   if (len > 0)
     {
       buf[len] = '\0';
