@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_close.c,v 1.18 2001/11/13 11:45:47 leeh Exp $
+ *   $Id: m_close.c,v 1.19 2001/12/22 05:31:02 wcampbel Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -37,7 +37,7 @@
 static void mo_close(struct Client*, struct Client*, int, char**);
 
 struct Message close_msgtab = {
-  "CLOSE", 0, 0, 1, 0, MFLG_SLOW, 0,
+  "CLOSE", 0, 0, 0, 0, MFLG_SLOW, 0,
   {m_unregistered, m_not_oper, m_ignore, mo_close}
 };
 #ifndef STATIC_MODULES
