@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.73 2001/06/10 05:12:40 a1kmm Exp $
+ * $Id: channel.h,v 7.74 2001/06/18 08:40:14 db Exp $
  */
 
 #include <sys/types.h>        /* time_t */
@@ -32,7 +32,8 @@
 #include "ircd_defs.h"        /* buffer sizes */
 #endif
 
-#define USE_TABLE_MODE
+/* XXX until debugged and verified thoroughly */
+#undef USE_TABLE_MODE
 
 struct Client;
 
