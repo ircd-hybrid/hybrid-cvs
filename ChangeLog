@@ -1,3 +1,17 @@
+androsyn    2002/05/24 23:06:31 EDT	(20020525_10)
+
+  Modified files:
+    src                  linebuf.c packet.c send.c 
+  Log:
+  Change a few write() and read() calls to send() and recv()
+  
+  Revision  Changes    Path
+  7.81      +2 -2      ircd-hybrid-7/src/linebuf.c
+  7.82      +5 -5      ircd-hybrid-7/src/packet.c
+  7.197     +2 -2      ircd-hybrid-7/src/send.c
+
+
+
 androsyn    2002/05/24 21:55:22 EDT	(20020525_9)
 
   Modified files:
@@ -27227,4 +27241,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3692 2002/05/25 01:55:28 androsyn Exp $
+$Id: ChangeLog,v 7.3693 2002/05/25 03:06:37 androsyn Exp $
