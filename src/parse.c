@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.22 2000/11/05 21:23:40 toot Exp $
+ *   $Id: parse.c,v 7.23 2000/11/06 15:40:53 db Exp $
  */
 #include "parse.h"
 #include "client.h"
@@ -570,7 +570,7 @@ struct Message msgtab[] = {
   },
   {MSG_AWAY, 0, 0, MFLG_SLOW, 0,
     /* UNREG, CLIENT, SERVER, OPER */
-    { m_unregistered, m_away, ms_away, m_away }
+    { m_unregistered, m_away, m_away, m_away }
   },
   {MSG_ISON, 0, 1, MFLG_SLOW, 0,
     /* UNREG, CLIENT, SERVER, OPER */
@@ -659,7 +659,7 @@ struct Message msgtab[] = {
   },
   {MSG_ADMIN, 0, 0, MFLG_SLOW | MFLG_UNREG, 0,
     /* UNREG, CLIENT, SERVER, OPER */
-    { m_admin, m_admin, ms_admin, m_admin }
+    { m_unregistered, m_admin, ms_admin, ms_admin }
   },
   {MSG_HELP, 0, 0, MFLG_SLOW, 0,
     /* UNREG, CLIENT, SERVER, OPER */

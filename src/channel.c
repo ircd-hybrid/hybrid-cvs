@@ -34,7 +34,7 @@
  *                mode * -p etc. if flag was clear
  *
  *
- * $Id: channel.c,v 7.65 2000/11/06 08:13:33 db Exp $
+ * $Id: channel.c,v 7.66 2000/11/06 15:40:51 db Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -742,7 +742,7 @@ void send_channel_modes(struct Client *cptr, struct Channel *chptr)
     return;
 
   *modebuf = *parabuf = '\0';
-  channel_modes(cptr, modebuf, parabuf, chptr);
+  channel_modes(chptr, cptr, modebuf, parabuf);
 
   if (*parabuf)
     strcat(parabuf, " ");
