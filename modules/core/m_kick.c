@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kick.c,v 1.63 2003/06/14 18:38:55 michael Exp $
+ *  $Id: m_kick.c,v 1.64 2003/06/16 03:57:06 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -59,7 +59,7 @@ _moddeinit(void)
   mod_del_cmd(&kick_msgtab);
 }
 
-const char *_version = "$Revision: 1.63 $";
+const char *_version = "$Revision: 1.64 $";
 #endif
 
 /* m_kick()
@@ -79,7 +79,7 @@ m_kick(struct Client *client_p, struct Client *source_p,
   char *name;
   char *p = NULL;
   char *user;
-  struct Membership *ms;
+  struct Membership *ms = NULL;
   struct Membership *ms_target;
 
   if (*parv[2] == '\0')
