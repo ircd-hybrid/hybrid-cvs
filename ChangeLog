@@ -1,3 +1,18 @@
+a1kmm       2001/12/14 03:49:22 EST	(20011214_3)
+
+  Modified files:
+    .                    .cvsignore 
+    modules              .cvsignore m_oper.c 
+  Log:
+  - Fixed a core in m_oper() when you deoper and then reoper.
+  
+  Revision  Changes    Path
+  1.4       +1 -0      ircd-hybrid-7/.cvsignore
+  1.2       +1 -0      ircd-hybrid-7/modules/.cvsignore
+  1.39      +7 -4      ircd-hybrid-7/modules/m_oper.c
+
+
+
 a1kmm       2001/12/14 02:47:11 EST	(20011214_2)
 
   Modified files:
@@ -341,7 +356,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3164 2001/12/14 07:47:16 a1kmm Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3165 2001/12/14 08:49:27 a1kmm Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -18695,4 +18710,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3164 2001/12/14 07:47:16 a1kmm Exp $
+$Id: ChangeLog,v 7.3165 2001/12/14 08:49:27 a1kmm Exp $
