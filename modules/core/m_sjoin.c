@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_sjoin.c,v 1.35 2000/12/21 03:18:14 ejb Exp $
+ *   $Id: m_sjoin.c,v 1.36 2000/12/21 04:44:59 ejb Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -501,6 +501,16 @@ void set_final_mode(struct Mode *mode,struct Mode *oldmode)
   char numeric[16];
   char *s;
 
+  if ((MODE_HIDEOPS & mode->mode) && !(MODE_HIDEOPS & oldmode->mode))
+  {
+	  if (what != 1)
+	  {
+		  *mbuf++ = '+';
+		  what = 1;
+	  }
+	  *mbuf++ = 'z';
+  }
+  
   if((MODE_PRIVATE    & mode->mode) && !(MODE_PRIVATE    & oldmode->mode))
     {
       if (what != 1)
@@ -574,6 +584,16 @@ void set_final_mode(struct Mode *mode,struct Mode *oldmode)
         }
       *mbuf++ = 's';
     }
+  if ((MODE_HIDEOPS & oldmode->mode) && !(MODE_HIDEOPS & mode->mode))
+  {
+	  if (what != -1)
+	  {
+		  *mbuf++ = '-';
+		  what = -1;
+	  }
+	  *mbuf++ = 'z';
+  }
+  
   if((MODE_MODERATED  & oldmode->mode) && !(MODE_MODERATED  & mode->mode))
     {
       if (what != -1)
