@@ -1,4 +1,4 @@
-$Id: server-version-info,v 7.2 2000/11/28 06:06:48 db Exp $
+$Id: server-version-info,v 7.3 2000/12/15 00:11:59 toot Exp $
 Updated for Hybrid 6 (2000/11/26)
 
 When you type /version you will often see something like this:
@@ -10,22 +10,14 @@ here they are:
 'A'	SENDQ_ALWAYS
 'c'	CHROOTDIR
 'C'	CMDLINE_CONFIG
-'d'	DO_ID
 'D'	DEBUGMODE
-'e'	LOCOP_REHASH
-'E'	OPER_REHASH
 'G'	GLINES
 'H'	HUB
 'i'	SHOW_INVISIBLE_LUSERS
 'I'	NO_DEFAULT_INVISIBLE
-'K'	OPER_KILL
 'M'	IDLE_FROM_MSG
 'p'	CRYPT_OPER_PASSWORD
 'P'	CRYPT_LINK_PASSWORD
-'r'	LOCOP_RESTART
-'R'	OPER_RESTART
-'t'	OPER_REMOTE
-'V'	VALLOC
 'Y'	USE_SYSLOG
 'Z'	ZIP_LINKS
 
