@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.93 2000/12/30 06:47:28 lusky Exp $
+ *   $Id: send.c,v 7.94 2000/12/30 09:52:17 lusky Exp $
  */
 #include "tools.h"
 #include "send.h"
@@ -44,7 +44,7 @@
 #include <stdarg.h>
 #include <time.h>
 #include <assert.h>
-#include <sys/errno.h>
+#include <errno.h>
 #include "memdebug.h"
 
 #define LOG_BUFSIZE 2048

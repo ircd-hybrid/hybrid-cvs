@@ -4,7 +4,7 @@
  * Copyright (C) 1990 Jarkko Oikarinen and
  *                    University of Oulu, Co Center
  *
- * $Id: fileio.c,v 7.13 2000/12/21 13:39:41 db Exp $
+ * $Id: fileio.c,v 7.14 2000/12/30 09:52:16 lusky Exp $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@
 #include <fcntl.h>  /* O_RDONLY, O_WRONLY, ... */
 #include <unistd.h> /* read, write, open, close */
 #include <assert.h> /* assert */
-#include <sys/errno.h>
+#include <errno.h>
 #include "memdebug.h"
 
 /*
