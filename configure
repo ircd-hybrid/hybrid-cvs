@@ -874,6 +874,9 @@ Optional Packages:
                           Define the log facility to use with ircd's syslog
                           output (default LOG_LOCAL4)
   --with-nicklen=LENGTH   Set the nick length to LENGTH (default 9)
+  --with-maxclients=NUMBER
+                          Set the maximum number of clients to NUMBER (default
+                          200)
   --with-topiclen=NUMBER  Set the max topic length to NUMBER (default 120, max
                           390)
 
@@ -8383,6 +8386,15 @@ else
 fi;
 
 
+# Check whether --with-maxclients or --without-maxclients was given.
+if test "${with_maxclients+set}" = set; then
+  withval="$with_maxclients"
+  MAXCLIENTS="$withval"
+else
+  MAXCLIENTS="200"
+fi;
+
+
 # Check whether --with-topiclen or --without-topiclen was given.
 if test "${with_topiclen+set}" = set; then
   withval="$with_topiclen"
@@ -8407,6 +8419,11 @@ _ACEOF
 
 cat >>confdefs.h <<_ACEOF
 #define NICKLEN (${NICKLEN}+1)
+_ACEOF
+
+
+cat >>confdefs.h <<_ACEOF
+#define MAX_CLIENTS ${MAXCLIENTS}
 _ACEOF
 
 
@@ -11147,4 +11164,5 @@ echo
 echo "Configured limits:"
 echo "NICKLEN ................. $NICKLEN"
 echo "TOPICLEN ................ $TOPICLEN"
+echo "MAXCLIENTS .............. $MAXCLIENTS"
 echo

@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.60 2003/06/18 01:28:03 joshk Exp $
+dnl $Id: configure.ac,v 7.61 2003/06/18 02:21:03 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -193,7 +193,6 @@ AC_PATH_PROG(LD, ld)
 AC_PROG_YACC
 AC_PROG_RANLIB
 
-dnl Make sure the yacc was not 'fallback' and really exists
 if test "$YACC" = "yacc" -a -z "`which $YACC 2>/dev/null`"; then
 	AC_MSG_ERROR([could not locate a suitable parser generator; install bison, yacc, or byacc])
 fi
@@ -844,6 +843,10 @@ AC_ARG_WITH(nicklen,
 AC_HELP_STRING([--with-nicklen=LENGTH],[Set the nick length to LENGTH (default 9)]),
 	NICKLEN="$withval", NICKLEN="9")
 
+AC_ARG_WITH(maxclients,
+AC_HELP_STRING([--with-maxclients=NUMBER],[Set the maximum number of clients to NUMBER (default 200)]),
+	MAXCLIENTS="$withval", MAXCLIENTS="200")
+
 AC_ARG_WITH(topiclen,           
 AC_HELP_STRING([--with-topiclen=NUMBER],[Set the max topic length to NUMBER (default 120, max 390)]),
 [
@@ -858,6 +861,7 @@ TOPICLEN="120")
 
 AC_DEFINE_UNQUOTED(TOPICLEN, ${TOPICLEN}, [Maximum topic length (<=390)])
 AC_DEFINE_UNQUOTED(NICKLEN, (${NICKLEN}+1), [Nickname length])
+AC_DEFINE_UNQUOTED(MAX_CLIENTS, ${MAXCLIENTS}, [Maximum no. of clients that can connect to the ircd.])
 
 dnl Shared Modules Support
 dnl ======================
@@ -1157,4 +1161,5 @@ echo
 echo "Configured limits:"
 echo "NICKLEN ................. $NICKLEN"
 echo "TOPICLEN ................ $TOPICLEN"
+echo "MAXCLIENTS .............. $MAXCLIENTS"
 echo
