@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.161 2001/06/11 19:36:05 androsyn Exp $
+ * $Id: ircd.c,v 7.162 2001/06/11 19:38:22 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -484,6 +484,7 @@ static void cleanup_zombies(void *unused)
 {
   int status;
   waitpid(-1, &status, WNOHANG);
+  eventAdd("cleanup_zombies", cleanup_zombies, NULL, 30, 0);
 }
 
 int main(int argc, char *argv[])
