@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.183 2004/04/22 03:40:58 bill Exp $
+ *  $Id: m_sjoin.c,v 1.184 2004/05/18 00:17:12 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -63,7 +63,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.183 $";
+const char *_version = "$Revision: 1.184 $";
 #endif
 
 static char modebuf[MODEBUFLEN];
@@ -545,7 +545,7 @@ nextnick:
       sendto_one(target_p, "%s", nick_buf);
   }
 
-  if (HasID(source_p))
+  if (HasID(source_p) && !keep_our_modes)
   {
     if (dlink_list_length(&chptr->banlist) > 0)
       remove_ban_list(chptr, client_p, &chptr->banlist,
