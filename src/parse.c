@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.14 2000/10/03 18:14:52 db Exp $
+ *   $Id: parse.c,v 7.15 2000/10/20 15:29:07 toot Exp $
  */
 #include "parse.h"
 #include "client.h"
@@ -484,11 +484,11 @@ static struct Message *do_msg_tree(MESSAGE_TREE *mtree, char *prefix,
 }
 
 struct Message msgtab[] = {
-  {MSG_PRIVMSG, 0, 2, MFLG_SLOW | MFLG_UNREG, 0L,
+  {MSG_PRIVMSG, 0, 1, MFLG_SLOW | MFLG_UNREG, 0L,
     /* UNREG, CLIENT, SERVER, OPER */
     { m_unregistered, m_privmsg, ms_privmsg, mo_privmsg }
   },
-  {MSG_NOTICE, 0, 2, MFLG_SLOW | MFLG_UNREG, 0L,
+  {MSG_NOTICE, 0, 1, MFLG_SLOW | MFLG_UNREG, 0L,
     /* UNREG, CLIENT, SERVER, OPER */
     { m_unregistered, m_notice, ms_notice, mo_notice }
   },
@@ -510,7 +510,7 @@ struct Message msgtab[] = {
   },
   {MSG_CJOIN, 0, 1, MFLG_SLOW, 0,
     /* UNREG, CLIENT, SERVER, OPER */
-    { m_unregistered, m_cjoin, m_error, m_error }
+    { m_unregistered, m_cjoin, m_error, m_cjoin }
   },
   {MSG_MODE, 0, 1, MFLG_SLOW, 0,
     /* UNREG, CLIENT, SERVER, OPER */

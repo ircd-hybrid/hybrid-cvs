@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_notice.c,v 7.11 2000/10/16 16:10:12 toot Exp $
+ *   $Id: m_notice.c,v 7.12 2000/10/20 15:29:06 toot Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -119,19 +119,19 @@ int     m_notice(struct Client *cptr,
   struct Channel *vchan;
   int type=0;
 
-/* not needed now --is */
-  /* if (parc < 2 || *parv[1] == '\0')
+  /* notice gives different errors, so still check this */
+  if (parc < 2 || *parv[1] == '\0')
     {
       sendto_one(sptr, form_str(ERR_NORECIPIENT),
                  me.name, parv[0], "NOTICE");
       return -1;
-	  }  
+    }
 
   if (parc < 3 || *parv[2] == '\0')
     {
       sendto_one(sptr, form_str(ERR_NOTEXTTOSEND), me.name, parv[0]);
       return -1;
-	  } */
+    }
 
   if (MyConnect(sptr))
     {
@@ -379,7 +379,7 @@ int     m_notice(struct Client *cptr,
    * -Dianora
    */
 
-        
+
   /*
   ** the following two cases allow masks in NOTICEs
   ** (for OPERs only)
@@ -388,9 +388,9 @@ int     m_notice(struct Client *cptr,
   */
   if ((*nick == '$' || *nick == '#'))
     {
-		sendto_one(sptr, form_str(ERR_NOSUCHNICK),
-				   me.name, parv[0], nick);
-		return -1;
+               sendto_one(sptr, form_str(ERR_NOSUCHNICK),
+                                  me.name, parv[0], nick);
+               return -1;
     }
         
   /*
@@ -464,8 +464,7 @@ int     mo_notice(struct Client *cptr,
   struct Channel *chptr;
   int type=0;
 
-/* not needed now --is */
-/*  if (parc < 2 || *parv[1] == '\0')
+  if (parc < 2 || *parv[1] == '\0')
     {
       sendto_one(sptr, form_str(ERR_NORECIPIENT),
                  me.name, parv[0], "NOTICE");
@@ -476,7 +475,7 @@ int     mo_notice(struct Client *cptr,
     {
       sendto_one(sptr, form_str(ERR_NOTEXTTOSEND), me.name, parv[0]);
       return -1;
-	  } */
+    }
 
   if (MyConnect(sptr))
     {
