@@ -1,6 +1,6 @@
-diff -ur ircd-hybrid/contrib/m_ojoin.c halfops/contrib/m_ojoin.c
---- ircd-hybrid/contrib/m_ojoin.c	Sat Sep 27 19:16:01 2003
-+++ halfops/contrib/m_ojoin.c	Sat Sep 27 19:34:45 2003
+diff -ur nohalfops/contrib/m_ojoin.c halfops/contrib/m_ojoin.c
+--- nohalfops/contrib/m_ojoin.c	Sat Oct 11 11:17:48 2003
++++ halfops/contrib/m_ojoin.c	Sat Oct 11 11:17:54 2003
 @@ -103,6 +103,8 @@
                  modeletter = 'o'; name++; break;
        case '+': tmp_flags = CHFL_VOICE;
@@ -10,10 +10,10 @@ diff -ur ircd-hybrid/contrib/m_ojoin.c halfops/contrib/m_ojoin.c
        case '#':
        case '&':
          tmp_flags = 0;
-diff -ur ircd-hybrid/modules/core/m_kick.c halfops/modules/core/m_kick.c
---- ircd-hybrid/modules/core/m_kick.c	Sat Sep 27 19:16:04 2003
-+++ halfops/modules/core/m_kick.c	Sat Sep 27 19:35:52 2003
-@@ -122,7 +122,7 @@
+diff -ur nohalfops/modules/core/m_kick.c halfops/modules/core/m_kick.c
+--- nohalfops/modules/core/m_kick.c	Sat Oct 11 11:17:48 2003
++++ halfops/modules/core/m_kick.c	Sat Oct 11 11:17:54 2003
+@@ -135,7 +135,7 @@
          return;
        }
      }
@@ -22,7 +22,7 @@ diff -ur ircd-hybrid/modules/core/m_kick.c halfops/modules/core/m_kick.c
      {
        /* was a user, not a server, and user isn't seen as a chanop here */
        if (MyConnect(source_p))
-@@ -180,6 +180,17 @@
+@@ -193,6 +193,17 @@
  
    if ((ms_target = find_channel_link(who, chptr)) != NULL)
    {
@@ -40,20 +40,20 @@ diff -ur ircd-hybrid/modules/core/m_kick.c halfops/modules/core/m_kick.c
     /* jdc
      * - In the case of a server kicking a user (i.e. CLEARCHAN),
      *   the kick should show up as coming from the server which did
-diff -ur ircd-hybrid/modules/core/m_sjoin.c halfops/modules/core/m_sjoin.c
---- ircd-hybrid/modules/core/m_sjoin.c	Sat Sep 27 19:16:04 2003
-+++ halfops/modules/core/m_sjoin.c	Sat Sep 27 19:35:13 2003
-@@ -311,7 +311,7 @@
+diff -ur nohalfops/modules/core/m_sjoin.c halfops/modules/core/m_sjoin.c
+--- nohalfops/modules/core/m_sjoin.c	Sat Oct 11 11:17:48 2003
++++ halfops/modules/core/m_sjoin.c	Sat Oct 11 11:18:15 2003
+@@ -318,7 +318,7 @@
+     fl = 0;
      num_prefix = 0;
  
-     /* XXXXXXXX THIS IS JUST DUMB */
 -    for (i = 0; i < 2; i++)
 +    for (i = 0; i < 3; i++)
      {
        if (*s == '@')
        {
-@@ -333,6 +333,16 @@
-         }
+@@ -330,6 +330,16 @@
+         fl |= CHFL_VOICE;
          s++;
        }
 +      else if (*s == '%')
@@ -67,9 +67,9 @@ diff -ur ircd-hybrid/modules/core/m_sjoin.c halfops/modules/core/m_sjoin.c
 +        s++;
 +      }
      }
-     /* if the client doesnt exist, backtrack over the prefix (@%+) that we
-      * just added and skip to the next nick
-@@ -356,7 +366,7 @@
+ 
+     if (IsDigit(*s))
+@@ -370,7 +380,7 @@
  
      if (!keep_new_modes)
      {
@@ -78,7 +78,7 @@ diff -ur ircd-hybrid/modules/core/m_sjoin.c halfops/modules/core/m_sjoin.c
          fl = CHFL_DEOPPED;
        else
          fl = 0;
-@@ -439,6 +449,24 @@
+@@ -453,6 +463,24 @@
          pargs = 0;
        }
      }
@@ -103,7 +103,7 @@ diff -ur ircd-hybrid/modules/core/m_sjoin.c halfops/modules/core/m_sjoin.c
  
  nextnick:
      /* p points to the next nick */
-@@ -616,6 +644,7 @@
+@@ -641,6 +669,7 @@
  remove_our_modes(struct Channel *chptr, struct Client *source_p)
  {
    remove_a_mode(chptr, source_p, CHFL_CHANOP, 'o');
@@ -111,10 +111,10 @@ diff -ur ircd-hybrid/modules/core/m_sjoin.c halfops/modules/core/m_sjoin.c
    remove_a_mode(chptr, source_p, CHFL_VOICE, 'v');
  }
  
-diff -ur ircd-hybrid/src/channel_mode.c halfops/src/channel_mode.c
---- ircd-hybrid/src/channel_mode.c	Sat Sep 27 19:16:06 2003
-+++ halfops/src/channel_mode.c	Sat Sep 27 19:37:30 2003
-@@ -73,6 +73,10 @@
+diff -ur nohalfops/src/channel_mode.c halfops/src/channel_mode.c
+--- nohalfops/src/channel_mode.c	Sat Oct 11 11:17:48 2003
++++ halfops/src/channel_mode.c	Sat Oct 11 11:17:54 2003
+@@ -72,6 +72,10 @@
  static void chm_op(struct Client *, struct Client *, struct Channel *, int,
                     int *, char **, int *, int, int, char, void *,
                     const char *chname);
@@ -125,7 +125,7 @@ diff -ur ircd-hybrid/src/channel_mode.c halfops/src/channel_mode.c
  static void chm_voice(struct Client *, struct Client *, struct Channel *,
                        int, int *, char **, int *, int, int, char, void *,
                        const char *chname);
-@@ -648,7 +652,11 @@
+@@ -647,7 +651,11 @@
  
    mode_type = (long)d;
  
@@ -138,7 +138,7 @@ diff -ur ircd-hybrid/src/channel_mode.c halfops/src/channel_mode.c
    {
      if (!(*errors & SM_ERR_NOOPS))
        sendto_one(source_p, form_str(alev == CHACCESS_NOTONCHAN ?
-@@ -729,7 +737,7 @@
+@@ -728,7 +736,7 @@
      return;
    }
  
@@ -147,7 +147,7 @@ diff -ur ircd-hybrid/src/channel_mode.c halfops/src/channel_mode.c
    {
      if (!(*errors & SM_ERR_NOOPS))
        sendto_one(source_p, form_str(alev == CHACCESS_NOTONCHAN ?
-@@ -823,7 +831,7 @@
+@@ -822,7 +830,7 @@
      return;
    }
  
@@ -156,7 +156,7 @@ diff -ur ircd-hybrid/src/channel_mode.c halfops/src/channel_mode.c
    {
      if (!(*errors & SM_ERR_NOOPS))
        sendto_one(source_p, form_str(alev == CHACCESS_NOTONCHAN ?
-@@ -926,7 +934,7 @@
+@@ -925,7 +933,7 @@
      return;
    }
  
@@ -165,7 +165,7 @@ diff -ur ircd-hybrid/src/channel_mode.c halfops/src/channel_mode.c
    {
      if (!(*errors & SM_ERR_NOOPS))
        sendto_one(source_p, form_str(alev == CHACCESS_NOTONCHAN ?
-@@ -1087,6 +1095,95 @@
+@@ -1086,6 +1094,95 @@
  }
  
  static void
@@ -261,7 +261,7 @@ diff -ur ircd-hybrid/src/channel_mode.c halfops/src/channel_mode.c
  chm_voice(struct Client *client_p, struct Client *source_p,
            struct Channel *chptr, int parc, int *parn,
            char **parv, int *errors, int alev, int dir, char c, void *d,
-@@ -1096,7 +1193,7 @@
+@@ -1095,7 +1192,7 @@
    struct Client *targ_p;
    struct Membership *member;
  
@@ -270,7 +270,7 @@ diff -ur ircd-hybrid/src/channel_mode.c halfops/src/channel_mode.c
    {
      if (!(*errors & SM_ERR_NOOPS))
        sendto_one(source_p, form_str(alev == CHACCESS_NOTONCHAN ?
-@@ -1158,7 +1255,7 @@
+@@ -1157,7 +1254,7 @@
    int i, limit;
    char *lstr;
  
@@ -279,7 +279,7 @@ diff -ur ircd-hybrid/src/channel_mode.c halfops/src/channel_mode.c
    {
      if (!(*errors & SM_ERR_NOOPS))
        sendto_one(source_p, form_str(alev == CHACCESS_NOTONCHAN ?
-@@ -1223,7 +1320,7 @@
+@@ -1222,7 +1319,7 @@
    int i;
    char *key;
  
@@ -288,7 +288,7 @@ diff -ur ircd-hybrid/src/channel_mode.c halfops/src/channel_mode.c
    {
      if (!(*errors & SM_ERR_NOOPS))
        sendto_one(source_p, form_str(alev == CHACCESS_NOTONCHAN ?
-@@ -1338,7 +1435,7 @@
+@@ -1337,7 +1434,7 @@
    {chm_except, NULL},                             /* e */
    {chm_nosuch, NULL},                             /* f */
    {chm_nosuch, NULL},                             /* g */
@@ -297,7 +297,7 @@ diff -ur ircd-hybrid/src/channel_mode.c halfops/src/channel_mode.c
    {chm_simple, (void *) MODE_INVITEONLY},         /* i */
    {chm_nosuch, NULL},                             /* j */
    {chm_key, NULL},                                /* k */
-@@ -1383,6 +1480,9 @@
+@@ -1382,6 +1479,9 @@
  
    if (has_member_flags(member, CHFL_CHANOP))
      return(CHACCESS_CHANOP);
