@@ -1,4 +1,4 @@
-$Id: Hybrid-team,v 7.76 2004/04/22 03:40:53 bill Exp $
+$Id: Hybrid-team,v 7.77 2004/07/16 23:58:03 joshk Exp $
 
 The hybrid team is a group of ircd coders who were frustrated
 with the instability and all-out "dirtiness" of the EFnet ircd's
@@ -32,7 +32,6 @@ metalrock, Jack Low <jclow@csupomona.edu>
 Michael, Michael Wobst <michael@elite-web.de>
 isomer, Perry Lorier <perry@coders.net>
 jmallett, Juli Mallett <jmallett@FreeBSD.org>
-k9, Jeremy Chadwick <yoshi@parodius.com>
 Rodder, Jon Lusky <lusky@blown.net>
 toot, Toby Verrall <to7@antipope.fsnet.co.uk>
 wiz, Jason Dambrosio <jason@wiz.cx>
@@ -40,12 +39,13 @@ Wohali, Joan Touzet <joant@ieee.org>
 xyst, Greg Prosser <gnp@arrogant.org>
  
 The following people have contributed blood, sweat, and/or code to
-this release of hybrid, in nick alphabetical order:
+all releases of Hybrid, in nick alphabetical order:
  
 bysin, Ben Kittridge <bkittridge@cfl.rr.com>
 desrt, Ryan Lortie <desertangel@mindless.com>
 Habeeb, David Supuran <habeeb@cfl.rr.com>
 jv, Jakub Vlasek <jv@pilsedu.cz>
+k9, Jeremy Chadwick <ircd@jdc.parodius.com>
 kre, Dinko Korunic <kreator@fly.srk.fer.hr>
 madmax, Paul Lomax <madmax@efnet.org>
 Neph|l|m, Adel Mezibra <adel@cybercable.fr>
