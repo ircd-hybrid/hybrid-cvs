@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.96 2001/05/24 04:22:08 ejb Exp $
+ * $Id: ircd_lexer.l,v 1.97 2001/05/28 17:10:55 davidt Exp $
  */
 
 %option case-insensitive
@@ -115,6 +115,7 @@ compression_level { return COMPRESSION_LEVEL; }
 connect		{ return CONNECT; }
 connectfreq     { return CONNECTFREQ; }
 default_floodcount  { return DEFAULT_FLOODCOUNT; }
+default_cipher_preference { return DEFAULT_CIPHER_PREFERENCE; }
 deny		{ return DENY; }
 description	{ return DESCRIPTION; }
 die		{ return DIE; }
