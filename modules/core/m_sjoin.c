@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.130 2002/04/06 05:04:43 androsyn Exp $
+ *  $Id: m_sjoin.c,v 1.131 2002/04/10 12:33:08 db Exp $
  */
 
 #include "tools.h"
@@ -65,7 +65,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.130 $";
+const char *_version = "$Revision: 1.131 $";
 #endif
 /*
  * ms_sjoin
@@ -810,7 +810,7 @@ static void remove_our_modes( int hide_or_not,
   dlinkMoveList(&chptr->locchanops, &chptr->locpeons);
   dlinkMoveList(&chptr->lochalfops, &chptr->locpeons);
   dlinkMoveList(&chptr->locvoiced, &chptr->locpeons);
-  dlinkMoveList(&chptr->locchanops_voiced, &chptr->peons);
+  dlinkMoveList(&chptr->locchanops_voiced, &chptr->locpeons);
 }
 
 
