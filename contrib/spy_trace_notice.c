@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: spy_trace_notice.c,v 1.10 2003/05/31 23:42:11 metalrock Exp $
+ *  $Id: spy_trace_notice.c,v 1.11 2003/09/23 03:53:22 db Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -46,9 +46,10 @@ _moddeinit(void)
   hook_del_hook("doing_ltrace", (hookfn *)show_ltrace);
 }
 
-const char *_version = "$Revision: 1.10 $";
+const char *_version = "$Revision: 1.11 $";
 
-int show_trace(struct hook_spy_data *data)
+int
+show_trace(struct hook_spy_data *data)
 {
   sendto_realops_flags(UMODE_SPY, L_ALL,
                          "trace requested by %s (%s@%s) [%s]",
@@ -58,7 +59,8 @@ int show_trace(struct hook_spy_data *data)
   return 0;
 }
 
-int show_ltrace(struct hook_spy_data *data)
+int
+show_ltrace(struct hook_spy_data *data)
 {
   sendto_realops_flags(UMODE_SPY, L_ALL,
 		       "ltrace requested by %s (%s@%s) [%s]",

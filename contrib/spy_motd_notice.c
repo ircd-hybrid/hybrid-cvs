@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: spy_motd_notice.c,v 1.9 2003/05/31 23:42:11 metalrock Exp $
+ *  $Id: spy_motd_notice.c,v 1.10 2003/09/23 03:53:22 db Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -43,9 +43,10 @@ _moddeinit(void)
   hook_del_hook("doing_motd", (hookfn *)show_motd);
 }
 
-const char *_version = "$Revision: 1.9 $";
+const char *_version = "$Revision: 1.10 $";
 
-int show_motd(struct hook_spy_data *data)
+int
+show_motd(struct hook_spy_data *data)
 {
   sendto_realops_flags(UMODE_SPY, L_ALL,
                          "motd requested by %s (%s@%s) [%s]",
