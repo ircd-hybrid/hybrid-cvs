@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: channel_mode.c,v 7.139 2004/06/14 15:25:34 bill Exp $
+ *  $Id: channel_mode.c,v 7.140 2004/10/06 14:01:20 adx Exp $
  */
 
 #include "stdinc.h"
@@ -653,8 +653,6 @@ chm_simple(struct Client *client_p, struct Client *source_p, struct Channel *chp
   if (simple_modes_mask & mode_type)
     return;
 
-  simple_modes_mask |= mode_type;
-
   /* setting + */
   /* Apparently, (though no one has ever told the hybrid group directly) 
    * admins don't like redundant mode checking. ok. It would have been nice 
@@ -665,6 +663,9 @@ chm_simple(struct Client *client_p, struct Client *source_p, struct Channel *chp
    */ 
   if ((dir == MODE_ADD)) /* && !(chptr->mode.mode & mode_type)) */
   {
+    if (chptr->mode.mode & mode_type)
+      return;
+    
     chptr->mode.mode |= mode_type;
 
     mode_changes[mode_count].letter = c;
@@ -678,6 +679,8 @@ chm_simple(struct Client *client_p, struct Client *source_p, struct Channel *chp
   else if ((dir == MODE_DEL)) /* && (chptr->mode.mode & mode_type)) */
   {
     /* setting - */
+    if (!(chptr->mode.mode & mode_type))
+      return;
 
     chptr->mode.mode &= ~mode_type;
 
@@ -689,6 +692,8 @@ chm_simple(struct Client *client_p, struct Client *source_p, struct Channel *chp
     mode_changes[mode_count].id = NULL;
     mode_changes[mode_count++].arg = NULL;
   }
+
+  simple_modes_mask |= mode_type;
 }
 
 static void
