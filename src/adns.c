@@ -1,5 +1,5 @@
 /*
- * $Id: adns.c,v 7.27 2001/10/04 14:25:38 androsyn Exp $
+ * $Id: adns.c,v 7.28 2001/10/04 16:21:34 androsyn Exp $
  * adns.c  functions to enter libadns 
  *
  * Written by Aaron Sethman <androsyn@ratbox.org>
@@ -49,11 +49,13 @@ void delete_adns_queries(struct DNSQuery *q)
 /* void restart_resolver(void)
  * Input: None
  * Output: None
- * Side effects: Rehashes the ADNS configuration.
+ * Side effects: Tears down any old ADNS sockets..reloads the conf
  */
 void restart_resolver(void)
 {
- adns__rereadconfig(dns_state);
+  fd_close(dns_state->udpsocket);
+  adns_globalsystemfailure(dns_state);
+  init_resolver();
 }
 
 /* void init_resolver(void)
