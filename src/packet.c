@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.82 2002/05/25 03:06:29 androsyn Exp $
+ *  $Id: packet.c,v 7.83 2002/05/31 00:08:41 androsyn Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -61,7 +61,7 @@ parse_client_queued(struct Client *client_p)
         client_dopacket(client_p, readBuf, dolen);
       else
       {
-        if (client_p->localClient)
+        if (MyClient(client_p))
         {
           linebuf_donebuf(&client_p->localClient->buf_recvq);
           linebuf_donebuf(&client_p->localClient->buf_sendq);
