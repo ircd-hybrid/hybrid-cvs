@@ -23,7 +23,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_kqueue.c,v 1.11 2001/04/25 04:11:54 androsyn Exp $
+ *  $Id: s_bsd_kqueue.c,v 1.12 2001/04/25 04:37:20 db Exp $
  */
 #include "config.h"
 #ifdef USE_KQUEUE
@@ -88,7 +88,6 @@ static int kqoff;		/* offset into the buffer */
 void
 kq_update_events(int fd, short filter, PF * handler)
 {
-    int update_required = 0;
     PF *cur_handler;
     int retval;
 
@@ -105,23 +104,30 @@ kq_update_events(int fd, short filter, PF * handler)
         break;
     }
 
-    if (cur_handler == NULL && handler != NULL)
-        update_required++;
-    else if (cur_handler != NULL && handler == NULL)
-        update_required++;
-
-    if (update_required) {
+    if ((cur_handler == NULL && handler != NULL)
+        ||
+       (cur_handler != NULL && handler == NULL)) {
         struct kevent *kep;
 
 	kep = kqlst + kqoff;
 
         kep->ident = (u_long) fd;
         kep->filter = filter;
+
+	/* jlemon didn't define this in fbsd 4.2 argh! -db */
 #ifdef NOTE_LOWAT
 	kep->fflags = NOTE_LOWAT;
-#endif
 	kep->data = 1;
-        kep->flags = handler ? (EV_ADD | EV_ONESHOT) : EV_DELETE;
+#endif
+
+        if (handler != NULL) {
+		if (filter == EVFILT_WRITE)
+			kep->flags = (EV_ADD | EV_ONESHOT);
+		else
+			kep->flags = EV_ADD;
+	} else {
+		kep->flags = EV_DELETE;
+	}
 	if (kqoff == kqmax) {
 		kevent(kq, kqlst, kqoff, NULL, 0, &zero_timespec);
 		kqoff == 0;
