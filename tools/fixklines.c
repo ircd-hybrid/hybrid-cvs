@@ -1,5 +1,6 @@
 /*
 fixklines - scan an ircd.conf or kline.conf file
+$Id: fixklines.c,v 7.1 1999/08/10 23:13:14 lusky Exp $
   D lines of form
   D:192.168.0.* are converted to D:192.168.0.0/24
   K-lines of form
@@ -34,10 +35,6 @@ Typical usage:
 #define MAXLINE 1024
 #define YES 1
 #define NO 0
-
-#ifndef lint
-static char *version="$Id: fixklines.c,v 7.0 1999/08/01 21:19:56 lusky Exp $";
-#endif
 
 char linebuf[MAXLINE];
 void read_write_klines(char *,char *);

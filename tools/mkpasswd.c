@@ -3,10 +3,11 @@
  * You can use this code as long as my name stays with it.
  *
  *
- * $Id: mkpasswd.c,v 7.0 1999/08/01 21:19:57 lusky Exp $
+ * $Id: mkpasswd.c,v 7.1 1999/08/10 23:13:14 lusky Exp $
  */
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include <time.h>
 
 
