@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.128 2001/05/25 01:02:54 ejb Exp $
+ *  $Id: s_bsd.c,v 7.129 2001/05/27 03:17:26 a1kmm Exp $
  */
 #include "config.h"
 #include "fdlist.h"
@@ -650,7 +650,7 @@ comm_connect_tcp(int fd, const char *host, u_short port,
   /* We have a valid IP, so we just call tryconnect */
   /* Make sure we actually set the timeout here .. */
   comm_settimeout(fd, 30, comm_connect_timeout, NULL);
-  comm_connect_tryconnect(fd, NULL);        
+  comm_connect_tryconnect(fd, NULL);
  }
 }
 

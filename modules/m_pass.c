@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_pass.c,v 1.16 2001/04/04 15:22:33 androsyn Exp $
+ *  $Id: m_pass.c,v 1.17 2001/05/27 03:17:21 a1kmm Exp $
  */
 #include "handlers.h"  /* m_pass prototype */
 #include "client.h"      /* client struct */
@@ -87,7 +87,7 @@ static void mr_pass(struct Client *client_p, struct Client *source_p,
        * safely assume if there is a ":TS" then its a TS server
        * -Dianora
        */
-      if (0 == irccmp(parv[2], "TS"))
+      if (0 == irccmp(parv[2], "TS") && client_p->tsinfo == 0)
         client_p->tsinfo = TS_DOESTS;
     }
 }
