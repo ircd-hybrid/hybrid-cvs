@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.187 2002/10/28 21:09:20 bill Exp $
+ *  $Id: s_conf.h,v 7.188 2002/10/30 17:44:53 wiz Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -123,6 +123,7 @@ struct ConfItem
 #define CONF_FLAGS_REDIR                0x00000800
 #define CONF_FLAGS_EXEMPTGLINE          0x00001000
 #define CONF_FLAGS_RESTRICTED           0x00002000
+#define CONF_FLAGS_CAN_FLOOD            0x00100000
 /* server flags */
 #define CONF_FLAGS_ALLOW_AUTO_CONN      0x00004000
 #define CONF_FLAGS_LAZY_LINK            0x00008000
@@ -134,6 +135,7 @@ struct ConfItem
 
 #define IsLimitIp(x)            ((x)->flags & CONF_FLAGS_LIMIT_IP)
 #define IsNoTilde(x)            ((x)->flags & CONF_FLAGS_NO_TILDE)
+#define IsConfCanFlood(x)       ((x)->flags & CONF_FLAGS_CAN_FLOOD)
 #define IsNeedIdentd(x)         ((x)->flags & CONF_FLAGS_NEED_IDENTD)
 #define IsPassIdentd(x)         ((x)->flags & CONF_FLAGS_PASS_IDENTD)
 #define IsNoMatchIp(x)          ((x)->flags & CONF_FLAGS_NOMATCH_IP)
@@ -213,6 +215,7 @@ struct config_file_entry
   int           pace_wait_simple;
   int           short_motd;
   int           no_oper_flood;
+  int           true_no_oper_flood;
   int           glines;
   int           gline_time;
   int           idletime;

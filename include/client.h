@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.h,v 7.152 2002/07/12 00:43:19 androsyn Exp $
+ *  $Id: client.h,v 7.153 2002/10/30 17:44:53 wiz Exp $
  */
 
 #ifndef INCLUDED_client_h
@@ -396,6 +396,7 @@ struct LocalUser
 #define FLAGS_WAITAUTH     0x8000 /* waiting for CRYPTLINK AUTH command */
 #define FLAGS_SERVLINK     0x10000 /* servlink has servlink process */
 #define FLAGS_MARK	   0x20000 /* marked client */
+#define FLAGS_CANFLOOD	   0x40000 /* client has the ability to flood */
 /* umodes, settable flags */
 
 #define FLAGS_SERVNOTICE   0x0001 /* server notices such as kill */
@@ -490,6 +491,9 @@ struct LocalUser
 #define SetMark(x)		((x)->flags |= FLAGS_MARK)
 #define ClearMark(x)		((x)->flags &= ~FLAGS_MARK)
 #define IsMarked(x)		((x)->flags & FLAGS_MARK)
+#define SetCanFlood(x)		((x)->flags |= FLAGS_CANFLOOD)
+#define ClearCanFlood(x)	((x)->flags &= FLAGS_CANFLOOD)
+#define IsCanFlood(x)		((x)->flags & FLAGS_CANFLOOD)
 
 /* oper flags */
 #define MyOper(x)               (MyConnect(x) && IsOper(x))

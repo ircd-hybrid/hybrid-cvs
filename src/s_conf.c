@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.331 2002/10/28 21:09:24 bill Exp $
+ *  $Id: s_conf.c,v 7.332 2002/10/30 17:44:57 wiz Exp $
  */
 
 #include "stdinc.h"
@@ -1386,6 +1386,7 @@ set_default_conf(void)
   ConfigFileEntry.pace_wait_simple = 1;
   ConfigFileEntry.short_motd = NO;
   ConfigFileEntry.no_oper_flood = NO;
+  ConfigFileEntry.true_no_oper_flood = NO;
   ConfigFileEntry.fname_userlog[0] = '\0';
   ConfigFileEntry.fname_foperlog[0] = '\0';
   ConfigFileEntry.fname_operlog[0] = '\0';

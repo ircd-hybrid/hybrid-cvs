@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.260 2002/10/28 21:09:24 bill Exp $
+ *  $Id: ircd_parser.y,v 1.261 2002/10/30 17:44:56 wiz Exp $
  */
 
 %{
@@ -101,6 +101,7 @@ int   class_redirport_var;
 %token  AUTOCONN
 %token  BYTES KBYTES MBYTES GBYTES TBYTES
 %token  CALLER_ID_WAIT
+%token  CAN_FLOOD
 %token  CHANNEL
 %token  CIPHER_PREFERENCE
 %token  CLASS
@@ -266,6 +267,7 @@ int   class_redirport_var;
 %token  T_UNAUTH
 %token  T_WALLOP
 %token  THROTTLE_TIME
+%token  TRUE_NO_OPER_FLOOD
 %token  UNKLINE
 %token  USER
 %token	USE_ANONOPS
@@ -1074,7 +1076,7 @@ auth_item:      auth_user | auth_passwd | auth_class |
                 auth_kline_exempt | auth_have_ident | auth_is_restricted |
                 auth_exceed_limit | auth_no_tilde | auth_gline_exempt |
                 auth_spoof | auth_spoof_notice |
-                auth_redir_serv | auth_redir_port |
+                auth_redir_serv | auth_redir_port | auth_can_flood |
                 error;
 
 auth_user:   USER '=' QSTRING ';'
@@ -1180,6 +1182,16 @@ auth_have_ident:      HAVE_IDENT '=' TYES ';'
                       HAVE_IDENT '=' TNO ';'
   {
     yy_achead->flags &= ~CONF_FLAGS_NEED_IDENTD;
+  };
+
+auth_can_flood:      CAN_FLOOD '=' TYES ';'
+  {
+    yy_achead->flags |= CONF_FLAGS_CAN_FLOOD;
+  }
+                      |
+                      CAN_FLOOD '=' TNO ';'
+  {
+    yy_achead->flags &= ~CONF_FLAGS_CAN_FLOOD;
   };
 
 auth_no_tilde:        NO_TILDE '=' TYES ';' 
@@ -1944,6 +1956,7 @@ general_item:       general_failed_oper_notice |
                     general_pace_wait | general_stats_i_oper_only |
                     general_pace_wait_simple | general_stats_P_oper_only |
                     general_short_motd | general_no_oper_flood |
+                    general_true_no_oper_flood |
                     general_iauth_server |
                     general_iauth_port |
                     general_glines | general_gline_time |
@@ -2158,6 +2171,16 @@ general_no_oper_flood: NO_OPER_FLOOD '=' TYES ';'
     NO_OPER_FLOOD '=' TNO ';'
   {
     ConfigFileEntry.no_oper_flood = 0;
+  };
+
+general_true_no_oper_flood: TRUE_NO_OPER_FLOOD '=' TYES ';'
+  {
+    ConfigFileEntry.true_no_oper_flood = 1;
+  }
+    |
+    TRUE_NO_OPER_FLOOD '=' TNO ';'
+  {
+    ConfigFileEntry.true_no_oper_flood = 0;
   };
 
 general_iauth_server: IAUTH_SERVER '=' QSTRING ';'

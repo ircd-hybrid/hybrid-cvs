@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_message.c,v 1.103 2002/10/24 18:16:38 bill Exp $
+ *  $Id: m_message.c,v 1.104 2002/10/30 17:44:55 wiz Exp $
  */
 
 #include "stdinc.h"
@@ -123,7 +123,7 @@ _moddeinit(void)
   mod_del_cmd(&notice_msgtab);
 }
 
-const char *_version = "$Revision: 1.103 $";
+const char *_version = "$Revision: 1.104 $";
 #endif
 
 /*
@@ -682,7 +682,7 @@ flood_attack_client(int p_or_n, struct Client *source_p,
   int delta;
 
   if (GlobalSetOptions.floodcount && MyConnect(target_p)
-      && IsClient(source_p))
+      && IsClient(source_p) && !IsConfCanFlood(source_p))
   {
     if ((target_p->localClient->first_received_message_time + 1)
         < CurrentTime)
@@ -740,7 +740,7 @@ flood_attack_channel(int p_or_n, struct Client *source_p,
 {
   int delta;
 
-  if (GlobalSetOptions.floodcount)
+  if (GlobalSetOptions.floodcount && !IsConfCanFlood(source_p))
   {
     if ((chptr->first_received_message_time + 1) < CurrentTime)
     {

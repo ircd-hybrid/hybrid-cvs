@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.210 2002/10/10 18:30:31 androsyn Exp $
+ *  $Id: s_user.c,v 7.211 2002/10/30 17:44:57 wiz Exp $
  */
 
 #include "stdinc.h"
@@ -820,6 +820,13 @@ report_and_set_user_flags(struct Client *source_p,struct ConfItem *aconf)
       sendto_one(source_p,
          ":%s NOTICE %s :*** You are exempt from idle limits. congrats.",
                  me.name,source_p->name);
+    }
+  if (IsConfCanFlood(aconf))
+    {
+      SetCanFlood(source_p);
+      sendto_one(source_p, ":%s NOTICE %S :*** You are exempt from flood "
+                 "protection, aren't you feersome.",
+                 me.name, source_p->name);
     }
 }
 
