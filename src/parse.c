@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: parse.c,v 7.133 2002/07/19 04:34:25 ejb Exp $
+ *  $Id: parse.c,v 7.134 2002/07/26 16:37:14 leeh Exp $
  */
 
 #include "stdinc.h"
@@ -351,10 +351,12 @@ handle_command(struct Message *mptr, struct Client *client_p,
 	}
 
       sendto_realops_flags(FLAGS_ALL, L_ALL, 
-			"Dropping server %s due to (invalid) command '%s' with only "
-			"%d arguments (expecting %d).  (Buf: '%s')",
-				client_p->name, mptr->cmd, i, mptr->parameters, tbuf);
-
+			   "Dropping server %s due to (invalid) command '%s'"
+			   "with only %d arguments (expecting %d).  (Buf: '%s')",
+			   client_p->name, mptr->cmd, i, mptr->parameters, tbuf);
+      ilog(L_CRIT, "Insufficient parameters (%d) for command '%s' from %s.  Buf: %s",
+           i, mptr->cmd, client_p->name, tbuf);
+      
       exit_client(client_p, client_p, client_p, "Not enough arguments to server command.");
       return;
     }
