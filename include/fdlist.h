@@ -1,7 +1,7 @@
 /*
  * fdlist.h
  *
- * $Id: fdlist.h,v 7.14 2001/01/24 20:04:30 fl_ Exp $
+ * $Id: fdlist.h,v 7.15 2001/01/26 20:40:22 androsyn Exp $
  */
 #ifndef INCLUDED_fdlist_h
 #define INCLUDED_fdlist_h
@@ -11,13 +11,12 @@
 #endif
 #ifndef INCLUDED_sys_socket_h
 #define INCLUDED_sys_socket_h
-#include "ircd_defs.h"
 #include <sys/socket.h>		/* Socket structs */
-#include <netinet/in.h>
-
 #endif
 
+#include <netinet/in.h>
 #include "config.h"
+#include "ircd_defs.h"
 
 #define FD_DESC_SZ 32
 
