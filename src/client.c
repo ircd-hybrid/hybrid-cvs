@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.92 2001/01/04 00:31:46 adrian Exp $
+ *  $Id: client.c,v 7.93 2001/01/04 02:03:26 db Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -608,6 +608,7 @@ remove_client_from_list(struct Client* cptr)
 {
   assert(0 != cptr);
   
+#if 0
   /* HACK somehow this client has already exited
    * but has come back to haunt us.. looks like a bug
    * XXX isn't this bug fixed now? -is
@@ -618,6 +619,7 @@ remove_client_from_list(struct Client* cptr)
 	  cptr, cptr->name?cptr->name:"NULL");
       return;
     }
+#endif
 
   if (cptr->prev)
     cptr->prev->next = cptr->next;
