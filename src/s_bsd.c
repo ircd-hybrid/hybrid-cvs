@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_bsd.c,v 7.155 2002/01/05 09:15:16 a1kmm Exp $
+ *  $Id: s_bsd.c,v 7.156 2002/01/07 06:12:40 joant Exp $
  */
 
 #include "config.h"
@@ -522,8 +522,6 @@ ignoreErrno(int ierrno)
     default:
         return 0;
     }
-    /* NOTREACHED */
-       return 0;
 }
 
 

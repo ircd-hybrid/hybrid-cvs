@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: convertklines.c,v 7.3 2001/10/04 21:22:37 androsyn Exp $
+ * $Id: convertklines.c,v 7.4 2002/01/07 06:12:43 joant Exp $
  */
 
 #include <stdio.h>
@@ -220,8 +220,6 @@ static void oldParseOneLine(FILE *outkline, FILE *outdline, char* line)
       if ((user_field = getfield(NULL)) == NULL)
 	break;
 
-      break;
-      /* NOTREACHED */
     }
   if (!passwd_field)
     passwd_field = "";

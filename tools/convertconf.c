@@ -15,7 +15,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: convertconf.c,v 1.28 2001/08/26 22:24:31 kreator Exp $
+ * $Id: convertconf.c,v 1.29 2002/01/07 06:12:43 joant Exp $
  */
 
 #include <stdio.h>
@@ -488,8 +488,6 @@ static void oldParseOneLine(FILE *out,char* line)
       if ((class_field = getfield(NULL)) == NULL)
 	break;
       
-      break;
-      /* NOTREACHED */
     }
   if (!passwd_field)
     passwd_field = "";

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: snprintf.c,v 1.3 2002/01/05 09:15:19 a1kmm Exp $
+ *  $Id: snprintf.c,v 1.4 2002/01/07 06:12:40 joant Exp $
  */
 
 /**************************************************************
@@ -793,3 +793,7 @@ int main (void)
 #endif /* SNPRINTF_TEST */
 
 #endif /* !HAVE_SNPRINTF */
+
+/* Makes aCC (HP-UX) and Forte C (Solaris) stop complaining */
+
+static int shut_up_forte_and_aCC = 0;
