@@ -1,3 +1,17 @@
+db          2003/01/17 00:11:53 EST	(20030117_7)
+
+  Modified files:
+    modules              m_list.c 
+  Log:
+  - ick, I should compile with -Wall more often. Getting lazy
+    with Rodder normally running them. Missing return value in an int
+    returning function.
+  
+  Revision  Changes    Path
+  1.45      +2 -2      ircd-hybrid-7/modules/m_list.c
+
+
+
 db          2003/01/16 23:19:28 EST	(20030117_6)
 
   Modified files:
@@ -34129,4 +34143,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4175 2003/01/17 04:19:31 db Exp $
+$Id: ChangeLog,v 7.4176 2003/01/17 05:11:56 db Exp $
