@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_log.c,v 7.20 2001/01/18 13:08:09 ejb Exp $
+ *   $Id: s_log.c,v 7.21 2001/01/18 17:32:25 ejb Exp $
  */
 #include "client.h"	/* Needed for struct Client */
 #include "s_log.h"

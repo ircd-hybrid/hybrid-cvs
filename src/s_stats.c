@@ -20,8 +20,13 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_stats.c,v 7.12 2001/01/11 05:32:09 a1kmm Exp $
+ *  $Id: s_stats.c,v 7.13 2001/01/18 17:32:25 ejb Exp $
  */
+
+#include <sys/types.h>
+
+#include <string.h>
+
 #include "s_stats.h"
 #include "client.h"
 #include "irc_string.h"
@@ -31,8 +36,6 @@
 #include "s_bsd.h"
 #include "send.h"
 #include "memory.h"
-
-#include <string.h>
 
 /*
  * stats stuff

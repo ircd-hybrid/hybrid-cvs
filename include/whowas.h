@@ -18,17 +18,14 @@
  */
 
 /*
- * $Id: whowas.h,v 7.5 2001/01/18 09:07:30 ejb Exp $
+ * $Id: whowas.h,v 7.6 2001/01/18 17:32:16 ejb Exp $
  */
 #ifndef INCLUDED_whowas_h
 #define INCLUDED_whowas_h
-#ifndef INCLUDED_ircd_defs_h
-#include "ircd_defs.h"
-#endif
-#ifndef INCLUDED_sys_types_h
 #include <sys/types.h>
-#define INCLUDED_sys_types_h
-#endif
+
+#include "ircd_defs.h"
+#include "client.h"
 
 #include "setup.h"
 

@@ -1,7 +1,7 @@
 /*
  * restart.c
  *
- * $Id: restart.c,v 7.11 2001/01/18 13:08:06 ejb Exp $
+ * $Id: restart.c,v 7.12 2001/01/18 17:32:23 ejb Exp $
  */
 #include "tools.h"
 #include "restart.h"

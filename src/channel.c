@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.186 2001/01/17 19:28:07 fl_ Exp $
+ * $Id: channel.c,v 7.187 2001/01/18 17:32:17 ejb Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -2988,8 +2988,7 @@ char *channel_pub_or_secret(struct Channel *chptr)
     return("=");
   else if(SecretChannel(chptr))
     return("@");
-  else
-    return("*");
+  return("*");
 }
 
 /*
@@ -3078,7 +3077,7 @@ char *channel_chanop_or_voice(struct Channel *chptr, struct Client *acptr)
     return("+");
   else if(find_user_link(&chptr->halfops,acptr))
     return("%");
-  else return("");
+  return("");
 }
 
 /*

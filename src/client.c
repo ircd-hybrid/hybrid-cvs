@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.121 2001/01/18 02:35:02 db Exp $
+ *  $Id: client.c,v 7.122 2001/01/18 17:32:19 ejb Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -846,8 +846,7 @@ struct Client *find_person(char *name, struct Client *cptr)
 
   if (c2ptr && IsClient(c2ptr) && c2ptr->user)
     return c2ptr;
-  else
-    return cptr;
+  return cptr;
 }
 
 /*

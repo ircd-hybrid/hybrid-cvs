@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: irc_string.h,v 7.12 2001/01/11 09:30:18 a1kmm Exp $
+ *   $Id: irc_string.h,v 7.13 2001/01/18 17:32:14 ejb Exp $
  */
 #ifndef INCLUDED_irc_string_h
 #define INCLUDED_irc_string_h
@@ -60,41 +60,36 @@ extern char* canonize(char *);
  * ircsprintf - optimized sprintf
  */
 #ifdef __GNUC__
-extern int ircsprintf(register char*, register const char*, ...)
+int ircsprintf(char*, const char*, ...)
            __attribute__ ((format(printf, 2, 3)));
-extern int ircsnprintf(register char*, register int, register const char*,
+int ircsnprintf(char*, int, const char*,
                        ...) __attribute__ ((format(printf, 3, 4)));
 #else
-extern int ircsprintf(register char *str, register const char *format, ...);
-extern int ircsnprintf(register char*, register int,
-                       register const char*);
+int ircsprintf(char *str, const char *format, ...);
+int ircsnprintf(char*, int, const char*);
 #endif
 /*
  * inetntoa - optimized inet_ntoa
  */
-extern const char* inetntoa(const char* in_addr);
+const char* inetntoa(const char* in_addr);
 /*
  * strncpy_irc - optimized strncpy
  */
-extern char* strncpy_irc(char* s1, const char* s2, size_t n);
+char* strncpy_irc(char* s1, const char* s2, size_t n);
 /*
  * clean_string - cleanup control and high ascii characters
  * -Dianora
  */
-extern char* clean_string(char* dest, const unsigned char* src, size_t len);
+char* clean_string(char* dest, const unsigned char* src, size_t len);
 /*
  * strip_tabs - convert tabs to spaces
  * - jdc
  */
-extern char *strip_tabs(char *dest, const unsigned char *src, size_t len);
+char *strip_tabs(char *dest, const unsigned char *src, size_t len);
 
-extern unsigned long textip_to_ul(const char *ip);
-extern const char* myctime(time_t);
-extern char*       strtoken(char** save, char* str, char* fs);
-
-#ifdef IPV6
-extern char* mk6addrstr(struct in6_addr *addr);
-#endif
+unsigned long textip_to_ul(const char *ip);
+const char* myctime(time_t);
+char*       strtoken(char** save, char* str, char* fs);
 
 #define EmptyString(x) (!(x) || (*(x) == '\0'))
 

@@ -19,7 +19,7 @@
  *
  *
  *
- * $Id: vchannel.c,v 7.35 2001/01/11 09:30:29 a1kmm Exp $
+ * $Id: vchannel.c,v 7.36 2001/01/18 17:32:26 ejb Exp $
  */
 #include "tools.h"
 #include "vchannel.h"
@@ -181,10 +181,7 @@ struct Channel* select_vchan(struct Channel *root,
                me.name, sptr->name, name);
     return NULL;
   }
-  else
-  {
-    return root;
-  }
+  return root;
 }
 
 

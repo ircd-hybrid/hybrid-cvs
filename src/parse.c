@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: parse.c,v 7.84 2001/01/18 09:07:41 ejb Exp $
+ *   $Id: parse.c,v 7.85 2001/01/18 17:32:22 ejb Exp $
  */
 
 #include <assert.h>
@@ -301,14 +301,13 @@ int parse(struct Client *cptr, char *pbuffer, char *bufend)
    
   if (mptr == (struct Message *)NULL)
     return do_numeric(numeric, cptr, from, i, para);
-  else
-  {
-    status = handle_command(mptr, cptr, from, i, para);
-    if (cptr->fd < 0)
-      return(CLIENT_EXITED);
-    else
-      return status;
-  }
+
+  status = handle_command(mptr, cptr, from, i, para);
+
+  if (cptr->fd < 0)
+    return(CLIENT_EXITED);
+
+  return status;
 }
 
 static int

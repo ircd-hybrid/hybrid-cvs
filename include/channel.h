@@ -17,8 +17,11 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.58 2001/01/10 22:59:08 db Exp $
+ * $Id: channel.h,v 7.59 2001/01/18 17:32:14 ejb Exp $
  */
+
+#include <sys/types.h>        /* time_t */
+#include <sys/time.h>
 
 #ifndef INCLUDED_channel_h
 #define INCLUDED_channel_h
@@ -27,10 +30,6 @@
 #endif
 #ifndef INCLUDED_ircd_defs_h
 #include "ircd_defs.h"        /* buffer sizes */
-#endif
-#ifndef INCLUDED_sys_types_h
-#include <sys/types.h>        /* time_t */
-#define INCLUDED_sys_types_h
 #endif
 
 struct Client;

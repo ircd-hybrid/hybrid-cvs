@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: class.c,v 7.22 2001/01/11 05:31:54 a1kmm Exp $
+ *   $Id: class.c,v 7.23 2001/01/18 17:32:19 ejb Exp $
  */
 #include "tools.h"
 #include "class.h"
@@ -151,8 +151,7 @@ int     get_con_freq(struct Class *clptr)
 {
   if (clptr)
     return (ConFreq(clptr));
-  else
-    return (CONNECTFREQUENCY);
+  return (CONNECTFREQUENCY);
 }
 
 /*

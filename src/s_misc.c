@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_misc.c,v 7.17 2001/01/18 13:08:09 ejb Exp $
+ *  $Id: s_misc.c,v 7.18 2001/01/18 17:32:25 ejb Exp $
  */
 #include "s_misc.h"
 #include "client.h"

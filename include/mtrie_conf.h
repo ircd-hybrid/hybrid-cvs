@@ -1,4 +1,4 @@
-/* $Id: mtrie_conf.h,v 7.3 2001/01/10 22:59:08 db Exp $ */
+/* $Id: mtrie_conf.h,v 7.4 2001/01/18 17:32:15 ejb Exp $ */
 #ifndef INCLUDED_mtrie_conf_h
 #define INCLUDED_mtrie_conf_h
 
@@ -48,6 +48,9 @@ extern void clear_mtrie_conf_links(void);
  *                     \-->[domain_level "varner" "voo"]->...
  *                
  */
+
+struct domain_level;
+
 typedef struct domain_piece
 {
   char *host_piece;

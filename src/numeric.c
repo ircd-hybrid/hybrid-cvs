@@ -16,20 +16,23 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: numeric.c,v 7.12 2001/01/11 05:32:03 a1kmm Exp $
+ *   $Id: numeric.c,v 7.13 2001/01/18 17:32:21 ejb Exp $
  */
+
+#include <sys/types.h>
+
+#include <assert.h>
+
+#ifdef USE_GETTEXT
+#include <libintl.h>
+#endif
+
 #include "numeric.h"
 #include "irc_string.h"
 #include "common.h"     /* NULL cripes */
 #include "memory.h"
 
-#include <assert.h>
-
 #include "messages.tab"
-
-#ifdef USE_GETTEXT
-#include <libintl.h>
-#endif
 
 /*
  * form_str

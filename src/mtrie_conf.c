@@ -43,7 +43,7 @@
  *
  * Diane Bruce -db (db@db.net)
  *
- * $Id: mtrie_conf.c,v 7.23 2001/01/11 09:30:27 a1kmm Exp $
+ * $Id: mtrie_conf.c,v 7.24 2001/01/18 17:32:21 ejb Exp $
  */
 #include "mtrie_conf.h"
 #include "class.h"
@@ -289,11 +289,8 @@ static DOMAIN_PIECE *find_or_add_host_piece(DOMAIN_LEVEL *level_ptr,
       new_ptr->flags |= flags;
       return(new_ptr);
     }
-  else
-    {
-      sendto_realops_flags(FLAGS_ALL,"Bug: in find_or_add_host_piece. yay.");
-      return(NULL);
-    }
+  sendto_realops_flags(FLAGS_ALL,"Bug: in find_or_add_host_piece. yay.");
+  return(NULL);
   /* NOT REACHED */
 }
 
@@ -587,8 +584,7 @@ struct ConfItem* find_matching_mtrie_conf(const char* host, const char* user,
 
   if(kline_aconf)
     return(kline_aconf);
-  else
-    return(iline_aconf);
+  return(iline_aconf);
 }
 
 /*
@@ -974,6 +970,7 @@ static int sortable(char *tokenized,char *p)
       d++;
       p++;
     }
+  return 0;
 }
 
 /*

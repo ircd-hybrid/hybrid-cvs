@@ -20,10 +20,11 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.121 2001/01/18 09:07:43 ejb Exp $
+ *  $Id: s_user.c,v 7.122 2001/01/18 17:32:26 ejb Exp $
  */
 
-#define _XOPEN_SOURCE
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #include <string.h>
 #include <stdio.h>
@@ -33,7 +34,6 @@
 #include <assert.h>
 #include <time.h>
 #include <limits.h>
-#include <sys/stat.h>
 
 #include "tools.h"
 #include "s_user.h"

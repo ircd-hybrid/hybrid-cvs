@@ -17,8 +17,30 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.105 2001/01/18 09:07:38 ejb Exp $
+ * $Id: ircd.c,v 7.106 2001/01/18 17:32:20 ejb Exp $
  */
+
+#include <sys/types.h>
+#include <sys/file.h>
+#include <sys/stat.h>
+#include <sys/socket.h>
+
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <errno.h>
+#include <time.h>
+#include <pwd.h>
+#include <fcntl.h>
+#include <unistd.h>
+
+#if defined(HAVE_GETOPT_H)
+#include <getopt.h>
+#endif /* HAVE_GETOPT_H */
+
+#ifdef USE_GETTEXT
+#include <libintl.h>
+#endif
 
 #include "config.h"
 #include "tools.h"
@@ -60,26 +82,6 @@
 #include "modules.h"
 #include "memory.h"
 #include "hook.h"
-
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include <errno.h>
-#include <time.h>
-#include <pwd.h>
-#include <fcntl.h>
-#include <unistd.h>
-#include <sys/file.h>
-#include <sys/stat.h>
-#include <sys/socket.h>
-
-#if defined(HAVE_GETOPT_H)
-#include <getopt.h>
-#endif /* HAVE_GETOPT_H */
-
-#ifdef USE_GETTEXT
-#include <libintl.h>
-#endif
 
 
 /*
@@ -281,8 +283,6 @@ static void parse_command_line(int argc, char* argv[])
   const char* options = "d:f:h:k:l:nvx:"; 
   int         opt;
 
-/* XXX - how does VMS handle command line arguments? */
-#ifndef VMS
   while ((opt = getopt(argc, argv, options)) != EOF) {
     switch (opt) {
     case 'd': 
@@ -329,7 +329,6 @@ static void parse_command_line(int argc, char* argv[])
       break;
     }
   }
-#endif
 }
 
 static time_t io_loop(time_t delay)

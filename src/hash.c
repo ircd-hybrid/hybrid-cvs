@@ -16,8 +16,21 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: hash.c,v 7.25 2001/01/11 05:31:57 a1kmm Exp $
+ *  $Id: hash.c,v 7.26 2001/01/18 17:32:20 ejb Exp $
  */
+
+#include <sys/types.h>
+#include <sys/stat.h>
+
+#include <errno.h>
+#include <assert.h>
+#include <fcntl.h>     /* O_RDWR ... */
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <time.h>
+
 #include "tools.h"
 #include "s_conf.h"
 #include "channel.h"
@@ -32,16 +45,6 @@
 #include "fdlist.h"
 #include "fileio.h"
 #include "memory.h"
-
-#include <errno.h>
-#include <assert.h>
-#include <fcntl.h>     /* O_RDWR ... */
-#include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <time.h>
-#include <sys/stat.h>
 
 /* New hash code */
 /*

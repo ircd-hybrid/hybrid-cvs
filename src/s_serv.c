@@ -20,8 +20,18 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.119 2001/01/11 05:32:08 a1kmm Exp $
+ *   $Id: s_serv.c,v 7.120 2001/01/18 17:32:25 ejb Exp $
  */
+
+#include <sys/types.h>
+
+#include <assert.h>
+#include <string.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <time.h>
+#include <netdb.h>
+
 #include "tools.h"
 #include "s_serv.h"
 #include "channel.h"
@@ -50,12 +60,6 @@
 #include "s_debug.h"
 #include "memory.h"
 
-#include <assert.h>
-#include <string.h>
-#include <stdlib.h>
-#include <errno.h>
-#include <time.h>
-#include <netdb.h>
 
 #define MIN_CONN_FREQ 300
 

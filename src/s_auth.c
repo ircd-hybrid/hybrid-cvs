@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.c,v 7.42 2001/01/18 13:08:06 ejb Exp $
+ *   $Id: s_auth.c,v 7.43 2001/01/18 17:32:23 ejb Exp $
  *
  * Changes:
  *   July 6, 1999 - Rewrote most of the code here. When a client connects

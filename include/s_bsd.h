@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_bsd.h,v 7.23 2001/01/18 13:08:05 ejb Exp $
+ *   $Id: s_bsd.h,v 7.24 2001/01/18 17:32:15 ejb Exp $
  *
  */
 #ifndef INCLUDED_s_bsd_h

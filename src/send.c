@@ -17,8 +17,19 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.110 2001/01/17 22:49:34 fl_ Exp $
+ *   $Id: send.c,v 7.111 2001/01/18 17:32:26 ejb Exp $
  */
+
+#include <sys/types.h>
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+#include <stdarg.h>
+#include <time.h>
+#include <assert.h>
+#include <errno.h>
+
 #include "tools.h"
 #include "send.h"
 #include "channel.h"
@@ -39,14 +50,6 @@
 #include "s_log.h"
 #include "vchannel.h"
 #include "memory.h"
-
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdarg.h>
-#include <time.h>
-#include <assert.h>
-#include <errno.h>
 
 #define LOG_BUFSIZE 2048
 
@@ -1204,8 +1207,8 @@ match_it(const struct Client *one, const char *mask, int what)
 {
   if(what == MATCH_HOST)
     return match(mask, one->host);
-  else
-    return match(mask, one->user->server);
+
+  return match(mask, one->user->server);
 } /* match_it() */
 
 /*

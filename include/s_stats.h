@@ -18,17 +18,15 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: s_stats.h,v 7.4 2000/12/12 00:28:08 db Exp $
+ * $Id: s_stats.h,v 7.5 2001/01/18 17:32:16 ejb Exp $
  */
 #ifndef INCLUDED_s_stats_h
 #define INCLUDED_s_stats_h
-#ifndef INCLUDED_config_h
-#include "config.h"
-#endif
-#ifndef INCLUDED_sys_types_h
+
 #include <sys/types.h>
-#define INCLUDED_sys_types_h
-#endif
+#include <sys/time.h>
+
+#include "config.h"
 
 struct Client;
 

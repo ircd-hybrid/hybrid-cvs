@@ -19,31 +19,22 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.73 2001/01/18 09:07:29 ejb Exp $
+ * $Id: s_conf.h,v 7.74 2001/01/18 17:32:15 ejb Exp $
  */
 
 #include "setup.h"
+
+#include <netinet/in.h>         /* in_addr */
 
 #ifdef HAVE_SYS_PARAM_H
 #include <sys/param.h>
 #endif
 
-#ifndef INCLUDED_config_h
 #include "config.h"             /* defines */
-#endif
-#ifndef INCLUDED_fileio_h
 #include "fileio.h"             /* FBFILE */
-#endif
-#ifndef INCLUDED_netinet_in_h
-#include <netinet/in.h>         /* in_addr */
-#define INCLUDED_netinet_in_h
-#endif
-#ifndef INCLUDED_ircd_defs_h
 #include "ircd_defs.h"
-#endif
-#ifndef INCLUDED_motd_h
 #include "motd.h"               /* MessageFile */
-#endif
+#include "class.h"
 
 struct Client;
 struct DNSReply;
