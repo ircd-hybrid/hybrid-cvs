@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.224 2001/12/03 16:17:26 androsyn Exp $
+ *   $Id: s_serv.c,v 7.225 2001/12/03 16:23:41 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -112,6 +112,7 @@ struct Capability captab[] = {
   { "AOPS",  CAP_AOPS },
   { "UID",   CAP_UID },
   { "ZIP",   CAP_ZIP },
+  { "TBURST", CAP_TBURST },
   { 0,           0 }
 };
 
