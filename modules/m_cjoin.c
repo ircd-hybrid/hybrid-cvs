@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_cjoin.c,v 1.20 2001/01/01 21:50:32 davidt Exp $
+ *   $Id: m_cjoin.c,v 1.21 2001/01/01 22:28:58 davidt Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -164,6 +164,13 @@ int     m_cjoin(struct Client *cptr,
   */
   add_user_to_channel(chptr, sptr, CHFL_CHANOP);
 
+  sendto_channel_local(ALL_MEMBERS, chptr,
+                       ":%s!%s@%s JOIN :%s",
+                       sptr->name,
+                       sptr->username,
+                       sptr->host,
+                       root_vchan->chname);
+
   sendto_channel_remote(chptr, cptr,
 			":%s SJOIN %lu %s + :@%s", me.name,
 			chptr->channelts,
@@ -173,13 +180,17 @@ int     m_cjoin(struct Client *cptr,
   vchan_chptr->mode.mode |= MODE_TOPICLIMIT;
   vchan_chptr->mode.mode |= MODE_NOPRIVMSGS;
 
+  sendto_channel_local(ALL_MEMBERS,chptr,
+                       ":%s MODE %s +nt",
+                       me.name, root_vchan->chname);
+
   sendto_channel_remote(vchan_chptr, sptr, 
 			":%s MODE %s +nt",
 			me.name,
 			vchan_chptr->chname);
 
   del_invite(vchan_chptr, sptr);
-  (void)channel_member_names(sptr, vchan_chptr, chptr->chname);
+  (void)channel_member_names(sptr, vchan_chptr, root_vchan->chname);
 
   return 0;
 }
