@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.132 2001/01/28 04:07:48 androsyn Exp $
+ *   $Id: s_serv.c,v 7.133 2001/01/29 02:08:44 ejb Exp $
  */
 
 #include <sys/types.h>
@@ -89,7 +89,6 @@ struct Capability captab[] = {
   { "QS",       CAP_QS },
   { "EX",       CAP_EX },
   { "CHW",      CAP_CHW },
-  { "DE",       CAP_DE },
   { "LL",       CAP_LL },
   { "IE",       CAP_IE },
   { "VCHAN",    CAP_VCHAN },
