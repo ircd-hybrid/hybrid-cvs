@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: messages.tab,v 7.75 2003/03/02 06:46:43 db Exp $
+ *   $Id: messages.tab,v 7.76 2003/03/02 09:00:42 bill Exp $
  */
 
 static struct NumericInfo replies[] = {
@@ -733,7 +733,7 @@ static struct NumericInfo replies[] = {
 /* 710 */  {"RPL_KNOCK", ":%s 710 %s %s %s!%s@%s :has asked for an invite.", NULL},
 /* 711 */  {"RPL_KNOCKDLVR", ":%s 711 %s %s :Your KNOCK has been delivered.", NULL},
 /* 712 */  {"ERR_TOOMANYKNOCK", ":%s 712 %s %s :Too many KNOCKs (%s).", NULL},
-/* 712 */  {"ERR_CHANOPEN", ":%s 713 %s %s :Channel is open.", NULL},
+/* 713 */  {"ERR_CHANOPEN", ":%s 713 %s %s :Channel is open.", NULL},
 /* 714 */  {"ERR_KNOCKONCHAN", ":%s 714 %s %s :You are already on that channel.", NULL},
 /* 715 */  {"ERR_KNOCKDISABLED", ":%s 715 %s :KNOCKs are disabled.", NULL},
 /* 716 */  {NULL, NULL, NULL},

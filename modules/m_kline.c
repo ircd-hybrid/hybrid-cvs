@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.113 2003/02/18 22:26:35 db Exp $
+ *  $Id: m_kline.c,v 1.114 2003/03/02 09:00:41 bill Exp $
  */
 
 #include "stdinc.h"
@@ -75,7 +75,7 @@ _moddeinit(void)
   mod_del_cmd(&kline_msgtab);
   mod_del_cmd(&dline_msgtab);
 }
-const char *_version = "$Revision: 1.113 $";
+const char *_version = "$Revision: 1.114 $";
 #endif
 
 /* Local function prototypes */
@@ -180,10 +180,10 @@ mo_kline(struct Client *client_p, struct Client *source_p,
   if(parc != 0)
     reason = *parv;
 
-  if (valid_user_host(source_p, user,host))
+  if (!valid_user_host(source_p, user,host))
      return;
 
-  if (valid_wild_card(user,host))
+  if (!valid_wild_card(user,host))
     {
        sendto_one(source_p, 
           ":%s NOTICE %s :Please include at least %d non-wildcard characters with the user@host",
@@ -289,7 +289,7 @@ ms_kline(struct Client *client_p, struct Client *source_p,
   if (!IsPerson(source_p))
     return;
 
-  if (valid_user_host(source_p, kuser, khost))
+  if (!valid_user_host(source_p, kuser, khost))
     {
       sendto_realops_flags(UMODE_ALL, L_ALL,
              "*** %s!%s@%s on %s is requesting an Invalid K-Line for [%s@%s] [%s]",
@@ -298,7 +298,7 @@ ms_kline(struct Client *client_p, struct Client *source_p,
       return;
     }
 
-  if (valid_wild_card(kuser, khost))
+  if (!valid_wild_card(kuser, khost))
     {
        sendto_realops_flags(UMODE_ALL, L_ALL, 
              "*** %s!%s@%s on %s is requesting a K-Line without %d wildcard chars for [%s@%s] [%s]",
@@ -315,12 +315,6 @@ ms_kline(struct Client *client_p, struct Client *source_p,
   if (find_u_conf((char *)source_p->user->server,
 		  source_p->username, source_p->host))
     {
-      sendto_realops_flags(UMODE_ALL, L_ALL,
-			   "*** Received K-Line for [%s@%s] [%s], from %s!%s@%s on %s",
-			   kuser, khost, kreason,
-			   source_p->name, source_p->username,
-			   source_p->host, source_p->user->server);
-
       /* We check if the kline already exists after we've announced its 
        * arrived, to avoid confusing opers - fl
        */
@@ -830,7 +824,7 @@ find_user_host(struct Client *source_p,
  * inputs       - pointer to source
  *              - pointer to user buffer
  *              - pointer to host buffer
- * output	- 1 if not valid user or host, 0 if valid
+ * output	- 1 if valid user or host, 0 if invalid
  * side effects -
  */
 static int
@@ -844,7 +838,7 @@ valid_user_host(struct Client *source_p, char *luser, char *lhost)
   {
     sendto_one(source_p, ":%s NOTICE %s :Invalid character '#' in kline",
                me.name, source_p->name);		    
-    return 1;
+    return 0;
   }
 
   /* Dont let people kline *!ident@host, as the ! is invalid.. */
@@ -852,10 +846,10 @@ valid_user_host(struct Client *source_p, char *luser, char *lhost)
   {
     sendto_one(source_p, ":%s NOTICE %s :Invalid character '!' in kline",
                me.name, source_p->name);
-    return 1;
+    return 0;
   }
 
-  return 0;
+  return 1;
 }
 
 /*
@@ -916,9 +910,9 @@ valid_wild_card(char *luser, char *lhost)
   }
 
   if (nonwild < ConfigFileEntry.min_nonwildcard)
-    return 1;
-  else
     return 0;
+  else
+    return 1;
 }
 
 /*
