@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.266 2002/07/12 03:30:04 joant Exp $
+ *  $Id: s_serv.c,v 7.267 2002/07/21 02:59:41 a1kmm Exp $
  */
 
 #include "stdinc.h"
@@ -1052,11 +1052,12 @@ int server_estab(struct Client *client_p)
   **    ...a bit tricky, but you have been warned, besides
   **    code is more neat this way...  --msa
   */
-  SetServer(client_p);
   client_p->servptr = &me;
 
   if (IsDead(client_p))
     return CLIENT_EXITED;
+
+  SetServer(client_p);
 
  /* Update the capability combination usage counts. -A1kmm */
   set_chcap_usage_counts(client_p);
