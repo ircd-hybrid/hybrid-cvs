@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kill.c,v 1.21 2001/01/19 06:37:44 db Exp $
+ *   $Id: m_kill.c,v 1.22 2001/01/19 07:20:28 ejb Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -136,11 +136,9 @@ int mo_kill(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   sendto_realops_flags(FLAGS_ALL,
 		       "Received KILL message for %s. From %s (%s)", 
 		       acptr->name, parv[0], reason);
-
-#if defined(USE_SYSLOG) && defined(SYSLOG_KILL)
   log(L_INFO,"KILL From %s For %s Path %s",
       parv[0], acptr->name, buf );
-#endif
+
   /*
   ** And pass on the message to other servers. Note, that if KILL
   ** was changed, the message has to be sent to all links, also
@@ -260,10 +258,8 @@ int ms_kill(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
 			   acptr->name, parv[0]);
     }
 
-#if defined(USE_SYSLOG) && defined(SYSLOG_KILL)
   log(L_INFO,"KILL From %s For %s Path %s!%s",
       parv[0], acptr->name, inpath, path);
-#endif
   /*
   ** And pass on the message to other servers. Note, that if KILL
   ** was changed, the message has to be sent to all links, also
