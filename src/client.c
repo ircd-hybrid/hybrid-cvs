@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.110 2001/01/09 00:54:07 toot Exp $
+ *  $Id: client.c,v 7.111 2001/01/10 02:24:53 db Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -377,9 +377,13 @@ check_pings_list(dlink_list *list)
             }
         }
       /* ping_timeout: */
+
+      /* bloat for now */
+#if 0
       timeout = cptr->lasttime + ping;
       while (timeout <= CurrentTime)
         timeout += ping;
+#endif
     }
 }
 
