@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 1.5 2000/11/26 23:00:42 db Exp $
+ *   $Id: m_whois.c,v 1.6 2000/11/27 01:01:24 db Exp $
  */
 
 #include "common.h"   /* bleah */
@@ -274,7 +274,7 @@ void whois_person(struct Client *sptr,struct Client *acptr)
   sendto_one(sptr, form_str(RPL_WHOISUSER), me.name,
 	 sptr->name, acptr->name,
 	 acptr->username, acptr->host, acptr->info);
-  server_name = acptr->user->server;
+  server_name = (char *)acptr->user->server;
 
   mlen = strlen(me.name) + strlen(sptr->name) + 6 + strlen(acptr->name);
 
