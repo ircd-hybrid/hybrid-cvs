@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: motd.c,v 7.34 2003/07/05 06:21:03 db Exp $
+ *  $Id: motd.c,v 7.35 2003/07/19 23:05:12 michael Exp $
  */
 
 #include "stdinc.h"
@@ -182,7 +182,7 @@ read_message_file(MessageFile *MessageFileptr)
 
   if (local_tm)
     ircsprintf(MessageFileptr->lastChangedDate,
-               "%d/%d/%d %d:%d",
+               "%d/%d/%d %d:%02d",
                local_tm->tm_mday,
                local_tm->tm_mon + 1,
                1900 + local_tm->tm_year,
