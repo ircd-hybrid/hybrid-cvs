@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_user.c,v 7.5 2000/10/06 04:27:03 lusky Exp $
+ *   $Id: m_user.c,v 7.6 2000/10/30 23:18:21 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -104,7 +104,6 @@ static int bot_check(char *host);
 */
 int m_user(struct Client* cptr, struct Client* sptr, int parc, char *parv[])
 {
-#define UFLAGS  (FLAGS_INVISIBLE|FLAGS_WALLOP|FLAGS_SERVNOTICE)
   char* username;
   char* host;
   char* server;
