@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.348 2003/09/10 11:31:53 michael Exp $
+ *  $Id: ircd_parser.y,v 1.349 2003/09/11 03:41:47 metalrock Exp $
  */
 
 %{
@@ -195,6 +195,7 @@ unhook_hub_leaf_confs(void)
 %token  IGNORE_BOGUS_TS
 %token  IP
 %token  KILL
+%token	KILL_CHASE_TIME_LIMIT
 %token  KLINE
 %token  KLINE_EXEMPT
 %token  KLINE_WITH_CONNECTION_CLOSED
@@ -1192,7 +1193,8 @@ class_name: NAME '=' QSTRING ';'
       MyFree(yy_conf->name);
       yy_conf->name = NULL;
     }
-    else {
+    else
+    {
       if (class != NULL)
       {
         PingFreq(class) = PingFreq(yy_class);
@@ -2380,7 +2382,7 @@ general_item:       general_hide_spoof_ips | general_ignore_bogus_ts |
 		    general_max_nick_time | general_max_nick_changes |
 		    general_max_accept | general_anti_spam_exit_message_time |
                     general_ts_warn_delta | general_ts_max_delta |
-                    general_kline_with_reason |
+                    general_kill_chase_time_limit | general_kline_with_reason |
                     general_kline_with_connection_closed |
                     general_warn_no_nline | general_dots_in_ident |
                     general_stats_o_oper_only | general_stats_k_oper_only |
@@ -2404,6 +2406,12 @@ general_item:       general_hide_spoof_ips | general_ignore_bogus_ts |
                     general_dot_in_ip6_addr | general_ping_cookie |
                     general_disable_auth |
 		    error;
+
+general_kill_chase_time_limit: KILL_CHASE_TIME_LIMIT '=' NUMBER ';'
+{
+  if (ypass == 2)
+    ConfigFileEntry.kill_chase_time_limit = $3;
+};
 
 general_hide_spoof_ips: HIDE_SPOOF_IPS '=' TBOOL ';'
 {

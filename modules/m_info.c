@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.c,v 1.78 2003/09/10 11:31:51 michael Exp $
+ *  $Id: m_info.c,v 1.79 2003/09/11 03:41:43 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&info_msgtab);
 }
 
-const char *_version = "$Revision: 1.78 $";
+const char *_version = "$Revision: 1.79 $";
 #endif
 
 /*
@@ -173,6 +173,12 @@ static struct InfoStruct info_table[] =
     OUTPUT_DECIMAL,
     &ConfigFileEntry.idletime,
     "Number of minutes before a client is considered idle"
+  },
+  {
+    "kill_chase_time_limit",
+    OUTPUT_DECIMAL,
+    &ConfigFileEntry.kill_chase_time_limit,
+    "Nick Change Tracker for KILL"
   },
   {
     "kline_with_connection_closed",

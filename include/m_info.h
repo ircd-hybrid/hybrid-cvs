@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_info.h,v 7.48 2003/06/18 06:26:29 metalrock Exp $
+ *  $Id: m_info.h,v 7.49 2003/09/11 03:41:42 metalrock Exp $
  */
 
 #ifndef INCLUDED_m_info_h
@@ -76,8 +76,6 @@ Info MyInformation[] = {
   { "IPV6", "OFF", 0, "IPv6 Support" },
 #endif
 */
-  { "KILLCHASETIMELIMIT", "", KILLCHASETIMELIMIT, "Nick Change Tracker for KILL" },
-
 #ifdef KPATH
   { "KPATH", KPATH, 0, "Path to K-line File" },
 #else

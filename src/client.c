@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.408 2003/08/22 07:51:58 michael Exp $
+ *  $Id: client.c,v 7.409 2003/09/11 03:41:47 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -654,9 +654,13 @@ find_chasing(struct Client *source_p, const char *user, int *chasing)
 
   if (chasing)
     *chasing = 0;
+
   if (who)
     return(who);
-  if ((who = get_history(user, (time_t)KILLCHASETIMELIMIT)) == NULL)
+
+  if ((who = get_history(user,
+			(time_t)ConfigFileEntry.kill_chase_time_limit))
+			 == NULL)
   {
     sendto_one(source_p, form_str(ERR_NOSUCHNICK),
                me.name, source_p->name, user);
@@ -665,6 +669,7 @@ find_chasing(struct Client *source_p, const char *user, int *chasing)
 
   if (chasing)
     *chasing = 1;
+
   return(who);
 }
 

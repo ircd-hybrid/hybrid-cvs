@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.472 2003/09/10 11:31:53 michael Exp $
+ *  $Id: s_conf.c,v 7.473 2003/09/11 03:41:47 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -1879,6 +1879,7 @@ set_default_conf(void)
   ConfigFileEntry.ignore_bogus_ts = NO;
   ConfigFileEntry.disable_auth = NO;
   ConfigFileEntry.disable_remote = NO;
+  ConfigFileEntry.kill_chase_time_limit = 90;
   ConfigFileEntry.default_floodcount = 8; /* XXX */
   ConfigFileEntry.failed_oper_notice = YES;
   ConfigFileEntry.dots_in_ident = 0;      /* XXX */

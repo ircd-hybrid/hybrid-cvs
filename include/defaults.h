@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: defaults.h,v 7.15 2003/06/22 00:52:54 joshk Exp $
+ *  $Id: defaults.h,v 7.16 2003/09/11 03:41:42 metalrock Exp $
  */
 
 #ifndef INCLUDED_defaults_h
@@ -80,7 +80,6 @@
 /* 10 FDs reserved for logging and name resolution */
 #define HARD_FDLIMIT    MAXCONN + MAX_BUFFER + 10
 
-#define KILLCHASETIMELIMIT 90   /* Recommended value: 90 */
 #define MASTER_MAX      (HARD_FDLIMIT - MAX_BUFFER)
 
 /* class {} default values */

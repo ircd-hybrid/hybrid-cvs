@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.261 2003/09/10 11:31:49 michael Exp $
+ *  $Id: s_conf.h,v 7.262 2003/09/11 03:41:42 metalrock Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -318,6 +318,7 @@ struct config_file_entry
   int caller_id_wait;
   int min_nonwildcard;
   int min_nonwildcard_simple;
+  int kill_chase_time_limit;
   int default_floodcount;
   int client_flood;
   /* 0 == don't use throttle... */
