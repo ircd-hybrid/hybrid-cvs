@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: packet.c,v 7.113 2003/06/06 04:31:50 michael Exp $
+ *  $Id: packet.c,v 7.114 2005/03/04 01:14:37 michael Exp $
  */
 #include "stdinc.h"
 #include "tools.h"
@@ -39,7 +39,7 @@
 #include "send.h"
 
 static char readBuf[READBUF_SIZE];
-static void client_dopacket(struct Client *client_p, char *buffer, size_t length);
+static void client_dopacket(struct Client *, char *, size_t);
 
 
 /* extract_one_line()
@@ -234,7 +234,7 @@ flood_endgrace(struct Client *client_p)
    */
   client_p->localClient->sent_parsed = 0;
 }
-	    
+
 /*
  * flood_recalc
  *
@@ -247,19 +247,15 @@ flood_recalc(int fd, void *data)
   struct Client *client_p = data;
   struct LocalUser *lclient_p = client_p->localClient;
  
-  /* This can happen in the event that the client detached. */
-  if (!lclient_p)
-    return;
-
   /* allow a bursting client their allocation per second, allow
    * a client whos flooding an extra 2 per second
    */
-  if(IsFloodDone(client_p))
+  if (IsFloodDone(client_p))
     lclient_p->sent_parsed -= 2;
   else
     lclient_p->sent_parsed = 0;
   
-  if(lclient_p->sent_parsed < 0)
+  if (lclient_p->sent_parsed < 0)
     lclient_p->sent_parsed = 0;
   
   parse_client_queued(client_p);
@@ -460,7 +456,8 @@ read_packet(int fd, void *data)
   parse_client_queued(client_p);
 
   /* Check to make sure we're not flooding */
-  if (IsPerson(client_p) &&
+  /* TBD - ConfigFileEntry.client_flood should be a size_t */
+  if (!(IsServer(client_p) || IsHandshake(client_p) || IsConnecting(client_p)) &&
       (dbuf_length(&client_p->localClient->buf_recvq) >
        (unsigned int)ConfigFileEntry.client_flood))
   {
