@@ -1,7 +1,7 @@
 #
 # Makefile.in for ircd/src
 #
-# $Id: Makefile.in,v 7.4 1999/09/01 03:47:32 tomh Exp $
+# $Id: Makefile.in,v 7.5 1999/09/01 04:28:02 tomh Exp $
 #
 CC = @CC@
 RM = @RM@
@@ -60,6 +60,7 @@ SRCS = \
 	m_message.c \
 	m_mode.c \
 	m_names.c \
+	m_nick.c \
 	m_oper.c \
 	m_operwall.c \
 	m_part.c \
@@ -155,6 +156,7 @@ SRCS = \
 #	m_lusers.o \
 #	m_mode.o \
 #	m_names.o \
+#	m_nick.o \
 #	m_oper.o \
 #	m_operwall.o \
 #	m_part.o \
