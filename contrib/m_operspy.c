@@ -1,6 +1,6 @@
 /************************************************************************
  *   IRC - Internet Relay Chat, contrib/m_operspy.c
- *   Copyright (C) 2002 Bill Jonus and the Hybrid Development Team
+ *   Copyright (C) 2002 William Bierman III and the Hybrid Development Team
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_operspy.c,v 1.13.2.6 2004/03/18 04:16:03 bill Exp $
+ *   $Id: m_operspy.c,v 1.13.2.7 2004/04/17 21:31:27 bill Exp $
  */
 
 /***  PLEASE READ ME  ***/
@@ -135,7 +135,7 @@ _moddeinit(void)
 {
   mod_del_cmd(&operspy_msgtab);
 }
-const char *_version = "$Revision: 1.13.2.6 $";
+const char *_version = "$Revision: 1.13.2.7 $";
 #endif
 
 #ifdef OPERSPY_LOG
