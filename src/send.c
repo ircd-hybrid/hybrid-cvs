@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: send.c,v 7.185 2002/03/09 21:59:36 androsyn Exp $
+ *  $Id: send.c,v 7.186 2002/03/13 04:21:42 androsyn Exp $
  */
 
 #include <sys/types.h>
@@ -109,6 +109,14 @@ send_trim(char *lsendbuf, int len );
  * - Dianora
  * 
  */
+/*
+ * This problem also accounts for the infamous double-free bug we've
+ * run into for months.  If the client is still being auth'ed, it'll
+ * still attempt to exit the client when the ident lookup times out.
+ * Thanks to my anime beta testers for enduring all those cores to 
+ * find this one....
+ * - Wohali
+ */
 
 static int
 dead_link(struct Client *to, char *notice)
@@ -128,7 +136,10 @@ dead_link(struct Client *to, char *notice)
   }
   Debug((DEBUG_ERROR, notice, get_client_name(to, HIDE_IP)));
   SetDead(to);
-  if (!IsClosing(to))
+  /* If we're still unknown (being auth'ed) or sendqing out, don't
+   * kill just yet
+   */
+  if (!IsClosing(to) && !IsUnknown(to))
     exit_client(to, to, &me, "Dead link");
   return (-1);
 } /* dead_link() */
