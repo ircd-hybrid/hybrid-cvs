@@ -1,3 +1,8 @@
+*** 20001111_3 by db
+- simplified mo_dline a bit
+
+
+
 *** 20001111_2 by db
 - interim checkin of m_kline.c, first pass of clean up
 
@@ -422,7 +427,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.530 2000/11/11 14:37:38 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.531 2000/11/11 14:44:23 db Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
