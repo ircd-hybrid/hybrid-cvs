@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_whois.c,v 1.6 2000/11/27 01:01:24 db Exp $
+ *   $Id: m_whois.c,v 1.7 2000/11/27 23:58:20 db Exp $
  */
 
 #include "common.h"   /* bleah */
@@ -54,6 +54,12 @@ void
 _modinit(void)
 {
   mod_add_cmd(MSG_WHOIS, &whois_msgtab);
+}
+
+void
+_moddeinit(void)
+{
+  mod_del_cmd(MSG_WHOIS);
 }
 
 char *_version = "20001126";

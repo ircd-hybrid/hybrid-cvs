@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 1.7 2000/11/27 08:47:13 db Exp $
+ *  $Id: m_stats.c,v 1.8 2000/11/27 23:58:20 db Exp $
  */
 #include "handlers.h"  /* m_pass prototype */
 #include "class.h"       /* report_classes */
@@ -60,6 +60,12 @@ void
 _modinit(void)
 {
   mod_add_cmd(MSG_STATS, &stats_msgtab);
+}
+
+void
+_moddeinit(void)
+{
+  mod_del_cmd(MSG_STATS);
 }
 
 char *_version = "20001122";

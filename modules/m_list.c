@@ -3,7 +3,7 @@
  *   Copyright (C) 1990 Jarkko Oikarinen and
  *                      University of Oulu, Co Center
  *
- * $Id: m_list.c,v 1.7 2000/11/23 23:17:11 db Exp $ 
+ * $Id: m_list.c,v 1.8 2000/11/27 23:58:19 db Exp $ 
  *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -46,6 +46,12 @@ void
 _modinit(void)
 {
   mod_add_cmd(MSG_LIST, &list_msgtab);
+}
+
+void
+_moddeinit(void)
+{
+  mod_del_cmd(MSG_LIST);
 }
 
 int list_all_channels(struct Client *sptr);
