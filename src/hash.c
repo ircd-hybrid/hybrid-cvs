@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hash.c,v 7.54 2003/04/07 03:19:23 db Exp $
+ *  $Id: hash.c,v 7.55 2003/04/07 12:20:48 adx Exp $
  */
 
 #include "stdinc.h"
@@ -906,12 +906,12 @@ safe_list_all_channels(struct Client *source_p)
 	  (SecretChannel(chptr) && !IsMember(source_p, chptr)))
 	continue;
       list_one_channel(source_p, chptr);
-      if (MyConnect(source_p))
-      {  
-	source_p->localClient->hash_index = i;
-	if (exceeding_sendq(source_p))
-	  return;		/* still more to do */
-      }
+    }
+    if (MyConnect(source_p))
+    {  
+      source_p->localClient->hash_index = i;
+      if (exceeding_sendq(source_p))
+        return;		/* still more to do */
     }
   }
 
