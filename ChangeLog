@@ -1,3 +1,15 @@
+*** 20001130_15 by adrian
+
+
+move read_packet() and parse_client_queued() into packet.c.
+s_bsd.c is meant to be a place where BSD socket type stuff
+happens, not parsing client messages.
+
+This is the precursor tidyup which will make implementing the recvq
+flooding code talk..
+
+
+
 *** 20001130_14 by db
 - removed the evil local struct Client hack and added a new LocalUser
   "localClient" part. If non NULL, this client struct is a local client..
@@ -1172,7 +1184,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.639 2000/11/30 16:01:44 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.640 2000/11/30 16:27:34 adrian Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
