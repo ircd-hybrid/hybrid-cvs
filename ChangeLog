@@ -1,3 +1,16 @@
+bill        2002/10/30 15:24:21 EST	(20021030_4)
+
+  Modified files:
+    src                  hook.c 
+  Log:
+  Submitted by:   AndroSyn
+  - this one should be DLINK_FOREACH_SAFE
+  
+  Revision  Changes    Path
+  7.18      +3 -5      ircd-hybrid-7/src/hook.c
+
+
+
 bill        2002/10/30 14:59:13 EST	(20021030_3)
 
   Modified files:
@@ -32839,4 +32852,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4086 2002/10/30 19:59:15 bill Exp $
+$Id: ChangeLog,v 7.4087 2002/10/30 20:24:23 bill Exp $
