@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_cjoin.c,v 1.52 2002/05/24 00:28:26 androsyn Exp $
+ *  $Id: m_cjoin.c,v 1.53 2002/05/24 00:31:52 leeh Exp $
  */
 
 #include "tools.h"
@@ -45,14 +45,12 @@
 #include <string.h>
 
 #ifdef VCHANS
-
 static void m_cjoin(struct Client*, struct Client*, int, char**);
 
 struct Message cjoin_msgtab = {
   "CJOIN", 0, 0, 2, 0, MFLG_SLOW, 0,
   {m_unregistered, m_cjoin, m_ignore, m_cjoin}
 };
-
 #endif
 
 #ifndef STATIC_MODULES
@@ -72,8 +70,10 @@ _moddeinit(void)
 #endif
 }
 
-const char *_version = "$Revision: 1.52 $";
-#endif
+const char *_version = "$Revision: 1.53 $";
+#endif /* STATIC_MODULES */
+
+#ifdef VCHANS
 /*
 ** m_cjoin
 **      parv[0] = sender prefix
@@ -220,3 +220,4 @@ static void m_cjoin(struct Client *client_p,
   channel_member_names(source_p, vchan_chptr, root_vchan->chname, 1);
 }
 
+#endif /* VCHANS */
