@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.94 2001/02/05 01:05:34 androsyn Exp $
+ * $Id: s_conf.h,v 7.95 2001/02/05 06:50:54 db Exp $
  */
 
 #include "setup.h"
@@ -324,6 +324,7 @@ extern  void    cleanup_tklines(void *notused);
 
 extern  const   char *get_conf_name(KlineType);
 extern  int     is_address(char *,unsigned long *,unsigned long *); 
+extern  int     is_ipv6_address(char *,unsigned long *,unsigned long *); 
 extern  int     rehash (struct Client *, struct Client *, int);
 
 extern int  conf_add_server(struct ConfItem *,int);
