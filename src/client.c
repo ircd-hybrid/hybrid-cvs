@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.181 2001/06/13 17:41:20 leeh Exp $
+ *  $Id: client.c,v 7.182 2001/06/24 04:55:31 a1kmm Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -406,12 +406,7 @@ check_klines(void)
                            client_p->localClient->aftype)))
    {
      if (aconf->status & CONF_EXEMPTDLINE)
-     {
-       sendto_realops_flags(FLAGS_ALL,
-                           "DLINE over-ruled for %s, client is kline_exempt",
-                           get_client_name(client_p, HIDE_IP));
        continue;
-     }
      sendto_realops_flags(FLAGS_ALL,"DLINE active for %s",
                         get_client_name(client_p, HIDE_IP));
      if (ConfigFileEntry.kline_with_connection_closed)

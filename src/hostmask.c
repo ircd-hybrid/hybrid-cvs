@@ -16,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program; if not, write to the Free Software
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
- * $Id: hostmask.c,v 7.44 2001/06/16 22:56:58 a1kmm Exp $ 
+ * $Id: hostmask.c,v 7.45 2001/06/24 04:55:32 a1kmm Exp $ 
  */
  
 #include <stdlib.h>
@@ -476,11 +476,12 @@ find_address_conf(const char *host, const char *user,
 struct ConfItem*
 find_dline(struct irc_inaddr *addr, int aftype)
 {
- struct ConfItem *eline, *dline;
+ struct ConfItem *eline;
  eline = find_conf_by_address(NULL, addr, CONF_EXEMPTDLINE|1, aftype,
                               NULL);
- dline = find_conf_by_address(NULL, addr, CONF_DLINE|1, aftype, NULL);
- return dline ? (eline ? eline : dline) : NULL;
+ if (eline)
+  return eline;
+ return find_conf_by_address(NULL, addr, CONF_DLINE|1, aftype, NULL);
 }
 
 /* void add_conf_by_address(const char*, int, const char *,

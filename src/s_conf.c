@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.246 2001/06/22 00:09:30 leeh Exp $
+ *  $Id: s_conf.c,v 7.247 2001/06/24 04:55:32 a1kmm Exp $
  */
 
 #include <sys/types.h>
@@ -1649,7 +1649,7 @@ int conf_connect_allowed(struct irc_inaddr *addr, int aftype)
  struct ConfItem *aconf = find_dline(addr, aftype);
  
  /* DLINE exempt also gets you out of static limits/pacing... */
- if (aconf && aconf->status & CONF_EXEMPTDLINE)
+ if (aconf && (aconf->status & CONF_EXEMPTDLINE))
   return 0;
  
  if (aconf)
