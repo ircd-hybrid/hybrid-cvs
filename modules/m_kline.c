@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.172 2003/10/03 01:19:02 metalrock Exp $
+ *  $Id: m_kline.c,v 1.173 2003/10/03 09:40:01 stu Exp $
  */
 
 #include "stdinc.h"
@@ -106,7 +106,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.172 $";
+const char *_version = "$Revision: 1.173 $";
 #endif
 
 #define TK_SECONDS 0
@@ -479,11 +479,17 @@ valid_tkline(char *p, int minutes)
   if(result == 0)
     result = 1;
 
+  /* 
+   * If the incoming time is in seconds convert it to minutes for the purpose
+   * of this calculation
+   */
+  if(!minutes)
+      result = (time_t)result / (time_t)60; 
+
   if(result > MAX_TDKLINE_TIME)
     result = MAX_TDKLINE_TIME;
 
-  if(minutes)
-      result = (time_t)result * (time_t)60;  /* turn it into seconds */
+  result = (time_t)result * (time_t)60;  /* turn it into seconds */
 
   return(result);
 }
