@@ -1,3 +1,18 @@
+db          2002/10/12 06:39:07 EDT	(20021012_3)
+
+  Modified files:
+    modules              m_cryptlink.c 
+    src                  s_conf.c 
+  Log:
+  - "Unauthorised" vs. "Unauthorized" ircnet spells it the second way,
+    so guess hybrid will too.
+  
+  Revision  Changes    Path
+  1.35      +6 -6      ircd-hybrid-7/modules/m_cryptlink.c
+  7.328     +1 -1      ircd-hybrid-7/src/s_conf.c
+
+
+
 db          2002/10/12 00:33:32 EDT	(20021012_2)
 
   Modified files:
@@ -32429,4 +32444,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4060 2002/10/12 04:33:34 db Exp $
+$Id: ChangeLog,v 7.4061 2002/10/12 10:39:09 db Exp $
