@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: ircd_defs.h,v 7.22 2001/11/11 17:05:46 ejb Exp $
+ * $Id: ircd_defs.h,v 7.23 2001/11/30 19:04:21 db Exp $
  *
  * ircd_defs.h - Global size definitions for record entries used
  * througout ircd. Please think 3 times before adding anything to this
@@ -50,8 +50,6 @@
 #define MAXRECIPIENTS   20
 #define MAXBANLENGTH    1024
 #define OPERNICKLEN     NICKLEN*2 /* Length of OPERNICKs. */
-
-#define OPERWALL_LEN    400     /* can be truncated on other servers */
 
 #define USERHOST_REPLYLEN       (NICKLEN+HOSTLEN+USERLEN+5)
 #define MAX_DATE_STRING 32      /* maximum string length for a date string */
