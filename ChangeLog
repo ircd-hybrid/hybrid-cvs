@@ -1,3 +1,17 @@
+androsyn    2002/06/01 17:49:48 EDT	(20020601_3)
+
+  Modified files:
+    include              tools.h 
+    src                  tools.c 
+  Log:
+  Inline versions of the dlink functions
+  
+  Revision  Changes    Path
+  1.10      +144 -1    ircd-hybrid-7/include/tools.h
+  7.21      +3 -1      ircd-hybrid-7/src/tools.c
+
+
+
 db          2002/06/01 14:47:27 EDT	(20020601_2)
 
   Modified files:
@@ -27755,4 +27769,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3731 2002/06/01 18:47:34 db Exp $
+$Id: ChangeLog,v 7.3732 2002/06/01 21:49:54 androsyn Exp $
