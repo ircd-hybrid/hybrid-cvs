@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.147 2003/05/31 04:46:55 metalrock Exp $
+ *  $Id: m_kline.c,v 1.148 2003/05/31 21:43:29 db Exp $
  */
 
 #include "stdinc.h"
@@ -81,7 +81,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.147 $";
+const char *_version = "$Revision: 1.148 $";
 #endif
 
 /* Local function prototypes */
@@ -448,8 +448,8 @@ valid_tkline(char *p)
   if(result == 0)
     result = 1;
 
-  if(result > (24*60*10))
-    result = (24*60*10); /* Max it at 10 days */
+  if(result > MAX_TDKLINE_TIME)
+    result = MAX_TDKLINE_TIME;
 
   result = (time_t)result * (time_t)60;  /* turn it into seconds */
 

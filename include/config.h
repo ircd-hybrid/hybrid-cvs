@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: config.h,v 7.161 2003/05/29 05:17:55 db Exp $
+ *  $Id: config.h,v 7.162 2003/05/31 21:43:27 db Exp $
  */
 
 #ifndef INCLUDED_config_h
@@ -283,6 +283,9 @@
  * try 5 or 25. 5 for AIX and SUNOS, 25 should work better for other OS's
 */
 #define HYBRID_SOMAXCONN 25
+
+/* Max tkline or tdline time (10 days) */
+#define MAX_TDKLINE_TIME	(24*60*10)
 
 /* CODE DISABLE SECTION
  *
