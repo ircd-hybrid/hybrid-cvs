@@ -1,4 +1,4 @@
-dnl $Id: configure.ac,v 7.7 2003/05/08 20:42:48 metalrock Exp $
+dnl $Id: configure.ac,v 7.8 2003/05/08 21:42:48 joshk Exp $
 dnl Process this file with autoconf to produce a configure script.
 
 dnl TODO: clean up all the OpenSSL and shared module checking stuff;
@@ -58,14 +58,11 @@ case `$CC -V 2>&1` in
 esac
 
 AC_MSG_CHECKING(if we are using Apple GCC)
-case `$CC -v 2>&1 | tail -1` in
-*Apple*)
+if expr "`$CC -v 2>&1 | tail -1`" : Apple >/dev/null; then
 	AppleGCC=yes
-;;
-*)
+else
 	AppleGCC=no
-;;
-esac
+fi
 
 AC_MSG_RESULT($AppleGCC)
 
