@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: config.h,v 7.49 2000/12/11 21:00:43 davidt Exp $
+ * $Id: config.h,v 7.50 2000/12/12 23:07:07 adrian Exp $
  */
 #ifndef INCLUDED_config_h
 #define INCLUDED_config_h
@@ -87,19 +87,21 @@
  *
  */
 
-#define DPATH   "/usr/local/ircd/"
-#define MODPATH "/usr/local/ircd/modules/autoload/"
-#define MSGPATH "/usr/local/ircd/messages/"
-#define SPATH   "/usr/local/ircd/ircd"
-#define CPATH   "ircd.conf"
-#define KPATH   "kline.conf"
-#define DLPATH  "kline.conf"
-#define RPATH   "ircd.rsa"
-#define MPATH   "ircd.motd"
-#define LPATH   "ircd.log"
-#define PPATH   "ircd.pid"
-#define HPATH   "opers.txt"
-#define OPATH   "opers.motd"
+#define DPATH   IRCD_PREFIX
+#define MODPATH IRCD_PREFIX "/modules/autoload/"
+#define MSGPATH IRCD_PREFIX "/messages/"
+#define SPATH   IRCD_PREFIX "/bin/ircd"
+/* i really don't like the below, but I'll figure the rest out! -- adrian */
+#define ETCPATH	IRCD_PREFIX "/etc"
+#define CPATH   ETCPATH "/ircd.conf"
+#define KPATH   ETCPATH "/kline.conf"
+#define DLPATH  ETCPATH "/kline.conf"
+#define RPATH   ETCPATH "/ircd.rsa"
+#define MPATH   ETCPATH "/ircd.motd"
+#define LPATH   ETCPATH "/ircd.log"
+#define PPATH   ETCPATH "/ircd.pid"
+#define HPATH   ETCPATH "/opers.txt"
+#define OPATH   ETCPATH "/opers.motd"
 
 /* TS_MAX_DELTA_DEFAULT and TS_WARN_DELTA_DEFAULT -
  * allowed delta for TS when another server connects.
