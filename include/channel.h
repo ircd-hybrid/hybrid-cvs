@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.59 2001/01/18 17:32:14 ejb Exp $
+ * $Id: channel.h,v 7.60 2001/01/21 16:58:43 davidt Exp $
  */
 
 #include <sys/types.h>        /* time_t */
@@ -77,8 +77,6 @@ struct Channel
   time_t          first_received_message_time; /* channel flood control */
   int             received_number_of_privmsgs;
   int             flood_noticed;
-
-  unsigned long   serverMask;           /* Only used for Lazy Links */
 
   int             num_bed;              /* number of bans+exceptions+denies */
   time_t          channelts;
