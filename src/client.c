@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.392 2003/07/05 06:21:02 db Exp $
+ *  $Id: client.c,v 7.393 2003/07/06 23:38:49 db Exp $
  */
 
 #include "stdinc.h"
@@ -1031,7 +1031,7 @@ remove_dependents(struct Client *client_p, struct Client *source_p,
                   const char *comment1)
 {
   struct Client *to;
-  struct AccessItem *aconf;
+  struct ConfItem *conf;
   static char myname[HOSTLEN+1];
   dlink_node *ptr;
 
@@ -1050,8 +1050,8 @@ remove_dependents(struct Client *client_p, struct Client *source_p,
        * comstud, since m_squit already does the notification.
        */
 
-      if ((aconf = to->serv->sconf) != NULL)
-        strlcpy(myname, my_name_for_link(aconf), sizeof(myname));
+      if ((conf = to->serv->sconf) != NULL)
+        strlcpy(myname, my_name_for_link(conf), sizeof(myname));
       else
         strlcpy(myname, me.name, sizeof(myname));
       recurse_send_quits(client_p, source_p, to, comment1, myname);

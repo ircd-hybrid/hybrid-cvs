@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_cryptlink.c,v 1.53 2003/07/05 06:20:57 db Exp $
+ *  $Id: m_cryptlink.c,v 1.54 2003/07/06 23:38:46 db Exp $
  */
 
 /*
@@ -95,7 +95,7 @@ _moddeinit(void)
   mod_del_cmd(&cryptlink_msgtab);
 }
 
-const char *_version = "$Revision: 1.53 $";
+const char *_version = "$Revision: 1.54 $";
 #endif
 
 
@@ -140,8 +140,9 @@ static void mr_cryptlink(struct Client *client_p,
  * cryptlink_auth - CRYPTLINK AUTH message handler
  *        parv[1] = secret key
  */
-static void cryptlink_auth(struct Client *client_p, struct Client *source_p,
-                           int parc, char *parv[])
+static void
+cryptlink_auth(struct Client *client_p, struct Client *source_p,
+	       int parc, char *parv[])
 {
   struct EncCapability *ecap;
   struct ConfItem *conf;
@@ -453,7 +454,7 @@ static void cryptlink_serv(struct Client *client_p, struct Client *source_p,
 
   if (!IsWaitAuth(client_p))
   {
-    cryptlink_init(client_p, aconf, -1);
+    cryptlink_init(client_p, conf, -1);
   }
 
   sendto_one(client_p, "CRYPTLINK AUTH %s %s",

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_server.c,v 1.112 2003/07/05 06:21:00 db Exp $
+ *  $Id: m_server.c,v 1.113 2003/07/06 23:38:47 db Exp $
  */
 
 #include "stdinc.h"
@@ -77,7 +77,7 @@ _moddeinit(void)
   mod_del_cmd(&sid_msgtab);
 }
 
-const char *_version = "$Revision: 1.112 $";
+const char *_version = "$Revision: 1.113 $";
 #endif
 
 
@@ -267,7 +267,6 @@ ms_server(struct Client *client_p, struct Client *source_p,
   struct Client *target_p;
   struct Client *bclient_p;
   struct ConfItem *conf;
-  struct AccessItem *aconf;
   struct MatchItem *match_item;
   int hop;
   int hlined = 0;
@@ -483,7 +482,7 @@ ms_server(struct Client *client_p, struct Client *source_p,
     if (bclient_p == client_p)
       continue;
 
-    if ((aconf = bclient_p->serv->sconf) == NULL)
+    if ((conf = bclient_p->serv->sconf) == NULL)
     {
       sendto_realops_flags(UMODE_ALL, L_ADMIN,
 			   "Lost connect{} block for %s on %s. Closing",
@@ -495,7 +494,7 @@ ms_server(struct Client *client_p, struct Client *source_p,
       return;
     }
 
-    if (match(my_name_for_link(aconf), target_p->name))
+    if (match(my_name_for_link(conf), target_p->name))
       continue;
 
     sendto_one(bclient_p, ":%s SERVER %s %d :%s%s",
@@ -524,7 +523,6 @@ ms_sid(struct Client *client_p, struct Client *source_p,
   struct Client *target_p;
   struct Client *bclient_p;
   struct ConfItem *conf;
-  struct AccessItem *aconf;
   struct MatchItem *match_item;
   int hlined = 0;
   int llined = 0;
@@ -748,7 +746,7 @@ ms_sid(struct Client *client_p, struct Client *source_p,
     if (bclient_p == client_p)
       continue;
 
-    if ((aconf = bclient_p->serv->sconf) == NULL)
+    if ((conf = bclient_p->serv->sconf) == NULL)
     {
       sendto_realops_flags(UMODE_ALL, L_ADMIN,
 			   "Lost connect{} block for %s on %s. Closing",
@@ -760,7 +758,7 @@ ms_sid(struct Client *client_p, struct Client *source_p,
       return;
     }
 
-    if (match(my_name_for_link(aconf), target_p->name))
+    if (match(my_name_for_link(conf), target_p->name))
       continue;
 
     sendto_one(bclient_p, ":%s SID %s %d %s:%s%s",

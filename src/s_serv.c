@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.c,v 7.362 2003/07/05 06:21:03 db Exp $
+ *  $Id: s_serv.c,v 7.363 2003/07/06 23:38:49 db Exp $
  */
 
 #include "stdinc.h"
@@ -28,7 +28,6 @@
 #include "rsa.h"
 #endif
 #include "tools.h"
-#include "s_serv.h"
 #include "channel.h"
 #include "channel_mode.h"
 #include "client.h"
@@ -48,6 +47,7 @@
 #include "packet.h"
 #include "irc_res.h"
 #include "s_conf.h"
+#include "s_serv.h"
 #include "s_log.h"
 #include "s_stats.h"
 #include "s_user.h"
@@ -254,8 +254,11 @@ struct EncCapability *check_cipher(struct Client *client_p,
  * according to given config entry --Jto
  */
 const char *
-my_name_for_link(struct AccessItem *aconf)
+my_name_for_link(struct ConfItem *conf)
 {
+  struct AccessItem *aconf;
+
+  aconf = (struct AccessItem *)map_to_conf(conf);
   if (aconf->fakename != NULL)
     return(aconf->fakename);
   else
@@ -578,7 +581,7 @@ check_server(const char *name, struct Client *client_p, int cryptlink)
       if (cryptlink && IsConfCryptLink(aconf))
       {
         if (aconf->rsa_public_key)
-          server_aconf = aconf;
+          server_conf = conf;
       }
       else if (!(cryptlink || IsConfCryptLink(aconf)))
 #endif /* HAVE_LIBCRYPTO */
@@ -1016,7 +1019,7 @@ server_estab(struct Client *client_p)
      * Nagle is already disabled at this point --adx
      */
     sendto_one(client_p, "SERVER %s 1 :%s%s",
-               my_name_for_link(aconf), 
+               my_name_for_link(conf), 
                ConfigServerHide.hidden ? "(H) " : "",
                (me.info[0]) ? (me.info) : "IRCers United");
     send_queued_write(client_p);
@@ -1116,7 +1119,7 @@ server_estab(struct Client *client_p)
   ilog(L_NOTICE, "Link with %s established: (%s) link",
        inpath_ip, show_capabilities(client_p));
 
-  client_p->serv->sconf = aconf;
+  client_p->serv->sconf = conf;
 
   if (HasServlink(client_p))
   {
@@ -1151,8 +1154,8 @@ server_estab(struct Client *client_p)
     if (target_p == client_p)
       continue;
 
-    if ((aconf = target_p->serv->sconf) &&
-         match(my_name_for_link(aconf), client_p->name))
+    if ((conf = target_p->serv->sconf) &&
+         match(my_name_for_link(conf), client_p->name))
       continue;
 
     sendto_one(target_p,":%s SERVER %s 2 :%s%s", 
@@ -1179,7 +1182,7 @@ server_estab(struct Client *client_p)
   **    is destroyed...)
   */
 
-  aconf = client_p->serv->sconf;
+  conf = client_p->serv->sconf;
 
   DLINK_FOREACH_PREV(ptr, global_client_list.tail)
   {
@@ -1191,7 +1194,7 @@ server_estab(struct Client *client_p)
 
     if (IsServer(target_p))
     {
-      if (match(my_name_for_link(aconf), target_p->name))
+      if (match(my_name_for_link(conf), target_p->name))
         continue;
 
       sendto_one(client_p, ":%s SERVER %s %d :%s%s", 
@@ -2133,7 +2136,7 @@ serv_connect_callback(int fd, int status, void *data)
     /* Handle all CRYPTLINK links in cryptlink_init */
     if (IsConfCryptLink(aconf))
     {
-      cryptlink_init(client_p, aconf, fd);
+      cryptlink_init(client_p, conf, fd);
       return;
     }
 #endif
@@ -2160,7 +2163,7 @@ serv_connect_callback(int fd, int status, void *data)
 		      , 0);
 
     sendto_one(client_p, "SERVER %s 1 :%s%s",
-               my_name_for_link(aconf), 
+               my_name_for_link(conf), 
 	       ConfigServerHide.hidden ? "(H) " : "", 
 	       me.info);
 
@@ -2192,8 +2195,9 @@ serv_connect_callback(int fd, int status, void *data)
  * sends a CRYPTLINK SERV command.
  */
 void
-cryptlink_init(struct Client *client_p, struct AccessItem *aconf, int fd)
+cryptlink_init(struct Client *client_p, struct ConfItem *conf, int fd)
 {
+  struct AccessItem *aconf;
   char *encrypted;
   char *key_to_send;
   char randkey[CIPHERKEYLEN];
@@ -2208,7 +2212,9 @@ cryptlink_init(struct Client *client_p, struct AccessItem *aconf, int fd)
     return;
   }
 
-  if (!aconf->rsa_public_key)
+  aconf = (struct AccessItem *)map_to_conf(conf);
+
+  if (aconf->rsa_public_key == NULL)
   {
     cryptlink_error(client_p, "SERV", "Invalid RSA public key",
                                       "Invalid RSA public key");
@@ -2254,7 +2260,7 @@ cryptlink_init(struct Client *client_p, struct AccessItem *aconf, int fd)
          CAP_ENC_MASK);
 
   sendto_one(client_p, "CRYPTLINK SERV %s %s :%s%s",
-             my_name_for_link(aconf), key_to_send,
+             my_name_for_link(conf), key_to_send,
              ConfigServerHide.hidden ? "(H) " : "", me.info);
 
   SetHandshake(client_p);

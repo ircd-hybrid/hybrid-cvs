@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_serv.h,v 7.86 2003/07/05 04:41:48 joshk Exp $
+ *  $Id: s_serv.h,v 7.87 2003/07/06 23:38:44 db Exp $
  */
 
 #ifndef INCLUDED_serv_h
@@ -28,6 +28,8 @@
 
 /* collect ziplinks compression ratios/etc every minute */
 #define ZIPSTATS_TIME           60
+
+struct ConfItem;
 
 /*
  * number of seconds to wait after server starts up, before
@@ -240,7 +242,7 @@ extern struct EncCapability CipherTable[];
 extern int check_server(const char *name, struct Client *server, int cryptlink);
 extern int hunt_server(struct Client *client_p, struct Client *source_p,
                        const char *command, int server, int parc, char **parv);
-extern const char *my_name_for_link(struct AccessItem* conf);
+extern const char *my_name_for_link(struct ConfItem* conf);
 extern void add_capability(const char *capab_name, int cap_flag, int defaults_flag);
 extern int delete_capability(const char *capab_name);
 extern int find_capability(const char *capab);
@@ -256,7 +258,8 @@ extern void burst_channel(struct Client *client_p, struct Channel *chptr);
 extern void sendnick_TS(struct Client *, struct Client *);
 extern int serv_connect(struct AccessItem *, struct Client *);
 extern unsigned long nextFreeMask(void);
-extern void cryptlink_init(struct Client *client_p, struct AccessItem *aconf, int fd);
+extern void cryptlink_init(struct Client *client_p, struct ConfItem *conf,
+			   int fd);
 extern void cryptlink_regen_key(void *);
 extern void cryptlink_error(struct Client *client_p, const char *type,
                             const char *reason, const char *client_reason);
