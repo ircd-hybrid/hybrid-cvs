@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd.c,v 7.41 2000/10/30 22:32:32 adrian Exp $
+ *  $Id: s_bsd.c,v 7.42 2000/10/30 23:11:17 adrian Exp $
  */
 #include "fdlist.h"
 #include "s_bsd.h"
@@ -871,7 +871,8 @@ read_packet(int fd, void *data)
 finish:
 #endif
   /* If we get here, we need to register for another COMM_SELECT_READ */
-  comm_setselect(cptr->fd, COMM_SELECT_READ, read_packet, cptr, 0);
+  if (cptr->fd > -1)
+      comm_setselect(cptr->fd, COMM_SELECT_READ, read_packet, cptr, 0);
 }
 
 void error_exit_client(struct Client* cptr, int error)
