@@ -1,3 +1,18 @@
+leeh        2002/07/03 08:31:31 EDT	(20020703_2)
+
+  Modified files:
+    .                    configure 
+    autoconf             configure.in 
+  Log:
+  - retard proofing, it seems the concept of actually specifying a param
+    in --with-maxclients is beyond some people.
+  
+  Revision  Changes    Path
+  7.136     +2 -2      ircd-hybrid-7/autoconf/configure.in
+  7.139     +2 -2      ircd-hybrid-7/configure
+
+
+
 db          2002/07/02 19:58:14 EDT	(20020703_1)
 
   Modified files:
@@ -28975,4 +28990,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3825 2002/07/02 23:58:21 db Exp $
+$Id: ChangeLog,v 7.3826 2002/07/03 12:31:38 leeh Exp $
