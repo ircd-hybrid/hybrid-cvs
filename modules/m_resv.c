@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_resv.c,v 1.3 2001/06/29 16:03:44 leeh Exp $
+ *   $Id: m_resv.c,v 1.4 2001/07/02 04:56:17 jdc Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -33,6 +33,7 @@
 #include "modules.h"
 #include "s_conf.h"
 #include "resv.h"
+#include "hash.h"
 
 static void mo_resv(struct Client *, struct Client *, int, char **);
 static void mo_unresv(struct Client *, struct Client *, int, char **);
