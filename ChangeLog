@@ -1,3 +1,15 @@
+db          2002/11/26 15:34:59 EST	(20021126_0)
+
+  Modified files:
+    src                  channel.c 
+  Log:
+  - reverse chanops+voice clients with peons in names listing
+  
+  Revision  Changes    Path
+  7.343     +5 -2      ircd-hybrid-7/src/channel.c
+
+
+
 jmallett    2002/11/24 03:27:16 EST	(20021124_0)
 
   Modified files:
@@ -33276,4 +33288,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4117 2002/11/24 08:27:19 jmallett Exp $
+$Id: ChangeLog,v 7.4118 2002/11/26 20:35:01 db Exp $
