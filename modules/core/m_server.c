@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_server.c,v 1.32 2001/01/05 07:47:24 a1kmm Exp $
+ *   $Id: m_server.c,v 1.33 2001/01/05 08:11:46 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"  /* m_server prototype */
@@ -353,6 +353,7 @@ int ms_server(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
   add_client_to_list(acptr);
   add_to_client_hash_table(acptr->name, acptr);
   add_client_to_llist(&(acptr->servptr->serv->servers), acptr);
+
 
   /*
    * Old sendto_serv_but_one() call removed because we now

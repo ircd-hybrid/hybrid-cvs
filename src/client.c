@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.100 2001/01/05 07:47:26 a1kmm Exp $
+ *  $Id: client.c,v 7.101 2001/01/05 08:11:47 db Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -610,18 +610,16 @@ remove_client_from_list(struct Client* cptr)
 {
   assert(0 != cptr);
   
-#if 0
-  /* HACK somehow this client has already exited
-   * but has come back to haunt us.. looks like a bug
-   * XXX isn't this bug fixed now? -is
+  /* A client made with make_client()
+   * is on the unknown_list until removed.
+   * If it =does= happen to exit before its removed from that list
+   * and its =not= on the GlobalClientList, it will core here.
+   * short circuit that case now -db
    */
   if (!cptr->prev && !cptr->next)
     {
-      log(L_CRIT, "already exited client %X [%s]",
-	  cptr, cptr->name?cptr->name:"NULL");
       return;
     }
-#endif
 
   if (cptr->prev)
     cptr->prev->next = cptr->next;
