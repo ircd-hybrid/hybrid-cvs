@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.272 2003/05/25 22:13:16 joshk Exp $
+ *  $Id: s_user.c,v 7.273 2003/05/25 22:36:32 db Exp $
  */
 
 #include "stdinc.h"
@@ -1305,16 +1305,87 @@ oper_up(struct Client *source_p, struct ConfItem *aconf)
   send_message_file(source_p, &ConfigFileEntry.opermotd);
 }
 
-/* XXX INCOMPLETE XXX */
+/*
+ * Quick and dirty SID code for new proposed SID on EFnet
+ *
+ */
+#define MAXSID		3
+#define MAXUSERID	6
+#define TOTALSID	(MAXSID+MAXUSERID)
+
+static char new_sid[TOTALSID+1];	/* allow for \0 */
+static void add_one_to_sid(int index);
+  
+/*
+ * sid_init()
+ * 
+ * inputs	- NONE
+ * output	- NONE
+ * side effects	- new_sid is filled in with server id portion (first 3 bytes)
+ *		  or defaulted to 'A'. Rest is filled in with 'A'
+ */
 
 void
 sid_init(void)
 {
+  int i;
+
+  memset(new_sid, 0, sizeof(new_sid));
+
+  if (ServerInfo.sid != NULL)
+    memcpy(new_sid, ServerInfo.sid, IRCD_MIN(strlen(ServerInfo.sid), MAXSID));
+
+  for (i = 0; i < MAXSID; i++)
+    if (new_sid[i] == '\0') 
+      new_sid[i] = 'A';
+
+  /* XXX if MAXUSERID != 6, this will have to be rewritten */
+  memcpy(new_sid+MAXSID, "AAAAAA", MAXUSERID);
 }
+
+/*
+ * sid_get
+ *
+ * inputs	- NONE
+ * output	- new SID is returned to called
+ * side effects	- new_sid is incremented by one.
+ */
 
 char *
 sid_get(void)
 {
-	// Quell build warning until we finish this
-	return NULL;
+  add_one_to_sid(TOTALSID-1);	/* index from 0 */
+  return(new_sid);
+}
+
+/*
+ * add_one_to_sid
+ *
+ * inputs	- index number into new_sid
+ * output	- NONE
+ * side effects	- new_sid is incremented by one
+ *		  note this is a recursive function
+ */
+
+static void
+add_one_to_sid(int i)
+{
+  if (i != MAXSID)		/* Not reached server SID portion yet? */
+  {
+    if (new_sid[i] == 'Z')
+      new_sid[i] = '0';
+    else if (new_sid[i] == '9')
+    {
+      new_sid[i] = 'A';
+      add_one_to_sid(i-1);
+    }
+    else new_sid[i] = new_sid[i] + 1;
+  }
+  else
+  {
+    /* XXX if MAXUSERID != 6, this will have to be rewritten */
+    if (new_sid[i] == 'Z')
+      memcpy(new_sid+MAXSID, "AAAAAA", MAXUSERID);
+    else new_sid[i] = new_sid[i] + 1;
+  }
 }
