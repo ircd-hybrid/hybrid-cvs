@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.39 2000/11/04 17:44:20 adrian Exp $
+ *   $Id: s_serv.c,v 7.40 2000/11/06 15:49:12 adrian Exp $
  */
 #include "s_serv.h"
 #include "channel.h"
@@ -1125,11 +1125,6 @@ serv_connect(struct ConfItem *aconf, struct Client *by)
     if ((fd = comm_open(AF_INET, SOCK_STREAM, 0, servname)) < 0) {
         /* Eek, failure to create the socket */
         report_error("opening stream socket to %s: %s", aconf->name, errno);
-        return 0;
-    }
-    if (fd >= (HARD_FDLIMIT - 10)) {
-        sendto_realops("No more connections allowed (%s)", aconf->name);
-        close(fd); /* Haven't fd_open()ed yet */
         return 0;
     }
 
