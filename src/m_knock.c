@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_knock.c,v 7.1 1999/08/20 04:38:24 tomh Exp $
+ *   $Id: m_knock.c,v 7.2 1999/11/10 04:23:44 db Exp $
  */
 #include "m_commands.h"
 #include "channel.h"
@@ -230,24 +230,6 @@ int m_knock(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
                    sptr->host);
         sendto_channel_type_notice(cptr, chptr, MODE_CHANOP, message);
       }
-
-    /* There is a problem with the code fragment below...
-     * The problem is, s_user.c checks to see if the sender
-     * is actually chanop on the channel
-     */
-
-    /* bit of paranoia, be a shame if it cored for this -Dianora */
-    /*
-    if(sptr->user)
-      sendto_channel_type(cptr, sptr, chptr, MODE_CHANOP,
-          ":%s PRIVMSG @%s :KNOCK: %s (%s [%s@%s] has asked for an invite)",
-                          parv[0],
-                          chptr->chname,
-                          chptr->chname,
-                          sptr->name,
-                          sptr->username,
-                          sptr->host);
-                          */
   }
   return 0;
 }

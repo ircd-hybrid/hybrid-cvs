@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_invite.c,v 7.1 1999/08/20 04:38:23 tomh Exp $
+ *   $Id: m_invite.c,v 7.2 1999/11/10 04:23:44 db Exp $
  */
 #include "m_commands.h"
 #include "channel.h"
@@ -222,15 +222,10 @@ int m_invite(struct Client *cptr, struct Client *sptr, int parc, char *parv[])
                              acptr->username,
                              acptr->host);
 
-                  /* Note the horrible kludge here of "PRIVMSG"
-                   * in the arguments, this is to ensure that p4 in 
-                   * sendto_channel_type() in send.c is the message payload
-                   * for non CHW type servers
-                   * -Dianora
-                   */
-                  sendto_channel_type(cptr, sptr, chptr, MODE_CHANOP,
-                                      ":%s %s @%s :%s",
-                                      parv[0], "PRIVMSG", chptr->chname,
+                  sendto_channel_type(cptr, sptr, chptr,
+                                      MODE_CHANOP,
+                                      chptr->chname,
+                                      "PRIVMSG",
                                       message);
                 }
             }

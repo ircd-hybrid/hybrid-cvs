@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: send.h,v 7.1 1999/08/31 19:57:33 wnder Exp $
+ * $Id: send.h,v 7.2 1999/11/10 04:23:40 db Exp $
  */
 
 #ifndef INCLUDED_send_h
@@ -41,8 +41,13 @@ extern  int sendto_slaves(struct Client *, char *, char *, int, char **);
 extern  void sendto_one(struct Client *, const char *, ...);
 extern  void sendto_channel_butone(struct Client *, struct Client *, 
                                    struct Channel *, const char *, ...);
-extern  void sendto_channel_type(struct Client *, struct Client *, 
-                                 struct Channel *, int, const char *, ...);
+extern  void sendto_channel_type(struct Client *,
+                                 struct Client *, 
+                                 struct Channel *,
+                                 int type,
+                                 const char *nick,
+                                 const char *cmd,
+                                 const char *message);
 extern  void sendto_serv_butone(struct Client *, const char *, ...);
 extern  void sendto_common_channels(struct Client *, const char *, ...);
 extern  void sendto_channel_butserv(struct Channel *, struct Client *, 
