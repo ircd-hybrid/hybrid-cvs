@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.102 2002/05/24 23:34:20 androsyn Exp $
+ *  $Id: m_kline.c,v 1.103 2002/06/26 23:38:57 leeh Exp $
  */
 
 #include "stdinc.h"
@@ -75,7 +75,7 @@ _moddeinit(void)
   mod_del_cmd(&kline_msgtab);
   mod_del_cmd(&dline_msgtab);
 }
-const char *_version = "$Revision: 1.102 $";
+const char *_version = "$Revision: 1.103 $";
 #endif
 
 /* Local function prototypes */
@@ -388,7 +388,7 @@ static void apply_tkline(struct Client *source_p, struct ConfItem *aconf,
  add_temp_kline(aconf);
  sendto_realops_flags(FLAGS_ALL, L_ALL,
                       "%s added temporary %d min. K-Line for [%s@%s] [%s]",
-                      source_p->name, tkline_time/60, aconf->user, aconf->host,
+                      get_oper_name(source_p), tkline_time/60, aconf->user, aconf->host,
                       aconf->passwd);
  sendto_one(source_p, ":%s NOTICE %s :Added temporary %d min. K-Line for [%s@%s]",
             me.name, source_p->name, tkline_time/60, aconf->user, aconf->host);
