@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: numeric.h,v 7.2 2000/01/03 16:18:21 db Exp $
+ * $Id: numeric.h,v 7.3 2000/01/03 16:45:19 db Exp $
  */
 #ifndef INCLUDED_numeric_h
 #define INCLUDED_numeric_h
@@ -234,7 +234,7 @@ extern const char* form_str(int);
 
 #define RPL_NOTOPIC          331
 #define RPL_TOPIC            332
-#define RPL_TOPICWHOTIME 333
+#define RPL_TOPICWHOTIME     333
 
 #define RPL_INVITING         341
 #define RPL_SUMMONING        342
