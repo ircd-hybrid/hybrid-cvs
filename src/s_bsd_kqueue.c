@@ -23,10 +23,9 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_kqueue.c,v 1.21 2001/09/25 05:22:32 db Exp $
+ *  $Id: s_bsd_kqueue.c,v 1.22 2001/12/11 03:22:42 a1kmm Exp $
  */
 #include "config.h"
-#ifdef USE_KQUEUE
 #include "fdlist.h"
 #include "s_bsd.h"
 #include "class.h"
@@ -50,6 +49,7 @@
 #include "s_debug.h"
 #include "s_bsd.h"
 #include "memory.h"
+#ifdef USE_KQUEUE
 
 #include <assert.h>
 #include <stdio.h>

@@ -19,7 +19,7 @@
  *
  *
  *
- * $Id: rsa.c,v 7.22 2001/10/24 18:03:01 androsyn Exp $
+ * $Id: rsa.c,v 7.23 2001/12/11 03:22:42 a1kmm Exp $
  */
 
 #include "config.h"
@@ -32,15 +32,17 @@
 #include <openssl/bn.h>
 #include <openssl/evp.h>
 #include <openssl/err.h>
-
 #include <assert.h>
 #include <string.h>
+#endif
 
 #include "memory.h"
 #include "rsa.h"
 #include "s_conf.h"
 #include "s_log.h"
 #include "client.h" /* CIPHERKEYLEN .. eww */
+
+#ifdef HAVE_LIBCRYPTO
 
 void report_crypto_errors(void);
 int verify_private_key(void);

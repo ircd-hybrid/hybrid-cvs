@@ -23,10 +23,9 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_devpoll.c,v 7.10 2001/06/12 21:23:18 androsyn blalloc.c $
+ *  $Id: s_bsd_devpoll.c,v 7.11 2001/12/11 03:22:42 a1kmm Exp $
  */
 #include "config.h"
-#ifdef USE_DEVPOLL
 #include "fdlist.h"
 #include "s_bsd.h"
 #include "class.h"
@@ -50,6 +49,7 @@
 #include "s_debug.h"
 #include "s_bsd.h"
 #include "memory.h"
+#ifdef USE_DEVPOLL
 
 #include <assert.h>
 #include <stdio.h>

@@ -23,10 +23,9 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_poll.c,v 7.50 2001/11/21 14:51:08 androsyn Exp $
+ *  $Id: s_bsd_poll.c,v 7.51 2001/12/11 03:22:43 a1kmm Exp $
  */
 #include "config.h"
-#ifdef USE_POLL
 #include "fdlist.h"
 #include "s_bsd.h"
 #include "class.h"
@@ -50,6 +49,7 @@
 #include "s_debug.h"
 #include "s_bsd.h"
 #include "memory.h"
+#ifdef USE_POLL
 
 #include <assert.h>
 #include <stdio.h>
