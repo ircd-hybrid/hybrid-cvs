@@ -1,7 +1,7 @@
 Message customization/localization system
 David Taylor <davidt@yadt.co.uk>
 
-$Id: message-customisation.txt,v 1.2 2001/01/24 14:58:43 wcampbel Exp $
+$Id: message-customisation.txt,v 1.3 2001/04/01 22:06:49 ejb Exp $
 
 Please send any comments, questions, flames or suggestions to the
 above address :)
@@ -28,6 +28,7 @@ compiled in standard messages.
 Currently available locales are:
 	custom		These are the messages you would have seen if
 			you used the old CUSTOM_ERR define in config.h.
+	ayb		'All Your Base'-type messages.
 	standard	(This doesn't actually exist as a locale, but
 			 using a non-existent locale will use the compiled
 			 in defaults).
