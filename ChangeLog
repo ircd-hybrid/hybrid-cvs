@@ -1,3 +1,16 @@
+lusky       2003/02/16 16:22:26 EST	(20030216_2)
+
+  Modified files:
+    src                  ircd.c 
+  Log:
+  - call close_all_connections() before init_netio() otherwise we
+    break kqueue
+  
+  Revision  Changes    Path
+  7.252     +5 -5      ircd-hybrid-7/src/ircd.c
+
+
+
 db          2003/02/15 19:40:45 EST	(20030216_1)
 
   Modified files:
@@ -35105,4 +35118,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4234 2003/02/16 00:40:48 db Exp $
+$Id: ChangeLog,v 7.4235 2003/02/16 21:22:28 lusky Exp $
