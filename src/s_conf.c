@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.448 2003/06/29 17:28:15 adx Exp $
+ *  $Id: s_conf.c,v 7.449 2003/06/30 00:23:40 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -1584,6 +1584,7 @@ find_matching_name_conf(ConfType type,
 	if (match(match_item->user, user) && match(match_item->host, host))
 	  return (conf);
       }
+    }
       break;
 
   case OPER_TYPE:
@@ -1604,19 +1605,19 @@ find_matching_name_conf(ConfType type,
     }
     break;
 
-    case SERVER_TYPE:
-      DLINK_FOREACH(ptr, (*list_p).head)
-      {
-	conf = ptr->data;
-	aconf = (struct AccessItem *)map_to_conf(conf);
+  case SERVER_TYPE:
+    DLINK_FOREACH(ptr, (*list_p).head)
+    {
+      conf = ptr->data;
+      aconf = (struct AccessItem *)map_to_conf(conf);
 
-	if ((name != NULL) && (match_esc(aconf->name, name) == 0))
-	  return(conf);
-	else if ((host != NULL) && (match_esc(aconf->host, host) == 0))
-	  return(conf);
-      }
+      if ((name != NULL) && (match_esc(aconf->name, name) == 0))
+        return(conf);
+      else if ((host != NULL) && (match_esc(aconf->host, host) == 0))
+        return(conf);
     }
     break;
+  
   default:
     break;
   }
