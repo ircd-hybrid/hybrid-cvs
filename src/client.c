@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.338 2003/03/21 17:52:25 db Exp $
+ *  $Id: client.c,v 7.339 2003/04/01 17:04:47 adx Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -906,7 +906,7 @@ exit_one_client(struct Client *client_p, struct Client *source_p,
   del_from_client_hash_table(source_p->name, source_p);
 
   /* remove from global client list */
-  if (source_p != NULL)
+  if (source_p != NULL && source_p->node.next != NULL)
     dlinkDelete(&source_p->node, &GlobalClientList);
   update_client_exit_stats(source_p);
 
