@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_stats.c,v 1.22 2000/12/14 23:06:39 db Exp $
+ *  $Id: m_stats.c,v 1.23 2000/12/15 03:59:53 db Exp $
  */
 #include "tools.h"	 /* dlink_node/dlink_list */
 #include "handlers.h"    /* m_pass prototype */
@@ -520,7 +520,6 @@ void stats_L(struct Client *sptr,char *name,int doall, int wilds)
 
   stats_L_list(sptr, name, doall, wilds, &unknown_list);
   stats_L_list(sptr, name, doall, wilds, &lclient_list);
-  stats_L_list(sptr, name, doall, wilds, &oper_list);
   stats_L_list(sptr, name, doall, wilds, &serv_list);
 }
 
@@ -553,18 +552,6 @@ void stats_L_list(struct Client *sptr,char *name, int doall, int wilds,
       if (!(doall || wilds) && irccmp(name, acptr->name))
 	continue;
 
-      /* I've added a sanity test to the "CurrentTime - acptr->since"
-       * occasionally, acptr->since is larger than CurrentTime.
-       * The code in parse.c "randomly" increases the "since",
-       * which means acptr->since is larger then CurrentTime at times,
-       * this gives us very high odd number.. 
-       * So, I am going to return 0 for ->since if this happens.
-       * - Dianora
-       */
-      /* trust opers not on this server */
-      /* if(IsAnyOper(sptr)) */
-
-      /* Don't trust opers not on this server */
       if(MyClient(sptr) && IsAnyOper(sptr))
 	{
 	  sendto_one(sptr, Lformat, me.name,
