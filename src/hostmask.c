@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.c,v 7.90 2003/08/12 21:22:23 metalrock Exp $
+ *  $Id: hostmask.c,v 7.91 2003/08/12 21:39:09 metalrock Exp $
  */
 
 #include "stdinc.h"
@@ -540,11 +540,11 @@ find_kline_conf(const char *host, const char *user,
   struct AccessItem *eline;
 
   eline = find_conf_by_address(host, ip, CONF_EXEMPTKLINE, aftype,
-                               NULL, NULL);
+                               user, NULL);
   if (eline != NULL)
     return (eline);
 
-  return (find_conf_by_address(host, ip, CONF_KILL, aftype, NULL, NULL));
+  return (find_conf_by_address(host, ip, CONF_KILL, aftype, user, NULL));
 }
 
 /* struct AccessItem* find_dline_conf(struct irc_ssaddr*, int)
