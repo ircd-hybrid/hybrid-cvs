@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# $Id: version.c.SH,v 7.11 2000/10/23 12:07:08 adrian Exp $ 
+# $Id: version.c.SH,v 7.12 2000/11/05 16:33:06 adrian Exp $ 
 
 spitshell=cat
 package=IRC
@@ -87,6 +87,7 @@ char *infotext[] =
   "Bleep               Thomas Helvey       tomh@inxpress.net",
   "CBongo              Chris Bongaarts     cab@tc.umn.edu",
   "comstud             Chris Behrens       cbehrens@concentric.net",
+  "David-T             David Taylor        davidt@yadt.co.uk",
   "desrt               Ryan Lortie         desertangel@mindless.com",
   "echo                Adam J. Durana      adam@caca.com",
   "FlashMan            Craig A. Huegen     chuegen@quadrunner.com",
