@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.323 2002/09/09 13:43:48 db Exp $
+ *  $Id: s_conf.c,v 7.324 2002/09/11 15:27:09 db Exp $
  */
 
 #include "stdinc.h"
@@ -1612,7 +1612,7 @@ int
 conf_connect_allowed(struct irc_inaddr *addr, int aftype)
 {
   IP_ENTRY *ip_found;
-  struct ConfItem *aconf = find_dline(addr,aftype);
+  struct ConfItem *aconf = find_dline_conf(addr,aftype);
  
   /* DLINE exempt also gets you out of static limits/pacing... */
   if (aconf && (aconf->status & CONF_EXEMPTDLINE))
@@ -1648,9 +1648,10 @@ find_kill(struct Client* client_p)
   assert(client_p != NULL);
   if(client_p == NULL)
     return NULL;
-  aconf = find_address_conf(client_p->host, client_p->username,
-			    &client_p->localClient->ip,
-  			    client_p->localClient->aftype);
+
+  aconf = find_kline_conf(client_p->host, client_p->username,
+			  &client_p->localClient->ip,
+			  client_p->localClient->aftype);
   if (aconf == NULL)
     return aconf;
   if(aconf->status & CONF_KILL)

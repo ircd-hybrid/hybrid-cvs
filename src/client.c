@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: client.c,v 7.299 2002/09/05 14:06:16 db Exp $
+ *  $Id: client.c,v 7.300 2002/09/11 15:27:08 db Exp $
  */
 #include "stdinc.h"
 #include "config.h"
@@ -409,8 +409,8 @@ check_klines(void)
       continue;
 	
     /* if there is a returned struct ConfItem then kill it */
-    if ((aconf = find_dline(&client_p->localClient->ip,
-			    client_p->localClient->aftype)) != NULL)
+    if ((aconf = find_dline_conf(&client_p->localClient->ip,
+				 client_p->localClient->aftype)) != NULL)
     {
       if (aconf->status & CONF_EXEMPTDLINE)
 	continue;
@@ -500,7 +500,7 @@ check_klines(void)
 	/* and go examine next fd/client_p */    
 	continue;
       } 
-      else if((aconf = find_kill(client_p))) 
+      else if((aconf = find_kill(client_p)) != NULL) 
       {
 	/* if there is a returned struct ConfItem.. then kill it */
 	if (IsExemptKline(client_p))
@@ -547,8 +547,8 @@ check_klines(void)
   {
     client_p = ptr->data;
 
-    if((aconf = find_dline(&client_p->localClient->ip,
-                           client_p->localClient->aftype)))
+    if((aconf = find_dline_conf(&client_p->localClient->ip,
+				client_p->localClient->aftype)))
     {
       if(aconf->status & CONF_EXEMPTDLINE)
         continue;

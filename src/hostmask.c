@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: hostmask.c,v 7.72 2002/09/10 02:25:51 db Exp $
+ *  $Id: hostmask.c,v 7.73 2002/09/11 15:27:08 db Exp $
  */
 
 #include "stdinc.h"
@@ -499,13 +499,37 @@ find_address_conf(const char *host, const char *user,
   return iconf;
 }
 
-/* struct ConfItem* find_dline(struct irc_inaddr*, int)
- * Input: An address, an address family.
- * Output: The best matching D-line or exempt line.
+/*
+ * find_kline_conf
+ *
+ * inputs	- pointer to hostname
+ *		- pointer to username
+ *		- incoming IP and type (IPv4 vs. IPv6)
+ * outut	- pointer to kline conf if found NULL if not
+ * side effects	-
+ */
+struct ConfItem *
+find_kline_conf(const char *host, const char *user,
+		struct irc_inaddr *ip, int aftype)
+{
+  struct ConfItem *kconf;
+
+  /* Find the best K-line... -A1kmm */
+  kconf = find_conf_by_address(host, ip, CONF_KILL, aftype, user);
+
+  /* If they are K-lined, return the K-line. Otherwise, return the
+   * I-line. -A1kmm */
+  return (kconf);
+}
+
+/* struct ConfItem* find_dline_conf(struct irc_inaddr*, int)
+ *
+ * Input:	An address, an address family.
+ * Output:	The best matching D-line or exempt line.
  * Side effects: None.
  */
 struct ConfItem *
-find_dline(struct irc_inaddr *addr, int aftype)
+find_dline_conf(struct irc_inaddr *addr, int aftype)
 {
   struct ConfItem *eline;
   eline = find_conf_by_address(NULL, addr, CONF_EXEMPTDLINE | 1, aftype,
