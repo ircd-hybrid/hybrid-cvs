@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.92 2000/12/02 15:19:35 db Exp $
+ * $Id: channel.c,v 7.93 2000/12/02 16:36:01 db Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -520,7 +520,7 @@ dlink_node *find_channel_link(dlink_list *list, struct Channel *chptr)
 static int change_channel_membership(struct Channel *chptr,
 				     dlink_list *to_list, struct Client *who)
 {
-  volatile dlink_node *ptr;
+  dlink_node *ptr;
 
   if ( (ptr = find_user_link(&chptr->peons, who)) )
     {
@@ -2508,7 +2508,7 @@ void del_invite(struct Channel *chptr, struct Client *who)
     {
       if (ptr->data == who)
 	{
-	  dlinkDelete(who, ptr, &chptr->invites);
+	  dlinkDelete(ptr, &chptr->invites);
 	  free_dlink_node(ptr);
 	  break;
 	}
@@ -2518,7 +2518,7 @@ void del_invite(struct Channel *chptr, struct Client *who)
     {
       if (ptr->data == chptr)
 	{
-	  dlinkDelete(who, ptr, &who->user->invited);
+	  dlinkDelete(ptr, &who->user->invited);
 	  free_dlink_node(ptr);
 	  break;
 	}
