@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: m_info.h,v 7.9 2000/08/13 22:34:59 ejb Exp $
+ * $Id: m_info.h,v 7.10 2000/10/30 23:03:53 adrian Exp $
  */
 #ifndef INCLUDED_m_info_h
 #define INCLUDED_m_info_h
@@ -318,12 +318,6 @@ Info MyInformation[] = {
 #else
   { "NO_OPER_FLOOD", "OFF", 0, "Disable Flood Control for Operators" },
 #endif /* NO_OPER_FLOOD */
-
-#ifdef NO_PRIORITY
-  { "NO_PRIORITY", "ON", 0, "Do not Prioritize Socket File Descriptors" },
-#else
-  { "NO_PRIORITY", "OFF", 0, "Do not Prioritize Socket File Descriptors" },
-#endif /* NO_PRIORITY */
 
 #ifdef NOISY_HTM
   { "NOISY_HTM", "ON", 0, "Notify Operators of HTM (De)activation" },
