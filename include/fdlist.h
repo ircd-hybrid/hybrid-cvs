@@ -1,7 +1,7 @@
 /*
  * fdlist.h
  *
- * $Id: fdlist.h,v 7.2 2000/10/24 18:47:10 adrian Exp $
+ * $Id: fdlist.h,v 7.3 2000/10/31 13:21:51 adrian Exp $
  */
 #ifndef INCLUDED_fdlist_h
 #define INCLUDED_fdlist_h
@@ -51,6 +51,8 @@ struct _fde {
     void *read_data;
     PF *write_handler;
     void *write_data;
+    PF *timeout_handler;
+    void *timeout_data;
     time_t timeout;
     struct {
         unsigned int open:1;
