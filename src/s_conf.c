@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.494 2005/01/08 01:43:47 joshk Exp $
+ *  $Id: s_conf.c,v 7.495 2005/01/08 04:04:52 michael Exp $
  */
 
 #include "stdinc.h"
@@ -2189,7 +2189,7 @@ lookup_confhost(struct ConfItem *conf)
   /* Get us ready for a bind() and don't bother doing dns lookup */
   hints.ai_flags = AI_PASSIVE | AI_NUMERICHOST;
 
-  if ((ret = irc_getaddrinfo(aconf->host, NULL, &hints, &res)))
+  if (irc_getaddrinfo(aconf->host, NULL, &hints, &res))
   {
     conf_dns_lookup(aconf);
     return;
