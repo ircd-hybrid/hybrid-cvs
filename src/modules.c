@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.c,v 7.51 2001/01/18 09:07:41 ejb Exp $
+ * $Id: modules.c,v 7.52 2001/01/22 04:18:22 lusky Exp $
  */
 
 #include <dlfcn.h>
@@ -26,7 +26,6 @@
 #include <errno.h>
 #include <dirent.h>
 
-#define _XOPEN_SOURCE
 #include <limits.h>
 #include <unistd.h>
 #include <sys/types.h>
