@@ -17,24 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *
- * a number of behaviours in set_mode() have been rewritten
- * These flags can be set in a define if you wish.
- *
- * OLD_P_S      - restore xor of p vs. s modes per channel
- *                currently p is rather unused, so using +p
- *                to disable "knock" seemed worth while.
- * OLD_MODE_K   - new mode k behaviour means user can set new key
- *                while old one is present, mode * -k of old key is done
- *                on behalf of user, with mode * +k of new key.
- *                /mode * -key results in the sending of a *, which
- *                can be used to resynchronize a channel.
- * OLD_NON_RED  - Current code allows /mode * -s etc. to be applied
- *                even if +s is not set. Old behaviour was not to allow
- *                mode * -p etc. if flag was clear
- *
- *
- * $Id: m_drop.c,v 7.1 2000/01/06 02:05:22 db Exp $
+ * $Id: m_drop.c,v 7.2 2000/01/06 02:08:44 db Exp $
  */
 #include "channel.h"
 #include "client.h"
