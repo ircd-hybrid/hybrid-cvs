@@ -20,7 +20,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: linebuf.c,v 7.95 2003/04/14 08:41:15 michael Exp $
+ *  $Id: linebuf.c,v 7.96 2003/04/21 22:12:53 adx Exp $
  */
 
 #include "stdinc.h"
@@ -169,20 +169,6 @@ linebuf_skip_crlf(char *ch, int len)
     }
   assert(orig_len > len);
   return(orig_len - len);
-}
-
-
-
-/*
- * linebuf_newbuf
- *
- * Initialise the new buffer
- */
-void
-linebuf_newbuf(buf_head_t *bufhead)
-{
-  /* not much to do right now :) */
-  memset(bufhead, 0, sizeof(buf_head_t));
 }
 
 /*
@@ -501,173 +487,6 @@ linebuf_get(buf_head_t *bufhead, char *buf, int buflen, int partial,
 
   /* return how much we copied */
   return cpylen;
-}
-
-/* linebuf_attach()
- *
- * attach the lines in a buf_head_t to another buf_head_t
- * without copying the data (using refcounts).
- */
-void
-linebuf_attach(buf_head_t *bufhead, buf_head_t *new)
-{
-  dlink_node *node;
-  buf_line_t *line;
-  
-  DLINK_FOREACH(node, new->list.head)
-  {
-    line = (buf_line_t *)node->data;
-
-    dlinkAddTail(line, make_dlink_node(), &bufhead->list);
-
-    /* Update the allocated size */
-    bufhead->alloclen++;
-    bufhead->len += line->len;
-    bufhead->numlines++;
-
-    line->refcount++;
-  }
-}
-
-/*
- * linebuf_putmsg
- *
- * Similar to linebuf_put, but designed for use by send.c.
- *
- * prefixfmt is used as a format for the varargs, and is inserted first.
- * Then format/va_args is appended to the buffer.
- */
-void
-linebuf_putmsg(buf_head_t *bufhead, const char *format, va_list *va_args,
-               const char *prefixfmt, ...)
-{
-  buf_line_t *bufline;
-  int len = 0;
-  va_list prefix_args;
-  
-  /* make sure the previous line is terminated */
-#ifndef NDEBUG
-  if (bufhead->list.tail)
-    {
-      bufline = bufhead->list.tail->data;
-      assert(bufline->terminated);
-    }
-#endif
-  /* Create a new line */
-  bufline = linebuf_new_line(bufhead);
-
-  if (prefixfmt != NULL)
-  {
-    va_start(prefix_args, prefixfmt);
-    len = vsnprintf(bufline->buf, BUF_DATA_SIZE, prefixfmt, prefix_args);
-    va_end(prefix_args);
-  }
-
-  if (va_args != NULL)
-  {
-    len += vsnprintf((bufline->buf + len), (BUF_DATA_SIZE - len), format,
-                    *va_args);
-  }
-  
-  bufline->terminated = 1;
-
-  /* Truncate the data if required */
-  if (len > 510)
-    {
-      len = 510;
-      bufline->buf[len++] = '\r';
-      bufline->buf[len++] = '\n';
-    }
-  else if(len == 0)
-    {
-      bufline->buf[len++] = '\r';
-      bufline->buf[len++] = '\n';
-      bufline->buf[len] = '\0';
-    }
-  else
-    {
-      /* Chop trailing CRLF's .. */
-      while((bufline->buf[len] == '\r') || (bufline->buf[len] == '\n') ||
-	    (bufline->buf[len] == '\0'))
-	{
-	  len--;
-	}
-
-      bufline->buf[++len] = '\r';
-      bufline->buf[++len] = '\n';
-      bufline->buf[++len] = '\0';
-    }
-
-  bufline->len  = len;
-  bufhead->len += len;
-}
-
-/*
- * linebuf_flush
- *
- * Flush data to the buffer. It tries to write as much data as possible
- * to the given socket. Any return values are passed straight through.
- * If there is no data in the socket, EWOULDBLOCK is set as an errno
- * rather than returning 0 (which would map to an EOF..)
- *
- * Notes: XXX We *should* have a clue here when a non-full buffer is arrived.
- *        and tag it so that we don't re-schedule another write until
- *        we have a CRLF.
- */
-int
-linebuf_flush(int fd, buf_head_t *bufhead)
-{
-  buf_line_t *bufline;
-  int retval;
-  
-  /* Check we actually have a first buffer */
-  if (bufhead->list.head == NULL)
-    {
-      /* nope, so we return none .. */
-      errno = EWOULDBLOCK;
-      return -1;    
-    }
-
-  bufline = bufhead->list.head->data;
-
-  /* And that its actually full .. */
-  if (!bufline->terminated)
-    {
-      errno = EWOULDBLOCK;
-      return -1;
-    }
-    
-  /* Check we're flushing the first buffer */
-  if (!bufline->flushing)
-    {
-      bufline->flushing = 1;
-      bufhead->writeofs = 0;
-    }
-
-  /* Now, try writing data */
-  retval = send(fd, bufline->buf + bufhead->writeofs, bufline->len
-		 - bufhead->writeofs, 0);
-   
-  /* Deal with return code */
-  if (retval < 0)
-    return retval;
-  if (retval == 0)
-    return 0;
-
-  /* we've got data, so update the write offset */
-  bufhead->writeofs += retval;
-
-  /* if we've written everything *and* the CRLF, deallocate and update
-     bufhead */
-  if (bufhead->writeofs == bufline->len)
-    {
-      bufhead->writeofs = 0;
-      assert(bufhead->len >=0);
-      linebuf_done_line(bufhead, bufline, bufhead->list.head);
-    }
-
-  /* Return line length */
-  return retval;
 }
 
 /*

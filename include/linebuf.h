@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: linebuf.h,v 1.24 2002/07/14 20:15:38 androsyn Exp $
+ *  $Id: linebuf.h,v 1.25 2003/04/21 22:12:52 adx Exp $
  */
 
 #ifndef __LINEBUF_H__
@@ -59,25 +59,13 @@ struct _buf_head {
     int  numlines;		/* number of lines */
 };
 
-/* they should be functions, but .. */
-#define linebuf_len(x)		((x)->len)
+/* this should be a function, but .. */
 #define linebuf_alloclen(x)	((x)->alloclen)
-#define linebuf_numlines(x)	((x)->numlines)
 
 extern void linebuf_init(void);
-/* declared as static */
-/* extern buf_line_t *linebuf_new_line(buf_head_t *); */
-/* extern void linebuf_done_line(buf_head_t *, buf_line_t *, dlink_node *); */
-/* extern int linebuf_skip_crlf(char *, int); */
-/* extern void linebuf_terminate_crlf(buf_head_t *, buf_line_t *); */
-extern void linebuf_newbuf(buf_head_t *);
 extern void client_flush_input(struct Client *);
 extern void linebuf_donebuf(buf_head_t *);
 extern int linebuf_parse(buf_head_t *, char *, int, int);
 extern int linebuf_get(buf_head_t *, char *, int, int, int);
-extern void linebuf_putmsg(buf_head_t *, const char *, va_list *,
-                           const char *, ...);
-extern int linebuf_flush(int, buf_head_t *);
-extern void linebuf_attach(buf_head_t *, buf_head_t *);
 extern void count_linebuf_memory(int *, u_long *);
 #endif
