@@ -1,3 +1,16 @@
+leeh        2002/01/01 10:53:47 EST	(20020101_2)
+
+  Modified files:
+    src                  ircd_lexer.l ircd_parser.y 
+  Log:
+  - renamed bind_address to vhost for consistency with serverinfo {};
+  
+  Revision  Changes    Path
+  1.133     +0 -1      ircd-hybrid-7/src/ircd_lexer.l
+  1.232     +2 -3      ircd-hybrid-7/src/ircd_parser.y
+
+
+
 a1kmm       2002/01/01 01:56:43 EST	(20020101_1)
 
   Modified files:
@@ -1914,7 +1927,7 @@ a1kmm       2001/12/10 22:22:46 EST	(20011211_3)
     we don't have libcrypto.
   - Took the dependency build out of configure.
   - Added a depend target to help/Makefile.in
-  - Added a $Id: ChangeLog,v 7.3266 2002/01/01 06:56:49 a1kmm Exp $ tag to help/Makefile.in so commit doesn't complain.
+  - Added a $Id: ChangeLog,v 7.3267 2002/01/01 15:53:52 leeh Exp $ tag to help/Makefile.in so commit doesn't complain.
   
   Revision  Changes      Path
   7.102     +0 -3        ircd-hybrid-7/autoconf/configure.in
@@ -20268,4 +20281,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3266 2002/01/01 06:56:49 a1kmm Exp $
+$Id: ChangeLog,v 7.3267 2002/01/01 15:53:52 leeh Exp $
