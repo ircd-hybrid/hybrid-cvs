@@ -21,7 +21,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: m_unkline.c,v 1.39 2001/12/02 15:00:55 leeh Exp $
+ *   $Id: m_unkline.c,v 1.40 2001/12/15 02:31:29 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -110,14 +110,14 @@ static void mo_unkline (struct Client *client_p,struct Client *source_p,
       sendto_one(source_p,":%s NOTICE %s :You need unkline = yes;",me.name,parv[0]);
       return;
     }
-  if ( parc < 2 )
+  if (parc < 2)
     {
       sendto_one(source_p, form_str(ERR_NEEDMOREPARAMS),
                  me.name, source_p->name, "UNKLINE");
       return;
     }
 
-  if ( (host = strchr(parv[1], '@')) || *parv[1] == '*' )
+  if ((host = strchr(parv[1], '@')) || *parv[1] == '*')
     {
       /* Explicit user@host mask given */
 
