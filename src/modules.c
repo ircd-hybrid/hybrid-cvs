@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: modules.c,v 7.8 2000/11/27 23:38:47 db Exp $
+ * $Id: modules.c,v 7.9 2000/11/28 00:08:31 db Exp $
  */
 
 #include <dlfcn.h>
@@ -100,6 +100,9 @@ int unload_one_module (char *name)
   MyFree(modlist[index]->name);
   memcpy( &modlist[index], &modlist[index+1],
 	  sizeof(struct module) * ((num_mods-1) - index) );
+
+  if(num_mods != 0)
+    num_mods--;
 
   log (L_INFO, "Module %s unloaded", name);
   sendto_realops ("Module %s unloaded", name);
@@ -206,7 +209,7 @@ load_one_module (char *path)
       return -1;
     }
 
-  if (!(ver = (char *)dlsym (tmpptr, "_modver")))
+  if (!(ver = (char *)dlsym (tmpptr, "_version")))
     ver = unknown_ver;
 
   increase_modlist();
@@ -323,3 +326,7 @@ mo_modunload (struct Client *cptr, struct Client *sptr, int parc, char **parv)
     }
   free (m_bn);
 }
+
+
+
+
