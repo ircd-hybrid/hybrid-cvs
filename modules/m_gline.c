@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_gline.c,v 1.64 2001/10/06 18:32:14 leeh Exp $
+ *  $Id: m_gline.c,v 1.65 2001/10/15 03:13:18 db Exp $
  */
 
 #include <assert.h>
@@ -155,7 +155,7 @@ static void mo_gline(struct Client *client_p,
     {
       if (!IsSetOperGline(source_p))
 	{
-	  sendto_one(source_p,":%s NOTICE %s :You have no G flag",me.name,parv[0]);
+	  sendto_one(source_p,":%s NOTICE %s :You need gline = yes;",me.name,parv[0]);
 	  return;
 	}
 			

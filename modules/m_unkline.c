@@ -21,7 +21,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- *   $Id: m_unkline.c,v 1.35 2001/08/03 13:10:29 leeh Exp $
+ *   $Id: m_unkline.c,v 1.36 2001/10/15 03:13:18 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -107,7 +107,7 @@ static void mo_unkline (struct Client *client_p,struct Client *source_p,
   
   if (!IsSetOperUnkline(source_p))
     {
-      sendto_one(source_p,":%s NOTICE %s :You have no U flag",me.name,parv[0]);
+      sendto_one(source_p,":%s NOTICE %s :You need unkline = yes;",me.name,parv[0]);
       return;
     }
   if ( parc < 2 )
@@ -345,7 +345,7 @@ mo_undline (struct Client *client_p, struct Client *source_p,
 
   if (!IsSetOperUnkline(source_p))
     {
-      sendto_one(source_p,":%s NOTICE %s :You have no U flag",me.name,
+      sendto_one(source_p,":%s NOTICE %s :You need unkline = yes;",me.name,
 		 parv[0]);
       return;
     }
@@ -469,7 +469,7 @@ static void mo_ungline(struct Client *client_p, struct Client *source_p,
 
   if (!IsSetOperUnkline(source_p) || !IsSetOperGline(source_p))
     {
-      sendto_one(source_p,":%s NOTICE %s :You have no U and G flags",
+      sendto_one(source_p,":%s NOTICE %s :You need unkline = yes;",
                  me.name,parv[0]);
       return;
     }

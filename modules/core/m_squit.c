@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_squit.c,v 1.39 2001/08/03 13:10:29 leeh Exp $
+ *   $Id: m_squit.c,v 1.40 2001/10/15 03:13:18 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -85,7 +85,7 @@ static void mo_squit(struct Client *client_p, struct Client *source_p,
 
   if (!IsOperRemote(source_p))
     {
-      sendto_one(source_p,":%s NOTICE %s :You have no R flag",me.name,parv[0]);
+      sendto_one(source_p,":%s NOTICE %s :You need remote = yes;",me.name,parv[0]);
       return;
     }
 

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_connect.c,v 1.29 2001/07/17 00:26:58 leeh Exp $
+ *   $Id: m_connect.c,v 1.30 2001/10/15 03:13:18 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -87,7 +87,7 @@ static void mo_connect(struct Client* client_p, struct Client* source_p,
 
   if (MyConnect(source_p) && !IsOperRemote(source_p) && parc > 3)
     {
-      sendto_one(source_p,":%s NOTICE %s :You have no R flag", me.name, parv[0]);
+      sendto_one(source_p,":%s NOTICE %s :You need remote = yes;", me.name, parv[0]);
       return;
     }
 

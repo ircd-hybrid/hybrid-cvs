@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_die.c,v 1.17 2001/06/05 01:46:48 db Exp $
+ *   $Id: m_die.c,v 1.18 2001/10/15 03:13:18 db Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -68,7 +68,7 @@ static void mo_die(struct Client *client_p, struct Client *source_p,
 
   if (!IsOperDie(source_p))
     {
-      sendto_one(source_p,":%s NOTICE %s :You have no D flag", me.name, parv[0]);
+      sendto_one(source_p,":%s NOTICE %s :You need die = yes;", me.name, parv[0]);
       return;
     }
 

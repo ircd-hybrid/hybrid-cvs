@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_kill.c,v 1.51 2001/08/25 16:22:32 db Exp $
+ *   $Id: m_kill.c,v 1.52 2001/10/15 03:13:18 db Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -83,9 +83,9 @@ static void mo_kill(struct Client *client_p, struct Client *source_p,
   user = parv[1];
   reason = parv[2]; /* Either defined or NULL (parc >= 2!!) */
 
-  if (!IsSetOperK(source_p))
+  if (!IsSetOperGlobalKill(source_p))
     {
-      sendto_one(source_p,":%s NOTICE %s :You have no K flag",me.name,parv[0]);
+      sendto_one(source_p,":%s NOTICE %s :You need global_kill = yes;",me.name,parv[0]);
       return;
     }
 
