@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: supported.h,v 1.22 2002/04/28 16:38:22 leeh Exp $
+ *  $Id: supported.h,v 1.23 2002/07/16 20:26:47 leeh Exp $
  */
 
 #ifndef INCLUDED_supported_h
@@ -28,6 +28,12 @@
 #include "config.h"
 #include "channel.h"
 #include "ircd_defs.h"
+
+#ifndef USE_ASCII_CASEMAP
+#define CASEMAP "rfc1459"
+#else
+#define CASEMAP "ascii"
+#endif
 
 #define FEATURES "WALLCHOPS"\
                 "%s%s%s%s" \
@@ -49,16 +55,19 @@
 
 #define FEATURES2 "CHANTYPES=%s" \
                   " PREFIX=%s" \
-		  " CHANMODES=%s" \
+		  " CHANMODES=%s%s%s%s" \
 		  " NETWORK=%s" \
-		  " CHARSET=rfc1459" \
-		  " CASEMAPPING=rfc1459" \
+		  " CASEMAPPING=%s" \
 		  " CALLERID"
 
 #define FEATURES2VALUES ConfigServerHide.disable_local_channels ? "#" : "#&", \
-                        "(ohv)@%+", "beI,k,l,imnpsta", \
-			ServerInfo.network_name
-                          
+                        ConfigChannel.use_halfops ? "(ohv)@%+" : "(ov)@+", \
+                        ConfigChannel.use_except ? "e" : "", \
+                        ConfigChannel.use_invex ? "I" : "", \
+                        "b,k,l,imnpst", \
+                        ConfigChannel.use_anonops ? "a" : "", \
+                        ServerInfo.network_name, CASEMAP
+
 /*
  * - from mirc's versions.txt
  *
