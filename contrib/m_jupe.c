@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_jupe.c,v 1.29 2002/05/24 23:48:34 androsyn Exp $
+ *  $Id: m_jupe.c,v 1.30 2002/07/04 13:13:46 androsyn Exp $
  */
 
 #include "stdinc.h"
@@ -71,7 +71,7 @@ _moddeinit(void)
   mod_del_cmd(&jupe_msgtab);
 }
 
-const char *_version = "$Revision: 1.29 $";
+const char *_version = "$Revision: 1.30 $";
 #endif
 
 /*
@@ -159,7 +159,8 @@ static void mo_jupe(struct Client *client_p, struct Client *source_p,
   ajupe->serv->up = me.name;
   ajupe->servptr = &me;
   SetServer(ajupe);
-
+  SetDead(ajupe);
+  
   Count.server++;
   Count.myserver++;
 
