@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_lexer.l,v 1.167 2003/06/14 18:28:41 adx Exp $
+ *  $Id: ircd_lexer.l,v 1.168 2003/06/15 09:27:43 michael Exp $
  */
 
 %option case-insensitive
@@ -54,10 +54,10 @@
 #define MAX_INCLUDE_DEPTH 10
 
 
-int lineno=1;
+int lineno = 1;
 char linebuf[IRCD_BUFSIZE];
 char conffilebuf[IRCD_BUFSIZE];
-int include_stack_ptr=0;
+int include_stack_ptr = 0;
 YY_BUFFER_STATE include_stack[MAX_INCLUDE_DEPTH];
 int lineno_stack[MAX_INCLUDE_DEPTH];
 FBFILE* inc_fbfile_in[MAX_INCLUDE_DEPTH];
@@ -452,7 +452,7 @@ void cinclude(void)
     strlcpy(conffile_stack[include_stack_ptr], conffilebuf, IRCD_BUFSIZE);
     include_stack[include_stack_ptr++] = YY_CURRENT_BUFFER;
     conf_fbfile_in = tmp_fbfile_in;
-    sprintf(conffilebuf, "%s", c);
+    snprintf(conffilebuf, sizeof(conffilebuf), "%s", c);
     yy_switch_to_buffer(yy_create_buffer(yyin, YY_BUF_SIZE));
   }
 }
