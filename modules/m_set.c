@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_set.c,v 1.25 2000/12/30 18:28:53 lusky Exp $ */
+ *   $Id: m_set.c,v 1.26 2000/12/30 19:44:03 lusky Exp $ */
 
 /* rewritten by jdc */
 
@@ -307,12 +307,13 @@ int quote_msglocale( struct Client *sptr, char *locale )
   if(locale)
   {
     char langenv[BUFSIZE];
-    ircsprintf("LANGUAGE=%s",locale);
+    ircsprintf(langenv,"LANGUAGE=%s",locale);
     putenv(langenv);
     { /* XXX ick, this is what gettext.info _recommends_ */
-      extern int  _nl_msg_cat_cntr;
-      ++_nl_msg_cat_cntr;
+/*      extern int  _nl_msg_cat_cntr;
+      ++_nl_msg_cat_cntr; */
     }
+
     sendto_one(sptr, ":%s NOTICE %s :Set MSGLOCALE to '%s'",
                me.name, sptr->name,
                getenv("LANGUAGE") ? getenv("LANGUAGE") : "<unset>");
