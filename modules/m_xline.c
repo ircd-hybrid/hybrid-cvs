@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_xline.c,v 1.30 2004/01/27 05:58:44 metalrock Exp $
+ *  $Id: m_xline.c,v 1.31 2004/02/10 06:00:13 db Exp $
  */
 
 #include "stdinc.h"
@@ -82,7 +82,7 @@ _moddeinit(void)
   mod_del_cmd(&unxline_msgtab);
 }
 
-const char *_version = "$Revision: 1.30 $";
+const char *_version = "$Revision: 1.31 $";
 #endif
 
 
@@ -191,6 +191,9 @@ mo_xline(struct Client *client_p, struct Client *source_p,
   else
     type_i = atoi(type);
 
+  if (EmptyString(reason))
+    reason = def_reason;
+
   if (target_server != NULL)
   {
     sendto_match_servs(source_p, target_server, CAP_CLUSTER,
@@ -201,9 +204,6 @@ mo_xline(struct Client *client_p, struct Client *source_p,
   }
   else if (dlink_list_length(&cluster_items))
     cluster_xline(source_p, parv[1], type_i, reason);
-
-  if (EmptyString(reason))
-    reason = def_reason;
 
   write_xline(source_p, parv[1], reason, type_i);
 } /* mo_xline() */
