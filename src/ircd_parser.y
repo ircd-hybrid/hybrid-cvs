@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: ircd_parser.y,v 1.343 2003/07/22 10:57:19 adx Exp $
+ *  $Id: ircd_parser.y,v 1.344 2003/07/22 12:23:11 adx Exp $
  */
 
 %{
@@ -1437,7 +1437,8 @@ auth_user: USER '=' QSTRING ';'
 };
 
 /* XXX - IP/IPV6 tags don't exist anymore - put IP/IPV6 into user. */
-auth_passwd: PASSWORD '=' QSTRING ';' 
+
+auth_passwd: PASSWORD '=' QSTRING ';'
 {
   if (ypass == 2)
   {
@@ -1450,7 +1451,7 @@ auth_passwd: PASSWORD '=' QSTRING ';'
   }
 };
 
-/* TYES/TNO are flipped to change the default value to YES */
+/* the logic here is flipped to change the default value to YES */
 auth_spoof_notice: SPOOF_NOTICE '=' TBOOL ';'
 {
   if (ypass == 2)

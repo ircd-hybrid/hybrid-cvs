@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.h,v 7.258 2003/07/17 06:25:24 metalrock Exp $
+ *  $Id: s_conf.h,v 7.259 2003/07/22 12:23:10 adx Exp $
  */
 
 #ifndef INCLUDED_s_conf_h
@@ -327,7 +327,6 @@ struct config_file_entry
   int ping_cookie;
   int disable_auth;
   int disable_remote;
-  int fallback_to_ip6_int;
 #ifdef HAVE_LIBCRYPTO
   struct EncCapability *default_cipher_preference;
 #endif

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.461 2003/07/22 10:33:33 adx Exp $
+ *  $Id: s_conf.c,v 7.462 2003/07/22 12:23:11 adx Exp $
  */
 
 #include "stdinc.h"
@@ -1764,8 +1764,8 @@ rehash(int sig)
 {
   if (sig != 0)
     sendto_realops_flags(UMODE_ALL, L_ALL,
-                         "Got signal SIGHUP, reloading ircd conf. file");
-  
+                         "Got signal SIGHUP, reloading ircd.conf file");
+
   restart_resolver();
   /* don't close listeners until we know we can go ahead with the rehash */
 
@@ -1836,40 +1836,70 @@ set_default_conf(void)
   ffailed_operlog[0] = '\0';
   foperlog[0] = '\0';
   
+  ConfigChannel.disable_local_channels = NO;
+  ConfigChannel.use_invex = YES;
+  ConfigChannel.use_except = YES;
+  ConfigChannel.use_knock = YES;
+  ConfigChannel.knock_delay = 300;
+  ConfigChannel.knock_delay_channel = 60;
+  ConfigChannel.max_chans_per_user = 15;
+  ConfigChannel.quiet_on_ban = YES;
+  ConfigChannel.max_bans = 25;
+  ConfigChannel.default_split_user_count = 0;
+  ConfigChannel.default_split_server_count = 0;
+  ConfigChannel.no_join_on_split = NO;
+  ConfigChannel.no_create_on_split = NO;
+
+  ConfigServerHide.flatten_links = NO;
+  ConfigServerHide.links_delay = 300;
+  ConfigServerHide.hidden = NO;
+  ConfigServerHide.disable_hidden = NO;
+  ConfigServerHide.hide_servers = NO;
+  ConfigServerHide.hide_server_ips = NO;
+
   ConfigFileEntry.hide_spoof_ips = YES;
   ConfigFileEntry.ignore_bogus_ts = NO;
-  ConfigFileEntry.disable_remote = 0;
+  ConfigFileEntry.disable_auth = NO;
+  ConfigFileEntry.disable_remote = NO;
+  ConfigFileEntry.default_floodcount = 8; /* XXX */
   ConfigFileEntry.failed_oper_notice = YES;
-  ConfigFileEntry.anti_nick_flood = NO;
+  ConfigFileEntry.dots_in_ident = 0;      /* XXX */
+  ConfigFileEntry.dot_in_ip6_addr = YES;
+  ConfigFileEntry.min_nonwildcard = 4;
+  ConfigFileEntry.min_nonwildcard_simple = 3;
+  ConfigFileEntry.max_accept = 20;
+  ConfigFileEntry.anti_nick_flood = NO;   /* XXX */
   ConfigFileEntry.max_nick_time = 20;
   ConfigFileEntry.max_nick_changes = 5;
-  ConfigFileEntry.max_accept = 20;
-  ConfigFileEntry.anti_spam_exit_message_time = 0;
+  ConfigFileEntry.anti_spam_exit_message_time = 0;  /* XXX */
   ConfigFileEntry.ts_warn_delta = TS_WARN_DELTA_DEFAULT;
-  ConfigFileEntry.ts_max_delta = TS_MAX_DELTA_DEFAULT;
+  ConfigFileEntry.ts_max_delta = TS_MAX_DELTA_DEFAULT;  /* XXX */
   ConfigFileEntry.kline_with_reason = YES;
   ConfigFileEntry.kline_with_connection_closed = NO;
   ConfigFileEntry.warn_no_nline = YES;
-  ConfigFileEntry.stats_o_oper_only = NO;
-  ConfigFileEntry.stats_k_oper_only = 1; /* masked */
-  ConfigFileEntry.stats_i_oper_only = 1; /* masked */
+  ConfigFileEntry.stats_o_oper_only = NO; /* XXX */
+  ConfigFileEntry.stats_k_oper_only = 1;  /* masked */
+  ConfigFileEntry.stats_i_oper_only = 1;  /* masked */
   ConfigFileEntry.stats_P_oper_only = NO;
-  ConfigFileEntry.pace_wait = 10;
   ConfigFileEntry.caller_id_wait = 60;
+  ConfigFileEntry.pace_wait = 10;
   ConfigFileEntry.pace_wait_simple = 1;
   ConfigFileEntry.short_motd = NO;
-  ConfigFileEntry.no_oper_flood = NO;
-  ConfigFileEntry.true_no_oper_flood = NO;
+  ConfigFileEntry.ping_cookie = NO;
+  ConfigFileEntry.no_oper_flood = NO;     /* XXX */
+  ConfigFileEntry.true_no_oper_flood = NO;  /* XXX */
   ConfigFileEntry.oper_pass_resv = YES;
-  ConfigFileEntry.glines = NO;
-  ConfigFileEntry.use_egd = NO;
-  ConfigFileEntry.gline_time = 12 * 3600;
+  ConfigFileEntry.glines = NO;            /* XXX */
+  ConfigFileEntry.gline_time = 12 * 3600; /* XXX */
   ConfigFileEntry.idletime = 0;
-  ConfigFileEntry.dots_in_ident = 0;
   ConfigFileEntry.maximum_links = MAXIMUM_LINKS_DEFAULT;
   ConfigFileEntry.max_targets = MAX_TARGETS_DEFAULT;
+  ConfigFileEntry.client_flood = CLIENT_FLOOD_DEFAULT;
+  ConfigFileEntry.oper_only_umodes = UMODE_DEBUG;  /* XXX */
+  ConfigFileEntry.oper_umodes = UMODE_LOCOPS | UMODE_SERVNOTICE |
+    UMODE_OPERWALL | UMODE_WALLOP;        /* XXX */
+  ConfigFileEntry.crypt_oper_password = YES;
   DupString(ConfigFileEntry.servlink_path, SLPATH);
-  ConfigFileEntry.egdpool_path = NULL;
 #ifdef HAVE_LIBCRYPTO
   /* jdc -- This is our default value for a cipher.  According to the
    *        CRYPTLINK document (doc/cryptlink.txt), BF/128 must be supported
@@ -1881,41 +1911,12 @@ set_default_conf(void)
    */
   ConfigFileEntry.default_cipher_preference = &CipherTable[1];
 #endif
+  ConfigFileEntry.use_egd = NO;
+  ConfigFileEntry.egdpool_path = NULL;
 #ifdef HAVE_LIBZ
   ConfigFileEntry.compression_level = 0;
 #endif
-
-  ConfigFileEntry.oper_umodes = UMODE_LOCOPS | UMODE_SERVNOTICE |
-    UMODE_OPERWALL | UMODE_WALLOP;
-  ConfigFileEntry.oper_only_umodes = UMODE_DEBUG;
-  ConfigFileEntry.crypt_oper_password = YES;
   ConfigFileEntry.throttle_time = 10;
-
-  ConfigChannel.use_except  = YES;
-  ConfigChannel.use_invex   = YES;
-  ConfigChannel.use_knock   = YES;
-  ConfigChannel.knock_delay = 300;
-  ConfigChannel.knock_delay_channel = 60;
-  ConfigChannel.max_chans_per_user = 15;
-  ConfigChannel.max_bans = 25;
-  ConfigChannel.default_split_user_count = 0;
-  ConfigChannel.default_split_server_count = 0;
-  ConfigChannel.no_join_on_split = NO;
-  ConfigChannel.no_create_on_split = NO;
-
-  ConfigServerHide.flatten_links = 0;
-  ConfigServerHide.hide_server_ips = 0;
-  ConfigServerHide.hide_servers = 0;
-  ConfigServerHide.links_delay = 300;
-  ConfigServerHide.hidden = 0;
-  ConfigServerHide.disable_hidden = 0;
-
-  ConfigFileEntry.min_nonwildcard = 4;
-  ConfigFileEntry.min_nonwildcard_simple = 3;
-  ConfigFileEntry.default_floodcount = 8;
-  ConfigFileEntry.client_flood = CLIENT_FLOOD_DEFAULT;
-
-  ConfigFileEntry.fallback_to_ip6_int = 1;
 }
 
 /* read_conf() 
