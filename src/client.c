@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.146 2001/03/06 15:53:36 toot Exp $
+ *  $Id: client.c,v 7.147 2001/03/07 19:50:11 madmax Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -1442,12 +1442,12 @@ const char* comment         /* Reason for the exit */
       if( GlobalSetOptions.hide_server )
 	{
           /* 
-          ** Replaces the name of the splitting server with net.split
+          ** Replaces the name of the splitting server with
+          ** a.server.on.<networkname>.net        
           ** when a client exits from a split, in an attempt to 
-          ** hide topology without breaking too many clients..
+          ** hide topology but let clients detect a split still.
           */
-          strcpy(comment1, me.name);         
-          strcat(comment1, " net.split");
+	  ircsprintf(comment1,"%s a.server.on.%s.net",me.name, ServerInfo.network_name);
 	}
       else
 	{
