@@ -17,14 +17,15 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_select.c,v 7.13 2001/01/19 11:42:02 adrian Exp $
+ *  $Id: s_bsd_select.c,v 7.14 2001/02/27 04:46:24 androsyn Exp $
  */
+#include "config.h"
+#ifdef USE_SELECT
 #include "fdlist.h"
 #include "s_bsd.h"
 #include "class.h"
 #include "client.h"
 #include "common.h"
-#include "config.h"
 #include "irc_string.h"
 #include "ircdauth.h"
 #include "ircd.h"
@@ -236,4 +237,4 @@ comm_select(time_t delay)
     return 0;
 }
 
-
+#endif /* USE_SELECT */

@@ -23,14 +23,15 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_bsd_poll.c,v 7.31 2001/01/20 10:43:39 toot Exp $
+ *  $Id: s_bsd_poll.c,v 7.32 2001/02/27 04:46:24 androsyn Exp $
  */
+#include "config.h"
+#ifdef USE_POLL
 #include "fdlist.h"
 #include "s_bsd.h"
 #include "class.h"
 #include "client.h"
 #include "common.h"
-#include "config.h"
 #include "irc_string.h"
 #include "ircdauth.h"
 #include "ircd.h"
@@ -347,4 +348,4 @@ comm_select(time_t delay)
     comm_select_fdlist(FDLIST_IDLECLIENT, delay);
     return 0;
 }
-
+#endif
