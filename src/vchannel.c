@@ -19,7 +19,7 @@
  *
  *
  *
- * $Id: vchannel.c,v 7.38 2001/01/20 14:25:13 davidt Exp $
+ * $Id: vchannel.c,v 7.39 2001/01/20 14:40:12 davidt Exp $
  */
 #include "tools.h"
 #include "vchannel.h"
@@ -111,7 +111,7 @@ struct Channel* cjoin_channel(struct Channel *root,
 
     ircsprintf( vchan_name, "##%s_%u", name+1, vchan_ts );
     vchan_chptr = hash_find_channel( vchan_name, NULL );
-  } while (vchan_chptr)
+  } while (vchan_chptr);
   
   vchan_chptr = get_channel(sptr, vchan_name, CREATE);
 
