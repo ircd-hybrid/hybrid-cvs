@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: send.c,v 7.125 2001/02/06 04:50:38 db Exp $
+ *   $Id: send.c,v 7.126 2001/02/07 07:14:28 db Exp $
  */
 
 #include <sys/types.h>
@@ -106,6 +106,8 @@ static int
 dead_link(struct Client *to, char *notice)
 {
   /* XXX is this the =right= thing to do? or anyone have a better idea? */
+
+  to->flags |= FLAGS_DEADSOCKET;
 
   exit_client(to, to, &me,
               (to->flags & FLAGS_SENDQEX) ?
