@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_clearchan.c,v 1.6 2001/01/18 00:34:49 fl_ Exp $
+ *   $Id: m_clearchan.c,v 1.7 2001/01/30 18:26:21 fl_ Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -106,7 +106,7 @@ int mo_clearchan(struct Client *cptr, struct Client *sptr, int parc, char *parv[
 
   if (!on_vchan)
     {
-     sendto_realops_flags_opers(FLAGS_WALLOP, &me, 
+     sendto_wallops_flags(FLAGS_WALLOP, &me, 
               "CLEARCHAN called for [%s] by %s!%s@%s",
               parv[1], sptr->name, sptr->username, sptr->host);
      sendto_ll_serv_butone(NULL, sptr, 1,
@@ -117,7 +117,7 @@ int mo_clearchan(struct Client *cptr, struct Client *sptr, int parc, char *parv[
     }
   else
     {
-     sendto_realops_flags_opers(FLAGS_WALLOP, &me,
+     sendto_wallops_flags(FLAGS_WALLOP, &me,
               "CLEARCHAN called for [%s %s] by %s!%s@%s",
               parv[1], parv[2], sptr->name, sptr->username, sptr->host);
      sendto_ll_serv_butone(NULL, sptr, 1,

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_squit.c,v 1.26 2001/01/29 18:59:54 jdc Exp $
+ *   $Id: m_squit.c,v 1.27 2001/01/30 18:26:29 fl_ Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -136,7 +136,7 @@ static int ms_squit(struct Client *cptr, struct Client *sptr,
       */
       if (MyConnect(found_squit->acptr))
 	{
-	  sendto_realops_flags_opers(FLAGS_WALLOP, &me,
+	  sendto_wallops_flags(FLAGS_WALLOP, &me,
 				 "Remote SQUIT %s from %s (%s)",
 				 found_squit->server_name,
 				 get_client_name(sptr, HIDE_IP), comment);

@@ -2,7 +2,7 @@
  * send.h
  * Copyright (C) 1999 Patrick Alken
  *
- * $Id: send.h,v 7.39 2001/01/27 03:53:18 db Exp $
+ * $Id: send.h,v 7.40 2001/01/30 18:26:27 fl_ Exp $
  */
 
 #ifndef INCLUDED_send_h
@@ -103,7 +103,8 @@ extern  void sendto_match_butone(struct Client *, struct Client *,
                                  char *, int, const char *, ...);
 
 extern  void sendto_realops_flags(int, const char *, ...);
-extern  void sendto_realops_flags_opers(int, struct Client *, const char *, ...);
+
+extern  void sendto_wallops_flags(int, struct Client *, const char *, ...);
 
 extern  void sendto_ops_butone(struct Client *, struct Client *, 
                                const char *, ...);
@@ -143,7 +144,7 @@ extern  void sendto_match_butone(struct Client *, struct Client *,
 extern  void sendto_realops_flags(int, const char *, ...)
 	    __attribute__((format (printf, 2, 3)));
 
-extern  void sendto_realops_flags_opers(int, struct Client *, const char *, ...)
+extern  void sendto_wallops_flags(int, struct Client *, const char *, ...)
             __attribute__((format (printf, 3, 4)));
 
 extern  void sendto_ops_butone(struct Client *, struct Client *, 
