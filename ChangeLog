@@ -1,3 +1,9 @@
+*** 20001124_5 by bill
+
+ - changed DPATH and the like from "/usr/ejb/ircd/" to "/usr/local/ircd/"
+   maybe ejb could just ln -sf /usr/ejb /usr/local?
+
+
 *** 20001124_4 by db
 - removed more unused junk
 
@@ -719,7 +725,7 @@ first, then others that had sptr first.. inconsistent...
 
 *** 20001105_12 by ryan
 
-Added $Id: ChangeLog,v 7.577 2000/11/24 14:13:48 db Exp $ tags to rsa_respond (oops)
+Added $Id: ChangeLog,v 7.578 2000/11/24 23:45:04 bill Exp $ tags to rsa_respond (oops)
 
 
 *** 20001105_11 by ryan
