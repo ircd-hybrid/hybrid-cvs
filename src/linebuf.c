@@ -6,7 +6,7 @@
  * The idea here is that we should really be maintaining pre-munged
  * buffer "lines" which we can later refcount to save needless copies.
  *
- * $Id: linebuf.c,v 7.27 2001/03/29 09:11:15 db Exp $
+ * $Id: linebuf.c,v 7.28 2001/03/31 18:35:24 toot Exp $
  */
 
 #include <errno.h>
@@ -521,7 +521,7 @@ linebuf_flush(int fd, buf_head_t *bufhead)
  * count linebufs for s_debug
  */
 
-void count_linebuf_memory(int *count, int *linebuf_memory_used)
+void count_linebuf_memory(int *count, u_long *linebuf_memory_used)
 {
   *count = bufline_count;
   *linebuf_memory_used = bufline_count * sizeof(buf_line_t);

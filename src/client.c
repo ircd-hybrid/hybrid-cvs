@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.157 2001/03/29 09:11:13 db Exp $
+ *  $Id: client.c,v 7.158 2001/03/31 18:35:23 toot Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -145,7 +145,6 @@ struct Client* make_client(struct Client* from)
 
 void _free_client(struct Client* client_p)
 {
-  int result = 0;
   assert(0 != client_p);
   assert(&me != client_p);
   assert(0 == client_p->prev);

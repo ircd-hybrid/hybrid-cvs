@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_debug.c,v 7.49 2001/03/31 17:56:49 ejb Exp $
+ *   $Id: s_debug.c,v 7.50 2001/03/31 18:35:24 toot Exp $
  */
 
 #include <sys/types.h> 
@@ -390,7 +390,7 @@ void count_memory(struct Client *source_p)
 
   sendto_one(source_p, ":%s %d %s :linebuf %d(%d)",
              me.name, RPL_STATSDEBUG, source_p->name,
-	     linebuf_count, linebuf_memory_used);
+	     linebuf_count, (int)linebuf_memory_used);
 
   count_scache(&number_servers_cached,&mem_servers_cached);
 
