@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.208 2001/09/08 15:27:35 androsyn Exp $
+ * $Id: ircd_parser.y,v 1.209 2001/09/11 18:47:45 leeh Exp $
  */
 
 %{
@@ -1935,7 +1935,7 @@ general_item:       general_failed_oper_notice |
                     general_default_cipher_preference |
                     general_compression_level | general_client_flood |
                     general_throttle_time | general_havent_read_conf |
-                    general_dot_in_ip6_addr
+                    general_dot_in_ip6_addr |
                     error
 
 general_failed_oper_notice:   FAILED_OPER_NOTICE '=' TYES ';'
