@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: client.c,v 7.116 2001/01/11 22:34:27 davidt Exp $
+ *  $Id: client.c,v 7.117 2001/01/12 07:11:14 a1kmm Exp $
  */
 #include "tools.h"
 #include "client.h"
@@ -403,13 +403,13 @@ check_pings_list(dlink_list *list)
 static void
 check_unknowns_list(dlink_list *list)
 {
-  dlink_node *ptr;
+  dlink_node *ptr, *next;
   struct Client *cptr;
 
-  for(ptr = list->head; ptr; ptr = ptr->next)
+  for(ptr = list->head; ptr; ptr = next)
     {
       cptr = ptr->data;
-
+      next = ptr->next;
       /*
        * Check UNKNOWN connections - if they have been in this state
        * for > 30s, close them.
@@ -1011,12 +1011,13 @@ const char* get_client_host(struct Client* client)
 
 void free_exited_clients( void )
 {
-  dlink_node *ptr;
+  dlink_node *ptr, *next;
   struct Client *acptr;
   
-  for(ptr = dead_list.head; ptr; ptr = ptr->next)
+  for(ptr = dead_list.head; ptr; ptr = next)
   {
     acptr = ptr->data;
+    next = ptr->next;
     if (ptr->data == NULL)
     {
       sendto_realops_flags(FLAGS_ALL,

@@ -4,7 +4,7 @@
  * shape or form. The author takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: res.c,v 7.41 2001/01/11 20:36:12 a1kmm Exp $
+ * $Id: res.c,v 7.42 2001/01/12 07:11:14 a1kmm Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -209,7 +209,7 @@ static int      proc_answer(ResRQ* request, HEADER* header,
                                     char *, char *);
 static ResRQ*   find_id(int);
 
-/*static struct cache* make_cache(ResRQ* request);*/
+static struct cache* make_cache(ResRQ* request);
 
 static  struct  resinfo {
   int  re_errors;
@@ -1119,7 +1119,7 @@ res_readreply(int fd, void *data)
        * this should never happen, bail here and leave the client unresolved
        */
 
-      assert(!request->sent);
+      assert(0);
 
 #if 0
       (*request->query.callback)(request->query.vptr, 0);

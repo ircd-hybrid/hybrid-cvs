@@ -4,7 +4,7 @@
  * Owner:  Wohali (Joan Touzet)
  *
  *
- * $Id: blalloc.c,v 7.20 2001/01/12 00:05:01 a1kmm Exp $
+ * $Id: blalloc.c,v 7.21 2001/01/12 07:11:13 a1kmm Exp $
  */
 #include <stdio.h>
 #include <unistd.h>
@@ -332,6 +332,7 @@ int _BlockHeapFree(BlockHeap *bh, void *ptr)
     assert(mme->next != mme);
    }
 #endif
+   mem_frob(ptr, bh->elemSize);
    for (walker = bh->base; walker != NULL; walker = walker->next)
      {
       if ((ptr >= walker->elems) && (ptr <= walker->endElem))

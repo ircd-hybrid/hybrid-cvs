@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_auth.c,v 7.39 2001/01/11 05:32:05 a1kmm Exp $
+ *   $Id: s_auth.c,v 7.40 2001/01/12 07:11:15 a1kmm Exp $
  *
  * Changes:
  *   July 6, 1999 - Rewrote most of the code here. When a client connects
@@ -249,7 +249,7 @@ static void auth_dns_callback(void* vptr, struct DNSReply* reply)
 #ifdef USE_IAUTH
       link_auth_request(auth, &auth_client_list);
 #endif
-      /*free_auth_request(auth);*/
+      free_auth_request(auth);
     }
 }
 

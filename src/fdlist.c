@@ -3,7 +3,7 @@
  * fdlist.c   maintain lists of file descriptors
  *
  *
- * $Id: fdlist.c,v 7.19 2001/01/11 05:31:56 a1kmm Exp $
+ * $Id: fdlist.c,v 7.20 2001/01/12 07:11:14 a1kmm Exp $
  */
 #include "fdlist.h"
 #include "client.h"  /* struct Client */
@@ -104,6 +104,7 @@ void
 fd_close(int fd)
 {
     fde_t *F = &fd_table[fd];
+    assert(F->flags.open);
     /* All disk fd's MUST go through file_close() ! */
     assert(F->type != FD_FILE);
     if (F->type == FD_FILE) {
