@@ -1,3 +1,15 @@
+bill        2002/10/23 21:16:38 EDT	(20021024_0)
+
+  Modified files:
+    src                  m_error.c 
+  Log:
+  - no longer show all opers every time a user issues the ERROR command.  too much potential for abuse, especially since the ip is not shown, and it can be done pre-registration.
+  
+  Revision  Changes    Path
+  7.26      +1 -27     ircd-hybrid-7/src/m_error.c
+
+
+
 bill        2002/10/23 18:12:17 EDT	(20021023_0)
 
   Modified files:
@@ -32614,4 +32626,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4073 2002/10/23 22:12:22 bill Exp $
+$Id: ChangeLog,v 7.4074 2002/10/24 01:16:40 bill Exp $
