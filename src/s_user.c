@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_user.c,v 7.181 2002/01/13 23:49:58 leeh Exp $
+ *  $Id: s_user.c,v 7.182 2002/01/14 20:17:38 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -568,14 +568,16 @@ introduce_client(struct Client *client_p, struct Client *source_p,
   struct Client *server;
   static char ubuf[12];
 
-  send_umode(NULL, source_p, 0, SEND_UMODES, ubuf);
+  if(MyClient(source_p))
+    send_umode(source_p, source_p, 0, SEND_UMODES, ubuf);
+  else
+    send_umode(NULL, source_p, 0, SEND_UMODES, ubuf);
 
   if (!*ubuf)
     {
       ubuf[0] = '+';
       ubuf[1] = '\0';
     }
-
 
   /* arghhh one could try not introducing new nicks to ll leafs
    * but then you have to introduce them "on the fly" in SJOIN
