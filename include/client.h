@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.133 2001/11/11 15:17:38 leeh Exp $
+ * $Id: client.h,v 7.134 2001/11/29 20:23:57 leeh Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -310,6 +310,7 @@ struct LocalUser
   int allow_read;	/* how many we're allowed to read in this second */
   int actually_read;    /* how many we've actually read in this second */
   int sent_parsed;      /* how many messages we've parsed in this second */
+  time_t last_knock;    /* time of last knock */
 };
 
 /*

@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_lexer.l,v 1.127 2001/11/26 12:27:20 androsyn Exp $
+ * $Id: ircd_lexer.l,v 1.128 2001/11/29 20:24:04 leeh Exp $
  */
 
 %option case-insensitive
@@ -258,6 +258,7 @@ stats_P_oper_only	{ return STATS_P_OPER_ONLY; }
 whois_wait              { return WHOIS_WAIT; }
 pace_wait               { return PACE_WAIT; }
 knock_delay             { return KNOCK_DELAY; }
+knock_delay_channel	{ return KNOCK_DELAY_CHANNEL; }
 iauth_server            { return IAUTH_SERVER; }
 iauth_port		{ return IAUTH_PORT; }
 glines                  { return GLINES; }

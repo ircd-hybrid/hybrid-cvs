@@ -16,7 +16,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: numeric.h,v 7.23 2001/11/29 05:53:41 db Exp $
+ * $Id: numeric.h,v 7.24 2001/11/29 20:23:57 leeh Exp $
  */
 #ifndef INCLUDED_numeric_h
 #define INCLUDED_numeric_h
@@ -293,6 +293,11 @@ extern const char* form_str(int);
 
 #define RPL_KNOCK	     710
 #define RPL_KNOCKDLVR	     711
+
+#define ERR_TOOMANYKNOCK     712
+#define ERR_CHANOPEN         713
+#define ERR_KNOCKONCHAN      714
+#define ERR_KNOCKDISABLED    714
 
 #define ERR_LAST_ERR_MSG     999
 

@@ -19,7 +19,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: s_conf.h,v 7.162 2001/11/21 14:51:01 androsyn Exp $
+ * $Id: s_conf.h,v 7.163 2001/11/29 20:23:57 leeh Exp $
  */
 
 #include "setup.h"
@@ -249,6 +249,7 @@ struct config_channel_entry
   int           use_knock;
   int           use_vchans;
   int           knock_delay;
+  int		knock_delay_channel;
   int           vchans_oper_only;
   int           maxbans;
   int           max_chans_per_user;

@@ -19,7 +19,7 @@
  *
  *  (C) 1988 University of Oulu,Computing Center and Jarkko Oikarinen"
  *
- *  $Id: s_conf.c,v 7.276 2001/11/21 14:51:08 androsyn Exp $
+ *  $Id: s_conf.c,v 7.277 2001/11/29 20:24:05 leeh Exp $
  */
 
 #include <sys/types.h>
@@ -1562,6 +1562,7 @@ set_default_conf(void)
   ConfigChannel.use_knock   = YES;
   ConfigChannel.use_vchans = NO;
   ConfigChannel.knock_delay = 300;
+  ConfigChannel.knock_delay_channel = 60;
   ConfigChannel.max_chans_per_user = 15;
   ConfigChannel.maxbans = 25;
 
