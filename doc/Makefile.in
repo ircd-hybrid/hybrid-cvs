@@ -1,8 +1,9 @@
-# $Id: Makefile.in,v 7.21 2003/05/17 17:17:52 joshk Exp $
+# $Id: Makefile.in,v 7.22 2003/07/07 05:18:41 joshk Exp $
 INSTALL		= @INSTALL@
 INSTALL_DATA	= @INSTALL_DATA@
 RM		= @RM@
-mandir          = @prefix@/man8
+prefix		= @prefix@
+mandir          = ${prefix}/man8
 
 all:
 
