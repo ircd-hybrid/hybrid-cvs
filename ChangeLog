@@ -1,3 +1,15 @@
+androsyn    2002/01/30 01:48:17 EST	(20020130_0)
+
+  Modified files:
+    src                  ircd.c 
+  Log:
+  Keep people from starting ircd as root.
+  
+  Revision  Changes    Path
+  7.216     +7 -0      ircd-hybrid-7/src/ircd.c
+
+
+
 leeh        2002/01/28 15:58:20 EST	(20020128_0)
 
   Modified files:
@@ -21825,4 +21837,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.3356 2002/01/28 20:58:26 leeh Exp $
+$Id: ChangeLog,v 7.3357 2002/01/30 06:48:23 androsyn Exp $
