@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_whois.c,v 1.84 2003/01/17 13:00:51 db Exp $
+ *  $Id: m_whois.c,v 1.85 2003/01/25 03:41:46 lusky Exp $
  */
 
 #include "stdinc.h"
@@ -76,7 +76,7 @@ _moddeinit(void)
   mod_del_cmd(&whois_msgtab);
 }
 
-const char *_version = "$Revision: 1.84 $";
+const char *_version = "$Revision: 1.85 $";
 #endif
 /*
 ** m_whois
@@ -460,13 +460,16 @@ whois_person(struct Client *source_p,struct Client *target_p, int glob)
     sendto_one(source_p, form_str(RPL_WHOISOPERATOR),
 	       me.name, source_p->name, target_p->name);
 
-  if (glob || (MyConnect(target_p) && (IsOper(source_p) ||
-      !ConfigServerHide.hide_servers)) || (target_p == source_p) )
+  if (MyConnect(target_p) && glob) /* Can't do any of this if not local! db */
   {
+    if (IsOper(source_p) ||
+        !ConfigServerHide.hide_servers || (target_p == source_p))
+    {
     sendto_one(source_p, form_str(RPL_WHOISIDLE),
 	       me.name, source_p->name, target_p->name,
 	       CurrentTime - target_p->user->last,
 	       target_p->firsttime);
+    }
   }
 
   hd.client_p = target_p;

@@ -1,4 +1,4 @@
-$Id: README,v 1.24 2002/09/24 16:33:05 bill Exp $
+$Id: README,v 1.25 2003/01/25 03:41:44 lusky Exp $
 
 This directory contains modules and patches that have been contributed
 by other people, or aren't suitable for including into the 
@@ -8,7 +8,11 @@ modules, or guarantee any of them will actually work.
 Once again. WITH feeling. Not all of these modules have been thoroughly
 tested! Thats why some of them are in contrib not in the main tree yet!
 At least one module in contrib has been known to core servers when used.
-You have been warned.
+You have been warned. 
+
+To repeat, ONE OR MORE OF THESE MAY CRASH YOUR SERVER.  USE AT YOUR
+OWN RISK.
+
 
 Modules
 -------
