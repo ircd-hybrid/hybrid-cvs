@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kline.c,v 1.156 2003/06/16 03:07:49 db Exp $
+ *  $Id: m_kline.c,v 1.157 2003/06/16 05:32:42 db Exp $
  */
 
 #include "stdinc.h"
@@ -81,7 +81,7 @@ _moddeinit(void)
   delete_capability("KLN");
 }
 
-const char *_version = "$Revision: 1.156 $";
+const char *_version = "$Revision: 1.157 $";
 #endif
 
 /* Local function prototypes */
@@ -313,7 +313,7 @@ ms_kline(struct Client *client_p, struct Client *source_p,
     else
       apply_kline(source_p, conf, current_date, cur_time);
   }
-  else if (find_maching_name_conf(ULINE_TYPE,
+  else if (find_matching_name_conf(ULINE_TYPE,
 				  source_p->user->server->name,
 				  source_p->username, source_p->host,
 				  SHARED_KLINE))
