@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd.c,v 7.171 2001/07/26 15:24:04 leeh Exp $
+ * $Id: ircd.c,v 7.172 2001/07/28 10:47:25 a1kmm Exp $
  */
 
 #include <sys/types.h>
@@ -531,7 +531,10 @@ int main(int argc, char *argv[])
  Count.server = 1;     /* us */
  memset((void *)&ServerInfo, 0, sizeof(ServerInfo));
  memset((void *)&AdminInfo, 0, sizeof(AdminInfo));
- 
+
+ /* Initialise the channel capability usage counts... */
+ init_chcap_usage_counts();
+
  ConfigFileEntry.dpath = DPATH;
  ConfigFileEntry.configfile = CPATH;   /* Server configuration file */
  ConfigFileEntry.klinefile = KPATH;    /* Server kline file */
@@ -597,10 +600,11 @@ int main(int argc, char *argv[])
   exit(EXIT_FAILURE);
  }
 
- strncpy_irc(me.name, ServerInfo.name, HOSTLEN);
+ /* Can't use strncpy_irc here because we didn't malloc enough... -A1kmm */
+ strncpy(me.name, ServerInfo.name, HOSTLEN);
 
  if (ServerInfo.description != NULL)
-  strncpy_irc(me.info, ServerInfo.description, REALLEN);
+  strncpy(me.info, ServerInfo.description, REALLEN);
  
 #ifdef USE_GETTEXT
  /*

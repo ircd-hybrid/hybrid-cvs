@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.h,v 7.80 2001/07/27 19:55:57 leeh Exp $
+ * $Id: channel.h,v 7.81 2001/07/28 10:47:14 a1kmm Exp $
  */
 
 #include <sys/types.h>        /* time_t */
@@ -33,7 +33,7 @@
 #endif
 
 /* XXX until debugged and verified thoroughly */
-#undef USE_TABLE_MODE
+#define USE_TABLE_MODE
 
 struct Client;
 
@@ -161,6 +161,9 @@ extern void sync_oplists(struct Channel *, struct Client *, int,
 extern void set_channel_mode_flags( char flags_ptr[4][2],
 				    struct Channel *chptr,
 				    struct Client *source_p);
+extern void init_chcap_usage_counts(void);
+extern void set_chcap_usage_counts(struct Client *serv_p);
+extern void unset_chcap_usage_counts(struct Client *serv_p);
 
 /*
 ** Channel Related macros follow
@@ -257,7 +260,7 @@ typedef struct Ban      /* also used for exceptions -orabidoo */
 struct ChModeChange
 {
  char letter;
- char *arg;
+ char *arg, *id;
  int caps, nocaps, mems;
 };
 

@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: s_serv.c,v 7.195 2001/07/26 15:24:05 leeh Exp $
+ *   $Id: s_serv.c,v 7.196 2001/07/28 10:47:26 a1kmm Exp $
  */
 
 #include <sys/types.h>
@@ -71,6 +71,7 @@
 #include "client.h"
 #include "s_debug.h"
 #include "memory.h"
+#include "channel.h" /* chcap_usage_counts stuff...*/
 
 extern char *crypt();
 
@@ -1115,6 +1116,8 @@ int server_estab(struct Client *client_p)
   */
   SetServer(client_p);
   client_p->servptr = &me;
+  /* Update the capability combination usage counts. -A1kmm */
+  set_chcap_usage_counts(client_p);
 
   /* Some day, all these lists will be consolidated *sigh* */
   add_client_to_llist(&(me.serv->servers), client_p);
