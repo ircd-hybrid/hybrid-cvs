@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: s_user.c,v 7.151 2001/04/19 07:38:15 a1kmm Exp $
+ *  $Id: s_user.c,v 7.152 2001/05/02 07:17:06 a1kmm Exp $
  */
 
 #include <sys/types.h>
@@ -496,6 +496,7 @@ int register_local_user(struct Client *client_p, struct Client *source_p,
   /* Increment our total user count here */
   if (++Count.total > Count.max_tot)
     Count.max_tot = Count.total;
+  source_p->localClient->allow_read = MAX_FLOOD_PER_SEC_I;
 
   Count.totalrestartcount++;
   user_welcome(source_p);

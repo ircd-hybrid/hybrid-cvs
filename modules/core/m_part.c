@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_part.c,v 1.42 2001/04/20 06:11:01 a1kmm Exp $
+ *   $Id: m_part.c,v 1.43 2001/05/02 07:17:04 a1kmm Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -101,14 +101,8 @@ static void m_part(struct Client *client_p,
 
   name = strtoken( &p, parv[1], ",");
 
-  if (!IsPrivileged(source_p) && source_p->tsinfo &&
-      ((CurrentTime-client_p->tsinfo) < 4))
-  {
-   client_p->localClient->allow_read -=
-     MAX_FLOOD_PER_SEC_I-MAX_FLOOD_PER_SEC;
-   if (client_p->localClient->allow_read < 1)
-    client_p->localClient->allow_read = 1;;
-  }
+  /* Finish the flood grace period... */
+  SetFloodDone(source_p);
   /* if its my client, and isn't an oper */
 
   while(name)

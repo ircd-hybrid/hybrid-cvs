@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_message.c,v 1.65 2001/04/19 07:38:13 a1kmm Exp $
+ *   $Id: m_message.c,v 1.66 2001/05/02 07:17:03 a1kmm Exp $
  */
 #include "handlers.h"
 #include "client.h"
@@ -226,16 +226,8 @@ static void m_message(int p_or_n,
       return;
     }
 
-  /* Just a kludge to discourage abuse of the 3s flood time you get at
-   * on registering... */
-  if (!IsPrivileged(source_p) && source_p->tsinfo &&
-      ((CurrentTime-client_p->tsinfo) < 4))
-  {
-   client_p->localClient->allow_read -=
-     MAX_FLOOD_PER_SEC_I-MAX_FLOOD_PER_SEC;
-   if (client_p->localClient->allow_read < 1)
-    client_p->localClient->allow_read = 1;;
-  }
+  /* Finish the flood grace period... */
+  SetFloodDone(source_p);
 
   ntargets = build_target_list(p_or_n,command,
 			       client_p,source_p,parv[1],&target_table,parv[2]);

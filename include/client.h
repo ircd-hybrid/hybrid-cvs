@@ -17,7 +17,7 @@
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
  *
- * $Id: client.h,v 7.108 2001/04/26 11:34:29 toot Exp $
+ * $Id: client.h,v 7.109 2001/05/02 07:16:57 a1kmm Exp $
  */
 #ifndef INCLUDED_client_h
 #define INCLUDED_client_h
@@ -422,7 +422,10 @@ struct LocalUser
 #define FLAGS2_IP_HIDDEN        0x100000        /* client IP should be hidden
                                                    from non opers */
 #define FLAGS2_PERSISTING       0x200000      /* They have no valid socket
-                                               * but */
+                                               * but are persisting. */
+#define FLAGS2_FLOODDONE        0x400000      /* Flood grace period has
+                                               * been ended. */
+
 #define SEND_UMODES  (FLAGS_INVISIBLE | FLAGS_OPER | FLAGS_WALLOP | \
                       FLAGS_ADMIN|FLAGS_PERSISTANT)
 #define ALL_UMODES   (SEND_UMODES | FLAGS_SERVNOTICE | FLAGS_CCONN | \
@@ -534,6 +537,8 @@ struct LocalUser
 #define IsOperRehash(x)         ((x)->flags2 & FLAGS2_OPER_REHASH)
 #define SetOperAdmin(x)         ((x)->flags2 |= FLAGS2_OPER_ADMIN)
 #define IsSetOperAdmin(x)       ((x)->flags2 & FLAGS2_OPER_ADMIN)
+#define SetFloodDone(x)         ((x)->flags2 |= FLAGS2_FLOODDONE)
+#define IsFloodDone(x)          ((x)->flags2 & FLAGS2_FLOODDONE)
 #define CBurst(x)               ((x)->flags2 & FLAGS2_CBURST)
 
 /*
