@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *   $Id: m_join.c,v 7.8 2000/01/03 00:33:41 db Exp $
+ *   $Id: m_join.c,v 7.9 2000/01/04 19:17:30 db Exp $
  */
 
 #include "m_commands.h"
@@ -134,7 +134,6 @@ int     m_join(struct Client *cptr,
       return 0;
     }
 
-
 #ifdef NEED_SPLITCODE
 
   /* Check to see if the timer has timed out, and if so, see if
@@ -173,7 +172,6 @@ int     m_join(struct Client *cptr,
                        me.name, parv[0], name);
           continue;
         }
-
 
 #ifdef NO_JOIN_ON_SPLIT_SIMPLE
       if (server_was_split && MyClient(sptr) && (*name != '&') &&
@@ -292,24 +290,12 @@ int     m_join(struct Client *cptr,
              {
                flags = CHFL_CHANOP;
 #ifndef HUB
+               /* LazyLinks */
                if( (*name != '&') && serv_cptr_list
                      && IsCapable( serv_cptr_list, CAP_LL) )
                  {
-#ifdef DEBUGLL
-                   sendto_realops("This is where we ask for %s %s %s",
-                                   name,
-                                   sptr->name,
-                                   key ? key : "" );
-#endif
-                   if(key)
-                     sendto_one(serv_cptr_list,":%s CBURST %s %s %s",
-                       me.name,name,sptr->name,key);
-                   else
-                     sendto_one(serv_cptr_list,":%s CBURST %s %s",
-                       me.name,name,sptr->name);
-#ifdef DEBUGLL
-                   sendto_realops("Waiting for LLJOIN");
-#endif
+                   sendto_one(serv_cptr_list,":%s CBURST %s %s %s",
+                     me.name,name,sptr->name, key ? key: "" );
                    /* And wait for LLJOIN */
                    return 0;
                  }

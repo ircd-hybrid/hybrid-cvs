@@ -34,7 +34,7 @@
  *                mode * -p etc. if flag was clear
  *
  *
- * $Id: channel.c,v 7.31 2000/01/04 17:52:52 db Exp $
+ * $Id: channel.c,v 7.32 2000/01/04 19:17:29 db Exp $
  */
 #include "channel.h"
 #include "client.h"
@@ -441,8 +441,6 @@ static  int     del_denyid(struct Channel *chptr, char *banid)
     }
   return 0;
 }
-
-
 
 /*
  * del_matching_exception - delete an exception matching this user
