@@ -17,7 +17,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: channel.c,v 7.200 2001/03/06 15:53:34 toot Exp $
+ * $Id: channel.c,v 7.201 2001/03/14 05:27:16 toot Exp $
  */
 #include "tools.h"
 #include "channel.h"
@@ -1161,6 +1161,7 @@ void set_channel_mode(struct Client *client_p,
   int   target_was_voice;
 
   int halfop_deop_self;
+  int halfop_setting_voice;
 
   dlink_node *ptr;
   dlink_list *to_list=NULL;
@@ -1186,6 +1187,7 @@ void set_channel_mode(struct Client *client_p,
   for ( ; ; )
     {
       halfop_deop_self = 0;
+      halfop_setting_voice = 0;
       if (BadPtr(curr))
         {
           /*
@@ -1223,7 +1225,7 @@ void set_channel_mode(struct Client *client_p,
           /* NOT REACHED */
           break;
 
-	case 'h':
+	case 'h' :
         case 'o' :
         case 'v' :
           if (MyClient(source_p))
@@ -1332,13 +1334,17 @@ void set_channel_mode(struct Client *client_p,
             change_channel_membership(chptr,&chptr->peons, who);
 
           /* Allow users to -h themselves */
-          if (whatt == MODE_DEL && target_was_hop && (c == 'h') &&
+          if ((whatt == MODE_DEL) && target_was_hop && (c == 'h') &&
               (who == source_p))
-          {
-            halfop_deop_self = 1;
-          }
+            {
+              halfop_deop_self = 1;
+            }
 
-          if (!isok && !halfop_deop_self)
+          /* let half-ops set voices */
+          if (isok_c && (c == 'v'))
+             halfop_setting_voice = 1;
+
+          if (!isok && !halfop_deop_self && !halfop_setting_voice)
             {
               if (MyClient(source_p) && !errsent(SM_ERR_NOOPS, &errors_sent))
                 sendto_one(source_p, form_str(ERR_CHANOPRIVSNEEDED), me.name, 
@@ -1481,7 +1487,7 @@ void set_channel_mode(struct Client *client_p,
           if (!*arg)
             break;
 
-          if (!isok)
+          if (!isok_c)
             {
               if (!errsent(SM_ERR_NOOPS, &errors_sent) && MyClient(source_p))
                 sendto_one(source_p, form_str(ERR_CHANOPRIVSNEEDED), me.name, 

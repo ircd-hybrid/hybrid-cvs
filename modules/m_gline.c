@@ -20,7 +20,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- *  $Id: m_gline.c,v 1.42 2001/03/13 20:38:22 fl_ Exp $
+ *  $Id: m_gline.c,v 1.43 2001/03/14 05:27:09 toot Exp $
  */
 #include "tools.h"
 #include "handlers.h"
@@ -143,8 +143,6 @@ static void mo_gline(struct Client *client_p,
   char *user = NULL;
   char *host = NULL;	              /* user and host of GLINE "victim" */
   const char *reason = NULL;          /* reason for "victims" demise */
-  char *p;
-  char tmpch;
   char tempuser[USERLEN + 2];
   char temphost[HOSTLEN + 1];
 
