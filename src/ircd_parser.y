@@ -18,7 +18,7 @@
  *   along with this program; if not, write to the Free Software
  *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
  *
- * $Id: ircd_parser.y,v 1.123 2001/01/31 20:15:15 davidt Exp $
+ * $Id: ircd_parser.y,v 1.124 2001/02/03 03:19:01 davidt Exp $
  */
 
 %{
@@ -1511,7 +1511,7 @@ general_pace_wait: PACE_WAIT '=' NUMBER ';'
     ConfigFileEntry.pace_wait = yylval.number;
   } ;
 
-general_pace_wait: CALLER_ID_WAIT '=' NUMBER ';'
+general_caller_id_wait: CALLER_ID_WAIT '=' NUMBER ';'
   {
     ConfigFileEntry.caller_id_wait = yylval.number;
   } ;
