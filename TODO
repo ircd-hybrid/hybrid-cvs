@@ -1,4 +1,4 @@
-$Id: TODO,v 7.91 2003/06/21 20:09:12 metalrock Exp $
+$Id: TODO,v 7.92 2003/06/24 02:36:15 joshk Exp $
 
 - add more stderr debugging (ircd -s)... one for every place we syslog()
 - ircd -s doesn't work through a restart
@@ -124,6 +124,9 @@ Little things to be done given enough time and initiative -Hwy
 * Find out the status of the build with IRIX64/MIPSpro.
 * Make modules.c more flexible in anticipation of Win32 modules usability.
 * LAZY LINKS ARE BROKEN!!!
+* TENDRA IS BROKEN! (Not quite our fault)
+* Fix lack of error message for oper initiating /connect that fails because
+it's a leaf.
 
 -- metalrock's list
 

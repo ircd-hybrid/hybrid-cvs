@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_sjoin.c,v 1.162 2003/06/12 15:17:22 michael Exp $
+ *  $Id: m_sjoin.c,v 1.163 2003/06/24 02:36:22 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -62,7 +62,7 @@ _moddeinit(void)
   mod_del_cmd(&sjoin_msgtab);
 }
 
-const char *_version = "$Revision: 1.162 $";
+const char *_version = "$Revision: 1.163 $";
 #endif
 
 /* ms_sjoin()
@@ -312,7 +312,7 @@ ms_sjoin(struct Client *client_p, struct Client *source_p,
     num_prefix = 0;
 
     /* XXXXXXXX THIS IS JUST DUMB */
-#ifdef USE_HALFOP
+#ifdef USE_HALFOPS
     for (i = 0; i < 3; i++)
 #else
     for (i = 0; i < 2; i++)

@@ -7,7 +7,7 @@
  * The authors takes no responsibility for any damage or loss
  * of property which results from the use of this software.
  *
- * $Id: irc_res.c,v 7.28 2003/06/07 17:28:01 michael Exp $
+ * $Id: irc_res.c,v 7.29 2003/06/24 02:36:24 joshk Exp $
  *
  * July 1999 - Rewrote a bunch of stuff here. Change hostent builder code,
  *     added callbacks and reference counting of returned hostents.
@@ -203,7 +203,7 @@ start_resolver(void)
 int
 init_resolver(void)
 {
-#ifdef LRAND48
+#ifdef HAVE_SRAND48
   srand48(CurrentTime);
 #endif
   start_resolver();
@@ -544,7 +544,7 @@ query_name(const char *name, int query_class, int type,
       (unsigned char *)buf, sizeof(buf))) > 0)
   {
     HEADER *header = (HEADER *)buf;
-#ifndef LRAND48
+#ifndef HAVE_LRAND48
     int k = 0;
     struct timeval tv;
 #endif
@@ -554,7 +554,7 @@ query_name(const char *name, int query_class, int type,
      * network byte order, the nameserver does not interpret this value
      * and returns it unchanged
      */
-#ifdef LRAND48
+#ifdef HAVE_LRAND48
     do
     {
       header->id = (header->id + lrand48()) & 0xffff;
@@ -567,7 +567,7 @@ query_name(const char *name, int query_class, int type,
       header->id = (header->id + k + tv.tv_usec) & 0xffff;
       k++;
     } while (find_id(header->id));
-#endif /* LRAND48 */
+#endif /* HAVE_LRAND48 */
     request->id = header->id;
     ++request->sends;
 

@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: m_kick.c,v 1.64 2003/06/16 03:57:06 metalrock Exp $
+ *  $Id: m_kick.c,v 1.65 2003/06/24 02:36:22 joshk Exp $
  */
 
 #include "stdinc.h"
@@ -59,7 +59,7 @@ _moddeinit(void)
   mod_del_cmd(&kick_msgtab);
 }
 
-const char *_version = "$Revision: 1.64 $";
+const char *_version = "$Revision: 1.65 $";
 #endif
 
 /* m_kick()
@@ -181,7 +181,7 @@ m_kick(struct Client *client_p, struct Client *source_p,
   if ((ms_target = find_channel_link(who, chptr)) != NULL)
   {
     /* half ops cannot kick other halfops on private channels */
-#ifdef HALFOPS
+#ifdef USE_HALFOPS
     if (has_member_flags(ms, CHFL_HALFOP))
     {
       if (((chptr->mode.mode & MODE_PRIVATE) && has_member_flags(ms_target, CHFL_CHANOP|CHFL_HALFOP)) ||
