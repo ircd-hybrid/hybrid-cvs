@@ -1,3 +1,28 @@
+db          2002/09/02 01:34:23 EDT	(20020902_0)
+
+  Modified files:
+    contrib              README 
+    modules              m_gline.c m_join.c 
+    src                  channel_mode.c s_auth.c 
+  Log:
+  - strengthened warning in README in contrib
+  - cleaned up logic in m_join.c to be somewhat saner
+  - burst proper channel modes in m_join for persistent channels
+  - removed superflous MODE when the SJOIN can do it anyway
+  - chm_simple() was missing mode_limit check, thus allowing clients
+    to core the server with a pile of +nt-nt+nt etc.
+  - commented s_auth.c madness better
+  - corrected style in s_auth.c
+  
+  Revision  Changes    Path
+  1.23      +4 -0      ircd-hybrid-7/contrib/README
+  1.83      +2 -2      ircd-hybrid-7/modules/m_gline.c
+  1.91      +109 -101  ircd-hybrid-7/modules/m_join.c
+  7.60      +3 -0      ircd-hybrid-7/src/channel_mode.c
+  7.99      +24 -18    ircd-hybrid-7/src/s_auth.c
+
+
+
 db          2002/08/28 14:13:36 EDT	(20020828_1)
 
   Modified files:
@@ -31608,4 +31633,4 @@ version hybrid-7-current 1999-08-01 to present
 * Restarted changelog
 -Rodder
 
-$Id: ChangeLog,v 7.4006 2002/08/28 18:13:38 db Exp $
+$Id: ChangeLog,v 7.4007 2002/09/02 05:34:26 db Exp $
