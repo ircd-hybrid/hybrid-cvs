@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- *  $Id: s_conf.c,v 7.465 2003/08/06 04:58:27 michael Exp $
+ *  $Id: s_conf.c,v 7.466 2003/08/10 12:30:08 michael Exp $
  */
 
 #include "stdinc.h"
@@ -1223,6 +1223,8 @@ detach_conf(struct Client *client_p, ConfType type)
 
     if (conf->type == type)
     {
+      dlinkDelete(&conf->conf_node, &client_p->localClient->confs);
+
       switch (conf->type)
       {
       case CLIENT_TYPE:
@@ -1258,7 +1260,6 @@ detach_conf(struct Client *client_p, ConfType type)
 	break;
       }
 
-      dlinkDelete(&conf->conf_node, &client_p->localClient->confs);
       return(0);
     }
   }
@@ -1286,6 +1287,8 @@ detach_all_confs(struct Client *client_p)
   DLINK_FOREACH_SAFE(ptr, next_ptr, client_p->localClient->confs.head)
   {
     conf = ptr->data;
+
+    dlinkDelete(&conf->conf_node, &client_p->localClient->confs);
 
     switch(conf->type)
     {
@@ -1321,7 +1324,6 @@ detach_all_confs(struct Client *client_p)
     default:
       break;
     }
-    dlinkDelete(&conf->conf_node, &client_p->localClient->confs);
   }
 }
 
