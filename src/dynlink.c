@@ -19,7 +19,7 @@
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307
  *  USA
  *
- * $Id: dynlink.c,v 7.14 2003/08/22 07:51:58 michael Exp $
+ * $Id: dynlink.c,v 7.15 2003/09/14 21:39:06 bill Exp $
  *
  */
 #include "stdinc.h"
@@ -249,6 +249,9 @@ load_a_module(char *path, int warn, int core)
   char *ver;
 
   mod_basename = basename(path);
+
+  if (findmodule_byname(mod_basename) != -1)
+    return(1);
 
 #ifdef HAVE_SHL_LOAD
   tmpptr = shl_load(path, BIND_IMMEDIATE, NULL);
